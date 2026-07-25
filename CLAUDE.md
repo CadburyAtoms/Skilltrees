@@ -28,7 +28,7 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
 | Doc | What it is |
 |---|---|
 | `EDHA_FOUNDRY_HANDOFF.md` | THE knowledge base. Dated deltas newest-first at the top; core reference §1–§10 below them. §9 = canonical backlog; §10 = gotchas that each bit us at least once. |
-| `EDHA_FOUNDRY_TEST_CHECKLIST.md` | Per-tree in-Foundry test worklists + the one-time **DEPLOY FIRST** section (what's merged but not yet live on Ben's machine — read it before believing any "wrong text/old behavior" bug). Agents edit THIS file; Ben tests from the generated `EDHA_DASHBOARD.html` (Bench tab) — after editing the checklist OR any dashboard source doc (TODO_*, art wishlist, campaign canon/state, handoff, triage, pilot, map JSON) run `node scripts/build-dashboard.js` and commit the dashboard (CI + pre-commit enforce sync). |
+| `EDHA_FOUNDRY_TEST_CHECKLIST.md` | Per-tree in-Foundry test worklists + the **DEPLOY STATE** section (renamed from "DEPLOY FIRST" on 2026-07-16d — what's merged but not yet live on Ben's machine; read it before believing any "wrong text/old behavior" bug, and check its date against `git log` because only Ben can advance it). Agents edit THIS file; Ben tests from the generated `EDHA_DASHBOARD.html` (Bench tab) — after editing the checklist OR any dashboard source doc (TODO_*, art wishlist, campaign canon/state, handoff, triage, pilot, map JSON) run `node scripts/build-dashboard.js` and commit the dashboard (CI + pre-commit enforce sync). |
 | `.claude/skills/test-pass-fixes/` | The test-results → fix workflow, plus `CASE_STUDIES.md` — worked root-cause examples. |
 | `.claude/skills/leyline-tree-authoring/` | The authoring/consistency standard, `audit.py` (the pre-commit gate), and `ENGINE_INDEX.md` (primitives map — read it **instead of** scanning the 11k-line engine). |
 | `AUTHORING_WORKFLOW.md` | Ben's side of the loop: Foundry-edit → extract → build → ⟳ Sync ("the keys"). |
@@ -39,12 +39,16 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
 | `.claude/skills/session-forge/` | The build-a-session workflow (state → geography-first → premise stress-test → batched rulings → scenes/stats → clue ledger → close-out), plus `RUN_SHEET_TEMPLATE.md`, the session-1 `CASE_STUDY.md`, and `MAP_CHEATSHEET.md`. |
 | `.claude/skills/session-debrief/` | Ben's post-play table notes → updated state doc, table rulings into canon §9, consequences + next-session seeds. The campaign-play counterpart of test-pass-fixes. |
 | `.claude/skills/lore-forge/` | The author/audit-world-canon workflow (load load-bearing canon → derive every claim from a named ruling → logic-audit against the death model → batch design questions as a GATE and wait → write at the §5b depth standard → sweep dependents → close-out), plus `CASE_STUDY.md` (the famine layer-1 correction worked through). The worldbuilding counterpart of session-forge. |
+| **Game-design skills** (added to the repo 2026-07-24 — they lived only in Ben's user-level `~/.claude/skills/` and so were invisible to a fresh clone and to CI) | `leyline-revision-guide` + `deity-revision-guide` — the DESIGN standards for the two tree families (color/deity identity, action-type mix, cost curves); `talent-balance` — is this talent balanced/well-named; `phrasing-verifier` — Stormlight-canon phrasing conventions for card text; `cosmere-canon-reference` — the lookup file for canon terms, conditions, skills, capitalization. Distinct from `leyline-tree-authoring`, which is the ENGINEERING standard (wiring, events-vs-effects, audit.py). Design question → these. Wiring question → that. |
 
 ## Where behavior lives
 
 - **`module-src/scripts/register-skills.js`** — the ENTIRE runtime engine (single tracked copy,
-  ~11k lines; mirrored to Ben's live module by `scripts/module-src-sync.js`). All name-based
-  automation, every generic handler, one tree-section header per tree.
+  ~15k lines; mirrored to Ben's live module by `scripts/module-src-sync.js`). Every generic
+  handler, one tree-section header per tree. ⚠️ Also, today, **200 talents' worth of name-keyed
+  automation** — that is the iron-rule-2b backlog, not the pattern to copy (this line used to read
+  "all name-based automation lives here", which is how the backlog grew). New behaviour goes on
+  the talent; `lint-refs.js` pass 7 now enforces that the name-keyed list only shrinks.
 - **`data/authored/<atlas>-<tree>.json`** — the per-talent authored overlay (`description`,
   `activation`, `damage`, `events`, `effects`, `img` ONLY). Wins over the generator AND the
   side tables.
@@ -58,6 +62,14 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
   SKILL.md §"Adversary abilities".
 - **`data/talent-*.json`** side tables — MASKED bootstrap history. Never add an entry for an
   existing talent (it does nothing); never invent a new sidecar table.
+- **`data/native-vocabulary.json`** — the **cosmere-rpg system's OWN** event/handler types (12
+  handlers + 17 events at system 2.1.0), snapshotted from Ben's Foundry install by
+  `scripts/dump-native-vocabulary.js`. ⚠️ **The engine's `edha-*` types are an ADDITION to these,
+  not the whole vocabulary** — authored rules may use either. Enumerating only `register-skills.js`
+  under-counts by 12 handlers and 17 events, which on 2026-07-24 nearly caused a handler to be built
+  for events the system already fires (`EDHA_EDITABILITY_AUDIT.md` §9j). **Native handlers write
+  self/owner state; there is no native "current user target"** — targeting is what edha-* handlers
+  are for. Regenerate after a system upgrade; not in CI (needs the install).
 
 ## Iron rules
 
@@ -65,29 +77,112 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
    relaunch on Ben's machine). Authored `events` / `effects` / text / `img` changes need a **pack
    rebuild + ⟳ Sync**, which only Ben can run — say which one in the commit message AND the delta
    header. Prefer engine-only wiring when both would work.
-2. **One engine, no side-engines.** New automation composes existing primitives — grep
-   `ENGINE_INDEX.md` FIRST. A genuinely new mechanic adds ONE small generic handler/flag/event to
-   the engine, never a bespoke per-tree subsystem.
+2. **Two rules, because "engine" was doing two jobs** (split 2026-07-24 — the old single rule
+   forbade a *second engine file* and said nothing about where behaviour *lives*, which is how 210
+   talents drifted off their documents without ever violating it. Existing "iron rule 2" citations
+   mean **2a**.)
+
+   **2a. One engine, no side-engines.** All runtime code lives in
+   `module-src/scripts/register-skills.js`. New automation composes existing primitives — grep
+   `ENGINE_INDEX.md` FIRST. A genuinely new mechanic adds ONE small generic handler/flag/event
+   type, never a bespoke per-tree subsystem and never a second script.
+
+   **2b. Behaviour belongs on the talent, not on its name.** A talent's automation ships in its
+   own `system.events` / `effects`, so it is **visible and editable on the Events and Effects tabs
+   in Foundry** — that is the whole point, and it is a requirement, not a preference. The engine
+   provides *generic* handler types that read those rules; it must not branch on a talent's name
+   to decide what to do.
+
+   `item.name === "X"` and `edhaOwnsTalent(actor, "X")` are the smell. They bind behaviour to a
+   string, so **a rename silently unwires the talent and an edit in Foundry does nothing** — the
+   tab is empty because there is nothing on the document to show. Hooks are NOT the problem: a
+   document-driven talent uses the same hooks and the same engine file. The difference is only
+   what the hook consults once it fires.
+
+   Two declared exits, both explicit:
+   - **ENGINE-OWNED** — the mechanic genuinely cannot be a rule: multi-step dialogs, cross-actor
+     state machines, targeting overlays, the contest queue, the creation wizard. Declare it — the
+     talent still carries an `events` cue rule that at minimum posts a card, plus an
+     `ENGINE_OWNED: <reason>` line in the tree-section header.
+   - **MANUAL** — no nameable Foundry hook at all. Rule 3's existing bar, unchanged, including
+     "re-litigate manual every pass".
+
+   A talent that ships an empty document with **no** declaration is a bug, not a style choice.
+
+   **Ratchet clause — read this before calling anything a violation.** 2b binds every talent
+   that is **new or touched** from 2026-07-24. Measured that day: 90 of 365 talents carry
+   behaviour on the document, 200 are name-keyed, 75 have neither. Those are a tracked backlog,
+   not an instant violation — but **the count may only go down**, and that is now ENFORCED:
+   `scripts/lint-refs.js` **pass 7** freezes the **221 talent names the engine mentioned in code**
+   on 2026-07-24 into `scripts/name-keyed-allowlist.json` and fails the build if
+   - a talent name appears in engine code and is **not** on the list (the list may not grow), or
+   - a listed name is **no longer** in the engine (delete the line — the list must not become
+     fiction).
+
+   (221 names vs 200 talents: a few talents carry document behaviour *and* a name-keyed branch,
+   and the list counts names in code, which is what rule 2b actually forbids. Comments are
+   stripped before scanning — the engine's tree-section headers list talents by name on purpose,
+   and that IS the rule-3 ledger.) Adversary bespoke abilities are **out of scope**: they are a
+   different surface with their own wiring standard (lint pass 5), and engine name-keyed
+   automation against one is legitimate there.
+
+   The migration's FIRST job is to classify all 200 into expressible-now /
+   needs-a-new-generic-handler / genuinely-engine-owned and report the split — that number decides
+   whether this is one session or five. See `EDHA_EDITABILITY_AUDIT.md`.
 3. **No silent manual cards; kill soft laziness.** Every talent is accounted for in an event note,
    a tree-section header, or the docs. Opposed-skill tests go through the contest core — never
    "trust the player rolled and won". "Manual" requires there to be NO nameable Foundry hook.
-4. **Gates before every commit** (all must pass):
+4. **Gates before every commit** — `npm run gates` runs the whole set; all must pass:
    ```bash
-   node --check module-src/scripts/register-skills.js
-   node scripts/validate.js
+   node --check module-src/scripts/register-skills.js   # + every scripts/*.js and tests/*.js in CI
+   node scripts/validate.js         # data/*.json schema + adversary refs (NOT the tree graph — see rule 7)
    node scripts/lint-refs.js        # data↔engine cross-reference lint (handler types, name literals)
    node tests/run.js                # engine pure-helper unit tests
+   node scripts/build-dashboard.js --check     # generated docs must match their sources
+   node scripts/build-canon-codex.js --check
+   node scripts/build-player-primer.js --check
    python3 tests/audit_parser_test.py
    python3 .claude/skills/leyline-tree-authoring/audit.py <color|deity-name>   # exit 0 required
    ```
-   CI (`validate.yml`) runs all of these on every PR. `validate-packs.js` needs Ben's compiled
-   packs — skip it locally and note the deferred rebuild. A fix whose root cause is in a pure
-   engine helper ships WITH a pinned regression case in `tests/`.
+   **CI (`validate.yml`) runs two more that `npm run gates` does not**, because both need
+   something a clone may lack — match them before assuming a green local run means green CI:
+   - `python3 scripts/map/lint_map.py` — needs Pillow (`python3 -m pip install pillow`); CI
+     installs it just-in-time. Runs on any `source-materials/maps/**` or gazetteer change.
+   - **Pack build + validate** — builds every pack into a scratch `EDHA_MODROOT` and runs
+     `validate-packs.js` + `validate-adversaries.js` against the compiled LevelDB. Needs
+     `classic-level`; CI installs it pinned to Foundry's 2.0.0. This step exists because both
+     validators were deploy-only until 07-16d, which is how two build-breaking bugs reached
+     Ben's `deploy-to-foundry.bat` step 5 — do not treat it as optional.
+
+   A fix whose root cause is in a pure engine helper ships WITH a pinned regression case in
+   `tests/`. **Never chain gates with `;` or pipe them through `tail`** — both mask the exit code
+   that decides, and both have already let a failing lint into a commit (07-18g, 07-18j).
 5. **Docs are part of the change.** Every working session ends with: a dated delta at the TOP of
    `EDHA_FOUNDRY_HANDOFF.md`, checklist rows for everything Ben must re-test, ⚑ flags on anything
    you couldn't self-verify without Foundry, and new primitives added to `ENGINE_INDEX.md`.
 6. **Commit hygiene.** Small themed commits (one per fixed item on multi-fix passes); state
    engine-only vs rebuild-needed; no model identifiers in commit text.
+7. **A tree must be walkable: the node graph is acyclic, and every talent is reachable.**
+   (Added 2026-07-24 — the rule that did not exist when it was needed.) Every entry in a talent's
+   `connections` array becomes a **managed talent prerequisite** on the tree node, so connections
+   are *requirements*, not decoration, and the graph they form must be a DAG rooted in
+   prereq-free nodes. Two authoring mistakes are fatal and both shipped:
+   - **A mutual pair** — A connects to B while B connects to A. Neither can ever be taken.
+   - **An inverted edge** — the card's prose prereq points one way, `connections` points the
+     other. The node then demands the talent that demands it.
+
+   Both were live on `main` for the whole tracked history: Green's `Predator's Instinct` ↔
+   `Pack Hunter` and Red's `Burning Drive` ↔ `Reckless Advance`, taking **16 talents** (Green's
+   entire Instinct column, Red's entire Momentum branch) permanently out of play. A player hit
+   the Green one at session 0. **All six gates passed the whole time** — `validate.js`'s
+   `validateConnections` checks only that a connection *name resolves inside the tree*, never
+   what the edges add up to. Also check the third, non-fatal case: **prose and `connections`
+   naming different parents**, which silently ANDs them (Green's `Scent the Weak` and
+   `Coordinated Hunt`).
+
+   ⚑ **This rule is currently UNGATED** — the cycle/reachability check in `validate.js` is the
+   open item. Until it lands, hand-verify the graph of any tree whose `connections` you touch,
+   and do not trust a green gate run to mean the tree is playable.
 
 ## How to think here (what made past sessions work)
 

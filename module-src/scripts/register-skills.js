@@ -408,22 +408,39 @@ function edhaTestRiderApply(roll, source, config) {
     const ctx = config?.data?.context;                         // 'Skill' | 'Attack' | 'Item' (system casing)
     const target = Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
     const parts = [];
+    let mode = "";                                             // advantage/disadvantage from a mode rule
+    const activeStance = edhaActiveStance(actor);              // null unless a stance marker is up
     for (const tal of actor.items) {
       if (!edhaIsTalent(tal)) continue;
       for (const rule of edhaEventRules(tal)) {
         const h = rule?.handler;
-        if (h?.type !== "edha-test-rider" || !h.bonusFormula) continue;
+        if (h?.type !== "edha-test-rider") continue;
+        if (!h.bonusFormula && !h.mode) continue;              // 07-24j: a rule may be mode-only
         // ⚑ bench: weapon attack vs Weakened gains the die; Extract Thought's Deception does not.
         if (!edhaTestCtxMatch(h.appliesTo, ctx, !!config?.data?.source?.system?.damage?.formula)) continue;
         if (h.whenTargetStatus && !target?.statuses?.has?.(h.whenTargetStatus)) continue;
         if (h.whenTargetIsolated && !(target && edhaIsIsolated(target))) continue;
         if (h.whenAttribute) { const a = roll?.data?.skill?.attribute ?? config?.defaultAttribute; if (!String(h.whenAttribute).split(/[,\s]+/).filter(Boolean).includes(a)) continue; }   // Burning Drive: Physical (str/spd)
+        if (h.whenSkill && roll?.data?.skill?.id !== h.whenSkill) continue;                      // 07-24j: stance skill advantage (itm/ins/agi)
+        if (h.whileStanceActive && activeStance !== tal.name) continue;                          // 07-24j: only while THIS talent's stance is up
         if (h.whenFastTurn && !edhaIsFastTurn(actor)) continue;                                  // Momentum fast-turn payoffs
         if (h.firstTestThisTurn && !edhaIsFirstTestThisTurn(actor)) continue;                    // Burning Drive: first test only
+        if (h.mode && !mode) mode = h.mode;                    // first matching mode wins; formulas still stack
+        if (!h.bonusFormula) continue;
         const resolved = Roll.replaceFormulaData(h.bonusFormula, actor.getRollData(), { missing: "0" });
         if (resolved) parts.push(`${edhaFoldDieMath(resolved)}[${tal.name}]`);   // flavor label → the breakdown names the source talent
       }
     }
+    if (mode) {
+      // ⚠ The system's enum is the STRING "advantage"/"disadvantage", and a DIALOG roll overwrites
+      // roll.options from data.skillTest — so both halves are required (§ the pre-roll pipeline note
+      // at the top of this file). The retired edhaStanceAdvPreRoll set `= 1` and wrapped neither,
+      // which is why stance skill advantage never actually landed. Regression pinned in tests/.
+      roll.options.advantageMode = mode; roll.configureModifiers?.();
+      const orig = roll.configureDialog?.bind(roll);
+      if (orig) roll.configureDialog = async (data) => { try { data ??= {}; data.skillTest ??= {}; data.skillTest.advantageMode = mode; } catch (e) {} return orig(data); };
+      roll.options._edhaTestRider = true;   // guard BEFORE the parts check — a mode-only rule must
+    }                                       // not re-wrap configureDialog on a re-fired pre-roll
     const rally = edhaRallyBonus(actor);                                                          // Battle Fever / Feeding Frenzy stack
     if (rally > 0) parts.push(`${rally}[Rally]`);
     if (!parts.length) return;
@@ -1226,6 +1243,83 @@ async function edhaDispatchOnHit(dealer, target, list) {
       else await edhaFireTrigger(owner, tal.name, spec, ctx);
     }
   }
+}
+
+/* H1 `edha-def-test` (07-24m) — fire THIS talent's payload rules once its test has resolved.
+ *
+ * Deliberately GENERIC: it does not know any payload handler type. Every rule carries its own
+ * executor (`rule.handler.execute`, the same call the system's own fireEvent makes), so a payload
+ * can be any handler that exists now or later — edha-triggered-effect, edha-apply-status,
+ * edha-next-test-mod, edha-push, the coming edha-cae-grant, or a NATIVE one. Hand-listing the
+ * payload types here is exactly the name-keyed mistake one level up, so don't.
+ *
+ * Two events rather than one event + a `whenTest` field: a field would have to be added to every
+ * payload handler's schema, whereas two events cost nothing anywhere and the rule editor's event
+ * picker documents the success/fail branch by itself.
+ *
+ * Order and short-circuit follow the system: `order`-sorted, and a handler returning false stops
+ * the rest (mirrors fireEvent). */
+/* The `edha-combat-timing` DISPATCHER (07-24n). That event type has been registered since 07-18
+ * with **zero dispatchers** — every combat-timed passive was a bespoke name-keyed combatStart hook
+ * instead. Wiring it once unlocks the CAE passive grants (Foresight, Sidestep), stance entry
+ * (Practiced Kata) and anything combat-timed later.
+ *
+ * Currently fires at combat START only. Add further moments (turn-start, round-start) when a
+ * consumer needs one, and discriminate with a field on the CONSUMING handler — `options.moment` is
+ * passed for exactly that. Single GM applier so a grant lands once whatever clients are open.
+ *
+ * NOTE — a deliberate widening: the hooks this replaces were gated `a.type === "character"`.
+ * Rule-driven dispatch does not need that gate (only an actor actually carrying the rule fires),
+ * so an adversary with an embedded twin now gets its combat-start grant too. That is the correct
+ * scope for a rule, but it IS a behaviour change — flagged on the checklist. */
+Hooks.on("combatStart", (combat) => {
+  try {
+    if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;
+    for (const c of combat?.combatants ?? []) {
+      const a = c?.actor; if (!a?.items) continue;
+      for (const tal of a.items) {
+        if (!edhaIsTalent(tal)) continue;
+        for (const rule of edhaEventRules(tal)) {
+          if (rule?.event !== "edha-combat-timing") continue;
+          try { void rule.handler?.execute?.({ item: tal, rule, options: { moment: "combat-start", combat } }); }
+          catch (e) { console.error(`Edha Content | ${tal.name} combat-timing rule failed`, e); }
+        }
+      }
+    }
+  } catch (e) { console.error("Edha Content | combat-timing dispatch failed", e); }
+});
+
+/* The H1 pre-use VETO. Returning false from preUseItem cancels with NO cost paid, so the "nothing
+ * spent" guarantee the deity takeovers hand-rolled survives their retirement — but unlike a
+ * takeover this does not swallow the card or the roll, so the player still rolls their own test.
+ * Gate only; never resolves anything. */
+Hooks.on("cosmere-rpg.preUseItem", (item) => {
+  try {
+    if (!edhaIsTalent(item) || !item.actor) return;
+    const h = edhaRuleOf(item, "edha-def-test"); if (!h) return;
+    const ttok = Array.from(game.user?.targets ?? [])[0] ?? null;
+    if (h.requireTarget !== false && !ttok?.actor) {
+      ui.notifications?.warn(`Edha: ${item.name} — target the creature first (nothing spent).`);
+      return false;
+    }
+    if (h.rangeColor && ttok && !edhaDeathInRange(item.actor, ttok, h.rangeColor)) {
+      ui.notifications?.warn(`Edha: ${ttok.actor?.name ?? "that creature"} is outside your Attunement Range (${h.rangeColor}) — nothing spent.`);
+      return false;
+    }
+  } catch (e) { /* never block a use on a guard failure */ }
+});
+
+async function edhaDispatchTestResult(owner, item, target, ok, ctx = {}) {
+  const want = ok ? "edha-test-success" : "edha-test-fail";
+  const rules = edhaEventRules(item).filter(r => r?.event === want)
+    .sort((a, b) => (Number(a.order) || 0) - (Number(b.order) || 0));
+  for (const rule of rules) {
+    try {
+      const res = await rule.handler?.execute?.({ item, rule, options: { ...ctx, target, owner, testOk: ok } });
+      if (res === false) break;
+    } catch (e) { console.error(`Edha Content | ${item?.name} ${want} payload failed`, e); }
+  }
+  return rules.length;
 }
 
 /* --- GM cue cards (07-16): adversary ability text → a whispered reminder at its named hook -------
@@ -2397,6 +2491,22 @@ function edhaReadDefense(actor, key) {
   const v = Number(foundry.utils.getProperty(actor, `system.defenses.${key}.value`));
   return Number.isFinite(v) ? v : null;
 }
+/* H1 `edha-def-test` (07-24m) — the pure success/fail decision, hoisted out of ~20 hand-rolled
+ * copies so it is testable without Foundry. `total` is the owner's captured roll.
+ *   vs "defense" -> beat `defValue` (edhaReadDefense)
+ *   vs "skill"   -> beat `oppRoll`  (edhaRollOpposedSkill — the engine rolls the foe; never trust
+ *                   the player to have won, per iron rule 3 / kill-soft-laziness)
+ *   vs "dc"      -> beat a flat `dc` (Grand Deception 15, Field Medicine 15)
+ * FAIL-OPEN on an unreadable comparison value, which is what every deity call site already does
+ * (`def == null ? true : total >= def`) — an adversary with no written defense must not make the
+ * talent silently useless. Returns { ok, dc } so the card can print what was beaten. Pinned. */
+function edhaDefTestOutcome(total, { vs = "defense", dc = null, defValue = null, oppRoll = null } = {}) {
+  const t = Number(total) || 0;
+  const bar = vs === "skill" ? oppRoll : vs === "dc" ? dc : defValue;
+  const n = Number(bar);
+  if (bar === null || bar === undefined || !Number.isFinite(n)) return { ok: true, dc: null };   // fail-open
+  return { ok: t >= n, dc: n };
+}
 // Queue a contest the moment a talent is used (captures game.user.targets reliably on the owner's client).
 // The talent's own skill_test roll is matched by edhaContestWatch — order-independent (see edhaTryResolveContest).
 function edhaQueueContest(owner, color, onResolve) {
@@ -3259,10 +3369,23 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
  * names so future stances wire themselves: USING a stance talent ENTERS that stance — one marker
  * ActiveEffect on the actor (talent's name + img, `edha-content.stanceOf` flag) — and any other
  * stance ends first (one stance at a time). Using it again while active LEAVES the stance
- * (toggle). The marker is the visible/queryable state (token icon + sheet + `edhaActiveStance`);
- * each stance's mechanical rider (Vigilant's Dodge/Reactive-Strike discount, Flamestance's
- * Intimidation advantage, …) is wired separately as its hook is named — §9j backlog. Runs on the
- * using client (useItem is client-local); players own their actors, so the writes are permitted.
+ * (toggle). The marker is the visible/queryable state (token icon + sheet + `edhaActiveStance`).
+ * Runs on the using client (useItem is client-local); players own their actors, so the writes are
+ * permitted.
+ *
+ * IRON RULE 2b (07-24j) — the six stance talents came OFF the engine. Both name-keyed tables are
+ * gone; each stance's mechanical rider now lives on its own talent, editable in Foundry:
+ *   - numeric while-active riders (Stone/Vine/Blood) → ONE ActiveEffect on the talent flagged
+ *     `edha-content.stanceRider`, `transfer: false`; `edhaStanceRiderChanges` copies its changes
+ *     onto the marker at enter (see below);
+ *   - skill advantage (Flame → Intimidation, Iron → Insight, Wind → Agility) → an `edha-test-rider`
+ *     rule with `mode: advantage`, `whenSkill`, `whileStanceActive`, injected by the ONE pre-roll
+ *     rider pipeline (`edhaTestRiderApply`) instead of a second bespoke pre-roll hook.
+ * ENGINE-OWNED here: nothing. Nothing in this section knows a talent name.
+ * Each stance's SITUATIONAL half (Flamestance's lone-enemy Action, Ironstance's Reactive Strike on
+ * a graze/miss, Windstance's Disengage Action, Vinestance's push-on-melee, Vigilant's Dodge/
+ * Reactive-Strike discount) stays in the HEROIC header ledger below — those are CAE action-economy
+ * grants, queued on the `edha-cae-grant` handler (audit §9k H5), not on this section.
  */
 function edhaActiveStance(actor) {
   try { return (actor?.effects ?? []).find(e => e.getFlag?.("edha-content", "stanceOf"))?.name ?? null; }
@@ -3280,37 +3403,29 @@ async function edhaToggleStance(item) {
   } else {
     // No `statuses` at create (§10 gotcha — creating WITH statuses throws on cosmere v2.1.0).
     // Numeric stance riders bake into the marker itself (07-18h): the marker IS the stance, so
-    // deflect/defense changes apply exactly while it exists and vanish on leave/swap.
+    // deflect/defense changes apply exactly while it exists and vanish on leave/swap. Since
+    // 07-24j those changes are READ OFF THE TALENT (iron rule 2b) instead of a name-keyed table.
     await actor.createEmbeddedDocuments("ActiveEffect", [{
       name: item.name, img: item.img, disabled: false, transfer: false,
       description: item.system?.description?.chat || item.system?.description?.value || "",
-      changes: EDHA_STANCE_CHANGES[item.name] || [],
+      changes: edhaStanceRiderChanges(item),
       flags: { "edha-content": { stanceOf: item.name } },
     }]);
     ui.notifications?.info(`Edha: ${actor.name} enters ${item.name}${others.length ? ` (${others.map(o => o.name).join(", ")} ended)` : ""}.`);
   }
 }
-// Numeric while-in-stance riders (07-18h). Only the decision-free numeric halves live here; each
-// stance's situational half is in the HEROIC header ledger below (trusted/cue).
-const EDHA_STANCE_CHANGES = {
-  "Stonestance": [{ key: "system.deflect.bonus", mode: 2, value: "1" }],
-  "Vinestance":  [{ key: "system.defenses.phy.bonus", mode: 2, value: "1" }, { key: "system.defenses.cog.bonus", mode: 2, value: "1" }],
-  "Bloodstance": [{ key: "system.defenses.phy.bonus", mode: 2, value: "-2" }, { key: "system.defenses.cog.bonus", mode: 2, value: "-2" }, { key: "system.defenses.spi.bonus", mode: 2, value: "-2" }],
-};
-// While-in-stance skill advantage (Flamestance → Intimidation, Ironstance → Insight, Windstance →
-// Agility): injected on the pre-roll pipeline like Weakened's disadvantage.
-const EDHA_STANCE_SKILL_ADV = { "Flamestance": "itm", "Ironstance": "ins", "Windstance": "agi" };
-function edhaStanceAdvPreRoll(roll, source, config) {
+/* The stance's numeric while-active riders, read off the TALENT's own Effects tab (iron rule 2b,
+ * 07-24j — this replaced the name-keyed EDHA_STANCE_CHANGES table). Author ONE ActiveEffect on the
+ * stance talent flagged `edha-content.stanceRider` with `transfer: false`: it sits on the item
+ * where Ben can edit the numbers, never applies by itself, and the marker copies its changes on
+ * enter. A stance with no such effect simply has no numeric rider (Flame/Iron/Wind — their half is
+ * an edha-test-rider `mode` rule instead). New stances wire themselves; nothing here knows a name. */
+function edhaStanceRiderChanges(item) {
   try {
-    const actor = edhaD20RollActor(config); if (!actor) return;
-    const stance = edhaActiveStance(actor); if (!stance) return;
-    const skill = EDHA_STANCE_SKILL_ADV[stance]; if (!skill) return;
-    if (roll?.data?.skill?.id !== skill) return;
-    roll.options.advantageMode = 1;
-    try { roll.configureModifiers?.(); } catch (e) {}
-  } catch (e) { /* non-fatal */ }
+    const eff = (item?.effects ?? []).find(e => e.getFlag?.("edha-content", "stanceRider"));
+    return (eff?.changes ?? []).map(c => ({ key: c.key, mode: c.mode ?? 2, value: c.value }));
+  } catch (e) { return []; }
 }
-for (const cap of ["Skill", "Attack", "Item"]) Hooks.on(`cosmere-rpg.pre${cap}Roll`, edhaStanceAdvPreRoll);
 /* --- CAE bridge (07-18j — Cosmere Advanced Encounters, v1.3.1 captured in the items dump) ------
  * CAE exposes NO api, but its per-combatant tracker state is plain flags:
  *   flags["cosmere-advanced-encounters"] = { actionsAvailableGroups:[{max,remaining,used,name}],
@@ -3353,52 +3468,11 @@ async function edhaCaeGrant(actor, kind, n, label) {   // kind: "action" | "reac
   game.socket.emit("module.edha-content", { action: "cae-flag", payload });
   return true;
 }
-// Use-triggered grants: focus is paid natively; the tracker gains a named group the player clicks.
-const EDHA_CAE_USE_GRANTS = {
-  "Fast Talker":      { kind: "action", n: 2, label: "Fast Talker (Spiritual tests)" },
-  "Quick Analysis":   { kind: "action", n: 2, label: "Quick Analysis (Cognitive tests)" },
-  "Trickster's Hand": { kind: "action", n: 2, label: "Trickster's Hand (Physical tests)" },
-  "Cautious Advance": { kind: "action", n: 2, label: "Cautious Advance (Brace / Gain Advantage)" },
-  "Backstep":         { kind: "action", n: 1, label: "Backstep (Disengage)" },
-};
-Hooks.on("cosmere-rpg.useItem", (item) => {
-  try {
-    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
-    const g = EDHA_CAE_USE_GRANTS[item.name]; if (!g || !edhaOwnsTalent(actor, item.name)) return;
-    (async () => {
-      const tracked = await edhaCaeGrant(actor, g.kind, g.n, item.name);
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>⚡ <strong>${item.name}</strong>: ${g.n} ${g.kind}(s) — ${g.label}${tracked ? " (on the tracker)" : " (no tracker in this scene — honor-system)"}.</p>` });
-    })();
-  } catch (e) { console.error("Edha Content | CAE use-grant failed", e); }
-});
-// Through the Fray: the targeted ally gains the reaction (not the user).
-Hooks.on("cosmere-rpg.useItem", (item) => {
-  try {
-    const actor = item?.actor; if (!actor || !edhaIsTalent(item) || item.name !== "Through the Fray") return;
-    if (!edhaOwnsTalent(actor, "Through the Fray")) return;
-    const ally = [...(game.user?.targets ?? [])][0]?.actor ?? null;
-    if (!ally) { ui.notifications?.warn("Edha: Through the Fray — target the ally first, then use it again."); return; }
-    (async () => {
-      const tracked = await edhaCaeGrant(ally, "reaction", 1, "Through the Fray (Disengage / Gain Advantage)");
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>⚡ <strong>Through the Fray</strong>: ${ally.name} may Disengage or Gain Advantage as a reaction${tracked ? " (on the tracker)" : ""}.</p>` });
-    })();
-  } catch (e) { console.error("Edha Content | Through the Fray failed", e); }
-});
-// Foresight (+1 reaction) and Sidestep (+1 Dodge reaction while unarmored/light) at combat start —
-// GM applier so it lands once, whatever clients are open.
-Hooks.on("combatStart", (combat) => {
-  try {
-    if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;
-    for (const c of combat?.combatants ?? []) {
-      const a = c?.actor; if (!a || a.type !== "character") continue;
-      if (edhaOwnsTalent(a, "Foresight")) void edhaCaeGrant(a, "reaction", 1, "Foresight");
-      if (edhaOwnsTalent(a, "Sidestep")) {
-        const deflect = Number(a.system?.deflect?.value) || 0;
-        if (deflect < 2) void edhaCaeGrant(a, "reaction", 1, "Sidestep (Dodge only)");
-      }
-    }
-  } catch (e) { console.error("Edha Content | CAE combat-start grants failed", e); }
-});
+// EDHA_CAE_USE_GRANTS and its hook retired 07-24n — every row was `on use, grant N of a kind with
+// a label`, which is the `edha-cae-grant` handler on event `use` (iron rule 2b).
+// Through the Fray retired 07-24n -> edha-cae-grant, kind reaction, target=target (iron rule 2b).
+// Foresight + Sidestep retired 07-24n -> edha-cae-grant on event edha-combat-timing; Sidestep's
+// armour gate is the handler's whenDeflectBelow field (iron rule 2b).
 
 /* --- Starting kits (07-18j — §9j #4; ruling 59 + the primer text) -------------------------------
  * `edha.grantStartingKit(actor, "Warrior")` (GM console, or the player's own actor): grants the
@@ -3465,18 +3539,8 @@ Hooks.on("preCreateCombatant", (combatant) => {
     return false;
   } catch (e) { /* never block combat on a guard failure */ }
 });
-// Practiced Kata: start each combat in Vigilant Stance unless Surprised (owner-side, per owner).
-Hooks.on("combatStart", (combat) => {
-  try {
-    for (const c of combat?.combatants ?? []) {
-      const a = c?.actor;
-      if (!a || !a.isOwner || a.type !== "character") continue;
-      if (!edhaOwnsTalent(a, "Practiced Kata") || a.statuses?.has?.("surprised")) continue;
-      const vs = a.items.find(i => edhaIsTalent(i) && i.name === "Vigilant Stance");
-      if (vs && edhaActiveStance(a) !== "Vigilant Stance") void edhaToggleStance(vs);
-    }
-  } catch (e) { console.error("Edha Content | Practiced Kata combat-start failed", e); }
-});
+// Practiced Kata retired 07-24n -> edha-enter-stance on event edha-combat-timing. Now runs on the
+// single GM applier like every other combat-timing rule, instead of owner-side (iron rule 2b).
 Hooks.on("cosmere-rpg.useItem", (item) => {
   try { if (edhaIsTalent(item) && item.system?.modality === "stance" && item.actor) void edhaToggleStance(item); }
   catch (e) { console.error("Edha Content | stance toggle failed", e); }
@@ -3557,6 +3621,29 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
  *   (cue; the numeric half is wired), Defensive Position/Formation Drills (Brace is the GM's
  *   dis/advantage bookkeeping — re-litigate WITH the CAE dump, it may expose Brace).
  * CONTEST-EXEMPT: none — every opposed line above is vs a DEFENSE (gated below) or a fixed DC.
+ *
+ * ── IRON RULE 2b STATUS (07-24m/n) ────────────────────────────────────────────────────────────
+ * The ledger above describes each talent's MECHANIC and stays accurate. What changed is WHERE the
+ * behaviour lives. These are now authored rules on their own documents, and their engine branches
+ * are deleted — do not re-add a name-keyed case for any of them:
+ *   def-tests (`edha-def-test`)  Synchronized Assault · Set at Odds · Turning Point ·
+ *                               Grand Deception · Tactical Ploy (+ two payload rules)
+ *   action economy (`edha-cae-grant`)  Fast Talker · Quick Analysis · Trickster's Hand ·
+ *                               Cautious Advance · Backstep · Through the Fray ·
+ *                               Foresight · Sidestep
+ *   combat-timed (`edha-combat-timing`)  Foresight · Sidestep · Practiced Kata
+ *                               (`edha-enter-stance` → Vigilant Stance)
+ *   stances (`stanceRider` effect + `edha-test-rider`)  all six, see the stance section
+ *   next-test (`edha-next-test-mod` target=self)  the four Opportunity adders · Risky Behavior ·
+ *                               Overwhelm with Details
+ * STILL name-keyed here, and why: Sharp Eye (payload reads arbitrary target state — needs a reveal
+ *   handler), Field Medicine + Resuscitation (heals the TARGET's recovery die; the rider formula
+ *   resolves against the OWNER), Steadfast Challenge (→ Calm Appeal) and Valiant Intervention
+ *   (→ Resolute Stand) — both coupled to a rider talent that needs a MANUAL declaration first.
+ * ⚑ Vigilant Stance is now OFF the ratchet with an EMPTY document. That is declared, not an
+ *   oversight: its Dodge/Reactive-Strike discount is the CAE-NEXT cost-discount class above, which
+ *   no handler can express yet. Its text reaches the table on the stance marker (edhaToggleStance
+ *   copies the talent's description onto it). Give it a real rule the moment a CAE cost hook lands.
  */
 // -- Quarry core -------------------------------------------------------------------------------
 async function edhaSetQuarry(owner, target) {
@@ -3695,23 +3782,9 @@ const EDHA_HEROIC_DEFTESTS = {
   "Valiant Intervention": { skill: "ath", def: "spi", apply: async (owner, target) => {
     edhaPostCalcTestCard(owner, "Valiant Intervention", { mode: "disadvantage", count: 1, candidates: [target], prompt: `${target.name} takes a disadvantage on tests against ${owner.name}'s allies${edhaOwnsTalent(owner, "Resolute Stand") ? " — Resolute Stand: no Reactive Strikes; spend focus to add targets (GM applies)" : ""}.`, icon: "🛡️" });
   } },
-  "Tactical Ploy": { skill: "dec", def: "cog", apply: async (owner, target) => {
-    await edhaSetNextTestMod(target, { source: "Tactical Ploy", count: 1, formula: "-1d4" });
-    const burned = await edhaCaeGrant(target, "burn-reaction", 1, "Tactical Ploy");
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🎭 <strong>Tactical Ploy</strong>: ${target.name} loses one Reaction${burned ? " (burned on the tracker)" : " (honor-system)"} and takes <strong>−1d4</strong> on their next cognitive/spiritual test (auto-applied — GM waives it if the next test is physical).</p>` });
-  } },
-  "Synchronized Assault": { skill: "ldr", def: "cog", apply: async (owner, target) => {
-    const n = Number(owner.system?.skills?.ldr?.rank) || 1;
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>⚔️ <strong>Synchronized Assault</strong> succeeds: up to <strong>${n}</strong> allies gain an Action for an extra Strike against ${target.name} (granted actions are §9i honor-system — strike away).</p>` });
-  }, applyFail: async (owner, target) => {
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>⚔️ <strong>Synchronized Assault</strong> fails: only ONE ally gains the extra Strike against ${target.name}.</p>` });
-  } },
-  "Set at Odds": { skill: "ldr", def: "spi", apply: async (owner, target) => {
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🐍 <strong>Set at Odds</strong> succeeds vs ${target.name}'s group: the targets turn <strong>hostile to each other</strong> (GM runs the fallout).</p>` });
-  } },
-  "Turning Point": { skill: "ded", def: "cog", apply: async (owner, target) => {
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>♟️ <strong>Turning Point</strong> succeeds vs ${target.name}: you and your allies gain an Action on your next turns (§9i honor-system).</p>` });
-  } },
+  // Synchronized Assault, Set at Odds and Turning Point moved onto their documents 07-24m (H1
+  // batch 1) — all three were "gated test, then a table-run effect", which is `edha-def-test`
+  // plus its own note. The three rows below are what still needs a payload H1 cannot supply.
   "Sharp Eye": { skill: "per", def: "cog", apply: async (owner, target) => {
     const s = target.system, low = (o) => Object.entries(o || {}).sort((a, b) => (Number(a[1]?.value) || 0) - (Number(b[1]?.value) || 0))[0]?.[0] ?? "?";
     const half = (r) => (Number(r?.value) || 0) <= ((edhaResVal(r) ?? 0) / 2);
@@ -3738,12 +3811,7 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
 Hooks.on("cosmere-rpg.useItem", (item) => {
   try {
     const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
-    if (item.name === "Grand Deception" && edhaOwnsTalent(actor, "Grand Deception")) {
-      edhaQueueContest(actor, "dec", async ({ total }) => {
-        const ok = total >= 15;
-        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎭 <strong>Grand Deception</strong>: ${total} vs DC 15 — <strong>${ok ? "the ruse lands" : "FAIL"}</strong>${ok ? " (reveal the changed detail)" : ""}.</p>` });
-      });
-    }
+    // Grand Deception moved onto its document 07-24m — `edha-def-test` with vs="dc", dc=15.
     if (item.name === "Field Medicine" && edhaOwnsTalent(actor, "Field Medicine")) {
       const t = [...(game.user?.targets ?? [])][0]?.actor ?? null;
       if (!t) { ui.notifications?.warn("Edha: Field Medicine — target the patient first, then use it."); return; }
@@ -3776,24 +3844,10 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎖️ <strong>${item.name}</strong>: your next roll gains <strong>${die}</strong> (the card's skill list is honor-system — GM waives it on a non-matching test).</p>` });
   } catch (e) { console.error("Edha Content | command-die self-add failed", e); }
 });
-// Opportunity ADDERS (07-18h): using the talent banks the +1-Opportunity credit for the next test.
-const EDHA_OPP_ADDERS = new Set(["High Society Contacts", "Underworld Contacts", "Rumormonger", "Well Supplied"]);
-Hooks.on("cosmere-rpg.useItem", (item) => {
-  try {
-    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
-    if (!EDHA_OPP_ADDERS.has(item.name) || !edhaOwnsTalent(actor, item.name)) return;
-    void actor.setFlag("edha-content", "oppCredit", { source: item.name });
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎲 <strong>${item.name}</strong>: ${actor.name}'s next matching test gains an <strong>Opportunity</strong> (banked — the menu fires with the roll).</p>` });
-  } catch (e) { console.error("Edha Content | opportunity adder failed", e); }
-});
-// Risky Behavior (Agent): raise the stakes on your next test (1 focus, paid natively).
-Hooks.on("cosmere-rpg.useItem", (item) => {
-  try {
-    const actor = item?.actor; if (!actor || !edhaIsTalent(item) || item.name !== "Risky Behavior") return;
-    if (!edhaOwnsTalent(actor, "Risky Behavior")) return;
-    void edhaRaiseStakesApi(actor, null, "Risky Behavior");   // posts its own card
-  } catch (e) { console.error("Edha Content | Risky Behavior failed", e); }
-});
+// Opportunity ADDERS, Risky Behavior's Plot Die and Overwhelm with Details' Lore bank all came off
+// the engine on 07-24k (iron rule 2b): every one of them was "on use, write a next-test flag on
+// MYSELF", which is now `edha-next-test-mod` with target=self plus the opportunity / plotDie /
+// formula fields. EDHA_OPP_ADDERS and two bespoke useItem hooks deleted with them.
 // Resilient Hero (Leader): the first time health would hit 0, it becomes your Athletics modifier
 // instead — a pre-update veto with a once-per-long-rest flag (GM clears with the rest).
 Hooks.on("preUpdateActor", (actor, changes) => {
@@ -3808,16 +3862,8 @@ Hooks.on("preUpdateActor", (actor, changes) => {
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>💪 <strong>Resilient Hero</strong>: instead of dropping, ${actor.name} holds at <strong>${mod}</strong> health (spent until a long rest — GM: clear with <code>actor.unsetFlag("edha-content","resilientSpent")</code>).</p>` });
   } catch (e) { console.error("Edha Content | Resilient Hero failed", e); }
 });
-// Overwhelm with Details (Scholar): your Lore modifier rides your next cognitive/spiritual test.
-Hooks.on("cosmere-rpg.useItem", (item) => {
-  try {
-    const actor = item?.actor; if (!actor || !edhaIsTalent(item) || item.name !== "Overwhelm with Details") return;
-    if (!edhaOwnsTalent(actor, "Overwhelm with Details")) return;
-    const mod = Number(actor.system?.skills?.lor?.mod) || (Number(actor.system?.skills?.lor?.rank) || 0);
-    void edhaSetNextTestMod(actor, { source: "Overwhelm with Details", count: 1, formula: String(mod) });
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>📚 <strong>Overwhelm with Details</strong>: your next cognitive/spiritual test gains <strong>+${mod}</strong> (Lore — GM waives on a physical test).</p>` });
-  } catch (e) { console.error("Edha Content | Overwhelm with Details failed", e); }
-});
+// (Overwhelm with Details moved onto its document 07-24k — see the note above the command-die
+// cluster. Its Lore modifier is now the rule's `formula`, resolved against the owner at use.)
 
 // A card that applies a counted (dis)advantage to a chosen creature's next test(s). `candidates` = actors
 // to list as buttons; pass null to fall back to a single "target the creature, then click" button.
@@ -4608,7 +4654,7 @@ async function edhaRunPush(owner, victim, cfg) {
     }
     const otok = edhaCasterToken(owner), vtok = edhaCasterToken(victim) ?? victim.getActiveTokens?.()[0];
     if (!otok || !vtok) {
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>💥 <strong>${cfg.note || "Shockwave Slam"}</strong> — push ${victim.name} (no token on canvas — apply manually).</p>` });
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>💥 <strong>${cfg.note || "Push"}</strong> — push ${victim.name} (no token on canvas — apply manually).</p>` });
       return;
     }
     const maxFt = cfg.bySize ? (EDHA_SIZE_FT[edhaColorRank(owner, "red")] || EDHA_SIZE_FT[1]) : (Number(cfg.distanceFt) || 5);
@@ -4621,7 +4667,7 @@ async function edhaRunPush(owner, victim, cfg) {
       const amt = Math.max(0, Math.floor(roll.total));
       if (amt > 0) { await edhaCrossDamage(victim, amt, cfg.collisionType || "impact", { edhaSource: owner }); dmgTxt = ` and slams into an obstacle for <strong>${amt} ${cfg.collisionType || "impact"}</strong>`; }
     }
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>💥 <strong>${cfg.note || "Shockwave Slam"}</strong> — ${victim.name} is pushed <strong>${Math.round(movedFt)} ft</strong>${dmgTxt}.</p>` });
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>💥 <strong>${cfg.note || "Push"}</strong> — ${victim.name} is pushed <strong>${Math.round(movedFt)} ft</strong>${dmgTxt}.</p>` });
   } catch (e) { console.error("Edha Content | edha-push failed", e); }
 }
 
@@ -4742,21 +4788,12 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
         ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🧠 <strong>Shatter Focus</strong> (${actor.name}): ${t.name} loses <strong>1 focus</strong>.</p>` });
         break;
       }
-      case "Emotional Overload": {                                // disadvantage on the target's next (non-attack) test
-        const t = target0();
-        if (!t) { ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>😖 <strong>Emotional Overload</strong> — target the creature, then re-use.</p>` }); break; }
-        void edhaSetNextTestMod(t, { mode: "disadvantage", count: 1, skill: null, source: "Emotional Overload" });
-        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>😖 <strong>Emotional Overload</strong> (${actor.name}): disadvantage on ${t.name}'s next test. <span style="opacity:.8">(GM: only a non-attack test.)</span></p>` });
-        break;
-      }
-      case "Reckless Gambit": {                                   // grant advantage to an ally's next test; it becomes Exhausted
-        const t = target0();
-        if (!t) { ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎲 <strong>Reckless Gambit</strong> — target the creature, then re-use.</p>` }); break; }
-        void edhaSetNextTestMod(t, { mode: "advantage", count: 1, skill: null, source: "Reckless Gambit" });
-        void edhaToggleStatus(t, "exhausted", true);
-        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎲 <strong>Reckless Gambit</strong> (${actor.name}): ${t.name} gains advantage on its next test, then becomes <strong>Exhausted</strong> (−2).</p>` });
-        break;
-      }
+      // MIGRATED to the document 2026-07-24 (iron rule 2b) — behaviour now lives on the talents:
+      //   Emotional Overload → edha-next-test-mod (disadvantage, count 1), event `use`
+      //   Reckless Gambit    → edha-next-test-mod (advantage, count 1) + edha-apply-status (exhausted)
+      // Both ride the SAME nextTestMod pipeline this switch used, so behaviour is unchanged; the
+      // difference is that the rules are visible and editable on each talent's Events tab, and a
+      // rename no longer unwires them. Do not re-add cases here.
       case "Reckless Momentum":                                   // spend Opportunity → Plot Die on your next test this turn
         void edhaGrantPlotDie(actor, { skill: null, source: "Reckless Momentum" });
         ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎲 <strong>Reckless Momentum</strong> (${actor.name}): spend an Opportunity to roll the Plot Die on your next test this turn.</p>` });
@@ -14593,7 +14630,97 @@ function edhaRegisterNativeEventSystem() {
     hook: "edha-content.noop-opportunity",   // sentinel: never fired; the post-roll Opportunity watcher reads these rules
   });
 
+  api.registerItemEventType({
+    source: "edha-content", type: "edha-test-success",
+    label: "Edha: When Your Test SUCCEEDS", description: "Fires when this talent's own Edha: Gated Test rule beats its target. Put the talent's payload rules on this event — any handler works.",
+    hook: "edha-content.noop-test-success",   // sentinel: never fired; edhaDispatchTestResult dispatches these
+  });
+  api.registerItemEventType({
+    source: "edha-content", type: "edha-test-fail",
+    label: "Edha: When Your Test FAILS", description: "Fires when this talent's own Edha: Gated Test rule does NOT beat its target (Synchronized Assault's reduced effect, Absolute Authority's consolation Weakened). Leave it empty if a failure should do nothing.",
+    hook: "edha-content.noop-test-fail",      // sentinel: never fired; edhaDispatchTestResult dispatches these
+  });
+
   /* ---- HANDLER TYPES (config schemas auto-render in the rule editor) ---- */
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-cae-grant",
+    label: "Edha: Grant / Burn Action Economy", description: "Add a named Action or Reaction group to the Cosmere Advanced Encounters tracker, or burn one of the target's Reactions. Falls back to a plain chat note when CAE is off or there is no combat, so the talent still reads correctly at the table.",
+    config: { schema: {
+      kind: new FF.StringField({ required: true, initial: "action", choices: choices("action", "reaction", "burn-reaction"), label: "What to do", hint: "action / reaction = GRANT that many. burn-reaction = spend one of the TARGET's Reactions (Tactical Ploy, Feinting Strike)." }),
+      n: new FF.NumberField({ required: false, initial: 1, label: "How many" }),
+      target: new FF.StringField({ required: false, initial: "self", choices: choices("self", "target"), label: "Who gets it", hint: "self = the user. target = the creature you have targeted (Through the Fray grants an ally a Reaction; burn-reaction almost always wants target)." }),
+      label: new FF.StringField({ required: false, blank: true, initial: "", label: "Tracker group name", hint: "Shown on the CAE tracker as 'Edha: <this>'. Blank uses the talent's name. Say what the actions are FOR — the tracker cannot enforce it (e.g. 'Brace / Gain Advantage')." }),
+      whenDeflectBelow: new FF.NumberField({ required: false, initial: 0, label: "Only while deflect is below", hint: "0 = no gate. Sidestep only grants its Dodge reaction while you are not wearing deflect-2+ armour." }),
+    } },
+    executor: async function (event) {
+      const item = event.item, owner = item?.actor; if (!owner) return;
+      const who = this.target === "target" ? (Array.from(game.user?.targets ?? [])[0]?.actor ?? null) : owner;
+      if (!who) { ui.notifications?.warn(`Edha: ${item.name} — target the creature first, then use it again.`); return; }
+      const gate = Number(this.whenDeflectBelow) || 0;
+      if (gate > 0 && (Number(owner.system?.deflect?.value) || 0) >= gate) return;   // Sidestep in heavy armour: silent no-op
+      const n = Math.max(1, Number(this.n) || 1);
+      const label = this.label || item.name;
+      const tracked = await edhaCaeGrant(who, this.kind, n, label);
+      const burn = this.kind === "burn-reaction";
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+        content: `<p>⚡ <strong>${item.name}</strong>: ${burn ? `${who.name} loses one Reaction` : `${who === owner ? "you gain" : `${who.name} gains`} ${n} ${this.kind}${n === 1 ? "" : "s"} — ${label}`}`
+          + `${tracked ? " (on the tracker)" : " (no tracker in this scene — honour-system)"}.</p>` });
+    },
+  });
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-enter-stance",
+    label: "Edha: Enter a Stance", description: "Put the user into one of their own stance talents. Pair with Edha: Combat-Timed Passive to start every combat in a stance (Practiced Kata).",
+    config: { schema: {
+      stance: new FF.StringField({ required: true, initial: "", label: "Stance talent name", hint: "The name of the stance talent to enter — it must be on the same actor and be a stance (system.modality). A NAME here is fine: it is authored data you can edit, not engine code." }),
+      unlessStatus: new FF.StringField({ required: false, blank: true, initial: "surprised", label: "Skip while the user has this status", hint: "Practiced Kata does not apply while Surprised. Blank = always." }),
+    } },
+    executor: async function (event) {
+      const item = event.item, owner = item?.actor; if (!owner || !this.stance) return;
+      if (this.unlessStatus && owner.statuses?.has?.(this.unlessStatus)) return;
+      const target = owner.items?.find(i => edhaIsTalent(i) && i.name === this.stance && i.system?.modality === "stance");
+      if (!target) { console.warn(`Edha Content | ${item.name}: no stance talent named "${this.stance}" on ${owner.name}`); return; }
+      if (edhaActiveStance(owner) === target.name) return;   // already there — toggling would LEAVE it
+      await edhaToggleStance(target);
+    },
+  });
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-def-test",
+    label: "Edha: Gated Test (On Use)", description: "Roll this talent's own test and gate its payload on the result. YOU roll it on the talent's card; the engine captures that roll and compares it. Put what happens on the sibling 'When Your Test SUCCEEDS' / 'FAILS' rules — this handler only decides.",
+    config: { schema: {
+      skill: new FF.StringField({ required: true, initial: "", label: "Your test", hint: "The skill id YOU roll — leyline colors are skill ids too (blue, black, red, white, green), which is why one field covers both atlases. e.g. dis, ath, dec, ldr, ded, per, med." }),
+      vs: new FF.StringField({ required: true, initial: "defense", choices: choices("defense", "skill", "dc"), label: "Tested against", hint: "defense = a static defense · skill = an opposed SKILL the ENGINE rolls for the foe (never trust a player to have won — iron rule 3) · dc = a flat number printed on the card." }),
+      def: new FF.StringField({ required: false, blank: true, initial: "cog", choices: choices("", "phy", "cog", "spi"), label: "Which defense (vs = defense)" }),
+      targetSkill: new FF.StringField({ required: false, blank: true, initial: "", label: "Foe's skill (vs = skill)", hint: "e.g. ath, sur, dis — the engine rolls 1d20 + rank + attribute for them." }),
+      dc: new FF.NumberField({ required: false, initial: 0, label: "Flat DC (vs = dc)", hint: "Grand Deception and Field Medicine are both DC 15." }),
+      requireTarget: new FF.BooleanField({ required: false, initial: true, label: "Require a target", hint: "Vetoes the use BEFORE any cost is paid when nothing is targeted." }),
+      rangeColor: new FF.StringField({ required: false, blank: true, initial: "", label: "Attunement Range colour", hint: "Blank = no range gate. Set it (e.g. black) to veto — again before cost — when the target is outside your Attunement Range for that colour." }),
+      note: new FF.StringField({ required: false, blank: true, initial: "", label: "Card note", hint: "Appended to the result card — say what a success means when the payload is table-run." }),
+    } },
+    executor: async function (event) {
+      const item = event.item, owner = item?.actor; if (!owner) return;
+      const ttok = Array.from(game.user?.targets ?? [])[0] ?? null;
+      const target = ttok?.actor ?? null;
+      if (this.requireTarget !== false && !target) {
+        ui.notifications?.warn(`Edha: ${item.name} — target the creature, then use it again.`);
+        return;
+      }
+      const cfg = { vs: this.vs, dc: Number(this.dc) || 0, def: this.def, targetSkill: this.targetSkill, note: this.note };
+      edhaQueueContest(owner, this.skill, async ({ total }) => {
+        let defValue = null, oppRoll = null;
+        if (cfg.vs === "defense") defValue = target ? edhaReadDefense(target, cfg.def || "cog") : null;
+        else if (cfg.vs === "skill") oppRoll = target ? await edhaRollOpposedSkill(target, cfg.targetSkill) : null;
+        const { ok, dc } = edhaDefTestOutcome(total, { vs: cfg.vs, dc: cfg.dc, defValue, oppRoll });
+        const barLabel = cfg.vs === "skill" ? `${String(cfg.targetSkill || "").toUpperCase()} ${dc ?? "?"}`
+          : cfg.vs === "dc" ? `DC ${dc ?? cfg.dc}`
+          : `${String(cfg.def || "cog").toUpperCase()} ${dc ?? "?"}`;
+        const fired = await edhaDispatchTestResult(owner, item, target, ok, { total, dc });
+        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+          content: `<p><strong>${item.name}</strong>: ${total} vs ${target ? `${target.name}'s ` : ""}${barLabel} — <strong>${ok ? "SUCCESS" : "FAIL"}</strong>`
+            + `${!fired && ok ? " (no payload rule on this talent — resolve at the table)" : ""}.`
+            + `${cfg.note ? ` <span style="opacity:.85;font-size:.9em">${cfg.note}</span>` : ""}</p>` });
+      });
+    },
+  });
   api.registerItemEventHandlerType({
     source: "edha-content", type: "edha-triggered-effect",
     label: "Edha: Triggered Effect", description: "Deal damage / AoE / heal / Temp HP / affliction when this rule fires.",
@@ -14693,7 +14820,10 @@ function edhaRegisterNativeEventSystem() {
     label: "Edha: Test Modifier Rider", description: "Passively adds a bonus to your matching skill/attack TEST (injected as the system's temporary modifier).",
     config: { schema: {
       appliesTo: new FF.StringField({ required: true, initial: "any", choices: choices("any", "attack", "skill", "item"), label: "Applies to test type", hint: "'any' or one of: attack, skill, item" }),
-      bonusFormula: new FF.StringField({ required: true, initial: "", label: "Bonus formula", hint: "[Die] = 1d(2 * @skills.<color>.rank + 2). Resolved against your roll data, then added to the d20 test." }),
+      bonusFormula: new FF.StringField({ required: false, blank: true, initial: "", label: "Bonus formula", hint: "[Die] = 1d(2 * @skills.<color>.rank + 2). Resolved against your roll data, then added to the d20 test. May be blank when Mode is set." }),
+      mode: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "advantage", "disadvantage"), label: "Advantage mode", hint: "Grants advantage/disadvantage on the matching test instead of (or as well as) a formula. 07-24j: replaced the name-keyed stance table; also what Frenzied Tempo needs." }),
+      whenSkill: new FF.StringField({ required: false, blank: true, initial: "", label: "Only on tests of this skill", hint: "A single skill id, e.g. itm (Intimidation), ins (Insight), agi (Agility). Narrower than 'Only on tests of these attribute(s)' — Intimidation is Presence, but so are Persuasion and Deception." }),
+      whileStanceActive: new FF.BooleanField({ required: false, initial: false, label: "Only while THIS talent's stance is active", hint: "For stance talents (system.modality = stance): the rider applies only while the actor stands in the stance this very talent grants." }),
       whenTargetStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "Only when the target has this status", hint: "e.g. weakened (checks your current target). Predatory Patience uses weakened." }),
       whenTargetIsolated: new FF.BooleanField({ required: false, initial: false, label: "Only vs Isolated targets", hint: "Isolated = no ally within 5 ft of the target (Black tree; 07-05 ruling)." }),
       whenAttribute: new FF.StringField({ required: false, blank: true, initial: "", label: "Only on tests of these attribute(s)", hint: "comma-list of str, spd, int, wil, awa, pre. Burning Drive: 'str, spd' (Physical)." }),
@@ -14720,12 +14850,15 @@ function edhaRegisterNativeEventSystem() {
     source: "edha-content", type: "edha-push",
     label: "Edha: Push Target + Collision", description: "Shove the creature you hit away from you (wall-aware); on a wall collision, deal the collision damage. PILOT (Red). Pair with event edha-on-hit.",
     config: { schema: {
-      whenDamageType: new FF.StringField({ required: false, initial: "impact", label: "Only when you dealt damage type(s)", hint: "'any' or a comma-list. Shockwave Slam: impact (melee)." }),
+      whenDamageType: new FF.StringField({ required: false, initial: "impact", label: "Only when you dealt damage type(s)", hint: "'any' or a comma-list. The Red pilot consumer uses impact (melee only)." }),
       bySize: new FF.BooleanField({ required: false, initial: true, label: "Push distance = [Size] (scales with Red rank)" }),
       distanceFt: new FF.NumberField({ required: false, initial: 5, label: "Fixed push distance (ft, if not by size)" }),
       collisionFormula: new FF.StringField({ required: false, blank: true, initial: "floor((@tier)d(2 * @skills.red.rank + 2) / 2)", label: "Collision damage formula (blank = none)" }),
       collisionType: new FF.StringField({ required: false, initial: "impact", choices: choices("energy", "impact", "keen", "spirit", "vital"), label: "Collision damage type" }),
-      note: new FF.StringField({ required: false, initial: "Shockwave Slam", label: "Note" }),
+      // Was initial: "Shockwave Slam" — a talent-specific default on a GENERIC handler, so any new
+      // push rule authored in Foundry came out labelled as another talent (every shipped consumer
+      // had to override it). Blank now; edhaRunPush falls back to "Push". (2026-07-24, iron rule 2b.)
+      note: new FF.StringField({ required: false, blank: true, initial: "", label: "Note (card label)" }),
     } },
     executor: async function () { /* config-only: edhaDispatchOnHit reads this rule and calls edhaRunPush */ },
   });
@@ -14990,21 +15123,35 @@ function edhaRegisterNativeEventSystem() {
   });
   api.registerItemEventHandlerType({
     source: "edha-content", type: "edha-next-test-mod",
-    label: "Edha: Modify Target's Next Test (On Use)", description: "On use, the current target's next test gains (dis)advantage and/or a dice/flat modifier (Probability Net's −1d6). Rides the nextTestMod pipeline; counted, target consumes on their next test.",
+    label: "Edha: Modify a Next Test (On Use)", description: "On use, a next test gains (dis)advantage, a dice/flat modifier (Probability Net's −1d6), a Plot Die, and/or a banked Opportunity. Target YOURSELF or the creature you have targeted. Rides the nextTestMod / plotDieNext / oppCredit pipelines; counted, consumed on the next test.",
     config: { schema: {
+      target: new FF.StringField({ required: false, initial: "target", choices: choices("target", "self"), label: "Who it affects", hint: "target = the creature you currently have targeted (Probability Net, Emotional Overload). self = you (Overwhelm with Details, the Opportunity adders, Risky Behavior). 07-24k." }),
       mode: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "advantage", "disadvantage"), label: "Advantage mode" }),
-      formula: new FF.StringField({ required: false, blank: true, initial: "", label: "Modifier formula (e.g. -1d6)" }),
+      formula: new FF.StringField({ required: false, blank: true, initial: "", label: "Modifier formula (e.g. -1d6)", hint: "Resolved against YOUR roll data at use, so @skills.<x>.mod works (Overwhelm with Details banks your Lore modifier)." }),
       count: new FF.NumberField({ required: false, initial: 1, label: "Tests affected" }),
+      plotDie: new FF.BooleanField({ required: false, initial: false, label: "Also raise the stakes (Plot Die)", hint: "Writes plotDieNext, which the existing pre-roll injector consumes. Risky Behavior, Reckless Momentum. 07-24k." }),
+      opportunity: new FF.BooleanField({ required: false, initial: false, label: "Also bank an Opportunity", hint: "Writes oppCredit, cashed by the Opportunity menu on your next test. The four Opportunity adders. 07-24k." }),
     } },
     executor: async function (event) {
       const item = event.item, owner = item?.actor; if (!owner) return;
-      const target = Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
+      const toSelf = this.target === "self";
+      const target = toSelf ? owner : (Array.from(game.user?.targets ?? [])[0]?.actor ?? null);
       if (!target) { ui.notifications?.warn(`Edha: ${item.name} — target the creature, then use again.`); return; }
-      const mod = { source: item.name, count: Math.max(1, Number(this.count) || 1) };
-      if (this.mode) mod.mode = this.mode;
-      if (this.formula) mod.formula = this.formula;
-      await edhaSetNextTestMod(target, mod);
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🎲 <strong>${item.name}</strong>: ${target.name}'s next test${this.mode ? ` is at <strong>${this.mode}</strong>` : ""}${this.mode && this.formula ? " and" : ""}${this.formula ? ` takes <strong>${this.formula}</strong>` : ""}.</p>` });
+      const bits = [];
+      if (this.mode || this.formula) {
+        const mod = { source: item.name, count: Math.max(1, Number(this.count) || 1) };
+        if (this.mode) mod.mode = this.mode;
+        // Resolve against the OWNER's roll data at use time — a self-mod like "+@skills.lor.mod"
+        // must bank a number, not an unresolved @-ref the target's pipeline can't evaluate.
+        if (this.formula) mod.formula = String(Roll.replaceFormulaData(this.formula, owner.getRollData(), { missing: "0" })).trim() || this.formula;
+        await edhaSetNextTestMod(target, mod);
+        if (this.mode) bits.push(`at <strong>${this.mode}</strong>`);
+        if (this.formula) bits.push(`taking <strong>${mod.formula}</strong>`);
+      }
+      if (this.plotDie) { await edhaGrantPlotDie(target, { skill: null, source: item.name }); bits.push("raising the stakes (<strong>Plot Die</strong>)"); }
+      if (this.opportunity) { await edhaSetEdhaFlag(target, "oppCredit", { source: item.name }); bits.push("with an <strong>Opportunity</strong> banked"); }
+      if (!bits.length) return;
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🎲 <strong>${item.name}</strong>: ${toSelf ? "your" : `${target.name}'s`} next test — ${bits.join(", ")}.</p>` });
     },
   });
   api.registerItemEventHandlerType({

@@ -33,7 +33,41 @@
         "type": null
       },
       "events": {},
-      "effects": []
+      "effects": [
+        {
+          "_id": "BloodStanceRid01",
+          "name": "Bloodstance — while active",
+          "img": "icons/skills/wounds/blood-drip-droplet-red.webp",
+          "type": "base",
+          "changes": [
+            {
+              "key": "system.defenses.phy.bonus",
+              "mode": 2,
+              "value": "-2"
+            },
+            {
+              "key": "system.defenses.cog.bonus",
+              "mode": 2,
+              "value": "-2"
+            },
+            {
+              "key": "system.defenses.spi.bonus",
+              "mode": 2,
+              "value": "-2"
+            }
+          ],
+          "duration": {},
+          "statuses": [],
+          "disabled": false,
+          "transfer": false,
+          "description": "<p>Copied onto the stance marker while you stand in Bloodstance: <strong>−2 to Physical, Cognitive and Spiritual defense</strong> (the cost of the widened Opportunity range). Edit the numbers here — the marker reads this effect (iron rule 2b, 07-24j). <em>transfer: false</em>, so it never applies on its own.</p>",
+          "flags": {
+            "edha-content": {
+              "stanceRider": true
+            }
+          }
+        }
+      ]
     },
     "Cautious Advance": {
       "docId": "sL8CjCeW8XZB6Jnr",
@@ -61,7 +95,20 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "CautiousAdvCae00": {
+          "id": "CautiousAdvCae00",
+          "description": "Warrior. On use, the CAE tracker gains a named group you click down as you spend them; focus is paid natively by the activation. The card's restriction (Cautious Advance (Brace / Gain Advantage)) is honour-system — the tracker cannot enforce what the actions are for. 07-24n: replaced its EDHA_CAE_USE_GRANTS row (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-cae-grant",
+            "kind": "action",
+            "n": 2,
+            "target": "self",
+            "label": "Cautious Advance (Brace / Gain Advantage)"
+          }
+        }
+      },
       "effects": []
     },
     "Combat Training": {
@@ -215,26 +262,23 @@
         "formula": null,
         "type": null
       },
-      "events": {},
-      "effects": [
-        {
-          "_id": "9loFFx5XdJUORRhI",
-          "name": "Flamestance (Active)",
-          "img": "icons/magic/fire/dagger-rune-enchant-flame-orange.webp",
-          "type": "base",
-          "changes": [],
-          "duration": {},
-          "statuses": [],
-          "disabled": true,
-          "transfer": true,
-          "description": "INDICATOR ONLY (toggle on while in this stance). Mechanics manual: advantage on Intimidation; when exactly one enemy is in reach and no allies are, gain an Action to attack or Gain Advantage.",
-          "flags": {
-            "edha-content": {
-              "passive": true
-            }
+      "events": {
+        "FlameStanceAdv01": {
+          "id": "FlameStanceAdv01",
+          "description": "Warrior. While you stand in Flamestance, your Intimidation tests gain advantage — injected by the shared pre-roll rider pipeline. 07-24j: this replaced the name-keyed EDHA_STANCE_SKILL_ADV table (iron rule 2b). whenSkill is the SKILL id, not the attribute: Intimidation is Presence-or-Awareness-based, and the attribute filter would wrongly cover its siblings.",
+          "event": "edha-pre-test",
+          "handler": {
+            "type": "edha-test-rider",
+            "appliesTo": "any",
+            "bonusFormula": "",
+            "mode": "advantage",
+            "whenSkill": "itm",
+            "whileStanceActive": true,
+            "whenTargetIsolated": false
           }
         }
-      ]
+      },
+      "effects": []
     },
     "Formation Drills": {
       "docId": "tY8OscDJxeD4iXTR",
@@ -342,7 +386,22 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "IronStanceAdv001": {
+          "id": "IronStanceAdv001",
+          "description": "Warrior. While you stand in Ironstance, your Insight tests gain advantage — injected by the shared pre-roll rider pipeline. 07-24j: this replaced the name-keyed EDHA_STANCE_SKILL_ADV table (iron rule 2b). whenSkill is the SKILL id, not the attribute: Insight is Presence-or-Awareness-based, and the attribute filter would wrongly cover its siblings.",
+          "event": "edha-pre-test",
+          "handler": {
+            "type": "edha-test-rider",
+            "appliesTo": "any",
+            "bonusFormula": "",
+            "mode": "advantage",
+            "whenSkill": "ins",
+            "whileStanceActive": true,
+            "whenTargetIsolated": false
+          }
+        }
+      },
       "effects": []
     },
     "Meteoric Leap": {
@@ -471,7 +530,18 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "PractKataStance0": {
+          "id": "PractKataStance0",
+          "description": "Warrior. At combat start you enter Vigilant Stance, unless you are Surprised. The stance NAME lives here as authored data you can edit — that is allowed; what iron rule 2b forbids is the name living in engine code. 07-24n: replaced a name-keyed combatStart hook, and closes the H11 gap found in pass B.",
+          "event": "edha-combat-timing",
+          "handler": {
+            "type": "edha-enter-stance",
+            "stance": "Vigilant Stance",
+            "unlessStatus": "surprised"
+          }
+        }
+      },
       "effects": []
     },
     "Precise Parry": {
@@ -649,7 +719,31 @@
         "type": null
       },
       "events": {},
-      "effects": []
+      "effects": [
+        {
+          "_id": "StoneStanceRid01",
+          "name": "Stonestance — while active",
+          "img": "icons/magic/defensive/shield-barrier-glowing-triangle-orange.webp",
+          "type": "base",
+          "changes": [
+            {
+              "key": "system.deflect.bonus",
+              "mode": 2,
+              "value": "1"
+            }
+          ],
+          "duration": {},
+          "statuses": [],
+          "disabled": false,
+          "transfer": false,
+          "description": "<p>Copied onto the stance marker while you stand in Stonestance: <strong>+1 deflect</strong>. Edit the numbers here — the marker reads this effect (iron rule 2b, 07-24j). <em>transfer: false</em>, so it never applies on its own.</p>",
+          "flags": {
+            "edha-content": {
+              "stanceRider": true
+            }
+          }
+        }
+      ]
     },
     "Surefooted": {
       "docId": "nnE5uTc8G5ETXYc6",
@@ -769,25 +863,7 @@
         "type": null
       },
       "events": {},
-      "effects": [
-        {
-          "_id": "h612cJ37bIfC4gvk",
-          "name": "Vigilant Stance (Active)",
-          "img": "icons/magic/defensive/shield-barrier-blue.webp",
-          "type": "base",
-          "changes": [],
-          "duration": {},
-          "statuses": [],
-          "disabled": true,
-          "transfer": true,
-          "description": "INDICATOR ONLY (toggle on while in this stance). Mechanics manual: Dodge &amp; Reactive Strike cost 1 less focus; enter other stances as a Free Action.",
-          "flags": {
-            "edha-content": {
-              "passive": true
-            }
-          }
-        }
-      ]
+      "effects": []
     },
     "Vinestance": {
       "docId": "x23tP4yUuO99LTE1",
@@ -816,7 +892,36 @@
         "type": null
       },
       "events": {},
-      "effects": []
+      "effects": [
+        {
+          "_id": "VineStanceRider1",
+          "name": "Vinestance — while active",
+          "img": "icons/magic/nature/vines-thorned-curled-green.webp",
+          "type": "base",
+          "changes": [
+            {
+              "key": "system.defenses.phy.bonus",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.defenses.cog.bonus",
+              "mode": 2,
+              "value": "1"
+            }
+          ],
+          "duration": {},
+          "statuses": [],
+          "disabled": false,
+          "transfer": false,
+          "description": "<p>Copied onto the stance marker while you stand in Vinestance: <strong>+1 Physical and +1 Cognitive defense</strong>. Edit the numbers here — the marker reads this effect (iron rule 2b, 07-24j). <em>transfer: false</em>, so it never applies on its own.</p>",
+          "flags": {
+            "edha-content": {
+              "stanceRider": true
+            }
+          }
+        }
+      ]
     },
     "Wary": {
       "docId": "wvcWiwuzA6fNn8r6",
@@ -871,7 +976,22 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "WindStanceAdv001": {
+          "id": "WindStanceAdv001",
+          "description": "Warrior. While you stand in Windstance, your Agility tests gain advantage — injected by the shared pre-roll rider pipeline. 07-24j: this replaced the name-keyed EDHA_STANCE_SKILL_ADV table (iron rule 2b). whenSkill is the SKILL id, not the attribute: Agility is Presence-or-Awareness-based, and the attribute filter would wrongly cover its siblings.",
+          "event": "edha-pre-test",
+          "handler": {
+            "type": "edha-test-rider",
+            "appliesTo": "any",
+            "bonusFormula": "",
+            "mode": "advantage",
+            "whenSkill": "agi",
+            "whileStanceActive": true,
+            "whenTargetIsolated": false
+          }
+        }
+      },
       "effects": []
     },
     "Wit's End": {

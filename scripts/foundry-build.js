@@ -342,10 +342,9 @@ function parseCost(costStr) {
   out.costText = shown.length ? shown.join(", ") : null;
   return out;
 }
-function prereqGroups(s) {
-  if (!s || /^\s*[—-]\s*$/.test(s)) return [];
-  return s.split(/\s*[;,]\s*|\s+and\s+/i).map(p => p.trim()).filter(Boolean).map(part => part.split(/\s+or\s+/i).map(x => x.trim()).filter(Boolean));
-}
+// prereqGroups lives in foundry-build-parts.js so tests can require it (this file cannot be
+// imported: classic-level at load + a top-level async IIFE). Do not re-inline it here.
+const { prereqGroups } = require("./foundry-build-parts.js");
 function classifyToken(tok, index, heroicIds, localByName) {
   const t = tok.trim();
   const m = t.match(/^([A-Za-z][A-Za-z\s]*?)\s+(?:rank\s+)?(\d+)\s*\+?$/i);
@@ -508,6 +507,13 @@ function pathEvents(tree) {
     const nodes = {};
     const nameToNode = {};
     tree.talents.forEach(t => { nameToNode[t.name.toLowerCase()] = t; });
+    // Resolver handed to prereqGroups so a talent name containing " and " / " or "
+    // (Scholar's "Mind and Body") is not torn apart by the separator split. Tree-local
+    // first, then the global index — the same precedence classifyToken uses.
+    const isTreeName = (x) => {
+      const k = String(x).trim().toLowerCase();
+      return !!(nameToNode[k] || index.byName[k]);
+    };
 
     let sortT = 0;
     for (const t of tree.talents) {
@@ -518,7 +524,7 @@ function pathEvents(tree) {
       let edgeNames = Array.isArray(t.connections) ? t.connections : null;
       if (!edgeNames) {
         edgeNames = [];
-        for (const grp of prereqGroups(t.prereqs)) for (const tok of grp) {
+        for (const grp of prereqGroups(t.prereqs, isTreeName)) for (const tok of grp) {
           const c = classifyToken(tok, index, heroicIds);
           if (c.kind === "talent") edgeNames.push(c.label);
         }
@@ -543,7 +549,7 @@ function pathEvents(tree) {
         }
         nodePrereqs[pid] = { id:pid, type:"talent", managed:true, attribute:"str", value:1, talents, _id:pid };
       }
-      for (const group of prereqGroups(t.prereqs)) {
+      for (const group of prereqGroups(t.prereqs, isTreeName)) {
         const clauses = group.map(tok => classifyToken(tok, index, heroicIds, nameToNode));
         const pid = fid(`pr:${tree.id}:${t.name}:${group.join("|")}`);
         const talentClauses = clauses.filter(c => c.kind === "talent");

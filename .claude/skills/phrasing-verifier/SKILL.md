@@ -1,8 +1,3 @@
-> **⚠️ SUPERSEDED — do not follow this file.** The live skill is
-> `.claude/skills/phrasing-verifier/SKILL.md`, added to the repo 2026-07-24. This copy is the
-> pre-repo bootstrap version and its content has since DIVERGED; it is kept only as
-> history. If you found this by grepping, you want the `.claude/skills/` one.
-
 ---
 name: phrasing-verifier
 description: >
@@ -61,7 +56,9 @@ understanding of acceptable phrasing. **Never edit source-material descriptions.
 **Custom material (check and auto-fix these):**
 - Atlas value: `leyline` — Leyline paths (White, Black, Red, Blue, Green)
 - Atlas value: `deity` — Deity paths (Death, Chaos, Power, Sovereignty, Life, Destruction,
-  Order, Knowledge, Fate, Civilization)
+  Order, Knowledge, Fate, Civilization). Note: deity paths now use a flat structure
+  with two entry nodes and **no Key talent**; the `Specialty` field equals the path
+  name for every deity talent.
 
 If the Atlas column is missing, fall back to matching on Path name using the lists above.
 
@@ -152,6 +149,12 @@ def auto_fix_description(desc):
     # Fix "until the end of the scene" → "for the scene"
     fixed = re.sub(r'until the end of the scene', 'for the scene', fixed, flags=re.IGNORECASE)
 
+    # Fix "creature" / "creatures" → "character" / "characters"
+    fixed = re.sub(r'\bcreatures\b', 'characters', fixed)
+    fixed = re.sub(r'\bCreatures\b', 'Characters', fixed)
+    fixed = re.sub(r'\bcreature\b', 'character', fixed)
+    fixed = re.sub(r'\bCreature\b', 'Character', fixed)
+
     return fixed
 ```
 
@@ -224,7 +227,7 @@ Disoriented, Weakened, Surprised, Determined, Restrained, Frightened, Compelled,
 Afflicted, Injured
 
 **Always capitalized (mechanics):** Opportunity, Complication, Reaction, Strike, Aid,
-Dodge, Brace, Reactive Strike, Gain Advantage, Draw Mana, Attunement Range, Investiture,
+Dodge, Brace, Disengage, Move, Reactive Strike, Gain Advantage, Draw Mana, Attunement Range, Investiture,
 Stormlight, Deflect, Plot Die
 
 **Always capitalized (attributes):** Strength, Speed, Willpower, Intelligence, Presence,
@@ -271,16 +274,36 @@ Do not flag this pattern.
 
 ### Rule 7: Test structure
 
-The standard phrasing for skill tests against defenses is:
-> "test [Skill] vs. [Defense] defense"
+There are three valid test structures.
+
+**Attack tests** test against a defense type (Physical, Cognitive, Spiritual). The standard phrasing is:
+> "test [Skill] vs. [Defense]"
 or
-> "test [Skill] against [creature]'s [Defense] defense"
+> "test [Skill] against [character]'s [Defense] defense"
+
+The defense word is usually omitted in canon body text.
+
+**Skill contests** test against a skill directly. The standard phrasing is:
+> "test [Skill] vs. [Skill]"
+
+e.g. "test Green vs. Survival"
+
+**Deity color tests (homebrew)** test using a leyline-color skill against a defense:
+> "test [Color] vs. [Defense]"
+
+e.g. "test Black vs. Cognitive". The color used is the deity path's more thematically
+appropriate of its two colors (diminishment / curse → the darker color;
+restoration / buff → the lighter color). Pattern is identical to attack tests, but
+the rolling skill is one of `Black / Red / White / Blue / Green` rather than a canon
+skill.
 
 Blue skill tests (Cognitive) test against Cognitive defense.
 Influence tests test against Spiritual or Cognitive defense depending on context.
 Physical tests test against Physical defense.
 
-Flag deviations from this structure.
+Flag deviations from these structures. Specifically flag deity talents that test
+against a deity-specific skill (Sovereignty, Death, Chaos, etc.) — those are
+deprecated and should be migrated to one of the path's two leyline colors.
 
 ### Rule 8: Opportunity spend format
 
@@ -302,6 +325,28 @@ Effects lasting a round should read:
 `[Die]`, `[Tier]`, `[Size]` — check these are used consistently with no spaces between
 tokens (e.g. `[Tier][Die]` not `[Tier] [Die]`). Flag inconsistencies.
 
+### Rule 11: Cost in description (Investiture / Opportunity / focus)
+
+When a custom talent has a non-zero Investiture, focus, or Opportunity cost in the
+`Cost` column, the description should open with the spend phrasing so the talent is
+self-contained when looked up in isolation:
+
+- `Cost: 1 Investiture` → description should contain `Spend 1 Investiture and …`
+- `Cost: 2 Investiture` → description should contain `Spend 2 Investiture and …`
+- `Cost: Opportunity` → description should contain `Spend an Opportunity to …`
+- `Cost: 1 Investiture, Opportunity` → description should contain both spends, e.g.
+  `Spend 1 Investiture and an Opportunity to …`
+- `Cost: 1 Focus` → description should contain `spend 1 focus`
+- `Cost: Passive` → no spend phrase required
+
+Flag for manual review (do not auto-rewrite) any custom talent whose `Cost` field is
+non-`Passive` but whose description lacks the matching `spend [resource]` phrase.
+
+**Exception — Free-Action upgrade riders.** Talents whose action is a Free Action
+upgrade applied at the moment of another talent's placement may embed the spend
+later in the description, e.g. "When you place a Charge, spend an additional 1
+Investiture to declare it a Pinpoint Charge." Do not flag these.
+
 ---
 
 ## Edge cases
@@ -309,7 +354,7 @@ tokens (e.g. `[Tier][Die]` not `[Tier] [Die]`). Flag inconsistencies.
 - **"When you..." openers**: Valid. Only note if an entire specialty uses this exclusively.
 - **HP vs health**: HP is the preferred abbreviation. "health" lowercase is also acceptable.
   Note inconsistency within the same path.
-- **"creatures" vs "characters"**: Both are used in source material. Do not auto-fix.
+- **"creature" vs "character"**: "character" is the only correct universal term in custom talents. "enemy" and "ally" are the valid subsets. Auto-fix "creature" → "character".
 - **Shared-name talents**: Flag for manual review with side-by-side comparison.
 - **"[Tier]" in bracket notation**: Preserve capitalization — this is notation, not the
   word "tier."

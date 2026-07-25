@@ -24,9 +24,141 @@ retired for good; live testing happens on the dashboard.
 
 ---
 
-## ✅ DEPLOY STATE (current as of 2026-07-18)
+## ⚑ RULE-2b PASS A — Red, the first three talents off the engine (2026-07-24) — NEEDS A PACK REBUILD
 
-The live module + packs on this machine are **current through the 07-17 playtest-2 engine push**
+> **This is the migration's pipe-cleaner.** Behaviour for three Red talents moved from engine
+> name-dispatch onto the talent documents. It changes the PACK, so **nothing below takes effect
+> until `deploy-to-foundry.bat` + ⟳ Sync**. The point of the pass is as much the *round trip* —
+> do the tabs actually populate, can Ben edit them — as the three mechanics.
+
+| # | talent | what to check | expected |
+|---|---|---|---|
+| 2bA-1 | **Emotional Overload** | Open the talent in Foundry → **Events tab** | ⚑ A rule is THERE (was empty): `edha-next-test-mod`, mode disadvantage, count 1. This is the whole point — confirm it renders and is editable. |
+| 2bA-2 | **Emotional Overload** | Target a creature, use it | Target's next test at disadvantage; card names the talent. Behaviour should be IDENTICAL to before — it rides the same nextTestMod pipeline. |
+| 2bA-3 | **Reckless Gambit** | Events tab | ⚑ **TWO** rules: `edha-next-test-mod` (advantage) + `edha-apply-status` (exhausted). Both must be listed. |
+| 2bA-4 | **Reckless Gambit** | Target, use | Target gains advantage on its next test AND gains **Exhausted**. Both halves, one use. |
+| 2bA-5 | **Shockwave Slam** | Melee impact hit | Push card still reads **"Shockwave Slam"** (not "Push"). Its note now comes from the document; a regression here means the note field didn't survive the build. |
+| 2bA-6 | **edha-push default** | Author a NEW push rule on any talent, leave Note blank | Card reads **"Push"**, not "Shockwave Slam". (Fixes a talent-specific default baked into a generic handler.) |
+| 2bA-7 | **the round trip** | Edit one of the new rules in Foundry (e.g. change count 1 → 2), use the talent | The edit actually takes effect. If it doesn't, the whole migration premise is wrong and everything else stops. |
+| 2bA-8 | **Shattering Blow** (Warrior) | on-hit push | Unchanged — it always carried its own note. Regression check on the default change. |
+| 2bA-9 | **native handler vocabulary** ⚠️ | While in any talent's Events tab, open the handler **type dropdown** and read the whole list | ⚑ Do the SYSTEM's native handlers appear alongside the Edha ones — **Update Actor**, Execute Macro, Grant Items, Modify Attribute, Use Item? And in the EVENT dropdown: **Actor Damaged**, **Actor Updated**, **Activated Modality**, **Actor Long Rested**? No authored talent has ever used one, so this is unproven. Zero risk — just read the dropdowns and report what's listed. **Scope narrowed 07-24i:** this no longer decides "how much of the 8-handler plan is needed" (§9k settled that from the code). It now gates exactly **three** talents whose cheap classification leans on a native type — **Reckless Momentum**, **Risky Behavior**, and **Resilient Hero**'s long-rest flag clear. If natives are absent from the dropdowns, those three drop from bucket 1b to bucket 2; nothing else in the 9/56/136/17 split moves. |
+
+> ⚑ **None of the above was verified in Foundry** — no session can launch it. 2bA-7 is the
+> one that matters most; if it fails, say so before any further conversion work is planned.
+>
+> **The 07-24i classification pass added NO new rows here, deliberately** — it changed no behaviour
+> (docs + one checker script; nothing to deploy, no pack rebuild). The rows above are still the
+> whole outstanding 2b bench surface.
+
+## ⚑ RULE-2b PASS E — H5 action economy + the combat-timing dispatcher (2026-07-24n) — NEEDS A PACK REBUILD
+
+> **Eleven talents, and the first proof that H1 can drive real mechanical payloads.** `edha-cae-grant`
+> replaces `EDHA_CAE_USE_GRANTS` + three bespoke hooks; the `edha-combat-timing` event finally has a
+> dispatcher (it had none since 07-18). Ratchet **202 → 191**.
+
+| # | talent | what to check | expected |
+|---|---|---|---|
+| 2bE-1 | **Fast Talker** (Agent) | Events tab, then use it | ⚑ A rule is THERE: `edha-cae-grant`, action ×2. The CAE tracker gains **"Edha: Fast Talker (Spiritual tests)"** with 2 remaining. |
+| 2bE-2 | **Quick Analysis / Trickster's Hand / Cautious Advance / Backstep** | use each | Same, with their own counts and labels (Backstep is ×1). |
+| 2bE-3 | **Through the Fray** (Leader) ⚠️ | target an ALLY, use it | The **ally's** tracker gains the Reaction, not yours. `target: target` is the field being proved. |
+| 2bE-4 | **Foresight** (Envoy) ⚠️ | start a combat with Foresight owned | +1 Reaction group appears at combat start. **This is the first thing the new `edha-combat-timing` dispatcher has ever run.** |
+| 2bE-5 | **Sidestep** (Hunter) | start combat in light armour, then again in deflect-2+ armour | Grants the Dodge reaction only in the light case — `whenDeflectBelow: 2`, a silent no-op otherwise. |
+| 2bE-6 | **Practiced Kata** (Warrior) | start a combat | Still enters **Vigilant Stance**; still skipped while **Surprised**. Now runs on the GM applier rather than owner-side. |
+| 2bE-7 | **Tactical Ploy** (Leader) ⚠️⚠️ | target a creature, use it, roll | On a **success**: target takes **−1d4** on their next test AND **loses a Reaction** on the tracker. On a **failure**: neither. **This is the first talent whose H1 payload is real mechanics rather than card text — if the payload dispatch is broken, this is where it shows.** |
+| 2bE-8 | **no tracker fallback** | use Fast Talker out of combat (or with CAE disabled) | A plain chat note, no error. The graceful fallback must survive the handler move. |
+| 2bE-9 | ⚑ **adversary widening** | put an adversary carrying a combat-timing talent into a fight | It now gets its combat-start grant. **Deliberate change** — the retired hooks were gated `type === "character"`; rule-driven dispatch doesn't need that gate. Tell me if you'd rather it stayed PC-only. |
+| 2bE-10 | **regression: stances** | enter/leave each stance | Unchanged from pass B — Practiced Kata's rewrite touches the same machine. |
+
+> ⚑ **Not verified in Foundry.** **2bE-7 is the row that matters most in the whole migration so far**
+> — it is the first evidence that H1's success/fail dispatch drives real effects, and 45 talents are
+> queued behind that answer. 2bE-4 is second: the combat-timing dispatcher is brand new code.
+
+## ⚑ RULE-2b PASS D — H1 `edha-def-test`, the first four (2026-07-24m) — NEEDS A PACK REBUILD
+
+> **The handler 45 talents are waiting on.** It gates a payload on your own test: you roll on the
+> talent's card as usual, the engine captures that roll and compares it. This batch is deliberately
+> four LOW-RISK talents whose payload is table-run, so the *gate* gets benched before anything
+> mechanical rides on it. Ratchet **206 → 202**.
+
+| # | talent | what to check | expected |
+|---|---|---|---|
+| 2bD-1 | **Set at Odds** (Leader) | Events tab | ⚑ A rule is THERE (was empty): `edha-def-test`, your test **ldr**, vs **defense / spi**. Confirm it renders and is editable. |
+| 2bD-2 | **Set at Odds** | target a creature, use it, roll | The card reads `<total> vs <name>'s SPI <n> — SUCCESS/FAIL`. **You roll it**, not the engine. |
+| 2bD-3 | **the gate** ⚠️ | use it with **nothing targeted** | Warned "target the creature first (nothing spent)" and **no focus/Investiture is deducted**. This is the veto replacing the old takeover's nothing-spent guarantee. |
+| 2bD-4 | **Grand Deception** (Leader) | use it (no target needed) | Resolves vs **flat DC 15**; no targeting warning, because `requireTarget` is off for this one. |
+| 2bD-5 | **Synchronized Assault** (Leader) | use on a target, roll high **and** low | Both branches print, and the note gives both outcomes (success = allies up to your Leadership ranks gain an Action; fail = only one). |
+| 2bD-6 | **Turning Point** (Scholar) | use on a target, roll | `ded` vs Cognitive, same shape. |
+| 2bD-7 | **regression: the untouched rows** | **Sharp Eye**, **Tactical Ploy**, **Steadfast Challenge**, **Valiant Intervention** | All four still work exactly as before — they stay on the old `EDHA_HEROIC_DEFTESTS` path this pass. If any broke, the table edit went wrong. |
+
+> ⚑ **Not verified in Foundry.** **2bD-3 is the row that matters** — the veto is the only thing
+> standing between "mis-target and lose nothing" and "mis-target and lose the cost", and it is the
+> mechanism every deity conversion will depend on.
+>
+> ⚑ **Two H1 modes are UNPROVEN by this batch**: `vs: skill` (engine rolls the foe's skill) has no
+> consumer here — its first will be Green/Drive the Prey — and the `edha-test-fail` event fires no
+> payload yet; its first real consumer is Absolute Authority's consolation Weakened.
+
+## ⚑ RULE-2b PASS C — the "modify my own next test" family (2026-07-24k) — NEEDS A PACK REBUILD
+
+> Six talents across **Agent, Leader and Scholar**, all one shape: *on use, write a next-test flag
+> on myself*. `edha-next-test-mod` grew `target: self` plus `plotDie` and `opportunity`, so no new
+> handler type. `EDHA_OPP_ADDERS` and two bespoke `useItem` hooks are deleted. Ratchet **212 → 206**.
+
+| # | talent | what to check | expected |
+|---|---|---|---|
+| 2bC-1 | **High Society Contacts** (Agent) | Events tab, then use it | ⚑ A rule is THERE (was empty): `edha-next-test-mod`, target **self**, Opportunity **true**. Using it banks the credit and the card says so. |
+| 2bC-2 | **High Society Contacts** | now roll any test | The **Opportunity menu** fires with the roll and names the talent — exactly as before. |
+| 2bC-3 | **Underworld Contacts / Rumormonger / Well Supplied** | use each, then roll | Same banked Opportunity. Rumormonger and Well Supplied are **Leader**, so this crosses two paths off one table. |
+| 2bC-4 | **Risky Behavior** (Agent) | use it, then roll | Your next test **raises the stakes** (Plot Die injected), and the consume card names *Risky Behavior* — not the generic "Raise the Stakes". |
+| 2bC-5 | **Overwhelm with Details** (Scholar) ⚠️ | use it, then roll | Your next test gains **+your Lore modifier as a number**. ⚑ The formula now resolves at use against your roll data; if the card shows a raw `@skills.lor.mod` instead of a number, the resolution broke. |
+| 2bC-6 | **the round trip** ⚠️ | On Risky Behavior's Events tab tick **Also bank an Opportunity** as well, use it, roll | You get **both** the Plot Die and the Opportunity menu. Proves the fields are live and composable, not just a re-skin of the old hook. |
+| 2bC-7 | **regression: targeted mods** | **Emotional Overload** (Red, pass A) on a target | Still applies **disadvantage to the TARGET**. `target` defaults to `target`, so every pre-existing next-test-mod rule must be untouched — this is the one that would break if the default flipped. |
+| 2bC-8 | **regression: Probability Net** | use it on a target | Still `-1d6` on the target's next test. Same reason as 2bC-7. |
+
+> ⚑ **Not verified in Foundry.** **2bC-7** is the one to run even if you skip the rest — six new
+> fields landed on a handler that five shipped talents already use, and a wrong default would
+> silently redirect all of them onto the caster.
+
+## ⚑ RULE-2b PASS B — the six Warrior stances come off the engine (2026-07-24j) — NEEDS A PACK REBUILD
+
+> **Behaviour should be IDENTICAL to before, with one exception (2bB-4) where it should be BETTER
+> than before, because the old code was broken.** Both name-keyed stance tables are gone: the
+> numeric riders now live on each talent's **Effects** tab, the skill advantage on its **Events**
+> tab. Ratchet **218 → 212**. Nothing below takes effect until `deploy-to-foundry.bat` + ⟳ Sync.
+
+| # | talent | what to check | expected |
+|---|---|---|---|
+| 2bB-1 | **Stonestance** | Effects tab, then use it | ⚑ ONE effect, *"Stonestance — while active"*, greyed/not-transferring. Using it enters the stance and the **marker** grants **+1 deflect**. Leaving it removes the deflect. |
+| 2bB-2 | **Vinestance** / **Bloodstance** | use each | Vine: **+1 Physical, +1 Cognitive**. Blood: **−2 Physical, −2 Cognitive, −2 Spiritual**. Same numbers as before — only their storage moved. |
+| 2bB-3 | **the round trip** ⚠️ | On Stonestance's Effects tab change the deflect value `1` → `2`, then enter the stance | The marker grants **+2**. This is the whole point of the pass — if the edit doesn't take, the stance conversion is wrong. |
+| 2bB-4 | **Flamestance** ⚠️ **was broken** | enter Flamestance, roll **Intimidation** | **Advantage (2d20kh).** ⚑ This very likely NEVER worked: the retired code set `advantageMode = 1` (the system's enum is the string `"advantage"`) and didn't wrap `configureDialog`, which a dialog roll overwrites. Check it **both** from the sheet and through the roll dialog. |
+| 2bB-5 | **Ironstance** / **Windstance** | enter each, roll **Insight** / **Agility** | Same advantage, same two ways. |
+| 2bB-6 | **the stance gate** | while in Flamestance, roll **Insight** (not Intimidation); then leave all stances and roll Intimidation | **No advantage** in both cases — `whenSkill` and `whileStanceActive` must both bite. |
+| 2bB-7 | **Events tab** | open Flamestance → Events | ⚑ A rule is THERE (was empty): `edha-test-rider`, mode **advantage**, whenSkill `itm`, whileStanceActive **true**. Confirm it renders and is editable. |
+| 2bB-8 | **no stray indicators** | Flamestance + Vigilant Stance sheets | The old greyed *"(Active) — INDICATOR ONLY / Mechanics manual"* effect is **GONE** from both. The stance marker is the indicator now. (Vigilant Stance is otherwise unchanged this pass.) |
+| 2bB-9 | **regression: riderless stances** | enter **Vigilant Stance** | Still enters/leaves normally with no numeric change — it has no rider effect, and that must read as "no rider", not as an error. |
+| 2bB-10 | **regression: existing riders** | Predatory Patience (Black) vs a Weakened target | Its `+[Die]` still lands. The test-rider injector was restructured to allow mode-only rules; formula riders must be untouched. |
+
+> ⚑ **Not verified in Foundry** — no session can launch it. **2bB-3 and 2bB-4 are the ones that
+> matter**: 2bB-3 proves the migration premise for `effects` (as 2bA-7 did for `events`), and
+> 2bB-4 is a bug fix that has never once been seen working.
+
+## ⚑ DEPLOY STATE (last confirmed by Ben 2026-07-18 — STALE, see the banner)
+
+> **⚑ THIS SECTION IS OUT OF DATE (flagged 2026-07-24).** It was last advanced on **2026-07-18**;
+> the handoff's newest delta is **2026-07-23c**, so roughly a week of merged work — the items
+> tranche, the culture items, the character-creation wizard, the wizard review fixes, and the
+> whole map/hydrology run — is **not accounted for below**. Only Ben can advance this section
+> (it describes his machine, which no session can inspect), so it goes stale silently.
+>
+> **Agents:** per `test-pass-fixes` Phase 1, a DEPLOY STATE older than the newest handoff delta
+> is **not evidence** — it is a question for Ben. Do not use it to rule a "wrong text / old
+> behaviour" report in or out until he confirms.
+>
+> **Ben:** one `deploy-to-foundry.bat` run + relaunch, then tell a session what it printed and
+> the section gets rewritten from that. Everything below this banner describes 2026-07-18.
+
+The live module + packs on this machine were, **as of 2026-07-18**, current through the 07-17 playtest-2 engine push
 (everything up to and including PR #97; packs current through 2026-07-16c + the 07-16d fixes).
 
 **MERGED BUT NOT YET DEPLOYED:** the **2026-07-17c bench-results fixes** and the **2026-07-18b
@@ -38,6 +170,58 @@ onto every world adversary and placed token in place (position/HP kept, renamed 
 Standing rules: **PC tokens are linked** and never need replacing; **PCs need no ⟳ Sync** unless
 a section says a specific pack-baked talent changed. Every deployed section below assumes the
 current deploy state — per-section setup boilerplate was removed in the 07-18 consolidation.
+
+---
+
+# Pending the next rebuild + deploy (ONE `deploy-to-foundry.bat` run covers every row here)
+
+> **Section added 2026-07-24 to fix a dashboard bug, not to add content.** Every "ALSO PENDING"
+> block below already existed — but they sat *inside* the `## DEPLOY STATE` section, and
+> `build-dashboard.js` deliberately filters that section out of the Bench tab to render it as the
+> banner. So these rows have **never appeared on the dashboard Ben actually tests from** (CLAUDE.md:
+> "Ben tests from the generated `EDHA_DASHBOARD.html`"). Row text is unchanged and unmoved; only
+> this heading is new, which promotes all of them into a real, markable bench section. **Keep
+> pending rows below a `#` heading — anything above the first one is invisible to Ben.**
+
+**ALSO PENDING (2026-07-24, tree-graph + overlay fixes):** `data/leyline.json`, `data/domain.json`
+and `scripts/edha-pack-io.js` changed. **Pack rebuild + deploy + ⟳ Sync needed** — the tree node
+graphs and 10 talents' Events/Effects tabs are all pack-baked. See the "2026-07-24 fixes" section
+immediately below.
+
+- [ ] **Green / Instinct is takeable at all (THE session-0 blocker)** — open the Green tree on a
+      PC with Green 1+. **Pack Hunter** is now pickable with no talent prereq (it is the branch
+      root); taking it unlocks **Predator's Instinct** and **Scent the Weak**, and the column
+      walks down to **Natural Order**. Before this fix, Pack Hunter and Predator's Instinct each
+      required the other and all 8 Instinct talents were permanently unpickable.
+- [ ] **Red / Momentum is takeable** — same check on Red: **Reckless Advance** is the branch root
+      (its card now reads **"Red 1+"**, not "Burning Drive"), and **Burning Drive**, **Volatile
+      Strike**, … **Unstoppable** chain down from it. ⚑ **Ben — eyeball the drawn tree**: the fix
+      trusted the layout + connections over the card text. If you intended Burning Drive to come
+      first, say so and it flips instead.
+- [ ] **Death / Speak with the Fallen** — its card now reads **"Reaper's Harvest"** (was "Risen
+      Servant", which is drawn *below* it). Confirm it hangs off Reaper's Harvest beside Bone
+      Garden, and that Risen Servant is still reachable via Bone Garden.
+- [ ] **The 10 recovered talents show behaviour again** — after rebuild + ⟳ Sync, each of these
+      has a NON-EMPTY Events or Effects tab: **Guardian Stance** (White, +1 Deflect AE),
+      **Thorn Field** (Green), **Shoulder the Oath** (Order), **Lay Foundation** (Civilization),
+      **Death Ward** + **Necrotic Cascade** (Death), **Set Charge** (Destruction, 2 rules) +
+      **Fault Line** (Destruction), **Warlord's Advance** + **Investiture of Command** (Power).
+      Their behaviour was being erased at build time by an empty authored overlay.
+- [ ] **Razkael prereqs match the drawn tree (2026-07-24b)** — **Cascading Failure**'s card now
+      reads "Pinpoint Charge or Concussive Yield" and **Fault Line**'s reads "Walking Ruin or
+      Combustion Chain"; each is takeable from either drawn parent alone, not both.
+- [ ] **Four silently-dead prereqs now bite (2026-07-24b)** — **Know Your Moment** (Scholar) lists
+      **Mind and Body** as a talent prereq (it was being dropped entirely); **Resolute Stand**
+      (Leader) requires **Athletics 1+**; **Shattering Blow** (Warrior) requires **Windstance**
+      AND **Perception 2+** (both were dropped); **Animal Bond** (Hunter) spells "companion".
+      ⚑ These now ENFORCE where they previously did nothing — if a PC already owns one of these
+      talents without the prereq, the sheet may flag it. Expected, not a bug.
+- [ ] **Risen Servant's card no longer names a cut talent (2026-07-24c)** — its Prerequisites read
+      **"Bone Garden or Speak with the Fallen"** (was "Bone Garden or Gentle Passage" — a talent
+      deleted in the Death-tree rewrite). Confirm it is takeable from EITHER parent alone.
+- [ ] ⚑ **Nothing else lost its rules** — spot-check two talents that already worked (e.g. Black's
+      Withering Ray, Red's Arc Flash): tabs unchanged. The A/B build says 0 talents lost anything,
+      but that is a repo-side check, not a table one.
 
 **ALSO PENDING (2026-07-19c, Lunavar lore pass):** `data/cultures.json` — the Lunavar culture
 item's flavor/names text re-synced to the updated player primer (rice country, Moonmere, the

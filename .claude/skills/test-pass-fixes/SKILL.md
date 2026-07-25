@@ -1,6 +1,6 @@
 ---
 name: test-pass-fixes
-description: Triage and fix EDHA in-Foundry test results in the Skilltrees repo. Use whenever Ben reports playtest or test-pass outcomes — freeform chat notes, "X didn't work / fired twice / showed the wrong text", a pasted "EDHA bench results" block (from EDHA_FOUNDRY_TEST_SHEET.html's Copy-results button), an xlsx results sheet, or marked-up EDHA_FOUNDRY_TEST_CHECKLIST.md rows — for any tree or engine behavior. Drives the full loop; parse reports → establish deploy state → audit the whole tree → root-cause (never symptom-patch) → batch rulings → fix via shared engine primitives → gates → delta/checklist/index docs. Read CASE_STUDIES.md (this folder) before diagnosing anything.
+description: Triage and fix EDHA in-Foundry test results in the Skilltrees repo. Use whenever Ben reports playtest or test-pass outcomes — freeform chat notes, "X didn't work / fired twice / showed the wrong text", a pasted "EDHA bench results" block (from EDHA_DASHBOARD.html's Copy-for-Claude button), an xlsx results sheet, or marked-up EDHA_FOUNDRY_TEST_CHECKLIST.md rows — for any tree or engine behavior. Drives the full loop; parse reports → establish deploy state → audit the whole tree → root-cause (never symptom-patch) → batch rulings → fix via shared engine primitives → gates → delta/checklist/index docs. Read CASE_STUDIES.md (this folder) before diagnosing anything.
 ---
 
 # Test-pass fixes — from Ben's results to a shipped, documented pass
@@ -24,8 +24,9 @@ until Phase 3 has a written root cause for every row.**
 
 Input is usually **freeform chat notes** (sometimes an xlsx, checked-off checklist rows, or a
 pasted **"EDHA bench results"** block — same treatment). The bench-results block comes from the
-**Copy results for Claude** button on `EDHA_FOUNDRY_TEST_SHEET.html` (the human-facing view of the
-checklist, see Phase 7): rows arrive pre-labeled `PASS / FAIL / PARTIAL / SKIP` with Ben's note
+**Copy for Claude** button on `EDHA_DASHBOARD.html` (Bench tab — the human-facing view of the
+checklist, see Phase 7; it replaced the retired `EDHA_FOUNDRY_TEST_SHEET.html` on 2026-07-18):
+rows arrive pre-labeled `PASS / FAIL / PARTIAL / SKIP` with Ben's note
 quoted and the source section named, and the `@<hash>` stamp in its first line tells you exactly
 which checklist revision Ben was testing from (match it against `git log` — a stale stamp is
 deploy-state evidence for Phase 1). Ben's quoted notes are still *symptoms*, not causes.
@@ -53,9 +54,13 @@ N. <Tree> / <Talent or subsystem> — EXPECTED (from the card/checklist) vs OBSE
 Ben's machine lags `main`. Packs may be frozen at an old build; owned talents are **snapshots**
 until ⟳ Sync; the engine mirror may predate recent merges. So, before diagnosing:
 
-1. Read the **DEPLOY FIRST** section at the top of `EDHA_FOUNDRY_TEST_CHECKLIST.md` and the recent
-   handoff delta headers — anything marked "pack rebuild deferred" or "NO pack rebuild" tells you
-   what was live when Ben tested.
+1. Read the **DEPLOY STATE** section at the top of `EDHA_FOUNDRY_TEST_CHECKLIST.md` (called
+   "DEPLOY FIRST" before 2026-07-16d) and the recent handoff delta headers — anything marked
+   "pack rebuild deferred" or "NO pack rebuild" tells you what was live when Ben tested.
+   **Check the section's own date against `git log` first.** Only Ben can advance it, so it goes
+   stale silently: on 2026-07-24 it was dated 07-18 and claimed currency through PR #97 while
+   `main` was at PR #126. A DEPLOY STATE older than the newest handoff delta is not evidence —
+   it is a question for Ben.
 2. For every "wrong text / old behavior / thing I thought we fixed" row, check `git log` for that
    talent/engine area: **if the repo already has the fix and it postdates the last deploy, the row
    is a stale pack/snapshot, not a repo bug.** Say so in the delta and move on (worked example:
@@ -172,9 +177,11 @@ The pass isn't done when the code is: the docs ARE the knowledge transfer to the
    fix, ⚑-flagging each row the engine can't guarantee (DOM injections, dialog interactions,
    at-the-table feel, anything you couldn't self-verify). State the deploy requirement at the
    section top (rebuild? sync? relaunch? F5?).
-   **Then regenerate the bench sheet:** `node scripts/build-test-sheet.js` and commit the updated
-   `EDHA_FOUNDRY_TEST_SHEET.html` in the same commit — CI and the pre-commit hook fail on a stale
-   sheet (`--check`). The MD is the only thing you edit; the HTML is generated, never hand-touched.
+   **Then regenerate the dashboard:** `node scripts/build-dashboard.js` and commit the updated
+   `EDHA_DASHBOARD.html` in the same commit — CI and the pre-commit hook fail on a stale
+   dashboard (`--check`). The MD is the only thing you edit; the HTML is generated, never
+   hand-touched. (This replaced `build-test-sheet.js` / `EDHA_FOUNDRY_TEST_SHEET.html`, both
+   deleted 2026-07-18.)
    Write rows knowing how they surface there: the row's **first bold run is its label** in Ben's
    copied results (bold the talent name first), section-title/prose keywords ("pack rebuild",
    "⟳ Sync", "relaunch", "F5", "engine-only") become the section's deploy chips, and **rewording a

@@ -407,3 +407,67 @@ test("edhaColorRank: character ranks pass through; adversary falls back to ROLE 
   const pc0 = { type: "character", system: { skills: {} } };
   assert.strictEqual(env.edhaColorRank(pc0, "red"), 0, "characters never inherit the fallback");
 });
+
+// --- edhaStanceRiderChanges — the iron-rule-2b stance conversion (07-24j) -----
+// The six Warrior stances came off the engine's name-keyed EDHA_STANCE_CHANGES table; the marker
+// now copies its changes off ONE ActiveEffect on the talent flagged `edha-content.stanceRider`.
+// Pinned because a silent [] here is indistinguishable from "this stance has no numeric rider",
+// which is exactly how a conversion regression would hide.
+const stanceItem = (effects) => ({
+  effects: effects.map((e) => ({
+    ...e,
+    getFlag: (scope, key) => (scope === "edha-content" ? e.flags?.["edha-content"]?.[key] : undefined),
+  })),
+});
+test("edhaStanceRiderChanges reads the flagged effect's changes off the talent", () => {
+  const item = stanceItem([
+    { changes: [{ key: "system.deflect.bonus", mode: 2, value: "1" }], flags: { "edha-content": { stanceRider: true } } },
+  ]);
+  eq(env.edhaStanceRiderChanges(item), [{ key: "system.deflect.bonus", mode: 2, value: "1" }]);
+});
+test("edhaStanceRiderChanges ignores effects that are not flagged stanceRider", () => {
+  const item = stanceItem([
+    { changes: [{ key: "system.resources.hea.max.bonus", mode: 2, value: "@level" }], flags: {} },
+  ]);
+  eq(env.edhaStanceRiderChanges(item), []);
+});
+test("edhaStanceRiderChanges defaults a missing mode to 2 (ADD)", () => {
+  const item = stanceItem([
+    { changes: [{ key: "system.defenses.phy.bonus", value: "-2" }], flags: { "edha-content": { stanceRider: true } } },
+  ]);
+  eq(env.edhaStanceRiderChanges(item), [{ key: "system.defenses.phy.bonus", mode: 2, value: "-2" }]);
+});
+test("edhaStanceRiderChanges returns [] for a stance with no rider effect, and never throws", () => {
+  eq(env.edhaStanceRiderChanges(stanceItem([])), []);
+  eq(env.edhaStanceRiderChanges({}), []);
+  eq(env.edhaStanceRiderChanges(null), []);
+});
+
+// --- edhaDefTestOutcome — H1's pure success/fail decision (07-24m) ------------
+// Hoisted out of ~20 hand-rolled copies of `def == null ? true : total >= def`. The fail-open
+// branch is the one that matters: an adversary with no written defense must not make the talent
+// silently do nothing, which is what a naive `total >= Number(null)` would produce.
+test("edhaDefTestOutcome vs defense: meets-or-beats succeeds, under fails", () => {
+  assert.strictEqual(env.edhaDefTestOutcome(14, { vs: "defense", defValue: 14 }).ok, true, "ties succeed");
+  assert.strictEqual(env.edhaDefTestOutcome(13, { vs: "defense", defValue: 14 }).ok, false);
+  assert.strictEqual(env.edhaDefTestOutcome(14, { vs: "defense", defValue: 14 }).dc, 14, "card prints what was beaten");
+});
+test("edhaDefTestOutcome vs skill: compares against the engine-rolled foe total", () => {
+  assert.strictEqual(env.edhaDefTestOutcome(18, { vs: "skill", oppRoll: 12 }).ok, true);
+  assert.strictEqual(env.edhaDefTestOutcome(9, { vs: "skill", oppRoll: 12 }).ok, false);
+});
+test("edhaDefTestOutcome vs dc: flat number, ties succeed", () => {
+  assert.strictEqual(env.edhaDefTestOutcome(15, { vs: "dc", dc: 15 }).ok, true);
+  assert.strictEqual(env.edhaDefTestOutcome(14, { vs: "dc", dc: 15 }).ok, false);
+});
+test("edhaDefTestOutcome FAILS OPEN when the bar is unreadable (no written defense)", () => {
+  for (const bad of [null, undefined, NaN, "—"]) {
+    assert.strictEqual(env.edhaDefTestOutcome(3, { vs: "defense", defValue: bad }).ok, true, `defValue ${String(bad)} must fail open`);
+  }
+  assert.strictEqual(env.edhaDefTestOutcome(3, { vs: "defense", defValue: null }).dc, null, "and reports no dc to print");
+  assert.strictEqual(env.edhaDefTestOutcome(3, { vs: "skill", oppRoll: null }).ok, true, "same for an unrollable foe");
+});
+test("edhaDefTestOutcome treats a 0 bar as real, not missing", () => {
+  assert.strictEqual(env.edhaDefTestOutcome(0, { vs: "dc", dc: 0 }).ok, true);
+  assert.strictEqual(env.edhaDefTestOutcome(-1, { vs: "dc", dc: 0 }).ok, false, "0 must not be swallowed as falsy");
+});

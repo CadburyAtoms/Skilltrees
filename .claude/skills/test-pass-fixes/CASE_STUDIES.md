@@ -54,7 +54,7 @@ first capture (the movement-denial text belongs to Dread Presence); Ben's machin
 the 06-16 build, and owned talents are snapshots until ⟳ Sync. Resolution: rebuild + Sync and
 re-check — recorded in the delta, zero code changed.
 
-**Lesson:** establish deploy state (checklist DEPLOY FIRST section + delta headers + `git log`)
+**Lesson:** establish deploy state (checklist DEPLOY STATE section + delta headers + `git log`)
 before believing any "wrong text / old behavior" report. A bug in something changed since the
 last deploy is a deployment gap until proven otherwise. "Fixing" correct data corrupts it.
 

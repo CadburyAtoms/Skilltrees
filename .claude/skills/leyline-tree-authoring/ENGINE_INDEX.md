@@ -4,6 +4,64 @@ Read this instead of re-scanning the 11,000+-line engine. Find code by **greppin
 (line numbers drift). Helpers are `function` declarations (hoisted) — callable from anywhere.
 **Destruction's section is the worked example** for a deity "signature subsystem"; mirror it.
 
+## ⚠️ THIS FILE IS HALF THE VOCABULARY — read `data/native-vocabulary.json` too
+
+Everything below is what the **edha-content module** adds. The **cosmere-rpg system registers its
+own event system underneath**, and authored rules may use both. As of system 2.1.0:
+
+| | edha-* | native | total |
+|---|--:|--:|--:|
+| handler types | 31 | **12** | **43** |
+| event types | 10 | **17** | **27** |
+
+Native handlers: `grant-items` · `remove-items` · `modify-attribute` · `set-attribute` ·
+`modify-skill-rank` · `set-skill-rank` · `grant-expertises` · `remove-expertises` · `use-item` ·
+`update-item` · **`update-actor`** · **`execute-macro`**
+Native events: `create` · `update` · `delete` · `add-to-actor` · `remove-from-actor` · `equip` ·
+`unequip` · `use` · **`mode-activate`** · **`mode-deactivate`** · `goal-complete` · `goal-progress` ·
+**`update-actor`** · **`apply-damage-actor`** · **`apply-injury-actor`** · `short-rest-actor` ·
+**`long-rest-actor`**
+
+**THE DIVIDING LINE — this is the useful part. It applies to BOTH handlers and events.**
+
+*Handlers* — native ones write **self/owner** state: `update-actor`'s Target is `parent` or a fixed
+`global` UUID, and there is **no native "current user target"**. Anything that must hit *whoever the
+player is targeting* needs an edha-* handler, because those read `game.user.targets`. That is why
+`edha-next-test-mod` exists and why `update-actor` could never have replaced it.
+
+*Events* — **⚠ native events are owner-scoped too, and this is the half that gets assumed wrong.**
+When a hook fires, the system's dispatcher resolves it to **one document** and, for an Actor,
+iterates **`actor.items`** — the items of the actor the event happened **to**
+(`systems/cosmere-rpg/index.js`, the `Hooks.once('ready')` dispatcher; verified 2026-07-24i).
+So a talent's `apply-damage-actor` rule means "**I** was damaged", never "an ally was damaged".
+The edha events run through the **same** dispatcher and pick their one document via `transform` —
+which is how `edha-on-defeat` redirects from the victim to the killer. That is a cross-actor
+*redirection*, still to exactly one actor.
+
+**Neither event system fans out to N observers.** That is why ~47 talents hand-roll
+`edhaCharacterOwnersOf("X")` / `edhaOwnersOf("X")` sweeps, and it is the load-bearing reason the
+proposed `edha-watch` handler is needed. The existing name-free idiom to copy is
+`edhaDarkVeilSweep` (walks tokens → talents → `edhaEventRules`, matching `handler.type`, with no
+name literal anywhere).
+
+Before proposing a NEW handler, check whether a native one already covers it — but check the
+*scope*, not just the name. On 2026-07-24 `edha-watch` was nearly **built** because the vocabulary
+was under-counted, then nearly **cancelled** because `apply-damage-actor` looked like it already did
+the job; it does not. The full field list per handler is in `data/native-vocabulary.json`;
+regenerate after a system upgrade with `node scripts/dump-native-vocabulary.js` (needs Ben's Foundry
+install; not in CI). `lint-refs.js` pass 2 validates BOTH halves, so a typo'd native type now fails
+instead of silently doing nothing.
+
+⚠ **`update-actor` Changes write STRINGS.** `getChangeValue` returns `change.value` verbatim in
+OVERRIDE/CUSTOM mode; an object only merges in ADD mode, and only when the flag *already* holds an
+object. So a native rule cannot write `{skill, source}` into a flag that engine code later reads as
+an object — it lands a string. Caught on Reckless Momentum's plot die (audit §9k); the die still
+injects but the card's source label is lost. Check the consumer's shape before calling something
+natively expressible.
+
+Post-mortem: `EDHA_EDITABILITY_AUDIT.md` §9j (how the vocabulary was missed) and **§9k** (the
+re-derived classification, the verified scoping, and the surviving handler set).
+
 ## Dispatch — how a talent's behavior runs
 - **`preUseItem` takeover** — `Hooks.on("cosmere-rpg.preUseItem", ...)` returning **`false`** cancels the
   system's default use (no card, no auto-roll). Use it for click-to-place / fully-custom talents; you
@@ -54,6 +112,19 @@ edhaQueueContest(owner, "<color>", async ({ total }) => {   // captures the owne
   if (total >= opp) await edhaApplyTimedStatus(target, "slowed", { owner, expire: "target" });
 });
 ```
+- **`edha-def-test` (H1, 07-24m) — reach for this BEFORE hand-rolling any of the above.** The
+  authorable form of the whole "roll a gated test, then do something" shape (45 talents across 17
+  trees). One rule on the talent, event `use`: `skill` (the id YOU roll — leyline colours are skill
+  ids too), `vs` = `defense` \| `skill` \| `dc`, plus `def` / `targetSkill` / `dc`. It **gates
+  only** — the payload goes on sibling rules listening to the new events **`edha-test-success`** /
+  **`edha-test-fail`**, and those may use ANY handler (`edhaDispatchTestResult` calls
+  `rule.handler.execute`, so it knows no payload type — never hand-list them).
+  `requireTarget` / `rangeColor` veto in `preUseItem`, i.e. **before cost** — that is how a
+  converted talent keeps the "nothing spent" guarantee a `preUseItem` takeover used to give it,
+  without swallowing the card or the player's roll.
+  Pure decision **`edhaDefTestOutcome(total, {vs, dc, defValue, oppRoll})`** — pinned in `tests/`;
+  it **fails OPEN** on an unreadable bar, matching the ~20 hand-rolled `def == null ? true : …`
+  copies it replaced (an adversary with no written defense must not make the talent inert).
 - vs a static **defense**: `edhaReadDefense(actor, "phy"|"cog"|"spi")` (no foe roll needed).
 - `edhaPromptDC(title,hint)`, `edhaRewriteOrRelay(...)` for GM-DC / roll-rewrite cases.
 - **No owner roll to capture** (a passive that fires on an event)? Roll the DC yourself and roll each
@@ -349,10 +420,18 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   stamps owner-relative expiry, false = until removed. Consumers: Trooper/Captain **Brace** →
   the new **`braced`** status (condition, visible icon; DELIBERATELY not in `EDHA_TIMED_STATUSES`
   so Predictive Ward's permanent baked-AE marker never auto-expires).
-- **`edha-next-test-mod`** (event `use`): the current user-target's next test gains `mode`
-  (advantage/disadvantage) and/or a `formula` modifier (Probability Net's `-1d6`), counted.
-  `nextTestMod.formula` injects via the same term-concat as test riders, flavor-labeled; a
-  formula-only mod no longer forces disadvantage (the mode block is gated).
+- **`edha-next-test-mod`** (event `use`): a next test gains `mode` (advantage/disadvantage) and/or a
+  `formula` modifier (Probability Net's `-1d6`), counted. `nextTestMod.formula` injects via the same
+  term-concat as test riders, flavor-labeled; a formula-only mod no longer forces disadvantage (the
+  mode block is gated).
+  **Generalised 07-24k — it is now the whole "modify a next test" family, not just the targeted
+  half.** `target: "target" | "self"` (**defaults to `target`**, so every pre-07-24k rule is
+  unchanged — that default is the regression risk, not the new fields), plus `plotDie: true`
+  (writes `plotDieNext`, the raise-the-stakes injector) and `opportunity: true` (writes `oppCredit`,
+  cashed by the Opportunity menu). The `formula` is resolved against the **owner's** roll data at
+  use, so a self-mod banks a number rather than an `@`-ref the target pipeline can't evaluate.
+  Fields compose — one rule can grant advantage AND a Plot Die AND an Opportunity. This retired
+  `EDHA_OPP_ADDERS` and two bespoke `useItem` hooks (Risky Behavior, Overwhelm with Details).
 - **`edha-thorns`** (sentinel on `edha-apply-watch`): melee/adjacent attackers who damage the
   owner take the splash automatically — rolled, applied with `{edhaThorns: true}` chain guard.
   Consumer: Cinder Coat. `edhaTokenGapFt(a, b)` is the shared center-distance helper.
@@ -419,9 +498,26 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
 - **Stance state machine** (`edhaToggleStance(item)` / `edhaActiveStance(actor)`) — keyed on
   `system.modality === "stance"` (the FIELD, not names — new stances wire themselves). Using a
   stance talent enters it: one marker AE (talent name/img, flag `edha-content.stanceOf`), any
-  other stance ends first, using it again leaves. The marker is the queryable state — wire each
-  stance's mechanical rider against `edhaActiveStance(actor) === "<name>"` (riders themselves
-  are §9j backlog). The system ships NO stance machinery; its own stance AEs are inert.
+  other stance ends first, using it again leaves. The marker is the queryable state. The system
+  ships NO stance machinery; its own stance AEs are inert.
+- **`edhaStanceRiderChanges(item)`** (07-24j, iron rule 2b) — a stance's numeric while-active
+  riders, read off **the talent's own Effects tab** instead of the retired name-keyed
+  `EDHA_STANCE_CHANGES` table. Author ONE ActiveEffect on the stance talent flagged
+  `edha-content.stanceRider` with **`transfer: false`** (it must never apply on its own); the
+  marker copies its `changes` at enter, so the numbers are editable in Foundry and vanish on
+  leave/swap. No rider effect = no numeric rider, which is legitimate (Flame/Iron/Wind). Pure;
+  pinned in `tests/engine-helpers.test.js`, mutation-checked.
+- **Stance skill advantage is an `edha-test-rider` rule**, not a hook (07-24j). Three fields added
+  for it and reusable everywhere: **`mode`** (advantage/disadvantage — `bonusFormula` may now be
+  blank, so a rule can be mode-only), **`whenSkill`** (a single skill id; narrower than
+  `whenAttribute`, which would sweep in every sibling skill of the same attribute), and
+  **`whileStanceActive`** (only while THIS talent's own stance is up). `mode` is also what
+  Frenzied Tempo was blocked on.
+- ⚠ **FACT (07-24j): the advantage enum is the STRING `"advantage"`/`"disadvantage"`, and you must
+  wrap `configureDialog` too.** A dialog roll overwrites `roll.options.advantageMode` from
+  `data.skillTest.advantageMode`, so setting only `roll.options` silently loses on any dialog roll.
+  The retired `edhaStanceAdvPreRoll` set `= 1` and wrapped neither — stance skill advantage never
+  landed. Copy `edhaAdvTestPreRoll`'s two-line shape for any new advantage injector.
 - **PC token defaults** (`edhaPcSightShape(actor)` + preCreateActor hook + AWA updateActor
   watcher + `edha.fixPcTokens()`) — new character actors get displayName HOVER(30) and cosmere
   "sense" sight (attenuation 0.1) with range = Senses Range (`edhaSensesRangeFtFromAwa`); the
@@ -454,9 +550,28 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   auto-enters Vigilant at combatStart.
 - **Resilient Hero** — preUpdateActor HP-floor veto (`resilientSpent` flag, GM clears on long
   rest). **Wary** — preCreateActiveEffect veto on `surprised` while focus > 0.
-- ⚠ **CAE-NEXT class** (Cosmere Advanced Encounters — installed 07-18, api UNCAPTURED): every
-  action/reaction-economy behavior is queued in §9j #1b with its hook class named. Do NOT mark
-  those manual; do NOT wire them blind — the items dump's CAE section is the gate.
+- **`edha-cae-grant`** (H5, 07-24n) — action-economy as a rule. `kind` action/reaction/**burn-reaction**
+  (burn spends the TARGET's), `n`, `target: self|target`, `label` (the tracker shows
+  `Edha: <label>`), `whenDeflectBelow` (Sidestep's armour gate; silent no-op above it). Thin wrapper
+  over `edhaCaeGrant`, so the no-tracker chat fallback still works. **CAE has no api — the contract
+  is the combatant flags, don't re-investigate** (audit §9j).
+- **`edha-combat-timing` HAS A DISPATCHER NOW** (07-24n). It was registered on 07-18 and nothing
+  ever fired it — every combat-timed passive was a bespoke `combatStart` hook. It now fires each
+  such rule at **combat start** on the single GM applier, passing `options.moment` so further
+  moments (turn/round start) can be added with a field on the consuming handler. Rule-driven, so
+  it reaches adversaries carrying an embedded twin — deliberate, and wider than the
+  `type === "character"` hooks it replaced.
+  ⚑ **Heuristic this taught us: grep for a registered type with ZERO dispatch sites — it is a
+  migration unlock hiding in plain sight.**
+- **`edha-enter-stance`** (H11, 07-24n) — put the user into one of their own stance talents;
+  `stance` (the talent NAME, as authored data — allowed; 2b forbids names in engine CODE) +
+  `unlessStatus` (default `surprised`). No-ops if already in that stance, because
+  `edhaToggleStance` would otherwise LEAVE it. Consumer: Practiced Kata on `edha-combat-timing`.
+- ⚠ **CAE-NEXT class** (Cosmere Advanced Encounters — installed 07-18, api UNCAPTURED): the
+  remaining action/reaction-economy behaviours are queued in §9j #1b with their hook class named.
+  The GRANT/BURN half is built (`edha-cae-grant` above); what is still unexpressible is the
+  **cost-discount** half (Vigilant Stance's Dodge/Reactive-Strike −1, Stonestance's attack tax) —
+  no hook intercepts an action's focus cost. Do NOT mark those manual; do NOT wire them blind.
 
 ## Character creation (07-18l — §9j #5; the wizard + the kit)
 - **`edhaCreationWizard(actor)`** (`edha.creationWizard`) — the guided DialogV2 walkthrough:

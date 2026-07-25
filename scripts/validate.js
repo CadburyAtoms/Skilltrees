@@ -51,6 +51,123 @@ function validateConnections(row, idx, file, errors, warnings, treeNameSet) {
   }
 }
 
+// ---------- tree-graph integrity (CLAUDE.md iron rule 7, added 2026-07-24) ----------
+// validateConnections above checks only that a connection NAME resolves inside its tree. It has
+// never checked what the edges ADD UP TO — which is how two mutual-connection cycles sat on `main`
+// for the whole tracked history (Green: Predator's Instinct <-> Pack Hunter; Red: Burning Drive
+// <-> Reckless Advance), taking 16 talents permanently out of play while all six gates passed.
+// A player hit the Green one at session 0.
+//
+// The requirement model MIRRORS foundry-build.js exactly, because that is what Foundry evaluates:
+//   - every `connections` entry becomes ONE managed talent prereq whose `talents` map holds every
+//     parent -> satisfied by owning ANY one of them (OR within the group);
+//   - each prose prerequisite GROUP (split on ; and ,) contributes its own prereq -> AND across
+//     groups, OR within a group (split on " or ").
+// So a node is takeable iff EVERY group has at least one takeable member. A node with no groups
+// is a root. Anything never reachable from a root is dead content, whether or not it sits on a cycle.
+const prereqGroups = (s) => (!s || /^\s*[—-]\s*$/.test(String(s)))
+  ? []
+  : String(s).split(/\s*[;,]\s*|\s+and\s+/i).map(p => p.trim()).filter(Boolean)
+      .map(part => part.split(/\s+or\s+/i).map(x => x.trim()).filter(Boolean));
+
+function validateTreeGraph(rows, atlas, file, errors, warnings, treeKeyOf) {
+  const byTree = {};
+  for (const row of rows) {
+    if (!row || typeof row !== 'object' || Array.isArray(row)) continue;
+    if (!isLoadedByApp(row, atlas)) continue;
+    const key = treeKeyOf(row);
+    if (!key || !rowName(row)) continue;
+    (byTree[key] = byTree[key] || []).push(row);
+  }
+
+  for (const [tree, treeRows] of Object.entries(byTree)) {
+    const byName = {};
+    for (const r of treeRows) byName[rowName(r).toLowerCase()] = r;
+    const local = (n) => byName[String(n).trim().toLowerCase()];
+
+    // requirement groups per talent, in build order (connections first, then prose)
+    const req = {}, connOf = {}, proseOf = {};
+    for (const r of treeRows) {
+      const name = rowName(r);
+      const groups = [];
+      const conn = (Array.isArray(r.connections) ? r.connections : [])
+        .filter(local).map(n => rowName(local(n)));
+      if (conn.length) groups.push(conn);
+      const prose = [];
+      for (const g of prereqGroups(r.prerequisites || r.Prerequisites)) {
+        const talents = g.filter(local).map(t => rowName(local(t)));
+        if (talents.length) { groups.push(talents); prose.push(...talents); }
+      }
+      req[name] = groups; connOf[name] = conn; proseOf[name] = prose;
+    }
+
+    // --- cycles: DFS over the union of all requirement edges, reporting the actual loop path
+    const WHITE = 0, GREY = 1, BLACK = 2;
+    const state = {}, seen = new Set();
+    const walk = (name, stack) => {
+      if (state[name] === GREY) {
+        const loop = stack.slice(stack.indexOf(name)).concat(name);
+        const sig = [...loop].sort().join('|');
+        if (!seen.has(sig)) {
+          seen.add(sig);
+          errors.push({ file, idx: -1, name, msg:
+            `${tree}: prerequisite CYCLE — ${loop.join(' -> ')}. Every \`connections\` entry is a ` +
+            `REQUIREMENT, so none of these talents can ever be taken. Check for a mutual pair ` +
+            `(A connects to B while B connects to A) or an inverted edge (the card's prose points ` +
+            `one way, \`connections\` the other). Iron rule 7.` });
+        }
+        return;
+      }
+      if (state[name] === BLACK) return;
+      state[name] = GREY; stack.push(name);
+      for (const g of req[name] || []) for (const p of g) walk(p, stack);
+      stack.pop(); state[name] = BLACK;
+    };
+    for (const r of treeRows) walk(rowName(r), []);
+
+    // --- reachability: fixpoint from the prereq-free roots
+    const ok = {};
+    for (const r of treeRows) if (!req[rowName(r)].length) ok[rowName(r)] = true;
+    for (let changed = true; changed; ) {
+      changed = false;
+      for (const r of treeRows) {
+        const n = rowName(r);
+        if (ok[n]) continue;
+        if (req[n].every(g => g.some(p => ok[p]))) { ok[n] = true; changed = true; }
+      }
+    }
+    const dead = treeRows.map(rowName).filter(n => !ok[n]);
+    if (dead.length) {
+      errors.push({ file, idx: -1, name: dead[0], msg:
+        `${tree}: ${dead.length} talent(s) UNREACHABLE — no path from any prereq-free root: ` +
+        `${dead.join(', ')}. Iron rule 7 (a tree must be walkable).` });
+    }
+
+    // --- prose vs connections naming DIFFERENT parents: silently ANDs them (non-fatal).
+    // Only flagged when BOTH name talents — prose that names only a skill rank is the norm,
+    // because the drawn tree edge is deliberately not repeated on the card.
+    for (const r of treeRows) {
+      const n = rowName(r);
+      const c = connOf[n], p = proseOf[n];
+      if (!c.length || !p.length) continue;
+      const cs = [...new Set(c)].sort().join('|'), ps = [...new Set(p)].sort().join('|');
+      if (cs === ps) continue;
+      // Harmless when the extra parent is an ANCESTOR of the other — owning one implies the other.
+      const ancestors = (start) => {
+        const out = new Set(), q = [start];
+        while (q.length) for (const g of req[q.pop()] || []) for (const x of g) if (!out.has(x)) { out.add(x); q.push(x); }
+        return out;
+      };
+      const implied = p.every(x => c.includes(x) || c.some(y => ancestors(y).has(x)))
+                   || c.every(x => p.includes(x) || p.some(y => ancestors(y).has(x)));
+      if (implied) continue;
+      warnings.push({ file, idx: -1, name: n, msg:
+        `${tree}: prose prereq [${ps}] and \`connections\` [${cs}] name different talents, and ` +
+        `neither implies the other — the node will require BOTH. Intended, or an authoring slip?` });
+    }
+  }
+}
+
 function buildTreeNameSets(rows, atlas) {
   const sets = {};
   for (const r of rows) {
@@ -94,6 +211,13 @@ function validateOneFile(rows, file, atlas, errors, warnings) {
     return;
   }
   const treeSets = buildTreeNameSets(rows, atlas);
+  const treeKeyOf = (row) => {
+    if (atlas === 'leyline') { const c = row.path || row.Color; return c ? c[0].toUpperCase() + c.slice(1).toLowerCase() : null; }
+    if (atlas === 'heroic')  { const p = row.Path || row.path;  return p ? p[0].toUpperCase() + p.slice(1).toLowerCase() : null; }
+    if (atlas === 'deity')   { return row.Deity || row.deity || null; }
+    return null;
+  };
+  validateTreeGraph(rows, atlas, file, errors, warnings, treeKeyOf);
   rows.forEach((row, idx) => {
     if (!row || typeof row !== 'object' || Array.isArray(row)) {
       errors.push({ file, idx, msg: 'row is not an object' });

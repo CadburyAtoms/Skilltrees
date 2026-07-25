@@ -27,8 +27,18 @@ specialties**. A **deity** tree is shaped differently and its authored file is a
   Structural fields (name, ids, prerequisites, folder, node graph) are generator-owned — never set
   them here.
 - **`module-src/scripts/register-skills.js`** — the entire runtime engine (single tracked copy;
-  the live module dir is mirrored on the Foundry machine via `scripts/module-src-sync.js`). All
-  *name-based* automation and every generic handler lives here.
+  the live module dir is mirrored on the Foundry machine via `scripts/module-src-sync.js`). Every
+  generic handler lives here.
+
+  > **⚠️ CHANGED 2026-07-24 — this file used to say "all *name-based* automation lives here", and
+  > that sentence is why 210 of 365 talents ship with empty Events/Effects tabs.** Name-keyed
+  > dispatch (`item.name === "X"`) binds behaviour to a string: renaming the talent unwires it,
+  > and editing it in Foundry does nothing, because there is nothing on the document to read.
+  > **CLAUDE.md iron rule 2b is now the standard: behaviour goes on the talent** as `events` /
+  > `effects`, and the engine only supplies generic handler types that execute them. Wire new work
+  > that way. The 210 existing name-keyed talents are a ratcheting backlog — the count may only go
+  > down, never up. If a mechanic truly cannot be a rule, take the **ENGINE-OWNED** exit and
+  > declare it (cue rule on the talent + `ENGINE_OWNED: <reason>` in the tree-section header).
 - **`data/talent-*.json`** sidecar tables — generator INPUTS for the broader EDHA catalog. Do **not**
   invent a new sidecar table for a leyline tree; the four reference trees wire through `events`/
   `effects` + the engine, not new tables.
@@ -67,7 +77,13 @@ above. **Destruction (Razkael) is the reference** — read its section in `regis
 ## The cardinal rule: reuse the engine, do NOT build a side-engine
 
 Automation has ONE home: `register-skills.js` and the generic handlers it already provides. When
-wiring a new tree, **reuse, do not reinvent** (the Red header says exactly this). Existing primitives:
+wiring a new tree, **reuse, do not reinvent** (the Red header says exactly this).
+
+**"Side-engine" means a second script or a bespoke per-tree subsystem — that is iron rule 2a.**
+It has never meant "code instead of data", and reading it that way is what let the name-keyed
+drift happen. Rule **2b** is the separate constraint: the primitives below are *generic handler
+types*, and the right way to use one is to put a rule on the talent that invokes it — not to add
+another `item.name === "…"` branch that calls it directly. Existing primitives:
 
 - Triggered payloads: `edha-triggered-effect` (damage / affliction / status / heal / resource),
   `edha-burst`, `edha-move`, `edha-push`, `edha-damage-rider`, `edha-test-rider`, rally stack.

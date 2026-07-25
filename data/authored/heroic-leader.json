@@ -381,7 +381,21 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "GrandDeceptH1010": {
+          "id": "GrandDeceptH1010",
+          "description": "Leader. Deception vs a flat DC 15 printed on the card — no target needed, so requireTarget is off. 07-24m: replaced a bespoke fixed-DC useItem branch (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "dec",
+            "vs": "dc",
+            "dc": 15,
+            "requireTarget": false,
+            "note": "On a success, reveal the ruse that changes a detail of the scene."
+          }
+        }
+      },
       "effects": []
     },
     "Hardy": {
@@ -632,7 +646,19 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "RumorOppAdder001": {
+          "id": "RumorOppAdder001",
+          "description": "Leader. On use, bank an Opportunity for your next matching test — the Opportunity menu cashes it with the roll. The card's \"spread misinformation or gather rumors\" restriction is honour-system: the engine banks the credit, the GM waives it on a non-matching test. 07-24k: replaced the name-keyed EDHA_OPP_ADDERS set (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "self",
+            "opportunity": true,
+            "count": 1
+          }
+        }
+      },
       "effects": []
     },
     "Set at Odds": {
@@ -662,7 +688,21 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "SetAtOddsH100100": {
+          "id": "SetAtOddsH100100",
+          "description": "Leader. Leadership vs the target's Spiritual, engine-resolved on YOUR roll. The fallout is the GM's to run. 07-24m: replaced its EDHA_HEROIC_DEFTESTS row (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "ldr",
+            "vs": "defense",
+            "def": "spi",
+            "requireTarget": true,
+            "note": "On a success the targets turn hostile to each other — the GM runs the fallout. Spend focus equal to the number of targets."
+          }
+        }
+      },
       "effects": []
     },
     "Shrewd Command": {
@@ -741,7 +781,21 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "SyncAssaultH1010": {
+          "id": "SyncAssaultH1010",
+          "description": "Leader. Leadership vs the target's Cognitive, engine-resolved on YOUR roll — the card prints SUCCESS/FAIL and the note gives both outcomes. The granted Actions stay table-run (no hook grants another creature's action). 07-24m: replaced its EDHA_HEROIC_DEFTESTS row (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "ldr",
+            "vs": "defense",
+            "def": "cog",
+            "requireTarget": true,
+            "note": "SUCCESS: allies up to your ranks in Leadership each gain an Action for an extra Strike against the target. FAIL: only one ally does."
+          }
+        }
+      },
       "effects": []
     },
     "Tactical Ploy": {
@@ -771,7 +825,43 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "TacticalPloyH100": {
+          "id": "TacticalPloyH100",
+          "description": "Leader. Deception vs the target's Cognitive, engine-resolved on YOUR roll. Both effects hang off the success event below. 07-24m/n: replaced its EDHA_HEROIC_DEFTESTS row (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "dec",
+            "vs": "defense",
+            "def": "cog",
+            "requireTarget": true
+          }
+        },
+        "TacticalPloyMod0": {
+          "id": "TacticalPloyMod0",
+          "description": "Leader. On a success the target takes -1d4 on their next test. The card's cognitive/spiritual restriction is honour-system — GM waives it on a physical test.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "target",
+            "formula": "-1d4",
+            "count": 1
+          }
+        },
+        "TacticalPloyBurn": {
+          "id": "TacticalPloyBurn",
+          "description": "Leader. On a success the target also loses one Reaction, burned off the CAE tracker.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-cae-grant",
+            "kind": "burn-reaction",
+            "n": 1,
+            "target": "target",
+            "label": "Tactical Ploy"
+          }
+        }
+      },
       "effects": []
     },
     "Through the Fray": {
@@ -800,7 +890,20 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ThruFrayCae00000": {
+          "id": "ThruFrayCae00000",
+          "description": "Leader. On use, the TARGETED ally gains the Reaction — not you. 07-24n: replaced a bespoke useItem hook (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-cae-grant",
+            "kind": "reaction",
+            "n": 1,
+            "target": "target",
+            "label": "Through the Fray (Disengage / Gain Advantage)"
+          }
+        }
+      },
       "effects": []
     },
     "Valiant Intervention": {
@@ -908,7 +1011,19 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "WellSupOppAdd001": {
+          "id": "WellSupOppAdd001",
+          "description": "Leader. On use, bank an Opportunity for your next matching test — the Opportunity menu cashes it with the roll. The card's \"requisition resources\" restriction is honour-system: the engine banks the credit, the GM waives it on a non-matching test. 07-24k: replaced the name-keyed EDHA_OPP_ADDERS set (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "self",
+            "opportunity": true,
+            "count": 1
+          }
+        }
+      },
       "effects": []
     }
   }

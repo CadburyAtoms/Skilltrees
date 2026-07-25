@@ -1,3 +1,8 @@
+> **⚠️ SUPERSEDED — do not follow this file.** The live skill is
+> `.claude/skills/talent-balance/SKILL.md`, added to the repo 2026-07-24. This copy is the
+> pre-repo bootstrap version and its content has since DIVERGED; it is kept only as
+> history. If you found this by grepping, you want the `.claude/skills/` one.
+
 ---
 name: talent-balance
 description: >
