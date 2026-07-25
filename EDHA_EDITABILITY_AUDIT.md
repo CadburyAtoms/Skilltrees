@@ -708,11 +708,61 @@ the work — every batch is unverifiable until Ben deploys, and there are ~16 ba
 | **H** | 07-24q | **H8 `edha-watch` built** + **×3** — Crown of Thorns, Absolute Authority (Power), Extract Thought (Black) | **174 → 171** | checklist 2bH-1…11, unverified. First consumer of `edha-test-fail`. Phase 1 (the seven "already satisfiable") converted **zero** — see below. |
 | **I** | 07-24r | **H8's `watch` enum widened** (`defeat`, `focus-change`) + **H10 `edha-focus` built** + **×7** — Coercive Pressure, Whispered Doubt, Predatory Insight, Hollow Command, Siphoned Will (Black), Necrotic Cascade (Death), Reactive Analysis (Blue) | **171 → 164** | checklist 2bI-1…12, unverified. First consumers of `scope: scene`. `cogDisadv`, `advTest`'s writer, `focusRound` and `cascadeArmed` all deleted. |
 | **K** | 07-24s | **H12 `edha-detonate-list` built** + **×2** — Cascading Failure, The Unmooring (Destruction). Plus **lint-refs pass 8**, the `execute-macro` budget, landed before any consumer. | **154 → 152** | checklist 2bK-1…5, unverified. Scouted the five ledgers, H3ann and H13 first — see the three blocks below; two of the three build premises turned out to be wrong. |
+| **P** | 07-24y | **H19 `whenSlowTurn` + H20 `edha-draw-mana` + H15 `sustainCap`/`replaceOldest` built** — **×4** — Calculated Patience (Blue), Blue + Red Leyline Attunement, Forge Construct (Civilization). Retires the `edha.calculatedPatience()` MANUAL macro and Risen Servant's cap-at-tier. | **135 → 131** | checklist 2bP-1…12, unverified. **The unit was a SHAPE, not a tree: three talents whose behaviour had nowhere to live.** New: `edhaIsSlowTurn`, `edhaRulesForEvent`, `edhaSummonIsFrom`/`edhaOwnedSummons`, `summonTalent`/`summonedAt` flags. |
 | **O** | 07-24x | **Ben's rulings q13 + q15 BUILT** — `edha-next-test-mod` given `rangeFt` / `maxTargets` / **`doubleIfOwns`** (Authority doubles both halves at once), **`requireQuarry`**, and **`appliesTo`** (test | damage | either) with a real damage-roll consumption path in the rollDamage wrapper + a pre-cost veto — **×1** — Pack Hunting | **136 → 135** | checklist 2bO-1…7, unverified. **The first pass to fix a card-vs-engine drift by BUILDING the card's promise instead of deleting it.** Decisive Command now enforces its printed 20 ft and Authority genuinely doubles range and ally count. |
 | **N** | 07-24w | **Ben's rulings q12 + q14 built** — `edha-next-test-mod`'s `skill` widened to a COMMA-LIST (it was a scalar compare, so an authored list matched nothing) + **`ownedFrom`/`@owned`** (a die sized by how many SIBLING talents you own cannot be a literal on one document); `edha-apply-status` given **`expire: "combat"`** + a generic creature-keyed end-of-combat sweep — **×6** — the whole Leader command-die atom: Decisive Command, Confident / Demonstrative / Shrewd Command, Relentless March, **Authority** | **142 → 136** | checklist 2bN-1…6, unverified. Authority converted only because deleting the hook removed its ONLY (cosmetic) presence — an empty document with no engine code is a rule-2b bug, not an exit. q13 + q15 still open, restated precisely. |
 | **M** | 07-24v | **A REAL H3 BUG FIXED** (mark before committing the ledger) + **`edha-single-target`** built (config-only, retires `EDHA_SINGLE_TARGET`) + `edha-apply-status` given **`mark`** / `whenOwnsTalent` / a native-status label fallback — **×8** — the whole **Envoy Rousing-Presence cluster** (Rousing Presence, Lessons in Patience, Instill Confidence, Devoted Presence, Stalwart Presence, Rallying Shout) + Withering Ray, Verdant Mend | **150 → 142** | checklist 2bM-1…12, unverified. **Also the pass that made the classification honest: 22 talents reclassified from five scouting reports, and BUCKET 1 IS NOW EMPTY — 0 of its 6 were convertible.** Eight new demand tags. |
 | **L** | 07-24u | **THE `covenants` LEDGER MIGRATED** — repointed to `lists.covenants` (one accessor, all 12 readers followed) + H3 given **`allowDuplicates`** (Ben's 07-24t ruling), **`multiOwner`**, **`sceneScoped`**, a **pre-cost veto** and a **generic release button**; `edha-combat-timing` given a **`round-start` moment**; `edha-triggered-effect` given **`target: list-members`** — **×2** — Covenant, Bear Witness (Order) | **152 → 150** | checklist 2bL-1…14, unverified. First ledger of the five. **lint pass 7 had to learn that a status `label:` is not dispatch** — a 4th gate taught, and the first one whose false positive was *reassuring*. Shoulder the Oath + Concord fell out on the `damage-applied` payload gap; Final Decree stays bucket-3. |
 | **J** | 07-24s | **H6 `edha-prompt-pick` built** (+ the `turn-start` watch kind, `edha-push` widened and given an executor, `edha-cae-grant` `target: victim`, **`edhaDispatchOnHit` made to announce**) + **×10** — Subtle Suggestion, Pattern Recognition, Probability Cascade, False Premise, Anticipate, Intercept (Blue), Unnerving Approach, Puppeteer (Black), Overwhelming Authority (White), Feinting Strike (Warrior) | **164 → 154** | checklist 2bJ-1…14, unverified. **Blue, Black and Warrior bucket-2 all go to ZERO.** The whole Calculation card family, both Blue useItem switches, `edhaUnnervingApproachUse` and `edhaPuppeteerTurnCue` deleted. Two adversary abilities re-wired (lint pass 5 broke, as predicted); `audit.py` given an explicit UTF-8 codec. |
+
+**Pass P — the ATOM was a SHAPE, and it is the fifth kind this doc has had to name.** §9n already
+had the LEDGER (pass H), the MECHANIC (Kneel), the WATCHER (pass I) and the CALL SITE (Crown). This
+pass's three builds look unrelated on the greedy list — a turn-speed field, a Draw Mana event, two
+summon fields — and they are one thing: **a talent whose behaviour had nowhere to live.** All five
+Attunement Keys and Calculated Patience are `activation.type: none`, so they cannot fire `use` and
+could not hold a rule *at all*; Forge Construct's spec was already authored and a hidden gate held it
+anyway. Grouping them made each build's justification the same sentence, which is worth more than the
+count: **schedule by what is BLOCKING a talent, not by which handler its `needs` column names.**
+
+**Pass P — the first forecast in this doc that was right, and the reason is reproducible.** H20's
+prediction ("Blue and Red are drop-ins on `edha-next-test-mod`") held field-for-field, including
+`attr` — the produced flag object is byte-equivalent to what the table wrote. It was right because it
+was made by naming all three legs of the 07-24v test (executor real at a known line, schema fields
+enumerated, event absent) rather than by asking whether a handler was registered. **That test is now
+2-for-2: it also correctly predicted that Forge Construct's blocker was NOT its summon spec.** Use
+it; it costs one grep per leg.
+
+**Pass P — H15 was "two fields" in three separate documents and it was never two fields.** Two
+things were invisible in every estimate and both only appear at the call sites:
+- **A handler executor runs on `use`, i.e. AFTER the system has charged the cost.** Both gates being
+  replaced refuse *pre*-cost ("nothing spent"). So a cap expressed purely as executor logic would
+  have silently started charging for refused uses. It needed a generic `preUseItem` veto — the same
+  shape H1 / H3 / H12 / `edha-next-test-mod` all already carry. **Generalises: any field that can
+  REFUSE a use cannot live in the executor of the handler it belongs to.**
+- **`replaceOldest` had no ordering data.** Nothing stamped a creation time on a summon, and the
+  existing lookup used `.find()` — correct only because the cap happened to be 1. "Replace the
+  oldest" was unimplementable as specified, and nothing in the classification said so. **Before
+  costing a superlative (oldest / nearest / weakest), check that the data it sorts by exists.**
+
+**Pass P — the fail-open twin, and why a mirror is not a negation.** `whenSlowTurn` reads like the
+inverse of the shipped `whenFastTurn`, and writing it as `!edhaIsFastTurn(actor)` would have shipped
+a silent buff: that helper collapses **three** states into one `false` — no combat, no combatant, and
+a genuine slow turn — which is safe only because it fails CLOSED. Negated, it fails OPEN, granting
+advantage on the first test of every out-of-combat scene, where nobody would connect it to a Blue
+talent. The fix is a real predicate requiring a live combatant. **The general shape: a boolean helper
+that folds "unknown" into one of its two answers cannot be inverted.** Worth grepping for — any
+`!edhaIsX(...)` where `edhaIsX` has an early `return false` for missing state is the same bug.
+
+**Pass P — scouting was decisive for the FOURTH consecutive pass, and it corrected the brief itself.**
+Five read-only scouts before a line was written. They confirmed the H19 hazard from the system source
+(`turnSpeed`'s getter is `?? TurnSpeed.Slow`, schema initial `"slow"`), proved Tagging Shot's branch
+is unreachable dead code, and found two classification errors: **Tempered Edge was never an H16
+consumer** — it is a passive with nothing to arm, so H16 is 2 talents not 3, and it is re-filed as
+H23 — and **Resuscitation does not need H17 for its own text** (it has no recovery die; its H17
+dependency is purely the coupling to Field Medicine). They also caught the one thing that would have
+made this pass destructive: **Beacon of Stability is a total orphan of a single line inside the White
+Draw Mana branch**, with 45 lines of working code and no other caller. Restructuring `edhaDrawMana`
+instead of adding to it would have deleted a talent nobody was touching.
 
 **Pass M — THE `needs` COLUMN'S FAILURE MODE IS NOW NAMED, and it is a one-line test.** Eight passes
 have recorded "the estimate was optimistic again" without saying *why*. Five scouts read the call
@@ -1668,6 +1718,64 @@ talents-per-unit-of-risk rather than by raw demand:
 ⚠ **Do NOT schedule the three range-rider Attunements, Phantom Barricade or Siege Form as "1b".** They
 are new capability: a visible-range filtered heal, an Isolated-gated status sweep, terrain placement,
 Wall/cover creation, and a toggle-a-summon's-effect handler respectively.
+
+#### ✅ AND WHAT HAPPENED WHEN THE TOP THREE OF THAT LIST WERE EXECUTED (07-24y) — the first pass whose per-item forecasts all held
+
+| step | predicted | delivered | why |
+|---|--:|--:|---|
+| **H20** — the Draw Mana rider event | 2 (Blue + Red) | **2** | Exact, field-for-field, including `attr`. The produced `nextTestMod` object is equivalent to what the table wrote. Costs the forecast did NOT price, all found by scouting: Blue/Red must LEAVE `EDHA_DRAW_MANA` or the mod is written twice (silently, same result — invisible at a bench); Red's `reactionNote` had **no schema field** to land in and had to be re-homed as an `edha-note`; and the one-card summary becomes card + N. |
+| **H19** — `whenSlowTurn` | 1 (Calculated Patience) | **1** | Exact, and the ⚠ carried with it was REAL — see §9n. Also retired a MANUAL exit and its console macro, which no estimate counted because the ratchet does not track manual exits. |
+| **H15** — `sustainCap` + `replaceOldest` | 1 off the ratchet (Forge Construct), + Risen Servant's cap retired | **1, and exactly that** | The talent count was right; **the BUILD SIZE was not.** "Two fields" was wrong twice over — it also needed a generic pre-cost `preUseItem` veto (an executor runs after the cost is charged) and a `summonedAt` stamp (nothing recorded a creation time, so "oldest" had nothing to sort by). Risen Servant stayed, as forecast, on H3. |
+
+**So the per-step column was right three times running, and that is a first — but read WHY before
+generalising it.** These three were not forecast from the `needs` column. They were forecast from the
+07-24v three-leg test (name the executor, the schema field, the event), applied per talent, and the
+two places the forecast still slipped were both **build size**, never talent count: H20's re-homing
+problem and H15's veto + ordering. **The column predicts WHICH talents move; it has still never
+predicted how much work moving them is.** Continue to use `--priority` to rank, not to plan.
+
+**Recomputed after pass P** (`--priority`, built = H1,H5,H11,H3,H8,H10,H6,H12): **95 bucket-2, 19
+bucket-1b, 17 bucket-3, bucket 1 = 0, total 131**, 46 "already satisfiable". Demand: **H8 44 ·
+H6 22 · H1 20 · H3 15 · H2 11 · H3b 9 · H7 8 · H9 5 · H3ann 3 · H10 3 · H17 3 · H20 3 · H16 2 ·
+H13 1 · H18 1 · H21 1 · H22 1 · H23 1.** Greedy order: **H2 (+11) → H3b (+9) → H7 (+8) → …**
+
+⚠ **H15 and H19 are BUILT but do not appear as `--built`, and H20 appears with 3 consumers left.**
+That is correct, not stale: H15/H19 served bucket-**1b** talents, which the demand column never
+counted, so they were 0-consumer entries before and after. H20's *event* is built — that was the
+entire blocker for Blue and Red — but its remaining 3 (White / Black / Green) are genuine bucket 2
+and need new capability on top of it. **A handler can be finished and still leave its demand column
+untouched; do not read a non-zero count as "unbuilt".**
+
+**Recommended next, in order — the greedy list minus what shipped, plus two corrections:**
+1. **H17 — the target-scoped formula resolver.** Now the largest remaining *small* build, and it is
+   **two-and-a-half builds, not two**: the resolver, the recovery-die path, and **a mixed-scope
+   formula problem nobody has costed** — Field Medicine heals `<the TARGET's recovery die> + <YOUR
+   Medicine ranks>`, and a single `formulaScope` enum cannot express one formula with two scopes.
+   The cheapest answer found while scouting is to merge the target's roll data into the owner's under
+   a `target.` namespace before resolving. **Galvanize is the clean single-scope consumer and should
+   be the pilot.** Two corrections to the record: the recovery-die path is **verified** now
+   (`actor.system.recovery.die.value`, a bare `"d8"`-style string, `RECOVERY_DICE[min(ceil((wil.value
+   + wil.bonus)/2), 5)]` — the engine's `|| "1d8"` fallback is dead code and its second `||` branch is
+   a latent throw), and **Resuscitation does not need H17 for its own text** — it has no recovery die
+   at all; its dependency is purely the coupling to Field Medicine.
+2. **H16 — arm-and-consume, and it is 2 talents, not 3.** **Tempered Edge was never an H16 consumer**
+   — it is a passive with nothing to arm — and is re-filed as **H23** (a summoner-scoped damage rider:
+   `edhaRiderParts` walks the ROLLER's items, and the roller is the summon, plus an ignore-deflect
+   second damage instance the rider schema has no vocabulary for). Withering Touch converts on H16
+   alone. **Tagging Shot is a FIX, not a move** — its branch is unreachable dead code today (the gate
+   reads the item that rolled damage; its `damage.formula` is null), so it has never once marked a
+   quarry — and its card promises "on a hit **or a graze**", where ⚑ **it is UNVERIFIED whether a
+   graze reaches `applyDamage` at all**. That is a bench question or a ruling, not a build.
+   One independent one-line fix to take while in there: the shared heal-cut card picks its source
+   name from the FRACTION (`hcf === 0` prints "Withering Touch", anything else "Necrotic Grasp")
+   instead of from the `byName` the effect already stores — so any future fraction-0 block from any
+   source will claim to be Withering Touch.
+3. **The `summonTalent` flag is now available and unused.** `edhaCivIsConstruct` still identifies a
+   Construct by `name.startsWith("Combat Construct")` at 6 call sites. That is NOT a rule-2b
+   violation (it is a summon name, not a talent name, and lint pass 7 correctly ignores it), and it
+   was deliberately left alone this pass because changing it has migration risk for Constructs
+   already standing in Ben's world. It is now a cheap cleanup whenever Civilization is next opened.
+4. **`edicts`, the second ledger** — unchanged from pass L, still one ledger per session (§9m q7).
 
 ### 9m. Questions for Ben — batched, none decided unilaterally
 

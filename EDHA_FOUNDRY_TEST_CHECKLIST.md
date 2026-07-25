@@ -109,6 +109,38 @@ retired for good; live testing happens on the dashboard.
 
 ---
 
+## ⚑ RULE-2b PASS P — three passives that could never hold a rule (2026-07-24y) — NEEDS A PACK REBUILD
+
+> Four talents off the ratchet (**135 → 131**). The theme is one problem: a talent whose behaviour
+> had nowhere to live. The Attunement Keys and Calculated Patience are all **Always Active**, so they
+> can never fire a "use" event and literally could not carry a rule — and Forge Construct's summon
+> spec had been on its document for months while a hidden gate held it back. Three small builds fix
+> all three cases. Mostly this should look like **nothing changed**; the rows that matter are the
+> ones where something might have got *worse*.
+
+| # | talent | what to check | expected |
+|---|---|---|---|
+| 2bP-1 | **Calculated Patience** — the normal case | in combat, declare a **Slow** turn, roll your first test | Advantage, as always. Your **second** test that turn: no advantage. |
+| 2bP-2 | ⚠️⚠️ **Calculated Patience** — OUT of combat | with **no combat running**, roll any test | **No advantage.** This is the row that matters most: the obvious way to write this gate would have granted advantage on the first test of every out-of-combat scene, silently. If you see advantage here, stop and report it. |
+| 2bP-3 | **Calculated Patience** — the macro is gone | console: `edha.calculatedPatience()` | **TypeError / not a function.** That is correct — the talent does it by itself now. Also confirm a **Fast** turn gives no advantage. |
+| 2bP-4 | **Blue Leyline Attunement** | Draw Mana, then roll an **Intellect or Willpower** test | Advantage, as before. A **Strength/Speed** test gets nothing. |
+| 2bP-5 | **Red Leyline Attunement** | Draw Mana, then roll a **Strength or Speed** test | Advantage. A second card also posts the **"lose your Reaction"** reminder (still GM-tracked — nothing enforces it, same as before). |
+| 2bP-6 | ⚠️ **Draw Mana** — the card changed | Draw Mana on a Blue or Red character | You now get the **Draw Mana summary card plus a second card** from the Key, where it used to be one clause inside the summary line. Cosmetic, but it is a visible difference — say if the extra card is noise. |
+| 2bP-7 | ⚠️ **Draw Mana** — the other three Keys are untouched | Draw Mana on **White** (with Beacon of Stability), **Black**, and **Green** | Unchanged in every respect: White heals + the Beacon cleanse card appears, Black Weakens, Green prompts for terrain (and Thorn Field still bakes its keen hazard). These three did **not** move — if any of them changed, that is a bug in this pass. |
+| 2bP-8 | **Forge Construct** — sustain ONE | with a live Construct, use Forge Construct again | The old one is dismantled and a new one appears — exactly as before. |
+| 2bP-9 | ⚠️ **Forge Construct** — a Construct summoned BEFORE this deploy | if one is standing from an earlier session, use Forge Construct again | It should still be found and replaced. Older Constructs carry no identity flag, so the engine falls back to matching the summon's name — this row is that fallback. |
+| 2bP-10 | **Risen Servant** — the cap still refuses | sustain servants up to your tier, then use it again | Refused, **nothing spent** (no Investiture, no Remain), with a message naming the cap. |
+| 2bP-11 | **Risen Servant** — the Remains gate is unchanged | use it with **no Harvested Remain** | Refused with nothing spent, as before. (Only the *cap* moved this pass; the Remains ledger is untouched.) |
+| 2bP-12 | ⚠️ **the migration's whole point** | open **Calculated Patience** → Events tab; open **Blue Leyline Attunement** → Events tab; open **Forge Construct** → Events tab and find "How many you can sustain" | All three now show a rule where the tab used to be empty. Change Forge Construct's sustain number to **2**, use it twice → **two** Constructs stand. Put it back to 1. |
+
+> ⚑ **Not verified in Foundry.** Nothing here has run at a table.
+>
+> **2bP-2 is the one to actually try.** Everything else in this pass is a like-for-like move; that
+> row is the one place a plausible-looking implementation would have been wrong, and it fails
+> silently in the direction of a free buff.
+
+---
+
 ## ⚑ RULE-2b PASS O — Authority and Pack Hunting BUILT for real (2026-07-24x) — NEEDS A PACK REBUILD
 
 > One talent off the ratchet (**136 → 135**) but the biggest *behaviour* change of the day: you ruled
@@ -464,17 +496,21 @@ retired for good; live testing happens on the dashboard.
 The live module + packs on this machine were, **as of 2026-07-18**, current through the 07-17 playtest-2 engine push
 (everything up to and including PR #97; packs current through 2026-07-16c + the 07-16d fixes).
 
-**MERGED BUT NOT YET DEPLOYED — the RULE-2b MIGRATION, PASSES A THROUGH K (2026-07-24 → 07-24s).**
-**69 talents** have moved off engine name-dispatch onto their own documents, and **every one of them
+**MERGED BUT NOT YET DEPLOYED — the RULE-2b MIGRATION, PASSES A THROUGH P (2026-07-24 → 07-24y).**
+**90 talents** have moved off engine name-dispatch onto their own documents, and **every one of them
 changes the PACK**, so none of it is live until one `deploy-to-foundry.bat` + ⟳ Sync. Checklist rows
 **2bA-1…9 · 2bB-1…10 · 2bC-1…8 · 2bD-1…7 · 2bE-1…10 · 2bF-1…17 · 2bG-1…8 · 2bH-1…11 · 2bI-1…12 ·
-2bJ-1…14 · 2bK-1…5 · 2bL-1…14 · 2bM-1…12 · 2bN-1…6 · 2bO-1…7** are ALL
+2bJ-1…14 · 2bK-1…5 · 2bL-1…14 · 2bM-1…12 · 2bN-1…6 · 2bO-1…7 · 2bP-1…12** are ALL
 unrun — do not treat any of them as verified, and do not read a "wrong text / old behaviour" report on a
 converted talent as a bug until this deploy has happened. Nine handlers were built in that window
 (H1 `edha-def-test`, H5 `edha-cae-grant`, H11 `edha-enter-stance`, H3 `edha-owner-list`,
 H8 `edha-watch`, H10 `edha-focus`, H6 `edha-prompt-pick`, H12 `edha-detonate-list`, `edha-note`)
-plus the `edha-combat-timing` dispatcher; the handler code is ENGINE-side and needs only F5, but the rules that USE it are
-pack-baked. Two ADVERSARY abilities changed with pass J and are also pack-baked (Callthief's
+plus the `edha-combat-timing` dispatcher and, in pass P, the `edha-draw-mana` EVENT with its
+dispatcher; the handler code is ENGINE-side and needs only F5, but the rules that USE it are
+pack-baked.
+
+⚠️ **Pass P retires a console macro.** `edha.calculatedPatience()` no longer exists — if it is in a
+hotbar macro, that macro will throw after this deploy. Delete it; the talent is automatic now. Two ADVERSARY abilities changed with pass J and are also pack-baked (Callthief's
 Overwhelming Authority, the Dirgehound Pack's Unnerving Approach — 2bJ-13/14). **If exactly one thing
 gets tested first, make it 2bA-7** (does editing a rule in Foundry actually change behaviour) — the
 whole migration premise rests on it.
@@ -1643,8 +1679,8 @@ Setup: a Blue PC, an enemy in range, in combat.
 - [ ] **Read Intent** — target a creature, use it (rolls **Blue**, pays 1 Inv) → the engine **auto-compares Blue vs the target's Cognitive defense** and posts the verdict; on a **success** it prompts the GM to reveal the creature's intended action (the reveal stays narrative). No target / unreadable defense → reminder note.
 - [ ] **Collected** — Cognitive & Spiritual defenses show **+2** (data-side AE, already built; ⟳ Sync a stale owned copy).
 
-## 2. The Calculated Patience toggle
-- [ ] Select your token (or pass an actor/name) → console: **`edha.calculatedPatience()`** → your **next test rolls advantage** (a chat note posts). Use it when you take a slow turn.
+## 2. Calculated Patience — RETIRED as a manual toggle (2026-07-24y)
+- [x] ~~console `edha.calculatedPatience()`~~ — **the macro is gone.** The talent is automatic now: on a **Slow turn** its rule fires on your first test by itself. Retested as rows **2bP-1…3**.
 
 ## 3. Manual (no Foundry hook)
 - [ ] **Forewarned** — silently declare a character + action each round; if they take it before your next turn you gain 1 Reaction (GM/player-tracked).
@@ -1652,8 +1688,7 @@ Setup: a Blue PC, an enemy in range, in combat.
 - [ ] **Probable Outcome** — you may change your fast/slow turn choice after others choose (GM-adjudicated).
 
 ## 4. Watch-items (couldn't self-verify — no Foundry session this pass)
-- [ ] `nextTestMod` advantage (Reactive Analysis / Calculated Patience) and disadvantage (Intercept) apply and clear correctly on the next test.
-- [ ] `edha.calculatedPatience()` resolves the selected token / passed actor and sets the flag.
+- [ ] `nextTestMod` advantage (Reactive Analysis) and disadvantage (Intercept) apply and clear correctly on the next test. *(Calculated Patience left this flag entirely on 07-24y — it is a pre-roll rider now, not a banked mod.)*
 
 ---
 

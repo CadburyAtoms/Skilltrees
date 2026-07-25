@@ -1,8 +1,55 @@
 # Edha → Foundry VTT Port — Agent / Operator Handoff
 
-Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-24x: **the ratchet list is down to 135 names** (221 at the start, −86 in fifteen passes). ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **Blue, Black and Warrior are fully clear of rule-2b talents** (07-24s). **The first of the five marker LEDGERS (`covenants`) has migrated to `flags.edha-content.lists.covenants` (07-24u)** — one accessor repoint, 12 readers unchanged; `edicts` is next and is now cheaper, because `allowDuplicates` and `multiOwner` both shipped with it. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
+Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-24y: **the ratchet list is down to 131 names** (221 at the start, −90 in sixteen passes). ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **Blue, Black and Warrior are fully clear of rule-2b talents** (07-24s). **The first of the five marker LEDGERS (`covenants`) has migrated to `flags.edha-content.lists.covenants` (07-24u)** — one accessor repoint, 12 readers unchanged; `edicts` is next and is now cheaper, because `allowDuplicates` and `multiOwner` both shipped with it. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24x** (RULE-2b PASS O —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24y** (RULE-2b PASS P —
+**Three passives that could never hold a rule at all (×4), and one MANUAL exit that was never justified.**
+⚠️ **PACK REBUILD + ⟳ Sync REQUIRED.**)
+**Ratchet 135 → 131.** Checklist **2bP-1…12**, all unrun. ⚠️ **`edha.calculatedPatience()` is DELETED — remove any hotbar macro that calls it.**
+
+**The theme is one problem, not three talents.** All five Leyline Attunement Keys and Calculated
+Patience are **Always Active** (`activation.type: none`), so they can never fire a `use` event and
+therefore could never carry a rule *at all* — their tabs weren't empty by neglect, they were empty
+because nothing could be put in them. That is the third leg of the 07-24v readiness test
+(executor / schema field / EVENT) failing, and it is why three separate "cheap 1b" forecasts kept
+being wrong about them.
+
+**(1) `edha-draw-mana` — the event an Always-Active Key can hold.** One new event dispatched from
+the Draw Mana hook that already existed. Blue and Red converted as drop-ins on `edha-next-test-mod`;
+the payload handler and every field it needed (including `attr`) had been ready for months with no
+way to reach them. Red's "lose your Reaction" had no schema field to land in, so rather than drop the
+text it rides alongside as an `edha-note` — still GM-tracked, but now editable in Foundry (2bP-4…6).
+⚠️ White / Black / Green did **not** move and are not cheap: a disposition-filtered visible-range
+heal, an Isolated + line-of-sight status sweep, and a terrain Region with a click-to-place picker are
+each new capability. **Beacon of Stability is a total orphan of one line inside the White branch**,
+and Thorn Field / Thorn Hedge of one inside Green — both now commented as such (2bP-7).
+
+**(2) `whenSlowTurn`, and the hazard was real.** Calculated Patience is a direct mirror of the live
+Burning Drive rule, but the mirror is not symmetric: `edhaIsFastTurn` returns false for **three**
+different states (no combat, no combatant, genuinely slow) and gets away with it because it fails
+CLOSED. The negation fails **OPEN** — `whenSlowTurn = !edhaIsFastTurn` would have granted advantage
+on the first test of **every out-of-combat scene**, silently. So it ships a real predicate that
+requires a live combatant. **2bP-2 is the row to actually try.**
+
+**(3) The macro nobody should have accepted.** `edha.calculatedPatience()` existed because "there's
+no fast/slow-turn hook" — and the pre-roll rider pipeline had been reading turnSpeed for
+`whenFastTurn` the whole time. Iron rule 3 says re-litigate manual every pass; this is what that
+found. The console API is gone (2bP-3).
+
+**(4) Forge Construct was pointed at the wrong line, exactly as §9n predicted.** Its summon spec has
+been authored data for months; what held it on the ratchet was a 10-line name-keyed sustain-ONE
+gate. Now `sustainCap` + `replaceOldest` on its own rule. ⚠️ **It was never "two schema fields":** a
+handler executor runs on `use`, i.e. *after* the cost is charged, while the gates it replaces refuse
+**pre-cost** — so it needed a generic `preUseItem` veto too. And `replaceOldest` had **no ordering
+data at all** (nothing stamped a creation time; the old lookup used `.find()`, correct only because
+the cap happened to be 1). Risen Servant's cap moved the same way, but that talent **stays** on the
+ratchet for its Remains ledger — H3 (2bP-8…11).
+
+**Also fixed while in there:** summon identity was a NAME PREFIX, so renaming a summon silently broke
+its cap and its riders. There is a `summonTalent` flag now, with a name fallback for creatures
+summoned before it existed (2bP-9).
+
+Previous update: **2026-07-24x** (RULE-2b PASS O —
 **You ruled BUILD IT on both remaining questions, so three things that never worked now do.**
 ⚠️ **PACK REBUILD + ⟳ Sync REQUIRED.**)
 **Ratchet 136 → 135.** Checklist **2bO-1…7**, all unrun. ✅ **§9m has NO open items again.**
@@ -3577,7 +3624,7 @@ Blue tree-by-tree finishes: **Foresight (8) done → the BLUE tree is fully wire
 - **Read Intent** (1 Action, 1 Inv, `skill_test`) → rolls Blue + pays cost natively → reminder card (Blue vs the target's **Cognitive defense**; on a success the **GM reveals the creature's intended action**).
 - **Collected** (passive) → **already done** (data-side `+2 Cog / +2 Spi` defenses AE; ⟳ Sync a stale owned copy).
 - **Forewarned / Telepathic Network / Probable Outcome** → **MANUAL** (hidden "declare a character + action" + untracked "gain 1 Reaction"; scene-long telepathy + "share expertise"; changing your fast/slow choice — none have hooks).
-- **Calculated Patience** (passive) → **MANUAL + a toggle**: new console/macro API **`edha.calculatedPatience(tokenOrActorOrName?)`** grants advantage on your next test (call it when you take a slow turn; reuses `nextTestMod`). Added to the `edha.*` API.
+- **Calculated Patience** (passive) → ~~MANUAL + a console toggle~~ **SUPERSEDED 2026-07-24y**: it is an `edha-test-rider` on its own document (`whenSlowTurn` + `firstTestThisTurn` + `mode: advantage`) and fires by itself. **`edha.calculatedPatience()` is deleted.** The manual exit was justified by "there's no fast/slow-turn hook", which was never true — the pre-roll rider already read turnSpeed for `whenFastTurn`.
 
 ### Notes for Ben
 - **Telepathic Network** is left as a narrative use-note (per your "default"); **Anticipate** (Calculation) still approximates "your Telepathic Network" as in-range Blue allies rather than a tracked membership — flag me if you want a literal network roster later.
@@ -3909,7 +3956,7 @@ Exposed at `game.modules.get("edha-content").api` and global `edha`:
 - `edha.showRange(item|name)` — draw the Attunement-Range ring.
 - `edha.aoe(item)` / `edha.summon(actor,name)` / `edha.setTempHp(actor,n,src)` / `edha.getTempHp(actor)`.
 - `edha.clearKindleLights()` — restore tokens' pre-Kindle lighting (also auto on `deleteCombat`). `edha.refreshDefBuffs()` — re-sync Know-Your-Moment-style defense buffs to the current combat turn (e.g. after a mid-combat reload).
-- `edha.raiseStakes(tokenOrActorOrName, skillId?, source?)` — grant a Plot Die (White / Coordination). `edha.calculatedPatience(tokenOrActorOrName?)` — grant advantage on the actor's next test (Blue / Foresight's Calculated Patience; call it when you take a slow turn).
+- `edha.raiseStakes(tokenOrActorOrName, skillId?, source?)` — grant a Plot Die (White / Coordination). *(`edha.calculatedPatience()` was REMOVED 2026-07-24y — the talent carries its own `whenSlowTurn` rider now.)*
 
 ## 5. Behaviour tables (generator INPUTS ONLY; in `Skilltrees/data/`; NEVER read at runtime)
 
@@ -4126,7 +4173,10 @@ stays); the one-turn-generous timed-status convention; Speak with the Fallen's Q
 **Reserve SPENDING + Double Dip's HP-substitution** (Scope-A, 06-13b). **No-AI-intent** (Fate Read
 the Threads / Order Lawkeeper's Eye intent-reveal) — reconfirmed by Ben 2026-07-16 (C): an NPC's
 intended action is not data anywhere in Foundry. Blue Foresight's cluster (Forewarned / Telepathic
-Network / Probable Outcome / Calculated Patience) — reconfirmed manual (Ben F). The previously-listed
+Network / Probable Outcome) — reconfirmed manual (Ben F). **Calculated Patience LEFT this list
+2026-07-24y**: it was here because "there's no fast/slow-turn hook", and the pre-roll rider pipeline
+had been reading turnSpeed for `whenFastTurn` all along — a worked example of why iron rule 3 says to
+re-litigate manual every pass rather than inheriting the list. The previously-listed
 Unweaving dispel + Void Sense see-through-walls are NO LONGER here — wired 07-16c (Ben E15/B5).
 Action grants + trusted costs moved to §9i (Ben D12/13: flagged for the rework, not manual-forever).
 

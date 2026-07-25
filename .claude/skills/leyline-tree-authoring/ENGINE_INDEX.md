@@ -12,7 +12,10 @@ own event system underneath**, and authored rules may use both. As of system 2.1
 | | edha-* | native | total |
 |---|--:|--:|--:|
 | handler types | 31 | **12** | **43** |
-| event types | 10 | **17** | **27** |
+| event types | 11 | **17** | **28** |
+
+*(edha event types went 10 → 11 on 07-24y with `edha-draw-mana`. `data/native-vocabulary.json` is a
+snapshot of the SYSTEM's half and does not change when the module adds one.)*
 
 Native handlers: `grant-items` · `remove-items` · `modify-attribute` · `set-attribute` ·
 `modify-skill-rank` · `set-skill-rank` · `grant-expertises` · `remove-expertises` · `use-item` ·
@@ -199,6 +202,54 @@ Insight) and §9o called them byte-identical. **They are not, and the difference
     `getProperty(changes, "flags.edha-content.lists.covenants")` reads `undefined`. A flat legacy key
     had no dot, which is why this bites only *after* migration — and it fails silently.
 
+## An ALWAYS-ACTIVE talent can hold no `use` rule — give it an EVENT (`edha-draw-mana`, 07-24y)
+`activation.type: "none"` means the system never fires `use`, so the talent's Events tab is not empty
+by neglect — **nothing can be put in it.** All five Leyline Attunement Keys and Calculated Patience
+were stuck there. Two exits, and which one you need depends on whether a hook already exists:
+- **A new event type** when a hook exists but dispatches nothing to documents. `edha-draw-mana` is
+  ~5 lines of `registerItemEventType` (sentinel hook) + a sweep inside the existing Draw Mana hook.
+  Blue/Red Keys then carry ordinary `edha-next-test-mod` rules.
+- **An existing engine-detected event** when the behaviour is a passive rider — Calculated Patience
+  needed no new event at all, because `edha-pre-test` already fires from the pre-roll injector.
+- **`edhaRulesForEvent(actor, type)`** is the reusable selection: every rule on the actor's talents
+  listening for `type`, `order`-sorted within each talent. Split out of the dispatcher so it is
+  unit-testable — the dispatch is async and `tests/run.js` is synchronous.
+- ⚠ **Retire the old table row in the same commit**, or the rider fires twice. For a single-slot flag
+  the second write clobbers the first *with the same value*, so it is invisible at the bench.
+- ⚠ **A dispatcher does not always want the GM gate.** `edhaDispatchCombatTiming` has one because a
+  grant must land once across clients; Draw Mana fires on the OWNER's client, so copying that gate
+  would have made it silently do nothing for players.
+
+## A boolean helper that folds "unknown" into one answer CANNOT be inverted (`whenSlowTurn`, 07-24y)
+`edhaIsFastTurn` returns `false` for **three** states — no combat, no combatant, genuinely slow — and
+that is safe only because it fails CLOSED (a fast-turn payoff that never fires is inert). Writing
+`whenSlowTurn` as `!edhaIsFastTurn(actor)` inverts it into a fail-OPEN bug: advantage on the first
+test of every out-of-combat scene, in the one place nobody would connect it to a Blue talent. Hence a
+real `edhaIsSlowTurn` that requires a live combatant.
+- An **unset** `turnSpeed` in combat IS Slow — the system's getter is `?? TurnSpeed.Slow` and its
+  schema `initial` is `"slow"`, while the engine reads the RAW flag, which stays `undefined` until
+  the player toggles.
+- > **Grep for this shape:** any `!edhaIsX(...)` where `edhaIsX` has an early `return false` for
+  > missing state is the same latent bug. Pin both directions in `tests/` — the in-combat half of a
+  > naive negation passes, and only the out-of-combat row fails.
+
+## Sustained summons — `sustainCap` / `replaceOldest` on `edha-summon` (07-24y)
+A cap formula (blank = uncapped) plus refuse-vs-replace. Two things this build proved, both of which
+generalise past summons:
+- ⚠⚠ **A field that can REFUSE a use cannot live in the handler's executor.** An executor runs on
+  `use`, i.e. **after** the system has charged the cost, and every gate it replaced refuses pre-cost
+  ("nothing spent"). It needs a `preUseItem` veto — the same shape H1 / H3 / H12 /
+  `edha-next-test-mod` all carry. Check this before costing ANY "just add a field" gate.
+- ⚠ **Check that a superlative has data to sort by.** "Replace the OLDEST" was unimplementable:
+  nothing stamped a creation time, and the existing lookup used `.find()`, correct only while the cap
+  happened to be 1. Hence `summonedAt`.
+- **`summonTalent`** ends summon-identity-by-name-prefix (`name.startsWith("Combat Construct")`),
+  which silently broke caps and riders on a rename. `edhaSummonIsFrom` / `edhaOwnedSummons` read it,
+  with a name fallback for creatures summoned before the flag existed — compared against the rule's
+  own **authored** `summonName`, never a literal in engine code. ⚠ `edhaCivIsConstruct` (6 call
+  sites) still name-prefixes; not a rule-2b violation (a summon name is not a talent name), just an
+  available cleanup.
+
 ## Range, target count, and doubling — `edha-next-test-mod` (07-24x)
 Ben ruled q13 BUILD IT, so Decisive Command's printed "within 20 ft" is enforced and Authority really
 doubles it. Three fields: **`rangeFt`** · **`maxTargets`** · **`doubleIfOwns`** (a talent name that
@@ -261,7 +312,9 @@ Eight passes over-estimated for a single reason: a classification checked whethe
    `executor: async function () {}`. A config-only handler **cannot be a payload**, only a passive
    read from elsewhere.
 2. **the SCHEMA FIELD** — `edha-combat-timing` has no slow-turn moment; `edha-next-test-mod`'s `skill`
-   is a scalar compare, so an authored comma-list silently matches nothing.
+   is a scalar compare, so an authored comma-list silently matches nothing. *(That example is now
+   HISTORICAL — `skill` was widened to a comma-list on 07-24w. The lesson stands; the instance is
+   fixed. Kept because it is the clearest illustration of a gate that silently passes everything.)*
 3. **the EVENT** — nothing fires "you paid ritual HP" (Blood Price), and a talent whose
    `activation.type` is `none` can never fire `use` at all, so it can hold no rule on that event (all
    five Leyline Attunements).
