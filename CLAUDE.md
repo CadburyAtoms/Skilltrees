@@ -180,9 +180,19 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
    naming different parents**, which silently ANDs them (Green's `Scent the Weak` and
    `Coordinated Hunt`).
 
-   ⚑ **This rule is currently UNGATED** — the cycle/reachability check in `validate.js` is the
-   open item. Until it lands, hand-verify the graph of any tree whose `connections` you touch,
-   and do not trust a green gate run to mean the tree is playable.
+   ✅ **THIS RULE IS NOW GATED, IN TWO PLACES** (the ⚑ "currently UNGATED — hand-verify the graph"
+   note here was stale; corrected 2026-07-24s after checking).
+   - `scripts/validate.js` — a DFS over the union of all requirement edges that reports the actual
+     loop path, plus a fixpoint reachability sweep from the prereq-free roots. `validateConnections`
+     still only checks that a name *resolves*; the graph check is separate and sits beside it.
+   - `tests/pipeline.test.js` — the same two checks pinned against the real data files, plus a
+     regression case holding the three historic cycles (Green / Red / Death) fixed.
+
+   Verified by mutation rather than by reading: re-introducing a mutual pair in `data/leyline.json`
+   fails **both** `validate.js` (naming the loop) and `tests/run.js`. A green gate run now does mean
+   the tree is walkable — but note what is still NOT checked: the third, non-fatal case above
+   (**prose and `connections` naming different parents**, which silently ANDs them) has no gate, so
+   read the prose against `connections` whenever you touch either.
 
 ## How to think here (what made past sessions work)
 
