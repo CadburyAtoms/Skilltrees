@@ -900,7 +900,33 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "RedKeyDrawMana00": {
+          "id": "RedKeyDrawMana00",
+          "description": "Red Key. On Draw Mana, gain an advantage on your next Physical test. Attribute-gated to str/spd.",
+          "event": "edha-draw-mana",
+          "order": 0,
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "self",
+            "mode": "advantage",
+            "count": 1,
+            "attr": "str, spd"
+          }
+        },
+        "RedKeyReaction00": {
+          "id": "RedKeyReaction00",
+          "description": "Red Key, second half. The Reaction loss is GM-tracked — nothing in the system exposes a Reaction to spend, so this is a reminder by design, not an oversight. Edit the wording here rather than in the engine.",
+          "event": "edha-draw-mana",
+          "order": 1,
+          "handler": {
+            "type": "edha-note",
+            "text": "lose your Reaction until the start of your next turn (GM-tracked).",
+            "icon": "⚡",
+            "whisper": "public"
+          }
+        }
+      },
       "effects": []
     },
     "Searing Bolt": {

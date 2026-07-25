@@ -1295,6 +1295,45 @@ function edhaDispatchCombatTiming(combat, moment) {
     }
   } catch (e) { console.error("Edha Content | combat-timing dispatch failed", e); }
 }
+/* --- DRAW MANA (07-24y, H20) — the event that lets an Attunement Key hold its own rule ----------
+ * The five Leyline Attunement Keys are `activation.type: "none"`, so they can NEVER fire a `use`
+ * event and therefore could never carry a rule at all — their riders had to live in the name-keyed
+ * EDHA_DRAW_MANA table. That is the third leg of the 07-24v readiness test (executor / schema field
+ * / EVENT) failing, and it is the whole reason this event exists: the payload handlers were ready
+ * months ago and nothing could reach them.
+ *
+ * Deliberately NOT GM-gated, unlike edhaDispatchCombatTiming: Draw Mana fires on the OWNER's client
+ * (the engine's standing convention — that is where they hold their target), and the payload
+ * handlers relay to the GM themselves where they need to.
+ *
+ * It sweeps the actor's OWN items rather than the EDHA_DRAW_MANA table, so a rule on any talent
+ * fires — a Key, or anything else that wants to ride Draw Mana. */
+/* Pure: every rule on the actor's talents listening for `type`, ordered. Split out from the
+ * dispatcher so the SELECTION is unit-testable (the dispatch itself is async and the runner is
+ * sync). `order` sorts WITHIN a talent, matching edhaDispatchTestResult — across talents the item
+ * order stands, which is what lets Red's reminder follow Red's grant. */
+function edhaRulesForEvent(actor, type) {
+  const out = [];
+  try {
+    for (const item of actor?.items ?? []) {
+      if (!edhaIsTalent(item)) continue;
+      const rules = edhaEventRules(item).filter(r => r?.event === type)
+        .sort((a, b) => (Number(a.order) || 0) - (Number(b.order) || 0));
+      for (const rule of rules) out.push({ item, rule });
+    }
+  } catch (e) { console.error("Edha Content | rule lookup failed", e); }
+  return out;
+}
+async function edhaDispatchDrawMana(actor, item) {
+  try {
+    for (const { item: tal, rule } of edhaRulesForEvent(actor, "edha-draw-mana")) {
+      try {
+        const res = await rule.handler?.execute?.({ item: tal, rule, options: { source: item ?? null, drawMana: true } });
+        if (res === false) break;   // mirrors fireEvent / edhaDispatchTestResult
+      } catch (e) { console.error(`Edha Content | ${tal.name} draw-mana rule failed`, e); }
+    }
+  } catch (e) { console.error("Edha Content | draw-mana dispatch failed", e); }
+}
 /* The ROUND boundary. Foundry has no "new round" hook, so it is latched off combatTurnChange the
  * same way the retired Bear Witness code did — including its reload guard: a client that first sees
  * a combat already past round 1 STAMPS the round without firing, so re-opening the world mid-combat
@@ -14422,13 +14461,24 @@ for (const ctx of ["Attack", "Item"]) Hooks.on(`cosmere-rpg.pre${ctx}Roll`, edha
  * rider." The Draw Mana action is granted by every leyline path (foundry-build pathEvents); the per-color
  * effect lives on the Key talent. On use we recover Investiture and apply each owned Key's rider.
  *   White → heal allies in range (= Tier)    Black → Weaken enemies in range (status if native, else note)
- *   Green → place [Size] difficult terrain    Blue/Red → advantage on next Cognitive/Physical test (ENFORCED via nextTestMod, attr-gated — Blue wired 2026-07-03c)
+ *   Green → place [Size] difficult terrain
+ *   Blue/Red → ON THEIR OWN DOCUMENTS since 07-24y (iron rule 2b): an `edha-next-test-mod` rule on
+ *     the `edha-draw-mana` event, attribute-gated (`int, wil` / `str, spd`). Red's "lose your
+ *     Reaction" reminder rides alongside as an `edha-note`, so its wording is editable in Foundry
+ *     instead of being a string literal in this table.
  */
+/* ⚠ THIS TABLE IS A SHRINKING BACKLOG, not the design (iron rule 2b). Blue and Red left it on
+ * 07-24y: their riders are now `edha-next-test-mod` rules on their own documents, reached by the
+ * `edha-draw-mana` event. The three that remain are here because no handler can express them yet —
+ * a disposition-filtered visible-range heal (White), an Isolated + line-of-sight status sweep
+ * (Black), and a modifyMovementCost terrain Region with a click-to-place picker (Green). Each is
+ * new capability, NOT a field; do not schedule them as cheap.
+ * ⚠ Beacon of Stability lives INSIDE the White branch and is handed its filtered ally list, and
+ * Thorn Field / Thorn Hedge bake a keen hazard into the Green branch's Region. Both are total
+ * orphans of a single line here — restructure this function and they die silently. */
 const EDHA_DRAW_MANA = {
   "White Leyline Attunement": { color: "white", kind: "heal-allies" },
-  "Blue Leyline Attunement":  { color: "blue",  kind: "next-test-adv", attr: "int, wil", label: "Cognitive (int/wil) test" },   // enforced via nextTestMod (2026-07-03c — was a manual note; mirrors the Red Key)
   "Black Leyline Attunement": { color: "black", kind: "weaken-enemies" },
-  "Red Leyline Attunement":   { color: "red",   kind: "next-test-adv", attr: "str, spd", label: "Physical (str/spd) test", reactionNote: "lose your Reaction until the start of your next turn" },
   "Green Leyline Attunement": { color: "green", kind: "terrain" },
 };
 async function edhaHealActor(actor, amt) {
@@ -14523,15 +14573,14 @@ async function edhaDrawMana(item) {
           if (pt) ui.notifications?.warn(`Edha: that point is beyond Attunement Range (${ft} ft) — terrain not placed.`);
           lines.push(`Green: terrain NOT placed (${pt ? "out of range" : "cancelled"})`);
         }
-      } else if (r.kind === "next-test-adv") {
-        // Red Key: advantage on your next Physical test (enforced via the nextTestMod flag, attribute-gated).
-        await edhaSetNextTestMod(actor, { mode: "advantage", count: 1, skill: null, attr: r.attr || null, source: keyName });
-        lines.push(`${r.color[0].toUpperCase() + r.color.slice(1)}: advantage on your next ${r.label || "test"}${r.reactionNote ? ` (${r.reactionNote} — GM-tracked)` : ""}`);
       } else if (r.kind === "note") {
         lines.push(`${r.color[0].toUpperCase() + r.color.slice(1)}: ${r.text} (apply manually)`);
       }
     }
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p><strong>${actor.name}</strong> Draws Mana — ${lines.join("; ")}.</p>` });
+    // …then the document-driven riders (Blue/Red Keys today). AFTER the summary card so the
+    // recover-Investiture line still reads first; each rule posts its own card.
+    await edhaDispatchDrawMana(actor, item);
   } catch (e) { console.error("Edha Content | Draw Mana failed", e); }
 }
 Hooks.on("cosmere-rpg.useItem", (item) => { try { if (item?.name === "Draw Mana") void edhaDrawMana(item); } catch (e) { console.error("Edha Content | Draw Mana hook failed", e); } });
@@ -15232,6 +15281,11 @@ function edhaRegisterNativeEventSystem() {
     source: "edha-content", type: "edha-combat-timing",
     label: "Edha: Combat-Timed Passive", description: "Active during a combat-timing window (e.g. round start until your turn). The engine's combat hooks read this rule's config.",
     hook: "edha-content.noop-combat-timing", // sentinel: never fired; the combat hooks read this rule
+  });
+  api.registerItemEventType({
+    source: "edha-content", type: "edha-draw-mana",
+    label: "Edha: When You Draw Mana", description: "Fires on the owner's client each time they use the Draw Mana action — this is how a Leyline Attunement Key carries its own rider. Any handler works. The Keys are Always Active, so they can never fire a plain 'use' event; this is the event they get instead.",
+    hook: "edha-content.noop-draw-mana",   // sentinel: never fired; edhaDispatchDrawMana dispatches these
   });
   api.registerItemEventType({
     source: "edha-content", type: "edha-opportunity",

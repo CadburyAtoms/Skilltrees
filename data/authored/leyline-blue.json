@@ -154,7 +154,20 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "BlueKeyDrawMana0": {
+          "id": "BlueKeyDrawMana0",
+          "description": "Blue Key. On Draw Mana, gain an advantage on your next Cognitive test. Attribute-gated to int/wil — a Cognitive test is one whose skill's attribute is Intellect or Willpower.",
+          "event": "edha-draw-mana",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "self",
+            "mode": "advantage",
+            "count": 1,
+            "attr": "int, wil"
+          }
+        }
+      },
       "effects": []
     },
     "Calculated Patience": {

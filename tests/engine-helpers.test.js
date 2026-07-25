@@ -1064,6 +1064,53 @@ test("edhaIsSlowTurn: IN combat the two predicates are exact opposites; OUT of c
   });
 });
 
+// --- edhaRulesForEvent — H20's dispatch selection (07-24y) --------------------------
+// The Draw Mana riders live on the Attunement Keys' own documents now, reached by the
+// `edha-draw-mana` event. These pin the selection, because the dispatch itself is async and
+// this runner is synchronous.
+const evTalent = (name, rules) => ({ type: "talent", name, hasEvents: () => true, enabledEvents: rules });
+
+test("edhaRulesForEvent: picks only rules on the named event", () => {
+  const t = evTalent("Blue Leyline Attunement", [
+    { event: "edha-draw-mana", handler: { type: "edha-next-test-mod" } },
+    { event: "use", handler: { type: "edha-note" } },
+    { event: "edha-pre-test", handler: { type: "edha-test-rider" } },
+  ]);
+  const got = env.edhaRulesForEvent({ items: [t] }, "edha-draw-mana");
+  assert.strictEqual(got.length, 1);
+  assert.strictEqual(got[0].rule.handler.type, "edha-next-test-mod");
+  assert.strictEqual(got[0].item.name, "Blue Leyline Attunement");
+});
+
+test("edhaRulesForEvent: skips non-talent items entirely", () => {
+  // A weapon carrying a same-named rule must not fire an Attunement rider.
+  const weapon = { type: "weapon", name: "Sword", hasEvents: () => true,
+    enabledEvents: [{ event: "edha-draw-mana", handler: { type: "edha-note" } }] };
+  eq(env.edhaRulesForEvent({ items: [weapon] }, "edha-draw-mana"), []);
+});
+
+test("edhaRulesForEvent: `order` sorts within a talent — Red's reminder follows Red's grant", () => {
+  const red = evTalent("Red Leyline Attunement", [
+    { event: "edha-draw-mana", order: 1, handler: { type: "edha-note" } },
+    { event: "edha-draw-mana", handler: { type: "edha-next-test-mod" } },
+  ]);
+  const got = env.edhaRulesForEvent({ items: [red] }, "edha-draw-mana");
+  eq(got.map((g) => g.rule.handler.type), ["edha-next-test-mod", "edha-note"]);
+});
+
+test("edhaRulesForEvent: an actor with no items, or a broken one, yields nothing rather than throwing", () => {
+  eq(env.edhaRulesForEvent(null, "edha-draw-mana"), []);
+  eq(env.edhaRulesForEvent({}, "edha-draw-mana"), []);
+  eq(env.edhaRulesForEvent({ items: [{ type: "talent", hasEvents: () => { throw new Error("boom"); } }] }, "edha-draw-mana"), []);
+});
+
+test("edhaRulesForEvent: gathers across several talents, so two Keys both fire", () => {
+  const blue = evTalent("Blue Leyline Attunement", [{ event: "edha-draw-mana", handler: { type: "edha-next-test-mod" } }]);
+  const red = evTalent("Red Leyline Attunement", [{ event: "edha-draw-mana", handler: { type: "edha-next-test-mod" } }]);
+  const got = env.edhaRulesForEvent({ items: [blue, red] }, "edha-draw-mana");
+  eq(got.map((g) => g.item.name), ["Blue Leyline Attunement", "Red Leyline Attunement"]);
+});
+
 test("edhaIsSlowTurn: a token actor matches its combatant by tokenId, not actorId", () => {
   const tokActor = { id: "world-actor", isToken: true, token: { id: "tok9" } };
   const byToken = { tokenId: "tok9", actorId: "someone-else", getFlag: () => "slow" };

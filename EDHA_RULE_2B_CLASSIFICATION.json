@@ -62,8 +62,8 @@
     "1": 0,
     "2": 96,
     "3": 17,
-    "1b": 21,
-    "total": 134
+    "1b": 19,
+    "total": 132
   },
   "_splitNote": "Recomputed FROM the talents map below, not asserted — the map is the record; any summary that disagrees with it is the thing that is wrong. Verify with scripts/check-2b-classification.js.",
   "handlerDemand": {
@@ -171,7 +171,7 @@
     "H20_draw_mana": {
       "consumers": 3,
       "trees": 3,
-      "verdict": "NEW 07-24v — a Draw Mana rider EVENT plus riders. All five Leyline Attunements are rows in EDHA_DRAW_MANA; they are `activation.type: none` and can NEVER fire a `use` event, so a new event dispatched from the existing Draw Mana hook is mandatory before any of them can hold a rule. Blue and Red are then drop-ins on `edha-next-test-mod`. White / Black / Green are NOT 1b at all: a disposition-filtered visible-range heal, an Isolated-gated status sweep and a modifyMovementCost terrain placement have no existing handler. Beacon of Stability and Thorn Field live INSIDE the White and Green riders."
+      "verdict": "✅ EVENT BUILT 07-24y — `edha-draw-mana`, dispatched from the existing Draw Mana hook by `edhaDispatchDrawMana` (NOT GM-gated, unlike the combat-timing dispatcher: Draw Mana fires on the owner's client). Blue and Red converted exactly as forecast — `edha-next-test-mod` {target self, mode advantage, count 1, attr 'int, wil' / 'str, spd'}; both left EDHA_DRAW_MANA, and Red's 'lose your Reaction' rides alongside as an `edha-note` so its wording is editable rather than a string literal in the table. The forecast was RIGHT for once, and the reason is worth keeping: it was made by naming all three legs (executor real, schema fields present including `attr`, event absent) instead of asking whether a handler was registered. The 3 remaining consumers (White / Black / Green) are genuine bucket 2 and unchanged — each is new capability, not a field. ⚠ Beacon of Stability is a TOTAL ORPHAN of one line inside the White branch and Thorn Field / Thorn Hedge of one inside Green; restructuring `edhaDrawMana` kills them silently."
     },
     "H21_summon_effect": {
       "consumers": 1,
@@ -917,14 +917,6 @@
       "needs": [],
       "why": "ENGINE-OWNED: preUpdateToken movement veto over every Weakened creature in range"
     },
-    "Blue Leyline Attunement": {
-      "tree": "leyline/Blue",
-      "bucket": "1b",
-      "needs": [
-        "H20"
-      ],
-      "why": "CORRECTED 07-24v — the RIDER is a genuine drop-in on `edha-next-test-mod` (target self, mode advantage, count 1, attr 'int, wil'), but `needs: []` was wrong: this talent is activation.type none and can never fire a `use` event, so it cannot hold any rule until a Draw Mana event exists. Needs H20, then it is trivial."
-    },
     "Holographic Illusion": {
       "tree": "leyline/Blue",
       "bucket": "1b",
@@ -1068,14 +1060,6 @@
       "bucket": "1b",
       "needs": [],
       "why": "whenAttribute/whenFastTurn exist but edha-test-rider has no mode field (07-24i confirms 9i)"
-    },
-    "Red Leyline Attunement": {
-      "tree": "leyline/Red",
-      "bucket": "1b",
-      "needs": [
-        "H20"
-      ],
-      "why": "CORRECTED 07-24v — as Blue: the rider is a drop-in on `edha-next-test-mod` (attr 'str, spd') but needs H20 first, because activation.type none means there is no use event. Its printed 'lose your Reaction' is display-only and enforces nothing today."
     },
     "Reckless Momentum": {
       "tree": "leyline/Red",
