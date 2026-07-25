@@ -816,3 +816,90 @@ test("edhaNextTestMatches: a missing mod never matches", () => {
     assert.strictEqual(env.edhaNextTestMatches(bad, RL(), null, 1), false);
   }
 });
+
+// --- edhaPickAccepts / edhaParseCosts — H6's pure core (07-24s) ---------------
+//
+// H6 asks a question the payload then answers, so a wrong filter is invisible: the card simply
+// offers the wrong names and nobody can tell it was ever meant to offer others. Both directions are
+// mutation-checked below.
+const C = (o = {}) => ({ disposition: 1, anchorDisposition: 1, ownerDisposition: 1, hp: 10, statuses: [], ...o });
+
+test("edhaPickAccepts: no filters = everybody qualifies", () => {
+  assert.strictEqual(env.edhaPickAccepts({}, C()), true);
+  assert.strictEqual(env.edhaPickAccepts({ source: "creatures" }, C({ disposition: -1 })), true);
+});
+test("edhaPickAccepts: enemy/ally are relative to YOU", () => {
+  assert.strictEqual(env.edhaPickAccepts({ disposition: "ally" }, C({ disposition: 1, ownerDisposition: 1 })), true);
+  assert.strictEqual(env.edhaPickAccepts({ disposition: "ally" }, C({ disposition: -1, ownerDisposition: 1 })), false);
+  assert.strictEqual(env.edhaPickAccepts({ disposition: "enemy" }, C({ disposition: -1, ownerDisposition: 1 })), true);
+  assert.strictEqual(env.edhaPickAccepts({ disposition: "enemy" }, C({ disposition: 1, ownerDisposition: 1 })), false);
+});
+test("edhaPickAccepts: anchor-ally is relative to the ANCHOR, and plain ally gets it backwards", () => {
+  // Unnerving Approach: I target an ENEMY, then push one of THAT enemy's allies. Those creatures are
+  // hostile to me, so `ally` would offer nobody and `enemy` would also offer my own party.
+  const foesFriend = C({ disposition: -1, anchorDisposition: -1, ownerDisposition: 1 });
+  const myFriend = C({ disposition: 1, anchorDisposition: -1, ownerDisposition: 1 });
+  assert.strictEqual(env.edhaPickAccepts({ disposition: "anchor-ally" }, foesFriend), true);
+  assert.strictEqual(env.edhaPickAccepts({ disposition: "anchor-ally" }, myFriend), false);
+  assert.strictEqual(env.edhaPickAccepts({ disposition: "ally" }, foesFriend), false, "the backwards reading");
+  assert.strictEqual(env.edhaPickAccepts({ disposition: "anchor-enemy" }, myFriend), true);
+  assert.strictEqual(env.edhaPickAccepts({ disposition: "anchor-enemy" }, foesFriend), false);
+});
+test("edhaPickAccepts: aliveOnly drops a downed creature, and can be turned off", () => {
+  assert.strictEqual(env.edhaPickAccepts({}, C({ hp: 0 })), false);
+  assert.strictEqual(env.edhaPickAccepts({}, C({ hp: -3 })), false);
+  assert.strictEqual(env.edhaPickAccepts({ aliveOnly: false }, C({ hp: 0 })), true);
+});
+test("edhaPickAccepts: an UNREADABLE hp stays a candidate — fails OPEN, unlike whenTotal", () => {
+  // The asymmetry is deliberate and is the reason both are pinned. A watch's numeric gate fails
+  // CLOSED because a scene-wide passive firing on a non-fact is silent; a pick fails OPEN because
+  // the worst case is one extra name on a whispered card the owner can ignore. The hand-rolled
+  // Unnerving Approach read `(hea?.value ?? 1) > 0` and made the same call.
+  for (const unknown of [null, undefined, "", "x", NaN]) {
+    assert.strictEqual(env.edhaPickAccepts({}, C({ hp: unknown })), true, String(unknown));
+  }
+});
+test("edhaPickAccepts: requireStatus is an OR over a comma-list", () => {
+  const h = { requireStatus: "weakened, frightened" };
+  assert.strictEqual(env.edhaPickAccepts(h, C({ statuses: ["weakened"] })), true);
+  assert.strictEqual(env.edhaPickAccepts(h, C({ statuses: ["frightened", "prone"] })), true);
+  assert.strictEqual(env.edhaPickAccepts(h, C({ statuses: ["prone"] })), false);
+  assert.strictEqual(env.edhaPickAccepts(h, C({ statuses: [] })), false);
+  assert.strictEqual(env.edhaPickAccepts({ requireStatus: "" }, C({ statuses: [] })), true, "blank = no filter");
+});
+test("edhaPickAccepts: the filters AND together", () => {
+  const h = { disposition: "enemy", requireStatus: "weakened" };
+  const base = { ownerDisposition: 1, anchorDisposition: 1 };
+  assert.strictEqual(env.edhaPickAccepts(h, C({ ...base, disposition: -1, statuses: ["weakened"] })), true);
+  assert.strictEqual(env.edhaPickAccepts(h, C({ ...base, disposition: 1, statuses: ["weakened"] })), false);
+  assert.strictEqual(env.edhaPickAccepts(h, C({ ...base, disposition: -1, statuses: [] })), false);
+  assert.strictEqual(env.edhaPickAccepts(h, C({ ...base, disposition: -1, statuses: ["weakened"], hp: 0 })), false);
+});
+test("edhaPickAccepts: a missing rule or candidate never qualifies", () => {
+  assert.strictEqual(env.edhaPickAccepts(null, C()), false);
+  assert.strictEqual(env.edhaPickAccepts({}, null), false);
+});
+
+test("edhaParseCosts: resource:amount pairs, in order", () => {
+  eq(env.edhaParseCosts("foc:2, inv:1"), [{ resource: "foc", value: 2 }, { resource: "inv", value: 1 }]);
+  eq(env.edhaParseCosts("  INV : 3  "), [{ resource: "inv", value: 3 }]);
+});
+test("edhaParseCosts: a bare resource name means 1", () => {
+  eq(env.edhaParseCosts("foc"), [{ resource: "foc", value: 1 }]);
+  eq(env.edhaParseCosts("foc, inv:2"), [{ resource: "foc", value: 1 }, { resource: "inv", value: 2 }]);
+});
+test("edhaParseCosts: nothing to spend parses to nothing", () => {
+  for (const empty of ["", "   ", ",,", null, undefined]) eq(env.edhaParseCosts(empty), []);
+});
+test("edhaParseCosts: a cost that does not parse is DROPPED, never defaulted to 0", () => {
+  // A silent 0 would hand out a free reaction every round and look exactly like a working card.
+  eq(env.edhaParseCosts("foc:0"), []);
+  eq(env.edhaParseCosts("foc:-2"), []);
+  eq(env.edhaParseCosts("foc:x"), []);
+  eq(env.edhaParseCosts(":4"), []);
+  eq(env.edhaParseCosts("foc:0, inv:1"), [{ resource: "inv", value: 1 }], "one bad entry does not eat the good one");
+});
+test("edhaParseCosts: a fractional amount floors rather than charging a fraction", () => {
+  eq(env.edhaParseCosts("foc:2.7"), [{ resource: "foc", value: 2 }]);
+  eq(env.edhaParseCosts("foc:0.5"), [], "…and floors to nothing rather than to a free use");
+});

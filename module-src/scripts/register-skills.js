@@ -1345,8 +1345,12 @@ async function edhaDispatchTestResult(owner, item, target, ok, ctx = {}) {
    * Kneel's test from a different item on the same actor). Deliberately after the item's own rules,
    * outside the return value — `rules.length` still answers "did THIS talent carry a payload", which
    * is what H1's card note reports. edhaDispatchWatchers is re-entrancy-guarded, so a watcher's own
-   * dispatch landing back here cannot loop. */
-  void edhaDispatchWatchers({ kind: "test", owner, victim: target, skill: ctx.skill ?? null, def: ctx.def ?? null, ok, total: ctx.total ?? null });
+   * dispatch landing back here cannot loop.
+   *
+   * `announce: false` (07-24s) — H6 re-uses this dispatcher to run a talent's success rules against
+   * a PICKED creature, and a pick is not a test. Announcing one would let a `watch: test` rule with
+   * no skill/defense filters fire on every choice anybody makes. */
+  if (ctx.announce !== false) void edhaDispatchWatchers({ kind: "test", owner, victim: target, skill: ctx.skill ?? null, def: ctx.def ?? null, ok, total: ctx.total ?? null });
   return rules.length;
 }
 
@@ -1642,6 +1646,226 @@ Hooks.on("renderChatMessageHTML", (msg, html) => {
     root?.querySelectorAll?.(".edha-watch-manual").forEach((b) => b.addEventListener("click", (e) => edhaWatchManualClick(e, msg)));
   } catch (e) {}
 });
+
+/* ================================================================================================
+ * H6 `edha-prompt-pick` (07-24s) — THE OFFER: hand the player a choice, then run the payload.
+ *
+ * ⚠ WHAT §9o SAID, AND WHAT THE CALL SITES SAY. §9o costed this three times as "largely exposing a
+ * schema over functions that are already generic — edhaPostCalcTestCard & co. take the talent name
+ * as a mere LABEL". That is HALF true, and the half that is false is the design:
+ *   · TRUE for the OFFER shape. `edhaPostCoordReactionCard(owner, name, {costs, prompt, result})`
+ *     branches on no name at all: its click gates once-per-round, spends the listed resources and
+ *     posts `result`. Ten talents share it already.
+ *   · FALSE for the PICK shape. `edhaPostCalcTestCard`, `edhaPostBeaconCard`, `edhaPostReknitCard`,
+ *     `edhaPostLifeCleanseCard`, `edhaPostMutationCard` and Unnerving Approach's hand-rolled card
+ *     each HARD-CODE a different payload in their click handler — set a next-test flag, spend 1 Inv
+ *     and clear a status, delete an injury Item, write a mutation flag, push a token. They are
+ *     generic only WITHIN their own payload, so there is no one function to put a schema over.
+ * So the build is not a schema over an existing card function: it is ONE card+click pair whose
+ * click DISPATCHES BACK INTO THE RULE SYSTEM. That is pass H's move —
+ * `edhaDispatchTestResult(owner, item, picked, true, …)` fires the item's own
+ * `edha-test-success` rules with the PICKED creature as the subject, so H6 needs no payload
+ * vocabulary of its own and every existing payload handler works unchanged, present or future.
+ * (Recorded because the estimate was wrong in the same direction for the SEVENTH pass running: the
+ * `needs` column records the GATE. Here it also mis-recorded the SHAPE of the thing being reused.)
+ *
+ * WHY IT HAD TO BE A HANDLER AT ALL. A rule can resolve a test and it can apply an effect, but it
+ * cannot ASK. Every talent that says "choose one" therefore had to be engine code, and 31 of them
+ * are — the largest single demand column in the classification.
+ *
+ * THE SOURCES, and why only two shipped. `confirm` (one accept button — the offer shape) and
+ * `creatures` (pick one of N actors, filtered) cover every consumer whose payload is an actor.
+ * Three more sources are real and are NOT built, because their payload would have to receive the
+ * picked THING rather than an actor, and no payload handler takes one:
+ *   status  — Beacon of Stability, Surgical Precision, Devoted Presence (pick a condition to clear)
+ *   item    — Reknit Form (pick an injury to delete)
+ *   effect  — Unweaving (pick an active effect to dispel)
+ * Shipping them schema-only would repeat exactly what §9o forbids for the watch kinds: a source
+ * with no reachable consumer. They land with a payload that can act on the pick, not before.
+ * ============================================================================================= */
+
+/* PURE (pinned in tests/): does ONE candidate pass this pick rule's filters?
+ * c = { disposition, anchorDisposition, ownerDisposition, hp, statuses }. Split out from the sweep
+ * so the filter logic is testable with no canvas and no actors, exactly like edhaWatchMatches.
+ *
+ * `aliveOnly` fails OPEN on an unreadable HP — the OPPOSITE of edhaWatchMatches' whenTotal, and
+ * deliberately so. The failure modes are not symmetric: an unreadable passive gate firing scene-wide
+ * is silent and wrong, whereas an extra name in a whispered pick list is visible and declinable.
+ * The hand-rolled Unnerving Approach read `(hea?.value ?? 1) > 0` and made the same choice. */
+function edhaPickAccepts(h, c) {
+  if (!h || !c) return false;
+  if (h.aliveOnly !== false) {
+    const raw = c.hp;
+    const hp = (raw === null || raw === undefined || raw === "") ? NaN : Number(raw);
+    if (Number.isFinite(hp) && hp <= 0) return false;
+  }
+  const disp = String(h.disposition || "any");
+  if (disp === "enemy" && c.disposition === c.ownerDisposition) return false;
+  if (disp === "ally" && c.disposition !== c.ownerDisposition) return false;
+  // Measured against the ANCHOR instead of you: Unnerving Approach pushes an ally OF YOUR TARGET,
+  // which "ally" (relative to you) gets exactly backwards.
+  if (disp === "anchor-ally" && c.disposition !== c.anchorDisposition) return false;
+  if (disp === "anchor-enemy" && c.disposition === c.anchorDisposition) return false;
+  const want = String(h.requireStatus || "").split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
+  if (want.length && !want.some((s) => (c.statuses || []).includes(s))) return false;
+  return true;
+}
+
+/* PURE (pinned in tests/): "foc:2, inv:1" → [{resource:"foc", value:2}, {resource:"inv", value:1}].
+ * A bare name means 1 ("foc" === "foc:1") because this is a text field a human types. Anything that
+ * does not parse to a positive whole number is DROPPED rather than defaulted — a cost that silently
+ * became 0 would hand out a free reaction, which is the failure nobody would notice at the table. */
+function edhaParseCosts(s) {
+  const out = [];
+  for (const part of String(s ?? "").split(",")) {
+    const p = part.trim(); if (!p) continue;
+    const bits = p.split(":");
+    const res = String(bits[0] ?? "").trim().toLowerCase(); if (!res) continue;
+    const n = bits.length > 1 ? Math.floor(Number(String(bits[1]).trim())) : 1;
+    if (!Number.isFinite(n) || n <= 0) continue;
+    out.push({ resource: res, value: n });
+  }
+  return out;
+}
+
+/* Build the candidate list. Measured from the ANCHOR — you, or the creature this rule's trigger
+ * resolved against — because "an ally of your target within 10 ft" is a circle round the TARGET. */
+function edhaPickCandidates(owner, h, anchor) {
+  const atok = edhaCasterToken(anchor) ?? anchor?.getActiveTokens?.()[0];
+  if (!atok) return [];
+  const ft = h.rangeColor ? edhaAttuneFtColor(owner, h.rangeColor) : (Number(h.rangeFt) || 0);
+  if (!ft) return [];
+  const otok = edhaCasterToken(owner);
+  const ownerDisp = otok?.document?.disposition ?? 1, anchorDisp = atok.document?.disposition ?? 1;
+  const list = edhaTokensWithin(atok, ft).filter((t) => t.actor);   // edhaTokensWithin already drops the anchor
+  // The owner is a candidate for its own network (Anticipate grants advantage to "you or an ally"),
+  // and edhaTokensWithin cannot supply it when the owner IS the anchor — so add it back explicitly.
+  const out = [];
+  if (h.includeSelf !== false && anchor === owner && otok) out.push(otok);
+  for (const t of list) {
+    if (h.includeSelf === false && t.actor === owner) continue;
+    if (!edhaPickAccepts(h, {
+      disposition: t.document?.disposition ?? 1, anchorDisposition: anchorDisp, ownerDisposition: ownerDisp,
+      hp: t.actor.system?.resources?.hea?.value, statuses: [...(t.actor.statuses ?? [])],
+    })) continue;
+    out.push(t);
+  }
+  return out;
+}
+
+/* The card. Whispered to the owner + GM: a choice is the owner's to make, and the payload announces
+ * itself publicly when it runs. Every button carries the ITEM's uuid, so the click re-reads the rule
+ * off the document rather than trusting anything baked into the HTML. */
+async function edhaRunPromptPick(item, h, event) {
+  const owner = item?.actor; if (!owner) return;
+  const source = String(h.source || "confirm");
+  const victim = event?.options?.victim ?? event?.options?.target ?? Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
+  const anchor = String(h.relativeTo || "self") === "victim" ? victim : owner;
+  if (String(h.relativeTo || "self") === "victim" && !anchor) {
+    ui.notifications?.warn(`Edha: ${item.name} — target the creature first.`);
+    return;
+  }
+  const icon = h.icon ? `${h.icon} ` : "";
+  const attrs = (pickUuid) => `data-edha-item="${item.uuid}" data-edha-pick="${pickUuid}"`
+    + (anchor && anchor !== owner ? ` data-edha-anchor="${anchor.uuid}"` : "");
+  let body = "";
+  if (source === "creatures") {
+    const cands = edhaPickCandidates(owner, h, anchor);
+    if (!cands.length) {
+      if (h.emptyNote) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+        content: `<p>${icon}<strong>${item.name}</strong>: ${h.emptyNote}</p>` });
+      return;
+    }
+    body = cands.map((t) => `<button type="button" class="edha-pick-btn" ${attrs(t.actor.uuid)}>${h.label || "Choose"} ${t.actor.name}</button>`).join(" ");
+  } else {
+    // confirm: the subject is the creature the trigger already resolved against (or you).
+    const subject = victim ?? owner;
+    body = `<button type="button" class="edha-pick-btn" ${attrs(subject.uuid)}>${h.label || `Use ${item.name}`}</button>`;
+  }
+  const costs = edhaParseCosts(h.costs);
+  const costLabel = costs.length ? ` <span style="opacity:.8">(spends ${costs.map((c) => `${c.value} ${EDHA_RES_LABEL[c.resource] || c.resource}`).join(" + ")})</span>` : "";
+  ChatMessage.create({
+    whisper: edhaWhisperIds(owner),
+    speaker: ChatMessage.getSpeaker({ actor: owner }),
+    content: `<div class="edha-trigger-card"><p>${icon}<strong>${item.name}</strong> — ${h.prompt || "choose one:"}${costLabel}</p>${body}</div>`,
+  });
+}
+
+async function edhaPromptPickClick(ev) {
+  try {
+    ev.preventDefault();
+    const btn = ev.currentTarget, ds = btn.dataset;
+    const item = await fromUuid(ds.edhaItem).catch(() => null);
+    const owner = item?.actor;
+    if (!item || !owner) { ui.notifications?.warn("Edha: that talent is no longer available."); return; }
+    if (!owner.isOwner) { ui.notifications?.warn("Edha: only the talent's owner (or the GM) can resolve this."); return; }
+    // Re-read the rule off the DOCUMENT: an edit in Foundry between posting and clicking must win,
+    // and nothing about the decision should live in the chat HTML.
+    const h = edhaRuleOf(item, "edha-prompt-pick");
+    if (!h) { ui.notifications?.warn(`Edha: ${item.name} no longer carries a prompt rule.`); return; }
+    const pref = await fromUuid(ds.edhaPick).catch(() => null); const picked = pref?.actor ?? pref;
+    if (!picked) { ui.notifications?.warn("Edha: that creature is no longer on the canvas."); return; }
+    const aref = ds.edhaAnchor ? await fromUuid(ds.edhaAnchor).catch(() => null) : null;
+    const anchor = aref?.actor ?? aref ?? null;
+    // The budget is spent HERE, not at post time: posting a card the player declines must not burn
+    // the round's use. Same reasoning as edhaWatchBudgetGate running last.
+    if (String(h.once || "no") !== "no" && !edhaCoordOPRAllowed(owner, item.uuid, "_pick")) {
+      ui.notifications?.info(`${item.name} was already used this round.`);
+      btn.closest(".edha-trigger-card")?.querySelectorAll(".edha-pick-btn").forEach((b) => (b.disabled = true));
+      return;
+    }
+    btn.closest(".edha-trigger-card")?.querySelectorAll(".edha-pick-btn").forEach((b) => (b.disabled = true));
+    if (String(h.once || "no") !== "no") await edhaCoordOPRMark(owner, item.uuid, "_pick");
+    for (const c of edhaParseCosts(h.costs)) {
+      try {
+        const cur = owner.system?.resources?.[c.resource]?.value ?? 0;
+        await owner.update({ [`system.resources.${c.resource}.value`]: Math.max(0, cur - c.value) });
+      } catch (e) { console.error(`Edha Content | ${item.name} could not spend ${c.value} ${c.resource}`, e); }
+    }
+    btn.textContent = `✓ ${picked.name}`;
+    void edhaMarkCardResolved(edhaMessageIdOf(btn), `✓ ${picked.name}`);
+    // The payload is the talent's OWN success rules, with the PICKED creature as the subject.
+    // `announce: false` — a pick is not a test, and letting it fan out as one would let an unfiltered
+    // scene watcher fire on every choice anyone makes.
+    const fired = await edhaDispatchTestResult(owner, item, picked, true, { anchor, viaPick: true, announce: false });
+    if (!fired && h.note) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+      content: `<p>${h.icon ? `${h.icon} ` : ""}<strong>${item.name}</strong>: ${h.note}</p>` });
+  } catch (e) { console.error("Edha Content | prompt pick click failed", e); }
+}
+Hooks.on("renderChatMessageHTML", (msg, html) => {
+  try {
+    const root = html instanceof HTMLElement ? html : html?.[0];
+    root?.querySelectorAll?.(".edha-pick-btn").forEach((b) => b.addEventListener("click", edhaPromptPickClick));
+  } catch (e) {}
+});
+
+/* The TURN-START announcement — built ALONGSIDE its payload, which is the whole rule §9o states for
+ * the remaining watch kinds. `turn-start` was queued with four consumers (Apex Form, Primal
+ * Regeneration, Consuming Decay, Bear Witness) that all need payloads which do not exist, so it was
+ * correctly NOT built in pass I. Puppeteer's payload is H6's own offer card, so the kind and its
+ * consumer land together.
+ *
+ * `total` is the combatant's CURRENT FOCUS, mirroring focus-change's "the new focus": it is the only
+ * number anyone gates a turn start on, and it makes Puppeteer's "starts its turn at 0 focus"
+ * expressible as {whenTotal: "at-most", whenTotalValue: 0} with no kind-specific field. Unreadable
+ * focus stays null, so the gate fails CLOSED (edhaWatchMatches).
+ *
+ * Announced from ONE client (edhaDefBuffGmGate), exactly as the hand-rolled Puppeteer cue was: the
+ * sweep sees every actor from any GM client, and N clients announcing would post N cards. */
+async function edhaAnnounceTurnStart(combat) {
+  try {
+    combat = combat || game.combat; if (!combat?.started) return;
+    if (!edhaDefBuffGmGate()) return;
+    const actor = combat.combatant?.actor; if (!actor) return;
+    const foc = actor.system?.resources?.foc?.value;
+    await edhaDispatchWatchers({
+      kind: "turn-start", owner: actor, victim: null, skill: null, def: null, ok: null,
+      total: (foc === null || foc === undefined) ? null : Number(foc),
+    });
+  } catch (e) { console.error("Edha Content | turn-start announce failed", e); }
+}
+Hooks.on("combatTurnChange", (combat) => void edhaAnnounceTurnStart(combat));
+Hooks.on("combatStart", (combat) => void edhaAnnounceTurnStart(combat));
 
 /* ================================================================================================
  * H3 `edha-owner-list` (07-24p) — the SUSTAINED CAPPED LEDGER, hoisted.
@@ -4905,8 +5129,17 @@ async function edhaRunPush(owner, victim, cfg) {
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>💥 <strong>${cfg.note || "Push"}</strong> — push ${victim.name} (no token on canvas — apply manually).</p>` });
       return;
     }
-    const maxFt = cfg.bySize ? (EDHA_SIZE_FT[edhaColorRank(owner, "red")] || EDHA_SIZE_FT[1]) : (Number(cfg.distanceFt) || 5);
-    const dx = vtok.center.x - otok.center.x, dy = vtok.center.y - otok.center.y, len = Math.hypot(dx, dy) || 1;
+    /* 07-24s: two widenings, both because Unnerving Approach's hand-rolled push was NOT this
+     * function and could not become it. `sizeColor` — [Size] scaled off any colour, not always Red
+     * (Unnerving Approach is Black). `awayFrom: "anchor"` — shove the creature away from a THIRD
+     * party rather than from you, which is what "push its ally directly away from your target"
+     * means; the anchor is whatever the rule's trigger handed the payload (H6 passes the creature
+     * its candidate list was measured around). A missing anchor falls back to you rather than
+     * refusing — the push still happens, from the wrong origin, and the card says who it was from. */
+    const anchorTok = (String(cfg.awayFrom || "self") === "anchor" && cfg.anchorActor)
+      ? (edhaCasterToken(cfg.anchorActor) ?? cfg.anchorActor.getActiveTokens?.()[0] ?? otok) : otok;
+    const maxFt = cfg.bySize ? (EDHA_SIZE_FT[edhaColorRank(owner, cfg.sizeColor || "red")] || EDHA_SIZE_FT[1]) : (Number(cfg.distanceFt) || 5);
+    const dx = vtok.center.x - anchorTok.center.x, dy = vtok.center.y - anchorTok.center.y, len = Math.hypot(dx, dy) || 1;
     const aim = { x: vtok.center.x + dx / len * (maxFt * edhaPxPerFt()), y: vtok.center.y + dy / len * (maxFt * edhaPxPerFt()) };
     const { movedFt, collided } = await edhaApplyMove(vtok, aim, maxFt, { gapPx: 0, hostile: true });
     let dmgTxt = "";
@@ -4915,7 +5148,8 @@ async function edhaRunPush(owner, victim, cfg) {
       const amt = Math.max(0, Math.floor(roll.total));
       if (amt > 0) { await edhaCrossDamage(victim, amt, cfg.collisionType || "impact", { edhaSource: owner }); dmgTxt = ` and slams into an obstacle for <strong>${amt} ${cfg.collisionType || "impact"}</strong>`; }
     }
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>💥 <strong>${cfg.note || "Push"}</strong> — ${victim.name} is pushed <strong>${Math.round(movedFt)} ft</strong>${dmgTxt}.</p>` });
+    const fromTxt = anchorTok !== otok ? ` directly away from ${anchorTok.actor?.name ?? "your target"}` : "";
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>💥 <strong>${cfg.note || "Push"}</strong> — ${victim.name} is pushed <strong>${Math.round(movedFt)} ft</strong>${fromTxt}${dmgTxt}.</p>` });
   } catch (e) { console.error("Edha Content | edha-push failed", e); }
 }
 
@@ -14864,7 +15098,7 @@ function edhaRegisterNativeEventSystem() {
     source: "edha-content", type: "edha-watch",
     label: "Edha: Watch (react to another talent's test or roll)", description: "This talent reacts to something ANOTHER document did — a test another of your talents resolved, or any skill roll you made. Put what happens on the sibling 'When Your Test SUCCEEDS' / 'FAILS' rules, exactly as for a gated test; this handler only decides whether the observation counts.",
     config: { schema: {
-      watch: new FF.StringField({ required: true, initial: "test", choices: choices("test", "skill-roll", "defeat", "focus-change"), label: "What to watch", hint: "test = a gated test (Edha: Gated Test) that resolved · skill-roll = any skill test roll, including ones no talent gated (Extract Thought rides every Deception roll) · defeat = a creature dropped to 0 HP · focus-change = a creature LOST focus (the observed value is its new focus)." }),
+      watch: new FF.StringField({ required: true, initial: "test", choices: choices("test", "skill-roll", "defeat", "focus-change", "turn-start"), label: "What to watch", hint: "test = a gated test (Edha: Gated Test) that resolved · skill-roll = any skill test roll, including ones no talent gated (Extract Thought rides every Deception roll) · defeat = a creature dropped to 0 HP · focus-change = a creature LOST focus (the observed value is its new focus) · turn-start = a creature began its turn (the observed value is its CURRENT focus, so 'at most 0' is Puppeteer's gate)." }),
       scope: new FF.StringField({ required: true, initial: "self", choices: choices("self", "scene"), label: "Whose events", hint: "self = only your OWN actor's (Crown of Thorns, Extract Thought — a sibling talent's event, which rules otherwise never see) · scene = anyone's, filtered below." }),
       payloadTarget: new FF.StringField({ required: false, initial: "victim", choices: choices("victim", "actor"), label: "The payload acts on", hint: "victim = the creature the observed TEST resolved against (the usual for test / skill-roll) · actor = the creature the event happened to — the one that dropped, or the one that lost focus. The subject-only kinds want 'actor'." }),
       whenSkill: new FF.StringField({ required: false, blank: true, initial: "", label: "Only these skills/colours", hint: "Comma-list, blank = any. Leyline colours are skill ids, so one field covers both atlases: 'black,red' for Crown of Thorns, 'dec' for Extract Thought." }),
@@ -14889,6 +15123,39 @@ function edhaRegisterNativeEventSystem() {
     // Config-only: the sweep in edhaDispatchWatchers reads these rules. An executor would be wrong —
     // nothing ever fires this rule ON its own item; that is the whole point of the handler.
     executor: async function () {},
+  });
+  /* H6 (07-24s). THE OFFER. A rule can resolve a test and apply an effect; it cannot ASK, which is
+   * why 31 "choose one" talents were engine code. The click DISPATCHES BACK — it fires this item's
+   * own `edha-test-success` rules with the picked creature as the subject — so this handler owns no
+   * payload vocabulary at all and every payload handler works on a pick unchanged. See the block
+   * comment above edhaPickAccepts for why this is NOT the "schema over an existing card function"
+   * §9o costed, and for the three candidate sources deliberately NOT shipped. */
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-prompt-pick",
+    label: "Edha: Prompt / Pick One", description: "Whisper yourself a card that asks a question — accept an offer, or choose one creature from a filtered list. What HAPPENS goes on the sibling 'When Your Test SUCCEEDS' rules, exactly as for a gated test; the creature you pick becomes their target.",
+    config: { schema: {
+      source: new FF.StringField({ required: true, initial: "confirm", choices: choices("confirm", "creatures"), label: "What is being chosen", hint: "confirm = one accept button; the payload lands on the creature this rule's trigger already resolved against (Subtle Suggestion, Puppeteer) · creatures = one button per creature matching the filters below (Anticipate, Unnerving Approach)." }),
+      prompt: new FF.StringField({ required: false, blank: true, initial: "", label: "The question", hint: "Shown after the talent's name. Say what accepting means — the card is the only place the table sees it." }),
+      label: new FF.StringField({ required: false, blank: true, initial: "", label: "Button text", hint: "Blank = 'Use <talent>' for confirm, 'Choose <name>' for a creature." }),
+      icon: new FF.StringField({ required: false, blank: true, initial: "", label: "Icon", hint: "One emoji shown before the name." }),
+      costs: new FF.StringField({ required: false, blank: true, initial: "", label: "Extra cost on accept", hint: "Comma-list of resource:amount, e.g. 'foc:2, inv:1'. A bare name means 1. Spent when you CLICK, not when the card posts, so declining costs nothing. This is the reaction's extra price — the talent's own activation cost is already paid." }),
+      once: new FF.StringField({ required: false, initial: "no", choices: choices("no", "round"), label: "How often it may be accepted", hint: "round = once per round (Puppeteer, Lifeline). The budget is spent on the CLICK, so an ignored card does not burn it. Outside combat this means once until the next encounter ends." }),
+      relativeTo: new FF.StringField({ required: false, initial: "self", choices: choices("self", "victim"), label: "Candidates measured around", hint: "self = a circle round YOU (Anticipate's network) · victim = a circle round the creature this rule's trigger resolved against (Unnerving Approach: your target's allies within 10 ft). The creature it is measured around is passed to the payload as the ANCHOR — that is what Edha: Push's 'away from anchor' uses." }),
+      rangeColor: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "white", "blue", "black", "red", "green"), label: "Range = that colour's Attunement Range", hint: "Your rank in the colour sets the radius. Takes precedence over the fixed distance below." }),
+      rangeFt: new FF.NumberField({ required: false, initial: 0, label: "…or this many feet", hint: "Used when no colour is set. With neither, there are no candidates — a pick over the whole scene is never what a card means." }),
+      disposition: new FF.StringField({ required: false, initial: "any", choices: choices("any", "enemy", "ally", "anchor-ally", "anchor-enemy"), label: "Which creatures", hint: "enemy / ally are relative to YOU. anchor-ally / anchor-enemy are relative to the creature the circle is measured around — Unnerving Approach pushes an ally OF YOUR TARGET, which plain 'ally' gets backwards." }),
+      includeSelf: new FF.BooleanField({ required: false, initial: true, label: "You are a candidate too", hint: "Anticipate grants advantage to 'you or an ally', so you appear in your own list." }),
+      requireStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "Only creatures with this status", hint: "Comma-list = any of them. Blank = no filter." }),
+      aliveOnly: new FF.BooleanField({ required: false, initial: true, label: "Skip creatures already at 0 HP" }),
+      emptyNote: new FF.StringField({ required: false, blank: true, initial: "", label: "Note when nobody qualifies", hint: "Posted instead of the card when the list comes out empty. Blank = stay silent." }),
+      note: new FF.StringField({ required: false, blank: true, initial: "", label: "Note when accepted with no payload", hint: "Posted on accept only if this talent carries NO success rules — the table-run case (Puppeteer: the GM resolves the borrowed action)." }),
+    } },
+    executor: async function (event) {
+      try {
+        const item = event.item; if (!item?.actor) return;
+        await edhaRunPromptPick(item, this, event);
+      } catch (e) { console.error("Edha Content | edha-prompt-pick executor failed", e); }
+    },
   });
   /* H10 (07-24r). INVOLUNTARY FOCUS as a rule. `edhaGainFocus` / `edhaDrainFocus` have existed since
    * the Black tree shipped and have never had a handler, so every talent that moves someone's focus
@@ -15148,7 +15415,9 @@ function edhaRegisterNativeEventSystem() {
     label: "Edha: Push Target + Collision", description: "Shove the creature you hit away from you (wall-aware); on a wall collision, deal the collision damage. PILOT (Red). Pair with event edha-on-hit.",
     config: { schema: {
       whenDamageType: new FF.StringField({ required: false, initial: "impact", label: "Only when you dealt damage type(s)", hint: "'any' or a comma-list. The Red pilot consumer uses impact (melee only)." }),
-      bySize: new FF.BooleanField({ required: false, initial: true, label: "Push distance = [Size] (scales with Red rank)" }),
+      bySize: new FF.BooleanField({ required: false, initial: true, label: "Push distance = [Size]" }),
+      sizeColor: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "white", "blue", "black", "red", "green"), label: "Which colour scales [Size]", hint: "Blank = Red (the pilot consumer). Unnerving Approach scales off Black." }),
+      awayFrom: new FF.StringField({ required: false, initial: "self", choices: choices("self", "anchor"), label: "Pushed away from", hint: "self = you (the usual: you shoved it) · anchor = the creature this rule's trigger was measured around. Unnerving Approach pushes your target's ALLY directly away from YOUR TARGET, which 'self' gets wrong." }),
       distanceFt: new FF.NumberField({ required: false, initial: 5, label: "Fixed push distance (ft, if not by size)" }),
       collisionFormula: new FF.StringField({ required: false, blank: true, initial: "floor((@tier)d(2 * @skills.red.rank + 2) / 2)", label: "Collision damage formula (blank = none)" }),
       collisionType: new FF.StringField({ required: false, initial: "impact", choices: choices("energy", "impact", "keen", "spirit", "vital"), label: "Collision damage type" }),
@@ -15157,7 +15426,23 @@ function edhaRegisterNativeEventSystem() {
       // had to override it). Blank now; edhaRunPush falls back to "Push". (2026-07-24, iron rule 2b.)
       note: new FF.StringField({ required: false, blank: true, initial: "", label: "Note (card label)" }),
     } },
-    executor: async function () { /* config-only: edhaDispatchOnHit reads this rule and calls edhaRunPush */ },
+    /* Was config-only (edhaDispatchOnHit reads the rule directly and calls edhaRunPush). It now ALSO
+     * has an executor so a push can be the PAYLOAD of anything — a gated test, a watch, an H6 pick.
+     * That does not double-fire the on-hit path: `edha-on-hit` is registered against a sentinel hook
+     * the system never fires, so nothing but this executor ever calls .execute() on the rule. */
+    executor: async function (event) {
+      try {
+        const item = event.item, owner = item?.actor; if (!owner) return;
+        const victim = event.options?.victim ?? event.options?.target ?? Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
+        if (!victim) { ui.notifications?.warn(`Edha: ${item.name} — no creature to push.`); return; }
+        await edhaRunPush(owner, victim, {
+          bySize: this.bySize !== false, sizeColor: this.sizeColor || "", distanceFt: this.distanceFt,
+          collisionFormula: this.collisionFormula, collisionType: this.collisionType,
+          note: this.note || item.name,
+          awayFrom: this.awayFrom || "self", anchorActor: event.options?.anchor ?? null,
+        });
+      } catch (e) { console.error("Edha Content | edha-push executor failed", e); }
+    },
   });
   api.registerItemEventHandlerType({
     source: "edha-content", type: "edha-rally-stack",
