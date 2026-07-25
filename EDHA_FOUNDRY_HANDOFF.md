@@ -1,8 +1,56 @@
 # Edha → Foundry VTT Port — Agent / Operator Handoff
 
-Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-24u: **the ratchet list is down to 150 names** (221 at the start, −71 in twelve passes). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **Blue, Black and Warrior are fully clear of rule-2b talents** (07-24s). **The first of the five marker LEDGERS (`covenants`) has migrated to `flags.edha-content.lists.covenants` (07-24u)** — one accessor repoint, 12 readers unchanged; `edicts` is next and is now cheaper, because `allowDuplicates` and `multiOwner` both shipped with it. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
+Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-24v: **the ratchet list is down to 142 names** (221 at the start, −79 in thirteen passes). ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **Blue, Black and Warrior are fully clear of rule-2b talents** (07-24s). **The first of the five marker LEDGERS (`covenants`) has migrated to `flags.edha-content.lists.covenants` (07-24u)** — one accessor repoint, 12 readers unchanged; `edicts` is next and is now cheaper, because `allowDuplicates` and `multiOwner` both shipped with it. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24u** (RULE-2b PASS L —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-24v** (RULE-2b PASS M —
+**A REAL BUG in last pass's H3 code, the Envoy cluster + the single-target gate (×8), and the classification finally made honest: BUCKET 1 IS EMPTY.**
+⚠️ **PACK REBUILD + ⟳ Sync REQUIRED.**)
+**Ratchet 150 → 142.** Checklist **2bM-1…12**, all unrun. ⚑ **Four new questions for you — §9m q12–q15.**
+
+**(1) A BUG I shipped on 07-24u, found by scouting rather than by testing — 2bM-1.** H3's `place`
+committed the ledger and only *then* marked the creature. When no GM is online to mark a target the
+player does not own, the mark path bails — but the ledger write has already happened, leaving an entry
+whose creature carries no status, which `edhaOwnerList`'s reconcile-on-read then hides **for ever**.
+Silent in three directions: the placement looks like a no-op, the cap never counts it, and junk
+accumulates in the flag. For Covenant the symptom is a pact that forms with **no icon and no +1 AE** —
+indistinguishable from "the talent is broken". Fixed by ordering: **the step that can refuse must run
+before the step that commits.**
+
+**(2) BUCKET 1 WAS FICTION.** You asked me to convert bucket 1 (6 talents) and then the 1b fields (39).
+Five read-only scouts checked the columns against real call sites first, and **0 of the 6 were
+convertible**. Bucket 1 is now **0**. Ten of the 39 "1b" talents are not field-level at all and moved
+to bucket 2. Delivered: **8**, not 45 — and I'd rather say that than pad the number.
+
+**(3) The mechanism behind eight passes of over-estimation is now a one-line test.** Every optimistic
+`needs: []` came from checking whether a handler was **registered**. Name all three or it is not ready:
+the **executor** (`edha-heal-cut` and `edha-overflow-thp` are registered with empty function bodies —
+a config-only handler cannot be a payload), the **schema field** (`edha-combat-timing` has no slow-turn
+moment), and the **event** (nothing fires "you paid ritual HP"; and a talent whose activation is
+`none`, like all five Leyline Attunements, can never fire `use` at all).
+
+**(4) One recorded "DELETE-ONLY" would have shipped a live bug.** Overgrowth's entry said its name
+check was redundant belt-and-braces. It is the **only discriminator**: Life Surge carries the identical
+`edha-overflow-thp` rule and grants no Deflect, so deleting the name starts stacking +1/+2/+3 Deflect
+on every Life Surge heal, silently, across two trees.
+
+**(5) Four of the six Envoy talents carry a REMINDER, not a mechanic — and did before this pass too.**
+Only Rousing Presence's status and Lessons in Patience's focus ever executed; Instill Confidence,
+Devoted Presence, Stalwart Presence and Rallying Shout were strings. Converting them is worth doing
+(the text is now editable in Foundry instead of buried in the engine) but it moves a reminder, and the
+ratchet cannot tell the difference — so I'm saying which is which rather than letting the count imply
+more automation than exists.
+
+**(6) `edha-apply-status` was putting an enemy-debuff ownership flag on your ALLIES.** It wrote
+`markedBy.<status>` unconditionally, and the damage post-pass reads that to add a marker owner's bonus
+damage. Now a `mark` field, off for buffs.
+
+**Next, and the shape of the remaining work has changed:** it is no longer a few big handlers but a
+long tail of small ones. Cheapest first — **H20** (a Draw Mana event; converts Blue + Red Attunement
+immediately), **H15** (two `edha-summon` fields; the only thing holding Forge Construct), **H19**
+(`whenSlowTurn`, one field), then **H17** (a target-scoped formula resolver, which finally closes the
+Field Medicine gap open since pass D).
+
+Previous update: **2026-07-24u** (RULE-2b PASS L —
 **THE FIRST MARKER LEDGER MIGRATED. `covenants` now lives where a rule can reach it, and all 12 of its readers followed for free.**
 ⚠️ **PACK REBUILD + ⟳ Sync REQUIRED.**)
 **Ratchet 152 → 150.** Checklist **2bL-1…14**, all unrun.

@@ -109,6 +109,39 @@ retired for good; live testing happens on the dashboard.
 
 ---
 
+## ⚑ RULE-2b PASS M — Envoy's cluster, the single-target gate, and an H3 bug (2026-07-24v) — NEEDS A PACK REBUILD
+
+> Eight talents, ratchet **150 → 142**. **2bM-1 is a BUG FIX to something shipped last pass** and is
+> the row I'd most like run: H3 was committing the ledger *before* it marked the creature, so a
+> Covenant formed with no icon and no +1 AE whenever a player targeted a creature they don't own and
+> no GM was connected. It looked exactly like "the talent is broken".
+>
+> Four of the six Envoy talents carry a **reminder, not a mechanic** — that was true before this pass
+> too. Their text is now editable in Foundry instead of being buried in the engine, which is the whole
+> gain; don't expect new automation from them.
+
+| # | talent | what to check | expected |
+|---|---|---|---|
+| 2bM-1 | ⚠️⚠️ **H3 ordering** (any ledger) | as a PLAYER, with **no GM connected**, use **Covenant** on an ally you don't own | It refuses with "a GM must be online… nothing placed" and **no half-formed pact is left behind**. Before the fix the entry was written anyway and then hidden for ever. If a GM is always online at your table, skip — this cannot bite you. |
+| 2bM-2 | **Rousing Presence** (Envoy) ⚠️ | target an ally, use it | The ally becomes **Determined** and the card names them. If nothing happens the use is being swallowed — tell me. |
+| 2bM-3 | ⚑ **Rousing Presence** — the card label | look at the card wording | It should read **"Determined"**, capitalised properly — not lowercase `determined`. Determined is a native status, and the old lookup missed it. |
+| 2bM-4 | **Lessons in Patience** | own it, then use Rousing Presence | The ally also **regains 1 focus**, on the same card. This is the one rider in the cluster that is a real mechanic. |
+| 2bM-5 | **Instill Confidence / Devoted Presence / Stalwart Presence** | own each, use Rousing Presence | Each adds its own reminder line. Owning none adds none; owning all three adds three. These are **reminders** — nothing is applied automatically, exactly as before. |
+| 2bM-6 | ⚑ **Rallying Shout** — a deliberate change | own it, use Rousing Presence on an ally **above 0 HP** | The reminder **still prints**. It used to print only at 0 HP, which hid the card's first clause ("revive an Unconscious ally"). Tell me if you preferred the old gate. |
+| 2bM-7 | ⚑ **Rousing Presence** — no stray mark on your ally | after using it, check the ally's flags (or just confirm nothing odd happens when they later take damage) | The ally should **not** be carrying a "marked by you" ownership flag. That flag feeds bonus-damage lookups and had no business being on a friend. |
+| 2bM-8 | **Withering Ray** (Black) ⚠️ | target **two** creatures, use it | Cancelled with **nothing spent**, and a whispered picker lists both; clicking one retargets and re-uses. Then confirm the **HP cost still works** on a normal single-target use — that talent now carries two rules. |
+| 2bM-9 | **Verdant Mend** (Green) | target two creatures, use it | Same picker, nothing spent. With one target it heals normally. |
+| 2bM-10 | ⚑ **Both** — the picker note | read the picker card | It carries a short line naming the talent ("hits ONE creature" / "heals ONE creature"). |
+| 2bM-11 | **Galvanize** (Envoy) — unchanged | use it on an ally | Still restores focus equal to their recovery die. It is **deliberately still engine-owned** — its amount is the *target's* die, which no rule can express yet. |
+| 2bM-12 | ⚑ **Nothing else in Envoy changed** | glance at Foresight and the other Envoy talents | No behaviour change. Foresight was converted back in pass E. |
+
+> ⚑ **Not verified in Foundry.** Nothing here has run at a table.
+>
+> **Not a bug if you see it:** Determined never expires. It never did — the card's "until the end of
+> the scene" has always been unenforced, and §9m q14 asks whether to build a real scene expiry.
+
+---
+
 ## ⚑ RULE-2b PASS L — Order's Covenant ledger (2026-07-24u) — NEEDS A PACK REBUILD
 
 > Two talents, ratchet **152 → 150** — but the real change is that **the whole `covenants` ledger
@@ -393,7 +426,7 @@ The live module + packs on this machine were, **as of 2026-07-18**, current thro
 **69 talents** have moved off engine name-dispatch onto their own documents, and **every one of them
 changes the PACK**, so none of it is live until one `deploy-to-foundry.bat` + ⟳ Sync. Checklist rows
 **2bA-1…9 · 2bB-1…10 · 2bC-1…8 · 2bD-1…7 · 2bE-1…10 · 2bF-1…17 · 2bG-1…8 · 2bH-1…11 · 2bI-1…12 ·
-2bJ-1…14 · 2bK-1…5 · 2bL-1…14** are ALL
+2bJ-1…14 · 2bK-1…5 · 2bL-1…14 · 2bM-1…12** are ALL
 unrun — do not treat any of them as verified, and do not read a "wrong text / old behaviour" report on a
 converted talent as a bug until this deploy has happened. Nine handlers were built in that window
 (H1 `edha-def-test`, H5 `edha-cae-grant`, H11 `edha-enter-stance`, H3 `edha-owner-list`,

@@ -199,6 +199,48 @@ Insight) and §9o called them byte-identical. **They are not, and the difference
     `getProperty(changes, "flags.edha-content.lists.covenants")` reads `undefined`. A flat legacy key
     had no dot, which is why this bites only *after* migration — and it fails silently.
 
+## Single-target talents — `edha-single-target` (07-24v)
+Config-only (the `edha-thorns` shape): the `preUseItem` gate reads the rule, and with ≥2 tokens
+targeted it cancels **before cost** and whispers a picker. Retired the name-keyed
+`EDHA_SINGLE_TARGET` Set, so adding a single-target talent is authoring a rule.
+- One optional `note`, printed on the picker card — it ships with a consumer rather than as a lying UI.
+- ⚠ **Verdant Mend's document was completely BARE**, which is why "just add a boolean" had nowhere to
+  go: there was no rule on the talent to hold a field. When a classification says "one boolean", check
+  that the talent HAS a rule to put it on.
+
+## In a multi-step write, REFUSE before you COMMIT (07-24v)
+H3's `place` committed the ledger and *then* marked the creature. With no GM online to mark a target
+the player does not own, the mark path returned — leaving an entry whose creature had no status, which
+`edhaOwnerList`'s reconcile-on-read then hid **for ever**. Silent three ways at once: the placement
+looked like a no-op, the cap never counted it, and junk built up in the flag. It hit every H3 consumer
+including the migrated `covenants` ledger.
+> **Order the steps so the one that can refuse runs first.** Any handler that writes in more than one
+> place has this shape; "commit, then apply" is only safe when the apply cannot fail.
+
+## A debuff handler will happily mark an ALLY — `mark` on `edha-apply-status` (07-24v)
+`edha-apply-status` wrote `markedBy.<status>` unconditionally, and the damage post-pass reads that flag
+to add the marker owner's bonus damage. Used for a **buff** (Rousing Presence's Determined) it put an
+enemy-debuff ownership flag on a friend, on a shared hot read path — harmless only while the bonus
+formula happened to be blank. **`mark: false` applies the status without claiming ownership.**
+- It also gained **`whenOwnsTalent`** (the upgrade-rider gate every sibling handler has), and its card
+  label gained the **native-status fallback term**: `determined` is not in `EDHA_STATUSES`, so the
+  two-term lookup printed a bare lowercase id. Mirror `edhaFireTrigger`'s three-term fallback.
+
+## "Registered" is not "usable" — the one-line test before writing `needs: []` (07-24v)
+Eight passes over-estimated for a single reason: a classification checked whether a handler type was
+**registered**. Name all three of these or it is not ready —
+1. **the EXECUTOR** — `edha-heal-cut` and `edha-overflow-thp` are registered with
+   `executor: async function () {}`. A config-only handler **cannot be a payload**, only a passive
+   read from elsewhere.
+2. **the SCHEMA FIELD** — `edha-combat-timing` has no slow-turn moment; `edha-next-test-mod`'s `skill`
+   is a scalar compare, so an authored comma-list silently matches nothing.
+3. **the EVENT** — nothing fires "you paid ritual HP" (Blood Price), and a talent whose
+   `activation.type` is `none` can never fire `use` at all, so it can hold no rule on that event (all
+   five Leyline Attunements).
+> Corollary: **a talent whose classified mechanic is already authored is pointed at the wrong line.**
+> Forge Construct's summon spec has been on its document for months; what holds it on the ratchet is a
+> sustain-ONE replace gate nobody had costed.
+
 ## Ledger-wide payloads — `target: "list-members"` (07-24u)
 `edha-triggered-effect` can address **every member of one of your H3 ledgers**, which is the payload
 shape the marker trees had no way to express (Bear Witness grants Temp HP to each Covenant ally).
