@@ -181,6 +181,7 @@ const EDHA_STATUSES = {
   doubledipped: { label: "Double-Dipped", icon: "icons/svg/blood.svg", condition: false, _id: "conddoubledip000", tint: "#b03060" },   // Black/Ritual — Double Dip's scene mark made VISIBLE (Ben 07-12: "hard to tell whether you're contributing to the Reservoir or using from it"); cleared with the flag at scene end
   braced:     { label: "Braced (attacks at disadvantage)", icon: "icons/svg/shield.svg", condition: true,  _id: "condbraced000000" },   // 07-16b playtest pass — Trooper/Captain Brace (timed via explicit edhaApplyTimedStatus stamp) + Frostbinder's PERMANENT Predictive Ward marker; deliberately NOT in EDHA_TIMED_STATUSES (the Ward must never auto-expire)
   diagrammed: { label: "Vital Diagram",                    icon: "icons/svg/blood.svg",  condition: false, _id: "conddiagrammed00", tint: "#d04a4a" },   // 07-16b — the Stitchmother's anatomical mark; Scalpel-Strike's +4 rides whenTargetStatus on it (scene-long, GM-cleared)
+  clearsight: { label: "Clearsight (veils suppressed nearby)", icon: "icons/svg/sun.svg", condition: false, _id: "condclearsight00", tint: "#3a9d4a" },   // Green (Instinct) — 07-25 pass 2bS: the SCENE-ARMING marker (edha-self-status writes it, edha-suppress-veil rules read it); enemy dark-veil markers in range stay down while it is up. Cleared at combat end (the Kindle-light convention).
 };
 function edhaRegisterStatuses(phase) {
   try {
@@ -428,6 +429,9 @@ function edhaTestRiderApply(roll, source, config) {
         if (h.whenFastTurn && !edhaIsFastTurn(actor)) continue;                                  // Momentum fast-turn payoffs
         if (h.whenSlowTurn && !edhaIsSlowTurn(actor)) continue;                                  // Calculated Patience (a real predicate, NOT !fast — see edhaIsSlowTurn)
         if (h.firstTestThisTurn && !edhaIsFirstTestThisTurn(actor)) continue;                    // Burning Drive: first test only
+        if (h.unlessDisadvantage && roll?.options?.advantageMode === "disadvantage") continue;   // Apex Predator: never stomp an active disadvantage (07-25)
+        const zoneNeed = Number(h.whenEnemiesInMyZone) || 0;                                     // Apex Predator: ≥N enemies in YOUR terrain (07-25)
+        if (zoneNeed > 0 && edhaEnemiesInOwnedTerrain(actor).length < zoneNeed) continue;
         if (h.mode && !mode) mode = h.mode;                    // first matching mode wins; formulas still stack
         if (!h.bonusFormula) continue;
         const resolved = Roll.replaceFormulaData(h.bonusFormula, actor.getRollData(), { missing: "0" });
@@ -984,26 +988,40 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
           ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealer.actor }), content: `<p>🎯 <strong>${rule.item.name}</strong> (${mk.owner.name}): +${amt} ${h.bonusDamageType || "vital"} vs the ${EDHA_STATUSES[status]?.label ?? status} target.</p>` });
         }
       }
-      // GREEN / INSTINCT pre-pass bonuses (name-based; added to the single apply, no recursion):
+      // Dealer-side passive bonus damage (`edha-damage-bonus`, 07-25 pass 2bS — was the name-keyed
+      // GREEN/INSTINCT pre-pass pair). Added to the single apply, no recursion; the gate and the
+      // amount ride the dealer's own documents. `@hunters` = how many different attackers hit this
+      // victim this round (the focus-fire tracker); `@colorRank` per ruling 122 (raw
+      // @skills.green.rank reads 0 → d2 on an adversary carrying this off-leyline).
       const dealtType0 = list.find(i => Number(i?.amount) > 0 && i?.type && i.type !== "heal")?.type || "energy";
-      //  Coordinated Hunt — you + ≥1 ally attacked this victim this round → +min(#attackers, Green rank).
-      if (edhaOwnsTalent(dealer.actor, "Coordinated Hunt")) {
-        const vtok3 = edhaCasterToken(target) ?? target.getActiveTokens?.()[0];
-        const otok3 = edhaCasterToken(dealer.actor);
-        if (vtok3 && otok3) {
-          const atk = edhaFocusFireSet(vtok3);
-          const ally = [...atk].some(id => { const t = canvas?.tokens?.get(id); return t && t.id !== otok3.id && (t.document?.disposition ?? 1) === (otok3.document?.disposition ?? 1); });
-          if (atk.has(otok3.id) && ally) {
-            const bonus = Math.min(atk.size, edhaColorRank(dealer.actor, "green"));
-            if (bonus > 0) { list.push({ amount: bonus, type: dealtType0 }); ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealer.actor }), content: `<p>🐺 <strong>Coordinated Hunt</strong> (${dealer.actor.name}): +${bonus} ${dealtType0} (${atk.size} hunters on ${target.name}).</p>` }); }
-          }
+      for (const tal of (dealer.actor.items ?? [])) {
+        if (!edhaIsTalent(tal)) continue;
+        for (const rule of edhaEventRules(tal)) {
+          const h = rule?.handler;
+          if (h?.type !== "edha-damage-bonus") continue;
+          try {
+            let hunters = 0;
+            const req = String(h.require || "window");
+            if (req === "pack-on-target") {
+              const vtok3 = edhaCasterToken(target) ?? target.getActiveTokens?.()[0];
+              const otok3 = edhaCasterToken(dealer.actor);
+              if (!vtok3 || !otok3) continue;
+              const atk = edhaFocusFireSet(vtok3);
+              const ally = [...atk].some(id => { const t = canvas?.tokens?.get(id); return t && t.id !== otok3.id && (t.document?.disposition ?? 1) === (otok3.document?.disposition ?? 1); });
+              if (!atk.has(otok3.id) || !ally) continue;
+              hunters = atk.size;
+            } else if (req === "window") {
+              if (!edhaStrikeWindowActive(dealer.actor)) continue;
+            }
+            const f = edhaSubstRankTier(h.amountFormula || "0", h.color ? (edhaColorRank(dealer.actor, h.color) || 1) : 1, Number(dealer.actor.system?.tier) || 1)
+              .replace(/@hunters\b/g, String(hunters));
+            const amt = Math.max(0, Math.floor(edhaEvalSync(f, dealer.actor.getRollData())));
+            if (amt > 0) {
+              list.push({ amount: amt, type: dealtType0 });
+              ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealer.actor }), content: `<p>🐺 <strong>${tal.name}</strong> (${dealer.actor.name}): +${amt} ${dealtType0}${hunters ? ` (${hunters} hunters on ${target.name})` : " strike"}.</p>` });
+            }
+          } catch (e) { console.error(`Edha Content | edha-damage-bonus (${tal?.name}) failed`, e); }
         }
-      }
-      //  Pack Pressure — within the strike window → +[Tier][Die]. Rank via edhaColorRank (ruling
-      //  122): raw @skills.green.rank reads 0 → d2 on an adversary carrying this off-leyline.
-      if (edhaPackPressureActive(dealer.actor)) {
-        const amt = Math.max(0, Math.floor(edhaEvalSync(`(${Number(dealer.actor.system?.tier) || 1})d(${2 * edhaColorRank(dealer.actor, "green") + 2})`, dealer.actor.getRollData())));
-        if (amt > 0) { list.push({ amount: amt, type: dealtType0 }); ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealer.actor }), content: `<p>🐺 <strong>Pack Pressure</strong> (${dealer.actor.name}): +${amt} ${dealtType0} strike.</p>` }); }
       }
       edhaLifeOutgoingBonus(dealer.actor, list, dealer.item);   // LIFE / Anaveth — Bone Spurs (+keen, melee-gated) / Apex Form (+vital) on the buffed creature's hit
       edhaCivTemperedEdge(dealer, target, list);   // CIVILIZATION / Kethane — Tempered Edge rides the Construct's melee Slam (+[T][D red] energy + ignore deflect)
@@ -7604,6 +7622,24 @@ function edhaCanSee(viewer, target) {
  * Generic handler `edha-dark-veil` {effectName}; debounced GM-side on token moves + lighting. */
 let _edhaDarkVeilTimer = null;
 function edhaDarkVeilSoon() { try { clearTimeout(_edhaDarkVeilTimer); _edhaDarkVeilTimer = setTimeout(() => { void edhaDarkVeilSweep(); }, 300); } catch (e) {} }
+/* `edha-suppress-veil` (07-25 pass 2bS — Natural Order re-litigated off the manual list, the Dread
+ * Presence lesson: the veil sweep IS a nameable hook). While an ARMED owner (the rule's
+ * requireSelfStatus, written by the talent's own edha-self-status rule) stands within Attunement
+ * Range of a HOSTILE token, that token's dark-veil marker stays down — the sweep refuses to raise
+ * it and stands down one it had raised. A GM's MANUAL marker toggle is still never fought
+ * (autoVeil-flagged effects only). Illusions / advantage-from-deception have no hook and ride the
+ * talent's edha-note. */
+function edhaVeilSuppressed(tok) {
+  try {
+    for (const { actor: owner, handler: h } of edhaWatchersOfRule("edha-suppress-veil")) {
+      if (h.requireSelfStatus && !owner.statuses?.has?.(h.requireSelfStatus)) continue;
+      const otok = edhaCasterToken(owner); if (!otok || otok.id === tok.id) continue;
+      if ((otok.document?.disposition ?? 1) === (tok.document?.disposition ?? 1)) continue;   // enemies of the owner only
+      if (edhaTokensWithin(otok, edhaAttuneFtColor(owner, h.rangeColor || "green")).some(t => t.id === tok.id)) return true;
+    }
+  } catch (e) {}
+  return false;
+}
 async function edhaDarkVeilSweep() {
   try {
     if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;   // one applier
@@ -7618,11 +7654,13 @@ async function edhaDarkVeilSweep() {
           const eff = [...(a.effects ?? [])].find(e => String(e.name || e.label || "").startsWith(effName));
           if (!eff) continue;
           const unlit = !edhaPointIlluminated(tok.center.x, tok.center.y);
-          if (unlit && eff.disabled) {
+          const suppressed = unlit && edhaVeilSuppressed(tok);   // only worth computing when the veil would be up
+          if (unlit && !suppressed && eff.disabled) {
             await eff.update({ disabled: false, "flags.edha-content.autoVeil": true });
             ChatMessage.create({ whisper: (game.users?.filter(u => u.active && u.isGM) ?? []).map(u => u.id), content: `<p>🌒 <strong>${tal.name}</strong>: ${tok.name} stands in darkness — the marker is ON (auto).</p>` });
-          } else if (!unlit && !eff.disabled && eff.getFlag?.("edha-content", "autoVeil")) {
+          } else if ((!unlit || suppressed) && !eff.disabled && eff.getFlag?.("edha-content", "autoVeil")) {
             await eff.update({ disabled: true, "flags.edha-content.autoVeil": false });
+            if (suppressed) ChatMessage.create({ whisper: (game.users?.filter(u => u.active && u.isGM) ?? []).map(u => u.id), content: `<p>🌿 <strong>${tal.name}</strong>: ${tok.name}'s veil is SUPPRESSED — an armed veil-suppressing enemy holds it within Attunement Range.</p>` });
           }
         }
       }
@@ -7632,6 +7670,15 @@ async function edhaDarkVeilSweep() {
 Hooks.on("updateToken", (doc, changes) => { try { if ("x" in changes || "y" in changes) edhaDarkVeilSoon(); } catch (e) {} });
 Hooks.on("updateScene", (scene, changes) => { try { if (changes.environment !== undefined || changes.darkness !== undefined) edhaDarkVeilSoon(); } catch (e) {} });
 for (const h of ["createAmbientLight", "updateAmbientLight", "deleteAmbientLight"]) Hooks.on(h, () => edhaDarkVeilSoon());
+// Arming/disarming a suppressor is an ActiveEffect change (statuses are AEs) — re-check the veils.
+for (const h of ["createActiveEffect", "deleteActiveEffect"]) Hooks.on(h, () => edhaDarkVeilSoon());
+// "For the scene": the clearsight arm clears when combat ends (the Kindle-light convention).
+Hooks.on("deleteCombat", () => {
+  try {
+    if (!game.user?.isGM) return;
+    for (const t of (canvas?.tokens?.placeables ?? [])) if (t.actor?.statuses?.has?.("clearsight")) { try { void t.actor.toggleStatusEffect?.("clearsight", { active: false }); } catch (e) {} }
+  } catch (e) {}
+});
 
 // Sense-through-obstruction reveals (07-16c, the B5/B6 rulings): a client whose user owns Void
 // Sense renders OMEN-bearing tokens through walls/fog; Reaper's Harvest owners render HARVESTED
@@ -10284,7 +10331,7 @@ Hooks.on("combatTurnChange", (combat) => { if (edhaDefBuffGmGate()) void edhaFat
 Hooks.on("combatStart", (combat) => { if (edhaDefBuffGmGate()) void edhaFateTurnStart(combat); });
 
 /* --- Bulwark Ground — attacks against an ally standing on your Ordained Ground can't benefit from
- * advantage. The INVERSE of the Black pre-roll pipeline (edhaApexPreRoll): it keys off the DEFENDER —
+ * advantage. The INVERSE of the advantage pre-roll pipelines (edhaTestRiderApply): it keys off the DEFENDER —
  * the attacker's synced target (edhaTargetsOfRoller), not the roller. If a target stands on a Bulwark
  * owner's Ordained square, any "advantage" on the incoming attack is neutralized to none; disadvantage
  * is left untouched (the card removes a benefit, it never grants one). The GM can still re-toggle in
@@ -14052,21 +14099,11 @@ function edhaSameDisposition(owner, tok) {
   return (tok.document?.disposition ?? 1) === (ot.document?.disposition ?? 1);
 }
 
-/* --- Apex Predator — ≥3 enemies in your terrain → advantage on your Physical (str/spd) tests ------ */
-const EDHA_PHYS_ATTRS = new Set(["str", "spd"]);
-function edhaPhysTest(roll, config) { return EDHA_PHYS_ATTRS.has(roll?.data?.skill?.attribute ?? config?.defaultAttribute); }
-function edhaApexPreRoll(roll, source, config) {
-  try {
-    const actor = edhaD20RollActor(config); if (!actor) return;
-    if (roll?.options?.advantageMode === "disadvantage") return;       // don't stomp an active disadvantage (e.g. Weakened)
-    if (!edhaOwnsTalent(actor, "Apex Predator") || !edhaPhysTest(roll, config)) return;
-    if (edhaEnemiesInOwnedTerrain(actor).length < 3) return;
-    roll.options.advantageMode = "advantage"; roll.configureModifiers?.();
-    const orig = roll.configureDialog?.bind(roll);
-    if (orig) roll.configureDialog = async (data) => { try { data ??= {}; data.skillTest ??= {}; data.skillTest.advantageMode = "advantage"; } catch (e) {} return orig(data); };
-  } catch (e) { console.error("Edha Content | Apex Predator pre-roll failed", e); }
-}
-for (const ctx of ["skill", "attack", "item"]) { const cap = ctx.charAt(0).toUpperCase() + ctx.slice(1); Hooks.on(`cosmere-rpg.pre${cap}Roll`, edhaApexPreRoll); }
+/* --- Apex Predator — ON ITS OWN DOCUMENT since 07-25 pass 2bS (iron rule 2b): an `edha-test-rider`
+ * rule ({mode: advantage · whenAttribute str,spd · whenEnemiesInMyZone 3 · unlessDisadvantage}).
+ * The bespoke edhaApexPreRoll hook trio is deleted — the generic injector (edhaTestRiderApply)
+ * gained the two gate fields, so any future "advantage while my terrain is crowded" talent is
+ * authoring, not engine work. edhaEnemiesInOwnedTerrain stays (the gate reads it). */
 
 /* --- Pack Sense — ON ITS OWN DOCUMENT since 07-25 (iron rule 2b): an H26 `edha-test-react` rule
  * ({rolls: attack,item · requireTargetInMyTerrain · modFormula Green}) — the fifth caller of
@@ -14358,10 +14395,8 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
 
 /* ============================================================================================
  * GREEN / INSTINCT tree engine (2026-06-16) — pack tactics: advantage-granting, focus-fire, forced
- * movement, a strike window. ENGINE-ONLY / name-based (talents stay events:{}, NO pack rebuild —
- * F5/relaunch). Reusable primitive: `advAttackNext` (advantage on your next attack), a mirror of
- * advTest. Coordinated Hunt + Pack Pressure inject a bonus damage instance in the applyDamage PRE-pass
- * (single call, no recursion).
+ * movement, a strike window. Reusable primitives: `advAttackNext` (advantage on your next attack,
+ * a mirror of advTest) and the focus-fire tracker — both generic, both stay ENGINE-OWNED.
  * Wired via contest core (reuses edhaQueueContest / edhaRollOpposedSkill):
  *   • Drive the Prey — Green vs Survival (opposed roll); success → Slowed (timed). Forced move-away
  *     and ally Reactive Strikes are GM-narrated (Manual by nature — no movement/reaction hook).
@@ -14369,9 +14404,18 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
  *   edha-test-success; the GM-narrated half rides the card note. The Fellstag's "Herding Antlers"
  *   adaptation keeps the engine path below: adversary abilities are a different surface with their
  *   own wiring standard (lint pass 5) and are explicitly out of 2b's scope.
- * Manual by nature (no Foundry hook): Predator's Instinct (track/fear), Natural Order (narrative
- * scene debuff). Packmate's Warning UPGRADED from truly-manual (2026-07-04): the edhaCanSee ward
- * injector applies the +2-defense-vs-unseen as −2 on the qualifying attack roll.
+ * IRON RULE 2b (07-25, pass 2bS) — the whole Instinct spine is document-driven now:
+ *   • Apex Predator — `edha-test-rider` {mode advantage · whenAttribute str,spd ·
+ *     whenEnemiesInMyZone 3 · unlessDisadvantage}; the bespoke pre-roll hook trio is deleted.
+ *   • Pack Hunter / Scent the Weak — `edha-adv-attack` rules on their own use events.
+ *   • Pack Pressure — `edha-strike-window` (use) + an `edha-damage-bonus` {require: window} rule.
+ *   • Coordinated Hunt — `edha-damage-bonus` {require: pack-on-target, min(@hunters, @colorRank)}.
+ *   • Packmate's Warning — `edha-unseen-ward` (the 2026-07-04 edhaCanSee injector, now announcing)
+ *     + an `edha-note` restating the passive on use.
+ *   • Natural Order — `edha-self-status` (clearsight arm) + `edha-suppress-veil` + `edha-note`:
+ *     the veil-suppression half is ENFORCED via the dark-veil sweep (re-litigated 07-25 — the
+ *     Dread Presence lesson); illusions/deception-advantage stay GM-narrated on the note.
+ * Manual by nature (no Foundry hook): Predator's Instinct (track/fear).
  * ============================================================================================ */
 
 // "Advantage on your next attack" flag (Pack Hunter / Scent the Weak), consumed on the next attack.
@@ -14427,37 +14471,25 @@ async function edhaFocusFireWatch(roll, source, config) {
 }
 for (const ctx of ["attack", "item"]) Hooks.on(`cosmere-rpg.${ctx}Roll`, edhaFocusFireWatch);
 
-// Pack Pressure strike window — active until the start of the owner's next turn.
-function edhaPackPressureActive(actor) {
-  const pp = actor?.getFlag?.("edha-content", "packPressure");
+// Strike window (opened by `edha-strike-window`) — active until the start of the owner's next turn.
+// Renamed from the Pack-Pressure-specific `packPressure` flag 07-25 (pass 2bS): the window is a
+// generic arm any talent can open, read by `edha-damage-bonus` rules gated `require: window`.
+function edhaStrikeWindowActive(actor) {
+  const pp = actor?.getFlag?.("edha-content", "strikeWindow");
   if (!pp || !game.combat?.started) return false;
   return edhaTurnSeq(game.combat.round, game.combat.turn) < edhaTurnSeq(pp.round, pp.turn);
 }
 
-/* --- Instinct on-use abilities -------------------------------------------------------------------- */
+/* --- Instinct on-use abilities -------------------------------------------------------------------
+ * IRON RULE 2b (07-25, pass 2bS): the name switch is gone. Pack Hunter and Scent the Weak are
+ * `edha-adv-attack` rules on their own `use` events (the generic executor below feeds the same
+ * advAttackNext pipeline); Pack Pressure is `edha-strike-window` + an `edha-damage-bonus` rule;
+ * Packmate's Warning's restatement card and Natural Order's scene card are `edha-note` rules.
+ * Only the Fellstag's Herding Antlers keeps an engine path — an ADVERSARY adaptation, a different
+ * surface with its own wiring standard (lint pass 5), explicitly out of scope for 2b. */
 Hooks.on("cosmere-rpg.useItem", (item) => {
   try {
     const actor = item?.actor; if (!actor) return;
-    const otok = edhaCasterToken(actor), disp = otok?.document?.disposition ?? 1;
-    // Pack Hunter — you + each ally adjacent to the targeted enemy gain advantage on your next attack.
-    if (item.name === "Pack Hunter" && edhaOwnsTalent(actor, "Pack Hunter")) {
-      void edhaGrantAdvAttack(actor, "Pack Hunter");
-      const enemyTok = Array.from(game.user?.targets ?? [])[0]; let n = 1;
-      if (enemyTok && otok) for (const t of (canvas?.tokens?.placeables ?? [])) {
-        if (t.id === otok.id || !t.actor || (t.document?.disposition ?? 1) !== disp || !edhaAdjacent(t, enemyTok)) continue;
-        void edhaGrantAdvAttack(t.actor, "Pack Hunter"); n++;
-      }
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🐾 <strong>Pack Hunter</strong> (${actor.name}): ${n} hunter(s) gain advantage on their next attack${enemyTok ? ` against ${enemyTok.name}` : ""}.</p>` });
-    }
-    // Scent the Weak — name the lowest-HP creature in range; advantage on your next attack (once/round).
-    if (item.name === "Scent the Weak" && edhaOwnsTalent(actor, "Scent the Weak")) {
-      const ft = edhaAttuneFtColor(actor, "green");
-      const enemies = otok ? edhaTokensWithin(otok, ft).filter(t => (t.document?.disposition ?? 1) !== disp && (t.actor?.system?.resources?.hea?.value ?? 1) > 0) : [];
-      enemies.sort((a, b) => (a.actor?.system?.resources?.hea?.value ?? 0) - (b.actor?.system?.resources?.hea?.value ?? 0));
-      const low = enemies[0];
-      if (low && edhaCoordOPRAllowed(actor, "Scent the Weak", "_scent")) { void edhaCoordOPRMark(actor, "Scent the Weak", "_scent"); void edhaGrantAdvAttack(actor, "Scent the Weak"); }
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: low ? `<p>🩸 <strong>Scent the Weak</strong> (${actor.name}): lowest HP in range = <strong>${low.name}</strong> (${low.actor?.system?.resources?.hea?.value} HP). Advantage on your first attack against it this round.</p>` : `<p>🩸 <strong>Scent the Weak</strong> (${actor.name}): no creatures in Attunement Range.</p>` });
-    }
     // Drive the Prey moved onto its document 07-24p (iron rule 2b) — `edha-def-test` green vs the
     // foe's Survival + a Slowed rule on edha-test-success. The forced move-away and ally Reactive
     // Strikes stay GM-narrated (no Foundry movement/reaction hook) and ride the H1 card's note.
@@ -14483,47 +14515,37 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
         });
       }
     }
-    // Pack Pressure — a +[Tier][Die] strike window until the start of your next turn (movement GM-narrated).
-    if (item.name === "Pack Pressure" && edhaOwnsTalent(actor, "Pack Pressure")) {
-      const coord = game.combat?.started ? edhaNextTurnCoord(game.combat, edhaCombatantTurnIndex(game.combat, actor)) : { round: 0, turn: 0 };
-      void actor.setFlag("edha-content", "packPressure", coord);
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🐺 <strong>Pack Pressure</strong> (${actor.name}): you + allies within 15 ft may Move ½ Speed without provoking (GM-narrated). Until the start of your next turn, your Strikes deal +[Tier][Die].</p>` });
-    }
-    // Manual / narrative (no Foundry hook): Natural Order. (Packmate's Warning upgraded to the
-    // edhaCanSee ward injector, 2026-07-04 — the on-use card below just restates the passive.)
-    if (item.name === "Packmate's Warning" && edhaOwnsTalent(actor, "Packmate's Warning"))
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>📣 <strong>Packmate's Warning</strong> (${actor.name}): an ally within 10 ft targeted by an attack they can't see gains <strong>+2 defense</strong> against it (auto — the attack roll takes −2 when the ally can't see the attacker: hidden, or wall LOS; darkness GM-judged).</p>` });
-    if (item.name === "Natural Order" && edhaOwnsTalent(actor, "Natural Order"))
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>⚖️ <strong>Natural Order</strong> (${actor.name}): for the scene, enemies in Attunement Range can't benefit from illusions, magical concealment, or advantage from deception (GM-narrated).</p>` });
   } catch (e) { console.error("Edha Content | Instinct use-hook failed", e); }
 });
 
-/* --- Packmate's Warning — +2 defense vs attacks the ally can't see (−2 on the attack roll) ---------- */
-// Defender-keyed pre-roll injector (the Lawkeeper shape + the Mantle NumericTerm append; was truly-
-// manual until edhaCanSee existed, upgraded 2026-07-04): an attack roll whose synced target is an
-// ally within 10 ft of a Packmate owner AND cannot see the attacker (hidden, or a sight-blocking
-// wall) takes −2 — the roll-side equivalent of "+2 defense against it". The owner itself is excluded
-// ("an ally"). ⚑ NumericTerm append — same bench caveat as the Mantle aura (dialog rebuilds).
-function edhaGreenPackmateWard(roll, source, config) {
+/* --- Unseen-attack ward (`edha-unseen-ward`, 07-25 pass 2bS — was the name-keyed Packmate's
+ * Warning injector). Defender-keyed pre-roll injector (the Lawkeeper shape + the Mantle
+ * NumericTerm append; was truly-manual until edhaCanSee existed, upgraded 2026-07-04): an attack
+ * roll whose synced target is an ally within the rule's range of an owner AND cannot see the
+ * attacker (hidden, or a sight-blocking wall) takes −N — the roll-side equivalent of "+N defense
+ * against it". The sweep ANNOUNCES (edhaWatchersOfRule); range, amount and the "an ally" self-
+ * exclusion ride the document. ⚑ NumericTerm append — same bench caveat as the Mantle aura. */
+function edhaUnseenWardPreRoll(roll, source, config) {
   try {
     const attacker = edhaD20RollActor(config); if (!attacker) return;
     const atok = edhaCasterToken(attacker); if (!atok) return;
     const dtok = edhaTargetsOfRoller(attacker)[0]; const da = dtok?.actor; if (!da || da === attacker) return;
     if (edhaCanSee(dtok, atok)) return;                       // the defender SEES the attack — no ward
-    for (const owner of edhaCharacterOwnersOf("Packmate's Warning")) {
-      if (owner === da) continue;                             // "an ally" — the owner itself is excluded
+    for (const { actor: owner, item: tal, handler: h } of edhaWatchersOfRule("edha-unseen-ward")) {
+      if (h.excludeSelf !== false && owner === da) continue;  // "an ally" — the owner itself is excluded
       const otok = edhaCasterToken(owner); if (!otok) continue;
       if ((otok.document?.disposition ?? 1) !== (dtok.document?.disposition ?? 1)) continue;
-      if (!edhaTokensWithin(otok, 10).some(x => x.id === dtok.id)) continue;
+      if (!edhaTokensWithin(otok, Number(h.rangeFt) || 10).some(x => x.id === dtok.id)) continue;
       const T = foundry.dice?.terms ?? {};
       if (!T.OperatorTerm || !T.NumericTerm) return;
-      roll.terms.push(new T.OperatorTerm({ operator: "-" }), new T.NumericTerm({ number: 2, options: { flavor: "Packmate's Warning (+2 defense)" } }));
+      const amt = Math.max(1, Number(h.amount) || 2);
+      roll.terms.push(new T.OperatorTerm({ operator: "-" }), new T.NumericTerm({ number: amt, options: { flavor: `${tal.name} (+${amt} defense)` } }));
       roll._formula = Roll.getFormula(roll.terms);
       break;
     }
-  } catch (e) { console.error("Edha Content | Packmate's Warning ward failed", e); }
+  } catch (e) { console.error("Edha Content | unseen-ward pre-roll failed", e); }
 }
-for (const ctx of ["Attack", "Item"]) Hooks.on(`cosmere-rpg.pre${ctx}Roll`, edhaGreenPackmateWard);
+for (const ctx of ["Attack", "Item"]) Hooks.on(`cosmere-rpg.pre${ctx}Roll`, edhaUnseenWardPreRoll);
 
 /* --- Draw Mana — universal leyline action; rider determined by the owned Leyline Key(s) ---------
  * Canon: "1 Action: recover Investiture equal to your Tier and trigger your leyline color's Attunement
@@ -16060,6 +16082,8 @@ function edhaRegisterNativeEventSystem() {
       whenFastTurn: new FF.BooleanField({ required: false, initial: false, label: "Only on a Fast turn", hint: "Reads combatant turnSpeed (Momentum fast-turn payoffs)." }),
       whenSlowTurn: new FF.BooleanField({ required: false, initial: false, label: "Only on a Slow turn", hint: "Calculated Patience. NOT the negation of Fast: it requires a real combatant, so it stays OFF out of combat (an unset turnSpeed in combat IS Slow — the system's default)." }),
       firstTestThisTurn: new FF.BooleanField({ required: false, initial: false, label: "Only on your first test this turn", hint: "Burning Drive." }),
+      whenEnemiesInMyZone: new FF.NumberField({ required: false, initial: 0, label: "Only while this many enemies stand in your difficult terrain", hint: "0 = no gate. Apex Predator: 3. Living enemies inside terrain YOU created (the Green Territory tag). 07-25 pass 2bS." }),
+      unlessDisadvantage: new FF.BooleanField({ required: false, initial: false, label: "Stand down if the roll is already at disadvantage", hint: "Apex Predator never stomps an active disadvantage (e.g. Weakened). Only meaningful with Mode = advantage. 07-25 pass 2bS." }),
     } },
     executor: async function () { /* applied by the pre-roll injector (edhaTestRiderApply reads this rule) */ },
   });
@@ -16432,6 +16456,91 @@ function edhaRegisterNativeEventSystem() {
       color: new FF.StringField({ required: false, initial: "green", label: "Colour for the [Size] rank" }),
       sizeFt: new FF.NumberField({ required: false, initial: 0, label: "Expansion (ft, 0 = [Size] by colour rank)" }),
       costInv: new FF.NumberField({ required: false, initial: 1, label: "Investiture cost (spent on the CLICK)", hint: "A declined offer costs nothing." }),
+    } },
+  });
+  /* ---- The Green pack family (07-25, pass 2bS — Instinct's on-use / dealer-side shapes) ---- */
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-adv-attack",
+    label: "Edha: Advantage On the Next Attack (On Use)",
+    description: "Grants 'advantage on your next attack' (the existing advAttackNext pipeline consumes it on your next attack/item roll). 'pack' also grants it to each ally adjacent to the enemy you have targeted (Pack Hunter); Scent mode instead names the lowest-HP living enemy in Attunement Range and arms you against it (Scent the Weak).",
+    config: { schema: {
+      to: new FF.StringField({ required: true, initial: "self", choices: choices("self", "pack"), label: "Who gains it", hint: "self = you. pack = you + every ally adjacent to your targeted enemy." }),
+      vsLowestHp: new FF.BooleanField({ required: false, initial: false, label: "Scent mode: name the lowest-HP enemy in range first", hint: "The grant only lands when a living enemy stands in the colour's Attunement Range; the card names it either way." }),
+      rangeColor: new FF.StringField({ required: false, blank: true, initial: "", label: "Attunement Range colour (Scent mode)" }),
+      once: new FF.StringField({ required: false, initial: "no", choices: choices("no", "round"), label: "Budget", hint: "round = the grant lands once per round (Scent the Weak); the card still posts." }),
+    } },
+    executor: async function (event) {
+      const item = event.item, actor = item?.actor; if (!actor) return;
+      const otok = edhaCasterToken(actor), disp = otok?.document?.disposition ?? 1;
+      if (this.vsLowestHp) {
+        const ft = edhaAttuneFtColor(actor, this.rangeColor || "green");
+        const enemies = otok ? edhaTokensWithin(otok, ft).filter(t => (t.document?.disposition ?? 1) !== disp && (t.actor?.system?.resources?.hea?.value ?? 1) > 0) : [];
+        enemies.sort((a, b) => (a.actor?.system?.resources?.hea?.value ?? 0) - (b.actor?.system?.resources?.hea?.value ?? 0));
+        const low = enemies[0];
+        if (low && (this.once !== "round" || edhaCoordOPRAllowed(actor, item.name, "_adv"))) {
+          if (this.once === "round") await edhaCoordOPRMark(actor, item.name, "_adv");
+          void edhaGrantAdvAttack(actor, item.name);
+        }
+        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: low
+          ? `<p>🩸 <strong>${item.name}</strong> (${actor.name}): lowest HP in range = <strong>${low.name}</strong> (${low.actor?.system?.resources?.hea?.value} HP). Advantage on your first attack against it this round.</p>`
+          : `<p>🩸 <strong>${item.name}</strong> (${actor.name}): no creatures in Attunement Range.</p>` });
+        return;
+      }
+      void edhaGrantAdvAttack(actor, item.name);
+      if (this.to === "pack") {
+        const enemyTok = Array.from(game.user?.targets ?? [])[0]; let n = 1;
+        if (enemyTok && otok) for (const t of (canvas?.tokens?.placeables ?? [])) {
+          if (t.id === otok.id || !t.actor || (t.document?.disposition ?? 1) !== disp || !edhaAdjacent(t, enemyTok)) continue;
+          void edhaGrantAdvAttack(t.actor, item.name); n++;
+        }
+        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🐾 <strong>${item.name}</strong> (${actor.name}): ${n} hunter(s) gain advantage on their next attack${enemyTok ? ` against ${enemyTok.name}` : ""}.</p>` });
+      } else {
+        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🐾 <strong>${item.name}</strong> (${actor.name}): advantage on your next attack.</p>` });
+      }
+    },
+  });
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-strike-window",
+    label: "Edha: Open a Strike Window (On Use)",
+    description: "Arms a window lasting until the start of your next turn. Your Edha: Bonus Damage rules gated 'window' apply while it is open (Pack Pressure). Put the card text — including any GM-narrated half — in the note, where it is editable.",
+    config: { schema: {
+      note: new FF.StringField({ required: false, blank: true, initial: "", label: "Card text", hint: "Posted when the window opens. Blank = a plain 'the window is open until the start of your next turn'." }),
+      icon: new FF.StringField({ required: false, blank: true, initial: "🐺", label: "Icon" }),
+    } },
+    executor: async function (event) {
+      const item = event.item, actor = item?.actor; if (!actor) return;
+      const coord = game.combat?.started ? edhaNextTurnCoord(game.combat, edhaCombatantTurnIndex(game.combat, actor)) : { round: 0, turn: 0 };
+      await actor.setFlag("edha-content", "strikeWindow", coord).catch(() => {});
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>${this.icon ? `${this.icon} ` : ""}<strong>${item.name}</strong> (${actor.name}): ${this.note || "the window is open until the start of your next turn."}</p>` });
+    },
+  });
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-damage-bonus",
+    label: "Edha: Bonus Damage On Your Hits (config only)",
+    description: "Adds a bonus damage instance (matching your attack's damage type) to your qualifying hits — read by the applyDamage pre-pass, so put it on an 'Edha: Watch Rule' event. 'window' = while your Edha: Strike Window is open (Pack Pressure); 'pack-on-target' = you + at least one ally attacked this victim this round, with @hunters = the attacker count (Coordinated Hunt).",
+    config: { schema: {
+      require: new FF.StringField({ required: true, initial: "window", choices: choices("window", "pack-on-target"), label: "Fires when", hint: "A gate is REQUIRED — an ungated always-on bonus belongs on Edha: Passive Damage Rider instead." }),
+      amountFormula: new FF.StringField({ required: true, initial: "(@tier)d(2 * @colorRank + 2)", label: "Bonus formula", hint: "@colorRank (via the colour below, ruling 122), @tier, and — in pack-on-target mode — @hunters. Coordinated Hunt is min(@hunters, @colorRank)." }),
+      color: new FF.StringField({ required: false, initial: "green", label: "Colour for @colorRank" }),
+    } },
+  });
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-unseen-ward",
+    label: "Edha: Ward Allies vs Unseen Attacks (config only)",
+    description: "An ally near you targeted by an attack they can't see (hidden attacker, or wall LOS; darkness GM-judged) gets +N defense against it — injected as −N on the attack roll (Packmate's Warning). Config-only: the pre-roll injector reads this rule — put it on an 'Edha: Watch Rule' event.",
+    config: { schema: {
+      rangeFt: new FF.NumberField({ required: false, initial: 10, label: "Ally within (ft)" }),
+      amount: new FF.NumberField({ required: false, initial: 2, label: "Defense bonus" }),
+      excludeSelf: new FF.BooleanField({ required: false, initial: true, label: "'An ally' — never the owner itself" }),
+    } },
+  });
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-suppress-veil",
+    label: "Edha: Suppress Enemy Veils (config only)",
+    description: "While you are ARMED (the self-status below — write it with an Edha: Apply Status To Yourself rule on this talent's use), hostile dark-veil markers within Attunement Range stay DOWN: the veil sweep refuses to raise them and stands down ones it raised (Natural Order). A GM's manual marker toggle is never fought. Config-only — put it on an 'Edha: Watch Rule' event.",
+    config: { schema: {
+      rangeColor: new FF.StringField({ required: false, initial: "green", label: "Attunement Range colour" }),
+      requireSelfStatus: new FF.StringField({ required: false, initial: "clearsight", label: "Armed while you carry this status" }),
     } },
   });
   api.registerItemEventHandlerType({

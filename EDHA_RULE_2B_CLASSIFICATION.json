@@ -60,16 +60,16 @@
   },
   "split": {
     "1": 0,
-    "2": 76,
-    "3": 14,
-    "1b": 15,
-    "total": 105
+    "2": 71,
+    "3": 13,
+    "1b": 14,
+    "total": 98
   },
   "_splitNote": "Recomputed FROM the talents map below, not asserted — the map is the record; any summary that disagrees with it is the thing that is wrong. Verify with scripts/check-2b-classification.js.",
   "handlerDemand": {
     "_note": "Consumers = bucket-2 talents naming the handler in `needs`. Most need two, so these sum past the bucket-2 count. Bucket-1b talents are NOT counted here (they need a field, not a handler).",
     "H8_edha_watch": {
-      "consumers": 30,
+      "consumers": 29,
       "trees": 12,
       "verdict": "SURVIVES — and it is now the LARGEST demand. Justification corrected: not 'no handler fires on engine events' (false) but 'no event system, native or edha, fans out to N observer actors'. See §9k. BUILT 07-24q; the `watch` enum widened 07-24r with `defeat` and `focus-change` (plus payloadTarget / whenTotal / chain), which is schema plus one dispatch call per hook rather than a handler. Still queued and measured in §9o: damage-applied, turn-start, token-move, attack-declared."
     },
@@ -99,7 +99,7 @@
       "verdict": "SURVIVES — slightly smaller than the 15 estimated"
     },
     "H7_edha_aura": {
-      "consumers": 6,
+      "consumers": 2,
       "trees": 3,
       "verdict": "SURVIVES — smaller than the 17 estimated; several presumed auras are really H8 watchers"
     },
@@ -933,12 +933,6 @@
       "needs": [],
       "why": "ENGINE-OWNED: per-round upkeep on per-viewer illusions"
     },
-    "Coordinated Hunt": {
-      "tree": "leyline/Green",
-      "bucket": "1b",
-      "needs": [],
-      "why": "the aggro ledger + edha-pack-advantage already exist; needs a per-attacker-count bonus field || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — activation.type is `none` (ALWAYS-ACTIVE), so it can never fire `use` and can hold no `use` rule. It needs an engine-detected event that already fires (edha-pre-test / edha-pre-deal-damage / edha-watch / edha-combat-timing), the Calculated Patience shape."
-    },
     "Vital Surge": {
       "tree": "leyline/Green",
       "bucket": "1b",
@@ -950,46 +944,6 @@
       "bucket": "1b",
       "needs": [],
       "why": "edha-opportunity-option exists; needs a clear-a-condition payload"
-    },
-    "Apex Predator": {
-      "tree": "leyline/Green",
-      "bucket": "2",
-      "needs": [
-        "H7"
-      ],
-      "why": "3+ enemies inside my terrain -> advantage on Physical tests"
-    },
-    "Pack Hunter": {
-      "tree": "leyline/Green",
-      "bucket": "2",
-      "needs": [
-        "H7"
-      ],
-      "why": "move adjacent to an enemy an ally is adjacent to -> both gain advantage"
-    },
-    "Pack Pressure": {
-      "tree": "leyline/Green",
-      "bucket": "2",
-      "needs": [
-        "H7"
-      ],
-      "why": "allies move without provoking + shared adjacency damage bonus"
-    },
-    "Packmate's Warning": {
-      "tree": "leyline/Green",
-      "bucket": "2",
-      "needs": [
-        "H8"
-      ],
-      "why": "an ally within 10 ft is targeted by an unseen attack -> +2 defense || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 2 — its name appears at L14482, L14501, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
-    },
-    "Scent the Weak": {
-      "tree": "leyline/Green",
-      "bucket": "2",
-      "needs": [
-        "H7"
-      ],
-      "why": "track the lowest-HP creature in range; first test vs it gains advantage"
     },
     "Resurgent Growth": {
       "tree": "leyline/Green",
@@ -1006,12 +960,6 @@
         "H6"
       ],
       "why": "pick-one over the target's injury ITEMS, then delete one"
-    },
-    "Natural Order": {
-      "tree": "leyline/Green",
-      "bucket": "3",
-      "needs": [],
-      "why": "ENGINE-OWNED: suppresses the illusion/veil system for enemies in range"
     },
     "Frenzied Tempo": {
       "tree": "leyline/Red",
