@@ -639,6 +639,29 @@ test("edhaListSharedHold: with no owner excluded, any holder counts", () => {
   assert.strictEqual(env.edhaListSharedHold([L("a", "Actor.X")], "Actor.X", null), true);
 });
 
+// --- edhaOwnerLedgers — reconcile against the MARKER status, not the ledger KEY (2bV) ---
+// Order's ledger keys are plural (`covenants`/`edicts`) while the marker ids are singular
+// (`covenant`/`edict`). The sweep used to pass no status, so edhaOwnerList's mark-wins filter
+// checked has("covenants") — false for every correctly-marked creature — and the whole sweep read
+// EMPTY: the Covenant proximity AE, the break watch and the multiOwner shared-hold all silently
+// died for any entry whose uuid resolved. Mutation-checked both ways (drop the status argument in
+// edhaOwnerLedgers' edhaOwnerList call and the first assertion fails).
+test("edhaOwnerLedgers reconciles on the passed marker status (plural key, singular marker)", () => {
+  const ally = { uuid: "Actor.ally", statuses: new Set(["covenant"]) };
+  const owner = { id: "own1", type: "character", flags: { "edha-content": { lists: { covenants: [{ id: "e1", uuid: "Actor.ally", name: "Ally" }] } } } };
+  const oldActors = env.game.actors, oldFrom = env.fromUuidSync;
+  env.game.actors = [owner];
+  env.fromUuidSync = (u) => (u === "Actor.ally" ? { actor: ally } : null);
+  try {
+    const swept = env.edhaOwnerLedgers("covenants", "covenant");
+    assert.strictEqual(swept.length, 1, "a correctly-marked, resolvable ally must be swept");
+    assert.strictEqual(swept[0].list[0].uuid, "Actor.ally");
+    // The regression itself, pinned: key-as-status drops the resolvable marked entry.
+    assert.strictEqual(env.edhaOwnerLedgers("covenants").length, 0,
+      "no status = the pre-2bV bug — reconciling vs the KEY drops every marked entry");
+  } finally { env.game.actors = oldActors; env.fromUuidSync = oldFrom; }
+});
+
 // --- edhaWatchMatches — H8's pure observation filter (07-24q) -----------------
 //
 // H8 lets a talent react to an event that fired on a DIFFERENT document. Everything about which

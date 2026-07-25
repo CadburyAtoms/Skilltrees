@@ -60,31 +60,31 @@
  },
  "split": {
   "1": 0,
-  "2": 47,
-  "3": 9,
+  "2": 41,
+  "3": 8,
   "1b": 7,
-  "total": 63
+  "total": 56
  },
  "_splitNote": "Recomputed FROM the talents map below, not asserted — the map is the record; any summary that disagrees with it is the thing that is wrong. Verify with scripts/check-2b-classification.js.",
  "handlerDemand": {
   "_note": "Consumers = bucket-2 talents naming the handler in `needs`. Most need two, so these sum past the bucket-2 count. Bucket-1b talents are NOT counted here (they need a field, not a handler).",
   "H8_edha_watch": {
-   "consumers": 16,
+   "consumers": 14,
    "trees": 7,
    "verdict": "SURVIVES — and it is now the LARGEST demand. Justification corrected: not 'no handler fires on engine events' (false) but 'no event system, native or edha, fans out to N observer actors'. See §9k. BUILT 07-24q; the `watch` enum widened 07-24r with `defeat` and `focus-change` (plus payloadTarget / whenTotal / chain), which is schema plus one dispatch call per hook rather than a handler. Still queued and measured in §9o: damage-applied, turn-start, token-move, attack-declared."
   },
   "H1_edha_def_test": {
-   "consumers": 9,
+   "consumers": 7,
    "trees": 6,
    "verdict": "SURVIVES — the single cleanest win; it is also literally the EDHA_HEROIC_DEFTESTS table made authorable"
   },
   "H3_edha_owner_list": {
-   "consumers": 12,
+   "consumers": 8,
    "trees": 4,
    "verdict": "SURVIVES — larger than the 24 estimated; 6 trees hand-roll the identical capped-list-with-fizzle code. 3 further bucket-1b talents (Risen Servant, Speak with the Fallen, Pinpoint Charge) also read the list, so H3 unblocks 37 in total."
   },
   "H6_edha_prompt_pick": {
-   "consumers": 9,
+   "consumers": 7,
    "trees": 3,
    "verdict": "BUILT 07-24s (pass J). ⚠ THE 07-24n VERDICT WAS HALF WRONG and is kept here as the correction: \"the post-card helpers are already generic and take the talent name as a mere label\" is TRUE of the OFFER shape (edhaPostCoordReactionCard branches on no name at all) and FALSE of the PICK shape — edhaPostCalcTestCard, edhaPostBeaconCard, edhaPostReknitCard, edhaPostLifeCleanseCard and edhaPostMutationCard each HARD-CODE a different payload in their click handler, so there was no one function to put a schema over. Built instead as pass H's move: one card+click pair whose click dispatches back through edhaDispatchTestResult, so the payload is the item's own edha-test-success rules and H6 owns no payload vocabulary. Sources `confirm` and `creatures` shipped; `status`, `item` and `effect` did NOT — their payload would have to receive the picked THING rather than an actor and no payload handler takes one, which is why Beacon of Stability, Surgical Precision, Devoted Presence, Reknit Form and Unweaving are still here."
   },
@@ -99,7 +99,7 @@
    "verdict": "SURVIVES — slightly smaller than the 15 estimated"
   },
   "H7_edha_aura": {
-   "consumers": 2,
+   "consumers": 1,
    "trees": 2,
    "verdict": "SURVIVES — smaller than the 17 estimated; several presumed auras are really H8 watchers"
   },
@@ -134,7 +134,7 @@
    "verdict": "BUILT 07-24s (pass K). The audit premise was WRONG in the same way H6 was: edhaResolveCharges has a generic SIGNATURE and a name-keyed BODY — it hard-codes i.name === \"Pinpoint Charge\" (:8511) and edhaOwnsTalent(owner, \"Concussive Yield\") (:8557). H12 WRAPS those two branches rather than retiring them, so the net ratchet was -2, not -4; Pinpoint Charge and Concussive Yield each still need their own conversion. NOT coupled to the charges ledger — the handler is engine code and reads the flag directly, so it needed none of the legacy-flag-path escape H3ann is blocked on. Also corrected: mergeTerrain MERGES NOTHING (no geometry union exists in the project); it swaps the terrain formula and prints a GM instruction."
   },
   "H3ann_owner_list_annotate": {
-   "consumers": 3,
+   "consumers": 2,
    "trees": 3,
    "verdict": "NEW 07-24q — NOT a handler: H3's missing `annotate` op (flag the most recent un-flagged entry), plus the legacy-flag-path escape H3 needs to address a ledger it does not itself own. Three consumers of the op shape are already in the engine and the engine NAMES the shape twice ('mirroring Pinpoint Charge', 'the Inevitable-Snare shape'). Blocked behind the same shared-ledger atomicity problem — see §9n pass H."
   },
@@ -504,66 +504,6 @@
    ],
    "why": "bound creature takes damage -> optional redirect. Once/round || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 5 — its name appears at L3752, L9495, L9508, L9514, L9568, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2). || CHECKED 2026-07-25 (pass 2bS, per the session brief): one H25 field is NOT enough — it needs requireLinkedVictim AND a choose-amount redirect ACTION (take UP TO half as Spirit + heal [T][D]) plus its use-side link-click machinery. Convert it WITH the Life path."
   },
-  "Edict": {
-   "tree": "deity/Order",
-   "bucket": "2",
-   "needs": [
-    "H3",
-    "H6"
-   ],
-   "why": "prohibition dialog + capped Edict list + marker status + violation button || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — this talent's name is in the use-cancelling preUseItem takeover set EDHA_ORDER_TAKEOVER @L13865, whose hook ends in a bare `return false`. The system's default use() is cancelled, so the `use` event NEVER fires and any authored `use` rule is silently inert while the Events tab looks correct. Not convertible until the takeover is dismantled; that is the atom, not the talent. MECHANIC COUNT 8 — its name appears at L13277, L13369, L13703, L13720, L13753, L13774, L13865, L13871, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
-  },
-  "Sealed Edict": {
-   "tree": "deity/Order",
-   "bucket": "2",
-   "needs": [
-    "H1",
-    "H3ann"
-   ],
-   "why": "CORRECTED 07-24q (NO SUCH OP): H3 does place/release/count. This is 'flag the most recent UNSEALED entry' — the engine comment calls it 'the Inevitable-Snare shape', and Inevitable Snare's comment calls itself 'mirroring Pinpoint Charge'. Three talents, one missing op. Also shared-ledger (edicts), and its name is read from inside Edict's card (the whenOwnsTalent/UPGRADE shape). 07-24s scouting: H1 is the WRONG GATE — its payload does not fire on ITS use, it fires when an Edict is VIOLATED, reached from three other talents (the Violated button :13450, Verdict :13175, Final Decree :13385). edha-def-test is on-use, so this needs an H8-shaped watch on a sibling talent’s resolution. Classic \"needs records the GATE, never the coupling\"."
-  },
-  "Verdict": {
-   "tree": "deity/Order",
-   "bucket": "2",
-   "needs": [
-    "H1",
-    "H3"
-   ],
-   "why": "CORRECTED 07-24q (SHARED LEDGER + CROSS-TALENT CALL): the test half is clean H1, but the payload resolves a specific entry of EDICT's ledger via edhaOrderResolveViolation — shared with Edict's Violated button and Final Decree, and it runs Sealed Edict's rider too. Converts with the edicts ledger. || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — this talent's name is in the use-cancelling preUseItem takeover set EDHA_ORDER_TAKEOVER @L13865, whose hook ends in a bare `return false`. The system's default use() is cancelled, so the `use` event NEVER fires and any authored `use` rule is silently inert while the Events tab looks correct. Not convertible until the takeover is dismantled; that is the atom, not the talent. MECHANIC COUNT 4 — its name appears at L13609, L13616, L13865, L13873, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
-  },
-  "Concord": {
-   "tree": "deity/Order",
-   "bucket": "2",
-   "needs": [
-    "H3",
-    "H8"
-   ],
-   "why": "scene flag over the Covenant list; each ally's first attack each round gains damage || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): LEG 3 (EVENT) FAILS — this talent's name is in the use-cancelling preUseItem takeover set EDHA_ORDER_TAKEOVER @L13865, whose hook ends in a bare `return false`. The system's default use() is cancelled, so the `use` event NEVER fires and any authored `use` rule is silently inert while the Events tab looks correct. Not convertible until the takeover is dismantled; that is the atom, not the talent. MECHANIC COUNT 3 — its name appears at L13649, L13865, L13874, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
-  },
-  "Shoulder the Oath": {
-   "tree": "deity/Order",
-   "bucket": "2",
-   "needs": [
-    "H8",
-    "H6"
-   ],
-   "why": "Covenant ally damaged -> take half + reduce + THP both. Once/round || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 5 — its name appears at L13555, L13559, L13902, L13904, L13912, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md §2)."
-  },
-  "Lawkeeper's Eye": {
-   "tree": "deity/Order",
-   "bucket": "2",
-   "needs": [
-    "H3",
-    "H7"
-   ],
-   "why": "advantage aura vs Edict-bound targets I can see. 07-24f called this a client veil; it is not — it is edhaCanSee + advantage"
-  },
-  "Final Decree": {
-   "tree": "deity/Order",
-   "bucket": "3",
-   "needs": [],
-   "why": "ENGINE-OWNED: three violation watchers resolving together over a cross-actor bound/witness ledger"
-  },
   "Galvanize": {
    "tree": "heroic/Envoy",
    "bucket": "2",
@@ -708,7 +648,7 @@
    "why": "a character in range takes damage a 2nd time in a round -> Disoriented"
   }
  },
- "_converted": "07-24j: 6 Warrior stances. 07-24k: 6 self-next-test. 07-24m: 4 heroic def-tests (H1). 07-24n: 11 action-economy/combat-timed + Tactical Ploy (H5 + H11). 07-24p: 11 gated tests (H1) + 3 upgrade riders retired as `whenOwnsTalent` authored data (Absolute Stillness, Calm Appeal, Resolute Stand). 07-24p (pass G): H3 built + Chaos's 3 fully-expressible Omen talents. Converted talents are REMOVED from this map. 07-24q (pass H): H8 built + Crown of Thorns, Absolute Authority, Extract Thought. 07-24r (pass I): H8's `watch` enum widened (defeat, focus-change) + H10 `edha-focus` built — the whole Black focus watcher (Coercive Pressure, Whispered Doubt, Predatory Insight), Hollow Command + Siphoned Will (upgrade-talent exit), Necrotic Cascade, Reactive Analysis. 07-24s (pass J): H6 `edha-prompt-pick` built (+ the `turn-start` watch kind, built WITH its only reachable consumer; `edha-push` widened with sizeColor/awayFrom and given an executor) — Subtle Suggestion, Pattern Recognition, Probability Cascade, False Premise, Anticipate, Intercept (Blue), Unnerving Approach, Puppeteer (Black), Overwhelming Authority (White). Blue and Black bucket-2 are now EMPTY. False Premise needed no prompt at all — Ben's fail-open ruling deleted its second path. Plus Feinting Strike (Warrior) in the same pass, which CLEARS heroic/Warrior: it needed no handler at all, only for edhaDispatchOnHit to stop hand-listing three payload types. 07-24s (pass K): H12 edha-detonate-list built — Cascading Failure, The Unmooring (Destruction). Their conversion’s FIRST step was deleting their names from EDHA_DESTRUCTION_TALENTS, whose takeover ends in a bare return false: leave the name in and the use event never fires, so any rule on the document is silently inert. 07-24u (pass L): the `covenants` LEDGER repointed to lists.covenants — ONE accessor, and all 12 readers followed for free — plus H3 given allowDuplicates (Ben 07-24t), multiOwner (Order icons are shared between owners) and sceneScoped, a pre-cost veto and a generic release button. Covenant converted, its +1-defenses AE moved onto its own Effects tab. lint pass 7 had to learn that a status `label:` is a DISPLAY string and not dispatch — that one false positive was the only thing holding Covenant on the ratchet. Bear Witness came with it — `whenMoment: round-start` added to the edha-combat-timing dispatcher (with a generic round-boundary latch and the mid-combat-reload guard copied from the code it replaced) plus `target: list-members` on edha-triggered-effect, the ledger-wide payload the marker trees had no way to express. Shoulder the Oath and Concord did NOT convert: both need in-flight damage payloads (a post-damage redirect and a pre-damage list mutation) that do not exist, which is the same `damage-applied` payload gap §9o has ruled out of scope three times. 07-24v (pass M): H3 ordering BUG FIXED (mark before committing the ledger — the reversed order left a phantom entry that reconcile-on-read hid for ever, affecting every H3 consumer incl. covenants). New `edha-single-target` config-only handler retires EDHA_SINGLE_TARGET — Withering Ray, Verdant Mend. `edha-apply-status` gained `mark` (a buff on an ally must not write an ownership flag) + `whenOwnsTalent`, and its card label gained the native-status fallback term. The whole Envoy Rousing-Presence cluster converted: Rousing Presence + Lessons in Patience (real mechanics) and Instill Confidence / Devoted Presence / Stalwart Presence / Rallying Shout as edha-note UPGRADE riders — four of those six carried a REMINDER not a mechanic, before and after. Galvanize stays engine-owned (target-scoped recovery die). 07-24w (pass N): Ben ruled q12 ENFORCE and q14 END OF COMBAT. `edha-next-test-mod` gained a COMMA-LIST `skill` matcher (it was a scalar compare, so an authored list would have matched nothing at all) and `ownedFrom` + `@owned`, because a die sized by HOW MANY sibling talents you own cannot be a literal on any one document — nothing in roll data exposes an owned-talent count. `edha-apply-status` gained `expire: combat` plus a generic end-of-combat sweep keyed on the creature, so Determined finally wears off. Converted the whole Leader command-die atom: Decisive Command, Confident/Demonstrative/Shrewd Command, Relentless March, and Authority — Authority as a rider because deleting the hook removed its only (cosmetic) presence and an empty document with no engine code is a rule-2b bug, not an exit. 07-24x (pass O): Ben ruled q13 BUILD IT and q15 (a) YES + (b) BUILD IT. `edha-next-test-mod` gained `rangeFt` / `maxTargets` / `doubleIfOwns` (Authority doubles BOTH, which is literally what its card says), `requireQuarry`, and `appliesTo` (test | damage | either) with a real damage-roll consumption path in the rollDamage wrapper plus a pre-cost veto for range and quarry. Decisive Command now ENFORCES its printed 20 ft and Authority genuinely doubles range and ally count; Pack Hunting converted with BOTH of its live card-vs-engine drifts fixed rather than papered over. 07-25 (pass R): the WHOLE White path (15) + Green's Pack Sense — H26 edha-test-react built (the coord/test-react twin of H25: Shared Conviction, Pillar of Order, Concordant Presence, Voice of Authority via a disadvantage-reroll action, Pack Sense), H27 edha-damage-reduce (Shield Wall, Devoted Conduit — the applyDamage pre-pass now sweeps rules), H7 edha-aura (Guardian Stance), edha-pulse (Collective Resolve + White Leyline Attunement's Draw-Mana heal, which leaves the EDHA_DRAW_MANA table), edha-cleanse (Beacon of Stability, un-orphaned from inside the White branch), edha-move-window (Ordered Advance), edha-designate (Guiding Signal), edha-accord-forge + H6 (Terms of Accord), H1 vs: prompt-dc widening (Counterpoint). Bound by Word took the upgrade-talent exit (the shareModIfOwns gate on Terms of Accord's forge rule, declared in the Accord header) — its bucket-3 siblings Terms of Accord and Voice of Authority re-litigated per iron rule 3 and CONVERTED instead of exiting. White bucket-2/3 are now EMPTY. 07-25 (pass 2bS): the whole leyline/Green path (14) + deity/Life Overgrowth via the deflectStackMax field — H2 zone family (edha-zone / edha-zone-hazard / edha-zone-react), edha-adv-attack, edha-strike-window, edha-damage-bonus, edha-unseen-ward, edha-heal-react, edha-remove-injury, edha-suppress-veil (+ clearsight); Natural Order re-litigated OFF its bucket-3 exit and CONVERTED (the veil half is enforced via the dark-veil sweep). Green is the second colour fully clear. 07-25 (pass 2bU): deity/Chaos CLEAR — Spreading Omen, Unweaving, Cascade Collapse, Unravel Everything on H1/H3/H6 + the 2bU widenings (H1 targetList owner-sweep, H3 near-victim/enemies-range, H6 source: effects, unlessTargetStatus); Void Sense on edha-sense-reveal (rendering ENGINE_OWNED, name out of code). 07-25 (pass 2bU): deity/Power CLEAR — Kneel (H13 built), Investiture of Command (maxTargets multi-target + adv-attack targets), Warlord's Advance / Momentum / Fury (armed damage-bonus: meleeOnly, tallyKills/@tally, onKill/onSurvive riders), Unstoppable Advance (H8 token-move kind + once: arm-per-target + immuneStatuses), Mantle of the Aspirant (bucket-3 RE-LITIGATED: self-status oncePerScene + defense-buff window: scene + edha-test-aura + edha-redirect; posters ENGINE-OWNED). Ratchet 70 -> 63.",
+ "_converted": "07-24j: 6 Warrior stances. 07-24k: 6 self-next-test. 07-24m: 4 heroic def-tests (H1). 07-24n: 11 action-economy/combat-timed + Tactical Ploy (H5 + H11). 07-24p: 11 gated tests (H1) + 3 upgrade riders retired as `whenOwnsTalent` authored data (Absolute Stillness, Calm Appeal, Resolute Stand). 07-24p (pass G): H3 built + Chaos's 3 fully-expressible Omen talents. Converted talents are REMOVED from this map. 07-24q (pass H): H8 built + Crown of Thorns, Absolute Authority, Extract Thought. 07-24r (pass I): H8's `watch` enum widened (defeat, focus-change) + H10 `edha-focus` built — the whole Black focus watcher (Coercive Pressure, Whispered Doubt, Predatory Insight), Hollow Command + Siphoned Will (upgrade-talent exit), Necrotic Cascade, Reactive Analysis. 07-24s (pass J): H6 `edha-prompt-pick` built (+ the `turn-start` watch kind, built WITH its only reachable consumer; `edha-push` widened with sizeColor/awayFrom and given an executor) — Subtle Suggestion, Pattern Recognition, Probability Cascade, False Premise, Anticipate, Intercept (Blue), Unnerving Approach, Puppeteer (Black), Overwhelming Authority (White). Blue and Black bucket-2 are now EMPTY. False Premise needed no prompt at all — Ben's fail-open ruling deleted its second path. Plus Feinting Strike (Warrior) in the same pass, which CLEARS heroic/Warrior: it needed no handler at all, only for edhaDispatchOnHit to stop hand-listing three payload types. 07-24s (pass K): H12 edha-detonate-list built — Cascading Failure, The Unmooring (Destruction). Their conversion’s FIRST step was deleting their names from EDHA_DESTRUCTION_TALENTS, whose takeover ends in a bare return false: leave the name in and the use event never fires, so any rule on the document is silently inert. 07-24u (pass L): the `covenants` LEDGER repointed to lists.covenants — ONE accessor, and all 12 readers followed for free — plus H3 given allowDuplicates (Ben 07-24t), multiOwner (Order icons are shared between owners) and sceneScoped, a pre-cost veto and a generic release button. Covenant converted, its +1-defenses AE moved onto its own Effects tab. lint pass 7 had to learn that a status `label:` is a DISPLAY string and not dispatch — that one false positive was the only thing holding Covenant on the ratchet. Bear Witness came with it — `whenMoment: round-start` added to the edha-combat-timing dispatcher (with a generic round-boundary latch and the mid-combat-reload guard copied from the code it replaced) plus `target: list-members` on edha-triggered-effect, the ledger-wide payload the marker trees had no way to express. Shoulder the Oath and Concord did NOT convert: both need in-flight damage payloads (a post-damage redirect and a pre-damage list mutation) that do not exist, which is the same `damage-applied` payload gap §9o has ruled out of scope three times. 07-24v (pass M): H3 ordering BUG FIXED (mark before committing the ledger — the reversed order left a phantom entry that reconcile-on-read hid for ever, affecting every H3 consumer incl. covenants). New `edha-single-target` config-only handler retires EDHA_SINGLE_TARGET — Withering Ray, Verdant Mend. `edha-apply-status` gained `mark` (a buff on an ally must not write an ownership flag) + `whenOwnsTalent`, and its card label gained the native-status fallback term. The whole Envoy Rousing-Presence cluster converted: Rousing Presence + Lessons in Patience (real mechanics) and Instill Confidence / Devoted Presence / Stalwart Presence / Rallying Shout as edha-note UPGRADE riders — four of those six carried a REMINDER not a mechanic, before and after. Galvanize stays engine-owned (target-scoped recovery die). 07-24w (pass N): Ben ruled q12 ENFORCE and q14 END OF COMBAT. `edha-next-test-mod` gained a COMMA-LIST `skill` matcher (it was a scalar compare, so an authored list would have matched nothing at all) and `ownedFrom` + `@owned`, because a die sized by HOW MANY sibling talents you own cannot be a literal on any one document — nothing in roll data exposes an owned-talent count. `edha-apply-status` gained `expire: combat` plus a generic end-of-combat sweep keyed on the creature, so Determined finally wears off. Converted the whole Leader command-die atom: Decisive Command, Confident/Demonstrative/Shrewd Command, Relentless March, and Authority — Authority as a rider because deleting the hook removed its only (cosmetic) presence and an empty document with no engine code is a rule-2b bug, not an exit. 07-24x (pass O): Ben ruled q13 BUILD IT and q15 (a) YES + (b) BUILD IT. `edha-next-test-mod` gained `rangeFt` / `maxTargets` / `doubleIfOwns` (Authority doubles BOTH, which is literally what its card says), `requireQuarry`, and `appliesTo` (test | damage | either) with a real damage-roll consumption path in the rollDamage wrapper plus a pre-cost veto for range and quarry. Decisive Command now ENFORCES its printed 20 ft and Authority genuinely doubles range and ally count; Pack Hunting converted with BOTH of its live card-vs-engine drifts fixed rather than papered over. 07-25 (pass R): the WHOLE White path (15) + Green's Pack Sense — H26 edha-test-react built (the coord/test-react twin of H25: Shared Conviction, Pillar of Order, Concordant Presence, Voice of Authority via a disadvantage-reroll action, Pack Sense), H27 edha-damage-reduce (Shield Wall, Devoted Conduit — the applyDamage pre-pass now sweeps rules), H7 edha-aura (Guardian Stance), edha-pulse (Collective Resolve + White Leyline Attunement's Draw-Mana heal, which leaves the EDHA_DRAW_MANA table), edha-cleanse (Beacon of Stability, un-orphaned from inside the White branch), edha-move-window (Ordered Advance), edha-designate (Guiding Signal), edha-accord-forge + H6 (Terms of Accord), H1 vs: prompt-dc widening (Counterpoint). Bound by Word took the upgrade-talent exit (the shareModIfOwns gate on Terms of Accord's forge rule, declared in the Accord header) — its bucket-3 siblings Terms of Accord and Voice of Authority re-litigated per iron rule 3 and CONVERTED instead of exiting. White bucket-2/3 are now EMPTY. 07-25 (pass 2bS): the whole leyline/Green path (14) + deity/Life Overgrowth via the deflectStackMax field — H2 zone family (edha-zone / edha-zone-hazard / edha-zone-react), edha-adv-attack, edha-strike-window, edha-damage-bonus, edha-unseen-ward, edha-heal-react, edha-remove-injury, edha-suppress-veil (+ clearsight); Natural Order re-litigated OFF its bucket-3 exit and CONVERTED (the veil half is enforced via the dark-veil sweep). Green is the second colour fully clear. 07-25 (pass 2bU): deity/Chaos CLEAR — Spreading Omen, Unweaving, Cascade Collapse, Unravel Everything on H1/H3/H6 + the 2bU widenings (H1 targetList owner-sweep, H3 near-victim/enemies-range, H6 source: effects, unlessTargetStatus); Void Sense on edha-sense-reveal (rendering ENGINE_OWNED, name out of code). 07-25 (pass 2bU): deity/Power CLEAR — Kneel (H13 built), Investiture of Command (maxTargets multi-target + adv-attack targets), Warlord's Advance / Momentum / Fury (armed damage-bonus: meleeOnly, tallyKills/@tally, onKill/onSurvive riders), Unstoppable Advance (H8 token-move kind + once: arm-per-target + immuneStatuses), Mantle of the Aspirant (bucket-3 RE-LITIGATED: self-status oncePerScene + defense-buff window: scene + edha-test-aura + edha-redirect; posters ENGINE-OWNED). Ratchet 70 -> 63. 07-25 (pass V): deity/Order to ZERO — the `edicts` ledger repointed onto H3 (uuid-keyed entries; proh/sealed ride along), the takeover Set deleted: Edict (H3 place {prohibition}), Sealed Edict (H3 {op: annotate} — H3ann built with its first consumer), Verdict (H1 {requireTargetOnList} + edha-prohibition-resolve), Concord (edha-self-status `concord` + list-member-hits damage-bonus {oncePerRoundPerDealer}), Shoulder the Oath (edha-redirect {direction: intercept} — re-litigated from its ENGINE_OWNED exit), Lawkeeper's Eye (edha-bound-adv config), Final Decree (ENGINE-OWNED flow keyed on its edha-decree rule — the Void-Sense exit shape). H3ann's consumers all converted or engine-adjacent this pass, so its count legitimately reads low.",
  "_readinessMeasured2bQ": {
   "date": "2026-07-25",
   "what": "Applied the 07-24v three-leg test (executor / schema field / event) plus a mechanic count to every talent whose `needs` column read satisfiable.",
