@@ -1245,6 +1245,53 @@ async function edhaDispatchOnHit(dealer, target, list) {
   }
 }
 
+/* H1 `edha-def-test` (07-24m) — fire THIS talent's payload rules once its test has resolved.
+ *
+ * Deliberately GENERIC: it does not know any payload handler type. Every rule carries its own
+ * executor (`rule.handler.execute`, the same call the system's own fireEvent makes), so a payload
+ * can be any handler that exists now or later — edha-triggered-effect, edha-apply-status,
+ * edha-next-test-mod, edha-push, the coming edha-cae-grant, or a NATIVE one. Hand-listing the
+ * payload types here is exactly the name-keyed mistake one level up, so don't.
+ *
+ * Two events rather than one event + a `whenTest` field: a field would have to be added to every
+ * payload handler's schema, whereas two events cost nothing anywhere and the rule editor's event
+ * picker documents the success/fail branch by itself.
+ *
+ * Order and short-circuit follow the system: `order`-sorted, and a handler returning false stops
+ * the rest (mirrors fireEvent). */
+/* The H1 pre-use VETO. Returning false from preUseItem cancels with NO cost paid, so the "nothing
+ * spent" guarantee the deity takeovers hand-rolled survives their retirement — but unlike a
+ * takeover this does not swallow the card or the roll, so the player still rolls their own test.
+ * Gate only; never resolves anything. */
+Hooks.on("cosmere-rpg.preUseItem", (item) => {
+  try {
+    if (!edhaIsTalent(item) || !item.actor) return;
+    const h = edhaRuleOf(item, "edha-def-test"); if (!h) return;
+    const ttok = Array.from(game.user?.targets ?? [])[0] ?? null;
+    if (h.requireTarget !== false && !ttok?.actor) {
+      ui.notifications?.warn(`Edha: ${item.name} — target the creature first (nothing spent).`);
+      return false;
+    }
+    if (h.rangeColor && ttok && !edhaDeathInRange(item.actor, ttok, h.rangeColor)) {
+      ui.notifications?.warn(`Edha: ${ttok.actor?.name ?? "that creature"} is outside your Attunement Range (${h.rangeColor}) — nothing spent.`);
+      return false;
+    }
+  } catch (e) { /* never block a use on a guard failure */ }
+});
+
+async function edhaDispatchTestResult(owner, item, target, ok, ctx = {}) {
+  const want = ok ? "edha-test-success" : "edha-test-fail";
+  const rules = edhaEventRules(item).filter(r => r?.event === want)
+    .sort((a, b) => (Number(a.order) || 0) - (Number(b.order) || 0));
+  for (const rule of rules) {
+    try {
+      const res = await rule.handler?.execute?.({ item, rule, options: { ...ctx, target, owner, testOk: ok } });
+      if (res === false) break;
+    } catch (e) { console.error(`Edha Content | ${item?.name} ${want} payload failed`, e); }
+  }
+  return rules.length;
+}
+
 /* --- GM cue cards (07-16): adversary ability text → a whispered reminder at its named hook -------
  * Generic handler `edha-gm-cue` (event edha-apply-watch; on-hit cues ride event edha-on-hit inside
  * edhaDispatchOnHit). Triggers: "damaged" (the owner took damage) · "hp-below" {atFraction} (the
@@ -2413,6 +2460,22 @@ function edhaReadDefense(actor, key) {
   if (!actor || !key) return null;
   const v = Number(foundry.utils.getProperty(actor, `system.defenses.${key}.value`));
   return Number.isFinite(v) ? v : null;
+}
+/* H1 `edha-def-test` (07-24m) — the pure success/fail decision, hoisted out of ~20 hand-rolled
+ * copies so it is testable without Foundry. `total` is the owner's captured roll.
+ *   vs "defense" -> beat `defValue` (edhaReadDefense)
+ *   vs "skill"   -> beat `oppRoll`  (edhaRollOpposedSkill — the engine rolls the foe; never trust
+ *                   the player to have won, per iron rule 3 / kill-soft-laziness)
+ *   vs "dc"      -> beat a flat `dc` (Grand Deception 15, Field Medicine 15)
+ * FAIL-OPEN on an unreadable comparison value, which is what every deity call site already does
+ * (`def == null ? true : total >= def`) — an adversary with no written defense must not make the
+ * talent silently useless. Returns { ok, dc } so the card can print what was beaten. Pinned. */
+function edhaDefTestOutcome(total, { vs = "defense", dc = null, defValue = null, oppRoll = null } = {}) {
+  const t = Number(total) || 0;
+  const bar = vs === "skill" ? oppRoll : vs === "dc" ? dc : defValue;
+  const n = Number(bar);
+  if (bar === null || bar === undefined || !Number.isFinite(n)) return { ok: true, dc: null };   // fail-open
+  return { ok: t >= n, dc: n };
 }
 // Queue a contest the moment a talent is used (captures game.user.targets reliably on the owner's client).
 // The talent's own skill_test roll is matched by edhaContestWatch — order-independent (see edhaTryResolveContest).
@@ -14584,7 +14647,56 @@ function edhaRegisterNativeEventSystem() {
     hook: "edha-content.noop-opportunity",   // sentinel: never fired; the post-roll Opportunity watcher reads these rules
   });
 
+  api.registerItemEventType({
+    source: "edha-content", type: "edha-test-success",
+    label: "Edha: When Your Test SUCCEEDS", description: "Fires when this talent's own Edha: Gated Test rule beats its target. Put the talent's payload rules on this event — any handler works.",
+    hook: "edha-content.noop-test-success",   // sentinel: never fired; edhaDispatchTestResult dispatches these
+  });
+  api.registerItemEventType({
+    source: "edha-content", type: "edha-test-fail",
+    label: "Edha: When Your Test FAILS", description: "Fires when this talent's own Edha: Gated Test rule does NOT beat its target (Synchronized Assault's reduced effect, Absolute Authority's consolation Weakened). Leave it empty if a failure should do nothing.",
+    hook: "edha-content.noop-test-fail",      // sentinel: never fired; edhaDispatchTestResult dispatches these
+  });
+
   /* ---- HANDLER TYPES (config schemas auto-render in the rule editor) ---- */
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-def-test",
+    label: "Edha: Gated Test (On Use)", description: "Roll this talent's own test and gate its payload on the result. YOU roll it on the talent's card; the engine captures that roll and compares it. Put what happens on the sibling 'When Your Test SUCCEEDS' / 'FAILS' rules — this handler only decides.",
+    config: { schema: {
+      skill: new FF.StringField({ required: true, initial: "", label: "Your test", hint: "The skill id YOU roll — leyline colors are skill ids too (blue, black, red, white, green), which is why one field covers both atlases. e.g. dis, ath, dec, ldr, ded, per, med." }),
+      vs: new FF.StringField({ required: true, initial: "defense", choices: choices("defense", "skill", "dc"), label: "Tested against", hint: "defense = a static defense · skill = an opposed SKILL the ENGINE rolls for the foe (never trust a player to have won — iron rule 3) · dc = a flat number printed on the card." }),
+      def: new FF.StringField({ required: false, blank: true, initial: "cog", choices: choices("", "phy", "cog", "spi"), label: "Which defense (vs = defense)" }),
+      targetSkill: new FF.StringField({ required: false, blank: true, initial: "", label: "Foe's skill (vs = skill)", hint: "e.g. ath, sur, dis — the engine rolls 1d20 + rank + attribute for them." }),
+      dc: new FF.NumberField({ required: false, initial: 0, label: "Flat DC (vs = dc)", hint: "Grand Deception and Field Medicine are both DC 15." }),
+      requireTarget: new FF.BooleanField({ required: false, initial: true, label: "Require a target", hint: "Vetoes the use BEFORE any cost is paid when nothing is targeted." }),
+      rangeColor: new FF.StringField({ required: false, blank: true, initial: "", label: "Attunement Range colour", hint: "Blank = no range gate. Set it (e.g. black) to veto — again before cost — when the target is outside your Attunement Range for that colour." }),
+      note: new FF.StringField({ required: false, blank: true, initial: "", label: "Card note", hint: "Appended to the result card — say what a success means when the payload is table-run." }),
+    } },
+    executor: async function (event) {
+      const item = event.item, owner = item?.actor; if (!owner) return;
+      const ttok = Array.from(game.user?.targets ?? [])[0] ?? null;
+      const target = ttok?.actor ?? null;
+      if (this.requireTarget !== false && !target) {
+        ui.notifications?.warn(`Edha: ${item.name} — target the creature, then use it again.`);
+        return;
+      }
+      const cfg = { vs: this.vs, dc: Number(this.dc) || 0, def: this.def, targetSkill: this.targetSkill, note: this.note };
+      edhaQueueContest(owner, this.skill, async ({ total }) => {
+        let defValue = null, oppRoll = null;
+        if (cfg.vs === "defense") defValue = target ? edhaReadDefense(target, cfg.def || "cog") : null;
+        else if (cfg.vs === "skill") oppRoll = target ? await edhaRollOpposedSkill(target, cfg.targetSkill) : null;
+        const { ok, dc } = edhaDefTestOutcome(total, { vs: cfg.vs, dc: cfg.dc, defValue, oppRoll });
+        const barLabel = cfg.vs === "skill" ? `${String(cfg.targetSkill || "").toUpperCase()} ${dc ?? "?"}`
+          : cfg.vs === "dc" ? `DC ${dc ?? cfg.dc}`
+          : `${String(cfg.def || "cog").toUpperCase()} ${dc ?? "?"}`;
+        const fired = await edhaDispatchTestResult(owner, item, target, ok, { total, dc });
+        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+          content: `<p><strong>${item.name}</strong>: ${total} vs ${target ? `${target.name}'s ` : ""}${barLabel} — <strong>${ok ? "SUCCESS" : "FAIL"}</strong>`
+            + `${!fired && ok ? " (no payload rule on this talent — resolve at the table)" : ""}.`
+            + `${cfg.note ? ` <span style="opacity:.85;font-size:.9em">${cfg.note}</span>` : ""}</p>` });
+      });
+    },
+  });
   api.registerItemEventHandlerType({
     source: "edha-content", type: "edha-triggered-effect",
     label: "Edha: Triggered Effect", description: "Deal damage / AoE / heal / Temp HP / affliction when this rule fires.",

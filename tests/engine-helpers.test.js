@@ -442,3 +442,32 @@ test("edhaStanceRiderChanges returns [] for a stance with no rider effect, and n
   eq(env.edhaStanceRiderChanges({}), []);
   eq(env.edhaStanceRiderChanges(null), []);
 });
+
+// --- edhaDefTestOutcome — H1's pure success/fail decision (07-24m) ------------
+// Hoisted out of ~20 hand-rolled copies of `def == null ? true : total >= def`. The fail-open
+// branch is the one that matters: an adversary with no written defense must not make the talent
+// silently do nothing, which is what a naive `total >= Number(null)` would produce.
+test("edhaDefTestOutcome vs defense: meets-or-beats succeeds, under fails", () => {
+  assert.strictEqual(env.edhaDefTestOutcome(14, { vs: "defense", defValue: 14 }).ok, true, "ties succeed");
+  assert.strictEqual(env.edhaDefTestOutcome(13, { vs: "defense", defValue: 14 }).ok, false);
+  assert.strictEqual(env.edhaDefTestOutcome(14, { vs: "defense", defValue: 14 }).dc, 14, "card prints what was beaten");
+});
+test("edhaDefTestOutcome vs skill: compares against the engine-rolled foe total", () => {
+  assert.strictEqual(env.edhaDefTestOutcome(18, { vs: "skill", oppRoll: 12 }).ok, true);
+  assert.strictEqual(env.edhaDefTestOutcome(9, { vs: "skill", oppRoll: 12 }).ok, false);
+});
+test("edhaDefTestOutcome vs dc: flat number, ties succeed", () => {
+  assert.strictEqual(env.edhaDefTestOutcome(15, { vs: "dc", dc: 15 }).ok, true);
+  assert.strictEqual(env.edhaDefTestOutcome(14, { vs: "dc", dc: 15 }).ok, false);
+});
+test("edhaDefTestOutcome FAILS OPEN when the bar is unreadable (no written defense)", () => {
+  for (const bad of [null, undefined, NaN, "—"]) {
+    assert.strictEqual(env.edhaDefTestOutcome(3, { vs: "defense", defValue: bad }).ok, true, `defValue ${String(bad)} must fail open`);
+  }
+  assert.strictEqual(env.edhaDefTestOutcome(3, { vs: "defense", defValue: null }).dc, null, "and reports no dc to print");
+  assert.strictEqual(env.edhaDefTestOutcome(3, { vs: "skill", oppRoll: null }).ok, true, "same for an unrollable foe");
+});
+test("edhaDefTestOutcome treats a 0 bar as real, not missing", () => {
+  assert.strictEqual(env.edhaDefTestOutcome(0, { vs: "dc", dc: 0 }).ok, true);
+  assert.strictEqual(env.edhaDefTestOutcome(-1, { vs: "dc", dc: 0 }).ok, false, "0 must not be swallowed as falsy");
+});
