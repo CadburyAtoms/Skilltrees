@@ -302,6 +302,99 @@ engine.split("\n").forEach((lineText, i) => {
       `deliberate, add a "type-strict: <reason>" comment on the line`);
 });
 
+// --- pass 8: the `execute-macro` budget (Ben's 07-24p ruling, gate landed 07-24s) ---------------
+//
+// Ben overruled a flat ban on the system's native `execute-macro` handler, and was right to: a macro
+// STRING is testable in a way a "the table resolves this by hand" card never is — a gate can parse
+// it and reason about its size. So it is permitted on a shipped talent, GATED. What it must never
+// become is the thing iron rule 2a forbids: a cross-actor subsystem living in a text field, i.e. a
+// second engine in a string.
+//
+// This lands BEFORE the first consumer, deliberately (Ben, 07-24r: "a prerequisite, not a
+// nice-to-have"). There are zero `execute-macro` rules in data/ today, so nothing is grandfathered
+// and the first one written is checked on the way in.
+//
+// THE LIMITS, and why these numbers. Ben sketched "~15 lines" and left the final call here.
+//   · 20 LOGICAL LINES (blank lines and comment-only lines don't count). 15 was the right order of
+//     magnitude but too tight in practice for the guard-clause style used everywhere else in this
+//     project — `if (!actor) return;` lines are cheap and make code MORE readable, and a limit that
+//     punishes them pushes authors toward dense one-liners, which is the opposite of the goal.
+//   · 1200 CHARACTERS as well, because a line limit alone is evaded by one long line and a
+//     character limit alone is evaded by whitespace. Either bound alone is decorative.
+// Both are about SIZE only. They are not a claim that a 20-line macro is a good idea; they are the
+// point past which "put it in a handler" stops being a matter of taste.
+{
+  const MAX_LOGICAL_LINES = 20;
+  const MAX_CHARS = 1200;
+  // A macro body runs as an async function body in Foundry, so top-level `await` is legal there and
+  // must not read as a syntax error here.
+  const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
+
+  const checkMacro = (where, h) => {
+    // A macro pointed at by UUID lives in the WORLD, not the repo: this gate cannot read it, a
+    // reviewer cannot diff it, and a pack rebuild cannot carry it. That defeats the whole point of
+    // moving behaviour onto the talent, so inline is the only permitted form.
+    if (h.UUID || (h.MacroType && String(h.MacroType).toLowerCase() !== "inline")) {
+      err(`${where}: execute-macro must be INLINE. A macro referenced by UUID lives in the world, ` +
+          `not in data/ — this gate cannot parse it, a review cannot diff it, and a pack rebuild ` +
+          `cannot carry it, so the behaviour is no more visible than the engine branch it replaced`);
+    }
+    const body = String(h.Inline ?? "");
+    if (!body.trim()) {
+      err(`${where}: execute-macro has an empty Inline body — an empty macro is a talent that does nothing`);
+      return;
+    }
+    if (body.length > MAX_CHARS) {
+      err(`${where}: execute-macro Inline is ${body.length} chars (max ${MAX_CHARS}) — if it needs ` +
+          `to be this big it needs to be a handler; see iron rule 2a`);
+    }
+    const logical = body.split("\n")
+      .map((l) => l.trim())
+      .filter((l) => l && !l.startsWith("//") && !l.startsWith("*") && !l.startsWith("/*")).length;
+    if (logical > MAX_LOGICAL_LINES) {
+      err(`${where}: execute-macro Inline is ${logical} logical lines (max ${MAX_LOGICAL_LINES}; ` +
+          `blanks and comments are free) — if it needs to be this big it needs to be a handler`);
+    }
+    // A parse error means the rule is dead at the table and nothing says so. This is the check that
+    // makes a macro defensible at all: it is the thing a manual card can never be given.
+    try { new AsyncFunction(body); }
+    catch (e) { err(`${where}: execute-macro Inline does not parse — ${e.message}`); }
+    // Size is the wrong thing to worry about on its own. A macro that registers a hook is a SECOND
+    // ENGINE regardless of length: it outlives the use that created it, it re-registers on every
+    // execution, and nothing ever removes it. Same for a timer.
+    if (/\bHooks\s*\.\s*(on|once)\s*\(/.test(body)) {
+      err(`${where}: execute-macro Inline registers a Foundry hook. A hook outlives the use that ` +
+          `created it and re-registers every time the macro runs, with nothing to remove it — that ` +
+          `is a second engine in a text field whatever its length. Put it in register-skills.js`);
+    }
+    if (/\bset(Interval|Timeout)\s*\(/.test(body)) {
+      err(`${where}: execute-macro Inline schedules a timer — same problem as a hook: it outlives ` +
+          `the use, and nothing cancels it. Put it in register-skills.js`);
+    }
+  };
+
+  for (const file of fs.readdirSync(AUTHORED_DIR).filter((f) => f.endsWith(".json")).sort()) {
+    let doc;
+    try { doc = JSON.parse(fs.readFileSync(path.join(AUTHORED_DIR, file), "utf8")); } catch (e) { continue; }
+    for (const [name, t] of Object.entries(doc.talents || {})) {
+      for (const [evId, ev] of Object.entries(t.events || {})) {
+        if (ev?.handler?.type === "execute-macro") checkMacro(`data/authored/${file} (${name}) event ${evId}`, ev.handler);
+      }
+    }
+  }
+  try {
+    const advData = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, "data/adversaries.json"), "utf8"));
+    for (const [advName, adv] of Object.entries(advData)) {
+      if (advName.startsWith("_")) continue;
+      for (const it of adv.items || []) {
+        for (const [j, ev] of (Array.isArray(it?.events) ? it.events : []).entries()) {
+          if (ev?.handler?.type === "execute-macro") checkMacro(`data/adversaries.json (${advName} / ${it.name}) events[${j}]`, ev.handler);
+        }
+      }
+    }
+  } catch (e) { /* pass 5 already reports a malformed adversaries.json */ }
+}
+
 // --- pass 7: the iron-rule-2b RATCHET (2026-07-24) -----------------------------
 // Rule 2b: a talent's behaviour belongs on the talent (system.events / effects), not bound to
 // its NAME in engine code. A name-keyed talent ships with empty Events/Effects tabs, editing
