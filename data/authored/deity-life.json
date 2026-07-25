@@ -42,7 +42,20 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "MutatePick000000": {
+          "event": "use",
+          "description": "Life (Anaveth). 2bW — the chooser as a rule (was the name-keyed useItem case): a whispered card offers the three adaptations for your willing target (default you); the click bakes the pick onto the creature's `mutation` flag for the scene, one per creature. The flag readers were always name-free: Bone Spurs rides the outgoing damage pre-pass (melee-gated), Venom Glands the on-hit post-pass (edhaAddAffliction), Dense Tissue the incoming deflect reduce + the forced-movement veto (Ben E16). An apex grant doubles all of them (Ben E19).",
+          "handler": {
+            "type": "edha-mutation",
+            "keenFormula": "@tier",
+            "venomFormula": "floor(((@tier)d(2 * @skills.green.rank + 2)) / 2)",
+            "deflectAmount": 2
+          },
+          "order": 0,
+          "id": "MutatePick000000"
+        }
+      },
       "effects": []
     },
     "Apex Form": {
@@ -83,7 +96,23 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "ApexGrant0000000": {
+          "event": "use",
+          "description": "Life (Anaveth). 2bW — the capstone's FIVE mechanics on one rule (was the name-keyed useItem case; LESSONS §2's count-the-mechanics check done): (1) start-of-ITS-turn [Tier][Die on Green] regeneration via the lifeRegen queue; (2) +2 Deflect and (3) +tier vital on its attacks via the `apexForm` flag; (4) active adaptations DOUBLED — every mutation reader checks the same flag (Ben E19); (5) the Injury when it ends — the scene reset's apex branch reads the flag's sourceName (auto at scene end). Willing target, default you.",
+          "handler": {
+            "type": "edha-regen-grant",
+            "formula": "(@tier)d(2 * @skills.green.rank + 2)",
+            "endOnVitalSpirit": false,
+            "mutationFormula": "",
+            "deflect": 2,
+            "vitalFormula": "@tier",
+            "note": "{name} regenerates [Tier][Die] at the start of its turns, gains +2 Deflect, and adds +Tier vital to its attacks (scene). Active adaptations are doubled; {name} takes an Injury when it ends (auto at scene end)."
+          },
+          "order": 0,
+          "id": "ApexGrant0000000"
+        }
+      },
       "effects": []
     },
     "Life Surge": {
@@ -172,7 +201,28 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "LifelineBond0000": {
+          "event": "use",
+          "description": "Life (Anaveth). 2bW — the whole talent as one intercept rule (was three name-keyed pieces: the link case, the Bulwark sweep block, the bespoke card/click): use LINKS your targeted creature under the `lifeline` flag (linkOnUse); when the linked creature takes damage, the generic intercept sweep offers the card — take UP TO half as Spirit (Spirit already ignores Deflect; you pick the amount), the creature heals back what you took plus [Tier][Die on Green], once per round. ⚠ the Life scene reset clears the `lifeline` key by name — keep the watchFlag as `lifeline`.",
+          "handler": {
+            "type": "edha-redirect",
+            "direction": "intercept",
+            "watchFlag": "lifeline",
+            "linkOnUse": true,
+            "chooseAmount": true,
+            "takeFraction": 0.5,
+            "takeType": "spirit",
+            "healFormula": "(@tier)d(2 * @skills.green.rank + 2)",
+            "thpFormula": "",
+            "oncePerRound": true,
+            "rangeColor": "",
+            "linkNote": "when {name} takes damage, you may take up to half of it as Spirit and heal them [Tier][Die] (once per round)"
+          },
+          "order": 0,
+          "id": "LifelineBond0000"
+        }
+      },
       "effects": []
     },
     "Overgrowth": {
@@ -265,7 +315,23 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "PrimalGrant00000": {
+          "event": "use",
+          "description": "Life (Anaveth). 2bW — the regen grant as a rule (was the name-keyed useItem case): Tier+1 at the start of the target's turns — [Tier][Die on Green]+1 while it carries an adaptation (mutationFormula) — ending if it takes Vital or Spirit damage (the flag-driven end-check). Willing target, default you.",
+          "handler": {
+            "type": "edha-regen-grant",
+            "formula": "@tier + 1",
+            "endOnVitalSpirit": true,
+            "mutationFormula": "(@tier)d(2 * @skills.green.rank + 2) + 1",
+            "deflect": 0,
+            "vitalFormula": "",
+            "note": "{name} regenerates Tier+1 (or [Tier][Die]+1 with an active adaptation) at the start of its turns — ends if it takes Vital or Spirit damage."
+          },
+          "order": 0,
+          "id": "PrimalGrant00000"
+        }
+      },
       "effects": []
     },
     "Prognosis": {
@@ -361,7 +427,20 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "SurgCleanse00000": {
+          "event": "edha-watch-rule",
+          "description": "Life (Anaveth). 2bW — the cleanse as a rule (was the name-keyed damageRoll hook): the base skill_test heal (2×[T][D] hit / [T][D] graze) is the system's; this rule fires on the talent's own NON-graze damage roll (the success branch) and posts the cleanse card for your current target — Weakened / Disoriented / Slowed, pick one. Test vs Physical (a DEFENSE) → base pipeline, contest-exempt.",
+          "handler": {
+            "type": "edha-cleanse",
+            "trigger": "success-damage-roll",
+            "conditions": "weakened,disoriented,slowed",
+            "rangeColor": "blue"
+          },
+          "order": 0,
+          "id": "SurgCleanse00000"
+        }
+      },
       "effects": []
     },
     "Vital Diagnosis": {
