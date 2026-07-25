@@ -474,7 +474,22 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "PackHuntQuarry00": {
+          "description": "Hunter. Reaction, 1 focus: add your Survival ranks to a targeted ally's attack OR damage roll against your quarry. 07-24x: replaced a name-gated useItem branch (iron rule 2b) and FIXED both of its live card-vs-engine drifts per Ben's q15 ruling. (a) `requireQuarry` adds the quarry gate the engine never had — the bonus used to land on the ally's next roll of any kind against anything; it is also vetoed BEFORE cost when you have no quarry, so the focus is not burned. (b) `appliesTo: either` makes the damage half real: the next-test pipeline was registered on d20 rolls only, so the card had been promising something impossible. The quarry is resolved when you spend the focus, not at roll time, so re-marking later cannot silently retarget a live bonus.",
+          "event": "use",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "target",
+            "count": 1,
+            "formula": "@skills.sur.rank",
+            "requireQuarry": true,
+            "appliesTo": "either"
+          },
+          "order": 0,
+          "id": "PackHuntQuarry00"
+        }
+      },
       "effects": []
     },
     "Protective Bond": {

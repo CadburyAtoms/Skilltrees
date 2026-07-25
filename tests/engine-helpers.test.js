@@ -579,6 +579,32 @@ test("edhaNextTestMatches: a skill gate rejects a roll carrying NO skill id", ()
   assert.strictEqual(env.edhaNextTestMatches(NTM({ skill: "itm, lea" }), { data: {} }), false);
 });
 
+// --- edhaNextTestMatches `appliesTo` — the damage-roll half (07-24x, Ben's q15(b) ruling) ---
+// Pack Hunting's card promised a bonus on "attack OR damage roll" and the pipeline was d20-only, so
+// the damage half was unreachable. Pinned in BOTH directions on BOTH callers: the default must stay
+// test-only (every pre-07-24x consumer is implicitly `test`, so a leak here changes shipped talents),
+// and `damage` must not fire on a d20.
+test("edhaNextTestMatches: the DEFAULT mod is test-only — a damage roll must not consume it", () => {
+  const m = NTM();
+  assert.strictEqual(env.edhaNextTestMatches(m, SROLL("ath"), null, null, false), true, "d20 still matches");
+  assert.strictEqual(env.edhaNextTestMatches(m, { data: {} }, null, null, true), false, "damage must NOT match");
+});
+test("edhaNextTestMatches: appliesTo 'damage' fires on damage and NOT on a d20", () => {
+  const m = NTM({ appliesTo: "damage" });
+  assert.strictEqual(env.edhaNextTestMatches(m, { data: {} }, null, null, true), true);
+  assert.strictEqual(env.edhaNextTestMatches(m, SROLL("ath"), null, null, false), false);
+});
+test("edhaNextTestMatches: appliesTo 'either' fires on both", () => {
+  const m = NTM({ appliesTo: "either" });
+  assert.strictEqual(env.edhaNextTestMatches(m, { data: {} }, null, null, true), true);
+  assert.strictEqual(env.edhaNextTestMatches(m, SROLL("ath"), null, null, false), true);
+});
+test("edhaNextTestMatches: a skill-gated mod never matches a damage roll (no skill id on one)", () => {
+  // Belt and braces: 'either' + a skill list must not leak onto damage, because a damage roll has no
+  // skill to check and the skill gate fails closed. Pack Hunting carries no skill list, deliberately.
+  assert.strictEqual(env.edhaNextTestMatches(NTM({ appliesTo: "either", skill: "sur" }), { data: {} }, null, null, true), false);
+});
+
 // --- edhaListSharedHold — the shared-marker guard (07-24u, audit §9o trap 3) ---
 // A marker status belongs to the CREATURE, not to one pact, and two of Order's are deliberately
 // shared between owners. edhaListUnmark clears a status unconditionally, so without this check one

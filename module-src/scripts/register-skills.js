@@ -657,6 +657,24 @@ function edhaWrapRollDamage(originalCall, options = {}) {
     const base = options.overrideFormula ?? this.system?.damage?.formula;
     if (base) options = { ...options, overrideFormula: `${base} + ${bonus}` };
   }
+  /* DAMAGE-ROLL next-test mods (07-24x, Ben's q15(b) ruling to BUILD this rather than delete the
+   * clause from the card). Pack Hunting's card offers its bonus on "your ally's attack OR damage
+   * roll"; the next-test pipeline was registered on d20 contexts only, so the damage half was
+   * unreachable and the card had been promising something impossible.
+   *
+   * Only mods that OPT IN (appliesTo damage|either) are eligible — every pre-07-24x consumer is
+   * implicitly `test`, so this is inert for all of them. Consumed here rather than in a post-roll
+   * hook because the formula has to be in the roll before it is evaluated. */
+  try {
+    const dmgMod = edhaNextTestDamageMod(this.actor, this);
+    if (dmgMod?.formula) {
+      const base = options.overrideFormula ?? this.system?.damage?.formula;
+      if (base) {
+        options = { ...options, overrideFormula: `${base} + ${dmgMod.formula}` };
+        void edhaNextTestConsumeDamage(this.actor, dmgMod);
+      }
+    }
+  } catch (e) { /* never break a damage roll on a rider failure */ }
   // Sovereignty (Verdannis): a die-stepped roller (Exalted/Diminished) has its damage dice moved
   // along the d4–d12 ladder before the roll (riders included — they're the roller's own damage).
   const stepped = edhaSovStepOverride(this, options.overrideFormula ?? this.system?.damage?.formula);
@@ -1664,6 +1682,33 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
     }
     if ((h.evict || "oldest") === "refuse" && cur.length >= edhaListCap(actor, h.capFormula)) {
       ui.notifications?.warn(`Edha: you are at your cap of ${edhaListCap(actor, h.capFormula)} — nothing spent.`);
+      return false;
+    }
+  } catch (e) { /* never block a use on a guard failure */ }
+});
+
+/* `edha-next-test-mod`'s pre-cost VETO (07-24x). Decisive Command costs a focus and Pack Hunting costs
+ * a focus and a Reaction, so a refusal after the executor runs burns both — the same reason H1, H12
+ * and H3 all have one of these. Only gates what the rule DECLARES: a range, or a required quarry.
+ * Restricted to `target: "target"` (the only mode that reads your current targets) plus the quarry
+ * check, which is owner-side and applies whatever the target mode is. */
+Hooks.on("cosmere-rpg.preUseItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
+    const h = edhaRuleOf(item, "edha-next-test-mod"); if (!h) return;
+    if (h.requireQuarry && !edhaQuarryOf(actor)) {
+      ui.notifications?.warn(`Edha: ${item.name} — you have no quarry (nothing spent).`);
+      return false;
+    }
+    if ((h.target || "target") !== "target") return;
+    const dbl = h.doubleIfOwns && edhaOwnsTalent(actor, String(h.doubleIfOwns).trim()) ? 2 : 1;
+    const rangeFt = Math.max(0, (Number(h.rangeFt) || 0) * dbl);
+    if (!rangeFt) return;
+    const otok = edhaCasterToken(actor);
+    const inRange = otok ? edhaTokensWithin(otok, rangeFt) : [];
+    const ok = Array.from(game.user?.targets ?? []).some(t => t.actor && inRange.some(x => x.id === t.id));
+    if (!ok) {
+      ui.notifications?.warn(`Edha: ${item.name} — target a creature within ${rangeFt} ft (nothing spent).`);
       return false;
     }
   } catch (e) { /* never block a use on a guard failure */ }
@@ -3959,7 +4004,7 @@ async function edhaSetNextTestMod(target, mod) {
     return true;
   } catch (e) { console.error("Edha Content | set next-test mod failed", e); return false; }
 }
-function edhaNextTestMatches(mod, roll, actor = null, round = undefined) {
+function edhaNextTestMatches(mod, roll, actor = null, round = undefined, wantDamage = false) {
   if (!mod) return false;
   // "…this round" (07-24r). A mod stamped with the round it was granted in silently stops matching
   // once the round moves on — the behaviour Predatory Insight's bespoke `advTest` flag had and this
@@ -3979,7 +4024,44 @@ function edhaNextTestMatches(mod, roll, actor = null, round = undefined) {
     const t = actor ? edhaTargetsOfRoller(actor)[0] : null;
     if ((t?.actor?.uuid ?? null) !== mod.targetUuid) return false;
   }
+  /* QUARRY-bound (07-24x, Ben's q15(a) ruling). Pack Hunting's bonus goes ON THE ALLY but is only
+   * valid against the GRANTER's quarry — a different creature from either party, so `targetUuid`
+   * (which binds to the granter's own current target, i.e. the ally) cannot express it. The granter's
+   * quarry uuid is stamped at grant time and checked against whoever the ROLLER is targeting.
+   *
+   * Fails CLOSED: no quarry stamped means the mod never matches. That is deliberate — the card says
+   * "against your quarry", so a bonus with no quarry to check is not a bonus. The pre-cost veto
+   * refuses the use outright, so this branch should never be reached with an empty stamp. */
+  if (mod.quarryUuid) {
+    const t = actor ? edhaTargetsOfRoller(actor)[0] : null;
+    if ((t?.actor?.uuid ?? null) !== mod.quarryUuid) return false;
+  }
+  /* WHICH ROLL it rides (07-24x, Ben's q15(b) ruling to BUILD damage-roll support). `test` (default,
+   * and every pre-07-24x consumer) = d20 tests only. `damage` = damage rolls only. `either` = both,
+   * whichever the ally rolls first — Pack Hunting's card says "attack or damage roll".
+   * `wantDamage` is passed by the damage path; a d20 caller leaves it undefined. */
+  const applies = mod.appliesTo || "test";
+  if (wantDamage === true && applies === "test") return false;
+  if (wantDamage !== true && applies === "damage") return false;
   return true;
+}
+/* The damage-roll half of the next-test pipeline (07-24x). Kept as two small named helpers beside the
+ * d20 pair so the shapes stay comparable: match, then consume. `roll` is faked as an object carrying
+ * no skill id, which is correct — a damage roll has no skill, so a `skill`-gated mod must not match it
+ * (and `edhaNextTestMatches` rejects a missing id, as its pinned test asserts). */
+function edhaNextTestDamageMod(actor, item) {
+  const mod = actor?.getFlag?.("edha-content", "nextTestMod");
+  if (!mod) return null;
+  return edhaNextTestMatches(mod, { data: {} }, actor, undefined, true) ? mod : null;
+}
+async function edhaNextTestConsumeDamage(actor, mod) {
+  try {
+    const left = Math.max(0, (Number(mod.count) || 1) - 1);
+    if (left <= 0) await actor.unsetFlag("edha-content", "nextTestMod");
+    else await actor.setFlag("edha-content", "nextTestMod", { ...mod, count: left });
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }),
+      content: `<p>🔮 <strong>${mod.source || "Calculation"}</strong> — <strong>${mod.formula}</strong> added to this damage roll${left > 0 ? ` (${left} more)` : ""}.</p>` });
+  } catch (e) { console.error("Edha Content | next-test damage consume failed", e); }
 }
 function edhaNextTestPreRoll(roll, source, config) {
   try {
@@ -4363,13 +4445,11 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
       if (!t) { ui.notifications?.warn("Edha: Seek Quarry — target the creature first, then use it again."); return; }
       void edhaSetQuarry(actor, t);
     }
-    if (item.name === "Pack Hunting") {
-      const ally = [...(game.user?.targets ?? [])][0]?.actor ?? null;
-      if (!ally) { ui.notifications?.warn("Edha: Pack Hunting — target the ALLY first, then use it again."); return; }
-      const ranks = Number(actor.system?.skills?.sur?.rank) || 0;
-      void edhaSetNextTestMod(ally, { source: "Pack Hunting", count: 1, formula: String(ranks) });
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🐺 <strong>Pack Hunting</strong>: ${ally.name}'s next roll against ${actor.name}'s quarry gains <strong>+${ranks}</strong> (applied automatically; use it on the attack or damage roll).</p>` });
-    }
+    /* Pack Hunting CONVERTED 07-24x (iron rule 2b). Both of its live card-vs-engine drifts were fixed
+     * with it, per Ben's q15 ruling: (a) the bonus now only applies against the granter's QUARRY (the
+     * engine had no quarry gate at all, so it landed on the ally's next roll against anything), and
+     * (b) it can now ride a DAMAGE roll, which the card always promised and the d20-only pipeline
+     * could never deliver. Its rule lives on the talent; see data/authored/heroic-hunter.json. */
   } catch (e) { console.error("Edha Content | quarry use failed", e); }
 });
 // Advantage on ATTACKS against your quarry ("find and study" rolls stay the table's call — flag it).
@@ -15949,6 +16029,11 @@ function edhaRegisterNativeEventSystem() {
       formula: new FF.StringField({ required: false, blank: true, initial: "", label: "Modifier formula (e.g. -1d6)", hint: "Resolved against YOUR roll data at use, so @skills.<x>.mod works (Overwhelm with Details banks your Lore modifier)." }),
       count: new FF.NumberField({ required: false, initial: 1, label: "Tests affected" }),
       skill: new FF.StringField({ required: false, blank: true, initial: "", label: "Only these skills", hint: "Comma-list of skill ids (dec, dis, ath …; leyline colours are skill ids too) — 'itm, lea, per' is Confident Command's list. Blank = the next test of any kind. Widened from a single id 07-24w." }),
+      rangeFt: new FF.NumberField({ required: false, initial: 0, label: "Maximum range (ft, 0 = no limit)", hint: "Vetoed BEFORE cost: a targeted creature further than this refuses the use with nothing spent. Decisive Command's card says 'an ally within 20 ft'. 07-24x." }),
+      maxTargets: new FF.NumberField({ required: false, initial: 1, label: "How many creatures it can affect", hint: "1 = the usual. Targets beyond this many are ignored (the first N you targeted are used). Doubled by the talent below. 07-24x." }),
+      doubleIfOwns: new FF.StringField({ required: false, blank: true, initial: "", label: "Owning this talent DOUBLES the range and the target count", hint: "A talent name — Authority doubles both halves of every ally-affecting Leader talent, which is exactly what its card says. Blank = no doubling. Authored data, so it is editable; the rule-2b smell is names in engine code. 07-24x." }),
+      requireQuarry: new FF.BooleanField({ required: false, initial: false, label: "Only against YOUR quarry", hint: "Stamps your current quarry on the mod; the bonus then only applies to a roll made against that creature. Vetoed BEFORE cost when you have no quarry. Pack Hunting. 07-24x." }),
+      appliesTo: new FF.StringField({ required: false, initial: "test", choices: choices("test", "damage", "either"), label: "Which roll it rides", hint: "test = d20 tests only (the default, and every pre-07-24x consumer). damage = damage rolls only. either = whichever comes first — Pack Hunting's card says 'attack or damage roll'. 07-24x." }),
       ownedFrom: new FF.StringField({ required: false, blank: true, initial: "", label: "Substitute @owned with how many of these talents you have", hint: "Comma-list of talent NAMES. The count replaces @owned in the formula before it resolves, which is how a die can scale with how many upgrades you own — the command die is 1d(4 + 2 * @owned) over the three Command talents. Talent names are fine HERE: this is authored data you can edit, not engine code. 07-24w." }),
       attr: new FF.StringField({ required: false, blank: true, initial: "", label: "Only tests on these attributes", hint: "Comma-list of attribute ids — 'int, wil' is a Cognitive test, 'str, spd' a Physical one. Blank = any. Coercive Pressure's disadvantage is Cognitive-only. 07-24r." }),
       expireEndOfRound: new FF.BooleanField({ required: false, initial: false, label: "Only for the rest of this round", hint: "Stamps the current combat round; the mod stops applying once the round moves on, instead of waiting forever for a matching test. For talents whose text says 'this round'. 07-24r." }),
@@ -15959,10 +16044,30 @@ function edhaRegisterNativeEventSystem() {
     executor: async function (event) {
       const item = event.item, owner = item?.actor; if (!owner) return;
       const toSelf = this.target === "self";
-      const target = toSelf ? owner
-        : this.target === "victim" ? (event.options?.victim ?? Array.from(game.user?.targets ?? [])[0]?.actor ?? null)
-        : (Array.from(game.user?.targets ?? [])[0]?.actor ?? null);
-      if (!target) { ui.notifications?.warn(`Edha: ${item.name} — target the creature, then use again.`); return; }
+      /* MULTI-TARGET + RANGE (07-24x, Ben's q13 ruling to build Authority for real). `doubleIfOwns`
+       * doubles BOTH halves at once because that is literally what Authority's card says: "Double the
+       * range of Leader talents that affect allies, AND double the number of allies affected."
+       * Only the `target` mode fans out — `self` is one creature by definition and `victim` is
+       * whatever the trigger already resolved against. */
+      const dbl = this.doubleIfOwns && edhaOwnsTalent(owner, String(this.doubleIfOwns).trim()) ? 2 : 1;
+      const maxT = Math.max(1, (Number(this.maxTargets) || 1) * dbl);
+      const rangeFt = Math.max(0, (Number(this.rangeFt) || 0) * dbl);
+      let picked;
+      if (toSelf) picked = [owner];
+      else if (this.target === "victim") picked = [event.options?.victim ?? Array.from(game.user?.targets ?? [])[0]?.actor ?? null].filter(Boolean);
+      else {
+        const otok = edhaCasterToken(owner);
+        picked = Array.from(game.user?.targets ?? [])
+          .filter(t => t.actor && (!rangeFt || (otok && edhaTokensWithin(otok, rangeFt).some(x => x.id === t.id))))
+          .slice(0, maxT)
+          .map(t => t.actor);
+      }
+      const target = picked[0] ?? null;
+      if (!target) { ui.notifications?.warn(`Edha: ${item.name} — target the creature${rangeFt ? ` (within ${rangeFt} ft)` : ""}, then use again.`); return; }
+      // The granter's quarry is resolved ONCE, here, not at roll time — "your quarry" means whoever it
+      // was when you spent the focus, so re-marking later must not silently retarget a live bonus.
+      const quarryUuid = this.requireQuarry ? (edhaQuarryOf(owner) || null) : null;
+      if (this.requireQuarry && !quarryUuid) { ui.notifications?.warn(`Edha: ${item.name} — you have no quarry.`); return; }
       const bits = [];
       if (this.mode || this.formula) {
         const mod = { source: item.name, count: Math.max(1, Number(this.count) || 1) };
@@ -15989,14 +16094,24 @@ function edhaRegisterNativeEventSystem() {
           }
           mod.formula = String(Roll.replaceFormulaData(f, owner.getRollData(), { missing: "0" })).trim() || f;
         }
-        await edhaSetNextTestMod(target, mod);
+        if (quarryUuid) mod.quarryUuid = quarryUuid;
+        if (this.appliesTo && this.appliesTo !== "test") mod.appliesTo = this.appliesTo;
+        for (const p of picked) await edhaSetNextTestMod(p, mod);
         if (this.mode) bits.push(`at <strong>${this.mode}</strong>`);
         if (this.formula) bits.push(`taking <strong>${mod.formula}</strong>`);
       }
-      if (this.plotDie) { await edhaGrantPlotDie(target, { skill: null, source: item.name }); bits.push("raising the stakes (<strong>Plot Die</strong>)"); }
-      if (this.opportunity) { await edhaSetEdhaFlag(target, "oppCredit", { source: item.name }); bits.push("with an <strong>Opportunity</strong> banked"); }
+      for (const p of picked) {
+        if (this.plotDie) await edhaGrantPlotDie(p, { skill: null, source: item.name });
+        if (this.opportunity) await edhaSetEdhaFlag(p, "oppCredit", { source: item.name });
+      }
+      if (this.plotDie) bits.push("raising the stakes (<strong>Plot Die</strong>)");
+      if (this.opportunity) bits.push("with an <strong>Opportunity</strong> banked");
       if (!bits.length) return;
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🎲 <strong>${item.name}</strong>: ${toSelf ? "your" : `${target.name}'s`} next test — ${bits.join(", ")}.</p>` });
+      const who = toSelf ? "your" : `${picked.map(p => p.name).join(", ")}'s`;
+      const rollWord = (this.appliesTo === "damage") ? "next damage roll" : (this.appliesTo === "either") ? "next test or damage roll" : "next test";
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+        content: `<p>🎲 <strong>${item.name}</strong>: ${who} ${rollWord} — ${bits.join(", ")}`
+          + `${quarryUuid ? " (against your quarry only)" : ""}.</p>` });
     },
   });
   api.registerItemEventHandlerType({

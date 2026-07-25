@@ -268,14 +268,17 @@
       },
       "events": {
         "DecisiveCmdDie00": {
-          "description": "Leader. Give the targeted ally a command die on their next test. 07-24w: replaced a name-gated useItem hook (iron rule 2b). The die is 1d(4 + 2 * @owned) where @owned counts how many of the three Command upgrades you have — d4 / d6 / d8 / d10 — because nothing in roll data exposes an owned-talent count, so a literal formula could not express the scaling. NOTE the card's 'within 20 ft' is still NOT enforced: no distance check existed before this conversion either, and adding one is a behaviour change tied to the open Authority question (audit 9m q13).",
+          "description": "Leader. Give the targeted ally a command die on their next test. 07-24w: replaced a name-gated useItem hook (iron rule 2b). The die is 1d(4 + 2 * @owned) where @owned counts how many of the three Command upgrades you have — d4 / d6 / d8 / d10 — because nothing in roll data exposes an owned-talent count, so a literal formula could not express the scaling. NOTE the card's 'within 20 ft' is still NOT enforced: no distance check existed before this conversion either, and adding one is a behaviour change tied to the open Authority question (audit 9m q13). 07-24x (Ben's q13 ruling to BUILD it): the card's 'within 20 ft' is now ENFORCED, vetoed pre-cost, and `doubleIfOwns: Authority` doubles BOTH the range (40 ft) and the ally count (2) — which is exactly what Authority's card says.",
           "event": "use",
           "handler": {
             "type": "edha-next-test-mod",
             "target": "target",
             "count": 1,
             "formula": "1d(4 + 2 * @owned)",
-            "ownedFrom": "Confident Command, Demonstrative Command, Shrewd Command"
+            "ownedFrom": "Confident Command, Demonstrative Command, Shrewd Command",
+            "rangeFt": 20,
+            "maxTargets": 1,
+            "doubleIfOwns": "Authority"
           },
           "order": 0,
           "id": "DecisiveCmdDie00"
@@ -294,14 +297,14 @@
           "id": "DecisiveRelent00"
         },
         "DecisiveAuthort0": {
-          "description": "Leader UPGRADE RIDER — Authority. A REMINDER, and deliberately so pending audit 9m q13. Authority's card doubles Leader range and ally count; the engine enforced NEITHER — the doubled range was computed into a warning string and the variable was then dead, and Decisive Command has no distance check at all. Deleting that hook removed Authority's only presence, so rather than leave it with an empty document and no engine code (which iron rule 2b calls a bug) it converts as a rider that actually says MORE than the old string did: it names the ally count too, which the engine never surfaced.",
+          "description": "Leader UPGRADE RIDER — Authority. 07-24x: Ben ruled BUILD IT, so this is no longer a reminder for unenforced text — `doubleIfOwns: Authority` on the rule above actually doubles the range and the target count. The note stays so the player is told what changed and knows to target two allies.",
           "event": "use",
           "handler": {
             "type": "edha-note",
             "icon": "🎖️",
             "whisper": "public",
             "whenOwnsTalent": "Authority",
-            "text": "<strong>Authority</strong>: this reaches an ally within <strong>40 ft</strong> instead of 20, and may affect <strong>2 allies</strong> instead of 1 (neither is enforced — pick the second ally and check the range at the table)."
+            "text": "<strong>Authority</strong>: this reaches <strong>40 ft</strong> instead of 20 and affects <strong>2 allies</strong> instead of 1 — both now enforced automatically; target both allies before using it."
           },
           "order": 2,
           "id": "DecisiveAuthort0"
