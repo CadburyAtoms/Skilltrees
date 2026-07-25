@@ -42,7 +42,20 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "BeaconStabCln000": {
+          "description": "White / Coordination. `edha-cleanse` on H20's edha-draw-mana event, iron rule 2b (07-25, pass 2bR): was a one-line orphan nested INSIDE the White Draw Mana branch (handed its visible ally list — visibleOnly reproduces that filter). One button per (ally, condition); the click spends 1 Inv and removes it. ⚠ Cosmetic drift: the offer is its own card now, not a line on the Draw Mana summary card.",
+          "event": "edha-draw-mana",
+          "handler": {
+            "type": "edha-cleanse",
+            "rangeColor": "white",
+            "visibleOnly": true,
+            "costs": "inv:1"
+          },
+          "order": 1,
+          "id": "BeaconStabCln000"
+        }
+      },
       "effects": []
     },
     "Bound by Word": {
@@ -107,7 +120,20 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "CollResolvePls00": {
+          "description": "White / Accord. `edha-pulse` (status), iron rule 2b (07-25, pass 2bR): was a name-keyed useItem branch. Determined to every ally in White Attunement Range on use — no expiry and no visibility gate, exactly as the retired branch had it (the activation's Opportunity + 1 Inv cost stays on the activation).",
+          "event": "use",
+          "handler": {
+            "type": "edha-pulse",
+            "rangeColor": "white",
+            "kind": "status",
+            "statusId": "determined"
+          },
+          "order": 0,
+          "id": "CollResolvePls00"
+        }
+      },
       "effects": []
     },
     "Concordant Presence": {
@@ -134,7 +160,23 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ConcordPresTR000": {
+          "description": "White / Coordination. H26, iron rule 2b (07-25, pass 2bR). requireSeen is the 07-12 ruling (no triggering through walls, and grant recipients must be seen too); the grant is once per (skill, round) and the owner clicks only when the triggering test actually succeeded (ruling 1c).",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-test-react",
+            "when": "any",
+            "requireSkillTest": true,
+            "rangeColor": "white",
+            "requireSeen": true,
+            "action": "grant-plot-die",
+            "note": "{roller} just tested {skill} → {total}. On a success, grant the next ally's {skill} test the Plot Die."
+          },
+          "order": 0,
+          "id": "ConcordPresTR000"
+        }
+      },
       "effects": []
     },
     "Counterpoint": {
@@ -174,7 +216,39 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "CounterptH100000": {
+          "description": "White / Accord. H1 `vs: prompt-dc` (built this pass), iron rule 2b (07-25, pass 2bR): was edhaCounterpointContest. You roll the talent's own White test; the GM is then asked for the influence result. ⚠ Two deliberate drifts from the retired code, both sanctioned: no target now VETOES before cost (H1 convention) instead of posting the manual Disorient card, and a DECLINED prompt resolves fail-open (§9m q9) instead of falling back to that card.",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "white",
+            "vs": "prompt-dc",
+            "requireTarget": true,
+            "note": "On a success the influence is negated and the payload Disorients the enemy (1 Inv)."
+          },
+          "order": 0,
+          "id": "CounterptH100000"
+        },
+        "CounterptDis0000": {
+          "description": "White / Accord. The success payload: spend 1 Investiture, Disorient the influenced enemy until the end of your next turn (owner-relative timed expiry), exactly what the retired contest callback did on total >= DC.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "status",
+            "statusId": "disoriented",
+            "statusExpire": "owner",
+            "target": "victim",
+            "formula": "0",
+            "damageType": "energy",
+            "costResource": "inv",
+            "costValue": 1,
+            "note": "influence negated — Disoriented until the end of your next turn"
+          },
+          "order": 1,
+          "id": "CounterptDis0000"
+        }
+      },
       "effects": []
     },
     "Devoted Conduit": {
@@ -201,7 +275,21 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "DevConduitDR0000": {
+          "description": "White / Bulwark. H27, iron rule 2b (07-25, pass 2bR). Only on REDIRECTED damage — Shared Burden's 'in their place' hit (ruling C1); victim inside your White Attunement Range; half [Tier][White Die] prevented. Same adversary-owner rank rules as Shield Wall.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-damage-reduce",
+            "when": "redirected",
+            "rangeColor": "white",
+            "color": "white",
+            "amountFormula": "floor(((@tier)d(2 * @colorRank + 2)) / 2)"
+          },
+          "order": 0,
+          "id": "DevConduitDR0000"
+        }
+      },
       "effects": []
     },
     "Disciplined Mind": {
@@ -255,7 +343,22 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "GuardStanceAur00": {
+          "description": "White / Bulwark. H7 `edha-aura`, iron rule 2b (07-25, pass 2bR): was the name-keyed guardianStance sweep (07-12 ruling E re-litigated). While at least one living ally is adjacent, you and each adjacent living ally carry the managed +1 Deflect AE; the sweep applies/removes it as tokens move. Legacy guardianStance-flagged AEs from pre-07-25 deploys are swept off automatically.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-aura",
+            "key": "system.deflect.bonus",
+            "amount": 1,
+            "alsoAllies": true,
+            "label": "Guardian Stance (+1 Deflect)",
+            "img": "icons/magic/defensive/shield-barrier-blue.webp"
+          },
+          "order": 0,
+          "id": "GuardStanceAur00"
+        }
+      },
       "effects": []
     },
     "Guiding Signal": {
@@ -293,7 +396,19 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "GuidSignalDsg000": {
+          "description": "White / Coordination. `edha-designate` over the Tool A2 designate-mark primitive, iron rule 2b (07-25, pass 2bR): was a name-keyed useItem branch. Card text is canon (Ben 07-14 — the old pick-an-ally grant card was engine drift): designate an OPPOSING token in White Attunement Range; the next ally testing against it this round gets the Plot Die.",
+          "event": "use",
+          "handler": {
+            "type": "edha-designate",
+            "color": "white",
+            "note": "The next ally to test against the designated character this round raises the stakes (have them target the token when rolling)."
+          },
+          "order": 0,
+          "id": "GuidSignalDsg000"
+        }
+      },
       "effects": []
     },
     "Hardy": {
@@ -499,7 +614,18 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "OrderedAdvMW0000": {
+          "description": "White / Coordination. `edha-move-window`, iron rule 2b (07-25, pass 2bR): was a name-keyed useItem branch (07-14 — use arms a round-window; the updateToken watcher reads the FLAG and posts the allies-within-10ft half-Speed card on each move). Provoke itself stays un-enforced — no reaction system exists to suppress.",
+          "event": "use",
+          "handler": {
+            "type": "edha-move-window",
+            "rangeFt": 10
+          },
+          "order": 0,
+          "id": "OrderedAdvMW0000"
+        }
+      },
       "effects": []
     },
     "Overwhelming Authority": {
@@ -605,7 +731,23 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "PillarOrderTR000": {
+          "description": "White / Coordination. H26 `edha-test-react`, iron rule 2b (07-25, pass 2bR): retired the name-keyed loop in the coord watcher. Gates, cost and both texts are byte-for-byte what the retired block passed to edhaPostCoordReactionCard — an ally in White Attunement Range rolled a Complication, 1 Investiture to blank it.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-test-react",
+            "when": "complication",
+            "rangeColor": "white",
+            "action": "offer",
+            "costs": "inv:1",
+            "prompt": "{roller} rolled a Complication. Spend 1 Investiture to change it to a blank face.",
+            "result": "🛡️ <strong>Pillar of Order</strong> ({owner}): {roller}'s Complication is negated (blank face)."
+          },
+          "order": 0,
+          "id": "PillarOrderTR000"
+        }
+      },
       "effects": []
     },
     "Retributive Guard": {
@@ -768,7 +910,26 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "SharedConvTR0000": {
+          "description": "White / Coordination. H26, iron rule 2b (07-25, pass 2bR). The PLAUSIBLE-fail heuristic (a Complication or a kept d20 of 10 or less) posts the offer; the owner still judges ACTUAL failure — the contest flag makes the click ask for the DC and report whether the boost turns it around, exactly as the retired block did.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-test-react",
+            "when": "plausible-fail",
+            "requireSkillTest": true,
+            "rangeColor": "white",
+            "action": "offer",
+            "contest": true,
+            "modFormula": "@skills.white.rank + @attr.wil",
+            "costs": "foc:2, inv:1",
+            "prompt": "{roller} tested {skill} → <strong>{total}</strong>. If they would fail, add your White modifier (+{mod}) → <strong>{boosted}</strong>.",
+            "result": "✊ <strong>Shared Conviction</strong> ({owner}): +{mod} to {roller}'s {skill} test → <strong>{boosted}</strong>."
+          },
+          "order": 0,
+          "id": "SharedConvTR0000"
+        }
+      },
       "effects": []
     },
     "Shield Wall": {
@@ -795,7 +956,22 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ShieldWallDR0000": {
+          "description": "White / Bulwark. H27 `edha-damage-reduce`, iron rule 2b (07-25, pass 2bR): was a name loop in the applyDamage pre-pass. Victim adjacent to you, you with 2+ adjacent living allies, half [Tier][White Die] prevented before the hit lands. @colorRank is the skill rank for a PC and the ROLE rank for an adversary owner (W29 / ruling 122) — adversaries ride the same sweep.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-damage-reduce",
+            "when": "damaged",
+            "requireVictimAdjacent": true,
+            "requireAdjacentAllies": 2,
+            "color": "white",
+            "amountFormula": "floor(((@tier)d(2 * @colorRank + 2)) / 2)"
+          },
+          "order": 0,
+          "id": "ShieldWallDR0000"
+        }
+      },
       "effects": []
     },
     "Terms of Accord": {
@@ -833,7 +1009,38 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "TermsAccordPk000": {
+          "description": "White / Accord. H6 `edha-prompt-pick` + `edha-accord-forge`, iron rule 2b (07-25, pass 2bR): was edhaPostAccordCard / edhaAccordForgeClick. Pick a same-side character in White Attunement Range; the payload forges the accord. ⚠ Minor drift: candidates now skip creatures at 0 HP (H6's aliveOnly default).",
+          "event": "use",
+          "handler": {
+            "type": "edha-prompt-pick",
+            "source": "creatures",
+            "icon": "🤝",
+            "prompt": "forge an accord — you both gain +1 to objective tests for the scene:",
+            "label": "Forge with",
+            "relativeTo": "self",
+            "rangeColor": "white",
+            "disposition": "ally",
+            "includeSelf": false,
+            "emptyNote": "No characters in Attunement Range."
+          },
+          "order": 0,
+          "id": "TermsAccordPk000"
+        },
+        "TermsAccordFrg00": {
+          "description": "White / Accord. The forge payload: stores your White modifier on the picked partner's accord flag; the flag then drives the ENGINE-OWNED partner watcher. shareModIfOwns is the UPGRADE-TALENT gate — Bound by Word's whole rider lives here (its own document is deliberately empty, declared in the tree-section header).",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-accord-forge",
+            "modFormula": "@skills.white.rank + @attr.wil",
+            "shareModIfOwns": "Bound by Word",
+            "note": "both +1 to objective tests for the scene (GM-narrated)"
+          },
+          "order": 1,
+          "id": "TermsAccordFrg00"
+        }
+      },
       "effects": []
     },
     "Unbreakable Line": {
@@ -1013,7 +1220,24 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "VoiceAuthTR00000": {
+          "description": "White / Accord. H26 `disadvantage-reroll`, iron rule 2b (07-25, pass 2bR): was the edhaAccordWatchAttack name loop. An enemy attack inside your White Attunement Range posts the offer; the click spends 1 Inv, re-rolls the kept d20, keeps the lower, and rewrites the attacker's roll card (the rewrite relay stays ENGINE-OWNED).",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-test-react",
+            "rolls": "attack,item",
+            "rollerIs": "enemy",
+            "when": "any",
+            "rangeColor": "white",
+            "action": "disadvantage-reroll",
+            "costs": "inv:1",
+            "prompt": "{roller} made a hostile action (rolled <strong>{total}</strong>). If it targets an ally, spend 1 Inv → impose disadvantage."
+          },
+          "order": 0,
+          "id": "VoiceAuthTR00000"
+        }
+      },
       "effects": []
     },
     "White Leyline Attunement": {
@@ -1040,7 +1264,22 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "WhiteAttunePls00": {
+          "description": "White key. `edha-pulse` (heal) on H20's edha-draw-mana event, iron rule 2b (07-25, pass 2bR): the last name-keyed row of the EDHA_DRAW_MANA table for White. Heal = your tier, allies you can SEE in White Attunement Range plus yourself, hidden/wall skips accounted on the card (the 07-12 ruling), cross-actor heals relayed to the GM (07-17). ⚠ Cosmetic drift: posts its own card instead of a line on the Draw Mana summary card.",
+          "event": "edha-draw-mana",
+          "handler": {
+            "type": "edha-pulse",
+            "rangeColor": "white",
+            "kind": "heal",
+            "formula": "@tier",
+            "visibleOnly": true,
+            "includeSelf": true
+          },
+          "order": 0,
+          "id": "WhiteAttunePls00"
+        }
+      },
       "effects": []
     }
   }

@@ -582,7 +582,25 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "PackSenseTR00000": {
+          "description": "Green / Instinct. H26 `edha-test-react`, iron rule 2b (07-25, pass 2bR): was edhaPackSenseWatch — the fifth caller of edhaPostCoordReactionCard, converted in the same build as the White coord family. An allied attack (attack/item rolls only) against a creature standing in your difficult terrain posts the offer; 1 Inv adds your Green modifier.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-test-react",
+            "rolls": "attack,item",
+            "when": "any",
+            "requireTargetInMyTerrain": true,
+            "action": "offer",
+            "modFormula": "@skills.green.mod",
+            "costs": "inv:1",
+            "prompt": "{roller} attacks a creature in your difficult terrain. Spend 1 Investiture to add your Green modifier (+{mod}) to their result.",
+            "result": "🐺 <strong>Pack Sense</strong> ({owner}): +{mod} to {roller}'s attack."
+          },
+          "order": 0,
+          "id": "PackSenseTR00000"
+        }
+      },
       "effects": []
     },
     "Packmate's Warning": {
