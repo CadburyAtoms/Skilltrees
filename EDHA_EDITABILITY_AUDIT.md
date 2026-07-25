@@ -1259,6 +1259,56 @@ retires a whole bench pass, and three of them cleared at once.
 H10 5 · H3ann 3 · H12 2 · H13 1.** Greedy order: **H2 (+11) → H3b (+9) → H7 (+8) → H9 (+5) →
 H3ann (+3) → H12 (+2) → H13 (+1).**
 
+#### H3ann, measured properly (07-24s) — it is 3 consumers, not 3, and it converts ZERO on its own
+
+Scouted the four candidate call sites before costing the build (the §9n habit). Every headline about
+H3ann in this doc and in `EDHA_RULE_2B_CLASSIFICATION.json` was wrong in some way. Verified in the
+engine, not taken on report:
+
+- **Weave the Thread is NOT an annotate consumer and should be struck from the list.** Its one
+  annotation, `list[len-1].linked = true; list[len-2].linked = true` (`register-skills.js:9879`), has
+  **exactly one write and zero reads** — grep `\.linked` and the only other hits in 15k lines are
+  *unlinked tokens* and `linkedSkills`. **An annotation nothing reads is not a mechanic**; this is
+  dead code, and the classification counted it as one of H3ann's three. Its real mechanics are the
+  Aid and Reactive-Strike grants, and the Reactive-Strike half is worse than "manual": it is
+  described once at cast time and never mentioned again, because `edhaFateSpringSnare` has no Weave
+  branch. The spring path is a **nameable hook**, so by iron rule 3 that is backlog, not manual.
+  Re-file as `edha-note` + a watch on the spring with a 30 ft gate.
+- **Weave also has a live card-vs-engine drift** independent of the migration: the card says the
+  player *chooses* two Ordained squares *within Attunement Range*; the engine silently takes the two
+  most recent, with no picker and no range check (`:9874-9880`). H6 exists now.
+- **Pinpoint Charge is misfiled as bucket 1b `needs: ["H3"]`, and it is doubly wrong.** The op it
+  needs does not exist, and its payload is not reachable from its own document: the extra keen, the
+  deflect add-back, the terrain re-centring and the follow flag all live inside `edhaResolveCharges`
+  (`:8511-8538`), which belongs to Set Charge. Bucket 2.
+- **Inevitable Snare has a silent editability bug worth fixing during conversion.** Its base damage
+  respects the entry's own formula (`snare.formula || EDHA_FATE_SNARE_DMG`, `:9789`) but its
+  *Inevitable extra* rolls the module constant `EDHA_FATE_GREEN_DIE` (`:9792`) — so editing that
+  talent's damage in Foundry today changes nothing. The two values coincide, which is why nobody
+  noticed.
+- **The op is ~12 lines and three call sites are character-for-character identical**
+  (`[...list].reverse().find(e => !e.<flag>)` → set → card, at `:8600`, `:9770`, `:12963`). The
+  engine's own comments had already classified them — "mirroring Pinpoint Charge", "the
+  Inevitable-Snare shape".
+
+**Two fields matter more than the op**, and one of them is not the one this doc has been tracking:
+1. **`listPath`** — the legacy-flag-path escape. H3 reads `flags.edha-content.lists.<key>`; **none**
+   of the four ledgers live there (`edicts`, `fateSnares`, `fateOrdained`, `charges` are all flat).
+   Without it the op cannot address a single one of its own consumers.
+2. **`sourceItemUuid`, stamped on the entry** — and this is the interesting one, because it is
+   **independent of the ledger conversion**. Two payload sites find their formula by NAME
+   (`i.name === "Pinpoint Charge"` at `:8511`, `edhaOrderTalent(owner, "Sealed Edict")` at `:12944`)
+   and a third uses a constant where it should read the talent. Stamping the annotating item's uuid
+   onto the ledger entry lets those sites read the formula off a document while the ledger itself
+   stays un-migrated at its legacy path. **That removes name-keys without converting a ledger** —
+   worth testing as a cheaper first step than a whole ledger atom.
+
+Also required, and easy to miss: all four refuse **before** `edhaConsumeCost`, so the op needs H1's
+existing `preUseItem` veto pattern or the "nothing spent" guarantee is lost; and `annotate` should
+return **false** when nothing was eligible, mirroring `release`, or the rule-ordering idiom breaks.
+Note too that `edhaOwnerList`'s status reconciliation is **meaningless** for three of the four —
+Snares, Ordained and Charges are canvas positions with no actor uuid to reconcile against.
+
 **Recommended next, and the greedy order is NOT the right read.** Every remaining handler is small;
 what decides a pass now is which ATOM it unlocks:
 1. **H3ann + the legacy-flag-path escape.** Still the true unblock for H3's 17, and pass J added a

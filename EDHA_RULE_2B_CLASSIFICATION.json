@@ -60,16 +60,16 @@
   },
   "split": {
     "1": 6,
-    "2": 91,
+    "2": 92,
     "3": 17,
-    "1b": 40,
+    "1b": 39,
     "total": 154
   },
   "_splitNote": "Recomputed FROM the talents map below, not asserted — the map is the record; any summary that disagrees with it is the thing that is wrong. Verify with scripts/check-2b-classification.js.",
   "handlerDemand": {
     "_note": "Consumers = bucket-2 talents naming the handler in `needs`. Most need two, so these sum past the bucket-2 count. Bucket-1b talents are NOT counted here (they need a field, not a handler).",
     "H8_edha_watch": {
-      "consumers": 45,
+      "consumers": 46,
       "trees": 13,
       "verdict": "SURVIVES — and it is now the LARGEST demand. Justification corrected: not 'no handler fires on engine events' (false) but 'no event system, native or edha, fans out to N observer actors'. See §9k. BUILT 07-24q; the `watch` enum widened 07-24r with `defeat` and `focus-change` (plus payloadTarget / whenTotal / chain), which is schema plus one dispatch call per hook rather than a handler. Still queued and measured in §9o: damage-applied, turn-start, token-move, attack-declared."
     },
@@ -84,7 +84,7 @@
       "verdict": "SURVIVES — larger than the 24 estimated; 6 trees hand-roll the identical capped-list-with-fizzle code. 3 further bucket-1b talents (Risen Servant, Speak with the Fallen, Pinpoint Charge) also read the list, so H3 unblocks 37 in total."
     },
     "H6_edha_prompt_pick": {
-      "consumers": 22,
+      "consumers": 23,
       "trees": 8,
       "verdict": "BUILT 07-24s (pass J). ⚠ THE 07-24n VERDICT WAS HALF WRONG and is kept here as the correction: \"the post-card helpers are already generic and take the talent name as a mere label\" is TRUE of the OFFER shape (edhaPostCoordReactionCard branches on no name at all) and FALSE of the PICK shape — edhaPostCalcTestCard, edhaPostBeaconCard, edhaPostReknitCard, edhaPostLifeCleanseCard and edhaPostMutationCard each HARD-CODE a different payload in their click handler, so there was no one function to put a schema over. Built instead as pass H's move: one card+click pair whose click dispatches back through edhaDispatchTestResult, so the payload is the item's own edha-test-success rules and H6 owns no payload vocabulary. Sources `confirm` and `creatures` shipped; `status`, `item` and `effect` did NOT — their payload would have to receive the picked THING rather than an actor and no payload handler takes one, which is why Beacon of Stability, Surgical Precision, Devoted Presence, Reknit Form and Unweaving are still here."
     },
@@ -135,7 +135,7 @@
     },
     "H3ann_owner_list_annotate": {
       "consumers": 3,
-      "trees": 2,
+      "trees": 3,
       "verdict": "NEW 07-24q — NOT a handler: H3's missing `annotate` op (flag the most recent un-flagged entry), plus the legacy-flag-path escape H3 needs to address a ledger it does not itself own. Three consumers of the op shape are already in the engine and the engine NAMES the shape twice ('mirroring Pinpoint Charge', 'the Inevitable-Snare shape'). Blocked behind the same shared-ledger atomicity problem — see §9n pass H."
     },
     "H13_kneel_widenings": {
@@ -325,11 +325,11 @@
     },
     "Pinpoint Charge": {
       "tree": "deity/Destruction",
-      "bucket": "1b",
+      "bucket": "2",
       "needs": [
-        "H3"
+        "H3ann"
       ],
-      "why": "modifies the last-placed list entry + a detonation rider"
+      "why": "CORRECTED 07-24s (was bucket 1b needs [H3], wrong in BOTH directions): the annotate op it needs does not exist, AND its payload is not reachable from its own document. The extra keen, the deflect add-back, the terrain re-centring and the follow flag all live inside edhaResolveCharges (:8511-8538), which belongs to Set Charge — and that site finds its formula by NAME (i.name === \"Pinpoint Charge\", :8511). Needs H3ann + a sourceItemUuid stamp on the ledger entry so the payload reads the formula off a document. Coupled to the charges ledger for everything else."
     },
     "Set Charge": {
       "tree": "deity/Destruction",
@@ -411,7 +411,7 @@
       "needs": [
         "H3ann"
       ],
-      "why": "CORRECTED 07-24q (NO SUCH OP): sets `inevitable` on the last un-flagged Snare; the flag is then read by Snare's spring code. Needs H3's missing annotate op AND the fateSnares ledger (legacy path, 9 read sites, canvas-owning placement)."
+      "why": "CORRECTED 07-24q (NO SUCH OP): sets `inevitable` on the last un-flagged Snare; the flag is then read by Snare's spring code. Needs H3's missing annotate op AND the fateSnares ledger (legacy path, 9 read sites, canvas-owning placement). 07-24s scouting: its payload lives in edhaFateSpringSnare (Snare’s code, reached from the Region trigger, Foreknown Strike and Thread of Inevitability), so it cannot convert alone. SILENT EDITABILITY BUG to fix during conversion: the base damage respects the entry formula (:9789) but the Inevitable EXTRA rolls the module constant EDHA_FATE_GREEN_DIE (:9792), so editing this talent’s damage in Foundry changes nothing. The values coincide, which is why nobody noticed."
     },
     "Foreknown Strike": {
       "tree": "deity/Fate",
@@ -435,9 +435,10 @@
       "tree": "deity/Fate",
       "bucket": "2",
       "needs": [
-        "H3ann"
+        "H8",
+        "H6"
       ],
-      "why": "CORRECTED 07-24q (NO SUCH OP): links the two most recent Ordained entries — annotate, over TWO entries. Payload (free Aid / free Reactive Strike grants) is table-run by design; the ledger is fateOrdained (legacy path, 8 read sites)."
+      "why": "CORRECTED 07-24s by SCOUTING THE CALL SITES: it is NOT an annotate consumer. Its one annotation (list[len-1].linked / list[len-2].linked, register-skills.js:9879) has ONE write and ZERO reads in 15k lines — dead code, and an annotation nothing reads is not a mechanic. Its real mechanics are the Aid grant and the Reactive-Strike grant, and the latter is worse than manual: described once at cast time and never again, because edhaFateSpringSnare has no Weave branch. The spring path IS a nameable hook (iron rule 3 => backlog, not manual), so this wants edha-note + an edha-watch on the spring with a 30ft gate. SEPARATE card-vs-engine drift: the card says the player CHOOSES two Ordained squares within Attunement Range; the engine takes the two most recent with no picker and no range check (:9874-9880) — H6 can express the picker now."
     },
     "Thread of Inevitability": {
       "tree": "deity/Fate",
@@ -627,7 +628,7 @@
         "H1",
         "H3ann"
       ],
-      "why": "CORRECTED 07-24q (NO SUCH OP): H3 does place/release/count. This is 'flag the most recent UNSEALED entry' — the engine comment calls it 'the Inevitable-Snare shape', and Inevitable Snare's comment calls itself 'mirroring Pinpoint Charge'. Three talents, one missing op. Also shared-ledger (edicts), and its name is read from inside Edict's card (the whenOwnsTalent/UPGRADE shape)."
+      "why": "CORRECTED 07-24q (NO SUCH OP): H3 does place/release/count. This is 'flag the most recent UNSEALED entry' — the engine comment calls it 'the Inevitable-Snare shape', and Inevitable Snare's comment calls itself 'mirroring Pinpoint Charge'. Three talents, one missing op. Also shared-ledger (edicts), and its name is read from inside Edict's card (the whenOwnsTalent/UPGRADE shape). 07-24s scouting: H1 is the WRONG GATE — its payload does not fire on ITS use, it fires when an Edict is VIOLATED, reached from three other talents (the Violated button :13450, Verdict :13175, Final Decree :13385). edha-def-test is on-use, so this needs an H8-shaped watch on a sibling talent’s resolution. Classic \"needs records the GATE, never the coupling\"."
     },
     "Verdict": {
       "tree": "deity/Order",
