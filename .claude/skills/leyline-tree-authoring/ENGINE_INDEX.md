@@ -478,6 +478,35 @@ wrong the same way — `edhaPostCalcTestCard` (H6) and `edhaResolveCharges` (H12
 If it contains one, a handler wrapping it inherits the name-key and the ratchet moves less than the
 plan says.
 
+## Telling the player something — H24 `edha-reveal` (07-25)
+**Reach for this before hand-rolling another whispered card.** Given a creature and a comma-list of
+fact ids, it posts the facts as card text. It is the payload half of scouting: `edha-note` carries
+**static** text, so "tell me this creature's numbers" previously had nowhere to live and two talents
+sat on the ratchet for want of it and nothing else.
+
+- **`facts`** (comma-list, rendered **in the order authored**) — `hp` · `conditions` · `defenses` ·
+  `lowest-attribute` · `lowest-defense` · `below-half`. Unknown ids are skipped, not rendered as junk.
+- **`hideDefenses`** (comma-list of `phy`/`cog`/`spi`) subtracts from `defenses`. It is a subtraction
+  rather than three fact ids because Studied Mark deliberately withholds Cognitive, and that single
+  difference is all that separates its card from Vital Diagnosis's.
+- **`separator`** — `"; "` reads as a report (Vital Diagnosis), `" · "` as a menu of things you could
+  learn (Sharp Eye). One implementation, two card styles.
+- **`target`** — `target` / `victim` / `self`. Use **`victim`** on a test-success or watch payload:
+  `edhaDispatchTestResult` passes the victim, and re-reading `game.user.targets` there is the bug.
+- **`whisper`** (default **on**) — knowing a thing and announcing it are different acts.
+- **`note`** — free text for a table instruction the engine cannot enforce ("pick ONE to learn").
+
+**The pure half is `edhaRevealFacts(target, {facts, hideDefenses})`**, which returns the CLAUSES and
+lets the caller join them. Unit-pinned in `tests/reveal.test.js`, including that
+**`edhaGnosisRevealLines` is byte-identical** to its pre-07-25 form — it now delegates here, and it
+is still called by Studied Mark and The Final Study, so a drift would silently change cards on
+talents nobody touched.
+
+⚠️ **Why it was invisible.** Sharp Eye's row read `needs: [H1]` and **H1 was built**, so it counted
+as ready in every priority run — while the engine's own comment above it said *"what still needs a
+payload H1 cannot supply"*. H1 decides success/failure and owns **no payload vocabulary** (the same
+trade H6 and H8 make). **A `needs` entry naming only a gate is not a satisfiable row.**
+
 ## A talent can be cancelled before its rules ever run (07-24s; ENUMERATED 07-25)
 A talent whose name is in a `preUseItem` takeover Set **never fires its `use` event**, so authored
 rules on it are silently inert while the Events tab looks perfectly correct. **Removing the name is

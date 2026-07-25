@@ -2049,7 +2049,7 @@ end-of-scene Injury (L9591–9595). Its row says `needs: [H8]`, and H8 is built.
 
 ### Two builds fell out of the sweep that no demand column contains
 
-1. **A generic REVEAL handler.** **Sharp Eye**'s payload is a whispered card naming the target's
+1. **A generic REVEAL handler.** ✅ **BUILT THIS PASS as H24 `edha-reveal`; both talents converted.** **Sharp Eye**'s payload is a whispered card naming the target's
    lowest attribute, lowest defence, and which resources are below half. No registered handler
    produces dynamic target facts — `edha-note` carries static text only. The engine's own comment at
    **L4662** says of that row: *"what still needs a payload H1 cannot supply"*. **Vital Diagnosis**
@@ -2080,9 +2080,30 @@ answer. This is the single largest reason the ready column overstates.
 the rule; what holds it is a name test in the *reader*. LESSONS.md §2's "grep the helper's BODY for
 talent names" caught it.
 
-### Delivered
+### Delivered — H24 built, 3 conversions, ratchet 131 → 128
 
-**1 conversion — Reckless Momentum (Red), ratchet 131 → 130.** Engine-only; no rebuild for the
+**The measurement named a build, so the pass built it.** `edha-reveal` (H24) is the payload half of
+scouting: given a creature and a comma-list of fact ids (`hp` · `conditions` · `defenses` ·
+`lowest-attribute` · `lowest-defense` · `below-half`, with a `hideDefenses` subtraction) it posts the
+facts as card text, whispered by default. `edha-note` carries only STATIC text, which is why "tell me
+this creature's numbers" had nowhere to live.
+
+Its pure half, `edhaRevealFacts`, returns the **clauses** and lets the caller join them — which is
+what lets one implementation serve Vital Diagnosis's report (`"; "`) and Sharp Eye's menu (`" · "`).
+`edhaGnosisRevealLines` now delegates to it, so there is one implementation; **`tests/reveal.test.js`
+pins that its output is byte-identical**, because Studied Mark and The Final Study still call it and
+a drift there would silently change cards on talents this pass never touched. Eight cases,
+**mutation-checked both ways** — breaking the `<=` boundary fails 1, disabling the `hideDefenses`
+filter fails 2 (including the byte-identity pin, which is the proof it actually guards Studied Mark).
+
+- **Sharp Eye** (Hunter) → `edha-def-test` (per vs cog) on `use` + `edha-reveal` on
+  `edha-test-success`, `target: victim`. That split is exactly what the retired `EDHA_HEROIC_DEFTESTS`
+  row was — a gate H1 already owned and a payload it never did. **The table is now empty.**
+- **Vital Diagnosis** (Life) → `edha-reveal` on `use`, appended to the `edha-apply-status` rule it
+  already carried. Confirms the §9n prediction outright: **its classified mechanic was already
+  authored**, and the row was pointed at the wrong line.
+
+**And 1 conversion that needed no build — Reckless Momentum (Red).** Engine-only; no rebuild for the
 engine half, but the authored rule means **PACK REBUILD + ⟳ Sync**. It is the pass-I shape again: a
 registered field with no dispatch site. `edha-next-test-mod`'s `plotDie` hint has named this talent
 since **07-24k** and nothing ever wired it. The retired case (L5500–5503) called
@@ -2105,7 +2126,7 @@ Withering Ray call.
 |---|--:|---|
 | "67 read ready" | **64** | miscount; bucket 3 double-counted |
 | session 4 = "?? of 15 bucket-1b" | **1** | the 1b column was never the constraint — 3 of the 15 are dealer-side, 4 always-active |
-| conversions | **1** | 33 of 64 cannot hold a rule at all; 48 of the rest are multi-mechanic |
+| conversions | **3** | 33 of 64 cannot hold a rule at all; 48 of the rest are multi-mechanic. The 3 that moved: one field built-and-never-wired, and two freed by BUILDING the payload the sweep named. |
 
 **The mechanism, finally named.** Every previous over-estimate was explained as *"`needs` records the
 gate, not the payload"*. That is true but incomplete — it implies the missing piece is always a

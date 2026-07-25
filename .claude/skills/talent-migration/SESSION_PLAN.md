@@ -1,7 +1,7 @@
 # The remaining migration, partitioned into sessions
 
-**State: 130 talents on the ratchet** (221 at the start 2026-07-24; −91 in seventeen passes A–Q).
-Split **0 / 18 / 95 / 17** (bucket 1 / 1b / 2 / 3).
+**State: 128 talents on the ratchet** (221 at the start 2026-07-24; −93 in seventeen passes A–Q).
+Split **0 / 18 / 93 / 17** (bucket 1 / 1b / 2 / 3).
 
 Recompute before trusting any number here — talents convert and this file goes stale:
 
@@ -86,7 +86,7 @@ Use `--priority` to **rank builds**, never to forecast a pass's output.
 | **2** | **H9 → Sovereignty** | 7, whole tree | **high** | One tree, one ledger (±1 damage die step), ruled BUILD IT. Also on **Expose**'s critical path. ⚠️ Behind `EDHA_SOV_TALENTS`; same caution. |
 | **3** | **The 17 declared exits** | 17 | **high** | **No build at all** — an `edha-note` cue rule + an `ENGINE_OWNED:` header line each. Cheapest per talent of anything left. |
 | ~~4~~ | ~~bucket-1b scout~~ | **DONE 07-25** | — | **Ran as the measuring pass. Result: 1 conversion, and the three structural blockers above.** The 1b pool was never the constraint. Full working in audit §9p. |
-| **5** | **The REVEAL handler** | 2 + unblocks | **high** | **Named by pass Q.** Sharp Eye and Vital Diagnosis need the identical unbuilt payload: a whispered card of dynamic target facts (lowest attribute / lowest defence / resources below half). The engine's own comment at L4662 says so. Small, and it retires two mis-filed rows. |
+| ~~5~~ | ~~The REVEAL handler~~ **DONE 07-25** | **2** | — | Built as **H24 `edha-reveal`** in the same pass that named it; **Sharp Eye** and **Vital Diagnosis** both converted, and `EDHA_HEROIC_DEFTESTS` is now empty. See ENGINE_INDEX for the field list — reach for it for any scouting/lore-reveal payload rather than hand-rolling another whispered card. |
 | **6** | **Dismantle one takeover Set** | ~4–5 + its tree | **medium** | Start with **Order** (`EDHA_ORDER_TAKEOVER`, 5 names, 3 of them ready) — it is the smallest Set whose members are already classified, and Order's `edicts` ledger work wants the same session. |
 | **7** | **The applyDamage payload cluster** | ~20 | **medium** | The biggest win left, invisible to `--priority`. Scout the wrapper as ONE atom before costing it. |
 | **8–12** | **The ledgers, one per session** | 21 | medium | Ben's q7 ruling. Order: `edicts`, then `remains`, `charges`, `snares`, `ordained`. The deliverable of a ledger pass is the **REPOINT**, not the talent count. |
