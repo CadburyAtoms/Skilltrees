@@ -51,9 +51,12 @@ known payload-gap reason:
     Charge, already in the engine). The engine's own comments name the shape twice.
   · **Cascading Failure / The Unmooring are not ledger ops at all** — bulk detonations over a
     canvas-owning ledger, which §9n had already ruled out of H3's scope back in pass G.
-  **Recommended next is therefore NOT the biggest number.** H3ann (the annotate op *plus* the
-  legacy-flag-path escape — the real unblock for all 17) → H12 (a schema over the already-generic
-  `edhaResolveCharges`) → H13 (Kneel's two widenings) → H6. See audit §9o.
+  **Recommended next — corrected in-session, see §9o.** With H8 in the built set, "already
+  satisfiable" jumps 11 → **31**, and reading all 31 says the next build is **widening H8's `watch`
+  enum** (damage-applied, defeat, turn-start, token-move, focus-change, attack-declared — ~20
+  talents, every hook already owned by the engine), NOT H6 or H3ann. H8 as shipped watches only
+  `test` and `skill-roll`, which is why just ~3 of the 31 are convertible today.
+  Order: **H8 watch-kinds** → H6 → H3ann (+ the legacy-flag-path escape) → H12 → H13 → the tail.
 
 **(6) Two generic bits that are not H8 but came out of it.** A pre-cost **"already armed, nothing
 spent"** veto keyed on *any* untimed `edha-self-status` rule (no name at all), replacing Crown's

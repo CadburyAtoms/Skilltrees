@@ -1075,6 +1075,40 @@ Knowledge only)**. ✅ **H8 IS BUILT (07-24q)** and `edha-test-fail` now has its
 (Absolute Authority). Demand recomputed after pass H: **H8 51 · H6 30 · H1 22 · H3 17 · H2 11 ·
 H3b 9 · H10 9 · H7 8 · H9 5 · H3ann 3 · H12 2 · H13 1.**
 
+#### ⚠ SELF-CORRECTION, same session (07-24q): H8's `watch` VOCABULARY is the next build, not H6
+
+The recommendation immediately below was written before `check-2b-classification.js` knew H8 was
+built. Re-running `--priority` with `--built=H1,H5,H11,H3,H8` moves "already satisfiable, build
+nothing" from 11 to **31**, and reading all 31 changes the answer:
+
+**H8 as shipped watches exactly two event kinds — `test` and `skill-roll`.** Of the 31, only about
+**three** (Expose, Reactive Analysis, possibly Counterpoint) are test-shaped. The rest want a kind
+that does not exist yet:
+
+| wanted `watch` kind | talents | the hook already exists as |
+|---|---|---|
+| `damage-applied` | Death Ward, Breaking Point, Devoted Conduit, Warlord's Fury, Resurgent Growth | the applyDamage wrapper |
+| `defeat` | Necrotic Cascade, Reaper's Harvest, Arsenal | `edha-on-defeat` |
+| `turn-start` | Apex Form, Primal Regeneration, Consuming Decay, Bear Witness | the combat hooks + `edha-combat-timing` |
+| `token-move` | Unstoppable Advance, Ordered Advance | `preUpdateToken` / `updateToken` |
+| `focus-change` | Coercive Pressure | the Black focus watcher |
+| `attack-declared` | Packmate's Warning, Concord | the pre-roll hooks |
+
+**So the highest-leverage next build is widening H8's `watch` enum, not building H6 or H3ann.**
+Every kind above is a hook the engine already owns and already hand-rolls a name-keyed sweep on;
+the handler, the filters (`scope` / `disposition` / range / `once`), the memoized index and the
+payload dispatch are all built and unchanged. This is schema plus a dispatch call per hook — the
+same "expose a schema over functions that are already generic" shape §9o predicted for H6, except
+the consumers are ~20 rather than H6's 30 and the risk is lower because the handler is already
+benched (2bH-5).
+
+Revised order: **H8 watch-kinds** → H6 → H3ann (+ the legacy-flag-path escape) → H12 → H13 → the tail.
+
+⚠ **These 31 are read off the `needs` / `why` columns, NOT off the call sites.** That column has
+been optimistic in every single pass (§9n D, F, G, H). Expect a third of them to fall out on
+contact, and re-read every call site before batching — six coupling corrections in five passes, plus
+this pass's three shape corrections, all came from doing exactly that.
+
 **Recommended next, and it is NOT the biggest number.** H6 still leads the greedy order, but the
 cheapest real shrink now is **finishing what pass H exposed**, because each item is a schema over
 code that already exists and each one unblocks talents nothing else can reach:
