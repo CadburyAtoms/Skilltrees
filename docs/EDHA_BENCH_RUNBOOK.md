@@ -24,6 +24,10 @@ Sessions still **cannot launch Foundry** — everything here requires Ben to hav
   them, never target-and-fire effects that write to them, never delete their tokens. The
   setup script hard-throws on their names.
 
+**The next run's paste-ready prompt lives in `docs/BENCH_NEXT_RUN.md`** — each run ends by
+rewriting that file for the run after it (run 1 → run 2 = White+Blue, run 3 = Black+Green,
+then the deities, Heroic, and the non-tree console-runnable sections).
+
 ## Per-run checklist (the agent)
 
 1. **Join:** browser pane → `http://localhost:30000/join` → select **Bench** → Join (no
