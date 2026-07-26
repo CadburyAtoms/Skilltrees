@@ -137,35 +137,20 @@ reactions). No pack rebuild pending. Priority: 2bR-18 (premise), then 2bR-7
 Evidence per row in the 07-26i delta. The rows below stayed open — all four survivors share ONE
 root cause except 2bR-17.
 
-- [ ] **2bR-9 — Shield Wall** — an enemy damages an ally adjacent to the owner (owner has ≥2 adjacent living allies) → Damage reduced by half [Tier][White Die], same chat note naming the talent. ⚑ Also worth one adversary-owner check (role rank feeds the die — ruling 122).
-      **FAIL 2026-07-26i (bench run 2):** never fires. `edhaEvalSync` cannot evaluate a DICE formula
-      under Foundry v13.351 — `Roll#evaluateSync()` throws "contains terms that cannot be
-      synchronously evaluated", the catch returns 0, and the `amt > 0` gate drops the talent. Proven
-      by swapping the amount to a flat `3`: the card posts and resolves correctly. Root cause is ONE
-      engine helper, shared with 2bQ-7 / 2bQ-8's Retributive Guard / Devoted Conduit.
-- [ ] **2bQ-7 — Interposing Shield** — have an ally within 10 ft take damage → The whispered card appears offering 1 Inv to reduce it by half a White [Die]. Click it — the reduction lands. The number must never exceed the damage actually dealt. Unchanged from before this pass.
-      **FAIL 2026-07-26i:** no card at all — same `edhaEvalSync` dice bug as 2bR-9. With a flat
-      amount the card posts, the click reduces the damage and moves the owner; the gates, range and
-      cap logic are all correct.
-- [ ] **2bQ-8 — Shared Burden / Retributive Guard** — be **adjacent** to an ally who takes damage, once from a hostile attacker → Shared Burden offers 2 Inv to take half in their place. Retributive Guard offers 1 Inv to strike back — but **only** when there is a hostile attacker inside your White Attunement Range. Damage from a fall or a hazard should offer Shared Burden and **not** Retributive Guard.
-      **PARTIAL 2026-07-26i:** Shared Burden PASSES completely (offer, cost, redirect, the
-      hazard-vs-attacker split, and a live cost edit changing the card). **Retributive Guard never
-      fires** — same `edhaEvalSync` dice bug; with a flat amount it offers and deals its spirit
-      damage to the attacker correctly.
-- [ ] **White spot-checks (like-for-like)** — run once each: Pillar of Order (2bR-1) · Concordant Presence (2bR-3) · Voice of Authority (2bR-5) · Collective Resolve (2bR-6) · Devoted Conduit (2bR-10) → identical to pre-migration behaviour (cards, costs, ranges); any drift is a bug. Collapsed from 2bR-1/3/5/6/10.
-      **2026-07-26i:** Pillar of Order, Concordant Presence, Voice of Authority and Collective
-      Resolve all PASS. **Devoted Conduit fails** — same `edhaEvalSync` dice bug. Row stays for it
-      alone; re-run it with the other three once the helper is fixed.
-- [ ] **2bR-17 — Adversaries** — Callthief's Counterpoint · Bellwether's / The Reckoning's Ordered Advance → Each now carries its OWN rules (they used to ride the talents' retired name hooks) — behaviour per their stat-block text. Adversary pack + ⟳ Sync required.
-      **PARTIAL 2026-07-26i (imported FRESH from the pack, so this is NOT a ⟳ Sync gap):**
-      Bellwether's Ordered Advance PASSES (arms, and each move posts the allies-within-10-ft card).
-      **The Callthief's Counterpoint never resolves** — it charges its Focus, then nothing. Root
-      cause is data-side and generic: `scripts/foundry-build.js` `advItemDoc` only promotes an
-      adversary item to `activation.type: "skill_test"` when it is an ATTACK, so a non-attack ability
-      carrying an `edha-def-test` rule gets `utility` with no `activation.skill`, never rolls, and
-      the contest queue times out. **Six abilities are affected** (Callthief Counterpoint ·
-      Reeve-Owl Sovereign of Solitude · Rootling Swarm Grasping Vines + Territorial Instinct ·
-      Surecat Redirect Momentum (2bF-17) · Tussock-Sow Drive the Prey).
+> **⚠️ FIXED 2026-07-26j, NOT YET RE-BENCHED — the four rows below were ONE bug.** `edhaEvalSync`
+> could not evaluate a dice formula under Foundry v13 (`Roll#evaluateSync()` throws on any die term;
+> the catch returned 0 and the `amt > 0` gate then dropped the talent in silence). It now folds and
+> ROLLS the dice. **Engine-only — Ben needs an F5, no rebuild.** Re-run all four in bench run 3; the
+> numbers below are what to expect at level 7 / White rank 3 (tier 2).
+
+- [ ] **2bR-9 — Shield Wall** — an enemy damages an ally adjacent to the owner (owner has ≥2 adjacent living allies) → Damage reduced by half [Tier][White Die] — **expect 1–8** (half of 2d8), with the "🛡️ …damage reduced by N — Shield Wall" note naming the talent. ⚑ Also worth one adversary-owner check (role rank feeds the die — ruling 122).
+- [ ] **2bQ-7 — Interposing Shield** — have an ally within 10 ft take damage → The whispered card appears offering 1 Inv to reduce it by **half a White [Die] (0–4)**. Click it — the reduction lands and the owner moves up to 10 ft toward them. The number must never exceed the damage actually dealt. ⚑ Note a legitimate 0 is possible when the die rolls 1; a 0 is skipped, which is the talent's own maths, not the bug.
+- [ ] **2bQ-8 — Retributive Guard (Shared Burden already passed)** — be **adjacent** to an ally damaged by a hostile attacker inside your White Attunement Range → Retributive Guard offers 1 Inv to strike back for **2d8 spirit**. Damage from a fall or a hazard must offer **nothing** (Shared Burden's half of this row passed 07-26i and is retired).
+- [ ] **Devoted Conduit (2bR-10)** — have a SECOND White character redirect damage onto an ally in your Attunement Range (Shared Burden's redirect is the trigger) → you reduce that redirected damage by **half [Tier][Die] (1–8)**, on a card naming Devoted Conduit. ⚑ It deliberately never reduces the redirect the owner took **themselves** — the card reads "when an ally… takes damage intended for another creature", so it needs two White characters to observe. The other four White spot-checks (Pillar of Order · Concordant Presence · Voice of Authority · Collective Resolve) passed 07-26i and are retired.
+- [ ] **⚠️ The SAME 07-26j fix restored 7 more rules in five OTHER trees — bench them in their own passes (engine-only, F5)** — the White four above were only what a White pass could see; a sweep of all ~31 `edhaEvalSync` call sites found these too, each silently dealing/reducing **nothing** before the fix: **Pack Pressure** (Green) · **Tempered Edge** (Civilization) · **Withering Touch** (Death — its damage bonus only; the healing-cut rider always worked) · **Predatory Strike** (Knowledge) · **Warlord's Advance** (Power) · **Crownox Ring**'s Shield Wall + Retributive Guard (adversary). Each should now roll `[Tier][Die]` and print a real number. ⚑ Green's **Vital Surge** matched the same search but was checked in code and is NOT affected — don't re-test it for this.
+- [ ] **⚑ Burst-only: the 13 damage riders that lost their bonus inside an AoE** — `edha-damage-rider` was fine on ordinary hits but went through the broken evaluator on the **`edha-burst` detonate** path, so these lost their rider **only when the damage came from a burst**: Life's **Prognosis**, and the bite/strike riders on Mistheron · Stillback · Wasting-Eater Stillback · Wrongwake · Wasting-Eater Wrongwake · Keelshadow · The False Spring · Brandram · Hazewyrm Adult · Hazewyrm Elder · The Doubled · The Doubled Elder. Needs the owner to deal damage through an AoE specifically — awkward to stage, so it stays ⚑ rather than a promised row.
+- [ ] **2bR-17 — Callthief's Counterpoint** — run it against a target → it rolls the Callthief's **Deception**, resolves vs the target's Cognitive defense, and on a success negates the influence and leaves it Disoriented for 1 Focus. **⚠️ FIXED 2026-07-26j — NEEDS A PACK REBUILD + ⟳ Sync Adversaries + re-drag.** It was built as `utility` with no `activation.skill`, so it never rolled: the Focus was charged and nothing happened. Bellwether's / The Reckoning's Ordered Advance half of this row PASSED 07-26i and is retired.
+- [ ] **⚑ The other five restored adversary abilities (same 07-26j fix)** — run each once after the rebuild + ⟳ Sync: **Reeve-Owl** Sovereign of Solitude (black) · **Rootling Swarm** Grasping Vines + Territorial Instinct (green) · **Tussock-Sow** Drive the Prey (green). Each must now ROLL its named skill and print a `N vs <DEF> M — SUCCESS/FAIL` card instead of silently charging its cost. (Surecat's Redirect Momentum is 2bF-17 in the Blue section.)
 
 ---
 
@@ -181,12 +166,7 @@ defense, one without). No pack rebuild pending. Priority: 2bJ-1 (first prompt-pi
 walls), 2bP-1, 2bP-2 (the trap row), 2bP-3, 2bP-4, 2bJ-5, 2bF-2, 2bF-4, 2bF-5, 2bF-6, 2bI-12,
 2bAA-7, and the Blue spot-check row. Evidence per row in the 07-26i delta.
 
-- [ ] **2bF-17 — Surecat → Redirect Momentum** — run the adversary's copy → It carries its OWN rule now (it used to ride the PC talent's engine branch). Must behave the same.
-      **FAIL 2026-07-26i (imported FRESH from the pack — not a ⟳ Sync gap):** charges its Focus,
-      then nothing. Identical root cause to 2bR-17's Callthief Counterpoint — a non-attack adversary
-      item carrying `edha-def-test` is built as `activation.type: "utility"` with no
-      `activation.skill`, so no test is ever rolled and the contest times out. Six abilities share
-      this; fix `advItemDoc` in `scripts/foundry-build.js`, not the six documents.
+- [ ] **2bF-17 — Surecat → Redirect Momentum** — run the adversary's copy → it rolls **Blue**, rolls the TARGET's Athletics, and prints `Blue N vs ATH M`, same as the PC talent (2bF-3, which passed). **⚠️ FIXED 2026-07-26j — NEEDS A PACK REBUILD + ⟳ Sync Adversaries + re-drag.** It was built as `utility` with no `activation.skill`, so it never rolled: the Focus was charged and nothing happened.
 - [ ] **2bAA-6 — Living Image** — open it → **Events tab**; then start your turn with an illusion up → ⚑ TWO rules where the tab was empty: `edha-illusion-upkeep` (config) + `edha-note` (use). The turn-start prompt still whispers with a one-click pay. **Edit `costPer` to 2 and the button must then charge 2** — that is the whole point of the conversion.
       *(2026-07-26i: NOT RUN — the turn-start upkeep needs a live combat turn change, which the
       cosmere activation model does not expose from the console. Ben's row for now.)*

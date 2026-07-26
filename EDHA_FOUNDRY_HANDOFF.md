@@ -2,7 +2,10 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, **COMPLETED 2026-07-26 (pass AA)**: **the ratchet list is EMPTY — 221 → 0 across twenty-seven passes.** Every tree is clear, all six marker ledgers have migrated, and `scripts/name-keyed-allowlist.json` stays in the repo with an empty `talents` list *on purpose* — lint pass 7 still guards against REGROWTH, which is the half of the ratchet that matters from here on. ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **ALL SIX marker LEDGERS have migrated** (`covenants` 07-24u; `edicts` 07-25 pass V; `remains` 07-25 pass W; Fate's `snares` 07-25 pass X; Destruction's `charges` 07-26 pass Y; Fate's `ordained` 07-26 pass AA — the point-bound ones fail OPEN through H3's reconcile by design). There is no flat marker-list flag left in the engine. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-26i** (BENCH RUN 2 —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-26j** (bench run 2's
+two failure families FIXED — the v13 sync-dice bug in `edhaEvalSync` restoring 4 White talents
+(engine-only, F5) and the `advItemDoc` promotion gap restoring 6 adversary abilities (PACK REBUILD +
+⟳ Sync Adversaries). 215 tests green.) Prior: **2026-07-26i** (BENCH RUN 2 —
 White + Blue, executed live: 26 rows retired on evidence, TWO root-caused failure families — the
 `edhaEvalSync` dice bug killing 4 White talents, and the adversary `edha-def-test` build gap killing
 6 abilities — plus a proven-unreachable fail-open branch and one world-hygiene note. Docs only.)
@@ -11,6 +14,101 @@ the Red pilot, executed live by an agent session joined as `Bench`: 16 rows reti
 1 FAIL root-caused (Shockwave Slam's weapon-hit trigger surface), 4 cross-tree observations,
 and the agent-bench runbook hardened with the v13 operating lessons. Docs + setup-script fix
 only; nothing to deploy.)
+
+**2026-07-26j — BENCH RUN 2'S TWO FAILURE FAMILIES, FIXED. 10 talents/abilities restored;
+⚠️ MIXED DEPLOY: the engine half is F5-only, the adversary half needs a PACK REBUILD
+(`foundry-build adversaries`) + ⟳ Sync Adversaries + re-drag.**
+
+### Bug root causes
+
+- **① `edhaEvalSync` could not evaluate DICE — 11 rules dead across SIX trees, not the 4 the bench
+  found (engine-only, F5).**
+  Foundry v13 made `DiceTerm` non-deterministic (the dice-fulfillment feature), so
+  `Roll#evaluateSync()` **throws** on any die term — "This Roll contains terms that cannot be
+  synchronously evaluated". `edhaEvalSync`'s `catch` returned **0**, and because nearly every caller
+  gates on `amt > 0`, the talent was skipped in **silence**: no error, no card, nothing to see. Flat
+  and `@dealt` formulas were unaffected, which is exactly why Shared Burden and Unbreakable Line kept
+  working and the failure read as unrelated talents rather than one helper. The old comment above the
+  helper said *"Evaluate a flat (non-dice) formula"* — it described the damage, not the intent; "half
+  [Tier][Die]" is the whole system's idiom.
+
+  ⚠️ **The bench found 4; a full sweep of all ~31 `edhaEvalSync` call sites against every authored
+  rule found 11, across SIX trees** — the White four were just the ones a White bench pass could see:
+  | Tree | Rule (all `amountFormula` unless noted) |
+  |---|---|
+  | White | **Shield Wall** · **Devoted Conduit** · **Interposing Shield** · **Retributive Guard** |
+  | Green | **Pack Pressure** |
+  | Civilization | **Tempered Edge** |
+  | Death | **Withering Touch** (its damage bonus only — the `healCutFraction` rider always worked) |
+  | Knowledge | **Predatory Strike** |
+  | Power | **Warlord's Advance** |
+  | Adversaries | **Crownox Ring** — Shield Wall + Retributive Guard |
+
+  **Plus 13 conditionally-dead rules:** `edha-damage-rider.bonusFormula` is normally injected as a
+  *string* into the async damage roll and was fine — but the **burst-detonate** path evaluates it
+  through `edhaEvalSync`, so Life's **Prognosis** and 12 adversary bite/strike riders (Mistheron,
+  both Stillbacks, both Wrongwakes, Keelshadow, The False Spring, Brandram, both Hazewyrms, both
+  Doubled) lost their rider **only when the dealing item was an AoE burst**. All restored by the
+  same one-line change.
+
+  **Checked and NOT affected — do not reopen:** Green's **Vital Surge** matches the field filter but
+  its action is `offer-thp`, and the `edha-heal-react` evalSync read fires only for `queue-regrowth`
+  (`edhaRegrowthRuleOf` filters on it); its formula is encoded into the button and rolled async.
+  Verified in code, not assumed. No authored rule carries dice in any of the other evalSync-read
+  fields (`capFormula`, `dcFormula`, `modFormula`, `thpFormula`, `budgetFormula`, …), so those call
+  sites had no live victims.
+  **Fix:** `edhaEvalSync` now substitutes roll data → folds computed die math (`edhaFoldDieMath`,
+  already pinned) → **rolls the dice** (`edhaRollDiceSync`, new pure helper) → evaluates. Rolling
+  here is faithful rather than a shortcut: `Die#randomFace()` is itself synchronous and draws from
+  Foundry's own seeded RNG (`CONFIG.Dice.randomUniform`); what v13 made async is *fulfillment*
+  (manual dice / Dice So Nice), which a passive damage reduction has no business awaiting. Making
+  the call sites async was not an option — the pre-damage reduce path mutates the instance list
+  before the system applies it and is synchronous by necessity.
+  **Not mangling what it can't roll:** anything that is not a bare `NdM` (e.g. `2d20kh`) is left
+  alone and still fails to 0, rather than being silently rewritten into a wrong number.
+- **② A non-attack adversary ability carrying `edha-def-test` never rolled — 6 abilities mute
+  (data-side; PACK REBUILD + ⟳ Sync).** `advItemDoc` in `scripts/foundry-build.js` promoted an item
+  to `activation.type: "skill_test"` **only when it was an attack** (`raw.attack != null`). H1 is a
+  *decider, not a roller*: it queues a contest and waits for the owner's own skill roll, so with no
+  test ever fired the contest timed out — the cost was charged and nothing else happened, with no
+  error anywhere. Mute: **Callthief Counterpoint · Surecat Redirect Momentum · Reeve-Owl Sovereign of
+  Solitude · Rootling Swarm Grasping Vines + Territorial Instinct · Tussock-Sow Drive the Prey.**
+  **Fix:** the builder now also promotes an ability that carries an `edha-def-test` rule, reading the
+  skill **off the rule** (never off the ability's name — iron rule 2b) and setting the matching
+  attribute. Verified by an A/B build of the adversaries pack against HEAD's builder into scratch
+  modroots: **exactly 6 items differ**, all six `utility → skill_test` with the right skill
+  (dec/blue/black/green), and 194 parsed items otherwise byte-identical.
+
+### Verification (both fixes proven by mutation, not by reading)
+
+- **Live, against the real `Roll` in Ben's running Foundry** (helpers evaluated as local copies —
+  Ben's module was NOT modified): Shield Wall's shipped formula now returns varied 2–8, Interposing
+  Shield 0–4, Retributive Guard 7–9; flat formulas unchanged; `2d20kh` still declines.
+- **Pinned regression cases** (iron rule 4 — the root cause is a pure helper): 5 new tests covering
+  `edhaRollDiceSync` (substitution, face bounds, the leave-alone cases, the runaway guard) and
+  `edhaEvalSync` on Shield Wall's and Interposing Shield's exact shipped formulas. **215 tests pass.**
+- ⚠️ **The harness was hiding this class of bug and is now fixed too.** `tests/harness.js`'s
+  `safeEval` refused Foundry's BARE math functions (`floor(x)` — the form every authored formula
+  actually uses; it only accepted `Math.floor`). So a dice formula returned 0 in the harness for the
+  *wrong reason*, and my first draft of the Interposing Shield test passed against a constant 0
+  because its bound `0..4` admitted it. The stub now maps the bare forms, and the test asserts real
+  variation rather than a range alone.
+
+### Known limits / couldn't self-verify
+
+- ⚑ **None of the 17 restored talents/abilities are re-benched** — the 11 dice ones need only Ben's
+  F5; the 6 adversary def-test ones need the rebuild + ⟳ Sync. Rows are open in the checklist: the
+  White four in the White section, and a new cross-tree row covering Green/Civilization/Death/
+  Knowledge/Power + the two Crownox abilities.
+- ⚑ **The 13 burst-path damage riders are the hardest to re-test** — each needs its owner to deal
+  damage through an `edha-burst` AoE specifically, since the non-burst path always worked. Flagged
+  rather than claimed.
+- ⚑ **New failure mode to know about:** `edhaRollDiceSync` only rolls a bare `NdM`. Any formula
+  `edhaFoldDieMath` cannot fold to that shape (a kept-dice modifier like `2d20kh`) still evaluates
+  to 0 — deliberately, so it fails as before rather than being silently mangled into a wrong number.
+  No shipped formula is in that shape today; a future one would be a silent 0 again.
+
+---
 
 **2026-07-26i — BENCH RUN 2 (White + Blue) — EXECUTED LIVE. 26 rows retired on evidence, TWO
 root-caused failure FAMILIES found (9 talents/abilities between them), 1 world-hygiene note;
