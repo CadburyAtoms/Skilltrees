@@ -1,16 +1,30 @@
-# The remaining migration — PATH BY PATH
+# The migration — ✅ COMPLETE (2026-07-26, pass AA)
 
-**State: 4 talents on the ratchet** (221 at the start 2026-07-24). All four are leyline/Blue
-(Holographic Illusion, Phantom Barricade, Phantom Double, Living Image). **Pass Z (07-26)
-cleared Black + heroic (10, grouped by BUILD, no ledger): H18 the `edha-ritual-paid`
-announcement + `edha-reserve-bank`; H17 the target-formula resolver (`@target.recoveryDie`,
-pinned) + `edha-focus` resource:hea + posted dice; the three ENGINE-OWNED vetoes re-litigated
-RULE-KEYED (`edha-focus-guard` / `edha-hp-floor` + the FIRST authored NATIVE rule / 
-`edha-move-veto` — adversary copies carry their own rule); Cold Eyes via the new `whenOnMyList`
-own-ledger gate; the last `EDHA_DRAW_MANA` row deleted (`edha-pulse` who:enemies).**
-**NEXT: PASS AA, THE FINAL SESSION (Ben 07-26, amending the earlier pairing note): Blue's four
-+ Fate's `ordained` repoint close the migration TOGETHER.**
-Before that: **Pass Y (07-26) cleared deity/Destruction (7) + leyline/Red (3) —
+**State: 0 talents on the ratchet** (221 at the start 2026-07-24, cleared over twenty-seven
+passes). Every tree is clear, all six marker ledgers are repointed onto H3 storage, and no talent
+name is dispatched on in engine code.
+
+**There is no next pass.** What remains of this skill is maintenance, and it is one thing:
+`scripts/lint-refs.js` **pass 7** now guards against REGROWTH. `scripts/name-keyed-allowlist.json`
+stays in the repo with an **empty `talents` list** — do NOT delete it, and do not add to it. A new
+`item.name === "X"` or `edhaOwnsTalent(actor, "X")` in the engine is a build failure, and the fix
+is a rule on the document or a declared exit, never a new line in that file.
+
+**Pass AA (07-26) — the FINAL session: Fate's `ordained` ledger (the sixth and last; one accessor
+repoint, all five readers followed for free, the `linked` annotation intact) + leyline/Blue's four.
+New: **H22 `edha-barrier`** — the engine's first blocks-movement capability, real Foundry Walls
+around a placed square, cover deliberately left a table read — plus `edha-illusion-copy` (the
+belief loop rule-keyed; BOTH adversary "The Seeming" abilities rewired with it),
+`edha-illusion-upkeep`, and the `edha-summon` widenings `tokenSizeColor` + `placeAt: pick-point`
+(no summon could be placed at a chosen square before). The Blue `useItem` switch is deleted.**
+
+Before that: **Pass Z (07-26) cleared Black + heroic (10, grouped by BUILD, no ledger): H18 the
+`edha-ritual-paid` announcement + `edha-reserve-bank`; H17 the target-formula resolver
+(`@target.recoveryDie`, pinned) + `edha-focus` resource:hea + posted dice; the three ENGINE-OWNED
+vetoes re-litigated RULE-KEYED (`edha-focus-guard` / `edha-hp-floor` + the FIRST authored NATIVE
+rule / `edha-move-veto` — adversary copies carry their own rule); Cold Eyes via the new
+`whenOnMyList` own-ledger gate; the last `EDHA_DRAW_MANA` row deleted (`edha-pulse` who:enemies).**
+**Pass Y (07-26) cleared deity/Destruction (7) + leyline/Red (3) —
 the sixth two-path session: the Destruction takeover retired, the FIFTH LEDGER (`charges`)
 repointed onto H3 (point-bound like snares; the arm's nested trig.targetUuid never meets the
 reconcile), and the shared-name Shatter Focus SPLIT into its two talents (the Chaos takeover had
@@ -57,7 +71,7 @@ pass AA, the FINAL session, paired by Ben's 07-26 instruction (this supersedes t
 | ~~deity/Life~~ | **0** | ✅ **CLEAR (pass W, 07-25)** — the useItem switch deleted; `edha-mutation` (chooser, riders as fields) + `edha-regen-grant` (Apex Form's FIVE mechanics on one rule; Primal's endOnVitalSpirit/mutationFormula) + `edha-cleanse` {success-damage-roll} (Surgical) + the `edha-redirect` intercept widenings (`watchFlag`/`linkOnUse`/`chooseAmount`/`takeType`/`healFormula` — Lifeline re-litigated OFF pass S's measured H25 build; the choose-amount click already existed). |
 | ~~deity/Chaos~~ | **0** | ✅ **CLEAR (pass U, 07-25)** — H1 `targetList` owner-sweep + `vs: none`, H3 `near-victim`/`enemies-range`, H6 `source: effects` (the dispel), `unlessTargetStatus`, config-only `edha-sense-reveal` (the veil table retired). `EDHA_CHAOS_TALENTS` is down to Shatter Focus (RED's talent — converting it frees the Set entirely). |
 | ~~leyline/Black · heroic/*~~ | **0** | ✅ **CLEAR (pass Z, 07-26)** — H18 `edha-ritual-paid` + `edha-reserve-bank`; H17 `edhaTargetFormula` + the recovery-die path + `edha-focus` hea/dice; the veto trio rule-keyed (`edha-focus-guard`/`edha-hp-floor`/`edha-move-veto`, first authored NATIVE rule); `whenOnMyList`; `EDHA_DRAW_MANA` deleted (`edha-pulse` who:enemies/requireIsolated). |
-| leyline/Blue | 4 | **PASS AA (FINAL, with the `ordained` repoint — Ben 07-26).** Holographic Illusion (1b — expose `tokenSizeFt`; 3 mechanics, LESSONS §2), Phantom Barricade (H22 — no wall/cover capability exists), Phantom Double + Living Image (bucket 3 — per-viewer client veil + belief ledger; re-litigate, then declare what stays ENGINE-OWNED rule-keyed). |
+| ~~leyline/Blue~~ | **0** | ✅ **CLEAR (pass AA, 07-26) — THE LAST FOUR.** Holographic Illusion = one `edha-summon` rule (the 1b was TWO gaps: `tokenSizeColor` and `placeAt: pick-point`; the classification's "3 mechanics" was one mechanic at three call sites). Living Image = config-only `edha-illusion-upkeep` + `edha-note`. Phantom Double = `edha-illusion-copy` (exit re-litigated, CONFIRMED, taken rule-keyed; both adversary Seemings rewired). Phantom Barricade = **H22 `edha-barrier`**, built — Foundry Walls, cover left a table read. Fate's `ordained` repointed in the same pass. |
 
 **The 13 bucket-3 declared exits** cut across every path and need **no build** — an `edha-note` cue
 rule on the talent plus an `ENGINE_OWNED: <reason>` line in its tree-section header. Take them as you
@@ -80,11 +94,11 @@ The bulk comes from spotting that N talents are one shape. Confirmed so far:
 - **Per-tree `edha<Tree>DealerPre/Post` riders** inside the applyDamage wrapper — behaviour that
   fires when you deal damage, not on use. ~20 talents across ~8 trees. Needs the payload cluster:
   pre-damage veto, in-flight reduction, second-hit counter, scene tally, heal-fraction.
-- **Marker LEDGERS** — six of them (`covenants` + `edicts` + `remains` + `snares` + `charges`
-  done; only Fate's `ordained` remains — the LAST, and it pairs with nothing, its readers already
-  run rule-keyed through the legacy accessor). ⚠️ **One ledger per session** (§9m q7): a
-  half-migrated ledger silently empties a live list at the table. The deliverable of a ledger pass
-  is the **REPOINT**, not the count.
+- **Marker LEDGERS** — six of them, **all migrated** (`covenants` 07-24u · `edicts` V · `remains`
+  W · `snares` X · `charges` Y · `ordained` AA). Every one now lives at
+  `flags.edha-content.lists.<key>` behind a one-line accessor. ⚠️ **One ledger per session**
+  (§9m q7): a half-migrated ledger silently empties a live list at the table. The deliverable of
+  a ledger pass is the **REPOINT**, not the count.
   ⚠️ **A ledger SWEEP must pass the MARKER status** — `edhaOwnerLedgers(key, status)`: the key is
   plural, the marker singular, and the key-as-status default silently empties the sweep (the 2bV
   pinned regression).
@@ -124,6 +138,14 @@ requireVictimInMyZone} · `edhaOwnerLedgers(key, status)`** (07-25, pass V) ·
 `edha-zone-react` {defeat-in-zone, ignite-spread} · `edha-place-hazard` {mode: trail, spreads} ·
 the `damaged` watch kind · `edha-test-rider` {unlessSkills} · `edhaDrainFocus` cross-actor
 relay** (07-26, pass Y) ·
+**`edha-ritual-paid` EVENT · `edha-reserve-bank` · H17 `edhaTargetFormula`/`edhaRecoveryDie` ·
+`edha-focus` {resource: hea, posted dice} · `whenOnMyList` · `edha-focus-guard` ·
+`edha-hp-floor` · `edha-move-veto` · `edha-pulse` {who: enemies, requireIsolated}** (07-26,
+pass Z) ·
+**H22 `edha-barrier` (Foundry Walls — the first blocks-movement capability) ·
+`edhaPickPlacement` · `edha-summon` {tokenSizeFt/tokenSizeColor, placeAt: pick-point,
+rangeColor/rangeFt, `at` point} · `edha-illusion-copy` · `edha-illusion-upkeep`** (07-26,
+pass AA — the last) ·
 `edha-note`.
 
 ⚠️ **H8 `edha-watch` is a GATE with a stub executor** — 44 talents name it and every one still needs a

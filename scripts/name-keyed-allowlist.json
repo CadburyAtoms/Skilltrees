@@ -10,7 +10,9 @@
   "",
   "To migrate a talent: move its behaviour onto the talent as system.events / effects in data/authored/<atlas>-<tree>.json, delete the name-keyed branch from the engine, then delete its line here. To take a declared exit instead (ENGINE-OWNED / MANUAL, see CLAUDE.md iron rule 2b) the talent still leaves this list \u2014 an exit is a declaration, not a name-keyed branch.",
   "",
-  "DO NOT regenerate this file to make the gate pass. Adding an entry is the violation the gate exists to catch. See EDHA_EDITABILITY_AUDIT.md for the migration plan."
+  "DO NOT regenerate this file to make the gate pass. Adding an entry is the violation the gate exists to catch. See EDHA_EDITABILITY_AUDIT.md for the migration plan.",
+  "",
+  "✅ MIGRATION COMPLETE 2026-07-26 (pass AA): `talents` is EMPTY — 221 → 0 over twenty-seven passes. DO NOT DELETE THIS FILE. Pass 7's remaining job is preventing REGROWTH, and it can only do that while this file exists with an empty list: a new talent name in engine code now fails the build with nowhere legitimate to put it."
  ],
  "generatedFrom": "module-src/scripts/register-skills.js",
  "generatedOn": "2026-07-24",

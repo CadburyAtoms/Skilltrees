@@ -633,8 +633,46 @@ own items); none names a talent.
   substitution (H27's inline pair extracted); pinned in `tests/engine-helpers.test.js`,
   mutation-checked both ways.
 
+## The FINAL primitives — Blue + the last ledger (07-26, pass 2bAA)
+**Ratchet 4 → 0. The rule-2b migration is complete: no talent name is dispatched on in engine
+code, and every marker ledger lives under `flags.edha-content.lists.<key>`.**
+- **H22 `edha-barrier`** — the engine's FIRST blocks-movement capability. Executor: click-place
+  (`edhaPickPlacement`), refuse+refund an OCCUPIED square, summon the HP token at the point, and
+  raise a box of four real Foundry **Walls** around it. Walls are GM-create-only, so a player
+  relays (`barrier-walls` / `barrier-clear`, the foundation-place shape); walls and summon share
+  a `barrierId` because a relayed summon materializes on the GM's client and the caster never
+  sees the actor. Fields: `hpFormula`, `sizeFt`, `defensePenalty`, `blocksMovement`,
+  `blocksSight` {none|limited|normal}, `rangeColor`/`rangeFt`, `note`. **COVER IS STILL A TABLE
+  READ** — `blocksSight` ships `none` deliberately. Lifecycle: the HP-zero branch in the defeated
+  sweep (destroyed = walls down, not a skull on a token that still blocks the corridor),
+  `deleteActor`/`deleteToken`, and a `deleteCombat` sweep. **Pure `edhaBarrierSegments(x, y,
+  sizePx)`** — the four `c` arrays, pinned on the property that matters (the box CLOSES; a
+  one-pixel gap is a gap a token walks through), mutation-checked both ways.
+- **`edhaPickPlacement(item, {color, rangeFt})`** — the Fate/Bone-Garden placement convention
+  factored out: range ring, `edhaPickPoint`, and a **REFUND** on cancel or an out-of-range pick
+  (executors run after the system has charged). Returns a snapped CENTRE or null. Reach for this
+  before writing another picker.
+- **`edha-summon` widenings** — `tokenSizeFt` / `tokenSizeColor` ([Size] off a colour's rank,
+  which used to be computed in code) and `placeAt: pick-point` + `rangeColor`/`rangeFt`.
+  `edhaSummon` now honours **`at: {x, y}`** (re-centred against the token's own size, since token
+  x/y are TOP-LEFT). No summon could be placed at a chosen square before 2bAA — which is why
+  every "at a point within Attunement Range" card spawned beside the caster. Four of the six
+  spec fields the schema hides stay hidden on purpose: they are per-cast runtime values.
+- **`edha-illusion-copy`** — the rule-keyed entry to the phantom belief loop (ENGINE-OWNED
+  re-litigated and confirmed: a `Token#isVisible` patch is not a rule chain). Fields: `copyOf`
+  {target-or-self|self}, `sourceLabel` (blank = the item's name — stamped as `phantomSource` and
+  read back by every card and the fooled-target riders), `hpFormula`, `speed`, `defensePenalty`,
+  `beliefDefense`, `beliefSkill`, `rangeColor`. The sweep reads the stamped skill; no talent name
+  survives in the flow. Consumers: Phantom Double + BOTH adversary "The Seeming" abilities.
+- **`edha-illusion-upkeep`** (config-only; the `combatTurnChange` sweep is its reader) —
+  `resource`, `costPer`, `qualifier`, `note`. The pay button carries its DOCUMENT, so the click
+  charges what the rule says.
+- **`edhaGetOrdained` → `edhaOwnerList(o, "ordained")`** — the SIXTH and last ledger repoint.
+  One accessor moved it and all five readers followed for free. `edhaGetFateList` /
+  `edhaSetFateList` are DELETED with the last flat marker key.
+
 ## The Black + heroic mop-up primitives (07-26, pass 2bZ)
-Ratchet 14 → 4 — only Blue's four remain (pass AA = Blue + the `ordained` repoint, FINAL).
+Ratchet 14 → 4 — only Blue's four remained (pass AA cleared them).
 - **`edha-ritual-paid` EVENT + `edhaDispatchRitualPaid(actor, item, paid)`** — fired by
   `edhaRitualHpCost` AFTER the health deduction; a Reserve payment (Double Dip) deliberately
   never fires it. `options.paid` carries the amount. The edha-draw-mana shape: sentinel hook,
@@ -722,9 +760,9 @@ legacy. No talent name in code.
 
 ## The Fate path's primitives (07-25, pass 2bX)
 Fate to zero; the `snares` ledger repointed (the FOURTH of six — POINT-BOUND entries, no uuid/no
-marker status, H3's reconcile fails OPEN by design, pinned). `fateOrdained` stays the LEGACY flat
-key behind `edhaGetOrdained` on purpose (§9m q7; the H12-over-charges precedent) — do not repoint
-it in passing. No talent name in code.
+marker status, H3's reconcile fails OPEN by design, pinned). `fateOrdained` was the LEGACY flat key
+behind `edhaGetOrdained` until **pass 2bAA repointed it** (`lists.ordained`, same shape) — there is
+no flat marker key left in the engine. No talent name in code.
 - **`edha-zone` grew kinds `ordained` / `snare`** — click-place a 5 ft marker square into the
   owner's marker ledger (`edhaFatePlaceCore`): cap/evict/colour off the rule, a snare's damage
   formula/type off ITS document, entry stamped `talent: item.name` (card/AE titles are data).

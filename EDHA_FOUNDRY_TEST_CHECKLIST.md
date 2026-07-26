@@ -179,6 +179,31 @@ retired for good; live testing happens on the dashboard.
 
 ---
 
+## ⚑ RULE-2b PASS AA — THE FINAL PASS: Fate's `ordained` ledger + the whole Blue Illusion branch (2026-07-26) — NEEDS A PACK REBUILD (leyline + deity + adversary)
+
+**Ratchet 4 → 0 — the migration is finished (221 → 0).** Two clusters: the SIXTH and last marker
+ledger (`ordained` → `lists.ordained`, one accessor, all five readers followed for free) and
+Blue's four. New: **H22 `edha-barrier`** — the engine's first blocks-movement capability, real
+Foundry Walls raised around a placed square — plus `edha-illusion-copy`, `edha-illusion-upkeep`,
+and two `edha-summon` widenings (`tokenSizeColor`, `placeAt: pick-point`). Engine work is F5-only;
+the authored rules are pack-baked. ⚑ **Nothing in this pass has run in Foundry** — walls, the
+relay, and the ledger repoint are all bench-unverified.
+
+| # | Talent / area | Do | Expect |
+|---|---|---|---|
+| 2bAA-1 | **Ordained Ground** (the ledger repoint) | place two squares, then a third with tier 2 | Unchanged behaviour: click-place in range, cap = tier, the oldest fizzles and its template vanishes. ⚑ the list now lives at `flags.edha-content.lists.ordained` — a mid-scene actor from an OLD build keeps a stale `fateOrdained` flag that reads as zero squares; re-place after the sync rather than reporting it as a loss. |
+| 2bAA-2 | **Weave the Thread** (the `linked` annotation) | with two active squares, use it and link them; then spring a snare within 30 ft of a linked square | The two-square veto still refuses BEFORE cost with fewer than two. The link dialog lists your squares, and the Reactive-Strike prompt fires on a spring near a LINKED one — the annotation has to have survived the repoint. |
+| 2bAA-3 | **Bulwark Ground** (the readers followed) | an ally begins its turn standing on one of your squares | +1 all defenses AE, Temp HP if Bulwark Ground is owned, and the Aid-at-30-ft card — all three read through the repointed accessor. Attacks against that ally still can't benefit from advantage. |
+| 2bAA-4 | **Read the Threads** (marker-command) | use it, click "Move …" on an Ordained marker | The slide still works and the template follows. ⚠ a marker card posted BEFORE this deploy carries the old key and will say "That marker is gone" — post a fresh one. |
+| 2bAA-5 | **Scene end** | end the combat with squares, snares and buffs live | Everything clears: both ledger keys, the templates, the snare Regions, the defense buffs. A missed key here silently leaves a live list at the table, which is the failure this row exists for. |
+| 2bAA-6 | **Living Image** | open it → **Events tab**; then start your turn with an illusion up | ⚑ TWO rules where the tab was empty: `edha-illusion-upkeep` (config) + `edha-note` (use). The turn-start prompt still whispers with a one-click pay. **Edit `costPer` to 2 and the button must then charge 2** — that is the whole point of the conversion. |
+| 2bAA-7 | **Holographic Illusion** | Events tab; then use it and click a square in range, and again out of range, and again cancelling | ⚑ ONE `edha-summon` rule. **NEW: it now asks you to click a square** and enforces Blue Attunement Range — the old version spawned it beside you with no range check at all. Out-of-range and cancel must REFUND the Investiture. The token is sized to [Size] off your Blue rank and does NOT join initiative. |
+| 2bAA-8 | **Phantom Double** | Events tab; use with no target, then on an ally in range, then on an ally out of range | ⚑ ONE `edha-illusion-copy` rule. Belief loop unchanged (each enemy that can see it rolls Perception vs your Cognitive defense; fooled clients stop rendering the original). **NEW: an out-of-range ally refunds the 2 Investiture.** |
+| 2bAA-9 | **The Seeming** — Mistheron AND The Doubled Elder | use it on each; break the copy | ⚑ Each adversary ability now carries its OWN `use` rule (⟳ Sync Adversaries / re-drag first). Both must still raise the copy and run the belief sweep, and **the cards must name "The Seeming", not "Phantom Double"**. Spearing Beak's / the Grasp's fooled-target rider must still find the belief ledger. |
+| 2bAA-10 | **Phantom Barricade** — H22, the session's build risk | use it: click a square in range; walk a token into the barrier; attack it to 0; try placing one on top of a creature; end the encounter | ⚑ ALL NEW. Click-placed in Blue range (cancel/out-of-range refunds). **Nothing should be able to move through it** — that is real walls, and it is the first time this engine has ever done it. At 0 HP it is destroyed and the walls come down; an occupied square is refused and refunded; the encounter ending clears it. **Cover is still yours to adjudicate** — deliberately not automated. Report anything the walls do to vision or lighting. |
+
+---
+
 ## ⚑ RULE-2b PASS Z — Black + heroic, the mop-up before Blue (2026-07-26) — NEEDS A PACK REBUILD (leyline + heroic + adversary)
 
 Ten talents, grouped by BUILD (ratchet 14 → 4 — only Blue's four remain; pass AA is the FINAL
@@ -800,13 +825,14 @@ built inline per §9m q6/q1. Engine handlers are F5-only; all 44 rules are pack-
 The live module + packs on this machine were, **as of 2026-07-18**, current through the 07-17 playtest-2 engine push
 (everything up to and including PR #97; packs current through 2026-07-16c + the 07-16d fixes).
 
-**MERGED BUT NOT YET DEPLOYED — the RULE-2b MIGRATION, PASSES A THROUGH Z (2026-07-24 → 07-26).**
-**217 talents** have moved off engine name-dispatch onto their own documents, and **every one of them
-changes the PACK**, so none of it is live until one `deploy-to-foundry.bat` + ⟳ Sync. Checklist rows
+**MERGED BUT NOT YET DEPLOYED — the RULE-2b MIGRATION, PASSES A THROUGH AA (2026-07-24 → 07-26).**
+**All 221 talents** have moved off engine name-dispatch onto their own documents — the migration is
+COMPLETE — and **every one of them changes the PACK**, so none of it is live until one
+`deploy-to-foundry.bat` + ⟳ Sync. Checklist rows
 **2bA-1…9 · 2bB-1…10 · 2bC-1…8 · 2bD-1…7 · 2bE-1…10 · 2bF-1…17 · 2bG-1…8 · 2bH-1…11 · 2bI-1…12 ·
 2bJ-1…14 · 2bK-1…5 · 2bL-1…14 · 2bM-1…12 · 2bN-1…6 · 2bO-1…7 · 2bP-1…12 · 2bQ-1…10 · 2bR-1…18 ·
-2bS-1…17 · 2bT-1…20 · 2bU-1…16 · 2bV-1…18 · 2bW-1…17 · 2bX-1…17 · 2bY-1…14 · 2bZ-1…12** are ALL
-unrun — do not treat any of them as verified, and do not read a "wrong text / old behaviour" report on a
+2bS-1…17 · 2bT-1…20 · 2bU-1…16 · 2bV-1…18 · 2bW-1…17 · 2bX-1…17 · 2bY-1…14 · 2bZ-1…12 ·
+2bAA-1…10** are ALL unrun — do not treat any of them as verified, and do not read a "wrong text / old behaviour" report on a
 converted talent as a bug until this deploy has happened. Nine handlers were built in that window
 (H1 `edha-def-test`, H5 `edha-cae-grant`, H11 `edha-enter-stance`, H3 `edha-owner-list`,
 H8 `edha-watch`, H10 `edha-focus`, H6 `edha-prompt-pick`, H12 `edha-detonate-list`, `edha-note`)
@@ -837,9 +863,14 @@ kinds `charge`/`line`, `edha-detonate-react`, `edha-reroll-react`, `edha-zone-re
 formula), `edha-focus` `resource: hea` + posted dice, the `whenOnMyList`/`whenOnMyListStatus`
 watch gate, the config-only veto trio (`edha-focus-guard`, `edha-hp-floor`, `edha-move-veto`),
 `edha-pulse` `who: enemies`/`requireIsolated` + GM-whispered skip accounting, and the FIRST
-authored NATIVE rule (Resilient Hero's `long-rest-actor` + `update-actor` clear — 2bA-9).
-Passes R, S, Y and Z also rewire adversary abilities (2bR-17, 2bS-3, 2bY-10, 2bZ-10), so the
-ADVERSARY pack + ⟳ Sync are needed too.
+authored NATIVE rule (Resilient Hero's `long-rest-actor` + `update-actor` clear — 2bA-9); and
+pass AA — the last — added **H22 `edha-barrier`** (the engine's FIRST blocks-movement capability:
+real Foundry Walls, GM-created or relayed, raised around a placed square and cleared when the
+barrier is destroyed / deleted / at the end of the encounter), `edha-illusion-copy`,
+`edha-illusion-upkeep`, and the `edha-summon` widenings `tokenSizeFt`/`tokenSizeColor` and
+`placeAt: pick-point` + `rangeColor`/`rangeFt` (no summon could be placed at a chosen square
+before). Passes R, S, Y, Z and AA also rewire adversary abilities (2bR-17, 2bS-3, 2bY-10, 2bZ-10,
+2bAA-9), so the ADVERSARY pack + ⟳ Sync are needed too.
 
 ⚠️ **Pass P retires a console macro.** `edha.calculatedPatience()` no longer exists — if it is in a
 hotbar macro, that macro will throw after this deploy. Delete it; the talent is automatic now. Two ADVERSARY abilities changed with pass J and are also pack-baked (Callthief's

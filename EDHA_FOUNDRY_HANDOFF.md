@@ -1,14 +1,48 @@
 # Edha → Foundry VTT Port — Agent / Operator Handoff
 
-Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-26 (pass Y): **the ratchet list is down to 14 names** (221 at the start, −207 in twenty-five passes), and **WHITE, GREEN, KNOWLEDGE, SOVEREIGNTY, CHAOS, POWER, ORDER, CIVILIZATION, DEATH, LIFE, FATE, DESTRUCTION AND RED ARE ALL FULLY CLEAR** — what remains is the mop-up (Black 4 / Blue 4 / heroic 6) plus Fate's `ordained`, the LAST ledger. ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **Blue, Black and Warrior are fully clear of rule-2b talents** (07-24s). **FIVE of the six marker LEDGERS have migrated** (`covenants` 07-24u; `edicts` 07-25 pass V; `remains` 07-25 pass W; Fate's `snares` 07-25 pass X; Destruction's `charges` 07-26 pass Y — both point-bound, fail-open by design); only Fate's `ordained` remains (deliberately LEGACY behind its accessor — §9m q7, one ledger per session; its repoint pairs with nothing). Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
+Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, **COMPLETED 2026-07-26 (pass AA)**: **the ratchet list is EMPTY — 221 → 0 across twenty-seven passes.** Every tree is clear, all six marker ledgers have migrated, and `scripts/name-keyed-allowlist.json` stays in the repo with an empty `talents` list *on purpose* — lint pass 7 still guards against REGROWTH, which is the half of the ratchet that matters from here on. ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **ALL SIX marker LEDGERS have migrated** (`covenants` 07-24u; `edicts` 07-25 pass V; `remains` 07-25 pass W; Fate's `snares` 07-25 pass X; Destruction's `charges` 07-26 pass Y; Fate's `ordained` 07-26 pass AA — the point-bound ones fail OPEN through H3's reconcile by design). There is no flat marker-list flag left in the engine. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-26** (RULE-2b PASS Z —
-**leyline/Black (4 of 5 remaining) + heroic (6), grouped by BUILD: H18 the ritual-paid
-announcement, H17 the target-scoped formula resolver, the three ENGINE-OWNED vetoes re-litigated
-rule-keyed, the last EDHA_DRAW_MANA row deleted.**
-⚠️ **PACK REBUILD (leyline + heroic + adversary) + ⟳ Sync REQUIRED.**)
-**Ratchet 14 → 4** — only Blue's four remain; **pass AA = Blue + the `ordained` repoint, the
-FINAL session (Ben 07-26).** Checklist **2bZ-1…12**, all unrun.
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-26** (RULE-2b PASS AA —
+**THE FINAL PASS: Fate's `ordained` ledger repointed (the sixth and last) + leyline/Blue's four,
+including H22 `edha-barrier`, the engine's first blocks-movement capability.**
+⚠️ **PACK REBUILD (leyline + deity + adversary) + ⟳ Sync REQUIRED.**)
+**Ratchet 4 → 0 — THE MIGRATION IS DONE.** Checklist **2bAA-1…10**, all unrun.
+
+**2026-07-26 — RULE-2b PASS AA: THE FINAL PASS. Ratchet 4 → 0; 221 → 0 over twenty-seven passes.**
+Grouped by BUILD, gated green between clusters. One ledger in scope (`ordained`), which is what
+made the pairing legal.
+- **Ledger 6/6 — `ordained` repointed** onto H3 storage (`flags.edha-content.lists.ordained`),
+  the charges/snares recipe verbatim: entries are POINT-BOUND (x/y, no uuid, no marker status), so
+  the mark-wins reconcile fails OPEN and keeps every one — the 2bV covenants convention. **One
+  accessor**: `edhaGetOrdained` wraps `edhaOwnerList`, so all five readers followed for free
+  (Weave's two-square pre-cost veto, the zone-guard no-advantage injector, the turn-start buff
+  sweep, `edhaFateZonesNear`). Write sites repointed by hand; the scene-cleanup key list is a
+  raw-path hand-edit (§9o trap 3) covering BOTH `lists.*` keys plus the pre-repoint flat keys.
+  The `linked` annotation rides the entries and survives untouched (pinned).
+  `edhaGetFateList`/`edhaSetFateList` are deleted with the last flat key.
+- **Holographic Illusion** — the 1b, and it turned out to be TWO generic gaps rather than one:
+  `tokenSizeColor` ([Size] off a colour's rank, which the engine computed as `edhaSizeFt`) and
+  `placeAt: pick-point` + `rangeColor`/`rangeFt`. **No summon could ever be placed at a CHOSEN
+  square** — which is why every "at a point within Attunement Range" card spawned beside the
+  caster. `edhaSummon` takes an `at` centre now, and `edhaPickPlacement` factors out the
+  Fate/Bone-Garden picker convention (ring, click, REFUND on cancel or out-of-range).
+- **Living Image** — a config-only `edha-illusion-upkeep` rule (the turn-start sweep is its
+  reader, the pass-Y/Z veto shape; the pay button carries its DOCUMENT) + an `edha-note` for the
+  on-use reminder.
+- **Phantom Double** — ENGINE-OWNED re-litigated and CONFIRMED (a Token#isVisible patch is not a
+  rule chain), taken RULE-KEYED as `edha-illusion-copy`. The belief sweep reads the stamped skill
+  instead of hard-coding Perception, and every card reads the stamped SOURCE. **TWO adversaries
+  carry an ability named "The Seeming"** (Mistheron, The Doubled Elder) and both rode the same
+  branch — each now carries its own `use` rule in `adversaries.json`.
+- **H22 `edha-barrier` — the engine's FIRST blocks-movement capability.** An HP-bearing summon
+  token inside a box of four real Foundry Walls (GM-create-only → `barrier-walls` relay, the
+  foundation-place shape; walls and summon share a `barrierId` because a relayed summon
+  materializes on the GM's client). **COVER STAYS A TABLE READ** — the standing ruling was checked
+  before automating anything, so `blocksSight` ships `none` and the rule's note tells the table.
+  An occupied square is refused and refunded (a closed wall box would trap the creature).
+  `edhaBarrierSegments` is pure and PINNED on the property that matters — the box CLOSES.
+- The Blue `cosmere-rpg.useItem` switch is DELETED, and with it the last name-keyed dispatch in
+  the engine.
 
 **2026-07-26 — RULE-2b PASS Z: Black + heroic clear. Ratchet 14 → 4 (only Blue remains).**
 Grouped by BUILD, gated green between clusters; no ledger in scope. Pass AA (FINAL) = Blue's four
