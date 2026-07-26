@@ -1387,7 +1387,9 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearKindle
  *  - NECROTIC GRASP: on a Black-talent hit, mark the target "healing halved" (expires end of the
  *    OWNER's next turn — reuses the expiry pass with an owner-relative coordinate); the apply path
  *    halves heals to a marked target.
- *  - RITUAL HP COST keystone + RESERVE: pay HP on use; flag Blood Price advantage; bank Reserve.
+ *  - RITUAL HP COST keystone + RESERVE: pay HP on use, then ANNOUNCE (edha-ritual-paid, 2bZ).
+ *    Blood Price (next-test advantage) and Sanguine Reservoir (Reserve banking) ride the event
+ *    off their OWN documents — the executor names no talent.
  *  - ⚑ IRON RULE 2b (07-24p): DOUBLE DIP is on its own document — `edha-def-test` black vs cog +
  *    an `edha-apply-status` mark on edha-test-success. Its bespoke per-owner `doubleDipBy` flag
  *    died with the hook; the mark is now the engine-wide `markedBy.doubledipped` shape (the Omen /
@@ -1561,6 +1563,21 @@ async function edhaDispatchDrawMana(actor, item) {
       } catch (e) { console.error(`Edha Content | ${tal.name} draw-mana rule failed`, e); }
     }
   } catch (e) { console.error("Edha Content | draw-mana dispatch failed", e); }
+}
+/* The RITUAL-PAID announcement (2bZ — the edha-draw-mana shape again: an engine moment that used
+ * to route to named talents now says what happened, and the riders read it off their own
+ * documents). Fired by edhaRitualHpCost AFTER the health deduction; NOT fired when the price was
+ * paid from Reserve instead (not a health loss — stated on Double Dip's card). `options.paid`
+ * carries the amount so a banking rule needs no formula of its own. Knows no payload type. */
+async function edhaDispatchRitualPaid(actor, item, paid) {
+  try {
+    for (const { item: tal, rule } of edhaRulesForEvent(actor, "edha-ritual-paid")) {
+      try {
+        const res = await rule.handler?.execute?.({ item: tal, rule, options: { source: item ?? null, paid: Math.max(0, Math.floor(Number(paid) || 0)) } });
+        if (res === false) break;   // mirrors fireEvent / edhaDispatchTestResult
+      } catch (e) { console.error(`Edha Content | ${tal.name} ritual-paid rule failed`, e); }
+    }
+  } catch (e) { console.error("Edha Content | ritual-paid dispatch failed", e); }
 }
 /* The ROUND boundary. Foundry has no "new round" hook, so it is latched off combatTurnChange the
  * same way the retired Bear Witness code did — including its reload guard: a client that first sees
@@ -3152,8 +3169,15 @@ async function edhaApplyHealCut(target, owner, fraction, byName) {
   } catch (e) { console.error("Edha Content | heal-cut apply failed", e); }
 }
 
-/* --- RESERVE (Sanguine Reservoir): flag-based pseudo-resource, cap = ranks in Black --------------- */
-function edhaReserveCap(actor) { return edhaColorRank(actor, "black"); }
+/* --- RESERVE: flag-based pseudo-resource. A Reserve USER is an actor carrying an
+ * `edha-reserve-bank` rule (Sanguine Reservoir's document since 2bZ — iron rule 2b); the cap rides
+ * that rule's `capFormula` (ranks in Black on the authored rule). The colorRank fallback covers a
+ * pre-repoint actor whose talent has not re-synced yet — banked Reserve stays spendable. --------- */
+function edhaReserveCap(actor) {
+  const h = edhaActorRuleOf(actor, "edha-reserve-bank")?.handler;
+  if (h?.capFormula) return Math.max(0, Math.floor(edhaEvalSync(String(h.capFormula), actor?.getRollData?.() ?? {})));
+  return edhaColorRank(actor, "black");
+}
 function edhaGetReserve(actor) { return Math.max(0, Math.floor(Number(actor?.flags?.["edha-content"]?.reserve) || 0)); }
 async function edhaSetReserve(actor, v) {
   v = Math.max(0, Math.min(edhaReserveCap(actor), Math.floor(Number(v) || 0)));
@@ -3178,7 +3202,8 @@ Hooks.on("renderDialogV2", (app, element) => {
   try {
     if (!String(app?.id ?? "").endsWith(".consume")) return;
     const item = app.item; const actor = item?.actor;
-    if (!actor || !edhaOwnsTalent(actor, "Sanguine Reservoir")) return;
+    const bank = actor ? edhaActorRuleOf(actor, "edha-reserve-bank") : null;   // rule-keyed (2bZ) — was edhaOwnsTalent on the talent name
+    if (!bank) return;
     const root = element instanceof HTMLElement ? element : element?.[0];
     if (!root || root.querySelector(".edha-reserve-spend")) return;
     const invRows = [...root.querySelectorAll("#consumables .form-group")].filter(el => {
@@ -3205,7 +3230,7 @@ Hooks.on("renderDialogV2", (app, element) => {
         if (!box?.checked) return;
         for (const el of invRows) { const c = el.querySelector("input[type=checkbox]"); if (c) c.checked = false; }
         void edhaSetReserve(actor, edhaGetReserve(actor) - need).then(() => {
-          ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🩸 <strong>Sanguine Reservoir</strong>: ${actor.name} pays <strong>${need}</strong> ${item.name} cost from Reserve (${edhaGetReserve(actor)}/${edhaReserveCap(actor)} left) — no Investiture spent.</p>` });
+          ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🩸 <strong>${bank.item.name}</strong>: ${actor.name} pays <strong>${need}</strong> ${item.name} cost from Reserve (${edhaGetReserve(actor)}/${edhaReserveCap(actor)} left) — no Investiture spent.</p>` });
         });
       } catch (e) { console.error("Edha Content | Reserve spend failed", e); }
     }, true);
@@ -3232,7 +3257,10 @@ Hooks.on("deleteCombat", async () => {
   } catch (e) {}
 });
 
-/* --- RITUAL HP COST keystone: pay HP on use; flag Blood Price; bank Reserve ---------------------- */
+/* --- RITUAL HP COST keystone: pay HP on use, then ANNOUNCE the payment (edha-ritual-paid) --------
+ * 2bZ (iron rule 2b): this executor used to name-key Blood Price (advantage flag) and Sanguine
+ * Reservoir (Reserve banking) — two riders inside ANOTHER talent's executor. Both are rules on
+ * their own documents now, reached by edhaDispatchRitualPaid below. Do not re-add a name here. */
 async function edhaRitualHpCost(item, cfg) {
   try {
     const actor = item?.actor; if (!actor) return;
@@ -3264,53 +3292,27 @@ async function edhaRitualHpCost(item, cfg) {
       const cur = Number(actor.system?.resources?.hea?.value) || 0;
       try { await actor.update({ "system.resources.hea.value": Math.max(0, cur - amt) }); } catch (e) { /* perms */ }
     }
-    const hasBlood = edhaOwnsTalent(actor, "Blood Price");
-    if (hasBlood) { try { await actor.setFlag("edha-content", "bloodPriceAdv", true); } catch (e) {} }
-    let banked = 0;
-    if (amt > 0 && edhaOwnsTalent(actor, "Sanguine Reservoir")) {
-      const before = edhaGetReserve(actor);
-      banked = (await edhaSetReserve(actor, before + amt)) - before;
-    }
     ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor }),
-      content: `<p>🩸 <strong>${item.name}</strong>: ${actor.name} pays <strong>${amt}</strong> HP`
-        + (hasBlood ? ` — <strong>advantage</strong> on your next Black test` : "")
-        + (banked > 0 ? ` — banked <strong>${banked}</strong> Reserve (${edhaGetReserve(actor)}/${edhaReserveCap(actor)})` : "")
-        + `.</p>`,
+      content: `<p>🩸 <strong>${item.name}</strong>: ${actor.name} pays <strong>${amt}</strong> HP.</p>`,
     });
+    // ANNOUNCE the payment (2bZ). The Reserve branch above returns BEFORE this line on purpose:
+    // paying from Reserve is not a health loss, so no ritual rider fires (unchanged behaviour).
+    // amt can legitimately be 0 (a formula that rolled to nothing) and the announcement still
+    // fires — the retired code armed the advantage flag on a 0 payment too; a banking rule
+    // simply banks nothing.
+    await edhaDispatchRitualPaid(actor, item, amt);
   } catch (e) { console.error("Edha Content | ritual HP cost failed", e); }
 }
 
-/* --- BLOOD PRICE: advantage on your next Black test after paying ritual HP ----------------------- */
-function edhaIsBlackTest(roll) { return roll?.data?.skill?.id === "black"; }
-function edhaBloodPricePreRoll(roll, source, config) {
-  try {
-    const actor = edhaD20RollActor(config);
-    if (!actor?.getFlag?.("edha-content", "bloodPriceAdv")) return;
-    if (!edhaIsBlackTest(roll)) return;
-    roll.options.advantageMode = "advantage";
-    roll.configureModifiers?.();
-    const origDialog = roll.configureDialog?.bind(roll);
-    if (origDialog) roll.configureDialog = async (data) => {
-      try { data ??= {}; data.skillTest ??= {}; data.skillTest.advantageMode = "advantage"; } catch (e) {}
-      return origDialog(data);
-    };
-  } catch (e) { console.error("Edha Content | Blood Price pre-roll failed", e); }
-}
-function edhaBloodPriceConsume(roll, source, config) {
-  try {
-    const actor = edhaD20RollActor(config);
-    if (!actor?.getFlag?.("edha-content", "bloodPriceAdv")) return;
-    if (!edhaIsBlackTest(roll)) return;
-    void actor.unsetFlag("edha-content", "bloodPriceAdv");
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🩸 <strong>Blood Price</strong> — advantage spent on this Black test.</p>` });
-  } catch (e) { console.error("Edha Content | Blood Price consume failed", e); }
-}
-for (const ctx of ["skill", "attack", "item"]) {
-  const cap = ctx.charAt(0).toUpperCase() + ctx.slice(1);
-  Hooks.on(`cosmere-rpg.pre${cap}Roll`, edhaBloodPricePreRoll);   // advantage on the next Black test
-  Hooks.on(`cosmere-rpg.${ctx}Roll`,    edhaBloodPriceConsume);   // consume the flag once the test resolves
-}
+/* Blood Price's advantage pipeline is GONE (2bZ, iron rule 2b). The bespoke `bloodPriceAdv` flag +
+ * its pre-roll/consume hook pair were a private second copy of the nextTestMod pipeline (the same
+ * retirement Coercive Pressure's cogDisadv took in 07-24r). The talent's document now carries
+ * `edha-next-test-mod` {target: self, advantage, skill: black} on the `edha-ritual-paid` event —
+ * same advantage write, same consume-and-announce, skill-gated to Black exactly as before. A
+ * bloodPriceAdv flag left on a live actor by a pre-deploy build is inert from now on.
+ * ⚠ ONE narrowing, the standing 2bI-4 caveat: nextTestMod is a single flag slot, so a second
+ * next-test rider OVERWRITES a banked Blood Price advantage instead of stacking beside it. */
 
 /* ============================================================================================
  * BLACK / SUBJUGATION tree engine (2026-06-13c) — focus economy + control flags.
@@ -7374,7 +7376,7 @@ Hooks.on("renderCharacterSheet", (app, element) => {
     // talent/skill/attr points; it belongs with Investiture/Focus/Health). Spending happens through the
     // "Pay from Reserve" option in the Spend-Investiture dialog / the ritual-HP Double Dip prompt.
     root.querySelector(".edha-reserve-bar")?.remove();
-    if (reserveCap > 0 && edhaOwnsTalent(actor, "Sanguine Reservoir")) {
+    if (reserveCap > 0 && edhaActorRuleOf(actor, "edha-reserve-bank")) {   // rule-keyed (2bZ)
       const invRes = root.querySelector(".resource.inv");
       if (invRes) {
         const rbar = document.createElement("div");
@@ -15332,6 +15334,11 @@ function edhaRegisterNativeEventSystem() {
     hook: "edha-content.noop-draw-mana",   // sentinel: never fired; edhaDispatchDrawMana dispatches these
   });
   api.registerItemEventType({
+    source: "edha-content", type: "edha-ritual-paid",
+    label: "Edha: When You Pay Ritual HP", description: "Fires for the caster after one of their talents' Edha: Ritual HP Cost rules deducts health — this is how an Always-Active ritual passive carries its own rider (the advantage on your next Black test, the Reserve banking). Paying the price from Reserve instead of health does NOT fire it. Any handler works.",
+    hook: "edha-content.noop-ritual-paid",   // sentinel: never fired; edhaDispatchRitualPaid dispatches these
+  });
+  api.registerItemEventType({
     source: "edha-content", type: "edha-opportunity",
     label: "Edha: When You Roll an Opportunity", description: "The PAYLOAD of an Opportunity spend. Put an Edha: Opportunity Option on this talent to add its button to the Opportunity-spend menu, then put what actually happens here — any handler works, exactly as on a gated test's success. Rules here run when the player clicks that button, after its resource cost is deducted (07-25).",
     hook: "edha-content.noop-opportunity",   // sentinel: never fired; the post-roll Opportunity watcher reads these rules
@@ -16435,12 +16442,33 @@ function edhaRegisterNativeEventSystem() {
   });
   api.registerItemEventHandlerType({
     source: "edha-content", type: "edha-ritual-hp-cost",
-    label: "Edha: Ritual HP Cost", description: "On use, the caster loses health = formula. Flags Blood Price's advantage and (with Sanguine Reservoir) banks the lost HP as Reserve.",
+    label: "Edha: Ritual HP Cost", description: "On use, the caster loses health = formula, then the payment is ANNOUNCED (Edha: When You Pay Ritual HP) so ritual riders on other talents fire off their own documents.",
     config: { schema: {
       formula: new FF.StringField({ required: true, initial: "@tier", label: "HP lost (formula)", hint: "Rolled on use. e.g. @tier, or floor((1d(2 * @skills.black.rank + 2)) / 2) for 'half [Die]'." }),
       note: new FF.StringField({ required: false, initial: "", label: "Note" }),
     } },
     executor: async function (event) { const item = event.item; if (item?.actor) await edhaRitualHpCost(item, this); },
+  });
+  /* H18's payload half (2bZ). The banking rule is ALSO the Reserve-user marker: the sheet's Reserve
+   * bar, the Spend-Investiture "Pay from Reserve" checkbox, the Double-Dip pay-from-Reserve offer
+   * and edhaReserveCap all key on an actor carrying this rule — never on a talent name. */
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-reserve-bank",
+    label: "Edha: Bank Ritual HP As Reserve", description: "Pair with event Edha: When You Pay Ritual HP — the health just paid is banked as Reserve, up to the cap. Carrying this rule is what makes its owner a Reserve user: it turns on the sheet's Reserve bar, the Spend-Investiture 'Pay from Reserve' checkbox and the Double-Dip pay-from-Reserve offer.",
+    config: { schema: {
+      capFormula: new FF.StringField({ required: false, blank: true, initial: "@skills.black.rank", label: "Reserve cap (formula)", hint: "Resolved against YOUR roll data. Ranks in Black on the authored rule." }),
+    } },
+    executor: async function (event) {
+      try {
+        const item = event.item, owner = item?.actor; if (!owner) return;
+        const paid = Math.max(0, Math.floor(Number(event.options?.paid) || 0));
+        if (!paid) return;
+        const before = edhaGetReserve(owner);
+        const banked = (await edhaSetReserve(owner, before + paid)) - before;
+        if (banked > 0) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+          content: `<p>🩸 <strong>${item.name}</strong>: banked <strong>${banked}</strong> Reserve (${edhaGetReserve(owner)}/${edhaReserveCap(owner)}).</p>` });
+      } catch (e) { console.error("Edha Content | edha-reserve-bank executor failed", e); }
+    },
   });
   api.registerItemEventHandlerType({
     source: "edha-content", type: "edha-opportunity-option",

@@ -58,7 +58,20 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "BloodPriceAdv000": {
+          "description": "Black/Ritual. When you pay a Ritual talent's health cost, advantage on your next Black test. 2bZ (iron rule 2b): was a bespoke bloodPriceAdv flag + pre-roll/consume pair name-keyed inside edhaRitualHpCost; now the standard nextTestMod pipeline on the edha-ritual-paid announcement. Paying from Reserve (Double Dip) does not fire it.",
+          "event": "edha-ritual-paid",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "self",
+            "mode": "advantage",
+            "skill": "black",
+            "count": 1
+          },
+          "id": "BloodPriceAdv000"
+        }
+      },
       "effects": []
     },
     "Coercive Pressure": {
@@ -948,7 +961,17 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "SanguineBank0000": {
+          "description": "Black/Ritual. Health paid to your Ritual talents banks as Reserve, cap = ranks in Black. 2bZ (iron rule 2b): was name-keyed inside edhaRitualHpCost. This rule is ALSO the Reserve-user marker — the sheet Reserve bar, the Spend-Investiture 'Pay from Reserve' checkbox and the Double-Dip pay-from-Reserve offer all key on it.",
+          "event": "edha-ritual-paid",
+          "handler": {
+            "type": "edha-reserve-bank",
+            "capFormula": "@skills.black.rank"
+          },
+          "id": "SanguineBank0000"
+        }
+      },
       "effects": []
     },
     "Sapping Hex": {

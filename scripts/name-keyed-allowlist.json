@@ -1,6 +1,6 @@
 {
  "_README": [
-  "IRON RULE 2b RATCHET LIST — generated once on 2026-07-24, then only ever SHRINKS.",
+  "IRON RULE 2b RATCHET LIST \u2014 generated once on 2026-07-24, then only ever SHRINKS.",
   "",
   "Each entry is a talent whose NAME appears as a string literal in engine CODE (register-skills.js, comments excluded). That is the rule-2b smell: behaviour bound to a string rather than to the talent document, so the talent ships with empty Events/Effects tabs, editing them in Foundry does nothing, and renaming the talent silently unwires it.",
   "",
@@ -8,7 +8,7 @@
   "  - a talent name in the engine that is NOT listed here  -> ERROR (the list may not grow)",
   "  - a name listed here that is NO LONGER in the engine   -> ERROR (delete the line; the list must not become fiction)",
   "",
-  "To migrate a talent: move its behaviour onto the talent as system.events / effects in data/authored/<atlas>-<tree>.json, delete the name-keyed branch from the engine, then delete its line here. To take a declared exit instead (ENGINE-OWNED / MANUAL, see CLAUDE.md iron rule 2b) the talent still leaves this list — an exit is a declaration, not a name-keyed branch.",
+  "To migrate a talent: move its behaviour onto the talent as system.events / effects in data/authored/<atlas>-<tree>.json, delete the name-keyed branch from the engine, then delete its line here. To take a declared exit instead (ENGINE-OWNED / MANUAL, see CLAUDE.md iron rule 2b) the talent still leaves this list \u2014 an exit is a declaration, not a name-keyed branch.",
   "",
   "DO NOT regenerate this file to make the gate pass. Adding an entry is the violation the gate exists to catch. See EDHA_EDITABILITY_AUDIT.md for the migration plan."
  ],
@@ -17,7 +17,6 @@
  "originalCount": 221,
  "talents": [
   "Black Leyline Attunement",
-  "Blood Price",
   "Cold Eyes",
   "Dread Presence",
   "Field Medicine",
@@ -28,7 +27,6 @@
   "Phantom Double",
   "Resilient Hero",
   "Resuscitation",
-  "Sanguine Reservoir",
   "Wary"
  ]
 }
