@@ -439,7 +439,18 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ChaosShatterRr00": {
+          "description": "Chaos (Maelith). Reaction, 1 Investiture: an enemy bearing your Omen in Attunement Range makes a test - remove the Omen; it rerolls and keeps the lower d20 (the engine rewrites the kept total). Refused BEFORE cost with no marked target. The auto-prompt whispers you when an Omen-bearer rolls (mutable; a real use re-arms). 2bY (iron rule 2b) - was the name-keyed takeover flow.",
+          "event": "use",
+          "handler": {
+            "type": "edha-reroll-react",
+            "markStatus": "omen",
+            "autoPrompt": true
+          },
+          "id": "ChaosShatterRr00"
+        }
+      },
       "effects": []
     },
     "Spreading Omen": {

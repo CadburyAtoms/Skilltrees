@@ -195,7 +195,37 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "BreakingPtWatch0": {
+          "description": "Red (leyline). Watch: an enemy within your Red Attunement Range takes damage for the 2nd time in a round (the damaged kind's observed value is the per-round hit count). Once per round per creature. 2bY (iron rule 2b) - was the name-keyed applyDamage watcher.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-watch",
+            "watch": "damaged",
+            "scope": "scene",
+            "payloadTarget": "actor",
+            "disposition": "enemy",
+            "rangeColor": "red",
+            "includeSelf": false,
+            "whenTotal": "at-least",
+            "whenTotalValue": 2,
+            "once": "round-per-target"
+          },
+          "id": "BreakingPtWatch0"
+        },
+        "BreakingPtStatus": {
+          "description": "Red (leyline). The payload: the twice-struck creature becomes Disoriented until the start of your next turn. The 1 Investiture is spent by you at the table (the card notes it), as the retired watcher did.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-apply-status",
+            "status": "disoriented",
+            "expire": "owner-turn",
+            "mark": false,
+            "note": "(You may spend 1 Investiture.)"
+          },
+          "id": "BreakingPtStatus"
+        }
+      },
       "effects": []
     },
     "Burning Drive": {
@@ -552,7 +582,21 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "FrenziedTempoAdv": {
+          "description": "Red (leyline). Passive: on a Fast turn, advantage on Presence-attribute tests EXCEPT the five leyline casts (unlessSkills - black is itself a Presence skill, which a positive filter cannot say). Applied by the pre-roll injector; always-active talent, no use event. 2bY (iron rule 2b) - was the name-keyed pre-roll hook.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-test-rider",
+            "appliesTo": "any",
+            "mode": "advantage",
+            "whenAttribute": "pre",
+            "whenFastTurn": true,
+            "unlessSkills": "white,blue,black,red,green"
+          },
+          "id": "FrenziedTempoAdv"
+        }
+      },
       "effects": []
     },
     "Incite": {
@@ -1022,7 +1066,20 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ShatterFocDrain0": {
+          "description": "Red (leyline). Reaction: target the character in Attunement Range that failed a test, then use - it loses 1 focus (involuntary: Wary reduces it; cross-actor writes relay through the GM). The failed-test trigger stays table-declared. 2bY (iron rule 2b) - this card was UNREACHABLE before: the Chaos takeover matched the shared name and ran the Omen-reroll flow instead.",
+          "event": "use",
+          "handler": {
+            "type": "edha-focus",
+            "op": "drain",
+            "resource": "foc",
+            "target": "victim",
+            "formula": "1"
+          },
+          "id": "ShatterFocDrain0"
+        }
+      },
       "effects": []
     },
     "Shockwave Slam": {
