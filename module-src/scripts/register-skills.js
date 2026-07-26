@@ -5389,7 +5389,8 @@ Hooks.on("preUpdateActor", (actor, changes) => {
  * gets a warn — edhaSummon bakes the spec owner-side and relays `summon-actor` to the primary GM
  * (SHARED with Death/Risen Servant + Civ/Forge Construct; canonical entry in EDHA_FOUNDRY_HANDOFF.md §9).
  * ============================================================================================ */
-function edhaSizeFt(owner) { return EDHA_SIZE_FT[edhaColorRank(owner, "blue")] || EDHA_SIZE_FT[1]; }
+// (edhaSizeFt is GONE with Holographic Illusion's conversion — [Size] off a colour is the
+//  `tokenSizeColor` field on edha-summon now, resolved in its executor.)
 function edhaTokenArt(actor) {
   const tok = actor?.getActiveTokens?.()[0];
   return tok?.document?.texture?.src || actor?.prototypeToken?.texture?.src || actor?.img || "icons/svg/mystery-man.svg";
@@ -5704,14 +5705,6 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
         // (07-16: this case was UNREACHABLE until the hook gate above went flag-aware — the
         // bespoke adversary item is action-typed and needed the build's adversaryTalent flag.)
         if (edhaOwnsTalent(actor, "The Seeming")) void edhaCastPhantomDouble(actor, actor, { source: "The Seeming" });
-        break;
-      case "Holographic Illusion":
-        if (edhaOwnsTalent(actor, "Holographic Illusion")) {
-          void edhaSummon(actor, {
-            name: "Holographic Illusion", img: "icons/magic/perception/silhouette-stealth-shadow.webp",
-            hpFormula: "1", speed: 0, defensePenalty: 99, tokenSizeFt: edhaSizeFt(actor),
-          });
-        }
         break;
     }
   } catch (e) { console.error("Edha Content | Illusion use-hook failed", e); }
@@ -7926,10 +7919,14 @@ async function edhaSummon(caster, spec) {
     };
     const ct = spec.anchorTok ?? caster.getActiveTokens?.()[0];   // anchorTok: place beside a token other than the caster's (Phantom Double of an ally)
     const gs = scene.grid?.size ?? 100;
+    // `at` (2bAA): an explicit CENTRE point from the placement picker — no summon could be placed
+    // at a chosen square before, which is why every "at a point within Attunement Range" card was
+    // spawning beside the caster instead. Token x/y are TOP-LEFT, so re-centre by its own size.
+    const half = ((tokSq || 1) * gs) / 2;
     const payload = {
       actorData, sceneId: scene.id,
-      x: ct ? ct.document.x + gs : Math.round((canvas?.dimensions?.sceneWidth ?? 1000) / 2),
-      y: ct ? ct.document.y : Math.round((canvas?.dimensions?.sceneHeight ?? 1000) / 2),
+      x: spec.at ? Math.round(spec.at.x - half) : (ct ? ct.document.x + gs : Math.round((canvas?.dimensions?.sceneWidth ?? 1000) / 2)),
+      y: spec.at ? Math.round(spec.at.y - half) : (ct ? ct.document.y : Math.round((canvas?.dimensions?.sceneHeight ?? 1000) / 2)),
       casterId: caster.id, actsAfterCaster: !!spec.actsAfterCaster,
       cardHtml: `<p><strong>${caster.name}</strong> summons <strong>${spec.name}</strong> — HP ${hp}, defenses ${dval("phy")}/${dval("cog")}/${dval("spi")}` +
                 (atkFormula ? `, ${atk.name || "attack"} ${atkFormula} ${atk.damageType || "keen"}` : "") + `.</p>`,
@@ -8998,6 +8995,29 @@ function edhaConsumeCost(item) {
     if (Object.keys(updates).length) actor.update(updates);
     return true;
   } catch (e) { console.error("Edha Content | burst consume failed", e); return true; }
+}
+/* Click-place a summon/barrier within Attunement Range (2bAA) — the Fate/Bone-Garden convention
+ * factored out: range ring, picker, and a REFUND on cancel or an out-of-range pick, because the
+ * system has already charged the cost by the time an executor runs. Returns a grid-snapped CENTRE
+ * {x, y} or null, in which case the caller has already been warned and refunded. `color` blank and
+ * `rangeFt` 0 means no range gate at all — place anywhere on the scene. */
+async function edhaPickPlacement(item, { color = "", rangeFt = 0 } = {}) {
+  const owner = item?.actor; const scene = canvas?.scene;
+  if (!owner) return null;
+  if (!scene) { edhaRefundCost(item); ui.notifications?.warn(`Edha: need an active scene for ${item.name} — cost refunded.`); return null; }
+  const tok = edhaCasterToken(owner);
+  const ft = Number(rangeFt) > 0 ? Number(rangeFt)
+    : (color ? (EDHA_ATTUNE_FT[edhaColorRank(owner, color) || 1] || EDHA_ATTUNE_FT[1]) : 0);
+  const gd = scene.grid?.distance || 5, gs = scene.grid?.size || 100;
+  let ring = null;
+  if (tok && ft > 0) { try { ring = await edhaDrawCircle(tok.center.x, tok.center.y, ft, EDHA_RANGE_RING_HEX, 0); } catch (e) {} }
+  const pt = await edhaPickPoint(`Click the square for ${item.name} (right-click to cancel).${ft > 0 ? ` Attunement Range ${ft} ft.` : ""}`);
+  try { if (ring) await ring.delete(); } catch (e) {}
+  if (!pt) { edhaRefundCost(item); ui.notifications?.info(`${item.name} canceled — cost refunded.`); return null; }
+  if (ft > 0 && tok && Math.hypot(pt.x - tok.center.x, pt.y - tok.center.y) / gs * gd > ft + gd / 2) {
+    edhaRefundCost(item); ui.notifications?.warn(`Edha: that square is beyond Attunement Range (${ft} ft) — cost refunded.`); return null;
+  }
+  return pt;
 }
 function edhaRefundCost(item) {
   try {
@@ -16720,14 +16740,33 @@ function edhaRegisterNativeEventSystem() {
       actsAfterCaster: new FF.BooleanField({ required: false, initial: true, label: "Acts on caster's initiative" }),
       sustainCap: new FF.StringField({ required: false, blank: true, initial: "", label: "How many you can sustain", hint: "A formula resolved against YOUR roll data — '1' for a single sustained summon, '@tier' for one per tier. BLANK = no limit (every pre-07-24y summon behaves this way). Enforced BEFORE the cost is charged." }),
       replaceOldest: new FF.BooleanField({ required: false, initial: false, label: "At the cap, replace instead of refusing", hint: "OFF = using the talent at your cap is refused and nothing is spent (Risen Servant). ON = the OLDEST sustained summon is dismissed and the new one takes its place (Forge Construct's sustain-ONE reforge)." }),
+      /* 2bAA (the Holographic Illusion 1b). `edhaSummon` honours SIX spec fields the schema never
+       * exposed — tokenName, displayName, disposition, extraFlags, anchorTok and tokenSizeFt — and
+       * that is why Blue's summons lived in engine code. Widened with exactly what the Blue specs
+       * need: the token's [Size] and a placement point. The other four are per-cast runtime values
+       * (a duplicated token's name/hover-mode/disposition, the belief flags), not dials a GM edits,
+       * and they stay with the illusion-copy flow that computes them. */
+      tokenSizeFt: new FF.NumberField({ required: false, initial: 0, label: "Token size (ft)", hint: "0 = one square. 10 makes a 2x2 token on a 5 ft grid." }),
+      tokenSizeColor: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "white", "blue", "black", "red", "green"), label: "…or size it by this colour's [Size]", hint: "Blank = the fixed size above. A colour scales the token with your rank in it ([Size] = 2.5/5/10/15/20 ft) — Holographic Illusion is 'not exceeding [Size]' on Blue." }),
+      placeAt: new FF.StringField({ required: false, initial: "beside-you", choices: choices("beside-you", "pick-point"), label: "Where it appears", hint: "beside-you = the square next to your token (every pre-2bAA summon). pick-point = you CLICK the square, gated by the range below; cancelling or picking out of range REFUNDS the cost." }),
+      rangeColor: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "white", "blue", "black", "red", "green"), label: "Placement range = this colour's Attunement Range", hint: "pick-point only. Blank and no fixed range = place anywhere on the scene." }),
+      rangeFt: new FF.NumberField({ required: false, initial: 0, label: "…or a fixed placement range (ft)", hint: "0 = use the colour above." }),
       bakedEffectsJson: new FF.StringField({ required: false, blank: true, initial: "", label: "Baked ActiveEffects (JSON array — advanced)", hint: "Toggled-off mode effects on the summon, e.g. Siege Form. [{label, icon, disabled, changes:[{key,mode,value}], description}]" }),
       extraItemsJson: new FF.StringField({ required: false, blank: true, initial: "", label: "Extra abilities (JSON array — advanced)", hint: "Additional baked actions, e.g. a Siege-Form ranged attack. [{name, actions, damageFormula, damageType, description}]" }),
     } },
     executor: async function (event) {
       const item = event.item; if (!item?.actor) return;
       const pj = (s) => { try { const v = JSON.parse(s || "[]"); return Array.isArray(v) ? v : []; } catch (e) { return []; } };
+      let at = null;
+      if ((this.placeAt || "beside-you") === "pick-point") {
+        at = await edhaPickPlacement(item, { color: this.rangeColor || "", rangeFt: this.rangeFt });
+        if (!at) return;                                   // cancelled / out of range — already refunded
+      }
       await edhaSummon(item.actor, {
-        name: this.summonName || item.name, img: this.img, talentName: item.name,
+        name: this.summonName || item.name, img: this.img, talentName: item.name, at,
+        tokenSizeFt: this.tokenSizeColor
+          ? (EDHA_SIZE_FT[edhaColorRank(item.actor, this.tokenSizeColor)] || EDHA_SIZE_FT[1])
+          : (Number(this.tokenSizeFt) || null),
         hpFormula: this.hpFormula, speed: this.speed, defensePenalty: this.defensePenalty, deflect: this.deflect,
         conditionImmunities: String(this.conditionImmunities || "").split(/[,\s]+/).filter(Boolean),
         attack: this.attackFormula ? { name: this.attackName || "Attack", damageFormula: this.attackFormula, damageType: this.attackType || "keen", range: this.attackRange || "melee" } : null,

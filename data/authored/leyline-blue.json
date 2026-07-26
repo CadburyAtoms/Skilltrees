@@ -595,7 +595,26 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "HoloSummon000000": {
+          "event": "use",
+          "description": "Blue (Illusion). 2bAA — the whole talent as ONE edha-summon rule (was a name-keyed useItem case). The 1b that unblocked it: `tokenSizeColor` exposes [Size] off your Blue rank, which the engine used to compute in code (edhaSizeFt). `placeAt: pick-point` + `rangeColor: blue` is the CARD's 'within Attunement Range' — the retired case placed the illusion beside you and checked no range at all (card-is-spec, §9m q11); a cancelled or out-of-range click REFUNDS the Investiture. A no-stats image: 1 HP, Speed 0, defenses 99 below yours, no attack, and it does NOT join the initiative order.",
+          "handler": {
+            "type": "edha-summon",
+            "summonName": "Holographic Illusion",
+            "img": "icons/magic/perception/silhouette-stealth-shadow.webp",
+            "hpFormula": "1",
+            "speed": 0,
+            "defensePenalty": 99,
+            "tokenSizeColor": "blue",
+            "placeAt": "pick-point",
+            "rangeColor": "blue",
+            "actsAfterCaster": false
+          },
+          "order": 0,
+          "id": "HoloSummon000000"
+        }
+      },
       "effects": []
     },
     "Intercept": {

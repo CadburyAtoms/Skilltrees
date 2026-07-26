@@ -62,8 +62,8 @@
   "1": 0,
   "2": 1,
   "3": 1,
-  "1b": 1,
-  "total": 3
+  "1b": 0,
+  "total": 2
  },
  "_splitNote": "Recomputed FROM the talents map below, not asserted \u2014 the map is the record; any summary that disagrees with it is the thing that is wrong. Verify with scripts/check-2b-classification.js.",
  "handlerDemand": {
@@ -200,12 +200,6 @@
   }
  },
  "talents": {
-  "Holographic Illusion": {
-   "tree": "leyline/Blue",
-   "bucket": "1b",
-   "needs": [],
-   "why": "CORRECTED 07-24v \u2014 the 'no combatant' field already EXISTS (`actsAfterCaster`) and is already effectively off here, so that was never the blocker. The real one-field ask is exposing `tokenSizeFt` (or a size-by-rank pair) on the schema: [Size] is computed in code today, and `tokenSizeFt` is one of SIX spec fields edhaSummon honours that the schema does not expose \u2014 which is the actual reason the Blue summons live in code. || MEASURED 2026-07-25 (pass 2bQ, readiness sweep of the 64 that read ready): MECHANIC COUNT 3 \u2014 its name appears at L5079, L5080, L5082, so it is NOT a one-rule conversion; converting the dispatch site alone would ship a talent whose other mechanics silently stopped (LESSONS.md \u00a72)."
-  },
   "Phantom Barricade": {
    "tree": "leyline/Blue",
    "bucket": "2",
