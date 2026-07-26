@@ -40,5 +40,6 @@ test-pass-fixes session. Record per the skill: passing rows retire with one-line
 fails get dated inline notes, feel/canvas rows stay ⚑. Finish with the dated handoff delta
 (next letter after the current top one), dashboard rebuild, gates (`python`, never `python3`;
 no `;`-chaining), ONE pushed commit titled `Bench run 2 (White+Blue): X retired on evidence,
-Y fails -> test-pass-fixes`, and rewrite docs/BENCH_NEXT_RUN.md with the run-3 prompt
-(Black, then Green).
+Y fails -> test-pass-fixes`, rewrite docs/BENCH_NEXT_RUN.md with the run-3 prompt (Black,
+then Green), and **log out of Bench as the very last in-world act** (`game.logOut()`, then
+confirm the join screen lists Bench as selectable — a held slot blocks the next session).

@@ -57,6 +57,9 @@ running (if `http://localhost:30000` doesn't answer, stop and ask).
 6. **Sweep:** compare start/end document-id snapshots (actors/scenes/combats/walls); anything
    changed outside the bench folders goes in the delta, prominently. Note for Ben that bench
    chat can be flushed.
+7. **Log out — always the last in-world act:** `game.logOut()` in the console, then confirm
+   the join screen lists Bench as selectable again. Ending a session without this HOLDS the
+   Bench slot and the next session cannot join (run 1 did it; Ben had to ask).
 
 ## Known traps
 

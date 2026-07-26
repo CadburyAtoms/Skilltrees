@@ -71,6 +71,9 @@ then the deities, Heroic, and the non-tree console-runnable sections).
    - Chat spam is accepted (Ben's call, 07-26); end the run noting Ben may flush bench chat.
    - Before/after sweep: snapshot document ids (actors/scenes/combats/macros) at run start and
      end; anything outside the bench folders changed = report it in the delta, prominently.
+   - **Log out — always the last in-world act:** `game.logOut()` in the console, then confirm
+     the join screen lists Bench as selectable again. A session that ends without this HOLDS
+     the Bench slot and the next session cannot join (run 1 did exactly that; Ben had to ask).
 9. **Pilot rule:** the first run executes ONE tree (Red — smallest live surface, the
    migration's pipe-cleaner talents) end-to-end through recording, delta, dashboard, commit —
    then scale to multi-tree runs.
