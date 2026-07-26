@@ -42,16 +42,21 @@ function macroErrorsFor(cases) {
   }
 }
 
-/* --- the three LEGAL shapes: mutation-checked the other way ---------------------------------- */
+/* --- the three LEGAL shapes: mutation-checked the other way ----------------------------------
+ * FIELD SHAPE (corrected 2026-07-26): the system's real schema is `inline` (boolean) + `macro:
+ * { type, command }` + `uuid` — camelCase. The first version of these fixtures used the
+ * PascalCase i18n LABEL keys (`Inline` as the source string), which no DataModel would ever
+ * populate, so the gate they pinned was aimed at fields that don't exist. */
+const inlineScript = (command) => ({ inline: true, macro: { type: "script", command } });
 const LEGAL = {
   // A small inline macro is the whole point of the ruling — it must survive.
-  "Fixture Small": { Inline: "const a = actor;\nif (!a) return;\nawait a.update({});" },
+  "Fixture Small": inlineScript("const a = actor;\nif (!a) return;\nawait a.update({});"),
   // A Foundry macro body runs as an ASYNC function body, so top-level await is legal there and must
   // not be reported as a syntax error here.
-  "Fixture Await": { Inline: "await actor.update({});" },
+  "Fixture Await": inlineScript("await actor.update({});"),
   // Guard clauses and comments make code more readable; a limit that punished them would push
   // authors toward dense one-liners, which is the opposite of what the limit is for.
-  "Fixture Comments": { Inline: Array.from({ length: 40 }, () => "// just a comment").join("\n") + "\nconst a = 1;" },
+  "Fixture Comments": inlineScript(Array.from({ length: 40 }, () => "// just a comment").join("\n") + "\nconst a = 1;"),
 };
 
 let legalErrs = null;
@@ -64,17 +69,19 @@ test("macro gate accepts every legal shape (small · top-level await · comments
 const ILLEGAL = {
   // A UUID macro lives in the WORLD: this gate cannot parse it, a review cannot diff it, and a pack
   // rebuild cannot carry it — so the behaviour is no more visible than the engine branch it replaced.
-  "Fixture Uuid": { MacroType: "document", UUID: "Macro.abcdef1234567890" },
-  "Fixture Empty": { Inline: "   " },
-  "Fixture Chars": { Inline: "const x = 1; // " + "y".repeat(1300) },
-  "Fixture Lines": { Inline: Array.from({ length: 25 }, (_, i) => `const v${i} = ${i};`).join("\n") },
+  "Fixture Uuid": { inline: false, uuid: "Macro.abcdef1234567890" },
+  // A chat macro as a rule payload is a card pretending to be automation.
+  "Fixture Chat": { inline: true, macro: { type: "chat", command: "the table resolves this" } },
+  "Fixture Empty": inlineScript("   "),
+  "Fixture Chars": inlineScript("const x = 1; // " + "y".repeat(1300)),
+  "Fixture Lines": inlineScript(Array.from({ length: 25 }, (_, i) => `const v${i} = ${i};`).join("\n")),
   // The check that makes a macro defensible at all: a parse error means the rule is dead at the
   // table and nothing else would ever say so.
-  "Fixture Parse": { Inline: "const a = ;" },
+  "Fixture Parse": inlineScript("const a = ;"),
   // Size is the wrong thing to worry about on its own. A hook outlives the use that created it and
   // re-registers on every execution, with nothing to remove it — a second engine, at any length.
-  "Fixture Hook": { Inline: 'Hooks.on("updateActor", () => {});' },
-  "Fixture Timer": { Inline: "setTimeout(() => {}, 100);" },
+  "Fixture Hook": inlineScript('Hooks.on("updateActor", () => {});'),
+  "Fixture Timer": inlineScript("setTimeout(() => {}, 100);"),
 };
 
 let illegalErrs = null;
@@ -86,7 +93,8 @@ test("macro gate reports EVERY violation in one run, not just the first", () => 
 
 for (const [label, name, expect] of [
   ["a macro referenced by UUID", "Fixture Uuid", "must be INLINE"],
-  ["an empty body", "Fixture Empty", "empty Inline body"],
+  ["a chat-type macro", "Fixture Chat", 'macro.type "chat"'],
+  ["an empty body", "Fixture Empty", "empty macro.command"],
   ["over the character budget", "Fixture Chars", "chars (max 1200)"],
   ["over the logical-line budget", "Fixture Lines", "logical lines (max 20"],
   ["a body that does not parse", "Fixture Parse", "does not parse"],
