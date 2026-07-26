@@ -405,6 +405,23 @@ function build() {
   const hygieneMd = src('TODO_REPO_HYGIENE.md');
 
   // --- Bench (checklist), minus the DEPLOY STATE section which becomes the banner
+  // GATE (2026-07-26d): the bench parser only turns "- [ ]" checkbox lines into bench items — a
+  // markdown TABLE is swallowed as prose, so its rows render dead: no marks, no PASS/FAIL, and
+  // invisible to Copy-for-Claude. All 28 rule-2b sections (~341 rows, passes A→AB) shipped as
+  // tables and Ben found the Bench tab empty of them at the first migration deploy. `--check`
+  // never caught it because in-sync HTML is not the same as PARSED rows. Refuse tables outright.
+  {
+    const tableLines = checklistMd.split(/\r?\n/)
+      .map((l, i) => ({ l, n: i + 1 }))
+      .filter(({ l }) => /^\s*\|.*\|\s*$/.test(l));
+    if (tableLines.length) {
+      throw new Error(
+        `EDHA_FOUNDRY_TEST_CHECKLIST.md has ${tableLines.length} markdown-table line(s) ` +
+        `(first at line ${tableLines[0].n}) — bench rows must be "- [ ] **label** — …" checkbox ` +
+        `lines; a table renders as dead prose on the Bench tab (invisible to marks and ` +
+        `Copy-for-Claude). Convert the rows, then rebuild.`);
+    }
+  }
   const checklist = parseChecklist(checklistMd);
   let deployBanner = null;
   const benchSections = checklist.sections.filter((s) => {

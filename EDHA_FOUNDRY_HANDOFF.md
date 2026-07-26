@@ -8,6 +8,17 @@ AUDIT of the finished migration — lint pass 9 (handler FIELD names), the 91-em
 sweep, and the deploy script hardened. **VERDICT: run the .bat.**
 ⚠️ **PACK REBUILD (adversary) + re-drag of placed adversaries REQUIRED.**)
 
+**2026-07-26d — "The dashboard has none of the 2b bench items" (Ben, post-deploy) — TRUE since
+pass A, fixed.** The bench parser only turns `- [ ]` checkbox lines into bench items; a markdown
+TABLE is swallowed as PROSE — and every rule-2b checklist section (passes A→AB, 28 sections,
+**341 rows**) was written as a table, so the whole migration bench rendered as dead paragraphs:
+no marks, no PASS/FAIL, invisible to Copy-for-Claude. `build-dashboard --check` could never
+catch it (in-sync HTML ≠ parsed rows) — the fifth gate-blindness of the migration (§9n family).
+All 341 rows converted to checkbox rows by script (`**<id> — <talent>** — do → expect`; ids kept
+in the bold label so Ben's copied results name them; no saved marks existed to lose), and
+build-dashboard now **refuses any table line in the checklist** — a table on the bench is a
+build failure, not silent prose. test-pass-fixes Phase 7 states the convention. Docs-only.
+
 **2026-07-26c — Ben's first .bat run STOPPED at step 4 (76 phantom "un-extracted Foundry edits")
 — root-caused, fixed, verdict unchanged: RE-RUN THE .BAT.** The guard's baselines lived at
 `data/authored/.baselines/` — keyed to the DATA, shared across every `EDHA_MODROOT` — so every
