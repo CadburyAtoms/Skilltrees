@@ -5074,7 +5074,9 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
  *   Feral Connection/Hunter's Edge/Protective Bond — no companion actor; §9j names the build),
  *   Deadly Trap/Experienced Trapper (GM-side terrain; hazard Regions are the named future hook),
  *   Killing Edge (item trait edits — gear pass), Shadowing (senses are table reads), Steady Aim
- *   (range/damage read off the card at roll time).
+ *   (range/damage read off the card at roll time), Fatal Thrust ("unsuspecting" is a table read;
+ *   the attack is the system's weapon roll and the 4d4/advantage riders read off the card —
+ *   Steady Aim's class. Named here 07-26: it was one of the audit's four undeclared-and-empty).
  * LEADER — WIRED: the COMMAND-DIE cluster (scaling die, self-add cards, Relentless March +
  *   Authority riders on Decisive Command), Valiant Intervention/Tactical Ploy/Synchronized
  *   Assault/Set at Odds/Turning Point/Grand Deception (gates), Resilient Hero (HP-floor veto),
@@ -5090,8 +5092,11 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
  *   (round-window defenses, authored), Swift Healer/Applied Medicine (heal riders, authored),
  *   Clear Mind (AE), Overwhelm with Details (Lore next-test), Sharp Eye-class reveal (gate).
  *   CAE-NEXT: Strategize [grant + burn-reaction half], Contingency [plot-die edit — needs the
- *   ally's roll card, cue today]. MANUAL: the ERUDITION expertise cluster (sheet edits — the
- *   creator's culture work owns expertise UX), the CRAFTING/FABRIAL cluster (Efficient Engineer/
+ *   ally's roll card, cue today]. MANUAL: the ERUDITION expertise cluster — BY NAME: Mind and
+ *   Body, Emotional Intelligence, Deep Study (sheet edits; the native grant-expertises handler is
+ *   the named future hook, blocked on ⟳ Sync re-firing add-to-actor on every re-add — the
+ *   creator's culture work owns expertise UX. Named here 07-26: two of these were among the
+ *   audit's four undeclared-and-empty), the CRAFTING/FABRIAL cluster (Efficient Engineer/
  *   Experimental Tinkering/Fine Handiwork/Inventive Design/Prized Acquisition/Overcharge — no
  *   crafting subsystem in the free system), Ongoing Care (rest-time; rolls fine), Keen Insight
  *   (Gain Advantage isn't a hookable item), Deep Contemplation (Erudition reassign = sheet edit).
@@ -5110,7 +5115,10 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
  *   [cost-discount — Dodge/Reactive Strike −1], Stonestance's attack tax [cost-discount inverse],
  *   Flame/Wind extra actions [grant-action], Combat Training's free graze [cadence], Cautious
  *   Advance [grant-action]. MANUAL: Precise Parry (hit→graze is the GM's — the Combat Training
- *   NO-HOOK class), Shard Training (Shard gear is paid content), Vinestance's reaction test
+ *   NO-HOOK class), Shard Training (Shard gear is paid content), Signature Weapon (a weapon-
+ *   expertise grant + an Opportunity-range edit are sheet edits — the Erudition class, same
+ *   grant-expertises blocker. Named here 07-26: it was one of the audit's four undeclared-and-
+ *   empty), Vinestance's reaction test
  *   (cue; the numeric half is wired), Defensive Position/Formation Drills (Brace is the GM's
  *   dis/advantage bookkeeping — re-litigate WITH the CAE dump, it may expose Brace).
  * CONTEST-EXEMPT: none — every opposed line above is vs a DEFENSE (gated below) or a fixed DC.
