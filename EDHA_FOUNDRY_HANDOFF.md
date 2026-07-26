@@ -8,6 +8,39 @@ AUDIT of the finished migration — lint pass 9 (handler FIELD names), the 91-em
 sweep, and the deploy script hardened. **VERDICT: run the .bat.**
 ⚠️ **PACK REBUILD (adversary) + re-drag of placed adversaries REQUIRED.**)
 
+**2026-07-26f — THE BENCH RESTRUCTURE (Ben: "update/consolidate the bench — it's too much") —
+991 → 568 open rows, reorganized per-TREE; docs-only, nothing to deploy.** Ben confirmed the
+migration deploy is live ("I can confirm it appears the migration worked", 07-26), which
+obsoleted a third of the bench outright. Two commits:
+- **Retired (commit 1):** the 22 legacy per-tree sections — 343 rows written against the DELETED
+  name-keyed engine, including the 94 "Watch-items" rows asserting deleted internals — plus 38
+  rows in Heroic wiring / Engine backlog / Pass-3 ×2 / manual re-litigation, each superseded by
+  a named 2b row (full inventory in the commit message). Deletion-with-paper-trail per the 07-18
+  precedent.
+- **Reorganized (commit 2):** the 29 rule-2b pass sections dissolved into **17 top-level
+  `# BENCH —` sections** (engine-wide first, then 5 leylines, 10 deities, heroic), each preambled
+  with its bench actor + priority rows. All 343 2b rows extracted VERBATIM keyed by id: 290 kept
+  individually, **53 like-for-like rows collapsed into 11 spot-check rows that name their source
+  ids** (2bB-1/2/5/6/7/9, 2bC-2/3/4/5/8, 2bD-1/2/4/5/6, 2bE-1/2/6/10, 2bF-1/10, 2bJ-4/6/11,
+  2bL-9/12, 2bM-3/4/5/7/11/12, 2bN-1/4/5/6, 2bO-2/3/4/6, 2bR-1/3/5/6/10, 2bS-4/6/7/12/13/14/15)
+  — nothing else dropped, enforced by the assembly script's assertion. 2bAB-1…10 moved into
+  "Adversary ability wiring"; Pending-section rows redistributed (tree-graph rows → their trees,
+  culture flavor → Culture items, map picker → wizard); survivors of the five retired sections
+  migrated (melee discriminator / GM summon relay / injury tool / formula bar / collision /
+  burst-cards → Engine-wide; Flashpoint → Red; Kindle → Items-dump; Cruel Step + Mender's
+  Instinct absorbed into Black/Green spot rows; senses + Veil → Adversary wiring).
+- **DEPLOY STATE advanced on Ben's quoted confirmation** and promoted `##` → `#`, which also
+  fixes a live regression: the dashboard's deploy BANNER had been dead since 07-24 — the banner
+  filter only matches top-level sections, and DEPLOY STATE was a `##` SUBSECTION of "PASS A"
+  (as were all 28 later pass sections: `parseChecklist` only promotes the FIRST pre-`#` `##` to
+  a section, so the whole 2b bench rendered nested under one giant PASS-A section). Both quirks
+  are why every restructure section is a `# ` heading now. ⚑ DEPLOY STATE still carries one ask:
+  Ben has not explicitly confirmed ⟳ Sync (PCs) / ⟳ Sync Adversaries / the 2bAB re-drag.
+- **Marks caveat:** dashboard marks are keyed by section title + row text — the restructure
+  orphans pre-restructure marks; recover unpasted day-1 marks from git history if needed.
+- Bench-actor + agent-run infrastructure (bench-setup-console.js, EDHA_BENCH_RUNBOOK.md) land in
+  the following commits — see the 07-26g delta when present.
+
 **2026-07-26e — Bench day-1: the Edit Event Rule dialog was illegible — module CSS fix
 (engine-mirror only: `node scripts/module-src-sync.js push` + F5; NO pack rebuild).** Ben's first
 observation at the migration bench: the rules render, but the edit window doesn't fit them. Root
