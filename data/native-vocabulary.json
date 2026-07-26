@@ -11,13 +11,18 @@
     "fixed `global` UUID). There is no native 'current user target'. Effects that must hit whoever",
     "the player is targeting need an edha-* handler, because those read game.user.targets.",
     "",
+    "FIELD NAMES: `schemaFields` (camelCase, from the bundle's actual registrations) is the",
+    "AUTHORING surface — what a rule's handler object may carry; anything else is silently dropped",
+    "by Foundry's DataModel. `labelKeys` (PascalCase, from lang/en.json) is editor chrome only —",
+    "NEVER author against it; the two were confused once and it miswired a gate (2026-07-26).",
+    "",
     "Refresh after a system upgrade: node scripts/dump-native-vocabulary.js"
   ],
   "system": {
     "id": "cosmere-rpg",
     "version": "2.1.0"
   },
-  "generatedFrom": "systems/cosmere-rpg/lang/en.json",
+  "generatedFrom": "systems/cosmere-rpg/lang/en.json + index.js (schemaFields)",
   "counts": {
     "events": 17,
     "handlers": 12
@@ -107,113 +112,182 @@
     {
       "type": "execute-macro",
       "label": "Execute Macro",
-      "fields": [
+      "labelKeys": [
         "Inline",
         "MacroType",
         "UUID"
+      ],
+      "schemaFields": [
+        "inline",
+        "macro",
+        "uuid"
       ]
     },
     {
       "type": "grant-expertises",
       "label": "Grant Expertises",
-      "fields": [
+      "labelKeys": [
         "AllowReplacement",
         "AvailableTypes",
         "Pick",
         "PickAmount",
         "PickDialog",
         "ReplaceExpertise"
+      ],
+      "schemaFields": [
+        "allowReplacement",
+        "availableTypes",
+        "expertises",
+        "pick",
+        "pickAmount"
       ]
     },
     {
       "type": "grant-items",
       "label": "Grant Items",
-      "fields": [
+      "labelKeys": [
         "AllowDuplicates",
         "IncreaseQuantity",
         "Items",
         "Notify",
         "PickOne",
         "PickPromptTitle"
+      ],
+      "schemaFields": [
+        "allowDuplicates",
+        "increaseQuantity",
+        "items",
+        "notify",
+        "pickOne",
+        "pickPromptTitle"
       ]
     },
     {
       "type": "modify-attribute",
       "label": "Modify Attribute",
-      "fields": [
+      "labelKeys": [
         "Amount",
         "Attribute",
         "Bonus"
+      ],
+      "schemaFields": [
+        "amount",
+        "attribute",
+        "bonus"
       ]
     },
     {
       "type": "modify-skill-rank",
       "label": "Modify Skill Rank",
-      "fields": [
+      "labelKeys": [
         "Amount",
         "Skill"
+      ],
+      "schemaFields": [
+        "amount",
+        "skill"
       ]
     },
     {
       "type": "remove-expertises",
       "label": "Remove Expertises",
-      "fields": []
+      "labelKeys": [],
+      "schemaFields": [
+        "expertises"
+      ]
     },
     {
       "type": "remove-items",
       "label": "Remove Items",
-      "fields": [
+      "labelKeys": [
         "Amount",
         "Items",
         "ReduceQuantity"
+      ],
+      "schemaFields": [
+        "amount",
+        "items",
+        "reduceQuantity"
       ]
     },
     {
       "type": "set-attribute",
       "label": "Set Attribute",
-      "fields": [
+      "labelKeys": [
         "Attribute",
         "Bonus",
         "Value"
+      ],
+      "schemaFields": [
+        "attribute",
+        "bonus",
+        "value"
       ]
     },
     {
       "type": "set-skill-rank",
       "label": "Set Skill Rank",
-      "fields": [
+      "labelKeys": [
         "Skill",
         "Value"
+      ],
+      "schemaFields": [
+        "skill",
+        "value"
       ]
     },
     {
       "type": "update-actor",
       "label": "Update Actor",
-      "fields": [
+      "labelKeys": [
         "Changes",
         "Target",
         "UUID"
+      ],
+      "schemaFields": [
+        "changes",
+        "target",
+        "uuid"
       ]
     },
     {
       "type": "update-item",
       "label": "Update Item",
-      "fields": [
+      "labelKeys": [
         "Changes",
         "MatchAll",
         "MatchMode",
         "Target",
         "UUID"
+      ],
+      "schemaFields": [
+        "changes",
+        "matchAll",
+        "matchMode",
+        "target",
+        "uuid"
       ]
     },
     {
       "type": "use-item",
       "label": "Use item",
-      "fields": [
+      "labelKeys": [
         "AdvantageMode",
         "FastForward",
         "Target",
         "TemporaryDamageModifiers",
         "UUID"
+      ],
+      "schemaFields": [
+        "advantageMode",
+        "fastForward",
+        "matchAll",
+        "matchMode",
+        "plotDie",
+        "target",
+        "temporaryDamageModifiers",
+        "temporaryModifiers",
+        "uuid"
       ]
     }
   ]

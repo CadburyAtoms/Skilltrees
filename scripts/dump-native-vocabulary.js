@@ -26,6 +26,7 @@
 "use strict";
 const fs = require("fs");
 const path = require("path");
+const { matchBrace, topLevelKeys } = require("./handler-schemas.js");
 
 const REPO_ROOT = path.resolve(__dirname, "..");
 const OUT = path.join(REPO_ROOT, "data", "native-vocabulary.json");
@@ -64,15 +65,55 @@ const events = Object.entries(ES.Types)
   .map(([type, v]) => ({ type, label: labelOf(v) }))
   .sort((a, b) => a.type.localeCompare(b.type));
 
-// Config field names per handler — the authoring surface. Title/Description are chrome, not fields.
+// ⚠ The i18n keys under each handler type are LABEL keys (PascalCase: Target, Changes, UUID),
+// NOT the DataModel schema field names (camelCase: target, changes, uuid). Confusing the two
+// nearly shipped a false lint on a correct rule and left lint pass 8 reading fields that don't
+// exist (2026-07-26). Label keys are kept for the editor-chrome record; the AUTHORING surface is
+// `schemaFields`, extracted from the system bundle's actual registerItemEventHandlerType calls.
 const CHROME = new Set(["Title", "Description"]);
 const handlers = Object.entries(ES.Handler.Types)
   .map(([type, v]) => ({
     type,
     label: labelOf(v?.Title) || type,
-    fields: Object.keys(v || {}).filter((k) => !CHROME.has(k)).sort(),
+    labelKeys: Object.keys(v || {}).filter((k) => !CHROME.has(k)).sort(),
+    schemaFields: [],
   }))
   .sort((a, b) => a.type.localeCompare(b.type));
+
+// Extract each handler's real config-schema field names from the system bundle. The bundle is
+// transpiled but not name-mangled: every registration is `registerItemEventHandlerType({ source:
+// SYSTEM_ID, type: "<type>", … config: { schema: <inline object | const ref> … })`. A referenced
+// const (update-item's SCHEMA$s) is resolved to its `const <id> = {` definition. Hard-fails if any
+// lang-listed handler yields no schema — a bundle restructure must rot LOUDLY, not under-report.
+{
+  let bundle;
+  const bundlePath = path.join(SYSTEM_DIR, "index.js");
+  try { bundle = fs.readFileSync(bundlePath, "utf8"); }
+  catch (e) { fail(`cannot read the system bundle (${bundlePath}) — ${e.message}`); }
+  const CALL = "registerItemEventHandlerType(";
+  const byType = new Map();
+  for (let idx = bundle.indexOf(CALL); idx !== -1; idx = bundle.indexOf(CALL, idx + CALL.length)) {
+    const next = bundle.indexOf(CALL, idx + CALL.length);
+    const slice = bundle.slice(idx, next === -1 ? bundle.length : next);
+    const tm = slice.match(/type:\s*"([a-z-]+)"/);
+    if (!tm) continue; // the API's own function definition, not a registration
+    const cm = slice.match(/config:\s*\{\s*schema:\s*(\{|[A-Za-z_$][\w$]*)/);
+    if (!cm) continue;
+    let open;
+    if (cm[1] === "{") {
+      open = idx + cm.index + cm[0].length - 1;
+    } else {
+      const dm = bundle.match(new RegExp(`const ${cm[1].replace(/\$/g, "\\$")} = \\{`));
+      if (!dm) fail(`handler "${tm[1]}": schema const ${cm[1]} not found in the bundle`);
+      open = dm.index + dm[0].length - 1;
+    }
+    byType.set(tm[1], topLevelKeys(bundle.slice(open + 1, matchBrace(bundle, open))).sort());
+  }
+  for (const h of handlers) {
+    if (!byType.has(h.type)) fail(`handler "${h.type}" is in lang/en.json but no schema was extracted from the bundle — did the registration shape change?`);
+    h.schemaFields = byType.get(h.type);
+  }
+}
 
 const targetChoices = ES.Handler?.General?.Target?.Choices
   ? Object.keys(ES.Handler.General.Target.Choices)
@@ -96,10 +137,15 @@ const snapshot = {
     "fixed `global` UUID). There is no native 'current user target'. Effects that must hit whoever",
     "the player is targeting need an edha-* handler, because those read game.user.targets.",
     "",
+    "FIELD NAMES: `schemaFields` (camelCase, from the bundle's actual registrations) is the",
+    "AUTHORING surface — what a rule's handler object may carry; anything else is silently dropped",
+    "by Foundry's DataModel. `labelKeys` (PascalCase, from lang/en.json) is editor chrome only —",
+    "NEVER author against it; the two were confused once and it miswired a gate (2026-07-26).",
+    "",
     "Refresh after a system upgrade: node scripts/dump-native-vocabulary.js",
   ],
   system: { id: systemJson.id, version: systemJson.version },
-  generatedFrom: "systems/cosmere-rpg/lang/en.json",
+  generatedFrom: "systems/cosmere-rpg/lang/en.json + index.js (schemaFields)",
   counts: { events: events.length, handlers: handlers.length },
   handlerTargetChoices: targetChoices,
   updateActorTargetChoices: updateActorTargets,
