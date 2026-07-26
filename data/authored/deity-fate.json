@@ -237,7 +237,7 @@
       "events": {
         "OrdainedZone0000": {
           "event": "use",
-          "description": "Fate (Olvarra). 2bX — the placement as the generic zone verb (was the preUseItem takeover): click-place a 5 ft marker square within Green Attunement Range (the range gate is new with 2bX — the card always said 'in Attunement Range' and the takeover never checked it; card-is-spec, §9m q11). Cap = tier, the oldest fizzles (Ben R1). The system charges the 1 Investiture; a cancelled or out-of-range pick REFUNDS it. Writes the LEGACY fateOrdained flat key by design (§9m q7 — `snares` was this session's one ledger; the rule-keyed engine flow addresses the un-migrated key with no name in code, the H12-over-charges precedent). The +1-defenses turn-start buff, the Aid-at-30-ft grant and the picker/canvas stay ENGINE-OWNED, keyed on this rule.",
+          "description": "Fate (Olvarra). 2bX — the placement as the generic zone verb (was the preUseItem takeover): click-place a 5 ft marker square within Green Attunement Range (the range gate is new with 2bX — the card always said 'in Attunement Range' and the takeover never checked it; card-is-spec, §9m q11). Cap = tier, the oldest fizzles (Ben R1). The system charges the 1 Investiture; a cancelled or out-of-range pick REFUNDS it. Writes the `ordained` H3 ledger (flags.edha-content.lists.ordained) — REPOINTED in 2bAA, the sixth and last ledger of the migration; entries are point-bound, so H3's mark-wins reconcile fails open and keeps them (the 2bV covenants convention). The +1-defenses turn-start buff, the Aid-at-30-ft grant and the picker/canvas stay ENGINE-OWNED, keyed on this rule.",
           "handler": {
             "type": "edha-zone",
             "kind": "ordained",

@@ -2328,7 +2328,8 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
       return;
     }
     // link-markers (2bX — Fate's Weave): two active begin-turn marker squares, checked BEFORE cost
-    // exactly as the retired takeover did. The ledger read is the legacy flat accessor by design.
+    // exactly as the retired takeover did. Reads through edhaGetOrdained, which is the `ordained`
+    // H3 ledger since the 2bAA repoint — this reader followed for free (one accessor).
     if (kind === "link-markers") {
       if (edhaGetOrdained(actor).length < 2) {
         ui.notifications?.warn(`Edha: ${item.name} needs two active Ordained Ground squares. Nothing spent.`);
@@ -10565,9 +10566,9 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearChaosS
  * "Ordained Ground + Snare" zone lifecycle. Colors Green/White; tag prefix "Fate (Olvarra).";
  * build `foundry-build deity` → pack `edha-deity`. 2bX authored rules onto every talent, so the
  * tree now needs a PACK REBUILD + ⟳ Sync. Infra (all generic):
- *   • placed markers → the legacy fateOrdained owner flag + the lists.snares H3 ledger (cap =
- *     tier; oldest fizzles), click-placed via edhaPickPoint + a MeasuredTemplate; cleared at
- *     scene/combat end (deleteCombat).
+ *   • placed markers → the lists.ordained + lists.snares H3 ledgers (cap = tier; oldest
+ *     fizzles), click-placed via edhaPickPoint + a MeasuredTemplate; cleared at scene/combat end
+ *     (deleteCombat).
  *   • damage writes  → edhaApplyBurstResults (+ GM socket relay), the proven burst pipeline.
  *   • Snare trigger  → a v13 Region (edha-content.fate-snare behavior) on tokenEnter + tokenMoveIn, so
  *     a foe that PASSES THROUGH the square springs it, not just one that stops; reuses the hazard-Region
@@ -10607,9 +10608,9 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearChaosS
  *   • Read the Threads / Foreknown Strike / Thread of Inevitability — `edha-marker-command`
  *     {mode: move / spring-pick / spring-all}, see ENGINE_OWNED below.
  * LEDGERS (§9m q7 — ONE per session): `snares` REPOINTED onto H3 storage (lists.snares) in 2bX;
- *   `fateOrdained` stays the LEGACY flat key behind edhaGetOrdained BY DESIGN — a rule-keyed
- *   engine flow may address the un-migrated flat key with no name in code (the H12-over-charges
- *   precedent). Do not half-migrate it; its repoint is its own session.
+ *   `ordained` REPOINTED in 2bAA — the SIXTH and LAST ledger, the one that closes the migration.
+ *   Both are now flags.edha-content.lists.<key> behind their one-line accessors; there is no flat
+ *   `fateOrdained` key any more (the scene cleanup still unsets it as deployed residue).
  * ENGINE_OWNED (declared, rule-keyed — the edha-decree exit shape; each talent's rule is its cue):
  *   • edha-marker-command flows — multi-step card/picker/canvas flows (spring buttons, the
  *     declared-event resolve, the ≤10 ft slide) no rule chain expresses; every dial a field.
@@ -10637,17 +10638,21 @@ function edhaTokenDocCenter(tok) {
 }
 function edhaSameSquare(cx, cy, sq) { return Math.hypot(cx - (sq?.x ?? 0), cy - (sq?.y ?? 0)) < edhaFateGridHalfPx(); }
 
-// LEGACY owner-flag marker list, scene-filtered (mirrors edhaGetCharges). `fateOrdained` is the
-// deliberately UN-migrated flat key (§9m q7 — one ledger per session; 2bX moved `snares`): the
-// rule-keyed engine flows below address it with no name in code (the H12-over-charges precedent),
-// so every reader keeps working through this accessor. Do not "fix" that, and do not half-migrate
-// it — its repoint is its own session.
-function edhaGetFateList(owner, key) { const c = owner?.getFlag?.("edha-content", key); return Array.isArray(c) ? c.filter(x => x && x.sceneId === (canvas?.scene?.id)) : []; }
-async function edhaSetFateList(owner, key, list) {
-  try { if (!list?.length) await owner.unsetFlag("edha-content", key); else await owner.setFlag("edha-content", key, list); }
-  catch (e) { console.error("Edha Content | set fate list failed", e); }
-}
-const edhaGetOrdained = (o) => edhaGetFateList(o, "fateOrdained");
+/* `ordained` REPOINTED onto H3 storage (flags.edha-content.lists.ordained) in 2bAA — the SIXTH
+ * and LAST ledger, and the one that closes the rule-2b migration. Same three properties as
+ * `snares` just below and `charges` one tree over: entries are POINT-BOUND — no uuid and NO
+ * marker status — so H3's mark-wins reconcile fails OPEN on every entry and keeps it (the 2bV
+ * covenants convention; there is nothing to pass, and that is correct, not a gap). The scene
+ * filter is H3's sceneScoped shape (every entry carries sceneId). The `linked` annotation
+ * edhaZoneLinkMarkers writes and edhaLinkedSquareNear reads rides the ENTRY, so it survives the
+ * repoint untouched (pinned in tests/). Writes go through edhaSetOwnerList("ordained", …) at
+ * each site — [] is a fine stored value (the old unset-when-empty quirk is dropped on purpose:
+ * nothing read the unset state and there are NO freebie semantics here). Canvas objects (the
+ * white MeasuredTemplate) stay with the placement handler per §9o — the cleanup path is a
+ * raw-path hand-edit onto lists.ordained (§9o trap 3). Every reader — Weave's two-square veto,
+ * the zone-guard, the turn-start buff sweep — goes through this accessor and follows for free.
+ * The legacy edhaGetFateList / edhaSetFateList pair is DELETED with the last flat key. */
+const edhaGetOrdained = (o) => edhaOwnerList(o, "ordained");
 /* `snares` REPOINTED onto H3 storage (flags.edha-content.lists.snares) in 2bX. Entries are
  * POINT-BOUND — no uuid and NO marker status — so H3's mark-wins reconcile fails OPEN on every
  * entry and keeps it (the 2bV covenants convention; there is nothing to pass, and that is
@@ -10749,14 +10754,13 @@ async function edhaFatePlaceCore(item, h, kind) {
     const cap = edhaListCap(owner, h.capFormula || "@tier");
     const entry = { id: foundry.utils.randomID(), sceneId: scene.id, templateId: tpl?.id, x: pt.x, y: pt.y, talent: item.name };
     if (isSnare) { entry.inevitable = false; entry.formula = item.system?.damage?.formula || EDHA_FATE_SNARE_DMG; entry.type = item.system?.damage?.type || "keen"; }
-    const cur = isSnare ? edhaGetSnares(owner) : edhaGetFateList(owner, "fateOrdained");
+    const cur = isSnare ? edhaGetSnares(owner) : edhaGetOrdained(owner);
     const { list, evicted } = edhaListPush(foundry.utils.deepClone(cur), entry, { cap, evict: h.evict || "oldest" });
     for (const drop of evicted) {   // canvas cleanup stays here, by hand (§9o trap 3)
       try { void scene.templates?.get(drop.templateId)?.delete()?.catch(() => {}); } catch (e) {}
       if (isSnare && drop) await edhaFateDeleteSnareRegion(scene, drop.id);
     }
-    if (isSnare) await edhaSetOwnerList(owner, "snares", list);           // the 2bX repoint
-    else await edhaSetFateList(owner, "fateOrdained", list);              // legacy flat key, by design
+    await edhaSetOwnerList(owner, isSnare ? "snares" : "ordained", list);   // both H3 ledgers (2bX / 2bAA)
     if (isSnare) await edhaFateDropSnareRegion(owner, scene, pt.x, pt.y, entry.id);
     const guard = edhaActorRuleOf(owner, "edha-zone-guard");
     const thp = guard?.handler?.thpFormula ? Math.max(0, Math.floor(edhaEvalSync(guard.handler.thpFormula, owner.getRollData()))) : 0;
@@ -10916,7 +10920,7 @@ async function edhaMarkerCommand(item, h) {
     // mode "move"
     const target = Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
     const maxFt = Number(h.maxFt) || 10;
-    const markers = [...edhaGetOrdained(owner).map((m, i) => ({ key: "fateOrdained", id: m.id, label: `${m.talent || "Marker"} #${i + 1}` })),
+    const markers = [...edhaGetOrdained(owner).map((m, i) => ({ key: "ordained", id: m.id, label: `${m.talent || "Marker"} #${i + 1}` })),
                      ...edhaGetSnares(owner).map((m, i) => ({ key: "snares", id: m.id, label: `${m.talent || "Trap"} #${i + 1}` }))];
     const btns = markers.map(m => `<button type="button" class="edha-fate-reposition" data-owner="${owner.uuid}" data-key="${m.key}" data-id="${m.id}" data-ft="${maxFt}">Move ${m.label} ≤${maxFt} ft</button>`).join(" ");
     ChatMessage.create({ whisper: edhaWhisperIds(owner), speaker: ChatMessage.getSpeaker({ actor: owner }),
@@ -10925,15 +10929,14 @@ async function edhaMarkerCommand(item, h) {
 }
 async function edhaFateReposition(owner, key, id, maxFt) {
   const isSnare = key === "snares";
-  const list = foundry.utils.deepClone(isSnare ? edhaGetSnares(owner) : edhaGetFateList(owner, key));
+  const list = foundry.utils.deepClone(edhaOwnerList(owner, key));   // both keys are H3 ledgers (2bAA)
   const m = list.find(x => x.id === id); if (!m) { ui.notifications?.info("That marker is gone."); return; }
   const pt = await edhaPickPoint(`Click the new square (≤${Number(maxFt) || 10} ft — range is owner-judged).`);
   if (!pt) return;
   m.x = pt.x; m.y = pt.y;
   try { await canvas?.scene?.templates?.get(m.templateId)?.update({ x: pt.x, y: pt.y }); } catch (e) {}
   if (isSnare) { await edhaFateDeleteSnareRegion(canvas?.scene, id); await edhaFateDropSnareRegion(owner, canvas?.scene, pt.x, pt.y, id); }
-  if (isSnare) await edhaSetOwnerList(owner, "snares", list);   // raw path (§9o trap 3)
-  else await edhaSetFateList(owner, key, list);
+  await edhaSetOwnerList(owner, key, list);   // raw path, either ledger (§9o trap 3)
   edhaFateCard(owner, null, `<p>🧵 Marker slid into place.</p>`);
 }
 async function edhaFateSpringFromCard(owner, snareId, bonusFormula, source) {
@@ -10956,7 +10959,7 @@ async function edhaFateThreadResolve(owner, item) {
 async function edhaZoneLinkMarkers(item, h) {
   try {
     const owner = item.actor; if (!owner) return;
-    const ord = foundry.utils.deepClone(edhaGetFateList(owner, "fateOrdained"));
+    const ord = foundry.utils.deepClone(edhaGetOrdained(owner));
     if (ord.length < 2) { edhaRefundCost(item); ui.notifications?.warn(`Edha: ${item.name} needs two active marker squares — cost refunded.`); return; }
     const tok = edhaCasterToken(owner);
     const ft = EDHA_ATTUNE_FT[edhaColorRank(owner, h.color || "green") || 1] || EDHA_ATTUNE_FT[1];
@@ -10984,7 +10987,7 @@ async function edhaZoneLinkMarkers(item, h) {
       return;
     }
     for (const id of picked) { const m = ord.find(x => x.id === id); if (m) m.linked = true; }
-    await edhaSetFateList(owner, "fateOrdained", ord);   // legacy flat key, by design (2bX)
+    await edhaSetOwnerList(owner, "ordained", ord);   // the 2bAA repoint — `linked` rides the entries
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
       content: `<div class="edha-trigger-card"><p>🪢 <strong>${item.name}</strong> (this scene): the chosen squares are linked. ${h.note || "GM/players execute the granted actions."}</p></div>` });
   } catch (e) { console.error("Edha Content | link-markers failed", e); }
@@ -11122,12 +11125,12 @@ async function edhaClearFateState() {
   try {
     if (!game.user?.isGM) return;
     for (const a of (game.actors?.filter(x => x.type === "character") ?? [])) {
-      // fateForeknown / fateThreadUsed are pre-2bX residue on deployed actors; keep unsetting them.
-      for (const key of ["fateOrdained", "fateForeknown", "fateThreadUsed"]) if (a.getFlag?.("edha-content", key)) await a.unsetFlag("edha-content", key);
-      // ⚠ raw path (§9o trap 3): the repointed snares ledger key is hand-edited here, plus the
-      // pre-repoint flat key so a deployed mid-scene actor doesn't keep a fossil list.
-      if (a.flags?.["edha-content"]?.lists?.snares) { try { await a.unsetFlag("edha-content", "lists.snares"); } catch (e) {} }
-      if (a.getFlag?.("edha-content", "fateSnares")) { try { await a.unsetFlag("edha-content", "fateSnares"); } catch (e) {} }
+      // ⚠ raw path (§9o trap 3): BOTH repointed ledger keys are hand-edited here — a repoint
+      // does NOT update the sweeps, and a missed key silently leaves a live list at the table.
+      for (const lk of ["ordained", "snares"]) if (a.flags?.["edha-content"]?.lists?.[lk]) { try { await a.unsetFlag("edha-content", `lists.${lk}`); } catch (e) {} }
+      // Pre-repoint flat keys + pre-2bX residue on deployed actors: keep unsetting them so a
+      // mid-scene actor doesn't keep a fossil list.
+      for (const key of ["fateOrdained", "fateSnares", "fateForeknown", "fateThreadUsed"]) if (a.getFlag?.("edha-content", key)) await a.unsetFlag("edha-content", key);
       await edhaFateRemoveOrdainedBuff(a);
     }
     // Marks are cleared by DATA: any markedBy key that some `edha-snare-react` offer-mark rule
