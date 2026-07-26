@@ -370,3 +370,41 @@ app-character-paths-list .path.drop-area {
   max-height: 76vh;
   overflow-y: auto;
 }
+
+/* M (07-26 migration bench): Edit Event Rule dialog legibility. The system lays every handler
+ * config field out as ONE flex row — label | input | hint side by side — inside a fixed 500px,
+ * non-resizable dialog (ItemEditEventRuleDialog). Edha handler types carry 20+ fields whose
+ * hints are paragraph-length documentation, so the hint squeezed the label column down to one
+ * word per line and the field stack ran off the bottom of the screen with no scrollbar.
+ * Scoped to .edit-event-rule only; the system dialog class and template are untouched. */
+.application.dialog.edit-event-rule {
+  width: 660px !important;   /* the system pins width:500 as an inline style (DEFAULT_OPTIONS) */
+  max-width: 96vw;
+  max-height: 92vh;
+}
+.application.dialog.edit-event-rule .window-content {
+  overflow-y: auto;
+}
+/* Label | control on a two-column grid; the hint is documentation, not a column-mate — it
+ * spans the full width underneath in small type. (form-fields/label flex values from the
+ * system's row layout are inert on grid items, so they don't need unsetting.) */
+.application.dialog.edit-event-rule form .form-group {
+  display: grid;
+  grid-template-columns: minmax(180px, 2fr) 3fr;
+  align-items: center;
+  gap: 2px 10px;
+}
+.application.dialog.edit-event-rule form .form-group > label {
+  line-height: 1.25;   /* the system's var(--form-field-height) line-height double-spaces a
+                          label the moment it wraps */
+}
+.application.dialog.edit-event-rule form .form-group > p.hint {
+  grid-column: 1 / -1;
+  font-size: var(--font-size-12, 12px);
+  line-height: 1.35;
+  margin: 0 0 4px;
+}
+/* Single-element rows span both columns: the trigger/handler description lines + Update. */
+.application.dialog.edit-event-rule form .form-group.submit > button {
+  grid-column: 1 / -1;
+}

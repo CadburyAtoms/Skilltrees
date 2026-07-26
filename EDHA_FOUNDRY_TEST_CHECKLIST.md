@@ -194,6 +194,21 @@ script's branch-echo + engine safety copies.
 
 ---
 
+## ⚑ 2bAC — Edit Event Rule dialog made legible (2026-07-26, bench day-1 report) — engine-only (module CSS): `node scripts/module-src-sync.js push` + F5
+
+**Ben's first bench observation:** the rules render, but the system's Edit Event Rule dialog lays
+every handler config field out as ONE flex row (label | input | hint side by side) in a fixed
+500px non-resizable window — Edha's Triggered Effect carries 27 fields with paragraph-length
+hints, so labels wrapped one word per line and the stack ran off the bottom of the screen.
+Fixed in `styles/edha.css` alone (block M): label | control on a two-column grid, hint full-width
+below in small type, window widened to 660px and capped to the viewport with the content
+scrolling. No pack rebuild, no sync of talents — push the module mirror and F5.
+
+- [ ] **2bAC-1 — Edit Event Rule legibility** — open any converted talent → Events → edit its Triggered Effect rule → ⚑ ~660px window; every label reads as a phrase (2 lines max), its control sits beside it, the hint sits UNDER the pair in smaller type, the form scrolls inside the window, and Update is reachable at the bottom.
+- [ ] **2bAC-2 — short dialogs unharmed** — edit a rule with a small handler (e.g. an *Edha: Apply Status* or a native *Update Actor* rule) → ⚑ Same two-column layout, nothing misaligned — the grid must not have wrecked the simple case.
+
+---
+
 ## ⚑ RULE-2b PASS AA — THE FINAL PASS: Fate's `ordained` ledger + the whole Blue Illusion branch (2026-07-26) — NEEDS A PACK REBUILD (leyline + deity + adversary)
 
 **Ratchet 4 → 0 — the migration is finished (221 → 0).** Two clusters: the SIXTH and last marker

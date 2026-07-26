@@ -8,6 +8,28 @@ AUDIT of the finished migration — lint pass 9 (handler FIELD names), the 91-em
 sweep, and the deploy script hardened. **VERDICT: run the .bat.**
 ⚠️ **PACK REBUILD (adversary) + re-drag of placed adversaries REQUIRED.**)
 
+**2026-07-26e — Bench day-1: the Edit Event Rule dialog was illegible — module CSS fix
+(engine-mirror only: `node scripts/module-src-sync.js push` + F5; NO pack rebuild).** Ben's first
+observation at the migration bench: the rules render, but the edit window doesn't fit them. Root
+cause is the SYSTEM's `ItemEditEventRuleDialog` (fixed 500px, non-resizable) laying every handler
+config field out as ONE flex row — `label | input | hint` side by side, the hint an unmanaged
+third flex item — which was fine for native handlers' one-line hints and collapses on ours:
+`edha-triggered-effect` carries **27 config fields** whose hints are paragraph-length
+documentation, so the hint crushed the label column to one word per line (double-spaced by the
+system's `line-height: var(--form-field-height)` on labels) and the 27-row stack ran off the
+bottom of the screen with no scrollbar. Fix is `module-src/styles/edha.css` **block M**, scoped
+to `.application.dialog.edit-event-rule` only, dialog + template untouched: form-groups become a
+two-column grid (`minmax(180px, 2fr) 3fr` — label | control), the hint spans full width
+underneath at 12px/1.35, labels get line-height 1.25, the window is widened to 660px
+(`!important` beats the system's inline `width:500` from DEFAULT_OPTIONS.position) and capped at
+92vh with `.window-content` scrolling, and the Update button spans both columns. Verified by
+mocking the REAL `edit-event-rule.hbs` structure + the system's `output.css` rules + the new
+block in a browser with all 27 Triggered Effect fields: the before-state reproduced Ben's
+screenshot exactly; the after-state reads top to bottom. ⚑ Not verified in Foundry itself —
+2bAC-1/2. Known accepted quirk: the system's `.form-fields.narrow` flex is inert on grid items,
+so narrow native fields render full-column-width — cosmetic, and only inside this one dialog.
+No engine change, no new primitive, ratchet untouched.
+
 **2026-07-26d — "The dashboard has none of the 2b bench items" (Ben, post-deploy) — TRUE since
 pass A, fixed.** The bench parser only turns `- [ ]` checkbox lines into bench items; a markdown
 TABLE is swallowed as PROSE — and every rule-2b checklist section (passes A→AB, 28 sections,
