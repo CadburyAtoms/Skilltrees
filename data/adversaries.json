@@ -2418,10 +2418,9 @@
               "type": "edha-damage-rider",
               "appliesTo": "energy",
               "bonusFormula": "3",
-              "lightRadiusFt": 5,
-              "note": "Kindle: +3 energy (Red modifier = +rank, boss rank 3, ruling 122). lightRadiusFt 5 fires the concealment-strip/light path (edhaLightSpecFor) on the energy hit (was inert without it — parity fix with the Ashkar hazewyrms, 2026-07-22)."
+              "lightRadiusFt": 5
             },
-            "description": "Carries Kindle's damage-rider shape verbatim; the Red-modifier bonus resolves to +rank = +3 at boss role rank (ruling 122)."
+            "description": "Carries Kindle's damage-rider shape verbatim; the Red-modifier bonus resolves to +rank = +3 at boss role rank (ruling 122). lightRadiusFt 5 fires the concealment-strip/light path on the energy hit (was inert without it — parity fix with the Ashkar hazewyrms, 2026-07-22)."
           }
         ]
       },
@@ -3958,8 +3957,7 @@
               "type": "edha-damage-rider",
               "appliesTo": "energy",
               "bonusFormula": "1",
-              "lightRadiusFt": 5,
-              "note": "Kindle: +1 energy (Red modifier = +rank, minion rank 1, ruling 122). lightRadiusFt 5 fires the concealment-strip/light path (edhaLightSpecFor) on the energy hit."
+              "lightRadiusFt": 5
             },
             "description": "Carries Kindle's damage-rider shape verbatim; Red-modifier = +rank = +1 at minion role rank (ruling 122); lightRadiusFt 5 wires the light/concealment clause the card promises."
           }
@@ -4163,10 +4161,9 @@
               "type": "edha-damage-rider",
               "appliesTo": "energy",
               "bonusFormula": "3",
-              "lightRadiusFt": 5,
-              "note": "Kindle: +3 energy (Red modifier = +rank, boss rank 3, ruling 122). lightRadiusFt 5 fires the concealment-strip/light path (edhaLightSpecFor); rides Searing Bolt's energy and Afterburn."
+              "lightRadiusFt": 5
             },
-            "description": "Carries Kindle's damage-rider shape verbatim; Red-modifier = +rank = +3 at boss role rank (ruling 122); lightRadiusFt 5 wires the light/concealment clause. Rides the elder's Searing Bolt (energy)."
+            "description": "Carries Kindle's damage-rider shape verbatim; Red-modifier = +rank = +3 at boss role rank (ruling 122); lightRadiusFt 5 wires the light/concealment clause. Rides Searing Bolt's energy and Afterburn."
           }
         ]
       },
