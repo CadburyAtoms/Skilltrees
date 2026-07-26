@@ -666,7 +666,14 @@ function pathEvents(tree) {
   }
 
   const FORCE = process.argv.includes("--force");
-  const BASELINE_DIR = `${DATA}/authored/.baselines`;
+  // The baseline lives WITH the modroot it describes, NOT with the data (moved 2026-07-26c).
+  // It used to be `${DATA}/authored/.baselines` — shared across every EDHA_MODROOT — so a
+  // session building into a SCRATCH modroot silently re-stamped the baselines that described
+  // Ben's LIVE packs. At the first post-migration deploy the guard then flagged 76 talents as
+  // "un-extracted Foundry edits" that were really just the undeployed repo delta, and the
+  // protection it owed any REAL Foundry edits had been destroyed weeks earlier. A baseline
+  // that can describe a different modroot than the one it sits beside is fiction.
+  const BASELINE_DIR = `${MODROOT}/.baselines`;
   // Every atlas is assembled above; only in-scope packs are written (or the guard would block
   // scope=adversaries on unrelated un-extracted talent edits, and pack writes would be surprises).
   const PACK_ATLAS = Object.fromEntries(Object.entries(ATLAS_PACK).map(([a, p]) => [p, a]));

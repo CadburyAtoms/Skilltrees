@@ -63,10 +63,13 @@ at the fix. To deliberately throw away in-Foundry edits and rebuild from source,
 > (c) not protected by the guard. **Structure changes go in the source JSON, full stop** — the
 > table above is not a preference, it is the only path that survives a build.
 
-The guard compares the live pack against a per-machine baseline in
-`data/authored/.baselines/` (git-ignored). It was armed for all packs on 2026-06-08 via
-`node scripts/foundry-extract.js baseline`. If you ever wipe/move the module, re-arm it the
-same way.
+The guard compares the live pack against a baseline stored **beside the packs it describes**, in
+`<module dir>/.baselines/` (moved 2026-07-26c — it used to live in `data/authored/.baselines/`,
+shared across every build target, which let a session building into a scratch folder silently
+re-stamp the baselines that described YOUR live packs; the first post-migration deploy then
+flagged 76 phantom "Foundry edits"). The first build after the move warns "no baseline" once per
+pack and proceeds — that is the re-arm. If you ever wipe/move the module, re-arm with
+`node scripts/foundry-extract.js baseline`.
 
 ## Adversaries — the W23 pipeline (script statblock → Actor)
 

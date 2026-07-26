@@ -8,6 +8,24 @@ AUDIT of the finished migration — lint pass 9 (handler FIELD names), the 91-em
 sweep, and the deploy script hardened. **VERDICT: run the .bat.**
 ⚠️ **PACK REBUILD (adversary) + re-drag of placed adversaries REQUIRED.**)
 
+**2026-07-26c — Ben's first .bat run STOPPED at step 4 (76 phantom "un-extracted Foundry edits")
+— root-caused, fixed, verdict unchanged: RE-RUN THE .BAT.** The guard's baselines lived at
+`data/authored/.baselines/` — keyed to the DATA, shared across every `EDHA_MODROOT` — so every
+migration/audit session that built packs into a *scratch* modroot silently re-stamped the
+baselines that described Ben's LIVE packs (the last clobber was this session's own audit builds,
+10:37 local). At deploy time the guard compared old live packs against post-migration baselines
+and read the whole undeployed delta as Foundry edits. **Proved a false positive before advising
+anything: every one of the 365 live talents byte-matches a build of the pre-migration commit
+(`336ec4d`) — 125/125 leyline, 90/90 deity, 150/150 heroic — so there are ZERO real un-extracted
+edits and nothing to lose.** Fix: `BASELINE_DIR` is now `${MODROOT}/.baselines` in BOTH
+`foundry-build.js` and `foundry-extract.js` — the baseline lives beside the packs it describes,
+so a scratch build can only ever stamp its own scratch. Pinned in `tests/pipeline.test.js`
+(mutation-checked: re-keying it to the data dir fails the suite). AUTHORING_WORKFLOW.md §guard
+updated. On the re-run, step 4 will warn `no baseline for <pack>` once per pack and proceed —
+that IS the re-arm, not an error. ⚠ Do NOT run the abort box's `foundry-extract.js leyline`
+suggestion while live packs are pre-migration: it would overwrite `data/authored/` with the
+OLD content. Scripts-only; no engine change, no new bench rows.
+
 **2026-07-26b — THE PRE-DEPLOY AUDIT of the finished migration (not a conversion pass; ratchet
 stays 0). VERDICT: run the .bat.** Five findings, all fixed and gated:
 - **Lint pass 9 — handler FIELD names vs the registered schema.** Nothing checked the keys inside
