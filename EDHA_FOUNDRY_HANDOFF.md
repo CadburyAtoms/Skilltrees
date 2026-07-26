@@ -1,12 +1,58 @@
 # Edha → Foundry VTT Port — Agent / Operator Handoff
 
-Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-25 (pass X): **the ratchet list is down to 24 names** (221 at the start, −197 in twenty-four passes), and **WHITE, GREEN, KNOWLEDGE, SOVEREIGNTY, CHAOS, POWER, ORDER, CIVILIZATION, DEATH, LIFE AND FATE ARE ALL FULLY CLEAR** — eight of them across four two-path sessions (passes T, U, V and W), Fate alone in pass X (the two-ledger tree). ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **Blue, Black and Warrior are fully clear of rule-2b talents** (07-24s). **FOUR of the six marker LEDGERS have migrated** (`covenants` 07-24u; `edicts` 07-25 pass V; `remains` 07-25 pass W; Fate's `snares` 07-25 pass X — point-bound entries, fail-open by design); `charges` and Fate's `ordained` remain (`ordained` is deliberately LEGACY behind its accessor — §9m q7, one ledger per session). Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
+Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-26 (pass Y): **the ratchet list is down to 14 names** (221 at the start, −207 in twenty-five passes), and **WHITE, GREEN, KNOWLEDGE, SOVEREIGNTY, CHAOS, POWER, ORDER, CIVILIZATION, DEATH, LIFE, FATE, DESTRUCTION AND RED ARE ALL FULLY CLEAR** — what remains is the mop-up (Black 4 / Blue 4 / heroic 6) plus Fate's `ordained`, the LAST ledger. ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **Blue, Black and Warrior are fully clear of rule-2b talents** (07-24s). **FIVE of the six marker LEDGERS have migrated** (`covenants` 07-24u; `edicts` 07-25 pass V; `remains` 07-25 pass W; Fate's `snares` 07-25 pass X; Destruction's `charges` 07-26 pass Y — both point-bound, fail-open by design); only Fate's `ordained` remains (deliberately LEGACY behind its accessor — §9m q7, one ledger per session; its repoint pairs with nothing). Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-25** (RULE-2b PASS X —
-**deity/Fate, all nine talents, the two-ledger tree to zero — `snares` REPOINTED, `ordained`
-cleanly legacy — plus the Hunter stretch: Tagging Shot + Seek Quarry, the `quarry` flag → an H3
-ledger.** ⚠️ **PACK REBUILD (deity + heroic) + ⟳ Sync REQUIRED.**)
-**Ratchet 35 → 24.** Checklist **2bX-1…17**, all unrun.
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-26** (RULE-2b PASS Y —
+**deity/Destruction (7) + leyline/Red (3), both trees to zero — the `charges` LEDGER (the fifth)
+REPOINTED onto H3, and the shared-name Shatter Focus split into its two talents.**
+⚠️ **PACK REBUILD (deity + leyline + adversary) + ⟳ Sync REQUIRED.**)
+**Ratchet 24 → 14.** Checklist **2bY-1…14**, all unrun.
+
+**2026-07-26 — RULE-2b PASS Y: Destruction clear (7) + Red clear (3). Ratchet 24 → 14.**
+Two-path session, Destruction gated green before Red opened. The session's ONE ledger (§9m q7):
+**`charges` repointed onto H3** (`charges` flat flag → `lists.charges`) — the snares repoint one
+tree over, all three traps already closed: (a) entries POINT-BOUND (no top-level uuid; the trigger
+arms carry a NESTED `trig.targetUuid` the reconcile never sees) → H3 fails OPEN on every entry,
+the 2bV/2bX pin covers it; (b) entries own canvas (MeasuredTemplates) + the arm/trigger machinery
+— those stay with the placement/detonate handlers per §9o, every ledger write a raw-path hand-edit
+(place, arm, trig-fire, detonate cleanup, deleteCombat — all five hand-edited); (c) unset-on-empty
+dropped ([] is a fine value; no freebie invented). H12's veto + executor read through
+`edhaGetCharges` and followed for free.
+- **Takeover retired** (`EDHA_DESTRUCTION_TALENTS` + five cases deleted): system costs + pre-cost
+  vetoes + refund-on-cancel throughout. **Set Charge** = `edha-zone {kind: charge}` (place/arm/
+  detonate card flows ENGINE-OWNED keyed on the rule; cap/evict/size/range fields; damage off ITS
+  document; NEW: the Attunement-Range gate — the card always said it, card-is-spec §9m q11).
+  **Fault Line** = `edha-zone {kind: line}` (line/save/construct dials as fields; the Speed-vs-Red
+  prone stays ENGINE-ROLLED, iron rule 3). **Pinpoint Charge** = H3ann on `charges` — the
+  sourceItemUuid stamp built in 2bX was built FOR this; the resolver's `i.name` read is gone and
+  the extra keen rolls off the annotating document. **Concussive Yield** = `edha-detonate-react`
+  (NEW config type, the edha-snare-react shape — the resolver sweeps it; the `edhaOwnsTalent`
+  rider is gone). **Combustion Chain** = `edha-zone-react {when: defeat-in-zone}` (the defeat
+  sweep announces via `edhaWatchersOfRule`; radius/spread/formula fields). **Walking Ruin** =
+  `edha-place-hazard {mode: trail}` toggle (flag `hazardTrail`; the move watcher reads the rule's
+  formula; ⚑ its activation was Always-Active, so the old takeover toggle likely never fired —
+  authored to utility/Free so the rule can). **Pyre** (1b) = `spreads: true` on its existing rule;
+  `EDHA_PYRE_SOURCES` deleted — the spread watcher keys on the Region stamp, and the Cinderbrock's
+  Fire the Wrack carries the same field (⚑ a Region placed before deploy has no stamp and stops
+  prompting; re-place it).
+- **Red: "Shatter Focus" was TWO talents sharing a name** — deity/Chaos's (Omen reroll-take-lower,
+  1 Inv) and leyline/Red's (a character in range fails a test → loses 1 focus, free). The takeover
+  matched by NAME and always ran the Chaos flow, so **Red's card was unreachable for the whole
+  tracked history** (a pure Red character only ever saw "bears no Omen of yours") — rule 2b's
+  conflation bug in the wild. Chaos's = `edha-reroll-react` (NEW: ENGINE-OWNED reroll/rewrite flow
+  keyed on the rule; markStatus/autoPrompt fields; pre-cost veto; the auto-prompt + Mute now
+  rule-keyed, `promptOff.<item>`); Red's = `edha-focus {op: drain, target: victim}` (the
+  set-resource cross-actor relay folded into `edhaDrainFocus` — a use-event drain runs on the
+  player's client). `EDHA_CHAOS_TALENTS` deleted.
+- **Breaking Point** = the NEW generic `damaged` watch kind (observed value = the victim's
+  per-round hit count; `bpHits` stays as the counter's legacy key) + an `edha-apply-status`
+  payload {disoriented, owner-turn}. Kept the retired watcher's ENEMY-ONLY gate; the card says "a
+  character" — drift noted, flip `disposition` on the Events tab if Ben rules the card. **Frenzied
+  Tempo** = `edha-test-rider` + NEW `unlessSkills` exclude ("Presence except the five casts" —
+  black is itself a Presence skill, unsayable with the positive filter).
+- Docs: audit §9n row Y; checklist 2bY-1…14; ENGINE_INDEX (charge/line verbs, detonate-react,
+  reroll-react, defeat-in-zone, trail/spreads, damaged, unlessSkills). Stretch (H17 trio) not
+  taken — context spent on the two full clears.
 
 **2026-07-25 — RULE-2b PASS X: Fate clear (9) + the Hunter stretch (2). Ratchet 35 → 24.**
 The two-ledger tree, one session, full clear. The session's ONE ledger (§9m q7): **`snares`

@@ -179,6 +179,37 @@ retired for good; live testing happens on the dashboard.
 
 ---
 
+## ⚑ RULE-2b PASS Y — the WHOLE Destruction path + the WHOLE Red path (2026-07-26) — NEEDS A PACK REBUILD (deity + leyline + adversary)
+
+Two-path session: 7 + 3 talents, both trees to ZERO on the ratchet (24 → 14). The `charges`
+ledger is REPOINTED onto H3 (`lists.charges`; point-bound entries, fail-open by design — the
+snares shape). The Destruction takeover AND the Chaos takeover are gone — system costs +
+pre-cost vetoes + refund-on-cancel everywhere. ⚠ "Shatter Focus" is TWO talents (deity/Chaos's
+Omen reroll + leyline/Red's focus drain); the old name-keyed takeover ran the Chaos flow for
+BOTH, so Red's card never worked — 2bY-11/12 test them separately. New: `edha-zone` kinds
+charge/line, `edha-detonate-react`, `edha-reroll-react`, `edha-zone-react` defeat-in-zone,
+`edha-place-hazard` mode trail + `spreads`, the `damaged` watch kind, `edha-test-rider`
+`unlessSkills`. Engine handlers are F5-only; the authored rules are pack-baked.
+
+| # | Talent / area | Do | Expect |
+|---|---|---|---|
+| 2bY-1 | **Set Charge** | use → click in range; click OUT of Attunement Range; right-click cancel | In range: red 10 ft template + Charges card + arm card. Out-of-range or cancel: **Investiture refunded**, nothing placed. ⚠ the range gate is NEW (card-is-spec — the old engine let you click anywhere). |
+| 2bY-2 | **Set Charge cap** | place past cap (tier+1) | The OLDEST fizzles (template vanishes, ledger at `lists.charges` shrinks). |
+| 2bY-3 | **Charge arms** | arm "target moves" (target first), "target damaged", "enter"; fire each | Same watchers as before: each fires ONE whispered Detonate prompt; detonation stays your click. |
+| 2bY-4 | **Detonate** | detonate one; Detonate ALL | Burst damage off the DOCUMENT's damage formula (edit it and re-test — pre-2bY this worked only via the placement snapshot), terrain dropped at each marker, charges consumed. |
+| 2bY-5 | **Pinpoint Charge** | use with no un-declared Charge; then with one; then detonate | No Charge: refused PRE-COST (nothing spent). With one: newest un-declared Charge flagged ⊕ (card + refreshed buttons). Detonate: +[T][D] keen off **Pinpoint's own damage formula** (edit it — the roll must change; pre-2bY it read a constant via the name), deflect ignored, terrain centres on/follows the primary target. |
+| 2bY-6 | **Concussive Yield** | own it; detonate any Charge | Every caught foe rolls SPD vs your Red (engine-rolled), failures Prone — card names Concussive Yield. Un-own it (or edit the rule's failStatus) and the rider follows the DOCUMENT. |
+| 2bY-7 | **Fault Line** | use → click a direction; right-click cancel; catch a Construct | 60×5 line: [T][D]+Str energy (Constructs ×3), SPD-vs-Red → Prone (engine-rolled), line hazard drawn. Cancel: **2 Investiture refunded**. |
+| 2bY-8 | **Walking Ruin** | use (toggle on); move; use again (off); check Speed | Toggle card; while on, vacated squares become terrain patches (formula off ITS rule). +10 ft Speed stays passive. ⚑ the toggle previously rode an Always-Active activation and may NEVER have fired on this machine — it is now a Free Action use; report what the old behaviour actually was if you remember it. |
+| 2bY-9 | **Combustion Chain** | use (armed card); drop a foe to 0 HP inside your terrain | Use: armed reminder + by-hand button. Auto: 10 ft zone ignites on the body + spread-5-ft card. Dials (radius/spread) are on the Events tab now. |
+| 2bY-10 | **Pyre / Fire the Wrack** | place a Pyre zone; end your turn; ⚠ also any zone placed BEFORE this deploy | End of your turn: the GM spread card per zone (unchanged). ⚑ a Region placed before the 2bY deploy carries no `spreads` stamp and stops prompting — re-place it once; not a bug. The Cinderbrock's Fire the Wrack spreads identically via its own rule. |
+| 2bY-11 | **Shatter Focus (RED, leyline)** | a character in range fails a test; target it; use | It loses 1 focus (Wary reduces; works on GM-owned foes via the relay). ⚠ pre-2bY this card was UNREACHABLE (the Chaos takeover answered instead, demanding an Omen) — this is the first time it can work; test from a character WITHOUT the Chaos tree. |
+| 2bY-12 | **Shatter Focus (CHAOS, deity)** | use with no marked target (veto); then target your Omen-bearer after it rolls; mute the auto-prompt, use again | No/unmarked target: refused PRE-COST (nothing spent — the old flow burned the click). Marked: Omen removed, kept d20 rerolls-take-lower, total rewritten. Auto-prompt whispers on an Omen-bearer's roll; Mute silences; a real use re-arms. |
+| 2bY-13 | **Breaking Point** | an enemy in your Red Attunement Range takes damage twice in one round; a third hit; an ALLY hit twice | 2nd hit: Disoriented (until your next turn starts) + card noting the manual 1 Investiture. 3rd hit: nothing (once/round/creature). Ally: nothing (the retired watcher was enemy-only; the card says "a character" — flip `disposition` on the Events tab if Ben rules the card). |
+| 2bY-14 | **Frenzied Tempo + scene reset** | Fast turn: an Influence (Presence) test, then a Red/Black CAST; Slow turn: any Presence test. Then end combat on a scene with Charges/trail | Fast+Influence: advantage. Fast+cast or Slow: none (the casts are excluded via `unlessSkills` — black is Presence). Combat end clears `lists.charges`, the legacy flat `charges`, templates, `hazardTrail`/legacy `walkingRuin`, `detonateUsed`. |
+
+---
+
 ## ⚑ RULE-2b PASS X — the WHOLE Fate path + the Hunter stretch (2026-07-25) — NEEDS A PACK REBUILD (deity + heroic)
 
 The two-ledger tree, all 9 talents to ZERO on the ratchet, plus the Hunter stretch — Tagging Shot + Seek Quarry (the `quarry` flag → an H3 ledger with a token icon) — 35 → 24 in total. The `snares` ledger is
@@ -742,12 +773,12 @@ built inline per §9m q6/q1. Engine handlers are F5-only; all 44 rules are pack-
 The live module + packs on this machine were, **as of 2026-07-18**, current through the 07-17 playtest-2 engine push
 (everything up to and including PR #97; packs current through 2026-07-16c + the 07-16d fixes).
 
-**MERGED BUT NOT YET DEPLOYED — the RULE-2b MIGRATION, PASSES A THROUGH X (2026-07-24 → 07-25).**
-**197 talents** have moved off engine name-dispatch onto their own documents, and **every one of them
+**MERGED BUT NOT YET DEPLOYED — the RULE-2b MIGRATION, PASSES A THROUGH Y (2026-07-24 → 07-26).**
+**207 talents** have moved off engine name-dispatch onto their own documents, and **every one of them
 changes the PACK**, so none of it is live until one `deploy-to-foundry.bat` + ⟳ Sync. Checklist rows
 **2bA-1…9 · 2bB-1…10 · 2bC-1…8 · 2bD-1…7 · 2bE-1…10 · 2bF-1…17 · 2bG-1…8 · 2bH-1…11 · 2bI-1…12 ·
 2bJ-1…14 · 2bK-1…5 · 2bL-1…14 · 2bM-1…12 · 2bN-1…6 · 2bO-1…7 · 2bP-1…12 · 2bQ-1…10 · 2bR-1…18 ·
-2bS-1…17 · 2bT-1…20 · 2bU-1…16 · 2bV-1…18 · 2bW-1…17 · 2bX-1…17** are ALL
+2bS-1…17 · 2bT-1…20 · 2bU-1…16 · 2bV-1…18 · 2bW-1…17 · 2bX-1…17 · 2bY-1…14** are ALL
 unrun — do not treat any of them as verified, and do not read a "wrong text / old behaviour" report on a
 converted talent as a bug until this deploy has happened. Nine handlers were built in that window
 (H1 `edha-def-test`, H5 `edha-cae-grant`, H11 `edha-enter-stance`, H3 `edha-owner-list`,
@@ -768,8 +799,14 @@ is ENGINE-side and needs only F5, but the rules that USE it are pack-baked; pass
 `sceneFreebie`, `edha-focus` `resource: inv`, `edha-damage-bonus` `healCutFraction`, H1
 `skipIfAlly`, `edha-zone` `costList`, `edha-zone-hazard` `moment: turn-end`, `edha-cleanse`
 `trigger: success-damage-roll`, the `edha-redirect` intercept widenings (`watchFlag`/`linkOnUse`/
-`chooseAmount`/`takeType`/`healFormula`) and the `withernext` status. Passes R and S also
-rewire adversary abilities (2bR-17, 2bS-3), so the ADVERSARY pack + ⟳ Sync are needed too.
+`chooseAmount`/`takeType`/`healFormula`) and the `withernext` status; pass X added the `edha-zone`
+kinds `ordained`/`snare`/`link-markers`, `edha-zone-guard`, `edha-snare-react`,
+`edha-marker-command`, H3ann's `sourceItemUuid` stamp + `riderSkill`/`riderColor`/
+`riderFailStatus`, and `edha-damage-bonus` `rangedOnly`/`placeList`; pass Y added the `edha-zone`
+kinds `charge`/`line`, `edha-detonate-react`, `edha-reroll-react`, `edha-zone-react`
+`defeat-in-zone`, `edha-place-hazard` `mode: trail` + `spreads`, the `damaged` watch kind and
+`edha-test-rider` `unlessSkills`. Passes R, S and Y also
+rewire adversary abilities (2bR-17, 2bS-3, 2bY-10), so the ADVERSARY pack + ⟳ Sync are needed too.
 
 ⚠️ **Pass P retires a console macro.** `edha.calculatedPatience()` no longer exists — if it is in a
 hotbar macro, that macro will throw after this deploy. Delete it; the talent is automatic now. Two ADVERSARY abilities changed with pass J and are also pack-baked (Callthief's

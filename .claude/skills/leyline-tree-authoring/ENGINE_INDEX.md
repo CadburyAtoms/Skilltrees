@@ -633,6 +633,54 @@ own items); none names a talent.
   substitution (H27's inline pair extracted); pinned in `tests/engine-helpers.test.js`,
   mutation-checked both ways.
 
+## The Destruction + Red paths' primitives (07-26, pass 2bY)
+Both trees to zero; the `charges` ledger repointed (the FIFTH of six — POINT-BOUND entries like
+snares, plus a NESTED `trig.targetUuid` the reconcile never sees; H3 fails OPEN by design,
+covered by the 2bV/2bX pin). Writes via `edhaSetOwnerList("charges", …)`; unset-on-empty dropped;
+canvas + the arm/trigger machinery stay with the placement/detonate handlers (every cleanup a
+raw-path hand-edit, incl. `edhaClearCharges` on `lists.charges`). Only Fate's `ordained` remains
+legacy. No talent name in code.
+- **`edha-zone` grew kinds `charge` / `line`** — `charge`: click-place a detonation marker into
+  the `charges` ledger (`edhaSetChargeMarker`): cap/evict/size/range off the rule, blast damage
+  off ITS document, the arm card + watchers unchanged; Attunement-Range gate on the pick (NEW —
+  card-is-spec); cancel/out-of-range/refused-at-cap REFUNDS. `line`: click-direction line AoE
+  (`edhaFaultLine`): length/width/constructMult/save dials as fields, damage off ITS document,
+  the foe save engine-rolled via `edhaFoeSkillVsColor`, line hazard dropped; cancel refunds.
+  (`edhaSpeedVsRedProne` retired — both callers carry their dials now.)
+- **`edha-detonate-react`** (config-only) — the detonation counterpart of edha-snare-react: swept
+  by `edhaResolveCharges` after every detonation (it rides Set Charge, Cascading Failure and The
+  Unmooring alike); skill/skillLabel/color/failStatus fields, engine-rolled per foe. Concussive
+  Yield is the first consumer. The resolver also reads the Pinpoint rider off the entry's
+  `sourceItemUuid` (H3ann's stamp) — formula/type off the annotating document, and the H3
+  annotate op now reposts the Charges card for the `charges` key and names point-bound entries
+  "`<talent> #n`" on the card.
+- **`edha-zone-react` grew `when: defeat-in-zone` + `action: ignite-spread`** (with its payload,
+  per its own §9o growth rule) — a character drops to 0 HP in the owner's dangerous terrain →
+  ignite a zone on the body + the spread card; radius/spread/formula/type fields; swept via
+  `edhaWatchersOfRule`; its executor posts the armed reminder on use. Combustion Chain is the
+  first consumer.
+- **`edha-place-hazard` grew `mode: trail` + `spreads`** — `trail`: using the talent TOGGLES the
+  generic `hazardTrail` flag (legacy `walkingRuin` honoured/cleared); the move watcher
+  (`edhaTrailRuleOf`) drops patches with the rule's formula/type/colour. `spreads`: stamps the
+  placed Region so the end-of-turn spread watcher keys on DATA — `EDHA_PYRE_SOURCES` is deleted;
+  Pyre and the Cinderbrock's Fire the Wrack each carry the field.
+- **The `damaged` watch kind (H8)** — every real damage application bumps the victim's per-round
+  hit counter (`bpHits.<round>`, the legacy key) and announces {kind: damaged, owner: victim,
+  total: count}; "struck a 2nd time this round" = `whenTotal: at-least 2` + `once:
+  round-per-target` + `payloadTarget: actor`. Breaking Point is the first consumer.
+- **`edha-test-rider` grew `unlessSkills`** — a comma-list EXCLUDE (whenSkill is a single
+  positive id): "Presence except the five casts" for Frenzied Tempo, where `black` is itself a
+  Presence skill.
+- **`edha-reroll-react`** — the mark-payoff Reaction, ENGINE-OWNED flow keyed on the rule
+  (`edhaRerollReactFlow`): remove your `markStatus` mark from the target, reroll-take-lower its
+  most recent test (chat scan + kept-d20 rewrite/relay); pre-cost veto (no marked target =
+  nothing spent); rule-keyed auto-prompt with per-rule mute (`promptOff.<item>`, re-armed by a
+  real use; legacy `shatterPromptOff` honoured). Deity/Chaos's Shatter Focus is the first
+  consumer — leyline/Red's SAME-NAMED talent is `edha-focus {op: drain, target: victim}`, and
+  **`edhaDrainFocus` grew the cross-actor set-resource relay** (a use-event drain runs on the
+  player's client; `edhaCrossFocusLoss` folded in). Mark helpers status-parameterized:
+  `edhaBearsMyMark` / `edhaRemoveMark`.
+
 ## The Fate path's primitives (07-25, pass 2bX)
 Fate to zero; the `snares` ledger repointed (the FOURTH of six — POINT-BOUND entries, no uuid/no
 marker status, H3's reconcile fails OPEN by design, pinned). `fateOrdained` stays the LEGACY flat
