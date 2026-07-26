@@ -551,13 +551,36 @@
         "cost": "2 Actions",
         "consume": "2 Investiture",
         "uses": "1/scene per thrall",
-        "text": "<p>Grant a Mutated Thrall either <strong>Bone Spurs</strong> (its Slam gains +2 Keen) or <strong>Venom Glands</strong> (its Slam inflicts Afflicted, 2 Vital/turn). By round 3 the Stitchmother can have stacked both onto a single thrall.</p><p><em>After using: toggle the granted upgrade's marker on that Thrall's sheet (both are baked, disabled by default) — the markers make the grant visible; the Slam bonuses stay GM-applied.</em></p>"
+        "text": "<p>Grant a Mutated Thrall either <strong>Bone Spurs</strong> (its Slam gains +2 Keen) or <strong>Venom Glands</strong> (its Slam inflicts Afflicted, 2 Vital/turn). By round 3 the Stitchmother can have stacked both onto a single thrall.</p><p><em>Target the thrall and use the item: the chooser card offers both grafts and the bonuses ride its melee hits automatically. The baked sheet markers stay for visibility.</em></p>",
+        "events": [
+          {
+            "event": "use",
+            "handler": {
+              "type": "edha-mutation",
+              "keenFormula": "2",
+              "venomFormula": "2",
+              "deflectAmount": 0
+            },
+            "description": "The tree talent's chooser with the Stitchmother's baked numbers (+2 keen / 2 vital venom; no Dense Tissue option — her text grants two grafts). Rule-keyed 07-26 (pre-deploy audit): the engine branch this name used to ride was deleted by the 2b migration, which left this copy dead."
+          }
+        ]
       },
       {
         "name": "Reknit Form",
         "cost": "2 Actions",
         "consume": "1 Investiture, 1 Focus",
-        "text": "<p>The Stitchmother removes one Injury from itself or an adjacent ally.</p>"
+        "text": "<p>The Stitchmother removes one Injury from itself or an adjacent ally.</p>",
+        "events": [
+          {
+            "event": "use",
+            "handler": {
+              "type": "edha-remove-injury",
+              "costTemporary": 0,
+              "costPermanent": 0
+            },
+            "description": "The tree talent's injury-removal picker with click-costs zeroed: her card already charges the flat 1 Investiture + 1 Focus at activation, and the tree's 2/3 Inv button costs would double-charge her. Rule-keyed 07-26 (pre-deploy audit): the name-keyed engine branch is gone; without this rule the use resolved nothing."
+          }
+        ]
       },
       {
         "name": "Phase 2",
@@ -2244,7 +2267,18 @@
         "name": "Guiding Signal",
         "cost": "1 Action",
         "consume": "1 Focus",
-        "text": "<p><em>White talent, name verbatim (engine name-keyed; Stitchmother/Reknit Form precedent).</em></p><p>Spend 1 Focus to designate a character or beast within 60 ft — the singer marks the one to take. The next test its partner makes against the marked target raises the stakes.</p>"
+        "text": "<p><em>White talent, rule-keyed on this item since the 07-26 pre-deploy audit (the engine name-key it used to ride is gone).</em></p><p>Spend 1 Focus to designate a character or beast within 60 ft — the singer marks the one to take. The next test its partner makes against the marked target raises the stakes.</p>",
+        "events": [
+          {
+            "event": "use",
+            "handler": {
+              "type": "edha-designate",
+              "color": "white",
+              "note": "The next test the Callthief's partner makes against the designated target raises the stakes (have it target the token when rolling)."
+            },
+            "description": "The tree talent's designate rule, verbatim (range = White Attunement Range at role rank). Rule-keyed 07-26: the deleted engine name-key left this copy dead."
+          }
+        ]
       },
       {
         "name": "Counterpoint",
@@ -2410,7 +2444,7 @@
       {
         "name": "Kindle",
         "kind": "trait",
-        "text": "<p><em>Red talent, name verbatim (engine name-keyed).</em></p><p>Its energy damage deals +3 additional damage (the Red-modifier term = +rank, boss leyline rank 3, ruling 122). Creatures it deals energy damage to shed light in 5 ft and lose concealment benefits until the end of its next turn — on the white flats, what the glare has touched cannot hide from it.</p>",
+        "text": "<p><em>Red talent, rule-keyed on this item (iron rule 2b; the engine name-key is gone).</em></p><p>Its energy damage deals +3 additional damage (the Red-modifier term = +rank, boss leyline rank 3, ruling 122). Creatures it deals energy damage to shed light in 5 ft and lose concealment benefits until the end of its next turn — on the white flats, what the glare has touched cannot hide from it.</p>",
         "events": [
           {
             "event": "edha-pre-deal-damage",
@@ -2427,7 +2461,7 @@
       {
         "name": "Afterburn",
         "cost": "Special",
-        "text": "<p><em>Red talent, name verbatim (engine name-keyed). Opportunity is trusted — never auto-deducted.</em></p><p>When it deals energy damage, it may spend an Opportunity to leave the target Afflicted [half 1d8 energy] — heatstroke riding the wound.</p>",
+        "text": "<p><em>Red talent, rule-keyed on this item (iron rule 2b; the engine name-key is gone). Opportunity is trusted — never auto-deducted.</em></p><p>When it deals energy damage, it may spend an Opportunity to leave the target Afflicted [half 1d8 energy] — heatstroke riding the wound.</p>",
         "events": [
           {
             "event": "edha-deal-damage",
@@ -2749,7 +2783,7 @@
         "name": "Sovereign of Solitude",
         "cost": "Reaction",
         "consume": "2 Focus",
-        "text": "<p><em>Black talent, name verbatim (engine name-keyed: the Immobilized timed status + contest ride the use) — the Arbiter's own talent on the Arbiter's own bird.</em></p><p>When a Weakened creature within 30 ft moves, spend 2 Focus: its movement drops to 0, and test Black vs. Spiritual — on a success it takes 1d6 vital ([Tier][Die]: count = tier 1, die = rival rank 2, ruling 122). You do not leave the court.</p>",
+        "text": "<p><em>Black talent, rule-keyed on this item since the 07-26 pre-deploy audit (the engine name-key its use path rode is gone) — the Arbiter's own talent on the Arbiter's own bird.</em></p><p>When a Weakened creature within 30 ft moves, spend 2 Focus: its movement drops to 0, and test Black vs. Spiritual — on a success it takes 1d6 vital ([Tier][Die]: count = tier 1, die = rival rank 2, ruling 122). You do not leave the court.</p>",
         "events": [
           {
             "event": "edha-apply-watch",
@@ -2757,9 +2791,45 @@
               "type": "edha-gm-cue",
               "trigger": "enemy-turn-start",
               "rangeFt": 30,
-              "note": "If the respondent is Weakened and tries to move this turn: Sovereign of Solitude (2 Focus) — movement to 0, Black vs. Spiritual for 1d6 vital (use the item to auto-resolve)."
+              "note": "If the respondent is Weakened and tries to move this turn: Sovereign of Solitude (2 Focus) — movement to 0, Black vs. Spiritual for 1d6 vital (target it and use the item to auto-resolve)."
             },
             "description": "Black/Isolation. The willing-move trigger is a table read (the Dread Presence veto covers unwilling approach) — cue at the hostile turn-start is the floor; the use path auto-resolves."
+          },
+          {
+            "event": "use",
+            "handler": {
+              "type": "edha-def-test",
+              "skill": "black",
+              "vs": "defense",
+              "def": "spi",
+              "requireTarget": true,
+              "note": "The Immobilized lands whether or not the test succeeds; the success adds the vital bite."
+            },
+            "description": "The contest half of the use path (Black vs Spiritual). Rule-keyed 07-26 (pre-deploy audit): the cue promised the use would auto-resolve, but the deleted engine name-key had left it dead."
+          },
+          {
+            "event": "use",
+            "handler": {
+              "type": "edha-triggered-effect",
+              "kind": "status",
+              "statusId": "immobilized",
+              "statusExpire": "target",
+              "target": "target",
+              "formula": "0",
+              "damageType": "energy"
+            },
+            "description": "The movement-to-0 half: Immobilized until the end of the target's next turn, exactly as the tree twin applies it."
+          },
+          {
+            "event": "edha-test-success",
+            "handler": {
+              "type": "edha-triggered-effect",
+              "kind": "damage",
+              "formula": "(@tier)d(2 * @skills.black.rank + 2)",
+              "damageType": "vital",
+              "target": "victim"
+            },
+            "description": "The success payload: [Tier][Die] vital — 1d6 at rival rank 2 (ruling 122), matching the card."
           }
         ]
       },
@@ -2845,27 +2915,47 @@
       {
         "name": "Shield Wall",
         "kind": "trait",
-        "text": "<p><em>White talent, name verbatim — the engine's Shield Wall pre-reduction rides the name (owner-scan widened for adversaries, ruling 113; adversary dice run at role rank per ruling 122).</em></p><p>While two or more crownoxen are adjacent to this one, attacks against those adjacent ring-mates deal half 1d6 less damage — engine-applied, with the reduction named in chat.</p>"
+        "text": "<p><em>White talent, rule-keyed on this item since the 07-26 pre-deploy audit (adversary dice run at role rank per ruling 122).</em></p><p>While two or more crownoxen are adjacent to this one, attacks against those adjacent ring-mates deal half 1d6 less damage — engine-applied, with the reduction named in chat.</p>",
+        "events": [
+          {
+            "event": "edha-watch-rule",
+            "handler": {
+              "type": "edha-damage-reduce",
+              "when": "damaged",
+              "requireVictimAdjacent": true,
+              "requireAdjacentAllies": 2,
+              "color": "white",
+              "amountFormula": "floor(((@tier)d(2 * @colorRank + 2)) / 2)"
+            },
+            "description": "The tree talent's pre-reduction, verbatim — @colorRank resolves via ruling 122 (rival White rank 2 -> half 1d6, matching the card). Rule-keyed 07-26: the deleted engine name-key left this copy dead."
+          }
+        ]
       },
       {
         "name": "Guardian Stance",
         "kind": "trait",
-        "text": "<p><em>White talent, name verbatim.</em></p><p>While an ox stands adjacent to a ring-mate, both have +1 Deflect (GM-run static — the listed Deflect 1 becomes 2 while the ring stands; state read, no trigger).</p>"
+        "text": "<p><em>White talent. NO NAMEABLE HOOK: a static adjacency read with no trigger — the tree twin's aura rides the PC stance machinery, which this trait does not enter; copying its rule would look live and never fire.</em></p><p>While an ox stands adjacent to a ring-mate, both have +1 Deflect (GM-run static — the listed Deflect 1 becomes 2 while the ring stands).</p>"
       },
       {
         "name": "Retributive Guard",
         "cost": "Reaction",
         "consume": "1 Focus",
-        "text": "<p><em>White talent, name verbatim (engine name-keyed use path — the contest auto-resolves on use).</em></p><p>When an adjacent ring-mate takes damage from an enemy within 30 ft, spend 1 Focus and test White vs. Spiritual: on a success the horns answer — 1d6 spirit damage to the attacker ([Tier][Die]: count = tier 1, die = rival rank 2, ruling 122).</p>",
+        "text": "<p><em>White talent, rule-keyed on this item since the 07-26 pre-deploy audit (the engine name-key its use path rode is gone).</em></p><p>When an adjacent ring-mate takes damage from an enemy within 30 ft, spend 1 Focus and test White vs. Spiritual: on a success the horns answer — 1d6 spirit damage to the attacker ([Tier][Die]: count = tier 1, die = rival rank 2, ruling 122).</p>",
         "events": [
           {
-            "event": "edha-apply-watch",
+            "event": "edha-watch-rule",
             "handler": {
-              "type": "edha-gm-cue",
-              "trigger": "damaged",
-              "note": "Retributive Guard — an adjacent ring-mate may spend 1 Focus: White vs. Spiritual → 1d6 spirit to the attacker (use its item to auto-resolve)."
+              "type": "edha-damage-react",
+              "when": "damaged",
+              "action": "retaliate",
+              "requireAdjacent": true,
+              "requireAttackerWithinColor": "white",
+              "amountFormula": "(@tier)d(2 * @skills.white.rank + 2)",
+              "costResource": "foc",
+              "costValue": 1,
+              "prompt": "{victim} (adjacent ring-mate) was hit by {attacker}. Spend 1 Focus → test White vs Spiritual; on a success deal {amount} spirit to {attacker}."
             },
-            "description": "White/Bulwark. No ally-damaged trigger exists in the dispatch vocabulary — the damaged cue on the struck ox prompts its ring-mates; the use path resolves the contest."
+            "description": "The tree talent's retaliate reaction with the ox's Focus cost (the tree twin charges Investiture) — auto-prompts from the damage chokepoint, contest through the core. Rule-keyed 07-26: the gm-cue it replaced promised a use path the deleted engine name-key had left dead."
           }
         ]
       },
@@ -2944,13 +3034,40 @@
         "name": "Grasping Vines",
         "cost": "1 Action",
         "consume": "1 Focus",
-        "text": "<p><em>Green talent, name verbatim (engine name-keyed — the contest auto-resolves on use).</em></p><p>Spend 1 Focus and test Green vs. Physical defense of a character within 30 ft: on a success the target is Restrained. It spends 1 Focus at the start of its turn to maintain the hold.</p>"
+        "text": "<p><em>Green talent, rule-keyed on this item since the 07-26 pre-deploy audit (the engine name-key it used to ride is gone).</em></p><p>Spend 1 Focus and test Green vs. Physical defense of a character within 30 ft: on a success the target is Restrained. It spends 1 Focus at the start of its turn to maintain the hold.</p>",
+        "events": [
+          {
+            "event": "use",
+            "handler": {
+              "type": "edha-def-test",
+              "skill": "green",
+              "vs": "defense",
+              "def": "phy",
+              "requireTarget": true,
+              "note": "On a success the target is Restrained; the swarm spends 1 Focus at the start of its turn to maintain the hold (GM-tracked)."
+            },
+            "description": "The tree talent's gated test, verbatim (Green vs Physical defense). Rule-keyed 07-26: the deleted engine name-key left this copy dead."
+          },
+          {
+            "event": "edha-test-success",
+            "handler": {
+              "type": "edha-triggered-effect",
+              "kind": "status",
+              "statusId": "restrained",
+              "statusExpire": "",
+              "target": "victim",
+              "formula": "0",
+              "damageType": "energy"
+            },
+            "description": "The success payload: Restrained on the caught character, exactly as the tree twin applies it."
+          }
+        ]
       },
       {
         "name": "Territorial Instinct",
         "cost": "Reaction",
         "consume": "1 Focus",
-        "text": "<p><em>Green talent, name verbatim (engine name-keyed use path).</em></p><p>When an enemy within 30 ft tries to Disengage, spend 1 Focus and test Green vs. Survival: on a success its movement drops to 0 this turn — the ground itself objects.</p>",
+        "text": "<p><em>Green talent, rule-keyed on this item since the 07-26 pre-deploy audit (the engine name-key its use path rode is gone).</em></p><p>When an enemy within 30 ft tries to Disengage, spend 1 Focus and test Green vs. Survival: on a success its movement drops to 0 this turn — the ground itself objects.</p>",
         "events": [
           {
             "event": "edha-apply-watch",
@@ -2961,6 +3078,31 @@
               "note": "If this enemy declares a Disengage: Territorial Instinct (1 Focus) — Green vs. Survival to zero its movement (use the item to auto-resolve)."
             },
             "description": "Green/Overgrowth. The Disengage declaration is a table read — the turn-start cue is the floor; the use path resolves the contest."
+          },
+          {
+            "event": "use",
+            "handler": {
+              "type": "edha-def-test",
+              "skill": "green",
+              "vs": "skill",
+              "targetSkill": "sur",
+              "requireTarget": true,
+              "note": "On a success the Disengaging enemy's movement drops to 0 this turn (GM-applied — no movement hook)."
+            },
+            "description": "The tree talent's opposed contest, verbatim (Green vs Survival through the contest core — iron rule 3). Rule-keyed 07-26: the cue promised the use path would auto-resolve, but the deleted engine name-key had left it dead."
+          },
+          {
+            "event": "edha-test-success",
+            "handler": {
+              "type": "edha-triggered-effect",
+              "kind": "status",
+              "statusId": "immobilized",
+              "statusExpire": "target",
+              "target": "victim",
+              "formula": "0",
+              "damageType": "energy"
+            },
+            "description": "The success payload: Immobilized until the end of the target's turn, exactly as the tree twin applies it."
           }
         ]
       },
@@ -3095,7 +3237,7 @@
       {
         "name": "Apex Predator",
         "kind": "trait",
-        "text": "<p><em>Green talent, name verbatim.</em></p><p>While three or more enemies are inside its briar, it has advantage on all Physical tests — you are fighting inside the thing that is fighting you (GM-run state read, no trigger).</p>"
+        "text": "<p><em>Green talent. NO NAMEABLE HOOK: the tree twin's rider counts enemies in an engine zone, and the briar is scene terrain, not an engine zone — copying the rule would look live and never fire.</em></p><p>While three or more enemies are inside its briar, it has advantage on all Physical tests — you are fighting inside the thing that is fighting you (GM-run state read, no trigger).</p>"
       },
       {
         "name": "Girdling Bough",
@@ -3177,7 +3319,37 @@
       {
         "name": "Whispered Doubt",
         "kind": "trait",
-        "text": "<p><em>Black talent, name verbatim — the engine's focus watcher rides the name (owner-scan widened for adversaries, ruling 113; the flock is the first adversary consumer).</em></p><p>Under the shrieking wrong-tolling, an enemy within its Attunement Range that spends focus spends 1 more (once per round per enemy) — engine-applied, announced in chat.</p>"
+        "text": "<p><em>Black talent, rule-keyed on this item since the 07-26 pre-deploy audit (the engine focus-watcher name-key it used to ride is gone).</em></p><p>Under the shrieking wrong-tolling, an enemy within its Attunement Range that spends focus spends 1 more (once per round per enemy) — engine-applied, announced in chat.</p>",
+        "events": [
+          {
+            "event": "edha-watch-rule",
+            "handler": {
+              "type": "edha-watch",
+              "watch": "focus-change",
+              "scope": "scene",
+              "payloadTarget": "actor",
+              "disposition": "enemy",
+              "rangeColor": "black",
+              "includeSelf": false,
+              "vs": "none",
+              "whenOutcome": "any",
+              "whenTotal": "any",
+              "once": "round-per-target",
+              "chain": false
+            },
+            "description": "The tree talent's focus-change watch, verbatim (enemy, Black Attunement Range at role rank, once per round per enemy). Rule-keyed 07-26: the deleted engine name-key left this copy dead."
+          },
+          {
+            "event": "edha-test-success",
+            "handler": {
+              "type": "edha-focus",
+              "op": "drain",
+              "target": "victim",
+              "formula": "1"
+            },
+            "description": "The watch payload: the spender loses 1 more focus, exactly as the tree twin applies it."
+          }
+        ]
       },
       {
         "name": "Sapping Hex",
@@ -3280,7 +3452,7 @@
         "name": "Intercept",
         "cost": "Reaction",
         "consume": "1 Focus",
-        "text": "<p><em>Blue talent, name verbatim (Forewarned's partner).</em></p><p>When the character it declared takes the declared action, spend 1 Focus: that action has disadvantage — you did exactly what it knew you would do.</p>",
+        "text": "<p><em>Blue talent, rule-keyed on this item since the 07-26 pre-deploy audit (Forewarned's partner; the engine name-key it used to ride is gone).</em></p><p>When the character it declared takes the declared action, spend 1 Focus: that action has disadvantage — you did exactly what it knew you would do.</p>",
         "events": [
           {
             "event": "edha-apply-watch",
@@ -3290,6 +3462,29 @@
               "note": "Intercept standing — if the declared character takes the declared action, 1 Focus imposes disadvantage on it."
             },
             "description": "Blue/Foresight. The declared-action-taken moment is a table read riding Forewarned's declaration — the turn-end cue keeps the standing order visible."
+          },
+          {
+            "event": "use",
+            "handler": {
+              "type": "edha-prompt-pick",
+              "source": "confirm",
+              "icon": "🔮",
+              "prompt": "if this is the creature the surecat declared with Forewarned and it is taking the declared action, its 1 Focus is spent — impose disadvantage on that action.",
+              "label": "Impose disadvantage",
+              "relativeTo": "self",
+              "once": "no"
+            },
+            "description": "The tree talent's confirm-pick, adapted to her Focus cost (the tree twin charges Investiture). Rule-keyed 07-26: the deleted engine name-key left the use path dead."
+          },
+          {
+            "event": "edha-test-success",
+            "handler": {
+              "type": "edha-next-test-mod",
+              "target": "victim",
+              "mode": "disadvantage",
+              "count": 1
+            },
+            "description": "The confirm payload: the declared creature's next test runs at disadvantage, exactly as the tree twin applies it."
           }
         ]
       },
@@ -3565,13 +3760,40 @@
       {
         "name": "Apex Predator",
         "kind": "trait",
-        "text": "<p><em>Green talent, name verbatim.</em></p><p>While three or more enemies are inside her mire, she has advantage on all Physical tests — you are fighting inside her workshop (GM-run state read, no trigger).</p>"
+        "text": "<p><em>Green talent. NO NAMEABLE HOOK: the tree twin's rider counts enemies in an engine zone, and the mire is scene terrain, not an engine zone — copying the rule would look live and never fire.</em></p><p>While three or more enemies are inside her mire, she has advantage on all Physical tests — you are fighting inside her workshop (GM-run state read, no trigger).</p>"
       },
       {
         "name": "Drive the Prey",
         "cost": "2 Actions",
         "consume": "2 Focus",
-        "text": "<p><em>Green talent, name verbatim (engine contest path rides the name — the Fellstag's Herding Antlers alias, un-aliased).</em></p><p>Spend 2 Focus and test Green vs. Survival against a character within 30 ft: on a success they are Slowed and must move away from her on their next turn — and her ground decides where away leads.</p>"
+        "text": "<p><em>Green talent, rule-keyed on this item since the 07-26 pre-deploy audit (the engine contest name-key it used to ride is gone).</em></p><p>Spend 2 Focus and test Green vs. Survival against a character within 30 ft: on a success they are Slowed and must move away from her on their next turn — and her ground decides where away leads.</p>",
+        "events": [
+          {
+            "event": "use",
+            "handler": {
+              "type": "edha-def-test",
+              "skill": "green",
+              "vs": "skill",
+              "targetSkill": "sur",
+              "requireTarget": true,
+              "note": "On a success it must move away from her on its next turn — her ground decides where away leads (GM-narrated)."
+            },
+            "description": "The tree talent's opposed contest, verbatim (Green vs Survival through the contest core — iron rule 3). Rule-keyed 07-26: the deleted engine name-key left this copy dead."
+          },
+          {
+            "event": "edha-test-success",
+            "handler": {
+              "type": "edha-triggered-effect",
+              "kind": "status",
+              "statusId": "slowed",
+              "statusExpire": "target",
+              "target": "victim",
+              "formula": "0",
+              "damageType": "energy"
+            },
+            "description": "The success payload: Slowed on the driven character, exactly as the tree twin applies it."
+          }
+        ]
       },
       {
         "name": "Tusk Rake",
@@ -3790,7 +4012,27 @@
         "name": "Flame Surge",
         "cost": "2 Actions",
         "consume": "2 Focus",
-        "text": "<p><em>Red talent, name verbatim — AoE, GM-rolled on the card (activated, no hidden trigger); [Tier][Die] resolved 2d8: dice count = tier 2, die = boss leyline rank 3 (ruling 122).</em></p><p>The breath: each character within 10 ft of a point within 60 ft tests Athletics vs. Red. On a failure they take 2d8 energy damage, and half as much on a success.</p>"
+        "text": "<p><em>Red talent, rule-keyed on this item since the 07-26 pre-deploy audit — the burst places, saves and rolls itself; [Tier][Die] resolves 2d8: dice count = tier 2, die = boss leyline rank 3 (ruling 122).</em></p><p>The breath: each character within 10 ft of a point within 60 ft tests Athletics vs. Red. On a failure they take 2d8 energy damage, and half as much on a success.</p>",
+        "events": [
+          {
+            "event": "edha-pre-use",
+            "handler": {
+              "type": "edha-burst",
+              "sizeByRank": true,
+              "sizeFt": 0,
+              "affects": "enemies",
+              "color": "red",
+              "rangeByRank": true,
+              "rangeFt": 0,
+              "saveSkill": "ath",
+              "saveVs": "red",
+              "addSkillMod": "red",
+              "heal": false,
+              "terrain": false
+            },
+            "description": "The tree talent's point-targeted burst, verbatim — size/range/dice resolve at boss role rank (ruling 122), matching the card's baked 2d8 vs Athletics. Wired 07-26 (pre-deploy audit): this copy had no rule, so its use resolved nothing."
+          }
+        ]
       },
       {
         "name": "Dread Presence",
@@ -3892,7 +4134,18 @@
         "name": "Guiding Signal",
         "cost": "1 Action",
         "consume": "1 Focus",
-        "text": "<p><em>White talent, name verbatim (engine name-keyed where applicable).</em></p><p>Spend 1 Focus to designate a creature within 30 ft. The next ally who tests against it this round raises the stakes — the flock's hundred eyes point one way.</p>"
+        "text": "<p><em>White talent, rule-keyed on this item since the 07-26 pre-deploy audit (the engine name-key it used to ride is gone).</em></p><p>Spend 1 Focus to designate a creature within 30 ft. The next ally who tests against it this round raises the stakes — the flock's hundred eyes point one way.</p>",
+        "events": [
+          {
+            "event": "use",
+            "handler": {
+              "type": "edha-designate",
+              "color": "white",
+              "note": "The next ally to test against the designated creature this round raises the stakes (have them target the token when rolling)."
+            },
+            "description": "The tree talent's designate rule, verbatim (range = White Attunement Range at role rank). Rule-keyed 07-26: the deleted engine name-key left this copy dead."
+          }
+        ]
       },
       {
         "name": "Ordered Advance",
@@ -3949,7 +4202,7 @@
       {
         "name": "Kindle",
         "kind": "trait",
-        "text": "<p><em>Red talent, name verbatim (engine name-keyed).</em></p><p>Its energy damage deals +1 additional damage (the Red-modifier term = +rank, minion leyline rank 1, ruling 122). A creature it deals energy damage to sheds light in 5 ft and loses concealment until the end of its next turn — the glare finds it.</p>",
+        "text": "<p><em>Red talent, rule-keyed on this item (iron rule 2b; the engine name-key is gone).</em></p><p>Its energy damage deals +1 additional damage (the Red-modifier term = +rank, minion leyline rank 1, ruling 122). A creature it deals energy damage to sheds light in 5 ft and loses concealment until the end of its next turn — the glare finds it.</p>",
         "events": [
           {
             "event": "edha-pre-deal-damage",
@@ -4042,7 +4295,7 @@
       {
         "name": "Afterburn",
         "cost": "Special",
-        "text": "<p><em>Red talent, name verbatim (engine name-keyed). Opportunity is trusted — never auto-deducted.</em></p><p>When it deals energy damage, it may spend an Opportunity to leave the target Afflicted [half 1d6 energy] — heatstroke riding the wound.</p>",
+        "text": "<p><em>Red talent, rule-keyed on this item (iron rule 2b; the engine name-key is gone). Opportunity is trusted — never auto-deducted.</em></p><p>When it deals energy damage, it may spend an Opportunity to leave the target Afflicted [half 1d6 energy] — heatstroke riding the wound.</p>",
         "events": [
           {
             "event": "edha-deal-damage",
@@ -4122,7 +4375,27 @@
         "name": "Flame Surge",
         "cost": "2 Actions",
         "consume": "2 Focus",
-        "text": "<p><em>Red talent, name verbatim — AoE, GM-rolled on the card (activated, no hidden trigger); [Tier][Die] resolved 2d8: count = tier 2, die = boss leyline rank 3 (ruling 122).</em></p><p>The breath, loosed through the haze: each character within 10 ft of a point within 60 ft tests Athletics vs. Red. On a failure they take 2d8 energy damage, and half as much on a success.</p>"
+        "text": "<p><em>Red talent, rule-keyed on this item since the 07-26 pre-deploy audit — the burst places, saves and rolls itself; [Tier][Die] resolves 2d8: count = tier 2, die = boss leyline rank 3 (ruling 122).</em></p><p>The breath, loosed through the haze: each character within 10 ft of a point within 60 ft tests Athletics vs. Red. On a failure they take 2d8 energy damage, and half as much on a success.</p>",
+        "events": [
+          {
+            "event": "edha-pre-use",
+            "handler": {
+              "type": "edha-burst",
+              "sizeByRank": true,
+              "sizeFt": 0,
+              "affects": "enemies",
+              "color": "red",
+              "rangeByRank": true,
+              "rangeFt": 0,
+              "saveSkill": "ath",
+              "saveVs": "red",
+              "addSkillMod": "red",
+              "heal": false,
+              "terrain": false
+            },
+            "description": "The tree talent's point-targeted burst, verbatim — size/range/dice resolve at boss role rank (ruling 122), matching the card's baked 2d8 vs Athletics. Wired 07-26 (pre-deploy audit): this copy had no rule, so its use resolved nothing."
+          }
+        ]
       },
       {
         "name": "Searing Bolt",
@@ -4153,7 +4426,7 @@
       {
         "name": "Kindle",
         "kind": "trait",
-        "text": "<p><em>Red talent, name verbatim (engine name-keyed).</em></p><p>Its energy damage deals +3 additional damage (Red-modifier = +rank, boss leyline rank 3, ruling 122). A creature it deals energy damage to sheds light in 5 ft and loses concealment until the end of its next turn.</p>",
+        "text": "<p><em>Red talent, rule-keyed on this item (iron rule 2b; the engine name-key is gone).</em></p><p>Its energy damage deals +3 additional damage (Red-modifier = +rank, boss leyline rank 3, ruling 122). A creature it deals energy damage to sheds light in 5 ft and loses concealment until the end of its next turn.</p>",
         "events": [
           {
             "event": "edha-pre-deal-damage",
@@ -4236,7 +4509,18 @@
         "name": "Guiding Signal",
         "cost": "1 Action",
         "consume": "1 Focus",
-        "text": "<p><em>White talent, name verbatim (engine name-keyed where applicable).</em></p><p>Spend 1 Focus — the lead-beast picks the straggler: designate a creature within 30 ft. The next ally who tests against it this round raises the stakes.</p>"
+        "text": "<p><em>White talent, rule-keyed on this item since the 07-26 pre-deploy audit (the engine name-key it used to ride is gone).</em></p><p>Spend 1 Focus — the lead-beast picks the straggler: designate a creature within 30 ft. The next ally who tests against it this round raises the stakes.</p>",
+        "events": [
+          {
+            "event": "use",
+            "handler": {
+              "type": "edha-designate",
+              "color": "white",
+              "note": "The next ally to test against the designated creature this round raises the stakes (have them target the token when rolling)."
+            },
+            "description": "The tree talent's designate rule, verbatim (range = White Attunement Range at role rank). Rule-keyed 07-26: the deleted engine name-key left this copy dead."
+          }
+        ]
       },
       {
         "name": "Ordered Advance",

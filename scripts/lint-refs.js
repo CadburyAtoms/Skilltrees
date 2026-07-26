@@ -75,6 +75,36 @@ function inEngine(lit) {
   return engine.includes(`"${lit}"`) || engine.includes(`'${lit}'`) || engine.includes("`" + lit + "`");
 }
 
+// Comment-stripped engine source, for checks that must mean "in CODE". The tree-section headers
+// list every talent by name (that IS the iron-rule-3 ledger), so a raw inEngine() is satisfied by
+// prose — which is how pass 5's name-keyed-wiring exemption went silently vacuous when the 2b
+// migration deleted the last tree-talent name from code (2026-07-26: two adversary abilities
+// whose cues promised "use the item to auto-resolve" had been dead since their name-key was
+// deleted, and pass 5 kept exempting them on the strength of a comment).
+function stripComments(src) {
+  const out = [];
+  let inBlock = false;
+  for (const raw of src.split("\n")) {
+    let l = raw;
+    if (inBlock) { const e = l.indexOf("*/"); if (e < 0) { out.push(""); continue; } l = l.slice(e + 2); inBlock = false; }
+    for (;;) {
+      const b = l.indexOf("/*"); if (b < 0) break;
+      const e = l.indexOf("*/", b + 2);
+      if (e < 0) { l = l.slice(0, b); inBlock = true; break; }
+      l = l.slice(0, b) + " " + l.slice(e + 2);
+    }
+    const s = l.indexOf("//");
+    // only treat // as a comment when it isn't inside a string literal
+    if (s >= 0 && (l.slice(0, s).split('"').length - 1) % 2 === 0) l = l.slice(0, s);
+    out.push(l);
+  }
+  return out.join("\n");
+}
+const engineCode = stripComments(engine);
+function inEngineCode(lit) {
+  return engineCode.includes(`"${lit}"`) || engineCode.includes(`'${lit}'`) || engineCode.includes("`" + lit + "`");
+}
+
 // --- pass 1+2: authored files -------------------------------------------------
 const talentNames = new Set();
 for (const file of fs.readdirSync(AUTHORED_DIR).filter((f) => f.endsWith(".json")).sort()) {
@@ -215,7 +245,7 @@ for (const [lit, line] of [...nameLits.entries()].sort((a, b) => a[1] - b[1])) {
         const prose = `${it.text || ""} ${it.rider || ""}`;
         if (!TRIGGER_RE.test(prose)) continue;                          // no trigger named → conscious-use is fine
         if (Array.isArray(it.events) && it.events.length) continue;     // wired via native rules
-        if (inEngine(it.name)) continue;                                // name-keyed engine wiring
+        if (inEngineCode(it.name)) continue;                            // name-keyed engine wiring — CODE only (comments satisfied this for months; see stripComments)
         if (/NO NAMEABLE HOOK/i.test(prose)) continue;                  // explicit, reasoned exemption
         // The automation lives on ANOTHER item of the same actor (07-19: the Fellstag's Waking
         // Ground rides the auto-embedded Draw Mana's terrain-on-draw). The named carrier must be
@@ -223,7 +253,7 @@ for (const [lit, line] of [...nameLits.entries()].sort((a, b) => a[1] - b[1])) {
         // silent failure this pass exists to kill.
         const via = prose.match(/ENGINE-NATIVE VIA ([^:<]+):/i);
         if (via) {
-          if (inEngine(via[1].trim())) continue;
+          if (inEngineCode(via[1].trim())) continue;
           err(`data/adversaries.json (${advName} / ${it.name}): ENGINE-NATIVE VIA "${via[1].trim()}" — that carrier isn't a quoted literal in register-skills.js (typo? unwired?)`);
           continue;
         }
@@ -433,23 +463,8 @@ engine.split("\n").forEach((lineText, i) => {
   catch (e) { err(`pass 7: cannot read scripts/name-keyed-allowlist.json — ${e.message}`); allow = null; }
 
   if (allow) {
-    // Strip block and line comments so only executable code is scanned.
-    const stripped = [];
-    let inBlock = false;
-    for (const raw of engine.split("\n")) {
-      let l = raw;
-      if (inBlock) { const e = l.indexOf("*/"); if (e < 0) { stripped.push(""); continue; } l = l.slice(e + 2); inBlock = false; }
-      for (;;) {
-        const b = l.indexOf("/*"); if (b < 0) break;
-        const e = l.indexOf("*/", b + 2);
-        if (e < 0) { l = l.slice(0, b); inBlock = true; break; }
-        l = l.slice(0, b) + " " + l.slice(e + 2);
-      }
-      const s = l.indexOf("//");
-      // only treat // as a comment when it isn't inside a string literal
-      if (s >= 0 && (l.slice(0, s).split('"').length - 1) % 2 === 0) l = l.slice(0, s);
-      stripped.push(l);
-    }
+    // Only executable code is scanned — the shared stripComments (also pass 5's exemption).
+    const stripped = engineCode.split("\n");
 
     const listed = new Set(allow.talents || []);
     const found = new Map();   // talent name -> first code line
