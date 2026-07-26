@@ -5462,27 +5462,36 @@ async function edhaClearPhantomDoubles(caster) {
  * The sweep runs on the ACTIVE GM's client via createToken (summons can materialize through the GM
  * relay, so the caster's client may never see the token). Late viewers: the GM card's re-test
  * button rolls only the not-yet-tested. */
-async function edhaCastPhantomDouble(caster, dup, { source = "Phantom Double" } = {}) {
+/* 2bAA — every dial arrives from the talent's `edha-illusion-copy` rule; `source` is the RULE's
+ * label (blank = the item's own name), which is what the copy stamps as phantomSource and what the
+ * break cue, the veil card and the fooled-target rider all read back. No talent name in here. */
+async function edhaCastPhantomDouble(caster, dup, h = {}) {
   await edhaClearPhantomDoubles(caster);
   const dupTok = edhaCasterToken(dup);
-  const dc = Number(caster.system?.defenses?.cog?.value ?? caster.system?.defenses?.cog?.override) || 10;
+  const def = String(h.beliefDefense || "cog").trim() || "cog";
+  const skill = String(h.beliefSkill || "prc").trim() || "prc";
+  const source = String(h.source || "").trim() || "Illusion";
+  const pen = Number.isFinite(Number(h.defensePenalty)) ? Number(h.defensePenalty) : 99;
+  const dc = Number(caster.system?.defenses?.[def]?.value ?? caster.system?.defenses?.[def]?.override) || 10;
   await edhaSummon(caster, {
     name: `${dup.name} (Illusion)`, img: edhaTokenArt(dup),
     tokenName: dupTok?.name ?? dup.name,   // the TOKEN label must not say "(Illusion)" — it's what fooled players read
     displayName: dupTok?.document?.displayName,   // hover-name behaves exactly like the real token (bench 07-17)
-    hpFormula: "1", speed: 0, defensePenalty: 99,
+    hpFormula: String(h.hpFormula || "1"), speed: Number(h.speed) || 0, defensePenalty: pen,
     anchorTok: dupTok ?? undefined,
     disposition: dupTok?.document?.disposition,
-    extraFlags: { phantomDouble: true, phantomOf: dupTok?.document?.uuid ?? null, phantomDC: dc, phantomSource: source,
+    extraFlags: { phantomDouble: true, phantomOf: dupTok?.document?.uuid ?? null, phantomDC: dc, phantomSkill: skill, phantomSource: source,
       phantomCasterTok: edhaCasterToken(caster)?.document?.uuid ?? null },   // per-token ownership (07-16)
   });
-  ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: caster }), content: `<p>🌫️ <strong>${source}</strong> (${caster.name}): an illusory copy of ${dup.name} appears beside them — 1 HP, any hit breaks it. Belief tests roll on the GM's side.</p>` });
+  ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: caster }), content: `<p>🌫️ <strong>${source}</strong> (${caster.name}): ${h.note || `an illusory copy of ${dup.name} appears beside them — any hit breaks it. Belief tests roll on the GM's side.`}</p>` });
 }
 async function edhaPhantomBeliefSweep(copyDoc, { initial = false } = {}) {
   try {
     const copyActor = copyDoc?.actor; if (!copyActor) return;
     const dc = Number(copyActor.getFlag("edha-content", "phantomDC")) || 10;
-    const source = copyActor.getFlag("edha-content", "phantomSource") || "Phantom Double";
+    const skill = String(copyActor.getFlag("edha-content", "phantomSkill") || "prc").trim() || "prc";
+    const sklab = CONFIG.COSMERE?.skills?.[skill]?.label || skill.toUpperCase();
+    const source = copyActor.getFlag("edha-content", "phantomSource") || "Illusion";
     const belief = foundry.utils.deepClone(copyActor.getFlag("edha-content", "phantomBelief") || { fooled: [], saw: [] });
     const tested = new Set([...belief.fooled, ...belief.saw].map(r => r.uuid));
     const copyTok = copyDoc.object ?? canvas?.tokens?.get?.(copyDoc.id); if (!copyTok) return;
@@ -5496,15 +5505,15 @@ async function edhaPhantomBeliefSweep(copyDoc, { initial = false } = {}) {
       return;
     }
     for (const t of fresh) {
-      const mod = Number(t.actor.system?.skills?.prc?.mod ?? t.actor.system?.skills?.prc?.rank) || 0;
+      const mod = Number(t.actor.system?.skills?.[skill]?.mod ?? t.actor.system?.skills?.[skill]?.rank) || 0;
       const roll = await (new Roll(`1d20 + ${mod}`)).evaluate();
       const fooled = roll.total < dc;
       (fooled ? belief.fooled : belief.saw).push({ uuid: t.document.uuid, name: t.name, total: roll.total, player: !!t.actor.hasPlayerOwner });
       if (t.actor.hasPlayerOwner) {   // each player learns only their own character's truth
         const ids = (game.users?.filter(u => u.active && !u.isGM && t.actor.testUserPermission?.(u, "OWNER")) ?? []).map(u => u.id);
         if (ids.length) ChatMessage.create({ whisper: ids, content: fooled
-          ? `<p>🌫️ <strong>${t.name}</strong> (Perception ${roll.total}) is taken in — <strong>${copyDoc.name}</strong> looks completely real.</p>`
-          : `<p>👁️ <strong>${t.name}</strong> (Perception ${roll.total}) sees through it — <strong>${copyDoc.name}</strong> is empty air.</p>` });
+          ? `<p>🌫️ <strong>${t.name}</strong> (${sklab} ${roll.total}) is taken in — <strong>${copyDoc.name}</strong> looks completely real.</p>`
+          : `<p>👁️ <strong>${t.name}</strong> (${sklab} ${roll.total}) sees through it — <strong>${copyDoc.name}</strong> is empty air.</p>` });
       }
     }
     // Visibility is CLIENT-VEILED (Ben 07-14: one PC per computer, GM on his own machine): the
@@ -5512,7 +5521,7 @@ async function edhaPhantomBeliefSweep(copyDoc, { initial = false } = {}) {
     // fooled players' clients don't render the ORIGINAL, seers' clients don't render the COPY,
     // the GM renders everything. No token document is ever actually hidden.
     await copyActor.setFlag("edha-content", "phantomBelief", belief);
-    const row = r => `<li>${r.name}: Perception ${r.total} vs ${dc}</li>`;
+    const row = r => `<li>${r.name}: ${sklab} ${r.total} vs ${dc}</li>`;
     ChatMessage.create({ whisper: gmIds, content: `<div class="edha-trigger-card"><p>🌫️ <strong>${source}</strong> — belief vs DC ${dc}:</p>`
       + (belief.fooled.length ? `<p><strong>Fooled</strong> (their client shows only the copy):</p><ul>${belief.fooled.map(row).join("")}</ul>` : "")
       + (belief.saw.length ? `<p><strong>See through it</strong> (their client shows only the original):</p><ul>${belief.saw.map(row).join("")}</ul>` : "")
@@ -5550,7 +5559,7 @@ async function edhaPhantomRestore(copyActor) {
   _edhaPhantomRestored.add(copyActor.id);
   try {
     // Nothing to un-hide — the veil is client-side and dies with the copy's flags; announce only.
-    ChatMessage.create({ content: `<p>🌫️ <strong>${copyActor.getFlag("edha-content", "phantomSource") || "Phantom Double"}</strong>: the illusion breaks — the real one stands plainly seen.</p>` });
+    ChatMessage.create({ content: `<p>🌫️ <strong>${copyActor.getFlag("edha-content", "phantomSource") || "Illusion"}</strong>: the illusion breaks — the real one stands plainly seen.</p>` });
     // Seeming-break GM cues (07-16): the summoner's own reactions to its copy breaking (Fade).
     // Resolve the CASTER TOKEN first (per-bird — unlinked tokens share a world actor id); the
     // token's synthetic actor carries the right name and per-token cue gates.
@@ -5695,16 +5704,6 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
             hpFormula: "2d(2 * @skills.blue.rank + 2)", speed: 0, defensePenalty: 99,
           });
         }
-        break;
-      case "Phantom Double":
-        if (edhaOwnsTalent(actor, "Phantom Double")) {
-          void edhaCastPhantomDouble(actor, target0() ?? actor, { source: "Phantom Double" });   // belief loop (Ben 07-14)
-        }
-        break;
-      case "The Seeming":   // the mistheron's ruling-40 adaptation — self-only, same belief loop
-        // (07-16: this case was UNREACHABLE until the hook gate above went flag-aware — the
-        // bespoke adversary item is action-typed and needed the build's adversaryTalent flag.)
-        if (edhaOwnsTalent(actor, "The Seeming")) void edhaCastPhantomDouble(actor, actor, { source: "The Seeming" });
         break;
     }
   } catch (e) { console.error("Edha Content | Illusion use-hook failed", e); }
@@ -8712,9 +8711,10 @@ Hooks.on("updateActor", async (actor, changes) => {
     if (!game.user?.isGM || actor.type === "character") return;
     const hp = foundry.utils.getProperty(changes, "system.resources.hea.value");
     if (hp === undefined) return;                                   // only react to HP changes
-    // Phantom Double (Blue/Illusion): any hit drops its 1 HP → the illusion ends; remove it outright.
+    // An illusory copy (edha-illusion-copy): any hit drops its 1 HP → the illusion ends; remove it
+    // outright. The label is the copy's stamped source, so an adversary's seeming reads as itself.
     if (hp <= 0 && actor.getFlag?.("edha-content", "phantomDouble")) {
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🌫️ <strong>Phantom Double</strong>: the illusion of ${actor.name} is struck and dissipates.</p>` });
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🌫️ <strong>${actor.getFlag?.("edha-content", "phantomSource") || "Illusion"}</strong>: the illusion of ${actor.name} is struck and dissipates.</p>` });
       try { await actor.delete(); } catch (e) {}                     // deleting the one-off actor removes its token
       return;
     }
@@ -16773,6 +16773,49 @@ function edhaRegisterNativeEventSystem() {
         actsAfterCaster: !!this.actsAfterCaster,
         bakedEffects: pj(this.bakedEffectsJson), extraItems: pj(this.extraItemsJson),
       });
+    },
+  });
+
+  /* ENGINE-OWNED, taken RULE-KEYED (2bAA — the edha-decree exit shape). Re-litigated per iron
+   * rule 3 and the exit CONFIRMED: the per-viewer veil is a patch of the Token#isVisible getter
+   * driven by a cross-actor belief ledger, and no rule chain expresses a canvas visibility patch.
+   * So the FLOW stays engine code and this rule carries every dial — who is copied, the label the
+   * copy stamps, its HP/speed/defenses, which of YOUR defenses sets the DC, which skill the
+   * onlookers roll, the range gate, and the card line. The Mistheron's The Seeming is the second
+   * consumer, on its own adversary document (lint pass 5 standard). No talent name in code. */
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-illusion-copy",
+    label: "Edha: Illusory Copy (belief loop)", description: "Place an illusory duplicate that every enemy who can see it tests against. Losers lose track of the original — their client stops rendering it; winners see only empty air where the copy stands. Any hit breaks it. Put it on 'use'.",
+    config: { schema: {
+      copyOf: new FF.StringField({ required: false, initial: "target-or-self", choices: choices("target-or-self", "self"), label: "Who is duplicated", hint: "target-or-self = your targeted creature, or you when nothing is targeted (Phantom Double) · self = always you, targeting ignored (an adversary's self-only seeming)." }),
+      sourceLabel: new FF.StringField({ required: false, blank: true, initial: "", label: "Label the copy carries", hint: "Blank = this item's name. It is stamped on the copy and read back by the break announcement, the belief cards and any damage rider keyed on 'taken in by the seeming' — so a rename follows the DOCUMENT, not a literal." }),
+      hpFormula: new FF.StringField({ required: false, initial: "1", label: "Copy's health", hint: "1 = any hit breaks it (both shipped consumers)." }),
+      speed: new FF.NumberField({ required: false, initial: 0, label: "Copy's speed (ft)" }),
+      defensePenalty: new FF.NumberField({ required: false, initial: 99, label: "Copy's defenses = yours − N", hint: "99 = it has no meaningful defenses; anything that swings at it hits." }),
+      beliefDefense: new FF.StringField({ required: false, initial: "cog", choices: choices("phy", "cog", "spi"), label: "Your defense sets the DC" }),
+      beliefSkill: new FF.StringField({ required: false, initial: "prc", label: "Skill the onlookers roll", hint: "A skill id — prc (Perception) for both shipped consumers. The engine rolls it; it is never trusted to the player (iron rule 3)." }),
+      rangeColor: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "white", "blue", "black", "red", "green"), label: "The duplicated ALLY must be in this Attunement Range", hint: "Blank = no range gate. Copying YOURSELF is never gated. An out-of-range pick REFUNDS the cost." }),
+      note: new FF.StringField({ required: false, blank: true, initial: "", label: "Card line" }),
+    } },
+    executor: async function (event) {
+      try {
+        const item = event.item, owner = item?.actor; if (!owner) return;
+        const targeted = Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
+        const dup = (this.copyOf || "target-or-self") === "self" ? owner : (targeted ?? owner);
+        if (dup !== owner && this.rangeColor) {
+          const dtok = edhaCasterToken(dup);
+          if (!dtok || !edhaAllyInAttune(owner, dtok, this.rangeColor)) {
+            edhaRefundCost(item);
+            ui.notifications?.warn(`Edha: ${dup.name} is not an ally within your ${this.rangeColor} Attunement Range — ${item.name} refunded.`);
+            return;
+          }
+        }
+        await edhaCastPhantomDouble(owner, dup, {
+          source: this.sourceLabel || item.name, hpFormula: this.hpFormula, speed: this.speed,
+          defensePenalty: this.defensePenalty, beliefDefense: this.beliefDefense,
+          beliefSkill: this.beliefSkill, note: this.note,
+        });
+      } catch (e) { console.error("Edha Content | edha-illusion-copy executor failed", e); }
     },
   });
 

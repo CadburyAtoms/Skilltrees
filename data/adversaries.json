@@ -892,7 +892,23 @@
       {
         "name": "The Seeming",
         "cost": "1 Action",
-        "text": "<p><em>The Blue tree talent <strong>Phantom Double</strong>, adapted per ruling 40 (beasts run tree abilities as natural adaptations): self-only, at will.</em></p><p>Its image stands a pace from its body. Using this places the seeming beside the bird (1 health — any hit breaks it). Every enemy who can see it tests Perception against its Cognitive defense (engine-rolled): on a failure only the seeming is real to them; on a success it is empty air. When the seeming breaks, the bird stands plainly seen. Its <em>call</em> sounds from the seeming, never the body.</p>"
+        "text": "<p><em>The Blue tree talent <strong>Phantom Double</strong>, adapted per ruling 40 (beasts run tree abilities as natural adaptations): self-only, at will.</em></p><p>Its image stands a pace from its body. Using this places the seeming beside the bird (1 health — any hit breaks it). Every enemy who can see it tests Perception against its Cognitive defense (engine-rolled): on a failure only the seeming is real to them; on a success it is empty air. When the seeming breaks, the bird stands plainly seen. Its <em>call</em> sounds from the seeming, never the body.</p>",
+        "events": [
+          {
+            "event": "use",
+            "handler": {
+              "type": "edha-illusion-copy",
+              "copyOf": "self",
+              "hpFormula": "1",
+              "speed": 0,
+              "defensePenalty": 99,
+              "beliefDefense": "cog",
+              "beliefSkill": "prc",
+              "note": "its image stands a pace from its body — 1 health, any hit breaks it. Every enemy who can see it tests Perception against its Cognitive defense."
+            },
+            "description": "2bAA — the ruling-40 adaptation on its OWN document. It used to be a name-keyed case in the Blue tree's useItem switch, which that conversion deletes; keying it on the rule keeps its only wiring where the ability lives. copyOf self = targeting is ignored. The label the copy stamps is this item's own name, which is what Spearing Beak's whenTargetFooled rider reads back."
+          }
+        ]
       },
       {
         "name": "Spearing Beak",
@@ -4522,7 +4538,23 @@
       {
         "name": "The Seeming",
         "cost": "1 Action",
-        "text": "<p><em>The Blue tree talent <strong>Phantom Double</strong>, adapted per ruling 40 — the full phantom loop, name verbatim (the mistheron's engine path: copy token + client veil), self-only, at will.</em></p><p>Its body already wears a borrowed shape; this stands a second copy of that shape beside it (1 health — any hit breaks it). Every enemy who can see it tests Perception against its Cognitive defense (engine-rolled): on a failure only the seeming is real to them; on a success it is empty air. When the seeming breaks, the elder stands plainly seen — briefly.</p>"
+        "text": "<p><em>The Blue tree talent <strong>Phantom Double</strong>, adapted per ruling 40 — the full phantom loop, name verbatim (the mistheron's engine path: copy token + client veil), self-only, at will.</em></p><p>Its body already wears a borrowed shape; this stands a second copy of that shape beside it (1 health — any hit breaks it). Every enemy who can see it tests Perception against its Cognitive defense (engine-rolled): on a failure only the seeming is real to them; on a success it is empty air. When the seeming breaks, the elder stands plainly seen — briefly.</p>",
+        "events": [
+          {
+            "event": "use",
+            "handler": {
+              "type": "edha-illusion-copy",
+              "copyOf": "self",
+              "hpFormula": "1",
+              "speed": 0,
+              "defensePenalty": 99,
+              "beliefDefense": "cog",
+              "beliefSkill": "prc",
+              "note": "a second copy of the shape it currently wears stands beside it — 1 health, any hit breaks it. Every enemy who can see it tests Perception against its Cognitive defense."
+            },
+            "description": "2bAA — the elder's copy of the mistheron's ability, on its OWN document. Both Seemings rode the SAME name-keyed case in the Blue useItem switch (edhaOwnsTalent(actor, \"The Seeming\") matched either), so deleting that switch would have unwired both; each now carries its own rule. copyOf self = targeting ignored. The Grasp's whenTargetFooled rider reads the label the copy stamps, which is this item's own name."
+          }
+        ]
       },
       {
         "name": "The Doubling",

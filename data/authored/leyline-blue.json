@@ -873,7 +873,26 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "PhantomCopy00000": {
+          "event": "use",
+          "description": "Blue (Illusion). 2bAA — ENGINE-OWNED, re-litigated and taken RULE-KEYED (the edha-decree exit shape): the per-viewer client veil is a Token#isVisible patch driven by a cross-actor belief ledger, which no rule chain expresses, so the FLOW stays engine code and this rule carries every dial. copyOf target-or-self reproduces the retired case (your target, or you when nothing is targeted). rangeColor blue is NEW with 2bAA — the card always said 'within Attunement Range' and the retired case checked nothing (card-is-spec, §9m q11); an out-of-range ally REFUNDS the 2 Investiture. beliefDefense cog / beliefSkill prc are Ben's 07-14 belief-loop ruling, engine-rolled (iron rule 3).",
+          "handler": {
+            "type": "edha-illusion-copy",
+            "copyOf": "target-or-self",
+            "sourceLabel": "",
+            "hpFormula": "1",
+            "speed": 0,
+            "defensePenalty": 99,
+            "beliefDefense": "cog",
+            "beliefSkill": "prc",
+            "rangeColor": "blue",
+            "note": ""
+          },
+          "order": 0,
+          "id": "PhantomCopy00000"
+        }
+      },
       "effects": []
     },
     "Phantom Step": {
