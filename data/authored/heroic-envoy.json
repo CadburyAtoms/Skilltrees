@@ -350,7 +350,21 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "GalvanizeFocus00": {
+          "description": "Heroic/Envoy. The targeted ally rolls THEIR recovery die and regains that much focus. 2bZ (iron rule 2b, H17): was a name-keyed useItem hook whose rolled die was evaluated and DISCARDED — the roll now posts (card-is-spec).",
+          "event": "use",
+          "handler": {
+            "type": "edha-focus",
+            "op": "gain",
+            "resource": "foc",
+            "target": "victim",
+            "formula": "@target.recoveryDie",
+            "label": "Galvanize"
+          },
+          "id": "GalvanizeFocus00"
+        }
+      },
       "effects": []
     },
     "Guiding Oration": {

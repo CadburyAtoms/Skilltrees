@@ -1277,3 +1277,34 @@ test("edhaLinkedSquareNear: linked-within hits; unlinked, far, non-true and garb
   assert.strictEqual(env.edhaLinkedSquareNear([{ x: 0, y: 0, linked: 1 }], 0, 0, 100), false, "linked must be === true");
   assert.strictEqual(env.edhaLinkedSquareNear(null, 0, 0, 100), false, "garbage list");
 });
+
+// --- edhaTargetFormula + edhaNormalizeDie — H17, the target-scoped resolver (2bZ) ---
+// Every other @-ref in the project resolves against the OWNER; these two are why "heal the
+// TARGET's recovery die" (Galvanize, Field Medicine) spent four passes engine-owned. The
+// resolver substitutes @target.* BEFORE the Roll sees the formula, so the owner-scoped rest
+// still resolves normally; an unreadable target path becomes 0 (smaller heal, never a crash).
+test("edhaTargetFormula: @target.recoveryDie becomes the die spec; owner refs pass through", () => {
+  assert.strictEqual(
+    env.edhaTargetFormula("@target.recoveryDie + @skills.med.rank", {}, "1d8"),
+    "1d8 + @skills.med.rank");
+  assert.strictEqual(env.edhaTargetFormula("@tier + 1", { tier: 9 }, "1d8"), "@tier + 1",
+    "a formula with no @target ref is untouched");
+});
+test("edhaTargetFormula: @target.<path> reads the target's roll data; unreadable paths read 0", () => {
+  const td = { skills: { med: { rank: 3 } }, tier: 2 };
+  assert.strictEqual(env.edhaTargetFormula("@target.skills.med.rank + @target.tier", td, "1d8"), "3 + 2");
+  assert.strictEqual(env.edhaTargetFormula("@target.no.such.path", td, "1d8"), "0", "missing path fails to 0");
+  assert.strictEqual(env.edhaTargetFormula("@target.skills", td, "1d8"), "0", "a non-numeric read fails to 0");
+  assert.strictEqual(env.edhaTargetFormula(null, null, null), "", "garbage in, empty string out");
+});
+test("edhaNormalizeDie: bare die prefixes 1; NdM passes; object/garbage falls back to 1d8", () => {
+  assert.strictEqual(env.edhaNormalizeDie("d8"), "1d8");
+  assert.strictEqual(env.edhaNormalizeDie("D10"), "1d10", "case folds");
+  assert.strictEqual(env.edhaNormalizeDie("2d6"), "2d6");
+  assert.strictEqual(env.edhaNormalizeDie(""), "1d8");
+  assert.strictEqual(env.edhaNormalizeDie(undefined), "1d8");
+  assert.strictEqual(env.edhaNormalizeDie({ value: "d8" }), "1d8",
+    "an object-shaped die field degrades to the default, never '[object Object]' in a Roll");
+  assert.strictEqual(env.edhaNormalizeDie("d8", "1d6"), "1d8", "explicit fallback only used when needed");
+  assert.strictEqual(env.edhaNormalizeDie("potato", "1d6"), "1d6");
+});

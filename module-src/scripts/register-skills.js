@@ -5049,7 +5049,8 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
  *   (per-enemy hide placement stays the GM's), Baleful (NPC focus spending isn't visible).
  * ENVOY — WIRED: Rousing Presence cluster (Determined + owned-rider options: Instill/Devoted/
  *   Stalwart/Rallying/Lessons), Steadfast Challenge (contest → Disoriented + counted disadv;
- *   Calm Appeal rides the card), Galvanize (recovery-die focus restore), Collected/Composed/
+ *   Calm Appeal rides the card), Galvanize (recovery-die focus restore — authored, H17 since 2bZ),
+ *   Collected/Composed/
  *   Customary Garb (AEs). CAE-NEXT: Foresight [grant-reaction], Practical Demonstration/Sage
  *   Counsel/Sound Advice [grant-action — free RP], Practiced Oratory [cost-tracking multi-
  *   target]. MANUAL: Peaceful Solution (ending combat is the GM's), Withering Retort (pre-attack
@@ -5072,7 +5073,8 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
  *   granted Strikes/Actions [grant-action — the gate cards name the counts today]. MANUAL:
  *   Imposing Posture (NPC influence-resist isn't visible — the Pack Tactics class), Cutthroat
  *   Tactics (the ally's plot-die choice), Authority's ally-count half (whoever the card reaches).
- * SCHOLAR — WIRED: Field Medicine (DC roll → recovery+Medicine heal; Resuscitation note),
+ * SCHOLAR — WIRED: Field Medicine (authored H1 dc-15 + H17 target-die heal since 2bZ;
+ *   Resuscitation = whenOwnsTalent upsell note, declared below),
  *   Anatomical Insight (on-hit cue + Opportunity-menu option, authored), Know Your Moment
  *   (round-window defenses, authored), Swift Healer/Applied Medicine (heal riders, authored),
  *   Clear Mind (AE), Overwhelm with Details (Lore next-test), Sharp Eye-class reveal (gate).
@@ -5116,9 +5118,10 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
  *   stances (`stanceRider` effect + `edha-test-rider`)  all six, see the stance section
  *   next-test (`edha-next-test-mod` target=self)  the four Opportunity adders · Risky Behavior ·
  *                               Overwhelm with Details
- * STILL name-keyed here, and why: Sharp Eye (payload reads arbitrary target state — needs a reveal
- *   handler), Field Medicine + Resuscitation (heals the TARGET's recovery die; the rider formula
- *   resolves against the OWNER).
+ * STILL name-keyed here: none — Field Medicine + Resuscitation were the last two, converted 2bZ
+ *   once H17 (`@target.*` formulas) existed; Sharp Eye left 07-25 with H24. ⚑ RESUSCITATION is a
+ *   declared whenOwnsTalent UPSELL on Field Medicine's success note (the pass-F exit): its own
+ *   document carries no rule; its 3-focus revive cost rides its own activation.
  * ⚑ Vigilant Stance is now OFF the ratchet with an EMPTY document. That is declared, not an
  *   oversight: its Dodge/Reactive-Strike discount is the CAE-NEXT cost-discount class above, which
  *   no handler can express yet. Its text reaches the table on the stance marker (edhaToggleStance
@@ -5248,28 +5251,16 @@ Hooks.on("preCreateActiveEffect", (eff) => {
  *     wrong). Stalwart Presence wants an ally-targeted, scene-window defense buff: edha-defense-buff
  *     is self-only (its sweep reads the buffed actor's OWN items), has a single `round-until-turn`
  *     window, and returns after the first match so one actor cannot hold two.
- *   Rallying Shout + Galvanize want the TARGET's recovery die; every `@` formula in the project
- *     resolves against the OWNER, and the recovery-die path itself is still flagged unverified.
- *     Galvanize therefore stays engine-owned below.
+ *   Rallying Shout's real mechanic (the ally's recovery die) is EXPRESSIBLE since 2bZ built H17
+ *     (`@target.recoveryDie` on edha-focus) — its reminder note stands until a pass upgrades it.
  *
  * ⚑ Two behaviour notes carried over deliberately: the printed "until the end of the scene" on
  * Determined was ALREADY fiction (nothing clears it, then or now), and Rallying Shout's reminder now
  * prints whenever the talent is used rather than only when the ally is at 0 HP — the old gate hid the
  * card's FIRST clause ("revive an Unconscious ally"), so always-print is the more faithful reading. */
-// Galvanize: the targeted ally rolls their recovery die and recovers that much focus.
-Hooks.on("cosmere-rpg.useItem", (item) => {
-  try {
-    const actor = item?.actor; if (!actor || !edhaIsTalent(item) || item.name !== "Galvanize") return;
-    const t = [...(game.user?.targets ?? [])][0]?.actor ?? null;
-    if (!t) { ui.notifications?.warn("Edha: Galvanize — target the ally first, then use it again."); return; }
-    (async () => {
-      const die = t.system?.recovery?.die?.value || t.system?.recovery?.die || "1d8"; // ⚑ recovery-die path unverified
-      const r = new Roll(String(die).match(/^d/) ? `1${die}` : String(die));
-      await r.evaluate();
-      await edhaGainFocus(t, Number(r.total) || 0, "Galvanize");
-    })();
-  } catch (e) { console.error("Edha Content | Galvanize failed", e); }
-});
+/* Galvanize — ON ITS DOCUMENT since 2bZ (iron rule 2b, H17): `edha-focus` {gain, victim,
+ * @target.recoveryDie}. The bespoke useItem hook is gone; the rolled die now POSTS (it used to be
+ * evaluated and discarded — the player only saw the focus total). Do not re-add a name here. */
 // -- Contest gates: vs-defense tests whose effects must ride the RESULT (kill soft laziness) -----
 // Each entry: the talent's own roll (skill) is captured; success = total ≥ the target's defense.
 const EDHA_HEROIC_DEFTESTS = {
@@ -5303,28 +5294,15 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
     });
   } catch (e) { console.error("Edha Content | heroic def-test failed", e); }
 });
-// Grand Deception + Field Medicine: fixed-DC self-rolls (the DC is ON the card, so the engine
-// resolves it — the §9c "DCs aren't exposed" blocker is about SYSTEM-rolled tests, not these).
-Hooks.on("cosmere-rpg.useItem", (item) => {
-  try {
-    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
-    // Grand Deception moved onto its document 07-24m — `edha-def-test` with vs="dc", dc=15.
-    if (item.name === "Field Medicine" && edhaOwnsTalent(actor, "Field Medicine")) {
-      const t = [...(game.user?.targets ?? [])][0]?.actor ?? null;
-      if (!t) { ui.notifications?.warn("Edha: Field Medicine — target the patient first, then use it."); return; }
-      edhaQueueContest(actor, "med", async ({ total }) => {
-        const ok = total >= 10 + 5; // DC 15 on the card
-        if (!ok) { ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>⚕️ <strong>Field Medicine</strong>: ${total} vs DC 15 — <strong>FAIL</strong> (the focus is spent).</p>` }); return; }
-        const die = t.system?.recovery?.die?.value || t.system?.recovery?.die || "1d8"; // ⚑ recovery-die path unverified
-        const med = Number(actor.system?.skills?.med?.rank) || 0;
-        const r = new Roll(`${String(die).match(/^d/) ? "1" + die : die} + ${med}`);
-        await r.evaluate();
-        await edhaCrossHeal(t, Number(r.total) || 0);
-        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>⚕️ <strong>Field Medicine</strong>: ${total} vs DC 15 — <strong>SUCCESS</strong>: ${t.name} heals <strong>${r.total}</strong> (recovery die + ${med} Medicine)${edhaOwnsTalent(actor, "Resuscitation") ? " — <strong>Resuscitation</strong>: spend 3 focus to revive an Unconscious/just-dead patient instead" : ""}.</p>` });
-      });
-    }
-  } catch (e) { console.error("Edha Content | heroic DC roll failed", e); }
-});
+/* Field Medicine — ON ITS DOCUMENT since 2bZ (iron rule 2b, H1 + H17). `edha-def-test` {med,
+ * vs: dc, dc: 15} on use (the fixed-DC self-roll H1 already owned — Grand Deception's shape) plus
+ * `edha-focus` {gain, resource: hea, victim, "@target.recoveryDie + @skills.med.rank"} on the
+ * success — the TARGET-die half is what H17 built. RESUSCITATION is the whenOwnsTalent UPSELL
+ * (the pass-F Siphoned Will exit): its only engine presence was ever a string inside this card,
+ * and that string is now an `edha-note` {whenOwnsTalent: "Resuscitation"} rule on Field
+ * Medicine's success. ⚑ Resuscitation's own document carries NO rule — editing its line means
+ * editing Field Medicine's note rule. Declared here, not an oversight; its 3-focus cost lives on
+ * its own activation, so using the talent itself pays the revive. Do not re-add a name here. */
 // Opportunity ADDERS, Risky Behavior's Plot Die and Overwhelm with Details' Lore bank all came off
 // the engine on 07-24k (iron rule 2b): every one of them was "on use, write a next-test flag on
 // MYSELF", which is now `edha-next-test-mod` with target=self plus the opportunity / plotDie /
@@ -8941,6 +8919,39 @@ function edhaEvalSync(formula, rd) {
 // Callers pass the already-resolved numbers; anything else in the formula stays for roll data.
 function edhaSubstRankTier(formula, rank, tier) {
   return String(formula ?? "").replace(/@colorRank\b/g, String(rank)).replace(/@tier\b/g, String(tier));
+}
+/* H17 (2bZ) — the TARGET-scoped formula resolver. Every @-ref in the project resolves against the
+ * OWNER's roll data, which is why "the TARGET's recovery die" spent four passes engine-owned
+ * (Galvanize, Field Medicine — audit §9c). PURE (pinned in tests/): `@target.recoveryDie` becomes
+ * the die spec passed in; any other `@target.<path>` becomes the NUMBER at that path of the
+ * target's roll data, 0 when unreadable — the smaller-heal direction, never a crash. Owner-scoped
+ * refs pass through untouched for the Roll to resolve. Self-contained path walk on purpose: it
+ * must run in the node test harness with no foundry.utils. */
+function edhaTargetFormula(formula, targetData, recoveryDie) {
+  let f = String(formula ?? "");
+  f = f.replace(/@target\.recoveryDie\b/g, String(recoveryDie || "0"));
+  f = f.replace(/@target\.([a-zA-Z0-9_.]+)/g, (m, p) => {
+    let v = targetData;
+    for (const k of p.split(".")) { if (v === undefined || v === null) break; v = v?.[k]; }
+    const n = Number(v);
+    return Number.isFinite(n) ? String(n) : "0";
+  });
+  return f;
+}
+/* The recovery-die read, ONE path (2bZ — it was duplicated inline in two heroic hooks, both ⚑).
+ * Normalisation is pure + pinned (tests/); the READ itself stays ⚑ BENCH-UNVERIFIED: nothing in
+ * this repo can confirm where cosmere-rpg 2.1.0 stores the die (`system.recovery.die[.value]`)
+ * without the live install. The d8 default mirrors the retired inline code — and unlike it, an
+ * object-shaped die field now degrades to the default instead of feeding "[object Object]" to
+ * the Roll parser. */
+function edhaNormalizeDie(raw, fallback = "1d8") {
+  const s = String(raw ?? "").trim().toLowerCase();
+  if (/^d\d+$/.test(s)) return `1${s}`;
+  if (/^\d+d\d+$/.test(s)) return s;
+  return fallback;
+}
+function edhaRecoveryDie(actor) {
+  return edhaNormalizeDie(actor?.system?.recovery?.die?.value ?? actor?.system?.recovery?.die);   // ⚑ recovery-die path unverified in Foundry
 }
 function edhaConsumeList(item) {
   return (item?.system?.activation?.consume || []).filter(c => c?.type === "resource" && c.resource)
@@ -15627,10 +15638,10 @@ function edhaRegisterNativeEventSystem() {
     source: "edha-content", type: "edha-focus",
     label: "Edha: Gain / Drain Focus (or Investiture)", description: "Move a creature's focus (or Investiture) involuntarily: you regain it, or the creature you affected loses it. Not for a talent's own resource cost — that lives on the activation.",
     config: { schema: {
-      op: new FF.StringField({ required: true, initial: "gain", choices: choices("gain", "drain"), label: "Which way", hint: "gain = the creature regains focus (capped at its maximum) · drain = it loses focus (floored at 0, and reduced by the target's own Wary)." }),
-      resource: new FF.StringField({ required: false, initial: "foc", choices: choices("foc", "inv"), label: "Which resource", hint: "foc = focus (the Wary reduction, the max clamp, the zero-crossing announcement). inv = Investiture — a plain gain/drain with the max clamp only (Reaper's Harvest recovers 1 on a qualifying defeat). 2bW." }),
-      target: new FF.StringField({ required: false, initial: "self", choices: choices("self", "victim"), label: "Whose focus", hint: "self = you (Siphoned Will, Predatory Insight) · victim = the creature this rule's trigger resolved against or happened to (Whispered Doubt's extra loss)." }),
-      formula: new FF.StringField({ required: false, blank: true, initial: "1", label: "How much", hint: "Resolved against YOUR roll data, so '@tier' works (Siphoned Will regains focus equal to your tier). Blank or 0 does nothing." }),
+      op: new FF.StringField({ required: true, initial: "gain", choices: choices("gain", "drain"), label: "Which way", hint: "gain = the creature regains it (capped at its maximum) · drain = it loses it (floored at 0; focus drains are reduced by the target's own focus-guard rule)." }),
+      resource: new FF.StringField({ required: false, initial: "foc", choices: choices("foc", "inv", "hea"), label: "Which resource", hint: "foc = focus (the guard reduction, the max clamp, the zero-crossing announcement). inv = Investiture — a plain gain/drain with the max clamp only (Reaper's Harvest). hea = HEALTH — gain only, i.e. a HEAL, relayed to the GM when you don't own the target (Field Medicine heals the patient's recovery die + your Medicine ranks). 2bZ." }),
+      target: new FF.StringField({ required: false, initial: "self", choices: choices("self", "victim"), label: "Whose focus", hint: "self = you (Siphoned Will, Predatory Insight) · victim = the creature this rule's trigger resolved against or happened to — on a plain `use` event this is the creature you have targeted (Galvanize's ally, Field Medicine's patient)." }),
+      formula: new FF.StringField({ required: false, blank: true, initial: "1", label: "How much", hint: "Resolved against YOUR roll data, so '@tier' works — EXCEPT `@target.*` refs, which resolve against the creature the rule acts on: `@target.recoveryDie` is their recovery die, `@target.<path>` reads their roll data (H17, 2bZ). A formula with dice is ROLLED and the roll posted. Blank or 0 does nothing." }),
       whenOwnsTalent: new FF.StringField({ required: false, blank: true, initial: "", label: "Only when you also have this talent", hint: "The UPGRADE-TALENT gate: blank = always. Siphoned Will's focus only pays out if you own Siphoned Will, so Hollow Command's rule carries it. A name here is authored data you can edit — declare the upgrade talent's empty document in the tree-section header." }),
       label: new FF.StringField({ required: false, blank: true, initial: "", label: "Named on the card as", hint: "Blank uses the talent's name. Set it when the focus belongs to a DIFFERENT talent than the rule's host (Hollow Command's rule pays 'Siphoned Will')." }),
     } },
@@ -15639,10 +15650,30 @@ function edhaRegisterNativeEventSystem() {
         const item = event.item, owner = item?.actor; if (!owner) return;
         if (!edhaRuleOwnsGate(owner, this.whenOwnsTalent)) return;   // upgrade-talent gate (Siphoned Will)
         const who = this.target === "victim" ? (event.options?.victim ?? Array.from(game.user?.targets ?? [])[0]?.actor ?? null) : owner;
-        if (!who) { ui.notifications?.warn(`Edha: ${item.name} — no creature to move focus on.`); return; }
-        const n = Math.max(0, Math.floor(edhaEvalSync(String(this.formula ?? "1") || "1", owner.getRollData()) || 0));
-        if (!n) return;
+        if (!who) { ui.notifications?.warn(`Edha: ${item.name} — target the creature first, then use it again.`); return; }
         const source = this.label || item.name;
+        /* H17 (2bZ): @target.* resolves against WHO the rule acts on, then the Roll resolves the
+         * owner-scoped rest as before. A formula with dice is ROLLED (async) and the roll POSTED —
+         * the Galvanize card fix: its recovery die used to be evaluated and discarded, so the
+         * player only ever saw the focus total. Flat formulas evaluate to the same numbers as the
+         * old evaluateSync path. */
+        let f = String(this.formula ?? "1") || "1";
+        if (f.includes("@target.")) f = edhaTargetFormula(f, who.getRollData?.() ?? {}, edhaRecoveryDie(who));
+        const roll = new Roll(Roll.replaceFormulaData(f, owner.getRollData(), { missing: "0" }));
+        await roll.evaluate();
+        if (roll.dice?.length) {
+          try { await roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor: owner }), flavor: `${source} — ${who === owner ? "your" : `${who.name}'s`} die` }); } catch (e) {}
+        }
+        const n = Math.max(0, Math.floor(Number(roll.total) || 0));
+        if (!n) return;
+        // HEALTH (2bZ): a heal, relay-safe (edhaCrossHeal — a player rarely owns the patient).
+        if (this.resource === "hea") {
+          if (this.op === "drain") { console.warn(`Edha Content | ${item.name}: resource 'hea' is gain-only (damage has its own handlers)`); return; }
+          await edhaCrossHeal(who, n);
+          ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+            content: `<p>⚕️ <strong>${source}</strong>: ${who.name} heals <strong>${n}</strong>.</p>` });
+          return;
+        }
         // Investiture (2bW): a plain clamped write — no Wary, no zero announcement (those are
         // focus semantics). Runs on whichever client fired the rule; a defeat payload runs GM-side.
         if ((this.resource || "foc") === "inv") {
