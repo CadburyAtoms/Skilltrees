@@ -5,14 +5,24 @@ How a Claude session runs the in-Foundry bench itself, through the in-app browse
 ("Could you take control of the PC and do the Foundry tests yourself?" — yes, via browser).
 Sessions still **cannot launch Foundry** — everything here requires Ben to have it running.
 
-## One-time setup (Ben)
+## One-time setup (Ben) — ✅ DONE and join-verified 2026-07-26
 
 - Foundry running on port 30000 with the **edha** world launched.
-- A **Gamemaster user named `Bench`** exists (created 2026-07-26). ⚠️ **Its password must be
-  BLANK** — the agent is not permitted to type passwords into login fields, ever, even
-  user-supplied ones. User Management → Bench → clear the password.
+- A **Gamemaster user named `Bench`** exists with a **BLANK password** (the agent is not
+  permitted to type passwords into login fields, ever, even user-supplied ones). Verified: a
+  passwordless join as Bench reached the world, GM true, edha-content active, system 2.1.0.
 - Ben stays logged in as himself (a user's session is single-login; the dedicated user exists
   so the agent never collides with Ben's). Ben can watch everything live.
+
+## Ben's standing rulings (2026-07-26)
+
+- **Scene:** use the EXISTING **"Playtest Map"** scene (it is the active scene — view it,
+  never activate/deactivate). Do NOT create a bench scene. The setup script places tokens
+  only when its `PLACE_TOKENS` flag is set, offset from an `ORIGIN` you choose after looking
+  at the map for a clear area.
+- **Player characters "Tem parinaem" and "Soggy Bottom" are UNTOUCHABLE** — never write to
+  them, never target-and-fire effects that write to them, never delete their tokens. The
+  setup script hard-throws on their names.
 
 ## Per-run checklist (the agent)
 
@@ -23,8 +33,9 @@ Sessions still **cannot launch Foundry** — everything here requires Ben to hav
    `game.system.version`. Mismatch → stop, report.
 3. **Setup:** run `scripts/bench-setup-console.js` in the console. Verify the summary log
    (⚠ lines = talents/paths not found — fix the script, don't improvise). Run it a SECOND time
-   and confirm idempotency (no new creations). **View** the scene "Edha Bench — Arena" — never
-   *activate* it (activation yanks every connected client, including Ben's).
+   and confirm idempotency (no new creations). Then **view** "Playtest Map", find a clear
+   area, set `ORIGIN` + `PLACE_TOKENS = true`, and run once more to place the bench tokens.
+   Never *activate/deactivate* a scene (it yanks every connected client, including Ben's).
 4. **Run order:** `BENCH — Engine-wide` first — if **2bA-7** (the edit-round-trip) fails, stop
    the whole run and report; everything rides on it. Then White → Blue → Black → Red → Green,
    the ten deities, Heroic, then whatever non-tree sections are console-runnable.
@@ -65,7 +76,8 @@ Sessions still **cannot launch Foundry** — everything here requires Ben to hav
 - The `Bench Target — Undefended` fixture is adversary-typed with only a Physical defense; if
   the engine reads schema defaults as "written" Cognitive/Spiritual, import a pack adversary
   that genuinely lacks them and note it here.
-- Wall/vision rows need walls drawn at the table (the Arena ships none) — draw a temporary
-  wall on the bench scene, test, delete it (bench-created, so deletion is allowed).
+- Wall/vision rows: the Playtest Map has its own walls — use an existing wall where one is
+  handy; if a temporary wall must be drawn, delete THAT wall afterward (bench-created, so
+  deletion is allowed) and never touch the map's own walls.
 - Rows needing a linked PLAYER client (belief loops, whisper visibility) follow §6; when the
   cookie displacement bites, they are ⚑ Ben rows.

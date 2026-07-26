@@ -8,6 +8,17 @@ AUDIT of the finished migration — lint pass 9 (handler FIELD names), the 91-em
 sweep, and the deploy script hardened. **VERDICT: run the .bat.**
 ⚠️ **PACK REBUILD (adversary) + re-drag of placed adversaries REQUIRED.**)
 
+**2026-07-26g — THE AGENT BENCH IS GO (docs + script only; nothing to deploy).** The
+passwordless-Bench join was VERIFIED live (world edha, GM true, module active, system 2.1.0),
+and Ben ruled three things: tests run on the EXISTING **"Playtest Map"** scene (no bench scene
+— `bench-setup-console.js` now targets it, token placement gated behind `PLACE_TOKENS`+`ORIGIN`
+set after eyeballing a clear area); **player characters "Tem parinaem" and "Soggy Bottom" are
+untouchable** (hard-guarded in the script, rule 1 of the new skill); and the whole workflow is
+now a repo skill — **`.claude/skills/bench-run/`** (the operating loop; the runbook stays the
+full procedure) so a fresh session needs no brief. First run = the Red pilot per the skill.
+⚑ Deferred to that run: setup-script live verification (idempotency, ⚠-line check, Undefended
+dummy's fail-open readability) — it has NOT run in Foundry yet.
+
 **2026-07-26f — THE BENCH RESTRUCTURE (Ben: "update/consolidate the bench — it's too much") —
 991 → 568 open rows, reorganized per-TREE; docs-only, nothing to deploy.** Ben confirmed the
 migration deploy is live ("I can confirm it appears the migration worked", 07-26), which

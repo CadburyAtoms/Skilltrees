@@ -14,8 +14,11 @@ All **15 trees are wired** (5 leyline colors + 10 deity trees) and the buildable
 Ben plays a tree in Foundry, reports results — usually **freeform chat notes** — and a session
 root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance review.
 
-> **If Ben's message contains test results, bug reports, or "X didn't work / showed the wrong
-> text" notes → invoke the `test-pass-fixes` skill before touching anything.** For **continuing the
+> **If the task is to RUN the bench yourself — join Ben's running Foundry, execute `# BENCH —`
+> checklist rows, record results — invoke `bench-run`** (added 07-26; the browser-driven
+> agent bench). **If Ben's message contains test results, bug reports, or "X didn't work /
+> showed the wrong text" notes → invoke the `test-pass-fixes` skill before touching
+> anything.** For **continuing the
 > iron-rule-2b migration** — converting talents off name-keyed dispatch, shrinking the ratchet,
 > building an H-numbered handler, migrating a marker ledger → invoke **`talent-migration`**; it
 > carries the workflow, the remaining scope broken into sessions, and what sixteen passes measured,
@@ -33,7 +36,7 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
 |---|---|
 | `EDHA_FOUNDRY_HANDOFF.md` | THE knowledge base. Dated deltas newest-first at the top; core reference §1–§10 below them. §9 = canonical backlog; §10 = gotchas that each bit us at least once. |
 | `EDHA_FOUNDRY_TEST_CHECKLIST.md` | Per-tree in-Foundry test worklists + the **DEPLOY STATE** section (renamed from "DEPLOY FIRST" on 2026-07-16d — what's merged but not yet live on Ben's machine; read it before believing any "wrong text/old behavior" bug, and check its date against `git log` because only Ben can advance it). Agents edit THIS file; Ben tests from the generated `EDHA_DASHBOARD.html` (Bench tab) — after editing the checklist OR any dashboard source doc (TODO_*, art wishlist, campaign canon/state, handoff, triage, pilot, map JSON) run `node scripts/build-dashboard.js` and commit the dashboard (CI + pre-commit enforce sync). |
-| `docs/EDHA_BENCH_RUNBOOK.md` | **The agent-driven bench** (2026-07-26): how a session joins Ben's running Foundry at `localhost:30000` as the passwordless GM user `Bench`, builds the bench roster with `scripts/bench-setup-console.js`, runs the `# BENCH —` checklist sections itself, and records results (PASS rows retire on evidence; fails feed test-pass-fixes; feel/canvas rows stay ⚑ Ben's). Read it BEFORE driving Foundry. |
+| `.claude/skills/bench-run/` + `docs/EDHA_BENCH_RUNBOOK.md` | **The agent-driven bench** (2026-07-26): a session joins Ben's running Foundry at `localhost:30000` as the passwordless GM user `Bench`, builds the bench roster with `scripts/bench-setup-console.js` (tokens on the EXISTING "Playtest Map"; PCs "Tem parinaem"/"Soggy Bottom" hard-guarded), runs the `# BENCH —` checklist sections itself, and records results (PASS rows retire on evidence; fails feed test-pass-fixes; feel/canvas rows stay ⚑ Ben's). The SKILL is the operating loop; the runbook is the full procedure. |
 | `.claude/skills/test-pass-fixes/` | The test-results → fix workflow, plus `CASE_STUDIES.md` — worked root-cause examples. |
 | `.claude/skills/talent-migration/` | **THE iron-rule-2b migration skill** (added 07-24y, after sixteen passes had spread the knowledge across §9n/§9o and ever-longer session briefs). `SKILL.md` = the pass workflow (atom → scout → build → author → gates → ratchet → docs); `SESSION_PLAN.md` = the remaining 131 partitioned into sessions, with what is next; `LESSONS.md` = what each pass measured, including why the classification's `needs` column over-estimates. Read it INSTEAD of writing a long brief. |
 | `.claude/skills/leyline-tree-authoring/` | The authoring/consistency standard, `audit.py` (the pre-commit gate), and `ENGINE_INDEX.md` (primitives map — read it **instead of** scanning the 11k-line engine). |

@@ -7,11 +7,15 @@
  *              talents the surviving bench rows name.
  *   fixtures — hostile target dummies (Isolated / Adjacent A+B / Floater / Undefended) and
  *              two friendly allies, with the skill ranks the `vs: skill` rows roll.
- *   scene    — "Edha Bench — Arena" (5-ft grid, no walls) with every bench token pre-placed.
+ *   tokens   — placed on the EXISTING "Playtest Map" scene (Ben's ruling 07-26: use the
+ *              playtest map, don't create a bench scene). Placement is OFF by default:
+ *              view the scene, pick a clear area, set ORIGIN to its top-left pixel and
+ *              PLACE_TOKENS = true, then run. RESET_TOKENS re-places existing tokens.
  *
  * Idempotent: re-running repairs drift instead of duplicating; nothing outside the
  * "Edha Bench" folders is ever touched, and the only deletions are embedded items on bench
- * actors. Set RESET_TOKENS = true to also re-place tokens at their canonical coordinates.
+ * actors. ⚠️ PLAYER CHARACTERS "Tem parinaem" and "Soggy Bottom" are hard-guarded — the
+ * script throws before ever writing to them (Ben's ruling 07-26).
  *
  * NOTES
  * - PCs are level 7 (the playtest norm the checklist's expected values were written against).
@@ -28,9 +32,16 @@
  *   (the on-hit rows need real weapon attacks).
  */
 (async () => {
+  const PLACE_TOKENS = false;      // view the scene first, then set true with a clear ORIGIN
+  const ORIGIN = { x: 200, y: 200 }; // top-left pixel of a clear area on the Playtest Map
   const RESET_TOKENS = false;
+  const SCENE_NAME = "Playtest Map";
+  const PROTECTED = ["tem parinaem", "soggy bottom"]; // player characters — never write to these
   if (game.world.id !== "edha") return console.error("BENCH SETUP: wrong world:", game.world.id);
   if (!game.user.isGM) return console.error("BENCH SETUP: needs a GM user.");
+  const assertNotProtected = (name) => {
+    if (PROTECTED.includes(name.toLowerCase())) throw new Error(`BENCH SETUP: refusing to touch player character "${name}"`);
+  };
   const log = [];
 
   // ---- folders ---------------------------------------------------------------------------
@@ -42,7 +53,6 @@
   const root = await ensureFolder("Edha Bench", "Actor");
   const fPCs = await ensureFolder("Bench PCs", "Actor", root.id);
   const fTgt = await ensureFolder("Bench Targets", "Actor", root.id);
-  const fScn = await ensureFolder("Edha Bench", "Scene");
   const benchFolderIds = [root.id, fPCs.id, fTgt.id];
   const inBench = a => benchFolderIds.includes(a.folder?.id);
 
@@ -116,6 +126,7 @@
   ];
 
   const ensureActor = async (name, folderId, type = "character", extraSystem = {}) => {
+    assertNotProtected(name);
     let a = game.actors.find(x => x.name === name && inBench(x));
     if (!a) {
       a = await Actor.create({ name, type, folder: folderId, system: { level: 7, ...extraSystem } });
@@ -187,35 +198,37 @@
                      "prototypeToken.disposition": -1, "prototypeToken.actorLink": true });
   }
 
-  // ---- the arena scene + tokens ----------------------------------------------------------
-  let scene = game.scenes.find(s => s.name === "Edha Bench — Arena" && s.folder?.id === fScn.id);
+  // ---- tokens on the EXISTING playtest scene (never created, never activated) --------------
+  const scene = game.scenes.find(s => s.name === SCENE_NAME) ?? game.scenes.find(s => /playtest/i.test(s.name));
   if (!scene) {
-    scene = await Scene.create({
-      name: "Edha Bench — Arena", folder: fScn.id, width: 3000, height: 2000, padding: 0,
-      grid: { type: 1, size: 100, distance: 5, units: "ft" }, backgroundColor: "#202830",
-      tokenVision: false, fog: { exploration: false },
+    console.warn(`BENCH SETUP: scene "${SCENE_NAME}" not found — tokens not placed.`);
+  } else if (!PLACE_TOKENS) {
+    log.push(`tokens NOT placed (PLACE_TOKENS=false) — view "${scene.name}", pick a clear area, set ORIGIN, re-run`);
+  } else {
+    // offsets from ORIGIN, grid-normalized: PCs in a column, dummies clustered to the right,
+    // Isolated far out (30+ ft from everything).
+    const g = scene.grid?.size ?? 100;
+    const SPOTS = {};
+    PCS.forEach((C, i) => { SPOTS[C.name] = [0, i]; });
+    Object.assign(SPOTS, {
+      "Bench Ally — One": [3, 6], "Bench Ally — Two": [3, 7],
+      "Bench Target — Adjacent A": [7, 6], "Bench Target — Adjacent B": [8, 6],
+      "Bench Target — Floater": [7, 9], "Bench Target — Undefended": [9, 9],
+      "Bench Target — Isolated": [24, 1],
     });
-    log.push("+scene Edha Bench — Arena");
+    const toks = [];
+    for (const [nm, [cx, cy]] of Object.entries(SPOTS)) {
+      const a = game.actors.find(z => z.name === nm && inBench(z));
+      if (!a) continue;
+      const [x, y] = [ORIGIN.x + cx * g, ORIGIN.y + cy * g];
+      const existing = scene.tokens.find(t => t.actorId === a.id);
+      if (existing && !RESET_TOKENS) continue;
+      if (existing) await existing.update({ x, y });
+      else toks.push(await a.getTokenDocument({ x, y }));
+    }
+    if (toks.length) { await scene.createEmbeddedDocuments("Token", toks); log.push(`+${toks.length} tokens placed on "${scene.name}"`); }
   }
-  const SPOTS = {};
-  PCS.forEach((C, i) => { SPOTS[C.name] = [200, 200 + i * 100]; });
-  Object.assign(SPOTS, {
-    "Bench Ally — One": [500, 800], "Bench Ally — Two": [500, 900],
-    "Bench Target — Adjacent A": [900, 800], "Bench Target — Adjacent B": [1000, 800],
-    "Bench Target — Floater": [900, 1100], "Bench Target — Undefended": [1100, 1100],
-    "Bench Target — Isolated": [2600, 300],
-  });
-  const toks = [];
-  for (const [nm, [x, y]] of Object.entries(SPOTS)) {
-    const a = game.actors.find(z => z.name === nm && inBench(z));
-    if (!a) continue;
-    const existing = scene.tokens.find(t => t.actorId === a.id);
-    if (existing && !RESET_TOKENS) continue;
-    if (existing) await existing.update({ x, y });
-    else toks.push(await a.getTokenDocument({ x, y }));
-  }
-  if (toks.length) { await scene.createEmbeddedDocuments("Token", toks); log.push(`+${toks.length} tokens placed`); }
 
   console.warn("BENCH SETUP:\n" + log.join("\n"));
-  console.warn(`BENCH SETUP DONE — ${PCS.length} PCs, ${TGT.length + 1} targets, scene "${scene.name}" (view it, don't activate).`);
+  console.warn(`BENCH SETUP DONE — ${PCS.length} PCs, ${TGT.length + 1} targets. Scene: "${scene?.name ?? "NONE"}" (view it, never activate/deactivate).`);
 })();
