@@ -2,11 +2,111 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, **COMPLETED 2026-07-26 (pass AA)**: **the ratchet list is EMPTY — 221 → 0 across twenty-seven passes.** Every tree is clear, all six marker ledgers have migrated, and `scripts/name-keyed-allowlist.json` stays in the repo with an empty `talents` list *on purpose* — lint pass 7 still guards against REGROWTH, which is the half of the ratchet that matters from here on. ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **ALL SIX marker LEDGERS have migrated** (`covenants` 07-24u; `edicts` 07-25 pass V; `remains` 07-25 pass W; Fate's `snares` 07-25 pass X; Destruction's `charges` 07-26 pass Y; Fate's `ordained` 07-26 pass AA — the point-bound ones fail OPEN through H3's reconcile by design). There is no flat marker-list flag left in the engine. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-26h** (BENCH RUN 1 —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-26i** (BENCH RUN 2 —
+White + Blue, executed live: 26 rows retired on evidence, TWO root-caused failure families — the
+`edhaEvalSync` dice bug killing 4 White talents, and the adversary `edha-def-test` build gap killing
+6 abilities — plus a proven-unreachable fail-open branch and one world-hygiene note. Docs only.)
+Prior: **2026-07-26h** (BENCH RUN 1 —
 the Red pilot, executed live by an agent session joined as `Bench`: 16 rows retired on evidence,
 1 FAIL root-caused (Shockwave Slam's weapon-hit trigger surface), 4 cross-tree observations,
 and the agent-bench runbook hardened with the v13 operating lessons. Docs + setup-script fix
 only; nothing to deploy.)
+
+**2026-07-26i — BENCH RUN 2 (White + Blue) — EXECUTED LIVE. 26 rows retired on evidence, TWO
+root-caused failure FAMILIES found (9 talents/abilities between them), 1 world-hygiene note;
+docs only, nothing to deploy.**
+A session joined Ben's running Foundry as `Bench` (world edha, GM, edha-content active, system
+2.1.0, Foundry 13.351) and ran the whole White and Blue sections. `bench-setup-console.js` re-ran
+with **zero ⚠ lines** (the run-1 High Society Contacts collision fix holds) and was idempotent —
+no creations, 16 PCs synced, tokens already at ORIGIN (2100, 9000). No screenshots again: the
+in-app browser pane never composites, so every line below is quoted card text + console-asserted
+state. Bench chat is ~170 messages — **Ben may flush it**.
+
+- **⚠️ FAILURE FAMILY 1 — `edhaEvalSync` cannot evaluate DICE under Foundry v13.351.** The helper
+  (line ~9075) calls `new Roll(...).evaluateSync()` with no options; in v13 any die term throws
+  *"This Roll contains terms that cannot be synchronously evaluated"*, the `catch` returns **0**,
+  and every caller's `amt > 0` gate then silently drops the talent. Flat/`@dealt` formulas are
+  unaffected, which is why Shared Burden and Unbreakable Line pass while their neighbours are dead.
+  **Proven by substitution, not by reading:** swapping Interposing Shield's and Retributive Guard's
+  amount to a flat `3` made both post their cards and resolve correctly (reduce + move; 3 spirit to
+  the attacker), then the originals were restored. **Kills 4 White talents** — Shield Wall (2bR-9),
+  Interposing Shield (2bQ-7), Retributive Guard (2bQ-8), Devoted Conduit (spot-check row). The
+  gates, ranges, dispositions, cost handling and click machinery are all correct; this is ONE
+  helper. ⚠ Note `edhaSummon` uses `await new Roll(...).evaluate()` and is fine — so the fix is
+  scoped to the sync call sites, and a sweep of the other ~30 `edhaEvalSync` callers with dice
+  formulas belongs to the fix session.
+- **⚠️ FAILURE FAMILY 2 — a non-attack adversary ability with an `edha-def-test` rule never rolls.**
+  `advItemDoc` in `scripts/foundry-build.js` promotes `activation.type` to `"skill_test"` and sets
+  `activation.skill` **only when the item is an attack** (`raw.attack != null`). A utility/reaction
+  ability carrying `edha-def-test` is therefore built with no skill, the system's use flow never
+  fires a test, `edhaQueueContest` waits and times out — the cost IS charged and nothing else
+  happens. **Six abilities**: Callthief Counterpoint (2bR-17) · Surecat Redirect Momentum (2bF-17) ·
+  Reeve-Owl Sovereign of Solitude · Rootling Swarm Grasping Vines + Territorial Instinct ·
+  Tussock-Sow Drive the Prey. **Not a ⟳ Sync gap** — both were imported FRESH from the pack this
+  run, so the DEPLOY STATE caveat does not explain them. Fix the builder, not the six documents.
+- **PASSED & RETIRED (White, 13):** 2bR-18 (Shared Burden cost 2→1 → card read "Spend 1 Inv";
+  restored) · 2bR-7 (Counterpoint: "12 vs DC 10 — SUCCESS" + Disoriented −1 Inv; **no target vetoes
+  the use, nothing spent**; a DECLINED DC prompt resolved SUCCESS — both sanctioned drifts confirmed)
+  · 2bR-11 (Beacon: own card, one button per ally-condition, click removed Disoriented −1 Inv) ·
+  2bR-12 ("healed 2 of 18 ally(ies) 2 HP within 60 ft (visible) — skipped 1 hidden, 15 behind a
+  wall"; no White line on the summary card) · 2bR-15 (pick card; **the 0-HP ally was correctly
+  skipped**; forge posted the note + the Bound by Word share) · 2bR-16 (partner's offer card on
+  their next test: "use their White modifier (+5) → 15 (was 12)") · 2bQ-10 (all four tabs carry one
+  `edha-damage-react` rule) · 2bR-2 (Shared Conviction: "+modifier turns 7 into 12 — now meets DC 10
+  (success)", −2 Focus −1 Inv) · 2bR-13 (armed-window note, then a per-move allies-within-10-ft
+  card) · 2bR-14 (designate → next ally's test vs the mark rolled `1d20 + 4 + 1dp`) · 2bJ-2 ·
+  2bJ-13 (Callthief's Overwhelming Authority, on its own rule) · 2bR-8 (+1 Deflect on both while
+  adjacent, auto-removed on separation, re-granted on re-adjacency) · 2bQ-9 (Unbreakable Line fired
+  ONLY on the drop, DC 11 = half the 21 killing blow, −3 Inv, ally at 1 HP; **a second ally dropping
+  the same round offered nothing**). Spot-checks: Pillar of Order ✓ · Concordant Presence ✓ (grant
+  card, DC gate, Plot Die consumed on the matching skill) · Voice of Authority ✓ ("kept d20 5 (of
+  11/5); result 7 (was 13)") · Collective Resolve ✓.
+- **PASSED & RETIRED (Blue, 13):** **2bJ-1 — the first prompt-pick click in the project WORKS**
+  (Subtle Suggestion → Disorient → status applied) · **2bF-3 — the first `vs: skill` WORKS**: it
+  rolled the TARGET's Athletics and printed "9 vs Bench Target — Adjacent A's ATH 13 — FAIL", a real
+  opposed roll, not a defense read · **2bAA-10 Phantom Barricade — the session's build risk, FULL
+  PASS**: 4 real move-blocking walls (`move: 20`, `sight: 0`), HP 13 from a properly-rolled 2d8,
+  Foundry's own `polygonBackends.move.testCollision` blocked both across and through while an empty
+  control lane was clear; an occupied square was refused and refunded ("something is standing there
+  — cost refunded"); a 118 ft placement was refused with nothing spent; at 0 HP the barrier died and
+  the walls came down (121 → 117). Vision/lighting untouched by design; cover left to the table ·
+  2bAA-7 (click-placed in range −1 Inv; out of range created nothing and refunded; does not join
+  initiative) · 2bP-1 (Slow turn: first test `2d20kh + 4`, second `1d20 + 4`) · **2bP-2 — the trap
+  row PASSES**: out of combat, three tests, no advantage anywhere · 2bP-3 (`edha.calculatedPatience`
+  → TypeError; Fast turn no advantage) · 2bP-4 (Intellect test `2d20kh + 3` with its card; Awareness
+  and Strength plain) · 2bJ-5 (resolves Blue vs COG with no manual card; out of range refused,
+  nothing spent) · 2bF-2 (public SUCCESS card + whispered GM reveal on success only) · 2bF-4
+  (Immobilized on success) · 2bF-5 (Weakened WITH Absolute Stillness, none without — verified by
+  removing and restoring the talent) · 2bF-6 (resolves vs COG, the manual Immobilize button is gone)
+  · 2bI-12 (advantage bound to the targeted creature; a test against a different creature rolled
+  plain `1d20`). Spot-checks: Counterspell ✓ · Probability Cascade ✓ · Anticipate ✓ · Intercept ✓.
+- **⚑ A KNOWN LIMIT IS NOW PROVEN UNFIXABLE AS WRITTEN.** The runbook said to swap the
+  `Bench Target — Undefended` fixture for "a pack adversary that genuinely lacks Cognitive/Spiritual".
+  **No such adversary can exist**: the cosmere schema always derives a numeric
+  `system.defenses.*.value` (floor 10), and a sweep of **all 52 pack adversaries** found zero with an
+  unreadable Cognitive defense. `edhaReadDefense` therefore never returns null, so H1's **fail-open
+  branch is unreachable in practice for `vs: defense`**. The observable half of 2bJ-5 / 2bF-6 (and by
+  the same argument 2bH-11 / 2bI-8) is what the rows should test: the talent resolves against the
+  derived defense and the old manual click-card is gone. Runbook updated.
+- **Cross-tree observations (not rows):** ① **prompt-pick `source: confirm` cards name a cost they
+  never charge** — Overwhelming Authority (White) and Subtle Suggestion (Blue) both print "spend 1
+  Investiture" but their rules carry `costs: ""`, and Investiture did not move on the click. Card
+  text vs rule drift; decide which side is canonical. ② Phantom Barricade's **destruction card posts
+  twice**. ③ Run 1's raw-i18n bug re-sighted (`COSMERE.Status.Disoriented` in an `edha-apply-status`
+  card) — already logged 07-26h, still unfixed.
+- **⚠️ WORLD HYGIENE — one overreach to report.** The end-of-run cleanup swept
+  `game.actors.filter(a => a.getFlag("edha-content", "summon"))`, which matched **two summon actors
+  that pre-dated this run** (leftovers from run 1's 2bP-12 Combat Constructs — run 1 recorded them
+  as deleted; they were not) and deleted them along with run 2's own. They were engine-summoned
+  bench debris, not campaign content, and nothing else moved: final id-diff is **zero additions**,
+  removals limited to those 2 actors + 1 of their tokens, Ben's campaign combat intact, both
+  protected PCs untouched, walls back to 117. Still a breach of "delete nothing pre-existing" —
+  the runbook now says to scope cleanup to an id-diff against the run's OWN start snapshot. One
+  orphan `Combat Construct` token from run 1 remains on the Playtest Map and was deliberately left
+  for Ben.
+- **Not run (rows stay, reasons recorded):** 2bAA-6 and 2bJ-3 need a real combat *turn change*,
+  which the cosmere activation model does not expose from the console (`combat.turn` stays null and
+  initiative is locked); 2bAA-8 / 2bAA-9 need a second client. 2bAC-1/2 stay ⚑ Ben (no screenshots).
 
 **2026-07-26h — BENCH RUN 1 (the Red pilot) — EXECUTED LIVE. 16 rows retired on evidence, 1
 FAIL root-caused, 4 cross-tree observations; docs + setup-script fix only, nothing to deploy.**

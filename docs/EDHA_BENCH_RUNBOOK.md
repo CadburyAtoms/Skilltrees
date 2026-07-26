@@ -111,11 +111,44 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   lower-left room cols 9–16, Isolated at (31, 31)) and move the ACTIVE tree's PC into the room
   for its rows. The scene also carries a Ben-made teleport Region — keep bench tokens out of it.
 
+## Operating lessons from run 2 (2026-07-26i — read these too)
+
+- **A silent handler is usually a FORMULA, not a gate.** Four White talents looked dead; all four
+  were `edhaEvalSync` returning 0 on a dice formula (v13 `evaluateSync()` throws on die terms).
+  Before blaming selection or ranges, substitute a **flat** amount into the rule on the bench actor
+  and re-trigger: if the card appears, the gates were never the problem. Restore the formula after.
+- **Adversary abilities that roll a test need `activation.skill`.** A non-attack adversary item
+  carrying `edha-def-test` is built as `utility` with no skill, so no roll ever fires, the contest
+  times out, and the only visible symptom is "the cost was charged and nothing happened". Check
+  `item.system.activation.skill` before calling it a wiring bug.
+- **Import adversaries FRESH from the pack** (`Bench Adv — <name>` in the bench folder). That takes
+  the DEPLOY-STATE ⟳ Sync caveat off the table entirely — a failure on a freshly-imported copy is a
+  real failure, not a stale snapshot, and you can say so in the delta.
+- **A row that "fails" on turn/round state is usually your combat.** `_edhaTestedThisTurn` clears on
+  `combatTurnChange`, and the cosmere combat model never fires one from `Combat.create` + console
+  driving (`combat.turn` stays null, initiative is locked). `Hooks.callAll("combatTurnChange", combat)`
+  is the honest way to simulate the turn boundary; without it, "first test this turn" rows read as
+  broken when they are fine.
+- **Click-to-place rows are drivable.** `edhaPickPoint` reads `canvas.mousePosition` on a
+  `pointerdown` over `#board`. With the pane hidden, temporarily `Object.defineProperty` that getter
+  to your chosen world point, dispatch a real `PointerEvent`, then restore the descriptor. Everything
+  except the literal mouse plumbing is then exercised for real (walls, refunds, range gates).
+- **Verify "nothing moves through it" with Foundry's own collision backend**, not by dragging:
+  `CONFIG.Canvas.polygonBackends.move.testCollision(a, b, {type: "move", mode: "any"})`, plus an
+  empty-lane control ray so a `true` means something.
+- **Scope end-of-run cleanup to an id-diff against THIS run's start snapshot.** Run 2 swept every
+  actor carrying the `summon` flag and deleted two that pre-dated it (run-1 leftovers). Compute
+  `added = now − start` and delete only that.
+
 ## Known limits
 
-- The `Bench Target — Undefended` fixture is adversary-typed with only a Physical defense; if
-  the engine reads schema defaults as "written" Cognitive/Spiritual, import a pack adversary
-  that genuinely lacks them and note it here.
+- ❌ **RESOLVED AS UNFIXABLE (07-26i): there is no "no written Cognitive/Spiritual defense" creature.**
+  The old note here said to swap the `Bench Target — Undefended` fixture for a pack adversary that
+  genuinely lacks those defenses. **None exists and none can be made** — the cosmere schema always
+  derives a numeric `system.defenses.*.value` (floor 10), and all **52** pack adversaries read a
+  Cognitive defense. `edhaReadDefense` therefore never returns null and **H1's fail-open branch is
+  unreachable for `vs: defense`**. Test the observable half instead (the talent resolves against the
+  derived defense; the old manual click-card is gone) and say so rather than reporting a FAIL.
 - Wall/vision rows: the Playtest Map has its own walls — use an existing wall where one is
   handy; if a temporary wall must be drawn, delete THAT wall afterward (bench-created, so
   deletion is allowed) and never touch the map's own walls.

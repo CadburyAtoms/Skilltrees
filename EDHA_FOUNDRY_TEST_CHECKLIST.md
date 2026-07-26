@@ -132,25 +132,40 @@ Run on **Bench — White** (ally dummies in range; a hostile pair adjacent for t
 reactions). No pack rebuild pending. Priority: 2bR-18 (premise), then 2bR-7
 (the pass's only deliberate drifts).
 
-- [ ] **2bR-18 — The point of the migration** — open any converted talent → Events → The rule(s) are visible and editable — change a prompt text, confirm the card shows the edit.
-- [ ] **2bR-7 — Counterpoint** — target the influencing enemy, use it, roll your White test → GM is prompted for the influence result (DC). Success: −1 Inv, enemy **Disoriented** until end of your next turn. ⚠️ **Two sanctioned drifts:** no target now VETOES the use (was: a manual card), and a DECLINED DC prompt resolves as a success (fail-open, §9m q9) instead of the manual card.
-- [ ] **2bR-11 — Beacon of Stability** — Draw Mana with a conditioned ally in range → The cleanse card posts (one button per ally-condition); click removes it, −1 Inv. ⚠️ Cosmetic drift: its own card now — no longer a line on the Draw Mana summary card.
-- [ ] **2bR-12 — White Leyline Attunement** — Draw Mana → Visible allies in range + you heal Tier HP; hidden / behind-wall skips accounted. ⚠️ Cosmetic drift: posts its own card; the Draw Mana summary card no longer prints a White line.
-- [ ] **2bR-15 — Terms of Accord** — use it → A pick card of same-side characters in range (⚠️ minor drift: creatures at 0 HP are now skipped); click forges the accord and posts the note — including the modifier share if you own Bound by Word.
-- [ ] **2bR-16 — ⚑ Bound by Word** — forge an accord (owning it), then the partner rolls a skill test → The partner's offer card appears, unchanged. **Bound by Word's own Events tab is EMPTY by design** — it is the *shareModIfOwns* gate on Terms of Accord's forge rule (upgrade-talent pattern, declared in the Accord header).
-- [ ] **2bQ-10 — ⚠️ all four — the Events tab** — open Interposing Shield, Shared Burden, Retributive Guard, Unbreakable Line → **Events** → Each shows one *Edha: Offer a Reaction When Someone Takes Damage* rule with its own range/cost/amount/prompt. **Change Shared Burden's cost to 1 Inv and confirm the card says 1** — that is the migration's whole point, and these four had empty tabs before. Put it back to 2.
-- [ ] **2bR-2 — Shared Conviction** — an ally's test rolls a Complication or a kept d20 ≤ 10 → Card offers +your White modifier; click asks for the DC and reports whether the boost saves it; spends 2 Focus + 1 Inv.
-- [ ] **2bR-13 — Ordered Advance** — use it, then move → The armed-window note, then an allies-within-10-ft half-Speed card on each move this round. (A window armed before this deploy dies with the old flag — re-use once, harmless.)
-- [ ] **2bR-14 — Guiding Signal** — use it → The designate card (opposing tokens in White Attunement Range); the next ally testing against the designated token this round gets the Plot Die.
-- [ ] **2bJ-2 — Overwhelming Authority (White)** — same as 2bJ-1 → Identical behaviour. The two shared one card function and now carry the same pair of rules; if 2bJ-1 works and this does not, the problem is the talent, not the handler.
-- [ ] **2bJ-13 — Callthief — Overwhelming Authority (adversary)** — run the Callthief's ability → Same offer-then-Disorient as 2bJ-2. It used to work only by borrowing the PC talent's engine branch, which is gone; it is wired on its own document now.
-- [ ] **2bR-8 — Guardian Stance** — move an ally adjacent, then apart → Both gain the +1 Deflect effect while adjacent; it auto-removes on separation. Any lingering pre-deploy "Guardian Stance (+1 Deflect)" effect is swept off automatically once.
+**Bench run 2 (2026-07-26i): 13 White rows PASSED on the live table and are retired** — 2bR-18,
+2bR-7, 2bR-11, 2bR-12, 2bR-15, 2bR-16, 2bQ-10, 2bR-2, 2bR-13, 2bR-14, 2bJ-2, 2bJ-13, 2bR-8, 2bQ-9.
+Evidence per row in the 07-26i delta. The rows below stayed open — all four survivors share ONE
+root cause except 2bR-17.
+
 - [ ] **2bR-9 — Shield Wall** — an enemy damages an ally adjacent to the owner (owner has ≥2 adjacent living allies) → Damage reduced by half [Tier][White Die], same chat note naming the talent. ⚑ Also worth one adversary-owner check (role rank feeds the die — ruling 122).
+      **FAIL 2026-07-26i (bench run 2):** never fires. `edhaEvalSync` cannot evaluate a DICE formula
+      under Foundry v13.351 — `Roll#evaluateSync()` throws "contains terms that cannot be
+      synchronously evaluated", the catch returns 0, and the `amt > 0` gate drops the talent. Proven
+      by swapping the amount to a flat `3`: the card posts and resolves correctly. Root cause is ONE
+      engine helper, shared with 2bQ-7 / 2bQ-8's Retributive Guard / Devoted Conduit.
 - [ ] **2bQ-7 — Interposing Shield** — have an ally within 10 ft take damage → The whispered card appears offering 1 Inv to reduce it by half a White [Die]. Click it — the reduction lands. The number must never exceed the damage actually dealt. Unchanged from before this pass.
+      **FAIL 2026-07-26i:** no card at all — same `edhaEvalSync` dice bug as 2bR-9. With a flat
+      amount the card posts, the click reduces the damage and moves the owner; the gates, range and
+      cap logic are all correct.
 - [ ] **2bQ-8 — Shared Burden / Retributive Guard** — be **adjacent** to an ally who takes damage, once from a hostile attacker → Shared Burden offers 2 Inv to take half in their place. Retributive Guard offers 1 Inv to strike back — but **only** when there is a hostile attacker inside your White Attunement Range. Damage from a fall or a hazard should offer Shared Burden and **not** Retributive Guard.
-- [ ] **2bQ-9 — Unbreakable Line — the trigger is narrow** — be adjacent to an ally who **drops to 0** → The card appears only on the drop, not on ordinary damage, shows a DC of half the killing blow, and is **once per round** (a second drop the same round offers nothing).
+      **PARTIAL 2026-07-26i:** Shared Burden PASSES completely (offer, cost, redirect, the
+      hazard-vs-attacker split, and a live cost edit changing the card). **Retributive Guard never
+      fires** — same `edhaEvalSync` dice bug; with a flat amount it offers and deals its spirit
+      damage to the attacker correctly.
 - [ ] **White spot-checks (like-for-like)** — run once each: Pillar of Order (2bR-1) · Concordant Presence (2bR-3) · Voice of Authority (2bR-5) · Collective Resolve (2bR-6) · Devoted Conduit (2bR-10) → identical to pre-migration behaviour (cards, costs, ranges); any drift is a bug. Collapsed from 2bR-1/3/5/6/10.
+      **2026-07-26i:** Pillar of Order, Concordant Presence, Voice of Authority and Collective
+      Resolve all PASS. **Devoted Conduit fails** — same `edhaEvalSync` dice bug. Row stays for it
+      alone; re-run it with the other three once the helper is fixed.
 - [ ] **2bR-17 — Adversaries** — Callthief's Counterpoint · Bellwether's / The Reckoning's Ordered Advance → Each now carries its OWN rules (they used to ride the talents' retired name hooks) — behaviour per their stat-block text. Adversary pack + ⟳ Sync required.
+      **PARTIAL 2026-07-26i (imported FRESH from the pack, so this is NOT a ⟳ Sync gap):**
+      Bellwether's Ordered Advance PASSES (arms, and each move posts the allies-within-10-ft card).
+      **The Callthief's Counterpoint never resolves** — it charges its Focus, then nothing. Root
+      cause is data-side and generic: `scripts/foundry-build.js` `advItemDoc` only promotes an
+      adversary item to `activation.type: "skill_test"` when it is an ATTACK, so a non-attack ability
+      carrying an `edha-def-test` rule gets `utility` with no `activation.skill`, never rolls, and
+      the contest queue times out. **Six abilities are affected** (Callthief Counterpoint ·
+      Reeve-Owl Sovereign of Solitude · Rootling Swarm Grasping Vines + Territorial Instinct ·
+      Surecat Redirect Momentum (2bF-17) · Tussock-Sow Drive the Prey).
 
 ---
 
@@ -161,26 +176,26 @@ defense, one without). No pack rebuild pending. Priority: 2bJ-1 (first prompt-pi
 — if it fails, every prompt row dies with it), 2bF-3 (first `vs: skill`),
 2bAA-10 (the walls), and 2bP-2 (the silent-free-buff trap).
 
-- [ ] **2bJ-1 — Subtle Suggestion (Blue) ⚠️⚠️** — target a character, use it, then click the button on the whispered card → A card asks whether you influenced them; clicking leaves the target **Disoriented until the end of your next turn**. This is the first prompt-pick click in the project — if the button does nothing, stop here and tell me.
-- [ ] **2bF-3 — Redirect Momentum (Blue) ⚠️⚠️** — target a mover + use + roll → **The first authored use of H1's `vs: skill` ever.** The engine must roll the TARGET's Athletics and print `Blue N vs ATH M`. If it silently compares against a defense instead, this is where it shows.
+**Bench run 2 (2026-07-26i): 13 Blue rows PASSED on the live table and are retired** — 2bJ-1
+(the first prompt-pick click in the project WORKS), 2bF-3 (the first `vs: skill`), 2bAA-10 (the
+walls), 2bP-1, 2bP-2 (the trap row), 2bP-3, 2bP-4, 2bJ-5, 2bF-2, 2bF-4, 2bF-5, 2bF-6, 2bI-12,
+2bAA-7, and the Blue spot-check row. Evidence per row in the 07-26i delta.
+
 - [ ] **2bF-17 — Surecat → Redirect Momentum** — run the adversary's copy → It carries its OWN rule now (it used to ride the PC talent's engine branch). Must behave the same.
-- [ ] **2bAA-10 — Phantom Barricade — H22, the session's build risk** — use it: click a square in range; walk a token into the barrier; attack it to 0; try placing one on top of a creature; end the encounter → ⚑ ALL NEW. Click-placed in Blue range (cancel/out-of-range refunds). **Nothing should be able to move through it** — that is real walls, and it is the first time this engine has ever done it. At 0 HP it is destroyed and the walls come down; an occupied square is refused and refunded; the encounter ending clears it. **Cover is still yours to adjudicate** — deliberately not automated. Report anything the walls do to vision or lighting.
+      **FAIL 2026-07-26i (imported FRESH from the pack — not a ⟳ Sync gap):** charges its Focus,
+      then nothing. Identical root cause to 2bR-17's Callthief Counterpoint — a non-attack adversary
+      item carrying `edha-def-test` is built as `activation.type: "utility"` with no
+      `activation.skill`, so no test is ever rolled and the contest times out. Six abilities share
+      this; fix `advItemDoc` in `scripts/foundry-build.js`, not the six documents.
 - [ ] **2bAA-6 — Living Image** — open it → **Events tab**; then start your turn with an illusion up → ⚑ TWO rules where the tab was empty: `edha-illusion-upkeep` (config) + `edha-note` (use). The turn-start prompt still whispers with a one-click pay. **Edit `costPer` to 2 and the button must then charge 2** — that is the whole point of the conversion.
-- [ ] **2bAA-7 — Holographic Illusion** — Events tab; then use it and click a square in range, and again out of range, and again cancelling → ⚑ ONE `edha-summon` rule. **NEW: it now asks you to click a square** and enforces Blue Attunement Range — the old version spawned it beside you with no range check at all. Out-of-range and cancel must REFUND the Investiture. The token is sized to [Size] off your Blue rank and does NOT join initiative.
-- [ ] **2bAA-8 — Phantom Double** — Events tab; use with no target, then on an ally in range, then on an ally out of range → ⚑ ONE `edha-illusion-copy` rule. Belief loop unchanged (each enemy that can see it rolls Perception vs your Cognitive defense; fooled clients stop rendering the original). **NEW: an out-of-range ally refunds the 2 Investiture.**
+      *(2026-07-26i: NOT RUN — the turn-start upkeep needs a live combat turn change, which the
+      cosmere activation model does not expose from the console. Ben's row for now.)*
 - [ ] **2bJ-3 — Pattern Recognition (Blue) ⚠️** — use it on a target, accept, then have them roll a test **this round**; separately, accept and let the **round change** before they roll → Disadvantage on the test this round. After the round changes it **no longer applies**. ⚑ **BEHAVIOUR CHANGE:** the card always said "their next test **this round**" and the old flag waited for ever. Tell me if you'd rather it kept waiting.
-- [ ] **2bJ-5 — False Premise (Blue) ⚠️** — target a character in your Blue Attunement Range, use it, roll Blue → The engine resolves **Blue vs their Cognitive defense** and, on a success, imposes disadvantage on their next test. ⚑ **NO MORE MANUAL CARD:** it used to fall back to a click-card when the defense was unreadable; that path is gone under your fail-open ruling (2bI-8 / 2bH-11), so it now just succeeds. Also check it refuses **out of range, nothing spent**.
-- [ ] **2bF-2 — Read Intent (Blue)** — target + use + roll → Public SUCCESS/FAIL card, plus a **whispered** "GM — reveal the action…" note on a success only. ⚠️ The test RESULT is public now; only the reveal is whispered. Say if you want the whole thing back to whisper.
-- [ ] **2bF-4 — Ghostly Walls (Blue)** — target + use + roll a success → Target Immobilized until the end of YOUR next turn.
-- [ ] **2bF-5 — ⚑ Absolute Stillness (Blue)** — own it, then use Ghostly Walls → The target ALSO gains Weakened. Without the talent, it must NOT. **Absolute Stillness's own Events tab is EMPTY and that is intended** — its rider is a `whenOwnsTalent` rule on Ghostly Walls. Tell me if you'd rather edit it on its own card.
-- [ ] **2bF-6 — Ghostly Walls vs an adversary with no written Cognitive defense** — use it → It now **auto-succeeds** (H1 fails open) where the old code offered a manual "Immobilize" button. The button is gone.
-- [ ] **2bI-12 — Reactive Analysis (Blue)** — **target** the creature that just failed, then use it; roll a test against **that** creature, then against a **different** one → Advantage on the test against the targeted creature and **not** on the other. ⚑ **NEW ENFORCEMENT** — the card always said "against them" and the old code granted advantage on any next test. With nothing targeted it falls back to the old, unbound behaviour.
-- [ ] **2bP-1 — Calculated Patience — the normal case** — in combat, declare a **Slow** turn, roll your first test → Advantage, as always. Your **second** test that turn: no advantage.
-- [ ] **2bP-2 — ⚠️⚠️ Calculated Patience — OUT of combat** — with **no combat running**, roll any test → **No advantage.** This is the row that matters most: the obvious way to write this gate would have granted advantage on the first test of every out-of-combat scene, silently. If you see advantage here, stop and report it.
-- [ ] **2bP-3 — Calculated Patience — the macro is gone** — console: `edha.calculatedPatience()` → **TypeError / not a function.** That is correct — the talent does it by itself now. Also confirm a **Fast** turn gives no advantage.
-- [ ] **2bP-4 — Blue Leyline Attunement** — Draw Mana, then roll an **Intellect or Willpower** test → Advantage, as before. A **Strength/Speed** test gets nothing.
-- [ ] **Blue spot-checks (like-for-like)** — run once each: Counterspell (2bF-1) · Probability Cascade (2bJ-4) · Anticipate (2bJ-6) · Intercept (2bJ-11) → identical to pre-migration behaviour; any drift is a bug. Collapsed from 2bF-1 + 2bJ-4/6/11.
+      *(2026-07-26i: NOT RUN — needs a real round change; see 2bAA-6.)*
+- [ ] **2bAA-8 — Phantom Double** — Events tab; use with no target, then on an ally in range, then on an ally out of range → ⚑ ONE `edha-illusion-copy` rule. Belief loop unchanged (each enemy that can see it rolls Perception vs your Cognitive defense; fooled clients stop rendering the original). **NEW: an out-of-range ally refunds the 2 Investiture.**
+      *(2026-07-26i: NOT RUN — the belief loop wants a second client; ⚑ Ben's.)*
 - [ ] **2bAA-9 — The Seeming — Mistheron AND The Doubled Elder** — use it on each; break the copy → ⚑ Each adversary ability now carries its OWN `use` rule (⟳ Sync Adversaries / re-drag first). Both must still raise the copy and run the belief sweep, and **the cards must name "The Seeming", not "Phantom Double"**. Spearing Beak's / the Grasp's fooled-target rider must still find the belief ledger.
+      *(2026-07-26i: NOT RUN — same second-client need as 2bAA-8.)*
 
 ---
 

@@ -5,41 +5,60 @@ rewrites this file for the run after it, so this file always holds THE next prom
 
 ---
 
-/bench-run — Foundry is running with the edha world open and the Bench user is passwordless.
-Run BENCH RUN 2 (two trees: **White, then Blue**): join as Bench, health-check, then re-run
-scripts/bench-setup-console.js once as the idempotency/repair check (zero ⚠ lines expected —
-the High Society Contacts collision was fixed in run 1; tokens are already placed, ORIGIN
-(2100, 9000), so the script will skip placement). **Read docs/EDHA_BENCH_RUNBOOK.md
-"Operating lessons from run 1" before driving anything** — especially: after Combat.create you
-must ui.combat.initialize({combat}) and verify game.combat.id, chat is `ol.chat-log`, token
-moves need {animate: false} + tokenDoc.reset(), item.use() blocks on the ItemConsumeDialog,
-and there are no screenshots when the pane is hidden (record quoted card text + console
-asserts instead). The Engine-wide premise rows are retired; 2bAC-1/2 stay ⚑ Ben. Tem parinaem
-and Soggy Bottom are untouchable.
+/bench-run — Foundry is running with the edha world open and the Bench user is passwordless. Run
+BENCH RUN 3 (two trees: **Black, then Green**): join as Bench, health-check, then re-run
+`scripts/bench-setup-console.js` once as the idempotency/repair check (zero ⚠ lines expected;
+tokens are already placed at ORIGIN (2100, 9000), so it will skip placement). Read
+`docs/EDHA_BENCH_RUNBOOK.md` — **both** the run-1 and the run-2 "Operating lessons" — before
+driving anything. The load-bearing ones: after `Combat.create` you must
+`ui.combat.initialize({combat})` and verify `game.combat.id`; chat is `ol.chat-log`; token moves
+need `{animate: false, teleport: true}` plus `tokenDoc.reset()`; `item.use()` blocks on the
+ItemConsumeDialog (click `[data-action=continue]`, then `[data-action=submit]` for the roll); there
+are no screenshots when the pane is hidden, so record quoted card text + console asserts; and **a
+silent handler is usually a dice formula, not a gate** (see below). Tem parinaem and Soggy Bottom
+are untouchable.
+
+**Two failure families are already root-caused — do NOT re-diagnose them, just note when a row is a
+victim:**
+
+1. **`edhaEvalSync` returns 0 for any DICE formula** under Foundry v13.351 (`evaluateSync()` throws
+   on die terms; the catch swallows it), so any rule whose amount formula contains dice and whose
+   caller gates on `amt > 0` is silently dead. Black and Green both have candidates — Predatory
+   Patience's `+[Die]` rider (2bB-10) and Green's heal/terrain amounts. If a row goes silent,
+   substitute a flat amount on the bench actor, confirm the card appears, restore it, and record it
+   as a member of this family rather than a new bug.
+2. **Non-attack adversary abilities carrying `edha-def-test` never roll** (`advItemDoc` only sets
+   `activation.skill` for attacks). Check `item.system.activation.skill` first on Black's adversary
+   rows (2bZ-10 Dread Presence copies, 2bJ-14 Dirgehound) and Green's. Import adversaries FRESH from
+   the pack as `Bench Adv — <name>` in the bench folder — that removes the DEPLOY-STATE ⟳ Sync
+   caveat entirely.
 
 Then run the two sections end-to-end:
-- **BENCH — White** on Bench — White: move it into the lower-left room; arrange Bench Ally
-  One/Two in range and a hostile pair adjacent for the Bulwark reaction rows. Priorities per
-  the preamble: 2bR-18 (premise) then 2bR-7. Shield Wall / Interposing Shield / Shared Burden
-  / Retributive Guard / Unbreakable Line need controlled damage to allies — the run-1 "Bench
-  Maul" pattern (copy a weapon, swap damage type, delete after) plus direct applyDamage both
-  work.
-- **BENCH — Blue** on Bench — Blue: enemy dummies in Blue Attunement Range — one with a
-  written Cognitive defense (Adjacent A/B/Floater) and the **Undefended** adversary fixture
-  for the fail-open rows (2bJ-5, 2bF-6; note the runbook's known-limit if the engine reads
-  schema defaults on it). Priorities: **2bJ-1 first (first prompt-pick click ever — if the
-  button does nothing, stop the Blue section and report)**, then 2bF-3 (first `vs: skill`),
-  2bAA-10 (Phantom Barricade — real walls; delete any barrier leftovers), 2bP-2 (the
-  out-of-combat silent-free-buff trap).
 
-Caveats: adversary-copy rows (2bR-17, 2bJ-13, 2bAA-9, 2bF-17) depend on the DEPLOY STATE
-switches Ben has not confirmed (⟳ Sync Adversaries / re-drag) — if one looks stale, record a
-deploy-state note, not a FAIL. Multi-client rows that would displace the Bench cookie stay ⚑
-Ben. Do NOT fix run 1's FAIL batch (Shockwave Slam etc.) mid-run — that is a separate
-test-pass-fixes session. Record per the skill: passing rows retire with one-line evidence,
-fails get dated inline notes, feel/canvas rows stay ⚑. Finish with the dated handoff delta
-(next letter after the current top one), dashboard rebuild, gates (`python`, never `python3`;
-no `;`-chaining), ONE pushed commit titled `Bench run 2 (White+Blue): X retired on evidence,
-Y fails -> test-pass-fixes`, rewrite docs/BENCH_NEXT_RUN.md with the run-3 prompt (Black,
-then Green), and **log out of Bench as the very last in-world act** (`game.logOut()`, then
-confirm the join screen lists Bench as selectable — a held slot blocks the next session).
+* **BENCH — Black on Bench — Black:** move it into the lower-left room; enemies in Black Attunement
+  Range with one **Isolated** (that fixture is parked far out at (9300, 9300)), one with its own
+  allies within 10 ft, and one driven to 0 focus. Priorities per the preamble: **2bI-1** (the first
+  `scope: scene` watch) and **2bI-5** (the chain flag) — if either fails, stop the Black section
+  before the rest; the others share that machinery. **2bI-9 is a design question, not a test** —
+  leave it ⚑. Also settle the standing question run 1 raised: Whispered Doubt and Coercive Pressure
+  fire **out of combat** although the rows say "in combat" (seen again all through run 2) — record
+  what you observe; the ruling is Ben's. 2bJ-7's push DIRECTION (away from your TARGET, not from
+  you) is the row worth being slow and careful on.
+* **BENCH — Green on Bench — Green:** allies in range for the heal rows, enemies for the terrain and
+  quarry rows. Run 1 left an open cross-tree report to close here: **Mender's Instinct offered its
+  heal-Reaction for a HOSTILE crossing half HP and double-posted** — it reproduced on every damage
+  event in run 2's White rows, so it is easy to catch; root-cause the ally gate and the dedup
+  together. Watch for the dice-formula family in Green's heal amounts.
+
+**Caveats:** multi-client rows that would displace the Bench cookie stay ⚑ Ben. Do NOT fix run 1's or
+run 2's FAIL batches mid-run — the `edhaEvalSync` fix, the `advItemDoc` fix and Shockwave Slam are
+all `test-pass-fixes` work, and the two new families are the biggest items in that queue. Record per
+the skill: passing rows retire with one-line evidence, fails get dated inline notes, feel/canvas rows
+stay ⚑. **Scope your end-of-run cleanup to an id-diff against your OWN start snapshot** — run 2 swept
+on the `summon` flag and deleted two pre-existing run-1 leftovers. One orphan `Combat Construct`
+token from run 1 is still on the Playtest Map; leave it for Ben.
+
+Finish with the dated handoff delta (next letter after the current top one), dashboard rebuild, gates
+(`python`, never `python3`; no `;`-chaining), ONE pushed commit titled
+`Bench run 3 (Black+Green): X retired on evidence, Y fails -> test-pass-fixes`, and rewrite
+`docs/BENCH_NEXT_RUN.md` with the run-4 prompt (the deity trees — Destruction, then Death).
