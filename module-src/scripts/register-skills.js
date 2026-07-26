@@ -5631,30 +5631,43 @@ Hooks.on("updateActor", (actor, changes) => {
   } catch (e) { /* non-fatal */ }
 });
 
-// Living Image upkeep (07-16c, Ben E17 — was "track manually"): at the owner's turn start, while
-// they have living summoned illusions, whisper the upkeep prompt with a one-click payment (1 Inv
-// per COMPLEX illusion — which images count as complex stays the table's call; simple ones free).
+/* --- `edha-illusion-upkeep` (2bAA — was the name-keyed Living Image block) ----------------------
+ * At the owner's turn start, while they have living summoned illusions, whisper the upkeep prompt
+ * with a one-click payment. CONFIG-ONLY, and legitimately so: this sweep is the reader (the
+ * pass-Y/Z veto shape). Living Image's own use is a `spe` activation whose whole payload was a
+ * reminder — that is an authored `edha-note` now, so the upkeep was never the use's payload.
+ * Every dial is a field: which resource, how much per illusion, and the table-call clause. The
+ * sweep consults the RULE (edhaActorRuleOf), so it names no talent and a rename cannot unwire it. */
 Hooks.on("combatTurnChange", (combat) => {
   try {
     if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;   // one client posts
-    const a = combat?.combatant?.actor; if (!a || !edhaOwnsTalent(a, "Living Image")) return;
+    const a = combat?.combatant?.actor; if (!a) return;
+    const rule = edhaActorRuleOf(a, "edha-illusion-upkeep"); if (!rule) return;
+    const h = rule.handler;
     const ills = game.actors?.filter(x => x.getFlag?.("edha-content", "summon") && x.getFlag?.("edha-content", "summoner") === a.id
       && (Number(x.system?.resources?.hea?.value) || 0) > 0) ?? [];
     if (!ills.length) return;
+    const cost = Math.max(1, Math.floor(Number(h.costPer)) || 1), res = String(h.resource || "inv").trim() || "inv";
+    const rlab = EDHA_RES_LABEL[res] || res;
     const ids = (game.users?.filter(u => u.active && (u.isGM || a.testUserPermission?.(u, "OWNER"))) ?? []).map(u => u.id);
     ChatMessage.create({ whisper: ids, speaker: ChatMessage.getSpeaker({ actor: a }),
-      content: `<div class="edha-trigger-card"><p>🎭 <strong>Living Image</strong> (${a.name}) — turn start with ${ills.length} illusion(s) up (${ills.map(i => i.name).join(", ")}): <strong>1 Investiture per COMPLEX illusion</strong> to maintain (simple images are free — the table calls which is which). Unpaid complex illusions fade (delete the token).</p><button type="button" class="edha-upkeep-inv-btn" data-actor="${a.uuid}">Pay 1 Investiture</button></div>` });
+      content: `<div class="edha-trigger-card"><p>🎭 <strong>${rule.item.name}</strong> (${a.name}) — turn start with ${ills.length} illusion(s) up (${ills.map(i => i.name).join(", ")}): <strong>${cost} ${rlab} per ${h.qualifier || "COMPLEX"} illusion</strong> to maintain.${h.note ? ` ${h.note}` : ""}</p><button type="button" class="edha-upkeep-inv-btn" data-actor="${a.uuid}" data-item="${rule.item.uuid}">Pay ${cost} ${rlab}</button></div>` });
   } catch (e) { /* non-fatal */ }
 });
 async function edhaUpkeepInvClick(ev) {
   try {
     ev.preventDefault();
     const ref = await fromUuid(ev.currentTarget.dataset.actor).catch(() => null); const a = ref?.actor ?? ref; if (!a) return;
-    const inv = a.system?.resources?.inv, cur = Number(inv?.value) || 0;
-    if (cur < 1) { ui.notifications?.warn(`Edha: ${a.name} has no Investiture left to pay upkeep.`); return; }
-    await a.update({ "system.resources.inv.value": cur - 1 });
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: a }), content: `<p>🎭 <strong>Living Image</strong>: ${a.name} pays 1 Investiture of upkeep (${cur - 1} left).</p>` });
-  } catch (e) { console.error("Edha Content | living-image upkeep failed", e); }
+    // The button carries its DOCUMENT: cost and resource come off the rule that posted it.
+    const tal = ev.currentTarget.dataset.item ? await fromUuid(ev.currentTarget.dataset.item).catch(() => null) : null;
+    const h = (tal ? edhaRuleOf(tal, "edha-illusion-upkeep") : null) ?? edhaActorRuleOf(a, "edha-illusion-upkeep")?.handler ?? {};
+    const cost = Math.max(1, Math.floor(Number(h.costPer)) || 1), res = String(h.resource || "inv").trim() || "inv";
+    const rlab = EDHA_RES_LABEL[res] || res;
+    const cur = Number(a.system?.resources?.[res]?.value) || 0;
+    if (cur < cost) { ui.notifications?.warn(`Edha: ${a.name} has no ${rlab} left to pay upkeep.`); return; }
+    await a.update({ [`system.resources.${res}.value`]: cur - cost });
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: a }), content: `<p>🎭 <strong>${tal?.name || "Upkeep"}</strong>: ${a.name} pays ${cost} ${rlab} of upkeep (${cur - cost} left).</p>` });
+  } catch (e) { console.error("Edha Content | illusion upkeep failed", e); }
 }
 Hooks.on("renderChatMessageHTML", (msg, html) => {
   const root = html instanceof HTMLElement ? html : html?.[0];
@@ -5698,11 +5711,6 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
             name: "Holographic Illusion", img: "icons/magic/perception/silhouette-stealth-shadow.webp",
             hpFormula: "1", speed: 0, defensePenalty: 99, tokenSizeFt: edhaSizeFt(actor),
           });
-        }
-        break;
-      case "Living Image":
-        if (edhaOwnsTalent(actor, "Living Image")) {
-          ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎭 <strong>Living Image</strong> (${actor.name}): your illusions may now move up to your movement rate and interact with the environment. Complex illusions cost 1 Investiture per round to maintain — the engine prompts you at each of your turn starts while you have illusions up.</p>` });
         }
         break;
     }
@@ -16727,6 +16735,19 @@ function edhaRegisterNativeEventSystem() {
         bakedEffects: pj(this.bakedEffectsJson), extraItems: pj(this.extraItemsJson),
       });
     },
+  });
+
+  /* Config-only by design: the turn-start sweep in the Illusion section is the reader (the
+   * pass-Y/Z veto shape). Nothing here executes, because Living Image's `use` payload is a note. */
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-illusion-upkeep",
+    label: "Edha: Illusion Upkeep Prompt", description: "While you have living summoned illusions, your turn start whispers an upkeep prompt with a one-click payment. Config-only: the turn-start sweep reads this rule, so it needs no event of its own — put it on any event.",
+    config: { schema: {
+      resource: new FF.StringField({ required: false, initial: "inv", choices: choices("inv", "foc"), label: "Resource paid" }),
+      costPer: new FF.NumberField({ required: false, initial: 1, label: "Cost per illusion", hint: "Charged once per click — the button pays for ONE illusion, because which of your images count stays a table call." }),
+      qualifier: new FF.StringField({ required: false, blank: true, initial: "COMPLEX", label: "Which illusions cost upkeep", hint: "Printed in the prompt. Living Image charges for COMPLEX images only; simple ones are free and the table calls which is which." }),
+      note: new FF.StringField({ required: false, blank: true, initial: "", label: "Note appended to the prompt" }),
+    } },
   });
 
   /* ---- v3 HANDLER TYPES (state marks, sweeps, apply-engine watchers) ---- */

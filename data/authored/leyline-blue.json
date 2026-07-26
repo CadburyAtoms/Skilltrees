@@ -687,7 +687,33 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "LivingUpkeep0000": {
+          "event": "edha-watch-rule",
+          "description": "Blue (Illusion). 2bAA — the upkeep prompt as data (was a name-keyed combatTurnChange gate, edhaOwnsTalent(actor, \"Living Image\")). Config-only and legitimately so: the turn-start sweep is the reader (the pass-Y/Z veto shape), and this talent's own use payload is the note rule below. Editing resource / costPer / qualifier / note here changes what the prompt charges and says.",
+          "handler": {
+            "type": "edha-illusion-upkeep",
+            "resource": "inv",
+            "costPer": 1,
+            "qualifier": "COMPLEX",
+            "note": "Simple images are free — the table calls which is which. Unpaid complex illusions fade (delete the token)."
+          },
+          "order": 0,
+          "id": "LivingUpkeep0000"
+        },
+        "LivingImgNote000": {
+          "event": "use",
+          "description": "Blue (Illusion). 2bAA — the on-use reminder, verbatim from the retired switch case. The mechanic is the table's (illusions moving and interacting is narrative); the upkeep half is enforced by the rule above.",
+          "handler": {
+            "type": "edha-note",
+            "text": "your illusions may now move up to your movement rate and interact with the environment. Complex illusions cost 1 Investiture per round to maintain — the engine prompts you at each of your turn starts while you have illusions up.",
+            "icon": "🎭",
+            "whisper": "public"
+          },
+          "order": 1,
+          "id": "LivingImgNote000"
+        }
+      },
       "effects": []
     },
     "Pattern Recognition": {
