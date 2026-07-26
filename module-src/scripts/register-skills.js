@@ -5362,20 +5362,40 @@ Hooks.on("preUpdateActor", (actor, changes) => {
  * ──────────────────────────────────────────────────────────────────────────────────────────── */
 
 /* ============================================================================================
- * BLUE / ILLUSION tree engine (2026-06-14e) — a mostly NARRATIVE tree (illusions, positioning, cover).
- * NAME-BASED, driven off `cosmere-rpg.useItem` on the owner's client; engine-only (NO pack rebuild). The
- * three "summon" talents spawn REAL friendly tokens via the shared `edhaSummon` engine (specs built in
- * code, since two of them are dynamic). Rulings (Ben, 06-14e): Barricade = HP 2[Die], no defenses, no
- * attack, sustain-multiple; Phantom Double = HP 1 copy of the chosen creature, dies on any hit, max 1,
- * belief ENGINE-ROLLED since 07-14 (Perception vs the CASTER's Cognitive defense, direction-aware
- * visibility, no advantage rider — see the belief-loop block below; The Seeming shares the path);
- * Holographic Illusion = a no-stats
- * token sized to [Size]; Living Image marks illusions mobile (upkeep PROMPTED at turn start with a
- * one-click pay since 07-16c — was manual); Redirect Momentum = Blue vs the mover's Athletics;
- * Ghostly Walls immobilizes owner-relative (+ Absolute Stillness Weakened rider).
+ * BLUE / ILLUSION tree engine (2026-06-14e; iron rule 2b pass 2bAA 2026-07-26) — a mostly
+ * NARRATIVE tree (illusions, positioning, cover). Rulings (Ben, 06-14e): Barricade = HP 2[Die],
+ * no defenses, no attack, sustain-multiple; Phantom Double = HP 1 copy of the chosen creature,
+ * dies on any hit, max 1, belief ENGINE-ROLLED since 07-14 (Perception vs the CASTER's Cognitive
+ * defense, direction-aware visibility, no advantage rider — see the belief-loop block below);
+ * Holographic Illusion = a no-stats token sized to [Size]; Living Image marks illusions mobile
+ * (upkeep PROMPTED at turn start with a one-click pay since 07-16c — was manual); Redirect
+ * Momentum = Blue vs the mover's Athletics; Ghostly Walls immobilizes owner-relative (+ Absolute
+ * Stillness Weakened rider).
  *
- * ── IRON RULE 2b STATUS (07-24p) ──────────────────────────────────────────────────────────────
- * On their own documents now, engine branches deleted — do not re-add a name-keyed case:
+ * ── IRON RULE 2b STATUS (2bAA — TREE CLEAR, and the LAST four on the whole ratchet) ───────────
+ * THE `cosmere-rpg.useItem` SWITCH IS DELETED. Do NOT re-add a name-keyed case here; this tree
+ * is where the migration finished (221 → 0). 2bAA authored rules onto four talents, so the tree
+ * needs a PACK REBUILD + ⟳ Sync. On their own documents:
+ *   • Holographic Illusion — one `edha-summon` rule. The 1b that unblocked it: `tokenSizeColor`
+ *     ([Size] off your Blue rank, which the engine computed as edhaSizeFt) and `placeAt:
+ *     pick-point` + `rangeColor` (no summon could be placed at a CHOSEN square before, which is
+ *     why every "at a point within Attunement Range" card spawned beside the caster). The range
+ *     gate is new — card-is-spec, §9m q11.
+ *   • Living Image — a config-only `edha-illusion-upkeep` rule (the turn-start sweep is its
+ *     reader, the pass-Y/Z veto shape) + an `edha-note` for the on-use reminder.
+ *   • Phantom Double — `edha-illusion-copy`, see ENGINE_OWNED below.
+ *   • Phantom Barricade — H22 `edha-barrier`, see ENGINE_OWNED below.
+ * ENGINE_OWNED (declared, rule-keyed — the edha-decree exit shape; each talent's rule is its cue):
+ *   • edha-illusion-copy — the per-viewer client veil is a patch of the Token#isVisible getter
+ *     driven by a cross-actor belief ledger, and no rule chain expresses a canvas visibility
+ *     patch. Re-litigated per iron rule 3 in 2bAA and the exit CONFIRMED. Every dial is a field:
+ *     who is copied, the label the copy stamps, HP/speed/defenses, which of YOUR defenses sets
+ *     the DC, which skill the onlookers roll, the range gate. The Mistheron's and The Doubled
+ *     Elder's "The Seeming" are the other two consumers, each on its OWN adversary document —
+ *     both rode this same branch, so deleting the switch would have unwired both.
+ *   • edha-barrier (H22) — the picker, the Wall documents and their GM relay + lifecycle are
+ *     canvas work no rule chain expresses (§9o). COVER STAYS A TABLE READ (the standing project
+ *     ruling), so `blocksSight` ships "none" and the rule's note tells the table.
  *   `edha-def-test`  Counterspell · Read Intent (+ an `edha-note` reveal) ·
  *                    Redirect Momentum (`vs: skill` → Athletics) ·
  *                    Ghostly Walls (+ Immobilize, + the Absolute Stillness Weakened)
@@ -5692,21 +5712,127 @@ Hooks.on("renderChatMessageHTML", (msg, html) => {
 // The manual "Immobilize" fallback button went with them: H1 fails OPEN on an unreadable defense, so
 // the case the button existed for (no readable Cognitive defense) now auto-succeeds instead.
 
-Hooks.on("cosmere-rpg.useItem", (item) => {
+/* --- H22 `edha-barrier` (2bAA) — the engine's FIRST blocks-movement capability ------------------
+ * Phantom Barricade's card promises three things and the engine delivered none of them: a barrier
+ * placed AT A POINT in Attunement Range, that BLOCKS MOVEMENT, and that PROVIDES COVER. What
+ * shipped was a one-square token, spawned beside the caster, that anyone could walk straight
+ * through. The card is the SPEC (§9m q11), so this builds what it says.
+ *
+ * THE EXPRESSION, declared. The HP-bearing summon token STAYS — "health equal to 2[Die] … until
+ * destroyed" needs a thing with health — and a box of four Foundry WALL segments is raised around
+ * its square. Walls are the only thing in Foundry that actually stops a token moving, and they are
+ * GM-create-only, so a player relays (`barrier-walls`, the foundation-place shape). Walls carry a
+ * `barrierId` that the summon carries too, which is what pairs them: the token cannot hold the
+ * wall ids, because a relayed summon materializes on the GM's client and the caster never sees it.
+ *
+ * COVER STAYS A TABLE READ. That is the standing project ruling and it still stands (it is the
+ * same one the dark-veil sweep honours), so `blocksSight` ships "none" — a shimmering illusion is
+ * seen through — and the rule's note tells the table the barricade grants cover. The field is
+ * there if a barrier should block line of sight; nothing else has to change.
+ *
+ * An OCCUPIED square is refused and REFUNDED. A closed wall box around a creature would trap it,
+ * and no reading of the card asks for that.
+ *
+ * ENGINE_OWNED (declared, rule-keyed — the edha-decree exit shape): the picker, the wall documents
+ * and their GM relay + lifecycle are canvas work no rule chain expresses (§9o). Every dial is a
+ * field on Phantom Barricade's own rule. */
+// PURE (pinned in tests/): the four wall segments of a box of side `sizePx` centred on (x, y),
+// as Foundry `c` arrays [x0, y0, x1, y1], walked clockwise from the top-left corner.
+function edhaBarrierSegments(x, y, sizePx) {
+  const h = Math.max(1, Math.round(Number(sizePx) || 0)) / 2;
+  const l = Math.round(x - h), r = Math.round(x + h), t = Math.round(y - h), b = Math.round(y + h);
+  return [[l, t, r, t], [r, t, r, b], [r, b, l, b], [l, b, l, t]];
+}
+async function edhaBarrierWallsGM(p) {
   try {
-    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
-    const target0 = () => [...(game.user?.targets ?? [])][0]?.actor ?? null;
-    switch (item.name) {
-      case "Phantom Barricade":
-        if (edhaOwnsTalent(actor, "Phantom Barricade")) {
-          void edhaSummon(actor, {
-            name: "Phantom Barricade", img: "icons/magic/defensive/barrier-shield-dome-blue.webp",
-            hpFormula: "2d(2 * @skills.blue.rank + 2)", speed: 0, defensePenalty: 99,
-          });
-        }
-        break;
+    const scene = game.scenes?.get(p?.sceneId) ?? canvas?.scene; if (!scene || !p?.barrierId) return;
+    const sense = Number(p.sense) || CONST.WALL_SENSE_TYPES.NONE;
+    await scene.createEmbeddedDocuments("Wall", edhaBarrierSegments(p.x, p.y, p.sizePx).map(c => ({
+      c, move: Number(p.move) || CONST.WALL_MOVEMENT_TYPES.NONE, sight: sense, light: sense,
+      sound: CONST.WALL_SENSE_TYPES.NONE,
+      flags: { "edha-content": { barrierId: p.barrierId } },
+    })));
+  } catch (e) { console.error("Edha Content | barrier walls failed", e); }
+}
+async function edhaBarrierClearGM(barrierId) {
+  try {
+    if (!barrierId) return;
+    for (const scene of (game.scenes ?? [])) {
+      const dead = (scene.walls ?? []).filter(w => w.getFlag?.("edha-content", "barrierId") === barrierId);
+      if (dead.length) await scene.deleteEmbeddedDocuments("Wall", dead.map(w => w.id));
     }
-  } catch (e) { console.error("Edha Content | Illusion use-hook failed", e); }
+  } catch (e) { console.error("Edha Content | barrier clear failed", e); }
+}
+function edhaBarrierRelay(action, payload) {
+  if (game.user?.isGM) return action === "barrier-walls" ? edhaBarrierWallsGM(payload) : edhaBarrierClearGM(payload?.barrierId);
+  if (!game.users?.activeGM) { ui.notifications?.warn("Edha: a GM must be online to raise or clear a barrier."); return null; }
+  try { game.socket.emit("module.edha-content", { action, payload }); } catch (e) {}
+  return null;
+}
+Hooks.once("ready", () => {
+  try {
+    game.socket.on("module.edha-content", async (data) => {
+      if (!game.user?.isGM) return;
+      if (game.users?.activeGM && !game.users.activeGM.isSelf) return;   // exactly one GM applies
+      if (data?.action === "barrier-walls") await edhaBarrierWallsGM(data.payload);
+      else if (data?.action === "barrier-clear") await edhaBarrierClearGM(data.payload?.barrierId);
+    });
+  } catch (e) {}
+});
+async function edhaPlaceBarrier(item, h) {
+  try {
+    const owner = item?.actor; if (!owner) return;
+    const scene = canvas?.scene;
+    const pt = await edhaPickPlacement(item, { color: h.rangeColor || "", rangeFt: h.rangeFt });
+    if (!pt) return;                                            // cancelled / out of range — refunded
+    const gs = scene?.grid?.size || 100, gd = scene?.grid?.distance || 5;
+    if ((canvas?.tokens?.placeables ?? []).some(t => t.actor && Math.hypot((t.center?.x ?? 0) - pt.x, (t.center?.y ?? 0) - pt.y) < gs / 2)) {
+      edhaRefundCost(item);
+      ui.notifications?.warn(`Edha: something is standing there — ${item.name} would wall it in. Cost refunded.`);
+      return;
+    }
+    const sizeFt = Number(h.sizeFt) > 0 ? Number(h.sizeFt) : gd;
+    const barrierId = foundry.utils.randomID();
+    await edhaSummon(owner, {
+      name: h.barrierName || item.name, img: h.img, talentName: item.name, at: pt,
+      hpFormula: h.hpFormula || "(@tier)d6", speed: 0,
+      defensePenalty: Number.isFinite(Number(h.defensePenalty)) ? Number(h.defensePenalty) : 99,
+      tokenSizeFt: sizeFt, actsAfterCaster: false,
+      extraFlags: { barrierId },
+    });
+    const SENSE = { none: CONST.WALL_SENSE_TYPES.NONE, limited: CONST.WALL_SENSE_TYPES.LIMITED, normal: CONST.WALL_SENSE_TYPES.NORMAL };
+    await edhaBarrierRelay("barrier-walls", {
+      sceneId: scene?.id, barrierId, x: pt.x, y: pt.y, sizePx: (sizeFt / gd) * gs,
+      move: h.blocksMovement === false ? CONST.WALL_MOVEMENT_TYPES.NONE : CONST.WALL_MOVEMENT_TYPES.NORMAL,
+      sense: SENSE[String(h.blocksSight || "none")] ?? CONST.WALL_SENSE_TYPES.NONE,
+    });
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+      content: `<p>🛡️ <strong>${item.name}</strong> (${owner.name}): a ${sizeFt} ft barrier goes up${h.blocksMovement === false ? "" : " — nothing moves through it"}${String(h.blocksSight || "none") !== "none" ? " and it blocks line of sight" : ""}. ${h.note || "It stands until the scene ends or it is destroyed."}</p>` });
+  } catch (e) { console.error("Edha Content | place barrier failed", e); }
+}
+// The barrier's walls die with it: destroyed (the HP-zero branch in the defeated sweep), deleted by
+// hand, or cleared at the end of the encounter — "for the scene", the deleteCombat convention every
+// other placement tree uses.
+Hooks.on("deleteActor", (actor) => {
+  try { const id = actor?.getFlag?.("edha-content", "barrierId"); if (id && game.user?.isGM) void edhaBarrierClearGM(id); } catch (e) {}
+});
+Hooks.on("deleteToken", (doc) => {
+  try { const id = doc?.actor?.getFlag?.("edha-content", "barrierId"); if (id && game.user?.isGM) void edhaBarrierClearGM(id); } catch (e) {}
+});
+Hooks.on("deleteCombat", () => {
+  try {
+    if (!game.user?.isGM) return;
+    void (async () => {
+      for (const a of (game.actors?.filter(x => x.getFlag?.("edha-content", "barrierId")) ?? [])) {
+        await edhaBarrierClearGM(a.getFlag("edha-content", "barrierId"));
+        try { await a.delete(); } catch (e) {}
+      }
+      for (const scene of (game.scenes ?? [])) {   // strays whose actor is already gone
+        const dead = (scene.walls ?? []).filter(w => w.getFlag?.("edha-content", "barrierId"));
+        if (dead.length) await scene.deleteEmbeddedDocuments("Wall", dead.map(w => w.id));
+      }
+    })();
+  } catch (e) { console.error("Edha Content | clear barriers failed", e); }
 });
 
 /* ============================================================================================
@@ -8716,6 +8842,15 @@ Hooks.on("updateActor", async (actor, changes) => {
     if (hp <= 0 && actor.getFlag?.("edha-content", "phantomDouble")) {
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🌫️ <strong>${actor.getFlag?.("edha-content", "phantomSource") || "Illusion"}</strong>: the illusion of ${actor.name} is struck and dissipates.</p>` });
       try { await actor.delete(); } catch (e) {}                     // deleting the one-off actor removes its token
+      return;
+    }
+    // A barrier (edha-barrier) at 0 HP is DESTROYED — the card's own wording — so it and its walls
+    // go, rather than standing there wearing a skull and still blocking the corridor.
+    const barrierId = actor.getFlag?.("edha-content", "barrierId");
+    if (hp <= 0 && barrierId) {
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🛡️ <strong>${actor.name}</strong> is destroyed — the barrier comes down.</p>` });
+      await edhaBarrierClearGM(barrierId);
+      try { await actor.delete(); } catch (e) {}
       return;
     }
     const dead = CONFIG.specialStatusEffects?.DEFEATED || "dead";
@@ -16773,6 +16908,30 @@ function edhaRegisterNativeEventSystem() {
         actsAfterCaster: !!this.actsAfterCaster,
         bakedEffects: pj(this.bakedEffectsJson), extraItems: pj(this.extraItemsJson),
       });
+    },
+  });
+
+  /* H22 (2bAA) — the engine's first blocks-movement capability. ENGINE-OWNED, keyed on the RULE:
+   * the picker, the Wall documents and their GM relay are canvas work no rule chain expresses
+   * (§9o), so the flow stays engine code and every dial is a field. See the Illusion section. */
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-barrier",
+    label: "Edha: Barrier (blocks movement)", description: "Click-place an obstruction with health: a token that can be attacked and destroyed, inside a box of Foundry walls that nothing moves through. It comes down when it is destroyed, when its token is deleted, or at the end of the encounter. Put it on 'use'.",
+    config: { schema: {
+      barrierName: new FF.StringField({ required: false, blank: true, initial: "", label: "Barrier name", hint: "Blank = this talent's name." }),
+      img: new FF.StringField({ required: false, initial: "", label: "Token image" }),
+      hpFormula: new FF.StringField({ required: true, initial: "2d(2 * @skills.blue.rank + 2)", label: "Health formula", hint: "Rolled against YOU when it goes up. Phantom Barricade is 2[Die] on the Blue track." }),
+      sizeFt: new FF.NumberField({ required: false, initial: 0, label: "Size (ft)", hint: "0 = one grid square. The walled box and the token are both this size." }),
+      defensePenalty: new FF.NumberField({ required: false, initial: 99, label: "Defenses = yours − N", hint: "99 = no meaningful defenses; anything that swings at it hits." }),
+      blocksMovement: new FF.BooleanField({ required: false, initial: true, label: "Blocks movement", hint: "ON raises real walls, which is the only thing in Foundry that stops a token moving. OFF makes it a purely visual obstruction." }),
+      blocksSight: new FF.StringField({ required: false, initial: "none", choices: choices("none", "limited", "normal"), label: "Blocks line of sight", hint: "none = seen through, which is what a shimmering illusion is — and COVER stays a table read, as it does everywhere else in this system. limited/normal make it a real sight blocker." }),
+      rangeColor: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "white", "blue", "black", "red", "green"), label: "Placement range = this colour's Attunement Range", hint: "Blank and no fixed range = place anywhere on the scene." }),
+      rangeFt: new FF.NumberField({ required: false, initial: 0, label: "…or a fixed placement range (ft)", hint: "0 = use the colour above." }),
+      note: new FF.StringField({ required: false, blank: true, initial: "", label: "Card line", hint: "Say what the table resolves by hand — e.g. that it grants cover." }),
+    } },
+    executor: async function (event) {
+      const item = event.item; if (!item?.actor) return;
+      await edhaPlaceBarrier(item, this);
     },
   });
 

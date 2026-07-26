@@ -835,7 +835,26 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "BarricadeH220000": {
+          "event": "use",
+          "description": "Blue (Illusion). 2bAA — H22 `edha-barrier`, the engine's FIRST blocks-movement capability, built because the card demanded three things the engine delivered none of: placement AT A POINT in Attunement Range, blocking movement, and cover. What shipped was a one-square token spawned beside you that anyone could walk through. Now: click-place within Blue Attunement Range (cancel, out of range, or an occupied square REFUNDS the Investiture — a closed wall box around a creature would trap it), an HP token rolled at 2[Die] on the Blue track, and a box of four real Foundry walls around its square. blocksSight stays `none` because a shimmering illusion is seen through and COVER IS A TABLE READ project-wide — flip the field if a barrier should block line of sight. It comes down when destroyed, when its token is deleted, or at the end of the encounter. Sustain-multiple (Ben 06-14e): no cap. The picker, the wall documents and their GM relay stay ENGINE-OWNED, keyed on this rule (§9o).",
+          "handler": {
+            "type": "edha-barrier",
+            "barrierName": "Phantom Barricade",
+            "img": "icons/magic/defensive/barrier-shield-dome-blue.webp",
+            "hpFormula": "2d(2 * @skills.blue.rank + 2)",
+            "sizeFt": 0,
+            "defensePenalty": 99,
+            "blocksMovement": true,
+            "blocksSight": "none",
+            "rangeColor": "blue",
+            "note": "It also provides cover to anything behind it — how much is the table's call, as every cover read in this system is."
+          },
+          "order": 0,
+          "id": "BarricadeH220000"
+        }
+      },
       "effects": []
     },
     "Phantom Double": {

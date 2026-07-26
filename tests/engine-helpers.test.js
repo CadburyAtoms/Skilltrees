@@ -1312,3 +1312,30 @@ test("edhaNormalizeDie: bare die prefixes 1; NdM passes; object/garbage falls ba
   assert.strictEqual(env.edhaNormalizeDie("d8", "1d6"), "1d8", "explicit fallback only used when needed");
   assert.strictEqual(env.edhaNormalizeDie("potato", "1d6"), "1d6");
 });
+
+// --- edhaBarrierSegments — H22, the first blocks-movement capability (2bAA) ---
+// The property that matters is that the box CLOSES: a gap of even one pixel between two
+// segments is a gap a token walks through, and nothing else in the engine would notice.
+test("edhaBarrierSegments: a box centred on the point, walked clockwise", () => {
+  eq(env.edhaBarrierSegments(250, 250, 100), [
+    [200, 200, 300, 200], [300, 200, 300, 300], [300, 300, 200, 300], [200, 300, 200, 200],
+  ]);
+});
+test("edhaBarrierSegments: the box is CLOSED — each segment ends where the next begins", () => {
+  for (const [x, y, size] of [[250, 250, 100], [137, 42, 75], [0, 0, 1], [512, 384, 201]]) {
+    const segs = env.edhaBarrierSegments(x, y, size);
+    assert.strictEqual(segs.length, 4, "a box is four segments");
+    for (let i = 0; i < 4; i++) {
+      const [, , ex, ey] = segs[i];
+      const [sx, sy] = segs[(i + 1) % 4];
+      assert.strictEqual(ex, sx, `segment ${i} x-gap at ${x},${y} size ${size}`);
+      assert.strictEqual(ey, sy, `segment ${i} y-gap at ${x},${y} size ${size}`);
+    }
+  }
+});
+test("edhaBarrierSegments: a garbage size still closes, at the minimum 1px box", () => {
+  const segs = env.edhaBarrierSegments(10, 10, 0);
+  assert.strictEqual(segs.length, 4);
+  assert.strictEqual(segs[3][2], segs[0][0], "still closed with size 0 clamped to 1");
+  assert.strictEqual(segs[3][3], segs[0][1]);
+});
