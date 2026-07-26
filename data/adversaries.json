@@ -2102,7 +2102,7 @@
       {
         "name": "Fire the Wrack",
         "cost": "1 Action",
-        "text": "<p><em>Pyre, adapted (ruling 98) — the engine runs Fire the Wrack on Pyre's hazard path: edha-place-hazard region + the Pyre spread watcher by alias.</em></p><p>It sparks a prepared wrack-pile or dry cover within reach: a 10-ft square becomes burning ground (dangerous terrain) for the scene — 1d6 energy on entering or starting a turn inside, auto-dealt by the region. At the end of each of its turns the fire spreads to one adjacent flammable square (GM-judged, via the spread card).</p>",
+        "text": "<p><em>Pyre, adapted (ruling 98) — the engine runs Fire the Wrack on Pyre's hazard path: edha-place-hazard region + the spread watcher via the rule's `spreads` stamp (2bY; the alias list is gone).</em></p><p>It sparks a prepared wrack-pile or dry cover within reach: a 10-ft square becomes burning ground (dangerous terrain) for the scene — 1d6 energy on entering or starting a turn inside, auto-dealt by the region. At the end of each of its turns the fire spreads to one adjacent flammable square (GM-judged, via the spread card).</p>",
         "events": [
           {
             "event": "edha-pre-use",
@@ -2112,9 +2112,10 @@
               "sizeFt": 10,
               "damageFormula": "1d6",
               "damageType": "energy",
-              "color": "red"
+              "color": "red",
+              "spreads": true
             },
-            "description": "Pyre's engine path: place a 10-ft burning Region (auto-damages on enter / turn start); the Pyre spread watcher runs it via EDHA_PYRE_SOURCES."
+            "description": "Pyre's engine path: place a 10-ft burning Region (auto-damages on enter / turn start) stamped `spreads` — the end-of-turn spread watcher keys on the stamp (2bY)."
           }
         ]
       },
