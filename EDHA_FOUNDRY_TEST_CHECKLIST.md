@@ -179,6 +179,33 @@ retired for good; live testing happens on the dashboard.
 
 ---
 
+## ⚑ RULE-2b PASS Z — Black + heroic, the mop-up before Blue (2026-07-26) — NEEDS A PACK REBUILD (leyline + heroic + adversary)
+
+Ten talents, grouped by BUILD (ratchet 14 → 4 — only Blue's four remain; pass AA is the FINAL
+session). New: the `edha-ritual-paid` EVENT + `edha-reserve-bank`, the H17 target-formula
+resolver (`@target.recoveryDie`), `edha-focus` `resource: hea` + posted dice, the `whenOnMyList`
+watch gate, the config-only veto trio (`edha-focus-guard`, `edha-hp-floor`, `edha-move-veto` —
+iron rule 3: all three stay ENFORCED, rule-keyed), `edha-pulse` `who: enemies`/`requireIsolated`,
+and the FIRST authored NATIVE rule (Resilient Hero's long-rest clear — 2bA-9 finally runs).
+Engine handlers are F5-only; the authored rules are pack-baked.
+
+| # | Talent / area | Do | Expect |
+|---|---|---|---|
+| 2bZ-1 | **Blood Price** | pay any ritual HP cost (Dark Investiture); roll a NON-Black test, then a Black test | Payment card is lean ("pays N HP"); a separate advantage card arms via nextTestMod. Non-Black test unaffected; the Black test rolls advantage + consume card. ⚠ single-slot (2bI-4): another next-test rider now OVERWRITES a banked Blood Price. |
+| 2bZ-2 | **Sanguine Reservoir bank** | pay ritual HP; check the sheet | Separate "banked N Reserve (x/cap)" card; the sheet Reserve bar shows (rule-keyed — a re-synced talent is required, ⟳ Sync first). |
+| 2bZ-3 | **Reserve as Investiture** | open a Spend-Investiture dialog with Reserve ≥ the static cost | The "Pay from Reserve" checkbox appears (now keyed on the banking RULE, not the name) and pays without touching Investiture. |
+| 2bZ-4 | **Double Dip + ritual pay-from-Reserve** | mark a target, use a ritual talent on it, accept the Reserve prompt | No health lost, NOTHING else fires — no Blood Price advantage, nothing banked (a Reserve payment is deliberately not a ritual-paid event; unchanged behaviour). |
+| 2bZ-5 | **Galvanize** | target an ally; use | The ally's recovery die ROLL POSTS (NEW — it used to be rolled invisibly) + the focus-gain card. ⚑ the recovery-die read path (`system.recovery.die`) is bench-unverified — if the die is wrong/1d8-always, report what the sheet says. |
+| 2bZ-6 | **Field Medicine** | target the patient; use (your Medicine roll) | vs DC 15 card; SUCCESS → "heals N" card (patient's recovery die + your Medicine ranks — the die posts); FAIL → focus still spent (note on the card). ⚑ same recovery-die flag. |
+| 2bZ-7 | **Resuscitation upsell** | Field Medicine success WITH Resuscitation owned; then without | With: the ⚕️ revive line prints. Without: silent. ⚑ Resuscitation's own Events tab is EMPTY BY DESIGN (whenOwnsTalent upsell on Field Medicine's rule — declared, not a bug). |
+| 2bZ-8 | **Wary** | involuntarily drain the owner's focus (Shatter Focus / Feinting Strike); try to apply Surprised while they hold focus | Reduction card (− Discipline ranks) names Wary; the Surprised AE is vetoed with a toast. Edit `reduceFormula` on Wary's Events tab — the reduction must follow the edit. |
+| 2bZ-9 | **Resilient Hero** | drop to 0 (holds); drop again (goes down); LONG REST; drop again | Holds at Athletics mod once per long rest. ⚑ **2bA-9, the FIRST authored NATIVE rule**: the long rest itself must clear the spend — if the third drop does NOT hold, the native `update-actor` rule was dropped by schema validation; report it (GM fallback: `actor.unsetFlag("edha-content","resilientSpent")`). |
+| 2bZ-10 | **Dread Presence** (PC + the three adversary copies) | a Weakened enemy in range drags its token closer to an ally; repeat near the Dirgehound Pack / Cragdrake Alpha / Doubled Elder | Move vetoed with a toast naming the talent. The adversary copies now ride their OWN rule (re-drag or ⟳ Sync Adversaries first) — ranges 30/60/60 ft via role rank. |
+| 2bZ-11 | **Cold Eyes** | mark a quarry (Seek Quarry); drop it to 0 with damage | Watch note ("choose a new quarry") + quarry entry AND icon cleared + 1 focus. ⚠ three narrowings vs the old hook (benched): only a live→0 CROSSING fires; a PC-type, summon, or Death-Warded quarry no longer triggers it; the victim needs a token. Flag if any bites at the table. |
+| 2bZ-12 | **Black Leyline Attunement** | Draw Mana with a mix in range: an Isolated enemy, an ally-adjacent enemy, a hidden one, one behind a wall | Summary card is now just "recover N Investiture"; a separate ☠️ pulse card counts ONLY what you can see ("skipped 1 with an ally adjacent"); the GM gets the 🕵️ whisper with hidden/wall counts. Weakened lands on the Isolated visible enemy only. |
+
+---
+
 ## ⚑ RULE-2b PASS Y — the WHOLE Destruction path + the WHOLE Red path (2026-07-26) — NEEDS A PACK REBUILD (deity + leyline + adversary)
 
 Two-path session: 7 + 3 talents, both trees to ZERO on the ratchet (24 → 14). The `charges`
@@ -773,12 +800,12 @@ built inline per §9m q6/q1. Engine handlers are F5-only; all 44 rules are pack-
 The live module + packs on this machine were, **as of 2026-07-18**, current through the 07-17 playtest-2 engine push
 (everything up to and including PR #97; packs current through 2026-07-16c + the 07-16d fixes).
 
-**MERGED BUT NOT YET DEPLOYED — the RULE-2b MIGRATION, PASSES A THROUGH Y (2026-07-24 → 07-26).**
-**207 talents** have moved off engine name-dispatch onto their own documents, and **every one of them
+**MERGED BUT NOT YET DEPLOYED — the RULE-2b MIGRATION, PASSES A THROUGH Z (2026-07-24 → 07-26).**
+**217 talents** have moved off engine name-dispatch onto their own documents, and **every one of them
 changes the PACK**, so none of it is live until one `deploy-to-foundry.bat` + ⟳ Sync. Checklist rows
 **2bA-1…9 · 2bB-1…10 · 2bC-1…8 · 2bD-1…7 · 2bE-1…10 · 2bF-1…17 · 2bG-1…8 · 2bH-1…11 · 2bI-1…12 ·
 2bJ-1…14 · 2bK-1…5 · 2bL-1…14 · 2bM-1…12 · 2bN-1…6 · 2bO-1…7 · 2bP-1…12 · 2bQ-1…10 · 2bR-1…18 ·
-2bS-1…17 · 2bT-1…20 · 2bU-1…16 · 2bV-1…18 · 2bW-1…17 · 2bX-1…17 · 2bY-1…14** are ALL
+2bS-1…17 · 2bT-1…20 · 2bU-1…16 · 2bV-1…18 · 2bW-1…17 · 2bX-1…17 · 2bY-1…14 · 2bZ-1…12** are ALL
 unrun — do not treat any of them as verified, and do not read a "wrong text / old behaviour" report on a
 converted talent as a bug until this deploy has happened. Nine handlers were built in that window
 (H1 `edha-def-test`, H5 `edha-cae-grant`, H11 `edha-enter-stance`, H3 `edha-owner-list`,
@@ -805,8 +832,14 @@ kinds `ordained`/`snare`/`link-markers`, `edha-zone-guard`, `edha-snare-react`,
 `riderFailStatus`, and `edha-damage-bonus` `rangedOnly`/`placeList`; pass Y added the `edha-zone`
 kinds `charge`/`line`, `edha-detonate-react`, `edha-reroll-react`, `edha-zone-react`
 `defeat-in-zone`, `edha-place-hazard` `mode: trail` + `spreads`, the `damaged` watch kind and
-`edha-test-rider` `unlessSkills`. Passes R, S and Y also
-rewire adversary abilities (2bR-17, 2bS-3, 2bY-10), so the ADVERSARY pack + ⟳ Sync are needed too.
+`edha-test-rider` `unlessSkills`; pass Z added the `edha-ritual-paid` EVENT + its dispatcher,
+`edha-reserve-bank`, the H17 target-formula resolver (`@target.recoveryDie` on any `edha-focus`
+formula), `edha-focus` `resource: hea` + posted dice, the `whenOnMyList`/`whenOnMyListStatus`
+watch gate, the config-only veto trio (`edha-focus-guard`, `edha-hp-floor`, `edha-move-veto`),
+`edha-pulse` `who: enemies`/`requireIsolated` + GM-whispered skip accounting, and the FIRST
+authored NATIVE rule (Resilient Hero's `long-rest-actor` + `update-actor` clear — 2bA-9).
+Passes R, S, Y and Z also rewire adversary abilities (2bR-17, 2bS-3, 2bY-10, 2bZ-10), so the
+ADVERSARY pack + ⟳ Sync are needed too.
 
 ⚠️ **Pass P retires a console macro.** `edha.calculatedPatience()` no longer exists — if it is in a
 hotbar macro, that macro will throw after this deploy. Delete it; the talent is automatic now. Two ADVERSARY abilities changed with pass J and are also pack-baked (Callthief's

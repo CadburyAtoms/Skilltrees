@@ -633,6 +633,45 @@ own items); none names a talent.
   substitution (H27's inline pair extracted); pinned in `tests/engine-helpers.test.js`,
   mutation-checked both ways.
 
+## The Black + heroic mop-up primitives (07-26, pass 2bZ)
+Ratchet 14 → 4 — only Blue's four remain (pass AA = Blue + the `ordained` repoint, FINAL).
+- **`edha-ritual-paid` EVENT + `edhaDispatchRitualPaid(actor, item, paid)`** — fired by
+  `edhaRitualHpCost` AFTER the health deduction; a Reserve payment (Double Dip) deliberately
+  never fires it. `options.paid` carries the amount. The edha-draw-mana shape: sentinel hook,
+  knows no payload type.
+- **`edha-reserve-bank`** (executor) — banks `options.paid` into Reserve, cap = `capFormula`.
+  ALSO the Reserve-user rule key: `edhaReserveCap`, the sheet Reserve bar, the Spend-Investiture
+  checkbox and the Double-Dip offer are all `edhaActorRuleOf(actor, "edha-reserve-bank")` now
+  (colorRank-black cap fallback for a pre-sync actor). Blood Price's advantage = a plain
+  `edha-next-test-mod` {self, advantage, black} on the same event (bloodPriceAdv pipeline deleted;
+  the 2bI-4 single-slot caveat applies).
+- **H17: pure `edhaTargetFormula(formula, targetData, recoveryDie)`** — `@target.recoveryDie` →
+  the die spec, `@target.<path>` → the NUMBER at that path of the target's roll data (0 when
+  unreadable), owner refs pass through. Pinned + mutation-checked. Wired into `edha-focus`:
+  a formula containing `@target.` resolves against WHO the rule acts on, and a formula with DICE
+  is rolled async and the roll POSTED (the Galvanize card fix). `edhaRecoveryDie(actor)` +
+  pure `edhaNormalizeDie(raw, fallback)` are the ONE recovery-die path (⚑ the system read is
+  still bench-unverified; normalisation pinned).
+- **`edha-focus` grew `resource: hea`** — a relay-safe HEAL of the rule's subject
+  (edhaCrossHeal); gain-only. Field Medicine's payload.
+- **`edha-watch` grew `whenOnMyList` / `whenOnMyListStatus`** — the own-ledger gate: the observed
+  subject must be on the WATCHER's ledger (Cold Eyes: the dropped creature is MY quarry). Checked
+  in the sweep, not edhaWatchMatches (membership needs the watcher).
+- **Config-only veto trio** (iron rule 3 — all three ENFORCED, rule-keyed; the pass-Y shape):
+  `edha-focus-guard` {reduceFormula, vetoStatus, whileFocusAbove} read by `edhaDrainFocus` + the
+  preCreateActiveEffect veto (Wary); `edha-hp-floor` {floorFormula, spentFlag} read by the
+  preUpdateActor veto (Resilient Hero — `edhaFlagSpent` tolerates the native writer's stringly
+  values); `edha-move-veto` {moverStatus, rangeColor, rangeFt} read by the preUpdateToken sweep
+  (Dread Presence — adversary copies carry their own rule; `edhaOwnersOf`/`edhaWithinAttune`
+  DELETED, the W29 pin re-anchored onto `edhaWatchersOfRule`).
+- **FIRST authored NATIVE rule** — Resilient Hero's `long-rest-actor` + `update-actor` {target:
+  parent, changes: [{key: flags.edha-content.resilientSpent, mode 5, value "false"}]} (⚑ 2bA-9:
+  bench-verify the system accepts the shape).
+- **`edha-pulse` grew `who: enemies` + `requireIsolated`** — the enemy side runs the 07-12b
+  information rule: public card counts only what the player can SEE, hidden/wall skips whisper
+  via `edhaPostGmCard`. Black Leyline Attunement's Draw Mana rider; **`EDHA_DRAW_MANA` is
+  DELETED** — `edhaDrawMana` is recover-Investiture + dispatch only.
+
 ## The Destruction + Red paths' primitives (07-26, pass 2bY)
 Both trees to zero; the `charges` ledger repointed (the FIFTH of six — POINT-BOUND entries like
 snares, plus a NESTED `trig.targetUuid` the reconcile never sees; H3 fails OPEN by design,

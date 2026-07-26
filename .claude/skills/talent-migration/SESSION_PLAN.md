@@ -1,7 +1,16 @@
 # The remaining migration — PATH BY PATH
 
-**State: 14 talents on the ratchet** (221 at the start 2026-07-24). Split **0 / 2 / 7 / 5**
-(bucket 1 / 1b / 2 / 3). **Pass Y (07-26) cleared deity/Destruction (7) + leyline/Red (3) —
+**State: 4 talents on the ratchet** (221 at the start 2026-07-24). All four are leyline/Blue
+(Holographic Illusion, Phantom Barricade, Phantom Double, Living Image). **Pass Z (07-26)
+cleared Black + heroic (10, grouped by BUILD, no ledger): H18 the `edha-ritual-paid`
+announcement + `edha-reserve-bank`; H17 the target-formula resolver (`@target.recoveryDie`,
+pinned) + `edha-focus` resource:hea + posted dice; the three ENGINE-OWNED vetoes re-litigated
+RULE-KEYED (`edha-focus-guard` / `edha-hp-floor` + the FIRST authored NATIVE rule / 
+`edha-move-veto` — adversary copies carry their own rule); Cold Eyes via the new `whenOnMyList`
+own-ledger gate; the last `EDHA_DRAW_MANA` row deleted (`edha-pulse` who:enemies).**
+**NEXT: PASS AA, THE FINAL SESSION (Ben 07-26, amending the earlier pairing note): Blue's four
++ Fate's `ordained` repoint close the migration TOGETHER.**
+Before that: **Pass Y (07-26) cleared deity/Destruction (7) + leyline/Red (3) —
 the sixth two-path session: the Destruction takeover retired, the FIFTH LEDGER (`charges`)
 repointed onto H3 (point-bound like snares; the arm's nested trig.targetUuid never meets the
 reconcile), and the shared-name Shatter Focus SPLIT into its two talents (the Chaos takeover had
@@ -25,8 +34,9 @@ work by *handler* and by *cheapest atom*, and that is what produced sessions con
 **Widened 07-25 post-S (Ben): TWO paths per session when both blocking builds are ruled and at
 most one ledger is in scope** — proven six times now (T: 93 → 75, U: 75 → 63, V: 63 → 48,
 W: 48 → 35, X: 35 → 24 single-path + the Hunter stretch, Y: 24 → 14).
-**Next: the mop-up — Black 4 / Blue 4 / heroic 6 (the H17 target-formula trio lives there) —
-plus Fate's `ordained` repoint, the LAST ledger, which pairs with nothing.**
+**Done 2bZ: the Black + heroic mop-up. What remains: Blue 4 + Fate's `ordained` repoint —
+pass AA, the FINAL session, paired by Ben's 07-26 instruction (this supersedes the earlier
+"`ordained` pairs with nothing" note).**
 
 ---
 
@@ -46,7 +56,8 @@ plus Fate's `ordained` repoint, the LAST ledger, which pairs with nothing.**
 | ~~deity/Power~~ | **0** | ✅ **CLEAR (pass U, 07-25)** — H13 built + the armed `edha-damage-bonus` riders (`meleeOnly`, `tallyKills`/@tally, onKill/onSurvive) + the `token-move` watch kind + `once: arm-per-target` + `maxTargets` multi-target + `edha-self-status` widenings + `edha-defense-buff` `window: scene` + config-only `edha-redirect`/`edha-test-aura`. Mantle re-litigated to a FULL conversion; the dealer pre/post passes and both dispatches deleted. |
 | ~~deity/Life~~ | **0** | ✅ **CLEAR (pass W, 07-25)** — the useItem switch deleted; `edha-mutation` (chooser, riders as fields) + `edha-regen-grant` (Apex Form's FIVE mechanics on one rule; Primal's endOnVitalSpirit/mutationFormula) + `edha-cleanse` {success-damage-roll} (Surgical) + the `edha-redirect` intercept widenings (`watchFlag`/`linkOnUse`/`chooseAmount`/`takeType`/`healFormula` — Lifeline re-litigated OFF pass S's measured H25 build; the choose-amount click already existed). |
 | ~~deity/Chaos~~ | **0** | ✅ **CLEAR (pass U, 07-25)** — H1 `targetList` owner-sweep + `vs: none`, H3 `near-victim`/`enemies-range`, H6 `source: effects` (the dispel), `unlessTargetStatus`, config-only `edha-sense-reveal` (the veil table retired). `EDHA_CHAOS_TALENTS` is down to Shatter Focus (RED's talent — converting it frees the Set entirely). |
-| leyline/Black · Blue · heroic/* | 14 | The mop-up: Black 4 · Blue 4 · heroic 6, mostly bucket-3 declared exits + the H17 target-formula trio (Galvanize, Field Medicine + Resuscitation — one function block, read WHO ELSE lives there; the Resuscitation upsell is the whenOwnsTalent shape). Red cleared in pass Y (the Chaos Set died with Shatter Focus's split; Breaking Point = the `damaged` watch kind; Frenzied Tempo = `unlessSkills`). |
+| ~~leyline/Black · heroic/*~~ | **0** | ✅ **CLEAR (pass Z, 07-26)** — H18 `edha-ritual-paid` + `edha-reserve-bank`; H17 `edhaTargetFormula` + the recovery-die path + `edha-focus` hea/dice; the veto trio rule-keyed (`edha-focus-guard`/`edha-hp-floor`/`edha-move-veto`, first authored NATIVE rule); `whenOnMyList`; `EDHA_DRAW_MANA` deleted (`edha-pulse` who:enemies/requireIsolated). |
+| leyline/Blue | 4 | **PASS AA (FINAL, with the `ordained` repoint — Ben 07-26).** Holographic Illusion (1b — expose `tokenSizeFt`; 3 mechanics, LESSONS §2), Phantom Barricade (H22 — no wall/cover capability exists), Phantom Double + Living Image (bucket 3 — per-viewer client veil + belief ledger; re-litigate, then declare what stays ENGINE-OWNED rule-keyed). |
 
 **The 13 bucket-3 declared exits** cut across every path and need **no build** — an `edha-note` cue
 rule on the talent plus an `ENGINE_OWNED: <reason>` line in its tree-section header. Take them as you

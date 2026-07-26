@@ -2,11 +2,51 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, refreshed 07-26 (pass Y): **the ratchet list is down to 14 names** (221 at the start, −207 in twenty-five passes), and **WHITE, GREEN, KNOWLEDGE, SOVEREIGNTY, CHAOS, POWER, ORDER, CIVILIZATION, DEATH, LIFE, FATE, DESTRUCTION AND RED ARE ALL FULLY CLEAR** — what remains is the mop-up (Black 4 / Blue 4 / heroic 6) plus Fate's `ordained`, the LAST ledger. ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **Blue, Black and Warrior are fully clear of rule-2b talents** (07-24s). **FIVE of the six marker LEDGERS have migrated** (`covenants` 07-24u; `edicts` 07-25 pass V; `remains` 07-25 pass W; Fate's `snares` 07-25 pass X; Destruction's `charges` 07-26 pass Y — both point-bound, fail-open by design); only Fate's `ordained` remains (deliberately LEGACY behind its accessor — §9m q7, one ledger per session; its repoint pairs with nothing). Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-26** (RULE-2b PASS Y —
-**deity/Destruction (7) + leyline/Red (3), both trees to zero — the `charges` LEDGER (the fifth)
-REPOINTED onto H3, and the shared-name Shatter Focus split into its two talents.**
-⚠️ **PACK REBUILD (deity + leyline + adversary) + ⟳ Sync REQUIRED.**)
-**Ratchet 24 → 14.** Checklist **2bY-1…14**, all unrun.
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-26** (RULE-2b PASS Z —
+**leyline/Black (4 of 5 remaining) + heroic (6), grouped by BUILD: H18 the ritual-paid
+announcement, H17 the target-scoped formula resolver, the three ENGINE-OWNED vetoes re-litigated
+rule-keyed, the last EDHA_DRAW_MANA row deleted.**
+⚠️ **PACK REBUILD (leyline + heroic + adversary) + ⟳ Sync REQUIRED.**)
+**Ratchet 14 → 4** — only Blue's four remain; **pass AA = Blue + the `ordained` repoint, the
+FINAL session (Ben 07-26).** Checklist **2bZ-1…12**, all unrun.
+
+**2026-07-26 — RULE-2b PASS Z: Black + heroic clear. Ratchet 14 → 4 (only Blue remains).**
+Grouped by BUILD, gated green between clusters; no ledger in scope. Pass AA (FINAL) = Blue's four
++ Fate's `ordained` repoint, paired by Ben's 07-26 instruction.
+- **H18 — the `edha-ritual-paid` announcement** (the edha-draw-mana shape): `edhaRitualHpCost`
+  announces after the HP deduction; a Reserve payment stays deliberately silent (not a health
+  loss). **Blood Price** = `edha-next-test-mod` {self, advantage, black} — its bespoke
+  bloodPriceAdv pre-roll/consume pair deleted (the Coercive Pressure retirement; the 2bI-4
+  single-slot caveat now covers it too). **Sanguine Reservoir** = NEW `edha-reserve-bank`
+  {capFormula}, which is ALSO the Reserve-user rule key: sheet Reserve bar, Spend-Investiture
+  checkbox, Double-Dip offer and edhaReserveCap are all rule-keyed (colorRank fallback covers a
+  pre-sync actor; all five of its counted mechanics survive).
+- **H17 — the target-scoped formula resolver**, TWO builds: `edhaTargetFormula`
+  (`@target.recoveryDie` / `@target.<path>` resolve against the creature the rule acts on —
+  pure, pinned, mutation-checked both ways) and ONE recovery-die path (`edhaRecoveryDie` +
+  `edhaNormalizeDie`, pinned normalisation; ⚑ the system read itself stays bench-unverified).
+  `edha-focus` grew `resource: hea` (relay-safe heal) and dice formulas now roll and POST — the
+  **Galvanize** card fix, its die used to be evaluated and DISCARDED. **Field Medicine** = H1
+  {med vs dc 15} + the target-die heal; **Resuscitation** = whenOwnsTalent upsell on Field
+  Medicine's success (pass-F exit, declared in the heroic tree-section header).
+- **The three ENGINE-OWNED vetoes re-litigated RULE-KEYED** (the pass-Y shape — hooks stay,
+  they consult documents): **Wary** = `edha-focus-guard` (the edhaDrainFocus reduction — 2bY's
+  Red Shatter drain path untouched — plus the field-driven Surprised AE veto). **Resilient
+  Hero** = `edha-hp-floor` + the project's FIRST authored NATIVE rule (`long-rest-actor` +
+  `update-actor` clears the spent flag — ⚑ 2bA-9 finally runs at the bench; the veto's flag read
+  tolerates the native writer's stringly values, the plot-die tolerance precedent). **Dread
+  Presence** = `edha-move-veto` — the sweep announces, inheriting the W29/ruling-113 adversary
+  widening for free; `edhaOwnersOf`/`edhaWithinAttune` deleted (their W29 pin re-anchored onto
+  edhaWatchersOfRule, mutation-checked); the Dirgehound/Cragdrake-Alpha/Doubled-Elder copies
+  carry their own rule (ADVERSARY pack).
+- **Cold Eyes** rides the shared defeat announcement via the NEW `whenOnMyList` own-ledger gate
+  (+ H3 quarry release + edha-focus). ⚑ Three deliberate narrowings, benched: live→0 crossing
+  only; PC/summon/Death-Warded quarry skipped; the victim needs a token.
+- **Black Leyline Attunement** = the LAST `EDHA_DRAW_MANA` row and the table is DELETED:
+  `edha-pulse` grew {who: enemies, requireIsolated} + the 07-12b GM-whispered skip accounting
+  (public card counts only what the player can see). One drift: the "Weakened isn't a native
+  status" manual-fallback line died with the branch — edhaToggleStatus owns application.
+Gates green throughout (196 engine tests; audit all-trees exit 0). Details: audit §9n row Z.
 
 **2026-07-26 — RULE-2b PASS Y: Destruction clear (7) + Red clear (3). Ratchet 24 → 14.**
 Two-path session, Destruction gated green before Red opened. The session's ONE ledger (§9m q7):
