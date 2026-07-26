@@ -14521,66 +14521,84 @@ for (const ctx of ["Attack", "Item"]) Hooks.on(`cosmere-rpg.pre${ctx}Roll`, edha
 
 /* --- Draw Mana — universal leyline action; rider determined by the owned Leyline Key(s) ---------
  * Canon: "1 Action: recover Investiture equal to your Tier and trigger your leyline color's Attunement
- * rider." The Draw Mana action is granted by every leyline path (foundry-build pathEvents); the per-color
- * effect lives on the Key talent. On use we recover Investiture and apply each owned Key's rider.
- *   Black → Weaken enemies in range (status if native, else note) — the LAST name-keyed row
- *   Blue/Red → ON THEIR OWN DOCUMENTS since 07-24y (iron rule 2b): an `edha-next-test-mod` rule on
- *     the `edha-draw-mana` event, attribute-gated (`int, wil` / `str, spd`). Red's "lose your
- *     Reaction" reminder rides alongside as an `edha-note`.
- *   White → `edha-pulse` on its own document since 07-25 pass 2bR (+ Beacon's `edha-cleanse`).
- *   Green → `edha-zone` on its own document since 07-25 pass 2bS (click-to-place [Size] difficult
- *     terrain; the picker/Region machinery stays ENGINE-OWNED, the rule carries colour/size/range,
- *     and a creator's `edha-zone-hazard` rule — Thorn Field's shape — rides every square placed).
- */
-/* ⚠ THIS TABLE IS A SHRINKING BACKLOG, not the design (iron rule 2b). Blue and Red left it on
- * 07-24y (`edha-next-test-mod` rules), White + Beacon of Stability on 07-25 pass 2bR (`edha-pulse` /
- * `edha-cleanse`), Green + its Thorn Field / Thorn Hedge orphans on 07-25 pass 2bS (`edha-zone` +
- * `edha-zone-hazard`) — all reached by the `edha-draw-mana` event. ONE row remains: Black's
- * Isolated + line-of-sight status sweep with its GM-whispered skip accounting, which no handler
- * expresses yet. It is new capability, NOT a field; do not schedule it as cheap. */
-const EDHA_DRAW_MANA = {
-  "Black Leyline Attunement": { color: "black", kind: "weaken-enemies" },
-};
+ * rider." The Draw Mana action is granted by every leyline path (foundry-build pathEvents); the
+ * per-color effect lives on the Key talent — ON ITS OWN DOCUMENT, every one of them, reached by the
+ * `edha-draw-mana` event:
+ *   Blue/Red → `edha-next-test-mod`, attribute-gated (07-24y); Red's Reaction reminder = `edha-note`.
+ *   White → `edha-pulse` (2bR; + Beacon's `edha-cleanse`).
+ *   Green → `edha-zone` (2bS; picker/Region machinery ENGINE-OWNED, spec on the rule).
+ *   Black → `edha-pulse` {who: enemies, status weakened, requireIsolated, visibleOnly} (2bZ) — the
+ *     LAST name-keyed row. The EDHA_DRAW_MANA table it lived in is DELETED; the 07-05 Isolated
+ *     gate, the 07-12 line-of-sight ruling and the 07-12b GM-whispered skip accounting all rode
+ *     into the pulse runner as generic fields. Do not re-add a table here. */
 async function edhaHealActor(actor, amt) {
   const hea = actor?.system?.resources?.hea; if (!hea) return;
   const max = (hea.max && typeof hea.max === "object") ? hea.max.value : hea.max;
   await actor.update({ "system.resources.hea.value": Math.min(max ?? ((hea.value || 0) + amt), (hea.value || 0) + amt) });
 }
-/* The pulse runner (`edha-pulse`, 07-25): heal or a status to every ally within the colour's
- * Attunement Range. visibleOnly reproduces the retired White Draw Mana rider exactly — the 07-12
- * through-walls ruling with per-skip accounting on the card, and cross-actor heals relayed to the GM
- * (07-17 playtest: a player doesn't own their allies' actors). */
+/* The pulse runner (`edha-pulse`, 07-25; enemy side 2bZ): heal or a status to every ally — or
+ * enemy — within the colour's Attunement Range. visibleOnly reproduces the 07-12 through-walls
+ * ruling with per-skip accounting; cross-actor heals relay to the GM (07-17 playtest: a player
+ * doesn't own their allies' actors). ENEMY pulses follow the 07-12b information ruling: the
+ * public card accounts only for what the player can SEE (unseen checks run FIRST, so the
+ * ally-adjacent count covers only visible enemies), and the hidden/behind-a-wall skips whisper to
+ * the GM via edhaPostGmCard — the Black Draw Mana rider's shape, generic now. */
 async function edhaRunPulse(item, h) {
   const owner = item?.actor; if (!owner) return;
   const tok = edhaCasterToken(owner); if (!tok) return;
   const ft = edhaAttuneFtColor(owner, h.rangeColor || "white");
   const disp = tok.document?.disposition ?? 1;
+  const enemies = String(h.who || "allies") === "enemies";
   const inRange = edhaTokensInCircle(tok.center.x, tok.center.y, ft, tok.id)
-    .filter(t => (t.document?.disposition ?? 1) === disp && t.actor);
-  const skips = { hidden: 0, wall: 0 };
-  const allies = !h.visibleOnly ? inRange : inRange.filter(t => {
+    .filter(t => t.actor && ((t.document?.disposition ?? 1) === disp) !== enemies);
+  const skips = { hidden: 0, wall: 0, ally: 0 };
+  let picked = !h.visibleOnly ? inRange : inRange.filter(t => {
     if (t.document?.hidden) { skips.hidden++; return false; }
     if (!edhaCanSee(tok, t)) { skips.wall++; return false; }
     return true;
   });
+  if (h.requireIsolated) picked = picked.filter(t => {
+    if (!edhaIsIsolated(t.actor, t)) { skips.ally++; return false; }
+    return true;
+  });
   const note = h.note ? ` <span style="opacity:.85;font-size:.9em">${h.note}</span>` : "";
+  const gmAccounting = async (applied) => {
+    if (!enemies || (!skips.hidden && !skips.wall)) return;
+    const unseen = [];
+    if (skips.hidden) unseen.push(`${skips.hidden} hidden`);
+    if (skips.wall) unseen.push(`${skips.wall} behind a wall`);
+    // GM-only — MUST be posted by the GM, never authored by the using player (a whisper is
+    // visible to its author, so a player would otherwise see these counts on their own screen).
+    await edhaPostGmCard(owner, `<p>🕵️ <strong>${item.name}</strong> full sweep for the GM: ${inRange.length} enem${inRange.length === 1 ? "y" : "ies"} in range, affected ${applied} — also skipped ${unseen.join(", ")} (not shown to the player).</p>`);
+  };
   if (String(h.kind || "heal") === "status") {
     const sid = h.statusId; if (!sid) return;
-    for (const t of allies) { try { await edhaToggleStatus(t.actor, sid, true); } catch (e) {} }
+    let applied = 0;
+    // Players don't own enemy actors — edhaToggleStatus relays to the GM client when needed.
+    for (const t of picked) { try { if (await edhaToggleStatus(t.actor, sid, true)) applied++; } catch (e) {} }
+    if (enemies) {
+      const visTotal = picked.length + skips.ally;   // what the player can see
+      const skipNote = skips.ally ? ` — skipped ${skips.ally} with an ally adjacent` : "";
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+        content: `<p>☠️ <strong>${item.name}</strong> (${owner.name}): <strong>${edhaConditionLabel(sid)}</strong> on ${applied} of ${visTotal} enem${visTotal === 1 ? "y" : "ies"} you can see within ${ft} ft${h.requireIsolated ? " (Isolated)" : ""}${skipNote}.${note}</p>` });
+      await gmAccounting(applied);
+      return;
+    }
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
-      content: `<p>✨ <strong>${item.name}</strong> (${owner.name}): ${allies.length} ally(ies) within range gain <strong>${edhaConditionLabel(sid)}</strong>.${note}</p>` });
+      content: `<p>✨ <strong>${item.name}</strong> (${owner.name}): ${picked.length} ally(ies) within range gain <strong>${edhaConditionLabel(sid)}</strong>.${note}</p>` });
     return;
   }
   const amt = Math.max(0, Math.floor(edhaEvalSync(String(h.formula || "@tier"), owner.getRollData())) || 0);
   if (!(amt > 0)) return;
-  for (const a of allies) await edhaCrossHeal(a.actor, amt);
-  if (h.includeSelf) await edhaHealActor(owner, amt);   // self is always owned — no relay needed
+  for (const a of picked) await edhaCrossHeal(a.actor, amt);
+  const self = (h.includeSelf && !enemies) ? 1 : 0;
+  if (self) await edhaHealActor(owner, amt);   // self is always owned — no relay needed
   const skipBits = [];
   if (skips.hidden) skipBits.push(`${skips.hidden} hidden`);
   if (skips.wall) skipBits.push(`${skips.wall} behind a wall`);
-  const self = h.includeSelf ? 1 : 0;
   ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
-    content: `<p>🕊️ <strong>${item.name}</strong>: healed ${allies.length + self} of ${inRange.length + self} ally(ies) ${amt} HP within ${ft} ft${h.visibleOnly ? " (visible)" : ""}${skipBits.length ? ` — skipped ${skipBits.join(", ")}` : ""}.${note}</p>` });
+    content: `<p>🕊️ <strong>${item.name}</strong>: healed ${picked.length + self} of ${inRange.length + self} ${enemies ? "creature" : "ally(ies)"} ${amt} HP within ${ft} ft${h.visibleOnly ? " (visible)" : ""}${skipBits.length && !enemies ? ` — skipped ${skipBits.join(", ")}` : ""}.${note}</p>` });
+  await gmAccounting(picked.length);
 }
 async function edhaDrawMana(item) {
   try {
@@ -14588,60 +14606,8 @@ async function edhaDrawMana(item) {
     const tier = Number(actor.system?.tier) || 1;
     const inv = actor.system?.resources?.inv;
     if (inv) { const max = (inv.max && typeof inv.max === "object") ? inv.max.value : inv.max; await actor.update({ "system.resources.inv.value": Math.min(max ?? ((inv.value || 0) + tier), (inv.value || 0) + tier) }); }
-    const lines = [`recover ${tier} Investiture`];
-    const owned = new Set(actor.items.filter(i => edhaIsTalent(i)).map(i => i.name));
-    const tok = edhaCasterToken(actor);
-    const disp = tok?.document?.disposition ?? 1;
-    for (const [keyName, r] of Object.entries(EDHA_DRAW_MANA)) {
-      if (!owned.has(keyName)) continue;
-      const rank = edhaColorRank(actor, r.color);
-      const ft = EDHA_ATTUNE_FT[rank] || EDHA_ATTUNE_FT[1];
-      /* The White rider left this table 07-25 (iron rule 2b): White Leyline Attunement carries an
-       * `edha-pulse` rule on the `edha-draw-mana` event (visible-gated heal, same skip accounting —
-       * built this pass), and Beacon of Stability — formerly a one-line orphan nested INSIDE the
-       * White branch here — carries its own `edha-cleanse` rule on the same event. Their cards now
-       * post separately from this summary card. */
-      if (r.kind === "weaken-enemies" && tok) {
-        // The 07-05 pass caught the missing gate: ALL enemies in range were Weakened. Only ISOLATED
-        // enemies (no living ally within 5 ft — edhaIsIsolated, checked per token) qualify.
-        // 07-12 ruling (Ben): line of sight required — the pulse doesn't reach through walls/doors
-        // (edhaCanSee: sight-wall ray; darkness stays GM-judged). Card text updated to match.
-        // 07-12 pass-3 lesson: the sweep silently skipped two GM-HIDDEN tokens and the card just said
-        // "Weakened 0" — every skip is accounted for. 07-12b ruling (Ben): the PLAYER card must not
-        // reveal what they can't see (hidden / wall-obscured enemy counts are GM information) — the
-        // public card accounts only for visible enemies; the full accounting whispers to the GM.
-        const inRange = edhaTokensInCircle(tok.center.x, tok.center.y, ft, tok.id)
-          .filter(t => (t.document?.disposition ?? 1) !== disp && t.actor);
-        const skips = { ally: 0, hidden: 0, wall: 0 };
-        // Unseen checks FIRST so the ally-adjacent count covers only enemies the player can see.
-        const enemies = inRange.filter(t => {
-          if (t.document?.hidden) { skips.hidden++; return false; }
-          if (!edhaCanSee(tok, t)) { skips.wall++; return false; }
-          if (!edhaIsIsolated(t.actor, t)) { skips.ally++; return false; }
-          return true;
-        });
-        const wkId = CONFIG.COSMERE?.statuses?.weakened ? "weakened" : null;
-        let applied = 0;
-        // Players don't own enemy actors — edhaToggleStatus relays to the GM client when needed
-        // (direct toggleStatusEffect threw permission errors at the table, 2026-06-11 playtest).
-        if (wkId) for (const e of enemies) { try { if (await edhaToggleStatus(e.actor, wkId, true)) applied++; } catch (x) {} }
-        const visTotal = inRange.length - skips.hidden - skips.wall;   // what the player can see
-        const skipNote = skips.ally ? ` — skipped ${skips.ally} with an ally adjacent` : "";
-        lines.push(wkId ? `Black: Weakened ${applied} of ${visTotal} enem${visTotal === 1 ? "y" : "ies"} you can see within ${ft} ft (Isolated)${skipNote}` : `Black: Weaken Isolated enemies you can see within ${ft} ft (apply manually — Weakened isn't a native status)${skipNote}`);
-        if (skips.hidden || skips.wall) {
-          const unseen = [];
-          if (skips.hidden) unseen.push(`${skips.hidden} hidden`);
-          if (skips.wall) unseen.push(`${skips.wall} behind a wall`);
-          // GM-only — MUST be posted by the GM, never authored by the using player (a whisper is
-          // visible to its author, so a player would otherwise see these counts on their own screen).
-          edhaPostGmCard(actor, `<p>🕵️ <strong>Draw Mana (Black)</strong> full sweep for the GM: ${inRange.length} enem${inRange.length === 1 ? "y" : "ies"} in range, Weakened ${applied} — also skipped ${unseen.join(", ")} (not shown to the player).</p>`);
-        }
-      } else if (r.kind === "note") {
-        lines.push(`${r.color[0].toUpperCase() + r.color.slice(1)}: ${r.text} (apply manually)`);
-      }
-    }
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p><strong>${actor.name}</strong> Draws Mana — ${lines.join("; ")}.</p>` });
-    // …then the document-driven riders (Blue/Red Keys today). AFTER the summary card so the
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p><strong>${actor.name}</strong> Draws Mana — recover ${tier} Investiture.</p>` });
+    // …then the document-driven riders (every Key since 2bZ). AFTER the summary card so the
     // recover-Investiture line still reads first; each rule posts its own card.
     await edhaDispatchDrawMana(actor, item);
   } catch (e) { console.error("Edha Content | Draw Mana failed", e); }
@@ -15838,14 +15804,16 @@ function edhaRegisterNativeEventSystem() {
    * ruling as a field) and Collective Resolve (Determined to allies in range on use). */
   api.registerItemEventHandlerType({
     source: "edha-content", type: "edha-pulse",
-    label: "Edha: Pulse To Allies In Range", description: "When this rule fires, every ally within your Attunement Range is healed or gains a status. Put it on `use`, or on the Draw Mana event for an Attunement Key rider.",
+    label: "Edha: Pulse To Creatures In Range", description: "When this rule fires, every ally — or every enemy — within your Attunement Range is healed or gains a status. Put it on `use`, or on the Draw Mana event for an Attunement Key rider. An enemy pulse keeps GM information off the player card: hidden/wall skips whisper to the GM instead (07-12b).",
     config: { schema: {
       rangeColor: new FF.StringField({ required: true, initial: "white", choices: choices("white", "blue", "black", "red", "green"), label: "Attunement Range colour" }),
       kind: new FF.StringField({ required: true, initial: "heal", choices: choices("heal", "status"), label: "What the pulse does" }),
+      who: new FF.StringField({ required: false, initial: "allies", choices: choices("allies", "enemies"), label: "Who it reaches", hint: "allies = your side (the White heal, Collective Resolve). enemies = the other side (the Black Key's Weaken sweep). 2bZ." }),
       formula: new FF.StringField({ required: false, blank: true, initial: "@tier", label: "Heal amount (kind = heal)", hint: "Resolved against YOUR roll data, floored." }),
-      statusId: new FF.StringField({ required: false, blank: true, initial: "", label: "Status to apply (kind = status)", hint: "Collective Resolve is 'determined' (a native cosmere condition — the icon toggles; the mechanical rules stay GM-applied)." }),
-      visibleOnly: new FF.BooleanField({ required: false, initial: false, label: "Only allies you can see", hint: "The 07-12 ruling for the White Draw Mana heal: no pulsing through walls, and every hidden/wall skip is accounted for on the card." }),
-      includeSelf: new FF.BooleanField({ required: false, initial: false, label: "You too", hint: "The White Draw Mana heal includes the caster." }),
+      statusId: new FF.StringField({ required: false, blank: true, initial: "", label: "Status to apply (kind = status)", hint: "Collective Resolve is 'determined'; the Black Key is 'weakened' (native cosmere conditions — the icon toggles; the mechanical rules stay GM-applied)." }),
+      requireIsolated: new FF.BooleanField({ required: false, initial: false, label: "Only Isolated creatures (no living ally within 5 ft)", hint: "The Black Key's 07-05 gate. Skips are accounted on the card ('skipped N with an ally adjacent')." }),
+      visibleOnly: new FF.BooleanField({ required: false, initial: false, label: "Only creatures you can see", hint: "The 07-12 ruling: no pulsing through walls, every skip accounted for — publicly for allies, GM-whispered for enemies (07-12b: the player card must not reveal what they can't see)." }),
+      includeSelf: new FF.BooleanField({ required: false, initial: false, label: "You too", hint: "The White Draw Mana heal includes the caster. Ignored for an enemy pulse." }),
       note: new FF.StringField({ required: false, blank: true, initial: "", label: "Extra card text" }),
     } },
     executor: async function (event) {

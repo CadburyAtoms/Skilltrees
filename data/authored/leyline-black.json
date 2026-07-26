@@ -31,7 +31,22 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "BlackKeyPulse000": {
+          "description": "Black. The Draw Mana rider: Weakened on every ISOLATED enemy you can SEE within your Black Attunement Range. 2bZ (iron rule 2b): the last EDHA_DRAW_MANA table row — the 07-05 Isolated gate, the 07-12 line-of-sight ruling and the 07-12b GM-whispered skip accounting all ride the widened pulse runner as fields now.",
+          "event": "edha-draw-mana",
+          "handler": {
+            "type": "edha-pulse",
+            "rangeColor": "black",
+            "kind": "status",
+            "statusId": "weakened",
+            "who": "enemies",
+            "requireIsolated": true,
+            "visibleOnly": true
+          },
+          "id": "BlackKeyPulse000"
+        }
+      },
       "effects": []
     },
     "Blood Price": {
