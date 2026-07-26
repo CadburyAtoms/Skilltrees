@@ -449,6 +449,7 @@ function edhaTestRiderApply(roll, source, config) {
         if (h.whenTargetIsolated && !(target && edhaIsIsolated(target))) continue;
         if (h.whenAttribute) { const a = roll?.data?.skill?.attribute ?? config?.defaultAttribute; if (!String(h.whenAttribute).split(/[,\s]+/).filter(Boolean).includes(a)) continue; }   // Burning Drive: Physical (str/spd)
         if (h.whenSkill && roll?.data?.skill?.id !== h.whenSkill) continue;                      // 07-24j: stance skill advantage (itm/ins/agi)
+        if (h.unlessSkills && String(h.unlessSkills).split(/[,\s]+/).filter(Boolean).includes(roll?.data?.skill?.id)) continue;   // 2bY: exclude-list (Frenzied Tempo — Presence minus the casts)
         if (h.whileStanceActive && activeStance !== tal.name) continue;                          // 07-24j: only while THIS talent's stance is up
         if (h.whenFastTurn && !edhaIsFastTurn(actor)) continue;                                  // Momentum fast-turn payoffs
         if (h.whenSlowTurn && !edhaIsSlowTurn(actor)) continue;                                  // Calculated Patience (a real predicate, NOT !fast — see edhaIsSlowTurn)
@@ -2695,7 +2696,7 @@ function edhaListPush(list, entry, { cap = 1, evict = "oldest" } = {}) {
 /* MEMBERSHIP lives on the mark, ORDER lives in this list — and the mark wins.
  *
  * Reconciling on read is what makes a HALF-migrated tree correct. Chaos's un-migrated talents
- * (Spreading Omen, Cascade Collapse, Unravel Everything) still call edhaRemoveOmen, which clears
+ * (Spreading Omen, Cascade Collapse, Unravel Everything) still call edhaRemoveMark, which clears
  * the status + markedBy and knows nothing about this ledger; without the filter below the ledger
  * would keep a phantom entry and the owner would be stuck under their cap. It also means a GM who
  * strips the status by hand does the right thing, which the old owner-flag lists never handled. */
@@ -5190,10 +5191,17 @@ async function edhaDrainFocus(actor, n, source) {
   if (!loss) return;
   const cur = Number(foc.value) || 0, next = Math.max(0, cur - loss);
   if (next === cur) return;
-  // Runs on the damage-applying client (the GM applies hits), so a direct write has permission —
-  // the same pattern as Whispered Doubt's extra-loss write. Tagged so the focus watcher skips it,
-  // then the zero-check runs by hand (the 07-05 Predatory Insight lesson).
-  try { await actor.update({ "system.resources.foc.value": next }, { edhaFocusWatch: true }); } catch (e) { return; }
+  // Usually runs on the damage-applying client (the GM), so a direct write has permission — the
+  // Whispered Doubt pattern, tagged so the focus watcher skips it, then the zero-check runs by
+  // hand (the 07-05 Predatory Insight lesson). 2bY: a USE-event drain (Red's Shatter Focus) runs
+  // on the using player's client against a GM-owned foe, so the unowned case relays through the
+  // GM (the retired edhaCrossFocusLoss's set-resource path, folded in here).
+  if (!actor.isOwner && !game.user?.isGM) {
+    if (!game.users?.activeGM) { ui.notifications?.warn(`Edha: a GM must be online for ${source || "the focus drain"}.`); return; }
+    try { game.socket.emit("module.edha-content", { action: "set-resource", payload: { actorUuid: actor.uuid, path: "system.resources.foc.value", value: next } }); } catch (e) { return; }
+  } else {
+    try { await actor.update({ "system.resources.foc.value": next }, { edhaFocusWatch: true }); } catch (e) { return; }
+  }
   // ANNOUNCE the zero crossing (07-24r; was a direct call to a Predatory-Insight-shaped helper). This
   // write is tagged, so the updateActor focus watcher deliberately never sees it — which is the whole
   // reason the 07-05 test pass found that a creature emptied BY Whispered Doubt never triggered the
@@ -5743,6 +5751,13 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
  *   Spiritual. It is also the pass's one genuine BEHAVIOUR UPGRADE: its old case posted "on a
  *   success…" without resolving anything, i.e. it trusted the player to have won an opposed test,
  *   which iron rule 3 forbids. The engine resolves it now; only the forced action stays volition.
+ * ── IRON RULE 2b STATUS (07-26, pass 2bY — tree CLEAR) ──────────────────────────────────────
+ *   Breaking Point — H8 `edha-watch {watch: damaged}` (the new generic per-round hit-count kind)
+ *     + edha-apply-status payload. Frenzied Tempo — `edha-test-rider {mode: advantage,
+ *     whenAttribute: pre, whenFastTurn, unlessSkills}` (the exclude-list field is new with 2bY).
+ *   Shatter Focus — the RED card (focus drain) is an `edha-focus {op: drain, target: victim}`
+ *     rule on ITS document; the same-named CHAOS talent rides `edha-reroll-react`. The name-keyed
+ *     takeover that conflated them is deleted (see the Chaos section).
  * Pilot: this is the FIRST tree to ENFORCE forced/granted movement (auto-move the caster, push +
  * wall-collision on a target) rather than GM-narrating it (the convention used by Ordered Advance,
  * Redirect Momentum, Ghostly Walls, Living Image). See FORCED_MOVEMENT_PILOT.md for the porting plan.
@@ -6037,89 +6052,41 @@ Hooks.on("combatTurnChange", (combat) => {
   } catch (e) { console.error("Edha Content | rally reset failed", e); }
 });
 
-// --- Breaking Point: a creature in your Attunement Range struck a 2nd time in a round → Disoriented --
-// Cross-actor (the Red mage reacts to OTHERS taking damage), so it's a GM-side applyDamage watcher,
-// name-based, once per round per creature — same shape as the Black focus watchers.
-function edhaWithinAttuneColor(owner, targetTok, color) {
-  const ot = edhaCasterToken(owner); if (!ot || !targetTok) return false;
-  return edhaTokensWithin(ot, edhaAttuneFtColor(owner, color)).some(t => t.id === targetTok.id);
-}
-async function edhaBreakingPointWatch(victim, damage) {
+/* --- The `damaged` watch kind (2bY — was the name-keyed Breaking Point applyDamage watcher):
+ * every real damage application bumps the victim's per-round hit counter and ANNOUNCES it as a
+ * watch event whose observed value is the count, so "struck a 2nd time in a round" is a plain
+ * {watch: damaged, whenTotal: at-least 2, once: round-per-target} rule and any future
+ * Nth-hit-this-round talent is authoring, not engine work. GM-side (the damage applier), like the
+ * defeat announce. The `bpHits` flag name is the counter's legacy key, kept so a mid-combat
+ * deploy doesn't double-count — it names no talent. */
+async function edhaDamagedWatchAnnounce(victim, damage) {
   try {
     if (!edhaDefBuffGmGate() || _edhaInTrigger) return;
     if (!victim || (Number(damage?.dealt) || 0) <= 0) return;
-    const owners = edhaCharacterOwnersOf("Breaking Point"); if (!owners.length) return;
     const round = game.combat?.round; if (round == null) return;
     const key = `bpHits.${round}`;
     const hits = (Number(victim.getFlag?.("edha-content", key)) || 0) + 1;
     try { await victim.setFlag("edha-content", key, hits); } catch (e) {}
-    if (hits !== 2) return;                                       // only the 2nd hit of the round triggers
-    const vtok = edhaCasterToken(victim) ?? victim.getActiveTokens?.()[0]; if (!vtok) return;
-    for (const owner of owners) {
-      if (owner === victim) continue;
-      if (!edhaWithinAttuneColor(owner, vtok, "red") || !edhaDisposHostile(owner, victim)) continue;
-      await edhaApplyTimedStatus(victim, "disoriented", { owner, expire: "owner" });
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🌀 <strong>Breaking Point</strong> (${owner.name}): ${victim.name} is struck a 2nd time this round and becomes <strong>Disoriented</strong>. <span style="opacity:.8">(You may spend 1 Investiture.)</span></p>` });
-      break;                                                       // one application per victim
-    }
-  } catch (e) { console.error("Edha Content | Breaking Point watch failed", e); }
+    await edhaDispatchWatchers({ kind: "damaged", owner: victim, victim: null, skill: null, def: null, ok: null, total: hits });
+  } catch (e) { console.error("Edha Content | damaged watch announce failed", e); }
 }
-Hooks.on("cosmere-rpg.applyDamage", (target, damage) => { try { void edhaBreakingPointWatch(target, damage); } catch (e) {} });
+Hooks.on("cosmere-rpg.applyDamage", (target, damage) => { try { void edhaDamagedWatchAnnounce(target, damage); } catch (e) {} });
 
-// --- Frenzied Tempo: advantage on Influence (Presence) tests during a fast turn (passive, owner-side) --
-function edhaFrenziedTempoPreRoll(roll, source, config) {
-  try {
-    const actor = edhaD20RollActor(config); if (!actor || !edhaOwnsTalent(actor, "Frenzied Tempo")) return;
-    if (!edhaIsFastTurn(actor)) return;
-    const skill = roll?.data?.skill;
-    const attr = skill?.attribute ?? config?.defaultAttribute;
-    if (attr !== "pre" || EDHA_LEY_COLORS.includes(skill?.id)) return;   // Presence-based Influence skills only (not leyline casts)
-    roll.options.advantageMode = "advantage"; roll.configureModifiers?.();
-    const orig = roll.configureDialog?.bind(roll);
-    if (orig) roll.configureDialog = async (data) => { try { data ??= {}; data.skillTest ??= {}; data.skillTest.advantageMode = "advantage"; } catch (e) {} return orig(data); };
-  } catch (e) { console.error("Edha Content | Frenzied Tempo pre-roll failed", e); }
-}
-for (const ctx of ["skill", "attack", "item"]) Hooks.on(`cosmere-rpg.pre${ctx.charAt(0).toUpperCase() + ctx.slice(1)}Roll`, edhaFrenziedTempoPreRoll);
+/* Frenzied Tempo moved onto its document 2bY (iron rule 2b): an `edha-test-rider` {mode:
+ * advantage, whenAttribute: pre, whenFastTurn, unlessSkills: the five colours} — the generic
+ * pre-roll injector applies it; `unlessSkills` is the exclude-list the classification named
+ * ("Presence except the leyline casts", which whenSkill's single positive id could not say). */
 
-// --- Cross-actor focus loss (Shatter Focus) ------------------------------------------------------
-async function edhaCrossFocusLoss(target, n = 1) {
-  if (!target) return;
-  const cur = Number(target.system?.resources?.foc?.value) || 0; if (cur <= 0) return;
-  const next = Math.max(0, cur - n);
-  if (target.isOwner) { try { await target.update({ "system.resources.foc.value": next }); } catch (e) {} return; }
-  if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "set-resource", payload: { actorUuid: target.uuid, path: "system.resources.foc.value", value: next } }); } catch (e) {} }
-}
-
-// --- NAME-BASED use dispatch for the activated Frenzy/Momentum talents (owner's client; no rebuild) --
-Hooks.on("cosmere-rpg.useItem", (item) => {
-  try {
-    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
-    const target0 = () => [...(game.user?.targets ?? [])][0]?.actor ?? null;
-    switch (item.name) {
-      case "Shatter Focus": {                                     // Reaction: a creature in range failed a test → it loses 1 focus
-        const t = target0();
-        if (!t) { ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🧠 <strong>Shatter Focus</strong> — target the creature that failed, then re-use (it loses 1 focus).</p>` }); break; }
-        void edhaCrossFocusLoss(t, 1);
-        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🧠 <strong>Shatter Focus</strong> (${actor.name}): ${t.name} loses <strong>1 focus</strong>.</p>` });
-        break;
-      }
-      // MIGRATED to the document 2026-07-24 (iron rule 2b) — behaviour now lives on the talents:
-      //   Emotional Overload → edha-next-test-mod (disadvantage, count 1), event `use`
-      //   Reckless Gambit    → edha-next-test-mod (advantage, count 1) + edha-apply-status (exhausted)
-      //   Reckless Momentum  → edha-next-test-mod (plotDie, target self), event `use` — pass 2bQ.
-      //     The retired case called edhaGrantPlotDie(actor, {skill: null, source}); the handler's
-      //     `plotDie` field calls that same helper with source = the talent's name, so behaviour is
-      //     identical. Its field hint had named this talent since 07-24k and nothing ever wired it.
-      // All three ride the SAME nextTestMod pipeline this switch used, so behaviour is unchanged; the
-      // difference is that the rules are visible and editable on each talent's Events tab, and a
-      // rename no longer unwires them. Do not re-add cases here.
-      // Incite moved onto its document 07-24p (iron rule 2b) — and UPGRADED on the way: this case
-      // only ever posted "on a success…", i.e. it trusted the player to have won the test, which is
-      // the iron-rule-3 soft laziness the migration is meant to kill. It is now `edha-def-test`
-      // (Intimidation vs Spiritual), engine-resolved; only the forced action stays volition-manual.
-    }
-  } catch (e) { console.error("Edha Content | Momentum/Frenzy use-hook failed", e); }
-});
+/* --- The Frenzy/Momentum use dispatch: DELETED 2bY (iron rule 2b) — its last case is gone.
+ * Emotional Overload · Reckless Gambit · Reckless Momentum → edha-next-test-mod (07-24/2bQ);
+ * Incite → edha-def-test, engine-resolved (07-24p). Do not re-add a switch here.
+ * RED's Shatter Focus (the leyline card: a character in range fails a test → it loses 1 focus)
+ * → `edha-focus` {op: drain, target: victim} on use — its case here had been DEAD code for the
+ * whole tracked history: the CHAOS takeover matched the shared name first, cancelled use(), and
+ * routed every use into the Omen-reroll flow, so a pure Red character got "bears no Omen of
+ * yours" instead of the card. TWO talents share this name (leyline-red + deity-chaos); each now
+ * carries its own rules, which is exactly what rule 2b's name-keying made impossible. The
+ * cross-actor focus write lives in edhaDrainFocus (the set-resource relay, folded in 2bY). */
 
 /* --- Defense-buff talents (e.g. Know Your Moment): +N defenses for a combat-timing window ----------
  * Driven by the talent's own `edha-defense-buff` rule (Events tab — amount/defenses/window editable
@@ -10390,30 +10357,31 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearLifeSt
  *   local client's Token#isVisible veil wrap) — no document rule can rewire another client's veil;
  *   the rule carries the spec, the wrap stays engine and names no talent.
  *
- * The Omen scan-side helpers (edhaBearsMyOmen, edhaRemoveOmen, edhaChaosTarget) stay ONLY for
- * Shatter Focus — RED's talent, un-migrated, the Set's last name. H3's reconcile-on-read keeps the
- * ledger honest when Shatter Focus removes an Omen the ledger tracked. Delete them when it converts.
+ * 2bY: the Set is EMPTY and deleted. "Shatter Focus" was TWO talents sharing a name — deity/
+ * Chaos's Omen reroll (now `edha-reroll-react` on ITS document) and leyline/Red's focus drain
+ * (an `edha-focus` rule on ITS document); the name-keyed takeover always ran the Chaos flow, so
+ * Red's card was unreachable until the split. The mark helpers are status-parameterized now
+ * (edhaBearsMyMark / edhaRemoveMark) and H3's reconcile-on-read keeps the ledger honest when the
+ * Reaction removes a marked Omen the ledger tracked.
  * ============================================================================================ */
 
-function edhaBearsMyOmen(owner, actor) {
-  return !!(actor?.statuses?.has?.("omen")) && (actor?.flags?.["edha-content"]?.markedBy?.omen?.actorId === owner?.id);
+function edhaBearsMyMark(owner, actor, status = "omen") {
+  return !!(actor?.statuses?.has?.(status)) && (actor?.flags?.["edha-content"]?.markedBy?.[status]?.actorId === owner?.id);
 }
 // (edhaRollColorTest retired 2bW — its last caller, Death Ward's hand-rolled Black test, now rides H1.)
 function edhaChaosCard(owner, rolls, html) {
   ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), rolls: rolls || [], content: `<div class="edha-burst-card">${html}</div>` });
 }
 
-/* --- Omen remove (the Marked pattern) — placement is H3's since 2bU; Shatter Focus (un-migrated)
- * still removes by hand, and H3's reconcile-on-read drops the ledger entry when it does. ---------- */
-async function edhaRemoveOmen(owner, target) {
+/* --- Mark remove (the Marked pattern) — placement is H3's since 2bU; the reroll Reaction removes
+ * by hand, and H3's reconcile-on-read drops the ledger entry when it does. Status-parameterized
+ * 2bY (was omen-only). ---------------------------------------------------------------------- */
+async function edhaRemoveMark(owner, target, status = "omen") {
   if (!target) return;
-  await edhaToggleStatus(target, "omen", false);
-  if (target.isOwner) { try { await target.unsetFlag("edha-content", "markedBy.omen"); } catch (e) {} }
-  else if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "set-flag", payload: { actorUuid: target.uuid, key: "markedBy.omen", value: null } }); } catch (e) {} }
+  await edhaToggleStatus(target, status, false);
+  if (target.isOwner) { try { await target.unsetFlag("edha-content", `markedBy.${status}`); } catch (e) {} }
+  else if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "set-flag", payload: { actorUuid: target.uuid, key: `markedBy.${status}`, value: null } }); } catch (e) {} }
 }
-
-/* --- Shatter Focus's target read (the one un-migrated Chaos-dispatch talent — Red's) -------------- */
-function edhaChaosTarget() { return Array.from(game.user?.targets ?? [])[0]?.actor ?? null; }
 
 
 /* Spreading Omen · Unweaving · Cascade Collapse · Unravel Everything moved onto their documents
@@ -10422,7 +10390,13 @@ function edhaChaosTarget() { return Array.from(game.user?.targets ?? [])[0]?.act
  * placements, H6's `effects` dispel source, and `unlessTargetStatus` on the trigger family.
  * Do not re-add cases for them. */
 
-/* --- Shatter Focus (Reaction) — remove your Omen, reroll-take-lower the foe's most recent test ----- */
+/* --- `edha-reroll-react` (2bY — was the name-keyed Shatter Focus flow): remove your mark from
+ * the targeted enemy and reroll-take-lower its most recent test. ENGINE-OWNED per §9o (the chat
+ * scan, the kept-d20 rewrite and its cross-client relay are a card/message flow no rule chain
+ * expresses), keyed on the RULE: the mark status rides it, the system charges the cost, and the
+ * "target bears no mark of yours" refusal is vetoed BEFORE cost. Deity/Chaos's Shatter Focus is
+ * the first consumer — RED's same-named talent is a different card (edha-focus drain) and no
+ * longer shares its engine path. */
 function edhaLatestRollMessageOf(actor) {
   const msgs = game.messages?.contents ?? [];
   for (let i = msgs.length - 1; i >= 0 && i >= msgs.length - 50; i--) {
@@ -10432,35 +10406,57 @@ function edhaLatestRollMessageOf(actor) {
   }
   return null;
 }
-async function edhaShatterFocus(owner, item) {
+async function edhaRerollReactFlow(item, h) {
   try {
-    const target = edhaChaosTarget(); if (!target) { ui.notifications?.warn("Edha: target the enemy who is making the test."); return; }
-    if (!edhaBearsMyOmen(owner, target)) { ui.notifications?.warn(`Edha: ${target.name} bears no Omen of yours.`); return; }
-    if (!edhaConsumeCost(item)) return;
-    await edhaRemoveOmen(owner, target);
+    const owner = item.actor; if (!owner) return;
+    const status = String(h.markStatus || "omen").trim() || "omen";
+    const statusLabel = edhaConditionLabel(status) || status;
+    // re-arm the auto-prompts — a real use is the opt-back-in (the mute is per-rule)
+    try { if (owner.getFlag?.("edha-content", `promptOff.${item.id}`)) await owner.unsetFlag("edha-content", `promptOff.${item.id}`); } catch (e) {}
+    try { if (owner.getFlag?.("edha-content", "shatterPromptOff")) await owner.unsetFlag("edha-content", "shatterPromptOff"); } catch (e) {}   // legacy pre-2bY key
+    const target = Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
+    if (!target) { ui.notifications?.warn("Edha: target the enemy who is making the test."); return; }
+    if (!edhaBearsMyMark(owner, target, status)) { ui.notifications?.warn(`Edha: ${target.name} bears no ${statusLabel} of yours.`); return; }
+    await edhaRemoveMark(owner, target, status);
     const msg = edhaLatestRollMessageOf(target);
-    if (!msg) { edhaChaosCard(owner, null, `<p>🩸 <strong>Shatter Focus</strong>: Omen removed from ${target.name}. No recent test found — the GM imposes the reroll-take-lower by hand.</p>`); return; }
+    if (!msg) { edhaChaosCard(owner, null, `<p>🩸 <strong>${item.name}</strong>: ${statusLabel} removed from ${target.name}. No recent test found — the GM imposes the reroll-take-lower by hand.</p>`); return; }
     const oldRoll = msg.rolls[0];
     const oldTotal = Number(oldRoll.total) || 0;
     const oldNat = Number(edhaKeptD20Nat(oldRoll)) || 0;
     const reroll = await new Roll("1d20").evaluate();
     const newNat = Number(reroll.total) || 0;
     if (oldNat && newNat >= oldNat) {
-      edhaChaosCard(owner, [reroll], `<p>🩸 <strong>Shatter Focus</strong>: Omen removed from ${target.name}; reroll d20 = <strong>${newNat}</strong> ≥ kept ${oldNat} — the original test stands.</p>`);
+      edhaChaosCard(owner, [reroll], `<p>🩸 <strong>${item.name}</strong>: ${statusLabel} removed from ${target.name}; reroll d20 = <strong>${newNat}</strong> ≥ kept ${oldNat} — the original test stands.</p>`);
       return;
     }
     const newTotal = oldTotal - (oldNat - newNat);
-    await edhaRewriteOrRelay(target, oldTotal, newTotal, `<em>Shatter Focus</em> (${owner.name}): reroll d20 ${oldNat}→${newNat}; total ${oldTotal}→<strong>${newTotal}</strong> (take the lower).`);
-    edhaChaosCard(owner, [reroll], `<p>🩸 <strong>Shatter Focus</strong>: Omen removed from ${target.name}; rerolled the d20 ${oldNat}→<strong>${newNat}</strong> — ${target.name}'s test drops to <strong>${newTotal}</strong>.</p>`);
-  } catch (e) { console.error("Edha Content | Shatter Focus failed", e); }
+    await edhaRewriteOrRelay(target, oldTotal, newTotal, `<em>${item.name}</em> (${owner.name}): reroll d20 ${oldNat}→${newNat}; total ${oldTotal}→<strong>${newTotal}</strong> (take the lower).`);
+    edhaChaosCard(owner, [reroll], `<p>🩸 <strong>${item.name}</strong>: ${statusLabel} removed from ${target.name}; rerolled the d20 ${oldNat}→<strong>${newNat}</strong> — ${target.name}'s test drops to <strong>${newTotal}</strong>.</p>`);
+  } catch (e) { console.error("Edha Content | reroll-react flow failed", e); }
 }
+// The pre-cost veto: every gate the retired takeover checked before edhaConsumeCost moves here
+// (the H1/H3/H12 shape) — a mistaken click spends nothing.
+Hooks.on("cosmere-rpg.preUseItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
+    const h = edhaRuleOf(item, "edha-reroll-react"); if (!h) return;
+    const status = String(h.markStatus || "omen").trim() || "omen";
+    const target = Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
+    if (!target) { ui.notifications?.warn(`Edha: ${item.name} — target the enemy who is making the test (nothing spent).`); return false; }
+    if (!edhaBearsMyMark(actor, target, status)) {
+      ui.notifications?.warn(`Edha: ${target.name} bears no ${edhaConditionLabel(status) || status} of yours — nothing spent.`);
+      return false;
+    }
+  } catch (e) { /* never block a use on a guard failure */ }
+});
 
-/* --- Shatter Focus AUTO-PROMPT (was backlog; wired 2026-07-04, Ben-approved shape) ------------------
+/* --- Reroll-Reaction AUTO-PROMPT (wired 2026-07-04, Ben-approved shape; rule-keyed 2bY) ------------
  * On every foe TEST (the contest-watch Roll hooks — they fire once, on the rolling client), whisper
- * the Reaction reminder to the owner whose Omen the roller bears. This never auto-fires: the owner
- * still uses the talent natively (cost + reroll flow unchanged). Spam controls: (1) only Omen-bearers
- * prompt at all, (2) once per foe per turn (the Order prompt-gate shape), (3) the card's Mute button
- * sets shatterPromptOff — using Shatter Focus re-arms the prompts. ⚑ bench: reassess spam live. */
+ * the Reaction reminder to the owner whose mark the roller bears — found through the owner's
+ * `edha-reroll-react` rule (autoPrompt field), never a talent name. Never auto-fires: the owner
+ * still uses the talent natively. Spam controls: (1) only mark-bearers prompt at all, (2) once per
+ * foe per turn, (3) the card's Mute button sets promptOff.<rule item> — a real use re-arms.
+ * ⚑ bench: reassess spam live. */
 const _edhaShatterPrompted = new Map();
 function edhaShatterPromptGate(key) {
   const c = game.combat;
@@ -10474,20 +10470,30 @@ function edhaShatterPromptGate(key) {
 function edhaChaosShatterPrompt(roll, source, config) {
   try {
     const foe = edhaD20RollActor(config); if (!foe) return;
-    if (!foe.statuses?.has?.("omen")) return;                 // fast path — only Omen-bearers can prompt
-    const mk = foe.flags?.["edha-content"]?.markedBy?.omen;
-    const owner = mk?.actorId ? game.actors?.get(mk.actorId) : null;
-    if (!owner || owner === foe) return;
-    if (!edhaOwnsTalent(owner, "Shatter Focus") || owner.getFlag?.("edha-content", "shatterPromptOff")) return;
-    const otok = edhaCasterToken(owner), ftok = edhaCasterToken(foe);
-    if (otok && ftok && (otok.document?.disposition ?? 1) === (ftok.document?.disposition ?? 1)) return;   // enemies only
-    if (!edhaShatterPromptGate(`${owner.id}:${foe.id}`)) return;
-    ChatMessage.create({
-      whisper: edhaWhisperIds(owner), speaker: ChatMessage.getSpeaker({ actor: owner }),
-      content: `<div class="edha-trigger-card"><p>🩸 <strong>Shatter Focus</strong> — ${foe.name} (your Omen-bearer) just rolled a test (kept total <strong>${Number(roll?.total) || "?"}</strong>). React? Target ${foe.name} and use <strong>Shatter Focus</strong>: the Omen is removed and the test rerolls-take-lower.</p>`
-        + `<button type="button" class="edha-shatter-mute" data-edha-owner="${owner.uuid}">🔇 Mute these prompts (using Shatter Focus re-arms them)</button></div>`,
-    });
-  } catch (e) { console.error("Edha Content | Shatter Focus prompt failed", e); }
+    const marks = foe.flags?.["edha-content"]?.markedBy; if (!marks) return;   // fast path — only mark-bearers can prompt
+    for (const [status, mk] of Object.entries(marks)) {
+      if (!foe.statuses?.has?.(status)) continue;
+      const owner = mk?.actorId ? game.actors?.get(mk.actorId) : null;
+      if (!owner || owner === foe) continue;
+      let rule = null;
+      for (const tal of (owner.items ?? [])) {
+        if (!edhaIsTalent(tal)) continue;
+        const rh = edhaRuleOf(tal, "edha-reroll-react");
+        if (rh && String(rh.markStatus || "omen") === status) { rule = { item: tal, handler: rh }; break; }
+      }
+      if (!rule || rule.handler.autoPrompt === false) continue;
+      if (owner.getFlag?.("edha-content", `promptOff.${rule.item.id}`) || owner.getFlag?.("edha-content", "shatterPromptOff")) continue;
+      const otok = edhaCasterToken(owner), ftok = edhaCasterToken(foe);
+      if (otok && ftok && (otok.document?.disposition ?? 1) === (ftok.document?.disposition ?? 1)) continue;   // enemies only
+      if (!edhaShatterPromptGate(`${owner.id}:${foe.id}`)) continue;
+      const statusLabel = edhaConditionLabel(status) || status;
+      ChatMessage.create({
+        whisper: edhaWhisperIds(owner), speaker: ChatMessage.getSpeaker({ actor: owner }),
+        content: `<div class="edha-trigger-card"><p>🩸 <strong>${rule.item.name}</strong> — ${foe.name} (your ${statusLabel}-bearer) just rolled a test (kept total <strong>${Number(roll?.total) || "?"}</strong>). React? Target ${foe.name} and use <strong>${rule.item.name}</strong>: the ${statusLabel} is removed and the test rerolls-take-lower.</p>`
+          + `<button type="button" class="edha-shatter-mute" data-edha-owner="${owner.uuid}" data-edha-item="${rule.item.id}">🔇 Mute these prompts (a real use re-arms them)</button></div>`,
+      });
+    }
+  } catch (e) { console.error("Edha Content | reroll-react prompt failed", e); }
 }
 for (const ctx of ["skill", "attack", "item"]) Hooks.on(`cosmere-rpg.${ctx}Roll`, edhaChaosShatterPrompt);
 Hooks.on("renderChatMessageHTML", (msg, html) => {
@@ -10495,7 +10501,7 @@ Hooks.on("renderChatMessageHTML", (msg, html) => {
   root?.querySelectorAll?.(".edha-shatter-mute").forEach(b => b.addEventListener("click", async (ev) => {
     ev.preventDefault(); b.disabled = true;
     const ref = await fromUuid(b.dataset.edhaOwner).catch(() => null); const owner = ref?.actor ?? ref; if (!owner) return;
-    try { await owner.setFlag("edha-content", "shatterPromptOff", true); } catch (e) {}
+    try { await owner.setFlag("edha-content", b.dataset.edhaItem ? `promptOff.${b.dataset.edhaItem}` : "shatterPromptOff", true); } catch (e) {}
     b.textContent = "Prompts muted";
   }));
 });
@@ -10504,24 +10510,13 @@ Hooks.on("renderChatMessageHTML", (msg, html) => {
  * a generic `edha-sense-reveal` rule (see edhaSenseRevealOnDamage / edhaSenseRevealShows). The
  * per-viewer canvas RENDERING is ENGINE_OWNED — a rule cannot rewire another client's veil. */
 
-/* --- Chaos dispatch — preUseItem TAKEOVER (cancel the default single-target flow) ------------------
- * Down to ONE name since pass 2bU: Shatter Focus is RED's talent (a different tree's — its only
- * takeover lives in this Set) and is not on the 2bU list. The other four are on their documents. */
-const EDHA_CHAOS_TALENTS = new Set(["Shatter Focus"]);
-Hooks.on("cosmere-rpg.preUseItem", (item) => {
-  try {
-    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
-    if (!EDHA_CHAOS_TALENTS.has(item.name) || !edhaOwnsTalent(actor, item.name)) return;
-    switch (item.name) {
-      // Entropy Strike · Isolating Pressure · Isolating Ruin (07-24p) and Spreading Omen ·
-      // Unweaving · Cascade Collapse · Unravel Everything (07-25 2bU) moved onto their documents
-      // (iron rule 2b). Do not re-add cases for them.
-      case "Shatter Focus":       if (actor.getFlag?.("edha-content", "shatterPromptOff")) void actor.unsetFlag("edha-content", "shatterPromptOff");   // a real use re-arms the auto-prompts
-                                  void edhaShatterFocus(actor, item); break;
-    }
-    return false;   // cancel the system's default use() for every active Chaos talent (no stray card/roll)
-  } catch (e) { console.error("Edha Content | Chaos preUse-hook failed", e); }
-});
+/* --- Chaos dispatch: DELETED 2bY (iron rule 2b) — EDHA_CHAOS_TALENTS is GONE. Its last name was
+ * Shatter Focus, which is TWO talents: deity/Chaos's (the Omen reroll-take-lower — now the
+ * `edha-reroll-react` rule above, system cost + pre-cost veto) and leyline/Red's (the focus
+ * drain — an `edha-focus` rule on ITS document). The takeover matched both by name and always ran
+ * the Chaos flow, so Red's card was unreachable; each document now carries its own behaviour.
+ * Entropy Strike · Isolating Pressure · Isolating Ruin (07-24p) · Spreading Omen · Unweaving ·
+ * Cascade Collapse · Unravel Everything (2bU) are on their documents — do not re-add a Set. */
 
 // Clear Omen / inflicted-Isolated statuses + markedBy at scene/combat end (GM-side), like the Charge/Life flags.
 async function edhaClearChaosState() {
@@ -15496,7 +15491,7 @@ function edhaRegisterNativeEventSystem() {
     source: "edha-content", type: "edha-watch",
     label: "Edha: Watch (react to another talent's test or roll)", description: "This talent reacts to something ANOTHER document did — a test another of your talents resolved, or any skill roll you made. Put what happens on the sibling 'When Your Test SUCCEEDS' / 'FAILS' rules, exactly as for a gated test; this handler only decides whether the observation counts.",
     config: { schema: {
-      watch: new FF.StringField({ required: true, initial: "test", choices: choices("test", "skill-roll", "defeat", "focus-change", "turn-start", "die-step", "token-move"), label: "What to watch", hint: "test = a gated test (Edha: Gated Test) that resolved · skill-roll = any skill test roll, including ones no talent gated (Extract Thought rides every Deception roll) · defeat = a creature dropped to 0 HP · focus-change = a creature LOST focus (the observed value is its new focus) · turn-start = a creature began its turn (the observed value is its CURRENT focus, so 'at most 0' is Puppeteer's gate) · die-step = an Edha: Step a Damage Die entry landed (the observed skill is the ENTRY KEY — Sovereign's Favor filters whenSkill 'exalt'; the observed value is the signed steps; the payload's victim is the stepped creature) · token-move = YOUR token's movement crossed an other-side living creature's space, one event per creature crossed (Unstoppable Advance's trample — pair with requireSelfStatus + once: arm-per-target; the payload's victim is the crossed creature. 2bU)." }),
+      watch: new FF.StringField({ required: true, initial: "test", choices: choices("test", "skill-roll", "defeat", "focus-change", "turn-start", "die-step", "token-move", "damaged"), label: "What to watch", hint: "test = a gated test (Edha: Gated Test) that resolved · skill-roll = any skill test roll, including ones no talent gated (Extract Thought rides every Deception roll) · defeat = a creature dropped to 0 HP · focus-change = a creature LOST focus (the observed value is its new focus) · turn-start = a creature began its turn (the observed value is its CURRENT focus, so 'at most 0' is Puppeteer's gate) · die-step = an Edha: Step a Damage Die entry landed (the observed skill is the ENTRY KEY — Sovereign's Favor filters whenSkill 'exalt'; the observed value is the signed steps; the payload's victim is the stepped creature) · token-move = YOUR token's movement crossed an other-side living creature's space, one event per creature crossed (Unstoppable Advance's trample — pair with requireSelfStatus + once: arm-per-target; the payload's victim is the crossed creature. 2bU) · damaged = a creature took real damage; the observed value is how many times it has been damaged THIS ROUND, so 'at least 2' + once: round-per-target is Breaking Point's second-blow gate (want payloadTarget 'actor'; set includeSelf OFF unless your own wounds count. 2bY)." }),
       scope: new FF.StringField({ required: true, initial: "self", choices: choices("self", "scene"), label: "Whose events", hint: "self = only your OWN actor's (Crown of Thorns, Extract Thought — a sibling talent's event, which rules otherwise never see) · scene = anyone's, filtered below." }),
       payloadTarget: new FF.StringField({ required: false, initial: "victim", choices: choices("victim", "actor"), label: "The payload acts on", hint: "victim = the creature the observed TEST resolved against (the usual for test / skill-roll) · actor = the creature the event happened to — the one that dropped, or the one that lost focus. The subject-only kinds want 'actor'." }),
       whenSkill: new FF.StringField({ required: false, blank: true, initial: "", label: "Only these skills/colours", hint: "Comma-list, blank = any. Leyline colours are skill ids, so one field covers both atlases: 'black,red' for Crown of Thorns, 'dec' for Extract Thought." }),
@@ -16271,8 +16266,9 @@ function edhaRegisterNativeEventSystem() {
     config: { schema: {
       appliesTo: new FF.StringField({ required: true, initial: "any", choices: choices("any", "attack", "skill", "item"), label: "Applies to test type", hint: "'any' or one of: attack, skill, item" }),
       bonusFormula: new FF.StringField({ required: false, blank: true, initial: "", label: "Bonus formula", hint: "[Die] = 1d(2 * @skills.<color>.rank + 2). Resolved against your roll data, then added to the d20 test. May be blank when Mode is set." }),
-      mode: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "advantage", "disadvantage"), label: "Advantage mode", hint: "Grants advantage/disadvantage on the matching test instead of (or as well as) a formula. 07-24j: replaced the name-keyed stance table; also what Frenzied Tempo needs." }),
+      mode: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "advantage", "disadvantage"), label: "Advantage mode", hint: "Grants advantage/disadvantage on the matching test instead of (or as well as) a formula. 07-24j: replaced the name-keyed stance table; Frenzied Tempo rides it since 2bY (with unlessSkills)." }),
       whenSkill: new FF.StringField({ required: false, blank: true, initial: "", label: "Only on tests of this skill", hint: "A single skill id, e.g. itm (Intimidation), ins (Insight), agi (Agility). Narrower than 'Only on tests of these attribute(s)' — Intimidation is Presence, but so are Persuasion and Deception." }),
+      unlessSkills: new FF.StringField({ required: false, blank: true, initial: "", label: "Never on tests of these skills", hint: "Comma-list of skill ids the rider stands down for. Leyline colours are skill ids, so 'white,blue,black,red,green' says 'Presence tests except the casts' (Frenzied Tempo — black is itself a Presence skill, which a positive filter cannot express). 2bY." }),
       whileStanceActive: new FF.BooleanField({ required: false, initial: false, label: "Only while THIS talent's stance is active", hint: "For stance talents (system.modality = stance): the rider applies only while the actor stands in the stance this very talent grants." }),
       whenTargetStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "Only when the target has one of these statuses", hint: "Comma-list = any of them (checks your current target). Predatory Patience: weakened. Kneel's standing advantage: compelled,frightened,weakened. (H13, 07-25 2bU.)" }),
       rangeColor: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "white", "blue", "black", "red", "green"), label: "Only while the target is within Attunement Range", hint: "Blank = any distance. Kneel's advantage only reaches Black range. Both tokens must be on the map — off-map fails closed. (H13, 07-25 2bU.)" }),
@@ -17064,6 +17060,20 @@ function edhaRegisterNativeEventSystem() {
       note: new FF.StringField({ required: false, blank: true, initial: "", label: "Card note" }),
     } },
     executor: async function () { /* config-only: the detonate resolver's sweep reads this rule */ },
+  });
+  /* 2bY — the mark-payoff Reaction (deity/Chaos's Shatter Focus): ENGINE-OWNED flow keyed on this
+   * rule (the chat-scan + kept-d20 rewrite + cross-client relay are no rule chain's job); every
+   * dial is a field. The "no mark on the target" refusal is vetoed BEFORE cost. */
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-reroll-react",
+    label: "Edha: Remove Your Mark, Reroll-Take-Lower (Reaction)",
+    description: "Spend the Reaction when an enemy bearing your mark makes a test: the mark is removed and the test rerolls, keeping the lower d20. Refused before cost with no marked target selected. The auto-prompt whispers you when a mark-bearer rolls (mutable per card; a real use re-arms).",
+    config: { schema: {
+      markStatus: new FF.StringField({ required: false, blank: true, initial: "omen", label: "Your mark's status id", hint: "The markedBy.<status> ownership flag is checked too — only YOUR mark qualifies. Chaos: omen." }),
+      autoPrompt: new FF.BooleanField({ required: false, initial: true, label: "Whisper me when a mark-bearer rolls a test", hint: "The reminder card (never auto-fires; you still use the talent). The card's Mute button silences it until your next real use." }),
+      note: new FF.StringField({ required: false, blank: true, initial: "", label: "Card note" }),
+    } },
+    executor: async function (event) { const item = event.item; if (item?.actor) await edhaRerollReactFlow(item, this); },
   });
   /* 2bX — ENGINE-OWNED card flows over the owner's placed markers, keyed on this rule (the
    * edha-decree exit shape): the spring buttons, the declared-event resolve and the ≤maxFt slide
