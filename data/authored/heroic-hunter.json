@@ -112,7 +112,46 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ColdEyesWatch000": {
+          "description": "Heroic/Hunter. Fires when the creature that dropped is YOUR quarry (whenOnMyList — the own-ledger gate, built 2bZ with this talent). Rides the shared defeat announcement, so it inherits the tree-wide defeat preconditions (live-to-0 crossing, no PC drops, no summons, no Death-Warded creatures — three deliberate narrowings vs the retired hook, benched 2bZ).",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-watch",
+            "watch": "defeat",
+            "scope": "scene",
+            "payloadTarget": "actor",
+            "whenOnMyList": "quarry",
+            "note": "your quarry is down — choose a new quarry (use Seek Quarry)."
+          },
+          "id": "ColdEyesWatch000"
+        },
+        "ColdEyesClear000": {
+          "description": "Heroic/Hunter. The dead quarry leaves your ledger (entry + marker) — the H3 release the retired hook hand-rolled.",
+          "event": "edha-test-success",
+          "order": 1,
+          "handler": {
+            "type": "edha-owner-list",
+            "list": "quarry",
+            "op": "release"
+          },
+          "id": "ColdEyesClear000"
+        },
+        "ColdEyesFocus000": {
+          "description": "Heroic/Hunter. Recover 1 focus when your quarry falls.",
+          "event": "edha-test-success",
+          "order": 2,
+          "handler": {
+            "type": "edha-focus",
+            "op": "gain",
+            "resource": "foc",
+            "target": "self",
+            "formula": "1",
+            "label": "Cold Eyes"
+          },
+          "id": "ColdEyesFocus000"
+        }
+      },
       "effects": []
     },
     "Combat Training": {

@@ -986,7 +986,19 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "WaryGuard0000000": {
+          "description": "Heroic/Warrior. The focus guard (2bZ, iron rule 3 re-litigated — both halves stay ENFORCED, rule-keyed): involuntary focus loss against you is reduced by your Discipline ranks, and Surprised cannot be applied while you hold focus. Config-only — edhaDrainFocus and the status-creation veto read it.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-focus-guard",
+            "reduceFormula": "@skills.dis.rank",
+            "vetoStatus": "surprised",
+            "whileFocusAbove": 0
+          },
+          "id": "WaryGuard0000000"
+        }
+      },
       "effects": []
     },
     "Windstance": {

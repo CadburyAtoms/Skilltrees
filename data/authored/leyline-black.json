@@ -405,7 +405,18 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "DreadMoveVeto000": {
+          "description": "Black/Isolation. The movement veto (2bZ, rule-keyed — was ENGINE-OWNED, re-litigated): a Weakened creature inside your Black Attunement Range cannot willingly move closer to any of its allies. Engine-forced movement bypasses. Config-only — the token-movement veto reads it; the Dirgehound/Cragdrake/Elder adversary copies carry their own rule.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-move-veto",
+            "moverStatus": "weakened",
+            "rangeColor": "black"
+          },
+          "id": "DreadMoveVeto000"
+        }
+      },
       "effects": []
     },
     "Extract Thought": {

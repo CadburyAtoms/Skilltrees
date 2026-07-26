@@ -369,22 +369,26 @@ test("edhaAmbushFooledIn: true only for a fooled uuid in the CURRENT scene", () 
 });
 
 // --- W29 owner-scan widening (ruling 113) + the ruling-107 rank fallback -----------------------
-// edhaCharacterOwnersOf filtered type "character", so every name-scan passive (Dread Presence,
-// Shield Wall, the focus watcher) was DEAD on adversary owners — the W28 Dirgehound Pack shipped
-// its headline veto that way. edhaOwnersOf must see: character actors, adversary actors in
-// game.actors, and UNLINKED adversary token copies that exist only on the canvas.
-test("edhaOwnersOf: sees character, adversary, and unlinked-token owners; dedupes; skips non-owners", () => {
-  const talent = (n) => ({ name: n, type: "talent" });
-  const advTalent = (n) => ({ name: n, flags: { "edha-content": { adversaryTalent: true } } });
-  const pc = { id: "pc1", type: "character", items: [talent("Dread Presence")] };
-  const linkedAdv = { id: "adv1", type: "adversary", items: [advTalent("Dread Presence")] };
-  const bystander = { id: "adv2", type: "adversary", items: [advTalent("Sapping Hex")] };
-  const tokenAdv = { id: "adv3", type: "adversary", items: [advTalent("Dread Presence")] };
-  env.game = { actors: [pc, linkedAdv, bystander] };
-  env.canvas = { tokens: { placeables: [ { actor: tokenAdv }, { actor: linkedAdv }, { actor: null } ] } };
-  const owners = env.edhaOwnersOf("Dread Presence");
-  assert.deepStrictEqual(owners.map(o => o.id).sort(), ["adv1", "adv3", "pc1"], "all three surfaces, deduped");
-  assert.ok(!owners.includes(bystander), "non-owner adversary excluded");
+// edhaOwnersOf is GONE (2bZ — its last consumer, the Dread Presence veto, is rule-keyed now), but
+// the W29 guarantee it pinned must SURVIVE the repoint: the rule sweep has to see a rule carried
+// by an UNLINKED adversary token that exists only on the canvas (the W28 Dirgehound regression),
+// plus directory characters, deduped. This pins edhaWatchersOfRule's actor surface instead.
+test("edhaWatchersOfRule: sees rules on character, adversary-token, and unlinked-token owners; dedupes; skips non-carriers", () => {
+  const rule = { id: "r000000000000001", event: "edha-watch-rule", handler: { type: "edha-move-veto", moverStatus: "weakened" } };
+  const talWith = (n) => ({ name: n, type: "talent", uuid: `T.${n}`, hasEvents: () => true, enabledEvents: [rule] });
+  const advWith = (n) => ({ name: n, uuid: `A.${n}`, flags: { "edha-content": { adversaryTalent: true } }, hasEvents: () => true, enabledEvents: [rule] });
+  const advBare = (n) => ({ name: n, uuid: `B.${n}`, flags: { "edha-content": { adversaryTalent: true } }, hasEvents: () => true, enabledEvents: [] });
+  const pc = { id: "pc1", uuid: "Actor.pc1", type: "character", items: [talWith("Dread Presence")] };
+  const bystander = { id: "adv2", uuid: "Actor.adv2", type: "adversary", items: [advBare("Sapping Hex")] };
+  const tokenAdv = { id: "adv3", uuid: "Actor.adv3", type: "adversary", items: [advWith("Dread Presence")] };
+  env.game = { actors: [pc, bystander] };
+  env.canvas = { tokens: { placeables: [ { actor: tokenAdv }, { actor: tokenAdv }, { actor: null } ] } };
+  env.edhaDropRuleIndex();
+  try {
+    const owners = [...env.edhaWatchersOfRule("edha-move-veto")].map(w => w.actor.id);
+    assert.deepStrictEqual(owners.sort(), ["adv3", "pc1"], "canvas-only adversary + directory character, deduped");
+    assert.ok(!owners.includes("adv2"), "a carrier of no such rule is excluded");
+  } finally { env.edhaDropRuleIndex(); }
 });
 test("edhaOwnersOf: character-only scan behavior unchanged for edhaCharacterOwnersOf", () => {
   const pc = { id: "pc1", type: "character", items: [{ name: "Shield Wall", type: "talent" }] };

@@ -2503,7 +2503,18 @@
       {
         "name": "Dread Presence",
         "kind": "trait",
-        "text": "<p><em>Black talent, name verbatim — the engine's preUpdateToken veto rides the name.</em></p><p>Weakened characters within 30 ft cannot willingly move closer to any allies — the pack's song stands between the straggler and the line.</p>"
+        "text": "<p><em>Black talent — carries the PC talent's rule shape verbatim (edha-move-veto, 2bZ; the name alone is NOT engine-keyed).</em></p><p>Weakened characters within 30 ft (Attunement Range at rival leyline rank 2) cannot willingly move closer to any allies — the pack's song stands between the straggler and the line.</p>",
+        "events": [
+          {
+            "event": "edha-watch-rule",
+            "handler": {
+              "type": "edha-move-veto",
+              "moverStatus": "weakened",
+              "rangeColor": "black"
+            },
+            "description": "Black/Isolation. The movement veto rule-keyed on this document (2bZ) — rangeColor black reads the ruling-122 role rank (rival 2 = 30 ft). The engine's token-move veto sweeps adversary embeds too (edhaWatchersOfRule covers canvas tokens — the W29 widening inherited)."
+          }
+        ]
       },
       {
         "name": "Unnerving Approach",
@@ -3769,7 +3780,18 @@
       {
         "name": "Dread Presence",
         "kind": "trait",
-        "text": "<p><em>Black talent, name verbatim — the engine's preUpdateToken veto rides the name (ruling 113 owner-scan).</em></p><p>Weakened characters within 60 ft (Attunement Range at boss rank 3 — parity fix, Kettavar 4c audit) cannot willingly move closer to any allies — the herd-cut, worked on people.</p>"
+        "text": "<p><em>Black talent — carries the PC talent's rule shape verbatim (edha-move-veto, 2bZ; the name alone is NOT engine-keyed).</em></p><p>Weakened characters within 60 ft (Attunement Range at boss rank 3 — parity fix, Kettavar 4c audit) cannot willingly move closer to any allies — the herd-cut, worked on people.</p>",
+        "events": [
+          {
+            "event": "edha-watch-rule",
+            "handler": {
+              "type": "edha-move-veto",
+              "moverStatus": "weakened",
+              "rangeColor": "black"
+            },
+            "description": "Black/Isolation. The movement veto rule-keyed on this document (2bZ) — rangeColor black reads the ruling-122 role rank (boss 3 = 60 ft)."
+          }
+        ]
       },
       {
         "name": "Predator's Due",
@@ -4521,7 +4543,18 @@
       {
         "name": "Dread Presence",
         "kind": "trait",
-        "text": "<p><em>Black talent, name verbatim — the engine's preUpdateToken veto rides the name (the Dirgehound/Cragdrake-Alpha precedent).</em></p><p>Weakened characters within 60 ft (Attunement Range at boss rank 3) cannot willingly move closer to any allies — the shape of your friend stands between you and your friends.</p>"
+        "text": "<p><em>Black talent — carries the PC talent's rule shape verbatim (edha-move-veto, 2bZ; the name alone is NOT engine-keyed).</em></p><p>Weakened characters within 60 ft (Attunement Range at boss rank 3) cannot willingly move closer to any allies — the shape of your friend stands between you and your friends.</p>",
+        "events": [
+          {
+            "event": "edha-watch-rule",
+            "handler": {
+              "type": "edha-move-veto",
+              "moverStatus": "weakened",
+              "rangeColor": "black"
+            },
+            "description": "Black/Isolation. The movement veto rule-keyed on this document (2bZ) — rangeColor black reads the ruling-122 role rank (boss 3 = 60 ft)."
+          }
+        ]
       },
       {
         "name": "Predatory Patience",

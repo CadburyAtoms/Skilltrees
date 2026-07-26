@@ -1398,7 +1398,7 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearKindle
  *    longer both benefit. Flagged on the checklist rather than fixed with a fourth flag layout.
  *  - Isolation movement talents — the 06-13 "manual by nature" classification is OVERTURNED piecewise
  *    as the hook inventory grows (the case-studies §4 lesson):
- *    · Dread Presence — ENFORCED since 07-05: preUpdateToken veto (willing moves only; edhaForced bypasses).
+ *    · Dread Presence — ENFORCED since 07-05; rule-keyed since 2bZ (`edha-move-veto` on its document).
  *    · Cruel Step — WIRED 07-12: authored `use` rule on the edha-move executor (10 ft toward the target,
  *      requireTargetIsolated gate; halts at walls; Reactions ignored by rule).
  *    · Unnerving Approach — ON ITS DOCUMENT since 07-24s (iron rule 2b): H6 `edha-prompt-pick` over
@@ -1774,7 +1774,8 @@ function edhaRuleOwnsGate(owner, name) {
  * name-keyed sweep on. Shipped so far:
  *   test          H1's own dispatcher                    (Crown of Thorns, Absolute Authority)
  *   skill-roll    cosmere-rpg.skillRoll                  (Extract Thought)
- *   defeat        the Death live→0 crossing watcher      (Necrotic Cascade)          — 07-24r
+ *   defeat        the Death live→0 crossing watcher      (Necrotic Cascade; Cold Eyes via
+ *                                                         whenOnMyList since 2bZ)    — 07-24r
  *   focus-change  edhaRunFocusWatch + edhaDrainFocus     (the three Black focus passives) — 07-24r
  * Two of those have no `victim` at all, which is what `payloadTarget: "actor"` is for. Queued and
  * measured in audit §9o: damage-applied · turn-start · token-move · attack-declared.
@@ -1903,6 +1904,15 @@ async function edhaDispatchWatchers(ev) {
         if (!edhaWatchMatches(h, ev)) continue;
         if (h.requireSelfStatus && !w.actor?.statuses?.has?.(h.requireSelfStatus)) continue;
         if (h.requireTargetStatus && !ev.victim?.statuses?.has?.(h.requireTargetStatus)) continue;
+        /* Own-ledger gate (2bZ — Cold Eyes): the observed SUBJECT must sit on the WATCHER's ledger.
+         * Reads the same subject the payload will act on, so a defeat kind gates on the creature
+         * that dropped. Lives here, not in edhaWatchMatches — list membership needs the watcher. */
+        if (h.whenOnMyList) {
+          const lkey = String(h.whenOnMyList).trim();
+          const lst = String(h.whenOnMyListStatus || lkey).trim();
+          const lsub = String(h.payloadTarget || "victim") === "actor" ? ev.owner : ev.victim;
+          if (!lkey || !lsub?.uuid || !edhaOwnerList(w.actor, lkey, lst).some((e) => e.uuid === lsub.uuid)) continue;
+        }
 
         // scope "scene": where the WATCHER stands relative to the actor who acted.
         if (scope === "scene") {
@@ -3362,32 +3372,17 @@ async function edhaRitualHpCost(item, cfg) {
  *   ⚑ Hollow Command no longer posts an owner-judged card when the Spiritual defense is unreadable;
  *   H1 fails OPEN instead. Same deliberate change as Extract Thought (2bH-11) and it wants the same
  *   ruling — benched as 2bI-8.
- * ⚑ STILL DEFERRED, with the reason (07-24r): Puppeteer needs H6 as well as H8 (a turn-start watch
- *   plus a prompt-pick card); Dread Presence is a scene-scope veto, not an observation.
+ * ⚑ Puppeteer converted 07-24s (H6 + the turn-start watch). Dread Presence converted 2bZ: its
+ *   ENGINE-OWNED exit re-litigated into the rule-keyed `edha-move-veto` (the pass-Y shape) — the
+ *   hook stays, what it consults is the document, and the adversary copies carry their own rule.
  * ============================================================================================ */
 function edhaCharacterOwnersOf(name) {
   return (game.actors?.filter(a => a.type === "character" && edhaOwnsTalent(a, name)) ?? []);
 }
-// W29 owner-scan widening (2026-07-20, ruling 113): name-scan passives were invisible on adversary
-// owners — the character filter above skips them, and compendium-dropped adversary tokens are usually
-// UNLINKED (their synthetic actors are not in game.actors at all), so the W28 Dirgehound Pack shipped
-// with its Dread Presence veto dead. edhaOwnersOf adds adversary owners from both surfaces, deduped
-// by actor. Consumers widened this pass: the Dread Presence veto, the Shield Wall / Devoted Conduit
-// pre-pass, and the focus watcher (Whispered Doubt / Coercive Pressure / Predatory Insight). Every
-// other name-scan stays character-only until a pass deliberately widens it — never wholesale.
-function edhaOwnersOf(name) {
-  const owners = (game.actors?.filter(a => (a.type === "character" || a.type === "adversary") && edhaOwnsTalent(a, name)) ?? []);
-  for (const t of (canvas?.tokens?.placeables ?? [])) {
-    const a = t?.actor;
-    if (a && a.type === "adversary" && !owners.includes(a) && edhaOwnsTalent(a, name)) owners.push(a);
-  }
-  return owners;
-}
-function edhaWithinAttune(owner, targetTok) {
-  const ot = edhaCasterToken(owner); if (!ot || !targetTok) return false;
-  const ft = EDHA_ATTUNE_FT[edhaColorRank(owner, "black")] || EDHA_ATTUNE_FT[1];
-  return edhaTokensWithin(ot, ft).some(t => t.id === targetTok.id);
-}
+/* edhaOwnersOf + edhaWithinAttune are GONE (2bZ): their last consumer was the Dread Presence
+ * movement veto, which is rule-keyed now (`edha-move-veto`). The W29/ruling-113 adversary-owner
+ * widening they carried is inherited for free — edhaWatchersOfRule sweeps canvas tokens, which is
+ * exactly where unlinked adversary owners live. */
 function edhaDisposHostile(owner, target) {
   const ot = edhaCasterToken(owner), tt = edhaCasterToken(target) ?? target.getActiveTokens?.()[0];
   if (!ot || !tt) return true;   // unknown positions → treat as enemy (don't silently no-op)
@@ -3518,17 +3513,32 @@ for (const ctx of ["skill", "attack", "item"]) {
  * The borrowed action itself stays GM-run — the talent carries no payload rule at all, which is
  * exactly what makes H6 post its `note` instead. Do NOT re-add a turn-change hook here. */
 
-// Dread Presence (2026-07-05, was "manual by nature"): ENFORCED. A Weakened creature inside a Dread
-// Presence owner's Attunement Range cannot WILLINGLY move closer to any of its allies — the drag is
-// vetoed on the moving client (preUpdateToken runs there) with a warning naming the blocked ally.
-// Engine-forced movement (push/slide/teleport relays) sets options.edhaForced and bypasses this.
+// The MOVE VETO (2bZ — was Dread Presence's name-keyed hook, rule-keyed now: the pass-Y shape). A
+// creature bearing the rule's status inside a rule owner's range cannot WILLINGLY move closer to
+// any of its allies — vetoed on the moving client (preUpdateToken runs there) with a warning
+// naming the blocked ally. Engine-forced movement (push/slide/teleport relays) sets
+// options.edhaForced and bypasses. The sweep ANNOUNCES (edhaWatchersOfRule), which inherits the
+// W29/ruling-113 adversary-owner widening for free: the Dirgehound/Cragdrake/Elder copies in the
+// ADVERSARY pack carry the same rule on their own trait documents (rangeFt pinned where the block
+// prints a fixed figure).
 Hooks.on("preUpdateToken", (doc, changes, options) => {
   try {
     if (options?.edhaForced) return;                              // pushes/slides are not willing movement
     if (!("x" in changes) && !("y" in changes)) return;
     const tok = doc.object, actor = doc.actor;
-    if (!tok || !actor?.statuses?.has?.("weakened")) return;
-    if (!edhaOwnersOf("Dread Presence").some(o => o !== actor && edhaWithinAttune(o, tok))) return;   // W29 (ruling 113): adversary owners included — the W28 Dirgehound veto was dead without this
+    if (!tok || !actor) return;
+    let live = null;
+    for (const w of edhaWatchersOfRule("edha-move-veto")) {
+      const h = w.handler;
+      if (w.actor === actor) continue;                            // your own presence never pins you
+      const st = String(h.moverStatus || "weakened").trim();
+      if (st && !actor.statuses?.has?.(st)) continue;
+      const otok = edhaCasterToken(w.actor); if (!otok) continue;
+      const ft = Number(h.rangeFt) > 0 ? Number(h.rangeFt) : edhaAttuneFtColor(w.actor, h.rangeColor || "black");
+      if (!edhaTokensWithin(otok, ft).some(t => t.id === tok.id)) continue;
+      live = w; break;
+    }
+    if (!live) return;
     const gs = (doc.parent?.grid?.size || 100), gd = (doc.parent?.grid?.distance || 5);
     const w = (doc.width ?? 1) * gs / 2, h = (doc.height ?? 1) * gs / 2;
     const oldC = { x: doc.x + w, y: doc.y + h };
@@ -3541,11 +3551,11 @@ Hooks.on("preUpdateToken", (doc, changes, options) => {
       const dOld = Math.hypot(t.center.x - oldC.x, t.center.y - oldC.y);
       const dNew = Math.hypot(t.center.x - newC.x, t.center.y - newC.y);
       if (dNew < dOld - 1) {                                       // measurably closer to this ally
-        ui.notifications?.warn(`Dread Presence: ${actor.name} is Weakened and cannot willingly move closer to ${t.actor.name}. (Engine-forced movement bypasses this.)`);
+        ui.notifications?.warn(`${live.item.name}: ${actor.name} is ${edhaConditionLabel(String(live.handler.moverStatus || "weakened")) || "Weakened"} and cannot willingly move closer to ${t.actor.name}. (Engine-forced movement bypasses this.)`);
         return false;
       }
     }
-  } catch (e) { console.error("Edha Content | Dread Presence veto failed", e); }
+  } catch (e) { console.error("Edha Content | move-veto failed", e); }
 });
 
 /* ============================================================================================
@@ -5085,8 +5095,8 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
  *   crafting subsystem in the free system), Ongoing Care (rest-time; rolls fine), Keen Insight
  *   (Gain Advantage isn't a hookable item), Deep Contemplation (Erudition reassign = sheet edit).
  * WARRIOR — ✅ NO BUCKET-2 TALENTS LEFT (07-24s). Feinting Strike was the last, and it moved onto its
- *   document — `edha-focus` drain (@skills.itm.rank, still Wary-aware because edhaDrainFocus owns
- *   that) + `edha-cae-grant` burn-reaction {target: victim} + an `edha-note` for the graze half,
+ *   document — `edha-focus` drain (@skills.itm.rank, still guard-aware because edhaDrainFocus owns
+ *   the focus-guard reduction) + `edha-cae-grant` burn-reaction {target: victim} + an `edha-note` for the graze half,
  *   which stays table-run because grazes are not engine-visible. It needed no new handler: both
  *   halves shipped in passes E and I, and the blocker was edhaDispatchOnHit hand-listing three
  *   handler types so every other rule on `edha-on-hit` was inert. The dispatcher now runs each
@@ -5094,7 +5104,8 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
  * WARRIOR — WIRED: the STANCE machine + numeric riders + skill advantage + Practiced Kata
  *   combat-start, Shattering Blow (on-hit push,
  *   authored), Meteoric Leap (on-hit cue, authored), Devastating Blow/Wit's End (tier formulas),
- *   Wary (Surprised veto + drain reduction), Hardy/Surefooted (AEs). CAE-NEXT: Vigilant Stance
+ *   Wary (authored edha-focus-guard since 2bZ — Surprised veto + drain reduction, rule-keyed),
+ *   Hardy/Surefooted (AEs). CAE-NEXT: Vigilant Stance
  *   [cost-discount — Dodge/Reactive Strike −1], Stonestance's attack tax [cost-discount inverse],
  *   Flame/Wind extra actions [grant-action], Combat Training's free graze [cadence], Cautious
  *   Advance [grant-action]. MANUAL: Precise Parry (hit→graze is the GM's — the Combat Training
@@ -5162,36 +5173,30 @@ function edhaQuarryAdvPreRoll(roll, source, config) {
   } catch (e) { /* non-fatal */ }
 }
 for (const cap of ["Attack"]) Hooks.on(`cosmere-rpg.pre${cap}Roll`, edhaQuarryAdvPreRoll);
-// Cold Eyes: your quarry hit 0 HP → recover 1 focus + re-prompt (rides the defeat updateActor class).
-Hooks.on("updateActor", (actor, changes) => {
-  try {
-    const hea = foundry.utils.getProperty(changes, "system.resources.hea.value");
-    if (hea === undefined || hea > 0) return;
-    if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return; // ONE applier
-    for (const pc of game.actors?.filter?.(a => a.type === "character") ?? []) {
-      if (edhaQuarryOf(pc) !== actor.uuid || !edhaOwnsTalent(pc, "Cold Eyes")) continue;
-      // ⚠ raw path (§9o trap 3, 2bX): the repointed `quarry` ledger is hand-cleared here (entry +
-      // marker), where the flat quarryUuid used to be unset. Cold Eyes itself stays on the ratchet.
-      for (const q of edhaOwnerList(pc, "quarry", "quarry")) void edhaListUnmark(q, "quarry", { key: "quarry", ownerId: pc.id });
-      void edhaSetOwnerList(pc, "quarry", []);
-      void edhaGainFocus(pc, 1, "Cold Eyes");
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: pc }), content: `<p>🎯 <strong>Cold Eyes</strong>: ${pc.name}'s quarry is down — choose a new quarry (use Seek Quarry).</p>` });
-    }
-  } catch (e) { console.error("Edha Content | Cold Eyes failed", e); }
-});
+/* Cold Eyes — ON ITS DOCUMENT since 2bZ (iron rule 2b). Its bespoke updateActor hook is gone: the
+ * Death defeat watcher already ANNOUNCES the drop, and the talent rides it as `edha-watch`
+ * {defeat, scene, payloadTarget: actor, whenOnMyList: quarry} — the own-ledger gate is the one
+ * field this conversion added — with H3 {quarry, release} (entry + marker cleared, the re-mark
+ * prompt on the watch note) and `edha-focus` {gain 1} as its success payloads.
+ * ⚑ THREE deliberate narrowings, benched (2bZ): the defeat kind needs a live→0 CROSSING (the old
+ * hook re-fired on every ≤0 write), skips PC-type / summon / Death-Warded quarry, and needs the
+ * victim on the map. All three inherit Ben's R2 tree-wide defeat preconditions. */
 /* -- Heroic on-hit: edhaHeroicOnHit is GONE (2bX). Its one resident — Tagging Shot's quarry mark —
  * was UNREACHABLE DEAD CODE (it keyed on Tagging Shot itself being the dealing item, and Tagging
  * Shot's damage formula is null, so it never dealt). The card's real shape is the withernext arm:
  * `edha-self-status {tagged}` on use + an armed-self-status `edha-damage-bonus` rule
  * {consumeSelfStatus, weaponOnly, rangedOnly, placeList: quarry} — the marked hit is the PLAYER's
  * ranged weapon attack, exactly as printed. Do not re-add a name-keyed on-hit case. */
-// Focus DRAIN with Wary's reduction (involuntary loss − Discipline ranks, floor 0 loss reduction).
+// Focus DRAIN with the victim's focus-guard reduction (2bZ — was name-keyed on Wary; the guard is
+// a rule on the VICTIM's own document now, so 2bY's Red Shatter drain and every other caller keep
+// riding this one path unchanged).
 async function edhaDrainFocus(actor, n, source) {
   const foc = actor?.system?.resources?.foc; if (!foc) return;
   let loss = Math.max(0, Number(n) || 0);
-  if (edhaOwnsTalent(actor, "Wary")) {
-    const red = Number(actor.system?.skills?.dis?.rank) || 0;
-    if (red > 0) { loss = Math.max(0, loss - red); ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🛡️ <strong>Wary</strong>: involuntary focus loss reduced by ${red}.</p>` }); }
+  const guard = edhaActorRuleOf(actor, "edha-focus-guard");
+  if (guard?.handler?.reduceFormula) {
+    const red = Math.max(0, Math.floor(edhaEvalSync(String(guard.handler.reduceFormula), actor.getRollData?.() ?? {})));
+    if (red > 0) { loss = Math.max(0, loss - red); ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🛡️ <strong>${guard.item.name}</strong>: involuntary focus loss reduced by ${red}.</p>` }); }
   }
   if (!loss) return;
   const cur = Number(foc.value) || 0, next = Math.max(0, cur - loss);
@@ -5216,14 +5221,19 @@ async function edhaDrainFocus(actor, n, source) {
     await edhaDispatchWatchers({ kind: "focus-change", owner: actor, victim: null, skill: null, def: null, ok: null, total: 0 });
   }
 }
-// Wary: cannot be Surprised while holding focus — veto the status AE at creation.
+// Focus-guard status veto (2bZ — was Wary's name-keyed Surprised veto; rule-keyed now, the pass-Y
+// shape: the hook stays, what it consults is the actor's own edha-focus-guard rule).
 Hooks.on("preCreateActiveEffect", (eff) => {
   try {
     const a = eff?.parent;
-    if (!a?.system?.resources || !eff?.statuses?.has?.("surprised") && !(Array.isArray(eff?._source?.statuses) && eff._source.statuses.includes("surprised"))) return;
-    if (!edhaOwnsTalent(a, "Wary")) return;
-    if ((Number(a.system.resources.foc?.value) || 0) > 0) {
-      ui.notifications?.info(`Edha: Wary — ${a.name} can't be Surprised while they have focus.`);
+    if (!a?.system?.resources) return;
+    const guard = edhaActorRuleOf(a, "edha-focus-guard");
+    const st = String(guard?.handler?.vetoStatus || "").trim();
+    if (!st) return;
+    if (!eff?.statuses?.has?.(st) && !(Array.isArray(eff?._source?.statuses) && eff._source.statuses.includes(st))) return;
+    const bar = Number(guard.handler.whileFocusAbove) || 0;
+    if ((Number(a.system.resources.foc?.value) || 0) > bar) {
+      ui.notifications?.info(`Edha: ${guard.item.name} — ${a.name} can't be ${edhaConditionLabel(st) || st} while they have focus.`);
       return false;
     }
   } catch (e) { /* non-fatal */ }
@@ -5307,19 +5317,24 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
 // the engine on 07-24k (iron rule 2b): every one of them was "on use, write a next-test flag on
 // MYSELF", which is now `edha-next-test-mod` with target=self plus the opportunity / plotDie /
 // formula fields. EDHA_OPP_ADDERS and two bespoke useItem hooks deleted with them.
-// Resilient Hero (Leader): the first time health would hit 0, it becomes your Athletics modifier
-// instead — a pre-update veto with a once-per-long-rest flag (GM clears with the rest).
+// HP-floor veto (2bZ — was Resilient Hero's name-keyed hook; rule-keyed now, the pass-Y shape).
+// A cleared flag may have been written by the talent's NATIVE long-rest rule, whose OVERRIDE mode
+// lands STRINGS — "false"/"0" must read as cleared (the plot-die tolerance precedent, §9n).
+function edhaFlagSpent(v) { return !(v === undefined || v === null || v === false || v === 0 || v === "" || v === "false" || v === "0"); }
 Hooks.on("preUpdateActor", (actor, changes) => {
   try {
-    if (actor?.type !== "character" || !edhaOwnsTalent(actor, "Resilient Hero")) return;
+    if (actor?.type !== "character") return;
+    const fl = edhaActorRuleOf(actor, "edha-hp-floor");
+    if (!fl) return;
     const hea = foundry.utils.getProperty(changes, "system.resources.hea.value");
     if (hea === undefined || hea > 0) return;
-    if (actor.getFlag("edha-content", "resilientSpent")) return;
-    const mod = Math.max(1, Number(actor.system?.skills?.ath?.mod) || (Number(actor.system?.skills?.ath?.rank) || 0) + (Number(actor.system?.attributes?.str?.value) || 0) || 1);
+    const flagKey = String(fl.handler.spentFlag || "resilientSpent").trim() || "resilientSpent";
+    if (edhaFlagSpent(actor.getFlag("edha-content", flagKey))) return;
+    const mod = Math.max(1, Math.floor(edhaEvalSync(String(fl.handler.floorFormula || "max(1, @skills.ath.mod)"), actor.getRollData?.() ?? {})) || 1);
     foundry.utils.setProperty(changes, "system.resources.hea.value", mod);
-    void actor.setFlag("edha-content", "resilientSpent", true);
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>💪 <strong>Resilient Hero</strong>: instead of dropping, ${actor.name} holds at <strong>${mod}</strong> health (spent until a long rest — GM: clear with <code>actor.unsetFlag("edha-content","resilientSpent")</code>).</p>` });
-  } catch (e) { console.error("Edha Content | Resilient Hero failed", e); }
+    void actor.setFlag("edha-content", flagKey, true);
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>💪 <strong>${fl.item.name}</strong>: instead of dropping, ${actor.name} holds at <strong>${mod}</strong> health (spent until a long rest — auto-clears ⚑; GM fallback: <code>actor.unsetFlag("edha-content","${flagKey}")</code>).</p>` });
+  } catch (e) { console.error("Edha Content | HP-floor veto failed", e); }
 });
 // (Overwhelm with Details moved onto its document 07-24k — see the note above the command-die
 // cluster. Its Lore modifier is now the rule's `formula`, resolved against the owner at use.)
@@ -15523,6 +15538,8 @@ function edhaRegisterNativeEventSystem() {
       dc: new FF.NumberField({ required: false, initial: 0, label: "Flat DC (your test vs = dc)" }),
       requireSelfStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "Only while YOU have this status", hint: "The scene-arming gate: Crown of Thorns only rides tests while you are 'crowned'. Pair with an Edha: Apply Status To Yourself rule on use." }),
       requireTargetStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "Only when the creature has this status" }),
+      whenOnMyList: new FF.StringField({ required: false, blank: true, initial: "", label: "Only when the creature is on YOUR sustained ledger", hint: "An Edha: Sustained List name (e.g. quarry). The subject of the observed event must be on the WATCHER's own ledger — Cold Eyes only fires when the creature that dropped is YOUR quarry, not anyone's kill. Blank = no gate. 2bZ." }),
+      whenOnMyListStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "…that ledger's marker status", hint: "Blank = the ledger name." }),
       disposition: new FF.StringField({ required: false, initial: "any", choices: choices("any", "enemy", "ally"), label: "Whose events (scope = scene)", hint: "Relative to you: enemy = only creatures hostile to you." }),
       rangeColor: new FF.StringField({ required: false, blank: true, initial: "", label: "Within Attunement Range (scope = scene)", hint: "Blank = any distance." }),
       rangeFt: new FF.NumberField({ required: false, initial: 0, label: "Within this many feet (scope = scene)", hint: "0 = any distance." }),
@@ -15757,6 +15774,48 @@ function edhaRegisterNativeEventSystem() {
       amountFormula: new FF.StringField({ required: true, initial: "0", label: "How much is prevented", hint: "Resolved against YOUR roll data, floored; dice allowed. @colorRank and @tier substitute before rolling — Shield Wall / Devoted Conduit are 'floor(((@tier)d(2 * @colorRank + 2)) / 2)' (half [Tier][Die])." }),
     } },
     // Config-only: the applyDamage pre-pass reads these rules. An executor would run after the hit.
+    executor: async function () {},
+  });
+  /* The FOCUS GUARD (2bZ — was Wary's two name-keyed sites, re-litigated per iron rule 3: both
+   * halves stay ENFORCED, they just read a rule now). Config-only: edhaDrainFocus applies the
+   * reduction in-flight, and the preCreateActiveEffect veto blocks the status while focus holds. */
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-focus-guard",
+    label: "Edha: Focus Guard (passive)", description: "Wary's shape: involuntary focus loss against YOU is reduced, and a status cannot be applied to you while you hold focus. Config-only — the focus-drain path and the status-creation veto read this rule off its owner.",
+    config: { schema: {
+      reduceFormula: new FF.StringField({ required: false, blank: true, initial: "@skills.dis.rank", label: "Involuntary focus loss reduced by", hint: "Resolved against YOUR roll data, floored at 0. Wary is your Discipline ranks. Blank = no reduction." }),
+      vetoStatus: new FF.StringField({ required: false, blank: true, initial: "surprised", label: "This status cannot be applied to you…", hint: "A status id. Blank = no veto." }),
+      whileFocusAbove: new FF.NumberField({ required: false, initial: 0, label: "…while your focus is above", hint: "Wary: you can't be Surprised while you have focus (above 0)." }),
+    } },
+    // Config-only: edhaDrainFocus + the preCreateActiveEffect veto read this rule.
+    executor: async function () {},
+  });
+  /* The MOVE VETO's rule (2bZ — was Dread Presence's name-keyed preUpdateToken sweep, iron rule 3
+   * re-litigated: still ENFORCED, now read off the document; the adversary copies carry it too). */
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-move-veto",
+    label: "Edha: Forbid Approaching Allies (movement veto)", description: "Dread Presence's shape: a creature bearing the status, inside your range, cannot willingly move closer to any of its allies. Engine-forced movement bypasses it. Config-only: the token-movement veto reads this rule off its owner — character or adversary alike.",
+    config: { schema: {
+      moverStatus: new FF.StringField({ required: false, blank: true, initial: "weakened", label: "The moving creature must have this status", hint: "Blank = every enemy in range is pinned (almost never what a card means)." }),
+      rangeColor: new FF.StringField({ required: false, blank: true, initial: "black", choices: choices("", "white", "blue", "black", "red", "green"), label: "Within your Attunement Range (colour)", hint: "Your rank in the colour sets the radius — an adversary owner reads its ROLE rank (ruling 122)." }),
+      rangeFt: new FF.NumberField({ required: false, initial: 0, label: "…or this many feet", hint: "0 = use the colour. Set it when the block prints a fixed figure." }),
+    } },
+    // Config-only: the preUpdateToken move veto reads this rule.
+    executor: async function () {},
+  });
+  /* The HP FLOOR (2bZ — was Resilient Hero's name-keyed preUpdateActor veto). Config-only: the
+   * pre-update veto reads it. The once-per-long-rest spend is a FLAG whose key rides the rule so
+   * the talent's own NATIVE rule (long-rest-actor + update-actor) can clear it — the first
+   * authored native-handler rule in the project (⚑ 2bA-9). The veto's read is tolerant of the
+   * native writer's stringly values ("false"/"0" read as cleared), the plot-die precedent. */
+  api.registerItemEventHandlerType({
+    source: "edha-content", type: "edha-hp-floor",
+    label: "Edha: Hold At An HP Floor (once per long rest)", description: "The first time health would hit 0, it becomes the floor formula instead. Spent until the flag below clears — pair a native 'Actor Long Rested' + 'Update Actor' rule on the same talent to clear it automatically. Config-only: the pre-update veto reads this rule.",
+    config: { schema: {
+      floorFormula: new FF.StringField({ required: false, blank: true, initial: "max(1, @skills.ath.mod)", label: "Health holds at", hint: "Resolved against YOUR roll data, floored at 1. Resilient Hero is your Athletics modifier." }),
+      spentFlag: new FF.StringField({ required: false, blank: true, initial: "resilientSpent", label: "Spent-flag key", hint: "The flags.edha-content key that marks it used. Name it here so the talent's own long-rest clear rule can write the same path." }),
+    } },
+    // Config-only: the preUpdateActor HP-floor veto reads this rule.
     executor: async function () {},
   });
   /* H7 (07-25). The adjacency aura: a GM-side sweep manages one AE on you and your adjacent living

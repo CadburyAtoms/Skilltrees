@@ -652,7 +652,36 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ResilientFloor00": {
+          "description": "Heroic/Leader. The HP floor (2bZ, rule-keyed): the first time health would hit 0 it holds at your Athletics modifier instead, spent until a long rest. Config-only — the pre-update veto reads it.",
+          "event": "edha-watch-rule",
+          "order": 1,
+          "handler": {
+            "type": "edha-hp-floor",
+            "floorFormula": "max(1, @skills.ath.mod)",
+            "spentFlag": "resilientSpent"
+          },
+          "id": "ResilientFloor00"
+        },
+        "ResilientRest000": {
+          "description": "Heroic/Leader. The long-rest clear — the FIRST authored NATIVE-handler rule in the project (2bA-9 ⚑ bench-verify): on a long rest the spent flag clears. The veto's read tolerates the native writer's stringly values ('false'/'0' read as cleared).",
+          "event": "long-rest-actor",
+          "order": 2,
+          "handler": {
+            "type": "update-actor",
+            "target": "parent",
+            "changes": [
+              {
+                "key": "flags.edha-content.resilientSpent",
+                "mode": 5,
+                "value": "false"
+              }
+            ]
+          },
+          "id": "ResilientRest000"
+        }
+      },
       "effects": []
     },
     "Resolute Stand": {
