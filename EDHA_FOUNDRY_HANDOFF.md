@@ -2,11 +2,79 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, **COMPLETED 2026-07-26 (pass AA)**: **the ratchet list is EMPTY — 221 → 0 across twenty-seven passes.** Every tree is clear, all six marker ledgers have migrated, and `scripts/name-keyed-allowlist.json` stays in the repo with an empty `talents` list *on purpose* — lint pass 7 still guards against REGROWTH, which is the half of the ratchet that matters from here on. ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **ALL SIX marker LEDGERS have migrated** (`covenants` 07-24u; `edicts` 07-25 pass V; `remains` 07-25 pass W; Fate's `snares` 07-25 pass X; Destruction's `charges` 07-26 pass Y; Fate's `ordained` 07-26 pass AA — the point-bound ones fail OPEN through H3's reconcile by design). There is no flat marker-list flag left in the engine. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-26b** (THE PRE-DEPLOY
-AUDIT of the finished migration — lint pass 9 (handler FIELD names), the 91-empty classification
-(4 newly declared), **15 dead adversary copies of tree talents wired** (2bAB-1…10), the orphan
-sweep, and the deploy script hardened. **VERDICT: run the .bat.**
-⚠️ **PACK REBUILD (adversary) + re-drag of placed adversaries REQUIRED.**)
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-26h** (BENCH RUN 1 —
+the Red pilot, executed live by an agent session joined as `Bench`: 16 rows retired on evidence,
+1 FAIL root-caused (Shockwave Slam's weapon-hit trigger surface), 4 cross-tree observations,
+and the agent-bench runbook hardened with the v13 operating lessons. Docs + setup-script fix
+only; nothing to deploy.)
+
+**2026-07-26h — BENCH RUN 1 (the Red pilot) — EXECUTED LIVE. 16 rows retired on evidence, 1
+FAIL root-caused, 4 cross-tree observations; docs + setup-script fix only, nothing to deploy.**
+A session joined Ben's running Foundry as `Bench` (world edha, GM, edha-content active, system
+2.1.0, Foundry 13.351) and ran the Engine-wide premise + the whole Red section per the skill.
+Roster: `bench-setup-console.js` ran with ONE ⚠ (High Society Contacts is in BOTH heroic
+Envoy and Agent — fixed in the repo script with `["name", "Group"]` disambiguation entries, the
+bench rows want the Agent copy); re-run proved idempotent (zero creations, only the +1 repair);
+tokens placed at ORIGIN (2100, 9000) — the only wall-and-token-free footprint has the PC column
+in the far-left corridor (col 7) with the target cluster in the big lower-left room (cols 9–16),
+so the ACTIVE tree's PC is moved into the room per section. End-of-run sweep: zero non-bench
+documents touched (scenes/combats/macros/walls/items diff-clean; Ben's campaign combat intact);
+~110 bench chat messages — **Ben may flush bench chat**. No screenshots exist for this run: the
+in-app browser pane never composited (hidden-pane limitation) — every evidence line below is
+quoted card text + console-asserted state instead.
+- **PASSED & RETIRED (premise):** 2bA-7 (Emotional Overload count 1→2 → exactly two `2d20kl`
+  tests then a clean `1d20`; restored) · 2bB-3 (Stonestance rider 1→2 → actor deflect bonus +2
+  on entering; restored) · 2bC-6 (Risky Behavior + opportunity tick → `1d20+5+1dp` AND the
+  Opportunity menu crediting the talent; restored) · 2bP-12 (Calculated Patience / Blue
+  Attunement / Forge Construct tabs all show their rules; sustainCap 1→2 → TWO Combat Constructs
+  stood; restored, summons deleted) · 2bA-9 (**natives ARE in both dropdowns** — event list has
+  Used/Activated Modality/Actor Updated/Actor Damaged/Actor Long Rested, handler list has Grant
+  Items/Modify Attribute/Use Item/Update Actor/Execute Macro — RM/RB/Resilient Hero stay 1b).
+  2bAC-1/2 stay ⚑ Ben (visual legibility; no screenshots this run).
+- **PASSED & RETIRED (Red):** 2bQ-2 (rules render + label edit round-trip: the Opportunity menu
+  button showed "(BENCH EDIT)"; NOTE the row's "one rule (On Use)" text was stale — the shipped
+  shape is TWO rules on `edha-opportunity`, plotDie+self intact) · 2bQ-3 (menu on a Physical
+  Opportunity, click → spent+disabled → next test `1d20+4+1dp`; a Lore-test Opportunity posts NO
+  menu) · 2bQ-1 (**retired as SUPERSEDED** — pre-07-25 spec; bare use posts the card and arms
+  nothing, by design; Cost line reads "Opportunity") · 2bA-1/2bA-2 (rule on tab; disadvantage
+  armed→consumed, card names talent) · 2bA-3/2bA-4 (two rules; advantage + Exhausted in one use)
+  · 2bF-11 (Incite: "23 vs SPI 14 — SUCCESS", forced action table-side) · 2bY-11 (Shatter Focus
+  drains exactly 1, first reach without the Chaos takeover) · 2bY-13 (nothing/Disoriented+card/
+  nothing within a round; re-arms next round; ally hits silent) · 2bY-14 (fast+Presence `2d20kh`,
+  fast+red-cast and slow plain `1d20`; combat-delete cleared planted `lists.charges` +
+  `hazardTrail` + `detonateUsed` actor flags) · 2bP-5 (Draw Mana: recover card + advantage card
+  `attr: str,spd` + "lose your Reaction (GM-tracked)" card; `2d20kh` on the next Str test).
+  Spot-checks: Arc Flash ✓ (offer card on an energy hit; Afterburn's too); Momentum graph
+  verified live off the compiled tree nodes (Reckless Advance = root, red 1; ⚑ drawn-tree eyeball
+  stays Ben's).
+- **FAIL (row stays, → test-pass-fixes): 2bA-5 Shockwave Slam** — a WEAPON melee impact hit
+  never fires the push: `edhaDispatchOnHit`'s `itemSpecific = !!tal.system.damage.formula` reads
+  the authored COLLISION formula as "attack talent — only its own hits", so every weapon dealer
+  skips the talent. The push itself + document note are fine (direct use → "pushed 10 ft",
+  correct direction). Fix the trigger surface, not the push.
+- **Cross-tree observations (dated notes added to their sections):** ① Mender's Instinct (Green)
+  offered its heal-Reaction for a HOSTILE half-HP crossing and double-posted, three times —
+  probable ally-gate + dedup bug. ② Whispered Doubt + Coercive Pressure (Black) fire with no
+  combat running (rows spec in-combat) — works-but-rule-needed. ③ **Cosmetic, engine-wide:**
+  `edha-apply-status` cards print the raw i18n key — "Bench Target — Floater is
+  **COSMERE.Status.Exhausted**" (same for Disoriented) — likely a `game.i18n.localize` miss in
+  the card text. ④ Cosmetics: summon card prints the unevaluated formula "(2)d(2 * 3 + 2)";
+  second beside-you summon stacks on the same square; a damage roll printed a doubled annotation
+  "(5[Kindle])[Kindle]".
+- **Agent-bench operating lessons (runbook updated):** `game.combat` is the client's VIEWED
+  combat, not the active one — after `Combat.create` you MUST `ui.combat.initialize({combat})`
+  or every combat-timing read (fast/slow, watch round-keys) silently consults the wrong combat
+  (this masqueraded as a 2bY-13 "stale tally / no re-arm" bug for half the run; ⚑ design note
+  for Ben: at a real multi-combat table the engine follows each client's viewed tracker). ·
+  Foundry v13 has no `#chat-log` id — read `ol.chat-log`. · With the pane hidden the PIXI ticker
+  never runs, so token moves freeze mid-animation on the agent's client — move with
+  `{animate: false}` and call `tokenDoc.reset()`; positions in the DB were always correct. ·
+  `item.use()` blocks on the system's ItemConsumeDialog — click its `[data-action=continue]` via
+  DOM. · Path grants auto-open PathItemSheet windows (15 of them) — close them. · Bench-PC
+  resource maxes are `{derived, override, useOverride}` objects, and prepared Investiture clamps
+  below the override on these synthetic actors (cosmetic; refill via source writes). · The
+  on-hit rows need an IMPACT and an ENERGY weapon — the compendium sweep hands out keen only; a
+  temporary "Bench Maul" (copied weapon, damage type swapped) works and was deleted after.
 
 **2026-07-26g — THE AGENT BENCH IS GO (docs + script only; nothing to deploy).** The
 passwordless-Bench join was VERIFIED live (world edha, GM true, module active, system 2.1.0),

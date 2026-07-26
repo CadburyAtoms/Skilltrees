@@ -71,6 +71,39 @@ Sessions still **cannot launch Foundry** — everything here requires Ben to hav
    migration's pipe-cleaner talents) end-to-end through recording, delta, dashboard, commit —
    then scale to multi-tree runs.
 
+## Operating lessons from run 1 (2026-07-26h — read before driving Foundry)
+
+- **Combat rows: `game.combat` is the client's VIEWED combat, not the active one.** After
+  `Combat.create({active: true})`, call `ui.combat.initialize({combat, render: true})` and
+  verify `game.combat.id` matches — otherwise every fast/slow read and watch round-key silently
+  consults whatever combat the tracker was already viewing (Ben usually has a campaign combat
+  open; this masqueraded as a Breaking Point "stale tally / never re-arms" bug for half of
+  run 1). Never modify Ben's combat; only view yours.
+- **Foundry v13 selectors:** there is no `#chat-log` — read `ol.chat-log` (step 5's `#chat-log`
+  is v12 phrasing).
+- **Hidden-pane animation freeze:** when the browser pane isn't displayed, the PIXI ticker never
+  runs, so token moves hang mid-animation on the agent's client (document `_source` is correct;
+  prepared x/y is stale). Move with `tokDoc.update({x, y}, {animate: false})` and call
+  `tokDoc.reset()` after; verify `tok.object.center` before any range-dependent row. Screenshots
+  are also unavailable in that state — record quoted card text + console-asserted state instead,
+  and say so in the delta.
+- **`item.use()` blocks on the ItemConsumeDialog** (cost confirmation): await ~2s, then click
+  the dialog's `[data-action=continue]` button via DOM. Damage cards apply via their
+  `[data-action=apply-damage]` buttons — the ×1 button applies to the card's stored targets.
+- **Path grants auto-open PathItemSheet windows** (one per bench PC on creation) — close them
+  (`foundry.applications.instances`) before DOM work.
+- **Resource top-ups:** `system.resources.*.max` is a `{derived, override, useOverride, bonus}`
+  object — compute the effective max; never write the object back as a value. Prepared
+  Investiture on the synthetic bench PCs clamps below the override (cosmetic; refill by writing
+  the source value).
+- **On-hit rows need an IMPACT and an ENERGY weapon** and the compendium sweep only found keen
+  ones — copy the found weapon, swap `system.damage.type`, and delete the copy at cleanup
+  (run 1's "Bench Maul" pattern) until the setup script grows damage-type fixtures.
+- **The Playtest Map is walled and busy** — pick ORIGIN analytically (per-cell wall+token scan;
+  run 1 used (2100, 9000): PC column parked in the far-left corridor col 7, targets inside the
+  lower-left room cols 9–16, Isolated at (31, 31)) and move the ACTIVE tree's PC into the room
+  for its rows. The scene also carries a Ben-made teleport Region — keep bench tokens out of it.
+
 ## Known limits
 
 - The `Bench Target — Undefended` fixture is adversary-typed with only a Physical defense; if

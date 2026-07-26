@@ -107,8 +107,9 @@
         "Windstance", "Practiced Kata", "Feinting Strike", "Cheap Shot", "Startling Blow",
         "Shattering Blow", "Subtle Takedown", "Meteoric Leap", "Anatomical Insight",
         // Agent + Scholar — CAE / Opportunity / contests (2bC, 2bD, 2bE, 2bQ-5)
+        // (a name that collides across heroic trees is written ["name", "Group"])
         "Fast Talker", "Quick Analysis", "Trickster's Hand", "Cautious Advance", "Backstep",
-        "High Society Contacts", "Underworld Contacts", "Risky Behavior", "Overwhelm with Details",
+        ["High Society Contacts", "Agent"], "Underworld Contacts", "Risky Behavior", "Overwhelm with Details",
         "Turning Point", "Vital Diagnosis", "Field Medicine", "Resuscitation",
         // Leader — command dice + contests (2bN, 2bO, 2bD, 2bE-3)
         "Decisive Command", "Confident Command", "Demonstrative Command", "Shrewd Command",
@@ -153,9 +154,10 @@
     let wantDocs = [];
     if (C.tree) wantDocs = byGroup.get(`${C.atlas}|${C.tree}`) ?? [];
     else for (const n of C.names) {
-      const cands = byName.get(n) ?? [];
+      const [nm, grp] = Array.isArray(n) ? n : [n, null];
+      const cands = grp ? [byKey.get(`${C.atlas}|${grp}|${nm}`)].filter(Boolean) : (byName.get(nm) ?? []);
       if (cands.length === 1) wantDocs.push(cands[0]);
-      else log.push(`${C.name}: ⚠ ${cands.length ? "AMBIGUOUS" : "NOT FOUND"} talent name: ${n}`);
+      else log.push(`${C.name}: ⚠ ${cands.length ? "AMBIGUOUS" : "NOT FOUND"} talent name: ${nm}${grp ? ` (${grp})` : ""}`);
     }
     const wantNames = new Set(wantDocs.map(d => d.name));
     // extras = wrong-tree strays among talents (name collisions), never the path/Draw Mana

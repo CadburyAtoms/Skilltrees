@@ -64,11 +64,12 @@ day-1 bench report, already fixed.
 
 ## The premise (stop if these fail)
 
-- [ ] **2bA-7 — the round trip** — Edit one of the new rules in Foundry (e.g. change count 1 → 2), use the talent → The edit actually takes effect. If it doesn't, the whole migration premise is wrong and everything else stops.
-- [ ] **2bB-3 — the round trip ⚠️** — On Stonestance's Effects tab change the deflect value `1` → `2`, then enter the stance → The marker grants **+2**. This is the whole point of the pass — if the edit doesn't take, the stance conversion is wrong.
-- [ ] **2bC-6 — the round trip ⚠️** — On Risky Behavior's Events tab tick **Also bank an Opportunity** as well, use it, roll → You get **both** the Plot Die and the Opportunity menu. Proves the fields are live and composable, not just a re-skin of the old hook.
-- [ ] **2bP-12 — ⚠️ the migration's whole point** — open **Calculated Patience** → Events tab; open **Blue Leyline Attunement** → Events tab; open **Forge Construct** → Events tab and find "How many you can sustain" → All three now show a rule where the tab used to be empty. Change Forge Construct's sustain number to **2**, use it twice → **two** Constructs stand. Put it back to 1.
-- [ ] **2bA-9 — native handler vocabulary ⚠️** — While in any talent's Events tab, open the handler **type dropdown** and read the whole list → ⚑ Do the SYSTEM's native handlers appear alongside the Edha ones — **Update Actor**, Execute Macro, Grant Items, Modify Attribute, Use Item? And in the EVENT dropdown: **Actor Damaged**, **Actor Updated**, **Activated Modality**, **Actor Long Rested**? No authored talent has ever used one, so this is unproven. Zero risk — just read the dropdowns and report what's listed. **Scope narrowed 07-24i:** this no longer decides "how much of the 8-handler plan is needed" (§9k settled that from the code). It now gates exactly **three** talents whose cheap classification leans on a native type — **Reckless Momentum**, **Risky Behavior**, and **Resilient Hero**'s long-rest flag clear. If natives are absent from the dropdowns, those three drop from bucket 1b to bucket 2; nothing else in the 9/56/136/17 split moves.
+**Bench run 1 (2026-07-26g): the five premise rows PASSED on the live table and are retired** —
+2bA-7 (count 1→2 → two disadvantaged tests), 2bB-3 (deflect 1→2 → marker +2), 2bC-6 (opportunity
+tick → Plot Die + menu), 2bP-12 (three tabs populated; sustain 2 → two Constructs), 2bA-9 (natives
+ARE in both dropdowns — Reckless Momentum / Risky Behavior / Resilient Hero stay bucket 1b).
+Evidence per row in the delta. The two 2bAC rows below are visual-legibility judgments — still ⚑ Ben.
+
 - [ ] **2bAC-1 — Edit Event Rule legibility** — open any converted talent → Events → edit its Triggered Effect rule → ⚑ ~660px window; every label reads as a phrase (2 lines max), its control sits beside it, the hint sits UNDER the pair in smaller type, the form scrolls inside the window, and Update is reachable at the bottom.
 - [ ] **2bAC-2 — short dialogs unharmed** — edit a rule with a small handler (e.g. an *Edha: Apply Status* or a native *Update Actor* rule) → ⚑ Same two-column layout, nothing misaligned — the grid must not have wrecked the simple case.
 
@@ -191,7 +192,7 @@ within 10 ft, one at 0 focus). No pack rebuild pending. Priority: 2bI-1 (first
 rest; the others share that machinery. 2bI-9 is the one row still asking a design
 question (the empty Events tab).
 
-- [ ] **2bI-1 — Whispered Doubt (Black) ⚠️⚠️** — in combat, have an **enemy inside your Black Attunement Range spend focus** → It loses **1 additional focus**, with a card. Then make it spend focus again the **same round** — nothing more (once per round per enemy). Next round it works again. This is the first `scope: scene` watch ever to run; if it does nothing, the whole scene half is dead.
+- [ ] **2bI-1 — Whispered Doubt (Black) ⚠️⚠️** — in combat, have an **enemy inside your Black Attunement Range spend focus** → It loses **1 additional focus**, with a card. Then make it spend focus again the **same round** — nothing more (once per round per enemy). Next round it works again. This is the first `scope: scene` watch ever to run; if it does nothing, the whole scene half is dead. **Observed 2026-07-26 (bench run 1, Red pilot, incidental):** Whispered Doubt AND Coercive Pressure both fired **with no combat running** (a bench drain on a hostile in range triggered the extra loss + the Cognitive-disadvantage arm, which later consumed as `2d20kl`). The watches work — but this row says "in combat"; rule whether out-of-combat firing is intended when you run Black.
 - [ ] **2bI-2 — Whispered Doubt — the negative cases** — repeat 2bI-1 with (a) an **ally** spending focus, (b) an enemy **outside** your range, (c) an enemy already at **0 focus** → Nothing, all three times. (c) is silent by design.
 - [ ] **2bI-5 — Predatory Insight (Black) ⚠️⚠️** — drive any creature **to 0 focus** — first by ordinary spending, then by letting **Whispered Doubt's** extra loss be what empties it → You regain **1 focus** BOTH times. The second is the one that broke in the 07-05 pass and it is the only rule in the project using the new `chain` setting — if it fires on the first but not the second, the chain flag is not working.
 - [ ] **2bI-3 — Coercive Pressure (Black) ⚠️** — same trigger — an enemy in range loses focus — then have it roll a **Cognitive (Intellect/Willpower)** test, then a **Physical** one → Disadvantage on the Cognitive test only, announced when spent. **⚑ CARD TEXT CHANGED:** it now reads "an **enemy** within Attunement Range… once per round per **enemy**" — the engine has been enemies-only since your 07-12 ruling and the card said "a character". Say if you'd rather widen the engine instead.
@@ -226,30 +227,24 @@ question (the empty Events tab).
 
 Run on **Bench — Red** (an enemy dummy in Red Attunement Range that can take damage twice in a
 round). No pack rebuild pending — this is the PILOT tree: it holds the migration's first three
-talents (2bA) and its rows run end-to-end fastest. Priority: 2bQ-3 (the changed
-Opportunity interaction) and 2bY-11 (a card that was unreachable before).
+talents (2bA) and its rows ran end-to-end in **bench run 1 (2026-07-26g)**: 12 rows retired on
+evidence (2bQ-1/2/3, 2bA-1/2/3/4, 2bF-11, 2bY-11, 2bY-13, 2bY-14, 2bP-5 — 2bQ-1 retired as
+SUPERSEDED: the "(On Use)" spec predates the 07-25 Opportunity redesign that 2bQ-3 verified; a
+bare use arms nothing, by design). What remains below is the one FAIL, the ⚑ rows, and the
+spot-check row with a drift observation.
 
-- [ ] **2bQ-2 — Reckless Momentum — the Events tab** — open the talent → **Events** → ⚠️ **The point of the whole migration.** One rule: *Edha: Modify a Next Test (On Use)* with **Also raise the stakes (Plot Die)** ticked and **Who it affects = self**. It should be editable — try changing the label, confirm it sticks. Previously this tab was **empty** and the behaviour was invisible.
-- [ ] **2bQ-1 — Reckless Momentum — unchanged behaviour** — use it, then roll any test → The Plot Die is rolled on that test, and a card posts naming the talent. Identical to before this pass — if anything at all is different, that is a bug in this pass.
-- [ ] **2bQ-3 — Reckless Momentum — now matches its card** — succeed on a **Physical** (Str/Spd) test that rolls an **Opportunity** → The Opportunity menu appears with a **Reckless Momentum** button. Click it → your next test rolls the Plot Die. ⚠️ **The interaction CHANGED**: it used to be a bare use of the talent, which checked neither the success nor the attribute and never spent the Opportunity. The card always said it should. An Opportunity on a **Cognitive/Spiritual** test must NOT offer the button.
-- [ ] **2bA-1 — Emotional Overload** — Open the talent in Foundry → **Events tab** → ⚑ A rule is THERE (was empty): `edha-next-test-mod`, mode disadvantage, count 1. This is the whole point — confirm it renders and is editable.
-- [ ] **2bA-2 — Emotional Overload** — Target a creature, use it → Target's next test at disadvantage; card names the talent. Behaviour should be IDENTICAL to before — it rides the same nextTestMod pipeline.
-- [ ] **2bA-3 — Reckless Gambit** — Events tab → ⚑ **TWO** rules: `edha-next-test-mod` (advantage) + `edha-apply-status` (exhausted). Both must be listed.
-- [ ] **2bA-4 — Reckless Gambit** — Target, use → Target gains advantage on its next test AND gains **Exhausted**. Both halves, one use.
-- [ ] **2bA-5 — Shockwave Slam** — Melee impact hit → Push card still reads **"Shockwave Slam"** (not "Push"). Its note now comes from the document; a regression here means the note field didn't survive the build.
-- [ ] **2bF-11 — Incite (Red) ⚠️** — target + use + roll → **Behaviour change, deliberate.** It used to just POST "on a success…" and resolve nothing. It now runs Intimidation vs Spiritual and prints SUCCESS/FAIL. Only the forced action stays yours to adjudicate.
-- [ ] **2bY-11 — Shatter Focus (RED, leyline)** — a character in range fails a test; target it; use → It loses 1 focus (Wary reduces; works on GM-owned foes via the relay). ⚠ pre-2bY this card was UNREACHABLE (the Chaos takeover answered instead, demanding an Omen) — this is the first time it can work; test from a character WITHOUT the Chaos tree.
-- [ ] **2bY-13 — Breaking Point** — an enemy in your Red Attunement Range takes damage twice in one round; a third hit; an ALLY hit twice → 2nd hit: Disoriented (until your next turn starts) + card noting the manual 1 Investiture. 3rd hit: nothing (once/round/creature). Ally: nothing (the retired watcher was enemy-only; the card says "a character" — flip `disposition` on the Events tab if Ben rules the card).
-- [ ] **2bY-14 — Frenzied Tempo + scene reset** — Fast turn: an Influence (Presence) test, then a Red/Black CAST; Slow turn: any Presence test. Then end combat on a scene with Charges/trail → Fast+Influence: advantage. Fast+cast or Slow: none (the casts are excluded via `unlessSkills` — black is Presence). Combat end clears `lists.charges`, the legacy flat `charges`, templates, `hazardTrail`/legacy `walkingRuin`, `detonateUsed`.
-- [ ] **2bP-5 — Red Leyline Attunement** — Draw Mana, then roll a **Strength or Speed** test → Advantage. A second card also posts the **"lose your Reaction"** reminder (still GM-tracked — nothing enforces it, same as before).
+- [ ] **2bA-5 — Shockwave Slam** — Melee impact hit → Push card still reads **"Shockwave Slam"** (not "Push"). Its note now comes from the document; a regression here means the note field didn't survive the build. **FAIL 2026-07-26 (bench run 1):** a WEAPON melee impact hit (Bench Maul, 1d8 impact, hit + damage applied) fires NO push — `edhaDispatchOnHit`'s `itemSpecific = !!tal.system.damage.formula` gate reads Shockwave Slam's authored COLLISION formula as "attack talent, only fires on its own hits" and skips it for every other dealer. The push machinery itself works: using the talent directly produced "💥 Shockwave Slam — pushed 10 ft", correct away-from-caster direction, note from the document. Fix direction: the trigger surface, not the push. → test-pass-fixes.
 - [ ] ⚑ **Flashpoint** — Red burst hits 2+: click the prompt → +1 Investiture AND your next Red test
       rolls with advantage automatically (pre-selected/fast-forwarded).
-- [ ] **Red spot-checks (like-for-like)** — run once: Arc Flash (any energy hit) and one Frenzy talent of your choice → identical to pre-migration behaviour; any drift is a bug.
+- [ ] **Red spot-checks (like-for-like)** — run once: Arc Flash (any energy hit) and one Frenzy talent of your choice → identical to pre-migration behaviour; any drift is a bug. **Bench run 1 (2026-07-26):** Arc Flash ✓ (offer card posted on an energy weapon hit; Afterburn's too). Battle Fever (Frenzy) has a **card-vs-engine drift**: card says "+1 to your next test (max = Rank), resets at start of your turn" but the rally bonus rode EVERY test until turn start (`rally {count, resetOn: turn}` — it never consumed on a test; observed +2[Rally] on 6+ consecutive rolls; the max=Rank cap works). Decide which side is canonical → test-pass-fixes.
 - [ ] **Red / Momentum is takeable** — same check on Red: **Reckless Advance** is the branch root
       (its card now reads **"Red 1+"**, not "Burning Drive"), and **Burning Drive**, **Volatile
       Strike**, … **Unstoppable** chain down from it. ⚑ **Ben — eyeball the drawn tree**: the fix
       trusted the layout + connections over the card text. If you intended Burning Drive to come
-      first, say so and it flips instead.
+      first, say so and it flips instead. **Bench run 1 (2026-07-26): the graph half is verified
+      live** — the compiled Red Leyline tree's nodes read Reckless Advance {skill red 1, no talent
+      prereq}, Burning Drive/Volatile Strike {Reckless Advance}, Unstoppable {Reckless Momentum,
+      red 3}. Only the drawn-tree eyeball remains.
 
 ---
 
@@ -274,7 +269,7 @@ field-discriminator regression), 2bS-11 (the pass's one behaviour addition).
 - [ ] **2bR-4 — Pack Sense (Green)** — an ally attacks a creature standing in your difficult terrain → Same card as before (+Green modifier, 1 Inv). A plain skill test (not attack/item) must NOT trigger it.
 - [ ] **2bM-9 — Verdant Mend (Green)** — target two creatures, use it → Same picker, nothing spent. With one target it heals normally.
 - [ ] **2bT-20 — regression: Green's damage-bonus riders** — Pack Pressure window + Coordinated Hunt → Unchanged by the require-mode widening — `window` and `pack-on-target` paths, amounts and cards identical to 2bS.
-- [ ] **Green spot-checks (like-for-like)** — run once each: Spreading Roots (2bS-4) · Pack Hunter (2bS-6) · Scent the Weak (2bS-7) · Resurgent Growth (2bS-12) · Vital Surge (2bS-13) · Natural Recovery (2bS-14) · Reknit Form (2bS-15) · Mender's Instinct (tight one-line reaction card) · Herding Antlers on the Fellstag (2bF-10, adversary regression) → identical to pre-migration behaviour; any drift is a bug. Collapsed from 2bS-4/6/7/12/13/14/15 + 2bF-10.
+- [ ] **Green spot-checks (like-for-like)** — run once each: Spreading Roots (2bS-4) · Pack Hunter (2bS-6) · Scent the Weak (2bS-7) · Resurgent Growth (2bS-12) · Vital Surge (2bS-13) · Natural Recovery (2bS-14) · Reknit Form (2bS-15) · Mender's Instinct (tight one-line reaction card) · Herding Antlers on the Fellstag (2bF-10, adversary regression) → identical to pre-migration behaviour; any drift is a bug. Collapsed from 2bS-4/6/7/12/13/14/15 + 2bF-10. **Observed 2026-07-26 (bench run 1, Red pilot, incidental — probable BUG):** Mender's Instinct offered its heal-Reaction when a **HOSTILE** target (enemy of the parked Bench — Green) dropped to half HP, and the card posted **TWICE** per crossing, three separate times. Two defects to chase when Green runs: the ally gate and the double post. Card also prints the full description, not the "tight one-line reaction card". → test-pass-fixes.
 - [ ] **2bS-3 — Fellstag / Briar-Gone Grove (adversaries)** — their Draw Mana / Sudden Wall placements → Thorn Hedge (rival → d6) and the Grove's Thorn Field (boss → d8) keen riders still bake into engine-placed patches — each carries its OWN zone-hazard rule now. Adversary pack + ⟳ Sync required.
 - [ ] **Green / Instinct is takeable at all (THE session-0 blocker)** — open the Green tree on a
       PC with Green 1+. **Pack Hunter** is now pickable with no talent prereq (it is the branch
