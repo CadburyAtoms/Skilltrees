@@ -1054,7 +1054,8 @@ pre-07-24r consumer did. Necrotic Cascade's corpse detonation is the first `enem
   `edhaEnemyTokensInCircle(owner,cx,cy,ft)` (Destruction). `edhaCasterToken(actor)`, `edhaColorRank(actor,"red")`.
 - `edhaConsumeCost(item)` (reads `activation.consume`; false if can't pay) / `edhaRefundCost(item)`.
 - `edhaEvalSync("@tier", rd)` (flat eval), `edhaFtToPx(ft)`, `edhaWhisperIds(owner)`,
-  `edhaCharacterOwnersOf(name)`, `edhaOwnsTalent(actor,name)`.
+  `edhaOwnsTalent(actor,name)`. (`edhaCharacterOwnersOf` deleted 07-26 with the orphan sweep —
+  the name-keyed sweeps' entry point; a name-keyed owner scan has no legitimate future consumer.)
 - Consts: `EDHA_SIZE_FT`, `EDHA_ATTUNE_FT` (index = color rank), `EDHA_COLOR_HEX`.
 - **`edhaCanSee(viewerTok, targetTok)`** — line of sight: GM-**hidden** target = never seen; a
   walls-only sight ray (v13's darkness-source + scene-border edges excluded — bench-probed 07-12);
@@ -1217,8 +1218,14 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   the cost into the `note` ("Reaction, 1 Focus — …"). Consumers: Fade, Break ×2, Cover Their
   Retreat, Press the Line, morale traits, Reactive Strike, Glyph Pulse, Phase 2, Devastating
   Blow's margin-Prone, Stalker Fade. **Iron-rule-3 corollary: text that names a hook gets a
-  cue — a bare 'GM-run' label fails `lint-refs` pass 5.** ⚠ HANDLER REGISTRATION IS LOAD-BEARING:
-  an unregistered handler type is silently dropped by the DataModel (same class as a bad rule id).
+  cue — a bare 'GM-run' label fails `lint-refs` pass 5 (which reads comment-STRIPPED engine code
+  since 07-26: a name in a section-header comment no longer counts as wiring).** ⚠ HANDLER
+  REGISTRATION IS LOAD-BEARING: an unregistered handler type is silently dropped by the DataModel
+  (same class as a bad rule id) — and so is EVERY FIELD the registered schema doesn't define.
+  Since 07-26, `lint-refs` **pass 9** machine-checks every authored/adversary handler object's
+  keys against the engine's own schemas (`scripts/handler-schemas.js`) and native
+  `schemaFields` — ⚠ native fields are camelCase (`target`, `changes`, `macro.command`); the
+  PascalCase names in lang/en.json are LABEL keys and were never fields.
 - **`edha-regen`** (event `edha-apply-watch`; 07-20, ruling 98): engine-APPLIED flat heal at the
   end of the owner's turn — not a cue, a write — clamped by pure **`edhaRegenClamp`** (pinned:
   never while down at hp ≤ 0, never past max, 0 on nonsense), then a whispered GM card showing

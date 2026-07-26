@@ -179,6 +179,33 @@ retired for good; live testing happens on the dashboard.
 
 ---
 
+## ⚑ 2bAB — THE PRE-DEPLOY AUDIT of the finished migration (2026-07-26) — NEEDS A PACK REBUILD (adversary)
+
+**Not a conversion pass — the ratchet stays 0.** The audit swept the finished migration before its
+first deploy and found one real family: **15 bespoke adversary abilities that SHARE a tree
+talent's name** had been riding the deleted engine name-keys and were dead (their texts still said
+"engine name-keyed"). Each now carries its tree twin's rule on its own item — nothing below has
+ever run in Foundry. Re-drag each adversary from the pack first (placed copies are frozen — the
+deploy script says so now). Also in the audit, no bench rows needed: lint pass 9 (handler FIELD
+names vs the registered schema), the 91-empty-documents classification (87 declared / 4 newly
+declared by name / 0 undeclared), the orphan sweep (7 dead declarations deleted), and the deploy
+script's branch-echo + engine safety copies.
+
+| # | Talent / area | Do | Expect |
+|---|---|---|---|
+| 2bAB-1 | **Flame Surge** — Cragdrake Alpha AND Hazewyrm Elder | use it, click a point | ⚑ The burst now places, saves and rolls ITSELF (10 ft at boss rank, Athletics vs Red, 2d8 energy, half on a success) — before this it was a text card whose use resolved nothing. |
+| 2bAB-2 | **Crownox Ring — Shield Wall** | hit an ox that stands adjacent to 2+ ring-mates | ⚑ The half-1d6 pre-reduction applies by itself and is named in chat (the card's claim is finally true again). |
+| 2bAB-3 | **Crownox Ring — Retributive Guard** | damage an ox while a ring-mate stands adjacent | ⚑ NEW SHAPE: the retaliate PROMPT now posts by itself from the damage (1 Focus → White vs Spiritual → 1d6 spirit, contest through the core) — the old gm-cue told you to "use the item", which did nothing. |
+| 2bAB-4 | **Guiding Signal** — The Reckoning, Bellwether AND Callthief | use it on each | ⚑ The designate marker lands (White Attunement Range at role rank) and the raise-the-stakes note posts — the use used to resolve nothing. |
+| 2bAB-5 | **Whispered Doubt** — Tollbird Flock | an enemy of the flock spends focus within its Black range | ⚑ It loses 1 MORE focus, announced, once per round per enemy — the watch is on the item now. |
+| 2bAB-6 | **Rootling Swarm — Grasping Vines + Territorial Instinct** | use each on a targeted character | ⚑ Vines: Green vs Physical auto-resolves → Restrained on a success. Instinct: Green vs Survival through the contest core → Immobilized; the turn-start cue still posts as the floor. |
+| 2bAB-7 | **Tussock-Sow — Drive the Prey** | use it on a targeted character | ⚑ Green vs Survival through the contest core; Slowed on a success; the move-away stays GM-narrated per the card note. |
+| 2bAB-8 | **Stitchmother — Adaptive Mutation + Reknit Form** | target a thrall, use Mutation; then use Reknit Form | ⚑ Mutation posts the two-graft chooser (+2 keen / 2-vital venom, no third option) and the bonuses ride the thrall's Slam. Reknit posts the injury picker; the buttons charge NOTHING extra (her card's flat 1 Inv + 1 Focus already paid). |
+| 2bAB-9 | **Reeve-Owl — Sovereign of Solitude** | target the moving Weakened creature, use it | ⚑ Immobilized lands, Black vs Spiritual auto-resolves, and a success rolls 1d6 vital — the cue's "use the item to auto-resolve" promise is true for the first time. |
+| 2bAB-10 | **Surecat — Intercept** | use it with the Forewarned creature targeted | ⚑ The confirm card posts; confirming puts disadvantage on that creature's next test. The turn-end cue still posts. |
+
+---
+
 ## ⚑ RULE-2b PASS AA — THE FINAL PASS: Fate's `ordained` ledger + the whole Blue Illusion branch (2026-07-26) — NEEDS A PACK REBUILD (leyline + deity + adversary)
 
 **Ratchet 4 → 0 — the migration is finished (221 → 0).** Two clusters: the SIXTH and last marker
@@ -832,7 +859,8 @@ COMPLETE — and **every one of them changes the PACK**, so none of it is live u
 **2bA-1…9 · 2bB-1…10 · 2bC-1…8 · 2bD-1…7 · 2bE-1…10 · 2bF-1…17 · 2bG-1…8 · 2bH-1…11 · 2bI-1…12 ·
 2bJ-1…14 · 2bK-1…5 · 2bL-1…14 · 2bM-1…12 · 2bN-1…6 · 2bO-1…7 · 2bP-1…12 · 2bQ-1…10 · 2bR-1…18 ·
 2bS-1…17 · 2bT-1…20 · 2bU-1…16 · 2bV-1…18 · 2bW-1…17 · 2bX-1…17 · 2bY-1…14 · 2bZ-1…12 ·
-2bAA-1…10** are ALL unrun — do not treat any of them as verified, and do not read a "wrong text / old behaviour" report on a
+2bAA-1…10 · 2bAB-1…10 (the pre-deploy audit: 15 dead adversary copies of tree talents, wired)**
+are ALL unrun — do not treat any of them as verified, and do not read a "wrong text / old behaviour" report on a
 converted talent as a bug until this deploy has happened. Nine handlers were built in that window
 (H1 `edha-def-test`, H5 `edha-cae-grant`, H11 `edha-enter-stance`, H3 `edha-owner-list`,
 H8 `edha-watch`, H10 `edha-focus`, H6 `edha-prompt-pick`, H12 `edha-detonate-list`, `edha-note`)

@@ -2,11 +2,46 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, **COMPLETED 2026-07-26 (pass AA)**: **the ratchet list is EMPTY — 221 → 0 across twenty-seven passes.** Every tree is clear, all six marker ledgers have migrated, and `scripts/name-keyed-allowlist.json` stays in the repo with an empty `talents` list *on purpose* — lint pass 7 still guards against REGROWTH, which is the half of the ratchet that matters from here on. ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **ALL SIX marker LEDGERS have migrated** (`covenants` 07-24u; `edicts` 07-25 pass V; `remains` 07-25 pass W; Fate's `snares` 07-25 pass X; Destruction's `charges` 07-26 pass Y; Fate's `ordained` 07-26 pass AA — the point-bound ones fail OPEN through H3's reconcile by design). There is no flat marker-list flag left in the engine. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-26** (RULE-2b PASS AA —
-**THE FINAL PASS: Fate's `ordained` ledger repointed (the sixth and last) + leyline/Blue's four,
-including H22 `edha-barrier`, the engine's first blocks-movement capability.**
-⚠️ **PACK REBUILD (leyline + deity + adversary) + ⟳ Sync REQUIRED.**)
-**Ratchet 4 → 0 — THE MIGRATION IS DONE.** Checklist **2bAA-1…10**, all unrun.
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-26b** (THE PRE-DEPLOY
+AUDIT of the finished migration — lint pass 9 (handler FIELD names), the 91-empty classification
+(4 newly declared), **15 dead adversary copies of tree talents wired** (2bAB-1…10), the orphan
+sweep, and the deploy script hardened. **VERDICT: run the .bat.**
+⚠️ **PACK REBUILD (adversary) + re-drag of placed adversaries REQUIRED.**)
+
+**2026-07-26b — THE PRE-DEPLOY AUDIT of the finished migration (not a conversion pass; ratchet
+stays 0). VERDICT: run the .bat.** Five findings, all fixed and gated:
+- **Lint pass 9 — handler FIELD names vs the registered schema.** Nothing checked the keys inside
+  a `handler` object; Foundry's DataModel silently drops unknown ones (the rule loads, the tab
+  looks right, the mechanic never fires). `scripts/handler-schemas.js` parses the engine's own
+  `registerItemEventHandlerType` schemas (88); native schemas now ship in `native-vocabulary.json`
+  as `schemaFields` — ⚠ the lang-derived keys were PascalCase i18n LABELS, not fields, which had
+  (a) nearly flagged a CORRECT rule (Resilient Hero's long-rest clear is fine) and (b) left lint
+  pass 8 reading `h.Inline`/`h.UUID` — fields that don't exist. Pass 8 re-aimed at the real
+  `inline`/`macro.command`/`uuid`. Sweep of all 365 + adversaries: 4 hits (3 inert `note` keys on
+  the Kindles, dropped; 1 false hit). Pinned + mutation-checked in `tests/handler-schemas.test.js`.
+- **The 91 pack-empty documents** (measured against the BUILT pack, not the overlay): 0
+  generator-provided, 87 declared, **4 undeclared** (Fatal Thrust, Mind and Body, Emotional
+  Intelligence, Signature Weapon) — now declared BY NAME in their tree-section headers; the
+  expertise trio's named future hook is native `grant-expertises`, blocked on ⟳ Sync re-firing
+  `add-to-actor`.
+- **A4, the real regression: 15 bespoke adversary abilities sharing a tree talent's name were
+  DEAD** — they rode the deleted engine name-keys (11 were on the original 221 list) while their
+  texts said "engine name-keyed". Each now carries its tree twin's rule on its own item
+  (role-rank/cost-adapted where cards bake numbers); Guardian Stance + Apex Predator ×2 declared
+  NO NAMEABLE HOOK instead. Root cause of the blindness ALSO fixed: **lint pass 5's name-keyed
+  exemption was satisfied by tree-section COMMENTS** — it reads comment-stripped code now
+  (`stripComments`, shared with pass 7). Both Seemings + all three Dread Presences verified wired.
+  Checklist **2bAB-1…10**, all ⚑ unrun.
+- **Orphan sweep** (mechanized edhaSizeFt hunt): 7 zero-caller declarations deleted
+  (`edhaCharacterOwnersOf`, `edhaWhiteMod`, the three `remains` accessors, `EDHA_CIV_WHITE_DIE`,
+  `edhaCivConstructOf`); `edhaGnosisRevealLines` kept — it is reveal.test.js's declared parity
+  surface. Iron rule 7 re-verified GATED by live mutation (validate.js names the loop; the
+  pipeline tests pin the three historic cycles).
+- **deploy-to-foundry.bat**: `--ff-only` + echoes the branch/SHA it deployed; `module-src-sync
+  push` keeps timestamped safety copies of every live file it replaces; the SUCCESS box now says
+  placed adversaries keep their old ABILITIES, not just art — delete and re-drag.
+⚠️ **PACK REBUILD (adversary) + re-drag REQUIRED** for the A4 wirings; everything else is
+engine-comment/gate/script-side.
 
 **2026-07-26 — RULE-2b PASS AA: THE FINAL PASS. Ratchet 4 → 0; 221 → 0 over twenty-seven passes.**
 Grouped by BUILD, gated green between clusters. One ledger in scope (`ordained`), which is what
