@@ -65,6 +65,53 @@ test("edhaEvalSync fills missing refs with 0 and never throws", () => {
   assert.strictEqual(env.edhaEvalSync(null, {}), 0);
 });
 
+/* --- REGRESSION (bench run 2, 2026-07-26i): a DICE formula must not evaluate to 0 -------------
+ * Foundry v13 made DiceTerm non-deterministic, so `Roll#evaluateSync()` throws on any die term and
+ * edhaEvalSync's catch returned 0 — which, because callers gate on `amt > 0`, silently killed
+ * Shield Wall, Interposing Shield, Retributive Guard and Devoted Conduit. The harness's RollStub
+ * refuses non-arithmetic input exactly as the real evaluateSync does, so these pin the real bug. */
+test("edhaRollDiceSync: rolls NdM and substitutes the total (the v13 sync-dice fix)", () => {
+  const three = () => 3;
+  assert.strictEqual(env.edhaRollDiceSync("2d8", three), "6");
+  assert.strictEqual(env.edhaRollDiceSync("d6", three), "3");            // bare d6 is 1d6
+  assert.strictEqual(env.edhaRollDiceSync("floor((2d8) / 2)", three), "floor((6) / 2)");
+  assert.strictEqual(env.edhaRollDiceSync("1d4 + 2d6", three), "3 + 6");
+});
+test("edhaRollDiceSync: respects the die's face bound and leaves non-dice text alone", () => {
+  const max = (faces) => faces;
+  assert.strictEqual(env.edhaRollDiceSync("3d10", max), "30");
+  assert.strictEqual(env.edhaRollDiceSync("7", max), "7");
+  assert.strictEqual(env.edhaRollDiceSync("", max), "");
+  assert.strictEqual(env.edhaRollDiceSync(null, max), "");
+});
+test("edhaRollDiceSync: leaves anything that is not a bare NdM ALONE rather than mangling it", () => {
+  const three = () => 3;
+  assert.strictEqual(env.edhaRollDiceSync("2d20kh", three), "2d20kh");   // kept-dice modifier
+  assert.strictEqual(env.edhaRollDiceSync("@dealt", three), "@dealt");
+  assert.strictEqual(env.edhaRollDiceSync("101d6", three), "101d6");     // runaway guard
+  assert.strictEqual(env.edhaRollDiceSync("0d6", three), "0");
+});
+test("edhaEvalSync: a DICE formula returns a real number, not 0 (Shield Wall's shape)", () => {
+  // The exact formula Shield Wall ships, after edhaSubstRankTier at tier 2 / White rank 3.
+  const f = env.edhaSubstRankTier("floor(((@tier)d(2 * @colorRank + 2)) / 2)", 3, 2);
+  assert.strictEqual(f, "floor(((2)d(2 * 3 + 2)) / 2)");
+  for (let i = 0; i < 40; i++) {
+    const v = env.edhaEvalSync(f, {});
+    assert.ok(Number.isInteger(v) && v >= 1 && v <= 8, `2d8 halved must land in 1..8, got ${v}`);
+  }
+});
+test("edhaEvalSync: Interposing Shield's roll-data dice formula also survives", () => {
+  const rd = { skills: { white: { rank: 3 } } };
+  const seen = new Set();
+  for (let i = 0; i < 60; i++) {
+    const v = env.edhaEvalSync("floor((1d(2 * @skills.white.rank + 2)) / 2)", rd);
+    assert.ok(Number.isInteger(v) && v >= 0 && v <= 4, `half of 1d8 must land in 0..4, got ${v}`);
+    seen.add(v);
+  }
+  // The bound alone would accept a constant 0 — which is exactly the bug. Demand real variation.
+  assert.ok(seen.size > 1 && [...seen].some(v => v > 0), `expected varied non-zero rolls, saw ${[...seen]}`);
+});
+
 // --- edhaEventRules / edhaRuleOf (the on-talent behaviour store) ---------------
 function fakeTalent(rules) {
   return { hasEvents: () => true, enabledEvents: rules };

@@ -9071,10 +9071,57 @@ function edhaPickPoint(promptText) {
   });
 }
 
-// Evaluate a flat (non-dice) formula like "@skills.red.mod" to a number against roll data.
+/* One synchronous die roll, drawn from FOUNDRY's RNG rather than bare Math.random so bench/seeded
+ * sessions stay faithful (CONFIG.Dice.randomUniform is the same source Die#randomFace uses). The
+ * Math.random fallback is for the node test harness, which has no CONFIG. */
+function edhaRandomFace(faces) {
+  const n = Math.max(1, Math.floor(Number(faces) || 1));
+  try { const u = CONFIG?.Dice?.randomUniform?.(); if (Number.isFinite(u)) return Math.min(n, Math.max(1, Math.ceil(u * n))); } catch (e) {}
+  return Math.min(n, Math.max(1, Math.ceil(Math.random() * n)));
+}
+/* Pure (pinned in tests/): roll every plain `NdM` in an already-FOLDED formula and substitute its
+ * total, so a DICE formula can survive a synchronous evaluation.
+ *
+ * WHY THIS EXISTS (bench run 2, 2026-07-26i — the bug it fixes was live for the whole tracked
+ * history): Foundry v13 made DiceTerm NON-deterministic (the dice-fulfillment feature), so
+ * `Roll#evaluateSync()` THROWS — "This Roll contains terms that cannot be synchronously evaluated"
+ * — on ANY die term. edhaEvalSync's catch then returned 0, and because nearly every caller gates on
+ * `amt > 0`, the talent was skipped in SILENCE. It killed Shield Wall, Interposing Shield,
+ * Retributive Guard and Devoted Conduit outright. The comment above this helper used to say
+ * "flat (non-dice) formula", which described the DAMAGE rather than the intent: the callers have
+ * always passed dice ("half [Tier][Die]" is the White tree's whole idiom).
+ *
+ * Rolling the faces here is faithful, not a shortcut — `Die#randomFace()` is itself synchronous and
+ * draws from the same RNG; what v13 made async is fulfillment (manual dice / Dice So Nice), which a
+ * passive damage-reduction has no business awaiting anyway. The pre-damage reduce path is
+ * documented as synchronous-by-necessity (it mutates the instance list before the system applies
+ * it), so making the call sites async was not an option.
+ *
+ * `rollFace` is injected so the node harness can pin this without Foundry. Anything that is not a
+ * bare NdM — a kept-dice modifier like `2d20kh`, say — is deliberately LEFT ALONE: it then fails
+ * exactly as it did before rather than being silently mangled into a wrong number. */
+function edhaRollDiceSync(formula, rollFace = edhaRandomFace) {
+  return String(formula ?? "").replace(/(?<![\w.@])(\d*)d(\d+)(?![\w.])/g, (m, n, f) => {
+    const count = Math.floor(Number(n === "" ? 1 : n));
+    const faces = Math.floor(Number(f));
+    if (!Number.isFinite(count) || !Number.isFinite(faces) || count < 0 || faces < 1) return m;
+    if (count === 0) return "0";
+    if (count > 100) return m;                       // runaway guard: leave it to fail loudly
+    let total = 0;
+    for (let i = 0; i < count; i++) total += rollFace(faces);
+    return String(total);
+  });
+}
+// Evaluate a formula like "@skills.red.mod" — or "floor((@tier)d(2 * @colorRank + 2) / 2)" — to a
+// number against roll data. Dice are folded (computed faces → plain NdM) then ROLLED synchronously;
+// see edhaRollDiceSync for why that is necessary under v13.
 function edhaEvalSync(formula, rd) {
-  try { const r = new Roll(Roll.replaceFormulaData(String(formula ?? "0"), rd, { missing: "0" })); r.evaluateSync(); return Number(r.total) || 0; }
-  catch (e) { return 0; }
+  try {
+    const subbed = Roll.replaceFormulaData(String(formula ?? "0"), rd, { missing: "0" });
+    const r = new Roll(edhaRollDiceSync(edhaFoldDieMath(subbed)));
+    r.evaluateSync();
+    return Number(r.total) || 0;
+  } catch (e) { return 0; }
 }
 // Pure (pinned in tests/): resolve the two Edha-vocabulary refs the system's roll data cannot —
 // @colorRank (skill rank for a PC, ROLE rank for an adversary owner — ruling 122) and @tier.

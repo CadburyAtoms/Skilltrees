@@ -1053,7 +1053,19 @@ pre-07-24r consumer did. Necrotic Cascade's corpse detonation is the first `enem
 - `edhaPickPoint(prompt)` → grid-snapped `{x,y}` or null (click-to-place). `edhaTokensInCircle(cx,cy,ft)`,
   `edhaEnemyTokensInCircle(owner,cx,cy,ft)` (Destruction). `edhaCasterToken(actor)`, `edhaColorRank(actor,"red")`.
 - `edhaConsumeCost(item)` (reads `activation.consume`; false if can't pay) / `edhaRefundCost(item)`.
-- `edhaEvalSync("@tier", rd)` (flat eval), `edhaFtToPx(ft)`, `edhaWhisperIds(owner)`,
+- **`edhaEvalSync(formula, rd)`** — the synchronous formula evaluator every passive amount goes
+  through. **It handles DICE**: it substitutes roll data, folds computed die math
+  (`edhaFoldDieMath`), then ROLLS the dice via `edhaRollDiceSync` before evaluating. ⚠️ It did not
+  until 2026-07-26j — Foundry v13 made DiceTerm non-deterministic, so `Roll#evaluateSync()` throws
+  on any die term, the catch returned **0**, and since callers gate on `amt > 0` the effect was
+  skipped **in silence**. That killed Shield Wall, Interposing Shield, Retributive Guard and Devoted
+  Conduit for the whole tracked history. If you write a handler that resolves an amount
+  synchronously, call this — do not hand-roll `new Roll(...).evaluateSync()`.
+- **Pure `edhaRollDiceSync(formula, rollFace?)`** — replaces every bare `NdM` with a rolled total so
+  a dice formula survives sync evaluation; `rollFace` is injectable for tests. Anything that is not
+  a bare `NdM` (e.g. `2d20kh`) is left ALONE rather than mangled. Pinned in `tests/`.
+  `edhaRandomFace(faces)` draws from Foundry's own RNG (`CONFIG.Dice.randomUniform`), not `Math.random`.
+- `edhaFtToPx(ft)`, `edhaWhisperIds(owner)`,
   `edhaOwnsTalent(actor,name)`. (`edhaCharacterOwnersOf` deleted 07-26 with the orphan sweep —
   the name-keyed sweeps' entry point; a name-keyed owner scan has no legitimate future consumer.)
 - Consts: `EDHA_SIZE_FT`, `EDHA_ATTUNE_FT` (index = color rank), `EDHA_COLOR_HEX`.
