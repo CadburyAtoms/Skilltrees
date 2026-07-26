@@ -18,20 +18,33 @@ are no screenshots when the pane is hidden, so record quoted card text + console
 silent handler is usually a dice formula, not a gate** (see below). Tem parinaem and Soggy Bottom
 are untouchable.
 
-**Two failure families are already root-caused — do NOT re-diagnose them, just note when a row is a
-victim:**
+**⚠️ FIRST: confirm the 07-26j deploy state, because two big fixes landed after run 2 and they
+change what you should expect.** Both were run-2 failure families, now fixed in the repo but needing
+Ben to pick them up — and they need DIFFERENT actions, so check them separately:
 
-1. **`edhaEvalSync` returns 0 for any DICE formula** under Foundry v13.351 (`evaluateSync()` throws
-   on die terms; the catch swallows it), so any rule whose amount formula contains dice and whose
-   caller gates on `amt > 0` is silently dead. Black and Green both have candidates — Predatory
-   Patience's `+[Die]` rider (2bB-10) and Green's heal/terrain amounts. If a row goes silent,
-   substitute a flat amount on the bench actor, confirm the card appears, restore it, and record it
-   as a member of this family rather than a new bug.
-2. **Non-attack adversary abilities carrying `edha-def-test` never roll** (`advItemDoc` only sets
-   `activation.skill` for attacks). Check `item.system.activation.skill` first on Black's adversary
-   rows (2bZ-10 Dread Presence copies, 2bJ-14 Dirgehound) and Green's. Import adversaries FRESH from
-   the pack as `Bench Adv — <name>` in the bench folder — that removes the DEPLOY-STATE ⟳ Sync
-   caveat entirely.
+1. **The dice fix (`edhaEvalSync`) — engine-only, needs Ben's sync + F5.** Console-check it before
+   trusting any amount: `edha` is loaded, and a passive with a dice amount now produces a real
+   number. If Shield Wall on `Bench — White` still reduces nothing, the engine half is NOT live —
+   say so and treat every dice-amount row as blocked rather than failing them.
+2. **The adversary def-test fix (`advItemDoc`) — needs a PACK REBUILD + ⟳ Sync Adversaries + re-drag.**
+   Check `item.system.activation.type` on a fresh pack import: `skill_test` means it is live,
+   `utility` means Ben has not rebuilt yet.
+
+**This run has re-test work that is NOT in the Black/Green sections** — 7 rules the 07-26j sweep
+restored in other trees, all engine-only (F5). Bench them wherever they fall naturally:
+**Pack Pressure** (Green — in your section anyway) · **Tempered Edge** (Civilization) ·
+**Withering Touch** (Death, damage bonus only) · **Predatory Strike** (Knowledge) ·
+**Warlord's Advance** (Power) · **Crownox Ring**'s Shield Wall + Retributive Guard (adversary).
+Each silently dealt/reduced NOTHING before the fix; each should now roll `[Tier][Die]` and print a
+real number. ⚑ Green's **Vital Surge** matched the same search but was verified in code as NOT
+affected — don't re-test it for this.
+
+**Still open from run 1, genuinely unfixed:** Shockwave Slam's weapon-hit trigger surface. Don't fix
+it mid-run.
+
+**The new failure mode to know:** `edhaRollDiceSync` only rolls a bare `NdM`. A formula that cannot
+fold to that shape (a kept-dice modifier like `2d20kh`) still evaluates to 0 — deliberately. Nothing
+ships in that shape today, but if an amount is silently 0, check its formula's shape first.
 
 Then run the two sections end-to-end:
 
@@ -50,13 +63,13 @@ Then run the two sections end-to-end:
   event in run 2's White rows, so it is easy to catch; root-cause the ally gate and the dedup
   together. Watch for the dice-formula family in Green's heal amounts.
 
-**Caveats:** multi-client rows that would displace the Bench cookie stay ⚑ Ben. Do NOT fix run 1's or
-run 2's FAIL batches mid-run — the `edhaEvalSync` fix, the `advItemDoc` fix and Shockwave Slam are
-all `test-pass-fixes` work, and the two new families are the biggest items in that queue. Record per
-the skill: passing rows retire with one-line evidence, fails get dated inline notes, feel/canvas rows
-stay ⚑. **Scope your end-of-run cleanup to an id-diff against your OWN start snapshot** — run 2 swept
-on the `summon` flag and deleted two pre-existing run-1 leftovers. One orphan `Combat Construct`
-token from run 1 is still on the Playtest Map; leave it for Ben.
+**Caveats:** multi-client rows that would displace the Bench cookie stay ⚑ Ben. Do NOT fix anything
+mid-run — that is `test-pass-fixes` work. Record per the skill: passing rows retire with one-line
+evidence, fails get dated inline notes, feel/canvas rows stay ⚑. **Scope your end-of-run cleanup to
+an id-diff against your OWN start snapshot** — run 2 swept on the `summon` flag and deleted two
+pre-existing run-1 leftovers. One orphan `Combat Construct` token from run 1 is still on the Playtest
+Map; leave it for Ben. **Log out at the end** (`game.logOut()`) so the Bench user is free for the
+next session.
 
 Finish with the dated handoff delta (next letter after the current top one), dashboard rebuild, gates
 (`python`, never `python3`; no `;`-chaining), ONE pushed commit titled

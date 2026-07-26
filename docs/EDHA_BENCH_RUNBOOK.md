@@ -139,6 +139,9 @@ then the deities, Heroic, and the non-tree console-runnable sections).
 - **Scope end-of-run cleanup to an id-diff against THIS run's start snapshot.** Run 2 swept every
   actor carrying the `summon` flag and deleted two that pre-dated it (run-1 leftovers). Compute
   `added = now − start` and delete only that.
+- **Log out when you finish** — `game.logOut()` in the console, then confirm `Bench` is selectable
+  again on `/join`. A session left joined blocks the next run at its very first step (run 2 opened
+  by being locked out by run 1's still-live pane).
 
 ## Known limits
 
