@@ -390,13 +390,8 @@ test("edhaWatchersOfRule: sees rules on character, adversary-token, and unlinked
     assert.ok(!owners.includes("adv2"), "a carrier of no such rule is excluded");
   } finally { env.edhaDropRuleIndex(); }
 });
-test("edhaOwnersOf: character-only scan behavior unchanged for edhaCharacterOwnersOf", () => {
-  const pc = { id: "pc1", type: "character", items: [{ name: "Shield Wall", type: "talent" }] };
-  const adv = { id: "adv1", type: "adversary", items: [{ name: "Shield Wall", flags: { "edha-content": { adversaryTalent: true } } }] };
-  env.game = { actors: [pc, adv] };
-  env.canvas = { tokens: { placeables: [] } };
-  assert.deepStrictEqual(env.edhaCharacterOwnersOf("Shield Wall").map(o => o.id), ["pc1"], "the narrow scan stays narrow");
-});
+// edhaCharacterOwnersOf's pinned case retired with the helper (07-26 orphan sweep): the migration
+// deleted its last caller, and a name-keyed owner scan has no legitimate future consumer.
 test("edhaColorRank: character ranks pass through; adversary falls back to ROLE rank at rank 0 (ruling 122)", () => {
   const pc = { type: "character", system: { skills: { white: { rank: 3 } } } };
   assert.strictEqual(env.edhaColorRank(pc, "white"), 3, "character rank unchanged");

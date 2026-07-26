@@ -141,7 +141,7 @@ function registerContent(phase) {
 const registerLeylineSkills = registerContent;
 
 // 1) Attempt immediately on module load (earliest possible — beats lazy schema build).
-const earlyOk = registerLeylineSkills("load");
+registerLeylineSkills("load");
 
 // 2) Guaranteed-safe hooks (CONFIG.COSMERE is definitely present by init).
 Hooks.once("init", () => registerLeylineSkills("init"));
@@ -3377,13 +3377,12 @@ async function edhaRitualHpCost(item, cfg) {
  *   ENGINE-OWNED exit re-litigated into the rule-keyed `edha-move-veto` (the pass-Y shape) — the
  *   hook stays, what it consults is the document, and the adversary copies carry their own rule.
  * ============================================================================================ */
-function edhaCharacterOwnersOf(name) {
-  return (game.actors?.filter(a => a.type === "character" && edhaOwnsTalent(a, name)) ?? []);
-}
 /* edhaOwnersOf + edhaWithinAttune are GONE (2bZ): their last consumer was the Dread Presence
  * movement veto, which is rule-keyed now (`edha-move-veto`). The W29/ruling-113 adversary-owner
  * widening they carried is inherited for free — edhaWatchersOfRule sweeps canvas tokens, which is
- * exactly where unlinked adversary owners live. */
+ * exactly where unlinked adversary owners live. edhaCharacterOwnersOf(name) followed 07-26 (the
+ * pre-deploy orphan sweep): it was the name-keyed sweeps' entry point, and the migration deleted
+ * its last caller — a name-keyed owner scan has no legitimate future consumer. */
 function edhaDisposHostile(owner, target) {
   const ot = edhaCasterToken(owner), tt = edhaCasterToken(target) ?? target.getActiveTokens?.()[0];
   if (!ot || !tt) return true;   // unknown positions → treat as enemy (don't silently no-op)
@@ -4589,7 +4588,6 @@ async function edhaApplyTimedStatus(target, statusId, { owner = null, expire = "
     return true;
   } catch (e) { console.error("Edha Content | apply timed status failed", e); return false; }
 }
-function edhaWhiteMod(actor) { return Math.floor(edhaEvalSync("@skills.white.rank + @attr.wil", actor.getRollData())) || 0; }
 
 /* Counterpoint is ON ITS OWN DOCUMENT since 07-25 (iron rule 2b): H1 `edha-def-test` with the
  * `vs: prompt-dc` mode (built this pass — the GM is asked for the influence result when the owner's
@@ -11716,11 +11714,9 @@ function edhaDeathInRange(owner, targetTok, color) {
  * flag never was; the whole ledger clears on deleteCombat below. The scene-start freebie is
  * DECLARED by a `sceneFreebie` place rule on the granting talent's own document and read by the
  * generic edhaOwnerListAvail, so "unset = freebie live, [] = spent" survives the repoint with no
- * talent name in code. Every reader below (the gates, the spends, Raise Dead's confirm) follows
- * the accessor for free — do NOT add a second path to the flat key. */
-function edhaRemainsList(owner) { return edhaOwnerListAvail(owner, "remains", "harvested"); }
-async function edhaSetRemains(owner, list) { await edhaSetOwnerList(owner, "remains", list); }   // [] ≠ unset: the freebie stays spent
-async function edhaSpendRemain(owner, source) { return edhaLedgerSpend(owner, "remains", "harvested", source); }
+ * talent name in code. The named accessors (edhaRemainsList/edhaSetRemains/edhaSpendRemain)
+ * retired 07-26 (the pre-deploy orphan sweep): every reader is rule-keyed through the generic
+ * ledger machinery now. Still do NOT add a second path to the flat key. */
 
 /* --- The defeat watcher: live→0 crossing, ANNOUNCED to the `defeat` watch kind ---------------------- */
 Hooks.on("preUpdateActor", (actor, changes, options) => {
@@ -12009,7 +12005,7 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearDeathS
  * ============================================================================================ */
 
 const EDHA_CIV_RED_DIE = "(@tier)d(2 * @skills.red.rank + 2)";
-const EDHA_CIV_WHITE_DIE = "(@tier)d(2 * @skills.white.rank + 2)";
+// EDHA_CIV_WHITE_DIE retired 07-26 (orphan sweep): Bonds of Community's THP formula is authored data.
 // 2bV: the owner's fortify rule (edha-zone {kind: fortify}) — the enter damage bakes off its item.
 function edhaCivFortifyRuleOf(owner) {
   for (const item of (owner?.items ?? [])) {
@@ -12022,11 +12018,6 @@ function edhaCivFortifyRuleOf(owner) {
 }
 function edhaCivIsConstruct(a) { return !!a?.getFlag?.("edha-content", "summon") && String(a?.name || "").startsWith("Combat Construct"); }
 function edhaCivSummonerOf(summon) { const id = summon?.getFlag?.("edha-content", "summoner"); return id ? (game.actors?.get(id) ?? null) : null; }
-function edhaCivConstructOf(owner) {
-  return (game.actors ?? []).find(a => edhaCivIsConstruct(a)
-    && a.getFlag?.("edha-content", "summoner") === owner?.id
-    && (Number(a.system?.resources?.hea?.value) || 0) > 0) ?? null;
-}
 // Point-in-Foundation (the Drawing square) — the containment math of edhaFoundationAtPoint without the
 // disposition filter (Bonds/Trade Routes check ownership + disposition themselves).
 function edhaCivPointInFoundation(d, x, y) {
@@ -13493,8 +13484,10 @@ function edhaProhAnnotateRuleOf(owner, key) {
  *   · the entry schema is H3's — `uuid`/`name`, not `allyUuid`/`allyName` (a pure rename)
  *   · "the mark wins" — an ally who no longer bears the `covenant` status drops off every read, so a
  *     GM clearing the icon by hand does the right thing, which the old flat list never handled.
- * The status id is SINGULAR (`covenant`) while the ledger key is plural, so it must be passed. */
-function edhaGetCovenants(owner) { return edhaOwnerList(owner, "covenants", "covenant"); }
+ * The status id is SINGULAR (`covenant`) while the ledger key is plural, so it must be passed.
+ * The accessor itself (edhaGetCovenants) retired 07-26 (the pre-deploy orphan sweep): the last
+ * reader went data-keyed, and the one-array-by-construction property lives in the ledger's key,
+ * not in the accessor. */
 async function edhaOrderApplyHits(owner, hits) {
   if (!hits?.length) return;
   const payload = { hits, terrain: null, casterActorUuid: owner.uuid };
