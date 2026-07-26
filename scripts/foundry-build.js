@@ -972,6 +972,18 @@ function advItemDoc(advName, raw, sort) {
   const skill = raw.skill || (ranged ? "lwp" : "hwp");
   const attribute = SKILL_ATTR[skill] || "str";
 
+  /* An ability that GATES ITSELF ON A TEST has to roll one. `edha-def-test` (H1) is a decider, not a
+   * roller: it queues a contest and waits for the owner's own skill roll to arrive, so if the use
+   * flow never fires a test the contest just times out — the cost is charged and NOTHING happens,
+   * with no error anywhere. Until 2026-07-26j only ATTACK items were promoted to `skill_test`, so
+   * every non-attack ability carrying a def-test rule was born mute: the Callthief's Counterpoint,
+   * the Surecat's Redirect Momentum, the Reeve-Owl's Sovereign of Solitude, both Rootling Swarm
+   * abilities and the Tussock-Sow's Drive the Prey (found live, bench run 2). The rule already
+   * names the skill it wants, so read it off the document rather than making each block declare it
+   * twice — and never key on the ability's NAME (iron rule 2b). */
+  const defTestSkill = (raw.events ?? []).find(r => r?.handler?.type === "edha-def-test")?.handler?.skill || null;
+  const testSkill = raw.skill || defTestSkill;
+
   const activation = {
     type: spec.type, cost: spec.cost, consume,
     flavor: "", plotDie: false, opportunity: null, complication: null, uses: null,
@@ -983,7 +995,12 @@ function advItemDoc(advName, raw, sort) {
     activation.skill = skill;
     activation.modifierFormula = String(raw.attack); // flat attack bonus -> added to the d20 test as a part
     if (raw.damage) damage = { formula: raw.damage, grazeOverrideFormula: raw.graze ?? "", type: raw.damageType ?? null, skill: null, attribute: null };
-  } else if (isHeal) {
+  } else if (defTestSkill) {
+    activation.type = "skill_test";
+    activation.skill = testSkill;
+    activation.attribute = SKILL_ATTR[testSkill] || "default";
+  }
+  if (isHeal) {
     damage = { formula: raw.damage, grazeOverrideFormula: raw.graze ?? "", type: raw.damageType ?? null, skill: null, attribute: null };
   }
 
