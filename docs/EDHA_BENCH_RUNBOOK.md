@@ -177,6 +177,28 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   (`systems/cosmere-rpg/index.js:7782-7800`). So "Blue 2+; Red 2+" really does demand both, and
   "X or Y" really is either — read the compiled node, don't guess from the drawn tree.
 
+## Operating lessons from run 5 (2026-07-27a)
+
+- **Cloned fixtures keep `prototypeToken.name`.** Staging victims by `toObject()`-cloning a
+  fixture gives tokens that still carry the ORIGINAL name — set both `name` and
+  `prototypeToken.name` (and rename any already-placed token) or every
+  `scene.tokens.find(t => t.name === …)` lookup misses.
+- **`combat.update({turn})` DOES fire the system turn-change when moving off an already-set
+  turn.** Run 2's "the model never fires one" holds only while `turn` is null. Drive a boundary
+  with update() alone, and only fall back to `Hooks.callAll("combatTurnChange", …)` if no watch
+  fired — doing both double-posts turn-start ticks.
+- **Roster cross-talk is constant, and it can EAT a row's numbers.** The 15 bench PCs' always-on
+  watches fire scene-wide out of combat: Breaking Point (Red) statuses targets on anyone's hits,
+  and Devoted Conduit (White) silently reduced a Lifeline self-hit to 0 (the row was saved by
+  its card text, not the HP delta). Read every stray card's OWNER before attributing it, and
+  prefer card-text assertions over bare HP deltas when a reducer might be watching.
+- **A refusal can live in `ui.notifications` only** — pre-cost vetoes (Shatter Focus, Spreading
+  Omen) post NO chat card; scrape `#notifications .notification` alongside the chat window or a
+  clean refusal looks like a silent nothing.
+- **H3 raw-flag reads are PRE-reconcile.** After a release, `flags…lists.<key>` may still show
+  the entry; the mark-wins reconcile drops it on the next write/read. Assert ledger counts from
+  the NEXT place card ("(1/2)"), not the raw flag.
+
 ## Known limits
 
 - ❌ **RESOLVED AS UNFIXABLE (07-26i): there is no "no written Cognitive/Spiritual defense" creature.**

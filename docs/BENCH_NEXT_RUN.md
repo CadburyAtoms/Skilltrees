@@ -6,109 +6,114 @@ rewrites this file for the run after it, so this file always holds THE next prom
 ---
 
 /bench-run — Foundry is running with the edha world open and the Bench user is passwordless. Run
-BENCH RUN 5 (two deity trees: **Life, then Chaos**): join as Bench, health-check, then re-run
-`scripts/bench-setup-console.js` once as the idempotency/repair check (zero ⚠ lines expected).
-Run 4 found the 23 bench tokens still placed at ORIGIN (2100, 9000) — if `scene.tokens` has no
-`Bench*` tokens, re-run the placement leg at that ORIGIN (the setup script's SPOTS map; grid is
-300 px = 5 ft). Read `docs/EDHA_BENCH_RUNBOOK.md` — the run-1 through run-4 "Operating lessons" —
-before driving anything. **The run-4 lessons are the load-bearing ones and they OVERRIDE older
-advice:**
+BENCH RUN 6 (two deity trees: **Fate, then Sovereignty**): join as Bench, health-check, then
+re-run `scripts/bench-setup-console.js` once as the idempotency/repair check (zero ⚠ lines
+expected; run 5's re-run was pure sync). The 23 bench tokens should still be placed at ORIGIN
+(2100, 9000) — if `scene.tokens` has no `Bench*` tokens, re-run the placement leg at that ORIGIN
+(the setup script's SPOTS map; grid is 300 px = 5 ft). Read `docs/EDHA_BENCH_RUNBOOK.md` — the
+run-1 through run-5 operating lessons — before driving anything. **Load-bearing lessons, newest
+first (they OVERRIDE older advice):**
 
-* **`tokDoc.update({x, y})` no longer moves a token.** It throws `Cannot read properties of
-  undefined (reading 'testPoint')` out of the Region movement segmentiser and silently leaves the
-  token put. Use `tokDoc.move({x, y, action: "displace"}, {animate: false})` then `tokDoc.reset()`.
-  Use `action: "walk"` when the row needs wall collision or Region enter-triggers to actually run —
-  `move()` returns `false` when a wall refuses, which is itself a usable assertion.
-* **Right-click cancel is a `contextmenu` event**, not a right-button `pointerdown`. Dispatch
-  `new MouseEvent("contextmenu", {bubbles: true, cancelable: true, button: 2})` on `#board`. A
-  `pointerdown` with `button: 2` leaves the pick LIVE and the next left click still places.
-* **`item.system.events` is a `RecordCollection`.** Writing an array back is a silent no-op that
-  reports success — edit with the dot path `"system.events.<ruleId>.handler.<field>"`. This is how
-  a document-edit (rule-2b premise) row can look like it failed when it was never applied.
-* **Re-adding a talent to a bench PC needs `edha.skipBudget(true)`** or the level-7 budget refuses
-  the create while `syncActorTalents` still reports success.
-* **Resource writes clamp to max** — a top-up above the effective max reads back as the max; do not
-  mistake the clamp for a spend when checking a "nothing spent" row.
-* **`actor.applyDamage([{amount, type}])` is the only honest console damage.** A raw
-  `system.resources.hea` edit does not fire the damage watches (it DOES still fire defeat watches).
-* Plus the standing ones: after `Combat.create` (INACTIVE — never `active: true`, Ben keeps a live
-  campaign combat open) call `ui.combat.initialize({combat})` and verify `game.combat.id`; chat is
-  `ol.chat-log`; `item.use()` blocks on the ItemConsumeDialog (`[data-action=continue]`, then
-  `[data-action=submit]` for the roll); damage cards apply via
-  `[data-action=apply-damage][data-multiplier='1']` — **the LAST button in the row is HEAL
-  (multiplier −1), never click blind**; there are no screenshots when the pane is hidden, so record
-  quoted card text + console asserts; turn boundaries are `combat.update({turn}) +
-  Hooks.callAll("combatTurnChange", combat, prior, current)` — each hook call fires the watches
-  once, so a "double post" is usually YOUR driving. Tem parinaem and Soggy Bottom are untouchable.
+* **Cloned fixtures keep `prototypeToken.name`** — clone-actor staging must set BOTH `name` and
+  `prototypeToken.name`, or `scene.tokens.find(t => t.name === …)` misses the new token (run 5).
+* **`combat.update({turn})` DOES fire the system turn-change** when moving off an already-set
+  turn — only add the manual `Hooks.callAll("combatTurnChange", …)` when an update produced no
+  watch fire, or turn-start rows double-post (run 5 double-ticked a regen this way).
+* **Expect roster cross-talk cards mid-row** — the 15 always-on bench PCs' watches fire
+  scene-wide out of combat: Breaking Point (Red) disoriented run-5 targets on other actors'
+  hits, Devoted Conduit (White) ATE a Lifeline spirit self-hit, Mender's/Shared Burden/Voice of
+  Authority offer-cards interleave constantly. Never attribute a stray card to the talent under
+  test; check the card's named owner first.
+* **`tokDoc.update({x, y})` is DEAD for token movement** — use
+  `tokDoc.move({x, y, action: "displace"}, {animate: false})` + `tokDoc.reset()`; `action:
+  "walk"` when a row needs wall collision or Region triggers (`move()` returning `false` on a
+  wall refusal is itself an assertion).
+* **Right-click cancel is a `contextmenu` event** on `#board`, not a `button: 2` pointerdown.
+* **`item.system.events` is a `RecordCollection`** — edit rules ONLY via the dot path
+  `"system.events.<ruleId>.handler.<field>"`; writing an array back is a silent no-op.
+* **Marker-ledger entries snapshot formulas at placement** — edit the document FIRST, then
+  place, then spring/detonate.
+* **`edha.skipBudget(true)`** around any talent re-add; **resource writes clamp to max**;
+  **`actor.applyDamage([{amount, type}])` is the only honest console damage**.
+* Plus the standing ones: INACTIVE combats only (`ui.combat.initialize({combat})`, verify
+  `game.combat.id`; Ben keeps a live campaign combat open — leave `BerbNeuXp4iKduef` alone);
+  chat is `ol.chat-log`; `item.use()` blocks on the ItemConsumeDialog
+  (`[data-action=continue]`, then `[data-action=submit]` for a roll); damage cards apply via
+  `[data-action=apply-damage][data-multiplier='1']` — the LAST button is HEAL; no screenshots
+  while the pane is hidden, so record quoted card text + console asserts. Tem parinaem and
+  Soggy Bottom are untouchable.
 
-**Deploy state — read before believing any bug.** The 07-26l ENGINE half is CONFIRMED LIVE (run 4
-re-tested all six and all six passed). **The 07-26n fixes for run 4's defects are IN THE REPO but
-each has a deploy prerequisite — read the checklist's DEPLOY STATE first and do NOT fail their
-rows against a stale deploy:** the engine fixes (`edhaIsConstruct` + the H3 owner-list write
-queue) need the engine sync + F5; Fault Line's ×3 ALSO needs `foundry-build deity` + ⟳ Sync
-Talents + a fresh RE-FORGE; Flame Surge needs `foundry-build adversaries` + ⟳ Sync Adversaries +
-re-importing BOTH bosses. Still pending from 07-26l: Mender's Instinct's authored note/range
-(`foundry-build leyline` + ⟳ Sync Talents) and Herding Antlers (`foundry-build adversaries` +
-re-drag the Fellstag). Do NOT run a pack build yourself. Check the letter above 07-26n before
-starting.
+**Deploy state — read before believing any bug.** The **07-26n ENGINE half is CONFIRMED LIVE**
+(run 5 verified the served blob: `edhaOwnerListQueue` + the new `edhaIsConstruct` + the
+`creatureType` mint; the Remains-race queue fix passed at the table). **The THREE pack halves
+are still owed** (all re-confirmed stale by run-5 fresh compendium reads): `foundry-build
+leyline` (Mender's note/range), `foundry-build deity` + re-forge (2bY-7's Constructs ×3 —
+live pack still reads `creatureType: ""`), `foundry-build adversaries` + re-imports (2bAB-1
+Flame Surge still `damage.formula: null` on both bosses; Herding Antlers still 0 events).
+Do NOT run a pack build yourself; record their rows BLOCKED-ON-DEPLOY unless a fresh console
+read proves a rebuild landed. Check the letter above 07-27a before starting.
 
-**FIRST: carry-forward rows from run 4 — three are FIXED (07-26n), gated on deploys:**
-(1) **Remains race** — FIXED engine-only. If the engine sync + F5 has landed, re-test the exact
-staging (Necrotic Cascade dropping 2–3 adversary-typed victims in ONE tick → cards read "(1/2)"
-then "(2/2)", ledger holds two). Chaos's Omen ledger rides the same queue — if a Chaos row drops
-multiple bearers in one tick, that is free corroborating evidence, note it.
-(2) **2bY-7 Fault Line `Constructs ×3`** — FIXED, needs BOTH halves (engine F5 + deity rebuild +
-⟳ Sync + re-forge). Only re-test with both live and a freshly-forged, hostile-flipped Construct.
-(3) **2bAB-1 Flame Surge** — FIXED in data; **BLOCKED-ON-DEPLOY** until the adversaries rebuild +
-⟳ Sync + fresh re-imports of both bosses. Skip and say BLOCKED-ON-DEPLOY if the rebuild has not
-run; if it has, re-test on FRESH imports (a real 2d8 total + 3 (red), halved on a save).
-(4) Raise Dead's raised-creature-keeps-its-Remain stays a RULING for Ben — not yours, skip.
-Also still open from run 1: Shockwave Slam's weapon-hit trigger surface (genuinely unfixed).
+**Carry-forward: run 5 left FOUR defects for test-pass-fixes — do NOT re-diagnose them, and
+re-test only what a fix delta says is fixed:** (1) simultaneous cascade-drop harvests lose the
+2nd+ nested kill's DISPATCH entirely (queue half is fixed and retired; the loss is upstream,
+suspected `_edhaCascadeBusy`/defeat-watch re-entrancy); (2) Adaptive Mutation has no
+once-per-creature gate (second use re-charges and silently replaces the pick); (3) Apex Form's
+scene end creates TWO injuries, not one; (4) Surgical Precision's graze branch is unreachable
+as console-driven (`dc: null` on the d20 — ⚑ Ben should try once from the sheet). Also still
+open: Shockwave Slam's weapon-hit trigger surface (run 1), and the Raise-Dead-keeps-its-Remain
++ Fault-Line-spares-allies + Walking-Ruin-indicator rulings (Ben's).
 
 Then run the two sections end-to-end:
 
-* **BENCH — Life on Bench — Life:** the whole section is unrun. Priorities: 2bW-12 Adaptive
-  Mutation (the whispered three-option chooser, one pick per creature per scene, and each graft's
-  rider actually riding a melee hit), then 2bW-13 Apex Form's five clauses — the fifth (scene end
-  clears the buff and adds ONE auto-created injury) is the interesting one: run 4 proved Raise
-  Dead's injury tool works and creates a real `injury`-type item, so Apex Form should too. Then
-  2bW-14 Primal Regeneration (the Vital/Spirit-damage END condition is the half most likely to be
-  wrong), 2bW-15 Surgical Precision (a GRAZE must post NO cleanse), 2bW-16 Lifeline (the amount
-  input, "0" declining free, once per round). Note the Life/Death premise row 2bW-17 is RETIRED —
-  don't re-prove it; if you want a Life-side document-edit spot-check, edit Lifeline's fraction.
-  ⚠️ Life needs a WILLING ALLY: `Bench Ally — One`/`Two` are friendly-disposition and linked.
-* **BENCH — Chaos on Bench — Chaos:** priorities per the section preamble — **2bG-4** (the H3
-  conditional-payload idiom: a success vs a target with NO Omen must apply Isolated and deal **no
-  damage at all**; if damage lands, the short-circuit is broken) and **2bG-6** (the half-migrated
-  Omen cap: place Omens with Entropy Strike, clear them with Cascade Collapse, place again — the
-  cap must free up through the read-time reconcile). Then the Omen chain in order: 2bG-1/2bG-2
-  (three rules; the at-cap REFUSAL must not fizzle an older Omen), 2bG-3/2bG-5, 2bU-1 Spreading
-  Omen (nearest-unmarked auto-pick), 2bU-2 Unweaving (the GM-clickable dispel card), 2bU-3 Cascade
-  Collapse (per-bearer Cognitive gate; out-of-range bearers untouched), 2bU-4 Unravel Everything
-  (the Isolated bearer takes 2[T][D] vital and NO Disorient), 2bU-5 Void Sense's new Blue-range
-  gate, 2bY-12 / 2bU-6 Shatter Focus (pre-cost veto; the Chaos Set's only remaining takeover) and
-  2bG-7/2bG-8 as the unchanged-regression pair.
+* **BENCH — Fate on Bench — Fate:** the biggest remaining deity section (17 rows). Priorities
+  per the preamble: **2bX-14 / 2bAA-5** (scene reset — a missed key silently leaves a live
+  ledger; end a combat with squares, snares, marks, links, buffs all live and confirm BOTH
+  ledger keys, templates, Regions, AEs and markedBy keys clear). Then the placement family
+  (2bX-1 Ordained Ground's NEW range gate + refund paths, 2bX-2 Snare cap with oldest-fizzle,
+  2bAA-1 the ledger repoint), the spring family (2bX-3 both directions + the DOCUMENT formula —
+  edit it FIRST then re-place, per the snapshot lesson; 2bX-4/5 Inevitable Snare's pre-cost
+  refusal, flag, extra die off its OWN formula + SPD-vs-Green Disorient), the buff/watch family
+  (2bX-6 Hexmark, 2bX-7/2bAA-3 Bulwark's turn-start AE + advantage-neutralize, 2bX-9/2bAA-2
+  Weave's linked-square Reactive-Strike prompt), the movers (2bX-10/2bAA-4 Read the Threads —
+  post a FRESH marker card, old ones say "That marker is gone"), and the capstones (2bX-11
+  Foreknown Strike's per-snare buttons, 2bX-12 Thread of Inevitability's resolve-all +
+  sceneOnce). 2bX-13 (costs/refunds) rides every row — watch the Investiture bar. Click-to-place
+  rows are drivable with the run-2 `canvas.mousePosition` descriptor trick; right-click cancels
+  via `contextmenu`.
+* **BENCH — Sovereignty on Bench — Sovereignty:** priority **2bT-16** (Sovereign's Balance — an
+  ENGINE-OWNED pair talent converted to entry-data couplings: ally+enemy targeted, pair ±1, the
+  ally's hit extends BOTH one round, once, cast round only — `onPairHit: extend-once`). Then
+  2bT-11 Censure (Black-range gate is NEW card-is-spec; check a damage roll actually steps down),
+  2bT-12 Decree of Ruin (scene vs timed −1, per-creature sceneOnce), 2bT-13 Edict of the Fallen
+  (−2 steps on ATTACK damage only + the ledger-entry Temp-HP rider on failed attack tests),
+  2bT-14 Exalt + Sovereign's Favor (the `die-step` watch must fire on Exalt and NOT on
+  Investiture of Authority; Temp HP keeps-higher), 2bT-15 (Exalt entry REPLACED by the scene
+  entry, second Investiture refused pre-cost), 2bT-17 Sovereignty capstone (±2 scene, no-reactions
+  card per hit, sceneOnce), 2bT-18 Expose (auto +1 Inv on a failed readable attack + Reactive
+  Strike in White range; the owner-click "did it fail?" card on non-attack tests; must NOT ride
+  Edict's entries — whenKeys censure,decree). A willing ally + enemy pair targeted together:
+  `Bench Ally — One` + `Bench Target — Adjacent A`, allies are friendly-disposition and linked.
 
-**Standing observations to extend, not re-open:** the out-of-combat scope question has a full
-characterization in the 07-26k delta (GM focus edits count as spends; campaign tokens' watches fire
-scene-wide; per-round ledgers never reset out of combat), and run 4 added three sightings (Fault
-Line spares allies; a raised creature keeps its Remain; Walking Ruin has no token indicator). If
-Life's or Chaos's watches show the same patterns, ADD the sighting to the ruling batch — don't
-re-derive it.
+**Standing observations to extend, not re-open:** the out-of-combat scope question has its full
+characterization in the 07-26k delta; run 5 added five sightings (roster cross-talk incl.
+Devoted Conduit eating a row's own damage; mutation riders firing on a nat-1 graze; Unweaving
+listing the Omen marker as dispellable; Chaos having no scene-end sweep; stale prompt-sweep
+cards re-posting). If Fate's or Sovereignty's watches show the same patterns, ADD the sighting
+to the rulings batch — don't re-derive it.
 
-**Caveats:** multi-client rows stay ⚑ Ben. Do NOT fix anything mid-run — that is `test-pass-fixes`
-work. Record per the skill: passing rows retire with one-line evidence, fails get dated inline
-notes, feel/canvas rows stay ⚑, blocked rows say BLOCKED-ON-DEPLOY. **Scope your end-of-run cleanup
-to an id-diff against your OWN start snapshot** — run 4's sweep ended exactly empty (7 actors,
-7 tokens, 1 Region, 0 walls, 0 combats, all created by that run, all deleted); keep it that way.
-The 23 roster tokens stay placed. The orphan `Combat Construct` token from run 1 may still be on
-the Playtest Map — **leave it for Ben** (run 4's "it's gone" claim was RETRACTED: its start
-snapshot captured only token ids, its end diff showed `tokensMissing: 0`, so what it deleted was
-its own Forge Construct summon, not the orphan). **Log out at the end** (`game.logOut()`) and
-confirm Bench is selectable on /join.
+**Caveats:** multi-client rows stay ⚑ Ben. Do NOT fix anything mid-run — that is
+`test-pass-fixes` work. Record per the skill: passing rows retire with one-line evidence, fails
+get dated inline notes, feel/canvas rows stay ⚑, blocked rows say BLOCKED-ON-DEPLOY. **Scope
+your end-of-run cleanup to an id-diff against your OWN start snapshot** — runs 4 and 5 both
+ended exactly empty; keep the streak. The 23 roster tokens stay placed. The run-1 orphan
+`Combat Construct` token may still be on the Playtest Map — **leave it for Ben**. Bench Ally —
+One carries pre-existing stale flags (`accord`, `aggro`, `bpHits`, `coordRound`) — they predate
+run 5, leave them unless a row trips over one (then note it). **Log out at the end**
+(`game.logOut()`) and confirm Bench is selectable on /join.
 
 Finish with the dated handoff delta (next letter after the current top one), dashboard rebuild,
 gates (`python`, never `python3`; no `;`-chaining; never pipe a gate through `tail`), ONE pushed
-commit titled `Bench run 5 (Life+Chaos): X retired on evidence, Y fails -> test-pass-fixes`, and
-rewrite `docs/BENCH_NEXT_RUN.md` with the run-6 prompt (suggested: **Fate + Order** — the two
-biggest remaining deity sections — or the test-pass-fixes batch first if Ben has run it).
+commit titled `Bench run 6 (Fate+Sovereignty): X retired on evidence, Y fails ->
+test-pass-fixes`, and rewrite `docs/BENCH_NEXT_RUN.md` with the run-7 prompt (suggested:
+**Civilization + Power + Knowledge**, or the test-pass-fixes batch first if Ben has run it —
+the fail list is four families deep at this point).

@@ -2,7 +2,16 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, **COMPLETED 2026-07-26 (pass AA)**: **the ratchet list is EMPTY — 221 → 0 across twenty-seven passes.** Every tree is clear, all six marker ledgers have migrated, and `scripts/name-keyed-allowlist.json` stays in the repo with an empty `talents` list *on purpose* — lint pass 7 still guards against REGROWTH, which is the half of the ratchet that matters from here on. ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **ALL SIX marker LEDGERS have migrated** (`covenants` 07-24u; `edicts` 07-25 pass V; `remains` 07-25 pass W; Fate's `snares` 07-25 pass X; Destruction's `charges` 07-26 pass Y; Fate's `ordained` 07-26 pass AA — the point-bound ones fail OPEN through H3's reconcile by design). There is no flat marker-list flag left in the engine. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-26n** (THREE of
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-27a** (BENCH RUN 5 —
+Life + Chaos + the carry-forward re-tests, executed live: **18 rows retired on evidence** (the
+whole 15-row Chaos section clean, 2 Life rows, and the Remains-race write-queue half verified
+fixed at the table with Omen-ledger corroboration), **4 defects → test-pass-fixes** (Adaptive
+Mutation's missing once-per-creature gate, Apex Form's DOUBLE injury at scene end, Surgical
+Precision's unreachable graze branch, and the narrowed simultaneous-harvest DISPATCH loss that
+survives the 07-26n queue fix), 4 rows re-confirmed BLOCKED-ON-DEPLOY by fresh compendium reads,
+5 rulings/observation sightings. The 07-26n ENGINE half confirmed live on the fresh join; the
+three pack halves still owed. Cleanup id-diff exactly empty; Bench logged out. Docs only.)
+Prior: **2026-07-26n** (THREE of
 bench run 4's four defects FIXED — every root cause verified in code before touching anything:
 `edhaIsConstruct`'s dead-field read + Forge Construct now minting a real Construct (MIXED: engine
 F5 + deity PACK REBUILD), the H3 owner-list write race serialised at the shared level with a
@@ -36,6 +45,133 @@ the Red pilot, executed live by an agent session joined as `Bench`: 16 rows reti
 1 FAIL root-caused (Shockwave Slam's weapon-hit trigger surface), 4 cross-tree observations,
 and the agent-bench runbook hardened with the v13 operating lessons. Docs + setup-script fix
 only; nothing to deploy.)
+
+**2026-07-27a — BENCH RUN 5 (Life + Chaos + carry-forwards), EXECUTED LIVE.** An agent session
+joined Ben's running Foundry as `Bench` (v13.351, cosmere 2.1.0, edha-content active), verified
+the 07-26n ENGINE deploy on the served blob, ran the carry-forward re-tests, the whole BENCH —
+Life and BENCH — Chaos sections, swept to an EXACTLY EMPTY id-diff, and logged out (Bench
+selectable on /join). Hidden-pane run — no screenshots; every verdict is quoted card text +
+console-asserted state. Docs only; nothing to deploy.
+
+### Deploy state established first (fresh reads, not assumptions)
+
+- **ENGINE 07-26n: LIVE.** The served `register-skills.js` (1,410,084 bytes) contains
+  `edhaOwnerListQueue`, the new `edhaIsConstruct` body (`const t = actor?.system?.type;`) and the
+  `spec.creatureType` summon mint. DEPLOY STATE updated with the ✅ line (run-4 precedent).
+- **Deity pack: NOT rebuilt** — Forge Construct's live pack rule reads `creatureType: ""` vs the
+  repo's `"Construct"` → **2bY-7 stays BLOCKED-ON-DEPLOY** (needs rebuild + ⟳ Sync + re-forge).
+- **Adversaries pack: NOT rebuilt** — both bosses' Flame Surge `damage.formula: null` (2bAB-1
+  BLOCKED), Fellstag's Herding Antlers 0 events (BLOCKED).
+- **Leyline pack: NOT rebuilt** — Mender's Instinct still 228-char note + empty `rangeColor`
+  (BLOCKED).
+
+### Carry-forward verdicts
+
+1. **Remains race (07-26n H3 write queue): the FIX IS VERIFIED, and the row narrows.** Exact
+   run-4 staging (cascade armed, adversary trigger drop, two 1-HP adversary victims dropped by
+   ONE cascade application — "⚡ Necrotic Cascade — 12 spirit to Bench Adv — Victim V1, Bench
+   Adv — Victim V2"): harvest cards read **"(1/2)" then "(2/2)"** and the ledger ended holding
+   **two entries** — run 4's two-"(1/2)"-cards/one-entry symptom is gone. Chaos corroborated the
+   queue on a second ledger: one Cascade Collapse roll released TWO Omen-bearers with serialized
+   counts "(1/2)"→"(0/2)". **Residual defect (NEW, → test-pass-fixes): of 3 drops in one tick,
+   V2's harvest never DISPATCHED** — no ✨/📋 card, no entry, no eviction; a cap-isolation
+   control (Reaper's Harvest `capFormula` document-edited to 5, empty ledger, same staging)
+   reproduced the loss with zero cap pressure and left V2 with no trace (round 1 it at least got
+   `markedBy.harvested`; round 2 nothing). Suspected family (inference, not traced): the
+   `_edhaCascadeBusy`/defeat-watch re-entrancy guard admits only the FIRST simultaneous nested
+   kill. Sequential drops correct in both runs.
+2. **2bY-7 Fault Line ×3 — BLOCKED-ON-DEPLOY** (deity pack evidence above; not re-tested against
+   the stale pack).
+3. **2bAB-1 Flame Surge — BLOCKED-ON-DEPLOY** (fresh pack read: no damage block yet).
+4. Raise-Dead-keeps-its-Remain: untouched, Ben's ruling. Shockwave Slam's trigger surface:
+   unchanged, still the run-1 backlog item.
+
+### BENCH — Life (2 retired, 3 PARTIAL rows stay with dated notes)
+
+- **2bW-14 Primal Regeneration — PASS, retired.** Tick "regenerates 3 HP" (tier+1) at the ally's
+  turn start; 2 vital → "🥀 … ends — it took Vital/Spirit damage" + `lifeRegen` cleared + no
+  further tick; re-granted on the mutated ally the tick rolled "regenerates 5 HP" (2d8+1).
+- **2bW-16 Lifeline — PASS, retired.** Bond card; whispered offer "took 6 keen. Take up to 3 of
+  it as spirit" (half of the POST-deflect amount, input capped); "0" declined free (no HP moved,
+  same-round re-offer appeared); real 3 → "takes 3 spirit in Bench Ally — Two's place; … heals 8"
+  (3 + 2d8); third same-round damage → no offer; next round re-armed.
+- **2bW-12 Adaptive Mutation — PARTIAL.** Chooser + all three picks + riders PASS (Bone Spurs
+  "+2 keen on the strike" on a clean 13-vs-4 hit; Venom "Afflicted — 6 ongoing vital"; Dense
+  Tissue "natural armor absorbs 2"). **FAIL: no once-per-creature gate** — a second use on the
+  same ally posted a second chooser, charged 2 Inv again, and the click silently REPLACED
+  boneSpurs→venomGlands; the card's own "(scene; one per creature)" is enforced nowhere.
+- **2bW-13 Apex Form — PARTIAL.** Clauses 1–4 PASS ("regenerates 9 HP" at its turn start;
+  absorbs 2; "+2 vital on the strike"; "Afflicted — 12 ongoing vital (doubled — Apex Form)").
+  **FAIL clause 5: combat delete created TWO injuries** (two "Apex Form ends — takes an injury"
+  cards, two injury items) where the card promises ONE; the flag/buff sweep itself was clean.
+  Family guess: scene-end clear running twice (the 2bL-13 shape) — inference.
+- **2bW-15 Surgical Precision — PARTIAL.** Success half PASS (d20 15 ≥ phy 14 → "🩺 … success:
+  remove one condition … Weakened", click removed it). **FAIL: the graze branch is unreachable
+  as driven** — the d20 carries `dc: null`, so a 9 vs Physical 14 still posted the cleanse card;
+  `roll.options.graze` never set. ⚑ Ben: reproduce once from the sheet — if the sheet flow binds
+  the defense, this is a bench-driving artifact, else the H1/skill_test DC binding is the bug.
+
+### BENCH — Chaos — the whole section (15 rows) PASSED and is retired
+
+Full per-row evidence lives in the checklist's retired block; headlines: **2bG-4's H3
+conditional short-circuit holds** (success on a no-Omen target → Isolated, HP untouched, no
+damage card); **2bG-6's two-path cap reconcile works** (Entropy→cap, Cascade cleared one,
+Entropy placed into the freed slot at "(2/2)"); the at-cap REFUSE keeps older Omens (2bG-2);
+Isolating Ruin's unconditional-first-instance + Omen-riding-second (6+12 vital) vs single (11)
+(2bG-5); Spreading Omen's nearest-unmarked auto-pick, honest no-neighbor card, cap refuse and
+pre-cost no-target veto (2bU-1); Unweaving's GM-clickable dispel deleting the AE + Omen-shatter
+Disorient vs dispel-only (2bU-2); Cascade Collapse's one-roll per-bearer-Cognitive sweep with
+out-of-range bearers untouched + empty-ledger parity (2bU-3); Unravel Everything's nearest-first
+fill, scene-wide detonation, Isolated 2[T][D]-vital-no-Disorient branch vs spirit+Disorient
+branch, all Omens cleared (2bU-4); Void Sense's once-per-round refund with the NEW Blue-range
+gate enforced both directions (2bG-8/2bU-5); and Shatter Focus's full loop — both pre-cost
+vetoes, reroll-take-lower rewriting the total (22→18), the reroll-higher-stands branch, ledger
+exit via the mark-wins reconcile, auto-prompt whisper, Mute, real-use re-arm (2bY-12/2bU-6).
+2bG-7's "unchanged trio" is superseded in place: all three now carry document rules from pass
+2bU and ran clean. Residuals (⚑, canvas/dice-luck only): through-walls bearer rendering; the
+resister-keeps-its-Omen branch (every sweep roll happened to beat every Cognitive).
+
+### Rulings-batch sightings (EXTEND the standing out-of-combat/scope batch — 5 new)
+
+1. **The 15-PC bench roster cross-talks in every section.** Concrete hits this run: Bench —
+   Red's Breaking Point disoriented targets on OTHER actors' hits (3×); Bench — White's Devoted
+   Conduit ATE Lifeline's self-inflicted 3 spirit (the row still verified via the card); Bench —
+   Green's Mender's Instinct + Bench — White's Shared Burden offered on staged ally damage;
+   Shared Conviction + Concordant Presence cards rode Bench — Life's Blue test. All the same
+   07-26k scene-wide characterization — but for the BENCH's own sake, a ruling on parking
+   non-active bench PCs' watches would cut real noise.
+2. **Adaptive Mutation riders fire on a nat-1 graze application** ("melee — auto-checked" checks
+   weapon kind, not hit quality) — intended?
+3. **Unweaving lists the Omen marker itself as a dispellable effect button** — the GM can
+   "unravel" the caster's own Omen; card says "what counts as magical is the table's call".
+4. **Chaos has no scene-end sweep** — combat delete left the omens ledger + `trigRound` intact
+   (Life sweeps everything at scene end). sceneScoped entries + reconcile make it near-harmless,
+   but it is the inconsistency twin of Walking Ruin's missing indicator.
+5. **Stale prompt-sweep cards re-post** — pending offer cards (Shared Burden, Mender's, Voice of
+   Authority) re-appeared repeatedly during unrelated uses, referencing long-resolved damage.
+   Chat-spam/staleness call.
+
+### Operating lessons (run 5)
+
+- **Cloned fixtures keep `prototypeToken.name`** — clone-actor staging must set BOTH `name` and
+  `prototypeToken.name` or scene lookups by token name miss.
+- **`combat.update({turn})` DOES fire the system turn-change** when moving off an already-set
+  turn — only add `Hooks.callAll("combatTurnChange", …)` when the update produced no watch fire,
+  or turn-start rows double-post (one Primal tick carded twice before this was applied).
+- **Expect roster cross-talk cards mid-row** (sighting 1) — Breaking Point / Mender's / Shared
+  Burden cards interleave with the row's own output; don't attribute them to the talent under
+  test.
+
+### World hygiene
+
+- Cleanup id-diff vs the start snapshot: **exactly empty** (3 victim actors + 3 tokens, Ally
+  Three + token, 2 INACTIVE combats, test AEs, 2 injuries, ally weapon copies — all created and
+  all deleted; fixtures healed, statuses cleared, tokens restored, Undefended's phy override
+  restored to 12, Reaper's Harvest capFormula restored to `@tier`). The 23 roster tokens stay.
+- Ben may flush bench chat (heavy this run). Bench Ally — One carries PRE-EXISTING stale flags
+  from earlier runs (`accord`/Bound by Word from Bench — White, `aggro`, `bpHits`, `coordRound`)
+  — left untouched, but a future setup-script pass could clear fixture flags. The run-1 orphan
+  `Combat Construct` token was not touched.
 
 **2026-07-26n — BENCH RUN 4'S DEFECTS 1–3, FIXED (test-pass-fixes). One commit per defect, root
 causes VERIFIED in code (hook → handler → write) rather than re-derived. ⚠️ MIXED DEPLOY: the two

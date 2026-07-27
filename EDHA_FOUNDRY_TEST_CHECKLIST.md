@@ -57,20 +57,23 @@ Cruel Step's straddle (plus the ⚑ near-parallel residual), Mender's ally + on-
 heal-cut family gate, `edhaAttackKind`'s ranged stand-downs, and Tempered Edge read by NET.
 Evidence per row in the 07-26m delta.
 
-**Still BLOCKED-ON-DEPLOY — now FOUR data/pack halves plus one engine sync (07-26n).** Ben runs
-these with Foundry closed:
-- **Engine (F5 after `module-src-sync` / deploy-to-foundry):** the 07-26n engine fixes —
-  `edhaIsConstruct` reading the real `system.type` field (2bY-7's Constructs ×3) and the H3
-  owner-list write queue (the Remains race) — are repo-only until the next engine sync + F5.
+**✅ The 07-26n ENGINE half is LIVE (bench run 5, 2026-07-27a).** The fresh Bench join's served
+`register-skills.js` carries `edhaOwnerListQueue`, the new `edhaIsConstruct` (`system.type` read)
+and the `spec.creatureType` summon mint — and the Remains-race re-test confirmed the queue works
+at the table (counts serialize, entries survive; the residual dispatch loss is a NEW defect, see
+the Death section).
+
+**Still BLOCKED-ON-DEPLOY — THREE data/pack halves (all re-confirmed by fresh compendium reads,
+bench run 5).** Ben runs these with Foundry closed:
 - `foundry-build leyline` + **⟳ Sync Talents** (Mender's Instinct's one-liner note + green range
-  gate — run 4 confirmed the live pack still carries the 228-char note and an empty `rangeColor`).
+  gate — run 5 re-confirmed the live pack still carries the 228-char note and an empty `rangeColor`).
 - `foundry-build deity` + **⟳ Sync Talents** + **RE-FORGE the Construct** (07-26n: Forge
-  Construct's rule now mints its summon `creatureType: "Construct"`; an already-summoned
-  Construct keeps its old humanoid type until re-forged).
+  Construct's rule mints its summon `creatureType: "Construct"` — run 5 read `creatureType: ""`
+  in the live pack; an already-summoned Construct also keeps its old humanoid type until re-forged).
 - `foundry-build adversaries` + **⟳ Sync Adversaries** + **re-drag the Fellstag** (Herding
-  Antlers — run 4 confirmed a FRESH pack read still shows 0 events) + **re-import BOTH bosses**
-  (07-26n: Flame Surge's missing damage block is now authored — 2d8 energy on Cragdrake Alpha and
-  Hazewyrm Elder; placed copies stay frozen at 0 until re-imported).
+  Antlers — run 5 re-confirmed a FRESH pack read still shows 0 events) + **re-import BOTH bosses**
+  (Flame Surge — run 5 re-confirmed both bosses' live `damage.formula` is still `null`; placed
+  copies stay frozen at 0 until re-imported).
 
 Only Ben advances this section.
 
@@ -302,7 +305,7 @@ evaluates a multi-talent group with `.some()`, so either parent alone suffices; 
 `data/domain.json` matches). Evidence per row in the 07-26m delta. ⚑ the drawn-tree eyeball for
 the prereq row is still Ben's.
 
-- [ ] **2bY-7 — Fault Line `Constructs ×3` — FIXED 07-26n, re-test (needs BOTH deploy halves: engine F5 + `foundry-build deity` + ⟳ Sync Talents + RE-FORGE)** — the run-4 FAIL (Construct took 12 − 1 = 11, ×1) was `edhaIsConstruct` reading `system.customType`, a field no cosmere actor has; it now reads `system.type = {id, custom}` (engine, F5), and Forge Construct's rule mints its summon `creatureType: "Construct"` via the new authorable `edha-summon` field (deity pack rebuild + ⟳ Sync Talents). **Re-test AFTER both halves + a fresh re-forge** (an old summon keeps its humanoid type): stage the line over a hostile-flipped, freshly-forged Construct in a clean lane → it takes **×3** (e.g. roll 12 → 36 − deflect), the Floater beside it ×1. The line's other dials stay retired-in-place from run 4 (Region, +2 Strength, Speed-vs-Red → Prone, cancel refund). ⚑ **Ruling still wanted:** the line spares ALLIES — the card reads "Each character in the line takes …" with no friend/foe clause, and the engine catches enemies only.
+- [ ] **2bY-7 — Fault Line `Constructs ×3` — FIXED 07-26n; run 5 (2026-07-27a) confirmed BLOCKED-ON-DEPLOY on the pack half** — the ENGINE half is live (run 5's fresh join: the served `register-skills.js` carries the new `edhaIsConstruct` reading `system.type` and the `spec.creatureType` mint), but a fresh compendium read shows the deity pack's Forge Construct rule still carries `creatureType: ""` vs the repo's `"Construct"` — `foundry-build deity` + ⟳ Sync Talents + a fresh RE-FORGE have not run. **Re-test AFTER the deity rebuild + re-forge** (an old summon keeps its humanoid type): stage the line over a hostile-flipped, freshly-forged Construct in a clean lane → it takes **×3** (e.g. roll 12 → 36 − deflect), the Floater beside it ×1. The line's other dials stay retired-in-place from run 4 (Region, +2 Strength, Speed-vs-Red → Prone, cancel refund). ⚑ **Ruling still wanted:** the line spares ALLIES — the card reads "Each character in the line takes …" with no friend/foe clause, and the engine catches enemies only.
 - [ ] ⚑ **Walking Ruin has no token indicator (2026-07-26m — ruling, not a bug)** — the toggle is tracked internally and nothing on the token says the character is leaving ruin behind, unlike every other scene-arm in the project (Cascade Armed, Crowned, `withernext`, `warlord`). Consistency call is Ben's.
 
 ---
@@ -312,35 +315,60 @@ the prereq row is still Ben's.
 Run on **Bench — Life** (a willing ally dummy to mutate; a wounded ally). No pack rebuild
 pending. The Life/Death premise row lives in the Death section (2bW-17).
 
-- [ ] **2bW-12 — Adaptive Mutation** — use targeting a willing ally; pick each option across creatures → The whispered chooser (three options); the pick bakes onto the creature (one per creature, scene): Bone Spurs +tier keen on melee hits, Venom Glands Afflicted ½[T][D] ongoing vital on melee hits, Dense Tissue +2 Deflect + forced movement refused.
-- [ ] **2bW-13 — Apex Form** — use on a mutated ally; check all FIVE → (1) [T][D green] regen at the start of ITS turns; (2) +2 Deflect; (3) +tier vital on its attacks; (4) its adaptation numbers DOUBLE; (5) at scene end the buff clears and it takes ONE auto-created injury.
-- [ ] **2bW-14 — Primal Regeneration** — use on an ally; deal it Vital damage; re-use on a mutated ally → Tier+1 at the start of its turns; Vital/Spirit damage ENDS it (card names the talent); with an adaptation the tick is [T][D green]+1.
-- [ ] **2bW-15 — Surgical Precision** — heal-test a conditioned ally — full success, then a graze → Success (non-graze): the cleanse card (Weakened/Disoriented/Slowed present on the target, pick one). A graze posts NO cleanse.
-- [ ] **2bW-16 — Lifeline** — use targeting an ally; damage them; absorb 0 / some; again same round → Use posts the bond card. On damage: the whispered card with the amount input (up to half). "0" declines free; a real amount lands on you as SPIRIT, the ally heals the amount + [T][D green]. Once per round.
+**Bench run 5 (2026-07-27a): 2 Life rows PASSED in full and are retired** — **2bW-14** (tick
+"regenerates 3 HP" = tier+1; 2 vital → "🥀 Primal Regeneration on Bench Ally — Two ends — it took
+Vital/Spirit damage", `lifeRegen` cleared, no tick on the next boundary; re-granted on the
+Dense-Tissue-mutated ally the tick rolled "regenerates 5 HP" = 2d8+1) · **2bW-16** (bond card;
+whispered offer "took 6 keen. Take up to 3 of it as spirit" with the number input capped at half
+POST-deflect; "0" declined free and a same-round re-offer appeared; a real 3 posted "takes 3 spirit
+in Bench Ally — Two's place; Bench Ally — Two heals 8" = 3 + 2d8; third same-round damage → no
+offer; next round re-armed). The chooser/riders of 2bW-12 and clauses 1–4 of 2bW-13 are
+retired-in-place inside the rows below. Evidence per row in the 07-27a delta.
+
+- [ ] **2bW-12 — Adaptive Mutation — PARTIAL 2026-07-27a: the once-per-creature gate is MISSING** — the chooser (whispered, three options) and all three picks PASSED: Bone Spurs "+2 keen on the strike (melee — auto-checked)" on a clean hit, Venom Glands "Afflicted — 6 ongoing vital", Dense Tissue "natural armor absorbs 2" (6 keen → 4). **FAIL: a second use on the already-mutated ally posted a SECOND chooser, charged 2 Inv again, and the click silently REPLACED Bone Spurs with Venom Glands** — the card's own "(scene; one per creature)" clause is not enforced anywhere. Not driven: Dense Tissue's forced-movement refusal (no push vehicle staged). ⚑ observation: the melee riders also fire on a nat-1 graze application — "melee — auto-checked" checks the weapon kind, not the hit quality.
+- [ ] **2bW-13 — Apex Form — PARTIAL 2026-07-27a: TWO injuries at scene end, not one** — clauses 1–4 PASSED ("Apex Form: Bench Ally — One regenerates 9 HP" at its turn start; "natural armor absorbs 2"; "+2 vital on the strike"; venom "Afflicted — 12 ongoing vital (doubled — Apex Form)"). **FAIL on clause 5: deleting the combat posted TWO "Apex Form ends — takes an injury" cards and created TWO injury items** (Slowed + Exausted placeholders) where the card promises ONE. The buff/flag sweep itself was clean (apexForm, mutations, lifeline, lifeRegen all cleared). Suspected family: the scene-end clear running twice (the 2bL-13 double-fire shape) — inference, not traced.
+- [ ] **2bW-15 — Surgical Precision — PARTIAL 2026-07-27a: the graze half never engages** — success half PASSED ("🩺 Surgical Precision — success: remove one condition… : Weakened", click removed it, d20 15 ≥ phy 14). **FAIL: the d20 carries NO DC (`dc: null` on the roll) — a 9 vs the target's Physical 14 still posted the cleanse card.** `roll.options.graze` is never set on this flow, so the "graze posts NO cleanse" branch is unreachable. ⚑ caveat: driven via console `use()` + default roll dialog — if Ben's sheet flow binds the defense, re-test there before fixing.
 
 ---
 
 # BENCH — Chaos (Maelith, deity)
 
 Run on **Bench — Chaos** (enemy dummies inside and outside Blue Attunement Range; one
-Isolated). No pack rebuild pending. Priority: 2bG-4 (the conditional-payload idiom) and
-2bG-6 (the half-migrated cap reconciliation).
+Isolated). No pack rebuild pending.
 
-- [ ] **2bG-4 — Isolating Pressure ⚠️⚠️** — success vs a target with **no** Omen → Isolated, and **NO damage at all**. This is the whole H3 conditional idiom: the release rule returns false and the damage rule after it is skipped. If damage lands here, the short-circuit is broken.
-- [ ] **2bG-6 — ⚑ half-migrated Omen cap ⚠️⚠️** — place Omens with Entropy Strike (new path), then fire **Cascade Collapse** (old path) to clear them, then place again → The cap must free up correctly. The two paths keep the ledger in different places on purpose — the new one reconciles against the status on read. **If Entropy Strike thinks you are still at cap after Cascade Collapse cleared the Omens, that reconciliation is broken.**
-- [ ] **2bG-1 — Entropy Strike (Chaos)** — Events tab, then target + use + roll → ⚑ **THREE** rules listed. On a success: Omen placed **and** [Tier][Die] spirit. It was a takeover before — **you roll the Blue test yourself now**, on the talent's own card.
-- [ ] **2bG-2 — Entropy Strike at your Omen cap (= tier)** — use it on a fresh target while at cap → The card says **"no Omen placed — you are at your cap of N"**, and no Omen lands. Chaos REFUSES at the cap; it must not fizzle an older one.
-- [ ] **2bG-3 — Isolating Pressure (Chaos) ⚠️⚠️** — success vs a target **with** your Omen → Isolated, **Omen spent**, and [Tier][Die]+Awareness vital.
-- [ ] **2bG-5 — Isolating Ruin (Chaos)** — success with, then without, an Omen → With: Isolated + **two** damage instances. Without: Isolated + **one**. The first instance is unconditional; only the second rides the Omen.
-- [ ] **2bG-7 — Spreading Omen / Cascade Collapse / Unravel Everything** — run each → Unchanged — these three did NOT convert (they need H8). A regression here means the shared Omen helpers broke.
-- [ ] **2bG-8 — Void Sense** — damage an Omen-bearer marked via the new path → Still refunds 1 Investiture once per round. It reads `markedBy.omen`, which H3 still writes.
-- [ ] **2bU-1 — Spreading Omen** — target an enemy with another enemy ~8 ft from it, use → YOU roll Blue on the card (⚠ drift — the takeover auto-rolled); success = Omen on the target AND on the nearest other unmarked enemy within 10 ft (auto-picked; a "no additional enemy" card when none; the cap refuses past tier). No target → refused, **nothing spent**.
-- [ ] **2bU-2 — Unweaving** — use vs a foe carrying an active effect + your Omen → Success = the GM-clickable dispel card (every enabled effect a button; the click deletes it) + the Omen shatters → Disoriented until the start of your next turn. No Omen → dispel card only, no Disorient.
-- [ ] **2bU-3 — Cascade Collapse** — 2 bearers in Blue range, 1 beyond it, use → ONE Blue roll; each IN-range bearer gated vs ITS OWN Cognitive — affected: Omen removed + [T][D] spirit + Disoriented; a resister keeps its Omen. The out-of-range bearer is untouched. Empty ledger: cost still spends, "no creatures on the ledger" (parity with the takeover).
-- [ ] **2bU-4 — Unravel Everything** — one pre-placed Omen on an ISOLATED foe, then use amid enemies → Fills Omens nearest-first within Blue range up to the tier cap, then detonates EVERY bearer scene-wide: the Isolated one takes 2[T][D] **vital** (no Disorient), the rest [T][D]+AWA spirit + Disoriented; all Omens clear.
-- [ ] **2bU-5 — Void Sense** — an Omen-bearer of yours takes damage in Blue range; again same round → +1 Investiture, once per round (⚠ drift — the Blue-range gate is NEW: the card's clause, never enforced before). Through-walls rendering of Omen-bearers still works (now rule-driven).
-- [ ] **2bU-6 — Shatter Focus (regression)** — a marked foe rolls a test; react → The auto-prompt still whispers and the reaction still rerolls-take-lower — its takeover is now the Chaos Set's ONLY name. The removed Omen also leaves the H3 ledger (place another to confirm the count).
-- [ ] **2bY-12 — Shatter Focus (CHAOS, deity)** — use with no marked target (veto); then target your Omen-bearer after it rolls; mute the auto-prompt, use again → No/unmarked target: refused PRE-COST (nothing spent — the old flow burned the click). Marked: Omen removed, kept d20 rerolls-take-lower, total rewritten. Auto-prompt whispers on an Omen-bearer's roll; Mute silences; a real use re-arms.
+**Bench run 5 (2026-07-27a): the WHOLE section — all 15 rows — PASSED on the live table and is
+retired** — **2bG-4** (success 23 vs PHY 14 on a no-Omen target → "is Isolated", HP untouched,
+**no damage card at all** — the H3 conditional short-circuit holds) · **2bG-6** (Entropy placed to
+cap, Cascade Collapse cleared A, Entropy then placed on B at "(2/2)" — the freed slot reconciled
+correctly) · 2bG-1 (THREE rules on the tab; success 23→"bears your Omen (1/2)" + "11 spirit …
+2d8"; the player rolls the Blue test) · 2bG-2 (at cap, SUCCESS 17: "no Omen placed on Bench
+Target — Adjacent B — you are at your cap of 2", damage still landed, both older Omens kept) ·
+2bG-3 ("Omen is spent (1/2 left)" + "7 vital … 2d8 + 2" + Isolated) · 2bG-5 (with: TWO instances
+6+12 vital, "a second instance rides this"; without: ONE, 11 vital) · 2bG-7 (covered by
+2bU-1/3/4 — all three now carry document rules from pass 2bU and ran clean) · 2bG-8 + 2bU-5
+(refund card on bearer damage; same-round re-damage silent; out-of-Blue-range damage silent — the
+NEW range gate enforced; back in range next round the card fired again, Inv clamped at max) ·
+2bU-1 (no target → "target the creature first (nothing spent)"; spread marked A "(1/2)" AND
+nearest-unmarked B "(2/2)" auto-picked past the farther A-candidate; at cap "no Omen placed …
+cap of 2"; lone target → "(1/2)" + "no additional enemy within 10 ft to mark") · 2bU-2 (dispel
+card with one button per enabled effect, click posted "Bench Test Buff unravels from …" and
+deleted the AE; Omen shattered → Disoriented; no-Omen use → dispel card only, no Disorient) ·
+2bU-3 (ONE Blue roll sweeping per-bearer vs ITS OWN Cognitive — "affected" branch took omen +
+2d8 spirit + Disoriented; the out-of-Blue-range bearer untouched, kept its Omen; empty ledger →
+cost spent + "no creatures on the ledger"; a later sweep cleared TWO bearers off one roll with
+serialized counts "(1/2)"→"(0/2)" — free corroboration of the 07-26n H3 write queue) · 2bU-4
+(cap-full fill posted the honest "no enemy in range to mark (2/2)"; detonation hit the
+out-of-range Isolated bearer scene-wide for "16 vital … 2 * (2d8)" with NO Disorient while the
+non-Isolated bearer took "11 spirit … 2d8 + 2" + Disoriented; all Omens cleared; a second use on
+an empty ledger filled nearest-first — Undefended + B picked over the farther A) · **2bY-12 +
+2bU-6** (no-target and unmarked-target both refused PRE-COST with "nothing spent" warns; marked:
+"Omen removed … rerolled the d20 18→ 14 — test drops to 18", and the reroll-higher branch
+"reroll d20 = 6 ≥ kept 5 — the original test stands"; the stale ledger entry left via the
+mark-wins reconcile — the next place read "(1/2)"; auto-prompt whispered with the kept total;
+Mute silenced a bearer's roll; a real use re-armed the prompt). Evidence per row in the 07-27a
+delta.
+
+- [ ] ⚑ **Chaos residuals (run 5, canvas/dice-luck only)** — (a) 2bU-5's through-walls RENDERING of Omen-bearers: canvas-visual, hidden-pane session cannot see highlights — Ben's eyeball. (b) 2bU-3's "a resister keeps its Omen" branch: every sweep roll beat every bearer's Cognitive this run — not driven, pure dice luck; the per-bearer gate itself is proven (the sweep card lists each bearer's verdict). (c) ⚑ observation for the rulings batch: Unweaving's dispel card lists the OMEN MARKER itself as a dispellable effect button; and deleting the bench combat does NOT sweep the omens ledger (Life sweeps everything at scene end; Chaos has no scene-end sweep — sceneScoped entries + reconcile cover it, but it is an inconsistency).
 
 ---
 
@@ -418,7 +446,7 @@ drops produced nothing, combat delete cleared the marker) · and **both graph ro
 Speak with the Fallen hangs off Reaper's Harvest beside Bone Garden; Risen Servant = OR{Bone Garden,
 Speak with the Fallen}, takeable from either alone). Evidence per row in the 07-26m delta.
 
-- [ ] **Remains ledger under simultaneous harvests — FIXED 07-26n (engine-only), re-test after the engine sync + F5** — the run-4 FAIL (one Necrotic Cascade dropping three adversaries posted two cards both reading "(1/2)" and the ledger held ONE entry) was an unserialised read-modify-write on `flags.edha-content.lists.remains`; every H3 ledger mutation now runs through a per-owner-per-key write queue (`edhaOwnerListQueue`), pinned in `tests/owner-list-race.test.js` with the exact bench scenario. **Re-test the same staging:** Reaper's Harvest + a Necrotic Cascade that drops 2–3 adversary-typed victims in ONE tick → the harvest cards read "(1/2)" then "(2/2)", and the ledger ends holding **two** entries (cap `@tier` = 2, oldest evicted on a third). Sequential drops stay correct. No pack rebuild — engine F5 once the sync lands.
+- [ ] **Simultaneous cascade-drop harvests: one victim's DISPATCH is swallowed entirely (NEW, narrowed from the run-4 race — 2026-07-27a)** — the 07-26n **write-queue half is VERIFIED FIXED and retired**: re-run of the exact staging (Necrotic Cascade armed, one adversary trigger drop + two 1-HP adversary victims dropped by the cascade's own "12 spirit to V1, V2" in ONE tick) produced harvest cards reading "(1/2)" then "(2/2)" and a ledger holding TWO entries — the run-4 symptom (two "(1/2)" cards, one entry) is gone, and Chaos's Omen ledger corroborated the queue (a one-roll Cascade Collapse released two bearers with counts "(1/2)"→"(0/2)"). **What remains: of the three drops in the tick, victim V2's harvest never ran AT ALL** — no ✨ Investiture card, no 📋 card, no ledger entry, no eviction; round 1 it got only the `markedBy.harvested` flag, and a cap-isolation control (capFormula document-edited to 5, empty ledger, same staging) reproduced the loss with NO cap pressure and left V2 with no trace whatsoever. Run 4 saw the same arithmetic (3 drops → 2 cards). Suspected family (inference): the `_edhaCascadeBusy` / defeat-watch re-entrancy guard admits only the FIRST simultaneous nested kill — the 2nd+ dispatch is swallowed upstream of the (now-serialised) ledger write. Sequential drops stay correct (run-4 control + this run's trigger→nested sequence).
 - [ ] ⚑ **Raise Dead — a raised creature keeps its own Harvested Remain (2026-07-26m — defect or ruling, Ben's call)** — an adversary that had itself been harvested was then raised by spending a DIFFERENT Remain: it came back at 1 HP still wearing the `harvested` marker, with its own entry still on the ledger — a living creature that is also a Remain. The card says nothing either way. Should the raise clear the target's own marker and entry?
 - [ ] **2bW-1 — Withering Touch — the two unrun halves** — still open from run 3 and not driven in run 4: **Temp HP still lands** on a blocked target, and the **turn-start expiry** of the No-Healing block. Everything else on this row is retired (see the run-4 block above).
 
