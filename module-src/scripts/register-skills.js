@@ -5798,20 +5798,11 @@ function edhaTargetFooled(caster, target) {
 // illusion before making a new one; a second bird's cast no longer clears the first bird's copy.
 // TOKEN-FIRST (bench 07-17): deleting only the ACTOR leaves the copy's token ORPHANED on the
 // scene — Foundry never cascades actor→token — so a recast stacked its new token exactly on the
-// leftover and read as "no new token created". Delete the tokens (the generic last-token summon
-// cleanup then deletes the actor, same shape as edhaCivDismantleGM); direct actor-delete only for
-// a tokenless copy.
+// leftover and read as "no new token created". That lesson is now the shared
+// `edhaDeleteActorWithTokens` primitive (07-27q), after bench run 13 found three OTHER sites that
+// had each open-coded the wrong half of it; the deleteActor hook restores original visibility.
 async function edhaClearPhantomDoubles(caster) {
-  for (const a of edhaPhantomCopiesOf(caster)) {
-    try {
-      let hadToken = false;
-      for (const sc of (game.scenes ?? [])) {
-        const toks = sc.tokens.filter(t => t.actorId === a.id);
-        if (toks.length) { hadToken = true; await sc.deleteEmbeddedDocuments("Token", toks.map(t => t.id)); }
-      }
-      if (!hadToken) await a.delete().catch(() => {});   // deleteActor hook restores original visibility
-    } catch (e) { /* copy already gone */ }
-  }
+  for (const a of edhaPhantomCopiesOf(caster)) await edhaDeleteActorWithTokens(a);
 }
 
 /* --- The illusion belief loop (Phantom Double / The Seeming rework, Ben 07-14) -------------------
@@ -6172,7 +6163,7 @@ Hooks.on("deleteCombat", () => {
     void (async () => {
       for (const a of (game.actors?.filter(x => x.getFlag?.("edha-content", "barrierId")) ?? [])) {
         await edhaBarrierClearGM(a.getFlag("edha-content", "barrierId"));
-        try { await a.delete(); } catch (e) {}
+        await edhaDeleteActorWithTokens(a);        // the scene-end door had the same orphan-token bug
       }
       for (const scene of (game.scenes ?? [])) {   // strays whose actor is already gone
         const dead = (scene.walls ?? []).filter(w => w.getFlag?.("edha-content", "barrierId"));
@@ -8498,6 +8489,33 @@ Hooks.on("deleteToken", async (tokenDoc) => {
   } catch (e) { console.error("Edha Content | summon cleanup failed", e); }
 });
 
+/* Tear a one-off actor down TOKEN-FIRST (REUSABLE primitive, 07-27q). ------------------------------
+ * Foundry NEVER cascades actor→token: neither the client `Actor` class nor the server document has
+ * any dependent-token delete, so `actor.delete()` alone leaves the token standing as an orphan. The
+ * Illusion section learned this at bench 07-17 (a recast stacked its new token on the leftover and
+ * read as "no new token created"); bench run 13 measured it AGAIN, three times, from two other
+ * sites that had each open-coded the wrong half — and this time with a sharper tail: Foundry DOES
+ * cascade token→combatant (`TokenDocument._onDeleteOperation` deletes combatants whose tokenId went
+ * away) but nothing cascades actor→combatant, so the orphan's leftover combatant made Advanced
+ * Encounters throw from its `initiative` getter on every later combatant add. One dead summon could
+ * wedge the tracker mid-combat. Deleting the TOKENS is therefore the load-bearing half — it takes
+ * the combatant with it.
+ *
+ * The actor delete is only ours when nobody else owns it: a `summon`-flagged actor that still had a
+ * token is deleted by the last-token cleanup above, and a second delete here races it into a
+ * server-side "Actor does not exist" (Ben's 07-17 log, 22:29:04). */
+async function edhaDeleteActorWithTokens(actor) {
+  try {
+    if (!actor) return;
+    let hadToken = false;
+    for (const sc of (game.scenes ?? [])) {
+      const toks = sc.tokens.filter(t => t.actorId === actor.id);
+      if (toks.length) { hadToken = true; await sc.deleteEmbeddedDocuments("Token", toks.map(t => t.id)); }
+    }
+    if (!hadToken || !actor.getFlag?.("edha-content", "summon")) { try { await actor.delete(); } catch (e) {} }
+  } catch (e) { console.error("Edha Content | actor+token teardown failed", e); }
+}
+
 /* --- Mode-gated summon items (REUSABLE primitive, bench 07-17) --------------------------------------
  * An extra baked item whose spec carries `requiresEffect: "<baked effect name>"` can only be used
  * while that summonEffect is toggled ON (first consumer: Siege Cannon requires Siege Form — Ben:
@@ -9240,7 +9258,7 @@ Hooks.on("updateActor", async (actor, changes) => {
     // outright. The label is the copy's stamped source, so an adversary's seeming reads as itself.
     if (hp <= 0 && actor.getFlag?.("edha-content", "phantomDouble")) {
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🌫️ <strong>${actor.getFlag?.("edha-content", "phantomSource") || "Illusion"}</strong>: the illusion of ${actor.name} is struck and dissipates.</p>` });
-      try { await actor.delete(); } catch (e) {}                     // deleting the one-off actor removes its token
+      await edhaDeleteActorWithTokens(actor);                        // token-FIRST: Foundry never cascades actor→token
       return;
     }
     // A barrier (edha-barrier) at 0 HP is DESTROYED — the card's own wording — so it and its walls
@@ -9249,7 +9267,7 @@ Hooks.on("updateActor", async (actor, changes) => {
     if (hp <= 0 && barrierId) {
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🛡️ <strong>${actor.name}</strong> is destroyed — the barrier comes down.</p>` });
       await edhaBarrierClearGM(barrierId);
-      try { await actor.delete(); } catch (e) {}
+      await edhaDeleteActorWithTokens(actor);                        // same orphan-token shape as the illusion above
       return;
     }
     const dead = CONFIG.specialStatusEffects?.DEFEATED || "dead";
@@ -13184,12 +13202,7 @@ async function edhaCivGrantSummonEffect(item, h, c) {
 async function edhaCivDismantleGM(actorId) {
   try {
     const a = game.actors?.get(actorId); if (!a?.getFlag?.("edha-content", "summon")) return;
-    let hadToken = false;
-    for (const sc of (game.scenes ?? [])) {
-      const toks = sc.tokens.filter(t => t.actorId === actorId);
-      if (toks.length) { hadToken = true; await sc.deleteEmbeddedDocuments("Token", toks.map(t => t.id)); }   // last-token cleanup deletes the actor
-    }
-    if (!hadToken) { try { await a.delete(); } catch (e) {} }
+    await edhaDeleteActorWithTokens(a);   // token-FIRST; the last-token cleanup owns the actor delete
   } catch (e) { console.error("Edha Content | dismantle failed", e); }
 }
 
