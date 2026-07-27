@@ -1420,3 +1420,30 @@ test("edhaFillName: null/undefined text or name never throws and never prints 'u
   assert.strictEqual(env.edhaFillName("hit {name}", null), "hit ");
   assert.strictEqual(env.edhaFillName("no placeholder", "X"), "no placeholder");
 });
+
+// --- edhaHealCutInfo / edhaHealCutGate — the 07-26k blocked-heal regression (defect 5) ---
+// The No-Healing mark guarded only applyDamage's heal instances; the rule-driven heal paths
+// (hp-threshold click, edhaCrossHeal riders) wrote hea directly, so a Mender click healed a
+// Withering-blocked target 10 HP. The gate is now shared; these pin its selection + arithmetic.
+const healCutActor = (marks, name = "Victim") => ({
+  name,
+  effects: marks.map((hc) => ({ getFlag: (ns, k) => (ns === "edha-content" && k === "healCut" ? hc : undefined) })),
+});
+test("edhaHealCutInfo: no marks -> null; the STRICTEST (lowest) fraction wins with its byName", () => {
+  assert.strictEqual(env.edhaHealCutInfo(healCutActor([])), null);
+  const info = env.edhaHealCutInfo(healCutActor([{ fraction: 0.5, byName: "Necrotic Grasp" }, { fraction: 0, byName: "Withering Touch" }]));
+  assert.strictEqual(info.fraction, 0);
+  assert.strictEqual(info.byName, "Withering Touch");
+});
+test("edhaHealCutInfo: fractions outside [0,1) are not heal cuts", () => {
+  assert.strictEqual(env.edhaHealCutInfo(healCutActor([{ fraction: 1 }, { fraction: -1 }])), null);
+});
+test("edhaHealCutGate: full block zeroes the heal, half floors it, no mark passes through", () => {
+  assert.strictEqual(env.edhaHealCutGate(healCutActor([{ fraction: 0, byName: "Withering Touch" }]), 10), 0);
+  assert.strictEqual(env.edhaHealCutGate(healCutActor([{ fraction: 0.5, byName: "Necrotic Grasp" }]), 7), 3);
+  assert.strictEqual(env.edhaHealCutGate(healCutActor([]), 10), 10);
+});
+test("edhaHealCutGate: garbage amounts clamp to 0 and never throw", () => {
+  assert.strictEqual(env.edhaHealCutGate(healCutActor([]), -3), 0);
+  assert.strictEqual(env.edhaHealCutGate(healCutActor([{ fraction: 0 }]), NaN), 0);
+});

@@ -3166,13 +3166,33 @@ Hooks.on("deleteActiveEffect", (effect) => {
 /* --- Necrotic Grasp: healing halved on a Black-talent hit (expires end of OWNER's next turn) ------
  * Fraction 0 = FULL heal block ("cannot regain HP" — Death/Withering Touch); Temp HP grants bypass
  * this path and still land (Ben R3, 07-02). */
-function edhaHealCutFactor(actor) {
-  let f = null;
+function edhaHealCutInfo(actor) {
+  // Strictest (lowest-fraction) mark wins, and its byName travels with it so the announce card
+  // can say WHO blocked the heal instead of hard-coding a talent (pure — pinned in tests/).
+  let best = null;
   for (const e of (actor?.effects ?? [])) {
     const hc = e.getFlag?.("edha-content", "healCut");
-    if (hc && Number(hc.fraction) >= 0 && Number(hc.fraction) < 1) f = (f == null) ? Number(hc.fraction) : Math.min(f, Number(hc.fraction));
+    if (hc && Number(hc.fraction) >= 0 && Number(hc.fraction) < 1 && (best == null || Number(hc.fraction) < best.fraction))
+      best = { fraction: Number(hc.fraction), byName: hc.byName || "" };
   }
-  return f;
+  return best;
+}
+function edhaHealCutFactor(actor) { return edhaHealCutInfo(actor)?.fraction ?? null; }
+/* THE shared heal gate (2026-07-26l, bench run 3 defect 5). The No-Healing / Healing-Halved mark
+ * was enforced ONLY on applyDamage's heal instances — but the rule-driven heal paths (the
+ * edha-hp-threshold trigger card, edhaCrossHeal and everything riding it: edha-focus 'hea',
+ * regrowth, Shared Burden, the pulse heals) write system.resources.hea directly and never pass
+ * through applyDamage, so a Mender click healed a Withering-blocked target 10 HP. Every such path
+ * now calls this before writing: it scales the amount by the strictest mark and announces once.
+ * DELIBERATELY not routed through it: drop-to-1 preventions (Death Ward, Raise Dead's revive,
+ * Unbreakable Line via bypassHealCut) — whether "cannot regain HP" stops stabilization is a
+ * design ruling, queued for Ben; today all three stay consistent (ungated). */
+function edhaHealCutGate(target, amount) {
+  const info = edhaHealCutInfo(target);
+  if (!info || !(Number(amount) > 0)) return Math.max(0, Math.floor(Number(amount) || 0));
+  const cutAmt = Math.max(0, Math.floor(Number(amount) * info.fraction));
+  ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: target }), content: `<p>🩸 <strong>${target.name}</strong> ${info.fraction === 0 ? "cannot regain HP" : "has their healing halved"}${info.byName ? ` (${info.byName})` : ""}.</p>` });
+  return cutAmt;
 }
 async function edhaApplyHealCut(target, owner, fraction, byName) {
   try {
@@ -4403,8 +4423,11 @@ function edhaReduceInstances(list, amount) {
   return done;
 }
 // Cross-actor heal/damage: do it directly if we own the target, else relay to the GM (burst-apply).
-async function edhaCrossHeal(actor, amount) {
+// Every rule-driven heal riding this path respects the No-Healing/Healing-Halved mark (defect 5);
+// bypassHealCut is for drop-to-1 PREVENTIONS only (Unbreakable Line — the Death Ward parity case).
+async function edhaCrossHeal(actor, amount, { bypassHealCut = false } = {}) {
   if (!actor || !(amount > 0)) return;
+  if (!bypassHealCut) { amount = edhaHealCutGate(actor, amount); if (!(amount > 0)) return; }
   if (actor.isOwner) { await edhaHealActor(actor, amount); return; }
   try { game.socket.emit("module.edha-content", { action: "burst-apply", payload: { hits: [{ actorUuid: actor.uuid, amount, heal: true }] } }); } catch (e) {}
 }
@@ -4529,7 +4552,7 @@ async function edhaBulwarkClick(ev) {
       note = `${owner.name} takes ${amount} in ${victim.name}'s place (Shared Burden).`;
     }
     else if (action === "retaliate" && attacker) { await edhaCrossDamage(attacker, amount, "spirit", { edhaSource: owner }); note = `${owner.name} deals ${amount} spirit to ${attacker.name} (Retributive Guard — on a successful White test).`; }
-    else if (action === "revive" && victim) { const cur = Number(victim.system?.resources?.hea?.value) || 0; await edhaCrossHeal(victim, Math.max(1, 1 - cur)); note = `${victim.name} drops to 1 health instead of 0 (Unbreakable Line — on a successful White test).`; }
+    else if (action === "revive" && victim) { const cur = Number(victim.system?.resources?.hea?.value) || 0; await edhaCrossHeal(victim, Math.max(1, 1 - cur), { bypassHealCut: true }); note = `${victim.name} drops to 1 health instead of 0 (Unbreakable Line — on a successful White test).`; }   // prevention, not a heal — Death Ward parity (ruling queued)
     else if (action === "rally-zone") {
       const founds = edhaFoundationsOn(canvas?.scene, owner.id);
       const disp = edhaCasterToken(owner)?.document?.disposition ?? 1;
@@ -8615,11 +8638,16 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
     const healee = ((eff.target === "victim" || eff.target === "triggering") && ctx.victim) ? ctx.victim : owner;
     const hea = healee.system?.resources?.hea;
     const prevHealee = Number(hea?.value) || 0;
-    const max = edhaResVal(hea) ?? (hea?.value ?? 0) + amt;
-    if (amt > 0) {
-      try { await healee.update({ "system.resources.hea.value": Math.min(max, (hea?.value ?? 0) + amt) }); }
+    // No-Healing / Healing-Halved gate (defect 5): this branch writes hea directly, never through
+    // applyDamage, so the mark must be honoured HERE — the cut amount is what lands, what the card
+    // says, and what the heal-react dispatch sees. (The click's cost was already paid; the gate's
+    // own card explains the 0, and the GM can refund — same convention as a mistargeted Cruel Step.)
+    const healAmt = edhaHealCutGate(healee, amt);
+    const max = edhaResVal(hea) ?? (hea?.value ?? 0) + healAmt;
+    if (healAmt > 0) {
+      try { await healee.update({ "system.resources.hea.value": Math.min(max, (hea?.value ?? 0) + healAmt) }); }
       catch (e) { // no perms on the healee (another player's PC) → relay as a burst-style heal hit
-        try { game.socket.emit("module.edha-content", { action: "burst-apply", payload: { hits: [{ actorUuid: healee.uuid, amount: amt, type: "heal", heal: true }] } }); } catch (e2) {}
+        try { game.socket.emit("module.edha-content", { action: "burst-apply", payload: { hits: [{ actorUuid: healee.uuid, amount: healAmt, type: "heal", heal: true }] } }); } catch (e2) {}
       }
     }
     if (eff.resourceGain) {
@@ -8635,13 +8663,13 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
     }
     // The card says WHY it fired (Ben 07-12: "we should know why it's happening") — the rule's note.
     const why = spec.note ? ` <span style="opacity:.8">(${spec.note})</span>` : "";
-    const what = [amt > 0 || !gainNote ? `${healee.name} regains <strong>${amt}</strong> health` : "", gainNote ? `${owner.name} regains <strong>${gainNote}</strong>` : ""].filter(Boolean).join("; ") + "." + why;
-    if (rolled && amt > 0) await edhaRollCard(owner, name, roll, what);
+    const what = [healAmt > 0 || !gainNote ? `${healee.name} regains <strong>${healAmt}</strong> health` : "", gainNote ? `${owner.name} regains <strong>${gainNote}</strong>` : ""].filter(Boolean).join("; ") + "." + why;
+    if (rolled && healAmt > 0) await edhaRollCard(owner, name, roll, what);
     else ChatMessage.create({ speaker, content: `<p>⚡ <strong>${name}</strong> — ${what}</p>` });
     // On-heal reactions (`edha-heal-react`, 07-25 pass 2bS) — e.g. Mender's Instinct feeding the
     // Restoration riders. The colour gate rides each rule now, not this chokepoint.
     const healTal = owner.items?.find?.(i => edhaIsTalent(i) && i.name === name);
-    if (amt > 0 && healTal) await edhaDispatchHealReact(owner, healTal, healee, amt, prevHealee);
+    if (healAmt > 0 && healTal) await edhaDispatchHealReact(owner, healTal, healee, healAmt, prevHealee);
     return;
   }
   if (eff.kind === "thp") {
@@ -14839,7 +14867,7 @@ async function edhaRunPulse(item, h) {
   if (!(amt > 0)) return;
   for (const a of picked) await edhaCrossHeal(a.actor, amt);
   const self = (h.includeSelf && !enemies) ? 1 : 0;
-  if (self) await edhaHealActor(owner, amt);   // self is always owned — no relay needed
+  if (self) await edhaCrossHeal(owner, amt);   // self is always owned; the cross path adds the heal-cut gate (defect 5)
   const skipBits = [];
   if (skips.hidden) skipBits.push(`${skips.hidden} hidden`);
   if (skips.wall) skipBits.push(`${skips.wall} behind a wall`);
