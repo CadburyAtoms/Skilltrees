@@ -5127,22 +5127,39 @@ function edhaCaeCombatant(actor) {
   try { return game.combat?.combatants?.find?.(c => c.actor === actor || c.actorId === actor?.id) ?? null; }
   catch (e) { return null; }
 }
+/* SERIALISED since 2026-07-27j (bench run 9 defect 2) — this is the H3 owner-list write race in a
+ * second place, and it had simply never been put through the queue.
+ *
+ * The CAE tracker state is a read-modify-write on a combatant flag: deepClone(getFlag) → push/
+ * decrement → setFlag, with an async server round-trip in the middle and no isolation. At combat
+ * start Foresight and Sidestep both fire on `edha-combat-timing` in the same tick; both read the
+ * SAME pre-write `actionsAvailableGroups`, both push onto their own clone, and the last setFlag
+ * wins — two "(on the tracker)" cards, ONE group written. The bench proved it directly: two
+ * Through the Fray uses in one tick produced two success cards and one group.
+ *
+ * Fixed at the SHARED level (the 07-26n rule), reusing `edhaOwnerListQueue` unchanged — its key is
+ * `${uuid}::${key}`, so passing the COMBATANT and the CAE flag key gives exactly the right scope.
+ * Serialising on the flag key also fixes the third case in the blast radius: `burn-reaction` and a
+ * `reaction` grant both write `reactionsAvailable`, so they now queue against each other instead
+ * of racing. The combatant is resolved OUTSIDE the queue and the getFlag re-read happens INSIDE
+ * it — queueing only the write fixes nothing. No task here awaits another queued task, so the
+ * deadlock rule is respected. */
 async function edhaCaeApplyGM(p) {
   try {
     const ref = await fromUuid(p.actorUuid).catch(() => null); const a = ref?.actor ?? ref;
     const c = edhaCaeCombatant(a); if (!c) return;
-    if (p.kind === "burn-reaction") {
-      const groups = foundry.utils.deepClone(c.getFlag(EDHA_CAE_ID, "reactionsAvailable") ?? []);
-      const g = groups.find(x => (x.remaining ?? 0) > 0);
-      if (!g) return;
-      g.remaining -= 1; g.used = (g.used ?? 0) + 1;
-      await c.setFlag(EDHA_CAE_ID, "reactionsAvailable", groups);
-    } else {
-      const key = p.kind === "reaction" ? "reactionsAvailable" : "actionsAvailableGroups";
-      const groups = foundry.utils.deepClone(c.getFlag(EDHA_CAE_ID, key) ?? []);
-      groups.push({ max: p.n || 1, remaining: p.n || 1, used: 0, name: `Edha: ${p.label || "grant"}` });
+    const key = (p.kind === "burn-reaction" || p.kind === "reaction") ? "reactionsAvailable" : "actionsAvailableGroups";
+    await edhaOwnerListQueue(c, key, async () => {
+      const groups = foundry.utils.deepClone(c.getFlag(EDHA_CAE_ID, key) ?? []);   // fresh read INSIDE the queue
+      if (p.kind === "burn-reaction") {
+        const g = groups.find(x => (x.remaining ?? 0) > 0);
+        if (!g) return;
+        g.remaining -= 1; g.used = (g.used ?? 0) + 1;
+      } else {
+        groups.push({ max: p.n || 1, remaining: p.n || 1, used: 0, name: `Edha: ${p.label || "grant"}` });
+      }
       await c.setFlag(EDHA_CAE_ID, key, groups);
-    }
+    });
   } catch (e) { console.error("Edha Content | CAE apply failed", e); }
 }
 async function edhaCaeGrant(actor, kind, n, label) {   // kind: "action" | "reaction" | "burn-reaction"
