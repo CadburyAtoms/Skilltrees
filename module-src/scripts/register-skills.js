@@ -1901,11 +1901,13 @@ Hooks.on("deleteCombat", () => _edhaWatchBudget.clear());
 Hooks.on("createCombat", () => _edhaWatchBudget.clear());
 
 /* Fan one observed event out to every talent watching for it.
- * ev = { kind, owner, victim, skill, def, ok, total }
+ * ev = { kind, owner, victim, skill, def, ok, total, chainBounded? }
  *   owner  = the SUBJECT — the actor whose test/roll/defeat/focus-change this was
  *   victim = the creature it resolved against (test kinds only; null for the subject-only kinds)
  *   skill  = the skill/colour id rolled               def    = the defense id it was tested against
  *   total  = the observed NUMBER — a roll total for the test kinds, the new focus for focus-change
+ *   chainBounded = set by an ANNOUNCE SITE whose event kind is structurally non-repeating (defeat:
+ *            the live→0 crossing fires once per creature) — see edhaWatchEntryLevel below
  *
  * RE-ENTRANCY (widened 07-24r). A watcher's own payload must not normally be observed by the next
  * watcher — Crown of Thorns' spirit damage would cascade — so the sweep runs under a depth guard.
@@ -1913,9 +1915,29 @@ Hooks.on("createCombat", () => _edhaWatchBudget.clear());
  * creature to 0 is a REAL second focus-change that Predatory Insight must see, and the hand-rolled
  * code said so (it re-ran the zero check by hand — the 07-05 test-pass lesson). So the guard is a
  * DEPTH counter and rules opt in with `chain`. Default off preserves pass H's behaviour exactly. */
-let _edhaWatchDepth = 0;
+
+/* PURE (pinned in tests/watch-dispatch.test.js): may a dispatch enter, and at what causal LEVEL?
+ * `openCount` = how many dispatches are currently OPEN (running or suspended mid-await). It
+ * approximates causal depth for sequential flows but OVER-counts when SIBLING events from one
+ * payload overlap — bench run 5's harvest DISPATCH loss: one Necrotic Cascade tick dropped V1+V2;
+ * V1's chain-level dispatch was still awaiting its (queued) ledger write when V2's updateActor
+ * hook fired, so V2's dispatch read "2 open" as its own ancestry and was dropped at the door — no
+ * ✨ card, no ledger entry, no eviction, with ZERO cap pressure (the cap-isolation control).
+ * `chainBounded` is the discriminator: an event kind whose recurrence is STRUCTURALLY bounded
+ * (defeat — a creature crosses live→0 at most once per drop, so a defeat chain can never loop)
+ * CLAMPS to chain level (2) instead of being dropped, which is always safe and always right for
+ * the 2nd+ simultaneous nested kill. Unbounded kinds (focus-change ping-pong) keep the hard
+ * drop — that backstop is what ends their loops. Behaviour at openCount 0/1 is unchanged. */
+function edhaWatchEntryLevel(openCount, chainBounded) {
+  const open = Math.max(0, Number(openCount) || 0);
+  if (open >= 2 && chainBounded !== true) return null;   // dropped — the unbounded-cascade backstop
+  return Math.min(open + 1, 2);                          // 1 = top-level (all rules) · 2 = chain-only
+}
+let _edhaWatchDepth = 0;   // count of OPEN dispatches — a COUNT, not this dispatch's level (see above)
 async function edhaDispatchWatchers(ev) {
-  if (_edhaWatchDepth >= 2 || !ev?.owner) return 0;   // depth 2 is the backstop, not the feature
+  if (!ev?.owner) return 0;
+  const depth = edhaWatchEntryLevel(_edhaWatchDepth, ev.chainBounded === true);
+  if (depth === null) return 0;   // depth 2 is the backstop, not the feature
   const watchers = edhaWatchersOfRule("edha-watch");
   if (!watchers.length) return 0;
   let fired = 0;
@@ -1924,7 +1946,10 @@ async function edhaDispatchWatchers(ev) {
     for (const w of watchers) {
       try {
         const h = w.handler;
-        if (_edhaWatchDepth > 1 && h.chain !== true) continue;   // caused by another watcher: opt-in only
+        /* THIS dispatch's LOCAL level, never the shared counter — a sibling dispatch entering
+         * mid-loop mutates the counter, and reading it here would wrongly chain-gate the REST of
+         * a top-level dispatch's watchers (07-27b, the same bench interleaving). */
+        if (depth > 1 && h.chain !== true) continue;   // caused by (or concurrent with) another watcher: opt-in only
         const scope = String(h.scope || "self");
         if (scope === "self" && w.actor !== ev.owner) continue;
         if (scope === "scene" && w.actor === ev.owner && h.includeSelf === false) continue;
@@ -12027,8 +12052,12 @@ Hooks.on("updateActor", async (victim, changes, options) => {
      * not a PC, not a summon, not saved by a Death Ward. Necrotic Cascade converted onto it 07-24r;
      * Reaper's Harvest followed 2bW — its name-keyed loop (Inv gain + edhaGainRemain) is gone, its
      * edha-watch rule sets `chain: true` so a cascade's NESTED kills still harvest (the pre-2bW
-     * ordering, as a field), and the Remain lands via its own H3 place payload. */
-    await edhaDispatchWatchers({ kind: "defeat", owner: victim, victim: null, skill: null, def: null, ok: null, total: 0 });
+     * ordering, as a field), and the Remain lands via its own H3 place payload.
+     * `chainBounded` (07-27b, bench run 5): a defeat cannot recur for the same creature (this very
+     * hook's live→0 gate), so simultaneous nested kills CLAMP to chain level instead of the 2nd+
+     * being dropped at the dispatcher's door — the harvest DISPATCH loss the cap-isolation control
+     * reproduced with an empty ledger. See edhaWatchEntryLevel. */
+    await edhaDispatchWatchers({ kind: "defeat", owner: victim, victim: null, skill: null, def: null, ok: null, total: 0, chainBounded: true });
   } catch (e) { console.error("Edha Content | Death defeat watcher failed", e); }
 });
 
