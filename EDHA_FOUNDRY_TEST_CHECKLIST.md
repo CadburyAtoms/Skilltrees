@@ -131,6 +131,23 @@ formula **AND** `activation.type: "skill_test"`. **Byte-check after the sync:** 
 `register-skills.js` must contain `edhaOnHitIsItemSpecific` (2×) and `whenDealer` (3×), and must NOT
 contain the old bare line `const itemSpecific = !!tal.system?.damage?.formula;`.
 
+**⏳ NEW 2026-07-27q — the fix-pass-B ENGINE half needs ⟳ sync the module + F5 (no rebuild, no ⟳ Sync
+Talents).** Three fixes, all engine-only. (1) **The cost refund raced the charge**: `use()` issues the
+cost deduction as an un-awaited ABSOLUTE `actor.update` and fires the `useItem` hook that dispatches
+our `use` events in the SAME tick, so `edhaRefundCost` read the pre-consume number and wrote a second
+absolute value — whichever landed last won, which is why one talent failed in both directions.
+`preUseItem` now snapshots the pre-cost values and the refund waits for the charge to land before it
+re-reads and credits (29 call sites, ~8 of them inside the race window). (2) **Six world-writing hooks
+were gated on a raw `isGM`**, so every connected GM ran them — the doubled dissipates card, a
+duplicated ignite Region, a double `actor.delete()`, both barrier wall-clear doors and the
+`applyButtonsTo` setting all move onto `edhaDefBuffGmGate()`. (3) **Actor deletes are TOKEN-FIRST**
+via the new `edhaDeleteActorWithTokens` — Foundry never cascades actor→token, and the orphan's
+leftover combatant wedges Advanced Encounters. **Byte-check after the sync:** the served
+`register-skills.js` must contain `edhaAwaitCostCharged` (2×), `EDHA_PRE_COST_RES` (6×) and
+`edhaDeleteActorWithTokens` (7×), and must NOT contain the line
+`if (!game.user?.isGM || actor.type === "character") return;` anywhere. Un-blocks **2bAA-8**'s refund
+half and the three run-13 re-test rows in the player-client window section.
+
 **⏳ NEW 2026-07-27n — a FIFTH pack build is owed: `foundry-build heroic` (again) + ⟳ Sync Talents.**
 Sharp Eye's `activation` is now `skill_test` / `prc` (it was `utility` with no skill, so the system
 rolled nothing and H1 had nothing to resolve). This is a **second** heroic build — the run-11 one
@@ -312,7 +329,15 @@ walls), 2bP-1, 2bP-2 (the trap row), 2bP-3, 2bP-4, 2bJ-5, 2bF-2, 2bF-4, 2bF-5, 2
       cosmere activation model does not expose from the console. Ben's row for now.)*
 - [ ] **2bJ-3 — Pattern Recognition (Blue) ⚠️** — use it on a target, accept, then have them roll a test **this round**; separately, accept and let the **round change** before they roll → Disadvantage on the test this round. After the round changes it **no longer applies**. ⚑ **BEHAVIOUR CHANGE:** the card always said "their next test **this round**" and the old flag waited for ever. Tell me if you'd rather it kept waiting.
       *(2026-07-26i: NOT RUN — needs a real round change; see 2bAA-6.)*
-- [ ] **2bAA-8 — Phantom Double** — Events tab; use with no target, then on an ally in range, then on an ally out of range → ⚑ ONE `edha-illusion-copy` rule. Belief loop unchanged (each enemy that can see it rolls Perception vs your Cognitive defense; fooled clients stop rendering the original). **NEW: an out-of-range ally refunds the 2 Investiture.**
+- [ ] **2bAA-8 — Phantom Double, the refund RE-TEST (07-27q; needs ⟳ sync + F5 first)** — the belief half is already retired; this is the Investiture arithmetic only, and it needs **both** halves.
+      **POSITIVE — run it twice, from two different starting values.** With the caster at **4/4** Investiture, target an ally **out of blue Attunement Range** and use it → the refusal card posts, no copy appears, and Investiture reads **4/4**, unchanged. Repeat from **3/4** → it must read **3/4**. Those are exactly the two runs that failed in opposite directions before (4 → 2, and 3 → 4), so one of them alone proves nothing.
+      **NEGATIVE (load-bearing) — a SUCCESSFUL cast must still charge.** From 4/4, target an ally **in range** and use it → the copy appears **and** Investiture drops to **2/4**. If this reads 4/4 the fix has over-fired and every cast is now free — that is the failure mode this row exists to catch.
+      *(2026-07-27q: root cause was ORDERING, not arithmetic. `use()` issues the cost deduction as an
+      un-awaited absolute `actor.update` and fires the `useItem` hook that dispatches our `use` events
+      in the SAME tick, so the refund read the pre-consume number and wrote a second absolute value
+      racing the first. Now `preUseItem` snapshots the pre-cost values and the refund waits for the
+      charge to land before it re-reads and credits. Pinned in `tests/refund-race.test.js`, which
+      reproduces the bench's exact numbers when the ordering is removed.)*
       *(2026-07-27p bench run 13 — **FAIL on the refund half only; everything else PASSED.** Driven
       as `PlayerBench`: exactly **ONE** `edha-illusion-copy` rule (`PhantomCopy00000`); no-target cast
       copied self adjacent (3300→3600) for 2 Inv; targeting Bench — Black at 10 ft copied the **ALLY**
@@ -1244,24 +1269,23 @@ Cross-actor relay watch-items scattered through the tree sections (White Coordin
 §5, Chaos §3…) need no dedicated tests — they self-verify while running the rows above; note
 anything that errors in the row's note box.
 
-## Re-test after the run-13 fixes (2026-07-27p — two defects found while the window was open)
+## Re-test after the run-13 fixes (2026-07-27q — all three fixed; ⟳ sync + F5 first, no rebuild)
 
-- [ ] **The dissipates card double-posts with two GMs connected** — with **two GM clients** live,
-      break any 1-HP illusion copy (HP→0) → the "🌫️ …is struck and dissipates" card must post
-      **ONCE**. Run 13 got **two**, 1 ms apart, authored by `Bench` and by `Gamemaster`. Root cause:
-      the `updateActor` hook at engine ~L9226 is guarded only by `if (!game.user?.isGM …)`, so
-      **every** connected GM runs the branch — unlike the belief sweep and the illusion-upkeep hook,
-      which both gate on `game.users.activeGM`. Isolating evidence: the max-1 **recast** break card,
-      which goes through the activeGM-guarded `edhaPhantomRestore`, posted exactly **once** in the
-      same session. Same family as the Apex Form double-injury bug. → test-pass-fixes.
-- [ ] **A deleted summon/phantom leaves its TOKEN behind** — the engine assumes otherwise in a
-      comment at ~L9235 (*"deleting the one-off actor removes its token"*). Run 13 reproduced the
-      orphan **three times**: the broken Seeming copy, a replaced Combat Construct, and a deleted
-      phantom copy all left a token whose `actorId` no longer resolves. Two knock-ons: the orphan
-      renders on the canvas, and a leftover **combatant** ("Unknown Participant") made Advanced
-      Encounters throw `Cannot read properties of null (reading 'system')` from its `initiative`
-      getter on **every** subsequent combatant add — i.e. one dead summon can wedge the tracker
-      mid-combat. Repro: summon, then delete the summon's ACTOR directly. → test-pass-fixes.
+- [ ] **One-applier: the dissipates card, RE-TEST (07-27q)** — with **two GM clients** live, break any 1-HP illusion copy (HP→0).
+      **POSITIVE:** the "🌫️ …is struck and dissipates" card posts **exactly ONCE**. Run 13 got two, 1 ms apart, authored by `Bench` and by `Gamemaster`.
+      **NEGATIVE (load-bearing):** the same hook must not go silent. In the same session, take a **non-PC** to 0 HP → the DEFEATED skull overlay still appears, and healing it above 0 removes it again. That branch shares the guard that was changed, so a gate that is too tight kills the skull as well as the duplicate card.
+      *(2026-07-27q: fixed. Foundry hooks fire on every client, so `if (!game.user?.isGM)` means once
+      per connected GM; six world-writing hooks moved onto `edhaDefBuffGmGate()`, and **`lint-refs`
+      pass 15** now fails the build on a new one.)*
+- [ ] **One-applier: the two sites the bench never saw (07-27q)** — found by the sweep behind the doubled card, so they have never been run.
+      **(a) Ignite is not doubled:** with **two GM clients** live, drop a foe to 0 HP inside your own dangerous terrain while you own an `edha-zone-react {defeat-in-zone}` talent → **ONE** 🔥 card and **ONE** new hazard Region on the body (check the Regions layer — the old guard let every GM drop its own).
+      **(b) Barrier teardown:** destroy a barrier (HP→0) → **one** "the barrier comes down" card, its walls gone, and **no leftover token**. Then end the encounter with a barrier still standing → its walls, token and actor all go.
+- [ ] **Token-first teardown, RE-TEST (07-27q)** — Foundry never cascades actor→token, so deleting the actor alone orphaned the placeable; the orphan's leftover combatant then made Advanced Encounters throw `Cannot read properties of null (reading 'system')` from its `initiative` getter on **every** later combatant add, wedging the tracker mid-combat.
+      **POSITIVE:** summon a Construct (or raise a phantom copy), add it to combat, then delete its **ACTOR** directly from the sidebar → the token disappears from the canvas **and** the combatant disappears from the tracker, and adding another combatant afterwards throws nothing. Repeat for a broken Seeming copy and for a replaced Combat Construct — the three shapes run 13 reproduced.
+      **NEGATIVE (load-bearing):** deleting the summon's **TOKEN** instead must still delete its actor (the last-token cleanup owns that delete, and the fix deliberately does **not** duplicate it). And a second, unrelated token on the same scene must be untouched.
+      *(2026-07-27q: the two correct implementations already in the engine were factored into
+      `edhaDeleteActorWithTokens`; three sites had open-coded the wrong half. Pinned in
+      `tests/orphan-token.test.js`.)*
 
 ---
 

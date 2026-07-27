@@ -282,6 +282,16 @@ Insight) and §9o called them byte-identical. **They are not, and the difference
   hooks was retrofitted). A clear that CREATES documents (the apex injury) also guards against
   overlapping itself (`_edhaLifeClearBusy`) and unsets its trigger flag BEFORE the creating
   round-trip.
+- **⛔ ANY hook that writes the world gates on `edhaDefBuffGmGate()`, not just deleteCombat clears —
+  and `lint-refs` pass 15 now enforces it** (07-27q). Foundry hooks fire on EVERY client, so a raw
+  `isGM` means once per connected GM, and Ben's table has two (`Gamemaster` + the agent-bench
+  `Bench`). Everything then happens twice: bench run 13 measured one "dissipates" card posted twice
+  1 ms apart, and the sweep behind it found a duplicated ignite Region and a double `actor.delete()`
+  (which is a server-side "Actor does not exist" race, not a harmless no-op). Fourth sighting of this
+  family in two marathons, hence the gate. A world write = `ChatMessage.create`, any
+  document/embedded create-update-delete, a status toggle, a flag write, a world setting, or an
+  `edha*GM(` helper. **`render*` hooks are exempt on purpose** — injecting a sidebar or sheet button
+  is per-client work, and gating it would hide the button from every GM but one.
 - **A clear GUARDS EVERY AWAIT INDIVIDUALLY and names its failures** (07-27d — the sweep-isolation
   rule, extending the one-applier rule above). All ~17 scene clears launch concurrently off one
   `deleteCombat`, so an unguarded per-actor `await` lets ONE rejection abort everything after it in
@@ -1219,7 +1229,41 @@ pre-07-24r consumer did. Necrotic Cascade's corpse detonation is the first `enem
 ## Targeting / costs / math utils
 - `edhaPickPoint(prompt)` → grid-snapped `{x,y}` or null (click-to-place). `edhaTokensInCircle(cx,cy,ft)`,
   `edhaEnemyTokensInCircle(owner,cx,cy,ft)` (Destruction). `edhaCasterToken(actor)`, `edhaColorRank(actor,"red")`.
-- `edhaConsumeCost(item)` (reads `activation.consume`; false if can't pay) / `edhaRefundCost(item)`.
+- `edhaConsumeCost(item)` (reads `activation.consume`; false if can't pay) / **`await edhaRefundCost(item)`
+  — ASYNC since 07-27q, and it must stay that way.** A refund is a CREDIT against a resource the
+  cosmere system also writes ABSOLUTELY, and the two writes race: `Item#use()` pushes the cost
+  deduction onto its `postRoll` list as an **un-awaited** `void actor.update({… value: current −
+  actual})`, and the LAST postRoll entry is `Hooks.callAll(USE_ITEM)` — the whole list runs in ONE
+  synchronous tick, and the `use` item-event's host defaults to `"source"`, so an executor runs on
+  that same client microtasks later, before the charge's round-trip returns. A refund that reads
+  `system.resources.<r>.value` right there reads the PRE-consume number; writing `cur + amount` is a
+  second absolute value, and whichever lands last wins. Bench run 13 measured ONE talent failing in
+  BOTH directions from this (inv 4 → 2, inv 3 → 4; the "+1" is `Math.min(max, stale + amount)`).
+  **There is no delta API to reach for** — every resource write in the cosmere system is a raw
+  absolute `actor.update`, and `modifyTokenAttribute`'s `isDelta` resolves to an absolute from a
+  client-side read. So the helper SEQUENCES instead: a generic `preUseItem` hook snapshots the
+  pre-cost values into `EDHA_PRE_COST_RES` (that hook runs before ANY consumption — and if an
+  earlier veto had returned false, `Hooks.call` would have aborted the use, so there is nothing to
+  refund), and `edhaAwaitCostCharged(actor, list, base, ms, step)` waits for the charge to LAND
+  before the refund re-reads and credits. A timed-out wait means nothing was charged
+  (`use({shouldConsume: true})` skips consumption entirely), so it refunds nothing rather than
+  minting. Pinned both directions in `tests/refund-race.test.js`.
+  **Writing a new refuse-after-cost path? Prefer a `preUseItem` VETO** — "nothing spent" has no race
+  at all, and H1 / H3 / H12 / H15 / `edha-next-test-mod` all carry one. The refund helper is for the
+  paths a veto cannot reach, i.e. anything gated behind a canvas click.
+- **`await edhaDeleteActorWithTokens(actor)` — the ONLY way to delete a one-off actor** (07-27q).
+  **Foundry NEVER cascades actor → token**: neither the client `Actor` class nor
+  `dist/database/documents/actor.mjs` has any dependent-token delete, so `actor.delete()` alone
+  leaves the placeable standing. It DOES cascade token → combatant
+  (`TokenDocument._onDeleteOperation`), and nothing cascades actor → combatant — so the orphan keeps
+  a live combatant, and Advanced Encounters then throws from that combatant's `initiative` getter on
+  every later combatant add. One dead summon wedges the tracker mid-combat. Deleting the TOKENS is
+  the load-bearing half; it takes the combatant with it. Ownership split, which the helper enforces:
+  a `summon`-flagged actor that HAD a token is deleted by the last-token `deleteToken` cleanup, never
+  here — a second delete races it into a server-side "Actor does not exist" (Ben's 07-17 log).
+  The lesson was learned at bench 07-17 and then re-learned at run 13, because three sites had each
+  open-coded the wrong half; all five consumers now share this one. Pinned in
+  `tests/orphan-token.test.js`.
 - **`edhaEvalSync(formula, rd)`** — the synchronous formula evaluator every passive amount goes
   through. **It handles DICE**: it substitutes roll data, folds computed die math
   (`edhaFoldDieMath`), then ROLLS the dice via `edhaRollDiceSync` before evaluating. ⚠️ It did not
