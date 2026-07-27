@@ -2,7 +2,14 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, **COMPLETED 2026-07-26 (pass AA)**: **the ratchet list is EMPTY — 221 → 0 across twenty-seven passes.** Every tree is clear, all six marker ledgers have migrated, and `scripts/name-keyed-allowlist.json` stays in the repo with an empty `talents` list *on purpose* — lint pass 7 still guards against REGROWTH, which is the half of the ratchet that matters from here on. ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **ALL SIX marker LEDGERS have migrated** (`covenants` 07-24u; `edicts` 07-25 pass V; `remains` 07-25 pass W; Fate's `snares` 07-25 pass X; Destruction's `charges` 07-26 pass Y; Fate's `ordained` 07-26 pass AA — the point-bound ones fail OPEN through H3's reconcile by design). There is no flat marker-list flag left in the engine. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-27h** (BENCH RUN 8'S
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-27i** (BENCH RUN 9 — THE
+FINAL SWEEP: the 07-27h counter fix confirmed live by HASH and its whole re-test batch passed, the
+Heroic section driven for the first time, **40 rows retired on evidence and 8 new FAILs** — headlined
+by a NEW data-side family of **dead cosmere SKILL keys** in eight talents (`itm`/`per`/`ldr`, plus two
+to triage), a CAE grant write-race that silently eats one of two combat-start reaction grants, and
+Pack Hunting double-dipping one banked use across attack AND damage. The bench setup script's
+ranged-weapon repair finally unblocked 2bX-16. Cleanup exactly clean, first run with an effect
+baseline. Nothing to deploy from this pass.) Prior: **2026-07-27h** (BENCH RUN 8'S
 ONE DEFECT FIXED, AND THE FAMILY BEHIND IT GATED — the counter economy moved off `system.count`
 (a field `ActiveEffectDataModel` does not declare, so every Insight read was 0 for the mechanic's
 whole life) onto **`system.stacks`**, which the sheet's own conditions widget edits, so the engine and
@@ -109,6 +116,117 @@ the Red pilot, executed live by an agent session joined as `Bench`: 16 rows reti
 1 FAIL root-caused (Shockwave Slam's weapon-hit trigger surface), 4 cross-tree observations,
 and the agent-bench runbook hardened with the v13 operating lessons. Docs + setup-script fix
 only; nothing to deploy.)
+
+**2026-07-27i — BENCH RUN 9, THE MARATHON'S FINAL SWEEP. The 07-27h counter fix is CONFIRMED LIVE and
+its whole re-test batch passed; the Heroic section was driven for the first time; and the run's real
+discovery is a NEW DATA-SIDE FAMILY — eight talents wired to skill keys that do not exist. 40 rows
+retired on evidence, 8 new FAILs → test-pass-fixes. NOTHING TO DEPLOY from this pass (bench + docs
+only); the three pack halves owed since run 5 are still owed, and the new data fixes will need a
+PACK REBUILD when they land.**
+
+**Deploy verified by HASH, not by markers.** The served
+`/modules/edha-content/scripts/register-skills.js` normalised CRLF→LF hashed to
+`5f78e01d117db53febb400b3d5f9b0d0c2b3e5f25d6f30e9071ab6a1e3987c7e` at 1429834 bytes — byte-identical
+to repo HEAD's blob. So every result below ran against the deployed 07-27h engine. (`system.count`
+still appears twice in the file; both are comments, as intended.)
+
+**The setup script's ranged-weapon fix is the run's quiet unlock.** Re-running
+`bench-setup-console.js` produced **zero ⚠ lines** and, for the first time in nine runs,
+`+weapon Shortbow` on all 16 bench PCs — `system.attack.type === "ranged"`, range 80. Sync counts
+matched run 8 exactly (25 leyline / 9 deity / 62 Heroic). **2bX-16 (Tagging Shot) then passed end to
+end** — the melee hit stood the rule down and kept the arm, the Shortbow hit consumed it and placed
+the Quarry. That row had been silently untestable for eight runs. It also made a design gap visible:
+Shattering Blow fires its 5 ft push on a *ranged* hit too (`whenDamageType: "any"`, no `meleeOnly`).
+
+**⛔ THE NEW FAMILY — dead SKILL keys in authored data (8 talents, 6 of them proven broken live).**
+07-27h's lint pass 11 gates dead `system.*` paths in the ENGINE. This is the same disease one layer
+over: authored rules referencing cosmere **skill ids that do not exist**, in `handler.skill`,
+`handler.whenSkill` and `@skills.<k>` formula/text substitutions. The valid set is
+`CONFIG.COSMERE.skills` (agi ath hwp lwp stl thv cra ded dis inm lor med dec ins lea prc prs sur +
+the five colors). A repo sweep of `data/authored/*.json` found:
+- **`itm`** (Intimidation is **`inm`**) — **Feinting Strike** ×2 (`@skills.itm.rank` in its focus
+  formula and its note) · **Flamestance** (`whenSkill`) · **Confident Command** (in its skill list).
+- **`per`** (Perception is **`prc`**; Persuasion is **`prs`**) — **Sharp Eye** (`skill`) ·
+  **Confident Command** (in its skill list).
+- **`ldr`** (Leadership is **`lea`**) — **Set at Odds** (`skill`) · **Synchronized Assault**
+  (`skill`) · **Rousing Presence** (`@skills.ldr.rank` in Rallying Shout's note).
+- Two more to triage, not yet driven: **`spd`** on Destruction's *Concussive Yield* (`skill`) and
+  Fate's *Inevitable Snare* (`riderSkill`) — `spd` is an attribute, not a skill — and **`exalt`** on
+  Sovereignty's *Sovereign's Favor* (`whenSkill`), which may be a custom marker rather than a skill.
+  (`black,red` / `ath, agi, lea` / `dec, ins, lea` are comma LISTS of valid keys — not defects.)
+
+**Measured symptoms, all live:** Sharp Eye is a **total silent no-op** (two uses, no roll, no card,
+no notification, nothing spent) · Set at Odds the same but silent-and-free · **Synchronized Assault
+charges 2 focus and does nothing** (the worst shape) · Feinting Strike's on-hit dispatch fires and
+burns the Reaction correctly but drains "**0** focus" against Intimidation 3 · Rallying Shout prints
+"recovery die + **0** health" against Leadership 3 · Confident Command enforces **Leadership only**
+while its card promises three skills (Intimidation rolled plain and stayed banked; Leadership got
+`1d20 + 5 + 1d10[Confident Command]`) · **Flamestance never worked and now we know why** — its
+`whenSkill: "itm"` can never match `inm`, with Ironstance (`ins`, valid) producing `2d20kh + 3` as the
+positive control, so the advantage plumbing is fine and only the key is wrong. **All are DATA fixes →
+PACK REBUILD.** The obvious follow-up is a lint pass that checks authored skill/defense keys the way
+pass 11 checks `system.*` paths.
+
+**⛔ SECOND NEW DEFECT — the CAE grant path has the H3 write race.** `edhaCaeApplyGM` (~5106–5122)
+does `deepClone(getFlag)` → `push` → `setFlag` with no serialisation. At combat start, Foresight and
+Sidestep both posted "(on the tracker)" but only **Sidestep's** group existed. Confirmed by probe:
+two Through the Fray uses fired in the same tick → two success cards, **one** group written. Same
+family as the 07-26n H3 owner-list fix. Blast radius: any actor with two combat-start grants (the
+shipped Foresight+Sidestep case), multi-grant AoE, and `burn-reaction` racing a grant.
+
+**⛔ THIRD — Pack Hunting double-dips.** 2bO-7's damage half finally works
+(`1d6 + 3 + 4`, "3 added to this damage roll"), but the same single banked use ALSO rode the attack
+roll (`1d20 + 4 + 3[Pack Hunting]`) with its own card, and only then was consumed. The row's spec is
+"either, whichever comes first — **not both**".
+
+**✅ WHAT PASSED.** The **entire 07-27h counter batch**: the gate row (effect named `Insight [2]`,
+`system.stacks` 2, no `count` key; cycling up read 3, down removed the status) plus **2bT-1 · 2bT-3 ·
+2bT-6 · 2bT-7 · 2bT-8 · 2bT-10**. Killing Blow's branches finally DIFFER (`(2d8) * 3` = 18 on success
+vs a bare `2d8` = 13 on failure, "now 2" not "now 0"); Accumulate climbed 2→3→4→5, refused the sixth
+tick, and **followed a `capFormula` edit to 7**; The Pack and Pack Share posted additively and placed
+independently, including the 07-27h ruling case (marker hand-cleared, pointer alive → no bonus card
+but the placement still lands); Death Mark/Hunter's Discipline last-click-wins verified in **both**
+orders. **Engine-wide:** 2bB-8 · 2bE-8 · 2bP-6 · 2bP-7 · 2bQ-6 · 2bL-13 · the 10-recovered-talents row.
+**Heroic (first ever pass):** 2bE-7 (the H1 payload dispatch — both payloads on success, neither on
+failure) · 2bE-3 · 2bD-3 · 2bO-1 · 2bO-5 · 2bX-15 · 2bX-16 · 2bQ-5 · 2bF-15 · 2bZ-5 · 2bZ-6 · 2bZ-7 ·
+2bZ-9 · 2bA-8 · 2bM-2 · the on-hit riders row. **2bZ-9 is the first authored NATIVE rule and it works
+end to end** — held at 5 (`max(1, @skills.ath.mod)`), went down, a long rest cleared the spend, held
+again (⚠ the native rule stores the string `"false"`, which works only because the floor check
+coerces).
+
+**Two claims RETRACTED after measurement, both worth the discipline.** (1) Field Medicine's heal
+looked short; reading the substituted formula showed `1d6 + 2` at caster Medicine 2 and `1d6 + 5` at
+Medicine 5 with the patient's at 0 — correct, the card prints the roll TOTAL not the die. (2) A first
+read using `system.events.toObject()` showed every stance as ruleless; `toObject()` returns `{}` for a
+RecordCollection — `.entries()`/`.size` are the honest readers.
+
+**A constraint on fixing 2bA-5 (Shockwave Slam), discovered here:** Cheap Shot is the only on-hit
+talent carrying its own `damage.formula` and the only one that did not fire on a weapon hit — but it
+DID apply Stunned on its own attack. So `edhaDispatchOnHit`'s `itemSpecific` gate has a legitimate
+consumer and must not simply be deleted; Shockwave Slam's problem is that its authored formula is a
+*collision* formula being misread as an attack. **Also settled: the ⚑ engine-move-collision row's
+engine half** — Shattering Blow pushed 0 ft into an occupied square and 5 ft into a clear lane, same
+talent, same round, tokens never stacking.
+
+**Ruling sightings (decided nothing).** 2bA-6: the blank-note push default now prints *the owning
+talent's name*, not the literal "Push" the row asks for — the old "Shockwave Slam" bug is gone, so
+this is a wording ruling. Shattering Blow firing on ranged hits. **And a checklist-method correction:**
+`insight` is registered `condition: false`, so it — like all ten Edha statuses — **never appears in the
+sheet's Conditions widget**; the gate row's "sheet → Conditions → cycle" path does not exist, and the
+run drove the widget handler's exact writes instead.
+
+**World hygiene: the cleanest close yet, and the first with an effect snapshot to diff against.**
+Start snapshot captured document ids, per-actor `flags["edha-content"]` **and per-actor active
+effects** (run 8's damage came from having no effect baseline). End state: **every document count
+identical to start** (87 actors / 2 scenes / 1 combat / 42 macros / 8 folders / 53 tokens / 117 walls /
+1 region / 0 templates); the effect diff is **exactly zero** — the 8 effects this run created were
+removed and **no pre-existing effect was touched**; the one Region the run created
+("Bench — Green — Difficult Terrain") was deleted; all 23 bench tokens returned to their exact start
+coordinates. One pre-existing flag the run overwrote (Adjacent A's `nextTestMod` from Coercive
+Pressure, clobbered by Tactical Ploy) was **restored from the snapshot**. **Tem parinaem and Soggy
+Bottom verified untouched** (HP 3 and 6, matching snapshot, zero effects; neither within 60 ft of the
+White Draw Mana that healed 8 bench allies). Ben's combat `BerbNeuXp4iKduef` untouched at round 1.
+Bench logged out and confirmed selectable on /join.
 
 **2026-07-27h — BENCH RUN 8'S ONE DEFECT FIXED + THE DEAD-FIELD FAMILY GATED. The counter economy
 moves off a field the cosmere schema does not have; because this was the family's THIRD instance, the
