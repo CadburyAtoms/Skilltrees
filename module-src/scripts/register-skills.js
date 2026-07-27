@@ -2441,12 +2441,17 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
 
 /* `edha-summon-effect`'s pre-cost VETO (2bV): a live summon, plus the per-mode gate — the baked
  * effect must exist and be off (toggle-baked), the summon must not already be armed (grant), and
- * the transform is once per scene. All were pre-cost refusals in the takeovers this replaces. */
+ * the transform is once per scene. All were pre-cost refusals in the takeovers this replaces.
+ *
+ * ⚠️ The lookup key is `edhaSummonSourceTalent(h)` — the rule's OWN `summonTalent` field, blank by
+ * default — NEVER `item.name`. This talent CONSUMES a summon another talent forged, so its own name
+ * is not the summon's stamp. Passing `item.name` here is the 07-27f defect: it refused every
+ * correctly-stamped Construct pre-cost ("needs a live Combat Construct. Nothing spent."). */
 Hooks.on("cosmere-rpg.preUseItem", (item) => {
   try {
     const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
     const h = edhaRuleOf(item, "edha-summon-effect"); if (!h) return;
-    const c = edhaOwnedSummons(actor, item.name, h.summonName || "Combat Construct")[0] ?? null;
+    const c = edhaOwnedSummons(actor, edhaSummonSourceTalent(h), h.summonName || "Combat Construct")[0] ?? null;
     if (!c) { ui.notifications?.warn(`Edha: ${item.name} needs a live ${h.summonName || "summon"}. Nothing spent.`); return false; }
     const mode = h.mode || "toggle-baked";
     if (mode === "toggle-baked") {
@@ -8076,11 +8081,28 @@ async function edhaSummonFolder() {
 /* --- Sustained-summon identity + census (07-24y, H15) --------------------------------------------
  * Which summons on the board came from THIS talent? The flag is authoritative; the name-prefix
  * fallback is for creatures summoned before 07-24y, which carry no `summonTalent` — and it compares
- * against the RULE's own `summonName` (authored data on the document), never a literal in here. */
+ * against the RULE's own `summonName` (authored data on the document), never a literal in here.
+ *
+ * TWO CALLERS ASK TWO DIFFERENT QUESTIONS (2026-07-27f — bench run 7 proved they were conflated):
+ *   • the FORGING talent's sustain-cap veto asks "how many summons of MINE am I sustaining?" —
+ *     talent identity, so pass the forging talent's name and the stamp decides.
+ *   • a CONSUMING talent (Siege Form / Arsenal / Magnum Opus act on a Construct someone else forged)
+ *     asks "do I have a live <summonName>?" — the SUMMON's identity, and which talent forged it is
+ *     not the question. Pass a blank/null `talentName` for that and the stamp is not consulted.
+ * Passing a consumer's own name was the run-7 defect: the stamp branch short-circuited on
+ * `summonTalent: "Forge Construct"` vs `"Siege Form"`, so a correctly-stamped Construct matched
+ * NOTHING and only legacy un-stamped ones worked — the exact inverse of the intent. */
 function edhaSummonIsFrom(a, talentName, summonName) {
+  const nameOk = !!summonName && String(a?.name || "").startsWith(summonName);
+  if (!talentName) return nameOk;                     // consumer-side: the summon's own identity
   const st = a?.getFlag?.("edha-content", "summonTalent");
-  if (st) return st === talentName;
-  return !!summonName && String(a?.name || "").startsWith(summonName);
+  if (st) return st === talentName;                   // stamped: the forging talent is authoritative
+  return nameOk;                                      // legacy un-stamped (pre-07-24y)
+}
+/* Which forging talent a CONSUMING rule pins itself to, or null for "any of my <summonName>s".
+ * One helper so the pre-cost veto and the executor can never disagree about the lookup key. */
+function edhaSummonSourceTalent(h) {
+  return String(h?.summonTalent || "").trim() || null;
 }
 /* Live summons of one talent, OLDEST FIRST. Un-stamped legacy summons sort as oldest (0), which is
  * the behaviour you want: they are the ones that have been standing around longest. */
@@ -12812,7 +12834,9 @@ async function edhaCivTeleportClick(ev) {
 
 /* --- Summon-mode executors (edha-summon-effect, 2bV — were the Siege Form / Arsenal / Magnum Opus
  * takeovers). All gates are pre-cost (the summon-effect veto); the summon is resolved by the
- * generic executor via edhaOwnedSummons and passed in. ---------------------------------------------- */
+ * generic executor via edhaOwnedSummons and passed in — keyed on the rule's own `summonTalent`
+ * field (blank = any of the owner's `summonName` summons), never on the consuming talent's own
+ * name, which is what broke all three of them until 07-27f. -------------------------------------- */
 async function edhaCivToggleBakedEffect(item, h, c) {
   try {
     const eff = c.effects?.find(e => e.getFlag?.("edha-content", "summonEffect") && e.name === h.effectName);
@@ -17955,7 +17979,8 @@ function edhaRegisterNativeEventSystem() {
     description: "Acts on YOUR live summon. toggle-baked = enable a named baked effect the summon ships with, with an end button (Siege Form). grant = copy this talent's own Effects-tab template effect onto the summon and arm its on-kill prompt (Arsenal). transform = the engine-owned colossus rewrite: bonus HP, defense effect, splashing hits, zone-buff upgrade (Magnum Opus). Refused BEFORE cost with no live summon (and per-mode gates).",
     config: { schema: {
       mode: new FF.StringField({ required: true, initial: "toggle-baked", choices: choices("toggle-baked", "grant", "transform"), label: "What it does" }),
-      summonName: new FF.StringField({ required: false, initial: "Combat Construct", label: "Summon name (prefix)", hint: "Which of your summons qualifies — authored data, matched with the summonTalent-flag fallback (edhaOwnedSummons)." }),
+      summonName: new FF.StringField({ required: false, initial: "Combat Construct", label: "Summon name (prefix)", hint: "Which of your summons qualifies — matched against the creature's NAME, because this talent consumes a summon another talent forged." }),
+      summonTalent: new FF.StringField({ required: false, blank: true, initial: "", label: "…forged by which talent (optional)", hint: "Blank (the default) = any of your live summons whose name matches above — the rename-proof choice. Set it to pin this rule to ONE forging talent's summons (e.g. 'Forge Construct'); it is then matched against the summonTalent stamp, with the name prefix still covering pre-07-24y summons." }),
       effectName: new FF.StringField({ required: false, blank: true, initial: "", label: "Baked effect to enable (toggle-baked)", hint: "Siege Form. An older summon without it refuses pre-cost (reforge it)." }),
       endButtonLabel: new FF.StringField({ required: false, blank: true, initial: "", label: "End button label (toggle-baked)", hint: "e.g. 'End Siege Form (Free Action)'. Blank = no button." }),
       onKillNote: new FF.StringField({ required: false, blank: true, initial: "", label: "Armed summon reduces a character to 0 HP: whisper this (grant)", hint: "Arsenal's 15 ft move + free Strike chase. Blank = no kill prompt." }),
@@ -17971,7 +17996,7 @@ function edhaRegisterNativeEventSystem() {
     } },
     executor: async function (event) {
       const item = event.item, owner = item?.actor; if (!owner) return;
-      const c = edhaOwnedSummons(owner, item.name, this.summonName || "Combat Construct")[0] ?? null;
+      const c = edhaOwnedSummons(owner, edhaSummonSourceTalent(this), this.summonName || "Combat Construct")[0] ?? null;   // 07-27f: NOT item.name — see the veto
       if (!c) { ui.notifications?.warn(`Edha: ${item.name} needs a live ${this.summonName || "summon"}.`); return; }
       if (this.mode === "grant") return edhaCivGrantSummonEffect(item, this, c);
       if (this.mode === "transform") return edhaCivTransformSummon(item, this, c);
