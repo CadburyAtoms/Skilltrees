@@ -2,7 +2,7 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, **COMPLETED 2026-07-26 (pass AA)**: **the ratchet list is EMPTY — 221 → 0 across twenty-seven passes.** Every tree is clear, all six marker ledgers have migrated, and `scripts/name-keyed-allowlist.json` stays in the repo with an empty `talents` list *on purpose* — lint pass 7 still guards against REGROWTH, which is the half of the ratchet that matters from here on. ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **ALL SIX marker LEDGERS have migrated** (`covenants` 07-24u; `edicts` 07-25 pass V; `remains` 07-25 pass W; Fate's `snares` 07-25 pass X; Destruction's `charges` 07-26 pass Y; Fate's `ordained` 07-26 pass AA — the point-bound ones fail OPEN through H3's reconcile by design). There is no flat marker-list flag left in the engine. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-27m** (BENCH RUN 11 — THE DEPLOY LANDED AND THE BACKLOG CLEARED: the served engine hashed identical to HEAD and all five rebuilt packs were confirmed carrying their fixes, then **12 rows retired on live evidence** — Flamestance's first-ever pass, Confident Command's three enforced skills, Feinting Strike's number, Set at Odds + Synchronized Assault, quarry auto-advantage on **both** the fast-forward AND dialog paths, 2bX-17, Fault Line's Constructs ×3, both 2bAD contest rows, and Flame Surge on both bosses; plus Mender's card + range gate and Herding Antlers. ONE FAIL: Sharp Eye is still a silent no-op and the dead skill key was NOT the whole cause — its `activation` is `utility` with no `activation.skill`, a one-talent authored fix. World hygiene clean: zero effect drift across 87 actors, 46 adversaries synced with none lost. DOCS-ONLY.) Prior: **2026-07-27l** (BENCH RUN 10'S ONE DEFECT FIXED —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-27n** (FIX PASS A of bench marathon 2 — TWO DEFECTS FIXED, INCLUDING THE MARATHON-1 CARRY-OVER: **Sharp Eye** could never roll the test it gates (`activation` was `utility` with no skill, so `use()`'s `rollRequired` was false and H1's queued contest simply expired — verified in system source, DATA → a FIFTH `foundry-build heroic` + ⟳ Sync); and **Shockwave Slam**, open and un-root-caused since bench run 1, had its weapon-hit surface killed by an `itemSpecific` gate that read its COLLISION formula as "this is my own attack" (ENGINE-ONLY → ⟳ sync + F5). Both family sweeps reported: the def-test family is one talent but the SECOND surface of a shape 07-26j already fixed in the builder, so `lint-refs` **pass 14** now gates both; the on-hit family is TWO, and the second (**Volatile Strike**) is left alone as Ben's ruling, settleable from the Events tab via the new `whenDealer` field. Plus a **RETRACTION**: run 11's "the dialog exposes no advantage control at all" is wrong — it is the d20 icon itself, left/right-click, pre-seeded as a CSS class; only the PREVIEW LINE is blind. 306 tests green.) Prior: **2026-07-27m** (BENCH RUN 11 — THE DEPLOY LANDED AND THE BACKLOG CLEARED: the served engine hashed identical to HEAD and all five rebuilt packs were confirmed carrying their fixes, then **12 rows retired on live evidence** — Flamestance's first-ever pass, Confident Command's three enforced skills, Feinting Strike's number, Set at Odds + Synchronized Assault, quarry auto-advantage on **both** the fast-forward AND dialog paths, 2bX-17, Fault Line's Constructs ×3, both 2bAD contest rows, and Flame Surge on both bosses; plus Mender's card + range gate and Herding Antlers. ONE FAIL: Sharp Eye is still a silent no-op and the dead skill key was NOT the whole cause — its `activation` is `utility` with no `activation.skill`, a one-talent authored fix. World hygiene clean: zero effect drift across 87 actors, 46 adversaries synced with none lost. DOCS-ONLY.) Prior: **2026-07-27l** (BENCH RUN 10'S ONE DEFECT FIXED —
 quarry auto-advantage had **never applied in the mechanic's life**, and the cause was two mistakes
 at one site: it wrote the NUMBER `1` where the cosmere `AdvantageMode` is a **string** enum
 (`hasAdvantage` is `=== "advantage"`, so `configureModifiers()` left a plain `1d20`), and it skipped
@@ -150,6 +150,137 @@ the Red pilot, executed live by an agent session joined as `Bench`: 16 rows reti
 and the agent-bench runbook hardened with the v13 operating lessons. Docs + setup-script fix
 only; nothing to deploy.)
 
+**2026-07-27n — FIX PASS A (bench marathon 2): SHARP EYE, THE MARATHON-1 CARRY-OVER, AND ONE
+RETRACTION. Two defects fixed — one DATA (heroic pack rebuild + ⟳ Sync), one ENGINE-ONLY (⟳ sync +
+F5) — plus a new lint gate, a new pinned regression, and run 11's dialog finding corrected against
+system source. 306 tests green.**
+
+### Bug root causes
+
+**① Sharp Eye could never roll the test it gates — and the `prc` skill key was only the first of two
+causes (2bQ-4; DATA → `foundry-build heroic` + ⟳ Sync Talents).** Run 11 measured the null result
+twice *after* the `prc` fix was confirmed live on both the pack and the owned item: no roll, no card,
+no notification, focus 4 → 4. Its `activation` was `{type: "utility", cost: {value: null, type:
+"spe"}}` with **no `activation.skill`** and `damage.formula: null`.
+
+The mechanism, re-derived from the installed system rather than taken from the report (`use()`,
+`systems/cosmere-rpg/index.js` ~L7188): `rollRequired = activation.type === "skill_test" || hasDamage`.
+Sharp Eye satisfied neither arm, so `use()` took its **else**-branch — it created the plain ACTION
+chat message and ran `postRoll`, which fires `Hooks.callAll(HOOKS.USE_ITEM, …)`. So the `use` event
+DID fire and H1's executor DID run; it called `edhaQueueContest(owner, "prc", cb)` and then waited for
+a d20 on `cosmere-rpg.{skill,attack,item}Roll` that the item never rolled. The queue entry expired
+after `EDHA_CONTEST_TTL`. **H1 is a decider, not a roller** — that is the whole failure. Fix:
+`activation.type` → `skill_test`, `activation.skill` → `prc`, matching the card's own "test Perception
+vs. Cognitive"; the Special Action cost is untouched, so no text changed.
+
+**Where this diverged from the bench: nowhere on the mechanism** — run 11's inference was right, and
+is now verified in source instead of trusted (its own honesty flag said the confirming probe had been
+refused). What the bench *did* get wrong is the framing: it called this "a genuine one-talent outlier,
+not a family". In authored data that is true and I re-measured it. In DEFECT SHAPE it is the **second
+instance**, and the first is in this very document: **07-26j**, where six adversary abilities were born
+mute for exactly this reason (`advItemDoc` promoted only ATTACK items to `skill_test`) — Callthief
+Counterpoint, Surecat Redirect Momentum, Reeve-Owl Sovereign of Solitude, both Rootling Swarm
+abilities, Tussock-Sow Drive the Prey. That fix landed in the BUILDER, so it never touched the TALENT
+surface, where an authored overlay wins verbatim. Hence the gate below rather than a second point fix.
+
+**② Shockwave Slam's weapon-hit trigger surface was dead — the marathon-1 carry-over, finally
+root-caused (2bA-5; ENGINE-ONLY → ⟳ sync + F5).** Found at bench run 1 (07-26h) and never traced. A
+weapon melee impact hit fired no push; using the talent directly produced "💥 Shockwave Slam — pushed
+10 ft" with the correct direction and the note off the document.
+
+`edhaDispatchOnHit` decided "does this rider fire only on the talent's OWN hit?" from
+`!!tal.system.damage.formula` **alone**, per talent. That field is about the card's number and about
+standalone use — **not about who authored the hit**. Shockwave Slam carries a formula because its card
+quotes a COLLISION value ("collision with an obstacle deals half [Tier][Die] Impact"), so the gate
+classified it as an attack talent and `dealer.item !== tal` skipped it for every other dealer — and
+`dealer.item` is the WEAPON on a weapon hit (`edhaDealerOf`). The push machinery was correct
+throughout, which is exactly why the surface looked mysteriously dead while a direct use worked.
+
+**The gate could not simply be removed, and the checklist already knew why**: bench run 9 established
+that Cheap Shot is the only on-hit talent on Bench — Heroic carrying its own `damage.formula`
+(`@scalar.damage.unarmed`) and the only rider that did NOT fire on a Sidesword hit — *correctly*,
+being an unarmed-strike talent whose Stunned rides its own hit. So this fixes the **discrimination**.
+The decision is now the pure helper `edhaOnHitIsItemSpecific(tal, rule)`, taken **per rule** rather
+than per talent:
+1. **`whenDealer` on the rule wins** — `"self"` | `"any"`. Iron rule 2b: whose hit a rider rides is
+   the talent's business and belongs on its own document, editable on the Events tab. Registered on
+   `edha-push` and `edha-triggered-effect`.
+2. The derived default narrows to *"the talent rolls its own attack"*: a damage formula **AND**
+   `activation.type === "skill_test"`. A `utility` talent never rolls a to-hit test at all, so its
+   formula cannot be the hit in question.
+No authored data changed — the narrowed default alone fixes it, so this is ENGINE-ONLY.
+
+### One bug or a family? — both sweeps, stated
+
+- **The mute-def-test family: ONE talent today, but the SECOND surface.** 37 authored rules carry
+  `edha-def-test`; 35 are already `skill_test`. The only other non-`skill_test` is Chaos's **Unravel
+  Everything**, and it is legitimately exempt — read the executor: `targetList` + `vs: "none"` returns
+  from `sweep(null)` *before* `edhaQueueContest` is reached. Zero skill mismatches across the other 35
+  and across all 7 adversary abilities.
+- **The on-hit family: TWO, and the second is Ben's call.** Twelve talents carry `edha-on-hit`. Eight
+  have no damage formula and were never gated (six of them verified firing on one Sidesword hit in run
+  9). Only FOUR can be affected: **Cheap Shot** and **Dark Investiture** are genuine attack talents and
+  are unchanged; **Shockwave Slam** is fixed; and **Volatile Strike** is the second member — its card
+  and its own rule description both say "when you hit with a melee attack", i.e. a RIDER wearing an
+  attack talent's shape, yet it is `skill_test` + damage and so still derives item-specific. **Left
+  alone deliberately, not overlooked**: it has two live paths (an automatic rider vs. the Special
+  Action you take after your weapon hits) and `whenDealer: "any"` would also make it offer itself on
+  its own damage application. Which is canon is a design call → rulings batch, settleable from the
+  Events tab with no code change.
+
+### ⚠️ RETRACTION — run 11's dialog finding, corrected against system source
+
+Run 11 concluded that "the cosmere dialog exposes **no advantage control at all**", which made the
+old quarry row's "pre-selected / overridable by hand" wording look unsatisfiable. **That half is
+wrong**, and it mattered: a future session could have changed working engine behaviour to chase it.
+`RollConfigurationDialog` (index.js ~L3531-3700):
+- **The control exists** — `_onRender` binds `mousedown` on `.dice-tooltip .dice-rolls .roll.die`, and
+  `onClickConfigureDie` cycles `toggleAdvantageMode`: **left**-click toward advantage, **right**-click
+  toward disadvantage. It is the rendered **d20 icon itself** — no label, no checkbox, no form field,
+  which is precisely why a DOM/accessibility read reports nothing.
+- **A pre-seed IS pre-selected** — `_onRender` adds the mode as a **CSS class** (a colour) on the die.
+- **It IS overridable** — `onSubmit` returns `this.data.skillTest.advantageMode`, the value the clicks
+  left behind, so a manual toggle beats the engine's seed.
+- **The preview line genuinely never updates**, and that is the real (and only) limitation: it is built
+  once in the dialog's constructor from `parts`, while `configureModifiers()` (the `1d20` → `2d20kh`
+  rewrite) runs at the END of `configureDialog`, after the dialog resolves — and `onClickConfigureDie`
+  never re-renders. Correct behaviour, invisible preview.
+The engine's own 07-24j comment ("the dialog opens with it selected and the GM can still toggle it
+off") was right all along. **No engine change** — recorded in ENGINE_INDEX and as a feel row on the
+checklist. If the die's colour cue is too subtle at the table, the answer is more whispered advantage
+cards like the quarry one, not a change to the channel.
+
+### New gates
+
+- **`scripts/lint-refs.js` pass 14** — every item carrying an `edha-def-test` rule must be able to
+  ROLL it: `activation.type === "skill_test"`, and its effective test skill must equal the rule's
+  `skill` (`edhaTryResolveContest` matches the captured roll BY skill, so a mismatch waits forever).
+  A damage formula is deliberately **not** accepted as an alternative even though the system's own
+  `rollRequired` ORs the two — only the `skill_test` arm calls `item.roll()` → `d20Roll` →
+  `cosmere-rpg.itemRoll`, the hook `edhaContestWatch` subscribes to; the damage arm fires `damageRoll`,
+  which the watcher never sees. My first draft admitted that decoy and was tightened. Both surfaces
+  covered (the adversary half checks only the derived skill, mirroring one `advItemDoc` line, because
+  the builder derives the activation there). **Mutation-verified, six shapes**, each failing by name.
+- **`tests/on-hit-dealer.test.js`** — pins `edhaOnHitIsItemSpecific` in both directions plus the four
+  shipped shapes, with an extract-drift guard that re-reads `data/authored/`. **Mutation-verified
+  twice**: restoring the original derivation fails 3 cases by name, and removing the gate entirely
+  (the tempting fix) fails 4 including the Cheap Shot guard.
+
+### Known limits / couldn't self-verify (no Foundry session — Ben was at the table)
+
+- ⚑ **Neither fix is bench-verified.** Sharp Eye needs the heroic rebuild + ⟳ Sync; Shockwave Slam
+  needs ⟳ sync + F5. Both have re-test rows with explicit positive AND negative controls — Shockwave
+  Slam's negative control is the important one: **Cheap Shot's Stunned must still NOT ride a weapon
+  hit**, which is the half the fix had to preserve.
+- ⚑ **Volatile Strike has never been benched at all**, and is now a rulings row rather than a change.
+- ⚑ **The dialog retraction is source-verified but not eye-verified** — nobody has looked at the die
+  icon's colour in a live dialog. The claim that the *control* exists is solid; whether the cue is
+  usable at the table is a feel row.
+- Nothing was built into the live module: the heroic pack was compiled into a scratch `EDHA_MODROOT`,
+  read back with `edha-pack-io`, and `validate-packs` run against it. No `module-src-sync`, no deploy.
+
+---
+
 **2026-07-27m — BENCH RUN 11: THE DEPLOY LANDED AND THE BACKLOG CLEARED. Twelve rows retired on
 live evidence, one FAIL re-root-caused. DOCS-ONLY — nothing to deploy.**
 
@@ -242,7 +373,12 @@ show advantage.** Both the Intimidation skill-test dialog under Flamestance and 
 dialog against a marked quarry previewed a plain `1d20 + N` and then rolled `2d20kh + N` on submit.
 The cosmere dialog exposes **no advantage control at all**, so the quarry row's wording ("Advantage
 must come up pre-selected, and must still be overridable by hand") is not satisfiable as written —
-the mechanic is correct, the row's expectation is not. (2) **Fault Line's dangerous-terrain Region
+the mechanic is correct, the row's expectation is not.
+⚠️ **HALF of finding (1) is RETRACTED — see the 2026-07-27n delta above.** The preview-line half is
+right and now explained; "**no advantage control at all**" is **WRONG**. `RollConfigurationDialog`
+binds `mousedown` on the rendered **d20 die icon** (left-click toward advantage, right-click toward
+disadvantage), a pre-seed renders as a CSS class on that die, and `onSubmit` returns whatever the
+clicks left — so the old row wording WAS satisfiable, just not visible to a DOM read. (2) **Fault Line's dangerous-terrain Region
 catches bystanders scene-wide**, including Ben's placed campaign tokens, with no friend/foe clause —
 the same shape as the existing ⚑ ruling about the line sparing allies.
 

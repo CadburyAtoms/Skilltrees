@@ -1549,6 +1549,26 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   **`lint-refs` pass 13** validates the authored side, where `edha-test-rider` hands its `mode`
   field to the channel unnarrowed. Both mutation-verified. Nine advantage sites exist; a tenth that
   gets either half wrong now fails the build.
+- ⚠ **WHAT THE ROLL DIALOG ACTUALLY SHOWS — and why it looks like nothing (07-27n).** Bench run 11
+  concluded "the cosmere dialog exposes **no advantage control at all**". That is **WRONG, and the
+  retraction matters** because it would have had a future session change working engine behaviour to
+  chase it. Read `RollConfigurationDialog` (index.js ~L3531-3700):
+  · **The control exists** — `_onRender` binds `mousedown` on `.dice-tooltip .dice-rolls .roll.die`,
+    and `onClickConfigureDie` cycles `toggleAdvantageMode` (**left**-click toward advantage,
+    **right**-click toward disadvantage). It is the rendered **d20 icon itself**: no label, no
+    checkbox, no form field — which is exactly why a DOM/accessibility read reports nothing.
+  · **A pre-seed IS pre-selected** — `_onRender` does
+    `.addClass(this.data.skillTest.advantageMode ?? "none")`, so the engine's `configureDialog`
+    seed lands as a **CSS class (a colour) on the die**, and nothing else.
+  · **It IS overridable by hand** — `onSubmit` returns `this.data.skillTest.advantageMode`, i.e. the
+    value the clicks left behind, so a manual toggle beats the engine's seed.
+  · **The FORMULA LINE genuinely never updates**, and that is the real limitation. The preview is
+    built ONCE in the constructor from `parts`; `configureModifiers()` (which rewrites `1d20` →
+    `2d20kh`) runs at the END of `configureDialog`, after the dialog resolves, and
+    `onClickConfigureDie` never re-renders. So the preview reads `1d20 + N` and the submit rolls
+    `2d20kh + N` — correct behaviour, invisible preview.
+  **Do not "fix" the engine for this.** If the die's colour cue is too subtle at the table, the
+  answer is the whispered advantage card (the quarry site's, 07-27l), not a change to the channel.
 - **PC token defaults** (`edhaPcSightShape(actor)` + preCreateActor hook + AWA updateActor
   watcher + `edha.fixPcTokens()`) — new character actors get displayName HOVER(30) and cosmere
   "sense" sight (attenuation 0.1) with range = Senses Range (`edhaSensesRangeFtFromAwa`); the

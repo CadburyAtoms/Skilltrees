@@ -122,47 +122,40 @@ would have dropped even the correct value on any non-fast-forward roll. **Byte-c
 the served `register-skills.js` must contain `_edhaQuarryAdv` (2×) and must contain **no**
 `advantageMode = 1` anywhere outside comments. Un-blocks the quarry advantage row and **2bX-17**.
 
+**⏳ NEW 2026-07-27n — the fix-pass-A ENGINE half needs ⟳ sync the module + F5 (no rebuild, no ⟳ Sync
+Talents).** One fix: `edhaDispatchOnHit` decided "does this rider fire only on the talent's own hit?"
+from `!!system.damage.formula` alone, which read **Shockwave Slam's COLLISION formula** as "this is my
+own attack" and killed its weapon-hit trigger surface (2bA-5, open since bench run 1). The decision is
+now `edhaOnHitIsItemSpecific`, taken per RULE: an explicit `whenDealer` wins, else it derives damage
+formula **AND** `activation.type: "skill_test"`. **Byte-check after the sync:** the served
+`register-skills.js` must contain `edhaOnHitIsItemSpecific` (2×) and `whenDealer` (3×), and must NOT
+contain the old bare line `const itemSpecific = !!tal.system?.damage?.formula;`.
+
+**⏳ NEW 2026-07-27n — a FIFTH pack build is owed: `foundry-build heroic` (again) + ⟳ Sync Talents.**
+Sharp Eye's `activation` is now `skill_test` / `prc` (it was `utility` with no skill, so the system
+rolled nothing and H1 had nothing to resolve). This is a **second** heroic build — the run-11 one
+carried the `prc` skill-key fix but not this. Un-blocks **2bQ-4** and **2bD-7**, which is the last
+row hanging on it.
+
 ---
 
-## ⚑ THE COMPLETE PACK-REBUILD LIST — run these in this order, Foundry CLOSED
+## ⚑ THE PACK-REBUILD LIST — run these in this order, Foundry CLOSED
 
-Four builds are now owed, not three: the three carried since bench run 5, plus **heroic**, which is
-new in 07-27j. Nothing here is optional and nothing is superseded.
+**✅ All FOUR builds carried into bench run 11 are DONE and VERIFIED LIVE (2026-07-27m).** Ben ran
+them; the run then read all five packs directly and confirmed each fix in place — Flamestance
+`whenSkill: "inm"`, Sharp Eye `skill: "prc"`, Set at Odds / Synchronized Assault `skill: "lea"`,
+Confident Command's three skills, Feinting Strike's `@skills.inm.rank`, Rallying Shout's
+`@skills.lea.rank`, Mender's one-liner note + `rangeColor: "green"`, Forge Construct's
+`creatureType: "Construct"`, Fellstag's Herding Antlers (2 events + `skill: "green"`) and both
+bosses' Flame Surge `2d8 energy`. The 07-27h build cleanup rode along. **Nothing from that list is
+still owed.**
 
-1. **`foundry-build heroic`** + **⟳ Sync Talents** — ⭐ NEW 2026-07-27j, and the biggest single
-   behaviour change in the batch: **eight talents were wired to cosmere skill ids that do not
-   exist** (`itm` for Intimidation, `per` for Perception/Persuasion, `ldr` for Leadership) and every
-   one failed silently. Un-blocks **Sharp Eye** (was a total no-op), **Set at Odds** (same),
-   **Synchronized Assault** (charged 2 focus and did nothing), **Feinting Strike** (drained "0"
-   focus), **Rallying Shout** (printed "+ 0 health"), **Confident Command** (enforced Leadership
-   only), and **Flamestance**, which has never worked in its life.
-2. **`foundry-build leyline`** + **⟳ Sync Talents** — carried since run 5. Mender's Instinct's
-   one-liner note + the green range gate (the live pack still carries the 228-char note and an
-   empty `rangeColor`).
-3. **`foundry-build deity`** + **⟳ Sync Talents** + **RE-FORGE the Construct** — carried since run 5
-   (07-26n: Forge Construct's rule mints its summon `creatureType: "Construct"`; the live pack reads
-   `""`, and an already-summoned Construct keeps its old humanoid type until re-forged). Also
-   carries the cosmetic Surgical Precision rule-description truthing.
-4. **`foundry-build adversaries`** + **⟳ Sync Adversaries** + **re-drag the Fellstag** (Herding
-   Antlers — a fresh pack read still shows 0 events) + **re-import BOTH bosses** (Flame Surge — both
-   bosses' live `damage.formula` is still `null`; placed copies stay frozen at 0 until re-imported).
+**⏳ ONE build is owed now:**
 
-**Rides along with whichever build runs first, nothing waits on it:** the 07-27h build cleanup stops
-minting six keys on every talent doc that the talent DataModel deletes at load (`hasPath`,
-`specialty`, `hasSpecialty`, `hasAncestry`, `prerequisites`, `prerequisitesMet` — the real prereqs
-live on the tree NODE, which is unchanged). Provably no behaviour change.
-
-*(The per-item detail for 2–4 is kept below verbatim, as re-confirmed by fresh compendium reads at
-bench run 5.)*
-- `foundry-build leyline` + **⟳ Sync Talents** (Mender's Instinct's one-liner note + green range
-  gate — run 5 re-confirmed the live pack still carries the 228-char note and an empty `rangeColor`).
-- `foundry-build deity` + **⟳ Sync Talents** + **RE-FORGE the Construct** (07-26n: Forge
-  Construct's rule mints its summon `creatureType: "Construct"` — run 5 read `creatureType: ""`
-  in the live pack; an already-summoned Construct also keeps its old humanoid type until re-forged).
-- `foundry-build adversaries` + **⟳ Sync Adversaries** + **re-drag the Fellstag** (Herding
-  Antlers — run 5 re-confirmed a FRESH pack read still shows 0 events) + **re-import BOTH bosses**
-  (Flame Surge — run 5 re-confirmed both bosses' live `damage.formula` is still `null`; placed
-  copies stay frozen at 0 until re-imported).
+1. **`foundry-build heroic`** + **⟳ Sync Talents** — ⭐ NEW 2026-07-27n. **Sharp Eye's `activation`**:
+   `utility` → `skill_test` with `skill: "prc"`. The run-11 heroic build fixed its dead skill key but
+   the talent still did nothing, because the item never rolled a test at all for its `edha-def-test`
+   rule to resolve. This is the only data change in fix pass A. Un-blocks **2bQ-4** and **2bD-7**.
 
 Only Ben advances this section.
 
@@ -336,7 +329,36 @@ SUPERSEDED: the "(On Use)" spec predates the 07-25 Opportunity redesign that 2bQ
 bare use arms nothing, by design). What remains below is the one FAIL, the ⚑ rows, and the
 spot-check row with a drift observation.
 
-- [ ] **2bA-5 — Shockwave Slam** — Melee impact hit → Push card still reads **"Shockwave Slam"** (not "Push"). Its note now comes from the document; a regression here means the note field didn't survive the build. **FAIL 2026-07-26 (bench run 1):** a WEAPON melee impact hit (Bench Maul, 1d8 impact, hit + damage applied) fires NO push — `edhaDispatchOnHit`'s `itemSpecific = !!tal.system.damage.formula` gate reads Shockwave Slam's authored COLLISION formula as "attack talent, only fires on its own hits" and skips it for every other dealer. The push machinery itself works: using the talent directly produced "💥 Shockwave Slam — pushed 10 ft", correct away-from-caster direction, note from the document. Fix direction: the trigger surface, not the push. → test-pass-fixes.
+- [ ] **2bA-5 — Shockwave Slam — ✅ FIXED 2026-07-27n — RE-TEST NEEDS: ⟳ sync the module + F5 (ENGINE-ONLY, no pack rebuild)** —
+      Hit an enemy with a **WEAPON** melee **impact** attack (Bench Maul, 1d8 impact) and apply the
+      damage → the push must fire off the weapon's hit: "💥 **Shockwave Slam** — pushed `<n>` ft",
+      away from you, note read from the document (not "Push"). Then **the negative control that
+      protects the other half**: hit with the same weapon while owning **Cheap Shot** → Cheap Shot's
+      **Stunned must NOT** apply, because it is an unarmed-strike talent whose rider rides only its
+      own hit; use Cheap Shot itself and the Stun **must** land.
+      *(Background: FAILED at bench run 1 (2026-07-26h) and stayed un-root-caused for a whole
+      marathon. `edhaDispatchOnHit` decided "does this rider fire only on the talent's own hit?" from
+      `!!tal.system.damage.formula` alone — a field about the card's number, not about who authored
+      the hit. Shockwave Slam carries a formula because its card quotes a **collision** value, so the
+      gate read it as an attack talent and skipped it for every other dealer; `dealer.item` is the
+      WEAPON on a weapon hit. The push machinery was always fine, which is why a direct use worked.
+      The gate could not just be removed — run 9 proved Cheap Shot is its legitimate consumer. The
+      decision is now `edhaOnHitIsItemSpecific`, taken PER RULE: an explicit `whenDealer` on the rule
+      wins, otherwise it derives "the talent rolls its own attack" = damage formula **AND**
+      `activation.type: "skill_test"`. Pinned in `tests/on-hit-dealer.test.js`, mutation-verified in
+      both directions.)*
+- [ ] **⚑ Volatile Strike — whose hit should it ride? YOUR RULING, 2026-07-27n (found by the 2bA-5
+      family sweep; nothing changed)** — Volatile Strike is the only other talent the 2bA-5 gate can
+      affect, and its card says "**When you hit with a melee attack**, spend 1 Investiture and test
+      Red vs. Physical to add half [Tier][Die] impact" — a RIDER. But it is authored as `skill_test`
+      **with its own damage formula**, so it still derives ITEM-SPECIFIC: today its offer only appears
+      on **its own** damage application, never on your sword. It was left alone deliberately rather
+      than flipped, because it has two live paths and only you can say which is canon: (a) it is an
+      automatic rider on any melee impact hit — then it wants `whenDealer: "any"`, and using it
+      standalone will also offer itself on its own damage; or (b) it is the Special Action you take
+      *after* your weapon hits, in which case the on-hit rule is the redundant half and should be
+      `whenDealer: "self"` or removed. **You can settle this entirely from the Events tab** —
+      `whenDealer` is a field on the rule now; no code change either way. Never benched.
 - [ ] ⚑ **Flashpoint** — Red burst hits 2+: click the prompt → +1 Investiture AND your next Red test
       rolls with advantage automatically (pre-selected/fast-forwarded).
 - [ ] **Red spot-checks (like-for-like)** — run once: Arc Flash (any energy hit) and one Frenzy talent of your choice → identical to pre-migration behaviour; any drift is a bug. **Bench run 1 (2026-07-26):** Arc Flash ✓ (offer card posted on an energy weapon hit; Afterburn's too). Battle Fever (Frenzy) has a **card-vs-engine drift**: card says "+1 to your next test (max = Rank), resets at start of your turn" but the rally bonus rode EVERY test until turn start (`rally {count, resetOn: turn}` — it never consumed on a test; observed +2[Rally] on 6+ consecutive rolls; the max=Rank cap works). Decide which side is canonical → test-pass-fixes.
@@ -981,9 +1003,15 @@ paths).
 > no-op, because its `activation.type` is `utility` with no `activation.skill`, so the system never
 > rolls a test for its `edha-def-test` rule to resolve. **2bD-7 stays open behind it.**
 >
-> What is left in this section: that one FAIL + 2bD-7 · **4 ⚑ DESIGN CALLS THAT ARE YOURS** (2bC-1 ·
-> 2bF-14 · 2bF-16 · the four dead prereqs) · **1 roster change, not a test** (2bC-8 — no bench PC owns
-> Probability Net) · **1 out-of-scope row parked here** (Probability Cascade is a **Blue** talent).
+> ⏳ **FIXED 2026-07-27n, and this section is deploy-blocked ONE more time.** The activation is now
+> `skill_test` / `prc`, verified in system source rather than inferred, so **2bQ-4 and 2bD-7 both need
+> a SECOND `foundry-build heroic` + ⟳ Sync Talents** before they can be driven. Nothing else in this
+> section is blocked.
+>
+> What is left in this section: those **2 deploy-blocked rows** (2bQ-4 + 2bD-7) · **4 ⚑ DESIGN CALLS
+> THAT ARE YOURS** (2bC-1 · 2bF-14 · 2bF-16 · the four dead prereqs) · **1 roster change, not a test**
+> (2bC-8 — no bench PC owns Probability Net) · **1 out-of-scope row parked here** (Probability Cascade
+> is a **Blue** talent).
 
 > **✅ Bench run 9 (2026-07-27i) drove this section for the first time — fourteen rows retired on
 > evidence.** **2bE-7 — the priority row, and the H1 payload dispatch WORKS**: success ("23 vs COG 14 —
@@ -1077,6 +1105,23 @@ paths).
 > without the stance and **9** with it. `derived` is the armour-only sub-field and never folds in
 > `bonus`; the engine reads `.value` (`edhaDeflectOf`). **Read `system.deflect.value`, never `.derived`.**
 
+- [ ] **The roll dialog DOES have an advantage control — run 11's reading corrected, 2026-07-27n (no
+      engine change, read this before chasing it)** — bench run 11 retired the quarry advantage row on
+      good evidence (`2d20kh + 4` + the 🎯 card on **both** the fast-forward and dialog paths) but
+      concluded that "the cosmere dialog exposes **no advantage control at all**", which made the row's
+      old "pre-selected / overridable by hand" wording look unsatisfiable. **That conclusion is wrong**,
+      verified in `RollConfigurationDialog` (`systems/cosmere-rpg/index.js` ~L3531-3700): the control is
+      the rendered **d20 die icon itself** — `_onRender` binds `mousedown` on it and `onClickConfigureDie`
+      cycles the mode (**left**-click toward advantage, **right**-click toward disadvantage). It has no
+      label, no checkbox and no form field, which is exactly why a DOM read reports nothing. A pre-seed
+      from the engine **is** pre-selected (`_onRender` adds the mode as a **CSS class**, i.e. a colour,
+      on the die) and it **is** overridable (`onSubmit` returns whatever the clicks left behind). **The
+      one real limitation is the preview line**: it is built once in the dialog's constructor, and
+      `configureModifiers()` (the `1d20` → `2d20kh` rewrite) runs only after the dialog resolves, so the
+      preview always reads `1d20 + N` and then rolls `2d20kh + N`. Correct behaviour, invisible preview.
+      **What to check at the table (feel, not pass/fail):** open the attack dialog against a marked
+      quarry and look at the die icon's **colour** — is that cue readable enough for you? If not, the
+      answer is more whispered advantage cards like the quarry one, **not** an engine change.
 - [ ] **⚑ Quarry advantage vs. an active DISADVANTAGE — your ruling, 2026-07-27l** — attack your quarry
       **while Weakened** → today the attack rolls **advantage** (the quarry site runs after Weakened's
       and overwrites it). That is the house convention — pack advantage, the Opportunity adv-test and
@@ -1084,9 +1129,9 @@ paths).
       that Apex Predator uses. Left alone deliberately rather than changed silently. Tell me if quarry
       should refuse to stomp instead.
 - [ ] **2bC-1 — High Society Contacts (Agent)** — Events tab, then use it → ⚑ A rule is THERE (was empty): `edha-next-test-mod`, target **self**, Opportunity **true**. Using it banks the credit and the card says so. *(2026-07-27k: the FACTUAL half PASSES — the rule reads exactly `HiSocOppAdder001` / `edha-next-test-mod` / target `self` / `opportunity: true`; using it banked `oppCredit {source: "High Society Contacts"}` with "🎲 …your next test — with an Opportunity banked", and the next test printed "🎲 Opportunity! …(+1 granted by High Society Contacts…)" and cleared the credit. **Only the ⚑ design question — is a rule being there what you want — is left, and it is yours.**)*
-- [ ] **2bD-7 — regression: the untouched rows — FAIL 2026-07-27i (2 of 4 are dead)** — **Sharp Eye**, **Tactical Ploy**, **Steadfast Challenge**, **Valiant Intervention** → All four still work exactly as before — they stay on the old `EDHA_HEROIC_DEFTESTS` path this pass. If any broke, the table edit went wrong. **Run 9:** Tactical Ploy ✅ (2bE-7, both branches) and Valiant Intervention ✅ (2bF-15). Steadfast Challenge rolled and resolved but only a FAIL was observed (2bF-13, below). **Sharp Eye is a silent no-op** — see 2bQ-4. Its cause is the dead-skill-key family below, not the table edit. **2026-07-27k: THREE OF FOUR ARE NOW CLEARED** — Steadfast Challenge's success branch passed (2bF-13, retired), joining Tactical Ploy and Valiant Intervention. ⛔ **This row now hangs on Sharp Eye alone, which is BLOCKED-ON-DEPLOY** (`foundry-build heroic` + ⟳ Sync Talents); a fresh console read on 07-27k confirms the live pack still carries `skill: "per"`. **2026-07-27m (bench run 11): still hangs on Sharp Eye alone, and it is no longer a deploy gap** — the heroic pack IS rebuilt and Sharp Eye still does nothing. Its cause is now root-caused as an `activation` defect, not the skill key; see 2bQ-4. The other three remain cleared.
+- [ ] **2bD-7 — regression: the untouched rows — FAIL 2026-07-27i (2 of 4 are dead)** — **Sharp Eye**, **Tactical Ploy**, **Steadfast Challenge**, **Valiant Intervention** → All four still work exactly as before — they stay on the old `EDHA_HEROIC_DEFTESTS` path this pass. If any broke, the table edit went wrong. **Run 9:** Tactical Ploy ✅ (2bE-7, both branches) and Valiant Intervention ✅ (2bF-15). Steadfast Challenge rolled and resolved but only a FAIL was observed (2bF-13, below). **Sharp Eye is a silent no-op** — see 2bQ-4. Its cause is the dead-skill-key family below, not the table edit. **2026-07-27k: THREE OF FOUR ARE NOW CLEARED** — Steadfast Challenge's success branch passed (2bF-13, retired), joining Tactical Ploy and Valiant Intervention. ⛔ **This row now hangs on Sharp Eye alone, which is BLOCKED-ON-DEPLOY** (`foundry-build heroic` + ⟳ Sync Talents); a fresh console read on 07-27k confirms the live pack still carries `skill: "per"`. **2026-07-27m (bench run 11): still hangs on Sharp Eye alone, and it is no longer a deploy gap** — the heroic pack IS rebuilt and Sharp Eye still does nothing. Its cause is now root-caused as an `activation` defect, not the skill key; see 2bQ-4. The other three remain cleared. ⏳ **2026-07-27n: the activation fix is IN and this row is BLOCKED-ON-DEPLOY behind it** — it needs a **second** `foundry-build heroic` + ⟳ Sync Talents. Re-check Sharp Eye only; the other three are settled.
 - [ ] **Probability Cascade (Blue) — the count-2 half of the 2bO-7 guard, NOT RUN 2026-07-27k** — `edhaNextModClaimOk` (the Pack Hunting double-dip guard) must stay inert for multi-use test-only mods: Probability Cascade is `count: 2`, `appliesTo: "test"` and must still apply to **two separate tests**. Run 10 verified the guard is inert for **count-1** test-only mods (Demonstrative / Shrewd / Overwhelm with Details / Decisive Command all applied normally on skill tests) but could not drive Probability Cascade itself — its chain needs an Opportunity plus 1 Investiture, which cannot be forced on demand. **This is a Blue row, not Heroic** — run it in a Blue pass.
-- [ ] **2bQ-4 — Sharp Eye — FAIL 2026-07-27i: a total silent no-op** — target a creature and use it → You roll **Perception**; the card says SUCCESS or FAIL against their Cognitive defense. **On a success only**, a second whispered card lists *lowest attribute · lowest defense · below half*. **Run 9:** used twice on a valid target — **no roll, no card, no notification, and nothing spent** (focus 4→4, Investiture 4→4). The document is not empty: it carries `SharpEyeGate0000` (`edha-def-test`) and `SharpEyeReveal00` (`edha-reveal`, on `edha-test-success`). **Cause:** the gate's **`skill: "per"`** is a dead key — the cosmere Perception skill is **`prc`**, and `per` appears nowhere in `CONFIG.COSMERE.skills`, so no roll can ever fire and the success event never arrives. Same shape as run 2's "cost charged and nothing happened" lesson, here without even the charge. ✅ **FIXED 2026-07-27j — BLOCKED-ON-DEPLOY: needs `foundry-build heroic` + ⟳ Sync Talents.** The gate is now `prc`. **Re-test after the rebuild:** target a creature, use it → a Perception roll and a SUCCESS/FAIL card, and on a success the whispered fact list. ⛔ **STILL A TOTAL SILENT NO-OP AFTER THE REBUILD — bench run 11, 2026-07-27m. The dead key was real but it was NOT the whole cause.** The `prc` fix is live on BOTH the pack and the owned item (`SharpEyeGate0000`, `edha-def-test`, `skill: "prc"`), and a use on a correctly targeted creature still produced **no roll, no card, no notification and nothing spent** (focus 4→4) — twice, with the target asserted in `game.user.targets`. **NEW ROOT CAUSE (repo audit, not yet confirmed by in-world mutation — the probe was blocked by a permission gate, so treat the mechanism as a strong inference and the null result as measured):** Sharp Eye's `activation` is `{type: "utility", cost: {value: null, type: "spe"}}` with **no `activation.skill`**, so the system never rolls a test and H1's `edha-def-test` has nothing to resolve — exactly bench run 2's "a non-attack item carrying `edha-def-test` is built as `utility` with no skill, so no roll ever fires" lesson. **Family audit across all authored talents: 37 carry `edha-def-test`; 35 are `activation.type: "skill_test"`. Only TWO are not** — Sharp Eye (`vs: defense`, genuinely broken) and Chaos's **Unravel Everything** (`vs: "none"`, which needs no roll and is probably fine). **The fix is a one-talent authored change** in `data/authored/heroic-hunter.json`: `activation.type` → `skill_test` and `activation.skill` → `prc` (its own card already says "test Perception vs. Cognitive"). Needs `foundry-build heroic` + ⟳ Sync Talents afterwards.
+- [ ] **2bQ-4 — Sharp Eye — FAIL 2026-07-27i: a total silent no-op** — target a creature and use it → You roll **Perception**; the card says SUCCESS or FAIL against their Cognitive defense. **On a success only**, a second whispered card lists *lowest attribute · lowest defense · below half*. **Run 9:** used twice on a valid target — **no roll, no card, no notification, and nothing spent** (focus 4→4, Investiture 4→4). The document is not empty: it carries `SharpEyeGate0000` (`edha-def-test`) and `SharpEyeReveal00` (`edha-reveal`, on `edha-test-success`). **Cause:** the gate's **`skill: "per"`** is a dead key — the cosmere Perception skill is **`prc`**, and `per` appears nowhere in `CONFIG.COSMERE.skills`, so no roll can ever fire and the success event never arrives. Same shape as run 2's "cost charged and nothing happened" lesson, here without even the charge. ✅ **FIXED 2026-07-27j — BLOCKED-ON-DEPLOY: needs `foundry-build heroic` + ⟳ Sync Talents.** The gate is now `prc`. **Re-test after the rebuild:** target a creature, use it → a Perception roll and a SUCCESS/FAIL card, and on a success the whispered fact list. ⛔ **STILL A TOTAL SILENT NO-OP AFTER THE REBUILD — bench run 11, 2026-07-27m. The dead key was real but it was NOT the whole cause.** The `prc` fix is live on BOTH the pack and the owned item (`SharpEyeGate0000`, `edha-def-test`, `skill: "prc"`), and a use on a correctly targeted creature still produced **no roll, no card, no notification and nothing spent** (focus 4→4) — twice, with the target asserted in `game.user.targets`. **ROOT CAUSE, now CONFIRMED IN SYSTEM SOURCE (2026-07-27n) rather than inferred:** Sharp Eye's `activation` was `{type: "utility", cost: {value: null, type: "spe"}}` with **no `activation.skill`**, and the system's own `use()` decides `rollRequired = activation.type === "skill_test" || hasDamage` (`systems/cosmere-rpg/index.js` ~L7188). With `utility` and `damage.formula: null` it took the else-branch: it posted the plain action card, fired `useItem` (so the `use` event and H1's executor really did run), and rolled **nothing**. H1 is a DECIDER, not a roller — it queued a contest and the entry simply expired after `EDHA_CONTEST_TTL`, with no error and no warning. ✅ **FIXED 2026-07-27n — BLOCKED-ON-DEPLOY: needs `foundry-build heroic` + ⟳ Sync Talents.** `activation.type` → `skill_test`, `activation.skill` → `prc`; the Special Action cost is unchanged, so the card text is untouched. Verified by reading the talent back out of a scratch-`EDHA_MODROOT` heroic build. **RE-TEST after the rebuild:** target a creature and use it → a **Perception** roll fires, a card reads "Sharp Eye: `<total>` vs `<name>`'s COG `<n>` — SUCCESS/FAIL", and on a success a second whispered card lists *lowest attribute · lowest defense · below half* with the "Pick ONE" note. **Family audit re-run independently: 37 authored rules carry `edha-def-test`, 35 are already `skill_test`;** the only other exception is Chaos's **Unravel Everything**, which is legitimately exempt (`targetList` + `vs: "none"` returns before the contest is ever queued). Zero skill mismatches across the other 35 and across all 7 adversary abilities. **This shape has now shipped twice** — six adversary abilities in 07-26j, this one on the talent surface — so **`lint-refs` pass 14** gates both surfaces from here (mutation-verified against this exact defect).
 - [ ] **2bF-14 — ⚑ Calm Appeal (Envoy)** — own it, use Steadfast Challenge → The Calm Appeal line appears on a success, with your Discipline rank filled in. Without the talent it must NOT. **Empty Events tab is intended** — same upgrade-talent pattern as 2bF-5. *(2026-07-27k: **BOTH factual halves PASS** — with the talent, a success printed "🕊️ Steadfast Challenge: **Calm Appeal** — spend 1 focus to pacify the target; resisting costs it +**2** focus" at Discipline rank 2; with the talent deleted, a success ("24 vs SPI 14") landed Disoriented and the disadvantage but **no** 🕊️ line. **Only the ⚑ empty-Events-tab design call is left, and it is yours.**)*
 - [ ] **2bF-16 — ⚑ Resolute Stand (Leader)** — own it, use Valiant Intervention → Its line appears on a success only. Empty Events tab intended. *(2026-07-27i: the factual half is observed — the line printed on Valiant Intervention's success. Only the empty-tab design question is yours.)*
 - [ ] **2bM-6 — ⚑ Rallying Shout — a deliberate change — ⚠️ and its number is broken** — own it, use Rousing Presence on an ally **above 0 HP** → The reminder **still prints**. Tell me if you preferred the old gate. *(2026-07-27i: the reminder DID print on an ally at 20 HP, so the deliberate change is live and the ruling is yours.)* ⛔ **Separately, a real defect in the same line:** it printed "recovers its recovery die + **0** health" with the owner's Leadership rank at **3**, because the note reads **`@skills.ldr.rank`** and the cosmere Leadership key is **`lea`**. ✅ **FIXED 2026-07-27j — BLOCKED-ON-DEPLOY: needs `foundry-build heroic` + ⟳ Sync Talents.** The note now reads `@skills.lea.rank`. **Re-test after the rebuild:** with Leadership rank 3 the line must read "recovery die + **3** health". ✅ **THE NUMBER DEFECT IS FIXED AND TABLE-VERIFIED — bench run 11, 2026-07-27m.** With Leadership rank 3, Rousing Presence on an ally at 32 HP printed "📣 Rousing Presence: You may revive an Unconscious ally. If the target is at 0 health it recovers its **recovery die + 3 health** (roll the target's own die)." — the `@skills.lea.rank` substitution resolves (was "+ 0"). **Only the ⚑ design question is left and it is yours**: the reminder still prints on an ally ABOVE 0 HP (re-confirmed this run) — tell me if you preferred the old gate.
