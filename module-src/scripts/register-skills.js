@@ -1702,7 +1702,10 @@ Hooks.on("deleteCombat", () => {
   try {
     if (!edhaDefBuffGmGate()) return;   // one applier (07-27b — the 2bW-13 family)
     for (const a of (game.actors?.filter(x => x.type === "character") ?? [])) {
-      for (const key of ["sceneOnce", "bonusTally", "armOnce"]) {
+      // `trigRound` joined 07-27b (bench run 5 saw it survive combat delete): it maps trigger name
+      // → the round it last fired, and rounds RESTART next combat — a stale entry silently eats the
+      // trigger in the next combat's same-numbered round. Scene end is exactly when it expires.
+      for (const key of ["sceneOnce", "bonusTally", "armOnce", "trigRound"]) {
         if (a.getFlag?.("edha-content", key) !== undefined) { try { void a.unsetFlag("edha-content", key); } catch (e) {} }
       }
       const fx = a.effects?.filter(e => e.getFlag?.("edha-content", "sceneDefBuff")) ?? [];
@@ -11013,14 +11016,36 @@ Hooks.on("renderChatMessageHTML", (msg, html) => {
  * Cascade Collapse · Unravel Everything (2bU) are on their documents — do not re-add a Set. */
 
 // Clear Omen / inflicted-Isolated statuses + markedBy at scene/combat end (GM-side), like the Charge/Life flags.
+// 07-27b (bench run 5, Chaos residual (c) — triaged as a DEFECT, not a ruling): this sweep predated
+// the 2bU ledger repoint and never learned about `lists.omens` — combat delete left every owner's
+// Omen ledger intact, plus the markers on any OFF-CANVAS bearer (the token-only-sweep trap the
+// combat-expiry sweep documents). The reconcile makes a stale entry near-harmless only while its
+// token still resolves; once it doesn't, the fail-open keep becomes phantom cap pressure next
+// scene. Death's clear is the established convention (statuses on tokens AND directory actors, the
+// ledger key on characters) — Chaos now matches it. markedBy.isolated joins for symmetry.
 async function edhaClearChaosState() {
   try {
     if (!game.user?.isGM) return;
-    for (const t of (canvas?.tokens?.placeables ?? [])) {
-      const a = t.actor; if (!a) continue;
+    const sweepActor = async (a) => {
+      if (!a) return;
       if (a.statuses?.has?.("omen")) await a.toggleStatusEffect?.("omen", { active: false });
       if (a.statuses?.has?.("isolated")) await a.toggleStatusEffect?.("isolated", { active: false });
       if (a.flags?.["edha-content"]?.markedBy?.omen) { try { await a.unsetFlag("edha-content", "markedBy.omen"); } catch (e) {} }
+      if (a.flags?.["edha-content"]?.markedBy?.isolated) { try { await a.unsetFlag("edha-content", "markedBy.isolated"); } catch (e) {} }
+    };
+    const seen = new Set();
+    for (const t of (canvas?.tokens?.placeables ?? [])) {
+      const a = t.actor; if (!a) continue;
+      const k = a.uuid ?? a.id; if (seen.has(k)) continue; seen.add(k);
+      await sweepActor(a);
+    }
+    for (const a of (game.actors ?? [])) {
+      const k = a.uuid ?? a.id; if (seen.has(k)) continue; seen.add(k);
+      await sweepActor(a);
+    }
+    for (const a of (game.actors?.filter(x => x.type === "character") ?? [])) {
+      // ⚠ raw ledger path (§9o trap 3) — the Death `lists.remains` precedent, hand-edited here too.
+      if (a.getFlag?.("edha-content", "lists.omens") !== undefined) { try { await a.unsetFlag("edha-content", "lists.omens"); } catch (e) {} }
     }
   } catch (e) { console.error("Edha Content | clear Chaos state failed", e); }
 }
