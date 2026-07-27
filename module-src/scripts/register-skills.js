@@ -1182,14 +1182,21 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
             .replace(/@counter\b/g, String(edhaCounterOn(ruleOwner, key, target, key)));
           const amt = Math.max(0, Math.floor(edhaEvalSync(f, ruleOwner.getRollData())));
           const dtype = h.damageType || dealtType0;
-          // Ignore-deflect = bump the hit by the target's deflect (the Pinpoint-Charge fact; 2bV).
+          /* Ignore-deflect = bump the hit by the target's deflect (the Pinpoint-Charge fact; 2bV).
+           * ⚠ The system's calc line will STILL print "… − ${defl}" — deflect is applied to the
+           * summed instances and this bump pre-pays it, so the NET equals base + rider with the
+           * deflect ignored. Bench run 3 (2bAD-2) read that calc line as the mechanic failing;
+           * verified 2026-07-26l against the system's applyDamage (damageIgnore + max(0,
+           * damageDeflect − deflect)): the bump lands in the same list the wrap hands to the
+           * original call. WORKS AS DESIGNED — the card below now SAYS so, which is the fix. */
           const defl = h.addTargetDeflect ? (Number(target?.system?.deflect?.value) || 0) : 0;
           if (defl > 0) list.push({ amount: defl, type: "impact" });
+          const deflNote = defl > 0 ? ` and the hit ignores ${target.name}'s deflect <span style="opacity:.8">(+${defl} added here pre-pays the −${defl} the system's calc line will show — the net is the full hit)</span>` : "";
           if (amt > 0) {
             list.push({ amount: amt, type: dtype });
-            ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: ruleOwner }), content: `<p>🐺 <strong>${tal.name}</strong> (${ruleOwner.name}): +${amt} ${dtype}${defl > 0 ? ` and the hit ignores ${target.name}'s deflect (+${defl})` : ""}${hunters ? ` (${hunters} hunters on ${target.name})` : ruleOwner === dealer.actor ? " strike" : ` on ${dealer.actor.name}'s hit`}.</p>` });
+            ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: ruleOwner }), content: `<p>🐺 <strong>${tal.name}</strong> (${ruleOwner.name}): +${amt} ${dtype}${deflNote}${hunters ? ` (${hunters} hunters on ${target.name})` : ruleOwner === dealer.actor ? " strike" : ` on ${dealer.actor.name}'s hit`}.</p>` });
           } else if (defl > 0) {
-            ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: ruleOwner }), content: `<p>🐺 <strong>${tal.name}</strong> (${ruleOwner.name}): the hit ignores ${target.name}'s deflect (+${defl}).</p>` });
+            ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: ruleOwner }), content: `<p>🐺 <strong>${tal.name}</strong> (${ruleOwner.name}): the hit ignores ${target.name}'s deflect <span style="opacity:.8">(+${defl} added here pre-pays the −${defl} the system's calc line will show)</span>.</p>` });
           }
           // Heal-cut rider (2bW — Withering Touch): the qualifying hit also blocks/halves the
           // victim's healing until the end of the rule owner's next turn (Temp HP still lands).
