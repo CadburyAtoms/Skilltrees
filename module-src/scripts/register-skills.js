@@ -704,7 +704,9 @@ function edhaWrapRollDamage(originalCall, options = {}) {
     const dmgMod = edhaNextTestDamageMod(this.actor, this);
     if (dmgMod?.formula) {
       const base = options.overrideFormula ?? this.system?.damage?.formula;
-      if (base) {
+      // The claim is taken only where the bonus is actually APPLIED (07-27j) — claiming on a roll
+      // with no damage formula would silently eat the d20 half's turn at it.
+      if (base && edhaNextModClaimOk(this.actor, dmgMod, "damage")) {
         options = { ...options, overrideFormula: `${base} + ${dmgMod.formula}` };
         void edhaNextTestConsumeDamage(this.actor, dmgMod);
       }
@@ -4913,8 +4915,53 @@ Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindAccordButtons(html));
  * ============================================================================================ */
 
 // Counted, optional-skill (dis)advantage on a creature's next test(s). Write locally or relay to the GM.
+/* ONE application per banked use — the cross-path claim (2026-07-27j, bench run 9 defect 3).
+ *
+ * Pack Hunting's card offers its bonus on "your ally's attack OR damage roll" and the row's spec is
+ * "either, whichever comes first — NOT both". The rule declares `appliesTo: "either"` correctly and
+ * the bench still saw ONE banked use ride both: `1d20 + 4 + 3[Pack Hunting]` on the attack with its
+ * own card, then `1d6 + 3 + 4` on the damage, and only then a consume.
+ *
+ * The cause is not the `appliesTo` gate — that works, and run 3 verified Predatory Patience
+ * honouring it. It is that the pipeline has TWO independent consumers reading one document flag,
+ * and the d20 half APPLIES at `pre<Ctx>Roll` but does not CONSUME until `<ctx>Roll`. A weapon
+ * Strike rolls its damage inside that window, so `edhaWrapRollDamage` reads a flag that is applied
+ * but not yet spent. Neither consumer awaits its own unset either (both are `void`ed, and the
+ * damage wrapper is synchronous — it must build overrideFormula before the roll, so it CANNOT
+ * await). No promise queue can fix a synchronous reader; the guard has to be an in-memory claim,
+ * the same shape `_edhaLastRoll.used` already uses for the contest queue.
+ *
+ * Deliberately narrow: only `either` mods can be seen by both paths at all (`edhaNextTestMatches`
+ * rejects a `test` mod on the damage path and a `damage` mod on a d20), so the guard is inert for
+ * every other consumer — including the one `count: 2` mod in the data, Probability Cascade, which
+ * is `test`-only and must keep applying to two separate tests. Same-path re-entry stays allowed, so
+ * the guard can never remove a bonus today's behaviour grants. TTL'd because a cancelled roll dialog
+ * would otherwise leave a claim standing; expiring it costs at most one re-applied bonus, where the
+ * opposite failure is an unbounded one. */
+const EDHA_NEXTMOD_CLAIM_TTL = 4000;
+const _edhaNextModClaim = new Map();   // actorId → { gid, path, ts }
+function edhaNextModGid(mod) {
+  return String(mod?.gid || `${mod?.source ?? ""}|${mod?.formula ?? ""}|${mod?.mode ?? ""}|${mod?.count ?? 1}`);
+}
+/* PURE (pinned in tests/): may `path` ("test" | "damage") apply this mod, given the actor's claim? */
+function edhaNextModPathOk(claim, mod, path, now = Date.now()) {
+  if (String(mod?.appliesTo || "test") !== "either") return true;        // single-path mod: nothing to guard
+  if (!claim || (now - (Number(claim.ts) || 0)) > EDHA_NEXTMOD_CLAIM_TTL) return true;
+  if (claim.gid !== edhaNextModGid(mod)) return true;                    // a DIFFERENT banked use
+  return claim.path === path;                                            // the other path already took it
+}
+function edhaNextModClaimOk(actor, mod, path) {
+  if (!actor) return true;
+  if (!edhaNextModPathOk(_edhaNextModClaim.get(actor.id), mod, path)) return false;
+  if (String(mod?.appliesTo || "test") === "either") _edhaNextModClaim.set(actor.id, { gid: edhaNextModGid(mod), path, ts: Date.now() });
+  return true;
+}
 async function edhaSetNextTestMod(target, mod) {
   try {
+    // Stamp a fresh identity so a NEW grant is never mistaken for the one a stale claim holds.
+    // Done before the socket emit so the owner and the relayed write agree on the same gid.
+    try { if (mod && !mod.gid) mod.gid = foundry.utils.randomID(); } catch (e) { /* non-fatal */ }
+    try { _edhaNextModClaim.delete(target?.id); } catch (e) { /* non-fatal */ }
     if (target.isOwner) { await target.setFlag("edha-content", "nextTestMod", mod); return true; }
     if (!game.users?.activeGM) { ui.notifications?.warn("Edha: a GM must be online to affect that creature's next test."); return false; }
     game.socket.emit("module.edha-content", { action: "set-flag", payload: { actorUuid: target.uuid, key: "nextTestMod", value: mod } });
@@ -4985,6 +5032,7 @@ function edhaNextTestPreRoll(roll, source, config) {
     const actor = edhaD20RollActor(config);
     const mod = actor?.getFlag?.("edha-content", "nextTestMod");
     if (!edhaNextTestMatches(mod, roll, actor)) return;
+    if (!edhaNextModClaimOk(actor, mod, "test")) return;   // the damage half already took this use (07-27j)
     if (mod.mode) {   // gated (07-16b): a formula-only mod (Probability Net) must not force disadvantage
       const m = mod.mode === "advantage" ? "advantage" : "disadvantage";
       roll.options.advantageMode = m; roll.configureModifiers?.();
