@@ -203,7 +203,12 @@ function edhaRegisterStatuses(phase) {
     for (const [id, def] of Object.entries(EDHA_STATUSES)) {
       if (!COSMERE.statuses[id]) COSMERE.statuses[id] = { label: def.label, icon: def.icon, condition: def.condition, ...(def.stackable ? { stackable: true } : {}) };
       if (!CONFIG.statusEffects.some(s => s.id === id)) {
-        CONFIG.statusEffects.push({ id, name: def.label, img: def.icon, _id: def._id, ...(def.tint ? { tint: def.tint } : {}), ...(def.stackable ? { system: { isStackable: true, count: 1 } } : {}) });
+        // `stacks`, NOT `count`: ActiveEffectDataModel's schema is EXACTLY {isStackable, stacks},
+        // so a `count` seed is silently dropped by the DataModel (2026-07-27h — the counter economy
+        // read 0 for a year). The system's own registerStatusEffects seeds `count: 1` too and is
+        // wrong in the same way; it gets away with it because CosmereActiveEffect#stacks falls back
+        // to `?? 1`. We seed the real field so the stored document is truthful.
+        CONFIG.statusEffects.push({ id, name: def.label, img: def.icon, _id: def._id, ...(def.tint ? { tint: def.tint } : {}), ...(def.stackable ? { system: { isStackable: true, stacks: 1 } } : {}) });
         added++;
       }
     }
@@ -1211,15 +1216,23 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
           // Counter placement is a POST-apply write (the hit must land first) — queue it for
           // edhaDamageBonusPost. `placeOnce: round` is the first-ally-to-hit gate (Ben R11:
           // per-talent, tracked independently).
-          if (Number(h.placeCounter) > 0 && (amt > 0 || req === "armed-self-status")) {
+          /* NOT conditional on the numeric bonus (07-27h ruling default — run 8 sighting 1): the
+           * require-gates above are the real filter. The Pack's card places 1 Insight on the first
+           * ally hit each round UNCONDITIONALLY, but its `+@counter` reads 0 whenever the bearer's
+           * marker was cleared outside the engine (token-HUD toggle, the sheet's own stack-cycle
+           * down to 0, a hand-deleted effect) — all of which leave the owner's bearer POINTER set.
+           * The old `amt > 0 || req === "armed-self-status"` gate therefore made the talent place
+           * nothing in precisely the state it exists to recover from. */
+          if (Number(h.placeCounter) > 0) {
             _edhaBonusPlaceQueue.push({ owner: ruleOwner, itemName: tal.name, targetUuid: target.uuid,
               place: Number(h.placeCounter), placeOnce: h.placeOnce || "no", key, status: key,
               cap: edhaListCap(ruleOwner, h.capFormula || "5"), ts: Date.now() });
           }
           /* Sustained-LEDGER placement is a post-apply write too (2bX — Tagging Shot's quarry
            * mark): the victim joins the rule owner's ledger at the rule's cap (oldest fizzles),
-           * follows the creature (no sceneId), and fires even at +0 bonus on an armed hit. */
-          if (h.placeList && (amt > 0 || req === "armed-self-status")) {
+           * follows the creature (no sceneId), and fires at +0 bonus too — same reasoning as the
+           * placeCounter gate directly above (07-27h). */
+          if (h.placeList) {
             _edhaBonusPlaceQueue.push({ owner: ruleOwner, itemName: tal.name, targetUuid: target.uuid,
               kind: "list", key: String(h.placeList).trim(), status: String(h.placeListStatus || h.placeList).trim(),
               cap: edhaListCap(ruleOwner, h.placeListCapFormula || "1"), placeOnce: h.placeOnce || "no", ts: Date.now() });
@@ -13509,8 +13522,10 @@ Hooks.on("deleteCombat", () => { try { if (edhaDefBuffGmGate()) void edhaClearPo
  *   • The COUNTER primitives (H3b's engine half, §9m q6: a counted SINGLE BEARER — 0..cap on one
  *     creature, transferring clears the old bearer — as a `mode` on H3, not a second handler). The
  *     ALREADY-REGISTERED stackable `insight` status is the visible marker AND (Ben R1, 07-03) drives
- *     the count via `effect.system.count` (⚑ bench-verify field name — could be `stacks`/`value`/
- *     `amount`; all reads/writes go through edhaCounterOn/edhaCounterSet so the fix is one line).
+ *     the count via **`effect.system.stacks`** — RESOLVED 2026-07-27h by bench run 8's mutation
+ *     probe, and the old ⚑ guess (`system.count`) was WRONG for the entire life of the mechanic:
+ *     ActiveEffectDataModel's schema is exactly {isStackable, stacks}, so every `count` write
+ *     resolved without error and was dropped, and every read was `Number(undefined) || 0` = 0.
  *     A pointer-only owner flag `flags.edha-content.counters.<key>` names "my current bearer";
  *     `markedBy.<status>` set on the bearer (the Diagnosed/Omen family) so the generic marked-damage
  *     dispatch picks it up for free. Cleared at scene end (deleteCombat).
@@ -13544,9 +13559,30 @@ function edhaCounterOn(owner, key, target, status = null) {
   if (!edhaCounterIsBearer(owner, key, target)) return 0;
   const st = status || key;
   const eff = target.effects?.find(e => e.statuses?.has?.(st));
-  return Math.max(0, Math.floor(Number(eff?.system?.count) || 0));   // ⚑ system.count — bench-verify (see header)
+  return eff ? edhaEffectStacks(eff) : 0;
 }
-// GM-side write: create/update/delete the status effect to exactly `count` + set/clear markedBy.<status>.
+/* THE stack read (shared primitive — every stackable-status count goes through it).
+ * `system.stacks` is the ONLY count field ActiveEffectDataModel defines, and the system's own
+ * accessor is `get stacks() { return this.system.stacks ?? 1 }` — so a stackable status whose
+ * stacks were never written counts as ONE, not zero. We mirror that exactly: a legacy `insight`
+ * effect written by the pre-07-27h engine (which stored a dropped `count`) therefore reads 1
+ * rather than 0, which is both the system's own reading of the same document and the safe
+ * direction (the marker is visibly ON the token). */
+function edhaEffectStacks(eff) {
+  if (!eff) return 0;
+  const raw = eff.system?.stacks ?? eff.stacks ?? 1;
+  const n = Math.floor(Number(raw));
+  return Number.isFinite(n) ? Math.max(0, n) : 0;
+}
+/* GM-side write: create/update/delete the status effect to exactly `count` + set/clear markedBy.<status>.
+ * Writing `system.stacks` is load-bearing THREE ways, all verified against the system source
+ * (CosmereActiveEffect, cosmere-rpg 2.1.0) — do not "simplify" any of them away:
+ *   1. It is the real schema field; `system.count` resolved silently and stored nothing (07-27h).
+ *   2. `_preUpdate` re-derives the effect NAME from it ("Insight [3]"), so we must NOT also write
+ *      `name` — the system owns that string, and fighting it would desync the token tooltip.
+ *   3. The sheet's own conditions widget cycles the same field and toggles the status OFF at <= 0,
+ *      which is exactly the delete-at-zero shape below. So Ben clicking the count on the sheet and
+ *      the engine writing it are now the SAME operation. (NumberField min 0 — never write < 0.) */
 async function edhaCounterApplyGM(target, status, count, mark) {
   try {
     const eff = target.effects?.find(e => e.statuses?.has?.(status));
@@ -13555,11 +13591,11 @@ async function edhaCounterApplyGM(target, status, count, mark) {
       try { await target.unsetFlag("edha-content", `markedBy.${status}`); } catch (e) {}
       return;
     }
-    if (eff) { try { await eff.update({ "system.count": count }); } catch (e) {} }
+    if (eff) { try { await eff.update({ "system.stacks": count }); } catch (e) {} }
     else {
       await target.toggleStatusEffect?.(status, { active: true });
       const created = target.effects?.find(e => e.statuses?.has?.(status));
-      if (created) { try { await created.update({ "system.count": count }); } catch (e) {} }
+      if (created) { try { await created.update({ "system.stacks": count }); } catch (e) {} }
     }
     if (mark) { try { await target.setFlag("edha-content", `markedBy.${status}`, mark); } catch (e) {} }
   } catch (e) { console.error("Edha Content | counter apply (GM) failed", e); }
