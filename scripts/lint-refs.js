@@ -15,6 +15,8 @@
  *   3. Every talent-name literal the engine compares against (`.name === "X"`,
  *      `edhaOwnsTalent(actor, "X")`, `edhaCharacterOwnersOf("X")`) resolves to a talent in
  *      data/authored/* or the structure files — or is on the explicit non-talent allowlist.
+ *  11. Every `system.<field>` the engine or the build reads/writes is a field some cosmere
+ *      DataModel actually declares (the DEAD-FIELD family — three shipped bugs; see the pass).
  *
  * Zero dependencies. Exit 0 clean, 1 on any error. Runs in CI next to validate.js; add it to
  * the local gates when a change touches authored events or engine name-based automation.
@@ -22,7 +24,7 @@
 "use strict";
 const fs = require("fs");
 const path = require("path");
-const { parseHandlerSchemas } = require("./handler-schemas.js");
+const { parseHandlerSchemas, matchBrace, topLevelKeys } = require("./handler-schemas.js");
 
 const REPO_ROOT = path.resolve(__dirname, "..");
 const ENGINE_PATH = path.join(REPO_ROOT, "module-src", "scripts", "register-skills.js");
@@ -101,6 +103,34 @@ function stripComments(src) {
   return out.join("\n");
 }
 const engineCode = stripComments(engine);
+/* Comments AND string contents replaced by spaces, byte offsets and line breaks preserved — so a
+ * match index in the result still points at the same place in the original. `stripComments` above
+ * rebuilds line-by-line and cannot be indexed back into the source; pass 11 needs both (it reads
+ * object literals out of the ORIGINAL text at offsets found in the blanked copy). */
+function blankStringsAndComments(src, { keepStrings = false } = {}) {
+  let out = "";
+  for (let i = 0; i < src.length; ) {
+    const c = src[i];
+    if (c === '"' || c === "'" || c === "`") {
+      out += c; i++;
+      for (; i < src.length; i++) {
+        if (src[i] === "\\") { out += keepStrings ? src.slice(i, i + 2) : "  "; i++; continue; }
+        out += src[i] === "\n" ? "\n" : (keepStrings || src[i] === c ? src[i] : " ");
+        if (src[i] === c) { i++; break; }
+      }
+      continue;
+    }
+    if (c === "/" && src[i + 1] === "/") { while (i < src.length && src[i] !== "\n") { out += " "; i++; } continue; }
+    if (c === "/" && src[i + 1] === "*") {
+      const e = src.indexOf("*/", i + 2);
+      const end = e < 0 ? src.length : e + 2;
+      for (; i < end; i++) out += src[i] === "\n" ? "\n" : " ";
+      continue;
+    }
+    out += c; i++;
+  }
+  return out;
+}
 function inEngineCode(lit) {
   return engineCode.includes(`"${lit}"`) || engineCode.includes(`'${lit}'`) || engineCode.includes("`" + lit + "`");
 }
@@ -604,6 +634,108 @@ engine.split("\n").forEach((lineText, i) => {
       }
     }
   } catch (e) { /* reported by the earlier adversaries.json pass */ }
+}
+
+/* --- pass 11: no DEAD `system.<field>` path (the dead-field family, 07-27h) ---------------------
+ *
+ * THREE bugs, one shape, and each one cost a bench run to find:
+ *   · 07-26l  `edhaAttackKind` read `item.system.range` — a weapon's range is `system.attack.range`,
+ *             so EVERY melee/ranged gate in the engine was inert.
+ *   · 07-26m  `edhaIsConstruct` read `actor.system.customType` — creature type is `system.type
+ *             {id, custom}`, so Fault Line's Constructs ×3 could never fire.
+ *   · 07-27g  the whole counter economy read/wrote `effect.system.count` — ActiveEffectDataModel has
+ *             exactly {isStackable, stacks}, so every Insight read was 0 and NINE Knowledge
+ *             behaviours degraded silently (six checklist rows went PARTIAL before it was caught).
+ *
+ * Why nothing caught them. Foundry's SchemaField DELETES unrecognised keys: `update({"system.count":
+ * 3})` RESOLVES, stores nothing, and reads back undefined. There is no error, no warning, no rejected
+ * promise. Unit tests do not help either — a test that stubs `{system: {count: 3}}` proves only that
+ * the engine agrees with itself, which is exactly what tests/counter.test.js did for a year.
+ *
+ * So the check has to be against the SYSTEM's real schemas: `systemSchemaTopLevelFields` in
+ * data/native-vocabulary.json (dumped from Ben's install by scripts/dump-native-vocabulary.js) is the
+ * union of every top-level field name any cosmere DataModel declares. Engine-owned RegionBehavior
+ * schemas are parsed live out of the engine itself, so a new behaviour field needs no allowlisting.
+ *
+ * LIMITS, stated so a green pass is not over-read:
+ *   · It is a UNION across document types — a field real on a weapon but read off an actor PASSES.
+ *     "Not obviously dead", never "correct for this document".
+ *   · TOP-LEVEL heads only. `system.attack.range` is fine and `system.range` is not, which is the
+ *     distinction the 07-26l bug turned on; a wrong SECOND segment is still invisible here.
+ *   · Skipped when the snapshot predates the field list (warn, don't guess). */
+{
+  const SNAP = path.join(REPO_ROOT, "data", "native-vocabulary.json");
+  let known = null;
+  try {
+    const v = JSON.parse(fs.readFileSync(SNAP, "utf8"));
+    if (Array.isArray(v.systemSchemaTopLevelFields) && v.systemSchemaTopLevelFields.length >= 50) {
+      known = new Set(v.systemSchemaTopLevelFields);
+    } else {
+      console.warn("⚠ lint-refs pass 11: native-vocabulary.json has no systemSchemaTopLevelFields — dead-field checking SKIPPED. Regenerate with: node scripts/dump-native-vocabulary.js");
+    }
+  } catch (e) { /* pass 2's block already warned about an unreadable snapshot */ }
+
+  if (known) {
+    // Fields the ENGINE itself declares on its own RegionBehavior DataModels — real `system.*` paths
+    // on documents the cosmere system knows nothing about. Parsed, not allowlisted, so adding a
+    // behaviour field never means editing this linter.
+    for (const m of engine.matchAll(/defineSchema\s*\(\s*\)\s*\{/g)) {
+      const open = m.index + m[0].length - 1;
+      let close; try { close = matchBrace(engine, open); } catch (e) { continue; }
+      const body = engine.slice(open, close + 1);
+      for (const r of body.matchAll(/return\s*\{/g)) {
+        const o = open + r.index + r[0].length - 1;
+        try { for (const k of topLevelKeys(engine.slice(o + 1, matchBrace(engine, o)))) known.add(k); }
+        catch (e) { /* skip an unparsable literal */ }
+      }
+    }
+    // Inherited from CORE Foundry region-behavior types the engine subclasses or configures.
+    // Explicit because they come from foundry.mjs, which this repo cannot read.
+    for (const k of ["difficulties", "terrainTypes"]) known.add(k);   // ModifyMovementCostRegionBehaviorType
+
+    // Every place the repo touches a cosmere document's `system` data.
+    const SCANNED = [
+      ["module-src/scripts/register-skills.js", engine],
+      ...["scripts/foundry-build.js", "scripts/foundry-build-parts.js", "scripts/edha-pack-io.js",
+          "scripts/bench-setup-console.js", "scripts/playtest-setup-console.js"]
+        .map((f) => [f, fs.existsSync(path.join(REPO_ROOT, f)) ? fs.readFileSync(path.join(REPO_ROOT, f), "utf8") : null])
+        .filter(([, src]) => src !== null),
+    ];
+    const DEAD = (file, line, head, how) =>
+      err(`${file}:${line}: \`system.${head}\` — no cosmere DataModel declares a top-level "${head}" ` +
+          `field, so this ${how} is DEAD: Foundry's SchemaField deletes unrecognised keys, the write ` +
+          `resolves without error and stores nothing, and every read is undefined. Check the real ` +
+          `schema (data/native-vocabulary.json systemSchemaTopLevelFields) before assuming a field ` +
+          `exists — three shipped bugs came from guessing one`);
+
+    for (const [file, src] of SCANNED) {
+      const blanked = blankStringsAndComments(src);   // offsets preserved; prose can't false-match
+      // Comments blanked but STRING BODIES kept — form (b) below has to look inside strings, and the
+      // engine's own comments quote `system.count` / `system.range` when explaining these very bugs.
+      const noComments = blankStringsAndComments(src, { keepStrings: true });
+      const lineAt = (idx) => src.slice(0, idx).split("\n").length;
+
+      // (a) property access — `system.foo`, `system?.foo`. No whitespace after the dot, so the word
+      //     "system." at the end of a sentence cannot match. `game.system.*` is the SYSTEM object.
+      for (const m of blanked.matchAll(/\bsystem(?:\?\.|\.)([A-Za-z_$][\w$]*)/g)) {
+        if (/game\s*\??\.\s*$/.test(blanked.slice(Math.max(0, m.index - 12), m.index))) continue;
+        if (!known.has(m[1])) DEAD(file, lineAt(m.index), m[1], "read");
+      }
+      // (b) flat update paths — `update({"system.foo": v})`, `getProperty(d, "system.foo")`. These
+      //     live INSIDE strings, so they are read from the comments-only-blanked copy.
+      for (const m of noComments.matchAll(/["'`]system\.([A-Za-z_$][\w$]*)/g)) {
+        if (!known.has(m[1])) DEAD(file, lineAt(m.index), m[1], "write path");
+      }
+      // (c) creation/update object literals — `system: { foo: … }`. This is the form the 07-27h status
+      //     registration used, and neither (a) nor (b) can see it.
+      for (const m of blanked.matchAll(/(?:^|[^\w$.])system\s*:\s*\{/g)) {
+        const open = src.indexOf("{", m.index);
+        let close; try { close = matchBrace(src, open); } catch (e) { continue; }
+        let keys; try { keys = topLevelKeys(src.slice(open + 1, close)); } catch (e) { continue; }
+        for (const k of keys) if (!known.has(k)) DEAD(file, lineAt(m.index), k, "stored key");
+      }
+    }
+  }
 }
 
 // --- report --------------------------------------------------------------------

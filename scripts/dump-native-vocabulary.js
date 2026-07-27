@@ -85,8 +85,8 @@ const handlers = Object.entries(ES.Handler.Types)
 // SYSTEM_ID, type: "<type>", … config: { schema: <inline object | const ref> … })`. A referenced
 // const (update-item's SCHEMA$s) is resolved to its `const <id> = {` definition. Hard-fails if any
 // lang-listed handler yields no schema — a bundle restructure must rot LOUDLY, not under-report.
+let bundle;   // module-scope: the document-schema extraction below reads it too
 {
-  let bundle;
   const bundlePath = path.join(SYSTEM_DIR, "index.js");
   try { bundle = fs.readFileSync(bundlePath, "utf8"); }
   catch (e) { fail(`cannot read the system bundle (${bundlePath}) — ${e.message}`); }
@@ -113,6 +113,73 @@ const handlers = Object.entries(ES.Handler.Types)
     if (!byType.has(h.type)) fail(`handler "${h.type}" is in lang/en.json but no schema was extracted from the bundle — did the registration shape change?`);
     h.schemaFields = byType.get(h.type);
   }
+}
+
+/* ---- DOCUMENT SCHEMA top-level field names (added 2026-07-27h) ---------------------------------
+ *
+ * WHY. Three times now the engine has read or written a `system.<field>` that no cosmere DataModel
+ * defines — `edhaAttackKind`'s `system.range` (07-26l), `edhaIsConstruct`'s `system.customType`
+ * (07-26m), and the whole counter economy's `system.count` (07-27g). Foundry's SchemaField DELETES
+ * unrecognised keys, so the write resolves without error, stores nothing, and every read is
+ * `undefined` → 0/false/"". Nothing errors, no test catches it (a unit test that stubs the document
+ * proves only that the engine agrees with itself), and the mechanic is simply inert. The `count`
+ * instance survived a ⚑ "bench-verify this field name" comment for the whole life of the mechanic.
+ *
+ * This snapshot is the truth a headless session and CI can check against: the union of every
+ * TOP-LEVEL field name declared by any schema literal in the system bundle (Actor, Item ×15,
+ * ActiveEffect, Combatant, TalentTree nodes, the field mixins — all of them).
+ *
+ * WHY THE UNION AND NOT PER-TYPE. Resolving which DataModel a given engine expression is holding is
+ * static type inference the linter cannot do (`x.system.foo` where x may be an actor, an item or an
+ * effect). The union answers the weaker but decidable question — "is this field name known to the
+ * system AT ALL?" — which is exactly the question all three bugs failed. It over-approximates on
+ * purpose: a field real on a WEAPON but read off an ACTOR still passes. Sharpening that needs the
+ * call-site type, so treat a pass as "not obviously dead", never as "correct".
+ *
+ * TOP-LEVEL ONLY, deliberately: `range` is a real field NESTED under a weapon's `attack`, and the
+ * 07-26l bug was reading it at the TOP level. Flattening all depths into one set would have waved
+ * that bug through. */
+function systemSchemaTopLevelFields(bundle) {
+  const fields = new Set();
+  const harvest = (openIdx) => {
+    try { for (const k of topLevelKeys(bundle.slice(openIdx + 1, matchBrace(bundle, openIdx)))) fields.add(k); }
+    catch (e) { /* an unparsable literal is skipped; the count assertion below is the rot alarm */ }
+  };
+  let sites = 0;
+  // `const SCHEMA$x = (…) => ({ … })` and `const SCHEMA$x = { … }`
+  for (const m of bundle.matchAll(/\bconst\s+SCHEMA[$\w]*\s*=\s*(?:\([^)]*\)\s*=>\s*\(\s*)?\{/g)) {
+    harvest(m.index + m[0].length - 1); sites++;
+  }
+  // `function SCHEMA$x(…) { … return { … } … }` — every returned literal in the body
+  for (const m of bundle.matchAll(/\bfunction\s+SCHEMA[$\w]*\s*\([^)]*\)\s*\{/g)) {
+    const bodyOpen = m.index + m[0].length - 1;
+    let bodyClose; try { bodyClose = matchBrace(bundle, bodyOpen); } catch (e) { continue; }
+    const body = bundle.slice(bodyOpen, bodyClose + 1);
+    for (const r of body.matchAll(/return\s*\{/g)) harvest(bodyOpen + r.index + r[0].length - 1);
+    sites++;
+  }
+  // `defineSchema() { … }` — the classes that declare fields inline instead of via a SCHEMA const
+  // (ActivationField's `activation`, the Activation subclass overrides).
+  for (const m of bundle.matchAll(/defineSchema\s*\(\s*\)\s*\{/g)) {
+    const bodyOpen = m.index + m[0].length - 1;
+    let bodyClose; try { bodyClose = matchBrace(bundle, bodyOpen); } catch (e) { continue; }
+    const body = bundle.slice(bodyOpen, bodyClose + 1);
+    for (const r of body.matchAll(/(?:return|mergeObject\([^,]*,)\s*\{/g)) harvest(bodyOpen + r.index + r[0].length - 1);
+    sites++;
+  }
+  // Rot alarm: the bundle has had 30+ schema literals since 2.0. A restructure that drops us to a
+  // handful must fail LOUDLY here rather than silently shrink the allowed set (which would turn the
+  // lint pass into a false-positive machine and get it disabled — the worst outcome).
+  if (sites < 25 || fields.size < 50) {
+    fail(`document-schema extraction found only ${sites} schema sites / ${fields.size} fields — the bundle restructured; re-derive the extraction before trusting this file`);
+  }
+  for (const probe of ["stacks", "isStackable", "resources", "attack", "damage", "events"]) {
+    if (!fields.has(probe)) fail(`document-schema extraction is missing the known field "${probe}" — the extractor is wrong, not the system`);
+  }
+  for (const probe of ["count", "customType"]) {
+    if (fields.has(probe)) fail(`document-schema extraction yielded "${probe}", which no cosmere DataModel defines — the extractor is over-harvesting (it must take TOP-LEVEL keys only)`);
+  }
+  return [...fields].sort();
 }
 
 const targetChoices = ES.Handler?.General?.Target?.Choices
@@ -142,13 +209,20 @@ const snapshot = {
     "by Foundry's DataModel. `labelKeys` (PascalCase, from lang/en.json) is editor chrome only —",
     "NEVER author against it; the two were confused once and it miswired a gate (2026-07-26).",
     "",
+    "`systemSchemaTopLevelFields` (added 07-27h) is the DOCUMENT side of the same trap: the union of",
+    "every top-level field name any cosmere DataModel declares. A `system.<name>` path the engine",
+    "reads or writes that is NOT in this list is DEAD — Foundry's SchemaField deletes unrecognised",
+    "keys, so the write resolves and stores nothing. lint-refs pass 11 gates the engine and the build",
+    "against it. It is a UNION, so a pass means 'not obviously dead', never 'right for this type'.",
+    "",
     "Refresh after a system upgrade: node scripts/dump-native-vocabulary.js",
   ],
   system: { id: systemJson.id, version: systemJson.version },
-  generatedFrom: "systems/cosmere-rpg/lang/en.json + index.js (schemaFields)",
+  generatedFrom: "systems/cosmere-rpg/lang/en.json + index.js (schemaFields, systemSchemaTopLevelFields)",
   counts: { events: events.length, handlers: handlers.length },
   handlerTargetChoices: targetChoices,
   updateActorTargetChoices: updateActorTargets,
+  systemSchemaTopLevelFields: systemSchemaTopLevelFields(bundle),
   events,
   handlers,
 };
@@ -169,3 +243,4 @@ fs.writeFileSync(OUT, serialized);
 console.log(`✓ wrote data/native-vocabulary.json — ${systemJson.id} ${systemJson.version}: ${events.length} native events, ${handlers.length} native handlers`);
 console.log(`  events:   ${events.map((e) => e.type).join(", ")}`);
 console.log(`  handlers: ${handlers.map((h) => h.type).join(", ")}`);
+console.log(`  document system fields (top level, union): ${snapshot.systemSchemaTopLevelFields.length}`);
