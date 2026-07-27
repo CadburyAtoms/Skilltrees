@@ -244,6 +244,42 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   id-diff was clean but it could not attribute the roster's flag litter — including whether `aggro`
   disappearing off Bench Ally — One was its own doing.
 
+## Operating lessons from run 8 (2026-07-27g — these OVERRIDE older advice where they conflict)
+
+- ❌ **Do NOT verify the deploy by counting markers — HASH the served engine.** Fetch it cache-busted,
+  `replace(/\r\n/g, "\n")`, SHA-256, and compare against the repo file normalised the same way
+  (`python -c "...open(p,'rb').read().replace(b'\r\n', b'\n')..."`). Two run prompts in a row have
+  carried WRONG expected counts (07-27f: "expect 3" was 4, "expect ~8" was 5), which would make a live
+  engine read as not-deployed. A hash cannot be misremembered. Note the raw byte lengths will differ
+  (CRLF on disk, and JS `.length` counts UTF-16 units while Python counts bytes) — normalise, then hash.
+- ❌ **Never sweep statuses by status id across `canvas.tokens.placeables` at cleanup.** Run 8 did, and
+  deleted four pre-existing effects off Ben's campaign adversaries (`Weakened` ×3, `Prone` ×1). Only two
+  were identifiable well enough to restore. **Snapshot per-actor ACTIVE EFFECTS at run start**, not just
+  document ids and `flags["edha-content"]`, and delete only the diff — the same discipline the id-diff
+  already gets.
+- **Turn-start watches do NOT all fire on the same hook.** Accumulate (Knowledge) fires on
+  `combat.update({turn})` and NOT on the `flags.cosmere-rpg.activated` flip; Foundation/Civ (run 7) is
+  the exact opposite. Try one, then the other, and record which worked for that talent.
+- **`RollConfigurationDialog` / `AttackConfigurationDialog` submit is `data-action="submit"`** (label
+  "Roll") and the window has no `footer` or `.form-footer`. A dialog-walker keyed on
+  `continue|confirm|ok` leaves attack rolls hanging invisibly. Match `submit` and `roll` too.
+- **`edhaDealerOf`'s 15 s window is measured from the damage ROLL.** If a `javascript_exec` times out
+  at 30 s between the roll and your `applyDamage`, you are outside it and every on-hit rider reads as
+  dead. Roll and apply inside the SAME exec.
+- **A negative needs a positive control in the same round.** "The forced slide didn't prompt" and "the
+  second walk didn't prompt" are the same observation once a once-per-round gate is live — run 8 ran the
+  control, could not separate the causes, and recorded 2bV-2's forced-slide half as UNPROVEN instead of
+  claiming it. Accumulate's out-of-range negative got a back-in-range control and is a real result.
+- **A card that prints a count may be printing INTENT, not state.** Studied Mark says "bears 2 Insight"
+  while the stored counter is 0, because the poster returns the clamped value it asked for without
+  reading it back. When a number matters, assert the document field, never the card.
+- **Ally-attacker rows: the `Bench Ally — *` fixtures carry NO weapons** (the setup script only arms
+  PCs). Use another bench PC as the ally attacker — but expect its own on-hit riders in the log
+  (Bench — Heroic fires five cards per hit). Read every stray card's owner before attributing it.
+- **Scene-wide AoE catches Ben's placed campaign tokens.** Final Decree's "every enemy in Attunement
+  Range" bound five of Ben's playtest adversaries. That is the talent behaving as written, but it is a
+  write to documents you did not choose — clean it, and report it.
+
 ## Known limits
 
 - ❌ **RESOLVED AS UNFIXABLE (07-26i): there is no "no written Cognitive/Spiritual defense" creature.**

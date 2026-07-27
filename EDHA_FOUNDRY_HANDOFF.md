@@ -2,7 +2,10 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, **COMPLETED 2026-07-26 (pass AA)**: **the ratchet list is EMPTY — 221 → 0 across twenty-seven passes.** Every tree is clear, all six marker ledgers have migrated, and `scripts/name-keyed-allowlist.json` stays in the repo with an empty `talents` list *on purpose* — lint pass 7 still guards against REGROWTH, which is the half of the ratchet that matters from here on. ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **ALL SIX marker LEDGERS have migrated** (`covenants` 07-24u; `edicts` 07-25 pass V; `remains` 07-25 pass W; Fate's `snares` 07-25 pass X; Destruction's `charges` 07-26 pass Y; Fate's `ordained` 07-26 pass AA — the point-bound ones fail OPEN through H3's reconcile by design). There is no flat marker-list flag left in the engine. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-27f** (BENCH RUN 7'S
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-27g** (BENCH RUN 8 —
+the 07-27f re-tests + Knowledge + Order, the marathon's last two deity trees, executed live: **BOTH
+07-27f fixes PASSED**, **25 rows retired on evidence** (383 → 359 open checklist rows), and **1 NEW FAIL
+whose root cause is proven by mutation and whose fix is one line.** See the dated section below.) Prior: **2026-07-27f** (BENCH RUN 7'S
 TWO DEFECTS FIXED — the summon-effect lookup asked `edhaOwnedSummons` the CONSUMING talent's name
 where the FORGING talent's stamp was compared (un-blocks Siege Form / Arsenal / Magnum Opus), and
 run 7's "cosmetic" raw-i18n note turned out to be a **nine-site family** with a two-report history:
@@ -97,6 +100,137 @@ the Red pilot, executed live by an agent session joined as `Bench`: 16 rows reti
 1 FAIL root-caused (Shockwave Slam's weapon-hit trigger surface), 4 cross-tree observations,
 and the agent-bench runbook hardened with the v13 operating lessons. Docs + setup-script fix
 only; nothing to deploy.)
+
+**2026-07-27g — BENCH RUN 8 (the marathon's last two deity trees: Knowledge + Order, plus the 07-27f
+re-tests). Executed live through the browser pane as `Bench`. DOCS ONLY — nothing to deploy from this
+run; the one new defect is the next `test-pass-fixes` input.**
+
+**Deploy state, established the strongest way yet.** Instead of counting markers, the run fetched the
+served `register-skills.js` cache-busted, normalised CRLF→LF and SHA-256'd it against the repo file:
+**`9a5b2d4e…14a4bc9` on both sides** — the live engine is byte-identical to `main`. Marker counts
+agreed too. ⚠️ **The run-8 prompt's expected counts were wrong** (`edhaSummonSourceTalent` is 4 not 3,
+`edhaSkillLabel` 5 not ~8) — a remembered number is not a deploy check; hash the file. **07-27b,
+07-27d and 07-27f are all CONFIRMED LIVE.** The three pack halves stay BLOCKED-ON-DEPLOY, untouched.
+
+**BOTH 07-27f fixes PASSED.**
+- **The `edha-summon-effect` lookup.** A Construct was forged NORMALLY — no `summonTalent`-unset
+  workaround — and read `{summon: true, summoner, summonTalent: "Forge Construct", summonedAt}`, the
+  exact shape that killed run 7. All three consuming talents got past the pre-cost veto and their whole
+  downstream payloads worked against a *stamped* Construct for the first time: **Siege Form** (AE
+  `disabled: false`, Speed 25→0, deflect 1→3, end-button reverting all three, both refusals holding with
+  Investiture unchanged), **Arsenal** (own-Effects-tab AE granted with `summonGranted`, re-arm refused,
+  and its `onKillNote` chase fired later unprompted), **Magnum Opus** (HP 14→28 incl. max, +2 to all
+  three defenses, Colossus AE, `civFoundationBonus: 2` written and announced, `sceneOnce` refusal, and a
+  10 ft splash that hit the target *and* the second enemy for 14 energy while sparing two at 15 ft).
+  **The forging side did not regress:** at cap 1, with the stamped Construct alive, Forge Construct
+  dismissed and replaced it (2bP-8/2bP-9's shape, now on a stamped Construct rather than run 7's
+  un-stamped fallback).
+- **The nine-site raw-i18n family is dead.** All seven named card sites read plain English: Magnum
+  Opus's splash save ("Agility vs your Red"), the Colossus AE description ("roll Agility … or gain
+  Prone"), Bastion's fortified entry ("Agility vs your Red", and exactly one entry card + one save
+  card), an `edha-apply-status` card on a NATIVE status via Red's Reckless Gambit ("is **Exhausted**",
+  where `CONFIG.COSMERE.statuses.exhausted.label` is the raw key — run 1's own bug shape), Order's court
+  sweep and the Sealed rider ("Discipline vs your Blue"), and Phantom Double's GM belief card
+  ("Perception 12 vs 16"). The negative held: Fault Line still prints its authored "Speed". No
+  `COSMERE.*` string appeared in any card all run. *Labelled inference:* the two Phantom Double
+  **player-whisper** shapes were not driven (bench fixtures have no player owner) — they interpolate the
+  same `sklab` const as the GM card, so they are covered by construction, not by observation.
+
+**25 rows retired on evidence** (open checklist rows 383 → 359: 25 retired, 1 new FAIL opened, 6
+Knowledge rows re-opened as PARTIAL with their passing halves retired in place). 3 Civ re-test rows (the
+2bV-13/14/15 family row, run 7's FAIL row, the raw-i18n row) ·
+**Knowledge, 5**: 2bT-2, 2bT-4, 2bT-5's two remaining halves, 2bT-9, 2bU-15 ·
+**Order, 17 — the whole section bar four rows, and nothing in Order failed**: 2bL-1, **2bL-2 (the one
+failure that mattered did not happen — Concord named the ally, Final Decree named the Witness, the
+ledger has not split)**, 2bV-17 (all three parts, the 07-24u reconcile fix's first bench), 2bV-18,
+2bL-3, 2bL-4, 2bL-5, 2bL-6 including its multi-drop ⚑ half, 2bL-8, 2bL-10, 2bL-11, 2bV-1, 2bV-3,
+2bV-4, 2bV-5, 2bV-7, 2bV-9. Plus the six Knowledge/Order rows now recorded PARTIAL with their passing
+halves retired in place. Evidence quoted per row in the checklist.
+
+**Two migration-premise rows landed together and they are the pass's point.** **2bL-5**: editing the
+Covenant Effects-tab AE from +1 to +2 and re-forming the pact gave the ally **+2** on all three
+defenses. **2bV-18**: editing `capFormula` from `@tier` to `1` on the Events tab changed the very next
+pact's card to "(1/1) … you sustain at most 1". Both restored afterwards. The number that used to be
+hard-coded in the engine is now editable in Foundry, and the behaviour follows the document.
+
+**⛔ 1 NEW FAIL — the counter economy writes to a field the cosmere schema does not have.** Root cause
+proven by mutation, not inferred: `edhaCounterOn` reads `effect.system.count` and `edhaCounterApplyGM`
+writes `{"system.count": n}`, but `ActiveEffectDataModel`'s schema has **exactly two** fields,
+`isStackable` and `stacks`. The write **resolves without error** and is silently dropped
+(`system` reads back `{isStackable: true}`), so every counter read is `Number(undefined) || 0` = **0**.
+The right field is **`system.stacks`** (`NumberField`, nullable) — writing 2 persists *and* renames the
+effect to `Insight [2]`, which is exactly the display the engine's own long-standing ⚑ comment
+("⚑ system.count — bench-verify … could be `stacks`/`value`/`amount`") asked someone to check. It has
+been wrong the whole time; run 3's "× max(**0** Insight, 1)" measurement was this defect, unrecognised.
+**Blast radius, all measured this run:** Studied Mark's card says "bears 2 Insight" while the store
+holds 0 (the poster returns the *intended* value without reading back — the card is truthful about
+intent and lies about state) · Killing Blow prints "(now 0)" on a failure that should leave 1 and
+"all 0 Insight removed" on a success, and its ×count degrades to ×1 on **both** branches so success and
+failure deal the same damage · The Final Study prints "all 0 Insight removed" · Hunter's Discipline's
+floor(count/2) and Death Mark's full-count transfer cards are **both** suppressed by `if (amt > 0)` ·
+Accumulate can never reach its cap-5 clamp · The Pack's `+@counter` is always 0, and because the
+placement queue is gated on `amt > 0 || require === "armed-self-status"` its once-per-round placement
+(R11) never queues either · and **any `@counter` substitution in any tree** is affected. One-line fix at
+the two accessors, and it ships with a pinned `tests/` case (rule 4).
+
+**Rulings-batch sightings (recorded, not decided).**
+1. **The Pack's R11 placement is gated behind a non-zero bonus.** Even with the counter fixed, The Pack
+   places nothing at 0 Insight, while its card says "the first ally to hit it each round places 1
+   Insight" unconditionally. Which is canon — the card or the gate?
+2. **Final Decree has no encounter scoping.** "Every enemy in Attunement Range" binds every hostile
+   token on a shared map: this run it decree-bound five of Ben's placed playtest adversaries alongside
+   the four bench targets. Same family as the standing out-of-combat scope characterization (07-26k),
+   not a new bug — but it is the loudest instance so far.
+3. **Bear Witness's keeps-higher writer relabels `source` while keeping the larger value**, so a
+   surviving 6 Temp HP from Final Decree ends up attributed to Bear Witness. Cosmetic; is the label
+   worth keeping accurate?
+
+**Operating lessons for the runbook (run 8).**
+- **Hash the served engine, don't count markers.** Fetch cache-busted, `replace(/\r\n/g, "\n")`,
+  SHA-256, compare to the repo file normalised the same way. Two prompts in a row have carried wrong
+  marker counts; a hash cannot be remembered wrong.
+- **Turn-start watches do NOT all fire on the same hook.** Accumulate fires on `combat.update({turn})`
+  and NOT on the `flags.cosmere-rpg.activated` flip — the exact opposite of run 7's Foundation/Civ
+  finding. Try both, one at a time, and record which one worked for that talent.
+- **`RollConfigurationDialog`'s submit button is `data-action="submit"` with the label "Roll"**, and it
+  has no `footer`/`.form-footer`, so a dialog-walker keyed on `continue|confirm|ok` silently leaves two
+  attack rolls hanging. Include `submit` and `roll` in the selector.
+- **`edhaDealerOf`'s 15 s window is measured from the roll, not from your intent.** A `javascript_exec`
+  that times out at 30 s between the roll and the `applyDamage` puts you outside it and every on-hit
+  rider looks dead. Roll and apply in the SAME exec.
+- **A negative needs a positive control in the same round.** "The forced slide didn't prompt" and "the
+  second walk didn't prompt" are the same observation when a once-per-round gate is in play — this run
+  ran the control, could not separate the causes, and recorded 2bV-2's forced-slide half as UNPROVEN
+  rather than claiming it. Accumulate's out-of-range negative *did* get a back-in-range control and so
+  is a real result.
+- **Never sweep statuses by status id across `canvas.tokens.placeables`.** See the world-hygiene note
+  below. Snapshot per-actor EFFECTS at run start, not just ids and flags, or you cannot tell your own
+  litter from the table's state.
+
+**World hygiene — one self-inflicted event, partially repaired, reported in full.** The end-of-run
+status sweep deleted by status id across every placed token and so removed **four effects that almost
+certainly pre-dated this run** on Ben's campaign adversaries: `Weakened` on **Stonebound Captain**,
+`Weakened` on **Wrenchmaster**, `Weakened` on one **Cinderhound**, and `Prone` on one **Mutated
+Thrall**. Nothing this run targeted those actors (the only Weakened it applied was Sealed Edict's, on
+Bench Target — Adjacent A; the only Prone it applied was Magnum Opus's splash, on the two named bench
+targets), so they were the table's state, not the bench's. **Restored:** Stonebound Captain
+(`WN8GGFtZFxR6isM0`) and Wrenchmaster (`FmTIcIQOm42umoSA`), both unambiguous. **NOT restored, because
+the sweep log cannot identify which duplicate it hit:** one `Weakened` among Cinderhound
+`E0pMS7z6qdt8O15p` / `NLdImS8EUcxb9jJC`, and one `Prone` among Mutated Thrall `BUEIUVatYUfVqYb2` /
+`qJ3sfPuqJZqod0xa` / `9opSkrFMBMjaWPVr`. Ben re-applies if either mattered. Root cause of the error: the
+run snapshotted document ids and per-actor flags but **not** per-actor active effects, so the sweep had
+no way to distinguish its own writes — the runbook now says to snapshot effects too.
+Everything else was clean: the **document id-diff against this run's own start snapshot is exactly
+empty** (fifth consecutive run), all 23 roster tokens are still placed and back at their start
+coordinates, both bench combats deleted (Ben's `BerbNeuXp4iKduef` never touched), the Fault Line hazard
+Region + its drawing and the Foundation/fortified Region + drawing all deleted, the run's Construct and
+the Phantom Double copy deleted, every `tempHp` write swept, and the flag diff reduced to `bpHits`
+counter growth on seven bench actors (Breaking Point's cumulative tally, by design). Covenant's AE and
+`capFormula` were both restored to their shipped values. The run-1 orphan `Combat Construct` token was
+left alone at (7500, 4800) as instructed. **Answering run 7's open question: `Bench Ally — One`'s stale
+`bpHits` / `accord` / `coordRound` flags were still present at the END of run 8** — run 8's sweep did
+not touch them, so whatever removed `aggro` in run 7 was not this kind of sweep. Bench chat grew by 181
+messages and can be flushed. `game.logOut()` ran and `Bench` is selectable on `/join` again.
 
 **2026-07-27f — BENCH RUN 7'S TWO DEFECTS FIXED (test-pass-fixes). One commit each; ALL
 ENGINE-ONLY (`module-src-sync` + F5 — byte-check `edhaSummonSourceTalent` and `edhaSkillLabel` in

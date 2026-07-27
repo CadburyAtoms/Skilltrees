@@ -81,18 +81,16 @@ Surgical Precision quoting its own d20 on both paths + the cancelled-dialog case
 ledger unset with ZERO named warns; the Weave picker as a real `<dialog>`; all three `tempHp` flags
 swept). Evidence per row in the 07-27e delta. No pack rebuild was in that batch.
 
-**⟳ NOT YET LIVE — the 07-27f batch (bench run 7's two defects). ENGINE-ONLY: ⟳ Sync + F5, NO pack
-rebuild, no `foundry-build`.** Two fixes, both engine-side:
-- the `edha-summon-effect` lookup — byte-check `edhaSummonSourceTalent` (3 hits). Un-blocks 2bV-13,
-  2bV-14 and 2bV-15's Magnum Opus half, which run 7 could only drive behind an `summonTalent`-unset
-  workaround. `edha-summon-effect` also gains an OPTIONAL "…forged by which talent" field, blank by
-  default, so no authored data changed and nothing needs rebuilding for it.
-- the raw-i18n-key family — byte-check `edhaSkillLabel` (~8 hits) + `edhaLocalizeLabel`. Nine card/AE
-  sites across Civilization, Order, Black and the shared status paths, including run 1's
-  `COSMERE.Status.Disoriented`, which has been live-broken since 07-26h.
-
-Both rows say what to read at the table. Until the Sync+F5, a run-8 re-test of either reads the
-07-27d engine and will simply reproduce run 7 — check the byte-check FIRST.
+**✅ The 07-27f ENGINE half is LIVE (bench run 8, 2026-07-27g).** Verified the strongest way yet:
+the served blob was fetched cache-busted, normalised to LF and **SHA-256'd against the repo file —
+`9a5b2d4e6a23eeec25241cef3e1236ae8bfa2bf9c91c02ba7111f412014a4bc9` on both sides**, i.e. the live
+engine is byte-identical to `main`. Marker counts matched exactly too (`edhaSummonSourceTalent` 4,
+`edhaSkillLabel` 5, `edhaLocalizeLabel` 4, `edhaSnareSpringGate` 3, `edhaCleanseArmMode` 3,
+`_edhaCleansePending` 5, `edhaWatchEntryLevel` 4, `_edhaLifeClearBusy` 4, `chainBounded` 8,
+`edhaOwnerListQueue` 17). ⚠️ The run-8 prompt's "expect 3 / ~8" hint counts were WRONG — trust the
+repo/live comparison, not a remembered number. **Both 07-27f fixes re-tested PASS** — the whole
+Construct-consuming family against a NORMALLY forged, `summonTalent`-stamped Construct, and all seven
+named raw-i18n card sites. Evidence per row in the 07-27g delta.
 
 **Still BLOCKED-ON-DEPLOY — THREE data/pack halves (all re-confirmed by fresh compendium reads,
 bench run 5).** Ben runs these with Foundry closed:
@@ -577,6 +575,54 @@ Run on **Bench — Civilization** (room for Foundations; a Construct summoned). 
 for the ENGINE rows; the deity-pack rebuild is still owed for the Construct `creatureType` mint (see
 DEPLOY STATE — **but see the note below: Civ's own Construct predicate does not read it**).
 
+**Bench run 8 (2026-07-27g): the ENTIRE Construct-consuming family PASSED against a NORMALLY forged,
+`summonTalent`-stamped Construct and is retired — the 07-27f lookup fix is confirmed at the table.**
+The Construct was forged with `Forge Construct` and read
+`{summon: true, summoner: …, summonTalent: "Forge Construct", summonedAt: …}` — the exact shape that
+killed run 7 — and none of the three refused. **2bV-13 Siege Form**: card "🏰 Siege Form: Siege Form is
+active on Combat Construct (Bench — Civilization) for the scene…", baked AE flipped `disabled: false`,
+Speed 25→**0**, deflect 1→**3**; the "End Siege Form (Free Action)" button reverted all three (card
+"🏰 … ends Siege Form (Free Action)"); both refusals held with Investiture unchanged at 4 —
+"Edha: Siege Form is already active. Nothing spent." and "Edha: Siege Cannon (Siege Form only) needs
+Siege Form active — toggle it on first. Nothing spent." · **2bV-14 Arsenal**: granted its OWN
+Effects-tab AE "Arsenal (2 attacks/turn)" onto the Construct with
+`summonGranted: "AVQfEKddptmPKABB"`, spent exactly its 2 Inv (4→2), re-arm refused
+"Edha: Arsenal is already active this scene. Nothing spent." — and its `onKillNote` chase later fired
+unprompted ("⚙️ Arsenal: … reduces Bench Target — Adjacent A to 0 HP — you may immediately command it
+to move up to 15 ft and make a free Strike…") · **2bV-15 Magnum Opus**: `2 * ((2)d(2 * 3 + 2)) = 14`
+took the Construct 14→**28** HP (max too), +2 to all three defenses 12→**14**, added
+"Colossus (Magnum Opus)" with three `+2` bonus changes, wrote `civFoundationBonus: 2` and said so
+("Allies in your Foundations now gain +2 to all defenses at their turn start (upgraded for the
+scene)"), stamped `sceneOnce` and refused a repeat ("was already used this scene. Nothing spent.");
+the 10 ft splash then dealt **14 energy to the target AND the second enemy** ("within 10 ft of Bench
+Target — Adjacent A" — target INCLUDED per Ben R7a) while the two enemies at 15 ft were correctly
+spared · **the FORGING side did NOT regress**: Forge Construct at cap 1, with the *stamped* Construct
+alive, posted "Edha: Bench — Civilization's Combat Construct (Bench — Civilization) dismissed —
+resummoning (cap 1)", deleted the old actor + token and minted a fresh stamped one (2bP-8/2bP-9's
+shape, now proven on a stamped Construct rather than run 7's un-stamped fallback).
+⚠️ One cosmetic console error at the dismiss-and-replace: `Actor "iiu9UrHCC86xlXr6" does not exist!`
+(the deleted Construct's id) — a post-deletion re-resolve; no cause attributed, nothing user-visible.
+
+**Bench run 8 (2026-07-27g): the raw-i18n family is DEAD — all seven named card sites read plain
+English and the authored-override negative holds.** (a) Magnum Opus splash save: "🗿 Magnum Opus —
+**Agility** vs your Red: Bench Target — Adjacent A: Agility 6 vs your Red 17 — Prone …" ·
+(b) the Colossus AE description on the transformed Construct: "…who roll **Agility** vs the summoner's
+red or gain **Prone** (engine-rolled)" · (c) Bastion's fortified-entry save: "⛨ Bastion — **Agility**
+vs your Red: Bench Target — Adjacent A: Agility 21 vs your Red 14 — keeps pace" (and exactly ONE entry
+card + ONE save card, re-corroborating the v13 double-event closure) · (d) an `edha-apply-status` card
+on a NATIVE status, via Red's Reckless Gambit: "🎯 Reckless Gambit: Bench Target — Floater is
+**Exhausted** (by Bench — Red)" — `CONFIG.COSMERE.statuses.exhausted.label` is the raw key
+`COSMERE.Status.Exhausted`, so this is the run-1 bug's own shape, now clean · (e) Order's sweep:
+"⚖️ Verdict — **Discipline** vs your Blue: Bench Target — Adjacent B: Discipline 13 vs your Blue 17 —
+fails" and the Sealed rider "⚖️ Sealed Edict — **Discipline** vs your Blue: … Discipline 5 vs your
+Blue 15 — breaks" · (f) Phantom Double's GM accounting card: "🌫️ Phantom Double — belief vs DC 16:
+Fooled …: Bench Target — Adjacent A: **Perception** 12 vs 16 …" — the two player-whisper shapes
+interpolate the *same* `sklab` const (engine lines 5715/5716/5724 all read the one computed at 5693),
+so they are covered by the same fix; that extension is an **inference from the shared variable**, not
+a driven card, because the bench fixtures have no player owner · (g) the negative: Fault Line's
+"💥 Fault Line — **Speed** vs your Red: Bench Target — Floater: Speed 20 vs your Red 14 — stays up",
+so the authored `saveLabel: "Speed"` still wins. No `COSMERE.*` string appeared in any card this run.
+
 **Bench run 7 (2026-07-27e): the Foundation family + the summon-lifecycle rows PASSED and are
 retired** — **2bV-16** (an adversary-typed victim dropped to 0 inside a Foundation whispered
 "🛡️ Bonds of Community — … drops to 0 HP inside your Foundation. Reaction (one per round — trusted):
@@ -622,9 +668,6 @@ predicate is `edhaCivIsConstruct`, which tests the `summon` flag + the name pref
 The only reader of the `system.type`-based `edhaIsConstruct` is Fault Line's `constructMult`
 (Destruction, already benched).
 
-- [ ] **2bV-13 · 2bV-14 · 2bV-15-Magnum-Opus — FIXED 2026-07-27f, RE-TEST WITHOUT run 7's workaround (ENGINE-ONLY → ⟳ Sync + F5, NO pack rebuild)** — the run-7 FAIL below is fixed at the lookup. **Byte-check the served `register-skills.js` for `edhaSummonSourceTalent` before believing any result** (3 hits expected: the definition plus the veto and the executor). Then drive all three talents against a Construct forged NORMALLY — **do NOT unset `summonTalent` this time; that was run 7's diagnostic workaround and re-testing with it would prove nothing.** What must happen: each of Siege Form / Arsenal / Magnum Opus finds the stamped Construct and proceeds past the pre-cost veto (no "needs a live Combat Construct. Nothing spent."). Then re-confirm the downstream halves run 7 already verified with the flag unset, since they were never driven against a *stamped* Construct: Siege Form's toggle (Speed 25→0, deflect 1→3, baked AE enabled, end-button reverts) and its two refusals; Arsenal's own-Effects-tab AE landing with `summonGranted` plus the re-arm refusal; Magnum Opus's HP roll, +2 defenses, Colossus AE, Foundation upgrade to +2, `sceneOnce` repeat refusal, and the 10 ft splash. **Also check the sustain-cap side did not regress:** Forge Construct at cap 1 must still dismiss-and-replace its own Construct (2bP-8/2bP-9's shape, which run 7 retired on the name fallback). New authorable dial on the Events tab if Ben wants it: `edha-summon-effect` now carries **"…forged by which talent (optional)"** — blank (the shipped default) means "any of my live summons with that name", which is the rename-proof choice; setting it to `Forge Construct` pins the rule to that forger's stamped summons.
-- [ ] **⛔ NEW FAIL 2026-07-27e (bench run 7) — `edha-summon-effect`'s pre-cost veto looks up the WRONG talent, killing the whole Construct-consuming family (2bV-13 Siege Form · 2bV-14 Arsenal · 2bV-15's Magnum Opus half) — ✅ FIXED 2026-07-27f (ENGINE-ONLY), see the re-test row above** — with a live, healthy, correctly-flagged Construct standing, all three refuse pre-cost: `W:Edha: Siege Form needs a live Combat Construct. Nothing spent.` / `…Arsenal needs a live Combat Construct…` / `…Magnum Opus needs a live Combat Construct…`. **Root cause (proven by mutation, not inferred):** the veto calls `edhaOwnedSummons(actor, item.name, h.summonName)` where `item.name` is the **consuming** talent, and `edhaSummonIsFrom` short-circuits on the summon's `summonTalent` stamp — `if (st) return st === talentName` — so a Construct stamped `summonTalent: "Forge Construct"` can never match `"Siege Form"`, and the `summonName` name-prefix fallback is unreachable *because the flag is present*. Measured on the live Construct: `lookup_ForgeConstruct: true`, `lookup_SiegeForm: false`, `lookup_Arsenal: false`, `lookup_MagnumOpus: false`. **Unsetting `summonTalent` made all three work immediately** — i.e. only *legacy, un-stamped* Constructs can use their own tree's Construct talents, the exact inverse of the intent. Fix direction: the lookup needs the SUMMONING talent's name (or an `h.summonTalent` field / the summon-name fallback when the consuming rule names a different talent) — not `item.name`. → test-pass-fixes. **Everything downstream of the veto is verified working** (driven with the flag unset, so the rows re-open on the fix, not on the mechanics): Siege Form toggled the baked AE on (`disabled: false`), Speed 25→**0**, deflect 1→**3**, card + "End Siege Form (Free Action)" button which reverted all three; already-sieged → "is already active. Nothing spent."; the Siege Cannon refused while Siege Form was off ("needs Siege Form active — toggle it on first. Nothing spent."); Arsenal copied its OWN Effects-tab AE "Arsenal (2 attacks/turn)" (anvil icon) onto the Construct with `summonGranted`, and re-arm refused ("already active this scene"); Magnum Opus rolled `2 * ((2)d(2*3+2)) = 22`, took the Construct 10→**32** HP (max too), +2 all defenses, added "Colossus (Magnum Opus)", upgraded the Foundation buff to +2, stamped `sceneOnce`, and refused a repeat ("was already used this scene"); the Colossus splash then hit both enemies within 10 ft for 9 energy each, with the save card applying **Prone** on the failure (Agility 1 vs Red 13) and sparing the success (Agility 19).
-- [ ] **Raw i18n keys in card text — FIXED 2026-07-27f as a NINE-SITE family, re-test the labels (ENGINE-ONLY → ⟳ Sync + F5)** — run 7's Magnum Opus splash printed `🗿 Magnum Opus — COSMERE.Actor.Skill.Agility vs your Red: … COSMERE.Actor.Skill.Agility 19 vs your Red 13 — stays up`, and run 1's `edha-apply-status` card printed `COSMERE.Status.Disoriented` (open since 07-26h). **Run 7's inference was wrong in mechanism:** Bastion's card read "Agility" because its call *hardcodes* the literal — there was no working shared path to copy. `CONFIG.COSMERE.skills[id].label` / `.statuses[id].label` are raw i18n KEYS; EDHA's own statuses carry plain English, which is why only NATIVE ids ever showed the bug. Fixed at the shared helpers (`edhaSkillLabel` / `edhaConditionLabel` / `edhaLocalizeLabel`) and inside `edhaFoeSkillVsColor`, so no caller computes a label any more. **Byte-check for `edhaSkillLabel` (expect ~8 hits) and `edhaLocalizeLabel`, then read the CARD TEXT on each:** (a) the Magnum Opus splash save — must say "Agility vs your Red", no `COSMERE.` anywhere; (b) the Colossus AE description on the transformed Construct — "roll Agility … or gain Prone", not "AGI … prone"; (c) Bastion's fortified-entry save — still "Agility", now via the helper not a literal; (d) any `edha-apply-status` card applying a NATIVE status (Disoriented/Slowed/Prone) — the status name, not a key; (e) Order's court/accomplice sweep and annotate rider — "Discipline vs your Blue"; (f) Phantom Double's belief cards — "Perception <n>", all three card shapes; (g) Fault Line's line save, whose rule authors `saveLabel: "Speed"` — must be unchanged ("Speed"), proving the authored override still wins. A raw `COSMERE.*` key anywhere in card text is a FAIL. Gated against regrowth by `lint-refs.js` pass 10, so this family cannot silently come back.
 - [ ] **2bV-15 — Tempered Edge — CONFIRMED WORKS AS DESIGNED 2026-07-26m, re-corroborated 2026-07-27e, retired-in-place** — run 7 re-measured it by NET against a deflect-2 target: Construct Slam base `(2)d(2*3+2)+2 = 17`, rider card "🐺 Tempered Edge (Bench — Civilization): **+11 energy** and the hit ignores Bench Target — Floater's deflect (+2 added here pre-pays the −2 …)", net applied **28** = 17 + 11 with the deflect fully compensated. **And the Siege-Cannon negative PASSES:** the Cannon's `(2)d(2*3+2)+2+2 = 10` energy applied for exactly **8** = base − deflect, with **no** Tempered Edge card — `whenDealerItem: "Construct Slam"` correctly excludes it. Nothing is open on this row any more; only the FAIL row above blocks the family.
 - [ ] ⚑ **Civ enemy-cost — GO, KEEP the experiment (bench run 7, 2026-07-27e — resolver-level evidence)** — the custom type DID register (`CONFIG.RegionBehavior.dataModels["edha-content.enemy-cost"]` → `EdhaEnemyCostRegionBehavior`, a true subclass of the native `ModifyMovementCostRegionBehaviorType`), and the native base's **only** resolver is `_getTerrainEffects` (`Object.getOwnPropertyNames` on the base prototype gives exactly `prepareBaseData`, `_onUpdate`, `_getTerrainEffects`) — which the subclass overrides. Called on the real behavior with the real tokens: the **ALLY** (disposition 1 = `ownerDisposition`) returns `[]` → ×1; the **ENEMY** (disposition −1) returns `[{"name":"difficulty","difficulty":2}]` → ×2. Identical for token documents and placeables. The second guessed name `getTerrainEffects` does not exist on the base and is dead code that can be deleted. ⚑ **Ben's remaining half is the ruler UI itself** (a canvas-feel read a hidden-pane session cannot take) — but the underlying cost resolution is proven disposition-filtered, so the experiment should be KEPT.
 
@@ -707,52 +750,121 @@ re-derived, and not a new bug.
 # BENCH — Knowledge (Gnothis, deity)
 
 Run on **Bench — Knowledge** (an enemy bearer in Green range; an ally attacker). No pack
-rebuild pending. Priority: 2bT-3 (counter mode + perCounter chain) and 2bT-5
-(armed damage-bonus + placement queue).
+rebuild pending. **Bench run 8 (2026-07-27g) drove every row in this section**; five retired outright,
+the rest are all blocked behind ONE new engine defect (below).
 
-- [ ] **2bT-3 — Killing Blow** — use with no bearer; then with a bearer carrying 3 Insight → No bearer → refused pre-cost. With bearer: YOU roll the Red test on the card (⚠️ drift — the takeover used to auto-roll); success = ONE [T][D] roll ×3 vital auto-applied to the bearer + ALL Insight cleared; failure = ×1 + exactly 1 removed. Don't hand-apply the card's own damage.
-- [ ] **2bT-5 — Predatory Strike — NARROWED 2026-07-26k (bench run 3, dice re-test)** — the restored dice PASSED: arm = "Primed Strike (next weapon hit)" icon + arm card; the weapon hit added **"+11 vital strike"** ([T][D red] × max(0 Insight, 1)) in the same application ("10 - 0 + 11"), consumed the icon, placed "1 Insight on Bench Target — Floater (now 1)" with the `Insight [1]` effect — and Accumulate's damage→1 Investiture clause fired alongside. Still open: re-use-while-armed pre-cost refusal and the weaponOnly negative (a talent's own damage must NOT trigger it).
-- [ ] **2bT-1 — Studied Mark** — use with a creature targeted in Green range → 2 Insight on it (⚑ the stackable status shows count 2 — `system.count` is STILL the bench-verify field) + the whispered snapshot WITHOUT Cognitive defense. No target / self / out of range → refused, **nothing spent**. ⚠️ Cosmetic drift: place and reveal are two cards now.
-- [ ] **2bT-2 — Studied Mark (transfer)** — mark creature A, then use on creature B → A drops to 0 Insight and loses the icon; B bears 2.
-- [ ] **2bT-4 — The Final Study** — succeed once, then use again same scene → Second use refused pre-cost ("already used this scene"). The success card ends with the free-Strike roster naming allies in Green range (or the no-allies line).
-- [ ] **2bT-6 — Hunter's Discipline** — hit your bearer yourself; then kill it → Each own hit +Tier vital. On the kill: whispered transfer card offering floor(count/2) to a creature in Green range (only if ≥1).
-- [ ] **2bT-7 — Death Mark** — kill the bearer → Transfer card for the FULL count + the PUBLIC per-ally burst card — each ally's button deals [T][D red] (the OWNER's dice) to that player's targeted enemy. Both 2bT-6 and 2bT-7 fire when both talents are owned (R9 — last click wins).
-- [ ] **2bT-8 — Accumulate** — start your turn with the bearer in / out of Green range → In range: +1 Insight (cap 5, then silent). Out of range: nothing. The damage→1 Investiture clause (once/round) is unchanged — it was already data-side.
-- [ ] **2bT-9 — Pack Share** — arm, then an ALLY hits the bearer inside YOUR Green range → Arm = `packsight` icon + a PUBLIC bearer snapshot (all three defenses); re-arm refused pre-cost. The ally's hit +Tier vital; the FIRST such hit each round places 1 Insight. Your own hits get nothing from it.
-- [ ] **2bT-10 — The Pack** — arm alongside Pack Share, ally hits the bearer → +live-Insight-count vital ON TOP of Pack Share's +Tier (R10 additive); its OWN once-per-round placement (R11). At 0 Insight the Pack line simply doesn't post.
-- [ ] **2bU-15 — Predatory Strike (regression)** — Knowledge: armed weapon hit → Still consumes `predprimed`, still adds ×max(Insight,1) vital, still places 1 Insight — the armed damage-bonus widenings (meleeOnly etc.) must not gate rules that don't carry them.
+**RETIRED on evidence, bench run 8 (2026-07-27g).** **2bT-2** (Studied Mark transfer: marking
+Adjacent A moved everything off Floater — Floater's `Insight` icon and its `markedBy.insight` stamp
+both gone, A gained icon + stamp, and the owner pointer moved to
+`counters.insight = "Actor.axH7sFmbZqJqv2YV"`) · **2bT-4** (The Final Study: the once-per-scene refusal
+held with nothing spent — "Edha: The Final Study was already used this scene — nothing spent.",
+Investiture unchanged at 4; the SUCCESS card ended with the free-Strike roster naming fifteen allies in
+Green range — "each ally in Attunement Range may immediately make a free Strike … : Bench — Red,
+Bench — Green, … Combat Construct (Bench — Civilization)" — with White/Blue/Black correctly outside the
+range and excluded) · **2bT-5's two remaining halves** (re-use while armed → "Edha: Predatory Strike is
+already active — nothing spent.", Investiture unchanged; and the **`weaponOnly` negative PASSES** — with
+`predprimed` live, Killing Blow's own `2d8` vital hit did NOT consume the icon and posted no Predatory
+Strike rider, then the next *weapon* hit did) · **2bT-9** (Pack Share: arm gave the
+`Pack Sight (allies share your mark)` icon plus a PUBLIC snapshot carrying **all three** defenses
+("Physical 14, Cognitive 14, Spiritual 14" — contrast Studied Mark's, which omits Cognitive); re-arm
+refused "already active — nothing spent."; an ALLY's weapon hit posted "🐺 Pack Share
+(Bench — Knowledge): **+2 vital** on Bench — Heroic's hit" (+Tier) and the first such hit that round
+placed "1 Insight on Bench Target — Floater"; **your own hits get nothing from it** — a self weapon hit
+posted only Hunter's Discipline's +2) · **2bU-15** (Predatory Strike regression: the armed weapon hit
+consumed `predprimed`, added "🐺 Predatory Strike (Bench — Knowledge): **+9 vital strike**"
+(×max(Insight,1)) and placed "1 Insight placed on Bench Target — Adjacent A (now 1)").
+
+- [ ] **⛔ NEW FAIL 2026-07-27g (bench run 8) — the Insight/counter economy is stored in a field the cosmere schema DOES NOT HAVE, so every counter read returns 0. This is the engine's own ⚑ prediction coming true, and it blocks SIX Knowledge rows at once.** **Root cause, proven by mutation:** `edhaCounterOn` reads `Number(eff?.system?.count)` and `edhaCounterApplyGM` writes `{"system.count": count}` (engine ~13543–13562, both carrying the comment "⚑ system.count — bench-verify"). The cosmere `ActiveEffectDataModel` schema has **exactly two** fields — `isStackable` and `stacks` — so the write is silently dropped by DataModel validation (`effect.update({"system.count": 2})` **resolves with no error** and reads back `system: {isStackable: true}`), and every read is `Number(undefined) || 0` = **0**. **The right field is `system.stacks`** (`NumberField`, nullable): writing 2 persists AND renames the effect to `Insight [2]`, which is exactly the "shows count 2" display the old ⚑ asked for. Verified both directions on the live bearer. **Observable blast radius, measured this run:** Studied Mark's card says "bears **2** Insight" while the stored count is 0 (line 16769 returns the clamped *intended* value without reading back — the card is truthful about intent and lies about state) · Killing Blow prints "-1 Insight on … (now **0**)" on a failure that should leave 1, and "all **0** Insight removed" on a success, and its ×count multiplier degrades to ×1 on **both** branches so success and failure are indistinguishable in damage · The Final Study prints "all **0** Insight removed" · Hunter's Discipline's on-kill floor(count/2) transfer card and Death Mark's FULL-count transfer card are **both suppressed** by the `if (amt > 0)` gate (engine ~13746) · Accumulate can never reach its cap-5 clamp · The Pack's `+@counter` bonus is always 0, and because the placement queue is gated on `amt > 0 || require === "armed-self-status"` (engine ~1214) The Pack's own once-per-round placement (R11) never queues either. Also affects **any `@counter` substitution in any tree** (engine line 1184). One-line fix at the two accessors; ship it with a pinned `tests/` case. → test-pass-fixes.
+- [ ] **2bT-3 — Killing Blow — PARTIAL 2026-07-27g: the flow is right, the count is 0 (see the FAIL above)** — ✅ retired-in-place halves: no-bearer → refused pre-cost, nothing spent ("Edha: you have no creature bearing your Insight for Killing Blow. Nothing spent.", Investiture 4→4); YOU roll the Red test on the card; **ONE** `2d8` roll auto-applied to the bearer as vital on both branches ("⚡ Killing Blow (Bench — Knowledge) — 9 vital to Bench Target — Adjacent A"), the card telling you not to hand-apply; SUCCESS clears the bearer and the pointer, FAILURE decrements. ⛔ Still open, re-test after the counter fix: success must be ×count (not ×1), the failure must leave count−1 (it clears to 0 instead), and both cards must print the real number.
+- [ ] **2bT-1 — Studied Mark — PARTIAL 2026-07-27g** — ✅ retired-in-place halves: the place card ("Bench Target — Floater bears 2 Insight (any prior bearer is cleared). Insight fades at the end of the scene."), the whispered snapshot **WITHOUT Cognitive defense** ("HP 32/33; conditions: Exhausted, Insight; defenses — Physical 14, Spiritual 14."), the documented two-card cosmetic drift, and **all three refusals with nothing spent** — no target ("target the creature first (nothing spent)"), self ("target a creature other than yourself. Nothing spent."), out of range ("Bench Target — Isolated is outside your Attunement Range (Green). Nothing spent."), Investiture 4→4 each time. ⛔ Still open: the stored count. The old ⚑ is now ANSWERED — `system.count` is the WRONG field, `system.stacks` is right; see the FAIL row.
+- [ ] **2bT-6 — Hunter's Discipline — PARTIAL 2026-07-27g** — ✅ the own-hit half PASSES and is correctly bearer-gated: every own hit on the bearer posted "🐺 Hunter's Discipline (Bench — Knowledge): **+2 vital strike**" (+Tier), and a weapon hit on a creature that was NOT the bearer at that moment got nothing. ⛔ The on-kill whispered floor(count/2) transfer offer never posted — `floor(0/2) = 0` fails the `amt > 0` gate. Re-test after the counter fix.
+- [ ] **2bT-7 — Death Mark — PARTIAL 2026-07-27g** — ✅ the PUBLIC per-ally burst card PASSES: killing the bearer posted "📖 Death Mark: each ally in Attunement Range (… fifteen named …) deals [Tier][Die] Vital (**Bench — Knowledge's dice**) to any enemy of their choice", one button per ally, and clicking one with an enemy targeted resolved as "📖 Death Mark: Bench Ally — One deals **8** vital to Bench Target — Undefended" (`(2)d(2*3+2)`, HP 30→22) with the button flipping to "✓ Bench Ally — One → Bench Target — Undefended". R9 confirmed at sweep level: BOTH transfer rules ran on the same kill. ⛔ The FULL-count transfer card never posted (count 0 → `amt > 0` gate). Re-test after the counter fix.
+- [ ] **2bT-8 — Accumulate — PARTIAL 2026-07-27g** — ✅ retired-in-place halves: the turn-start tick fires **in range** ("📖 Accumulate: +1 Insight on Bench Target — Floater"), posts **nothing** with the bearer moved out of Green range, and fires again when the bearer is moved back — a proper negative *and* a back-in-range control, so the non-fire is the range gate and not a once-per-round guard. The damage→1 Investiture clause also fired unprompted ("🔮 Accumulate: the Insight creature took damage — Bench — Knowledge recovers 1 Investiture"). ⚠️ **Operating note: Accumulate's turn-start watch fires on `combat.update({turn})`, NOT on the `flags.cosmere-rpg.activated` flip** — the opposite of run 7's Foundation/Civ finding; driving the activation flag produced nothing. ⛔ Still open: the cap-5 clamp (unreachable at count 0).
+- [ ] **2bT-10 — The Pack — PARTIAL 2026-07-27g** — ✅ arm PASSES (`Pack Mind (pack strikes as one)` icon + the card naming the live-count rider), and the "**at 0 Insight the Pack line simply doesn't post**" negative PASSES — an ally hit with The Pack armed alongside Pack Share posted only Pack Share's +2. ⛔ R10 (additive stacking on top of +Tier) and R11 (its OWN once-per-round placement) are both UNVERIFIABLE while the count reads 0. **Rulings sighting for the batch:** R11's placement currently sits behind `amt > 0`, so even with a working count The Pack places nothing at 0 Insight — is that intended, or should the first-ally-to-hit placement fire regardless of the bonus? The card text ("the first ally to hit it each round places 1 Insight") reads unconditional.
 
 ---
 
 # BENCH — Order (Tessavain, deity)
 
 Run on **Bench — Order** (a willing adjacent ally; an Edict-able enemy in Blue range; ideally a
-second Order PC for the shared-icon row). No pack rebuild pending. Priority: 2bL-1 /
-2bL-2 (the pact forms at all; the unconverted readers still see the ledger — the one
-failure that matters) and 2bV-17 (the latent-bug fix's first bench).
+second Order PC for the shared-icon row). No pack rebuild pending. **Bench run 8 (2026-07-27g) ran this
+section end to end: seventeen rows retired on evidence, nothing in Order failed.**
 
-- [ ] **2bL-1 — Covenant (Order) ⚠️⚠️** — stand adjacent to a willing ally, target them, use it → The pact forms: ally gains the **Covenant** icon, a card names them, and a **"Break the Covenant"** button appears. If **nothing at all happens**, the use is still being cancelled — stop and tell me.
-- [ ] **2bL-2 — ⚠️⚠️ The unconverted readers still see the ledger** — with 1+ Covenant active, use **Concord**, then check **Final Decree**'s card → Concord lists your covenanted allies **by name** and is not refused; Final Decree names them as Witnesses. If either says you have **no Covenants**, the ledger has split in two — stop immediately, this is the one failure that matters.
-- [ ] **2bV-17 — Covenant AE sweep (regression — the 2bV latent-bug fix)** — two PCs covenant; walk in/out of White range → The +1 all-defenses AE appears/disappears on BOTH; partner-damages-partner still posts the break-watch card. This never worked after 07-24u (the key-vs-marker reconcile bug) — first bench of the fix.
-- [ ] **2bV-18 — The point of the migration** — open any converted Order/Civ talent → Events → The rule(s) are visible and editable — change the cap formula, a note, the court radius; confirm the behaviour/card shows the edit.
-- [ ] **2bL-3 — Covenant — the pre-cost refusals** — try it (a) with no target, (b) on an **enemy**, (c) on an ally **2+ squares away**, (d) on someone you **already** have a pact with → All four refused with a warning and **no Investiture spent**. These moved from the old takeover into a pre-use guard, so this row confirms they survived the move.
-- [ ] **2bL-4 — Covenant — the +1 defenses AE** — form a pact, then walk the two of you into and out of Attunement Range (White) → Both wear a **Covenant (owner)** effect granting **+1 Physical/Cognitive/Spiritual** while in range; it disappears when out of range and comes back.
-- [ ] **2bL-5 — ⚑ Covenant — the AE is now EDITABLE** — open Covenant → **Effects** tab → "Covenant — while in range", change a +1 to **+2**, re-form the pact → The applied effect grants **+2**. This is the migration's whole premise for this pass — the number used to be hard-coded in the engine.
-- [ ] **2bL-6 — Covenant — the cap and the fizzle** — with tier N pacts already held, form one more → The **oldest** pact dissolves, its ally **loses the icon**, and the card says so. ⚑ If your cap dropped by 2+ at once, **all** the dropped allies lose their icons — the old code only cleared the last one, so this is a **fix**, not a bug.
-- [ ] **2bL-7 — ⚠️ Covenant — the SHARED icon (needs two Order PCs)** — have two Order characters both covenant the **same** ally, then have one of them break/fizzle theirs → The ally **keeps** the Covenant icon, because the other pact is still live. Getting this wrong strips the second player's marker silently — it is why the rule carries `multiOwner`.
-- [ ] **2bL-8 — Covenant — the break button** — click **"Break the Covenant"** on the card → The pact ends, the icon clears (unless 2bL-7 applies), and the +1 AE goes. Same for the **"It was deliberate"** button after a partner damages a partner.
-- [ ] **2bL-10 — Bear Witness (Order) ⚠️** — with 1+ covenanted ally in White range, run **two or three rounds** of combat → At the **start of every round**, each such ally gains Temp HP = your **White rank**, on one card. Not once per combat — every round.
-- [ ] **2bL-11 — ⚑ Bear Witness — Temp HP must KEEP THE HIGHER** — give a covenanted ally more Temp HP from another source, then let a round tick → Their Temp HP does **not go down**. Temp HP never stacks, it keeps the larger — if Bear Witness lowers it, the wrong writer is being used.
-- [ ] **2bV-1 — Edict** — use with no target / self / out of Blue range; then a valid enemy → Bad cases refused **pre-cost**. Valid: the prohibition picker (cancel REFUNDS the 1 Inv — ⚠ drift: charge-then-refund replaces never-charged, net identical); the place card shows the prohibition, the tier cap, Sealed Edict's notarize hint + Lawkeeper's reveal line (only if owned), and the ⚖ Violated button. A repeat cast on the SAME target is legal (its own entry); past the cap the OLDEST fades and its icon clears unless another law still binds it.
-- [ ] **2bV-2 — Edict watchers** — bind "move"; walk the target; push it with an engine slide → The walk PROMPTS (once/round, card names Edict); the forced slide does NOT. Same shape for Investiture-spend (engine spends count too) and attack-the-chosen-ally.
-- [ ] **2bV-3 — ⚖ Violated** — click it → [T][D blue]+Int spirit (Edict's own formula) + Disoriented until the start of your next turn; entry consumed; a second click no-ops with "already gone".
-- [ ] **2bV-4 — Sealed Edict** — use with no unsealed Edict; then with one; violate it → None → refused **pre-cost**. Seal card names the newest unsealed Edict. On violation the violator ALSO tests Discipline vs your Blue (engine-rolled) — failure = +[T][D blue] spirit + Weakened until the end of ITS next turn.
-- [ ] **2bV-5 — Verdict** — use vs a creature NOT on your ledger; then vs your Edict-bound target → Not yours → refused **pre-cost** (the shared icon is not enough). Valid: YOU roll Blue on the card (⚠ drift — the takeover auto-rolled) vs its Cognitive; success = the Edict resolves (2bV-3's payload incl. any Sealed rider) + each OTHER enemy within 10 ft rolls Discipline vs your Blue — failures share ONE [T][D blue] spirit roll + Disoriented. Failure = cost spent, court denied.
-- [ ] **2bV-6 — Concord** — use with zero Covenants; then with two → Zero → refused **pre-cost**. Valid: the `concord` status (re-use refused while it holds), the card names the pact allies + the Aid grant (manual). Each covenanted ally's FIRST damaging hit on an enemy each round gains +your Presence, same type (once/round PER ALLY, tracked separately; your own attacks never).
-- [ ] **2bV-7 — Shoulder the Oath** — a covenanted ally in White range loses HP; click; try again same round → Whispered Reaction card: take floor(D/2) (same type, redirect-marked), the ally heals back min(D, floor(D/2)+White), BOTH gain White-rank Temp HP (keeps-higher). Once per round. Damage fully eaten by Temp HP prompts nothing.
-- [ ] **2bV-8 — Lawkeeper's Eye** — an ally attacks your Edict-bound target you can see; then through a wall → Advantage auto-injected; the wall (or a hostile attacker) blocks it. The Edict place card carries the GM-reveal line.
-- [ ] **2bV-9 — Final Decree** — use twice; use with no enemy in Blue range; then valid + violate → Repeat + empty net refused **pre-cost**. Valid: picker (cancel refunds 3 Inv), every enemy in range decree-bound (`edict` icon, not counted vs the cap), covenanted allies stand Witness. Resolve with the violator targeted: every active Edict fires individually, ONE shared [T][D white] Temp-HP roll + advantage to each Witness, ONE shared [T][D blue]+Int spirit roll to each enemy within 10 ft of the violator (violator INCLUDED); decree spent.
-- [ ] **Order quiet cases (like-for-like)** — Covenant crossing scenes keeps the pact (2bL-9); Bear Witness posts NOTHING with no pacts / out-of-range ally / ally at 0 HP (2bL-12) → a "gains 0 Temp HP" card is a bug. Collapsed from 2bL-9/12.
+**RETIRED on evidence, bench run 8 (2026-07-27g) — the ledger is intact and the migration's premise is
+proven.** **2bL-1** (the pact FORMS: Bench Ally — Two gained the `Covenant` icon *and* the
+"Covenant (Bench — Order)" AE, the card named them "(1/2)" with a **"Break the Covenant"** button, and
+the H3 ledger held `{uuid: "Actor.LzEB1ChIfqqgYIrJ", name: "Bench Ally — Two", talent: "Covenant"}`) ·
+**2bL-2 — the row that mattered, and it PASSES both halves**: Concord was not refused and listed the
+ally **by name** ("… Bound: **Bench Ally — Two**."), and Final Decree's card named them as
+"Witnesses: **Bench Ally — Two**." Neither reader said "no Covenants" — the ledger has NOT split ·
+**2bV-17** (the 07-24u key-vs-marker reconcile fix's first bench, all three parts: moving the ally out
+of White range removed the +1 AE from **BOTH** (defenses 15/15/15 → 14/14/14 on caster and ally), moving
+back restored it on **BOTH**, the `Covenant` marker itself correctly persisting through both; and
+partner-damages-partner still posts the break watch — "🤝 Covenant watch: Bench — Order damaged Bench
+Ally — Two — if that was a DELIBERATE attack, the Covenant ends (owner-judged; incidental/area damage
+may not count)" with its button) · **2bV-18 — the point of the migration** (edited Covenant's
+`system.events.CovenantPact0000.handler.capFormula` from `@tier` to `1` on the Events tab; the very
+next pact's card changed to "(**1/1**). The oldest (…) fades — you sustain at most **1**." The document
+drives it. Restored to `@tier` afterwards.) · **2bL-3** (all four pre-cost refusals, Investiture 4→4
+every time: no target "target the creature first (nothing spent)"; an enemy "Bench Target — Adjacent A
+is not an ally — nothing spent."; 2+ squares away "Covenant requires touch — move adjacent to Bench
+Ally — Two first. Nothing spent."; already-covenanted "Bench Ally — One already bears your Covenant —
+nothing spent.") · **2bL-4** (both parties wear "Covenant (Bench — Order)" with three
+`system.defenses.*.bonus +1` changes, 14→**15** on all three defenses each, in range only) ·
+**2bL-5 — the pass's whole premise** (edited the Effects-tab AE "Covenant - while in range" from +1 to
++2, re-formed the pact, and the applied effect granted **+2** — Bench Ally — Two 14→**16** on all three.
+Restored to +1 afterwards.) · **2bL-6 including its ⚑ half** (at cap 2 a third pact evicted the oldest —
+"The oldest (Bench Ally — One) fades — you sustain at most 2", ally's icon gone; and with the cap edited
+to 1 while holding 2, the next pact dropped **BOTH** and cleared **both** icons — "The oldest
+(**Bench — Heroic, Bench Ally — Two**) fades" — so the multi-drop fix is real) · **2bL-8** (BOTH break
+buttons: "Break the Covenant" → "📋 Covenant: Bench — Order's bond with Bench Ally — Two ends (1 left)",
+icon + AE cleared on both, ledger shrunk; and "It was deliberate" → "… ends (0 left)", ledger empty) ·
+**2bL-10** (Bear Witness fires at the start of **every** round, not once per combat — rounds 1 and 2 both
+posted "⚡ Bear Witness — Bench — Knowledge, Bench Ally — Two gain **3** Temp HP. (your White)", White
+rank 3, both covenanted allies on ONE card) · **2bL-11** (Temp HP **keeps the higher**: the ally already
+held 6 Temp HP from Final Decree, Bear Witness offered 3, and the value stayed **6** — it did not go
+down. ⚠️ Cosmetic: the `source` was relabelled to "Bear Witness" while the value stayed 6, so the
+surviving 6 is now mis-attributed on the flag) · **2bV-1** (the prohibition picker is a real
+**DialogV2** — window title "Edict — declare ONE prohibited action", radios `move`/`attack`/`invest`/
+`other` plus an ally `<select>` — confirming the 07-27d AppV1→DialogV2 conversion live for the second
+window; the place card carried the prohibition, the tier cap "(1/2)", Sealed Edict's notarize hint,
+Lawkeeper's Eye's reveal line, and the ⚖ Violated button) · **2bV-3** (⚖ Violated → "⚖️ Edict violated
+(declared violation) — Bench Target — Adjacent A broke ' move from its space ': **14 spirit +
+Disoriented** until the start of Bench — Order's next turn. The Edict is consumed." A second click
+produced no duplicate payload and no card — ⚠️ but the button had already flipped to "⚖ resolved", so
+whether the documented "already gone" notice fires could not be confirmed) · **2bV-4** (no unsealed
+Edict → refused pre-cost "no Edict-Bound left to mark sealed — nothing spent."; sealing named the
+newest; on violation the violator ALSO tested engine-rolled — "⚖️ Sealed Edict — Discipline vs your
+Blue: … Discipline 5 vs your Blue 15 — breaks" → "takes an additional **6** spirit and is **Weakened**
+until the end of its next turn", total 20 applied and both statuses landed) · **2bV-5** (not on the
+ledger → refused pre-cost "is not on your edicts for Verdict — nothing spent."; the FAILURE branch spent
+the cost and denied the court ("10 vs … COG 14 — FAIL"); the SUCCESS branch ("22 vs … COG 14 — SUCCESS")
+resolved the Edict *and* ran the court — "the court turns on the accomplices (1 within 10 ft): **one
+shared roll**, 10 spirit to each who fails Discipline vs your Blue" then "Bench Target — Adjacent B:
+Discipline 13 vs your Blue 17 — fails — 10 spirit + Disoriented") · **2bV-7** (whispered Reaction card
+with the right arithmetic — the ally took 8, the card offered "take **4** of it yourself (same type),
+Bench Ally — Two heals back **7**, and BOTH of you gain **3** Temp HP. (Once per round.)" =
+floor(8/2), min(8, 4+White), White rank; the click resolved exactly that (Order 42→38, ally 24→31, both
+`tempHp {value: 3, source: "Shoulder the Oath"}`), and a second damage event the same round prompted
+nothing) · **2bV-9** (repeat use → "Final Decree is once per scene. Nothing spent."; the valid cast
+decree-bound every enemy in Blue range with the `edict` icon and stood the covenanted ally as Witness;
+resolving with the violator targeted gave **ONE** shared Temp-HP roll ("Bench Ally — Two gain **11**
+Temp HP + advantage on their next attack test", flags `tempHp` + `advAttackNext` both written) and
+**ONE** shared spirit roll to each enemy within 10 ft **violator included** ("Bench Target — Adjacent A,
+Bench Target — Adjacent B, Bench Target — Undefended take **9** spirit", all three HP-verified), then
+"The Decree is spent.").
+
+⚠️ **WORLD-HYGIENE / SCOPE SIGHTING from 2bV-9 — for the rulings batch, not a bug report.** Final
+Decree's "every enemy in Attunement Range" has **no encounter scoping**, so on a shared map it binds
+every hostile token in range — this run it decree-bound five of Ben's placed playtest adversaries
+(Frostbinder, Stitchmother, three Mutated Thralls) alongside the four bench targets, writing the
+`Edict-Bound` status to them. Same family as the standing out-of-combat scope characterization (07-26k).
+The run cleared what it applied.
+- [ ] **2bL-7 — ⚑ Covenant — the SHARED icon (needs two Order PCs)** — have two Order characters both covenant the **same** ally, then have one of them break/fizzle theirs → The ally **keeps** the Covenant icon, because the other pact is still live. Getting this wrong strips the second player's marker silently — it is why the rule carries `multiOwner`. **Still ⚑ after run 8**: the bench has one Order PC and staging a second would mean granting the whole Order path to another actor mid-run; left for Ben's two-client bench or a run that stages a second Order actor deliberately.
+- [ ] **2bV-2 — Edict watchers — PARTIAL 2026-07-27g** — ✅ the **move** watcher PASSES: with "move from its space" bound, walking the target posted "⚖️ Edict watch: Bench Target — Adjacent B moved from its space — if that was VOLUNTARY (forced movement/compulsion doesn't count), it just violated ' move from its space '." with its resolve button, and the **once-per-round** gate held (a second walk the same round posted nothing — verified with an explicit second-walk control). ⛔ **The "a forced slide does NOT prompt" negative is UNPROVEN**: the `displace` move also posted nothing, but so did the second *walk*, so the once-per-round gate had already consumed the round and the two causes cannot be separated out of combat. Re-drive with a fresh round between the walk and the slide. Also still open: the Investiture-spend and attack-the-chosen-ally watcher shapes.
+- [ ] **2bV-6 — Concord — PARTIAL 2026-07-27g** — ✅ the valid path PASSES: the `concord` status landed ("Concord (allies' first strike)"), the card named the pact allies ("Bound: Bench Ally — Two.") and stated the Aid grant + the "+2 damage (your Presence, same type as the hit — auto)" clause. ⛔ Still open: the zero-Covenant pre-cost refusal, the re-use-while-it-holds refusal, and the per-ally once-per-round +Presence rider actually landing on an ally's first damaging hit (needs an ally attack with the tally observed per ally).
+- [ ] **2bV-8 — Lawkeeper's Eye** — an ally attacks your Edict-bound target you can see; then through a wall → Advantage auto-injected; the wall (or a hostile attacker) blocks it. The Edict place card carries the GM-reveal line. **Run 8 confirmed only the card half** — the reveal line appeared on every Edict place card ("👁️ Lawkeeper's Eye: the GM reveals the bound creature's intended action on its next turn … you and your allies have advantage on attack tests against it while you can see it"). The advantage injection and the wall/hostile-attacker block were not driven.
+- [ ] **Order quiet cases (like-for-like)** — Covenant crossing scenes keeps the pact (2bL-9); Bear Witness posts NOTHING with no pacts / out-of-range ally / ally at 0 HP (2bL-12) → a "gains 0 Temp HP" card is a bug. Collapsed from 2bL-9/12. **Not driven in run 8.**
 
 ---
 

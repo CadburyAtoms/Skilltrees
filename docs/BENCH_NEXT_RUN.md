@@ -6,171 +6,153 @@ rewrites this file for the run after it, so this file always holds THE next prom
 ---
 
 /bench-run — Foundry is running with the edha world open and the Bench user is passwordless. Run
-BENCH RUN 8 (the marathon's LAST TWO deity trees: **Knowledge, then Order**): join as Bench,
-health-check, then re-run `scripts/bench-setup-console.js` once as the idempotency/repair check
-(zero ⚠ lines expected; runs 5, 6 and 7 were all pure sync). The 23 bench tokens should still be
-placed — run 7 left them in the corridor around ORIGIN (2100, 9000) and rows 37–40 of the lower-left
-room, and the id-diff ended exactly empty. If `scene.tokens` has no `Bench*` tokens, re-run the
-placement leg at ORIGIN (2100, 9000) (the setup script's SPOTS map; grid is 300 px = 5 ft). Read
-`docs/EDHA_BENCH_RUNBOOK.md` — the run-1 through run-7 operating lessons — before driving anything.
-**Load-bearing lessons, newest first (they OVERRIDE older advice):**
+**BENCH RUN 9 — THE FINAL SWEEP**: every `# BENCH —` row the marathon has not reached, plus the rows a
+landed fix unblocked. Runs 1–8 cleared the five leyline colors and all ten deity trees; what is left is
+**Heroic (the biggest single section), the Engine-wide & cross-tree remainder, the leyline/deity
+leftovers, and the adversary sections**. Join as Bench, health-check, then re-run
+`scripts/bench-setup-console.js` once as the idempotency/repair check (zero ⚠ lines expected; runs 5–8
+were all pure sync — run 8's log read `synced 25 | talents 25` for each leyline PC, `9 | 9` for each
+deity PC, `62 | 62` for Heroic). The 23 bench tokens should still be placed: run 8 returned every one of
+them to its start coordinate, the PC column at ORIGIN (2100, 9000) stepping down by 300 px, allies and
+targets in the lower-left room. If `scene.tokens` has no `Bench*` tokens, re-run the placement leg at
+ORIGIN (2100, 9000). Read `docs/EDHA_BENCH_RUNBOOK.md` — the run-1 through run-8 operating lessons —
+before driving anything. **Load-bearing lessons, newest first (they OVERRIDE older advice):**
 
-* **`tokDoc.move()` THROWS a cosmetic `#panCanvas … clientWidth` error when the moved token is
-  CONTROLLED and the pane is hidden — the write already landed** (run 7). Release control, catch,
-  verify `td.x/td.y`.
-* **Never resolve a token by NAME when duplicates exist** — run 7 moved the run-1 orphan
-  `Combat Construct` that way. Use `tokens.find(t => t.actorId === id && !!t.actor)` or the id.
-* **With the pane hidden the ChatLog renders NOTHING** (`ol.chat-log` empty;
-  `ui.chat.render({force:true})` throws). Hand-render: `await msg.renderHTML()` → append into
-  `ol.chat-log`, then `[data-message-id]` button selectors work.
-* **The sheet's `use-item` action needs a real `PointerEvent`**, not `MouseEvent("click")` (run 7).
-* **System attack/action cards have EMPTY `content`** — no reachable apply-damage button. Apply via
-  `target.applyDamage([...])` **within 15 s** of the damage roll: `edhaDealerOf` then attributes the
-  dealer + item exactly as the button would (this is how run 7 measured every on-hit rider).
-* **Turn-start rows fire on `updateCombatant` → `flags.cosmere-rpg.activated` = true** (the cosmere
-  activation model), not `combatTurnChange` (run 7).
-* **A two-`edhaPickPoint` flow looks like a silent post-cost no-op** — scrape `ui.notifications` for a
-  live "Click inside…" prompt before calling it a bug (run 7).
-* **A DialogV2 `cancel` BUTTON can't be driven synthetically** (it falls through to the default) —
-  drive the header close (X), same `!picked` branch, and say which you used (run 7).
-* **Hook `ui.notifications.warn/info/error` at run start** — pre-cost vetoes live only there and the
-  on-screen list rotates out in seconds. **Keep each exec under ~25 s** or a timeout leaves a
-  half-driven flow that poisons the next row (run 7).
-* **`items.getName("<tree name>")` returns the PATH item when a capstone shares the tree's name** —
-  always `items.find(i => i.type === "talent" && i.name === X)` (run 6).
-* **`displace` does NOT bypass snare/zone trigger Regions** — any entry mode springs them (run 6).
-* **Consume-vs-roll dialog order varies per use** — walk BOTH kinds in a loop.
-* **Cloned fixtures keep `prototypeToken.name`** — set BOTH `name` and `prototypeToken.name` (run 5).
-* **Expect roster cross-talk cards mid-row** — the 15 always-on bench PCs fire scene-wide, and Ben's
-  campaign **Corvaine adversaries' "Break" cards fire on bench victim drops**. Check every stray
-  card's named owner before attributing it.
-* Plus the standing ones: INACTIVE combats only (`ui.combat.initialize({combat})`, verify
-  `game.combat.id`; Ben's live campaign combat `BerbNeuXp4iKduef` — leave it alone); chat is
-  `ol.chat-log`; right-click cancel is a `contextmenu` event on `#board`; click-to-place uses the
-  run-2 `canvas.mousePosition` descriptor trick; `item.system.events` is a `RecordCollection` (dot
-  paths only); marker-ledger entries snapshot formulas at placement; `edha.skipBudget(true)` around
-  talent re-adds; **resource writes clamp to max — Investiture max is 4, so top up between uses or a
-  3-Inv talent dies on "Cannot consume, not enough of resource"** (run 7 lost two rows to that);
-  the bench adversary fixtures deflect 1–2, so measure by NET or use vital; no screenshots while the
-  pane is hidden — record quoted card text + console asserts. Tem parinaem and Soggy Bottom are
-  untouchable.
+* ❌ **Verify the deploy by HASHING the served engine, not by counting markers.** Fetch
+  `/modules/edha-content/scripts/register-skills.js?bc=<now>`, `replace(/\r\n/g,"\n")`, SHA-256, and
+  compare to the repo file normalised the same way. Run 8's own prompt carried two WRONG expected
+  counts. Run 8 measured `9a5b2d4e6a23eeec25241cef3e1236ae8bfa2bf9c91c02ba7111f412014a4bc9`; if the
+  live hash differs from the repo's, Ben has not synced — say so instead of failing rows.
+* ❌ **Snapshot per-actor ACTIVE EFFECTS at run start, not just document ids and flags.** Run 8's
+  cleanup swept statuses by id across every placed token and deleted four effects that pre-dated the run
+  off Ben's campaign adversaries; only two could be identified well enough to restore. Diff effects the
+  way you already diff ids, and delete only what you added.
+* **Turn-start watches do not share a hook.** Accumulate fires on `combat.update({turn})`; Foundation/Civ
+  fires on `flags.cosmere-rpg.activated` → true. Try one, then the other; record which worked.
+* **`RollConfigurationDialog` / `AttackConfigurationDialog` submit is `data-action="submit"`, label
+  "Roll", and the window has NO footer** — a walker keyed on `continue|confirm|ok` leaves attack rolls
+  hanging silently. This matters enormously in Heroic, which is almost all attack rows.
+* **`edhaDealerOf`'s 15 s window runs from the damage ROLL** — roll and `applyDamage` in the SAME exec or
+  every on-hit rider reads as dead.
+* **A negative needs a positive control in the same round** (a once-per-round gate and a
+  "forced-movement doesn't count" gate produce identical silence — run 8 recorded 2bV-2's forced-slide
+  half UNPROVEN rather than claim it).
+* **A card that prints a count may be printing INTENT** — assert the document field when a number matters.
+* **The `Bench Ally — *` fixtures carry NO weapons**; use another bench PC as the ally attacker and expect
+  its own on-hit cards (Bench — Heroic fires five per hit — which for THIS run is the point, not noise).
+* Plus the standing ones: `tokDoc.move()` throws a cosmetic `#panCanvas … clientWidth` error when the
+  moved token is CONTROLLED and the pane is hidden — **the write already landed** (release, catch, verify
+  `td.x/td.y`); never resolve a token by NAME when duplicates exist (use `actorId`/`id`); with the pane
+  hidden the ChatLog renders NOTHING — hand-render `await msg.renderHTML()` into `ol.chat-log` before any
+  `[data-message-id]` selector; the sheet's `use-item` needs a real `PointerEvent`; system attack cards
+  have EMPTY `content`; INACTIVE combats only (`ui.combat.initialize({combat})`, verify `game.combat.id`;
+  Ben's live campaign combat `BerbNeuXp4iKduef` — leave it alone); right-click cancel is a `contextmenu`
+  on `#board`; click-to-place uses the `canvas.mousePosition` descriptor trick; a DialogV2 `cancel`
+  BUTTON cannot be driven synthetically (drive the header X, same `!picked` branch, and say which);
+  `item.system.events` is a `RecordCollection` (dot paths only); marker-ledger entries snapshot formulas
+  at placement; `edha.skipBudget(true)` around talent re-adds; **resource writes clamp to max — top up
+  between uses**; hook `ui.notifications.warn/info/error` at run start (pre-cost vetoes live only there);
+  keep each exec under ~25 s. Tem parinaem and Soggy Bottom are untouchable.
 
-**FIRST: there IS a fix batch to re-test — the 07-27f two.** Both of run 7's findings were fixed
-(delta **2026-07-27f**), both **ENGINE-ONLY** (⟳ Sync + F5, **no pack rebuild**). **Byte-check the
-served blob before anything else:** `edhaSummonSourceTalent` (expect 3 — definition + veto +
-executor), `edhaSkillLabel` (~8), `edhaLocalizeLabel`, plus the confirmed-live 07-27d markers
-(`edhaSnareSpringGate`, `edhaCleanseArmMode`, `_edhaCleansePending`) and the 07-27b ones
-(`edhaWatchEntryLevel`, `_edhaLifeClearBusy`, `chainBounded`, `edhaOwnerListQueue`). If
-`edhaSummonSourceTalent` is absent, Ben has not synced: record the two re-tests BLOCKED-ON-DEPLOY
-rather than re-reporting run 7's symptoms as live bugs.
+**Re-tests: there is ONE fix batch owed and it is not written yet.** Run 8 filed a single new defect —
+the counter economy writes `effect.system.count`, a field the cosmere `ActiveEffectDataModel` does not
+have (its schema is exactly `isStackable` + `stacks`), so every counter read returns 0. That fix should
+land in a `test-pass-fixes` pass BEFORE run 9. **If it has landed, re-test the six blocked Knowledge
+rows first** — 2bT-1 (the stored count is 2, and the status label reads `Insight [2]`), 2bT-3 (success
+must be ×count and the failure must leave count−1), 2bT-6 (the floor(count/2) on-kill transfer card
+appears), 2bT-7 (the FULL-count transfer card appears alongside the ally burst), 2bT-8 (the cap-5 clamp
+and its silent overflow), 2bT-10 (R10's additive stacking on top of Pack Share's +Tier, and R11's own
+once-per-round placement). **If it has not landed, say so and skip them** — do not re-report run 8's
+symptoms as new.
 
-**Re-test 1 — the Construct-consuming family (Civilization 2bV-13 · 2bV-14 · the Magnum Opus half of
-2bV-15).** The lookup is fixed: `edhaOwnedSummons` now takes a **null** talent name from a CONSUMING
-rule (via `edhaSummonSourceTalent`) and matches on `summonName`, instead of comparing the consuming
-talent's own name against the summon's `summonTalent` stamp. **Re-open all three rows and drive them
-against a Construct forged NORMALLY — do NOT repeat run 7's `summonTalent`-unset workaround.** That
-workaround is what made run 7's downstream evidence possible, but re-testing behind it would prove
-nothing about the fix, and the downstream halves have still never been driven against a *stamped*
-Construct. So: confirm each talent gets past the pre-cost veto (no "needs a live Combat Construct.
-Nothing spent."), then re-confirm Siege Form's toggle + its two refusals, Arsenal's granted AE +
-re-arm refusal, and all of Magnum Opus (HP roll, +2 defenses, Colossus AE, Foundation upgrade,
-`sceneOnce` refusal, the 10 ft splash). **Also re-check the FORGING side did not regress:** Forge
-Construct at cap 1 must still dismiss-and-replace (2bP-8/2bP-9's shape — that branch was left
-byte-identical, so a failure there is a real regression). New optional Events-tab field to note if
-Ben asks: `edha-summon-effect` → "…forged by which talent", blank = any of your summons with that
-name (the shipped default, and the rename-proof one).
-
-**Re-test 2 — the raw-i18n-key family (nine sites, cross-tree).** Run 7 filed this as one cosmetic
-label; it was a nine-site family, and run 7's explanation of why Bastion's card worked was **wrong**
-(that call hardcodes `label: "Agility"` — there was no working path to copy). Now fixed at the
-shared helpers, so **read the CARD TEXT** on: the Magnum Opus splash save ("Agility vs your Red"),
-the Colossus AE description ("roll Agility … or gain Prone", not "AGI … prone"), Bastion's
-fortified-entry save (still "Agility", now via the helper), any `edha-apply-status` card applying a
-NATIVE status (run 1's `COSMERE.Status.Disoriented` — Disoriented/Slowed/Prone), Order's
-court/accomplice sweep and annotate rider ("Discipline vs your Blue"), and Phantom Double's belief
-cards ("Perception <n>"). **Any `COSMERE.*` string in card text is a FAIL.** One negative to check:
-Fault Line's rule authors `saveLabel: "Speed"` — it must still read "Speed", proving an authored
-override still wins over the helper.
-
-**Deploy state — read before believing any bug.** **07-27f is NOT confirmed — the byte-check above
-decides it**, and it is engine-only either way (no pack build is owed for it). ENGINE: 07-27b **and**
-07-27d are both CONFIRMED
-LIVE. **THREE pack halves are still owed, unchanged since run 5** — do NOT run a pack build yourself,
-and record these BLOCKED-ON-DEPLOY unless a fresh console read proves otherwise:
-- `foundry-build leyline` + ⟳ Sync (Mender's Instinct's note + green range gate).
-- `foundry-build deity` + ⟳ Sync + re-forge (the Construct `creatureType: "Construct"` mint — run 7
-  re-confirmed a freshly forged Construct still reads `system.type = {"id":"humanoid"}`; **note that
-  this gates nothing in Civilization**, whose predicate is flag-based, and the only reader of the
-  `system.type` path is Fault Line's `constructMult`; also Surgical Precision's cosmetic rule text).
+**Deploy state — read before believing any bug.** ENGINE: **07-27b, 07-27d and 07-27f are ALL CONFIRMED
+LIVE** (run 8 hash-verified the whole file). **THREE pack halves are still owed, unchanged since run
+5** — do NOT run a pack build yourself, and record these BLOCKED-ON-DEPLOY unless a fresh console read
+proves otherwise:
+- `foundry-build leyline` + ⟳ Sync (Mender's Instinct's note + green range gate) — gates **2bS-1**.
+- `foundry-build deity` + ⟳ Sync + re-forge (the Construct `creatureType` mint; also Surgical
+  Precision's cosmetic rule text). Note it gates **nothing** in Civilization, whose predicate is
+  flag-based; the only reader is Fault Line's `constructMult`.
 - `foundry-build adversaries` + ⟳ Sync + re-drag the Fellstag (Herding Antlers, 0 events) + re-import
-  BOTH bosses (Flame Surge `damage.formula: null`).
+  BOTH bosses (Flame Surge `damage.formula: null`) — gates several adversary rows below.
 
-Then run the two sections end-to-end:
+## THE WORKLIST — every `# BENCH —` row still open, by section
 
-* **BENCH — Knowledge on Bench — Knowledge:** priorities **2bT-3** (Killing Blow — no-bearer pre-cost
-  refusal; with a 3-Insight bearer YOU roll the Red test on the card, success = ONE [T][D] roll ×3
-  vital auto-applied + ALL Insight cleared, failure = ×1 and exactly 1 removed; do NOT hand-apply the
-  card's own damage) and **2bT-5's two open halves** (the re-use-while-armed pre-cost refusal, and the
-  `weaponOnly` negative — a talent's OWN damage must NOT trigger Predatory Strike). Then 2bT-1
-  (Studied Mark: 2 Insight with `system.count` = 2 as the bench-verify field, the whispered snapshot
-  WITHOUT Cognitive defense, three refusals spending nothing, and the cosmetic two-card drift), 2bT-2
-  (transfer drops A to 0 and moves the icon), 2bT-4 (The Final Study's once-per-scene refusal + the
-  free-Strike roster line), 2bT-6 (own hits +Tier vital; the kill's whispered floor(count/2) transfer
-  offer), 2bT-7 (Death Mark's FULL-count transfer + the PUBLIC per-ally burst card rolling the
-  OWNER's dice; note R9 last-click-wins when 2bT-6 and 2bT-7 both fire), 2bT-8 (Accumulate in/out of
-  Green range, cap 5, plus the unchanged damage→1 Investiture clause), 2bT-9 (Pack Share's arm +
-  PUBLIC three-defense snapshot, re-arm refusal, an ALLY's hit +Tier vital and the first such hit each
-  round placing 1 Insight, your own hits getting nothing), 2bT-10 (The Pack stacking additively on top
-  of Pack Share — R10 — with its OWN once-per-round placement R11, and posting nothing at 0 Insight),
-  and 2bU-15 (Predatory Strike regression: still consumes `predprimed`, still ×max(Insight,1) vital,
-  still places 1 Insight). ⚠️ **Knowledge is an ALLY-hit tree** — 2bT-9/2bT-10 need a second attacker
-  inside YOUR Green range; run 7's `applyDamage`-within-15 s trick attributes the dealer, so an ally
-  PC's weapon use + apply is the way to drive it.
-* **BENCH — Order on Bench — Order:** priorities **2bL-1 / 2bL-2** (does the pact form at all, and do
-  the UNCONVERTED readers still see the ledger — Concord must list your covenanted allies BY NAME and
-  Final Decree must name them as Witnesses; **if either says you have no Covenants, STOP and report** —
-  that is the one failure that matters) and **2bV-17** (the Covenant AE sweep — the 07-24u
-  key-vs-marker reconcile fix's first bench; two PCs covenant, walk in/out of White range, the +1
-  all-defenses AE appears/disappears on BOTH, and partner-damages-partner still posts the break
-  watch). Then 2bV-18 (the point of the migration — edit a cap formula / note / court radius on a
-  converted Order or Civ talent and confirm the behaviour follows), 2bL-3 (all four Covenant pre-cost
-  refusals), 2bL-4/2bL-5 (the AE and **the AE edited to +2** — the pass's whole premise), 2bL-6 (the
-  cap: the OLDEST pact dissolves and a 2+ drop clears ALL dropped allies' icons), 2bL-7 (⚠️ the SHARED
-  icon — needs two Order PCs; bench has one, so expect ⚑ unless you stage a second Order actor),
-  2bL-8 (both break buttons), 2bL-10/2bL-11 (Bear Witness EVERY round-start, Temp HP keeps-higher —
-  run 7 proved the keeps-higher writer works in Power's 2bU-8, so a drop here is a real bug),
-  2bV-1..2bV-9 (Edict's picker + refund drift, the three watcher shapes, ⚖ Violated, Sealed Edict's
-  engine-rolled Discipline rider, Verdict's court, Concord's per-ally once-per-round bonus, Shoulder
-  the Oath's Reaction, Lawkeeper's wall-blocked advantage, Final Decree's full resolve), and the Order
-  quiet-cases row. Remember: **Edict's prohibition picker was the OTHER AppV1 window converted to
-  DialogV2 in 07-27d** — an explicit "the V2 dialog appeared" note on 2bV-1 is worth recording, and
-  Covenant/Concord/Final Decree all read the same H3 `covenants` ledger, so group their symptoms
-  before calling three bugs.
+Work it in this order. Row ids are the checklist's; ⚑ marks a row the checklist already reserves for
+Ben (feel, canvas precision, multi-client) — **read those, do not drive them**, and leave them in place.
 
-**Standing observations to extend, not re-open:** the out-of-combat scope question (07-26k
-characterization; run 6 added Restrained-never-expires, run 7 added Absolute Authority's Weakened
-landing with `duration.type: "none"`); roster cross-talk (park proposal still pending). If
-Knowledge/Order watches show the same patterns, ADD the sighting — don't re-derive it.
+**1 — `BENCH — Engine-wide & cross-tree` (run FIRST; if 2bA-7's successor rows show the edit round-trip
+broken, STOP and report).** Open: **2bAC-2 · 2bA-6 · 2bB-8 · 2bM-1 · 2bL-13 · 2bT-19 · 2bQ-6 · 2bE-8 ·
+2bP-6 · 2bP-7**, plus the un-numbered rows *"GM summon relay (as a PLAYER without actor-create)"*,
+*"Withering Ray skill test"*, and *"The 10 recovered talents show behaviour again"*. ⚑ in this section:
+2bAC-1, 2bL-14, 2bE-9, the Injury-tool/Raise-Dead row, the formula-bar row, the engine-move-collision
+row, the Flame-Surge/burst-cards row, and *"Nothing else lost its rules"*. **2bM-1 is a no-GM row → ⚑.**
 
-**Caveats:** multi-client rows stay ⚑ Ben (2bL-7's two-Order-PC row and 2bM-1's no-GM row especially).
-Do NOT fix anything mid-run — that is `test-pass-fixes` work. Record per the skill: passing rows retire
-with one-line evidence, fails get dated inline notes, feel/canvas rows stay ⚑, blocked rows say
-BLOCKED-ON-DEPLOY. **Scope your end-of-run cleanup to an id-diff against your OWN start snapshot** —
-runs 4, 5, 6 and 7 all ended exactly empty; keep the streak — **and this run also snapshot per-actor
-`flags["edha-content"]` at start**, because run 7's clean document diff still could not attribute the
-roster's flag litter. The 23 roster tokens stay placed. The run-1 orphan `Combat Construct` token at
-(7500, 4800) is a **dangling reference to a deleted actor** — it can never be found by any summon
-lookup, so leave it for Ben and do not treat it as testable. Bench Ally — One carries pre-existing
-stale flags (`bpHits`, `accord`, `coordRound`) — leave them. **Log out at the end** (`game.logOut()`)
-and confirm Bench is selectable on /join.
+**2 — `BENCH — Heroic paths` (the big one; run on `Bench — Heroic`, which already carries exactly these
+talents).** Priorities in the section header: **2bE-7** (first H1 payload with real mechanics — if the
+payload dispatch is broken this is where it shows), **2bE-4** (the first thing `edha-combat-timing` has
+ever run), **2bJ-12** (the on-hit dispatcher), **2bO-7** (the damage-roll half Pack Hunting always
+promised), **2bD-3** (the nothing-spent veto), **2bZ-9** (the first authored NATIVE rule). Then, in
+checklist order: **2bE-3 · 2bE-5 · 2bD-7 · 2bO-1 · 2bO-5 · 2bN-2 · 2bN-3 · 2bC-7 · 2bQ-4 · 2bQ-5 ·
+2bF-13 · 2bF-15 · 2bM-2 · 2bX-15 · 2bX-16 · 2bX-17 · 2bZ-11 · 2bZ-5 · 2bZ-6 · 2bZ-7 · 2bZ-8 · 2bA-8**,
+and the five collapsed like-for-like rows **2bB-1/2/5/6/9 · 2bE-1/2/6/10 · 2bD-1/4/5/6 ·
+2bM-3/4/5/7/11 · 2bN-1/4/5 + 2bO-2 + 2bN-6**, plus the un-numbered *"On-hit riders"*, *"Orphan-token
+combat guard (07-18i)"* and *"Four silently-dead prereqs now bite"* rows. ⚑ in this section: 2bC-1,
+2bB-4, 2bF-14/2bF-5, 2bF-16, 2bM-6. **Run-8 sighting to fold in, not re-derive:** `Bench — Order` was a
+combatant in a bench combat that was created and deleted, and a pre-existing `Determined` icon on it
+survived the deletion — relevant to **2bN-3** (Rousing Presence's Determined must clear when combat
+ends). Treat it as a lead, not a result; the icon's provenance is unknown.
+
+**3 — leyline leftovers.** White: **2bR-10 · 2bR-17** (Callthief's Counterpoint) — ⚑ the burst-only row
+and the five-restored-adversary-abilities row. Blue: **2bF-17** (Surecat) **· 2bJ-3 · 2bAA-8** — ⚑
+2bAA-6, ⚑ 2bAA-9 (its two Seeming copies). Black: **2bI-9 · 2bZ-10** (its two unbenched copies) — ⚑
+2bI-4, 2bI-6, 2bJ-10. Red: **2bA-5**, plus *"Red spot-checks (like-for-like)"* and *"Red / Momentum is
+takeable"* — ⚑ the Flashpoint row. Green: **2bS-11 · 2bS-3**, plus *"Green spot-checks"* — **2bS-1 is
+BLOCKED-ON-DEPLOY** (the leyline pack half).
+
+**4 — deity leftovers.** Destruction: **2bY-7** (⚑ the Walking Ruin indicator row). Chaos: ⚑ 2bU-5/2bU-3
+only. Death: **2bW-1** (⚑ the Raise Dead row). Civilization: ⚑ the enemy-cost ruler row (answered GO at
+resolver level — Ben's canvas half). Knowledge: the six PARTIAL rows above, gated on the counter fix.
+Order: **2bV-2's forced-slide negative** (needs a FRESH round between the walk and the slide — run 8
+could not separate it from the once-per-round gate), **2bV-6's** zero-Covenant refusal + re-use refusal +
+the per-ally +Presence rider, **2bV-8's** advantage injection and its wall/hostile-attacker block, the
+**Order quiet cases** (2bL-9 crossing scenes, 2bL-12's three silent cases) — and ⚑ **2bL-7**, which needs
+a second Order PC.
+
+**5 — the adversary sections** (the long tail after Heroic; almost entirely ⚑ but not entirely).
+Non-⚑ and drivable: **2bAB-1 · 2bAB-8**, plus the un-numbered *"The Old Agreement — text-only"*,
+*"Pack Doctrine — no automation by design"*, *"Seize and Roll: no cue by design"*, *"Drag Under / Slip
+the Sound: no cue by design"*, *"The Tithe Takes the Failing — no automation by design"* (these four are
+NO-NAMEABLE-HOOK confirmations: verify the item genuinely has no events and move on), and the
+folder/drag/mirror rows that only need a post-deploy look. ⚑ 2bAB-4/5/6/7/9/10 and the ~150 per-adversary
+ability rows are Ben's. **Several adversary rows are BLOCKED-ON-DEPLOY** behind the owed
+`foundry-build adversaries` — check the pack read before failing any of them (Herding Antlers = 0 events,
+Flame Surge `damage.formula: null`).
+
+**Families carried the whole marathon** — mention them in the delta whether or not you touch them:
+**Shockwave Slam's weapon-hit trigger surface** (run 1's FAIL, still open) and the **standing
+out-of-combat scope characterization** (07-26k; run 6 added Restrained-never-expires, run 7 added
+Absolute Authority's Weakened landing with `duration.type: "none"`, run 8 added Final Decree binding
+every hostile token on a shared map). If Heroic shows the same patterns, ADD the sighting.
+
+**Caveats.** Multi-client rows stay ⚑ Ben (2bL-7's two-Order-PC row, 2bM-1's no-GM row, the client-veil
+rows in the Blue/Seeming block). Do NOT fix anything mid-run — that is `test-pass-fixes` work. Record per
+the skill: passing rows retire with one-line evidence, fails get dated inline notes, feel/canvas rows
+stay ⚑, blocked rows say BLOCKED-ON-DEPLOY. **Scope end-of-run cleanup to a diff against your OWN start
+snapshot — ids, per-actor `flags["edha-content"]`, AND per-actor active effects** (run 8's id-diff was
+exactly empty for the fifth run running, but its effect sweep damaged the table's state because it had no
+effect snapshot to diff against). The 23 roster tokens stay placed. The run-1 orphan `Combat Construct`
+token at (7500, 4800) is a dangling reference to a deleted actor — leave it for Ben, do not treat it as
+testable. `Bench Ally — One` carries pre-existing stale flags (`bpHits`, `accord`, `coordRound`) and
+`Bench — Order` / `Bench — Red` carry pre-existing `Determined` icons — leave all of them. Ben may want
+two effects re-applied that run 8 could not identify: one `Weakened` among Cinderhound
+`E0pMS7z6qdt8O15p` / `NLdImS8EUcxb9jJC`, and one `Prone` among Mutated Thrall `BUEIUVatYUfVqYb2` /
+`qJ3sfPuqJZqod0xa` / `9opSkrFMBMjaWPVr`. **Log out at the end** (`game.logOut()`) and confirm Bench is
+selectable on /join.
 
 Finish with the dated handoff delta (next letter after the current top one), dashboard rebuild, gates
-(`python`, never `python3`; no `;`-chaining; never pipe a gate through `tail`), ONE pushed commit
-titled `Bench run 8 (Knowledge+Order): X retired on evidence, Y fails -> test-pass-fixes`, and
-rewrite `docs/BENCH_NEXT_RUN.md` with the run-9 prompt: **THE FINAL SWEEP** — `BENCH — Heroic paths`,
-the `BENCH — Engine-wide & cross-tree` remainder, the adversary rows scattered through the leyline
-sections (2bR-17 Callthief's Counterpoint, 2bF-17 Surecat, the five restored adversary abilities,
-2bZ-10's two unbenched copies, 2bAA-9's two Seeming copies), and every leyline row a landed fix
-unblocked. Whatever run 8 fails feeds one more test-pass-fixes pass before that sweep; the only
-families carried the whole marathon are **Shockwave Slam's weapon-hit trigger surface** (run 1) and,
-if the run-7 fix has not landed, **the `edha-summon-effect` lookup**.
+(`python`, never `python3`; no `;`-chaining; never pipe a gate through `tail`), ONE pushed commit titled
+`Bench run 9 (final sweep): X retired on evidence, Y fails -> test-pass-fixes`, and rewrite
+`docs/BENCH_NEXT_RUN.md`. **If run 9 genuinely closes the last drivable row, say so and make the next
+prompt the playtest-1 / §9f balance-review handoff instead of a run 10** — enumerate what is left as ⚑
+Ben-only so he can see the whole remaining surface in one list.
