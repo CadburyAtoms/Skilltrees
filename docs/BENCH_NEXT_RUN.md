@@ -3,8 +3,14 @@
 > **⛔ STOP — there is no paste-ready next-run prompt right now, and there should not be one until
 > Ben has deployed.** The 2026-07-26/27 bench marathon ran six bench runs and seven fix passes back
 > to back. Four pack rebuilds' worth of fixes are sitting in the repo unable to reach the table, and
-> **nine checklist rows are blocked behind them**. A run 10 written today would re-fail rows whose
+> **nine checklist rows are blocked behind them**. A run written today would re-fail rows whose
 > fixes are already written.
+>
+> **Status 2026-07-27k:** a **run 10** was dispatched anyway, scoped to Heroic only, and it retired
+> 12 more rows without touching anything blocked — **Heroic now has 0 runnable rows**. That confirms
+> the stop above rather than contradicting it: every remaining Heroic row is either deploy-blocked,
+> ⚑ yours, or waiting on a fix. **Step 2 below is now the single highest-value action in the whole
+> bench backlog — it unblocks 8 Heroic rows on its own.** No run 11 prompt until then.
 
 ## Read this first
 

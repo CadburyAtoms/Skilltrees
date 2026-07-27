@@ -38,15 +38,32 @@ remains, not work that failed.
 | **Power** | 17 (whole section) | **0** | 0 | 0 | 0 |
 | **Knowledge** | 12 | 1 | 1 | 0 | 0 |
 | **Order** | 17 | 5 | 1 | 0 | 4 |
-| **Heroic paths** | 16 (its first ever pass) | 26 | 6 | 6 | **20** |
-| **TOTAL (bench scope)** | **178** | **77** | **36** | **8** | **41** |
+| **Heroic paths** | 28 (16 run 9 + 12 run 10) | 16 | 4 | 8 | **0** |
+| **TOTAL (bench scope)** | **190** | **67** | **34** | **10** | **21** |
 
 **Five sections are now empty**: Life, Fate, Sovereignty, Power, and (bar one ⚑) Chaos and
 Knowledge. Every deity tree has been driven end-to-end at least once.
 
-**What is actually left of the marathon's scope is 77 rows, of which 41 are agent-runnable and 8 are
+**What is actually left of the marathon's scope is 67 rows, of which 21 are agent-runnable and 10 are
 blocked on your rebuilds.** The rest are ⚑ yours by nature — canvas rendering, table feel,
 multi-client, "does this look right".
+
+> ✅ **Update (2026-07-27k, bench run 10 — the dedicated Heroic run you asked for).** Heroic is
+> **finished as far as the current deploy permits**: 12 more rows retired on evidence, and the
+> **20 "runnable" rows in the row above are now 0**. The 16 that remain are not untested — they are
+> **blocked**, and mostly by one missing action:
+> - **8 rows** wait on **`foundry-build heroic` + ⟳ Sync Talents** (the dead-cosmere-skill-key family
+>   fixed in `83c04ea` but never built). A fresh console read this run confirmed every stale key is
+>   still in the live pack, so nothing was failed against it. **That single rebuild unblocks all 8.**
+> - **4 rows** are ⚑ design calls that are yours alone — every factual half is now proven.
+> - **1** is a new engine FAIL found this run (quarry auto-advantage never applies), **1** is blocked
+>   behind it, **1** needs a bench-roster change rather than a test (no bench PC owns Probability
+>   Net), and **1** is a Blue row parked in the Heroic section.
+>
+> Heroic's blocked count rising 6 → 8 is not regression: two collapsed spot-rows (Contest-gate,
+> Warrior stances) had their remaining runnable items cleared this run, so what is left of each is
+> purely the blocked remainder. The bench-scope TOTAL's runnable column falls 41 → 21 for the same
+> reason — those rows were done, not deferred.
 
 > ⚠️ **Correction (2026-07-27).** An earlier version of this table said Heroic had **282** open rows
 > and put the checklist total at 333. That was a counting error on my side, not a change in the
@@ -71,7 +88,8 @@ your new passwordless player user unlocks — see §5.
 - **Adversary sections, entirely**: 2bAB-1 (blocked) · 2bAB-8 · four NO-NAMEABLE-HOOK confirmations.
 - **Engine-wide**: 2bAC-2 · the GM-summon relay · Withering Ray's skill test.
 - **In Heroic**: 2bZ-8 (now unblocked), 2bF-13's success branch, 2bE-5's negative, 2bZ-7's
-  negative, and the Envoy/Leader/CAE cluster spot-checks.
+  negative, and the Envoy/Leader/CAE cluster spot-checks. — ✅ **ALL OF THESE WERE DONE by bench
+  run 10 on 2026-07-27k**, along with 2bE-4, 2bO-7, 2bC-7, 2bN-3, 2bZ-11 and the orphan-token guard.
 
 Run 9 chose depth over breadth deliberately: root-causing the eight-talent skill-key family was
 worth more than touching more rows shallowly. I agree with that call.
@@ -88,6 +106,11 @@ talents in three other sections too).
 The result: **16 Heroic rows retired, 20 runnable rows still open.** That is roughly one focused
 run, not a mega-effort — the "282 rows" figure in the first draft of this report was my counting
 error, corrected above.
+
+> ✅ **That focused run happened: bench run 10, 2026-07-27k.** It retired 12 more rows and took
+> Heroic's runnable count to **0**. The estimate held — one run was the right size. What is left is
+> **16 rows that no agent can move on the current deploy**, half of them waiting on a single
+> `foundry-build heroic` + ⟳ Sync Talents. See §1 for the exact breakdown.
 
 The process lesson stands regardless: the instruction said to adjust freely based on what was
 actually open, and I followed the given run order instead of counting the sections first. The

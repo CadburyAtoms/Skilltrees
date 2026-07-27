@@ -2,7 +2,16 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, **COMPLETED 2026-07-26 (pass AA)**: **the ratchet list is EMPTY — 221 → 0 across twenty-seven passes.** Every tree is clear, all six marker ledgers have migrated, and `scripts/name-keyed-allowlist.json` stays in the repo with an empty `talents` list *on purpose* — lint pass 7 still guards against REGROWTH, which is the half of the ratchet that matters from here on. ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **ALL SIX marker LEDGERS have migrated** (`covenants` 07-24u; `edicts` 07-25 pass V; `remains` 07-25 pass W; Fate's `snares` 07-25 pass X; Destruction's `charges` 07-26 pass Y; Fate's `ordained` 07-26 pass AA — the point-bound ones fail OPEN through H3's reconcile by design). There is no flat marker-list flag left in the engine. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-27j** (BENCH RUN 9'S
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-27k** (BENCH RUN 10 — THE DEDICATED HEROIC
+RUN. Twelve rows retired on evidence; the section is now provably **deploy-blocked, not untested** —
+16 rows left, **0 runnable**, and **8 of them unblock in one action**: `foundry-build heroic` +
+⟳ Sync Talents. Two never-verified 07-27j engine fixes confirmed at the table (the CAE grant
+write-race — three groups, then two-in-one-tick; Pack Hunting's double-dip — one card, one roll).
+ONE new engine FAIL: quarry auto-advantage has never applied, root-caused to the single site that
+writes `advantageMode = 1` instead of `"advantage"` and skips the `configureDialog` wrapper. ONE
+suspected defect RETRACTED after measurement — Stonestance is fine; `deflect.derived` is the wrong
+field, read `.value`. A full skill-key audit of all 62 Heroic talents found no dead keys beyond the
+8 already fixed. Cleanup exactly clean. Nothing to deploy from this pass.) Prior: **2026-07-27j** (BENCH RUN 9'S
 THREE DEFECTS FIXED — THE MARATHON'S LAST FIX PASS. The dead-SKILL-key family closed in all eight
 talents, each replacement decided by the talent's own card text, and **gated** by a new `lint-refs`
 **pass 12** that validates every authored skill/attribute/status/damage-type/defense id against the
@@ -127,6 +136,99 @@ the Red pilot, executed live by an agent session joined as `Bench`: 16 rows reti
 1 FAIL root-caused (Shockwave Slam's weapon-hit trigger surface), 4 cross-tree observations,
 and the agent-bench runbook hardened with the v13 operating lessons. Docs + setup-script fix
 only; nothing to deploy.)
+
+**2026-07-27k — BENCH RUN 10: THE DEDICATED HEROIC RUN. Twelve rows retired on evidence, one new
+engine FAIL, one suspected defect retracted after measurement — and the section is now provably
+*deploy-blocked, not untested*. NOTHING TO DEPLOY FROM THIS PASS (bench only).**
+
+**Why Heroic still is not "done", precisely.** Runs 9 and 10 between them have now driven every
+Heroic row the current deploy allows. **16 rows remain and ZERO are runnable today.** The dominant
+cause is a single missing step: **8 of the 16 are BLOCKED-ON-DEPLOY on `foundry-build heroic` +
+⟳ Sync Talents** — the dead-cosmere-skill-key family fixed in `83c04ea` but never built into the
+pack. A fresh console read this run confirmed the live pack still carries every stale key
+(`Sharp Eye.skill: "per"`, `Flamestance.whenSkill: "itm"`, `Feinting Strike @skills.itm.rank`,
+`Confident Command.skill: "itm, lea, per"`, `Set at Odds`/`Synchronized Assault` `skill: "ldr"`,
+Rallying Shout's `@skills.ldr.rank`), so none of those rows were failed against it. **Rebuilding the
+heroic pack unblocks 8 rows in one action.** The other 8: 4 are ⚑ design calls that are Ben's alone
+(every factual half is now proven), 1 is the new FAIL below, 1 is blocked behind that FAIL (2bX-17),
+1 needs a roster change rather than a test (2bC-8 — no bench PC owns Probability Net), and 1 is a
+Blue row parked in the section (Probability Cascade).
+
+**Deploy verified BY HASH before anything was driven** — the served `register-skills.js` normalised
+CRLF→LF hashed to `35bc9315…f7cad`, byte-identical (1 436 805 B) to `HEAD:module-src/scripts/
+register-skills.js`. So the four 07-27j engine fixes were genuinely live, and **two of them are now
+table-verified for the first time**:
+- **The CAE grant write-race is FIXED (2bE-4).** A combat start with Foresight AND Sidestep owned
+  wrote **all three** groups — `base`, `Edha: Foresight`, `Edha: Sidestep (Dodge only)`. Two Through
+  the Fray uses fired in one tick wrote **two** groups. Run 9's probe produced two cards and one
+  group; the queue keyed on combatant uuid + flag key holds. Later in the run **four** Edha action
+  groups coexisted on one combatant (Backstep 1, Quick Analysis 2, Trickster's Hand 2, Cautious
+  Advance 2), which is the same guarantee under more pressure.
+- **Pack Hunting's double-dip is FIXED (2bO-7).** One banked use, ally Strike on the quarry → attack
+  `1d20 + 4 + 3[Pack Hunting]`, damage `1d6 + 4` **clean**, exactly **one** card, flag consumed. The
+  `edhaNextModClaimOk` guard was also shown inert for count-1 `test`-only mods four separate times
+  (Demonstrative, Shrewd, Overwhelm with Details, Decisive Command all applied normally).
+  ⛔ Its count-2 non-regression (Blue's Probability Cascade) could **not** be driven — that chain needs
+  an Opportunity plus 1 Investiture, which cannot be forced. Parked as a Blue row.
+
+**⚠️ NEW FAIL — quarry auto-advantage has NEVER applied (ENGINE, one site, named fix).** Seek Quarry's
+own card promises "attacks are auto-advantaged". **Four separate attacks on a correctly-marked quarry
+all rolled a plain `1d20 + 4`** — never `2d20kh` — with the ledger holding the victim and the `Quarry`
+icon on it. Root-caused by probe rather than by reading: a hook probe shows `cosmere-rpg.preAttackRoll`
+DOES fire and the roll carries `advantageMode: 1` at both `preAttack` and `attack`, but its `terms`
+stay `[Die:1d20, +, 4]` — one d20, no `kh`. `edhaQuarryAdvPreRoll` (~5442–5451) is the **only**
+advantage site in the engine that writes the **number `1`** instead of the string `"advantage"`, and
+the only one with **no `configureDialog` wrapper** — while the engine's own comment at ~line 314 says
+"Dialog rolls: configureDialog OVERWRITES options.advantageMode". Every other site (~476, 528, 3619,
+5038, 14434, 15236) does both. Same retired-code smell run 9 named for Flamestance, in the one branch
+never converted. → **test-pass-fixes**; blast radius is Seek Quarry, Tagging Shot's placed quarry, and
+2bX-17's advantage half.
+
+**⚠️ A SUSPECTED DEFECT RETRACTED AFTER MEASUREMENT (the run-9 discipline, deliberately repeated).**
+Stonestance first read as a silent no-op because `system.deflect.**derived**` stayed 0 with the stance
+active, even though the effect applied cleanly (`deflect.bonus = 1`, in `appliedEffects`, in
+`actor.overrides`). It is **not** a defect: `system.deflect.**value**` goes 0 → **1**, and a control
+measurement had 10 impact damage cost **10** HP without the stance and **9** with it. `derived` is the
+armour-only sub-field and never folds in `bonus`; the engine reads `.value` (`edhaDeflectOf`). **New
+operating rule: read `system.deflect.value`, never `.derived`.** Recorded because the first read would
+have shipped a false FAIL into the fix queue.
+
+**A WIDER AUDIT WORTH KEEPING.** Every skill key referenced by all 62 Heroic talents was validated
+against `CONFIG.COSMERE.skills`: exactly **9 dead-key sites across 7 talents**, precisely the set
+07-27j already fixed. **No new ones**, and `lor` (Overwhelm with Details) is valid. The pending heroic
+rebuild closes the entire family at once — this is the measurement that makes "8 rows, one action" a
+fact rather than a hope.
+
+**Retired on evidence (12 rows):** 2bE-4 · 2bE-5 (Chain armour, `deflect.value` 2 → **only** Foresight
+reached the tracker, Sidestep silent, with Foresight as the positive control in the same combat start)
+· 2bO-7 · 2bF-13 ("24 vs SPI 14 — SUCCESS" → Disoriented asserted on the document AND the disadvantage
+flag written, no click) · 2bZ-8 (all three halves, including editing `reduceFormula` on the Events tab
+and watching the next card change from "reduced by 2" to "reduced by 1") · 2bZ-7's negative
+(Resuscitation deleted → a success healed with **no** upsell line) · 2bC-7 (Emotional Overload wrote
+to the TARGET, caster's flag null) · 2bN-3's last half (ally's token deleted mid-fight → its Determined
+cleared at combat end while a pre-existing one survived) · 2bZ-11 (Cold Eyes end to end on an
+adversary-type quarry: note, ledger emptied, icon gone, +1 focus) · the **CAE cluster spot** · the
+**Envoy cluster spot** · the **orphan-token combat guard** (the run-1 orphan `Combat Construct`,
+resolved **by id**, refused with the exact named toast; combat stayed started). The **Leader command
+spot** went 10-of-11 and the **Warrior stances spot** 5-of-6, each now hanging on one blocked item.
+
+**Bench hygiene.** Setup script re-run as a real step: zero ⚠ lines, no creations (idempotent), and
+the ranged fixture asserted rather than trusted — `Shortbow.system.attack.type === "ranged"`, range 80.
+Cleanup ended **exactly clean**: zero document adds/removes (actors, items, scenes, combats, macros,
+folders, tokens, walls, templates), zero effect drift (8 effects, the same 8 as the start snapshot),
+zero flag drift, zero resource drift, the moved token returned to its home square, and only Ben's own
+combat `BerbNeuXp4iKduef` left standing. **One knowingly-accepted residue:** Resuscitation and Calm
+Appeal were deleted and re-created from the pack to drive their two negatives, so those two items carry
+new ids on Bench — Heroic; names and the 62-talent count are unchanged. Two restore passes were needed
+because the first raced with in-flight engine writes — worth knowing.
+
+**Two new harness lessons.** (1) The browser pane opened at 0×0, so Foundry **never initialised the
+canvas** and `canvas.initialize()` then threw a PIXI plugin conflict; `resize_window` to desktop
+followed by a **page reload** fixed it — but the reload wipes any in-page snapshot, so take the
+snapshot *after*. (2) Under v13 with Advanced Encounters live, `tokDoc.update({x,y})` and
+`tokDoc.move()` **both silently no-op** for a combatant with no movement left — they return without
+error and the token does not move. `scene.updateEmbeddedDocuments("Token", [...], {teleport: true})`
+lands.
 
 **2026-07-27j — BENCH RUN 9'S THREE DEFECTS FIXED. The marathon's last fix pass, so every item was
 root-caused in code before anything was touched and every fix ships with pinned regressions — there is
