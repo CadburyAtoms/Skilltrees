@@ -4178,10 +4178,34 @@ async function edhaPromptDC(title, hint) {
 // The modifier is rank + the linked attribute (cosmere skills don't expose a flat `.mod` in roll data, so
 // we mirror edhaWhiteMod's rank+attr approach). attrId defaults to the skill's natural attribute.
 const EDHA_SKILL_ATTR = { ath: "str", prc: "awa", sur: "awa", dec: "pre", lea: "pre", dis: "wil" };   // dis (Discipline) → wil per foundry-build.js's SKILL_ATTR (Order's Sealed Edict/Verdict contests)
+/* An ATTRIBUTE id is a legitimate contest id, not a typo (2026-07-27j). Several cards call for an
+ * ATTRIBUTE test, not a skill test — Concussive Yield's "each character tests Speed vs. your Red"
+ * and Inevitable Snare's "the triggering target tests Speed vs. your Green" — and `spd` is also
+ * this file's own long-standing DEFAULT in `edhaFoeSkillVsColor` and the `edha-zone`/snare-spring
+ * resolvers. But `spd` is an Attribute, never a Skill: cosmere rollData keys `skills` off
+ * CONFIG.COSMERE.skills (18 + EDHA's 5 colours) and `attr` off CONFIG.COSMERE.attributes, so
+ * `skills.spd.rank` is absent AND `EDHA_SKILL_ATTR` has no `spd` row — BOTH terms were skipped and
+ * the foe rolled a bare `1d20` with no Speed in it at all. Silent, like every member of this
+ * family: no error, no warning, just a contest the target's attribute never entered.
+ * `edhaSkillLabel` was already taught about attributes by the 07-27f label fix (it falls back to
+ * CONFIG.COSMERE.attributes) — the card has been PRINTING "Speed" over a roll that ignored it.
+ * CONFIG first so a system that adds an attribute needs no edit here; the literal set is the
+ * headless fallback (tests, and any load-order gap before CONFIG.COSMERE exists). */
+const EDHA_ATTR_IDS = ["str", "spd", "int", "wil", "awa", "pre"];
+function edhaIsAttributeId(id) {
+  const key = String(id ?? "").trim(); if (!key) return false;
+  const cfg = globalThis.CONFIG?.COSMERE?.attributes;
+  return cfg ? Object.prototype.hasOwnProperty.call(cfg, key) : EDHA_ATTR_IDS.includes(key);
+}
+/* The pure id→attribute decision, hoisted so it is pinnable without Foundry. Explicit `attrId`
+ * still wins; then "the id IS an attribute"; then the skill→attribute map. */
+function edhaContestAttrFor(skillId, attrId = null) {
+  return attrId || (edhaIsAttributeId(skillId) ? String(skillId).trim() : null) || EDHA_SKILL_ATTR[skillId] || null;
+}
 async function edhaRollOpposedSkill(target, skillId, attrId = null) {
   try {
     const data = target.getRollData?.() ?? {};
-    const attr = attrId || EDHA_SKILL_ATTR[skillId] || null;
+    const attr = edhaContestAttrFor(skillId, attrId);
     const parts = ["1d20"];                                         // rollData shape mirrors edhaWhiteMod: @skills.<id>.rank + @attr.<id>
     if (foundry.utils.getProperty(data, `skills.${skillId}.rank`) != null) parts.push(`@skills.${skillId}.rank`);
     if (attr && foundry.utils.getProperty(data, `attr.${attr}`) != null) parts.push(`@attr.${attr}`);
