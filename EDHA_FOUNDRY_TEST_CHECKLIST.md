@@ -73,14 +73,13 @@ are the next test-pass-fixes input, NOT deploy gaps. The Surgical data half stay
 (rule description + an explicit `def: "phy"` the engine already defaults) — it rides the
 already-owed deity rebuild.
 
-**⚑ NOT YET LIVE — the 07-27d ENGINE fix batch (bench run 6's five defects; ALL ENGINE-ONLY).**
-Ben: `module-src-sync` + F5 (Foundry can stay running; nothing was written into the live module).
-Byte-check `edhaSnareSpringGate`, `edhaCleanseArmMode` and `_edhaCleansePending` in the served
-blob before trusting the run-7 re-tests. The batch: Surgical Precision's decide-on-own-roll
-(attempt 2), the Chaos sweep's guarded ledger-first halves (attempt 2), the snare spring
-in-flight guard, the Weave/prohibition pickers on DialogV2 (run 6's "no-op" was the harness
-blind to the AppV1 window — the flow itself was proven live), and `tempHp` joining the generic
-scene sweep. No pack rebuild in this batch.
+**✅ The 07-27d ENGINE half is LIVE (bench run 7, 2026-07-27e).** The fresh Bench join byte-checked
+the served `register-skills.js`: `edhaSnareSpringGate` (3×), `edhaCleanseArmMode` (3×),
+`_edhaCleansePending` (5×), plus `_edhaLastRoll` and the `tempHp joined 07-27d` sweep comment —
+and **all FIVE re-tests PASSED at the table** (snare spring once on every one of five paths;
+Surgical Precision quoting its own d20 on both paths + the cancelled-dialog case; the Chaos sweep's
+ledger unset with ZERO named warns; the Weave picker as a real `<dialog>`; all three `tempHp` flags
+swept). Evidence per row in the 07-27e delta. No pack rebuild was in that batch.
 
 **Still BLOCKED-ON-DEPLOY — THREE data/pack halves (all re-confirmed by fresh compendium reads,
 bench run 5).** Ben runs these with Foundry closed:
@@ -356,7 +355,14 @@ takes an injury: Slowed…" card and ONE injury item; apexForm/lifeRegen swept c
 scene reset doubled anything all run. ⚑ still in the rulings batch: melee mutation riders fire
 on a nat-1 graze application.
 
-- [ ] **2bW-15 — Surgical Precision — FIXED 07-27d (attempt 2), re-test on the new ENGINE (module-src-sync + F5)** — run 6's sheet fail-open + "21 under an own d20 of 25" were ONE deterministic bug, not a race: the system's use() rolls a skill_test talent's DAMAGE before its TEST (system index.js ~7246), so the old damageRoll-time decider always read either nothing (fail-open) or the PREVIOUS use's capture (one-behind). Now the damageRoll fire only ARMS the decision and it resolves on the use's OWN arriving test (`edhaCleanseArmMode`, pinned). Re-test BOTH paths, back-to-back uses: (a) sheet use at PHY 45 → whispered graze note quoting THAT use's d20, NO cleanse; (b) console use at PHY 45 immediately after → graze note quoting ITS OWN d20; (c) any path at phy 1 → cleanse card, click removes a condition; (d) a use whose roll dialog is CANCELLED → no card at all, and the next use decides on its own roll (the stale arm is overwritten).
+> **✅ 2bW-15 — Surgical Precision — RETIRED on evidence (bench run 7, 2026-07-27e).** All four
+> sub-cases passed on the live 07-27d engine at PHY 45 / phy 1: two back-to-back CONSOLE uses quoted
+> **their own** d20s ("— 6 vs … PHY 45: graze" under `1d20+5=6`, then "— 24 …" under `1d20+5=24` —
+> the one-behind is gone); the SHEET path quoted "— 9 …" under its own `1d20+5=9` with **no**
+> fail-open cleanse; phy 1 gave the three-button cleanse card and the click posted "removed Weakened
+> from Bench Ally — Two"; and a CANCELLED roll dialog produced **zero** cards, with the next use
+> deciding on its own fresh d20 (8). The Surgical data half stays COSMETIC-only on the owed deity
+> rebuild.
 
 ---
 
@@ -397,7 +403,16 @@ mark-wins reconcile — the next place read "(1/2)"; auto-prompt whispered with 
 Mute silenced a bearer's roll; a real use re-armed the prompt). Evidence per row in the 07-27a
 delta.
 
-- [ ] ⚑ **Chaos residuals (run 5; (c) FIXED 07-27d attempt 2 — re-test on the new ENGINE, module-src-sync + F5)** — (a) 2bU-5's through-walls RENDERING of Omen-bearers: canvas-visual, hidden-pane session cannot see highlights — Ben's eyeball. (b) 2bU-3's "a resister keeps its Omen" branch: not driven (dice luck, run 5); the per-bearer gate itself is proven. (c) **the run-6 dead halves were an abort, not a bail:** `edhaClearChaosState` was the only deleteCombat clear whose per-actor awaits were unguarded (Death wraps each), so ONE rejection — the ~17 concurrent scene clears double-deleting the same AE is the proven shape — killed the rest of the canvas loop, the whole directory loop, and the ledger unset via the outer catch. Now: omens-ledger unset runs FIRST, every await has its own guard, and any residual failure `console.warn`s WITH the actor's name. Re-test the exact run-6 staging: Omens on a canvas bearer + an OFF-CANVAS (directory) bearer + one inflicted Isolated → combat delete → `lists.omens` unset on the owner (a fresh place reads "(1/2)"), the off-canvas bearer loses omen + markedBy, statuses clean — and if anything still fails, quote the named warn from console. Still a ruling: Unweaving's dispel card lists the OMEN MARKER itself as a dispellable effect button.
+> **✅ Chaos residual (c) — the scene sweep — RETIRED on evidence (bench run 7, 2026-07-27e).** Run
+> 6's exact staging re-run on the live 07-27d engine (a real Spreading Omen place on the canvas
+> bearer + a hand-staged OFF-CANVAS directory bearer + an inflicted Isolated with `markedBy`):
+> combat delete left `lists.omens` **UNSET** on the owner, the off-canvas bearer lost `omen` and
+> `markedBy.omen` while keeping its unrelated `restrained` / `markedBy.harvested` (correctly
+> untouched), the canvas bearer and the Isolated victim came out clean — and a FRESH place then read
+> **"(1/2)"**, proving the ledger really emptied. **Zero `Chaos sweep:` console.warn lines**, so the
+> guarded-per-await rewrite has no residual culprit.
+
+- [ ] ⚑ **Chaos residuals (run 5) — the two halves that are not engine work** — (a) 2bU-5's through-walls RENDERING of Omen-bearers: canvas-visual, a hidden-pane session cannot see highlights — Ben's eyeball. (b) 2bU-3's "a resister keeps its Omen" branch: not driven (dice luck, runs 5–7); the per-bearer gate itself is proven. Still a ruling: Unweaving's dispel card lists the OMEN MARKER itself as a dispellable effect button.
 
 ---
 
@@ -435,11 +450,29 @@ scene — nothing spent") · 2bX-13 (system charged every use; both cancel paths
 pre-cost refusals spent nothing — one exception logged in the 2bX-8 FAIL row). Evidence per row
 in the 07-27c delta.
 
-- [ ] **Snare spring double-fire — FIXED 07-27d, re-test on the new ENGINE (module-src-sync + F5)** — run 6's inference confirmed in code: v13 fires tokenEnter AND tokenMoveIn for one movement entry (the same double-event the Civ fortified Region already debounces), and the Region's ledger stale-check read before the first spring's queued consume landed, so both events sprang. The fix is an in-flight per-snare guard ON the spring (`edhaSnareSpringGate`, pinned) shared by every path. Re-test: walk INTO a snare → exactly ONE spring card, ONE roll, ONE Hexmark offer, damage once; walk THROUGH → same; two snares in one move path → each springs once; Foreknown click and Thread resolve still post once each. Runbook fact stands: `displace` does not bypass the trigger.
-- [ ] **`tempHp` scene reset — FIXED 07-27d, re-test on the new ENGINE (module-src-sync + F5)** — confirmed: the flag had NO scene-end clear anywhere (it predates the whole sweep family). Every grant card is combat/scene-scoped (Death Ward and Edict of the Fallen say "for the scene" outright), so it now clears in the generic scene sweep — canvas token actors AND directory actors, wider than the character loop, because grants land on adversaries too. Re-test: grant Temp HP on a PC (Bulwark turn-start), an adversary victim, and an off-canvas ally (Edict's range sweep) → combat delete → all three `tempHp` flags gone, next-scene damage hits HP directly. Out-of-combat grants clear only when a combat ends — the family's semantic, flag if that feels wrong at the table.
-- [ ] **2bX-8 + 2bAA-2 — Weave the Thread — NOT an engine bug (07-27d live repro: the picker RENDERED); now DialogV2, re-test on the new ENGINE (module-src-sync + F5)** — a controlled repro on the run-6 engine (two planted squares, real use → consume → 2 Inv) rendered the link picker every time: it was the engine's only AppV1 window (`div.app.window-app`, no `<dialog>` element), invisible to run 6's V2-tuned DOM sampling — the picker sat open unanswered, which is also where the 2 Inv went (cancel refunds; navigating away orphans). Converted DialogV2-first (with the prohibition picker — the only other AppV1 window). Re-test: with 2 squares, use → consume → the "link two squares" V2 dialog appears; pick two → `linked: true` on both entries + the link card; Cancel → "cost refunded"; the <2-squares veto still refuses pre-cost.
-- [ ] **2bX-9 — Weave spring watch — UNBLOCKED (the 2bX-8 picker works; run after linking two squares)** — spring a snare within 30 ft of a linked square → the Reactive-Strike prompt card; a spring farther than 30 ft → no prompt.
-- [ ] **2bX-11 — Foreknown Strike — PARTIAL (bench run 6, 2026-07-27c)** — scene card ✓ (one button per unsprung snare, exactly), click ✓ (the snare sprang at its own centre — honest "sprang with no creature in the square" card — and consumed ledger+template+Region; a button for an already-sprung snare is a silent no-op). NOT observable: the +[T][D]-off-its-own-formula roll — no creature can ever stand IN a live snare, because placement onto an occupied square springs it instantly and every entry mode (walk/displace) springs on entry. ⚑ rulings batch: the card says "the first enemy to ENTER or PASS THROUGH springs it" — standing there when it lands is neither; should placement under a creature ARM instead of spring? As is, Foreknown's centre-spring can never catch anyone.
+> **✅ Bench run 7 (2026-07-27e): FIVE more Fate rows RETIRED on evidence** — the snare spring
+> double-fire (all five paths post ONCE: walk-INTO → 1 card / 1 roll / 1 Hexmark offer with damage
+> applied once, walk-THROUGH → same, **two snares in one walk path → each sprang exactly once** (2
+> cards, 2 rolls, 2 offers), Foreknown click → 1, Thread resolve over two snares → 2 springs + 1
+> rally card; every snare consumed its ledger entry, template and Region) · `tempHp` scene reset (a
+> PC, an adversary victim and an off-canvas actor all lost the flag on ONE combat delete, and 6
+> vital then hit HP for exactly 6) · **2bX-8 + 2bAA-2** (the picker is now a real `<dialog>` titled
+> "Weave the Thread — link two squares", ZERO AppV1 windows on screen; Link wrote `linked: true` on
+> both entries + the link card; closing the picker refunded in full — 2→4 Inv with "Weave the Thread
+> canceled — cost refunded"; the <2-squares case refuses **pre-cost** with "needs two active Ordained
+> Ground squares. Nothing spent." and never opens a consume dialog) · **2bX-9** (a spring 10 ft from
+> a linked square posted "🪢 Weave the Thread: an ally standing on either linked square may make a
+> free Reactive Strike…", a spring 35–45 ft away posted none) · **2bX-11** (the previously
+> "unobservable" own-formula rider IS observable — an enemy standing **adjacent** (5 ft) to the
+> square is found by the spring's 5-ft nearest-enemy scan, so the Foreknown click rolled
+> `(2)d(2*3+2)+2 + ((2)d(2*3+2)) = 20` and dealt it; placement adjacent does NOT insta-spring, only
+> placement *under* a creature does — which narrows the rulings question, it does not remove it).
+> ⚑ Still a ruling (unchanged): should placement under a creature ARM instead of spring?
+>
+> ⚑ **Harness note, not a defect:** the picker's explicit **Cancel button** could not be exercised —
+> a synthetic activation of a DialogV2 submit button falls through to the `default` (`ok`) button.
+> The close/X path proven above takes the identical `!picked` branch in `edhaZoneLinkMarkers`, so the
+> refund branch itself is verified; only the literal Cancel-button click is a Ben row.
 
 ---
 
@@ -527,49 +560,133 @@ The `chainBounded` clamp holds at the table.
 
 # BENCH — Civilization (Kethane, deity)
 
-Run on **Bench — Civilization** (room for Foundations; a Construct summoned). No pack rebuild
-pending. Priority: 2bV-16 (drift: manual HP edits no longer prompt).
+Run on **Bench — Civilization** (room for Foundations; a Construct summoned). No pack rebuild pending
+for the ENGINE rows; the deity-pack rebuild is still owed for the Construct `creatureType` mint (see
+DEPLOY STATE — **but see the note below: Civ's own Construct predicate does not read it**).
 
-- [ ] **2bV-16 — Bonds of Community (regression-adjacent)** — an enemy drops to 0 inside your Foundation; a summon drops → The whispered Reaction card (⚠ drift: a MANUAL HP edit to 0 no longer prompts); click grants every standing ally in your Foundations Temp HP = your White mod + advantage on next attack. The summon must NOT prompt.
-- [ ] **2bV-10 — Lay Foundation** — use, right-click cancel; use, click in range → Cancel refunds. Valid: the gold 10 ft square; allies beginning their turn inside gain +1 all defenses; past tier the oldest crumbles.
-- [ ] **2bV-11 — Bastion** — use with no Foundation; then with one + lay another → None → refused **pre-cost**. Fortified: enemy ENTERING takes the baked [T][D red] impact + Agility vs your Red or Slowed; the Construct inside wears +2; the Foundation laid while Bastion holds comes up fortified; the save card names Bastion (baked label).
-- [ ] **2bV-12 — Trade Routes** — use with one Foundation; then link two + teleport → One → refused **pre-cost**. Linked: the ⇄ marks; an ally standing in either teleports to a clicked arrival point (once/turn trusted); every cancel path refunds.
-- [ ] **2bV-13 — Siege Form** — use with no Construct / already sieged; then valid + end it → Bad cases refused **pre-cost**. Valid: the baked Siege Form effect toggles ON (Speed 0, deflect 3, Siege Cannon usable); the card's button ends it. ⚑ a Construct summoned BEFORE 07-17 lost the Siege-Cannon gate shim — reforge it once.
-- [ ] **2bV-14 — Arsenal** — use with no Construct; then valid; Construct kills a character → None → refused pre-cost; re-arm refused. Armed: the indicator AE (from Arsenal's own Effects tab) rides the Construct; a live→0 kill whispers the 15 ft move + free Strike chase.
-- [ ] **2bV-15 — Tempered Edge — CONFIRMED WORKS AS DESIGNED 2026-07-26m, retired-in-place** — measured by NET against a deflect-2 target: Construct Slam base roll **12**, rider card "+14 energy and the hit ignores … deflect (+2 added here pre-pays the −2 …)", damage card "takes **27** damage. Damage Calculation: 29 − 2" — net = base + rider with deflect fully compensated, and the new explanatory clause is on the card. The run-3 "19 − 2" reading was indeed a false positive. Still open on this row: Siege Cannon adds NEITHER; all of Magnum Opus (once/scene pre-cost, +2×[T][D white] HP, +2 defenses, Foundation +1→+2, Colossus splash + Agility-vs-Red-or-Prone).
-- [ ] **2bP-8 — Forge Construct — sustain ONE** — with a live Construct, use Forge Construct again → The old one is dismantled and a new one appears — exactly as before.
-- [ ] **2bP-9 — ⚠️ Forge Construct — a Construct summoned BEFORE this deploy** — if one is standing from an earlier session, use Forge Construct again → It should still be found and replaced. Older Constructs carry no identity flag, so the engine falls back to matching the summon's name — this row is that fallback.
-- [ ] ⚑ **Civ enemy-cost (GO/NO-GO)** — ruler across a fortified Foundation: **×2 for an enemy, ×1
-      for an ally**. Console shows the enemy-cost registration; on failure Bastion silently keeps
-      the Ben-R3 blind cost (GM compensates) — report which resolver fired so the experiment can be
-      kept or deleted.
+**Bench run 7 (2026-07-27e): the Foundation family + the summon-lifecycle rows PASSED and are
+retired** — **2bV-16** (an adversary-typed victim dropped to 0 inside a Foundation whispered
+"🛡️ Bonds of Community — … drops to 0 HP inside your Foundation. Reaction (one per round — trusted):
+each standing ally in any of your Foundations gains **5** Temp HP and advantage on its next attack
+test." — 5 = White rank 3 + WIL 2; the click posted "Bench Ally — One gains 5 Temp HP and advantage
+on their next attack test" and wrote `tempHp {value: 5, source: "Bonds of Community"}` +
+`advAttackNext`; **a MANUAL HP edit to 0 produced ZERO cards** — the documented drift confirmed as
+designed; **a SUMMON dropped to 0 inside a Foundation produced ZERO prompts**) · **2bV-10**
+(right-click cancel → "Lay Foundation cancelled — Investiture refunded", nothing placed; a valid
+click drew the gold `#e8c060` 600×600 px = 10 ft square named "Foundation"; a combatant flipping
+`flags.cosmere-rpg.activated` inside it got "🧱 … begins their turn in a Foundation — +2 to all
+defenses" with the AE's three `+2` changes and defenses 14→16 — **the Magnum Opus upgrade path proven
+live**, `civFoundationBonus: 2`; a third Foundation past the tier-2 cap posted "🧱 …'s oldest
+Foundation crumbles (sustain cap 2)" and the oldest drawing AND its fortified Region both went) ·
+**2bV-11** (zero Foundations → "needs at least one active Foundation. Nothing spent." pre-cost, no
+consume dialog; valid → the fortify card, `bastionActive: true`, a `… — Fortified Foundation` Region
+carrying BOTH `edha-content.enemy-cost` and `edha-content.fortified` behaviors, drawing recoloured
+red to "⛨ Foundation (fortified)"; the Construct walking in gained `Bastion (+2 defenses)` 12→14 and
+LOST it when its Foundation crumbled; an enemy walking in got **exactly ONE** "⛨ … enters …'s
+fortified Foundation — takes 9 impact" (`(2)d(2*3+2)=9`) and **exactly ONE** save card **named
+Bastion** — "⛨ Bastion — Agility vs your Red: … Agility 3 vs your Red 14 — Slowed" — independent
+corroboration that the v13 double-event surface is closed here too; a Foundation laid while Bastion
+held came up fortified immediately, Ben R4) · **2bV-12** (one Foundation → "needs two active
+Foundations. Nothing spent." pre-cost; two → both drawings read "⛨ Foundation (fortified) ⇄" sharing
+one `link` id; an ally standing in one clicked Teleport, picked an arrival point and moved
+(6000,11100)→(7200,11400) with "🛤️ … steps through the trade route…"; **all three cancel paths
+refunded in full** — cancel at the FIRST pick, a pick OUTSIDE any Foundation ("that point is not
+inside one of your Foundations. Refunded."), and cancel at the SECOND pick) · **2bP-8 + 2bP-9 in one
+action** (a Construct with its `summonTalent` flag REMOVED — the genuine pre-deploy shape — was found
+by the **name fallback**: "Edha: …'s Combat Construct (…) dismissed — resummoning (cap 1)"; the old
+actor and token were deleted and a fresh Construct + token appeared).
+
+⚠️ **The run-1 orphan `Combat Construct` token can NEVER satisfy 2bP-9** — its `actorId`
+(`bYsKFlS4joFWz08Y`) points at a **deleted actor** (`token.actor` is null; no directory Construct
+exists), and every summon lookup goes through `game.actors`. It is a dangling token reference, not
+an un-flagged Construct. It stayed exactly where it was at (7500, 4800) through a full replacement
+cycle. Ben's to delete whenever convenient.
+
+ℹ️ **The owed deity-pack `creatureType` mint does NOT gate any Civ row.** A freshly forged Construct
+still reads `system.type = {"id":"humanoid"}` (run 7 confirmed the live pack rule carries no
+`creatureType` field while `data/authored/deity-civilization.json` does) — but Civilization's
+predicate is `edhaCivIsConstruct`, which tests the `summon` flag + the name prefix, not `system.type`.
+The only reader of the `system.type`-based `edhaIsConstruct` is Fault Line's `constructMult`
+(Destruction, already benched).
+
+- [ ] **⛔ NEW FAIL 2026-07-27e (bench run 7) — `edha-summon-effect`'s pre-cost veto looks up the WRONG talent, killing the whole Construct-consuming family (2bV-13 Siege Form · 2bV-14 Arsenal · 2bV-15's Magnum Opus half)** — with a live, healthy, correctly-flagged Construct standing, all three refuse pre-cost: `W:Edha: Siege Form needs a live Combat Construct. Nothing spent.` / `…Arsenal needs a live Combat Construct…` / `…Magnum Opus needs a live Combat Construct…`. **Root cause (proven by mutation, not inferred):** the veto calls `edhaOwnedSummons(actor, item.name, h.summonName)` where `item.name` is the **consuming** talent, and `edhaSummonIsFrom` short-circuits on the summon's `summonTalent` stamp — `if (st) return st === talentName` — so a Construct stamped `summonTalent: "Forge Construct"` can never match `"Siege Form"`, and the `summonName` name-prefix fallback is unreachable *because the flag is present*. Measured on the live Construct: `lookup_ForgeConstruct: true`, `lookup_SiegeForm: false`, `lookup_Arsenal: false`, `lookup_MagnumOpus: false`. **Unsetting `summonTalent` made all three work immediately** — i.e. only *legacy, un-stamped* Constructs can use their own tree's Construct talents, the exact inverse of the intent. Fix direction: the lookup needs the SUMMONING talent's name (or an `h.summonTalent` field / the summon-name fallback when the consuming rule names a different talent) — not `item.name`. → test-pass-fixes. **Everything downstream of the veto is verified working** (driven with the flag unset, so the rows re-open on the fix, not on the mechanics): Siege Form toggled the baked AE on (`disabled: false`), Speed 25→**0**, deflect 1→**3**, card + "End Siege Form (Free Action)" button which reverted all three; already-sieged → "is already active. Nothing spent."; the Siege Cannon refused while Siege Form was off ("needs Siege Form active — toggle it on first. Nothing spent."); Arsenal copied its OWN Effects-tab AE "Arsenal (2 attacks/turn)" (anvil icon) onto the Construct with `summonGranted`, and re-arm refused ("already active this scene"); Magnum Opus rolled `2 * ((2)d(2*3+2)) = 22`, took the Construct 10→**32** HP (max too), +2 all defenses, added "Colossus (Magnum Opus)", upgraded the Foundation buff to +2, stamped `sceneOnce`, and refused a repeat ("was already used this scene"); the Colossus splash then hit both enemies within 10 ft for 9 energy each, with the save card applying **Prone** on the failure (Agility 1 vs Red 13) and sparing the success (Agility 19).
+- [ ] **⚑ COSMETIC 2026-07-27e — the Magnum Opus splash save card prints a raw i18n key** — it reads `🗿 Magnum Opus — COSMERE.Actor.Skill.Agility vs your Red: … COSMERE.Actor.Skill.Agility 19 vs your Red 13 — stays up`. Bastion's save card on the same run printed "Agility" correctly, so the missing `game.i18n.localize` is specific to the `edha-summon-effect` splash label, not the shared save-card helper. Cosmetic only — the mechanic resolved correctly.
+- [ ] **2bV-15 — Tempered Edge — CONFIRMED WORKS AS DESIGNED 2026-07-26m, re-corroborated 2026-07-27e, retired-in-place** — run 7 re-measured it by NET against a deflect-2 target: Construct Slam base `(2)d(2*3+2)+2 = 17`, rider card "🐺 Tempered Edge (Bench — Civilization): **+11 energy** and the hit ignores Bench Target — Floater's deflect (+2 added here pre-pays the −2 …)", net applied **28** = 17 + 11 with the deflect fully compensated. **And the Siege-Cannon negative PASSES:** the Cannon's `(2)d(2*3+2)+2+2 = 10` energy applied for exactly **8** = base − deflect, with **no** Tempered Edge card — `whenDealerItem: "Construct Slam"` correctly excludes it. Nothing is open on this row any more; only the FAIL row above blocks the family.
+- [ ] ⚑ **Civ enemy-cost — GO, KEEP the experiment (bench run 7, 2026-07-27e — resolver-level evidence)** — the custom type DID register (`CONFIG.RegionBehavior.dataModels["edha-content.enemy-cost"]` → `EdhaEnemyCostRegionBehavior`, a true subclass of the native `ModifyMovementCostRegionBehaviorType`), and the native base's **only** resolver is `_getTerrainEffects` (`Object.getOwnPropertyNames` on the base prototype gives exactly `prepareBaseData`, `_onUpdate`, `_getTerrainEffects`) — which the subclass overrides. Called on the real behavior with the real tokens: the **ALLY** (disposition 1 = `ownerDisposition`) returns `[]` → ×1; the **ENEMY** (disposition −1) returns `[{"name":"difficulty","difficulty":2}]` → ×2. Identical for token documents and placeables. The second guessed name `getTerrainEffects` does not exist on the base and is dead code that can be deleted. ⚑ **Ben's remaining half is the ruler UI itself** (a canvas-feel read a hidden-pane session cannot take) — but the underlying cost resolution is proven disposition-filtered, so the experiment should be KEPT.
 
 ---
 
 # BENCH — Power (Tyrith, deity)
 
 Run on **Bench — Power** (a Weakened enemy in Black range; a melee-hit victim). No pack
-rebuild pending. Priority: 2bH-2 (first `edha-test-fail` payload ever) and
-2bH-5 (one talent reacting to another's test); 2bH-6 is the row most likely to
-catch a real bug while Power runs half engine-owned (Kneel).
+rebuild pending.
 
-- [ ] **2bH-2 — Absolute Authority ⚠️⚠️** — target a **Weakened** creature, use it, and **FAIL** the Black test → The target becomes **Weakened until the end of ITS next turn**. This is the FIRST time `edha-test-fail` has ever fired a payload in this project — if nothing happens on a failure, the whole fail branch is dead.
-- [ ] **2bH-5 — Crown of Thorns ⚠️⚠️** — while Crowned, use **Absolute Authority** (or **Kneel**, or Sovereignty's **Censure** / **Decree of Ruin**) against a creature → The target takes **spirit = your Presence** automatically, on a success **or** a failure, from a SECOND card. This is H8 doing the thing no event system could do — one talent reacting to another talent's test. Check all four sources if you can: Kneel and Censure/Decree are still engine-owned and reach Crown by a different route than Absolute Authority does.
-- [ ] **2bH-6 — ⚑ half-migrated Power ⚠️⚠️** — with Crown armed run **Kneel** and confirm the ping; then end the encounter and re-check → Kneel did NOT convert (it needs H13) but must still trigger Crown — its engine code now *announces* the test instead of calling Crown by name. If Kneel stopped pinging Crown, the announcement path is broken. On combat delete, **Crowned clears**.
-- [ ] **2bH-1 — Absolute Authority (Power)** — Events tab, then target a creature that is **NOT** compelled/frightened/weakened and use it → ⚑ **THREE** rules listed. The use is refused with "must be compelled / frightened / weakened" and **nothing is spent** — no Investiture, no card, no roll. This is H1's new pre-cost gate.
-- [ ] **2bH-3 — Absolute Authority** — same, but **succeed** → A card saying you choose its action on its next turn (GM-run). No status applied on a success.
-- [ ] **2bH-4 — Crown of Thorns (Power)** — use it → Your token gains a **Crowned** marker (dark red). The card explains the scene arm and carries a **"Crown ping"** button.
-- [ ] **2bH-7 — Crown of Thorns re-use** — use it a second time while already Crowned → Refused with "already active — nothing spent". This is a generic veto now, not a Crown-specific one.
-- [ ] **2bH-8 — Crown of Thorns manual ping** — with Crown armed, target a creature and click the card's **"Crown ping"** button → Spirit = Presence applied. This is the surface for a vs-Cognitive test the engine did not resolve; it must still work now that the talent is document-driven.
-- [ ] **2bU-7 — Kneel** — use with no target / out of Black range; then in range → Both bad cases refused **pre-cost**. YOU roll Black (⚠ drift); success = Compelled (expires start of your next turn) and the target can only make distance-CLOSING moves (anything else blocked with a warning); you roll attack tests vs Compelled/Frightened/Weakened targets in Black range with advantage (auto).
-- [ ] **2bU-8 — Investiture of Command** — use with nothing valid targeted; then 3 allies targeted in Black range → Nothing valid → refused **pre-cost**. Valid: ONE shared [T][D black] roll — each ally gains that Temp HP (keeps-higher, never stacks down) + advantage on its next attack test; you take tier spirit.
-- [ ] **2bU-9 — Warlord's Advance — the ranged skip PASSED 2026-07-26m and is retired-in-place** — armed, weapon set to `attack.type: "ranged"`, hit landed → **no rider** (7 damage, weapon only) and the `warlord` arm **survived**; blanking the field (schema re-initialises to "melee") then fired "+4 impact strike" and consumed the arm, with the survivor's Presence-advantage card. The dice/kill/survive halves stay retired from 07-26k. Still open here: the re-use-while-armed pre-cost refusal (not driven for this talent; the same veto passed 3× elsewhere).
-- [ ] **2bU-10 — Momentum of Victory** — use, move + free Strike by hand → The card (move 15 ft + melee Strike player-executed; Opportunity trusted); the next weapon hit adds +tier impact and consumes the arm. ⚠ drift: a re-use while armed is now REFUSED pre-cost (the old arm silently re-charged 1 Inv for nothing).
-- [ ] **2bU-11 — Warlord's Fury** — arm; drop a hostile NPC below half, then kill it → Re-arm refused. Below-half +1 (once per victim) and the kill +1 more — the whispered tally card each time; your melee hits add min(tally, 2×tier) of the dealt type. PC/ally/summon drops must NOT count.
-- [ ] **2bU-12 — Unstoppable Advance** — arm; get Slowed; drag through two enemy squares → Re-use while active refused. Slowed is shrugged off with a card. Each enemy whose space the drag crosses takes its own [T][D red] impact, once per enemy per activation. The arm ends after your next turn (timed sweep).
-- [ ] **2bU-13 — Mantle of the Aspirant** — use; try again; ally rolls in range; take a hit → Once per scene (a repeat refuses even after the statuses clear). +2 all defenses as an AE (auto-cleared at combat end); your melee hits +tier spirit; an ALLY in Black range rolls any d20 test at +1 (you excluded; ⚑ dialog-roll rebuilds, the standing injector caveat); taking damage posts the redirect card — budget min(tier, HP lost), click flow unchanged.
-- [ ] **2bU-14 — Crown of Thorns (regression)** — crowned, then use converted Kneel vs Cognitive → Crown still pings — Kneel's H1 test announces to the watch exactly as the takeover's hand call did.
-- [ ] **2bU-16 — Compelled cleanup (regression)** — let Compelled expire; move the ex-target → Movement is free again — the veto's mark dies with the status; a stale mark without the status never blocks.
+**✅ Bench run 7 (2026-07-27e): the ENTIRE Power section ran and 17 rows are RETIRED on evidence.**
+Nothing in Power failed. Row by row:
+
+- **2bH-1** — three rules on the Events tab; a target that is NOT compelled/frightened/weakened
+  refuses **pre-cost**: "Edha: Bench Target — Floater must be compelled / frightened / weakened for
+  Absolute Authority — nothing spent." No consume dialog, no card, no roll, net spend 0.
+- **2bH-2 — the first `edha-test-fail` payload in the project FIRES.** Driven twice; the second run
+  gated on **Frightened only** so the payload was unambiguous: `1d20+5=20` vs a forced COG 40 →
+  "Absolute Authority: 20 vs … COG 40 — FAIL." then "Absolute Authority — Bench Target — Floater is
+  **Weakened**." and the status appeared (`["frightened","weakened"]`). The whole fail branch is live.
+- **2bH-3** — success (`18` vs COG 3) posted only the 👑 note card ("you choose the target's action on
+  its next turn — it cannot be forced to directly harm itself. Forced volition, GM-run.") and applied
+  **no** status.
+- **2bH-4** — `crowned` status + the "Crowned (Crown of Thorns armed)" effect + the scene-arm card
+  carrying the "Crown ping (target the character first)" button.
+- **2bH-5 — H8's cross-talent reaction WORKS, on success AND on failure, from two sources.** Crowned
+  + Absolute Authority SUCCESS → a SECOND card "⚡ Crown of Thorns (Bench — Power) — **2** spirit to
+  Bench Target — Floater" (Presence 2), 2 HP dealt; the same talent FAILING → the same second card
+  and 2 spirit; **Kneel** as a second, differently-routed source → identical card. ⚑ **Partial
+  coverage:** Sovereignty's **Censure / Decree of Ruin** as sources 3 and 4 were NOT driven (a
+  cross-tree PC swap this run did not have budget for) — Ben's or a later run's.
+- **2bH-6 / 2bU-14** — Kneel's announcement path still pings Crown (above), and on **combat delete
+  `Crowned` clears** — along with the whole Power scene-arm family: all four statuses
+  (`crowned`/`fury`/`unstoppable`/`mantled`) gone, all five effects gone, defenses 16→14,
+  `bonusTally` cleared, `sceneOnce` re-armed, `tempHp` unset.
+- **2bH-7** — re-use while Crowned: "Edha: Crown of Thorns is already active — nothing spent." net 0.
+- **2bH-8** — the manual "Crown ping" button applied 2 spirit (Presence) to the targeted creature.
+- **2bU-7** — no target → "target the creature first (nothing spent)"; a target 83 ft away →
+  "outside your Attunement Range (black) — nothing spent" — both pre-cost, net 0. Valid: YOU rolled
+  Black (`1d20+5=20`) → "🎯 Kneel: … is Compelled (by Bench — Power). Next action: move toward the
+  compeller or do nothing — movement ENFORCED", `markedBy.compelled` naming Kneel. **The move veto
+  works in both directions:** a walk AWAY was refused in place with "…is Compelled (Kneel) — it may
+  only move toward Bench — Power, or stay put", a walk TOWARD passed silently. And the auto-advantage
+  fired: an attack on the Frightened target in Black range rolled **`2d20kh + 4`**.
+- **2bU-8** — an enemy-only target set refused pre-cost ("target up to 3 valid creature(s) in your
+  Attunement Range (black) first. Nothing spent."). Valid with three allies: **ONE shared roll**
+  `2d8 = 4` granting all three 4 Temp HP, the advantage card naming all three (`advAttackNext` on
+  each), and tier spirit to self (42→40). **Keeps-higher confirmed** — an ally pre-loaded with 99
+  Temp HP stayed at **99**, never stacked down. ⚑ cosmetic: the no-op keep still relabels that ally's
+  `tempHp.source` to "Investiture of Command".
+- **2bU-9's last open half** — the re-use-while-armed refusal for Warlord's Advance: "Edha: Warlord's
+  Advance is already active — nothing spent." net 0. Row fully closed.
+- **2bU-10** — arm card + `momentum`; re-use while armed refused pre-cost; the next weapon hit posted
+  "🐺 Momentum of Victory (Bench — Power): **+2 impact strike**" (= tier) and **consumed** the arm.
+- **2bU-11** — arm + `fury`; re-arm refused pre-cost. Dropping a hostile adversary below half
+  whispered "🗡️ Warlord's Fury: the tally rises — now 1", the kill added "🐺 … **+1 keen strike**"
+  (min(tally, 2×tier)) then "the tally rises — now 2" (`{belowHalf: [1], kills: 1}`). **The negative
+  holds:** a friendly ALLY dropping to 0 left the tally byte-identical.
+- **2bU-12** — arm + `unstoppable`; re-use while active refused pre-cost. Slowed applied → "🏃
+  Unstoppable Advance: … cannot be slowed — the condition is shrugged off" and the status did not
+  stick. A `walk` through two enemy squares produced **exactly two** impact cards, one per enemy with
+  its own roll (3 and 14) — **no double-fire on a movement path** — and a second pass over the same
+  two enemies produced **zero** further impacts (once per enemy per activation).
+- **2bU-13** — the +2-all-defenses AE (14→16) with its three `+2` changes, the note card, `mantled`,
+  and a repeat refused pre-cost ("was already used this scene"). Melee hit → "🐺 Mantle of the
+  Aspirant: **+2 spirit strike**". **The ⚑ standing ally-injector caveat is CLOSED:** an ally's
+  Athletics roll in Black range read **`1d20 + 4 + 1[Mantle of the Aspirant] = 13`** — injected and
+  labelled, surviving the dialog rebuild. Taking 10 damage posted the whispered redirect card with
+  the right budget: "You may redirect up to **2** of it to one or more willing allies…" + the button.
+- **2bU-16** — clearing the Compelled status also cleared `markedBy` (the mark dies with the status),
+  and the away move that had been vetoed then went through freely with no warning.
+
+⚑ **Extends the standing out-of-combat scope characterization (07-26k; run 6 added Restrained):**
+2bH-2's Weakened landed with `duration.type: "none"` and **no** timed marker, so "until the end of
+ITS next turn" does not expire out of combat. Same family as the existing note — recorded, not
+re-derived, and not a new bug.
 
 ---
 

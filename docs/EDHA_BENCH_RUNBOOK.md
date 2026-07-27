@@ -199,6 +199,51 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   the entry; the mark-wins reconcile drops it on the next write/read. Assert ledger counts from
   the NEXT place card ("(1/2)"), not the raw flag.
 
+## Operating lessons from run 7 (2026-07-27e — these OVERRIDE older advice where they conflict)
+
+- ❌ **`tokDoc.move()` THROWS a cosmetic `#panCanvas … clientWidth` TypeError when the moved token is
+  CONTROLLED and the pane is hidden — and the move ALREADY LANDED.** Release control first, wrap in
+  try/catch, then verify `td.x`/`td.y`. Run 4's "move() is the way" stands; what's new is that a throw
+  is not a failure.
+- ❌ **Never resolve a token by NAME when duplicates can exist.**
+  `scene.tokens.find(t => t.name === "Combat Construct")` matched the run-1 **orphan** ahead of the
+  live summon and silently redirected three moves onto a token this run was told to leave alone. Use
+  `scene.tokens.find(t => t.actorId === id && !!t.actor)` or the token id.
+- ❌ **With the pane hidden the ChatLog renders NOTHING** — `ol.chat-log` has 0 children and
+  `ui.chat.render({force: true})` throws on a null style, so every `[data-message-id]` selector misses
+  and card buttons look absent. Hand-render what you need: `const h = await msg.renderHTML();`
+  appended into `ol.chat-log`. After that, button selectors and the app's delegated listeners work.
+- ❌ **The cosmere sheet's `use-item` action ignores `MouseEvent("click")`; it needs a real
+  `PointerEvent`.** Run 6's "dispatch the full pointer sequence" is right about the sequence and wrong
+  about the constructor — build `pointerdown`/`pointerup`/`click` as `PointerEvent`.
+- **System attack/action cards have EMPTY `content`** (they render from `flags["cosmere-rpg"].message`),
+  so their apply-damage buttons are unreachable while hidden. Drive the same pre-pass honestly:
+  `edhaDealerOf` falls back to the last damage roll within **15 s**, so `target.applyDamage([...])`
+  inside that window attributes the dealer + item exactly as the button would. This is how Tempered
+  Edge, the Siege-Cannon negative, and the Momentum/Fury riders were measured.
+- **Foundation / Civ turn-start rows fire on `updateCombatant` with `flags.cosmere-rpg.activated` →
+  true** (the cosmere activation model), NOT on `combatTurnChange` and NOT on `combat.update({turn})`.
+  Driving the wrong hook reads as a dead buff.
+- **A talent whose flow is two sequential `edhaPickPoint` calls** (Trade Routes) looks exactly like a
+  silent post-cost no-op to a dialog-walking harness. If the cost was charged and nothing happened,
+  scrape `ui.notifications` for a live "Click inside…" prompt BEFORE calling it a bug.
+- **A DialogV2 `cancel` BUTTON cannot be driven synthetically** — activating a submit button
+  programmatically falls through to the `default` button, so a Cancel click reads as OK. Use the
+  header close (X) instead: it takes the same `!picked` branch, so the refund path is still provable.
+  Say which one you drove.
+- **Don't hand-write an H3 ledger while a queued RMW may be in flight.** Doing so ate a `linked: true`
+  write and briefly looked like a Weave defect; a clean run wrote it correctly. Stage via the talent
+  where you can.
+- **Hook `ui.notifications.warn/info/error` at run start, not per row.** Pre-cost vetoes live only in
+  notifications, and the on-screen `#notifications` list rotates entries out within seconds — a batch
+  that times out loses its evidence. A persistent capture array survives.
+- **Keep each `javascript_exec` under ~25 s.** Anything that arms a talent, walks dialogs and asserts
+  will exceed the 30 s tool timeout; the world keeps running, so a timeout leaves a half-driven flow
+  (an open dialog or a live pick) that poisons the next row. Split, and re-inspect before continuing.
+- **Snapshot per-actor `flags["edha-content"]` at run start**, not just document ids. Run 7's document
+  id-diff was clean but it could not attribute the roster's flag litter — including whether `aggro`
+  disappearing off Bench Ally — One was its own doing.
+
 ## Known limits
 
 - ❌ **RESOLVED AS UNFIXABLE (07-26i): there is no "no written Cognitive/Spiritual defense" creature.**

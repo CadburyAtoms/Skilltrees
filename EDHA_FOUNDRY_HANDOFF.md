@@ -2,7 +2,24 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, **COMPLETED 2026-07-26 (pass AA)**: **the ratchet list is EMPTY — 221 → 0 across twenty-seven passes.** Every tree is clear, all six marker ledgers have migrated, and `scripts/name-keyed-allowlist.json` stays in the repo with an empty `talents` list *on purpose* — lint pass 7 still guards against REGROWTH, which is the half of the ratchet that matters from here on. ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **ALL SIX marker LEDGERS have migrated** (`covenants` 07-24u; `edicts` 07-25 pass V; `remains` 07-25 pass W; Fate's `snares` 07-25 pass X; Destruction's `charges` 07-26 pass Y; Fate's `ordained` 07-26 pass AA — the point-bound ones fail OPEN through H3's reconcile by design). There is no flat marker-list flag left in the engine. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-27d** (BENCH RUN 6'S
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-27e** (BENCH RUN 7 —
+the 07-27d re-tests + Civilization + Power, executed live: **ALL FIVE 07-27d fixes PASSED** (the
+snare guard holds on all five spring paths incl. two snares in one walk path; Surgical Precision
+quotes its own d20 on both paths and on the cancelled-dialog case; the Chaos sweep unsets
+`lists.omens` with ZERO named warns; the Weave picker is a real `<dialog>`; all three `tempHp` flags
+swept), **31 rows retired on evidence** (5 re-tests + 5 more Fate rows incl. 2bX-9 unblocked and
+2bX-11's "unobservable" rider newly observed, 7 Civ rows incl. the whole Foundation family and
+2bP-8/2bP-9 in one action, 17 Power rows — the ENTIRE section, nothing in Power failed), **1 NEW FAIL
+with the root cause proven by mutation** (`edha-summon-effect`'s pre-cost veto passes the CONSUMING
+talent's name into `edhaOwnedSummons`, and `edhaSummonIsFrom` short-circuits on the summon's
+`summonTalent` stamp — so Siege Form / Arsenal / Magnum Opus can never see a Construct the current
+engine forged; only *un-stamped legacy* Constructs work, the inverse of the intent), **1 cosmetic**
+(the Magnum Opus splash save card prints the raw `COSMERE.Actor.Skill.Agility` key), and the **Civ
+enemy-cost experiment answered GO** at resolver level (`_getTerrainEffects` is the native base's only
+resolver and the subclass overrides it; ally → `[]`, enemy → `difficulty 2`). One world-hygiene event
+self-reported and repaired: a name-collision on `Combat Construct` moved the run-1 orphan token, which
+was restored to (7500, 4800). Cleanup id-diff exactly empty (fourth run running); Bench logged out.
+Docs only.) Prior: **2026-07-27d** (BENCH RUN 6'S
 FIVE DEFECTS FIXED — both attempt-2 items landed with verified mechanisms, and TWO of run 6's
 labeled inferences were wrong in mechanism: Surgical Precision decided one-behind
 *deterministically* (the system rolls a skill_test talent's damage BEFORE its test), and Weave the
@@ -73,6 +90,189 @@ the Red pilot, executed live by an agent session joined as `Bench`: 16 rows reti
 1 FAIL root-caused (Shockwave Slam's weapon-hit trigger surface), 4 cross-tree observations,
 and the agent-bench runbook hardened with the v13 operating lessons. Docs + setup-script fix
 only; nothing to deploy.)
+
+**2026-07-27e — BENCH RUN 7: the 07-27d re-tests + CIVILIZATION + POWER, executed live.** Joined
+`localhost:30000` as the passwordless GM `Bench` (world `edha`, system 2.1.0, `edha-content` active,
+`globalThis.edha` present, viewing "Playtest Map"). **31 rows retired on evidence · 1 NEW FAIL ·
+1 cosmetic · 1 GO/NO-GO answered · nothing in Power failed.**
+
+**Byte-check first (the run's precondition).** The served `register-skills.js` (1,431,784 bytes,
+18,553 lines, fetched cache-busted) carries `edhaSnareSpringGate` ×3, `edhaCleanseArmMode` ×3,
+`_edhaCleansePending` ×5, `_edhaLastRoll` ×4, the `tempHp` joined 07-27d sweep comment, and still the
+07-27b markers (`edhaWatchEntryLevel`, `_edhaLifeClearBusy`, `chainBounded`, `edhaOwnerListQueue`).
+**The 07-27d ENGINE half is LIVE** — so all five re-tests count.
+
+**Roster:** `bench-setup-console.js` re-run once → **zero ⚠ lines, pure sync** (16 PCs, 7 targets, no
+creations, no strays, no missing talents); 23 bench actors and 23 placed tokens intact.
+
+### The 07-27d re-test verdicts (5 defects) — 5 / 5 PASS
+
+1. **Snare spring double-fire — PASS-RETIRED.** Every one of five paths posts exactly once: walk
+   INTO (1 card / 1 roll `(2)d(2*3+2)+2=13` / 1 Hexmark offer, damage applied once, ledger + template
+   + Region all consumed), walk THROUGH (same), **two snares in one walk path → each sprang exactly
+   once** (2 cards, 2 rolls, 2 offers), the **Foreknown click** (1), the **Thread resolve** over two
+   snares (2 springs + exactly 1 rally card).
+2. **Surgical Precision (2bW-15) — PASS-RETIRED.** At PHY 45: console use 1 quoted **6** under its own
+   `1d20+5=6`; console use 2 back-to-back quoted **24** under its own `1d20+5=24` (the one-behind is
+   gone); the **sheet** path quoted **9** under its own `1d20+5=9` with **no** fail-open cleanse. At
+   phy 1: the three-button cleanse card, and the click posted "removed Weakened from Bench Ally — Two".
+   A **cancelled** roll dialog produced **zero** cards, and the next use decided on a fresh d20 (8).
+3. **Chaos sweep (c) — PASS-RETIRED.** Run 6's exact staging (real on-canvas Omen place + a hand-staged
+   off-canvas directory bearer + an inflicted Isolated with `markedBy`) → combat delete left
+   `lists.omens` **UNSET**, the off-canvas bearer lost `omen` + `markedBy.omen` while keeping its
+   unrelated `restrained` / `markedBy.harvested`, both canvas victims clean — and a FRESH place then
+   read **"(1/2)"**. **Zero `Chaos sweep:` warns**, so the guarded rewrite has no residual culprit.
+4. **Weave the Thread (2bX-8 / 2bAA-2) — PASS-RETIRED, and 2bX-9 with it.** The picker is a real
+   `<dialog>` titled "Weave the Thread — link two squares" with **zero** AppV1 windows on screen. Link
+   wrote `linked: true` on both entries + the link card; closing it refunded in full (2→4 Inv,
+   "Weave the Thread canceled — cost refunded"); the <2-squares case refuses **pre-cost**. **2bX-9:** a
+   spring 10 ft from a linked square posted the Reactive-Strike prompt, a spring 35–45 ft away posted
+   none.
+5. **`tempHp` scene reset — PASS-RETIRED.** A PC, an adversary victim and an off-canvas actor all lost
+   the flag on ONE combat delete, and 6 vital then hit HP for exactly 6.
+
+### Civilization — 7 rows retired, 1 NEW FAIL, 1 cosmetic, the GO/NO-GO answered
+
+Retired: **2bV-16** (amount 5 = White 3 + WIL 2; click grants Temp HP + `advAttackNext`; a **manual
+HP edit to 0 prompts nothing**; a **summon drop prompts nothing**) · **2bV-10** (cancel refunds; gold
+10 ft square; the turn-start buff fires on `flags.cosmere-rpg.activated` and read **+2** with Magnum
+Opus's upgrade live; a third Foundation crumbled the oldest and took its Region) · **2bV-11**
+(zero-Foundation refusal pre-cost; fortify Region carries both behaviors; the Construct inside gained
+`Bastion (+2 defenses)` 12→14 and lost it on the crumble; an enemy entry produced **exactly one**
+impact card and **exactly one** Bastion-labelled Agility save → Slowed — independent corroboration
+that the v13 double-event surface is closed here too; a Foundation laid under Bastion came up
+fortified) · **2bV-12** (one-Foundation refusal; ⇄ links; the teleport moved the ally between
+Foundations; **all three** cancel paths refunded) · **2bV-15** (Tempered Edge re-measured: base 17 +
+rider 11 = net **28** with deflect ignored; **and the Siege-Cannon negative passes** — 10 energy
+applied for exactly 8 = base − deflect, no rider card) · **2bP-8 + 2bP-9** (an un-stamped Construct
+was found by the **name fallback** and replaced) · **the enemy-cost GO/NO-GO: GO**.
+
+⛔ **NEW FAIL — `edha-summon-effect`'s pre-cost veto looks up the WRONG talent**, and it kills the
+entire Construct-consuming family (Siege Form, Arsenal, Magnum Opus). With a live, healthy,
+correctly-flagged Construct standing, all three refuse pre-cost ("needs a live Combat Construct.
+Nothing spent."). **Root cause proven by mutation, not inferred:** the veto calls
+`edhaOwnedSummons(actor, item.name, h.summonName)` where `item.name` is the **consuming** talent, and
+`edhaSummonIsFrom` short-circuits on the summon's stamp — `if (st) return st === talentName` — so a
+Construct stamped `summonTalent: "Forge Construct"` can never match `"Siege Form"`, and the
+name-prefix fallback is unreachable *because the flag is present*. Measured:
+`lookup_ForgeConstruct: true`, `lookup_SiegeForm/Arsenal/MagnumOpus: false`. **Unsetting
+`summonTalent` made all three work immediately** — only *legacy, un-stamped* Constructs can use their
+own tree's talents, the exact inverse of the intent. Fix direction: the lookup needs the SUMMONING
+talent's name (or an `h.summonTalent` field), never `item.name`. → **test-pass-fixes**. Everything
+downstream is verified working (driven with the flag unset): Siege Form's toggle (Speed 25→0, deflect
+1→3, baked AE enabled, end-button reverts), the already-sieged and Cannon-while-off refusals, Arsenal's
+own-Effects-tab AE riding the Construct + its re-arm refusal, and all of Magnum Opus (`2*((2)d(2*3+2))
+= 22` HP, +2 defenses, Colossus AE, the Foundation upgrade to +2, `sceneOnce`, the repeat refusal, and
+the 10 ft splash with an Agility-vs-Red save applying Prone on the failure).
+
+⚑ **Cosmetic:** the Magnum Opus splash save card prints the raw key `COSMERE.Actor.Skill.Agility`.
+Bastion's save card printed "Agility" correctly the same run, so the missing `game.i18n.localize` is
+specific to the `edha-summon-effect` splash label, not the shared helper.
+
+**⚑ Civ enemy-cost — GO, keep the experiment (resolver-level evidence).** The custom type registered
+(`EdhaEnemyCostRegionBehavior`, a true subclass of the native `ModifyMovementCostRegionBehaviorType`),
+and the native base's **only** resolver is `_getTerrainEffects` — which the subclass overrides
+(`getTerrainEffects`, the second guess, does not exist on the base and is dead code). Called on the
+real behavior with the real tokens: **ally → `[]` (×1), enemy → `[{difficulty: 2}]` (×2)**, identical
+for documents and placeables. Ben's remaining half is only the ruler UI itself.
+
+ℹ️ **The owed deity-pack `creatureType` mint does NOT gate any Civ row.** A freshly forged Construct
+still reads `system.type = {"id":"humanoid"}` (fresh read; the live pack rule has no `creatureType`
+field while `data/authored/deity-civilization.json` does) — but Civilization's predicate is
+`edhaCivIsConstruct`, which tests the `summon` flag + name prefix. The only reader of the
+`system.type`-based `edhaIsConstruct` is Fault Line's `constructMult` (Destruction, already benched).
+
+⚠️ **The run-1 orphan `Combat Construct` token can never satisfy 2bP-9** — its `actorId` points at a
+**deleted actor** (`token.actor` is null, no directory Construct exists) and every summon lookup goes
+through `game.actors`. It is a dangling token reference, not an un-flagged Construct. Left in place
+for Ben.
+
+### Power — the ENTIRE section ran; 17 rows retired, nothing failed
+
+**2bH-2 is the headline: the first `edha-test-fail` payload in the project FIRES.** Gated on
+**Frightened only** so the payload was unambiguous: `1d20+5=20` vs a forced COG 40 → FAIL card, then
+"Absolute Authority — … is **Weakened**" with the status appearing. Also retired: 2bH-1 (three rules;
+the status-gate refusal pre-cost) · 2bH-3 (success posts the note card, applies **no** status) ·
+2bH-4 (Crowned marker + the Crown-ping card) · **2bH-5** (H8's cross-talent reaction works on success
+**and** failure, from **two** sources — Absolute Authority and Kneel, each posting "⚡ Crown of Thorns
+… **2** spirit"; ⚑ Sovereignty's Censure/Decree as sources 3–4 NOT driven) · 2bH-6 / 2bU-14 (Kneel's
+announcement path pings Crown; **combat delete cleared the whole Power scene-arm family** — four
+statuses, five effects, defenses 16→14, `bonusTally`, `sceneOnce`, `tempHp`) · 2bH-7 · 2bH-8 (the
+manual ping applied 2 spirit) · **2bU-7** (both refusals pre-cost; YOU roll Black; Compelled +
+`markedBy`; **the move veto refuses AWAY in place and passes TOWARD**; the auto-advantage rolled
+`2d20kh + 4`) · **2bU-8** (enemy-only target refused; **ONE shared roll `2d8=4`** to three allies +
+advantage + tier spirit to self; **keeps-higher confirmed** — an ally pre-loaded with 99 stayed at 99)
+· **2bU-9's last open half** (the re-use-while-armed refusal — row now fully closed) · 2bU-10 (+2
+impact and the arm consumed) · **2bU-11** (below-half tally 1 → kill adds "+1 keen strike" then tally
+2; re-arm refused; **an ALLY drop left the tally byte-identical**) · **2bU-12** (Slowed shrugged;
+**exactly two** impacts for two enemies on a walk path — no double-fire — and **zero** on a second
+pass over the same two; re-use refused) · **2bU-13** (the +2 AE, the melee +2 spirit rider, the
+redirect card with budget 2 — and **the ⚑ standing ally-injector caveat is CLOSED**: an ally's roll
+read **`1d20 + 4 + 1[Mantle of the Aspirant]`**, injected and labelled) · 2bU-16 (the mark dies with
+the status; movement free again).
+
+⚑ **Extends the standing out-of-combat scope characterization** (07-26k; run 6 added Restrained):
+2bH-2's Weakened landed with `duration.type: "none"` and no timed marker, so "until the end of ITS
+next turn" does not expire out of combat. Recorded against the existing family, not re-derived.
+
+### New rulings-batch sightings (Ben's; nothing decided)
+
+- **Placement under a creature insta-springs a Snare — narrowed, not resolved.** Placement
+  **adjacent** (5 ft) does NOT spring, which is why the Foreknown rider became observable this run.
+  The open question is unchanged: should placement *under* a creature ARM instead of spring?
+- **Investiture of Command relabels a no-op keep.** Keeping the higher Temp HP is correct, but the
+  ally's `tempHp.source` is still overwritten to "Investiture of Command" on a keep that changed
+  nothing. Cosmetic; worth a look.
+- **Bonds of Community's "one per round" was never exercised out of combat** — every out-of-combat
+  drop offered the Reaction. Consistent with the round-budget family; flag if it should gate.
+
+### Operating lessons (added to the runbook; they cost this run real time)
+
+- **`tokDoc.move()` throws a COSMETIC `#panCanvas … clientWidth` TypeError when the moved token is
+  CONTROLLED and the pane is hidden — the write already landed.** Release control first, catch, and
+  verify `td.x/td.y`; treating the throw as a failed move sends you chasing a phantom.
+- **Never resolve a token by NAME when duplicates can exist.** `scene.tokens.find(t => t.name === …)`
+  matched the run-1 **orphan** `Combat Construct` ahead of the live one and silently redirected three
+  moves. Use `tokens.find(t => t.actorId === id && !!t.actor)`, or the token id.
+- **With the pane hidden the ChatLog renders NOTHING** (`ol.chat-log` has 0 children;
+  `ui.chat.render({force:true})` throws on a null style). Hand-render what you need:
+  `await msg.renderHTML()` appended into `ol.chat-log`, after which `[data-message-id]` button
+  selectors work normally.
+- **The cosmere sheet's `use-item` action ignores `MouseEvent("click")` — it needs a real
+  `PointerEvent`.** Run 6's "full pointer sequence" advice is right about the sequence and wrong about
+  the constructor.
+- **System attack/action cards have EMPTY `content`** — they render from
+  `flags["cosmere-rpg"].message`, so their apply-damage buttons are unreachable while hidden. Drive
+  the same pre-pass honestly instead: `edhaDealerOf` falls back to the last damage roll within **15 s**,
+  so `target.applyDamage([...])` inside that window attributes the dealer + item exactly as the button
+  would (this is how Tempered Edge and the Momentum/Fury riders were measured).
+- **Civ/Foundation turn-start rows fire on `updateCombatant` with `flags.cosmere-rpg.activated` → true**
+  (the cosmere activation model), **not** on `combatTurnChange`. Driving the wrong hook reads as a dead
+  buff.
+- **Talents whose flow is two sequential `edhaPickPoint` calls** (Trade Routes) look like a silent
+  post-cost no-op to a dialog-walking harness. If the cost was charged and nothing happened, check
+  `ui.notifications` for a live "Click inside…" prompt before calling it a bug.
+- **Don't hand-write an H3 ledger while a queued RMW may still be in flight** — doing so ate a
+  `linked: true` write and briefly looked like a Weave defect. A clean run wrote it correctly.
+
+### World hygiene (self-reported)
+
+- **One event, repaired:** the name-collision above moved the run-1 orphan `Combat Construct` token
+  from (7500, 4800) to (5700, 11400). It was **restored to (7500, 4800)** and verified. Nothing else
+  outside the bench folders was touched; Ben's live combat `BerbNeuXp4iKduef` was never opened.
+- **Cleanup id-diff against this run's OWN start snapshot: exactly empty** (fourth consecutive run) —
+  0 actors added, 0 tokens added, 0 tokens removed, 0 drawings, 0 templates, only Ben's `Region`, 117
+  walls unchanged, macros/journals/tables unchanged, only Ben's combat left. The 23 roster tokens stay
+  placed. All `tempHp` writes swept (`tempHpAnywhere: []`).
+- **Bench Ally — One's stale flags** now read `bpHits`, `accord`, `coordRound`. Run 6 recorded four,
+  including `aggro`. *Inference, labelled:* `aggro` most likely went in one of this run's combat-delete
+  scene sweeps; this session did not target it deliberately. The residual flag/effect litter across the
+  other bench actors (`bpHits`, `nextTestMod`, `coordRound`, `moveWindow`, `plotDieMark`, `strikeWindow`,
+  `reserve`, plus stance AEs) is roster cross-talk accumulated over runs and was **left alone** — this
+  run took no start-of-run FLAG snapshot, so it cannot attribute it precisely. **Next run should snapshot
+  per-actor `flags["edha-content"]` at start** so this becomes attributable.
+- Bench chat can be flushed. Bench was **logged out** (`game.logOut()`) and confirmed selectable on
+  `/join`.
 
 **2026-07-27d — BENCH RUN 6'S FIVE DEFECTS FIXED (test-pass-fixes; the two attempt-2 items
 landed with verified mechanisms). One commit per defect, every root cause VERIFIED before
