@@ -14,7 +14,23 @@ echo   Press any key to start, or close this window to cancel.
 pause >nul
 
 echo.
-echo   [1 of 5]  Getting the latest work from GitHub...
+echo   [1 of 7]  Checking that Foundry is really closed...
+REM The packs are a LevelDB; a running Foundry holds a lock on them and the pack
+REM rebuild fails part-way, leaving some packs rebuilt and others not. Cheaper to
+REM catch it here than to explain a half-deploy afterwards.
+REM
+REM Match on "Foundry", NOT on the full image name: tasklist TRUNCATES the Image
+REM Name column at 25 characters, so its own output reads "Foundry Virtual Tabletop."
+REM and a find for "...Tabletop.exe" never matches while Foundry is wide open.
+REM When nothing matches, tasklist prints "INFO: No tasks..." which contains no
+REM "Foundry", so this is exact in both directions. (Verified by running it against
+REM a live Foundry on 2026-07-27 - the first version of this check silently passed.)
+tasklist /FI "IMAGENAME eq Foundry Virtual Tabletop.exe" /NH 2>nul | find /I "Foundry" >nul
+if not errorlevel 1 goto :stillrunning
+echo   Foundry is closed. Good.
+
+echo.
+echo   [2 of 7]  Getting the latest work from GitHub...
 REM --ff-only: if GitHub and this machine have drifted apart, STOP instead of
 REM quietly merging in the middle of a deploy.
 git pull --ff-only
@@ -27,17 +43,28 @@ echo   If that is not the branch you expected, close this window now -
 echo   nothing has been installed yet.
 
 echo.
-echo   [2 of 5]  Installing the engine into your live module...
+echo   [3 of 7]  Checking whether you hand-edited the live engine...
+REM A plain "the files differ" check cannot tell BEHIND from HAND-EDITED, and they
+REM want opposite answers. `status` decides by asking whether the live content
+REM matches any past commit: if it does it is merely stale (push away), if it
+REM matches nothing then someone edited it inside AppData and a push destroys work
+REM that is in no commit anywhere. Exit 2 means exactly that case.
+node module-src-sync.js status
+if errorlevel 2 goto :handedited
+if errorlevel 1 goto :failed
+
+echo.
+echo   [4 of 7]  Installing the engine into your live module...
 node module-src-sync.js push
 if errorlevel 1 goto :failed
 
 echo.
-echo   [3 of 5]  Installing your adversary art...
+echo   [5 of 7]  Installing your adversary art...
 node sync-art.js
 if errorlevel 1 goto :failed
 
 echo.
-echo   [4 of 5]  Rebuilding the packs (leyline + deity + heroic + adversaries + items)...
+echo   [6 of 7]  Rebuilding the packs (leyline + deity + heroic + adversaries + items)...
 node foundry-build.js leyline
 if errorlevel 1 goto :failed
 node foundry-build.js deity
@@ -50,7 +77,7 @@ node foundry-build.js items
 if errorlevel 1 goto :failed
 
 echo.
-echo   [5 of 5]  Validating the packs...
+echo   [7 of 7]  Validating the packs...
 node validate-packs.js
 if errorlevel 1 goto :failed
 node validate-adversaries.js
@@ -70,10 +97,51 @@ echo         copies - they keep their OLD abilities and their OLD art,
 echo         not just the picture. If a deploy changed adversaries
 echo         (this one very likely did), delete the placed copies and
 echo         drag fresh ones out of the pack before you run them.
+echo      4. SUMMONED creatures standing on a scene are frozen the same
+echo         way - a Construct keeps the creature type it was minted
+echo         with. If a deploy changed how something is summoned,
+echo         dismiss it and forge a fresh one.
 echo   ================================================================
 echo.
 pause
 exit /b 0
+
+:stillrunning
+echo.
+echo   ****************************************************************
+echo    FOUNDRY IS STILL RUNNING - nothing has been changed.
+echo.
+echo    Close Foundry completely (the world, the main window, AND the
+echo    little Setup / launcher window), then run this again.
+echo.
+echo    Why this matters: the packs are a database that Foundry locks
+echo    while it is open. Deploying anyway rebuilds some packs and
+echo    fails on the rest, which is a much worse mess than stopping.
+echo   ****************************************************************
+echo.
+pause
+exit /b 1
+
+:handedited
+echo.
+echo   ****************************************************************
+echo    STOPPED ON PURPOSE - nothing has been installed.
+echo.
+echo    The engine file in your Foundry module folder does not match
+echo    ANY version in the project history, which means it was edited
+echo    in place. Deploying now would replace those edits with the
+echo    version from GitHub.
+echo.
+echo    If you did NOT edit it on purpose, it is safe to continue -
+echo    but send the lines above to Claude first, so the change can be
+echo    captured into the project instead of thrown away.
+echo.
+echo    To keep the edits: run  node module-src-sync.js  (no arguments)
+echo    from this folder, then commit the result.
+echo   ****************************************************************
+echo.
+pause
+exit /b 1
 
 :failed
 echo.
