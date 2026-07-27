@@ -11540,7 +11540,15 @@ async function edhaFateThreadResolve(owner, item) {
  * recent, with no picker and no range check (the drift the classification named). The dialog
  * offers every active legacy marker square and annotates the ones beyond Attunement Range (the
  * range stays owner-judged, as it was); cancel REFUNDS. Writes the `linked` annotation that the
- * `edha-snare-react` prompt gate reads. The two-active-squares gate is vetoed pre-cost. */
+ * `edha-snare-react` prompt gate reads. The two-active-squares gate is vetoed pre-cost.
+ *
+ * DialogV2-FIRST since 07-27d (bench run 6, 2bX-8 attempt): the reported "post-cost silent
+ * no-op" was NOT an engine failure — a live repro (use → consume → 2 Inv → picker) rendered the
+ * dialog on the current engine. This was the engine's only AppV1 window on a runtime path
+ * (`div.app.window-app`, no `<dialog>` element), which the run-6 DOM sampling missed — the
+ * picker sat open and unanswered, which also explains the swallowed cost (cancel refunds; a
+ * reload orphans it). Converted to DialogV2 (the edhaPromptDC idiom) so the bench harness sees
+ * it AND the flow survives the v16 AppV1 removal; the V1 body stays as the fallback. */
 async function edhaZoneLinkMarkers(item, h) {
   try {
     const owner = item.actor; if (!owner) return;
@@ -11554,12 +11562,25 @@ async function edhaZoneLinkMarkers(item, h) {
       const far = dist != null && dist > ft + gd / 2;
       return `<option value="${m.id}">${m.talent || "Marker"} #${i + 1}${far ? " (beyond Attunement Range)" : ""}</option>`;
     });
-    const picked = await new Promise((resolve) => {
+    const content = `<p>Choose TWO of your marker squares (Attunement Range ${ft} ft — owner-judged):</p>
+          <p><select name="edhaLinkA">${opts.join("")}</select></p>
+          <p><select name="edhaLinkB">${[...opts.slice(1), opts[0]].join("")}</select></p>`;
+    const DV2 = foundry.applications?.api?.DialogV2;
+    let picked = null;
+    if (DV2) {
+      try {
+        picked = await DV2.wait({
+          window: { title: `${item.name} — link two squares` }, content, rejectClose: false,
+          buttons: [
+            { action: "ok", label: "Link", default: true, callback: (ev, btn) => [btn.form.elements.edhaLinkA?.value, btn.form.elements.edhaLinkB?.value] },
+            { action: "cancel", label: "Cancel", callback: () => null },
+          ],
+        });
+      } catch (e) { picked = null; }
+    } else picked = await new Promise((resolve) => {
       new Dialog({
         title: `${item.name} — link two squares`,
-        content: `<form><p>Choose TWO of your marker squares (Attunement Range ${ft} ft — owner-judged):</p>
-          <p><select name="edhaLinkA">${opts.join("")}</select></p>
-          <p><select name="edhaLinkB">${[...opts.slice(1), opts[0]].join("")}</select></p></form>`,
+        content: `<form>${content}</form>`,
         buttons: {
           ok: { label: "Link", callback: (el) => { const r = el[0] ?? el; resolve([r.querySelector("[name=edhaLinkA]")?.value, r.querySelector("[name=edhaLinkB]")?.value]); } },
           cancel: { label: "Cancel", callback: () => resolve(null) },
@@ -13944,33 +13965,45 @@ async function edhaOrderRefreshBoundIcon(target) {
 }
 
 /* --- The prohibition picker (generic — H3 {prohibition} places + the edha-decree flow): three
- * canonical kinds + free text. ENGINE-OWNED support surface (a dialog is not a rule). ------------- */
+ * canonical kinds + free text. ENGINE-OWNED support surface (a dialog is not a rule).
+ * DialogV2-FIRST since 07-27d: the Weave link picker's run-6 lesson — an AppV1 window is
+ * invisible to the bench harness's DOM sampling and dies with v16's AppV1 removal. This was the
+ * only other AppV1 window on a runtime path (Order — unbenched, converted before it bites);
+ * the V1 body stays as the fallback. ------------------------------------------------------------- */
 const EDHA_ORDER_PROH_LABEL = { move: "move from its space", invest: "activate Investiture" };
 function edhaPickProhibition(owner, title) {
-  return new Promise((resolve) => {
-    const otok = edhaCasterToken(owner); const disp = otok?.document?.disposition ?? 1;
-    const allies = (canvas?.tokens?.placeables ?? []).filter(t => t.actor && t.actor !== owner && (t.document?.disposition ?? 1) === disp);
-    const opts = allies.map(t => `<option value="${t.actor.uuid}">${t.name}</option>`).join("");
-    new Dialog({
-      title: title || "Edict — declare ONE prohibited action",
-      content: `<form>
+  const otok = edhaCasterToken(owner); const disp = otok?.document?.disposition ?? 1;
+  const allies = (canvas?.tokens?.placeables ?? []).filter(t => t.actor && t.actor !== owner && (t.document?.disposition ?? 1) === disp);
+  const opts = allies.map(t => `<option value="${t.actor.uuid}">${t.name}</option>`).join("");
+  const content = `
         <p><label><input type="radio" name="edhaProhKind" value="move" checked> Move from its space</label></p>
         <p><label><input type="radio" name="edhaProhKind" value="attack"> Attack a chosen ally:</label> <select name="edhaProhAlly">${opts || `<option value="">(no allied tokens)</option>`}</select></p>
         <p><label><input type="radio" name="edhaProhKind" value="invest"> Activate Investiture</label></p>
-        <p><label><input type="radio" name="edhaProhKind" value="other"> Other:</label> <input type="text" name="edhaProhText" placeholder="describe the prohibited action" style="width:100%"></p>
-      </form>`,
+        <p><label><input type="radio" name="edhaProhKind" value="other"> Other:</label> <input type="text" name="edhaProhText" placeholder="describe the prohibited action" style="width:100%"></p>`;
+  const readPick = (root) => {
+    const kind = root.querySelector("[name=edhaProhKind]:checked")?.value || "other";
+    const allyUuid = kind === "attack" ? (root.querySelector("[name=edhaProhAlly]")?.value || null) : null;
+    const allyName = allyUuid ? (allies.find(t => t.actor.uuid === allyUuid)?.name ?? "the chosen ally") : null;
+    const custom = (root.querySelector("[name=edhaProhText]")?.value || "").trim();
+    const text = kind === "attack" ? `attack ${allyName}` : (EDHA_ORDER_PROH_LABEL[kind] || custom || "the declared action");
+    return { kind, allyUuid, text };
+  };
+  const DV2 = foundry.applications?.api?.DialogV2;
+  if (DV2) {
+    return DV2.wait({
+      window: { title: title || "Edict — declare ONE prohibited action" }, content, rejectClose: false,
+      buttons: [
+        { action: "ok", label: "Declare", default: true, callback: (ev, btn) => readPick(btn.form) },
+        { action: "cancel", label: "Cancel", callback: () => null },
+      ],
+    }).catch(() => null);
+  }
+  return new Promise((resolve) => {
+    new Dialog({
+      title: title || "Edict — declare ONE prohibited action",
+      content: `<form>${content}</form>`,
       buttons: {
-        ok: {
-          label: "Declare", callback: (h) => {
-            const el = h[0] ?? h;
-            const kind = el.querySelector("[name=edhaProhKind]:checked")?.value || "other";
-            const allyUuid = kind === "attack" ? (el.querySelector("[name=edhaProhAlly]")?.value || null) : null;
-            const allyName = allyUuid ? (allies.find(t => t.actor.uuid === allyUuid)?.name ?? "the chosen ally") : null;
-            const custom = (el.querySelector("[name=edhaProhText]")?.value || "").trim();
-            const text = kind === "attack" ? `attack ${allyName}` : (EDHA_ORDER_PROH_LABEL[kind] || custom || "the declared action");
-            resolve({ kind, allyUuid, text });
-          },
-        },
+        ok: { label: "Declare", callback: (h) => resolve(readPick(h[0] ?? h)) },
         cancel: { label: "Cancel", callback: () => resolve(null) },
       }, default: "ok", close: () => resolve(null),
     }).render(true);
