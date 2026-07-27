@@ -55,23 +55,46 @@ placement leg at ORIGIN (2100, 9000) (the setup script's SPOTS map; grid is 300 
   pane is hidden — record quoted card text + console asserts. Tem parinaem and Soggy Bottom are
   untouchable.
 
-**FIRST: there is NO fix batch to re-test.** Bench run 7 re-tested the 07-27d batch and **all five
-PASSED** — the 07-27d ENGINE half is confirmed LIVE (`edhaSnareSpringGate`, `edhaCleanseArmMode`,
-`_edhaCleansePending` byte-checked on a fresh join). Still **byte-check the served blob** for those
-three plus the 07-27b markers (`edhaWatchEntryLevel`, `_edhaLifeClearBusy`, `chainBounded`,
-`edhaOwnerListQueue`) so you can say the engine you tested is the engine in the repo — and add
-whatever the run-7 fix pass ships (see below).
+**FIRST: there IS a fix batch to re-test — the 07-27f two.** Both of run 7's findings were fixed
+(delta **2026-07-27f**), both **ENGINE-ONLY** (⟳ Sync + F5, **no pack rebuild**). **Byte-check the
+served blob before anything else:** `edhaSummonSourceTalent` (expect 3 — definition + veto +
+executor), `edhaSkillLabel` (~8), `edhaLocalizeLabel`, plus the confirmed-live 07-27d markers
+(`edhaSnareSpringGate`, `edhaCleanseArmMode`, `_edhaCleansePending`) and the 07-27b ones
+(`edhaWatchEntryLevel`, `_edhaLifeClearBusy`, `chainBounded`, `edhaOwnerListQueue`). If
+`edhaSummonSourceTalent` is absent, Ben has not synced: record the two re-tests BLOCKED-ON-DEPLOY
+rather than re-reporting run 7's symptoms as live bugs.
 
-**Run 7's ONE new FAIL is the incoming test-pass-fixes item; it may already be fixed when you run.**
-`edha-summon-effect`'s pre-cost veto passes the **consuming** talent's name into `edhaOwnedSummons`,
-and `edhaSummonIsFrom` short-circuits on the summon's `summonTalent` stamp — so **Siege Form, Arsenal
-and Magnum Opus can never see a Construct the current engine forged** (only un-stamped legacy ones
-work — the inverse of the intent). If that fix has landed, **re-open and re-run Civilization's
-2bV-13 / 2bV-14 / the Magnum Opus half of 2bV-15 without the workaround** (run 7 proved every
-downstream mechanic works with `summonTalent` unset, so the only question is the lookup). If it has
-not landed, skip those three and say so.
+**Re-test 1 — the Construct-consuming family (Civilization 2bV-13 · 2bV-14 · the Magnum Opus half of
+2bV-15).** The lookup is fixed: `edhaOwnedSummons` now takes a **null** talent name from a CONSUMING
+rule (via `edhaSummonSourceTalent`) and matches on `summonName`, instead of comparing the consuming
+talent's own name against the summon's `summonTalent` stamp. **Re-open all three rows and drive them
+against a Construct forged NORMALLY — do NOT repeat run 7's `summonTalent`-unset workaround.** That
+workaround is what made run 7's downstream evidence possible, but re-testing behind it would prove
+nothing about the fix, and the downstream halves have still never been driven against a *stamped*
+Construct. So: confirm each talent gets past the pre-cost veto (no "needs a live Combat Construct.
+Nothing spent."), then re-confirm Siege Form's toggle + its two refusals, Arsenal's granted AE +
+re-arm refusal, and all of Magnum Opus (HP roll, +2 defenses, Colossus AE, Foundation upgrade,
+`sceneOnce` refusal, the 10 ft splash). **Also re-check the FORGING side did not regress:** Forge
+Construct at cap 1 must still dismiss-and-replace (2bP-8/2bP-9's shape — that branch was left
+byte-identical, so a failure there is a real regression). New optional Events-tab field to note if
+Ben asks: `edha-summon-effect` → "…forged by which talent", blank = any of your summons with that
+name (the shipped default, and the rename-proof one).
 
-**Deploy state — read before believing any bug.** ENGINE: 07-27b **and** 07-27d are both CONFIRMED
+**Re-test 2 — the raw-i18n-key family (nine sites, cross-tree).** Run 7 filed this as one cosmetic
+label; it was a nine-site family, and run 7's explanation of why Bastion's card worked was **wrong**
+(that call hardcodes `label: "Agility"` — there was no working path to copy). Now fixed at the
+shared helpers, so **read the CARD TEXT** on: the Magnum Opus splash save ("Agility vs your Red"),
+the Colossus AE description ("roll Agility … or gain Prone", not "AGI … prone"), Bastion's
+fortified-entry save (still "Agility", now via the helper), any `edha-apply-status` card applying a
+NATIVE status (run 1's `COSMERE.Status.Disoriented` — Disoriented/Slowed/Prone), Order's
+court/accomplice sweep and annotate rider ("Discipline vs your Blue"), and Phantom Double's belief
+cards ("Perception <n>"). **Any `COSMERE.*` string in card text is a FAIL.** One negative to check:
+Fault Line's rule authors `saveLabel: "Speed"` — it must still read "Speed", proving an authored
+override still wins over the helper.
+
+**Deploy state — read before believing any bug.** **07-27f is NOT confirmed — the byte-check above
+decides it**, and it is engine-only either way (no pack build is owed for it). ENGINE: 07-27b **and**
+07-27d are both CONFIRMED
 LIVE. **THREE pack halves are still owed, unchanged since run 5** — do NOT run a pack build yourself,
 and record these BLOCKED-ON-DEPLOY unless a fresh console read proves otherwise:
 - `foundry-build leyline` + ⟳ Sync (Mender's Instinct's note + green range gate).

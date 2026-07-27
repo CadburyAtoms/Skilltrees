@@ -2,7 +2,14 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, **COMPLETED 2026-07-26 (pass AA)**: **the ratchet list is EMPTY — 221 → 0 across twenty-seven passes.** Every tree is clear, all six marker ledgers have migrated, and `scripts/name-keyed-allowlist.json` stays in the repo with an empty `talents` list *on purpose* — lint pass 7 still guards against REGROWTH, which is the half of the ratchet that matters from here on. ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **ALL SIX marker LEDGERS have migrated** (`covenants` 07-24u; `edicts` 07-25 pass V; `remains` 07-25 pass W; Fate's `snares` 07-25 pass X; Destruction's `charges` 07-26 pass Y; Fate's `ordained` 07-26 pass AA — the point-bound ones fail OPEN through H3's reconcile by design). There is no flat marker-list flag left in the engine. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-27e** (BENCH RUN 7 —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-27f** (BENCH RUN 7'S
+TWO DEFECTS FIXED — the summon-effect lookup asked `edhaOwnedSummons` the CONSUMING talent's name
+where the FORGING talent's stamp was compared (un-blocks Siege Form / Arsenal / Magnum Opus), and
+run 7's "cosmetic" raw-i18n note turned out to be a **nine-site family** with a two-report history:
+`CONFIG.COSMERE.*[id].label` holds i18n KEYS, EDHA's own statuses hold English, so only NATIVE ids
+ever showed it — and Bastion's "working" card was a hardcoded literal, not a path to copy. Both
+ENGINE-ONLY (sync + F5); 261 tests green; new `lint-refs` pass 10 gates the label family against
+regrowth, mutation-verified.) Prior: **2026-07-27e** (BENCH RUN 7 —
 the 07-27d re-tests + Civilization + Power, executed live: **ALL FIVE 07-27d fixes PASSED** (the
 snare guard holds on all five spring paths incl. two snares in one walk path; Surgical Precision
 quotes its own d20 on both paths and on the cancelled-dialog case; the Chaos sweep unsets
@@ -90,6 +97,103 @@ the Red pilot, executed live by an agent session joined as `Bench`: 16 rows reti
 1 FAIL root-caused (Shockwave Slam's weapon-hit trigger surface), 4 cross-tree observations,
 and the agent-bench runbook hardened with the v13 operating lessons. Docs + setup-script fix
 only; nothing to deploy.)
+
+**2026-07-27f — BENCH RUN 7'S TWO DEFECTS FIXED (test-pass-fixes). One commit each; ALL
+ENGINE-ONLY (`module-src-sync` + F5 — byte-check `edhaSummonSourceTalent` and `edhaSkillLabel` in
+the served blob), NO pack rebuild, no authored data touched. The headline is that run 7's ONE
+functional defect turned out to have a SECOND defect hiding behind its "cosmetic" note: the raw
+i18n key was not one talent's missing `localize` but a NINE-SITE family with a two-report history,
+and run 7's own explanation of why Bastion's card worked was wrong in mechanism. 261 tests green
+(13 new pinned cases in two new files) + a new lint pass, mutation-verified.**
+
+### Bug root causes (one bullet per cause; commits one per defect)
+
+1. **`edha-summon-effect` asked `edhaOwnedSummons` the wrong question — the CONSUMING talent's
+   name where the FORGING talent's stamp was compared** (`976f595`, ENGINE-ONLY). Run 7 proved the
+   symptom by mutation (`lookup_ForgeConstruct: true`, `lookup_SiegeForm/Arsenal/MagnumOpus:
+   false`; unsetting `summonTalent` made all three work), so the cause was already located — what
+   this pass added is *why the shape was wrong*, which decided the fix. `edhaOwnedSummons` has two
+   callers asking two genuinely different questions through ONE key:
+   - the FORGING talent's sustain-cap veto asks *"how many summons of MINE am I sustaining?"* —
+     talent identity, so the stamp is authoritative. Correct as written, and 2bP-8/2bP-9 retired on
+     its legacy name fallback, so it must not move.
+   - a CONSUMING talent (Siege Form / Arsenal / Magnum Opus act on a Construct that Forge Construct
+     forged) asks *"do I have a live `<summonName>`?"* — the SUMMON's identity. Which talent forged
+     it is not the question, and its own name is not the answer.
+
+   `edhaSummonIsFrom` now treats a blank/null `talentName` as the consumer question and matches on
+   the rule's own `summonName` prefix WITHOUT consulting the stamp; the forging branch is byte-for-
+   byte unchanged. `edha-summon-effect` gained an authorable **`summonTalent`** field resolved by
+   the new pure `edhaSummonSourceTalent(h)`, so the pre-cost veto and the executor can never
+   disagree about the lookup key. **Blank is the shipped default and is also the rename-proof
+   choice** (a renamed Forge Construct leaves old summons stamped with the old name; name-prefix
+   matching survives that, stamp matching does not), which is why this needed NO authored-data
+   change and stayed engine-only — the three Civ rules already carry
+   `summonName: "Combat Construct"`. `tests/summon-lookup.test.js` pins both pure decisions,
+   including the pre-fix census returning only the legacy Construct.
+2. **Raw i18n KEYS in card text: a NINE-SITE family, reported twice, fixed as neither**
+   (`c406391`, ENGINE-ONLY). `CONFIG.COSMERE.skills[id].label` and `.statuses[id].label` hold raw
+   i18n KEYS (`"COSMERE.Actor.Skill.Agility"`), not display text — and the engine had a localizing
+   helper for CONDITIONS only, so nine card/AE sites interpolated a config label or a bare id
+   directly. **Why it survived seven runs:** EDHA's own statuses (`EDHA_STATUSES`) carry plain
+   ENGLISH labels, so every card naming an Edha status read fine and only cards naming a NATIVE
+   skill or status printed a key — which looks exactly like one talent's typo. Run 1 logged
+   `COSMERE.Status.Disoriented` in an `edha-apply-status` card (07-26h, never fixed); run 7 logged
+   `COSMERE.Actor.Skill.Agility` in the Magnum Opus splash. **Run 7's inference that "a working
+   path exists to copy" was wrong in mechanism:** Bastion's card printed "Agility" because its call
+   *hardcodes* `label: "Agility"`. There was no working shared path — there were two workarounds
+   grown around the gap (that literal, and authored `saveLabel`/`skillLabel` English on two
+   Destruction rules), which is the tell that the gap was shared, not local. Fixed at the helpers:
+   `edhaSkillLabel` + `edhaLocalizeLabel` are new, `edhaConditionLabel` now consults
+   `EDHA_STATUSES` first, and **`edhaFoeSkillVsColor` — THE save-card helper — localizes its own
+   skill id**, so its `label` option became an override rather than a requirement. That last change
+   also fixed two callers nobody had reported: Fault Line's sibling rules pass `null` when
+   unauthored and were printing a bare `spd`.
+
+   The nine sites: the Magnum Opus splash save (reported), the Colossus AE description, Bastion's
+   masking literal, Order's court/accomplice sweep, Order's annotate rider, Phantom Double's three
+   belief cards, `edha-apply-status` (run 1's), `edhaStatusSweep`'s no-victim card, the
+   damage-bonus vs-status card, and the resource-regain card. Three creation-wizard UI closures
+   already localized correctly and were left alone.
+
+### New REUSABLE primitives
+
+- **`edhaSkillLabel(id)`** — display text for a skill OR attribute id, localized, falling back to
+  the UPPER-CASED id. **The only correct way to name a skill in card text.**
+- **`edhaLocalizeLabel(raw, fallback)`** — localize with a key-shaped-miss guard: if the result
+  still looks like a dotted i18n key, the fallback wins. This is the belt that makes the family
+  un-repeatable even at a future site that hands over a raw key.
+- **`edhaConditionLabel(id)`** — unchanged signature, now `EDHA_STATUSES`-aware, so it is the one
+  status-label call and the three-term inline expressions are gone.
+- **`edhaSummonSourceTalent(h)`** — the consuming rule's forging-talent key (blank → null = "any of
+  my summons with that name"). Use it at every `edhaOwnedSummons` call on a CONSUMER.
+- **`edha-summon-effect.summonTalent`** — a new authorable field on the Events tab: pin a
+  Construct-consuming talent to one forger, or leave it blank for name matching.
+
+### New GATE (regrowth, not just repair)
+
+- **`scripts/lint-refs.js` pass 10** — fails the build on a raw
+  `CONFIG.COSMERE.{skills,statuses,conditions,attributes}[id].label` or `EDHA_STATUSES[id].label`
+  read anywhere in the engine. Exempt: a line that localizes itself (`game.i18n` on it) or the
+  helpers' `label-helper` marker; prose lines are skipped. **Verified by mutation** — restoring
+  Phantom Double's old expression fails the lint and names the line (`register-skills.js:5691`),
+  the same way iron rule 7's graph check was verified.
+
+### Known limits / couldn't self-verify (no Foundry session)
+
+- ⚑ **Neither fix was driven in Foundry** — Foundry is running and this session never touches the
+  live module. Both are byte-checkable and both have re-test rows with what to READ at the table.
+- ⚑ **The summon fix's downstream halves were only ever verified against an UN-STAMPED Construct**
+  (run 7 drove them behind its own workaround). Run 8 must re-drive them against a normally forged,
+  stamped Construct — and must NOT repeat the `summonTalent`-unset workaround, which would prove
+  nothing about the fix.
+- ⚑ **One label site is unverifiable from here by design:** whether Ben's install has the
+  `COSMERE.*` strings loaded at all. If a translation is genuinely missing, the new guard makes the
+  card read `AGI`/`disoriented` instead of the key — degraded but never key-shaped.
+- ⚑ **Fault Line's authored `saveLabel: "Speed"` is now redundant** (the helper produces the same
+  text). It is left in place deliberately: removing it is a pack rebuild for zero behaviour, and
+  the re-test row uses it as the proof that an authored override still wins.
+- No new rulings. Nothing in this batch is a design question.
 
 **2026-07-27e — BENCH RUN 7: the 07-27d re-tests + CIVILIZATION + POWER, executed live.** Joined
 `localhost:30000` as the passwordless GM `Bench` (world `edha`, system 2.1.0, `edha-content` active,

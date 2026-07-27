@@ -279,6 +279,15 @@ generalise past summons:
   own **authored** `summonName`, never a literal in engine code. ⚠ `edhaCivIsConstruct` (6 call
   sites) still name-prefixes; not a rule-2b violation (a summon name is not a talent name), just an
   available cleanup.
+- ⚠⚠ **`edhaOwnedSummons` answers TWO different questions and the caller picks which** (07-27f, after
+  the stamp killed the whole Construct-consuming family for three bench runs). Pass a **talent name**
+  only if you are the talent that FORGED the summon ("how many of MINE am I sustaining?" — the
+  sustain-cap veto). A **CONSUMING** talent — one that acts on a summon someone else forged — passes
+  **null/blank** and is matched on `summonName` alone, via **`edhaSummonSourceTalent(h)`** reading the
+  rule's optional `summonTalent` field. Passing your own `item.name` as a consumer looks harmless and
+  refuses EVERY correctly-stamped summon, because the stamp branch short-circuits before the name
+  fallback: only *legacy un-stamped* summons work, the inverse of the intent. Blank is also the
+  rename-proof default — a renamed forger leaves old summons carrying the old stamp.
 
 ## Range, target count, and doubling — `edha-next-test-mod` (07-24x)
 Ben ruled q13 BUILD IT, so Decisive Command's printed "within 20 ft" is enforced and Authority really
@@ -1729,3 +1738,26 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   — because `edhaGrantTempHpCross` lands on adversaries, summons and unlinked token actors that the
   character loop never sees; each unsets its own guard. Out-of-combat grants clear only when a
   combat ends: the family's existing semantic.
+
+## Test-pass 2026-07-27f (the bench-run-7 two)
+
+- ⚠⚠ **`CONFIG.COSMERE.{skills,statuses,conditions,attributes}[id].label` is an i18n KEY, not
+  display text** (`"COSMERE.Actor.Skill.Agility"`). **Never interpolate one — or a bare id — into
+  card or AE text.** Call **`edhaSkillLabel(id)`** (skills + attributes; falls back to the
+  UPPER-CASED id) or **`edhaConditionLabel(id)`** (statuses/conditions, `EDHA_STATUSES`-aware;
+  falls back to the bare id). Both route through **`edhaLocalizeLabel(raw, fallback)`**, which
+  rejects a key-shaped localize MISS so a raw key can never reach a card even from a future site.
+  **`lint-refs.js` pass 10 enforces this** — a raw `*.label` read in the engine fails the build
+  (exempt: a line that localizes itself, or the helpers' `label-helper` marker).
+  ⚑ **Why this hid for seven bench runs, and the transferable tell:** EDHA's OWN statuses carry
+  plain ENGLISH labels, so every card naming an Edha status read fine and only NATIVE ids printed a
+  key — which looks like one talent's typo, and was filed that way twice (run 1's
+  `COSMERE.Status.Disoriented`, run 7's Magnum Opus splash). Nine sites were live. The tell that it
+  was shared, not local: **two workarounds had grown around the gap** — a hardcoded
+  `label: "Agility"` in Bastion's save call (the "working" card run 7 said to copy) and authored
+  `saveLabel`/`skillLabel` English on two Destruction rules. When you find a hardcoded English
+  label or an authored label field next to a formatting bug, the missing helper IS the bug.
+- **`edhaFoeSkillVsColor` localizes its own `skill` id** (07-27f) — its `label` option is an
+  OVERRIDE for different prose, not a requirement. Callers should pass `skill` and nothing else;
+  passing a computed `*.label` is the pass-10 violation. Fixing the shared helper also fixed the
+  two Fault Line siblings that pass `null` when unauthored and were printing a bare `spd`.
