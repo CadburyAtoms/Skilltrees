@@ -1103,7 +1103,7 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
         const amt = edhaEvalSync(h.bonusDamageFormula, mk.owner.getRollData());
         if (amt > 0) {
           list.push({ amount: amt, type: h.bonusDamageType || "vital" });
-          ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealer.actor }), content: `<p>🎯 <strong>${rule.item.name}</strong> (${mk.owner.name}): +${amt} ${h.bonusDamageType || "vital"} vs the ${EDHA_STATUSES[status]?.label ?? status} target.</p>` });
+          ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealer.actor }), content: `<p>🎯 <strong>${rule.item.name}</strong> (${mk.owner.name}): +${amt} ${h.bonusDamageType || "vital"} vs the ${edhaConditionLabel(status)} target.</p>` });
         }
       }
       // Dealer-side passive bonus damage (`edha-damage-bonus`, 07-25 pass 2bS — was the name-keyed
@@ -1321,7 +1321,7 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
           const res = mk.owner.system?.resources?.[resKey];
           const rmax = edhaResVal(res) ?? ((res?.value ?? 0) + gain);
           try { await mk.owner.update({ [`system.resources.${resKey}.value`]: Math.min(rmax, (res?.value ?? 0) + gain) }); } catch (e) { /* perms */ }
-          ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: mk.owner }), content: `<p>🔮 <strong>${rule.item.name}</strong>: the ${EDHA_STATUSES[status]?.label ?? status} creature took damage — ${mk.owner.name} recovers ${gain} ${EDHA_RES_LABEL[resKey] || resKey}.</p>` });
+          ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: mk.owner }), content: `<p>🔮 <strong>${rule.item.name}</strong>: the ${edhaConditionLabel(status)} creature took damage — ${mk.owner.name} recovers ${gain} ${EDHA_RES_LABEL[resKey] || resKey}.</p>` });
         }
       }
       // HP-threshold prompt (Mender's Instinct): an ALLY character just dropped to ≤ half HP → offer
@@ -4338,10 +4338,39 @@ for (const ctx of ["skill", "attack", "item"]) Hooks.on(`cosmere-rpg.${ctx}Roll`
 /* --- Cleanse-a-condition offer (Beacon of Stability's shape; generic since 07-25) ------------------
  * Posted by an `edha-cleanse` rule's executor: one button per (ally, condition); the click spends
  * the rule's costs and removes the condition. The card and click are the ENGINE-OWNED machinery. */
+/* --- CARD LABELS for system ids — the ONLY way an id reaches card text (2026-07-27f) -------------
+ * ⚠️ `CONFIG.COSMERE.skills[id].label` and `.statuses[id].label` hold raw i18n KEYS
+ * ("COSMERE.Actor.Skill.Agility", "COSMERE.Status.Disoriented"), NOT display text. EDHA's own
+ * statuses (EDHA_STATUSES) carry plain English, which is exactly why this hid for so long: every
+ * card that named an Edha status read fine and every card that named a NATIVE skill or status
+ * printed the key (bench run 1: `COSMERE.Status.Disoriented`; run 7: the Magnum Opus splash save).
+ * Two workarounds had grown around the gap instead of closing it — a hardcoded `label: "Agility"`
+ * in Bastion's save call (which is why run 7 saw one card "work") and authored `saveLabel`/
+ * `skillLabel` fields carrying English on two Destruction rules.
+ * NEVER interpolate a bare id or a `*.label` read into card/AE text. Call one of these. */
+function edhaLocalizeLabel(raw, fallback) {
+  const s = String(raw ?? "").trim();
+  if (!s) return fallback;
+  const out = String(game.i18n?.localize(s) ?? s);
+  /* An i18n MISS returns the key unchanged, and a dotted CapitalCase token with no spaces IS a key
+   * — never let one reach card text. This is the belt that makes the family un-repeatable: even a
+   * future site that hands us a raw key gets the readable fallback instead of the run-1 symptom. */
+  return (!out || /^[A-Z][A-Za-z0-9]*(\.[A-Za-z0-9]+)+$/.test(out)) ? fallback : out;
+}
 function edhaConditionLabel(id) {
-  const raw = CONFIG.COSMERE?.conditions?.[id]?.label ?? CONFIG.COSMERE?.statuses?.[id]?.label
-    ?? (CONFIG.statusEffects ?? []).find(s => s.id === id)?.name ?? id;
-  return game.i18n?.localize(raw) ?? raw;
+  const key = String(id ?? "").trim();
+  const raw = EDHA_STATUSES[key]?.label ?? CONFIG.COSMERE?.conditions?.[key]?.label ?? CONFIG.COSMERE?.statuses?.[key]?.label   // label-helper
+    ?? (CONFIG.statusEffects ?? []).find(s => s.id === key)?.name ?? null;
+  return edhaLocalizeLabel(raw, key);   // no configured label at all → the bare id, as before
+}
+/* The skill/attribute counterpart. Falls back to the UPPER-CASED id (the old inline default at
+ * every site this replaced) so an unknown id reads as a skill code, not as lowercase noise. */
+function edhaSkillLabel(id) {
+  const key = String(id ?? "").trim(); if (!key) return "";
+  /* `raw` must stay NULL when nothing is configured — feeding the bare id through localize returns
+   * it unchanged, which shipped a lowercase id where the old inline default said "AGI". */
+  const raw = CONFIG.COSMERE?.skills?.[key]?.label ?? CONFIG.COSMERE?.attributes?.[key]?.label ?? null;   // label-helper
+  return edhaLocalizeLabel(raw, key.toUpperCase());
 }
 function edhaPostBeaconCard(owner, name, allyTokens, costs = [], prompt = "") {
   try {
@@ -5661,7 +5690,7 @@ async function edhaPhantomBeliefSweep(copyDoc, { initial = false } = {}) {
     const copyActor = copyDoc?.actor; if (!copyActor) return;
     const dc = Number(copyActor.getFlag("edha-content", "phantomDC")) || 10;
     const skill = String(copyActor.getFlag("edha-content", "phantomSkill") || "prc").trim() || "prc";
-    const sklab = CONFIG.COSMERE?.skills?.[skill]?.label || skill.toUpperCase();
+    const sklab = edhaSkillLabel(skill);   // 07-27f: printed the raw i18n key in all three belief cards
     const source = copyActor.getFlag("edha-content", "phantomSource") || "Illusion";
     const belief = foundry.utils.deepClone(copyActor.getFlag("edha-content", "phantomBelief") || { fooled: [], saw: [] });
     const tested = new Set([...belief.fooled, ...belief.saw].map(r => r.uuid));
@@ -8855,7 +8884,7 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
       if (r.resource === "foc") await edhaGainFocus(owner, r.value, name);
       else { const res = owner.system?.resources?.[r.resource]; const rmax = edhaResVal(res) ?? (res?.value ?? 0) + r.value; try { await owner.update({ [`system.resources.${r.resource}.value`]: Math.min(rmax, (res?.value ?? 0) + r.value) }); } catch (e) {} }
     }
-    const label = game.i18n?.localize(EDHA_STATUSES[eff.statusId]?.label ?? CONFIG.COSMERE?.statuses?.[eff.statusId]?.label ?? eff.statusId) ?? eff.statusId;
+    const label = edhaConditionLabel(eff.statusId);   // 07-27f: same lookup, one helper (see edhaLocalizeLabel)
     ChatMessage.create({ speaker, content: `<p><strong>${name}</strong> — ${targets.map(a => a.name).join(", ")} ${targets.length > 1 ? "are" : "is"} <strong>${label}</strong>${spec.note ? ` <span style="opacity:.8">(${spec.note})</span>` : ""}.</p>` });
     return;
   }
@@ -9873,7 +9902,11 @@ async function edhaFoeSkillVsColor(owner, tokens, { skill = "spd", label = null,
     if (!uniq.length) return;
     const dcRoll = await new Roll(`1d20 + @skills.${color}.mod`, owner.getRollData()).evaluate();
     const dc = Number(dcRoll.total) || 0;
-    const skillName = label || skill;
+    /* 07-27f: the helper LOCALIZES the skill id itself. It used to fall back to the bare id, so
+     * every caller computed its own label — three of them from the raw `CONFIG.COSMERE.skills[id]
+     * .label` KEY, one from a hardcoded "Agility", and two from authored English on the rule.
+     * `label` now only overrides for a caller that wants different prose. */
+    const skillName = label || edhaSkillLabel(skill);
     const colorName = color.charAt(0).toUpperCase() + color.slice(1);
     const lines = [];
     for (const t of uniq) {
@@ -12564,7 +12597,7 @@ async function edhaCivConstructHitRiders(dealer, target, prevHp) {
               edhaCivCard(owner, [dr], `<p>🗿 <strong>${dec.item.name}</strong>: the Colossus's blow shakes the ground — <strong>${amt}</strong> ${dtype} to ${foes.map(t => t.name).join(", ")} (within ${radius} ft of ${target.name}).</p>`);
               if (h.splashStatus) {
                 const skill = h.splashSaveSkill || "agi";
-                await edhaFoeSkillVsColor(owner, foes, { skill, label: CONFIG.COSMERE?.skills?.[skill]?.label ?? skill.toUpperCase(),
+                await edhaFoeSkillVsColor(owner, foes, { skill,          // 07-27f: the helper localizes — do NOT pass a *.label read
                   color: h.splashSaveColor || "red", sourceName: dec.item.name, icon: "🗿",
                   failText: edhaConditionLabel(h.splashStatus) || h.splashStatus, okText: "stays up",
                   onFail: (t) => edhaToggleStatus(t.actor, h.splashStatus, true) });
@@ -12702,8 +12735,10 @@ class EdhaCivFortifiedRegionBehavior extends foundry.data.regionBehaviors.Region
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), rolls: [dr],
         content: `<p>⛨ <strong>${actor.name}</strong> enters ${owner.name}'s fortified Foundation — takes <strong>${amt}</strong> ${this.damageType || "impact"}.</p>` });
       const tok = tokDoc.object;
-      if (tok) await edhaFoeSkillVsColor(owner, [tok], { skill: "agi", label: "Agility", color: "red", sourceName: this.sourceLabel || "Fortified Foundation",
-        failText: "Slowed", okText: "keeps pace", icon: "⛨",
+      /* 07-27f: `label: "Agility"` was hardcoded here — the one save card that read correctly on
+       * bench run 7, which is what made the raw-key family look like a one-talent bug. */
+      if (tok) await edhaFoeSkillVsColor(owner, [tok], { skill: "agi", color: "red", sourceName: this.sourceLabel || "Fortified Foundation",
+        failText: edhaConditionLabel("slowed"), okText: "keeps pace", icon: "⛨",
         onFail: async (t) => {
           await edhaToggleStatus(t.actor, "slowed", true);
           // "until the start of its next turn": stamp the CURRENT coord — the expiry pass clears it when
@@ -12883,7 +12918,7 @@ async function edhaCivTransformSummon(item, h, c) {
     if (Number(h.defBonus) > 0) await c.createEmbeddedDocuments("ActiveEffect", [{
       name: `Colossus (${item.name})`, img: "icons/creatures/magical/construct-golem-stone-blue.webp",
       changes: ["phy", "cog", "spi"].map(k => ({ key: `system.defenses.${k}.bonus`, mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: String(h.defBonus), priority: 20 })),
-      description: `<p>Colossus for the scene: +${h.defBonus} to all defenses; <strong>reach 10 ft</strong> (manual — no system reach field); its attacks splash this talent's damage formula to each enemy within ${Number(h.splashRadiusFt) || 0} ft of the target, who roll ${(h.splashSaveSkill || "agi").toUpperCase()} vs the summoner's ${h.splashSaveColor || "red"} or gain ${h.splashStatus || "prone"} (engine-rolled).</p>`,
+      description: `<p>Colossus for the scene: +${h.defBonus} to all defenses; <strong>reach 10 ft</strong> (manual — no system reach field); its attacks splash this talent's damage formula to each enemy within ${Number(h.splashRadiusFt) || 0} ft of the target, who roll ${edhaSkillLabel(h.splashSaveSkill || "agi")} vs the summoner's ${h.splashSaveColor || "red"} or gain ${edhaConditionLabel(h.splashStatus || "prone")} (engine-rolled).</p>`,
       flags: { "edha-content": { civColossus: true } },
     }]);
     edhaCivCard(owner, dr ? [dr] : null, `<p>🗿 <strong>${item.name}</strong>: ${c.name} transforms into a <strong>Colossus</strong> — +<strong>${bonusHp}</strong> HP, +${Number(h.defBonus) || 0} to all defenses, reach 10 ft (manual), splashing attacks (engine-rolled).${Number(h.zoneBuffUpgrade) > 0 ? ` Allies in your Foundations now gain <strong>+${h.zoneBuffUpgrade}</strong> to all defenses at their turn start (upgraded for the scene).` : ""}${h.note ? ` <span style="opacity:.8">${h.note}</span>` : ""} <span style="opacity:.8">(Once per scene.)</span></p>`);
@@ -14093,9 +14128,8 @@ async function edhaProhAnnotateRider(owner, key, target) {
     const ttok = edhaOrderTokenOf(target.uuid); if (!ttok) return;
     const ann = edhaProhAnnotateRuleOf(owner, key); if (!ann) return;
     const skill = ann.handler.riderSkill || "dis", color = ann.handler.riderColor || "blue";
-    const label = CONFIG.COSMERE?.skills?.[skill]?.label ?? skill.toUpperCase();
     await edhaFoeSkillVsColor(owner, [ttok], {
-      skill, label, color, sourceName: ann.item.name, icon: "⚖️",
+      skill, color, sourceName: ann.item.name, icon: "⚖️",   // 07-27f: the helper localizes the skill id
       failText: "breaks — +[Tier][Die] spirit + Weakened", okText: "holds firm",
       onFail: async (t) => {
         const sr = await new Roll(Roll.replaceFormulaData(ann.item.system?.damage?.formula || EDHA_ORDER_BLUE_DIE, owner.getRollData(), { missing: "0" })).evaluate();
@@ -17725,7 +17759,7 @@ function edhaRegisterNativeEventSystem() {
         const foes = edhaEnemyTokensInCircle(owner, vtok.center.x, vtok.center.y, radius).filter(t => t.actor && t.actor !== victim);   // "each OTHER enemy"
         if (!foes.length) return;
         const skill = this.courtSkill || "dis", color = this.courtColor || "blue";
-        const slabel = CONFIG.COSMERE?.skills?.[skill]?.label ?? skill.toUpperCase();
+        const slabel = edhaSkillLabel(skill);   // 07-27f: was the raw i18n KEY in the prose line below
         const dr = await new Roll(Roll.replaceFormulaData(item.system?.damage?.formula || EDHA_ORDER_BLUE_DIE, owner.getRollData(), { missing: "0" })).evaluate();
         const amt = Math.max(0, Math.floor(dr.total));
         edhaOrderCard(owner, [dr], `<p>⚖️ <strong>${item.name}</strong> — the court turns on the accomplices (${foes.length} within ${radius} ft): one shared roll, <strong>${amt}</strong> ${item.system?.damage?.type || "spirit"} to each who fails ${slabel} vs your ${color[0].toUpperCase()}${color.slice(1)}.</p>`);
@@ -18449,9 +18483,10 @@ async function edhaApplyStatusMark(item, cfg, boundVictim = null) {
     } else if (game.users?.activeGM) {
       game.socket.emit("module.edha-content", { action: "apply-status-mark", payload: { actorUuid: victim.uuid, statusId: status, ...(wantMark ? { mark } : {}), ...(combatExpire ? { combatExpire: true } : {}) } });
     } else { ui.notifications?.warn(`Edha: a GM must be online to mark ${victim.name}.`); return; }
-    // Three-term fallback (07-24v): NATIVE statuses (determined, disoriented) are not in EDHA_STATUSES,
-    // so the two-term version printed a bare lowercase id. Mirrors edhaFireTrigger's status branch.
-    const label = EDHA_STATUSES[status]?.label ?? CONFIG.COSMERE?.statuses?.[status]?.label ?? status;
+    /* 07-27f: this three-term inline (07-24v) reached CONFIG.COSMERE.statuses for native ids and
+     * printed its raw i18n KEY — bench run 1's "COSMERE.Status.Disoriented", open since 07-26h.
+     * edhaConditionLabel is the same lookup order PLUS localization. */
+    const label = edhaConditionLabel(status);
     ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: owner }),
       content: `<p>🎯 <strong>${item.name}</strong>: <strong>${victim.name}</strong> is <strong>${label}</strong> (by ${owner.name})` +
@@ -18497,7 +18532,7 @@ async function edhaStatusSweep(item, cfg) {
     const ft = cfg.rangeByRank ? (EDHA_ATTUNE_FT[rank] || EDHA_ATTUNE_FT[1]) : (Number(cfg.rangeFt) || 30);
     const status = cfg.status || "weakened";
     const victims = edhaTokensWithin(tok, ft).map(t => t.actor).filter(a => a && a !== actor && a.statuses?.has?.(status));
-    const label = EDHA_STATUSES[status]?.label ?? status;
+    const label = edhaConditionLabel(status);   // 07-27f: printed a bare lowercase id for native statuses
     if (!victims.length) {
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p><strong>${item.name}</strong> — no ${label} creature within ${ft} ft.</p>` });
       return;

@@ -341,6 +341,25 @@ engine.split("\n").forEach((lineText, i) => {
       `deliberate, add a "type-strict: <reason>" comment on the line`);
 });
 
+// --- pass 10: no raw i18n KEY may reach card text (the label family, 07-27f) ----
+// `CONFIG.COSMERE.skills[id].label` / `.statuses[id].label` hold raw i18n KEYS, not display text.
+// EDHA's OWN statuses carry plain English, so every card naming one read fine while every card
+// naming a NATIVE skill or status printed the key — bench run 1 shipped
+// "COSMERE.Status.Disoriented" in an apply-status card and it survived four more runs, because the
+// symptom looks like one talent's typo rather than a shared-helper gap. Nine sites were live.
+// Read a label through edhaConditionLabel / edhaSkillLabel (which localize AND guard against a
+// localize miss). A site that localizes on the same line is exempt; the helpers themselves carry
+// the `label-helper` marker.
+engine.split("\n").forEach((lineText, i) => {
+  const t = lineText.trim();
+  if (t.startsWith("*") || t.startsWith("//") || t.startsWith("/*")) return;      // prose, incl. these notes
+  if (!/(COSMERE\??\.\??(skills|statuses|conditions|attributes)\??\.?\[[^\]]*\]\??\.label|EDHA_STATUSES\??\.?\[[^\]]*\]\??\.label)/.test(lineText)) return;
+  if (lineText.includes("game.i18n") || lineText.includes("label-helper")) return;
+  err(`register-skills.js:${i + 1}: raw *.label read — CONFIG.COSMERE.{skills,statuses}[id].label is an ` +
+      `i18n KEY ("COSMERE.Actor.Skill.Agility"), not display text. Use edhaSkillLabel(id) or ` +
+      `edhaConditionLabel(id); if this line genuinely localizes itself, keep the game.i18n call on it`);
+});
+
 // --- pass 8: the `execute-macro` budget (Ben's 07-24p ruling, gate landed 07-24s) ---------------
 //
 // Ben overruled a flat ban on the system's native `execute-macro` handler, and was right to: a macro
