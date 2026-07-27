@@ -309,6 +309,13 @@ Hooks.once("ready", () => {
  * attacker's turn). Disadvantage is applied via the system's d20 roll pipeline:
  * `cosmere-rpg.pre{Skill|Attack|Item}Roll` (roll, source, config) fires BEFORE the dialog/evaluate
  * (d20Roll, index.js ~L5266).
+ *  ⚠ THE CHANNEL IS A **STRING** ENUM, and BOTH halves below are required. `AdvantageMode`
+ *    (index.js L262-267) is `{None:"none", Advantage:"advantage", Disadvantage:"disadvantage"}` and
+ *    `D20Roll.hasAdvantage` is `options.advantageMode === "advantage"` — a NUMBER (or any other
+ *    string) reads as none and `configureModifiers()` leaves a plain `1d20`, with no error anywhere.
+ *    Two sites shipped that way and neither ever worked: the retired `edhaStanceAdvPreRoll` and
+ *    `edhaQuarryAdvPreRoll` (fixed 07-27l, after four bench attacks rolled `1d20 + 4`).
+ *    **`scripts/lint-refs.js` pass 13 + `tests/advantage-channel.test.js` now gate both halves.**
  *  - Fast-forward rolls: the D20Roll is already built when preRoll fires → set
  *    roll.options.advantageMode and re-run configureModifiers() (idempotent: resets d20 number/mods).
  *  - Dialog rolls: configureDialog OVERWRITES options.advantageMode from data.skillTest.advantageMode
@@ -472,7 +479,8 @@ function edhaTestRiderApply(roll, source, config) {
       // ⚠ The system's enum is the STRING "advantage"/"disadvantage", and a DIALOG roll overwrites
       // roll.options from data.skillTest — so both halves are required (§ the pre-roll pipeline note
       // at the top of this file). The retired edhaStanceAdvPreRoll set `= 1` and wrapped neither,
-      // which is why stance skill advantage never actually landed. Regression pinned in tests/.
+      // which is why stance skill advantage never actually landed — and edhaQuarryAdvPreRoll made
+      // the SAME two mistakes until 07-27l. Pinned: tests/advantage-channel.test.js + lint pass 13.
       roll.options.advantageMode = mode; roll.configureModifiers?.();
       const orig = roll.configureDialog?.bind(roll);
       if (orig) roll.configureDialog = async (data) => { try { data ??= {}; data.skillTest ??= {}; data.skillTest.advantageMode = mode; } catch (e) {} return orig(data); };
@@ -5439,15 +5447,30 @@ function edhaQuarryOf(owner) {
   return l.length ? (l[l.length - 1]?.uuid ?? null) : null;
 }
 // Advantage on ATTACKS against your quarry ("find and study" rolls stay the table's call — flag it).
+/* ⚠ 07-27l: this site NEVER applied, for its whole life — the SECOND instance of the retired
+ * `edhaStanceAdvPreRoll` shape (see the advantage-channel note at the top of this file, ~L310).
+ * It wrote the NUMBER 1, and the cosmere `AdvantageMode` is a STRING enum
+ * (index.js L262-267: none|advantage|disadvantage) — `hasAdvantage` is `=== "advantage"`, so
+ * `configureModifiers()` fell through to `d20.number = 1` and every quarry attack rolled a plain
+ * 1d20. It also skipped the `configureDialog` wrapper, so even the right value would have been
+ * overwritten on any non-fast-forward roll (index.js L3903 assigns options.advantageMode from the
+ * dialog result). Both halves are now gated by lint-refs pass 13 + tests/advantage-channel.test.js.
+ * The whispered card is new too: this was the only advantage site with no table-visible signal,
+ * which is exactly why four bench attacks rolled wrong before anyone noticed. */
 function edhaQuarryAdvPreRoll(roll, source, config) {
   try {
+    if (roll?.options?._edhaQuarryAdv) return;                 // idempotent (a re-fired pre-roll)
     const actor = edhaD20RollActor(config); if (!actor) return;
     const q = edhaQuarryOf(actor); if (!q) return;
-    const t = [...(game.user?.targets ?? [])][0]?.actor ?? null;
+    const ttok = [...(game.user?.targets ?? [])][0] ?? null;
+    const t = ttok?.actor ?? null;
     if (!t || t.uuid !== q) return;
-    roll.options.advantageMode = 1;
-    try { roll.configureModifiers?.(); } catch (e) {}
-  } catch (e) { /* non-fatal */ }
+    roll.options.advantageMode = "advantage"; roll.configureModifiers?.();
+    const orig = roll.configureDialog?.bind(roll);
+    if (orig) roll.configureDialog = async (data) => { try { data ??= {}; data.skillTest ??= {}; data.skillTest.advantageMode = "advantage"; } catch (e) {} return orig(data); };
+    roll.options._edhaQuarryAdv = true;
+    ChatMessage.create({ whisper: edhaWhisperIds(actor), speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎯 <strong>Quarry</strong>: ${ttok?.name ?? t.name} is your marked quarry — this attack rolls with <strong>advantage</strong>.</p>` });
+  } catch (e) { console.error("Edha Content | quarry advantage failed", e); }
 }
 for (const cap of ["Attack"]) Hooks.on(`cosmere-rpg.pre${cap}Roll`, edhaQuarryAdvPreRoll);
 /* Cold Eyes — ON ITS DOCUMENT since 2bZ (iron rule 2b). Its bespoke updateActor hook is gone: the
