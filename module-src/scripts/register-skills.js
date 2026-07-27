@@ -6158,11 +6158,13 @@ async function edhaPlaceBarrier(item, h) {
 // The barrier's walls die with it: destroyed (the HP-zero branch in the defeated sweep), deleted by
 // hand, or cleared at the end of the encounter — "for the scene", the deleteCombat convention every
 // other placement tree uses.
+// One applier (07-27q) — the wall delete is a world write, and the socket relay that reaches the
+// same helper is already activeGM-gated; these two were the only doors into it that were not.
 Hooks.on("deleteActor", (actor) => {
-  try { const id = actor?.getFlag?.("edha-content", "barrierId"); if (id && game.user?.isGM) void edhaBarrierClearGM(id); } catch (e) {}
+  try { const id = actor?.getFlag?.("edha-content", "barrierId"); if (id && edhaDefBuffGmGate()) void edhaBarrierClearGM(id); } catch (e) {}
 });
 Hooks.on("deleteToken", (doc) => {
-  try { const id = doc?.actor?.getFlag?.("edha-content", "barrierId"); if (id && game.user?.isGM) void edhaBarrierClearGM(id); } catch (e) {}
+  try { const id = doc?.actor?.getFlag?.("edha-content", "barrierId"); if (id && edhaDefBuffGmGate()) void edhaBarrierClearGM(id); } catch (e) {}
 });
 Hooks.on("deleteCombat", () => {
   try {
@@ -8483,10 +8485,12 @@ async function edhaSummonCreateGM(p) {
   }
 }
 
-// Cleanup: when a summon's last token is removed, delete its one-off actor.
+// Cleanup: when a summon's last token is removed, delete its one-off actor. ONE APPLIER (07-27q):
+// a raw isGM ran this on every connected GM, and the second delete is exactly the server-side
+// "Actor does not exist" race the Illusion section's deleteToken hook already documents.
 Hooks.on("deleteToken", async (tokenDoc) => {
   try {
-    if (!game.user?.isGM) return;
+    if (!edhaDefBuffGmGate()) return;
     const actor = game.actors?.get(tokenDoc.actorId);
     if (!actor?.getFlag?.("edha-content", "summon")) return;
     const stillUsed = (game.scenes ?? []).some(sc => sc.tokens.some(t => t.actorId === actor.id && t.id !== tokenDoc.id));
@@ -9223,9 +9227,13 @@ function edhaKillerCandidates() {
 // Defeated overlay TIED TO HP: a non-PC at 0 HP shows the skull; healing it above 0 (or a manual HP
 // edit) removes it. updateActor catches every HP change (applyDamage does actor.update, and manual
 // sheet edits too), so the skull stays in sync with health. PCs use the system's injury/death rules.
+// ONE APPLIER (07-27q): this branch announces AND deletes, and a raw isGM runs it on every connected
+// GM — bench run 13 caught the dissipates card posting twice, 1 ms apart, authored by `Bench` and
+// `Gamemaster`. The isolating control was the recast break card in the Illusion section, which is
+// activeGM-gated and posted exactly once in the same session. Same family as 07-27b's 2bW-13 sweep.
 Hooks.on("updateActor", async (actor, changes) => {
   try {
-    if (!game.user?.isGM || actor.type === "character") return;
+    if (!edhaDefBuffGmGate() || actor.type === "character") return;
     const hp = foundry.utils.getProperty(changes, "system.resources.hea.value");
     if (hp === undefined) return;                                   // only react to HP changes
     // An illusory copy (edha-illusion-copy): any hit drops its 1 HP → the illusion ends; remove it
@@ -10606,10 +10614,13 @@ Hooks.on("renderChatMessageHTML", (msg, html) => {
  * edhaCharacterOwnersOf("Combustion Chain") sweep): a foe drops to 0 HP inside an owner's
  * dangerous terrain → each of that owner's defeat-in-zone rules ignites a fresh hazard on the
  * body and offers the zone-spread card. Radius, spread distance, formula and type ride the rule;
- * the sweep announces (edhaWatchersOfRule) and names no talent. */
+ * the sweep announces (edhaWatchersOfRule) and names no talent.
+ * ONE APPLIER (07-27q): found by the sweep behind bench run 13's double-posted dissipates card, and
+ * worse than that one — a raw isGM here made every connected GM both post the card AND drop its own
+ * copy of the hazard Region. */
 Hooks.on("updateActor", async (actor, changes) => {
   try {
-    if (!game.user?.isGM || actor.type === "character") return;
+    if (!edhaDefBuffGmGate() || actor.type === "character") return;
     const hp = foundry.utils.getProperty(changes, "system.resources.hea.value");
     if (hp === undefined || hp > 0) return;
     const tok = edhaCasterToken(actor); if (!tok) return;
@@ -15899,7 +15910,7 @@ Hooks.once("ready", () => {
  * clicking Apply — selecting them no longer counts. AoE still works (it auto-TARGETS caught tokens). */
 Hooks.once("ready", async () => {
   try {
-    if (!game.user?.isGM) return;
+    if (!edhaDefBuffGmGate()) return;   // one applier — a world setting, not a per-client one
     const cur = game.settings.get("cosmere-rpg", "applyButtonsTo");
     if (cur !== 1) {
       await game.settings.set("cosmere-rpg", "applyButtonsTo", 1);   // Targeted Only — no self-hit fallback
