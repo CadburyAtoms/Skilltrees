@@ -967,7 +967,12 @@ function advItemDoc(advName, raw, sort) {
   const spec = activationSpec(costStr);
   const { consume, costText } = parseCost(raw.consume);
   const isAttack = raw.attack != null;           // damage optional: a grab/grapple attack rolls to-hit only
-  const isHeal = !isAttack && raw.damage;        // damage-only roll (heal/AoE) — raw dice, no skill mod
+  const isDmgRoll = !isAttack && raw.damage;     // damage-only roll (heal/AoE) — raw dice, no skill mod
+  /* Only a TRUE heal (damageType "heal" — Suture Cradle) gets the "Restores…" prose; a non-attack
+   * ability with a real damage type (Flame Surge's 2d8 energy — 07-26n) keeps its text-driven
+   * description and just carries the damage block, which is what its edha-burst rule reads at
+   * detonate. Before this split, giving such an ability a damage field rewrote its card as a heal. */
+  const isHeal = isDmgRoll && String(raw.damageType || "").toLowerCase() === "heal";
   const ranged = /\brange\b/i.test(raw.range || "");
   const skill = raw.skill || (ranged ? "lwp" : "hwp");
   const attribute = SKILL_ATTR[skill] || "str";
@@ -1000,7 +1005,7 @@ function advItemDoc(advName, raw, sort) {
     activation.skill = testSkill;
     activation.attribute = SKILL_ATTR[testSkill] || "default";
   }
-  if (isHeal) {
+  if (isDmgRoll) {
     damage = { formula: raw.damage, grazeOverrideFormula: raw.graze ?? "", type: raw.damageType ?? null, skill: null, attribute: null };
   }
 
