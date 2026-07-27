@@ -2,7 +2,7 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, **COMPLETED 2026-07-26 (pass AA)**: **the ratchet list is EMPTY — 221 → 0 across twenty-seven passes.** Every tree is clear, all six marker ledgers have migrated, and `scripts/name-keyed-allowlist.json` stays in the repo with an empty `talents` list *on purpose* — lint pass 7 still guards against REGROWTH, which is the half of the ratchet that matters from here on. ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **ALL SIX marker LEDGERS have migrated** (`covenants` 07-24u; `edicts` 07-25 pass V; `remains` 07-25 pass W; Fate's `snares` 07-25 pass X; Destruction's `charges` 07-26 pass Y; Fate's `ordained` 07-26 pass AA — the point-bound ones fail OPEN through H3's reconcile by design). There is no flat marker-list flag left in the engine. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-27l** (BENCH RUN 10'S ONE DEFECT FIXED —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-27m** (BENCH RUN 11 — THE DEPLOY LANDED AND THE BACKLOG CLEARED: the served engine hashed identical to HEAD and all five rebuilt packs were confirmed carrying their fixes, then **12 rows retired on live evidence** — Flamestance's first-ever pass, Confident Command's three enforced skills, Feinting Strike's number, Set at Odds + Synchronized Assault, quarry auto-advantage on **both** the fast-forward AND dialog paths, 2bX-17, Fault Line's Constructs ×3, both 2bAD contest rows, and Flame Surge on both bosses; plus Mender's card + range gate and Herding Antlers. ONE FAIL: Sharp Eye is still a silent no-op and the dead skill key was NOT the whole cause — its `activation` is `utility` with no `activation.skill`, a one-talent authored fix. World hygiene clean: zero effect drift across 87 actors, 46 adversaries synced with none lost. DOCS-ONLY.) Prior: **2026-07-27l** (BENCH RUN 10'S ONE DEFECT FIXED —
 quarry auto-advantage had **never applied in the mechanic's life**, and the cause was two mistakes
 at one site: it wrote the NUMBER `1` where the cosmere `AdvantageMode` is a **string** enum
 (`hasAdvantage` is `=== "advantage"`, so `configureModifiers()` left a plain `1d20`), and it skipped
@@ -149,6 +149,110 @@ the Red pilot, executed live by an agent session joined as `Bench`: 16 rows reti
 1 FAIL root-caused (Shockwave Slam's weapon-hit trigger surface), 4 cross-tree observations,
 and the agent-bench runbook hardened with the v13 operating lessons. Docs + setup-script fix
 only; nothing to deploy.)
+
+**2026-07-27m — BENCH RUN 11: THE DEPLOY LANDED AND THE BACKLOG CLEARED. Twelve rows retired on
+live evidence, one FAIL re-root-caused. DOCS-ONLY — nothing to deploy.**
+
+Ben ran the four owed pack builds and the engine sync. This run completed the in-world half of the
+deploy and then drove every row that had been waiting on it.
+
+**Deploy verified before anything was driven** — the served `register-skills.js` hashed
+**identical** to `HEAD:module-src/scripts/register-skills.js` (`3c69f7d2…`, 1 439 212 CRLF-normalised
+bytes), and all five packs were read directly and confirmed carrying their fixes: Flamestance
+`whenSkill: "inm"` · Sharp Eye `skill: "prc"` · Set at Odds / Synchronized Assault `skill: "lea"` ·
+Confident Command `skill: "inm, lea, prs"` · Feinting Strike `@skills.inm.rank` · Rallying Shout
+`@skills.lea.rank` · Mender's `note: ""` + `rangeColor: "green"` · Forge Construct
+`creatureType: "Construct"` · Fellstag's Herding Antlers 2 events + `skill: "green"` · both bosses'
+Flame Surge `2d8 energy`. **Ben can advance DEPLOY STATE — every ⏳ item in it is live.**
+
+**In-world deploy completion (Part A).** Setup script re-run from the repo copy via `<script src>`:
+**zero ⚠ lines**, all 16 PCs synced (25/25 leyline, 9/9 deity, 62/62 heroic — this call IS the
+roster's ⟳ Sync Talents). **The ranged-weapon assertion finally reads true**:
+`weapon.system.attack.type === "ranged"` on **16 of 16** PCs (Shortbow, 80 ft) alongside a melee
+Sidesword. **World-wide adversary sync** (Ben-authorised, the one exception to bench-folder scope):
+`edha.syncAllAdversaries()` → **46 synced, 0 skipped, 1 missing** (`Bench Target — Undefended`, a
+bench fixture with no pack source — correct). Every one of the 47 adversaries was snapshotted with
+its **full effect objects** first, and a post-sync diff confirms **zero effect drift** — the run-8
+incident did not repeat. The marathon-1 orphan `Combat Construct` token was confirmed dead
+(`actorId bYsKFlS4joFWz08Y`, `hasActor: false`, and no such actor in the world) and deleted; there
+was **no standing Construct to dismiss**, so one was forged fresh and came up
+`system.type = {id: "custom", custom: "Construct"}`.
+
+**Retired on evidence (12).**
+- **2bB-4 — Flamestance, a first-ever pass in the talent's life.** Entered, then Intimidation rolled
+  `2d20kh + 5 = 20` on the fast-forward path **and** `2d20kh + 5` again through the roll dialog;
+  an Insight control with the same stance active stayed `1d20 + 3`, so the `whenSkill` gate is real.
+- **Warrior stances spot** — hung on Flamestance alone; cleared by the above.
+- **2bN-2 — Confident Command enforces all three of its skills, both directions.** Banked
+  `skill: "inm, lea, prs"`; the die applied on Intimidation (`2d20kh + 5 + 1d10[Confident Command]`),
+  Leadership (`1d20 + 5 + 1d10[…]`) and Persuasion (`1d20 + 3 + 1d10[…]`), while a **non-listed**
+  Perception roll came back a plain `1d20 + 4` with the bonus **still banked**.
+- **2bM-6's number** — "recovery die + **3** health" at Leadership 3 (was "+ 0"). The ⚑ design half
+  stays Ben's and the row stays for it.
+- **2bJ-12 — Feinting Strike.** A Sidesword hit printed "🧠 Feinting Strike: … loses **3** focus" and
+  the victim's focus went **4 → 1** on the document (was 0). Reaction burn fired; the CAE-tracker
+  half stands from run 9 (this run was out of combat, so it printed the honour-system line).
+- **Contest-gate spot** — **Set at Odds** now rolls and posts ("10 vs … SPI 14 — FAIL"); it produced
+  no card at all before. **Synchronized Assault** posts "17 vs … COG 14 — SUCCESS" for the 2 focus it
+  charges (4 → 2), where before it charged and did nothing.
+- **Quarry auto-advantage — proven on BOTH paths, which is what run 10 could not do.** Fast-forward:
+  `2d20kh + 4 = 22` + "🎯 Quarry: … this attack rolls with **advantage**". **Through the dialog**
+  (the path the 07-27l bug also broke): `2d20kh + 4 = 16` + the same card. Negative control on a
+  non-quarry creature: plain `1d20 + 4`, **no card**.
+- **2bX-17** — with a stale flat `quarryUuid` staged on the owner, attacking the **stale-flag** target
+  rolled plain `1d20 + 4` with no card, while the **ledger** target rolled `2d20kh + 4` with the card.
+  The positive control run 10 lacked; combined with run 10's Cold Eyes half the row is complete.
+- **2bY-7 — Fault Line ×3 on a freshly re-forged Construct.** Card: "3 in the line take 11 energy
+  (**Constructs ×3**)". Measured: Construct **32** damage (11×3 − 1 deflect), Floater **11** (×1) —
+  the two HP deltas separate cleanly once the same-tick dangerous-terrain damage is subtracted.
+- **2bAD-1 — the attribute contest, proven decisively.** Fault Line's Speed save printed three
+  targets with three different totals; with the Floater's Speed set to 10 it rolled
+  **"Speed 29 vs your Red 16"**. A bare d20 cannot exceed 20, so the attribute is genuinely in the
+  roll. (The pre-fix behaviour was a flat 1–20.)
+- **2bAD-2 — skill contests still add both rank and attribute.** Herding Antlers' `vs: skill` contest
+  resolved across three deliberately different rank/attribute configurations, every total consistent
+  with `1d20 + @skills.sur.rank + @attr.awa`; `edhaRollOpposedSkill` was read in source to confirm it
+  pushes both terms and that `EDHA_SKILL_ATTR` maps `sur → awa`.
+- **2bAB-1 — Flame Surge on BOTH freshly imported bosses.** Cragdrake Alpha:
+  "= **13 (2d8)** + 3 (red) → 16 energy", halved to 8 on both saves. Hazewyrm Elder:
+  "= **4 (2d8)** + 3 (red) + 3 (Kindle) → 10 energy", halved to 5. HP deltas matched exactly. The
+  run-4 reading was "= 0 (0) + 3 (red) → 3".
+
+**Also cleared, inside a row that stays:** Mender's Instinct's two blocked halves both pass — the
+tight one-liner card ("dropped to **12/33 HP**") and a **real** green range gate, proven with a
+positive/negative pair (15 ft drew the offer, 85 ft drew nothing, identical damage). Herding Antlers
+passes on a fresh Fellstag import. The Green row stays only for six still-unrun talents.
+
+**⛔ THE ONE FAIL — 2bQ-4 Sharp Eye, and the dead skill key was NOT the whole cause.** The `prc` fix
+is live on both the pack and the owned item, and the talent is *still* a total silent no-op: no roll,
+no card, no notification, nothing spent (focus 4 → 4), reproduced twice with the target asserted.
+**Root cause (repo audit): its `activation` is `{type: "utility", cost: {value: null, type: "spe"}}`
+with no `activation.skill`,** so the system never rolls a test and H1's `edha-def-test` has nothing to
+resolve — bench run 2's lesson, recurring. **Family audit: of the 37 authored talents carrying
+`edha-def-test`, 35 are `activation.type: "skill_test"`. Only two are not** — Sharp Eye (genuinely
+broken, `vs: defense`) and Chaos's **Unravel Everything** (`vs: "none"`, which needs no roll). So this
+is a **one-talent authored fix** in `data/authored/heroic-hunter.json` — `activation.type` →
+`skill_test`, `activation.skill` → `prc`, matching its own card text — plus `foundry-build heroic`.
+⚠️ Honesty note: an in-world mutation probe that would have confirmed the mechanism was refused by a
+permission gate, so the **null result is measured** and the **mechanism is a strong inference**.
+**2bD-7 stays open behind this**, and it is no longer a deploy gap.
+
+**Two findings for the rulings batch, neither fixed.** (1) **The roll dialog's preview line does not
+show advantage.** Both the Intimidation skill-test dialog under Flamestance and the Sidesword attack
+dialog against a marked quarry previewed a plain `1d20 + N` and then rolled `2d20kh + N` on submit.
+The cosmere dialog exposes **no advantage control at all**, so the quarry row's wording ("Advantage
+must come up pre-selected, and must still be overridable by hand") is not satisfiable as written —
+the mechanic is correct, the row's expectation is not. (2) **Fault Line's dangerous-terrain Region
+catches bystanders scene-wide**, including Ben's placed campaign tokens, with no friend/foe clause —
+the same shape as the existing ⚑ ruling about the line sparing allies.
+
+**World hygiene.** End-state id-diff against this run's own start snapshot: **zero** added or missing
+actors, **zero** added or missing tokens (bar the authorised orphan deletion), walls 117 → 117, no
+bench-created combats, both `Bench — Destruction — Dangerous Terrain` Regions deleted, and
+**effect drift NONE** across all 87 actors. Ben's campaign combat was never touched. The 15-PC bench
+roster's always-on watches fire constantly out of combat (Bench — Red's Breaking Point statused three
+separate victims during other trees' rows), so every stray card's owner must be read before
+attributing it. Bench chat can be flushed.
 
 **2026-07-27l — BENCH RUN 10'S ONE DEFECT FIXED: quarry auto-advantage wrote a NUMBER into a
 STRING enum, and skipped the dialog. ENGINE-ONLY (⟳ sync the module + F5) + one TOOLING gate.
