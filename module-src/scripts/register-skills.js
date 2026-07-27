@@ -1401,7 +1401,7 @@ Hooks.once("ready", () => {
   } catch (e) { console.error("Edha Content | applyDamage wrap failed", e); }
 });
 // Auto-clear Kindle lights when an encounter ends (a reasonable "end of scene" trigger).
-Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearKindleLights(); } catch (e) {} });
+Hooks.on("deleteCombat", () => { try { if (edhaDefBuffGmGate()) void edhaClearKindleLights(); } catch (e) {} });   // one applier (07-27b — the 2bW-13 family: raw isGM doubles with two GM clients)
 
 /* ============================================================================================
  * BLACK / RITUAL tree engine (2026-06-13)
@@ -1700,7 +1700,7 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
  * defense buffs). */
 Hooks.on("deleteCombat", () => {
   try {
-    if (!game.user?.isGM) return;
+    if (!edhaDefBuffGmGate()) return;   // one applier (07-27b — the 2bW-13 family)
     for (const a of (game.actors?.filter(x => x.type === "character") ?? [])) {
       for (const key of ["sceneOnce", "bonusTally", "armOnce"]) {
         if (a.getFlag?.("edha-content", key) !== undefined) { try { void a.unsetFlag("edha-content", key); } catch (e) {} }
@@ -5922,7 +5922,7 @@ Hooks.on("deleteToken", (doc) => {
 });
 Hooks.on("deleteCombat", () => {
   try {
-    if (!game.user?.isGM) return;
+    if (!edhaDefBuffGmGate()) return;   // one applier (07-27b — the 2bW-13 family)
     void (async () => {
       for (const a of (game.actors?.filter(x => x.getFlag?.("edha-content", "barrierId")) ?? [])) {
         await edhaBarrierClearGM(a.getFlag("edha-content", "barrierId"));
@@ -8531,7 +8531,7 @@ for (const h of ["createActiveEffect", "deleteActiveEffect"]) Hooks.on(h, () => 
 // "For the scene": the clearsight arm clears when combat ends (the Kindle-light convention).
 Hooks.on("deleteCombat", () => {
   try {
-    if (!game.user?.isGM) return;
+    if (!edhaDefBuffGmGate()) return;   // one applier (07-27b — the 2bW-13 family)
     for (const t of (canvas?.tokens?.placeables ?? [])) if (t.actor?.statuses?.has?.("clearsight")) { try { void t.actor.toggleStatusEffect?.("clearsight", { active: false }); } catch (e) {} }
   } catch (e) {}
 });
@@ -10337,7 +10337,7 @@ async function edhaClearCharges() {
     }
   } catch (e) { console.error("Edha Content | clear charges failed", e); }
 }
-Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearCharges(); } catch (e) {} });
+Hooks.on("deleteCombat", () => { try { if (edhaDefBuffGmGate()) void edhaClearCharges(); } catch (e) {} });   // one applier (07-27b)
 
 /* ============================================================================================
  * LIFE (Anaveth, deity) tree engine (2026-06-17) — a Blue/Green healer-buffer. Reuses the Green heal
@@ -10422,7 +10422,7 @@ async function edhaOvergrowthDeflectStack(target, label, max) {
 }
 Hooks.on("deleteCombat", () => {   // end of encounter ≈ end of scene (Kindle-light convention)
   try {
-    if (!game.user?.isGM) return;
+    if (!edhaDefBuffGmGate()) return;   // one applier (07-27b — the 2bW-13 family)
     for (const t of canvas?.tokens?.placeables ?? []) {
       const ex = t.actor?.effects?.filter(e => e.getFlag?.("edha-content", "overgrowthDeflect")) ?? [];
       if (ex.length) void t.actor.deleteEmbeddedDocuments("ActiveEffect", ex.map(e => e.id));
@@ -10685,7 +10685,18 @@ Hooks.on("renderChatMessageHTML", (msg, html) => {
   root.querySelectorAll?.(".edha-lifecleanse-btn").forEach(b => b.addEventListener("click", edhaLifeCleanseClick));
 });
 
+/* 2026-07-27b (bench run 5, 2bW-13): the apex clear used to CREATE the injury while the flag was
+ * still set, behind a raw `game.user?.isGM` hook gate. With two GM clients connected (Ben's host
+ * client + the Bench GM user), BOTH ran the clear and Apex Form's end minted TWO injuries and two
+ * cards — the only visible double, because this is the one deleteCombat clear that CREATES rather
+ * than idempotently unsets. Three fences now: the hook runs on the ONE active GM
+ * (edhaDefBuffGmGate, the engine's one-applier convention), the function refuses to overlap
+ * itself (two combats deleted together fire two hooks), and the apex branch unsets the flag
+ * BEFORE the injury round-trip so a re-read inside the window finds nothing to double. */
+let _edhaLifeClearBusy = false;
 async function edhaClearLifeState() {
+  if (_edhaLifeClearBusy) return;
+  _edhaLifeClearBusy = true;
   try {
     if (!game.user?.isGM) return;
     for (const a of (game.actors ?? [])) {
@@ -10694,17 +10705,20 @@ async function edhaClearLifeState() {
         if (!fv) continue;
         // The apex price lands when it ends (scene end IS the end) — the shared injury tool
         // creates the Item GM-side; the flag carries the granting talent's name (2bW).
+        // UNSET FIRST, create after (07-27b): the creation awaits a server round-trip and must
+        // never be reachable twice off one still-set flag.
+        await a.unsetFlag("edha-content", k);
         if (k === "apexForm") {
           const src = fv?.sourceName || "Apex";
           const injName = await edhaAddInjury(a, { source: `${src} (ended)`, damageType: "vital" });
           if (injName) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: a }), content: `<p>🌟 <strong>${src}</strong> ends — ${a.name} takes an injury: <strong>${injName}</strong>.</p>` });
         }
-        await a.unsetFlag("edha-content", k);
       }
     }
   } catch (e) { console.error("Edha Content | clear Life state failed", e); }
+  finally { _edhaLifeClearBusy = false; }
 }
-Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearLifeState(); } catch (e) {} });
+Hooks.on("deleteCombat", () => { try { if (edhaDefBuffGmGate()) void edhaClearLifeState(); } catch (e) {} });
 
 /* ============================================================================================
  * CHAOS (Maelith, deity) tree engine (2026-06-18) — the "Omen" fracture lifecycle. ENGINE-ONLY,
@@ -10954,7 +10968,7 @@ async function edhaClearChaosState() {
     }
   } catch (e) { console.error("Edha Content | clear Chaos state failed", e); }
 }
-Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearChaosState(); } catch (e) {} });
+Hooks.on("deleteCombat", () => { try { if (edhaDefBuffGmGate()) void edhaClearChaosState(); } catch (e) {} });   // one applier (07-27b)
 
 /* ============================================================================================
  * FATE (Olvarra, deity) tree engine (2026-06-18; iron rule 2b pass 2bX 2026-07-25) — the
@@ -11563,7 +11577,7 @@ async function edhaClearFateState() {
     }
   } catch (e) { console.error("Edha Content | clear Fate state failed", e); }
 }
-Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearFateState(); } catch (e) {} });
+Hooks.on("deleteCombat", () => { try { if (edhaDefBuffGmGate()) void edhaClearFateState(); } catch (e) {} });   // one applier (07-27b)
 
 /* ============================================================================================
  * SOVEREIGNTY (Verdannis, deity) tree engine (2026-07-01; iron rule 2b pass 2bT 2026-07-25) — the
@@ -11848,7 +11862,7 @@ async function edhaClearSovState() {
     }
   } catch (e) { console.error("Edha Content | clear Sovereignty state failed", e); }
 }
-Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearSovState(); } catch (e) {} });
+Hooks.on("deleteCombat", () => { try { if (edhaDefBuffGmGate()) void edhaClearSovState(); } catch (e) {} });   // one applier (07-27b)
 
 /* --- H9 `edha-die-step`'s pre-cost VETO (2bT). Rules on `use` need their own targeting gates (a
  * willing ally / an ally-and-enemy pair); the once-per-target and once-per-scene stamps veto for
@@ -12153,7 +12167,7 @@ async function edhaClearDeathState() {
     }
   } catch (e) { console.error("Edha Content | clear Death state failed", e); }
 }
-Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearDeathState(); } catch (e) {} });
+Hooks.on("deleteCombat", () => { try { if (edhaDefBuffGmGate()) void edhaClearDeathState(); } catch (e) {} });   // one applier (07-27b)
 
 /* ============================================================================================
  * CIVILIZATION (Kethane, deity) tree engine (2026-07-02) — Foundations + the Combat Construct.
@@ -12726,7 +12740,7 @@ async function edhaClearCivState() {
     // (persist until the GM clears the map) — deleting a Foundation drawing takes its Region along.
   } catch (e) { console.error("Edha Content | clear Civilization state failed", e); }
 }
-Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearCivState(); } catch (e) {} });
+Hooks.on("deleteCombat", () => { try { if (edhaDefBuffGmGate()) void edhaClearCivState(); } catch (e) {} });   // one applier (07-27b)
 
 /* ============================================================================================
  * POWER (Tyrith, deity) tree engine (2026-07-02c) — dominate (Black control) → kill → escalate (Red).
@@ -13194,7 +13208,7 @@ async function edhaClearPowerState() {
     }
   } catch (e) { console.error("Edha Content | clear Power state failed", e); }
 }
-Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearPowerState(); } catch (e) {} });
+Hooks.on("deleteCombat", () => { try { if (edhaDefBuffGmGate()) void edhaClearPowerState(); } catch (e) {} });   // one applier (07-27b)
 
 /* ============================================================================================
  * KNOWLEDGE (Gnothis, deity) tree engine (2026-07-03; iron rule 2b pass 2bT 2026-07-25) — study
@@ -13499,7 +13513,7 @@ async function edhaClearCounterState() {
     }
   } catch (e) { console.error("Edha Content | clear counter state failed", e); }
 }
-Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearCounterState(); } catch (e) {} });
+Hooks.on("deleteCombat", () => { try { if (edhaDefBuffGmGate()) void edhaClearCounterState(); } catch (e) {} });   // one applier (07-27b)
 
 /* ============================================================================================
  * ORDER (Tessavain, deity) tree engine (2026-07-03) — the LAST of the 15 trees: declare law
@@ -14321,7 +14335,7 @@ async function edhaClearOrderState() {
     _edhaOrderPrompted.clear();
   } catch (e) { console.error("Edha Content | clear Order state failed", e); }
 }
-Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearOrderState(); } catch (e) {} });
+Hooks.on("deleteCombat", () => { try { if (edhaDefBuffGmGate()) void edhaClearOrderState(); } catch (e) {} });   // one applier (07-27b)
 
 /* ============================================================================================
  * GREEN / TERRITORY tree engine (2026-06-16) — difficult terrain as an ENFORCED map Region.
