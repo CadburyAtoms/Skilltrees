@@ -280,6 +280,50 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   Range" bound five of Ben's playtest adversaries. That is the talent behaving as written, but it is a
   write to documents you did not choose — clean it, and report it.
 
+## Operating lessons from run 10 (2026-07-27k — these OVERRIDE older advice where they conflict)
+
+- ❌ **A browser pane that opens at 0×0 means Foundry NEVER INITIALISES THE CANVAS**, and it fails
+  quietly: `game.ready` goes true, `scene.view()` resolves, but `canvas.ready` stays false,
+  `canvas.scene` is null and there are no placeables — so no targeting, no token work, no screenshot.
+  Re-initialising is worse: `canvas.initialize()` throws `Impossible to create a PIXI plugin for
+  OccludableSamplerShader … [pluginName=batchOcclusion]`. The fix is `resize_window` to desktop
+  **and then reload the page**. Do this BEFORE the start snapshot — the reload wipes every in-page
+  global, including your snapshot and your `ui.notifications` hook.
+- ❌ **Under v13 with Advanced Encounters live, `tokDoc.update({x,y})` and `tokDoc.move()` BOTH
+  silently no-op** for a combatant that has no movement left — they resolve without throwing and the
+  token simply does not move, which reads as "the row's range gate is wrong". Run 4's "move() is the
+  way" and run 7's "a throw is not a failure" are both superseded for this case:
+  `scene.updateEmbeddedDocuments("Token", [{_id, x, y}], {teleport: true, animate: false})` lands, and
+  it returns the new coordinates so you can assert them.
+- ❌ **`system.deflect.derived` is NOT the deflect. Read `system.deflect.value`.** `derived` is the
+  armour-only sub-field and never folds in `bonus`, so a stance or aura writing `system.deflect.bonus`
+  leaves `derived` at 0 and looks like a silent no-op. Run 10 nearly shipped a false FAIL on
+  Stonestance from exactly this; the truth is `value` 0 → 1, and 10 impact damage cost 9 HP instead
+  of 10. The engine agrees — `edhaDeflectOf` reads `.value`. **Any "the buff didn't apply" reading
+  deserves a damage-delta control before it becomes a FAIL.**
+- **Feed the setup script in by `<script src>` from a scratch `python -m http.server`, not by pasting
+  it.** Script tags are not CORS-restricted, the file stays the repo's copy (so you are testing what
+  is committed), and it costs no context. Hook `console.warn` first — that is where its log goes —
+  and give it **~35 s**: it fetches three packs and syncs sixteen actors before printing anything.
+  An empty log is not a failure.
+- **Talent `use()` opens a "Consume Resource" DialogV2 even with `{configurable: false}`.** Its button
+  is `Continue`. A dialog walker matching only `continue|confirm|ok|submit|roll` on `data-action` will
+  miss it — match the button TEXT too. And when a talent does nothing, check resources before blaming
+  it: "Cannot consume, not enough of resource" is a legitimate pre-cost veto that lives only in
+  notifications.
+- **Bench PCs are placed several squares apart, so most range gates refuse by default.** Measure
+  Chebyshev distance × `scene.grid.distance` before driving any ranged row, and move your own token
+  rather than concluding the gate is broken — Decisive Command's 40 ft refused at 85 ft and worked at
+  35 ft, which is the row passing, not failing.
+- **A skill-key audit of a whole path costs one exec and is worth it.** Walk every talent's
+  `system.events` + `activation`, pull `@skills.xxx.` and every `skill`/`whenSkill` field, and diff
+  against `Object.keys(CONFIG.COSMERE.skills)`. Run 10 did this for all 62 Heroic talents and proved
+  the pending rebuild closes the entire dead-key family with none hiding — which is what turned "8
+  rows blocked" into a defensible claim.
+- **Restoring flags at cleanup can race in-flight engine writes.** A single `update({"flags.edha-content": null})` followed immediately by a re-set left six actors dirty because watchers
+  re-wrote between the two. Unset the specific stray KEYS with `unsetFlag`, one at a time with a short
+  wait, then re-diff — two passes, then a third confirming pass that must come back empty.
+
 ## Known limits
 
 - ❌ **RESOLVED AS UNFIXABLE (07-26i): there is no "no written Cognitive/Spiritual defense" creature.**

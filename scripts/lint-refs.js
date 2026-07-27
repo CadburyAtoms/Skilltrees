@@ -20,6 +20,9 @@
  *  12. Every cosmere id an authored rule names — skill, attribute, status, damage type, defense,
  *      and every `@skills.`/`@attr.` ref — exists in the real vocabulary (the DEAD-ID family:
  *      eight talents shipped on `itm`/`per`/`ldr`, all silently inert; see the pass).
+ *  13. Every authored value that reaches a closed SYSTEM enum is one of its legal values (the
+ *      WRONG-SHAPE family: quarry advantage wrote the number 1 into a string enum and never once
+ *      applied. Engine-side coverage lives in tests/advantage-channel.test.js — see the pass).
  *
  * Zero dependencies. Exit 0 clean, 1 on any error. Runs in CI next to validate.js; add it to
  * the local gates when a change touches authored events or engine name-based automation.
@@ -897,6 +900,82 @@ engine.split("\n").forEach((lineText, i) => {
       }
     }
   }
+}
+
+/* --- pass 13: authored ENUM values that reach a SYSTEM channel (the wrong-shape family, 07-27l) --
+ *
+ * Passes 11 and 12 gate dead NAMES — a `system.<field>` the schema never declares, a cosmere id the
+ * vocabulary never had. This is the third member of the same disease: a name that resolves fine but
+ * whose VALUE is the wrong shape for the channel it is written into.
+ *
+ * The instance. `AdvantageMode` in the cosmere system is a STRING enum (index.js L262-267:
+ * none|advantage|disadvantage) and `D20Roll.hasAdvantage` is an `===` against it. Bench run 10 found
+ * `edhaQuarryAdvPreRoll` writing the NUMBER 1, so `configureModifiers()` fell through to
+ * `d20.number = 1` and every attack on a marked quarry rolled a plain 1d20 — silently, for the
+ * mechanic's whole life, with the wrong value still readable on the roll object so a console probe
+ * reported "advantage is set". The retired `edhaStanceAdvPreRoll` had made the same mistake.
+ *
+ * What THIS pass gates is the DATA half, which nothing covered. `edha-test-rider` takes the authored
+ * `mode` straight off the rule and assigns it to `roll.options.advantageMode` with no narrowing —
+ * so `mode: "adv"` on a talent is byte-for-byte the same bug, reachable by anyone editing the
+ * Events tab in Foundry, and it would pass every other gate. (`edha-next-test-mod` normalises
+ * anything non-"advantage" to disadvantage, which is worse, not better: a typo silently INVERTS
+ * the rule. Both are checked.)
+ *
+ * The ENGINE half is deliberately NOT duplicated here — `tests/advantage-channel.test.js` owns it,
+ * scanning every `.advantageMode =` site for the string value AND the configureDialog wrapper, with
+ * a mutation check against this very defect. Two gates for one check would just be two things to
+ * keep in sync; the split follows pass 11 / dead-field.test.js.
+ *
+ * EXTENDING IT: add `<handler type>: { <field>: [legal values] }` below. Only closed sets belong
+ * here — a field whose legal values are open-ended is a doc problem, not a lint one. `mode` on
+ * other handlers (edha-marker-command, edha-summon-effect, edha-owner-list, edha-snare-react,
+ * edha-place-hazard) means entirely different things and is intentionally absent. */
+{
+  const ENUM_FIELDS = {
+    "edha-test-rider": {
+      mode: { legal: ["advantage", "disadvantage"],
+              why: "it is assigned straight to roll.options.advantageMode; any other string reads as NO advantage and the roll silently stays 1d20" },
+    },
+    "edha-next-test-mod": {
+      mode: { legal: ["advantage", "disadvantage"],
+              why: "the engine narrows anything that is not exactly \"advantage\" to DISADVANTAGE — a typo does not fail, it inverts the rule" },
+    },
+  };
+
+  const checkEnums = (where, h) => {
+    const spec = h && typeof h === "object" ? ENUM_FIELDS[h.type] : null;
+    if (!spec) return;
+    for (const [field, { legal, why }] of Object.entries(spec)) {
+      const v = h[field];
+      if (v === undefined || v === null || v === "") continue;   // absent is legal — these are optional fields
+      if (typeof v !== "string" || !legal.includes(v)) {
+        err(`${where}: ${h.type} field "${field}" is ${JSON.stringify(v)} — it must be one of ` +
+            `[${legal.join(", ")}], because ${why}`);
+      }
+    }
+  };
+
+  for (const file of fs.readdirSync(AUTHORED_DIR).filter((f) => f.endsWith(".json")).sort()) {
+    let doc;
+    try { doc = JSON.parse(fs.readFileSync(path.join(AUTHORED_DIR, file), "utf8")); } catch (e) { continue; }
+    for (const [name, t] of Object.entries(doc.talents || {})) {
+      for (const [evId, ev] of Object.entries(t.events || {})) {
+        checkEnums(`data/authored/${file} (${name}) event ${evId}`, ev?.handler);
+      }
+    }
+  }
+  try {
+    const advData = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, "data/adversaries.json"), "utf8"));
+    for (const [advName, adv] of Object.entries(advData)) {
+      if (advName.startsWith("_")) continue;
+      for (const it of adv.items || []) {
+        for (const [j, ev] of (Array.isArray(it?.events) ? it.events : []).entries()) {
+          checkEnums(`data/adversaries.json (${advName} / ${it.name}) events[${j}]`, ev?.handler);
+        }
+      }
+    }
+  } catch (e) { /* reported by the earlier adversaries.json pass */ }
 }
 
 // --- report --------------------------------------------------------------------

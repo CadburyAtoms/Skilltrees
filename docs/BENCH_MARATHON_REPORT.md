@@ -1,8 +1,9 @@
 # BENCH MARATHON REPORT — 2026-07-26 → 07-27
 
-**Six bench runs, seven fix passes, 45 commits, one branch (`claude/rule-2b-audit`, pushed).**
-178 checklist rows retired on live evidence · 26 defects found → 25 fixed → 20 re-tested and
-retired at the table · 3 new build gates · engine tests 215 → 292.
+**Seven bench runs, eight fix passes, 52 commits, one branch (`claude/rule-2b-audit`, then
+`claude/heroic-and-tooling`, both pushed).** 190 checklist rows retired on live evidence ·
+27 defects found → 26 fixed → 22 re-tested and retired at the table · 5 new build gates ·
+engine tests 215 → 298.
 
 Everything below was executed live in your running Foundry as the `Bench` GM user, or verified
 in code with a pinned regression test. Where a claim is an inference rather than an observation,
@@ -20,34 +21,67 @@ Retired rows are **removed** from `EDHA_FOUNDRY_TEST_CHECKLIST.md` with their ev
 the dated handoff delta — that is the checklist convention, so "open" below is what genuinely
 remains, not work that failed.
 
-| Section | Retired this marathon | Still open | of which ⚑ yours | blocked on deploy |
-|---|---|---|---|---|
-| Engine-wide & cross-tree | 7 | 16 | 9 | 0 |
-| White (leyline) | — | 4 | 3 | 0 |
-| Blue (leyline) | — | 5 | 4 | 0 |
-| Black (leyline) | — | 5 | 4 | 0 |
-| Red (leyline) | — | 4 | 1 | 0 |
-| Green (leyline) | — | 4 | 2 | 1 |
-| **Destruction** | 14 | 2 | 2 | 1 |
-| **Life** | 2 (+3 fixed→retired) | **0** | 0 | 0 |
-| **Chaos** | 15 | 1 | 1 | 0 |
-| **Fate** | 20 | **0** | 0 | 0 |
-| **Sovereignty** | 8 (whole section) | **0** | 0 | 0 |
-| **Death** | 17 | 2 | 1 | 0 |
-| **Civilization** | 10 | 2 | 1 | 0 |
-| **Power** | 17 (whole section) | **0** | 0 | 0 |
-| **Knowledge** | 12 | 1 | 1 | 0 |
-| **Order** | 17 | 5 | 1 | 0 |
-| **Heroic paths** | 16 (its first ever pass) | 282 | 210 | 7 |
-| **TOTAL** | **178** | **333** | **240** | **9** |
+| `# BENCH —` section | Retired this marathon | Still open | of which ⚑ yours | blocked | **runnable** |
+|---|---|---|---|---|---|
+| Engine-wide & cross-tree | 7 | 16 | 9 | 0 | 7 |
+| White (leyline) | — | 4 | 3 | 0 | 1 |
+| Blue (leyline) | — | 5 | 4 | 0 | 1 |
+| Black (leyline) | — | 5 | 4 | 0 | 1 |
+| Red (leyline) | — | 4 | 1 | 0 | 3 |
+| Green (leyline) | — | 4 | 2 | 1 | 2 |
+| **Destruction** | 14 | 2 | 2 | 1 | 0 |
+| **Life** | 2 (+3 fixed→retired) | **0** | 0 | 0 | 0 |
+| **Chaos** | 15 | 1 | 1 | 0 | 0 |
+| **Fate** | 20 | **0** | 0 | 0 | 0 |
+| **Sovereignty** | 8 (whole section) | **0** | 0 | 0 | 0 |
+| **Death** | 17 | 2 | 1 | 0 | 1 |
+| **Civilization** | 10 | 2 | 1 | 0 | 1 |
+| **Power** | 17 (whole section) | **0** | 0 | 0 | 0 |
+| **Knowledge** | 12 | 1 | 1 | 0 | 0 |
+| **Order** | 17 | 5 | 1 | 0 | 4 |
+| **Heroic paths** | 28 (16 run 9 + 12 run 10) | 16 | 4 | 8 | **0** |
+| **TOTAL (bench scope)** | **190** | **67** | **34** | **10** | **21** |
 
 **Five sections are now empty**: Life, Fate, Sovereignty, Power, and (bar one ⚑) Chaos and
 Knowledge. Every deity tree has been driven end-to-end at least once.
 
-The 333 open rows are not 333 units of work. **240 are ⚑ yours by nature** — canvas rendering,
-table feel, multi-client, "does this look right". The agent-runnable remainder is **93 rows, 9 of
-them blocked on your pack rebuilds**, and 282 of the 333 sit in Heroic, which had never been
-benched before run 9 and is 133 talents deep.
+**What is actually left of the marathon's scope is 67 rows, of which 21 are agent-runnable and 10 are
+blocked on your rebuilds.** The rest are ⚑ yours by nature — canvas rendering, table feel,
+multi-client, "does this look right".
+
+> ✅ **Update (2026-07-27k, bench run 10 — the dedicated Heroic run you asked for).** Heroic is
+> **finished as far as the current deploy permits**: 12 more rows retired on evidence, and the
+> **20 "runnable" rows in the row above are now 0**. The 16 that remain are not untested — they are
+> **blocked**, and mostly by one missing action:
+> - **8 rows** wait on **`foundry-build heroic` + ⟳ Sync Talents** (the dead-cosmere-skill-key family
+>   fixed in `83c04ea` but never built). A fresh console read this run confirmed every stale key is
+>   still in the live pack, so nothing was failed against it. **That single rebuild unblocks all 8.**
+> - **4 rows** are ⚑ design calls that are yours alone — every factual half is now proven.
+> - **1** is a new engine FAIL found this run (quarry auto-advantage never applies), **1** is blocked
+>   behind it, **1** needs a bench-roster change rather than a test (no bench PC owns Probability
+>   Net), and **1** is a Blue row parked in the Heroic section.
+>   ✅ **The FAIL was fixed the same day (pass 8, `b96a915` — see §2).** Those first two rows now need
+>   only **⟳ sync the module + F5**, not the heroic rebuild, so Heroic's runnable count is 0 → **2**.
+>
+> Heroic's blocked count rising 6 → 8 is not regression: two collapsed spot-rows (Contest-gate,
+> Warrior stances) had their remaining runnable items cleared this run, so what is left of each is
+> purely the blocked remainder. The bench-scope TOTAL's runnable column falls 41 → 21 for the same
+> reason — those rows were done, not deferred.
+
+> ⚠️ **Correction (2026-07-27).** An earlier version of this table said Heroic had **282** open rows
+> and put the checklist total at 333. That was a counting error on my side, not a change in the
+> data: I split the checklist on `# BENCH —` headers only, so every block that physically follows
+> Heroic in the file — the player-client window, the character-creation wizard, the culture/items/
+> currency tranches, and eleven bestiary sections — was silently added to Heroic's count. Those 256
+> rows are real work, but they are **not** `# BENCH —` rows and were never in this marathon's scope.
+> Heroic itself is **26 open rows, 20 of them runnable**. The corrected numbers are above.
+
+### Outside the bench scope (for planning, not for this marathon)
+
+256 further open rows live in non-`# BENCH` sections, the big ones being: the **character-creation
+wizard v2** (38 open, 21 runnable), **adversary ability wiring** (27), and eleven **bestiary**
+sections (~140 open, but ~130 of those are ⚑ yours). The **player-client window** block is the one
+your new passwordless player user unlocks — see §5.
 
 ### What was NOT reached, by section (run 9's honest list — your remaining worklist)
 
@@ -57,17 +91,41 @@ benched before run 9 and is 133 talents deep.
 - **Adversary sections, entirely**: 2bAB-1 (blocked) · 2bAB-8 · four NO-NAMEABLE-HOOK confirmations.
 - **Engine-wide**: 2bAC-2 · the GM-summon relay · Withering Ray's skill test.
 - **In Heroic**: 2bZ-8 (now unblocked), 2bF-13's success branch, 2bE-5's negative, 2bZ-7's
-  negative, and the Envoy/Leader/CAE cluster spot-checks.
+  negative, and the Envoy/Leader/CAE cluster spot-checks. — ✅ **ALL OF THESE WERE DONE by bench
+  run 10 on 2026-07-27k**, along with 2bE-4, 2bO-7, 2bC-7, 2bN-3, 2bZ-11 and the orphan-token guard.
 
 Run 9 chose depth over breadth deliberately: root-causing the eight-talent skill-key family was
 worth more than touching more rows shallowly. I agree with that call.
+
+### Why Heroic wasn't finished — a scheduling error, not an omission
+
+Heroic *was* in the marathon plan: as one quarter of the single final-sweep run, sharing that run
+with the Engine-wide remainder, the adversary sections, and the leyline leftovers. Heroic is 133
+talents and had **never been benched at all** before run 9 — giving it a quarter-run when every
+deity tree got a half-run was backwards, and run 9 spent most of its budget root-causing the
+eight-talent dead-skill-key family instead (the right call in the moment — that family was breaking
+talents in three other sections too).
+
+The result: **16 Heroic rows retired, 20 runnable rows still open.** That is roughly one focused
+run, not a mega-effort — the "282 rows" figure in the first draft of this report was my counting
+error, corrected above.
+
+> ✅ **That focused run happened: bench run 10, 2026-07-27k.** It retired 12 more rows and took
+> Heroic's runnable count to **0**. The estimate held — one run was the right size. What is left is
+> **16 rows that no agent can move on the current deploy**, half of them waiting on a single
+> `foundry-build heroic` + ⟳ Sync Talents. See §1 for the exact breakdown.
+
+The process lesson stands regardless: the instruction said to adjust freely based on what was
+actually open, and I followed the given run order instead of counting the sections first. The
+`bench-marathon` skill now opens with a "size the run to the section, not the section to the run"
+step that requires counting `- [ ]` rows per section, minus ⚑, before scheduling anything.
 
 ---
 
 ## 2. Every defect: found → fixed → re-tested
 
-26 defects. **25 fixed, 1 works-as-designed, 1 carried unfixed** (Shockwave Slam, found run 1,
-before this marathon). 20 have been re-tested and retired at the table; 5 await your deploy.
+27 defects. **26 fixed, 1 works-as-designed, 1 carried unfixed** (Shockwave Slam, found run 1,
+before this marathon). 22 have been re-tested and retired at the table; 5 await your deploy.
 
 ### Found run 3 (before the marathon), fixed in pass 1, re-tested run 4 — all 8 retired
 
@@ -124,24 +182,30 @@ before this marathon). 20 have been re-tested and retired at the table; 5 await 
 | **The whole counter economy wrote a dead field** | `ActiveEffectDataModel`'s schema is exactly `isStackable` + `stacks`. Writes to `system.count` resolved with no error and were dropped; every read was 0. Blast radius: seven Knowledge rows plus any `@counter` in any tree | `f604d1f` | ✅ run 9, all six re-opened rows |
 | Two more dead fields the new gate found | `bench-setup-console.js` read the same dead `system.range.value` — **no bench PC had a ranged weapon in any of the first eight runs**, silently. `foundry-build.js` wrote six keys the TalentItemDataModel drops (inert) | `7dda01a` | ✅ run 9 — Shortbow on all 16 PCs, unblocking 2bX-16 |
 
-### Found run 9, fixed in pass 7 — **not yet re-tested; there was no run 10**
+### Found run 9, fixed in pass 7 — **two re-tested at run 10, two still await the heroic rebuild**
 
-| Defect | Root cause | Commit |
-|---|---|---|
-| **Eight talents wired to cosmere skill ids that don't exist** | `itm`/`per`/`ldr` aren't skills. A contest compares against the id the player actually rolled, so a dead id waits forever; `@skills.<id>.rank` substitutes to 0. Flamestance *never worked*, and now has a cause | `83c04ea` |
-| An attribute contest rolled a bare d20 | `spd` wasn't a data bug — `edhaRollOpposedSkill` skipped both terms for an attribute id, so a "tests Speed" card rolled nothing | `b2de5b4` |
-| CAE grant write-race | Same race as the H3 one, on a path that never went through the queue | `2a87c4d` |
-| Pack Hunting double-dipped | **Not** an `appliesTo` failure — it declares `either` correctly. It *applies* at `pre<Ctx>Roll` but *consumes* at `<ctx>Roll`, and a Strike rolls damage inside that window | `7e414d8` |
+| Defect | Root cause | Commit | Re-test |
+|---|---|---|---|
+| **Eight talents wired to cosmere skill ids that don't exist** | `itm`/`per`/`ldr` aren't skills. A contest compares against the id the player actually rolled, so a dead id waits forever; `@skills.<id>.rank` substitutes to 0. Flamestance *never worked*, and now has a cause | `83c04ea` | ⏳ needs heroic rebuild — a run-10 console read confirmed every stale key is still in the live pack |
+| An attribute contest rolled a bare d20 | `spd` wasn't a data bug — `edhaRollOpposedSkill` skipped both terms for an attribute id, so a "tests Speed" card rolled nothing | `b2de5b4` | ⏳ needs heroic rebuild |
+| CAE grant write-race | Same race as the H3 one, on a path that never went through the queue | `2a87c4d` | ✅ run 10 — three groups from one combat start, then two-in-one-tick |
+| Pack Hunting double-dipped | **Not** an `appliesTo` failure — it declares `either` correctly. It *applies* at `pre<Ctx>Roll` but *consumes* at `<ctx>Roll`, and a Strike rolls damage inside that window | `7e414d8` | ✅ run 10 — one card, one roll, flag consumed once |
+
+### Found run 10, fixed in pass 8
+
+| Defect | Root cause | Commit | Re-test |
+|---|---|---|---|
+| **Quarry auto-advantage has never once applied** | Two mistakes at one site, both re-derived from the installed system rather than from the report. `AdvantageMode` is a **string** enum and `hasAdvantage` is `=== "advantage"`, so the number `1` made `configureModifiers()` leave a plain `1d20` — while still reading back as `advantageMode: 1`, which is why the bench's probe saw "advantage is set" and the dice disagreed. And `preRoll` fires *before* `configureDialog`, which reassigns `options.advantageMode` from its own result, so the missing wrapper would have dropped even the correct value on any dialog roll. **The family sweep says ONE**: nine advantage sites in the engine, eight already correct on both counts — worth stating, because the raw-i18n and dead-field sweeps each turned two sightings into nine and three. It is the *second instance of the shape* though (the retired `edhaStanceAdvPreRoll` was the first), and the engine comment claiming that one's regression was "pinned in tests/" was false — nothing in `tests/` mentioned `advantageMode` | `b96a915` | ⏳ needs ⟳ sync + F5 (engine-only) — un-blocks 2bX-17 too |
 
 ### Carried, unfixed
 
 - **Shockwave Slam's weapon-hit trigger surface** — found run 1, before this marathon, never
   root-caused. The only defect that outlived the whole marathon.
 
-### Three gates built (worth more than the individual fixes)
+### Five gates built (worth more than the individual fixes)
 
-The marathon hit the same *shape* of bug three times — code reading a field the cosmere DataModel
-doesn't define, failing silently. Rather than fix the third one and move on:
+The marathon hit the same *shape* of bug four times — code writing or reading something the cosmere
+system does not actually define, failing silently every time. Rather than fix each one and move on:
 
 - **lint-refs pass 11** — validates engine `system.*` writes against the system's real schemas, in
   all three syntactic forms. Mutation-verified against all four historic writes.
@@ -150,6 +214,17 @@ doesn't define, failing silently. Rather than fix the third one and move on:
   a new status never means editing the linter). With the data fix reverted it reports exactly the
   eight original sites.
 - **lint-refs pass 10** (pass 5) — fails the build on any raw `*.label` read.
+- **lint-refs pass 13** — the same disease one step over: an authored value whose NAME resolves but
+  whose *shape* is wrong for the channel it lands in. `edha-test-rider` passes its `mode` straight
+  into `roll.options.advantageMode` unnarrowed, so `mode: "adv"` typed on the Events tab is
+  byte-for-byte the run-10 defect; on `edha-next-test-mod` a typo is worse than inert, because the
+  engine normalises anything non-`advantage` to disadvantage and therefore **inverts** the rule.
+  Mutation-verified against a planted value.
+- **`tests/advantage-channel.test.js`** — the engine half of the same family: every
+  `.advantageMode =` site must write the string enum *and* wrap `configureDialog`, with both
+  historic instances held fixed. Mutation-verified: restoring `= 1` fails three of its six cases.
+  Deliberately a test rather than a sixth lint pass — the split mirrors pass 11 / `dead-field.test.js`,
+  and two gates for one check is two things to keep in sync.
 
 ---
 
@@ -271,27 +346,31 @@ pass 7 (2bAD-1, 2bAD-2, the CAE grant, Pack Hunting).
 | **2bAA-8 / 2bAC-1 / 2bAC-2** | Second-client and screenshot rows. |
 | **2bW-13 Apex Form** | Already ✅ **passed** under two GM clients in run 6 — recorded here because that's the only reason it was provable. |
 
-The `🎮 Player-client window` section of the checklist (line 1077) is the batch to burn down next
-time a player is logged in.
+**Ben is adding a passwordless player user for the next marathon (2026-07-27).** That unlocks the
+whole `🎮 Player-client window` block, which is the batch to burn down in one sitting rather than a
+row at a time. The `bench-run` skill now carries the two-client procedure: open a second browser-pane
+tab, join as the player there, drive each tab by its own `tabId` — and log **both** clients out at
+the end, because a held player slot blocks the next run exactly like a held Bench slot.
+
+Worth knowing: the *two-GM* rows are a different shape and are already provable whenever your own
+Gamemaster client is connected. Apex Form's double-injury bug was found that way, and its fix
+verified the same way.
 
 ---
 
 ## 6. World hygiene
 
-### ⚠️ One item needs you — partially unrepaired
+### CLOSED — the campaign-adversary effects (Ben, 2026-07-27)
 
-Run 8's end-of-run status sweep deleted by status id across all placed tokens and removed **four
-effects that almost certainly pre-dated the run, on your campaign adversaries**:
+Run 8's end-of-run status sweep removed four statuses that pre-dated it from adversaries on the
+Playtest Map (two `Weakened` restored; one `Weakened` among two Cinderhounds and one `Prone` among
+three Mutated Thralls left unrestored, because the sweep log couldn't say which duplicate held them).
 
-- **Restored:** `Weakened` on Stonebound Captain (`WN8GGFtZFxR6isM0`) and Wrenchmaster
-  (`FmTIcIQOm42umoSA`).
-- **NOT restored** — the sweep log can't identify which duplicate held it:
-  one **`Weakened`** among Cinderhound `E0pMS7z6qdt8O15p` / `NLdImS8EUcxb9jJC`, and one **`Prone`**
-  among Mutated Thrall `BUEIUVatYUfVqYb2` / `qJ3sfPuqJZqod0xa` / `9opSkrFMBMjaWPVr`.
-
-Root cause: that run snapshotted ids and flags but not *effects*. The runbook now requires an
-effect snapshot, and run 9 closed with an **exactly zero effect diff** — 8 created, 8 removed, no
-pre-existing effect touched.
+**Ben's call: no action needed — that map is a stale one that isn't in use.** Recorded here only so
+the process lesson isn't lost with it: that run snapshotted ids and flags but **not effects**, which
+is why it couldn't undo its own sweep. The runbook and the bench-run skill now require an effect
+snapshot, and run 9 closed with an **exactly zero effect diff** — 8 created, 8 removed, nothing
+pre-existing touched.
 
 ### Everything else is clean
 

@@ -3,8 +3,14 @@
 > **⛔ STOP — there is no paste-ready next-run prompt right now, and there should not be one until
 > Ben has deployed.** The 2026-07-26/27 bench marathon ran six bench runs and seven fix passes back
 > to back. Four pack rebuilds' worth of fixes are sitting in the repo unable to reach the table, and
-> **nine checklist rows are blocked behind them**. A run 10 written today would re-fail rows whose
+> **nine checklist rows are blocked behind them**. A run written today would re-fail rows whose
 > fixes are already written.
+>
+> **Status 2026-07-27k:** a **run 10** was dispatched anyway, scoped to Heroic only, and it retired
+> 12 more rows without touching anything blocked — **Heroic now has 0 runnable rows**. That confirms
+> the stop above rather than contradicting it: every remaining Heroic row is either deploy-blocked,
+> ⚑ yours, or waiting on a fix. **Step 2 below is now the single highest-value action in the whole
+> bench backlog — it unblocks 8 Heroic rows on its own.** No run 11 prompt until then.
 
 ## Read this first
 
@@ -39,8 +45,12 @@ race, Pack Hunting's double-dip). Every one of those rows is annotated in
 
 Then pick up the remaining worklist — **report §1's "what was NOT reached"**: the leyline leftovers,
 the deity leftovers (2bY-7, 2bW-1, 2bV-2/6/8, 2bL-9/12), the adversary sections, Engine-wide's
-2bAC-2 / GM-summon relay / Withering Ray, and **Heroic**, which is where 282 of the 333 open rows
-live and which was benched for the first time in run 9.
+2bAC-2 / GM-summon relay / Withering Ray, and **Heroic** (26 open, 20 runnable — benched for the
+first time in run 9 and the largest single block left in bench scope).
+
+**What is left of `# BENCH —` scope in total: 77 rows, 41 runnable, 8 blocked on the rebuilds.**
+Everything else open in the checklist (the wizard, items, currency, the bestiaries, the
+player-client window) is outside bench scope — see report §1's "Outside the bench scope".
 
 The runbook (`docs/EDHA_BENCH_RUNBOOK.md`) carries the run-1 through run-9 operating lessons —
 read it before driving anything. The load-bearing ones from this marathon: **verify a deploy by
