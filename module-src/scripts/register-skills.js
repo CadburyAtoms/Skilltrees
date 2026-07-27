@@ -1475,9 +1475,50 @@ Hooks.on("deleteCombat", () => { try { if (edhaDefBuffGmGate()) void edhaClearKi
  * The move-adjacent trigger stays trust-based, as it always was: you declare the move by using the
  * talent, and the engine does the displacement. Do NOT re-add a use-hook or a card function here. */
 
+/* WHOSE hit does an `edha-on-hit` rule ride? (2026-07-27n — the 2bA-5 root cause, found live at
+ * bench run 1 and unexplained through a whole marathon.)
+ *
+ * Two opposite shapes share this event:
+ *   · the talent IS the attack   — Cheap Shot's unarmed strike, Dark Investiture's Black test.
+ *     Its rider must fire on ITS OWN hit only, or the Stun rides every sword swing.
+ *   · the talent RIDES an attack — Shockwave Slam ("when you hit with a melee Physical test"),
+ *     Sapping Hex, Startling Blow, Shattering Blow. It must fire on ANY qualifying hit its owner
+ *     deals, and the dealing item is a WEAPON, never the talent.
+ *
+ * The gate derived that from `!!system.damage.formula` alone — a field about the card's number and
+ * standalone use, not about who authored the hit. Shockwave Slam carries a formula because its card
+ * quotes a COLLISION value ("collision with an obstacle deals half [Tier][Die] Impact"); the engine
+ * read that as "this talent has its own attack", so `dealer.item !== tal` skipped the push on every
+ * weapon hit. The push machinery itself was fine the whole time, which is why a direct use worked
+ * and the trigger surface looked mysteriously dead.
+ *
+ * Two changes, in priority order:
+ *   1. **`whenDealer` on the RULE wins** — "self" | "any". Iron rule 2b: whose hit a rider rides is
+ *      the talent's business and belongs on its own document, editable on the Events tab, not
+ *      inferred by the engine from a field that means something else.
+ *   2. The DERIVED default is narrowed to "the talent rolls its own attack": a damage formula AND
+ *      `activation.type === "skill_test"`. A `utility` talent never rolls a to-hit test at all
+ *      (the system's `use()` only calls `item.roll()` for skill_test), so its formula cannot be the
+ *      hit in question. Cheap Shot and Dark Investiture are both skill_test and are unchanged.
+ *
+ * ⚑ Volatile Strike is skill_test + damage, so it still derives ITEM-SPECIFIC — yet its card and its
+ * own rule description both say "when you hit with a melee attack", i.e. it is a RIDER wearing an
+ * attack talent's shape. Left alone DELIBERATELY rather than flipped: its standalone use rolls that
+ * same damage, so `whenDealer: "any"` would also make it offer itself on its own hit, and which of
+ * the two paths is canon is a design call. It is in the rulings batch; if Ben wants it, setting
+ * `whenDealer: "any"` on the Events tab is the entire fix, with no code change.
+ *
+ * Pure so it is pinnable without Foundry (tests/on-hit-dealer.test.js). */
+function edhaOnHitIsItemSpecific(tal, rule) {
+  const declared = String(rule?.handler?.whenDealer ?? "").trim();
+  if (declared === "self") return true;
+  if (declared === "any") return false;
+  return !!tal?.system?.damage?.formula && tal?.system?.activation?.type === "skill_test";
+}
 // ON-HIT dispatch: run the dealer's `edha-on-hit` triggered-effect rules against the creature actually
 // hit. Owner-wide for passives (Sapping Hex/Predatory Patience); item-specific for attack talents that
-// carry their own damage (Dark Investiture only afflicts on ITS OWN hit). Guarded against re-entrancy.
+// carry their own damage (Dark Investiture only afflicts on ITS OWN hit) — see edhaOnHitIsItemSpecific,
+// which is now decided PER RULE so one talent can carry both shapes. Guarded against re-entrancy.
 async function edhaDispatchOnHit(dealer, target, list) {
   const owner = dealer?.actor;
   if (!owner || _edhaInTrigger || owner === target) return;
@@ -1485,22 +1526,21 @@ async function edhaDispatchOnHit(dealer, target, list) {
   if (!dealtTypes.length) return;
   for (const tal of owner.items) {
     if (!edhaIsTalent(tal)) continue;
-    const itemSpecific = !!tal.system?.damage?.formula;   // attack talent → only when IT dealt the damage
-    if (itemSpecific && dealer.item !== tal) continue;
     for (const rule of edhaEventRules(tal)) {
+      if (rule?.event !== "edha-on-hit") continue;
+      if (edhaOnHitIsItemSpecific(tal, rule) && dealer.item !== tal) continue;
       // GM cue on the owner's own hit (Press the Line: allied Raider reaction shot, 07-16).
-      if (rule?.event === "edha-on-hit" && rule?.handler?.type === "edha-gm-cue") {
+      if (rule?.handler?.type === "edha-gm-cue") {
         await edhaPostCueCard(owner, tal, rule.handler, ` <em>(hit ${target.name}.)</em>`);
         continue;
       }
       // Shockwave Slam: push the creature you just hit (Red movement pilot) — runs alongside triggered effects.
-      if (rule?.event === "edha-on-hit" && rule?.handler?.type === "edha-push") {
+      if (rule?.handler?.type === "edha-push") {
         const hp = rule.handler;
         if (hp.whenDamageType && hp.whenDamageType !== "any" && !dealtTypes.some(dt => edhaRiderMatches(hp.whenDamageType, dt))) continue;
         await edhaRunPush(owner, target, hp);
         continue;
       }
-      if (rule?.event !== "edha-on-hit") continue;
       /* ANY OTHER handler type runs its own executor (07-24s). This dispatcher used to hand-list the
        * three types it knew, so an `edha-focus` or `edha-cae-grant` rule on `edha-on-hit` was
        * SILENTLY INERT — which is why Feinting Strike's focus drain and Reaction burn had to stay
@@ -17083,6 +17123,7 @@ function edhaRegisterNativeEventSystem() {
     label: "Edha: Triggered Effect", description: "Deal damage / AoE / heal / Temp HP / affliction when this rule fires.",
     config: { schema: {
       whenDamageType: new FF.StringField({ required: false, initial: "any", label: "Only when you dealt damage type(s)", hint: "'any' or a comma-list: energy, impact, keen, spirit, vital (deal-damage rules only)" }),
+      whenDealer: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "self", "any"), label: "Whose hit does this ride (edha-on-hit)", hint: "Blank = work it out: a talent that rolls its own attack test (skill_test WITH a damage formula) rides only its own hit; anything else rides any hit you deal. self = ONLY this talent's own hit (Cheap Shot's Stun must not ride your sword). any = ANY qualifying hit you deal, including a weapon's. Set it explicitly whenever the talent carries a damage formula for a reason OTHER than its own attack. 2026-07-27n." }),
       whenTargetIsolated: new FF.BooleanField({ required: false, initial: false, label: "Only vs Isolated targets", hint: "Isolated = no ally within 5 ft of the target (Black tree; 07-05 ruling)." }),
       whenTargetStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "Only when the target has this status", hint: "e.g. weakened — checks the victim (or your current target) before firing. Predatory Patience: Investiture only vs Weakened." }),
       unlessTargetStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "SKIP when the target has this status", hint: "The negation of the gate above — a silent skip, never a stop, so the rules ordered after this one still run. Unravel Everything: the spirit + Disorient half only lands on bearers that are NOT Isolated (the Isolated ones take the vital rule instead). 07-25 pass 2bU." }),
@@ -17235,6 +17276,7 @@ function edhaRegisterNativeEventSystem() {
     label: "Edha: Push Target + Collision", description: "Shove the creature you hit away from you (wall-aware); on a wall collision, deal the collision damage. PILOT (Red). Pair with event edha-on-hit.",
     config: { schema: {
       whenDamageType: new FF.StringField({ required: false, initial: "impact", label: "Only when you dealt damage type(s)", hint: "'any' or a comma-list. The Red pilot consumer uses impact (melee only)." }),
+      whenDealer: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "self", "any"), label: "Whose hit does this ride (edha-on-hit)", hint: "Blank = work it out: a talent that rolls its own attack test (skill_test WITH a damage formula) rides only its own hit; anything else rides any hit you deal. self = ONLY this talent's own hit (an attack talent's rider — Cheap Shot's Stun must not ride your sword). any = ANY qualifying hit you deal, including a weapon's (Shockwave Slam: 'when you hit with a melee Physical test'). Set it explicitly whenever the talent carries a damage formula for a reason OTHER than its own attack — a collision or rider number reads as 'this is my attack' to the default. 2026-07-27n." }),
       bySize: new FF.BooleanField({ required: false, initial: true, label: "Push distance = [Size]" }),
       sizeColor: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "white", "blue", "black", "red", "green"), label: "Which colour scales [Size]", hint: "Blank = Red (the pilot consumer). Unnerving Approach scales off Black." }),
       awayFrom: new FF.StringField({ required: false, initial: "self", choices: choices("self", "anchor"), label: "Pushed away from", hint: "self = you (the usual: you shoved it) · anchor = the creature this rule's trigger was measured around. Unnerving Approach pushes your target's ALLY directly away from YOUR TARGET, which 'self' gets wrong." }),
