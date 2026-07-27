@@ -11265,7 +11265,24 @@ async function edhaFatePlaceCore(item, h, kind) {
 }
 
 /* --- Spring a Snare (shared by the auto-enter trigger + the marker-command cards) ------------------ */
+/* In-flight spring guard (bench run 6, 2026-07-27c — the snare DOUBLE-FIRE): v13 fires tokenEnter
+ * AND tokenMoveIn for ONE movement entry (~2 ms apart — the same double-event the Civ fortified
+ * Region debounces, see _edhaCivEnterGuard), and the second event's ledger stale-check reads
+ * BEFORE the first spring's queued consume lands — so one walk-in posted the card + roll + the
+ * Hexmark offer twice (damage applied once: the burst pipeline landed before the twin's).
+ * The guard lives ON THE SPRING, not per caller: a snare is a consumable that springs at most
+ * once, so every path (Region event, Foreknown click, insta-spring, Thread resolve) shares the
+ * same idempotence. Set-based, no time window; once the consume lands the ledger check takes
+ * over. edhaSnareSpringGate is the PURE decision (pinned in tests/). */
+const _edhaSnareSpringing = new Set();
+function edhaSnareSpringGate(inflight, snareId) {
+  if (!snareId) return true;                 // defensive: an id-less snare cannot be tracked — let it through
+  if (inflight.has(snareId)) return false;   // a spring for this snare is already in flight — drop the twin event
+  inflight.add(snareId);
+  return true;
+}
 async function edhaFateSpringSnare(owner, snare, triggerActor, { source = "", bonusFormula = "" } = {}) {
+  if (!edhaSnareSpringGate(_edhaSnareSpringing, snare?.id)) return;
   try {
     const scene = canvas?.scene; if (!scene || !snare) return;
     const label = source || snare.talent || "Trap";   // the label is DATA (the placing item's name)
@@ -11311,6 +11328,7 @@ async function edhaFateSpringSnare(owner, snare, triggerActor, { source = "", bo
     edhaFateCard(owner, rolls, `<p>🪢 <strong>${snare.inevitable ? "Inevitable " : ""}${label}</strong> springs on <strong>${triggerActor.name}</strong>: ${amt} ${snare.type || "keen"} + <strong>Restrained</strong> (until the start of your next turn).${extra}</p>`);
     edhaFateSpringReacts(owner, snare, triggerActor);   // `edha-snare-react` rules sweep (2bX)
   } catch (e) { console.error("Edha Content | Fate spring snare failed", e); }
+  finally { if (snare?.id) _edhaSnareSpringing.delete(snare.id); }   // a FAILED spring stays retryable; a done one is off the ledger
 }
 
 /* --- `edha-snare-react` sweep (2bX — was the name-keyed Hexmark offer and Weave's never-wired
@@ -15654,6 +15672,10 @@ class EdhaHazardRegionBehavior extends foundry.data.regionBehaviors.RegionBehavi
 // FATE / Olvarra — Snare trigger Region. Fires on tokenEnter (stops on the square) AND tokenMoveIn (a
 // PASS-THROUGH along the move path), so a foe that merely crosses the square springs the Snare. Mirrors
 // the hazard behavior; carries the owner + snareId so it can resolve the right Snare and gate to enemies.
+// ⚠ v13 fires BOTH events for one walk-in (~2 ms apart — the trap _edhaCivEnterGuard documents); the
+// stale-check below reads the ledger before the first spring's queued consume lands, so dedupe lives
+// in edhaFateSpringSnare's in-flight guard (bench run 6, 2026-07-27c), NOT here — every spring path
+// shares it. `displace` does NOT bypass these events (run-6 runbook fact).
 class EdhaFateSnareRegionBehavior extends foundry.data.regionBehaviors.RegionBehaviorType {
   static defineSchema() {
     const FF = foundry.data.fields;
