@@ -66,6 +66,46 @@ natively expressible.
 Post-mortem: `EDHA_EDITABILITY_AUDIT.md` §9j (how the vocabulary was missed) and **§9k** (the
 re-derived classification, the verified scoping, and the surviving handler set).
 
+## ⛑ THE DEAD-FIELD FAMILY — never guess a `system.<field>` name (three shipped bugs, now GATED)
+
+**The shape.** Foundry's `SchemaField` **deletes** keys a DataModel does not declare. So a write to a
+field that does not exist **resolves with no error**, stores nothing, and reads back `undefined` — and
+because `Number(undefined) || 0` is `0` and `String(undefined) || ""` is `""`, every gate reading it is
+silently false. Nothing throws, nothing warns, no promise rejects; the mechanic is simply inert.
+
+**The instances, each found only by benching the symptom:**
+
+| Read | Reality | Cost |
+|---|---|---|
+| `item.system.range` (`edhaAttackKind`, 07-26l) | a weapon's is `system.attack.range`; the discriminator is `system.attack.type` | EVERY meleeOnly / rangedOnly gate inert |
+| `actor.system.customType` (`edhaIsConstruct`, 07-26m) | creature type is `system.type = {id, custom}` | Fault Line's Constructs ×3 could never fire |
+| `effect.system.count` (the whole counter economy, 07-27g) | `ActiveEffectDataModel` is exactly `{isStackable, stacks}` | every Insight read 0; nine Knowledge behaviours degraded |
+| `d.system.range` (bench-setup's weapon picker, 07-27h) | same as row 1 — a **second file** nobody swept | `rangedW` never assigned for eight bench runs |
+
+**⚠ A unit test cannot catch this.** `tests/counter.test.js` pinned `system.count` and passed for the
+mechanic's whole life: a stubbed document carries the same wrong assumption as the code, so the test
+proves only that the engine agrees with itself. The authority is the system's DataModel, nothing else.
+
+**What to do instead.**
+1. **Check the field before writing it.** `data/native-vocabulary.json` →
+   `systemSchemaTopLevelFields` is the union of every top-level field name any cosmere DataModel
+   declares. Ben's install is readable even though Foundry cannot be launched — read
+   `systems/cosmere-rpg/index.js` for the nested shape.
+2. **`lint-refs.js` pass 11 now gates it** across the engine and the doc-minting scripts, in all three
+   forms: `system.foo`, `"system.foo"`, and `system: { foo }`. Mutation-verified against all four
+   instances above. **Its limits:** the check is a UNION across document types (a field real on a
+   weapon but read off an actor still PASSES) and top-level heads only — so green means *not obviously
+   dead*, never *right for this document*, and a wrong second segment is still invisible.
+3. **A ⚑ "bench-verify this field name" comment is not a plan.** `system.count` carried exactly that
+   comment from the day it was written and survived every pass until a bench run mutated the document.
+   If a field name is a guess, either verify it against the install in the same session or do not ship
+   the mechanic depending on it.
+4. **`edhaEffectStacks(eff)`** is the shared read for any stackable status — it mirrors the system's own
+   `get stacks() { return this.system.stacks ?? 1 }`, so a marker present but never counted reads **1**.
+   Writing `system.stacks` also makes the system re-derive the effect's NAME (`"Insight [3]"`) and puts
+   the count on the sheet's Conditions widget, which cycles the same field and toggles the status off at
+   ≤ 0 — so never write `name` yourself, and keep delete-at-zero.
+
 ## Dispatch — how a talent's behavior runs
 - **`preUseItem` takeover** — `Hooks.on("cosmere-rpg.preUseItem", ...)` returning **`false`** cancels the
   system's default use (no card, no auto-roll). Use it for click-to-place / fully-custom talents; you
@@ -914,8 +954,10 @@ Both trees to zero in one session; two ruled builds landed inline (§9m q6 / q1)
   (old bearer cleared — Studied Mark's literal text), `add` moves ±`count` (`requireBearerRange`
   = Accumulate's silent range gate), `release` clears ALL and still short-circuits on nothing.
   Engine half: `edhaCounterOn/Set/Add/BearerOf/IsBearer` (generic, keyed on `counters.<key>` +
-  the status's `system.count` — ⚑ STILL the bench-verify field, now pinned in
-  `tests/counter.test.js` with the rival-owner isolation case). Socket `counter-set`
+  the status's **`system.stacks`**, read through `edhaEffectStacks` — ✅ the field is SETTLED
+  (2026-07-27h); it was `system.count` and that field does not exist, so every read was 0 for the
+  mechanic's whole life. See the dead-field section at the top. Pinned in `tests/counter.test.js`
+  with the rival-owner isolation case AND a legacy-`count`-document case). Socket `counter-set`
   (ex `gnosis-set-insight`). Scene-cleared with the `packsight`/`packmind`/`predprimed` arms.
 - **`edha-counter-transfer`** — config-only, swept by the live→0 stamp: bearer drops → whispered
   transfer prompt for `fraction`×count to a creature in `rangeColor`; `allyBurst`+`burstFormula`
@@ -927,6 +969,10 @@ Both trees to zero in one session; two ruled builds landed inline (§9m q6 / q1)
   Share/The Pack). `@counter` substitutes your count on the victim; `damageType` (blank = match
   the attack); `placeCounter`/`placeOnce: round` queues a POST-apply counter write
   (`edhaDamageBonusPost` drains it — the generic form of the predatory breadcrumb).
+  ⚠ **Placement does NOT require a non-zero bonus** (07-27h ruling default): the require-modes are the
+  filter, and The Pack's card places on the first ally hit each round unconditionally — while
+  `+@counter` reads 0 whenever the marker was cleared outside the engine (token HUD, the sheet's
+  stack-cycle to 0, a hand delete) with the bearer pointer left intact. Don't re-add an `amt > 0` gate.
 - **H1 `edha-def-test` grew** `targetCounter` (the test's target IS your bearer; no-bearer vetoed
   pre-cost — Killing Blow), `oncePerScene` (generic `sceneOnce.<item.id>` stamp, deleteCombat
   sweep) and `requireDisposition` (ally/enemy, pre-cost).

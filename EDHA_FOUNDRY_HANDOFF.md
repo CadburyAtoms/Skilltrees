@@ -2,7 +2,16 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, **COMPLETED 2026-07-26 (pass AA)**: **the ratchet list is EMPTY — 221 → 0 across twenty-seven passes.** Every tree is clear, all six marker ledgers have migrated, and `scripts/name-keyed-allowlist.json` stays in the repo with an empty `talents` list *on purpose* — lint pass 7 still guards against REGROWTH, which is the half of the ratchet that matters from here on. ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **ALL SIX marker LEDGERS have migrated** (`covenants` 07-24u; `edicts` 07-25 pass V; `remains` 07-25 pass W; Fate's `snares` 07-25 pass X; Destruction's `charges` 07-26 pass Y; Fate's `ordained` 07-26 pass AA — the point-bound ones fail OPEN through H3's reconcile by design). There is no flat marker-list flag left in the engine. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-27g** (BENCH RUN 8 —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-27h** (BENCH RUN 8'S
+ONE DEFECT FIXED, AND THE FAMILY BEHIND IT GATED — the counter economy moved off `system.count`
+(a field `ActiveEffectDataModel` does not declare, so every Insight read was 0 for the mechanic's
+whole life) onto **`system.stacks`**, which the sheet's own conditions widget edits, so the engine and
+Ben now write the same field. **This was the THIRD dead-field bug of the marathon**, so the pass built
+the gate instead of stopping at the fix: `lint-refs` **pass 11** checks every `system.*` path the
+engine and the build touch against a snapshot of the system's REAL schemas, mutation-verified against
+all four historic instances — and it found a **fourth** on the day it landed (the bench setup script
+picked the roster's weapons off the same dead `system.range` that broke `edhaAttackKind`, so no bench
+PC has ever had a ranged weapon). ENGINE-ONLY (F5) + one inert build cleanup; 268 tests green.) Prior: **2026-07-27g** (BENCH RUN 8 —
 the 07-27f re-tests + Knowledge + Order, the marathon's last two deity trees, executed live: **BOTH
 07-27f fixes PASSED**, **25 rows retired on evidence** (383 → 359 open checklist rows), and **1 NEW FAIL
 whose root cause is proven by mutation and whose fix is one line.** See the dated section below.) Prior: **2026-07-27f** (BENCH RUN 7'S
@@ -100,6 +109,140 @@ the Red pilot, executed live by an agent session joined as `Bench`: 16 rows reti
 1 FAIL root-caused (Shockwave Slam's weapon-hit trigger surface), 4 cross-tree observations,
 and the agent-bench runbook hardened with the v13 operating lessons. Docs + setup-script fix
 only; nothing to deploy.)
+
+**2026-07-27h — BENCH RUN 8'S ONE DEFECT FIXED + THE DEAD-FIELD FAMILY GATED. The counter economy
+moves off a field the cosmere schema does not have; because this was the family's THIRD instance, the
+pass's main deliverable is the gate that makes a fourth impossible — and the gate found a fourth
+before it was even committed. ENGINE-ONLY (relaunch / F5, no rebuild, no ⟳ Sync) plus one provably
+inert build cleanup that rides the next rebuild. 268 tests green.**
+
+### Rulings (defaults applied — Ben can veto; this session was non-interactive)
+
+**R-A. The Pack's placement is unconditional (run 8 sighting 1 — "which is canon, the card or the
+gate?"). Default taken: the CARD.** `edha-damage-bonus` no longer requires `amt > 0` to queue its
+`placeCounter` / `placeList` write. The require-gates above it are the real filter; the numeric bonus
+is a different question from whether the placement happened. This matters beyond tidiness: The Pack's
+`+@counter` is 0 whenever the bearer's marker was cleared **outside** the engine — a token-HUD toggle,
+the sheet's own stack-cycle down to 0, a hand-deleted effect — every one of which leaves the owner's
+bearer POINTER intact. The old gate therefore silenced the talent in exactly the state it exists to
+recover from. Only The Pack changes behaviour (Pack Share is `+@tier`; Predatory Strike and Tagging
+Shot were already exempt as armed riders). Consistent with §9m's settled principle: the tree as
+documented is the SPEC.
+
+Run 8's sightings 2 (Final Decree's encounter scope) and 3 (Bear Witness's `source` relabel) are
+**untouched** — 2 is the standing out-of-combat scope characterization, 3 is cosmetic. Both stay in
+the batch for Ben.
+
+### Bug root causes
+
+**1. The counter economy wrote to a field that does not exist — `system.count`. (ENGINE-ONLY, F5.)**
+`edhaCounterOn` read `Number(eff?.system?.count)`, `edhaCounterApplyGM` wrote `{"system.count": n}`,
+and `edhaRegisterStatuses` seeded the status with `{isStackable: true, count: 1}`.
+`ActiveEffectDataModel`'s schema is **exactly** `{isStackable, stacks}`. Foundry's `SchemaField`
+DELETES unrecognised keys, so all three resolved without error, stored nothing, and every read was
+`Number(undefined) || 0` = **0**. Verified against the installed system source, not inferred:
+
+- `stacks` is `NumberField({required: false, nullable: true, min: 0})` — no maximum, so the engine's
+  own `capFormula` clamp remains the only cap.
+- `CosmereActiveEffect#stacks` is `this.system.stacks ?? 1`. **An effect whose stacks were never
+  written counts as ONE, not zero** — which is why the fix reads through a new pure helper
+  `edhaEffectStacks(eff)` that mirrors that `?? 1` exactly. A legacy pre-fix `insight` effect on a
+  live token now reads 1, the same number the system itself reports for that document, rather than 0.
+- `_preUpdate` re-derives the effect's NAME from `system.stacks` (`"Insight [3]"`, via the status
+  config's optional `stacksDisplayTransform` — Exhausted's is `-stacks`). So the engine must **not**
+  write `name` itself; the system owns that string. Run 8's mutation probe saw exactly this rename,
+  which is what identified the field.
+- The actor sheet's own conditions widget cycles `system.stacks` up/down and **toggles the status OFF
+  at ≤ 0** — which is the delete-at-zero shape `edhaCounterApplyGM` already had. So Ben clicking the
+  Insight count on the sheet and the engine writing it are now the SAME operation, which is a genuine
+  win for a mechanic whose whole point is being visible.
+- ⚠️ **The system's own `registerStatusEffects` seeds `{isStackable: true, count: 1}` too** — the
+  system has the identical bug in its status registration, and gets away with it only because of the
+  `?? 1` fallback. That is where EDHA's `count` came from: the engine copied the system's shape. Do
+  not "match the system" here; the system is wrong.
+
+One cause, nine observable symptoms — all of run 8's measured blast radius: Studied Mark's count card
+(it printed the *intended* value without reading back, so it was truthful about intent and lying about
+state), Killing Blow's ×count on **both** branches (success and failure dealt identical damage) and
+its "(now 0)" on a failure that should leave 1, The Final Study's release line, Hunter's Discipline's
+`floor(count/2)` and Death Mark's full-count transfer cards (both suppressed by `if (amt > 0)` at
+`floor(0/2) = 0` — that gate is correct, the 0 was the bug), Accumulate's unreachable cap-5, The
+Pack's `+@counter` and its R11 placement, and **every `@counter` substitution in every tree**.
+
+**2. The bench setup script picked the roster's weapons off `system.range`. (Bench tooling — re-run
+the script; nothing in the module.)** Found by the new gate, minutes after it existed. `system.range`
+is not a cosmere weapon field (a weapon's range is `system.attack.range`) — the exact dead field that
+made `edhaAttackKind` inert in 07-26l, in a second file that nobody thought to sweep. So `rng` was
+always falsy: `meleeW` took the first weapon in the first Item pack and **`rangedW` was never
+assigned, for all eight bench runs**, silently, because only the melee miss had a warning.
+⚑ **Every rangedOnly row benched so far was run without a ranged weapon on the PC** — Tagging Shot's
+arm, and the melee/ranged stand-down halves generally. Now reads `system.attack.type` with
+`system.attack.range.value` as the tiebreak (`edhaAttackKind`'s own order) and warns when no ranged
+weapon is found.
+
+**3. Six dead keys on every built talent doc. (DATA — rides the next `foundry-build`; no behaviour
+waits on it.)** `foundry-build.js` wrote `hasPath`, `specialty`, `hasSpecialty`, `hasAncestry`,
+`prerequisites` and `prerequisitesMet` into each talent's `system`. `TalentItemDataModel` declares
+none of them: `prerequisites`/`prerequisitesMet` exist **only** on the talent_tree NODE schema (which
+the build already writes at the node, and which is what the sheet reads via
+`characterMeetsTalentPrerequisites`), and the other four are derived-only or nonexistent. All six were
+stripped at load, so removing them is provably a no-behaviour-change cleanup — the pack simply stops
+minting keys Foundry deletes. Worth doing anyway: a reader who saw `system.prerequisites` on a talent
+would reasonably believe talent prereqs live there.
+
+### The gate — `lint-refs` pass 11, and why it is the deliverable
+
+Three instances is a family, and every one cost a bench run to find: `edhaAttackKind`'s `system.range`
+(07-26l), `edhaIsConstruct`'s `system.customType` (07-26m), the counter economy's `system.count`
+(07-27g). They are invisible by construction — the write resolves, nothing warns, and the mechanic is
+merely inert. **Unit tests cannot catch them**: `tests/counter.test.js` pinned `system.count` and
+passed for the mechanic's entire life, because the stub was written from the same wrong assumption as
+the code. The only authority is the system's real DataModel.
+
+- `scripts/dump-native-vocabulary.js` now also snapshots **`systemSchemaTopLevelFields`** — the union
+  of every top-level field name any cosmere DataModel declares (87 at system 2.1.0), extracted from
+  the schema literals in Ben's installed bundle. Hard-fails if the extraction under-harvests (bundle
+  restructure) **or** over-harvests (a flattened nested key would silently re-open the hole).
+- **Pass 11** checks every `system.<field>` the engine and the doc-minting scripts read or write, in
+  all three syntactic forms: property access (`system.foo`), flat update paths (`"system.foo"`), and
+  stored object literals (`system: { foo }` — the form the status registration used, which neither of
+  the others can see). Engine-owned RegionBehavior fields are parsed out of the engine itself, so a
+  new behaviour field needs no allowlisting; only two core-Foundry inherited names are listed by hand.
+- **TOP-LEVEL heads only, on purpose.** `range` IS a real field nested under a weapon's `attack`, and
+  the 07-26l bug was reading it at the top level — flattening all depths would have waved it through.
+- **Mutation-verified, not assumed.** Re-introducing each of the four historic writes fails the gate,
+  once per detection form; reverting clears it.
+- **Limits, stated in the pass so a green run is not over-read:** it is a UNION across document types,
+  so a field real on a weapon but read off an actor still passes — "not obviously dead", never
+  "correct for this document" — and a wrong SECOND path segment is still invisible.
+
+### New REUSABLE primitives
+
+- **`edhaEffectStacks(eff)` → integer ≥ 0** — THE stack read for any stackable status. Mirrors
+  `CosmereActiveEffect#stacks` (`system.stacks ?? 1`), so a marker present but never counted reads 1.
+  Every counter read goes through it; any future stacking mechanic should too.
+- **`systemSchemaTopLevelFields`** (data/native-vocabulary.json) — the machine-checkable answer to
+  "does this `system.<field>` exist?", available to CI and to a headless session with no install.
+- **`blankStringsAndComments(src, {keepStrings})`** in lint-refs — offset-preserving source masking,
+  so a pass can find a construct in the blanked copy and read the real text at the same index. The
+  existing line-rebuilding `stripComments` cannot be indexed back into the source.
+
+### Known limits / couldn't self-verify (no Foundry session)
+
+- ⚑ **The whole counter re-test is Ben's / the next bench run's** — 2bT-1/3/4/6/7/8/10 are re-opened
+  with concrete numbers to read (a 3-Insight bearer, the cap climb to 5, the ×count difference between
+  a 1- and a 3-Insight bearer). The run-9 gate row asks for the effect's stored `system.stacks` and
+  its re-derived name, not the card's number — the card was never the unreliable half.
+- ⚑ **The sheet handshake is unverified from here**: cycling Insight up on the Conditions widget must
+  be visible to the engine's next read, and cycling to 0 must remove the status. This is asserted from
+  the system source (`ActorConditionsComponent`), not observed.
+- ⚑ **Legacy markers read as 1, not 0.** Any `insight` effect already on a live token was written by
+  the broken engine. Clear them before re-testing, or the first number will be 1 for a reason that has
+  nothing to do with the talent.
+- ⚑ **The ranged-weapon prerequisite.** Until the bench setup script is re-run (or a bow is dragged on
+  by hand), no rangedOnly row means anything. Confirm `weapon.system.attack.type === "ranged"`.
+- ⚑ The build cleanup is asserted inert from the strip semantics; it takes a rebuild to observe, and
+  there is nothing to observe.
 
 **2026-07-27g — BENCH RUN 8 (the marathon's last two deity trees: Knowledge + Order, plus the 07-27f
 re-tests). Executed live through the browser pane as `Bench`. DOCS ONLY — nothing to deploy from this

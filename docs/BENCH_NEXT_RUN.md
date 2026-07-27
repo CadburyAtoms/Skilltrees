@@ -54,21 +54,45 @@ before driving anything. **Load-bearing lessons, newest first (they OVERRIDE old
   between uses**; hook `ui.notifications.warn/info/error` at run start (pre-cost vetoes live only there);
   keep each exec under ~25 s. Tem parinaem and Soggy Bottom are untouchable.
 
-**Re-tests: there is ONE fix batch owed and it is not written yet.** Run 8 filed a single new defect —
-the counter economy writes `effect.system.count`, a field the cosmere `ActiveEffectDataModel` does not
-have (its schema is exactly `isStackable` + `stacks`), so every counter read returns 0. That fix should
-land in a `test-pass-fixes` pass BEFORE run 9. **If it has landed, re-test the six blocked Knowledge
-rows first** — 2bT-1 (the stored count is 2, and the status label reads `Insight [2]`), 2bT-3 (success
-must be ×count and the failure must leave count−1), 2bT-6 (the floor(count/2) on-kill transfer card
-appears), 2bT-7 (the FULL-count transfer card appears alongside the ally burst), 2bT-8 (the cap-5 clamp
-and its silent overflow), 2bT-10 (R10's additive stacking on top of Pack Share's +Tier, and R11's own
-once-per-round placement). **If it has not landed, say so and skip them** — do not re-report run 8's
-symptoms as new.
+**Re-tests: the ONE fix batch owed HAS LANDED — 2026-07-27h, ENGINE-ONLY (F5, no rebuild, no ⟳ Sync).
+Run it FIRST, before the worklist.** The counter economy moved off `effect.system.count` (a field the
+cosmere `ActiveEffectDataModel` does not have — its schema is exactly `isStackable` + `stacks`, so every
+read was 0) onto **`system.stacks`**, and `edha-damage-bonus` no longer gates its `placeCounter` /
+`placeList` write on a non-zero bonus. Three things to do before reading any Knowledge row:
+
+1. **Byte-check** as usual (hash the served engine), and confirm the markers: `edhaEffectStacks` ×2,
+   `"system.stacks"` ×2, `stacks: 1` in the status registration, and **no `system.count` in code**. The
+   07-27g hash `9a5b2d4e…14a4bc9` is now STALE by design — expect a different hash and compare against
+   the repo file, never against a remembered number.
+2. **Clear every leftover `Insight` marker** on the bench targets first. Effects the old engine wrote
+   stored nothing, so the system's own `stacks ?? 1` default makes them read as **1** — honest for that
+   document, but not what any old card claimed. Start from no marker.
+3. **The re-run of `bench-setup-console.js` is now load-bearing, not just an idempotency check.** The
+   script chose the roster's weapons off the same dead `system.range`, so `rangedW` was NEVER assigned
+   and **no bench PC has ever had a ranged weapon** — every rangedOnly row of the last eight runs was
+   run without one. It now reads `system.attack.type` and warns if no ranged weapon exists in any pack.
+   Confirm `weapon.system.attack.type === "ranged"` on Bench — Heroic before **2bX-16** (Tagging Shot)
+   and before any melee/ranged stand-down half.
+
+Then the six re-opened Knowledge rows, each with a number to read off the DOCUMENT and not the card:
+**2bT-1** (`effect.system.stacks` is 2, the effect is *named* `Insight [2]`, and the card's number
+agrees), **2bT-3** (success ×count — compare a 3-Insight bearer against a 1-Insight one, they have never
+differed; failure leaves count−1 and prints "(now 2)"), **2bT-6** (kill a 4-Insight bearer → the
+whispered `floor(count/2)` offer says **2**; at 1 Insight `floor(1/2)=0` and NO card is correct),
+**2bT-7** (kill a 3-Insight bearer → the FULL-count card offers 3 alongside the ally burst; click both
+transfer cards in each order for R9's last-click-wins), **2bT-8** (tick 1→2→3→4→5, then the sixth tick
+posts NOTHING; then edit `capFormula` on the Events tab and watch the ceiling move), **2bT-10** (R10:
+both riders post additively as two cards; R11: each places once per round, independently — and the new
+ruling default means The Pack still places when its bonus is 0, so drive the hand-cleared-marker case
+once). **The gate row at the top of the Knowledge section is the stop-if-it-fails row** — if the stored
+`stacks` is not what the card says, everything below it is meaningless.
 
 **Deploy state — read before believing any bug.** ENGINE: **07-27b, 07-27d and 07-27f are ALL CONFIRMED
-LIVE** (run 8 hash-verified the whole file). **THREE pack halves are still owed, unchanged since run
-5** — do NOT run a pack build yourself, and record these BLOCKED-ON-DEPLOY unless a fresh console read
-proves otherwise:
+LIVE** (run 8 hash-verified the whole file); **07-27h is NEW and needs only Ben's usual engine sync +
+F5** — verify it by hash and by the markers above, and if it is missing, say so and skip the counter
+re-tests rather than re-reporting run 8's symptoms. **THREE pack halves are still owed, unchanged since
+run 5** — do NOT run a pack build yourself, and record these BLOCKED-ON-DEPLOY unless a fresh console
+read proves otherwise:
 - `foundry-build leyline` + ⟳ Sync (Mender's Instinct's note + green range gate) — gates **2bS-1**.
 - `foundry-build deity` + ⟳ Sync + re-forge (the Construct `creatureType` mint; also Surgical
   Precision's cosmetic rule text). Note it gates **nothing** in Civilization, whose predicate is
@@ -112,7 +136,8 @@ BLOCKED-ON-DEPLOY** (the leyline pack half).
 
 **4 — deity leftovers.** Destruction: **2bY-7** (⚑ the Walking Ruin indicator row). Chaos: ⚑ 2bU-5/2bU-3
 only. Death: **2bW-1** (⚑ the Raise Dead row). Civilization: ⚑ the enemy-cost ruler row (answered GO at
-resolver level — Ben's canvas half). Knowledge: the six PARTIAL rows above, gated on the counter fix.
+resolver level — Ben's canvas half). Knowledge: the six re-opened rows are the re-test batch at the TOP
+of this prompt, no longer gated — run them first, not here.
 Order: **2bV-2's forced-slide negative** (needs a FRESH round between the walk and the slide — run 8
 could not separate it from the once-per-round gate), **2bV-6's** zero-Covenant refusal + re-use refusal +
 the per-ally +Presence rider, **2bV-8's** advantage injection and its wall/hostile-attacker block, the
