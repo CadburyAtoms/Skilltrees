@@ -414,7 +414,7 @@
       "events": {
         "BKR9pR0CwIxuw7QL": {
           "id": "BKR9pR0CwIxuw7QL",
-          "description": "Green/Restoration. When an ally drops to half HP or below, a chat-card prompt offers the Reaction: spend 1 Inv to heal them [Tier][Die]. The clickable heal roll on the talent remains as fallback - don't use both for one trigger.",
+          "description": "Green/Restoration. When an ally drops to half HP or below, a chat-card prompt offers the Reaction: spend 1 Inv to heal them [Tier][Die]. The clickable heal roll on the talent remains as fallback - don't use both for one trigger. 2026-07-26l (bench run 3 defect 4): note emptied so the engine's tight who-dropped-to-what line shows (the old note pasted this whole description onto the card), and rangeColor green enforces the card's 'ally in Attunement Range'.",
           "event": "edha-apply-watch",
           "handler": {
             "type": "edha-hp-threshold",
@@ -423,7 +423,8 @@
             "costValue": 1,
             "oncePerRound": true,
             "includeSelf": false,
-            "note": "Green/Restoration. When an ally drops to half HP or below, a chat-card prompt offers the Reaction: spend 1 Inv to heal them [Tier][Die]. The clickable heal roll on the talent remains as fallback - don't use both for one trigger."
+            "rangeColor": "green",
+            "note": ""
           }
         }
       },

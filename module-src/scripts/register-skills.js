@@ -1317,15 +1317,30 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
       }
       // HP-threshold prompt (Mender's Instinct): an ALLY character just dropped to ≤ half HP → offer
       // each owner of an edha-hp-threshold rule the reaction (chat-card button; heal lands on the ally).
+      // 2026-07-26l (bench run 3 defect 4): the sweep said "ally" and enforced NOTHING — a HOSTILE
+      // crossing drew the offer (4a) and every rule-owning world actor got a card, token or no
+      // token (4b: The Vivisectionist, parked in the directory, posted from off-scene). The gates
+      // now: the owner must have a token on the scene (you cannot be "in Attunement Range" from the
+      // sidebar), the victim's token must share its disposition (unknown positions fail CLOSED, the
+      // watch-dispatch precedent), and an authored rangeColor enforces the card's Attunement Range.
+      // Owner === target (includeSelf) skips the gates — you are wherever you are. The COMBAT-gating
+      // question stays Ben's queued ruling; nothing here keys on game.combat.
       if (dealt && target?.type === "character" && maxHp > 0) {
         const newHp = Number(target.system?.resources?.hea?.value) || 0;
         const half = maxHp / 2;
         if (prevHp > half && newHp <= half) {
+          const ttok = edhaCasterToken(target) ?? target.getActiveTokens?.()[0] ?? null;
           for (const owner of (game.actors?.filter(a => a.type === "character") ?? [])) {
             const rule = edhaActorRuleOf(owner, "edha-hp-threshold");
             const h = rule?.handler;
             if (!h) continue;
             if (owner === target && h.includeSelf === false) continue;
+            if (owner !== target) {
+              const otok = edhaCasterToken(owner);
+              if (!otok) continue;                                                                   // (4b) no token on the scene → no reaction
+              if (!ttok || (otok.document?.disposition ?? 0) !== (ttok.document?.disposition ?? 0)) continue;   // (4a) allies only; unknown fails closed
+              if (h.rangeColor && !edhaAllyInAttune(owner, ttok, h.rangeColor)) continue;             // the card's "in Attunement Range"
+            }
             const spec = {
               effect: { kind: "heal", formula: h.healFormula || "0", target: "victim" },
               cost: h.costResource ? { resource: h.costResource, value: Number(h.costValue) || 0, optional: true } : null,
@@ -17977,7 +17992,8 @@ function edhaRegisterNativeEventSystem() {
       costValue: new FF.NumberField({ required: false, initial: 1, label: "Cost amount" }),
       oncePerRound: new FF.BooleanField({ required: false, initial: true, label: "Once per round" }),
       includeSelf: new FF.BooleanField({ required: false, initial: false, label: "Also prompt when YOU drop to half" }),
-      note: new FF.StringField({ required: false, initial: "", label: "Note (shown on the prompt)" }),
+      rangeColor: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "white", "blue", "black", "red", "green"), label: "Ally must be within this colour's Attunement Range", hint: "The card's 'an ally in Attunement Range' gate — your rank in the colour sets the radius. Blank = anywhere on the scene (the ally + on-scene gates still apply). 2026-07-26l." }),
+      note: new FF.StringField({ required: false, initial: "", label: "Note (shown on the prompt)", hint: "ONE tight line — the card already names who dropped and to what HP when this is blank. Do not paste the talent description here (bench run 3 defect 4c)." }),
     } },
     executor: async function () { /* config-only: the applyDamage wrapper reads this rule */ },
   });
