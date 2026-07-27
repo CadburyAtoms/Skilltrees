@@ -1447,3 +1447,23 @@ test("edhaHealCutGate: garbage amounts clamp to 0 and never throw", () => {
   assert.strictEqual(env.edhaHealCutGate(healCutActor([]), -3), 0);
   assert.strictEqual(env.edhaHealCutGate(healCutActor([{ fraction: 0 }]), NaN), 0);
 });
+
+// --- edhaIsConstruct — the 07-26m dead-field regression (bench run 4, defect 1) ---
+// The gate read `system.customType`, a field NO cosmere actor has — creature type lives at
+// `system.type = {id, custom}` (CONFIG.COSMERE.creatureTypes = ["custom","humanoid","animal"]),
+// so Fault Line's Constructs ×3 could never fire. Same dead-field family as edhaAttackKind
+// (07-26l defect 7). These pin the schema-true read and hold the dead shape dead.
+test("edhaIsConstruct: {id: custom, custom: Construct} is a Construct (case-insensitive)", () => {
+  assert.strictEqual(env.edhaIsConstruct({ system: { type: { id: "custom", custom: "Construct" } } }), true);
+  assert.strictEqual(env.edhaIsConstruct({ system: { type: { id: "custom", custom: "construct" } } }), true);
+});
+test("edhaIsConstruct: native ids are not Constructs; a hypothetical id 'construct' would be", () => {
+  assert.strictEqual(env.edhaIsConstruct({ system: { type: { id: "humanoid", custom: "" } } }), false);
+  assert.strictEqual(env.edhaIsConstruct({ system: { type: { id: "animal", custom: "Construct" } } }), false);
+  assert.strictEqual(env.edhaIsConstruct({ system: { type: { id: "construct", custom: "" } } }), true);
+});
+test("edhaIsConstruct: the legacy dead field stays dead, and missing shapes never throw", () => {
+  assert.strictEqual(env.edhaIsConstruct({ system: { customType: "Construct" } }), false);
+  assert.strictEqual(env.edhaIsConstruct({ system: {} }), false);
+  assert.strictEqual(env.edhaIsConstruct(null), false);
+});

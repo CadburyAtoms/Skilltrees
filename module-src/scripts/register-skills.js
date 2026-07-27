@@ -8057,6 +8057,15 @@ async function edhaSummon(caster, spec) {
       prototypeToken: { name: spec.tokenName ?? spec.name, actorLink: true, displayName: Number.isFinite(Number(spec.displayName)) ? Number(spec.displayName) : (CONST.TOKEN_DISPLAY_MODES?.OWNER_HOVER ?? 20), disposition: spec.disposition ?? CONST.TOKEN_DISPOSITIONS.FRIENDLY, texture: { src: spec.img }, ...(tokSq ? { width: tokSq, height: tokSq } : {}) },
       system: {
         tier: caster.system?.tier ?? 1,
+        // Creature type (2026-07-26n — bench run 4 defect 1): blank = the schema default
+        // (humanoid). "Construct" mints {id: "custom", custom: "Construct"}, which is what
+        // edhaIsConstruct (Fault Line's ×3) and any future type gate reads. Any other label
+        // works the same way; the cosmere ids themselves ("animal") pass through as ids.
+        ...(spec.creatureType ? {
+          type: ["humanoid", "animal"].includes(String(spec.creatureType).toLowerCase())
+            ? { id: String(spec.creatureType).toLowerCase(), custom: "" }
+            : { id: "custom", custom: String(spec.creatureType) },
+        } : {}),
         resources: { hea: { value: hp, max: ov(hp) } },
         defenses: { phy: ov(dval("phy")), cog: ov(dval("cog")), spi: ov(dval("spi")) },
         movement: { walk: { rate: ov(Number(spec.speed) || 25) } },
@@ -9710,7 +9719,16 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
 const EDHA_CHARGE_DMG = "(@tier)d(2 * @skills.red.rank + 2)";   // [Tier][Die] energy — the Charge/terrain default
 // Deflect (reduced by applyDamage on energy/impact/keen) — adding it back to a hit nets to "ignores deflect".
 function edhaDeflectOf(actor) { return Math.max(0, Number(actor?.system?.deflect?.value) || 0); }
-function edhaIsConstruct(actor) { return String(actor?.system?.customType || "").toLowerCase() === "construct"; }
+/* Cosmere creature type lives at `system.type = {id, custom}` — `CONFIG.COSMERE.creatureTypes` is
+ * exactly ["custom", "humanoid", "animal"], so a Construct is {id: "custom", custom: "Construct"}.
+ * The old read (`system.customType`) was a field NO cosmere actor has, so this returned false for
+ * every actor and Fault Line's Constructs ×3 could never fire — measured live at bench run 4
+ * (2026-07-26m defect 1; same dead-field family as 07-26l's `edhaAttackKind`). */
+function edhaIsConstruct(actor) {
+  const t = actor?.system?.type;
+  const label = t?.id === "custom" ? (t?.custom ?? "") : (t?.id ?? "");
+  return String(label).toLowerCase() === "construct";
+}
 
 /* `charges` REPOINTED onto H3 storage (flags.edha-content.lists.charges) in 2bY — the snares
  * repoint one tree over, same three properties. Entries are POINT-BOUND — no top-level uuid (the
@@ -16994,6 +17012,7 @@ function edhaRegisterNativeEventSystem() {
     config: { schema: {
       summonName: new FF.StringField({ required: true, initial: "", label: "Summon name" }),
       img: new FF.StringField({ required: false, initial: "", label: "Token image" }),
+      creatureType: new FF.StringField({ required: false, blank: true, initial: "", label: "Creature type", hint: "Blank = the system default (humanoid). 'Construct' mints the summon as {id: custom, custom: Construct} — what Fault Line's Constructs ×3 (and any other creature-type gate) reads. 'animal' passes through as the native id. 2026-07-26n." }),
       hpFormula: new FF.StringField({ required: true, initial: "(@tier)d6", label: "HP formula" }),
       speed: new FF.NumberField({ required: false, initial: 25, label: "Speed (ft)" }),
       defensePenalty: new FF.NumberField({ required: false, initial: 2, label: "Defenses = caster − N" }),
@@ -17030,6 +17049,7 @@ function edhaRegisterNativeEventSystem() {
       }
       await edhaSummon(item.actor, {
         name: this.summonName || item.name, img: this.img, talentName: item.name, at,
+        creatureType: String(this.creatureType || "").trim() || null,
         tokenSizeFt: this.tokenSizeColor
           ? (EDHA_SIZE_FT[edhaColorRank(item.actor, this.tokenSizeColor)] || EDHA_SIZE_FT[1])
           : (Number(this.tokenSizeFt) || null),
