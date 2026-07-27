@@ -63,14 +63,15 @@ and the `spec.creatureType` summon mint — and the Remains-race re-test confirm
 at the table (counts serialize, entries survive; the residual dispatch loss is a NEW defect, see
 the Death section).
 
-**⚠ The 07-27b ENGINE half is REPO-SIDE ONLY until the next `module-src-sync` + F5.** Five
-engine fixes (run 5's four defects + the Chaos-sweep triage): Adaptive Mutation's pre-cost gate,
-the Apex-Form one-applier/one-clear fences, Surgical Precision's engine-decided graze,
-`chainBounded` defeat dispatch (the harvest loss), and the Chaos `lists.omens` + `trigRound`
-scene sweep. Byte-check before trusting a re-test: the served `register-skills.js` must contain
-`edhaWatchEntryLevel` and `_edhaLifeClearBusy`. The Surgical data half is COSMETIC only (rule
-description + an explicit `def: "phy"` the engine already defaults) — it rides the already-owed
-deity rebuild, and the behavior fix needs only the engine sync + F5.
+**✅ The 07-27b ENGINE half is LIVE (bench run 6, 2026-07-27c).** The fresh Bench join's served
+`register-skills.js` carries `edhaWatchEntryLevel`, `_edhaLifeClearBusy`, `chainBounded` AND
+`edhaOwnerListQueue` (byte-checked), and three of the five fixes re-tested PASS at the table
+(triple-drop harvest, Adaptive Mutation's gate, Apex Form's one injury with BOTH GM clients
+connected). Two re-tests STILL FAIL on the new engine — Surgical Precision (sheet fail-open +
+stale-capture off-by-one) and the Chaos sweep's ledger/off-canvas halves — see their rows; both
+are the next test-pass-fixes input, NOT deploy gaps. The Surgical data half stays COSMETIC only
+(rule description + an explicit `def: "phy"` the engine already defaults) — it rides the
+already-owed deity rebuild.
 
 **Still BLOCKED-ON-DEPLOY — THREE data/pack halves (all re-confirmed by fresh compendium reads,
 bench run 5).** Ben runs these with Foundry closed:
@@ -334,9 +335,19 @@ in Bench Ally — Two's place; Bench Ally — Two heals 8" = 3 + 2d8; third same
 offer; next round re-armed). The chooser/riders of 2bW-12 and clauses 1–4 of 2bW-13 are
 retired-in-place inside the rows below. Evidence per row in the 07-27a delta.
 
-- [ ] **2bW-12 — Adaptive Mutation — FIXED 07-27b, re-test the gate (engine sync + F5 first)** — the chooser/riders are retired (run 5: all three picks passed). The once-per-creature clause is now ENFORCED twice: (a) with an ally already mutated this scene, target it and use the talent again → refused **pre-cost** ("already carries … one adaptation per creature per scene. Nothing spent"), NO second chooser, Inv untouched; (b) belt: click a leftover stale chooser card for that ally → buttons disable, "the earlier pick stands" card, the flag does NOT change kind. Then delete the combat and confirm a fresh use offers the chooser again (the Life scene reset clears the flag). Still not driven: Dense Tissue's forced-movement refusal (no push vehicle staged). ⚑ observation (rulings batch): the melee riders also fire on a nat-1 graze application — "melee — auto-checked" checks the weapon kind, not the hit quality.
-- [ ] **2bW-13 — Apex Form — FIXED 07-27b, re-test clause 5 (engine sync + F5 first; run it with BOTH GM clients connected)** — clauses 1–4 are retired (run 5). The verified cause was NOT the guessed 2bL-13 double-moment: the Life clear's hook was gated raw `isGM`, so Ben's host client AND the Bench GM client each minted an injury — the one deleteCombat clear that CREATES is the only one that showed it. Re-test: grant Apex Form, delete the combat while two GM clients are connected → exactly ONE "Apex Form ends — takes an injury" card and ONE injury item; flags still sweep clean. The whole raw-isGM deleteCombat clear family now rides the one-applier gate — if any OTHER scene reset visibly doubles this run, that is a regression in this fix.
-- [ ] **2bW-15 — Surgical Precision — FIXED 07-27b, re-test both branches (engine sync + F5 first)** — NOT a bench artifact: the system never binds a DC to a skill_test talent's d20 (sheet or console — its only DC binding is the chat enricher), and `roll.options.graze` only distinguishes the twin damage fires (it holds the attached graze sub-roll), so the old check posted the cleanse on EVERY use. The engine now decides: it captures the use's own Blue test and compares vs the target's Physical (the rule's new `def` field; fail-open if unreadable). Re-test: (a) success — test ≥ the target's phy → the cleanse card posts, click removes the condition (unchanged); (b) **graze — test < phy → NO cleanse card; instead a whispered "🩺 … graze — no condition is removed (the graze heal stands)" note with the numbers**; (c) the system's own damage card still shows both full/graze totals — the human toggle there is untouched. Sheet-driven once and console-driven once — both paths must agree now.
+**Bench run 6 (2026-07-27c): 2bW-12 and 2bW-13 re-tested and RETIRED** — 2bW-12: second use on a
+mutated ally refused pre-cost ("already carries Bone Spurs — one adaptation per creature per
+scene. Nothing spent", no chooser, Inv untouched); the stale-chooser belt drove the REAL case
+(two live choosers on an unmutated ally, pick on one, click the other) → "the earlier pick
+stands" card, buttons flip to "already adapted", flag kind unchanged — and a clicked chooser
+self-disables to "✓ applied"; combat delete cleared the flag and a fresh use re-offered the
+chooser. Still not driven: Dense Tissue's forced-movement refusal. · 2bW-13: with BOTH GM
+clients connected (Bench + Ben's Gamemaster), combat delete minted exactly ONE "Apex Form ends —
+takes an injury: Slowed…" card and ONE injury item; apexForm/lifeRegen swept clean; no other
+scene reset doubled anything all run. ⚑ still in the rulings batch: melee mutation riders fire
+on a nat-1 graze application.
+
+- [ ] **2bW-15 — Surgical Precision — STILL FAILS (bench run 6, 2026-07-27c) — sheet and console DISAGREE + stale-capture off-by-one** — the graze branch now EXISTS (console-driven with target PHY 45: whispered "🩺 … 21 vs Bench Target — Undefended's PHY 45: graze — no condition is removed (the graze heal stands)") and the success branch works (phy 1 → cleanse card, click removed Disoriented). BUT: (a) SHEET-driven use at PHY 45 rolled its d20 = 21 and still posted the SUCCESS cleanse card — fail-open fired on the sheet path; (b) the next console use rolled d20 = 25 but its graze note quoted "21" — the PREVIOUS use's captured test. Inference (unverified): the decider races its own use's `_edhaLastRoll` capture — no fresh capture at decision time → fail-open (sheet case); a prior TTL-fresh capture → consumed off-by-one (console case). Both GM clients were connected. Re-test after fix: both paths at phy 45 → graze note quoting THAT use's total; phy 1 → cleanse.
 
 ---
 
@@ -377,59 +388,97 @@ mark-wins reconcile — the next place read "(1/2)"; auto-prompt whispered with 
 Mute silenced a bearer's roll; a real use re-armed the prompt). Evidence per row in the 07-27a
 delta.
 
-- [ ] ⚑ **Chaos residuals (run 5; (c)'s sweep half FIXED 07-27b)** — (a) 2bU-5's through-walls RENDERING of Omen-bearers: canvas-visual, hidden-pane session cannot see highlights — Ben's eyeball. (b) 2bU-3's "a resister keeps its Omen" branch: every sweep roll beat every bearer's Cognitive this run — not driven, pure dice luck; the per-bearer gate itself is proven (the sweep card lists each bearer's verdict). (c) the missing scene-end sweep was triaged a DEFECT (the clear predated the 2bU ledger repoint) and is fixed — **re-test after the engine sync + F5:** place Omens + an inflicted Isolated, delete the combat → `lists.omens` is GONE from the owner's flags, omen/isolated statuses + markedBy keys cleared including on any off-canvas bearer, and `trigRound` is unset on characters. Still a ruling: Unweaving's dispel card lists the OMEN MARKER itself as a dispellable effect button.
+- [ ] ⚑ **Chaos residuals (run 5; (c) re-tested run 6 — STILL FAILS in part)** — (a) 2bU-5's through-walls RENDERING of Omen-bearers: canvas-visual, hidden-pane session cannot see highlights — Ben's eyeball. (b) 2bU-3's "a resister keeps its Omen" branch: not driven (dice luck, run 5); the per-bearer gate itself is proven. (c) **the 07-27b sweep fix only half-landed (bench run 6, 2026-07-27c):** with Omens on a canvas bearer + an off-canvas bearer + an inflicted Isolated, combat delete cleared the CANVAS bearer's statuses/markedBy and `trigRound` on every bearer (both NEW halves that work), but `lists.omens` SURVIVED on the owner — raw AND logically (the next fresh place read "(2/2)" and the spread refused "at your cap of 2"), and the OFF-CANVAS bearer kept omen status + markedBy. Since the new trigRound sweep ran, the applier was on 07-27b code — the ledger-unset and directory-actor halves of `edhaClearChaosState` are what still fail (inference: the new branch bails before the owner-flag unset, possibly on the off-canvas loop). Still a ruling: Unweaving's dispel card lists the OMEN MARKER itself as a dispellable effect button.
 
 ---
 
 # BENCH — Fate (Olvarra, deity)
 
 Run on **Bench — Fate** (open ground for squares + snares; an enemy walker). No pack rebuild
-pending. Priority: 2bX-14 / 2bAA-5 (scene reset — a missed key silently leaves
-a live ledger at the table).
+pending.
 
-- [ ] **2bX-1 — Ordained Ground** — use → click in range; click OUT of Attunement Range; right-click cancel → In range: white 5 ft template + card (n/cap; Bulwark THP line only if Bulwark owned). Out-of-range or cancel: **Investiture refunded**, nothing placed. ⚠ the range gate is NEW (card-is-spec — the old engine never checked it).
-- [ ] **2bX-2 — Snare** — use → place; place past cap (tier+1) → Green template + trigger Region; past cap the OLDEST fizzles (template + Region both vanish).
-- [ ] **2bX-3 — Snare spring** — walk an enemy INTO and separately THROUGH the square → Springs both ways: rolled [T][D]+Awa keen (the DOCUMENT's damage formula — edit it and re-test) + Restrained; snare consumed (ledger, template, Region all gone); card title = the placing talent's name.
-- [ ] **2bX-4 — Inevitable Snare** — use with no unsprung snare; then with one → No snare: refused PRE-COST (nothing spent). With one: last un-flagged snare flagged ⛓️.
-- [ ] **2bX-5 — Inevitable spring** — spring the flagged snare → Extra [T][D] rolled off **Inevitable Snare's own damage formula** (edit it in Foundry — the roll must change; pre-2bX it could not) + engine-rolled SPD vs your Green → Disoriented on a fail.
-- [ ] **2bX-6 — Hexmark** — own it; spring your snare with an enemy in it; click the offer; damage the marked foe within/beyond 10 ft of a zone → Offer card on the spring; after marking, +tier keen rides any damage while within 10 ft of your squares (one card per apply); beyond 10 ft nothing. Scene end clears the mark.
-- [ ] **2bX-7 — Bulwark Ground** — ally starts its turn on your Ordained square; enemy attacks that ally WITH advantage → Turn start: +1 defenses AE + Temp HP = tier (card names Bulwark). The attack's advantage is neutralized to none (card; GM can re-toggle); disadvantage untouched.
-- [ ] **2bX-8 — Weave the Thread** — use with <2 Ordained squares; with 2+ (pick two; also cancel once) → <2: refused PRE-COST. Picker dialog offers YOUR squares (out-of-range ones annotated); cancel refunds. ⚠ the picker is NEW — the old engine silently took the two most recent.
-- [ ] **2bX-9 — Weave spring watch** — spring any of your snares within 30 ft of a linked square; then one farther away → Within 30 ft: the Reactive-Strike prompt card. Farther: no prompt.
-- [ ] **2bX-10 — Read the Threads** — use; slide an Ordained square; slide a SNARE → Whispered card (foresight line + move buttons). Ordained: template moves. Snare: template AND trigger Region move (walk an enemy into the NEW square to confirm).
-- [ ] **2bX-11 — Foreknown Strike** — use; click a spring button → Scene card, one button per unsprung snare; clicked snare springs at its own centre for +[T][D] off **Foreknown Strike's own damage formula**.
-- [ ] **2bX-12 — Thread of Inevitability** — use; resolve; use again same scene → Declare card; resolve springs EVERY unsprung snare + rally card. Second use the same scene: refused PRE-COST (sceneOnce).
-- [ ] **2bX-13 — Costs** — every active Fate talent, watch the Investiture bar → The SYSTEM charges on use (no takeover); every cancel path refunds to the starting value.
-- [ ] **2bX-14 — Scene reset / stale state** — end combat (deleteCombat) on a scene with squares, snares, marks, links → Everything clears: templates, Regions, `lists.snares`, the legacy `fateOrdained`/pre-2bX `fateSnares` flags, ordained-buff AEs, every offer-mark markedBy key. ⚠ first deploy only: actors carrying PRE-repoint mid-scene state should simply lose it here.
-- [ ] **2bAA-1 — Ordained Ground (the ledger repoint)** — place two squares, then a third with tier 2 → Unchanged behaviour: click-place in range, cap = tier, the oldest fizzles and its template vanishes. ⚑ the list now lives at `flags.edha-content.lists.ordained` — a mid-scene actor from an OLD build keeps a stale `fateOrdained` flag that reads as zero squares; re-place after the sync rather than reporting it as a loss.
-- [ ] **2bAA-2 — Weave the Thread (the `linked` annotation)** — with two active squares, use it and link them; then spring a snare within 30 ft of a linked square → The two-square veto still refuses BEFORE cost with fewer than two. The link dialog lists your squares, and the Reactive-Strike prompt fires on a spring near a LINKED one — the annotation has to have survived the repoint.
-- [ ] **2bAA-3 — Bulwark Ground (the readers followed)** — an ally begins its turn standing on one of your squares → +1 all defenses AE, Temp HP if Bulwark Ground is owned, and the Aid-at-30-ft card — all three read through the repointed accessor. Attacks against that ally still can't benefit from advantage.
-- [ ] **2bAA-4 — Read the Threads (marker-command)** — use it, click "Move …" on an Ordained marker → The slide still works and the template follows. ⚠ a marker card posted BEFORE this deploy carries the old key and will say "That marker is gone" — post a fresh one.
-- [ ] **2bAA-5 — Scene end** — end the combat with squares, snares and buffs live → Everything clears: both ledger keys, the templates, the snare Regions, the defense buffs. A missed key here silently leaves a live list at the table, which is the failure this row exists for.
+**Bench run 6 (2026-07-27c): 15 Fate rows PASSED on the live table and are retired** — **2bX-14 +
+2bAA-5 (the priority scene reset)**: combat delete with 2 squares + 2 snares + a hexmark + the
+ordained AE + sceneOnce live cleared BOTH ledger keys, all templates, the snare Regions, the
+ordained-buff AE, the markedBy key, and re-armed sceneOnce; nothing doubled with two GM clients
+connected (the 07-27b one-applier family held) · 2bX-1 (in-range white 5-ft template + "set
+(1/2)" card WITH the Bulwark THP line; out-of-Attunement-range click AND right-click cancel both
+refunded — "canceled — cost refunded", nothing placed; the pick prompt names "Attunement Range
+60 ft") · 2bAA-1 (cap 2 = tier, third place evicted the OLDEST — its template vanished; ledger
+lives at `lists.ordained`; ⚑ cosmetic: the place card says "(2/2)" but never verbalizes the
+fizzle) · 2bX-2 (green template + trigger Region per snare; third place evicted oldest — template
+AND Region both gone by id/count; entries snapshot the formula) · 2bX-3 (springs on walk-INTO and
+walk-THROUGH; document formula edited to flat `7` then re-placed → the spring rolled exactly `7`;
+Restrained applied; consumed; card titled by the placing talent; formula restored) · 2bX-4 (empty
+ledger → "no snares left to mark inevitable — nothing spent" pre-cost; with one → entry flagged
+`inevitable: true` + card — ⚑ cosmetic grammar "the snares on Snare #1 is inevitable") · 2bX-5
+(spring rolled base 9 + `5` — Inevitable Snare's OWN formula edited to flat 5 — for 14 keen, +
+engine-rolled "SPD 3 vs your green 11 — Disoriented") · 2bX-6 (offer card on every spring; mark
+click → markedBy.hexmark + card; +2 keen rider card on damage within 10 ft of a square — net 0
+through deflect 2; silent beyond 10 ft) · 2bX-7 + 2bAA-3 (turn-start on an ordained square → +1
+phy/cog/spi AE + tempHp {2, source Bulwark Ground} + the Aid-at-30-ft clause on the card; an
+advantage attack vs that ally posted the Bulwark card and rolled a SINGLE 1d20 — neutralized; a
+disadvantage attack passed through as 2d20kl with no card) · 2bX-10 + 2bAA-4 (whispered foresight
+card, one Move button per marker; ordained slide moved the template; snare slide moved template
+AND Region and the moved Region sprang on entry at the NEW square) · 2bX-12 (declare card;
+resolve sprang EVERY unsprung snare + the rally card; second use refused pre-cost "once per
+scene — nothing spent") · 2bX-13 (system charged every use; both cancel paths refunded; all
+pre-cost refusals spent nothing — one exception logged in the 2bX-8 FAIL row). Evidence per row
+in the 07-27c delta.
+
+- [ ] **NEW — snare spring DOUBLE-FIRES on token-movement entry (bench run 6, 2026-07-27c)** — every walk-INTO, walk-THROUGH, and even `displace`-into entry posted the spring card TWICE with two INDEPENDENT rolls (e.g. "10 keen" then "5 keen", 2 ms apart) and two Hexmark offer cards; damage APPLIED only once (HP delta matched one roll − deflect); one snare consumed. Both cards authored by the SAME user (Bench) — a one-client double-event, NOT the two-GM-applier family. Discriminators: placement-onto-occupied springs post ONCE, Foreknown/Thread command-click springs post ONCE, damage-watch riders post once — only the Region token-movement path doubles. Inference (unverified): the trigger Region fires two movement events per entry (tokenMoveIn + tokenEnter, or v13 segmentiser double-fire). Also a runbook fact: `displace` does NOT bypass the trigger.
+- [ ] **NEW — `tempHp` flag survives every scene reset (bench run 6, 2026-07-27c)** — Bulwark's {2}, Edict's {2}, and Favor's {15} all persisted through THREE combat deletes while AEs, ledgers, statuses and markedBy swept clean. A stale tempHp silently absorbs damage next scene. Likely a missed key in the scene-reset family (it cleared nowhere, so it predates 07-27b).
+- [ ] **2bX-8 + 2bAA-2 — Weave the Thread — FAIL (bench run 6, 2026-07-27c): the picker never appears; cost swallowed** — the <2-squares veto works pre-cost ("needs two active Ordained Ground squares. Nothing spent"). With 2 squares: consume dialog → 2 Inv charged → then NOTHING — no picker dialog (DOM sampled every 250 ms for 4+ s), no pick prompt, no card, no `linked` annotation, no refund, no console error. Reproduced twice (incl. owner token controlled, targets cleared). The post-cost link-markers executor is a silent no-op at the table.
+- [ ] **2bX-9 — Weave spring watch — BLOCKED by the 2bX-8 FAIL** (no linked square can exist until the picker works) — within 30 ft of a linked square: the Reactive-Strike prompt card; farther: no prompt.
+- [ ] **2bX-11 — Foreknown Strike — PARTIAL (bench run 6, 2026-07-27c)** — scene card ✓ (one button per unsprung snare, exactly), click ✓ (the snare sprang at its own centre — honest "sprang with no creature in the square" card — and consumed ledger+template+Region; a button for an already-sprung snare is a silent no-op). NOT observable: the +[T][D]-off-its-own-formula roll — no creature can ever stand IN a live snare, because placement onto an occupied square springs it instantly and every entry mode (walk/displace) springs on entry. ⚑ rulings batch: the card says "the first enemy to ENTER or PASS THROUGH springs it" — standing there when it lands is neither; should placement under a creature ARM instead of spring? As is, Foreknown's centre-spring can never catch anyone.
 
 ---
 
 # BENCH — Sovereignty (Verdannis, deity)
 
 Run on **Bench — Sovereignty** (an ally + enemy pair targeted together). No pack rebuild
-pending. Priority: 2bT-16 — it proves an ENGINE-OWNED pair talent really converted to
-entry-data couplings.
+pending.
 
-- [ ] **2bT-16 — Sovereign's Balance** — use with one ally + one enemy targeted; the ally hits the enemy that round → Pair ±1 until your next turn; the hit extends BOTH one round, once, cast round only (the coupling is entry data now — `onPairHit: extend-once`).
-- [ ] **2bT-11 — Censure** — target an enemy in Black range, use, roll the Black test → Success vs Cognitive → Diminished, damage die −1 step until your next turn — check an actual damage roll steps down. No enemy target / out of Black range → refused, nothing spent. ⚠️ Deliberate drift: the range gate is the CARD's text, newly enforced (the takeover never checked it).
-- [ ] **2bT-12 — Decree of Ruin** — use on the same creature twice in a scene → Success = −1 for the SCENE; failure = −1 until your next turn; either way the second use on that creature is refused pre-cost.
-- [ ] **2bT-13 — Edict of the Fallen** — succeed, then have the target FAIL an attack test → −2 steps on ATTACK damage only (a non-attack damage roll is untouched); each failed attack test → your allies in White range gain Tier Temp HP automatically (the rider lives in the LEDGER ENTRY now). Failure = −1 all damage, timed.
-- [ ] **2bT-14 — Exalt + Sovereign's Favor** — Exalt a willing ally while owning Favor → Ally +1 step until your next turn AND [T][D white] Temp HP (keeps the higher — does not stack). Favor rides the new `die-step` watch kind: it must fire on Exalt and NOT on Investiture of Authority.
-- [ ] **2bT-15 — Investiture of Authority** — Exalt an ally, then Investiture the same ally; repeat Investiture → The Exalt entry is REPLACED by the scene entry (not stacked); the second Investiture on that ally is refused pre-cost.
-- [ ] **2bT-17 — Sovereignty (capstone)** — use; the ally hits the paired enemy; use again same scene → ±2 for the scene; each detected hit posts the no-reactions card; the second use is refused pre-cost (`sceneOnce`).
-- [ ] **2bT-18 — Expose** — a Censured/Decreed creature fails an attack; then any non-attack test → Failed readable attack → +1 Investiture auto, and if the attacked ally is in White range, the Reactive Strike card. Non-attack test → the owner-click "did it fail?" card. Must NOT ride Edict's entries (whenKeys censure,decree). Its rules live on the config events — the talent is Always Active.
+**Bench run 6 (2026-07-27c): the WHOLE section — all 8 rows — PASSED on the live table and is
+retired** — **2bT-16 (the priority pair conversion)**: ally+enemy targeted together → "ally +1 /
+enemy −1 until the start of your next turn" with BOTH `dieStep` entries sharing a `pairId` and
+`onPairHit: extend-once` (pure entry data); the ally's damage rolled a STEPPED d8 (d6 base); the
+hit posted "both effects extend one additional round" and both entries moved expire round 2→3
+with `extended: true`; a second hit extended nothing · 2bT-11 (no-target → "target the creature
+first (nothing spent)"; Isolated → "outside your Attunement Range (black) — nothing spent"; a
+FAILED test (11 vs COG 14) kept the cost spent and minted nothing; SUCCESS 22 vs COG 14 →
+`diminished` status + −1 entry, and the victim's actual damage roll stepped **1d6 → 1d4**) ·
+2bT-12 (FAIL 13 vs 14 → −1 entry expiring next-turn; SUCCESS 23 vs 14 on a second creature → −1
+entry with `expire: "scene"`; the second use on the SAME creature refused pre-cost "already used
+on … this scene" — and the latch held even though that first use had FAILED, per spec's "either
+way") · 2bT-13 (FAIL → −1 all timed; SUCCESS → −2 `scope: attack` scene entry carrying
+`failThpFormula: @tier` + `failThpRange: white` IN the ledger entry; the victim's attack damage
+rolled 1d4 — d6 −2 floored at d4, so a d6 base cannot distinguish −1 from −2, flag for a
+d10-weapon spot-check; a nat-1 attack auto-posted "failed an attack test — 17 ally(ies) in range
+gain 2 temporary HP" and wrote the tempHp flags; the non-attack-damage-untouched clause not
+driven — the victim has no non-attack damage vehicle) · 2bT-14 (Exalt → +1 next-turn entry +
+card; Sovereign's Favor's `die-step` watch rolled (2)d8 white → tempHp {8, source Sovereign's
+Favor}; a second Exalt rolled 15 and KEPT THE HIGHER — 15 replaced 8, no stacking) · 2bT-15
+(Investiture of Authority REPLACED both exalt entries with the single `investiture` scene entry
+— "replaces any existing Exalt" card; Favor did NOT fire on it — tempHp untouched; the second
+Investiture on that ally refused pre-cost) · 2bT-17 (±2 scene entries, shared pairId,
+`onPairHit: no-reactions`; the ally's damage rolled 1d10 = d6 + 2 steps; TWO hits → TWO "cannot
+take reactions until the start of its next turn (GM-enforced)" cards; second use refused
+pre-cost "Sovereignty was already used this scene — nothing spent") · 2bT-18 (the Censured
+creature's failed attack (3 vs PHY 14) → "recovers 1 Investiture" AUTO (3→4) + "may make a
+Reactive Strike" card for the White-range ally; its non-attack skill test → whispered owner-click
+"If it FAILED, click to recover 1 Investiture" card, click recovered 1; the Edict-only victim's
+failed attack fired NOTHING — whenKeys censure,decree respected). Evidence per row in the 07-27c
+delta. ⚑ carried to the open rows: the tempHp scene-reset residual (see BENCH — Fate) was
+confirmed here on a second tree's sweep.
 
 ---
 
 # BENCH — Death (Morrath, deity)
 
 Run on **Bench — Death** (hostile NPC dummies in Green range to harvest; a warded ally). No
-pack rebuild pending; ⚠️ the Remains-race re-test needs the 07-26n engine sync + F5 first.
+pack rebuild pending; the 07-26n queue fix AND the 07-27b `chainBounded` dispatch fix are both
+confirmed live at the table (runs 5–6).
 
 ⚠️ **Staging note (bench run 4):** Reaper's Harvest only harvests **adversary**-typed victims. The
 standard `Bench Target — *` fixtures are `character`-typed and are silently skipped — that is the
@@ -455,7 +504,13 @@ drops produced nothing, combat delete cleared the marker) · and **both graph ro
 Speak with the Fallen hangs off Reaper's Harvest beside Bone Garden; Risen Servant = OR{Bone Garden,
 Speak with the Fallen}, takeable from either alone). Evidence per row in the 07-26m delta.
 
-- [ ] **Simultaneous cascade-drop harvests — DISPATCH loss FIXED 07-27b, re-test the triple drop (engine sync + F5 first)** — verified cause (the run's `_edhaCascadeBusy` guess names a symbol that does not exist): `edhaDispatchWatchers`' global depth counter conflated SIBLINGS with ANCESTRY — V1's chain-level dispatch was still awaiting its queued ledger write when V2's defeat hook fired, so V2 read "2 open" as its own causal depth and the `>= 2` backstop dropped it at the door (cap-independent, exactly the cap-isolation evidence). The defeat announcement now declares `chainBounded` (a live→0 crossing cannot recur per creature, so a defeat chain cannot loop) and CLAMPS to chain level instead of dropping; unbounded kinds keep the backstop. Pinned in `tests/watch-dispatch.test.js` against the real dispatcher. Re-test the exact staging (cascade armed, adversary trigger drop, TWO 1-HP adversary victims dropped by one cascade tick, capFormula at the default `@tier`): **all three drops harvest** — three ✨ cards, counts "(1/2)"→"(2/2)"→eviction of the oldest at cap 2, ledger ends holding the two newest; the cascade itself must NOT re-detonate off the nested kills (chain:false, unchanged). Sequential drops stay correct (already retired).
+**Bench run 6 (2026-07-27c): the simultaneous cascade-drop harvest re-test PASSED and is
+RETIRED** — exact staging (Necrotic Cascade armed via `cascadearmed` status, adversary trigger
+dropped by 5 vital, TWO 1-HP adversary victims inside 10 ft, cap 2): ONE cascade tick ("13
+spirit to Bench Victim — V1, Bench Victim — V2 · 2d8"), THREE ✨ recover cards, ledger counts
+"(1/2)" → "(2/2)" → "(2/2). The oldest (Bench Victim — V1) fades — you sustain at most 2",
+ledger ended holding the two newest, and the cascade did NOT re-detonate off the nested kills.
+The `chainBounded` clamp holds at the table.
 - [ ] ⚑ **Raise Dead — a raised creature keeps its own Harvested Remain (2026-07-26m — defect or ruling, Ben's call)** — an adversary that had itself been harvested was then raised by spending a DIFFERENT Remain: it came back at 1 HP still wearing the `harvested` marker, with its own entry still on the ledger — a living creature that is also a Remain. The card says nothing either way. Should the raise clear the target's own marker and entry?
 - [ ] **2bW-1 — Withering Touch — the two unrun halves** — still open from run 3 and not driven in run 4: **Temp HP still lands** on a blocked target, and the **turn-start expiry** of the No-Healing block. Everything else on this row is retired (see the run-4 block above).
 

@@ -2,7 +2,19 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, **COMPLETED 2026-07-26 (pass AA)**: **the ratchet list is EMPTY — 221 → 0 across twenty-seven passes.** Every tree is clear, all six marker ledgers have migrated, and `scripts/name-keyed-allowlist.json` stays in the repo with an empty `talents` list *on purpose* — lint pass 7 still guards against REGROWTH, which is the half of the ratchet that matters from here on. ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **ALL SIX marker LEDGERS have migrated** (`covenants` 07-24u; `edicts` 07-25 pass V; `remains` 07-25 pass W; Fate's `snares` 07-25 pass X; Destruction's `charges` 07-26 pass Y; Fate's `ordained` 07-26 pass AA — the point-bound ones fail OPEN through H3's reconcile by design). There is no flat marker-list flag left in the engine. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-27b** (bench run 5's
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-27c** (BENCH RUN 6 —
+the 07-27b re-tests + Fate + Sovereignty, executed live: **26 rows retired on evidence** (3
+re-tests incl. the triple-drop harvest and Apex Form's one-injury under two GM clients, 15 Fate
+rows incl. the priority scene reset, and the ENTIRE 8-row Sovereignty section — the pair-coupling
+conversion proven as entry data), **2 re-tests STILL FAIL on the live 07-27b engine** (Surgical
+Precision: sheet fail-open + stale-capture off-by-one; Chaos sweep: `lists.omens` + off-canvas
+halves never landed while the trigRound half works), **2 NEW defects** (the snare trigger-Region
+DOUBLE-FIRES its card+roll on every token-movement entry — one client, damage applies once; and
+Weave the Thread's post-cost picker never appears, swallowing 2 Inv), 1 partial (Foreknown's
+own-formula rider is UNOBSERVABLE — placement under a creature insta-springs, rulings batch), and
+the `tempHp`-survives-every-scene-reset residual confirmed on two trees. The 07-27b engine
+byte-checked LIVE on the fresh join. Cleanup id-diff exactly empty (third run running); Bench
+logged out. Docs only.) Prior: **2026-07-27b** (bench run 5's
 FOUR defects FIXED + one triage promoted to a fix — every root cause verified in code, and TWO of
 the run's family guesses were wrong in mechanism: Apex Form's double injury was two GM CLIENTS
 behind a raw-isGM hook gate (not the 2bL-13 double-moment), and the harvest DISPATCH loss was the
@@ -55,6 +67,90 @@ the Red pilot, executed live by an agent session joined as `Bench`: 16 rows reti
 1 FAIL root-caused (Shockwave Slam's weapon-hit trigger surface), 4 cross-tree observations,
 and the agent-bench runbook hardened with the v13 operating lessons. Docs + setup-script fix
 only; nothing to deploy.)
+
+**2026-07-27c — BENCH RUN 6 (Fate + Sovereignty + the 07-27b re-tests), executed live by the
+agent as `Bench`. 26 rows retired on evidence; 4 defect families → test-pass-fixes (2 still-fails
++ 2 new); cleanup id-diff exactly empty; Bench logged out. DOCS ONLY — nothing to deploy. The
+07-27b ENGINE half byte-checked LIVE on the fresh join (`edhaWatchEntryLevel`,
+`_edhaLifeClearBusy`, `chainBounded`, `edhaOwnerListQueue` all in the served blob); Ben's host
+GM client was connected the whole run, making the two-client rows meaningful.**
+
+### The 07-27b re-test verdicts (5 defects)
+
+1. **Triple-drop harvest — PASS, retired.** Exact staging (cascade armed, adversary trigger
+   dropped, TWO 1-HP adversary victims inside one 2d8 tick): ONE cascade card ("13 spirit to V1,
+   V2"), THREE ✨ recover cards, ledger "(1/2)"→"(2/2)"→"the oldest fades — you sustain at most
+   2", two newest kept, no re-detonation. `chainBounded` holds at the table.
+2. **2bW-12 Adaptive Mutation — PASS, retired.** Pre-cost refusal on a mutated target ("nothing
+   spent", no chooser, no dialog); the belt driven on the REAL stale-chooser case (two live
+   choosers → pick one → the other's click posts "the earlier pick stands" and disables); a
+   clicked chooser self-disables to "✓ applied"; combat delete cleared the flag and re-offered.
+3. **2bW-13 Apex Form — PASS, retired, WITH both GM clients connected.** Combat delete minted
+   exactly ONE injury card + ONE injury item; flags swept; no other scene reset doubled anything
+   all run (the one-applier family held everywhere).
+4. **2bW-15 Surgical Precision — STILL FAILS, differently.** The graze branch now EXISTS and the
+   console path fired it ("21 vs PHY 45: graze — no condition is removed") — but the SHEET path
+   at PHY 45 rolled 21 and still posted the SUCCESS cleanse (fail-open), and the console note
+   quoted the PREVIOUS use's test (its own d20 was 25). Inference: the decider races its own
+   use's `_edhaLastRoll` capture — absent → fail-open; a prior TTL-fresh one → consumed
+   off-by-one. Sheet and console disagree; next test-pass-fixes input.
+5. **Chaos sweep — HALF STILL FAILS.** After combat delete: canvas bearer's statuses/markedBy
+   cleared ✓ and `trigRound` unset on every bearer ✓ (both new halves that work) — but
+   `lists.omens` survived raw AND logically (the next place read "(2/2)", the spread refused "at
+   your cap of 2") and the OFF-CANVAS bearer kept omen status + markedBy. Since trigRound's NEW
+   sweep ran, the applier was on 07-27b code — the ledger-unset and directory-actor halves of
+   `edhaClearChaosState` are what fail (inference: the new branch bails before the owner unset).
+
+### Fate (15 retired; 2 new defects, 1 blocked, 1 partial) + Sovereignty (all 8 retired)
+
+Row-level evidence lives in the two checklist section blocks (2026-07-27c). Highlights: the
+priority Fate scene reset cleared BOTH ledger keys/templates/Regions/AE/markedBy/sceneOnce with
+nothing doubled; document-formula edits drove real rolls three times (Snare flat 7, Inevitable
+flat 5, plus stepped weapon dice d8/d10/d4 proving die-step reads); Sovereignty's pair talents
+are genuinely entry-data (shared `pairId`, `onPairHit`, extend-once flag observed mutating).
+NEW defects for test-pass-fixes: **(a) the snare trigger-Region double-fires card+roll on every
+token-movement entry** (walk INTO/THROUGH and `displace` alike; 2 ms apart, SAME author `Bench`
+— one-client double-event, damage applies once; command-click and placement springs post once);
+**(b) Weave the Thread's post-cost picker never appears** (2 Inv charged then silence — no
+dialog in a 250 ms DOM sample, no card, no annotation, no refund, no console error; the <2
+veto works; blocks 2bX-9). Residual: **`tempHp` survives every scene reset** (three trees'
+sweeps, three combat deletes — Bulwark {2}, Edict {2}, Favor {15} all persisted while everything
+else cleared).
+
+### Rulings-batch sightings (Ben's — new this run, added to the standing batch)
+
+- **Snare placement onto an occupied square springs INSTANTLY** — the card says "the first enemy
+  to enter or pass through"; standing there when it lands is neither. This also makes Foreknown
+  Strike's centre-spring permanently unable to catch a creature (nobody can stand in a live
+  snare). Recommended default: placement under a creature ARMS without springing.
+- **Edict's failed-attack THP rider swept "17 ally(ies)"** — every friendly bench token in White
+  range got a tempHp write. Per-design wording ("your allies in White range"), but the width is
+  worth a look at a real table.
+- **Restrained "until the start of your next turn" never expires out of combat** — extends the
+  07-26k out-of-combat-scope characterization (sighting, not a new defect).
+- Cross-talk extensions: Ben's campaign **Corvaine adversaries' "Break" reaction cards fired on
+  bench victim drops** (scene-wide watch scope); Shared Conviction / Concordant Presence / Voice
+  of Authority offers interleaved all run — all fresh event-driven offers, per the 07-27b triage.
+- Cosmetic: Ordained's place card never verbalizes the eviction; Inevitable Snare's card grammar
+  ("the snares on Snare #1 is inevitable"); Bulwark's turn-start card says "Temp HP 2" without
+  naming Bulwark (the flag source does).
+
+### World hygiene + operating notes (run 6)
+
+- Cleanup id-diff vs the start snapshot: **exactly empty** across
+  actors/scenes/combats/macros/items/tables/tokens/walls/regions/templates. The 23 roster tokens
+  stay placed; Ben's campaign combat untouched; the run-1 orphan Combat Construct left alone.
+  Bench chat can be flushed. The Edict tempHp writes hit ONLY bench actors (verified — no
+  campaign/protected actor carried the flag) and were swept manually, as were the Chaos-omen
+  leftovers the broken sweep stranded (noted: manual because of defect 5).
+- The engine-driven trigRound sweep cleared stale `trigRound` flags on three NON-bench actors
+  (Test, The Demolisher, The Vivisectionist) at combat delete — by design of the 07-27b fix
+  (scene-end reset of a per-round key), agent-triggered but engine-executed; flagged here for
+  visibility, nothing else outside the bench folders was written.
+- Runbook lessons (also in BENCH_NEXT_RUN): `items.getName("Sovereignty")` returns the PATH item
+  (tree name = capstone name) — filter `type === "talent"`; `displace` does NOT bypass snare
+  Regions; ApplicationV2 sheet actions need a real pointer-event sequence (synthetic `.click()`
+  is ignored); consume/roll dialog order varies per use — walk both kinds.
 
 **2026-07-27b — BENCH RUN 5'S FOUR DEFECTS FIXED + the Chaos-sweep triage (test-pass-fixes). One
 commit per defect, root causes VERIFIED in code (hook → handler → write) — two of the run's
