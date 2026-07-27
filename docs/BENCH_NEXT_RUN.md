@@ -95,9 +95,11 @@ work. Record per the skill: passing rows retire with one-line evidence, fails ge
 notes, feel/canvas rows stay ⚑, blocked rows say BLOCKED-ON-DEPLOY. **Scope your end-of-run cleanup
 to an id-diff against your OWN start snapshot** — run 4's sweep ended exactly empty (7 actors,
 7 tokens, 1 Region, 0 walls, 0 combats, all created by that run, all deleted); keep it that way.
-The 23 roster tokens stay placed, and the run-1 orphan `Combat Construct` token is gone (it was
-run 4's own summon, cleaned up). **Log out at the end** (`game.logOut()`) and confirm Bench is
-selectable on /join.
+The 23 roster tokens stay placed. The orphan `Combat Construct` token from run 1 may still be on
+the Playtest Map — **leave it for Ben** (run 4's "it's gone" claim was RETRACTED: its start
+snapshot captured only token ids, its end diff showed `tokensMissing: 0`, so what it deleted was
+its own Forge Construct summon, not the orphan). **Log out at the end** (`game.logOut()`) and
+confirm Bench is selectable on /join.
 
 Finish with the dated handoff delta (next letter after the current top one), dashboard rebuild,
 gates (`python`, never `python3`; no `;`-chaining; never pipe a gate through `tail`), ONE pushed
