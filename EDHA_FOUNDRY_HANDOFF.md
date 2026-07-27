@@ -2,7 +2,13 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, **COMPLETED 2026-07-26 (pass AA)**: **the ratchet list is EMPTY — 221 → 0 across twenty-seven passes.** Every tree is clear, all six marker ledgers have migrated, and `scripts/name-keyed-allowlist.json` stays in the repo with an empty `talents` list *on purpose* — lint pass 7 still guards against REGROWTH, which is the half of the ratchet that matters from here on. ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **ALL SIX marker LEDGERS have migrated** (`covenants` 07-24u; `edicts` 07-25 pass V; `remains` 07-25 pass W; Fate's `snares` 07-25 pass X; Destruction's `charges` 07-26 pass Y; Fate's `ordained` 07-26 pass AA — the point-bound ones fail OPEN through H3's reconcile by design). There is no flat marker-list flag left in the engine. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-27c** (BENCH RUN 6 —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-27d** (BENCH RUN 6'S
+FIVE DEFECTS FIXED — both attempt-2 items landed with verified mechanisms, and TWO of run 6's
+labeled inferences were wrong in mechanism: Surgical Precision decided one-behind
+*deterministically* (the system rolls a skill_test talent's damage BEFORE its test), and Weave the
+Thread was never an engine bug (the picker rendered — the bench harness was blind to the engine's
+only AppV1 window). ALL ENGINE-ONLY, no pack rebuild in the batch; 248 tests green. Byte-check
+`edhaSnareSpringGate` + `edhaCleanseArmMode` after the sync.) Prior: **2026-07-27c** (BENCH RUN 6 —
 the 07-27b re-tests + Fate + Sovereignty, executed live: **26 rows retired on evidence** (3
 re-tests incl. the triple-drop harvest and Apex Form's one-injury under two GM clients, 15 Fate
 rows incl. the priority scene reset, and the ENTIRE 8-row Sovereignty section — the pair-coupling
@@ -67,6 +73,104 @@ the Red pilot, executed live by an agent session joined as `Bench`: 16 rows reti
 1 FAIL root-caused (Shockwave Slam's weapon-hit trigger surface), 4 cross-tree observations,
 and the agent-bench runbook hardened with the v13 operating lessons. Docs + setup-script fix
 only; nothing to deploy.)
+
+**2026-07-27d — BENCH RUN 6'S FIVE DEFECTS FIXED (test-pass-fixes; the two attempt-2 items
+landed with verified mechanisms). One commit per defect, every root cause VERIFIED before
+touching anything — two by reading the installed system source, two by a SHORT READ-ONLY
+diagnostic join as `Bench` (plus one controlled repro on the bench actor, state restored
+exactly, Bench logged out after) — and TWO of run 6's labeled inferences were wrong in
+mechanism: Surgical Precision was not racing its capture (the ordering is FIXED — damage rolls
+before the test, so it decided one-behind deterministically), and Weave the Thread was NOT an
+engine bug at all (the picker rendered; the bench harness was blind to AppV1 windows).
+ALL ENGINE-ONLY (`module-src-sync` + F5; byte-check `edhaSnareSpringGate` + `edhaCleanseArmMode`
+in the served blob); NO pack rebuild in this batch. 248 tests green (7 new pinned cases across
+four files, incl. a mutation-checked drive of the real Chaos sweep).**
+
+### Bug root causes (one bullet per cause; commits one per defect)
+
+1. **Surgical Precision (2bW-15, attempt 2): the decider ran at the WRONG POINT — the system
+   rolls a skill_test talent's damage BEFORE its test** (`c4d8f71`, ENGINE-ONLY). Verified in the
+   installed system source (index.js ~7246: for a non-attack skill_test talent with damage,
+   `use()` awaits `rollDamage` and only then the activation-type branch's `this.roll`). So the
+   07-27b damageRoll-time decider could never see the current use's test: an empty capture slot
+   fail-opened (run 6's sheet cleanse at PHY 45, own d20 21 arriving after), and a prior use's
+   still-TTL-fresh capture (TTL is 120 s) was consumed one-behind (the console "21 vs PHY 45"
+   under an own d20 of 25). Deterministic, not a race. Now the damageRoll fire only ARMS the
+   decision (rule dials + the target captured while the use's targeting is live) and it resolves
+   when the actor's OWN matching test arrives on the roll hooks, read straight off the hook args
+   — no shared slot, no consume lifecycle. `edhaCleanseArmMode` (pure, pinned) picks
+   immediate / consume-back (the attack path's ms window — rollAttack rolls the test first) /
+   arm; a cancelled use's arm is overwritten or TTL-expires.
+2. **Chaos sweep (attempt 2): the run-6 dead halves were an ABORT — the only deleteCombat clear
+   with unguarded per-actor awaits** (`cb333f2`, ENGINE-ONLY, mutation-checked). Death's clear
+   wraps every toggle/unset in its own try/catch; the 07-27b Chaos body only wrapped the flag
+   unsets. All ~17 scene clears launch concurrently off one deleteCombat, so a single rejection
+   (the proven core shape: `toggleStatusEffect{active:false}` → `deleteEmbeddedDocuments` on an
+   AE a concurrent sweep already deleted — no missing-id tolerance) aborted the remaining canvas
+   loop AND both later halves via the outer catch — exactly the observed signature, and the only
+   mechanism consistent with hooks being listener-isolated while the trigRound sweep (same
+   client, same storm) ran fine. Now the omens-ledger unset runs FIRST, every await carries its
+   own guard, and failures `console.warn` WITH the actor's name so run 7 can name any residual
+   thrower. `tests/chaos-sweep.test.js` drives the REAL sweep through a rejecting-toggle
+   interleaving; stripping the guards fails it exactly like the bench (verified by mutation).
+3. **Snare trigger-Region double-fire: v13 fires tokenEnter AND tokenMoveIn for ONE movement
+   entry, and the ledger stale-check reads before the first spring's queued consume lands**
+   (`b3f66a1`, ENGINE-ONLY). The run-6 inference confirmed — it is the SAME double-event the Civ
+   fortified Region already debounces (`_edhaCivEnterGuard`, comment dated pre-2bV). Fixed at the
+   consumable, not per caller: `edhaFateSpringSnare` now opens with an in-flight per-snareId
+   guard (`edhaSnareSpringGate`, pure + pinned) released in `finally` — every spring path
+   (Region event, Foreknown click, insta-spring, Thread resolve) shares the idempotence, no time
+   window, and a failed spring stays retryable.
+4. **Weave the Thread (2bX-8/2bAA-2): NOT an engine bug — the picker rendered; run 6's harness
+   was blind to AppV1 windows** (`92aad9c`, ENGINE-ONLY hardening; reclassified
+   works-as-designed / bench-driving artifact). A controlled live repro on the run-6 engine
+   (Bench — Fate, two planted squares, real `item.use()` → consume → 2 Inv charged) rendered the
+   link picker every time, after every upstream link was verified live: rule on the prepared
+   document, handler registered, `fireEvent` reaching the executor, served blob byte-identical.
+   The picker was the engine's only AppV1 window on a runtime path (`div.app.window-app`, no
+   `<dialog>` element) — run 6's V2-tuned DOM sampling never saw it, and the "swallowed" 2 Inv
+   is the unanswered open picker (cancel refunds; navigating away orphans). Both AppV1 dialogs
+   (the link picker + Order's prohibition picker) are now DialogV2-first with the V1 body as
+   fallback — the harness sees them and the flows survive v16's AppV1 removal. **2bX-9
+   unblocks.**
+5. **`tempHp` survives every scene reset: the one transient with NO scene-end clear anywhere**
+   (`b31e234`, ENGINE-ONLY). Grep: a getter, a setter, the absorption hook and the GM socket
+   relay — no deleteCombat site; the flag predates the sweep family. Determinable, not a ruling:
+   every grant surface is combat/scene-scoped by its card (Death Ward and Edict of the Fallen
+   say "for the scene" outright; Bulwark/Bear Witness are per-round combat grants; the
+   victory-surge and Favor riders are in-combat watches — no card implies persistence). The key
+   joined the generic sceneOnce/bonusTally/armOnce/trigRound sweep behind the one-applier gate,
+   with WIDER enumeration on purpose (canvas token actors + directory — `edhaGrantTempHpCross`
+   lands on adversaries, summons and unlinked tokens the character loop never sees), each unset
+   its own guard. Out-of-combat grants clear only when a combat ends — the family's existing
+   semantic; flagged on the checklist row in case the table wants a rest-based clear instead.
+
+### New REUSABLE primitives
+
+- **`edhaSnareSpringGate(inflightSet, id)`** — pure in-flight gate for any consumable whose
+  trigger can double-fire before its consume settles; release in `finally`.
+- **`edhaCleanseArmMode({isSkillTest, defId, backRoll, now, wantSkill})`** — the arm-vs-decide
+  choice for ANY "compare the use's own test" watcher: never decide at damageRoll time for a
+  skill_test activation; consume a back-capture only inside the ms attack window.
+- **The DialogV2-first convention** — no NEW AppV1 windows on runtime paths (harness-invisible
+  now, dead at v16); `edhaZoneLinkMarkers` + `edhaPickProhibition` are the worked examples
+  (DV2.wait + `btn.form.elements`, V1 fallback kept).
+- **The sweep-isolation rule** (extends 07-27b's one-applier rule): a deleteCombat clear guards
+  EVERY await individually and `console.warn`s failures with the actor's name — one rejection
+  must never starve the rest of a sweep. Chaos is the worked example; Death already complied.
+
+### Known limits / couldn't self-verify (no full bench session)
+
+- ⚑ All five fixes need Ben's `module-src-sync` + F5; byte-check `edhaSnareSpringGate` +
+  `edhaCleanseArmMode` in the served blob before the run-7 re-tests.
+- ⚑ The Chaos fix removes the abort CLASS; the specific run-6 rejecter could not be reproduced
+  post-cleanup (state was manually swept). If a warn names an actor at run 7, quote it — that is
+  the residual, and it is now contained to one actor's one call.
+- ⚑ Surgical's graze-note wording/whisper on the LIVE twin-damage flow, and the DialogV2 pickers'
+  look: engine-verified, table-feel not.
+- The diagnostic join wrote NOTHING outside Bench — Fate (two probe ledger entries + 2 Inv,
+  restored exactly; one system chat card, deleted; probe dialog closed; Bench logged out —
+  selectable on /join).
 
 **2026-07-27c — BENCH RUN 6 (Fate + Sovereignty + the 07-27b re-tests), executed live by the
 agent as `Bench`. 26 rows retired on evidence; 4 defect families → test-pass-fixes (2 still-fails

@@ -185,6 +185,15 @@ Insight) and §9o called them byte-identical. **They are not, and the difference
   hooks was retrofitted). A clear that CREATES documents (the apex injury) also guards against
   overlapping itself (`_edhaLifeClearBusy`) and unsets its trigger flag BEFORE the creating
   round-trip.
+- **A clear GUARDS EVERY AWAIT INDIVIDUALLY and names its failures** (07-27d — the sweep-isolation
+  rule, extending the one-applier rule above). All ~17 scene clears launch concurrently off one
+  `deleteCombat`, so an unguarded per-actor `await` lets ONE rejection abort everything after it in
+  that clear: Chaos's canvas loop, its directory loop AND its ledger unset died together on a
+  `toggleStatusEffect` → `deleteEmbeddedDocuments` throw (v13 has no missing-id tolerance, and a
+  concurrent sweep had already deleted the AE). Death already complied; Chaos is the worked fix.
+  Two corollaries: **unset the ledger FIRST** (the half whose survival becomes phantom cap pressure
+  must not be starved), and **`console.warn` failures WITH the actor's name** so the next bench run
+  names the culprit instead of reporting two dead loops.
 - **NOT in scope:** canvas objects (Fate's MeasuredTemplates, Destruction's Regions) stay with the
   placement handlers, and Knowledge's **Insight is a different shape** — a counted SINGLE bearer
   (0–5, transfer clears the old one), not N members. That is the proposed **H3b
@@ -1684,3 +1693,39 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
 - **Tempered Edge's ignore-deflect is a COMPENSATING instance** — the system's calc line will
   always show "− deflect"; the net equals base + rider. Never adjudicate `addTargetDeflect` off
   the calc line; the rider card states the pre-payment since 07-26l.
+
+## Test-pass 2026-07-27d (the bench-run-6 five)
+
+- **`edhaSnareSpringGate(inflightSet, id)`** — the pure in-flight gate for any CONSUMABLE whose
+  trigger can fire twice before its consume settles (pinned). **v13 fires `tokenEnter` AND
+  `tokenMoveIn` for ONE movement entry** — the Civ fortified Region had always debounced this
+  privately (`_edhaCivEnterGuard`); the fate snare had not, and its ledger stale-check read before
+  the first spring's queued consume landed, so both events found the snare live. Put the guard on
+  the CONSUMABLE (`edhaFateSpringSnare`), not per caller: every path (Region event, Foreknown
+  click, insta-spring, Thread resolve) then shares the idempotence, there is no time window, and a
+  failed spring stays retryable because the release is in `finally`.
+- **`edhaCleanseArmMode({isSkillTest, defId, backRoll, now, wantSkill})`** — the arm-vs-decide
+  choice for ANY watcher that compares "the use's OWN test" against something (pure, pinned).
+  **Never decide at `damageRoll` time for a `skill_test` activation:** the system's `use()` rolls a
+  non-attack skill_test talent's DAMAGE BEFORE its TEST (system `index.js` ~7246), so the current
+  use's test does not exist yet — an empty slot fail-opens and a prior use's TTL-fresh capture gets
+  consumed one-behind (both of Surgical Precision's run-6 symptoms, one deterministic cause, not a
+  race). The shape: the damage fire only ARMS (rule dials + the target, captured while targeting is
+  live) and the decision resolves when the actor's own matching test arrives on the roll hooks,
+  read straight off the hook args — no shared slot, no consume lifecycle. `consume-back` is only
+  for the ATTACK path, whose test rolls first, inside a millisecond window.
+- **DialogV2-first is now a convention, not a preference** — no NEW AppV1 windows on runtime paths.
+  An AppV1 window is a `div.app.window-app` with no `<dialog>` element, so it is **invisible to
+  V2-tuned bench DOM sampling** (which is how Weave the Thread was reported as a silent no-op when
+  the picker was rendering and simply sitting open unanswered — and an unanswered picker refunds
+  nothing, while Cancel does). AppV1 also dies at v16. `edhaZoneLinkMarkers` +
+  `edhaPickProhibition` are the worked examples: `DialogV2.wait` + `btn.form.elements`, V1 body
+  kept as fallback.
+- **`flags.edha-content.tempHp` clears in the generic scene sweep** (07-27d — it had a getter, a
+  setter, an absorption hook and a GM socket relay, and NO deleteCombat clear anywhere: it predates
+  the sweep family, so a stale grant silently absorbed damage in the next scene). Every grant
+  surface is combat/scene-scoped by its card, so this is convention, not a ruling. Its enumeration
+  is **deliberately wider than the sweep's character loop** — canvas token actors AND the directory
+  — because `edhaGrantTempHpCross` lands on adversaries, summons and unlinked token actors that the
+  character loop never sees; each unsets its own guard. Out-of-combat grants clear only when a
+  combat ends: the family's existing semantic.

@@ -45,6 +45,34 @@ first (they OVERRIDE older advice):**
   screenshots while the pane is hidden — record quoted card text + console asserts. Tem parinaem
   and Soggy Bottom are untouchable.
 
+**FIRST: re-test the 07-27d fix batch (bench run 6's five defects, ALL ENGINE-ONLY).** The
+orchestrator syncs the engine before your join, so **byte-check the served blob for
+`edhaSnareSpringGate`, `edhaCleanseArmMode` and `_edhaCleansePending` before trusting any of these**
+— if they are absent, say so and record the five as NOT-DEPLOYED rather than failing them. The rows
+carry full re-test recipes in the checklist; the short form:
+
+1. **Snare spring double-fire — FIXED.** Walk INTO a snare → exactly ONE spring card, ONE roll, ONE
+   Hexmark offer; walk THROUGH → same; two snares in one path → each once; Foreknown click and
+   Thread resolve still post once each.
+2. **Surgical Precision (2bW-15) — FIXED, attempt 2.** Run 6's two symptoms were ONE deterministic
+   bug (the system rolls a skill_test talent's damage BEFORE its test, so the old decider always
+   read one behind). Drive BOTH paths back-to-back at PHY 45: each use's graze note must quote
+   **that** use's own d20, with no cleanse; phy 1 → cleanse card; a CANCELLED roll dialog → no card,
+   and the next use decides on its own roll.
+3. **Chaos sweep (c) — FIXED, attempt 2.** The run-6 dead halves were an ABORT, not a bail: one
+   unguarded rejection killed the rest of the clear. Re-stage exactly as run 6 (Omens on a canvas
+   bearer + an OFF-CANVAS directory bearer + one inflicted Isolated → combat delete): `lists.omens`
+   unset on the owner (a fresh place reads "(1/2)"), the off-canvas bearer loses omen + markedBy,
+   statuses clean. **If anything still fails, quote the named `console.warn`** — the fix makes any
+   residual name its own culprit.
+4. **Weave the Thread (2bX-8/2bAA-2) — NOT an engine bug; the picker was rendering.** It was the
+   engine's only AppV1 window (`div.app.window-app`, no `<dialog>`), invisible to run 6's V2-tuned
+   DOM sampling, and the "swallowed" 2 Inv was the picker sitting open unanswered. Now DialogV2.
+   Re-test: 2 squares → use → consume → the V2 link dialog appears; pick two → `linked: true` on
+   both + the link card; Cancel → "cost refunded". **2bX-9 is UNBLOCKED** — run it.
+5. **`tempHp` scene reset — FIXED.** Grant Temp HP on a PC, an adversary victim and an off-canvas
+   ally → combat delete → all three `tempHp` flags gone, next-scene damage hits HP directly.
+
 **Deploy state — read before believing any bug.** The **07-27b ENGINE half is CONFIRMED LIVE**
 (run 6 byte-checked the served blob: `edhaWatchEntryLevel`, `_edhaLifeClearBusy`, `chainBounded`,
 `edhaOwnerListQueue`; the triple-drop harvest, Adaptive Mutation's gate and Apex Form's
@@ -59,18 +87,16 @@ Construct rows (2bV-13/14/15, 2bP-8/9) sit closest to the deity-pack gap — rea
 Construct's `system.type`/creatureType fresh before judging any Construct row, and if the mint
 is still "" treat construct-classification symptoms as BLOCKED-ON-DEPLOY, not new bugs.
 
-**Open defects from run 6 — do NOT re-diagnose, do NOT fix mid-run; they are queued for
-test-pass-fixes.** If Civilization or Power rows cross them, record the crossing: (1) **zone
-trigger-Regions double-fire card+roll on token-movement entry** (one client, damage applies
-once) — Bastion's enter-trigger (2bV-11) is the SAME surface family; if its save/impact posts
-twice on one entry, cite the run-6 snare defect rather than opening a new family; (2) **Weave
-the Thread's post-cost picker never appears** (Fate) — if any Civ/Power picker dialog (Trade
-Routes' arrival click, Siege toggles) goes silent post-cost, note the resemblance; (3)
-**Surgical Precision sheet-vs-console disagree + stale `_edhaLastRoll` capture** — any
-skill_test talent whose outcome branch reads wrong, check whether the quoted total matches THAT
-use's d20 before recording; (4) **Chaos sweep's `lists.omens` + off-canvas halves still dead**;
-(5) **`tempHp` flags survive every scene reset** — sweep your own tempHp writes at cleanup.
-Also still open: Shockwave Slam's weapon-hit trigger surface (run 1), 2bW-15, 2bW-1's two unrun
+**What the 07-27d fixes mean for THIS run's own sections** — the five are fixed, not open, so
+Civ/Power rows that cross them are now free corroboration rather than known-broken territory:
+Bastion's enter-trigger (2bV-11) rides the SAME v13 double-event surface the snare guard now
+closes — if its save/impact posts **once** per entry, say so, that is independent evidence for the
+fix; if it posts twice, that is a NEW row (the guard is per-consumable, and Bastion is a different
+consumable). Civ/Power picker dialogs (Trade Routes' arrival click, Siege toggles) are worth an
+explicit "the dialog appeared" note — the two converted AppV1 windows were the only ones, but a
+third would look exactly like run 6's false no-op. And when asserting Investiture of Command's
+keeps-higher Temp HP (2bU-8), the tempHp residual no longer masks it.
+Still genuinely open: Shockwave Slam's weapon-hit trigger surface (run 1), 2bW-1's two unrun
 halves, and the rulings batch (Ben's): Raise-Dead-keeps-its-Remain, Fault-Line-spares-allies,
 Walking-Ruin-indicator, mutation riders on a nat-1 graze, Unweaving's dispellable Omen marker,
 roster cross-talk park — plus run 6's: **placement-under-a-creature insta-springs Snares**
@@ -129,7 +155,8 @@ carries pre-existing stale flags (`accord`, `aggro`, `bpHits`, `coordRound`) —
 Finish with the dated handoff delta (next letter after the current top one), dashboard rebuild,
 gates (`python`, never `python3`; no `;`-chaining; never pipe a gate through `tail`), ONE pushed
 commit titled `Bench run 7 (Civilization+Power): X retired on evidence, Y fails ->
-test-pass-fixes`, and rewrite `docs/BENCH_NEXT_RUN.md` with the run-8 prompt (suggested:
-**Knowledge + Order + Heroic**, or the test-pass-fixes batch first if Ben has run it — the fail
-list is six families deep at this point: Shockwave Slam, Surgical's capture race, the Chaos
-sweep halves, the Region double-fire, Weave's picker, the tempHp residual).
+test-pass-fixes`, and rewrite `docs/BENCH_NEXT_RUN.md` with the run-8 prompt: **Knowledge + Order**
+(the marathon's last two deity trees), noting that the run after it is the FINAL SWEEP —
+Heroic, the Engine-wide remainder, the adversary sections, and every leyline row a fix unblocked.
+Whatever this run fails feeds one more test-pass-fixes pass before that sweep; the only family
+carried the whole marathon is Shockwave Slam's weapon-hit trigger surface (run 1).
