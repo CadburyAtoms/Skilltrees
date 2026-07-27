@@ -2,7 +2,12 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, **COMPLETED 2026-07-26 (pass AA)**: **the ratchet list is EMPTY — 221 → 0 across twenty-seven passes.** Every tree is clear, all six marker ledgers have migrated, and `scripts/name-keyed-allowlist.json` stays in the repo with an empty `talents` list *on purpose* — lint pass 7 still guards against REGROWTH, which is the half of the ratchet that matters from here on. ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **ALL SIX marker LEDGERS have migrated** (`covenants` 07-24u; `edicts` 07-25 pass V; `remains` 07-25 pass W; Fate's `snares` 07-25 pass X; Destruction's `charges` 07-26 pass Y; Fate's `ordained` 07-26 pass AA — the point-bound ones fail OPEN through H3's reconcile by design). There is no flat marker-list flag left in the engine. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-26k** (BENCH RUN 3 —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-26l** (the BENCH-RUN-3
+EIGHT, fixed — every root cause verified in code before touching anything: 5 engine-only fixes (F5),
+1 mixed (engine F5 + authored green PACK REBUILD), 1 data-only (adversaries PACK REBUILD — Herding
+Antlers had NO rule at all), and Tempered Edge re-classified **works-as-designed** (the calc line
+hides the deflect compensation; the card now explains it). 226 tests green; both pack rebuilds
+QUEUED for Ben — nothing was built into the live module.) Prior: **2026-07-26k** (BENCH RUN 3 —
 Black + Green + all the 07-26j re-tests, executed live: **40 rows retired on evidence, 8 defects
 root-caused → test-pass-fixes**, and BOTH 07-26j deploy halves CONFIRMED live at the table. Docs
 only; nothing to deploy.) Prior: **2026-07-26j** (bench run 2's
@@ -17,6 +22,113 @@ the Red pilot, executed live by an agent session joined as `Bench`: 16 rows reti
 1 FAIL root-caused (Shockwave Slam's weapon-hit trigger surface), 4 cross-tree observations,
 and the agent-bench runbook hardened with the v13 operating lessons. Docs + setup-script fix
 only; nothing to deploy.)
+
+**2026-07-26l — THE BENCH-RUN-3 EIGHT, FIXED (test-pass-fixes). One commit per defect, root
+causes VERIFIED in code (hook → handler → write) rather than re-derived. ⚠️ MIXED DEPLOY: the
+engine fixes are F5-only after the next `module-src-sync`; the two data fixes need PACK REBUILDS
+(`foundry-build leyline` + ⟳ Sync Talents; `foundry-build adversaries` + ⟳ Sync Adversaries +
+re-drag the Fellstag) — both BLOCKED-ON-DEPLOY, queued for Ben, and NOTHING was built into the
+live module (a scratch-modroot build verified the adversaries fix).**
+
+### Bug root causes (one bullet per cause; commits one per defect)
+
+1. **Whispered Doubt posted no card — `edhaDrainFocus` was the ONE silent focus write**
+   (`b3d1652`, ENGINE-ONLY). The watch fired and the drain landed; but `edhaGainFocus` announces
+   and the drain helper never did (the `edha-focus` executor's inv/hea branches post their own
+   cards; foc delegates). The loss announcement now lives at the helper's tail, so EVERY drain
+   consumer (Whispered Doubt, Red's Shatter Focus, Hollow Command payloads) gains the card at the
+   shared cause, labeled by the rule's own source.
+2. **Puppeteer's whispered offer printed a literal `{name}` — the offer path never substituted**
+   (`933f24f`, ENGINE-ONLY). Only the accept-note path filled the template. At offer time the
+   name is the TRIGGER's subject (victim → anchor → owner); the picked creature does not exist
+   yet. One pure helper (`edhaFillName`, pinned) now serves both paths; the `edha-prompt-pick`
+   schema hints document `{name}` on prompt and label.
+3. **Cruel Step's straddle mis-stop — collinear-origin collision degeneracy, NOT a corner-based
+   origin** (`8a212b8`, ENGINE-ONLY, ⚑ canvas). Verified against v13 source: the engine ray
+   origin IS the token center (`Token#center` → `document.getCenterPoint`), refuting the bench's
+   corner hypothesis. The real mechanism: with the mover's center sitting on the wall line (the
+   staged straddle at x=5156), the sweep behind `testCollision` degenerates around a collinear
+   origin and returns a spurious closest-hit on a lane the backend reports clear — the exact case
+   core guards in `Token#getMovementAdjustedPoint` (±1px offsets for "edges collinear with the
+   point"). Core resolves the ambiguous side by movement HISTORY; an engine slide knows its
+   INTENT, so `edhaComputeMove` starts the test ray 2px along the direction of travel. Walls
+   genuinely ahead still block. ⚑ Residual: travel near-PARALLEL to the straddled wall can still
+   round onto the line; bench run 4 re-tests the x=5156 case.
+4. **Mender's Instinct — the sweep said "ally" and enforced nothing** (`b713e01`, MIXED:
+   engine F5 + authored green PACK REBUILD). (4a) The victim's token must now share the owner
+   token's disposition — unknown positions fail CLOSED (the watch-dispatch precedent). (4b) The
+   owner sweep was `game.actors` world-wide; owners now need a token on the scene. **Judged a
+   determinable bug, not the queued out-of-combat ruling:** you cannot be "in Attunement Range"
+   from the directory sidebar (The Vivisectionist case); nothing added keys on `game.combat` —
+   the combat-gating ruling stays Ben's, untouched. (4c) The authored rule's `note` pasted the
+   whole description onto the card; emptied so the engine's tight who-dropped-to-what line shows.
+   Plus: `edha-hp-threshold` grew an authorable `rangeColor` gate (the card says "an ally in
+   Attunement Range"; Mender's authors green) — enforced via `edhaAllyInAttune`.
+5. **The "No Healing" block gated only applyDamage — every rule-driven heal path bypassed it**
+   (`f1aa75d`, ENGINE-ONLY). The hp-threshold click heals via `edhaRunTriggerEffect`'s direct
+   hea write; `edhaCrossHeal`/`edhaHealActor` carry the `edha-focus` 'hea', regrowth, Shared
+   Burden, pulse and pick heals the same way — none pass through applyDamage. Family fix at the
+   shared cause: **`edhaHealCutGate`** (strictest mark wins, announces once, names the mark's
+   own `byName`) guards `edhaCrossHeal` + the trigger heal branch; `edhaHealCutFactor` is now a
+   thin read of the shared `edhaHealCutInfo` (pinned). Drop-to-1 preventions (Death Ward, Raise
+   Dead, Unbreakable Line via `bypassHealCut`) stay consistently UNGATED — rulings batch.
+6. **Herding Antlers (Fellstag) had NO rule at all — the 07-26j sweep was RIGHT to skip it**
+   (`8917cbb`, DATA — PACK REBUILD + ⟳ Sync Adversaries + re-drag, BLOCKED-ON-DEPLOY). Not a
+   builder bug: `advItemDoc` promotes on an `edha-def-test` rule read off the document (never a
+   name), and this ability's events block did not exist — its italic line pointed at a DELETED
+   engine contest name-key. It now authors Drive the Prey's contest verbatim (green vs Survival
+   through the contest core; success → Slowed). Verified by a SCRATCH pack build: the compiled
+   item reads `skill_test/green` with both 16-char rules; validate-adversaries 0 issues.
+7. **`edhaAttackKind` read `system.range`, a field the DataModel strips — every meleeOnly/
+   rangedOnly gate was inert** (`be6b16d`, ENGINE-ONLY). The cosmere 2.1.0 discriminator is
+   `system.attack.type` ("melee"/"ranged", schema initial "melee") with `attack.range.value` as
+   the type-less tiebreak — verified against the system's `AttackingItemMixin` schema. Pinned:
+   5 regression cases, including the stripped legacy field.
+8. **Tempered Edge — WORKS AS DESIGNED; the bench row was a false positive** (`44a10ab`,
+   ENGINE-ONLY card text). Proven in code from both sides: the +deflect impact instance is pushed
+   in the SAME guarded branch that printed the card's "(+2)" clause, into the SAME list the wrap
+   hands to the original `applyDamage`; and the system applies deflect once to the summed
+   deflectable instances (`damageIgnore + max(0, damageDeflect − deflect)`). So "takes 17, calc
+   19 − 2" IS the mechanic succeeding: raw = base 8 + rider 9 + bump 2 = 19, −2 = 17 = base +
+   rider, deflect fully compensated. The fix is the case-study-§7 move — make the truth visible:
+   the rider card now states that the +N pre-pays the −N the system's calc line will show.
+   ⚑ The conclusion rests on the code-flow proof (the Slam's base roll was not directly logged);
+   run 4 confirms by comparing NET damage, not the calc line.
+
+### New REUSABLE primitives
+
+- **`edhaFillName(text, name)`** — the one `{name}` template fill (pure, pinned). Use it for any
+  card text carrying the placeholder; never re-inline the split/join.
+- **`edhaHealCutInfo(actor)` / `edhaHealCutGate(target, amount)`** — the shared No-Healing /
+  Healing-Halved read + gate. ANY new heal path that writes hea outside applyDamage MUST call the
+  gate (pure selection/arithmetic pinned). `edhaCrossHeal(actor, amount, {bypassHealCut})` is the
+  standard door; bypass is for drop-to-1 preventions only.
+- **`edha-hp-threshold` grew `rangeColor`** — authorable "ally must be in this colour's
+  Attunement Range" gate; blank keeps ally + on-scene gates only.
+- **The focus-drain announcement** — `edhaDrainFocus` now guarantees a loss card; no drain
+  consumer needs (or should add) its own.
+- **The straddle guard** — `edhaComputeMove`'s collision ray starts 2px along the travel
+  direction; any future engine move inherits it.
+
+### For Ben — NEW rulings-batch items (queued, NOT decided; the out-of-combat question stands as
+characterized in 07-26k, untouched)
+
+- **Does "cannot regain HP" stop drop-to-1 stabilization?** Today, consistently UNGATED: Death
+  Ward and Raise Dead (direct writes) and Unbreakable Line (explicit `bypassHealCut` for parity)
+  all still put a blocked creature at 1 HP. If you rule they should be blocked, it is a one-line
+  change per site.
+- **A fully-blocked heal still costs the click's resource** (the hp-threshold offer spends 1 Inv,
+  then heals 0 with the block card explaining). Convention says GM refunds, same as a mistargeted
+  Cruel Step — confirm or ask for a pre-click veto.
+
+### Known limits / couldn't self-verify (no Foundry session — the bench slot stays free)
+
+- ⚑ All six engine fixes are code-verified + gate-green only; bench run 4 re-tests each after the
+  orchestrator's `module-src-sync` (rows annotated in the checklist).
+- ⚑ Cruel Step: canvas-only fix; the near-parallel-travel residual is documented in-code.
+- ⚑ Mender's authored note/rangeColor + Herding Antlers: invisible at the table until their pack
+  rebuilds + syncs land (BLOCKED-ON-DEPLOY; re-drag the Fellstag after the adversaries rebuild).
+- ⚑ Tempered Edge: works-as-designed rests on code-flow proof; run 4 reads NET damage.
 
 **2026-07-26k — BENCH RUN 3 (Black + Green + the 07-26j re-tests), executed live by an agent
 session joined as `Bench`. 40 rows retired on evidence, 8 defects root-caused → test-pass-fixes,

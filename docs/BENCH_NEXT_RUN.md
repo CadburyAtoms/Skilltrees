@@ -25,17 +25,23 @@ a "double post" may be YOUR driving (run 3 proved one event → one card). Tem p
 Bottom are untouchable.
 
 **Deploy state (run 3 confirmed both 07-26j halves LIVE — do not re-prove them):** the dice fix
-and the adversary pack rebuild are on the table. No new deploy is pending unless the handoff's top
-delta says otherwise — check the letter above 07-26k before starting.
+and the adversary pack rebuild are on the table. **The run-3 eight are FIXED in 07-26l** — the
+engine six ride the next `module-src-sync` (verify it ran before trusting their re-tests; the
+canary: a Whispered Doubt drain posts a loss card), and TWO fixes are data-side, still
+BLOCKED-ON-DEPLOY (Mender's authored note/range → `foundry-build leyline` + ⟳ Sync Talents;
+Herding Antlers → `foundry-build adversaries` + ⟳ Sync Adversaries + re-drag) — do NOT fail
+their rows against a stale pack. Check the letter above 07-26l before starting.
 
-**Known-broken, do NOT re-diagnose mid-run (run 3 root-caused these → test-pass-fixes):**
-Whispered Doubt's silent card · Puppeteer's `{name}` offer · Cruel Step's wall-straddle mis-stop ·
-Mender's Instinct (no ally gate + WORLD-WIDE owner scope — expect "The Vivisectionist" to spam an
-offer on every half-HP crossing; ignore it, it's catalogued) · the "No Healing" block not gating
-hp-threshold heals · Herding Antlers dead on the Fellstag · `edhaAttackKind` reading a nonexistent
-field (every weapon reads MELEE — any rangedOnly/meleeOnly clause is untestable until fixed) ·
-Tempered Edge's ignore-deflect claim vs the calc line. Also still open from run 1: Shockwave
-Slam's weapon-hit trigger surface.
+**FIRST: re-test the run-3 fix batch (07-26l — rows annotated in the checklist, each stating its
+deploy prerequisite):** Whispered Doubt's loss card (2bI-1) · Puppeteer's filled `{name}` (2bJ-8)
+· Cruel Step at the x=5156 straddle (Black spot-checks, ⚑ probe the near-parallel residual once)
+· Mender's ally + on-scene gates (Green spot-checks — The Vivisectionist's SILENCE is the test;
+the tight card + range gate need the leyline rebuild first) · the heal-block on hp-threshold
+clicks (2bW-1) · `edhaAttackKind` ranged stand-downs (Engine-wide row + 2bU-9) · Tempered Edge
+re-read by NET damage, never the calc line (2bV-15 — adjudicated works-as-designed) · Herding
+Antlers only AFTER the adversaries rebuild + fresh re-drag (Green spot-checks). A fix that still
+fails goes back to test-pass-fixes with the quoted evidence — do not re-diagnose mid-run. Also
+still open from run 1: Shockwave Slam's weapon-hit trigger surface (genuinely unfixed).
 
 Then run the two sections end-to-end:
 

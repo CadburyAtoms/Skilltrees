@@ -981,7 +981,10 @@ pre-07-24r consumer did. Necrotic Cascade's corpse detonation is the first `enem
 - **`edhaApplyMove(tok, destCenter, maxFt, {gapPx})`** → `edhaComputeMove` (wall-collision clamp) →
   `edhaMoveTokenTo` (owner-direct or GM socket `move-token`). Push AWAY from an arbitrary origin by
   aiming past the victim along origin→victim (see `edhaUnnerveClick`, 07-12 — Unnerving Approach's
-  prompt-card push away from YOUR TARGET, not from the caster).
+  prompt-card push away from YOUR TARGET, not from the caster). **Straddle guard (2026-07-26l):**
+  the collision test ray starts 2px along the travel direction, so a wall the mover's own square
+  straddles (center collinear with the line — the degenerate-sweep false stop, bench run 3
+  defect 3) never stops the slide; walls ≥3px ahead still block.
 - **Prompt-card pattern** for pick-one-token effects: whispered `.edha-trigger-card` with per-candidate
   buttons carrying uuids in data attrs; a `renderChatMessageHTML` binder wires clicks; disable all
   buttons after one click (Beacon/Unnerve are the worked examples). Shared CSS (edha.css §H) makes
@@ -1394,7 +1397,9 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   Shrewd); Decisive Command + the self-add cards read it.
 - **`edhaDrainFocus(actor, n, source)`** — involuntary focus LOSS with Wary's Discipline
   reduction + the Predatory-Insight zero-check; tagged `edhaFocusWatch` (runs on the damage-
-  applying client — the Whispered Doubt write pattern).
+  applying client — the Whispered Doubt write pattern). **Announces the loss since 2026-07-26l**
+  (it was the one silent focus write — bench run 3 defect 1); drain consumers must NOT post
+  their own loss card.
 - **Opportunity credit** (`oppCredit` flag) — the four adder talents bank +1 Opportunity on use;
   `edhaOpportunityMenuWatch` cashes it on the next test (menu card names the source). Spenders
   stay `edha-opportunity-option` authored rules (event `edha-opportunity`).
@@ -1612,3 +1617,27 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
 - **H25 `edha-damage-react` `requireVictimInMyZone` + `action: "rally-zone"`** — Bonds of
   Community: fires on ANY side's drop inside your Foundations (summons never), grants THP +
   advantage to every ally standing in them; advantage still lands at 0 Temp HP.
+
+## Test-pass 2026-07-26l (the bench-run-3 eight)
+
+- **`edhaFillName(text, name)`** — THE `{name}` template fill (pure, pinned). Any card text
+  carrying the placeholder goes through it; never re-inline the split/join. Both prompt-pick
+  paths (offer AND accept note) use it; `edha-prompt-pick`'s `prompt`/`label` hints document
+  what `{name}` means on each card.
+- **`edhaHealCutInfo(actor)` / `edhaHealCutGate(target, amount)`** — the shared No-Healing /
+  Healing-Halved read + gate (strictest mark wins; the gate announces once, naming the mark's
+  `byName`). **Any heal path that writes `hea` outside applyDamage MUST call the gate** — the
+  standard door is `edhaCrossHeal(actor, amount, {bypassHealCut})`; bypass is ONLY for drop-to-1
+  preventions (Death Ward / Raise Dead / Unbreakable Line — whether the block stops stabilization
+  is a queued ruling). `edhaHealCutFactor` is now a thin read of the info (applyDamage wrap
+  unchanged). Pure selection/arithmetic pinned in tests/.
+- **`edha-hp-threshold` grew `rangeColor`** (+ the ally / owner-token-on-scene gates are
+  enforced in the sweep): the offer needs the owner ON the scene, the victim's token sharing its
+  disposition (unknown fails CLOSED), and — when authored — the ally inside the colour's
+  Attunement Range (`edhaAllyInAttune`). `includeSelf` skips the gates. The rule's `note` is ONE
+  tight line; blank shows the engine's who-dropped-to-what default (do not paste descriptions).
+- **`edhaAttackKind` reads `system.attack.type`** ("melee"/"ranged"; `attack.range.value` as the
+  type-less tiebreak) — the cosmere 2.1.0 weapon schema has NO `system.range`. Pinned.
+- **Tempered Edge's ignore-deflect is a COMPENSATING instance** — the system's calc line will
+  always show "− deflect"; the net equals base + rider. Never adjudicate `addTargetDeflect` off
+  the calc line; the rider card states the pre-payment since 07-26l.
