@@ -6019,7 +6019,22 @@ function edhaComputeMove(origin, aim, maxFt, movingTok = null) {
   let dest = { x: origin.x + dx / len * travel, y: origin.y + dy / len * travel };
   let collided = false;
   try {
-    const hit = CONFIG.Canvas?.polygonBackends?.move?.testCollision?.(origin, dest, { type: "move", mode: "closest" });
+    /* Straddle guard (2026-07-26l, bench run 3 defect 3). When the mover's own square straddles a
+     * wall — its CENTER sitting on/within rounding distance of the wall line (the bench staged
+     * exactly that against the Playtest Map's x=5156 wall) — the sweep behind testCollision
+     * degenerates around a collinear origin and returns a spurious "closest" hit on a lane the
+     * backend itself reports CLEAR ("moves 3 ft (stopped at an obstacle)"). The origin IS the
+     * token center (v13 Token#center → document.getCenterPoint — the bench's corner-origin guess
+     * is refuted in code); the degeneracy is the collinear origin, the exact case core guards in
+     * Token#getMovementAdjustedPoint ("edges collinear with the point" get a ±1px offset). Core
+     * resolves the ambiguous side by movement HISTORY; an engine slide knows its INTENT, so the
+     * test ray starts 2px along the direction of travel — a wall genuinely ahead (≥3px) still
+     * blocks, the wall under the token no longer participates. movedFt stays measured from the
+     * true origin. ⚑ residual: travel near-PARALLEL to the straddled wall can still round onto
+     * the line; not stageable from here — bench run 4 re-tests the x=5156 case. */
+    const nudge = Math.min(2, travel);
+    const torigin = { x: origin.x + dx / len * nudge, y: origin.y + dy / len * nudge };
+    const hit = CONFIG.Canvas?.polygonBackends?.move?.testCollision?.(torigin, dest, { type: "move", mode: "closest" });
     if (hit) { collided = true; dest = { x: hit.x, y: hit.y }; }
   } catch (e) { /* no movement backend → travel the full distance */ }
   // Occupied destination → step back toward the origin one grid square at a time until clear (R2).
