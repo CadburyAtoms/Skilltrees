@@ -242,7 +242,7 @@
             "type": "edha-focus",
             "op": "drain",
             "target": "victim",
-            "formula": "@skills.itm.rank"
+            "formula": "@skills.inm.rank"
           },
           "order": 0
         },
@@ -267,7 +267,7 @@
             "type": "edha-note",
             "icon": "🗡️",
             "whisper": "public",
-            "text": "the target loses <strong>@skills.itm.rank</strong> focus and its Reaction. <em>On a graze, halve the focus loss by hand — grazes are not engine-visible.</em>"
+            "text": "the target loses <strong>@skills.inm.rank</strong> focus and its Reaction. <em>On a graze, halve the focus loss by hand — grazes are not engine-visible.</em>"
           },
           "order": 2
         }
@@ -310,7 +310,7 @@
             "appliesTo": "any",
             "bonusFormula": "",
             "mode": "advantage",
-            "whenSkill": "itm",
+            "whenSkill": "inm",
             "whileStanceActive": true,
             "whenTargetIsolated": false
           }

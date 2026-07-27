@@ -771,7 +771,7 @@
             "icon": "📣",
             "whisper": "public",
             "whenOwnsTalent": "Rallying Shout",
-            "text": "You may revive an Unconscious ally. If the target is at 0 health it recovers its <strong>recovery die + @skills.ldr.rank</strong> health (roll the target's own die)."
+            "text": "You may revive an Unconscious ally. If the target is at 0 health it recovers its <strong>recovery die + @skills.lea.rank</strong> health (roll the target's own die)."
           },
           "order": 5,
           "id": "RouseRallying000"

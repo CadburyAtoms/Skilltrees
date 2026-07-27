@@ -137,7 +137,7 @@
             "count": 1,
             "formula": "1d(4 + 2 * @owned)",
             "ownedFrom": "Confident Command, Demonstrative Command, Shrewd Command",
-            "skill": "itm, lea, per"
+            "skill": "inm, lea, prs"
           },
           "order": 0,
           "id": "ConfidentCmdDie0"
@@ -797,7 +797,7 @@
           "event": "use",
           "handler": {
             "type": "edha-def-test",
-            "skill": "ldr",
+            "skill": "lea",
             "vs": "defense",
             "def": "spi",
             "requireTarget": true,
@@ -905,7 +905,7 @@
           "event": "use",
           "handler": {
             "type": "edha-def-test",
-            "skill": "ldr",
+            "skill": "lea",
             "vs": "defense",
             "def": "cog",
             "requireTarget": true,

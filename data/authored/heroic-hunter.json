@@ -678,7 +678,7 @@
           "event": "use",
           "handler": {
             "type": "edha-def-test",
-            "skill": "per",
+            "skill": "prc",
             "vs": "defense",
             "def": "cog",
             "requireTarget": true
