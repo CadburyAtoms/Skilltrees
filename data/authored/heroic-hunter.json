@@ -654,7 +654,7 @@
         "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Special Action\" aria-label=\"Special Action\">*</span></p><p>Observe a target then test Perception vs. Cognitive to learn their lowest attribute, lowest defense, or if their health, focus, or Investiture are below half.</p>"
       },
       "activation": {
-        "type": "utility",
+        "type": "skill_test",
         "cost": {
           "value": null,
           "type": "spe"
@@ -665,6 +665,7 @@
         "uses": null,
         "opportunity": null,
         "complication": null,
+        "skill": "prc",
         "attribute": "default"
       },
       "damage": {
