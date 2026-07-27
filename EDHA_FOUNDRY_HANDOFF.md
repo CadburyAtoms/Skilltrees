@@ -2,7 +2,114 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, **COMPLETED 2026-07-26 (pass AA)**: **the ratchet list is EMPTY — 221 → 0 across twenty-seven passes.** Every tree is clear, all six marker ledgers have migrated, and `scripts/name-keyed-allowlist.json` stays in the repo with an empty `talents` list *on purpose* — lint pass 7 still guards against REGROWTH, which is the half of the ratchet that matters from here on. ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **ALL SIX marker LEDGERS have migrated** (`covenants` 07-24u; `edicts` 07-25 pass V; `remains` 07-25 pass W; Fate's `snares` 07-25 pass X; Destruction's `charges` 07-26 pass Y; Fate's `ordained` 07-26 pass AA — the point-bound ones fail OPEN through H3's reconcile by design). There is no flat marker-list flag left in the engine. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-27q** (FIX PASS B of bench marathon 2 — **ALL THREE RUN-13 DEFECTS FIXED, ALL ENGINE-ONLY (⟳ sync + F5, NO rebuild), AND EVERY ONE OF THEM WAS A FAMILY.** 316 tests green.
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary.
+
+---
+
+## 2026-07-27r — BENCH RUN 14 (leyline + deity sweep; the marathon's last planned run). 7 rows retired on evidence, 2 new defects → test-pass-fixes, 1 fix-pass verdict DEFERRED on a stale client. DOCS-ONLY.
+
+Joined as `Bench` (`activeGM`, `isSelf`), world `edha`, system 2.1.0, canvas ready at 1280×720.
+**Engine hash-verified before anything ran:** the served `register-skills.js`, cache-busted and
+CRLF→LF-normalised, SHA-256 `232dde3620976361e3e0b82a7af82d99d8726808182aafca1e523fc19d8891e0` —
+byte-identical to `HEAD:module-src/scripts/register-skills.js`. `bench-setup-console.js` ran with
+**zero ⚠ lines** (16 PCs / 7 targets), idempotent on re-check (87 actors / 52 tokens unchanged), and
+the roster's weapon fixtures asserted real (`Sidesword` melee + `Shortbow` ranged).
+**`Bench` and `Gamemaster` were both connected for the whole run** — the two-GM test condition.
+
+### ✅ RETIRED ON EVIDENCE (7)
+
+- **2bAA-8 — Phantom Double's refund.** Both positives and the load-bearing negative. Out of blue
+  Attunement Range (Bench — Green at 80 ft) from **4/4** → refusal card, no copy, Investiture
+  **4/4 unchanged**; repeated from **3/4** → **3/4 unchanged**. Those are exactly the two runs that
+  failed in opposite directions (4→2, 3→4) at run 13. **NEGATIVE: a successful cast still charges** —
+  in range (Bench — Black at 30 ft) from 4/4 the copy appeared (`phantomDouble` actor + token, HP 1,
+  belief sweep "4 onlooker(s) tested — 3 taken in, 1 see through it") and Investiture read **2/4**.
+  The ordering fix holds and has not over-fired.
+- **2bR-17 — Callthief's Counterpoint** (FRESH pack import as `Bench Adv — Callthief`): rolled the
+  Callthief's **Deception** and printed "Counterpoint: **48 vs Bench Target — Undefended's DC 25 —
+  SUCCESS**", negated the influence and left the target **Disoriented** (asserted on the document,
+  effect + status), for Focus. ⚠️ My first drive printed "**DC ?**" and still returned SUCCESS — that
+  was **my harness**, not the engine: the rule is `edha-def-test {vs: "prompt-dc"}` and my dialog
+  walker clicked through the DC prompt with an empty field. Typing a DC produced the correct card.
+  Recorded because it is a false-FAIL shape any future run can hit.
+- **2bF-17 — Surecat's Redirect Momentum** (FRESH import): "Redirect Momentum: **18 vs Bench Target —
+  Undefended's ATH 7 — SUCCESS**" — rolls Blue, rolls the TARGET's Athletics, prints the same
+  `Blue N vs ATH M` shape as the PC talent 2bF-3, plus its documented "no payload rule — resolve at
+  the table" half.
+- **2bZ-10 — Dread Presence, both unbenched adversary copies**, attributed individually with a clean
+  negative. Only 3 owners existed on the scene (Bench — Black at 90 ft, out of its 60 ft, so no
+  confound). **Cragdrake Alpha isolated at 12 ft** (Elder parked 115 ft away) → move **blocked**,
+  toast "Dread Presence: Bench Target — Undefended is Weakened and cannot willingly move closer to
+  Bench Adv — Surecat." **Doubled Elder isolated at 25 ft** (Alpha parked 105 ft away) → **blocked**,
+  same toast. **CONTROL — both parked >100 ft** → the identical move **succeeded** (x 9300→9600) with
+  **no toast**. Each copy vetoes off its own rule and the range gate is real.
+- **2bS-6 Pack Hunter · 2bS-7 Scent the Weak · 2bS-15 Reknit Form** — three of the six unrun Green
+  talents. Evidence per talent in the checklist's Green row.
+
+### ❌ NEW DEFECTS → test-pass-fixes (2)
+
+1. **The hazard-Region flag vocabulary is split in two, and `defeat-in-zone` only understands one
+   half.** `edhaPlaceHazard` (~L16173 — the `edha-place-hazard` handler behind **Pyre**, Walking
+   Ruin's trail rule and Fire the Wrack) stamps `flags.edha-content.{sourceItem, sourceOwnerUuid,
+   spreads}` with **no `terrain` object**; `edhaOwnedTerrainRegions` (~L14970) — the reader behind
+   `edhaTokenInOwnedTerrain` (which gates the entire `edha-zone-react {defeat-in-zone}` sweep) and
+   behind `edhaEnemiesInOwnedTerrain` — filters on `flags.edha-content.terrain.ownerUuid`. **So
+   Combustion Chain can never fire off a Pyre zone**, which is the canonical Destruction pairing.
+   Proved with a matched control rather than by reading: a victim dropped to 0 HP *inside* a Pyre
+   zone that was actively ticking it for 12 energy produced **0 cards, 0 Regions**; the same victim,
+   talent and owner, dropped inside a **Walking Ruin trail** patch — placed by `edhaDropHazard`,
+   which *does* write `terrain.ownerUuid` — fired at once. The other three writers
+   (`edhaPlaceHazardRegionGM` ~L10184, the burst path ~L9863, green terrain ~L14952) all use the
+   `terrain.ownerUuid` shape, so `edhaPlaceHazard` is the lone outlier. Never benched before, which
+   is why 27 passes missed it.
+2. **`edhaDropRuleIndex()` is defined at L1939 and called from nowhere** — `_edhaRuleIndex` is built
+   once per handler type on first use and **never invalidated for the life of the client**. Anything
+   added to the world mid-session (an imported adversary, a newly granted talent, a summon) gets no
+   automation from that handler type until an F5. Found the hard way: freshly imported adversaries
+   were invisible to `edha-move-veto` because my earlier token moves had already populated that
+   index; a page reload was needed before 2bZ-10 could run at all. At the table this is "the
+   adversary I just dragged in does nothing".
+3. *(carried, not new)* **2bAA-8's sibling row — the sidebar actor-delete — still orphans.** See the
+   deferred section below; it is a scope gap in the run-13 fix, not a stale client.
+
+### ⏸ FIX-PASS-B VERDICT DEFERRED — Ben's client has not reloaded (do NOT re-fix)
+
+The doubled-card half of the one-applier work **cannot be judged this run**, and that is a finding,
+not a failure. Every newly-gated site still posted twice (`Bench` + `Gamemaster`): the dissipates
+card, the barrier-destroyed card, the ignite card (plus 2 hazard Regions), and a
+`Actor "…" does not exist!` double-delete race. **But Ben's client is provably running pre-`f7ff7b3`
+code, and the proof is in the same events:** the recast break card, guarded by the *older, untouched*
+`game.user !== game.users?.activeGM` check, posted exactly **ONCE** (from `Bench`) — so his client
+computes `activeGM === Bench` and honours an activeGM guard; had it carried the new engine,
+`edhaDefBuffGmGate()` (same designation) would have suppressed its dissipates card too. Corroborated
+again by the Walking Ruin trail drop, activeGM-gated *before* this fix, which produced exactly **one**
+Region while every newly-gated site doubled. **My client posted exactly one card at every site.**
+→ Ben: F5 the Gamemaster client, then these rows re-run in minutes.
+
+### 🔎 Verified-in-passing (not rows)
+
+- The **wedge chain is real and its fix is exact**: one orphaned combatant made every subsequent
+  `createEmbeddedDocuments("Combatant", …)` throw `Cannot read properties of null (reading 'system')`;
+  deleting that single combatant un-wedged the tracker on the very next add.
+- **Weapon `use()` is hard-vetoed by the action economy out of combat** ("does not have enough actions
+  to use Sidesword!" → no roll, no card, no damage), while talent `use()` warns and proceeds anyway.
+  This blocks every on-hit row outside combat and is what stopped 2bW-1. New runbook lesson.
+- Barrier lifecycle passes end-to-end: click-place for 1 Inv → 6 HP actor + token + **4 walls**;
+  HP→0 removes all three; and **ending the encounter** with one standing removes all three too.
+
+### 🧹 World hygiene — ZERO drift
+
+Start snapshot captured ids, flags **and effects**. Five adversaries were imported FRESH from the
+pack as `Bench Adv — <name>` and all five deleted; every Region, Drawing, wall, token, combat,
+status, effect, flag and resource I touched was restored key-by-key (`unsetFlag` → wait → re-set)
+and re-diffed to **empty**: 87 actors / 52 tokens / 117 walls / 1 Region / 0 drawings / 0 templates,
+effect-diff `[]`, flag-diff `[]`, resource-diff `[]`. Ben's combat `BerbNeuXp4iKduef` was never
+touched and is the only combat. Nothing outside the bench folders was created, modified or deleted.
+Bench chat can be flushed at Ben's convenience.
+
+---
+
+Last update: **2026-07-27q** (FIX PASS B of bench marathon 2 — **ALL THREE RUN-13 DEFECTS FIXED, ALL ENGINE-ONLY (⟳ sync + F5, NO rebuild), AND EVERY ONE OF THEM WAS A FAMILY.** 316 tests green.
 
 **Bug root causes — written as causes, each re-derived from the installed source, not from the report.**
 

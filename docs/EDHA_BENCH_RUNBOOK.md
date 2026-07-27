@@ -423,6 +423,44 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   rather than an off-by-one. Vary the starting value: if the sign of the error flips, stop looking
   for arithmetic and start looking for ordering.
 
+## Operating lessons from run 14 (2026-07-27r — these OVERRIDE older advice where they conflict)
+
+- ❌ **A duplicate card with two GMs is NOT automatically a fix failure — find out which build the
+  OTHER client is running, and you can do it from your own socket.** Run 14 saw every newly-gated
+  site double and could still clear the fix, because a guard that predates the fix acts as a
+  **build fingerprint**: the recast break card is gated on the older `game.user !== game.users?.activeGM`
+  and posted exactly ONCE, which proves the other client computes the same `activeGM` and honours
+  that designation — so if it were running the new engine, `edhaDefBuffGmGate()` (which reads the
+  same designation) would have suppressed its copy too. **Before reporting any one-applier row,
+  find a site gated by the OLD mechanism and one gated by the NEW one, and fire both in the same
+  session.** Ben's client is often several deploys behind; an engine-only fix needs his F5.
+- ❌ **`edhaDropRuleIndex()` is never called — the rule index NEVER invalidates.** Anything you add
+  to the world mid-session (an imported adversary, a granted talent, a summon) is invisible to any
+  handler type whose index was already built. **Import your adversaries FIRST, then reload the page,
+  then test** — or you will record a false FAIL. Persist your snapshot through the reload with
+  `sessionStorage` (`__benchSnap`, `__imported`) and re-install the notification hook after; a
+  reload wipes every in-page global.
+- ❌ **Weapon `use()` is hard-vetoed by the action economy out of combat; talent `use()` is not.**
+  "does not have enough actions to use <weapon>!" produces **no roll, no card, no damage** and looks
+  exactly like a dead talent — whereas the identical warning on a *talent* is cosmetic and the talent
+  proceeds. Every on-hit / rider row therefore needs the actor in a live combat with actions. This
+  is what stopped 2bW-1.
+- **Long token moves need `{teleport: true}`, and out-of-bounds parks fail SILENTLY.** A plain
+  `{animate: false}` update is *pathed* by v13 movement and lands partway (run 14 got 8860 for a
+  requested 19200) while still resolving without error. Read `_source` back and **assert the landed
+  coordinates** before trusting any staging. Also check `scene.dimensions` first — `sceneX/sceneY`
+  are non-zero (1900/3050 on the Playtest Map), so a "far corner" park at y=3000 is off-scene.
+- **The dialog walker is not enough — engine pickers also post as CHAT-CARD buttons.** Reknit Form's
+  injury picker renders as a `button.edha-reknit-btn` inside `ol.chat-log li.chat-message`, which a
+  dialog-only walker never sees; the row reads as "posted a card and did nothing". Walk BOTH surfaces.
+  And an empty prompt field is a false-FAIL generator: Counterpoint printed "DC ?" and still returned
+  SUCCESS purely because the walker clicked Resolve with the DC box blank — **fill inputs before
+  clicking, then re-drive**.
+- **To isolate WHICH of two identical talent copies fired, park the other one out of range and add a
+  both-parked control.** The veto toast names the talent and the approached ally but **not the owner**,
+  so attribution is impossible without isolation — and the negative (both parked → move succeeds, no
+  toast) is what turns two positives into a real result.
+
 ## Known limits
 
 - ❌ **RESOLVED AS UNFIXABLE (07-26i): there is no "no written Cognitive/Spiritual defense" creature.**
