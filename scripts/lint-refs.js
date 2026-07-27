@@ -26,6 +26,9 @@
  *  14. Every item carrying an `edha-def-test` rule can actually ROLL the test it gates, with the
  *      SAME skill (the MUTE-DEF-TEST family: six adversary abilities in 07-26j, then Sharp Eye on
  *      the talent surface in 07-27n — H1 waits for a roll that never comes; see the pass).
+ *  15. No hook that WRITES the world is gated on a raw `isGM` (the TWO-GM family: hooks fire on
+ *      every client, so per-GM means twice at Ben's table — Apex Form's double injury, the 07-27b
+ *      2bW-13 sweep, and bench run 13's double-posted card plus the two more its sweep found).
  *
  * Zero dependencies. Exit 0 clean, 1 on any error. Runs in CI next to validate.js; add it to
  * the local gates when a change touches authored events or engine name-based automation.
@@ -1078,6 +1081,90 @@ engine.split("\n").forEach((lineText, i) => {
       }
     }
   } catch (e) { /* reported by the earlier adversaries.json pass */ }
+}
+
+/* --- pass 15: a hook that WRITES the world must not be gated on a raw isGM (the two-GM family) ---
+ *
+ * `updateActor`, `deleteToken`, `combatTurnChange` and friends fire on EVERY connected client. A
+ * handler gated on `game.user.isGM` therefore runs once PER CONNECTED GM — and Ben's table runs
+ * `Gamemaster` plus the agent-bench `Bench`, so "per GM" is two. Everything the handler does then
+ * happens twice: the card posts twice, the Region is dropped twice, the actor is deleted twice
+ * (which is a server-side "Actor does not exist" race, not a harmless no-op).
+ *
+ * This family has now bitten four times across two marathons — Apex Form's double injury (07-27b,
+ * misdiagnosed first as a double MOMENT), the 2bW-13 sweep that moved ~70 sites onto
+ * `edhaDefBuffGmGate()` in the same pass, and bench run 13's double-posted "dissipates" card, whose
+ * own sweep found two more (a duplicated ignite Region, and the summon last-token actor delete).
+ * Each time the FIX was one character of thought and the COST was a live table seeing double, so it
+ * is gated rather than swept again.
+ *
+ * The rule: if a hook body references `isGM` and performs a world write, it must also carry the
+ * one-applier gate (`edhaDefBuffGmGate()` — or a hand-written `activeGM` check, which several
+ * older sites still use and which is equivalent).
+ *
+ * `render*` hooks are exempt, and that is not a loophole: injecting a button into a sidebar or a
+ * sheet is PER-CLIENT work, and gating it to one GM would hide the button from every other GM.
+ * Their `.update(`-shaped calls are canvas/DOM refreshes, not database writes.
+ *
+ * Delimitation: this engine registers every hook as a top-level statement (`Hooks.on(` at column 0),
+ * so a body runs from that anchor until its parens balance again — counted on the STRING-BLANKED
+ * copy, with escaped `\(`/`\)` (regex literals) neutralised first. The scan then asserts it
+ * delimited a plausible number of hooks, so if the style ever changes the pass fails loudly instead
+ * of silently checking nothing (the pass-12 "the extraction rotted" convention).
+ */
+{
+  const codeLines = blankStringsAndComments(engine).split("\n");                        // strings blanked: no false hits from card HTML
+  const nameLines = blankStringsAndComments(engine, { keepStrings: true }).split("\n"); // for the hook NAME only
+  const parenDelta = (l) => {
+    const s = l.replace(/\\[()]/g, "  ");
+    return (s.split("(").length - 1) - (s.split(")").length - 1);
+  };
+  // A world write is a database write. Canvas/UI refreshes and in-memory Map/Set deletes are not.
+  const RECEIVER_EXEMPT = new Set(["perception", "canvas", "ui", "app", "element", "sheet", "window"]);
+  function worldWrite(body) {
+    if (/ChatMessage\.create/.test(body)) return "ChatMessage.create";
+    if (/(?:create|delete)EmbeddedDocuments\(/.test(body)) return "an embedded-document create/delete";
+    if (/(?:create|delete)Documents\(/.test(body)) return "a document create/delete";
+    if (/toggleStatusEffect\(/.test(body)) return "a status-effect toggle";
+    if (/\.(?:setFlag|unsetFlag)\(/.test(body)) return "a flag write";
+    if (/game\.settings\.set\(/.test(body)) return "a world-setting write";
+    if (/\bedha[A-Za-z]*GM\(/.test(body)) return "a GM-side write helper";
+    for (const m of body.matchAll(/([A-Za-z_$][\w$]*)\s*\??\.(update|delete)\(/g)) {
+      if (RECEIVER_EXEMPT.has(m[1]) || /^[A-Z][A-Z0-9_]{2,}$/.test(m[1])) continue;     // canvas refresh / Map.delete
+      return `a document ${m[2]}`;
+    }
+    return null;
+  }
+  let scanned = 0;
+  for (let start = 0; start < codeLines.length; start++) {
+    if (!/^Hooks\.(?:on|once)\(/.test(codeLines[start])) continue;
+    let depth = 0, end = -1;
+    for (let i = start; i < codeLines.length; i++) {
+      depth += parenDelta(codeLines[i]);
+      if (depth <= 0) { end = i; break; }
+    }
+    if (end < 0) {
+      err(`lint-refs pass 15: could not delimit the hook registered at register-skills.js:${start + 1} — ` +
+          `its parens never balance. Fix the scan before trusting this gate.`);
+      continue;
+    }
+    scanned++;
+    const body = codeLines.slice(start, end + 1).join("\n");
+    const name = (nameLines[start].match(/^Hooks\.(?:on|once)\(\s*"([^"]*)"/) || [])[1] || "";
+    if (name.startsWith("render")) continue;                              // per-client UI injection — see above
+    if (!/\bisGM\b/.test(body)) continue;
+    if (/activeGM|edhaDefBuffGmGate/.test(body)) continue;                // already one-applier
+    const what = worldWrite(body);
+    if (!what) continue;
+    err(`register-skills.js:${start + 1} — the "${name}" hook is gated on a raw isGM but performs ${what}. ` +
+        `That hook fires on every client, so EVERY connected GM runs it: Ben's table has two (Gamemaster + Bench), ` +
+        `and the write happens twice — bench run 13 measured one "dissipates" card posted twice, 1 ms apart. ` +
+        `Use edhaDefBuffGmGate() ("exactly one GM writes"), as ~70 sites already do.`);
+  }
+  if (scanned < 150) {
+    err(`lint-refs pass 15: only ${scanned} top-level hook registrations were delimited (expected 150+) — ` +
+        `the scan rotted; fix it before trusting this pass.`);
+  }
 }
 
 // --- report --------------------------------------------------------------------
