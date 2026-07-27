@@ -2,7 +2,10 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, **COMPLETED 2026-07-26 (pass AA)**: **the ratchet list is EMPTY — 221 → 0 across twenty-seven passes.** Every tree is clear, all six marker ledgers have migrated, and `scripts/name-keyed-allowlist.json` stays in the repo with an empty `talents` list *on purpose* — lint pass 7 still guards against REGROWTH, which is the half of the ratchet that matters from here on. ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **ALL SIX marker LEDGERS have migrated** (`covenants` 07-24u; `edicts` 07-25 pass V; `remains` 07-25 pass W; Fate's `snares` 07-25 pass X; Destruction's `charges` 07-26 pass Y; Fate's `ordained` 07-26 pass AA — the point-bound ones fail OPEN through H3's reconcile by design). There is no flat marker-list flag left in the engine. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-26j** (bench run 2's
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-26k** (BENCH RUN 3 —
+Black + Green + all the 07-26j re-tests, executed live: **40 rows retired on evidence, 8 defects
+root-caused → test-pass-fixes**, and BOTH 07-26j deploy halves CONFIRMED live at the table. Docs
+only; nothing to deploy.) Prior: **2026-07-26j** (bench run 2's
 two failure families FIXED — the v13 sync-dice bug in `edhaEvalSync` restoring 4 White talents
 (engine-only, F5) and the `advItemDoc` promotion gap restoring 6 adversary abilities (PACK REBUILD +
 ⟳ Sync Adversaries). 215 tests green.) Prior: **2026-07-26i** (BENCH RUN 2 —
@@ -14,6 +17,158 @@ the Red pilot, executed live by an agent session joined as `Bench`: 16 rows reti
 1 FAIL root-caused (Shockwave Slam's weapon-hit trigger surface), 4 cross-tree observations,
 and the agent-bench runbook hardened with the v13 operating lessons. Docs + setup-script fix
 only; nothing to deploy.)
+
+**2026-07-26k — BENCH RUN 3 (Black + Green + the 07-26j re-tests), executed live by an agent
+session joined as `Bench`. 40 rows retired on evidence, 8 defects root-caused → test-pass-fixes,
+one batch of rulings queued for Ben. DOCS ONLY — nothing to deploy.**
+
+### Deploy state: BOTH 07-26j halves CONFIRMED live (checked before trusting anything)
+
+- **Dice fix (engine, F5)**: the served `register-skills.js` carries `edhaFoldDieMath` /
+  `edhaRollDiceSync`, and the observable canary passed — Shield Wall reduced **5** then **3**
+  (fresh dice per trigger) on the live table. Every dice-amount row this run printed real numbers.
+- **Adversary def-test fix (pack rebuild)**: fresh pack reads show all six restored abilities
+  promoted — Counterpoint `skill_test/dec`, Redirect Momentum `skill_test/blue`, Sovereign of
+  Solitude `skill_test/black`, Grasping Vines + Territorial Instinct + Drive the Prey
+  `skill_test/green`. (Their live RUNS are still open rows — bench them on FRESH imports.)
+- ⚠️ **The bench tokens were GONE at run start** — zero `Bench*` tokens on the Playtest Map
+  (someone cleared them after run 2). Re-placed all 23 at ORIGIN (2100, 9000) via the setup
+  script's spot map and left them placed. The setup script was otherwise fully idempotent: zero
+  ⚠ lines, zero repairs. (Also noted: pack enumeration prints 10 CosmereItem validation warnings
+  — `canticle`/`kettavar`/`corvaine`/`sylvaneth`/`goldenport`/`thalendor`/`malcurr`/`lunavar`/
+  `ashkar`/`vorsk` "is not a valid choice" — world-hygiene noise, pre-existing items.)
+
+### Retired on evidence — 40 rows (one line each; pane was hidden all run, so evidence is quoted card text + console asserts, no screenshots)
+
+- **White (4)**: 2bR-9 (reductions 5/3, note names the talent, stands down below 2 adjacent
+  allies) · 2bQ-7 (offer "reduce by 3 (half [Die])", click spent 1 Inv, retro-reduction landed,
+  "up to 10 ft" move) · 2bQ-8 (offer on attacked adjacent ally, click → White test → "deals 8
+  spirit"; attacker-less/hazard damage offered NOTHING) · the "7-more-rules" tracking row (all
+  seven benched this run, below).
+- **Black (20)**: 2bI-2 (ally spend / out-of-range spend / at-0 extra all silent) · 2bI-3
+  (Athletics plain while armed → Discipline announced + `2d20kl`; Cognitive-only strict order)
+  · 2bI-5 (**the chain flag works** — Whispered Doubt's extra loss emptying the target credited
+  Predatory Insight, card posted, both empty-branches fired) · 2bI-7 (out-of-range refused
+  pre-cost with the toast; in-range Deception contest FAIL branch spent-no-status, SUCCESS →
+  Cannot Act) · 2bI-8 + 2bH-11 (retired as PROVEN-UNREACHABLE fail-open — runbook Known limits,
+  run-2 precedent) · 2bH-9 (plain Deception 19 vs SPI 14 → No Reactions; notably Hollow
+  Command's own talent-driven Deception contest does NOT double-trigger Extract Thought) ·
+  2bH-10 (no-target and a 12-miss both silent) · 2bB-10 (`1d20 + 4 + 1d8[Predatory Patience]`
+  on an ATTACK vs Weakened; plain Deception correctly no rider per the 07-12 appliesTo ruling;
+  formula bar clean) · 2bJ-7 (**the direction row**: B pushed 10 ft due east "directly away
+  from Bench Target — Adjacent A" — the TARGET, not the owner; roster listed only the target's
+  allies; 15-ft ally correctly excluded) · 2bJ-9 (with-focus / out-of-range / own-turn all 0
+  offers; after a round's accept the next offer is suppressed entirely) · 2bJ-14 (Dirgehound's
+  own rule: flat **5 ft** push, not rank-scaled, roster = target's ally) · 2bZ-1 (lean "pays 2
+  HP" card + separate advantage card; Athletics untouched; Black test `2d20kh` + consume card)
+  · 2bZ-2 ("banked 2 Reserve (2/3)" card + 🩸 Reserve bar on the sheet) · 2bZ-3 (the dialog
+  showed "Pay from Reserve instead (2/3 banked)"; ticking it paid from Reserve, "no Investiture
+  spent") · 2bZ-4 (Reserve prompt is a Yes/No dialog; accepting → "pays 1 from Reserve (Double
+  Dip — 1/3 left). No health lost: no Blood Price, nothing banked") · 2bZ-12 (lean summary;
+  ☠️ pulse counted ONLY the 3 visibles, "skipped 2 with an ally adjacent"; Weakened landed on
+  the isolated visible only; 🕵️ GM whisper carried "skipped 1 hidden, 7 behind a wall" —
+  staged with a bench wall verified via the sight backend) · 2bM-8 (two targets → cancelled,
+  NOTHING spent, whispered picker; click retargeted + re-used and the HP cost worked) · 2bM-10
+  (picker notes read "hits ONE creature" / "heals ONE creature") · 2bF-12 (Double-Dipped marker
+  + `markedBy` on an 18-vs-14 success; FAIL branch left nothing) · 2bZ-10's PC half + Dirgehound
+  copy (console moves vetoed IN PLACE with the toast; the row stays open narrowed to the
+  Cragdrake Alpha / Doubled Elder copies).
+- **Green (14)**: 2bS-17 (**the premise**: edited `PackPressBonus00.amountFormula` → flat 5 on
+  the document, next strike printed "+5 keen strike", restored) · 2bS-16 (Overgrowth stepped
+  "+1 Deflect" as a named AE; Life Surge's heal left it at +1 — `deflectStackMax` discriminates;
+  both talents' shared overflow-THP rule fired) · 2bS-2 ("takes 3 keen from dangerous terrain
+  (Thorn Field — Bench — Green)" on enter) · 2bS-5 (1 enemy plain, 2 plain, 3 → `2d20kh`,
+  Weakened → `2d20kl` not stomped; an earlier false-positive was Scent-the-Weak/target
+  contamination, itself correct) · 2bS-8 (**restored dice**: "+10 keen strike" = 2d8; window
+  card is the editable note; window expired at the round boundary) · 2bS-9 (solo silent in a
+  fresh round; co-attacked round "+2 keen (2 hunters)") · 2bS-10 (hidden attacker on an ally:
+  `1d20 + 2 - 2[Packmate's Warning (+2 defense)]`; owner-as-target unmodified) · 2bF-7
+  (Restrained, upkeep note on the FAIL line too, no timed expiry) · 2bF-8 (engine rolled the
+  foe's Survival — "6 vs SUR 6 — SUCCESS" → Immobilized) · 2bF-9 ("23 vs SUR 8" → Slowed,
+  move-away narrated) · 2bR-4 (offer card with "+5 Green modifier, 1 Inv" on the ally's
+  in-terrain attack; plain test silent) · 2bM-9 (picker, nothing spent; pick healed 17 = 2d8+5)
+  · 2bT-20 (both rider paths byte-identical to their 2bS rows) · **Green / Instinct is
+  takeable** (compiled tree: Pack Hunter = root {green 1, NO talent prereq}; Predator's
+  Instinct + Scent the Weak require pack-hunter (managed); column walks to Natural Order —
+  the session-0 mutual pair is dead in the live pack).
+- **Adversary (2)**: 2bAB-2 (Crownox Shield Wall applied by itself — "reduced by 1", calc
+  "5 - 1" — on a FRESH import, 3 unlinked ring tokens) · 2bAB-3 (the retaliate prompt posted BY
+  ITSELF from the damage, one per adjacent ring-mate; click ran White vs Spiritual through the
+  contest core and dealt "3 spirit" — absorbed 2-of-3 by the attacker's Warlord Temp HP, a
+  clean cross-talent interaction).
+- **All 7 restored 07-26j rules printed real numbers**: Pack Pressure +10 · Tempered Edge +9 ·
+  Withering Touch +12 · Predatory Strike +11 · Warlord's Advance +6/+9/+10 · Crownox Shield
+  Wall −1 · Crownox Retributive Guard 3 spirit. (Their host rows that carry OTHER open clauses
+  stay open, narrowed — see the checklist.)
+
+### The 8 defects, root-caused → test-pass-fixes (do NOT symptom-patch)
+
+1. **Whispered Doubt posts NO card, in or out of combat** — the extra loss applies silently
+   (2bI-1's mechanics otherwise all pass; Wary's reduction card even announces a loss no card
+   ever declared). Card-emission gap in the scene-watch payload.
+2. **Puppeteer's whispered offer prints a literal `{name}`** — template variable never
+   substituted; the public accept-card names the creature correctly, so it's the offer path only.
+3. **Cruel Step mis-stops on a wall the mover STRADDLES** — "moves 3 ft (stopped at an
+   obstacle)" against the Playtest Map's x=5156 wall while the move backend reports the lane
+   clear; clean-lane 10 ft and occupied-square 0 ft both correct. Engine-move ray origin looks
+   corner-based, not center-based.
+4. **Mender's Instinct, decomposed (run 1's report was TWO owners, not a double post)**:
+   (a) `edha-hp-threshold` has NO ally/disposition gate (`includeSelf` is its only filter) — a
+   hostile crossing half HP drew the offer and the click healed it 10 HP for 1 Inv;
+   (b) the watch fires for every rule-owner WORLD-WIDE — the second card each event came from
+   "The Vivisectionist", a campaign actor with no token on the scene; no presence/range gate;
+   (c) the card prints the full description instead of the tight one-liner. Green's own
+   oncePerRound DID hold.
+5. **The Withering Touch "No Healing" block doesn't gate `edha-hp-threshold` heals** — a
+   Mender click healed a blocked target 10 HP; the block guards the applyDamage path only.
+6. **Herding Antlers (Fellstag) was MISSED by the 07-26j `advItemDoc` sweep** — on a FRESH
+   import from the REBUILT pack it reads `utility`, no `activation.skill`, `system.events`
+   EMPTY: 2 Inv charged, the promised Drive-the-Prey contest never runs. Same family as the
+   fixed six; one ability left behind.
+7. **`edhaAttackKind` reads a field that doesn't exist** — cosmere 2.1.0 weapons have NO
+   `system.range` (stripped by the DataModel); the discriminator is `system.attack.type`
+   ("melee"/"ranged") + `system.attack.range`. A weapon set to `attack.type: "ranged"` still
+   fired Warlord's melee-only rider and consumed the arm → every meleeOnly/rangedOnly gate is
+   currently inert (Warlord's, Withering Touch's ranged-skip, Spurs/Venom stand-downs). Zero
+   table exposure today (no ranged weapon in the compendia) — but it's a one-field fix.
+8. **Tempered Edge's "ignores deflect" claim vs the calc** — the card printed "+9 energy and
+   the hit ignores … deflect (+2)" but the application read "takes 17. Damage Calculation:
+   19 - 2". Either the ignore covers only the energy rider (card overclaims) or it didn't wire.
+
+### For Ben — ONE batch of rulings (the out-of-combat question, now fully characterized)
+
+- **Scene-scope watches fire with no combat running** (the standing run-1 question, seen
+  everywhere this run) — and the characterization is now sharp: **any focus decrease counts as
+  a spend, including GM bookkeeping edits** (dropping a fixture 4→0 armed Coercive AND credited
+  Predatory Insight); **every rule-owner on the scene watches everything** (The Outlaw — a
+  parked campaign token — armed Coercive on a bench fixture from ~45 ft, unplayed); **an
+  adversary's own ability Focus cost is taxed by enemy watches** (the Dirgehound's 1-Focus
+  Unnerving Approach fed Bench — Black's Coercive from 45 ft); **HP-threshold watches go
+  world-wide, even off-scene** (The Vivisectionist, defect 4b); **out of combat the
+  per-round ledgers never reset** (Coordinated Hunt counted a stale hunter from hours earlier
+  on a "solo" hit; in combat the round boundary cleans it correctly). Recommended default:
+  gate scene/turn-keyed watches on an ACTIVE combat containing the owner, and tag engine
+  bookkeeping writes so GM edits don't read as spends — but the ruling is yours.
+- **2bI-3 card text** stays enemies-only (verified live); say if you'd rather widen the engine.
+- Carried ⚑ observations, each verified live this run and awaiting only your call: 2bI-4
+  (single-slot `nextTestMod` confirmed on the actor) · 2bI-6 (Wary reduced the extra loss to 0,
+  with a card) · 2bJ-10 (declining no longer burns the round budget — but each ignored USE still
+  charges its Investiture) · 2bF-12's second-caster overwrite (shape confirmed, cross-caster
+  not staged) · Dread Presence toasts name the nearest ally SCENE-WIDE, campaign tokens included
+  ("Frostbinder", "The Forgemaster").
+- **Rank-3 Black Attunement Range measured at 60 ft** (the ☠️ pulse card names it) — flagging
+  because staging assumed 30.
+
+### Run hygiene
+
+Start/end id-diff is EMPTY: everything this run created (Dirgehound Pack, Fellstag, Crownox
+Ring imports + 6 tokens, one Combat Construct summon, 2 terrain Regions, 1 bench wall, 1 bench
+combat, 3 loaner items, run-added AEs) was deleted; fixtures restored to canonical spots with
+full resources. Ben's open combat untouched (round 1); the run-1 orphan Combat Construct token
+left alone per instructions; the 23 roster tokens left placed at ORIGIN (2100, 9000). Bench
+chat can be flushed. `game.logOut()` confirmed — Bench is selectable on /join.
+
+---
 
 **2026-07-26j — BENCH RUN 2'S TWO FAILURE FAMILIES, FIXED. 10 talents/abilities restored;
 ⚠️ MIXED DEPLOY: the engine half is F5-only, the adversary half needs a PACK REBUILD
