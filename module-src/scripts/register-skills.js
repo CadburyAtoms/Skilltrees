@@ -10372,9 +10372,12 @@ Hooks.on("deleteCombat", () => { try { if (edhaDefBuffGmGate()) void edhaClearCh
  *     Deflect + +tier vital (the `apexForm` flag), adaptation DOUBLING (every reader checks the
  *     flag — 07-16c Ben E19), and the Injury when it ends (edhaClearLifeState's apex branch).
  *   • Surgical Precision — the base skill_test heal is the system's; the cleanse is its
- *     `edha-cleanse` {trigger: success-damage-roll} rule, read by the damageRoll watcher below —
- *     fires only on the NON-graze branch, exactly as before. Test vs Physical (a DEFENSE) → base
- *     pipeline, NOT the contest core.
+ *     `edha-cleanse` {trigger: success-damage-roll} rule, read by the damageRoll watcher below.
+ *     ⚠ 07-27b (bench run 5, 2bW-15): the watcher DECIDES the outcome itself — captured test vs
+ *     the rule's `def` (phy) — because the system binds NO DC to a skill_test talent's d20 and
+ *     `roll.options.graze` only tells the twin damage rolls apart (it is the attached graze
+ *     sub-roll on the main fire, absent on the graze twin — the old check posted the cleanse on
+ *     every use). Test vs Physical (a DEFENSE) → base pipeline, NOT the contest core.
  *   • Lifeline — `edha-redirect` {direction: intercept, watchFlag: lifeline, linkOnUse,
  *     chooseAmount, takeType: spirit, healFormula}: use links the creature; the generic intercept
  *     sweep offers the up-to-half absorb (Spirit ignores Deflect) + [T][D] heal-back, once/round.
@@ -10662,18 +10665,46 @@ async function edhaLifeCleanseClick(ev) {
   } catch (e) { console.error("Edha Content | cleanse click failed", e); }
 }
 /* Any talent carrying an edha-cleanse rule with `trigger: success-damage-roll` posts its cleanse
- * card for the CURRENT TARGET when its own damage roll is NOT a graze (the system's success
- * branch). Was the name-keyed Surgical Precision hook (2bW). */
+ * card for the CURRENT TARGET when the use's own TEST beat the rule's defense — decided HERE,
+ * because the system decides nothing (2026-07-27b, bench run 5, 2bW-15):
+ *   • `roll.options.graze` never meant "the test missed". On the MAIN damage roll it holds the
+ *     ATTACHED graze sub-roll (system index.js ~6891 `roll.graze = grazeRoll` writes options.graze),
+ *     and the graze twin's own fire carries none — so the old check only told the twins apart,
+ *     and the cleanse posted on EVERY use, success or not.
+ *   • The system binds NO DC to a skill_test talent's d20 (dc: null on sheet AND console paths —
+ *     its only DC binding is the chat enricher), and full-vs-graze damage is a HUMAN toggle on
+ *     the damage card. There is no system success branch to ride. NOT a bench-driving artifact.
+ * So: capture the use's own test (the contest watcher's _edhaLastRoll, same skill as the item's
+ * activation), compare vs the target's `def` (default phy) via edhaDefTestOutcome — meet-or-beat
+ * posts the cleanse, under posts a whispered graze note and NO cleanse. Unreadable defense or no
+ * captured roll = FAIL-OPEN (post the cleanse), H1's documented convention.
+ * Was the name-keyed Surgical Precision hook (2bW). */
 Hooks.on("cosmere-rpg.damageRoll", (roll, item) => {
   try {
     const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
     const h = edhaRuleOf(item, "edha-cleanse");
     if (!h || (h.trigger || "use") !== "success-damage-roll") return;
-    if (roll?.options?.graze) return;                                  // graze = the "failure: heal only" branch — no cleanse
     const key = item.uuid ?? item.id ?? item.name, now = Date.now();
-    if (now - (_edhaSurgicalDebounce.get(key) || 0) < 600) return;     // one cleanse per use (dedupe the twin fire)
+    if (now - (_edhaSurgicalDebounce.get(key) || 0) < 600) return;     // one decision per use (the twin damageRoll fires)
     _edhaSurgicalDebounce.set(key, now);
     const target = Array.from(game.user?.targets ?? [])[0]?.actor ?? actor;
+    const defId = (h.def === undefined || h.def === null) ? "phy" : String(h.def).trim();   // absent (pre-07-27b rule) = phy; explicitly blank = no comparison
+    let ok = true, bar = null, total = null;
+    if (defId) {
+      const r = _edhaLastRoll.get(actor.id);
+      const want = String(item.system?.activation?.skill || "").trim();
+      const fresh = r && (now - r.ts) <= EDHA_CONTEST_TTL && (!want || !r.skill || r.skill === want);
+      const defVal = edhaReadDefense(target, defId);
+      if (fresh && defVal !== null && defVal !== undefined) {
+        total = Number(r.total) || 0;
+        ({ ok, dc: bar } = edhaDefTestOutcome(total, { vs: "defense", defValue: defVal }));
+      }
+    }
+    if (!ok) {
+      ChatMessage.create({ whisper: edhaWhisperIds(actor), speaker: ChatMessage.getSpeaker({ actor }),
+        content: `<p>🩺 <strong>${item.name}</strong> — ${total} vs ${target.name}'s ${defId.toUpperCase()} ${bar}: <strong>graze</strong> — no condition is removed (the graze heal stands).</p>` });
+      return;
+    }
     edhaPostLifeCleanseCard(actor, target, item.name, String(h.conditions || "").split(/[,\s]+/).filter(Boolean));
   } catch (e) { console.error("Edha Content | cleanse-on-success watcher failed", e); }
 });
@@ -16254,8 +16285,9 @@ function edhaRegisterNativeEventSystem() {
     source: "edha-content", type: "edha-cleanse",
     label: "Edha: Offer To Cleanse A Condition", description: "When this rule fires, you are offered a whispered card: one button per condition on each ally in range; clicking spends the costs and removes it. Put it on the Draw Mana event for Beacon of Stability's cadence — or set the trigger to 'success-damage-roll' for a heal-test talent whose cleanse fires only on the non-graze branch (Surgical Precision; that mode reads YOUR CURRENT TARGET and the conditions list, and the rule rides an 'Edha: Watch Rule' event).",
     config: { schema: {
-      trigger: new FF.StringField({ required: false, initial: "use", choices: choices("use", "success-damage-roll"), label: "When it fires", hint: "use = when this rule's event fires (Beacon). success-damage-roll = this talent's own NON-GRAZE damage roll (the system's success branch) — the cleanse card posts for your current target (Surgical Precision). 2bW." }),
+      trigger: new FF.StringField({ required: false, initial: "use", choices: choices("use", "success-damage-roll"), label: "When it fires", hint: "use = when this rule's event fires (Beacon). success-damage-roll = when this talent's own use SUCCEEDS: the engine captures the test you rolled and compares it against the defense below (the system binds no DC to a skill_test talent's d20, so the engine decides) — success posts the cleanse card for your current target, a graze posts a no-cleanse note (Surgical Precision). 2bW; outcome decided by the engine since 07-27b." }),
       conditions: new FF.StringField({ required: false, blank: true, initial: "", label: "Only these conditions", hint: "Comma-list of status ids, blank = every condition present. Surgical Precision: weakened,disoriented,slowed. 2bW." }),
+      def: new FF.StringField({ required: false, blank: true, initial: "phy", choices: choices("", "phy", "cog", "spi"), label: "Success = your test vs this defense (trigger = success-damage-roll)", hint: "The captured test must meet or beat the CURRENT TARGET's defense for the cleanse to post; under it is a graze and nothing is removed. Unreadable defense or no captured roll fails OPEN (the cleanse posts). Blank = no comparison — always posts. Surgical Precision: phy. 2026-07-27b (bench run 5, 2bW-15)." }),
       rangeColor: new FF.StringField({ required: true, initial: "white", choices: choices("white", "blue", "black", "red", "green"), label: "Attunement Range colour (trigger = use)" }),
       visibleOnly: new FF.BooleanField({ required: false, initial: false, label: "Only allies you can see (trigger = use)" }),
       costs: new FF.StringField({ required: false, blank: true, initial: "", label: "Costs on click", hint: "Comma-list of resource:amount, e.g. 'inv:1'. Spent when you CLICK, so an ignored card costs nothing." }),

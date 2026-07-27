@@ -430,11 +430,12 @@
       "events": {
         "SurgCleanse00000": {
           "event": "edha-watch-rule",
-          "description": "Life (Anaveth). 2bW — the cleanse as a rule (was the name-keyed damageRoll hook): the base skill_test heal (2×[T][D] hit / [T][D] graze) is the system's; this rule fires on the talent's own NON-graze damage roll (the success branch) and posts the cleanse card for your current target — Weakened / Disoriented / Slowed, pick one. Test vs Physical (a DEFENSE) → base pipeline, contest-exempt.",
+          "description": "Life (Anaveth). 2bW — the cleanse as a rule (was the name-keyed damageRoll hook): the base skill_test heal (2×[T][D] hit / [T][D] graze) is the system's; the engine captures the Blue test this use rolled, compares it against the target's `def` (Physical — the system binds no DC to a skill_test talent's d20, so the engine decides; 07-27b, bench run 5 2bW-15), and on success posts the cleanse card for your current target — Weakened / Disoriented / Slowed, pick one. A graze posts a no-cleanse note. Test vs Physical (a DEFENSE) → base pipeline, contest-exempt.",
           "handler": {
             "type": "edha-cleanse",
             "trigger": "success-damage-roll",
             "conditions": "weakened,disoriented,slowed",
+            "def": "phy",
             "rangeColor": "blue"
           },
           "order": 0,
