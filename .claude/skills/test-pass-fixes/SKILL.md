@@ -109,6 +109,24 @@ Discipline:
 - **Re-litigate "manual by nature".** If a row touches a talent previously declared manual, ask:
   can I *name the specific hook* now? If yes it's buildable (CASE_STUDIES §4: Dread Presence's
   `preUpdateToken` veto). The "name the hook" test from the authoring skill is the arbiter.
+- **A ROOT-CAUSED bench report is still a hypothesis.** An agent bench run states its cause with
+  confidence and is often right about the *symptom* and wrong about the *mechanism*. Across the
+  2026-07-26/27 marathon, four of them were: Cruel Step's "corner-based ray origin" (the origin was
+  already the token centre — verified in v13 source); Apex Form's "clear fires twice" (it was two GM
+  *clients*, one applier each); Surgical Precision's "races its own capture" (the ordering is fixed —
+  the system rolls a skill_test talent's damage *before* its test, so it decided one behind, every
+  time); and Weave the Thread's "post-cost no-op" (the picker rendered — the harness was blind to an
+  AppV1 window). Following any of those would have shipped a wrong fix. **Re-derive the mechanism
+  from the source — the installed cosmere system at
+  `C:\Users\benhe\AppData\Local\FoundryVTT\Data\systems\cosmere-rpg`, and Foundry's own code — before
+  touching anything**, and say in the delta where you diverged from the report.
+- **Suspect the DEAD FIELD before the dead logic.** A gate that silently never fires is more often
+  reading a field the cosmere DataModel does not define than it is mis-reasoning: the write resolves
+  with no error, the read is `undefined`, and the talent is skipped in silence. Three instances in
+  one marathon — `system.range` on weapons (real: `system.attack.type`), `system.customType` on
+  actors (real: `system.type.{id,custom}`), `system.count` on ActiveEffects (real: `system.stacks`).
+  `scripts/lint-refs.js` passes 11 and 12 now gate this for engine paths and authored ids
+  respectively; if a fourth shape appears, extend the gate rather than only fixing the instance.
 
 Label every row with one of: **stale-deploy** · **text-drift** (say which side is canon) ·
 **engine-bug** · **wrong-trigger-semantics** · **design-gap** (mechanic missing entirely) ·
@@ -150,14 +168,40 @@ For each root cause, in this order:
 
 ## Phase 6 — Gates (every commit)
 
+Run them **individually**, and read each exit code:
+
 ```bash
 node --check module-src/scripts/register-skills.js
 node scripts/validate.js
-python3 .claude/skills/leyline-tree-authoring/audit.py <tree>     # exit 0; run for EVERY touched tree
+node scripts/lint-refs.js
+node tests/run.js
+node scripts/build-dashboard.js --check
+node scripts/build-canon-codex.js --check
+node scripts/build-player-primer.js --check
+python tests/audit_parser_test.py
+python .claude/skills/leyline-tree-authoring/audit.py <tree>     # exit 0; EVERY touched tree
 ```
 
-`validate-packs.js` needs Ben's compiled LevelDB packs — skip locally, note the deferred rebuild.
-If a fix spans trees (a shared primitive), run `audit.py` for every tree whose talents it touches.
+Three rules about *how* you run them, each of which has already let a failure through:
+
+- **`python`, never `python3`.** python3 is not on Ben's PATH, so `npm run gates` always exits
+  non-zero here and the python gates get skipped by anyone who trusts it. Run them individually.
+- **Never chain gates with `;`** — it swallows the exit code that decides.
+- **Never pipe a gate through `tail`, `head`, or `Select-String`.** The pipe masks the real exit
+  code; three separate sessions have shipped or nearly shipped on a gate they only *looked* at. If
+  you want quiet output, redirect to null and read `$LASTEXITCODE` — don't filter it.
+
+`validate-packs.js` / `validate-adversaries.js` need compiled LevelDB packs. **Don't skip them for
+a data change** — build into a scratch dir instead, which works with Foundry running and never
+touches the live module:
+
+```bash
+EDHA_MODROOT=/some/scratch/dir node scripts/foundry-build.js adversaries
+```
+
+Then run the validators against that. This is how the marathon verified every pack-rebuild fix
+without a deploy. Note that grepping the compiled `.ldb` files proves nothing either way — LevelDB
+compresses, and a positive control returns zero hits too; read the pack back with `inspect-pack`.
 
 ## Phase 7 — Leave the trail
 

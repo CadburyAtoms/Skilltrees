@@ -22,6 +22,17 @@ running (if `http://localhost:30000` doesn't answer, stop and ask).
    Delete nothing pre-existing; bench-created combats/walls/measured-templates are yours to
    clean up and MUST be cleaned up.
 5. **DEPLOY STATE is Ben's** — your findings go in the handoff delta, never there.
+6. **Snapshot ids, flags AND EFFECTS before creating anything, and delete only what the
+   snapshot proves you created.** A run that snapshotted ids and flags but not effects swept
+   four pre-existing statuses off Ben's campaign adversaries and could only restore two — the
+   log couldn't say which duplicate token had held the rest.
+7. **Never resolve a token by NAME when duplicates can exist** — use the id or `actorId`. A run
+   grabbed `tokens.find(t => t.name === "Combat Construct")` and moved a year-old orphan
+   instead of its own summon.
+8. **Only claim what your own logs support, and label inferences as inferences.** A run
+   reported an orphan token as cleaned up, was asked how it knew, and had to retract — its
+   snapshot had only captured ids. The retraction then had to be chased into two documents
+   that had already repeated it.
 
 ## The loop
 
@@ -30,6 +41,12 @@ running (if `http://localhost:30000` doesn't answer, stop and ask).
 2. **Health check** (javascript_tool, screenshot it): `game.world.id === "edha"`,
    `game.user.name === "Bench"` + `isGM`, `game.modules.get("edha-content")?.active`,
    `!!globalThis.edha`, `game.system.version`.
+2b. **Verify the deploy BY HASH, never by counting markers.** Fetch the served
+   `register-skills.js` cache-busted, normalise CRLF→LF, SHA-256 it, and compare against
+   `git rev-parse HEAD:module-src/scripts/register-skills.js`'s content. Marker *counts* in a
+   handed-down prompt go stale within one run — one run was handed "expect 3" for a symbol
+   that had become 4 and would have failed a good deploy. If the hash differs, record the
+   affected rows **NOT-DEPLOYED**; never fail a fix's rows against an engine that predates it.
 3. **Roster:** paste `scripts/bench-setup-console.js` into the console. Zero ⚠ lines expected
    (⚠ = a talent/path name didn't resolve — fix the script in the repo, commit, don't
    improvise in-world). Re-run to prove idempotency (no new creations). Tokens: view
@@ -43,8 +60,7 @@ running (if `http://localhost:30000` doesn't answer, stop and ask).
      click for UI rows, `actor.items.getName("X").use()` for mechanics) → read `#chat-log`
      (read_page) + assert actor/status/flag state in the console → screenshot the card.
    - Rows needing combat: create a Combat on the viewed scene, run it, delete it after.
-   - Multi-client rows: a second tab as an unused player user MAY displace the Bench cookie
-     session — if it does, leave those rows ⚑ for Ben rather than fighting it.
+   - Multi-client rows: see the section below.
 5. **Record (one commit per run):**
    - **PASS (mechanical):** delete the row from the checklist; name it (2b id) in ONE dated
      handoff delta with a one-line evidence note each.
@@ -61,6 +77,29 @@ running (if `http://localhost:30000` doesn't answer, stop and ask).
    the join screen lists Bench as selectable again. Ending a session without this HOLDS the
    Bench slot and the next session cannot join (run 1 did it; Ben had to ask).
 
+## Multi-client rows (a second passwordless PLAYER user exists as of 2026-07-27)
+
+Some rows are unprovable from one client because the mechanic is *about* two clients. Ben added a
+passwordless player user for exactly this. Two shapes, and they need different setups:
+
+- **Two GM appliers** — "does this fire once or twice when two GMs are connected?" These are already
+  provable whenever **Ben's own Gamemaster client is connected**, which it usually is. Apex Form's
+  double-injury bug was found *because* two GM clients were live, and its fix was verified the same
+  way. Note in the row which clients were connected; a single-client pass proves nothing here.
+- **Genuine player-perspective rows** — the illusion belief loop, Covenant's shared icon across two
+  owners, Devoted Conduit's two-White staging. These need the player user actually logged in.
+
+Driving the second client: open a **new browser-pane tab** (`tabs_create`, then `navigate`), join as
+the player user there, and drive each tab by its own `tabId`. Two cautions learned the hard way:
+
+- A second session **may displace the Bench cookie session**. Verify Bench is still joined after the
+  player joins; if it isn't, that row stays ⚑ rather than being fought.
+- **Log out BOTH clients** at the end. A held player slot blocks the next run exactly like a held
+  Bench slot.
+
+The checklist's `🎮 Player-client window` section is the batch to burn down while a player client is
+up — do those rows together rather than one per run.
+
 ## Known traps
 
 - Ben's client shares the world live — token moves and chat are visible to him. Fine; just
@@ -72,3 +111,16 @@ running (if `http://localhost:30000` doesn't answer, stop and ask).
   number assumes different stats, compute the expectation from the actor before calling FAIL.
 - A row that fails may be YOUR setup, not the talent — re-read the row's "do" verb (targeted
   first? in range? correct damage type?) before recording anything.
+- **A row that fails may be YOUR HARNESS.** Weave the Thread was reported as a silent post-cost
+  no-op that swallowed 2 Investiture; the picker was rendering the whole time, in the engine's one
+  AppV1 window (`div.app.window-app`, no `<dialog>` element), invisible to V2-tuned DOM sampling.
+  Before recording "nothing happened", check `ui.notifications` for a live prompt and sample for
+  BOTH dialog shapes.
+- **The bench roster can be broken in ways no row tests.** `bench-setup-console.js` read a dead
+  weapon field for eight runs, so no bench PC had a ranged weapon and every rangedOnly row was
+  quietly unrunnable — with only a warning nobody read. Re-run the setup script as a real step, and
+  assert the fixtures it claims to have made (e.g. `weapon.system.attack.type === "ranged"`) rather
+  than trusting its summary.
+- The full operating-lesson list (v13 movement, dialog driving, chat rendering with a hidden pane,
+  resource clamps, honest console damage) lives in `docs/EDHA_BENCH_RUNBOOK.md`, newest run first.
+  **Read the newest two runs' lessons before driving anything** — they override older advice.

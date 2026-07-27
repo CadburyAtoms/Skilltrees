@@ -39,8 +39,12 @@ race, Pack Hunting's double-dip). Every one of those rows is annotated in
 
 Then pick up the remaining worklist — **report §1's "what was NOT reached"**: the leyline leftovers,
 the deity leftovers (2bY-7, 2bW-1, 2bV-2/6/8, 2bL-9/12), the adversary sections, Engine-wide's
-2bAC-2 / GM-summon relay / Withering Ray, and **Heroic**, which is where 282 of the 333 open rows
-live and which was benched for the first time in run 9.
+2bAC-2 / GM-summon relay / Withering Ray, and **Heroic** (26 open, 20 runnable — benched for the
+first time in run 9 and the largest single block left in bench scope).
+
+**What is left of `# BENCH —` scope in total: 77 rows, 41 runnable, 8 blocked on the rebuilds.**
+Everything else open in the checklist (the wizard, items, currency, the bestiaries, the
+player-client window) is outside bench scope — see report §1's "Outside the bench scope".
 
 The runbook (`docs/EDHA_BENCH_RUNBOOK.md`) carries the run-1 through run-9 operating lessons —
 read it before driving anything. The load-bearing ones from this marathon: **verify a deploy by

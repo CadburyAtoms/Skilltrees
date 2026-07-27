@@ -20,34 +20,48 @@ Retired rows are **removed** from `EDHA_FOUNDRY_TEST_CHECKLIST.md` with their ev
 the dated handoff delta — that is the checklist convention, so "open" below is what genuinely
 remains, not work that failed.
 
-| Section | Retired this marathon | Still open | of which ⚑ yours | blocked on deploy |
-|---|---|---|---|---|
-| Engine-wide & cross-tree | 7 | 16 | 9 | 0 |
-| White (leyline) | — | 4 | 3 | 0 |
-| Blue (leyline) | — | 5 | 4 | 0 |
-| Black (leyline) | — | 5 | 4 | 0 |
-| Red (leyline) | — | 4 | 1 | 0 |
-| Green (leyline) | — | 4 | 2 | 1 |
-| **Destruction** | 14 | 2 | 2 | 1 |
-| **Life** | 2 (+3 fixed→retired) | **0** | 0 | 0 |
-| **Chaos** | 15 | 1 | 1 | 0 |
-| **Fate** | 20 | **0** | 0 | 0 |
-| **Sovereignty** | 8 (whole section) | **0** | 0 | 0 |
-| **Death** | 17 | 2 | 1 | 0 |
-| **Civilization** | 10 | 2 | 1 | 0 |
-| **Power** | 17 (whole section) | **0** | 0 | 0 |
-| **Knowledge** | 12 | 1 | 1 | 0 |
-| **Order** | 17 | 5 | 1 | 0 |
-| **Heroic paths** | 16 (its first ever pass) | 282 | 210 | 7 |
-| **TOTAL** | **178** | **333** | **240** | **9** |
+| `# BENCH —` section | Retired this marathon | Still open | of which ⚑ yours | blocked | **runnable** |
+|---|---|---|---|---|---|
+| Engine-wide & cross-tree | 7 | 16 | 9 | 0 | 7 |
+| White (leyline) | — | 4 | 3 | 0 | 1 |
+| Blue (leyline) | — | 5 | 4 | 0 | 1 |
+| Black (leyline) | — | 5 | 4 | 0 | 1 |
+| Red (leyline) | — | 4 | 1 | 0 | 3 |
+| Green (leyline) | — | 4 | 2 | 1 | 2 |
+| **Destruction** | 14 | 2 | 2 | 1 | 0 |
+| **Life** | 2 (+3 fixed→retired) | **0** | 0 | 0 | 0 |
+| **Chaos** | 15 | 1 | 1 | 0 | 0 |
+| **Fate** | 20 | **0** | 0 | 0 | 0 |
+| **Sovereignty** | 8 (whole section) | **0** | 0 | 0 | 0 |
+| **Death** | 17 | 2 | 1 | 0 | 1 |
+| **Civilization** | 10 | 2 | 1 | 0 | 1 |
+| **Power** | 17 (whole section) | **0** | 0 | 0 | 0 |
+| **Knowledge** | 12 | 1 | 1 | 0 | 0 |
+| **Order** | 17 | 5 | 1 | 0 | 4 |
+| **Heroic paths** | 16 (its first ever pass) | 26 | 6 | 6 | **20** |
+| **TOTAL (bench scope)** | **178** | **77** | **36** | **8** | **41** |
 
 **Five sections are now empty**: Life, Fate, Sovereignty, Power, and (bar one ⚑) Chaos and
 Knowledge. Every deity tree has been driven end-to-end at least once.
 
-The 333 open rows are not 333 units of work. **240 are ⚑ yours by nature** — canvas rendering,
-table feel, multi-client, "does this look right". The agent-runnable remainder is **93 rows, 9 of
-them blocked on your pack rebuilds**, and 282 of the 333 sit in Heroic, which had never been
-benched before run 9 and is 133 talents deep.
+**What is actually left of the marathon's scope is 77 rows, of which 41 are agent-runnable and 8 are
+blocked on your rebuilds.** The rest are ⚑ yours by nature — canvas rendering, table feel,
+multi-client, "does this look right".
+
+> ⚠️ **Correction (2026-07-27).** An earlier version of this table said Heroic had **282** open rows
+> and put the checklist total at 333. That was a counting error on my side, not a change in the
+> data: I split the checklist on `# BENCH —` headers only, so every block that physically follows
+> Heroic in the file — the player-client window, the character-creation wizard, the culture/items/
+> currency tranches, and eleven bestiary sections — was silently added to Heroic's count. Those 256
+> rows are real work, but they are **not** `# BENCH —` rows and were never in this marathon's scope.
+> Heroic itself is **26 open rows, 20 of them runnable**. The corrected numbers are above.
+
+### Outside the bench scope (for planning, not for this marathon)
+
+256 further open rows live in non-`# BENCH` sections, the big ones being: the **character-creation
+wizard v2** (38 open, 21 runnable), **adversary ability wiring** (27), and eleven **bestiary**
+sections (~140 open, but ~130 of those are ⚑ yours). The **player-client window** block is the one
+your new passwordless player user unlocks — see §5.
 
 ### What was NOT reached, by section (run 9's honest list — your remaining worklist)
 
@@ -61,6 +75,24 @@ benched before run 9 and is 133 talents deep.
 
 Run 9 chose depth over breadth deliberately: root-causing the eight-talent skill-key family was
 worth more than touching more rows shallowly. I agree with that call.
+
+### Why Heroic wasn't finished — a scheduling error, not an omission
+
+Heroic *was* in the marathon plan: as one quarter of the single final-sweep run, sharing that run
+with the Engine-wide remainder, the adversary sections, and the leyline leftovers. Heroic is 133
+talents and had **never been benched at all** before run 9 — giving it a quarter-run when every
+deity tree got a half-run was backwards, and run 9 spent most of its budget root-causing the
+eight-talent dead-skill-key family instead (the right call in the moment — that family was breaking
+talents in three other sections too).
+
+The result: **16 Heroic rows retired, 20 runnable rows still open.** That is roughly one focused
+run, not a mega-effort — the "282 rows" figure in the first draft of this report was my counting
+error, corrected above.
+
+The process lesson stands regardless: the instruction said to adjust freely based on what was
+actually open, and I followed the given run order instead of counting the sections first. The
+`bench-marathon` skill now opens with a "size the run to the section, not the section to the run"
+step that requires counting `- [ ]` rows per section, minus ⚑, before scheduling anything.
 
 ---
 
@@ -271,27 +303,31 @@ pass 7 (2bAD-1, 2bAD-2, the CAE grant, Pack Hunting).
 | **2bAA-8 / 2bAC-1 / 2bAC-2** | Second-client and screenshot rows. |
 | **2bW-13 Apex Form** | Already ✅ **passed** under two GM clients in run 6 — recorded here because that's the only reason it was provable. |
 
-The `🎮 Player-client window` section of the checklist (line 1077) is the batch to burn down next
-time a player is logged in.
+**Ben is adding a passwordless player user for the next marathon (2026-07-27).** That unlocks the
+whole `🎮 Player-client window` block, which is the batch to burn down in one sitting rather than a
+row at a time. The `bench-run` skill now carries the two-client procedure: open a second browser-pane
+tab, join as the player there, drive each tab by its own `tabId` — and log **both** clients out at
+the end, because a held player slot blocks the next run exactly like a held Bench slot.
+
+Worth knowing: the *two-GM* rows are a different shape and are already provable whenever your own
+Gamemaster client is connected. Apex Form's double-injury bug was found that way, and its fix
+verified the same way.
 
 ---
 
 ## 6. World hygiene
 
-### ⚠️ One item needs you — partially unrepaired
+### CLOSED — the campaign-adversary effects (Ben, 2026-07-27)
 
-Run 8's end-of-run status sweep deleted by status id across all placed tokens and removed **four
-effects that almost certainly pre-dated the run, on your campaign adversaries**:
+Run 8's end-of-run status sweep removed four statuses that pre-dated it from adversaries on the
+Playtest Map (two `Weakened` restored; one `Weakened` among two Cinderhounds and one `Prone` among
+three Mutated Thralls left unrestored, because the sweep log couldn't say which duplicate held them).
 
-- **Restored:** `Weakened` on Stonebound Captain (`WN8GGFtZFxR6isM0`) and Wrenchmaster
-  (`FmTIcIQOm42umoSA`).
-- **NOT restored** — the sweep log can't identify which duplicate held it:
-  one **`Weakened`** among Cinderhound `E0pMS7z6qdt8O15p` / `NLdImS8EUcxb9jJC`, and one **`Prone`**
-  among Mutated Thrall `BUEIUVatYUfVqYb2` / `qJ3sfPuqJZqod0xa` / `9opSkrFMBMjaWPVr`.
-
-Root cause: that run snapshotted ids and flags but not *effects*. The runbook now requires an
-effect snapshot, and run 9 closed with an **exactly zero effect diff** — 8 created, 8 removed, no
-pre-existing effect touched.
+**Ben's call: no action needed — that map is a stale one that isn't in use.** Recorded here only so
+the process lesson isn't lost with it: that run snapshotted ids and flags but **not effects**, which
+is why it couldn't undo its own sweep. The runbook and the bench-run skill now require an effect
+snapshot, and run 9 closed with an **exactly zero effect diff** — 8 created, 8 removed, nothing
+pre-existing touched.
 
 ### Everything else is clean
 
