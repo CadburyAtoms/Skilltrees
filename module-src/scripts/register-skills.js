@@ -910,19 +910,22 @@ function edhaDealerOf(options) {
 // can stand down on a definitive ranged attack. Returns "melee" | "ranged" | null; null = can't tell
 // → consumers keep today's owner-judged behavior (fire + the GM-withhold note). Reads, in order: an
 // explicit flags.edha-content.attackKind stamp (edhaSummon bakes one onto its attack action), then a
-// weapon's system.range (⚑ the cosmere field shape is unverified until bench — a positive ranged
-// distance reads "ranged"; an absent/none range reads "melee"; schema drift reads null). Thrown/reach
-// is partial BY DESIGN — a thrown melee weapon reads "melee" and the owner judges.
+// weapon's system.attack.type — the cosmere 2.1.0 discriminator ("melee"/"ranged", schema initial
+// "melee"), verified against the system SCHEMA$i AttackingItemMixin AND live at bench run 3
+// (2026-07-26k defect 7: the old read was `system.range`, a field the DataModel strips, so EVERY
+// weapon returned null and every meleeOnly/rangedOnly gate was inert). system.attack.range {value}
+// is the tiebreak only when type is absent (schema drift). Thrown/reach is partial BY DESIGN — a
+// thrown melee weapon reads "melee" and the owner judges.
 function edhaAttackKind(item) {
   try {
     if (!item) return null;
     const stamped = item.flags?.["edha-content"]?.attackKind;
     if (stamped === "melee" || stamped === "ranged") return stamped;
     if (item.type !== "weapon") return null;
-    const r = item.system?.range;
-    if (r === undefined) return null;                       // schema drift — owner judges
-    const units = String(r?.units ?? r?.unit ?? "").toLowerCase();
-    if (units === "none" || units === "self" || units === "touch") return "melee";
+    const t = String(item.system?.attack?.type ?? "").toLowerCase();
+    if (t === "melee" || t === "ranged") return t;
+    const r = item.system?.attack?.range;
+    if (r == null) return null;                             // schema drift — owner judges
     return (Number(r?.value) > 0) ? "ranged" : "melee";
   } catch (e) { return null; }
 }

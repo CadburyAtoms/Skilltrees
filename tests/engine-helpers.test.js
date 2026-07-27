@@ -1381,3 +1381,28 @@ test("edhaBarrierSegments: a garbage size still closes, at the minimum 1px box",
   assert.strictEqual(segs[3][2], segs[0][0], "still closed with size 0 clamped to 1");
   assert.strictEqual(segs[3][3], segs[0][1]);
 });
+
+// --- edhaAttackKind — the 07-26k inert-gate regression (defect 7) -------------
+// The old read was `system.range`, a field cosmere 2.1.0's DataModel strips — so EVERY weapon
+// returned null ("owner judges" = fires) and every meleeOnly/rangedOnly stand-down was inert:
+// a weapon set to attack.type "ranged" still fired Warlord's melee-only rider and consumed the
+// arm (bench run 3). The real discriminator is system.attack.type; attack.range is the tiebreak.
+test("edhaAttackKind: cosmere 2.1.0 attack.type is the discriminator", () => {
+  assert.strictEqual(env.edhaAttackKind({ type: "weapon", system: { attack: { type: "ranged", range: { value: 60, unit: "ft" } } } }), "ranged");
+  assert.strictEqual(env.edhaAttackKind({ type: "weapon", system: { attack: { type: "melee", range: { value: 5, unit: "ft" } } } }), "melee");
+});
+test("edhaAttackKind: attack.type wins over a thrown weapon's range (partial by design)", () => {
+  assert.strictEqual(env.edhaAttackKind({ type: "weapon", system: { attack: { type: "melee", range: { value: 20, unit: "ft" } } } }), "melee");
+});
+test("edhaAttackKind: no attack block at all -> null (owner judges), never a guess", () => {
+  assert.strictEqual(env.edhaAttackKind({ type: "weapon", system: {} }), null);
+  assert.strictEqual(env.edhaAttackKind({ type: "weapon", system: { range: { value: 60 } } }), null, "the STRIPPED legacy field must not resurrect the old read");
+});
+test("edhaAttackKind: type-less attack block falls back to attack.range.value", () => {
+  assert.strictEqual(env.edhaAttackKind({ type: "weapon", system: { attack: { range: { value: 60 } } } }), "ranged");
+  assert.strictEqual(env.edhaAttackKind({ type: "weapon", system: { attack: { range: { value: 0 } } } }), "melee");
+});
+test("edhaAttackKind: the edha-content stamp outranks everything; non-weapons stay null", () => {
+  assert.strictEqual(env.edhaAttackKind({ type: "action", flags: { "edha-content": { attackKind: "ranged" } }, system: {} }), "ranged");
+  assert.strictEqual(env.edhaAttackKind({ type: "action", system: { attack: { type: "ranged" } } }), null);
+});
