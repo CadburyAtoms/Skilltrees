@@ -2,7 +2,18 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, **COMPLETED 2026-07-26 (pass AA)**: **the ratchet list is EMPTY — 221 → 0 across twenty-seven passes.** Every tree is clear, all six marker ledgers have migrated, and `scripts/name-keyed-allowlist.json` stays in the repo with an empty `talents` list *on purpose* — lint pass 7 still guards against REGROWTH, which is the half of the ratchet that matters from here on. ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **ALL SIX marker LEDGERS have migrated** (`covenants` 07-24u; `edicts` 07-25 pass V; `remains` 07-25 pass W; Fate's `snares` 07-25 pass X; Destruction's `charges` 07-26 pass Y; Fate's `ordained` 07-26 pass AA — the point-bound ones fail OPEN through H3's reconcile by design). There is no flat marker-list flag left in the engine. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-27i** (BENCH RUN 9 — THE
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-27j** (BENCH RUN 9'S
+THREE DEFECTS FIXED — THE MARATHON'S LAST FIX PASS. The dead-SKILL-key family closed in all eight
+talents, each replacement decided by the talent's own card text, and **gated** by a new `lint-refs`
+**pass 12** that validates every authored skill/attribute/status/damage-type/defense id against the
+system's real vocabulary — mutation-verified against the historic defect itself. Two of run 9's three
+triage items were resolved as **NOT data bugs**: `exalt` is a die-step ENTRY KEY (correct as shipped),
+and `spd` is an ATTRIBUTE whose contest the ENGINE could not roll — a "tests Speed" card had been
+printing Speed over a bare d20 for the whole life of two talents. The CAE grant race was the 07-26n
+H3 race in a second place that had simply never been queued, and Pack Hunting's double-dip was NOT an
+`appliesTo` failure but a two-consumer window between `pre<Ctx>Roll` and `<ctx>Roll`. THREE
+ENGINE-ONLY fixes (relaunch / F5) + ONE data fix that makes **heroic** the FOURTH owed pack build.
+292 tests green.) Prior: **2026-07-27i** (BENCH RUN 9 — THE
 FINAL SWEEP: the 07-27h counter fix confirmed live by HASH and its whole re-test batch passed, the
 Heroic section driven for the first time, **40 rows retired on evidence and 8 new FAILs** — headlined
 by a NEW data-side family of **dead cosmere SKILL keys** in eight talents (`itm`/`per`/`ldr`, plus two
@@ -116,6 +127,145 @@ the Red pilot, executed live by an agent session joined as `Bench`: 16 rows reti
 1 FAIL root-caused (Shockwave Slam's weapon-hit trigger surface), 4 cross-tree observations,
 and the agent-bench runbook hardened with the v13 operating lessons. Docs + setup-script fix
 only; nothing to deploy.)
+
+**2026-07-27j — BENCH RUN 9'S THREE DEFECTS FIXED. The marathon's last fix pass, so every item was
+root-caused in code before anything was touched and every fix ships with pinned regressions — there is
+no run 10 to catch a wrong one. THREE ENGINE-ONLY fixes (relaunch / F5, no rebuild) + ONE data fix
+that adds **heroic** to the pack-rebuild queue, making it FOUR builds Ben owes. One new gate. 292
+tests green.**
+
+### Rulings (defaults applied — Ben can veto; this session was non-interactive)
+
+**R-A. `per` on Confident Command is PERSUASION, not Perception. Default taken: the CARD.** The card
+reads "add your command die to your **Intimidation, Leadership, or Persuasion** d20 rolls", and the
+rule's own `description` repeats it, so the list is `inm, lea, prs`. This is the only one of the eight
+skill-key fixes where the dead id was genuinely ambiguous *as an id* (`per` could abbreviate either),
+and the card resolved it without needing a design call. Sharp Eye's `per` went the other way — its
+card says "test **Perception** vs. Cognitive" — which is exactly why the two had to be decided
+separately rather than swept with one find-and-replace.
+
+**R-B. A card that says "tests Speed" means the ATTRIBUTE. Default taken: the CARD is canon, fix the
+ENGINE.** See root cause 2. The alternative — renaming the data to a real skill like `agi` — would
+have changed the game's rules (Agility rank + Speed attribute instead of Speed alone) to hide an
+engine gap, which is the inverse of the 07-05 Withering Ray lesson.
+
+### Bug root causes
+
+**1. Eight talents were wired to cosmere SKILL ids that do not exist. (DATA — heroic PACK REBUILD.)**
+The real ids are Intimidation `inm`, Perception `prc`, Persuasion `prs`, Leadership `lea`. Nothing in
+the stack validates an id against a vocabulary, so all eight failed silently, in two distinct shapes:
+
+- **A contest `skill` is compared against the id the player ACTUALLY rolled.** `edha-def-test` calls
+  `edhaQueueContest(owner, this.skill, …)`, and `edhaTryResolveContest` bails with
+  `if (q.color && r.skill && r.skill !== q.color) return;` — *"a different test, keep waiting"*. A
+  dead id can never equal a real one, so the contest waits for a roll that cannot come and expires
+  silently. That is the precise mechanism behind all three of run 9's worst symptoms: **Sharp Eye**
+  a total no-op (utility activation, nothing spent), **Set at Odds** the same but silent-and-free,
+  and **Synchronized Assault** charging its 2 focus natively and then doing nothing — the activation
+  rolls `lea` correctly while the rule waits on `ldr` forever.
+- **`@skills.<id>.rank` substitutes to 0** when the id is absent from rollData, which is why
+  **Feinting Strike** drained "0" focus at Intimidation 3 and **Rallying Shout** printed "+ 0 health"
+  at Leadership 3. **Confident Command**'s comma-list matched only its one valid member, enforcing
+  Leadership alone. **Flamestance**'s `whenSkill: "itm"` could never match `inm`, so it has been inert
+  for its entire life — with Ironstance (`ins`) sitting beside it as the working control.
+
+Every replacement was decided from the talent's own card text, never by pattern-matching the id.
+Set at Odds and Synchronized Assault corroborate independently: both already carried the correct
+`skill: "lea"` on their `activation`, so only the rule had drifted. A repo-wide sweep confirmed run
+9's list was complete — 11 sites in 8 talents, no more.
+
+**2. A "tests Speed" card was rolling a bare d20 — the ENGINE could not roll an attribute contest.
+(ENGINE-ONLY, F5.)** Two of run 9's three triage items looked like family members and were not.
+`edhaRollOpposedSkill` builds `1d20 [+ @skills.<id>.rank] [+ @attr.<mapped>]`. cosmere rollData keys
+`skills` off `CONFIG.COSMERE.skills` and `attr` off `CONFIG.COSMERE.attributes`, so for `spd` BOTH
+terms were skipped — it is not a skill, and `EDHA_SKILL_ATTR` had no row for it — leaving a flat
+`1d20` with no Speed in it. This is not an authoring typo: `spd` is the engine's OWN default in
+`edhaFoeSkillVsColor`, the `edha-zone` line save and the snare-spring resolver, and the cards ask for
+it explicitly (Concussive Yield "each character in its radius tests **Speed** vs. your Red";
+Inevitable Snare "the triggering target tests **Speed** vs. your Green"). The tell that the card was
+canon: `edhaSkillLabel` was already taught about attributes by the 07-27f label fix, so the card has
+been *printing* "Speed" over a roll that ignored it. New pure helper `edhaContestAttrFor` fixes all
+six callers at the shared level; no data changed. ⚠️ **This retroactively qualifies run 6's 2bX-5
+PASS** — the "SPD 3" it recorded was a bare d20; that row's other halves stand and it is re-listed as
+2bAD-1.
+
+**3. The CAE grant path had the H3 write race, and had simply never been queued. (ENGINE-ONLY, F5.)**
+Answering the question run 9 posed explicitly: not a different read-modify-write — the same one.
+`edhaCaeApplyGM` does `deepClone(getFlag)` → push → `setFlag` on a COMBATANT flag with an async
+server round-trip and no isolation, so two combat-start grants in one tick both read the same
+pre-write state and the last write wins: two "(on the tracker)" cards, one group. Fixed by reusing
+`edhaOwnerListQueue` UNCHANGED — its key is `${uuid}::${key}`, so passing the combatant and the CAE
+flag key gives exactly the right scope — with the `getFlag` re-read moved INSIDE the queue. Keying on
+the flag rather than the kind also closes the third case in the reported blast radius: `burn-reaction`
+and a `reaction` grant both write `reactionsAvailable` and now serialise against each other.
+
+**4. Pack Hunting's double-dip was NOT an `appliesTo` failure. (ENGINE-ONLY, F5.)** The rule declares
+`appliesTo: "either"` correctly and the gate works — run 3 verified Predatory Patience honouring it.
+The real cause is that the next-test pipeline has TWO independent consumers of one document flag, and
+the d20 half **APPLIES at `pre<Ctx>Roll` but does not CONSUME until `<ctx>Roll`**. A weapon Strike
+rolls its damage inside that window, so `edhaWrapRollDamage` reads a flag that is applied-but-not-yet-
+spent. Neither consumer awaits its own unset (both are `void`ed) and the damage wrapper is
+**synchronous** — it must build `overrideFormula` before the roll — so no promise queue can fix it;
+the guard has to be an in-memory claim, the shape `_edhaLastRoll.used` already uses. The fix is
+deliberately CROSS-PATH ONLY, because a careless guard here breaks working talents:
+`edhaNextTestMatches` already keeps a `test` mod off the damage path and a `damage` mod off d20 rolls,
+so only `either` can be seen twice — and `either` is **exactly one talent in the data** (Pack
+Hunting), while the only `count: 2` mod (Blue's Probability Cascade) is `test`-only and must keep
+applying to two separate tests. Same-path re-entry stays allowed, so the guard can never remove a
+bonus today's behaviour grants, and it is order-independent — whichever of attack/damage runs first
+takes the use — which matters because it could not be re-tested live.
+
+**NOT a bug, and deliberately untouched: `exalt` on Sovereign's Favor.** `edha-watch` with
+`watch: "die-step"` reads `whenSkill` as the die-step **ENTRY KEY**, not a skill — its own field hint
+says so ("the observed skill is the ENTRY KEY — Sovereign's Favor filters whenSkill 'exalt'"), and the
+whole Sovereignty section passed at run 6. Pass 12 exempts exactly that combination, and the exemption
+is verified NARROW by mutation: change the watch mode and `exalt` is flagged.
+
+### New REUSABLE primitives + the gate
+
+- **`lint-refs` pass 12 — the dead-ID gate (the run's real deliverable).** Validates every authored
+  skill / attribute / status / damage-type / defense id, plus every `@skills.` and `@attr.`
+  substitution, against the real vocabulary. Two halves, both required: the SYSTEM's ids from a new
+  `contentVocabulary` block in `data/native-vocabulary.json` (extracted by
+  `dump-native-vocabulary.js` — the ids are TS const-enum members appearing as either a runtime IIFE
+  or a `/* Enum.Member */` annotation, so both shapes are harvested, with rot alarms on counts and
+  known members), and **EDHA's own additions parsed LIVE out of the engine** (5 leyline skills, ~30
+  statuses), so registering a new one never means editing a snapshot or the linter. Comma-lists are
+  checked member by member. `@skills.<id>` is NOT given the attribute latitude that contest fields
+  get, because rollData keys `skills` off `CONFIG.COSMERE.skills` alone — so a future
+  `@skills.spd.rank` is still caught. **Mutation-verified against the real historic defect:** with
+  the data fix reverted the pass reports exactly the 8 original sites.
+- **`edhaContestAttrFor(skillId, attrId)`** — the pure id→attribute decision for any opposed contest:
+  explicit `attrId` wins, then "the id IS an attribute", then the skill→attribute map. Reach for it
+  whenever a card asks for an attribute test rather than a skill test.
+- **`edhaNextModPathOk(claim, mod, path)` / `edhaNextModClaimOk(actor, mod, path)`** — the cross-path
+  claim for banked next-test mods. The general shape to reach for when a SYNCHRONOUS reader and an
+  async-committed flag would otherwise let one resource be spent twice; a promise queue cannot help
+  there.
+- **`edhaSetNextTestMod` now stamps a `gid`** on every banked mod (before the socket emit, so owner
+  and relay agree), which is what lets a claim distinguish one banked use from the next.
+
+### Known limits / couldn't self-verify (no Foundry session)
+
+- ⚑ **All four fixes are unverified at the table.** There is no bench run after this pass; every row
+  is annotated "fixed, awaiting Ben's re-test" with its deploy prerequisite stated.
+- ⚑ **The heroic pack rebuild is the gate on seven of the eight skill-key talents.** Until
+  `foundry-build heroic` + ⟳ Sync runs, Sharp Eye / Set at Odds / Synchronized Assault / Feinting
+  Strike / Rallying Shout / Confident Command / Flamestance all still fail exactly as run 9 measured.
+- ⚑ **The 2bAD-1 attribute-contest fix changes live dice math.** A foe's Speed test now adds
+  `@attr.spd` where it previously added nothing, so Concussive Yield and Inevitable Snare get harder
+  to land against fast creatures. That is what the cards always said, but it is a real balance shift
+  and worth one look at the table.
+- ⚑ **The next-mod claim is TTL'd (4s).** A cancelled roll dialog cannot strand the following roll,
+  but the trade is that an `either` mod re-applied more than 4 seconds after a cancelled roll would
+  not be caught. Expiring costs at most one re-applied bonus; the opposite failure is unbounded.
+- 🐛 **Recorded for a future session, not fixed here:** `topLevelKeys` in `scripts/handler-schemas.js`
+  consumes a QUOTED object key as a string literal and never records it. That is why EDHA_STATUSES'
+  one quoted entry (`"tagged"`) came back missing and pass 12 flagged a correct talent on its first
+  run; pass 12 uses its own extractor. The same blind spot exists in **pass 11's** schema harvesting,
+  where it can only ever ADD a false positive (a real field looking dead), never hide a real one.
+  Left alone deliberately rather than changing a parser three passes depend on with no bench run left
+  to catch a regression.
 
 **2026-07-27i — BENCH RUN 9, THE MARATHON'S FINAL SWEEP. The 07-27h counter fix is CONFIRMED LIVE and
 its whole re-test batch passed; the Heroic section was driven for the first time; and the run's real

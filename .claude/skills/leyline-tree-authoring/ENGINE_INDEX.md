@@ -100,6 +100,23 @@ proves only that the engine agrees with itself. The authority is the system's Da
    comment from the day it was written and survived every pass until a bench run mutated the document.
    If a field name is a guess, either verify it against the install in the same session or do not ship
    the mechanic depending on it.
+
+**The SAME disease one layer over, in authored DATA — dead cosmere IDs (07-27j, `lint-refs` pass 12).**
+Bench run 9 found **eight talents** wired to skill ids the system never defined (`itm` for Intimidation
+— really `inm`; `per` for Perception/Persuasion — `prc`/`prs`; `ldr` for Leadership — `lea`). Nothing
+validates an id against a vocabulary, so all eight failed SILENTLY, in two shapes worth recognising:
+a contest `skill` is compared to the id the player ACTUALLY rolled, so a dead id makes the contest wait
+for a roll that can never come (**total no-op — Sharp Eye; or worse, cost charged and nothing happens
+— Synchronized Assault**); and `@skills.<id>.rank` substitutes to **0** (Feinting Strike drained "0"
+focus at Intimidation 3). Flamestance never worked in its life.
+- **The vocabulary is TWO halves.** `data/native-vocabulary.json` → `contentVocabulary` (skills,
+  attributes, attributeGroups/defenses, damageTypes, statuses, resources) is the SYSTEM's; EDHA adds
+  five leyline SKILLS and ~30 STATUSES of its own, which pass 12 parses live out of the engine.
+- **Contest skill fields accept an ATTRIBUTE id; `@skills.<id>` does not.** See the contests section.
+- **Two exemptions exist and are narrow:** `edha-watch {watch: "die-step"}` reads `whenSkill` as the
+  die-step ENTRY KEY (Sovereign's Favor's `exalt` is correct), and that is the only one.
+- **Limit:** pass 12 checks ids against vocabularies, never whether the id is the RIGHT one for the
+  card. `prc` where the prose says Persuasion passes the gate and is still wrong — read the card.
 4. **`edhaEffectStacks(eff)`** is the shared read for any stackable status — it mirrors the system's own
    `get stacks() { return this.system.stacks ?? 1 }`, so a marker present but never counted reads **1**.
    Writing `system.stacks` also makes the system re-derive the effect's NAME (`"Insight [3]"`) and puts
@@ -153,9 +170,20 @@ proves only that the engine agrees with itself. The authority is the system's Da
 ```js
 edhaQueueContest(owner, "<color>", async ({ total }) => {   // captures the owner's NEXT roll total
   const opp = await edhaRollOpposedSkill(target, "ath");    // rolls the foe's skill (1d20 + rank + attr)
+  //                                     … or "spd"        // an ATTRIBUTE id is valid too (07-27j)
   if (total >= opp) await edhaApplyTimedStatus(target, "slowed", { owner, expire: "target" });
 });
 ```
+- **An ATTRIBUTE id is a legitimate contest id — `edhaContestAttrFor(skillId, attrId)` (07-27j).**
+  Several cards ask for an attribute test rather than a skill test ("each character tests **Speed**
+  vs. your Red"), and `spd` is the engine's own default in `edhaFoeSkillVsColor`, the `edha-zone`
+  line save and the snare-spring resolver. Until 07-27j `edhaRollOpposedSkill` silently dropped BOTH
+  its terms for such an id — `skills.spd.rank` does not exist and the skill→attribute map had no row
+  — so the foe rolled a **bare d20** while the card printed "Speed". The helper now resolves
+  explicit `attrId` → "the id IS an attribute" → the skill→attribute map. Pinned in
+  `tests/contest-attr.test.js`, including the guard that a real SKILL keeps BOTH terms.
+  ⚠️ **`@skills.<id>` gets no such latitude**: rollData keys `skills` off `CONFIG.COSMERE.skills`
+  alone, so `@skills.spd.rank` is DEAD — write `@attr.spd`. `lint-refs` pass 12 enforces both halves.
 - **`edha-def-test` (H1, 07-24m) — reach for this BEFORE hand-rolling any of the above.** The
   authorable form of the whole "roll a gated test, then do something" shape (45 talents across 17
   trees). One rule on the talent, event `use`: `skill` (the id YOU roll — leyline colours are skill
@@ -212,6 +240,24 @@ Insight) and §9o called them byte-identical. **They are not, and the difference
   same owner+key (deadlock — the reason the executor's `spend` op does not wrap `edhaLedgerSpend`,
   which carries the queue itself). Pinned in `tests/owner-list-race.test.js` (mutation-checked);
   `tests/run.js` runs async tests since the same pass.
+  **It is not only for ledgers (07-27j).** The queue key is `${uuid}::${key}`, so ANY document +
+  flag-key pair works — `edhaCaeApplyGM` now passes the **combatant** and the CAE flag key to
+  serialise tracker grants, which had the identical race (two combat-start grants, ONE group
+  written). Reach for it for any async read-modify-write on a Foundry document flag, not just
+  `lists.*`.
+- **`edhaNextModClaimOk(actor, mod, path)` / pure `edhaNextModPathOk(claim, mod, path)` — when a
+  promise queue CANNOT help (07-27j, bench run 9 defect 3).** A banked `edha-next-test-mod` with
+  `appliesTo: "either"` is read by two independent consumers: the d20 half APPLIES at
+  `pre<Ctx>Roll` but consumes only at `<ctx>Roll`, and a weapon Strike rolls its damage inside that
+  window. The damage wrapper is **synchronous** (it must build `overrideFormula` before the roll),
+  so it cannot await a queue — the guard has to be an in-memory claim, the shape
+  `_edhaLastRoll.used` already uses. The first path to APPLY claims the use; the other is refused,
+  which is what "either, whichever comes first — not both" requires. Deliberately CROSS-PATH ONLY,
+  so it is inert for `test`-only and `damage`-only mods (Blue's Probability Cascade, `count: 2`,
+  must keep applying to two separate tests). `edhaSetNextTestMod` stamps a `gid` so a NEW grant is
+  never mistaken for the one a stale claim holds. Pinned + mutation-checked in
+  `tests/next-mod-double-dip.test.js`. **Reach for this shape whenever a synchronous reader and an
+  async-committed flag could let one resource be spent twice.**
 - **Membership lives on the mark, order lives in the list, and the mark wins.**
   `edhaOwnerList(owner, key, status)` drops any entry whose creature no longer bears the status, so
   a half-migrated tree (or a GM clearing a status by hand) cannot strand a phantom under the cap.
