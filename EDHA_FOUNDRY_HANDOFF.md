@@ -2,7 +2,17 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, **COMPLETED 2026-07-26 (pass AA)**: **the ratchet list is EMPTY — 221 → 0 across twenty-seven passes.** Every tree is clear, all six marker ledgers have migrated, and `scripts/name-keyed-allowlist.json` stays in the repo with an empty `talents` list *on purpose* — lint pass 7 still guards against REGROWTH, which is the half of the ratchet that matters from here on. ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **ALL SIX marker LEDGERS have migrated** (`covenants` 07-24u; `edicts` 07-25 pass V; `remains` 07-25 pass W; Fate's `snares` 07-25 pass X; Destruction's `charges` 07-26 pass Y; Fate's `ordained` 07-26 pass AA — the point-bound ones fail OPEN through H3's reconcile by design). There is no flat marker-list flag left in the engine. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-27a** (BENCH RUN 5 —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-27b** (bench run 5's
+FOUR defects FIXED + one triage promoted to a fix — every root cause verified in code, and TWO of
+the run's family guesses were wrong in mechanism: Apex Form's double injury was two GM CLIENTS
+behind a raw-isGM hook gate (not the 2bL-13 double-moment), and the harvest DISPATCH loss was the
+watch dispatcher's depth counter conflating SIBLINGS with ANCESTRY (`_edhaCascadeBusy` does not
+exist). Adaptive Mutation got its pre-cost once-per-creature veto; Surgical Precision's outcome
+is now engine-decided (the system binds no DC and `options.graze` only marks the twin — NOT a
+bench artifact); the defeat dispatch is `chainBounded`; the Chaos scene sweep learned
+`lists.omens` + off-canvas bearers, and `trigRound` joined the generic scene sweep. ALL
+ENGINE-ONLY (sync + F5); the one data touch is a cosmetic rule-description truthing riding the
+already-owed deity rebuild. 238 tests green incl. the new `watch-dispatch` pins.) Prior: **2026-07-27a** (BENCH RUN 5 —
 Life + Chaos + the carry-forward re-tests, executed live: **18 rows retired on evidence** (the
 whole 15-row Chaos section clean, 2 Life rows, and the Remains-race write-queue half verified
 fixed at the table with Omen-ledger corroboration), **4 defects → test-pass-fixes** (Adaptive
@@ -45,6 +55,110 @@ the Red pilot, executed live by an agent session joined as `Bench`: 16 rows reti
 1 FAIL root-caused (Shockwave Slam's weapon-hit trigger surface), 4 cross-tree observations,
 and the agent-bench runbook hardened with the v13 operating lessons. Docs + setup-script fix
 only; nothing to deploy.)
+
+**2026-07-27b — BENCH RUN 5'S FOUR DEFECTS FIXED + the Chaos-sweep triage (test-pass-fixes). One
+commit per defect, root causes VERIFIED in code (hook → handler → write) — two of the run's
+labeled inferences were wrong in mechanism and are corrected below. ENGINE-ONLY throughout
+(`module-src-sync` + F5 on Ben's machine; byte-check `edhaWatchEntryLevel` + `_edhaLifeClearBusy`
+in the served blob); the single data touch (Surgical Precision's rule description + explicit
+`def: "phy"`) is COSMETIC and rides the already-owed deity rebuild — the engine defaults the same
+value, so behavior needs no pack build. 238 tests green (3 new pinned cases).**
+
+### Bug root causes (one bullet per cause; commits one per defect)
+
+1. **Adaptive Mutation (2bW-12): the card's "(scene; one per creature)" was enforced NOWHERE**
+   (`484bfec`, ENGINE-ONLY). The `edha-mutation` executor posted a chooser unconditionally and
+   the click overwrote the `mutation` flag. Now: a `cosmere-rpg.preUseItem` veto (the H1/H12/H3
+   precedent — an executor runs after the cost, so the gate must live pre-cost) refuses an
+   already-mutated target with nothing spent, and the chooser click is belted the same way so a
+   stale card cannot replace the graft. Gate reads bare flag existence — that is what every
+   mutation reader does, and the Life scene reset is what ends it.
+2. **Apex Form (2bW-13): TWO GM CLIENTS each minted the scene-end injury — NOT the guessed
+   2bL-13 double-moment** (`bbac2e2`, ENGINE-ONLY). `edhaClearLifeState` has exactly one
+   deleteCombat registration and no second moment; its hook was gated raw `game.user?.isGM`, so
+   Ben's host client AND the Bench GM user both ran it. Every OTHER GM-side path in the run
+   behaved because it sits behind `edhaDefBuffGmGate()` (one applier), and the Life clear is the
+   only deleteCombat clear that CREATES rather than idempotently unsets — which is why only the
+   injury doubled while the flag sweep stayed "clean". Fixed three-deep: the whole raw-isGM
+   deleteCombat clear FAMILY (15 hooks: Kindle, Charges, overgrowth AEs, the sceneOnce sweep,
+   barriers, clearsight, and the nine tree-state clears) now rides the one-applier gate;
+   `edhaClearLifeState` refuses to overlap itself (two combats deleted together); the apex branch
+   unsets the flag BEFORE the injury round-trip.
+3. **Surgical Precision (2bW-15): the graze branch was unreachable on EVERY path — an engine
+   wrong-trigger-semantics bug, NOT a bench-driving artifact** (`3ce6d26`, ENGINE F5 + cosmetic
+   data). Verified in the system source: `roll.options.graze` never meant "the test missed" — the
+   system attaches the graze SUB-ROLL to the main damage roll (index.js ~6891 `roll.graze =
+   grazeRoll` writes `options.graze`) and the graze twin's own fire carries none, so the old
+   check only told the twin fires apart and the cleanse posted on every use. And the system binds
+   NO DC to a skill_test talent's d20 (sheet and console identical; its only DC binding is the
+   chat enricher) — full-vs-graze damage is a human toggle on the card. The watcher now decides:
+   captured own test (`_edhaLastRoll`, skill-matched, TTL-fresh) vs the rule's new `def` (default
+   phy) through `edhaDefTestOutcome`; success posts the cleanse, a graze posts a whispered
+   no-cleanse note, unreadable/uncaptured FAILS OPEN (H1's convention).
+4. **Simultaneous-harvest DISPATCH loss: the watch dispatcher's depth counter conflated SIBLINGS
+   with ANCESTRY — the run's `_edhaCascadeBusy` guess names a symbol that does not exist**
+   (`3f7ad4b`, ENGINE-ONLY, pinned). One cascade tick drops V1+V2; V1's chain-level dispatch is
+   still suspended on its queued ledger write when V2's updateActor hook fires, so V2's dispatch
+   read the open-count (2) as its own causal depth and `_edhaWatchDepth >= 2` dropped it AT THE
+   DOOR — no card, no entry, no eviction, cap-independent (the cap-isolation control's exact
+   evidence); sequential drops settle in between and never hit it. Fix: `edhaWatchEntryLevel`
+   (pure, pinned) + the `chainBounded` event field — the defeat announcement declares it (a
+   live→0 crossing cannot recur per creature, so a defeat chain cannot loop) and CLAMPS to chain
+   level instead of dropping; unbounded kinds (focus ping-pong) keep the hard backstop; the loop
+   chain-gates on its LOCAL level since a sibling mutates the shared counter mid-loop.
+   `tests/watch-dispatch.test.js` drives the REAL dispatcher through the bench interleaving, and
+   its backstop case doubles as the mutation-check (it proves the open-count-2 window exists, so
+   the rescue is attributable to `chainBounded` alone). Run 5's round-1 "V2 got markedBy only"
+   note stays unexplained-stale (a full dispatch would have posted the ✨ card first) — watch it
+   on the re-test.
+5. **Triage (a) PROMOTED TO A DEFECT AND FIXED — "Chaos has no scene-end sweep" was an INCOMPLETE
+   sweep, not a design choice** (`cad4d1f`, ENGINE-ONLY). `edhaClearChaosState` exists but
+   predates the 2bU repoint of Omens onto the H3 ledger: it stripped statuses/`markedBy.omen`
+   from canvas tokens only, never `lists.omens`, never off-canvas bearers. The scene-end
+   full-reset IS the engine convention (Death clears `lists.remains` explicitly; every tree
+   resets). Now matches Death's shape: statuses + both markedBy keys on canvas tokens AND
+   directory actors, `lists.omens` unset on characters. `trigRound` (generic once-per-round
+   trigger ledger — stale entries silently eat a trigger in the next combat's same-numbered
+   round) joined the generic sceneOnce/bonusTally/armOnce sweep.
+
+### Triage verdict (b) — stale prompt-sweep cards: RULING, no engine defect found
+
+Traced every named surface (the intercept sweep, the hp-threshold prompt, the H25 damage-react
+dispatcher, the shatter/roll-react prompts, `edhaPostTriggerCard`): **all are one-shot,
+event-driven posts — no re-post-on-sweep-tick mechanism exists anywhere in the engine**, so
+there is no missing consumed-flag to fix. What run 5 saw is the standing roster cross-talk
+(15 always-armed bench PCs' watches each posting a FRESH offer per qualifying event) plus old
+cards' buttons re-arming on refresh (the known pre-stamp behavior already noted on the Flame
+Surge row). → rulings batch, recommended default: park non-active bench PCs' watches during a
+row (a bench-setup convention — remove them from the scene or a park flag), not an engine dedup.
+
+### New REUSABLE primitives
+
+- **`edhaWatchEntryLevel(openCount, chainBounded)`** — the pure watch-dispatch entry decision;
+  and **`ev.chainBounded`** on `edhaDispatchWatchers` events: declare it ONLY at an announce site
+  whose event kind is structurally non-repeating (defeat). Never declare it for a kind that can
+  ping-pong.
+- **`edha-cleanse` grew `def`** — `trigger: success-damage-roll` now means "your captured test
+  beat the target's `def`" (default phy; blank = always post). The engine decides the outcome;
+  the system never will.
+- **The one-applier rule for deleteCombat clears** — any scene-end clear that WRITES documents
+  gates on `edhaDefBuffGmGate()`, never raw `isGM`; a clear that CREATES documents also guards
+  against overlapping itself (`_edhaLifeClearBusy`'s shape) and unsets its trigger flag before
+  the creating round-trip.
+
+### Known limits / couldn't self-verify (no Foundry session)
+
+- ⚑ All five fixes need Ben's `module-src-sync` + F5 (Foundry was running; nothing was written
+  into the live module). Byte-check `edhaWatchEntryLevel` + `_edhaLifeClearBusy` before re-tests.
+- ⚑ 2bW-13's re-test is only meaningful with TWO GM clients connected (the mechanism); with one
+  it passes trivially.
+- ⚑ The graze note's live wording/whisper visibility and the sheet-driven Surgical path — the
+  harness cannot roll the system's twin damage flow.
+- Latent, noted NOT fixed (no report, sweep only): `edha-deal-damage`'s condition rejects the
+  main damage fire (its `options.graze` is truthy — the attached sub-roll) and keys on the graze
+  twin ~400ms later, so consumers reading `options.roll` off that event see the GRAZE roll's
+  totals. No current consumer reads the roll's total; flagging for the next pass that touches
+  that surface rather than silently widening this one.
 
 **2026-07-27a — BENCH RUN 5 (Life + Chaos + carry-forwards), EXECUTED LIVE.** An agent session
 joined Ben's running Foundry as `Bench` (v13.351, cosmere 2.1.0, edha-content active), verified

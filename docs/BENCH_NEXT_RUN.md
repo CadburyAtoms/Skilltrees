@@ -45,23 +45,33 @@ first (they OVERRIDE older advice):**
 
 **Deploy state — read before believing any bug.** The **07-26n ENGINE half is CONFIRMED LIVE**
 (run 5 verified the served blob: `edhaOwnerListQueue` + the new `edhaIsConstruct` + the
-`creatureType` mint; the Remains-race queue fix passed at the table). **The THREE pack halves
-are still owed** (all re-confirmed stale by run-5 fresh compendium reads): `foundry-build
-leyline` (Mender's note/range), `foundry-build deity` + re-forge (2bY-7's Constructs ×3 —
-live pack still reads `creatureType: ""`), `foundry-build adversaries` + re-imports (2bAB-1
-Flame Surge still `damage.formula: null` on both bosses; Herding Antlers still 0 events).
-Do NOT run a pack build yourself; record their rows BLOCKED-ON-DEPLOY unless a fresh console
-read proves a rebuild landed. Check the letter above 07-27a before starting.
+`creatureType` mint; the Remains-race queue fix passed at the table). **The 07-27b ENGINE half
+(run 5's five fixes) needs Ben's `module-src-sync` + F5 — byte-check the served
+`register-skills.js` for `edhaWatchEntryLevel` AND `_edhaLifeClearBusy` before running any
+07-27b re-test; if absent, mark them BLOCKED-ON-DEPLOY and move on.** The THREE pack halves are
+still owed (all re-confirmed stale by run-5 fresh compendium reads): `foundry-build leyline`
+(Mender's note/range), `foundry-build deity` + re-forge (2bY-7's Constructs ×3 — live pack still
+reads `creatureType: ""`; it now also carries Surgical Precision's cosmetic rule-description
+truthing), `foundry-build adversaries` + re-imports (2bAB-1 Flame Surge still `damage.formula:
+null` on both bosses; Herding Antlers still 0 events). Do NOT run a pack build yourself; record
+their rows BLOCKED-ON-DEPLOY unless a fresh console read proves a rebuild landed. Check the
+letter above 07-27b before starting.
 
-**Carry-forward: run 5 left FOUR defects for test-pass-fixes — do NOT re-diagnose them, and
-re-test only what a fix delta says is fixed:** (1) simultaneous cascade-drop harvests lose the
-2nd+ nested kill's DISPATCH entirely (queue half is fixed and retired; the loss is upstream,
-suspected `_edhaCascadeBusy`/defeat-watch re-entrancy); (2) Adaptive Mutation has no
-once-per-creature gate (second use re-charges and silently replaces the pick); (3) Apex Form's
-scene end creates TWO injuries, not one; (4) Surgical Precision's graze branch is unreachable
-as console-driven (`dc: null` on the d20 — ⚑ Ben should try once from the sheet). Also still
-open: Shockwave Slam's weapon-hit trigger surface (run 1), and the Raise-Dead-keeps-its-Remain
-+ Fault-Line-spares-allies + Walking-Ruin-indicator rulings (Ben's).
+**OPEN WITH THE 07-27b RE-TESTS (run 5's four defects + the Chaos sweep are FIXED — engine sync
++ F5 first; do NOT re-diagnose, the verified causes are in the 07-27b delta):** (1) the
+simultaneous-harvest triple drop — all THREE drops now dispatch (three ✨ cards, counts then
+eviction at cap 2; the cascade must not re-detonate off nested kills) — row in BENCH — Death;
+(2) **2bW-12** Adaptive Mutation's pre-cost once-per-creature refusal + the stale-card belt; (3)
+**2bW-13** Apex Form's scene end mints exactly ONE injury — meaningful only with BOTH GM clients
+connected (the cause was two GM clients behind a raw-isGM gate, NOT a double moment); (4)
+**2bW-15** Surgical Precision — success posts the cleanse, a GRAZE posts the whispered
+no-cleanse note (engine-decided; it was never a bench artifact — try sheet + console, they must
+agree); (5) the Chaos residual (c) sweep — combat delete now clears `lists.omens`, off-canvas
+bearers' markers, and `trigRound`. Also still open: Shockwave Slam's weapon-hit trigger surface
+(run 1), and the rulings batch (Ben's): Raise-Dead-keeps-its-Remain, Fault-Line-spares-allies,
+Walking-Ruin-indicator, mutation riders on a nat-1 graze, Unweaving's dispellable Omen marker,
+and the roster cross-talk park (triage verdict 07-27b: NO re-post mechanism exists — the
+"stale prompt" cards are fresh event-driven offers from the 15 always-armed bench PCs).
 
 Then run the two sections end-to-end:
 
@@ -95,11 +105,13 @@ Then run the two sections end-to-end:
   `Bench Ally — One` + `Bench Target — Adjacent A`, allies are friendly-disposition and linked.
 
 **Standing observations to extend, not re-open:** the out-of-combat scope question has its full
-characterization in the 07-26k delta; run 5 added five sightings (roster cross-talk incl.
-Devoted Conduit eating a row's own damage; mutation riders firing on a nat-1 graze; Unweaving
-listing the Omen marker as dispellable; Chaos having no scene-end sweep; stale prompt-sweep
-cards re-posting). If Fate's or Sovereignty's watches show the same patterns, ADD the sighting
-to the rulings batch — don't re-derive it.
+characterization in the 07-26k delta; run 5 added five sightings, of which TWO are now closed
+(Chaos's scene-end sweep was fixed 07-27b; the "stale prompt re-posts" were triaged — no re-post
+mechanism exists, they are fresh offers from the always-armed roster). Still live for the
+rulings batch: roster cross-talk incl. Devoted Conduit eating a row's own damage (recommended
+default: park non-active bench PCs' watches); mutation riders firing on a nat-1 graze;
+Unweaving listing the Omen marker as dispellable. If Fate's or Sovereignty's watches show the
+same patterns, ADD the sighting to the rulings batch — don't re-derive it.
 
 **Caveats:** multi-client rows stay ⚑ Ben. Do NOT fix anything mid-run — that is
 `test-pass-fixes` work. Record per the skill: passing rows retire with one-line evidence, fails

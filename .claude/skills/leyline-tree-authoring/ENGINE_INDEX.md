@@ -175,6 +175,16 @@ Insight) and §9o called them byte-identical. **They are not, and the difference
 - **Membership lives on the mark, order lives in the list, and the mark wins.**
   `edhaOwnerList(owner, key, status)` drops any entry whose creature no longer bears the status, so
   a half-migrated tree (or a GM clearing a status by hand) cannot strand a phantom under the cap.
+- **A tree's ledger key MUST be in its deleteCombat scene clear** (07-27b — Chaos's `lists.omens`
+  survived combat delete because `edhaClearChaosState` predated the 2bU repoint; the reconcile
+  hides a stale entry only while its token resolves, then the fail-open keep is phantom cap
+  pressure). The Death clear is the template: statuses on canvas tokens AND directory actors,
+  the raw `lists.<key>` unset on characters (§9o trap 3 — hand-edit the key).
+- **deleteCombat clears gate on `edhaDefBuffGmGate()`, never raw `isGM`** (07-27b — bench run
+  5's Apex Form double injury: two GM clients each ran the Life clear; the raw-isGM family of 15
+  hooks was retrofitted). A clear that CREATES documents (the apex injury) also guards against
+  overlapping itself (`_edhaLifeClearBusy`) and unsets its trigger flag BEFORE the creating
+  round-trip.
 - **NOT in scope:** canvas objects (Fate's MeasuredTemplates, Destruction's Regions) stay with the
   placement handlers, and Knowledge's **Insight is a different shape** — a counted SINGLE bearer
   (0–5, transfer clears the old one), not N members. That is the proposed **H3b
@@ -408,6 +418,16 @@ event, let alone another actor's. That is the gap ~54 name-keyed owner sweeps we
   spirit damage must not cascade), enforced by a DEPTH guard capped at 2. Turn it on when the caused
   event is genuinely a new one: Predatory Insight is the only rule in the project that sets it, because
   a creature emptied by Whispered Doubt's extra loss must still count (the 07-05 test-pass lesson).
+- **`ev.chainBounded` + `edhaWatchEntryLevel(openCount, chainBounded)` (07-27b — bench run 5's
+  harvest DISPATCH loss).** The depth guard's counter counts OPEN dispatches, and SIBLING events
+  from one payload overlap — the 2nd simultaneous nested kill used to read its sibling's open
+  frame as its own ancestry and be dropped at the door. An ANNOUNCE SITE whose kind is
+  structurally non-repeating (defeat: live→0 fires once per creature, so its chains cannot loop)
+  passes `chainBounded: true` and the dispatch CLAMPS to chain level instead of dropping.
+  **Never declare it for a kind that can ping-pong** (focus-change) — the ≥2 drop is what ends
+  those loops. The pure entry decision is `edhaWatchEntryLevel` (pinned,
+  `tests/watch-dispatch.test.js`, which also drives the real dispatcher through the bench
+  interleaving); the loop chain-gates on its LOCAL level, never the shared counter.
 - **`vs: "none"`** = the observation itself is the trigger. Otherwise the observed total is compared
   through H1's own `edhaDefTestOutcome` — no second roll, no new comparison code.
 - **Silence on a miss is not a field.** Write no `edha-test-fail` rule and a failed watch does
@@ -848,14 +868,21 @@ Both trees to zero; the `remains` ledger repointed (the THIRD of six). No talent
   handler). New `withernext` status (the predprimed shape).
 - **`edha-mutation`** — the pick-an-adaptation chooser (Adaptive Mutation): options render from
   the rule's fields (keenFormula / venomFormula / deflectAmount); the click bakes the `mutation`
-  flag the (name-free) Life readers consume.
+  flag the (name-free) Life readers consume. One-per-creature-per-scene is ENFORCED (07-27b):
+  a `preUseItem` veto refuses an already-mutated target pre-cost, and the click is belted so a
+  stale chooser cannot replace the graft.
 - **`edha-regen-grant`** — start-of-THEIR-turn regen via the existing lifeRegen resolver (no new
   hook): `endOnVitalSpirit`, `mutationFormula`, and the apex package (`deflect` + `vitalFormula`
   → the `apexForm` flag: doubling + injury-on-end ride it; `sourceName` labels every card).
   Apex Form's FIVE mechanics are one rule.
-- **`edha-cleanse` grew `trigger: success-damage-roll` + `conditions`** — the cleanse card on
-  this talent's own NON-graze damage roll (Surgical Precision; the name-keyed hook is a generic
-  rule watcher now).
+- **`edha-cleanse` grew `trigger: success-damage-roll` + `conditions`, and `def` (07-27b)** —
+  the cleanse card when this talent's own use SUCCEEDS. ⚠ the outcome is ENGINE-decided: the
+  system binds NO DC to a skill_test talent's d20 and `roll.options.graze` only marks the twin
+  damage fires (it is the ATTACHED graze sub-roll on the main fire — never "the test missed"),
+  so the watcher compares the use's captured test (`_edhaLastRoll`, skill-matched) vs the
+  target's `def` (default phy) through `edhaDefTestOutcome`. Success → cleanse card; graze →
+  whispered no-cleanse note; unreadable/uncaptured → fail-open. (Surgical Precision; the
+  name-keyed hook is a generic rule watcher now.)
 - **`edha-redirect` {intercept} grew `watchFlag` / `linkOnUse` / `chooseAmount` / `takeType` /
   `healFormula`** (+ blank `rangeColor`) — a SINGLE linked creature instead of a ledger, the
   link written on use, the offer carrying an amount input, damage-type conversion, and a rolled
