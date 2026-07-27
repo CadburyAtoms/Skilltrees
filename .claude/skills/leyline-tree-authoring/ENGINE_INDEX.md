@@ -1527,6 +1527,17 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   `data.skillTest.advantageMode`, so setting only `roll.options` silently loses on any dialog roll.
   The retired `edhaStanceAdvPreRoll` set `= 1` and wrapped neither — stance skill advantage never
   landed. Copy `edhaAdvTestPreRoll`'s two-line shape for any new advantage injector.
+  ✅ **NOW GATED, BOTH HALVES (07-27l) — because writing this FACT down was not enough.**
+  `edhaQuarryAdvPreRoll` made the identical two mistakes and shipped anyway; quarry auto-advantage
+  never applied once in its life, and the engine comment claiming the stance regression was "pinned
+  in tests/" was false — nothing in `tests/` mentioned `advantageMode`. The invariant is now
+  enforced, not advised: **`tests/advantage-channel.test.js`** scans every `.advantageMode =` site
+  in the engine for the string value AND a `configureDialog` seed in the same function (plus a
+  ledger holding both historic instances fixed, and a pin that the adjacent `plotDie` channel stays
+  BOOLEAN — `hasPlotDie` is `!!options.plotDie`, so don't "fix" it into a string by analogy), and
+  **`lint-refs` pass 13** validates the authored side, where `edha-test-rider` hands its `mode`
+  field to the channel unnarrowed. Both mutation-verified. Nine advantage sites exist; a tenth that
+  gets either half wrong now fails the build.
 - **PC token defaults** (`edhaPcSightShape(actor)` + preCreateActor hook + AWA updateActor
   watcher + `edha.fixPcTokens()`) — new character actors get displayName HOVER(30) and cosmere
   "sense" sight (attenuation 0.1) with range = Senses Range (`edhaSensesRangeFtFromAwa`); the

@@ -2,7 +2,20 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, **COMPLETED 2026-07-26 (pass AA)**: **the ratchet list is EMPTY — 221 → 0 across twenty-seven passes.** Every tree is clear, all six marker ledgers have migrated, and `scripts/name-keyed-allowlist.json` stays in the repo with an empty `talents` list *on purpose* — lint pass 7 still guards against REGROWTH, which is the half of the ratchet that matters from here on. ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **ALL SIX marker LEDGERS have migrated** (`covenants` 07-24u; `edicts` 07-25 pass V; `remains` 07-25 pass W; Fate's `snares` 07-25 pass X; Destruction's `charges` 07-26 pass Y; Fate's `ordained` 07-26 pass AA — the point-bound ones fail OPEN through H3's reconcile by design). There is no flat marker-list flag left in the engine. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-27k** (BENCH RUN 10 — THE DEDICATED HEROIC
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-27l** (BENCH RUN 10'S ONE DEFECT FIXED —
+quarry auto-advantage had **never applied in the mechanic's life**, and the cause was two mistakes
+at one site: it wrote the NUMBER `1` where the cosmere `AdvantageMode` is a **string** enum
+(`hasAdvantage` is `=== "advantage"`, so `configureModifiers()` left a plain `1d20`), and it skipped
+the `configureDialog` wrapper that every other site has, so even the right value would have been
+overwritten on any dialog roll. Both halves re-derived from the installed system source, not from
+the report. **The family sweep says ONE: nine advantage sites, eight already correct** — reported
+because the answer being "one" is the finding, after two sweeps this marathon turned two sightings
+into nine and three. This is the SECOND instance of the shape (the retired `edhaStanceAdvPreRoll`
+was the first) and the engine comment claiming its regression was "pinned in tests/" was **false** —
+nothing in `tests/` mentioned `advantageMode`. Now both gated: `tests/advantage-channel.test.js`
+(engine writes, value + wrapper, mutation-verified) and `lint-refs` **pass 13** (authored values into
+closed system enums, where `edha-test-rider` passes `mode` through unnarrowed). ENGINE-ONLY → ⟳ sync
++ F5; 298 tests green.) Prior: **2026-07-27k** (BENCH RUN 10 — THE DEDICATED HEROIC
 RUN. Twelve rows retired on evidence; the section is now provably **deploy-blocked, not untested** —
 16 rows left, **0 runnable**, and **8 of them unblock in one action**: `foundry-build heroic` +
 ⟳ Sync Talents. Two never-verified 07-27j engine fixes confirmed at the table (the CAE grant
@@ -136,6 +149,106 @@ the Red pilot, executed live by an agent session joined as `Bench`: 16 rows reti
 1 FAIL root-caused (Shockwave Slam's weapon-hit trigger surface), 4 cross-tree observations,
 and the agent-bench runbook hardened with the v13 operating lessons. Docs + setup-script fix
 only; nothing to deploy.)
+
+**2026-07-27l — BENCH RUN 10'S ONE DEFECT FIXED: quarry auto-advantage wrote a NUMBER into a
+STRING enum, and skipped the dialog. ENGINE-ONLY (⟳ sync the module + F5) + one TOOLING gate.
+298 tests green.**
+
+### Bug root causes
+
+**Quarry auto-advantage has never applied, in the mechanic's entire life — and the cause is two
+mistakes at one site, not one.** Run 10 reported four Sidesword attacks on a correctly-marked quarry
+all rolling a plain `1d20 + 4`, never `2d20kh`, while a hook probe showed `cosmere-rpg.preAttackRoll`
+firing with `advantageMode: 1` on the roll object. Both halves were verified against the installed
+cosmere system (`systems/cosmere-rpg/index.js`) rather than inferred — the marathon has now shipped
+four wrong fixes that came from a confident-sounding mechanism, so this one was re-derived:
+
+1. **The channel is a STRING enum, not a numeric one.** `AdvantageMode` (index.js L262-267) is
+   `{None:"none", Advantage:"advantage", Disadvantage:"disadvantage"}`, and
+   `D20Roll.hasAdvantage` is literally `this.options.advantageMode === AdvantageMode.Advantage`
+   (L3787). The number `1` is not that string, so `configureModifiers()` (L4017) took its
+   **else**-branch — `d20.number = 1` — and left the roll a plain `1d20`. Nothing throws, nothing
+   warns, and the wrong value stays *readable* on the roll, which is exactly why the bench's probe
+   saw "advantage is set" while the dice disagreed. This is NOT a `CONFIG`-level index; the only
+   numbers anywhere near this channel are `d20.number`.
+2. **The roll IS rebuilt by a dialog step this site skipped.** `d20Roll` (L5266) fires `preRoll`
+   **before** `await roll.configureDialog({… skillTest: {…} …})`, and configureDialog ends with
+   `this.options.advantageMode = result.advantageMode` (L3903). So on any non-fast-forward roll the
+   dialog **overwrites** whatever pre-roll set, unless the site wraps `configureDialog` to pre-seed
+   `data.skillTest.advantageMode`. Even the correct string would have been dropped without it.
+
+**Where this diverged from the bench's suspicion:** nowhere on the two named halves — both were
+right, and both are now verified in system source rather than taken on trust. What the bench did
+*not* have is the third fact, which is the reason to care: **this is the SECOND instance of one
+shape, not a one-off typo.** The retired `edhaStanceAdvPreRoll` made exactly the same two mistakes,
+and the engine's own comment at ~L472 said the regression was "pinned in tests/" — it was not.
+Nothing in `tests/` mentioned `advantageMode` at all. A doc claiming coverage that does not exist is
+how the second instance survived a sweep that should have caught it (CASE_STUDIES §8), so the claim
+is now true: `tests/advantage-channel.test.js` exists, and the comment names it.
+
+### One bug or a family? — the sweep, stated explicitly
+
+**Nine advantage-channel write sites in the engine; ONE was wrong, and it was wrong on both counts.**
+Every other site already does both halves — Weakened's disadvantage (~L346), `edha-test-rider`
+(~L481), pack advantage (~L533), the Opportunity adv-test (~L3624), `edha-next-test-mod` (~L5043),
+Bulwark's suppression (~L11862), and two later sites (~L14439, ~L15241). The quarry site is the sole
+outlier on the value AND the sole outlier on the wrapper. **Reported as a family check because the
+answer being "one" is itself the finding** — the raw-i18n and dead-field sweeps each turned two
+sightings into nine and three sites, and this one genuinely does not.
+
+The sweep went one layer further, to the **authored** side, because `edha-test-rider` assigns the
+rule's `mode` field **straight into the channel with no narrowing**: all 15 authored `mode` values
+that reach it are legal enum strings (7 `edha-test-rider`, 7+1 `edha-next-test-mod` across talents
+and the Surecat's Intercept). The `plotDie` channel next door was checked too and is genuinely
+boolean (`hasPlotDie` is `!!options.plotDie`) — left alone, and pinned so nobody "fixes" it into a
+string by analogy.
+
+### The fix
+
+`edhaQuarryAdvPreRoll` now matches the house convention exactly: the string, `configureModifiers()`,
+the `configureDialog` wrapper, an idempotence guard (`_edhaQuarryAdv`) so a re-fired pre-roll cannot
+double-wrap, and `console.error` instead of a silent swallow.
+
+**One deliberate addition beyond the fix: a whispered card** ("🎯 Quarry: X is your marked quarry —
+this attack rolls with advantage"), whispered to the owner + GMs exactly like pack advantage's. This
+was the *only* advantage site in the engine with no table-visible signal, which is why a mechanic
+that never once worked went unnoticed for its whole life. **Veto it and it comes straight back out.**
+
+### New gates (the fourth "wrong shape into a system channel" bug, so the pass built the gate)
+
+- **`tests/advantage-channel.test.js`** — the ENGINE half. Scans every `.advantageMode =` assignment
+  in comment-stripped engine code and checks (a) the value is a legal enum string or one of the two
+  known-narrowed variables, (b) the enclosing **function** also seeds `data.skillTest.advantageMode`,
+  (c) both historic instances stay fixed, (d) `plotDie` stays boolean. Scoping (b) to the function
+  rather than to N following lines is what makes it survive a site gaining a line.
+  **Mutation-verified**: restoring `= 1` with no wrapper fails three of its six cases by name.
+- **`scripts/lint-refs.js` pass 13** — the DATA half, which nothing covered. Authored values that
+  reach a closed system enum, keyed by handler type + field. `mode: "adv"` typed on the Events tab
+  in Foundry is byte-for-byte this defect and passed every other gate until now; on
+  `edha-next-test-mod` it is worse than inert, because the engine normalises anything non-`advantage`
+  to disadvantage and a typo therefore **inverts** the rule. **Mutation-verified** against a planted
+  value on Flamestance. The engine half is deliberately NOT duplicated there — two gates for one
+  check is two things to keep in sync; same split as pass 11 / `dead-field.test.js`.
+
+### Rulings sighted (not decided here)
+
+- **Quarry advantage STOMPS an active disadvantage.** Hook registration order puts the quarry site
+  after Weakened's, so a Weakened hunter attacking their quarry rolls *advantage*, not "they cancel".
+  That is the house convention (pack advantage, the adv-test and next-test-mod sites all stomp; only
+  `edha-test-rider` has an opt-in `unlessDisadvantage`, added for Apex Predator), so it was left
+  alone rather than silently changed. Say the word if quarry should carry `unlessDisadvantage` too.
+- **The whispered card** above — keep or cut.
+
+### Known limits / couldn't self-verify (no Foundry session)
+
+- ⚑ **The 2d20kh itself is unverified from here.** The fix is proven correct against the system's
+  source and against every working sibling site, but only the bench can show `2d20kh` on a real
+  quarry attack. Needs **⟳ sync the module + F5** (engine-only — no pack rebuild).
+- ⚑ **The dialog half specifically.** Every bench attack so far has been fast-forwarded, so the
+  `configureDialog` wrapper has never been exercised on this site. Drive one quarry attack **with
+  the roll dialog open** and confirm Advantage is pre-selected and still overridable.
+- ⚑ **2bX-17's advantage half stays blocked until the above passes** — a negative that matches a
+  globally-broken positive proves nothing, which is exactly why run 10 could not close it.
 
 **2026-07-27k — BENCH RUN 10: THE DEDICATED HEROIC RUN. Twelve rows retired on evidence, one new
 engine FAIL, one suspected defect retracted after measurement — and the section is now provably

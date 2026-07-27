@@ -1,8 +1,9 @@
 # BENCH MARATHON REPORT — 2026-07-26 → 07-27
 
-**Six bench runs, seven fix passes, 45 commits, one branch (`claude/rule-2b-audit`, pushed).**
-178 checklist rows retired on live evidence · 26 defects found → 25 fixed → 20 re-tested and
-retired at the table · 3 new build gates · engine tests 215 → 292.
+**Seven bench runs, eight fix passes, 52 commits, one branch (`claude/rule-2b-audit`, then
+`claude/heroic-and-tooling`, both pushed).** 190 checklist rows retired on live evidence ·
+27 defects found → 26 fixed → 22 re-tested and retired at the table · 5 new build gates ·
+engine tests 215 → 298.
 
 Everything below was executed live in your running Foundry as the `Bench` GM user, or verified
 in code with a pinned regression test. Where a claim is an inference rather than an observation,
@@ -59,6 +60,8 @@ multi-client, "does this look right".
 > - **1** is a new engine FAIL found this run (quarry auto-advantage never applies), **1** is blocked
 >   behind it, **1** needs a bench-roster change rather than a test (no bench PC owns Probability
 >   Net), and **1** is a Blue row parked in the Heroic section.
+>   ✅ **The FAIL was fixed the same day (pass 8, `b96a915` — see §2).** Those first two rows now need
+>   only **⟳ sync the module + F5**, not the heroic rebuild, so Heroic's runnable count is 0 → **2**.
 >
 > Heroic's blocked count rising 6 → 8 is not regression: two collapsed spot-rows (Contest-gate,
 > Warrior stances) had their remaining runnable items cleared this run, so what is left of each is
@@ -121,8 +124,8 @@ step that requires counting `- [ ]` rows per section, minus ⚑, before scheduli
 
 ## 2. Every defect: found → fixed → re-tested
 
-26 defects. **25 fixed, 1 works-as-designed, 1 carried unfixed** (Shockwave Slam, found run 1,
-before this marathon). 20 have been re-tested and retired at the table; 5 await your deploy.
+27 defects. **26 fixed, 1 works-as-designed, 1 carried unfixed** (Shockwave Slam, found run 1,
+before this marathon). 22 have been re-tested and retired at the table; 5 await your deploy.
 
 ### Found run 3 (before the marathon), fixed in pass 1, re-tested run 4 — all 8 retired
 
@@ -179,24 +182,30 @@ before this marathon). 20 have been re-tested and retired at the table; 5 await 
 | **The whole counter economy wrote a dead field** | `ActiveEffectDataModel`'s schema is exactly `isStackable` + `stacks`. Writes to `system.count` resolved with no error and were dropped; every read was 0. Blast radius: seven Knowledge rows plus any `@counter` in any tree | `f604d1f` | ✅ run 9, all six re-opened rows |
 | Two more dead fields the new gate found | `bench-setup-console.js` read the same dead `system.range.value` — **no bench PC had a ranged weapon in any of the first eight runs**, silently. `foundry-build.js` wrote six keys the TalentItemDataModel drops (inert) | `7dda01a` | ✅ run 9 — Shortbow on all 16 PCs, unblocking 2bX-16 |
 
-### Found run 9, fixed in pass 7 — **not yet re-tested; there was no run 10**
+### Found run 9, fixed in pass 7 — **two re-tested at run 10, two still await the heroic rebuild**
 
-| Defect | Root cause | Commit |
-|---|---|---|
-| **Eight talents wired to cosmere skill ids that don't exist** | `itm`/`per`/`ldr` aren't skills. A contest compares against the id the player actually rolled, so a dead id waits forever; `@skills.<id>.rank` substitutes to 0. Flamestance *never worked*, and now has a cause | `83c04ea` |
-| An attribute contest rolled a bare d20 | `spd` wasn't a data bug — `edhaRollOpposedSkill` skipped both terms for an attribute id, so a "tests Speed" card rolled nothing | `b2de5b4` |
-| CAE grant write-race | Same race as the H3 one, on a path that never went through the queue | `2a87c4d` |
-| Pack Hunting double-dipped | **Not** an `appliesTo` failure — it declares `either` correctly. It *applies* at `pre<Ctx>Roll` but *consumes* at `<ctx>Roll`, and a Strike rolls damage inside that window | `7e414d8` |
+| Defect | Root cause | Commit | Re-test |
+|---|---|---|---|
+| **Eight talents wired to cosmere skill ids that don't exist** | `itm`/`per`/`ldr` aren't skills. A contest compares against the id the player actually rolled, so a dead id waits forever; `@skills.<id>.rank` substitutes to 0. Flamestance *never worked*, and now has a cause | `83c04ea` | ⏳ needs heroic rebuild — a run-10 console read confirmed every stale key is still in the live pack |
+| An attribute contest rolled a bare d20 | `spd` wasn't a data bug — `edhaRollOpposedSkill` skipped both terms for an attribute id, so a "tests Speed" card rolled nothing | `b2de5b4` | ⏳ needs heroic rebuild |
+| CAE grant write-race | Same race as the H3 one, on a path that never went through the queue | `2a87c4d` | ✅ run 10 — three groups from one combat start, then two-in-one-tick |
+| Pack Hunting double-dipped | **Not** an `appliesTo` failure — it declares `either` correctly. It *applies* at `pre<Ctx>Roll` but *consumes* at `<ctx>Roll`, and a Strike rolls damage inside that window | `7e414d8` | ✅ run 10 — one card, one roll, flag consumed once |
+
+### Found run 10, fixed in pass 8
+
+| Defect | Root cause | Commit | Re-test |
+|---|---|---|---|
+| **Quarry auto-advantage has never once applied** | Two mistakes at one site, both re-derived from the installed system rather than from the report. `AdvantageMode` is a **string** enum and `hasAdvantage` is `=== "advantage"`, so the number `1` made `configureModifiers()` leave a plain `1d20` — while still reading back as `advantageMode: 1`, which is why the bench's probe saw "advantage is set" and the dice disagreed. And `preRoll` fires *before* `configureDialog`, which reassigns `options.advantageMode` from its own result, so the missing wrapper would have dropped even the correct value on any dialog roll. **The family sweep says ONE**: nine advantage sites in the engine, eight already correct on both counts — worth stating, because the raw-i18n and dead-field sweeps each turned two sightings into nine and three. It is the *second instance of the shape* though (the retired `edhaStanceAdvPreRoll` was the first), and the engine comment claiming that one's regression was "pinned in tests/" was false — nothing in `tests/` mentioned `advantageMode` | `b96a915` | ⏳ needs ⟳ sync + F5 (engine-only) — un-blocks 2bX-17 too |
 
 ### Carried, unfixed
 
 - **Shockwave Slam's weapon-hit trigger surface** — found run 1, before this marathon, never
   root-caused. The only defect that outlived the whole marathon.
 
-### Three gates built (worth more than the individual fixes)
+### Five gates built (worth more than the individual fixes)
 
-The marathon hit the same *shape* of bug three times — code reading a field the cosmere DataModel
-doesn't define, failing silently. Rather than fix the third one and move on:
+The marathon hit the same *shape* of bug four times — code writing or reading something the cosmere
+system does not actually define, failing silently every time. Rather than fix each one and move on:
 
 - **lint-refs pass 11** — validates engine `system.*` writes against the system's real schemas, in
   all three syntactic forms. Mutation-verified against all four historic writes.
@@ -205,6 +214,17 @@ doesn't define, failing silently. Rather than fix the third one and move on:
   a new status never means editing the linter). With the data fix reverted it reports exactly the
   eight original sites.
 - **lint-refs pass 10** (pass 5) — fails the build on any raw `*.label` read.
+- **lint-refs pass 13** — the same disease one step over: an authored value whose NAME resolves but
+  whose *shape* is wrong for the channel it lands in. `edha-test-rider` passes its `mode` straight
+  into `roll.options.advantageMode` unnarrowed, so `mode: "adv"` typed on the Events tab is
+  byte-for-byte the run-10 defect; on `edha-next-test-mod` a typo is worse than inert, because the
+  engine normalises anything non-`advantage` to disadvantage and therefore **inverts** the rule.
+  Mutation-verified against a planted value.
+- **`tests/advantage-channel.test.js`** — the engine half of the same family: every
+  `.advantageMode =` site must write the string enum *and* wrap `configureDialog`, with both
+  historic instances held fixed. Mutation-verified: restoring `= 1` fails three of its six cases.
+  Deliberately a test rather than a sixth lint pass — the split mirrors pass 11 / `dead-field.test.js`,
+  and two gates for one check is two things to keep in sync.
 
 ---
 

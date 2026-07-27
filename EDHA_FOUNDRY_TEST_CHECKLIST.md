@@ -114,6 +114,14 @@ ATTRIBUTE id is a real contest id (a "tests Speed" card was rolling a bare d20).
 the sync:** the served `register-skills.js` must contain `edhaContestAttrFor`, `edhaNextModClaimOk`
 and `edhaOwnerListQueue(c, key` (the CAE call site).
 
+**⏳ The 07-27l fix is ENGINE-ONLY and needs ⟳ sync the module + F5 (no rebuild, no ⟳ Sync Talents).**
+One site: `edhaQuarryAdvPreRoll` wrote the **number `1`** into `roll.options.advantageMode`, where the
+cosmere `AdvantageMode` is a **string** enum — so `configureModifiers()` left a plain `1d20` and
+quarry auto-advantage has never once applied. It also skipped the `configureDialog` wrapper, which
+would have dropped even the correct value on any non-fast-forward roll. **Byte-check after the sync:**
+the served `register-skills.js` must contain `_edhaQuarryAdv` (2×) and must contain **no**
+`advantageMode = 1` anywhere outside comments. Un-blocks the quarry advantage row and **2bX-17**.
+
 ---
 
 ## ⚑ THE COMPLETE PACK-REBUILD LIST — run these in this order, Foundry CLOSED
@@ -965,19 +973,23 @@ The run cleared what it applied.
 Run on **Bench — Heroic** (it carries exactly the talents these rows name, across all six
 paths).
 
-> ⛔ **NOTHING IN THIS SECTION IS RUNNABLE UNTIL THE HEROIC PACK IS REBUILT** (as of run 10,
-> 2026-07-27k). Runs 9 and 10 drove every row the current deploy allows. **16 rows remain, 0 of
-> them runnable today:**
+> ⛔ **ALMOST NOTHING IN THIS SECTION IS RUNNABLE UNTIL THE HEROIC PACK IS REBUILT** (as of run 10,
+> 2026-07-27k; amended 2026-07-27l). Runs 9 and 10 drove every row the current deploy allows.
+> **16 rows remain. 2 became runnable on 2026-07-27l** — the quarry advantage fix and 2bX-17 behind
+> it — and they need only **⟳ sync the module + F5**, NOT the pack rebuild. The other 14:
 > - **8 BLOCKED-ON-DEPLOY** on `foundry-build heroic` + ⟳ Sync Talents — the dead-skill-key family
 >   fixed in `83c04ea`: 2bJ-12 · 2bB-4 · 2bQ-4 · 2bM-6 · 2bN-2 (Confident third) · 2bD-7 (Sharp Eye
 >   third) · the Contest-gate spot · the Warrior stances spot (Flamestance). A fresh console read on
 >   07-27k confirmed each is still stale in the live pack, so none were failed against it.
 > - **4 ⚑ DESIGN CALLS THAT ARE YOURS** — every factual half is now proven: 2bC-1 · 2bF-14 ·
 >   2bF-16 · the four dead prereqs.
-> - **1 new engine FAIL** for test-pass-fixes: quarry auto-advantage (immediately below).
-> - **1 blocked behind that FAIL**: 2bX-17's advantage half.
 > - **1 roster change, not a test**: the Leader spot's 2bC-8 — no bench PC owns Probability Net.
 > - **1 out-of-scope row parked here**: Probability Cascade is a **Blue** talent; run it in a Blue pass.
+>
+> ✅ **The run-10 FAIL is FIXED (2026-07-27l, ENGINE-ONLY).** Quarry auto-advantage had never applied:
+> it wrote the number `1` where the cosmere `AdvantageMode` is a string enum, and skipped the
+> `configureDialog` wrapper every other advantage site has. **⟳ sync the module + F5** makes both the
+> quarry row (immediately below) and **2bX-17** runnable.
 >
 > **Rebuilding the heroic pack unblocks 8 rows in one step and is the highest-value action available
 > on this section.**
@@ -1074,20 +1086,28 @@ paths).
 > without the stance and **9** with it. `derived` is the armour-only sub-field and never folds in
 > `bonus`; the engine reads `.value` (`edhaDeflectOf`). **Read `system.deflect.value`, never `.derived`.**
 
-- [ ] **⚠️⚠️ NEW FAIL 2026-07-27k — quarry auto-advantage has NEVER applied (engine, one site)** — Seek
-      Quarry's own card promises "Advantage on tests to find, **attack**, and study your quarry —
-      attacks are auto-advantaged". **Four separate Sidesword attacks on a correctly-marked quarry all
-      rolled a plain `1d20 + 4`** — never `2d20kh` — with the ledger holding the victim and the `Quarry`
-      icon on it. **Root cause pinned by probe, not by reading:** a hook probe shows
-      `cosmere-rpg.preAttackRoll` DOES fire and the roll carries `advantageMode: 1` at both `preAttack`
-      and `attack`, but its `terms` stay `[Die:1d20, +, 4]` — one d20, no `kh`. `edhaQuarryAdvPreRoll`
-      (engine ~5442–5451) is the **only** advantage site in the engine that writes the **number `1`**
-      instead of the string `"advantage"`, and the only one with **no `configureDialog` wrapper** —
-      and the engine's own comment at ~line 314 says "Dialog rolls: configureDialog OVERWRITES
-      options.advantageMode". Every other site (~476, 528, 3619, 5038, 14434, 15236) does both. Same
-      retired-code smell run 9 named for Flamestance. **Fix shape:** match the house convention.
-      Blast radius: Seek Quarry, Tagging Shot's placed quarry, and anything else expecting quarry
-      advantage. → **test-pass-fixes**.
+- [ ] **✅ FIXED 2026-07-27l — quarry auto-advantage — RE-TEST NEEDS: ⟳ sync the module + F5 (ENGINE-ONLY, no pack rebuild)** —
+      Mark a quarry with Seek Quarry, target it, and make a **Sidesword attack** → the attack must roll
+      **`2d20kh`**, not `1d20`, and a whispered card must say "🎯 **Quarry**: `<name>` is your marked
+      quarry — this attack rolls with **advantage**". Then **repeat with the roll dialog OPEN** (do not
+      fast-forward) → Advantage must come up **pre-selected**, and must still be overridable by hand.
+      Then attack a **non**-quarry creature → plain `1d20`, **no card**.
+      *(Background: run 10 found four attacks on a correctly-marked quarry all rolling `1d20 + 4` with
+      `advantageMode: 1` visible on the roll. Two causes at one site, both re-derived from
+      `systems/cosmere-rpg/index.js` rather than from the report: `AdvantageMode` is a **string** enum
+      (L262-267) and `hasAdvantage` is `=== "advantage"`, so the number `1` made `configureModifiers()`
+      leave a plain `1d20`; and `preRoll` fires **before** `configureDialog`, which reassigns
+      `options.advantageMode` from its result (L3903), so the missing wrapper would have dropped even
+      the correct value on any dialog roll. Family sweep: 9 advantage sites in the engine, this was the
+      only wrong one, on both counts. Gated now by `tests/advantage-channel.test.js` + `lint-refs`
+      pass 13. **The whispered card is NEW** — it was the only advantage site with no table-visible
+      signal, which is how this survived unnoticed; say so and it comes back out.)*
+- [ ] **⚑ Quarry advantage vs. an active DISADVANTAGE — your ruling, 2026-07-27l** — attack your quarry
+      **while Weakened** → today the attack rolls **advantage** (the quarry site runs after Weakened's
+      and overwrites it). That is the house convention — pack advantage, the Opportunity adv-test and
+      `edha-next-test-mod` all stomp, and only `edha-test-rider` has the opt-in `unlessDisadvantage`
+      that Apex Predator uses. Left alone deliberately rather than changed silently. Tell me if quarry
+      should refuse to stomp instead.
 - [ ] **2bC-1 — High Society Contacts (Agent)** — Events tab, then use it → ⚑ A rule is THERE (was empty): `edha-next-test-mod`, target **self**, Opportunity **true**. Using it banks the credit and the card says so. *(2026-07-27k: the FACTUAL half PASSES — the rule reads exactly `HiSocOppAdder001` / `edha-next-test-mod` / target `self` / `opportunity: true`; using it banked `oppCredit {source: "High Society Contacts"}` with "🎲 …your next test — with an Opportunity banked", and the next test printed "🎲 Opportunity! …(+1 granted by High Society Contacts…)" and cleared the credit. **Only the ⚑ design question — is a rule being there what you want — is left, and it is yours.**)*
 - [ ] **2bD-7 — regression: the untouched rows — FAIL 2026-07-27i (2 of 4 are dead)** — **Sharp Eye**, **Tactical Ploy**, **Steadfast Challenge**, **Valiant Intervention** → All four still work exactly as before — they stay on the old `EDHA_HEROIC_DEFTESTS` path this pass. If any broke, the table edit went wrong. **Run 9:** Tactical Ploy ✅ (2bE-7, both branches) and Valiant Intervention ✅ (2bF-15). Steadfast Challenge rolled and resolved but only a FAIL was observed (2bF-13, below). **Sharp Eye is a silent no-op** — see 2bQ-4. Its cause is the dead-skill-key family below, not the table edit. **2026-07-27k: THREE OF FOUR ARE NOW CLEARED** — Steadfast Challenge's success branch passed (2bF-13, retired), joining Tactical Ploy and Valiant Intervention. ⛔ **This row now hangs on Sharp Eye alone, which is BLOCKED-ON-DEPLOY** (`foundry-build heroic` + ⟳ Sync Talents); a fresh console read on 07-27k confirms the live pack still carries `skill: "per"`.
 - [ ] **2bJ-12 — Feinting Strike (Warrior) ⚠️⚠️ — PARTIAL 2026-07-27i: the dispatcher PASSES, the number is 0** — make the attack and **hit** → The target loses focus equal to your **Intimidation ranks** and its **Reaction is burned on the CAE tracker** — check the tracker, not just the card. ✅ **The on-hit dispatcher premise is PROVEN**: a Sidesword hit fired all of Feinting Strike's rules, and the Reaction burn is real on the document (`remaining: 1→0, used: 0→1`), card "⚡ Feinting Strike: … loses one Reaction (on the tracker)". ⛔ **The focus drain is 0**: "🗡️ Feinting Strike: the target loses **0** focus and its Reaction", target focus 4→4, with the owner's Intimidation rank at **3**. Cause: both rules read **`@skills.itm.rank`** and the cosmere skill key for Intimidation is **`inm`** — `itm` does not exist in `CONFIG.COSMERE.skills`, so `getRollData().skills.itm` is `null`. Reproduced on two separate hits. ✅ **FIXED 2026-07-27j — BLOCKED-ON-DEPLOY: needs `foundry-build heroic` + ⟳ Sync Talents.** Both sites now read `@skills.inm.rank`. **Re-test after the rebuild:** hit with Intimidation rank 3 → the card must say "loses **3** focus" and the target's focus must actually drop by 3.
@@ -1098,7 +1118,7 @@ paths).
 - [ ] **2bF-14 — ⚑ Calm Appeal (Envoy)** — own it, use Steadfast Challenge → The Calm Appeal line appears on a success, with your Discipline rank filled in. Without the talent it must NOT. **Empty Events tab is intended** — same upgrade-talent pattern as 2bF-5. *(2026-07-27k: **BOTH factual halves PASS** — with the talent, a success printed "🕊️ Steadfast Challenge: **Calm Appeal** — spend 1 focus to pacify the target; resisting costs it +**2** focus" at Discipline rank 2; with the talent deleted, a success ("24 vs SPI 14") landed Disoriented and the disadvantage but **no** 🕊️ line. **Only the ⚑ empty-Events-tab design call is left, and it is yours.**)*
 - [ ] **2bF-16 — ⚑ Resolute Stand (Leader)** — own it, use Valiant Intervention → Its line appears on a success only. Empty Events tab intended. *(2026-07-27i: the factual half is observed — the line printed on Valiant Intervention's success. Only the empty-tab design question is yours.)*
 - [ ] **2bM-6 — ⚑ Rallying Shout — a deliberate change — ⚠️ and its number is broken** — own it, use Rousing Presence on an ally **above 0 HP** → The reminder **still prints**. Tell me if you preferred the old gate. *(2026-07-27i: the reminder DID print on an ally at 20 HP, so the deliberate change is live and the ruling is yours.)* ⛔ **Separately, a real defect in the same line:** it printed "recovers its recovery die + **0** health" with the owner's Leadership rank at **3**, because the note reads **`@skills.ldr.rank`** and the cosmere Leadership key is **`lea`**. ✅ **FIXED 2026-07-27j — BLOCKED-ON-DEPLOY: needs `foundry-build heroic` + ⟳ Sync Talents.** The note now reads `@skills.lea.rank`. **Re-test after the rebuild:** with Leadership rank 3 the line must read "recovery die + **3** health".
-- [ ] **2bX-17 — Quarry stale state (heroic pack) — BLOCKED BEHIND THE NEW ADVANTAGE DEFECT 2026-07-27k** — an actor with a PRE-deploy `quarryUuid` flag → The old flag is IGNORED (re-mark once with Seek Quarry) — advantage/Cold Eyes read only the new ledger. Not a bug. *(2026-07-27k: the **Cold Eyes half is PROVEN** — a stale flat `quarryUuid` was staged on Bench — Heroic and Cold Eyes still fired off the **ledger** entry, clearing the ledger's victim and not the stale one. ⛔ The **advantage half is UNPROVABLE right now**: attacks on the stale target and on the ledger target both rolled plain `1d20 + 4`, but so does every quarry attack — see the quarry auto-advantage FAIL at the top of this section. Re-drive once that is fixed; a negative that matches a globally-broken positive proves nothing.)*
+- [ ] **2bX-17 — Quarry stale state (heroic pack) — UNBLOCKED BY THE 2026-07-27l FIX; re-drive after ⟳ sync + F5** — an actor with a PRE-deploy `quarryUuid` flag → The old flag is IGNORED (re-mark once with Seek Quarry) — advantage/Cold Eyes read only the new ledger. Not a bug. *(2026-07-27k: the **Cold Eyes half is PROVEN** — a stale flat `quarryUuid` was staged on Bench — Heroic and Cold Eyes still fired off the **ledger** entry, clearing the ledger's victim and not the stale one. The **advantage half was UNPROVABLE** then: attacks on the stale target and on the ledger target both rolled plain `1d20 + 4`, but so did every quarry attack. **2026-07-27l: the advantage defect is fixed (ENGINE-ONLY — needs ⟳ sync the module + F5), so the half is now drivable and it needs a POSITIVE control this time:** attack the **ledger** target → `2d20kh` + the 🎯 Quarry card; attack the **stale-flag** target → plain `1d20` and **no** card. A negative alone still proves nothing.)*
 - [ ] **Warrior stances spot (like-for-like) — PARTIAL 2026-07-27i** — enter each stance once: Stonestance +1 deflect (2bB-1) · Vine/Bloodstance numbers (2bB-2) · Iron/Windstance advantage (2bB-5) · the whenSkill gate (2bB-6) · Vigilant riderless (2bB-9) · Flamestance's Events rule renders + is editable (2bB-7). **Run 9 read every stance document and drove two:** ✅ **2bB-5 / 2bB-6** — Ironstance entered and an **Insight** roll came back `2d20kh + 3`, so the `whenSkill` gate and the advantage plumbing both work (Ironstance `whenSkill: "ins"`, Windstance `whenSkill: "agi"`, both valid keys). ✅ **2bB-9** — Vigilant Stance genuinely carries **0 rules and 0 effects**, i.e. riderless by design. ✅ **2bB-7** — Flamestance's rule renders (`FlameStanceAdv01`, `edha-pre-test`/`edha-test-rider`) but its gate was a dead key — **fixed 2026-07-27j, needs `foundry-build heroic` + ⟳ Sync**; see 2bB-4. **2026-07-27k — 2bB-1 and 2bB-2 now PASS, so only Flamestance is left:** Stonestance took `system.deflect.value` 0 → **1** and 10 impact damage cost **9** HP instead of 10 (⚠️ its `deflect.derived` stays 0 — that is the armour-only sub-field; **read `.value`**); Vinestance took phy/cog 14 → **15** each with spi untouched; Bloodstance took phy/cog/spi 14 → **12** each. ⛔ **This row now hangs on Flamestance alone (2bB-7/2bB-4), BLOCKED-ON-DEPLOY** — a fresh console read on 07-27k shows the live pack still carries `whenSkill: "itm"`. ⚠️ **Harness note:** `system.events.toObject()` returns `{}` for a RecordCollection — an early read using it wrongly showed every stance as empty; use `.entries()` / `.size`. Also, `item.update({"system.events.-=<id>": null})` does **not** delete a rule under v13 (it silently no-ops); the reliable removal is to delete and re-add the item from the pack.
 - [ ] **Contest-gate spot (like-for-like) — FAIL 2026-07-27i: 2 of the 4 are dead, same cause** — Set at Odds rule + card + your-roll shape (2bD-1/2) · Grand Deception vs DC 15 (2bD-4) · Synchronized Assault both branches (2bD-5) · Turning Point (2bD-6). **Run 9, all four driven on a valid target:** ✅ **2bD-4** Grand Deception — "19 vs Bench Target — Adjacent A's DC 15 — SUCCESS (no payload rule on this talent — resolve at the table)". ✅ **2bD-6** Turning Point — "10 vs … COG 14 — FAIL" with its accounting line. ⛔ **2bD-1/2 Set at Odds — no card at all, nothing spent** (focus 4→4). ⛔ **2bD-5 Synchronized Assault — no card at all, and it CHARGED 2 focus** (4→2), the worse of the two failure shapes. Both carry **`skill: "ldr"`**, a dead key — cosmere Leadership is **`lea`**. Same family as Sharp Eye (2bQ-4), Flamestance (2bB-4), Feinting Strike (2bJ-12), Confident Command (2bN-2) and Rallying Shout (2bM-6). ✅ **FIXED 2026-07-27j — BLOCKED-ON-DEPLOY: needs `foundry-build heroic` + ⟳ Sync Talents.** Both are now `lea`, which their own `activation.skill` already said. **Re-test after the rebuild:** Set at Odds → a Leadership roll + a card, focus spent once; Synchronized Assault → a Leadership roll + a SUCCESS/FAIL card for the 2 focus it charges.
 - [ ] **Leader command spot — 10 of 11 RETIRED 2026-07-27k; only 2bC-8 is left, and no bench PC owns it** — Decisive Command die scale d4→d10 (2bN-1) · Relentless March reminder (2bN-4) · Authority 40 ft / two allies (2bN-5) · nothing else changed (2bN-6) · Authority doubling (2bO-2) · two allies (2bO-3) · die scale regression (2bO-4) · no-quarry no-spend pair (2bO-6) · Risky Behavior Plot Die (2bC-4) · Overwhelm with Details number (2bC-5) · Probability Net regression (2bC-8). **Run 10 drove all but the last:** ✅ **2bN-1 / 2bO-4** the die is `1d(4 + 2 * 3)` = **d10** with all three Command talents owned · ✅ **2bN-5 / 2bO-2 / 2bO-3** Authority's 40 ft is really ENFORCED — at 85 ft it refused pre-cost ("target a creature within **40 ft** (nothing spent)"), at 35 ft it landed, and **both** targeted allies got the mod written to their own documents from one use · ✅ **2bN-4** "🎖️ The target also gains **+10 ft movement** this round and ignores Exhausted, Slowed and Surprised" printed alongside · ✅ **2bO-6** with an empty quarry ledger Pack Hunting refused with "you have no quarry (nothing spent)", focus 4→4 and no mod written · ✅ **2bC-4** Risky Behavior's next test rolled `1d20 + 3 + **1dp**` with its own card · ✅ **2bC-5** Overwhelm banked **+4** = the actor's Lore mod and applied as `+ 4[Overwhelm with Details]`. ⛔ **2bC-8 Probability Net is owned by NO bench actor** — it cannot be driven until `scripts/bench-setup-console.js` grants it to a bench PC. That is a roster change, not a test failure.
