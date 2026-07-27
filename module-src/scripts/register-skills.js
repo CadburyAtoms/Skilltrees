@@ -2540,11 +2540,20 @@ function edhaPickCandidates(owner, h, anchor) {
 /* The card. Whispered to the owner + GM: a choice is the owner's to make, and the payload announces
  * itself publicly when it runs. Every button carries the ITEM's uuid, so the click re-reads the rule
  * off the document rather than trusting anything baked into the HTML. */
+// {name} template fill (pure — pinned in tests/). The one substitution idiom the card texts use;
+// split/join rather than a RegExp so authored text can never inject a pattern.
+function edhaFillName(text, name) { return String(text ?? "").split("{name}").join(String(name ?? "")); }
 async function edhaRunPromptPick(item, h, event) {
   const owner = item?.actor; if (!owner) return;
   const source = String(h.source || "confirm");
   const victim = event?.options?.victim ?? event?.options?.target ?? Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
   const anchor = String(h.relativeTo || "self") === "victim" ? victim : owner;
+  /* {name} on the OFFER card (2026-07-26l, bench run 3 defect 2): the accept-note path always
+   * substituted, but the offer path posted `prompt` raw — Puppeteer's whisper printed a literal
+   * `{name}`. At offer time the name is the TRIGGER's subject (the creature whose turn/test this
+   * was — victim), falling back to the anchor, then you; the PICKED creature does not exist yet,
+   * which is why the accept note keeps its own substitution below. */
+  const subjName = (victim ?? anchor ?? owner)?.name ?? "";
   if (String(h.relativeTo || "self") === "victim" && !anchor) {
     ui.notifications?.warn(`Edha: ${item.name} — target the creature first.`);
     return;
@@ -2557,7 +2566,7 @@ async function edhaRunPromptPick(item, h, event) {
     const cands = edhaPickCandidates(owner, h, anchor);
     if (!cands.length) {
       if (h.emptyNote) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
-        content: `<p>${icon}<strong>${item.name}</strong>: ${h.emptyNote}</p>` });
+        content: `<p>${icon}<strong>${item.name}</strong>: ${edhaFillName(h.emptyNote, subjName)}</p>` });
       return;
     }
     body = cands.map((t) => `<button type="button" class="edha-pick-btn" ${attrs(t.actor.uuid)}>${h.label || "Choose"} ${t.actor.name}</button>`).join(" ");
@@ -2574,14 +2583,14 @@ async function edhaRunPromptPick(item, h, event) {
   } else {
     // confirm: the subject is the creature the trigger already resolved against (or you).
     const subject = victim ?? owner;
-    body = `<button type="button" class="edha-pick-btn" ${attrs(subject.uuid)}>${h.label || `Use ${item.name}`}</button>`;
+    body = `<button type="button" class="edha-pick-btn" ${attrs(subject.uuid)}>${edhaFillName(h.label, subject.name) || `Use ${item.name}`}</button>`;
   }
   const costs = edhaParseCosts(h.costs);
   const costLabel = costs.length ? ` <span style="opacity:.8">(spends ${costs.map((c) => `${c.value} ${EDHA_RES_LABEL[c.resource] || c.resource}`).join(" + ")})</span>` : "";
   ChatMessage.create({
     whisper: edhaWhisperIds(owner),
     speaker: ChatMessage.getSpeaker({ actor: owner }),
-    content: `<div class="edha-trigger-card"><p>${icon}<strong>${item.name}</strong> — ${h.prompt || "choose one:"}${costLabel}</p>${body}</div>`,
+    content: `<div class="edha-trigger-card"><p>${icon}<strong>${item.name}</strong> — ${edhaFillName(h.prompt, subjName) || "choose one:"}${costLabel}</p>${body}</div>`,
   });
 }
 
@@ -2628,7 +2637,7 @@ async function edhaPromptPickClick(ev) {
     // The table-run case: no payload rule ran, so the card IS the mechanic. `{name}` is the creature
     // that was picked — Puppeteer's note has to say whose actions you are borrowing.
     if (!fired && h.note) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
-      content: `<p>${h.icon ? `${h.icon} ` : ""}<strong>${item.name}</strong> (${owner.name}): ${String(h.note).split("{name}").join(picked.name)}</p>` });
+      content: `<p>${h.icon ? `${h.icon} ` : ""}<strong>${item.name}</strong> (${owner.name}): ${edhaFillName(h.note, picked.name)}</p>` });
   } catch (e) { console.error("Edha Content | prompt pick click failed", e); }
 }
 /* The dispel click (2bU — the payload the `effects` source shipped with). GM-side: the pick card
@@ -15811,8 +15820,8 @@ function edhaRegisterNativeEventSystem() {
     label: "Edha: Prompt / Pick One", description: "Whisper yourself a card that asks a question — accept an offer, or choose one creature from a filtered list. What HAPPENS goes on the sibling 'When Your Test SUCCEEDS' rules, exactly as for a gated test; the creature you pick becomes their target.",
     config: { schema: {
       source: new FF.StringField({ required: true, initial: "confirm", choices: choices("confirm", "creatures", "effects"), label: "What is being chosen", hint: "confirm = one accept button; the payload lands on the creature this rule's trigger already resolved against (Subtle Suggestion, Puppeteer) · creatures = one button per creature matching the filters below (Anticipate, Unnerving Approach) · effects = one button per enabled Active Effect on that creature; the click DELETES the picked effect — the DISPEL, its payload intrinsic (Unweaving: which effect counts as magical is the table's call, so the click is GM-side). Success rules are NOT dispatched for a picked effect: no payload handler takes a THING, which is why this source shipped with its own payload (§9o's rule). 07-25 pass 2bU." }),
-      prompt: new FF.StringField({ required: false, blank: true, initial: "", label: "The question", hint: "Shown after the talent's name. Say what accepting means — the card is the only place the table sees it." }),
-      label: new FF.StringField({ required: false, blank: true, initial: "", label: "Button text", hint: "Blank = 'Use <talent>' for confirm, 'Choose <name>' for a creature." }),
+      prompt: new FF.StringField({ required: false, blank: true, initial: "", label: "The question", hint: "Shown after the talent's name. Say what accepting means — the card is the only place the table sees it. {name} = the creature this rule's trigger resolved against (Puppeteer: whose turn started at 0 focus); the PICKED creature is only known later, on the accept note." }),
+      label: new FF.StringField({ required: false, blank: true, initial: "", label: "Button text", hint: "Blank = 'Use <talent>' for confirm, 'Choose <name>' for a creature. For confirm, {name} = the trigger's creature." }),
       icon: new FF.StringField({ required: false, blank: true, initial: "", label: "Icon", hint: "One emoji shown before the name." }),
       costs: new FF.StringField({ required: false, blank: true, initial: "", label: "Extra cost on accept", hint: "Comma-list of resource:amount, e.g. 'foc:2, inv:1'. A bare name means 1. Spent when you CLICK, not when the card posts, so declining costs nothing. This is the reaction's extra price — the talent's own activation cost is already paid." }),
       once: new FF.StringField({ required: false, initial: "no", choices: choices("no", "round"), label: "How often it may be accepted", hint: "round = once per round (Puppeteer, Lifeline). The budget is spent on the CLICK, so an ignored card does not burn it. Outside combat this means once until the next encounter ends." }),

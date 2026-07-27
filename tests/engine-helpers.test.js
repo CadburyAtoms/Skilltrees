@@ -1406,3 +1406,17 @@ test("edhaAttackKind: the edha-content stamp outranks everything; non-weapons st
   assert.strictEqual(env.edhaAttackKind({ type: "action", flags: { "edha-content": { attackKind: "ranged" } }, system: {} }), "ranged");
   assert.strictEqual(env.edhaAttackKind({ type: "action", system: { attack: { type: "ranged" } } }), null);
 });
+
+// --- edhaFillName — the 07-26k literal-{name} offer regression (defect 2) -----
+// Puppeteer's whispered offer printed a literal `{name}` because only the accept-note path
+// substituted. The idiom is now one pure helper used by the offer AND accept paths.
+test("edhaFillName fills every {name}, and the shipped Puppeteer prompt renders", () => {
+  assert.strictEqual(env.edhaFillName("{name} and {name}", "Floater"), "Floater and Floater");
+  const shipped = "{name} starts its turn at <strong>0 focus</strong> in your Attunement Range";
+  assert.ok(!env.edhaFillName(shipped, "Bench Target — Floater").includes("{name}"));
+});
+test("edhaFillName: null/undefined text or name never throws and never prints 'undefined{'", () => {
+  assert.strictEqual(env.edhaFillName(null, "X"), "");
+  assert.strictEqual(env.edhaFillName("hit {name}", null), "hit ");
+  assert.strictEqual(env.edhaFillName("no placeholder", "X"), "no placeholder");
+});
