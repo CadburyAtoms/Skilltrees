@@ -197,6 +197,17 @@ edhaQueueContest(owner, "<color>", async ({ total }) => {   // captures the owne
   Pure decision **`edhaDefTestOutcome(total, {vs, dc, defValue, oppRoll})`** — pinned in `tests/`;
   it **fails OPEN** on an unreadable bar, matching the ~20 hand-rolled `def == null ? true : …`
   copies it replaced (an adversary with no written defense must not make the talent inert).
+  ⚠️ **H1 IS A DECIDER, NOT A ROLLER — the item must be able to roll the test itself.** The
+  executor calls `edhaQueueContest` and waits for the owner's d20 on
+  `cosmere-rpg.{skill,attack,item}Roll`; if none arrives the queue entry just expires and the talent
+  is a **total silent no-op** (nothing spent, no card, no error). So the talent's own
+  `activation.type` must be **`skill_test`** with `activation.skill` **equal to the rule's `skill`**
+  — the system only calls `item.roll()` for `skill_test` (a damage formula does *not* rescue it:
+  `rollDamage` fires `damageRoll`, a hook the watcher does not subscribe to), and
+  `edhaTryResolveContest` matches the captured roll **by skill**. The single exemption is owner-sweep
+  with no test — `targetList` set *and* `vs: "none"` (Unravel Everything), which returns before the
+  queue. This shipped twice: six adversary abilities (07-26j, fixed in `advItemDoc`) and Sharp Eye
+  (07-27n, the talent surface). **`lint-refs` pass 14 now gates both surfaces.**
 - **The payload side of H1 (07-24p).** `edhaDispatchTestResult` passes **`victim` as well as
   `target`**, so a payload rule with `target: "victim"` binds to the creature the TEST resolved
   against — better than `"prompt"`, which re-reads `game.user.targets` and would hit all of them.

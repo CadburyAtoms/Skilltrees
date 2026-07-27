@@ -23,6 +23,9 @@
  *  13. Every authored value that reaches a closed SYSTEM enum is one of its legal values (the
  *      WRONG-SHAPE family: quarry advantage wrote the number 1 into a string enum and never once
  *      applied. Engine-side coverage lives in tests/advantage-channel.test.js — see the pass).
+ *  14. Every item carrying an `edha-def-test` rule can actually ROLL the test it gates, with the
+ *      SAME skill (the MUTE-DEF-TEST family: six adversary abilities in 07-26j, then Sharp Eye on
+ *      the talent surface in 07-27n — H1 waits for a roll that never comes; see the pass).
  *
  * Zero dependencies. Exit 0 clean, 1 on any error. Runs in CI next to validate.js; add it to
  * the local gates when a change touches authored events or engine name-based automation.
@@ -972,6 +975,105 @@ engine.split("\n").forEach((lineText, i) => {
       for (const it of adv.items || []) {
         for (const [j, ev] of (Array.isArray(it?.events) ? it.events : []).entries()) {
           checkEnums(`data/adversaries.json (${advName} / ${it.name}) events[${j}]`, ev?.handler);
+        }
+      }
+    }
+  } catch (e) { /* reported by the earlier adversaries.json pass */ }
+}
+
+/* --- pass 14: a gated test must be able to ROLL (the mute-def-test family, 07-26j + 07-27n) ------
+ *
+ * H1 `edha-def-test` is a DECIDER, not a roller. Its executor calls `edhaQueueContest(owner, skill,
+ * cb)` and then waits for the owner's own d20 to arrive on `cosmere-rpg.{skill,attack,item}Roll`.
+ * If no test is ever rolled, the queue entry simply expires after EDHA_CONTEST_TTL — no error, no
+ * warning, no card. The talent is a total silent no-op.
+ *
+ * Whether a capturable d20 happens is decided entirely by the ITEM, in the system's own `use()`
+ * (systems/cosmere-rpg/index.js ~L7188). `rollRequired` is
+ * `activation.type === "skill_test" || hasDamage`, but the two arms are NOT interchangeable here:
+ * only the skill_test arm calls `item.roll()` → `d20Roll` → `cosmere-rpg.itemRoll`, which is what
+ * `edhaContestWatch` listens on. The damage arm calls `rollDamage()` → `damageRoll` →
+ * `cosmere-rpg.damageRoll`, a DamageRoll on a hook the watcher does not subscribe to. So a damage
+ * formula does NOT rescue a `utility` activation — `activation.type: "skill_test"` is the only
+ * shape that can resolve a def-test, and that is exactly what this pass requires.
+ *
+ * And when the roll DOES happen, `edhaTryResolveContest` matches it by skill
+ * (`if (q.color && r.skill && r.skill !== q.color) return;`) — so the item's own
+ * `activation.skill` must be the SAME skill the rule names, or the contest waits forever for a roll
+ * that already went past.
+ *
+ * TWO instances, on two different surfaces, which is why this is a gate and not a fix:
+ *   · 2026-07-26j — SIX adversary abilities (Callthief Counterpoint, Surecat Redirect Momentum,
+ *     Reeve-Owl Sovereign of Solitude, both Rootling Swarm abilities, Tussock-Sow Drive the Prey)
+ *     were born mute because `advItemDoc` only promoted ATTACK items to skill_test. Fixed in the
+ *     BUILDER — it now reads the skill off the def-test rule.
+ *   · 2026-07-27n — Sharp Eye (Hunter), on the TALENT surface, which the builder fix never touched:
+ *     an authored overlay wins verbatim, so its `utility` / no-skill activation shipped as authored
+ *     and the talent did nothing for its whole life. Bench run 11 measured the null result twice.
+ * Both surfaces are checked below so a third instance cannot land on either.
+ *
+ * THE ONE LEGAL EXEMPTION: owner-sweep mode with no test at all — `targetList` set AND `vs: "none"`
+ * (Chaos's Unravel Everything). Read the executor: that combination returns from `sweep(null)`
+ * before `edhaQueueContest` is ever reached, so no roll is needed. `vs: "none"` WITHOUT a
+ * `targetList` is NOT exempt — it still falls through to the queue and still needs the roll. */
+{
+  const defTestOf = (rules) => {
+    for (const r of rules) if (r?.handler?.type === "edha-def-test") return r.handler;
+    return null;
+  };
+  // Owner-sweep with no test: returns before edhaQueueContest. The ONLY shape that needs no roll.
+  const needsRoll = (h) => !(h.targetList && h.vs === "none");
+
+  const checkRollable = (where, h, activation, { effectiveSkill = undefined } = {}) => {
+    if (!h || !needsRoll(h)) return;
+    const type = activation?.type;
+    if (type !== "skill_test") {
+      err(`${where}: carries an edha-def-test rule but activation.type is "${type ?? "(none)"}" — only a ` +
+          `"skill_test" activation rolls the d20 the contest captures (a damage formula does NOT count: it ` +
+          `fires damageRoll, which the watcher does not listen on). H1 queues a contest no roll can ever ` +
+          `resolve, so the talent is a SILENT no-op — nothing spent, no card, no error. Set activation.type to ` +
+          `"skill_test" and activation.skill to "${h.skill || "<the rule's skill>"}".`);
+      return;
+    }
+    if (!h.skill) return;                      // no skill named on the rule → nothing to match against
+    if (effectiveSkill === undefined) return;  // caller cannot determine it (see the adversary note)
+    if (effectiveSkill !== h.skill) {
+      err(`${where}: the item rolls "${effectiveSkill ?? "(no skill)"}" but its edha-def-test rule waits for ` +
+          `"${h.skill}" — edhaTryResolveContest matches the captured roll BY SKILL, so the contest never resolves ` +
+          `and the talent is a silent no-op. The two must name the same skill.`);
+    }
+  };
+
+  for (const file of fs.readdirSync(AUTHORED_DIR).filter((f) => f.endsWith(".json")).sort()) {
+    let doc;
+    try { doc = JSON.parse(fs.readFileSync(path.join(AUTHORED_DIR, file), "utf8")); } catch (e) { continue; }
+    for (const [name, t] of Object.entries(doc.talents || {})) {
+      const h = defTestOf(Object.values(t.events || {}));
+      if (!h) continue;
+      checkRollable(`data/authored/${file} (${name})`, h, t.activation, {
+        effectiveSkill: t.activation?.skill ?? null,
+      });
+    }
+  }
+  /* The adversary half. `advItemDoc` DERIVES the activation, so the authored JSON is `utility` by
+   * design and only the derived skill is checkable here — mirrored from foundry-build.js
+   * (`raw.skill || defTestSkill` for a non-attack, the weapon skill for an attack). The type check
+   * is skipped for the same reason: the builder promotes it. Kept narrow deliberately — this is a
+   * mirror of one builder line, not a re-implementation of the builder. */
+  try {
+    const advData = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, "data/adversaries.json"), "utf8"));
+    for (const [advName, adv] of Object.entries(advData)) {
+      if (advName.startsWith("_")) continue;
+      for (const it of adv.items || []) {
+        const h = defTestOf(Array.isArray(it?.events) ? it.events : []);
+        if (!h || !needsRoll(h) || !h.skill) continue;
+        const isAttack = it.attack != null;
+        const ranged = /\brange\b/i.test(it.range || "");
+        const effectiveSkill = isAttack ? (it.skill || (ranged ? "lwp" : "hwp")) : (it.skill || h.skill);
+        if (effectiveSkill !== h.skill) {
+          err(`data/adversaries.json (${advName} / ${it.name}): the ability rolls "${effectiveSkill}" but its ` +
+              `edha-def-test rule waits for "${h.skill}" — the contest is matched BY SKILL, so it never resolves ` +
+              `and the ability is a silent no-op. Align the ability's "skill" with the rule's.`);
         }
       }
     }
