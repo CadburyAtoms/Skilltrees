@@ -69,7 +69,38 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "AnticipatePick00": {
+          "id": "AnticipatePick00",
+          "description": "Blue/Calculation. 07-24s: was `edhaPostCalcTestCard` over `edhaAlliesInAttune(actor,'blue')`. The Telepathic Network IS your Blue Attunement Range, so `rangeColor: blue` + `disposition: ally` is the same list, and `includeSelf` is what makes 'you or an ally' literal.",
+          "event": "use",
+          "handler": {
+            "type": "edha-prompt-pick",
+            "source": "creatures",
+            "icon": "🛡️",
+            "prompt": "spend 1 Investiture to give you or an ally in your Telepathic Network advantage on their resistance test.",
+            "label": "Advantage for",
+            "relativeTo": "self",
+            "rangeColor": "blue",
+            "disposition": "ally",
+            "includeSelf": true,
+            "aliveOnly": true,
+            "once": "no",
+            "emptyNote": "nobody is in your Telepathic Network right now."
+          }
+        },
+        "AnticipateMod000": {
+          "id": "AnticipateMod000",
+          "description": "Blue/Calculation. The grant, on whoever you picked.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "victim",
+            "mode": "advantage",
+            "count": 1
+          }
+        }
+      },
       "effects": []
     },
     "Baleful": {
@@ -123,7 +154,20 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "BlueKeyDrawMana0": {
+          "id": "BlueKeyDrawMana0",
+          "description": "Blue Key. On Draw Mana, gain an advantage on your next Cognitive test. Attribute-gated to int/wil — a Cognitive test is one whose skill's attribute is Intellect or Willpower.",
+          "event": "edha-draw-mana",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "self",
+            "mode": "advantage",
+            "count": 1,
+            "attr": "int, wil"
+          }
+        }
+      },
       "effects": []
     },
     "Calculated Patience": {
@@ -150,7 +194,24 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "CalcPatienceSlow": {
+          "id": "CalcPatienceSlow",
+          "description": "Blue/Foresight. On a SLOW turn, your first test that turn gains advantage. Mirror of Red's Burning Drive (whenFastTurn), but the slow-turn gate requires a live combatant on purpose — see edhaIsSlowTurn. Out of combat this does nothing.",
+          "event": "edha-pre-test",
+          "handler": {
+            "type": "edha-test-rider",
+            "appliesTo": "any",
+            "bonusFormula": "",
+            "mode": "advantage",
+            "whenTargetStatus": "",
+            "whenTargetIsolated": false,
+            "whenAttribute": "",
+            "whenSlowTurn": true,
+            "firstTestThisTurn": true
+          }
+        }
+      },
       "effects": []
     },
     "Collected": {
@@ -306,7 +367,21 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "CounterspellH100": {
+          "id": "CounterspellH100",
+          "description": "Blue. Blue vs the activating creature's Cognitive defense, engine-resolved on YOUR roll — the verdict is the card. 07-24p: replaced a bespoke useItem card function (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "blue",
+            "vs": "defense",
+            "def": "cog",
+            "requireTarget": true,
+            "note": "SUCCESS: the talent the target was activating fails. FAIL: it resolves as normal."
+          }
+        }
+      },
       "effects": []
     },
     "False Premise": {
@@ -346,7 +421,32 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "FalsePremTest000": {
+          "id": "FalsePremTest000",
+          "description": "Blue/Calculation. 07-24s: needed NO prompt at all, which is why it left the H6 batch. Its engine branch carried TWO paths — an auto-contest when the target's Cognitive defense could be read, and a manual card when it could not. The unreadable-defense case is settled (Ben, §9m q9 / 2bI-8): H1 fails OPEN, project-wide. So the fallback card was the whole reason the talent looked like an H6 consumer, and deleting it leaves clean H1.",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "blue",
+            "vs": "defense",
+            "def": "cog",
+            "requireTarget": true,
+            "rangeColor": "blue"
+          }
+        },
+        "FalsePremMod0000": {
+          "id": "FalsePremMod0000",
+          "description": "Blue/Calculation. On a success, disadvantage on the target's next test.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "victim",
+            "mode": "disadvantage",
+            "count": 1
+          }
+        }
+      },
       "effects": []
     },
     "Forewarned": {
@@ -413,7 +513,51 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "GhostlyWallsH100": {
+          "id": "GhostlyWallsH100",
+          "description": "Blue. Blue vs the target's Cognitive defense, engine-resolved on YOUR roll. 07-24p: replaced a bespoke useItem card function (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "blue",
+            "vs": "defense",
+            "def": "cog",
+            "requireTarget": true
+          }
+        },
+        "GhostlyWallsImmo": {
+          "id": "GhostlyWallsImmo",
+          "description": "Blue. On a success the target's movement rate is 0 until the end of YOUR next turn (owner-relative expiry).",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "status",
+            "statusId": "immobilized",
+            "statusExpire": "owner",
+            "target": "victim",
+            "formula": "0",
+            "damageType": "energy",
+            "note": "movement 0 until the end of your next turn"
+          }
+        },
+        "GhostlyWallsStil": {
+          "id": "GhostlyWallsStil",
+          "description": "Blue. ABSOLUTE STILLNESS's upgrade, carried here as authored data rather than an engine `edhaOwnsTalent` branch (07-24p, Ben's ruling): the extra Weakened only lands if you own it. Absolute Stillness therefore has no rule of its own — declared in the Blue tree-section header.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "status",
+            "statusId": "weakened",
+            "statusExpire": "owner",
+            "target": "victim",
+            "formula": "0",
+            "damageType": "energy",
+            "whenOwnsTalent": "Absolute Stillness",
+            "note": "Absolute Stillness — disadvantage on Physical tests; GM: it cannot take Reactions"
+          }
+        }
+      },
       "effects": []
     },
     "Holographic Illusion": {
@@ -451,7 +595,26 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "HoloSummon000000": {
+          "event": "use",
+          "description": "Blue (Illusion). 2bAA — the whole talent as ONE edha-summon rule (was a name-keyed useItem case). The 1b that unblocked it: `tokenSizeColor` exposes [Size] off your Blue rank, which the engine used to compute in code (edhaSizeFt). `placeAt: pick-point` + `rangeColor: blue` is the CARD's 'within Attunement Range' — the retired case placed the illusion beside you and checked no range at all (card-is-spec, §9m q11); a cancelled or out-of-range click REFUNDS the Investiture. A no-stats image: 1 HP, Speed 0, defenses 99 below yours, no attack, and it does NOT join the initiative order.",
+          "handler": {
+            "type": "edha-summon",
+            "summonName": "Holographic Illusion",
+            "img": "icons/magic/perception/silhouette-stealth-shadow.webp",
+            "hpFormula": "1",
+            "speed": 0,
+            "defensePenalty": 99,
+            "tokenSizeColor": "blue",
+            "placeAt": "pick-point",
+            "rangeColor": "blue",
+            "actsAfterCaster": false
+          },
+          "order": 0,
+          "id": "HoloSummon000000"
+        }
+      },
       "effects": []
     },
     "Intercept": {
@@ -489,7 +652,33 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "InterceptPick000": {
+          "id": "InterceptPick000",
+          "description": "Blue/Foresight. 07-24s: was `edhaPostCalcTestCard` in the Foresight useItem switch. Whether the creature is the one you designated with Forewarned stays owner-judged — Forewarned's designation is table-run and has no flag to read.",
+          "event": "use",
+          "handler": {
+            "type": "edha-prompt-pick",
+            "source": "confirm",
+            "icon": "🔮",
+            "prompt": "if this is the creature you designated with Forewarned and it is taking the declared action, spend 1 Investiture to impose disadvantage on it.",
+            "label": "Impose disadvantage",
+            "relativeTo": "self",
+            "once": "no"
+          }
+        },
+        "InterceptMod0000": {
+          "id": "InterceptMod0000",
+          "description": "Blue/Foresight. Disadvantage on the declared action.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "victim",
+            "mode": "disadvantage",
+            "count": 1
+          }
+        }
+      },
       "effects": []
     },
     "Living Image": {
@@ -517,7 +706,33 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "LivingUpkeep0000": {
+          "event": "edha-watch-rule",
+          "description": "Blue (Illusion). 2bAA — the upkeep prompt as data (was a name-keyed combatTurnChange gate, edhaOwnsTalent(actor, \"Living Image\")). Config-only and legitimately so: the turn-start sweep is the reader (the pass-Y/Z veto shape), and this talent's own use payload is the note rule below. Editing resource / costPer / qualifier / note here changes what the prompt charges and says.",
+          "handler": {
+            "type": "edha-illusion-upkeep",
+            "resource": "inv",
+            "costPer": 1,
+            "qualifier": "COMPLEX",
+            "note": "Simple images are free — the table calls which is which. Unpaid complex illusions fade (delete the token)."
+          },
+          "order": 0,
+          "id": "LivingUpkeep0000"
+        },
+        "LivingImgNote000": {
+          "event": "use",
+          "description": "Blue (Illusion). 2bAA — the on-use reminder, verbatim from the retired switch case. The mechanic is the table's (illusions moving and interacting is narrative); the upkeep half is enforced by the rule above.",
+          "handler": {
+            "type": "edha-note",
+            "text": "your illusions may now move up to your movement rate and interact with the environment. Complex illusions cost 1 Investiture per round to maintain — the engine prompts you at each of your turn starts while you have illusions up.",
+            "icon": "🎭",
+            "whisper": "public"
+          },
+          "order": 1,
+          "id": "LivingImgNote000"
+        }
+      },
       "effects": []
     },
     "Pattern Recognition": {
@@ -555,7 +770,34 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "PatternRecPick00": {
+          "id": "PatternRecPick00",
+          "description": "Blue/Calculation. 07-24s: was `edhaPostCalcTestCard` in the Calculation useItem switch. Confirm-shaped because the card says 'you MAY spend 1 Investiture'.",
+          "event": "use",
+          "handler": {
+            "type": "edha-prompt-pick",
+            "source": "confirm",
+            "icon": "🔮",
+            "prompt": "if you succeeded on a Cognitive test against this character, spend 1 Investiture to give its next test this round disadvantage.",
+            "label": "Impose disadvantage",
+            "relativeTo": "self",
+            "once": "no"
+          }
+        },
+        "PatternRecMod000": {
+          "id": "PatternRecMod000",
+          "description": "Blue/Calculation. `expireEndOfRound` is NEW behaviour and makes the talent match its own card: the hand-rolled version banked an unbounded disadvantage that waited for ever (2bJ-3).",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "victim",
+            "mode": "disadvantage",
+            "count": 1,
+            "expireEndOfRound": true
+          }
+        }
+      },
       "effects": []
     },
     "Phantom Barricade": {
@@ -593,7 +835,26 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "BarricadeH220000": {
+          "event": "use",
+          "description": "Blue (Illusion). 2bAA — H22 `edha-barrier`, the engine's FIRST blocks-movement capability, built because the card demanded three things the engine delivered none of: placement AT A POINT in Attunement Range, blocking movement, and cover. What shipped was a one-square token spawned beside you that anyone could walk through. Now: click-place within Blue Attunement Range (cancel, out of range, or an occupied square REFUNDS the Investiture — a closed wall box around a creature would trap it), an HP token rolled at 2[Die] on the Blue track, and a box of four real Foundry walls around its square. blocksSight stays `none` because a shimmering illusion is seen through and COVER IS A TABLE READ project-wide — flip the field if a barrier should block line of sight. It comes down when destroyed, when its token is deleted, or at the end of the encounter. Sustain-multiple (Ben 06-14e): no cap. The picker, the wall documents and their GM relay stay ENGINE-OWNED, keyed on this rule (§9o).",
+          "handler": {
+            "type": "edha-barrier",
+            "barrierName": "Phantom Barricade",
+            "img": "icons/magic/defensive/barrier-shield-dome-blue.webp",
+            "hpFormula": "2d(2 * @skills.blue.rank + 2)",
+            "sizeFt": 0,
+            "defensePenalty": 99,
+            "blocksMovement": true,
+            "blocksSight": "none",
+            "rangeColor": "blue",
+            "note": "It also provides cover to anything behind it — how much is the table's call, as every cover read in this system is."
+          },
+          "order": 0,
+          "id": "BarricadeH220000"
+        }
+      },
       "effects": []
     },
     "Phantom Double": {
@@ -631,7 +892,26 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "PhantomCopy00000": {
+          "event": "use",
+          "description": "Blue (Illusion). 2bAA — ENGINE-OWNED, re-litigated and taken RULE-KEYED (the edha-decree exit shape): the per-viewer client veil is a Token#isVisible patch driven by a cross-actor belief ledger, which no rule chain expresses, so the FLOW stays engine code and this rule carries every dial. copyOf target-or-self reproduces the retired case (your target, or you when nothing is targeted). rangeColor blue is NEW with 2bAA — the card always said 'within Attunement Range' and the retired case checked nothing (card-is-spec, §9m q11); an out-of-range ally REFUNDS the 2 Investiture. beliefDefense cog / beliefSkill prc are Ben's 07-14 belief-loop ruling, engine-rolled (iron rule 3).",
+          "handler": {
+            "type": "edha-illusion-copy",
+            "copyOf": "target-or-self",
+            "sourceLabel": "",
+            "hpFormula": "1",
+            "speed": 0,
+            "defensePenalty": 99,
+            "beliefDefense": "cog",
+            "beliefSkill": "prc",
+            "rangeColor": "blue",
+            "note": ""
+          },
+          "order": 0,
+          "id": "PhantomCopy00000"
+        }
+      },
       "effects": []
     },
     "Phantom Step": {
@@ -696,7 +976,33 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ProbCascadePick0": {
+          "id": "ProbCascadePick0",
+          "description": "Blue/Calculation. 07-24s: was `edhaPostCalcTestCard`. The Opportunity is trusted and never auto-deducted, as everywhere else in the engine.",
+          "event": "use",
+          "handler": {
+            "type": "edha-prompt-pick",
+            "source": "confirm",
+            "icon": "🔮",
+            "prompt": "spend an Opportunity and 1 Investiture to give this creature disadvantage on its next two tests.",
+            "label": "Impose disadvantage",
+            "relativeTo": "self",
+            "once": "no"
+          }
+        },
+        "ProbCascadeMod00": {
+          "id": "ProbCascadeMod00",
+          "description": "Blue/Calculation. Two tests, per the card.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "victim",
+            "mode": "disadvantage",
+            "count": 2
+          }
+        }
+      },
       "effects": []
     },
     "Probable Outcome": {
@@ -761,7 +1067,33 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ReactAnalMod0000": {
+          "id": "ReactAnalMod0000",
+          "description": "Blue/Foresight. 07-24r: it reads in the audit as an H8 watcher and it is not one. The trigger ('a character in range fails a test') is the REACTION's trigger — volition, which no hook owns — and the mechanic is the on-use grant the engine already had. So it needed no handler at all, only `edha-next-test-mod` on `use`. `bindToTarget` is new and makes the talent match its own text: the advantage is spent on a test AGAINST the creature you have targeted, not on any test at all (2bI-2). Nothing targeted → it stays unbound rather than failing.",
+          "event": "use",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "self",
+            "mode": "advantage",
+            "count": 1,
+            "bindToTarget": true
+          },
+          "order": 0
+        },
+        "ReactAnalNote000": {
+          "id": "ReactAnalNote000",
+          "description": "Blue/Foresight. The reminder the old on-use card posted, as a rule.",
+          "event": "use",
+          "handler": {
+            "type": "edha-note",
+            "icon": "📈",
+            "whisper": "public",
+            "text": "advantage on your next test against the creature that just failed — target it when you use this and the advantage binds to it."
+          },
+          "order": 1
+        }
+      },
       "effects": []
     },
     "Read Intent": {
@@ -801,7 +1133,31 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ReadIntentH10000": {
+          "id": "ReadIntentH10000",
+          "description": "Blue. Blue vs the target's Cognitive defense, engine-resolved on YOUR roll. 07-24p: replaced a bespoke useItem card function (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "blue",
+            "vs": "defense",
+            "def": "cog",
+            "requireTarget": true
+          }
+        },
+        "ReadIntentReveal": {
+          "id": "ReadIntentReveal",
+          "description": "Blue. On a success the GM reveals the creature's intended action — whispered to you and the GM, as the old card was.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-note",
+            "icon": "🔮",
+            "whisper": "owner",
+            "text": "GM — reveal the action the target intends to take next round."
+          }
+        }
+      },
       "effects": []
     },
     "Redirect Momentum": {
@@ -841,7 +1197,21 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "RedirectMomH1000": {
+          "id": "RedirectMomH1000",
+          "description": "Blue. Blue vs the MOVER's Athletics — an opposed skill the engine rolls for them (H1 `vs: skill`). 07-24p: replaced a bespoke useItem branch (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "blue",
+            "vs": "skill",
+            "targetSkill": "ath",
+            "requireTarget": true,
+            "note": "On a success, reduce its remaining movement by your Size in feet, or push it that far (the GM positions the token)."
+          }
+        }
+      },
       "effects": []
     },
     "Subtle Suggestion": {
@@ -879,7 +1249,37 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "SubtleSuggPick00": {
+          "id": "SubtleSuggPick00",
+          "description": "Blue/Calculation. 07-24s: was a bespoke `edhaPostDisorientCard` in the Calculation useItem switch. The card is the talent's 'you MAY spend 1 Investiture' — success is owner-judged, because an influence success is a test the system already resolved.",
+          "event": "use",
+          "handler": {
+            "type": "edha-prompt-pick",
+            "source": "confirm",
+            "icon": "🗣️",
+            "prompt": "if you successfully influenced this character, spend 1 Investiture to also leave it Disoriented until the end of your next turn.",
+            "label": "Disorient",
+            "relativeTo": "self",
+            "once": "no"
+          }
+        },
+        "SubtleSuggDisor0": {
+          "id": "SubtleSuggDisor0",
+          "description": "Blue/Calculation. The payload, on the creature you picked.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "status",
+            "statusId": "disoriented",
+            "statusExpire": "owner",
+            "target": "victim",
+            "formula": "0",
+            "damageType": "energy",
+            "note": "Disoriented until the end of your next turn"
+          }
+        }
+      },
       "effects": []
     },
     "Telepathic Network": {

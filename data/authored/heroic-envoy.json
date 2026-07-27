@@ -350,7 +350,21 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "GalvanizeFocus00": {
+          "description": "Heroic/Envoy. The targeted ally rolls THEIR recovery die and regains that much focus. 2bZ (iron rule 2b, H17): was a name-keyed useItem hook whose rolled die was evaluated and DISCARDED — the roll now posts (card-is-spec).",
+          "event": "use",
+          "handler": {
+            "type": "edha-focus",
+            "op": "gain",
+            "resource": "foc",
+            "target": "victim",
+            "formula": "@target.recoveryDie",
+            "label": "Galvanize"
+          },
+          "id": "GalvanizeFocus00"
+        }
+      },
       "effects": []
     },
     "Guiding Oration": {
@@ -684,7 +698,85 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "RousePresDeterm0": {
+          "description": "Envoy. The targeted ally becomes Determined. 07-24v: replaced a name-gated useItem hook whose body also name-checked five more talents (iron rule 2b). `mark: false` because this is a BUFF on an ally — writing markedBy.determined would put an enemy-debuff ownership flag on a friend, on the shared damage read path. NOTE the printed 'until the end of the scene' was already fiction: nothing clears Determined, before or after this conversion. 07-24w (Ben's ruling): Determined now expires at the END OF COMBAT — the printed 'until the end of the scene' had never been enforced by anything, and end-of-combat is what he ruled.",
+          "event": "use",
+          "handler": {
+            "type": "edha-apply-status",
+            "status": "determined",
+            "mark": false,
+            "expire": "combat"
+          },
+          "order": 0,
+          "id": "RousePresDeterm0"
+        },
+        "RouseLessons0000": {
+          "description": "Envoy UPGRADE RIDER — Lessons in Patience. The one rider in this cluster that was ever a real mechanic (edhaGainFocus(t, 1)); the other four were honour-system strings. Gated on the document via whenOwnsTalent, so Lessons in Patience's own sheet carries no rule — declared in the tree-section header (Ben 07-24t: an empty Events tab is acceptable; the test is editability).",
+          "event": "use",
+          "handler": {
+            "type": "edha-focus",
+            "op": "gain",
+            "target": "victim",
+            "formula": "1",
+            "whenOwnsTalent": "Lessons in Patience"
+          },
+          "order": 1,
+          "id": "RouseLessons0000"
+        },
+        "RouseInstill0000": {
+          "description": "Envoy UPGRADE RIDER — Instill Confidence. A REMINDER, not a mechanic, and it was one before this conversion too: the old code computed `focusedInstead` and used it for nothing but this string, applying Determined unconditionally regardless. Now editable in Foundry instead of being a template literal in the engine.",
+          "event": "use",
+          "handler": {
+            "type": "edha-note",
+            "icon": "📣",
+            "whisper": "public",
+            "whenOwnsTalent": "Instill Confidence",
+            "text": "You may swap <strong>Determined</strong> for <strong>Focused</strong> on the target (toggle by hand)."
+          },
+          "order": 2,
+          "id": "RouseInstill0000"
+        },
+        "RouseDevoted0000": {
+          "description": "Envoy UPGRADE RIDER — Devoted Presence. A REMINDER: the real mechanic needs a CLEAR-statuses payload, which nothing in the project has. It removes ALL FOUR conditions and is NOT a pick, so the classification's H6 dependency was wrong. The 1-focus cost is already real data on Devoted Presence's own activation.consume.",
+          "event": "use",
+          "handler": {
+            "type": "edha-note",
+            "icon": "📣",
+            "whisper": "public",
+            "whenOwnsTalent": "Devoted Presence",
+            "text": "Spend 1 focus to remove <strong>Prone, Slowed, Stunned and Surprised</strong> from the target (all four — clear them by hand and deduct the focus)."
+          },
+          "order": 3,
+          "id": "RouseDevoted0000"
+        },
+        "RouseStalwart000": {
+          "description": "Envoy UPGRADE RIDER — Stalwart Presence. A REMINDER: edha-defense-buff cannot express this. Its sweep reads the BUFFED actor's own items so it is self-only, its window enum has a single `round-until-turn` value so 'until scene end' is unsayable, and it returns after the first match so one actor cannot hold two.",
+          "event": "use",
+          "handler": {
+            "type": "edha-note",
+            "icon": "📣",
+            "whisper": "public",
+            "whenOwnsTalent": "Stalwart Presence",
+            "text": "Spend 1 focus to give the target <strong>+2 to one defense</strong> until the end of the scene (GM applies)."
+          },
+          "order": 4,
+          "id": "RouseStalwart000"
+        },
+        "RouseRallying000": {
+          "description": "Envoy UPGRADE RIDER — Rallying Shout. A REMINDER; the recovery-die half needs a TARGET-scoped formula, which no handler has (every @ formula resolves against the owner). BEHAVIOUR NOTE: this now prints on every use, where the old code gated it on the ally being at 0 HP — that gate hid the card's FIRST clause ('revive an Unconscious ally'), so always-print is the more faithful reading of the card. The Leadership half IS owner data and is shown resolved.",
+          "event": "use",
+          "handler": {
+            "type": "edha-note",
+            "icon": "📣",
+            "whisper": "public",
+            "whenOwnsTalent": "Rallying Shout",
+            "text": "You may revive an Unconscious ally. If the target is at 0 health it recovers its <strong>recovery die + @skills.lea.rank</strong> health (roll the target's own die)."
+          },
+          "order": 5,
+          "id": "RouseRallying000"
+        }
+      },
       "effects": []
     },
     "Sage Counsel": {
@@ -841,7 +933,57 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "SteadfastChalH10": {
+          "id": "SteadfastChalH10",
+          "description": "Envoy. Discipline vs the target's Spiritual defense, engine-resolved on YOUR roll. 07-24p: replaced its EDHA_HEROIC_DEFTESTS row (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "dis",
+            "vs": "defense",
+            "def": "spi",
+            "requireTarget": true
+          }
+        },
+        "SteadfastDisorie": {
+          "id": "SteadfastDisorie",
+          "description": "Envoy. On a success the target is Disoriented until the end of YOUR next turn.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "status",
+            "statusId": "disoriented",
+            "statusExpire": "owner",
+            "target": "victim",
+            "formula": "0",
+            "damageType": "energy"
+          }
+        },
+        "SteadfastDisadva": {
+          "id": "SteadfastDisadva",
+          "description": "Envoy. And its next test takes a disadvantage. The old card offered this as a one-button pick because there was no post-test dispatch to hang it on; H1 gives it one, so the click is gone. The \"against you\" scoping was honour-system before and still is.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "target",
+            "mode": "disadvantage",
+            "count": 1
+          }
+        },
+        "SteadfastChalCal": {
+          "id": "SteadfastChalCal",
+          "description": "Envoy. CALM APPEAL's rider, carried here as authored data rather than an engine `edhaOwnsTalent` branch (07-24p, Ben's ruling). Calm Appeal therefore has no rule of its own — declared in the heroic tree-section header.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-note",
+            "icon": "🕊️",
+            "whisper": "public",
+            "whenOwnsTalent": "Calm Appeal",
+            "text": "<strong>Calm Appeal</strong> — spend 1 focus to pacify the target; resisting costs it +@skills.dis.rank focus (the GM tracks it)."
+          }
+        }
+      },
       "effects": []
     },
     "Well Dressed": {

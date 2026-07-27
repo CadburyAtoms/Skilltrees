@@ -233,7 +233,45 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "FeintStrikeFoc00": {
+          "id": "FeintStrikeFoc00",
+          "description": "Warrior/Duelist. 07-24s: was a name-keyed branch in edhaHeroicOnHit. It could not be a rule until the on-hit dispatcher stopped hand-listing three handler types — an edha-focus rule on edha-on-hit was silently inert. Intimidation ranks, resolved against YOUR roll data.",
+          "event": "edha-on-hit",
+          "handler": {
+            "type": "edha-focus",
+            "op": "drain",
+            "target": "victim",
+            "formula": "@skills.inm.rank"
+          },
+          "order": 0
+        },
+        "FeintStrikeCae00": {
+          "id": "FeintStrikeCae00",
+          "description": "Warrior/Duelist. Burns the target Reaction on the CAE tracker. `target: victim` is the widening this needed: the on-hit path runs on the DAMAGE-APPLYING client, usually the GM, whose game.user.targets is not your target.",
+          "event": "edha-on-hit",
+          "handler": {
+            "type": "edha-cae-grant",
+            "kind": "burn-reaction",
+            "n": 1,
+            "target": "victim",
+            "label": "Feinting Strike"
+          },
+          "order": 1
+        },
+        "FeintStrikeNote0": {
+          "id": "FeintStrikeNote0",
+          "description": "Warrior/Duelist. The graze half stays table-run: grazes are not engine-visible.",
+          "event": "edha-on-hit",
+          "handler": {
+            "type": "edha-note",
+            "icon": "🗡️",
+            "whisper": "public",
+            "text": "the target loses <strong>@skills.inm.rank</strong> focus and its Reaction. <em>On a graze, halve the focus loss by hand — grazes are not engine-visible.</em>"
+          },
+          "order": 2
+        }
+      },
       "effects": []
     },
     "Flamestance": {
@@ -272,7 +310,7 @@
             "appliesTo": "any",
             "bonusFormula": "",
             "mode": "advantage",
-            "whenSkill": "itm",
+            "whenSkill": "inm",
             "whileStanceActive": true,
             "whenTargetIsolated": false
           }
@@ -948,7 +986,19 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "WaryGuard0000000": {
+          "description": "Heroic/Warrior. The focus guard (2bZ, iron rule 3 re-litigated — both halves stay ENFORCED, rule-keyed): involuntary focus loss against you is reduced by your Discipline ranks, and Surprised cannot be applied while you hold focus. Config-only — edhaDrainFocus and the status-creation veto read it.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-focus-guard",
+            "reduceFormula": "@skills.dis.rank",
+            "vetoStatus": "surprised",
+            "whileFocusAbove": 0
+          },
+          "id": "WaryGuard0000000"
+        }
+      },
       "effects": []
     },
     "Windstance": {

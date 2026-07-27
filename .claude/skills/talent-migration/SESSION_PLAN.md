@@ -1,0 +1,152 @@
+# The migration — ✅ COMPLETE (2026-07-26, pass AA)
+
+**State: 0 talents on the ratchet** (221 at the start 2026-07-24, cleared over twenty-seven
+passes). Every tree is clear, all six marker ledgers are repointed onto H3 storage, and no talent
+name is dispatched on in engine code.
+
+**There is no next pass.** What remains of this skill is maintenance, and it is one thing:
+`scripts/lint-refs.js` **pass 7** now guards against REGROWTH. `scripts/name-keyed-allowlist.json`
+stays in the repo with an **empty `talents` list** — do NOT delete it, and do not add to it. A new
+`item.name === "X"` or `edhaOwnsTalent(actor, "X")` in the engine is a build failure, and the fix
+is a rule on the document or a declared exit, never a new line in that file.
+
+**Pass AA (07-26) — the FINAL session: Fate's `ordained` ledger (the sixth and last; one accessor
+repoint, all five readers followed for free, the `linked` annotation intact) + leyline/Blue's four.
+New: **H22 `edha-barrier`** — the engine's first blocks-movement capability, real Foundry Walls
+around a placed square, cover deliberately left a table read — plus `edha-illusion-copy` (the
+belief loop rule-keyed; BOTH adversary "The Seeming" abilities rewired with it),
+`edha-illusion-upkeep`, and the `edha-summon` widenings `tokenSizeColor` + `placeAt: pick-point`
+(no summon could be placed at a chosen square before). The Blue `useItem` switch is deleted.**
+
+Before that: **Pass Z (07-26) cleared Black + heroic (10, grouped by BUILD, no ledger): H18 the
+`edha-ritual-paid` announcement + `edha-reserve-bank`; H17 the target-formula resolver
+(`@target.recoveryDie`, pinned) + `edha-focus` resource:hea + posted dice; the three ENGINE-OWNED
+vetoes re-litigated RULE-KEYED (`edha-focus-guard` / `edha-hp-floor` + the FIRST authored NATIVE
+rule / `edha-move-veto` — adversary copies carry their own rule); Cold Eyes via the new
+`whenOnMyList` own-ledger gate; the last `EDHA_DRAW_MANA` row deleted (`edha-pulse` who:enemies).**
+**Pass Y (07-26) cleared deity/Destruction (7) + leyline/Red (3) —
+the sixth two-path session: the Destruction takeover retired, the FIFTH LEDGER (`charges`)
+repointed onto H3 (point-bound like snares; the arm's nested trig.targetUuid never meets the
+reconcile), and the shared-name Shatter Focus SPLIT into its two talents (the Chaos takeover had
+run its Omen flow for both, so Red's card was unreachable the whole tracked history). New:
+`edha-zone` kinds charge/line, `edha-detonate-react`, `edha-reroll-react`, `edha-zone-react`
+defeat-in-zone, `edha-place-hazard` mode trail + `spreads` (EDHA_PYRE_SOURCES deleted), the
+`damaged` watch kind, `edha-test-rider` `unlessSkills`.** Pass X before it cleared Fate (+
+`snares` + the Hunter stretch); W Death + Life (+ `remains`); V Order + Civilization (+
+`edicts`); U Chaos + Power; T Knowledge + Sovereignty; R/S White and Green. Recompute before
+trusting anything here:
+
+```bash
+node scripts/lint-refs.js                      # pass 7 prints the live ratchet count
+node scripts/check-2b-classification.js
+```
+
+**Rewritten 2026-07-25 on Ben's instruction — "go path by path".** The old version partitioned the
+work by *handler* and by *cheapest atom*, and that is what produced sessions converting one talent.
+**One path per session. Convert all of it. Build whatever handler it needs, inline.** See SKILL.md.
+
+**Widened 07-25 post-S (Ben): TWO paths per session when both blocking builds are ruled and at
+most one ledger is in scope** — proven six times now (T: 93 → 75, U: 75 → 63, V: 63 → 48,
+W: 48 → 35, X: 35 → 24 single-path + the Hunter stretch, Y: 24 → 14).
+**Done 2bZ: the Black + heroic mop-up. What remains: Blue 4 + Fate's `ordained` repoint —
+pass AA, the FINAL session, paired by Ben's 07-26 instruction (this supersedes the earlier
+"`ordained` pairs with nothing" note).**
+
+---
+
+## The paths, largest first
+
+| path | on ratchet | what it needs |
+|---|--:|---|
+| ~~leyline/Green~~ | **0** | ✅ **CLEAR (pass S, 07-25)** — H2 the zone family (`edha-zone` / `edha-zone-hazard` / `edha-zone-react`) + `edha-adv-attack` + `edha-strike-window` + `edha-damage-bonus` + `edha-unseen-ward` + `edha-heal-react` + `edha-remove-injury` + `edha-suppress-veil`. Natural Order re-litigated and CONVERTED (veil half enforced). Thorn Hedge + the Grove's copy rewired in the ADVERSARY pack. Overgrowth (deity/Life) went with it via `deflectStackMax`. |
+| ~~leyline/White~~ | **0** | ✅ **CLEAR (pass R, 07-25)** — H26 `edha-test-react` + H27 `edha-damage-reduce` + H7 `edha-aura` + the small executors (`edha-pulse`, `edha-cleanse`, `edha-move-window`, `edha-designate`, `edha-accord-forge`) + H1 `vs: prompt-dc`. Bound by Word = upgrade-talent exit. |
+| ~~deity/Fate~~ | **0** | ✅ **CLEAR (pass X, 07-25)** — takeover deleted; the `snares` LEDGER repointed (point-bound, fail-open; canvas stays with the placement/spring handlers per §9o); `ordained` LEGACY behind its accessor by design. `edha-zone` {kind: ordained/snare/link-markers} + `edha-zone-guard` + `edha-snare-react` + `edha-marker-command` + H3ann `sourceItemUuid`/`riderFailStatus`. Weave re-litigated (picker built, the `linked` annotation got its first reader). |
+| ~~deity/Knowledge~~ | **0** | ✅ **CLEAR (pass T, 07-25)** — H3b as `mode: counter` on H3 + `edha-counter-transfer` + the three arming statuses + the `edha-damage-bonus` counter/armed modes. Takeover + name-keyed dealer passes deleted. |
+| ~~deity/Sovereignty~~ | **0** | ✅ **CLEAR (pass T, 07-25)** — H9 `edha-die-step` (+ `edha-die-step-react`, the `die-step` watch kind, `edha-temp-hp` victim). Both bucket-3 pair talents re-litigated to FULL conversions (entry-data couplings). Takeover deleted. |
+| ~~deity/Civilization~~ | **0** | ✅ **CLEAR (pass V, 07-25)** — `edha-zone` kinds foundation/fortify/link + **H21 `edha-summon-effect`** (toggle-baked / grant / transform) + the `summon-hits` damage-bonus mode (whenDealerItem, addTargetDeflect) + H25 `rally-zone`/`requireVictimInMyZone`. Magnum Opus = ENGINE-OWNED, rule-keyed. Takeovers deleted. |
+| ~~deity/Death~~ | **0** | ✅ **CLEAR (pass W, 07-25)** — takeover deleted; the `remains` LEDGER repointed (freebie = `sceneFreebie` field, "[] ≠ unset" in `edhaOwnerListAvail`); H3 `op: spend`; `edha-ward` / `edha-turn-dot` / `edha-revive` (Raise Dead ENGINE-OWNED, rule-keyed); Withering Touch = damage-bonus fields (`healCutFraction`, `withernext`); Reaper's Harvest = defeat watch (`chain`) + `edha-focus` {inv} + H3 place + sense-reveal; Bone Garden = zone `costList` + hazard `moment: turn-end`; Death Ward = H1 `skipIfAlly` + skill_test activation. |
+| ~~deity/Destruction~~ | **0** | ✅ **CLEAR (pass Y, 07-26)** — takeover deleted; the `charges` LEDGER repointed (point-bound + nested trig, fail-open; canvas + arm/trigger machinery stays with the placement/detonate handlers per §9o); `edha-zone` kinds charge/line + `edha-detonate-react` + `edha-zone-react` defeat-in-zone + `edha-place-hazard` mode trail/`spreads`; Pinpoint reads H3ann's `sourceItemUuid` (built for it in 2bX); `EDHA_PYRE_SOURCES` deleted (Fire the Wrack rides its own rule — adversary pack). |
+| ~~deity/Order~~ | **0** | ✅ **CLEAR (pass V, 07-25)** — the `edicts` LEDGER repointed (uuid-keyed; proh/sealed ride along) + H3 `annotate` (H3ann) + the `prohibition` place mode + H1 `requireTargetOnList` + `list-member-hits`/`oncePerRoundPerDealer` + `edha-redirect` **intercept** + `edha-bound-adv`/`edha-prohibition-resolve`/`edha-decree`. Final Decree = ENGINE-OWNED, rule-keyed. Takeover deleted. Latent `edhaOwnerLedgers` key-vs-marker bug fixed + pinned. |
+| ~~deity/Power~~ | **0** | ✅ **CLEAR (pass U, 07-25)** — H13 built + the armed `edha-damage-bonus` riders (`meleeOnly`, `tallyKills`/@tally, onKill/onSurvive) + the `token-move` watch kind + `once: arm-per-target` + `maxTargets` multi-target + `edha-self-status` widenings + `edha-defense-buff` `window: scene` + config-only `edha-redirect`/`edha-test-aura`. Mantle re-litigated to a FULL conversion; the dealer pre/post passes and both dispatches deleted. |
+| ~~deity/Life~~ | **0** | ✅ **CLEAR (pass W, 07-25)** — the useItem switch deleted; `edha-mutation` (chooser, riders as fields) + `edha-regen-grant` (Apex Form's FIVE mechanics on one rule; Primal's endOnVitalSpirit/mutationFormula) + `edha-cleanse` {success-damage-roll} (Surgical) + the `edha-redirect` intercept widenings (`watchFlag`/`linkOnUse`/`chooseAmount`/`takeType`/`healFormula` — Lifeline re-litigated OFF pass S's measured H25 build; the choose-amount click already existed). |
+| ~~deity/Chaos~~ | **0** | ✅ **CLEAR (pass U, 07-25)** — H1 `targetList` owner-sweep + `vs: none`, H3 `near-victim`/`enemies-range`, H6 `source: effects` (the dispel), `unlessTargetStatus`, config-only `edha-sense-reveal` (the veil table retired). `EDHA_CHAOS_TALENTS` is down to Shatter Focus (RED's talent — converting it frees the Set entirely). |
+| ~~leyline/Black · heroic/*~~ | **0** | ✅ **CLEAR (pass Z, 07-26)** — H18 `edha-ritual-paid` + `edha-reserve-bank`; H17 `edhaTargetFormula` + the recovery-die path + `edha-focus` hea/dice; the veto trio rule-keyed (`edha-focus-guard`/`edha-hp-floor`/`edha-move-veto`, first authored NATIVE rule); `whenOnMyList`; `EDHA_DRAW_MANA` deleted (`edha-pulse` who:enemies/requireIsolated). |
+| ~~leyline/Blue~~ | **0** | ✅ **CLEAR (pass AA, 07-26) — THE LAST FOUR.** Holographic Illusion = one `edha-summon` rule (the 1b was TWO gaps: `tokenSizeColor` and `placeAt: pick-point`; the classification's "3 mechanics" was one mechanic at three call sites). Living Image = config-only `edha-illusion-upkeep` + `edha-note`. Phantom Double = `edha-illusion-copy` (exit re-litigated, CONFIRMED, taken rule-keyed; both adversary Seemings rewired). Phantom Barricade = **H22 `edha-barrier`**, built — Foundry Walls, cover left a table read. Fate's `ordained` repointed in the same pass. |
+
+**The 13 bucket-3 declared exits** cut across every path and need **no build** — an `edha-note` cue
+rule on the talent plus an `ENGINE_OWNED: <reason>` line in its tree-section header. Take them as you
+pass through each path rather than as their own session. ⚠️ Re-litigate each against iron rule 3
+first — Dread Presence was "manual by nature" until a `preUpdateToken` veto enforced it, and pass S
+re-litigated Natural Order's "narrative scene debuff" exit into a full conversion (the dark-veil
+sweep was a nameable hook).
+
+---
+
+## Recurring shapes — find these in every path
+
+The bulk comes from spotting that N talents are one shape. Confirmed so far:
+
+- **A `switch (item.name)` on `useItem` or `preUseItem`** — one per tree. The `preUseItem` ones
+  cancel `use()`; see SKILL.md step 2.
+- **`edhaCharacterOwnersOf(NAME)` + a generic card poster** — the watcher-offers-a-reaction shape.
+  **H25 `edha-damage-react`** for damage triggers; **H26 `edha-test-react`** (built pass R) for
+  roll triggers. Both exist now — a new reaction of either shape is authoring, not engine work.
+- **Per-tree `edha<Tree>DealerPre/Post` riders** inside the applyDamage wrapper — behaviour that
+  fires when you deal damage, not on use. ~20 talents across ~8 trees. Needs the payload cluster:
+  pre-damage veto, in-flight reduction, second-hit counter, scene tally, heal-fraction.
+- **Marker LEDGERS** — six of them, **all migrated** (`covenants` 07-24u · `edicts` V · `remains`
+  W · `snares` X · `charges` Y · `ordained` AA). Every one now lives at
+  `flags.edha-content.lists.<key>` behind a one-line accessor. ⚠️ **One ledger per session**
+  (§9m q7): a half-migrated ledger silently empties a live list at the table. The deliverable of
+  a ledger pass is the **REPOINT**, not the count.
+  ⚠️ **A ledger SWEEP must pass the MARKER status** — `edhaOwnerLedgers(key, status)`: the key is
+  plural, the marker singular, and the key-as-status default silently empties the sweep (the 2bV
+  pinned regression).
+
+## Handlers built, for reuse before you build another
+
+H1 `edha-def-test` (+ `vs: prompt-dc` 07-25) · H3 `edha-owner-list` · H5 `edha-cae-grant` ·
+H6 `edha-prompt-pick` · H8 `edha-watch` · H10 `edha-focus` · H11 `edha-enter-stance` ·
+H12 `edha-detonate-list` · H15 summon `sustainCap`/`replaceOldest` · H19 `whenSlowTurn` ·
+H20 the `edha-draw-mana` event · **H24 `edha-reveal`** (07-25) · **H25 `edha-damage-react`**
+(07-25) · **H26 `edha-test-react` · H27 `edha-damage-reduce` · H7 `edha-aura` · `edha-pulse` ·
+`edha-cleanse` · `edha-move-window` · `edha-designate` · `edha-accord-forge`** (07-25, pass R) ·
+**H2 `edha-zone` · `edha-zone-hazard` · `edha-zone-react` · `edha-adv-attack` ·
+`edha-strike-window` · `edha-damage-bonus` · `edha-unseen-ward` · `edha-heal-react` ·
+`edha-remove-injury` · `edha-suppress-veil` · `edha-test-rider` {whenEnemiesInMyZone,
+unlessDisadvantage} · `edha-overflow-thp` {deflectStackMax}** (07-25, pass S) ·
+**H3b `edha-owner-list` {mode: counter} · `edha-counter-transfer` · `edha-damage-bonus`
+{armed-self-status, self/ally-hits-counter-bearer, placeCounter} · H9 `edha-die-step` ·
+`edha-die-step-react` · the `die-step` watch kind · H1 {targetCounter, oncePerScene,
+requireDisposition} · `edha-triggered-effect` {perCounterStatus} · `edha-temp-hp` {victim} ·
+`edha-reveal` {counter-bearer} · `edha-note` {rosterColor}** (07-25, pass T) ·
+**H3 {op: annotate (H3ann), prohibition} · H1 {requireTargetOnList} · `edha-self-status`
+{requireListNonEmpty} · `edha-note` {rosterList} · `edha-damage-bonus` {list-member-hits,
+oncePerRoundPerDealer, summon-hits, whenDealerItem, addTargetDeflect} · `edha-redirect`
+{direction: intercept} · `edha-bound-adv` · `edha-prohibition-resolve` · `edha-decree` ·
+`edha-zone` {kind: foundation/fortify/link} · H21 `edha-summon-effect` · H25 {rally-zone,
+requireVictimInMyZone} · `edhaOwnerLedgers(key, status)`** (07-25, pass V) ·
+**H3 {op: spend, sceneFreebie} · `edhaOwnerListAvail`/`edhaLedgerSpend` · `edha-ward` ·
+`edha-turn-dot` · `edha-revive` · `edha-mutation` · `edha-regen-grant` · `edha-focus`
+{resource: inv} · `edha-damage-bonus` {healCutFraction} · H1 {skipIfAlly} · `edha-zone`
+{costList} · `edha-zone-hazard` {moment: turn-end} · `edha-cleanse` {success-damage-roll} ·
+`edha-redirect` {watchFlag, linkOnUse, chooseAmount, takeType, healFormula}** (07-25, pass W) ·
+**`edha-zone` {kind: ordained/snare/link-markers, evict} · `edha-zone-guard` · `edha-snare-react` ·
+`edha-marker-command` · H3 annotate {sourceItemUuid stamp, riderFailStatus} · `edha-damage-bonus`
+{rangedOnly, placeList/placeListStatus/placeListCapFormula}** (07-25, pass X) ·
+**`edha-zone` {kind: charge/line} · `edha-detonate-react` · `edha-reroll-react` ·
+`edha-zone-react` {defeat-in-zone, ignite-spread} · `edha-place-hazard` {mode: trail, spreads} ·
+the `damaged` watch kind · `edha-test-rider` {unlessSkills} · `edhaDrainFocus` cross-actor
+relay** (07-26, pass Y) ·
+**`edha-ritual-paid` EVENT · `edha-reserve-bank` · H17 `edhaTargetFormula`/`edhaRecoveryDie` ·
+`edha-focus` {resource: hea, posted dice} · `whenOnMyList` · `edha-focus-guard` ·
+`edha-hp-floor` · `edha-move-veto` · `edha-pulse` {who: enemies, requireIsolated}** (07-26,
+pass Z) ·
+**H22 `edha-barrier` (Foundry Walls — the first blocks-movement capability) ·
+`edhaPickPlacement` · `edha-summon` {tokenSizeFt/tokenSizeColor, placeAt: pick-point,
+rangeColor/rangeFt, `at` point} · `edha-illusion-copy` · `edha-illusion-upkeep`** (07-26,
+pass AA — the last) ·
+`edha-note`.
+
+⚠️ **H8 `edha-watch` is a GATE with a stub executor** — 44 talents name it and every one still needs a
+separate real payload handler. A `needs` entry naming only a gate is not a satisfiable row.

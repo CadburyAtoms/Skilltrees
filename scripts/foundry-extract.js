@@ -28,7 +28,9 @@ const { authorable, fingerprint, readPack, slugify } = require("./edha-pack-io.j
 const DATA = "C:/Users/benhe/OneDrive/Documentos/Worldbuilding/Claude Design/skilltrees/data";
 const MODROOT = "C:/Users/benhe/AppData/Local/FoundryVTT/Data/modules/edha-content";
 const AUTHORED_DIR = `${DATA}/authored`;
-const BASELINE_DIR = `${AUTHORED_DIR}/.baselines`;
+// Beside the packs it describes — matches foundry-build.js (moved 2026-07-26c; the shared
+// data-keyed location let scratch-modroot builds clobber the LIVE packs' baselines).
+const BASELINE_DIR = `${MODROOT}/.baselines`;
 const ATLAS_PACK = { leyline: "edha-leyline", deity: "edha-deity", heroic: "edha-heroic" };
 
 const arg = (process.argv[2] || "all").trim();

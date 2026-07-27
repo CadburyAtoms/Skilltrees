@@ -89,7 +89,7 @@ if (cls && allow) {
 // different questions and they give different answers, because most bucket-2 talents need a PAIR
 // of handlers — which is why raw consumer counts undersell whichever handler you measure second.
 if (!errors.length && process.argv.includes("--priority")) {
-  const BUILT = new Set((process.argv.find(a => a.startsWith("--built=")) || "--built=H1,H5,H11").split("=")[1].split(",").filter(Boolean));
+  const BUILT = new Set((process.argv.find(a => a.startsWith("--built=")) || "--built=H1,H5,H11,H3,H8,H10,H6,H12").split("=")[1].split(",").filter(Boolean));
   const b2 = Object.entries(cls.talents).filter(([, r]) => r.bucket === "2");
   const satisfied = (set) => b2.filter(([, r]) => (r.needs || []).every(h => set.has(h))).length;
 

@@ -532,6 +532,9 @@ function pathEvents(tree) {
       const edgeSources = [];
       for (const nm of edgeNames) { const s = nameToNode[String(nm).toLowerCase()]; if (s) edgeSources.push(s); else report.unresolved.push(`${tree.id}::${t.name}-conn->${nm}`); }
 
+      // `talentPrereqs` is built but NOT stored on the talent doc (07-27h — the talent DataModel has
+      // no `prerequisites` field, so it was stripped at load). Kept because the two maps are filled
+      // together and the report counters below ride the same branches; the NODE map is the live one.
       const talentPrereqs = {}, nodePrereqs = {}, nodeConns = {};
       // All parent edges share ONE managed talent prereq whose `talents` map holds every parent.
       // The cosmere sheet evaluates `prereq.talents.some(...)` (OR) WITHIN a talent prereq but
@@ -586,8 +589,17 @@ function pathEvents(tree) {
           description: { value: descValue, chat: descShort, short: descShort },
           activation,
           damage,
-          path: tree.color || slugify(tree.group), hasPath: false, specialty: "", hasSpecialty: false, ancestry: null, hasAncestry: false,
-          prerequisites: talentPrereqs, prerequisitesMet: false, modality: STANCE_TALENTS.has(t.name) ? "stance" : null,
+          // TalentItemDataModel's real fields are the mixins (id/type/description/activation/damage/
+          // modality/events/relationships) + path/ancestry/power. `hasPath`, `specialty`,
+          // `hasSpecialty`, `hasAncestry`, `prerequisites` and `prerequisitesMet` were ALSO written
+          // here and every one of them was silently stripped at load — `prerequisites`/
+          // `prerequisitesMet` exist only on the talent_tree NODE schema (which line ~606 writes,
+          // and which is what the sheet actually reads), and the other four are derived-only or
+          // nonexistent. Dropped 2026-07-27h by the dead-field sweep; specialty is read from
+          // flags["edha-content"].specialty below, as it always was. NO behaviour change — the pack
+          // simply stops minting keys the DataModel deletes.
+          path: tree.color || slugify(tree.group), ancestry: null,
+          modality: STANCE_TALENTS.has(t.name) ? "stance" : null,
           events,
         },
         effects, sort: (sortT += 100000), ownership: { default: 0 },
@@ -666,7 +678,14 @@ function pathEvents(tree) {
   }
 
   const FORCE = process.argv.includes("--force");
-  const BASELINE_DIR = `${DATA}/authored/.baselines`;
+  // The baseline lives WITH the modroot it describes, NOT with the data (moved 2026-07-26c).
+  // It used to be `${DATA}/authored/.baselines` — shared across every EDHA_MODROOT — so a
+  // session building into a SCRATCH modroot silently re-stamped the baselines that described
+  // Ben's LIVE packs. At the first post-migration deploy the guard then flagged 76 talents as
+  // "un-extracted Foundry edits" that were really just the undeployed repo delta, and the
+  // protection it owed any REAL Foundry edits had been destroyed weeks earlier. A baseline
+  // that can describe a different modroot than the one it sits beside is fiction.
+  const BASELINE_DIR = `${MODROOT}/.baselines`;
   // Every atlas is assembled above; only in-scope packs are written (or the guard would block
   // scope=adversaries on unrelated un-extracted talent edits, and pack writes would be surprises).
   const PACK_ATLAS = Object.fromEntries(Object.entries(ATLAS_PACK).map(([a, p]) => [p, a]));
@@ -960,10 +979,27 @@ function advItemDoc(advName, raw, sort) {
   const spec = activationSpec(costStr);
   const { consume, costText } = parseCost(raw.consume);
   const isAttack = raw.attack != null;           // damage optional: a grab/grapple attack rolls to-hit only
-  const isHeal = !isAttack && raw.damage;        // damage-only roll (heal/AoE) — raw dice, no skill mod
+  const isDmgRoll = !isAttack && raw.damage;     // damage-only roll (heal/AoE) — raw dice, no skill mod
+  /* Only a TRUE heal (damageType "heal" — Suture Cradle) gets the "Restores…" prose; a non-attack
+   * ability with a real damage type (Flame Surge's 2d8 energy — 07-26n) keeps its text-driven
+   * description and just carries the damage block, which is what its edha-burst rule reads at
+   * detonate. Before this split, giving such an ability a damage field rewrote its card as a heal. */
+  const isHeal = isDmgRoll && String(raw.damageType || "").toLowerCase() === "heal";
   const ranged = /\brange\b/i.test(raw.range || "");
   const skill = raw.skill || (ranged ? "lwp" : "hwp");
   const attribute = SKILL_ATTR[skill] || "str";
+
+  /* An ability that GATES ITSELF ON A TEST has to roll one. `edha-def-test` (H1) is a decider, not a
+   * roller: it queues a contest and waits for the owner's own skill roll to arrive, so if the use
+   * flow never fires a test the contest just times out — the cost is charged and NOTHING happens,
+   * with no error anywhere. Until 2026-07-26j only ATTACK items were promoted to `skill_test`, so
+   * every non-attack ability carrying a def-test rule was born mute: the Callthief's Counterpoint,
+   * the Surecat's Redirect Momentum, the Reeve-Owl's Sovereign of Solitude, both Rootling Swarm
+   * abilities and the Tussock-Sow's Drive the Prey (found live, bench run 2). The rule already
+   * names the skill it wants, so read it off the document rather than making each block declare it
+   * twice — and never key on the ability's NAME (iron rule 2b). */
+  const defTestSkill = (raw.events ?? []).find(r => r?.handler?.type === "edha-def-test")?.handler?.skill || null;
+  const testSkill = raw.skill || defTestSkill;
 
   const activation = {
     type: spec.type, cost: spec.cost, consume,
@@ -976,7 +1012,12 @@ function advItemDoc(advName, raw, sort) {
     activation.skill = skill;
     activation.modifierFormula = String(raw.attack); // flat attack bonus -> added to the d20 test as a part
     if (raw.damage) damage = { formula: raw.damage, grazeOverrideFormula: raw.graze ?? "", type: raw.damageType ?? null, skill: null, attribute: null };
-  } else if (isHeal) {
+  } else if (defTestSkill) {
+    activation.type = "skill_test";
+    activation.skill = testSkill;
+    activation.attribute = SKILL_ATTR[testSkill] || "default";
+  }
+  if (isDmgRoll) {
     damage = { formula: raw.damage, grazeOverrideFormula: raw.graze ?? "", type: raw.damageType ?? null, skill: null, attribute: null };
   }
 

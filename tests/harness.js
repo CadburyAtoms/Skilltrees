@@ -25,10 +25,16 @@ function getProp(obj, p) {
 }
 
 /* Arithmetic-only expression evaluator — mirrors the slice of Foundry's Roll.safeEval the
- * engine's pure helpers rely on (numbers, + - * / % ( ), Math.<fn>). Throws on anything else. */
+ * engine's pure helpers rely on (numbers, + - * / % ( ), Math.<fn>, and the BARE math functions
+ * `floor(x)` / `ceil(x)` / … that Foundry exposes through its Roll math proxy — authored formulas
+ * are written `floor(@dealt / 2)`, never `Math.floor(...)`. Modelling the bare form matters: while
+ * this stub refused it, `edhaEvalSync("floor((2d8) / 2)")` returned 0 in the harness for the same
+ * shape that was failing in Foundry for an unrelated reason, so a test could pass on a wrong
+ * value. 2026-07-26j). Throws on anything else. */
+const SAFE_MATH_FNS = "abs|ceil|floor|max|min|round|sqrt|pow|sign|trunc";
 function safeEval(expr) {
-  const s = String(expr);
-  const stripped = s.replace(/\bMath\.(abs|ceil|floor|max|min|round|sqrt|pow|sign|trunc)\b/g, "");
+  const s = String(expr).replace(new RegExp(`(?<!\\w\\.?)\\b(${SAFE_MATH_FNS})\\s*\\(`, "g"), "Math.$1(");
+  const stripped = s.replace(new RegExp(`\\bMath\\.(${SAFE_MATH_FNS})\\b`, "g"), "");
   if (!/^[0-9+\-*/%().,\s]*$/.test(stripped)) throw new Error(`safeEval refused: ${expr}`);
   const v = Function(`"use strict"; return (${s});`)();
   if (typeof v !== "number" || !Number.isFinite(v)) throw new Error(`safeEval non-numeric: ${expr}`);

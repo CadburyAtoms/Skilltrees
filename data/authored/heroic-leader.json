@@ -127,7 +127,22 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ConfidentCmdDie0": {
+          "description": "Leader. Spend 1 focus (native consume) to add your command die to your own next Intimidation, Leadership or Persuasion test. 07-24w: the skill list is now ENFORCED per Ben's ruling — the old card text called it honour-system, and `skill` had to be widened from a single id to a comma-list, because an authored list against a scalar compare would have matched nothing at all.",
+          "event": "use",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "self",
+            "count": 1,
+            "formula": "1d(4 + 2 * @owned)",
+            "ownedFrom": "Confident Command, Demonstrative Command, Shrewd Command",
+            "skill": "inm, lea, prs"
+          },
+          "order": 0,
+          "id": "ConfidentCmdDie0"
+        }
+      },
       "effects": []
     },
     "Customary Garb": {
@@ -251,7 +266,50 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "DecisiveCmdDie00": {
+          "description": "Leader. Give the targeted ally a command die on their next test. 07-24w: replaced a name-gated useItem hook (iron rule 2b). The die is 1d(4 + 2 * @owned) where @owned counts how many of the three Command upgrades you have — d4 / d6 / d8 / d10 — because nothing in roll data exposes an owned-talent count, so a literal formula could not express the scaling. NOTE the card's 'within 20 ft' is still NOT enforced: no distance check existed before this conversion either, and adding one is a behaviour change tied to the open Authority question (audit 9m q13). 07-24x (Ben's q13 ruling to BUILD it): the card's 'within 20 ft' is now ENFORCED, vetoed pre-cost, and `doubleIfOwns: Authority` doubles BOTH the range (40 ft) and the ally count (2) — which is exactly what Authority's card says.",
+          "event": "use",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "target",
+            "count": 1,
+            "formula": "1d(4 + 2 * @owned)",
+            "ownedFrom": "Confident Command, Demonstrative Command, Shrewd Command",
+            "rangeFt": 20,
+            "maxTargets": 1,
+            "doubleIfOwns": "Authority"
+          },
+          "order": 0,
+          "id": "DecisiveCmdDie00"
+        },
+        "DecisiveRelent00": {
+          "description": "Leader UPGRADE RIDER — Relentless March. A REMINDER, and it was one before this conversion too: the old code pushed this exact text into the card and applied no speed effect and no status suppression. Now editable in Foundry. Relentless March's own document stays empty (Ben 07-24t) and is declared in the tree-section header.",
+          "event": "use",
+          "handler": {
+            "type": "edha-note",
+            "icon": "🎖️",
+            "whisper": "public",
+            "whenOwnsTalent": "Relentless March",
+            "text": "The target also gains <strong>+10 ft movement</strong> this round and ignores <strong>Exhausted, Slowed and Surprised</strong> (apply by hand)."
+          },
+          "order": 1,
+          "id": "DecisiveRelent00"
+        },
+        "DecisiveAuthort0": {
+          "description": "Leader UPGRADE RIDER — Authority. 07-24x: Ben ruled BUILD IT, so this is no longer a reminder for unenforced text — `doubleIfOwns: Authority` on the rule above actually doubles the range and the target count. The note stays so the player is told what changed and knows to target two allies.",
+          "event": "use",
+          "handler": {
+            "type": "edha-note",
+            "icon": "🎖️",
+            "whisper": "public",
+            "whenOwnsTalent": "Authority",
+            "text": "<strong>Authority</strong>: this reaches <strong>40 ft</strong> instead of 20 and affects <strong>2 allies</strong> instead of 1 — both now enforced automatically; target both allies before using it."
+          },
+          "order": 2,
+          "id": "DecisiveAuthort0"
+        }
+      },
       "effects": []
     },
     "Demonstrative Command": {
@@ -290,7 +348,22 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "DemonstrCmdDie00": {
+          "description": "Leader. Spend 1 focus to add your command die to your own next Athletics, Agility or Leadership test. Skill list ENFORCED 07-24w (Ben's ruling); these are the two ids players most often self-waived, so expect this to be the noticeable half of the tightening.",
+          "event": "use",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "self",
+            "count": 1,
+            "formula": "1d(4 + 2 * @owned)",
+            "ownedFrom": "Confident Command, Demonstrative Command, Shrewd Command",
+            "skill": "ath, agi, lea"
+          },
+          "order": 0,
+          "id": "DemonstrCmdDie00"
+        }
+      },
       "effects": []
     },
     "Focused Mind": {
@@ -579,7 +652,36 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ResilientFloor00": {
+          "description": "Heroic/Leader. The HP floor (2bZ, rule-keyed): the first time health would hit 0 it holds at your Athletics modifier instead, spent until a long rest. Config-only — the pre-update veto reads it.",
+          "event": "edha-watch-rule",
+          "order": 1,
+          "handler": {
+            "type": "edha-hp-floor",
+            "floorFormula": "max(1, @skills.ath.mod)",
+            "spentFlag": "resilientSpent"
+          },
+          "id": "ResilientFloor00"
+        },
+        "ResilientRest000": {
+          "description": "Heroic/Leader. The long-rest clear — the FIRST authored NATIVE-handler rule in the project (2bA-9 ⚑ bench-verify): on a long rest the spent flag clears. The veto's read tolerates the native writer's stringly values ('false'/'0' read as cleared).",
+          "event": "long-rest-actor",
+          "order": 2,
+          "handler": {
+            "type": "update-actor",
+            "target": "parent",
+            "changes": [
+              {
+                "key": "flags.edha-content.resilientSpent",
+                "mode": 5,
+                "value": "false"
+              }
+            ]
+          },
+          "id": "ResilientRest000"
+        }
+      },
       "effects": []
     },
     "Resolute Stand": {
@@ -695,7 +797,7 @@
           "event": "use",
           "handler": {
             "type": "edha-def-test",
-            "skill": "ldr",
+            "skill": "lea",
             "vs": "defense",
             "def": "spi",
             "requireTarget": true,
@@ -740,7 +842,22 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ShrewdCmdDie0000": {
+          "description": "Leader. Spend 1 focus to add your command die to your own next Deception, Insight or Leadership test. Skill list ENFORCED 07-24w (Ben's ruling).",
+          "event": "use",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "self",
+            "count": 1,
+            "formula": "1d(4 + 2 * @owned)",
+            "ownedFrom": "Confident Command, Demonstrative Command, Shrewd Command",
+            "skill": "dec, ins, lea"
+          },
+          "order": 0,
+          "id": "ShrewdCmdDie0000"
+        }
+      },
       "effects": []
     },
     "Synchronized Assault": {
@@ -788,7 +905,7 @@
           "event": "use",
           "handler": {
             "type": "edha-def-test",
-            "skill": "ldr",
+            "skill": "lea",
             "vs": "defense",
             "def": "cog",
             "requireTarget": true,
@@ -944,7 +1061,43 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ValiantIntervH10": {
+          "id": "ValiantIntervH10",
+          "description": "Leader. Athletics vs the target's Spiritual defense, engine-resolved on YOUR roll. 07-24p: replaced its EDHA_HEROIC_DEFTESTS row (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "ath",
+            "vs": "defense",
+            "def": "spi",
+            "requireTarget": true
+          }
+        },
+        "ValiantIntervDis": {
+          "id": "ValiantIntervDis",
+          "description": "Leader. On a success its next test takes a disadvantage. Same simplification as Steadfast Challenge: the old single-candidate pick card became a direct write once H1 existed to dispatch it. The \"against your allies\" scoping stays honour-system.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "target",
+            "mode": "disadvantage",
+            "count": 1
+          }
+        },
+        "ValiantIntervRes": {
+          "id": "ValiantIntervRes",
+          "description": "Leader. RESOLUTE STAND's rider, carried here as authored data rather than an engine `edhaOwnsTalent` branch (07-24p, Ben's ruling). Resolute Stand therefore has no rule of its own — declared in the heroic tree-section header.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-note",
+            "icon": "🛡️",
+            "whisper": "public",
+            "whenOwnsTalent": "Resolute Stand",
+            "text": "<strong>Resolute Stand</strong> — the target makes no Reactive Strikes; spend focus to add targets (the GM applies it)."
+          }
+        }
+      },
       "effects": []
     },
     "Well Dressed": {

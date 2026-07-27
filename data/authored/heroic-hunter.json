@@ -112,7 +112,46 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ColdEyesWatch000": {
+          "description": "Heroic/Hunter. Fires when the creature that dropped is YOUR quarry (whenOnMyList — the own-ledger gate, built 2bZ with this talent). Rides the shared defeat announcement, so it inherits the tree-wide defeat preconditions (live-to-0 crossing, no PC drops, no summons, no Death-Warded creatures — three deliberate narrowings vs the retired hook, benched 2bZ).",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-watch",
+            "watch": "defeat",
+            "scope": "scene",
+            "payloadTarget": "actor",
+            "whenOnMyList": "quarry",
+            "note": "your quarry is down — choose a new quarry (use Seek Quarry)."
+          },
+          "id": "ColdEyesWatch000"
+        },
+        "ColdEyesClear000": {
+          "description": "Heroic/Hunter. The dead quarry leaves your ledger (entry + marker) — the H3 release the retired hook hand-rolled.",
+          "event": "edha-test-success",
+          "order": 1,
+          "handler": {
+            "type": "edha-owner-list",
+            "list": "quarry",
+            "op": "release"
+          },
+          "id": "ColdEyesClear000"
+        },
+        "ColdEyesFocus000": {
+          "description": "Heroic/Hunter. Recover 1 focus when your quarry falls.",
+          "event": "edha-test-success",
+          "order": 2,
+          "handler": {
+            "type": "edha-focus",
+            "op": "gain",
+            "resource": "foc",
+            "target": "self",
+            "formula": "1",
+            "label": "Cold Eyes"
+          },
+          "id": "ColdEyesFocus000"
+        }
+      },
       "effects": []
     },
     "Combat Training": {
@@ -474,7 +513,22 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "PackHuntQuarry00": {
+          "description": "Hunter. Reaction, 1 focus: add your Survival ranks to a targeted ally's attack OR damage roll against your quarry. 07-24x: replaced a name-gated useItem branch (iron rule 2b) and FIXED both of its live card-vs-engine drifts per Ben's q15 ruling. (a) `requireQuarry` adds the quarry gate the engine never had — the bonus used to land on the ally's next roll of any kind against anything; it is also vetoed BEFORE cost when you have no quarry, so the focus is not burned. (b) `appliesTo: either` makes the damage half real: the next-test pipeline was registered on d20 rolls only, so the card had been promising something impossible. The quarry is resolved when you spend the focus, not at roll time, so re-marking later cannot silently retarget a live bonus.",
+          "event": "use",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "target",
+            "count": 1,
+            "formula": "@skills.sur.rank",
+            "requireQuarry": true,
+            "appliesTo": "either"
+          },
+          "order": 0,
+          "id": "PackHuntQuarry00"
+        }
+      },
       "effects": []
     },
     "Protective Bond": {
@@ -531,7 +585,25 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "SeekQuarryPlace0": {
+          "event": "use",
+          "description": "heroic/Hunter. 2bX — the quarry as an H3 ledger (was a bare quarryUuid string flag with a name-keyed use hook): cap 1 (a new quarry replaces the old, the oldest fizzles and unmarks), NOT scene-scoped (the quarry follows the creature), marker status `quarry` on the token. 'Target the creature first' refuses BEFORE cost (the generic H3 prompt veto). The attack-advantage injector and Cold Eyes read the ledger through the edhaQuarryOf adapter — the string→array shape change is why the covenants-style accessor repoint did NOT transfer (the 07-24v correction). Find/study advantage stays the table's call, as the old card said.",
+          "handler": {
+            "type": "edha-owner-list",
+            "op": "place",
+            "list": "quarry",
+            "status": "quarry",
+            "target": "prompt",
+            "capFormula": "1",
+            "evict": "oldest",
+            "sceneScoped": false,
+            "note": "Advantage on tests to find, attack, and study your quarry — attacks are auto-advantaged; find/study rolls are the table's call."
+          },
+          "order": 0,
+          "id": "SeekQuarryPlace0"
+        }
+      },
       "effects": []
     },
     "Shadowing": {
@@ -599,7 +671,36 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "SharpEyeGate0000": {
+          "id": "SharpEyeGate0000",
+          "description": "Hunter. H1 gate, iron rule 2b (07-25, pass 2bQ): retired the last row of the EDHA_HEROIC_DEFTESTS table. Perception vs the target's Cognitive defense, engine-resolved on YOUR roll — identical skill/defense to the retired row. The payload rides the SUCCESS event below; that split is the whole reason this talent could not move before H24 existed, because H1 decides the outcome and owns no payload vocabulary.",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "prc",
+            "vs": "defense",
+            "def": "cog",
+            "requireTarget": true
+          },
+          "order": 0
+        },
+        "SharpEyeReveal00": {
+          "id": "SharpEyeReveal00",
+          "description": "Hunter. H24 payload on the success. `target: victim` reads the creature the test resolved against, not your current targets — edhaDispatchTestResult passes the victim, and re-reading targets here would be wrong. Fact list, separator and note reproduce the retired card exactly, including that picking ONE is a table instruction the engine does not enforce.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-reveal",
+            "target": "victim",
+            "facts": "lowest-attribute,lowest-defense,below-half",
+            "separator": " · ",
+            "whisper": true,
+            "icon": "👁️",
+            "note": "Pick ONE to learn — share only the one you chose."
+          },
+          "order": 1
+        }
+      },
       "effects": []
     },
     "Sidestep": {
@@ -843,7 +944,37 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "TaggingArm000000": {
+          "event": "use",
+          "description": "heroic/Hunter. 2bX — the arm (the withernext/predprimed shape): using Tagging Shot marks YOU `tagged` until the end of your next turn; the Move-5-ft-and-attack is the player's, as printed. The old engine branch was UNREACHABLE DEAD CODE (it keyed on Tagging Shot itself dealing damage, and its damage formula is null — it never fired once, and was never benched).",
+          "handler": {
+            "type": "edha-self-status",
+            "statusId": "tagged",
+            "timed": true
+          },
+          "order": 0,
+          "id": "TaggingArm000000"
+        },
+        "TaggingHit000000": {
+          "event": "edha-watch-rule",
+          "description": "heroic/Hunter. 2bX — the armed hit (config; the applyDamage pre-pass reads it): while `tagged`, your next RANGED WEAPON hit consumes the arm and the victim joins your `quarry` ledger (placeList — written post-apply, cap 1, oldest fizzles; +0 bonus damage, the placement IS the payload). A definitively melee hit stands down WITHOUT consuming (rangedOnly, the meleeOnly mirror); a graze that deals damage fires — the card says 'on a hit or a graze'; ⚑ a 0-damage graze cannot reach the damage pipeline and stays owner-judged.",
+          "handler": {
+            "type": "edha-damage-bonus",
+            "require": "armed-self-status",
+            "requireSelfStatus": "tagged",
+            "consumeSelfStatus": true,
+            "weaponOnly": true,
+            "rangedOnly": true,
+            "amountFormula": "0",
+            "placeList": "quarry",
+            "placeListStatus": "quarry",
+            "placeListCapFormula": "1"
+          },
+          "order": 1,
+          "id": "TaggingHit000000"
+        }
+      },
       "effects": []
     },
     "Unrelenting Salvo": {

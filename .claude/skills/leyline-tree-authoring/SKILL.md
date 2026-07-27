@@ -252,6 +252,13 @@ which engine path runs it.
   build flags them `adversaryTalent` and every engine gate goes through `edhaIsTalent` (lint
   pass 4 keeps it that way). If your new hook checks `item.type === "talent"` raw, your case is
   unreachable on adversaries — exactly The Seeming's bug.
+- **An ability that gates on a test must ROLL one.** `edha-def-test` is a decider, not a roller: it
+  queues a contest and waits for the owner's own skill roll, so an ability whose `activation.type`
+  is `utility` never rolls, the contest times out, and the only symptom is *the cost is charged and
+  nothing happens* — no error, no card. `advItemDoc` promotes an ability to `skill_test` when it is
+  an attack **or** carries an `edha-def-test` rule (reading the skill off the rule), since 2026-07-26j;
+  before that, six abilities shipped mute. Nothing to do when authoring — but if you add a NEW
+  handler that likewise depends on the owner having rolled, teach the builder about it too.
 - **Handler-type registration is load-bearing**: a rule whose handler type isn't registered via
   `registerItemEventHandlerType` is SILENTLY dropped by the DataModel, same as a bad 16-char rule
   id. New handler = registration + dispatcher + `lint-refs` will only catch the name if the

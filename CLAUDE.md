@@ -14,8 +14,15 @@ All **15 trees are wired** (5 leyline colors + 10 deity trees) and the buildable
 Ben plays a tree in Foundry, reports results — usually **freeform chat notes** — and a session
 root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance review.
 
-> **If Ben's message contains test results, bug reports, or "X didn't work / showed the wrong
-> text" notes → invoke the `test-pass-fixes` skill before touching anything.** For authoring or
+> **If the task is to RUN the bench yourself — join Ben's running Foundry, execute `# BENCH —`
+> checklist rows, record results — invoke `bench-run`** (added 07-26; the browser-driven
+> agent bench). **If Ben's message contains test results, bug reports, or "X didn't work /
+> showed the wrong text" notes → invoke the `test-pass-fixes` skill before touching
+> anything.** For **continuing the
+> iron-rule-2b migration** — converting talents off name-keyed dispatch, shrinking the ratchet,
+> building an H-numbered handler, migrating a marker ledger → invoke **`talent-migration`**; it
+> carries the workflow, the remaining scope broken into sessions, and what sixteen passes measured,
+> so a session does not need a long brief. For authoring or
 > reviewing tree content, invoke `leyline-tree-authoring`. For planning/building/prepping a
 > **campaign session** (scenes, encounters, run-sheets, travel legs), invoke `session-forge`;
 > when Ben reports **what happened at the table** after play, invoke `session-debrief`. For
@@ -29,7 +36,9 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
 |---|---|
 | `EDHA_FOUNDRY_HANDOFF.md` | THE knowledge base. Dated deltas newest-first at the top; core reference §1–§10 below them. §9 = canonical backlog; §10 = gotchas that each bit us at least once. |
 | `EDHA_FOUNDRY_TEST_CHECKLIST.md` | Per-tree in-Foundry test worklists + the **DEPLOY STATE** section (renamed from "DEPLOY FIRST" on 2026-07-16d — what's merged but not yet live on Ben's machine; read it before believing any "wrong text/old behavior" bug, and check its date against `git log` because only Ben can advance it). Agents edit THIS file; Ben tests from the generated `EDHA_DASHBOARD.html` (Bench tab) — after editing the checklist OR any dashboard source doc (TODO_*, art wishlist, campaign canon/state, handoff, triage, pilot, map JSON) run `node scripts/build-dashboard.js` and commit the dashboard (CI + pre-commit enforce sync). |
+| `.claude/skills/bench-run/` + `docs/EDHA_BENCH_RUNBOOK.md` | **The agent-driven bench** (2026-07-26): a session joins Ben's running Foundry at `localhost:30000` as the passwordless GM user `Bench`, builds the bench roster with `scripts/bench-setup-console.js` (tokens on the EXISTING "Playtest Map"; PCs "Tem parinaem"/"Soggy Bottom" hard-guarded), runs the `# BENCH —` checklist sections itself, and records results (PASS rows retire on evidence; fails feed test-pass-fixes; feel/canvas rows stay ⚑ Ben's). The SKILL is the operating loop; the runbook is the full procedure. |
 | `.claude/skills/test-pass-fixes/` | The test-results → fix workflow, plus `CASE_STUDIES.md` — worked root-cause examples. |
+| `.claude/skills/talent-migration/` | **THE iron-rule-2b migration skill** (added 07-24y, after sixteen passes had spread the knowledge across §9n/§9o and ever-longer session briefs). `SKILL.md` = the pass workflow (atom → scout → build → author → gates → ratchet → docs); `SESSION_PLAN.md` = the remaining 131 partitioned into sessions, with what is next; `LESSONS.md` = what each pass measured, including why the classification's `needs` column over-estimates. Read it INSTEAD of writing a long brief. |
 | `.claude/skills/leyline-tree-authoring/` | The authoring/consistency standard, `audit.py` (the pre-commit gate), and `ENGINE_INDEX.md` (primitives map — read it **instead of** scanning the 11k-line engine). |
 | `AUTHORING_WORKFLOW.md` | Ben's side of the loop: Foundry-edit → extract → build → ⟳ Sync ("the keys"). |
 | `EDHA_TALENT_HANDBOOK.md` | Game-design source prose for the talents. |
@@ -180,9 +189,19 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
    naming different parents**, which silently ANDs them (Green's `Scent the Weak` and
    `Coordinated Hunt`).
 
-   ⚑ **This rule is currently UNGATED** — the cycle/reachability check in `validate.js` is the
-   open item. Until it lands, hand-verify the graph of any tree whose `connections` you touch,
-   and do not trust a green gate run to mean the tree is playable.
+   ✅ **THIS RULE IS NOW GATED, IN TWO PLACES** (the ⚑ "currently UNGATED — hand-verify the graph"
+   note here was stale; corrected 2026-07-24s after checking).
+   - `scripts/validate.js` — a DFS over the union of all requirement edges that reports the actual
+     loop path, plus a fixpoint reachability sweep from the prereq-free roots. `validateConnections`
+     still only checks that a name *resolves*; the graph check is separate and sits beside it.
+   - `tests/pipeline.test.js` — the same two checks pinned against the real data files, plus a
+     regression case holding the three historic cycles (Green / Red / Death) fixed.
+
+   Verified by mutation rather than by reading: re-introducing a mutual pair in `data/leyline.json`
+   fails **both** `validate.js` (naming the loop) and `tests/run.js`. A green gate run now does mean
+   the tree is walkable — but note what is still NOT checked: the third, non-fatal case above
+   (**prose and `connections` naming different parents**, which silently ANDs them) has no gate, so
+   read the prose against `connections` whenever you touch either.
 
 ## How to think here (what made past sessions work)
 

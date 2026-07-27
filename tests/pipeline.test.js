@@ -215,3 +215,17 @@ test("the three historic cycles stay fixed (Green / Red / Death)", () => {
   assert.notStrictEqual(find(dom, "Speak with the Fallen").Prerequisites, "Risen Servant",
     "Death cycle is back: Speak with the Fallen cannot require its own child Risen Servant");
 });
+
+test("the deploy guard's baseline is keyed to the MODROOT, never the data dir (2026-07-26c)", () => {
+  // The baseline describes ONE modroot's packs. When it lived under DATA it was shared across
+  // every build target, so a session building into a scratch modroot silently re-stamped the
+  // baselines describing Ben's LIVE packs - the first post-migration deploy then flagged 76
+  // phantom "un-extracted Foundry edits" and the guard's real protection was long gone.
+  for (const rel of ["scripts/foundry-build.js", "scripts/foundry-extract.js"]) {
+    const src = fs.readFileSync(path.join(__dirname, "..", rel), "utf8");
+    assert.ok(/BASELINE_DIR = `\$\{MODROOT\}\/\.baselines`/.test(src),
+      `${rel}: BASELINE_DIR must be \${MODROOT}/.baselines`);
+    assert.ok(!/BASELINE_DIR = `\$\{(DATA|AUTHORED_DIR)\}/.test(src),
+      `${rel}: BASELINE_DIR re-keyed to the data dir - the scratch-build clobber returns`);
+  }
+});

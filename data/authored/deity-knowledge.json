@@ -43,6 +43,31 @@
             "value": 1,
             "oncePerRound": true
           }
+        },
+        "AccumulateWatch0": {
+          "description": "Knowledge (Gnothis). Turn-start clause: watch your OWN turn starting. 07-25 pass 2bT: replaced the name-keyed combatTurnChange tick (iron rule 2b).",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-watch",
+            "watch": "turn-start",
+            "scope": "self",
+            "payloadTarget": "actor"
+          },
+          "id": "AccumulateWatch0"
+        },
+        "AccumulateTick00": {
+          "description": "Knowledge (Gnothis). The payload: +1 Insight on your bearer, only while it is within Green Attunement Range (silent skip out of range or at the cap of 5).",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-owner-list",
+            "mode": "counter",
+            "op": "add",
+            "count": 1,
+            "list": "insight",
+            "capFormula": "5",
+            "requireBearerRange": "green"
+          },
+          "id": "AccumulateTick00"
         }
       },
       "effects": []
@@ -87,7 +112,90 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "FinalStudyTest00": {
+          "description": "Knowledge (Gnothis). Capstone: Red vs Physical against your Insight bearer, once per scene (both vetoed BEFORE cost). 07-25 pass 2bT: replaced the preUseItem takeover (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "red",
+            "vs": "defense",
+            "def": "phy",
+            "targetCounter": "insight",
+            "oncePerScene": true,
+            "requireTarget": false,
+            "note": "The engine applies the damage to your Insight bearer — don't also apply this card's damage by hand."
+          },
+          "id": "FinalStudyTest00"
+        },
+        "FinalStudyHit000": {
+          "description": "Knowledge (Gnothis). Success: ONE [Tier][Die red] roll × Insight count, vital, on the bearer.",
+          "event": "edha-test-success",
+          "order": 0,
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "damage",
+            "formula": "(@tier)d(2 * @skills.red.rank + 2)",
+            "damageType": "vital",
+            "target": "victim",
+            "perCounterStatus": "insight"
+          },
+          "id": "FinalStudyHit000"
+        },
+        "FinalStudyClear0": {
+          "description": "Knowledge (Gnothis). Success: then remove ALL Insight.",
+          "event": "edha-test-success",
+          "order": 1,
+          "handler": {
+            "type": "edha-owner-list",
+            "mode": "counter",
+            "op": "release",
+            "list": "insight",
+            "capFormula": "5"
+          },
+          "id": "FinalStudyClear0"
+        },
+        "FinalStudyRoster": {
+          "description": "Knowledge (Gnothis). Success: the free-Strike roster — the note lists allies currently in Green Attunement Range (the Strike itself is player-executed, the standing action-grant convention).",
+          "event": "edha-test-success",
+          "order": 2,
+          "handler": {
+            "type": "edha-note",
+            "text": "each ally in Attunement Range may immediately make a <strong>free Strike</strong> against any enemy within their reach (player-executed):",
+            "icon": "📖",
+            "rosterColor": "green",
+            "rosterEmpty": "no allies in Attunement Range for the free Strike."
+          },
+          "id": "FinalStudyRoster"
+        },
+        "FinalStudyFDmg00": {
+          "description": "Knowledge (Gnothis). Failure: ONE [Tier][Die red] roll (×1), vital, on the bearer.",
+          "event": "edha-test-fail",
+          "order": 0,
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "damage",
+            "formula": "(@tier)d(2 * @skills.red.rank + 2)",
+            "damageType": "vital",
+            "target": "victim"
+          },
+          "id": "FinalStudyFDmg00"
+        },
+        "FinalStudyFCut00": {
+          "description": "Knowledge (Gnothis). Failure: remove 1 Insight.",
+          "event": "edha-test-fail",
+          "order": 1,
+          "handler": {
+            "type": "edha-owner-list",
+            "mode": "counter",
+            "op": "add",
+            "count": -1,
+            "list": "insight",
+            "capFormula": "5"
+          },
+          "id": "FinalStudyFCut00"
+        }
+      },
       "effects": []
     },
     "Death Mark": {
@@ -114,7 +222,22 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "DeathMarkXfer000": {
+          "description": "Knowledge (Gnothis). On-kill: the bearer drops to 0 → transfer prompt for the FULL slain Insight count, plus the public ally-burst card ([Tier][Die red] — YOUR dice, Ben R4 — to any enemy of the ally's choice, player-clicked). 07-25 pass 2bT: replaced the name-keyed live→0 loop (iron rule 2b).",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-counter-transfer",
+            "counter": "insight",
+            "fraction": 1,
+            "rangeColor": "green",
+            "capFormula": "5",
+            "allyBurst": true,
+            "burstFormula": "(@tier)d(2 * @skills.red.rank + 2)"
+          },
+          "id": "DeathMarkXfer000"
+        }
+      },
       "effects": []
     },
     "Hunter's Discipline": {
@@ -141,7 +264,32 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "HunterDiscRider0": {
+          "description": "Knowledge (Gnothis). Passive: your OWN hit on your Insight bearer deals +Tier vital. 07-25 pass 2bT: replaced the name-keyed dealer pre-pass (iron rule 2b).",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-damage-bonus",
+            "require": "self-hits-counter-bearer",
+            "counterStatus": "insight",
+            "amountFormula": "@tier",
+            "damageType": "vital"
+          },
+          "id": "HunterDiscRider0"
+        },
+        "HunterDiscXfer00": {
+          "description": "Knowledge (Gnothis). On-kill: the bearer drops to 0 → whispered Free-Action prompt to place HALF its Insight (rounded down) on a new creature in Green range. Fires alongside Death Mark's (Ben R9 — last click wins).",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-counter-transfer",
+            "counter": "insight",
+            "fraction": 0.5,
+            "rangeColor": "green",
+            "capFormula": "5"
+          },
+          "id": "HunterDiscXfer00"
+        }
+      },
       "effects": []
     },
     "Killing Blow": {
@@ -184,7 +332,76 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "KillingBlowTest0": {
+          "description": "Knowledge (Gnothis). Red vs Physical against the creature bearing your Insight (targetCounter — no user target read; no-bearer vetoed BEFORE cost). 07-25 pass 2bT: replaced the preUseItem takeover (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "red",
+            "vs": "defense",
+            "def": "phy",
+            "targetCounter": "insight",
+            "requireTarget": false,
+            "note": "The engine applies the damage to your Insight bearer — don't also apply this card's damage by hand."
+          },
+          "id": "KillingBlowTest0"
+        },
+        "KillingBlowHit00": {
+          "description": "Knowledge (Gnothis). Success: ONE [Tier][Die red] roll × Insight count (perCounterStatus), vital, on the bearer.",
+          "event": "edha-test-success",
+          "order": 0,
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "damage",
+            "formula": "(@tier)d(2 * @skills.red.rank + 2)",
+            "damageType": "vital",
+            "target": "victim",
+            "perCounterStatus": "insight"
+          },
+          "id": "KillingBlowHit00"
+        },
+        "KillingBlowClear": {
+          "description": "Knowledge (Gnothis). Success: then remove ALL Insight (ordered after the damage so the multiplier reads the live count).",
+          "event": "edha-test-success",
+          "order": 1,
+          "handler": {
+            "type": "edha-owner-list",
+            "mode": "counter",
+            "op": "release",
+            "list": "insight",
+            "capFormula": "5"
+          },
+          "id": "KillingBlowClear"
+        },
+        "KillingBlowFDmg0": {
+          "description": "Knowledge (Gnothis). Failure: ONE [Tier][Die red] roll (×1), vital, on the bearer.",
+          "event": "edha-test-fail",
+          "order": 0,
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "damage",
+            "formula": "(@tier)d(2 * @skills.red.rank + 2)",
+            "damageType": "vital",
+            "target": "victim"
+          },
+          "id": "KillingBlowFDmg0"
+        },
+        "KillingBlowFCut0": {
+          "description": "Knowledge (Gnothis). Failure: remove 1 Insight.",
+          "event": "edha-test-fail",
+          "order": 1,
+          "handler": {
+            "type": "edha-owner-list",
+            "mode": "counter",
+            "op": "add",
+            "count": -1,
+            "list": "insight",
+            "capFormula": "5"
+          },
+          "id": "KillingBlowFCut0"
+        }
+      },
       "effects": []
     },
     "Pack Share": {
@@ -222,7 +439,61 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "PackShareArm0000": {
+          "description": "Knowledge (Gnothis). Arm for the scene: packsight (the untimed self-status re-arm veto refuses a second use pre-cost; cleared with the counter state at combat end). 07-25 pass 2bT: replaced the packShareActive flag + name-keyed dealer passes (iron rule 2b).",
+          "event": "use",
+          "order": 0,
+          "handler": {
+            "type": "edha-self-status",
+            "statusId": "packsight",
+            "timed": false
+          },
+          "id": "PackShareArm0000"
+        },
+        "PackShareNote000": {
+          "description": "Knowledge (Gnothis). The arm card.",
+          "event": "use",
+          "order": 1,
+          "handler": {
+            "type": "edha-note",
+            "text": "armed for the scene — allies in Attunement Range (Green) deal +Tier vital on attacks against the creature bearing your Insight, and the first ally to hit it each round places 1 Insight.",
+            "icon": "📖"
+          },
+          "id": "PackShareNote000"
+        },
+        "PackShareReveal0": {
+          "description": "Knowledge (Gnothis). The shared snapshot — PUBLIC, not whispered: Pack Share extends the knowledge to allies (possibly other players' PCs); a whisper would hide it from who needs it.",
+          "event": "use",
+          "order": 2,
+          "handler": {
+            "type": "edha-reveal",
+            "target": "counter-bearer",
+            "counterStatus": "insight",
+            "facts": "hp,conditions,defenses",
+            "whisper": false,
+            "icon": "📖"
+          },
+          "id": "PackShareReveal0"
+        },
+        "PackShareRider00": {
+          "description": "Knowledge (Gnothis). The ally rider: an ALLY (never you) hitting your bearer within your Green range deals +Tier vital; the first such hit each round places 1 Insight (Ben R11: this talent's budget, tracked independently of The Pack's).",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-damage-bonus",
+            "require": "ally-hits-counter-bearer",
+            "requireSelfStatus": "packsight",
+            "counterStatus": "insight",
+            "color": "green",
+            "amountFormula": "@tier",
+            "damageType": "vital",
+            "placeCounter": 1,
+            "placeOnce": "round",
+            "capFormula": "5"
+          },
+          "id": "PackShareRider00"
+        }
+      },
       "effects": []
     },
     "Predatory Strike": {
@@ -263,7 +534,48 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "PredStrikeArm000": {
+          "description": "Knowledge (Gnothis). Arm: predprimed until the next weapon hit consumes it (the untimed self-status re-arm veto refuses a second use pre-cost). 07-25 pass 2bT: replaced the predatoryStrikeNext flag + name-keyed dealer pre/post pass (iron rule 2b).",
+          "event": "use",
+          "order": 0,
+          "handler": {
+            "type": "edha-self-status",
+            "statusId": "predprimed",
+            "timed": false
+          },
+          "id": "PredStrikeArm000"
+        },
+        "PredStrikeNote00": {
+          "description": "Knowledge (Gnothis). The arm card.",
+          "event": "use",
+          "order": 1,
+          "handler": {
+            "type": "edha-note",
+            "text": "make a melee or ranged weapon attack — the next hit auto-adds [Tier][Die] Vital per Insight on the target (min 1), then places 1 Insight on it. Don't also roll the card's damage by hand.",
+            "icon": "📖"
+          },
+          "id": "PredStrikeNote00"
+        },
+        "PredStrikeRider0": {
+          "description": "Knowledge (Gnothis). The armed rider: next WEAPON hit +[Tier][Die red] vital × max(Insight-on-target, 1), consuming predprimed, then 1 Insight placed on the actual hit target (post-pass — a new target becomes the bearer).",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-damage-bonus",
+            "require": "armed-self-status",
+            "requireSelfStatus": "predprimed",
+            "consumeSelfStatus": true,
+            "weaponOnly": true,
+            "counterStatus": "insight",
+            "amountFormula": "((@tier)d(2 * @colorRank + 2)) * max(@counter, 1)",
+            "color": "red",
+            "damageType": "vital",
+            "placeCounter": 1,
+            "capFormula": "5"
+          },
+          "id": "PredStrikeRider0"
+        }
+      },
       "effects": []
     },
     "Studied Mark": {
@@ -301,7 +613,40 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "StudiedMarkPlace": {
+          "description": "Knowledge (Gnothis). Place 2 Insight on the targeted creature (H3b counter: single bearer, cap 5 — placing on a new creature clears the old bearer). Green-range + not-yourself vetoed BEFORE cost. 07-25 pass 2bT: replaced the preUseItem takeover (iron rule 2b).",
+          "event": "use",
+          "order": 0,
+          "handler": {
+            "type": "edha-owner-list",
+            "mode": "counter",
+            "op": "place",
+            "count": 2,
+            "list": "insight",
+            "status": "insight",
+            "capFormula": "5",
+            "target": "prompt",
+            "rangeColor": "green",
+            "note": "Insight fades at the end of the scene."
+          },
+          "id": "StudiedMarkPlace"
+        },
+        "StudiedMarkPeek0": {
+          "description": "Knowledge (Gnothis). The whispered snapshot — HP, conditions, Physical and Spiritual defenses (Cognitive deliberately withheld, the card's literal text).",
+          "event": "use",
+          "order": 1,
+          "handler": {
+            "type": "edha-reveal",
+            "target": "target",
+            "facts": "hp,conditions,defenses",
+            "hideDefenses": "cog",
+            "whisper": true,
+            "icon": "📖"
+          },
+          "id": "StudiedMarkPeek0"
+        }
+      },
       "effects": []
     },
     "The Pack": {
@@ -339,7 +684,47 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ThePackArm000000": {
+          "description": "Knowledge (Gnothis). Arm for the scene: packmind (additive with Pack Share — Ben R10; both cost their own action + Inv). 07-25 pass 2bT: replaced the thePackActive flag + name-keyed dealer passes (iron rule 2b).",
+          "event": "use",
+          "order": 0,
+          "handler": {
+            "type": "edha-self-status",
+            "statusId": "packmind",
+            "timed": false
+          },
+          "id": "ThePackArm000000"
+        },
+        "ThePackNote00000": {
+          "description": "Knowledge (Gnothis). The arm card.",
+          "event": "use",
+          "order": 1,
+          "handler": {
+            "type": "edha-note",
+            "text": "armed for the scene — allies in Attunement Range (Green) deal bonus vital equal to your LIVE Insight count on attacks against the creature bearing your Insight; the first ally to hit it each round places 1 Insight.",
+            "icon": "📖"
+          },
+          "id": "ThePackNote00000"
+        },
+        "ThePackRider0000": {
+          "description": "Knowledge (Gnothis). The ally rider: +@counter vital (the live Insight count, read at the hit — 0 skips silently); its own independent once-per-round Insight placement (Ben R11).",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-damage-bonus",
+            "require": "ally-hits-counter-bearer",
+            "requireSelfStatus": "packmind",
+            "counterStatus": "insight",
+            "color": "green",
+            "amountFormula": "@counter",
+            "damageType": "vital",
+            "placeCounter": 1,
+            "placeOnce": "round",
+            "capFormula": "5"
+          },
+          "id": "ThePackRider0000"
+        }
+      },
       "effects": []
     }
   }

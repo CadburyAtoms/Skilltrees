@@ -31,7 +31,23 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ApexPredAdv00000": {
+          "description": "Green / Instinct. `edha-test-rider` (mode advantage), iron rule 2b (07-25, pass 2bS): was the bespoke edhaApexPreRoll hook trio. Advantage on your Physical (str/spd) tests while 3+ living enemies stand in difficult terrain you created; never stomps an active disadvantage (e.g. Weakened). ALWAYS-ACTIVE: config-only, read by the generic pre-roll injector.",
+          "event": "edha-pre-test",
+          "handler": {
+            "type": "edha-test-rider",
+            "appliesTo": "any",
+            "bonusFormula": "",
+            "mode": "advantage",
+            "whenAttribute": "str, spd",
+            "whenEnemiesInMyZone": 3,
+            "unlessDisadvantage": true
+          },
+          "order": 0,
+          "id": "ApexPredAdv00000"
+        }
+      },
       "effects": []
     },
     "Collected": {
@@ -114,7 +130,20 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "CoordHuntBonus00": {
+          "description": "Green / Instinct. `edha-damage-bonus` {require: pack-on-target}, iron rule 2b (07-25, pass 2bS): was a name block in the applyDamage pre-pass. When you and at least one ally attacked this victim this round, your hit deals +min(@hunters, @colorRank) of its own damage type (@hunters = different attackers on the victim this round, via the focus-fire tracker). ALWAYS-ACTIVE: config-only, read dealer-side by the pre-pass.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-damage-bonus",
+            "require": "pack-on-target",
+            "amountFormula": "min(@hunters, @colorRank)",
+            "color": "green"
+          },
+          "order": 0,
+          "id": "CoordHuntBonus00"
+        }
+      },
       "effects": []
     },
     "Drive the Prey": {
@@ -154,7 +183,35 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "DriveThePreyH100": {
+          "id": "DriveThePreyH100",
+          "description": "Green. Green vs the foe's SURVIVAL — an opposed skill the engine rolls for them (H1 `vs: skill`). 07-24p: replaced a bespoke useItem branch (iron rule 2b). The Fellstag's \"Herding Antlers\" adaptation is an ADVERSARY ability and keeps the engine path — a different surface with its own wiring standard.",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "green",
+            "vs": "skill",
+            "targetSkill": "sur",
+            "requireTarget": true,
+            "note": "On a success it must move away from you on its next turn, and your allies may make Reactive Strikes if it moves within their reach (GM-narrated)."
+          }
+        },
+        "DriveThePreySlow": {
+          "id": "DriveThePreySlow",
+          "description": "Green. On a success the target is Slowed until the end of ITS next turn.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "status",
+            "statusId": "slowed",
+            "statusExpire": "target",
+            "target": "victim",
+            "formula": "0",
+            "damageType": "energy"
+          }
+        }
+      },
       "effects": []
     },
     "Grasping Vines": {
@@ -194,7 +251,35 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "GraspingVinesH10": {
+          "id": "GraspingVinesH10",
+          "description": "Green. Green vs the target's Physical defense (static), engine-resolved on YOUR roll. 07-24p: replaced a bespoke useItem branch (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "green",
+            "vs": "defense",
+            "def": "phy",
+            "requireTarget": true,
+            "note": "On a success, spend 1 Investiture at the start of each of your turns to maintain the vines."
+          }
+        },
+        "GraspingVinesRes": {
+          "id": "GraspingVinesRes",
+          "description": "Green. On a success the target is Restrained — no timed expiry: it lasts while you keep paying the upkeep on the card.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "status",
+            "statusId": "restrained",
+            "statusExpire": "",
+            "target": "victim",
+            "formula": "0",
+            "damageType": "energy"
+          }
+        }
+      },
       "effects": []
     },
     "Green Leyline Attunement": {
@@ -221,7 +306,20 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "GreenAttuneZone0": {
+          "description": "Green key. `edha-zone` on H20's edha-draw-mana event, iron rule 2b (07-25, pass 2bS): the last name-keyed row of the EDHA_DRAW_MANA table for Green. Click-to-place a [Size] difficult-terrain square within Green Attunement Range — the picker, the Region write and the GM relay stay ENGINE-OWNED; this rule carries colour/size/range (0 = scale by Green rank). A creator's edha-zone-hazard rule (Thorn Field) rides every square placed. ⚠ Cosmetic drift: posts its own card instead of a line on the Draw Mana summary card.",
+          "event": "edha-draw-mana",
+          "handler": {
+            "type": "edha-zone",
+            "color": "green",
+            "sizeFt": 0,
+            "rangeFt": 0
+          },
+          "order": 0,
+          "id": "GreenAttuneZone0"
+        }
+      },
       "effects": []
     },
     "Hardy": {
@@ -316,7 +414,7 @@
       "events": {
         "BKR9pR0CwIxuw7QL": {
           "id": "BKR9pR0CwIxuw7QL",
-          "description": "Green/Restoration. When an ally drops to half HP or below, a chat-card prompt offers the Reaction: spend 1 Inv to heal them [Tier][Die]. The clickable heal roll on the talent remains as fallback - don't use both for one trigger.",
+          "description": "Green/Restoration. When an ally drops to half HP or below, a chat-card prompt offers the Reaction: spend 1 Inv to heal them [Tier][Die]. The clickable heal roll on the talent remains as fallback - don't use both for one trigger. 2026-07-26l (bench run 3 defect 4): note emptied so the engine's tight who-dropped-to-what line shows (the old note pasted this whole description onto the card), and rangeColor green enforces the card's 'ally in Attunement Range'.",
           "event": "edha-apply-watch",
           "handler": {
             "type": "edha-hp-threshold",
@@ -325,7 +423,8 @@
             "costValue": 1,
             "oncePerRound": true,
             "includeSelf": false,
-            "note": "Green/Restoration. When an ally drops to half HP or below, a chat-card prompt offers the Reaction: spend 1 Inv to heal them [Tier][Die]. The clickable heal roll on the talent remains as fallback - don't use both for one trigger."
+            "rangeColor": "green",
+            "note": ""
           }
         }
       },
@@ -366,7 +465,42 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "NatOrderArm00000": {
+          "description": "Green / Instinct. Re-litigated OFF the manual list 07-25 (pass 2bS, the Dread Presence lesson — the dark-veil sweep IS a nameable hook). Use arms the clearsight status for the scene (cleared at combat end); the sibling edha-suppress-veil rule reads it.",
+          "event": "use",
+          "handler": {
+            "type": "edha-self-status",
+            "statusId": "clearsight",
+            "timed": false
+          },
+          "order": 0,
+          "id": "NatOrderArm00000"
+        },
+        "NatOrderNote0000": {
+          "description": "The scene card. The veil half is enforced; illusions and advantage-from-deception stay GM-narrated.",
+          "event": "use",
+          "handler": {
+            "type": "edha-note",
+            "text": "for the scene, enemies in Attunement Range can't benefit from illusions, magical concealment, or advantage from deception (dark-veil markers are suppressed automatically; the rest is GM-narrated).",
+            "icon": "⚖️",
+            "whisper": "public"
+          },
+          "order": 1,
+          "id": "NatOrderNote0000"
+        },
+        "NatOrderVeil0000": {
+          "description": "Green / Instinct. `edha-suppress-veil`: while you carry clearsight, hostile dark-veil markers within Green Attunement Range stay down — the veil sweep refuses to raise them and stands down ones it raised (a GM's manual toggle is never fought).",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-suppress-veil",
+            "rangeColor": "green",
+            "requireSelfStatus": "clearsight"
+          },
+          "order": 2,
+          "id": "NatOrderVeil0000"
+        }
+      },
       "effects": [
         {
           "_id": "NaturalOrderInd1",
@@ -412,7 +546,21 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "NatRecCleanse000": {
+          "description": "Green / Restoration. `edha-heal-react` {offer-cleanse}, iron rule 2b (07-25, pass 2bS): was a name check in the edhaGreenHealRiders trio. Restore health with a Green talent → whispered card, one button per condition the target actually has (Afflicted / Disoriented / Stunned / Weakened); the Opportunity cost stays honour-system, exactly as retired.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-heal-react",
+            "action": "offer-cleanse",
+            "whenColor": "green",
+            "conditions": "afflicted, disoriented, stunned, weakened",
+            "costNote": "spend an Opportunity"
+          },
+          "order": 0,
+          "id": "NatRecCleanse000"
+        }
+      },
       "effects": []
     },
     "Pack Hunter": {
@@ -450,7 +598,18 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "PackHunterAdv000": {
+          "description": "Green / Instinct. `edha-adv-attack` {to: pack}, iron rule 2b (07-25, pass 2bS): was a name branch in the Instinct useItem switch. You + every ally adjacent to your targeted enemy gain advantage on your next attack (the advAttackNext pipeline, consumed on the next attack/item roll). Target the enemy first; the 1 Investiture rides the activation consume.",
+          "event": "use",
+          "handler": {
+            "type": "edha-adv-attack",
+            "to": "pack"
+          },
+          "order": 0,
+          "id": "PackHunterAdv000"
+        }
+      },
       "effects": []
     },
     "Pack Pressure": {
@@ -488,7 +647,31 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "PackPressWin0000": {
+          "description": "Green / Instinct. `edha-strike-window`, iron rule 2b (07-25, pass 2bS): was a name branch in the Instinct useItem switch. Opens the strike window until the start of your next turn; the card text (including the GM-narrated movement half) is this rule's note. The +[Tier][Die] payload is the sibling edha-damage-bonus rule.",
+          "event": "use",
+          "handler": {
+            "type": "edha-strike-window",
+            "note": "you + allies within 15 ft may Move ½ Speed without provoking (GM-narrated). Until the start of your next turn, your Strikes deal +[Tier][Die].",
+            "icon": "🐺"
+          },
+          "order": 0,
+          "id": "PackPressWin0000"
+        },
+        "PackPressBonus00": {
+          "description": "Green / Instinct. `edha-damage-bonus` {require: window}: while the strike window is open, your hits deal +[Tier][Die] of the attack's own damage type. @colorRank per ruling 122 (an adversary carrying this off-leyline rolls its ROLE rank, not d2).",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-damage-bonus",
+            "require": "window",
+            "amountFormula": "(@tier)d(2 * @colorRank + 2)",
+            "color": "green"
+          },
+          "order": 1,
+          "id": "PackPressBonus00"
+        }
+      },
       "effects": []
     },
     "Pack Sense": {
@@ -526,7 +709,25 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "PackSenseTR00000": {
+          "description": "Green / Instinct. H26 `edha-test-react`, iron rule 2b (07-25, pass 2bR): was edhaPackSenseWatch — the fifth caller of edhaPostCoordReactionCard, converted in the same build as the White coord family. An allied attack (attack/item rolls only) against a creature standing in your difficult terrain posts the offer; 1 Inv adds your Green modifier.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-test-react",
+            "rolls": "attack,item",
+            "when": "any",
+            "requireTargetInMyTerrain": true,
+            "action": "offer",
+            "modFormula": "@skills.green.mod",
+            "costs": "inv:1",
+            "prompt": "{roller} attacks a creature in your difficult terrain. Spend 1 Investiture to add your Green modifier (+{mod}) to their result.",
+            "result": "🐺 <strong>Pack Sense</strong> ({owner}): +{mod} to {roller}'s attack."
+          },
+          "order": 0,
+          "id": "PackSenseTR00000"
+        }
+      },
       "effects": []
     },
     "Packmate's Warning": {
@@ -554,7 +755,32 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "PackmateWard0000": {
+          "description": "Green / Instinct. `edha-unseen-ward`, iron rule 2b (07-25, pass 2bS): was the name-keyed edhaGreenPackmateWard injector (upgraded from truly-manual 2026-07-04). An ally within 10 ft targeted by an attack they can't see takes it at −2 on the attack roll (= +2 defense); the owner itself is excluded. ⚑ NumericTerm append — same bench caveat as the Mantle aura (dialog rebuilds).",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-unseen-ward",
+            "rangeFt": 10,
+            "amount": 2,
+            "excludeSelf": true
+          },
+          "order": 0,
+          "id": "PackmateWard0000"
+        },
+        "PackmateNote0000": {
+          "description": "The on-use restatement card (the passive does the work automatically).",
+          "event": "use",
+          "handler": {
+            "type": "edha-note",
+            "text": "an ally within 10 ft targeted by an attack they can't see gains <strong>+2 defense</strong> against it (auto — the attack roll takes −2 when the ally can't see the attacker: hidden, or wall LOS; darkness GM-judged).",
+            "icon": "📣",
+            "whisper": "public"
+          },
+          "order": 1,
+          "id": "PackmateNote0000"
+        }
+      },
       "effects": [
         {
           "_id": "PackmateWarnInd1",
@@ -672,7 +898,19 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ReknitInjuries00": {
+          "description": "Green / Restoration. `edha-remove-injury`, iron rule 2b (07-25, pass 2bS): was the name-gated Reknit useItem hook. On use, the injury menu posts for your targeted creature (default yourself) — one button per removable injury; the click spends 2 Investiture (temporary) or 3 (permanent) and deletes the injury Item. Death injuries never appear.",
+          "event": "use",
+          "handler": {
+            "type": "edha-remove-injury",
+            "costTemporary": 2,
+            "costPermanent": 3
+          },
+          "order": 0,
+          "id": "ReknitInjuries00"
+        }
+      },
       "effects": []
     },
     "Resurgent Growth": {
@@ -699,7 +937,23 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ResurgentQueue00": {
+          "description": "Green / Restoration. `edha-heal-react` {queue-regrowth}, iron rule 2b (07-25, pass 2bS): was a name check in the edhaGreenHealRiders trio. Heal an ally with a Green talent → they regain @tier + your Green modifier at the start of YOUR next turn, skipped if they left Green Attunement Range. ALWAYS-ACTIVE: config-only, announced from the heal chokepoints.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-heal-react",
+            "action": "queue-regrowth",
+            "whenColor": "green",
+            "allyOnly": true,
+            "amountFormula": "@tier + @skills.green.mod",
+            "color": "green",
+            "rangeColor": "green"
+          },
+          "order": 0,
+          "id": "ResurgentQueue00"
+        }
+      },
       "effects": []
     },
     "Scent the Weak": {
@@ -727,7 +981,21 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ScentWeakAdv0000": {
+          "description": "Green / Instinct. `edha-adv-attack` (Scent mode), iron rule 2b (07-25, pass 2bS): was a name branch in the Instinct useItem switch. Names the lowest-HP living enemy within Green Attunement Range on the card; the advantage arms once per round and only when such an enemy exists.",
+          "event": "use",
+          "handler": {
+            "type": "edha-adv-attack",
+            "to": "self",
+            "vsLowestHp": true,
+            "rangeColor": "green",
+            "once": "round"
+          },
+          "order": 0,
+          "id": "ScentWeakAdv0000"
+        }
+      },
       "effects": []
     },
     "Spreading Roots": {
@@ -765,7 +1033,22 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "SpreadRootsRct00": {
+          "description": "Green / Territory. `edha-zone-react`, iron rule 2b (07-25, pass 2bS): was the name-keyed Spreading Roots loop on combatTurnChange. A creature ends its turn in your difficult terrain → whispered offer to expand it [Size] (by Green rank); the click spends 1 Investiture (a declined offer costs nothing). One offer per round, exactly as retired.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-zone-react",
+            "when": "turn-end-in-zone",
+            "action": "offer-expand",
+            "color": "green",
+            "sizeFt": 0,
+            "costInv": 1
+          },
+          "order": 0,
+          "id": "SpreadRootsRct00"
+        }
+      },
       "effects": []
     },
     "Sudden Growth": {
@@ -863,7 +1146,34 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "TerritorialInstH": {
+          "id": "TerritorialInstH",
+          "description": "Green. Green vs the foe's SURVIVAL — an opposed skill the engine rolls for them (H1 `vs: skill`). 07-24p: replaced a bespoke useItem branch (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "green",
+            "vs": "skill",
+            "targetSkill": "sur",
+            "requireTarget": true
+          }
+        },
+        "TerritorialInstI": {
+          "id": "TerritorialInstI",
+          "description": "Green. On a success the target is Immobilized until the end of ITS next turn (movement 0 this turn).",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "status",
+            "statusId": "immobilized",
+            "statusExpire": "target",
+            "target": "victim",
+            "formula": "0",
+            "damageType": "energy"
+          }
+        }
+      },
       "effects": []
     },
     "Thorn Field": {
@@ -890,7 +1200,21 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ThornFieldHzrd00": {
+          "description": "Green / Territory. `edha-zone-hazard`, iron rule 2b (07-25, pass 2bS): was the edhaOwnsThorn name pair baked into the Green terrain creator. Difficult terrain you create also deals half [Tier][Die] keen on enter / turn-start; the formula is baked into the Region when the terrain is placed. @colorRank = Green skill rank (ROLE rank for an adversary owner, ruling 122) — identical dice to the retired @skills.green.rank read. ALWAYS-ACTIVE: this is a config-only rule, read by the zone creator, so the empty-looking activation is correct.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-zone-hazard",
+            "color": "green",
+            "damageFormula": "floor(((@tier)d(2 * @colorRank + 2)) / 2)",
+            "damageType": "keen",
+            "label": ""
+          },
+          "order": 0,
+          "id": "ThornFieldHzrd00"
+        }
+      },
       "effects": []
     },
     "Verdant Mend": {
@@ -931,7 +1255,18 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "VerdantMendSing0": {
+          "description": "Green. Single-target gate (Ben R1, 07-12): the heal used to apply to every targeted token, which is how it healed a stale target. 07-24v: replaced the name-keyed EDHA_SINGLE_TARGET Set with this config-only rule. This talent's document was previously completely bare, which is why the Set had nowhere else to live.",
+          "event": "use",
+          "handler": {
+            "type": "edha-single-target",
+            "note": "Verdant Mend heals ONE creature — pick the intended target."
+          },
+          "order": 0,
+          "id": "VerdantMendSing0"
+        }
+      },
       "effects": []
     },
     "Vital Surge": {
@@ -969,7 +1304,24 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "VitalSurgeThp000": {
+          "description": "Green / Restoration. `edha-heal-react` {offer-thp}, iron rule 2b (07-25, pass 2bS): was a name check in the edhaGreenHealRiders trio. Restore health with a Green talent to a creature below half HP → whispered card; the click spends 1 Investiture and rolls half [Tier][Die] Temp HP (no stacking — keeps the higher).",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-heal-react",
+            "action": "offer-thp",
+            "whenColor": "green",
+            "requireBelowHalf": true,
+            "amountFormula": "floor(((@tier)d(2 * @colorRank + 2)) / 2)",
+            "amountLabel": "½[Tier][Die]",
+            "color": "green",
+            "costInv": 1
+          },
+          "order": 0,
+          "id": "VitalSurgeThp000"
+        }
+      },
       "effects": []
     }
   }

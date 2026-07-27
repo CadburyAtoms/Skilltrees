@@ -37,6 +37,15 @@ if (!["pull", "push"].includes(mode)) {
 
 const hash = p => crypto.createHash("sha256").update(fs.readFileSync(p)).digest("hex").slice(0, 12);
 
+// push overwrites the LIVE module with no undo — and the live engine has carried hand edits
+// before (see memory: module dir drifts). Cheap insurance, no decisions: every live file a push
+// replaces is first copied into a timestamped folder under the OS temp dir. Silent when nothing
+// is overwritten; prints the folder once when something is.
+const os = require("os");
+const BACKUP_DIR = path.join(os.tmpdir(), "edha-engine-backups",
+  new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19));
+let backedUp = 0;
+
 let copied = 0, unchanged = 0, missing = 0;
 for (const rel of FILES) {
   const modPath = path.join(MODROOT, rel);
@@ -44,11 +53,18 @@ for (const rel of FILES) {
   const [src, dst] = mode === "pull" ? [modPath, repoPath] : [repoPath, modPath];
   if (!fs.existsSync(src)) { console.warn(`  ✗ MISSING ${mode === "pull" ? "module" : "repo"} file: ${rel}`); missing++; continue; }
   if (fs.existsSync(dst) && hash(src) === hash(dst)) { console.log(`  = unchanged ${rel}`); unchanged++; continue; }
+  if (mode === "push" && fs.existsSync(dst)) {
+    const bak = path.join(BACKUP_DIR, rel);
+    fs.mkdirSync(path.dirname(bak), { recursive: true });
+    fs.copyFileSync(dst, bak);
+    backedUp++;
+  }
   fs.mkdirSync(path.dirname(dst), { recursive: true });
   fs.copyFileSync(src, dst);
   console.log(`  → ${mode === "pull" ? "captured" : "deployed"} ${rel} (${fs.statSync(src).size} bytes)`);
   copied++;
 }
+if (backedUp) console.log(`\nSafety copies of the ${backedUp} replaced live file(s): ${BACKUP_DIR}`);
 console.log(`\n${mode}: ${copied} copied, ${unchanged} unchanged${missing ? `, ${missing} MISSING` : ""}.`);
 if (mode === "pull" && copied) console.log("Commit module-src/ in the skilltrees repo to make the backup permanent.");
 if (missing) process.exit(1);

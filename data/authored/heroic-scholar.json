@@ -452,7 +452,48 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "FieldMedTest0000": {
+          "description": "Heroic/Scholar. Your Medicine roll vs the flat DC 15 printed on the card (the Grand Deception shape). 2bZ (iron rule 2b): was a name-keyed useItem hook. On a failure the focus is still spent.",
+          "event": "use",
+          "order": 1,
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "med",
+            "vs": "dc",
+            "dc": 15,
+            "requireTarget": true,
+            "note": "DC 15 — on a failure the focus is still spent."
+          },
+          "id": "FieldMedTest0000"
+        },
+        "FieldMedHeal0000": {
+          "description": "Heroic/Scholar. On a success the patient heals their OWN recovery die + your Medicine ranks — the target-die half is H17 (2bZ): @target.recoveryDie resolves against the patient, the rest against you. Relay-safe (you rarely own the patient's actor). ⚑ recovery-die read path bench-unverified.",
+          "event": "edha-test-success",
+          "order": 2,
+          "handler": {
+            "type": "edha-focus",
+            "op": "gain",
+            "resource": "hea",
+            "target": "victim",
+            "formula": "@target.recoveryDie + @skills.med.rank",
+            "label": "Field Medicine"
+          },
+          "id": "FieldMedHeal0000"
+        },
+        "FieldMedResusc00": {
+          "description": "Heroic/Scholar. The Resuscitation UPSELL (the pass-F whenOwnsTalent exit): this line only prints if you also own Resuscitation, whose own document carries no rule — its 3-focus cost rides its own activation. Declared in the heroic tree-section header.",
+          "event": "edha-test-success",
+          "order": 3,
+          "handler": {
+            "type": "edha-note",
+            "icon": "⚕️",
+            "text": "<strong>Resuscitation</strong>: you may instead spend 3 focus to revive an Unconscious or just-dead patient.",
+            "whenOwnsTalent": "Resuscitation"
+          },
+          "id": "FieldMedResusc00"
+        }
+      },
       "effects": []
     },
     "Fine Handiwork": {

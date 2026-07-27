@@ -5,18 +5,19 @@ In-Foundry verification for every wiring pass to date. Engine detail lives in
 per-talent worklist with
 `python .claude/skills/leyline-tree-authoring/audit.py <color|deity-name> --checklist`.
 
-**Consolidated 2026-07-18 (Ben's ask):** every row Ben passed at the 07-17 bench is retired, every
-fail/partial row is replaced by its 07-17c re-test row, per-section deploy/setup boilerplate is
-gone (DEPLOY STATE below is the single source of deploy truth), and cross-section duplicates are
-merged. Retired rows and the evidence for each retirement live in the 2026-07-18b handoff delta +
-git history — nothing was dropped without a paper trail.
+**Restructured 2026-07-26 (Ben's ask, after the migration deploy):** the 22 pre-migration
+per-tree sections (343 rows written against the deleted name-keyed engine) and 38 superseded
+rows are retired (paper trail: the 2026-07-26f handoff delta + git history), and the 29 rule-2b
+pass sections are reorganized into per-TREE `# BENCH —` sections, each mapped to a pre-built
+bench actor (`scripts/bench-setup-console.js`). Rows keep their historical 2b ids in the bold
+label; each section's preamble names its priority rows; spot-check rows carry the collapsed
+like-for-like coverage and name their source ids.
 
 **Ben: don't read this file at the bench — open `EDHA_DASHBOARD.html` in a browser instead
-(Bench tab).** It's the same content as a clickable sheet: Pass/Fail/Partial/Skip per row, a note
-box, filters, progress counts, and a **Copy for Claude** button that produces the paste-back
-report (plus Copy TSV for Excel). Marks save locally in the browser and survive pulls. The
-dashboard's other tabs (Art / Worldbuilding / Engine / Repo / ⚑ For Ben) aggregate the sibling
-backlog docs.
+(Bench tab).** Same content as a clickable sheet: Pass/Fail/Partial/Skip per row, a note box,
+filters, progress counts, and a **Copy for Claude** button that produces the paste-back report.
+Marks save locally in the browser and survive pulls — but the 07-26 restructure re-keyed most
+rows, so pre-restructure marks are orphaned (see DEPLOY STATE).
 
 This MD stays the agents' source of truth: agents edit here, then regenerate the dashboard with
 `node scripts/build-dashboard.js` (CI fails if the two drift). Mark `[x]` here only for rows
@@ -24,254 +25,1054 @@ retired for good; live testing happens on the dashboard.
 
 ---
 
-## ⚑ RULE-2b PASS A — Red, the first three talents off the engine (2026-07-24) — NEEDS A PACK REBUILD
+# ⚑ DEPLOY STATE (confirmed by Ben 2026-07-26 — the migration deploy is LIVE)
 
-> **This is the migration's pipe-cleaner.** Behaviour for three Red talents moved from engine
-> name-dispatch onto the talent documents. It changes the PACK, so **nothing below takes effect
-> until `deploy-to-foundry.bat` + ⟳ Sync**. The point of the pass is as much the *round trip* —
-> do the tabs actually populate, can Ben edit them — as the three mechanics.
+**What is live on Ben's machine (2026-07-26):** the full rule-2b migration (passes A→AB — all
+221 talents on their own documents, ratchet 0), the pre-deploy audit fixes, and the 2bAC
+Edit-Event-Rule dialog CSS fix. Evidence: Ben ran the deploy, benched day 1, and confirmed —
+"I can confirm it appears the migration worked" (2026-07-26). The checklist was restructured
+the same day (991 → 568 open rows; delta 2026-07-26f): the 22 legacy per-tree sections
+tested the DELETED name-keyed engine and are retired; the 29 rule-2b pass sections are
+reorganized into the per-tree `# BENCH —` sections below, each mapped to a bench actor from
+`scripts/bench-setup-console.js`.
 
-| # | talent | what to check | expected |
-|---|---|---|---|
-| 2bA-1 | **Emotional Overload** | Open the talent in Foundry → **Events tab** | ⚑ A rule is THERE (was empty): `edha-next-test-mod`, mode disadvantage, count 1. This is the whole point — confirm it renders and is editable. |
-| 2bA-2 | **Emotional Overload** | Target a creature, use it | Target's next test at disadvantage; card names the talent. Behaviour should be IDENTICAL to before — it rides the same nextTestMod pipeline. |
-| 2bA-3 | **Reckless Gambit** | Events tab | ⚑ **TWO** rules: `edha-next-test-mod` (advantage) + `edha-apply-status` (exhausted). Both must be listed. |
-| 2bA-4 | **Reckless Gambit** | Target, use | Target gains advantage on its next test AND gains **Exhausted**. Both halves, one use. |
-| 2bA-5 | **Shockwave Slam** | Melee impact hit | Push card still reads **"Shockwave Slam"** (not "Push"). Its note now comes from the document; a regression here means the note field didn't survive the build. |
-| 2bA-6 | **edha-push default** | Author a NEW push rule on any talent, leave Note blank | Card reads **"Push"**, not "Shockwave Slam". (Fixes a talent-specific default baked into a generic handler.) |
-| 2bA-7 | **the round trip** | Edit one of the new rules in Foundry (e.g. change count 1 → 2), use the talent | The edit actually takes effect. If it doesn't, the whole migration premise is wrong and everything else stops. |
-| 2bA-8 | **Shattering Blow** (Warrior) | on-hit push | Unchanged — it always carried its own note. Regression check on the default change. |
-| 2bA-9 | **native handler vocabulary** ⚠️ | While in any talent's Events tab, open the handler **type dropdown** and read the whole list | ⚑ Do the SYSTEM's native handlers appear alongside the Edha ones — **Update Actor**, Execute Macro, Grant Items, Modify Attribute, Use Item? And in the EVENT dropdown: **Actor Damaged**, **Actor Updated**, **Activated Modality**, **Actor Long Rested**? No authored talent has ever used one, so this is unproven. Zero risk — just read the dropdowns and report what's listed. **Scope narrowed 07-24i:** this no longer decides "how much of the 8-handler plan is needed" (§9k settled that from the code). It now gates exactly **three** talents whose cheap classification leans on a native type — **Reckless Momentum**, **Risky Behavior**, and **Resilient Hero**'s long-rest flag clear. If natives are absent from the dropdowns, those three drop from bucket 1b to bucket 2; nothing else in the 9/56/136/17 split moves. |
+⚑ **Three switches Ben has not explicitly confirmed:** (1) PC "⟳ Sync Talents" after the
+deploy, (2) the "⟳ Sync Adversaries from Pack" click, (3) re-dragging the 2bAB adversaries
+(placed copies are frozen snapshots). Rows touching adversary rewires (2bR-17, 2bS-3, 2bZ-10,
+2bAA-9, 2bJ-13/14, and the whole 2bAB block) are not trustworthy until (2)/(3) — if one fails,
+confirm the sync state before reporting a bug.
 
-> ⚑ **None of the above was verified in Foundry** — no session can launch it. 2bA-7 is the
-> one that matters most; if it fails, say so before any further conversion work is planned.
->
-> **The 07-24i classification pass added NO new rows here, deliberately** — it changed no behaviour
-> (docs + one checker script; nothing to deploy, no pack rebuild). The rows above are still the
-> whole outstanding 2b bench surface.
+⚠️ **Standing warnings:** the console macro `edha.calculatedPatience()` was retired by pass P —
+a hotbar macro calling it will throw (2bP-3 tests the replacement). PC tokens are linked and
+never need replacing; PCs need no ⟳ Sync unless a section says a specific pack-baked talent
+changed.
 
-## ⚑ RULE-2b PASS E — H5 action economy + the combat-timing dispatcher (2026-07-24n) — NEEDS A PACK REBUILD
+**Marks caveat (07-26 restructure):** dashboard marks are keyed by section title + row text, so
+the restructure orphaned pre-restructure marks. If day-1 marks were never pasted back, recover
+them from the pre-restructure dashboard in git history before trusting the new sheet.
 
-> **Eleven talents, and the first proof that H1 can drive real mechanical payloads.** `edha-cae-grant`
-> replaces `EDHA_CAE_USE_GRANTS` + three bespoke hooks; the `edha-combat-timing` event finally has a
-> dispatcher (it had none since 07-18). Ratchet **202 → 191**.
+**✅ The 07-26l ENGINE half is LIVE (bench run 4, 2026-07-26m).** All six engine fixes were
+re-tested at the table and PASSED — Whispered Doubt's drain card (canary), Puppeteer's `{name}`,
+Cruel Step's straddle (plus the ⚑ near-parallel residual), Mender's ally + on-scene gates, the
+heal-cut family gate, `edhaAttackKind`'s ranged stand-downs, and Tempered Edge read by NET.
+Evidence per row in the 07-26m delta.
 
-| # | talent | what to check | expected |
-|---|---|---|---|
-| 2bE-1 | **Fast Talker** (Agent) | Events tab, then use it | ⚑ A rule is THERE: `edha-cae-grant`, action ×2. The CAE tracker gains **"Edha: Fast Talker (Spiritual tests)"** with 2 remaining. |
-| 2bE-2 | **Quick Analysis / Trickster's Hand / Cautious Advance / Backstep** | use each | Same, with their own counts and labels (Backstep is ×1). |
-| 2bE-3 | **Through the Fray** (Leader) ⚠️ | target an ALLY, use it | The **ally's** tracker gains the Reaction, not yours. `target: target` is the field being proved. |
-| 2bE-4 | **Foresight** (Envoy) ⚠️ | start a combat with Foresight owned | +1 Reaction group appears at combat start. **This is the first thing the new `edha-combat-timing` dispatcher has ever run.** |
-| 2bE-5 | **Sidestep** (Hunter) | start combat in light armour, then again in deflect-2+ armour | Grants the Dodge reaction only in the light case — `whenDeflectBelow: 2`, a silent no-op otherwise. |
-| 2bE-6 | **Practiced Kata** (Warrior) | start a combat | Still enters **Vigilant Stance**; still skipped while **Surprised**. Now runs on the GM applier rather than owner-side. |
-| 2bE-7 | **Tactical Ploy** (Leader) ⚠️⚠️ | target a creature, use it, roll | On a **success**: target takes **−1d4** on their next test AND **loses a Reaction** on the tracker. On a **failure**: neither. **This is the first talent whose H1 payload is real mechanics rather than card text — if the payload dispatch is broken, this is where it shows.** |
-| 2bE-8 | **no tracker fallback** | use Fast Talker out of combat (or with CAE disabled) | A plain chat note, no error. The graceful fallback must survive the handler move. |
-| 2bE-9 | ⚑ **adversary widening** | put an adversary carrying a combat-timing talent into a fight | It now gets its combat-start grant. **Deliberate change** — the retired hooks were gated `type === "character"`; rule-driven dispatch doesn't need that gate. Tell me if you'd rather it stayed PC-only. |
-| 2bE-10 | **regression: stances** | enter/leave each stance | Unchanged from pass B — Practiced Kata's rewrite touches the same machine. |
+**✅ The 07-26n ENGINE half is LIVE (bench run 5, 2026-07-27a).** The fresh Bench join's served
+`register-skills.js` carries `edhaOwnerListQueue`, the new `edhaIsConstruct` (`system.type` read)
+and the `spec.creatureType` summon mint — and the Remains-race re-test confirmed the queue works
+at the table (counts serialize, entries survive; the residual dispatch loss is a NEW defect, see
+the Death section).
 
-> ⚑ **Not verified in Foundry.** **2bE-7 is the row that matters most in the whole migration so far**
-> — it is the first evidence that H1's success/fail dispatch drives real effects, and 45 talents are
-> queued behind that answer. 2bE-4 is second: the combat-timing dispatcher is brand new code.
+**✅ The 07-27b ENGINE half is LIVE (bench run 6, 2026-07-27c).** The fresh Bench join's served
+`register-skills.js` carries `edhaWatchEntryLevel`, `_edhaLifeClearBusy`, `chainBounded` AND
+`edhaOwnerListQueue` (byte-checked), and three of the five fixes re-tested PASS at the table
+(triple-drop harvest, Adaptive Mutation's gate, Apex Form's one injury with BOTH GM clients
+connected). Two re-tests STILL FAIL on the new engine — Surgical Precision (sheet fail-open +
+stale-capture off-by-one) and the Chaos sweep's ledger/off-canvas halves — see their rows; both
+are the next test-pass-fixes input, NOT deploy gaps. The Surgical data half stays COSMETIC only
+(rule description + an explicit `def: "phy"` the engine already defaults) — it rides the
+already-owed deity rebuild.
 
-## ⚑ RULE-2b PASS D — H1 `edha-def-test`, the first four (2026-07-24m) — NEEDS A PACK REBUILD
+**✅ The 07-27d ENGINE half is LIVE (bench run 7, 2026-07-27e).** The fresh Bench join byte-checked
+the served `register-skills.js`: `edhaSnareSpringGate` (3×), `edhaCleanseArmMode` (3×),
+`_edhaCleansePending` (5×), plus `_edhaLastRoll` and the `tempHp joined 07-27d` sweep comment —
+and **all FIVE re-tests PASSED at the table** (snare spring once on every one of five paths;
+Surgical Precision quoting its own d20 on both paths + the cancelled-dialog case; the Chaos sweep's
+ledger unset with ZERO named warns; the Weave picker as a real `<dialog>`; all three `tempHp` flags
+swept). Evidence per row in the 07-27e delta. No pack rebuild was in that batch.
 
-> **The handler 45 talents are waiting on.** It gates a payload on your own test: you roll on the
-> talent's card as usual, the engine captures that roll and compares it. This batch is deliberately
-> four LOW-RISK talents whose payload is table-run, so the *gate* gets benched before anything
-> mechanical rides on it. Ratchet **206 → 202**.
+**✅ The 07-27f ENGINE half is LIVE (bench run 8, 2026-07-27g).** Verified the strongest way yet:
+the served blob was fetched cache-busted, normalised to LF and **SHA-256'd against the repo file —
+`9a5b2d4e6a23eeec25241cef3e1236ae8bfa2bf9c91c02ba7111f412014a4bc9` on both sides**, i.e. the live
+engine is byte-identical to `main`. Marker counts matched exactly too (`edhaSummonSourceTalent` 4,
+`edhaSkillLabel` 5, `edhaLocalizeLabel` 4, `edhaSnareSpringGate` 3, `edhaCleanseArmMode` 3,
+`_edhaCleansePending` 5, `edhaWatchEntryLevel` 4, `_edhaLifeClearBusy` 4, `chainBounded` 8,
+`edhaOwnerListQueue` 17). ⚠️ The run-8 prompt's "expect 3 / ~8" hint counts were WRONG — trust the
+repo/live comparison, not a remembered number. **Both 07-27f fixes re-tested PASS** — the whole
+Construct-consuming family against a NORMALLY forged, `summonTalent`-stamped Construct, and all seven
+named raw-i18n card sites. Evidence per row in the 07-27g delta.
 
-| # | talent | what to check | expected |
-|---|---|---|---|
-| 2bD-1 | **Set at Odds** (Leader) | Events tab | ⚑ A rule is THERE (was empty): `edha-def-test`, your test **ldr**, vs **defense / spi**. Confirm it renders and is editable. |
-| 2bD-2 | **Set at Odds** | target a creature, use it, roll | The card reads `<total> vs <name>'s SPI <n> — SUCCESS/FAIL`. **You roll it**, not the engine. |
-| 2bD-3 | **the gate** ⚠️ | use it with **nothing targeted** | Warned "target the creature first (nothing spent)" and **no focus/Investiture is deducted**. This is the veto replacing the old takeover's nothing-spent guarantee. |
-| 2bD-4 | **Grand Deception** (Leader) | use it (no target needed) | Resolves vs **flat DC 15**; no targeting warning, because `requireTarget` is off for this one. |
-| 2bD-5 | **Synchronized Assault** (Leader) | use on a target, roll high **and** low | Both branches print, and the note gives both outcomes (success = allies up to your Leadership ranks gain an Action; fail = only one). |
-| 2bD-6 | **Turning Point** (Scholar) | use on a target, roll | `ded` vs Cognitive, same shape. |
-| 2bD-7 | **regression: the untouched rows** | **Sharp Eye**, **Tactical Ploy**, **Steadfast Challenge**, **Valiant Intervention** | All four still work exactly as before — they stay on the old `EDHA_HEROIC_DEFTESTS` path this pass. If any broke, the table edit went wrong. |
+**⏳ The 07-27h fix is ENGINE-ONLY and needs a plain relaunch / F5 (no rebuild, no ⟳ Sync).** It moves
+the whole counter economy off `system.count` — a field `ActiveEffectDataModel` does not have, so every
+Insight read was 0 — onto **`system.stacks`**, plus the `placeCounter`/`placeList` gate no longer
+requiring a non-zero bonus. **Byte-check after the sync:** the served `register-skills.js` must contain
+`edhaEffectStacks` (2×), `"system.stacks"` (2×) and `stacks: 1` in the status registration, and must
+contain **no** `system.count` outside comments. ⚠️ **Legacy Insight effects on live tokens read as 1**
+(the system's own `stacks ?? 1` default), not as whatever the old card claimed — clear any leftover
+Insight marker before re-testing 2bT-1/3/4/6/7/8/10.
 
-> ⚑ **Not verified in Foundry.** **2bD-3 is the row that matters** — the veto is the only thing
-> standing between "mis-target and lose nothing" and "mis-target and lose the cost", and it is the
-> mechanism every deity conversion will depend on.
->
-> ⚑ **Two H1 modes are UNPROVEN by this batch**: `vs: skill` (engine rolls the foe's skill) has no
-> consumer here — its first will be Green/Drive the Prey — and the `edha-test-fail` event fires no
-> payload yet; its first real consumer is Absolute Authority's consolation Weakened.
+**⏳ The 07-27h bench-script fix is NOT in the module** — `scripts/bench-setup-console.js` picked the
+roster's weapons off a dead `system.range`, so `rangedW` was never assigned and **no bench PC has ever
+had a ranged weapon**. Re-run the setup script (or drag a bow onto Bench — Heroic / Bench — Fate by
+hand) before any rangedOnly row.
 
-## ⚑ RULE-2b PASS C — the "modify my own next test" family (2026-07-24k) — NEEDS A PACK REBUILD
-
-> Six talents across **Agent, Leader and Scholar**, all one shape: *on use, write a next-test flag
-> on myself*. `edha-next-test-mod` grew `target: self` plus `plotDie` and `opportunity`, so no new
-> handler type. `EDHA_OPP_ADDERS` and two bespoke `useItem` hooks are deleted. Ratchet **212 → 206**.
-
-| # | talent | what to check | expected |
-|---|---|---|---|
-| 2bC-1 | **High Society Contacts** (Agent) | Events tab, then use it | ⚑ A rule is THERE (was empty): `edha-next-test-mod`, target **self**, Opportunity **true**. Using it banks the credit and the card says so. |
-| 2bC-2 | **High Society Contacts** | now roll any test | The **Opportunity menu** fires with the roll and names the talent — exactly as before. |
-| 2bC-3 | **Underworld Contacts / Rumormonger / Well Supplied** | use each, then roll | Same banked Opportunity. Rumormonger and Well Supplied are **Leader**, so this crosses two paths off one table. |
-| 2bC-4 | **Risky Behavior** (Agent) | use it, then roll | Your next test **raises the stakes** (Plot Die injected), and the consume card names *Risky Behavior* — not the generic "Raise the Stakes". |
-| 2bC-5 | **Overwhelm with Details** (Scholar) ⚠️ | use it, then roll | Your next test gains **+your Lore modifier as a number**. ⚑ The formula now resolves at use against your roll data; if the card shows a raw `@skills.lor.mod` instead of a number, the resolution broke. |
-| 2bC-6 | **the round trip** ⚠️ | On Risky Behavior's Events tab tick **Also bank an Opportunity** as well, use it, roll | You get **both** the Plot Die and the Opportunity menu. Proves the fields are live and composable, not just a re-skin of the old hook. |
-| 2bC-7 | **regression: targeted mods** | **Emotional Overload** (Red, pass A) on a target | Still applies **disadvantage to the TARGET**. `target` defaults to `target`, so every pre-existing next-test-mod rule must be untouched — this is the one that would break if the default flipped. |
-| 2bC-8 | **regression: Probability Net** | use it on a target | Still `-1d6` on the target's next test. Same reason as 2bC-7. |
-
-> ⚑ **Not verified in Foundry.** **2bC-7** is the one to run even if you skip the rest — six new
-> fields landed on a handler that five shipped talents already use, and a wrong default would
-> silently redirect all of them onto the caster.
-
-## ⚑ RULE-2b PASS B — the six Warrior stances come off the engine (2026-07-24j) — NEEDS A PACK REBUILD
-
-> **Behaviour should be IDENTICAL to before, with one exception (2bB-4) where it should be BETTER
-> than before, because the old code was broken.** Both name-keyed stance tables are gone: the
-> numeric riders now live on each talent's **Effects** tab, the skill advantage on its **Events**
-> tab. Ratchet **218 → 212**. Nothing below takes effect until `deploy-to-foundry.bat` + ⟳ Sync.
-
-| # | talent | what to check | expected |
-|---|---|---|---|
-| 2bB-1 | **Stonestance** | Effects tab, then use it | ⚑ ONE effect, *"Stonestance — while active"*, greyed/not-transferring. Using it enters the stance and the **marker** grants **+1 deflect**. Leaving it removes the deflect. |
-| 2bB-2 | **Vinestance** / **Bloodstance** | use each | Vine: **+1 Physical, +1 Cognitive**. Blood: **−2 Physical, −2 Cognitive, −2 Spiritual**. Same numbers as before — only their storage moved. |
-| 2bB-3 | **the round trip** ⚠️ | On Stonestance's Effects tab change the deflect value `1` → `2`, then enter the stance | The marker grants **+2**. This is the whole point of the pass — if the edit doesn't take, the stance conversion is wrong. |
-| 2bB-4 | **Flamestance** ⚠️ **was broken** | enter Flamestance, roll **Intimidation** | **Advantage (2d20kh).** ⚑ This very likely NEVER worked: the retired code set `advantageMode = 1` (the system's enum is the string `"advantage"`) and didn't wrap `configureDialog`, which a dialog roll overwrites. Check it **both** from the sheet and through the roll dialog. |
-| 2bB-5 | **Ironstance** / **Windstance** | enter each, roll **Insight** / **Agility** | Same advantage, same two ways. |
-| 2bB-6 | **the stance gate** | while in Flamestance, roll **Insight** (not Intimidation); then leave all stances and roll Intimidation | **No advantage** in both cases — `whenSkill` and `whileStanceActive` must both bite. |
-| 2bB-7 | **Events tab** | open Flamestance → Events | ⚑ A rule is THERE (was empty): `edha-test-rider`, mode **advantage**, whenSkill `itm`, whileStanceActive **true**. Confirm it renders and is editable. |
-| 2bB-8 | **no stray indicators** | Flamestance + Vigilant Stance sheets | The old greyed *"(Active) — INDICATOR ONLY / Mechanics manual"* effect is **GONE** from both. The stance marker is the indicator now. (Vigilant Stance is otherwise unchanged this pass.) |
-| 2bB-9 | **regression: riderless stances** | enter **Vigilant Stance** | Still enters/leaves normally with no numeric change — it has no rider effect, and that must read as "no rider", not as an error. |
-| 2bB-10 | **regression: existing riders** | Predatory Patience (Black) vs a Weakened target | Its `+[Die]` still lands. The test-rider injector was restructured to allow mode-only rules; formula riders must be untouched. |
-
-> ⚑ **Not verified in Foundry** — no session can launch it. **2bB-3 and 2bB-4 are the ones that
-> matter**: 2bB-3 proves the migration premise for `effects` (as 2bA-7 did for `events`), and
-> 2bB-4 is a bug fix that has never once been seen working.
-
-## ⚑ DEPLOY STATE (last confirmed by Ben 2026-07-18 — STALE, see the banner)
-
-> **⚑ THIS SECTION IS OUT OF DATE (flagged 2026-07-24).** It was last advanced on **2026-07-18**;
-> the handoff's newest delta is **2026-07-23c**, so roughly a week of merged work — the items
-> tranche, the culture items, the character-creation wizard, the wizard review fixes, and the
-> whole map/hydrology run — is **not accounted for below**. Only Ben can advance this section
-> (it describes his machine, which no session can inspect), so it goes stale silently.
->
-> **Agents:** per `test-pass-fixes` Phase 1, a DEPLOY STATE older than the newest handoff delta
-> is **not evidence** — it is a question for Ben. Do not use it to rule a "wrong text / old
-> behaviour" report in or out until he confirms.
->
-> **Ben:** one `deploy-to-foundry.bat` run + relaunch, then tell a session what it printed and
-> the section gets rewritten from that. Everything below this banner describes 2026-07-18.
-
-The live module + packs on this machine were, **as of 2026-07-18**, current through the 07-17 playtest-2 engine push
-(everything up to and including PR #97; packs current through 2026-07-16c + the 07-16d fixes).
-
-**MERGED BUT NOT YET DEPLOYED:** the **2026-07-17c bench-results fixes** and the **2026-07-18b
-adversary sync**. ONE `deploy-to-foundry.bat` run + relaunch covers both. After that deploy,
-instead of re-dragging adversaries, click **"⟳ Sync Adversaries from Pack"** (Actors sidebar
-footer, GM) once — that click IS the sync feature's first test, and it pushes the 07-17c fixes
-onto every world adversary and placed token in place (position/HP kept, renamed copies skipped).
-
-Standing rules: **PC tokens are linked** and never need replacing; **PCs need no ⟳ Sync** unless
-a section says a specific pack-baked talent changed. Every deployed section below assumes the
-current deploy state — per-section setup boilerplate was removed in the 07-18 consolidation.
+**⏳ The 07-27j ENGINE half needs a plain relaunch / F5 (no rebuild).** Three engine fixes from the
+run-9 batch: the CAE grant path is serialised through `edhaOwnerListQueue` (two combat-start grants
+both reach the tracker), the next-test pipeline gained a cross-path claim so one banked `either` use
+cannot ride both the attack AND the damage roll, and `edhaRollOpposedSkill` learned that an
+ATTRIBUTE id is a real contest id (a "tests Speed" card was rolling a bare d20). **Byte-check after
+the sync:** the served `register-skills.js` must contain `edhaContestAttrFor`, `edhaNextModClaimOk`
+and `edhaOwnerListQueue(c, key` (the CAE call site).
 
 ---
 
-# Pending the next rebuild + deploy (ONE `deploy-to-foundry.bat` run covers every row here)
+## ⚑ THE COMPLETE PACK-REBUILD LIST — run these in this order, Foundry CLOSED
 
-> **Section added 2026-07-24 to fix a dashboard bug, not to add content.** Every "ALSO PENDING"
-> block below already existed — but they sat *inside* the `## DEPLOY STATE` section, and
-> `build-dashboard.js` deliberately filters that section out of the Bench tab to render it as the
-> banner. So these rows have **never appeared on the dashboard Ben actually tests from** (CLAUDE.md:
-> "Ben tests from the generated `EDHA_DASHBOARD.html`"). Row text is unchanged and unmoved; only
-> this heading is new, which promotes all of them into a real, markable bench section. **Keep
-> pending rows below a `#` heading — anything above the first one is invisible to Ben.**
+Four builds are now owed, not three: the three carried since bench run 5, plus **heroic**, which is
+new in 07-27j. Nothing here is optional and nothing is superseded.
 
-**ALSO PENDING (2026-07-24, tree-graph + overlay fixes):** `data/leyline.json`, `data/domain.json`
-and `scripts/edha-pack-io.js` changed. **Pack rebuild + deploy + ⟳ Sync needed** — the tree node
-graphs and 10 talents' Events/Effects tabs are all pack-baked. See the "2026-07-24 fixes" section
-immediately below.
+1. **`foundry-build heroic`** + **⟳ Sync Talents** — ⭐ NEW 2026-07-27j, and the biggest single
+   behaviour change in the batch: **eight talents were wired to cosmere skill ids that do not
+   exist** (`itm` for Intimidation, `per` for Perception/Persuasion, `ldr` for Leadership) and every
+   one failed silently. Un-blocks **Sharp Eye** (was a total no-op), **Set at Odds** (same),
+   **Synchronized Assault** (charged 2 focus and did nothing), **Feinting Strike** (drained "0"
+   focus), **Rallying Shout** (printed "+ 0 health"), **Confident Command** (enforced Leadership
+   only), and **Flamestance**, which has never worked in its life.
+2. **`foundry-build leyline`** + **⟳ Sync Talents** — carried since run 5. Mender's Instinct's
+   one-liner note + the green range gate (the live pack still carries the 228-char note and an
+   empty `rangeColor`).
+3. **`foundry-build deity`** + **⟳ Sync Talents** + **RE-FORGE the Construct** — carried since run 5
+   (07-26n: Forge Construct's rule mints its summon `creatureType: "Construct"`; the live pack reads
+   `""`, and an already-summoned Construct keeps its old humanoid type until re-forged). Also
+   carries the cosmetic Surgical Precision rule-description truthing.
+4. **`foundry-build adversaries`** + **⟳ Sync Adversaries** + **re-drag the Fellstag** (Herding
+   Antlers — a fresh pack read still shows 0 events) + **re-import BOTH bosses** (Flame Surge — both
+   bosses' live `damage.formula` is still `null`; placed copies stay frozen at 0 until re-imported).
 
-- [ ] **Green / Instinct is takeable at all (THE session-0 blocker)** — open the Green tree on a
-      PC with Green 1+. **Pack Hunter** is now pickable with no talent prereq (it is the branch
-      root); taking it unlocks **Predator's Instinct** and **Scent the Weak**, and the column
-      walks down to **Natural Order**. Before this fix, Pack Hunter and Predator's Instinct each
-      required the other and all 8 Instinct talents were permanently unpickable.
+**Rides along with whichever build runs first, nothing waits on it:** the 07-27h build cleanup stops
+minting six keys on every talent doc that the talent DataModel deletes at load (`hasPath`,
+`specialty`, `hasSpecialty`, `hasAncestry`, `prerequisites`, `prerequisitesMet` — the real prereqs
+live on the tree NODE, which is unchanged). Provably no behaviour change.
+
+*(The per-item detail for 2–4 is kept below verbatim, as re-confirmed by fresh compendium reads at
+bench run 5.)*
+- `foundry-build leyline` + **⟳ Sync Talents** (Mender's Instinct's one-liner note + green range
+  gate — run 5 re-confirmed the live pack still carries the 228-char note and an empty `rangeColor`).
+- `foundry-build deity` + **⟳ Sync Talents** + **RE-FORGE the Construct** (07-26n: Forge
+  Construct's rule mints its summon `creatureType: "Construct"` — run 5 read `creatureType: ""`
+  in the live pack; an already-summoned Construct also keeps its old humanoid type until re-forged).
+- `foundry-build adversaries` + **⟳ Sync Adversaries** + **re-drag the Fellstag** (Herding
+  Antlers — run 5 re-confirmed a FRESH pack read still shows 0 events) + **re-import BOTH bosses**
+  (Flame Surge — run 5 re-confirmed both bosses' live `damage.formula` is still `null`; placed
+  copies stay frozen at 0 until re-imported).
+
+Only Ben advances this section.
+
+---
+
+# BENCH — Engine-wide & cross-tree (run these FIRST — the migration premise)
+
+Any bench actor works here; **Bench — Red** is the reference. No pack rebuild pending for this
+section — but the two **2bAD** rows added 2026-07-27j need the **engine-only relaunch / F5** first
+(see DEPLOY STATE); everything else is live on the current deploy. **If 2bA-7 fails, stop the whole
+bench and report it** — every converted talent rides the same premise. The dialog rows (2bAC) were
+the day-1 bench report, already fixed.
+
+## The premise (stop if these fail)
+
+**Bench run 1 (2026-07-26g): the five premise rows PASSED on the live table and are retired** —
+2bA-7 (count 1→2 → two disadvantaged tests), 2bB-3 (deflect 1→2 → marker +2), 2bC-6 (opportunity
+tick → Plot Die + menu), 2bP-12 (three tabs populated; sustain 2 → two Constructs), 2bA-9 (natives
+ARE in both dropdowns — Reckless Momentum / Risky Behavior / Resilient Hero stay bucket 1b).
+Evidence per row in the delta. The two 2bAC rows below are visual-legibility judgments — still ⚑ Ben.
+
+- [ ] **2bAC-1 — Edit Event Rule legibility** — open any converted talent → Events → edit its Triggered Effect rule → ⚑ ~660px window; every label reads as a phrase (2 lines max), its control sits beside it, the hint sits UNDER the pair in smaller type, the form scrolls inside the window, and Update is reachable at the bottom.
+- [ ] **2bAC-2 — short dialogs unharmed** — edit a rule with a small handler (e.g. an *Edha: Apply Status* or a native *Update Actor* rule) → ⚑ Same two-column layout, nothing misaligned — the grid must not have wrecked the simple case.
+
+## Migration machinery (cross-tree behaviour)
+
+> **✅ Bench run 9 (2026-07-27i) retired seven Engine-wide rows on evidence** — **2bB-8** (neither
+> Flamestance nor Vigilant Stance carries any Effect at all; the old greyed "(Active) — INDICATOR ONLY /
+> Mechanics manual" effect is gone from both) · **2bE-8** (Fast Talker out of combat posted "⚡ Fast
+> Talker: you gain 2 actions — Fast Talker (Spiritual tests) **(no tracker in this scene —
+> honour-system)**", a plain note with no error) · **2bP-6** (Blue and Red each posted the Draw Mana
+> summary card **plus** a separate Key card — "🎲 Blue Leyline Attunement: your next test — at
+> advantage"; Red added its Reaction-loss card as a third) · **2bP-7** (all three unchanged: White
+> "healed 8 of 10 ally(ies) 2 HP within 60 ft (visible) — skipped 2 behind a wall" **plus** the Beacon
+> of Stability cleanse card; Black "Weakened on 0 of 0 enemies you can see within 60 ft" plus the
+> GM-only "🕵️ full sweep for the GM: 7 enemies in range … (not shown to the player)"; Green prompted
+> "Click where the 10 ft difficult-terrain square grows … Attunement Range 60 ft", placed on the click,
+> and **Thorn Field still baked its hazard** — "🔥 Bench Ally — Two takes 5 keen from dangerous terrain
+> (Thorn Field — Bench — Green)") · **2bQ-6** (Studied Mark's snapshot still **withholds Cognitive** —
+> "defenses — Physical 14 , Spiritual 14" — with the wording unshifted; contrast Pack Share's, which
+> prints all three) · **2bL-13** (combat start granted Foresight **once**, Sidestep **once**, and
+> Practiced Kata entered Vigilant Stance **once** — no double grant) · **the 10 recovered talents**
+> (all ten read a non-empty Events tab live: Guardian Stance 1+1 AE, Thorn Field 1, Shoulder the Oath 1,
+> Lay Foundation 1, Death Ward 2, Necrotic Cascade 4, Set Charge 1, Fault Line 1, Warlord's Advance 3,
+> Investiture of Command 3. ⚠️ The row's "(2 rules)" for Set Charge is stale — `deity-destruction.json`
+> authors exactly one, `SetChargeZone000`, so 1 is correct).
+
+- [ ] **2bA-6 — edha-push default — ⚠️ DRIFT vs the row's wording, 2026-07-27i (needs a ruling, not a fix)** — Author a NEW push rule on any talent, leave Note blank → Card reads **"Push"**, not "Shockwave Slam". (Fixes a talent-specific default baked into a generic handler.) **Run 9:** authored a fresh `edha-push` rule (`distanceFt: 5`, `awayFrom: "self"`, `note: ""`) onto Vigilant Stance and used it. The old bug is definitively **GONE** — nothing said "Shockwave Slam". But the card did not say "Push" either; it read **"💥 Vigilant Stance — Bench Target — Adjacent B is pushed 3 ft."**, i.e. the blank-note default is now *the owning talent's name*. That is arguably better than a literal "Push"; Ben's call which is canon, then align card/row/engine. ⚠️ Two secondary observations from the same probe, both needing a dedicated look and **flagged as unconfirmed**: the push reported **3 ft** for a `distanceFt: 5` rule, and the target moved from x=4800 to x=4500 — i.e. **toward** the caster at (3900), not away, despite `awayFrom: "self"`. The probe rule was hand-authored, so a mis-specified field vocabulary is a live possibility; do not treat the direction claim as established without re-driving it from an authored talent.
+- [ ] **2bM-1 — ⚠️⚠️ H3 ordering (any ledger)** — as a PLAYER, with **no GM connected**, use **Covenant** on an ally you don't own → It refuses with "a GM must be online… nothing placed" and **no half-formed pact is left behind**. Before the fix the entry was written anyway and then hidden for ever. If a GM is always online at your table, skip — this cannot bite you.
+- [ ] **2bL-14 — ⚑ Bear Witness — mid-combat reload** — in round 3+, refresh Foundry (F5) → Nobody gains a fresh round of Temp HP just for reloading.
+- [ ] **2bT-19 — regression: the five test talents' cards** — use Censure / Killing Blow etc. → The SYSTEM's use flow runs now (no takeover): cost charged exactly once, the player's test roll is captured by H1, and the card's own damage button is to be IGNORED (engine applies). Watch for double-application.
+- [ ] **2bE-9 — ⚑ adversary widening** — put an adversary carrying a combat-timing talent into a fight → It now gets its combat-start grant. **Deliberate change** — the retired hooks were gated `type === "character"`; rule-driven dispatch doesn't need that gate. Tell me if you'd rather it stayed PC-only.
+- [ ] **2bAD-1 — an ATTRIBUTE contest now actually rolls the attribute (NEW 2026-07-27j, ENGINE-ONLY — relaunch / F5)** — several cards call for an attribute test rather than a skill test: **Concussive Yield** ("each character in its radius tests **Speed** vs. your Red") and **Inevitable Snare** ("the triggering target tests **Speed** vs. your Green"), plus `spd` is the engine's own default for the `edha-zone` line save and any snare with no `riderSkill`. `edhaRollOpposedSkill` built `1d20 [+ @skills.<id>.rank] [+ @attr.<mapped>]` and `spd` matched NEITHER — it is not a cosmere skill, and the skill→attribute map had no row for it — so the foe rolled a **bare d20 with no Speed in it at all**, silently, while the card printed "Speed" over it. → Detonate a Charge with Concussive Yield owned, and spring an Inevitable Snare: the contest line must now show a total that **includes the target's Speed** (compare two targets with different Speed — the numbers must differ), not a flat 1–20. ⚠️ **This means run 6's 2bX-5 PASS was recorded over a broken roll** — the "SPD 3" it saw was a bare d20; the row's other halves (damage, Disoriented) were correct and stand.
+- [ ] **2bAD-2 — regression: a SKILL contest still adds BOTH its rank and its attribute (NEW 2026-07-27j, ENGINE-ONLY)** — the 2bAD-1 fix touches the shared `edhaRollOpposedSkill`, so confirm it did not turn skill contests into attribute-only ones → drive any `vs: "skill"` contest (Redirect Momentum's Athletics, Hollow Command, a Sealed Edict violation) → the foe's roll must still include **both** its skill rank and the linked attribute. Pinned in `tests/contest-attr.test.js`, but worth one live look.
+
+## Engine-wide fixes still unbenched (pre-migration survivors)
+
+**Bench run 4 (2026-07-26m): the melee-discriminator row is RETIRED** — `edhaAttackKind` now reads
+`system.attack.type`: a weapon set to `"ranged"` skipped Warlord's Advance's rider AND left the arm
+armed; blanking the field (schema re-initialises to `"melee"`) fired "+4 impact strike" and consumed
+it; Withering Touch's ranged half behaved identically. Evidence in the 07-26m delta.
+
+- [ ] **GM summon relay** — as a PLAYER without actor-create: Phantom Barricade / Risen Servant /
+      Forge Construct produce a real token via the GM client; you can move it and use its attack;
+      `actsAfterCaster` puts it on the caster's initiative. No GM online → the old warn.
+- [ ] ⚑ **Injury tool** — Raise Dead: the card names the auto-added injury and it appears on the
+      target's sheet (schema drift falls back to a bare-named Item — report if fields are missing).
+      Apex Form: ending the scene (delete combat) adds the injury + card. Create a world RollTable
+      named "Injuries" and confirm it takes precedence over the placeholder list.
+- [ ] ⚑ **Formula bar** — any advantage roll reads "2d20kh + 6" (spaced, no stray ")"). If garbling
+      recurs, note whether the roll dialog's Temporary Bonus field had anything typed in it.
+- [ ] **Withering Ray skill test** — if the garbled `2d20kh+6)` bar reappears, SCREENSHOT it (still
+      the one un-reproduced report).
+- [ ] ⚑ **Engine-move collision** — Unnerving Approach push (and Cruel Step slide) toward an occupied
+      square: the moved token stops in the last free square, never stacking. Manual drags still stack
+      (intended — R2 engine-only).
+- [ ] ⚑ **Flame Surge / burst cards** — Detonate: button reads "Detonated ✓" and stays disabled after
+      F5 / re-login; re-clicking is impossible. Cancel reads "Cancelled — refunded ✓". Old cards from
+      before this fix still reset on refresh (only messages stamped from now on persist).
+
+## Structural (tree graphs + prereqs, from the 07-24 fixes)
+
+- [ ] ⚑ **Nothing else lost its rules** — spot-check two talents that already worked (e.g. Black's
+      Withering Ray, Red's Arc Flash): tabs unchanged. The A/B build says 0 talents lost anything,
+      but that is a repo-side check, not a table one.
+
+---
+
+# BENCH — White (leyline)
+
+Run on **Bench — White** (ally dummies in range; a hostile pair adjacent for the Bulwark
+reactions). No pack rebuild pending. Priority: 2bR-18 (premise), then 2bR-7
+(the pass's only deliberate drifts).
+
+**Bench run 2 (2026-07-26i): 13 White rows PASSED on the live table and are retired** — 2bR-18,
+2bR-7, 2bR-11, 2bR-12, 2bR-15, 2bR-16, 2bQ-10, 2bR-2, 2bR-13, 2bR-14, 2bJ-2, 2bJ-13, 2bR-8, 2bQ-9.
+Evidence per row in the 07-26i delta. The rows below stayed open — all four survivors share ONE
+root cause except 2bR-17.
+
+> **✅ Bench run 3 (2026-07-26k): the 07-26j dice fix is CONFIRMED LIVE on the table.** Shield Wall
+> (5 then 3 reduction, fresh dice each trigger, stands down below 2 adjacent allies), Interposing
+> Shield (offer with a real number, click spends 1 Inv, retro-reduction lands, "up to 10 ft" move)
+> and Retributive Guard (offer on attacked-adjacent-ally, 8 spirit dealt on the White test,
+> fall/hazard damage offers NOTHING) all passed and are retired — evidence in the 07-26k delta.
+> All 7 restored rules in the other five trees were benched the same run and printed real numbers.
+
+- [ ] **Devoted Conduit (2bR-10)** — have a SECOND White character redirect damage onto an ally in your Attunement Range (Shared Burden's redirect is the trigger) → you reduce that redirected damage by **half [Tier][Die] (1–8)**, on a card naming Devoted Conduit. ⚑ It deliberately never reduces the redirect the owner took **themselves** — the card reads "when an ally… takes damage intended for another creature", so it needs two White characters to observe. The other four White spot-checks (Pillar of Order · Concordant Presence · Voice of Authority · Collective Resolve) passed 07-26i and are retired. *(2026-07-26k: the shared evaluator is proven — its three sibling rules on the same call site all rolled real numbers this run; only the two-White staging remains, and the bench roster has one White PC → ⚑ Ben or a two-client run.)*
+- [ ] **⚑ Burst-only: the 13 damage riders that lost their bonus inside an AoE** — `edha-damage-rider` was fine on ordinary hits but went through the broken evaluator on the **`edha-burst` detonate** path, so these lost their rider **only when the damage came from a burst**: Life's **Prognosis**, and the bite/strike riders on Mistheron · Stillback · Wasting-Eater Stillback · Wrongwake · Wasting-Eater Wrongwake · Keelshadow · The False Spring · Brandram · Hazewyrm Adult · Hazewyrm Elder · The Doubled · The Doubled Elder. Needs the owner to deal damage through an AoE specifically — awkward to stage, so it stays ⚑ rather than a promised row.
+- [ ] **2bR-17 — Callthief's Counterpoint** — run it against a target → it rolls the Callthief's **Deception**, resolves vs the target's Cognitive defense, and on a success negates the influence and leaves it Disoriented for 1 Focus. Bellwether's / The Reckoning's Ordered Advance half of this row PASSED 07-26i and is retired. *(2026-07-26k: the PACK REBUILD IS CONFIRMED LIVE — a fresh pack read shows Counterpoint at `skill_test/dec`; the run itself is still to do, on a FRESH import.)*
+- [ ] **⚑ The other five restored adversary abilities (same 07-26j fix)** — run each once on a FRESH pack import: **Reeve-Owl** Sovereign of Solitude (black) · **Rootling Swarm** Grasping Vines + Territorial Instinct (green) · **Tussock-Sow** Drive the Prey (green). Each must now ROLL its named skill and print a `N vs <DEF> M — SUCCESS/FAIL` card instead of silently charging its cost. (Surecat's Redirect Momentum is 2bF-17 in the Blue section.) *(2026-07-26k: rebuild confirmed live — all five read `skill_test` with their skills on a fresh pack read. ⚠️ The Fellstag's **Herding Antlers** was MISSED by the same fix — see the Green spot-check row.)*
+
+---
+
+# BENCH — Blue (leyline)
+
+Run on **Bench — Blue** (enemy dummies in Blue Attunement Range; one with a written Cognitive
+defense, one without). No pack rebuild pending. Priority: 2bJ-1 (first prompt-pick ever
+— if it fails, every prompt row dies with it), 2bF-3 (first `vs: skill`),
+2bAA-10 (the walls), and 2bP-2 (the silent-free-buff trap).
+
+**Bench run 2 (2026-07-26i): 13 Blue rows PASSED on the live table and are retired** — 2bJ-1
+(the first prompt-pick click in the project WORKS), 2bF-3 (the first `vs: skill`), 2bAA-10 (the
+walls), 2bP-1, 2bP-2 (the trap row), 2bP-3, 2bP-4, 2bJ-5, 2bF-2, 2bF-4, 2bF-5, 2bF-6, 2bI-12,
+2bAA-7, and the Blue spot-check row. Evidence per row in the 07-26i delta.
+
+- [ ] **2bF-17 — Surecat → Redirect Momentum** — run the adversary's copy → it rolls **Blue**, rolls the TARGET's Athletics, and prints `Blue N vs ATH M`, same as the PC talent (2bF-3, which passed). *(2026-07-26k: the 07-26j PACK REBUILD is CONFIRMED LIVE — fresh pack read shows `skill_test/blue`; the run itself is still to do, on a FRESH import.)*
+- [ ] **2bAA-6 — Living Image** — open it → **Events tab**; then start your turn with an illusion up → ⚑ TWO rules where the tab was empty: `edha-illusion-upkeep` (config) + `edha-note` (use). The turn-start prompt still whispers with a one-click pay. **Edit `costPer` to 2 and the button must then charge 2** — that is the whole point of the conversion.
+      *(2026-07-26i: NOT RUN — the turn-start upkeep needs a live combat turn change, which the
+      cosmere activation model does not expose from the console. Ben's row for now.)*
+- [ ] **2bJ-3 — Pattern Recognition (Blue) ⚠️** — use it on a target, accept, then have them roll a test **this round**; separately, accept and let the **round change** before they roll → Disadvantage on the test this round. After the round changes it **no longer applies**. ⚑ **BEHAVIOUR CHANGE:** the card always said "their next test **this round**" and the old flag waited for ever. Tell me if you'd rather it kept waiting.
+      *(2026-07-26i: NOT RUN — needs a real round change; see 2bAA-6.)*
+- [ ] **2bAA-8 — Phantom Double** — Events tab; use with no target, then on an ally in range, then on an ally out of range → ⚑ ONE `edha-illusion-copy` rule. Belief loop unchanged (each enemy that can see it rolls Perception vs your Cognitive defense; fooled clients stop rendering the original). **NEW: an out-of-range ally refunds the 2 Investiture.**
+      *(2026-07-26i: NOT RUN — the belief loop wants a second client; ⚑ Ben's.)*
+- [ ] **2bAA-9 — The Seeming — Mistheron AND The Doubled Elder** — use it on each; break the copy → ⚑ Each adversary ability now carries its OWN `use` rule (⟳ Sync Adversaries / re-drag first). Both must still raise the copy and run the belief sweep, and **the cards must name "The Seeming", not "Phantom Double"**. Spearing Beak's / the Grasp's fooled-target rider must still find the belief ledger.
+      *(2026-07-26i: NOT RUN — same second-client need as 2bAA-8.)*
+
+---
+
+# BENCH — Black (leyline)
+
+Run on **Bench — Black** (enemies in Black Attunement Range, one Isolated, one with allies
+within 10 ft, one at 0 focus). No pack rebuild pending.
+
+**Bench run 3 (2026-07-26k): 20 Black rows PASSED on the live table and are retired** — 2bI-2,
+2bI-3, 2bI-5 (the chain flag WORKS — the extra loss emptying the target credited Predatory
+Insight), 2bI-7, 2bI-8 + 2bH-11 (retired as PROVEN-UNREACHABLE fail-open, runbook Known limits),
+2bH-9, 2bH-10, 2bB-10, 2bJ-7 (push direction verified: away from the TARGET), 2bJ-9, 2bJ-14,
+2bZ-1, 2bZ-2, 2bZ-3, 2bZ-4, 2bZ-12 (rank-3 Black Attunement Range measured at 60 ft), 2bM-8,
+2bM-10, 2bF-12. Evidence per row in the 07-26k delta. The rows below stayed open — two FAILs
+(→ test-pass-fixes) and the ⚑ ruling rows, each with a dated note.
+
+**Bench run 4 (2026-07-26m): the three 07-26l re-tests all PASSED and are retired** — 2bI-1
+(Whispered Doubt's loss card: "🧠 Whispered Doubt: Bench Target — Adjacent A loses 1 focus"; Red's
+Shatter Focus announces off the same helper), 2bJ-8 (Puppeteer's offer names the creature, no
+literal braces), and the Cruel Step straddle spot-check (the x=5156 straddle slid the FULL 10 ft,
+and the ⚑ near-parallel residual also completed — `testCollision` from the collinear origin reads
+false while a genuine crossing ray reads true). Evidence in the 07-26m delta.
+
+- [ ] **2bI-4 — ⚑ Coercive Pressure stacking** — give the same creature Coercive Pressure's disadvantage **and** another next-test rider (e.g. Probability Net) → **NARROWING:** they no longer stack — the second write overwrites the first. The bespoke Cognitive-disadvantage flag that allowed both is gone. Tell me if that matters at the table. *(2026-07-26k: the single-slot shape is confirmed on the live actor — `flags.nextTestMod` is one object `{source: "Coercive Pressure", …}`; a Blood Price arm on the owner and a Coercive arm on the target each occupy their bearer's one slot. Cross-rider overwrite not staged; the ruling stays yours.)*
+- [ ] **2bI-6 — ⚑ Whispered Doubt vs Wary** — have the enemy own **Wary**, then trigger Whispered Doubt → **BEHAVIOUR CHANGE:** the extra loss is now reduced by their Discipline ranks (usually to zero), because it goes through the shared involuntary-focus path. Wary's text says involuntary focus loss, so this reads correct — but it did NOT happen before. Your ruling, not a bug report. *(2026-07-26k: OBSERVED live exactly as described — Wary + Discipline 1 → net extra 0, with a card "🛡️ Wary: involuntary focus loss reduced by 1"; Coercive still armed. Note Wary announces while Whispered Doubt itself is card-less — see 2bI-1.)*
+- [ ] **2bI-9 — Siphoned Will (Black)** — own it, land Hollow Command, and check the Events tab of **Siphoned Will itself** → You regain focus equal to your **tier**, on a card naming *Siphoned Will*. ⚑ Its own tab is **EMPTY** — the rule lives on Hollow Command. Third talent to take this exit (2bF-5/14/16 were the others); the question there is the question here. *(2026-07-26k: the mechanics half is verified — on Hollow Command's success, "🧠 Siphoned Will: Bench — Black regains 2 focus" (tier 2). Only the empty-tab design question remains — yours.)*
+- [ ] **2bJ-10 — ⚑ Puppeteer / Unnerving Approach — the ignored card** — let one of their cards post and **do not click it**; then trigger the talent again the same round → It works again. ⚑ **BEHAVIOUR CHANGE:** the once-per-round budget is now spent when you **click**, not when the card posts, so declining no longer burns the use. *(2026-07-26k: VERIFIED — an ignored Unnerving picker did not block a same-round re-use, and its click pushed; after an accepted Puppeteer, the next 0-focus turn-start posts NO offer (budget suppresses at the offer stage). ⚑ One cost note for your ruling: each ignored USE still charges its Investiture — only the round budget waits for the click.)*
+- [ ] **2bZ-10 — Dread Presence (the two unbenched adversary copies)** — a Weakened enemy in range drags its token closer to an ally, near the **Cragdrake Alpha** and the **Doubled Elder** → Move vetoed with a toast naming the talent, off each copy's OWN rule (re-drag or ⟳ Sync Adversaries first) — ranges 60/60 ft via role rank. *(2026-07-26k: the PC half and the Dirgehound Pack copy (30 ft rival) PASSED and are retired — both vetoed a console token move in place with the toast; a Weakened fixture's own staging move even got vetoed mid-run. The toast names the nearest ally scene-wide, campaign tokens included ("Frostbinder", "The Forgemaster") — correct mechanically, worth knowing at the table.)*
+---
+
+# BENCH — Red (leyline)
+
+Run on **Bench — Red** (an enemy dummy in Red Attunement Range that can take damage twice in a
+round). No pack rebuild pending — this is the PILOT tree: it holds the migration's first three
+talents (2bA) and its rows ran end-to-end in **bench run 1 (2026-07-26g)**: 12 rows retired on
+evidence (2bQ-1/2/3, 2bA-1/2/3/4, 2bF-11, 2bY-11, 2bY-13, 2bY-14, 2bP-5 — 2bQ-1 retired as
+SUPERSEDED: the "(On Use)" spec predates the 07-25 Opportunity redesign that 2bQ-3 verified; a
+bare use arms nothing, by design). What remains below is the one FAIL, the ⚑ rows, and the
+spot-check row with a drift observation.
+
+- [ ] **2bA-5 — Shockwave Slam** — Melee impact hit → Push card still reads **"Shockwave Slam"** (not "Push"). Its note now comes from the document; a regression here means the note field didn't survive the build. **FAIL 2026-07-26 (bench run 1):** a WEAPON melee impact hit (Bench Maul, 1d8 impact, hit + damage applied) fires NO push — `edhaDispatchOnHit`'s `itemSpecific = !!tal.system.damage.formula` gate reads Shockwave Slam's authored COLLISION formula as "attack talent, only fires on its own hits" and skips it for every other dealer. The push machinery itself works: using the talent directly produced "💥 Shockwave Slam — pushed 10 ft", correct away-from-caster direction, note from the document. Fix direction: the trigger surface, not the push. → test-pass-fixes.
+- [ ] ⚑ **Flashpoint** — Red burst hits 2+: click the prompt → +1 Investiture AND your next Red test
+      rolls with advantage automatically (pre-selected/fast-forwarded).
+- [ ] **Red spot-checks (like-for-like)** — run once: Arc Flash (any energy hit) and one Frenzy talent of your choice → identical to pre-migration behaviour; any drift is a bug. **Bench run 1 (2026-07-26):** Arc Flash ✓ (offer card posted on an energy weapon hit; Afterburn's too). Battle Fever (Frenzy) has a **card-vs-engine drift**: card says "+1 to your next test (max = Rank), resets at start of your turn" but the rally bonus rode EVERY test until turn start (`rally {count, resetOn: turn}` — it never consumed on a test; observed +2[Rally] on 6+ consecutive rolls; the max=Rank cap works). Decide which side is canonical → test-pass-fixes.
 - [ ] **Red / Momentum is takeable** — same check on Red: **Reckless Advance** is the branch root
       (its card now reads **"Red 1+"**, not "Burning Drive"), and **Burning Drive**, **Volatile
       Strike**, … **Unstoppable** chain down from it. ⚑ **Ben — eyeball the drawn tree**: the fix
       trusted the layout + connections over the card text. If you intended Burning Drive to come
-      first, say so and it flips instead.
-- [ ] **Death / Speak with the Fallen** — its card now reads **"Reaper's Harvest"** (was "Risen
-      Servant", which is drawn *below* it). Confirm it hangs off Reaper's Harvest beside Bone
-      Garden, and that Risen Servant is still reachable via Bone Garden.
-- [ ] **The 10 recovered talents show behaviour again** — after rebuild + ⟳ Sync, each of these
-      has a NON-EMPTY Events or Effects tab: **Guardian Stance** (White, +1 Deflect AE),
-      **Thorn Field** (Green), **Shoulder the Oath** (Order), **Lay Foundation** (Civilization),
-      **Death Ward** + **Necrotic Cascade** (Death), **Set Charge** (Destruction, 2 rules) +
-      **Fault Line** (Destruction), **Warlord's Advance** + **Investiture of Command** (Power).
-      Their behaviour was being erased at build time by an empty authored overlay.
-- [ ] **Razkael prereqs match the drawn tree (2026-07-24b)** — **Cascading Failure**'s card now
-      reads "Pinpoint Charge or Concussive Yield" and **Fault Line**'s reads "Walking Ruin or
-      Combustion Chain"; each is takeable from either drawn parent alone, not both.
+      first, say so and it flips instead. **Bench run 1 (2026-07-26): the graph half is verified
+      live** — the compiled Red Leyline tree's nodes read Reckless Advance {skill red 1, no talent
+      prereq}, Burning Drive/Volatile Strike {Reckless Advance}, Unstoppable {Reckless Momentum,
+      red 3}. Only the drawn-tree eyeball remains.
+
+---
+
+# BENCH — Green (leyline)
+
+Run on **Bench — Green** (your terrain placed; an enemy pack with adjacent allies; a wounded
+ally). No pack rebuild pending.
+
+**Bench run 3 (2026-07-26k): 14 Green rows PASSED on the live table and are retired** — 2bS-17
+(THE premise: edited Pack Pressure's `amountFormula` on the document to a flat 5, the very next
+strike printed "+5 keen strike", formula restored), 2bS-16 (Overgrowth stepped "+1 Deflect" as a
+named AE, Life Surge's heal left it untouched — the `deflectStackMax` field discriminates; both
+talents' shared overflow-THP rule also fired), 2bS-2 (hazard tick "3 keen … (Thorn Field —
+Bench — Green)" on enter), 2bS-5 (1 enemy → plain, 2 → plain, 3 → `2d20kh`, Weakened → `2d20kl`
+not stomped), 2bS-8 (the restored dice: "+10 keen strike" = 2d8, window card = the editable
+note), 2bS-9 (in-combat: solo silent, co-attacked round "+2 keen (2 hunters)"), 2bS-10 (hidden
+attacker on an ally rolled `1d20 + 2 - 2[Packmate's Warning (+2 defense)]`; Green-as-target
+unmodified), 2bF-7/2bF-8/2bF-9 (Restrained-no-expiry / engine-rolled Survival → Immobilized /
+Survival → Slowed), 2bR-4 (offer card on the ally's in-terrain attack, silent on a plain test),
+2bM-9 (picker + nothing spent; the pick healed 17 = 2d8+5 applied), 2bT-20 (both rider paths
+unchanged), and **Green / Instinct is takeable** (compiled tree: Pack Hunter = root with no
+talent prereq, Predator's Instinct and Scent the Weak hang off it, column walks to Natural
+Order — the session-0 mutual pair is dead). Evidence per row in the 07-26k delta.
+
+- [ ] **2bS-11 — Natural Order — NARROWED 2026-07-26k** — the use half PASSED: 2 Inv spent, the **"Clearsight (veils suppressed nearby)"** marker landed with the explanatory card. Still open: the veil half — a veiled enemy standing in **darkness** in range keeps its auto dark-veil marker DOWN (needs scene darkness + a veil-capable adversary — staging left ⚑ for a run that owns the darkness question, or Ben), and the combat-end clear.
+- [ ] **2bS-1 — Green Leyline Attunement — NARROWED 2026-07-26k** — placement PASSED (click-to-place placed the 10 ft difficult-terrain Region, "Thorn Field rides it"), and the ⚠️ cosmetic drift is confirmed (its own card; the Draw Mana summary prints no Green line). Still open/⚑: the range ring + snap feel (canvas rows, Ben's) and the out-of-range refusal (not driven this run).
+- [ ] **Green spot-checks (like-for-like) — Mender's ENGINE halves PASSED 2026-07-26m; the DATA halves are BLOCKED-ON-DEPLOY** — bench run 4 retired (1) the ally gate (a HOSTILE fixture taken 32 → 12 HP drew NO offer) and (2) the scene scope (with Green's own copy temporarily removed, The Vivisectionist — owner, no token on the scene — stayed SILENT; its silence was the test). (3) the heal-block passed under 2bW-1. **Still BLOCKED-ON-DEPLOY:** run 4 read the live pack and confirmed the authored green fix has NOT shipped — the rule's `note` is still 228 chars and `rangeColor` is still `""`, so the card prints the long description and an out-of-Attunement ally (~70 ft) still draws an offer. After `foundry-build leyline` + ⟳ Sync Talents, re-check for the engine's tight "<ally> dropped to N/M HP" line and the range refusal. Green's own `oncePerRound` held in run 3 — don't re-prove it. **Herding Antlers on the Fellstag (2bF-10): BLOCKED-ON-DEPLOY, confirmed still dead 2026-07-26m** — a FRESH pack read of the Fellstag shows Herding Antlers with **0 events** and no `activation.skill`; the live pack predates commit `8917cbb`. Re-test only after `foundry-build adversaries` + ⟳ Sync Adversaries + a FRESH re-drag: target a character, use → Green vs Survival through the contest core; success → Slowed + the move-away note. **Still unrun**: Spreading Roots (2bS-4) · Pack Hunter (2bS-6) · Scent the Weak (2bS-7, though its advantage was seen arming incidentally) · Resurgent Growth (2bS-12, seen ticking incidentally in run 4 — "Resurgent Growth: Bench Ally — One regains 7 health" at a round boundary) · Natural Recovery (2bS-14) · Reknit Form (2bS-15).
+- [ ] **2bS-3 — Briar-Gone Grove (adversary) — NARROWED 2026-07-26k** — the Grove's Thorn Field (boss → d8) keen rider baking into its engine-placed patches is still to bench. *(The Fellstag half PASSED and is retired: a FRESH pack import's Draw Mana placed its own 5 ft square, "Thorn Hedge rides it", and the hazard tick dealt "2 keen … (Thorn Hedge — Bench Adv — Fellstag)" — rival d6 family, its own zone-hazard rule.)*
+
+---
+
+# BENCH — Destruction (Razkael, deity)
+
+Run on **Bench — Destruction** (open ground; enemy dummies to catch blasts; one Construct-type
+if you can). ⚠️ 2bY-7's Constructs ×3 re-test needs the 07-26n deploys: engine sync + F5 AND
+`foundry-build deity` + ⟳ Sync Talents + a fresh re-forge (see DEPLOY STATE). The other rows
+need no pack rebuild.
+
+**Bench run 4 (2026-07-26m): 14 Destruction rows PASSED on the live table and are retired** —
+2bY-1 (in-range place → red 10 ft template + Charges card + arm card; both refusal paths refunded),
+2bY-2 (cap = tier, oldest evicted), 2bY-3 (all three arms bound and each fired ONE whispered
+Detonate prompt), **2bY-4** (Set Charge's document formula edited to a flat `6` → the detonate
+rolled `6`, terrain dropped, charge consumed), 2bY-5 (pre-cost refusal + ⊕ flag + Pinpoint's own
+edited formula printing "+9 keen … ignores deflect"), **2bY-6** (`failStatus` edited prone →
+**slowed** on the Events tab and the next detonate applied Slowed), 2bY-8 (toggle on/off, trail
+patches while on, zero after off, +10 ft Speed AE), 2bY-9 (armed card + the auto ignite/spread
+firing unprompted), 2bY-10 (Pyre stamped `spreads: true`, end-of-turn spread card), **2bK-1 +
+2bK-2** (2 charges detonated at once, and the multi-catch listed "+5 energy (caught in 2 blasts)"
+separately), 2bK-3 (15 ft + Intellect on the first use; the second the same scene refused with
+nothing spent), 2bK-4 (both capstones refused pre-cost on an empty ledger), 2bK-5 (both riders rode
+one detonate), and **Razkael prereqs** (compiled tree: Cascading Failure = ONE group {Pinpoint
+Charge, Concussive Yield}, Fault Line = ONE group {Combustion Chain, Walking Ruin} — the system
+evaluates a multi-talent group with `.some()`, so either parent alone suffices; prose in
+`data/domain.json` matches). Evidence per row in the 07-26m delta. ⚑ the drawn-tree eyeball for
+the prereq row is still Ben's.
+
+- [ ] **2bY-7 — Fault Line `Constructs ×3` — FIXED 07-26n; run 5 (2026-07-27a) confirmed BLOCKED-ON-DEPLOY on the pack half** — the ENGINE half is live (run 5's fresh join: the served `register-skills.js` carries the new `edhaIsConstruct` reading `system.type` and the `spec.creatureType` mint), but a fresh compendium read shows the deity pack's Forge Construct rule still carries `creatureType: ""` vs the repo's `"Construct"` — `foundry-build deity` + ⟳ Sync Talents + a fresh RE-FORGE have not run. **Re-test AFTER the deity rebuild + re-forge** (an old summon keeps its humanoid type): stage the line over a hostile-flipped, freshly-forged Construct in a clean lane → it takes **×3** (e.g. roll 12 → 36 − deflect), the Floater beside it ×1. The line's other dials stay retired-in-place from run 4 (Region, +2 Strength, Speed-vs-Red → Prone, cancel refund). ⚑ **Ruling still wanted:** the line spares ALLIES — the card reads "Each character in the line takes …" with no friend/foe clause, and the engine catches enemies only.
+- [ ] ⚑ **Walking Ruin has no token indicator (2026-07-26m — ruling, not a bug)** — the toggle is tracked internally and nothing on the token says the character is leaving ruin behind, unlike every other scene-arm in the project (Cascade Armed, Crowned, `withernext`, `warlord`). Consistency call is Ben's.
+
+---
+
+# BENCH — Life (Anaveth, deity)
+
+Run on **Bench — Life** (a willing ally dummy to mutate; a wounded ally). No pack rebuild
+pending. The Life/Death premise row lives in the Death section (2bW-17).
+
+**Bench run 5 (2026-07-27a): 2 Life rows PASSED in full and are retired** — **2bW-14** (tick
+"regenerates 3 HP" = tier+1; 2 vital → "🥀 Primal Regeneration on Bench Ally — Two ends — it took
+Vital/Spirit damage", `lifeRegen` cleared, no tick on the next boundary; re-granted on the
+Dense-Tissue-mutated ally the tick rolled "regenerates 5 HP" = 2d8+1) · **2bW-16** (bond card;
+whispered offer "took 6 keen. Take up to 3 of it as spirit" with the number input capped at half
+POST-deflect; "0" declined free and a same-round re-offer appeared; a real 3 posted "takes 3 spirit
+in Bench Ally — Two's place; Bench Ally — Two heals 8" = 3 + 2d8; third same-round damage → no
+offer; next round re-armed). The chooser/riders of 2bW-12 and clauses 1–4 of 2bW-13 are
+retired-in-place inside the rows below. Evidence per row in the 07-27a delta.
+
+**Bench run 6 (2026-07-27c): 2bW-12 and 2bW-13 re-tested and RETIRED** — 2bW-12: second use on a
+mutated ally refused pre-cost ("already carries Bone Spurs — one adaptation per creature per
+scene. Nothing spent", no chooser, Inv untouched); the stale-chooser belt drove the REAL case
+(two live choosers on an unmutated ally, pick on one, click the other) → "the earlier pick
+stands" card, buttons flip to "already adapted", flag kind unchanged — and a clicked chooser
+self-disables to "✓ applied"; combat delete cleared the flag and a fresh use re-offered the
+chooser. Still not driven: Dense Tissue's forced-movement refusal. · 2bW-13: with BOTH GM
+clients connected (Bench + Ben's Gamemaster), combat delete minted exactly ONE "Apex Form ends —
+takes an injury: Slowed…" card and ONE injury item; apexForm/lifeRegen swept clean; no other
+scene reset doubled anything all run. ⚑ still in the rulings batch: melee mutation riders fire
+on a nat-1 graze application.
+
+> **✅ 2bW-15 — Surgical Precision — RETIRED on evidence (bench run 7, 2026-07-27e).** All four
+> sub-cases passed on the live 07-27d engine at PHY 45 / phy 1: two back-to-back CONSOLE uses quoted
+> **their own** d20s ("— 6 vs … PHY 45: graze" under `1d20+5=6`, then "— 24 …" under `1d20+5=24` —
+> the one-behind is gone); the SHEET path quoted "— 9 …" under its own `1d20+5=9` with **no**
+> fail-open cleanse; phy 1 gave the three-button cleanse card and the click posted "removed Weakened
+> from Bench Ally — Two"; and a CANCELLED roll dialog produced **zero** cards, with the next use
+> deciding on its own fresh d20 (8). The Surgical data half stays COSMETIC-only on the owed deity
+> rebuild.
+
+---
+
+# BENCH — Chaos (Maelith, deity)
+
+Run on **Bench — Chaos** (enemy dummies inside and outside Blue Attunement Range; one
+Isolated). No pack rebuild pending.
+
+**Bench run 5 (2026-07-27a): the WHOLE section — all 15 rows — PASSED on the live table and is
+retired** — **2bG-4** (success 23 vs PHY 14 on a no-Omen target → "is Isolated", HP untouched,
+**no damage card at all** — the H3 conditional short-circuit holds) · **2bG-6** (Entropy placed to
+cap, Cascade Collapse cleared A, Entropy then placed on B at "(2/2)" — the freed slot reconciled
+correctly) · 2bG-1 (THREE rules on the tab; success 23→"bears your Omen (1/2)" + "11 spirit …
+2d8"; the player rolls the Blue test) · 2bG-2 (at cap, SUCCESS 17: "no Omen placed on Bench
+Target — Adjacent B — you are at your cap of 2", damage still landed, both older Omens kept) ·
+2bG-3 ("Omen is spent (1/2 left)" + "7 vital … 2d8 + 2" + Isolated) · 2bG-5 (with: TWO instances
+6+12 vital, "a second instance rides this"; without: ONE, 11 vital) · 2bG-7 (covered by
+2bU-1/3/4 — all three now carry document rules from pass 2bU and ran clean) · 2bG-8 + 2bU-5
+(refund card on bearer damage; same-round re-damage silent; out-of-Blue-range damage silent — the
+NEW range gate enforced; back in range next round the card fired again, Inv clamped at max) ·
+2bU-1 (no target → "target the creature first (nothing spent)"; spread marked A "(1/2)" AND
+nearest-unmarked B "(2/2)" auto-picked past the farther A-candidate; at cap "no Omen placed …
+cap of 2"; lone target → "(1/2)" + "no additional enemy within 10 ft to mark") · 2bU-2 (dispel
+card with one button per enabled effect, click posted "Bench Test Buff unravels from …" and
+deleted the AE; Omen shattered → Disoriented; no-Omen use → dispel card only, no Disorient) ·
+2bU-3 (ONE Blue roll sweeping per-bearer vs ITS OWN Cognitive — "affected" branch took omen +
+2d8 spirit + Disoriented; the out-of-Blue-range bearer untouched, kept its Omen; empty ledger →
+cost spent + "no creatures on the ledger"; a later sweep cleared TWO bearers off one roll with
+serialized counts "(1/2)"→"(0/2)" — free corroboration of the 07-26n H3 write queue) · 2bU-4
+(cap-full fill posted the honest "no enemy in range to mark (2/2)"; detonation hit the
+out-of-range Isolated bearer scene-wide for "16 vital … 2 * (2d8)" with NO Disorient while the
+non-Isolated bearer took "11 spirit … 2d8 + 2" + Disoriented; all Omens cleared; a second use on
+an empty ledger filled nearest-first — Undefended + B picked over the farther A) · **2bY-12 +
+2bU-6** (no-target and unmarked-target both refused PRE-COST with "nothing spent" warns; marked:
+"Omen removed … rerolled the d20 18→ 14 — test drops to 18", and the reroll-higher branch
+"reroll d20 = 6 ≥ kept 5 — the original test stands"; the stale ledger entry left via the
+mark-wins reconcile — the next place read "(1/2)"; auto-prompt whispered with the kept total;
+Mute silenced a bearer's roll; a real use re-armed the prompt). Evidence per row in the 07-27a
+delta.
+
+> **✅ Chaos residual (c) — the scene sweep — RETIRED on evidence (bench run 7, 2026-07-27e).** Run
+> 6's exact staging re-run on the live 07-27d engine (a real Spreading Omen place on the canvas
+> bearer + a hand-staged OFF-CANVAS directory bearer + an inflicted Isolated with `markedBy`):
+> combat delete left `lists.omens` **UNSET** on the owner, the off-canvas bearer lost `omen` and
+> `markedBy.omen` while keeping its unrelated `restrained` / `markedBy.harvested` (correctly
+> untouched), the canvas bearer and the Isolated victim came out clean — and a FRESH place then read
+> **"(1/2)"**, proving the ledger really emptied. **Zero `Chaos sweep:` console.warn lines**, so the
+> guarded-per-await rewrite has no residual culprit.
+
+- [ ] ⚑ **Chaos residuals (run 5) — the two halves that are not engine work** — (a) 2bU-5's through-walls RENDERING of Omen-bearers: canvas-visual, a hidden-pane session cannot see highlights — Ben's eyeball. (b) 2bU-3's "a resister keeps its Omen" branch: not driven (dice luck, runs 5–7); the per-bearer gate itself is proven. Still a ruling: Unweaving's dispel card lists the OMEN MARKER itself as a dispellable effect button.
+
+---
+
+# BENCH — Fate (Olvarra, deity)
+
+Run on **Bench — Fate** (open ground for squares + snares; an enemy walker). No pack rebuild
+pending.
+
+**Bench run 6 (2026-07-27c): 15 Fate rows PASSED on the live table and are retired** — **2bX-14 +
+2bAA-5 (the priority scene reset)**: combat delete with 2 squares + 2 snares + a hexmark + the
+ordained AE + sceneOnce live cleared BOTH ledger keys, all templates, the snare Regions, the
+ordained-buff AE, the markedBy key, and re-armed sceneOnce; nothing doubled with two GM clients
+connected (the 07-27b one-applier family held) · 2bX-1 (in-range white 5-ft template + "set
+(1/2)" card WITH the Bulwark THP line; out-of-Attunement-range click AND right-click cancel both
+refunded — "canceled — cost refunded", nothing placed; the pick prompt names "Attunement Range
+60 ft") · 2bAA-1 (cap 2 = tier, third place evicted the OLDEST — its template vanished; ledger
+lives at `lists.ordained`; ⚑ cosmetic: the place card says "(2/2)" but never verbalizes the
+fizzle) · 2bX-2 (green template + trigger Region per snare; third place evicted oldest — template
+AND Region both gone by id/count; entries snapshot the formula) · 2bX-3 (springs on walk-INTO and
+walk-THROUGH; document formula edited to flat `7` then re-placed → the spring rolled exactly `7`;
+Restrained applied; consumed; card titled by the placing talent; formula restored) · 2bX-4 (empty
+ledger → "no snares left to mark inevitable — nothing spent" pre-cost; with one → entry flagged
+`inevitable: true` + card — ⚑ cosmetic grammar "the snares on Snare #1 is inevitable") · 2bX-5
+(spring rolled base 9 + `5` — Inevitable Snare's OWN formula edited to flat 5 — for 14 keen, +
+engine-rolled "SPD 3 vs your green 11 — Disoriented") · 2bX-6 (offer card on every spring; mark
+click → markedBy.hexmark + card; +2 keen rider card on damage within 10 ft of a square — net 0
+through deflect 2; silent beyond 10 ft) · 2bX-7 + 2bAA-3 (turn-start on an ordained square → +1
+phy/cog/spi AE + tempHp {2, source Bulwark Ground} + the Aid-at-30-ft clause on the card; an
+advantage attack vs that ally posted the Bulwark card and rolled a SINGLE 1d20 — neutralized; a
+disadvantage attack passed through as 2d20kl with no card) · 2bX-10 + 2bAA-4 (whispered foresight
+card, one Move button per marker; ordained slide moved the template; snare slide moved template
+AND Region and the moved Region sprang on entry at the NEW square) · 2bX-12 (declare card;
+resolve sprang EVERY unsprung snare + the rally card; second use refused pre-cost "once per
+scene — nothing spent") · 2bX-13 (system charged every use; both cancel paths refunded; all
+pre-cost refusals spent nothing — one exception logged in the 2bX-8 FAIL row). Evidence per row
+in the 07-27c delta.
+
+> **✅ Bench run 7 (2026-07-27e): FIVE more Fate rows RETIRED on evidence** — the snare spring
+> double-fire (all five paths post ONCE: walk-INTO → 1 card / 1 roll / 1 Hexmark offer with damage
+> applied once, walk-THROUGH → same, **two snares in one walk path → each sprang exactly once** (2
+> cards, 2 rolls, 2 offers), Foreknown click → 1, Thread resolve over two snares → 2 springs + 1
+> rally card; every snare consumed its ledger entry, template and Region) · `tempHp` scene reset (a
+> PC, an adversary victim and an off-canvas actor all lost the flag on ONE combat delete, and 6
+> vital then hit HP for exactly 6) · **2bX-8 + 2bAA-2** (the picker is now a real `<dialog>` titled
+> "Weave the Thread — link two squares", ZERO AppV1 windows on screen; Link wrote `linked: true` on
+> both entries + the link card; closing the picker refunded in full — 2→4 Inv with "Weave the Thread
+> canceled — cost refunded"; the <2-squares case refuses **pre-cost** with "needs two active Ordained
+> Ground squares. Nothing spent." and never opens a consume dialog) · **2bX-9** (a spring 10 ft from
+> a linked square posted "🪢 Weave the Thread: an ally standing on either linked square may make a
+> free Reactive Strike…", a spring 35–45 ft away posted none) · **2bX-11** (the previously
+> "unobservable" own-formula rider IS observable — an enemy standing **adjacent** (5 ft) to the
+> square is found by the spring's 5-ft nearest-enemy scan, so the Foreknown click rolled
+> `(2)d(2*3+2)+2 + ((2)d(2*3+2)) = 20` and dealt it; placement adjacent does NOT insta-spring, only
+> placement *under* a creature does — which narrows the rulings question, it does not remove it).
+> ⚑ Still a ruling (unchanged): should placement under a creature ARM instead of spring?
+>
+> ⚑ **Harness note, not a defect:** the picker's explicit **Cancel button** could not be exercised —
+> a synthetic activation of a DialogV2 submit button falls through to the `default` (`ok`) button.
+> The close/X path proven above takes the identical `!picked` branch in `edhaZoneLinkMarkers`, so the
+> refund branch itself is verified; only the literal Cancel-button click is a Ben row.
+
+---
+
+# BENCH — Sovereignty (Verdannis, deity)
+
+Run on **Bench — Sovereignty** (an ally + enemy pair targeted together). No pack rebuild
+pending.
+
+**Bench run 6 (2026-07-27c): the WHOLE section — all 8 rows — PASSED on the live table and is
+retired** — **2bT-16 (the priority pair conversion)**: ally+enemy targeted together → "ally +1 /
+enemy −1 until the start of your next turn" with BOTH `dieStep` entries sharing a `pairId` and
+`onPairHit: extend-once` (pure entry data); the ally's damage rolled a STEPPED d8 (d6 base); the
+hit posted "both effects extend one additional round" and both entries moved expire round 2→3
+with `extended: true`; a second hit extended nothing · 2bT-11 (no-target → "target the creature
+first (nothing spent)"; Isolated → "outside your Attunement Range (black) — nothing spent"; a
+FAILED test (11 vs COG 14) kept the cost spent and minted nothing; SUCCESS 22 vs COG 14 →
+`diminished` status + −1 entry, and the victim's actual damage roll stepped **1d6 → 1d4**) ·
+2bT-12 (FAIL 13 vs 14 → −1 entry expiring next-turn; SUCCESS 23 vs 14 on a second creature → −1
+entry with `expire: "scene"`; the second use on the SAME creature refused pre-cost "already used
+on … this scene" — and the latch held even though that first use had FAILED, per spec's "either
+way") · 2bT-13 (FAIL → −1 all timed; SUCCESS → −2 `scope: attack` scene entry carrying
+`failThpFormula: @tier` + `failThpRange: white` IN the ledger entry; the victim's attack damage
+rolled 1d4 — d6 −2 floored at d4, so a d6 base cannot distinguish −1 from −2, flag for a
+d10-weapon spot-check; a nat-1 attack auto-posted "failed an attack test — 17 ally(ies) in range
+gain 2 temporary HP" and wrote the tempHp flags; the non-attack-damage-untouched clause not
+driven — the victim has no non-attack damage vehicle) · 2bT-14 (Exalt → +1 next-turn entry +
+card; Sovereign's Favor's `die-step` watch rolled (2)d8 white → tempHp {8, source Sovereign's
+Favor}; a second Exalt rolled 15 and KEPT THE HIGHER — 15 replaced 8, no stacking) · 2bT-15
+(Investiture of Authority REPLACED both exalt entries with the single `investiture` scene entry
+— "replaces any existing Exalt" card; Favor did NOT fire on it — tempHp untouched; the second
+Investiture on that ally refused pre-cost) · 2bT-17 (±2 scene entries, shared pairId,
+`onPairHit: no-reactions`; the ally's damage rolled 1d10 = d6 + 2 steps; TWO hits → TWO "cannot
+take reactions until the start of its next turn (GM-enforced)" cards; second use refused
+pre-cost "Sovereignty was already used this scene — nothing spent") · 2bT-18 (the Censured
+creature's failed attack (3 vs PHY 14) → "recovers 1 Investiture" AUTO (3→4) + "may make a
+Reactive Strike" card for the White-range ally; its non-attack skill test → whispered owner-click
+"If it FAILED, click to recover 1 Investiture" card, click recovered 1; the Edict-only victim's
+failed attack fired NOTHING — whenKeys censure,decree respected). Evidence per row in the 07-27c
+delta. ⚑ carried to the open rows: the tempHp scene-reset residual (see BENCH — Fate) was
+confirmed here on a second tree's sweep.
+
+---
+
+# BENCH — Death (Morrath, deity)
+
+Run on **Bench — Death** (hostile NPC dummies in Green range to harvest; a warded ally). No
+pack rebuild pending; the 07-26n queue fix AND the 07-27b `chainBounded` dispatch fix are both
+confirmed live at the table (runs 5–6).
+
+⚠️ **Staging note (bench run 4):** Reaper's Harvest only harvests **adversary**-typed victims. The
+standard `Bench Target — *` fixtures are `character`-typed and are silently skipped — that is the
+"a PC drop harvests nothing" branch, not a bug. Import or clone an adversary-typed victim for every
+harvest row.
+
+**Bench run 4 (2026-07-26m): 17 Death rows PASSED on the live table and are retired** — **2bW-17
+(the premise)**: Death Ward's `thpFormula` edited on the Events tab to a flat `3`, and the very next
+lethal-drop rescue rolled `3` and printed "gains 3 Temp HP" · 2bW-1's heal-block re-test (a Mender's
+hp-threshold click on a blocked target posted "🩸 … cannot regain HP (Withering Touch)" and HP did
+not move) · 2bW-2's ranged half (arm survived, no rider) · 2bW-3 (in-range harvest, plus all three
+negatives: out of range, a summon, a `character`-typed victim — and the CASCADE nested kill DOES
+harvest via `chain`) · 2bW-4 (BOTH halves — an unset flag gave the scene-start freebie, an explicit
+`[]` refused) · 2bW-5 (both pre-cost refusals, the `decaying` icon, and the turn-start tick "takes
+12 vital … regains 6 HP") · 2bW-6 (all four, including an ALLY ending its turn inside taking
+"🦴 … 6 keen", and the cancel refunding while the Remain stayed) · 2bW-7 (willing → no test, ward
+lands) · 2bW-8 (unwilling → "24 vs … SPI 14 — SUCCESS", and the 1-HP lethal-drop rescue that did
+NOT harvest) · 2bW-9 (not-at-0 refusal, the full valid raise with its auto-created injury item, and
+the sceneOnce refusal with nothing spent) · 2bW-10 / 2bP-11 (no-Remain refusals) · **2bP-10** (cap
+named at 2 servants, Remain survived) · 2bW-11 (all three branches) · **2bI-10** (13 spirit to both
+enemies within 10 ft, the ally beside the body untouched) · 2bI-11 (re-use refused, PC and summon
+drops produced nothing, combat delete cleared the marker) · and **both graph rows** (compiled tree:
+Speak with the Fallen hangs off Reaper's Harvest beside Bone Garden; Risen Servant = OR{Bone Garden,
+Speak with the Fallen}, takeable from either alone). Evidence per row in the 07-26m delta.
+
+**Bench run 6 (2026-07-27c): the simultaneous cascade-drop harvest re-test PASSED and is
+RETIRED** — exact staging (Necrotic Cascade armed via `cascadearmed` status, adversary trigger
+dropped by 5 vital, TWO 1-HP adversary victims inside 10 ft, cap 2): ONE cascade tick ("13
+spirit to Bench Victim — V1, Bench Victim — V2 · 2d8"), THREE ✨ recover cards, ledger counts
+"(1/2)" → "(2/2)" → "(2/2). The oldest (Bench Victim — V1) fades — you sustain at most 2",
+ledger ended holding the two newest, and the cascade did NOT re-detonate off the nested kills.
+The `chainBounded` clamp holds at the table.
+- [ ] ⚑ **Raise Dead — a raised creature keeps its own Harvested Remain (2026-07-26m — defect or ruling, Ben's call)** — an adversary that had itself been harvested was then raised by spending a DIFFERENT Remain: it came back at 1 HP still wearing the `harvested` marker, with its own entry still on the ledger — a living creature that is also a Remain. The card says nothing either way. Should the raise clear the target's own marker and entry?
+- [ ] **2bW-1 — Withering Touch — the two unrun halves** — still open from run 3 and not driven in run 4: **Temp HP still lands** on a blocked target, and the **turn-start expiry** of the No-Healing block. Everything else on this row is retired (see the run-4 block above).
+
+---
+
+# BENCH — Civilization (Kethane, deity)
+
+Run on **Bench — Civilization** (room for Foundations; a Construct summoned). No pack rebuild pending
+for the ENGINE rows; the deity-pack rebuild is still owed for the Construct `creatureType` mint (see
+DEPLOY STATE — **but see the note below: Civ's own Construct predicate does not read it**).
+
+**Bench run 8 (2026-07-27g): the ENTIRE Construct-consuming family PASSED against a NORMALLY forged,
+`summonTalent`-stamped Construct and is retired — the 07-27f lookup fix is confirmed at the table.**
+The Construct was forged with `Forge Construct` and read
+`{summon: true, summoner: …, summonTalent: "Forge Construct", summonedAt: …}` — the exact shape that
+killed run 7 — and none of the three refused. **2bV-13 Siege Form**: card "🏰 Siege Form: Siege Form is
+active on Combat Construct (Bench — Civilization) for the scene…", baked AE flipped `disabled: false`,
+Speed 25→**0**, deflect 1→**3**; the "End Siege Form (Free Action)" button reverted all three (card
+"🏰 … ends Siege Form (Free Action)"); both refusals held with Investiture unchanged at 4 —
+"Edha: Siege Form is already active. Nothing spent." and "Edha: Siege Cannon (Siege Form only) needs
+Siege Form active — toggle it on first. Nothing spent." · **2bV-14 Arsenal**: granted its OWN
+Effects-tab AE "Arsenal (2 attacks/turn)" onto the Construct with
+`summonGranted: "AVQfEKddptmPKABB"`, spent exactly its 2 Inv (4→2), re-arm refused
+"Edha: Arsenal is already active this scene. Nothing spent." — and its `onKillNote` chase later fired
+unprompted ("⚙️ Arsenal: … reduces Bench Target — Adjacent A to 0 HP — you may immediately command it
+to move up to 15 ft and make a free Strike…") · **2bV-15 Magnum Opus**: `2 * ((2)d(2 * 3 + 2)) = 14`
+took the Construct 14→**28** HP (max too), +2 to all three defenses 12→**14**, added
+"Colossus (Magnum Opus)" with three `+2` bonus changes, wrote `civFoundationBonus: 2` and said so
+("Allies in your Foundations now gain +2 to all defenses at their turn start (upgraded for the
+scene)"), stamped `sceneOnce` and refused a repeat ("was already used this scene. Nothing spent.");
+the 10 ft splash then dealt **14 energy to the target AND the second enemy** ("within 10 ft of Bench
+Target — Adjacent A" — target INCLUDED per Ben R7a) while the two enemies at 15 ft were correctly
+spared · **the FORGING side did NOT regress**: Forge Construct at cap 1, with the *stamped* Construct
+alive, posted "Edha: Bench — Civilization's Combat Construct (Bench — Civilization) dismissed —
+resummoning (cap 1)", deleted the old actor + token and minted a fresh stamped one (2bP-8/2bP-9's
+shape, now proven on a stamped Construct rather than run 7's un-stamped fallback).
+⚠️ One cosmetic console error at the dismiss-and-replace: `Actor "iiu9UrHCC86xlXr6" does not exist!`
+(the deleted Construct's id) — a post-deletion re-resolve; no cause attributed, nothing user-visible.
+
+**Bench run 8 (2026-07-27g): the raw-i18n family is DEAD — all seven named card sites read plain
+English and the authored-override negative holds.** (a) Magnum Opus splash save: "🗿 Magnum Opus —
+**Agility** vs your Red: Bench Target — Adjacent A: Agility 6 vs your Red 17 — Prone …" ·
+(b) the Colossus AE description on the transformed Construct: "…who roll **Agility** vs the summoner's
+red or gain **Prone** (engine-rolled)" · (c) Bastion's fortified-entry save: "⛨ Bastion — **Agility**
+vs your Red: Bench Target — Adjacent A: Agility 21 vs your Red 14 — keeps pace" (and exactly ONE entry
+card + ONE save card, re-corroborating the v13 double-event closure) · (d) an `edha-apply-status` card
+on a NATIVE status, via Red's Reckless Gambit: "🎯 Reckless Gambit: Bench Target — Floater is
+**Exhausted** (by Bench — Red)" — `CONFIG.COSMERE.statuses.exhausted.label` is the raw key
+`COSMERE.Status.Exhausted`, so this is the run-1 bug's own shape, now clean · (e) Order's sweep:
+"⚖️ Verdict — **Discipline** vs your Blue: Bench Target — Adjacent B: Discipline 13 vs your Blue 17 —
+fails" and the Sealed rider "⚖️ Sealed Edict — **Discipline** vs your Blue: … Discipline 5 vs your
+Blue 15 — breaks" · (f) Phantom Double's GM accounting card: "🌫️ Phantom Double — belief vs DC 16:
+Fooled …: Bench Target — Adjacent A: **Perception** 12 vs 16 …" — the two player-whisper shapes
+interpolate the *same* `sklab` const (engine lines 5715/5716/5724 all read the one computed at 5693),
+so they are covered by the same fix; that extension is an **inference from the shared variable**, not
+a driven card, because the bench fixtures have no player owner · (g) the negative: Fault Line's
+"💥 Fault Line — **Speed** vs your Red: Bench Target — Floater: Speed 20 vs your Red 14 — stays up",
+so the authored `saveLabel: "Speed"` still wins. No `COSMERE.*` string appeared in any card this run.
+
+**Bench run 7 (2026-07-27e): the Foundation family + the summon-lifecycle rows PASSED and are
+retired** — **2bV-16** (an adversary-typed victim dropped to 0 inside a Foundation whispered
+"🛡️ Bonds of Community — … drops to 0 HP inside your Foundation. Reaction (one per round — trusted):
+each standing ally in any of your Foundations gains **5** Temp HP and advantage on its next attack
+test." — 5 = White rank 3 + WIL 2; the click posted "Bench Ally — One gains 5 Temp HP and advantage
+on their next attack test" and wrote `tempHp {value: 5, source: "Bonds of Community"}` +
+`advAttackNext`; **a MANUAL HP edit to 0 produced ZERO cards** — the documented drift confirmed as
+designed; **a SUMMON dropped to 0 inside a Foundation produced ZERO prompts**) · **2bV-10**
+(right-click cancel → "Lay Foundation cancelled — Investiture refunded", nothing placed; a valid
+click drew the gold `#e8c060` 600×600 px = 10 ft square named "Foundation"; a combatant flipping
+`flags.cosmere-rpg.activated` inside it got "🧱 … begins their turn in a Foundation — +2 to all
+defenses" with the AE's three `+2` changes and defenses 14→16 — **the Magnum Opus upgrade path proven
+live**, `civFoundationBonus: 2`; a third Foundation past the tier-2 cap posted "🧱 …'s oldest
+Foundation crumbles (sustain cap 2)" and the oldest drawing AND its fortified Region both went) ·
+**2bV-11** (zero Foundations → "needs at least one active Foundation. Nothing spent." pre-cost, no
+consume dialog; valid → the fortify card, `bastionActive: true`, a `… — Fortified Foundation` Region
+carrying BOTH `edha-content.enemy-cost` and `edha-content.fortified` behaviors, drawing recoloured
+red to "⛨ Foundation (fortified)"; the Construct walking in gained `Bastion (+2 defenses)` 12→14 and
+LOST it when its Foundation crumbled; an enemy walking in got **exactly ONE** "⛨ … enters …'s
+fortified Foundation — takes 9 impact" (`(2)d(2*3+2)=9`) and **exactly ONE** save card **named
+Bastion** — "⛨ Bastion — Agility vs your Red: … Agility 3 vs your Red 14 — Slowed" — independent
+corroboration that the v13 double-event surface is closed here too; a Foundation laid while Bastion
+held came up fortified immediately, Ben R4) · **2bV-12** (one Foundation → "needs two active
+Foundations. Nothing spent." pre-cost; two → both drawings read "⛨ Foundation (fortified) ⇄" sharing
+one `link` id; an ally standing in one clicked Teleport, picked an arrival point and moved
+(6000,11100)→(7200,11400) with "🛤️ … steps through the trade route…"; **all three cancel paths
+refunded in full** — cancel at the FIRST pick, a pick OUTSIDE any Foundation ("that point is not
+inside one of your Foundations. Refunded."), and cancel at the SECOND pick) · **2bP-8 + 2bP-9 in one
+action** (a Construct with its `summonTalent` flag REMOVED — the genuine pre-deploy shape — was found
+by the **name fallback**: "Edha: …'s Combat Construct (…) dismissed — resummoning (cap 1)"; the old
+actor and token were deleted and a fresh Construct + token appeared).
+
+⚠️ **The run-1 orphan `Combat Construct` token can NEVER satisfy 2bP-9** — its `actorId`
+(`bYsKFlS4joFWz08Y`) points at a **deleted actor** (`token.actor` is null; no directory Construct
+exists), and every summon lookup goes through `game.actors`. It is a dangling token reference, not
+an un-flagged Construct. It stayed exactly where it was at (7500, 4800) through a full replacement
+cycle. Ben's to delete whenever convenient.
+
+ℹ️ **The owed deity-pack `creatureType` mint does NOT gate any Civ row.** A freshly forged Construct
+still reads `system.type = {"id":"humanoid"}` (run 7 confirmed the live pack rule carries no
+`creatureType` field while `data/authored/deity-civilization.json` does) — but Civilization's
+predicate is `edhaCivIsConstruct`, which tests the `summon` flag + the name prefix, not `system.type`.
+The only reader of the `system.type`-based `edhaIsConstruct` is Fault Line's `constructMult`
+(Destruction, already benched).
+
+- [ ] **2bV-15 — Tempered Edge — CONFIRMED WORKS AS DESIGNED 2026-07-26m, re-corroborated 2026-07-27e, retired-in-place** — run 7 re-measured it by NET against a deflect-2 target: Construct Slam base `(2)d(2*3+2)+2 = 17`, rider card "🐺 Tempered Edge (Bench — Civilization): **+11 energy** and the hit ignores Bench Target — Floater's deflect (+2 added here pre-pays the −2 …)", net applied **28** = 17 + 11 with the deflect fully compensated. **And the Siege-Cannon negative PASSES:** the Cannon's `(2)d(2*3+2)+2+2 = 10` energy applied for exactly **8** = base − deflect, with **no** Tempered Edge card — `whenDealerItem: "Construct Slam"` correctly excludes it. Nothing is open on this row any more; only the FAIL row above blocks the family.
+- [ ] ⚑ **Civ enemy-cost — GO, KEEP the experiment (bench run 7, 2026-07-27e — resolver-level evidence)** — the custom type DID register (`CONFIG.RegionBehavior.dataModels["edha-content.enemy-cost"]` → `EdhaEnemyCostRegionBehavior`, a true subclass of the native `ModifyMovementCostRegionBehaviorType`), and the native base's **only** resolver is `_getTerrainEffects` (`Object.getOwnPropertyNames` on the base prototype gives exactly `prepareBaseData`, `_onUpdate`, `_getTerrainEffects`) — which the subclass overrides. Called on the real behavior with the real tokens: the **ALLY** (disposition 1 = `ownerDisposition`) returns `[]` → ×1; the **ENEMY** (disposition −1) returns `[{"name":"difficulty","difficulty":2}]` → ×2. Identical for token documents and placeables. The second guessed name `getTerrainEffects` does not exist on the base and is dead code that can be deleted. ⚑ **Ben's remaining half is the ruler UI itself** (a canvas-feel read a hidden-pane session cannot take) — but the underlying cost resolution is proven disposition-filtered, so the experiment should be KEPT.
+
+---
+
+# BENCH — Power (Tyrith, deity)
+
+Run on **Bench — Power** (a Weakened enemy in Black range; a melee-hit victim). No pack
+rebuild pending.
+
+**✅ Bench run 7 (2026-07-27e): the ENTIRE Power section ran and 17 rows are RETIRED on evidence.**
+Nothing in Power failed. Row by row:
+
+- **2bH-1** — three rules on the Events tab; a target that is NOT compelled/frightened/weakened
+  refuses **pre-cost**: "Edha: Bench Target — Floater must be compelled / frightened / weakened for
+  Absolute Authority — nothing spent." No consume dialog, no card, no roll, net spend 0.
+- **2bH-2 — the first `edha-test-fail` payload in the project FIRES.** Driven twice; the second run
+  gated on **Frightened only** so the payload was unambiguous: `1d20+5=20` vs a forced COG 40 →
+  "Absolute Authority: 20 vs … COG 40 — FAIL." then "Absolute Authority — Bench Target — Floater is
+  **Weakened**." and the status appeared (`["frightened","weakened"]`). The whole fail branch is live.
+- **2bH-3** — success (`18` vs COG 3) posted only the 👑 note card ("you choose the target's action on
+  its next turn — it cannot be forced to directly harm itself. Forced volition, GM-run.") and applied
+  **no** status.
+- **2bH-4** — `crowned` status + the "Crowned (Crown of Thorns armed)" effect + the scene-arm card
+  carrying the "Crown ping (target the character first)" button.
+- **2bH-5 — H8's cross-talent reaction WORKS, on success AND on failure, from two sources.** Crowned
+  + Absolute Authority SUCCESS → a SECOND card "⚡ Crown of Thorns (Bench — Power) — **2** spirit to
+  Bench Target — Floater" (Presence 2), 2 HP dealt; the same talent FAILING → the same second card
+  and 2 spirit; **Kneel** as a second, differently-routed source → identical card. ⚑ **Partial
+  coverage:** Sovereignty's **Censure / Decree of Ruin** as sources 3 and 4 were NOT driven (a
+  cross-tree PC swap this run did not have budget for) — Ben's or a later run's.
+- **2bH-6 / 2bU-14** — Kneel's announcement path still pings Crown (above), and on **combat delete
+  `Crowned` clears** — along with the whole Power scene-arm family: all four statuses
+  (`crowned`/`fury`/`unstoppable`/`mantled`) gone, all five effects gone, defenses 16→14,
+  `bonusTally` cleared, `sceneOnce` re-armed, `tempHp` unset.
+- **2bH-7** — re-use while Crowned: "Edha: Crown of Thorns is already active — nothing spent." net 0.
+- **2bH-8** — the manual "Crown ping" button applied 2 spirit (Presence) to the targeted creature.
+- **2bU-7** — no target → "target the creature first (nothing spent)"; a target 83 ft away →
+  "outside your Attunement Range (black) — nothing spent" — both pre-cost, net 0. Valid: YOU rolled
+  Black (`1d20+5=20`) → "🎯 Kneel: … is Compelled (by Bench — Power). Next action: move toward the
+  compeller or do nothing — movement ENFORCED", `markedBy.compelled` naming Kneel. **The move veto
+  works in both directions:** a walk AWAY was refused in place with "…is Compelled (Kneel) — it may
+  only move toward Bench — Power, or stay put", a walk TOWARD passed silently. And the auto-advantage
+  fired: an attack on the Frightened target in Black range rolled **`2d20kh + 4`**.
+- **2bU-8** — an enemy-only target set refused pre-cost ("target up to 3 valid creature(s) in your
+  Attunement Range (black) first. Nothing spent."). Valid with three allies: **ONE shared roll**
+  `2d8 = 4` granting all three 4 Temp HP, the advantage card naming all three (`advAttackNext` on
+  each), and tier spirit to self (42→40). **Keeps-higher confirmed** — an ally pre-loaded with 99
+  Temp HP stayed at **99**, never stacked down. ⚑ cosmetic: the no-op keep still relabels that ally's
+  `tempHp.source` to "Investiture of Command".
+- **2bU-9's last open half** — the re-use-while-armed refusal for Warlord's Advance: "Edha: Warlord's
+  Advance is already active — nothing spent." net 0. Row fully closed.
+- **2bU-10** — arm card + `momentum`; re-use while armed refused pre-cost; the next weapon hit posted
+  "🐺 Momentum of Victory (Bench — Power): **+2 impact strike**" (= tier) and **consumed** the arm.
+- **2bU-11** — arm + `fury`; re-arm refused pre-cost. Dropping a hostile adversary below half
+  whispered "🗡️ Warlord's Fury: the tally rises — now 1", the kill added "🐺 … **+1 keen strike**"
+  (min(tally, 2×tier)) then "the tally rises — now 2" (`{belowHalf: [1], kills: 1}`). **The negative
+  holds:** a friendly ALLY dropping to 0 left the tally byte-identical.
+- **2bU-12** — arm + `unstoppable`; re-use while active refused pre-cost. Slowed applied → "🏃
+  Unstoppable Advance: … cannot be slowed — the condition is shrugged off" and the status did not
+  stick. A `walk` through two enemy squares produced **exactly two** impact cards, one per enemy with
+  its own roll (3 and 14) — **no double-fire on a movement path** — and a second pass over the same
+  two enemies produced **zero** further impacts (once per enemy per activation).
+- **2bU-13** — the +2-all-defenses AE (14→16) with its three `+2` changes, the note card, `mantled`,
+  and a repeat refused pre-cost ("was already used this scene"). Melee hit → "🐺 Mantle of the
+  Aspirant: **+2 spirit strike**". **The ⚑ standing ally-injector caveat is CLOSED:** an ally's
+  Athletics roll in Black range read **`1d20 + 4 + 1[Mantle of the Aspirant] = 13`** — injected and
+  labelled, surviving the dialog rebuild. Taking 10 damage posted the whispered redirect card with
+  the right budget: "You may redirect up to **2** of it to one or more willing allies…" + the button.
+- **2bU-16** — clearing the Compelled status also cleared `markedBy` (the mark dies with the status),
+  and the away move that had been vetoed then went through freely with no warning.
+
+⚑ **Extends the standing out-of-combat scope characterization (07-26k; run 6 added Restrained):**
+2bH-2's Weakened landed with `duration.type: "none"` and **no** timed marker, so "until the end of
+ITS next turn" does not expire out of combat. Same family as the existing note — recorded, not
+re-derived, and not a new bug.
+
+---
+
+# BENCH — Knowledge (Gnothis, deity)
+
+Run on **Bench — Knowledge** (an enemy bearer in Green range; an ally attacker). No pack
+rebuild pending. **Bench run 8 (2026-07-27g) drove every row in this section**; five retired outright,
+the rest were all blocked behind ONE engine defect — **fixed 2026-07-27h, ENGINE-ONLY (relaunch / F5,
+no rebuild, no ⟳ Sync)**. The six rows below are the run-9 re-test batch.
+
+⚠️ **Before the first row: clear every leftover `Insight` marker** on the bench targets. Effects written
+by the pre-fix engine stored nothing, so the system's own `stacks ?? 1` default makes them read as **1**
+— which is the honest reading of that document, but not the number any old card claimed. Start from no
+marker so the counts you read are the ones this engine wrote.
+
+**RETIRED on evidence, bench run 8 (2026-07-27g).** **2bT-2** (Studied Mark transfer: marking
+Adjacent A moved everything off Floater — Floater's `Insight` icon and its `markedBy.insight` stamp
+both gone, A gained icon + stamp, and the owner pointer moved to
+`counters.insight = "Actor.axH7sFmbZqJqv2YV"`) · **2bT-4** (The Final Study: the once-per-scene refusal
+held with nothing spent — "Edha: The Final Study was already used this scene — nothing spent.",
+Investiture unchanged at 4; the SUCCESS card ended with the free-Strike roster naming fifteen allies in
+Green range — "each ally in Attunement Range may immediately make a free Strike … : Bench — Red,
+Bench — Green, … Combat Construct (Bench — Civilization)" — with White/Blue/Black correctly outside the
+range and excluded) · **2bT-5's two remaining halves** (re-use while armed → "Edha: Predatory Strike is
+already active — nothing spent.", Investiture unchanged; and the **`weaponOnly` negative PASSES** — with
+`predprimed` live, Killing Blow's own `2d8` vital hit did NOT consume the icon and posted no Predatory
+Strike rider, then the next *weapon* hit did) · **2bT-9** (Pack Share: arm gave the
+`Pack Sight (allies share your mark)` icon plus a PUBLIC snapshot carrying **all three** defenses
+("Physical 14, Cognitive 14, Spiritual 14" — contrast Studied Mark's, which omits Cognitive); re-arm
+refused "already active — nothing spent."; an ALLY's weapon hit posted "🐺 Pack Share
+(Bench — Knowledge): **+2 vital** on Bench — Heroic's hit" (+Tier) and the first such hit that round
+placed "1 Insight on Bench Target — Floater"; **your own hits get nothing from it** — a self weapon hit
+posted only Hunter's Discipline's +2) · **2bU-15** (Predatory Strike regression: the armed weapon hit
+consumed `predprimed`, added "🐺 Predatory Strike (Bench — Knowledge): **+9 vital strike**"
+(×max(Insight,1)) and placed "1 Insight placed on Bench Target — Adjacent A (now 1)").
+
+> **✅ Bench run 9 (2026-07-27i): the 07-27h counter fix is CONFIRMED LIVE and the whole re-test batch
+> PASSED — the gate row and all six re-opened rows are retired.** Served-engine SHA-256 matched repo
+> HEAD exactly (`5f78e01d…3987c7e`, 1429834 LF bytes), so this ran against the deployed fix.
+> **Gate row:** Studied Mark placed → effect named `Insight [2]`, `system.stacks` **2**, `effect.system`
+> keys exactly `["isStackable","stacks"]` — **no `count` key**; the system's own cycle write took it to
+> `Insight [3]` and the engine read 3 (proved by Killing Blow's ×3); cycling down gave `Insight [1]`
+> then removed the status entirely. ⚠️ **One correction to the row's method: `insight` is registered
+> `condition: false`, so it never appears in the sheet's Conditions widget** — the literal "sheet →
+> Conditions → cycle" path does not exist for any Edha status (all ten read `condition: false`). The
+> run drove the widget handler's exact writes instead (`effect.update({system:{stacks:n}})`, and
+> `toggleStatusEffect` at 0), which the engine comment already claims is the same operation.
+> **2bT-1** (card "bears 2 Insight", effect `Insight [2]`, stored 2 — all three agree; transfer moved
+> everything to the new bearer and left the old with no marker, pointer and `markedBy` both moved) ·
+> **2bT-3** (the two branches finally DIFFER: success rolled `(2d8) * 3` = 18 and cleared bearer +
+> pointer; failure rolled a bare `2d8` = 13 and printed "-1 Insight … (**now 2**)", not "now 0") ·
+> **2bT-6** (4-Insight bearer killed → "place **2** Insight" = floor(4/2), with the Green-range
+> candidate list; and the true-negative holds — at 1 Insight **no Hunter's Discipline card at all**
+> while Death Mark still offered 1) · **2bT-7** (3-Insight bearer → Death Mark offered the full **3**
+> beside the ally-burst card; R9 last-click-wins verified in BOTH orders — HD(2)→DM(4) ended at
+> `Insight [4]`, DM(3)→HD(1) ended at `Insight [1]`, each card reading back the true stored value) ·
+> **2bT-8** (ticked 2→3→4→5 with every card printing the true number and the effect renaming; the
+> sixth tick at cap posted **nothing at all**; then `capFormula` edited 5→7 on the Events tab and the
+> next ticks climbed to 6 then 7 — the cap is the RULE's) · **2bT-10** (R10: The Pack `+3` from
+> `@counter` and Pack Share `+2` posted as two separate additive cards; R11: each placed its own 1
+> Insight independently — "now 4" / "now 5" — the same-round second hit repeated both bonuses and
+> placed nothing, a new round re-armed both; and the 07-27h ruling default holds — with the marker
+> hand-cleared and the pointer surviving, The Pack posted **no** bonus card but **still placed**).
+> ⚠️ Operating note confirmed: Accumulate ticks on the **owner's** turn start via `combat.update({turn})`.
+- [ ] **Retired-in-place: the 07-27g root cause, kept as the record of what was wrong** — **Root cause, proven by mutation:** `edhaCounterOn` reads `Number(eff?.system?.count)` and `edhaCounterApplyGM` writes `{"system.count": count}` (engine ~13543–13562, both carrying the comment "⚑ system.count — bench-verify"). The cosmere `ActiveEffectDataModel` schema has **exactly two** fields — `isStackable` and `stacks` — so the write is silently dropped by DataModel validation (`effect.update({"system.count": 2})` **resolves with no error** and reads back `system: {isStackable: true}`), and every read is `Number(undefined) || 0` = **0**. **The right field is `system.stacks`** (`NumberField`, nullable): writing 2 persists AND renames the effect to `Insight [2]`, which is exactly the "shows count 2" display the old ⚑ asked for. Verified both directions on the live bearer. **Observable blast radius, measured this run:** Studied Mark's card says "bears **2** Insight" while the stored count is 0 (line 16769 returns the clamped *intended* value without reading back — the card is truthful about intent and lies about state) · Killing Blow prints "-1 Insight on … (now **0**)" on a failure that should leave 1, and "all **0** Insight removed" on a success, and its ×count multiplier degrades to ×1 on **both** branches so success and failure are indistinguishable in damage · The Final Study prints "all **0** Insight removed" · Hunter's Discipline's on-kill floor(count/2) transfer card and Death Mark's FULL-count transfer card are **both suppressed** by the `if (amt > 0)` gate (engine ~13746) · Accumulate can never reach its cap-5 clamp · The Pack's `+@counter` bonus is always 0, and because the placement queue is gated on `amt > 0 || require === "armed-self-status"` (engine ~1214) The Pack's own once-per-round placement (R11) never queues either. Also affects **any `@counter` substitution in any tree** (engine line 1184). **FIXED 2026-07-27h** at the three sites (`edhaCounterOn` → the new `edhaEffectStacks`, both `edhaCounterApplyGM` writes, and the `edhaRegisterStatuses` seed), plus the `placeCounter`/`placeList` queue no longer gated on `amt > 0`; 268 tests green including a case that a legacy `system.count` document must NOT read as its count. This row is history — the re-tests are the rows above and below it.
+
+---
+
+# BENCH — Order (Tessavain, deity)
+
+Run on **Bench — Order** (a willing adjacent ally; an Edict-able enemy in Blue range; ideally a
+second Order PC for the shared-icon row). No pack rebuild pending. **Bench run 8 (2026-07-27g) ran this
+section end to end: seventeen rows retired on evidence, nothing in Order failed.**
+
+**RETIRED on evidence, bench run 8 (2026-07-27g) — the ledger is intact and the migration's premise is
+proven.** **2bL-1** (the pact FORMS: Bench Ally — Two gained the `Covenant` icon *and* the
+"Covenant (Bench — Order)" AE, the card named them "(1/2)" with a **"Break the Covenant"** button, and
+the H3 ledger held `{uuid: "Actor.LzEB1ChIfqqgYIrJ", name: "Bench Ally — Two", talent: "Covenant"}`) ·
+**2bL-2 — the row that mattered, and it PASSES both halves**: Concord was not refused and listed the
+ally **by name** ("… Bound: **Bench Ally — Two**."), and Final Decree's card named them as
+"Witnesses: **Bench Ally — Two**." Neither reader said "no Covenants" — the ledger has NOT split ·
+**2bV-17** (the 07-24u key-vs-marker reconcile fix's first bench, all three parts: moving the ally out
+of White range removed the +1 AE from **BOTH** (defenses 15/15/15 → 14/14/14 on caster and ally), moving
+back restored it on **BOTH**, the `Covenant` marker itself correctly persisting through both; and
+partner-damages-partner still posts the break watch — "🤝 Covenant watch: Bench — Order damaged Bench
+Ally — Two — if that was a DELIBERATE attack, the Covenant ends (owner-judged; incidental/area damage
+may not count)" with its button) · **2bV-18 — the point of the migration** (edited Covenant's
+`system.events.CovenantPact0000.handler.capFormula` from `@tier` to `1` on the Events tab; the very
+next pact's card changed to "(**1/1**). The oldest (…) fades — you sustain at most **1**." The document
+drives it. Restored to `@tier` afterwards.) · **2bL-3** (all four pre-cost refusals, Investiture 4→4
+every time: no target "target the creature first (nothing spent)"; an enemy "Bench Target — Adjacent A
+is not an ally — nothing spent."; 2+ squares away "Covenant requires touch — move adjacent to Bench
+Ally — Two first. Nothing spent."; already-covenanted "Bench Ally — One already bears your Covenant —
+nothing spent.") · **2bL-4** (both parties wear "Covenant (Bench — Order)" with three
+`system.defenses.*.bonus +1` changes, 14→**15** on all three defenses each, in range only) ·
+**2bL-5 — the pass's whole premise** (edited the Effects-tab AE "Covenant - while in range" from +1 to
++2, re-formed the pact, and the applied effect granted **+2** — Bench Ally — Two 14→**16** on all three.
+Restored to +1 afterwards.) · **2bL-6 including its ⚑ half** (at cap 2 a third pact evicted the oldest —
+"The oldest (Bench Ally — One) fades — you sustain at most 2", ally's icon gone; and with the cap edited
+to 1 while holding 2, the next pact dropped **BOTH** and cleared **both** icons — "The oldest
+(**Bench — Heroic, Bench Ally — Two**) fades" — so the multi-drop fix is real) · **2bL-8** (BOTH break
+buttons: "Break the Covenant" → "📋 Covenant: Bench — Order's bond with Bench Ally — Two ends (1 left)",
+icon + AE cleared on both, ledger shrunk; and "It was deliberate" → "… ends (0 left)", ledger empty) ·
+**2bL-10** (Bear Witness fires at the start of **every** round, not once per combat — rounds 1 and 2 both
+posted "⚡ Bear Witness — Bench — Knowledge, Bench Ally — Two gain **3** Temp HP. (your White)", White
+rank 3, both covenanted allies on ONE card) · **2bL-11** (Temp HP **keeps the higher**: the ally already
+held 6 Temp HP from Final Decree, Bear Witness offered 3, and the value stayed **6** — it did not go
+down. ⚠️ Cosmetic: the `source` was relabelled to "Bear Witness" while the value stayed 6, so the
+surviving 6 is now mis-attributed on the flag) · **2bV-1** (the prohibition picker is a real
+**DialogV2** — window title "Edict — declare ONE prohibited action", radios `move`/`attack`/`invest`/
+`other` plus an ally `<select>` — confirming the 07-27d AppV1→DialogV2 conversion live for the second
+window; the place card carried the prohibition, the tier cap "(1/2)", Sealed Edict's notarize hint,
+Lawkeeper's Eye's reveal line, and the ⚖ Violated button) · **2bV-3** (⚖ Violated → "⚖️ Edict violated
+(declared violation) — Bench Target — Adjacent A broke ' move from its space ': **14 spirit +
+Disoriented** until the start of Bench — Order's next turn. The Edict is consumed." A second click
+produced no duplicate payload and no card — ⚠️ but the button had already flipped to "⚖ resolved", so
+whether the documented "already gone" notice fires could not be confirmed) · **2bV-4** (no unsealed
+Edict → refused pre-cost "no Edict-Bound left to mark sealed — nothing spent."; sealing named the
+newest; on violation the violator ALSO tested engine-rolled — "⚖️ Sealed Edict — Discipline vs your
+Blue: … Discipline 5 vs your Blue 15 — breaks" → "takes an additional **6** spirit and is **Weakened**
+until the end of its next turn", total 20 applied and both statuses landed) · **2bV-5** (not on the
+ledger → refused pre-cost "is not on your edicts for Verdict — nothing spent."; the FAILURE branch spent
+the cost and denied the court ("10 vs … COG 14 — FAIL"); the SUCCESS branch ("22 vs … COG 14 — SUCCESS")
+resolved the Edict *and* ran the court — "the court turns on the accomplices (1 within 10 ft): **one
+shared roll**, 10 spirit to each who fails Discipline vs your Blue" then "Bench Target — Adjacent B:
+Discipline 13 vs your Blue 17 — fails — 10 spirit + Disoriented") · **2bV-7** (whispered Reaction card
+with the right arithmetic — the ally took 8, the card offered "take **4** of it yourself (same type),
+Bench Ally — Two heals back **7**, and BOTH of you gain **3** Temp HP. (Once per round.)" =
+floor(8/2), min(8, 4+White), White rank; the click resolved exactly that (Order 42→38, ally 24→31, both
+`tempHp {value: 3, source: "Shoulder the Oath"}`), and a second damage event the same round prompted
+nothing) · **2bV-9** (repeat use → "Final Decree is once per scene. Nothing spent."; the valid cast
+decree-bound every enemy in Blue range with the `edict` icon and stood the covenanted ally as Witness;
+resolving with the violator targeted gave **ONE** shared Temp-HP roll ("Bench Ally — Two gain **11**
+Temp HP + advantage on their next attack test", flags `tempHp` + `advAttackNext` both written) and
+**ONE** shared spirit roll to each enemy within 10 ft **violator included** ("Bench Target — Adjacent A,
+Bench Target — Adjacent B, Bench Target — Undefended take **9** spirit", all three HP-verified), then
+"The Decree is spent.").
+
+⚠️ **WORLD-HYGIENE / SCOPE SIGHTING from 2bV-9 — for the rulings batch, not a bug report.** Final
+Decree's "every enemy in Attunement Range" has **no encounter scoping**, so on a shared map it binds
+every hostile token in range — this run it decree-bound five of Ben's placed playtest adversaries
+(Frostbinder, Stitchmother, three Mutated Thralls) alongside the four bench targets, writing the
+`Edict-Bound` status to them. Same family as the standing out-of-combat scope characterization (07-26k).
+The run cleared what it applied.
+- [ ] **2bL-7 — ⚑ Covenant — the SHARED icon (needs two Order PCs)** — have two Order characters both covenant the **same** ally, then have one of them break/fizzle theirs → The ally **keeps** the Covenant icon, because the other pact is still live. Getting this wrong strips the second player's marker silently — it is why the rule carries `multiOwner`. **Still ⚑ after run 8**: the bench has one Order PC and staging a second would mean granting the whole Order path to another actor mid-run; left for Ben's two-client bench or a run that stages a second Order actor deliberately.
+- [ ] **2bV-2 — Edict watchers — PARTIAL 2026-07-27g** — ✅ the **move** watcher PASSES: with "move from its space" bound, walking the target posted "⚖️ Edict watch: Bench Target — Adjacent B moved from its space — if that was VOLUNTARY (forced movement/compulsion doesn't count), it just violated ' move from its space '." with its resolve button, and the **once-per-round** gate held (a second walk the same round posted nothing — verified with an explicit second-walk control). ⛔ **The "a forced slide does NOT prompt" negative is UNPROVEN**: the `displace` move also posted nothing, but so did the second *walk*, so the once-per-round gate had already consumed the round and the two causes cannot be separated out of combat. Re-drive with a fresh round between the walk and the slide. Also still open: the Investiture-spend and attack-the-chosen-ally watcher shapes.
+- [ ] **2bV-6 — Concord — PARTIAL 2026-07-27g** — ✅ the valid path PASSES: the `concord` status landed ("Concord (allies' first strike)"), the card named the pact allies ("Bound: Bench Ally — Two.") and stated the Aid grant + the "+2 damage (your Presence, same type as the hit — auto)" clause. ⛔ Still open: the zero-Covenant pre-cost refusal, the re-use-while-it-holds refusal, and the per-ally once-per-round +Presence rider actually landing on an ally's first damaging hit (needs an ally attack with the tally observed per ally).
+- [ ] **2bV-8 — Lawkeeper's Eye** — an ally attacks your Edict-bound target you can see; then through a wall → Advantage auto-injected; the wall (or a hostile attacker) blocks it. The Edict place card carries the GM-reveal line. **Run 8 confirmed only the card half** — the reveal line appeared on every Edict place card ("👁️ Lawkeeper's Eye: the GM reveals the bound creature's intended action on its next turn … you and your allies have advantage on attack tests against it while you can see it"). The advantage injection and the wall/hostile-attacker block were not driven.
+- [ ] **Order quiet cases (like-for-like)** — Covenant crossing scenes keeps the pact (2bL-9); Bear Witness posts NOTHING with no pacts / out-of-range ally / ally at 0 HP (2bL-12) → a "gains 0 Temp HP" card is a bug. Collapsed from 2bL-9/12. **Not driven in run 8.**
+
+---
+
+# BENCH — Heroic paths
+
+Run on **Bench — Heroic** (it carries exactly the talents these rows name, across all six
+paths). No pack rebuild pending. Priority: 2bE-7 (first H1 payload with real
+mechanics), 2bE-4 (the combat-timing dispatcher), 2bJ-12 (the on-hit
+dispatcher), 2bO-7 (the damage-roll half Pack Hunting always promised),
+2bD-3 (the nothing-spent veto), 2bZ-9 (the first authored NATIVE rule).
+
+> **✅ Bench run 9 (2026-07-27i) drove this section for the first time — fourteen rows retired on
+> evidence.** **2bE-7 — the priority row, and the H1 payload dispatch WORKS**: success ("23 vs COG 14 —
+> SUCCESS") wrote **both** payloads — "🎲 Tactical Ploy: … next test — taking **-1d4**" (flag
+> `nextTestMod {source: "Tactical Ploy", formula: "-1d4"}`) **and** "⚡ … loses one Reaction (on the
+> tracker)" with the CAE group asserted on the document (`remaining: 1→0, used: 0→1`); the failure
+> branch ("6 vs COG 40 — FAIL") landed **neither** · **2bE-3** (the ALLY's tracker gained
+> "Edha: Through the Fray (Disengage / Gain Advantage)" while the caster's was untouched — `target:
+> target` proven) · **2bD-3** ("Edha: Set at Odds — target the creature first (nothing spent)", focus
+> 4→4, Investiture 4→4) · **2bO-1** (55 ft refused pre-cost — "target a creature within 40 ft (nothing
+> spent)", the 40 being Authority's doubling, which Heroic owns; 15 ft worked, "next test — taking
+> `1d(4 + 2 * 3)`" = the d10 of 2bN-1) · **2bO-5 both halves** (a NON-quarry attack rolled plain
+> `1d20 + 4` / `1d6 + 4` with no card and the bonus **stayed banked**; the quarry attack spent it) ·
+> **2bX-15** (no target refused pre-cost; the mark gave the `Quarry` icon + "(1/1)"; a second mark
+> printed "The oldest (Bench Target — Adjacent A) fades — you sustain at most 1" and the old icon and
+> ledger entry were gone) · **2bX-16 — untestable for eight runs, now PASSED end to end** (see the
+> ranged-weapon note below): armed → `Tagging Shot (next ranged hit)` on the owner; a **melee**
+> Sidesword hit stood the rule down and the arm **SURVIVED**; the **Shortbow** hit consumed the arm and
+> placed "🎯 Tagging Shot: Bench Target — Adjacent A bears your Quarry (1/1)" with the ledger entry
+> naming Tagging Shot · **2bQ-5** (target became **Diagnosed** and the whisper reported "HP 32/33;
+> conditions: …; defenses — Physical 14 , Cognitive 14 , Spiritual 14") · **2bF-15** ("next test — **at
+> disadvantage**" with no click, flag written, on an 18 vs SPI 14; Resolute Stand's upsell line printed
+> on the success, which is 2bF-16's factual half) · **2bZ-5** (the recovery-die **roll posts** — `1d6`,
+> and `system.recovery.die.derived` reads `"d6"`, so the ⚑ recovery-die read path is now verified —
+> plus "regains 2 focus") · **2bZ-6** (FAIL branch "6 vs DC 15 — FAIL" still spent the focus; SUCCESS
+> branch "22 vs DC 15 — SUCCESS" → "heals N". ⚠️ **A suspected number defect here was RETRACTED after
+> measurement**: the card prints the roll TOTAL, not the die, and the substituted formula reads
+> `1d6 + 2` with the caster's Medicine 2 and `1d6 + 5` with Medicine 5 while the patient's stayed 0 —
+> so `@target.recoveryDie + @skills.med.rank` resolves against the right actors and the talent is
+> correct) · **2bZ-7** (with Resuscitation owned, "⚕️ Field Medicine: **Resuscitation**: you may instead
+> spend 3 focus…" printed on the success) · **2bZ-9 — the first authored NATIVE rule, end to end**
+> (drop 1 held at **5** = `max(1, @skills.ath.mod)`; drop 2 went down to 0; a **long rest** fired the
+> native `update-actor` rule and cleared the spend; drop 3 **held again**. ⚠️ Worth knowing: the native
+> rule stores the **string** `"false"`, not a boolean — it works because the floor check coerces, but a
+> future change to plain truthiness would silently re-break it) · **2bA-8** (Shattering Blow's own note
+> came through and the push landed — see the collision control below) · **2bM-2** (ally became
+> **Determined** and the card named them; Lessons in Patience's +1 focus fired alongside; the three
+> reminder lines printed, which is 2bM-5, and Rallying Shout's line printed on an ally **above 0 HP**,
+> which is 2bM-6's factual half).
+>
+> **A COLLISION CONTROL WORTH KEEPING** (this also settles the ⚑ engine-move-collision row's engine
+> half): Shattering Blow pushed Adjacent A **0 ft** when Adjacent B occupied the destination square,
+> and **5 ft** (4500 → 4800) when the lane was clear — same talent, same round, negative and positive.
+> Tokens never stacked. Manual drags remain Ben's ⚑ half.
+>
+> ⚠️ **Design sighting for the rulings batch, not a bug report:** Shattering Blow (a Warrior melee
+> talent) also fired its 5 ft push on a **Shortbow** hit — its rule carries `whenDamageType: "any"` and
+> no melee gate, unlike Warlord's Advance's `meleeOnly`. Now visible for the first time because the
+> roster finally has a real ranged weapon.
+
+- [ ] **2bC-1 — High Society Contacts (Agent)** — Events tab, then use it → ⚑ A rule is THERE (was empty): `edha-next-test-mod`, target **self**, Opportunity **true**. Using it banks the credit and the card says so.
+- [ ] **2bE-4 — Foresight (Envoy) ⚠️ — PARTIAL, and it exposed a NEW engine defect 2026-07-27i** — start a combat with Foresight owned → +1 Reaction group appears at combat start. **This is the first thing the new `edha-combat-timing` dispatcher has ever run.** ✅ **The dispatcher itself WORKS**: combat start posted "⚡ Foresight: you gain 1 reaction — Foresight **(on the tracker)**" and "⚡ Sidestep: you gain 1 reaction — Sidestep (Dodge only) (on the tracker)". ⛔ **But only ONE group actually reached the tracker** — `reactionsAvailable` held `[{name: "base"}, {name: "Edha: Sidestep (Dodge only)"}]`; **Foresight's group is missing** while its card claimed success. **Root cause, confirmed by a deliberate probe:** `edhaCaeApplyGM` (engine ~5106–5122) does `deepClone(getFlag(...))` → `push` → `setFlag` with no serialisation, so two grants in the same tick race and the second overwrites the first. Firing **two** Through the Fray uses in one tick reproduced it exactly — two "(on the tracker)" cards, **one** group written (`edhaGroupCount: 1`). Same read-modify-write family as the 07-26n H3 owner-list fix, on the CAE path. Blast radius: any actor owning two combat-start grants (Foresight + Sidestep is the shipped case), plus any multi-grant AoE and any `burn-reaction` racing a grant. ✅ **FIXED 2026-07-27j — ENGINE-ONLY, needs a relaunch / F5 only (no rebuild, no ⟳ Sync).** `edhaCaeApplyGM`'s read-modify-write now runs inside `edhaOwnerListQueue`, keyed on the COMBATANT uuid + the CAE flag key, with the `getFlag` re-read INSIDE the queue. Merging the burn/grant branches behind one key computation also serialises `burn-reaction` against a `reaction` grant (the third case in the blast radius). **Re-test:** start a combat with BOTH Foresight and Sidestep owned → `reactionsAvailable` must hold **base + BOTH** Edha groups, not one. Then fire two Through the Fray uses in one tick → **two** groups. ⚠️ Harness note: `game.combat` is the client's VIEWED combat — call `ui.combat.initialize({combat})` **before** `startCombat()`, or every grant silently misses the tracker and the cards read "no tracker in this scene".
+- [ ] **2bE-5 — Sidestep (Hunter) — NARROWED 2026-07-27i** — start combat in light armour, then again in deflect-2+ armour → Grants the Dodge reaction only in the light case — `whenDeflectBelow: 2`, a silent no-op otherwise. ✅ The **light-armour half PASSES** (deflect 0 → the grant fired and reached the tracker). ⛔ The deflect-2+ negative was **not driven** — needs armour on the bench PC.
+- [ ] **2bD-7 — regression: the untouched rows — FAIL 2026-07-27i (2 of 4 are dead)** — **Sharp Eye**, **Tactical Ploy**, **Steadfast Challenge**, **Valiant Intervention** → All four still work exactly as before — they stay on the old `EDHA_HEROIC_DEFTESTS` path this pass. If any broke, the table edit went wrong. **Run 9:** Tactical Ploy ✅ (2bE-7, both branches) and Valiant Intervention ✅ (2bF-15). Steadfast Challenge rolled and resolved but only a FAIL was observed (2bF-13, below). **Sharp Eye is a silent no-op** — see 2bQ-4. Its cause is the dead-skill-key family below, not the table edit.
+- [ ] **2bJ-12 — Feinting Strike (Warrior) ⚠️⚠️ — PARTIAL 2026-07-27i: the dispatcher PASSES, the number is 0** — make the attack and **hit** → The target loses focus equal to your **Intimidation ranks** and its **Reaction is burned on the CAE tracker** — check the tracker, not just the card. ✅ **The on-hit dispatcher premise is PROVEN**: a Sidesword hit fired all of Feinting Strike's rules, and the Reaction burn is real on the document (`remaining: 1→0, used: 0→1`), card "⚡ Feinting Strike: … loses one Reaction (on the tracker)". ⛔ **The focus drain is 0**: "🗡️ Feinting Strike: the target loses **0** focus and its Reaction", target focus 4→4, with the owner's Intimidation rank at **3**. Cause: both rules read **`@skills.itm.rank`** and the cosmere skill key for Intimidation is **`inm`** — `itm` does not exist in `CONFIG.COSMERE.skills`, so `getRollData().skills.itm` is `null`. Reproduced on two separate hits. ✅ **FIXED 2026-07-27j — BLOCKED-ON-DEPLOY: needs `foundry-build heroic` + ⟳ Sync Talents.** Both sites now read `@skills.inm.rank`. **Re-test after the rebuild:** hit with Intimidation rank 3 → the card must say "loses **3** focus" and the target's focus must actually drop by 3.
+- [ ] **2bO-7 — ⚠️⚠️ Pack Hunting — the DAMAGE roll — PARTIAL 2026-07-27i: it works, and it DOUBLE-DIPS** — use it, then have the ally roll **damage** against your quarry → The +Survival is added to the **damage** roll and a card says so. Also confirm it works on an **attack** roll (either, whichever comes first — **not both**). ✅ **The damage half the engine could never do now WORKS**: the ally's damage roll read `1d6 + 3 + 4` with "🔮 Pack Hunting — **3 added to this damage roll**". ⛔ **But it applied to BOTH rolls of the same attack** — the attack roll read `1d20 + 4 + 3[Pack Hunting]` with its own card "🔮 Pack Hunting — 3 on this test", and only then was the flag consumed (`count: 1`, `appliesTo: "either"`). The row says *either, whichever comes first — not both*; a single banked use was spent twice. ✅ **FIXED 2026-07-27j — ENGINE-ONLY, relaunch / F5 only.** The `appliesTo` gate was never the bug: the d20 half APPLIES at `pre<Ctx>Roll` but consumes at `<ctx>Roll`, and a Strike rolls damage inside that window, so the damage wrapper read a flag that was applied-but-not-yet-spent. A cross-path in-memory claim (`edhaNextModClaimOk`) now gives the FIRST path the use and refuses the other; it is inert for every `test`-only and `damage`-only mod. **Re-test:** one use, then have the ally Strike the quarry → the bonus appears on **exactly one** of the two rolls (either is correct), with exactly **one** card, and the flag is gone afterwards. Also re-check Blue's **Probability Cascade** (`count: 2`, test-only) still applies to **two** separate tests — that is the regression this guard was shaped to avoid.
+- [ ] **2bN-2 — ⚠️ Confident / Demonstrative / Shrewd Command — the ENFORCED skill lists — FAIL 2026-07-27i (Confident enforces only ONE of its three)** — use each, then roll a **listed** skill and a **non-listed** one → The die applies **only** on the listed skills — Confident: Intimidation/Leadership/Persuasion · Demonstrative: Athletics/Agility/Leadership · Shrewd: Deception/Insight/Leadership. **Run 9, Confident Command:** the banked flag holds `skill: "itm, lea, per"`. Rolling **Intimidation** (`inm`) gave a plain `1d20 + 5` with **no die** and the bonus **stayed banked**; rolling **Leadership** (`lea`) gave `1d20 + 5 + 1d10[Confident Command]` and consumed it. So **`itm` and `per` are both dead keys** — Intimidation should be `inm` and Persuasion should be `prs` (`per` is not a cosmere skill either). Confident Command therefore enforces **Leadership only**, while its card promises three. Demonstrative (`ath, agi, lea`) and Shrewd (`dec, ins, lea`) are all-valid and were not driven. ✅ **FIXED 2026-07-27j — BLOCKED-ON-DEPLOY: needs `foundry-build heroic` + ⟳ Sync Talents.** The list is now `inm, lea, prs`; the card's own words decided that `per` here is **Persuasion**, not Perception. **Re-test after the rebuild:** the die must apply on all three of Intimidation, Leadership and Persuasion, and NOT on a fourth skill.
+- [ ] **2bN-3 — ⚠️ Rousing Presence — Determined now expires — NARROWED 2026-07-27i** — make an ally Determined, then **end the encounter** → The Determined icon **clears itself** when combat ends. ✅ **The main half PASSES**: Bench Ally — Two was made Determined by Rousing Presence, was a combatant, and its icon **cleared** when the combat was deleted. ✅ **This also resolves run 8's open lead**: the four *pre-existing* `Determined` icons (Bench — Heroic, Order, Red, Sovereignty) **survived** the same combat deletion — the engine correctly clears only what it applied, so run 8's surviving icon was right behaviour, not a bug. ⛔ Still open: the ally who **left the scene** mid-fight.
+- [ ] **2bB-4 — Flamestance ⚠️ was broken — ROOT-CAUSED 2026-07-27i, and it still does not work** — enter Flamestance, roll **Intimidation** → **Advantage (2d20kh).** ⚑ This very likely NEVER worked: the retired code set `advantageMode = 1` … **Run 9 confirms the suspicion and names the cause.** Flamestance entered cleanly ("Edha: Bench — Heroic enters Flamestance") and then an **Intimidation** roll came back a plain `1d20 + 5` — **no `2d20kh`**. The rule is `FlameStanceAdv01`, `edha-pre-test`/`edha-test-rider`, **`whenSkill: "itm"`** — a dead key, so the gate can never match Intimidation (`inm`) no matter what the advantage plumbing does. **Positive control in the same run:** Ironstance (`whenSkill: "ins"`, valid) + an Insight roll produced `2d20kh + 3` — so the advantage machinery is fine and only the key is wrong. ✅ **FIXED 2026-07-27j — BLOCKED-ON-DEPLOY: needs `foundry-build heroic` + ⟳ Sync Talents.** `whenSkill` is now `inm`. **Re-test after the rebuild:** enter Flamestance, roll Intimidation → **2d20kh**. This talent has never worked in its life, so this is a first-ever pass, not a regression check.
+- [ ] **2bC-7 — regression: targeted mods** — **Emotional Overload** (Red, pass A) on a target → Still applies **disadvantage to the TARGET**. `target` defaults to `target`, so every pre-existing next-test-mod rule must be untouched — this is the one that would break if the default flipped.
+- [ ] **2bQ-4 — Sharp Eye — FAIL 2026-07-27i: a total silent no-op** — target a creature and use it → You roll **Perception**; the card says SUCCESS or FAIL against their Cognitive defense. **On a success only**, a second whispered card lists *lowest attribute · lowest defense · below half*. **Run 9:** used twice on a valid target — **no roll, no card, no notification, and nothing spent** (focus 4→4, Investiture 4→4). The document is not empty: it carries `SharpEyeGate0000` (`edha-def-test`) and `SharpEyeReveal00` (`edha-reveal`, on `edha-test-success`). **Cause:** the gate's **`skill: "per"`** is a dead key — the cosmere Perception skill is **`prc`**, and `per` appears nowhere in `CONFIG.COSMERE.skills`, so no roll can ever fire and the success event never arrives. Same shape as run 2's "cost charged and nothing happened" lesson, here without even the charge. ✅ **FIXED 2026-07-27j — BLOCKED-ON-DEPLOY: needs `foundry-build heroic` + ⟳ Sync Talents.** The gate is now `prc`. **Re-test after the rebuild:** target a creature, use it → a Perception roll and a SUCCESS/FAIL card, and on a success the whispered fact list.
+- [ ] **2bF-13 — Steadfast Challenge (Envoy) — NARROWED 2026-07-27i** — target + use + roll a success → Target **Disoriented** AND its next test at disadvantage — **with no click**. **Run 9:** the talent rolls and resolves through the contest core ("Steadfast Challenge: 6 vs Bench Target — Adjacent A's SPI 14 — FAIL"), and the failure correctly landed no payload and no click-card. ⛔ A **success** was not rolled, so the Disoriented + disadvantage payload is still unverified.
+- [ ] **2bF-14 — ⚑ Calm Appeal (Envoy)** — own it, use Steadfast Challenge → The Calm Appeal line appears on a success, with your Discipline rank filled in. Without the talent it must NOT. **Empty Events tab is intended** — same upgrade-talent pattern as 2bF-5.
+- [ ] **2bF-16 — ⚑ Resolute Stand (Leader)** — own it, use Valiant Intervention → Its line appears on a success only. Empty Events tab intended. *(2026-07-27i: the factual half is observed — the line printed on Valiant Intervention's success. Only the empty-tab design question is yours.)*
+- [ ] **2bM-6 — ⚑ Rallying Shout — a deliberate change — ⚠️ and its number is broken** — own it, use Rousing Presence on an ally **above 0 HP** → The reminder **still prints**. Tell me if you preferred the old gate. *(2026-07-27i: the reminder DID print on an ally at 20 HP, so the deliberate change is live and the ruling is yours.)* ⛔ **Separately, a real defect in the same line:** it printed "recovers its recovery die + **0** health" with the owner's Leadership rank at **3**, because the note reads **`@skills.ldr.rank`** and the cosmere Leadership key is **`lea`**. ✅ **FIXED 2026-07-27j — BLOCKED-ON-DEPLOY: needs `foundry-build heroic` + ⟳ Sync Talents.** The note now reads `@skills.lea.rank`. **Re-test after the rebuild:** with Leadership rank 3 the line must read "recovery die + **3** health".
+- [ ] **2bX-17 — Quarry stale state (heroic pack)** — an actor with a PRE-deploy `quarryUuid` flag → The old flag is IGNORED (re-mark once with Seek Quarry) — advantage/Cold Eyes read only the new ledger. Not a bug.
+- [ ] **2bZ-11 — Cold Eyes** — mark a quarry (Seek Quarry); drop it to 0 with damage → Watch note ("choose a new quarry") + quarry entry AND icon cleared + 1 focus. ⚠ three narrowings vs the old hook (benched): only a live→0 CROSSING fires; a PC-type, summon, or Death-Warded quarry no longer triggers it; the victim needs a token. Flag if any bites at the table.
+- [ ] **2bZ-7 — Resuscitation upsell — NARROWED 2026-07-27i** — Field Medicine success WITH Resuscitation owned; then without → With: the ⚕️ revive line prints. Without: silent. ⚑ Resuscitation's own Events tab is EMPTY BY DESIGN. *(2026-07-27i: the **with** half PASSES — "⚕️ Field Medicine: **Resuscitation**: you may instead spend 3 focus to revive an Unconscious or just-dead patient." printed on the success. The **without** half was not driven — it needs the talent temporarily removed.)*
+- [ ] **2bZ-8 — Wary** — involuntarily drain the owner's focus (Shatter Focus / Feinting Strike); try to apply Surprised while they hold focus → Reduction card (− Discipline ranks) names Wary; the Surprised AE is vetoed with a toast. Edit `reduceFormula` on Wary's Events tab — the reduction must follow the edit. *(2026-07-27i: NOT RUN — the intended driver, Feinting Strike, drained **0** focus. **2026-07-27j: unblocked by the heroic rebuild** — after `foundry-build heroic` + ⟳ Sync, Feinting Strike drains real focus again and is a valid driver for this row; Shatter Focus still works as the alternative.)*
+- [ ] **Warrior stances spot (like-for-like) — PARTIAL 2026-07-27i** — enter each stance once: Stonestance +1 deflect (2bB-1) · Vine/Bloodstance numbers (2bB-2) · Iron/Windstance advantage (2bB-5) · the whenSkill gate (2bB-6) · Vigilant riderless (2bB-9) · Flamestance's Events rule renders + is editable (2bB-7). **Run 9 read every stance document and drove two:** ✅ **2bB-5 / 2bB-6** — Ironstance entered and an **Insight** roll came back `2d20kh + 3`, so the `whenSkill` gate and the advantage plumbing both work (Ironstance `whenSkill: "ins"`, Windstance `whenSkill: "agi"`, both valid keys). ✅ **2bB-9** — Vigilant Stance genuinely carries **0 rules and 0 effects**, i.e. riderless by design. ✅ **2bB-7** — Flamestance's rule renders (`FlameStanceAdv01`, `edha-pre-test`/`edha-test-rider`) but its gate was a dead key — **fixed 2026-07-27j, needs `foundry-build heroic` + ⟳ Sync**; see 2bB-4. ⛔ Not driven: Stonestance's +1 deflect and Vine/Bloodstance's numbers (each carries exactly 1 Effect and 0 events, consistent with the spec). ⚠️ **Harness note:** `system.events.toObject()` returns `{}` for a RecordCollection — an early read using it wrongly showed every stance as empty; use `.entries()` / `.size`. Also, `item.update({"system.events.-=<id>": null})` does **not** delete a rule under v13 (it silently no-ops); the reliable removal is to delete and re-add the item from the pack.
+- [ ] **CAE cluster spot (like-for-like)** — Fast Talker tracker grant (2bE-1) · Quick Analysis / Trickster's Hand / Cautious Advance / Backstep counts (2bE-2) · Practiced Kata auto-stance (2bE-6) · stance regression (2bE-10) · High Society Contacts Opportunity (2bC-2) · Underworld / Rumormonger / Well Supplied (2bC-3) → identical to before. Collapsed from 2bE-1/2/6/10 + 2bC-2/3.
+- [ ] **Contest-gate spot (like-for-like) — FAIL 2026-07-27i: 2 of the 4 are dead, same cause** — Set at Odds rule + card + your-roll shape (2bD-1/2) · Grand Deception vs DC 15 (2bD-4) · Synchronized Assault both branches (2bD-5) · Turning Point (2bD-6). **Run 9, all four driven on a valid target:** ✅ **2bD-4** Grand Deception — "19 vs Bench Target — Adjacent A's DC 15 — SUCCESS (no payload rule on this talent — resolve at the table)". ✅ **2bD-6** Turning Point — "10 vs … COG 14 — FAIL" with its accounting line. ⛔ **2bD-1/2 Set at Odds — no card at all, nothing spent** (focus 4→4). ⛔ **2bD-5 Synchronized Assault — no card at all, and it CHARGED 2 focus** (4→2), the worse of the two failure shapes. Both carry **`skill: "ldr"`**, a dead key — cosmere Leadership is **`lea`**. Same family as Sharp Eye (2bQ-4), Flamestance (2bB-4), Feinting Strike (2bJ-12), Confident Command (2bN-2) and Rallying Shout (2bM-6). ✅ **FIXED 2026-07-27j — BLOCKED-ON-DEPLOY: needs `foundry-build heroic` + ⟳ Sync Talents.** Both are now `lea`, which their own `activation.skill` already said. **Re-test after the rebuild:** Set at Odds → a Leadership roll + a card, focus spent once; Synchronized Assault → a Leadership roll + a SUCCESS/FAIL card for the 2 focus it charges.
+- [ ] **Envoy cluster spot (like-for-like)** — Rousing Presence card label "Determined" (2bM-3) · Lessons in Patience +1 focus (2bM-4) · Instill/Devoted/Stalwart reminder lines (2bM-5) · no stray mark on the ally (2bM-7) · Galvanize unchanged (2bM-11) · Foresight unchanged (2bM-12) → identical to before. Collapsed from 2bM-3/4/5/7/11/12.
+- [ ] **Leader command spot (like-for-like)** — Decisive Command die scale d4→d10 (2bN-1) · Relentless March reminder (2bN-4) · Authority 40 ft / two allies (2bN-5, now ENFORCED per 2bO-2/3) · nothing else changed (2bN-6) · Authority doubling (2bO-2) · two allies (2bO-3) · die scale regression (2bO-4) · no-quarry no-spend pair (2bO-6) · Risky Behavior Plot Die (2bC-4) · Overwhelm with Details number (2bC-5) · Probability Net regression (2bC-8) → per their pass specs. Collapsed from 2bN-1/4/5/6 + 2bO-2/3/4/6 + 2bC-4/5/8.
+> **✅ On-hit riders — RETIRED on evidence 2026-07-27i.** One Sidesword hit fired the whole set:
+> **Startling Blow** → "Bench Target — Adjacent A is **Surprised**" (status asserted on the actor) ·
+> **Shattering Blow** → its 5 ft push card, with its own note (2bA-8) · **Subtle Takedown**,
+> **Meteoric Leap**, **Anatomical Insight** → their ⏰ GM cue cards, each naming the victim ·
+> **Feinting Strike** → fired (its number is broken; see 2bJ-12). **Cheap Shot** did NOT fire on the
+> Sidesword hit but **DID** apply **Stunned** on its own attack — see the 2bA-5 note below.
+> **Anatomical Insight's Opportunity option also PASSES**: Cheap Shot's unarmed roll (`1d20 + 2 + 1dp`)
+> produced an Opportunity and the menu offered "Anatomical Insight: Target becomes Exhausted
+> [− half your Medicine ranks]" alongside the four canon spends.
+>
+> ⚠️ **A REAL CONSTRAINT ON FIXING 2bA-5 (Shockwave Slam), found here.** Cheap Shot is the ONLY on-hit
+> talent on Bench — Heroic carrying its own `system.damage.formula` (`@scalar.damage.unarmed`), and it
+> is the ONLY on-hit rider that did not fire on a weapon hit — every other one (all `damage.formula:
+> null`) fired. That is exactly `edhaDispatchOnHit`'s `itemSpecific = !!tal.system.damage.formula`
+> gate, the mechanism 2bA-5 blames. **But for Cheap Shot the gate is CORRECT** — it is an unarmed-strike
+> talent and its Stunned should ride its own hit, which it does. So the gate has at least one
+> legitimate consumer and **must not simply be removed**; Shockwave Slam's problem is that its authored
+> `damage.formula` is a *collision* formula being misread as "this talent has its own attack". Fix the
+> discrimination, not the gate. → carry into **test-pass-fixes** with 2bA-5.
+- [ ] **Orphan-token combat guard (07-18i)** — after re-deploying: add a token whose world actor
+      you've deleted to a combat → it's SKIPPED with a named toast and combat starts anyway
+      (was: Advanced Encounters' initiative getter crashed the whole encounter — the live
+      07-18 "combat isn't starting" report).
 - [ ] **Four silently-dead prereqs now bite (2026-07-24b)** — **Know Your Moment** (Scholar) lists
       **Mind and Body** as a talent prereq (it was being dropped entirely); **Resolute Stand**
       (Leader) requires **Athletics 1+**; **Shattering Blow** (Warrior) requires **Windstance**
       AND **Perception 2+** (both were dropped); **Animal Bond** (Hunter) spells "companion".
       ⚑ These now ENFORCE where they previously did nothing — if a PC already owns one of these
       talents without the prereq, the sheet may flag it. Expected, not a bug.
-- [ ] **Risen Servant's card no longer names a cut talent (2026-07-24c)** — its Prerequisites read
-      **"Bone Garden or Speak with the Fallen"** (was "Bone Garden or Gentle Passage" — a talent
-      deleted in the Death-tree rewrite). Confirm it is takeable from EITHER parent alone.
-- [ ] ⚑ **Nothing else lost its rules** — spot-check two talents that already worked (e.g. Black's
-      Withering Ray, Red's Arc Flash): tabs unchanged. The A/B build says 0 talents lost anything,
-      but that is a repo-side check, not a table one.
-
-**ALSO PENDING (2026-07-19c, Lunavar lore pass):** `data/cultures.json` — the Lunavar culture
-item's flavor/names text re-synced to the updated player primer (rice country, Moonmere, the
-grief-night; ruling 60 keeps item flavor = primer verbatim). **Pack rebuild + deploy + ⟳ Sync
-needed** before the item shows the new text. Flavor-only — no mechanical or pick-list change;
-existing PCs' owned culture items keep the old flavor (stale snapshot, harmless).
-
-- [ ] **Lunavar culture item flavor** — after the next rebuild+deploy: the Lunavar culture
-      item (compendium copy) opens with the rice-country/Moonmere/grief-night text and the
-      five name exemplars.
-- [ ] **Malcurr culture item flavor (2026-07-19, Malcurr pass — same rebuild)** — the
-      Malcurr culture item opens with the Kenmere/Proving/lamp-country text, the six
-      given-name exemplars, and the beached-fisher you-might-be. Flavor-only; existing
-      owned copies stay stale snapshots, harmless.
-- [ ] **Goldenport + Lunavar carrier-coast flavor (2026-07-19, W26 step 2 / ruling 87 —
-      same rebuild)** — Goldenport's culture item ends with the carrier-coast paragraph
-      ("…a signature can baptize anything"); Lunavar's ends with the sea-gate line
-      ("…the Once-Children price that exchange as carefully as any fast-day").
-      Flavor-only; same stale-snapshot caveat.
-
-**ALSO PENDING (2026-07-19p, wizard v2 pass):** the 07-19 bench's wizard fixes + Ben's three
-rulings. Engine + css + the new map-picker assets ride the deploy bat's module push; the
-culture **pick-2 rewire** (`edha-pick-expertises` replaces the native Rosharan-list pick)
-rides the SAME pack rebuild as the bestiaries. One `deploy-to-foundry.bat` run still covers
-everything pending on this page.
-
-**ALSO PENDING (2026-07-19ab, map redraw re-registration):** the wizard's map-picker assets
-(`thyrcross-nations.json` + `thyrcross-map.jpg`) were regenerated from the REDRAWN map (new
-canvas, Ben's per-nation layer borders). They ride the same deploy-bat module push — no pack
-rebuild, no engine change. **Regenerated AGAIN 2026-07-20n** from Ben's gap-fill repaint:
-polygons are now a watertight partition (no inter-nation gaps/overlaps/coast fringe in the
-data — `scripts/map/trace_nations.py`), so border clicks can no longer land in dead zones.
-The two rows below are still the test; the partition just raises the bar (every land click
-should now resolve to SOME nation — "no nation" on a mainland click is a bug).
-
-- [ ] **Map picker shows the redrawn map** — after deploy: the Where-are-you-from step shows
-      the new map art (Goldenport wash running the whole west coast is the giveaway) and the
-      map is not stretched or letterboxed (the asset aspect changed with the new canvas).
-- [ ] **Redrawn polygons hit the right nations** — click near the touchy borders: the
-      Goldenport coastal strip (formerly Kettavar/Lunavar), the Vorsk/Lunavar mountain line,
-      Malcurr's lake country, the Thalendor/Corvaine river line. Hover names must match the
-      wash colors; Sylvaneth island still clickable.
-- [x] **⚑ Redraw rulings menu ANSWERED (2026-07-19, rulings 81–85)** — Goldenport coast
-      intended; Fenholt swap kept; ghosts removed (27 cities now); river timings follow the
-      corrected re-measure (~13 days — the interim 9-day figure was a truncated trace, so no
-      narrative skip after all); all four land-budget chains re-derived (Thalendor 14.5M,
-      Corvaine 18.0M, Lunavar 11.6M, Malcurr 7.8M). W26 step 2 (the Lunavar/Goldenport lore
-      sweep) remains the open lore-forge item.
 
 ---
+
 
 # 🎮 Player-client window (2026-07-19 — a second client is logged in; run these FIRST)
 
@@ -640,6 +1441,14 @@ the delta + git.
       dialogs, attribute/skill writes, faith note) from their own sheet: all writes are
       owner-side — confirm no permission errors.
 
+- [ ] **Map picker shows the redrawn map** — after deploy: the Where-are-you-from step shows
+      the new map art (Goldenport wash running the whole west coast is the giveaway) and the
+      map is not stretched or letterboxed (the asset aspect changed with the new canvas).
+- [ ] **Redrawn polygons hit the right nations** — click near the touchy borders: the
+      Goldenport coastal strip (formerly Kettavar/Lunavar), the Vorsk/Lunavar mountain line,
+      Malcurr's lake country, the Thalendor/Corvaine river line. Hover names must match the
+      wash colors; Sylvaneth island still clickable.
+
 ---
 
 # Culture items (2026-07-18k — data + build: `deploy-to-foundry.bat` → relaunch; NO engine change, NO ⟳ Sync — no owned culture copies exist yet)
@@ -672,6 +1481,19 @@ expertise and offers a pick-2 origin list; Ashkar picks a second culture + one r
       list (a 404 icon renders INVISIBLE — §10 gotcha; frozen/light/castle/oak/coins/mountain/
       circle/sound/angel/ruins/mystery-man are the expected set).
 
+- [ ] **Lunavar culture item flavor** — after the next rebuild+deploy: the Lunavar culture
+      item (compendium copy) opens with the rice-country/Moonmere/grief-night text and the
+      five name exemplars.
+- [ ] **Malcurr culture item flavor (2026-07-19, Malcurr pass — same rebuild)** — the
+      Malcurr culture item opens with the Kenmere/Proving/lamp-country text, the six
+      given-name exemplars, and the beached-fisher you-might-be. Flavor-only; existing
+      owned copies stay stale snapshots, harmless.
+- [ ] **Goldenport + Lunavar carrier-coast flavor (2026-07-19, W26 step 2 / ruling 87 —
+      same rebuild)** — Goldenport's culture item ends with the carrier-coast paragraph
+      ("…a signature can baptize anything"); Lunavar's ends with the sea-gate line
+      ("…the Once-Children price that exchange as carefully as any fast-day").
+      Flavor-only; same stale-snapshot caveat.
+
 ---
 
 # Items-dump tranche (2026-07-18j — engine + data + build: `deploy-to-foundry.bat` → relaunch; ⟳ Sync not needed for these rows)
@@ -702,59 +1524,8 @@ edha-items (re-priced c/s/g; Roshar money loot excluded), and the starting-kit g
       version never created the items — a docs-array double-wrap, fixed pre-bench; the grant is
       also once-only now. Covered again by the Character-creation section's walkthrough row.)
 
----
-
-# Heroic wiring pass (2026-07-18h — engine + data: `deploy-to-foundry.bat` → relaunch → **⟳ Sync**; all 133 heroic talents classified WIRED / CAE-NEXT / MANUAL in the engine's HEROIC header)
-
-The full heroic review Ben asked for: quarry, Rousing Presence, contest gates, command dice,
-stance riders, on-hit riders, Opportunity credits, Resilient Hero, Wary. The CAE-NEXT class
-(action/reaction economy against Cosmere Advanced Encounters) wires after THE PASTE captures the
-module's api — those talents are NOT in these rows yet.
-
-- [ ] **Quarry loop** — Seek Quarry (target first) marks the quarry; your ATTACK rolls against
-      it gain advantage; Tagging Shot marks on a hit automatically; when the quarry hits 0 HP,
-      **Cold Eyes** pays 1 focus and prompts a re-pick.
-- [ ] **Pack Hunting** — target an ALLY, use it: their next roll vs your quarry gains +Survival
-      ranks (auto-applied).
-- [ ] **Rousing Presence** — target an ally, use it: Determined applies, and the card lists every
-      rider you own (Lessons +1 focus fires automatically; Instill/Devoted/Stalwart/Rallying are
-      listed with their by-hand halves).
-- [ ] ⚑ **Steadfast Challenge gate** — target an enemy, use it, ROLL Discipline: the engine
-      compares vs their Spiritual and only a SUCCESS applies Disoriented + posts the
-      disadvantage card (a FAIL applies nothing). Roll both outcomes.
-- [ ] ⚑ **Valiant Intervention / Tactical Ploy gates** — same pattern (Athletics vs Spi /
-      Deception vs Cog); Tactical Ploy's success also stamps −1d4 on the target's next test.
-- [ ] ⚑ **Field Medicine** — target a patient, use it, roll Medicine: DC 15 gate, success heals
-      recovery die + Medicine ranks. ⚑ the recovery-die path is a guess (`system.recovery.die`)
-      — if the heal rolls 1d8 for everyone or errors, report the sheet's real recovery die.
-- [ ] ⚑ **Galvanize** — same recovery-die caveat: the targeted ally's focus restore should match
-      their sheet's die.
-- [ ] **Command dice scale** — Decisive Command's die reads d4 with no upgrades, d6/d8/d10 as
-      Confident/Demonstrative/Shrewd Command are added; using an upgrade talent banks the die on
-      your own next roll; the DC card lists Relentless March / Authority riders when owned.
-- [ ] ⚑ **Resilient Hero** — drop a test PC to 0: health holds at the Athletics modifier
-      instead, once (the flag blocks a second save until cleared).
-- [ ] **Wary** — with focus > 0, toggling Surprised on the PC is vetoed with a toast; Feinting
-      Strike's drain against a Wary target shrinks by Discipline ranks.
-- [ ] **Feinting Strike** — on a HIT the target loses focus = your Intimidation ranks (card
-      notes the graze-half and reaction-loss are by hand until the CAE tranche).
-- [ ] **Stance riders** — Stonestance shows +1 deflect while active; Vinestance +1 phy/cog;
-      Bloodstance −2 all three; Intimidation rolls in Flamestance (and Insight in Ironstance,
-      Agility in Windstance) open with advantage; with Practiced Kata, combat start auto-enters
-      Vigilant Stance unless Surprised.
-- [ ] **On-hit riders** — Cheap Shot hit → Stunned; Startling Blow hit → Surprised; Shattering
-      Blow hit → 5 ft push card; Subtle Takedown / Anatomical Insight / Meteoric Leap hits →
-      their GM cue cards.
-- [ ] **Opportunity credit** — use High Society Contacts (or Underworld/Rumormonger/Well
-      Supplied): the next test's roll fires the Opportunity menu with "+1 granted by <talent>";
-      Anatomical Insight's Exhausted option appears on the menu after an unarmed-hit roll with
-      an Opportunity.
-- [ ] ⚑ **Sharp Eye** — target + use + roll Perception: on success a WHISPERED card (owner only)
-      offers the three reveals; confirm it's not public.
-- [ ] **Orphan-token combat guard (07-18i)** — after re-deploying: add a token whose world actor
-      you've deleted to a combat → it's SKIPPED with a named toast and combat starts anyway
-      (was: Advanced Encounters' initiative getter crashed the whole encounter — the live
-      07-18 "combat isn't starting" report).
+- [ ] ⚑ **Kindle** — deal energy damage, wait ~30s reading the card, then Apply: the target token now
+      sheds the flame light. In the damage roll breakdown, the Kindle die/mod is labeled "[Kindle]".
 
 ---
 
@@ -948,35 +1719,6 @@ the Procreate paint loop.
 
 ---
 
-# The manual re-litigation pass (2026-07-16c — the Ben-ruled wirings not yet benched)
-
-07-17 bench already passed the sight model, Pack Tactics, and Kneel enforcement; token senses and
-sense-through reveals moved to their 07-17c re-test rows. These are the wirings nobody has
-exercised yet.
-
-- [ ] ⚑ **Senses field on the sheet** — an adversary block with an explicit `senses` value shows
-      that range on the SHEET (the `system.senses` DataModel shape is unverified from the repo —
-      a dropped field silently falls back to the AWA default, which token vision masks).
-- [ ] ⚑ **Veil auto-toggle (Stalker)** — Stalker standing in darkness: the Veil marker enables
-      itself + a GM whisper; walk it into light: the marker releases. Toggle it ON manually in
-      light (cover): the engine leaves it alone.
-- [ ] ⚑ **Unweaving pick-card** — success vs a buffed enemy lists its active effects as buttons;
-      GM-click removes exactly that effect and resolves the card; a clean target says "narrate
-      the unraveling".
-- [ ] ⚑ **Dense Tissue immunity** — grant a Thrall Dense Tissue (the picker), then Shockwave/
-      Unnerve-push it: "immune to forced movement" card, token unmoved. Cruel Step's SELF-slide
-      on a hypothetical bearer must still work (willing move).
-- [ ] ⚑ **Living Image upkeep** — with an illusion up, the owner's turn start whispers the
-      upkeep card; Pay 1 Investiture deducts and reports; no illusions → no card.
-- [ ] ⚑ **Set Charge trigger arms** — place a Charge: the arm card appears. Arm "target moves"
-      (with a target): moving that creature whispers the Detonate prompt, once. Arm "takes
-      damage": damaging it prompts. Arm "a creature enters": an enemy ENDING a move inside
-      10 ft prompts (⚑ known limit: sprinting THROUGH without stopping doesn't). Manual: silent.
-- [ ] ⚑ **Apex Form doubling** — a thrall with Bone Spurs + Apex Form: the strike card says
-      +keen ×2 "(doubled — Apex Form)"; venom and Dense-Tissue deflect double likewise.
-
----
-
 # Adversary ability wiring (2026-07-16 + 16b — session-1 actors and the playtest 9; not yet benched)
 
 07-17 bench already passed The Seeming's core loop, Break cues, and the Fade damage-cue; the
@@ -1027,830 +1769,36 @@ Mutation Upgrade); superseded hand-toggle AEs were removed — the engine does t
       "turn one of its own grazes into a graze"; rule whether that means miss→graze or
       graze→hit and the text gets fixed to match.
 
----
-
-# Pass-3 UNIQUE fixes (2026-07-12f — the root causes still unbenched)
-
-Deployed since 07-12; 07-17 bench passed the sheetScale/hover/palette row, and the Black Draw
-Mana visibility rework moved to the Playtest-2 GM-sweep row above.
-
-- [ ] ⚑ **Cruel Step / Sudden Growth** — after rebuild + Sync: their Events tab shows the 16-char
-      ids (`CruelStepMove001` / `SuddnGrwthBrst01`); both actually fire now (the old 15-char ids were
-      silently dropped by Foundry). Cruel Step slides 10 ft to an Isolated target; Sudden Growth's
-      terrain burst opens.
-- [ ] ⚑ **Predatory Patience** — longsword attack AND Withering Ray vs a Weakened creature gain
-      +1d[Black die]; Extract Thought's Deception still does NOT. (The 07-12d batch left this broken —
-      the die matched no roll due to the roll-context capitalization.)
-- [ ] ⚑ **Formula bar** — any advantage roll reads "2d20kh + 6" (spaced, no stray ")"). If garbling
-      recurs, note whether the roll dialog's Temporary Bonus field had anything typed in it.
-- [ ] ⚑ **Pyre** — SQUARE region (not a circle). End of turn: card to GM + owner; GM **Spread**
-      click-places one adjacent square; **Extinguish** (anyone) removes it. **Green Draw Mana** —
-      click-to-place the terrain square within Attunement Range. **Spreading Roots** still grows it.
----
-
-# Pass-3 fix batch re-test (2026-07-12d — the fixes still unbenched)
-
-Deployed since 07-12. The single-target picker moved to its 07-17c re-test row (the v13 fix
-changed the mechanism).
-
-- [ ] ⚑ **Engine-move collision** — Unnerving Approach push (and Cruel Step slide) toward an occupied
-      square: the moved token stops in the last free square, never stacking. Manual drags still stack
-      (intended — R2 engine-only).
-- [ ] ⚑ **Flame Surge / burst cards** — Detonate: button reads "Detonated ✓" and stays disabled after
-      F5 / re-login; re-clicking is impossible. Cancel reads "Cancelled — refunded ✓". Old cards from
-      before this fix still reset on refresh (only messages stamped from now on persist).
-- [ ] ⚑ **Lay Foundation** — START combat with a combatant standing in a Foundation: the +1 defenses
-      buff and chat line appear immediately, not on turn two.
-- [ ] ⚑ **Flashpoint** — Red burst hits 2+: click the prompt → +1 Investiture AND your next Red test
-      rolls with advantage automatically (pre-selected/fast-forwarded).
-- [ ] ⚑ **Kindle** — deal energy damage, wait ~30s reading the card, then Apply: the target token now
-      sheds the flame light. In the damage roll breakdown, the Kindle die/mod is labeled "[Kindle]".
-- [ ] ⚑ **Set Charge (and any burst)** — the card now shows "= roll (dice) + N (skill) + N (Kindle) →
-      total type" so every component is named.
-- [ ] ⚑ **Coercive Pressure** — an ALLY losing focus in your range gives no disadvantage card; an
-      adversary still does.
-- [ ] ⚑ **White Attunement** — Draw Mana with an ally behind a wall / hidden: NOT healed, and the card
-      accounts for it ("healed 2 of 3 … — skipped 1 behind a wall"). Card text says "you can see".
-- [ ] ⚑ **Concordant Presence** — an ally succeeding behind a wall no longer triggers the grant; a
-      visible one does, and only visible allies are offered as recipients.
-- [ ] ⚑ **Overgrowth** — heal the same creature twice: effect steps +1 → +2 Deflect (max +3), visible
-      on its Effects tab; all stacks clear when combat ends.
-- [ ] ⚑ **Guardian Stance** — move an ally adjacent to the owner: BOTH gain a "Guardian Stance
-      (+1 Deflect)" effect within a moment; move apart → it vanishes. The old manual toggle effect is
-      gone from the talent (after Sync).
-- [ ] ⚑ **Mender's Instinct** — the reaction card is one tight line + button, and no longer tells you
-      to target the creature (it heals the ally who dropped automatically).
-- [ ] **Withering Ray skill test** — if the garbled `2d20kh+6)` bar reappears, SCREENSHOT it (still
-      the one un-reproduced report).
-
----
-
-# Engine backlog pass — the §9a/§9b items still unbenched (2026-07-04)
-
-The cross-tree pass that closed handoff §9a (5 shared primitives) + §9b (6 tree-local hooks).
-07-17 bench passed the forced-move stamp. ⚑ rows are where the engine can't self-verify.
-
-## Shared primitives
-- [ ] **LOS helper (`edhaCanSee`)** — Lawkeeper's Eye: advantage vs your bound target in the open;
-      **no** advantage with a sight-blocking wall between you (darkness stays GM-judged).
-- [ ] **Packmate's Warning (upgraded from manual)** — an attack on an ally within 10 ft of the owner
-      by a **hidden** (or wall-obscured) attacker rolls at −2, flavored on the roll. ⚑ the −2 is an
-      appended NumericTerm — confirm a dialog-configured roll keeps it (the Mantle-aura caveat).
-- [ ] ⚑ **Melee discriminator (`edhaAttackKind`)** — hit with a MELEE weapon: Bone Spurs/Venom
-      Glands/Fury/Mantle riders fire "(auto-checked)". Hit with a RANGED weapon: Spurs/Venom post a
-      stands-down card; **Withering Touch and Warlord's Advance stay armed**. If riders misread,
-      the cosmere weapon `system.range` shape differs — report it (null already falls back to
-      owner-judged).
-- [ ] **GM summon relay** — as a PLAYER without actor-create: Phantom Barricade / Risen Servant /
-      Forge Construct produce a real token via the GM client; you can move it and use its attack;
-      `actsAfterCaster` puts it on the caster's initiative. No GM online → the old warn.
-- [ ] ⚑ **Injury tool** — Raise Dead: the card names the auto-added injury and it appears on the
-      target's sheet (schema drift falls back to a bare-named Item — report if fields are missing).
-      Apex Form: ending the scene (delete combat) adds the injury + card. Create a world RollTable
-      named "Injuries" and confirm it takes precedence over the placeholder list.
-
-## Tree-local hooks
-- [ ] **Pinpoint Charge follow** — detonate a Pinpoint on a survivor: the terrain centers on THEM
-      (not the marker) and follows their moves, visual included; it stops following at 0 HP.
-      ⚑ a Region moved onto a stationary token may not fire tokenEnter — turn-start damage still hits.
-- [ ] **Pyre spread** — end the Pyre owner's turn: one whispered confirm card per Pyre zone; the
-      free Spread button grows Region + visual +5 ft. Spreading Roots still costs 1 Inv (unchanged).
-- [ ] ⚑ **Shatter Focus auto-prompt** — an Omen-bearing foe rolls any test → the owner gets ONE
-      whispered Reaction reminder (once per foe per turn). Mute silences; a real Shatter Focus use
-      re-arms. **Reassess spam live** — this is the named bench risk.
-- [ ] **Target-bound Presence advantage** — after a Warlord's Advance survivor: the advantage fires
-      ONLY with that survivor targeted (any other target neither grants nor consumes it).
-- [ ] **Vital Diagnosis reveal** — use with a synced target: whispered HP / conditions / all-three-
-      defenses snapshot.
-- [ ] ⚑ **Civ enemy-cost (GO/NO-GO)** — ruler across a fortified Foundation: **×2 for an enemy, ×1
-      for an ally**. Console shows the enemy-cost registration; on failure Bastion silently keeps
-      the Ben-R3 blind cost (GM compensates) — report which resolver fired so the experiment can be
-      kept or deleted.
-- [ ] **Bastion regression (latent-bug fix)** — Bastion now declares its `fortified` behavior type
-      in module.json (it never had been; nothing since 06-16 was live to catch it). Confirm Bastion
-      creates its Regions at all + the enter-damage/Slowed court fires.
-
----
-
-# Black — Isolation + Ritual + Subjugation (2026-06-13 — base wiring still unbenched)
-
-Predatory Patience, the Reserve economy, Predator's Due, Predatory Insight, Hollow Command, and
-Extract Thought all have NEWER re-test rows in the "Black — 07-05 test-pass fixes" section below —
-these are the base behaviors that never got a later rework.
-
-## 1. Isolation
-- [ ] **Sapping Hex** — **miss** an Isolated target → it does **NOT** become Weakened (the
-      real-hit retrofit point); a hit still Weakens (regression row in the 07-05 section).
-- [ ] **Sovereign of Solitude** — target a Weakened mover, use as a Reaction → spends 2 Inv, prompts Black-vs-Spiritual, rolls [Tier][Die] vital on a hit, and the target gains **Immobilized** (auto-expires end of its next turn).
-- [ ] **Spoils of Isolation** — regression: still works as before.
-
-## 2. Ritual (HP-cost economy + affliction + heal-cut)
-- [ ] **Hardy** — max HP increases by your level (bump current HP up to the new max manually).
-- [ ] **Withering Ray** — on use, HP auto-deducts (= half [Die]); chat shows the payment.
-- [ ] **Dark Investiture** — on use, HP auto-deducts (= Tier) + 1 Inv; on a **hit** the target gains **Afflicted** and takes **[Tier][Die] vital at the start of each of its turns**.
-- [ ] **Dark Investiture** — remove the Afflicted icon → the per-turn damage stops.
-- [ ] **Necrotic Grasp** — hit a creature with a Black attack, then heal it → the heal is **halved**, until the end of **your** next turn.
-- [ ] **Blood Price** — after paying ritual HP, your **next Black test** rolls with **advantage** (chat confirms it's spent).
-
-## 3. Subjugation
-- [ ] **Whispered Doubt** — GM spends an **enemy's** focus while it's in your Attunement Range → it loses **1 extra** focus (once/round/enemy).
-- [ ] **Coercive Pressure** — a creature in range loses focus → its **next Cognitive (int/wil) test** rolls disadvantage (once/round/creature).
-- [ ] **Composed** — regression: +tier max focus.
-
-## Watch-items (couldn't be self-verified; check first if something's off)
-- [ ] Affliction auto-tick actually fires at the **start of the target's turn**.
-- [ ] Heal-cut interception actually halves the applied heal.
-- [ ] Blood Price / Predatory-Insight advantage detection keys off `roll.data.skill.id` correctly (Black / Deception).
-
----
-
-# White / Coordination (2026-06-14)
-
-The Coordination tree is a Plot Die ("raise the stakes") + ally-support tree, name-keyed in the
-engine. Setup: a White PC **GM-run or with a player online** (the cross-actor watcher posts cards
-GM-side, whispered to the owner) + ≥2 ally tokens in Attunement Range + an enemy.
-
-## 1. The Plot-Die primitive (`edha.raiseStakes`)
-- [ ] Console: `edha.raiseStakes(<select an ally token first>)` → that ally's **next test** rolls a **Plot Die** (raise-the-stakes box pre-checked in the dialog; the die appears on fast-forward too). A chat line confirms it was spent.
-- [ ] `edha.raiseStakes(token, "ath")` → the Plot Die only attaches to the next **Athletics** test, persisting across other tests until then (skill-gated).
-
-## 2. Coordination talents
-- [ ] **Mending Aura** — Special (Opportunity + 1 Inv): cast → place the [Size] burst → Detonate heals **floor([Tier][Die]/2)** to each ally inside. (Regression — authored earlier.)
-- [ ] **Guiding Signal** — 1 Action, 1 Inv: use it → a **grant card** posts listing in-range allies → click one → that ally's **next test** raises the stakes.
-- [ ] **Concordant Presence** — passive: an in-range ally makes a skill test → the White PC's player (whispered) gets a **grant card** for that **same skill** → click a recipient ally → a **DC prompt** opens (enter the first ally's test DC) → the Plot Die is granted **only if the first ally met the DC** (a failure posts "no success — no grant"). (One prompt per skill per round.)
-- [ ] **Beacon of Stability** — apply a condition to an ally, then **Draw Mana** on the White PC → a **cleanse card** posts → click `Ally: Condition` → spends **1 Inv**, removes that condition. (One condition per Draw Mana.)
-- [ ] **Shared Conviction** — an in-range ally rolls a **low** test (Complication or d20 ≤ 10) → the White PC gets a whispered **reaction card** showing `+White mod (rank + WIL) → new total` → click → a **DC prompt** opens → spends **2 Focus + 1 Inv** and reports whether the boost **turns the failure into a success** (or "already meets DC — no boost needed" / "still short of DC X"). Choosing **No DC — judge it** falls back to posting the boosted total.
-- [ ] **Pillar of Order** — an in-range ally rolls a **Complication** → the White PC gets a whispered **reaction card** → click → spends **1 Inv**, posts "Complication negated (blank face)".
-- [ ] **Unity of Purpose** — MANUAL (aid is untracked): when 2+ allies aid a test, use `edha.raiseStakes(<the testing ally>)` to raise the stakes.
-- [ ] **Ordered Advance** — 2 Actions, 1 Inv: use it → a **round note** posts; the no-provoke half-Speed movement is GM-narrated.
-
-## 3. Watch-items (couldn't be self-verified — check first if something's off)
-- [ ] Plot Die actually injects via `roll.options.plotDie` on **both** fast-forward and dialog rolls (the dialog "Raise the Stakes" box should arrive pre-checked).
-- [ ] `roll.complicationsCount` reads correctly post-roll (fires Pillar of Order / Shared Conviction). A natural-1 d20 (no plot die) should also count as a Complication.
-- [ ] Cross-actor grant: clicking a grant button as the **player** sets the flag on **another PC** via the `set-flag` GM relay (needs a GM online).
-- [ ] Shared Conviction's `@skills.white.rank + @attr.wil` resolves to the right number on the owner.
-- [ ] The whispered cards reach the **owner's player** (not just the GM), and the once/round reaction gate holds.
-- [ ] **No GM online** → the GM-side watcher cards (Concordant/Shared/Pillar) won't post (expected); Guiding Signal/Beacon/`edha.raiseStakes` still work from the owner's client.
-
-## 4. Follow-ups / known limits
-- [x] "Success" (Concordant) and "would fail" (Shared Conviction) now resolve via a **DC prompt** at the card click (2026-06-15) — the engine compares the ally's total to the entered DC instead of eyeballing it. Foundry tests still carry no built-in DC, so the GM supplies it on the spot (or picks "No DC — judge it"). Shared Conviction still only surfaces on plausible failures (Complication / low d20).
-- [ ] Pillar of Order negation is a **tracked chat note** (Complications are a GM narrative resource), not a die re-render (ruling 4).
-- [x] **Hardy** (White copy) now has the +level max-HP AE (06-14b); the **Green** copy followed (06-16b).
-- [ ] Reaction economy (1 reaction/round across ALL talents) is only approximated per-talent — GM still tracks the global limit.
-
----
-
-# White / Bulwark (2026-06-14b)
-
-A damage-mitigation tree on the `applyDamage` wrapper. Passives pre-reduce; optional reactions post
-a whispered post-damage card (heal-back / redirect / retaliate / revive). Setup: a White PC GM-run
-or with a player online, allies adjacent / within 10 ft, plus an enemy attacker.
-
-## 1. Hardy (data-side AE)
-- [ ] On the White PC's sheet, **Hardy - Max HP** appears on the Effects tab; **max HP = base + level** (nudge current HP up to the new max manually). Inspect-verified at the pack level already.
-
-## 2. Passives (auto pre-reduction)
-- [ ] **Shield Wall** — stand the White PC with **≥2 allies adjacent**; attack one of those adjacent allies → its damage is reduced by **floor([Tier][Die]/2)** (chat note). With <2 adjacent allies → no reduction.
-- [ ] **Devoted Conduit** — fires **only on Shared Burden's redirected hit** (see below): when the burden-bearer is an in-range ally of a Devoted Conduit owner, the redirected damage is further reduced by floor([Tier][Die]/2).
-- [ ] **Guardian Stance** — MANUAL: toggle its +1 Deflect AE on the owner (and the adjacent ally's copy) while an ally is adjacent.
-
-## 3. Reactions (whispered post-damage cards)
-- [ ] **Interposing Shield** — an ally **within 10 ft** takes damage → card → spend 1 Inv → ally is healed back **floor([Die]/2)** + "move 10 ft" note.
-- [ ] **Shared Burden** — an **adjacent** ally takes D → card → spend 2 Inv → ally healed **floor(D/2)**, owner takes that much (as vital, tagged redirected so Devoted Conduit can cut it).
-- [ ] **Retributive Guard** — an **adjacent** ally is hit by an **enemy in your Attunement Range** → card → spend 1 Inv → deal **[Tier][Die] spirit** to the attacker (roll White vs Spiritual first; click on success).
-- [ ] **Unbreakable Line** — an **adjacent** ally **drops to 0** → card (1/round) → spend 3 Inv → ally set to **1 HP** (roll White DC = ceil(½ damage); click on success).
-
-## 4. Watch-items (couldn't self-verify)
-- [ ] Adjacency (Chebyshev ≤ 1 square incl. diagonals) matches table expectations for the token sizes used.
-- [ ] `evaluateSync` rolls the [Tier][Die] reductions in the pre-pass without error.
-- [ ] Shared Burden's redirect re-enters the wrapper, Devoted Conduit reduces it, and it does **not** cascade into more reaction cards.
-- [ ] Cross-actor card actions (heal an ally, damage the enemy attacker, revive an ally) work when the **owner's player** clicks (relays to the GM via burst-apply when the player lacks perms).
-- [ ] Cards post only with a **GM online** (GM-gated watcher).
-
----
-
-# White / Accord (2026-06-14c)
-
-The most narrative White tree. Native conditions (Disoriented/Determined) + owner-judged cards.
-Unyielding Accord ships a draggable +1 Cog/Spi AE. Setup: a White PC GM-run or with a player
-online, allies in range, an enemy.
-
-## 1. Conditions & cards
-- [ ] **Collective Resolve** — use it → each in-range ally gains the **Determined** icon.
-- [ ] **Overwhelming Authority** — target an enemy, use it → card → click → enemy gains **Disoriented**; it **auto-clears at the end of YOUR next turn** (chat note). (No test — a flat apply.)
-- [ ] **Counterpoint** — target an enemy, use it (**rolls White**) → a **DC prompt** opens (enter the enemy's influence result) → on **White ≥ DC** it auto-spends **1 Inv**, negates the influence, and Disorients the target (owner-relative expiry); on a miss it posts "the influence stands." **No target / No DC** → falls back to the manual Disorient card.
-- [ ] **Voice of Authority** — have an **enemy in range** make an attack → a whispered card posts → spend 1 Inv → the engine keeps the lower of d20-vs-d20 and **rewrites the attack's roll card** to the disadvantaged total ("updated on its roll card"). As a player with no GM-editable message it relays to the GM; if neither works it falls back to reporting the number. Once/round.
-
-## 2. Accord (Terms of Accord + Bound by Word)
-- [ ] **Terms of Accord** — use it → card lists in-range characters → click one → both share an accord (chat note; if you also own **Bound by Word**, the note says the partner can use your White modifier).
-- [ ] **Bound by Word** — after the accord, have the **partner** make a skill test → they get a whispered card offering your White modifier (`d20 + your mod`) in place of their own → click on an objective test → the engine **rewrites the partner's roll card** to the swapped total ("updated on the roll card"; relays to the GM, or falls back to a reported number). Once/round/skill.
-
-## 3. Manual (no Foundry hook)
-- [ ] **Disciplined Mind** — GM-tracked: you + in-range allies reduce the focus cost to resist influence by 1 (min 1).
-- [ ] **Unyielding Accord** — drag the **"Unyielding Accord - +1 Cog/Spi"** effect from the talent onto each in-range ally adjacent to another ally; remove it when they no longer qualify.
-
-## 4. Watch-items (couldn't self-verify)
-- [ ] Disoriented's owner-relative expiry fires at the end of the OWNER's next turn (not the enemy's), via the `apply-timed-status` relay stamping `expireAfter`.
-- [ ] The Voice of Authority re-roll math is right and the GM can act on the reported lower total.
-- [ ] The accord flag persists on the partner (set via the `set-flag` relay) and Bound by Word reads it.
-- [ ] Determined/Disoriented relays work when a player clicks (target is GM-owned).
-
----
-
-# Blue / Calculation (2026-06-14d)
-
-The signature is imposing/granting a (dis)advantage on a creature's **next test**, plus Disorient.
-Every talent fires on the **owner's own client** (no GM-gating; the cost is consumed by Foundry's
-activation), riding the `nextTestMod` flag. Setup: a Blue PC, an enemy token, and (for Anticipate)
-an ally in range.
-
-## 1. Disadvantage-on-next-test (the core primitive)
-- [ ] **Pattern Recognition** — target an enemy, use it (pays 1 Inv) → a whispered card posts → click → the enemy's **next test rolls disadvantage** (a chat note fires when that test happens, then the flag clears). If you had no target, the card says "target the creature, then click".
-- [ ] **Probability Cascade** — target an enemy, use it (pays Opportunity + 1 Inv; Opportunity is GM-trusted) → card → click → the enemy's **next TWO tests** roll disadvantage (the consume note counts down "(1 more)" then clears).
-- [ ] **False Premise** — target an enemy, use it (rolls **Blue**, pays 1 Inv) → the engine **auto-compares your Blue total to the target's Cognitive defense**: on **≥** it imposes disadvantage on their next test and posts "Blue X ≥ Cog (Y)"; on a miss it posts "no effect". No target / unreadable defense → manual card.
-
-## 2. Advantage + Disorient
-- [ ] **Anticipate** — use it (pays 1 Inv) → card lists **you + in-range (Blue) allies** → click one → that character's **next test rolls advantage** (their "resistance test"; GM-judged which roll).
-- [ ] **Subtle Suggestion** — target the influenced character, use it (pays 1 Inv) → disorient card → click → target gains **Disoriented** (auto-clears at the end of your next turn via the timed-status pass — see watch-item re: "start" vs "end").
-
-## 3. Counterspell + passives
-- [ ] **Counterspell** — target the activating creature, use it (rolls **Blue**, pays 2 Foc + 1 Inv) → the engine **auto-compares Blue vs the target's Cognitive defense** and posts the verdict: on **≥**, "the activated talent fails"; on a miss, "the talent resolves as normal". No target / unreadable defense → reminder note.
-- [ ] **Composed** — max focus shows **+tier** (data-side AE, already built; ⟳ Sync if the owned copy is stale).
-- [ ] **Baleful** — manual: GM adds +tier focus to the cost of resisting your influence (no Foundry hook).
-
-## 4. Watch-items (couldn't self-verify — no Foundry session this pass)
-- [ ] **Contest auto-resolution** (2026-06-15): the skill_test talents (False Premise, Counterspell, Read Intent, Ghostly Walls, Redirect Momentum, Counterpoint) capture their **own Blue/White roll** via the contest-watcher and resolve against the target's defense. Confirm `useItem` fires for these and that the talent's d20 test is the one matched (the resolver matches the roll tied to that use, in either fire order, even through a slow roll dialog). If a talent's roll dialog is **cancelled**, nothing applies (expected — no roll, no contest).
-- [ ] `nextTestMod` injects (dis)advantage exactly like the `advTest`/`cogDisadv` flags (pre-roll set + post-roll consume), decrements per test, and clears at 0 — across skill / attack / item rolls.
-- [ ] The `set-flag` relay applies `nextTestMod` onto a **GM-owned enemy** when a player clicks.
-- [ ] Subtle Suggestion's Disorient lasts the right window (text says "until the **start** of your next turn"; the engine uses the established Disoriented expiry = **end** of your next turn — a one-turn over-extension; see the handoff note for Ben).
-- [ ] The "next test" with `skill:null` doesn't accidentally swallow an unrelated roll the target makes before the intended one (it consumes the literal next d20 test of any kind).
-
----
-
-# Blue / Illusion (2026-06-14e)
-
-A narrative tree; the automatable half spawns **real friendly tokens** via `edhaSummon`. Setup: a
-Blue PC, an ally token + an enemy token, in combat; the summoning user needs ACTOR_CREATE perm
-(GM, or a player the GM granted it).
-
-## 1. Summons (the real builds)
-- [ ] **Phantom Barricade** — use it (1 Inv) → a friendly **"Phantom Barricade"** token spawns next to you with **HP = 2[Die]** (`2d(2·blue rank+2)`), **defenses 0/0/0**, **no attack**, speed 0. Reposition it to block the lane; it survives until HP 0 / scene end. Use again → a second barricade (sustain-multiple).
-- [ ] **Phantom Double** — target an ally (or no target = yourself), use it (2 Inv) → a token copying **that creature's art + name** ("… (Illusion)") spawns with **HP 1**; a prior Phantom Double of yours is removed first (max 1). **Deal any damage to it → it auto-deletes** ("the illusion … dissipates" chat line). Perception-vs-Blue-defense + the "advantage vs those who failed" are GM-run (the use-note reminds you).
-- [ ] **Holographic Illusion** — use it (1 Inv) → a no-stats **"Holographic Illusion"** token spawns **sized to [Size]** (1 sq at rank 1–2, larger at higher rank). Static; move/edit by hand.
-- [ ] **Living Image** — use it → a note: illusions may move/interact; **1 Inv/round upkeep is manual**.
-
-## 2. Ghostly Walls + Redirect
-- [ ] **Ghostly Walls** — target an enemy, use it (rolls **Blue**, pays 2 Inv) → the engine **auto-compares Blue vs the target's Cognitive defense**: on **≥** it auto-applies **Immobilized** (move 0), auto-clearing at the **end of YOUR next turn** (not the enemy's), and posts the verdict; on a miss, "no effect". No target / unreadable defense → manual immobilize card.
-- [ ] **Absolute Stillness** (own it too) — on a successful Ghostly Walls the target ALSO auto-gains **Weakened** (disadvantage on Physical str/spd tests). "Cannot take Reactions" is GM-tracked.
-- [ ] **Redirect Momentum** — target the mover, use it (rolls **Blue**, pays 1 Inv) → the engine **auto-rolls the mover's Athletics** (rank + Strength) and compares: on **Blue ≥ Athletics** it posts "reduce remaining move by [Size] / push [Size] ft" (2.5/5/10/15/20 by Blue rank; GM positions the token); on a miss, "it keeps its momentum". No target → reminder card.
-
-## 3. Manual (no Foundry hook)
-- [ ] **Phantom Step** — passive: an ally in range may move +[Size] ft without provoking Reactions (GM-narrated; nothing fires).
-
-## 4. Watch-items (couldn't self-verify — no Foundry session this pass)
-- [ ] `edhaSummon` rolls the barricade HP with the right die faces, spawns defenses 0 (defensePenalty 99), and the token sizing (`tokenSizeFt`) lands for Holographic Illusion.
-- [ ] Phantom Double copies the chosen creature's token texture (`edhaTokenArt`) and the **delete-on-hit** fires via the updateActor HP-watch (and `edhaClearPhantomDoubles` enforces max 1).
-- [ ] Ghostly Walls' `immobilized` expires at the end of the OWNER's next turn (owner-relative stamp overwrites the target-relative auto-stamp), and the Absolute Stillness Weakened rider lands.
-
----
-
-# Blue / Foresight (2026-06-14f)
-
-A prediction/initiative tree — mostly manual; the automatable half reuses the Calculation flag.
-Setup: a Blue PC, an enemy in range, in combat.
-
-## 1. The automated talents
-- [ ] **Intercept** — target the designated creature, use it (pays 1 Inv) → card → click → that creature's **next test rolls disadvantage** (`nextTestMod`).
-- [ ] **Reactive Analysis** — use it (pays 1 Inv) after an in-range creature fails a test → **your next test rolls advantage** (chat note; consumed on your next test).
-- [ ] **Read Intent** — target a creature, use it (rolls **Blue**, pays 1 Inv) → the engine **auto-compares Blue vs the target's Cognitive defense** and posts the verdict; on a **success** it prompts the GM to reveal the creature's intended action (the reveal stays narrative). No target / unreadable defense → reminder note.
-- [ ] **Collected** — Cognitive & Spiritual defenses show **+2** (data-side AE, already built; ⟳ Sync a stale owned copy).
-
-## 2. The Calculated Patience toggle
-- [ ] Select your token (or pass an actor/name) → console: **`edha.calculatedPatience()`** → your **next test rolls advantage** (a chat note posts). Use it when you take a slow turn.
-
-## 3. Manual (no Foundry hook)
-- [ ] **Forewarned** — silently declare a character + action each round; if they take it before your next turn you gain 1 Reaction (GM/player-tracked).
-- [ ] **Telepathic Network** — in-range allies join your network for the scene and "share your expertise" (GM-applied).
-- [ ] **Probable Outcome** — you may change your fast/slow turn choice after others choose (GM-adjudicated).
-
-## 4. Watch-items (couldn't self-verify — no Foundry session this pass)
-- [ ] `nextTestMod` advantage (Reactive Analysis / Calculated Patience) and disadvantage (Intercept) apply and clear correctly on the next test.
-- [ ] `edha.calculatedPatience()` resolves the selected token / passed actor and sets the flag.
-
----
-
-# Red — Momentum + Frenzy + Conflagration/Key (2026-06-15)
-
-Movement is **enforced** here (the forced-movement pilot — see `FORCED_MOVEMENT_PILOT.md`).
-Setup: a Red PC (Speed set) + an enemy, with a **wall** nearby for collision tests.
-
-## 1. Momentum — movement enforcement (the pilot)
-- [ ] **Reckless Advance** — target a creature, use it → your token **slides toward** it ([Size] ft, stops a half-token short), chat: "moves N ft … ignoring Reactions". With a wall between you → stops at the wall.
-- [ ] **Explosive Leap** — use with a target → you leap [Size] ft; chat reminds the 5-ft Prone test (GM-applied).
-- [ ] **Unstoppable** — on a **Fast turn**, deal damage → you move **half Speed** toward your target, **once per turn** (second damage same turn does nothing). On a **Slow turn** → no move.
-- [ ] **Shockwave Slam** — hit an enemy with a melee **impact** attack → it is **pushed [Size] ft** away; if it hits a wall, chat shows **half [Tier][Die] impact** collision damage and its HP drops.
-- [ ] **Volatile Strike** — melee-hit a creature → an optional **"spend 1 Investiture"** card; clicking it adds **half [Tier][Die] impact** to the victim.
-- [ ] **Burning Drive** — on a **Fast turn**, your **first** str/spd test gains **+half [Die]**; your 2nd test that turn does not; on a Slow turn, neither.
-- [ ] **Momentum's Edge** — move ≥ 20 ft toward a creature this turn, then Strike (impact) → bonus impact **= your Speed**. Moving < 20 ft (or away) → no bonus. *(If the bonus reads 0, `@movement.walk.rate` isn't in roll data — see pilot doc item 1.)*
-
-## 2. Frenzy
-- [ ] **Battle Fever** — deal damage → you gain **+1 to your next test** (chat), stacking to **max = Red rank**; the bonus shows in your next d20 breakdown and **clears at the start of your turn**. Allies apply the same +N themselves.
-- [ ] **Feeding Frenzy** — `edha.rally(token)` bumps the same stack (cap = rank), **clears at the start of the round**.
-- [ ] **Breaking Point** — an enemy in Attunement Range takes damage a **2nd time in a round** → it becomes **Disoriented** (once/round/creature); the first hit does nothing.
-- [ ] **Shatter Focus** — target an enemy that failed a test, use it → it **loses 1 focus**.
-- [ ] **Emotional Overload** — target a creature, use it → **disadvantage** on its next test (GM: only a non-attack test).
-- [ ] **Reckless Gambit** — target a creature, use it → it gains **advantage** on its next test and becomes **Exhausted**.
-- [ ] **Reckless Momentum** — use it → **Plot Die** flagged on your next test this turn.
-- [ ] **Frenzied Tempo** — on a **Fast turn**, your **Presence** (Influence) tests roll **advantage**; leyline-skill casts are excluded; Slow turn → none.
-- [ ] **Incite** — use it → card describing the forced Strike / lose-Reaction (GM resolves the forced action — the one un-automatable bit).
-
-## 3. Watch-items (couldn't self-verify — no Foundry session this pass)
-- [ ] Push/leap respect walls (`CONFIG.Canvas.polygonBackends.move`); if not, they travel full distance (still functional).
-- [ ] Pushing a **GM-owned enemy** as a player relays via the `move-token` socket (one GM online).
-- [ ] `turnSpeed` flag reads as expected (fast-turn talents fire only on Fast turns).
-- [ ] `exhausted` toggles on NPCs (Reckless Gambit) via the relay.
-
-## 4. Conflagration completion + Key (2026-06-15)
-- [ ] **Searing Bolt** — already native (skill_test Red attack, auto-consumes 1 Investiture, rolls [Tier][Die] energy). Confirm: using it makes a Red attack, deducts 1 Inv, deals energy, and **triggers Afterburn / Arc Flash / Chain Detonation / Kindle** off that energy damage. (No rider authored — its energy damage is the Conflagration enabler.)
-- [ ] **Red Leyline Attunement (Key)** — Draw Mana → recover Tier Investiture **and** your next **Physical (str/spd)** test rolls **advantage** (chat note; consumed on that test). A Cognitive/Influence test in between does **not** consume it. The "lose your Reaction" clause is GM-tracked (no reaction engine).
-# Green / Territory (2026-06-16)
-
-Setup: a Green PC + ≥3 enemy tokens + an ally token (for Pack Sense).
-
-## 1. Difficult terrain is real & enforced
-- [ ] **Green Draw Mana** drops a **Region** (not just a circle): players see a green 🌿 drawing; planning a move **through** it costs **double** (native difficult terrain).
-- [ ] The Region carries the **ownership tag** (it counts as "your" terrain below) and can be **dragged** to a point in range.
-- [ ] **Sudden Growth** — click-to-place + Detonate drops a [Size] difficult-terrain Region (Opportunity trusted + 1 Inv).
-
-## 2. Thorn Field (passive rider)
-- [ ] With **Thorn Field** owned, terrain you create (Draw Mana / Sudden Growth) **also** deals **½[Tier][Die] keen** to creatures that enter / start their turn in it (chat line).
-- [ ] **Without** Thorn Field, the same terrain is difficult-only (no damage). Thorn Field's own talent is now passive (no clickable attack).
-
-## 3. Membership talents
-- [ ] **Apex Predator** — with **≥3 enemies** standing in your terrain, your **Physical (str/spd)** tests roll **advantage**; drop below 3 → no advantage. Confirm it doesn't override an active disadvantage (e.g. Weakened).
-- [ ] **Pack Sense** — an **ally** attacks a target **inside your terrain** → you get a whispered card; spend 1 Inv → the note adds your **Green modifier** to their result.
-- [ ] **Spreading Roots** — a creature **ends its turn** in your terrain → whispered card; spend 1 Inv → the **Region grows [Size]** (drawing grows too).
-
-## 4. Conditions (contest-resolved since PR #42 — no longer auto-on-use)
-- [ ] **Grasping Vines** — target an enemy in range, use it → your **Green test** is captured and compared vs the target's **Physical defense**: on **≥** it gains **Restrained** (maintain = 1 Inv/turn, chat note); on a miss, no effect. No target → a "target, then use again" reminder card.
-- [ ] **Territorial Instinct** — target a fleeing enemy, use as a Reaction → the engine **auto-rolls the target's Survival** vs your Green total: on **≥** it gains **Immobilized** (auto-expires); on a miss it slips free. Confirm nothing applies when the contest fails.
-
-## 5. Watch-items (couldn't self-verify)
-- [ ] `modifyMovementCost` actually doubles the planned move cost at the table (and players can see the drawing).
-- [ ] Pack Sense reads the attacker's target via synced `user.targets` on the GM client; the card only posts when a GM is online.
-- [ ] Spreading Roots resolves the just-ended combatant's token (`combat.previous.turn`) and the grow-terrain relay updates the Region for a player clicker.
-- [ ] Immobilized "this turn" lands ~one turn long under the next-turn expiry convention — confirm that's acceptable, else tighten.
-- [ ] **Primal Awareness** stays manual (no Surprise/outdoors/track hooks) — confirm that's fine.
-
----
-
-# Green / Restoration (2026-06-16b)
-
-Setup: a Green PC + an injured/below-half **ally** token + an enemy that can apply a condition.
-
-## 1. Hardy (data-side AE)
-- [ ] **Hardy** — max HP increases by your level (nudge current HP up to the new max by hand).
-
-## 2. The green-heal trigger (use **Verdant Mend** or **Mender's Instinct** to heal an ally)
-- [ ] **Resurgent Growth** — heal an ally → at the **start of your next turn** they regain **tier + Green mod** (chat line), only if still in Attunement Range; move them out of range first → no regrowth.
-- [ ] **Vital Surge** — heal an ally that **was below half HP** → whispered card; spend 1 Inv → they gain **½[Tier][Die] Temp HP** (THP keeps the higher if they already had some).
-- [ ] **Natural Recovery** — heal a conditioned ally → whispered card lists Afflicted/Disoriented/Stunned/Weakened present → click one → it's removed (Opportunity trusted).
-- [ ] Riders fire for **both** Verdant Mend (clickable heal) and Mender's Instinct (reaction heal).
-
-## 3. Reknit Form (enforced injury removal)
-- [ ] Target a creature with an **injury Item**, use **Reknit Form** → whispered card lists their injuries with the cost (2 Inv temporary / 3 Inv permanent) → click → the injury is deleted + Investiture spent.
-- [ ] A creature with **no injuries** → "no removable injuries" notice (no card).
-
-## 4. Watch-items (couldn't self-verify)
-- [ ] Verdant Mend's heal application carries the dealer item so it's detected as green (else the `_edhaLastDealer` fallback catches it).
-- [ ] Cross-actor relays: THP via `set-flag` (healing another player's PC) and injury delete via `delete-item` (GM online).
-- [ ] Resurgent Growth resolves exactly at the owner's turn start and clears its queue.
-
----
-
-# Green / Instinct (2026-06-16c)
-
-Setup: a Green PC + ≥1 ally token + an enemy.
-
-## 1. Advantage-granting (the `advAttackNext` primitive)
-- [ ] **Pack Hunter** — target an enemy, use it → you (and each ally adjacent to that enemy) get **advantage on your next attack** (chat line); the next attack roll shows advantage, then clears.
-- [ ] **Scent the Weak** — use it → chat names the **lowest-HP creature in Attunement Range**; your next attack rolls advantage (once/round).
-
-## 2. Forced movement (contest-resolved since PR #42)
-- [ ] **Drive the Prey** — target an enemy, use it (2 Inv) → the engine **auto-rolls the target's Survival** vs your Green total: on **≥** it gains **Slowed** (timed) and chat spells out the move-away + ally Reactive Strikes (GM-narrated); on a miss, "it doesn't break". The old on-use Slowed rule was REMOVED from the talent's Events tab — if Slowed applies with no contest in chat, the leyline pack wasn't rebuilt.
-
-## 3. Damage bonuses (applyDamage pre-pass)
-- [ ] **Coordinated Hunt** — have an ally attack an enemy this round, then you attack & hit it → your damage gains **+min(#attackers, Green rank)** (chat line names the hunter count).
-- [ ] **Pack Pressure** — use it, then Strike during the window (before your next turn) → +[Tier][Die] on the hit; after your next turn starts, the bonus stops.
-
-## 4. Manual (indicator AE on the sheet + reminder on use)
-- [ ] **Predator's Instinct / Packmate's Warning / Natural Order** — each shows a toggle-able indicator effect on the sheet (Effects tab) and posts its reminder; the mechanical effects are GM-narrated.
-
-## 5. Watch-items (couldn't self-verify)
-- [ ] `advAttackNext` seeds advantage through the roll dialog (not just fast-forward) and clears after one attack.
-- [ ] Focus-fire counts the right attackers via synced `user.targets` (GM online); resets each round.
-- [ ] Pack Pressure window expires exactly at the start of the owner's next turn.
-- [ ] Coordinated Hunt / Pack Pressure apply to the owner's strikes only (ally strikes GM-narrated) — confirm that's acceptable.
-
----
-
-# Destruction (Razkael, deity) (2026-06-17)
-
-Setup: a Destruction PC + several enemy tokens, including one **Construct**
-(`customType: "Construct"`) and one with **deflect > 0**.
-
-## 1. Set Charge + Detonate (the spine) ⚑
-- [ ] **Set Charge** (1 Inv) → click-to-place a marker template; a "Charges set" card appears with **Detonate #n** + **Detonate ALL** buttons. Right-click/Esc cancels → **Inv refunded**.
-- [ ] Set more than **tier** Charges → the **oldest fizzles** (marker removed), count stays at tier.
-- [ ] **Detonate #n** (Free) → enemies within 10 ft take [Tier][Die] energy + the point becomes a **dangerous-terrain Region** (🔥 drawing, damage on enter / turn-start); the marker is removed.
-- [ ] Charges + markers **fizzle at scene/combat end** (deleteCombat clears `charges` + stale templates).
-
-## 2. Pinpoint / Cascading / The Unmooring ⚑
-- [ ] **Pinpoint Charge** (Free, 1 Inv) → marks the latest Charge **⊕**; on detonation the **primary** target takes extra [Tier][Die]+Int **keen** and its **deflect is ignored** (hit bumped by its deflect value).
-- [ ] **Cascading Failure** (2 Inv) → detonates **all** Charges; a foe caught in **2+** blasts takes an extra [Tier][Die]; with ≥2 Charges the chat notes the zones **merge**.
-- [ ] **The Unmooring** (3 Inv, **once/scene**) → all Charges detonate at **15 ft**, **+Int**, **ignore deflect**; second use same scene is blocked.
-
-## 3. Concussive Yield + Fault Line ⚑
-- [ ] With **Concussive Yield** owned, **every** Charge detonation rolls **each** caught foe's **Speed vs your Red DC** and applies core **Prone** on a fail (one chat card; engine rolls the foes — confirm it never auto-prones on a success).
-- [ ] **Fault Line** (2 Inv) → click a direction; a **60×5 ft line** (rotated-rectangle hazard) deals [Tier][Die]+Str energy, runs the Speed-vs-Red→Prone test, and **Constructs take ×3**. **Watch the rectangle's rotation/anchor** (untested geometry).
-
-## 4. Combustion Chain + Walking Ruin
-- [ ] **Combustion Chain** — drop an enemy to **0 HP while it stands in your dangerous terrain** → it **auto-fires** (a fresh 10 ft zone ignites on the body + a "spread your zones 5 ft" card). Confirm it does NOT fire for bodies outside your terrain.
-- [ ] **Walking Ruin** — use to toggle ON (chat note); +10 ft Speed is passive (AE). While on, **moving** drops a dangerous-terrain patch at the vacated square (one per move step). Toggle OFF / scene end stops it. **Watch terrain volume** over a long move.
-
-## 5. Watch-items (couldn't self-verify — no Foundry session)
-- [ ] Fault Line rectangle Region: rotation about center vs corner, and the one-end-at-caster anchor — adjust the math if the line sits wrong.
-- [ ] Deflect-ignore bump assumes `system.deflect.value` and that applyDamage subtracts deflect on energy/keen — verify the net equals "ignores deflect".
-- [ ] Construct ×3 detection via `system.customType === "Construct"` — confirm against a real adversary; structures (walls) still have no actor (GM-side).
-- [ ] Combustion auto-fire uses the GM-side `updateActor` hp≤0 hook + `edhaTokenInOwnedTerrain` — confirm it reads the body's token position correctly.
-- [ ] Player (non-GM) detonation/terrain relays through the `place-hazard-region` + `burst-apply` socket (a GM must be online).
-
----
-
-# Life (Anaveth, deity) (2026-06-18)
-
-A Blue/Green healer-buffer reusing the Green heal machinery. Setup: a Life PC, a **willing ally**
-token, an enemy, in combat.
-
-## 1. Adaptive Mutation (the pick-a-mutation card) ⚑
-- [ ] **Adaptive Mutation** — use it → a whispered card stamps ONE mutation on a willing target (one per creature, per scene).
-- [ ] **Bone Spurs** — the mutated creature's damaging hits gain **+tier keen** (damage pre-pass; chat note).
-- [ ] **Venom Glands** — the mutated creature's hit **Afflicts** the foe: ½[Tier][Die] vital at the start of the foe's turns (the affliction engine; remove the icon to stop it).
-- [ ] **Dense Tissue** — deflectable damage (energy/impact/keen) INTO the mutated creature is reduced by 2; Spirit/Vital damage is NOT reduced.
-- [ ] The "melee-only" clause on Bone Spurs / Venom Glands is a named backlog hook (applyDamage can't see melee vs ranged yet) — for now the bonus applies to all its attacks; confirm that's acceptable.
-
-## 2. Regen (turn-start heals parked on the owner)
-- [ ] **Primal Regeneration** — link a creature → at the **start of ITS turn** it heals Tier+1 ([Tier][Die]+1 if it carries a mutation); taking **Vital or Spirit** damage ENDS the regen (chat note).
-- [ ] **Apex Form** (capstone) — a willing creature (may be you) gains +2 Deflect + [Tier][Die] turn-start regen + **+tier vital** on its attacks; persists through damage. ("Takes an Injury when it ends" = named backlog hook; apply the injury by hand for now.)
-
-## 3. Surgical Precision + Lifeline ⚑
-- [ ] **Surgical Precision** — use it (skill-test heal) → on a real success (NOT a graze) a **cleanse card** posts (Weakened / Disoriented / Slowed); a graze heals the smaller amount and does NOT cleanse.
-- [ ] **Lifeline** — use it to link a creature → when the linked creature takes damage, you get a whispered card (once/round): take **up to half of it as Spirit** yourself and the linked creature **heals [Tier][Die]** (owner-judged click; reuses the Shared-Burden redirect).
-
-## 4. Regression (data-authored — already in the pack before this pass)
-- [ ] **Vital Diagnosis** — Diagnosed mark; any damage vs the marked creature gains +tier vital.
-- [ ] **Life Surge / Overgrowth** — heals; healing past max HP → Temp HP (Overgrowth's +1 Deflect stack stays manual).
-- [ ] **Prognosis** — +[Tier][Die] heal vs a conditioned creature; recover 1 Inv when your Diagnosed creature is hit.
-
-## 5. Watch-items (couldn't self-verify — no Foundry session)
-- [ ] The `mutation` / `apexForm` / `lifeline` flags land on GM-owned or other-player targets via the `set-flag` relay when a player clicks.
-- [ ] Regen resolves at the TARGET's turn start (not the owner's) and Primal actually ends on Vital/Spirit damage only.
-- [ ] Dense Tissue / Apex Deflect reduce only DEFLECTABLE damage types.
-
----
-
-# Chaos (Maelith, deity) (2026-06-18)
-
-Black/Blue. Signature = **Omens**: a registered `omen` status on the Marked pattern
-(`flags.edha-content.markedBy.omen`), cap = tier. Every active talent is a `preUseItem` takeover
-that ROLLS the color test and gates the effect on `total ≥ defense` — nothing is trust-the-player.
-**Isolated is now also an inflictable status** (OR'd into `edhaIsIsolated`), so Maelith's applied
-Isolation feeds the Black tree's Isolation engine. Setup: a Chaos PC + several enemies, in combat.
-
-## 1. Placing Omens (test-gated) ⚑
-- [ ] **Entropy Strike** — target an enemy, use it → rolls **Blue vs its Cognitive defense**; on **≥** it gains the **Omen** icon; on a fail, no mark. Chat shows the test line ("Blue X vs Y — success/fail").
-- [ ] **Spreading Omen** — same gate, multiple targets; total Omens capped at **tier** (the card refuses placements past the cap).
-- [ ] **Isolating Pressure** — rolls **Black vs Physical**; on **≥** the target becomes **Isolated** (the inflictable status). Confirm a Black-tree payoff now sees it (e.g. Severance's vital conversion, `whenTargetIsolated` triggers).
-- [ ] **Ruin** — **Black vs Physical**; on success, Isolated + the Omen payoff.
-
-## 2. Cashing Omens ⚑
-- [ ] **Cascade Collapse** — rolls Blue **per bearer vs each one's own Cognitive**; damage lands via the burst pipeline (players relay to the GM).
-- [ ] **Unweaving** — **Black vs Spiritual** → the Omen payoff; the arbitrary-effect dispel posts a GM card (manual by nature).
-- [ ] **Shatter Focus** (Reaction) — remove one of your Omens → the bearer **rerolls and takes the lower** (the roll card is rewritten via `edhaRewriteOrRelay`).
-- [ ] **Unravel Everything** (capstone) — marks all in range up to the cap, then detonates all Omens.
-- [ ] **Void Sense** (passive) — any Omen-bearer of yours takes damage → you recover **1 Investiture** (once/round). (The see-through-walls vision is manual.)
-
-## 3. Watch-items (couldn't self-verify — no Foundry session)
-- [ ] The `omen` / `isolated` status icons render (registered custom statuses) and the cap counts only YOUR bearers.
-- [ ] Duration fidelity: cards say "until the START of your next turn" but the engine's timed expiry is END-of-next-turn — a documented one-turn over-extension (same convention as Subtle Suggestion). Confirm it's acceptable.
-- [ ] Player-initiated Omen placement / detonation relays GM-side (a GM must be online).
-
----
-
-# Fate (Olvarra, deity) (2026-06-19)
-
-Green/White. Zones ride the Destruction Charge lifecycle: click-placed 5 ft markers in owner flag
-state (cap = tier, oldest fizzles, cleared at combat end). Snares spring via a real v13 Region
-behavior (`edha-content.fate-snare`) on enter OR pass-through. Every active is a `preUseItem`
-takeover (cancel → cost refunded). Setup: a Fate PC + enemies + an ally, in combat.
-
-## 1. Zones ⚑
-- [ ] **Ordained Ground** — use → click-place a 5 ft zone (cap = tier; oldest fizzles); Esc/right-click cancels → cost refunded.
-- [ ] **Snare** — use → click-place; an enemy that ENTERS **or passes THROUGH** the square springs it: [Tier][Die] + Awareness keen + **Restrained**, and the snare is consumed. Walk a token straight across without stopping — it must still spring.
-- [ ] **Inevitable Snare** — flags the last-placed Snare (+1 Inv) → on trigger it deals **+[Tier][Die] keen** AND the engine rolls the foe's **Speed vs your Green DC** → **Disoriented** on a fail (engine-rolled, never trust-the-player).
-- [ ] Zone markers + snares clear at combat/scene end.
-
-## 2. Ordained turn-start buffs
-- [ ] An **ally starting its turn on an Ordained square** gains **+1 to all defenses** (a self-cleaning AE — confirm it's removed when it starts a later turn OFF the square).
-- [ ] **Bulwark Ground** (if owned) — that ally also gains **Temp HP = tier**, and attacks against it **cannot gain advantage** while it stands there (the no-advantage pre-roll injector — an attacker with advantage rolls flat).
-- [ ] Action-grants (Aid at range / free Strike / Reactive Strike) post PROMPT cards naming who may act — the action itself is taken by hand.
-
-## 3. Hexmark + thread talents ⚑
-- [ ] **Hexmark** — mark a foe; when the marked foe takes damage **near your zones**, that hit gains **+tier keen** (damage pre-pass, no recursion).
-- [ ] **Read the Threads / Foreknown Strike / Thread of Inevitability** — card-button reuses of the snare/zone resolvers (reposition / strike prompts); confirm the buttons act and the costs deduct.
-
-## 4. Watch-items (couldn't self-verify — no Foundry session)
-- [ ] The fate-snare Region arms for players via the GM relay (`place-fate-snare`) and is dropped when sprung/moved (`delete-fate-snare`).
-- [ ] Pass-through triggering (`tokenMoveIn`) vs plain entry — test both.
-- [ ] The no-advantage injector suppresses advantage ONLY against the buffed defender and leaves other rolls untouched.
-
----
-
-# Sovereignty (Verdannis, deity) (2026-07-01)
-
-Setup: a Sovereignty PC + one allied PC + several enemies — at least one whose weapon damage uses
-a ladder die (d4–d12) and one with an off-ladder die (flat or d20) to confirm it's left alone.
-
-## 1. The die-step primitive (the spine) ⚑
-- [ ] **Censure** (1 Inv) on a targeted enemy → rolls Black vs its **Cognitive** defense; on a **success only**, the enemy gains the **Diminished** icon and its next damage roll's dice are stepped DOWN one (e.g. 2d8 → 2d6, visible in the roll breakdown). On a fail: verdict card, **no icon, no step**.
-- [ ] A **d4** weapon stays d4 (floor); dice off the d4–d12 ladder are untouched.
-- [ ] **Exalt** (1 Inv) on a targeted ally → **Exalted** icon; their damage dice step UP one (d8 → d10, max d12).
-- [ ] Both timed effects **expire after the caster's next turn** (the sweep clears the entry + icon; convention: "start of your next turn" lands end-of-owner-next-turn — one turn generous).
-- [ ] Buff + debuff entries **stack** (Exalt + Sovereign's Balance on the same ally = net +2 steps; the d4/d12 clamp is the only rail).
-
-## 2. Scene-length + once-per gates ⚑
-- [ ] **Decree of Ruin** (2 Inv) → success = Diminished **for the scene** (survives your turns; clears at combat end); **failure still applies the timed −1**. A second use on the SAME creature this scene is refused **before any cost is paid**.
-- [ ] **Investiture of Authority** (2 Inv) → scene-long +1 that **replaces your Exalt entry** on that ally (net stays +1, not +2); once per ally per scene (repeat refused, no cost).
-- [ ] **Edict of the Fallen** (2 Inv, 2 Actions) → success = **−2 steps on ATTACK damage only** for the scene (a non-attack talent damage roll is NOT stepped by it); failure = timed −1 on all damage.
-- [ ] **Sovereignty** (3 Inv, capstone) → ally +2 / enemy −2 for the scene; a second cast this scene is refused. All scene entries, icons, and once-per stamps **clear at combat end** (deleteCombat).
-
-## 3. The GM-side watchers (Expose / Edict of the Fallen THP / Balance / Sovereignty) ⚑
-- [ ] **Expose** — a Censure/Decree-Diminished enemy makes an **attack** (target synced) that **fails** (total < the target's Physical defense) → the owner auto-recovers **1 Investiture** (no cap); if the attack's target is the owner's ally in White range, a **Reactive Strike prompt card** names them (the strike itself is by hand). Confirm NO recovery on a hit.
-- [ ] **Expose fallback** — the same enemy makes a **skill test** (no DC readable) → the owner gets a whispered card with an "It failed — recover 1 Investiture" button (owner-judged).
-- [ ] **Edict of the Fallen THP rider** — the marked enemy fails an attack test → each ally in the owner's White range gains **THP = the owner's Tier** (keeps-the-higher, never stacks).
-- [ ] **Sovereign's Balance** (2 Inv) — target ONE ally + ONE enemy, then use → both stepped, timed. If the ally **hits** that enemy **in the cast round** (attack total ≥ its Physical defense), both effects **auto-extend one round, once** (card announces it). No extension on a later-round hit.
-- [ ] **Sovereignty hit card** — each detected ally→enemy hit posts the "no reactions until the start of its next turn" card (denial itself is GM-enforced).
-
-## 4. Sovereign's Favor + costs
-- [ ] **Sovereign's Favor** owned → each **Exalt** also grants the ally **THP = [Tier][Die on White]** (rolled; re-Exalting keeps the HIGHER THP — never stacks). Investiture of Authority does NOT trigger it (literal "when you use Exalt").
-- [ ] Every active pays its Investiture through its own use; bad targeting (no enemy / no ally+enemy pair / once-per repeat) warns **without charging**.
-
-## 5. Watch-items (couldn't self-verify — no Foundry session)
-- [ ] The damage-die rewrite bakes the formula then steps ladder dice via regex — check a graze roll, a damage roll with riders (Kindle-style bonuses step too: they're the roller's own damage), and that the chat breakdown shows the stepped die.
-- [ ] `edhaSovIsAttackItem` (weapon type / `system.attack` / activation "attack") is the Edict of the Fallen scope gate — confirm a real adversary attack matches and a utility talent doesn't.
-- [ ] Hit/fail detection reads the synced target's **Physical** defense only (attacks vs Cog/Spi defenses won't auto-resolve — they fall back to the Expose click card / no Balance extension).
-- [ ] Player (non-GM) casts write die-steps to GM-owned enemies via the `set-flag`/`toggle-status` relays (a GM must be online); the watchers + sweep run on the GM client.
-- [ ] Out-of-combat casts stamp their expiry lazily on the first combat turn change ("owner-next").
-
----
-
-# Death (Morrath, deity) (2026-07-02)
-
-Setup: a Death PC + one allied PC + several enemies — at least one **Weakened**, one below half
-HP, and one healthy full-HP enemy (for the Consuming Decay gate). The `harvested` + `decaying`
-icons should render with their **green tint** on a token (if the tint doesn't render, fall back
-to a distinct icon file — one-row change in `EDHA_STATUSES`).
-
-## 1. Reaper's Harvest + the Remains pool (the spine) ⚑
-- [ ] Drop an enemy to 0 HP **within the owner's Green Attunement Range** → the owner auto-recovers **1 Investiture**, the corpse gains the green **Harvested** skull (beside the black defeated overlay), and a whispered card shows the running Remains count.
-- [ ] A **PC** dropping to 0 does NOT harvest (Ben R2); a **Risen Servant** dropping does NOT harvest (summons dissolve); a drop **outside** Green range does NOT harvest.
-- [ ] Healing the same enemy above 0 and re-dropping it harvests **again** (each is a real live→0 crossing) — flag if that plays wrong at the table.
-- [ ] With Remains at **cap = tier**, another harvest makes the **oldest fizzle** (its icon clears), count stays at tier.
-- [ ] Fresh scene, nothing harvested yet → the pool reads **1** (the scene-start freebie: spend a Remain without ever harvesting). All Remains, icons, and armed flags **clear at combat end** (deleteCombat).
-
-## 2. Withering Touch + Consuming Decay ⚑
-- [ ] **Withering Touch** (1 Inv) → arm card posts; your next **weapon** hit auto-deals the talent's [Tier][Die]+Willpower vital on top AND the target gains "**No Healing**" — a heal instance on them lands as **0** ("cannot regain HP" chat line) until the start of your next turn. A **Temp HP grant still lands** (Ben R3). Confirm the rider does NOT fire on a talent (non-weapon) hit, and doesn't fire twice.
-- [ ] **Consuming Decay** (2 Inv) → refused **without cost** on: a full-HP un-Weakened target, a target outside Black range, or a target already decaying (one instance per character — even by another Death PC). On a legal target: the green **Decaying** icon appears; at the **start of each of its turns** it takes a fresh [Tier][Die] vital roll and the owner heals **half** (floor). Removing the icon by hand **ends the decay** (no tick next turn).
-- [ ] A decay tick that drops the victim to 0 still triggers **Reaper's Harvest / Necrotic Cascade** (the tick suppresses only the native on-hit dispatch).
-
-## 3. Bone Garden + Death Ward ⚑
-- [ ] **Bone Garden** (1 Inv + 1 Remain) → refused pre-cost with no Remain; click-to-place; a click **outside Green range warns and spends nothing**; cancel spends nothing. Placed: a green 10 ft **square** Region + 🦴 drawing; movement through it costs **×2 (engine-enforced)**; ANY creature — enemy, ally, or the owner (Ben R5) — that **ends its turn inside** takes the baked [Tier][Die] keen (auto-applied). Terrain persists until the GM clears the map (terrain convention).
-- [ ] **Death Ward** (2 Inv) on a targeted **ally** → applies freely (card, no roll). On an **enemy** → rolls Black vs its **Spiritual** defense; fail = card, no ward, **cost stays spent**; a repeat on an already-warded target is refused pre-cost.
-- [ ] Warded creature takes lethal damage → it lands on **1 HP** (not 0), gains [Tier][Die]+Presence **Temp HP** (rolled fresh), the ward **ends**, and — critically — **no harvest / no cascade** fires on the saved drop. A second lethal hit (ward gone) kills normally.
-
-## 4. Necrotic Cascade + Risen Servant ⚑
-- [ ] **Necrotic Cascade** (1 Inv) → arm card ("for the scene"); re-arming the same scene is refused **pre-cost**. While armed, ANY qualifying drop (any killer — an ally's kill, a decay tick, a hazard) within **Black** range → one [Tier][Die] spirit roll applied to **each enemy within 10 ft of the body**. A cascade kill does NOT chain another cascade (but DOES harvest).
-- [ ] **Risen Servant** (1 Inv + 1 Remain) → refused pre-cost with no Remain or at **tier** active Servants. Summons a friendly token beside you: HP = [Tier][Die on Green] (rolled), defenses = yours −3, Speed 25, **Bone Strike** rolls Athletics vs Physical then [Tier][Die on Green] keen, Disoriented-immune (Frightened/Compelled are sheet-noted manual), combatant slots onto **your initiative**. Its actor auto-deletes when the token is removed.
-
-## 5. Raise Dead + Speak with the Fallen
-- [ ] **Raise Dead** (4 Inv, once/scene) → refused pre-cost on a second use or a target above 0 HP. On use: optional "does a Remain represent them?" confirm (consumes one on Yes); target returns at **1 HP** (defeated overlay self-clears), **Disoriented until the end of ITS next turn**, its combatant moves onto the caster's initiative (GM-side; players get a card note), and the card tells the **GM to add ONE injury** (manual — backlog: an injury-table roller).
-- [ ] **Speak with the Fallen** (2 Inv via activation) → prompt: spend a Remain, or "touching ≤24 h remains" (owner-judged); the 3-questions card posts. The Q&A + the +2 Inv repeat cost are table-run (trusted).
-
-## 6. Watch-items (couldn't self-verify — no Foundry session)
-- [ ] The **status tint** (`tint` on the CONFIG.statusEffects entry) rendering on token icons — the one genuinely untested Foundry surface in this pass.
-- [ ] The defeat watcher keys off a `preUpdateActor` HP stamp (live→0 crossing) — confirm repeat hits on a corpse don't re-harvest, and that a heal-then-drop does.
-- [ ] Death Ward's restore runs in the applyDamage **post-pass** on the applying client — confirm the 0→1 flicker doesn't strand the defeated overlay, and that a player applying damage to their own PC can trigger the ward.
-- [ ] Bone Garden's square is an axis-aligned rectangle Region — `edhaPointInRegion` uses `region.object.testPoint` for rectangles; confirm end-of-turn detection at the square's edge.
-- [ ] Withering Touch fires on any **weapon** hit (melee-ness is owner-judged — the damage path doesn't expose reach); ranged-weapon misuse is a table call.
-- [ ] Player (non-GM) flows: Bone Garden relays via the new `bone-garden` socket action; Decay/Ward flags via `set-flag`; Risen Servant still needs actor-create permission (GM casts it otherwise — carried backlog). A GM must be online for all of these.
-
-# Civilization (Kethane, deity) (2026-07-02)
-
-07-17 bench already passed the setup checks, Lay Foundation, Siege Form, and the fortified-Region
-enter-firing. Setup: a Civilization PC + one allied PC + several enemies, on a gridded scene with
-room for 10 ft squares.
-
-## 1. Forge Construct (the pre-standard wiring, re-audited)
-- [ ] **Forge Construct** (1 Action, 1 Inv) → summons beside you: HP = [Tier][Die white] + tier×2, deflect 1, Speed 25, defenses = yours −2, **Construct Slam** (Athletics vs Physical, [Tier][Die white] impact), slots onto your initiative, carries the baked toggled-off **Siege Form** effect + **Siege Cannon** item. Using it again with a live Construct **dismantles the old one and reforges** (sustain ONE, Ben R1) — non-GM casts need a GM online (dismantle relay). Actor-create permission still required (GM casts for players — carried backlog).
-
-## 2. Tempered Edge ⚑
-- [ ] **Tempered Edge** (passive) — a **Construct Slam** hit auto-adds **+[Tier][Die red] energy** (rolled vs the summoner) and bumps the hit by the target's **deflect** value (net: the Slam ignores deflect — chat line names both). Confirm the rider does NOT fire on the Siege Cannon (ranged), and not at all if the summoner doesn't own the talent.
-
-## 3. Arsenal + Magnum Opus ⚑
-- [ ] **Arsenal** (2 Actions, 2 Inv) → refused pre-cost with no live Construct or when already active. On use: the Construct wears the "Arsenal (2 attacks/turn)" indicator AE (cadence trusted). The Construct dropping a character **live→0** whispers the summoner the **chase prompt** (move 15 ft + free Strike — player-executed).
-- [ ] **Magnum Opus** (3 Actions, 3 Inv, once/scene) → refused pre-cost on a second use or with no Construct. On use: Construct gains **2×[Tier][Die white]** HP (value AND max), the +2 all-defenses **Colossus** AE (reach 10 ft is a manual note), and every subsequent Construct hit **splashes [Tier][Die red] energy** to each enemy within 10 ft of the target (target INCLUDED, Ben R7a), each rolling **Agility vs your Red** → **Prone** on a fail (engine-rolled, one DC roll). Allies in Foundations now get **+2** (not +1) at turn start (Ben R7b) — confirm an ally camping in a Foundation upgrades on its next turn.
-
-## 4. Bastion + Trade Routes ⚑
-- [ ] **Bastion** (2 Actions, 2 Inv) → refused **without cost** with zero Foundations. On use: each Foundation turns red-rimmed "⛨ fortified" with a matching Region; an **enemy entering** (or passing through — tokenMoveIn) takes the baked [Tier][Die red] impact + rolls **Agility vs your Red** → **Slowed** on a fail, clearing at the next turn advance ("until the start of its next turn" — a forced-move entry off-turn clears early, known trade-off). **Allies enter free** (the enter check is disposition-gated). One entry = one hit (the 1 s tokenEnter/tokenMoveIn debounce). A Foundation laid AFTER Bastion comes up fortified (Ben R4). The **Construct standing inside** a fortified Foundation wears +2 all defenses, dropping when it steps out (move-watcher).
-- [ ] **Difficult terrain is the native ×2 for EVERYONE** (disposition-blind — Ben R3): the ruler shows ×2 for allies too; GM compensates allied movement by hand. A disposition-filtered cost function is named backlog.
-- [ ] **Trade Routes** (1 Action, 1 Inv) → refused without cost with <2 Foundations; two validated clicks (wrong square / same square twice / cancel → refunded); both drawings gain "⇄". The card's **Teleport** button: an ally standing in either linked square jumps to the other (owner moves directly; GM relay otherwise); refused when outside, dead, wrong disposition, or the link crumbled. Once per turn is trusted.
-
-## 5. Bonds of Community (Reaction) ⚑
-- [ ] ANY non-summon creature — **enemy, ally, or PC (Ben R5)** — dropping **live→0 inside one of your Foundations** whispers the owner the Reaction prompt. Clicking **"Use Reaction"**: every standing ally inside ANY of your Foundations gains **Temp HP = your White mod** (keeps-higher, no stacking) + **advantage on its next attack test** (the Green `advAttackNext` flag — confirm it fires and consumes on their next attack roll). The dropped creature itself (at 0 HP) is excluded. A drop OUTSIDE every Foundation prompts nothing; a **summon** dropping prompts nothing. One Reaction per round is trusted.
-
-## 6. Watch-items (couldn't self-verify — no Foundry session)
-- [ ] The Bastion **Slowed expiry** stamps the CURRENT turn coord — confirm it clears exactly at the next turn advance and reads right at the table.
-- [ ] `agi` as the Agility skill id in `edhaRollOpposedSkill` (Bastion/Magnum saves) — if the roll comes back flat 1d20, the id is wrong (one-line fix).
-- [ ] Magnum's HP write targets `hea.max.override` on the summon (created with an override max) — confirm value AND max both climb by the same amount.
-- [ ] The Colossus splash + Tempered Edge rider both key off `edhaDealerOf` — confirm they attribute correctly when the GM clicks Apply on the Construct's damage card (15 s dealer memory).
-- [ ] Trade Routes' Teleport for a non-owner-moved token relies on the `move-token` relay (GM online).
-- [ ] Player (non-GM) flows: Bastion via `civ-fortify`, links via `civ-link`, reforge via `civ-dismantle` — a GM must be online for all of these; Forge Construct itself still needs actor-create permission.
-
-# Power (Tyrith, deity) (2026-07-02c)
-
-Setup: a Power PC (with a melee weapon) + one allied PC + several enemies on a gridded scene.
-The Kneel movement VETO itself passed the 07-17 bench — these rows are the talent takeovers and
-escalation economy around it.
-
-## 1. Kneel + Absolute Authority (Black vs Cognitive takeovers) ⚑
-- [ ] **Kneel** (1 Action, 1 Inv) → refused **without cost** with no target / target out of Black range. On use: ONE engine Black roll vs the target's Cognitive (no stray system card). Success → the target wears the new **Compelled** icon, expiring at the start of your next turn (owner-relative); the card states the move-toward-or-nothing clause (GM-run). Failure → status-free, cost stays spent.
-- [ ] **Kneel's passive advantage** ⚑ — with a target bearing Compelled/Frightened/Weakened **in Black range** synced-targeted, your attack roll opens with **advantage** pre-selected (dialog) or fast-forwards with it; no advantage when out of range or the status is absent. `frightened` is a GM-applied marker (nothing auto-inflicts it).
-- [ ] **Absolute Authority** (2 Actions, 2 Inv) → refused **without cost** unless the target bears Compelled/Frightened/Weakened (gate ENFORCED) and stands in Black range. Success → the "you choose its next action (no direct self-harm)" card (forced volition — GM-run). Failure → the target is **Weakened until the end of ITS next turn** (auto-applied, auto-expiring).
-
-## 2. Crown of Thorns ⚑
-- [ ] Arm (2 Actions, 2 Inv) → re-arm refused pre-cost. While armed, **every engine-resolved Black/Red vs-Cognitive test pings**: Kneel and Absolute Authority (success AND failure), plus Sovereignty's Censure / Decree of Ruin if the same PC owns them — the tested character takes **spirit = Presence** (spirit bypasses deflect = "cannot be reduced").
-- [ ] The arming card's **"Crown ping"** button covers tests the engine did NOT resolve: target the character, click → same spirit damage. Wearer/GM only; refused when the scene ended (flag cleared).
-
-## 3. Warlord's Advance + Momentum of Victory ⚑
-- [ ] **Warlord's Advance** (1 Action, 1 Inv) → use arms the strike; your next WEAPON hit auto-adds **[Tier][Die red] impact** into the SAME damage application (chat line; don't also roll the card). **Kill** (that hit drops the target live→0, rider included) → you gain **Temp HP = tier** + the whispered **10 ft free-move** prompt. **Survivor** → advantage armed on your next **Presence-attribute** test (the vs-that-target binding + until-your-next-turn expiry are card-noted/trusted). No more GM kill adjudication.
-- [ ] **Momentum of Victory** (Free, 1 Inv + **Opportunity — listed, never auto-deducted**) → posts the move-15-ft + free-Strike card; the next WEAPON hit auto-adds **+tier impact**, consumed on fire.
-
-## 4. Unstoppable Advance (the new move-through watcher) ⚑
-- [ ] Use (1 Action, 1 Inv; re-use refused while active) → moving your token **through an enemy's square** deals that enemy **[Tier][Die red] impact** (own roll per enemy, auto-applied GM-side) — **once per enemy per activation**, however many segments you drag. Allies and corpses are skipped.
-- [ ] While armed, applying **Slowed / Immobilized / Prone** to you is **shrugged off** (the effect is deleted with a chat note).
-- [ ] The flag **expires after your next turn** (sweep); armed out of combat, it stamps at the first turn change. Trample kills feed Warlord's Fury (real attribution via burst-apply).
-
-## 5. Investiture of Command + Warlord's Fury ⚑
-- [ ] **Investiture of Command** (2 Actions, 2 Inv) → refused **without cost** with zero valid targets (allies = same disposition, alive, in **Black** range; max 3). ONE shared **[Tier][Die black]** roll → each ally gains that **Temp HP** (keeps-higher, no stacking) + **advantage on its next attack test** (consumed on their next attack). The caster then takes **tier spirit** automatically. No more first-ally-only behavior.
-- [ ] **Warlord's Fury** (2 Actions, 2 Inv; re-arm refused pre-cost) → melee WEAPON hits gain **+tally** (dealt type), tally = hostile non-summon NPC victims YOU dropped below half max HP (once each) **+1 per kill** (one blow crossing both counts twice), capped **tier×2** live. PC/ally/summon drops do NOT count (Ben R7). Whispered tally cards on each rise.
-
-## 6. Mantle of the Aspirant (capstone, once/scene) ⚑
-- [ ] Use (3 Actions, 3 Inv) → second use refused pre-cost. You wear the **+2 all-defenses** AE for the scene; your melee WEAPON hits auto-add **+tier spirit**.
-- [ ] **Ally aura** ⚑ — an ally standing in your **Black** range rolls ANY test at **+1** (a flat `+1 Mantle of the Aspirant` term on the d20 roll); the wearer is excluded; out of range = no bonus. **Watch-item: dialog rolls** — if the configure dialog rebuilds the formula and drops the +1, that's the known risk (fallback = AE, named backlog).
-- [ ] **Redirect** — taking damage whispers the redirect card (budget = min(tier, HP lost)): target a willing ally in Black range, click, choose the amount → the ally takes it (with `edhaRedirected` when applied directly — Devoted Conduit stays honest), the wearer heals back the same; the button decrements until the budget is spent. Damage fully eaten by Temp HP prompts nothing.
-
-## 7. Watch-items (couldn't self-verify — no Foundry session)
-- [ ] The Mantle **+1 NumericTerm append** vs `configureModifiers`/dialog re-configuration — the one genuinely new roll-pipeline surface this pass.
-- [ ] The move-through watcher samples **one straight segment per updateToken** — bench multi-waypoint drags (v13 fires per movement operation, but confirm) and diagonal near-misses (center-distance ≤ half token width).
-- [ ] `compelled`/`frightened` status registration + the Compelled owner-relative expiry (applied via `edhaApplyTimedStatus`, not the auto-stamp set).
-- [ ] Warlord's Advance's pre→post handoff (`_edhaWarlordHit`, 15 s) when the GM clicks Apply on the damage card late.
-- [ ] Crown of Thorns pings ride `burst-apply` — a player wearer needs a GM online.
-- [ ] All scene state (crown/fury/unstoppable/mantle flags, the Mantle AE, compelled/frightened icons) clears on **deleteCombat**.
-
----
-
-# Knowledge (Gnothis, deity) (2026-07-03)
-
-Setup: a Knowledge PC (with a weapon) + at least one allied PC (a **different player**, for the
-multi-player visibility items) + a couple of enemies on a gridded scene.
-
-## 1. Studied Mark + the Insight economy ⚑
-- [ ] **Studied Mark** (1 Action, 1 Inv) → refused **without cost** with no target / target outside Green Attunement Range. On use: the target gets **2 Insight** and a whispered card (owner + GM only) reads out its current HP, conditions, and Physical/Spiritual defenses.
-- [ ] ⚑ **The `insight` status's stack count** — confirm the token HUD (or the effect's data in the console) actually shows **2**, not just the icon present. This is the single biggest bench-verify item in the tree: the count is written via `effect.update({"system.count": n})` — if the real cosmere-rpg field isn't named `count`, the icon will still toggle on/off correctly but the NUMBER shown will be wrong. Named fallback: swap the field in `edhaGnosisInsightOn`/`edhaGnosisApplyInsightGM` once confirmed.
-- [ ] Studied Mark a **second, different** creature → the first creature's Insight/icon clears to 0 automatically (one bearer at a time, tree-wide).
-
-## 2. Predatory Strike + Hunter's Discipline (weapon-hit riders)
-- [ ] **Predatory Strike** (1 Action, 1 Inv) → arms the rider (no stray card/roll of its own); your next weapon hit auto-adds **[Tier][Die red] × max(Insight on target, 1)** vital, then places **+1 Insight** on the actual target hit. A **miss** does nothing (no bonus, rider stays armed for the next attempt — confirm it does NOT fire on a 0-damage call).
-- [ ] **Hunter's Discipline** (passive) — hitting your OWN bearer with anything (not just a weapon) adds **+Tier vital**; hitting a NON-bearer or an ally hitting the bearer does **not** trigger this (owner-only, unlike Pack Share).
-- [ ] **On-kill** ⚑ — your bearer drops to 0 → a **whispered** (owner + GM only) prompt lists creatures in Green range; clicking one transfers **floor(slain Insight / 2)** to it. No candidates in range → an informational card, no prompt.
-
-## 3. Killing Blow + The Final Study (Red vs Physical takeovers) ⚑
-- [ ] **Killing Blow** (1 Action, 2 Inv) → refused **without cost** if you have no bearer (no target-picking needed — it resolves against your current bearer automatically). Roll 1d20+Red vs the bearer's Physical defense (public card, ONE engine roll, no stray system card). **Success** → `[Tier][Die red] × Insight count` vital, ALL Insight cleared. **Failure** → `[Tier][Die red] × 1` vital, **1** Insight removed (not cleared).
-- [ ] **The Final Study** (3 Actions, 3 Inv, capstone) → same test shape; second use in the same scene refused pre-cost. **Success** ALSO lists allies in Green range for a free Strike (player-executed, not auto-rolled).
-- [ ] Confirm **no name collision**: your Green PC's actual "Apex Predator" (≥3 enemies in terrain → advantage) is unaffected by anything in this tree — they are now different cards entirely.
-
-## 4. Accumulate (start-of-turn tick + damage→Inv, two different mechanisms)
-- [ ] Start of your turn, bearer in Green range, Insight < 5 → **+1 Insight**, auto (public card). Bearer out of range, or Insight already at 5 → nothing.
-- [ ] Bearer takes damage from **any** source (not just your own hits) → **+1 Investiture**, capped **once per round** — this rides the SAME generic dispatch as Life's Prognosis (`edha-marked-damage-trigger`), not new engine code; confirm it doesn't also fire a second time in the same round from a different damage source.
-
-## 5. Pack Share + The Pack (ally riders, both stack if both armed) ⚑
-- [ ] **Pack Share** (1 Action, 1 Inv) → arms for the scene (re-arm refused pre-cost); the public arming card includes the HP/conditions/defenses reveal — confirm your **ally's own player** (not just the caster) can see this card and the "first hit places Insight" button context.
-- [ ] An ally (not you) hits the bearer in your Green range → **+Tier vital**, auto. Once per round, the FIRST such hit ALSO places **+1 Insight** — confirm a second ally hit the same round adds the damage bonus again but does NOT place a second Insight.
-- [ ] **The Pack** (1 Action, 2 Inv) → same ally-hit shape, but the bonus is **+ your current Insight count** (live, re-read each hit) instead of a flat Tier; its own independent once-per-round Insight-placement trigger.
-- [ ] Arm **both** Pack Share and The Pack in the same scene → an ally's hit stacks BOTH bonuses (additive, by design — R10) and can place up to **+2** Insight from the same first hit of the round (one from each talent's own trigger — R11).
-
-## 6. Death Mark (on-kill full transfer + the ally-choice burst) ⚑
-- [ ] Your bearer drops to 0 → a whispered (owner + GM only) prompt transfers the **full** slain Insight count to a chosen creature in Green range (same shape as Hunter's Discipline, just the full count instead of half).
-- [ ] The SAME on-kill event ALSO posts a **public** card (not whispered) with one button per ally in Green range — confirm each ally's OWN controlling player can see it and click their own ally's button, target an enemy, and see `[Tier][Die red]` (baked off the KNOWLEDGE OWNER's own Tier/Red rank, not the acting ally's) land on that enemy.
-- [ ] If a PC also owns **both** Hunter's Discipline and Death Mark, confirm BOTH transfer prompts post independently (R9) — clicking one, then the other, leaves whichever was clicked LAST as the actual final bearer.
-
-## 7. Watch-items (couldn't self-verify — no Foundry session)
-- [ ] **⚑ TOP ITEM**: `effect.system.count` as the stackable `insight` status's real field name (see §1) — everything else in the tree is unaffected if this needs a one-line swap.
-- [ ] The Predatory-Strike pre→post handoff (`_edhaGnosisPredatoryHit`, 15 s) on a late GM Apply click (the standing Warlord's-Advance-shaped limitation).
-- [ ] Multi-player visibility: Pack Share's reveal card and Death Mark's ally-burst card are deliberately **public** (not whispered) so other players' controlled allies can see/click — confirm this reads cleanly at the table and doesn't feel like a spoiler leak to the GM.
-- [ ] All Knowledge scene state (`gnothisBearer`, `predatoryStrikeNext`, `packShareActive`, `thePackActive`, `finalStudyUsed`, the `insight` status/effect, `markedBy.insight`) clears on **deleteCombat**.
-
----
-
-# Order (Tessavain, deity) (2026-07-03b)
-
-Setup: an Order PC + TWO allied PCs (one controlled by another player's client, for the
-multi-client rows) + several enemies on a gridded scene. The `edict` + `covenant` icons are
-tinted — if a tint doesn't render, fall back to a distinct icon file (the Death-tint caveat).
-
-## 1. Edict + the violation model (the spine) ⚑
-- [ ] **Edict** (1 Action, 1 Inv) → refused **without cost** with no target / target outside Blue Attunement Range; the prohibition dialog's Cancel spends nothing. On use with "move from its space": the target wears the blue **Edict-Bound** padlock and the card posts with the **⚖ Violated** button (+ the Lawkeeper GM-reveal line if owned, + the "you may Seal it" note if Sealed Edict is owned).
-- [ ] **Move watch** — move the bound token → the owner gets a whispered "Edict watch" PROMPT (once per round). Confirm nothing auto-fires (forced movement is not "taking the action" — the button is the ruling).
-- [ ] **⚖ Violated** click → ONE [Tier][Die blue]+Int spirit roll auto-applies + **Disoriented** (expires after the owner's next turn), the Edict is consumed, the padlock clears (unless another Edict/Decree still binds them). A second click warns "no longer active" and does nothing (no double damage).
-- [ ] **Investiture watch** — bind "activate Investiture", the bound enemy spends Inv → prompt. **Attack watch** — bind "attack <chosen ally>", the bound enemy attacks THAT synced ally → prompt; attacking anyone else → NO prompt.
-- [ ] **Cap** — with tier Edicts up, placing another makes the **oldest fade** (whispered note; that target's padlock clears if no other law binds it). Repeat Edicts on the SAME target (different prohibitions) are legal — each resolves separately.
-
-## 2. Sealed Edict + Verdict (the Discipline courts) ⚑
-- [ ] **Sealed Edict** (Free, 1 Inv) → refused **without cost** with no unsealed Edict. Seals your MOST RECENT unsealed Edict (the card names it). On that Edict's violation the engine ALSO rolls the target's **Discipline vs your Blue** (one card — the engine rolls the foe): a FAIL adds [Tier][Die blue] spirit + **Weakened until the end of ITS next turn**; "holds firm" adds nothing. Confirm it never applies on trust.
-- [ ] **Verdict** (2 Actions, 2 Inv) → refused **without cost** when the synced target isn't bound by YOUR Edict or is out of Blue range. ONE engine **Blue vs Cognitive** roll (no stray system card). **Failure** → card, cost stays spent, the Edict survives. **Success** → that Edict resolves in full (damage + Disoriented + Sealed rider if sealed, consumed), THEN each **other** enemy within 10 ft rolls Discipline vs your Blue — failures take ONE shared [Tier][Die blue] spirit roll + Disoriented until the start of your next turn; the bound target itself is NOT in the 10 ft court.
-
-## 3. Covenant + the proximity buff ⚑
-- [ ] **Covenant** (1 Action, 1 Inv) → refused **without cost** on: no target, an enemy, a non-adjacent ally (**touch enforced** ≤5 ft), or an ally you already covenant. On use: the ally wears the white **Covenant** aura icon; the card carries the Break button + the Aid-at-range note (by hand).
-- [ ] ⚑ **Proximity AE** — with owner and ally within White Attunement Range of EACH OTHER, both wear a "+1 all defenses — Covenant (<owner>)" AE (confirm the displayed defense values actually bump). Move them apart → both AEs drop (≈250 ms debounce or the next turn change). The OWNER wears only ONE +1 even with two partners in range; an ally covenanted by TWO different Order PCs wears one +1 per owner.
-- [ ] **Break watch** — either partner damages the other → the owner gets the whispered "Covenant watch" prompt (once per pact per round); the Break button ends the pact (icon + AEs clear).
-- [ ] **Cap** — tier Covenants; an over-cap pact dissolves the oldest.
-
-## 4. Bear Witness + Shoulder the Oath (the White riders) ⚑
-- [ ] **Bear Witness** — at the START of each ROUND (the round counter advances), every covenanted ally within White range gains **Temp HP = your White rank** (keeps-higher, never stacks; public card). Out-of-range or 0-HP allies get nothing; the OWNER gets nothing. Confirm round 1 (combat start) fires, and a mid-combat reload does NOT double-grant.
-- [ ] **Shoulder the Oath** (Reaction, no cost) — a covenanted ally LOSES HP with you in White range → whispered card: take **floor(D/2)** yourself as the SAME damage type, the ally heals back **min(D, half + White)**, BOTH gain White-rank Temp HP. Once per round; damage fully eaten by Temp HP prompts nothing; your own hit on the ally prompts the Covenant watch, not Shoulder.
-
-## 5. Lawkeeper's Eye + Concord ⚑
-- [ ] **Lawkeeper's Eye** ⚑ — with an Edict-bound enemy synced-targeted, the OWNER's attack roll opens with **advantage** pre-selected (dialog) or fast-forwards with it; an allied PC (same disposition) attacking it ALSO gets advantage; an enemy attacking it does NOT. "While you can see" is owner-judged (no LOS primitive). The intent-reveal clause is the GM-narrated line on the Edict card (the Read-the-Threads no-AI-intent backlog).
-- [ ] **Concord** (2 Actions, 2 Inv) → refused **without cost** with zero Covenants or when already formed this scene. While armed: a covenanted ALLY's first damaging hit on an ENEMY each round gains **+your Presence** (same type as the hit, chat note); a second hit the same round does NOT; the OWNER's own attacks never do; a clean miss leaves the rider for the next hit. The Aid-grant Free Action is a card note (by hand).
-
-## 6. Final Decree (capstone, once/scene) ⚑
-- [ ] Use (3 Actions, 3 Inv) → refused **pre-cost** on re-use / with no enemies in Blue range; the dialog's Cancel spends nothing. On use: EVERY enemy in Blue range wears the padlock (decree-bound — does NOT count against the Edict cap), Covenant allies are named Witnesses on the card.
-- [ ] Watchers prompt on any bound enemy taking the prohibited action; **⚖ Violated (target the violator first)** fires the batch: (1) every active Edict resolves individually — own roll, own target, Sealed riders included; already-dead targets are skipped but consumed; (2) ONE shared **[Tier][Die WHITE]** roll → Temp HP to every Witness (keeps-higher) + advantage on their next attack test; (3) ONE shared [Tier][Die blue]+Int spirit roll to each enemy within 10 ft of the violator — **violator included**. Padlocks clear except where real Edicts remain; a second click no-ops.
-
-## 7. Watch-items (couldn't self-verify — no Foundry session)
-- [ ] The `edict`/`covenant` status **tints** on token icons (the Death-tint caveat — fallback = distinct icon files, one-row change in `EDHA_STATUSES`).
-- [ ] The Covenant proximity sweep on `updateToken` — watch AE create/delete churn on long drags (250 ms debounce) and confirm `system.defenses.*.bonus` folds into the displayed values.
-- [ ] `dis` as the Discipline skill id in `edhaRollOpposedSkill` (the Sealed Edict/Verdict courts) — a flat-1d20 foe roll means the id/attr is wrong (one-line fix; attr wired `wil` per foundry-build's SKILL_ATTR).
-- [ ] The start-of-ROUND primitive fires exactly once per round boundary (combat start + round advances) and never on mid-round turn changes.
-- [ ] The Investiture-spend watch fires on ANY inv decrease (a GM hand-edit also prompts — the owner judges; that's the prompt-not-fire design).
-- [ ] Player (non-GM) flows: Edict/Decree statuses + damage land via the `toggle-status`/`burst-apply` relays; the proximity AE + every watcher/prompt runs GM-side — a GM must be online.
-- [ ] All Order state (`edicts`/`covenants`/`concordActive`/`finalDecreeUsed`/`decree`, both icons, the covBuff AEs) clears on **deleteCombat**.
-
----
-
-# Black — 07-05 test-pass fixes (the rows still unbenched)
-
-Fixes from Ben's 2026-07-05 in-Foundry Black pass. Rulings baked in: Isolated = **no ally within
-5 ft (adjacency incl. diagonals)** everywhere; Reserve spends through the Spend-Investiture
-dialog; Extract Thought = auto-resolved passive; Opportunity menu = shared primitive. 07-17 bench
-already passed the setup checks, Draw Mana's isolation accounting, the Dread Presence veto, the
-Withering Ray cost cell, and both watch-items (the Opportunity menu firing + the dialog injection).
-
-## 1. Isolation (5 ft ruling + visibility) ⚑
-- [ ] **Isolated icon (auto-sync)** — in combat, a combatant with no living ally adjacent (5 ft, diagonals count) shows the **Isolated** net icon automatically; move an ally adjacent → the icon clears by itself. Out of combat / combat end → all auto icons strip.
-- [ ] **Sapping Hex** — hit a target that has the Isolated icon → Weakened (regression); hit a NON-isolated one → nothing.
-- [ ] **Severance** — regression: vital conversion still fires vs an adjacent-ally-free target; and the stray **blank roll card is gone** (it was Predatory Patience's 0-heal Investiture card — now a labeled text card).
-- [ ] **Unnerving Approach** — move adjacent to an enemy, target it, use: whispered card lists its allies within 10 ft → click one → it's pushed [Size] ft directly away FROM YOUR TARGET (not from you), stopping at walls; Isolated marker re-syncs. Once per turn enforced. ⚑ (also: player-owned client → the push relays through the GM)
-- [ ] **Predatory Patience** — attack a Weakened creature via the roll dialog: the breakdown shows **`1d8[Predatory Patience]`** (real die, labeled), not `1d(2x3+2)`; on the applied hit a **labeled card** "⚡ Predatory Patience — regains 1 Investiture" posts.
-
-## 2. Ritual (Reserve spend + Double Dip + card labels) ⚑
-- [ ] **Reserve readout** — sits under the **Investiture bar** (red pill "🩸 Reserve r / cap"), no longer in the talent/attr/skill budget bar.
-- [ ] **Spend from Reserve** — with Reserve ≥ cost, use any Investiture talent → the Spend-Investiture dialog shows a **"Pay from Reserve instead"** checkbox; check + Continue → Investiture untouched, Reserve drops, chat card confirms. Unchecked → Investiture spends as before. (Not offered when Reserve < the full cost.)
-- [ ] **Double Dip** ⚑ — target an enemy, use it (2 Inv) → its own Black test auto-resolves vs the target's **Cognitive** defense (verdict card). On success, use **Withering Ray / Dark Investiture on that target** → a **"pay from Reserve?"** prompt replaces the HP loss on Yes; card states no Blood Price / no re-banking. Against an UN-marked target → no prompt, HP paid as before. Marks clear at combat end.
-- [ ] **Dark Investiture** — card text now names the immediate [Tier][Die] vital + the ongoing Afflicted tick (Model A, as approved).
-- [ ] **Predator's Due** — kill a creature → the heal card is **labeled** ("⚡ Predator's Due (name) — regains X health; regains 1 Investiture") with the dice under it.
-
-## 3. Subjugation (control visibility + Opportunity menu) ⚑
-- [ ] **Predatory Insight (passive)** — WITHOUT ever using the active: drop an enemy to 0 focus **via Whispered Doubt's extra loss** (spend its focus down so the +1 loss lands the 0) → the owner regains 1 focus. Also via a direct GM spend to 0. (Root cause: our own Whispered-Doubt write bypassed the focus watcher.)
-- [ ] **Opportunity menu** ⚑ — roll any test until an **Opportunity** shows (plot die or nat 20) → a menu card posts: "Predatory Insight: Advantage on your next Deception test this round — spend 1 Investiture" + the canon spends as a text footer. Click → 1 Inv deducted, next Deception test this round rolls advantage, menu disables (one spend per card). Let the round pass without testing Deception → the grant silently expires.
-- [ ] **Hollow Command (auto-resolved)** ⚑ — target an enemy, use it → its Deception test resolves vs the target's **Spiritual** defense. Success → target wears **"Cannot Act (Hollow Command)"** (auto-expires end of ITS next turn) and **Siphoned Will** auto-pays focus = tier (no confirm card needed). Failure → verdict card only, no focus. No target → fallback click-card.
-- [ ] **Extract Thought (now passive)** ⚑ — target an enemy and roll a **Deception** skill test: total ≥ its Spiritual defense → "🧵 Extract Thought" card + the **"No Reactions"** marker on the target (auto-expires end of YOUR next turn); below its defense → silence. No synced target → nothing; unreadable defense → owner-judged click-card.
-- [ ] **Puppeteer cue** ⚑ — a combatant at **0 focus** in your Attunement Range starts its turn → you get a whispered **reaction card**; click → spends 2 Focus + 1 Inv and posts the public "chooses one of its actions" note (the action itself stays GM-run). Once per round.
-
-## 4. Watch-items (couldn't self-verify — no Foundry session this pass)
-- [ ] The Isolated marker sync doesn't flicker on long drags (it's debounced 250 ms) and never fights Maelith's inflicted Isolated (markers carry `isoMarker`; inflicted effects don't).
-- [ ] Dread Presence's veto doesn't block legitimate moves (it blocks only moves that measurably reduce the distance to ANY living same-disposition token while Weakened + in range). GM override: toggle Weakened off, move, re-apply — or ask and we'll add a bypass key.
-- [ ] `noactions` / `noreactions` marker expiry: end of the TARGET's next turn (Hollow Command) vs end of the OWNER's next turn (Extract Thought).
+## The 2bAB pre-deploy audit rewires (2026-07-26 — 15 dead adversary copies of tree talents, wired)
+
+The pre-deploy audit found 15 bespoke adversary abilities sharing a tree talent's name that had
+been riding the deleted engine name-keys — dead, their texts still claiming engine wiring. Each
+now carries its tree twin's rule on its own item; nothing below has ever run in Foundry.
+**Re-drag each adversary from the pack first** (placed copies are frozen snapshots).
+
+- [ ] **2bAB-1 — Flame Surge — Cragdrake Alpha AND Hazewyrm Elder — FIXED 07-26n, BLOCKED-ON-DEPLOY (pack rebuild: `foundry-build adversaries` + ⟳ Sync Adversaries + re-import BOTH bosses)** — the run-4 FAIL ("💥 Flame Surge hit: **= 0 (0)** + 3 (red) → 3 energy" on both fresh imports) was DATA: the `edha-burst` resolver reads `item.system.damage.formula` and both abilities had an `events` block but no `damage` block. Both now author **2d8 energy** (the ruling-122 baked dice; scratch pack build verified the compiled items read `dmg=2d8 energy` with the breath text intact). **Re-test AFTER the rebuild + fresh re-imports** (placed copies stay frozen at 0): the burst places, the save rolls, and the card reads a real 2d8 total + 3 (red), halved on a successful save.
+*(2bAB-2 and 2bAB-3 — Crownox Ring Shield Wall + Retributive Guard — PASSED in bench run 3
+(2026-07-26k) on a FRESH pack import, three unlinked ring tokens: the half-1d6 pre-reduction
+applied by itself and was named in chat ("reduced by 1 — Shield Wall", calc "5 - 1"), and the
+retaliate PROMPT posted by itself from the damage — one per adjacent ring-mate — with the click
+running White vs Spiritual through the contest core and dealing "3 spirit" on the success.
+Retired; evidence in the 07-26k delta.)*
+- [ ] **2bAB-4 — Guiding Signal — The Reckoning, Bellwether AND Callthief** — use it on each → ⚑ The designate marker lands (White Attunement Range at role rank) and the raise-the-stakes note posts — the use used to resolve nothing.
+- [ ] **2bAB-5 — Whispered Doubt — Tollbird Flock** — an enemy of the flock spends focus within its Black range → ⚑ It loses 1 MORE focus, announced, once per round per enemy — the watch is on the item now.
+- [ ] **2bAB-6 — Rootling Swarm — Grasping Vines + Territorial Instinct** — use each on a targeted character → ⚑ Vines: Green vs Physical auto-resolves → Restrained on a success. Instinct: Green vs Survival through the contest core → Immobilized; the turn-start cue still posts as the floor.
+- [ ] **2bAB-7 — Tussock-Sow — Drive the Prey** — use it on a targeted character → ⚑ Green vs Survival through the contest core; Slowed on a success; the move-away stays GM-narrated per the card note.
+- [ ] **2bAB-8 — Stitchmother — Adaptive Mutation + Reknit Form** — target a thrall, use Mutation; then use Reknit Form → ⚑ Mutation posts the two-graft chooser (+2 keen / 2-vital venom, no third option) and the bonuses ride the thrall's Slam. Reknit posts the injury picker; the buttons charge NOTHING extra (her card's flat 1 Inv + 1 Focus already paid).
+- [ ] **2bAB-9 — Reeve-Owl — Sovereign of Solitude** — target the moving Weakened creature, use it → ⚑ Immobilized lands, Black vs Spiritual auto-resolves, and a success rolls 1d6 vital — the cue's "use the item to auto-resolve" promise is true for the first time.
+- [ ] **2bAB-10 — Surecat — Intercept** — use it with the Forewarned creature targeted → ⚑ The confirm card posts; confirming puts disadvantage on that creature's next test. The turn-end cue still posts.
+
+## Still unbenched from the manual re-litigation (2026-07-16c)
+
+- [ ] ⚑ **Senses field on the sheet** — an adversary block with an explicit `senses` value shows
+      that range on the SHEET (the `system.senses` DataModel shape is unverified from the repo —
+      a dropped field silently falls back to the AWA default, which token vision masks).
+- [ ] ⚑ **Veil auto-toggle (Stalker)** — Stalker standing in darkness: the Veil marker enables
+      itself + a GM whisper; walk it into light: the marker releases. Toggle it ON manually in
+      light (cover): the engine leaves it alone.
 
 ---
 

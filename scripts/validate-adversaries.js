@@ -79,7 +79,9 @@ const dir = `${MODROOT}/packs/edha-adversaries`;
       // their native trait/weapon/action type (07-16, both flagged adversaryTalent). Only a stray
       // talent-TYPE embed (the actual 07-14 failure mode) is caught here.
       if (isTalentEmbed && !["trait", "weapon", "action"].includes(it.type)) fail(`${a.name}/${it.name}: talent embed is type "${it.type}" — not a rendered sheet section (needs trait/weapon/action; a talent-type embed is invisible)`);
-      if (isTalentEmbed && !Object.keys(it.system.events || {}).length && !(it.effects || []).length) console.log(`    (note: ${it.name} embed carries no events/effects — name-based engine automation only)`);
+      // Wording updated 2026-07-26: "name-based engine automation only" became a lie when the 2b
+      // migration deleted the last name-key — an embed with no events/effects now auto-fires NOTHING.
+      if (isTalentEmbed && !Object.keys(it.system.events || {}).length && !(it.effects || []).length) console.log(`    (note: ${it.name} embed carries no events/effects — nothing auto-fires for this copy; its text must stand on its own or declare NO NAMEABLE HOOK)`);
       const dtxt = dmg && dmg.formula ? ` dmg=${dmg.formula} ${dmg.type}` : "";
       const mod = act.modifierFormula ? ` +${act.modifierFormula}` : "";
       // effects[] on an embedded item must be ID strings with matching baked effect keys

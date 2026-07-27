@@ -182,8 +182,11 @@ The pass isn't done when the code is: the docs ARE the knowledge transfer to the
    dashboard (`--check`). The MD is the only thing you edit; the HTML is generated, never
    hand-touched. (This replaced `build-test-sheet.js` / `EDHA_FOUNDRY_TEST_SHEET.html`, both
    deleted 2026-07-18.)
-   Write rows knowing how they surface there: the row's **first bold run is its label** in Ben's
-   copied results (bold the talent name first), section-title/prose keywords ("pack rebuild",
+   Write rows knowing how they surface there: **a row is a `- [ ] **label** — …` CHECKBOX line,
+   never a markdown table** — the parser swallows a table as prose, so its rows render dead on
+   the Bench tab (no marks, no Copy-for-Claude; 341 migration rows shipped that way before the
+   07-26d gate made a checklist table a build failure). The row's **first bold run is its label**
+   in Ben's copied results (bold the talent name first), section-title/prose keywords ("pack rebuild",
    "⟳ Sync", "relaunch", "F5", "engine-only") become the section's deploy chips, and **rewording a
    row resets Ben's saved mark for it** — so reword when the test changed (a re-test is wanted) and
    leave text alone when it didn't.

@@ -1,1595 +1,220 @@
 {
-  "_README": [
-    "IRON-RULE-2b CLASSIFICATION — the per-talent record behind EDHA_EDITABILITY_AUDIT.md §9.",
-    "",
-    "Re-derived 2026-07-24i against the FULL vocabulary: 43 handler types (31 edha + 12 native)",
-    "and 27 event types (10 edha + 17 native). SUPERSEDES the 07-24f pass, which enumerated only",
-    "the module's own 31 handlers and produced the void 61/16/118/26 split.",
-    "",
-    "METHOD — this matters, it is why the 07-24f numbers were wrong. Every one of the 218 names then on the list",
-    "was classified by READING THE CODE AT ITS CALL SITES, never from the engine's tree-section",
-    "header ledgers. The headers describe a talent's MECHANIC accurately but say nothing about",
-    "which HANDLER can express it; classifying from headers gave Red '8 of 9 convertible' when",
-    "the call sites gave 3. Tooling: call sites extracted with lint-refs pass 7's own comment",
-    "stripping (so header ledgers cannot read as call sites), then the body of every function",
-    "reached from a name-bearing line was read in full. 218 names, 527 call sites, 132 dispatched",
-    "functions, 93 merged context windows.",
-    "",
-    "BUCKETS",
-    "  1  — an existing handler (edha OR native) expresses it AS-REGISTERED. Pure data move.",
-    "  1b — an existing handler + ONE new schema field (or one small engine tolerance change).",
-    "  2  — needs a NEW generic handler. `needs` names which.",
-    "  3  — genuinely ENGINE-OWNED. Still leaves the allowlist via marker-rule dispatch + a cue",
-    "       rule + an ENGINE_OWNED: line (audit §9b — bucket 3 is NOT an exit from the ratchet).",
-    "",
-    "THE DIVIDING LINE (verified in the system source, not inferred — see audit §9k):",
-    "  Native handlers write SELF/OWNER state (`update-actor` Target is `parent` or a fixed",
-    "  `global` UUID; there is no native 'current user target').",
-    "  Native EVENTS are likewise OWNER-SCOPED: the system's dispatcher resolves each hook to ONE",
-    "  document and, for an Actor, iterates `actor.items` — the items of the actor the event",
-    "  happened TO. A talent never hears about a creature that is not its own actor.",
-    "  => native = things that happen to ME; edha = targeting, and watching anyone else."
+ "_README": [
+  "IRON-RULE-2b CLASSIFICATION \u2014 the per-talent record behind EDHA_EDITABILITY_AUDIT.md \u00a79.",
+  "",
+  "Re-derived 2026-07-24i against the FULL vocabulary: 43 handler types (31 edha + 12 native)",
+  "and 27 event types (10 edha + 17 native). SUPERSEDES the 07-24f pass, which enumerated only",
+  "the module's own 31 handlers and produced the void 61/16/118/26 split.",
+  "",
+  "METHOD \u2014 this matters, it is why the 07-24f numbers were wrong. Every one of the 218 names then on the list",
+  "was classified by READING THE CODE AT ITS CALL SITES, never from the engine's tree-section",
+  "header ledgers. The headers describe a talent's MECHANIC accurately but say nothing about",
+  "which HANDLER can express it; classifying from headers gave Red '8 of 9 convertible' when",
+  "the call sites gave 3. Tooling: call sites extracted with lint-refs pass 7's own comment",
+  "stripping (so header ledgers cannot read as call sites), then the body of every function",
+  "reached from a name-bearing line was read in full. 218 names, 527 call sites, 132 dispatched",
+  "functions, 93 merged context windows.",
+  "",
+  "BUCKETS",
+  "  1  \u2014 an existing handler (edha OR native) expresses it AS-REGISTERED. Pure data move.",
+  "  1b \u2014 an existing handler + ONE new schema field (or one small engine tolerance change).",
+  "  2  \u2014 needs a NEW generic handler. `needs` names which.",
+  "  3  \u2014 genuinely ENGINE-OWNED. Still leaves the allowlist via marker-rule dispatch + a cue",
+  "       rule + an ENGINE_OWNED: line (audit \u00a79b \u2014 bucket 3 is NOT an exit from the ratchet).",
+  "",
+  "THE DIVIDING LINE (verified in the system source, not inferred \u2014 see audit \u00a79k):",
+  "  Native handlers write SELF/OWNER state (`update-actor` Target is `parent` or a fixed",
+  "  `global` UUID; there is no native 'current user target').",
+  "  Native EVENTS are likewise OWNER-SCOPED: the system's dispatcher resolves each hook to ONE",
+  "  document and, for an Actor, iterates `actor.items` \u2014 the items of the actor the event",
+  "  happened TO. A talent never hears about a creature that is not its own actor.",
+  "  => native = things that happen to ME; edha = targeting, and watching anyone else."
+ ],
+ "generatedOn": "2026-07-24r",
+ "supersedes": "EDHA_EDITABILITY_AUDIT.md \u00a79a (07-24f) \u2014 treat 61/16/118/26 as void",
+ "source": "scripts/name-keyed-allowlist.json \u2229 register-skills.js call sites (218 names at the 07-24i derivation; 212 now \u2014 the six Warrior stances converted 07-24j)",
+ "vocabulary": {
+  "handlers": {
+   "edha": 31,
+   "native": 12,
+   "total": 43
+  },
+  "events": {
+   "edha": 10,
+   "native": 17,
+   "total": 27
+  },
+  "edhaEventsAreEngineDetected": [
+   "edha-apply-watch",
+   "edha-on-defeat",
+   "edha-take-damage",
+   "edha-deal-damage",
+   "edha-pre-deal-damage",
+   "edha-pre-test",
+   "edha-on-hit",
+   "edha-pre-use",
+   "edha-combat-timing",
+   "edha-opportunity"
   ],
-  "generatedOn": "2026-07-24n",
-  "supersedes": "EDHA_EDITABILITY_AUDIT.md §9a (07-24f) — treat 61/16/118/26 as void",
-  "source": "scripts/name-keyed-allowlist.json ∩ register-skills.js call sites (218 names at the 07-24i derivation; 212 now — the six Warrior stances converted 07-24j)",
-  "vocabulary": {
-    "handlers": {
-      "edha": 31,
-      "native": 12,
-      "total": 43
-    },
-    "events": {
-      "edha": 10,
-      "native": 17,
-      "total": 27
-    },
-    "edhaEventsAreEngineDetected": [
-      "edha-apply-watch",
-      "edha-on-defeat",
-      "edha-take-damage",
-      "edha-deal-damage",
-      "edha-pre-deal-damage",
-      "edha-pre-test",
-      "edha-on-hit",
-      "edha-pre-use",
-      "edha-combat-timing",
-      "edha-opportunity"
-    ],
-    "note": "The edha event system ALREADY covers engine-detected triggers. What no event system covers — native or edha — is fan-out to N observer actors; both dispatch to exactly one document (`transform` picks it). That, not 'no handler fires on engine events', is why H8 exists."
+  "note": "The edha event system ALREADY covers engine-detected triggers. What no event system covers \u2014 native or edha \u2014 is fan-out to N observer actors; both dispatch to exactly one document (`transform` picks it). That, not 'no handler fires on engine events', is why H8 exists."
+ },
+ "split": {
+  "1": 0,
+  "2": 0,
+  "3": 0,
+  "1b": 0,
+  "total": 0
+ },
+ "_splitNote": "Recomputed FROM the talents map below, not asserted \u2014 the map is the record; any summary that disagrees with it is the thing that is wrong. Verify with scripts/check-2b-classification.js.",
+ "handlerDemand": {
+  "_note": "Consumers = bucket-2 talents naming the handler in `needs`. Most need two, so these sum past the bucket-2 count. Bucket-1b talents are NOT counted here (they need a field, not a handler).",
+  "H8_edha_watch": {
+   "consumers": 0,
+   "trees": 7,
+   "verdict": "SURVIVES \u2014 and it is now the LARGEST demand. Justification corrected: not 'no handler fires on engine events' (false) but 'no event system, native or edha, fans out to N observer actors'. See \u00a79k. BUILT 07-24q; the `watch` enum widened 07-24r with `defeat` and `focus-change` (plus payloadTarget / whenTotal / chain), which is schema plus one dispatch call per hook rather than a handler. Still queued and measured in \u00a79o: damage-applied, turn-start, token-move, attack-declared. 2bY: Breaking Point + Shatter Focus left the column (the `damaged` watch kind landed WITH its payload). 2bZ: Cold Eyes (its last consumer here) converted via whenOnMyList."
   },
-  "split": {
-    "1": 7,
-    "2": 124,
-    "3": 17,
-    "1b": 43,
-    "total": 191
+  "H1_edha_def_test": {
+   "consumers": 0,
+   "trees": 6,
+   "verdict": "SURVIVES \u2014 the single cleanest win; it is also literally the EDHA_HEROIC_DEFTESTS table made authorable 2bY: Fault Line + Concussive Yield left the column (converted on their own save dials, not H1). 2bZ: Field Medicine (its last bucket-2 consumer here) converted; 0 remaining is correct."
   },
-  "_splitNote": "Recomputed FROM the talents map below, not asserted — the map is the record; any summary that disagrees with it is the thing that is wrong. Verify with scripts/check-2b-classification.js.",
-  "handlerDemand": {
-    "_note": "Consumers = bucket-2 talents naming the handler in `needs`. Most need two, so these sum past the bucket-2 count. Bucket-1b talents are NOT counted here (they need a field, not a handler).",
-    "H8_edha_watch": {
-      "consumers": 47,
-      "trees": 12,
-      "verdict": "SURVIVES — and it is now the LARGEST demand. Justification corrected: not 'no handler fires on engine events' (false) but 'no event system, native or edha, fans out to N observer actors'. See §9k."
-    },
-    "H1_edha_def_test": {
-      "consumers": 41,
-      "trees": 17,
-      "verdict": "SURVIVES — the single cleanest win; it is also literally the EDHA_HEROIC_DEFTESTS table made authorable"
-    },
-    "H3_edha_owner_list": {
-      "consumers": 34,
-      "trees": 6,
-      "verdict": "SURVIVES — larger than the 24 estimated; 6 trees hand-roll the identical capped-list-with-fizzle code. 3 further bucket-1b talents (Risen Servant, Speak with the Fallen, Pinpoint Charge) also read the list, so H3 unblocks 37 in total."
-    },
-    "H6_edha_prompt_pick": {
-      "consumers": 30,
-      "trees": 12,
-      "verdict": "SURVIVES — larger AND much cheaper than estimated: the post-card helpers are ALREADY generic and take the talent name as a mere label parameter. Devoted Presence (1b) also wants it, so 32 in total."
-    },
-    "H5_edha_cae_grant": {
-      "consumers": 3,
-      "trees": 7,
-      "verdict": "SURVIVES — but the 07-24f 'single atlas, six heroic paths' is wrong: leyline Black needs it too"
-    },
-    "H2_edha_zone": {
-      "consumers": 11,
-      "trees": 5,
-      "verdict": "SURVIVES — slightly smaller than the 15 estimated"
-    },
-    "H7_edha_aura": {
-      "consumers": 8,
-      "trees": 4,
-      "verdict": "SURVIVES — smaller than the 17 estimated; several presumed auras are really H8 watchers"
-    },
-    "H10_edha_focus": {
-      "consumers": 8,
-      "trees": 5,
-      "verdict": "NEW — involuntary focus gain/loss as a rule. edhaGainFocus/edhaDrainFocus have NO handler at all; the 07-24f pass missed this shape entirely."
-    },
-    "H9_edha_die_step": {
-      "consumers": 5,
-      "trees": 1,
-      "verdict": "NEW — the damage-die-step ledger (edhaSovAddStep). All of Sovereignty and nothing else: 5 bucket-2 consumers, plus 2 bucket-3 and 1 bucket-1b that read the same ledger. QUESTION for Ben — a handler for one tree, or keep Sovereignty ENGINE-OWNED wholesale?"
-    },
-    "H4_edha_use_gate": {
-      "consumers": 0,
-      "trees": 0,
-      "verdict": "DOES NOT SURVIVE as its own handler. Reading the call sites, every 'nothing spent' precondition is an inline guard specific to its talent (has a Construct / has a Covenant / target is Weakened / once per scene). The reusable parts are already covered: once-per-scene/turn/round by existing trigger gates, list-count by H3, target-state by H1. Fold in; do not build."
-    },
-    "H11_edha_enter_stance": {
-      "consumers": 0,
-      "trees": 1,
-      "verdict": "NEW, found 07-24j during the Warrior conversion — enter a named stance on a combat-timing trigger. Practiced Kata + Vigilant Stance. Tiny; fold into the H5 build."
-    }
+  "H3_edha_owner_list": {
+   "consumers": 0,
+   "trees": 4,
+   "verdict": "SURVIVES \u2014 larger than the 24 estimated; 6 trees hand-roll the identical capped-list-with-fizzle code. 3 further bucket-1b talents (Risen Servant, Speak with the Fallen, Pinpoint Charge) also read the list, so H3 unblocks 37 in total. 2bY: the last bucket-2 consumer (Set Charge / the charges ledger) converted in-pass \u2014 0 is drained, not unbuilt."
   },
-  "talents": {
-    "Entropy Strike": {
-      "tree": "deity/Chaos",
-      "bucket": "2",
-      "needs": [
-        "H1",
-        "H3"
-      ],
-      "why": "Blue vs Cognitive gate, then place a capped Omen + damage"
-    },
-    "Spreading Omen": {
-      "tree": "deity/Chaos",
-      "bucket": "2",
-      "needs": [
-        "H1",
-        "H3"
-      ],
-      "why": "same gate + nearest-second-enemy spread"
-    },
-    "Isolating Pressure": {
-      "tree": "deity/Chaos",
-      "bucket": "2",
-      "needs": [
-        "H1",
-        "H3"
-      ],
-      "why": "Black vs Physical, Isolated, conditional Omen-consume damage"
-    },
-    "Isolating Ruin": {
-      "tree": "deity/Chaos",
-      "bucket": "2",
-      "needs": [
-        "H1",
-        "H3"
-      ],
-      "why": "same shape, two damage instances"
-    },
-    "Unweaving": {
-      "tree": "deity/Chaos",
-      "bucket": "2",
-      "needs": [
-        "H1",
-        "H6"
-      ],
-      "why": "Black vs Spiritual, then a pick-one dispel card over target.effects"
-    },
-    "Cascade Collapse": {
-      "tree": "deity/Chaos",
-      "bucket": "2",
-      "needs": [
-        "H1",
-        "H3"
-      ],
-      "why": "sweeps own Omen-bearers in range, one roll, per-target defense gate"
-    },
-    "Unravel Everything": {
-      "tree": "deity/Chaos",
-      "bucket": "2",
-      "needs": [
-        "H1",
-        "H3"
-      ],
-      "why": "fill Omens to cap across range, then unravel all; Isolated branch"
-    },
-    "Void Sense": {
-      "tree": "deity/Chaos",
-      "bucket": "3",
-      "needs": [],
-      "why": "ENGINE-OWNED: per-viewer sense-through rendering (EDHA_SENSE_REVEALS client veil)"
-    },
-    "Forge Construct": {
-      "tree": "deity/Civilization",
-      "bucket": "1",
-      "needs": [],
-      "why": "edha-summon expresses the Construct spec as-registered"
-    },
-    "Siege Form": {
-      "tree": "deity/Civilization",
-      "bucket": "1b",
-      "needs": [],
-      "why": "edha-summon + one field to toggle a named baked summonEffect"
-    },
-    "Tempered Edge": {
-      "tree": "deity/Civilization",
-      "bucket": "1b",
-      "needs": [],
-      "why": "edha-damage-rider scoped to my summon — needs a 'applies to my summon' field"
-    },
-    "Lay Foundation": {
-      "tree": "deity/Civilization",
-      "bucket": "2",
-      "needs": [
-        "H2"
-      ],
-      "why": "click-placed 10 ft zone granting a begin-turn defense buff"
-    },
-    "Bastion": {
-      "tree": "deity/Civilization",
-      "bucket": "2",
-      "needs": [
-        "H2",
-        "H1"
-      ],
-      "why": "fortify existing zones; enter = damage + Agility vs Red -> Slowed"
-    },
-    "Trade Routes": {
-      "tree": "deity/Civilization",
-      "bucket": "2",
-      "needs": [
-        "H2"
-      ],
-      "why": "pick two of my zones and link them; teleport button"
-    },
-    "Arsenal": {
-      "tree": "deity/Civilization",
-      "bucket": "2",
-      "needs": [
-        "H8"
-      ],
-      "why": "writes an AE onto the CONSTRUCT (a dynamic other actor) + a kill-chase prompt"
-    },
-    "Bonds of Community": {
-      "tree": "deity/Civilization",
-      "bucket": "2",
-      "needs": [
-        "H8",
-        "H2"
-      ],
-      "why": "someone drops inside my zone -> every ally in any of my zones gets THP + advantage"
-    },
-    "Magnum Opus": {
-      "tree": "deity/Civilization",
-      "bucket": "3",
-      "needs": [],
-      "why": "ENGINE-OWNED: rewrites the summon actor (HP max override, splash attack machine, once/scene)"
-    },
-    "Withering Touch": {
-      "tree": "deity/Death",
-      "bucket": "1",
-      "needs": [],
-      "why": "edha-on-hit + edha-triggered-effect + edha-heal-cut all exist as-registered"
-    },
-    "Risen Servant": {
-      "tree": "deity/Death",
-      "bucket": "1b",
-      "needs": [
-        "H3"
-      ],
-      "why": "edha-summon + a 'spend from owner list' cost field"
-    },
-    "Speak with the Fallen": {
-      "tree": "deity/Death",
-      "bucket": "1b",
-      "needs": [
-        "H3"
-      ],
-      "why": "a cue card plus an optional list spend"
-    },
-    "Bone Garden": {
-      "tree": "deity/Death",
-      "bucket": "2",
-      "needs": [
-        "H2",
-        "H3"
-      ],
-      "why": "click-placed square: difficult terrain + end-turn damage, costs a Remain"
-    },
-    "Consuming Decay": {
-      "tree": "deity/Death",
-      "bucket": "2",
-      "needs": [
-        "H8"
-      ],
-      "why": "gated application then a per-turn DoT on another actor that heals the owner"
-    },
-    "Death Ward": {
-      "tree": "deity/Death",
-      "bucket": "2",
-      "needs": [
-        "H1",
-        "H8"
-      ],
-      "why": "willing/unwilling branch + a cross-actor would-drop-to-0 ward"
-    },
-    "Necrotic Cascade": {
-      "tree": "deity/Death",
-      "bucket": "2",
-      "needs": [
-        "H8"
-      ],
-      "why": "anyone drops within MY range -> splash. Owner sweep on defeat"
-    },
-    "Reaper's Harvest": {
-      "tree": "deity/Death",
-      "bucket": "2",
-      "needs": [
-        "H3",
-        "H8"
-      ],
-      "why": "defeat-in-range -> Investiture + a capped Remains list; plus a sense-reveal pair"
-    },
-    "Raise Dead": {
-      "tree": "deity/Death",
-      "bucket": "3",
-      "needs": [],
-      "why": "ENGINE-OWNED: DialogV2 confirm + revive + combatant initiative surgery + injury roll"
-    },
-    "Pyre": {
-      "tree": "deity/Destruction",
-      "bucket": "1b",
-      "needs": [],
-      "why": "already carries edha-place-hazard; the name only sits in the EDHA_PYRE_SOURCES alias list -> one 'spreads' field"
-    },
-    "Pinpoint Charge": {
-      "tree": "deity/Destruction",
-      "bucket": "1b",
-      "needs": [
-        "H3"
-      ],
-      "why": "modifies the last-placed list entry + a detonation rider"
-    },
-    "Set Charge": {
-      "tree": "deity/Destruction",
-      "bucket": "2",
-      "needs": [
-        "H2",
-        "H3"
-      ],
-      "why": "click-placed capped marker list with trigger arming"
-    },
-    "Cascading Failure": {
-      "tree": "deity/Destruction",
-      "bucket": "2",
-      "needs": [
-        "H3"
-      ],
-      "why": "bulk detonate the list; double-caught bonus. NOT a defeat chain (07-24f miscategorised)"
-    },
-    "The Unmooring": {
-      "tree": "deity/Destruction",
-      "bucket": "2",
-      "needs": [
-        "H3"
-      ],
-      "why": "bulk detonate at radius 15, ignore deflect, merge terrain, once/scene"
-    },
-    "Fault Line": {
-      "tree": "deity/Destruction",
-      "bucket": "2",
-      "needs": [
-        "H1",
-        "H2"
-      ],
-      "why": "click-direction line AoE + Speed vs Red -> Prone + the line becomes terrain"
-    },
-    "Concussive Yield": {
-      "tree": "deity/Destruction",
-      "bucket": "2",
-      "needs": [
-        "H1"
-      ],
-      "why": "a foe-skill-vs-color rider on someone else's detonation"
-    },
-    "Walking Ruin": {
-      "tree": "deity/Destruction",
-      "bucket": "2",
-      "needs": [
-        "H2"
-      ],
-      "why": "self token-move watcher laying a terrain trail"
-    },
-    "Combustion Chain": {
-      "tree": "deity/Destruction",
-      "bucket": "3",
-      "needs": [],
-      "why": "ENGINE-OWNED: defeat-in-my-terrain -> every zone I own grows. Cross-actor chain"
-    },
-    "Ordained Ground": {
-      "tree": "deity/Fate",
-      "bucket": "2",
-      "needs": [
-        "H2",
-        "H3"
-      ],
-      "why": "click-placed capped marker + template"
-    },
-    "Snare": {
-      "tree": "deity/Fate",
-      "bucket": "2",
-      "needs": [
-        "H2",
-        "H3"
-      ],
-      "why": "click-placed capped marker with a Region enter-trigger"
-    },
-    "Inevitable Snare": {
-      "tree": "deity/Fate",
-      "bucket": "2",
-      "needs": [
-        "H3"
-      ],
-      "why": "flags the most recent list entry"
-    },
-    "Foreknown Strike": {
-      "tree": "deity/Fate",
-      "bucket": "2",
-      "needs": [
-        "H3",
-        "H6"
-      ],
-      "why": "scene flag + a button per unsprung Snare"
-    },
-    "Read the Threads": {
-      "tree": "deity/Fate",
-      "bucket": "2",
-      "needs": [
-        "H3",
-        "H6"
-      ],
-      "why": "a button per marker to reposition it"
-    },
-    "Weave the Thread": {
-      "tree": "deity/Fate",
-      "bucket": "2",
-      "needs": [
-        "H3"
-      ],
-      "why": "links the two most recent list entries. 07-24f called this B3 volition; the CODE is a list write + a card"
-    },
-    "Thread of Inevitability": {
-      "tree": "deity/Fate",
-      "bucket": "2",
-      "needs": [
-        "H3",
-        "H6"
-      ],
-      "why": "declare-an-event card, then spring every Snare at once. Once/scene"
-    },
-    "Hexmark": {
-      "tree": "deity/Fate",
-      "bucket": "2",
-      "needs": [
-        "H8"
-      ],
-      "why": "on someone else's snare trigger, offer a mark; marked target takes bonus near my zones"
-    },
-    "Bulwark Ground": {
-      "tree": "deity/Fate",
-      "bucket": "2",
-      "needs": [
-        "H7",
-        "H8"
-      ],
-      "why": "round-start THP for allies standing in my zones + an anti-advantage aura"
-    },
-    "Studied Mark": {
-      "tree": "deity/Knowledge",
-      "bucket": "2",
-      "needs": [
-        "H3"
-      ],
-      "why": "single-bearer capped Insight resource + a reveal card"
-    },
-    "Killing Blow": {
-      "tree": "deity/Knowledge",
-      "bucket": "2",
-      "needs": [
-        "H1",
-        "H3"
-      ],
-      "why": "Red vs Physical vs the bearer; damage scales per Insight"
-    },
-    "The Final Study": {
-      "tree": "deity/Knowledge",
-      "bucket": "2",
-      "needs": [
-        "H1",
-        "H3"
-      ],
-      "why": "same + allies get a free Strike. Once/scene"
-    },
-    "Predatory Strike": {
-      "tree": "deity/Knowledge",
-      "bucket": "2",
-      "needs": [
-        "H3"
-      ],
-      "why": "arms the next hit; bonus scales per Insight on the target"
-    },
-    "Hunter's Discipline": {
-      "tree": "deity/Knowledge",
-      "bucket": "2",
-      "needs": [
-        "H3",
-        "H8",
-        "H6"
-      ],
-      "why": "hit-the-bearer rider + on-defeat transfer card"
-    },
-    "Death Mark": {
-      "tree": "deity/Knowledge",
-      "bucket": "2",
-      "needs": [
-        "H3",
-        "H8",
-        "H6"
-      ],
-      "why": "bearer drops -> transfer full Insight via a pick card; allies deal vital"
-    },
-    "Accumulate": {
-      "tree": "deity/Knowledge",
-      "bucket": "2",
-      "needs": [
-        "H3",
-        "H8"
-      ],
-      "why": "turn-start top-up if the bearer is in range + Investiture when the bearer is damaged"
-    },
-    "Pack Share": {
-      "tree": "deity/Knowledge",
-      "bucket": "2",
-      "needs": [
-        "H3",
-        "H8"
-      ],
-      "why": "allies deal bonus vs the bearer; first ally to hit places Insight"
-    },
-    "The Pack": {
-      "tree": "deity/Knowledge",
-      "bucket": "2",
-      "needs": [
-        "H3",
-        "H8"
-      ],
-      "why": "same, bonus equals the live Insight count"
-    },
-    "Overgrowth": {
-      "tree": "deity/Life",
-      "bucket": "1",
-      "needs": [],
-      "why": "DELETE-ONLY: the item already carries edha-overflow-thp; the name check at L1007 is redundant belt-and-braces"
-    },
-    "Adaptive Mutation": {
-      "tree": "deity/Life",
-      "bucket": "2",
-      "needs": [
-        "H6"
-      ],
-      "why": "pick one of three mutations for a willing target"
-    },
-    "Apex Form": {
-      "tree": "deity/Life",
-      "bucket": "2",
-      "needs": [
-        "H8"
-      ],
-      "why": "cross-actor start-of-THEIR-turn regen; edha-regen is owner-turn only"
-    },
-    "Primal Regeneration": {
-      "tree": "deity/Life",
-      "bucket": "2",
-      "needs": [
-        "H8"
-      ],
-      "why": "same shape, ends on Vital/Spirit damage"
-    },
-    "Surgical Precision": {
-      "tree": "deity/Life",
-      "bucket": "2",
-      "needs": [
-        "H1",
-        "H6"
-      ],
-      "why": "Blue vs Physical, then pick a condition to clear"
-    },
-    "Vital Diagnosis": {
-      "tree": "deity/Life",
-      "bucket": "2",
-      "needs": [
-        "H8"
-      ],
-      "why": "self half is B1 (diagnosed status + whenTargetStatus rider); the ALLY half needs an owner sweep"
-    },
-    "Lifeline": {
-      "tree": "deity/Life",
-      "bucket": "2",
-      "needs": [
-        "H8",
-        "H6"
-      ],
-      "why": "bound creature takes damage -> optional redirect. Once/round"
-    },
-    "Edict": {
-      "tree": "deity/Order",
-      "bucket": "2",
-      "needs": [
-        "H3",
-        "H6"
-      ],
-      "why": "prohibition dialog + capped Edict list + marker status + violation button"
-    },
-    "Covenant": {
-      "tree": "deity/Order",
-      "bucket": "2",
-      "needs": [
-        "H3"
-      ],
-      "why": "adjacency-gated capped pair list + marker status"
-    },
-    "Sealed Edict": {
-      "tree": "deity/Order",
-      "bucket": "2",
-      "needs": [
-        "H3",
-        "H1"
-      ],
-      "why": "flags the last Edict; violation adds Discipline vs Blue"
-    },
-    "Verdict": {
-      "tree": "deity/Order",
-      "bucket": "2",
-      "needs": [
-        "H1",
-        "H3"
-      ],
-      "why": "Blue vs Cognitive vs a bound target, then a 10 ft Discipline splash"
-    },
-    "Concord": {
-      "tree": "deity/Order",
-      "bucket": "2",
-      "needs": [
-        "H3",
-        "H8"
-      ],
-      "why": "scene flag over the Covenant list; each ally's first attack each round gains damage"
-    },
-    "Bear Witness": {
-      "tree": "deity/Order",
-      "bucket": "2",
-      "needs": [
-        "H3",
-        "H8"
-      ],
-      "why": "round-start THP to every Covenant ally in range"
-    },
-    "Shoulder the Oath": {
-      "tree": "deity/Order",
-      "bucket": "2",
-      "needs": [
-        "H8",
-        "H6"
-      ],
-      "why": "Covenant ally damaged -> take half + reduce + THP both. Once/round"
-    },
-    "Lawkeeper's Eye": {
-      "tree": "deity/Order",
-      "bucket": "2",
-      "needs": [
-        "H3",
-        "H7"
-      ],
-      "why": "advantage aura vs Edict-bound targets I can see. 07-24f called this a client veil; it is not — it is edhaCanSee + advantage"
-    },
-    "Final Decree": {
-      "tree": "deity/Order",
-      "bucket": "3",
-      "needs": [],
-      "why": "ENGINE-OWNED: three violation watchers resolving together over a cross-actor bound/witness ledger"
-    },
-    "Investiture of Command": {
-      "tree": "deity/Power",
-      "bucket": "1b",
-      "needs": [],
-      "why": "edha-temp-hp + advantage grant; needs a multi-target cap field (up to 3)"
-    },
-    "Momentum of Victory": {
-      "tree": "deity/Power",
-      "bucket": "1b",
-      "needs": [],
-      "why": "arms a damage rider on a free Strike"
-    },
-    "Warlord's Advance": {
-      "tree": "deity/Power",
-      "bucket": "1b",
-      "needs": [],
-      "why": "edha-on-hit + triggered-effect + next-test-mod all exist; needs a kill/survive branch field"
-    },
-    "Kneel": {
-      "tree": "deity/Power",
-      "bucket": "2",
-      "needs": [
-        "H1"
-      ],
-      "why": "Black vs Cognitive -> Compelled. The move-veto is already name-free (kneelBy stamp)"
-    },
-    "Absolute Authority": {
-      "tree": "deity/Power",
-      "bucket": "2",
-      "needs": [
-        "H1"
-      ],
-      "why": "status-gated Black vs Cognitive, Weakened on fail. The forced volition is card text, not code"
-    },
-    "Crown of Thorns": {
-      "tree": "deity/Power",
-      "bucket": "2",
-      "needs": [
-        "H1"
-      ],
-      "why": "a scene-armed rider on every Black/Red vs-Cognitive test I resolve"
-    },
-    "Warlord's Fury": {
-      "tree": "deity/Power",
-      "bucket": "2",
-      "needs": [
-        "H8"
-      ],
-      "why": "scene tally of below-half crossings and kills, capped, feeding a melee bonus"
-    },
-    "Unstoppable Advance": {
-      "tree": "deity/Power",
-      "bucket": "2",
-      "needs": [
-        "H8"
-      ],
-      "why": "move-through-enemy-space watcher with once-per-enemy damage"
-    },
-    "Mantle of the Aspirant": {
-      "tree": "deity/Power",
-      "bucket": "3",
-      "needs": [],
-      "why": "ENGINE-OWNED: once/scene state machine — self AE + ally test aura + damage-redirect prompt"
-    },
-    "Sovereign's Favor": {
-      "tree": "deity/Sovereignty",
-      "bucket": "1b",
-      "needs": [],
-      "why": "edha-temp-hp riding a sibling talent's success — needs a 'when sibling fires' field"
-    },
-    "Censure": {
-      "tree": "deity/Sovereignty",
-      "bucket": "2",
-      "needs": [
-        "H1",
-        "H9"
-      ],
-      "why": "Black vs Cognitive -> a damage-die-step ledger entry"
-    },
-    "Decree of Ruin": {
-      "tree": "deity/Sovereignty",
-      "bucket": "2",
-      "needs": [
-        "H1",
-        "H9"
-      ],
-      "why": "same, scene duration, once per creature"
-    },
-    "Edict of the Fallen": {
-      "tree": "deity/Sovereignty",
-      "bucket": "2",
-      "needs": [
-        "H1",
-        "H9",
-        "H8"
-      ],
-      "why": "Black vs Spiritual -> -2 attack steps + ally THP on each failed attack test"
-    },
-    "Exalt": {
-      "tree": "deity/Sovereignty",
-      "bucket": "2",
-      "needs": [
-        "H9"
-      ],
-      "why": "untested targeted ledger write (+1 step)"
-    },
-    "Investiture of Authority": {
-      "tree": "deity/Sovereignty",
-      "bucket": "2",
-      "needs": [
-        "H9"
-      ],
-      "why": "scene ledger write replacing my own Exalt entries. Once per ally"
-    },
-    "Expose": {
-      "tree": "deity/Sovereignty",
-      "bucket": "2",
-      "needs": [
-        "H8"
-      ],
-      "why": "a Censured creature fails a test -> Investiture + a reactive-strike offer"
-    },
-    "Sovereign's Balance": {
-      "tree": "deity/Sovereignty",
-      "bucket": "3",
-      "needs": [],
-      "why": "ENGINE-OWNED: paired ally/enemy ledger that extends when the ally hits the enemy"
-    },
-    "Sovereignty": {
-      "tree": "deity/Sovereignty",
-      "bucket": "3",
-      "needs": [],
-      "why": "ENGINE-OWNED: paired scene ledger + no-reactions-on-hit coupling"
-    },
-    "Rousing Presence": {
-      "tree": "heroic/Envoy",
-      "bucket": "1",
-      "needs": [],
-      "why": "edha-apply-status on a targeted ally expresses Determined as-registered"
-    },
-    "Instill Confidence": {
-      "tree": "heroic/Envoy",
-      "bucket": "1b",
-      "needs": [],
-      "why": "swaps the sibling's applied status — one field"
-    },
-    "Stalwart Presence": {
-      "tree": "heroic/Envoy",
-      "bucket": "1b",
-      "needs": [],
-      "why": "edha-defense-buff exists; needs a pick-which-defense prompt field"
-    },
-    "Calm Appeal": {
-      "tree": "heroic/Envoy",
-      "bucket": "1b",
-      "needs": [],
-      "why": "a cue rider on Steadfast Challenge's Disoriented result"
-    },
-    "Devoted Presence": {
-      "tree": "heroic/Envoy",
-      "bucket": "1b",
-      "needs": [
-        "H6"
-      ],
-      "why": "currently an honour-system STRING pushed into a card; wants a real clear-conditions pick"
-    },
-    "Lessons in Patience": {
-      "tree": "heroic/Envoy",
-      "bucket": "2",
-      "needs": [
-        "H10"
-      ],
-      "why": "grants focus to a target — no focus handler exists"
-    },
-    "Galvanize": {
-      "tree": "heroic/Envoy",
-      "bucket": "2",
-      "needs": [
-        "H10"
-      ],
-      "why": "ally rolls a recovery die and recovers that much focus"
-    },
-    "Rallying Shout": {
-      "tree": "heroic/Envoy",
-      "bucket": "2",
-      "needs": [
-        "H6"
-      ],
-      "why": "revive an Unconscious ally, heal recovery die + Leadership ranks"
-    },
-    "Steadfast Challenge": {
-      "tree": "heroic/Envoy",
-      "bucket": "2",
-      "needs": [
-        "H1"
-      ],
-      "why": "EDHA_HEROIC_DEFTESTS row {dis vs spi} — this table IS H1"
-    },
-    "Seek Quarry": {
-      "tree": "heroic/Hunter",
-      "bucket": "1b",
-      "needs": [],
-      "why": "sets the quarry pointer — a one-entry owner list; needs the pointer field"
-    },
-    "Tagging Shot": {
-      "tree": "heroic/Hunter",
-      "bucket": "1b",
-      "needs": [],
-      "why": "edha-on-hit exists; needs a 'set quarry' payload field"
-    },
-    "Pack Hunting": {
-      "tree": "heroic/Hunter",
-      "bucket": "1b",
-      "needs": [],
-      "why": "edha-next-test-mod formula exists; needs a quarry-gated ally target"
-    },
-    "Cold Eyes": {
-      "tree": "heroic/Hunter",
-      "bucket": "2",
-      "needs": [
-        "H8",
-        "H10"
-      ],
-      "why": "defeat OF MY QUARRY by me -> focus + re-mark"
-    },
-    "Sharp Eye": {
-      "tree": "heroic/Hunter",
-      "bucket": "2",
-      "needs": [
-        "H1"
-      ],
-      "why": "CORRECTED 07-24m: H1 gates it, but its PAYLOAD (reveal the target's lowest attribute/defense and which resources are below half) has no handler — it reads arbitrary target state into a whispered card. Needs a small reveal handler alongside H1."
-    },
-    "Decisive Command": {
-      "tree": "heroic/Leader",
-      "bucket": "1b",
-      "needs": [],
-      "why": "edha-next-test-mod formula exists; needs a range field + the command-die formula"
-    },
-    "Relentless March": {
-      "tree": "heroic/Leader",
-      "bucket": "1b",
-      "needs": [],
-      "why": "honour-system string rider on Decisive Command -> a cue rule"
-    },
-    "Confident Command": {
-      "tree": "heroic/Leader",
-      "bucket": "1b",
-      "needs": [],
-      "why": "command-die upgrade counter + a skill list — one field"
-    },
-    "Demonstrative Command": {
-      "tree": "heroic/Leader",
-      "bucket": "1b",
-      "needs": [],
-      "why": "same field, different skills"
-    },
-    "Shrewd Command": {
-      "tree": "heroic/Leader",
-      "bucket": "1b",
-      "needs": [],
-      "why": "same field, different skills"
-    },
-    "Resolute Stand": {
-      "tree": "heroic/Leader",
-      "bucket": "1b",
-      "needs": [],
-      "why": "modifies Valiant Intervention's target count + suppresses reactive strikes"
-    },
-    "Authority": {
-      "tree": "heroic/Leader",
-      "bucket": "1b",
-      "needs": [],
-      "why": "a range/target multiplier read by sibling Leader rules — one field on those rules"
-    },
-    "Valiant Intervention": {
-      "tree": "heroic/Leader",
-      "bucket": "2",
-      "needs": [
-        "H1"
-      ],
-      "why": "DEFTESTS row {ath vs spi} + a disadvantage card"
-    },
-    "Resilient Hero": {
-      "tree": "heroic/Leader",
-      "bucket": "3",
-      "needs": [],
-      "why": "ENGINE-OWNED: preUpdateActor HP-floor veto. NOTE: its long-rest flag clear IS natively expressible (long-rest-actor + update-actor)"
-    },
-    "Resuscitation": {
-      "tree": "heroic/Scholar",
-      "bucket": "2",
-      "needs": [
-        "H1"
-      ],
-      "why": "CORRECTED 07-24k: coupled to Field Medicine — its name appears in engine code ONLY inside that talent's success-card string, so it cannot leave the ratchet until Field Medicine converts on H1."
-    },
-    "Field Medicine": {
-      "tree": "heroic/Scholar",
-      "bucket": "2",
-      "needs": [
-        "H1"
-      ],
-      "why": "CORRECTED 07-24m: H1 gates the DC-15 test, but the heal is the TARGET's recovery die + your Medicine ranks — edha-triggered-effect's formula resolves against the OWNER, so it cannot express it. Needs a target-die formula source."
-    },
-    "Feinting Strike": {
-      "tree": "heroic/Warrior",
-      "bucket": "2",
-      "needs": [
-        "H5",
-        "H10"
-      ],
-      "why": "on-hit focus drain by Intimidation ranks + burn a reaction"
-    },
-    "Wary": {
-      "tree": "heroic/Warrior",
-      "bucket": "3",
-      "needs": [],
-      "why": "ENGINE-OWNED: preCreateActiveEffect veto on surprised + an in-flight focus-loss reduction"
-    },
-    "Blood Price": {
-      "tree": "leyline/Black",
-      "bucket": "1",
-      "needs": [],
-      "why": "edha-ritual-hp-cost + edha-next-test-mod both exist as-registered"
-    },
-    "Black Leyline Attunement": {
-      "tree": "leyline/Black",
-      "bucket": "1b",
-      "needs": [],
-      "why": "Draw Mana kind table row {color, kind:weaken-enemies} -> a Draw Mana rider rule"
-    },
-    "Sanguine Reservoir": {
-      "tree": "leyline/Black",
-      "bucket": "1b",
-      "needs": [],
-      "why": "edha-ritual-hp-cost exists; needs a Reserve-store field capped by Black rank"
-    },
-    "Withering Ray": {
-      "tree": "leyline/Black",
-      "bucket": "1b",
-      "needs": [],
-      "why": "EDHA_SINGLE_TARGET set -> one singleTarget boolean"
-    },
-    "Double Dip": {
-      "tree": "leyline/Black",
-      "bucket": "2",
-      "needs": [
-        "H1"
-      ],
-      "why": "Black vs Cognitive, then a per-target Reserve permission for the scene"
-    },
-    "Hollow Command": {
-      "tree": "leyline/Black",
-      "bucket": "2",
-      "needs": [
-        "H1",
-        "H5"
-      ],
-      "why": "Deception vs Spiritual -> no actions next turn"
-    },
-    "Siphoned Will": {
-      "tree": "leyline/Black",
-      "bucket": "2",
-      "needs": [
-        "H10"
-      ],
-      "why": "focus regain riding Hollow Command's success"
-    },
-    "Extract Thought": {
-      "tree": "leyline/Black",
-      "bucket": "2",
-      "needs": [
-        "H1",
-        "H5"
-      ],
-      "why": "Deception success -> target loses Reactions"
-    },
-    "Predatory Insight": {
-      "tree": "leyline/Black",
-      "bucket": "2",
-      "needs": [
-        "H8",
-        "H10"
-      ],
-      "why": "ANY character hits 0 focus -> I regain focus. Cross-actor observation"
-    },
-    "Whispered Doubt": {
-      "tree": "leyline/Black",
-      "bucket": "2",
-      "needs": [
-        "H8",
-        "H10"
-      ],
-      "why": "an enemy in range spends focus -> it spends 1 more. Once/round/enemy"
-    },
-    "Coercive Pressure": {
-      "tree": "leyline/Black",
-      "bucket": "2",
-      "needs": [
-        "H8"
-      ],
-      "why": "a character in range loses focus -> disadvantage on its next Cognitive"
-    },
-    "Puppeteer": {
-      "tree": "leyline/Black",
-      "bucket": "2",
-      "needs": [
-        "H8",
-        "H6"
-      ],
-      "why": "a 0-focus character in range takes its turn -> reaction prompt"
-    },
-    "Unnerving Approach": {
-      "tree": "leyline/Black",
-      "bucket": "2",
-      "needs": [
-        "H6"
-      ],
-      "why": "once/turn pick-an-ally-of-my-target and push it (edha-push exists)"
-    },
-    "Dread Presence": {
-      "tree": "leyline/Black",
-      "bucket": "3",
-      "needs": [],
-      "why": "ENGINE-OWNED: preUpdateToken movement veto over every Weakened creature in range"
-    },
-    "Calculated Patience": {
-      "tree": "leyline/Blue",
-      "bucket": "1",
-      "needs": [],
-      "why": "edha-combat-timing (slow turn) + edha-next-test-mod both exist as-registered"
-    },
-    "Probability Cascade": {
-      "tree": "leyline/Blue",
-      "bucket": "1",
-      "needs": [],
-      "why": "edha-opportunity-option + edha-next-test-mod count:2 express it as-registered"
-    },
-    "Blue Leyline Attunement": {
-      "tree": "leyline/Blue",
-      "bucket": "1b",
-      "needs": [],
-      "why": "Draw Mana kind table row {next-test-adv, int/wil}"
-    },
-    "Absolute Stillness": {
-      "tree": "leyline/Blue",
-      "bucket": "1b",
-      "needs": [],
-      "why": "an upgrade flag read by Ghostly Walls — one field on the sibling rule"
-    },
-    "Holographic Illusion": {
-      "tree": "leyline/Blue",
-      "bucket": "1b",
-      "needs": [],
-      "why": "edha-summon with an inert spec; needs a 'no combatant' field"
-    },
-    "Phantom Barricade": {
-      "tree": "leyline/Blue",
-      "bucket": "1b",
-      "needs": [],
-      "why": "edha-summon with an HP'd cover object; needs a blocks-movement field"
-    },
-    "Anticipate": {
-      "tree": "leyline/Blue",
-      "bucket": "2",
-      "needs": [
-        "H6"
-      ],
-      "why": "reaction prompt granting advantage to me or a network ally"
-    },
-    "Counterspell": {
-      "tree": "leyline/Blue",
-      "bucket": "2",
-      "needs": [
-        "H1"
-      ],
-      "why": "Blue vs Cognitive via the contest queue -> the activated talent fails"
-    },
-    "False Premise": {
-      "tree": "leyline/Blue",
-      "bucket": "2",
-      "needs": [
-        "H1",
-        "H6"
-      ],
-      "why": "reaction, Blue vs Cognitive -> disadvantage"
-    },
-    "Pattern Recognition": {
-      "tree": "leyline/Blue",
-      "bucket": "2",
-      "needs": [
-        "H6"
-      ],
-      "why": "on my Cognitive success vs a character -> disadvantage prompt"
-    },
-    "Reactive Analysis": {
-      "tree": "leyline/Blue",
-      "bucket": "2",
-      "needs": [
-        "H8"
-      ],
-      "why": "a character in range FAILS a test -> advantage on my next vs them"
-    },
-    "Subtle Suggestion": {
-      "tree": "leyline/Blue",
-      "bucket": "2",
-      "needs": [
-        "H6"
-      ],
-      "why": "influence success -> Disoriented prompt"
-    },
-    "Ghostly Walls": {
-      "tree": "leyline/Blue",
-      "bucket": "2",
-      "needs": [
-        "H1"
-      ],
-      "why": "Blue vs Cognitive -> movement 0"
-    },
-    "Read Intent": {
-      "tree": "leyline/Blue",
-      "bucket": "2",
-      "needs": [
-        "H1"
-      ],
-      "why": "Blue vs Cognitive -> reveal intent"
-    },
-    "Redirect Momentum": {
-      "tree": "leyline/Blue",
-      "bucket": "2",
-      "needs": [
-        "H1"
-      ],
-      "why": "reaction, Blue vs Athletics -> reduce movement or push (edha-push exists)"
-    },
-    "Intercept": {
-      "tree": "leyline/Blue",
-      "bucket": "2",
-      "needs": [
-        "H6"
-      ],
-      "why": "a designated creature takes the declared action -> disadvantage prompt"
-    },
-    "Phantom Double": {
-      "tree": "leyline/Blue",
-      "bucket": "3",
-      "needs": [],
-      "why": "ENGINE-OWNED: per-viewer client veil + belief ledger"
-    },
-    "Living Image": {
-      "tree": "leyline/Blue",
-      "bucket": "3",
-      "needs": [],
-      "why": "ENGINE-OWNED: per-round upkeep on per-viewer illusions"
-    },
-    "Green Leyline Attunement": {
-      "tree": "leyline/Green",
-      "bucket": "1b",
-      "needs": [],
-      "why": "Draw Mana kind table row {terrain}"
-    },
-    "Thorn Field": {
-      "tree": "leyline/Green",
-      "bucket": "1b",
-      "needs": [],
-      "why": "edha-place-hazard exists; the name only sits in the edhaOwnsThorn alias -> a terrain-damage field"
-    },
-    "Coordinated Hunt": {
-      "tree": "leyline/Green",
-      "bucket": "1b",
-      "needs": [],
-      "why": "the aggro ledger + edha-pack-advantage already exist; needs a per-attacker-count bonus field"
-    },
-    "Verdant Mend": {
-      "tree": "leyline/Green",
-      "bucket": "1b",
-      "needs": [],
-      "why": "EDHA_SINGLE_TARGET set -> one singleTarget boolean"
-    },
-    "Vital Surge": {
-      "tree": "leyline/Green",
-      "bucket": "1b",
-      "needs": [],
-      "why": "edha-temp-hp exists; needs a below-half gate on the heal"
-    },
-    "Natural Recovery": {
-      "tree": "leyline/Green",
-      "bucket": "1b",
-      "needs": [],
-      "why": "edha-opportunity-option exists; needs a clear-a-condition payload"
-    },
-    "Grasping Vines": {
-      "tree": "leyline/Green",
-      "bucket": "2",
-      "needs": [
-        "H1"
-      ],
-      "why": "Green vs Physical -> Restrained, maintained per turn"
-    },
-    "Territorial Instinct": {
-      "tree": "leyline/Green",
-      "bucket": "2",
-      "needs": [
-        "H1"
-      ],
-      "why": "reaction on Disengage, Green vs Survival -> movement 0"
-    },
-    "Drive the Prey": {
-      "tree": "leyline/Green",
-      "bucket": "2",
-      "needs": [
-        "H1"
-      ],
-      "why": "Green vs Survival -> Slowed + must move away (aliased to Herding Antlers)"
-    },
-    "Spreading Roots": {
-      "tree": "leyline/Green",
-      "bucket": "2",
-      "needs": [
-        "H2",
-        "H8"
-      ],
-      "why": "a creature ends its turn in MY terrain -> optional expand"
-    },
-    "Apex Predator": {
-      "tree": "leyline/Green",
-      "bucket": "2",
-      "needs": [
-        "H7"
-      ],
-      "why": "3+ enemies inside my terrain -> advantage on Physical tests"
-    },
-    "Pack Hunter": {
-      "tree": "leyline/Green",
-      "bucket": "2",
-      "needs": [
-        "H7"
-      ],
-      "why": "move adjacent to an enemy an ally is adjacent to -> both gain advantage"
-    },
-    "Pack Pressure": {
-      "tree": "leyline/Green",
-      "bucket": "2",
-      "needs": [
-        "H7"
-      ],
-      "why": "allies move without provoking + shared adjacency damage bonus"
-    },
-    "Pack Sense": {
-      "tree": "leyline/Green",
-      "bucket": "2",
-      "needs": [
-        "H8",
-        "H6"
-      ],
-      "why": "an ALLY attacks a creature in my terrain -> I may add my Green modifier"
-    },
-    "Packmate's Warning": {
-      "tree": "leyline/Green",
-      "bucket": "2",
-      "needs": [
-        "H8"
-      ],
-      "why": "an ally within 10 ft is targeted by an unseen attack -> +2 defense"
-    },
-    "Scent the Weak": {
-      "tree": "leyline/Green",
-      "bucket": "2",
-      "needs": [
-        "H7"
-      ],
-      "why": "track the lowest-HP creature in range; first test vs it gains advantage"
-    },
-    "Resurgent Growth": {
-      "tree": "leyline/Green",
-      "bucket": "2",
-      "needs": [
-        "H8"
-      ],
-      "why": "healed ally regains HP at the start of MY next turn while in range"
-    },
-    "Reknit Form": {
-      "tree": "leyline/Green",
-      "bucket": "2",
-      "needs": [
-        "H6"
-      ],
-      "why": "pick-one over the target's injury ITEMS, then delete one"
-    },
-    "Natural Order": {
-      "tree": "leyline/Green",
-      "bucket": "3",
-      "needs": [],
-      "why": "ENGINE-OWNED: suppresses the illusion/veil system for enemies in range"
-    },
-    "Frenzied Tempo": {
-      "tree": "leyline/Red",
-      "bucket": "1b",
-      "needs": [],
-      "why": "whenAttribute/whenFastTurn exist but edha-test-rider has no mode field (07-24i confirms 9i)"
-    },
-    "Red Leyline Attunement": {
-      "tree": "leyline/Red",
-      "bucket": "1b",
-      "needs": [],
-      "why": "Draw Mana kind table row {next-test-adv, str/spd, reactionNote}"
-    },
-    "Reckless Momentum": {
-      "tree": "leyline/Red",
-      "bucket": "1b",
-      "needs": [],
-      "why": "native update-actor CAN write plotDieNext (9j was right that a handler exists) but OVERRIDE writes a STRING, so g.source is lost — one engine tolerance line. See §9k"
-    },
-    "Shatter Focus": {
-      "tree": "leyline/Red",
-      "bucket": "2",
-      "needs": [
-        "H8",
-        "H10"
-      ],
-      "why": "a character in range fails a test -> it loses 1 focus. Also a Chaos-tree name"
-    },
-    "Incite": {
-      "tree": "leyline/Red",
-      "bucket": "2",
-      "needs": [
-        "H1"
-      ],
-      "why": "Intimidation vs Spiritual -> Strike nearest or lose Reaction (volition = card text)"
-    },
-    "Breaking Point": {
-      "tree": "leyline/Red",
-      "bucket": "2",
-      "needs": [
-        "H8"
-      ],
-      "why": "a character in range takes damage a 2nd time in a round -> Disoriented"
-    },
-    "Guiding Signal": {
-      "tree": "leyline/White",
-      "bucket": "1b",
-      "needs": [],
-      "why": "the designate + plot-die-mark primitives already exist; needs the designate payload as a field"
-    },
-    "Collective Resolve": {
-      "tree": "leyline/White",
-      "bucket": "1b",
-      "needs": [],
-      "why": "edha-opportunity-option exists; needs an allies-in-range status payload"
-    },
-    "Beacon of Stability": {
-      "tree": "leyline/White",
-      "bucket": "2",
-      "needs": [
-        "H6"
-      ],
-      "why": "Draw Mana rider posting a pick-a-condition-to-cleanse card"
-    },
-    "Guardian Stance": {
-      "tree": "leyline/White",
-      "bucket": "2",
-      "needs": [
-        "H7"
-      ],
-      "why": "while an ally is adjacent both gain Deflect — the canonical aura sweep"
-    },
-    "Shield Wall": {
-      "tree": "leyline/White",
-      "bucket": "2",
-      "needs": [
-        "H7",
-        "H8"
-      ],
-      "why": "2+ adjacent allies -> attacks against THEM are reduced. Runs inside the applyDamage wrapper"
-    },
-    "Devoted Conduit": {
-      "tree": "leyline/White",
-      "bucket": "2",
-      "needs": [
-        "H8"
-      ],
-      "why": "an ally takes REDIRECTED damage -> reduce it. Runs inside the applyDamage wrapper"
-    },
-    "Interposing Shield": {
-      "tree": "leyline/White",
-      "bucket": "2",
-      "needs": [
-        "H8",
-        "H6"
-      ],
-      "why": "ally within 10 ft damaged -> move + reduce prompt"
-    },
-    "Shared Burden": {
-      "tree": "leyline/White",
-      "bucket": "2",
-      "needs": [
-        "H8",
-        "H6"
-      ],
-      "why": "adjacent ally damaged -> take half instead"
-    },
-    "Retributive Guard": {
-      "tree": "leyline/White",
-      "bucket": "2",
-      "needs": [
-        "H8",
-        "H1",
-        "H6"
-      ],
-      "why": "adjacent ally damaged -> White vs Spiritual -> spirit damage to the attacker"
-    },
-    "Unbreakable Line": {
-      "tree": "leyline/White",
-      "bucket": "2",
-      "needs": [
-        "H8",
-        "H6"
-      ],
-      "why": "adjacent ally would drop to 0 -> White test vs half the damage -> 1 HP"
-    },
-    "Shared Conviction": {
-      "tree": "leyline/White",
-      "bucket": "2",
-      "needs": [
-        "H8",
-        "H6"
-      ],
-      "why": "an ally would fail a test -> add my White modifier"
-    },
-    "Pillar of Order": {
-      "tree": "leyline/White",
-      "bucket": "2",
-      "needs": [
-        "H8",
-        "H6"
-      ],
-      "why": "an ally rolls a Complication -> blank it"
-    },
-    "Concordant Presence": {
-      "tree": "leyline/White",
-      "bucket": "2",
-      "needs": [
-        "H8",
-        "H6"
-      ],
-      "why": "an ally succeeds -> the next ally on that skill raises the stakes"
-    },
-    "Ordered Advance": {
-      "tree": "leyline/White",
-      "bucket": "2",
-      "needs": [
-        "H8"
-      ],
-      "why": "when I move, allies within 10 ft may move — a token-move watcher over others"
-    },
-    "Counterpoint": {
-      "tree": "leyline/White",
-      "bucket": "2",
-      "needs": [
-        "H8",
-        "H1"
-      ],
-      "why": "an enemy influences an ally -> White test -> negate + Disorient"
-    },
-    "Overwhelming Authority": {
-      "tree": "leyline/White",
-      "bucket": "2",
-      "needs": [
-        "H6"
-      ],
-      "why": "influence success -> Disoriented prompt"
-    },
-    "Terms of Accord": {
-      "tree": "leyline/White",
-      "bucket": "3",
-      "needs": [],
-      "why": "ENGINE-OWNED: cross-actor paired accord ledger, one active accord per creature"
-    },
-    "Bound by Word": {
-      "tree": "leyline/White",
-      "bucket": "3",
-      "needs": [],
-      "why": "ENGINE-OWNED: reads the paired accord ledger to substitute my modifier into an ally's roll"
-    },
-    "Voice of Authority": {
-      "tree": "leyline/White",
-      "bucket": "3",
-      "needs": [],
-      "why": "ENGINE-OWNED: rewrites a hostile roll in flight"
-    },
-    "White Leyline Attunement": {
-      "tree": "leyline/White",
-      "bucket": "1b",
-      "needs": [],
-      "why": "Draw Mana kind table row {heal-allies}"
-    }
+  "H6_edha_prompt_pick": {
+   "consumers": 0,
+   "trees": 3,
+   "verdict": "BUILT 07-24s (pass J). \u26a0 THE 07-24n VERDICT WAS HALF WRONG and is kept here as the correction: \"the post-card helpers are already generic and take the talent name as a mere label\" is TRUE of the OFFER shape (edhaPostCoordReactionCard branches on no name at all) and FALSE of the PICK shape \u2014 edhaPostCalcTestCard, edhaPostBeaconCard, edhaPostReknitCard, edhaPostLifeCleanseCard and edhaPostMutationCard each HARD-CODE a different payload in their click handler, so there was no one function to put a schema over. Built instead as pass H's move: one card+click pair whose click dispatches back through edhaDispatchTestResult, so the payload is the item's own edha-test-success rules and H6 owns no payload vocabulary. Sources `confirm` and `creatures` shipped; `status`, `item` and `effect` did NOT \u2014 their payload would have to receive the picked THING rather than an actor and no payload handler takes one, which is why Beacon of Stability, Surgical Precision, Devoted Presence, Reknit Form and Unweaving are still here. BUILT; bucket-2 consumers 0 after 2bX \u2014 legitimately drained, not unbuilt."
   },
-  "_converted": "07-24j: 6 Warrior stances. 07-24k: 6 self-next-test. 07-24m: 4 heroic def-tests (H1). 07-24n: 11 action-economy/combat-timed + Tactical Ploy (H5 + H11). Converted talents are REMOVED from this map."
+  "H5_edha_cae_grant": {
+   "consumers": 0,
+   "trees": 0,
+   "verdict": "SURVIVES \u2014 but the 07-24f 'single atlas, six heroic paths' is wrong: leyline Black needs it too"
+  },
+  "H2_edha_zone": {
+   "consumers": 0,
+   "trees": 4,
+   "verdict": "SURVIVES \u2014 slightly smaller than the 15 estimated 2bY: remaining consumers (the Destruction placement cluster) all converted in-pass \u2014 0 is drained, not unbuilt."
+  },
+  "H7_edha_aura": {
+   "consumers": 0,
+   "trees": 2,
+   "verdict": "SURVIVES \u2014 smaller than the 17 estimated; several presumed auras are really H8 watchers BUILT; bucket-2 consumers 0 after 2bX \u2014 legitimately drained, not unbuilt."
+  },
+  "H10_edha_focus": {
+   "consumers": 0,
+   "trees": 3,
+   "verdict": "BUILT 07-24r (pass I). One schema over edhaGainFocus / edhaDrainFocus, which were already generic and had simply never had a handler \u2014 the H6 shape. First consumers: Whispered Doubt (drain), Predatory Insight (gain), Siphoned Will (gain, riding Hollow Command as a whenOwnsTalent upgrade rider). 2bY: Shatter Focus (Red's) left the column \u2014 converted as edha-focus {op: drain, target: victim}. 2bZ: Galvanize converted (H17 landed); Cold Eyes remains. 2bZ: Cold Eyes converted; 0 remaining is correct."
+  },
+  "H9_edha_die_step": {
+   "consumers": 0,
+   "trees": 0,
+   "verdict": "BUILT 2026-07-25 (pass 2bT) as `edha-die-step` + the config `edha-die-step-react` (\u00a79m q1, ruled BUILD IT). Consumers read 0 because all of Sovereignty \u2014 its 5 bucket-2, both bucket-3 pair talents (re-litigated to full conversions via entry-data couplings) and the 1b Favor rider \u2014 converted in the SAME pass that built it."
+  },
+  "H4_edha_use_gate": {
+   "consumers": 0,
+   "trees": 0,
+   "verdict": "DOES NOT SURVIVE as its own handler. Reading the call sites, every 'nothing spent' precondition is an inline guard specific to its talent (has a Construct / has a Covenant / target is Weakened / once per scene). The reusable parts are already covered: once-per-scene/turn/round by existing trigger gates, list-count by H3, target-state by H1. Fold in; do not build."
+  },
+  "H11_edha_enter_stance": {
+   "consumers": 0,
+   "trees": 0,
+   "verdict": "NEW, found 07-24j during the Warrior conversion \u2014 enter a named stance on a combat-timing trigger. Practiced Kata + Vigilant Stance. Tiny; fold into the H5 build."
+  },
+  "H3b_edha_owner_counter": {
+   "consumers": 0,
+   "trees": 0,
+   "verdict": "BUILT 2026-07-25 (pass 2bT) as a `mode: counter` on H3 `edha-owner-list` (\u00a79m q6, ruled). Consumers read 0 because all 9 Knowledge bucket-2 talents converted in the SAME pass that built it \u2014 the count is legitimately zero, not a measurement gap."
+  },
+  "H12_edha_detonate_list": {
+   "consumers": 0,
+   "trees": 0,
+   "verdict": "BUILT 07-24s (pass K). The audit premise was WRONG in the same way H6 was: edhaResolveCharges has a generic SIGNATURE and a name-keyed BODY \u2014 it hard-codes i.name === \"Pinpoint Charge\" (:8511) and edhaOwnsTalent(owner, \"Concussive Yield\") (:8557). H12 WRAPS those two branches rather than retiring them, so the net ratchet was -2, not -4; Pinpoint Charge and Concussive Yield each still need their own conversion. NOT coupled to the charges ledger \u2014 the handler is engine code and reads the flag directly, so it needed none of the legacy-flag-path escape H3ann is blocked on. Also corrected: mergeTerrain MERGES NOTHING (no geometry union exists in the project); it swaps the terrain formula and prints a GM instruction."
+  },
+  "H3ann_owner_list_annotate": {
+   "consumers": 0,
+   "trees": 3,
+   "verdict": "NEW 07-24q \u2014 NOT a handler: H3's missing `annotate` op (flag the most recent un-flagged entry), plus the legacy-flag-path escape H3 needs to address a ledger it does not itself own. Three consumers of the op shape are already in the engine and the engine NAMES the shape twice ('mirroring Pinpoint Charge', 'the Inevitable-Snare shape'). Blocked behind the same shared-ledger atomicity problem \u2014 see \u00a79n pass H. 2bY: Pinpoint Charge (its last consumer) converted in-pass via the sourceItemUuid stamp \u2014 0 is drained, not unbuilt."
+  },
+  "H13_kneel_widenings": {
+   "consumers": 0,
+   "trees": 0,
+   "verdict": "NEW 07-24q \u2014 NOT a handler: two widenings of existing ones, both needed before Kneel can leave. (a) edha-test-rider's whenTargetStatus must accept a comma-list and gain a range gate (Kneel's standing advantage vs compelled/frightened/weakened in Black range); (b) the move-toward-or-nothing preUpdateToken veto must read the house markedBy shape instead of the bespoke `kneelBy` stamp, so a document rule can write it. BUILT 07-25 (2bU): whenTargetStatus comma-list + rangeColor on edha-test-rider; the move veto reads markedBy.compelled (edha-apply-status expire: owner-turn writes it). Kneel converted with it."
+  },
+  "H15_summon_sustain": {
+   "consumers": 0,
+   "trees": 0,
+   "verdict": "\u2705 BUILT 07-24y \u2014 `sustainCap` (a formula) + `replaceOldest` on `edha-summon`, plus `summonTalent` / `summonedAt` stamped at summon time. Forge Construct converted (sustainCap \"1\", replaceOldest on); Risen Servant's cap-at-tier retired to its document (\"@tier\", replaceOldest off) but the TALENT stays on the ratchet for its Remains ledger \u2014 H3. \u26a0 IT WAS NEVER 'TWO FIELDS': a handler executor runs on `use`, i.e. AFTER the system charged the cost, and both gates this replaces refuse PRE-cost ('nothing spent'). So it also needed a generic `preUseItem` veto \u2014 the same shape H1/H3/H12/edha-next-test-mod all carry. And `replaceOldest` had NO ORDERING DATA: nothing stamped a creation time, so `.find()` was only ever correct while the cap happened to be 1. Both were invisible in the `needs` column and only showed up by reading the call sites. Summon identity keeps a name-prefix FALLBACK for creatures summoned before the flag existed, compared against the rule's own authored `summonName` \u2014 not a literal in engine code."
+  },
+  "H23_summoner_rider": {
+   "consumers": 0,
+   "trees": 1,
+   "verdict": "NEW 07-24y \u2014 a SUMMONER-SCOPED damage rider, split out of H16 where Tempered Edge had been mis-filed (it is a passive; H16 is arm-and-consume). Two builds, not one: a summoner-walk in `edhaRiderParts` (which today iterates the ROLLER's items, and the roller is the summon) AND a second-damage-instance / ignore-deflect vocabulary that `edha-damage-rider` does not have \u2014 it carries ONE bonusFormula joined into the roller's own damage type and cannot read the victim's deflect. Its `summonTalent` prerequisite shipped with H15 on 07-24y. One consumer, one tree: schedule it low unless a second summoner rider appears."
+  },
+  "H16_arm_consume": {
+   "consumers": 0,
+   "trees": 2,
+   "verdict": "NEW 07-24v, RESCOPED 07-24y \u2014 the arm-on-use / consume-on-next-weapon-hit shape. Withering Touch already implements it by hand (edhaWitherArm + edhaWitherStrike) and Tagging Shot needs it. `edha-on-hit` CANNOT substitute: its dispatcher treats a rule as item-specific iff the talent has a damage formula, so a talent WITH one never fires on a weapon hit and a talent WITHOUT one fires on every hit for ever. Also wants a melee/ranged gate field (edhaAttackKind exists; no schema exposes it). \u26a0 07-24y: TEMPERED EDGE WAS NEVER AN H16 CONSUMER \u2014 it is a passive with nothing to arm; re-filed as H23. So this is 2 talents, not 3. Withering Touch converts on H16 alone; Tagging Shot needs H16 PLUS a ruling, because its card promises 'on a hit OR A GRAZE' and it is UNVERIFIED whether a graze reaches applyDamage at all. Two things worth fixing while in there, both independent of the build: Tagging Shot's branch is UNREACHABLE DEAD CODE today (its gate reads the item that rolled damage and its damage.formula is null, so it has never marked a quarry), and the shared heal-cut card picks its source name from the FRACTION (`hcf === 0` prints 'Withering Touch', anything else prints 'Necrotic Grasp') instead of from the `byName` the effect already stores. Bucket-2 consumers 0 after 2bX's stretch \u2014 legitimately drained, not unbuilt."
+  },
+  "H17_target_formula": {
+   "consumers": 0,
+   "trees": 2,
+   "verdict": "BUILT 2bZ - edhaTargetFormula + the recovery-die path; all three consumers converted the same pass, 0 remaining is correct."
+  },
+  "H18_ritual_paid": {
+   "consumers": 0,
+   "trees": 1,
+   "verdict": "BUILT 2bZ - edha-ritual-paid event + edha-reserve-bank; both consumers converted in the same pass, 0 remaining is correct."
+  },
+  "H19_slow_turn": {
+   "consumers": 0,
+   "trees": 0,
+   "verdict": "\u2705 BUILT 07-24y \u2014 `whenSlowTurn` on `edha-test-rider` + a real `edhaIsSlowTurn` predicate; Calculated Patience converted and its `edha.calculatedPatience()` MANUAL toggle retired. The forecast hazard was REAL and confirmed in code: `edhaIsFastTurn` returns false for THREE states (no combat / no combatant / genuinely slow), so `!edhaIsFastTurn` fails OPEN out of combat. `edhaIsSlowTurn` requires a live combatant and treats an UNSET turnSpeed in combat as Slow (the system's getter is `?? TurnSpeed.Slow`, schema initial \"slow\"). Pinned in tests/engine-helpers.test.js, mutation-checked both ways (naive-negation and unset-is-not-slow each fail 4 cases)."
+  },
+  "H20_draw_mana": {
+   "consumers": 0,
+   "trees": 1,
+   "verdict": "\u2705 EVENT BUILT 07-24y \u2014 `edha-draw-mana`, dispatched from the existing Draw Mana hook by `edhaDispatchDrawMana` (NOT GM-gated, unlike the combat-timing dispatcher: Draw Mana fires on the owner's client). Blue and Red converted exactly as forecast \u2014 `edha-next-test-mod` {target self, mode advantage, count 1, attr 'int, wil' / 'str, spd'}; both left EDHA_DRAW_MANA, and Red's 'lose your Reaction' rides alongside as an `edha-note` so its wording is editable rather than a string literal in the table. The forecast was RIGHT for once, and the reason is worth keeping: it was made by naming all three legs (executor real, schema fields present including `attr`, event absent) instead of asking whether a handler was registered. The 3 remaining consumers (White / Black / Green) are genuine bucket 2 and unchanged \u2014 each is new capability, not a field. \u26a0 Beacon of Stability is a TOTAL ORPHAN of one line inside the White branch and Thorn Field / Thorn Hedge of one inside Green; restructuring `edhaDrawMana` kills them silently. 2bZ: the sweep payload landed as edha-pulse fields (who/requireIsolated + GM accounting); its one consumer converted the same pass."
+  },
+  "H21_summon_effect": {
+   "consumers": 0,
+   "trees": 1,
+   "verdict": "NEW 07-24v \u2014 toggle a named baked effect on your live summon (Siege Form). The classification put this field on `edha-summon`, which is wrong: Siege Form summons nothing and its document has no summon rule. Wants its own small handler (effectName + on/off/toggle) plus a pre-cost gate on 'a live summon of mine carries that effect'. The effect DATA already lives in Forge Construct's bakedEffectsJson, so the two talents' documents are coupled."
+  },
+  "H22_wall_cover": {
+   "consumers": 0,
+   "trees": 1,
+   "verdict": "NEW 07-24v \u2014 Wall/cover creation. Phantom Barricade's card says it blocks movement and provides cover; NOTHING in the engine does either (no Wall document creation anywhere, and cover is explicitly a table read). Not a field: it needs Wall create from the token footprint, cleanup on HP-0 and on token delete, and a GM relay because players cannot create Walls. Bucket 2/3, not 1b."
+  },
+  "H24_reveal": {
+   "consumers": 0,
+   "trees": 0,
+   "verdict": "BUILT 2026-07-25 (pass 2bQ). `edha-reveal` \u2014 state facts about a creature as card text (hp / conditions / defenses / lowest-attribute / lowest-defense / below-half, with a hideDefenses subtraction). Its two consumers, Sharp Eye and Vital Diagnosis, converted in the same pass, so this reads 0 and that is correct, not stale. It existed nowhere in any demand column because `needs` recorded only the GATE: Sharp Eye was filed `needs: [H1]` with H1 already built, and the engine's own comment at L4662 said of that row 'what still needs a payload H1 cannot supply'. Reach for it for any scouting/lore-reveal payload rather than hand-rolling another whisper."
+  },
+  "H25_damagereact": {
+   "consumers": 0,
+   "trees": 0,
+   "verdict": "BUILT 2026-07-25 (pass 2bQ). edha-damage-react \u2014 the Bulwark shape: an ally near you takes damage (or drops to 0) and you are offered a whispered card to spend a resource and intervene. Converted all four White Bulwark reactions at once. It appeared in NO demand column because the four were filed H8+H6 (a watch plus a prompt), and both were built \u2014 what was missing was the SPEC vocabulary, which is neither. Adding a fifth reaction of this shape is now authoring, not engine work. Reads 0 consumers because all four converted in the same pass that built it."
+  }
+ },
+ "talents": {},
+ "_converted": "07-24j: 6 Warrior stances. 07-24k: 6 self-next-test. 07-24m: 4 heroic def-tests (H1). 07-24n: 11 action-economy/combat-timed + Tactical Ploy (H5 + H11). 07-24p: 11 gated tests (H1) + 3 upgrade riders retired as `whenOwnsTalent` authored data (Absolute Stillness, Calm Appeal, Resolute Stand). 07-24p (pass G): H3 built + Chaos's 3 fully-expressible Omen talents. Converted talents are REMOVED from this map. 07-24q (pass H): H8 built + Crown of Thorns, Absolute Authority, Extract Thought. 07-24r (pass I): H8's `watch` enum widened (defeat, focus-change) + H10 `edha-focus` built \u2014 the whole Black focus watcher (Coercive Pressure, Whispered Doubt, Predatory Insight), Hollow Command + Siphoned Will (upgrade-talent exit), Necrotic Cascade, Reactive Analysis. 07-24s (pass J): H6 `edha-prompt-pick` built (+ the `turn-start` watch kind, built WITH its only reachable consumer; `edha-push` widened with sizeColor/awayFrom and given an executor) \u2014 Subtle Suggestion, Pattern Recognition, Probability Cascade, False Premise, Anticipate, Intercept (Blue), Unnerving Approach, Puppeteer (Black), Overwhelming Authority (White). Blue and Black bucket-2 are now EMPTY. False Premise needed no prompt at all \u2014 Ben's fail-open ruling deleted its second path. Plus Feinting Strike (Warrior) in the same pass, which CLEARS heroic/Warrior: it needed no handler at all, only for edhaDispatchOnHit to stop hand-listing three payload types. 07-24s (pass K): H12 edha-detonate-list built \u2014 Cascading Failure, The Unmooring (Destruction). Their conversion\u2019s FIRST step was deleting their names from EDHA_DESTRUCTION_TALENTS, whose takeover ends in a bare return false: leave the name in and the use event never fires, so any rule on the document is silently inert. 07-24u (pass L): the `covenants` LEDGER repointed to lists.covenants \u2014 ONE accessor, and all 12 readers followed for free \u2014 plus H3 given allowDuplicates (Ben 07-24t), multiOwner (Order icons are shared between owners) and sceneScoped, a pre-cost veto and a generic release button. Covenant converted, its +1-defenses AE moved onto its own Effects tab. lint pass 7 had to learn that a status `label:` is a DISPLAY string and not dispatch \u2014 that one false positive was the only thing holding Covenant on the ratchet. Bear Witness came with it \u2014 `whenMoment: round-start` added to the edha-combat-timing dispatcher (with a generic round-boundary latch and the mid-combat-reload guard copied from the code it replaced) plus `target: list-members` on edha-triggered-effect, the ledger-wide payload the marker trees had no way to express. Shoulder the Oath and Concord did NOT convert: both need in-flight damage payloads (a post-damage redirect and a pre-damage list mutation) that do not exist, which is the same `damage-applied` payload gap \u00a79o has ruled out of scope three times. 07-24v (pass M): H3 ordering BUG FIXED (mark before committing the ledger \u2014 the reversed order left a phantom entry that reconcile-on-read hid for ever, affecting every H3 consumer incl. covenants). New `edha-single-target` config-only handler retires EDHA_SINGLE_TARGET \u2014 Withering Ray, Verdant Mend. `edha-apply-status` gained `mark` (a buff on an ally must not write an ownership flag) + `whenOwnsTalent`, and its card label gained the native-status fallback term. The whole Envoy Rousing-Presence cluster converted: Rousing Presence + Lessons in Patience (real mechanics) and Instill Confidence / Devoted Presence / Stalwart Presence / Rallying Shout as edha-note UPGRADE riders \u2014 four of those six carried a REMINDER not a mechanic, before and after. Galvanize stays engine-owned (target-scoped recovery die). 07-24w (pass N): Ben ruled q12 ENFORCE and q14 END OF COMBAT. `edha-next-test-mod` gained a COMMA-LIST `skill` matcher (it was a scalar compare, so an authored list would have matched nothing at all) and `ownedFrom` + `@owned`, because a die sized by HOW MANY sibling talents you own cannot be a literal on any one document \u2014 nothing in roll data exposes an owned-talent count. `edha-apply-status` gained `expire: combat` plus a generic end-of-combat sweep keyed on the creature, so Determined finally wears off. Converted the whole Leader command-die atom: Decisive Command, Confident/Demonstrative/Shrewd Command, Relentless March, and Authority \u2014 Authority as a rider because deleting the hook removed its only (cosmetic) presence and an empty document with no engine code is a rule-2b bug, not an exit. 07-24x (pass O): Ben ruled q13 BUILD IT and q15 (a) YES + (b) BUILD IT. `edha-next-test-mod` gained `rangeFt` / `maxTargets` / `doubleIfOwns` (Authority doubles BOTH, which is literally what its card says), `requireQuarry`, and `appliesTo` (test | damage | either) with a real damage-roll consumption path in the rollDamage wrapper plus a pre-cost veto for range and quarry. Decisive Command now ENFORCES its printed 20 ft and Authority genuinely doubles range and ally count; Pack Hunting converted with BOTH of its live card-vs-engine drifts fixed rather than papered over. 07-25 (pass R): the WHOLE White path (15) + Green's Pack Sense \u2014 H26 edha-test-react built (the coord/test-react twin of H25: Shared Conviction, Pillar of Order, Concordant Presence, Voice of Authority via a disadvantage-reroll action, Pack Sense), H27 edha-damage-reduce (Shield Wall, Devoted Conduit \u2014 the applyDamage pre-pass now sweeps rules), H7 edha-aura (Guardian Stance), edha-pulse (Collective Resolve + White Leyline Attunement's Draw-Mana heal, which leaves the EDHA_DRAW_MANA table), edha-cleanse (Beacon of Stability, un-orphaned from inside the White branch), edha-move-window (Ordered Advance), edha-designate (Guiding Signal), edha-accord-forge + H6 (Terms of Accord), H1 vs: prompt-dc widening (Counterpoint). Bound by Word took the upgrade-talent exit (the shareModIfOwns gate on Terms of Accord's forge rule, declared in the Accord header) \u2014 its bucket-3 siblings Terms of Accord and Voice of Authority re-litigated per iron rule 3 and CONVERTED instead of exiting. White bucket-2/3 are now EMPTY. 07-25 (pass 2bS): the whole leyline/Green path (14) + deity/Life Overgrowth via the deflectStackMax field \u2014 H2 zone family (edha-zone / edha-zone-hazard / edha-zone-react), edha-adv-attack, edha-strike-window, edha-damage-bonus, edha-unseen-ward, edha-heal-react, edha-remove-injury, edha-suppress-veil (+ clearsight); Natural Order re-litigated OFF its bucket-3 exit and CONVERTED (the veil half is enforced via the dark-veil sweep). Green is the second colour fully clear. 07-25 (pass 2bU): deity/Chaos CLEAR \u2014 Spreading Omen, Unweaving, Cascade Collapse, Unravel Everything on H1/H3/H6 + the 2bU widenings (H1 targetList owner-sweep, H3 near-victim/enemies-range, H6 source: effects, unlessTargetStatus); Void Sense on edha-sense-reveal (rendering ENGINE_OWNED, name out of code). 07-25 (pass 2bU): deity/Power CLEAR \u2014 Kneel (H13 built), Investiture of Command (maxTargets multi-target + adv-attack targets), Warlord's Advance / Momentum / Fury (armed damage-bonus: meleeOnly, tallyKills/@tally, onKill/onSurvive riders), Unstoppable Advance (H8 token-move kind + once: arm-per-target + immuneStatuses), Mantle of the Aspirant (bucket-3 RE-LITIGATED: self-status oncePerScene + defense-buff window: scene + edha-test-aura + edha-redirect; posters ENGINE-OWNED). Ratchet 70 -> 63. 07-25 (pass V): deity/Order to ZERO \u2014 the `edicts` ledger repointed onto H3 (uuid-keyed entries; proh/sealed ride along), the takeover Set deleted: Edict (H3 place {prohibition}), Sealed Edict (H3 {op: annotate} \u2014 H3ann built with its first consumer), Verdict (H1 {requireTargetOnList} + edha-prohibition-resolve), Concord (edha-self-status `concord` + list-member-hits damage-bonus {oncePerRoundPerDealer}), Shoulder the Oath (edha-redirect {direction: intercept} \u2014 re-litigated from its ENGINE_OWNED exit), Lawkeeper's Eye (edha-bound-adv config), Final Decree (ENGINE-OWNED flow keyed on its edha-decree rule \u2014 the Void-Sense exit shape). H3ann's consumers all converted or engine-adjacent this pass, so its count legitimately reads low. Same pass (V), deity/Civilization to ZERO: Lay Foundation / Bastion / Trade Routes = edha-zone kinds foundation/fortify/link (H2 widened \u2014 the pickers/Drawings/Regions stay engine-owned, the dials are rule fields); Siege Form = edha-summon-effect {toggle-baked} (H21 BUILT); Arsenal = edha-summon-effect {grant} + its own summonGrantTemplate effect; Tempered Edge = edha-damage-bonus {summon-hits, whenDealerItem, addTargetDeflect} (H23 as damage-bonus modes, not a new handler); Bonds of Community = edha-damage-react {rally-zone, requireVictimInMyZone} (H25 widened); Magnum Opus = ENGINE-OWNED colossus rewrite keyed on its edha-summon-effect {transform} rule. The Civ takeover Set, the Lay Foundation takeover, the name-keyed Bonds watcher and the Tempered Edge rider are DELETED. 07-25 (pass 2bX): deity/Fate all 9 \u2014 takeover deleted; `snares` REPOINTED onto H3 (lists.snares, point-bound fail-open entries); `ordained` stays LEGACY behind its accessor (H12-over-charges precedent, its repoint is its own session); edha-zone kinds ordained/snare/link-markers + edha-zone-guard + edha-snare-react + edha-marker-command; H3ann sourceItemUuid stamp + riderFailStatus (the Pinpoint correction \u2014 Inevitable's extra die now reads the DOCUMENT). 2bX stretch: Tagging Shot (the dead on-hit branch deleted; withernext arm shape \u2014 rangedOnly + placeList on edha-damage-bonus) + Seek Quarry (H3 `quarry` ledger, cap 1, registered status; the adapter bridges the string->array shape change \u2014 the 07-24v correction). 07-26 (pass 2bY): the Destruction path \u2014 takeover deleted, the charges LEDGER (the fifth) repointed onto H3 (lists.charges, point-bound fail-open), Set Charge/Fault Line as edha-zone kinds charge/line, Pinpoint via H3ann sourceItemUuid, Concussive Yield as edha-detonate-react, Combustion Chain as edha-zone-react defeat-in-zone, Walking Ruin as edha-place-hazard mode trail, Pyre's EDHA_PYRE_SOURCES deleted for the `spreads` stamp. 07-26 (pass 2bY, path 2): leyline/Red \u2014 the Chaos takeover Set deleted (its last name, Shatter Focus, was TWO talents: Chaos's Omen reroll -> edha-reroll-react; Red's focus drain -> edha-focus, previously unreachable behind the shared name); Breaking Point -> the new `damaged` watch kind + apply-status payload; Frenzied Tempo -> edha-test-rider with the new unlessSkills exclude field. 07-26 (pass Z): H18 built \u2014 the edha-ritual-paid announcement + edha-reserve-bank; Blood Price (edha-next-test-mod self/advantage/black) + Sanguine Reservoir (the banking rule doubles as the Reserve-user rule key). 07-26 (pass Z, cont.): H17 built \u2014 edhaTargetFormula (@target.* resolver, pinned) + edhaRecoveryDie/edhaNormalizeDie (one read path, pinned normalisation, read still bench-flagged) + edha-focus resource:hea and dice-posting; Galvanize, Field Medicine, Resuscitation (upsell exit). 07-26 (pass Z, cont.): Cold Eyes = defeat watch + whenOnMyList (the own-ledger gate) + H3 release + edha-focus; the three ENGINE-OWNED vetoes re-litigated RULE-KEYED (the pass-Y shape) \u2014 Wary = edha-focus-guard (drain reduction + status veto), Resilient Hero = edha-hp-floor + the project's FIRST authored NATIVE rule (long-rest-actor/update-actor clears the spent flag; stringly-value tolerance in the veto read), Dread Presence = edha-move-veto (adversary copies carry their own rule; edhaOwnersOf/edhaWithinAttune deleted). 07-26 (pass Z, cont.): Black Leyline Attunement = the LAST draw-mana table row; edha-pulse widened (who: enemies, requireIsolated, GM-whispered skip accounting per 07-12b) and EDHA_DRAW_MANA deleted. 07-26 (pass AA, THE LAST): the `ordained` LEDGER repointed onto lists.ordained — the sixth and last, one accessor and all five readers followed free, the `linked` annotation intact, edhaGetFateList/edhaSetFateList deleted with the last flat key. Blue's four: Living Image = config edha-illusion-upkeep + edha-note; Holographic Illusion = one edha-summon rule after TWO widenings (tokenSizeColor, and placeAt: pick-point — no summon could EVER be placed at a chosen square, which is why every 'at a point within Attunement Range' card spawned beside the caster; its 'MECHANIC COUNT 3' was one mechanic at three call sites); Phantom Double = edha-illusion-copy, the exit re-litigated and CONFIRMED then taken rule-keyed, with BOTH adversary 'The Seeming' abilities rewired onto their own documents (they shared the branch); Phantom Barricade = H22 edha-barrier BUILT — real Foundry Walls, the engine's first blocks-movement capability, cover deliberately left a table read. The Blue useItem switch is deleted. RATCHET 221 -> 0: the migration is complete, and this map is empty for good.",
+ "_readinessMeasured2bQ": {
+  "date": "2026-07-25",
+  "what": "Applied the 07-24v three-leg test (executor / schema field / event) plus a mechanic count to every talent whose `needs` column read satisfiable.",
+  "measured": 64,
+  "note": "SESSION_PLAN said 67; the live figure was 64 (46 bucket-2 + 18 bucket-1b). The 17 bucket-3 exits also read ready but are session 3's atom.",
+  "heldBack": {
+   "takeoverCancelsUse": 15,
+   "alwaysActive": 11,
+   "dealerSideRider": 7,
+   "total": 33
+  },
+  "noLeg3Blocker": 31,
+  "caveat": "31 is an UPPER BOUND, not a forecast: most carry >1 mechanic or need an unbuilt payload. Two named builds fell out of this sweep \u2014 a generic REVEAL handler (Sharp Eye + Vital Diagnosis) and an exclude-skills field on edha-test-rider (Frenzied Tempo).",
+  "converted": 7,
+  "convertedNote": "Reckless Momentum; Sharp Eye + Vital Diagnosis (H24 edha-reveal); the four White Bulwark reactions (H25 edha-damage-react). 131 -> 124."
+ }
 }

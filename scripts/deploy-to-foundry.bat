@@ -15,8 +15,16 @@ pause >nul
 
 echo.
 echo   [1 of 5]  Getting the latest work from GitHub...
-git pull
+REM --ff-only: if GitHub and this machine have drifted apart, STOP instead of
+REM quietly merging in the middle of a deploy.
+git pull --ff-only
 if errorlevel 1 goto :failed
+for /f "delims=" %%b in ('git rev-parse --abbrev-ref HEAD') do set DEPLOY_BRANCH=%%b
+for /f "delims=" %%s in ('git rev-parse --short HEAD') do set DEPLOY_SHA=%%s
+echo.
+echo   You are deploying branch "%DEPLOY_BRANCH%" at commit %DEPLOY_SHA%.
+echo   If that is not the branch you expected, close this window now -
+echo   nothing has been installed yet.
 
 echo.
 echo   [2 of 5]  Installing the engine into your live module...
@@ -51,14 +59,17 @@ if errorlevel 1 goto :failed
 echo.
 echo   ================================================================
 echo    SUCCESS - deploy finished with no errors.
+echo    (Deployed: branch "%DEPLOY_BRANCH%" at commit %DEPLOY_SHA%)
 echo.
 echo    The steps left happen INSIDE Foundry:
 echo      1. Relaunch Foundry and open your world.
 echo      2. Click the round Sync Talents arrows on each character
 echo         you are going to play.
-echo      3. If you added art above: adversaries already dragged into
-echo         the world keep their OLD picture. Delete those and drag a
-echo         fresh copy out of the pack to see the new art.
+echo      3. Adversaries already dragged into the world are FROZEN
+echo         copies - they keep their OLD abilities and their OLD art,
+echo         not just the picture. If a deploy changed adversaries
+echo         (this one very likely did), delete the placed copies and
+echo         drag fresh ones out of the pack before you run them.
 echo   ================================================================
 echo.
 pause
@@ -75,6 +86,9 @@ echo.
 echo    (Common cause: talents you edited inside Foundry have not been
 echo     saved back to the project yet - the builder stops on purpose
 echo     so your edits are not lost. That is a safe stop, not a break.)
+echo.
+echo    (Another safe stop: step 1 refuses to pull when GitHub and this
+echo     machine disagree about history - nothing was installed.)
 echo   ****************************************************************
 echo.
 pause

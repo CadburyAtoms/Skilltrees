@@ -47,7 +47,65 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "CascadeSweep0000": {
+          "description": "Chaos. THE OWNER-SWEEP (H1 targetList, 2bU): ONE shared Blue roll — yours, on the card — then every Omen-bearer within Blue Attunement Range is gated on its OWN Cognitive (Ben 06-18); the rules below run per member.",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "blue",
+            "vs": "defense",
+            "def": "cog",
+            "requireTarget": false,
+            "targetList": "omens",
+            "targetListStatus": "omen",
+            "targetListRange": "blue"
+          },
+          "order": 0,
+          "id": "CascadeSweep0000"
+        },
+        "CascadeRel000000": {
+          "description": "Chaos. The member's Omen is removed first, so the card reads remove-then-damage as the prose does. Every swept member is on the ledger, so this never short-circuits.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-owner-list",
+            "list": "omens",
+            "op": "release",
+            "status": "omen",
+            "target": "victim"
+          },
+          "order": 1,
+          "id": "CascadeRel000000"
+        },
+        "CascadeDmg000000": {
+          "description": "Chaos. [Tier][Die] spirit per removed Omen, its own roll per bearer.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "damage",
+            "target": "victim",
+            "formula": "(@tier)d(2 * @skills.blue.rank + 2)",
+            "damageType": "spirit"
+          },
+          "order": 2,
+          "id": "CascadeDmg000000"
+        },
+        "CascadeDis000000": {
+          "description": "Chaos. And Disoriented until the start of YOUR next turn.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "status",
+            "statusId": "disoriented",
+            "statusExpire": "owner",
+            "target": "victim",
+            "formula": "0",
+            "damageType": "energy"
+          },
+          "order": 3,
+          "id": "CascadeDis000000"
+        }
+      },
       "effects": []
     },
     "Entropy Strike": {
@@ -90,7 +148,49 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "EntropyStrikeH10": {
+          "id": "EntropyStrikeH10",
+          "description": "Chaos. Blue vs the target's Cognitive defense, engine-resolved on YOUR roll. 07-24p: replaced a preUseItem TAKEOVER (iron rule 2b) — the roll is now the player's, per Ben's ruling that deity conversions match the heroic ones.",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "blue",
+            "vs": "defense",
+            "def": "cog",
+            "requireTarget": true
+          },
+          "order": 0
+        },
+        "EntropyStrikeOme": {
+          "id": "EntropyStrikeOme",
+          "description": "Chaos. On a success the target bears your Omen. `evict: refuse` is Chaos's own cap behaviour and the card says so — Order and Fate fizzle their oldest instead, which is why H3 has the field.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-owner-list",
+            "list": "omens",
+            "op": "place",
+            "capFormula": "@tier",
+            "evict": "refuse",
+            "status": "omen",
+            "target": "victim"
+          },
+          "order": 1
+        },
+        "EntropyStrikeDmg": {
+          "id": "EntropyStrikeDmg",
+          "description": "Chaos. And [Tier][Die] spirit. Ordered AFTER the Omen so the card reads place-then-damage, as the prose does.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "damage",
+            "target": "victim",
+            "formula": "(@tier)d(2 * @skills.blue.rank + 2)",
+            "damageType": "spirit"
+          },
+          "order": 2
+        }
+      },
       "effects": []
     },
     "Isolating Pressure": {
@@ -133,7 +233,63 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "IsolPressureH100": {
+          "id": "IsolPressureH100",
+          "description": "Chaos. Black vs the target's Physical defense, engine-resolved on YOUR roll. 07-24p: replaced a preUseItem TAKEOVER (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "black",
+            "vs": "defense",
+            "def": "phy",
+            "requireTarget": true
+          },
+          "order": 0
+        },
+        "IsolPressureIso0": {
+          "id": "IsolPressureIso0",
+          "description": "Chaos. On a success the target is Isolated until the start of YOUR next turn.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "status",
+            "statusId": "isolated",
+            "statusExpire": "owner",
+            "target": "victim",
+            "formula": "0",
+            "damageType": "energy"
+          },
+          "order": 1
+        },
+        "IsolPressureShat": {
+          "id": "IsolPressureShat",
+          "description": "Chaos. THE CONDITIONAL, and the reason H3's `release` returns false: if the target does not bear your Omen there is nothing to release, the handler returns false, and edhaDispatchTestResult stops — so the damage rule ordered after this one never fires. No new gate field needed.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-owner-list",
+            "list": "omens",
+            "op": "release",
+            "status": "omen",
+            "target": "victim",
+            "note": "shattered — the damage below rides this"
+          },
+          "order": 2
+        },
+        "IsolPressureDmg0": {
+          "id": "IsolPressureDmg0",
+          "description": "Chaos. [Tier][Die] + Awareness vital, reached ONLY when the Omen above was actually shattered.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "damage",
+            "target": "victim",
+            "formula": "(@tier)d(2 * @skills.black.rank + 2) + @attr.awa",
+            "damageType": "vital"
+          },
+          "order": 3
+        }
+      },
       "effects": []
     },
     "Isolating Ruin": {
@@ -176,7 +332,76 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "IsolRuinH1000000": {
+          "id": "IsolRuinH1000000",
+          "description": "Chaos. Black vs the target's Physical defense, engine-resolved on YOUR roll. 07-24p: replaced a preUseItem TAKEOVER (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "black",
+            "vs": "defense",
+            "def": "phy",
+            "requireTarget": true
+          },
+          "order": 0
+        },
+        "IsolRuinIso00000": {
+          "id": "IsolRuinIso00000",
+          "description": "Chaos. On a success the target is Isolated until the start of ITS next turn (Ruin's expiry differs from Pressure's — target-relative, not owner).",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "status",
+            "statusId": "isolated",
+            "statusExpire": "target",
+            "target": "victim",
+            "formula": "0",
+            "damageType": "energy"
+          },
+          "order": 1
+        },
+        "IsolRuinDmg10000": {
+          "id": "IsolRuinDmg10000",
+          "description": "Chaos. [Tier][Die] + Awareness vital, UNCONDITIONAL — ordered before the release so it lands whether or not an Omen is present.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "damage",
+            "target": "victim",
+            "formula": "(@tier)d(2 * @skills.black.rank + 2) + @attr.awa",
+            "damageType": "vital"
+          },
+          "order": 2
+        },
+        "IsolRuinShatter0": {
+          "id": "IsolRuinShatter0",
+          "description": "Chaos. The conditional half: no Omen to release → returns false → the second damage instance below is skipped.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-owner-list",
+            "list": "omens",
+            "op": "release",
+            "status": "omen",
+            "target": "victim",
+            "note": "shattered — a second instance rides this"
+          },
+          "order": 3
+        },
+        "IsolRuinDmg20000": {
+          "id": "IsolRuinDmg20000",
+          "description": "Chaos. The additional [Tier][Die] + Awareness vital, reached only when the Omen was shattered.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "damage",
+            "target": "victim",
+            "formula": "(@tier)d(2 * @skills.black.rank + 2) + @attr.awa",
+            "damageType": "vital"
+          },
+          "order": 4
+        }
+      },
       "effects": []
     },
     "Shatter Focus": {
@@ -214,7 +439,18 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ChaosShatterRr00": {
+          "description": "Chaos (Maelith). Reaction, 1 Investiture: an enemy bearing your Omen in Attunement Range makes a test - remove the Omen; it rerolls and keeps the lower d20 (the engine rewrites the kept total). Refused BEFORE cost with no marked target. The auto-prompt whispers you when an Omen-bearer rolls (mutable; a real use re-arms). 2bY (iron rule 2b) - was the name-keyed takeover flow.",
+          "event": "use",
+          "handler": {
+            "type": "edha-reroll-react",
+            "markStatus": "omen",
+            "autoPrompt": true
+          },
+          "id": "ChaosShatterRr00"
+        }
+      },
       "effects": []
     },
     "Spreading Omen": {
@@ -254,7 +490,52 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "SpreadOmenH10000": {
+          "description": "Chaos. Blue vs the target's Cognitive defense, engine-resolved on YOUR roll. 2bU (07-25): replaced the preUseItem takeover (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "blue",
+            "vs": "defense",
+            "def": "cog",
+            "requireTarget": true
+          },
+          "order": 0,
+          "id": "SpreadOmenH10000"
+        },
+        "SpreadOmenPl1000": {
+          "description": "Chaos. On a success the target bears your Omen. `evict: refuse` is Chaos's cap behaviour — at the cap the new one simply doesn't land and the card says so.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-owner-list",
+            "list": "omens",
+            "op": "place",
+            "capFormula": "@tier",
+            "evict": "refuse",
+            "status": "omen",
+            "target": "victim"
+          },
+          "order": 1,
+          "id": "SpreadOmenPl1000"
+        },
+        "SpreadOmenPl2000": {
+          "description": "Chaos. The SECOND placement — 'one additional enemy within 10 ft of them': the nearest living enemy not already marked, auto-picked (target: near-victim, 2bU). A silent card note when nobody qualifies; the cap still refuses past @tier.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-owner-list",
+            "list": "omens",
+            "op": "place",
+            "capFormula": "@tier",
+            "evict": "refuse",
+            "status": "omen",
+            "target": "near-victim",
+            "nearFt": 10
+          },
+          "order": 2,
+          "id": "SpreadOmenPl2000"
+        }
+      },
       "effects": []
     },
     "Unravel Everything": {
@@ -295,7 +576,95 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "UnravelFill00000": {
+          "description": "Chaos. THE FILL (H3 enemies-range, 2bU): an Omen on every living enemy within Blue Attunement Range, nearest first, until the cap (@tier) refuses — 'up to your cap'.",
+          "event": "use",
+          "handler": {
+            "type": "edha-owner-list",
+            "list": "omens",
+            "op": "place",
+            "capFormula": "@tier",
+            "evict": "refuse",
+            "status": "omen",
+            "target": "enemies-range",
+            "rangeColor": "blue"
+          },
+          "order": 0,
+          "id": "UnravelFill00000"
+        },
+        "UnravelSweep0000": {
+          "description": "Chaos. THE DETONATION (H1 targetList vs: none, 2bU): no test — every bearer resolves immediately, SCENE-WIDE (the card's range clause binds the placement, not the removal). The rules below run per bearer.",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "blue",
+            "vs": "none",
+            "requireTarget": false,
+            "targetList": "omens",
+            "targetListStatus": "omen"
+          },
+          "order": 1,
+          "id": "UnravelSweep0000"
+        },
+        "UnravelRel000000": {
+          "description": "Chaos. Each bearer's Omen is removed as it detonates.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-owner-list",
+            "list": "omens",
+            "op": "release",
+            "status": "omen",
+            "target": "victim"
+          },
+          "order": 2,
+          "id": "UnravelRel000000"
+        },
+        "UnravelIso000000": {
+          "description": "Chaos. The Isolated branch: a bearer that is Isolated when its Omen is removed takes 2[Tier][Die] VITAL instead — and skips the spirit + Disorient below.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "damage",
+            "target": "victim",
+            "whenTargetStatus": "isolated",
+            "formula": "2 * ((@tier)d(2 * @skills.blue.rank + 2))",
+            "damageType": "vital"
+          },
+          "order": 3,
+          "id": "UnravelIso000000"
+        },
+        "UnravelDmg000000": {
+          "description": "Chaos. The ordinary branch: [Tier][Die] + Awareness spirit — skipped for Isolated bearers (unlessTargetStatus, a silent skip so the rule after it still runs).",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "damage",
+            "target": "victim",
+            "unlessTargetStatus": "isolated",
+            "formula": "(@tier)d(2 * @skills.blue.rank + 2) + @attr.awa",
+            "damageType": "spirit"
+          },
+          "order": 4,
+          "id": "UnravelDmg000000"
+        },
+        "UnravelDis000000": {
+          "description": "Chaos. And the ordinary branch Disorients until the start of YOUR next turn (Isolated bearers take the vital instead — no Disorient, matching the card).",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "status",
+            "statusId": "disoriented",
+            "statusExpire": "owner",
+            "target": "victim",
+            "unlessTargetStatus": "isolated",
+            "formula": "0",
+            "damageType": "energy"
+          },
+          "order": 5,
+          "id": "UnravelDis000000"
+        }
+      },
       "effects": []
     },
     "Unweaving": {
@@ -335,7 +704,62 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "UnweaveH10000000": {
+          "description": "Chaos. Black vs the target's Spiritual defense, engine-resolved on YOUR roll. 2bU (07-25): replaced the preUseItem takeover (iron rule 2b).",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "black",
+            "vs": "defense",
+            "def": "spi",
+            "requireTarget": true
+          },
+          "order": 0,
+          "id": "UnweaveH10000000"
+        },
+        "UnweavePick00000": {
+          "description": "Chaos. The DISPEL (H6 source: effects, 2bU): one button per enabled Active Effect on the target; the GM clicks the one that counts as magical (adjudication stays at the table, removal is one click). Deletion is the pick's intrinsic payload — success rules are NOT dispatched for a picked effect.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-prompt-pick",
+            "source": "effects",
+            "icon": "🧵",
+            "prompt": "success — end ONE magical buff, stance, or sustained effect on the target (GM picks; what counts as magical is the table's call):"
+          },
+          "order": 1,
+          "id": "UnweavePick00000"
+        },
+        "UnweaveRel000000": {
+          "description": "Chaos. THE CONDITIONAL: no Omen of yours on the target → release returns false → the Disorient below never fires. Ordered AFTER the dispel so a bare success still unweaves.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-owner-list",
+            "list": "omens",
+            "op": "release",
+            "status": "omen",
+            "target": "victim",
+            "note": "shattered — the Disorient below rides this"
+          },
+          "order": 2,
+          "id": "UnweaveRel000000"
+        },
+        "UnweaveDis000000": {
+          "description": "Chaos. Omen shattered → Disoriented until the start of YOUR next turn.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "status",
+            "statusId": "disoriented",
+            "statusExpire": "owner",
+            "target": "victim",
+            "formula": "0",
+            "damageType": "energy"
+          },
+          "order": 3,
+          "id": "UnweaveDis000000"
+        }
+      },
       "effects": []
     },
     "Void Sense": {
@@ -362,7 +786,22 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "VoidSenseRvl0000": {
+          "description": "Chaos. The sense-reveal spec (edha-sense-reveal, 2bU): omen-bearers render to YOUR client through walls/fog (the per-viewer RENDERING is ENGINE_OWNED — see the tree-section header), and once per round a creature bearing YOUR Omen taking damage within Blue Attunement Range recovers you 1 Investiture (the range gate is the card's own clause — the old engine code never enforced it).",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-sense-reveal",
+            "status": "omen",
+            "recoverResource": "inv",
+            "recoverAmount": 1,
+            "oncePerRound": true,
+            "rangeColor": "blue"
+          },
+          "order": 0,
+          "id": "VoidSenseRvl0000"
+        }
+      },
       "effects": []
     }
   }

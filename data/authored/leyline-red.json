@@ -195,7 +195,37 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "BreakingPtWatch0": {
+          "description": "Red (leyline). Watch: an enemy within your Red Attunement Range takes damage for the 2nd time in a round (the damaged kind's observed value is the per-round hit count). Once per round per creature. 2bY (iron rule 2b) - was the name-keyed applyDamage watcher.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-watch",
+            "watch": "damaged",
+            "scope": "scene",
+            "payloadTarget": "actor",
+            "disposition": "enemy",
+            "rangeColor": "red",
+            "includeSelf": false,
+            "whenTotal": "at-least",
+            "whenTotalValue": 2,
+            "once": "round-per-target"
+          },
+          "id": "BreakingPtWatch0"
+        },
+        "BreakingPtStatus": {
+          "description": "Red (leyline). The payload: the twice-struck creature becomes Disoriented until the start of your next turn. The 1 Investiture is spent by you at the table (the card notes it), as the retired watcher did.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-apply-status",
+            "status": "disoriented",
+            "expire": "owner-turn",
+            "mark": false,
+            "note": "(You may spend 1 Investiture.)"
+          },
+          "id": "BreakingPtStatus"
+        }
+      },
       "effects": []
     },
     "Burning Drive": {
@@ -552,7 +582,21 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "FrenziedTempoAdv": {
+          "description": "Red (leyline). Passive: on a Fast turn, advantage on Presence-attribute tests EXCEPT the five leyline casts (unlessSkills - black is itself a Presence skill, which a positive filter cannot say). Applied by the pre-roll injector; always-active talent, no use event. 2bY (iron rule 2b) - was the name-keyed pre-roll hook.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-test-rider",
+            "appliesTo": "any",
+            "mode": "advantage",
+            "whenAttribute": "pre",
+            "whenFastTurn": true,
+            "unlessSkills": "white,blue,black,red,green"
+          },
+          "id": "FrenziedTempoAdv"
+        }
+      },
       "effects": []
     },
     "Incite": {
@@ -592,7 +636,21 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "InciteH100000000": {
+          "id": "InciteH100000000",
+          "description": "Red. Intimidation vs the target's Spiritual defense, engine-resolved on YOUR roll. 07-24p: replaced a useItem case that only POSTED \"on a success…\" — it trusted the player to have won, which is the iron-rule-3 soft laziness this migration exists to kill. Only the forced action stays volition-manual.",
+          "event": "use",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "inm",
+            "vs": "defense",
+            "def": "spi",
+            "requireTarget": true,
+            "note": "On a success it must Strike the nearest character or lose its Reaction — the GM resolves the forced action."
+          }
+        }
+      },
       "effects": []
     },
     "Kindle": {
@@ -859,7 +917,32 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "RecklessMomOpt00": {
+          "id": "RecklessMomOpt00",
+          "description": "Red / Momentum. The MENU ENTRY. Iron rule 2b + the card's own gate, built 07-25: the card reads 'When you succeed on a Physical test, spend Opportunity to roll the Plot Die on your next test this turn', and an Opportunity is what a successful test produces — so the Opportunity-spend menu IS this talent's trigger, and putting it there enforces both halves the old engine case ignored. whenAttribute 'str, spd' is the Physical gate (the attribute of the test that produced the Opportunity). The Opportunity itself is the cost and is trusted rather than auto-deducted, per the engine's standing Opportunity convention, so no resource cost is listed.",
+          "event": "edha-opportunity",
+          "handler": {
+            "type": "edha-opportunity-option",
+            "label": "Raise the stakes — Plot Die on your next test this turn",
+            "kind": "note",
+            "whenAttribute": "str, spd",
+            "note": "Reckless Momentum: your next test this turn rolls the Plot Die."
+          },
+          "order": 0
+        },
+        "RecklessMomPlot0": {
+          "id": "RecklessMomPlot0",
+          "description": "Red / Momentum. The PAYLOAD, run when the Opportunity button is clicked. Same handler and same field as the 07-25 conversion (edha-next-test-mod, plotDie, self) — it calls edhaGrantPlotDie exactly as the retired engine case did. What changed is only WHEN it fires: on the Opportunity spend rather than on a bare use, which is what the card describes. The `edha-opportunity` event type had been registered since 07-24 with nothing dispatching it; this pass wired it.",
+          "event": "edha-opportunity",
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "self",
+            "plotDie": true
+          },
+          "order": 1
+        }
+      },
       "effects": []
     },
     "Red Leyline Attunement": {
@@ -886,7 +969,33 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "RedKeyDrawMana00": {
+          "id": "RedKeyDrawMana00",
+          "description": "Red Key. On Draw Mana, gain an advantage on your next Physical test. Attribute-gated to str/spd.",
+          "event": "edha-draw-mana",
+          "order": 0,
+          "handler": {
+            "type": "edha-next-test-mod",
+            "target": "self",
+            "mode": "advantage",
+            "count": 1,
+            "attr": "str, spd"
+          }
+        },
+        "RedKeyReaction00": {
+          "id": "RedKeyReaction00",
+          "description": "Red Key, second half. The Reaction loss is GM-tracked — nothing in the system exposes a Reaction to spend, so this is a reminder by design, not an oversight. Edit the wording here rather than in the engine.",
+          "event": "edha-draw-mana",
+          "order": 1,
+          "handler": {
+            "type": "edha-note",
+            "text": "lose your Reaction until the start of your next turn (GM-tracked).",
+            "icon": "⚡",
+            "whisper": "public"
+          }
+        }
+      },
       "effects": []
     },
     "Searing Bolt": {
@@ -957,7 +1066,20 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ShatterFocDrain0": {
+          "description": "Red (leyline). Reaction: target the character in Attunement Range that failed a test, then use - it loses 1 focus (involuntary: Wary reduces it; cross-actor writes relay through the GM). The failed-test trigger stays table-declared. 2bY (iron rule 2b) - this card was UNREACHABLE before: the Chaos takeover matched the shared name and ran the Omen-reroll flow instead.",
+          "event": "use",
+          "handler": {
+            "type": "edha-focus",
+            "op": "drain",
+            "resource": "foc",
+            "target": "victim",
+            "formula": "1"
+          },
+          "id": "ShatterFocDrain0"
+        }
+      },
       "effects": []
     },
     "Shockwave Slam": {

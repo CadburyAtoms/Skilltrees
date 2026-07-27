@@ -45,7 +45,37 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "BoneZone00000000": {
+          "event": "use",
+          "description": "Death (Morrath). 2bW — the placement as the generic zone verb (was the preUseItem takeover): click-to-place a 10 ft difficult-terrain square within Green Attunement Range; costs one Harvested Remain (`costList`) — an empty ledger refuses BEFORE cost, and a cancelled or out-of-range pick REFUNDS the Investiture with nothing spent. Terrain persists until the GM clears the map (the Destruction/Green convention).",
+          "handler": {
+            "type": "edha-zone",
+            "kind": "terrain",
+            "color": "green",
+            "sizeFt": 10,
+            "rangeFt": 0,
+            "costList": "remains",
+            "costListStatus": "harvested"
+          },
+          "order": 0,
+          "id": "BoneZone00000000"
+        },
+        "BoneHazard000000": {
+          "event": "edha-watch-rule",
+          "description": "Death (Morrath). The teeth: ANY creature — allies and the owner too (Ben R5) — that ENDS its turn inside takes [Tier][Die on Green] keen, applied by the generic turn-end sweep (`moment: turn-end`, 2bW). Baked against your roll data at placement.",
+          "handler": {
+            "type": "edha-zone-hazard",
+            "moment": "turn-end",
+            "damageFormula": "(@tier)d(2 * @colorRank + 2)",
+            "damageType": "keen",
+            "color": "green",
+            "label": ""
+          },
+          "order": 1,
+          "id": "BoneHazard000000"
+        }
+      },
       "effects": []
     },
     "Consuming Decay": {
@@ -86,7 +116,24 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "DecayApply000000": {
+          "event": "use",
+          "description": "Death (Morrath). 2bW — the whole talent as one rule (was the preUseItem takeover): the target gate (Weakened or below half HP, Black range, one instance per creature — any owner, a GM online for another's creature) is vetoed BEFORE cost; the apply stamps the decay + the `decaying` status (own id — never collides with real Black afflictions, Ben R4). The flag-driven GM tick re-rolls the baked formula at the start of the target's turns and heals you half; removing the icon ends it; scene end clears it.",
+          "handler": {
+            "type": "edha-turn-dot",
+            "statusId": "decaying",
+            "formula": "",
+            "damageType": "",
+            "healOwnerFraction": 0.5,
+            "requireTargetStatus": "weakened",
+            "orBelowHalfHp": true,
+            "rangeColor": "black"
+          },
+          "order": 0,
+          "id": "DecayApply000000"
+        }
+      },
       "effects": []
     },
     "Death Ward": {
@@ -98,7 +145,7 @@
         "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Two Actions\" aria-label=\"Two Actions\">2</span></p><p>Spend 2 Investiture and choose a character in Attunement Range. If the target is unwilling, test Black vs. Spiritual; on a success, or freely on a willing target, the effect applies. For the scene, the first time the target would drop to 0 HP it instead drops to 1 HP and gains [Tier][Die] + Presence temporary HP. The effect then ends.</p>"
       },
       "activation": {
-        "type": "utility",
+        "type": "skill_test",
         "cost": {
           "value": 2,
           "type": "act"
@@ -118,13 +165,42 @@
         "plotDie": false,
         "uses": null,
         "opportunity": null,
-        "complication": null
+        "complication": null,
+        "skill": "black",
+        "attribute": "default"
       },
       "damage": {
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "WardTest00000000": {
+          "event": "use",
+          "description": "Death (Morrath). 2bW — the gate as H1 (was the takeover's hand-rolled Black test): an unwilling target is tested Black vs Spiritual on YOUR roll (activation is skill_test now, the Censure convention — a failed test still spends the cost, Ben R6); a willing (same-side) target skips the test entirely (`skipIfAlly` — consent owner-judged at targeting). Target + Black range vetoed before cost; an already-warded target refuses via edha-ward's own veto.",
+          "handler": {
+            "type": "edha-def-test",
+            "skill": "black",
+            "vs": "defense",
+            "def": "spi",
+            "requireTarget": true,
+            "rangeColor": "black",
+            "skipIfAlly": true,
+            "note": "A failed test still spends the cost."
+          },
+          "order": 0,
+          "id": "WardTest00000000"
+        },
+        "WardApply0000000": {
+          "event": "edha-test-success",
+          "description": "Death (Morrath). The ward itself: first lethal drop this scene lands on 1 HP + [Tier][Die on Black]+Presence Temp HP, then ends. The applyDamage post-pass enforces it and the defeat watcher skips warded creatures — both read the flag this rule writes.",
+          "handler": {
+            "type": "edha-ward",
+            "thpFormula": "(@tier)d(2 * @skills.black.rank + 2) + @attr.pre"
+          },
+          "order": 1,
+          "id": "WardApply0000000"
+        }
+      },
       "effects": []
     },
     "Necrotic Cascade": {
@@ -165,7 +241,66 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "NecroCascArm0000": {
+          "id": "NecroCascArm0000",
+          "description": "Death (Morrath). 07-24r: the scene arm, as a STATUS rather than the bespoke `cascadeArmed` flag. Nothing lets a rule write an arbitrary flag, so a flag would have kept the arming engine-owned; a status is writable here and readable by the watch rule below, and it shows on the token so 'am I armed?' stops being a memory test. The generic already-armed veto refuses a second use before cost.",
+          "event": "use",
+          "handler": {
+            "type": "edha-self-status",
+            "statusId": "cascadearmed",
+            "timed": false
+          },
+          "order": 0
+        },
+        "NecroCascNote000": {
+          "id": "NecroCascNote000",
+          "description": "Death (Morrath). The arming card.",
+          "event": "use",
+          "handler": {
+            "type": "edha-note",
+            "icon": "💀",
+            "whisper": "public",
+            "text": "armed for the scene: when a creature drops to 0 HP within your Attunement Range (Black), each enemy within 10 ft of the body takes [Tier][Die] spirit — applied automatically. Remove the Cascade Armed icon to end it early."
+          },
+          "order": 1
+        },
+        "NecroCascWatch00": {
+          "id": "NecroCascWatch00",
+          "description": "Death (Morrath). 07-24r — the FIRST consumer of H8's `defeat` watch kind. The engine announces a qualifying live→0 crossing (one applier, not a PC, not a summon, not saved by a Death Ward — the shared preconditions the announcement sits behind), and this rule decides whether it is yours: `rangeColor: black` against the BODY, `requireSelfStatus` for the scene arm. `payloadTarget: actor` because a defeat has one party, and the splash below is measured from that creature.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-watch",
+            "watch": "defeat",
+            "scope": "scene",
+            "payloadTarget": "actor",
+            "rangeColor": "black",
+            "requireSelfStatus": "cascadearmed",
+            "includeSelf": true,
+            "vs": "none",
+            "whenOutcome": "any",
+            "whenTotal": "any",
+            "once": "no",
+            "chain": false
+          },
+          "order": 2
+        },
+        "NecroCascDeton00": {
+          "id": "NecroCascDeton00",
+          "description": "Death (Morrath). The detonation: one [Tier][Die on Black] spirit roll applied to each ENEMY within 10 ft of the body. `nearAffects: enemies` is new (07-24r) and is what keeps the splash off your own side; edhaTokensWithin already excludes the corpse itself, and downed creatures are skipped. The formula duplicates the talent's own damage line because a triggered effect always carries its own — edit BOTH if you retune it.",
+          "event": "edha-test-success",
+          "handler": {
+            "type": "edha-triggered-effect",
+            "kind": "damage-aoe",
+            "target": "near-victim",
+            "radius": 10,
+            "nearAffects": "enemies",
+            "formula": "(@tier)d(2 * @skills.black.rank + 2)",
+            "damageType": "spirit"
+          },
+          "order": 3
+        }
+      },
       "effects": []
     },
     "Raise Dead": {
@@ -203,7 +338,24 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "RaiseFlow0000000": {
+          "event": "use",
+          "description": "Death (Morrath). ENGINE_OWNED (2bW — the edha-decree exit shape): the DialogV2 confirm, the burst-apply revive relay, the combatant initiative surgery and the auto injury are a multi-step flow no rule chain expresses, so the flow stays engine code KEYED ON THIS RULE — it carries every dial, and the pre-cost gates (once per scene via the generic sceneOnce stamp; target a token at 0 HP) ride the generic veto. Died-within-the-hour + touch stay owner-judged at targeting.",
+          "handler": {
+            "type": "edha-revive",
+            "statusId": "disoriented",
+            "ledger": "remains",
+            "ledgerStatus": "harvested",
+            "confirm": "Does a <strong>Harvested Remain</strong> represent {name}? (It is consumed.)",
+            "injury": true,
+            "initiative": true,
+            "oncePerScene": true
+          },
+          "order": 0,
+          "id": "RaiseFlow0000000"
+        }
+      },
       "effects": []
     },
     "Reaper's Harvest": {
@@ -230,7 +382,70 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ReapWatch0000000": {
+          "event": "edha-watch-rule",
+          "description": "Death (Morrath). 2bW — the defeat trigger (Always Active, so no use event exists; the engine's live→0 announcement is the hook). The shared preconditions ride the announcement (one applier, a real crossing, not a PC — Ben R2 — not a summon, not Death-Warded); this rule adds the Green range gate (both tokens on the map). `chain: true` is load-bearing: a Necrotic Cascade's NESTED kills must still harvest, exactly as the pre-2bW ordering had it.",
+          "handler": {
+            "type": "edha-watch",
+            "watch": "defeat",
+            "scope": "scene",
+            "payloadTarget": "actor",
+            "rangeColor": "green",
+            "includeSelf": true,
+            "vs": "none",
+            "whenOutcome": "any",
+            "whenTotal": "any",
+            "once": "no",
+            "chain": true
+          },
+          "order": 0,
+          "id": "ReapWatch0000000"
+        },
+        "ReapInv000000000": {
+          "event": "edha-test-success",
+          "description": "Death (Morrath). The Investiture half: +1 on each qualifying drop (max-clamped).",
+          "handler": {
+            "type": "edha-focus",
+            "op": "gain",
+            "resource": "inv",
+            "target": "self",
+            "formula": "1"
+          },
+          "order": 1,
+          "id": "ReapInv000000000"
+        },
+        "ReapRemain000000": {
+          "event": "edha-test-success",
+          "description": "Death (Morrath). The corpse joins the Remains ledger (lists.remains, `harvested` marker — the green skull, Ben R1): cap = tier, the oldest fizzles past cap, NOT scene-scoped (cleared at scene end by the Death reset). `sceneFreebie` is the card's 'You begin each scene with 1' — an unset ledger reads as one spendable freebie, and [] ≠ unset keeps it spent once used. 2bW.",
+          "handler": {
+            "type": "edha-owner-list",
+            "op": "place",
+            "list": "remains",
+            "status": "harvested",
+            "target": "victim",
+            "capFormula": "@tier",
+            "evict": "oldest",
+            "sceneScoped": false,
+            "sceneFreebie": true,
+            "freebieLabel": "Scene-start Remain"
+          },
+          "order": 2,
+          "id": "ReapRemain000000"
+        },
+        "ReapSense0000000": {
+          "event": "edha-watch-rule",
+          "description": "Death (Morrath). The sense half (Ben's B6 ruling, 07-16c): Harvested Remains render to your client through walls/fog. Rule-driven since 2bW (was the retired EDHA_SENSE_REVEALS table's second row).",
+          "handler": {
+            "type": "edha-sense-reveal",
+            "status": "harvested",
+            "recoverResource": "",
+            "recoverAmount": 0
+          },
+          "order": 3,
+          "id": "ReapSense0000000"
+        }
+      },
       "effects": []
     },
     "Risen Servant": {
@@ -287,9 +502,24 @@
             "attackType": "keen",
             "attackRange": "melee",
             "actsAfterCaster": true,
+            "sustainCap": "@tier",
+            "replaceOldest": false,
             "bakedEffectsJson": "",
             "extraItemsJson": ""
           }
+        },
+        "RisenSpend000000": {
+          "event": "use",
+          "description": "Death (Morrath). 2bW — the Remain gate + spend as a rule (was the last name-keyed branch holding this talent on the ratchet): refuses BEFORE cost with the ledger empty (freebie-aware), consumes the OLDEST Remain on use. The sustain cap rides the summon rule (07-24y).",
+          "handler": {
+            "type": "edha-owner-list",
+            "op": "spend",
+            "list": "remains",
+            "status": "harvested",
+            "requireNonEmpty": true
+          },
+          "order": 1,
+          "id": "RisenSpend000000"
         }
       },
       "effects": []
@@ -329,7 +559,34 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "SpeakSpend000000": {
+          "event": "use",
+          "description": "Death (Morrath). 2bW — the optional spend (was the useItem branch): with a Remain held, a confirm asks whether to consume one; declining (or an empty ledger) spends nothing and the cue below still posts.",
+          "handler": {
+            "type": "edha-owner-list",
+            "op": "spend",
+            "list": "remains",
+            "status": "harvested",
+            "requireNonEmpty": false,
+            "confirm": "Spend a <strong>Harvested Remain</strong>? (Otherwise you must be touching the remains of a character that died within the last 24 hours — owner-judged.)"
+          },
+          "order": 0,
+          "id": "SpeakSpend000000"
+        },
+        "SpeakNote0000000": {
+          "event": "use",
+          "description": "Death (Morrath). The 3-questions card. The Q&A itself ('truthfully but briefly') and the +2 Inv repeat cost stay table narrative, card-noted.",
+          "handler": {
+            "type": "edha-note",
+            "icon": "🕯️",
+            "whisper": "public",
+            "text": "ask up to <strong>3 questions</strong> — the spirit answers truthfully but briefly. Each additional use on the same remains within 24 h costs +2 Investiture (not auto-deducted)."
+          },
+          "order": 1,
+          "id": "SpeakNote0000000"
+        }
+      },
       "effects": []
     },
     "Withering Touch": {
@@ -370,7 +627,49 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "WitherArm0000000": {
+          "event": "use",
+          "description": "Death (Morrath). 2bW: the arm, as a STATUS (the predprimed shape) — untimed, so the generic already-armed veto refuses a wasted second use before cost. Cleared by the Death scene reset.",
+          "handler": {
+            "type": "edha-self-status",
+            "statusId": "withernext",
+            "timed": false
+          },
+          "order": 0,
+          "id": "WitherArm0000000"
+        },
+        "WitherNote000000": {
+          "event": "use",
+          "description": "Death (Morrath). The arming card.",
+          "handler": {
+            "type": "edha-note",
+            "icon": "🥀",
+            "whisper": "public",
+            "text": "next melee weapon hit withers — the talent's [Tier][Die]+Willpower vital is added automatically, and the target cannot regain HP until the start of your next turn (a ranged hit is skipped and the touch stays armed; Temp HP still lands). Don't also roll the card's damage by hand."
+          },
+          "order": 1,
+          "id": "WitherNote000000"
+        },
+        "WitherStrike0000": {
+          "event": "edha-watch-rule",
+          "description": "Death (Morrath). 2bW — the armed strike as the generic armed-self-status damage bonus (was edhaWitherStrike): consumed on the next MELEE WEAPON hit (a definitively ranged hit stands down without consuming — the 07-04 ruling as the meleeOnly field; unknown = owner-judged), adds the talent's own [Tier][Die]+Wil vital to the same application, and full-blocks the victim's healing (healCutFraction 0 — Temp HP still lands, Ben R3). The formula duplicates the talent's own damage line because a bonus rule always carries its own — edit BOTH if you retune it.",
+          "handler": {
+            "type": "edha-damage-bonus",
+            "require": "armed-self-status",
+            "requireSelfStatus": "withernext",
+            "consumeSelfStatus": true,
+            "weaponOnly": true,
+            "meleeOnly": true,
+            "amountFormula": "(@tier)d(2 * @skills.black.rank + 2) + @attr.wil",
+            "color": "black",
+            "damageType": "vital",
+            "healCutFraction": "0"
+          },
+          "order": 2,
+          "id": "WitherStrike0000"
+        }
+      },
       "effects": []
     }
   }

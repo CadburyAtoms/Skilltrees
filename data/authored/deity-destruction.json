@@ -45,7 +45,23 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "CascadeFailDet00": {
+          "id": "CascadeFailDet00",
+          "description": "Destruction/Ruin. 07-24s: H12. Was a case in the Destruction preUseItem takeover — the FIRST step of converting it was deleting its name from EDHA_DESTRUCTION_TALENTS, because that set ends in a bare `return false` and the use event would never have fired. Cost now flows through the normal activation. The multi-catch bonus IS this talent.",
+          "event": "use",
+          "handler": {
+            "type": "edha-detonate-list",
+            "source": "charges",
+            "doubleCaughtFormula": "(@tier)d(2 * @skills.red.rank + 2)",
+            "doubleCaughtType": "energy",
+            "mergeTerrain": true,
+            "mergeWhenAtLeast": 2,
+            "requireNonEmpty": true,
+            "oncePerScene": false
+          }
+        }
+      },
       "effects": []
     },
     "Combustion Chain": {
@@ -73,7 +89,22 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "CombustionChain0": {
+          "description": "Destruction (Razkael). Auto-fires (Reaction) when a character drops to 0 HP in your dangerous terrain: a 10 ft zone ignites on the body and each of your zones spreads 5 ft (GM grows the Regions). Using the talent posts the armed reminder + by-hand button. 2bY (iron rule 2b) - was the name-keyed defeat sweep.",
+          "event": "use",
+          "handler": {
+            "type": "edha-zone-react",
+            "when": "defeat-in-zone",
+            "action": "ignite-spread",
+            "color": "red",
+            "igniteRadiusFt": 10,
+            "spreadFt": 5,
+            "damageType": "energy"
+          },
+          "id": "CombustionChain0"
+        }
+      },
       "effects": []
     },
     "Concussive Yield": {
@@ -100,7 +131,20 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "ConcussiveReact0": {
+          "description": "Destruction (Razkael). Rides EVERY detonation of your Charges: each caught character tests Speed vs. your Red (engine-rolled); failures are knocked Prone. Config-only - the detonate resolver sweeps this rule (always-active talent, no use event). 2bY (iron rule 2b) - was the name-keyed resolver rider.",
+          "event": "edha-watch-rule",
+          "handler": {
+            "type": "edha-detonate-react",
+            "skill": "spd",
+            "skillLabel": "Speed",
+            "color": "red",
+            "failStatus": "prone"
+          },
+          "id": "ConcussiveReact0"
+        }
+      },
       "effects": []
     },
     "Fault Line": {
@@ -141,7 +185,25 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "FaultLineZone000": {
+          "description": "Destruction (Razkael). A click-direction 60 ft x 5 ft line off this document's damage; each caught character tests Speed vs. your Red (engine-rolled) - failures are knocked Prone; Constructs take x3 (structures GM-side); the line becomes dangerous terrain. Cancelled pick refunds the cost. 2bY (iron rule 2b) - was the preUse takeover.",
+          "event": "use",
+          "handler": {
+            "type": "edha-zone",
+            "kind": "line",
+            "color": "red",
+            "lengthFt": 60,
+            "widthFt": 5,
+            "constructMult": 3,
+            "saveSkill": "spd",
+            "saveLabel": "Speed",
+            "saveColor": "red",
+            "failStatus": "prone"
+          },
+          "id": "FaultLineZone000"
+        }
+      },
       "effects": []
     },
     "Pinpoint Charge": {
@@ -182,7 +244,19 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "PinpointAnnotate": {
+          "description": "Destruction (Razkael). Declares your most recent un-declared Charge a Pinpoint Charge (the annotate op stamps sourceItemUuid, so the detonation reads the extra keen off THIS document's damage and centres/follows the terrain on the primary target). Refused before cost with no eligible Charge. 2bY (iron rule 2b) - was the preUse takeover.",
+          "event": "use",
+          "handler": {
+            "type": "edha-owner-list",
+            "op": "annotate",
+            "list": "charges",
+            "annotateField": "pinpoint"
+          },
+          "id": "PinpointAnnotate"
+        }
+      },
       "effects": []
     },
     "Pyre": {
@@ -236,7 +310,8 @@
             "sizeFt": 10,
             "damageFormula": "(@tier)d(2 * @skills.red.rank + 2)",
             "damageType": "energy",
-            "color": "red"
+            "color": "red",
+            "spreads": true
           }
         }
       },
@@ -280,7 +355,21 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "SetChargeZone000": {
+          "description": "Destruction (Razkael). Click-place a Charge marker (10 ft blast) within Red Attunement Range into the charges ledger (cap = tier, oldest fizzles); the arm card binds its trigger. The system charges the cost; a cancelled or out-of-range pick refunds it. Blast damage/type ride this document. 2bY (iron rule 2b) — was the preUse takeover.",
+          "event": "use",
+          "handler": {
+            "type": "edha-zone",
+            "kind": "charge",
+            "color": "red",
+            "sizeFt": 10,
+            "capFormula": "@tier",
+            "evict": "oldest"
+          },
+          "id": "SetChargeZone000"
+        }
+      },
       "effects": []
     },
     "The Unmooring": {
@@ -321,7 +410,24 @@
         "skill": null,
         "attribute": null
       },
-      "events": {},
+      "events": {
+        "UnmooringDet0000": {
+          "id": "UnmooringDet0000",
+          "description": "Destruction/Ruin. 07-24s: H12. Same takeover-removal step as Cascading Failure. `mergeWhenAtLeast: 1` because this one merges always, not at two. Its once-per-scene budget is now a handler field keyed per item, replacing the bespoke `unmooringUsed` flag, and it is vetoed PRE-COST like the hand-rolled version.",
+          "event": "use",
+          "handler": {
+            "type": "edha-detonate-list",
+            "source": "charges",
+            "radiusFt": 15,
+            "bonusFormula": " + @attr.int",
+            "ignoreDeflect": true,
+            "mergeTerrain": true,
+            "mergeWhenAtLeast": 1,
+            "requireNonEmpty": true,
+            "oncePerScene": true
+          }
+        }
+      },
       "effects": []
     },
     "Walking Ruin": {
@@ -333,9 +439,10 @@
         "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>For the scene, every space you move through becomes dangerous terrain. Your Speed increases by 10 ft.</p>"
       },
       "activation": {
-        "type": "none",
+        "type": "utility",
         "cost": {
-          "value": null
+          "value": null,
+          "type": "fre"
         },
         "consume": [],
         "flavor": "",
@@ -348,7 +455,20 @@
         "formula": null,
         "type": null
       },
-      "events": {},
+      "events": {
+        "WalkingRuinTrail": {
+          "description": "Destruction (Razkael). Toggle the terrain trail on/off (Free Action): while active this scene, every space you move through becomes dangerous terrain with this rule's damage (the move watcher reads it; +10 ft Speed is the passive transfer effect). 2bY (iron rule 2b) - was the preUse takeover toggle.",
+          "event": "use",
+          "handler": {
+            "type": "edha-place-hazard",
+            "mode": "trail",
+            "damageFormula": "(@tier)d(2 * @skills.red.rank + 2)",
+            "damageType": "energy",
+            "color": "red"
+          },
+          "id": "WalkingRuinTrail"
+        }
+      },
       "effects": [
         {
           "_id": "OuogmsMwqmGTf9WQ",
