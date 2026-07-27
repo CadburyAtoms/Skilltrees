@@ -5222,6 +5222,12 @@ async function edhaDrainFocus(actor, n, source) {
   } else {
     try { await actor.update({ "system.resources.foc.value": next }, { edhaFocusWatch: true }); } catch (e) { return; }
   }
+  // ANNOUNCE the loss (2026-07-26l, bench run 3 defect 1): this helper was the ONE silent focus
+  // write — edhaGainFocus posts a card, the executor's inv/hea branches post cards, and Wary's
+  // reduction card even NAMED an "involuntary focus loss" that nothing had declared. Every drain
+  // consumer (Whispered Doubt, Red's Shatter Focus, Coercive-family payloads) announces via this
+  // line now; it names the RULE's label, never a hard-coded talent.
+  ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🧠 <strong>${source || "Focus drain"}</strong>: ${actor.name} loses <strong>${cur - next}</strong> focus${next <= 0 ? " — and is at 0" : ""}.</p>` });
   // ANNOUNCE the zero crossing (07-24r; was a direct call to a Predatory-Insight-shaped helper). This
   // write is tagged, so the updateActor focus watcher deliberately never sees it — which is the whole
   // reason the 07-05 test pass found that a creature emptied BY Whispered Doubt never triggered the
