@@ -228,6 +228,19 @@ it; Withering Touch's ranged half behaved identically. Evidence in the 07-26m de
 - [ ] **GM summon relay** — as a PLAYER without actor-create: Phantom Barricade / Risen Servant /
       Forge Construct produce a real token via the GM client; you can move it and use its attack;
       `actsAfterCaster` puts it on the caster's initiative. No GM online → the old warn.
+      *(2026-07-27p bench run 13 — **PARTIAL, and the blocker is a world setting, not the code.**
+      Forge Construct cast by `PlayerBench` produced a real Combat Construct: player-owned, moved by
+      the player (`_source.x` 5400→5700), and **Construct Slam rolled a real Athletics skill test +
+      damage from the player's own client**. It was added to the combat tracker. But the two clauses
+      the row is actually about are BOTH unverifiable here: (a) the `summon-actor` relay branch is
+      **unreachable** — `game.user.can("ACTOR_CREATE")` is **true** for the PLAYER role in this world,
+      so `edhaSummon` took the direct `edhaSummonCreateGM` path on the player's own client; the relay
+      needs the permission revoked, which is a world-settings change a bench run must not make.
+      (b) `actsAfterCaster`'s initiative copy **cannot be read**: with Advanced Encounters active NO
+      combatant stores a raw initiative — `_source.initiative` is `undefined` for every combatant
+      including the caster, and the visible numbers come from AE's derived getter. ⚑ Ben: decide
+      whether PLAYER should keep ACTOR_CREATE at all — if it keeps it, the relay is dead code at
+      your table and this row can never run as written.)*
 - [ ] ⚑ **Injury tool** — Raise Dead: the card names the auto-added injury and it appears on the
       target's sheet (schema drift falls back to a bare-named Item — report if fields are missing).
       Apex Form: ending the scene (delete combat) adds the injury + card. Create a world RollTable
@@ -300,7 +313,20 @@ walls), 2bP-1, 2bP-2 (the trap row), 2bP-3, 2bP-4, 2bJ-5, 2bF-2, 2bF-4, 2bF-5, 2
 - [ ] **2bJ-3 — Pattern Recognition (Blue) ⚠️** — use it on a target, accept, then have them roll a test **this round**; separately, accept and let the **round change** before they roll → Disadvantage on the test this round. After the round changes it **no longer applies**. ⚑ **BEHAVIOUR CHANGE:** the card always said "their next test **this round**" and the old flag waited for ever. Tell me if you'd rather it kept waiting.
       *(2026-07-26i: NOT RUN — needs a real round change; see 2bAA-6.)*
 - [ ] **2bAA-8 — Phantom Double** — Events tab; use with no target, then on an ally in range, then on an ally out of range → ⚑ ONE `edha-illusion-copy` rule. Belief loop unchanged (each enemy that can see it rolls Perception vs your Cognitive defense; fooled clients stop rendering the original). **NEW: an out-of-range ally refunds the 2 Investiture.**
-      *(2026-07-26i: NOT RUN — the belief loop wants a second client; ⚑ Ben's.)*
+      *(2026-07-27p bench run 13 — **FAIL on the refund half only; everything else PASSED.** Driven
+      as `PlayerBench`: exactly **ONE** `edha-illusion-copy` rule (`PhantomCopy00000`); no-target cast
+      copied self adjacent (3300→3600) for 2 Inv; targeting Bench — Black at 10 ft copied the **ALLY**
+      beside the ALLY (3900→4200) with `phantomOf` = Black's token and DC still **16 = the CASTER's**
+      Cognitive; the recast deleted the old copy and posted the break card BEFORE the new one appeared.
+      ❌ **The out-of-range refund does not refund.** Targeting Bench — Order at 105 ft posts the right
+      refusal ("…is not an ally within your blue Attunement Range — Phantom Double refunded") and
+      creates no copy, but the Investiture is wrong, and **nondeterministically so**: from inv 4 it
+      ended at **2** (paid, never refunded); from inv 3 it ended at **4** (gained 1). Root cause is
+      `edhaRefundCost` (engine ~L9595): it does a read-modify-write of an ABSOLUTE clamped value
+      (`Math.min(max, cur + amount)`) that **races the cosmere system's own absolute consume write** —
+      whichever lands last wins. **This helper has 29 call sites**, so every "cost refunded" path in
+      the engine shares the bug; the sync-refusal paths like this one are the ones inside the race
+      window. → test-pass-fixes.)*
 - [ ] **2bAA-9 — The Seeming — Mistheron AND The Doubled Elder** — use it on each; break the copy → ⚑ Each adversary ability now carries its OWN `use` rule (⟳ Sync Adversaries / re-drag first). Both must still raise the copy and run the belief sweep, and **the cards must name "The Seeming", not "Phantom Double"**. Spearing Beak's / the Grasp's fooled-target rider must still find the belief ledger.
       *(2026-07-26i: NOT RUN — same second-client need as 2bAA-8.)*
 
@@ -1176,37 +1202,37 @@ you haven't since the 07-19 pull: Foundry closed → `deploy-to-foundry.bat` →
 **⟳ Sync Adversaries from Pack** click (covers the 07-17c / 07-18b / 07-19 batches in one go —
 see DEPLOY STATE above).
 
-Recommended order. The two sections directly below were moved up WHOLE (titles and row text
-unchanged, so existing dashboard marks survive); the other entries are single rows that stay in
-their home sections — each pointer names the section to jump to.
+> ## ✅ Bench run 13 (2026-07-27p) burned this window down with `PlayerBench` + `Bench` up together.
+> **Retired on evidence:** the whole *Illusion belief loop* (6 rows, incl. both ⚑⚑ client-veil rows),
+> the whole *Playtest-2 fixes* pair, *Sense-through reveals*, *CAE use-grants*, and the *sync-button*
+> bulk row. **Still open:** *GM summon relay* (PARTIAL — blocked by a world PERMISSION, see its row),
+> **2bAA-8**'s refund half (FAIL → test-pass-fixes), and the heavy two-PC stagings below.
+> **Pointer 8 (Unnerving Approach push relay) was STALE and is deleted** — its home section
+> *Black — 07-05 test-pass fixes* no longer exists; the surviving Unnerving Approach rows are the ⚑
+> canvas-precision *Engine-move collision* row, **2bJ-10** (already verified 07-26k), and the
+> dirgehound ADVERSARY row — none of them is a player-client row.
+>
+> **The two-client procedure is now written down** — `docs/EDHA_BENCH_RUNBOOK.md` §6 and the
+> `bench-run` skill both name `PlayerBench` and carry the two-tab recipe. **The Bench cookie session
+> was NOT displaced** by the player joining (all three users active simultaneously).
 
-1. **The Illusion belief loop** (just below, under *W23 adversary pipeline*) — the ⚑⚑
-   client-veil rows: The Seeming vs the party, the break, PC Phantom Double, late viewer.
-   The flagship cannot-test-solo family.
+What is genuinely LEFT for a two-client window — all of it needs deliberate staging that run 13
+judged too heavy to rush:
 
-2. **Playtest-2 fixes** (just below) — White Draw Mana's ally-heal permission and Black Draw
-   Mana's GM-only sweep, both used AS the player.
+1. **2bR-10 — Devoted Conduit** (*White*) — needs a **second White character**; the bench roster has
+   one. Staging means granting the whole White path to another actor.
 
-3. **Sense-through reveals** — the "needs a SECOND client" row in *Bench-results fixes
-   (2026-07-17c)*: a player owning a Void Sense PC sees the Omen-marked token behind a wall.
+2. **2bL-7 — Covenant's SHARED icon** (*Order*) — needs **two Order PCs** covenanting the same ally,
+   then one breaking.
+
+3. **2bM-1 — H3 ordering** — as a PLAYER with **no GM connected**. Note its own escape hatch: with a
+   GM always online it cannot bite.
 
 4. **The wizard as a player** — the "⚑ Player client" row in *Character-creation wizard
    (2026-07-18l)*: run the full walkthrough from the player's own sheet; watch for permission
-   errors anywhere.
+   errors anywhere. Large — only start it if you can finish it.
 
-5. **CAE use-grants as a player** — in *Items-dump tranche (2026-07-18j)*: the tracked
-   action-group write relays through the GM.
-
-6. **Players never see the sync button** — the player-side half of *Adversary pack sync
-   (2026-07-18b)*'s bulk-button row. Ten-second glance at the Actors sidebar.
-
-7. **GM summon relay** — in *Engine backlog pass (2026-07-04)* → Shared primitives: Phantom
-   Barricade / Risen Servant / Forge Construct cast by a player WITHOUT actor-create.
-
-8. **Unnerving Approach push relay** — the ⚑ player-client half of its row in *Black — 07-05
-   test-pass fixes*.
-
-9. If time allows: the multi-player visibility rows in *Knowledge (Gnothis)* §5–§6 (Pack
+5. If time allows: the multi-player visibility rows in *Knowledge (Gnothis)* §5–§6 (Pack
    Share's public reveal + Death Mark's ally-burst clicks from the ally's own client) and the
    *Order (Tessavain)* two-client Covenant rows — heavier setup, save for last.
 
@@ -1217,6 +1243,25 @@ should land on the player's screen, not just the GM whisper.
 Cross-actor relay watch-items scattered through the tree sections (White Coordination §3, Life
 §5, Chaos §3…) need no dedicated tests — they self-verify while running the rows above; note
 anything that errors in the row's note box.
+
+## Re-test after the run-13 fixes (2026-07-27p — two defects found while the window was open)
+
+- [ ] **The dissipates card double-posts with two GMs connected** — with **two GM clients** live,
+      break any 1-HP illusion copy (HP→0) → the "🌫️ …is struck and dissipates" card must post
+      **ONCE**. Run 13 got **two**, 1 ms apart, authored by `Bench` and by `Gamemaster`. Root cause:
+      the `updateActor` hook at engine ~L9226 is guarded only by `if (!game.user?.isGM …)`, so
+      **every** connected GM runs the branch — unlike the belief sweep and the illusion-upkeep hook,
+      which both gate on `game.users.activeGM`. Isolating evidence: the max-1 **recast** break card,
+      which goes through the activeGM-guarded `edhaPhantomRestore`, posted exactly **once** in the
+      same session. Same family as the Apex Form double-injury bug. → test-pass-fixes.
+- [ ] **A deleted summon/phantom leaves its TOKEN behind** — the engine assumes otherwise in a
+      comment at ~L9235 (*"deleting the one-off actor removes its token"*). Run 13 reproduced the
+      orphan **three times**: the broken Seeming copy, a replaced Combat Construct, and a deleted
+      phantom copy all left a token whose `actorId` no longer resolves. Two knock-ons: the orphan
+      renders on the canvas, and a leftover **combatant** ("Unknown Participant") made Advanced
+      Encounters throw `Cannot read properties of null (reading 'system')` from its `initiative`
+      getter on **every** subsequent combatant add — i.e. one dead summon can wedge the tracker
+      mid-combat. Repro: summon, then delete the summon's ACTOR directly. → test-pass-fixes.
 
 ---
 
@@ -1237,45 +1282,20 @@ The two ⚑⚑ Line-Caller flows below are the pipeline's remaining unknowns.
       10 ft" accounting line instead. Next round (or combat end) the window is dead — moving
       posts nothing.
 
-## Illusion belief loop (2026-07-14o — the multi-client rows; needs a PLAYER logged in)
+## Illusion belief loop — ✅ RETIRED WHOLE at bench run 13 (2026-07-27p, two clients)
 
-- [ ] ⚑⚑ **PC Phantom Double** — a Blue test PC uses it (2A, 2 Inv): the 1-HP copy appears
-      ADJACENT to the caster (same art, "(Illusion)"); every GM-side enemy that can see it rolls
-      Perception vs the caster's **Cognitive** defense automatically; the GM gets the fooled/saw
-      accounting card with a **Re-test new viewers** button; the public card shows counts only;
-      NO tokens are hidden in this direction.
-- [ ] ⚑ **Ally-targeted double** — target an ally first, then use it: the copy duplicates the
-      ALLY and appears beside them.
-- [ ] ⚑ **Max 1 / recast** — casting again deletes the old copy (break card posts) before the
-      new one appears.
-- [ ] ⚑⚑ **The Seeming vs the party — THE CLIENT VEIL** — the Mistheron uses The Seeming
-      (1 Action): copy spawns beside the bird on the HOSTILE side wearing the bird's PLAIN token
-      name (no "(Illusion)" label); each PC rolls Perception vs Cognitive 14 (engine). Then check
-      per machine: a FOOLED player's client renders ONLY the copy (the real bird is gone from
-      their canvas); a player who SAW THROUGH renders only the real bird; the GM machine renders
-      both. Each player also gets their own whisper.
-- [ ] ⚑⚑ **The break** — any hit kills the 1-HP copy (or GM-delete it): every player's client
-      drops its veil at once (the real bird re-appears for the fooled), "the illusion breaks"
-      posts, belief state dies with the copy. Fade's text now says the bird may raise The Seeming
-      again once unseen (no auto-restore).
-- [ ] ⚑ **Late viewer** — move a new enemy into sight of a standing copy, click **Re-test new
-      viewers** on the GM card: only the newcomer rolls; earlier results stand.
+All six rows passed with `PlayerBench` logged in beside `Bench`; evidence per row in the 07-27p
+delta. The **client veil is proven in all three directions on three machines** (fooled client hides
+the original, seer's client hides the copy, GM renders both). Two NEW defects surfaced while running
+them — the doubled dissipates card and the orphaned token — and they live in the delta, not here.
 
 ---
 
-# Playtest-2 fixes (2026-07-17 — deployed; the two remaining rows need a PLAYER client logged in)
+# Playtest-2 fixes — ✅ RETIRED WHOLE at bench run 13 (2026-07-27p)
 
-07-17 bench already passed Decisive Command's d4 and Siege Cannon's to-hit (the Siege-Form gate has
-its own 07-17c row). What's left is the pair a solo-GM bench can't see — both are about what a
-PLAYER's client does.
-
-- [ ] ⚑ **White Draw Mana heals allies without a permission error** — as a PLAYER (not the GM),
-      use White Draw Mana with allies in Attunement Range: they gain [Tier] HP and there is NO
-      "lack permission to edit actor" error. Works whether the ally is your own or another player's PC.
-- [ ] ⚑ **Black Draw Mana keeps the GM sweep off the player's screen** — as a PLAYER, use Black
-      Draw Mana with at least one enemy hidden or behind a wall: the "🕵️ full sweep for the GM" card
-      appears ONLY on the GM's screen, and the player's public card still names only visible enemies.
-      Then use it as the GM directly — the sweep card still appears for the GM.
+Both remaining rows were the pair a solo-GM bench could not see, and both passed **as the player**:
+White Draw Mana healed an ally `PlayerBench` had *no* ownership of with zero permission errors, and
+Black Draw Mana's GM sweep card never rendered on the player's screen (public card 5, GM card 8).
 
 ---
 
@@ -1602,10 +1622,11 @@ edha-items (re-priced c/s/g; Roshar money loot excluded), and the starting-kit g
       (price reads in s/g, damage/traits intact) and one equipment piece. `_meta._review` in
       `data/items.json` lists 13 Roshar-flavored entries (crem, sphere lantern, infused gem…) —
       prune or re-flavor at your leisure; deleting the entry re-prices nothing else.
-- [ ] ⚑ **CAE use-grants** — in a combat with the tracker up: use Fast Talker (or Quick
-      Analysis/Trickster's Hand/Cautious Advance/Backstep): a named "Edha: <talent>" action
-      group appears on your combatant; Through the Fray puts a reaction group on the TARGETED
-      ally; as a PLAYER client the write relays through the GM.
+      *(CAE use-grants retired at bench run 13, 2026-07-27p — all three clauses, driven **as
+      `PlayerBench`**: Cautious Advance added `{max:2, name:"Edha: Cautious Advance (Brace / Gain
+      Advantage)"}` to the caster's `actionsAvailableGroups`; Through the Fray added
+      `{max:1, name:"Edha: Through the Fray (…)"}` to the **targeted ally's** `reactionsAvailable`,
+      not the caster's; zero permission errors, so the combatant-flag write relayed through the GM.)*
 - [ ] ⚑ **CAE combat-start grants** — a PC with Foresight gets an extra tracked reaction at
       Begin Combat; Sidestep only when their deflect < 2.
 - [ ] ⚑ **CAE burns** — Tactical Ploy success / Feinting Strike hit decrements the target's
@@ -1699,8 +1720,10 @@ re-drag never fixed. Matching is by drag-stamp (`_stats.compendiumSource`) or ex
 stable because the build's pack ids are deterministic. Renamed world copies are treated as
 customized variants: the bulk pass skips them; their own sheet button syncs them explicitly.
 
-- [ ] ⚑ **Bulk button renders** — as GM, the Actors sidebar footer shows **"⟳ Sync Adversaries
-      from Pack"**; players never see it.
+      *(Bulk-button row retired at bench run 13, 2026-07-27p: GM footer showed **⟳ Sync Adversaries
+      from Pack** + **＋ Edha Character** (positive control), the player's Actors sidebar footer held
+      neither — only Foundry's own "Create Actor". The PC-sheet **⟳ Sync Talents** button IS
+      player-facing by design and works on an owned actor.)*
 - [ ] ⚑ **Bulk sync replaces the 07-17c re-drag** — after deploying 07-17c + this together, do
       NOT re-drag; click the button once. Then confirm a Mistheron placed BEFORE the deploy rolls
       Spearing Beak's +1d6 only vs fooled targets (the 07-17c `whenTargetFooled` fix) — proof the
@@ -1776,11 +1799,10 @@ displayName, a missing mode gate, the PC visionMode, and one stale world actor.
       section (heavy weapon, melee) and rolls from its icon. GM-lore visibility is ANSWERED: with ownership "None"
       players can't open the sheet at all — the biography stays GM-only unless you ever grant
       Limited (which shows exactly the biography).
-- [ ] ⚑ **Sense-through reveals — needs a SECOND client** — the reveal only acts on PLAYER
-      clients (your GM client always renders everything), so it cannot be observed solo: log a
-      player owning a Void Sense PC, Omen-mark an enemy behind a wall/in fog → that player's
-      canvas renders the marked token. If your 07-17 ✗ came from something else you saw, note
-      what it was — that row couldn't fail solo by design.
+      *(Sense-through reveals retired at bench run 13, 2026-07-27p: `PlayerBench` owning
+      Bench — Chaos (Void Sense, `edha-sense-reveal` status `omen`) rendered an Omen-marked target
+      it could not otherwise see, while an identically-obscured UNMARKED control stayed invisible —
+      the mark was the only difference.)*
 
 ---
 

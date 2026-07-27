@@ -77,7 +77,7 @@ running (if `http://localhost:30000` doesn't answer, stop and ask).
    the join screen lists Bench as selectable again. Ending a session without this HOLDS the
    Bench slot and the next session cannot join (run 1 did it; Ben had to ask).
 
-## Multi-client rows (a second passwordless PLAYER user exists as of 2026-07-27)
+## Multi-client rows — the player user is named **`PlayerBench`** (id `yF9LHvfhB7otsHYY`)
 
 Some rows are unprovable from one client because the mechanic is *about* two clients. Ben added a
 passwordless player user for exactly this. Two shapes, and they need different setups:
@@ -89,11 +89,21 @@ passwordless player user for exactly this. Two shapes, and they need different s
 - **Genuine player-perspective rows** — the illusion belief loop, Covenant's shared icon across two
   owners, Devoted Conduit's two-White staging. These need the player user actually logged in.
 
-Driving the second client: open a **new browser-pane tab** (`tabs_create`, then `navigate`), join as
-the player user there, and drive each tab by its own `tabId`. Two cautions learned the hard way:
+Driving the second client (the run-13 recipe — full procedure in `docs/EDHA_BENCH_RUNBOOK.md` §6):
+join **`Bench`** in the `seed` tab first, then `tabs_create` → `navigate` to `/join` → select
+**`PlayerBench`** → Join with a **blank password**, and drive each tab by its own `tabId`. Never join
+as `Gamemaster`, `Amertron`, `Laustarr` or `Spidercam` — those are Ben's and his players'.
 
-- A second session **may displace the Bench cookie session**. Verify Bench is still joined after the
-  player joins; if it isn't, that row stays ⚑ rather than being fought.
+- ⚠️ **The new tab opens at 0×0, so its canvas never initialises.** `resize_window` **and then
+  reload** — run 10's lesson applies to the second tab too.
+- **Verify Bench survived**, from Bench's own socket. **Run 13 measured NO displacement** (Bench +
+  Gamemaster + PlayerBench all active at once). Keep this as a caution, not an expectation; if it
+  ever does bite, that row stays ⚑ rather than being fought.
+- **Grant `PlayerBench` OWNER on bench-folder actors only**, snapshot `ownership` first, restore at
+  the end.
+- **One PC per client is a staging step, not a detail.** If PlayerBench owns many PCs, a belief
+  ledger holding both a fooled and a seer observer resolves to "sees through" and you are testing
+  the wrong thing. Narrow to a single PC per direction.
 - **Log out BOTH clients** at the end. A held player slot blocks the next run exactly like a held
   Bench slot.
 

@@ -49,9 +49,32 @@ then the deities, Heroic, and the non-tree console-runnable sections).
    read the outcome off `#chat-log` (read_page) + assert actor/status state in the console →
    screenshot the card for evidence. Combat-timing rows: create a Combat on the bench scene,
    run it, and **delete that combat afterward**.
-6. **Multi-client rows:** a second browser tab as an unused *player* user MAY displace the
-   Bench cookie session. If it does: run those rows as a separate player-phase (rejoin as
-   Bench after), or leave them ⚑ for Ben's two-client bench. Never join as a user Ben uses.
+6. **Multi-client rows — use `PlayerBench`.** Ben created a dedicated passwordless **player**
+   (non-GM) user named **`PlayerBench`** (id `yF9LHvfhB7otsHYY`) on 2026-07-27 for exactly this.
+   Never join as `Gamemaster`, `Amertron`, `Laustarr` or `Spidercam` — those are Ben's and his
+   players'. The procedure, as actually executed in run 13:
+
+   a. Join `Bench` in the **`seed`** pane tab first; health-check, hash-verify, snapshot.
+   b. `tabs_create` → new tab (e.g. `tab-1`) → `navigate` to `http://localhost:30000/join` →
+      select `PlayerBench` → Join, **blank password**. Drive each tab **by its own `tabId`**.
+   c. ⚠️ The new tab opens at **0×0**, so its canvas never initialises (`canvas.ready` false).
+      `resize_window` **and then reload** — run 10's lesson applies to the second tab too, and
+      it costs you a whole row if you miss it.
+   d. **Verify `Bench` survived**, from Bench's own socket: `game.users.filter(u => u.active)`.
+      **Run 13 measured NO displacement** — `Bench`, `Gamemaster` and `PlayerBench` were all
+      active simultaneously in separate pane tabs. The old warning that a second session *may*
+      displace the Bench cookie is retained as a caution, not an expectation; if it ever does
+      bite, that row stays ⚑ rather than being fought.
+   e. **Grant `PlayerBench` OWNER on the bench PCs it needs** — bench-folder actors ONLY.
+      Snapshot each actor's `ownership` block first and restore it at the end (run 13 did, and
+      the end-state diff came back empty).
+   f. **Log out BOTH clients** at the end and confirm BOTH are selectable on `/join`. A held
+      player slot blocks the next run exactly like a held Bench slot.
+
+   **One-PC-per-computer is a real staging step.** Ben's veil design assumes one PC per player
+   machine. If `PlayerBench` owns *many* PCs, a belief ledger holding both a fooled and a seer
+   observer resolves to "sees through" and you are testing the wrong thing. Narrow ownership to
+   a **single** PC per direction and re-read — that is how run 13 proved both directions.
 7. **Recording (per run, one commit):**
    - **PASS (mechanical):** the row is retired — deleted from `EDHA_FOUNDRY_TEST_CHECKLIST.md`
      and named (with its 2b id) in that run's single dated handoff delta, one line of evidence
@@ -364,6 +387,41 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   on a prescribed `bench-setup-console.js` change that could never have worked: Probability Net is an
   **adversary** ability in `data/adversaries.json`, so no talent-pack name list can reach it. Importing
   the adversary fresh from the pack — the standing procedure — ran the row in two execs.
+
+## Operating lessons from run 13 (2026-07-27p — the first two-client run; these OVERRIDE older advice)
+
+- ❌ **`isVisible` on a player client is worthless until you prove base vision works.** The very
+  first veil read came back `false` for the original AND the copy — which looks like a defect and is
+  not. `isVisible` was `false` for **all 54** non-owned tokens, because **bench PCs carry a 10 ft
+  `sense` vision range** (`sight.range: 10, visionMode: "sense", brightness: 0`). A GM never notices;
+  a player client renders almost nothing. **Sample every placeable and count how many are visible
+  before attributing a single `false` to the mechanic under test.** Fix by widening the observer
+  token's `sight.range` (snapshot and restore it) — do NOT conclude the veil is broken.
+- **The veil resolves per USER, not per token, so many-PCs-one-player tests the wrong thing.**
+  `edhaPhantomVeilHides` reads *every* observer the user owns: hold both a fooled and a seer and the
+  `mineFooled && !mineSaw` branch can never fire, so the original is never hidden. Narrow ownership
+  to **one** PC per direction. Two ownership flips proved both directions off a single cast.
+- **A GM-only card still reaches the player's `createChatMessage` hook.** Foundry broadcasts the
+  document and filters *rendering*. A hook-level capture will show you the GM sweep card on the
+  player client and it means nothing. **For any "does the player see X" row, read the rendered DOM —
+  `ol.chat-log li.chat-message` — not the hook.** Both the Black Draw Mana row and the illusion GM
+  card turn on exactly this distinction.
+- ❌ **Do not read `combatant.initiative` with Advanced Encounters installed.** It is a *derived
+  getter* in the module, not the stored field, and it **throws** (`Cannot read properties of null
+  (reading 'system')`) when any combatant's actor is missing. Read `combatant._source.initiative` —
+  which in this world is `undefined` for every combatant, so `actsAfterCaster` cannot be verified by
+  reading initiative at all. Run 13 nearly recorded a false FAIL off the derived `0` vs `502`.
+- **One orphaned combatant wedges the whole tracker.** A summon whose actor was deleted left a
+  combatant behind, and after that *every* `createEmbeddedDocuments("Combatant", …)` threw from AE's
+  `setupTurns`. If combat setup starts failing for no reason, sweep `combat.combatants.filter(c => !c.actor)` first.
+- **Two GM clients are a TEST CONDITION, not noise.** Ben's `Gamemaster` being connected is what
+  exposed the doubled dissipates card. When a card may double-post, check `message.author.name` on
+  each copy — that names the offending client directly and takes one exec.
+- **A "refunded" notification is not a refund.** Assert the resource. Run 13's refund bug prints a
+  perfectly correct refusal message while the resource is wrong — and wrong in *different directions*
+  from different starting values, which is the signature of a **race between two absolute writes**
+  rather than an off-by-one. Vary the starting value: if the sign of the error flips, stop looking
+  for arithmetic and start looking for ordering.
 
 ## Known limits
 
