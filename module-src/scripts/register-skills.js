@@ -11067,29 +11067,51 @@ Hooks.on("renderChatMessageHTML", (msg, html) => {
 // token still resolves; once it doesn't, the fail-open keep becomes phantom cap pressure next
 // scene. Death's clear is the established convention (statuses on tokens AND directory actors, the
 // ledger key on characters) — Chaos now matches it. markedBy.isolated joins for symmetry.
+//
+// 07-27d (bench run 6, attempt 2 — the ledger/off-canvas halves STILL failed on the 07-27b code
+// while the canvas-statuses half and the trigRound sweep both ran): the 07-27b body was the only
+// deleteCombat clear whose per-actor awaits were UNGUARDED — Death wraps every toggle/unset in its
+// own try/catch; this one only wrapped the flag unsets. All ~17 scene clears launch concurrently
+// off one deleteCombat, so a single rejection anywhere (the proven shape: toggleStatusEffect's
+// deleteEmbeddedDocuments throwing on an AE a concurrent sweep already deleted — core has no
+// missing-id tolerance there) aborted the remaining canvas loop AND both later halves via the
+// outer catch, which is exactly the dead-halves signature the bench saw. Three changes:
+//   1. THE LEDGER UNSET RUNS FIRST — the half whose survival causes phantom cap pressure can no
+//      longer be starved by a status failure later in the sweep.
+//   2. Every await is individually guarded (Death's convention) AND each actor is wrapped, so a
+//      statuses-getter throw skips that actor alone.
+//   3. Failures console.warn WITH the actor's name — if anything still rejects at run 7, the
+//      console names the culprit instead of silently eating two loops.
 async function edhaClearChaosState() {
   try {
     if (!game.user?.isGM) return;
+    // (1) The omens ledger, FIRST (⚠ raw ledger path, §9o trap 3 — the Death `lists.remains`
+    // precedent, hand-edited here too).
+    for (const a of (game.actors?.filter(x => x.type === "character") ?? [])) {
+      if (a.getFlag?.("edha-content", "lists.omens") !== undefined) {
+        try { await a.unsetFlag("edha-content", "lists.omens"); }
+        catch (e) { console.warn(`Edha Content | Chaos sweep: omens-ledger unset failed on ${a.name}`, e); }
+      }
+    }
+    // (2) Statuses + markedBy, every await its own guard (Death's per-call convention).
     const sweepActor = async (a) => {
       if (!a) return;
-      if (a.statuses?.has?.("omen")) await a.toggleStatusEffect?.("omen", { active: false });
-      if (a.statuses?.has?.("isolated")) await a.toggleStatusEffect?.("isolated", { active: false });
-      if (a.flags?.["edha-content"]?.markedBy?.omen) { try { await a.unsetFlag("edha-content", "markedBy.omen"); } catch (e) {} }
-      if (a.flags?.["edha-content"]?.markedBy?.isolated) { try { await a.unsetFlag("edha-content", "markedBy.isolated"); } catch (e) {} }
+      try { if (a.statuses?.has?.("omen")) await a.toggleStatusEffect?.("omen", { active: false }); }
+      catch (e) { console.warn(`Edha Content | Chaos sweep: omen status clear failed on ${a.name}`, e); }
+      try { if (a.statuses?.has?.("isolated")) await a.toggleStatusEffect?.("isolated", { active: false }); }
+      catch (e) { console.warn(`Edha Content | Chaos sweep: isolated status clear failed on ${a.name}`, e); }
+      try { if (a.flags?.["edha-content"]?.markedBy?.omen) await a.unsetFlag("edha-content", "markedBy.omen"); } catch (e) {}
+      try { if (a.flags?.["edha-content"]?.markedBy?.isolated) await a.unsetFlag("edha-content", "markedBy.isolated"); } catch (e) {}
     };
     const seen = new Set();
     for (const t of (canvas?.tokens?.placeables ?? [])) {
       const a = t.actor; if (!a) continue;
       const k = a.uuid ?? a.id; if (seen.has(k)) continue; seen.add(k);
-      await sweepActor(a);
+      try { await sweepActor(a); } catch (e) { console.warn(`Edha Content | Chaos sweep: token actor ${a?.name ?? "?"} failed`, e); }
     }
     for (const a of (game.actors ?? [])) {
       const k = a.uuid ?? a.id; if (seen.has(k)) continue; seen.add(k);
-      await sweepActor(a);
-    }
-    for (const a of (game.actors?.filter(x => x.type === "character") ?? [])) {
-      // ⚠ raw ledger path (§9o trap 3) — the Death `lists.remains` precedent, hand-edited here too.
-      if (a.getFlag?.("edha-content", "lists.omens") !== undefined) { try { await a.unsetFlag("edha-content", "lists.omens"); } catch (e) {} }
+      try { await sweepActor(a); } catch (e) { console.warn(`Edha Content | Chaos sweep: directory actor ${a?.name ?? "?"} failed`, e); }
     }
   } catch (e) { console.error("Edha Content | clear Chaos state failed", e); }
 }
