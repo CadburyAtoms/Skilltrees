@@ -162,6 +162,16 @@ Insight) and §9o called them byte-identical. **They are not, and the difference
   idiom above, not an error path.
 - Pure core **`edhaListPush(list, entry, {cap, evict})` → `{list, evicted, refused}`** (pinned in
   `tests/`; a cap that COMPUTED to 0/NaN refuses rather than emptying a live ledger).
+- **`edhaOwnerListQueue(owner, key, task)` — THE door for any ledger read-modify-write (07-26n,
+  bench run 4 defect 2).** Every `lists.*` mutation is an RMW with no Foundry isolation: three
+  same-tick defeats ran three concurrent harvest placements that all read the same stored list,
+  and the last write won (entries LOST — measured live). The queue serialises per owner+key; the
+  task must RE-READ inside itself (queueing only the write fixes nothing). All 16 write sites go
+  through it — any new writer MUST too. Two rules, enforced by review: user interaction (dialogs,
+  pick-points) stays OUTSIDE the queue, and a queued task never awaits another queued task on the
+  same owner+key (deadlock — the reason the executor's `spend` op does not wrap `edhaLedgerSpend`,
+  which carries the queue itself). Pinned in `tests/owner-list-race.test.js` (mutation-checked);
+  `tests/run.js` runs async tests since the same pass.
 - **Membership lives on the mark, order lives in the list, and the mark wins.**
   `edhaOwnerList(owner, key, status)` drops any entry whose creature no longer bears the status, so
   a half-migrated tree (or a GM clearing a status by hand) cannot strand a phantom under the cap.
@@ -658,6 +668,12 @@ code, and every marker ledger lives under `flags.edha-content.lists.<key>`.**
   x/y are TOP-LEFT). No summon could be placed at a chosen square before 2bAA — which is why
   every "at a point within Attunement Range" card spawned beside the caster. Four of the six
   spec fields the schema hides stay hidden on purpose: they are per-cast runtime values.
+  **`creatureType` (07-26n)** — authorable creature type: blank = the schema default (humanoid);
+  `"Construct"` mints `system.type = {id: "custom", custom: "Construct"}` (native ids pass
+  through as ids), which is what **`edhaIsConstruct`** — now reading the schema-true
+  `system.type`, the old `system.customType` read was a dead field (bench run 4) — and any future
+  creature-type gate reads. Forge Construct is the first consumer; a summon minted before the
+  rule change keeps its old type until re-forged.
 - **`edha-illusion-copy`** — the rule-keyed entry to the phantom belief loop (ENGINE-OWNED
   re-litigated and confirmed: a `Token#isVisible` patch is not a rule chain). Fields: `copyOf`
   {target-or-self|self}, `sourceLabel` (blank = the item's name — stamped as `phantomSource` and

@@ -2,7 +2,15 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, **COMPLETED 2026-07-26 (pass AA)**: **the ratchet list is EMPTY — 221 → 0 across twenty-seven passes.** Every tree is clear, all six marker ledgers have migrated, and `scripts/name-keyed-allowlist.json` stays in the repo with an empty `talents` list *on purpose* — lint pass 7 still guards against REGROWTH, which is the half of the ratchet that matters from here on. ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **ALL SIX marker LEDGERS have migrated** (`covenants` 07-24u; `edicts` 07-25 pass V; `remains` 07-25 pass W; Fate's `snares` 07-25 pass X; Destruction's `charges` 07-26 pass Y; Fate's `ordained` 07-26 pass AA — the point-bound ones fail OPEN through H3's reconcile by design). There is no flat marker-list flag left in the engine. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-26m** (BENCH RUN 4 —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-26n** (THREE of
+bench run 4's four defects FIXED — every root cause verified in code before touching anything:
+`edhaIsConstruct`'s dead-field read + Forge Construct now minting a real Construct (MIXED: engine
+F5 + deity PACK REBUILD), the H3 owner-list write race serialised at the shared level with a
+per-owner-per-key queue behind ALL 16 ledger write sites (ENGINE-ONLY, pinned + mutation-checked),
+and Flame Surge's missing damage block authored on both bosses (DATA — adversaries PACK REBUILD,
+scratch-build verified). Defect 4 (a raised creature keeps its own Remain) stays queued as Ben's
+ruling, untouched. 235 tests green; the run-4 "orphan is gone" claim retracted in
+BENCH_NEXT_RUN.md. Nothing was built into the live module.) Prior: **2026-07-26m** (BENCH RUN 4 —
 Destruction + Death + the 07-26l re-tests, executed live: **38 rows retired on evidence, 4 defects
 root-caused → test-pass-fixes** (a Constructs-multiplier gate reading a nonexistent field, a
 Remains-ledger write race under multi-drop AoE, Flame Surge's missing damage block, and a
@@ -28,6 +36,78 @@ the Red pilot, executed live by an agent session joined as `Bench`: 16 rows reti
 1 FAIL root-caused (Shockwave Slam's weapon-hit trigger surface), 4 cross-tree observations,
 and the agent-bench runbook hardened with the v13 operating lessons. Docs + setup-script fix
 only; nothing to deploy.)
+
+**2026-07-26n — BENCH RUN 4'S DEFECTS 1–3, FIXED (test-pass-fixes). One commit per defect, root
+causes VERIFIED in code (hook → handler → write) rather than re-derived. ⚠️ MIXED DEPLOY: the two
+engine fixes are F5-only after the next `module-src-sync`; the two data halves need PACK REBUILDS
+(`foundry-build deity` + ⟳ Sync Talents + RE-FORGE the Construct; `foundry-build adversaries` +
+⟳ Sync Adversaries + re-import BOTH bosses) — BLOCKED-ON-DEPLOY, queued for Ben, and NOTHING was
+built into the live module (a scratch-modroot build of ALL packs verified both data halves:
+validate-packs + validate-adversaries green, compiled Flame Surge reads `dmg=2d8 energy`, compiled
+Forge Construct rule carries `creatureType: "Construct"`). Defect 4 (raised creature keeps its own
+Remain) is Ben's ruling — code and data untouched there.**
+
+### Bug root causes (one bullet per cause; commits one per defect)
+
+1. **`edhaIsConstruct` read `system.customType`, a field NO cosmere actor has — Fault Line's
+   Constructs ×3 could never fire** (`1974fe6`, MIXED: engine F5 + deity PACK REBUILD). Creature
+   type lives at `system.type = {id, custom}` (`CONFIG.COSMERE.creatureTypes` =
+   `["custom","humanoid","animal"]`; a Construct is `{id:"custom", custom:"Construct"}`). Both
+   halves per the run-4 delta: the gate now reads the schema-true field, AND `edha-summon` grew an
+   authorable **`creatureType`** schema field that `edhaSummon` mints into `system.type` — Forge
+   Construct's authored rule sets `"Construct"`, so the summon stops being born humanoid.
+   **Sweep result: this was the ONLY dead creature-type read** — `customType` had exactly one
+   occurrence, and every other engine `.system.type` read is an ITEM type (path atlas / injury),
+   not an actor creature type. Pinned: 3 `edhaIsConstruct` cases incl. the legacy dead shape.
+   ⚑ needs a fresh RE-FORGE after deploy — an already-summoned Construct keeps its minted type.
+2. **The H3 owner-list race — every ledger mutation was an unserialised read-modify-write on
+   `flags.edha-content.lists.<key>`; concurrent defeats lost entries** (`468f27e`, ENGINE-ONLY).
+   Fixed at the SHARED level, not per-list: **`edhaOwnerListQueue(owner, key, task)`** — a
+   per-owner-per-key promise queue in the H3 core. A mutation enters the queue, re-READS inside
+   it, commits before the next reads. ALL 16 `lists.*` write sites now sit behind it (H3 executor
+   place/release/annotate/fill, `edhaLedgerSpend`, the release click, `edhaDamageBonusPost`'s
+   placeList, charge place/arm/trigger-fire/detonate, Fate place/spring/reposition/link, Edict
+   violation consume). Two rules, documented at the helper: user interaction stays OUTSIDE the
+   queue, and no queued task may await another queued task on the same owner+key (deadlock).
+   `tests/run.js` is now async-aware; 6 pinned cases in `tests/owner-list-race.test.js` include
+   the exact bench scenario, MUTATION-CHECKED: the unserialised RMW reproduces the one-survivor
+   ledger run 4 measured, the queued path yields two.
+3. **2bAB-1 Flame Surge rolled 0 — the ability had `events` but no `damage` block** (`7daa2da`,
+   DATA + build script — PACK REBUILD, BLOCKED-ON-DEPLOY). `edha-burst` reads
+   `item.system.damage.formula` (fallback `"0"`); both bosses' copies compiled `{formula: null}`.
+   Both now author **2d8 energy** (ruling-122 baked dice, Searing Bolt's convention). Plus the
+   build fix the data fix exposed: `advItemDoc`'s `isHeal` branch keyed on *any* non-attack damage
+   field and would have rewritten Flame Surge's card as "Restores … to the target" — the
+   "Restores" prose now applies only to `damageType: "heal"` (Suture Cradle, the sole consumer);
+   a damage-bearing non-heal keeps its text description. **Sweep result: the only other
+   damage-reading adversary rules without a damage block are the three `affects: none`
+   terrain-only bursts** (Fellstag's Sudden Wall, Briar-Gone Grove's + Tussock-Sow's Sudden
+   Growth) — their texts promise no damage and the detonate path never rolls damage for
+   `affects: none`; correct as-is.
+
+### New REUSABLE primitives
+
+- **`edhaOwnerListQueue(owner, key, task)`** — THE door for any H3 ledger read-modify-write.
+  Read inside the task, never queue user interaction, never nest same-owner+key acquisitions.
+- **`edha-summon` grew `creatureType`** — authorable creature type for summons (blank = system
+  default humanoid; `"Construct"` mints `{id: custom, custom: Construct}`; native ids pass
+  through). Forge Construct is the first consumer.
+- **`edhaIsConstruct(actor)`** — now the schema-true creature-type gate; reach for it for any
+  future "vs Constructs" dial instead of re-reading `system.type` inline.
+- **tests/run.js runs async tests** — a test may return a promise; registration order preserved.
+
+### Known limits / couldn't self-verify (no Foundry session)
+
+- ⚑ The Constructs ×3 re-test needs BOTH deploy halves + a fresh re-forge (2bY-7 row annotated).
+- ⚑ The Remains-race re-test needs the engine sync + F5; the harness pins the interleaving but
+  the live `setFlag` timing is Foundry's (Death section row annotated).
+- ⚑ Flame Surge needs the adversaries rebuild + fresh re-imports of BOTH bosses (2bAB-1 row).
+- The queue serialises ONE client's writes; two GMs mutating the same ledger from different
+  clients remain unserialised (Foundry offers no cross-client lock) — the bench scenario was
+  single-client and is fully covered.
+- Adjacent risk observed, not fixed (out of scope): concurrent RESOURCE writes (e.g. two same-tick
+  Investiture gains) are their own unserialised RMW family; nothing reported yet — noting for a
+  future pass rather than silently widening this one.
 
 **2026-07-26m — BENCH RUN 4 (Destruction + Death + the 07-26l re-tests), executed live by an
 agent session joined as `Bench`: 38 rows retired on evidence, 4 defects root-caused →

@@ -57,14 +57,20 @@ Cruel Step's straddle (plus the ⚑ near-parallel residual), Mender's ally + on-
 heal-cut family gate, `edhaAttackKind`'s ranged stand-downs, and Tempered Edge read by NET.
 Evidence per row in the 07-26m delta.
 
-**Still BLOCKED-ON-DEPLOY — the two DATA fixes, unchanged.** Ben runs these with Foundry closed:
-`foundry-build leyline` + **⟳ Sync Talents** (Mender's Instinct's one-liner note + green range
-gate — run 4 confirmed the live pack still carries the 228-char note and an empty `rangeColor`,
-so the card is long and range is un-gated) and `foundry-build adversaries` + **⟳ Sync Adversaries**
-+ **re-drag the Fellstag** (Herding Antlers — run 4 confirmed a FRESH pack read still shows the
-ability with **0 events**; it stays dead on every placed/imported copy until then).
-⚠️ Bench run 4 added a THIRD pending pack build: `foundry-build adversaries` also owes Flame
-Surge's missing damage block once test-pass-fixes lands it (see the Destruction section).
+**Still BLOCKED-ON-DEPLOY — now FOUR data/pack halves plus one engine sync (07-26n).** Ben runs
+these with Foundry closed:
+- **Engine (F5 after `module-src-sync` / deploy-to-foundry):** the 07-26n engine fixes —
+  `edhaIsConstruct` reading the real `system.type` field (2bY-7's Constructs ×3) and the H3
+  owner-list write queue (the Remains race) — are repo-only until the next engine sync + F5.
+- `foundry-build leyline` + **⟳ Sync Talents** (Mender's Instinct's one-liner note + green range
+  gate — run 4 confirmed the live pack still carries the 228-char note and an empty `rangeColor`).
+- `foundry-build deity` + **⟳ Sync Talents** + **RE-FORGE the Construct** (07-26n: Forge
+  Construct's rule now mints its summon `creatureType: "Construct"`; an already-summoned
+  Construct keeps its old humanoid type until re-forged).
+- `foundry-build adversaries` + **⟳ Sync Adversaries** + **re-drag the Fellstag** (Herding
+  Antlers — run 4 confirmed a FRESH pack read still shows 0 events) + **re-import BOTH bosses**
+  (07-26n: Flame Surge's missing damage block is now authored — 2d8 energy on Cragdrake Alpha and
+  Hazewyrm Elder; placed copies stay frozen at 0 until re-imported).
 
 Only Ben advances this section.
 
@@ -274,7 +280,9 @@ Order — the session-0 mutual pair is dead). Evidence per row in the 07-26k del
 # BENCH — Destruction (Razkael, deity)
 
 Run on **Bench — Destruction** (open ground; enemy dummies to catch blasts; one Construct-type
-if you can). No pack rebuild pending for the tree talents.
+if you can). ⚠️ 2bY-7's Constructs ×3 re-test needs the 07-26n deploys: engine sync + F5 AND
+`foundry-build deity` + ⟳ Sync Talents + a fresh re-forge (see DEPLOY STATE). The other rows
+need no pack rebuild.
 
 **Bench run 4 (2026-07-26m): 14 Destruction rows PASSED on the live table and are retired** —
 2bY-1 (in-range place → red 10 ft template + Charges card + arm card; both refusal paths refunded),
@@ -294,7 +302,7 @@ evaluates a multi-talent group with `.some()`, so either parent alone suffices; 
 `data/domain.json` matches). Evidence per row in the 07-26m delta. ⚑ the drawn-tree eyeball for
 the prereq row is still Ben's.
 
-- [ ] **2bY-7 — Fault Line — PARTIAL 2026-07-26m; `Constructs ×3` is a FAIL** — the line itself passed and stays retired-in-place: 60×5 rectangle Region drawn from the caster, "+2" Strength on the damage roll, engine-rolled Speed vs Red → Prone, and a right-click cancel refunded 2 Investiture. **FAIL (→ test-pass-fixes):** the Constructs multiplier never applies. `edhaIsConstruct` (`register-skills.js:9713`) reads `actor.system.customType`, a field that does not exist on any cosmere actor — creature type lives at `system.type = {id, custom}` and `CONFIG.COSMERE.creatureTypes` is `["custom","humanoid","animal"]`. Measured in a clean lane: the line rolled 12; the Floater took 12 and the Construct took 12 − 1 deflect = **11**, i.e. ×1. Same family as 07-26l's `edhaAttackKind`. Note the Forge Construct summon is itself minted `system.type.id = "humanoid"`, so a fix probably needs both halves. ⚑ **Ruling wanted:** the line spares ALLIES — a friendly-disposition Construct standing squarely inside took nothing until its disposition was flipped hostile — while the card reads "Each character in the line takes …" with no friend/foe clause.
+- [ ] **2bY-7 — Fault Line `Constructs ×3` — FIXED 07-26n, re-test (needs BOTH deploy halves: engine F5 + `foundry-build deity` + ⟳ Sync Talents + RE-FORGE)** — the run-4 FAIL (Construct took 12 − 1 = 11, ×1) was `edhaIsConstruct` reading `system.customType`, a field no cosmere actor has; it now reads `system.type = {id, custom}` (engine, F5), and Forge Construct's rule mints its summon `creatureType: "Construct"` via the new authorable `edha-summon` field (deity pack rebuild + ⟳ Sync Talents). **Re-test AFTER both halves + a fresh re-forge** (an old summon keeps its humanoid type): stage the line over a hostile-flipped, freshly-forged Construct in a clean lane → it takes **×3** (e.g. roll 12 → 36 − deflect), the Floater beside it ×1. The line's other dials stay retired-in-place from run 4 (Region, +2 Strength, Speed-vs-Red → Prone, cancel refund). ⚑ **Ruling still wanted:** the line spares ALLIES — the card reads "Each character in the line takes …" with no friend/foe clause, and the engine catches enemies only.
 - [ ] ⚑ **Walking Ruin has no token indicator (2026-07-26m — ruling, not a bug)** — the toggle is tracked internally and nothing on the token says the character is leaving ruin behind, unlike every other scene-arm in the project (Cascade Armed, Crowned, `withernext`, `warlord`). Consistency call is Ben's.
 
 ---
@@ -384,7 +392,7 @@ entry-data couplings.
 # BENCH — Death (Morrath, deity)
 
 Run on **Bench — Death** (hostile NPC dummies in Green range to harvest; a warded ally). No
-pack rebuild pending.
+pack rebuild pending; ⚠️ the Remains-race re-test needs the 07-26n engine sync + F5 first.
 
 ⚠️ **Staging note (bench run 4):** Reaper's Harvest only harvests **adversary**-typed victims. The
 standard `Bench Target — *` fixtures are `character`-typed and are silently skipped — that is the
@@ -410,7 +418,7 @@ drops produced nothing, combat delete cleared the marker) · and **both graph ro
 Speak with the Fallen hangs off Reaper's Harvest beside Bone Garden; Risen Servant = OR{Bone Garden,
 Speak with the Fallen}, takeable from either alone). Evidence per row in the 07-26m delta.
 
-- [ ] **Remains ledger — FAIL 2026-07-26m: simultaneous harvests race and LOSE entries** — one Necrotic Cascade that dropped three adversaries in the same tick posted **two** harvest cards, each reading "(1/2)", and the ledger ended holding **one** entry; the cap is `@tier` = 2 with `evict: oldest`, so two should have survived. Isolated as concurrency rather than the cap by the control: the same two victims dropped **sequentially** (≈2 s apart) accumulated correctly to `["V1","V2"]`. Read-modify-write on `flags.edha-content.lists.remains` with no serialisation — last write wins. Affects every H3 owner-list under multi-drop AoE, not just Death. → test-pass-fixes.
+- [ ] **Remains ledger under simultaneous harvests — FIXED 07-26n (engine-only), re-test after the engine sync + F5** — the run-4 FAIL (one Necrotic Cascade dropping three adversaries posted two cards both reading "(1/2)" and the ledger held ONE entry) was an unserialised read-modify-write on `flags.edha-content.lists.remains`; every H3 ledger mutation now runs through a per-owner-per-key write queue (`edhaOwnerListQueue`), pinned in `tests/owner-list-race.test.js` with the exact bench scenario. **Re-test the same staging:** Reaper's Harvest + a Necrotic Cascade that drops 2–3 adversary-typed victims in ONE tick → the harvest cards read "(1/2)" then "(2/2)", and the ledger ends holding **two** entries (cap `@tier` = 2, oldest evicted on a third). Sequential drops stay correct. No pack rebuild — engine F5 once the sync lands.
 - [ ] ⚑ **Raise Dead — a raised creature keeps its own Harvested Remain (2026-07-26m — defect or ruling, Ben's call)** — an adversary that had itself been harvested was then raised by spending a DIFFERENT Remain: it came back at 1 HP still wearing the `harvested` marker, with its own entry still on the ledger — a living creature that is also a Remain. The card says nothing either way. Should the raise clear the target's own marker and entry?
 - [ ] **2bW-1 — Withering Touch — the two unrun halves** — still open from run 3 and not driven in run 4: **Temp HP still lands** on a blocked target, and the **turn-start expiry** of the No-Healing block. Everything else on this row is retired (see the run-4 block above).
 
@@ -1283,7 +1291,7 @@ been riding the deleted engine name-keys — dead, their texts still claiming en
 now carries its tree twin's rule on its own item; nothing below has ever run in Foundry.
 **Re-drag each adversary from the pack first** (placed copies are frozen snapshots).
 
-- [ ] **2bAB-1 — Flame Surge — Cragdrake Alpha AND Hazewyrm Elder — FAIL 2026-07-26m: the burst rolls ZERO** — bench run 4 imported both bosses FRESH from the pack. The burst places and the save rolls, but the card reads "💥 Flame Surge hit: **= 0 (0)** + 3 (red) → 3 energy" on both, where the ability's own text promises "2d8 energy … half as much on a success". Root cause is DATA, not engine: the `edha-burst` handler has no amount field of its own and reads `item.system.damage.formula`, which on both abilities is **`{formula: null, type: null}`** — `data/adversaries.json` gives Flame Surge an `events` block but never a `damage` block. Fix = author the damage block on both abilities, then **PACK REBUILD** (`foundry-build adversaries` + ⟳ Sync + re-drag). → test-pass-fixes.
+- [ ] **2bAB-1 — Flame Surge — Cragdrake Alpha AND Hazewyrm Elder — FIXED 07-26n, BLOCKED-ON-DEPLOY (pack rebuild: `foundry-build adversaries` + ⟳ Sync Adversaries + re-import BOTH bosses)** — the run-4 FAIL ("💥 Flame Surge hit: **= 0 (0)** + 3 (red) → 3 energy" on both fresh imports) was DATA: the `edha-burst` resolver reads `item.system.damage.formula` and both abilities had an `events` block but no `damage` block. Both now author **2d8 energy** (the ruling-122 baked dice; scratch pack build verified the compiled items read `dmg=2d8 energy` with the breath text intact). **Re-test AFTER the rebuild + fresh re-imports** (placed copies stay frozen at 0): the burst places, the save rolls, and the card reads a real 2d8 total + 3 (red), halved on a successful save.
 *(2bAB-2 and 2bAB-3 — Crownox Ring Shield Wall + Retributive Guard — PASSED in bench run 3
 (2026-07-26k) on a FRESH pack import, three unlinked ring tokens: the half-1d6 pre-reduction
 applied by itself and was named in chat ("reduced by 1 — Shield Wall", calc "5 - 1"), and the

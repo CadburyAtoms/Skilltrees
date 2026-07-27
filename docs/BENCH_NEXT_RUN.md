@@ -42,21 +42,27 @@ advice:**
   once, so a "double post" is usually YOUR driving. Tem parinaem and Soggy Bottom are untouchable.
 
 **Deploy state — read before believing any bug.** The 07-26l ENGINE half is CONFIRMED LIVE (run 4
-re-tested all six and all six passed). **Two DATA fixes are still BLOCKED-ON-DEPLOY** and run 4
-re-confirmed both against fresh pack reads: Mender's Instinct's authored note/range needs
-`foundry-build leyline` + ⟳ Sync Talents (the live rule still has a 228-char `note` and an empty
-`rangeColor`), and Herding Antlers needs `foundry-build adversaries` + ⟳ Sync Adversaries +
-re-drag (the live Fellstag ability still has **0 events**). Do NOT fail their rows against a stale
-pack, and do NOT run a pack build yourself. Check the letter above 07-26m before starting.
+re-tested all six and all six passed). **The 07-26n fixes for run 4's defects are IN THE REPO but
+each has a deploy prerequisite — read the checklist's DEPLOY STATE first and do NOT fail their
+rows against a stale deploy:** the engine fixes (`edhaIsConstruct` + the H3 owner-list write
+queue) need the engine sync + F5; Fault Line's ×3 ALSO needs `foundry-build deity` + ⟳ Sync
+Talents + a fresh RE-FORGE; Flame Surge needs `foundry-build adversaries` + ⟳ Sync Adversaries +
+re-importing BOTH bosses. Still pending from 07-26l: Mender's Instinct's authored note/range
+(`foundry-build leyline` + ⟳ Sync Talents) and Herding Antlers (`foundry-build adversaries` +
+re-drag the Fellstag). Do NOT run a pack build yourself. Check the letter above 07-26n before
+starting.
 
-**FIRST: carry-forward rows from run 4.** Nothing from the 07-26l batch still fails — but four
-defects were opened and they are `test-pass-fixes` work, NOT yours to re-diagnose. If any of them
-has been fixed by the time you run, re-test it; otherwise skip it and say so:
-(1) `edhaIsConstruct` reads a nonexistent field so Fault Line's `Constructs ×3` never fires;
-(2) simultaneous harvests race on the Remains ledger and lose entries (affects every H3 owner-list
-under multi-drop AoE — worth a glance in any tree with a marker ledger);
-(3) 2bAB-1 Flame Surge rolls `0` on both bosses (no `damage` block in `data/adversaries.json`);
-(4) Raise Dead leaves a raised creature wearing its own Harvested Remain (defect-or-ruling).
+**FIRST: carry-forward rows from run 4 — three are FIXED (07-26n), gated on deploys:**
+(1) **Remains race** — FIXED engine-only. If the engine sync + F5 has landed, re-test the exact
+staging (Necrotic Cascade dropping 2–3 adversary-typed victims in ONE tick → cards read "(1/2)"
+then "(2/2)", ledger holds two). Chaos's Omen ledger rides the same queue — if a Chaos row drops
+multiple bearers in one tick, that is free corroborating evidence, note it.
+(2) **2bY-7 Fault Line `Constructs ×3`** — FIXED, needs BOTH halves (engine F5 + deity rebuild +
+⟳ Sync + re-forge). Only re-test with both live and a freshly-forged, hostile-flipped Construct.
+(3) **2bAB-1 Flame Surge** — FIXED in data; **BLOCKED-ON-DEPLOY** until the adversaries rebuild +
+⟳ Sync + fresh re-imports of both bosses. Skip and say BLOCKED-ON-DEPLOY if the rebuild has not
+run; if it has, re-test on FRESH imports (a real 2d8 total + 3 (red), halved on a save).
+(4) Raise Dead's raised-creature-keeps-its-Remain stays a RULING for Ben — not yours, skip.
 Also still open from run 1: Shockwave Slam's weapon-hit trigger surface (genuinely unfixed).
 
 Then run the two sections end-to-end:
