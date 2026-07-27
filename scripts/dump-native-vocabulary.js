@@ -182,6 +182,63 @@ function systemSchemaTopLevelFields(bundle) {
   return [...fields].sort();
 }
 
+/* ---- CONTENT VOCABULARY ids (added 2026-07-27j) ------------------------------------------------
+ *
+ * WHY. Bench run 9 found eight talents wired to cosmere SKILL ids that do not exist — `itm` for
+ * Intimidation (`inm`), `per` for Perception/Persuasion (`prc`/`prs`), `ldr` for Leadership
+ * (`lea`). Same disease as the dead `system.*` fields pass 11 gates, one layer over: an authored
+ * `skill`/`whenSkill` that no vocabulary defines never matches anything, and an `@skills.itm.rank`
+ * substitutes to 0. Both are SILENT — Sharp Eye was a total no-op, Synchronized Assault charged
+ * 2 focus and did nothing, Feinting Strike drained "0" focus at Intimidation 3.
+ *
+ * The ids are TS `const enum` members, so they are inlined in the bundle in two shapes: a runtime
+ * IIFE (`Skill["Intimidation"] = "inm"`) for the enums the system reflects over, and a comment
+ * annotation (`"spd" /* Attribute.Speed *\/`) for the ones fully erased. Both are harvested.
+ *
+ * NOT the whole authoring vocabulary: EDHA registers five leyline SKILLS and ~30 STATUSES of its
+ * own. Those are parsed live out of the engine by lint-refs pass 12, so adding one never means
+ * editing a snapshot or a linter. */
+function contentVocabulary(bundle) {
+  const iife = (name) => {
+    const out = {};
+    for (const m of bundle.matchAll(new RegExp(`${name}\\["(\\w+)"\\]\\s*=\\s*"([\\w:.\\-]+)"`, "g"))) out[m[1]] = m[2];
+    return out;
+  };
+  // TS `const enum` members survive only as `"value" /* Enum.Member */` annotations.
+  const inlined = (name) => {
+    const out = {};
+    for (const m of bundle.matchAll(new RegExp(`"([\\w:.\\-]+)"\\s*/\\* ${name}\\.(\\w+) \\*/`, "g"))) out[m[2]] = m[1];
+    return out;
+  };
+  const ids = (o) => [...new Set(Object.values(o))].sort();
+
+  const vocab = {
+    skills: ids(iife("Skill")),
+    attributes: ids(inlined("Attribute")),
+    attributeGroups: ids(inlined("AttributeGroup")),   // also the DEFENSE ids (phy/cog/spi)
+    damageTypes: ids(iife("DamageType")),
+    statuses: ids(inlined("Status")),
+    resources: ids(inlined("Resource")),
+  };
+
+  // Rot alarms — a bundle restructure must fail LOUDLY rather than silently shrink an allowed set,
+  // which would turn pass 12 into a false-positive machine and get it disabled (the worst outcome).
+  const MIN = { skills: 18, attributes: 6, attributeGroups: 3, damageTypes: 5, statuses: 15, resources: 3 };
+  for (const [k, min] of Object.entries(MIN)) {
+    if (vocab[k].length < min) fail(`content vocabulary "${k}" yielded only ${vocab[k].length} ids (expected ≥ ${min}) — the bundle restructured; re-derive the extraction before trusting this file`);
+  }
+  // Known members, so a regex that matches the WRONG thing is caught rather than counted.
+  const PROBES = { skills: ["inm", "prc", "prs", "lea"], attributes: ["spd", "str"], damageTypes: ["keen", "heal"], statuses: ["stunned", "prone"] };
+  for (const [k, probes] of Object.entries(PROBES)) {
+    for (const p of probes) if (!vocab[k].includes(p)) fail(`content vocabulary "${k}" is missing the known id "${p}" — the extractor is wrong, not the system`);
+  }
+  // The dead ids that started this. If any appears, the extraction is harvesting prose, not enums.
+  for (const [k, dead] of Object.entries({ skills: ["itm", "per", "ldr"], attributes: ["speed"] })) {
+    for (const d of dead) if (vocab[k].includes(d)) fail(`content vocabulary "${k}" yielded "${d}", which the cosmere system does not define — the extractor is over-harvesting`);
+  }
+  return vocab;
+}
+
 const targetChoices = ES.Handler?.General?.Target?.Choices
   ? Object.keys(ES.Handler.General.Target.Choices)
   : [];
@@ -215,6 +272,13 @@ const snapshot = {
     "keys, so the write resolves and stores nothing. lint-refs pass 11 gates the engine and the build",
     "against it. It is a UNION, so a pass means 'not obviously dead', never 'right for this type'.",
     "",
+    "`contentVocabulary` (added 07-27j) is the same trap at the CONTENT layer: the real cosmere id",
+    "sets for skills, attributes, defenses (attributeGroups), damage types, statuses and resources.",
+    "An authored `skill`/`whenSkill`/`status` outside these never matches anything and an",
+    "`@skills.<id>` outside them substitutes to 0 — silently, both times. lint-refs pass 12 gates",
+    "data/authored/*.json against it. EDHA's OWN additions (5 leyline skills, ~30 statuses) are NOT",
+    "here — pass 12 parses those live out of register-skills.js, so adding one needs no snapshot.",
+    "",
     "Refresh after a system upgrade: node scripts/dump-native-vocabulary.js",
   ],
   system: { id: systemJson.id, version: systemJson.version },
@@ -223,6 +287,7 @@ const snapshot = {
   handlerTargetChoices: targetChoices,
   updateActorTargetChoices: updateActorTargets,
   systemSchemaTopLevelFields: systemSchemaTopLevelFields(bundle),
+  contentVocabulary: contentVocabulary(bundle),
   events,
   handlers,
 };

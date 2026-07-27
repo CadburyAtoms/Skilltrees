@@ -17,6 +17,9 @@
  *      data/authored/* or the structure files — or is on the explicit non-talent allowlist.
  *  11. Every `system.<field>` the engine or the build reads/writes is a field some cosmere
  *      DataModel actually declares (the DEAD-FIELD family — three shipped bugs; see the pass).
+ *  12. Every cosmere id an authored rule names — skill, attribute, status, damage type, defense,
+ *      and every `@skills.`/`@attr.` ref — exists in the real vocabulary (the DEAD-ID family:
+ *      eight talents shipped on `itm`/`per`/`ldr`, all silently inert; see the pass).
  *
  * Zero dependencies. Exit 0 clean, 1 on any error. Runs in CI next to validate.js; add it to
  * the local gates when a change touches authored events or engine name-based automation.
@@ -733,6 +736,164 @@ engine.split("\n").forEach((lineText, i) => {
         let close; try { close = matchBrace(src, open); } catch (e) { continue; }
         let keys; try { keys = topLevelKeys(src.slice(open + 1, close)); } catch (e) { continue; }
         for (const k of keys) if (!known.has(k)) DEAD(file, lineAt(m.index), k, "stored key");
+      }
+    }
+  }
+}
+
+/* --- pass 12: no DEAD content-vocabulary id in authored data (the dead-ID family, 07-27j) -------
+ *
+ * Pass 11 gates dead `system.<field>` paths in the ENGINE. This is the same disease one layer
+ * over, in the DATA: an authored rule naming a cosmere id that does not exist.
+ *
+ * Bench run 9 found EIGHT talents wired to skill ids the system never defined — `itm` for
+ * Intimidation (really `inm`), `per` for Perception/Persuasion (`prc`/`prs`), `ldr` for
+ * Leadership (`lea`) — and every failure was SILENT, because nothing in this stack validates an
+ * id against a vocabulary:
+ *   · a contest `skill` is compared to the id the player ACTUALLY rolled, so a dead id never
+ *     matches and the contest waits for a roll that can never come. Sharp Eye and Set at Odds
+ *     were total no-ops; Synchronized Assault charged 2 focus and did nothing.
+ *   · `@skills.<id>.rank` substitutes to 0 when the id is absent from rollData, so Feinting
+ *     Strike drained "0" focus at Intimidation 3 and Rallying Shout printed "+ 0 health".
+ *   · a `whenSkill` rider simply never fires. Flamestance never worked in its whole life, with
+ *     Ironstance (`ins`, valid) as the working control sitting right beside it.
+ *
+ * The vocabulary is two halves, and BOTH must be counted or the gate flags correct data:
+ *   · the SYSTEM's ids — `contentVocabulary` in data/native-vocabulary.json, dumped from Ben's
+ *     install by scripts/dump-native-vocabulary.js.
+ *   · EDHA's OWN additions — five leyline SKILLS (`LEYLINE_SKILLS`) and ~30 STATUSES
+ *     (`EDHA_STATUSES`), parsed LIVE out of the engine here, so registering a new one never
+ *     means editing this linter or re-dumping a snapshot.
+ *
+ * TWO exemptions, both real semantics rather than convenience — a linter that flags correct data
+ * gets disabled, which is worse than no linter:
+ *   · `edha-watch {watch: "die-step"}` reads `whenSkill` as the die-step ENTRY KEY, not a skill.
+ *     Sovereign's Favor's `exalt` is correct and documented in the handler's own field hint.
+ *   · a contest skill field may hold an ATTRIBUTE id. Several cards call for an attribute test
+ *     ("each character tests Speed vs. your Red") and `spd` is the engine's own default in
+ *     `edhaFoeSkillVsColor`. `@skills.<id>` is NOT given that latitude: rollData keys `skills`
+ *     off CONFIG.COSMERE.skills alone, so `@skills.spd.rank` really is dead — `@attr.spd` is the
+ *     attribute form, and this pass checks that separately.
+ *
+ * LIMITS, stated so a green pass is not over-read: it checks ids against vocabularies, never
+ * whether the id is the RIGHT one for the card — `prc` where the prose says Persuasion passes
+ * here and is still wrong. Only the fields listed below are checked; a new handler that invents
+ * another id-bearing field name needs a line adding. */
+{
+  const SNAP = path.join(REPO_ROOT, "data", "native-vocabulary.json");
+  let vocab = null;
+  try {
+    const v = JSON.parse(fs.readFileSync(SNAP, "utf8"));
+    if (v.contentVocabulary?.skills?.length >= 18 && v.contentVocabulary?.statuses?.length >= 15) vocab = v.contentVocabulary;
+    else console.warn("⚠ lint-refs pass 12: native-vocabulary.json has no contentVocabulary — authored id checking SKIPPED. Regenerate with: node scripts/dump-native-vocabulary.js");
+  } catch (e) { /* pass 2's block already warned about an unreadable snapshot */ }
+
+  if (vocab) {
+    /* EDHA's own registrations, parsed out of the engine (never allowlisted — see the header).
+     * NOT `topLevelKeys`: that helper consumes a quoted key as a string LITERAL and never records
+     * it, so `"tagged": {…}` in EDHA_STATUSES came back missing and the gate flagged Tagging Shot
+     * — a correct talent — on its first run. Both key forms are read here. (The same blind spot
+     * exists in topLevelKeys for pass 11's schema harvesting, where it can only ever ADD a false
+     * positive, never hide a real one; left alone deliberately rather than changing a parser three
+     * passes depend on. Recorded in the 07-27j delta.) */
+    const engineKeys = (constName) => {
+      const m = engine.match(new RegExp(`const ${constName} = \\{`));
+      if (!m) return [];
+      const open = m.index + m[0].length - 1;
+      let body; try { body = engine.slice(open + 1, matchBrace(engine, open)); } catch (e) { return []; }
+      const keys = new Set();
+      let depth = 0;
+      for (let i = 0; i < body.length; i++) {
+        const c = body[i];
+        if (c === "/" && body[i + 1] === "/") { while (i < body.length && body[i] !== "\n") i++; continue; }
+        if (c === "/" && body[i + 1] === "*") { const e = body.indexOf("*/", i + 2); if (e < 0) break; i = e + 1; continue; }
+        if (c === "{" || c === "(" || c === "[") { depth++; continue; }
+        if (c === "}" || c === ")" || c === "]") { depth--; continue; }
+        if (depth !== 0) { if (c === '"' || c === "'" || c === "`") { for (i++; i < body.length; i++) { if (body[i] === "\\") { i++; continue; } if (body[i] === c) break; } } continue; }
+        // depth 0: a key is either `bare:` or `"quoted":`
+        if (c === '"' || c === "'") {
+          const q = c; let j = i + 1, s = "";
+          for (; j < body.length; j++) { if (body[j] === "\\") { s += body[++j]; continue; } if (body[j] === q) break; s += body[j]; }
+          let k = j + 1; while (k < body.length && /\s/.test(body[k])) k++;
+          if (body[k] === ":") keys.add(s);
+          i = j;
+        } else if (/[A-Za-z_$]/.test(c)) {
+          let j = i + 1; while (j < body.length && /[\w$]/.test(body[j])) j++;
+          let k = j; while (k < body.length && /\s/.test(body[k])) k++;
+          if (body[k] === ":") keys.add(body.slice(i, j));
+          i = j - 1;
+        }
+      }
+      return [...keys];
+    };
+    const leylineSkills = engineKeys("LEYLINE_SKILLS");
+    const edhaStatuses = engineKeys("EDHA_STATUSES");
+    if (leylineSkills.length !== 5) err(`lint-refs pass 12: parsed ${leylineSkills.length} LEYLINE_SKILLS out of the engine (expected 5) — the extraction rotted; fix it before trusting this pass`);
+    if (edhaStatuses.length < 20) err(`lint-refs pass 12: parsed ${edhaStatuses.length} EDHA_STATUSES out of the engine (expected ≥ 20) — the extraction rotted; fix it before trusting this pass`);
+
+    const SKILLS = new Set([...vocab.skills, ...leylineSkills]);          // valid in @skills.<id>
+    const ATTRS = new Set(vocab.attributes);
+    const CONTEST = new Set([...SKILLS, ...ATTRS]);                        // valid in a contest skill field
+    const STATUSES = new Set([...vocab.statuses, ...edhaStatuses]);
+    const DAMAGE = new Set(vocab.damageTypes);
+    const DEFENSES = new Set(vocab.attributeGroups);
+
+    // field name -> [vocabulary, set, extra literals that are legal non-ids]
+    const FIELDS = {
+      skill: ["skill or attribute", CONTEST, []],
+      whenSkill: ["skill or attribute", CONTEST, []],
+      riderSkill: ["skill or attribute", CONTEST, []],
+      saveSkill: ["skill or attribute", CONTEST, []],
+      targetSkill: ["skill or attribute", CONTEST, []],
+      status: ["status", STATUSES, []],
+      failStatus: ["status", STATUSES, []],
+      requireSelfStatus: ["status", STATUSES, []],
+      requireTargetStatus: ["status", STATUSES, []],
+      whenTargetStatus: ["status", STATUSES, []],
+      damageType: ["damage type", DAMAGE, []],
+      whenDamageType: ["damage type", DAMAGE, ["any"]],
+      def: ["defense", DEFENSES, []],
+    };
+
+    const idErr = (where, field, id, kind, set) =>
+      err(`${where}: ${field} "${id}" is not a valid cosmere ${kind} — nothing matches it, so the rule is ` +
+          `SILENTLY inert (a contest waits for a roll that never comes; an @skills ref substitutes to 0). ` +
+          `Valid: ${[...set].sort().join(" ")}`);
+
+    for (const file of fs.readdirSync(AUTHORED_DIR).filter((f) => f.endsWith(".json")).sort()) {
+      let doc;
+      try { doc = JSON.parse(fs.readFileSync(path.join(AUTHORED_DIR, file), "utf8")); } catch (e) { continue; }
+      for (const [name, t] of Object.entries(doc.talents || {})) {
+        const base = `data/authored/${file} (${name})`;
+
+        // (a) handler id FIELDS. Values may be comma-lists; every member must resolve.
+        for (const [evId, ev] of Object.entries(t.events || {})) {
+          const h = ev?.handler; if (!h || typeof h !== "object") continue;
+          for (const [field, [kind, set, extra]] of Object.entries(FIELDS)) {
+            const raw = h[field];
+            if (typeof raw !== "string" || !raw.trim()) continue;
+            // `edha-watch {watch: "die-step"}` reads whenSkill as the ENTRY KEY, not a skill.
+            if (field === "whenSkill" && h.type === "edha-watch" && h.watch === "die-step") continue;
+            for (const id of raw.split(",").map((s) => s.trim()).filter(Boolean)) {
+              if (!set.has(id) && !extra.includes(id)) idErr(`${base} event ${evId}`, field, id, kind, set);
+            }
+          }
+        }
+
+        // (b) @skills.<id> / @attr.<id> substitutions in ANY authored string (formulas, note text,
+        //     descriptions). This is the half that printed "0" rather than doing nothing.
+        const walk = (node, trail) => {
+          if (Array.isArray(node)) return node.forEach((v, i) => walk(v, `${trail}[${i}]`));
+          if (node && typeof node === "object") { for (const [k, v] of Object.entries(node)) walk(v, trail ? `${trail}.${k}` : k); return; }
+          if (typeof node !== "string") return;
+          for (const m of node.matchAll(/@skills\.([A-Za-z_]\w*)/g)) {
+            if (!SKILLS.has(m[1])) idErr(`${base} ${trail}`, "@skills ref", m[1], ATTRS.has(m[1]) ? "skill (it is an ATTRIBUTE — use @attr." + m[1] + ")" : "skill", SKILLS);
+          }
+          for (const m of node.matchAll(/@attr\.([A-Za-z_]\w*)/g)) {
+            if (!ATTRS.has(m[1])) idErr(`${base} ${trail}`, "@attr ref", m[1], "attribute", ATTRS);
+          }
+        };
+        walk(t, "");
       }
     }
   }

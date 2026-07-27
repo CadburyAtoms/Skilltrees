@@ -22,6 +22,13 @@
     "keys, so the write resolves and stores nothing. lint-refs pass 11 gates the engine and the build",
     "against it. It is a UNION, so a pass means 'not obviously dead', never 'right for this type'.",
     "",
+    "`contentVocabulary` (added 07-27j) is the same trap at the CONTENT layer: the real cosmere id",
+    "sets for skills, attributes, defenses (attributeGroups), damage types, statuses and resources.",
+    "An authored `skill`/`whenSkill`/`status` outside these never matches anything and an",
+    "`@skills.<id>` outside them substitutes to 0 — silently, both times. lint-refs pass 12 gates",
+    "data/authored/*.json against it. EDHA's OWN additions (5 leyline skills, ~30 statuses) are NOT",
+    "here — pass 12 parses those live out of register-skills.js, so adding one needs no snapshot.",
+    "",
     "Refresh after a system upgrade: node scripts/dump-native-vocabulary.js"
   ],
   "system": {
@@ -133,6 +140,76 @@
     "viewBounds",
     "weight"
   ],
+  "contentVocabulary": {
+    "skills": [
+      "agi",
+      "ath",
+      "cra",
+      "dec",
+      "ded",
+      "dis",
+      "hwp",
+      "inm",
+      "ins",
+      "lea",
+      "lor",
+      "lwp",
+      "med",
+      "prc",
+      "prs",
+      "stl",
+      "sur",
+      "thv"
+    ],
+    "attributes": [
+      "awa",
+      "int",
+      "pre",
+      "spd",
+      "str",
+      "wil"
+    ],
+    "attributeGroups": [
+      "cog",
+      "phy",
+      "spi"
+    ],
+    "damageTypes": [
+      "energy",
+      "heal",
+      "impact",
+      "keen",
+      "spirit",
+      "vital"
+    ],
+    "statuses": [
+      "afflicted",
+      "blind",
+      "burrowing",
+      "dead",
+      "determined",
+      "disoriented",
+      "empowered",
+      "enhanced",
+      "exhausted",
+      "flying",
+      "focused",
+      "hidden",
+      "immobilized",
+      "invisible",
+      "prone",
+      "restrained",
+      "slowed",
+      "stunned",
+      "surprised",
+      "unconscious"
+    ],
+    "resources": [
+      "foc",
+      "hea",
+      "inv"
+    ]
+  },
   "events": [
     {
       "type": "add-to-actor",
