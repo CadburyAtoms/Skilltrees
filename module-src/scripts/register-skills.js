@@ -1711,6 +1711,23 @@ Hooks.on("deleteCombat", () => {
       const fx = a.effects?.filter(e => e.getFlag?.("edha-content", "sceneDefBuff")) ?? [];
       if (fx.length) { try { void a.deleteEmbeddedDocuments("ActiveEffect", fx.map(e => e.id)); } catch (e) {} }
     }
+    // `tempHp` joined 07-27d (bench run 6: Bulwark {2}, Edict {2}, Favor {15} rode through THREE
+    // combat deletes on three trees while AEs/ledgers/statuses/markedBy swept clean — Temp HP was
+    // the ONLY transient the scene reset never learned, so a stale grant silently absorbed damage
+    // next scene). Determinable, not a ruling: every grant surface is combat/scene-scoped by its
+    // card (Death Ward and Edict of the Fallen say "for the scene" outright; Bulwark/Bear Witness
+    // are per-round combat grants; the victory-surge and Favor riders are in-combat watches).
+    // WIDER enumeration than the character loop above on purpose: edhaGrantTempHpCross lands on
+    // adversaries, summons, and unlinked token actors too — sweep canvas token actors AND the
+    // directory, each unset its own guard (the Chaos-sweep lesson, same pass).
+    const seenThp = new Set();
+    const thpClear = (a) => {
+      if (!a) return;
+      const k = a.uuid ?? a.id; if (seenThp.has(k)) return; seenThp.add(k);
+      if (a.flags?.["edha-content"]?.tempHp !== undefined) { try { void a.unsetFlag("edha-content", "tempHp"); } catch (e) {} }
+    };
+    for (const t of (canvas?.tokens?.placeables ?? [])) thpClear(t.actor);
+    for (const a of (game.actors ?? [])) thpClear(a);
   } catch (e) { /* non-fatal */ }
 });
 /* An arming status dropping clears its arm-per-target watch ledger (2bU): the next arming starts
