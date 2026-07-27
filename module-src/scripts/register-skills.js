@@ -10361,7 +10361,9 @@ Hooks.on("deleteCombat", () => { try { if (game.user?.isGM) void edhaClearCharge
  *     readers are unchanged: Bone Spurs rides edhaLifeOutgoingBonus in the damage PRE-pass; Venom
  *     Glands rides edhaLifeVenomOnHit in the POST-pass (edhaAddAffliction); Dense Tissue subtracts
  *     from deflectable incoming via edhaLifeDeflectReduce and refuses forced movement (the
- *     preUpdateToken veto below). One adaptation per creature; scene.
+ *     preUpdateToken veto below). One adaptation per creature; scene — ENFORCED since 07-27b
+ *     (bench run 5, 2bW-12): a preUseItem veto refuses pre-cost on an already-mutated target,
+ *     and the chooser click is belted the same way, so a stale card cannot replace the graft.
  *   • Primal Regeneration / Apex Form — `edha-regen-grant`: a `lifeRegen` entry parked on the
  *     OWNER (the regrowth-queue pattern); edhaResolveLifeRegen heals the target at the START OF
  *     THE TARGET'S turn via edhaCrossHeal (⚠ this resolver IS the cross-actor turn dispatcher —
@@ -10589,6 +10591,16 @@ async function edhaMutationClick(ev) {
     const oref = await fromUuid(ds.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref;
     const tref = await fromUuid(ds.edhaTarget).catch(() => null); const target = tref?.actor ?? tref;
     if (!owner || !target || !ds.edhaKind) return;
+    /* The once-per-creature BELT (2026-07-27b — bench run 5, 2bW-12): a stale chooser card (posted
+     * before the pre-cost veto below existed, or a second chooser whispered before the first was
+     * clicked) must not silently REPLACE the graft — the first pick binds for the scene. */
+    const cur = target.getFlag?.("edha-content", "mutation");
+    if (cur) {
+      btn.closest(".edha-trigger-card")?.querySelectorAll(".edha-mutation-btn").forEach(b => b.disabled = true);
+      btn.textContent = "already adapted";
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🧬 ${target.name} already carries <strong>${EDHA_MUTATION_LABEL[cur.kind] || "an adaptation"}</strong> — one adaptation per creature per scene; the earlier pick stands.</p>` });
+      return;
+    }
     const kind = ds.edhaKind, rd = owner.getRollData();
     let keen = 0, venom = 0;
     if (kind === "boneSpurs") keen = Math.max(0, Math.floor(edhaEvalSync(decodeURIComponent(ds.edhaKeenf || "@tier"), rd)));
@@ -10605,6 +10617,26 @@ async function edhaMutationClick(ev) {
  * apexForm flag + lifeRegen entry from the talents' own rules. edhaLinkLifeline / the Lifeline
  * card + click retired the same pass — `edha-redirect` {intercept, watchFlag, chooseAmount} and
  * the generic intercept sweep/click carry the link, the offer and the absorb.) */
+
+/* edha-mutation's pre-cost VETO (2026-07-27b — bench run 5, 2bW-12). The card's own clause —
+ * "(scene; one per creature)" — was enforced NOWHERE: a second use on an already-mutated creature
+ * posted a second chooser, charged the cost again, and the click silently REPLACED the graft.
+ * An executor runs AFTER the system charges the cost, so the gate lives here and refuses with
+ * nothing spent (the H1/H12/H3 precedent). Keyed on the rule, never a name. The gate reads bare
+ * flag EXISTENCE, no sceneId check, because that is what every mutation reader does — the flag
+ * lives until the Life scene reset (deleteCombat) clears it, and that IS "the scene" engine-wide. */
+Hooks.on("cosmere-rpg.preUseItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
+    const h = edhaRuleOf(item, "edha-mutation"); if (!h) return;
+    const target = Array.from(game.user?.targets ?? [])[0]?.actor ?? actor;
+    const cur = target.getFlag?.("edha-content", "mutation");
+    if (cur) {
+      ui.notifications?.warn(`Edha: ${target.name} already carries ${EDHA_MUTATION_LABEL[cur.kind] || "an adaptation"} — one adaptation per creature per scene. Nothing spent.`);
+      return false;
+    }
+  } catch (e) { /* never block a use on a guard failure */ }
+});
 
 /* --- The cleanse-on-success watcher (edha-cleanse {trigger: success-damage-roll} — 2bW) ------------- */
 function edhaPostLifeCleanseCard(owner, target, label, conditions) {
