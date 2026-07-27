@@ -2,7 +2,13 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, **COMPLETED 2026-07-26 (pass AA)**: **the ratchet list is EMPTY — 221 → 0 across twenty-seven passes.** Every tree is clear, all six marker ledgers have migrated, and `scripts/name-keyed-allowlist.json` stays in the repo with an empty `talents` list *on purpose* — lint pass 7 still guards against REGROWTH, which is the half of the ratchet that matters from here on. ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **ALL SIX marker LEDGERS have migrated** (`covenants` 07-24u; `edicts` 07-25 pass V; `remains` 07-25 pass W; Fate's `snares` 07-25 pass X; Destruction's `charges` 07-26 pass Y; Fate's `ordained` 07-26 pass AA — the point-bound ones fail OPEN through H3's reconcile by design). There is no flat marker-list flag left in the engine. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-26l** (the BENCH-RUN-3
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-26m** (BENCH RUN 4 —
+Destruction + Death + the 07-26l re-tests, executed live: **38 rows retired on evidence, 4 defects
+root-caused → test-pass-fixes** (a Constructs-multiplier gate reading a nonexistent field, a
+Remains-ledger write race under multi-drop AoE, Flame Surge's missing damage block, and a
+raised-creature-keeps-its-Remain edge), 2 rows confirmed BLOCKED-ON-DEPLOY, 3 rulings sightings.
+Six of the eight 07-26l fixes re-tested PASS; the two data fixes are still owed their pack builds.
+Docs only.) Prior: **2026-07-26l** (the BENCH-RUN-3
 EIGHT, fixed — every root cause verified in code before touching anything: 5 engine-only fixes (F5),
 1 mixed (engine F5 + authored green PACK REBUILD), 1 data-only (adversaries PACK REBUILD — Herding
 Antlers had NO rule at all), and Tempered Edge re-classified **works-as-designed** (the calc line
@@ -22,6 +28,203 @@ the Red pilot, executed live by an agent session joined as `Bench`: 16 rows reti
 1 FAIL root-caused (Shockwave Slam's weapon-hit trigger surface), 4 cross-tree observations,
 and the agent-bench runbook hardened with the v13 operating lessons. Docs + setup-script fix
 only; nothing to deploy.)
+
+**2026-07-26m — BENCH RUN 4 (Destruction + Death + the 07-26l re-tests), executed live by an
+agent session joined as `Bench`: 38 rows retired on evidence, 4 defects root-caused →
+test-pass-fixes, 2 rows confirmed BLOCKED-ON-DEPLOY, 3 rulings sightings added. Docs only —
+nothing to deploy from this pass.**
+
+### The 07-26l fix batch — re-tested first (the engine deploy WAS live; canary confirmed)
+
+Canary before anything else: an involuntary focus drop on a bench fixture posted
+"🧠 Whispered Doubt: Bench Target — Adjacent A loses 1 focus" — the `edhaDrainFocus`
+announcement is on the table, so the six engine re-tests below are trustworthy.
+
+1. **2bI-1 Whispered Doubt's loss card — PASS, retired.** The canary above. The shared-cause claim
+   holds at the *other* consumer too: Red's **Shatter Focus** now announces
+   "🧠 Shatter Focus: Bench Target — Floater loses 1 focus" off the same helper.
+2. **2bJ-8 Puppeteer's `{name}` — PASS, retired.** A 0-focus enemy's turn start whispered
+   "🎭 Puppeteer — **Bench Target — Floater** starts its turn at 0 focus in your Attunement
+   Range…" — no literal braces anywhere on the card.
+3. **Cruel Step's straddle — PASS, retired (both probes).** Staged at the SAME wall (x=5156,
+   the lower-left room): mover's center ON the wall line, clean lane east → the slide ran the
+   FULL 10 ft to (5006 → target), no "(stopped at an obstacle)", 1 Inv spent. The documented
+   ⚑ residual was probed too — travel near-PARALLEL to the straddled wall (target moved to
+   (5306, 9900), a shallow angle off the wall) also completed. Independent controls:
+   `testCollision` from the collinear origin reads **false** while a genuine west→east crossing
+   ray reads **true**, and a `walk` through the wall is still refused.
+4. **Mender's Instinct's two engine gates — PASS, retired.** (a) ally gate: a HOSTILE fixture
+   taken from 32 → 12 HP (below half) drew **no** offer. (b) on-scene gate: with Green's own copy
+   temporarily removed, **The Vivisectionist** (owns the talent, no token on the scene) stayed
+   **silent** — its silence is the test and it passed. (c) The card is still the long description
+   and range is still un-gated — exactly the **BLOCKED-ON-DEPLOY** half (`rangeColor` reads `""`
+   and the `note` is 228 chars on the live pack), so an out-of-Attunement ally at ~70 ft still
+   drew an offer. Not a fail; the leyline rebuild is owed.
+5. **2bW-1 heal-block on hp-threshold clicks — PASS, retired.** Blocked target, then a Field
+   Medicine heal on it: "🩸 Bench Target — Adjacent B cannot regain HP (Withering Touch)" fired
+   and HP stayed 9 — while the talent still printed its own "heals 4" line (the announce/apply
+   split, as designed). Second heal shape covered by the same click.
+6. **`edhaAttackKind` ranged stand-downs — PASS, retired (Engine-wide row + 2bU-9 + 2bW-2).**
+   Warlord's Advance armed, weapon set to `attack.type: "ranged"`, hit landed → **no rider**
+   (7 damage = weapon only) and the `warlord` arm **survived**. Type-less tiebreak: with
+   `attack.type` blanked (schema re-initialises to "melee") the same hit added
+   "+4 impact strike" and consumed the arm. Withering Touch's ranged half behaved identically —
+   no rider, `withernext` still on.
+7. **2bV-15 Tempered Edge — PASS by NET, retired.** Construct Slam base roll **12**, rider card
+   "+14 energy and the hit ignores … deflect (+2 added here pre-pays the −2 …)", damage-taken card
+   "takes **27** damage. Damage Calculation: 29 − 2". 12 + 14 = 26 ≠ 27 only because the deflect-2
+   bump is the 27th point: net = base + rider + 0, deflect fully ignored. The explanatory clause
+   is on the card. The run-3 reading was indeed a false positive.
+8. **Herding Antlers — BLOCKED-ON-DEPLOY, confirmed not run.** A fresh pack read of the Fellstag
+   shows Herding Antlers with **0 events** and no `activation.skill`: the live pack predates
+   `8917cbb`. Row untouched; `foundry-build adversaries` + ⟳ Sync + re-drag still owed.
+
+### BENCH — Destruction (retired on evidence)
+
+2bY-1 (in-range place → red 10 ft template + Charges card + arm card; an out-of-range click and a
+right-click cancel each **refunded** the 1 Inv and placed nothing — note the cancel gesture is a
+real `contextmenu` event, a right-button `pointerdown` does not cancel) · 2bY-2 (cap = tier: the
+third placement evicted the oldest, template and ledger entry both gone) · 2bY-3 (all three arms
+bound and fired exactly one whispered Detonate prompt each: `enter` on a walk-in, `target-moves`
+on the target's walk, `target-damaged` — ⚠ the last needs a REAL damage application; a raw
+`system.resources.hea` edit does not count as damage for this watch) · **2bY-4** (the priority row:
+Set Charge's document formula edited to a flat `6`, a NEW charge placed, detonate rolled
+`{f: "6", t: 6}` → "6 energy" to three caught creatures, terrain dropped at the marker, charge
+consumed. ⚠ the ledger SNAPSHOTS the formula at placement — edit, then place, then detonate) ·
+2bY-5 (Pinpoint: refused pre-cost with no un-declared Charge; with one, "⊕ … is pinpoint"; its
+**own** formula edited to `9` printed "+9 keen (Pinpoint Charge — ignores deflect)") · **2bY-6**
+(Concussive Yield edited on the document — `failStatus` prone → **slowed** — and the very next
+detonate applied **Slowed**: "Speed 5 vs your Red 19 — Slowed") · 2bY-8 (Walking Ruin: toggle-on
+card, a vacated square became a terrain patch, toggle-off card, and after the off-toggle a further
+move left **0** new patches; the +10 ft Speed rides a transferred AE "Walking Ruin — Speed".
+⚠ the toggle carries NO token indicator — feel note, not a bug) · 2bY-9 (Combustion Chain: the
+armed card with its by-hand button, AND the auto path fired unprompted twice during other rows —
+"fell in your dangerous terrain — a 10 ft zone ignites on the body… spread 5 ft") · 2bY-10 (Pyre
+placed a Region stamped `spreads: true`; the end-of-turn GM spread card posted) · **2bK-1 + 2bK-2
+in one shot** ("💥 Cascading Failure — 2 Charge(s): … 8 energy … 14 energy … **+5 energy (caught
+in 2 blasts)**" — the multi-catch listed separately, as the mechanic promises) · 2bK-3 (The
+Unmooring: first use detonated at 15 ft with "+2" (Intellect) on the formula and the merge line;
+the second use the same scene refused — "is once per scene — nothing spent") · 2bK-4 (both
+capstones refused pre-cost on an empty ledger, nothing spent) · 2bK-5 (both riders rode a single
+detonate) · **Razkael prereqs** (compiled tree: Cascading Failure = ONE group {Pinpoint Charge,
+Concussive Yield}, Fault Line = ONE group {Combustion Chain, Walking Ruin}, The Unmooring = ONE
+group {Cascading Failure, Fault Line}; the system evaluates a multi-talent group with `.some()`
+and separate groups with `.every()` — `systems/cosmere-rpg/index.js:7782-7800` — so each really is
+takeable from EITHER parent alone. Prose in `data/domain.json` matches exactly. ⚑ the drawn-tree
+eyeball is still Ben's).
+
+**2bY-7 Fault Line — PARTIAL.** Line/save/hazard/refund all pass: 60×5 rectangle Region drawn from
+the caster, "+2" Strength on the damage formula, engine-rolled Speed vs Red → Prone, right-click
+cancel refunded 2 Inv. Two findings, both below. Also worth knowing at the table: the line spares
+**allies** — a friendly-disposition Construct standing squarely inside took nothing until its token
+disposition was flipped hostile ("1 in the line" → "2 in the line").
+
+### BENCH — Death (retired on evidence)
+
+**2bW-17, the premise row** — Death Ward's `thpFormula` edited on the Events tab to a flat `3`;
+the very next lethal-drop rescue rolled `{f: "3", t: 3}` and the card read "gains **3** Temp HP".
+Restored afterwards. · 2bW-3 (harvest in range → "+1 Investiture" + "bears your Harvested Remain
+(1/2)"; **all three negatives pass**: out of range → nothing, a summon drop → nothing, and the
+`character`-typed fixtures are never harvested — the harvest wants an **adversary**-typed victim,
+which is why the run used fresh `Bench Adv — Victim V1/V2` imports) · 2bW-4 (BOTH halves: with the
+flag **unset** the scene-start freebie summoned a Risen Servant and left the ledger at `[]`; with
+the ledger explicitly `[]` the next use refused — "needs a Harvested Remain — nothing spent". `[]`
+≠ unset is real) · 2bW-10 / 2bP-11 (no-Remain refusal, nothing spent) · **2bP-10** (with two
+servants live and a genuine Remain held: "already sustains 2 Risen Servant(s) — cap 2. Nothing
+spent" and the Remain **survived**) · 2bW-6 (all four: no-Remain refusal pre-cost; cancel
+**refunded** the 1 Inv and left the Remain; the valid place consumed the Remain and dropped a
+`modifyMovementCost` Region carrying `turnEndDamage`; and an **ALLY** ending its turn inside took
+"🦴 … takes 6 keen") · 2bW-11 (all three: with no Remain the 3-questions cue still posts; with one,
+the confirm asks and Yes consumes it — "a Harvested Remain is consumed — 0 left") · 2bW-9 (not-at-0
+refused pre-cost; the valid raise gave 1 HP + Disoriented + an auto-created **injury item** + the
+initiative note + Remain consumed; the second use the same scene refused with **nothing spent** —
+note the Investiture bar clamps at max 4, which can masquerade as a spend) · 2bW-5 (healthy
+full-HP target refused pre-cost; Weakened target took the `decaying` icon; at its turn start
+"takes 12 vital … Bench — Death regains 6 HP"; a re-use on an already-decaying target refused) ·
+2bW-7 (willing → "is willing — no test needed", ward lands, the ignored roll posts as documented) ·
+2bW-8 (unwilling → YOU roll Black: "24 vs … SPI 14 — SUCCESS" → ward; and the **1-HP lethal-drop
+rescue** dropped the ally to 1 HP, ended the ward, and did **NOT** harvest — the ledger stayed
+put) · **2bI-10** (Cascade Armed marker; on the drop both enemies within 10 ft took "13 spirit"
+and the **ally beside the body took nothing**) · 2bI-11 (re-use while armed refused — "already
+active — nothing spent"; a PC-typed and a summon drop both produced no cascade harvest; deleting
+the bench combat **cleared** the Cascade Armed marker) · **Death graph rows** (compiled tree:
+Speak with the Fallen hangs off **Reaper's Harvest** beside Bone Garden; Risen Servant =
+OR{Bone Garden, Speak with the Fallen}, so it is takeable from either parent alone — both rows
+retired) · 2bW-2's ranged half (above).
+
+The CASCADE nested kill DOES harvest (`chain`): a cascade that dropped `Bench Adv — Victim V1`
+posted "Reaper's Harvest: Bench Adv — Victim V1 bears your Harvested Remain" alongside the primary
+victim's — but see defect 2.
+
+### The four defects → test-pass-fixes
+
+1. **`edhaIsConstruct` reads a field the cosmere schema does not have — Fault Line's
+   `Constructs ×3` can never fire.** `register-skills.js:9713` is
+   `String(actor?.system?.customType || "").toLowerCase() === "construct"`. There is no
+   `system.customType` on any cosmere actor: creature type lives at **`system.type = {id, custom}`**
+   and `CONFIG.COSMERE.creatureTypes` is exactly `["custom", "humanoid", "animal"]` — a Construct
+   is `{id: "custom", custom: "Construct"}`. Measured live in a clean lane (both targets out of
+   every hazard, HP topped): line rolled 12; the Floater took 12 and the **Construct took 12 − 1
+   deflect = 11**, i.e. **×1, not ×3**. Same bug family as 07-26l's `edhaAttackKind` (a gate
+   reading a stripped/nonexistent field, silently inert). One call site
+   (`register-skills.js:10078`). Note the summon minted by Forge Construct is itself
+   `system.type.id = "humanoid"`, so the fix likely needs both halves: read the right field AND
+   mint Constructs as Constructs. ENGINE + possibly the summon template.
+2. **Simultaneous harvests race on the Remains ledger — entries are lost.** One Necrotic Cascade
+   that dropped three adversaries in the same tick posted **two** harvest cards, each reading
+   "(1/2)", and the ledger ended holding **one** entry. Cap is `@tier` = 2 and eviction is
+   `oldest`, so two should have survived. Isolated as a concurrency bug, not a cap bug, by the
+   control: the same two victims dropped **sequentially** (≈2 s apart) accumulated correctly to
+   `["V1", "V2"]`. Read-modify-write on `flags.edha-content.lists.remains` without serialisation;
+   last write wins. Affects every H3 owner-list under multi-drop AoE. ENGINE.
+3. **2bAB-1 Flame Surge has no damage — both bosses roll `0`.** Fresh pack imports of
+   **Cragdrake Alpha** and **Hazewyrm Elder**: the burst places, the save rolls, and the card reads
+   "💥 Flame Surge hit: **= 0 (0)** + 3 (red) → 3 energy". Root cause is data, not engine: the
+   `edha-burst` handler has no amount field of its own and reads `item.system.damage.formula`,
+   which on both abilities is **`{formula: null, type: null}`** — `data/adversaries.json` gives the
+   ability an `events` block but never a `damage` block, while its own text promises "2d8 energy …
+   half as much on a success". DATA — PACK REBUILD.
+4. **Raise Dead's `Constructs`-adjacent edge: a raised creature keeps its own Harvested Remain.**
+   `Bench Adv — Victim V2` was harvested, then raised by spending V1's Remain: it came back at
+   1 HP still wearing the `harvested` marker, with its own entry still on the ledger — a living
+   creature that is also a Remain. The card says nothing either way, so this is filed as a
+   defect-or-ruling for Ben rather than a hard bug.
+
+### Rulings-batch sightings (ADD to the standing batch — the out-of-combat scope question already
+has its full characterization in the 07-26k delta; these extend it, they do not re-derive it)
+
+- **Fault Line spares allies.** The card reads "Each character in the line takes …" with no
+  friend/foe clause, and the engine catches enemies only (`edhaEnemyTokensInLine`). Correct or a
+  narrowing? The same question applies to every `kind: line` zone.
+- **A raised creature that was itself harvested stays a Remain** (defect 4 above) — should Raise
+  Dead clear the target's own marker and ledger entry?
+- **Walking Ruin has no token indicator.** The toggle is tracked internally; nothing on the token
+  says "this character is leaving ruin behind". Every other scene-arm in the project (Cascade
+  Armed, Crowned, `withernext`, `warlord`) wears a marker. Feel/consistency call.
+
+### Operating lessons (added to the runbook's run-4 section)
+
+- **`tokDoc.update({x, y})` is DEAD for token movement under v13 + cosmere 2.1.0.** It throws
+  `Cannot read properties of undefined (reading 'testPoint')` from the Region movement segmentiser
+  and silently leaves the token where it was — run 2's advice is stale. Use
+  **`tokDoc.move({x, y, action: "displace"}, {animate: false})`** and `tokDoc.reset()`; use
+  `action: "walk"` when the row needs wall collision and Region triggers to actually run
+  (`move()` returns `false` when a wall refuses the walk, which is itself a usable assertion).
+- **Right-click cancel is a `contextmenu` event, not a right-button `pointerdown`.** A
+  `pointerdown` with `button: 2` leaves the pick LIVE (the range ring stays on the canvas and the
+  next left click still places). Dispatch
+  `new MouseEvent("contextmenu", {bubbles: true, cancelable: true, button: 2})` on `#board`.
+- **Adding a talent back to a bench PC needs `edha.skipBudget(true)`** — the level-7 budget
+  silently refuses the create and `syncActorTalents` reports success on the shorter list.
+- **`item.system.events` is a `RecordCollection`, not an array.** Writing an array back is a
+  no-op that reports success; edit with the dot path
+  (`"system.events.<ruleId>.handler.<field>"`). This is how a document-edit row can look like it
+  failed when it was never applied.
+- **Resource writes clamp to max.** Topping a bar up by writing a number above the effective max
+  reads back as the max — do not mistake the clamp for a spend when checking a "nothing spent" row.
+- **`applyDamage` is the only honest way to deal damage from the console.** A raw
+  `system.resources.hea` edit does not fire the damage watches (Set Charge's `target-damaged` arm,
+  Mender's threshold offer), though it DOES still fire the defeat watches at 0.
 
 **2026-07-26l — THE BENCH-RUN-3 EIGHT, FIXED (test-pass-fixes). One commit per defect, root
 causes VERIFIED in code (hook → handler → write) rather than re-derived. ⚠️ MIXED DEPLOY: the

@@ -51,15 +51,20 @@ changed.
 the restructure orphaned pre-restructure marks. If day-1 marks were never pasted back, recover
 them from the pre-restructure dashboard in git history before trusting the new sheet.
 
-**Merged but NOT yet live (2026-07-26l — the bench-run-3 eight, fixed; agent-recorded, Ben
-confirms):** six ENGINE fixes (Whispered Doubt's drain card · Puppeteer's `{name}` · Cruel
-Step's straddle guard · Mender's ally/on-scene gates · the heal-cut family gate · `edhaAttackKind`
-reading `system.attack.type` · Tempered Edge's explanatory card) go live at the next
-`module-src-sync` + F5/relaunch. Two DATA fixes are **BLOCKED-ON-DEPLOY** until Ben runs the
-builds with Foundry closed: `foundry-build leyline` + **⟳ Sync Talents** (Mender's Instinct's
-one-liner note + green range gate) and `foundry-build adversaries` + **⟳ Sync Adversaries** +
-**re-drag the Fellstag** (Herding Antlers' authored contest — the ability stays dead on every
-placed/imported copy until then).
+**✅ The 07-26l ENGINE half is LIVE (bench run 4, 2026-07-26m).** All six engine fixes were
+re-tested at the table and PASSED — Whispered Doubt's drain card (canary), Puppeteer's `{name}`,
+Cruel Step's straddle (plus the ⚑ near-parallel residual), Mender's ally + on-scene gates, the
+heal-cut family gate, `edhaAttackKind`'s ranged stand-downs, and Tempered Edge read by NET.
+Evidence per row in the 07-26m delta.
+
+**Still BLOCKED-ON-DEPLOY — the two DATA fixes, unchanged.** Ben runs these with Foundry closed:
+`foundry-build leyline` + **⟳ Sync Talents** (Mender's Instinct's one-liner note + green range
+gate — run 4 confirmed the live pack still carries the 228-char note and an empty `rangeColor`,
+so the card is long and range is un-gated) and `foundry-build adversaries` + **⟳ Sync Adversaries**
++ **re-drag the Fellstag** (Herding Antlers — run 4 confirmed a FRESH pack read still shows the
+ability with **0 events**; it stays dead on every placed/imported copy until then).
+⚠️ Bench run 4 added a THIRD pending pack build: `foundry-build adversaries` also owes Flame
+Surge's missing damage block once test-pass-fixes lands it (see the Destruction section).
 
 Only Ben advances this section.
 
@@ -99,13 +104,11 @@ Evidence per row in the delta. The two 2bAC rows below are visual-legibility jud
 
 ## Engine-wide fixes still unbenched (pre-migration survivors)
 
-- [ ] **Melee discriminator (`edhaAttackKind`) — FIXED 2026-07-26l, re-test after the run-4
-      engine deploy (F5)** — the read is now `system.attack.type` ("melee"/"ranged") with
-      `attack.range.value` as the type-less tiebreak (commit `be6b16d`, 5 pinned cases).
-      Re-test: set a weapon's `system.attack.type` to `"ranged"`, arm Warlord's Advance, hit →
-      the rider is SKIPPED and the arm SURVIVES (the 07-26k trial fired it and consumed the arm).
-      Then the original coverage: Spurs/Venom stand-down on a ranged hit; a type-less weapon
-      still fires with the owner-judged note.
+**Bench run 4 (2026-07-26m): the melee-discriminator row is RETIRED** — `edhaAttackKind` now reads
+`system.attack.type`: a weapon set to `"ranged"` skipped Warlord's Advance's rider AND left the arm
+armed; blanking the field (schema re-initialises to `"melee"`) fired "+4 impact strike" and consumed
+it; Withering Touch's ranged half behaved identically. Evidence in the 07-26m delta.
+
 - [ ] **GM summon relay** — as a PLAYER without actor-create: Phantom Barricade / Risen Servant /
       Forge Construct produce a real token via the GM client; you can move it and use its attack;
       `actsAfterCaster` puts it on the caster's initiative. No GM online → the old warn.
@@ -201,15 +204,18 @@ Insight), 2bI-7, 2bI-8 + 2bH-11 (retired as PROVEN-UNREACHABLE fail-open, runboo
 2bM-10, 2bF-12. Evidence per row in the 07-26k delta. The rows below stayed open — two FAILs
 (→ test-pass-fixes) and the ⚑ ruling rows, each with a dated note.
 
-- [ ] **2bI-1 — Whispered Doubt (Black) — card FIXED 2026-07-26l, re-test after the run-4 engine deploy (F5)** — the MECHANICS all passed 07-26k and stay retired-in-place: extra loss applied, once per round per enemy held, re-armed next round, `scope: scene` watch alive. The no-card FAIL is fixed at the shared cause (`edhaDrainFocus` now announces every involuntary loss — commit `b3d1652`). Re-test: trigger the extra loss → a card "🧠 Whispered Doubt: <enemy> loses 1 focus"; Wary's reduction still posts its own card; Red's Shatter Focus drain now announces too (same helper — spot-check it once). **Out-of-combat scope, observed richly in run 3 (ruling is Ben's, UNCHANGED by the fix):** the watch fires out of combat; a GM console/bookkeeping focus edit counts as a "spend" (dropping a fixture 4→0 armed Coercive AND credited Predatory Insight); campaign tokens' watches fire scene-wide (The Outlaw armed Coercive on a bench fixture from ~45 ft with no one playing it; a Dirgehound's own 1-Focus ability cost was taxed by Bench — Black's watches from 45 ft).
+**Bench run 4 (2026-07-26m): the three 07-26l re-tests all PASSED and are retired** — 2bI-1
+(Whispered Doubt's loss card: "🧠 Whispered Doubt: Bench Target — Adjacent A loses 1 focus"; Red's
+Shatter Focus announces off the same helper), 2bJ-8 (Puppeteer's offer names the creature, no
+literal braces), and the Cruel Step straddle spot-check (the x=5156 straddle slid the FULL 10 ft,
+and the ⚑ near-parallel residual also completed — `testCollision` from the collinear origin reads
+false while a genuine crossing ray reads true). Evidence in the 07-26m delta.
+
 - [ ] **2bI-4 — ⚑ Coercive Pressure stacking** — give the same creature Coercive Pressure's disadvantage **and** another next-test rider (e.g. Probability Net) → **NARROWING:** they no longer stack — the second write overwrites the first. The bespoke Cognitive-disadvantage flag that allowed both is gone. Tell me if that matters at the table. *(2026-07-26k: the single-slot shape is confirmed on the live actor — `flags.nextTestMod` is one object `{source: "Coercive Pressure", …}`; a Blood Price arm on the owner and a Coercive arm on the target each occupy their bearer's one slot. Cross-rider overwrite not staged; the ruling stays yours.)*
 - [ ] **2bI-6 — ⚑ Whispered Doubt vs Wary** — have the enemy own **Wary**, then trigger Whispered Doubt → **BEHAVIOUR CHANGE:** the extra loss is now reduced by their Discipline ranks (usually to zero), because it goes through the shared involuntary-focus path. Wary's text says involuntary focus loss, so this reads correct — but it did NOT happen before. Your ruling, not a bug report. *(2026-07-26k: OBSERVED live exactly as described — Wary + Discipline 1 → net extra 0, with a card "🛡️ Wary: involuntary focus loss reduced by 1"; Coercive still armed. Note Wary announces while Whispered Doubt itself is card-less — see 2bI-1.)*
 - [ ] **2bI-9 — Siphoned Will (Black)** — own it, land Hollow Command, and check the Events tab of **Siphoned Will itself** → You regain focus equal to your **tier**, on a card naming *Siphoned Will*. ⚑ Its own tab is **EMPTY** — the rule lives on Hollow Command. Third talent to take this exit (2bF-5/14/16 were the others); the question there is the question here. *(2026-07-26k: the mechanics half is verified — on Hollow Command's success, "🧠 Siphoned Will: Bench — Black regains 2 focus" (tier 2). Only the empty-tab design question remains — yours.)*
-- [ ] **2bJ-8 — Puppeteer (Black) — offer `{name}` FIXED 2026-07-26l, re-test after the run-4 engine deploy (F5)** — the `turn-start` watch and the accept path passed 07-26k and stay retired-in-place (2 focus + 1 Inv spent on click; public note correctly named). The offer path now fills `{name}` with the trigger's subject via the shared `edhaFillName` (commit `933f24f`, pinned). Re-test: a 0-focus enemy's turn starts → the whispered offer names the creature ("🎭 Puppeteer — Bench Target — Floater starts its turn at 0 focus…"), no literal braces anywhere on the card.
 - [ ] **2bJ-10 — ⚑ Puppeteer / Unnerving Approach — the ignored card** — let one of their cards post and **do not click it**; then trigger the talent again the same round → It works again. ⚑ **BEHAVIOUR CHANGE:** the once-per-round budget is now spent when you **click**, not when the card posts, so declining no longer burns the use. *(2026-07-26k: VERIFIED — an ignored Unnerving picker did not block a same-round re-use, and its click pushed; after an accepted Puppeteer, the next 0-focus turn-start posts NO offer (budget suppresses at the offer stage). ⚑ One cost note for your ruling: each ignored USE still charges its Investiture — only the round budget waits for the click.)*
 - [ ] **2bZ-10 — Dread Presence (the two unbenched adversary copies)** — a Weakened enemy in range drags its token closer to an ally, near the **Cragdrake Alpha** and the **Doubled Elder** → Move vetoed with a toast naming the talent, off each copy's OWN rule (re-drag or ⟳ Sync Adversaries first) — ranges 60/60 ft via role rank. *(2026-07-26k: the PC half and the Dirgehound Pack copy (30 ft rival) PASSED and are retired — both vetoed a console token move in place with the toast; a Weakened fixture's own staging move even got vetoed mid-run. The toast names the nearest ally scene-wide, campaign tokens included ("Frostbinder", "The Forgemaster") — correct mechanically, worth knowing at the table.)*
-- [ ] ⚑ **Black spot-checks (like-for-like) — Cruel Step straddle FIXED 2026-07-26l, re-test after the run-4 engine deploy (F5)** — clean-lane 10 ft and occupied-square 0 ft passed 07-26k and stay retired-in-place. The straddle mis-stop is fixed at the verified cause (commit `8a212b8`): the ray origin was ALREADY the token center (v13-checked — not corner-based); the sweep degenerates when the center is collinear with a wall, so the test ray now starts 2px along the travel direction. Re-test AT THE SAME WALL (x=5156, lower-left room): place the mover's square straddling it, clean lane beyond → the slide runs the FULL distance, no "(stopped at an obstacle)". ⚑ Also probe once with travel near-PARALLEL to the wall (the documented residual). *(The row's "two 16-char rule ids" is STALE text: the document carries ONE rule (`CruelStepMove001`, 16 chars) and `data/authored/leyline-black.json` also authors exactly one — no data loss.)*
-
 ---
 
 # BENCH — Red (leyline)
@@ -260,7 +266,7 @@ Order — the session-0 mutual pair is dead). Evidence per row in the 07-26k del
 
 - [ ] **2bS-11 — Natural Order — NARROWED 2026-07-26k** — the use half PASSED: 2 Inv spent, the **"Clearsight (veils suppressed nearby)"** marker landed with the explanatory card. Still open: the veil half — a veiled enemy standing in **darkness** in range keeps its auto dark-veil marker DOWN (needs scene darkness + a veil-capable adversary — staging left ⚑ for a run that owns the darkness question, or Ben), and the combat-end clear.
 - [ ] **2bS-1 — Green Leyline Attunement — NARROWED 2026-07-26k** — placement PASSED (click-to-place placed the 10 ft difficult-terrain Region, "Thorn Field rides it"), and the ⚠️ cosmetic drift is confirmed (its own card; the Draw Mana summary prints no Green line). Still open/⚑: the range ring + snap feel (canvas rows, Ben's) and the out-of-range refusal (not driven this run).
-- [ ] **Green spot-checks (like-for-like) — Mender's Instinct FIXED 2026-07-26l (engine F5 + a PACK-REBUILD half), re-test after the run-4 engine deploy** — the three run-3 defects, fixed (commit `b713e01`): (1) ally gate — a hostile crossing half HP must draw NO offer (unknown positions fail closed); (2) scene scope — an owner with no token on the scene must post nothing (stage: The Vivisectionist still owns the rule — its silence IS the test); (3) heal-block — see 2bW-1. **After the ENGINE deploy alone, the card still prints the long description and range is un-gated** — those ride the authored green fix (note emptied + `rangeColor: green`) and are **BLOCKED-ON-DEPLOY** until `foundry-build leyline` + ⟳ Sync Talents; after THAT, the card shows the engine's tight "<ally> dropped to N/M HP" line and an out-of-Attunement ally draws no offer. Green's own `oncePerRound` held in run 3 — don't re-prove it. **Herding Antlers on the Fellstag (2bF-10): FIXED 2026-07-26l in DATA (commit `8917cbb`), BLOCKED-ON-DEPLOY** — the ability had NO authored rule (the 07-26j sweep was right to skip it); it now authors Drive the Prey's contest verbatim, and a scratch pack build compiles it to `skill_test/green` with both rules. Re-test only after `foundry-build adversaries` + ⟳ Sync Adversaries + a FRESH re-drag: target a character, use → Green vs Survival through the contest core; success → Slowed + the move-away note. **Still unrun**: Spreading Roots (2bS-4) · Pack Hunter (2bS-6) · Scent the Weak (2bS-7, though its advantage was seen arming incidentally) · Resurgent Growth (2bS-12) · Natural Recovery (2bS-14) · Reknit Form (2bS-15).
+- [ ] **Green spot-checks (like-for-like) — Mender's ENGINE halves PASSED 2026-07-26m; the DATA halves are BLOCKED-ON-DEPLOY** — bench run 4 retired (1) the ally gate (a HOSTILE fixture taken 32 → 12 HP drew NO offer) and (2) the scene scope (with Green's own copy temporarily removed, The Vivisectionist — owner, no token on the scene — stayed SILENT; its silence was the test). (3) the heal-block passed under 2bW-1. **Still BLOCKED-ON-DEPLOY:** run 4 read the live pack and confirmed the authored green fix has NOT shipped — the rule's `note` is still 228 chars and `rangeColor` is still `""`, so the card prints the long description and an out-of-Attunement ally (~70 ft) still draws an offer. After `foundry-build leyline` + ⟳ Sync Talents, re-check for the engine's tight "<ally> dropped to N/M HP" line and the range refusal. Green's own `oncePerRound` held in run 3 — don't re-prove it. **Herding Antlers on the Fellstag (2bF-10): BLOCKED-ON-DEPLOY, confirmed still dead 2026-07-26m** — a FRESH pack read of the Fellstag shows Herding Antlers with **0 events** and no `activation.skill`; the live pack predates commit `8917cbb`. Re-test only after `foundry-build adversaries` + ⟳ Sync Adversaries + a FRESH re-drag: target a character, use → Green vs Survival through the contest core; success → Slowed + the move-away note. **Still unrun**: Spreading Roots (2bS-4) · Pack Hunter (2bS-6) · Scent the Weak (2bS-7, though its advantage was seen arming incidentally) · Resurgent Growth (2bS-12, seen ticking incidentally in run 4 — "Resurgent Growth: Bench Ally — One regains 7 health" at a round boundary) · Natural Recovery (2bS-14) · Reknit Form (2bS-15).
 - [ ] **2bS-3 — Briar-Gone Grove (adversary) — NARROWED 2026-07-26k** — the Grove's Thorn Field (boss → d8) keen rider baking into its engine-placed patches is still to bench. *(The Fellstag half PASSED and is retired: a FRESH pack import's Draw Mana placed its own 5 ft square, "Thorn Hedge rides it", and the hazard tick dealt "2 keen … (Thorn Hedge — Bench Adv — Fellstag)" — rival d6 family, its own zone-hazard rule.)*
 
 ---
@@ -268,27 +274,28 @@ Order — the session-0 mutual pair is dead). Evidence per row in the 07-26k del
 # BENCH — Destruction (Razkael, deity)
 
 Run on **Bench — Destruction** (open ground; enemy dummies to catch blasts; one Construct-type
-if you can). No pack rebuild pending. Priority: 2bK-1 (proves the talents fire at all)
-and 2bY-4 (the document formula finally drives the roll).
+if you can). No pack rebuild pending for the tree talents.
 
-- [ ] **2bK-1 — Cascading Failure (Destruction) ⚠️⚠️** — place 2+ Charges, then use it → All active Charges detonate at once, damage rolls per Charge, and the card names the talent. If **nothing at all happens**, the use is still being cancelled — stop and tell me.
-- [ ] **2bY-1 — Set Charge** — use → click in range; click OUT of Attunement Range; right-click cancel → In range: red 10 ft template + Charges card + arm card. Out-of-range or cancel: **Investiture refunded**, nothing placed. ⚠ the range gate is NEW (card-is-spec — the old engine let you click anywhere).
-- [ ] **2bY-2 — Set Charge cap** — place past cap (tier+1) → The OLDEST fizzles (template vanishes, ledger at `lists.charges` shrinks).
-- [ ] **2bY-3 — Charge arms** — arm "target moves" (target first), "target damaged", "enter"; fire each → Same watchers as before: each fires ONE whispered Detonate prompt; detonation stays your click.
-- [ ] **2bY-4 — Detonate** — detonate one; Detonate ALL → Burst damage off the DOCUMENT's damage formula (edit it and re-test — pre-2bY this worked only via the placement snapshot), terrain dropped at each marker, charges consumed.
-- [ ] **2bY-5 — Pinpoint Charge** — use with no un-declared Charge; then with one; then detonate → No Charge: refused PRE-COST (nothing spent). With one: newest un-declared Charge flagged ⊕ (card + refreshed buttons). Detonate: +[T][D] keen off **Pinpoint's own damage formula** (edit it — the roll must change; pre-2bY it read a constant via the name), deflect ignored, terrain centres on/follows the primary target.
-- [ ] **2bY-6 — Concussive Yield** — own it; detonate any Charge → Every caught foe rolls SPD vs your Red (engine-rolled), failures Prone — card names Concussive Yield. Un-own it (or edit the rule's failStatus) and the rider follows the DOCUMENT.
-- [ ] **2bY-7 — Fault Line** — use → click a direction; right-click cancel; catch a Construct → 60×5 line: [T][D]+Str energy (Constructs ×3), SPD-vs-Red → Prone (engine-rolled), line hazard drawn. Cancel: **2 Investiture refunded**.
-- [ ] **2bY-8 — Walking Ruin** — use (toggle on); move; use again (off); check Speed → Toggle card; while on, vacated squares become terrain patches (formula off ITS rule). +10 ft Speed stays passive. ⚑ the toggle previously rode an Always-Active activation and may NEVER have fired on this machine — it is now a Free Action use; report what the old behaviour actually was if you remember it.
-- [ ] **2bY-9 — Combustion Chain** — use (armed card); drop a foe to 0 HP inside your terrain → Use: armed reminder + by-hand button. Auto: 10 ft zone ignites on the body + spread-5-ft card. Dials (radius/spread) are on the Events tab now.
-- [ ] **2bY-10 — Pyre / Fire the Wrack** — place a Pyre zone; end your turn; ⚠ also any zone placed BEFORE this deploy → End of your turn: the GM spread card per zone (unchanged). ⚑ a Region placed before the 2bY deploy carries no `spreads` stamp and stops prompting — re-place it once; not a bug. The Cinderbrock's Fire the Wrack spreads identically via its own rule.
-- [ ] **2bK-2 — Cascading Failure — the multi-catch** — arrange it so one creature stands inside **two** blast radii → That creature takes an **extra [Tier][Die] energy**, listed separately on the card as "caught in 2 blasts". This is the talent's whole mechanic.
-- [ ] **2bK-3 — The Unmooring (Destruction) ⚠️** — place Charges, use it, then try to use it **again the same scene** → First use: every Charge detonates at **15 ft** radius, ignoring deflect, each +Intellect. Second use: refused, **nothing spent**. End the encounter and it is available again.
-- [ ] **2bK-4 — ⚑ Both — the empty-list refusal** — use either with **no Charges placed** → Refused with a warning and **no Investiture spent**. The hand-rolled versions checked this before charging you; the check moved to a pre-use guard, so this row is confirming it survived the move.
-- [ ] **2bK-5 — Both — the riders still ride** — detonate with **Pinpoint Charge** declared, and (separately) while owning **Concussive Yield** → Pinpoint's extra keen and the Concussive Yield prone-test both still fire. ⚑ Those two talents are **still engine-owned** — H12 wraps their branches rather than removing them, so this row is checking the wrap, not a conversion.
-- [ ] **Razkael prereqs match the drawn tree (2026-07-24b)** — **Cascading Failure**'s card now
-      reads "Pinpoint Charge or Concussive Yield" and **Fault Line**'s reads "Walking Ruin or
-      Combustion Chain"; each is takeable from either drawn parent alone, not both.
+**Bench run 4 (2026-07-26m): 14 Destruction rows PASSED on the live table and are retired** —
+2bY-1 (in-range place → red 10 ft template + Charges card + arm card; both refusal paths refunded),
+2bY-2 (cap = tier, oldest evicted), 2bY-3 (all three arms bound and each fired ONE whispered
+Detonate prompt), **2bY-4** (Set Charge's document formula edited to a flat `6` → the detonate
+rolled `6`, terrain dropped, charge consumed), 2bY-5 (pre-cost refusal + ⊕ flag + Pinpoint's own
+edited formula printing "+9 keen … ignores deflect"), **2bY-6** (`failStatus` edited prone →
+**slowed** on the Events tab and the next detonate applied Slowed), 2bY-8 (toggle on/off, trail
+patches while on, zero after off, +10 ft Speed AE), 2bY-9 (armed card + the auto ignite/spread
+firing unprompted), 2bY-10 (Pyre stamped `spreads: true`, end-of-turn spread card), **2bK-1 +
+2bK-2** (2 charges detonated at once, and the multi-catch listed "+5 energy (caught in 2 blasts)"
+separately), 2bK-3 (15 ft + Intellect on the first use; the second the same scene refused with
+nothing spent), 2bK-4 (both capstones refused pre-cost on an empty ledger), 2bK-5 (both riders rode
+one detonate), and **Razkael prereqs** (compiled tree: Cascading Failure = ONE group {Pinpoint
+Charge, Concussive Yield}, Fault Line = ONE group {Combustion Chain, Walking Ruin} — the system
+evaluates a multi-talent group with `.some()`, so either parent alone suffices; prose in
+`data/domain.json` matches). Evidence per row in the 07-26m delta. ⚑ the drawn-tree eyeball for
+the prereq row is still Ben's.
+
+- [ ] **2bY-7 — Fault Line — PARTIAL 2026-07-26m; `Constructs ×3` is a FAIL** — the line itself passed and stays retired-in-place: 60×5 rectangle Region drawn from the caster, "+2" Strength on the damage roll, engine-rolled Speed vs Red → Prone, and a right-click cancel refunded 2 Investiture. **FAIL (→ test-pass-fixes):** the Constructs multiplier never applies. `edhaIsConstruct` (`register-skills.js:9713`) reads `actor.system.customType`, a field that does not exist on any cosmere actor — creature type lives at `system.type = {id, custom}` and `CONFIG.COSMERE.creatureTypes` is `["custom","humanoid","animal"]`. Measured in a clean lane: the line rolled 12; the Floater took 12 and the Construct took 12 − 1 deflect = **11**, i.e. ×1. Same family as 07-26l's `edhaAttackKind`. Note the Forge Construct summon is itself minted `system.type.id = "humanoid"`, so a fix probably needs both halves. ⚑ **Ruling wanted:** the line spares ALLIES — a friendly-disposition Construct standing squarely inside took nothing until its disposition was flipped hostile — while the card reads "Each character in the line takes …" with no friend/foe clause.
+- [ ] ⚑ **Walking Ruin has no token indicator (2026-07-26m — ruling, not a bug)** — the toggle is tracked internally and nothing on the token says the character is leaving ruin behind, unlike every other scene-arm in the project (Cascade Armed, Crowned, `withernext`, `warlord`). Consistency call is Ben's.
 
 ---
 
@@ -377,30 +384,35 @@ entry-data couplings.
 # BENCH — Death (Morrath, deity)
 
 Run on **Bench — Death** (hostile NPC dummies in Green range to harvest; a warded ally). No
-pack rebuild pending. Priority: 2bW-17 (the Death/Life premise row).
+pack rebuild pending.
 
-- [ ] **2bW-17 — The point of the migration** — open any converted Death/Life talent → Events → The rule(s) are visible and editable — change the decay fraction, the ward's THP formula, a mutation number, Lifeline's fraction; confirm the behaviour/card shows the edit.
-- [ ] **2bW-1 — Withering Touch — heal-block FIXED 2026-07-26l, re-test after the run-4 engine deploy (F5)** — the dice/arm/consume mechanics passed 07-26k and stay retired-in-place ("+12 vital strike" in the same application; "No Healing" AE + card landed). The heal-block bypass is fixed at the family cause (commit `f1aa75d`): every rule-driven heal path now runs `edhaHealCutGate`. Re-test: block a target, then click a Mender's hp-threshold offer on it → heals **0** with a "cannot regain HP (Withering Touch)" card (⚠ the click's 1 Inv is still spent — GM refunds; a pre-click veto is in the rulings batch). Also spot-check one other heal shape on a blocked target (Field Medicine or a regrowth tick) → same block. Still open: Temp-HP-still-lands and the turn-start expiry (not driven in run 3).
-- [ ] **2bW-2 — Withering Touch (ranged)** — arm, then a ranged weapon hit; then a talent's own damage → Both are skipped and the arm STAYS (icon still on). Unknown-range weapons fire with the owner-judged note.
-- [ ] **2bW-3 — Reaper's Harvest** — drop a hostile NPC in Green range; drop one out of range; kill via Necrotic Cascade → In range: +1 Investiture card + the corpse joins the Remains ledger (`harvested` green skull; cap = tier, oldest fizzles). Out of range / a PC / a summon / a Death-Warded drop: nothing. A CASCADE's nested kill still harvests (the `chain` field).
-- [ ] **2bW-4 — Remains freebie** — fresh scene, spend the freebie (e.g. Risen Servant), then check the list → A scene with NO harvest still allows ONE spend ("Scene-start Remain"); after it the ledger reads empty and stays empty — the freebie does NOT come back until the next scene reset ([] ≠ unset).
-- [ ] **2bW-5 — Consuming Decay** — use vs a healthy full-HP target / out of Black range / an already-decaying target; then a Weakened one → Bad cases refused **pre-cost** (nothing spent). Valid: `decaying` icon + the card; at the start of the target's turns it takes the re-rolled [T][D black] vital and the owner heals half; removing the icon ends it.
-- [ ] **2bW-6 — Bone Garden** — use with no Remain; use + right-click cancel; then valid → No Remain → refused **pre-cost**. Cancel → the 1 Inv REFUNDS, the Remain stays. Valid: the green 10 ft square (difficult terrain enforced), the Remain is consumed, and ANY creature — allies and you too — ending its turn inside takes the baked [T][D green] keen.
-- [ ] **2bW-7 — Death Ward (willing)** — target a same-side character, use → No test — "willing" card + the ward lands (a roll still posts from the skill_test card; it is ignored — ⚠ drift, was roll-free). Re-warding the same creature refused **pre-cost**.
-- [ ] **2bW-8 — Death Ward (unwilling + save)** — target an enemy, use, roll; then drop the warded creature → YOU roll Black on the card vs its Spiritual (⚠ drift — the takeover auto-rolled); failure = cost spent, no ward. On the warded creature's first lethal drop: 1 HP instead + [T][D black]+Pre Temp HP, ward ends, and the drop does NOT harvest/cascade.
-- [ ] **2bW-9 — Raise Dead** — use twice in a scene; use vs a standing target; then a 0-HP token with a Remain held → Repeat + not-at-0 refused **pre-cost** (generic sceneOnce). Valid: the Remain confirm (declining spends nothing), 1 HP revive, Disoriented until the end of ITS next turn, initiative moved onto yours (GM-side, else card-noted), ONE auto-created injury.
-- [ ] **2bW-10 — Risen Servant** — use with no Remain; then with one → None → refused **pre-cost**. Valid: the summon lands (unchanged spec) and the OLDEST Remain is consumed on use. Cap-at-tier refusal unchanged (sustainCap).
-- [ ] **2bW-11 — Speak with the Fallen** — use with a Remain; decline; use with none → The confirm asks; accepting consumes the oldest Remain, declining posts "no Remain spent" — the 3-questions cue card posts in every case.
-- [ ] **2bP-10 — Risen Servant — the cap still refuses** — sustain servants up to your tier, then use it again → Refused, **nothing spent** (no Investiture, no Remain), with a message naming the cap.
-- [ ] **2bP-11 — Risen Servant — the Remains gate is unchanged** — use it with **no Harvested Remain** → Refused with nothing spent, as before. (Only the *cap* moved this pass; the Remains ledger is untouched.)
-- [ ] **2bI-10 — Necrotic Cascade (Death) ⚠️⚠️** — use it, then drop an enemy inside your Black Attunement Range with **other enemies within 10 ft of the body** → Your token gains a **Cascade Armed** marker. On the drop, each of those enemies takes **[Tier][Die] spirit** — and **your allies standing next to the body take nothing**. First consumer of the new `defeat` watch.
-- [ ] **2bI-11 — Necrotic Cascade — the negative cases** — re-use it while armed; drop a **PC**; drop a **summon**; end the encounter → Re-use refused ("already active — nothing spent"). No cascade on a PC or a summon drop. On combat delete the **Cascade Armed** marker clears.
-- [ ] **Death / Speak with the Fallen** — its card now reads **"Reaper's Harvest"** (was "Risen
-      Servant", which is drawn *below* it). Confirm it hangs off Reaper's Harvest beside Bone
-      Garden, and that Risen Servant is still reachable via Bone Garden.
-- [ ] **Risen Servant's card no longer names a cut talent (2026-07-24c)** — its Prerequisites read
-      **"Bone Garden or Speak with the Fallen"** (was "Bone Garden or Gentle Passage" — a talent
-      deleted in the Death-tree rewrite). Confirm it is takeable from EITHER parent alone.
+⚠️ **Staging note (bench run 4):** Reaper's Harvest only harvests **adversary**-typed victims. The
+standard `Bench Target — *` fixtures are `character`-typed and are silently skipped — that is the
+"a PC drop harvests nothing" branch, not a bug. Import or clone an adversary-typed victim for every
+harvest row.
+
+**Bench run 4 (2026-07-26m): 17 Death rows PASSED on the live table and are retired** — **2bW-17
+(the premise)**: Death Ward's `thpFormula` edited on the Events tab to a flat `3`, and the very next
+lethal-drop rescue rolled `3` and printed "gains 3 Temp HP" · 2bW-1's heal-block re-test (a Mender's
+hp-threshold click on a blocked target posted "🩸 … cannot regain HP (Withering Touch)" and HP did
+not move) · 2bW-2's ranged half (arm survived, no rider) · 2bW-3 (in-range harvest, plus all three
+negatives: out of range, a summon, a `character`-typed victim — and the CASCADE nested kill DOES
+harvest via `chain`) · 2bW-4 (BOTH halves — an unset flag gave the scene-start freebie, an explicit
+`[]` refused) · 2bW-5 (both pre-cost refusals, the `decaying` icon, and the turn-start tick "takes
+12 vital … regains 6 HP") · 2bW-6 (all four, including an ALLY ending its turn inside taking
+"🦴 … 6 keen", and the cancel refunding while the Remain stayed) · 2bW-7 (willing → no test, ward
+lands) · 2bW-8 (unwilling → "24 vs … SPI 14 — SUCCESS", and the 1-HP lethal-drop rescue that did
+NOT harvest) · 2bW-9 (not-at-0 refusal, the full valid raise with its auto-created injury item, and
+the sceneOnce refusal with nothing spent) · 2bW-10 / 2bP-11 (no-Remain refusals) · **2bP-10** (cap
+named at 2 servants, Remain survived) · 2bW-11 (all three branches) · **2bI-10** (13 spirit to both
+enemies within 10 ft, the ally beside the body untouched) · 2bI-11 (re-use refused, PC and summon
+drops produced nothing, combat delete cleared the marker) · and **both graph rows** (compiled tree:
+Speak with the Fallen hangs off Reaper's Harvest beside Bone Garden; Risen Servant = OR{Bone Garden,
+Speak with the Fallen}, takeable from either alone). Evidence per row in the 07-26m delta.
+
+- [ ] **Remains ledger — FAIL 2026-07-26m: simultaneous harvests race and LOSE entries** — one Necrotic Cascade that dropped three adversaries in the same tick posted **two** harvest cards, each reading "(1/2)", and the ledger ended holding **one** entry; the cap is `@tier` = 2 with `evict: oldest`, so two should have survived. Isolated as concurrency rather than the cap by the control: the same two victims dropped **sequentially** (≈2 s apart) accumulated correctly to `["V1","V2"]`. Read-modify-write on `flags.edha-content.lists.remains` with no serialisation — last write wins. Affects every H3 owner-list under multi-drop AoE, not just Death. → test-pass-fixes.
+- [ ] ⚑ **Raise Dead — a raised creature keeps its own Harvested Remain (2026-07-26m — defect or ruling, Ben's call)** — an adversary that had itself been harvested was then raised by spending a DIFFERENT Remain: it came back at 1 HP still wearing the `harvested` marker, with its own entry still on the ledger — a living creature that is also a Remain. The card says nothing either way. Should the raise clear the target's own marker and entry?
+- [ ] **2bW-1 — Withering Touch — the two unrun halves** — still open from run 3 and not driven in run 4: **Temp HP still lands** on a blocked target, and the **turn-start expiry** of the No-Healing block. Everything else on this row is retired (see the run-4 block above).
 
 ---
 
@@ -415,7 +427,7 @@ pending. Priority: 2bV-16 (drift: manual HP edits no longer prompt).
 - [ ] **2bV-12 — Trade Routes** — use with one Foundation; then link two + teleport → One → refused **pre-cost**. Linked: the ⇄ marks; an ally standing in either teleports to a clicked arrival point (once/turn trusted); every cancel path refunds.
 - [ ] **2bV-13 — Siege Form** — use with no Construct / already sieged; then valid + end it → Bad cases refused **pre-cost**. Valid: the baked Siege Form effect toggles ON (Speed 0, deflect 3, Siege Cannon usable); the card's button ends it. ⚑ a Construct summoned BEFORE 07-17 lost the Siege-Cannon gate shim — reforge it once.
 - [ ] **2bV-14 — Arsenal** — use with no Construct; then valid; Construct kills a character → None → refused pre-cost; re-arm refused. Armed: the indicator AE (from Arsenal's own Effects tab) rides the Construct; a live→0 kill whispers the 15 ft move + free Strike chase.
-- [ ] **2bV-15 — Tempered Edge / Magnum Opus — ignore-deflect ADJUDICATED 2026-07-26l: WORKS AS DESIGNED (re-read after the run-4 engine deploy, F5)** — the run-3 "19 − 2" reading was a false positive: the +2 bump is a compensating impact instance, so the system's calc line ALWAYS shows the −deflect while the NET equals base + rider (17 = 8 + 9 that run — deflect fully ignored). Verified in code both sides (commit `44a10ab`); the rider card now says the +N pre-pays the −N. Re-test by the NET, never the calc line: Slam a deflect-2 foe, read the Slam's own base roll → damage taken must equal base + rider exactly, and the card carries the new explanatory clause. Still open: Siege Cannon adds NEITHER; all of Magnum Opus (once/scene pre-cost, +2×[T][D white] HP, +2 defenses, Foundation +1→+2, Colossus splash + Agility-vs-Red-or-Prone).
+- [ ] **2bV-15 — Tempered Edge — CONFIRMED WORKS AS DESIGNED 2026-07-26m, retired-in-place** — measured by NET against a deflect-2 target: Construct Slam base roll **12**, rider card "+14 energy and the hit ignores … deflect (+2 added here pre-pays the −2 …)", damage card "takes **27** damage. Damage Calculation: 29 − 2" — net = base + rider with deflect fully compensated, and the new explanatory clause is on the card. The run-3 "19 − 2" reading was indeed a false positive. Still open on this row: Siege Cannon adds NEITHER; all of Magnum Opus (once/scene pre-cost, +2×[T][D white] HP, +2 defenses, Foundation +1→+2, Colossus splash + Agility-vs-Red-or-Prone).
 - [ ] **2bP-8 — Forge Construct — sustain ONE** — with a live Construct, use Forge Construct again → The old one is dismantled and a new one appears — exactly as before.
 - [ ] **2bP-9 — ⚠️ Forge Construct — a Construct summoned BEFORE this deploy** — if one is standing from an earlier session, use Forge Construct again → It should still be found and replaced. Older Constructs carry no identity flag, so the engine falls back to matching the summon's name — this row is that fallback.
 - [ ] ⚑ **Civ enemy-cost (GO/NO-GO)** — ruler across a fortified Foundation: **×2 for an enemy, ×1
@@ -442,7 +454,7 @@ catch a real bug while Power runs half engine-owned (Kneel).
 - [ ] **2bH-8 — Crown of Thorns manual ping** — with Crown armed, target a creature and click the card's **"Crown ping"** button → Spirit = Presence applied. This is the surface for a vs-Cognitive test the engine did not resolve; it must still work now that the talent is document-driven.
 - [ ] **2bU-7 — Kneel** — use with no target / out of Black range; then in range → Both bad cases refused **pre-cost**. YOU roll Black (⚠ drift); success = Compelled (expires start of your next turn) and the target can only make distance-CLOSING moves (anything else blocked with a warning); you roll attack tests vs Compelled/Frightened/Weakened targets in Black range with advantage (auto).
 - [ ] **2bU-8 — Investiture of Command** — use with nothing valid targeted; then 3 allies targeted in Black range → Nothing valid → refused **pre-cost**. Valid: ONE shared [T][D black] roll — each ally gains that Temp HP (keeps-higher, never stacks down) + advantage on its next attack test; you take tier spirit.
-- [ ] **2bU-9 — Warlord's Advance — ranged skip FIXED 2026-07-26l (engine-wide), re-test after the run-4 engine deploy (F5)** — the dice/kill/survive halves passed 07-26k and stay retired-in-place ("+6/+9/+10 impact strike"; kill → 2 Temp HP + free-move whisper; survivor → Presence-advantage card). `edhaAttackKind` now reads `system.attack.type` (commit `be6b16d` — see the Engine-wide row for the shared re-test); THIS row's re-test: arm, hit with a weapon set to `attack.type: "ranged"` → the rider is skipped AND the arm survives (run 3 fired it and consumed the arm). Also still open here: re-use-while-armed pre-cost refusal (not driven for this talent; the same veto passed 3× elsewhere).
+- [ ] **2bU-9 — Warlord's Advance — the ranged skip PASSED 2026-07-26m and is retired-in-place** — armed, weapon set to `attack.type: "ranged"`, hit landed → **no rider** (7 damage, weapon only) and the `warlord` arm **survived**; blanking the field (schema re-initialises to "melee") then fired "+4 impact strike" and consumed the arm, with the survivor's Presence-advantage card. The dice/kill/survive halves stay retired from 07-26k. Still open here: the re-use-while-armed pre-cost refusal (not driven for this talent; the same veto passed 3× elsewhere).
 - [ ] **2bU-10 — Momentum of Victory** — use, move + free Strike by hand → The card (move 15 ft + melee Strike player-executed; Opportunity trusted); the next weapon hit adds +tier impact and consumes the arm. ⚠ drift: a re-use while armed is now REFUSED pre-cost (the old arm silently re-charged 1 Inv for nothing).
 - [ ] **2bU-11 — Warlord's Fury** — arm; drop a hostile NPC below half, then kill it → Re-arm refused. Below-half +1 (once per victim) and the kill +1 more — the whispered tally card each time; your melee hits add min(tally, 2×tier) of the dealt type. PC/ally/summon drops must NOT count.
 - [ ] **2bU-12 — Unstoppable Advance** — arm; get Slowed; drag through two enemy squares → Re-use while active refused. Slowed is shrugged off with a card. Each enemy whose space the drag crosses takes its own [T][D red] impact, once per enemy per activation. The arm ends after your next turn (timed sweep).
@@ -1271,7 +1283,7 @@ been riding the deleted engine name-keys — dead, their texts still claiming en
 now carries its tree twin's rule on its own item; nothing below has ever run in Foundry.
 **Re-drag each adversary from the pack first** (placed copies are frozen snapshots).
 
-- [ ] **2bAB-1 — Flame Surge — Cragdrake Alpha AND Hazewyrm Elder** — use it, click a point → ⚑ The burst now places, saves and rolls ITSELF (10 ft at boss rank, Athletics vs Red, 2d8 energy, half on a success) — before this it was a text card whose use resolved nothing.
+- [ ] **2bAB-1 — Flame Surge — Cragdrake Alpha AND Hazewyrm Elder — FAIL 2026-07-26m: the burst rolls ZERO** — bench run 4 imported both bosses FRESH from the pack. The burst places and the save rolls, but the card reads "💥 Flame Surge hit: **= 0 (0)** + 3 (red) → 3 energy" on both, where the ability's own text promises "2d8 energy … half as much on a success". Root cause is DATA, not engine: the `edha-burst` handler has no amount field of its own and reads `item.system.damage.formula`, which on both abilities is **`{formula: null, type: null}`** — `data/adversaries.json` gives Flame Surge an `events` block but never a `damage` block. Fix = author the damage block on both abilities, then **PACK REBUILD** (`foundry-build adversaries` + ⟳ Sync + re-drag). → test-pass-fixes.
 *(2bAB-2 and 2bAB-3 — Crownox Ring Shield Wall + Retributive Guard — PASSED in bench run 3
 (2026-07-26k) on a FRESH pack import, three unlinked ring tokens: the half-1d6 pre-reduction
 applied by itself and was named in chat ("reduced by 1 — Shield Wall", calc "5 - 1"), and the

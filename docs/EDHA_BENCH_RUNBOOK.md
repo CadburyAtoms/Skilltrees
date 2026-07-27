@@ -143,6 +143,40 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   again on `/join`. A session left joined blocks the next run at its very first step (run 2 opened
   by being locked out by run 1's still-live pane).
 
+## Operating lessons from run 4 (2026-07-26m — these OVERRIDE older advice where they conflict)
+
+- ❌ **`tokDoc.update({x, y})` is DEAD for token movement** under v13 + cosmere 2.1.0 — it throws
+  `Cannot read properties of undefined (reading 'testPoint')` from the Region movement segmentiser
+  and silently leaves the token where it was. Run 2's `{animate: false}` advice is stale. Use
+  **`tokDoc.move({x, y, action: "displace"}, {animate: false})`** + `tokDoc.reset()` for staging,
+  and **`action: "walk"`** when the row needs wall collision or Region enter-triggers to fire
+  (`move()` returns `false` when a wall refuses the walk — a usable assertion in its own right).
+- **Right-click cancel is a `contextmenu` event, not a right-button `pointerdown`.** A
+  `pointerdown` with `button: 2` leaves the pick LIVE (the range-ring template stays on the canvas
+  and the next left click still places, which reads as "the cancel didn't refund"). Dispatch
+  `new MouseEvent("contextmenu", {bubbles: true, cancelable: true, button: 2})` on `#board`.
+- **`item.system.events` is a `RecordCollection`, not an array.** Writing an array back with
+  `item.update({"system.events": [...]})` is a no-op that reports success — which will make a
+  rule-2b document-edit row look like a FAIL when the edit never applied. Edit with the dot path:
+  `item.update({"system.events.<ruleId>.handler.<field>": value})`.
+- **Marker-ledger entries SNAPSHOT the formula at placement.** To prove "the document drives the
+  roll", edit the formula FIRST, then place, then detonate/spring. Editing after placement changes
+  nothing and is not evidence of a bug.
+- **Re-adding a talent to a bench PC needs `edha.skipBudget(true)`** — the level-7 talent budget
+  silently refuses the create while `syncActorTalents` still reports success on the shorter list.
+- **Resource writes clamp to the effective max.** Topping a bar up past max reads back as max; do
+  not mistake the clamp for a spend when verifying a "nothing spent" refusal.
+- **`actor.applyDamage([{amount, type}])` is the only honest console damage.** A raw
+  `system.resources.hea` edit does NOT fire the damage watches (Set Charge's `target-damaged` arm,
+  Mender's hp-threshold offer) — though it does still fire the defeat watches at 0.
+- **Harvest-style rows need an ADVERSARY-typed victim.** The `Bench Target — *` fixtures are
+  `character`-typed and Reaper's Harvest skips them by design (that is the "a PC drop harvests
+  nothing" branch). Clone the adversary-typed `Bench Target — Undefended` for cheap victims.
+- **Deity two-entry trees compile as AND across skill groups, OR within a talent group.** A
+  multi-talent prerequisite group is satisfied by `.some()`; separate groups by `.every()`
+  (`systems/cosmere-rpg/index.js:7782-7800`). So "Blue 2+; Red 2+" really does demand both, and
+  "X or Y" really is either — read the compiled node, don't guess from the drawn tree.
+
 ## Known limits
 
 - ❌ **RESOLVED AS UNFIXABLE (07-26i): there is no "no written Cognitive/Spiritual defense" creature.**
