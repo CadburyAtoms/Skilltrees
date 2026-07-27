@@ -532,6 +532,9 @@ function pathEvents(tree) {
       const edgeSources = [];
       for (const nm of edgeNames) { const s = nameToNode[String(nm).toLowerCase()]; if (s) edgeSources.push(s); else report.unresolved.push(`${tree.id}::${t.name}-conn->${nm}`); }
 
+      // `talentPrereqs` is built but NOT stored on the talent doc (07-27h — the talent DataModel has
+      // no `prerequisites` field, so it was stripped at load). Kept because the two maps are filled
+      // together and the report counters below ride the same branches; the NODE map is the live one.
       const talentPrereqs = {}, nodePrereqs = {}, nodeConns = {};
       // All parent edges share ONE managed talent prereq whose `talents` map holds every parent.
       // The cosmere sheet evaluates `prereq.talents.some(...)` (OR) WITHIN a talent prereq but
@@ -586,8 +589,17 @@ function pathEvents(tree) {
           description: { value: descValue, chat: descShort, short: descShort },
           activation,
           damage,
-          path: tree.color || slugify(tree.group), hasPath: false, specialty: "", hasSpecialty: false, ancestry: null, hasAncestry: false,
-          prerequisites: talentPrereqs, prerequisitesMet: false, modality: STANCE_TALENTS.has(t.name) ? "stance" : null,
+          // TalentItemDataModel's real fields are the mixins (id/type/description/activation/damage/
+          // modality/events/relationships) + path/ancestry/power. `hasPath`, `specialty`,
+          // `hasSpecialty`, `hasAncestry`, `prerequisites` and `prerequisitesMet` were ALSO written
+          // here and every one of them was silently stripped at load — `prerequisites`/
+          // `prerequisitesMet` exist only on the talent_tree NODE schema (which line ~606 writes,
+          // and which is what the sheet actually reads), and the other four are derived-only or
+          // nonexistent. Dropped 2026-07-27h by the dead-field sweep; specialty is read from
+          // flags["edha-content"].specialty below, as it always was. NO behaviour change — the pack
+          // simply stops minting keys the DataModel deletes.
+          path: tree.color || slugify(tree.group), ancestry: null,
+          modality: STANCE_TALENTS.has(t.name) ? "stance" : null,
           events,
         },
         effects, sort: (sortT += 100000), ownership: { default: 0 },

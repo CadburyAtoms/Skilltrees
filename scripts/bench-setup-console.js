@@ -82,13 +82,19 @@
     if (meleeW && rangedW) break;
     for (const d of await pack.getDocuments()) {
       if (d.type !== "weapon") continue;
-      const rng = d.system?.range?.value ?? d.system?.range?.long ?? null;
+      // `system.attack.{type,range}` — NOT `system.range` (2026-07-27h). `system.range` is not a
+      // cosmere weapon field, so it always read undefined: EVERY weapon looked melee and `rangedW`
+      // stayed null for eight bench runs, which silently gave the roster no ranged weapon at all
+      // (the same dead field that made edhaAttackKind inert in 07-26l — see lint-refs pass 11).
+      const kind = String(d.system?.attack?.type ?? "").toLowerCase();
+      const rng = kind ? kind === "ranged" : (Number(d.system?.attack?.range?.value) || 0) > 0;
       if (!meleeW && !rng) meleeW = d;
       else if (!rangedW && rng) rangedW = d;
       if (meleeW && rangedW) break;
     }
   }
   if (!meleeW) log.push("⚠ no melee weapon found in any compendium — drag one onto each PC by hand");
+  if (!rangedW) log.push("⚠ no RANGED weapon found in any compendium — every rangedOnly row (Tagging Shot, the stand-down halves) needs one dragged on by hand");
 
   // ---- the roster ------------------------------------------------------------------------
   const MUNDANE = { ath: 2, agi: 2, dis: 2, prc: 2, med: 1, lwp: 2, inm: 2, dec: 2, sur: 2, lea: 2, ins: 1, lor: 1, ded: 1, prs: 1 };
