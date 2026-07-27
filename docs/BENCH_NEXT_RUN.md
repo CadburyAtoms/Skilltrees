@@ -1,10 +1,9 @@
 # Next bench session
 
-> ✅ **The deploy block is GONE.** Ben ran all four owed pack builds plus the engine sync, and
-> **bench run 11 (2026-07-27m) verified every one of them in-world** — the served engine hashed
-> identical to `HEAD`, all five packs read their fixes, and **12 rows retired on live evidence**.
-> The old `⛔ STOP` banner that stood here is deleted: it was written when nine rows were stranded
-> behind rebuilds, and none of them are stranded now.
+> **Run 13 is THE PLAYER-CLIENT WINDOW.** Ben added a second passwordless player user, `PlayerBench`,
+> precisely for the rows that are unprovable from one client. Those rows have now sat at the bottom of
+> **twelve** solo passes. Run 13 exists to burn the batch down **together**, in one window, with two
+> clients up — not one row per run.
 
 ## Read this first
 
@@ -12,80 +11,72 @@
 per-section disposition, every defect found → fixed → re-tested with commit refs, the rulings batch,
 and world hygiene.
 
-**→ `docs/EDHA_BENCH_RUNBOOK.md`** — the run-1 through run-11 operating lessons. **Read the newest
-two runs' lessons before driving anything**; they override older advice.
+**→ `docs/EDHA_BENCH_RUNBOOK.md`** — the run-1 through run-12 operating lessons. **Read the newest two
+runs' lessons before driving anything**; they override older advice. Run 12's are the ones that will
+bite you first: read `_source` before calling an engine move dead, `displace` is *not* a forced move,
+a walker must click each button once, and `ui.combat.initialize` may not take on the first call.
 
-## State after run 11
+## State after run 12
 
-- **Nothing is BLOCKED-ON-DEPLOY.** A row that fails now is a real failure.
-- **Heroic is finished except one FAIL and the ⚑/roster leftovers** — see below.
-- The bench roster is healthy: 16 PCs, zero ⚠ from `bench-setup-console.js`, and every PC now
-  carries a **real ranged weapon** (`weapon.system.attack.type === "ranged"`, Shortbow 80 ft) as
-  well as a melee Sidesword.
+- **Nothing failed in run 12.** Ten rows retired on evidence and fix pass A's Shockwave Slam
+  restoration was verified in **both** directions (the push fires off a weapon hit; Cheap Shot still
+  does not ride one, yet still Stuns on its own).
+- **Engine-wide, Heroic and Order are exhausted of solo-runnable rows.** What is left in them is
+  ⚑ Ben's judgment, the two deploy-blocked Sharp Eye rows, or player-client rows.
+- **The engine is deployed and hash-verified** (`6c0cfe85…`). Re-verify by hash on join anyway.
 
-## Run 12 — the two jobs, in this order
+## ⛔ Still deploy-blocked — do NOT test, record blocked
 
-### 1. Sharp Eye's real fix (a `test-pass-fixes` job, not a bench job)
+**`foundry-build heroic` + ⟳ Sync Talents is owed** (Sharp Eye's `activation` → `skill_test`/`prc`).
+Until Ben runs it with Foundry closed, **2bQ-4** and **2bD-7** are **BLOCKED-ON-DEPLOY**. A blocked row
+is recorded blocked, never failed against a stale pack.
 
-**2bQ-4 is the one row that did not come back after the rebuild**, and the dead skill key was only
-half the story. The `prc` fix is live on the pack *and* the owned item, and Sharp Eye is still a
-total silent no-op — no roll, no card, no notification, nothing spent.
+## Run 13 — the two-client window
 
-**Root cause:** its `activation` is `{type: "utility", cost: {value: null, type: "spe"}}` with **no
-`activation.skill`**, so the system never rolls a test and H1's `edha-def-test` rule has nothing to
-resolve. Family audit: of the **37** authored talents carrying `edha-def-test`, **35** are
-`activation.type: "skill_test"`; the only two that are not are Sharp Eye (genuinely broken) and
-Chaos's **Unravel Everything** (`vs: "none"`, which needs no roll and is likely fine — confirm, do
-not assume).
+Join **`Bench` (GM) first**, health-check and snapshot, then open a **second browser-pane tab**
+(`tabs_create` → `navigate`) and join as **`PlayerBench`**. Drive each tab by its own `tabId`.
 
-**The fix is one talent** in `data/authored/heroic-hunter.json`: `activation.type` → `skill_test`,
-`activation.skill` → `prc`, matching Sharp Eye's own card text ("test Perception vs. Cognitive").
-Then `foundry-build heroic` + ⟳ Sync Talents. **2bD-7 unblocks with it.**
+Two cautions, both learned the hard way:
+- The second session **may displace the Bench cookie session**. Verify Bench is still joined after
+  PlayerBench joins; if it isn't, that row stays ⚑ rather than being fought.
+- **Log out BOTH clients at the end.** A held player slot blocks the next run exactly like a held
+  Bench slot.
 
-⚠️ One honesty caveat to carry forward: run 11's in-world mutation probe (temporarily flipping the
-owned item's activation to prove the mechanism) was **refused by a permission gate**, so the null
-result is measured but the mechanism is a strong inference. Re-derive it in the installed cosmere
-system before shipping the change — this marathon has had four cases where a confident bench
-inference was wrong.
+### The batch to burn down while the player client is up
 
-### 2. Engine-wide, then the leyline/deity leftovers
+1. **`🎮 Player-client window`** — the checklist's own section. This is the batch; do it as a batch.
+2. **The GM summon relay** (Engine-wide) — its verb is literally "as a PLAYER without actor-create":
+   Phantom Barricade / Risen Servant / Forge Construct must produce a real token **via the GM client**,
+   movable, its attack usable, and `actsAfterCaster` must put it on the caster's initiative. Run 12
+   deliberately did not fake this from the GM side.
+3. **2bM-1 — H3 ordering** — as a PLAYER, use **Covenant** on an ally you don't own. Note the row's own
+   escape hatch: with a GM always online it cannot bite, so if you cannot stage a GM-less moment, record
+   *why* rather than inventing a result.
+4. **2bL-7 — Covenant's SHARED icon** — needs **two Order PCs** covenanting the same ally, then one
+   breaking. Staging a second Order actor is a deliberate setup step, not a side effect; if you stage
+   it, say so.
+5. **Genuine player-perspective rows** the runbook names: the illusion belief loop, Covenant's shared
+   icon across two owners, Devoted Conduit's two-White staging.
 
-**Heroic has no runnable rows left**, so run 12's bench half should take **Engine-wide** first and
-then the tree leftovers:
+## Run 14 — what is left after that
 
-- **Engine-wide:** `2bAC-2` (short dialogs unharmed) · the **GM summon relay** · **Withering Ray** ·
-  `2bA-6`'s ⚑ push-default ruling (needs Ben, not a bench pass) · `2bT-19` · `2bE-9`.
-- **Green leftovers** (the row now stays *only* for these six): Spreading Roots (2bS-4) · Pack
-  Hunter (2bS-6) · Scent the Weak (2bS-7) · Resurgent Growth (2bS-12) · Natural Recovery (2bS-14) ·
-  Reknit Form (2bS-15).
-- **Deity leftovers:** 2bW-1 · 2bV-2/6/8 · 2bL-9/12.
-- **Blue:** **Probability Cascade** is parked in the Heroic section but is a Blue talent — run it in
-  a Blue pass. Its chain needs an Opportunity plus 1 Investiture, which run 10 could not force.
-- **Adversary sections**, including the five restored abilities on fresh pack imports.
-- **Roster gap, not a test:** `2bC-8` (Probability Net) is owned by **no** bench actor. Granting it
-  in `scripts/bench-setup-console.js` is a one-line repo change that makes the row runnable.
+- **Leyline leftovers**: Green's six (Spreading Roots 2bS-4 · Pack Hunter 2bS-6 · Scent the Weak 2bS-7 ·
+  Resurgent Growth 2bS-12 · Natural Recovery 2bS-14 · Reknit Form 2bS-15), and **Probability Cascade**,
+  which is parked in the Heroic section but is a **Blue** talent — its chain needs an Opportunity plus
+  1 Investiture, which run 10 could not force.
+- **Deity leftovers**: 2bW-1.
+- **The adversary sections**, including the five restored abilities on fresh pack imports.
+- **2bE-9's factual half** (an adversary carrying a combat-timing talent gets its combat-start grant) —
+  the ⚑ *design* question stays Ben's, but the fact is drivable with an imported bench adversary.
 
-## Run 13 — the player-client window (unchanged)
+## Standing lessons run 12 added
 
-`PlayerBench` exists as a second passwordless player user. The checklist's
-`🎮 Player-client window` section is the batch to burn down while a player client is up — do those
-rows **together** rather than one per run. Two cautions from the runbook: a second session may
-displace the Bench cookie session (verify Bench is still joined after the player joins), and
-**both** clients must be logged out at the end.
-
-## Standing lessons run 11 added
-
-- **The roll dialog's preview line does not reflect advantage.** Both a skill-test dialog under
-  Flamestance and an attack dialog against a marked quarry previewed a plain `1d20 + N` and then
-  rolled `2d20kh + N` on submit. The cosmere dialog exposes **no advantage control at all** — so a
-  row asking for advantage to be "pre-selected and overridable by hand" is unsatisfiable as written.
-  Judge advantage by the **resulting roll**, never by the dialog preview.
-- **Attributes clamp at 10 and skill ranks clamp at 5.** A probe that sets `rank: 12` silently
-  becomes 5. Read the value back before computing an expected range, or a decisive-looking control
-  proves nothing.
-- **"Cannot consume, not enough of resource" is a legitimate pre-cost veto that lives only in
-  notifications.** Several talents quietly did nothing mid-run purely because the bench PC's focus
-  had run to 0. Top resources up between rows and check notifications before recording any FAIL.
-- **Fault Line's dangerous-terrain Region catches bystanders scene-wide**, including Ben's placed
-  campaign tokens. Clean the Region afterwards — it is not in the start snapshot, so the id-diff
-  will catch it, but the incidental damage to campaign actors will not undo itself.
+- **A negative control is worth nothing until the positive fires in the same round.** 2bV-2's
+  forced-slide half had been UNPROVEN since run 8 purely because the once-per-round gate could not be
+  separated from the mechanism. Ordering the two probes inside one fresh round settled it in one pass.
+- **`ui.notifications` holds the whole truth for pre-cost refusals AND for movement vetoes.** Three of
+  run 12's results (Concord's two refusals, Dread Presence's veto) exist nowhere else — no card, no
+  error, no console line.
+- **When a row's prescribed fix looks like a repo change, sanity-check the premise.** 2bC-8's standing
+  "grant it in `bench-setup-console.js`" could never have worked, because Probability Net is an
+  adversary ability, not a talent.

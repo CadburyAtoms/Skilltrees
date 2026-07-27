@@ -175,10 +175,11 @@ the day-1 bench report, already fixed.
 2bA-7 (count 1→2 → two disadvantaged tests), 2bB-3 (deflect 1→2 → marker +2), 2bC-6 (opportunity
 tick → Plot Die + menu), 2bP-12 (three tabs populated; sustain 2 → two Constructs), 2bA-9 (natives
 ARE in both dropdowns — Reckless Momentum / Risky Behavior / Resilient Hero stay bucket 1b).
-Evidence per row in the delta. The two 2bAC rows below are visual-legibility judgments — still ⚑ Ben.
+Evidence per row in the delta. **2bAC-2 retired on measured evidence at bench run 12 (2026-07-27o)** —
+the small-handler case is structurally intact (see the delta); the one 2bAC row left below is a
+visual-legibility judgment — still ⚑ Ben.
 
 - [ ] **2bAC-1 — Edit Event Rule legibility** — open any converted talent → Events → edit its Triggered Effect rule → ⚑ ~660px window; every label reads as a phrase (2 lines max), its control sits beside it, the hint sits UNDER the pair in smaller type, the form scrolls inside the window, and Update is reachable at the bottom.
-- [ ] **2bAC-2 — short dialogs unharmed** — edit a rule with a small handler (e.g. an *Edha: Apply Status* or a native *Update Actor* rule) → ⚑ Same two-column layout, nothing misaligned — the grid must not have wrecked the simple case.
 
 ## Migration machinery (cross-tree behaviour)
 
@@ -204,9 +205,17 @@ Evidence per row in the delta. The two 2bAC rows below are visual-legibility jud
 > authors exactly one, `SetChargeZone000`, so 1 is correct).
 
 - [ ] **2bA-6 — edha-push default — ⚠️ DRIFT vs the row's wording, 2026-07-27i (needs a ruling, not a fix)** — Author a NEW push rule on any talent, leave Note blank → Card reads **"Push"**, not "Shockwave Slam". (Fixes a talent-specific default baked into a generic handler.) **Run 9:** authored a fresh `edha-push` rule (`distanceFt: 5`, `awayFrom: "self"`, `note: ""`) onto Vigilant Stance and used it. The old bug is definitively **GONE** — nothing said "Shockwave Slam". But the card did not say "Push" either; it read **"💥 Vigilant Stance — Bench Target — Adjacent B is pushed 3 ft."**, i.e. the blank-note default is now *the owning talent's name*. That is arguably better than a literal "Push"; Ben's call which is canon, then align card/row/engine. ⚠️ Two secondary observations from the same probe, both needing a dedicated look and **flagged as unconfirmed**: the push reported **3 ft** for a `distanceFt: 5` rule, and the target moved from x=4800 to x=4500 — i.e. **toward** the caster at (3900), not away, despite `awayFrom: "self"`. The probe rule was hand-authored, so a mis-specified field vocabulary is a live possibility; do not treat the direction claim as established without re-driving it from an authored talent.
+      ✅ **RE-DRIVEN FROM AN AUTHORED TALENT — bench run 12 (2026-07-27o): both secondary observations are
+      ARTIFACTS OF THE HAND-AUTHORED PROBE, not engine behaviour.** Shockwave Slam's own `edha-push`
+      rule pushed twice, in opposite compass directions, both **directly away from the caster**: the
+      victim at x=9300 went to x=**8700** with the caster east at x=9600, and a second victim at
+      y=9300 went to y=**8700** with the caster south at y=9600 (token `_source`, not the frozen
+      prepared value). The distance was **10 ft** both times, which is `bySize: true` reading
+      `EDHA_SIZE_FT[red rank 3]` — the rule's `distanceFt: 5` is ignored whenever `bySize` is set,
+      which is what the probe's "3 ft for a 5 ft rule" was really seeing. **Only the blank-note
+      default is still yours to rule on.**
 - [ ] **2bM-1 — ⚠️⚠️ H3 ordering (any ledger)** — as a PLAYER, with **no GM connected**, use **Covenant** on an ally you don't own → It refuses with "a GM must be online… nothing placed" and **no half-formed pact is left behind**. Before the fix the entry was written anyway and then hidden for ever. If a GM is always online at your table, skip — this cannot bite you.
 - [ ] **2bL-14 — ⚑ Bear Witness — mid-combat reload** — in round 3+, refresh Foundry (F5) → Nobody gains a fresh round of Temp HP just for reloading.
-- [ ] **2bT-19 — regression: the five test talents' cards** — use Censure / Killing Blow etc. → The SYSTEM's use flow runs now (no takeover): cost charged exactly once, the player's test roll is captured by H1, and the card's own damage button is to be IGNORED (engine applies). Watch for double-application.
 - [ ] **2bE-9 — ⚑ adversary widening** — put an adversary carrying a combat-timing talent into a fight → It now gets its combat-start grant. **Deliberate change** — the retired hooks were gated `type === "character"`; rule-driven dispatch doesn't need that gate. Tell me if you'd rather it stayed PC-only.
 
 ## Engine-wide fixes still unbenched (pre-migration survivors)
@@ -225,8 +234,10 @@ it; Withering Touch's ranged half behaved identically. Evidence in the 07-26m de
       named "Injuries" and confirm it takes precedence over the placeholder list.
 - [ ] ⚑ **Formula bar** — any advantage roll reads "2d20kh + 6" (spaced, no stray ")"). If garbling
       recurs, note whether the roll dialog's Temporary Bonus field had anything typed in it.
-- [ ] **Withering Ray skill test** — if the garbled `2d20kh+6)` bar reappears, SCREENSHOT it (still
-      the one un-reproduced report).
+      *(2026-07-27o, bench run 12: the FACTUAL half is clean and the garble did not reproduce —
+      Withering Ray rolled at advantage read exactly `2d20kh + 5 + 1d8[Predatory Patience]`, spaced,
+      no stray ")". The dedicated Withering Ray row is retired; this one stays only for the
+      look-at-it-yourself half.)*
 - [ ] ⚑ **Engine-move collision** — Unnerving Approach push (and Cruel Step slide) toward an occupied
       square: the moved token stops in the last free square, never stacking. Manual drags still stack
       (intended — R2 engine-only).
@@ -237,7 +248,10 @@ it; Withering Touch's ranged half behaved identically. Evidence in the 07-26m de
 ## Structural (tree graphs + prereqs, from the 07-24 fixes)
 
 - [ ] ⚑ **Nothing else lost its rules** — spot-check two talents that already worked (e.g. Black's
-      Withering Ray, Red's Arc Flash): tabs unchanged. The A/B build says 0 talents lost anything,
+      Withering Ray, Red's Arc Flash): tabs unchanged. *(2026-07-27o, bench run 12: read live off both
+      owned items — Withering Ray carries its two `use` rules (`edha-ritual-hp-cost`,
+      `edha-single-target`) and Arc Flash its one `edha-deal-damage` triggered effect, matching the
+      authored files; Withering Ray also RAN end-to-end this run. Only the eyeball is left.)* The A/B build says 0 talents lost anything,
       but that is a repo-side check, not a table one.
 
 ---
@@ -329,24 +343,6 @@ SUPERSEDED: the "(On Use)" spec predates the 07-25 Opportunity redesign that 2bQ
 bare use arms nothing, by design). What remains below is the one FAIL, the ⚑ rows, and the
 spot-check row with a drift observation.
 
-- [ ] **2bA-5 — Shockwave Slam — ✅ FIXED 2026-07-27n — RE-TEST NEEDS: ⟳ sync the module + F5 (ENGINE-ONLY, no pack rebuild)** —
-      Hit an enemy with a **WEAPON** melee **impact** attack (Bench Maul, 1d8 impact) and apply the
-      damage → the push must fire off the weapon's hit: "💥 **Shockwave Slam** — pushed `<n>` ft",
-      away from you, note read from the document (not "Push"). Then **the negative control that
-      protects the other half**: hit with the same weapon while owning **Cheap Shot** → Cheap Shot's
-      **Stunned must NOT** apply, because it is an unarmed-strike talent whose rider rides only its
-      own hit; use Cheap Shot itself and the Stun **must** land.
-      *(Background: FAILED at bench run 1 (2026-07-26h) and stayed un-root-caused for a whole
-      marathon. `edhaDispatchOnHit` decided "does this rider fire only on the talent's own hit?" from
-      `!!tal.system.damage.formula` alone — a field about the card's number, not about who authored
-      the hit. Shockwave Slam carries a formula because its card quotes a **collision** value, so the
-      gate read it as an attack talent and skipped it for every other dealer; `dealer.item` is the
-      WEAPON on a weapon hit. The push machinery was always fine, which is why a direct use worked.
-      The gate could not just be removed — run 9 proved Cheap Shot is its legitimate consumer. The
-      decision is now `edhaOnHitIsItemSpecific`, taken PER RULE: an explicit `whenDealer` on the rule
-      wins, otherwise it derives "the talent rolls its own attack" = damage formula **AND**
-      `activation.type: "skill_test"`. Pinned in `tests/on-hit-dealer.test.js`, mutation-verified in
-      both directions.)*
 - [ ] **⚑ Volatile Strike — whose hit should it ride? YOUR RULING, 2026-07-27n (found by the 2bA-5
       family sweep; nothing changed)** — Volatile Strike is the only other talent the 2bA-5 gate can
       affect, and its card says "**When you hit with a melee attack**, spend 1 Investiture and test
@@ -980,10 +976,6 @@ every hostile token in range — this run it decree-bound five of Ben's placed p
 `Edict-Bound` status to them. Same family as the standing out-of-combat scope characterization (07-26k).
 The run cleared what it applied.
 - [ ] **2bL-7 — ⚑ Covenant — the SHARED icon (needs two Order PCs)** — have two Order characters both covenant the **same** ally, then have one of them break/fizzle theirs → The ally **keeps** the Covenant icon, because the other pact is still live. Getting this wrong strips the second player's marker silently — it is why the rule carries `multiOwner`. **Still ⚑ after run 8**: the bench has one Order PC and staging a second would mean granting the whole Order path to another actor mid-run; left for Ben's two-client bench or a run that stages a second Order actor deliberately.
-- [ ] **2bV-2 — Edict watchers — PARTIAL 2026-07-27g** — ✅ the **move** watcher PASSES: with "move from its space" bound, walking the target posted "⚖️ Edict watch: Bench Target — Adjacent B moved from its space — if that was VOLUNTARY (forced movement/compulsion doesn't count), it just violated ' move from its space '." with its resolve button, and the **once-per-round** gate held (a second walk the same round posted nothing — verified with an explicit second-walk control). ⛔ **The "a forced slide does NOT prompt" negative is UNPROVEN**: the `displace` move also posted nothing, but so did the second *walk*, so the once-per-round gate had already consumed the round and the two causes cannot be separated out of combat. Re-drive with a fresh round between the walk and the slide. Also still open: the Investiture-spend and attack-the-chosen-ally watcher shapes.
-- [ ] **2bV-6 — Concord — PARTIAL 2026-07-27g** — ✅ the valid path PASSES: the `concord` status landed ("Concord (allies' first strike)"), the card named the pact allies ("Bound: Bench Ally — Two.") and stated the Aid grant + the "+2 damage (your Presence, same type as the hit — auto)" clause. ⛔ Still open: the zero-Covenant pre-cost refusal, the re-use-while-it-holds refusal, and the per-ally once-per-round +Presence rider actually landing on an ally's first damaging hit (needs an ally attack with the tally observed per ally).
-- [ ] **2bV-8 — Lawkeeper's Eye** — an ally attacks your Edict-bound target you can see; then through a wall → Advantage auto-injected; the wall (or a hostile attacker) blocks it. The Edict place card carries the GM-reveal line. **Run 8 confirmed only the card half** — the reveal line appeared on every Edict place card ("👁️ Lawkeeper's Eye: the GM reveals the bound creature's intended action on its next turn … you and your allies have advantage on attack tests against it while you can see it"). The advantage injection and the wall/hostile-attacker block were not driven.
-- [ ] **Order quiet cases (like-for-like)** — Covenant crossing scenes keeps the pact (2bL-9); Bear Witness posts NOTHING with no pacts / out-of-range ally / ally at 0 HP (2bL-12) → a "gains 0 Temp HP" card is a bug. Collapsed from 2bL-9/12. **Not driven in run 8.**
 
 ---
 
@@ -1009,9 +1001,16 @@ paths).
 > section is blocked.
 >
 > What is left in this section: those **2 deploy-blocked rows** (2bQ-4 + 2bD-7) · **4 ⚑ DESIGN CALLS
-> THAT ARE YOURS** (2bC-1 · 2bF-14 · 2bF-16 · the four dead prereqs) · **1 roster change, not a test**
-> (2bC-8 — no bench PC owns Probability Net) · **1 out-of-scope row parked here** (Probability Cascade
-> is a **Blue** talent).
+> THAT ARE YOURS** (2bC-1 · 2bF-14 · 2bF-16 · the four dead prereqs) · **1 out-of-scope row parked here**
+> (Probability Cascade is a **Blue** talent).
+>
+> ✅ **2bC-8 IS RETIRED, AND IT WAS NEVER A ROSTER GAP — bench run 12 (2026-07-27o).** The standing note
+> here said it needed `scripts/bench-setup-console.js` to grant Probability Net to a bench PC. That fix
+> could never have worked: **Probability Net is an ADVERSARY ability**, on the Wrenchmaster in
+> `data/adversaries.json` — it is not a talent and is in no talent pack, so the setup script's
+> name lists cannot reach it. The right drive was the standing one for any adversary surface: import it
+> **fresh from the pack** into the bench folder. Evidence in the delta. *(General lesson: before calling
+> a row a roster gap, check whether the thing is a talent at all.)*
 
 > **✅ Bench run 9 (2026-07-27i) drove this section for the first time — fourteen rows retired on
 > evidence.** **2bE-7 — the priority row, and the H1 payload dispatch WORKS**: success ("23 vs COG 14 —
@@ -1135,7 +1134,6 @@ paths).
 - [ ] **2bF-14 — ⚑ Calm Appeal (Envoy)** — own it, use Steadfast Challenge → The Calm Appeal line appears on a success, with your Discipline rank filled in. Without the talent it must NOT. **Empty Events tab is intended** — same upgrade-talent pattern as 2bF-5. *(2026-07-27k: **BOTH factual halves PASS** — with the talent, a success printed "🕊️ Steadfast Challenge: **Calm Appeal** — spend 1 focus to pacify the target; resisting costs it +**2** focus" at Discipline rank 2; with the talent deleted, a success ("24 vs SPI 14") landed Disoriented and the disadvantage but **no** 🕊️ line. **Only the ⚑ empty-Events-tab design call is left, and it is yours.**)*
 - [ ] **2bF-16 — ⚑ Resolute Stand (Leader)** — own it, use Valiant Intervention → Its line appears on a success only. Empty Events tab intended. *(2026-07-27i: the factual half is observed — the line printed on Valiant Intervention's success. Only the empty-tab design question is yours.)*
 - [ ] **2bM-6 — ⚑ Rallying Shout — a deliberate change — ⚠️ and its number is broken** — own it, use Rousing Presence on an ally **above 0 HP** → The reminder **still prints**. Tell me if you preferred the old gate. *(2026-07-27i: the reminder DID print on an ally at 20 HP, so the deliberate change is live and the ruling is yours.)* ⛔ **Separately, a real defect in the same line:** it printed "recovers its recovery die + **0** health" with the owner's Leadership rank at **3**, because the note reads **`@skills.ldr.rank`** and the cosmere Leadership key is **`lea`**. ✅ **FIXED 2026-07-27j — BLOCKED-ON-DEPLOY: needs `foundry-build heroic` + ⟳ Sync Talents.** The note now reads `@skills.lea.rank`. **Re-test after the rebuild:** with Leadership rank 3 the line must read "recovery die + **3** health". ✅ **THE NUMBER DEFECT IS FIXED AND TABLE-VERIFIED — bench run 11, 2026-07-27m.** With Leadership rank 3, Rousing Presence on an ally at 32 HP printed "📣 Rousing Presence: You may revive an Unconscious ally. If the target is at 0 health it recovers its **recovery die + 3 health** (roll the target's own die)." — the `@skills.lea.rank` substitution resolves (was "+ 0"). **Only the ⚑ design question is left and it is yours**: the reminder still prints on an ally ABOVE 0 HP (re-confirmed this run) — tell me if you preferred the old gate.
-- [ ] **Leader command spot — 10 of 11 RETIRED 2026-07-27k; only 2bC-8 is left, and no bench PC owns it** — Decisive Command die scale d4→d10 (2bN-1) · Relentless March reminder (2bN-4) · Authority 40 ft / two allies (2bN-5) · nothing else changed (2bN-6) · Authority doubling (2bO-2) · two allies (2bO-3) · die scale regression (2bO-4) · no-quarry no-spend pair (2bO-6) · Risky Behavior Plot Die (2bC-4) · Overwhelm with Details number (2bC-5) · Probability Net regression (2bC-8). **Run 10 drove all but the last:** ✅ **2bN-1 / 2bO-4** the die is `1d(4 + 2 * 3)` = **d10** with all three Command talents owned · ✅ **2bN-5 / 2bO-2 / 2bO-3** Authority's 40 ft is really ENFORCED — at 85 ft it refused pre-cost ("target a creature within **40 ft** (nothing spent)"), at 35 ft it landed, and **both** targeted allies got the mod written to their own documents from one use · ✅ **2bN-4** "🎖️ The target also gains **+10 ft movement** this round and ignores Exhausted, Slowed and Surprised" printed alongside · ✅ **2bO-6** with an empty quarry ledger Pack Hunting refused with "you have no quarry (nothing spent)", focus 4→4 and no mod written · ✅ **2bC-4** Risky Behavior's next test rolled `1d20 + 3 + **1dp**` with its own card · ✅ **2bC-5** Overwhelm banked **+4** = the actor's Lore mod and applied as `+ 4[Overwhelm with Details]`. ⛔ **2bC-8 Probability Net is owned by NO bench actor** — it cannot be driven until `scripts/bench-setup-console.js` grants it to a bench PC. That is a roster change, not a test failure.
 > **✅ On-hit riders — RETIRED on evidence 2026-07-27i.** One Sidesword hit fired the whole set:
 > **Startling Blow** → "Bench Target — Adjacent A is **Surprised**" (status asserted on the actor) ·
 > **Shattering Blow** → its 5 ft push card, with its own note (2bA-8) · **Subtle Takedown**,

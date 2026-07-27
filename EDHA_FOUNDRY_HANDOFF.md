@@ -2,7 +2,7 @@
 
 Self-contained cold-start doc. Read top to bottom. **§1–§6 = how it works + how YOU operate it solo. §7 = the native Event/Effect system — ⚠️ PARTIALLY IN FORCE: the 2026-06-09 "all behavior lives ON the talents" refactor was real, then silently reversed by every tree wired after it. Measured 2026-07-24, **COMPLETED 2026-07-26 (pass AA)**: **the ratchet list is EMPTY — 221 → 0 across twenty-seven passes.** Every tree is clear, all six marker ledgers have migrated, and `scripts/name-keyed-allowlist.json` stays in the repo with an empty `talents` list *on purpose* — lint pass 7 still guards against REGROWTH, which is the half of the ratchet that matters from here on. ⛑ **`needs` is a FOUR-leg question, not three** (07-25, §9p): executor / schema field / event / **and is that event reachable at all** — 33 of the 64 talents that "read ready" sit behind a `use`-cancelling takeover or an Always-Active activation, which no handler-demand column can see. ⛑ **`bucket 1` is now EMPTY and `bucket` is NOT a forecast** — it was assigned by asking whether a handler is *registered*, not whether the behaviour can be expressed (07-24v: 0 of 6 bucket-1 talents were convertible). The classification of those 150 is **audit §9k** as corrected by **§9n**, the conversion log is **§9n**, and the build order is **§9o — but read §9o's FIVE "what actually happened when this table was executed" blocks before trusting its per-step numbers.** §9a–§9g are superseded. **ALL SIX marker LEDGERS have migrated** (`covenants` 07-24u; `edicts` 07-25 pass V; `remains` 07-25 pass W; Fate's `snares` 07-25 pass X; Destruction's `charges` 07-26 pass Y; Fate's `ordained` 07-26 pass AA — the point-bound ones fail OPEN through H3's reconcile by design). There is no flat marker-list flag left in the engine. Five talents sit on a **declared exit with an empty document** (Vigilant Stance, the three UPGRADE talents from pass F, and Siphoned Will from pass I) — each declared in its tree-section header, none of them an oversight; **✅ BOTH open questions were SETTLED 2026-07-24t and §9m now has NO open items: the empty tab is ACCEPTABLE (the test is editability, not which tab), so the six-talent Envoy cluster is unblocked; and H3 gets an `allowDuplicates` field, because the tree as documented is the SPEC — a handler's limitation is never a reason to narrow a talent.** READ §7.-1 BEFORE §7.0 — the two historic blockers really were solved, but the architecture claim is not current. §8 = current content state. §9 = open to-dos. §10 = gotchas.**
 
-Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-27n** (FIX PASS A of bench marathon 2 — TWO DEFECTS FIXED, INCLUDING THE MARATHON-1 CARRY-OVER: **Sharp Eye** could never roll the test it gates (`activation` was `utility` with no skill, so `use()`'s `rollRequired` was false and H1's queued contest simply expired — verified in system source, DATA → a FIFTH `foundry-build heroic` + ⟳ Sync); and **Shockwave Slam**, open and un-root-caused since bench run 1, had its weapon-hit surface killed by an `itemSpecific` gate that read its COLLISION formula as "this is my own attack" (ENGINE-ONLY → ⟳ sync + F5). Both family sweeps reported: the def-test family is one talent but the SECOND surface of a shape 07-26j already fixed in the builder, so `lint-refs` **pass 14** now gates both; the on-hit family is TWO, and the second (**Volatile Strike**) is left alone as Ben's ruling, settleable from the Events tab via the new `whenDealer` field. Plus a **RETRACTION**: run 11's "the dialog exposes no advantage control at all" is wrong — it is the d20 icon itself, left/right-click, pre-seeded as a CSS class; only the PREVIEW LINE is blind. 306 tests green.) Prior: **2026-07-27m** (BENCH RUN 11 — THE DEPLOY LANDED AND THE BACKLOG CLEARED: the served engine hashed identical to HEAD and all five rebuilt packs were confirmed carrying their fixes, then **12 rows retired on live evidence** — Flamestance's first-ever pass, Confident Command's three enforced skills, Feinting Strike's number, Set at Odds + Synchronized Assault, quarry auto-advantage on **both** the fast-forward AND dialog paths, 2bX-17, Fault Line's Constructs ×3, both 2bAD contest rows, and Flame Surge on both bosses; plus Mender's card + range gate and Herding Antlers. ONE FAIL: Sharp Eye is still a silent no-op and the dead skill key was NOT the whole cause — its `activation` is `utility` with no `activation.skill`, a one-talent authored fix. World hygiene clean: zero effect drift across 87 actors, 46 adversaries synced with none lost. DOCS-ONLY.) Prior: **2026-07-27l** (BENCH RUN 10'S ONE DEFECT FIXED —
+Backing detail (every session's notes) lives in agent memory `edha-foundry-module-build.md` + `edha-aoe-bursts.md`; this doc is the curated summary. Last update: **2026-07-27o** (BENCH RUN 12 — FIX PASS A VERIFIED IN BOTH DIRECTIONS, AND 10 ROWS RETIRED ON LIVE EVIDENCE, NOTHING FAILED: **Shockwave Slam** now fires off a WEAPON hit ("pushed 10 ft", note off the document, token `_source` moved directly away from the caster — twice, on two axes), and the load-bearing NEGATIVE holds — **Cheap Shot** still does not ride a weapon hit yet still Stuns on its own, proven on the same victim in the same round; Dark Investiture unchanged. Retired: 2bT-19 (cost charged once, H1 captured the roll, exactly one dieStep entry per use), Withering Ray (`2d20kh + 5 + 1d8[Predatory Patience]` — no garble), 2bAC-2 (measured: 660×447, labels and controls on the same row), 2bC-8, and ALL FOUR runnable Order rows — 2bV-2’s forced-slide negative finally SEPARATED from the once-per-round gate, 2bV-6’s three halves, 2bV-8 with both blocks, and the Bear Witness quiet cases. **2bC-8 was never a roster gap** — Probability Net is an ADVERSARY ability, so the standing “grant it in bench-setup-console.js” fix could not have worked. World hygiene: zero drift in ids, flags and EFFECTS across 87 actors. Nothing to deploy. DOCS-ONLY.) Prior: **2026-07-27n** (FIX PASS A of bench marathon 2 — TWO DEFECTS FIXED, INCLUDING THE MARATHON-1 CARRY-OVER: **Sharp Eye** could never roll the test it gates (`activation` was `utility` with no skill, so `use()`'s `rollRequired` was false and H1's queued contest simply expired — verified in system source, DATA → a FIFTH `foundry-build heroic` + ⟳ Sync); and **Shockwave Slam**, open and un-root-caused since bench run 1, had its weapon-hit surface killed by an `itemSpecific` gate that read its COLLISION formula as "this is my own attack" (ENGINE-ONLY → ⟳ sync + F5). Both family sweeps reported: the def-test family is one talent but the SECOND surface of a shape 07-26j already fixed in the builder, so `lint-refs` **pass 14** now gates both; the on-hit family is TWO, and the second (**Volatile Strike**) is left alone as Ben's ruling, settleable from the Events tab via the new `whenDealer` field. Plus a **RETRACTION**: run 11's "the dialog exposes no advantage control at all" is wrong — it is the d20 icon itself, left/right-click, pre-seeded as a CSS class; only the PREVIEW LINE is blind. 306 tests green.) Prior: **2026-07-27m** (BENCH RUN 11 — THE DEPLOY LANDED AND THE BACKLOG CLEARED: the served engine hashed identical to HEAD and all five rebuilt packs were confirmed carrying their fixes, then **12 rows retired on live evidence** — Flamestance's first-ever pass, Confident Command's three enforced skills, Feinting Strike's number, Set at Odds + Synchronized Assault, quarry auto-advantage on **both** the fast-forward AND dialog paths, 2bX-17, Fault Line's Constructs ×3, both 2bAD contest rows, and Flame Surge on both bosses; plus Mender's card + range gate and Herding Antlers. ONE FAIL: Sharp Eye is still a silent no-op and the dead skill key was NOT the whole cause — its `activation` is `utility` with no `activation.skill`, a one-talent authored fix. World hygiene clean: zero effect drift across 87 actors, 46 adversaries synced with none lost. DOCS-ONLY.) Prior: **2026-07-27l** (BENCH RUN 10'S ONE DEFECT FIXED —
 quarry auto-advantage had **never applied in the mechanic's life**, and the cause was two mistakes
 at one site: it wrote the NUMBER `1` where the cosmere `AdvantageMode` is a **string** enum
 (`hasAdvantage` is `=== "advantage"`, so `configureModifiers()` left a plain `1d20`), and it skipped
@@ -149,6 +149,149 @@ the Red pilot, executed live by an agent session joined as `Bench`: 16 rows reti
 1 FAIL root-caused (Shockwave Slam's weapon-hit trigger surface), 4 cross-tree observations,
 and the agent-bench runbook hardened with the v13 operating lessons. Docs + setup-script fix
 only; nothing to deploy.)
+
+**2026-07-27o — BENCH RUN 12 (engine-wide + heroic + order): FIX PASS A's RESTORATION VERIFIED IN
+BOTH DIRECTIONS, AND 10 ROWS RETIRED ON LIVE EVIDENCE. Nothing failed. DOCS-ONLY — nothing to deploy
+from this pass; the one owed `foundry-build heroic` is unchanged and untouched.**
+
+Joined as `Bench`; the served engine hashed **identical** to `HEAD:module-src/scripts/register-skills.js`
+(`6c0cfe85…`, 1 443 369 normalised bytes) before anything was driven, so every result below is against
+fix pass A. `bench-setup-console.js` re-ran clean — 16 PCs, zero ⚠, zero creations (idempotent).
+
+### PART A — Shockwave Slam (2bA-5): the fix works AND it did not over-fire
+
+Both controls, because the row is not complete without both.
+
+- **POSITIVE.** A **weapon** hit — Bench Maul (melee, damage type `impact`), damage rolled 12 and
+  applied to Bench Target — Isolated — produced **"💥 Shockwave Slam — Bench Target — Isolated is
+  pushed 10 ft."**, the note read off the document. The token's `_source.x` went 9300 → **8700**
+  (600 px = 10 ft) with the caster east at x=9600, i.e. **directly away**. 10 ft is
+  `EDHA_SIZE_FT[red rank 3]`, the rule's `bySize`. This is the surface that was dead since bench run 1.
+  It then fired a **second** time, independently, during the Order staging — victim at y=9300 →
+  y=**8700** with the caster south at y=9600.
+- **NEGATIVE — the load-bearing half. Cheap Shot still does NOT ride a weapon hit.** The same Bench
+  Maul impact hit, dealt by Bench — Heroic to Bench Target — Floater, fired **Feinting Strike**,
+  **Startling Blow** ("is Surprised", status asserted on the document) and **Shattering Blow**'s push —
+  and Cheap Shot did not fire: `statuses: ["surprised"]`, `stunned: false`. Then Cheap Shot's **own**
+  damage roll, applied to the **same victim in the same round**, produced "Cheap Shot — Bench Target —
+  Floater is **Stunned**" and `stunned: true`. The gate discriminates exactly as designed.
+- **Dark Investiture spot-check: unchanged.** Bench — Black's Sidesword (keen) hit on Bench Target —
+  Adjacent B fired Severance and Sapping Hex (Weakened) and **not** Dark Investiture — no `afflicted`
+  status, no affliction flag, no card.
+
+⚠️ **The frozen-animation trap nearly turned this PASS into a FAIL.** The first read said the pushed
+token had not moved (`x` still 9300, delta 0) — the *prepared* value, stale because the pane's PIXI
+ticker is parked. `_source.x` was already 8700. **Read `_source` before calling any engine move dead**
+(run 1 documented this; it is worth repeating because the symptom is indistinguishable from the bug
+this row was about).
+
+### PART B — rows retired on evidence
+
+**Engine-wide.** **2bT-19** (the five test talents' cards): Censure's FAIL branch rolled `1d20 + 5 = 7`
+→ "Censure: 7 vs …'s COG 14 — FAIL", Investiture 3→2; its SUCCESS branch `1d20 + 5 = 23` → "👑 Censure:
+… is **Diminished** — damage die −1 step until the start of your next turn" + "23 vs COG 14 — SUCCESS",
+Investiture 2→1; Decree of Ruin `1d20 + 5 = 20` → SUCCESS + its own Diminished, Investiture 4→2. The
+system's own use flow ran throughout (Consume Resource → Roll dialogs), the card's total equals the
+system roll's total (H1 captured the player's roll, no takeover), the cost was charged **exactly once**
+per use, and **no payload double-applied**: the victim's `dieStep` ledger held exactly one `censure`
+entry and exactly one `decree` entry, with one Diminished effect. ·
+**Withering Ray skill test** — the garbled `2d20kh+6)` bar did **not** reproduce: rolled at advantage it
+read exactly `2d20kh + 5 + 1d8[Predatory Patience]`, spaced, no stray `)`. ·
+**2bAC-2** (short dialogs unharmed) — measured, not eyeballed: the *Edit Event Rule* window for a small
+handler (Death Ward's one-field `edha-ward`) rendered **660 × 447 px** with 8 form-groups; every
+labelled group's label and control sit on the **same row** at a consistent 250–260 px offset, every
+label fits **1** line, the single hint sits **below** its pair, the content does **not** overflow, and
+**Update** is present and reachable. Nothing misaligned; the grid did not wreck the simple case.
+
+**Heroic — 2bC-8, and the standing prescription for it was WRONG.** The checklist said it needed a
+one-line `scripts/bench-setup-console.js` change to grant Probability Net to a bench PC. That could
+never have worked: **Probability Net is an ADVERSARY ability** (the Wrenchmaster, in
+`data/adversaries.json`) — not a talent, in no talent pack, unreachable by the setup script's name
+lists. Driven the standing way instead, imported **fresh from `edha-content.edha-adversaries`** into the
+bench folder: "🎲 Probability Net: Bench — Order's next test — taking **-1d6**", the flag written on the
+TARGET, and that target's next test rolled `1d20 + 4 **- 1d6[Probability Net]** = 9` with its own
+announce card — then the flag **cleared**. `edhaNextModClaimOk` stayed inert for it, which is the
+regression the row exists for. *(Generalisable: before calling a row a roster gap, check whether the
+thing is a talent at all.)*
+
+**Order (Tessavain) — all four runnable rows, each with its own control.**
+
+- **2bV-2 — the forced-slide negative is PROVEN, and run 8's ambiguity is resolved.** Run 8 could not
+  separate "forced movement doesn't prompt" from "the once-per-round gate already fired", and part of
+  why is that its `displace` was an **unstamped** move, which the engine treats as ambiguous *by design*
+  (`options.edhaForced` is the discriminator, and a raw `displace` does not set it). Driven properly this
+  time: in a **fresh round 2** of a bench combat, a **genuine engine push** (Shockwave Slam off a weapon
+  hit) moved the Edict-bound target 10 ft and posted **nothing**; then a **voluntary walk of the same
+  token in the same round** posted "⚖️ Edict watch: Bench Target — Adjacent A moved from its space — if
+  that was VOLUNTARY … it just violated ' move from its space '." with its resolve button. The gate was
+  demonstrably unspent, so the slide's silence is the stamp, not the gate. The row's other two shapes
+  also passed with controls: **Investiture** — a spend (4→3) prompted "…spent Investiture…", a **gain**
+  (3→4) prompted nothing; **attack the chosen ally** — the bound creature attacking a *different*
+  creature prompted nothing, attacking the named ally prompted "…made an attack on Bench Ally — Two…".
+- **2bV-6 — Concord's three open halves.** Zero-Covenant refusal: "Edha: Concord — your covenants list
+  is empty. Nothing spent.", Investiture 1→1. Re-use while it holds: "Edha: Concord is already active —
+  nothing spent.", Investiture 1→1. **Both refusals live only in `ui.notifications`.** The per-ally
+  once-per-round rider, measured by HP delta in a fresh round: hit #1 rolled 4 keen and dealt **6**
+  (= roll + **2**, the owner's Presence) with the card "🐺 Concord (Bench — Order): +2 keen on Bench
+  Ally — Two's hit."; hit #2 the same round rolled 3 and dealt **3**, no card.
+- **2bV-8 — Lawkeeper's Eye, with BOTH blocks.** A Covenant ally attacking the Edict-bound target while
+  the owner could see it rolled **`2d20kh + 2`** — advantage auto-injected, no click. Same target, same
+  weapon: a **hostile** attacker rolled plain `1d20 + 2`; and with the **Edict owner moved behind a wall**
+  (line of sight asserted false via the sight polygon backend) the same ally rolled plain `1d20 + 2`.
+- **Order quiet cases (2bL-9/12).** Bear Witness posts **nothing** with the covenanted ally out of
+  Attunement Range, **nothing** with the ally at 0 HP, and **nothing** with no pacts at all (after the
+  pact was broken in-game: "📋 Covenant: Bench — Order's bond with Bench Ally — Two ends (0 left)") — with
+  the positive control in between: back in range it posted "⚡ Bear Witness — Bench Ally — Two gains **3**
+  Temp HP. (your White)". No "gains 0 Temp HP" card ever appeared. **2bL-9 was tested as a *view* change,
+  not a token migration** — the client left the Playtest Map for "Playtest Map (Copy)" and returned; the
+  ledger held throughout, and the ally kept both the `Covenant` marker and the "Covenant (Bench — Order)"
+  AE with its Physical defense still 15 (14 + 1). No scene was activated or deactivated.
+
+### Two standing claims answered as a by-product
+
+- **2bA-6's two flagged secondary observations are ARTIFACTS OF THE HAND-AUTHORED PROBE**, now re-driven
+  from an authored talent as the row demanded. Direction: away from the caster, twice, on two compass
+  axes. Distance: **10 ft**, because `bySize: true` reads `EDHA_SIZE_FT[red rank 3]` and the rule's
+  `distanceFt: 5` is then ignored — which is what "3 ft for a 5 ft rule" was really seeing. Only the
+  blank-note default is still Ben's to rule on.
+- **The 07-27n dialog RETRACTION is confirmed at the table, from the DOM.** The roll dialog's fieldset
+  legend carries the tooltip "Left click or right click any individual die to apply advantage or
+  disadvantage respectively"; the control is `<div class="roll die d20 none" data-action="skill-adv-mode">`;
+  a single `mousedown` flipped its class to `roll die d20 advantage` while the preview line stayed
+  `1d20 + 5`; the submitted roll was `2d20kh + 5`. Control real, mode is a CSS class, preview blind —
+  exactly as fix pass A re-derived from source. (This is a DOM reading, stated as such.)
+
+### For the rulings batch (nothing decided here)
+
+1. **Volatile Strike's `whenDealer`** — carried unchanged from 07-27n; still settleable entirely from
+   the Events tab, still Ben's.
+2. **2bA-6's blank-note default** — its factual unknowns are now closed (above); only the naming
+   convention is open.
+3. **NEW, world-hygiene, not a bug: Dread Presence's veto makes a Weakened bench target unmovable.**
+   Every attempt to move Bench Target — Adjacent B resolved **without error and did nothing**; the only
+   evidence anywhere was a notification — "Dread Presence: Bench Target — Adjacent B is Weakened and
+   cannot willingly move closer to Wrenchmaster. (Engine-forced movement bypasses this.)" That is the
+   talent working, and one of Ben's placed adversaries was the anchor. It is recorded because from the
+   harness side it reads *identically* to a broken range gate.
+
+### World hygiene
+
+Cleanup is an id-diff against this run's own start snapshot (ids, per-actor `flags["edha-content"]`
+**and** active effects, 87 actors). **Zero drift**: no added or removed actors, scenes, combats, folders,
+macros, world items, tokens, walls, regions or measured templates; **zero effect drift in both
+directions** — nothing pre-existing was destroyed. The bench combat was deleted; **Ben's campaign combat
+was never touched**. Everything created (two Bench Mauls, three Bench Blades, `Bench Adv — Wrenchmaster`
+and its token) was deleted. Flag residue: **two combat-scoped keys the engine itself clears on
+`deleteCombat`** — `combatExpire` on Bench Ally — One, `aggro` + `trigRound` on Bench — Heroic — deliberately
+NOT restored, since re-adding them would recreate state the engine considers ended. Roster tokens stay
+placed but several were **moved** (Bench — Red/Order/Black/Sovereignty, Bench Ally — Two, and three
+targets). Bench chat can be flushed. Bench was logged out.
+
+⚑ **Not tested, recorded blocked, never failed against a stale pack:** **2bQ-4** (Sharp Eye) and
+**2bD-7** behind it — both need the owed `foundry-build heroic` + ⟳ Sync Talents. ⚑ **Deferred to the
+player-client window (run 13):** the **GM summon relay** (its verb is "as a PLAYER without
+actor-create") and **2bM-1**. ⚑ **Still Ben's:** 2bAC-1, 2bL-7, 2bL-14, 2bE-9, the Injury tool, the
+Formula-bar eyeball, Flame Surge / burst cards, the drawn-tree eyeball, and the four dead prereqs.
 
 **2026-07-27n — FIX PASS A (bench marathon 2): SHARP EYE, THE MARATHON-1 CARRY-OVER, AND ONE
 RETRACTION. Two defects fixed — one DATA (heroic pack rebuild + ⟳ Sync), one ENGINE-ONLY (⟳ sync +

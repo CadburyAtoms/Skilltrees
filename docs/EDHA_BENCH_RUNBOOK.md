@@ -324,6 +324,47 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   re-wrote between the two. Unset the specific stray KEYS with `unsetFlag`, one at a time with a short
   wait, then re-diff — two passes, then a third confirming pass that must come back empty.
 
+## Operating lessons from run 12 (2026-07-27o — these OVERRIDE older advice where they conflict)
+
+- ❌ **Read `_source` before you call ANY engine move dead.** A Shockwave Slam push that worked perfectly
+  read as `x` unchanged and `delta 0` on the prepared document, because the pane's PIXI ticker is parked
+  and the animation never completes. `_source.x` was already at the destination. Run 1 documented this
+  for moves *you* make; run 12 nearly recorded a false FAIL on a move the ENGINE made, on the exact row
+  that was about a dead push. `tokDoc.reset()` afterwards re-syncs the prepared value.
+- ❌ **`doc.move({action: "displace"})` is NOT a forced move, and run 8's 2bV-2 attempt turned on this.**
+  The Order watcher (and every other voluntary-movement consumer) discriminates on `options.edhaForced`,
+  which only `edhaMoveTokenTo` stamps. A raw `displace` is *unstamped*, which the engine deliberately
+  treats as ambiguous → it SHOULD prompt. To drive a genuine forced move, trigger a real engine push
+  (a weapon hit that carries an `edha-push` rider works and needs no internals).
+- **A token that refuses to move, returns no error and logs nothing may be VETOED.** Three `teleport`
+  updates and a `move()` all resolved and did nothing; the only evidence in the world was a
+  notification — "Dread Presence: … is Weakened and cannot willingly move closer to Wrenchmaster." A
+  status YOU applied earlier plus one of Ben's placed adversaries is enough to trigger it. This is why
+  the `ui.notifications` capture is hooked at run start, not per row.
+- **A dialog walker MUST click each button at most once.** A walker that re-scans every 300 ms will
+  re-click the same live button until the DOM node goes away — run 12's first Censure drive logged
+  4× Continue and 4× Roll for ONE use. The world deduped, but the log is unreadable and would falsely
+  suggest a double-application on any row that is about double-application. Keep a `WeakSet` of clicked
+  elements.
+- **`ui.combat.initialize({combat})` does not always take on the first call.** After it, `game.combat`
+  was still Ben's campaign combat — so `game.combat.round`, which the Order once-per-round gate reads,
+  was HIS round, not yours. Call it, assert `game.combat.id === yours`, and call it again if it didn't
+  take. (Create the bench combat with `active: false`; never activate.)
+- **`setFlag` MERGES, so restoring a snapshot value does not delete sub-keys you added.** Cleanup left
+  `bpHits` with extra round-keys and `markedBy.edict` behind even after a "restore". The fix is
+  `unsetFlag(key)` → wait → `setFlag(key, snapshotValue)`. Also: the JSON-string comparison used to
+  find residue is **key-order sensitive** — compare key-by-key or you will chase a phantom diff.
+- **Combat-scoped flags legitimately disappear when you delete your bench combat** (`combatExpire`,
+  `aggro`, `trigRound`). Do NOT restore them — that recreates state the engine considers ended. Report
+  them as engine-swept instead.
+- **The first token move right after joining can throw from Region geometry**
+  (`#testSamples … reading 'testPoint'`). It is transient — the scene's regions are not built yet.
+  Retry once before concluding anything.
+- **Before calling a row a "roster gap", check whether the thing is a TALENT at all.** 2bC-8 sat blocked
+  on a prescribed `bench-setup-console.js` change that could never have worked: Probability Net is an
+  **adversary** ability in `data/adversaries.json`, so no talent-pack name list can reach it. Importing
+  the adversary fresh from the pack — the standing procedure — ran the row in two execs.
+
 ## Known limits
 
 - ❌ **RESOLVED AS UNFIXABLE (07-26i): there is no "no written Cognitive/Spiritual defense" creature.**
