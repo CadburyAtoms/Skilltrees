@@ -10693,49 +10693,93 @@ async function edhaLifeCleanseClick(ev) {
   } catch (e) { console.error("Edha Content | cleanse click failed", e); }
 }
 /* Any talent carrying an edha-cleanse rule with `trigger: success-damage-roll` posts its cleanse
- * card for the CURRENT TARGET when the use's own TEST beat the rule's defense — decided HERE,
- * because the system decides nothing (2026-07-27b, bench run 5, 2bW-15):
- *   • `roll.options.graze` never meant "the test missed". On the MAIN damage roll it holds the
- *     ATTACHED graze sub-roll (system index.js ~6891 `roll.graze = grazeRoll` writes options.graze),
- *     and the graze twin's own fire carries none — so the old check only told the twins apart,
- *     and the cleanse posted on EVERY use, success or not.
- *   • The system binds NO DC to a skill_test talent's d20 (dc: null on sheet AND console paths —
- *     its only DC binding is the chat enricher), and full-vs-graze damage is a HUMAN toggle on
- *     the damage card. There is no system success branch to ride. NOT a bench-driving artifact.
- * So: capture the use's own test (the contest watcher's _edhaLastRoll, same skill as the item's
- * activation), compare vs the target's `def` (default phy) via edhaDefTestOutcome — meet-or-beat
- * posts the cleanse, under posts a whispered graze note and NO cleanse. Unreadable defense or no
- * captured roll = FAIL-OPEN (post the cleanse), H1's documented convention.
- * Was the name-keyed Surgical Precision hook (2bW). */
+ * card for the CURRENT TARGET when the use's own TEST beat the rule's defense. The 07-27b version
+ * DECIDED at damageRoll time — wrong POINT, deterministically (bench run 6, 2bW-15, attempt 2):
+ * for a non-attack skill_test talent with damage, the system's use() rolls the DAMAGE before the
+ * SKILL TEST (system index.js ~7246: rollDamage precedes the activation-type branch's this.roll),
+ * so at damageRoll time the current use's test does not exist yet. The decider therefore read
+ * either NOTHING (fail-open — the sheet path's wrong cleanse at PHY 45) or the PREVIOUS use's
+ * still-TTL-fresh capture (the console path's "21 vs PHY 45" note under its own d20 of 25).
+ * Not a race: one-behind by construction.
+ *
+ * Now the damageRoll fire only ARMS a pending decision (rule dials + the target captured while
+ * the use's targeting is live), and the decision runs when the actor's OWN matching test arrives
+ * on the roll hooks — the roll is read straight off the hook args, so there is no shared "last
+ * roll" slot to consume off-by-one. edhaCleanseArmMode (pure, pinned) picks the path:
+ *   • "immediate"    — no comparison wanted (blank def) or no test to wait for (a damage-only
+ *                      activation): decide now, fail-open shape unchanged.
+ *   • "consume-back" — the attack path (rollAttack rolls the TEST first, ms before damage): a
+ *                      back-fresh same-skill capture within EDHA_CLEANSE_BACK_MS is THIS use's.
+ *   • "arm"          — the skill_test path: wait for the test (TTL = EDHA_CONTEST_TTL for slow
+ *                      roll dialogs; a cancelled use's arm is overwritten by the next or expires).
+ * Meet-or-beat posts the cleanse; under posts the whispered graze note; unreadable defense still
+ * FAILS OPEN (H1's convention). Was the name-keyed Surgical Precision hook (2bW). */
+const _edhaCleansePending = new Map();   // actorId -> { label, defId, conditions, targetUuid, want, ts }
+const EDHA_CLEANSE_BACK_MS = 1500;       // attack path only: test → damage is a same-flow ms gap, never a user gap
+function edhaCleanseArmMode({ isSkillTest, defId, backRoll = null, now = 0, backMs = EDHA_CLEANSE_BACK_MS, wantSkill = "" } = {}) {
+  if (!defId || !isSkillTest) return "immediate";
+  const fresh = backRoll && !backRoll.used && (now - backRoll.ts) <= backMs
+    && (!wantSkill || !backRoll.skill || backRoll.skill === wantSkill);
+  return fresh ? "consume-back" : "arm";
+}
+function edhaCleanseDecide(actor, target, label, defId, conditions, total) {
+  try {
+    let ok = true, bar = null;
+    if (defId && total !== null && total !== undefined) {
+      const defVal = edhaReadDefense(target, defId);
+      if (defVal !== null && defVal !== undefined) ({ ok, dc: bar } = edhaDefTestOutcome(total, { vs: "defense", defValue: defVal }));
+    }
+    if (!ok) {
+      ChatMessage.create({ whisper: edhaWhisperIds(actor), speaker: ChatMessage.getSpeaker({ actor }),
+        content: `<p>🩺 <strong>${label}</strong> — ${total} vs ${target.name}'s ${defId.toUpperCase()} ${bar}: <strong>graze</strong> — no condition is removed (the graze heal stands).</p>` });
+      return;
+    }
+    edhaPostLifeCleanseCard(actor, target, label, conditions);
+  } catch (e) { console.error("Edha Content | cleanse decide failed", e); }
+}
 Hooks.on("cosmere-rpg.damageRoll", (roll, item) => {
   try {
     const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
     const h = edhaRuleOf(item, "edha-cleanse");
     if (!h || (h.trigger || "use") !== "success-damage-roll") return;
     const key = item.uuid ?? item.id ?? item.name, now = Date.now();
-    if (now - (_edhaSurgicalDebounce.get(key) || 0) < 600) return;     // one decision per use (the twin damageRoll fires)
+    if (now - (_edhaSurgicalDebounce.get(key) || 0) < 600) return;     // one arm per use (the twin damageRoll fires)
     _edhaSurgicalDebounce.set(key, now);
     const target = Array.from(game.user?.targets ?? [])[0]?.actor ?? actor;
     const defId = (h.def === undefined || h.def === null) ? "phy" : String(h.def).trim();   // absent (pre-07-27b rule) = phy; explicitly blank = no comparison
-    let ok = true, bar = null, total = null;
-    if (defId) {
-      const r = _edhaLastRoll.get(actor.id);
-      const want = String(item.system?.activation?.skill || "").trim();
-      const fresh = r && (now - r.ts) <= EDHA_CONTEST_TTL && (!want || !r.skill || r.skill === want);
-      const defVal = edhaReadDefense(target, defId);
-      if (fresh && defVal !== null && defVal !== undefined) {
-        total = Number(r.total) || 0;
-        ({ ok, dc: bar } = edhaDefTestOutcome(total, { vs: "defense", defValue: defVal }));
-      }
-    }
-    if (!ok) {
-      ChatMessage.create({ whisper: edhaWhisperIds(actor), speaker: ChatMessage.getSpeaker({ actor }),
-        content: `<p>🩺 <strong>${item.name}</strong> — ${total} vs ${target.name}'s ${defId.toUpperCase()} ${bar}: <strong>graze</strong> — no condition is removed (the graze heal stands).</p>` });
+    const conditions = String(h.conditions || "").split(/[,\s]+/).filter(Boolean);
+    const want = String(item.system?.activation?.skill || "").trim();
+    const back = _edhaLastRoll.get(actor.id);
+    const mode = edhaCleanseArmMode({ isSkillTest: String(item.system?.activation?.type || "") === "skill_test", defId, backRoll: back, now, wantSkill: want });
+    if (mode === "immediate") { edhaCleanseDecide(actor, target, item.name, defId, conditions, null); return; }
+    if (mode === "consume-back") {
+      back.used = true;   // this use's own test (the attack path rolled it ms ago) — consume it
+      edhaCleanseDecide(actor, target, item.name, defId, conditions, Number(back.total) || 0);
       return;
     }
-    edhaPostLifeCleanseCard(actor, target, item.name, String(h.conditions || "").split(/[,\s]+/).filter(Boolean));
+    // "arm": the test hasn't rolled yet — a second use before this resolves overwrites the arm.
+    _edhaCleansePending.set(actor.id, { label: item.name, defId, conditions, targetUuid: target.uuid, want, ts: now });
   } catch (e) { console.error("Edha Content | cleanse-on-success watcher failed", e); }
 });
+// The decision point: the use's OWN test arriving. Registered AFTER edhaContestWatch (file order),
+// so contests resolve first and the roll is read straight off the hook args — no slot lifecycle.
+function edhaCleanseRollWatch(roll, source, config) {
+  try {
+    const actor = edhaD20RollActor(config); if (!actor) return;
+    const p = _edhaCleansePending.get(actor.id); if (!p) return;
+    if (Date.now() - p.ts > EDHA_CONTEST_TTL) { _edhaCleansePending.delete(actor.id); return; }   // stale arm (cancelled use)
+    const skill = roll?.data?.skill?.id ?? null;
+    if (p.want && skill && skill !== p.want) return;    // a different test — keep waiting for the talent's own
+    _edhaCleansePending.delete(actor.id);
+    const total = Number(roll.total) || 0;
+    void (async () => {
+      const tref = await fromUuid(p.targetUuid).catch(() => null); const target = tref?.actor ?? tref;
+      if (!target) return;
+      edhaCleanseDecide(actor, target, p.label, p.defId, p.conditions, total);
+    })();
+  } catch (e) { console.error("Edha Content | cleanse roll watch failed", e); }
+}
+for (const ctx of ["skill", "attack", "item"]) Hooks.on(`cosmere-rpg.${ctx}Roll`, edhaCleanseRollWatch);
 
 /* --- Button binding + scene cleanup (the name-keyed useItem switch is GONE — 2bW) ------------------- */
 Hooks.on("renderChatMessageHTML", (msg, html) => {
