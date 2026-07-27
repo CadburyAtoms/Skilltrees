@@ -961,18 +961,20 @@ async function edhaDamageBonusPost(dealer, target, prevHp = null) {
        * counter. Mark FIRST, commit once it landed (the 07-24v H3 ordering); evicted entries
        * unmark; a creature already on the list is never double-marked. */
       if (e.kind === "list") {
-        const cur = edhaOwnerList(owner, e.key, e.status);
-        if (cur.some(x => x.uuid === target.uuid)) continue;
-        const mark = { actorId: owner.id, talent: e.itemName };
-        if (target.isOwner) { await target.toggleStatusEffect?.(e.status, { active: true }); try { await target.setFlag("edha-content", `markedBy.${e.status}`, mark); } catch (err) {} }
-        else if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "apply-status-mark", payload: { actorUuid: target.uuid, statusId: e.status, mark } }); } catch (err) {} }
-        else { ui.notifications?.warn(`Edha: a GM must be online to mark ${target.name} — nothing placed.`); continue; }
-        const entry = { id: foundry.utils.randomID(), uuid: target.uuid, name: target.name, talent: e.itemName };
-        const res = edhaListPush(cur, entry, { cap: e.cap, evict: "oldest" });
-        await edhaSetOwnerList(owner, e.key, res.list);
-        for (const ev2 of res.evicted) await edhaListUnmark(ev2, e.status, { key: e.key, ownerId: owner.id });
-        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
-          content: `<p>🎯 <strong>${e.itemName}</strong>: <strong>${target.name}</strong> bears your ${edhaConditionLabel(e.status) || e.status} (${res.list.length}/${e.cap}).</p>` });
+        await edhaOwnerListQueue(owner, e.key, async () => {   // queued RMW (07-26n) — fresh read inside
+          const cur = edhaOwnerList(owner, e.key, e.status);
+          if (cur.some(x => x.uuid === target.uuid)) return;
+          const mark = { actorId: owner.id, talent: e.itemName };
+          if (target.isOwner) { await target.toggleStatusEffect?.(e.status, { active: true }); try { await target.setFlag("edha-content", `markedBy.${e.status}`, mark); } catch (err) {} }
+          else if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "apply-status-mark", payload: { actorUuid: target.uuid, statusId: e.status, mark } }); } catch (err) {} }
+          else { ui.notifications?.warn(`Edha: a GM must be online to mark ${target.name} — nothing placed.`); return; }
+          const entry = { id: foundry.utils.randomID(), uuid: target.uuid, name: target.name, talent: e.itemName };
+          const res = edhaListPush(cur, entry, { cap: e.cap, evict: "oldest" });
+          await edhaSetOwnerList(owner, e.key, res.list);
+          for (const ev2 of res.evicted) await edhaListUnmark(ev2, e.status, { key: e.key, ownerId: owner.id });
+          ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+            content: `<p>🎯 <strong>${e.itemName}</strong>: <strong>${target.name}</strong> bears your ${edhaConditionLabel(e.status) || e.status} (${res.list.length}/${e.cap}).</p>` });
+        });
         continue;
       }
       const n = await edhaCounterAdd(owner, target, e.place, { key: e.key, status: e.status, cap: e.cap, talent: e.itemName });
@@ -2204,15 +2206,17 @@ async function edhaListReleaseClick(ev) {
     if (!owner) { ui.notifications?.warn("Edha: could not work out whose ledger this is."); return; }
     if (!owner.isOwner && !game.user?.isGM) { ui.notifications?.warn("Edha: only the talent's owner (or the GM) resolves this."); return; }
     const key = ds.list, status = ds.status || key;
-    const cur = edhaOwnerList(owner, key, status);
-    const idx = cur.findIndex(e => e.id === ds.entry);
-    if (idx < 0) { ui.notifications?.info("Edha: that entry is no longer on the list."); btn.disabled = true; return; }
-    const [gone] = cur.splice(idx, 1);
-    btn.disabled = true; btn.textContent = "released";
-    await edhaSetOwnerList(owner, key, cur);
-    await edhaListUnmark(gone, status, { key, ownerId: owner.id, multiOwner: ds.multi === "1" });
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
-      content: `<p>📋 <strong>${gone.talent || key}</strong>: ${owner.name}'s bond with <strong>${gone.name}</strong> ends (${cur.length} left).</p>` });
+    await edhaOwnerListQueue(owner, key, async () => {   // queued RMW (07-26n) — fresh read inside
+      const cur = edhaOwnerList(owner, key, status);
+      const idx = cur.findIndex(e => e.id === ds.entry);
+      if (idx < 0) { ui.notifications?.info("Edha: that entry is no longer on the list."); btn.disabled = true; return; }
+      const [gone] = cur.splice(idx, 1);
+      btn.disabled = true; btn.textContent = "released";
+      await edhaSetOwnerList(owner, key, cur);
+      await edhaListUnmark(gone, status, { key, ownerId: owner.id, multiOwner: ds.multi === "1" });
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+        content: `<p>📋 <strong>${gone.talent || key}</strong>: ${owner.name}'s bond with <strong>${gone.name}</strong> ends (${cur.length} left).</p>` });
+    });
   } catch (e) { console.error("Edha Content | list release failed", e); }
 }
 Hooks.on("renderChatMessageHTML", (msg, html) => {
@@ -2779,6 +2783,30 @@ async function edhaSetOwnerList(owner, key, list) {
   try { await owner.setFlag("edha-content", `lists.${key}`, list); }
   catch (e) { console.error(`Edha Content | owner-list ${key} write failed`, e); }
 }
+/* SERIALISED read-modify-write for the H3 ledgers (2026-07-26n — bench run 4 defect 2).
+ * Every ledger mutation is a read-modify-write on flags.edha-content.lists.<key>, and Foundry
+ * gives that no isolation: one Necrotic Cascade dropping three adversaries in the same tick ran
+ * three concurrent harvest placements that all read the SAME stored list — last write wins, and
+ * the ledger ended holding one entry where two should have survived (cap 2, eviction oldest;
+ * sequential drops accumulated correctly — concurrency, not cap). The fix is a per-owner-per-key
+ * promise queue AT THE SHARED LEVEL: a mutation enters the queue, re-reads the list INSIDE it,
+ * and commits before the next mutation reads. Rules of use:
+ *   • the READ must happen inside the queued task — queueing only the write fixes nothing;
+ *   • user interaction (dialogs, pick-points) stays OUTSIDE the queue, or one player's open
+ *     dialog stalls every other mutation of that ledger;
+ *   • never queue a task that awaits ANOTHER queued task on the same owner+key — that is a
+ *     deadlock (the reason the executor's `spend` op does not wrap edhaLedgerSpend, which
+ *     carries the queue itself).
+ * A failed task never wedges the chain (each link swallows its predecessor's rejection), and the
+ * chaining discipline is pinned in tests/ (owner-list-race). */
+const EDHA_LIST_QUEUE = new Map();   // `${owner uuid}::${key}` → tail promise of the pending chain
+function edhaOwnerListQueue(owner, key, task) {
+  const qk = `${owner?.uuid ?? owner?.id ?? "?"}::${String(key ?? "").trim()}`;
+  const tail = (EDHA_LIST_QUEUE.get(qk) ?? Promise.resolve()).catch(() => {}).then(() => task());
+  EDHA_LIST_QUEUE.set(qk, tail);
+  void tail.catch(() => {}).finally(() => { if (EDHA_LIST_QUEUE.get(qk) === tail) EDHA_LIST_QUEUE.delete(qk); });
+  return tail;
+}
 function edhaListCap(owner, formula) {
   const n = Math.floor(edhaEvalSync(formula || "@tier", owner?.getRollData?.() ?? {}));
   return Math.max(1, Number.isFinite(n) ? n : 1);
@@ -2849,15 +2877,19 @@ function edhaOwnerListAvail(owner, key, status = null) {
  * when something was spent. Spending the synthetic freebie writes [] — the flat accessor's
  * "[] ≠ unset" semantic, preserved through the repoint. */
 async function edhaLedgerSpend(owner, key, status = null, source = "") {
-  const st = status || key;
-  const list = foundry.utils.deepClone(edhaOwnerListAvail(owner, key, st));
-  if (!list.length) { ui.notifications?.warn(`Edha: ${owner.name} has no ${edhaConditionLabel(st) || st} for ${source || key}.`); return false; }
-  const spent = list.shift();   // oldest first
-  await edhaSetOwnerList(owner, key, list);
-  await edhaListUnmark(spent, st, { key, ownerId: owner.id });
-  ChatMessage.create({ whisper: edhaWhisperIds(owner), speaker: ChatMessage.getSpeaker({ actor: owner }),
-    content: `<p>💀 <strong>${source || key}</strong>: a ${edhaConditionLabel(st) || st} is consumed — <strong>${list.length}</strong> left.</p>` });
-  return true;
+  // Queued (07-26n): the availability read happens INSIDE the queue, so two spends landing in the
+  // same tick consume two DIFFERENT entries instead of both popping the same head.
+  return edhaOwnerListQueue(owner, key, async () => {
+    const st = status || key;
+    const list = foundry.utils.deepClone(edhaOwnerListAvail(owner, key, st));
+    if (!list.length) { ui.notifications?.warn(`Edha: ${owner.name} has no ${edhaConditionLabel(st) || st} for ${source || key}.`); return false; }
+    const spent = list.shift();   // oldest first
+    await edhaSetOwnerList(owner, key, list);
+    await edhaListUnmark(spent, st, { key, ownerId: owner.id });
+    ChatMessage.create({ whisper: edhaWhisperIds(owner), speaker: ChatMessage.getSpeaker({ actor: owner }),
+      content: `<p>💀 <strong>${source || key}</strong>: a ${edhaConditionLabel(st) || st} is consumed — <strong>${list.length}</strong> left.</p>` });
+    return true;
+  });
 }
 
 /* The near-victim auto-pick (07-25, 2bU — Spreading Omen's second placement): the NEAREST living
@@ -9860,15 +9892,21 @@ async function edhaSetChargeMarker(item, h) {
     const cap = edhaListCap(owner, h.capFormula || "@tier");
     const entry = { id: foundry.utils.randomID(), sceneId: scene.id, templateId: tpl?.id, x: pt.x, y: pt.y, sizeFt,
                     pinpoint: false, formula: item.system?.damage?.formula || EDHA_CHARGE_DMG, type: item.system?.damage?.type || "energy" };
-    const { list, evicted, refused } = edhaListPush(foundry.utils.deepClone(edhaGetCharges(owner)), entry, { cap, evict: h.evict || "oldest" });
-    if (refused) {   // evict: refuse at the cap — the new Charge doesn't land, nothing spent
-      try { void scene.templates?.get(tpl?.id)?.delete()?.catch(() => {}); } catch (e) {}
-      edhaRefundCost(item); ui.notifications?.warn(`Edha: you already sustain ${cap} Charge(s) — cost refunded.`); return;
-    }
-    for (const drop of evicted) { try { void scene.templates?.get(drop.templateId)?.delete()?.catch(() => {}); } catch (e) {} }   // canvas cleanup stays here, by hand (§9o trap 3)
-    await edhaSetOwnerList(owner, "charges", list);
+    // Queued RMW (07-26n): the push runs against a FRESH read inside the per-owner queue. The
+    // user's pick-point already resolved above — nothing interactive sits inside the lock.
+    const committed = await edhaOwnerListQueue(owner, "charges", async () => {
+      const { list, evicted, refused } = edhaListPush(foundry.utils.deepClone(edhaGetCharges(owner)), entry, { cap, evict: h.evict || "oldest" });
+      if (refused) {   // evict: refuse at the cap — the new Charge doesn't land, nothing spent
+        try { void scene.templates?.get(tpl?.id)?.delete()?.catch(() => {}); } catch (e) {}
+        edhaRefundCost(item); ui.notifications?.warn(`Edha: you already sustain ${cap} Charge(s) — cost refunded.`); return null;
+      }
+      for (const drop of evicted) { try { void scene.templates?.get(drop.templateId)?.delete()?.catch(() => {}); } catch (e) {} }   // canvas cleanup stays here, by hand (§9o trap 3)
+      await edhaSetOwnerList(owner, "charges", list);
+      return list;
+    });
+    if (!committed) return;
     edhaPostChargesCard(owner);
-    edhaPostChargeArmCard(owner, list[list.length - 1], list.length);
+    edhaPostChargeArmCard(owner, committed[committed.length - 1], committed.length);
   } catch (e) { console.error("Edha Content | set charge failed", e); }
 }
 /* --- Charge trigger arming + watchers (07-16c, Ben E18 — supersedes the 06-16 "declared text,
@@ -9887,29 +9925,35 @@ async function edhaChargeArmClick(ev) {
     ev.preventDefault();
     const btn = ev.currentTarget, ds = btn.dataset;
     const oref = await fromUuid(ds.owner).catch(() => null); const owner = oref?.actor ?? oref; if (!owner) return;
-    const list = foundry.utils.deepClone(edhaGetCharges(owner));
-    const ch = list.find(c => c.id === ds.charge); if (!ch) { ui.notifications?.warn("Edha: that Charge is gone (past the cap or detonated)."); return; }
-    if (ds.kind === "manual") delete ch.trig;
-    else if (ds.kind === "enter") ch.trig = { kind: "enter" };
-    else {
-      const t = Array.from(game.user?.targets ?? [])[0] ?? null;
-      if (!t?.actor) { ui.notifications?.warn("Edha: target the creature first, then click the arm button."); return; }
-      ch.trig = { kind: ds.kind, targetUuid: t.actor.uuid, targetName: t.name };
-    }
-    await edhaSetOwnerList(owner, "charges", list);   // raw path (§9o trap 3): trig is a NESTED write the H3 ops never touch
-    btn.closest(".edha-trigger-card")?.querySelectorAll("button").forEach(b => b.disabled = true);
-    btn.textContent += " ✓";
+    await edhaOwnerListQueue(owner, "charges", async () => {   // queued RMW (07-26n) — fresh read inside
+      const list = foundry.utils.deepClone(edhaGetCharges(owner));
+      const ch = list.find(c => c.id === ds.charge); if (!ch) { ui.notifications?.warn("Edha: that Charge is gone (past the cap or detonated)."); return; }
+      if (ds.kind === "manual") delete ch.trig;
+      else if (ds.kind === "enter") ch.trig = { kind: "enter" };
+      else {
+        const t = Array.from(game.user?.targets ?? [])[0] ?? null;
+        if (!t?.actor) { ui.notifications?.warn("Edha: target the creature first, then click the arm button."); return; }
+        ch.trig = { kind: ds.kind, targetUuid: t.actor.uuid, targetName: t.name };
+      }
+      await edhaSetOwnerList(owner, "charges", list);   // raw path (§9o trap 3): trig is a NESTED write the H3 ops never touch
+      btn.closest(".edha-trigger-card")?.querySelectorAll("button").forEach(b => b.disabled = true);
+      btn.textContent += " ✓";
+    });
   } catch (e) { console.error("Edha Content | charge arm failed", e); }
 }
 async function edhaChargeTrigFire(owner, chargeId, why) {
   try {
-    const list = foundry.utils.deepClone(edhaGetCharges(owner));
-    const idx = list.findIndex(c => c.id === chargeId); if (idx < 0) return;
-    if (!list[idx].trig || list[idx].trig.fired) return;
-    list[idx].trig.fired = true;   // one prompt per arm — re-arm from the card if it should watch again
-    await edhaSetOwnerList(owner, "charges", list);   // raw path (§9o trap 3)
-    ChatMessage.create({ whisper: edhaWhisperIds(owner), speaker: ChatMessage.getSpeaker({ actor: owner }),
-      content: `<div class="edha-trigger-card"><p>🧨 <strong>Set Charge trigger</strong>: ${why} — detonate?</p><button type="button" class="edha-charge-btn" data-owner="${owner.uuid}" data-charge="${chargeId}">Detonate #${idx + 1}</button></div>` });
+    // Queued RMW (07-26n): one AoE damaging two armed targets fires two of these in the same
+    // tick — unserialised, the second write clobbered the first `fired` stamp (H3 race family).
+    await edhaOwnerListQueue(owner, "charges", async () => {
+      const list = foundry.utils.deepClone(edhaGetCharges(owner));
+      const idx = list.findIndex(c => c.id === chargeId); if (idx < 0) return;
+      if (!list[idx].trig || list[idx].trig.fired) return;
+      list[idx].trig.fired = true;   // one prompt per arm — re-arm from the card if it should watch again
+      await edhaSetOwnerList(owner, "charges", list);   // raw path (§9o trap 3)
+      ChatMessage.create({ whisper: edhaWhisperIds(owner), speaker: ChatMessage.getSpeaker({ actor: owner }),
+        content: `<div class="edha-trigger-card"><p>🧨 <strong>Set Charge trigger</strong>: ${why} — detonate?</p><button type="button" class="edha-charge-btn" data-owner="${owner.uuid}" data-charge="${chargeId}">Detonate #${idx + 1}</button></div>` });
+    });
   } catch (e) { console.error("Edha Content | charge trigger fire failed", e); }
 }
 Hooks.on("updateToken", (doc, changes) => {
@@ -10036,7 +10080,9 @@ async function edhaResolveCharges(owner, charges, { radiusFt = null, bonusFormul
     // Remove the detonated charges + their markers (canvas cleanup by hand — §9o trap 3).
     const dets = new Set(charges.map(c => c.id));
     for (const c of charges) { try { void scene.templates?.get(c.templateId)?.delete()?.catch(() => {}); } catch (e) {} }
-    await edhaSetOwnerList(owner, "charges", edhaGetCharges(owner).filter(c => !dets.has(c.id)));
+    // Queued RMW (07-26n): the filter reads inside the queue, so a placement or trigger-arm
+    // landing mid-detonation is not clobbered by this commit.
+    await edhaOwnerListQueue(owner, "charges", () => edhaSetOwnerList(owner, "charges", edhaGetCharges(owner).filter(c => !dets.has(c.id))));
   } catch (e) { console.error("Edha Content | resolve charges failed", e); }
 }
 function edhaFtToPx(ft) { const s = canvas?.scene; const gs = s?.grid?.size || 100, gd = s?.grid?.distance || 5; return Math.max(Math.round(gs / 2), Math.round((ft / gd) * gs)); }
@@ -11071,13 +11117,17 @@ async function edhaFatePlaceCore(item, h, kind) {
     const cap = edhaListCap(owner, h.capFormula || "@tier");
     const entry = { id: foundry.utils.randomID(), sceneId: scene.id, templateId: tpl?.id, x: pt.x, y: pt.y, talent: item.name };
     if (isSnare) { entry.inevitable = false; entry.formula = item.system?.damage?.formula || EDHA_FATE_SNARE_DMG; entry.type = item.system?.damage?.type || "keen"; }
-    const cur = isSnare ? edhaGetSnares(owner) : edhaGetOrdained(owner);
-    const { list, evicted } = edhaListPush(foundry.utils.deepClone(cur), entry, { cap, evict: h.evict || "oldest" });
-    for (const drop of evicted) {   // canvas cleanup stays here, by hand (§9o trap 3)
-      try { void scene.templates?.get(drop.templateId)?.delete()?.catch(() => {}); } catch (e) {}
-      if (isSnare && drop) await edhaFateDeleteSnareRegion(scene, drop.id);
-    }
-    await edhaSetOwnerList(owner, isSnare ? "snares" : "ordained", list);   // both H3 ledgers (2bX / 2bAA)
+    // Queued RMW (07-26n) — the pick-point already resolved above; fresh read inside the lock.
+    const list = await edhaOwnerListQueue(owner, isSnare ? "snares" : "ordained", async () => {
+      const cur = isSnare ? edhaGetSnares(owner) : edhaGetOrdained(owner);
+      const res = edhaListPush(foundry.utils.deepClone(cur), entry, { cap, evict: h.evict || "oldest" });
+      for (const drop of res.evicted) {   // canvas cleanup stays here, by hand (§9o trap 3)
+        try { void scene.templates?.get(drop.templateId)?.delete()?.catch(() => {}); } catch (e) {}
+        if (isSnare && drop) await edhaFateDeleteSnareRegion(scene, drop.id);
+      }
+      await edhaSetOwnerList(owner, isSnare ? "snares" : "ordained", res.list);   // both H3 ledgers (2bX / 2bAA)
+      return res.list;
+    });
     if (isSnare) await edhaFateDropSnareRegion(owner, scene, pt.x, pt.y, entry.id);
     const guard = edhaActorRuleOf(owner, "edha-zone-guard");
     const thp = guard?.handler?.thpFormula ? Math.max(0, Math.floor(edhaEvalSync(guard.handler.thpFormula, owner.getRollData()))) : 0;
@@ -11093,8 +11143,10 @@ async function edhaFateSpringSnare(owner, snare, triggerActor, { source = "", bo
     const scene = canvas?.scene; if (!scene || !snare) return;
     const label = source || snare.talent || "Trap";   // the label is DATA (the placing item's name)
     // consume the snare (drop from the ledger + delete its template) BEFORE applying so it can't
-    // re-fire. Ledger write is a raw-path hand-edit onto lists.snares (§9o trap 3).
-    await edhaSetOwnerList(owner, "snares", edhaGetSnares(owner).filter(s => s.id !== snare.id));
+    // re-fire. Ledger write is a raw-path hand-edit onto lists.snares (§9o trap 3). Queued RMW
+    // (07-26n): two snares springing in the same tick (a group walk-in) must not resurrect each
+    // other — the filter reads inside the per-owner queue.
+    await edhaOwnerListQueue(owner, "snares", () => edhaSetOwnerList(owner, "snares", edhaGetSnares(owner).filter(s => s.id !== snare.id)));
     try { void scene.templates?.get(snare.templateId)?.delete()?.catch(() => {}); } catch (e) {}
     await edhaFateDeleteSnareRegion(scene, snare.id);
     if (!triggerActor) { edhaFateCard(owner, null, `<p>🪢 <strong>${label}</strong> sprang with no creature in the square.</p>`); return; }
@@ -11246,15 +11298,20 @@ async function edhaMarkerCommand(item, h) {
 }
 async function edhaFateReposition(owner, key, id, maxFt) {
   const isSnare = key === "snares";
-  const list = foundry.utils.deepClone(edhaOwnerList(owner, key));   // both keys are H3 ledgers (2bAA)
-  const m = list.find(x => x.id === id); if (!m) { ui.notifications?.info("That marker is gone."); return; }
+  if (!edhaOwnerList(owner, key).some(x => x.id === id)) { ui.notifications?.info("That marker is gone."); return; }
   const pt = await edhaPickPoint(`Click the new square (≤${Number(maxFt) || 10} ft — range is owner-judged).`);
   if (!pt) return;
-  m.x = pt.x; m.y = pt.y;
-  try { await canvas?.scene?.templates?.get(m.templateId)?.update({ x: pt.x, y: pt.y }); } catch (e) {}
-  if (isSnare) { await edhaFateDeleteSnareRegion(canvas?.scene, id); await edhaFateDropSnareRegion(owner, canvas?.scene, pt.x, pt.y, id); }
-  await edhaSetOwnerList(owner, key, list);   // raw path, either ledger (§9o trap 3)
-  edhaFateCard(owner, null, `<p>🧵 Marker slid into place.</p>`);
+  // Queued RMW (07-26n): the pick above stays outside the lock; the entry is re-found inside it
+  // (a spring may have consumed it while the pick was open — the fresh read notices).
+  await edhaOwnerListQueue(owner, key, async () => {
+    const list = foundry.utils.deepClone(edhaOwnerList(owner, key));   // both keys are H3 ledgers (2bAA)
+    const m = list.find(x => x.id === id); if (!m) { ui.notifications?.info("That marker is gone."); return; }
+    m.x = pt.x; m.y = pt.y;
+    try { await canvas?.scene?.templates?.get(m.templateId)?.update({ x: pt.x, y: pt.y }); } catch (e) {}
+    if (isSnare) { await edhaFateDeleteSnareRegion(canvas?.scene, id); await edhaFateDropSnareRegion(owner, canvas?.scene, pt.x, pt.y, id); }
+    await edhaSetOwnerList(owner, key, list);   // raw path, either ledger (§9o trap 3)
+    edhaFateCard(owner, null, `<p>🧵 Marker slid into place.</p>`);
+  });
 }
 async function edhaFateSpringFromCard(owner, snareId, bonusFormula, source) {
   const snare = edhaGetSnares(owner).find(s => s.id === snareId);
@@ -11303,8 +11360,13 @@ async function edhaZoneLinkMarkers(item, h) {
       ui.notifications?.info(`${item.name} ${picked ? "needs two DIFFERENT squares" : "canceled"} — cost refunded.`);
       return;
     }
-    for (const id of picked) { const m = ord.find(x => x.id === id); if (m) m.linked = true; }
-    await edhaSetOwnerList(owner, "ordained", ord);   // the 2bAA repoint — `linked` rides the entries
+    // Queued RMW (07-26n): the dialog above stays outside the lock; the picked ids are re-found
+    // against a FRESH read inside it (an eviction may have consumed one while the dialog was open).
+    await edhaOwnerListQueue(owner, "ordained", async () => {
+      const fresh = foundry.utils.deepClone(edhaGetOrdained(owner));
+      for (const id of picked) { const m = fresh.find(x => x.id === id); if (m) m.linked = true; }
+      await edhaSetOwnerList(owner, "ordained", fresh);   // the 2bAA repoint — `linked` rides the entries
+    });
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
       content: `<div class="edha-trigger-card"><p>🪢 <strong>${item.name}</strong> (this scene): the chosen squares are linked. ${h.note || "GM/players execute the granted actions."}</p></div>` });
   } catch (e) { console.error("Edha Content | link-markers failed", e); }
@@ -13710,11 +13772,16 @@ function edhaPickProhibition(owner, title) {
  * annotating talents by RULE-SCAN (edhaProhPlaceRuleOf / edhaProhAnnotateRuleOf), names nothing. -- */
 async function edhaProhResolveViolation(owner, key, entryId, { via = "declared violation" } = {}) {
   try {
-    const list = foundry.utils.deepClone(edhaOwnerList(owner, key, "edict"));
-    const idx = list.findIndex(e => e.id === entryId);
-    if (idx < 0) { ui.notifications?.info("Edha: that Edict is no longer active."); return false; }
-    const [e] = list.splice(idx, 1);                          // consume FIRST — a racing second click no-ops
-    await edhaSetOwnerList(owner, key, list);
+    // Queued RMW (07-26n): the consume runs against a fresh read inside the per-owner queue.
+    const e = await edhaOwnerListQueue(owner, key, async () => {
+      const list = foundry.utils.deepClone(edhaOwnerList(owner, key, "edict"));
+      const idx = list.findIndex(x => x.id === entryId);
+      if (idx < 0) return null;
+      const [ent] = list.splice(idx, 1);                      // consume FIRST — a racing second click no-ops
+      await edhaSetOwnerList(owner, key, list);
+      return ent;
+    });
+    if (!e) { ui.notifications?.info("Edha: that Edict is no longer active."); return false; }
     const tref = await fromUuid(e.uuid).catch(() => null); const target = tref?.actor ?? tref;
     if (!target) { edhaOrderCard(owner, null, `<p>⚖️ The Edict on ${e.name} resolves — the target is gone; the Edict is consumed.</p>`); return true; }
     const alive = (Number(target.system?.resources?.hea?.value) || 0) > 0;
@@ -16403,8 +16470,8 @@ function edhaRegisterNativeEventSystem() {
         return;
       }
 
-      const cur = edhaOwnerList(owner, key, status);
       if (this.op === "count") {
+        const cur = edhaOwnerList(owner, key, status);
         ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
           content: `<p>📋 <strong>${item.name}</strong>: ${cur.length}/${cap} ${label}${cur.length === 1 ? "" : "s"} sustained.${this.note ? ` <span style="opacity:.8">${this.note}</span>` : ""}</p>` });
         return;
@@ -16414,21 +16481,22 @@ function edhaRegisterNativeEventSystem() {
        * Inevitable Snare and Pinpoint Charge are the other two known instances (§9o). The refusal
        * is also vetoed pre-cost; this return false is the belt. */
       if (this.op === "annotate") {
-        const field = String(this.annotateField || "sealed").trim() || "sealed";
-        const list = foundry.utils.deepClone(cur);
-        const e = [...list].reverse().find(x => x && !x[field]);
-        if (!e) { ui.notifications?.warn(`Edha: no ${label} left to mark ${field}.`); return false; }
-        /* `sourceItemUuid` (2bX — the Pinpoint correction): the annotated entry remembers WHICH
-         * document annotated it, so a downstream resolver (Fate's snare spring) reads the rider
-         * formula and contest dials off that item instead of a module constant — editing the
-         * talent's damage in Foundry actually changes what the spring rolls. */
-        await edhaSetOwnerList(owner, key, list.map(x => x === e ? { ...x, [field]: true, sourceItemUuid: item.uuid } : x));
-        // A POINT-BOUND entry (charges — 2bY) has no creature name; say which marker instead.
-        const eName = e.name || `${e.talent || label} #${list.indexOf(e) + 1}`;
-        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
-          content: `<p>📋 <strong>${item.name}</strong>: the ${label} on <strong>${eName}</strong>${e.proh ? ` ("<em>${e.proh.text}</em>")` : ""} is <strong>${field}</strong>.${this.note ? ` <span style="opacity:.8">${this.note}</span>` : ""}</p>` });
-        if (key === "charges") edhaPostChargesCard(owner);   // refresh the Detonate buttons so the ⊕ shows (2bY — keyed on the LEDGER, not a talent)
-        return;
+        return await edhaOwnerListQueue(owner, key, async () => {   // queued RMW (07-26n) — fresh read inside
+          const field = String(this.annotateField || "sealed").trim() || "sealed";
+          const list = foundry.utils.deepClone(edhaOwnerList(owner, key, status));
+          const e = [...list].reverse().find(x => x && !x[field]);
+          if (!e) { ui.notifications?.warn(`Edha: no ${label} left to mark ${field}.`); return false; }
+          /* `sourceItemUuid` (2bX — the Pinpoint correction): the annotated entry remembers WHICH
+           * document annotated it, so a downstream resolver (Fate's snare spring) reads the rider
+           * formula and contest dials off that item instead of a module constant — editing the
+           * talent's damage in Foundry actually changes what the spring rolls. */
+          await edhaSetOwnerList(owner, key, list.map(x => x === e ? { ...x, [field]: true, sourceItemUuid: item.uuid } : x));
+          // A POINT-BOUND entry (charges — 2bY) has no creature name; say which marker instead.
+          const eName = e.name || `${e.talent || label} #${list.indexOf(e) + 1}`;
+          ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+            content: `<p>📋 <strong>${item.name}</strong>: the ${label} on <strong>${eName}</strong>${e.proh ? ` ("<em>${e.proh.text}</em>")` : ""} is <strong>${field}</strong>.${this.note ? ` <span style="opacity:.8">${this.note}</span>` : ""}</p>` });
+          if (key === "charges") edhaPostChargesCard(owner);   // refresh the Detonate buttons so the ⊕ shows (2bY — keyed on the LEDGER, not a talent)
+        });
       }
       /* THE FILL (07-25, 2bU — Unravel Everything): place on every living enemy within the colour's
        * Attunement Range, nearest first, until the cap refuses. A fill never evicts — "up to your
@@ -16438,27 +16506,28 @@ function edhaRegisterNativeEventSystem() {
         if (!otok) { ui.notifications?.warn(`Edha: ${item.name} — no token on the scene to measure from.`); return; }
         const ft = this.rangeColor ? edhaAttuneFtColor(owner, this.rangeColor) : 0;
         if (!ft) { ui.notifications?.warn(`Edha: ${item.name} — set an Attunement Range colour for the enemies-range placement.`); return; }
-        let list = cur.slice();
-        const cands = edhaTokensWithin(otok, ft)
-          .filter(t => t.actor && (t.document?.disposition ?? 1) !== (otok.document?.disposition ?? 1)
-            && (t.actor.system?.resources?.hea?.value ?? 1) > 0 && !list.some(e => e.uuid === t.actor.uuid))
-          .sort((a, b) => Math.hypot(a.center.x - otok.center.x, a.center.y - otok.center.y) - Math.hypot(b.center.x - otok.center.x, b.center.y - otok.center.y));
-        const placed = [];
-        for (const t of cands) {
-          const entry = { id: foundry.utils.randomID(), uuid: t.actor.uuid, name: t.actor.name, talent: item.name,
-            ...(this.sceneScoped === false ? {} : { sceneId: canvas?.scene?.id ?? null }) };
-          const res = edhaListPush(list, entry, { cap, evict: "refuse" });
-          if (res.refused) break;
-          const mark = { actorId: owner.id, talent: item.name };
-          if (t.actor.isOwner) { await t.actor.toggleStatusEffect?.(status, { active: true }); try { await t.actor.setFlag("edha-content", `markedBy.${status}`, mark); } catch (e) {} }
-          else if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "apply-status-mark", payload: { actorUuid: t.actor.uuid, statusId: status, mark } }); } catch (e) {} }
-          else { ui.notifications?.warn(`Edha: a GM must be online to mark ${t.actor.name} — the fill stops here.`); break; }
-          list = res.list; placed.push(t.actor.name);
-        }
-        if (placed.length) await edhaSetOwnerList(owner, key, list);
-        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
-          content: `<p>📋 <strong>${item.name}</strong>: ${placed.length ? `<strong>${placed.join(", ")}</strong> bear${placed.length === 1 ? "s" : ""} your ${label}` : "no enemy in range to mark"} (${list.length}/${cap}).${this.note ? ` <span style="opacity:.8">${this.note}</span>` : ""}</p>` });
-        return;
+        return await edhaOwnerListQueue(owner, key, async () => {   // queued RMW (07-26n) — fresh read inside
+          let list = edhaOwnerList(owner, key, status).slice();
+          const cands = edhaTokensWithin(otok, ft)
+            .filter(t => t.actor && (t.document?.disposition ?? 1) !== (otok.document?.disposition ?? 1)
+              && (t.actor.system?.resources?.hea?.value ?? 1) > 0 && !list.some(e => e.uuid === t.actor.uuid))
+            .sort((a, b) => Math.hypot(a.center.x - otok.center.x, a.center.y - otok.center.y) - Math.hypot(b.center.x - otok.center.x, b.center.y - otok.center.y));
+          const placed = [];
+          for (const t of cands) {
+            const entry = { id: foundry.utils.randomID(), uuid: t.actor.uuid, name: t.actor.name, talent: item.name,
+              ...(this.sceneScoped === false ? {} : { sceneId: canvas?.scene?.id ?? null }) };
+            const res = edhaListPush(list, entry, { cap, evict: "refuse" });
+            if (res.refused) break;
+            const mark = { actorId: owner.id, talent: item.name };
+            if (t.actor.isOwner) { await t.actor.toggleStatusEffect?.(status, { active: true }); try { await t.actor.setFlag("edha-content", `markedBy.${status}`, mark); } catch (e) {} }
+            else if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "apply-status-mark", payload: { actorUuid: t.actor.uuid, statusId: status, mark } }); } catch (e) {} }
+            else { ui.notifications?.warn(`Edha: a GM must be online to mark ${t.actor.name} — the fill stops here.`); break; }
+            list = res.list; placed.push(t.actor.name);
+          }
+          if (placed.length) await edhaSetOwnerList(owner, key, list);
+          ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+            content: `<p>📋 <strong>${item.name}</strong>: ${placed.length ? `<strong>${placed.join(", ")}</strong> bear${placed.length === 1 ? "s" : ""} your ${label}` : "no enemy in range to mark"} (${list.length}/${cap}).${this.note ? ` <span style="opacity:.8">${this.note}</span>` : ""}</p>` });
+        });
       }
       if (!who) {
         // The auto-pick coming up empty is a fact for the card, not an error (Spreading Omen: "no
@@ -16470,58 +16539,67 @@ function edhaRegisterNativeEventSystem() {
       }
 
       if (this.op === "release") {
-        const idx = cur.findIndex(e => e.uuid === who.uuid);
-        if (idx < 0) return false;        // nothing to release → the dispatcher skips the rules after this one
-        const [gone] = cur.splice(idx, 1);
-        await edhaSetOwnerList(owner, key, cur);
-        await edhaListUnmark(gone, status, { key, ownerId: owner.id, multiOwner: this.multiOwner === true });
-        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
-          content: `<p>📋 <strong>${item.name}</strong>: ${who.name}'s <strong>${label}</strong> is spent (${cur.length}/${cap} left).${this.note ? ` <span style="opacity:.8">${this.note}</span>` : ""}</p>` });
-        return;
+        return await edhaOwnerListQueue(owner, key, async () => {   // queued RMW (07-26n) — fresh read inside
+          const cur = edhaOwnerList(owner, key, status);
+          const idx = cur.findIndex(e => e.uuid === who.uuid);
+          if (idx < 0) return false;      // nothing to release → the dispatcher skips the rules after this one
+          const [gone] = cur.splice(idx, 1);
+          await edhaSetOwnerList(owner, key, cur);
+          await edhaListUnmark(gone, status, { key, ownerId: owner.id, multiOwner: this.multiOwner === true });
+          ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+            content: `<p>📋 <strong>${item.name}</strong>: ${who.name}'s <strong>${label}</strong> is spent (${cur.length}/${cap} left).${this.note ? ` <span style="opacity:.8">${this.note}</span>` : ""}</p>` });
+        });
       }
 
-      // place
-      if (this.allowDuplicates !== true && cur.some(e => e.uuid === who.uuid)) return;   // already yours — never double-mark
       /* The declared PROHIBITION (2bV — Order's Edict). The picker runs now and the choice rides
        * the entry; the engine's violation watchers key on `entry.proh`, never on a talent. The
        * system has already charged the cost, so a cancel REFUNDS it (the Trade-Routes convention)
-       * — net "nothing spent" without a name-keyed takeover. */
+       * — net "nothing spent" without a name-keyed takeover. USER INTERACTION, so it stays
+       * OUTSIDE the queued section below (07-26n) — an open picker must not stall the ledger. */
       let proh = null;
       if (this.prohibition === true) {
         proh = event.options?.edhaProh ?? await edhaPickProhibition(owner, `${item.name} — declare ONE prohibited action`);
         if (!proh) { edhaRefundCost(item); ui.notifications?.info(`${item.name} cancelled — cost refunded.`); return false; }
       }
-      const entry = { id: foundry.utils.randomID(), uuid: who.uuid, name: who.name, talent: item.name,
-        ...(proh ? { proh, sealed: false } : {}),
-        ...(this.sceneScoped === false ? {} : { sceneId: canvas?.scene?.id ?? null }) };
-      const { list, evicted, refused } = edhaListPush(cur, entry, { cap, evict: this.evict || "oldest" });
-      if (refused) {
+      // place — the queued RMW (07-26n). This is the section bench run 4 caught racing: three
+      // defeats in one tick ran three of these placements concurrently, all reading the same
+      // stored list, and the last write won. The dup-check, push, mark and commit now happen
+      // behind the per-owner-per-key queue, against a FRESH read.
+      return await edhaOwnerListQueue(owner, key, async () => {
+        const cur = edhaOwnerList(owner, key, status);
+        if (this.allowDuplicates !== true && cur.some(e => e.uuid === who.uuid)) return;   // already yours — never double-mark
+        const entry = { id: foundry.utils.randomID(), uuid: who.uuid, name: who.name, talent: item.name,
+          ...(proh ? { proh, sealed: false } : {}),
+          ...(this.sceneScoped === false ? {} : { sceneId: canvas?.scene?.id ?? null }) };
+        const { list, evicted, refused } = edhaListPush(cur, entry, { cap, evict: this.evict || "oldest" });
+        if (refused) {
+          ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+            content: `<p>📋 <strong>${item.name}</strong>: no ${label} placed on ${who.name} — you are at your cap of ${cap}.</p>` });
+          return;
+        }
+        /* MARK FIRST, commit the ledger only once it landed (07-24v — a real bug, found scouting).
+         * The order used to be reversed, and the failure was silent in the worst way: with no GM online
+         * to mark a creature the player does not own, edhaSetOwnerList had ALREADY committed, so the
+         * ledger held an entry whose creature carried no status — and edhaOwnerList's
+         * reconcile-on-read then filtered that entry out for ever. Net effect: the placement appeared
+         * to do nothing, the cap never saw it, and junk accumulated in the flag. This affects EVERY H3
+         * consumer, including the covenants ledger migrated on 07-24u. */
+        const mark = { actorId: owner.id, talent: item.name };
+        if (who.isOwner) { await who.toggleStatusEffect?.(status, { active: true }); try { await who.setFlag("edha-content", `markedBy.${status}`, mark); } catch (e) {} }
+        else if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "apply-status-mark", payload: { actorUuid: who.uuid, statusId: status, mark } }); } catch (e) {} }
+        else { ui.notifications?.warn(`Edha: a GM must be online to mark ${who.name} — nothing placed.`); return; }
+        await edhaSetOwnerList(owner, key, list);
+        const mo = this.multiOwner === true;
+        for (const e of evicted) await edhaListUnmark(e, status, { key, ownerId: owner.id, multiOwner: mo });
         ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
-          content: `<p>📋 <strong>${item.name}</strong>: no ${label} placed on ${who.name} — you are at your cap of ${cap}.</p>` });
-        return;
-      }
-      /* MARK FIRST, commit the ledger only once it landed (07-24v — a real bug, found scouting).
-       * The order used to be reversed, and the failure was silent in the worst way: with no GM online
-       * to mark a creature the player does not own, edhaSetOwnerList had ALREADY committed, so the
-       * ledger held an entry whose creature carried no status — and edhaOwnerList's
-       * reconcile-on-read then filtered that entry out for ever. Net effect: the placement appeared
-       * to do nothing, the cap never saw it, and junk accumulated in the flag. This affects EVERY H3
-       * consumer, including the covenants ledger migrated on 07-24u. */
-      const mark = { actorId: owner.id, talent: item.name };
-      if (who.isOwner) { await who.toggleStatusEffect?.(status, { active: true }); try { await who.setFlag("edha-content", `markedBy.${status}`, mark); } catch (e) {} }
-      else if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "apply-status-mark", payload: { actorUuid: who.uuid, statusId: status, mark } }); } catch (e) {} }
-      else { ui.notifications?.warn(`Edha: a GM must be online to mark ${who.name} — nothing placed.`); return; }
-      await edhaSetOwnerList(owner, key, list);
-      const mo = this.multiOwner === true;
-      for (const e of evicted) await edhaListUnmark(e, status, { key, ownerId: owner.id, multiOwner: mo });
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
-        content: `<p>📋 <strong>${item.name}</strong>: <strong>${who.name}</strong> bears your <strong>${label}</strong> (${list.length}/${cap}).`
-          + `${proh ? ` It must not <strong>${proh.text}</strong>.` : ""}`
-          + `${evicted.length ? ` The oldest (${evicted.map(e => e.name).join(", ")}) fades — you sustain at most ${cap}.` : ""}`
-          + `${this.note ? ` <span style="opacity:.8">${this.note}</span>` : ""}</p>`
-          + `${proh ? edhaListPlaceNotes(owner, key) : ""}`
-          + `${proh ? `<button type="button" class="edha-order-btn" data-edha-action="violated" data-edha-owner="${owner.uuid}" data-edha-list="${key}" data-edha-edict="${entry.id}">⚖ Violated — resolve</button>` : ""}`
-          + `${this.releaseButton ? `<button type="button" class="edha-list-release" data-owner="${owner.uuid}" data-list="${key}" data-status="${status}" data-entry="${entry.id}"${mo ? ` data-multi="1"` : ""}>${this.releaseButton}</button>` : ""}` });
+          content: `<p>📋 <strong>${item.name}</strong>: <strong>${who.name}</strong> bears your <strong>${label}</strong> (${list.length}/${cap}).`
+            + `${proh ? ` It must not <strong>${proh.text}</strong>.` : ""}`
+            + `${evicted.length ? ` The oldest (${evicted.map(e => e.name).join(", ")}) fades — you sustain at most ${cap}.` : ""}`
+            + `${this.note ? ` <span style="opacity:.8">${this.note}</span>` : ""}</p>`
+            + `${proh ? edhaListPlaceNotes(owner, key) : ""}`
+            + `${proh ? `<button type="button" class="edha-order-btn" data-edha-action="violated" data-edha-owner="${owner.uuid}" data-edha-list="${key}" data-edha-edict="${entry.id}">⚖ Violated — resolve</button>` : ""}`
+            + `${this.releaseButton ? `<button type="button" class="edha-list-release" data-owner="${owner.uuid}" data-list="${key}" data-status="${status}" data-entry="${entry.id}"${mo ? ` data-multi="1"` : ""}>${this.releaseButton}</button>` : ""}` });
+      });
     },
   });
   api.registerItemEventHandlerType({
