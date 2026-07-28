@@ -7273,7 +7273,7 @@ async function edhaCreatorApplyPick(actor, kind, doc, docs) {
 
 const EDHA_CREATOR_PICKS = {
   culture: { title: "Where are you from?", intro: "Pick your country of origin. The card grants your nation's <strong>cultural expertise</strong> and asks you to pick <strong>two origin expertises</strong> from its list (Ashkar picks differently — the card explains)." },
-  heroic:  { title: "Your heroic path", intro: "Pick your heroic path. Its <strong>Key talent</strong> and <strong>starting kit</strong> (with the 5-silver purse) are granted automatically. The weapon slot stays YOUR pick: any weapon ≤ 2 gold you can actually use." },
+  heroic:  { title: "Your heroic path", intro: "Pick your heroic path. Its <strong>Key talent</strong>, its <strong>free starting skill rank</strong> (the one your path names) and its <strong>starting kit</strong> (with the 5-silver purse) are granted automatically. The weapon slot stays YOUR pick: any weapon ≤ 2 gold you can actually use." },
   leyline: { title: "Your leyline attunement", intro: "Pick the leyline you attune to. The color's <strong>Attunement Key</strong> and the universal <strong>Draw Mana</strong> action are granted automatically." },
   deity:   { title: "A deity path? (optional)", intro: "Deity attunement is <em>usually earned in play</em> — GM's call. <strong>Browse the trees</strong> to see where your character might one day build, and <strong>note a faith</strong> if they're religious (pure flavor — no talents, no commitment). Skip unless your table starts attuned.", skippable: true },
 };
@@ -7419,30 +7419,81 @@ async function edhaGrantBasicActions(actor) {
   } catch (e) { console.warn("Edha Content | basic-actions grant failed", e); return 0; }
 }
 
-// Path training (Ben 07-19: the skills page "lets you place all five — one should be
-// automatic"): the heroic path grants +1 rank in one of ITS skills, picked here. The skill
-// list is read at runtime from the ORIGINAL cosmere heroic-paths pack doc (linkedSkills), so
-// no repo copy can drift; the choice is stamped on edha-content.pathRankSkill so Start over /
-// ↺ Change heroic hand the rank back (no stacking on redo).
-async function edhaCreatorPathRank(actor, DV2, pathName) {
+// Pure: the starting skill named on a heroic path's own card. Every path's description ends
+// "Starting Skill: <X>. If you choose <Path> as your starting path, gain a free skill rank in
+// <X>." — in TWO markup shapes ("<strong>Starting Skill: Athletics.</strong>" and
+// "<strong>Starting Skill:</strong> <strong>Discipline.</strong>"), so strip tags first. Returns
+// the skill's LABEL; edhaSkillIdFromLabel turns it into an id. Pinned in tests/ against all six.
+function edhaParseStartingSkill(html) {
+  const text = String(html ?? "").replace(/<[^>]*>/g, " ").replace(/&nbsp;/g, " ");
+  const m = /Starting Skill:\s*([A-Za-z][A-Za-z ]*?)\s*\./.exec(text);
+  return m ? m[1].replace(/\s+/g, " ").trim() : null;
+}
+// Resolve a skill LABEL ("Athletics", "Heavy Weaponry") to its CONFIG id ("ath", "hwp"). Matches
+// the id itself too, so a card that names an id still resolves.
+function edhaSkillIdFromLabel(label) {
+  const want = String(label ?? "").trim().toLowerCase();
+  if (!want) return null;
+  for (const [id, cfg] of Object.entries(CONFIG.COSMERE?.skills ?? {})) {
+    if (id.toLowerCase() === want) return id;
+    let lbl = cfg?.label ?? id;
+    try { lbl = game.i18n.localize(lbl); } catch (e) { /* raw key stands */ }
+    if (String(lbl).trim().toLowerCase() === want) return id;
+  }
+  return null;
+}
+
+// Path training (Ben 07-19: the skills page "lets you place all five — one should be automatic"):
+// the heroic path grants a free +1 rank in ONE FIXED skill — Warrior/Athletics, Hunter/Perception,
+// Scholar/Lore, Agent/Insight, Envoy/Discipline, Leader/Leadership. Stamped on
+// edha-content.pathRankSkill so Start over / ↺ Change heroic hand the rank back (no stacking).
+//
+// ⚠️ 2026-07-28, bench run 21. This used to read `system.linkedSkills` off the pack doc and offer
+// a PICK from it; the dialog never appeared for any path, silently, and the run filed it as an
+// authoring gap ("all six heroic paths ship linkedSkills: []"). It is NOT a gap and no data change
+// was needed. In the cosmere system `linkedSkills` means the skills a path UNLOCKS: the character
+// sheet renders `path.system.linkedSkills.filter(id => actor.system.skills[id].unlocked)`, and
+// `Actor#orphanedSkills` is the non-core skills no path claims. Core heroic paths unlock no
+// non-core skills, so [] is exactly what they must ship — and a populated list would have offered
+// surge skills, not training. There was never a choice to offer, either: the rule on every path's
+// own card names ONE skill.
+//
+// The system already implements this rule, table and all (STARTING_SKILLS +
+// cosmereRPG.utils.macros.startingPath.set/unset, which also stamps flags.cosmere-rpg
+// .isStartingPath). Call it instead of re-keying the table here — iron rule 2a, compose what
+// exists — and learn which skill moved by DIFFING ranks, so no path→skill mapping lives in this
+// engine at all. The card-text parse is the fallback for an install whose system lacks the macro.
+async function edhaCreatorPathRank(actor, pathName) {
   try {
     if (actor.getFlag?.("edha-content", "pathRankSkill")) return;   // once per heroic pick
-    const pack = game.packs?.get("cosmere-rpg.heroic-paths");
-    const src = (await pack?.getDocuments())?.find(d => d.name === pathName);
-    const linked = Array.from(src?.system?.linkedSkills ?? []);
-    if (!linked.length) { ui.notifications?.info(`Edha: ${pathName}'s skill list isn't readable — add your path's +1 rank by hand on the skills page.`); return; }
+    const items = Array.from(actor.items ?? []);
+    const path = items.find(i => i.type === "path" && i.system?.type === "heroic" && i.name === pathName)
+              ?? edhaCreationState(actor).heroic;
+    if (!path) { ui.notifications?.warn(`Edha: ${pathName} isn't on the actor yet — add its +1 starting rank by hand on the skills page.`); return; }
+    // A path the actor already carries as its STARTING path owns the free rank; never grant twice.
+    const claimed = items.find(i => i.type === "path" && i.getFlag?.("cosmere-rpg", "isStartingPath") === true);
+    if (claimed && claimed.id !== path.id) {
+      ui.notifications?.info(`Edha: ${claimed.name} is already ${actor.name}'s starting path — the free skill rank stays with it.`);
+      return;
+    }
     const label = (id) => { try { return game.i18n.localize(CONFIG.COSMERE?.skills?.[id]?.label ?? id); } catch (e) { return id; } };
-    const rows = linked.map(id => `<label><input type="radio" name="edhaPR" value="${escCw(id)}"><span style="flex:1"><strong>${escCw(label(id))}</strong> — currently rank ${Number(actor.system?.skills?.[id]?.rank) || 0}</span></label>`).join("");
-    const res = await DV2.wait({
-      window: { title: `Character Creation — ${pathName} training` }, rejectClose: false, position: { width: 440 },
-      content: `<p>Your heroic path's training grants <strong>+1 rank</strong> in one of its skills (this is the "+1 from your heroic path" — the skills page counts it as already spent):</p><div class="edha-cw-picklist">${rows}</div>`,
-      buttons: [{ action: "ok", label: "Train ▶", default: true, callback: (ev, btn) => btn.form?.querySelector?.("input[name=edhaPR]:checked")?.value ?? null }],
-    });
-    if (!res) { ui.notifications?.info("Edha: no training picked — add the path's +1 rank by hand on the skills page."); return; }
-    const cur = Number(actor.system?.skills?.[res]?.rank) || 0;
-    await actor.update({ [`system.skills.${res}.rank`]: cur + 1 });
-    await actor.setFlag?.("edha-content", "pathRankSkill", res);
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎓 <strong>${escCw(actor.name)}</strong>'s ${escCw(pathName)} training: +1 ${escCw(label(res))} (rank ${cur + 1}).</p>` });
+    const rankOf = (id) => Number(actor.system?.skills?.[id]?.rank) || 0;
+    const before = Object.fromEntries(Object.keys(actor.system?.skills ?? {}).map(id => [id, rankOf(id)]));
+    let skillId = null;
+    const macro = globalThis.cosmereRPG?.utils?.macros?.startingPath;
+    if (typeof macro?.set === "function") {
+      try {
+        await macro.set(path, { notify: false });
+        skillId = Object.keys(before).find(id => rankOf(id) > before[id]) ?? null;
+      } catch (e) { console.warn("Edha Content | the system's startingPath.set failed — falling back to the card text", e); }
+    }
+    if (!skillId) {   // fallback: the sentence on the path's own card
+      skillId = edhaSkillIdFromLabel(edhaParseStartingSkill(path.system?.description?.value));
+      if (skillId) await actor.update({ [`system.skills.${skillId}.rank`]: rankOf(skillId) + 1 });
+    }
+    if (!skillId) { ui.notifications?.warn(`Edha: couldn't read ${pathName}'s starting skill — add its +1 rank by hand on the skills page.`); return; }
+    await actor.setFlag?.("edha-content", "pathRankSkill", skillId);
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🎓 <strong>${escCw(actor.name)}</strong>'s ${escCw(pathName)} training: +1 ${escCw(label(skillId))} (rank ${rankOf(skillId)}).</p>` });
   } catch (e) { console.warn("Edha Content | path-rank grant failed", e); }
 }
 async function edhaCreatorWipePathRank(actor) {
@@ -7559,7 +7610,7 @@ async function edhaCreatorPickStep(actor, DV2, kind) {
   await edhaCreatorApplyPick(actor, kind, doc, docs);
   if (kind === "culture") await edhaAwaitExpertisePicks();   // the origin picks read as part of this page (Ashkar chains two)
   if (kind === "heroic") {
-    await edhaCreatorPathRank(actor, DV2, doc.name);                            // the path's automatic +1 skill rank
+    await edhaCreatorPathRank(actor, doc.name);                                 // the path's automatic +1 starting skill rank
     if (EDHA_KITS[doc.name]) await edhaCreatorWeaponPick(actor, DV2, doc.name); // the kit's weapon slot
   }
   return "next";
