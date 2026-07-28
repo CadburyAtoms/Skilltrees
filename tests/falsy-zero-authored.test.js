@@ -9,8 +9,9 @@
  * so the click charged **2 Investiture** (measured 10 → 8) under a button reading "−0 Investiture".
  * Display and behaviour disagreed because one used `== null` and the other used `||`.
  *
- * THE FAMILY. 413 `|| <number>` sites in the engine; 168 with a non-zero default; ~31 of those read
- * an AUTHORED or dataset value. Four are bugs, and the discriminator is provenance, not shape:
+ * THE FAMILY. Measured on the FIXED engine, comments stripped: 410 `|| <number>` sites; 165 with a
+ * non-zero default; ~31 of those read an AUTHORED or dataset value. Four were bugs, and the
+ * discriminator is provenance, not shape:
  *   · `Number(ds.edhaCost) || 2`        — `edha-remove-injury` costs, `initial: 2/3`. LIVE (1 rule).
  *   · `Number(spec.speed) || 25`        — `edha-summon` / `edha-illusion-copy` speed. LIVE (4 rules:
  *     Holographic Illusion, Phantom Double, and The Seeming's two copies — every one of them a
