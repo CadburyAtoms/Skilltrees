@@ -148,6 +148,24 @@ leftover combatant wedges Advanced Encounters. **Byte-check after the sync:** th
 `if (!game.user?.isGM || actor.type === "character") return;` anywhere. Un-blocks **2bAA-8**'s refund
 half and the three run-13 re-test rows in the player-client window section.
 
+**⏳ NEW 2026-07-27s — the fix-pass-C ENGINE half needs ⟳ sync the module + F5 (no rebuild, no ⟳ Sync
+Talents).** Two fixes, both engine-only; **nothing here rides the owed heroic build**. (1) **The two
+hazard-Region placers spoke two flag vocabularies.** `edhaPlaceHazard` (the `edha-place-hazard`
+handler behind **Pyre**, Walking Ruin's trail rule and Fire the Wrack) stamped a flat
+`sourceOwnerUuid`, while `edhaOwnedTerrainRegions` — the membership spine behind
+`edhaTokenInOwnedTerrain` (which gates the **whole** `edha-zone-react {defeat-in-zone}` ignite
+sweep), `edhaEnemiesInOwnedTerrain` and Pack Sense — reads `terrain.ownerUuid`. Every Region that
+handler placed was invisible to the spine, so **Combustion Chain could never fire off a Pyre zone**.
+All placers now write the one nested shape and `edhaTerrainOwnerUuid` is the only reader of the flag.
+(2) **A GM hand-deleting a summon's ACTOR from the sidebar** went through none of the five engine
+teardown sites, so the token (and its combatant, which wedges Advanced Encounters) was orphaned; a
+`deleteActor` hook scoped to engine-minted actors (`flags.edha-content.summon === true`) now sweeps
+them. **Byte-check after the sync:** the served `register-skills.js` must contain
+`edhaTerrainOwnerUuid` (3×) and `edhaSweepOrphanedTokens` (2×), and must contain **exactly one**
+`sourceOwnerUuid` outside comments (the legacy read arm — a second one means the write came back).
+⚠️ **A Pyre / Fire-the-Wrack zone already standing on a scene when you sync is understood by the
+legacy read arm, so it is not stranded** — but re-place it if you want the canonical flag on it.
+
 **⏳ NEW 2026-07-27n — a FIFTH pack build is owed: `foundry-build heroic` (again) + ⟳ Sync Talents.**
 Sharp Eye's `activation` is now `skill_test` / `prc` (it was `utility` with no skill, so the system
 rolled nothing and H1 had nothing to resolve). This is a **second** heroic build — the run-11 one
@@ -1275,12 +1293,21 @@ anything that errors in the row's note box.
       ✅ **(b) PASSES MECHANICALLY — bench run 14 (2026-07-27r).** Phantom Barricade click-placed for 1 Inv (4→3) as a 6-HP actor + token + **4 walls** boxing (2400,9300); HP→0 removed the actor, the token AND all four walls (scene back to its baseline 117). Re-placed and then **ended the encounter** (deleted the bench combat) → actor, token and all four walls went too. Card count doubled (`Bench` + `Gamemaster`) — the same un-reloaded-client artifact as the dissipates row above, not a teardown defect.
       ❌ **(a) IGNITE — A NEW DEFECT, and it is NOT the doubling. → test-pass-fixes.** The ignite never fired at all off **Pyre**, the canonical pairing. Root cause is a **flag-vocabulary split between the two hazard-Region placers**: `edhaPlaceHazard` (~L16173, the `edha-place-hazard` handler behind Pyre / Walking Ruin's trail-rule / Fire the Wrack) stamps `flags.edha-content.{sourceItem, sourceOwnerUuid, spreads}` and **no `terrain` object**, while `edhaOwnedTerrainRegions` (~L14970) — the reader behind `edhaTokenInOwnedTerrain`, which gates the whole `defeat-in-zone` sweep, and behind `edhaEnemiesInOwnedTerrain` — filters on `flags.edha-content.terrain.ownerUuid`. A Pyre zone is therefore invisible to Combustion Chain forever. **Proved by a matched control, not by inference:** a victim dropped to 0 HP standing in a Pyre zone (which was actively ticking it for 12 energy, so it WAS inside) produced **0 cards and 0 Regions**; the same victim, same talent, same owner, dropped inside a **Walking Ruin trail** patch — placed by the *other* helper (`edhaDropHazard`, which does write `terrain.ownerUuid`) — fired immediately. The other three writers (`edhaPlaceHazardRegionGM` ~L10184, the burst path ~L9863, green terrain ~L14952) all use the `terrain.ownerUuid` shape, so `edhaPlaceHazard` is the lone outlier.
       ⚠️ Once it fires, it DOES double under two GMs (2 cards — `Bench` + `Gamemaster` — and **2** hazard Regions), but that is the un-reloaded-client artifact again; re-judge with (a) fixed and Ben's client reloaded.
-- [ ] **Token-first teardown, RE-TEST (07-27q)** — Foundry never cascades actor→token, so deleting the actor alone orphaned the placeable; the orphan's leftover combatant then made Advanced Encounters throw `Cannot read properties of null (reading 'system')` from its `initiative` getter on **every** later combatant add, wedging the tracker mid-combat.
-      **POSITIVE:** summon a Construct (or raise a phantom copy), add it to combat, then delete its **ACTOR** directly from the sidebar → the token disappears from the canvas **and** the combatant disappears from the tracker, and adding another combatant afterwards throws nothing. Repeat for a broken Seeming copy and for a replaced Combat Construct — the three shapes run 13 reproduced.
-      **NEGATIVE (load-bearing):** deleting the summon's **TOKEN** instead must still delete its actor (the last-token cleanup owns that delete, and the fix deliberately does **not** duplicate it). And a second, unrelated token on the same scene must be untouched.
-      *(2026-07-27q: the two correct implementations already in the engine were factored into
-      `edhaDeleteActorWithTokens`; three sites had open-coded the wrong half. Pinned in
-      `tests/orphan-token.test.js`.)*
+      *(2026-07-27s: (a)'s root cause is FIXED — see the Combustion Chain row directly below, which is the one to run first. This row is now only about the DOUBLING, and it cannot be judged until Ben F5s the Gamemaster client.)*
+- [ ] **Combustion Chain fires off a Pyre zone (07-27s)** — engine-only, ⟳ sync the module + F5 first. The two hazard-Region placers wrote two different owner flags, so every zone dropped by `edha-place-hazard` (Pyre, Walking Ruin's trail rule, Fire the Wrack) was invisible to `edhaTokenInOwnedTerrain`, which gates the entire `edha-zone-react {defeat-in-zone}` sweep. Bench run 14 measured 0 cards and 0 Regions where an identical drop in a Walking Ruin patch fired instantly.
+      **POSITIVE:** own Combustion Chain, drop a **Pyre** zone, put a foe inside it and take that foe to 0 HP → the 🔥 ignite card posts, a fresh hazard Region appears **on the body**, and the card carries the "Spread your zones" button. Then repeat inside a **Walking Ruin trail** patch (the control that already worked) — it must still fire, i.e. the fix did not trade one placer for the other.
+      **NEGATIVE (load-bearing, two of them):** drop the foe **outside** every zone → no card, no new Region (the gate must still be a gate, not a fail-open). And with a **second** caster's Pyre zone on the scene, drop a foe inside *theirs* → your Combustion Chain must **not** fire (owner identity must still discriminate; a fallback that matched everything would look like a pass on the positive).
+      ⚠️ Also confirm the Pyre **end-of-turn spread prompt** still whispers (its owner test moved onto the shared spine in the same commit) — one 🔥 "the blaze spreads" card at the end of the owner's turn, with Spread + Extinguish buttons.
+- [ ] ⚑ **PROBE, not a fix — "the adversary I just dragged in does nothing" (07-27s)** — bench run 14 blamed a dead `edhaDropRuleIndex()`; **that diagnosis is wrong** (it is registered on eight hooks and has been since 2026-07-24), so nothing was changed and the symptom is still open. Before reporting it again, capture WHICH half is stale, with the console open:
+      Import an adversary that owns a rule (Dread Presence is the easy one), drop its token, and **before moving anything** run:
+      `edhaWatchersOfRule("edha-move-veto").map(w => w.actor.name)` — then F5 and run the same line again.
+      **If the list is the same both times**, the index is fine and the fault is downstream (the rule, the item type, or the status gate) — say so. **If the token only appears after the F5**, capture `canvas.tokens.placeables.length` and `game.scenes.viewed.tokens.size` at the same moment: that pins whether the sweep's actor enumeration or the invalidation is the liar. Either answer is a real finding; a repeat of "the index never invalidates" is not.
+- [ ] **Hand-deleting a summon's ACTOR from the sidebar (07-27s, attempt 2)** — ⟳ sync the module + F5 first. Fix pass B factored the five ENGINE teardown paths onto `edhaDeleteActorWithTokens` and run 14 confirmed those are correct — but it is a **helper, not a hook**, so a GM deleting the actor by hand went through none of them. A `deleteActor` hook, scoped to actors the engine minted (`flags.edha-content.summon === true`), now sweeps the tokens; Foundry cascades token→combatant from there.
+      **POSITIVE:** summon a Construct (or raise a phantom copy), add it to combat, then delete its **ACTOR** directly from the sidebar → the token disappears from the canvas **and** the combatant disappears from the tracker, and adding another combatant afterwards throws nothing. Repeat for a broken Seeming copy and for a **Phantom Barricade** — three different mints of the same flag.
+      **NEGATIVE 1 (load-bearing — the fix must not have duplicated the other half):** deleting the summon's **TOKEN** instead must still delete its actor, exactly once, with **no** `Actor "…" does not exist!` in the console.
+      **NEGATIVE 2 (load-bearing — the cascade must not be blanket):** hand-delete a **non-engine** actor that has tokens on the scene — a pack-imported adversary, or a duplicate of one — and its tokens must **stay** (Foundry's own behaviour, unchanged). Also confirm an unrelated bystander token is untouched when an engine summon IS deleted.
+      **NEGATIVE 3:** with two GM clients connected, one hand-delete must produce **one** sweep, not two.
+      *(2026-07-27q factored the helper; 2026-07-27s added the missing sidebar door. Both halves pinned in `tests/orphan-token.test.js`.)*
       ❌ **THE POSITIVE AS WRITTEN STILL FAILS — bench run 14 (2026-07-27r), attempt 1. → test-pass-fixes.**
       A Forge-Construct summon (stamped, tokened) was added to a bench combat and its **ACTOR** deleted
       directly: the actor went, but `tokenGone: false`, `combatantGone: false`, and the very next

@@ -6,6 +6,130 @@ Backing detail (every session's notes) lives in agent memory `edha-foundry-modul
 
 ---
 
+## 2026-07-27s — FIX PASS C of bench marathon 2 (the last one). Run 14's defects: **2 FIXED, 1 RETIRED AS THE SAME BUG, 1 DIAGNOSIS OVERTURNED.** ENGINE-ONLY → ⟳ Sync + F5, **no pack rebuild** (nothing here rides the owed `foundry-build heroic`). 325 tests green.
+
+### Rulings (Ben, 2026-07-27) — nothing new decided; **13 pending**, carried forward
+
+The twelve carried from fix pass B are untouched: PLAYER `ACTOR_CREATE` · the "(Illusion)" label ·
+bench PC sight range · Black Draw Mana "affected 5" · Volatile Strike `whenDealer` · Fault Line
+bystanders · Rallying Shout reminder · Phantom Double pre-cost veto · `edhaConsumeList` `value.min` ·
+`applyButtonsTo` one-GM notification · 2bR-17's spec-vs-rule mismatch (the row says "vs Cognitive
+defense", the rule is `edha-def-test {vs: "prompt-dc"}`) · the run-13 orphan row's fix scope.
+**That last one is now DECIDED rather than pending** — the hook was scopeable safely, so it was
+built (see cause 2) and the row keeps its verb. **One NEW item takes its place: item 3 below —
+"the adversary I just dragged in does nothing" has no established cause and needs one live probe.**
+
+### Bug root causes — causes, not changes; each verified in code before anything was touched
+
+**(1) Two hazard placers spoke two flag vocabularies, and the terrain spine understood only one —
+so Combustion Chain could never fire off a Pyre zone.** ✅ FIXED · **this is ALSO run 14's third
+report ("the ignite site never fired at all"): one bug, not two.** The engine had grown two spellings
+for *who owns this dangerous terrain*: `edhaPlaceHazardRegionGM`, the burst path and green terrain
+all stamp nested `terrain: {ownerUuid, color}`; `edhaPlaceHazard` — the `edha-place-hazard` handler
+behind **Pyre**, Walking Ruin's trail rule and Fire the Wrack — stamped a **flat `sourceOwnerUuid`**.
+And two readers, each matching only one: `edhaOwnedTerrainRegions` (→ `edhaTokenInOwnedTerrain`,
+which gates the **entire** `edha-zone-react {defeat-in-zone}` sweep; → `edhaEnemiesInOwnedTerrain`,
+Apex Predator's crowd gate; → Pack Sense's target gate; → the trail dedupe) reads only the nested
+one, while the flat one was read *only* by the Pyre spread watcher. Every Region that handler ever
+placed was therefore invisible to every membership question in the engine. **Nothing failed loudly —
+the gate simply never opened**, which is why six gates and 27 migration passes walked past it: a
+written flag and a read flag both existed, they just were not the same flag.
+**Direction of the fix, and why:** converge on the nested shape rather than teach the readers both,
+so exactly **one** vocabulary is ever written. `edhaTerrainOwnerUuid(region)` is now the single
+function that knows how a Region spells its owner, and the spread watcher — the flat key's only
+reader — goes through the spine like everything else. The flat key survives there as a **legacy READ
+arm only**, and that is not a permanent shim by preference: hazard Regions are `scope: "scene"` and
+can outlive a deploy (the spread watcher already carried that exact caveat from 2bY), and **Foundry
+was running, so the live world's Regions could not be read to prove the set empty** — bench run 14's
+hygiene block reports the world holding exactly **1** Region. Putting the tolerance in the *spine*
+rather than in the spread watcher means one legacy zone is understood by *every* consumer at once,
+which is the behaviour it should always have had. Delete the arm once no live scene carries one.
+**Family sweep — 6 Region placers, 9 readers, ONE crossed pairing:** placers are the burst path
+(L9863), `edhaPlaceHazardRegionGM` (L10184), `edhaFateCreateSnareRegionGM` (L11579),
+`edhaCivFortifyGM` (L12904), `edhaCreateGreenTerrain` (L14952) and `edhaPlaceHazard` (L16173); the
+snare and fortified namespaces are self-consistent (`fateSnare`/`snareId`, `fortified.{ownerUuid,
+drawingId}`), `followTokenUuid` and `turnEndDamage` each have exactly one writer and one reader.
+`edhaPlaceHazard` was the lone outlier. *(Noted in passing, not fixed: `edhaFateCreateSnareRegionGM`
+writes a flat `owner` flag nothing reads — a dead write, not a crossed one.)*
+
+**(2) The hand-delete orphan — the gap was SCOPE, not logic, and the row's verb was the tell.**
+✅ FIXED (attempt 2 of 2). Run 14 confirmed fix pass B's teardown is correct at all five engine sites
+(two verified live) and that the load-bearing negative holds. But `edhaDeleteActorWithTokens` is a
+**helper invoked from five call sites, not a `deleteActor` hook**, so a GM deleting the actor from
+the **sidebar** — exactly what the row says — passed through none of them. Foundry cascades nothing
+from an actor; it *does* cascade token→combatant and nothing cascades actor→combatant, so the orphan
+kept a live combatant and Advanced Encounters threw from its `initiative` getter on every later
+combatant add. The missing door is now a hook, and **the cascade is scoped to actors the engine
+minted by an exact predicate rather than a heuristic**: `Actor.create` appears **twice** in the whole
+engine and only `edhaSummonCreateGM` mints NPCs (the other is the creation wizard's PC), and it
+always stamps `flags.edha-content.summon = true` — constructs, phantom copies and barriers all route
+through `edhaSummon` and differ only in `extraFlags`. So it cannot reach a hand-made adversary, a PC
+or an imported pack actor. It does **not** delete the actor (already gone) and does not race the
+last-token cleanup, which re-reads `game.actors.get(tokenDoc.actorId)` and finds null once our
+deletes land — the "Actor does not exist" race stays closed.
+
+**(3) ❌ THE `edhaDropRuleIndex()` DIAGNOSIS IS WRONG — and the symptom is UNRESOLVED, not fixed.**
+Run 14: *"`edhaDropRuleIndex()` is dead code — the rule index never invalidates, so anything added
+mid-session gets no automation until F5."* **The stated cause does not survive inspection.** The
+invalidator is registered on **eight** hooks — `createItem, updateItem, deleteItem, createToken,
+deleteToken, createActor, deleteActor, canvasReady` — and has been since the index was introduced
+(`dcd51a7`, 2026-07-24); `_edhaRuleIndex` is a module-level `let` reassigned wholesale, so every
+reader sees the drop. It reads as dead code because the registration is a **`for` loop on the next
+line**, which a grep for the call site does not find. A comment now says so at the definition.
+**What I then checked, and ruled out, for the real symptom:**
+- *Does the index get rebuilt stale inside the `createToken` batch?* No. Verified in Foundry v13
+  source: `client/data/client-backend.mjs` fires `Hooks.callAll("createToken", …)` **after**
+  `doc._onCreate(…)`, and `CanvasDocumentMixin#_onCreate` does `layer.objects.addChild(object)`
+  synchronously inside that call, while `PlaceablesLayer#placeables` is literally
+  `this.objects.children`. So the new token **is** in `canvas.tokens.placeables` by the time any
+  listener runs. (`edhaAuraSweepSoon`, the one `createToken` listener that rebuilds synchronously,
+  is therefore safe — and it only caches the `edha-aura` key anyway.)
+- *Is the relevant registration a different cache?* No — `edha-move-veto` dispatches through
+  `edhaWatchersOfRule`, and that is the only cache on the path.
+- *Do the hooks fire on the client that matters?* Yes — document CRUD hooks fire on every client;
+  the drag is a `createActor` **and** a `createToken`, and both invalidate.
+- *Is the synthetic (unlinked) token actor replaced under the cached reference?* No —
+  `ActorDelta#_initialize` only re-mints `syntheticActor` when the token is repointed to a different
+  base actor; ordinary updates `reset()` it in place.
+- *Does `edhaCasterToken` pick the wrong copy when unlinked twins share a world actor id?* No —
+  it resolves `actor.getActiveTokens()[0]`, which for a token actor is its own token. Run 14's own
+  2bZ-10 evidence (two copies isolated individually, clean >100 ft control) confirms it.
+**Verdict: reported cause WRONG; symptom REAL but mechanism UNESTABLISHED.** No fix shipped — a
+guess here would be the sixth confident-but-wrong claim of this marathon. It is queued for Ben with
+a one-command probe (checklist row below).
+
+### New REUSABLE primitives
+
+- **`edhaTerrainOwnerUuid(region)`** — the ONE function that knows how a Region spells its owner.
+  Every membership consumer asks it (via `edhaOwnedTerrainRegions`). New terrain code asks it too;
+  nothing else may read the flag directly.
+- **`edhaSweepOrphanedTokens(actorId)`** — delete every token still pointing at a dead actor id,
+  across all scenes; the combatant cascades with it. Pair it with a **mint-scoped** `deleteActor`
+  hook, never a blanket one.
+
+### The gate: `lint-refs` pass 16 — a hazard Region must declare its owner in the one vocabulary
+
+Any `createEmbeddedDocuments("Region", …)` whose `edha-content` flags declare `hazard:` must also
+declare `terrain: { ownerUuid: … }`, and may not write a flat `*OwnerUuid` beside it (nested
+namespaces are the vocabulary; a flat owner key is the bug). Delimited by paren balance on the
+string-blanked copy, pass-15 style, with the pass-12 "the extraction rotted" self-check — it asserts
+it found ≥5 Region creates (it finds 6). **Mutation-verified in both directions against the real
+defect**: restoring the flat flag fires both arms, and `tests/terrain-ownership.test.js` fails on the
+same mutation. Chosen over gating "every written flag must have a matching reader", which would have
+been a 5-entry allowlist of legitimately-unread metadata (`hazard`, `scope`, `terrain.color`,
+`fortified.disposition`, the snare's `owner`) and — decisively — **would not have caught this bug**,
+because the flat key *did* have a reader. It just wasn't the one that mattered.
+
+### ⚑ Could not self-verify (no Foundry here)
+
+Both fixes. Re-test rows with explicit positive **and** negative controls are in the checklist. The
+negatives are the load-bearing halves: for (1) another caster's terrain must **not** become yours and
+a body that falls **outside** the zone must **not** ignite one; for (2) deleting a summon's **token**
+must still delete its actor, and a bystander token on the same scene must be untouched when an
+unrelated actor is hand-deleted. Item 3 gets a **probe** row, not a fix row.
+
+---
+
 ## 2026-07-27r — BENCH RUN 14 (leyline + deity sweep; the marathon's last planned run). 7 rows retired on evidence, 2 new defects → test-pass-fixes, 1 fix-pass verdict DEFERRED on a stale client. DOCS-ONLY.
 
 Joined as `Bench` (`activeGM`, `isSelf`), world `edha`, system 2.1.0, canvas ready at 1280×720.
@@ -109,7 +233,7 @@ Bench chat can be flushed at Ben's convenience.
 
 ---
 
-Last update: **2026-07-27q** (FIX PASS B of bench marathon 2 — **ALL THREE RUN-13 DEFECTS FIXED, ALL ENGINE-ONLY (⟳ sync + F5, NO rebuild), AND EVERY ONE OF THEM WAS A FAMILY.** 316 tests green.
+Last update: **2026-07-27s** (FIX PASS C of bench marathon 2 — the last fix pass; delta at the top of this file. Run 14's two new defects fixed, its third report retired as the SAME bug as the first, and its fourth **diagnosis overturned**: `edhaDropRuleIndex()` is not dead code — it is registered on eight hooks, and the symptom it was blamed for is queued unfixed rather than guessed at. ENGINE-ONLY → ⟳ Sync + F5; 325 tests green; `lint-refs` pass 16 added.) Prior: **2026-07-27q** (FIX PASS B of bench marathon 2 — **ALL THREE RUN-13 DEFECTS FIXED, ALL ENGINE-ONLY (⟳ sync + F5, NO rebuild), AND EVERY ONE OF THEM WAS A FAMILY.** 316 tests green.
 
 **Bug root causes — written as causes, each re-derived from the installed source, not from the report.**
 

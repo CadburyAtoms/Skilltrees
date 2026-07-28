@@ -151,9 +151,20 @@ focus at Intimidation 3). Flamestance never worked in its life.
   is the `edha-place-hazard` handler (circle only).
 - **`EdhaHazardRegionBehavior`** (`edha-content.hazard`) — applies `damageFormula`/`damageType` on
   `tokenEnter`/`tokenTurnStart`. **`edhaHazardVisual(...)`** draws the player-visible overlay.
-- **Ownership/membership:** Regions carry `flags.edha-content.terrain = {ownerUuid, color}`.
+- **Ownership/membership — ONE VOCABULARY, and it is GATED (07-27s).** Every hazard/terrain Region
+  carries `flags.edha-content.terrain = {ownerUuid, color}`, and **`edhaTerrainOwnerUuid(region)` is
+  the only function allowed to know that**; ask it, or ask the spine built on it:
   `edhaOwnedTerrainRegions(owner, scene)`, `edhaPointInRegion(region,x,y)`,
   `edhaTokenInOwnedTerrain(tok, owner)`, `edhaEnemiesInOwnedTerrain(owner)`. No merge/union exists.
+  ⚠️ **A second spelling is not a synonym — it is a Region half the engine cannot see.** For two days
+  `edhaPlaceHazard` stamped a FLAT `sourceOwnerUuid` read only by the Pyre spread watcher, so every
+  Region it placed (Pyre, Walking Ruin's trail rule, Fire the Wrack) was invisible to the membership
+  spine and **Combustion Chain could never fire off a Pyre zone** — the canonical Destruction
+  pairing, measured dead at bench run 14 against a matched Walking-Ruin control that fired instantly.
+  Nothing failed loudly; the gate simply never opened. `lint-refs` **pass 16** now fails the build on
+  a hazard Region that omits `terrain.ownerUuid` or writes a flat `*OwnerUuid` beside it, and
+  `tests/terrain-ownership.test.js` pins both reads plus the two negatives. The flat key survives
+  ONLY as a legacy read arm, because hazard Regions are `scope:"scene"` and outlive a deploy.
 - **Square terrain toolkit (07-12f)** — Pyre + Green terrain are Foundation-shaped SQUARES (Regions
   hold multiple `rectangle` shapes). `edhaSnapCellRect(scene,x,y,cells)` (grid-snapped cell rect),
   `edhaSquareVisual(...)`, `edhaGrowTerrainSquareGM(sceneId,regionId,x,y)` (adds ONE adjacent grid
@@ -1264,6 +1275,16 @@ pre-07-24r consumer did. Necrotic Cascade's corpse detonation is the first `enem
   The lesson was learned at bench 07-17 and then re-learned at run 13, because three sites had each
   open-coded the wrong half; all five consumers now share this one. Pinned in
   `tests/orphan-token.test.js`.
+  **But a helper only covers the paths that CALL it** (07-27s, run 14): a GM hand-deleting the actor
+  from the sidebar goes through no engine site at all, so the `deleteActor` hook beside the helper is
+  the other half — `edhaSweepOrphanedTokens(actorId)` deletes every token still pointing at a dead
+  actor id, across all scenes, and the combatant goes with them. It **does not** delete the actor
+  (already gone) and does not race the last-token cleanup, which re-reads `game.actors.get(...)` and
+  finds null. ⚠️ **Scope any `deleteActor` cascade to actors the engine MINTED** — the hook fires for
+  every actor in the world. The exact predicate is `flags.edha-content.summon === true`:
+  `Actor.create` appears twice in the engine and only `edhaSummonCreateGM` mints NPCs (the other is
+  the creation wizard's PC), and constructs / phantom copies / barriers all route through
+  `edhaSummon`, differing only in `extraFlags`. Do not widen it to "has any edha flag".
 - **`edhaEvalSync(formula, rd)`** — the synchronous formula evaluator every passive amount goes
   through. **It handles DICE**: it substitutes roll data, folds computed die math
   (`edhaFoldDieMath`), then ROLLS the dice via `edhaRollDiceSync` before evaluating. ⚠️ It did not
