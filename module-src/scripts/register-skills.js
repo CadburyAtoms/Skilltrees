@@ -2045,6 +2045,20 @@ function edhaSceneActors({ directoryFilter = null } = {}) {
 // Every actor that can currently carry a rule: canvas tokens (unlinked adversaries live ONLY here —
 // the W29 lesson) plus every character in the directory (off-canvas owners still observe).
 function edhaWatchActors() { return edhaSceneActors({ directoryFilter: (a) => a.type === "character" }); }
+
+/* ⛑ A CLICK HANDLER'S OUTER CATCH IS NEVER "non-fatal" (bench run 23, 2026-07-28).
+ * Reaching it means the user pressed a button and the thing the button promises did not happen.
+ * Every one of the 33 chat-card handlers used to end in a bare `console.error`, which at the table
+ * is indistinguishable from a no-op: Living Image's "Pay N Investiture" button was read as
+ * "charges nothing, for any user, ever" across FOUR bench runs while a TypeError was being
+ * swallowed here on every single click. The console line was there the whole time and nobody was
+ * looking at the console. So: log for the trace AND raise, so the next one announces itself in the
+ * moment it happens. Deliberately NOT applied to the ~270 inner defensive catches — those guard
+ * optional work (a missing permission, an absent flag) and are legitimately non-fatal. */
+function edhaClickFailed(what, e) {
+  try { console.error(`Edha Content | ${what} failed`, e); } catch (_) {}
+  try { ui.notifications?.error(`Edha: ${what} failed — ${e?.message || e}. Details in the console (F12).`); } catch (_) {}
+}
 function edhaWatchersOfRule(type) {
   const hit = _edhaRuleIndex.get(type);
   if (hit) return hit;
@@ -2422,7 +2436,7 @@ async function edhaListReleaseClick(ev) {
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
         content: `<p>📋 <strong>${gone.talent || key}</strong>: ${owner.name}'s bond with <strong>${gone.name}</strong> ends (${cur.length} left).</p>` });
     });
-  } catch (e) { console.error("Edha Content | list release failed", e); }
+  } catch (e) { edhaClickFailed("list release", e); }
 }
 Hooks.on("renderChatMessageHTML", (msg, html) => {
   try {
@@ -2658,7 +2672,7 @@ async function edhaWatchManualClick(ev, msg) {
       ok: btn.dataset.ok === "false" ? false : true, total: Number(btn.dataset.total) || 0,
     });
     if (!fired) ui.notifications?.info("Edha: nothing is watching for that right now (armed? in range?).");
-  } catch (e) { console.error("Edha Content | manual watch trigger failed", e); }
+  } catch (e) { edhaClickFailed("manual watch trigger", e); }
 }
 Hooks.on("renderChatMessageHTML", (msg, html) => {
   try {
@@ -2874,7 +2888,7 @@ async function edhaPromptPickClick(ev) {
     // that was picked — Puppeteer's note has to say whose actions you are borrowing.
     if (!fired && h.note) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
       content: `<p>${h.icon ? `${h.icon} ` : ""}<strong>${item.name}</strong> (${owner.name}): ${edhaFillName(h.note, picked.name)}</p>` });
-  } catch (e) { console.error("Edha Content | prompt pick click failed", e); }
+  } catch (e) { edhaClickFailed("prompt pick click", e); }
 }
 /* The dispel click (2bU — the payload the `effects` source shipped with). GM-side: the pick card
  * lists EVERY enabled effect because nothing in the data says which are "magical" — that
@@ -2892,7 +2906,7 @@ async function edhaDispelPickClick(ev) {
     btn.closest(".edha-trigger-card")?.querySelectorAll("button").forEach((b) => (b.disabled = true));
     void edhaMarkCardResolved(edhaMessageIdOf(btn), "Unwoven ✓");
     ChatMessage.create({ content: `<p>🧵 <strong>${item?.name || "Dispel"}</strong>: <strong>${name}</strong> unravels from ${who}.</p>` });
-  } catch (e) { console.error("Edha Content | dispel pick failed", e); }
+  } catch (e) { edhaClickFailed("dispel pick", e); }
 }
 Hooks.on("renderChatMessageHTML", (msg, html) => {
   try {
@@ -4049,7 +4063,7 @@ async function edhaOpportunityClick(ev) {
     const card = btn.closest(".edha-opp-card");
     card?.querySelectorAll("button").forEach(b => { b.disabled = true; });
     btn.textContent = `${o.itemName} — spent`;
-  } catch (e) { console.error("Edha Content | Opportunity click failed", e); }
+  } catch (e) { edhaClickFailed("Opportunity click", e); }
 }
 Hooks.on("renderChatMessageHTML", (msg, html) => {
   const root = html instanceof HTMLElement ? html : html?.[0];
@@ -4242,7 +4256,7 @@ async function edhaPlotGrantClick(ev) {
     btn.closest(".edha-trigger-card")?.querySelectorAll(".edha-plotgrant-btn").forEach(b => b.disabled = true);
     btn.textContent = `✓ ${ally.name}`;
     ChatMessage.create({ content: `<p>🎲 <strong>${src}</strong>: ${ally.name}'s next ${skill ? String(skill).toUpperCase() + " " : ""}test raises the stakes.</p>` });
-  } catch (e) { console.error("Edha Content | plot-grant click failed", e); }
+  } catch (e) { edhaClickFailed("plot-grant click", e); }
 }
 /* --- Tool A2: the designate-mark primitive (Guiding Signal shape, Ben 07-14) ---------------------
  * "Designate a character within Attunement Range; the NEXT ally who tests against them this round
@@ -4279,7 +4293,7 @@ async function edhaDesignateClick(ev) {
     if (!ok) return;
     btn.closest(".edha-trigger-card")?.querySelectorAll(".edha-designate-btn").forEach(b => b.disabled = true);
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🎯 <strong>${src}</strong>: ${owner.name} designates <strong>${tDoc.name}</strong> — the next ally to test against them this round raises the stakes. <span style="opacity:.8">(target ${tDoc.name}'s token when rolling)</span></p>` });
-  } catch (e) { console.error("Edha Content | designate click failed", e); }
+  } catch (e) { edhaClickFailed("designate click", e); }
 }
 // The mark grant a roller qualifies for: some same-side DESIGNATOR (not the roller) holds a live
 // plotDieMark whose marked token is among the rolling user's targets.
@@ -4535,7 +4549,7 @@ async function edhaCoordReactClick(ev) {
     for (const c of costs) { try { const res = owner.system?.resources?.[c.resource], cur = res?.value ?? 0; await owner.update({ [`system.resources.${c.resource}.value`]: Math.max(0, cur - c.value) }); } catch (e) {} }
     btn.disabled = true; btn.textContent = `${name} used`;
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>${result}</p>` });
-  } catch (e) { console.error("Edha Content | coord react click failed", e); }
+  } catch (e) { edhaClickFailed("coord react click", e); }
 }
 function edhaBindCoordReactButtons(html) {
   const root = html instanceof HTMLElement ? html : html?.[0];
@@ -4688,7 +4702,7 @@ async function edhaBeaconClick(ev) {
     btn.closest(".edha-trigger-card")?.querySelectorAll(".edha-beacon-btn").forEach(b => b.disabled = true);
     btn.textContent = `✓ cleansed`;
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🕊️ <strong>${name}</strong>: removed <strong>${edhaConditionLabel(statusId)}</strong> from ${ally.name}${costLabel ? ` (${costLabel})` : ""}.</p>` });
-  } catch (e) { console.error("Edha Content | cleanse click failed", e); }
+  } catch (e) { edhaClickFailed("cleanse click", e); }
 }
 function edhaBindBeaconButtons(html) {
   const root = html instanceof HTMLElement ? html : html?.[0];
@@ -5000,7 +5014,7 @@ async function edhaBulwarkClick(ev) {
     else { note = "(no valid target — re-target and retry)"; }
     btn.disabled = true; btn.textContent = `${name} used`;
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🛡️ <strong>${name}</strong>: ${note}</p>` });
-  } catch (e) { console.error("Edha Content | Bulwark click failed", e); }
+  } catch (e) { edhaClickFailed("Bulwark click", e); }
 }
 function edhaBindBulwarkButtons(html) {
   const root = html instanceof HTMLElement ? html : html?.[0];
@@ -5102,7 +5116,7 @@ async function edhaAccordVoiceClick(ev) {
     const amend = `📢 <strong>${name}</strong>: disadvantage — d20 ${origNat} vs ${newNat} → keep <strong>${keptNat}</strong>; total <strong>${newTotal}</strong> (was ${origTotal}).`;
     const rewrote = attacker ? await edhaRewriteOrRelay(attacker, origTotal, newTotal, amend) : false;
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>📢 <strong>${name}</strong>: ${attacker ? attacker.name + "'s" : "the"} attack rolls disadvantage — kept d20 <strong>${keptNat}</strong> (of ${origNat}/${newNat}); result <strong>${newTotal}</strong> (was ${origTotal})${rewrote ? " — <em>updated on its roll card.</em>" : " — <em>GM applies the lower.</em>"}</p>` });
-  } catch (e) { console.error("Edha Content | voice click failed", e); }
+  } catch (e) { edhaClickFailed("voice click", e); }
 }
 
 // Bound by Word — an accord partner may use the accord-maker's White modifier on an objective test (ruling B).
@@ -5127,7 +5141,7 @@ async function edhaAccordBoundClick(ev) {
     const amend = `🤝 <strong>Bound by Word</strong>: using the accord-maker's White modifier → total <strong>${newTotal}</strong> (was ${wasTotal}).`;
     const rewrote = await edhaRewriteOrRelay(partner, wasTotal, newTotal, amend);
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: partner }), content: `<p>🤝 <strong>Bound by Word</strong>: ${partner.name}'s result is <strong>${newTotal}</strong> (was ${wasTotal})${rewrote ? " — <em>updated on the roll card.</em>" : " — <em>GM applies the higher.</em>"}</p>` });
-  } catch (e) { console.error("Edha Content | bound click failed", e); }
+  } catch (e) { edhaClickFailed("bound click", e); }
 }
 
 // Accord partner watcher (GM-gated, whispered): a flag-driven ENGINE-OWNED subsystem since 07-25 —
@@ -6109,7 +6123,7 @@ async function edhaIllusionRetestClick(ev) {
     const copyActor = await fromUuid(ev.currentTarget.dataset.edhaCopy).catch(() => null);
     const doc = copyActor?.getActiveTokens?.()[0]?.document; if (!doc) { ui.notifications?.warn("Edha: the illusion's token is gone."); return; }
     await edhaPhantomBeliefSweep(doc);
-  } catch (e) { console.error("Edha Content | illusion re-test failed", e); }
+  } catch (e) { edhaClickFailed("illusion re-test", e); }
 }
 Hooks.on("renderChatMessageHTML", (msg, html) => {
   const root = html instanceof HTMLElement ? html : html?.[0];
@@ -6256,7 +6270,7 @@ async function edhaUpkeepInvClick(ev) {
     if (cur < cost) { ui.notifications?.warn(`Edha: ${a.name} has no ${rlab} left to pay upkeep.`); return; }
     await a.update({ [`system.resources.${res}.value`]: cur - cost });
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: a }), content: `<p>🎭 <strong>${tal?.name || "Upkeep"}</strong>: ${a.name} pays ${cost} ${rlab} of upkeep (${cur - cost} left).</p>` });
-  } catch (e) { console.error("Edha Content | illusion upkeep failed", e); }
+  } catch (e) { edhaClickFailed("illusion upkeep", e); }
 }
 Hooks.on("renderChatMessageHTML", (msg, html) => {
   const root = html instanceof HTMLElement ? html : html?.[0];
@@ -9560,7 +9574,7 @@ async function edhaTriggerCardClick(ev) {
     try { await edhaRunTriggerEffect(owner, name, spec, ctx); } finally { _edhaInTrigger = false; }
     btn.disabled = true; btn.textContent = `${name} fired`;
     void edhaMarkCardResolved(edhaMessageIdOf(btn), `${name} fired ✓`);   // survives refresh (card-persistence family)
-  } catch (e) { console.error("Edha Content | trigger card click failed", e); }
+  } catch (e) { edhaClickFailed("trigger card click", e); }
 }
 function edhaBindTriggerButtons(html) {
   const root = html instanceof HTMLElement ? html : html?.[0];
@@ -9631,7 +9645,7 @@ async function edhaPickTargetClick(ev) {
     edhaSetUserTargets([tok]);
     await edhaMarkCardResolved(edhaMessageIdOf(btn), `✓ ${tok.name}`);
     await item.use();
-  } catch (e) { console.error("Edha Content | single-target pick failed", e); }
+  } catch (e) { edhaClickFailed("single-target pick", e); }
 }
 Hooks.on("renderChatMessageHTML", (msg, html) => {
   const root = html instanceof HTMLElement ? html : html?.[0];
@@ -10733,7 +10747,7 @@ async function edhaChargeArmClick(ev) {
       btn.closest(".edha-trigger-card")?.querySelectorAll("button").forEach(b => b.disabled = true);
       btn.textContent += " ✓";
     });
-  } catch (e) { console.error("Edha Content | charge arm failed", e); }
+  } catch (e) { edhaClickFailed("charge arm", e); }
 }
 async function edhaChargeTrigFire(owner, chargeId, why) {
   try {
@@ -11412,7 +11426,7 @@ async function edhaMutationClick(ev) {
     btn.closest(".edha-trigger-card")?.querySelectorAll(".edha-mutation-btn").forEach(b => b.disabled = true);
     btn.textContent = "✓ applied";
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🧬 ${target.name} gains <strong>${EDHA_MUTATION_LABEL[kind] || kind}</strong> for the scene.</p>` });
-  } catch (e) { console.error("Edha Content | mutation click failed", e); }
+  } catch (e) { edhaClickFailed("mutation click", e); }
 }
 /* (edhaApplyApexForm / edhaApplyPrimalRegen retired 2bW — `edha-regen-grant` writes the same
  * apexForm flag + lifeRegen entry from the talents' own rules. edhaLinkLifeline / the Lifeline
@@ -11460,7 +11474,7 @@ async function edhaLifeCleanseClick(ev) {
     btn.closest(".edha-trigger-card")?.querySelectorAll(".edha-lifecleanse-btn").forEach(b => b.disabled = true);
     btn.textContent = "✓ cleansed";
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🩺 <strong>${decodeURIComponent(ds.edhaLabel || "Cleanse")}</strong> (${owner.name}): removed <strong>${edhaConditionLabel(ds.edhaStatus)}</strong> from ${target.name}.</p>` });
-  } catch (e) { console.error("Edha Content | cleanse click failed", e); }
+  } catch (e) { edhaClickFailed("cleanse click", e); }
 }
 /* Any talent carrying an edha-cleanse rule with `trigger: success-damage-roll` posts its cleanse
  * card for the CURRENT TARGET when the use's own TEST beat the rule's defense. The 07-27b version
@@ -12702,7 +12716,7 @@ async function edhaSovExposeClick(ev) {
     if (!owner) return;
     btn.disabled = true; btn.textContent = "✓ recovered";
     await edhaSovRecoverInv(owner, decodeURIComponent(btn.dataset.edhaSource || "the talent"), btn.dataset.edhaVictim || "the creature", Number(btn.dataset.edhaN) || 1);
-  } catch (e) { console.error("Edha Content | expose click failed", e); }
+  } catch (e) { edhaClickFailed("expose click", e); }
 }
 Hooks.on("renderChatMessageHTML", (msg, html) => {
   const root = html instanceof HTMLElement ? html : html?.[0];
@@ -13557,7 +13571,7 @@ async function edhaCivTeleportClick(ev) {
     await edhaMoveTokenTo(tok, arrive, { teleport: true });
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: tok.actor }),
       content: `<p>🛤️ <strong>${tok.actor.name}</strong> steps through the trade route to the linked Foundation (Free Action — once per turn, trusted).</p>` });
-  } catch (e) { console.error("Edha Content | trade-route teleport failed", e); }
+  } catch (e) { edhaClickFailed("trade-route teleport", e); }
 }
 
 /* Bonds of Community moved onto its document 2bV (iron rule 2b): an `edha-damage-react`
@@ -13593,7 +13607,7 @@ async function edhaCivSummonEffectEndClick(ev) {
     await eff.update({ disabled: true });
     btn.disabled = true;
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: c }), content: `<p>🏰 <strong>${c.name}</strong> ends ${btn.dataset.edhaEffect} (Free Action).</p>` });
-  } catch (e) { console.error("Edha Content | summon effect end failed", e); }
+  } catch (e) { edhaClickFailed("summon effect end", e); }
 }
 
 async function edhaCivTransformSummon(item, h, c) {
@@ -14021,7 +14035,7 @@ async function edhaRedirectClick(ev) {
     btn.dataset.edhaLeft = String(left);
     if (left <= 0) { btn.disabled = true; btn.textContent = "Redirect spent."; } else { btn.textContent = `Redirect (up to ${left} left)`; }
     edhaPowerCard(owner, null, `<p>👑 <strong>${talName}</strong>: ${at.actor.name} shoulders <strong>${amt}</strong> ${type} in ${owner.name}'s place${left > 0 ? ` (${left} redirect left on this hit)` : ""}.</p>`);
-  } catch (e) { console.error("Edha Content | redirect failed", e); }
+  } catch (e) { edhaClickFailed("redirect", e); }
 }
 /* The INTERCEPT sweep (2bV — Shoulder the Oath's shape, generic): a creature on a watcher's ledger
  * lost HP → the watcher is offered a Reaction to take floor(D × fraction) in their place, heal them
@@ -14106,7 +14120,7 @@ async function edhaInterceptClick(ev) {
     if (heal > 0) await edhaCrossHeal(victim, heal);
     if (thp > 0) { await edhaGrantTempHpCross(owner, thp, name); await edhaGrantTempHpCross(victim, thp, name); }
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🤝 <strong>${name}</strong>: ${owner.name} takes <strong>${half}</strong> ${type} in ${victim.name}'s place${heal > 0 ? `; ${victim.name} heals <strong>${heal}</strong>` : ""}${thp > 0 ? `; both gain <strong>${thp}</strong> Temp HP` : ""}.</p>` });
-  } catch (e) { console.error("Edha Content | intercept resolve failed", e); }
+  } catch (e) { edhaClickFailed("intercept resolve", e); }
 }
 Hooks.on("renderChatMessageHTML", (msg, html) => {
   try {
@@ -14408,7 +14422,7 @@ async function edhaCounterTransferClick(ev) {
     btn.closest(".edha-trigger-card")?.querySelectorAll(".edha-counter-transfer-btn").forEach(b => b.disabled = true);
     btn.textContent = `✓ ${target.name}`;
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>📖 <strong>${name}</strong>: ${target.name} now bears <strong>${n}</strong> ${edhaConditionLabel(ds.edhaStatus) || ds.edhaStatus}.</p>` });
-  } catch (e) { console.error("Edha Content | counter transfer click failed", e); }
+  } catch (e) { edhaClickFailed("counter transfer click", e); }
 }
 function edhaCounterPostAllyBurstCard(owner, sourceName, allyTokens, formula) {
   try {
@@ -14439,7 +14453,7 @@ async function edhaCounterBurstClick(ev) {
     else { ui.notifications?.warn(`Edha: a GM must be online to apply ${name}'s burst.`); return; }
     btn.disabled = true; btn.textContent = `✓ ${ally.name} → ${target.name}`;
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: ally }), rolls: [dr], content: `<p>📖 <strong>${name}</strong>: ${ally.name} deals <strong>${amt}</strong> vital to ${target.name}.</p>` });
-  } catch (e) { console.error("Edha Content | counter burst click failed", e); }
+  } catch (e) { edhaClickFailed("counter burst click", e); }
 }
 Hooks.on("updateActor", async (victim, changes, options) => {
   try {
@@ -15297,7 +15311,7 @@ async function edhaOrderBtnClick(ev) {
     }
     // `break-covenant` retired 07-24u (H3's generic `.edha-list-release`); `shoulder` retired 2bV
     // (the generic `.edha-intercept-btn` — edha-redirect {direction: intercept}).
-  } catch (e) { console.error("Edha Content | Order button failed", e); }
+  } catch (e) { edhaClickFailed("Order button", e); }
 }
 Hooks.on("renderChatMessageHTML", (msg, html) => {
   const root = html instanceof HTMLElement ? html : html?.[0];
@@ -15524,7 +15538,7 @@ async function edhaSpreadClick(ev) {
     btn.disabled = true; btn.textContent = "Terrain expanded";
     const label = ds.edhaLabel ? decodeURIComponent(ds.edhaLabel) : "The terrain";
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>${free ? "🔥" : "🌱"} <strong>${label}</strong> (${owner.name}): the terrain expands ${ds.edhaSize} ft${cost > 0 ? ` (−${cost} Investiture)` : ""}.</p>` });
-  } catch (e) { console.error("Edha Content | terrain-spread click failed", e); }
+  } catch (e) { edhaClickFailed("terrain-spread click", e); }
 }
 function edhaBindSpreadButtons(html) { const root = html instanceof HTMLElement ? html : html?.[0]; root?.querySelectorAll?.(".edha-spread-btn").forEach(b => b.addEventListener("click", edhaSpreadClick)); }
 Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindSpreadButtons(html));
@@ -15539,7 +15553,7 @@ async function edhaSpreadSquareClick(ev) {
     if (!grown) return;   // warned already (occupied / not adjacent) — button stays live for a re-pick
     btn.disabled = true; btn.textContent = "✓ Spread";
     ChatMessage.create({ content: `<p>🔥 <strong>${ds.edhaLabel || "Terrain"}</strong> spreads one square.</p>` });
-  } catch (e) { console.error("Edha Content | square-spread click failed", e); }
+  } catch (e) { edhaClickFailed("square-spread click", e); }
 }
 // Player extinguish (07-12 rework): the region + its visuals go away; players relay through the GM.
 async function edhaExtinguishClick(ev) {
@@ -15549,7 +15563,7 @@ async function edhaExtinguishClick(ev) {
     btn.closest(".edha-trigger-card")?.querySelectorAll("button").forEach(b => b.disabled = true);
     btn.textContent = "✓ Extinguished";
     ChatMessage.create({ content: `<p>💨 <strong>${ds.edhaLabel || "The terrain"}</strong> is put out.</p>` });
-  } catch (e) { console.error("Edha Content | extinguish click failed", e); }
+  } catch (e) { edhaClickFailed("extinguish click", e); }
 }
 Hooks.on("renderChatMessageHTML", (msg, html) => {
   const root = html instanceof HTMLElement ? html : html?.[0];
@@ -15716,7 +15730,7 @@ async function edhaVitalSurgeClick(ev) {
     await edhaGrantTempHpCross(target, amt, label);
     btn.disabled = true; btn.textContent = "Temp HP granted";
     await roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor: owner }), flavor: `💚 ${label} — ${amt} Temp HP → ${target.name}${cost > 0 ? ` (−${cost} Investiture)` : ""}.` });
-  } catch (e) { console.error("Edha Content | temp-HP offer click failed", e); }
+  } catch (e) { edhaClickFailed("temp-HP offer click", e); }
 }
 
 /* --- Cleanse offer card (`edha-heal-react` {offer-cleanse} — was name-keyed to Natural Recovery) --- */
@@ -15747,7 +15761,7 @@ async function edhaNaturalRecoveryClick(ev) {
     const label = ds.edhaLabel ? decodeURIComponent(ds.edhaLabel) : "Cleanse";
     const costNote = ds.edhaCostnote ? decodeURIComponent(ds.edhaCostnote) : "spend an Opportunity";
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🍃 <strong>${label}</strong> (${owner.name}): removed <strong>${edhaConditionLabel(ds.edhaStatus)}</strong> from ${target.name} (${costNote}).</p>` });
-  } catch (e) { console.error("Edha Content | cleanse offer click failed", e); }
+  } catch (e) { edhaClickFailed("cleanse offer click", e); }
 }
 
 /* --- Injury-removal menu (`edha-remove-injury` — was name-keyed to Reknit Form) -------------------- */
@@ -15791,7 +15805,7 @@ async function edhaReknitClick(ev) {
     btn.closest(".edha-trigger-card")?.querySelectorAll(".edha-reknit-btn").forEach(b => b.disabled = true);
     btn.textContent = "✓ healed";
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🩹 <strong>${talLabel}</strong> (${owner.name}): removed <strong>${label}</strong> from ${target.name} (−${cost} Investiture).</p>` });
-  } catch (e) { console.error("Edha Content | Reknit click failed", e); }
+  } catch (e) { edhaClickFailed("Reknit click", e); }
 }
 
 function edhaBindRestorationButtons(html) {
