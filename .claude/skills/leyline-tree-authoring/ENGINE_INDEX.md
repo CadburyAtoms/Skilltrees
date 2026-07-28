@@ -1574,6 +1574,12 @@ pre-07-24r consumer did. Necrotic Cascade's corpse detonation is the first `enem
   derived value when present, else the AWA table (0→10 · 1→15 · 2–3→20 · 4→25 · 5+→30; pinned).
   The build writes adversary token `sight.range` from it (per-block `senses` field wins) — Foundry
   natively renders lit areas beyond sight.range, so token vision IS the rule with no module code.
+  ⚠️ **CHARACTERS ONLY, since 07-28i.** `edhaDeriveSheetStats` now writes the AWA table into
+  `system.senses.range.derived` for PCs, so `edhaSensesRangeFt` returns the Edha number for them;
+  ADVERSARIES still derive the cosmere ladder `[5,10,20,50,100,∞]` at ceil(AWA/2) on their sheets
+  while their tokens carry the build's flat 10 ft default. Three surfaces, two-and-a-bit rules —
+  **`EDHA_RULINGS.md` R-56** decides how far to extend it. Until then, do not assume a creature's
+  Senses Range and a PC's mean the same thing.
 - **The aggro ledger** — every damaging item roll records the attacker TOKEN's last target
   (`aggro` flag, post-roll so an attack never counts itself; cleared at combat end). Solves the
   "GM owns every adversary, targeting is per-user" problem. **`edha-pack-advantage`** (sentinel):
@@ -1909,6 +1915,24 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
 - ⚠ FACT (07-18g): **never fold a DerivedValueField's `.bonus` into its `.override`** — the
   value getter adds `.bonus` on top of the override, so folding double-counts every AE
   (Surefooted's +10 displayed +20). Set the override to the base derivation only.
+- **THE EDHA DERIVED-STAT RULES — one source of truth** (`EDHA_HP_BONUS`,
+  **`edhaWalkRateFtFromSpd(spd)`** = 20 + 5×SPD, `edhaSensesRangeFtFromAwa(awa)`; canon is
+  `source-materials/legacy-uploads/Character_Building_Rules.md` §Derived stats). All three differ
+  from the cosmere system's own derivation, and **both** `edhaDeriveSheetStats` (the sheet) and
+  `edhaCwDerivedPreview` (the wizard's live panel) must read these helpers — never re-implement
+  the arithmetic. 07-28i: when they each carried a copy they drifted in BOTH directions at once
+  (preview 13/30/10 vs sheet 14/35/5), and a fix that only moved one surface would have been
+  right for one cell and wrong for the next. `EDHA_HP_BONUS` is deliberately ONE constant because
+  its value is the open ruling R-56's neighbour, **R-54**.
+- ⚠ FACT (07-28i): **the system CLAMPS every resource to its max BEFORE the module's derivation
+  runs.** `CommonActorDataModel#prepareSecondaryDerivedData` ends with
+  `resource.value = clamp(0, max.value, value)`, and that is inside `Actor#prepareDerivedData` —
+  i.e. before the `prepareDerivedData` wrapper adds `EDHA_HP_BONUS`. So **any max this module
+  raises after the fact is unreachable unless you also repair the clamp**: the stored value is cut
+  down on every prepare and no heal, rest or hand edit can ever reach the displayed max. The
+  repair re-runs the clamp from `_source` (never invents a point). Same family as the Investiture
+  source-persist gotcha. If you ever raise another resource max in derivation, repair its clamp
+  in the same breath.
 - ⚠ FACT (07-18g): **prose prereq names resolve TREE-LOCAL first** in foundry-build
   (classifyToken's localByName) — 28 talent names collide across trees and the global index is
   first-writer-wins.
@@ -1992,7 +2016,29 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
 - **`edhaCreatorDialogs(DV2)`** — wraps `DV2.wait`/`DV2.confirm` for a wizard-style flow: the
   current dialog re-fronts itself when a DOCUMENT sheet renders over it (never over dialogs/
   pickers); `.hold()` suspends for deliberate opens (open-tree, browse, content-link clicks);
-  `.off()` in the flow's finally. Reach for it for any future multi-step dialog walkthrough.
+  `.off()` in the flow's finally. **Also re-clamps a dialog that GROWS after Foundry positioned
+  it** (07-28i) — one ResizeObserver per wizard dialog, deciding via
+  **`edhaDialogNeedsReposition(topPx, heightPx, viewportH)`** (pure; false when the box already
+  fits and when it is already flush at top 0, so it never thrashes or fights a drag) and fixing it
+  with `setPosition({})`, which makes Foundry re-run its own clamp against the real height. Reach
+  for it for any future multi-step dialog walkthrough. **The trap it exists for:**
+  `ApplicationV2#_updatePosition` clamps `top` into `[0, viewportH − height]` exactly ONCE, at
+  render — so any page that fills or reveals content asynchronously (the country page's
+  `display:none` map, the stepper's render-filled preview panel) keeps a `top` computed for a
+  shorter box and hangs off the bottom of a short screen.
+- **`edhaCreatorPathRank(actor, pathName)`** — the heroic path's free starting skill rank. Calls
+  the SYSTEM's own `cosmereRPG.utils.macros.startingPath.set(pathItem, {notify:false})` (its
+  `STARTING_SKILLS` table is the rule: Warrior→ath · Hunter→prc · Scholar→lor · Agent→ins ·
+  Envoy→dis · Leader→lea) and learns which skill moved by DIFFING ranks, so no path→skill map
+  lives in this engine. Fallback for an install without the macro:
+  **`edhaParseStartingSkill(html)`** + **`edhaSkillIdFromLabel(label)`** — both pure, both pinned
+  against the six real cards in `data/path-descriptions.json`. Records
+  `flags.edha-content.pathRankSkill` so ↺ Change / Start over hand the rank back.
+  ⚠️ **`system.linkedSkills` is NOT this field and never was** (07-28i): in cosmere-rpg it lists
+  the skills a path UNLOCKS — the sheet renders it filtered by `.unlocked`, `Actor#orphanedSkills`
+  is the non-core skills no path claims — so core heroic paths correctly ship `[]`. Reading it for
+  training made the grant silently never fire for any path, for months. If you need "what does
+  this path give at creation", the answer is `STARTING_SKILLS` / the card's own sentence.
 - **`edha-pick-expertises`** (handler type) — pick-N expertises from the RULE'S OWN entries
   list (`entries` = JSON `[{id,type,label,text}]`, `pickAmount`, optional `title`). Exists
   because the native `grant-expertises pick:true` ignores its authored list and offers the

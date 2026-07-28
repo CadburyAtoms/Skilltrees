@@ -71,6 +71,17 @@ a hotbar macro calling it will throw (2bP-3 tests the replacement). PC tokens ar
 never need replacing; PCs need no ⟳ Sync unless a section says a specific pack-baked talent
 changed.
 
+📏 **HOW TO WRITE (AND READ) A BYTE-CHECK — the convention, stated once because 07-28g broke it.**
+A `must NOT contain <string>` clause **always means "outside comments"**, and it must SAY so: a
+fix routinely quotes the buggy code it replaced in its own explanatory docblock, so a literal
+"anywhere" reading fails a *correct* deploy. That is not hypothetical — 07-28g named three
+forbidden strings, two of which the shipped fix quotes at L334/L2017/L3458, and it cost bench
+run 21 and a fix pass one wrong turn each before the hash settled it. Most clauses here already
+said "outside comments" (lines ~124, ~147, ~190); 07-28g's was the lapse, now corrected.
+**The SHA-256 of the served `register-skills.js` against `HEAD:module-src/scripts/register-skills.js`
+(both CRLF-normalised) is what DECIDES.** Marker counts and string checks are corroboration; when
+one disagrees with the hash, believe the hash and go find the string's line numbers.
+
 **Marks caveat (07-26 restructure):** dashboard marks are keyed by section title + row text, so
 the restructure orphaned pre-restructure marks. If day-1 marks were never pasted back, recover
 them from the pre-restructure dashboard in git history before trusting the new sheet.
@@ -169,7 +180,8 @@ via the new `edhaDeleteActorWithTokens` — Foundry never cascades actor→token
 leftover combatant wedges Advanced Encounters. **Byte-check after the sync:** the served
 `register-skills.js` must contain `edhaAwaitCostCharged` (2×), `EDHA_PRE_COST_RES` (6×) and
 `edhaDeleteActorWithTokens` (7×), and must NOT contain the line
-`if (!game.user?.isGM || actor.type === "character") return;` anywhere. Un-blocks **2bAA-8**'s refund
+`if (!game.user?.isGM || actor.type === "character") return;` **outside comments** (see 07-28g's
+corrected clause below — "anywhere" has already failed a correct deploy once). Un-blocks **2bAA-8**'s refund
 half and the three run-13 re-test rows in the player-client window section.
 
 **⏳ NEW 2026-07-27s — the fix-pass-C ENGINE half needs ⟳ sync the module + F5 (no rebuild, no ⟳ Sync
@@ -230,7 +242,7 @@ the same victim skipped the **range** filter too, so a 5-ft cue fired from anywh
 now fail CLOSED, with `prototypeToken.disposition` as the fallback so a phantom copy still resolves
 to the side of the thing it copies. **Byte-check after the sync:** the served `register-skills.js`
 must contain `edhaActorSide` (**2×**) and `edhaAllyDropEligible` (**3×**), and must NOT contain
-`disp !== undefined && (t.document?.disposition ?? null) !== disp` anywhere. Re-test row is in
+`disp !== undefined && (t.document?.disposition ?? null) !== disp` **outside comments**. Re-test row is in
 `# BENCH — Engine-wide & cross-tree` → "Engine-wide fixes still unbenched"; it wants **four cells**,
 two of them positive. **The pack-rebuild list stays EMPTY.**
 
@@ -246,11 +258,41 @@ stamp is guarded on a running combat and the catch-up pass keyed on a status all
 deliberately excludes `braced`, `tagged`, `unstoppable`, `compelled` and `disoriented`.
 **Byte-check after the sync:** the served `register-skills.js` must contain `edhaNumOr` (**5×**),
 `edhaSceneActors` (**5×**) and `edhaTimedStampPlan` (**2×**), and must NOT contain
-`Number(ds.edhaCost) || 2`, `Number(spec.speed) || 25` or `holders.includes(tok.actor)` anywhere.
+`Number(ds.edhaCost) || 2`, `Number(spec.speed) || 25` or `holders.includes(tok.actor)`
+**outside comments** — ⚠️ **corrected 2026-07-28i**: two of those three ARE present (L334, L2017,
+L3458), quoted in the shipped fix's own explanatory docblocks, so the original "anywhere" wording
+fails a CORRECT deploy and cost run 21 and a fix pass one wrong turn each. **The SHA-256 against
+`HEAD:module-src/scripts/register-skills.js` is the check that decides**; a "must NOT contain"
+line is a hint, and every one of them means *outside comments*.
 Re-test rows: the Stitchmother/Trooper block in `# Adversary ability wiring` (Braced expiry — four
 cells; Suture Cradle — three, one of them the three-Raiders control; Reknit — two; static illusions —
 two). ⚠️ **`braced` must still NOT be in `EDHA_TIMED_STATUSES`** — the Predictive Ward control
 depends on it.
+
+**⏳ NEW 2026-07-28i — the fix-pass-E ENGINE half needs ⟳ sync the module + F5 (no rebuild, no
+⟳ Sync Talents).** Four engine-only fixes from bench run 21's wizard sweep; **the pack-rebuild list
+stays EMPTY — and item 2 is why it stays empty.** (1) **The wizard preview and the sheet each owned
+their own copy of three derivations**, so they drifted in BOTH directions at once: Move (the sheet's
+canon 20+5×SPD vs. the preview re-implementing the system's ladder) and Senses (the preview's canon
+AWA table vs. a sheet the engine had never derived at all). One shared source of truth now; the +1
+max health is untouched and stays R-54's call. (2) **The Edha +1 max health was UNREACHABLE** — the
+system clamps every resource to its max before the module's wrapper raises that max, so a stored 14
+was cut to 13 on every prepare; Finish's 13/14 was only the visible half. (3) **Path training read
+`linkedSkills`, which is the wrong field** — it means the skills a path UNLOCKS, so `[]` is correct
+data and **no data change was needed**; the free rank is ONE fixed skill named on each path's card,
+and the wizard now calls the system's own `startingPath` macro. (4) **The country page kept a `top`
+measured before its map loaded** — the map block is `display:none` until its JSON resolves, so
+Foundry centred a 426 px dialog and never re-clamped once it grew to 788. A ResizeObserver now
+re-clamps any wizard dialog that grows.
+**Byte-check after the sync:** the served `register-skills.js` must contain `edhaWalkRateFtFromSpd`
+(**5×**), `EDHA_HP_BONUS` (**7×**), `edhaParseStartingSkill` (**2×**), `edhaSkillIdFromLabel`
+(**3×**) and `edhaDialogNeedsReposition` (**2×**), and must NOT contain `RATES[idx(cur.spd)]`
+anywhere at all (zero occurrences, comments included) nor `linkedSkills` **outside comments**
+(the four surviving mentions are all in one docblock at ~L7491–7495 explaining why the field was
+the wrong one — read the byte-check convention in DEPLOY STATE above; the hash is what decides).
+Re-test rows: four in `# Character-creation wizard v2`, every one carrying its paired negative —
+Derived-stat preview v2 · Finish tops up to a REACHABLE max · Path training v2 · Wizard fits the
+screen v2.
 
 ⚠️ **2026-07-28g — Sovereign of Solitude is a SYNC question, not an authoring gap.** Run 20 read
 `rules = 0` and filed it as an empty item; the repo carries **four** rules on it, authored 07-26,
@@ -1640,27 +1682,27 @@ so nothing was dropped.)*
       needs a Foundry table.
       ℹ️ **The aspect half is fine either way and needs no test:** 1118/1488 = **0.7513**, identical to
       the canvas aspect 2236/2976, so "not stretched or letterboxed" holds for both renders.
-- [ ] 🤖 **Derived-stat preview on the attributes page (07-19w)** — a live panel above the
-      steppers shows Health · Focus · Investiture* · the three defenses · Move · Recovery die ·
-      Senses, recomputed on every +/− click ("push STR = more health and phys def", live).
-      Every number mirrors the real derivation (health sums the system's advancement rules with
-      STR; movement/recovery use the ceil(attr/2) ladders; *Investiture footnoted as
-      attunement-gated). VERIFY against the finished sheet: finish the wizard, compare the
-      panel's last numbers to the sheet's actual values — any mismatch is a formula-drift
-      report (quote both numbers).
-      - ❌ **FAIL 2026-07-28h (bench run 21) — the panel IS live, but THREE numbers drift.** The
-        recompute half passes outright: every +/− click updated the panel, and Focus (2+WIL=5),
-        Phys def (10+STR+SPD=16), Cog def (10+INT+WIL=16), Spi def (10), Investiture (2*) and
-        Recovery (d8) all matched the finished sheet exactly. The three that did NOT, at
-        STR3/SPD3/INT3/WIL3/AWA0/PRE0 — **panel → sheet**:
-        · **Health 13 → 14** · **Move 30 ft → 35 ft** · **Senses 10 ft → 5 ft**
-        Root cause for the first two is ONE function, `edhaDeriveSheetStats` (engine ~L16178),
-        which the panel does not model: it adds **+1 to `hea.max.bonus` in memory for every
-        character** ("HP = system + 1") and overrides walk rate with **20 + 5×SPD**. The sheet's
-        raw movement reads `{"derived":30,"override":35,"useOverride":true}` — the panel is
-        reading `derived`, the sheet uses `override`. Senses is a third, separate drift.
-        **Same root cause as the "+1 max health" and "Finish = long rest" rows below — fix them
-        as one family.**
+- [ ] 🤖 **Derived-stat preview v2 — the panel and the sheet agree cell for cell (fixed
+      2026-07-28i; ⟳ sync + F5)** — run 21 found THREE of nine cells drifting and canon pointed a
+      different way for each: **Move** — `Character_Building_Rules.md` §Derived stats says
+      "Movement = 20 + SPD·5", so the SHEET was right and the panel was re-implementing the
+      cosmere system's ceil(SPD/2) ladder; **Senses** — the same doc's §Senses Range table says
+      AWA 0 → 10 ft, so the PANEL was right and the engine had never applied the Edha table to
+      the sheet at all; **Health** — the panel simply did not model the engine's +1, which is
+      **R-54's call and was NOT changed**. Neither surface owns the arithmetic now.
+      **THE POSITIVE (the reported spread, unchanged):** run the wizard to the attributes page,
+      set **STR 3 / SPD 3 / INT 3 / WIL 3 / AWA 0 / PRE 0**, and read the panel — it must say
+      **Health 14 · Move 35 ft · Senses 10 ft**. Finish, open the sheet, and read the same three:
+      **all three must MATCH the panel.** Quote both sets if any cell differs.
+      **NEGATIVE CONTROL 1 — the six that already agreed must still agree:** Focus **5**, Phys def
+      **16**, Cog def **16**, Spi def **10**, Investiture **2\***, Recovery **d8**, panel and
+      sheet both. A fix that moved any of these broke something that was working.
+      **NEGATIVE CONTROL 2 — a second spread, because agreeing on one spread can be luck:**
+      set **SPD 0** and **AWA 4** and confirm panel and sheet BOTH read **Move 20 ft** and
+      **Senses 25 ft** (not the system's 20 ft / 20 ft).
+      **NEGATIVE CONTROL 3 — a hand-set Senses Range still wins:** on the finished PC use the
+      sheet's own **Configure Senses Range** to override it (say 60 ft); it must STAY 60 ft
+      across an F5. The engine writes only the `derived` half, so an override must not be stomped.
 *(The **07-19v weapon slot v2** row is retired 2026-07-27v as STALE — its ×2-quantity clause is
 **explicitly reverted** (the engine grants one weapon, never ×2). Its two still-live halves — the rows
 LOOK pickable, and the picked weapon is kitItem-stamped so Start over / ↺ Change remove it with the kit
@@ -1672,22 +1714,26 @@ LOOK pickable, and the picked weapon is kitItem-stamped so Start over / ↺ Chan
       OUR row after it — 🪙 total pill (copper-weighted, tooltip) + three tinted g/s/c pills
       with always-visible numbers. The header strip keeps the compact native chip with the
       corrected total. Verdict on the look still wanted.
-- [ ] 🤖 **Finish = long rest + top-up (07-19x, belted 07-19y)** — Finishing the wizard runs a
-      silent `longRest`, then re-reads the maxes a beat later and tops up anything that lagged
-      (bench: 10/11 — a max-health AE bonus can settle after the rest reads max), Investiture
-      included (the system's rest doesn't touch it). Confirm the finished PC reads FULL on all
-      three bars with no rest dialog.
-      - ❌ **FAIL 2026-07-28h (bench run 21) — two of three bars top up; HEALTH IS STILL ONE
-        SHORT, and the belt did not catch it.** GM-side: pre-finish 3/14 · 3/5 · 0/2 → post-finish
-        **13/14** · 5/5 · 2/2. **No rest dialog** appeared (that half passes), and Investiture
-        topping up proves the Edha top-up ran at all. Reproduced INDEPENDENTLY from the player
-        client on a different PC (Scholar/White): pre 3/14 → post **13/14** · 5/5 · 2/2. So it is
-        systematic, not a race that sometimes wins. **Root cause: the same `edhaDeriveSheetStats`
-        +1 as the two rows around this one** — the rest sets health to the max it reads (13), then
-        the engine's in-memory `hea.max.bonus += 1` re-derives max to 14. The 07-19y "re-read a
-        beat later" belt cannot help, because the +1 is applied on every `prepareDerivedData` and
-        is never in `_source`. The old note's "bench: 10/11" is the SAME bug one derivation
-        smaller. Fix with the derived-stat-preview and +1-max-health rows as one family.
+- [ ] 🤖 **Finish tops up to a REACHABLE max (07-19x, belted 07-19y, root-caused 2026-07-28i;
+      ⟳ sync + F5)** — run 21 found Finish landing every PC at **13/14** while Focus and
+      Investiture filled, on two different clients and two different PCs. The top-up was never the
+      problem: the cosmere system clamps every resource to its max as the LAST act of
+      `prepareSecondaryDerivedData`, which runs BEFORE the module raises that max, so a stored 14
+      was cut back to 13 on every prepare. **The extra point was unreachable by any route at all**
+      — long rest, healing, a hand edit — not just by Finish. The engine now re-runs that clamp
+      against the real max, reading from `_source` so nothing is invented.
+      **THE POSITIVE:** finish the wizard on a fresh PC — all three bars read FULL
+      (**14/14 · 5/5 · 2/2** at STR 3) and **no rest dialog** appears. Do it once as GM and once
+      from the player client, since run 21 saw the bug on both.
+      **NEGATIVE CONTROL 1 — THE LOAD-BEARING ONE: a wounded PC must STAY wounded.** Take the
+      finished PC to **9/14**, then **F5** and re-read: it must still be **9/14**. If it comes
+      back full, the repair is inventing health, which is worse than the bug it replaced.
+      **NEGATIVE CONTROL 2 — one point down is a real state:** take the same PC to **13/14**
+      (exactly the number the bug used to show) and F5 — it must still read **13/14**, not jump to
+      14. This is the case a naive "just fill to max" fix would get wrong and the other negative
+      would not catch.
+      **NEGATIVE CONTROL 3 — the other two bars are unaffected:** spend Focus to 3/5 and
+      Investiture to 1/2, F5, and confirm they stay 3/5 and 1/2.
 - [ ] 🤖 **+1 max health SOLVED-pending-confirm (07-19z)** — a BRAND-NEW ＋ actor showed 10/11
       before any picks, and at that moment only the basic-action copies exist: a shipped
       action carries an auto-applying (transfer) Active Effect touching max health. Action
@@ -1709,39 +1755,62 @@ LOOK pickable, and the picked weapon is kitItem-stamped so Start over / ↺ Chan
         STR 0" asks the engine to undo its own documented design rule and **can never pass as
         written**. R-54 decides whether 11 is intended (retire this row's number) or the +1 should
         not apply at level 1.
-- [ ] 🤖 **Path training rank (07-19z)** — after picking a heroic path, a "path training"
-      dialog grants +1 rank in one of the PATH'S skills (list read live from the cosmere
-      heroic-paths pack's linkedSkills). The skills page then shows 1 of 5 spent — the
-      "+1 from your heroic path" is finally automatic, not honor-system. Start over and
-      ↺ Change heroic hand the rank back (no stacking on redo). If the dialog says the list
-      isn't readable, say so — the fallback is the old by-hand rank.
-      - ❌ **FAIL 2026-07-28h (bench run 21) — the dialog NEVER APPEARS, for ANY path, and it
-        fails silently.** Picking Warrior went kit → weapon-slot picker → leyline with no path-
-        training dialog at any point, and the actor's skills stayed **entirely unranked**
-        (`rankedSkills: []`, total 0). **Root cause, and it is not Warrior-specific:** the feature
-        reads `linkedSkills` live off `cosmere-rpg.heroic-paths`, and **all six path items ship
-        `linkedSkills: []`** at system **2.1.0** — Agent, Envoy, Hunter, Leader, Scholar, Warrior,
-        every one an empty array (read straight off the pack; every other entry in that pack is a
-        talent with `linkedSkills: null`). So the live list is always empty and the dialog has
-        nothing to offer. The row's own escape hatch — "if the dialog says the list isn't
-        readable, say so" — never fires either: the list IS readable, it is just empty, so the
-        wizard skips with **no dialog, no toast and no fallback**. ⚠️ This also silently
-        falsifies the skills page's own wording ("4 free + 1 your heroic path accounts for — a
-        path-granted rank shows as spent"): nothing is ever granted, and the page reads
-        **Spent: 0 of 5**. Fix needs a decision on the fallback (hand-rank prompt vs. drop the
-        claim), not just a code change.
-- [ ] 🤖 **Wizard fits the screen (07-19z)** — every wizard window opens fully on-screen; tall
-      pages scroll inside the dialog instead of clipping past the bottom.
-      - ❌ **FAIL 2026-07-28h (bench run 21) — ONE page overflows, and nothing scrolls at the
-        dialog level.** At a **1400×900** viewport the **"Where are you from?"** page opens at
-        top **237**, height **788**, bottom **1025** — **125 px past the bottom of the screen**.
-        Its `.window-content` computes `overflow-y: visible` and `max-height: none`, so the
-        dialog itself never scrolls; only the inner `.edha-cw-preview` scrolls (188 visible of
-        559). Every other page measured fits: heroic 177→723, attributes 142→758, skills and
-        purse&name both inside the viewport. So it is the map+prose country page specifically.
-        ⚠️ **Viewport-dependent in magnitude, not in kind** — on a taller screen 788 px may fit,
-        but with `max-height: none` there is no clamp at any height, so this reappears on any
-        short display. Fix = clamp the dialog to the viewport and let the content scroll.
+      - ℹ️ **2026-07-28i — the +1 is now REACHABLE, which is a separate bug fixed, not an answer to
+        R-54.** Until this deploy the system's resource clamp ran before the module raised the max,
+        so **11/11 could never be displayed at all** — the actor sat at 10/11 forever no matter
+        what healed it. That is fixed (see "Finish tops up to a REACHABLE max"). The NUMBER is
+        still R-54's call and `EDHA_HP_BONUS` in the engine is deliberately one constant in one
+        place, so answering R-54 is a one-line change that moves the sheet, the wizard preview and
+        the tests together.
+- [ ] 🤖 **Path training v2 — automatic, no dialog, one fixed skill (fixed 2026-07-28i; ⟳ sync +
+      F5, NO pack rebuild)** — run 21 found the old pick-a-skill dialog never appearing for any
+      path, and filed it as a data gap ("all six heroic paths ship `linkedSkills: []`"). **It is
+      not a gap and no data changed.** `linkedSkills` means the skills a path UNLOCKS (the sheet
+      renders it filtered by `.unlocked`), so `[]` is correct for a core path — and a populated
+      list would have offered surge skills as "training". The real rule is on each path's own
+      card: **ONE fixed skill**, granted automatically, which is what Ben asked for originally.
+      The wizard now calls the system's own `startingPath` macro (Warrior→Athletics ·
+      Hunter→Perception · Scholar→Lore · Agent→Insight · Envoy→Discipline · Leader→Leadership).
+      **THE POSITIVE:** pick **Warrior**. No dialog appears; a chat card reads
+      "🎓 …'s Warrior training: **+1 Athletics** (rank 1)"; the skills page then shows
+      **Spent: 1 of 5**, making its own "4 free + 1 your heroic path accounts for" wording true
+      for the first time; the sheet shows **Athletics rank 1**; and the Warrior path item carries
+      `flags.cosmere-rpg.isStartingPath = true`.
+      **POSITIVE CONTROL 2 — a different path must train a DIFFERENT skill:** on a second PC pick
+      **Scholar** and confirm **+1 Lore** (not Athletics). One path passing proves nothing about
+      the table being read correctly.
+      **NEGATIVE CONTROL 1 — the rank comes back and never stacks:** ↺ Change the heroic path and
+      confirm Athletics returns to **0**; re-pick Warrior and confirm it is **1**, not 2.
+      **NEGATIVE CONTROL 2 — a hand-placed rank in the same skill is not eaten:** on a fresh PC
+      set Athletics to **1** by hand FIRST, then pick Warrior → it must read **2**; ↺ Change must
+      return it to **1**, not to 0.
+      **NEGATIVE CONTROL 3 — no double grant:** on a PC that already has a starting path, opening
+      the wizard again must NOT add a second rank; expect the info toast naming the existing
+      starting path instead.
+- [ ] 🤖 **Wizard fits the screen v2 — the country page is re-clamped after its map lands (fixed
+      2026-07-28i; ⟳ sync + F5)** — run 21 measured **"Where are you from?"** at top **237**,
+      height **788**, bottom **1025** in a 1400×900 viewport: **125 px off the bottom**, while
+      every other page fitted. It read as a CSS gap (`.window-content` at `overflow-y: visible`,
+      `max-height: none`) but **no CSS changed and none needed to** — the scroll container is
+      `.dialog-content`, already capped at 76vh by rule L, and that cap is exactly why the box is
+      788 and not taller. The **stale `top`** was the bug: the map block ships `display:none` and
+      is revealed only after `thyrcross-nations.json` resolves, so Foundry centred a **426** px
+      dialog at (900−426)/2 = **237** and never looked again. A ResizeObserver now re-clamps any
+      wizard dialog that grows after it was positioned.
+      **THE POSITIVE:** open the country page on a short window (**make the browser ~900 px tall**
+      — this does not reproduce on a tall screen) and confirm the whole dialog is on-screen:
+      its bottom edge is at or above the viewport bottom, the **Choose ▶** button is reachable
+      without scrolling the page, and the map is still visible and still clickable through to a
+      nation after the reposition.
+      **NEGATIVE CONTROL 1 — pages that already fitted must NOT jump:** heroic and attributes
+      opened at top 177 and 142 (i.e. centred). They must still open centred, NOT shoved down to
+      a clamp. A fix that repositions everything is the wrong fix.
+      **NEGATIVE CONTROL 2 — the wizard must not fight you:** drag the country page to a legal
+      position and let go; it must STAY there. Re-clamping on drag would make the window
+      un-movable.
+      **NEGATIVE CONTROL 3 — the page still scrolls:** with the map showing, the country page's
+      inner content must still scroll (long nation prose reachable) rather than the dialog simply
+      being made taller.
 - [ ] 🤖 **Weapon slot v3 — path-curated (07-19y, Ben-approved lists) — THE ONE WEAPON-PICKER ROW
       (absorbed 07-19q + 07-19v, 2026-07-27v)** — ONE weapon, never ×2 (the take-five ×2 reading is
       reverted), and the list is the path's own arms: Agent = Knife/Sidesword/Staff · Envoy =

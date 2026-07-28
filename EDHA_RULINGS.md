@@ -416,6 +416,15 @@ needs a level gate. ⚠️ Note this is **not** the same question as the two *de
 the derived-stat preview showing Health 13 vs the sheet's 14, and the finish top-up leaving health
 13/14, are both **bugs to fix either way** (the preview must model the derivation; the top-up must
 re-read after it settles). Only the target number is a decision. *(Bench run 21.)*
+> **2026-07-28i — both defects are FIXED and the question is unchanged, but one fact about it
+> changed.** The 13/14 root cause turned out not to be timing at all: the system clamps every
+> resource to its max at the end of `prepareSecondaryDerivedData`, *before* the module raises that
+> max, so the +1 was **unreachable by any route** — 11/11 could never be displayed, healed to, or
+> rested to. That is now repaired, so if you rule **(a)**, 11 will finally behave like a real 11
+> instead of a number painted on the sheet. If you rule **(b)**, the repair becomes a no-op by
+> construction. The engine now holds the number as a single constant, `EDHA_HP_BONUS`, read by both
+> the sheet derivation and the wizard preview — so answering this is a one-line change that moves
+> the sheet, the preview and the tests together. *(Marathon 3, fix pass E.)*
 
 **R-55. The sheet's budget chips use two different meanings of "X / Y" — which is right?** On a
 correctly-built L1 PC (12 attribute points spent, 5 skill ranks spent, 2 of 4 talents taken) the
@@ -427,6 +436,22 @@ it is never the old **-1/4** — so the row is retired on that evidence; this is
 numerator convention the three chips should share. *Recommended: make all three spent/total*, since
 "Talents 2 / 4" is the one players read most and 0/12 next to a fully-spent sheet reads like an
 error. *(Bench run 21.)*
+
+**R-56. Should adversaries use the Edha Senses Range table too, or keep the cosmere ladder?** Fix
+pass E made PC sheets read the Edha table (`Character_Building_Rules.md` §Senses Range: AWA 0 → 10 ft,
+1 → 15, 2–3 → 20, 4 → 25, 5+ → 30), because the wizard preview already promised it, the PC's own
+token sight was already built off it, and the sheet was the only surface still showing the system's
+ceil(AWA/2) ladder [5, 10, 20, 50, 100, ∞]. **Adversaries were deliberately left alone** — they are a
+GM-facing surface, Ben is mid-session, and their tokens ship a flat **10 ft** default from the build
+rather than either table, so widening the change would have altered combat vision for every creature
+on the map to settle a PC bug. That leaves three different rules in play for three surfaces, which is
+one too many. Options: **(a)** extend the Edha table to adversary sheets AND their token sight, so
+one rule governs everything — *Recommended*, and it matches the 07-17c ruling that adversaries "use
+the same vision rules as players unless bespoke"; **(b)** leave adversaries on the system ladder and
+accept that a creature's Senses Range means something different from a PC's; **(c)** keep the flat
+10 ft build default as the adversary rule and say so, retiring the AWA link for them entirely. A
+block's explicit `senses` field stays the bespoke override under all three. Nothing is blocked on
+this — it only decides how far the fix reaches. *(Marathon 3, fix pass E.)*
 
 ---
 

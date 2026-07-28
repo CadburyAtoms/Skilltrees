@@ -33,6 +33,139 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-07-28i — MARATHON-3 FIX PASS E (bench run 21's four wizard fails): **three of them were ONE bug that was really THREE, canon pointing a different way for each cell — and the "authoring gap" that needs no data change, again.** The pack-rebuild list **stays EMPTY** (six passes running). **ALL ENGINE-ONLY → ⟳ sync the module + F5.** No CSS change either, despite the report. 400 tests green.
+
+### What shipped
+
+Four commits, four defects, two new test files + 6 cases added to a third — **28 new cases, every
+fix mutation-verified, twice where a plausible WRONG fix existed.** Zero data files touched, zero
+CSS touched. `e72bf74` preview-vs-sheet · `7662cb6` the unreachable +1 · `c2eaba5` path training ·
+`efe93cd` the country-page clamp.
+
+### Bug root causes
+
+**1. The wizard preview and the sheet each owned their own copy of three derivations — so they
+drifted in BOTH directions at once.** Run 21 reported three of nine cells disagreeing (Health 13 vs
+14, Move 30 vs 35, Senses 10 vs 5) and suggested one cause. There are three, and **canon points a
+different way for each** — this is the "drift has two directions" case with all three directions on
+screen at the same time. `source-materials/legacy-uploads/Character_Building_Rules.md` §Derived
+stats decides:
+- **Move** — "Movement = 20 + SPD·5". The **SHEET was right**; the preview was re-implementing the
+  cosmere system's own `speedToMovementRate` ladder, `[20,25,30,40,60,80]` at ceil(SPD/2).
+- **Senses** — §Senses Range says AWA 0 → 10 ft. The **PREVIEW was right**, and the sheet was not
+  merely wrong but *unwritten*: `edhaDeriveSheetStats` had never touched `system.senses.range` at
+  all, so the system's `[5,10,20,50,100,∞]` ladder stood — while that same PC's TOKEN sight was
+  already being built off the Edha table by `edhaPcSightShape`. One actor, two Senses Ranges.
+- **Health** — the preview simply did not model the engine's +1. **R-54 was NOT decided here.**
+
+Fixed by making neither surface own the arithmetic: `EDHA_HP_BONUS`, `edhaWalkRateFtFromSpd` and
+the existing `edhaSensesRangeFtFromAwa` are one source of truth and both callers read them. The
+senses write goes to `.derived` (exactly where the system writes its own), so a hand-configured
+override and the `.bonus` still win.
+
+**2. The Edha +1 max health was UNREACHABLE, and "Finish leaves 13/14" was only its visible half.**
+Not a timing bug and not the top-up's fault. `CommonActorDataModel#prepareSecondaryDerivedData`
+ends by clamping every resource to its max — and that runs inside `Actor#prepareDerivedData`, i.e.
+**before** our wrapper raises the max. So the ordering is: system derives max 13 → the clamp cuts
+the stored 14 back to 13 → the engine raises max to 14. `_source` keeps 14; every prepared read
+shows 13. **14/14 could never be displayed by any route** — long rest, healing, a hand edit, the
+07-19y belt, or a longer delay. Same family as the Investiture source-clamp gotcha one function
+above. Fixed by re-running the clamp the system would have run had it seen our max, starting from
+`_source` so nothing is invented. It does not decide R-54: if the +1 goes, the repair is a no-op by
+construction.
+
+**3. Path training read the wrong field — and the reported "authoring gap" was not one.** Run 21
+found the dialog never appearing for any path and root-caused it to data: "all six heroic paths
+ship `linkedSkills: []`". Checked before acting; **the empty array is correct and NO data change
+was needed**, which is why the pack-rebuild list stays empty. In cosmere-rpg `linkedSkills` is the
+**unlocked-skill association**: the sheet renders
+`path.system.linkedSkills.filter(id => actor.system.skills[id].unlocked)`, `Actor#skillLinkedItems`
+intersects it with `unlockedSkills`, `Actor#orphanedSkills` is the non-core skills no path claims.
+A core heroic path unlocks no non-core skills, so `[]` is what it must ship — and a populated list
+would have offered **surge skills** as "training". There was no choice to offer either: every
+path's own card says *"Starting Skill: Athletics. If you choose Warrior as your starting path, gain
+a free skill rank in Athletics"* — ONE fixed skill, which is also what Ben originally asked for
+("one should be automatic"). *(The canon sentence "`linkedSkills` stays empty" at
+`EDHA_CAMPAIGN_CANON.md:3480` is inside the culture-items ruling 60 and governs the ten nation
+items; it does not reach paths either way. It happens to point the same direction.)* The system
+already implements the rule — `STARTING_SKILLS` + `cosmereRPG.utils.macros.startingPath.set/unset`
+— so the wizard now calls it (iron rule 2a) and learns which skill moved by **diffing ranks**,
+keeping any path→skill table out of this engine entirely.
+
+**4. The country page kept a `top` measured before its map existed.** Reported as CSS
+(`.window-content` at `overflow-y: visible`, `max-height: none`) — true, but not the cause, and
+clamping `.window-content` would not have fixed it. The scroll container is `.dialog-content`,
+already capped at 76vh by edha.css rule L, and **that cap is working**: the measured 788 px IS the
+capped height. `ApplicationV2#_updatePosition` clamps `top` into `[0, viewportH − height]` exactly
+once, at render. The map block ships `display:none` and is revealed only at the end of an async
+IIFE, after `thyrcross-nations.json` resolves — so Foundry measured a **426** px dialog, centred it
+at (900−426)/2 = **237**, and never looked again once the 42vh map took it to **788**. Every
+reported number falls out of that: top 237, height 788, bottom 1025, overflow 125; had Foundry
+measured the final box its own clamp would have put top at 112 and it would have fitted. Fixed
+generically, because the stepper pages have the same shape (their preview panel is filled in the
+render callback and merely happens to fit today): one ResizeObserver per wizard dialog re-clamps
+`top` when the box grows, via `setPosition({})` so Foundry's own clamp does the arithmetic.
+
+### New REUSABLE primitives
+
+- **`EDHA_HP_BONUS` / `edhaWalkRateFtFromSpd(spd)`** — with `edhaSensesRangeFtFromAwa`, the three
+  Edha derived-stat rules as ONE source of truth. Any future surface that previews or reports a
+  character's stats reads these; re-implementing the arithmetic is what caused this pass.
+- **`edhaDialogNeedsReposition(topPx, heightPx, viewportH)`** — pure; does a dialog hang off the
+  bottom in a way repositioning can fix? False when it already fits and false when it is already
+  flush at 0, so it never thrashes. Wired into `edhaCreatorDialogs`, which now covers every wizard
+  page; reach for it for any dialog that fills content after render.
+- **`edhaParseStartingSkill(html)` / `edhaSkillIdFromLabel(label)`** — pure; read a heroic path's
+  named starting skill off its own card and resolve a skill label to its CONFIG id.
+
+### Docs / conventions fixed
+
+⚠️ **The 07-28g byte-check clause is corrected, and the convention is now stated once in DEPLOY
+STATE.** A `must NOT contain <string>` check **always means "outside comments"** and must say so —
+a fix routinely quotes the code it replaced in its own docblock, so "anywhere" fails a *correct*
+deploy. It cost run 21 and a fix pass one wrong turn each. Worth noting: most clauses in the
+checklist **already** said "outside comments" (~L124, ~L147, ~L190); 07-28g was the lapse, not a
+missing rule. **The SHA-256 against `HEAD:module-src/scripts/register-skills.js` is what decides**;
+counts and string checks corroborate, and when one disagrees with the hash, believe the hash.
+
+### Rulings
+
+- **R-54** (unchanged question, one changed fact) — the +1 is now *reachable*; before this deploy
+  11/11 could never be displayed at all. `EDHA_HP_BONUS` is one constant in one place, so answering
+  R-54 is a one-line change that moves sheet, preview and tests together.
+- **R-56 (NEW)** — should adversaries use the Edha Senses Range table too? PCs now do; adversary
+  sheets still derive the cosmere ladder while their tokens ship the build's flat 10 ft. Three
+  surfaces, two-and-a-bit rules. Deliberately NOT widened mid-session — changing it would alter
+  combat vision for every creature on Ben's map to settle a PC bug. *Recommended (a): one rule
+  everywhere*, matching the 07-17c "same vision rules as players unless bespoke" ruling.
+
+### A gate was considered and DECLINED, with the numbers
+
+The tempting gate is "the wizard preview must not re-implement a derivation the sheet owns". It
+cannot be written with usable precision. The only machine-checkable shape is *"`edhaCwDerivedPreview`
+must not contain arithmetic"* — but six of its nine cells are legitimately inline
+(`2 + cur.wil`, `10 + cur.str + cur.spd`, …) because they mirror the SYSTEM's formulas, which the
+engine does not and should not own. A lint over that function would fire on **6 of 9 cells, all
+correct** — 33% precision — and would still have missed the Senses case entirely, since that cell
+was already calling the right helper and the bug was in the *other* surface. The real invariant is
+"these two functions agree", which is a behavioural claim, not a textual one; it is pinned as a
+TEST instead (`tests/derived-stats.test.js`, the preview-vs-sheet case), which is where an
+agreement between two computations belongs. Consistent with passes B, C and D, which declined
+theirs on the same grounds.
+
+### Known limits / couldn't self-verify (no Foundry from here)
+
+- 🤖 All four fixes need Ben's ⟳ module sync + F5. Byte-check markers and their exact counts are in
+  DEPLOY STATE; the hash decides.
+- 🤖 The four re-test rows in `# Character-creation wizard v2` are rewritten with **explicit
+  positive AND negative controls**, because three of the four had a plausible wrong fix that would
+  have been worse than the bug: filling health to max unconditionally (a wounded PC would be healed
+  by an F5), repositioning every dialog (the pages that already fitted would jump), and stomping a
+  hand-configured Senses Range override.
+- ⚑ Nothing new for Ben's judgment beyond R-54 and R-56.
+
+---
+
 ## 2026-07-28h — BENCH RUN 21 (marathon 3): **fix pass D re-tested — 4 of 5 rows retired, every positive AND every load-bearing negative held — and the 34-row `# Character-creation wizard v2` swept in ONE walkthrough: 25 retired, 4 root-caused fails that are really ONE bug, 2 new rulings.** **29 rows retired total. Zero world drift.** DOCS-ONLY (no engine, no data, no pack rebuild).
 
 **Deploy verified by hash, not by marker counts:** the served `register-skills.js`, cache-busted and
