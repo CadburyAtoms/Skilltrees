@@ -3257,7 +3257,13 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
 async function edhaAmbushBeliefTest(actor, amb, tTok) {
   try {
     const sceneId = canvas?.scene?.id ?? null;
-    const belief = edhaAmbushLedgerFor(actor.getFlag?.("edha-content", "ambushBelief"), sceneId);
+    const stored = actor.getFlag?.("edha-content", "ambushBelief");
+    const belief = edhaAmbushLedgerFor(stored, sceneId);
+    /* edhaAmbushLedgerFor returns `tested: {}` on a scene change, but `setFlag` MERGES, so the
+     * stored map was never actually cleared — every scene's entries accumulated forever (bench run
+     * 17). Inert (token uuids are scene-scoped, and edhaAmbushFooledIn gates on sceneId anyway) but
+     * unbounded, so delete the whole flag before rewriting it. Only on a real scene change. */
+    const staleScene = !!stored && stored.sceneId !== sceneId;
     const tokUuid = tTok.document?.uuid; if (!tokUuid || edhaAmbushTested(belief, tokUuid)) return;   // once per scene per target
     const dcKey = amb.handler.dcFrom || "cog";
     const dc = Number(actor.system?.defenses?.[dcKey]?.value ?? actor.system?.defenses?.[dcKey]?.override) || 10;
@@ -3266,6 +3272,7 @@ async function edhaAmbushBeliefTest(actor, amb, tTok) {
     const roll = await (new Roll(`${amb.handler.perceptionAdvantage ? "2d20kh" : "1d20"} + ${mod}`)).evaluate();
     const fooled = roll.total < dc;
     const led = edhaAmbushMark(belief, tokUuid, { fooled, total: roll.total, name: tTok.name });
+    if (staleScene) { try { await actor.unsetFlag("edha-content", "ambushBelief"); } catch (e) {} }
     await actor.setFlag("edha-content", "ambushBelief", led);
     const gmIds = (game.users?.filter(u => u.active && u.isGM) ?? []).map(u => u.id);
     ChatMessage.create({ whisper: gmIds, speaker: ChatMessage.getSpeaker({ actor }),
