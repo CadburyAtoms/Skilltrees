@@ -3121,6 +3121,45 @@ function edhaRegenClamp(amount, hp, max) {
   if (amt <= 0 || cur <= 0 || cur >= mx) return 0;
   return Math.min(amt, mx - cur);
 }
+/* An actor's SIDE, for when the canvas cannot answer (07-28d, bench run 18).
+ * `getActiveTokens()` is a CANVAS lookup and it returns nothing in three ordinary situations: an
+ * actor parked in the sidebar and never placed, one whose only token is on another scene, and —
+ * the case run 18 measured — one whose token was deleted milliseconds earlier by a racing
+ * `updateActor` hook (the phantom-double "the illusion dissipates" branch deletes token-first
+ * while the applyDamage wrapper is still running its cue sweep). **None of those mean "this
+ * creature has no side."** They all mean the lookup failed, which is why this must never be read
+ * as "therefore no filter applies".
+ * `prototypeToken.disposition` is `required: true` with a numeric initial on EVERY Actor
+ * (foundry common/documents/token.mjs), so it is a real answer, not a guess: built adversaries
+ * carry -1 from `advPrototypeToken`, and `edhaSummon` stamps a phantom copy's prototype from the
+ * DUPLICATED token's disposition — so a copy resolves to the side of the thing it is a copy of,
+ * which is the side it was created wearing. `null` only when there is no actor at all. */
+function edhaActorSide(actor) {
+  const live = actor?.getActiveTokens?.()[0]?.document?.disposition;
+  if (Number.isFinite(live)) return live;
+  const proto = actor?.prototypeToken?.disposition;
+  return Number.isFinite(proto) ? proto : null;
+}
+/* PURE (pinned in tests/ally-drop-side.test.js): may this `ally-drops` cue owner fire for this drop?
+ * BOTH filters fail CLOSED on a value we could not determine — the same precedent the
+ * `edha-hp-threshold` gate states in words ("unknown positions fail CLOSED, the watch-dispatch
+ * precedent"). Until 07-28d both failed OPEN, and the two halves shared one cause — a victim with
+ * no token on canvas:
+ *   · the side test read `disp !== undefined && …`, so an unresolvable victim skipped the
+ *     SAME-SIDE filter ENTIRELY and every ally-drops owner on the scene fired ACROSS the
+ *     disposition line (measured at run 18 with a matched control: breaking a disposition-0
+ *     phantom fired three disposition-−1 cues; the same drop with the token still present fired 0);
+ *   · the range test read `ft > 0 && vTok && …`, so the same victim also skipped the RANGE filter
+ *     and a 5-ft cue fired from anywhere on the map. 3 of the 5 shipped ally-drops rules carry a
+ *     rangeFt (Roek 20, Crownox Ring 5, The Reckoning 5), so that half was live in real data too.
+ * `rangeFt` 0/absent still means "whole scene" — that is an authored dial, not a failed lookup. */
+function edhaAllyDropEligible(victimSide, ownerSide, rangeFt, gapFt) {
+  if (!Number.isFinite(victimSide) || !Number.isFinite(ownerSide)) return false;   // unknown side → no eligible ally
+  if (ownerSide !== victimSide) return false;                                      // same side only
+  const ft = Number(rangeFt) || 0;
+  if (ft <= 0) return true;                                                        // 0 / absent = whole scene
+  return Number.isFinite(gapFt) && gapFt <= ft;                                    // unknown position → cannot be "within N ft"
+}
 async function edhaGmCueDamageSweep(victim, prevHp, newHp, maxHp) {
   try {
     for (const { item, h } of edhaCueRules(victim, "damaged")) await edhaPostCueCard(victim, item, h);
@@ -3129,13 +3168,14 @@ async function edhaGmCueDamageSweep(victim, prevHp, newHp, maxHp) {
     }
     if (prevHp > 0 && newHp <= 0) {
       const vTok = victim.getActiveTokens?.()[0] ?? null;
-      const disp = vTok?.document?.disposition;
+      const vSide = edhaActorSide(victim);
       for (const t of (canvas?.tokens?.placeables ?? [])) {
         if (!t.actor || t.actor === victim) continue;
-        if (disp !== undefined && (t.document?.disposition ?? null) !== disp) continue;   // same side only
+        const oSide = t.document?.disposition;
+        if (!edhaAllyDropEligible(vSide, oSide, 0, null)) continue;   // cheap side-only gate; unknown side fires nobody
         for (const { item, h } of edhaCueRules(t.actor, "ally-drops")) {
           const ft = Number(h.rangeFt) || 0;
-          if (ft > 0 && vTok && edhaTokenGapFt(t, vTok) > ft) continue;
+          if (!edhaAllyDropEligible(vSide, oSide, ft, vTok ? edhaTokenGapFt(t, vTok) : null)) continue;
           await edhaPostCueCard(t.actor, item, h, ` <em>(${victim.name} dropped${ft ? `, within ${ft} ft` : ""}.)</em>`);
         }
       }
