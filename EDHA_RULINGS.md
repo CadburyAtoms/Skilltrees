@@ -244,7 +244,28 @@ this ruling. *(3A-14.)*
 
 **R-40. The Gone-to-Weir Fen-Heart's token footprint — 3×3 or 4×4?** `size: "large"` is the schema
 cap, so the footprint is set by hand at placement and the biography carries the note. Say which, and
-it goes in the block's text. *(Checklist Lunavar row; its sheet-read half stays a 🤖 row.)*
+it goes in the block's text. *(Checklist Lunavar row; its sheet-read half is now RETIRED — bench run
+16 confirmed `creatureType: custom`, `size: large` and the bio note. Only the number is still open.)*
+
+**R-46. How far should a "charge" carry? The Cragdrake Whelp Pack's Reckless Advance moves 3 ft.**
+Raised by bench run 16 (2026-07-27x), which drove it and watched a charging whelp advance **half a
+square**. The rule is `edha-move {bySize: true}` and the whelp is **small**, so `bySize` is behaving
+exactly as configured — this is a design question, not a defect, and the card states no distance so
+nothing is drifting. But "charge toward it, ignoring Reactions — whelps arrive all at once or not at
+all" reads like a rush, and 3 ft is not a rush. *Recommended default: give it an explicit
+`distanceFt` (its Speed, 25 ft, or half that) rather than `bySize`, and say so on the card.*
+⚠️ **Distinct from the Explosive Leap defect** in the same section, which IS a defect: that card
+promises "up to 20 ft" and `bySize` delivers 5 — there the prose and the engine disagree, so it goes
+to test-pass-fixes, not here.
+
+**R-47. Should the `NO NAMEABLE HOOK:` engineering note be visible on the player-facing card?**
+Bench run 16 drove Seize and Roll, Drag Under and Slip the Sound and all three posted their authoring
+rationale to chat verbatim — e.g. "NO NAMEABLE HOOK: to-hit-only grab — a hit that deals no damage
+makes no document write, so there is no engine hook; the GM rolls the attack and adjudicates the
+grip." The wiring is correct and the rows passed; the question is presentational. *Recommended
+default: keep the line in the item description (it is the rule-3 ledger and it must stay somewhere
+visible in Foundry), but move it behind a GM-only note field or an HTML comment so the table sees
+only the fiction.* Affects every adversary ability carrying the marker, not just these three.
 
 ---
 

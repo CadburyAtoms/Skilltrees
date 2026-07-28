@@ -1497,34 +1497,49 @@ proven mistheron patterns (engine-rolled seemings, `edha-damage-rider whenTarget
 `edha-gm-cue` thresholds) — if a cue misfires here it likely misfires on the Mistheron too;
 report once.
 
-- [ ] 🤖 **Folder + drag** — after rebuild+deploy: the pack shows the Lunavar Fens Bestiary
-      folder; all five drag out with portraits (core-icon placeholders), stats, and items.
+*(**Folder + drag** · **Frayed Seeming advantage** · **Seize and Roll: no cue** · **Fen-Heart token
+scale** · **Leyline pair on a minion** · **Noonwing** — all six RETIRED on evidence 2026-07-27x, bench
+run 16, on FRESH pack imports. See that run's handoff delta for the quoted evidence.)*
+
 - [ ] 🤖 **Stillback ambush belief + rider (rewired 07-19n)** — target a PC and use Ambush
       Bite: the engine rolls the PC's Perception vs the Stillback's Cognitive defense ONCE
       (first attack on that target this scene; GM whisper + the player's own truth card),
       and a fooled target then takes the +1d6 on Ambush Bite (the new `edha-ambush-belief`
       ledger — the old wiring read the Mistheron's phantom-copy ledger, which an ambush
       predator never writes, so the rider could never fire).
-- [ ] 🤖 **Frayed Seeming advantage (rewired 07-19n)** — the Wasting-Eater Stillback's belief
-      test rolls the target's Perception with ADVANTAGE (2d20kh — frayed stillness).
-- [ ] 🤖 **Seize and Roll: no cue by design (07-19n)** — the grab is a to-hit-only attack (no
-      damage write → no engine hook, NO NAMEABLE HOOK line in the rider); confirm the roll
-      posts the rider text and NO stray cue card appears.
+      *(2026-07-27x bench run 16 — **FAIL, root-caused, THREE symptoms ONE cause + a second cause.**
+      The belief test itself fires and whispers correctly: "🌫️ The Causeway Seeming — Bench — Red:
+      Perception 4 vs 12 → **taken in** (whenTargetFooled riders apply)". But the ledger is written
+      under the token's **dotted UUID** `Scene.<id>.Token.<id>`, and Foundry's `setFlag` EXPANDS
+      dotted keys into nested objects — the stored flag's `tested` has exactly one top-level key,
+      `"Scene"`. `edhaAmbushFooledIn` then looks the flat string up (`tested[u]`) and gets
+      `undefined`. Measured live: `tested[grn.uuid]` → **null**, `fooledPerEngineExpr` → **false**
+      while the card said "taken in". Consequences, both observed: **(a)** the `whenTargetFooled`
+      rider never fires — a fooled target's Ambush Bite rolled `1d10 + 3 + 0 = 13` with no
+      `(1d6)[The Causeway Seeming]` term; **(b)** the once-per-scene guard
+      (`if (belief.tested[tokUuid]) return`) never holds — a SECOND Ambush Bite on the same target
+      re-rolled the belief test ("Perception 8 vs 12"). **Separate second cause:** the roll is
+      `1d20 + **0**`, never the target's Perception — `Number(tTok.actor.system.skills.prc.mod ?? …)`
+      reads `prc.mod`, which is an OBJECT `{bonus, derived: 4, override, useOverride}`, so
+      `Number()` → NaN → `|| 0`. Corroborated arithmetically: a total of **4** is impossible with a
+      +4 mod. Same family as `edhaSpeedFt` (Vorsk §3). Negative control present: Bench — Blue rolled
+      16 vs 11 → "sees through it" and correctly got no rider.)*
 - [ ] 🤖 **Cues fire** — damage the Drownlight Colony (gutter-and-relight cue) and drop the
       Fen-Heart below half (madness-slackens cue) and near 0 (goes-still cue, atFraction
       0.05 — first use of a near-zero threshold; verify it fires before death cleanup).
-- [ ] 🤖 **Fen-Heart token scale (the sheet read)** — confirm the sheet shows creatureType
-      **"custom"** and size **"large"** (the schema cap), and that the biography carries the
-      hand-placement note. *(2026-07-27w: **which** footprint — 3×3 or 4×4 — is a decision, not a
-      test, and is now `EDHA_RULINGS.md` **R-40**. Set whatever it says at placement.)*
-- [ ] 🤖 **Leyline pair on a minion** — the Drownlight Colony carries blue+black (ruling 69
-      pair-attunement, per-block override): confirm the build embeds both Attunement Keys +
-      Draw Mana without complaint (ruling 49 auto-embed on a two-color minion is new).
-- [ ] 🤖 **Noonwing (added 2026-07-19f, same rebuild; Stoop cue rewired 07-19n)** — drags out
-      with its five items; the Stoop's cue fires **when the Stoop deals damage** (event
-      `edha-on-hit` — the old "attack-hit" trigger was dispatched by nothing; note: a
-      snatch that deals no damage posts no cue, the rider text carries it) and the
-      bloodied cue fires; fly 80 shows as its movement (walk-10 note lives in the bio).
+      *(2026-07-27x bench run 16 — **PARTIAL.** ✅ Drownlight Colony both cues fire: 2 damage →
+      "⏰ Gutter and Re-light … the lights gutter and re-light 30 ft away"; crossing half (8→4 of 10)
+      → "⏰ Only Lights: Bloodied — the colony scatters and does not re-form this scene". ✅ Fen-Heart
+      bloodied fires crossing 30 of 60 → "⏰ The Madness Slackens: Bloodied — … it stops targeting
+      downed characters". ⛔ **The near-zero (atFraction 0.05) goes-still cue NEVER fires.** Root
+      cause measured, not guessed: `edhaPostCueCard` builds its once-per-round key as
+      `cue:${item.name}:${h.trigger}` — **`atFraction` is not in the key**, so BOTH `hp-below` rules
+      on "The Madness Slackens" share one slot. Direct evidence: after a single 60→0 write crossing
+      BOTH lines (30 and 3), only the bloodied card posted and the flag read exactly
+      `{"cue:The Madness Slackens:hp-below": 1}`. Pack-wide blast radius is **2 adversaries** —
+      Gone-to-Weir Fen-Heart (0.5 + 0.05) and Briar-Gone Grove (0.5 + 0), both on an item named
+      "The Madness Slackens"; a keying fix retires both. ⚠️ An earlier probe that cleared
+      `flags.edha-content.**triggers**` was a no-op — the real flag is **`trigRound`**.)*
 
 ---
 
@@ -1537,43 +1552,27 @@ seemings, `edha-damage-rider whenTargetFooled`, `edha-gm-cue`); the smith is the
 adversary embedding **deity-tree** talents (Civilization/Forge Construct + Tempered Edge +
 Siege Form, as written).
 
-- [ ] 🤖 **Folders + drag** — after rebuild+deploy: both folders show; all five drag out with
-      placeholder portraits, stats, and items.
+*(**Folders + drag** · **Drag Under / Slip the Sound: no cue** · **Smith deity-tree embeds** —
+RETIRED on evidence 2026-07-27x, bench run 16, on FRESH pack imports. See that run's handoff delta.)*
+
 - [ ] 🤖 **Wrongwake ambush belief + rider (rewired 07-19n)** — target a PC and use Breach
       Strike: the engine rolls the PC's Perception vs the Wrongwake's Cognitive defense once
       per scene (`edha-ambush-belief` on The Thrown Voice; GM whisper + player truth card);
       a fooled target then takes the +1d6 on Breach Strike. Same family as the rewired
       Stillback — report once if the family misfires. The Wasting-Eater Wrongwake shares
       the wiring (flat roll, no advantage).
-- [ ] 🤖 **Drag Under / Slip the Sound: no cue by design (07-19n)** — the grab is to-hit-only
-      and the reaction keys on being MISSED; neither has an engine hook (NO NAMEABLE HOOK
-      lines carry the reasons). Confirm the rider/text posts and no stray cue appears.
-- [ ] 🤖 **Smith deity-tree embeds** — first deity-tree talents on an adversary: Forge
-      Construct / Tempered Edge / Siege Form land as working talents (no prereq gates,
-      ruling 40), Draw Mana + both Attunement Keys auto-embed (ruling 49), Investiture 4
-      shows, and **Forge Construct actually summons the Combat Construct token** scaled to
-      the smith (the talent-summons path on an adversary caster is new).
-- [ ] 🤖 **Fellstag green engine — NARROWED to SUDDEN WALL ONLY, 2026-07-27v** — two of this row's
-      three clauses are proven on FRESH pack imports and must not be re-driven. ✅ **Draw Mana +
-      Thorn Hedge** (bench run 3): a fresh import's Draw Mana placed its own 5 ft square, "Thorn Hedge
-      rides it", and the hazard tick dealt "2 keen … (Thorn Hedge — Bench Adv — Fellstag)" — rival d6
-      family, its own zone-hazard rule. ✅ **Herding Antlers** (bench run 11, on the rebuilt adversary
-      pack — this is 2bF-10): the pack reads 2 events + `activation.skill: "green"`, a use on a
-      character rolled `1d20 + 2 = 22` and posted "Herding Antlers: 22 vs Bench Ally — One's **SUR 19**
-      — SUCCESS", applied **Slowed** (asserted on the document) and printed the move-away note.
-      ⛔ **UNDRIVEN — the whole of what this row now asks:** **Sudden Wall** click-places the same
-      thicket via Sudden Growth's `edha-burst` rule, consuming 1 Inv from the pool of 4, with the
-      Opportunity trusted. (It is a canvas burst-center pick — see the map/canvas note in
-      `docs/BENCH_NEXT_RUN.md`.)
-- [ ] 🤖 **Fellstag hand-placed maze thicket** — the enemy-turn-start cue still whispers the
-      floor(1d6/2) keen reminder for GM-placed (non-engine) thicket; engine-placed patches
-      deal it themselves — confirm no double-damage on an engine patch (the cue note says
-      hand-placed only).
-- [ ] 🤖 **Wake-eel drag-under cue (rewired 07-19n)** — Worry the Failing's cue fires **when
-      it deals damage** (event `edha-on-hit`; the old "attack-hit" trigger never fired)
-      with the full bloodied/drag-under note.
-- [ ] 🤖 **Smith bloodied cue (07-19n: explicit atFraction 0.5)** — Behind the Work whispers
-      the yield note when the smith crosses half HP.
+      *(2026-07-27x bench run 16 — **FAIL, and the family DOES misfire exactly as the Stillback
+      does.** Reproduced on a fresh import: the ledger's `tested` again has one top-level key
+      `"Scene"`, `tested[greenTok.uuid]` → **false**, and a second use (Drag Under) re-rolled the
+      belief test that should have been once-per-scene ("Perception 14 vs 13" then "13 vs 13").
+      Roll is `1d20 + **0**` though Bench — Green's Perception mod derives 4. Full root cause is
+      written up once on the **Stillback** row in the Lunavar section above — fix there, re-test
+      both. Ledger-independent halves all work: the whisper posts to both GMs and names the
+      right defense.)*
+*(**Fellstag green engine / Sudden Wall** · **Fellstag hand-placed maze thicket** · **Wake-eel
+drag-under cue** · **Smith bloodied cue** — RETIRED on evidence 2026-07-27x, bench run 16. Sudden Wall
+was click-placed for real (the burst-center pick IS drivable); the maze-thicket row got its
+no-double-damage answer with a matching HP delta. See that run's handoff delta.)*
 
 ---
 
@@ -2522,16 +2521,25 @@ adversary dice the ROLE rank, and role rank 2 evaluates `2*2+2 = 6` → **d6**, 
 together, neither alone.)*
 
 ## 1. Cragdrake Whelp Pack (minion ×4)
-- [ ] 🤖 **Reckless Advance use** — target a creature and use: the whelp charges toward it
-      via the engine move executor, no Reactions provoked.
+
+*(**Reckless Advance use** — RETIRED on evidence 2026-07-27x, bench run 16: the token actually moved
+(5400,9000 → 5400,9150) and the card read "💨 Reckless Advance — … moves 3 ft toward Bench Target —
+Isolated, **ignoring Reactions**".)*
 
 ## 2. Cragdrake Adult (rival ×2, wolf-sized)
-- [ ] 🤖 **Searing Bolt** — native ranged attack: +6 vs 60 ft, 1d6 energy on a hit (rival
-      rank-2 die, ruling 122).
-- [ ] 🤖 **Predatory Patience rider + cue** — attack a Weakened target: +1d6 injected on
-      the test; on the hit, whispered 1-Focus-regain card.
-- [ ] 🤖 **Explosive Leap use** — the move rides the executor; landing prone-test is on the
-      card (GM-adjudicated, by design).
+
+*(**Searing Bolt** · **Predatory Patience rider + cue** · **Explosive Leap use** — all three RETIRED
+on evidence 2026-07-27x, bench run 16. Predatory Patience carries a real negative control: the same
+target rolled `1d20 + 0 + 6` while NOT Weakened, and `1d20 + 0 + 7 + 1d6[Predatory Patience]` once
+Weakened. See that run's handoff delta.)*
+
+> ⚠️ **New defect found in passing (2026-07-27x, bench run 16) — Explosive Leap moves the wrong
+> distance.** The row's own two clauses both pass, so it is retired, but the ability's card says
+> "**Leap up to 20 ft** without provoking Reactions" while its rule is `edha-move {bySize: true}`,
+> which on a **medium** creature allowed and moved exactly **5 ft** (3300,9000 → 3300,9300). The
+> engine and the card disagree by 15 ft; `distanceFt: 20` is the dial that matches the prose. Feeds
+> test-pass-fixes. *(Reckless Advance's prose states no distance, so it is not the same drift —
+> though a "charge" that moves 3 ft is a design question, logged to `EDHA_RULINGS.md`.)*
 
 ## 3. Cragdrake Alpha (boss, tier 2)
 
@@ -2551,9 +2559,37 @@ saves, with HP deltas matching exactly. For contrast, the pre-rebuild reading wa
 
 - [ ] 🤖 **Predator's Due on-defeat** — reducing a character to 0: +2d8 health
       engine-applied + whispered Focus card.
+      *(2026-07-27x bench run 16 — **PARTIAL: the heal is right, the card is PUBLIC not whispered.**
+      ✅ Engine-applied heal confirmed: Alpha 30 → **38** on reducing a character to 0, card
+      "⚡ Predator's Due (Bench Adv — Cragdrake Alpha) — … regains **8** health … **2d8 4 4 8**",
+      with the ruling-122 note ("count = tier 2, die = boss rank 3"). ⛔ The message posted with an
+      EMPTY whisper list (`whisper: []` → public), so a boss's kill-heal and its "1 Focus on the
+      kill (focus is a GM add)" instruction are visible to every connected client. Likely
+      `edhaWhisperIds()` returning empty for an ownerless adversary; worth checking whether other
+      adversary `edha-triggered-effect` cards leak the same way. ⚠️ **Harness note for the re-test:**
+      `edhaResolveKiller` resolves the killer from `canvas.tokens.controlled` — NOT from the damage
+      dealer — so the Alpha's token must be CONTROLLED when the victim drops or the row reads as a
+      dead talent (it did, once, before staging was corrected).)*
 - [ ] 🤖 **Unstoppable** — damage on a Fast turn → half-Speed engine move, once per turn.
-- [ ] 🤖 **Bloodied cue** — at half HP: whispered "drakes cull, they don't duel" withdrawal
-      card.
+      *(2026-07-27x bench run 16 — **BLOCKED at the table, but a blocking DEFECT is already proven
+      by measurement.** ⛔ Blocker: `edhaIsFastTurn` → `edhaCombatantOf` reads **`game.combat`**, the
+      ACTIVE combat. A bench combat cannot be made active without deactivating **Ben's live campaign
+      combat** (`BerbNeuXp4iKduef`, round 1), which the bench safety rules forbid. Measured: the
+      Alpha sat in the bench combat with `turnSpeed: "fast"`, yet the `edhaIsFastTurn` expression
+      evaluated against live state returned **false**, so `whenFastTurn` returned before any move —
+      no card, token unmoved. Row stays 🤖 (technical blocker, not a judgment call). ⛔ **Defect
+      that would fail this row anyway, provable without a Fast turn:** `edhaSpeedFt` does
+      `Number(getProperty(actor, "system.movement.walk.rate"))`, but `walk.rate` is an OBJECT
+      `{bonus, derived: 20, override: 40, useOverride: true}` → `NaN || 0` → **0**. So
+      `edhaMoveAllowanceFt {byHalfSpeed}` returns `floor(0/2)` = **0 ft** — Unstoppable can only ever
+      move zero. Effective speed should read **40**. Pack-wide blast radius **3**: Cragdrake Alpha,
+      The Slagbull and Brandram, all on an item named "Unstoppable". Same object-as-scalar family as
+      the ambush-belief Perception mod (Lunavar §Stillback); an engine sweep found these two sites
+      and no others.)*
+
+*(**Bloodied cue** — RETIRED on evidence 2026-07-27x, bench run 16: crossing half (56 → 23) posted
+"⏰ Culls, Never Duels (Bench Adv — Cragdrake Alpha): Bloodied — the pack disengages and circles for
+the high ground; **drakes cull, they don't duel**", whispered to the GMs.)*
 
 ## 4. Bellwether (encounter piece)
 

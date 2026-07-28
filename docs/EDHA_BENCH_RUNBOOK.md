@@ -503,6 +503,44 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   `combat.turn` can stay `null` after `startCombat()`/`nextTurn()`; drive turns with
   `combat.update({turn: N})`, which does fire the engine's turn-boundary sweeps.
 
+## Operating lessons from run 16 (2026-07-27x — these OVERRIDE older advice where they conflict)
+
+- ❌ **`edhaResolveKiller` reads `canvas.tokens.controlled`, NOT the damage dealer.** Every
+  `edha-on-defeat` row (Predator's Due, Reaper's Harvest, Warlord's Advance) resolves its killer from
+  the **selected token**, falling back to `game.user.character` then `game.combat.combatant` — the
+  15 s `edhaDealerOf` window does NOT apply here. Run 16 rolled the Alpha's attack, applied the kill
+  4 s later and got nothing, because the Alpha's token was targeted but not **controlled**. Always
+  `tok.object.control({releaseOthers: true})` the killer before dropping the victim.
+- ❌ **A BACKWARD `combat.update({turn})` fires no turn-start events.** Going 1 → 0 within a round
+  dispatched only `tokenTurnEnd`; the region's `tokenTurnStart` never came and a working hazard read
+  as dead. Step **forward** — `combat.update({round: c.round + 1, turn: 0})` — which fires
+  `tokenRoundEnd`, `tokenRoundStart` **and** `tokenTurnStart`. (`nextTurn()` leaves `turn: null`
+  under Advanced Encounters, per run 15; `update` is still the tool, just forward.)
+- ❌ **`whenFastTurn` cannot be driven from a bench combat at all.** `edhaIsFastTurn` →
+  `edhaCombatantOf` reads **`game.combat`** — the ACTIVE combat. While Ben's campaign combat is
+  active, a bench combat is invisible to it no matter what `turnSpeed` flag you set, and making yours
+  active would deactivate his. Record such rows **BLOCKED, blocker named, still 🤖** — a technical
+  blocker never becomes ⚑.
+- **A formula that can legitimately roll 0 needs SAMPLES, not one drive.** `floor(1d6/2)` returns 0
+  on a d6 of 1, and `edha-content.hazard` returns silently on `amt <= 0` — no damage, no card,
+  indistinguishable from a dead hook. Run 16 nearly filed a defect on one zero; six turn-starts
+  produced 2, 3, 1, 2, 3 keen and a clean pass.
+- **Consume-resource confirms block `item.use()` and are NOT `dialog.roll-configuration`.**
+  "Consume 1 Focus?" / "Consume 1 Investiture?" render as plain `dialog.application` with a
+  **Continue** button. A walker matching only the roll-config selector hangs the exec for 30 s and
+  the row reads "the ability did nothing". Walk **any** `dialog[open]`, matching
+  `roll|continue|yes|ok`.
+- **Bestiary rows are the cheapest rows in the corpus, but not 4.5-per-drag cheap.** Run 16 imported
+  **15** distinct adversaries to cover **23** rows and retire **18** — about **1.2 retired per
+  import**. Import once as `Bench Adv — <name>`, drive every row touching that actor, then move on.
+- **Fingerprint the world against the pack instead of re-syncing.** Comparing all 46 world
+  adversaries to their pack source on item names + `damage.formula`/`type` + `activation.type`/`skill`
+  + every rule's `handler.type` is a few seconds of console and answers "is a sync owed?" with
+  evidence. Run 16: **0 drift**, so `syncAllAdversaries()` was correctly not run.
+- **The cosmere adversary sheet renders ONE move number.** Don't score "fly X shows as its movement"
+  against the `movement.fly` field — the header shows a single "N ft MOVE", so a rate parked on
+  `walk.override` displays correctly regardless of which slot holds it.
+
 ## Known limits
 
 - ❌ **RESOLVED AS UNFIXABLE (07-26i): there is no "no written Cognitive/Spiritual defense" creature.**

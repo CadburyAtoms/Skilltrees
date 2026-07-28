@@ -33,6 +33,126 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-07-27x — BENCH RUN 16 (Lunavar + Malcurr + Vorsk bestiaries): **18 of 23 rows retired on evidence, 2 fails, 2 partials, 1 blocked.** Three engine defects root-caused (one of them a two-site family), zero world drift. DOCS-ONLY — no engine, data or pack change this pass; every fix feeds test-pass-fixes.
+
+First run of marathon 3, and the first run to work the **bestiary** sections — which are cheap per
+import: **15 distinct adversaries imported fresh from the rebuilt pack covered all 23 rows.**
+
+**Deploy state verified by hash, not by markers.** The served
+`modules/edha-content/scripts/register-skills.js`, cache-busted and CRLF-normalised, SHA-256s to
+`3c53a42ad233f5808ae5b6c86c038daf0115bbae073751c64a2a4ac06c9f27ea`, byte-identical to
+`HEAD:module-src/scripts/register-skills.js` at `9e5fc3b`. No row was scored against a stale engine.
+
+### Adversary world-sync: **NOT warranted — measured, not assumed**
+
+The packs were rebuilt 07-27u *after* the last world-wide sync, so Ben's placed campaign copies were
+suspect. They are fine. All **46** world adversaries were fingerprinted against their pack source on
+item names, per-item `damage.formula`, `damage.type`, `activation.type`, `activation.skill` and every
+`events` rule's `handler.type`+`event`: **0 drift, 0 mismatches.** `edha.syncAllAdversaries()` was
+**not** run (it touches campaign actors and was authorised for marathon 2 only) and, on this evidence,
+does not need to be.
+
+### Retired on evidence (18)
+
+**Lunavar (6/8).** *Folder + drag* — the pack folder holds 6 blocks, all imported with portraits,
+HP, tier, size and items. *Frayed Seeming advantage* — the belief roll's recorded formula is exactly
+`2d20kh + 0` → 16, card "Perception 16 vs 11 → sees through it". *Seize and Roll: no cue* —
+to-hit-only `1d20 + 0 + 6`, no damage block, **zero** cue cards, and the card carries the full grip
+prose. *Fen-Heart token scale* — `creatureType: custom`, `size: large`, bio carries "it PLAYS huge:
+set the token to 3x3 or 4x4 on placement". *Leyline pair on a minion* — the Drownlight Colony
+imports Draw Mana **+ Blue + Black** Attunement Keys, no complaint. *Noonwing* — its five items;
+the Stoop's `edha-on-hit` cue fired on damage ("Stoop hit — target prone … GROUNDED until the end of
+its next turn. (hit Bench — White.)"); bloodied cue fired; and the sheet header reads **"80 ft MOVE"**
+(the cosmere adversary sheet renders ONE move number, so the walk/fly slot question is moot at the
+sheet — the walk-10 note is in the bio as designed).
+
+**Malcurr (7/8).** *Folders + drag* — both folders, all five blocks. *Drag Under / Slip the Sound* —
+both post their rider text with NO NAMEABLE HOOK reasons and produce no cue. *Smith deity-tree
+embeds* — Forge Construct **actually summoned** "Combat Construct (Bench Adv — Sevenbrand
+Construct-Smith)" beside the smith, Inv **4 → 3**, HP **8/8** matching `(@tier)d(2*white+2)+(@tier*2)`
+at the smith's own tier 1 / white 2, Siege Form baked and disabled, Tempered Edge present, both
+Attunement Keys + Draw Mana auto-embedded, Investiture 4. *Fellstag Sudden Wall* — **click-placed for
+real** (5 ft burst, Attunement Range 30 ft), Inv 4 → 3, Opportunity trusted, Detonate created the
+region "Bench Adv — Fellstag — Difficult Terrain" carrying `modifyMovementCost` + `edha-content.hazard`.
+*Fellstag maze thicket* — an engine patch deals its own damage on entry (2 keen) **and** at turn
+start, and on one clean turn start there was exactly **1** hazard card, **1** reminder cue, and an HP
+delta of **1** matching the card: **no double-damage**. *Wake-eel drag-under cue* and *Smith bloodied
+cue* — both fired verbatim on `edha-on-hit` / half-HP.
+
+**Vorsk (5/7).** *Reckless Advance* — token moved, card named "ignoring Reactions". *Searing Bolt* —
+"Attack +6; Range 60 ft", rolled `1d20 + 0 + 6`, damage `1d6` energy (rival rank-2 die, ruling 122).
+*Predatory Patience* — `1d20 + 0 + 7 + 1d6[Predatory Patience]` with the term labelled on the card,
+plus the whispered Focus-regain cue, **against a negative control** (same target un-Weakened rolled
+`1d20 + 0 + 6`, no d6). *Explosive Leap* — the move rides the executor and the landing prone-test IS
+on the description card. *Bloodied cue* — "drakes cull, they don't duel", verbatim.
+
+### Defects for test-pass-fixes (3, all root-caused in code AND measured live)
+
+1. **The ambush-belief ledger is written under a key it can never read back** — *two rows, one cause.*
+   `edhaAmbushBeliefTest` stores `belief.tested[tokUuid]` where `tokUuid` is a **dotted** UUID
+   (`Scene.<id>.Token.<id>`); Foundry's `setFlag` expands dotted keys, so the persisted `tested` has a
+   single top-level key `"Scene"` and `edhaAmbushFooledIn`'s flat `tested[u]` lookup returns
+   `undefined` forever. Two observed consequences: the `whenTargetFooled` **+1d6 rider never fires**
+   against a target the card itself calls "taken in", and the **once-per-scene guard never holds** (a
+   second attack re-rolls the belief test). Reproduced identically on the Stillback (Lunavar) and the
+   Wrongwake (Malcurr). *Suggested shape: store an escaped/flattened key, or key by token `id` +
+   scene, not by a dotted UUID.*
+2. **Object-as-scalar reads — a two-site family in the engine.** Cosmere 2.1.0 exposes several
+   derived values as objects, and two engine sites `Number()` them directly:
+   - `edhaAmbushBeliefTest` (~L3219) reads `system.skills.prc.mod`, an object
+     `{bonus, derived, override, useOverride}` → NaN → `|| 0`, so **every belief test rolls
+     `1d20 + 0`** instead of the target's Perception. Corroborated arithmetically (a total of 4 is
+     impossible with +4).
+   - `edhaSpeedFt` (L6413) reads `system.movement.walk.rate`, likewise an object → **0**, so
+     `edha-move {byHalfSpeed}` allows `floor(0/2)` = **0 ft**. Effective speed should be 40.
+     Blast radius **3** pack blocks — Cragdrake Alpha, The Slagbull, Brandram, all "Unstoppable".
+     A targeted sweep of the engine found these two sites and no others (`@skills.x.mod` inside
+     roll-data *formulas* resolves correctly and is not affected).
+3. **Two `hp-below` GM cues on one item collide on the once-per-round key.** `edhaPostCueCard` keys
+   on `cue:${item.name}:${h.trigger}` with **no `atFraction`**, so the Fen-Heart's near-zero
+   "goes still" cue (0.05) is permanently eaten by its own bloodied cue (0.5). Direct evidence: one
+   60→0 write crossing both lines posted one card and left the flag reading exactly
+   `{"cue:The Madness Slackens:hp-below": 1}`. Pack-wide blast radius **2** — Gone-to-Weir Fen-Heart
+   and Briar-Gone Grove.
+
+Plus one **card-vs-engine drift** noted on a row that otherwise passed: **Explosive Leap** promises
+"Leap up to **20 ft**" but its `bySize` rule moved a medium creature exactly **5 ft**.
+
+### Still open
+
+**Predator's Due (PARTIAL)** — the +2d8 engine heal is correct (30 → 38, `2d8 4 4 8`), but the card
+posts with an **empty whisper list**, i.e. publicly, leaking a boss's kill-heal and its GM-add note.
+**Unstoppable (BLOCKED, stays 🤖)** — `edhaIsFastTurn` resolves its combatant from `game.combat`, the
+**active** combat; a bench combat cannot be made active without deactivating Ben's live campaign
+combat, which the safety rules forbid. Defect (2) above means it would move 0 ft even if driven.
+
+### Operating lessons this run paid for (also in the runbook)
+
+- **`edhaResolveKiller` uses `canvas.tokens.controlled`, NOT the damage dealer.** Predator's Due read
+  as a dead talent for one drive purely because the Alpha's token was not selected.
+- **Stepping `combat.update({turn})` BACKWARD fires no turn-start events**; only a forward step
+  (`{round: n+1, turn: 0}`) does. `nextTurn()` leaves `turn: null` under Advanced Encounters.
+- **`floor(1d6/2)` legitimately rolls 0**, so a single zero-damage observation proves nothing — six
+  samples turned an apparent dead hazard into a clean pass.
+- Two consume-resource confirm dialogs (`Consume 1 Focus?` / `Consume 1 Investiture?`) **block
+  `item.use()`**; a walker matching only `dialog.roll-configuration` hangs the call and reads as
+  "the ability did nothing".
+- Ben's `Gamemaster` client was connected throughout; **Bench held `isActiveGM`**, and every cue card
+  was attributed by `userId` before being counted.
+
+### World hygiene
+
+**Zero drift.** End-state id-diff against the run's own start snapshot (ids, flags **and effects**):
+no added/removed actors, **no effect drift** (all 8 pre-existing effects intact, including Ben's
+`Stonebound Captain`/`Wrenchmaster` Weakened), no added/removed/misplaced tokens (6 roster tokens
+restored to their snapshot positions), regions/templates/combats/folders all back to start counts.
+Ben's combat `BerbNeuXp4iKduef` was read but never modified. The 15 imported adversaries, their
+tokens, the summon, the Sudden Wall region, both burst templates and the bench combat were all
+deleted. Only lasting bench-folder change: a few Bench PCs were topped up to full HP. Bench chat can
+be flushed.
+
+---
+
 ## 2026-07-27w — THE MARKER SPLIT: **Ben's queue goes 182 → 22.** ⚑ now means his judgment and 🤖 means the bench queue; 45 standing decisions extracted to a new `EDHA_RULINGS.md`; the dashboard gains a Bench-queue tab and a Rulings tab. DOCS + TOOLING. No engine, data or pack change.
 
 Ben's complaint was that the checklist handed him **240 open rows, 182 carrying ⚑**, when perhaps
