@@ -18,8 +18,10 @@ two-client list, and world hygiene.
 1. **Press F5.** ⭐ Ten seconds. Your client is running pre-`f7ff7b3` code, which is the only reason
    the dissipates card and the ignite sweep still double. Proven in run 14 (your client honoured the
    *older* `activeGM` guard), re-confirmed in run 15 by attributing every card and Region by `userId`.
-2. **`foundry-build heroic` + ⟳ Sync Talents**, Foundry **CLOSED** — the only rebuild owed. Unblocks
-   **2bQ-4 Sharp Eye** (fix is in `data/authored/heroic-hunter.json`) and **2bD-7** behind it.
+2. ~~**`foundry-build heroic` + ⟳ Sync Talents**~~ — ✅ **DONE 2026-07-27u.** All five packs were
+   rebuilt with Foundry closed and Sharp Eye's fix was verified in the built artifact. **2bQ-4 and
+   2bD-7 are unblocked** and need a bench drive. *(⟳ Sync Talents on any PC you'll play, and ⟳ Sync
+   Adversaries from Pack, are still yours at next launch — the script cannot do either.)*
 
 Everything else this marathon produced was engine-only and is already live. Marathon 1's
 four-rebuild backlog is gone.
@@ -32,17 +34,28 @@ not in more runs.
 
 | Where | Runnable | Note |
 |---|---|---|
-| Red · Green | 2 + 2 | 3 more Green rows need a canvas picker — see below |
+| Red · Green | 2 + 2 | 3 more Green rows need a turn boundary / an Opportunity — see below |
 | Engine-wide | 3 | 2bA-6, 2bM-1, the GM summon relay (gated on ruling 3A-1) |
 | Death · Civilization | 1 + 1 | Civilization's is bookkeeping |
-| Heroic | 3 | 2 of them blocked on the rebuild |
+| Heroic | 3 | ✅ both rebuild-blocked rows are **UNBLOCKED** by the 07-27u heroic build |
 
-### The one real tooling gap
+### ⚠️ CORRECTION 2026-07-27v — there is NO canvas-picker tooling gap
 
-**Green 2bS-4 / 2bS-12 / 2bS-14 cannot be driven from the browser pane.** Green terrain is placed only
-by Sudden Growth and Green Draw Mana, both of which open a **canvas burst-center picker**. Run 15
-declared these NOT REACHED rather than faking them. Either teach the bench a coordinate-click for the
-picker, or they stay ⚑ Ben's.
+This section used to say **"Green 2bS-4 / 2bS-12 / 2bS-14 cannot be driven from the browser pane …
+a canvas burst-center picker"**. **That is wrong, and this marathon's own evidence refutes it:**
+**2bAA-7** was retired on a **click-placed** cast — *"click-placed in range −1 Inv; out of range created
+nothing and refunded; does not join initiative"* — a driven canvas click-placement **with** its
+out-of-range refusal. The picker is drivable. Run 15 hit a **runway** limit, not a capability limit.
+
+What those three rows actually need: **2bS-4** is `edha-zone-react {turn-end-in-zone}` (a character must
+*end its turn* in Green's terrain) · **2bS-12** ticks at the start of the owner's NEXT turn · **2bS-14**
+costs an **Opportunity**. Turn boundaries **are** drivable — `combat.update({turn})`, proven by 2bL-10
+across rounds 1 and 2 — so only the Opportunity is genuinely awkward to force.
+
+Two more stale blockers were struck in the checklist the same day, for the same reason: **"the console
+can't drive a turn boundary"** (refuted above; it had parked 2bAA-6 and 2bJ-3) and **"needs a second
+client"** (true only for *rendering* checks — run 13 drove the raise, sweep and break, and run 14 drove
+2bAA-8 **solo**; it had parked 2bAA-9).
 
 ## If you run again, open with
 

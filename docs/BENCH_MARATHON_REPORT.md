@@ -50,13 +50,21 @@ Sovereignty, Power, plus Order down to a single ⚑).
 
 Declared by the runs themselves, not inferred:
 
-- **Green 2bS-4 / 2bS-12 / 2bS-14** — Green terrain is placed only by Sudden Growth and Green Draw
-  Mana, both of which open a **canvas burst-center picker** the agent could not drive from the
-  browser pane. This is a genuine tooling limit, not a skipped row.
+- **Green 2bS-4 / 2bS-12 / 2bS-14** — NOT REACHED. ⚠️ **CORRECTED 2026-07-27v: this was written as
+  "a genuine tooling limit" and that is WRONG.** The canvas picker **can** be driven from the browser
+  pane, and this marathon's own evidence says so: **2bAA-7** was retired on a **click-placed** cast
+  (`click-placed in range −1 Inv; out of range created nothing and refunded; does not join
+  initiative`) — a driven canvas click-placement *with* its out-of-range refusal. Run 15 hit a
+  **runway** limit (time/budget), not a capability one. What these three rows actually need is a
+  **turn boundary or an Opportunity**: 2bS-4 is `edha-zone-react {turn-end-in-zone}` (a character must
+  *end its turn* in Green's terrain), 2bS-12's tick lands at the start of the owner's NEXT turn, and
+  2bS-14 costs an **Opportunity**. Turn boundaries are drivable (`combat.update({turn})`, proven by
+  2bL-10 across rounds 1 and 2); forcing an Opportunity on demand is the one genuinely hard part.
 - **2bW-1 (Withering Touch)** — PARTIAL, see §2.
 - Engine-wide 2bA-6, 2bM-1, the GM summon relay · Red L403/L404 · Green L438/L440 ·
   Civilization 2bV-15 (bookkeeping) · Heroic L1152/L1177/L1201.
-- **2bQ-4 and 2bD-7** — BLOCKED-ON-DEPLOY, not failed (§4).
+- **2bQ-4 and 2bD-7** — were BLOCKED-ON-DEPLOY, not failed (§4). ✅ **UNBLOCKED 2026-07-27u** — Ben ran
+  the heroic build and the fix is confirmed in the built pack. They need a bench drive now.
 
 ### Outside bench scope (untouched, for planning)
 
@@ -269,8 +277,8 @@ Plus pinned regressions: `tests/on-hit-dealer.test.js`, `tests/refund-race.test.
 
 ## 3. THE RULINGS BATCH — one menu, your call
 
-**31 items pending: 15 new this marathon (§3A), 16 carried unanswered from marathon 1 (§3B).**
-Nothing was decided silently except where marked **APPLIED**.
+**33 items pending: 15 new this marathon + 2 added by the 2026-07-27v checklist audit (§3A), 16 carried
+unanswered from marathon 1 (§3B).** Nothing was decided silently except where marked **APPLIED**.
 
 ### 3A. New this marathon
 
@@ -325,6 +333,30 @@ Nothing was decided silently except where marked **APPLIED**.
 15. **Withering Touch's duration** — "start" or "end" of your next turn? Engine, both cards **and
     measured behaviour** all say *end*; only the prose says *start*. *Recommended: fix the prose.*
 
+**Added by the 2026-07-27v checklist audit — both are about the character-creation map picker**
+
+16. **Which map should the picker show — labelled or label-free?** The shipped asset
+    `module-src/assets/thyrcross-map.jpg` (1118×1488, byte-identical to the deployed copy) **still
+    carries every nation letter (`A Kettavar` … `J Canticle`) and all 13 numbered city labels** — the
+    07-19s "label-free map" fix was **silently reverted twice**, by `db79969` and `b114f7e`, each of
+    which regenerated the jpg from `thyrcross-labeled.png` again because
+    `scripts/build-map-picker-asset.js`'s docstring still told them to. *(The docstring is now fixed;
+    the asset was deliberately NOT regenerated, because that is this ruling.)* **Two checklist rows now
+    contradict each other and one must be retired either way:** *"Map v3: label-free"* wants no labels,
+    while *"Map picker shows the redrawn map"* names **"Goldenport wash running the whole west coast"**
+    as its giveaway — and that wash exists **only on the political/labelled render**. Aspect is fine
+    either way (0.7513 == canvas aspect), so this is purely a look call.
+17. **Map polygon dead spots — fix the polygon, or re-tag the dots?** Point-testing all 35 gazetteer
+    city dots against the 10 shipped nation polygons: **30 agree, 5 do not.** `city-04 [746,676]`,
+    `city-11 [484,1120]`, `city-14 [407,1324]` and `city-17 [595,916]` — all tagged `goldenport` —
+    fall **inside no polygon at all**, so clicking there selects nothing; and `city-31 [1244,1552]`,
+    tagged `corvaine`, resolves to **`thalendor`**. Controls pass (Aldercourt → corvaine, Heartholt →
+    thalendor), and `thyrcross-nations.json` is byte-identical to `thyrcross.map.json`'s polygons and
+    to the deployed copy, so this is map truth, not a deploy gap. **These are the same four
+    `lint_map.py` already WARNs about.** Either Goldenport's polygon is missing its coastal lobe, or
+    those dots are tagged to the wrong nation — both are edits to `thyrcross.map.json`, and only you
+    can say which is true.
+
 ### 3B. Carried unanswered from marathon 1 — still yours
 
 **A. The big one — out-of-combat scope.** Every marathon-1 run saw it: any focus decrease counts as a
@@ -368,11 +400,14 @@ attribute contests demonstrably work.
 the only reason the dissipates card and the ignite sweep still double. Proven, not assumed (§2). All
 engine work this marathon is already synced and hash-verified — you need no sync, just a refresh.
 
-**2. `foundry-build heroic` + ⟳ Sync Talents** — Foundry **CLOSED**. The **only** rebuild owed by this
-marathon. Unblocks **2bQ-4 Sharp Eye** and **2bD-7** behind it. Nothing else in the marathon rides it;
-all seven other fixes were engine-only and are live.
+**2. ~~`foundry-build heroic` + ⟳ Sync Talents~~** — ✅ **DONE 2026-07-27u.** Ben closed Foundry and ran
+all five packs; Sharp Eye's `activation.type: "skill_test"` / `activation.skill: "prc"` was read back
+**out of the rebuilt pack**, with both rules intact. **2bQ-4 and 2bD-7 are unblocked and need a bench
+drive, not a deploy.** The pack-rebuild list is empty for the first time in the project's tracked
+history. *(Still yours whenever you next launch: **⟳ Sync Talents** on any PC you will play, and — the
+adversary pack was rebuilt too — **⟳ Sync Adversaries from Pack** or a re-drag of placed copies.)*
 
-That is the entire queue. Marathon 1's four-rebuild backlog is gone.
+So the queue is down to **item 1 — press F5.** Marathon 1's four-rebuild backlog is gone.
 
 ---
 
@@ -417,6 +452,15 @@ emptied.
 
 **Six confident claims were wrong and were caught before they shipped.** That is the headline number,
 not the fix count.
+
+⚠️ **A SEVENTH was wrong and was NOT caught before it shipped — it is in this report.** §1 and
+`BENCH_NEXT_RUN.md` both told you Green 2bS-4 / 2bS-12 / 2bS-14 "cannot be driven from the browser pane
+— a genuine tooling limit". **It is not a tooling limit.** The refutation was sitting in this same
+marathon's own row list: **2bAA-7** retired on a **click-placed** cast with an out-of-range refusal, so
+the canvas picker demonstrably can be driven. What those rows need is a turn boundary or an Opportunity.
+**Corrected in both docs 2026-07-27v.** The lesson generalises: *"I could not do it this run"* and
+*"it cannot be done"* are different claims, and the second one needs its own evidence — the same
+mistake shape as run 11's "the dialog exposes no advantage control at all" (item 1 below).
 
 1. Run 11: "the cosmere dialog exposes no advantage control at all" — **wrong**;
    `RollConfigurationDialog` binds `mousedown` on the d20 icon (left = advantage, right =
