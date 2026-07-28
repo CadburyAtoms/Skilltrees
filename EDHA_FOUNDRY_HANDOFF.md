@@ -33,6 +33,88 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-07-27w — THE MARKER SPLIT: **Ben's queue goes 182 → 22.** ⚑ now means his judgment and 🤖 means the bench queue; 45 standing decisions extracted to a new `EDHA_RULINGS.md`; the dashboard gains a Bench-queue tab and a Rulings tab. DOCS + TOOLING. No engine, data or pack change.
+
+Ben's complaint was that the checklist handed him **240 open rows, 182 carrying ⚑**, when perhaps
+thirty were his. The 07-27v audit named the cause and deliberately did not act on it: **⚑ expanded to
+"Could not self-verify (no Foundry here)"**, which was identical to "only Ben can do this" right up
+until **2026-07-26**, when the `bench-run` skill gave agents their own Foundry client. Nobody
+re-tagged. In six bestiary sections it was worse — ⚑ sat on the `##` header and every row beneath
+inherited it (105 of 108 in one, 26 of 26 in another).
+
+**The load-bearing half of this pass is the DEFINITION, not the re-tagging.** Both bench skills told
+subagents that ⚑ rows "stay ⚑ Ben's", and a five-run marathon skipped **~201 agent-drivable rows** on
+that sentence. Re-tagging without fixing the definition would have regenerated the same backlog on
+the next marathon.
+
+### The vocabulary (commit `f18de6f`)
+
+- **⚑ = Ben's judgment ONLY** — design, feel, balance, a ruling, a perception only a human at the
+  table can have.
+- **🤖 = needs a live Foundry table, and an agent can drive it** — the bench queue.
+- **No marker** = repo-side and settled.
+
+Recorded in four places so it cannot rot back: a top-of-file block in this doc (**"⚑ vs 🤖 — the two
+checklist markers"**, above the deltas), **iron rule 5** in `CLAUDE.md` (which previously said "⚑
+flags on anything you couldn't self-verify without Foundry" — that one sentence is the root cause),
+and both bench skills. `bench-run` gains a "which rows are yours" step in its run loop; `bench-marathon`
+now **counts 🤖 rows** when sizing a run instead of subtracting ⚑, and is told that a section reading
+as almost entirely ⚑ is a re-tagging bug, not a light section. Both are told the thing that actually
+went wrong: **a row you could not reach is recorded BLOCKED and stays 🤖 — it never becomes ⚑.**
+
+### The re-tag (`afa63e8`) — 240 → 248 rows, nothing closed
+
+210 rows → 🤖. 26 keep ⚑. **31 `##` bestiary headers lost their marker.** Eight rows that were a
+mechanical half plus a judgment half became two rows each: 2bAC-1 (geometry vs "do the labels read as
+phrases"), the Attributes and Skills pages (enforcement vs the VETO CHECK on the legacy numbers),
+adversary vision (the `visionMode` read vs "does 10 ft feel wrong — say a number"), Heat of the Flats
+(the cue vs when shade negates), the dirgehound loadout (count/HP vs pack-or-mob), the crownox ring
+(the two wired clauses vs where a ring stops being a ring), plus a **new** Cold-Fire Cinderbrock row
+for "does it read pitiable" — that question had lost its home when its mechanical half retired.
+
+The four genuinely BLOCKED rows now name their blocker inline: **💾 writes the real file** (needs a
+user gesture + an OS dialog, Chrome/Edge only — ⚑ by nature), **2bM-1** (needs zero GM clients, so it
+is *conditionally* agent-drivable in a window with Ben's client closed), **GM summon relay** (gated on
+ruling R-1), **One-applier dissipates** (gated on Ben pressing F5 — and it should be re-tagged 🤖 the
+moment he does).
+
+### `EDHA_RULINGS.md` (`0d77d4a`) — 45 numbered decisions, one place
+
+`docs/BENCH_MARATHON_REPORT.md` §3 (33 items) merged with **14 checklist rows that were pure
+decisions with nothing left to test**. Every one had already had its mechanical halves proven at the
+bench; what remained was a choice, sitting in a queue of tests. §3 is now a pointer, not a duplicate.
+**Four sections — Black, Destruction, Chaos, Death — now have NO open bench rows** and say so, naming
+the rulings that replaced them. **§I is the APPLIED-as-default list needing a veto, and R-43 ("a card
+that says 'tests Speed' means the attribute") changes live dice math** on Concussive Yield and
+Inevitable Snare.
+
+### The dashboard (`19a3b61`) — and a new gate
+
+**`⚑ For Ben` was skipping the bench tab entirely** (`if (tab.key === 'bench') continue;`), which was
+defensible while bench-⚑ meant "bench-verify" and is not now: it left 22 of Ben's 28 rows off the tab
+built to show them. Fixed. **`🤖 Bench queue`** is new — 210 rows, previously not visible anywhere.
+**`⚖ Rulings`** renders the new doc with a note box per ruling, so Ben answers on the dashboard and
+**Copy-for-Claude carries the answers back** (verified in-browser). Classification reads the row's
+**own first line**, never the merged continuation text — that merge is what let a header's marker
+reach the rows beneath it.
+
+**New gate, mutation-verified in both directions:** the dashboard build fails if a row carries BOTH
+markers, or if a `##` header carries either. It was written because the re-tag produced exactly the
+first case — a ⚑ row whose prose said "the 🤖 row above" landed in both mirrors and made the queue
+read 211.
+
+### 🤖 Needs a table — nothing here does
+
+This pass touched no engine, data or pack. Verified in a browser against a clean server on :8127
+rather than asserted: all 239 mirror jump-links resolve to real rows, a Bench-queue "go →" lands on
+the right bench row, the ⚑ filter shows 22 of 234 and 🤖 shows 210, and marking, noting, gathering and
+clearing all still work. Nothing to deploy.
+
+**Final state: 234 open rows — 22 ⚑ (Ben's), 210 🤖 (the bench queue), 2 unmarked repo-side rows —
+plus 45 rulings.**
+
+---
+
 ## 2026-07-27v — CHECKLIST AUDIT APPLIED: **294 → 240 open rows.** 38 retired on evidence, 17 retired as stale, 13 narrowed to their real residue, 5 false claims corrected, 1 new defect + 2 rulings raised. DOCS-ONLY + one script docstring. No engine, data or pack change.
 
 Ben pushed back that **294 rows were open and 227 carried ⚑**, including mechanical "does this roll
