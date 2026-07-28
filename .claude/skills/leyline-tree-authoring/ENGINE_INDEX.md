@@ -191,6 +191,47 @@ source, not inferred.
 - **Not gated** — statically detecting "this string becomes an object key in a flag value" is not
   decidable here. Sanitising at the boundary is the defence.
 
+## ⛑ A FAILED LOOKUP IS NOT "NO RESTRICTION" — the `x !== undefined &&` fail-open (07-28d)
+
+**The shape:** resolve a value that might not be there, then guard the filter that uses it.
+
+```js
+const disp = vTok?.document?.disposition;                       // a CANVAS lookup — can fail
+if (disp !== undefined && (t.document?.disposition ?? null) !== disp) continue;   // same side only
+```
+
+Read it again: when `disp` is `undefined` the whole conjunction is false, so the **filter is
+skipped and everything matches**. `undefined` here means *"I could not determine the victim's
+side"*, and the code turns that into *"therefore everyone is on it"*. Bench run 18 measured the
+consequence — breaking a disposition-**0** phantom fired all three of Ben's disposition-**−1**
+Corvaine `ally-drops` cues, while the identical drop with the token still present fired **0** — and
+because `edhaPostCueCard` marks the once-per-round ledger, the spurious cards also wrote `trigRound`
+flags onto campaign actors.
+
+**The distinction that decides whether a given instance is a bug** (this is semantic, which is why
+there is no lint — the swept corpus was 3 sites and only 1 was wrong):
+
+| the value comes from… | absence means | correct behaviour |
+|---|---|---|
+| a **runtime document lookup** (`getActiveTokens()`, `canvas.tokens.get`, `?.document?.…`) | the lookup FAILED | **fail closed**, or resolve it another way — never widen |
+| an **authored optional field** (`foundation.disposition`, `mod.round`, an `excludeOwnerId` parameter) | the author declared NO restriction | skipping the filter is the API |
+
+- **`edhaActorSide(actor)`** → the actor's disposition as a NUMBER, or `null`. Live token →
+  `prototypeToken.disposition` → `null`. Reach for this **instead of `edhaCasterToken(a)?.document?.
+  disposition ?? 1`** whenever a missing token would otherwise become a guessed side: the prototype
+  is a real answer (`required: true`, numeric initial on every Actor — foundry
+  `common/documents/token.mjs`), built adversaries carry `-1` from `advPrototypeToken`, and
+  `edhaSummon` stamps a phantom copy's prototype from the **duplicated** token, so *a copy resolves
+  to the side of the thing it is a copy of*.
+- **`edhaAllyDropEligible(victimSide, ownerSide, rangeFt, gapFt)`** → PURE. The single place the
+  `ally-drops` decision lives. Unknown side on **either** end → `false`. `rangeFt` 0/absent → whole
+  scene (an authored dial). A ranged cue with an unknown gap → `false`, because "within N ft" cannot
+  be true of a position you do not have. Pinned in `tests/ally-drop-side.test.js`.
+- **Still carrying the old shape, deliberately** (do not "fix" these): the ~8 sites reading
+  `edhaCasterToken(x)?.document?.disposition ?? 1` default a missing token to FRIENDLY rather than
+  failing closed. That is a third behaviour — *guessing* — and each would need its own bench control
+  before changing. Listed in the 07-28d delta as a backlog family, not touched.
+
 ## Dispatch — how a talent's behavior runs
 - **`preUseItem` takeover** — `Hooks.on("cosmere-rpg.preUseItem", ...)` returning **`false`** cancels the
   system's default use (no card, no auto-roll). Use it for click-to-place / fully-custom talents; you

@@ -33,6 +33,146 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-07-28d — MARATHON-3 FIX PASS C (bench run 18's one defect): **`ally-drops` cues fired ACROSS the disposition line whenever the victim had no token — and the same cause silently disabled the RANGE filter too.** The `!== undefined` guard family swept: **8 instances, exactly 1 is a bug.** A gate was considered and **declined, with the matrix.** ENGINE-ONLY → ⟳ sync the module + F5; **the pack-rebuild list stays EMPTY.**
+
+### What shipped
+
+One engine fix, one new test file, and two numbered rulings. No data file was touched — three fix
+passes in a row have now kept the rebuild list empty, which is the reason Ben has not had to close
+Foundry since 07-27u.
+
+### Bug root causes
+
+**`edhaGmCueDamageSweep` treated a FAILED LOOKUP as "no restriction".** The sweep resolved the
+dropped creature's side from the canvas and then filtered with a guard that disabled itself:
+
+```js
+const disp = vTok?.document?.disposition;                        // vTok = victim.getActiveTokens()[0]
+if (disp !== undefined && (t.document?.disposition ?? null) !== disp) continue;   // "same side only"
+```
+
+`getActiveTokens()` is a **canvas** lookup, so `disp` is `undefined` in three ordinary situations —
+an actor parked in the sidebar, an actor whose only token is on another scene, and an actor whose
+token was deleted a moment earlier. `undefined` there means *"I could not determine the victim's
+side"*; the short-circuit turned it into *"therefore everyone matches"*, and **every** `ally-drops`
+cue owner on the scene fired, across the disposition line. Run 18 measured it with a matched
+control: breaking a disposition-**0** phantom fired all three of Ben's disposition-**−1** Corvaine
+"Break" cues, while the identical drop with the token still present fired **0**.
+
+Two things about the mechanism the run's write-up got *slightly* wrong, corrected here after reading
+the code rather than the report:
+
+- It is a **hook race, not an ordering**. The break is not inside `applyDamage`; it is an
+  `updateActor` hook (the `hp <= 0 && phantomDouble` branch) that calls `edhaDeleteActorWithTokens`,
+  and the applyDamage wrapper's `await edhaGmCueDamageSweep(...)` runs concurrently with it. Which
+  is why the symptom was intermittent — and why the fix must not depend on ordering. It does not.
+- The phantom is **not the only door**, so this was never a Seeming bug. Any drop applied to an
+  off-scene or sidebar actor hits the same path deterministically (precedent: "The Vivisectionist,
+  parked in the directory, posted from off-scene", 07-26l).
+
+**The SECOND HALF, same cause, not in the report.** Two lines down, the range filter was written
+`if (ft > 0 && vTok && edhaTokenGapFt(t, vTok) > ft) continue;` — so the same tokenless victim
+skipped **that** filter as well. A ranged cue fired from anywhere on the map *and printed
+"within 5 ft" about a position it did not have*. This half was live in real data: **3 of the 5
+shipped `ally-drops` rules carry a `rangeFt`** (Sergeant Halden Roek 20, Crownox Ring 5,
+The Reckoning 5; the two Corvaine rules are the unranged ones).
+
+**Chosen semantics, and why.** `undefined` is never "a creature with no side" — every Actor has one.
+`prototypeToken.disposition` is `required: true` with a numeric initial on every Actor (verified in
+the installed `common/documents/token.mjs`), built adversaries carry `-1` from `advPrototypeToken`,
+and `edhaSummon` stamps a phantom copy's prototype from the **duplicated** token's disposition. So
+the resolver is: **live token → prototype → fail closed**, which makes a phantom double behave like
+the thing it is a copy of, exactly as the fix brief asked, and reaches "fail closed" only for an
+actor that does not exist. Range fails closed unconditionally — with no position, "within N ft"
+cannot be true. `rangeFt` 0/absent still means the whole scene: that is an **authored dial**, not a
+failed lookup, and the distinction is the whole point (see below).
+
+### The family sweep — `x !== undefined &&` (and `!= null &&`) guarding a filter
+
+Swept the whole engine. **Eight instances. Exactly one is a bug**, and the discriminator is
+semantic, not syntactic:
+
+| # | Line | Value comes from | Absence means | Fails | Verdict |
+|---|---|---|---|---|---|
+| 1 | 3135 (was) | `victim.getActiveTokens()[0]?.document?.disposition` — a **runtime lookup** | the lookup FAILED | **OPEN** | ❌ **the bug — fixed** |
+| 1b | 3138 (was) | the same missing token, via `&& vTok &&` | ditto | **OPEN** | ❌ **same bug, second half — fixed** |
+| 2 | 13294 | `foundation.disposition` — an **authored config field** on the Drawing flag | the author set NO side restriction | OPEN | ✅ correct |
+| 3 | 15840 | the same authored field, in `edhaFoundationAtPoint` | ditto | OPEN | ✅ correct |
+| 4 | 3713 | `advTest` flag's optional `round` stamp / `game.combat?.round` | unstamped legacy grant, or out of combat | OPEN | ✅ intended, documented in place |
+| 5 | 5101 | `edhaNextTestMatches`'s optional `mod.round` | ditto ("out of combat there is no round and the stamp is inert") | OPEN | ✅ intended, already pinned |
+| 6 | 2958 | `excludeOwnerId` — an optional **parameter** | exclude nobody | OPEN | ✅ intended API |
+| 7 | 12078 | `dist` for a dropdown label | no token → no "(beyond Attunement Range)" suffix | n/a | ✅ cosmetic, not a filter |
+| — | 1004, 1021, 4450, 11244/11246, 15376 | positive gates (`prevHp != null && prevHp > 0`, …) | — | **CLOSED** | ✅ |
+
+⚠️ **The fix brief's reading of #2 was wrong and is corrected here**: L13294 does *not* fail closed.
+Its `?? 1` is on the **token** side of the comparison, not on `disp`, so when `disp` is `undefined`
+the guard short-circuits and the teleport is **allowed** — structurally identical to the bug. It is
+still correct, because there `undefined` means the Foundation carries no side restriction. That is
+the whole lesson: **the shape does not tell you the answer; the provenance of the value does.**
+
+### The gate: considered, DECLINED — with the matrix
+
+A lint pass on "a filter guarded by `x !== undefined` where `x` comes from an optional chain" would
+have fired on **3 sites and been right about 1** — 33% precision on day one, requiring two allowlist
+entries out of three hits, at which point the allowlist *is* the gate. It cannot do better, because
+the property that makes #1 a bug and #2/#3 correct (failed lookup vs. absent authored field) is not
+in the syntax.
+
+A sharper variant *was* found — require the initialiser to reference `.document` (a Foundry document
+resolution) — and it scores **3/3 today with no allowlist**. It was still declined, on two grounds:
+(a) it is redundant exactly where it works, since the only site it catches is now behind a pinned
+mutation-verified test; and (b) it has real false negatives, including the one that matters — a
+future regression written against the *new* helper (`const s = edhaActorSide(v); if (s !== null && …)`)
+has no `.document` in it and sails through. That is fix pass B's own criterion for a fake gate, and
+this would meet it. **Precision 3/3 on a corpus of 3 is not evidence.** Measured the regrowth risk
+instead: the count of this idiom has been **stable at 3 for 120+ commits**, so a ratchet would be
+guarding a population that does not grow. Documented as a ⛑ family in `ENGINE_INDEX.md` — including
+the provenance table above — so the next session meets the reasoning instead of re-deriving it.
+
+### New REUSABLE primitives
+
+- **`edhaActorSide(actor)`** → the actor's disposition as a NUMBER, or `null`. Live token →
+  `prototypeToken.disposition` → `null`. Reach for it **instead of**
+  `edhaCasterToken(a)?.document?.disposition ?? 1` wherever a missing token would otherwise become a
+  *guessed* side.
+- **`edhaAllyDropEligible(victimSide, ownerSide, rangeFt, gapFt)`** → PURE. The single place the
+  `ally-drops` decision lives; unknown side or unknown gap → `false`.
+- `tests/ally-drop-side.test.js` — 13 cases. **Pins the CROSS-DISPOSITION outcome specifically**,
+  because a test that only asserted "the cue fired" passes on the broken code: the bug fired *more*
+  cues, not fewer. Mutation-verified by restoring both original expressions — 4 cases fail, and the
+  positive control (victim WITH a token) still passes, so the suite is not merely "everything red".
+  One failure output even reproduced the false card verbatim: *"Press the Line … within 5 ft"* for a
+  victim with no position at all.
+
+### Rulings (Ben, 2026-07-28 — filed, NOT decided here)
+
+- **R-50 — an ambushing strike never gets its own fooled-rider.** Run 18 surfaced this and correctly
+  declined to file it; it is filed now with **"intended"** as the recommended default. Verified in
+  code rather than inferred: the belief test is dispatched from `cosmere-rpg.useItem` as a
+  fire-and-forget `void edhaAmbushBeliefTest(...)`, while the `whenTargetFooled` rider is selected
+  when the damage formula is assembled — so the ledger write always lands after the number is fixed
+  and the bonus first appears on the **second** strike. Consistent across Glare-Strike and Raking
+  Grasp, and consistent with the card text ("its FIRST attack… marks them fooled" — marks, not
+  benefits).
+- **R-51 — does an illusory copy breaking count as "an ally dropped"?** A question the *bug* was
+  hiding: with the side now resolved, breaking a phantom cues the duplicated creature's own side.
+  Recommended default **no** — it never had a life to lose and its own side knows it was never real.
+  One-line engine change if Ben agrees; left undone deliberately rather than silencing a cue he may
+  want.
+
+### Known limits / couldn't self-verify
+
+- 🤖 **Not driven in Foundry** — Ben is at the table and this session must not touch the live module.
+  The re-test row (engine-wide section) asks for **four cells, two of them positive controls**, and
+  names the `trigRound` flags on Ben's Corvaine token actors as the thing to check before and after.
+- **Backlog, not touched:** ~8 sites read `edhaCasterToken(x)?.document?.disposition ?? 1` and so
+  default a missing token to **FRIENDLY**. That is a *third* behaviour — guessing, rather than
+  failing open or closed — and `edhaActorSide` would improve every one of them. Each needs its own
+  bench control first; changing eight disposition filters on inference is exactly the move this pass
+  exists to argue against. Listed in `ENGINE_INDEX.md` under the new ⛑ family.
+
+---
+
 ## 2026-07-28c — BENCH RUN 18 (Canticle Plains + Kettavar Tundra bestiaries) + the full re-test of fix pass B: **fix pass B is 3-for-3, and all 27 🤖 bestiary rows retired on evidence — the first section-pair swept whole.** One NEW engine defect root-caused with a matched control. **Zero world drift** (proved and reverted, including unlinked token actors). DOCS-ONLY — no engine, data or pack change; the rebuild list stays **EMPTY**.
 
 **Deploy verified BY HASH on join**, not by marker counts: the served

@@ -136,6 +136,33 @@ refund). *(3A-8.)*
 consume dialog lets the player pay more and the refund would under-credit. No talent does today —
 this is a "close the door before it matters" call. *(3A-6.)*
 
+**R-50. An ambushing strike never gets its OWN fooled-rider — the strike that marks them fooled is
+the one strike that does not benefit.** Surfaced by bench run 18 and filed here by fix pass C
+(2026-07-28d) rather than left in a run's prose. Verified in code, not inferred: the belief test is
+kicked off from the `cosmere-rpg.useItem` hook as a **fire-and-forget** `void
+edhaAmbushBeliefTest(...)`, while the `whenTargetFooled` damage rider is selected when the damage
+formula is assembled — which for a `skill_test` talent the system does *before* the test resolves.
+So the ledger write always lands after the number is fixed, and the +1d6 / +1d8 first appears on the
+**second** strike. Run 18 saw it identically on Glare-Strike and Raking Grasp, and it matches the
+card text ("its FIRST attack … marks them fooled" — marks, not benefits).
+*Recommended default: **intended**, leave it.* It reads as a deliberate ambush rhythm — the seeming
+buys you the opening, the payoff starts once they have committed to believing it — and the
+alternative costs real machinery (the rider would have to be re-derived after the test, or the
+belief test awaited inside the use hook, which risks the takeover class of bug). Say so if you want
+the ambusher to benefit on the strike that fools them and it becomes an engine task.
+
+**R-51. Does an illusory copy breaking count as "an ally dropped"?** Raised by fix pass C while
+fixing the cross-disposition defect below it. The two are separate: the defect was that a tokenless
+victim fired cue owners on *every* side, and that is fixed. What is left is a design question the
+old bug was hiding — a phantom copy now resolves to the side of the creature it duplicates, so
+breaking one cues **that side's** `ally-drops` owners ("an ally dropped: the Raider may immediately
+Disengage and flee"). *Recommended default: **no — a phantom's break should not fire `ally-drops`
+at all.*** It never had a life to lose, and its own side are precisely the people who know it was
+never real; the fooled *enemies* are the ones who would react, and they are on the other side of
+the filter. One-line engine change (skip the block when the victim carries the `phantomDouble`
+flag), **engine-only, no pack rebuild** — left undone deliberately because it would silence a cue
+you may want. *(From bench run 18 / fix pass C.)*
+
 ---
 
 ## D. Talent identity & tree shape

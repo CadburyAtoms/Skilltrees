@@ -220,6 +220,20 @@ Un-blocks the Stillback / Wrongwake ambush-belief rows, the Fen-Heart near-zero 
 half-Speed half of Unstoppable (the `edhaIsFastTurn` / `game.combat` blocker on the full Unstoppable
 drive is UNCHANGED — that stays blocked while Ben's campaign combat is active).
 
+**⏳ NEW 2026-07-28d — the marathon-3 fix-pass-C ENGINE half needs ⟳ sync the module + F5 (no
+rebuild, no ⟳ Sync Talents).** ONE fix, from bench run 18: `ally-drops` GM cues fired **across the
+disposition line** whenever the dropped creature had no token on canvas at sweep time (a phantom
+double whose token the break handler just removed, an actor parked in the sidebar, an actor whose
+token is on another scene). The side was resolved from the canvas and then gated
+`disp !== undefined && …`, so an unresolvable side **skipped the same-side filter entirely** — and
+the same victim skipped the **range** filter too, so a 5-ft cue fired from anywhere on the map. Both
+now fail CLOSED, with `prototypeToken.disposition` as the fallback so a phantom copy still resolves
+to the side of the thing it copies. **Byte-check after the sync:** the served `register-skills.js`
+must contain `edhaActorSide` (**2×**) and `edhaAllyDropEligible` (**3×**), and must NOT contain
+`disp !== undefined && (t.document?.disposition ?? null) !== disp` anywhere. Re-test row is in
+`# BENCH — Engine-wide & cross-tree` → "Engine-wide fixes still unbenched"; it wants **four cells**,
+two of them positive. **The pack-rebuild list stays EMPTY.**
+
 ⚠️ **You still owe ⟳ Sync Talents on any character you will PLAY** — an owned talent is a frozen
 snapshot until you click it. The 16 bench PCs sync themselves (`bench-setup-console.js` calls
 `edha.syncActorTalents`), so a bench run does not need it; your own PCs do.
@@ -375,26 +389,27 @@ it; Withering Touch's ranged half behaved identically. Evidence in the 07-26m de
 - [ ] 🤖 **Flame Surge / burst cards** — Detonate: button reads "Detonated ✓" and stays disabled after
       F5 / re-login; re-clicking is impossible. Cancel reads "Cancelled — refunded ✓". Old cards from
       before this fix still reset on refresh (only messages stamped from now on persist).
-- [ ] 🤖 **`ally-drops` must not fire across the disposition line when the victim has no token**
-      *(NEW DEFECT, found at bench run 18 — re-test after the fix)*. Drop a **phantom double** (The
-      Seeming's copy, or any victim whose token is removed as part of the same damage application) to 0
-      and confirm that **only same-disposition** `ally-drops` cue owners fire.
-      *(2026-07-28c bench run 18 — **FAIL, root-caused, measured with a matched control.**
-      `edhaGmCueDamageSweep` reads `const vTok = victim.getActiveTokens?.()[0] ?? null;` then
-      `const disp = vTok?.document?.disposition;` and gates with
-      `if (disp !== undefined && (t.document?.disposition ?? null) !== disp) continue;`. When the victim
-      has **no token on canvas at sweep time**, `disp` is `undefined`, the same-side test is **skipped
-      entirely**, and **every** `ally-drops` owner on the scene fires — across the disposition line. The
-      Seeming's phantom is exactly that case: the seeming-break handler removes its token during the same
-      `applyDamage`. **Observed:** breaking a phantom set to disposition **0** (unique on the map) still
-      fired all three of Ben's **disposition −1** Corvaine "Break" cues and wrote `trigRound` to each.
-      **CONTROL, same session:** a normal bench adversary at disposition 0 **with its token still on
-      canvas**, dropped to 0 the same way, fired **0** Break cards and left the Corvaine flags untouched.
-      So the filter works whenever a token exists, and fails **open** when one does not. Severity is low
-      (a spurious GM reminder card + a `trigRound` key), but it reaches **Ben's campaign token actors**
-      from a bench action, which is how run 18 noticed. Suggested shape: treat "no token" as **no
-      eligible ally** rather than as "no filter". All three writes were reverted from the start
-      snapshot this run.)*
+- [ ] 🤖 **`ally-drops` side filter — the tokenless victim (FIXED 2026-07-28d; engine-only, ⟳ sync + F5
+      first)**. Run 18's defect: `edhaGmCueDamageSweep` resolved the victim's side from the canvas and
+      gated with `disp !== undefined && …`, so a victim with **no token at sweep time** skipped the
+      same-side filter entirely and every `ally-drops` owner on the scene fired across the disposition
+      line. Now: live token → `prototypeToken.disposition` → fail closed. Drive **all four** cells —
+      the fix is only proven by the pair, because the bug fired *more* cues, not fewer:
+      **① NEGATIVE (the defect itself)** — break a **phantom double** (The Seeming's copy) whose token is
+      removed by the break handler, with a **disposition −1** `ally-drops` owner on the map (Ben's
+      Corvaine Raider / Line-Caller). Expect **no Break card** and **no new `trigRound` key** on that
+      owner. This is the cell that failed at run 18.
+      **② POSITIVE (the fix must not over-correct)** — same tokenless drop, with a **same-disposition**
+      un-ranged `ally-drops` owner in play. Expect the card **to fire**: the copy's prototype carries the
+      duplicated creature's disposition, so its side is still known and a legitimate cue is not silenced.
+      **③ POSITIVE CONTROL (unchanged behaviour)** — a normal adversary **with its token present**,
+      dropped to 0: same-side owners fire, cross-side owners do not. Run 18 already measured this as 0
+      cross-side cards; it must stay 0.
+      **④ NEGATIVE, the second half** — a **ranged** cue (Sergeant Halden Roek 20 ft, Crownox Ring 5 ft,
+      The Reckoning 5 ft) with a **tokenless** victim: expect **no card**. Pre-fix it fired from anywhere
+      on the map and printed "within 5 ft" about a position it did not have.
+      ⚠️ **Check Ben's Corvaine token actors' `edha-content.trigRound` flags before and after** — the
+      original harm was stray writes onto campaign actors, and that is the thing to confirm is gone.
 
 ## Structural (tree graphs + prereqs, from the 07-24 fixes)
 
