@@ -1407,6 +1407,67 @@ engine.split("\n").forEach((lineText, i) => {
   }
 }
 
+/* --- pass 18: a registered event type must be able to FIRE (the dead-event family, 07-28) -------
+ *
+ * Bench run 17: Cinderbrock's Fire the Wrack placed nothing — five drives, no card, no error. Its
+ * rule sat on `edha-pre-use`, which the engine registered with the sentinel hook
+ * `edha-content.noop-pre-use` and then never fired. The type showed up in Ben's Events-tab dropdown
+ * looking exactly like a working one, and anything authored onto it was silently inert. Same shape
+ * as CASE_STUDIES §8 (The Seeming): "registered" is a claim about a code PATH, not a code LINE.
+ *
+ * WHAT IT CHECKS. Every `registerItemEventType` whose `hook` is a sentinel (`edha-content.noop-*`)
+ * must have ONE of:
+ *   (a) the engine fires that hook — `Hooks.call/callAll("<hook>"` — so the system's own event
+ *       framework dispatches it (this is what `edha-pre-use` now does); or
+ *   (b) the engine names the event TYPE outside its own registration, i.e. a dispatcher that
+ *       enumerates rules with `rule.event === "<type>"` (edha-on-hit, edha-test-success, …); or
+ *   (c) the type is a declared SHELF below — a config-only event whose rules are read by HANDLER
+ *       type rather than by event, which is a legitimate second idiom in this engine
+ *       (`edhaRuleOf(item, "<handlerType>")` and `edhaWatchersOfRule("<handlerType>")` both ignore
+ *       the `event` field entirely). Each shelf names its reader so the claim is checkable.
+ *
+ * A NEW sentinel event type therefore FAILS until it is either fired or declared — which is the
+ * half that matters, because the trap is invisible from the data side.
+ *
+ * LIMIT, stated so a green pass is not over-read: this gates the EVENT, not the (event, handler)
+ * PAIR. Fire the Wrack's real defect was a pair — `edha-place-hazard` had no pre-use reader while
+ * `edha-burst` did — and a pair-level check is NOT reliably decidable by grep: a reachability
+ * matrix built for this pass flagged 44 pairs, of which the great majority are false positives
+ * (`edha-damage-rider` × 27 is read via `h?.type !== "edha-damage-rider"`; `edha-watch` × 14 via
+ * `edhaWatchersOfRule`), while Fire the Wrack itself came back FALSE-NEGATIVE — matching
+ * `edhaTrailRuleOf`'s `type === "edha-place-hazard" && h.mode === "trail"`, a movement-driven
+ * reader that never runs for its `mode: "drop"` rule. A gate that noisy teaches people to ignore
+ * it. Pair-level reachability is filed as backlog with that matrix as the evidence. */
+{
+  /* Config-only shelves: the event carries the rule, a handler-type reader runs it. Reader named. */
+  const SENTINEL_SHELVES = {
+    "edha-apply-watch":     "read by handler type — edhaWatchersOfRule / the applyDamage cue sweep (edha-gm-cue, edha-overflow-thp, …)",
+    "edha-pre-deal-damage": "read by handler type — the rollDamage wrapper scans edha-damage-rider rules",
+    "edha-pre-test":        "read by handler type — the pre{Skill|Attack|Item}Roll injector scans edha-test-rider rules",
+    "edha-watch-rule":      "read by handler type — edhaWatchersOfRule(<handlerType>), which ignores the event field by design",
+  };
+  const src18 = blankStringsAndComments(engine, { keepStrings: true });   // comments out, strings kept
+  const types = [...src18.matchAll(/registerItemEventType\(\{[\s\S]{0,400}?type:\s*"(edha-[a-z0-9-]+)"[\s\S]{0,800}?hook:\s*"([^"]+)"/g)]
+    .map((m) => ({ type: m[1], hook: m[2] }));
+  if (types.length < 10) {
+    err(`lint-refs pass 18: only ${types.length} registerItemEventType calls were parsed (expected 10+) — the scan rotted; fix it before trusting this pass.`);
+  }
+  for (const { type, hook } of types) {
+    if (!/^edha-content\.noop-/.test(hook)) continue;                 // a real system hook fires itself
+    const fired = src18.includes(`Hooks.callAll("${hook}"`) || src18.includes(`Hooks.call("${hook}"`);
+    if (fired) continue;
+    // (b) the type named anywhere OTHER than inside its own registration block
+    const occurrences = [...src18.matchAll(new RegExp(`"${type.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}"`, "g"))];
+    const namedOutsideRegistration = occurrences.length > 1;
+    if (namedOutsideRegistration) continue;
+    if (SENTINEL_SHELVES[type]) continue;
+    err(`lint-refs pass 18: event type "${type}" is registered with the sentinel hook "${hook}" but nothing can ever dispatch it — ` +
+        `no Hooks.call("${hook}"), no dispatcher naming "${type}", and it is not a declared shelf. ` +
+        `Authoring a rule onto it is a silent no-op (bench run 17, Fire the Wrack). Fire the hook from its real trigger, ` +
+        `add a dispatcher, or declare it in SENTINEL_SHELVES with the handler-type reader that runs its rules.`);
+  }
+}
+
 // --- report --------------------------------------------------------------------
 if (errors.length) {
   for (const e of errors) console.error(`✗ ${e}`);

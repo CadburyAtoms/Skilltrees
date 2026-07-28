@@ -10183,6 +10183,40 @@ function edhaBurstSpecFromCfg(h) {
     },
   };
 }
+/* The `edha-pre-use` DISPATCHER (2026-07-28, bench run 17 — Cinderbrock's Fire the Wrack placed
+ * nothing, five drives, no card and no error).
+ *
+ * `edha-pre-use` was registered with the sentinel hook `edha-content.noop-pre-use`, and NOTHING
+ * fired it. The only glue on `cosmere-rpg.preUseItem` that read a rule was the burst takeover
+ * below, which looks its rule up by HANDLER type (`edhaRuleOf(item, "edha-burst")`) and so served
+ * exactly one handler. Any other handler parked on `edha-pre-use` was unreachable — a registered
+ * event type that can never fire, offered to Ben in the Events-tab dropdown like a working one.
+ *
+ * The fix is four lines because the sentinel is not dead by design, it is FIRE-ME-YOURSELF: the
+ * system groups every registered event type by its `hook` string in its own `ready` handler and
+ * does `Hooks.on(hook, …)` for each (system index.js ~11977). Our types register on `init`, so the
+ * listener exists by then. Calling the hook hands the item to the system's `fireEvent`, which
+ * filters `rule.event === type && !rule.disabled` and runs each rule's registered executor — so
+ * EVERY handler type works here now, and any future one works without new glue (iron rule 2a: no
+ * bespoke per-handler dispatch). Host is the default "source" and we pass no userId, so only the
+ * acting client runs it — no two-GM double-fire.
+ *
+ * Deliberately NOT a takeover: it does not return false. Returning false from preUseItem cancels
+ * with no cost paid and no card, which is right for a burst that resolves itself and wrong for a
+ * rider like Fire the Wrack, whose Action cost and card are the system's job. Burst rules are
+ * skipped outright — their executors are declared no-ops and the takeover below owns them — so
+ * this changes nothing for the 8 shipped `edha-burst` rules.
+ *
+ * Chose this over re-authoring Fire the Wrack onto `use`: that is a data change, so it would
+ * re-open the pack-rebuild list (EMPTY for the first time in the project's tracked history) and
+ * cost Ben a Foundry-closed rebuild — and it would leave the trap armed for the next author. */
+Hooks.on("cosmere-rpg.preUseItem", (item) => {
+  try {
+    if (!edhaIsTalent(item)) return;      // covers bespoke adversary abilities: build stamps adversaryTalent
+    if (!edhaEventRules(item).some(r => r?.event === "edha-pre-use" && r?.handler?.type !== "edha-burst")) return;
+    Hooks.callAll("edha-content.noop-pre-use", item);
+  } catch (e) { console.error("Edha Content | edha-pre-use dispatch failed", e); }
+});
 // Intercept burst talents BEFORE the default single-target flow rolls/posts anything. The burst
 // CONFIG lives on the talent (its edha-burst rule); this hook is only the engine glue.
 Hooks.on("cosmere-rpg.preUseItem", (item) => {
@@ -16464,8 +16498,8 @@ function edhaRegisterNativeEventSystem() {
   });
   api.registerItemEventType({
     source: "edha-content", type: "edha-pre-use",
-    label: "Edha: Takes Over Item Use", description: "This talent's use is taken over by a custom resolution (e.g. a point-targeted burst). The engine reads this rule's config.",
-    hook: "edha-content.noop-pre-use", // sentinel: never fired; the preUseItem takeover reads this rule
+    label: "Edha: Before This Is Used", description: "Fires on the acting client when this item is used, BEFORE its cost is paid and before it rolls — any handler works. An Edha: Point Burst rule here additionally TAKES OVER the use (the engine resolves the burst itself and cancels the default single-target flow). Anything else runs as a rider and lets the normal use proceed.",
+    hook: "edha-content.noop-pre-use", // fired by the edha-pre-use dispatcher on cosmere-rpg.preUseItem (07-28); edha-burst rules are read directly by the takeover instead
   });
   api.registerItemEventType({
     source: "edha-content", type: "edha-combat-timing",
