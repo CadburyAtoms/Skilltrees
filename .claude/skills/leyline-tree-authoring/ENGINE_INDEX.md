@@ -201,6 +201,23 @@ source, not inferred.
 - **Native authored-event handlers** — a talent's `events` rule runs its handler (`edha-burst`,
   `edha-place-hazard`, `edha-triggered-effect`, …). `edhaRuleOf(item, type)` reads the first rule of a
   type; `edhaEventRules(item)` lists them.
+- ⚠️ **THE ENGINE HAS TWO DISPATCH IDIOMS, and mixing them up ships dead rules.** (a) **Handler-type
+  lookup** — `edhaRuleOf(item, "<handlerType>")` / `edhaWatchersOfRule("<handlerType>")` **ignore the
+  `event` field entirely**, so for those the event is a decorative *shelf*. (b) **Event-name
+  dispatch** — the engine or the system enumerates rules whose `event` matches. So the question that
+  decides whether a rule is alive is never "does this event have a dispatcher" but **"is this
+  (event, handler) PAIR reachable"**. Fire the Wrack sat on `edha-pre-use` with a handler whose only
+  reader was on `use`, and was inert for its whole life (bench run 17).
+- **`edha-pre-use` is a real dispatcher now (07-28b), not just the burst shelf.** The engine fires
+  the sentinel hook `edha-content.noop-pre-use` from `cosmere-rpg.preUseItem`, and the SYSTEM's own
+  `fireEvent` then runs every matching rule's executor — so **any** handler type works on
+  `edha-pre-use` with no new glue. It does **not** return `false`, so the cost and card stay the
+  system's; `edha-burst` rules are skipped because the takeover below owns them.
+- **Sentinel hooks are FIRE-ME-YOURSELF, not decoration.** The system groups every registered event
+  type by its `hook` string in its own `ready` handler and does `Hooks.on(hook, …)` for each. Our
+  types register on `init`, so the listener always exists — `Hooks.callAll("<sentinel>", item)` is a
+  complete dispatcher for a whole event type. **`lint-refs` pass 18** now fails any sentinel-hooked
+  type that is neither fired, nor named by a dispatcher, nor declared a shelf with its reader named.
 
 ## Damage / heal application
 - **`edhaApplyBurstResults({ hits, terrain, casterActorUuid })`** — the canonical privileged-write path.
@@ -1246,7 +1263,26 @@ pre-07-24r consumer did. Necrotic Cascade's corpse detonation is the first `enem
 ## Token movement additions (07-12d)
 - **`edhaTokenAtDest(movingTok, center)`** — another visible token occupies the destination?
   `edhaComputeMove(origin, aim, maxFt, movingTok)` backsteps to the last free square when given the
-  mover (Ben R2: engine moves never stack; manual drags unpoliced).
+  mover (Ben R2: engine moves never stack; manual drags unpoliced). ⚠️ **It is a bounding-box
+  overlap using the MOVER's own width, not a grid-square test** — a Large neighbour or an off-grid
+  token counts where "is that square occupied?" would say no. Do not verify a blocked move by
+  eyeballing the square (bench run 17 did, and ruled out the branch that was probably firing).
+- ⚠️ **A move of ≤ ONE grid square is all-or-nothing.** The backstep steps a whole square at a time,
+  and since the overlap box is a square wide there is no intermediate position that clears the
+  occupier — so a 1-square push into an occupied square correctly yields **0 ft**, while a 2-square
+  push degrades visibly to half. Same code, and it is why run 12's 10-ft push looked healthy and run
+  17's 5-ft push looked broken (07-28b).
+- **`edhaComputeMove` returns `{dest, movedFt, collided, blockedBy, blocker}`** (07-28b).
+  `blockedBy` is `"direction"` (aim collapsed onto the origin — nothing to travel along), `"wall"`,
+  `"token"` (with `blocker` = the occupier's name), or `null`. **Print it.** A 0-ft result is
+  otherwise indistinguishable from a dead handler, which cost bench run 17 a whole pass.
+- **`edhaBlockedText(blockedBy, blocker)`** — the one phrasing for "it stopped short, and here is
+  what stopped it" (`" (stopped by Cinderbrock)"`, `" (stopped by a wall)"`, `""`). Used by
+  `edha-push` and `edha-move`; use it in any new mover rather than inventing a second wording.
+- **`edhaRunPush` refuses out loud when the victim shares a space with the anchor** — "directly
+  away" has no direction, and the old `|| 1` silently aimed at the victim's own centre. Collision
+  damage additionally requires `movedFt > 0`: a push that never travelled cannot slam into anything
+  (whether a *creature* counts as an obstacle at all is ruling **R-49**).
 - **`edhaMoveTokenTo(tok, center, {teleport:true})`** — v13 `doc.move({action:"displace"})`
   unconstrained teleport (walls ignored, no walk animation); the GM `move-token` relay honors it.
   Plain calls stay walk-animated slides.

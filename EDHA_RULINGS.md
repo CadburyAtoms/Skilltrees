@@ -271,6 +271,20 @@ it `distanceFt: 20` and drop `bySize`.* The alternative (keep `bySize`, reword t
 authored data changes → **pack rebuild + ⟳ Sync**, which is why fix pass A left it alone: the
 rebuild list is currently empty and this is not worth re-opening it on its own.
 
+**R-49. Is a CREATURE an "obstacle" for a push's collision damage, or only a wall?**
+Sent here by fix pass B (2026-07-28b) rather than decided silently. `edha-push` stops the victim when
+the destination is occupied by a body exactly as it stops them at a wall, and both set the same
+`collided` flag — so a victim shoved into another creature and stopped short currently takes the
+wall-collision die ("… and slams into an obstacle for N impact"). Shockwave Slam's own text says "a
+collision with an obstacle", which does not say whether a body counts.
+Fix pass B changed only the incoherent half — **a push that travelled 0 ft now deals no collision
+damage at all**, because nothing can slam into anything without moving. That much is not a judgment
+call. Whether a push that moves 2.5 ft and *then* hits a body should roll the die is.
+*Recommended default: YES, a creature counts — being slammed into someone is a collision, it keeps
+one rule for both cases, and it is the behaviour that has shipped all along.* The alternative (walls
+only) is a one-word engine change: gate the collision roll on `blockedBy === "wall"`. Engine-only
+either way — **no pack rebuild**, so this can be flipped whenever you decide.
+
 **R-47. Should the `NO NAMEABLE HOOK:` engineering note be visible on the player-facing card?**
 Bench run 16 drove Seize and Roll, Drag Under and Slip the Sound and all three posted their authoring
 rationale to chat verbatim — e.g. "NO NAMEABLE HOOK: to-hit-only grab — a hit that deals no damage

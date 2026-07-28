@@ -2261,6 +2261,22 @@ rider's flavor label is the **carrying item's** name (`[Breach and Drag]`), not 
       `edha-place-hazard` one; both PC place-hazard rules in `deity-destruction.json` use `use`.
       ⚠️ **Row-wording correction:** `edhaPlaceHazard` does **not** click-place — it centres on
       `game.user.targets[0]`, else the caster's own token. There is no pick to drive.)*
+      *(2026-07-28b fix pass B — **FIXED ENGINE-ONLY, ⟳ sync + F5, NO pack rebuild.** The run's
+      proposed data fix (`edha-pre-use` → `use`) was declined: it would re-open the pack-rebuild
+      list, which is EMPTY for the first time in the project's tracked history, and would leave the
+      trap armed for the next author. Instead the sentinel hook is now **fired** from the real
+      `preUseItem`, so the system's own `fireEvent` dispatches **every** handler type on
+      `edha-pre-use`. Not a takeover — it does not return `false`, so the Action cost and card stay
+      the system's job. `edha-burst` rules are skipped, so the 8 shipped burst rules are untouched.)*
+- [ ] 🤖 **Fire the Wrack — the pre-use dispatcher** *(engine-only, ⟳ sync + F5)*.
+      **POSITIVE:** using the ability now places **one** 10-ft red burning Region (centred on the
+      target if one is set, else on the caster) and the Action cost is still charged and the normal
+      use card still posts — the dispatcher is a rider, not a takeover.
+      **NEGATIVE 1 (bursts unchanged):** any `edha-burst` talent — Flame Surge, Mending Aura,
+      Sudden Growth — must behave **exactly** as before, one burst, no doubled resolution and no
+      second card; they are the 8 rules that already worked through this event.
+      **NEGATIVE 2 (no double-place):** with two GMs connected, one use must place **one** Region,
+      not two — the dispatcher runs only on the acting client.
 - [ ] 🤖 **Pyre spread card BY ALIAS** — at the end of the CINDERBROCK's turn with a patch on the
       scene: the whispered spread card fires, labeled **Fire the Wrack** (not "Pyre"), with
       working Spread + Extinguish buttons. A PC Destruction player's own Pyre zones must still
@@ -2694,6 +2710,29 @@ line is NPC intent and targeting, not module data"). Nothing exists that could a
       inside `edhaRunPush`'s `edhaApplyMove(vtok, aim, maxFt, {gapPx: 0, hostile: true})` — the one
       call shape that differs from the working `edha-move` path. The **wall-collision half 1d6** is
       untested and unreachable until the push moves at all.)*
+      *(2026-07-28b fix pass B — **NOT A REGRESSION; the push code is byte-identical to run 12's.**
+      Diffed `038ebf9..2bc33ef`: `edhaRunPush`, `edhaApplyMove`, `edhaComputeMove`, `edhaTokenAtDest`,
+      `edhaPxPerFt`, `edhaColorRank`, `edhaCasterToken` all unchanged. What differed is the NUMBER —
+      run 12 pushed **10 ft = two** grid squares, this row pushes **5 ft = exactly one**, and
+      `edhaTokenAtDest` is a bounding-box overlap, so a one-square push has no intermediate stop: it
+      travels the full square or returns to the origin. **0 ft can therefore be CORRECT** (a body in
+      the way, nowhere to go); the defect was that the card never said which. ⚠️ **Note for the
+      re-drive: "the destination square was unoccupied" is not the check the engine makes** — the
+      overlap box uses the mover's own width, so a Large attacker or an off-grid neighbour counts
+      where a bare square check would not.)*
+- [ ] 🤖 **Shockwave Slam — the push now says WHY it stopped** *(engine-only, ⟳ sync + F5; this row
+      settles which of the three branches run 17 actually hit, by reading the card)*.
+      **POSITIVE:** an impact hit with a genuinely clear lane and no creature within one square of
+      the destination must move the victim **5 ft** (`_source` delta = 300 px at 60 px/ft) and the
+      card must carry **no** parenthetical.
+      **NEGATIVE 1 (a body):** park any token on the destination square and re-hit — the card must
+      read `is pushed 0 ft **(stopped by <that token's name>)**` and **no** collision damage may be
+      dealt (a push that never travelled cannot slam).
+      **NEGATIVE 2 (a wall):** push into a wall inside 5 ft — `(stopped by a wall)`, a partial
+      distance, and the half-1d6 collision **does** roll.
+      **NEGATIVE 3 (no direction):** stack the victim on the Slagbull and hit — no push, and an
+      explicit refusal card ("… is in the same space as … so 'directly away' has no direction"),
+      not a silent 0.
 - [ ] 🤖 **Unstoppable** — damage on a Fast turn → half-Speed engine move, once per turn.
       *(2026-07-28 bench run 17 — **BLOCKED, blocker unchanged, row stays 🤖.** `edhaIsFastTurn`
       reads `game.combat` (the ACTIVE combat), and making a bench combat active would deactivate

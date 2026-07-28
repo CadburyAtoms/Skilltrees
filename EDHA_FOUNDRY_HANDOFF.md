@@ -33,6 +33,105 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-07-28b — FIX PASS B of bench marathon 3. Run 17's two fails: **both fixed, and the one filed as a REGRESSION is not one — bisected to byte-identical code.** Plus the unbounded ledger and a new gate. **ENGINE-ONLY → ⟳ sync the module + F5; NO pack rebuild — the rebuild list stays EMPTY.** 337 tests green, every fix mutation-verified.
+
+Run 17 filed two fails. Both were real, both are fixed, and **the headline finding is that item 1's
+framing was wrong in a way that mattered**: it was handed over as a regression with a named suspect
+list, and the bisect cleared every suspect. This delta leads with that, because acting on the
+framing would have "fixed" working code.
+
+### Bug root causes
+
+- **`edha-push` displaced 0 ft (Ashkar §5, Shockwave Slam) — NOT a regression. The push path is
+  byte-identical to the run that proved it.** Diffed `038ebf9` (run 12, which drove this same rule to
+  a correct 10 ft) against `2bc33ef` (run 17): `edhaRunPush`, `edhaApplyMove`, `edhaComputeMove`,
+  `edhaTokenAtDest`, `edhaPxPerFt`, `edhaColorRank`, `edhaCasterToken` and `edhaDispatchOnHit` are
+  **identical across the whole range**. Both named suspects are cleared on the evidence, not on
+  opinion: `382c4a9`'s `edhaDerivedNum` rerouted `edhaSpeedFt`, which **the push path never calls**
+  (it reads `bySize`/`distanceFt`, never `byHalfSpeed` — `edhaSpeedFt` is `edha-move`'s); and
+  `71408c5`'s `edhaFlagKey` is irrelevant because **`edhaRunPush` keeps no ledger at all** (the
+  `oncePerTurn` guard is `edha-move`'s, not the push's).
+  **What actually differed was the NUMBER.** Run 12 pushed at red rank 3 → 10 ft → **two** grid
+  squares. Run 17 pushed at red rank 2 → 5 ft → **exactly one**. `edhaTokenAtDest` is a bounding-box
+  overlap, so the step-back loop's whole-square step has **no intermediate stop for a one-square
+  push**: it travels the full square or returns to the origin. Reproduced headlessly at the Playtest
+  Map's 60 px/ft — same obstruction, 10-ft dial → 5 ft (looks fine), 5-ft dial → **0 ft** (looks
+  broken). Same code, different geometry, and the first time this dial was ever driven.
+  **So 0 ft can be the CORRECT answer** — a body was in the way and there was nowhere to go. The
+  real defect is that the engine **could not say so**: a body, a wall, and a directionless push all
+  posted the identical bare `pushed 0 ft`, which is exactly why run 17 could not settle it at the
+  table. Fixed at that shared cause, not at the symptom.
+- **`edha-pre-use` had no dispatcher (Goldenport §3, Fire the Wrack).** Run 17's finding is
+  confirmed exactly: the event occurs **once** in the engine, in its own registration, against the
+  sentinel hook `edha-content.noop-pre-use` that nothing fired. The only `preUseItem` glue reading a
+  rule was the burst takeover, which looks up by **handler** type (`edhaRuleOf(item, "edha-burst")`)
+  and so served exactly one handler; every other handler on that event was unreachable while still
+  being offered in Ben's Events-tab dropdown. CASE_STUDIES §8 again — "registered" is a claim about a
+  code PATH, not a code LINE.
+  **Took the ENGINE option over run 17's proposed data fix**, which the run itself flagged as the fix
+  pass's call. Re-authoring onto `use` would re-open the **pack-rebuild list — EMPTY for the first
+  time in the project's tracked history** — cost Ben a Foundry-closed rebuild, and leave the trap
+  armed for the next author. The sentinel turns out not to be dead by design but **fire-me-yourself**:
+  the system groups every registered type by its `hook` string in its own `ready` handler and does
+  `Hooks.on(hook, …)`; our types register on `init`, so the listener exists. Firing it hands the item
+  to the system's `fireEvent`, which filters `rule.event === type && !rule.disabled` and runs each
+  rule's registered executor — so the dispatcher is four lines and **every** handler type works,
+  including future ones, with no per-handler glue.
+- **The ambush-belief ledger grew without bound.** `edhaAmbushLedgerFor` returns `tested: {}` on a
+  scene change correctly, but the caller wrote it with `setFlag`, which **merges** — so the stored map
+  was never cleared. Inert exactly as run 17 judged (uuids are scene-scoped; `edhaAmbushFooledIn`
+  gates on `sceneId`), but unbounded. Now deletes the flag before rewriting, only on a real change.
+
+### New REUSABLE primitives
+
+- **`edhaComputeMove` now returns `blockedBy` + `blocker`** — `"direction"` / `"wall"` / `"token"`
+  (with the occupier's name). Every mover gets it for free.
+- **`edhaBlockedText(blockedBy, blocker)`** — the one phrasing for "it stopped short, and here is what
+  stopped it". Wired into `edha-push` **and** `edha-move` (sibling consumer retrofitted in the same
+  commit).
+- **The `edha-pre-use` dispatcher** — any handler type on `edha-pre-use` now runs on the acting
+  client, through the system's own event framework. Deliberately **not** a takeover: it does not
+  return `false`, because cancelling `preUseItem` means no cost paid and no card — right for a
+  self-resolving burst, wrong for a rider like Fire the Wrack. `edha-burst` rules are skipped, so the
+  8 shipped burst rules are untouched.
+- **`lint-refs` pass 18** — a sentinel-hooked event type must be fired, named by a dispatcher, or
+  declared a SHELF with its handler-type reader named. A new one fails until it is one of those.
+
+### The family question, answered — and one gate deliberately NOT built
+
+Enumerated all **15** registered `edha-*` event types against their firing paths. **`edha-pre-use`
+was the only one with neither a firing path nor a handler-type reader.** Three ride real system
+hooks; seven are named by a dispatcher; **four are config-only SHELVES** (`edha-apply-watch`,
+`edha-pre-deal-damage`, `edha-pre-test`, `edha-watch-rule`) whose rules are read by **handler** type —
+`edhaRuleOf` and `edhaWatchersOfRule` both ignore the `event` field by design. That second idiom is
+the thing to know: **for most of this engine the `event` field is decorative and the handler type is
+the key**, which is why the right question is not "does this event have a dispatcher" but "is this
+**(event, handler) PAIR** reachable".
+
+⛔ **The pair-level check is NOT gated, on purpose.** A reachability matrix built for this pass flags
+**44** pairs, of which the great majority are false positives (`edha-damage-rider` × 27 is read via
+`h?.type !== "edha-damage-rider"`; `edha-watch` × 14 via `edhaWatchersOfRule`) — and Fire the Wrack
+itself came back a false **NEGATIVE**, matching `edhaTrailRuleOf`'s
+`type === "edha-place-hazard" && h.mode === "trail"`, a movement-driven reader that never runs for
+its `mode: "drop"` rule. A gate that noisy teaches people to ignore it. Filed as backlog with the
+matrix as the evidence; pass 18 gates the decidable half.
+
+### Known limits / couldn't self-verify (no Foundry here)
+
+- 🤖 **Which branch actually fired for Shockwave Slam is still unproven at the table.** Three can
+  produce a 0-ft card, and the fix makes all three self-describing rather than guessing between them.
+  The next drive settles it in one row by reading the card: `(stopped by <name>)` = a body,
+  `(stopped by a wall)` = geometry, the same-space refusal = stacked tokens. Note run 17's "the
+  destination square was unoccupied" is **not** the check the engine makes — `edhaTokenAtDest` is a
+  bounding-box overlap with the mover's own width, so a Large attacker or an off-grid neighbour
+  counts where a bare square-occupancy check would not.
+- 🤖 Fire the Wrack's Region placement, and the Pyre spread card BY ALIAS it was blocking.
+- ⚑ **One ruling for Ben** (`EDHA_RULINGS.md` R-49): a push blocked by a **creature** currently
+  counts as "an obstacle" for collision damage once it moves at all. Wall vs body is a design call,
+  not a bug — engine unchanged pending Ben.
+
+---
+
 ## 2026-07-28 — BENCH RUN 17 (Goldenport Coast + Ashkar Mesas bestiaries), with a full re-test of fix pass A: **fix pass A is 5-for-5, and 18 of 22 bestiary rows retired on evidence.** 2 fails root-caused, 2 blocked, **zero world drift** except one benign flag noted below. DOCS-ONLY — no engine, data or pack change this pass; both fails feed test-pass-fixes.
 
 **Deploy verified BY HASH before anything was driven.** The served
