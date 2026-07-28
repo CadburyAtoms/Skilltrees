@@ -7180,8 +7180,43 @@ async function edhaCwEnrich(html) {
 // DV2.confirm so the current step re-fronts itself whenever a DOCUMENT sheet renders over it —
 // and ONLY document sheets: dialogs and pickers (the pick-2 expertise dialog) must stay on top.
 // hold() suspends the guard for deliberate opens (open-tree buttons, content-link clicks).
+// Pure: does a dialog box hang off the bottom of the viewport in a way repositioning can fix?
+// ApplicationV2#_updatePosition clamps `top` into [0, viewportH − height] ONCE, at render — so a
+// dialog that GROWS afterwards keeps a top offset computed for a shorter box. `top <= 0` means it
+// is already flush and taller than the viewport: nothing to gain, and re-setting would thrash.
+function edhaDialogNeedsReposition(topPx, heightPx, viewportH) {
+  const top = Number(topPx) || 0, h = Number(heightPx) || 0, vh = Number(viewportH) || 0;
+  return top > 0 && vh > 0 && h > 0 && (top + h) > vh;
+}
+
+/* Wizard dialogs: keep-on-top guard + the grow-after-positioning fix (07-28, bench run 21).
+ * The "Where are you from?" page opened 237 → 1025 in a 1400×900 viewport — 125 px past the
+ * bottom — while every other page fitted. The height caps in edha.css were NOT at fault and the
+ * content DOES scroll (.dialog-content is capped at 76vh); the stale TOP is the bug. The map block
+ * ships `display:none` and is revealed only after assets/thyrcross-nations.json resolves, so
+ * Foundry measured a 426 px dialog, centred it at (900−426)/2 = 237, and never looked again once
+ * the 42vh map pushed it to 788. Every arithmetic step reproduces the reported numbers exactly.
+ * The stepper pages have the same shape (their preview panel is filled in the render callback),
+ * so the fix is generic rather than a hook in the map wiring: one ResizeObserver per wizard dialog
+ * re-clamps `top` whenever the box grows. Width, left and size are never touched, a dialog that
+ * already fits is never moved, and dragging changes position rather than size so the observer
+ * stays quiet. */
 function edhaCreatorDialogs(DV2) {
-  let cur = null, hold = false;
+  let cur = null, hold = false, ro = null;
+  const watch = (dlg) => {
+    try {
+      ro?.disconnect?.(); ro = null;
+      const el = dlg?.element instanceof HTMLElement ? dlg.element : null;
+      if (!el || typeof ResizeObserver !== "function") return;
+      ro = new ResizeObserver(() => {
+        try {
+          const r = el.getBoundingClientRect();
+          if (edhaDialogNeedsReposition(r.top, r.height, window.innerHeight)) dlg.setPosition?.({});
+        } catch (e) { /* best-effort */ }
+      });
+      ro.observe(el);
+    } catch (e) { /* best-effort */ }
+  };
   const hookId = Hooks.on("renderApplicationV2", (app) => {
     try {
       if (hold || !cur || app === cur) return;
@@ -7194,10 +7229,15 @@ function edhaCreatorDialogs(DV2) {
     cur = null;
     opts.classes = ["edha-cw", ...(opts.classes ?? [])];   // css hook: viewport-capped height (07-19: the wizard opened with its bottom off-screen)
     const r0 = opts.render;
-    opts.render = (ev, dlg) => { cur = dlg ?? null; hold = false; try { r0?.(ev, dlg); } catch (e) { /* step render is best-effort */ } };
+    opts.render = (ev, dlg) => {
+      cur = dlg ?? null; hold = false;
+      try { r0?.(ev, dlg); } catch (e) { /* step render is best-effort */ }
+      watch(dlg);   // re-clamp `top` if this page grows after Foundry positioned it
+    };
     return DV2[fnName](opts);
   };
-  return { wait: wrap("wait"), confirm: wrap("confirm"), hold: () => { hold = true; }, off: () => Hooks.off("renderApplicationV2", hookId) };
+  return { wait: wrap("wait"), confirm: wrap("confirm"), hold: () => { hold = true; },
+           off: () => { try { ro?.disconnect?.(); } catch (e) {} ro = null; Hooks.off("renderApplicationV2", hookId); } };
 }
 
 // Pure: creation-state snapshot (works on a plain {system:{level}, items:[]} actor — pinned in tests).

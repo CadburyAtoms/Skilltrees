@@ -101,3 +101,39 @@ test("edhaCwAttrBudget / edhaCwSkillBudget / edhaCwMaxSkillRank follow Character
   assert.strictEqual(env.edhaCwAttrBudget(0), 12);
   assert.strictEqual(env.edhaCwSkillBudget(0), 5);
 });
+
+/* --- Grow-after-positioning (bench run 21: the country page hung 125 px off the bottom) --------
+ * ApplicationV2#_updatePosition clamps `top` into [0, viewportH − height] ONCE, at render. The
+ * "Where are you from?" page ships its map block `display:none` and reveals it only after
+ * assets/thyrcross-nations.json resolves, so Foundry centred a 426 px dialog at (900−426)/2 = 237
+ * and never looked again once the 42vh map took it to 788: 237 + 788 = 1025 in a 900 px viewport.
+ * These pin the decision the ResizeObserver in edhaCreatorDialogs makes — including when it must
+ * do NOTHING, which is the half that keeps it from thrashing or fighting the user. */
+test("edhaDialogNeedsReposition: the reported country-page case", () => {
+  assert.strictEqual(env.edhaDialogNeedsReposition(237, 788, 900), true);   // 1025 > 900
+});
+
+test("edhaDialogNeedsReposition: the same page BEFORE the map lands is left alone", () => {
+  assert.strictEqual(env.edhaDialogNeedsReposition(237, 426, 900), false);  // 663 fits
+});
+
+test("NEGATIVE: pages that already fit are never moved (run 21 measured these two)", () => {
+  assert.strictEqual(env.edhaDialogNeedsReposition(177, 546, 900), false);  // heroic  177 -> 723
+  assert.strictEqual(env.edhaDialogNeedsReposition(142, 616, 900), false);  // attrs   142 -> 758
+});
+
+test("NEGATIVE: a dialog already flush at the top is not re-clamped, however tall", () => {
+  assert.strictEqual(env.edhaDialogNeedsReposition(0, 1200, 900), false);   // nothing to gain
+  assert.strictEqual(env.edhaDialogNeedsReposition(-4, 1200, 900), false);
+});
+
+test("NEGATIVE: a degenerate measurement is never acted on", () => {
+  assert.strictEqual(env.edhaDialogNeedsReposition(237, 0, 900), false);
+  assert.strictEqual(env.edhaDialogNeedsReposition(237, 788, 0), false);
+  assert.strictEqual(env.edhaDialogNeedsReposition(undefined, undefined, undefined), false);
+});
+
+test("the exact boundary — bottom flush with the viewport is NOT an overflow", () => {
+  assert.strictEqual(env.edhaDialogNeedsReposition(112, 788, 900), false);  // 900 === 900
+  assert.strictEqual(env.edhaDialogNeedsReposition(113, 788, 900), true);   // 901 > 900
+});
