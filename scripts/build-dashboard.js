@@ -1090,7 +1090,10 @@ function main() {
   // Drift floor re-based after the 2026-07-18 checklist consolidation (691 → ~555 rows: passed/
   // superseded rows retired, setup boilerplate removed). Keep it below any legitimate cleanup
   // but high enough to catch a section-parser regression zeroing out whole tabs.
-  if (rowCount < 400) {
+  // Re-based again 2026-07-28l: bench run 23 retired 7 rows and crossed the old 400 floor at 398.
+  // Verified legitimate rather than parser drift — the checklist's own `- [ ]` count moved 79 → 72
+  // (exactly the 7 retired) and the `# BENCH —` 🤖 queue moved 22 → 15, so no section zeroed out.
+  if (rowCount < 380) {
     console.error(`SUSPICIOUS: only ${rowCount} rows parsed across the sources — parser drift?`);
     process.exit(1);
   }

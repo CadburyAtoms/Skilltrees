@@ -356,7 +356,6 @@ Evidence per row in the delta. **2bAC-2 retired on measured evidence at bench ru
 the small-handler case is structurally intact (see the delta); the one 2bAC row left below is a
 visual-legibility judgment — still ⚑ Ben.
 
-- [ ] 🤖 **2bAC-1 (mechanical half) — Edit Event Rule geometry** — open any converted talent → Events → edit its Triggered Effect rule → the window is ~660px wide, each control sits beside its label, the hint sits UNDER the pair in smaller type, the form scrolls inside the window, and Update is reachable at the bottom. *(Split from the row below 2026-07-27w. Bench run 12 already measured 660×447 with labels and controls on the same row — this is the six-property re-read, not a fresh question.)*
 - [ ] ⚑ **2bAC-1 (judgment half) — do the labels read as PHRASES?** — with that same dialog open: does every label read as a phrase in 2 lines or fewer, or are some still jargon that needs re-wording? A measurement cannot answer this; you have to read them. *(Split 2026-07-27w — the geometry half is the bench row above.)*
 
 ## Migration machinery (cross-tree behaviour)
@@ -391,8 +390,8 @@ blank note read "Push", or the owning talent's name?)*
 
 - [ ] ⚑ **2bM-1 — ⚠️⚠️ H3 ordering (any ledger)** — as a PLAYER, with **no GM connected**, use **Covenant** on an ally you don't own → It refuses with "a GM must be online… nothing placed" and **no half-formed pact is left behind**. Before the fix the entry was written anyway and then hidden for ever. If a GM is always online at your table, skip — this cannot bite you.
       ⛔ **BLOCKER (2026-07-27w): needs ZERO GM clients connected, and the bench joins as a GM.** So it is not simply a Ben row — it is **conditionally agent-drivable**: in a window where your own Gamemaster client is CLOSED and the agent joins only as `PlayerBench`, a bench run can drive it. Until such a window is arranged it stays ⚑.
-- [ ] 🤖 **2bL-14 — Bear Witness — mid-combat reload** — in round 3+, refresh Foundry (F5) → Nobody gains a fresh round of Temp HP just for reloading.
-- [ ] 🤖 **2bE-9 — adversary widening** — put an adversary carrying a combat-timing talent into a fight → It now gets its combat-start grant. **Deliberate change** — the retired hooks were gated `type === "character"`; rule-driven dispatch doesn't need that gate. Tell me if you'd rather it stayed PC-only.
+*(**2bL-14** — Bear Witness mid-combat reload — and **2bE-9** — adversary widening — both RETIRED on evidence
+2026-07-28l, bench run 23. Evidence in the delta.)*
 
 ## Engine-wide fixes still unbenched (pre-migration survivors)
 
@@ -422,17 +421,13 @@ it; Withering Touch's ranged half behaved identically. Evidence in the 07-26m de
       (permission revoked → the relay branch is reachable and a bench run can drive it) or gets
       retired outright (permission kept → the relay is dead code at this table). A bench run must
       not change world settings to force it.
-- [ ] 🤖 **Injury tool** — Raise Dead: the card names the auto-added injury and it appears on the
-      target's sheet (schema drift falls back to a bare-named Item — report if fields are missing).
-      Apex Form: ending the scene (delete combat) adds the injury + card. Create a world RollTable
-      named "Injuries" and confirm it takes precedence over the placeholder list.
-      ✅ **TWO OF THE THREE CLAUSES ARE PROVEN — narrowed 2026-07-27v.** **Raise Dead** passed at bench
-      run 4 as **2bW-9** (the full valid raise produced its auto-created injury Item on the target).
-      **Apex Form** passed at bench run 6 as **2bW-13**, under the hardest condition available — with
-      **both** GM clients connected, one combat delete minted exactly **ONE** "Apex Form ends — takes an
-      injury: Slowed…" card and **ONE** injury item. ⛔ **All that remains is the third clause**: create
-      a world RollTable named "Injuries" and confirm it takes precedence over the engine's placeholder
-      list. Nothing else on this row is open.
+*(**Injury tool** — RETIRED IN FULL on evidence 2026-07-28l, bench run 23. Raise Dead passed at run 4
+(2bW-9), Apex Form at run 6 (2bW-13), and run 23 drove the last clause — the world-RollTable
+precedence — as a positive/negative pair. ⚠️ **One correction worth keeping: the "placeholder list" is
+already unreachable on Ben's install.** `edhaFindInjuryTable` matches `/injur/i`, and the
+`cosmere-rpg.tables` pack ships **"Injury Effects"** and **"Injury Duration"**, so the pack table wins
+long before the built-in fallback. The row's real question — does a WORLD table outrank that — is
+answered yes, because world tables are searched first. Evidence in the delta.)*
 - [ ] 🤖 **Formula bar** — any advantage roll reads "2d20kh + 6" (spaced, no stray ")"). If garbling
       recurs, note whether the roll dialog's Temporary Bonus field had anything typed in it.
       *(2026-07-27o, bench run 12: the FACTUAL half is clean and the garble did not reproduce —
@@ -523,10 +518,36 @@ walls), 2bP-1, 2bP-2 (the trap row), 2bP-3, 2bP-4, 2bJ-5, 2bF-2, 2bF-4, 2bF-5, 2
       `combat.update({turn})` (recorded on the Knowledge section's Accumulate note), and **2bL-10 drove
       rounds 1 and 2** to prove Bear Witness fires every round. This row is agent-runnable; it was
       parked on a limit that does not exist.*)
-- [ ] 🤖 **2bJ-3 — Pattern Recognition (Blue) ⚠️** — use it on a target, accept, then have them roll a test **this round**; separately, accept and let the **round change** before they roll → Disadvantage on the test this round. After the round changes it **no longer applies**. **BEHAVIOUR CHANGE:** the card always said "their next test **this round**" and the old flag waited for ever. Tell me if you'd rather it kept waiting.
-      *(2026-07-26i: NOT RUN — needs a real round change; see 2bAA-6.* ⚠️ **Struck 2026-07-27v for the
-      same reason: a round change IS drivable** — `combat.update({turn})` / `combat.update({round})`,
-      demonstrated by 2bL-10's two rounds. Agent-runnable.*)
+      ⛔ **RUN 2026-07-28l (bench run 23) — THREE OF FOUR CLAUSES PASS, THE BUTTON IS A HARD FAIL.**
+      ✅ **Events tab**: Living Image carries exactly the two rules the row names — `LivingUpkeep0000`
+      (`edha-illusion-upkeep`, on `edha-watch-rule` = config) + `LivingImgNote000` (`edha-note`, on
+      `use`), read live off the owned item. ✅ **Turn-start prompt**: with a real Holographic Illusion up
+      (`summoner` = Blue, HP 1), Blue's turn start whispered (2 recipients) "🎭 **Living Image**
+      (Bench — Blue) — turn start with 1 illusion(s) up (Holographic Illusion (Bench — Blue)):
+      **1 Investiture per COMPLEX illusion** to maintain…" with a **Pay 1 Investiture** button.
+      ✅ **THE DOCUMENT DRIVES IT — the conversion's whole point**: editing
+      `system.events.LivingUpkeep0000.handler.costPer` from 1 → **2** changed the very next turn-start
+      prompt to "**2 Investiture** per COMPLEX illusion" and the button label to "**Pay 2
+      Investiture**". (Restored to 1.)
+      ❌ **THE BUTTON NEVER CHARGES — every click, every user, silently.** Clicking "Pay 1 Investiture"
+      left Investiture at 4→4 and posted no card; clicking "Pay 2 Investiture" left it at 3→3. A probe
+      listener on the same element fired, so dispatch works — the engine's own handler **throws**:
+      `Edha Content | illusion upkeep failed TypeError: Cannot read properties of null (reading
+      'dataset') at edhaUpkeepInvClick (register-skills.js:6245)`.
+      **ROOT CAUSE (read off the source, not inferred):** `edhaUpkeepInvClick` L6243 reads
+      `ev.currentTarget.dataset.actor` — fine, that is evaluated *before* the `await fromUuid(...)`.
+      The await ends event dispatch, so the browser resets `ev.currentTarget` to **null**, and L6245's
+      `ev.currentTarget.dataset.item` throws. The `try/catch` at L6253 swallows it into a console
+      error, which is why it presents as a silent no-op. **Isolated and confirmed**: re-running the
+      handler's exact logic with the dataset captured *synchronously* charged 1 Investiture (4 → 3) and
+      posted the card, so nothing else in the chain is wrong.
+      **The fix is one line** — `const btn = ev.currentTarget;` before the first await, then read
+      `btn.dataset` — the idiom the codebase already uses at L4272 (`edhaDesignateClick`) and L10424.
+      ⚠️ **Audit the family, do not point-fix**: any handler that reads `ev.currentTarget` after an
+      `await` has the same latent bug. → **test-pass-fixes**.
+*(**2bJ-3 — Pattern Recognition** — RETIRED on evidence 2026-07-28l, bench run 23, as a paired
+positive/negative. ⚠️ **The behaviour-change question the row asks is Ben's and is now in
+`EDHA_RULINGS.md` R-57** — should it keep waiting instead of expiring? Evidence in the delta.)*
 - [ ] 🤖 **2bAA-9 — The Seeming — Mistheron AND The Doubled Elder** — use it on each; break the copy → Each adversary ability now carries its OWN `use` rule (⟳ Sync Adversaries / re-drag first). Both must still raise the copy and run the belief sweep, and **the cards must name "The Seeming", not "Phantom Double"**. Spearing Beak's / the Grasp's fooled-target rider must still find the belief ledger.
       *(2026-07-26i: NOT RUN — same second-client need as 2bAA-8.* ⚠️ **THAT NOTE IS STALE and is
       struck, 2026-07-27v: 2bAA-8 was driven SOLO at bench run 14** — the second-client label was
@@ -1397,7 +1418,7 @@ paths).
       **What to check at the table (feel, not pass/fail):** open the attack dialog against a marked
       quarry and look at the die icon's **colour** — is that cue readable enough for you? If not, the
       answer is more whispered advantage cards like the quarry one, **not** an engine change.
-- [ ] 🤖 **2bD-7 — regression: the untouched rows — FAIL 2026-07-27i (2 of 4 are dead)** — **Sharp Eye**, **Tactical Ploy**, **Steadfast Challenge**, **Valiant Intervention** → All four still work exactly as before — they stay on the old `EDHA_HEROIC_DEFTESTS` path this pass. If any broke, the table edit went wrong. **Run 9:** Tactical Ploy ✅ (2bE-7, both branches) and Valiant Intervention ✅ (2bF-15). Steadfast Challenge rolled and resolved but only a FAIL was observed (2bF-13, below). **Sharp Eye is a silent no-op** — see 2bQ-4. Its cause is the dead-skill-key family below, not the table edit. **2026-07-27k: THREE OF FOUR ARE NOW CLEARED** — Steadfast Challenge's success branch passed (2bF-13, retired), joining Tactical Ploy and Valiant Intervention. ⛔ **This row now hangs on Sharp Eye alone, which is BLOCKED-ON-DEPLOY** (`foundry-build heroic` + ⟳ Sync Talents); a fresh console read on 07-27k confirms the live pack still carries `skill: "per"`. **2026-07-27m (bench run 11): still hangs on Sharp Eye alone, and it is no longer a deploy gap** — the heroic pack IS rebuilt and Sharp Eye still does nothing. Its cause is now root-caused as an `activation` defect, not the skill key; see 2bQ-4. The other three remain cleared. ⏳ **2026-07-27n: the activation fix is IN and this row is BLOCKED-ON-DEPLOY behind it** — it needs a **second** `foundry-build heroic` + ⟳ Sync Talents. Re-check Sharp Eye only; the other three are settled. ✅ **UNBLOCKED 2026-07-27u — that second heroic build is DONE.** Re-check Sharp Eye only.
+*(**2bD-7 — regression: the untouched rows** — RETIRED on evidence 2026-07-28l, bench run 23. It had hung on **Sharp Eye alone** since 07-27k, the other three (Tactical Ploy, Valiant Intervention, Steadfast Challenge) having cleared at runs 9 and 10. Sharp Eye now works — see 2bQ-4 — so all four of the untouched rows behave. Evidence in the delta.)*
       ⛔ **RESIDUE, stated exactly — narrowed 2026-07-27v: 3 OF 4 ARE CLOSED AND ONLY SHARP EYE IS
       LEFT.** ✅ Tactical Ploy (2bE-7, both branches, bench run 9) · ✅ Valiant Intervention (2bF-15,
       run 9) · ✅ Steadfast Challenge (2bF-13's success branch, run 10 — the run-9 FAIL-only reading is
@@ -1406,7 +1427,7 @@ paths).
       (07-27u), so a silent no-op here would be a NEW finding, not the old one. Score this row off
       2bQ-4's result.
 - [ ] 🤖 **Probability Cascade (Blue) — the count-2 half of the 2bO-7 guard, NOT RUN 2026-07-27k** — `edhaNextModClaimOk` (the Pack Hunting double-dip guard) must stay inert for multi-use test-only mods: Probability Cascade is `count: 2`, `appliesTo: "test"` and must still apply to **two separate tests**. Run 10 verified the guard is inert for **count-1** test-only mods (Demonstrative / Shrewd / Overwhelm with Details / Decisive Command all applied normally on skill tests) but could not drive Probability Cascade itself — its chain needs an Opportunity plus 1 Investiture, which cannot be forced on demand. **This is a Blue row, not Heroic** — run it in a Blue pass.
-- [ ] 🤖 **2bQ-4 — Sharp Eye — FAIL 2026-07-27i: a total silent no-op** — target a creature and use it → You roll **Perception**; the card says SUCCESS or FAIL against their Cognitive defense. **On a success only**, a second whispered card lists *lowest attribute · lowest defense · below half*. **Run 9:** used twice on a valid target — **no roll, no card, no notification, and nothing spent** (focus 4→4, Investiture 4→4). The document is not empty: it carries `SharpEyeGate0000` (`edha-def-test`) and `SharpEyeReveal00` (`edha-reveal`, on `edha-test-success`). **Cause:** the gate's **`skill: "per"`** is a dead key — the cosmere Perception skill is **`prc`**, and `per` appears nowhere in `CONFIG.COSMERE.skills`, so no roll can ever fire and the success event never arrives. Same shape as run 2's "cost charged and nothing happened" lesson, here without even the charge. ✅ **FIXED 2026-07-27j — BLOCKED-ON-DEPLOY: needs `foundry-build heroic` + ⟳ Sync Talents.** The gate is now `prc`. **Re-test after the rebuild:** target a creature, use it → a Perception roll and a SUCCESS/FAIL card, and on a success the whispered fact list. ⛔ **STILL A TOTAL SILENT NO-OP AFTER THE REBUILD — bench run 11, 2026-07-27m. The dead key was real but it was NOT the whole cause.** The `prc` fix is live on BOTH the pack and the owned item (`SharpEyeGate0000`, `edha-def-test`, `skill: "prc"`), and a use on a correctly targeted creature still produced **no roll, no card, no notification and nothing spent** (focus 4→4) — twice, with the target asserted in `game.user.targets`. **ROOT CAUSE, now CONFIRMED IN SYSTEM SOURCE (2026-07-27n) rather than inferred:** Sharp Eye's `activation` was `{type: "utility", cost: {value: null, type: "spe"}}` with **no `activation.skill`**, and the system's own `use()` decides `rollRequired = activation.type === "skill_test" || hasDamage` (`systems/cosmere-rpg/index.js` ~L7188). With `utility` and `damage.formula: null` it took the else-branch: it posted the plain action card, fired `useItem` (so the `use` event and H1's executor really did run), and rolled **nothing**. H1 is a DECIDER, not a roller — it queued a contest and the entry simply expired after `EDHA_CONTEST_TTL`, with no error and no warning. ✅ **FIXED 2026-07-27n — BLOCKED-ON-DEPLOY: needs `foundry-build heroic` + ⟳ Sync Talents.** `activation.type` → `skill_test`, `activation.skill` → `prc`; the Special Action cost is unchanged, so the card text is untouched. Verified by reading the talent back out of a scratch-`EDHA_MODROOT` heroic build. **RE-TEST after the rebuild:** target a creature and use it → a **Perception** roll fires, a card reads "Sharp Eye: `<total>` vs `<name>`'s COG `<n>` — SUCCESS/FAIL", and on a success a second whispered card lists *lowest attribute · lowest defense · below half* with the "Pick ONE" note. **Family audit re-run independently: 37 authored rules carry `edha-def-test`, 35 are already `skill_test`;** the only other exception is Chaos's **Unravel Everything**, which is legitimately exempt (`targetList` + `vs: "none"` returns before the contest is ever queued). Zero skill mismatches across the other 35 and across all 7 adversary abilities. **This shape has now shipped twice** — six adversary abilities in 07-26j, this one on the talent surface — so **`lint-refs` pass 14** gates both surfaces from here (mutation-verified against this exact defect). ✅ **UNBLOCKED 2026-07-27u — the heroic rebuild is DONE and the fix is confirmed IN THE BUILT PACK** (`activation.type: "skill_test"`, `activation.skill: "prc"`, both rules intact). This row is no longer deploy-blocked; it needs a bench drive. **Drive it as written above** — target a creature, use it, expect a Perception roll, a SUCCESS/FAIL card vs COG, and on a success the whispered fact list.
+*(**2bQ-4 — Sharp Eye** — RETIRED on evidence 2026-07-28l, bench run 23, after two deploy-blocked re-tests and two root causes (the dead `per` skill key, then the `utility` activation). The 07-27n activation fix is live on the owned item — `activation.type: "skill_test"`, `activation.skill: "prc"`, both rules intact — and **both branches drove end to end**. Evidence in the delta.)*
 > **✅ On-hit riders — RETIRED on evidence 2026-07-27i.** One Sidesword hit fired the whole set:
 > **Startling Blow** → "Bench Target — Adjacent A is **Surprised**" (status asserted on the actor) ·
 > **Shattering Blow** → its 5 ft push card, with its own note (2bA-8) · **Subtle Takedown**,
@@ -1436,6 +1457,27 @@ paths).
       the talent item — `item.system.prerequisites` reads `null` on an owned Resolute Stand and
       Shattering Blow, which is correct, not evidence. The observable is the sheet's own prereq
       warning on a PC who already owns the talent, and that is a look-at-the-sheet call. Yours.)*
+      ✅ **ANSWERED 2026-07-28l, bench run 23 — and the answer is that THERE IS NOTHING TO LOOK AT.
+      Ben: this row can be retired; left standing only because ⚑ is your marker.**
+      **(a) All four prereqs are real in the built pack** (read off `edha-heroic`): **Know Your
+      Moment** → talent `Mind and Body` (managed) + skill `ded` rank 2 · **Resolute Stand** → talent
+      `Hardy` (managed) + skill `ath` rank 1 · **Shattering Blow** → talent `Windstance` (managed) +
+      skill `prc` rank 2 · **Animal Bond** → a `connection`-type prereq rank 1. None is dropped.
+      **(b) The unmet case occurs naturally on the bench**: `Bench — Heroic` **owns** Resolute Stand
+      (`actor.hasTalent("resolute-stand") === true`) while `actor.hasTalentPreRequisites(...)` returns
+      **false** — it has Athletics 3 but does **not** own Hardy. Control in the same read:
+      `leader-hardy` returns `prereqsMet: true`, so the evaluator genuinely discriminates.
+      **(c) The sheet cannot flag it, and this is settled from the system's own source, not from a
+      look.** The character sheet has no talents tab and the string "prereq" appears nowhere in its
+      rendered HTML; prerequisites are rendered only by `TalentTreeItemSheet`, whose tree view is a
+      PIXI **`<canvas>`** with no per-talent DOM node. Its two node getters are the whole vocabulary:
+      `isTalentObtained` checks ownership only, and **`isTalentAvailable` short-circuits —
+      `if (actor.hasTalent(this.data.talentId)) return false;` runs BEFORE prerequisites are ever
+      consulted**. `_draw()` has no third branch. So an owned-but-unmet talent renders exactly like
+      any other owned talent: **there is no warning state to see**, and "the sheet may flag it" is
+      answered **no**.
+      ⚠️ Also measured: `available:false` on an obtained node proves nothing about prereqs — every
+      obtained node reads false. Do not read that field as a prereq signal.
 
 ---
 

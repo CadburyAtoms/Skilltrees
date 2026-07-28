@@ -187,6 +187,18 @@ at run 11 on an ally at 32 HP. The number defect in the same line is fixed and t
 ("recovery die + **3** health" at Leadership 3). Only the gate is yours: keep the always-print, or
 restore the at-0-HP-only gate? *(3A-11 + checklist 2bM-6.)*
 
+**R-57. Pattern Recognition's disadvantage now EXPIRES when the round turns — keep that, or let it
+wait?** The card has always said "their next test **this round**"; the old flag waited for ever, and
+the 2b conversion made the text true via `expireEndOfRound`. **The behaviour is verified working**
+(bench run 23, both directions: with the stamped round current the victim rolled `2d20kl + 2` and the
+card printed "🔮 Pattern Recognition — disadvantage on this test", flag consumed; with the round moved
+on the same victim rolled a plain `1d20 + 2`, no card, flag left unconsumed). So this is purely your
+call on intent: **(a)** keep the expiry, matching the card — *Recommended*, the text is unambiguous;
+**(b)** restore the wait-for-ever behaviour and re-word the card to drop "this round". ⚠️ Note the
+side effect either way: a stale un-expired mod is **left on the actor rather than cleared**, so under
+(a) a victim can accumulate dead `nextTestMod` flags until something overwrites the single slot (the
+same one-slot overwrite characterised in R-15). *(Checklist 2bJ-3, retired run 23.)*
+
 ---
 
 ## E. Cards, text & naming

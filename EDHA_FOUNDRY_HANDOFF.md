@@ -33,6 +33,115 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-07-28l — BENCH RUN 23 (marathon 3, the LAST planned run): **the bench tails — 22 🤖 in, 7 retired, 1 hard FAIL with its root cause read off the source, 14 not reached.** Also **settled the four-dead-prereqs ⚑ row from the system's own getters** (there is no warning to look at) and found **one new engine defect**. **Zero world drift: 87 actors / 52 tokens / 117 walls / 0 tables, identical to the start snapshot.** DOCS-ONLY (no engine, no data, no pack rebuild).
+
+Engine hash-verified live before anything was driven: served `register-skills.js` normalised to LF digests
+`2e34ea72f151ee47ef2f7c3d12e3e9af4a19b076a943ae9bbdf3c7407870ed99` = git blob `9346245` = `HEAD`. Pack-rebuild
+list still **EMPTY**. Ben's `Gamemaster` was connected throughout and Bench held `isActiveGM`; his combat
+`BerbNeuXp4iKduef` was read but never modified, and every bench combat was `active: false`.
+
+**RETIRED ON EVIDENCE (7).**
+
+- **2bQ-4 — Sharp Eye**, dead for four runs across two root causes, now works. `activation.type: "skill_test"` /
+  `activation.skill: "prc"` confirmed live on the owned item, and **both branches drove**: `1d20 + 4` = 6 →
+  "Sharp Eye : 6 vs Bench Target — Undefended's COG 10 — **FAIL**"; `1d20 + 4` = 18 → "… — **SUCCESS**"
+  **plus** the second whispered card (2 recipients) "👁️ Sharp Eye on Bench Target — Undefended — lowest
+  attribute **str** · lowest defense **cog** · below half — health: no, focus: yes, Investiture: yes. Pick ONE
+  to learn — share only the one you chose."
+- **2bD-7 — the untouched rows.** Had hung on Sharp Eye alone since 07-27k; the other three cleared at runs 9/10.
+  All four now behave.
+- **2bJ-3 — Pattern Recognition**, as a paired positive/negative. Applying it wrote
+  `nextTestMod {mode: "disadvantage", round: 1, source: "Pattern Recognition"}` and the card "🎲 Pattern
+  Recognition : Bench Target — Adjacent A's next test — at disadvantage." With the stamped round **current** the
+  victim rolled **`2d20kl + 2`** + "🔮 Pattern Recognition — disadvantage on this test", flag **consumed**;
+  with the round **moved on** the same victim rolled a plain **`1d20 + 2`**, no card, flag left unconsumed.
+  ⚠️ **Method, stated because it matters:** the negative was driven by editing the stamp to a past round, not by
+  advancing a round — `expireEndOfRound` stamps `game.combat?.round` (L19137), which is **Ben's** combat. Measured
+  directly: the flag stamped `round: 1` (Ben's) while the bench combat sat at round 2. The behaviour is exercised in
+  both directions; only which integer lands in the stamp was not driven. The intent question is now **R-57**.
+- **2bE-9 — adversary widening.** A freshly pack-imported `Bench Adv — Cragdrake Alpha` (type `adversary`) carrying
+  Foresight got its combat-start grant — "⚡ Foresight : you gain 1 reaction" spoken by the adversary — with
+  `Bench — Heroic` in the same combat as the character control. `edhaDispatchCombatTiming` has no
+  `type === "character"` gate, confirmed in source. ⚠️ **The apparent double-grant was MY harness**: the combat held
+  the adversary as **two** tokenless combatants (3 total), so one grant each was correct — the actor carries exactly
+  one Foresight with one rule.
+- **2bL-14 — Bear Witness mid-combat reload**, proved four ways in one combat. Round 4: fires — "⚡ Bear Witness
+  — Bench Ally — Two gains **3** Temp HP. (your White)". **F5 the client at round 4**: message count 1048 → 1048,
+  no Temp HP. **Turn change within round 4 after the reload: Bear Witness SILENT** — while Living Image's upkeep
+  fired on the **same hook in the same tick**, which is the control that makes the silence mean something.
+  **Round 4 → 5: fires again**, 3 Temp HP. Exactly the guard at L1739–1748 (`seen === undefined && round > 1` →
+  stamp only, never fire).
+- **2bAC-1 (mechanical half) — Edit Event Rule geometry**, all six properties measured on the live dialog:
+  width **660** px · **31 of 31** form-groups with control beside label · **18 of 18** hints below the pair and at
+  **12 px vs the label's 14 px** · inner scroller `scrollHeight/clientHeight = 1929/790` · window height 828 inside
+  a 900 px viewport · and **Update** reachable: after scrolling the scroller to its end it sits inside the window
+  and in the viewport, 28 px tall.
+- **Injury tool — RETIRED IN FULL.** Raise Dead passed run 4, Apex Form run 6; run 23 drove the last clause as a
+  positive/negative pair. Baseline raise → injury "Exausted (-1)…" described **(rolled on "Injury Effects")**;
+  with a world RollTable named `Injuries` created → injury **"BENCH23 Sentinel Wound"**, **(rolled on
+  "Injuries")**, and the card read "The raising leaves its mark: BENCH23 Sentinel Wound (injury added)". Table
+  deleted afterwards.
+  ⚠️ **Correction worth keeping: the "placeholder list" is already unreachable on Ben's install.**
+  `edhaFindInjuryTable` matches `/injur/i` and falls back to RollTable **packs**, and `cosmere-rpg.tables` ships
+  **"Injury Effects"** and **"Injury Duration"**. So the built-in fallback never runs; what a world table actually
+  outranks is the system pack table, because world tables are searched first.
+
+**FAIL — ONE NEW ENGINE DEFECT, root-caused (→ test-pass-fixes).**
+
+- **2bAA-6 — Living Image: three of four clauses pass, the Pay button is a hard fail.** The document half is
+  exactly as specified (`LivingUpkeep0000` `edha-illusion-upkeep` config + `LivingImgNote000` `edha-note` use); the
+  turn-start prompt whispers correctly with a real illusion up; and **the document drives it** — editing
+  `costPer` 1 → 2 changed the next prompt to "**2 Investiture** per COMPLEX illusion" and the button to "**Pay 2
+  Investiture**". But **the button never charges, for any user, ever**: 4→4 at cost 1, 3→3 at cost 2, no card.
+  A probe listener on the same element fired, so dispatch works — the engine's handler **throws**:
+  `TypeError: Cannot read properties of null (reading 'dataset') at edhaUpkeepInvClick (register-skills.js:6245)`.
+  **Root cause, off the source:** L6243 reads `ev.currentTarget.dataset.actor` *before* its `await fromUuid(...)`
+  (fine); the await ends event dispatch, the browser nulls `ev.currentTarget`, and **L6245's
+  `ev.currentTarget.dataset.item` throws**. The `try/catch` at L6253 swallows it into a console error — which is
+  why it looks like a silent no-op. **Isolated**: re-running the same logic with the dataset captured
+  synchronously charged 1 Investiture (4 → 3) and posted the card, so nothing else in the chain is wrong.
+  **One-line fix** — `const btn = ev.currentTarget;` before the first await, then read `btn.dataset` — the idiom
+  the codebase already uses at L4272 (`edhaDesignateClick`) and L10424. ⚠️ **Sweep the family**, do not point-fix:
+  any handler reading `ev.currentTarget` after an `await` carries the same latent bug.
+
+**THE ⚑ FOUR-DEAD-PREREQS ROW IS ANSWERED — there is nothing to look at.** All four prereqs are real in the built
+pack (Know Your Moment → Mind and Body + `ded` 2; Resolute Stand → Hardy + `ath` 1; Shattering Blow → Windstance +
+`prc` 2; Animal Bond → a `connection` prereq). The unmet case occurs naturally — `Bench — Heroic` **owns** Resolute
+Stand while `hasTalentPreRequisites` returns **false** (Athletics 3, but it does not own Hardy), with `leader-hardy`
+returning **true** in the same read as the discriminating control. But **the sheet cannot flag it**: the character
+sheet has no talents tab and no "prereq" string at all, and the tree view is a PIXI `<canvas>` whose only node
+getters are `isTalentObtained` (ownership only) and `isTalentAvailable`, which **short-circuits on
+`if (actor.hasTalent(...)) return false;` before prerequisites are ever consulted**. `_draw()` has no third branch.
+Ben can retire the row; it was left standing only because ⚑ is his marker. ⚠️ Also: `available: false` on an obtained
+node proves nothing about prereqs — every obtained node reads false.
+
+**NOT REACHED (14 🤖), all budget rather than blockers — none re-filed as ⚑.** Engine-wide: Formula bar,
+engine-move collision (manual-drag half), Flame Surge/burst cards. White: 2bR-10, the burst-only damage riders, the
+five restored adversary abilities. Blue: 2bAA-9. Red: Flashpoint. Green: 2bS-11, 2bS-1, the three-talent spot-check
+row, 2bS-3. Order: 2bL-7. Heroic: Probability Cascade. ⚠️ Note for whoever picks these up: the Green spot-check row
+**cannot retire** until 2bS-14 (Natural Recovery) is driven, and that costs an Opportunity — so it is the
+lowest-value Green target, not the highest.
+
+**Harness lessons (full block in the runbook).** `combat.update({round, turn})` on an `active: false` bench combat
+**does** fire `combatTurnChange` with the bench combat passed — premise verified before staging anything — and
+`startCombat()` works too, but only in an **isolated** call. `canvas.mousePosition` is **frozen at (0,0)** with the
+pane hidden, so `edhaPickPoint` cannot be driven by synthetic pointer events; stubbing that one getter placed the
+summon correctly. Token `update({x,y})` **and** `move({action:"displace"})` both stall mid-animation with the ticker
+parked — `_source` never reaches the target. And **deleting one combat cleared a marker ledger belonging to an
+actor in a different, still-live combat** (Order's `lists.covenants`) — the combat-end sweeps are unscoped; recorded
+as a sighting, same family as the standing out-of-combat scope note.
+
+**World state, verified against the start snapshot:** 87 actors, 52 tokens, 117 walls, 1 region, 0 templates,
+0 RollTables, Ben's combat alone at round 1 — all identical. Everything created (2 combats, 1 adversary, 1 summon
++ its token, 1 RollTable, 1 injury) was deleted; `Bench Target — Floater` was restored to 25 HP, no statuses, and its
+original (4500, 14100). ⚠️ **One unattributable residue:** `Bench — Order` carries a `Determined` effect/status.
+Nothing this run applies Determined, so it is almost certainly pre-existing — but **the start effect snapshot was
+lost in the 2bL-14 page reload**, so it is stated as an inference and was **not** cleaned. *(Lesson: persist the
+start snapshot outside the page whenever a row requires an F5.)* Bench-fixture resources moved as usual (Blue Inv
+2→3, Order 0→4, Death →4); `Bench — White` remains at 0 HP/focus/Inv, which is run-22 residue and not mine.
+
+---
+
 ## 2026-07-28j — BENCH RUN 22 (marathon 3): **fix pass E re-tested — 3 of 4 retired with every paired negative including the load-bearing one, and the 4th is BLOCKED by a harness limit that is permanent, not a shortage. The six re-test sections swept: 32 🤖 in, 24 retired, 4 not reached.** **27 rows retired total. Zero world drift.** DOCS-ONLY (no engine, no data, no pack rebuild).
 
 Live engine hash-verified at join: `2e34ea72f151ee47ef2f7c3d12e3e9af4a19b076a943ae9bbdf3c7407870ed99`

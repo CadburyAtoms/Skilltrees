@@ -843,6 +843,79 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   one: **one long-lived subject that many rows can be asserted against** beats importing a fixture per
   row. The adversary rows needed exactly one import because four of them shared a single sync click.
 
+## Operating lessons from run 23 (2026-07-28l — these OVERRIDE older advice where they conflict)
+
+- ✅ **A bench combat DOES drive the whole turn-boundary engine — verify the premise first, in one cheap
+  call, before staging anything.** `Combat.create({active:false})` then `combat.update({round, turn})` fires
+  `combatTurnChange` **with the bench combat passed** (`game.combat` stays Ben's), and the entire engine is
+  written as `Hooks.on("combatTurnChange", (combat) => …)` reading the **passed** combat — so illusion upkeep,
+  round-start dispatch, rally resets, hazard sweeps and the timing dispatcher are all reachable. Run 23 spent
+  one call proving this and then settled four turn-boundary rows on it. ⚠️ **`startCombat()` works too — but
+  only in an ISOLATED call**; bundled into a compound call it was refused, and the refusal looks nothing like
+  a Foundry error.
+- ❌ **`game.combat` is still Ben's, and that is now MEASURED rather than argued.** `expireEndOfRound` stamps
+  `mod.round = game.combat?.round` (L19137): the flag came out `round: 1` (Ben's combat) while the bench combat
+  sat at **round 2**. So a "does it expire when the round turns?" row cannot be driven by advancing a bench
+  round. **The decomposition that works**: drive the positive for real, then set the stamp to a past round by
+  hand and drive the same test again — that exercises the *read* branch, which is where the behaviour lives,
+  and the write side is settled by reading one line of source. Say which half was stubbed.
+- ❌ **`canvas.mousePosition` is FROZEN at (0,0) with the pane hidden, so `edhaPickPoint` cannot be driven by
+  synthetic pointer events.** Dispatching `pointermove` + `pointerdown` on `#board` leaves PIXI's federated
+  pointer state untouched, and the picker resolves to world (0,0) — which reads as an out-of-range refusal, i.e.
+  a **false FAIL**. The fix is to shadow just that getter
+  (`Object.defineProperty(canvas, "mousePosition", {get: () => new PIXI.Point(x,y), configurable:true})`), which
+  stubs the *mouse read only* and leaves the engine's placement, range and refund logic real. Declare it when you
+  use it. (This supersedes "run 16 click-placed for real" — that is not reproducible in a hidden pane.)
+- ❌ **Token movement STALLS mid-animation with the ticker parked — `move({action:"displace"})` does not save you.**
+  Both `update({x,y})` and `move({action:"displace"})` left `_source` at an interpolated midpoint (3507, 13106
+  for a target of 2400, 12000) and it never advanced. Re-read `_source` after every move and **do not build a
+  range expectation on a move you did not verify landed**; `update({...}, {animate:false})` is what finally set
+  it. This is the sharper form of the old "prepared position reads stale" note: the move may never complete at all.
+- ❌ **A silent no-op button is not necessarily an unbound button — CHECK THE CONSOLE BEFORE CALLING IT DEAD.**
+  Living Image's Pay button did nothing on click. A probe listener added to the same element fired, proving
+  dispatch works; `read_console_messages({onlyErrors:true})` then produced the actual defect in one line
+  (`TypeError: Cannot read properties of null (reading 'dataset')` with the file and line number). **The engine
+  wraps these handlers in `try/catch` + `console.error`, so every handler bug in this codebase presents as
+  silence.** The console is the first stop, not the last.
+- ⚠️ **`ev.currentTarget` is null after any `await` — a whole class of engine handler is at risk.** Found in
+  `edhaUpkeepInvClick`: the pre-await read works, the post-await read throws. Worth grepping for whenever a
+  button "does nothing".
+- ❌ **`setFlag` MERGES, so a fixture built on an actor that already carries that flag inherits its siblings.**
+  Run 23 wrote a `nextTestMod` probe onto a victim already holding one from Coercive Pressure, silently inherited
+  its `attr: "int, wil"` gate, rolled a Presence skill, and got a clean "no disadvantage" that meant nothing.
+  **`unsetFlag` first, then `setFlag`**, whenever the flag under test may already exist — and pick the skill that
+  matches the gate.
+- ❌ **`deleteCombat` sweeps are UNSCOPED: deleting one combat cleared a marker ledger belonging to an actor in a
+  different, still-live combat.** Deleting a throwaway bench combat wiped `Bench — Order`'s `lists.covenants`,
+  which then made Bear Witness look broken (it read an empty list and posted nothing). **Delete bench combats
+  LAST, after every ledger-dependent row is done** — and if a ledger reads empty when it should not, ask what you
+  deleted before you ask what the engine did.
+- ⚠️ **A row scan must key on the field the DISPATCHER keys on.** Scanning `handler.type === "edha-combat-timing"`
+  returned **zero** talents; the dispatcher actually filters `rule.event === "edha-combat-timing"` and the handler
+  can be any type (`edha-cae-grant`, `edha-enter-stance`, `edha-triggered-effect`). Same family as the standing
+  `rule.type` vs `rule.handler.type` warning: **read the consuming code before writing the scan.**
+- ✅ **The best control is a DIFFERENT rule firing on the SAME hook in the same tick.** 2bL-14's reload guard is a
+  negative — "Bear Witness must not fire" — and a negative on a hidden bench proves nothing on its own. What made
+  it decisive was that Living Image's upkeep fired on that very turn change: the hook chain is demonstrably alive,
+  so the silence is the guard, not a dead listener. Look for a sibling rule on the same hook before staging an
+  extra control of your own.
+- ⚠️ **Persist the start snapshot OUTSIDE the page if any row needs an F5.** 2bL-14 requires a reload, which
+  destroyed the in-page snapshot; run 23 therefore could not attribute a `Determined` effect on `Bench — Order`
+  and had to report it as an inference rather than clean it. Write the snapshot to the scratchpad, or re-capture
+  it immediately after the reload.
+- ✅ **Reading the system's own getters can settle a row that "needs a human look".** The four-dead-prereqs ⚑ row
+  asked whether the sheet flags an owned talent whose prereqs are unmet. The tree view is a PIXI canvas with no
+  DOM node — unreadable here — but `isTalentAvailable`'s source short-circuits on `hasTalent()` **before**
+  consulting prerequisites, and `_draw()` has no third branch. **No warning state exists**, so there is nothing to
+  look at. When a visual row is blocked by the hidden pane, read the code that would have drawn it.
+- **Density, measured: 22 🤖 in, 7 retired + 1 root-caused fail, from 2 actors and 2 combats created — but the
+  honest number is ~1 row per 2 tool calls.** These were combat and talent mechanics spread across seven trees
+  with almost no shared staging, exactly as the brief predicted; the one place staging compounded was the single
+  bench combat, which carried four rows (2bAA-6, 2bJ-3, 2bE-9, 2bL-14). **The lesson is the run-21/22 one
+  inverted: when rows do NOT share a subject, budget per row and pick the ones that can actually RETIRE** — run
+  23 deliberately dropped the Green spot-check row on discovering it cannot retire until an Opportunity-gated
+  talent is driven.
+
 ## Known limits
 
 - ❌ **RESOLVED AS UNFIXABLE (07-26i): there is no "no written Cognitive/Spiritual defense" creature.**
