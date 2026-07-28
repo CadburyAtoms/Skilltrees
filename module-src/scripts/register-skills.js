@@ -594,12 +594,41 @@ function edhaNextTurnCoord(combat, ti) {
   const R = combat.round ?? 1, T = combat.turn ?? 0;
   return ti > T ? { round: R, turn: ti } : { round: R + 1, turn: ti };   // strictly after now → the creature's next turn
 }
-// Statuses that auto-expire at the END of the affected creature's next turn (Edha control convention).
-// Weakened (Black disadvantage) and Immobilized (Sovereign of Solitude's movement-stop) both ride this.
+/* Statuses that auto-expire at the END of the affected creature's next turn NO MATTER HOW THEY WERE
+ * APPLIED — including a GM hand-toggling the icon on the token HUD. Weakened (Black disadvantage)
+ * and Immobilized (Sovereign of Solitude's movement-stop) both ride this.
+ *
+ * ⚠️ This is NOT the list of "statuses that can be timed", and adding to it is almost never the fix
+ * for "X never expired". A rule that authors `timed: true` (or `expire: owner-turn/target-turn`)
+ * carries its own intent and is stamped by `edhaApplyTimedStatus`; five such status ids are
+ * deliberately absent here — `braced`, `tagged`, `unstoppable`, `compelled`, `disoriented` — because
+ * each ALSO has an untimed life (the Frostbinder's Predictive Ward is a permanent `braced`; a GM may
+ * mark someone Compelled indefinitely). Putting them here would expire those too. See the
+ * `timedExpire` intent flag below, which is what actually makes an authored `timed: true` durable. */
 const EDHA_TIMED_STATUSES = new Set(["weakened", "immobilized", "slowed", "noactions", "noreactions"]);   // noactions/noreactions: Black/Subjugation markers (07-05); owner-relative appliers overwrite the auto-stamp
 function edhaIsTimedStatus(carrier) {
   try { for (const s of (carrier?.statuses ?? [])) if (EDHA_TIMED_STATUSES.has(s)) return true; } catch (e) {}
   return false;
+}
+/* PURE. The turn-change CATCH-UP decision for one effect that carries no `expireAfter` yet: must the
+ * pass stamp it, and relative to whom?
+ *
+ * Two sources, and the second is the one that was missing (bench run 20, 2026-07-28f). Brace authors
+ * `edha-self-status {statusId: "braced", timed: true}`, whose executor calls `edhaApplyTimedStatus`.
+ * That stamps only `if (game.combat?.started)` and only when the creature is in THAT combat — so a
+ * Brace used before initiative is rolled (or while `game.combat` is some other combat) lands with no
+ * coordinate, and the catch-up pass then skipped it because it keyed on EDHA_TIMED_STATUSES, which
+ * `braced` is deliberately not in. Result: immortal. Same hole for `tagged`, `unstoppable`,
+ * `compelled` and `disoriented` — 7 authored rules across 5 status ids, all relying on the one stamp.
+ *
+ * `intent` is the `timedExpire` flag the applier writes when it could not stamp. Honouring it keys
+ * the behaviour on WHAT THE RULE ASKED FOR rather than on a status name — so a talent renamed or a
+ * new timed status needs no engine edit, and an effect that never went through `edhaApplyTimedStatus`
+ * (Predictive Ward's transfer AE) can never be caught by it. */
+function edhaTimedStampPlan(intent, allowlisted) {
+  if (intent && typeof intent === "object") return { expire: intent.expire || "target", ownerUuid: intent.ownerUuid || null, fromIntent: true };
+  if (allowlisted) return { expire: "target", ownerUuid: null, fromIntent: false };
+  return null;
 }
 // Stamp a timed status with its expiry coordinate the moment it is applied (any path: Sapping Hex, Black
 // Draw Mana, Sovereign of Solitude, manual toggle, edha.toggleStatus). GM-side; out-of-combat applications
@@ -615,7 +644,8 @@ Hooks.on("createActiveEffect", (effect) => {
     void effect.setFlag("edha-content", "expireAfter", edhaNextTurnCoord(combat, ti));
   } catch (e) { console.error("Edha Content | timed-status stamp failed", e); }
 });
-// Each turn change: drop any effect whose expireAfter has passed; lazily stamp un-stamped Weakened.
+// Each turn change: drop any effect whose expireAfter has passed; lazily stamp anything still
+// un-stamped — an allowlisted status, OR an effect carrying an applier's `timedExpire` intent.
 async function edhaExpireTimedStatuses(combat) {
   combat = combat || game.combat; if (!combat?.started) return;
   const curSeq = edhaTurnSeq(combat.round, combat.turn);
@@ -632,9 +662,20 @@ async function edhaExpireTimedStatuses(combat) {
         }
         continue;
       }
-      if (edhaIsTimedStatus(e)) {   // applied out of combat / by hand → stamp now, expire normally
-        try { await e.setFlag("edha-content", "expireAfter", edhaNextTurnCoord(combat, i)); } catch (x) {}
+      // Applied out of combat / by hand / before this combat existed → stamp now, expire normally.
+      const plan = edhaTimedStampPlan(e.getFlag?.("edha-content", "timedExpire"), edhaIsTimedStatus(e));
+      if (!plan) continue;
+      let ti = i;   // default: the CARRIER's own turn
+      if (plan.expire === "owner" && plan.ownerUuid) {   // owner-relative (Brace, Kneel's Compelled, Disorient)
+        const oref = await fromUuid(plan.ownerUuid).catch(() => null);
+        const oa = oref?.actor ?? oref;
+        const oi = oa ? edhaCombatantTurnIndex(combat, oa) : -1;
+        if (oi >= 0) ti = oi;
       }
+      try {
+        await e.setFlag("edha-content", "expireAfter", edhaNextTurnCoord(combat, ti));
+        if (plan.fromIntent) await e.unsetFlag("edha-content", "timedExpire");   // consumed
+      } catch (x) {}
     }
   }
 }
@@ -4997,11 +5038,19 @@ async function edhaApplyTimedStatus(target, statusId, { owner = null, expire = "
   try {
     if (target.isOwner) {
       await target.toggleStatusEffect?.(statusId, { active: true });
-      if (expire && game.combat?.started) {
+      if (expire) {
         const eff = [...(target.effects ?? [])].find(e => e.statuses?.has?.(statusId));
         const who = (expire === "owner" && owner) ? owner : target;
-        const ti = edhaCombatantTurnIndex(game.combat, who);
+        const ti = game.combat?.started ? edhaCombatantTurnIndex(game.combat, who) : -1;
         if (eff && ti >= 0) await eff.setFlag("edha-content", "expireAfter", edhaNextTurnCoord(game.combat, ti));
+        // Can't stamp yet — no combat running, or neither creature is in THIS combat. Record what the
+        // rule asked for so the turn-change pass stamps it the moment a combat exists; otherwise the
+        // status is IMMORTAL for every id outside EDHA_TIMED_STATUSES (Brace, before initiative).
+        // Also clear any stamp left over from a previous combat: its coordinate means nothing here.
+        else if (eff) {
+          try { await eff.unsetFlag("edha-content", "expireAfter"); } catch (x) {}
+          await eff.setFlag("edha-content", "timedExpire", { expire, ownerUuid: owner?.uuid ?? null });
+        }
       }
       return true;
     }
@@ -10168,12 +10217,16 @@ Hooks.once("ready", () => {
           const tref = await fromUuid(p.targetUuid).catch(() => null); const t = tref?.actor ?? tref;
           if (!t?.toggleStatusEffect) return;
           await t.toggleStatusEffect(p.statusId, { active: true });
-          if (p.expire && game.combat?.started) {
+          if (p.expire) {
             const eff = [...(t.effects ?? [])].find(e => e.statuses?.has?.(p.statusId));
             let who = t;
             if (p.expire === "owner" && p.ownerUuid) { const oref = await fromUuid(p.ownerUuid).catch(() => null); who = oref?.actor ?? oref ?? t; }
-            const ti = edhaCombatantTurnIndex(game.combat, who);
+            const ti = game.combat?.started ? edhaCombatantTurnIndex(game.combat, who) : -1;
             if (eff && ti >= 0) await eff.setFlag("edha-content", "expireAfter", edhaNextTurnCoord(game.combat, ti));
+            else if (eff) {   // relay half of the same catch-up intent (see edhaApplyTimedStatus)
+              try { await eff.unsetFlag("edha-content", "expireAfter"); } catch (x) {}
+              await eff.setFlag("edha-content", "timedExpire", { expire: p.expire, ownerUuid: p.ownerUuid ?? null });
+            }
           }
           return;
         }
