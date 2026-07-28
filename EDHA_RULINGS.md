@@ -400,6 +400,34 @@ already WARNs about.** Either Goldenport's polygon is missing its coastal lobe, 
 tagged to the wrong nation — both are edits to `source-materials/maps/thyrcross.map.json`, and only
 you can say which is true. *(3A-17.)*
 
+**R-54. Is 11 max health at STR 0 correct for a level-1 PC — i.e. does `HP = system + 1` apply at
+level 1?** The checklist's "+1 max health" row demands a fresh actor read **10/10 at STR 0**, and
+bench run 21 proved that **can never happen**, for a reason that is design rather than a bug. The
+07-19z fix it was written for genuinely worked — a brand-new ＋ Edha Character carries 20 items, 19
+of them actions, and **zero transfer Active Effects**, so the AE that used to add the +1 is gone. But
+the actor still derives max **11**: `_source…hea.max.bonus` is **0** while derived reads `bonus: 1`,
+and **a plain cosmere character with no items and no effects at all reads exactly the same 11**. The
+source is `edhaDeriveSheetStats` (engine ~L16178), which deliberately adds +1 to `hea.max.bonus` in
+memory for every character — its own comment says *"The Edha reference sheets derive these
+differently from the cosmere system… HP = system + 1."* So either **(a)** 11 is intended and the
+row's number is simply stale (retire "10/10", write "10/11") — *Recommended*, since the derivation is
+documented and deliberate — or **(b)** the +1 is not meant to apply at level 1, and the derivation
+needs a level gate. ⚠️ Note this is **not** the same question as the two *defects* it sits next to:
+the derived-stat preview showing Health 13 vs the sheet's 14, and the finish top-up leaving health
+13/14, are both **bugs to fix either way** (the preview must model the derivation; the top-up must
+re-read after it settles). Only the target number is a decision. *(Bench run 21.)*
+
+**R-55. The sheet's budget chips use two different meanings of "X / Y" — which is right?** On a
+correctly-built L1 PC (12 attribute points spent, 5 skill ranks spent, 2 of 4 talents taken) the
+header strip reads **"Talents 2 / 4"**, **"Attr pts 0 / 12"**, **"Skill rnks 0 / 5"**. Talents is
+*spent* / total; the other two are *remaining* / total. The checklist's "Sheet budget bar says 5
+skill ranks" row predicted **5/5**, so it was written expecting *spent*/total everywhere. **The fix
+that row tests did work** — the denominator is the Edha budget **5**, not the system table's 4, and
+it is never the old **-1/4** — so the row is retired on that evidence; this is only about which
+numerator convention the three chips should share. *Recommended: make all three spent/total*, since
+"Talents 2 / 4" is the one players read most and 0/12 next to a fully-spent sheet reads like an
+error. *(Bench run 21.)*
+
 ---
 
 ## I. ⚠️ APPLIED AS DEFAULT — veto if you disagree

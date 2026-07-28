@@ -734,6 +734,65 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   and 4 were never driven at all.** Import the actors for the rows you will drive *next*, not the
   ones you hope to reach.
 
+## Operating lessons from run 21 (2026-07-28h — these OVERRIDE older advice where they conflict)
+
+- ❌ **A handed-down "the engine must NOT contain <string>" check can fail a CORRECT deploy, because
+  the fix quotes the old buggy code in its own comments.** Fix pass D's byte-check said
+  `Number(ds.edhaCost) || 2` and `holders.includes(tok.actor)` must be absent; both are present at
+  L334/L2017/L3458 — in explanatory docblocks. **Only the SHA-256 against
+  `HEAD:module-src/scripts/register-skills.js` decides.** Compute it in-page (cache-bust fetch →
+  CRLF→LF → digest) and compare to `git cat-file blob` normalised the same way. If a string check
+  disagrees with the hash, believe the hash and grep for the string's line numbers before writing
+  anything down.
+- ❌ **`game.combat` is BEN'S combat, always, and that BLOCKS any "stamped at application time inside
+  a running combat" cell.** A bench combat made `Combat.create({active:false})` never becomes
+  `game.combat`, so engine code reading `game.combat?.started` + `edhaCombatantTurnIndex` cannot see
+  your combatants. You may not add a token to Ben's combat or activate your own, so such a cell is
+  **BLOCKED with the blocker named** — not a fail, and never re-filed as ⚑. Everything keyed on the
+  combat passed to the hook (`edhaExpireTimedStatuses(combat)`) IS drivable, which is why 3 of the 4
+  Braced cells ran fine.
+- ✅ **Design ONE combat that carries every timed-status cell at once, each the others' control.**
+  Run 21 put an out-of-combat `braced` (must expire), a transfer-AE `braced` (must never expire), a
+  hand-toggled `compelled` (must never expire), a hand-toggled `slowed` (must expire) and a
+  rule-applied `tagged` (must expire) into a single 3-combatant bench combat and stepped it 5 rounds.
+  Five assertions, one setup, and every "must not expire" sits in the same log as a "must expire" —
+  which is the only way "it didn't expire" means anything.
+- ❌ **A re-rendering dialog invalidates your element references EVERY failed submit.** The pick-2
+  dialog re-renders on each rejected Confirm, so a cached `[...querySelectorAll("input")]` silently
+  points at detached nodes — setting `.checked` on them changed nothing and the warn kept saying
+  "you picked 0". **Re-query inside a `q()` helper on every step, and drive checkboxes with
+  `.click()`, not `.checked = true`.**
+- ❌ **Synthetic `MouseEvent("click")` does NOT trigger Foundry v13 content links** — and with the
+  pane hidden, `computer{action:"screenshot"}` fails, so coordinate clicks are unavailable too.
+  Before recording a click-clause as a defect, **post the same `@UUID[...]` into a chat message and
+  click that the same way**: if the control also does nothing, it is the harness. (Also note the
+  wizard's map polygons listen on **`pointerenter`**, not `mouseenter` — a `mouseenter` probe reports
+  an empty tooltip on a working picker.)
+- ❌ **The hidden pane throttles `setTimeout` to ~1 s, so a 10-iteration loop with any sleep in it
+  blows the 30 s budget.** Run 21 lost a call to a 10× `await sleep(200)` polygon sweep. Split UI
+  sweeps into batches of 3–4 with **no sleeps at all** and read state synchronously right after the
+  click — most wizard handlers update the DOM in the same tick.
+- ✅ **For a UI section, the DOM IS the evidence and it beats a screenshot.** Computed styles settle
+  the cosmetic rows outright and unambiguously: `scrollHeight === clientHeight` retires
+  "text un-clipped", `getBoundingClientRect` overlap area 0 retires "rows un-overlapped",
+  `rect.bottom > innerHeight` fails "fits the screen" with a number, and comparing an input's
+  `border`/`borderRadius`/height to a `select`'s retires "looks fillable". None of these need a
+  visible pane.
+- ✅ **Compare a bound sheet against an unbound one to prove BOTH.** "Browse the tree (read-only,
+  unbound)" and "Open the actor's tree (selectable)" are each other's control: `document.parent`
+  reads `null` for the compendium copy and the **Actor** for the owned copy. One check, two rows,
+  and neither conclusion rests on how the window looked.
+- ⚠️ **Snapshot unlinked tokens' FLAGS, not just their effects and statuses.** Run 21's start
+  snapshot captured `unlinkedFx` (effect names) but not `flags`, so when Ben's Stitchmother token
+  turned up carrying `bpHits {"1":4}` the run **could not prove whether it predated the run** and had
+  to report it as an inference. Capture
+  `canvas.scene.tokens.map(t => [t.id, JSON.stringify(t.actor?.flags?.["edha-content"] ?? {})])` at
+  join time.
+- **Density, measured: 2 actors created covered 34 rows and retired 25 — about 12.5 per creation**,
+  an order of magnitude above run 19's 2.1 and run 20's 0.62. The cause is structural, not skill:
+  a section that is **one continuous flow over one subject** rewards keeping the subject open and
+  asserting as you pass each page. Budget these sections by *pages in the flow*, not by rows.
+
 ## Known limits
 
 - ❌ **RESOLVED AS UNFIXABLE (07-26i): there is no "no written Cognitive/Spiritual defense" creature.**

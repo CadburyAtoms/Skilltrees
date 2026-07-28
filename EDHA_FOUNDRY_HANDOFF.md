@@ -33,6 +33,209 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-07-28h — BENCH RUN 21 (marathon 3): **fix pass D re-tested — 4 of 5 rows retired, every positive AND every load-bearing negative held — and the 34-row `# Character-creation wizard v2` swept in ONE walkthrough: 25 retired, 4 root-caused fails that are really ONE bug, 2 new rulings.** **29 rows retired total. Zero world drift.** DOCS-ONLY (no engine, no data, no pack rebuild).
+
+**Deploy verified by hash, not by marker counts:** the served `register-skills.js`, cache-busted and
+CRLF-normalised, SHA-256s to `c076e410717cd45d931b2929f030948b91dea0330c8c8a737e42c9f8015c474d` —
+byte-identical to `HEAD:module-src/scripts/register-skills.js` (git blob `7990378`, 19250 lines).
+⚠️ **The 07-28g delta's byte-check clause is WRONG and should not be trusted next time:** it says the
+engine "must NOT contain `Number(ds.edhaCost) || 2`, `Number(spec.speed) || 25` or
+`holders.includes(tok.actor)` anywhere", but the shipped fix **quotes two of those three strings in
+its own explanatory comments** (L334, L2017, L3458). A literal reading fails a correct deploy. The
+hash is the check; marker counts (`edhaNumOr` ×5, `edhaSceneActors` ×5, `edhaTimedStampPlan` ×2) all
+matched too.
+
+### Part A — fix pass D re-tested: 4 of 5 rows retired, 1 cell BLOCKED
+
+Every one of these was driven with the paired negative the row demanded, because three of the four
+fixes could have been "fixed" in a way that was worse than the bug.
+
+- ✅ **Static illusions are IMMOBILE — RETIRED, both cells, one code site.** Blue's **Phantom
+  Double** (`edha-illusion-copy`, authored `speed: 0`) created an actor with
+  `movement.walk.rate = {derived:20, override:0, useOverride:true}` — **0 ft**. **Positive control
+  in the same minute:** Civilization's **Forge Construct** (`edha-summon`, authored `speed: 25`)
+  created `{derived:20, override:25, useOverride:true}` — **25 ft**. Both handler types funnel
+  through the single `edhaNumOr(spec.speed, 25)` at L8616, so 0→0 and 25→25 settles all four rules.
+  **The fix did not turn defaults into 0.**
+- ✅ **Reknit Form charges the ZERO — RETIRED, both cells plus a third.** (a) The Stitchmother's
+  authored `costTemporary: 0` rendered `data-edha-cost="0"` / "(−0 Investiture)" and the click
+  removed the injury with **Investiture unmoved at 10 → 10**. (b) **The blank case still bites:** a
+  button with the `data-edha-cost` attribute genuinely **absent** (`hasCostAttr: false`, dataset
+  `undefined`) charged **2** (inv 3 → 1). (c) And explicit non-zero still bites: Bench — Green's
+  `T=2` charged exactly 2. **Absent ≠ zero, and the fix keeps them apart.**
+- ✅ **Suture Cradle fires ONCE — RETIRED, all three cells.** (a) From an unlinked Stitchmother
+  token whose directory twin exists (synthetic `Scene…Token.F6gi….Actor.U5ib…` vs `Actor.U5ib…` —
+  different objects, **same id**), one hit produced **exactly ONE** card, where run 20 got two 75 ms
+  apart. (b) **THE LOAD-BEARING CONTROL: three unlinked tokens stamped from ONE prototype stayed
+  THREE cradlers** — three victims, **three independent rolls (19, 18, 4 — genuinely varying)**. An
+  id-only dedupe would have collapsed these to one, which is the worse bug. (c) The directory twin,
+  Ben's own unlinked Stitchmother and the second Stitchmother all held nobody and **rolled nothing**.
+  Re-cradling moved the flag and the old victim then drew no card.
+- ✅ **The other four timed statuses — RETIRED, both cells.** Positive: the Hunter's **Tagging
+  Shot** (`tagged`, `timed:true`, a NON-allowlisted id) applied out of combat recorded the intent,
+  was stamped `{round:2, turn:0}` at the first turn change and expired on cue — "💢 Tagging Shot
+  (next ranged hit) on Bench — Heroic ends (end of its turn)." Negative: a **hand-toggled
+  `compelled`** on the same actor (no rule involved) was **never stamped** and survived 5 rounds.
+- ⚠️ **Braced expiry — 3 of 4 cells pass; row STAYS for cell (b), which is BLOCKED.** (a) the bug's
+  own case now expires; (c) Predictive Ward's `braced` stayed permanent across **5 rounds / 14
+  turn-changes** with `expireAfter` null throughout; (d) `slowed` expired normally off the allowlist
+  path. **(a) and (c) read differently, which is exactly what the old row could not detect.**
+  **(b) is BLOCKED, blocker named:** `edhaApplyTimedStatus` reads `game.combat` = the scene's ACTIVE
+  combat = Ben's `BerbNeuXp4iKduef`, and the bench may neither add a token to it nor activate a
+  combat of its own. Row stays 🤖 — a technical blocker, not a judgment call.
+
+### Part B — the wizard: 34 🤖 in, 25 retired, in ONE continuous walkthrough
+
+Driven exactly as the brief asked — one sheet, start to finish (country → pick-2 → heroic → kit →
+weapon → leyline → deity → attributes → skills → talents → purse/name → Finish), then a second pass
+with **↺ Change** for the redo rows and a third from the **PlayerBench** client. **Two actors created,
+both deleted.**
+
+**Retired (25):** Sidebar button v2 · Wizard stays on top · Map picker · ↺ Change a pick · Basic
+actions auto-grant · Attribute blurbs · Skills grouped like the sheet · Select text un-clipped ·
+Malcurr-Stamped Blade · Culture in the ancestry slot · Name field looks fillable · Skill budget
+wording · Expertise rows un-overlapped · Sheet budget bar says 5 skill ranks · No expertise stacking
+on redo · ONE Unarmed Strike · THE PICK-2 v2 · Keys granted ONCE · @UUID links render · Deity page v2
+· Attributes page (mechanical) · Skills page (mechanical) · Budget page trees v2 · Kit idempotency ·
+Player client v2.
+
+The ones worth the evidence line:
+
+- **Sidebar button v2** — ＋ Edha Character filed the actor into **Edha PCs**, opened its sheet
+  (z **101**) and opened the wizard **above** it (z **102**), console clean.
+- **Map picker** — the sanitizer fix holds: the SVG overlay exists with **10 polygons**, pixel-aligned
+  to the image (both 558,326 · 284×378, viewBox `0 0 2236 2976`), image loaded 1118×1488. **All ten
+  polygons click through to ten distinct nations**; `pointerenter` gives name + region
+  ("Goldenport / west coast (inlets = Life-nexus trade arteries)") with a gold highlight;
+  `pointerleave` hides it; the culture card and the map highlight both follow the select.
+- **THE PICK-2 v2** — Corvaine's own five entries with prose (not the Rosharan registry); **"exactly
+  2" enforced in both directions** — "pick exactly 2 (you picked 0)" and "(you picked 3)", dialog
+  staying open each time; chat card "🎓 … picks: Court Etiquette, Requisition Law (Corvaine)"; the
+  wizard **waited** for the picks before the heroic page. **Ashkar chains two dialogs** exactly as
+  written: "Pick Diaspora Culture" (the 9 other nations' cultural expertises) → "Choose 1 expertise"
+  (the road-life entries), granting `cultural:ashkar` + `cultural:corvaine` + `specialist:road-law`.
+- **↺ Change a pick + No expertise stacking** — the confirm names what leaves, and the wipe is
+  **precise**: culture item, `cultural:corvaine` and **both** picker-granted origin expertises went,
+  `originPicks` cleared, and a deliberately planted **hand-added expertise SURVIVED** (the
+  load-bearing negative). The page re-opened for a fresh pick with no restart. ⚠️ **The row's own
+  parenthetical was wrong** — it said "culture leaves picked origin expertises behind by design";
+  the engine wipes them and its confirm text says so. Retired on the engine's behaviour.
+- **Keys granted ONCE** — Warrior → **Vigilant Stance ×1**; Red → **Red Leyline Attunement ×1** +
+  Draw Mana ×1; **zero duplicate item names on the whole actor**. The 07-19 double-Key is gone.
+- **Malcurr-Stamped Blade** — absent from the **Warrior** picker, which is the full ≤2g list of 10
+  weapons, so the absence is decisive. Still in the compendium (113 items) carrying
+  `flags.edha-content.plotItem: true` — **the only item so flagged**.
+- **Deity page v2** — 🌿 Browse opened **Path: Death** with `document.parent === null`, i.e. the
+  **unbound** copy, talents tab, at z **118** above the wizard's 117. ☀ Note as faith stamped
+  `faith: "Death"`, granted **zero** items (36 → 36), and showed up in **both** places the row asks:
+  the welcome checklist ("faith: Death (flavor)") and the finish card.
+- **Attributes + Skills (mechanical)** — "Spent 0→12 of 12", **max 3 per attribute enforced** (STR's
+  `+` disabled at 3, a 4th click blocked), **all six `+` disabled at budget**, and Next **wrote**
+  str/spd/int/wil = 3. Skills: max rank 2 enforced, **all 23 `+` disabled at 5 of 5**, and Next wrote
+  `agi 2, ath 1, red 2`.
+- **Budget page trees v2** — "Open the Warrior tree" opened `Path: Warrior` whose `document.parent`
+  is the **Actor**, editable, talents tab, at z **122** above the wizard's 121. The mirror-image of
+  the Browse case above, which is what makes both convincing.
+- **Kit idempotency** — two calls both info-toasted "already received the Warrior starting kit" and
+  granted **nothing** (36 → 36 → 36); `{force:true}` re-granted **14** items.
+- **Player client v2** — PlayerBench (non-GM, owning exactly one PC) ran the **whole** walkthrough
+  from its own sheet: map hover + click, pick-2, path + Key + kit + weapon picker, leyline + Key,
+  faith flag, attribute writes, skill writes, Finish + long rest. **Zero permission errors** across
+  the entire run (`console.error`, permission-shaped `console.warn`, and `ui.notifications`
+  warn/error all captured). Finish card: "🧭 ZZ Bench Player PC is made: Thalendor · Scholar · White
+  attuned · faith: Life (unattuned)".
+
+### The four fails are ONE bug plus two others
+
+**`edhaDeriveSheetStats` (engine ~L16178) is invisible to the wizard.** It deliberately adds **+1 to
+`hea.max.bonus` in memory for every character** and overrides walk rate with **20 + 5×SPD**. Nothing
+in the wizard models it, and three separate rows fail because of it:
+
+- ❌ **Derived-stat preview** — panel vs finished sheet: **Health 13 → 14**, **Move 30 ft → 35 ft**
+  (sheet raw: `{derived:30, override:35, useOverride:true}` — the panel reads `derived`, the sheet
+  uses `override`), **Senses 10 ft → 5 ft** (a third, separate drift). Everything else matched
+  exactly: Focus 5, Investiture 2, Phys def 16, Cog def 16, Spi def 10, Recovery d8.
+- ❌ **Finish = long rest + top-up** — health lands **13/14**, not full, while Focus 5/5 and
+  Investiture 2/2 do top up. **Reproduced independently from the player client on a different PC**
+  (also 13/14), so it is systematic. The 07-19y "re-read a beat later" belt cannot help: the +1 is
+  applied on every `prepareDerivedData` and is never in `_source`. The old note's "bench: 10/11" is
+  this same bug one derivation smaller.
+- ⚠️ **+1 max health** — the fix it tests **worked** (20 items, 19 actions, **zero transfer AEs**, no
+  duplicates, clean console; nothing left to repair, so there is no repair log and no culprit action
+  to name). But the row's "10/10 at STR 0" **can never pass**: `_source` bonus is 0 while derived
+  reads `bonus: 1`, and **a plain system character with zero items and zero effects reads the same
+  11**. → **`EDHA_RULINGS.md` R-54.**
+
+And two unrelated to that family:
+
+- ❌ **Path training rank — the dialog never appears, for ANY path, silently.** Root cause is data,
+  not code: **all six heroic-path items ship `linkedSkills: []`** in `cosmere-rpg.heroic-paths` at
+  system 2.1.0. The live-read list is always empty, so the wizard skips with no dialog, no toast and
+  no fallback, and the actor stays entirely unranked. The row's escape hatch ("if the dialog says the
+  list isn't readable") never fires either — the list IS readable, just empty. ⚠️ This also
+  falsifies the skills page's own wording, which promises "1 your heroic path accounts for" and then
+  shows **Spent: 0 of 5**.
+- ❌ **Wizard fits the screen** — the **"Where are you from?"** page opens 237→**1025** at a
+  1400×900 viewport, **125 px past the bottom**, with `.window-content` at `overflow-y: visible` and
+  `max-height: none`, so nothing scrolls at the dialog level. Every other page fits (heroic 177→723,
+  attributes 142→758). Magnitude is viewport-dependent; the missing clamp is not.
+
+### Narrowed rather than retired
+
+- **Weapon slot v3** — **two of six** path lists verified behaviourally and every mechanical clause
+  passed: **Warrior = the full ≤2g list** (10 weapons, Staff 3c → Longsword 2g, each with its skill),
+  **Scholar = Knife/Mace** exactly. The picked weapon landed at **`quantity: 1`** (never ×2) carrying
+  `kitItem: true` alongside 9 other kit items. Stays for **Agent · Envoy · Hunter · Leader**.
+- **Redrawn polygons** — all ten centroids resolve to their own nation and Sylvaneth's island is
+  clickable; stays only for the border/dead-spot half, which is **R-42**.
+- **Map v3: label-free** and **Map picker shows the redrawn map** — untouched, still gated on
+  **R-41**; the shipped asset does still carry the labels, as that ruling records. Not re-filed.
+
+### New rulings
+
+- **R-54** — is 11 max health at STR 0 correct (does `HP = system + 1` apply at level 1)? The two
+  *defects* beside it are bugs either way; only the target number is a decision.
+- **R-55** — the sheet's budget chips mix two conventions: "Talents 2 / 4" is spent/total while
+  "Attr pts 0 / 12" and "Skill rnks 0 / 5" are remaining/total.
+
+### Not proven, and why (harness, not defect)
+
+**Content-link CLICK.** The render half of `@UUID links render` passed decisively — real
+`a.content-link` anchors with compendium UUIDs that resolve (`Hunter [Item]`), **no raw `@UUID[` text
+anywhere** — and the "opens in front, wizard doesn't fight it" behaviour is proven four separate
+times by the two tree-opening buttons (z 118 > 117 and z 122 > 121). But the click itself would not
+fire: a synthetic `MouseEvent("click")` opens nothing, **and the control proves it is my harness** —
+the identical link posted into a chat message also opened nothing. A trusted ref-click was attempted
+and landed off the measured position (the pane is hidden, so `screenshot` and therefore
+coordinate-clicks are unavailable). Recorded as harness-limited, not as a wizard defect.
+
+**Also observed, as the "Wizard stays on top" row asks:** path sheets **`Path: Warrior`** and
+**`Path: Red`** did open **unasked** mid-flow when those paths were chosen — the opener is still
+unpinned. The wizard was never buried by them (z 117 above 112 and 116), which is why that row is
+retired rather than failed.
+
+### World state
+
+**Zero drift.** End state **87 actors / 52 tokens / 117 walls** — identical to the start snapshot,
+with no actor or token added or removed and **no token moved**. Ben's combat `BerbNeuXp4iKduef`
+untouched at round 1, turn null, 4 combatants; the bench combat was created `active:false`, stepped
+with `combat.update({round,turn})`, and deleted. Everything created was snapshot-proven mine before
+deletion: 2 wizard actors, 5 tokens, 1 bench combat, 2 summons, 4 injuries, 1 chat message.
+Bench — Green's Investiture and Bench — Heroic's statuses restored to their start values, and two
+bench targets' `Disoriented` (from my damage drives) cleared. ⚠️ **Stepping the bench combat wrote
+NO `trigRound` onto Ben's tokens this time** — a full before/after flag diff over every token actor
+on the scene came back empty, so run 19's cue-sweep exposure did not recur with a bench-only
+combat.
+
+⚠️ **One thing I cannot attribute, stated as an inference:** Ben's `Stitchmother` token
+(`KUG9rm11H01B2UUM`) carries `bpHits {"1": 4}` and `Mutated Thrall (2)` carries `bpHits {"1": 1}`.
+**My start snapshot captured effects and statuses for unlinked tokens but not their FLAGS**, so I
+cannot prove these predate this run. I never applied damage to either token — all my damage went to
+Bench Targets — so I believe them to be older residue, but that is an inference, not a log. The
+snapshot gap is now fixed in the runbook.
+
+---
+
 ## 2026-07-28g — MARATHON-3 FIX PASS D (bench run 20's four items): **3 engine defects fixed — one of them 5× bigger than reported, one whose reported MECHANISM was wrong, and the "authoring gap" that turns out to need no data change at all.** Two family sweeps with the counts. A lint pass measured and **DECLINED, with its recall**. **ENGINE-ONLY → ⟳ sync the module + F5; the pack-rebuild list stays EMPTY** (a fourth pass running).
 
 ### What shipped

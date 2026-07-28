@@ -1610,50 +1610,10 @@ browse + faith note, and full attribute/skill assignment pages. Rows Ben passed 
 (sheet bar, start-over, kit backfill, two-wizards, budget gate) are retired — paper trail in
 the delta + git.
 
-- [ ] 🤖 **Sidebar button v2** — ＋ Edha Character files the new actor into an **"Edha PCs"**
-      folder (auto-created on first use), opens its sheet, and the wizard opens **ON TOP** of
-      the sheet (was: behind it).
-- [ ] 🤖 **Wizard stays on top** — while any wizard page is open, document sheets rendering
-      (actor sheet re-renders, the leyline path sheet — 07-19's mystery box) never bury the
-      wizard; pick DIALOGS still land above it; "Open the tree" / "Browse the tree" /
-      content-link clicks are exempt and stay in front of the wizard. ⚑ if a path sheet still
-      pops up UNASKED mid-flow, note the exact window title — the opener is still unpinned.
-- [ ] 🤖 **Map picker (fixed 07-19q — the svg was sanitizer-stripped)** — take-two's "no map at
-      all" was DialogV2's cleanHTML eating the `<svg>` overlay (its tag allowlist has img/div
-      but not svg); the deploy itself was verified clean (live hashes = repo). The overlay is
-      now built AFTER sanitization and the logic is browser-harness-verified. In Foundry:
-      hover a nation = name + region tip; click = selects it (the dropdown below follows and
-      stays as the fallback); the culture card updates; all ten nations clickable. If the map
-      is STILL absent, the console now says exactly why (asset-fetch / img-load warnings) —
-      paste that line.
-- [ ] 🤖 **↺ Change a pick in-wizard (07-19q)** — every "Already chosen" page (country / heroic /
-      leyline / deity) carries **↺ Change…**: the confirm names exactly what leaves (the path +
-      its Key + that tree's talents; heroic also pulls the kit gear + its 5 silver back;
-      culture leaves picked origin expertises behind by design), then the page re-opens for a
-      fresh pick. Back from any later page → Change → re-pick → continue, NO restart needed.
 *(The **07-19q weapon slot picker** row is retired 2026-07-27v as STALE — its list clause
 ("every edha-items weapon of 2 gold or less") is now true only for the Warrior. **Superseded by
 Weapon slot v3 — path-curated**, below, which absorbed its still-live "Take it / Choose later" clause
 so nothing was dropped.)*
-- [ ] 🤖 **Basic actions auto-grant (07-19q; console errors fixed 07-19r)** — a ＋ Edha Character
-      actor (and ANY actor the wizard is opened on) gains the system's basic actions
-      (cosmere-rpg.actions pack) it was missing — by name, once; re-opening the wizard
-      duplicates nothing. The wizard-start red console errors from Ben's 07-19 paste
-      (`connectRelationship … null uuid` + the server `undefined id`) were the copies carrying
-      their PACK relationship links — every wizard pack-copy path now strips them
-      (`edhaCleanPackCopy`). Confirm a fresh ＋ Edha Character produces a CLEAN console.
-      ⚑ actors made BEFORE this fix carry poisoned action copies — expect the same errors if
-      you delete/edit those items; recycle the test actor instead (the errors never corrupted
-      data — the bad writes were server-rejected).
-- [ ] 🤖 **Attribute blurbs (07-19q)** — each attribute row now explains what it feeds (defenses;
-      STR: Health-per-level + carry; SPD: movement; WIL: Focus + Recovery die; AWA: Senses
-      Range; AWA/PRE: Investiture) plus its LIVE skill list (leyline colors under their
-      attribute). Sanity-read at the table — if a claim contradicts the sheet, quote the line.
-- [ ] 🤖 **Skills grouped like the sheet (07-19q)** — Physical / Cognitive / Spiritual headers;
-      the intro no longer claims magic skills unlock later (the five colors are always-rankable
-      core skills — Edha registers them so; deity paths add NO skill).
-- [ ] 🤖 **Select text un-clipped (07-19q)** — the wizard dropdowns show their full text inside
-      the box (was: pinned to Foundry's 26px form-field height).
 - [ ] 🤖 **Map v3: label-free (07-19s)** — the picker map no longer shows city labels or the
       lettered nation ids (the asset is now a downscale of the raw base painting; the render
       toolchain's label overlay is what carried the letters). Hover tooltips still name each
@@ -1680,14 +1640,6 @@ so nothing was dropped.)*
       needs a Foundry table.
       ℹ️ **The aspect half is fine either way and needs no test:** 1118/1488 = **0.7513**, identical to
       the canvas aspect 2236/2976, so "not stretched or letterboxed" holds for both renders.
-- [ ] 🤖 **Malcurr-Stamped Blade OUT of the weapon picker (07-19s) — ✅ UNBLOCKED 2026-07-27v; the
-      "needs the next pack rebuild" note is struck** — the 07-27u items build shipped
-      `flags["edha-content"].plotItem: true` on the blade (the only item so flagged) and the picker
-      filters `plotItem !== true`. **Drive it now:** open any path's weapon picker → the
-      Malcurr-Stamped Blade is **absent**, while it is still present in the compendium for the table.
-- [ ] 🤖 **Culture in the ancestry slot (07-19s)** — a PC with a culture and no ancestry shows the
-      CULTURE's name in the header line that used to read "Ancestry" (tooltip explains the slot
-      stays optional). Dragging Human on shows "Human" again, as before.
 - [ ] 🤖 **Derived-stat preview on the attributes page (07-19w)** — a live panel above the
       steppers shows Health · Focus · Investiture* · the three defenses · Move · Recovery die ·
       Senses, recomputed on every +/− click ("push STR = more health and phys def", live).
@@ -1696,14 +1648,23 @@ so nothing was dropped.)*
       attunement-gated). VERIFY against the finished sheet: finish the wizard, compare the
       panel's last numbers to the sheet's actual values — any mismatch is a formula-drift
       report (quote both numbers).
+      - ❌ **FAIL 2026-07-28h (bench run 21) — the panel IS live, but THREE numbers drift.** The
+        recompute half passes outright: every +/− click updated the panel, and Focus (2+WIL=5),
+        Phys def (10+STR+SPD=16), Cog def (10+INT+WIL=16), Spi def (10), Investiture (2*) and
+        Recovery (d8) all matched the finished sheet exactly. The three that did NOT, at
+        STR3/SPD3/INT3/WIL3/AWA0/PRE0 — **panel → sheet**:
+        · **Health 13 → 14** · **Move 30 ft → 35 ft** · **Senses 10 ft → 5 ft**
+        Root cause for the first two is ONE function, `edhaDeriveSheetStats` (engine ~L16178),
+        which the panel does not model: it adds **+1 to `hea.max.bonus` in memory for every
+        character** ("HP = system + 1") and overrides walk rate with **20 + 5×SPD**. The sheet's
+        raw movement reads `{"derived":30,"override":35,"useOverride":true}` — the panel is
+        reading `derived`, the sheet uses `override`. Senses is a third, separate drift.
+        **Same root cause as the "+1 max health" and "Finish = long rest" rows below — fix them
+        as one family.**
 *(The **07-19v weapon slot v2** row is retired 2026-07-27v as STALE — its ×2-quantity clause is
 **explicitly reverted** (the engine grants one weapon, never ×2). Its two still-live halves — the rows
 LOOK pickable, and the picked weapon is kitItem-stamped so Start over / ↺ Change remove it with the kit
 — were **moved into Weapon slot v3**, below, rather than dropped.)*
-- [ ] 🤖 **Name field looks fillable (07-19v)** — the purse-and-name page's Name box renders as a
-      bordered input, same spec as the dropdowns.
-- [ ] 🤖 **Skill budget wording (07-19v)** — the L1 intro now reads "5 total (4 free + 1 your
-      heroic path accounts for — a path-granted rank shows as spent)".
 - [ ] ⚑ **Coin row v3 (07-19x — v2's numbers were invisible until clicked)** — v2 injected the
       editors INSIDE the system's currency-list, whose CSS collapses inputs until hover (it's a
       compact header widget) — hence letters-only at rest, numbers-only when clicked, and the
@@ -1716,6 +1677,17 @@ LOOK pickable, and the picked weapon is kitItem-stamped so Start over / ↺ Chan
       (bench: 10/11 — a max-health AE bonus can settle after the rest reads max), Investiture
       included (the system's rest doesn't touch it). Confirm the finished PC reads FULL on all
       three bars with no rest dialog.
+      - ❌ **FAIL 2026-07-28h (bench run 21) — two of three bars top up; HEALTH IS STILL ONE
+        SHORT, and the belt did not catch it.** GM-side: pre-finish 3/14 · 3/5 · 0/2 → post-finish
+        **13/14** · 5/5 · 2/2. **No rest dialog** appeared (that half passes), and Investiture
+        topping up proves the Edha top-up ran at all. Reproduced INDEPENDENTLY from the player
+        client on a different PC (Scholar/White): pre 3/14 → post **13/14** · 5/5 · 2/2. So it is
+        systematic, not a race that sometimes wins. **Root cause: the same `edhaDeriveSheetStats`
+        +1 as the two rows around this one** — the rest sets health to the max it reads (13), then
+        the engine's in-memory `hea.max.bonus += 1` re-derives max to 14. The 07-19y "re-read a
+        beat later" belt cannot help, because the +1 is applied on every `prepareDerivedData` and
+        is never in `_source`. The old note's "bench: 10/11" is the SAME bug one derivation
+        smaller. Fix with the derived-stat-preview and +1-max-health rows as one family.
 - [ ] 🤖 **+1 max health SOLVED-pending-confirm (07-19z)** — a BRAND-NEW ＋ actor showed 10/11
       before any picks, and at that moment only the basic-action copies exist: a shipped
       action carries an auto-applying (transfer) Active Effect touching max health. Action
@@ -1723,16 +1695,53 @@ LOOK pickable, and the picked weapon is kitItem-stamped so Start over / ↺ Chan
       stay), and opening the wizard on an existing PC strips them from its action items
       (console logs what it removed). Confirm: fresh actor = 10/10 at STR 0, and the repair
       log names the culprit action — paste its name for the delta.
+      - ⚠️ **2026-07-28h (bench run 21) — THE FIX WORKED; THIS ROW'S TARGET NUMBER IS WRONG, and
+        it is now `EDHA_RULINGS.md` R-54.** The transfer-AE half is decisively fixed: a brand-new
+        ＋ Edha Character carries **20 items, 19 of them actions, ZERO transfer AEs**
+        (`itemsWithAnyEffect: []`), no duplicate names, and a **clean console**. There is therefore
+        **no repair log and no culprit action to name** — nothing is left to repair.
+        But the actor still reads **max 11 at STR 0**, and the culprit is not an AE:
+        `_source…hea.max.bonus` is **0**, while derived reads
+        `{derived:10, override:null, useOverride:false, bonus:1}`. **A plain system character
+        created with zero items and zero effects reads exactly the same 11** — because
+        `edhaDeriveSheetStats` (engine ~L16178) deliberately adds **+1 max HP to every character**
+        ("The Edha reference sheets derive these differently… HP = system + 1"). So "10/10 at
+        STR 0" asks the engine to undo its own documented design rule and **can never pass as
+        written**. R-54 decides whether 11 is intended (retire this row's number) or the +1 should
+        not apply at level 1.
 - [ ] 🤖 **Path training rank (07-19z)** — after picking a heroic path, a "path training"
       dialog grants +1 rank in one of the PATH'S skills (list read live from the cosmere
       heroic-paths pack's linkedSkills). The skills page then shows 1 of 5 spent — the
       "+1 from your heroic path" is finally automatic, not honor-system. Start over and
       ↺ Change heroic hand the rank back (no stacking on redo). If the dialog says the list
       isn't readable, say so — the fallback is the old by-hand rank.
+      - ❌ **FAIL 2026-07-28h (bench run 21) — the dialog NEVER APPEARS, for ANY path, and it
+        fails silently.** Picking Warrior went kit → weapon-slot picker → leyline with no path-
+        training dialog at any point, and the actor's skills stayed **entirely unranked**
+        (`rankedSkills: []`, total 0). **Root cause, and it is not Warrior-specific:** the feature
+        reads `linkedSkills` live off `cosmere-rpg.heroic-paths`, and **all six path items ship
+        `linkedSkills: []`** at system **2.1.0** — Agent, Envoy, Hunter, Leader, Scholar, Warrior,
+        every one an empty array (read straight off the pack; every other entry in that pack is a
+        talent with `linkedSkills: null`). So the live list is always empty and the dialog has
+        nothing to offer. The row's own escape hatch — "if the dialog says the list isn't
+        readable, say so" — never fires either: the list IS readable, it is just empty, so the
+        wizard skips with **no dialog, no toast and no fallback**. ⚠️ This also silently
+        falsifies the skills page's own wording ("4 free + 1 your heroic path accounts for — a
+        path-granted rank shows as spent"): nothing is ever granted, and the page reads
+        **Spent: 0 of 5**. Fix needs a decision on the fallback (hand-rank prompt vs. drop the
+        claim), not just a code change.
 - [ ] 🤖 **Wizard fits the screen (07-19z)** — every wizard window opens fully on-screen; tall
       pages scroll inside the dialog instead of clipping past the bottom.
-- [ ] 🤖 **Expertise rows un-overlapped (07-19z)** — the pick-2 dialog's prose sits beside the
-      checkbox, never over it.
+      - ❌ **FAIL 2026-07-28h (bench run 21) — ONE page overflows, and nothing scrolls at the
+        dialog level.** At a **1400×900** viewport the **"Where are you from?"** page opens at
+        top **237**, height **788**, bottom **1025** — **125 px past the bottom of the screen**.
+        Its `.window-content` computes `overflow-y: visible` and `max-height: none`, so the
+        dialog itself never scrolls; only the inner `.edha-cw-preview` scrolls (188 visible of
+        559). Every other page measured fits: heroic 177→723, attributes 142→758, skills and
+        purse&name both inside the viewport. So it is the map+prose country page specifically.
+        ⚠️ **Viewport-dependent in magnitude, not in kind** — on a taller screen 788 px may fit,
+        but with `max-height: none` there is no clamp at any height, so this reappears on any
+        short display. Fix = clamp the dialog to the viewport and let the content scroll.
 - [ ] 🤖 **Weapon slot v3 — path-curated (07-19y, Ben-approved lists) — THE ONE WEAPON-PICKER ROW
       (absorbed 07-19q + 07-19v, 2026-07-27v)** — ONE weapon, never ×2 (the take-five ×2 reading is
       reverted), and the list is the path's own arms: Agent = Knife/Sidesword/Staff · Envoy =
@@ -1744,67 +1753,26 @@ LOOK pickable, and the picked weapon is kitItem-stamped so Start over / ↺ Chan
       hover glow, visible radio, blue selected state), and the picked weapon is **kitItem-stamped**, so
       **Start over / ↺ Change heroic remove it with the kit** (the second Knife on Test Agent-Blue was
       the un-stamped survivor of a pre-fix restart — prune that one by hand).
+      - ✅ **2026-07-28h (bench run 21) — TWO of the six lists verified, and every mechanical
+        clause passes. The row now stays ONLY for the four unverified path lists.**
+        · **Warrior = the full ≤2g list** — exactly 10 options, Staff 3c · Knife 25c · Shield 35c
+        · Shortspear 35c · Longspear 5s · Axe 65c · Mace 65c · Hammer 13s · Sidesword 13s ·
+        Longsword 2g, each with its skill named. · **Scholar = Knife/Mace** — exactly those two,
+        nothing else (driven from the player client).
+        · **ONE weapon, never ×2**: the picked Longsword landed at **`quantity: 1`**.
+        · **kitItem-stamped**: the picked weapon carries `flags.edha-content.kitItem = true`,
+        alongside the 9 other kit items (10 stamped in total), so Start over / ↺ Change will take
+        it with the kit. · **Take it / Choose later** both present and labelled.
+        ⛔ **Still unverified: Agent · Envoy · Hunter · Leader.**
 - [ ] ⚑ **Preview panel centered (07-19y)** — the derived-stat box on the attributes page is
       centered ("90% of the way to clean design" — say what the last 10% needs).
-- [ ] 🤖 **Sheet budget bar says 5 skill ranks (07-19y)** — the header's "Skill rnks" chip now
-      uses the Edha budget (5 at L1, +2/level) instead of the system table's 4 — a
-      correctly-built L1 PC reads 5/5, not -1/4.
-- [ ] 🤖 **No expertise stacking on redo (07-19u)** — Start over (or ↺ Change on the country
-      page) wipes the origin expertises the picker granted (stamped at pick time; hand-added
-      ones survive) — re-picking the same nation then asks for a clean 2. AND the picker now
-      counts already-known entries toward the pick: re-adding a culture whose origins you
-      somehow still know asks only for the difference (0 needed = no dialog, just a toast).
-      Was: linger + forced re-pick = four expertises.
-- [ ] 🤖 **ONE Unarmed Strike (07-19t — root-caused off Ben's console paste)** — both copies
-      were weapon-type with `src: null` = locally CREATED: the shipped basic actions carry
-      their own add-to-actor grant-items events that deliver the unarmed WEAPON, and the batch
-      create fired them concurrently — the system's name-dedup raced itself (the duplicate-Key
-      race, one layer down). Now: actor-lifecycle events are stripped from the action copies,
-      and the weapon is granted deliberately once (matched by `system.id === "unarmed"`, so
-      real doubles like the Agent's two Knives are never touched). Re-test: a fresh ＋ Edha
-      Character has exactly ONE Unarmed Strike; re-opening the wizard on the OLD actor heals
-      its double automatically (toast) and grants one if missing.
-- [ ] 🤖 **THE PICK-2 v2 — our dialog now** — after Choose on a country: the pick dialog lists
-      that nation's OWN origin entries with their prose (NOT the Rosharan registry list),
-      enforces exactly 2, already-known entries show checked+disabled, and a chat card records
-      the picks. **Ashkar chains two dialogs** (one other nation's cultural expertise, then one
-      road-life entry). Cancelling mid-pick leaves the options readable on the culture card
-      (add by hand). The wizard waits for the picks before showing the heroic page.
-- [ ] 🤖 **Keys granted ONCE** — heroic and leyline pages grant path + Key (+ kit on heroic) with
-      NO duplicates (07-19 fail: Vigilant Stance ×2 / Red Leyline Attunement ×2 ate the
-      budget — the wizard no longer grants Keys at all; the path item's own event does). A PC
-      carrying the old duplicates: Start over clears them.
-- [ ] 🤖 **@UUID links render** — the heroic page's description shows real clickable content links
-      (was raw `@UUID[Compendium…]` text); clicking one opens that sheet in front and the
-      wizard doesn't fight it.
-- [ ] 🤖 **Deity page v2** — 🌿 **Browse the tree** opens the deity's tree read-only (talents tab,
-      unbound — no picks possible); ☀ **Note as faith** stamps a flavor-only flag that shows on
-      the welcome checklist and the finish card ("faith: X (unattuned)"); Choose still grants
-      the path for tables that start attuned; Skip stays default.
-- [ ] 🤖 **Attributes page (mechanical half)** — six steppers, live "Spent X of 12" counter (L1;
-      max 3 per attribute at L1), + disabled at cap/budget, Next writes the values onto the
-      sheet. *(Split 2026-07-27w — this half only asks whether the page enforces and writes the
-      numbers it currently claims, whatever those numbers turn out to be.)*
 - [ ] ⚑ **Attributes page — VETO CHECK (Ben)** — are **12 points at L1 / max 3 per attribute at
       L1 / +1 at levels 3, 6, 9, 12, 15, 18** still canon? They come from the legacy
       `Character_Building_Rules.md`. Confirm, or say the real numbers — the wizard enforces
       whatever this answer is. *(Split 2026-07-27w; the enforcement half is the 🤖 row above.)*
-- [ ] 🤖 **Skills page (mechanical half)** — core skills grouped by attribute + this PC's unlocked
-      magic skills, one shared pool: "Spent X of 5" at L1, max rank 2, writes ranks on Next. A
-      leveled Start-over PC shows the bigger budget and its already-granted ranks as spent.
-      *(Split 2026-07-27w — enforcement and writes only.)*
 - [ ] ⚑ **Skills page — VETO CHECK (Ben)** — are **5 + (L−1)×2 total ranks** and **max rank
       INT((L−1)/5)+2** still canon? Same legacy source as the attributes numbers; confirm or give
       the real ones. *(Split 2026-07-27w; the enforcement half is the 🤖 row above.)*
-- [ ] 🤖 **Budget page trees v2** — "Open the X tree" opens the ACTOR'S tree (path sheet, talents
-      tab) with nodes actually selectable (was: the compendium tree, nothing clickable), and
-      the wizard stays behind it while you pick.
-- [ ] 🤖 **Kit idempotency re-test** — now testable without the duplicate-Key noise:
-      `edha.grantStartingKit(actor, "Hunter")` twice — second call info-toasts, grants nothing;
-      `{force: true}` re-grants.
-- [ ] 🤖 **Player client v2** — a player runs the FULL new walkthrough (map pick, pick-2
-      dialogs, attribute/skill writes, faith note) from their own sheet: all writes are
-      owner-side — confirm no permission errors.
 
 - [ ] 🤖 **Map picker shows the redrawn map** — after deploy: the Where-are-you-from step shows
       the new map art (Goldenport wash running the whole west coast is the giveaway) and the
@@ -1815,6 +1783,19 @@ LOOK pickable, and the picked weapon is kitItem-stamped so Start over / ↺ Chan
       Goldenport coastal strip (formerly Kettavar/Lunavar), the Vorsk/Lunavar mountain line,
       Malcurr's lake country, the Thalendor/Corvaine river line. Hover names must match the
       wash colors; Sylvaneth island still clickable.
+      - ✅ **2026-07-28h (bench run 21) — all TEN polygons resolve to their own nation, and the
+        picker plumbing is sound.** Clicking each polygon in turn drove the dropdown to ten
+        DISTINCT nations: poly 0→Sylvaneth (**the island is clickable**), 1→Kettavar, 2→Vorsk,
+        3→Malcurr, 4→Lunavar, 5→Thalendor, 6→Goldenport, 7→Ashkar, 8→Canticle, 9→Corvaine. Hover
+        (`pointerenter`) gives name + region — "Goldenport / west coast (inlets = Life-nexus trade
+        arteries)", "Malcurr / northeast lake country (tree-of-lakes waterways)" — with a gold
+        highlight, and `pointerleave` hides the tip. The SVG overlay is pixel-aligned with the
+        image (both 558,326 284×378; viewBox `0 0 2236 2976`), and the culture card + map
+        highlight both follow the select.
+      ⏸️ **The row STAYS only for the border/dead-spot half, which is `EDHA_RULINGS.md` R-42** —
+        the four Goldenport-tagged dots inside no polygon and the Corvaine dot resolving to
+        Thalendor are the defect row below, not a new finding. Centroid hit-testing cannot settle
+        a border question; that needs R-42 answered first.
 - [ ] ❌ **DEFECT (measured by the 2026-07-27v checklist audit, never benched): five map-picker DEAD
       SPOTS / mis-hits, and four of them are holes in the partition** — `module-src/assets/
       thyrcross-nations.json` is byte-identical to `thyrcross.map.json`'s polygons and to the deployed
@@ -2197,29 +2178,35 @@ Mutation Upgrade); superseded hand-toggle AEs were removed — the engine does t
       `timedExpire` and must never acquire an `expireAfter`. **(d) SECOND NEGATIVE CONTROL:** a
       `slowed` in the same combat must expire exactly as before (the allowlist path is untouched).
       Report all four; (a) and (c) reading the same is the failure the old row could not detect.
-- [ ] 🤖 **The other four timed statuses ride the same fix (07-28g)** — `braced` was one of FIVE
-      status ids whose authored `timed: true` relied on the single in-combat stamp. Spot-check ONE
-      of the others out of combat, then in combat: **Kneel's `compelled`** (owner-relative — it must
-      expire at the end of the OWNER's next turn, not the victim's, which the old lazy path got
-      wrong) or the Hunter's **`tagged`**. Negative control: a hand-toggled `compelled` from the
-      token HUD (no rule involved) must NOT auto-expire — that is why these are deliberately absent
-      from `EDHA_TIMED_STATUSES`.
+      - ✅ **2026-07-28h (bench run 21) — (a), (c) and (d) ALL PASS and (a) ≠ (c). (b) is
+        BLOCKED.** Staged one bench combat holding my own unlinked Trooper + Frostbinder tokens
+        and Bench — Heroic, created `active:false` and stepped with `combat.update({round,turn})`
+        so Ben's combat was never touched.
+        · **(a) THE BUG'S OWN CASE — PASSES.** Brace used with the Trooper in no running combat
+        stamped **no** `expireAfter` and instead recorded the intent
+        `timedExpire {expire:"owner", ownerUuid:…}`. At the first turn change the catch-up pass
+        consumed it — intent **null**, `expireAfter {round:1, turn:2}` (the Trooper's own index,
+        owner-relative) — and at (2,0) the icon was **GONE** with
+        "💢 Braced (attacks at disadvantage) on Trooper ends (end of its turn)."
+        · **(c) NEGATIVE CONTROL — PASSES, and reads DIFFERENTLY from (a).** The Frostbinder's
+        Predictive Ward `braced` (a transfer AE that never went through `edhaApplyTimedStatus`)
+        survived **5 rounds / 14 turn-changes** with `expireAfter` **null** and `timedExpire`
+        **null** throughout — it never acquired a stamp.
+        · **(d) SECOND NEGATIVE CONTROL — PASSES.** A hand-toggled `slowed` on the same
+        Frostbinder stamped `{round:1, turn:1}` off the allowlist path and expired on schedule at
+        (1,2): "💢 Slowed on Frostbinder ends (end of its turn)." Allowlist path untouched.
+        · **Confirmed on the engine as the row requires: `braced` is NOT in
+        `EDHA_TIMED_STATUSES`** (L608 = weakened, immobilized, slowed, noactions, noreactions).
+      - ⛔ **(b) BLOCKED — blocker named; row stays 🤖.** (b) wants Brace used INSIDE a running
+        combat so the stamp lands immediately. `edhaApplyTimedStatus` reads **`game.combat`**,
+        which resolves to the scene's **ACTIVE** combat — Ben's `BerbNeuXp4iKduef`. Reaching that
+        branch needs the Brace user to be a combatant in **Ben's** combat, and the bench may
+        neither add a token to it nor activate a combat of its own (both are standing rules). A
+        bench combat created `active:false` cannot satisfy it: `game.combat` still returned
+        `BerbNeuXp4iKduef` throughout. Needs Ben, or a rule change.
 - [ ] 🤖 **Cinder Coat splash-back** — melee-hit a Cinderhound: the attacker automatically takes
       1d4 Energy (card names the hound). A ranged hit from across the room must NOT splash.
 - [ ] 🤖 **Bite sheds light** — a bitten creature's token starts glowing (the Kindle light rider).
-- [ ] 🤖 **Suture Cradle fires ONCE — RE-TEST after fix pass D (07-28g; engine-only → ⟟ sync + F5),
-      and the second cell is the one that catches a wrong fix** — run 20 got the whole mechanic
-      right and posted every card TWICE (75 ms apart, both from user `Bench`, so not the two-GM
-      duplicate): the holder scan deduped by object identity, and an unlinked token's synthetic
-      actor is a different object with the same `id`. **(a)** From an **unlinked** Stitchmother
-      token, TARGET a creature and use the cradle; hit the cradled creature → **exactly ONE**
-      Discipline-vs-DC-10+damage roll and **ONE** keep/ends card (check the speaker alias too: the
-      bug showed "Stitchmother" and "Bench Adv — Stitchmother"). Cradle another creature: the flag
-      moves. **(b) POSITIVE CONTROL — THREE unlinked tokens stamped from ONE prototype must stay
-      three separate cradlers.** Drop three Stitchmothers from the same prototype, cradle a
-      different creature with each, then hit all three targets: **three** independent rolls. A
-      naive `id`-only dedupe collapses them to one, which is a worse bug than the one being fixed.
-      **(c) NEGATIVE CONTROL:** a Stitchmother holding nobody rolls nothing when anything is hit.
 - [ ] 🤖 **Stalker Fade cue** — damage a Stalker: the graze-or-miss reminder card (once/round).
 - [ ] 🤖 **Devastating Blow cue** — on ITS hit: the margin-Prone reminder; on other attacks: none.
 
@@ -2249,21 +2236,6 @@ Retired; evidence in the 07-26k delta.)*
         strike", victim 47 → 38 at Deflect 0.
       - ⚠️ **The Reknit Form half FAILED (run 20) and is FIXED in 07-28g — see the dedicated
         re-test row below.**
-- [ ] 🤖 **Reknit Form charges the ZERO its rule authors — RE-TEST after fix pass D (07-28g;
-      engine-only → ⟟ sync + F5)** — run 20's picker rendered "(−0 Investiture)" and then charged
-      **2** (inv 10 → 8): `edhaReknitClick` read `Number(ds.edhaCost) || 2`, and an authored 0 is
-      falsy. **(a)** Note the Stitchmother's Investiture, use Reknit Form on a creature with an
-      injury, click a button → the injury is removed and **Investiture does not move at all**; the
-      result card reads "(−0 Investiture)", matching the button. **(b) POSITIVE CONTROL — the
-      default must still bite:** a `edha-remove-injury` rule with the cost fields left BLANK still
-      charges 2 (temporary) / 3 (permanent). Absent is not zero, and the fix must keep them apart.
-- [ ] 🤖 **Static illusions are IMMOBILE — the same falsy-zero bug, four rules the report missed
-      (07-28g; engine-only → ⟟ sync + F5)** — `Number(spec.speed) || 25` gave every speed-0 summon a
-      25 ft walk. **(a)** Cast Blue's **Phantom Double** (or the Mistheron's **Seeming**, or
-      **Holographic Illusion**) → the created token's Speed reads **0**, and dragging it shows no
-      movement allowance. Its own card says the image *stands* a pace away; it must not walk.
-      **(b) POSITIVE CONTROL:** an ordinary summon (Civilization's or Death's, which author
-      `speed: 25`) still moves 25 ft. Both cells, or the row proves nothing.
 - [ ] 🤖 **2bAB-9 — Reeve-Owl — Sovereign of Solitude — READ THE PACK BEFORE CONCLUDING ANYTHING
       (revised 07-28g; NO code or data change)** — run 20 reported `rules = 0, effects = 0` and
       called it an authoring gap. **The repo disagrees and was checked line by line:**
