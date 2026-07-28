@@ -3216,7 +3216,8 @@ async function edhaAmbushBeliefTest(actor, amb, tTok) {
     const tokUuid = tTok.document?.uuid; if (!tokUuid || belief.tested[tokUuid]) return;   // once per scene per target
     const dcKey = amb.handler.dcFrom || "cog";
     const dc = Number(actor.system?.defenses?.[dcKey]?.value ?? actor.system?.defenses?.[dcKey]?.override) || 10;
-    const mod = Number(tTok.actor.system?.skills?.prc?.mod ?? tTok.actor.system?.skills?.prc?.rank) || 0;
+    const sk = tTok.actor.system?.skills?.prc;
+    const mod = edhaDerivedNum(sk?.mod, Number(sk?.rank) || 0);   // `.mod` is a DerivedValueField OBJECT — 07-27y
     const roll = await (new Roll(`${amb.handler.perceptionAdvantage ? "2d20kh" : "1d20"} + ${mod}`)).evaluate();
     const fooled = roll.total < dc;
     belief.tested[tokUuid] = { fooled, total: roll.total, name: tTok.name };
@@ -4516,11 +4517,26 @@ Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindBeaconButtons(html));
  * round-scoped movement window; the updateToken watcher below reads the FLAG, not a name). The
  * name-keyed useItem hook that drove both is gone — do not re-add a branch here. */
 
+/* Read a cosmere DerivedValueField as a NUMBER (the object-as-scalar family, bench run 16 / 07-27y).
+ * cosmere-rpg 2.1.0 exposes a dozen derived stats as OBJECTS, not numbers — `system.movement.<t>.rate`,
+ * `system.skills.<id>.mod`, `system.resources.<id>.max`, `system.senses.range`, `system.deflect`,
+ * `system.injuries`, `system.defenses.<id>`, `system.encumbrance.{lift,carry}`, `system.recovery.die`,
+ * the currency totals. Each is a DerivedValueField: a SchemaField carrying {derived, override,
+ * useOverride[, bonus]} plus a getter-only `.value` (value = bonus present ? base + bonus :
+ * useOverride ? override : derived). `Number(thatObject)` is **NaN**, so the near-universal
+ * `Number(x) || 0` idiom silently yields **0** — no error, no warning, the feature just reads as
+ * dead. Three engine sites shipped that way (every belief test rolled 1d20+0; every half-Speed move
+ * went 0 ft). Take `.value` first; fall back to override/derived for a RAW `_source` object, which
+ * has the fields but not the getter. Pure — pinned in tests/. lint-refs pass 17 gates the shape. */
+function edhaDerivedNum(v, fallback = 0) {
+  if (v === null || v === undefined) return fallback;   // NOT Number(null) — that is 0, which is a MISSING field reading as a real zero
+  const n = (typeof v === "object") ? Number(v.value ?? v.override ?? v.derived) : Number(v);
+  return Number.isFinite(n) ? n : fallback;
+}
 // Half walking Speed in ft, floored to the 2.5-ft half-square (adversary rates live under
 // .override, PC rates under .value — take whichever resolves). Pure — pinned in tests/.
 function edhaHalfSpeed(actor) {
-  const r = actor?.system?.movement?.walk?.rate;
-  const v = (r && typeof r === "object") ? Number(r.value ?? r.override) : Number(r);
+  const v = edhaDerivedNum(actor?.system?.movement?.walk?.rate, NaN);
   return Math.floor(((Number.isFinite(v) && v > 0 ? v : 25) / 2) / 2.5) * 2.5;
 }
 // Movement-window watcher (Ordered Advance's shape, flag-driven since 07-25): while an owner's
@@ -5868,7 +5884,8 @@ async function edhaPhantomBeliefSweep(copyDoc, { initial = false } = {}) {
       return;
     }
     for (const t of fresh) {
-      const mod = Number(t.actor.system?.skills?.[skill]?.mod ?? t.actor.system?.skills?.[skill]?.rank) || 0;
+      const sk = t.actor.system?.skills?.[skill];
+      const mod = edhaDerivedNum(sk?.mod, Number(sk?.rank) || 0);   // `.mod` is a DerivedValueField OBJECT — 07-27y
       const roll = await (new Roll(`1d20 + ${mod}`)).evaluate();
       const fooled = roll.total < dc;
       (fooled ? belief.fooled : belief.saw).push({ uuid: t.document.uuid, name: t.name, total: roll.total, player: !!t.actor.hasPlayerOwner });
@@ -6410,7 +6427,10 @@ async function edhaApplyMove(tok, destCenter, maxFt, { gapPx = 0, hostile = fals
   await edhaMoveTokenTo(tok, r.dest, { hostile });
   return r;
 }
-function edhaSpeedFt(actor) { return Math.max(0, Number(foundry.utils.getProperty(actor, "system.movement.walk.rate")) || 0); }
+// Walking Speed in ft. `movement.walk.rate` is a DerivedValueField OBJECT — read it through
+// edhaDerivedNum (07-27y: the raw Number() here was NaN → 0, so every `edha-move {byHalfSpeed}`
+// moved 0 ft — the three "Unstoppable" blocks). Pure — pinned in tests/.
+function edhaSpeedFt(actor) { return Math.max(0, edhaDerivedNum(actor?.system?.movement?.walk?.rate, 0)); }
 function edhaMoveAllowanceFt(actor, cfg) {
   if (cfg.byHalfSpeed) return Math.floor(edhaSpeedFt(actor) / 2);
   if (cfg.bySize) return EDHA_SIZE_FT[edhaColorRank(actor, "red")] || EDHA_SIZE_FT[1];
@@ -8758,8 +8778,7 @@ function edhaSensesRangeFtFromAwa(awa) {
   return a >= 5 ? 30 : a === 4 ? 25 : a >= 2 ? 20 : a === 1 ? 15 : 10;
 }
 function edhaSensesRangeFt(actor) {
-  const s = actor?.system?.senses?.range;
-  const v = (s && typeof s === "object") ? Number(s.value ?? s.override) : Number(s);
+  const v = edhaDerivedNum(actor?.system?.senses?.range, NaN);   // DerivedValueField object — one reader, edhaDerivedNum
   if (Number.isFinite(v) && v > 0) return v;
   return edhaSensesRangeFtFromAwa(actor?.system?.attributes?.awa?.value);
 }

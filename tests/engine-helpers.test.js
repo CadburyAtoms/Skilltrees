@@ -263,6 +263,35 @@ test("edhaHalfSpeed reads .value (PC) or .override (adversary), halves to the 2.
   assert.strictEqual(env.edhaHalfSpeed({ system: { movement: { walk: { rate: 35 } } } }), 17.5);
   assert.strictEqual(env.edhaHalfSpeed({}), 12.5);                                                      // default walk 25
 });
+
+// --- 07-27y the object-as-scalar family (bench run 16) ----------------------------------------
+// cosmere-rpg 2.1.0 exposes a dozen derived stats as DerivedValueField OBJECTS carrying
+// {derived, override, useOverride[, bonus]} + a getter-only `.value`. `Number(thatObject)` is NaN,
+// so the `Number(x) || 0` idiom silently yields 0 and the feature reads as dead. Three engine sites
+// shipped that way. These pin the ONE reader every site now goes through.
+test("edhaDerivedNum: object → .value; falls back override → derived; scalars pass through", () => {
+  assert.strictEqual(env.edhaDerivedNum({ value: 40, derived: 40, override: 0, useOverride: false }), 40);
+  assert.strictEqual(env.edhaDerivedNum({ override: 25, useOverride: true }), 25);   // no getter (a raw _source object)
+  assert.strictEqual(env.edhaDerivedNum({ derived: 30 }), 30);                       // no .value, no .override
+  assert.strictEqual(env.edhaDerivedNum(35), 35);                                    // a plain number still works
+  assert.strictEqual(env.edhaDerivedNum(0), 0, "a real 0 is not the fallback");
+  assert.strictEqual(env.edhaDerivedNum(undefined, 7), 7);
+  assert.strictEqual(env.edhaDerivedNum({}, 7), 7, "an EMPTY derived object must not read as 0");
+  assert.strictEqual(env.edhaDerivedNum(null, 7), 7);
+  // The live `system.skills.prc.mod` shape — both belief tests (ambush + phantom) rolled 1d20+0
+  // for a +4 Perception until they went through this reader.
+  const prcMod = { derived: 4, override: 0, useOverride: false, value: 4 };
+  assert.strictEqual(env.edhaDerivedNum(prcMod, /* rank fallback */ 0), 4);
+});
+test("edhaSpeedFt reads the DerivedValueField, not the object (byHalfSpeed moved 0 ft before 07-27y)", () => {
+  // The exact live shape: cosmere writes movement.walk.rate.{derived,override,useOverride,bonus}.
+  const alpha = { system: { movement: { walk: { rate: { derived: 40, override: 0, useOverride: false, bonus: 0, value: 40 } } } } };
+  assert.strictEqual(env.edhaSpeedFt(alpha), 40, "Number(object) was NaN → || 0 → every Unstoppable moved 0 ft");
+  assert.strictEqual(env.edhaMoveAllowanceFt(alpha, { byHalfSpeed: true }), 20);
+  // Negative controls: no movement block, and an explicitly zero rate, both still 0.
+  assert.strictEqual(env.edhaSpeedFt({}), 0);
+  assert.strictEqual(env.edhaSpeedFt({ system: { movement: { walk: { rate: { value: 0 } } } } }), 0);
+});
 test("edhaNextTokenName renumbers only on collision, picking the lowest free number", () => {
   assert.strictEqual(env.edhaNextTokenName("Mistheron (1)", ["Mistheron (1)"]), "Mistheron (2)");       // the 07-14 report
   assert.strictEqual(env.edhaNextTokenName("Mistheron (1)", ["Mistheron (1)", "Mistheron (2)"]), "Mistheron (3)");
