@@ -1,126 +1,97 @@
-# Next bench session — run 23
+# Next bench session
 
-> **Marathon 3 continues.** Run 22 re-tested **fix pass E** (3 of 4 retired — every positive AND every
-> load-bearing negative held; the 4th is BLOCKED by a permanent harness limit, not a defect) and swept
-> the **six re-test sections**: **32 🤖 in, 24 retired, 4 not reached**. **27 rows retired total — the
-> best run of the marathon.** Zero world drift: 87 actors / 52 tokens / 117 walls, unchanged. The
-> engine is hash-verified live and the pack-rebuild list is still **EMPTY**.
+> **Marathon 3 is complete** (2026-07-27/28) — 8 bench runs, 6 fix passes, 36 commits.
+> **Bench queue 210 🤖 → 51. Ben's list 227 ⚑ → 22.** No `⛔ STOP`, and **no pack rebuild is owed**.
 
-## Your scope — **the bench tails, 22 🤖**
+## Read this first
 
-| Section | Line | 🤖 |
+**→ [`docs/BENCH_MARATHON_3_REPORT.md`](BENCH_MARATHON_3_REPORT.md)** — disposition, every defect
+found → fixed → re-tested with commit refs, the gates built and declined, world hygiene, and the nine
+wrong claims caught before shipping.
+
+**→ [`EDHA_RULINGS.md`](../EDHA_RULINGS.md)** — 59 standing decisions. **Read §I first**: R-43 is
+applied and changes live dice math.
+
+**→ `docs/EDHA_BENCH_RUNBOOK.md`** — run-1 → run-23 operating lessons.
+
+## ⚑ vs 🤖 — read this before picking rows
+
+- **`🤖` = needs a live Foundry table, and an agent drives it. THIS IS YOUR QUEUE.**
+- **`⚑` = Ben's judgment only.** Leave it alone.
+
+⚠️ **Never re-file an unrun 🤖 row as ⚑ because you ran out of time.** Leave it 🤖, or record it
+BLOCKED with the blocker named. Marathon 2 skipped ~201 drivable rows because the old wording said
+"⚑ rows stay ⚑ Ben's"; that instruction is gone from both bench skills and must not come back.
+**Design questions go to `EDHA_RULINGS.md`, never to the checklist as a new ⚑ row.**
+
+## Ben's queue
+
+**⟟ Sync the module + F5.** That is the whole list. All 19 marathon-3 fixes are engine-only and already
+synced; your client needs the refresh. Two rows retire on that alone.
+
+The single queued data item — **Unbreakable Line has no `use` rule** — waits on its ruling, not on you.
+
+## What is left: 51 🤖
+
+| Section | 🤖 | Note |
 |---|---|---|
-| `# BENCH — Engine-wide & cross-tree` | 341 | **7** |
-| `# BENCH — White (leyline)` | 483 | **3** |
-| `# BENCH — Blue (leyline)` | 507 | **3** |
-| `# BENCH — Red (leyline)` | 575 | **1** |
-| `# BENCH — Green (leyline)` | 594 | **4** |
-| `# BENCH — Order (Tessavain, deity)` | 1157 | **1** |
-| `# BENCH — Heroic paths` | 1237 | **3** |
+| Adversary ability wiring | 12 | **Best target.** Run 20 ran out of runway; clusters on 4 actors (Roek+Raider, Mistheron ×2, Cinderhound, Stalker) |
+| Wizard v2 | 6 | Weapon-slot variants for Agent/Envoy/Hunter/Leader; the rest are observer-dependent |
+| Green (leyline) | 4 | Needs a turn boundary (drivable) or an **Opportunity** (genuinely awkward) |
+| Engine-wide · White · Bench-results · Player-client | 3 each | Player-client rows need `PlayerBench` and are *rendering* checks |
+| W29 · Items-dump | 3 each | W29's are ruling-gated on R-48 |
+| Blue · Adversary pack sync · Vorsk | 2 each | |
+| Red · Order · Heroic · Goldenport · Ashkar | 1 each | |
 
-Counted from run 22's end state — **count it yourself before you start** and state your scope up front.
-**55 🤖 remain in the checklist overall.**
+**Start with adversary ability wiring.** Highest count, cheapest per row, and the four actors behind it
+are already identified.
 
-⚠️ **Start with Engine-wide, and read its own header first: if `2bA-7` (edit-round-trip) fails, STOP the
-run and report.** Everything in every tree rides on it. After that the leylines are the natural order
-(White → Blue → Red → Green), then Order, then Heroic.
+### Known blockers — do not fight these
 
-⚠️ **This is the opposite shape from run 22.** Run 22 hit 13.5 rows per subject because one wizard
-walkthrough and one sync click each carried many rows. These 22 are **combat and talent mechanics spread
-across seven trees** — closer to run 19's 2.1 per import. **Import/stage only for the rows you are about
-to drive** (run 20 fell to 0.62 by batch-importing 9 actors and never driving 4).
+- **2bM-1 (H3 ordering)** needs **zero GM clients connected**; the bench joins as a GM and Ben's is up.
+- **Anything reading `edhaIsFastTurn`** resolves via `game.combat` = Ben's live campaign combat.
+  **Never activate a bench combat** — it would deactivate his.
+- **Observer/rAF-dependent rows are unverifiable on this bench.** Run 22 measured **0 animation frames
+  in 2.7 s and 0 ResizeObserver callbacks** — the pane is `document.hidden`. Prove the mechanism by
+  hand and record BLOCKED, not FAILED.
+- **The four dead-prereq rows are answered, not open**: the tree view is a PIXI canvas whose
+  `isTalentAvailable` short-circuits on `hasTalent()` before prerequisites are consulted. There is no
+  warning state to observe. Retirable.
 
-## Read before driving
+## Harness traps — each has already produced or nearly produced a false result
 
-**→ `docs/EDHA_BENCH_RUNBOOK.md`** — run-1 → **run-22** operating lessons; run 22's block is newest and
-overrides older advice. The ones that will cost you a row here:
+- **Verify a gate is OPEN before treating silence as evidence** (run 19 nearly proved the once-per-round
+  gate instead of the filter under test).
+- **Bench PC tokens already exist on the map** — creating duplicates made the engine measure range from
+  a token 121 ft away (run 20).
+- **Geometry can make correct behaviour look broken** — a one-square push is all-or-nothing by
+  construction; a 31 px shortfall is v13's wall-constrained walk.
+- **Read `movement.walk.rate.value`, not `.override`** — the getter adds `.bonus` on top, so a working
+  +10 reads as +0. Same family as "read `system.deflect.value`, never `.derived`".
+- **An item cloned from a compendium is NOT hand-added** — it carries `_stats.compendiumSource`, so a
+  sync correctly replaces it.
+- Bench PCs carry a **10 ft sight range**; a token's **prepared** position reads stale while the ticker
+  is parked (read `_source`).
+- **Snapshot whole effect OBJECTS, not names**, and include unlinked token actors *and their flags* —
+  two runs could not attribute a change because of exactly this gap.
+- **When reverting a flag, restore the whole snapshot object** — `{recursive: false}` on a sub-path
+  strips siblings.
+- In the **built** pack, `system.events` is an OBJECT keyed by rule id with the type at
+  **`rule.handler.type`** — a `rule.type` scan returns a vacuous 0/0.
+- A **per-name** scan over-counts: seven adversaries carry an ability called "Predatory Patience".
+- **`grep -c` counts LINES, not occurrences**, and a byte-check clause means "outside comments".
+- Chat log is `ol.chat-log` in v13.
 
-1. **Read a DerivedValueField's `.value`, never `.override`/`.derived`.** Run 22 read
-   `movement.walk.rate.override` and recorded a working +10 speed AE as **+0** — a clean false FAIL. The
-   engine writes the Edha value into `override` *and* the getter adds `.bonus` on top. This generalises
-   the old `system.deflect.value` rule: **the field you want is always `.value`.** Directly relevant
-   here — the leyline and Heroic rows are full of numeric AEs.
-2. ⛔ **The pane is `document.hidden`: rAF delivers 0 frames and NO observer ever fires.** Measured in
-   run 22 (`ResizeObserver` and `IntersectionObserver` both 0, including their initial observation);
-   `tabs_select` does not un-hide it. Any fix triggered by an observer/rAF is **BLOCKED with the blocker
-   named**, never FAIL. You can still prove the *mechanism* by invoking its effect by hand.
-3. **`game.combat` is Ben's combat, always.** Anything gated on `game.combat?.started` +
-   `edhaCombatantTurnIndex` cannot see a bench combat made `active:false`. **BLOCKED**, blocker named —
-   never a fail, never re-filed as ⚑. Several Engine-wide rows are combat-shaped, so expect this.
-4. **One `use()` per `javascript_tool` call**, with `use({shouldConsume:false, configurable:false})`.
-   Two in one call blows the 30 s budget; a timeout is not evidence of a hang.
-5. **Verify a once-per-round gate is OPEN before treating silence as evidence** (run 19), and **always
-   pair a negative with a control that makes the same rule FIRE**.
-6. **`edha-on-hit` and damage riders land on damage APPLICATION, not on the roll** — click the card's
-   `button[data-action="apply-damage"]` with the victim controlled.
+## Standing lessons
 
-## Known — do NOT re-file these as new
-
-- **The `edhaDeriveSheetStats` family.** It adds **+1 max HP to every character** (`EDHA_HP_BONUS`) and
-  writes Move as `20 + 5×SPD` into `walk.rate.override`. **R-54** decides the number. Cite it; do not
-  open a new defect if a health or speed number surprises you.
-- **Adversary Senses Range is 5 ft live, not 10.** `edhaDeriveSheetStats` and both `preCreateActor`
-  hooks return early for non-characters, so the Edha AWA table is character-only. The **pack** ships
-  token sight **10** against a Senses Range of **5** (52/52), and **⟳ Sync pushes the 10**. Fully
-  measured into **R-56**; two checklist rows wait on it. Cite, don't re-derive.
-- **Content-link clicks are not drivable** — synthetic clicks do not trigger Foundry v13's handler, and
-  with the pane hidden `screenshot` (and coordinate clicks) are unavailable.
-- **R-41 / R-42** (map picker) and **R-54 / R-55 / R-56** — standing rulings; several rows wait on them.
-- **`rules = 0` is not automatically a failure** — read the pack AND grep the engine first. ⚠️ The built
-  shape keys `system.events` by rule id with the type at **`rule.handler.type`**; a `rule.type` scan
-  returns a vacuous 0/0.
-- **A talent name may exist in several trees.** Hardy ×4, Surefooted ×3, Combat Training ×2 in the
-  heroic pack alone — resolve by id, and check `system.path` before assuming which copy you have.
-
-## Standing rules (unchanged)
-
-- **Tem parinaem and Soggy Bottom are untouchable.** Never type a password. Never activate or deactivate
-  a scene **or a combat** (`Combat.create({active:false})` + `combat.update({round,turn})` kept Ben's
-  combat untouched through runs 19–22). Create only in the Edha Bench folders; import adversaries fresh
-  as `Bench Adv — <name>`. ⚠️ The engine **auto-renames** placed tokens — **resolve tokens by id,
-  always** (run 22 met a pre-existing `Mistheron (1)` beside its own auto-renamed `Mistheron (2)`).
-- ⚠️ **Bench PC tokens ALREADY EXIST on the map.** Never create a second one — `move({action:"displace"})`
-  the existing one. `edhaCasterToken()` resolves `actor.getActiveTokens()[0]`, so a duplicate makes a
-  correct range filter look dead.
-- **Snapshot ids, flags, EFFECTS — and unlinked token actors' flags too.** ⚠️ **New from run 22: capture
-  whole effect OBJECTS (`e.toObject()`), not just names** — run 22 could report two bench PCs losing an
-  `edha-aura` effect but could not restore it. Restore the **whole** flag object (run 22 restored
-  `Bench — White` byte-exact, 378 → 378 chars).
-- **Verify the deploy BY HASH on join.** Run 22's match was
-  `2e34ea72f151ee47ef2f7c3d12e3e9af4a19b076a943ae9bbdf3c7407870ed99` (git blob `9346245`, 19389 lines).
-  **Marker counts in a handed-down brief go stale — the hash does not**, and a "must NOT contain
-  <string>" line is a hint that fails correct deploys when the fix quotes old code in its comments.
-- **🤖 is your queue; ⚑ is Ben's judgment — never re-file an unrun 🤖 as ⚑.** Out of time → leave it 🤖,
-  or record it **BLOCKED** with the blocker named.
-- **Design/feel/balance questions go to `EDHA_RULINGS.md`** (now **56** standing decisions), never into
-  the checklist as a ⚑ row.
-- **Only claim what your own logs support**, and label inferences as inferences.
-- **Log out at the end without fail** — `game.logOut()`, then confirm `Bench` is selectable on `/join`.
-  If you used `PlayerBench`, log **both** out.
-
-## World state you can rely on
-
-- Ben's `Gamemaster` client is usually connected and **Bench held `isActiveGM`** in runs 16–22. A
-  duplicate card with two GMs is not automatically a defect — **attribute by `userId` first.**
-- Ben's campaign combat `BerbNeuXp4iKduef` is live at **round 1**, turn `null`, on the active
-  `Playtest Map` (**52 tokens, 117 walls, 87 world actors** — run 22 ended exactly on those numbers).
-  Read it, never modify it.
-- **Adversary world-sync is NOT owed** (run 16: 46 fingerprinted, 0 drift; run 22 re-confirmed the
-  four Corvaine Raiders are current). Do not run `edha.syncAllAdversaries()` without authorisation —
-  two `# Adversary pack sync` rows are still waiting on exactly that authorisation.
-- `PlayerBench` (`yF9LHvfhB7otsHYY`) is passwordless and free. The `🎮 Player-client window` section is
-  the batch to burn down whenever that client is up.
-- Bench-folder fixtures carry accumulating residue. Ordinary — do not try to "fix" it. ⚠️ Specifically:
-  `Bench — Heroic` carries a pre-existing `Determined` effect, a `bpHits` flag and a `quarry` list;
-  `Bench — Blue` and `Bench — White` are currently **without** their "Guardian Stance (+1 Deflect)"
-  aura (White owns the stance and is not in it) — that is run-22 residue, already reported, not new
-  drift and not yours to chase.
-- ⚠️ Ben's `Stonebound Captain` token still carries the run-19 `trigRound` key, and his `Stitchmother` /
-  `Mutated Thrall (2)` tokens carry `bpHits` values of unproven age. Not drift you caused; do not clean.
-
-## After this section
-
-Once the tails are done the remaining 🤖 concentrate in: `# Adversary ability wiring` (**12**), the four
-bestiaries (**7** between them), `# Character-creation wizard v2` (**6** — of which 3 are ruling-gated
-and 1 is the harness-blocked ResizeObserver row), `# Items-dump tranche` (**3**), `# Bench-results
-fixes` (**3**), and `# Adversary pack sync` (**2**, both needing bulk-sync authorisation).
+- **Verify the root cause in code before touching anything.** Nine confident claims were wrong on
+  inspection this marathon; two would have produced a false PASS, one would have cost a needless pack
+  rebuild, and one was a "regression" whose causal chain turned out byte-identical.
+- **Verify a deploy by HASH, never by counting markers.**
+- **A re-test without its negative control is not a re-test.** The negatives caught more real problems
+  than the positives did — an `id`-only dedupe that collapses three actors into one, a health fix that
+  would have healed wounded PCs on reload, a status fix that would have expired hand-toggled markers.
+- **Check your own harness before reporting a defect.**
+- **A checked-in test that cannot fail proves nothing** — two were green while their feature was dead,
+  and two more were inert on Ben's CRLF checkout while CI stayed green.
+- **Provenance, not shape, decides whether a guard is wrong.**
