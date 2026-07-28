@@ -461,6 +461,48 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   so attribution is impossible without isolation — and the negative (both parked → move succeeds, no
   toast) is what turns two positives into a real result.
 
+## Operating lessons from run 15 (2026-07-27t — these OVERRIDE older advice where they conflict)
+
+- ❌ **Build a bench combat with `scene: null`, NOT bound to the scene.** v13's
+  `Combat._onDeleteTokens` compares the Scene **document** to a scene **id string**
+  (`(combat.scene !== null) && (combat.scene !== sceneId)` → always true for a scene-bound combat),
+  so it `continue`s and **the token→combatant cascade never runs**. Run 15 read `combatantGone: false`
+  twice and nearly failed a good fix; `combat.update({scene: null})` made it cascade first try. Ben's
+  real campaign combat is `scene: null` — that is what the UI produces, so it is also the honest
+  fixture. This supersedes the per-run checklist's "create a Combat on the bench scene".
+- ❌ **Prime every Region's polygon tree on join, or the FIRST token move throws.**
+  `RegionDocument.#testSamples` reads the **private** `#polygonTree` field while the tree is only ever
+  built by the lazy **public** `polygonTree` getter, so until something touches the getter every move
+  dies with `Cannot read properties of undefined (reading 'testPoint')`. Run 12 called this
+  "transient — retry once"; **it is not** (run 15 retried twice, waited, activated the layer and
+  called `object.draw()`, all still failing). The fix is one line, and it must be re-run after any new
+  Region is created:
+  `for (const r of canvas.scene.regions) void r.polygonTree;`
+- ❌ **`edhaWatchersOfRule` is NOT a global** — it is module-scoped. Any checklist row telling you to
+  run it in the console throws `ReferenceError`. Re-implement the sweep inline, and **use the engine's
+  real predicate**: `i.type === "talent" || i.flags?.["edha-content"]?.adversaryTalent === true`.
+  Filtering on `type === "talent"` alone **silently drops every adversary**, whose abilities are
+  `trait`/`action` items — run 15's first transcription reported 1 watcher instead of 2 and made a
+  freshly imported adversary look absent from the rule index.
+- **Attribute Regions by the hook's `userId`, not by counting, and never by `_stats`.** Embedded
+  Region documents carry **no `_stats`** in this world (`createdBy` is undefined), so "which client
+  made this?" is unanswerable from the document. `Hooks.on("createRegion", (r, opts, userId) => …)`
+  gives it directly — that is what turned "2 Regions appeared" into "one from `Bench`, one from
+  `Gamemaster`" and let a one-applier row pass against a two-GM world.
+- ❌ **Stage the fixture BEFORE applying the status the row is about.** Run 15 staged a token while it
+  was already `weakened`, so the *staging* move was itself vetoed; the real move then had zero delta
+  and read as "the veto did not fire" — a false negative on a mechanic that works. Assert the staged
+  position landed before you apply anything.
+- **A silent negative is only evidence if something else spoke.** When a drop produced no Combustion
+  Chain card, the proof it was the talent's gate (and not a dead hook) was an *unrelated* card firing
+  off the same `updateActor`. Always look for a co-firing effect to certify the event chain ran.
+- **The action-economy veto is turn-scoped, not combat-scoped.** A weapon `use()` still refuses until
+  the combatant is **activated** — set `combatant.setFlag("cosmere-rpg", "activated", true)` (what the
+  tracker's activate button does). AE also keeps the budget at
+  `flags["cosmere-advanced-encounters"].actionsAvailableGroups[0].remaining`. With AE installed
+  `combat.turn` can stay `null` after `startCombat()`/`nextTurn()`; drive turns with
+  `combat.update({turn: N})`, which does fire the engine's turn-boundary sweeps.
+
 ## Known limits
 
 - ❌ **RESOLVED AS UNFIXABLE (07-26i): there is no "no written Cognitive/Spiritual defense" creature.**

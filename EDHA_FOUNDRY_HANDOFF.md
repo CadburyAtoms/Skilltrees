@@ -6,6 +6,109 @@ Backing detail (every session's notes) lives in agent memory `edha-foundry-modul
 
 ---
 
+## 2026-07-27t — BENCH RUN 15 (the marathon's final run): **fix pass C's re-tests all PASS, with every negative. 2 rows retired, the rule-index probe MEASURED and NOT REPRODUCED, 1 partial.** DOCS-ONLY — no engine or data change.
+
+Driven as `Bench` against a **hash-verified** HEAD engine — the served `register-skills.js`, CRLF→LF
+normalised, SHA-256 `3c53a42ad233f5808ae5b6c86c038daf0115bbae073751c64a2a4ac06c9f27ea`, byte-identical
+to `HEAD:module-src/scripts/register-skills.js` (`edhaTerrainOwnerUuid` ×4, `edhaSweepOrphanedTokens`
+×2). `Bench` + `Gamemaster` both connected throughout, so every one-applier claim below is
+**attributed by author**, never by count.
+
+### RETIRED on evidence (2)
+
+- **Combustion Chain fires off a Pyre zone** — the canonical Destruction pairing that could *never*
+  fire before. Pyre placed a Region carrying the converged nested `terrain.ownerUuid`
+  (`Actor.LGCK98JixGBQ2Zs9`); a foe dropped to 0 HP inside it produced "🔥 **Combustion Chain**
+  (Bench — Destruction): Bench Target — Undefended fell in your dangerous terrain — a 10 ft zone
+  ignites on the body", a fresh 10 ft circle hazard Region centred **on the body** (5850,12150 r=600)
+  and the "Spread your zones 5 ft" button. **ONE applier on my client**, attributed via the
+  `createRegion` hook's `userId`: `REGION:Bench` ×1 + card from `Bench` ×1 (the `REGION:Gamemaster`
+  and `Gamemaster` copies are Ben's un-reloaded client — expected version skew, not a defect).
+  **NEGATIVE A (outside every zone):** with 0 owned zones the same drop gave **0 cards, 0 Regions** —
+  and an unrelated Reaper's Harvest card still fired off that same `updateActor`, which proves the
+  event chain ran and the silence is Combustion Chain's own gate, not a dead hook.
+  **NEGATIVE B (a second owner's zone, the load-bearing one):** a bench-folder duplicate
+  (`Bench Adv — Destruction Two`, Combustion Chain removed) dropped a Pyre zone over the foe while
+  `Bench — Destruction` owned **zero** zones; the drop gave **0 cards, 0 Regions**. Converging two
+  flag vocabularies did **not** make everyone's zones everyone's.
+  **The Walking Ruin trail control still fires** (one card + one Region from my client) — the fix did
+  not trade one placer for the other — and the **Pyre end-of-turn spread prompt** still whispers
+  exactly once ("🔥 Pyre — end of Bench — Destruction's turn: the blaze spreads…", Spread +
+  Extinguish buttons). This also closes the ignite half of the "two sites the bench never saw" row.
+- **Hand-deleting a summon's ACTOR from the sidebar** — a Forge-Construct summon
+  (`flags.edha-content.summon = true`) in a bench combat, deleted with `actor.delete()` (the sidebar
+  button's own operation): actor gone, **token gone**, **combatant gone**, and the next
+  `createEmbeddedDocuments("Combatant", …)` returned a clean id with no throw — the tracker is not
+  wedged. **NEGATIVE 1:** deleting the summon's TOKEN still deleted its actor **exactly once** (one
+  `deleteActor`, by `Bench`), with **no** `Actor "…" does not exist!` in notifications or console.
+  **NEGATIVE 2 (the cascade must not be blanket):** a pack-imported adversary
+  (`Bench Adv — Dirgehound Pack`) and a **character**-type actor were each hand-deleted and **their
+  tokens STAYED**, with zero `deleteToken` events — the scope really is `summon === true`, and it
+  cannot reach a PC or an imported pack actor. **NEGATIVE 3:** every sweep produced exactly one
+  `deleteToken`, authored by `Bench`. A bystander token was untouched throughout.
+
+### ⚠️ The false FAIL this run nearly recorded — a v13 core bug in the TEST HARNESS, worth knowing
+
+The orphan-sweep positive read `combatantGone: false` **twice**, with the tracker wedged exactly as
+run 14 described — and the fix was fine. **v13's `Combat._onDeleteTokens` skips any combat whose
+`combat.scene` is non-null, because it compares the Scene *document* to a scene *id string*:**
+`if ( (combat.scene !== null) && (combat.scene !== sceneId) ) continue;` (foundry.mjs ~L44593) — a
+document is never `===` a string, so the token→combatant cascade **never runs for a scene-bound
+combat**. Ben's real campaign combat has `scene: null`, which is what the UI produces; the runbook's
+"create a Combat on the bench scene" produces a scene-bound one that can never cascade. Setting
+`scene: null` made the cascade work on the first try. **Any future row about combatant teardown must
+build its bench combat with `scene: null`.**
+
+### MEASURED, not fixed — the rule-index probe: **the symptom did NOT reproduce**
+
+"The adversary I just dragged in does nothing" could not be reproduced in either half. Watchers,
+placeables and `scene.tokens.size` were **identical before and after an F5**, and the behaviour
+agreed: an adversary imported **mid-session** vetoed a weakened mover immediately with no reload
+(isolated by parking the PC owner 100 ft away, with a both-parked control that moved freely and
+produced no toast), and a freshly imported adversary **after** the F5 did the same. Full table in the
+checklist row. **Two traps in that row's own instructions would each have faked an "index is empty"
+finding:** `edhaWatchersOfRule` is **module-scoped, not a global**, so the prescribed console line
+throws `ReferenceError`; and a naive re-implementation filtering `item.type === "talent"`
+**under-counts every adversary**, whose abilities are `trait`/`action` items carrying
+`flags.edha-content.adversaryTalent === true` (the engine's `edhaIsTalent` accepts both). My first
+transcription hit exactly that and reported 1 watcher instead of 2.
+
+### PARTIAL — 2bW-1 (Withering Touch), row stays
+
+Run 14's blocker is gone: **in a live combat a weapon `use()` raises no action veto**, so the
+delivery half ran — "🐺 Withering Touch (Bench — Death): **+8 vital strike**" plus the
+`Withering Touch — No Healing` effect, `withernext` consumed. ✅ **The turn-boundary expiry PASSES**
+(`expireAfter {round: 2, turn: 0}`; cleared with "💢 … ends (end of its turn)"). ✅ **Temp HP does
+land on a fully blocked target** (7 THP while HP stayed pinned and the block stayed on; it later
+absorbed damage). ❓ **But the row's named example cannot demonstrate it**: `edha-overflow-thp` gives
+no Temp HP on a blocked target because a fraction-0 cut leaves no overflow to convert — a **ruling**,
+not a bug. ❗ **Card-vs-prose drift found:** the prose says "until the **start** of your next turn";
+engine, both cards and the measured expiry all say **end**. → test-pass-fixes.
+
+### FOR THE RULINGS BATCH (Ben) — 2 new, **15 pending**
+
+1. **Does heal-overflow→Temp HP count as a heal or as a Temp HP grant?** Today a full No-Healing
+   block (fraction 0) stops the heal, so nothing overflows and no Temp HP lands, while a *direct*
+   Temp HP grant bypasses the block as designed (Ben R3, 07-02). Both readings are defensible; the
+   2bW-1 row currently asks for the second and the engine does the first.
+2. **Withering Touch's duration wording — "start" or "end" of your next turn?** Engine + both cards
+   say **end** and that is what expires; only the talent prose says **start**. Which is canon?
+
+### Not touched / not reached
+
+⛔ **2bQ-4 and 2bD-7 remain BLOCKED-ON-DEPLOY** behind the owed `foundry-build heroic` + ⟳ Sync —
+recorded blocked, **not** failed. **NOT REACHED, with reasons:** Green's **2bS-4 / 2bS-12 / 2bS-14** —
+Green's difficult terrain is placed only by Sudden Growth / Green Draw Mana, both of which open a
+**canvas burst-center picker** ("Click the Sudden Growth burst center") that the pane could not drive;
+runway ended before attempting a screen-coordinate click. Also not attempted: Engine-wide 2bA-6 /
+2bM-1 / the GM summon relay, the Red and Green spot-check rows, Civilization 2bV-15 (a bookkeeping
+delete for Ben), and Heroic's three remaining non-⚑ rows. **Zero drift:** actors 87→87, Playtest Map
+52 tokens / 117 walls / 1 Region / 0 templates / 0 drawings, "Playtest Map (Copy)" untouched, only
+Ben's combat left, and a key-by-key flag/effect/status/HP diff against the start snapshot came back
+**empty**. Nothing outside the bench folders was changed. Bench chat can be flushed.
+
+---
+
 ## 2026-07-27s — FIX PASS C of bench marathon 2 (the last one). Run 14's defects: **2 FIXED, 1 RETIRED AS THE SAME BUG, 1 DIAGNOSIS OVERTURNED.** ENGINE-ONLY → ⟳ Sync + F5, **no pack rebuild** (nothing here rides the owed `foundry-build heroic`). 325 tests green.
 
 ### Rulings (Ben, 2026-07-27) — nothing new decided; **13 pending**, carried forward
