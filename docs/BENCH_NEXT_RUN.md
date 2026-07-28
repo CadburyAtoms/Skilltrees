@@ -1,85 +1,76 @@
 # Next bench session
 
-> **The planned marathon is DONE — run 14 was its last scheduled run.** What follows is not a
-> fifteenth lap; it is the honest remainder, and most of it is **blocked on Ben**, not on agent time.
-> Read the two ⛔ sections first: if neither has been actioned, a new bench run has very little it can
-> legitimately close.
+> **Marathon 2 is complete** (2026-07-27/28) — 5 bench runs, 3 fix passes, 18 commits, 41 rows
+> retired on evidence. **There is no `⛔ STOP` this time.** The engine is fully deployed and
+> hash-verified; one small rebuild is owed and almost nothing is blocked behind it.
 
 ## Read this first
 
-**→ [`docs/BENCH_MARATHON_REPORT.md`](BENCH_MARATHON_REPORT.md)** — the whole marathon in one doc.
+**→ [`docs/BENCH_MARATHON_REPORT.md`](BENCH_MARATHON_REPORT.md)** — per-section disposition, every
+defect found → fixed → re-tested with commit refs, the 31-item rulings batch, the deploy queue, the
+two-client list, and world hygiene.
 
-**→ `docs/EDHA_BENCH_RUNBOOK.md`** — run-1 → run-14 operating lessons. **Read run 13's and run 14's
-before driving anything.** Run 14's are the ones most likely to cost you a row:
+**→ `docs/EDHA_BENCH_RUNBOOK.md`** — run-1 → run-15 operating lessons, and it now names
+**`PlayerBench`** for two-client work.
 
-- **A duplicate card with two GMs is not automatically a fix failure** — fingerprint the other
-  client's build by firing one OLD-gated and one NEW-gated site in the same session.
-- **`edhaDropRuleIndex()` is never called, so the rule index never invalidates.** Import adversaries
-  **first, then reload the page**, then test. Persist your snapshot through the reload via
-  `sessionStorage`.
-- **Weapon `use()` is hard-vetoed by the action economy out of combat** (no roll, no card, no
-  damage); talent `use()` only warns. On-hit rows need a live combat.
-- **Long token moves need `{teleport: true}`** and out-of-bounds parks fail silently — assert the
-  landed `_source` coordinates. `sceneX/sceneY` are 1900/3050, not 0/0.
-- **Engine pickers post as chat-card buttons too**, not only dialogs — and an empty prompt field
-  will hand you a false SUCCESS.
+## Ben's queue — short
 
-## ⛔ BLOCKED ON BEN (1) — F5 his Gamemaster client
+1. **Press F5.** ⭐ Ten seconds. Your client is running pre-`f7ff7b3` code, which is the only reason
+   the dissipates card and the ignite sweep still double. Proven in run 14 (your client honoured the
+   *older* `activeGM` guard), re-confirmed in run 15 by attributing every card and Region by `userId`.
+2. **`foundry-build heroic` + ⟳ Sync Talents**, Foundry **CLOSED** — the only rebuild owed. Unblocks
+   **2bQ-4 Sharp Eye** (fix is in `data/authored/heroic-hunter.json`) and **2bD-7** behind it.
 
-Run 14 could not return a verdict on fix pass B's one-applier half. Every newly-gated site still
-double-posted, **but Ben's client is provably running pre-`f7ff7b3` code** (proof in the 07-27r
-delta: an older activeGM-gated card posted exactly once in the same event). **Nothing here needs
-re-fixing.** Once Ben reloads, these re-run in minutes and should retire immediately:
+Everything else this marathon produced was engine-only and is already live. Marathon 1's
+four-rebuild backlog is gone.
 
-- the **dissipates card** re-test (its DEFEATED-skull negative already PASSES),
-- the **ignite** card/Region count — *after* defect (1) below is fixed, since it never fires off Pyre,
-- the **barrier** card count — its whole mechanical half already PASSES.
+## What is actually left in `# BENCH —` scope
 
-## ⛔ BLOCKED ON BEN (2) — the owed `foundry-build heroic` + ⟳ Sync
+**47 open rows — but 33 are ⚑ yours by nature and 2 are blocked on the rebuild above, leaving 12
+agent-runnable.** The bench corpus is close to exhausted; the remaining value is now in the **rulings**,
+not in more runs.
 
-Still owed since run 10 (Sharp Eye's `activation` → `skill_test`/`prc`). **2bQ-4** and **2bD-7**
-remain **BLOCKED-ON-DEPLOY**. A blocked row is recorded blocked, never failed against a stale pack.
+| Where | Runnable | Note |
+|---|---|---|
+| Red · Green | 2 + 2 | 3 more Green rows need a canvas picker — see below |
+| Engine-wide | 3 | 2bA-6, 2bM-1, the GM summon relay (gated on ruling 3A-1) |
+| Death · Civilization | 1 + 1 | Civilization's is bookkeeping |
+| Heroic | 3 | 2 of them blocked on the rebuild |
 
-## 🔧 Open defects handed to test-pass-fixes — do NOT re-litigate or re-report
+### The one real tooling gap
 
-1. **The hazard-Region flag vocabulary is split** — `edhaPlaceHazard` (~L16173) writes
-   `sourceOwnerUuid`; `edhaOwnedTerrainRegions` (~L14970) reads `terrain.ownerUuid`. **Combustion
-   Chain can never fire off a Pyre zone.** Matched control in the 07-27r delta.
-2. **`edhaDropRuleIndex()` is dead code** (~L1939) — the rule index never invalidates, so anything
-   added mid-session gets no automation until F5.
-3. **The sidebar actor-delete still orphans its token + combatant** and wedges the AE tracker.
-   `edhaDeleteActorWithTokens` is a helper on five *engine* call sites, not a `deleteActor` hook —
-   every engine teardown path is now correct (both verified live), but the hand-delete is uncovered.
-   Needs a design call: add the hook, or re-word the row to the paths it covers.
+**Green 2bS-4 / 2bS-12 / 2bS-14 cannot be driven from the browser pane.** Green terrain is placed only
+by Sudden Growth and Green Draw Mana, both of which open a **canvas burst-center picker**. Run 15
+declared these NOT REACHED rather than faking them. Either teach the bench a coordinate-click for the
+picker, or they stay ⚑ Ben's.
 
-## What a next run could actually close
+## If you run again, open with
 
-Small, and mostly turn-boundary staging. **Do not start one of these without a bench combat** —
-that is the single blocker they share.
+**2bW-1 (Withering Touch)** — the marathon's only PARTIAL. The rider fires and turn-boundary expiry
+passes; Temp HP lands via a direct grant but **not** via the row's named `edha-overflow-thp`, because a
+fraction-0 cut leaves no overflow to convert. **It is blocked on ruling 3A-7** (does "cannot regain HP"
+block a Temp HP *grant*?) — get the ruling first or the row cannot be scored. It also carries
+card-vs-prose drift (3A-15: engine, cards and measured behaviour all say *end* of your next turn; only
+the prose says *start*).
 
-- **Green's last three:** Spreading Roots **2bS-4** (needs a character *ending its turn* in Green's
-  difficult terrain) · Resurgent Growth **2bS-12** (tick lands at the start of your next turn) ·
-  Natural Recovery **2bS-14** (costs an **Opportunity** — run 10 could not force one either; decide
-  early whether you can, and if not record *why* rather than inventing a result).
-- **Death 2bW-1** — the arm half is verified (`withernext` + card). The delivery half needs Bench —
-  Death **in combat with actions**, then both remaining halves run together: Temp HP still landing on
-  a blocked target (Bench — Life's `edha-overflow-thp` is the cleanest source) and the turn-start
-  expiry.
-- **Blue 2bAA-6 / 2bJ-3** — both need a real round change; same combat-staging blocker.
-- **Blue 2bAA-9 (The Seeming)** — the card-naming half ("The Seeming", not "Phantom Double") is
-  drivable solo on fresh imports of Mistheron and The Doubled Elder.
-- **Engine-wide 2bE-9's factual half** — an imported adversary carrying a combat-timing talent gets
-  its combat-start grant. Same bench combat closes it.
-- **2bS-3** — the Briar-Gone Grove's Thorn Field keen rider baking into its engine-placed patches.
+Then the tails in the table above.
 
-## What is NOT a next run's
+## Standing lessons this marathon paid for
 
-- **2bR-10** (Devoted Conduit, needs a second White character), **2bL-7** (Covenant's shared icon,
-  two Order PCs), **2bM-1** (needs NO GM connected) — these need `PlayerBench` **and** deliberate
-  path-granting: a dedicated two-client run, not a tail-end.
-- **2bAC-1** (visual legibility), **2bA-6**'s blank-note default, **Volatile Strike**'s `whenDealer`
-  ruling, Battle Fever's card-vs-engine drift, **2bI-4 / 2bI-6 / 2bI-9 / 2bJ-10**, the Civ ruler UI —
-  all ⚑ **Ben's judgment**, already measured, waiting only on a decision.
-- **The wizard as a player** — large; only start it if you can finish it.
-- **2bV-15 (Tempered Edge)** reads "nothing is open on this row any more" and its blocking FAIL is
-  gone. It is a **bookkeeping delete for Ben to confirm**, not a run.
+- **Verify the root cause in code before touching anything.** Six confident claims were wrong on
+  inspection this marathon — two would have produced a **false PASS**. Report §7 lists all six.
+- **Verify a deploy by HASH, never by counting markers.** Also: `grep -c` counts **lines**, not
+  occurrences — a marker legitimately "expected 6×" can show as 4.
+- **A re-test without its negative control is not a re-test.** Cheap Shot not riding a weapon hit, an
+  in-range cast still charging 2, and another owner's zone staying silent each caught a distinct class
+  of over-firing fix.
+- **Check your own harness before reporting a defect.** Run 14's "DC ?" SUCCESS was its own click
+  through an empty prompt; run 15's `combatantGone: false` was the runbook's own staging instruction
+  producing a scene-bound combat that can never cascade (v13's `Combat._onDeleteTokens` compares a
+  Scene *document* to a scene *id string*).
+- **A duplicate card with two GMs is not automatically a fix failure** — attribute it by `userId`, and
+  check whether the other client is simply on an older engine.
+- Bench PCs carry a **10 ft sight range** — it skews anything visibility-shaped.
+- A token's **prepared** position reads stale while the pane's ticker is parked; read `_source`.
+- `edhaWatchersOfRule` is **module-scoped, not global**, and filtering `item.type === "talent"`
+  **under-counts every adversary** (their abilities are `trait`/`action` items).
