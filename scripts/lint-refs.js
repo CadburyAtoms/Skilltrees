@@ -1468,6 +1468,104 @@ engine.split("\n").forEach((lineText, i) => {
   }
 }
 
+/* --- pass 19: no `ev.currentTarget` read AFTER an `await` (the dead-event-target family, 07-28) --
+ *
+ * Bench run 23: Living Image's "Pay N Investiture" button charged nothing, for any user, on any
+ * click, for four runs. `Event.currentTarget` is set ONLY while the event is being dispatched; an
+ * `await` in an async listener returns control to the browser, dispatch completes, and the browser
+ * sets it back to null. `edhaUpkeepInvClick` captured the actor uuid correctly on its first line
+ * and re-read `ev.currentTarget.dataset.item` one line later, after `await fromUuid(...)` — a
+ * guaranteed TypeError that the handler's outer catch swallowed into a console line.
+ *
+ * WHY THIS ONE IS GATED WHEN OTHERS WERE DECLINED. The numbers, on record:
+ *   - CORPUS 35 occurrences across 33 hand-written chat-card click handlers — a live, growing
+ *     surface, not a one-off. Every new tree that posts a button adds one.
+ *   - PRECISION 0 false positives on that corpus. The naive form of this check (any `await`
+ *     textually earlier in the function) reports 4 and TWO of them are correct code, because a
+ *     read inside the await's OWN operand is evaluated before suspension —
+ *     `await fromUuid(ev.currentTarget.dataset.x)` is fine. This pass models operand extents, so
+ *     it clears both look-alikes and keeps the one real bug.
+ *   - INVISIBILITY the defect is not reviewable (the line looks like the 33 correct ones), not
+ *     observable at runtime (the throw is caught), and cost four bench runs to localise. That is
+ *     the same profile as passes 4, 7, 11 and 12 — all regrowth gates.
+ *
+ * WHAT IT CHECKS. For every `currentTarget` in executable code: find the innermost enclosing
+ * function body, then look for an `await` in THAT body (not a nested one) whose operand ends
+ * before the read. If one exists, the read happens after suspension and is a bug.
+ *
+ * THE FIX IS ALWAYS THE SAME: capture `const btn = ev.currentTarget;` before the first await and
+ * read `btn.dataset` afterwards. Holding the ELEMENT across an await is fine — only the event's
+ * pointer to it is cleared. */
+{
+  const src19 = blankStringsAndComments(engine);        // comments AND string contents blanked
+  if (src19.length !== engine.length) err("lint-refs pass 19: the blanking pass changed the source length — the scan rotted; fix it before trusting this pass.");
+  const lineOf19 = (idx) => engine.slice(0, idx).split("\n").length;
+
+  const matchTo = (s, open, closeCh) => { let d = 0; for (let i = open; i < s.length; i++) { if (s[i] === s[open]) d++; else if (s[i] === closeCh) { d--; if (!d) return i; } } return -1; };
+
+  // function bodies: index of the `{` that opens one, and whether that body is a function's
+  const bodies = new Set();
+  for (const m of src19.matchAll(/\b(async\s+)?function\b\s*\*?\s*[A-Za-z0-9_$]*\s*\(/g)) {
+    const close = matchTo(src19, m.index + m[0].length - 1, ")"); if (close < 0) continue;
+    const brace = src19.indexOf("{", close); if (brace < 0) continue;
+    if (src19.slice(close + 1, brace).trim() !== "") continue;
+    bodies.add(brace);
+  }
+  for (const m of src19.matchAll(/(async\s*)?(\([^()]*\)|[A-Za-z0-9_$]+)\s*=>\s*\{/g)) bodies.add(m.index + m[0].length - 1);
+  for (const m of src19.matchAll(/(^|[\s{,;])(async\s+)?([A-Za-z_$][\w$]*)\s*\(([^()]*)\)\s*\{/gm)) {
+    if (["if", "for", "while", "switch", "catch", "function", "return", "typeof", "do"].includes(m[3])) continue;
+    bodies.add(m.index + m[0].length - 1);
+  }
+  if (bodies.size < 500) err(`lint-refs pass 19: only ${bodies.size} function bodies were delimited (expected 500+) — the scan rotted; fix it before trusting this pass.`);
+
+  const enclosing = (idx) => {
+    let depth = 0;
+    for (let i = idx - 1; i >= 0; i--) {
+      const c = src19[i];
+      if (c === "}") depth++;
+      else if (c === "{") { if (depth === 0) { if (bodies.has(i)) return i; } else depth--; }
+    }
+    return -1;
+  };
+  /* End of the expression `await` applies to — a primary expression plus its member/call chain.
+   * A read INSIDE this range is an argument, evaluated BEFORE the suspension, so it is legal. */
+  const operandEnd = (pos) => {
+    let i = pos;
+    while (i < src19.length && /\s/.test(src19[i])) i++;
+    if ("([{".includes(src19[i])) i = matchTo(src19, i, { "(": ")", "[": "]", "{": "}" }[src19[i]]) + 1;
+    else while (i < src19.length && /[\w$."'`]/.test(src19[i])) i++;
+    for (;;) {
+      let j = i;
+      while (j < src19.length && /\s/.test(src19[j])) j++;
+      if (src19[j] === "?" && src19[j + 1] === ".") j += 2;
+      else if (src19[j] === ".") j += 1;
+      else if (src19[j] === "(" || src19[j] === "[") { i = matchTo(src19, j, src19[j] === "(" ? ")" : "]") + 1; continue; }
+      else break;
+      while (j < src19.length && /\s/.test(src19[j])) j++;
+      while (j < src19.length && /[\w$]/.test(src19[j])) j++;
+      i = j;
+    }
+    return i;
+  };
+
+  let seen19 = 0;
+  for (const m of src19.matchAll(/\bcurrentTarget\b/g)) {
+    seen19++;
+    const body = enclosing(m.index);
+    if (body < 0) { err(`lint-refs pass 19: the \`currentTarget\` at register-skills.js:${lineOf19(m.index)} is not inside any delimited function — the scan rotted; fix it before trusting this pass.`); continue; }
+    for (const a of src19.slice(body, m.index).matchAll(/\bawait\b/g)) {
+      const abs = body + a.index;
+      if (enclosing(abs) !== body) continue;                 // the await belongs to a nested function
+      if (m.index < operandEnd(abs + 5)) continue;           // the read IS that await's own operand
+      err(`lint-refs pass 19: register-skills.js:${lineOf19(m.index)} reads \`currentTarget\` after the \`await\` on line ${lineOf19(abs)} of the same handler. ` +
+          `An await ends event dispatch, so the browser has already nulled it — this throws TypeError every time, and a click handler's catch hides it ` +
+          `(bench run 23: Living Image's Pay button, four runs). Capture \`const btn = ev.currentTarget;\` BEFORE the first await and read \`btn.dataset\` after it.`);
+      break;
+    }
+  }
+  if (seen19 < 20) err(`lint-refs pass 19: only ${seen19} \`currentTarget\` reads were found (expected 20+) — the scan rotted; fix it before trusting this pass.`);
+}
+
 // --- report --------------------------------------------------------------------
 if (errors.length) {
   for (const e of errors) console.error(`✗ ${e}`);
