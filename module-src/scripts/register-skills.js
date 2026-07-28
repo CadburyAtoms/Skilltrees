@@ -1967,15 +1967,43 @@ let _edhaRuleIndex = new Map();
 function edhaDropRuleIndex() { _edhaRuleIndex = new Map(); }
 for (const h of ["createItem", "updateItem", "deleteItem", "createToken", "deleteToken", "createActor", "deleteActor", "canvasReady"]) Hooks.on(h, edhaDropRuleIndex);
 
-// Every actor that can currently carry a rule: canvas tokens (unlinked adversaries live ONLY here —
-// the W29 lesson) plus every character in the directory (off-canvas owners still observe).
-function edhaWatchActors() {
-  const seen = new Set(), out = [];
-  const add = (a) => { const k = a?.uuid ?? a?.id; if (a && k && !seen.has(k)) { seen.add(k); out.push(a); } };
-  for (const t of (canvas?.tokens?.placeables ?? [])) add(t.actor);
-  for (const a of (game.actors ?? [])) if (a.type === "character") add(a);
+/* Every DISTINCT actor that can currently carry scene-scoped state or a rule: the canvas's token
+ * actors, plus the directory actors no token here already represents.
+ *
+ * ⛑ The two hazards, and why each key ALONE gets one of them wrong (bench run 20, 2026-07-28f):
+ *  - An UNLINKED token's synthetic actor and its directory twin are DIFFERENT OBJECTS with the
+ *    SAME `id`, and the synthetic one INHERITS the base's flags. So object identity keeps both —
+ *    `edhaSutureCradleCheck` used `holders.includes(tok.actor)` and fired twice, 75 ms apart, from
+ *    one user, doubling a Discipline roll that decides whether the cradle ends. `uuid` keeps both
+ *    too: they read `Scene.x.Token.y.Actor.z` vs `Actor.z`.
+ *  - But two unlinked tokens stamped from ONE prototype SHARE that `id`, so keying on `id` alone
+ *    would collapse three distinct combatants into one — the opposite bug, and a worse one.
+ * So: dedupe the canvas pass by `uuid` (distinct tokens stay distinct; one linked actor's two
+ * tokens collapse), then admit a directory actor only when no canvas token already IS it — by
+ * `id`. An off-canvas actor is still included: "parked in the sidebar" is a real holder (07-28d).
+ *
+ * `directoryFilter` narrows the second pass only (watchers want characters; scene state wants
+ * everyone). Reach for this instead of hand-rolling the canvas+directory union — six other sites
+ * roll their own, all write-idempotent, listed in ENGINE_INDEX's ⛑ twin-actor family. */
+function edhaSceneActors({ directoryFilter = null } = {}) {
+  const out = [], seenUuid = new Set(), canvasIds = new Set();
+  for (const tok of (canvas?.tokens?.placeables ?? [])) {
+    const a = tok?.actor; if (!a) continue;
+    const k = a.uuid ?? a.id; if (!k || seenUuid.has(k)) continue;
+    seenUuid.add(k); if (a.id) canvasIds.add(a.id);
+    out.push(a);
+  }
+  for (const a of (game.actors ?? [])) {
+    if (!a || (directoryFilter && !directoryFilter(a))) continue;
+    if (a.id && canvasIds.has(a.id)) continue;   // a token on this scene already IS this actor
+    const k = a.uuid ?? a.id; if (!k || seenUuid.has(k)) continue;
+    seenUuid.add(k); out.push(a);
+  }
   return out;
 }
+// Every actor that can currently carry a rule: canvas tokens (unlinked adversaries live ONLY here —
+// the W29 lesson) plus every character in the directory (off-canvas owners still observe).
+function edhaWatchActors() { return edhaSceneActors({ directoryFilter: (a) => a.type === "character" }); }
 function edhaWatchersOfRule(type) {
   const hit = _edhaRuleIndex.get(type);
   if (hit) return hit;
@@ -3385,10 +3413,12 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
 async function edhaSutureCradleCheck(victim, dealtAmount) {
   try {
     if (!victim || !(dealtAmount > 0)) return;
-    const holders = [];   // scan canvas tokens (unlinked adversaries live as token actors, NOT in game.actors)
-    for (const tok of (canvas?.tokens?.placeables ?? [])) if (tok.actor && !holders.includes(tok.actor)) holders.push(tok.actor);
-    for (const a of (game.actors ?? [])) if (!holders.includes(a)) holders.push(a);
-    for (const owner of holders) {
+    // Canvas tokens (unlinked adversaries live as token actors, NOT in game.actors) + the directory
+    // actors no token here already is. This used `holders.includes(tok.actor)` — OBJECT identity —
+    // which cannot dedupe an unlinked token's synthetic actor against its directory twin (different
+    // object, same id, inherits the flag), so the cradle rolled Discipline TWICE and either result
+    // could end it (bench run 20). `edhaSceneActors` carries the whole rule; see its comment.
+    for (const owner of edhaSceneActors()) {
       if (owner.getFlag?.("edha-content", "sutureCradle")?.targetUuid !== victim.uuid) continue;
       const dc = 10 + Math.floor(dealtAmount);
       const total = await edhaRollOpposedSkill(owner, "dis");
@@ -3402,8 +3432,9 @@ async function edhaSutureCradleCheck(victim, dealtAmount) {
 }
 Hooks.on("deleteCombat", () => {
   try {
-    for (const tok of (canvas?.tokens?.placeables ?? [])) if (tok.actor?.getFlag?.("edha-content", "sutureCradle")) void tok.actor.unsetFlag("edha-content", "sutureCradle");
-    for (const a of (game.actors ?? [])) if (a.getFlag?.("edha-content", "sutureCradle")) void a.unsetFlag("edha-content", "sutureCradle");
+    // Same union as the check above (this one was never a defect — a repeated unsetFlag is
+    // idempotent — but keeping the pair on one primitive is the point of having one).
+    for (const a of edhaSceneActors()) if (a.getFlag?.("edha-content", "sutureCradle")) void a.unsetFlag("edha-content", "sutureCradle");
   } catch (e) { /* non-fatal */ }
 });
 
