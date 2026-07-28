@@ -6,6 +6,206 @@ Backing detail (every session's notes) lives in agent memory `edha-foundry-modul
 
 ---
 
+## 2026-07-27v — CHECKLIST AUDIT APPLIED: **294 → 240 open rows.** 38 retired on evidence, 17 retired as stale, 13 narrowed to their real residue, 5 false claims corrected, 1 new defect + 2 rulings raised. DOCS-ONLY + one script docstring. No engine, data or pack change.
+
+Ben pushed back that **294 rows were open and 227 carried ⚑**, including mechanical "does this roll
+work" rows that are not judgment calls. Three read-only audits covered all 294; this pass is the single
+writer applying their output. **Root cause of the pile-up, and it is not laziness:** ⚑ expands to
+**"Could not self-verify (no Foundry here)"**, which was *identical* to "only Ben can do this" right up
+until the `bench-run` skill gave agents a Foundry client on **2026-07-26**. Nobody re-tagged afterwards,
+and in six bestiary sections ⚑ was stamped onto every row straight from the `##` header. **No ⚑ was
+re-tagged in this pass** — the marker-vocabulary change is a separate decision still with Ben; ⚑ fell
+from 227 to 182 purely because flagged rows were deleted.
+
+### RETIRED ON EVIDENCE (38)
+
+**Bench + re-test (12).** **2bI-9 Siphoned Will** — "🧠 Siphoned Will: Bench — Black regains 2 focus"
+(tier 2) on Hollow Command's success; its empty-tab question was settled by Ben 07-24t · **2bF-14 Calm
+Appeal** — with the talent, "🕊️ Steadfast Challenge: **Calm Appeal** … +**2** focus" at Discipline 2;
+**with the talent deleted, no 🕊️ line at all** · **2bF-16 Resolute Stand** — its line printed on Valiant
+Intervention's success · **2bC-1 High Society Contacts** — rule reads exactly `HiSocOppAdder001` /
+`edha-next-test-mod` / `self` / `opportunity: true`; banked `oppCredit`, and the next test printed
+"🎲 Opportunity! …(+1 granted by High Society Contacts…)" and cleared it · **2bV-15 Tempered Edge** —
+net applied **28** = 17 + 11 with deflect fully compensated, and the negative held (Siege Cannon's 10
+energy applied for exactly 8, **no** Tempered Edge card) · **the 07-27g root cause row** (a record, not
+a test; its re-tests are green) · **"Nothing else lost its rules"** — Withering Ray's two `use` rules and
+Arc Flash's `edha-deal-damage` read live off the OWNED items · **the rule-index PROBE** — closed on its
+own recorded verdict; watchers 2→2→3, placeables 53→53→54, mid-session import vetoed with no reload,
+both-parked control clean · **⚑ CAE combat-start grants** — a duplicate of 2bE-4/2bE-5, both retired
+with Foresight as the in-run positive control · **⚑ Damage-rider family regression** — the row asks for
+one rider; three fired across three runs and three damage types ("+5 keen" / "+2 impact" / "+8 vital") ·
+**⚑ Siege Cannon gated on Siege Form** — OFF refused **pre-cost** with Investiture unchanged at 4, ON
+rolled and applied 8 · **⚑ THE PASTE** — its deliverable is in the repo (`ed67fe9`) and was consumed by
+07-18j.
+
+**Bestiary + adversary (14).** Dread Presence veto ×2 (**Cragdrake Alpha at 12 ft**, **Doubled Elder at
+25 ft**, each isolated with the other parked >100 ft; **both-parked control moved freely with no
+toast**; card text "within 60 ft" confirmed in the shipped block) · Flame Surge ×2 (Cragdrake Alpha
+"13 (2d8) + 3 (red) → 16 energy" halved to 8; Hazewyrm Elder "4 (2d8) + 3 + 3 (Kindle) → 10" halved to
+5) · **Counterpoint** (fresh import, "48 vs DC 25 — SUCCESS", Disoriented asserted — recorded WITH the
+run's own harness correction, that a first "DC ?" SUCCESS was the dialog walker, not the engine) ·
+**Redirect Momentum** ("18 vs ATH 7") · **Shield Wall pre-reduction** and **Shield Wall at rival d6**
+(one retirement covering both rows) · **Retributive Guard** (prompt posted per adjacent ring-mate, "3
+spirit", 2 absorbed by the attacker's Warlord Temp HP) · Loadout sanity ×2 (**Cold-Fire Cinderbrock**:
+only Ember Bite atk +4 / 1d6+1 + Furnace Heart, no Fire the Wrack, no Den Fury, hp 14; **Callthief**:
+count 2, atk +6 / 1d8+2 keen, Deception 4) · **The Old Agreement**, **Pack Doctrine**, **The Tithe Takes
+the Failing** (all three read `rules = 0, effects = 0` — there is nothing that *could* automate them,
+which is what the rows asked).
+
+⚠️ **Denominator declared, because a check that cannot fail proves nothing** (the 07-27u trap): the pack
+evidence is the **07-27u rebuilt** `edha-adversaries` LevelDB — **52 actors · 336 embedded items · 253
+rules, 253 carrying `rule.handler.type`**. A `rule.type` scan returns 0/0.
+
+⛔ **Explicitly NOT closed:** Kindle's `lightRadiusFt: 5` is present on the shipped Kindle rules — that
+settles the **field**, not "a bitten creature's token starts glowing", which is what the Kindle rows
+actually ask.
+
+**Wizard + repo-side (12).** Culture: Folders+docs (113 items · 10 cultures + Human ancestry) · Icons
+render (all 11 resolve, and the set matches the row exactly) · Lunavar flavor (5 exemplars) · Malcurr
+flavor (6 given names) · Goldenport + Lunavar carrier-coast (both closing lines quoted at verified
+indices) · **⚑ "Does the sheet demand an ancestry?" — ANSWERED NO**: the else-branch renders a neutral
+"Add Ancestry" drop target, no warning, no validation; and the Human ancestry ships name + img +
+description only, **no events, no effects**. Dashboard (all four live rows, driven in a real browser on
+`:8123`): Tabs populate · Session-hide (incl. `#hiddenBar`, `✕ show`, `show all`; the key is
+**sessionStorage**) · For-Ben jump links (tab switch + scroll 0→9452 + the `flash` class) · Copy for
+Claude (payload grouped by tab AND section, notes carried). Map/codex: Capital lookup (60 marks;
+Heartholt → §5a, Aldercourt → §5) · Place-links fly the map.
+
+⚠️ **Evidence caveat preserved on the dashboard and codex rows, and repeated in the checklist:** those
+were driven by **dispatching real `MouseEvent`s at the registered handlers, not pixel clicks** — the
+pane was not compositing, so there are no screenshots. That tests the logic and the resulting DOM/CSS,
+**not** whether a control is physically reachable under a stray overlay.
+
+### RETIRED AS STALE (17) — each names its superseder in the row
+
+Bench/re-test (2): "The Edha Items pack has its 13 items" (13 → 102 → **113**; the number can never be
+true again) · "⚑ Item price display" (its purpose shipped 07-18j; duplicates "The mirror").
+Bestiary/adversary (12): Canticle §3 Dread Presence → W29 §0's own re-test row · Canticle §1 Guiding
+Signal, Vorsk §4 and Ashkar §4 Guiding Signal/Ordered Advance → 2bAB-4 (and **their "no dice automation
+expected" claim is now false** — Guiding Signal carries `edha-designate`) · W29 §0 Whispered Doubt →
+2bAB-5 · W29 §3 Grasping Vines + Territorial Instinct → 2bAB-6 · W29 §8 Drive the Prey → 2bAB-7 ·
+W29 §1 Sovereign of Solitude → 2bAB-9 · W29 §6 Forewarned → 2bAB-10 · Ashkar §4 Unbreakable Line (the
+duplicate half — see the refusal below) · **"Senses field on the sheet"**, which is **unrunnable: 0 of
+52 actors carry `system.senses`**, so no test subject exists — the action is to author one, not to
+re-open the row. Wizard/repo (3): "⚑ Old bench marks survived" (`EDHA_FOUNDRY_TEST_SHEET.html` was
+deleted in `21501cd`, the very PR that added the dashboard — the row can never be driven) · the 07-19q
+and 07-19v weapon-picker rows, **both folded into "Weapon slot v3"** rather than dropped.
+
+### NARROWED — 13 rows that stay, with the proven half recorded and the residue named
+
+Chaos residuals (**(a) through-walls CLOSES** on run 13's sense-through evidence — an Omen-marked target
+rendered on the player's client while an identically-obscured unmarked control stayed invisible; only
+the Unweaving/Omen-button ruling remains) · Injury tool (Raise Dead + Apex Form proven; only the
+world-RollTable-precedence clause is unrun) · 2bAA-9 The Seeming (raise + belief sweep proven; its
+"same second-client need as 2bAA-8" note is **stale** — 2bAA-8 was driven solo at run 14) · 2bW-1
+(every mechanical half has run; **only two rulings remain**, and the row's own `edha-overflow-thp`
+example asks for something the mechanics cannot produce) · Engine-move collision (0 ft blocked / 5 ft
+clear, tokens never stacked; only manual drags left) · Surefooted (Walking Ruin's +10 ft Speed AE proven
+at 2bY-8) · Kindle (label half proven — "+ 3 (Kindle)"; token flame-light unrun) · Stances (enter, swap
+and the "(Stonestance ended)" toast proven; only "use the active one again → leaves it") · Formula bar
+(chat-formula half clean: `2d20kh + 5 + 1d8[Predatory Patience]`; nothing mechanical open) · 2bD-7
+(3 of 4 cleared — hangs on **Sharp Eye alone**) · Stale duplicates healed **and** Shortsword on the
+Raider (the world-wide sync ran: 46 synced, 0 skipped, zero effect drift; only the five-Raider read
+remains — do them as one pass) · **Malcurr Fellstag narrowed to Sudden Wall only** (Draw Mana + Thorn
+Hedge and Herding Antlers are both proven on fresh imports) · **"One-applier: the two sites" merged into
+the dissipates row** — all three sites are mechanically proven and only the same doubling verdict is
+left, which needs Ben's F5, not a fix pass.
+
+### FIVE CLAIMS CORRECTED — they were false and they were propagating
+
+1. **The canvas-picker "tooling limit" does not exist**, and this is the one that was asserted to Ben.
+   `docs/BENCH_MARATHON_REPORT.md` §1 and `docs/BENCH_NEXT_RUN.md` both said Green 2bS-4/12/14 "cannot
+   be driven from the browser pane — a genuine tooling limit". **Refuted by the same marathon's own row
+   list:** 2bAA-7 retired on a **click-placed** cast *with* an out-of-range refusal. Run 15 hit a
+   **runway** limit, not a capability one; what those rows need is a turn boundary or an Opportunity.
+   Both docs corrected, and the report's §7 now carries it as the **seventh** wrong claim — the one that
+   was NOT caught before it shipped. *"I could not do it this run"* and *"it cannot be done"* are
+   different claims.
+2. **Two more stale blockers struck** where they had parked rows with Ben: "the console can't drive a
+   turn boundary" (refuted — run 9's own method was `combat.update({turn})`, and 2bL-10 drove rounds 1
+   and 2; it had parked 2bAA-6 and 2bJ-3) and "needs a second client" (true only for *rendering* checks;
+   it had parked 2bAA-9).
+3. **The "Deploy needed first" block is struck from all six bestiary headers** — satisfied by the
+   07-27u rebuild plus the 07-27m world-wide sync (46 synced, 0 skipped, zero effect drift).
+4. **The Canticle preamble is rewritten.** It said the section exists to prove "the **name-keyed engine
+   paths** reach adversary-owned items". **That engine no longer exists** — the rule-2b migration
+   completed 07-26 and `scripts/name-keyed-allowlist.json` reads `talents: []` (verified) — and all five
+   of its "(name-keyed)" abilities carry their own rules in the built pack: Guiding Signal →
+   `edha-designate` · Counterpoint → `edha-def-test` + `edha-triggered-effect` · Overwhelming Authority →
+   `edha-prompt-pick` + `edha-triggered-effect` · Unnerving Approach → `edha-prompt-pick` + `edha-push` +
+   `edha-note` · Dread Presence → `edha-move-veto`. Every "(name-keyed)" label in Canticle and W29 is
+   struck.
+5. **`Malcurr-Stamped Blade OUT of the weapon picker` is unblocked** — the 07-27u build shipped
+   `flags["edha-content"].plotItem: true` on the blade (the only item so flagged) and the picker filters
+   `plotItem !== true`. Blocker note dropped. *(Also corrected while in these docs: both files still
+   listed `foundry-build heroic` as owed. It was done 07-27u.)*
+
+### ❌ NEW DEFECT — the label-free map picker asset was silently reverted, TWICE
+
+`module-src/assets/thyrcross-map.jpg` (1118×1488, **byte-identical to the deployed copy**) still carries
+every nation letter (`A Kettavar` … `J Canticle`) and all **13** numbered city labels. Verified by
+extracting and **viewing** the committed file, not by reading a log.
+
+**Timeline (`git log --follow`):** `dac7b90` original → **`c1b219c` "Bench take-three: label-free map"**
+(genuinely label-free) → **`db79969` "Thycross redraw re-registration"** and **`b114f7e` "Map gap-fill
+re-registration"**, both of which regenerated the jpg **from `thyrcross-labeled.png` again** and restored
+every label.
+
+**Root cause — a docstring, and it is fixed.** `scripts/build-map-picker-asset.js` still declared the
+image half to be "a downscaled copy of thyrcross-labeled.png". The 07-19s fix changed the asset and never
+changed the docs, so two later re-registration passes followed the documentation straight back into the
+bug. The docstring now states the opposite in the strongest terms it can, names both reverting commits,
+and pins the aspect. **The asset was deliberately NOT regenerated** — which render the picker should show
+is a ruling, not a mechanical fix.
+
+**Also found in the same area — five map-picker dead spots.** `thyrcross-nations.json` is byte-identical
+to `thyrcross.map.json`'s polygons and to the deployed copy. Point-testing all **35** gazetteer city dots
+against the 10 shipped polygons: **30 agree, 5 do not.** `city-04 [746,676]`, `city-11 [484,1120]`,
+`city-14 [407,1324]`, `city-17 [595,916]` — all tagged `goldenport` — fall **inside no polygon at all**,
+so clicking there selects nothing; `city-31 [1244,1552]`, tagged `corvaine`, resolves to **`thalendor`**.
+**Controls pass** (Aldercourt → corvaine, Heartholt → thalendor). These are **the same four
+`lint_map.py` already WARNs about** — the gate saw them and nobody acted.
+
+**Both are now rows in the checklist and rulings 3A-16 / 3A-17 in the marathon report's batch.**
+
+### The paint-overlay row was REWRITTEN, not deleted — every number in it was wrong
+
+It said the overlay is **2865×3399** with **6 crosshairs**, and listed **Heartholt and Withervale** as
+still to paint. Measured: the canvas is **2236×2976**, Heartholt and Withervale are already
+`painted: true` (with Black Altar Crossing and Lake Vespera), and a fresh render carries **19 markers** —
+**13 unpainted sites** plus **6 already-drawn city dots that need a name**. The committed
+`paint-overlay.png` is also **stale** (it hashes differently from a regeneration and predates the last
+gazetteer edit), so the row now opens with "run `python scripts/map/paint_overlay.py` first".
+
+### ⚠️ TWO SPEC ITEMS REFUSED — closing them would have asserted something untested
+
+- **Unbreakable Line** was listed as "Ashkar §4 / W29 §2 — duplicates of each other" under STALE.
+  Deleting **both** would have removed the only coverage of an ability that **has never been benched**
+  (it was not among the seven restored 07-26j rules that printed real numbers at run 3). Applied as: the
+  **W29 §2 Crownox row is KEPT** and annotated to carry The Reckoning's wording too; the Ashkar §4 copy
+  is retired into it. The row now says in terms that the merge removed a duplicate, not a doubt.
+- **"⚑ Weapon slot v2 (07-19v)"** was listed as STALE because its ×2-quantity clause is reverted — but
+  the row carries **two other live halves** (the rows LOOK pickable; the picked weapon is
+  **kitItem-stamped** so Start over / ↺ Change remove it with the kit), neither of which is covered
+  anywhere else. Applied as: both halves **moved into "Weapon slot v3"**, which is now the single
+  weapon-picker row, and the 07-19q row's "Take it / Choose later" clause was folded in the same way.
+
+*(One bookkeeping note for whoever reconciles the numbers: the audit spec's §A3 header says 13 rows and
+enumerates 12. Twelve were named and twelve were closed; the total closed on evidence is **38**, not 39.)*
+
+### Row counts
+
+| | Before | After |
+|---|---|---|
+| Open rows (whole file) | 294 | **240** |
+| Carrying ⚑ | 227 | **182** |
+
+**No row was re-tagged.** The ⚑ drop is entirely deletions; the marker-vocabulary question — that ⚑
+still expands to "could not self-verify", which stopped meaning "Ben only" on 2026-07-26 — is still
+Ben's to decide.
+
+---
+
 ## 2026-07-27u — DEPLOY: **the pack-rebuild list is EMPTY for the first time in this project's tracked history.** Foundry closed; all five packs rebuilt and validated; Sharp Eye's fix confirmed IN THE BUILT ARTIFACT. No code change — deploy + docs only.
 
 Ben closed Foundry and asked for the outstanding updates to be run. All seven steps of
