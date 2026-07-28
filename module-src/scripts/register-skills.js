@@ -567,8 +567,14 @@ for (const ctx of ["skill", "attack", "item"]) {
   Hooks.on(`cosmere-rpg.pre${cap}Roll`, edhaPackAdvantageApply);
   Hooks.on(`cosmere-rpg.${ctx}Roll`, edhaAggroRecord);
 }
-Hooks.on("deleteCombat", () => {
-  try { for (const tok of (canvas?.tokens?.placeables ?? [])) if (tok.actor?.getFlag?.("edha-content", "aggro")) void tok.actor.unsetFlag("edha-content", "aggro"); } catch (e) {}
+Hooks.on("deleteCombat", (combat) => {
+  try {
+    const guard = edhaCombatEndGuard(combat);   // ⛑ cross-combat clobber guard
+    for (const tok of (canvas?.tokens?.placeables ?? [])) {
+      const a = tok.actor; if (!a || edhaStillFightingElsewhere(a, guard)) continue;
+      if (a.getFlag?.("edha-content", "aggro")) void a.unsetFlag("edha-content", "aggro");
+    }
+  } catch (e) {}
 });
 
 /* --- Generic timed-status EXPIRY (2026-06-13) --------------------------------------------------
@@ -887,14 +893,16 @@ async function edhaApplyKindleLight(targetActor, light) {
   } catch (e) { console.error("Edha Content | kindle light apply failed", e); }
 }
 // Restore the pre-Kindle light on every lit token (end of scene/encounter). GM-side.
-async function edhaClearKindleLights() {
+async function edhaClearKindleLights(endedCombat) {
   try {
     if (!game.user?.isGM) { ui.notifications?.warn("Edha: clearing Kindle lights is GM-side."); return 0; }
     let n = 0;
+    const guard = edhaCombatEndGuard(endedCombat);   // ⛑ cross-combat clobber guard
     for (const scene of game.scenes ?? []) {
       const updates = [];
       for (const td of scene.tokens) {
         if (!foundry.utils.getProperty(td, "flags.edha-content.kindleLit")) continue;
+        if (edhaStillFightingElsewhere(td.actor, guard)) continue;   // lit for a combat that is still running
         const prev = foundry.utils.getProperty(td, "flags.edha-content.kindleLightPrev") ?? {};
         updates.push({ _id: td.id, light: prev, "flags.edha-content.-=kindleLit": null, "flags.edha-content.-=kindleLightPrev": null });
       }
@@ -937,12 +945,14 @@ function edhaIsIsolated(actor, tok = null) {
 async function edhaSyncIsolatedMarkers() {
   try {
     if (!edhaDefBuffGmGate()) return;
-    const combat = game.combat;
-    const live = !!combat?.started && (!combat.scene || combat.scene.id === canvas?.scene?.id);
+    // ⛑ EVERY started combat on this scene, not just `game.combat` (07-28, the cross-combat family).
+    // `game.combat` is the ACTIVE one; with a second combat running, every token in it read
+    // `inCombat === false` and had its positional marker stripped by the other combat's ticks.
+    const live = (game.combats ?? []).filter(c => c?.started && (!c.scene || c.scene.id === canvas?.scene?.id));
     for (const t of (canvas?.tokens?.placeables ?? [])) {
       const a = t.actor; if (!a) continue;
       const marker = a.effects?.find?.(e => e.getFlag?.("edha-content", "isoMarker"));
-      const inCombat = live && (combat.turns ?? []).some(c => (c.tokenId && c.tokenId === t.id) || c.actorId === a.id);
+      const inCombat = live.some(c => (c.turns ?? []).some(x => (x.tokenId && x.tokenId === t.id) || x.actorId === a.id));
       const dead = (a.system?.resources?.hea?.value ?? 1) <= 0;
       const inflicted = (a.effects ?? []).some?.(e => e.statuses?.has?.("isolated") && !e.getFlag?.("edha-content", "isoMarker"));
       const want = inCombat && !dead && !inflicted && edhaIsIsolated(a, t);
@@ -1486,7 +1496,7 @@ Hooks.once("ready", () => {
   } catch (e) { console.error("Edha Content | applyDamage wrap failed", e); }
 });
 // Auto-clear Kindle lights when an encounter ends (a reasonable "end of scene" trigger).
-Hooks.on("deleteCombat", () => { try { if (edhaDefBuffGmGate()) void edhaClearKindleLights(); } catch (e) {} });   // one applier (07-27b — the 2bW-13 family: raw isGM doubles with two GM clients)
+Hooks.on("deleteCombat", (combat) => { try { if (edhaDefBuffGmGate()) void edhaClearKindleLights(combat); } catch (e) {} });   // one applier (07-27b — the 2bW-13 family: raw isGM doubles with two GM clients)
 
 /* ============================================================================================
  * BLACK / RITUAL tree engine (2026-06-13)
@@ -1823,10 +1833,12 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
  * 2bU adds the other scene-lived generics to the same sweep: the `bonusTally.<item.id>` kill
  * tallies, the `armOnce.<status>` watch ledgers, and AEs flagged `sceneDefBuff` (window: scene
  * defense buffs). */
-Hooks.on("deleteCombat", () => {
+Hooks.on("deleteCombat", (combat) => {
   try {
     if (!edhaDefBuffGmGate()) return;   // one applier (07-27b — the 2bW-13 family)
+    const guard = edhaCombatEndGuard(combat);   // ⛑ cross-combat clobber guard
     for (const a of (game.actors?.filter(x => x.type === "character") ?? [])) {
+      if (edhaStillFightingElsewhere(a, guard)) continue;
       // `trigRound` joined 07-27b (bench run 5 saw it survive combat delete): it maps trigger name
       // → the round it last fired, and rounds RESTART next combat — a stale entry silently eats the
       // trigger in the next combat's same-numbered round. Scene end is exactly when it expires.
@@ -1847,7 +1859,7 @@ Hooks.on("deleteCombat", () => {
     // directory, each unset its own guard (the Chaos-sweep lesson, same pass).
     const seenThp = new Set();
     const thpClear = (a) => {
-      if (!a) return;
+      if (!a || edhaStillFightingElsewhere(a, guard)) return;
       const k = a.uuid ?? a.id; if (seenThp.has(k)) return; seenThp.add(k);
       if (a.flags?.["edha-content"]?.tempHp !== undefined) { try { void a.unsetFlag("edha-content", "tempHp"); } catch (e) {} }
     };
@@ -2045,6 +2057,57 @@ function edhaSceneActors({ directoryFilter = null } = {}) {
 // Every actor that can currently carry a rule: canvas tokens (unlinked adversaries live ONLY here —
 // the W29 lesson) plus every character in the directory (off-canvas owners still observe).
 function edhaWatchActors() { return edhaSceneActors({ directoryFilter: (a) => a.type === "character" }); }
+
+/* ⛑ THE CROSS-COMBAT CLOBBER GUARD (bench run 23, 2026-07-28) — build one per sweep, then test
+ * each actor before you write to it.
+ *
+ * THE DEFECT CLASS. `deleteCombat` and `combatTurnChange` are per-COMBAT events, but ~20 of the
+ * engine's scene-reset sweeps ignore the combat they are handed and iterate the WORLD
+ * (`game.actors`, `canvas.tokens.placeables`, `game.scenes`). With exactly one combat in play —
+ * the case every one of them was written for — that is correct and stays correct. With TWO, the
+ * end of one encounter reaches into the other and deletes live state: run 23 measured deleting a
+ * bench combat clearing `lists.covenants` off an actor in Ben's still-running combat, and runs
+ * 19/20 measured a bench combat's turn change stamping `trigRound` onto his campaign actors.
+ * That is player data, and it is destroyed silently.
+ *
+ * WHY THIS SHAPE AND NOT "SWEEP ONLY THIS COMBAT'S COMBATANTS". Because the wide enumeration is
+ * DELIBERATE and is pinned: `tempHp` is swept across canvas token actors AND the directory on
+ * purpose (L1845's note — the grant lands on adversaries, summons and unlinked token actors that
+ * are frequently not combatants), and `tests/temphp-scene-reset.test.js` asserts exactly that for
+ * a token-only actor. Narrowing to `combat.combatants` would break intended behaviour and that
+ * test. The invariant that is actually wanted is narrower and costs nothing:
+ *
+ *      ending combat A must not clear state on an actor that is a combatant in a
+ *      different, still-existing combat B.
+ *
+ * Single-combat play is therefore byte-identical to before; only the cross-combat case changes.
+ *
+ * FAIL-SAFE DIRECTION, stated. A wrong SKIP leaves stale state (recoverable — the next scene reset
+ * or the reset-triggers macro clears it). A wrong CLEAR destroys another table's live encounter.
+ * So every ambiguity resolves toward skipping: any other combat that still exists counts, started
+ * or not, and matching is by `id` OR `uuid`. Per the twin-actor note above, two unlinked tokens
+ * stamped from one prototype share an `id` — so a sibling token of a real combatant is also
+ * skipped. That is over-skipping, which is the safe side, and it is why `uuid` is checked too. */
+function edhaCombatEndGuard(endedCombat) {
+  const keys = new Set();
+  try {
+    const endedId = endedCombat?.id ?? null;
+    for (const c of (game.combats ?? [])) {
+      if (!c || (endedId && c.id === endedId)) continue;   // the combat that just ended is not "elsewhere"
+      for (const cbt of (c.combatants ?? [])) {
+        if (cbt?.actorId) keys.add(cbt.actorId);
+        try { const u = cbt?.actor?.uuid; if (u) keys.add(u); } catch (e) { /* synthetic actor may not resolve */ }
+      }
+    }
+  } catch (e) { /* no combats collection (out of combat, or a headless load) → guard is empty */ }
+  return keys;
+}
+// True when this actor is still fighting in ANOTHER combat, so this combat's reset must leave it alone.
+function edhaStillFightingElsewhere(actor, guard) {
+  if (!actor || !guard || !guard.size) return false;
+  try { return (actor.id && guard.has(actor.id)) || (actor.uuid && guard.has(actor.uuid)); }
+  catch (e) { return false; }
+}
 
 /* ⛑ A CLICK HANDLER'S OUTER CATCH IS NEVER "non-fatal" (bench run 23, 2026-07-28).
  * Reaching it means the user pressed a button and the thing the button promises did not happen.
@@ -3302,10 +3365,16 @@ async function edhaTurnCueSweep(combat, prior, current) {
   try {
     const tokOf = ref => combat?.combatants?.get?.(ref?.combatantId)?.token?.object ?? null;
     const curTok = tokOf(current) ?? combat?.combatant?.token?.object ?? null;
+    // ⛑ Same cross-combat family as the deleteCombat sweeps: this cue scans EVERY token on the
+    // scene, so a second combat's turn ticking posted reaction cues to — and stamped `trigRound`
+    // onto — actors fighting in a DIFFERENT combat (bench runs 19/20 landed keys on Ben's Corvaine
+    // and Stonebound). A creature busy in its own encounter does not react to this one's turns.
+    const guard = edhaCombatEndGuard(combat);
     if (curTok?.actor) {
       const disp = curTok.document?.disposition ?? 0;
       for (const t of (canvas?.tokens?.placeables ?? [])) {
         if (!t.actor || t === curTok || (t.document?.disposition ?? 0) === disp) continue;   // hostiles to the mover only
+        if (edhaStillFightingElsewhere(t.actor, guard)) continue;                            // fighting in another combat
         for (const { item, h } of edhaCueRules(t.actor, "enemy-turn-start")) {
           const ft = Number(h.rangeFt) || 0;
           if (ft > 0 && edhaTokenGapFt(t, curTok) > ft + 2.5) continue;   // half-square slack for adjacency reads
@@ -3485,11 +3554,15 @@ async function edhaSutureCradleCheck(victim, dealtAmount) {
     }
   } catch (e) { console.error("Edha Content | suture cradle check failed", e); }
 }
-Hooks.on("deleteCombat", () => {
+Hooks.on("deleteCombat", (combat) => {
   try {
     // Same union as the check above (this one was never a defect — a repeated unsetFlag is
     // idempotent — but keeping the pair on one primitive is the point of having one).
-    for (const a of edhaSceneActors()) if (a.getFlag?.("edha-content", "sutureCradle")) void a.unsetFlag("edha-content", "sutureCradle");
+    const guard = edhaCombatEndGuard(combat);   // ⛑ cross-combat clobber guard
+    for (const a of edhaSceneActors()) {
+      if (edhaStillFightingElsewhere(a, guard)) continue;
+      if (a.getFlag?.("edha-content", "sutureCradle")) void a.unsetFlag("edha-content", "sutureCradle");
+    }
   } catch (e) { /* non-fatal */ }
 });
 
@@ -3664,10 +3737,12 @@ Hooks.on("renderDialogV2", (app, element) => {
 // other mark in the engine already has; flagged on the checklist rather than fixed with a fourth
 // bespoke flag layout.
 // Scene end: clear the Double-Dip marks (GM-side, same lifecycle as Charges/Reserve-style scene state).
-Hooks.on("deleteCombat", async () => {
+Hooks.on("deleteCombat", async (combat) => {
   try {
     if (!edhaDefBuffGmGate()) return;
+    const guard = edhaCombatEndGuard(combat);   // ⛑ cross-combat clobber guard
     for (const a of (game.actors ?? [])) {
+      if (edhaStillFightingElsewhere(a, guard)) continue;
       if (!a.flags?.["edha-content"]?.markedBy?.doubledipped) continue;
       try { await a.unsetFlag("edha-content", "markedBy.doubledipped"); await edhaToggleStatus(a, "doubledipped", false); } catch (e) {}
     }
@@ -6394,16 +6469,21 @@ Hooks.on("deleteActor", (actor) => {
 Hooks.on("deleteToken", (doc) => {
   try { const id = doc?.actor?.getFlag?.("edha-content", "barrierId"); if (id && edhaDefBuffGmGate()) void edhaBarrierClearGM(id); } catch (e) {}
 });
-Hooks.on("deleteCombat", () => {
+Hooks.on("deleteCombat", (combat) => {
   try {
     if (!edhaDefBuffGmGate()) return;   // one applier (07-27b — the 2bW-13 family)
+    const guard = edhaCombatEndGuard(combat);   // ⛑ cross-combat clobber guard
     void (async () => {
+      const kept = [];
       for (const a of (game.actors?.filter(x => x.getFlag?.("edha-content", "barrierId")) ?? [])) {
+        // The barrier summon is the CASTER's prop: it survives if its caster is still fighting.
+        const owner = game.actors?.get?.(a.getFlag?.("edha-content", "summoner")) ?? null;
+        if (edhaStillFightingElsewhere(a, guard) || edhaStillFightingElsewhere(owner, guard)) { kept.push(a.getFlag("edha-content", "barrierId")); continue; }
         await edhaBarrierClearGM(a.getFlag("edha-content", "barrierId"));
         await edhaDeleteActorWithTokens(a);        // the scene-end door had the same orphan-token bug
       }
       for (const scene of (game.scenes ?? [])) {   // strays whose actor is already gone
-        const dead = (scene.walls ?? []).filter(w => w.getFlag?.("edha-content", "barrierId"));
+        const dead = (scene.walls ?? []).filter(w => { const id = w.getFlag?.("edha-content", "barrierId"); return id && !kept.includes(id); });
         if (dead.length) await scene.deleteEmbeddedDocuments("Wall", dead.map(w => w.id));
       }
     })();
@@ -9231,10 +9311,11 @@ for (const h of ["createAmbientLight", "updateAmbientLight", "deleteAmbientLight
 // Arming/disarming a suppressor is an ActiveEffect change (statuses are AEs) — re-check the veils.
 for (const h of ["createActiveEffect", "deleteActiveEffect"]) Hooks.on(h, () => edhaDarkVeilSoon());
 // "For the scene": the clearsight arm clears when combat ends (the Kindle-light convention).
-Hooks.on("deleteCombat", () => {
+Hooks.on("deleteCombat", (combat) => {
   try {
     if (!edhaDefBuffGmGate()) return;   // one applier (07-27b — the 2bW-13 family)
-    for (const t of (canvas?.tokens?.placeables ?? [])) if (t.actor?.statuses?.has?.("clearsight")) { try { void t.actor.toggleStatusEffect?.("clearsight", { active: false }); } catch (e) {} }
+    const guard = edhaCombatEndGuard(combat);   // ⛑ cross-combat clobber guard
+    for (const t of (canvas?.tokens?.placeables ?? [])) if (!edhaStillFightingElsewhere(t.actor, guard) && t.actor?.statuses?.has?.("clearsight")) { try { void t.actor.toggleStatusEffect?.("clearsight", { active: false }); } catch (e) {} }
   } catch (e) {}
 });
 
@@ -11131,10 +11212,12 @@ Hooks.once("ready", () => {
 });
 
 // Scene / combat end: fizzle Charges, clear markers, and reset the once-per-scene + trail flags.
-async function edhaClearCharges() {
+async function edhaClearCharges(endedCombat) {
   try {
     if (!game.user?.isGM) return;
+    const guard = edhaCombatEndGuard(endedCombat);   // ⛑ cross-combat clobber guard
     for (const a of (game.actors?.filter(x => x.type === "character") ?? [])) {
+      if (edhaStillFightingElsewhere(a, guard)) continue;
       // ⚠ raw path (§9o trap 3): the repointed charges ledger key is hand-edited here (2bY).
       if (a.flags?.["edha-content"]?.lists?.charges) { try { await a.unsetFlag("edha-content", "lists.charges"); } catch (e) {} }
       if (a.getFlag?.("edha-content", "charges")) await a.unsetFlag("edha-content", "charges");               // legacy: the pre-2bY flat key, cleared for old saves
@@ -11143,13 +11226,16 @@ async function edhaClearCharges() {
       if (a.getFlag?.("edha-content", "hazardTrail")) await a.unsetFlag("edha-content", "hazardTrail");       // the `edha-place-hazard {mode: trail}` toggle (2bY)
       if (a.getFlag?.("edha-content", "walkingRuin")) await a.unsetFlag("edha-content", "walkingRuin");       // legacy: the pre-2bY trail flag
     }
-    for (const scene of game.scenes ?? []) {
+    // Un-attributable world props: a charge template carries no owner, so it cannot be tested
+    // against the guard. While another combat is still running, leave them ALL alone — a stale
+    // template is a visible, hand-deletable nuisance; deleting a live encounter's is not.
+    if (!guard.size) for (const scene of game.scenes ?? []) {
       const stale = (scene.templates ?? []).filter(t => t.getFlag?.("edha-content", "charge"));
       if (stale.length) await scene.deleteEmbeddedDocuments("MeasuredTemplate", stale.map(t => t.id));
     }
   } catch (e) { console.error("Edha Content | clear charges failed", e); }
 }
-Hooks.on("deleteCombat", () => { try { if (edhaDefBuffGmGate()) void edhaClearCharges(); } catch (e) {} });   // one applier (07-27b)
+Hooks.on("deleteCombat", (combat) => { try { if (edhaDefBuffGmGate()) void edhaClearCharges(combat); } catch (e) {} });   // one applier (07-27b)
 
 /* ============================================================================================
  * LIFE (Anaveth, deity) tree engine (2026-06-17) — a Blue/Green healer-buffer. Reuses the Green heal
@@ -11235,10 +11321,12 @@ async function edhaOvergrowthDeflectStack(target, label, max) {
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: target }), content: `<p>🌿 <strong>${label}</strong>: ${target.name} grows natural armor — <strong>+${n} Deflect</strong>${n >= max ? " (max)" : ` (stacks to ${max})`} until end of scene.</p>` });
   } catch (e) { console.error("Edha Content | heal-rider deflect stack failed", e); }
 }
-Hooks.on("deleteCombat", () => {   // end of encounter ≈ end of scene (Kindle-light convention)
+Hooks.on("deleteCombat", (combat) => {   // end of encounter ≈ end of scene (Kindle-light convention)
   try {
     if (!edhaDefBuffGmGate()) return;   // one applier (07-27b — the 2bW-13 family)
+    const guard = edhaCombatEndGuard(combat);   // ⛑ cross-combat clobber guard
     for (const t of canvas?.tokens?.placeables ?? []) {
+      if (edhaStillFightingElsewhere(t.actor, guard)) continue;
       const ex = t.actor?.effects?.filter(e => e.getFlag?.("edha-content", "overgrowthDeflect")) ?? [];
       if (ex.length) void t.actor.deleteEmbeddedDocuments("ActiveEffect", ex.map(e => e.id));
     }
@@ -11581,12 +11669,14 @@ Hooks.on("renderChatMessageHTML", (msg, html) => {
  * itself (two combats deleted together fire two hooks), and the apex branch unsets the flag
  * BEFORE the injury round-trip so a re-read inside the window finds nothing to double. */
 let _edhaLifeClearBusy = false;
-async function edhaClearLifeState() {
+async function edhaClearLifeState(endedCombat) {
   if (_edhaLifeClearBusy) return;
   _edhaLifeClearBusy = true;
   try {
     if (!game.user?.isGM) return;
+    const guard = edhaCombatEndGuard(endedCombat);   // ⛑ cross-combat clobber guard
     for (const a of (game.actors ?? [])) {
+      if (edhaStillFightingElsewhere(a, guard)) continue;   // apexForm ending costs an INJURY — never on someone else's combat
       for (const k of ["mutation", "apexForm", "lifeline", "lifeRegen"]) {   // ⚠ raw key list (§9o trap 3) — a Lifeline rule using a different watchFlag needs its own cleanup
         const fv = a.getFlag?.("edha-content", k);
         if (!fv) continue;
@@ -11605,7 +11695,7 @@ async function edhaClearLifeState() {
   } catch (e) { console.error("Edha Content | clear Life state failed", e); }
   finally { _edhaLifeClearBusy = false; }
 }
-Hooks.on("deleteCombat", () => { try { if (edhaDefBuffGmGate()) void edhaClearLifeState(); } catch (e) {} });
+Hooks.on("deleteCombat", (combat) => { try { if (edhaDefBuffGmGate()) void edhaClearLifeState(combat); } catch (e) {} });
 
 /* ============================================================================================
  * CHAOS (Maelith, deity) tree engine (2026-06-18) — the "Omen" fracture lifecycle. ENGINE-ONLY,
@@ -11866,12 +11956,14 @@ Hooks.on("renderChatMessageHTML", (msg, html) => {
 //      statuses-getter throw skips that actor alone.
 //   3. Failures console.warn WITH the actor's name — if anything still rejects at run 7, the
 //      console names the culprit instead of silently eating two loops.
-async function edhaClearChaosState() {
+async function edhaClearChaosState(endedCombat) {
   try {
     if (!game.user?.isGM) return;
+    const guard = edhaCombatEndGuard(endedCombat);   // ⛑ cross-combat clobber guard
     // (1) The omens ledger, FIRST (⚠ raw ledger path, §9o trap 3 — the Death `lists.remains`
     // precedent, hand-edited here too).
     for (const a of (game.actors?.filter(x => x.type === "character") ?? [])) {
+      if (edhaStillFightingElsewhere(a, guard)) continue;
       if (a.getFlag?.("edha-content", "lists.omens") !== undefined) {
         try { await a.unsetFlag("edha-content", "lists.omens"); }
         catch (e) { console.warn(`Edha Content | Chaos sweep: omens-ledger unset failed on ${a.name}`, e); }
@@ -11879,7 +11971,7 @@ async function edhaClearChaosState() {
     }
     // (2) Statuses + markedBy, every await its own guard (Death's per-call convention).
     const sweepActor = async (a) => {
-      if (!a) return;
+      if (!a || edhaStillFightingElsewhere(a, guard)) return;
       try { if (a.statuses?.has?.("omen")) await a.toggleStatusEffect?.("omen", { active: false }); }
       catch (e) { console.warn(`Edha Content | Chaos sweep: omen status clear failed on ${a.name}`, e); }
       try { if (a.statuses?.has?.("isolated")) await a.toggleStatusEffect?.("isolated", { active: false }); }
@@ -11899,7 +11991,7 @@ async function edhaClearChaosState() {
     }
   } catch (e) { console.error("Edha Content | clear Chaos state failed", e); }
 }
-Hooks.on("deleteCombat", () => { try { if (edhaDefBuffGmGate()) void edhaClearChaosState(); } catch (e) {} });   // one applier (07-27b)
+Hooks.on("deleteCombat", (combat) => { try { if (edhaDefBuffGmGate()) void edhaClearChaosState(combat); } catch (e) {} });   // one applier (07-27b)
 
 /* ============================================================================================
  * FATE (Olvarra, deity) tree engine (2026-06-18; iron rule 2b pass 2bX 2026-07-25) — the
@@ -12516,10 +12608,12 @@ Hooks.on("renderChatMessageHTML", (msg, html) => {
  * a takeover, and do not re-add the seven names. Bulwark Ground and Hexmark stay config-only. */
 
 // Clear Fate markers / flags / buffs at scene/combat end (GM-side), like the Charge/Chaos state.
-async function edhaClearFateState() {
+async function edhaClearFateState(endedCombat) {
   try {
     if (!game.user?.isGM) return;
+    const guard = edhaCombatEndGuard(endedCombat);   // ⛑ cross-combat clobber guard
     for (const a of (game.actors?.filter(x => x.type === "character") ?? [])) {
+      if (edhaStillFightingElsewhere(a, guard)) continue;
       // ⚠ raw path (§9o trap 3): BOTH repointed ledger keys are hand-edited here — a repoint
       // does NOT update the sweeps, and a missed key silently leaves a live list at the table.
       for (const lk of ["ordained", "snares"]) if (a.flags?.["edha-content"]?.lists?.[lk]) { try { await a.unsetFlag("edha-content", `lists.${lk}`); } catch (e) {} }
@@ -12537,9 +12631,11 @@ async function edhaClearFateState() {
     }
     for (const t of (canvas?.tokens?.placeables ?? [])) {
       const a = t.actor; const mb = a?.flags?.["edha-content"]?.markedBy; if (!mb) continue;
+      if (edhaStillFightingElsewhere(a, guard)) continue;
       for (const k of Object.keys(mb)) if (markKeys.has(k)) { try { await a.unsetFlag("edha-content", `markedBy.${k}`); } catch (e) {} }
     }
-    for (const scene of game.scenes ?? []) {
+    // Un-attributable world props (no owner on the template/Region) — see the charges sweep.
+    if (!guard.size) for (const scene of game.scenes ?? []) {
       const stale = (scene.templates ?? []).filter(t => t.getFlag?.("edha-content", "fateMarker"));
       if (stale.length) await scene.deleteEmbeddedDocuments("MeasuredTemplate", stale.map(t => t.id));
       const staleRgn = (scene.regions ?? []).filter(r => r.getFlag?.("edha-content", "fateSnare"));
@@ -12547,7 +12643,7 @@ async function edhaClearFateState() {
     }
   } catch (e) { console.error("Edha Content | clear Fate state failed", e); }
 }
-Hooks.on("deleteCombat", () => { try { if (edhaDefBuffGmGate()) void edhaClearFateState(); } catch (e) {} });   // one applier (07-27b)
+Hooks.on("deleteCombat", (combat) => { try { if (edhaDefBuffGmGate()) void edhaClearFateState(combat); } catch (e) {} });   // one applier (07-27b)
 
 /* ============================================================================================
  * SOVEREIGNTY (Verdannis, deity) tree engine (2026-07-01; iron rule 2b pass 2bT 2026-07-25) — the
@@ -12821,18 +12917,19 @@ async function edhaSovSweep(combat) {
 }
 Hooks.on("combatTurnChange", (c) => { if (edhaDefBuffGmGate()) void edhaSovSweep(c); });
 
-async function edhaClearSovState() {
+async function edhaClearSovState(endedCombat) {
   try {
     if (!game.user?.isGM) return;
+    const guard = edhaCombatEndGuard(endedCombat);   // ⛑ cross-combat clobber guard
     for (const tok of (canvas?.tokens?.placeables ?? [])) {
-      const a = tok.actor; if (!a) continue;
+      const a = tok.actor; if (!a || edhaStillFightingElsewhere(a, guard)) continue;
       for (const key of ["dieStep", "dieStepOnceBy"]) if (a.getFlag?.("edha-content", key)) { try { await a.unsetFlag("edha-content", key); } catch (e) {} }
       if (a.statuses?.has?.("exalted")) await a.toggleStatusEffect?.("exalted", { active: false });
       if (a.statuses?.has?.("diminished")) await a.toggleStatusEffect?.("diminished", { active: false });
     }
   } catch (e) { console.error("Edha Content | clear Sovereignty state failed", e); }
 }
-Hooks.on("deleteCombat", () => { try { if (edhaDefBuffGmGate()) void edhaClearSovState(); } catch (e) {} });   // one applier (07-27b)
+Hooks.on("deleteCombat", (combat) => { try { if (edhaDefBuffGmGate()) void edhaClearSovState(combat); } catch (e) {} });   // one applier (07-27b)
 
 /* --- H9 `edha-die-step`'s pre-cost VETO (2bT). Rules on `use` need their own targeting gates (a
  * willing ally / an ally-and-enemy pair); the once-per-target and once-per-scene stamps veto for
@@ -13123,17 +13220,19 @@ async function edhaReviveUse(item, h) {
 }
 
 /* --- Scene cleanup (deleteCombat): the whole Death state resets ------------------------------------- */
-async function edhaClearDeathState() {
+async function edhaClearDeathState(endedCombat) {
   try {
     if (!game.user?.isGM) return;
+    const guard = edhaCombatEndGuard(endedCombat);   // ⛑ cross-combat clobber guard
     for (const tok of (canvas?.tokens?.placeables ?? [])) {
-      const a = tok.actor; if (!a) continue;
+      const a = tok.actor; if (!a || edhaStillFightingElsewhere(a, guard)) continue;
       for (const key of ["decay", "deathWard"]) if (a.getFlag?.("edha-content", key)) { try { await a.unsetFlag("edha-content", key); } catch (e) {} }
       // `cascadearmed` joined the status list 07-24r; `withernext` 2bW — both scene arms are
       // statuses now, so the scene reset clears them here rather than as flags below.
       for (const s of ["decaying", "harvested", "cascadearmed", "withernext"]) if (a.statuses?.has?.(s)) { try { await a.toggleStatusEffect?.(s, { active: false }); } catch (e) {} }
     }
     for (const a of (game.actors?.filter(x => x.type === "character") ?? [])) {
+      if (edhaStillFightingElsewhere(a, guard)) continue;
       for (const s of ["cascadearmed", "withernext"]) if (a.statuses?.has?.(s)) { try { await a.toggleStatusEffect?.(s, { active: false }); } catch (e) {} }
       for (const key of ["lists.remains"]) {   // ⚠ raw path (§9o trap 3): the repointed ledger key must be hand-edited here; raiseDeadUsed → the generic sceneOnce sweep, witherNext → the status above (2bW)
         if (a.getFlag?.("edha-content", key) !== undefined) { try { await a.unsetFlag("edha-content", key); } catch (e) {} }
@@ -13141,7 +13240,7 @@ async function edhaClearDeathState() {
     }
   } catch (e) { console.error("Edha Content | clear Death state failed", e); }
 }
-Hooks.on("deleteCombat", () => { try { if (edhaDefBuffGmGate()) void edhaClearDeathState(); } catch (e) {} });   // one applier (07-27b)
+Hooks.on("deleteCombat", (combat) => { try { if (edhaDefBuffGmGate()) void edhaClearDeathState(combat); } catch (e) {} });   // one applier (07-27b)
 
 /* ============================================================================================
  * CIVILIZATION (Kethane, deity) tree engine (2026-07-02) — Foundations + the Combat Construct.
@@ -13693,16 +13792,19 @@ Hooks.once("ready", () => {
 });
 
 /* --- Scene cleanup (deleteCombat): the Civilization scene state resets ------------------------------- */
-async function edhaClearCivState() {
+async function edhaClearCivState(endedCombat) {
   try {
     if (!game.user?.isGM) return;
+    const guard = edhaCombatEndGuard(endedCombat);   // ⛑ cross-combat clobber guard
     for (const a of (game.actors?.filter(x => x.type === "character") ?? [])) {
+      if (edhaStillFightingElsewhere(a, guard)) continue;
       for (const key of ["bastionActive", "magnumUsed", "civFoundationBonus"]) {
         if (a.getFlag?.("edha-content", key) !== undefined) { try { await a.unsetFlag("edha-content", key); } catch (e) {} }
       }
     }
     // Flag-keyed, not name-prefix-keyed (2bV): any summon can carry these now.
     for (const a of (game.actors ?? []).filter(x => x?.getFlag?.("edha-content", "summon"))) {
+      if (edhaStillFightingElsewhere(a, guard)) continue;
       for (const key of ["arsenalActive", "summonArmed", "colossus"]) {   // arsenalActive = legacy pre-2bV state
         if (a.getFlag?.("edha-content", key) !== undefined) { try { await a.unsetFlag("edha-content", key); } catch (e) {} }
       }
@@ -13713,7 +13815,7 @@ async function edhaClearCivState() {
     // (persist until the GM clears the map) — deleting a Foundation drawing takes its Region along.
   } catch (e) { console.error("Edha Content | clear Civilization state failed", e); }
 }
-Hooks.on("deleteCombat", () => { try { if (edhaDefBuffGmGate()) void edhaClearCivState(); } catch (e) {} });   // one applier (07-27b)
+Hooks.on("deleteCombat", (combat) => { try { if (edhaDefBuffGmGate()) void edhaClearCivState(combat); } catch (e) {} });   // one applier (07-27b)
 
 /* ============================================================================================
  * POWER (Tyrith, deity) tree engine (2026-07-02c) — dominate (Black control) → kill → escalate (Red).
@@ -14164,10 +14266,12 @@ function edhaTestAuraApply(roll, source, config) {
 for (const ctx of ["Skill", "Attack", "Item"]) Hooks.on(`cosmere-rpg.pre${ctx}Roll`, edhaTestAuraApply);
 
 /* --- Scene cleanup (deleteCombat): the whole Power state resets -------------------------------------- */
-async function edhaClearPowerState() {
+async function edhaClearPowerState(endedCombat) {
   try {
     if (!game.user?.isGM) return;
+    const guard = edhaCombatEndGuard(endedCombat);   // ⛑ cross-combat clobber guard
     for (const a of (game.actors?.filter(x => x.type === "character") ?? [])) {
+      if (edhaStillFightingElsewhere(a, guard)) continue;
       // The flag list is LEGACY-ONLY since 2bU (stale pre-conversion worlds); live state is statuses.
       for (const key of ["crownActive", "warlordNext", "momentumNext", "fury", "unstoppable", "mantleActive", "mantleUsed", "kneelBy"]) {
         if (a.getFlag?.("edha-content", key) !== undefined) { try { await a.unsetFlag("edha-content", key); } catch (e) {} }
@@ -14176,12 +14280,12 @@ async function edhaClearPowerState() {
       if (fx.length) { try { await a.deleteEmbeddedDocuments("ActiveEffect", fx.map(e => e.id)); } catch (e) {} }
     }
     for (const tok of (canvas?.tokens?.placeables ?? [])) {
-      const a = tok.actor; if (!a) continue;
+      const a = tok.actor; if (!a || edhaStillFightingElsewhere(a, guard)) continue;
       for (const s of ["compelled", "frightened", "crowned", "warlord", "momentum", "fury", "unstoppable", "mantled"]) if (a.statuses?.has?.(s)) { try { await a.toggleStatusEffect?.(s, { active: false }); } catch (e) {} }
     }
   } catch (e) { console.error("Edha Content | clear Power state failed", e); }
 }
-Hooks.on("deleteCombat", () => { try { if (edhaDefBuffGmGate()) void edhaClearPowerState(); } catch (e) {} });   // one applier (07-27b)
+Hooks.on("deleteCombat", (combat) => { try { if (edhaDefBuffGmGate()) void edhaClearPowerState(combat); } catch (e) {} });   // one applier (07-27b)
 
 /* ============================================================================================
  * KNOWLEDGE (Gnothis, deity) tree engine (2026-07-03; iron rule 2b pass 2bT 2026-07-25) — study
@@ -14492,14 +14596,16 @@ function edhaBindCounterButtons(html) {
 Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindCounterButtons(html));
 
 /* --- Scene cleanup (deleteCombat): counters + arming statuses reset ("fades at the end of the scene") - */
-async function edhaClearCounterState() {
+async function edhaClearCounterState(endedCombat) {
   try {
     if (!game.user?.isGM) return;
+    const guard = edhaCombatEndGuard(endedCombat);   // ⛑ cross-combat clobber guard
     for (const a of (game.actors?.filter(x => x.type === "character") ?? [])) {
+      if (edhaStillFightingElsewhere(a, guard)) continue;
       if (a.getFlag?.("edha-content", "counters") !== undefined) { try { await a.unsetFlag("edha-content", "counters"); } catch (e) {} }
     }
     for (const tok of (canvas?.tokens?.placeables ?? [])) {
-      const a = tok.actor; if (!a) continue;
+      const a = tok.actor; if (!a || edhaStillFightingElsewhere(a, guard)) continue;
       const eff = a.effects?.find(e => e.statuses?.has?.("insight"));
       if (eff) { try { await eff.delete(); } catch (e) {} }
       if (a.flags?.["edha-content"]?.markedBy?.insight) { try { await a.unsetFlag("edha-content", "markedBy.insight"); } catch (e) {} }
@@ -14509,7 +14615,7 @@ async function edhaClearCounterState() {
     }
   } catch (e) { console.error("Edha Content | clear counter state failed", e); }
 }
-Hooks.on("deleteCombat", () => { try { if (edhaDefBuffGmGate()) void edhaClearCounterState(); } catch (e) {} });   // one applier (07-27b)
+Hooks.on("deleteCombat", (combat) => { try { if (edhaDefBuffGmGate()) void edhaClearCounterState(combat); } catch (e) {} });   // one applier (07-27b)
 
 /* ============================================================================================
  * ORDER (Tessavain, deity) tree engine (2026-07-03) — the LAST of the 15 trees: declare law
@@ -15319,10 +15425,14 @@ Hooks.on("renderChatMessageHTML", (msg, html) => {
 });
 
 /* --- Scene cleanup (deleteCombat): the whole Order state resets --------------------------------------- */
-async function edhaClearOrderState() {
+async function edhaClearOrderState(endedCombat) {
   try {
     if (!game.user?.isGM) return;
+    const guard = edhaCombatEndGuard(endedCombat);   // ⛑ cross-combat clobber guard
     for (const a of (game.actors?.filter(x => x.type === "character") ?? [])) {
+      // ⛑ THE ROW THIS GUARD WAS BUILT FOR: run 23 watched a bench combat delete take Ben’s
+      // still-live actor’s covenant ledger with it.
+      if (edhaStillFightingElsewhere(a, guard)) continue;
       // `lists.covenants` — the second raw path the accessor repoint could not reach (§9o trap 3).
       // unsetFlag resolves a dotted key, so this deletes the ledger and leaves the `lists` object.
       // "edicts"/"concordActive"/"finalDecreeUsed" are LEGACY keys (pre-2bV state on Ben's actors);
@@ -15332,7 +15442,7 @@ async function edhaClearOrderState() {
       }
     }
     for (const tok of (canvas?.tokens?.placeables ?? [])) {
-      const a = tok.actor; if (!a) continue;
+      const a = tok.actor; if (!a || edhaStillFightingElsewhere(a, guard)) continue;
       if (a.statuses?.has?.("edict")) { try { await a.toggleStatusEffect?.("edict", { active: false }); } catch (e) {} }
       if (a.statuses?.has?.("covenant")) { try { await a.toggleStatusEffect?.("covenant", { active: false }); } catch (e) {} }
       if (a.statuses?.has?.("concord")) { try { await a.toggleStatusEffect?.("concord", { active: false }); } catch (e) {} }
@@ -15342,7 +15452,7 @@ async function edhaClearOrderState() {
     _edhaOrderPrompted.clear();
   } catch (e) { console.error("Edha Content | clear Order state failed", e); }
 }
-Hooks.on("deleteCombat", () => { try { if (edhaDefBuffGmGate()) void edhaClearOrderState(); } catch (e) {} });   // one applier (07-27b)
+Hooks.on("deleteCombat", (combat) => { try { if (edhaDefBuffGmGate()) void edhaClearOrderState(combat); } catch (e) {} });   // one applier (07-27b)
 
 /* ============================================================================================
  * GREEN / TERRITORY tree engine (2026-06-16) — difficult terrain as an ENFORCED map Region.
@@ -19300,10 +19410,12 @@ async function edhaApplyStatusMark(item, cfg, boundVictim = null) {
  * Sweeps game.actors rather than canvas tokens on purpose: an ally who walked off-scene mid-fight
  * still has the status, and the token-only sweeps elsewhere in this file are exactly why some markers
  * have historically survived a scene change. One GM applier. */
-async function edhaClearCombatExpiryStatuses() {
+async function edhaClearCombatExpiryStatuses(endedCombat) {
   try {
     if (!edhaDefBuffGmGate()) return;
+    const guard = edhaCombatEndGuard(endedCombat);   // ⛑ cross-combat clobber guard
     for (const a of (game.actors ?? [])) {
+      if (edhaStillFightingElsewhere(a, guard)) continue;
       const map = a.getFlag?.("edha-content", "combatExpire");
       if (!map || typeof map !== "object") continue;
       for (const status of Object.keys(map)) {
@@ -19315,7 +19427,7 @@ async function edhaClearCombatExpiryStatuses() {
     }
   } catch (e) { console.error("Edha Content | combat-expiry status sweep failed", e); }
 }
-Hooks.on("deleteCombat", () => { try { void edhaClearCombatExpiryStatuses(); } catch (e) {} });
+Hooks.on("deleteCombat", (combat) => { try { void edhaClearCombatExpiryStatuses(combat); } catch (e) {} });
 
 // Damage every creature in range bearing a status; optionally Temp HP = total dealt (Spoils of Isolation).
 async function edhaStatusSweep(item, cfg) {
