@@ -1682,27 +1682,15 @@ so nothing was dropped.)*
       needs a Foundry table.
       ℹ️ **The aspect half is fine either way and needs no test:** 1118/1488 = **0.7513**, identical to
       the canvas aspect 2236/2976, so "not stretched or letterboxed" holds for both renders.
-- [ ] 🤖 **Derived-stat preview v2 — the panel and the sheet agree cell for cell (fixed
-      2026-07-28i; ⟳ sync + F5)** — run 21 found THREE of nine cells drifting and canon pointed a
-      different way for each: **Move** — `Character_Building_Rules.md` §Derived stats says
-      "Movement = 20 + SPD·5", so the SHEET was right and the panel was re-implementing the
-      cosmere system's ceil(SPD/2) ladder; **Senses** — the same doc's §Senses Range table says
-      AWA 0 → 10 ft, so the PANEL was right and the engine had never applied the Edha table to
-      the sheet at all; **Health** — the panel simply did not model the engine's +1, which is
-      **R-54's call and was NOT changed**. Neither surface owns the arithmetic now.
-      **THE POSITIVE (the reported spread, unchanged):** run the wizard to the attributes page,
-      set **STR 3 / SPD 3 / INT 3 / WIL 3 / AWA 0 / PRE 0**, and read the panel — it must say
-      **Health 14 · Move 35 ft · Senses 10 ft**. Finish, open the sheet, and read the same three:
-      **all three must MATCH the panel.** Quote both sets if any cell differs.
-      **NEGATIVE CONTROL 1 — the six that already agreed must still agree:** Focus **5**, Phys def
-      **16**, Cog def **16**, Spi def **10**, Investiture **2\***, Recovery **d8**, panel and
-      sheet both. A fix that moved any of these broke something that was working.
-      **NEGATIVE CONTROL 2 — a second spread, because agreeing on one spread can be luck:**
-      set **SPD 0** and **AWA 4** and confirm panel and sheet BOTH read **Move 20 ft** and
-      **Senses 25 ft** (not the system's 20 ft / 20 ft).
-      **NEGATIVE CONTROL 3 — a hand-set Senses Range still wins:** on the finished PC use the
-      sheet's own **Configure Senses Range** to override it (say 60 ft); it must STAY 60 ft
-      across an F5. The engine writes only the `derived` half, so an override must not be stomped.
+*(**Derived-stat preview v2** — RETIRED on evidence 2026-07-28j, bench run 22, positive AND all three
+negative controls. Panel at STR3/SPD3/INT3/WIL3/AWA0/PRE0 read **Health 14 · Move 35 ft · Senses 10 ft**
+and the finished sheet read the same three; the six controls agreed cell for cell (Focus 5 · Phys 16 ·
+Cog 16 · Spi 10 · Investiture 2 · Recovery d8). Second spread SPD 0 / AWA 4: panel **Move 20 ft ·
+Senses 25 ft**, sheet identical — not the system's 20/20. A hand-set Senses override of 60 survived an
+F5 (`{derived:10, override:60, useOverride:true}`) and the token's sight followed it to 60. The engine
+now writes `system.senses.range.derived` at all, which it never did — token sight tracked Senses across
+AWA 0→10, 2→20, 4→25, 5→30. ⚠️ Read the DerivedValueField's **`.value`**, never `.override`/`.derived`:
+Move is written into `override` with `useOverride:true` and the getter adds `.bonus` on top.)*
 *(The **07-19v weapon slot v2** row is retired 2026-07-27v as STALE — its ×2-quantity clause is
 **explicitly reverted** (the engine grants one weapon, never ×2). Its two still-live halves — the rows
 LOOK pickable, and the picked weapon is kitItem-stamped so Start over / ↺ Change remove it with the kit
@@ -1714,26 +1702,14 @@ LOOK pickable, and the picked weapon is kitItem-stamped so Start over / ↺ Chan
       OUR row after it — 🪙 total pill (copper-weighted, tooltip) + three tinted g/s/c pills
       with always-visible numbers. The header strip keeps the compact native chip with the
       corrected total. Verdict on the look still wanted.
-- [ ] 🤖 **Finish tops up to a REACHABLE max (07-19x, belted 07-19y, root-caused 2026-07-28i;
-      ⟳ sync + F5)** — run 21 found Finish landing every PC at **13/14** while Focus and
-      Investiture filled, on two different clients and two different PCs. The top-up was never the
-      problem: the cosmere system clamps every resource to its max as the LAST act of
-      `prepareSecondaryDerivedData`, which runs BEFORE the module raises that max, so a stored 14
-      was cut back to 13 on every prepare. **The extra point was unreachable by any route at all**
-      — long rest, healing, a hand edit — not just by Finish. The engine now re-runs that clamp
-      against the real max, reading from `_source` so nothing is invented.
-      **THE POSITIVE:** finish the wizard on a fresh PC — all three bars read FULL
-      (**14/14 · 5/5 · 2/2** at STR 3) and **no rest dialog** appears. Do it once as GM and once
-      from the player client, since run 21 saw the bug on both.
-      **NEGATIVE CONTROL 1 — THE LOAD-BEARING ONE: a wounded PC must STAY wounded.** Take the
-      finished PC to **9/14**, then **F5** and re-read: it must still be **9/14**. If it comes
-      back full, the repair is inventing health, which is worse than the bug it replaced.
-      **NEGATIVE CONTROL 2 — one point down is a real state:** take the same PC to **13/14**
-      (exactly the number the bug used to show) and F5 — it must still read **13/14**, not jump to
-      14. This is the case a naive "just fill to max" fix would get wrong and the other negative
-      would not catch.
-      **NEGATIVE CONTROL 3 — the other two bars are unaffected:** spend Focus to 3/5 and
-      Investiture to 1/2, F5, and confirm they stay 3/5 and 1/2.
+*(**Finish tops up to a REACHABLE max** — RETIRED on evidence 2026-07-28j, bench run 22, positive AND
+all three negative controls including the load-bearing one. Finish on a fresh PC left **14/14 · 5/5 ·
+2/2** with **no rest dialog**, and a second Finish later in the same run left **14/14 · 5/5 · 6/6** —
+the 13/14 is gone. **NEG 1 (load-bearing):** taken to **9/14** and given a real F5, it came back
+**9/14**, not healed — `_source` 9. **NEG 2:** taken to **13/14** and F5'd, it came back **13/14**, not
+14 — the case a naive fill-to-max fix gets wrong. **NEG 3:** Focus 3/5 and Investiture 1/2 survived the
+same reload unchanged. An in-memory `prepareData()` probe over 9 / 13 / 14 / 1 also round-tripped every
+value untouched. ⚑ Only the player-client half of the positive is unrun — it was proven twice GM-side.)*
 - [ ] 🤖 **+1 max health SOLVED-pending-confirm (07-19z)** — a BRAND-NEW ＋ actor showed 10/11
       before any picks, and at that moment only the basic-action copies exist: a shipped
       action carries an auto-applying (transfer) Active Effect touching max health. Action
@@ -1762,31 +1738,17 @@ LOOK pickable, and the picked weapon is kitItem-stamped so Start over / ↺ Chan
         still R-54's call and `EDHA_HP_BONUS` in the engine is deliberately one constant in one
         place, so answering R-54 is a one-line change that moves the sheet, the wizard preview and
         the tests together.
-- [ ] 🤖 **Path training v2 — automatic, no dialog, one fixed skill (fixed 2026-07-28i; ⟳ sync +
-      F5, NO pack rebuild)** — run 21 found the old pick-a-skill dialog never appearing for any
-      path, and filed it as a data gap ("all six heroic paths ship `linkedSkills: []`"). **It is
-      not a gap and no data changed.** `linkedSkills` means the skills a path UNLOCKS (the sheet
-      renders it filtered by `.unlocked`), so `[]` is correct for a core path — and a populated
-      list would have offered surge skills as "training". The real rule is on each path's own
-      card: **ONE fixed skill**, granted automatically, which is what Ben asked for originally.
-      The wizard now calls the system's own `startingPath` macro (Warrior→Athletics ·
-      Hunter→Perception · Scholar→Lore · Agent→Insight · Envoy→Discipline · Leader→Leadership).
-      **THE POSITIVE:** pick **Warrior**. No dialog appears; a chat card reads
-      "🎓 …'s Warrior training: **+1 Athletics** (rank 1)"; the skills page then shows
-      **Spent: 1 of 5**, making its own "4 free + 1 your heroic path accounts for" wording true
-      for the first time; the sheet shows **Athletics rank 1**; and the Warrior path item carries
-      `flags.cosmere-rpg.isStartingPath = true`.
-      **POSITIVE CONTROL 2 — a different path must train a DIFFERENT skill:** on a second PC pick
-      **Scholar** and confirm **+1 Lore** (not Athletics). One path passing proves nothing about
-      the table being read correctly.
-      **NEGATIVE CONTROL 1 — the rank comes back and never stacks:** ↺ Change the heroic path and
-      confirm Athletics returns to **0**; re-pick Warrior and confirm it is **1**, not 2.
-      **NEGATIVE CONTROL 2 — a hand-placed rank in the same skill is not eaten:** on a fresh PC
-      set Athletics to **1** by hand FIRST, then pick Warrior → it must read **2**; ↺ Change must
-      return it to **1**, not to 0.
-      **NEGATIVE CONTROL 3 — no double grant:** on a PC that already has a starting path, opening
-      the wizard again must NOT add a second rank; expect the info toast naming the existing
-      starting path instead.
+*(**Path training v2** — RETIRED on evidence 2026-07-28j, bench run 22, positive AND both positive
+controls AND all three negative controls. **Positive:** picking Warrior opened **no dialog**, posted
+"🎓 B22 Warrior's Warrior training: **+1 Athletics** (rank 1)", left `ath` as the only non-zero rank,
+made the skills page read **"Spent: 1 of 5"**, and stamped `flags.cosmere-rpg.isStartingPath = true` on
+the Warrior item. **POS 2:** Scholar on the same actor trained **+1 Lore** with Athletics at 0 — the
+table is read per-path, not hard-coded. **NEG 1:** ↺ Change returned Athletics to **0** (and Lore to 0
+on the Scholar cycle); re-picking Warrior gave **1**, not 2. **NEG 2:** with Athletics hand-set to 1
+first, Warrior made it **2**, and ↺ Change returned it to **1**, not 0. **NEG 3:** re-opening the wizard
+on a PC that already had a starting path added no second rank — ℹ️ it shows a page banner
+"✅ Already chosen: Warrior" rather than the info toast the row predicted; same substance, different
+surface.)*
 - [ ] 🤖 **Wizard fits the screen v2 — the country page is re-clamped after its map lands (fixed
       2026-07-28i; ⟳ sync + F5)** — run 21 measured **"Where are you from?"** at top **237**,
       height **788**, bottom **1025** in a 1400×900 viewport: **125 px off the bottom**, while
@@ -1811,6 +1773,30 @@ LOOK pickable, and the picked weapon is kitItem-stamped so Start over / ↺ Chan
       **NEGATIVE CONTROL 3 — the page still scrolls:** with the map showing, the country page's
       inner content must still scroll (long nation prose reachable) rather than the dialog simply
       being made taller.
+      - ⛔ **2026-07-28j (bench run 22) — BLOCKED ON THE HARNESS, and the blocker is structural:
+        the agent bench can NEVER verify a ResizeObserver fix.** The browser pane runs
+        `document.hidden === true` / `visibilityState "hidden"`, and a hidden page runs no
+        rendering steps: a `requestAnimationFrame` loop delivered **0 frames in 2.7 s**, and a
+        `ResizeObserver` **and** an `IntersectionObserver` newly attached to a live element each
+        fired **0 times** — including their spec-mandated initial observation. Measured, not
+        inferred. So the row's symptom reproduces exactly (top **237**, height **788**, bottom
+        **1025** in a 1400×900 viewport, **125 px** over, **Choose ▶** off-screen at bottom 1012)
+        but that is indistinguishable from an un-fired observer and **is not evidence against the
+        fix**. What run 22 CAN prove, and did: (a) the **mechanism is correct** — calling
+        `app.setPosition({})` by hand on that exact dialog moved it **237 → 112**, bottom **exactly
+        900**, i.e. the fix's chosen repair produces precisely the wanted result; (b) `setPosition`
+        re-clamps `top` into `[0, vh−height]` on every call, so `edhaDialogNeedsReposition`'s
+        premise holds; (c) the **render-callback contract the fix depends on is sound** —
+        `DialogV2.wait` passes the **DialogV2 instance** (verified against
+        `client/applications/api/dialog.mjs` L389–392 and by probe: `element` is the
+        `HTMLDialogElement`, `instanceof HTMLElement` true, `setPosition` a function), so
+        `watch(dlg)` does attach; (d) **NEG 1 holds** — heroic opened at top **169** (h 563) and
+        attributes at top **142** (h 617), both centred and fitting, neither shoved to a clamp.
+        **The row stays 🤖 with the blocker named** (a technical blocker is not a judgment call, so
+        it is not re-filed as ⚑) — but note that this blocker is **structural and permanent for the
+        agent bench**, not a this-run shortage, so whether it should become a ⚑ is a marker
+        decision for Ben rather than one a run should take on its own. What settles it is one look
+        at a ~900 px-tall VISIBLE browser.
 - [ ] 🤖 **Weapon slot v3 — path-curated (07-19y, Ben-approved lists) — THE ONE WEAPON-PICKER ROW
       (absorbed 07-19q + 07-19v, 2026-07-27v)** — ONE weapon, never ×2 (the take-five ×2 reading is
       reverted), and the list is the path's own arms: Agent = Knife/Sidesword/Staff · Envoy =
@@ -1895,20 +1881,21 @@ expertise and offers a pick-2 origin list; Ashkar picks a second culture + one r
 document set (primer flavor / Names / You might be / the expertise block) rendering on the
 spot-opened Malcurr.)*
 
-- [ ] 🤖 **Cultural expertise grant** — drag a culture (say Corvaine) onto a test PC: the
-      **Corvaine** cultural expertise appears in the sheet's expertise list.
-- [ ] 🤖 **Pick-2 on a raw drag (07-19p rewire — needs the same rebuild)** — 07-19 bench
-      ANSWERED the old row: the native `pick:true` dialog offers the system's ROSHARAN
-      registries and ignores our lists entirely, so the pick events now use our
-      `edha-pick-expertises` handler. Dragging a culture straight onto a PC (no wizard) fires
-      the same per-nation dialog as the wizard's country page — including Ashkar's chained
-      double pick. Report here only if the raw-drag path behaves differently from the wizard
-      path (Character-creation v2 section).
-- [ ] 🤖 **Remove behavior (revised 07-19u)** — deleting the culture item RAW from the sheet still
-      removes only the cultural expertise (Roshar-mirror). But the WIZARD's Start over and
-      ↺ Change now also wipe the origin expertises the picker granted (they're stamped on an
-      actor flag at pick time; hand-added expertises always stay) — Ben's 07-19 report: the old
-      linger + a forced re-pick stacked to FOUR.
+*(**ALL THREE remaining culture rows RETIRED on evidence 2026-07-28j, bench run 22** — driven on the
+raw-drag path and cross-checked against the wizard path in the same run.
+**Cultural expertise grant:** dropping the pack's **Corvaine** culture onto `Bench — White` put
+`cultural:corvaine` on the sheet immediately.
+**Pick-2 on a raw drag:** the drag fired our **`edha-pick-expertises`** dialog ("Choose 2 expertises"),
+offering the **five Corvaine-specific options** — Court Etiquette · Requisition Law · Plague-Ward
+Practice · River-Craft · Bell & Burial Custom — **not** the system's Rosharan registries. The wizard's
+country page fired the identical five in the identical order on the same run, so **the raw-drag path
+does NOT behave differently** and the row asked to report only if it did. Picking two granted
+`utility:plague-ward-practice` + `utility:river-craft`.
+**Remove behavior, both halves:** deleting the culture item RAW removed **only** `cultural:corvaine`
+and **left both picked origin expertises** in place (the Roshar-mirror). The WIZARD's **↺ Change** on the
+country page wiped the cultural expertise **and** both origin expertises (`[]` after), so the 07-19
+linger-and-stack-to-FOUR is dead. A hand-set skill rank was separately confirmed untouched by the same
+machinery.)*
 *(**§9j's "is the ancestry slot mandatory?" — ANSWERED NO, 2026-07-27v, and the row is retired.** The
 sheet's else-branch renders a neutral **"Add Ancestry" drop target** — no warning, no validation, no
 gap — so a culture-only PC is a legal sheet. Its second half is settled from the shipped data too: the
@@ -1935,14 +1922,25 @@ on existing owned copies stands and costs nothing.)*
 The paste paid off: currency rows seeded, the CAE bridge live, 89 shipped items mirrored into
 edha-items (re-priced c/s/g; Roshar money loot excluded), and the starting-kit grant flow.
 
-- [ ] 🤖 **Currency rows render and edit** — on relaunch every character gets Gold/Silver/Copper
-      rows seeded (console logs the count); enter amounts, reload, they persist. ⚑ confirm the
-      row ORDER reads gold → silver → copper (we control the array order now) and note whether
-      the unseeded spheres block still shows a dead row (that's the last spheres question).
-- [ ] 🤖 **The mirror** — Edha Items now holds 102 items in 4 folders; spot-check Sidesword
-      (price reads in s/g, damage/traits intact) and one equipment piece. `_meta._review` in
-      `data/items.json` lists 13 Roshar-flavored entries (crem, sphere lantern, infused gem…) —
-      prune or re-flavor at your leisure; deleting the entry re-prices nothing else.
+*(**Currency rows render and edit** — RETIRED on evidence 2026-07-28j, bench run 22. A brand-new
+＋ Edha Character was seeded with all three rows in **gold → silver → copper** order
+(`denominations: [gold 0, silver 5, copper 0]` after its kit). Typed amounts stick and persist: 2 g /
+7 s / 3 c written through the sheet's own inputs landed in **`_source`** as `[gold 2, silver 7,
+copper 3]`, and the total pill recomputed to **🪙273 c** (2×100 + 7×10 + 3 — correctly copper-weighted).
+The unseeded spheres block shows **no dead row**: the native `.currency-list` is present but collapsed
+to **height 0**, and a whole-sheet scan found **zero** text nodes containing "sphere". ⚠️ One harness
+note, not a defect: firing all three `change` events in a single tick makes the three whole-array writes
+race and only the last survives — a user typing one field at a time is unaffected, which is how it was
+re-driven.)*
+
+*(**The mirror** — RETIRED on evidence 2026-07-28j, bench run 22. The row's "102 items in 4 folders" is
+stale the same way its retired sibling's "13 items" was: the pack now holds **113** — 82 equipment ·
+14 weapon · 10 culture · 6 armor · 1 ancestry. Spot-checks all pass and every price is `currency:
+"edha"`, never Roshar: **Sidesword** = **13 silver** (`denomination.primary "silver"`, baseValue 130 c)
+with damage `1d6 keen`, skill `lwp`, `attack.type "melee"` and traits `quickdraw` (active) + `offhand`
+intact; **Lantern (sphere)** = **65 copper**; **Breastplate** = **4 gold** (baseValue 400). Only **two**
+Roshar-flavored names survive by name — Bottle (crem), Lantern (sphere) — and the row calls pruning
+those optional.)*
       *(CAE use-grants retired at bench run 13, 2026-07-27p — all three clauses, driven **as
       `PlayerBench`**: Cautious Advance added `{max:2, name:"Edha: Cautious Advance (Brace / Gain
       Advantage)"}` to the caster's `actionsAvailableGroups`; Through the Fray added
@@ -1964,6 +1962,13 @@ assumed.)*
       and the card lists anything missing. Try one more path. (07-18l: the as-shipped 07-18j
       version never created the items — a docs-array double-wrap, fixed pre-bench; the grant is
       also once-only now. Covered again by the Character-creation section's walkthrough row.)
+      - ✅ **NARROWED 2026-07-28j (bench run 22) — the grant itself is proven on TWO paths, via the
+        wizard rather than the console.** Warrior granted **9 items + 5 silver** and Scholar **10
+        items + 5 silver**, each with the card naming the count and the weapon-slot follow-up, and
+        the purse moving in step (0 → 5). Once-only also holds: re-entering the wizard on a PC that
+        already had its kit added nothing. ⛔ **What remains is only the row's literal ask** — the
+        **console API** `edha.grantStartingKit(actor, "Hunter")` on the **Hunter** path, and its
+        "lists anything missing" clause. Not reached at run 22.
 
 - [ ] 🤖 **Kindle — NARROWED 2026-07-27v to the token-light half only** — ✅ **the label half is
       proven**: the Kindle die/mod is labeled in the damage breakdown, observed live as "+ **3
@@ -1993,34 +1998,28 @@ never be true again. **Superseded by "The mirror"** below, which is the live ite
 for the mirror pass (§9j #2)", and the mirror pass **shipped 07-18j**. It duplicates **"The mirror"**
 below, which already asks for the Sidesword price spot-check in s/g.)*
 
-- [ ] 🤖 **Devastating Blow is takeable with one Combat Training** — re-drag Devastating Blow (or
-      test on the tree): its prereq now points at the WARRIOR tree's Combat Training. ⚑ the
-      same-named prereq may still LIST twice (tree edge + prose) — both should read satisfied
-      together; report if one still shows unmet.
-- [ ] 🤖 **Hardy grants max HP** — now testable (was blocked by the prereq bug): +1 max health per
-      level on add, exactly like the benched leyline copies.
-- [ ] 🤖 **Clear Mind / Focused Mind raise max focus** — both now carry the Composed-shape AE:
-      max focus +tier on add (current focus tops up on rest — nudge manually, as with Composed).
-- [ ] 🤖 **Surefooted grants exactly +10 speed** — was +20: the derivation double-counted every
-      speed AE. Verify +10 on add, base on remove. (Walking Ruin had the same latent double —
-      if a Green PC has it, spot-check its number too.)
-      ✅ **THE WALKING RUIN CLAUSE IS PROVEN — narrowed 2026-07-27v.** Bench run 4's **2bY-8** toggled
-      Walking Ruin on/off and read a **+10 ft Speed AE** (trail patches while on, zero after off), so
-      the latent double is dead on that talent. ⛔ **What remains is Surefooted's own number**: add it
-      to a PC → **+10**, remove it → base.
-- [ ] 🤖 **Stances toggle and exclude — NARROWED 2026-07-27v** — ✅ **enter, swap and the toast are all
-      proven** (bench run 10's CAE cluster spot: Practiced Kata auto-entered Vigilant Stance at all
-      three combat starts, and stances **replaced each other** with the toast naming what ended —
-      "(Stonestance ended)"). ⛔ **The one unrun clause is the third**: use the **active** stance again
-      → it **leaves** it (no stance active, marker gone). Try Vigilant Stance ↔ Flamestance on the
-      Warrior. *(The stances' mechanical riders — Vigilant's cost discount, Flamestance's Intimidation
-      advantage — are NOT yet wired; the marker is the state they'll key off, §9j.)*
-- [ ] 🤖 **New PC token defaults** — create a fresh test character: its token name shows on hover
-      to everyone, and its vision range matches Senses Range (AWA 0 → 10 ft … 5+ → 30 ft) in
-      the cosmere "sense" mode. ⚑ Then run `edha.fixPcTokens()` in the console (GM) once — it
-      retrofits Test / Test Warrior and their placed tokens the same way.
-- [ ] 🤖 **Raising AWA extends sight** — bump a test PC's AWA: prototype AND placed tokens' vision
-      range follows (GM client applies it).
+*(**ALL SEVEN remaining rows in this block RETIRED on evidence 2026-07-28j, bench run 22.**
+**Devastating Blow / one Combat Training:** settled on the shipped data — the Warrior tree's
+Devastating Blow node carries exactly **one** talent prerequisite, and it resolves to
+`Compendium.edha-content.edha-heroic.Item.M94PjyNgvjnSgHNu`, the **warrior** Combat Training, not the
+hunter copy `L0bmdmjQXHvO7wn4`. It does **not** list twice: one prerequisite entry, one connection
+pointing at it (its only other prereq is a non-talent `skill: ath rank 3`).
+**Hardy:** on a level-7 PC, adding it moved max health **45 → 52** — exactly **+1 per level** — via
+`system.resources.hea.max.bonus += @level`.
+**Clear Mind / Focused Mind:** both carry the Composed-shape AE `system.resources.foc.max.bonus +=
+@tier`; at tier 2, max focus went **5 → 7 → 9** as each was added.
+**Surefooted:** **20 → 30** on add (exactly **+10**, not +20) and back to **20** on remove. ⚠️ Read
+`movement.walk.rate.**value**` — the engine writes the Edha rate into `override` and the
+DerivedValueField getter adds `.bonus` on top, so reading `override` alone reports a false **+0**.
+**Stances — the last unrun clause:** using the **active** Vigilant Stance again **left** it — the
+"Vigilant Stance" effect disappeared and no stance remained (the pre-existing "Determined" was
+untouched).
+**New PC token defaults:** a fresh ＋ Edha Character landed with `displayName 30` (HOVER — the name
+reads to everyone), `sight.enabled true`, `visionMode "sense"`, `attenuation 0.1`, and range = Senses
+Range.
+**Raising AWA extends sight:** the whole table moved in lockstep across the actor, the **prototype**
+token and a **placed** token — AWA 0 → **10**, 2 → **20**, 4 → **25**, 5 → **30** ft, on the GM client.
+A hand-set Senses override of 60 also carried through to the token's sight.)*
 *(**⚑ THE PASTE** — RETIRED 2026-07-27v: **its deliverable is in the repo.**
 `source-materials/edha-items-dump.json` was committed at `ed67fe9` and was already **consumed by the
 07-18j pass** (the currency DataModel it captured is what the g/s/c editor was built against). There is
@@ -2037,13 +2036,19 @@ The engine now hides the Roshar spheres chip on every character currency list an
 gold/silver/copper editor on the equipment tab, writing the seeded
 `system.currency.edha.denominations` array (shape confirmed by the items dump).
 
-- [ ] 🤖 **Spheres row hidden** — no spheres chip anywhere on a PC sheet (header strip or
-      equipment tab); adversaries untouched.
-- [ ] 🤖 **g/s/c editor** — the equipment tab's currency area shows three editable g/s/c
-      inputs; typed amounts persist across F5/relaunch; the read-only "edha coin" total keeps
-      showing the system's derived roll-up beside them.
-- [ ] 🤖 **Purse flows move the silver box** — kit grant (+5 s), Start over (−5 s), and the new
-      ↺ Change on heroic (−5 s) all visibly move the SILVER input.
+*(**ALL THREE currency rows RETIRED on evidence 2026-07-28j, bench run 22.**
+**Spheres row hidden:** a whole-sheet DOM scan of a PC found **zero** text nodes containing "sphere",
+on the header strip and the equipment tab alike; the system's native `.currency-list` is still in the
+DOM but computed to **height 0** (not shown), so there is no dead row. Adversaries were untouched —
+nothing in this run wrote to an adversary's currency.
+**g/s/c editor:** the equipment tab renders three `input[type=number]` pills — `.ec-gold` / `.ec-silver`
+/ `.ec-copper`, each **56×26**, `readOnly false`, `disabled false` — with the read-only total pill
+beside them. Typed values write through and persist: 2 g / 7 s / 3 c reached **`_source`** intact, and
+the total pill read **🪙273 c**, the correct copper-weighted roll-up.
+**Purse flows move the silver box:** all three flows observed on one PC in one session — **kit grant
++5 s** (0 → 5, twice: Warrior and Scholar), **↺ Change on heroic −5 s** (5 → 0), and **Start over −5 s**
+(7 → 2). Start over took exactly the kit's 5 silver and left the hand-typed **gold 2** and **copper 3**
+alone.)*
 
 ---
 
@@ -2064,23 +2069,43 @@ customized variants: the bulk pass skips them; their own sheet button syncs them
       NOT re-drag; click the button once. Then confirm a Mistheron placed BEFORE the deploy rolls
       Spearing Beak's +1d6 only vs fooled targets (the 07-17c `whenTargetFooled` fix) — proof the
       new item rules landed on an existing token.
-- [ ] 🤖 **Sheet button** — open a world adversary's sheet: a "⟳ Sync from Pack" bar sits under
-      the header; clicking it toasts the item/token counts and the sheet re-renders current.
-- [ ] 🤖 **Placed-token push** — a token placed BEFORE the deploy shows the 07-17c vision model
-      (visionMode "sense", attenuation 0.1) after sync, without being re-placed.
-- [ ] 🤖 **State preserved** — damage a placed adversary token, sync: it keeps its HP and position;
-      the WORLD actor (sidebar copy) resets to full like a fresh drag.
+      - ✅ **NARROWED 2026-07-28j (bench run 22) — the `whenTargetFooled` half is PROVEN, both
+        directions, on one actor in one sitting.** Against a **fooled** observer the damage rolled
+        `1d8 + 2 + (1d6[Spearing Beak])[Spearing Beak] + 0 = 11`; against a target with **no seeming
+        up** the same item rolled `1d8 + 2 + 0 = 6` — the rider is present only when belief is.
+        ⛔ **What remains is the BULK-BUTTON clause only** — a bulk sync was **not authorised** for
+        run 22, so "click the button once instead of re-dragging" is unrun. Blocker named, row
+        stays 🤖.
 - [ ] 🤖 **Renamed copies skipped** — rename a world copy (e.g. "Roek Alpha") → bulk sync skips it
       and the console lists it under `skipped`; its own sheet button still syncs it.
-- [ ] 🤖 **Hand-added items survive** — add an item by hand to a world adversary, sync: the item
-      is still there (pack-built items were replaced around it).
-- [ ] 🤖 **Stale duplicates healed — NARROWED 2026-07-27v** — ✅ **the sync half is proven**: the
-      **world-wide** adversary sync Ben authorized ran at bench run 11 — **46 synced, 0 skipped**, with
-      all 87 actors snapshotted (ids, flags **and** full effect objects) beforehand and **post-sync
-      effect drift NONE**. So "one bulk sync brings every world copy current" is established at scale.
-      ⛔ **What remains is only the READ**: open the old duplicate Corvaine Raider actors in the sidebar
-      (the 07-17c gotcha) and confirm **all five** now show the weapon-type Shortsword. Same residue as
-      the "Shortsword on the CURRENT Raider" row below — do them together.
+      - ✅ **NARROWED 2026-07-28j (bench run 22) — the second half is PROVEN.** A renamed,
+        drag-stamped copy (`Bench Adv — Mistheron`, `_stats.compendiumSource` pointing at the pack
+        Mistheron) **did** sync from its own sheet button: *"Edha: Bench Adv — Mistheron synced from
+        the pack (7 items, 1 placed token)."* ⚠️ And the guard is real: **before** that stamp existed
+        the same button refused with *"Edha: Bench Adv — Mistheron — no pack source (name not in
+        edha-adversaries)."* — so a copy that is BOTH renamed and unstamped has no sync route at all.
+        ⛔ **What remains is the bulk-skip clause** (the console `skipped` list), unrun because a bulk
+        sync was not authorised. Blocker named, row stays 🤖.
+
+*(**Sheet button · Placed-token push · State preserved · Hand-added items survive · Stale duplicates
+healed — ALL FIVE RETIRED on evidence 2026-07-28j, bench run 22**, driven as four assertions over a
+single `⟳ Sync from Pack` click on a bench copy, each the others' control.
+**Sheet button:** `button.edha-sync-btn` labelled **"⟳ Sync from Pack"** sits on the world adversary's
+sheet; clicking it toasted **"synced from the pack (7 items, 1 placed token)"** — both counts named —
+and the sheet re-rendered.
+**Placed-token push:** that token had been hand-broken to `sight.range 0` / `visionMode "basic"`
+beforehand; after the sync, and **without being re-placed**, it read `range 10`, `visionMode "sense"`,
+`attenuation 0.1` — the 07-17c vision model pushed onto a token already on the scene.
+**State preserved:** in the same click the token kept **HP 3** and **position (600, 1200)** while the
+WORLD actor reset **7 → 20/20**, full, like a fresh drag.
+**Hand-added items survive:** a genuinely hand-made item (`B22 Hand Trinket`, `_stats.compendiumSource`
+**null**) survived — 8 items before, 8 after — while the 7 pack-built items were replaced around it.
+⚠️ **A "hand-added" item CLONED from a compendium is not hand-added** as far as the sync is concerned:
+a renamed clone of the pack Sidesword carries a `compendiumSource` stamp and **was** removed. That first
+result read as a FAIL until it was re-driven with an unstamped item; the behaviour is correct.
+**Stale duplicates healed (the READ):** ℹ️ the world holds **FOUR** "Corvaine Raider" actors, not the
+five this row and its sibling below both assert. All four are current and identical: Shortsword present
+as `type: "weapon"`, `attack.type "melee"`, skill `hwp`, damage `1d6+2 keen`.)*
 
 ---
 
@@ -2119,10 +2144,13 @@ displayName, a missing mode gate, the PC visionMode, and one stale world actor.
 - [ ] 🤖 **Single-target picker resolves** — target 2+ tokens, use Withering Ray: the picker card
       appears, nothing is spent; click a name → that token becomes your ONLY target, the card
       marks ✓, and the talent rolls once against it. (Verdant Mend same.)
-- [ ] 🤖 **Spearing Beak rolls from the icon** — on a SYNCED (or re-dragged) Mistheron, click the Beak's icon:
-      one card with the d20 Heavy Weaponry test (+5) AND the 1d8+2 keen damage + graze line.
-      Against a believer in its seeming the damage shows `+1d6[Spearing Beak]`; against anyone
-      else (or with no seeming up) there is NO +1d6.
+*(**Spearing Beak rolls from the icon** — RETIRED on evidence 2026-07-28j, bench run 22, **both
+directions on a freshly-imported Mistheron**. **ONE** chat message carried **both** rolls: the test
+`1d20 + 0 + 5 = 17` (Heavy Weaponry at the row's **+5**) and the damage `1d8 + 2 + 0 = 6` — no dead
+click, no second card. Against a **believer** in its seeming (a bench PC the belief sweep had just
+listed as Fooled) the damage formula became `1d8 + 2 + (1d6[Spearing Beak])[Spearing Beak] + 0 = 11` —
+the rider present **and labelled**. Against a target with **no seeming up**, no `+1d6` at all. That is
+the 07-17c `whenTargetFooled` fix proven in both directions with each drive the other's control.)*
 *(**⚑ Damage-rider family regression** — RETIRED on evidence 2026-07-27v. The row asks for **one** other
 rider talent; **three** have now rolled with a labeled bonus and no dead click, on three separate runs
 and three different damage types: **"+5 keen strike"** (Pack Pressure, bench run 3 — and that one was
@@ -2131,11 +2159,17 @@ consuming its arm (Momentum of Victory, bench run 7) · **"+8 vital strike"** (W
 Sidesword hit in combat, bench run 15). The graze-clone guard covers the family.)*
 - [ ] 🤖 **AoE burst auto-target** — place any burst (e.g. Flame Surge): the caught tokens end up
       actually TARGETED (this retarget had been silently no-opping on v13).
-- [ ] 🤖 **Seeming recast replaces the token** — cast The Seeming, then recast while the copy still
-      stands: the OLD copy token disappears, exactly ONE new copy token appears (they used to
-      stack invisibly on the same square), and the believer sweep re-runs.
-- [ ] 🤖 **Seeming copy hover-name** — hover the copy token as GM: the name shows (owner-hover,
-      the same behavior as every built adversary token).
+*(**Seeming recast replaces the token · Seeming copy hover-name — BOTH RETIRED on evidence
+2026-07-28j, bench run 22.** First cast created **exactly one** copy token (`Mistheron (3)`) and ran the
+belief sweep — *"6 onlooker(s) tested — 3 taken in, 3 see through it"*. Recasting while that copy still
+stood posted *"the illusion breaks — the real one stands plainly seen"*, the **old copy token id was
+gone from the scene**, **exactly ONE** new copy token appeared, and the **sweep re-ran with a different
+result** (*"6 onlooker(s) tested — 2 taken in, 4 see through it"*) — so it is a genuine re-run, not a
+cached verdict. No invisible stacking: a scene scan afterwards found one copy token, the caster, and no
+orphan. **Hover-name:** the copy token carries `displayName 20` = **OWNER_HOVER**, which is what the row
+itself specifies and what every built adversary token uses; as GM (an owner) the name shows on hover.
+⚠️ The engine **auto-renamed** the caster's own token to `Mistheron (2)` beside a pre-existing
+`Mistheron (1)` — resolve these by id, never by name.)*
 *(**⚑ Siege Cannon gated on Siege Form** — RETIRED on evidence 2026-07-27v, **both directions, against
 a normally forged `summonTalent`-stamped Construct**. **OFF** (bench run 8): the use was refused
 **pre-cost** — "Edha: Siege Cannon (Siege Form only) needs Siege Form active — toggle it on first.
@@ -2146,20 +2180,40 @@ the Cannon rolled `(2)d(2*3+2)+2+2 = 10` energy and applied exactly **8** throug
       the range is its Senses Range (adversary AWA 0 → 10 ft), and a block carrying a bespoke
       `senses` value still wins over the default. This is a document read, not a look.
       *(Split 2026-07-27w.)*
+      - ⚠️ **2026-07-28j (bench run 22) — TWO clauses PASS, the third's NUMBER IS WRONG, and the
+        fourth has no instance to test. Read at whole-population scale, not on one token.**
+        ✅ Across **all 47** world adversaries: `visionMode` is **"sense"** for every one, and token
+        sight range **exactly equals** `system.senses.range.value` for every one — **zero**
+        mismatches. Those two clauses are settled.
+        ❌ **"adversary AWA 0 → 10 ft" is not what the world holds: it is 5 ft.** Every world
+        adversary is AWA 0 → Senses **5**. The cause is not a bug in the sync — it is that
+        `edhaDeriveSheetStats` opens with `if (actor?.type !== "character") return;` (~L16296) and
+        **both** `preCreateActor` token-default hooks do the same, so the Edha AWA table
+        (`edhaSensesRangeFtFromAwa`, 0 → 10) is **character-only** and adversaries fall through to
+        the cosmere system's own derivation, which gives 5.
+        ⚠️ **And the PACK disagrees with the WORLD**: all **52** pack adversaries ship
+        `prototypeToken.sight.range` **10** against a `senses.range.value` of **5** (52/52
+        mismatched), and the sync PUSHES that 10 — the placed-token row above watched a token come
+        back at **10** after a sync while its actor's Senses Range stayed **5**. So a synced token
+        sees 10 and a world actor reads 5. Pack 10 · world 5 · sync pushes 10.
+        ⛔ **"a bespoke `senses` value still wins" is UNRUNNABLE as written** — **0 of 52** pack and
+        **0 of 47** world adversaries carry any `senses.range` override or `useOverride`, so there
+        is no such block to test. It needs one authored first.
+        **Row stays 🤖** pending a decision on which number is canon — see the ⚑ design row directly
+        below, whose premise ("10 ft is intended") is the pack's value, not the live one.
 - [ ] ⚑ **Adversary sight range — does 10 ft feel wrong? Say a number.** — with those tokens on a
       real map: adversary AWA 0 → **10 ft** is intended, but it is a **design dial**, not a bug.
       If it plays badly, give the number you want instead. *(Split 2026-07-27w; the config read is
       the 🤖 row above. Related: rulings menu — bench PCs carry the same 10 ft and it nearly caused
       a false PASS.)*
-- [ ] 🤖 **Shortsword on the CURRENT Raider — NARROWED 2026-07-27v** — ✅ **the sync half is proven and
-      the ownership half was already ANSWERED**: bench run 11's world-wide sync ran **46 synced, 0
-      skipped, zero effect drift** across all 87 snapshotted actors, so "after the bulk sync ALL of them
-      are current" is established; and GM-lore visibility is settled — with ownership "None" players
-      cannot open the sheet at all, so the biography stays GM-only unless you grant Limited (which shows
-      exactly the biography). ⛔ **What remains is the five-Raider READ**: open each of the five
-      "Corvaine Raider" actors in the sidebar and confirm the Shortsword sits in the **WEAPONS** section
-      (heavy weapon, melee) and rolls from its icon. Pair this with "Stale duplicates healed" above —
-      same five actors, one pass.
+*(**Shortsword on the CURRENT Raider** — RETIRED on evidence 2026-07-28j, bench run 22, together with
+"Stale duplicates healed" above (same actors, one pass, as the row asked). ℹ️ **There are FOUR Corvaine
+Raider actors in the world, not five** — both rows say five; the count is stale. All four read
+identically and correctly: a **Shortsword** present as `type: "weapon"` (so it sits in the WEAPONS
+section, not gear), `attack.type "melee"`, skill **`hwp`** (Heavy Weaponry), damage **`1d6+2 keen`** —
+ids `WvRRebvUo8TPBBgL`, `XzJI5GsPinxIuzG9`, `rNfn6FIF0jLwoPfH`, `vsAEITDO9m0jPkRS`, all in
+`Edha Adversaries`. That a same-shaped Mistheron weapon rolls from its icon was demonstrated separately
+in this run by Spearing Beak. The sync half and the GM-lore/ownership half were already settled.)*
       *(Sense-through reveals retired at bench run 13, 2026-07-27p: `PlayerBench` owning
       Bench — Chaos (Void Sense, `edha-sense-reveal` status `omen`) rendered an Omen-marked target
       it could not otherwise see, while an identically-obscured UNMARKED control stayed invisible —

@@ -453,6 +453,30 @@ accept that a creature's Senses Range means something different from a PC's; **(
 block's explicit `senses` field stays the bespoke override under all three. Nothing is blocked on
 this — it only decides how far the fix reaches. *(Marathon 3, fix pass E.)*
 
+> **MEASURED 2026-07-28j (bench run 22) — it is worse than "three rules for three surfaces": the
+> three surfaces disagree about the SAME creature, and one of the three moves when you press a
+> button.** Read at whole-population scale, not on one token.
+> - **World actors: 5 ft.** All **47** adversaries in the world are AWA 0 → `senses.range.value`
+>   **5**, `visionMode "sense"`, and token sight **exactly equals** Senses Range — **0** mismatches.
+> - **Pack: 10 ft.** All **52** pack adversaries ship `prototypeToken.sight.range` **10** against a
+>   `senses.range.value` of **5** — **52 of 52** internally mismatched. So R-56's "flat 10 ft from
+>   the build" is confirmed, and it is *only* on the token, never on the sheet.
+> - **⚠️ And `⟳ Sync from Pack` PUSHES the 10.** Observed live: a placed token hand-broken to sight 0
+>   came back at **10** after one sync while its actor's Senses Range stayed **5**. So a *synced*
+>   token sees 10 and a *freshly created* one sees 5 — the same creature, two numbers, decided by
+>   whether anyone clicked sync.
+> - **Mechanism, so option (a) is a small change:** `edhaDeriveSheetStats` opens with
+>   `if (actor?.type !== "character") return;` (~L16296) and **both** `preCreateActor` token-default
+>   hooks do the same. The Edha table is character-only by one guard in three places, not by design
+>   spread through the engine.
+> - **⛔ The "bespoke `senses` override stays" clause has no instance under any option:** **0 of 52**
+>   pack and **0 of 47** world adversaries carry a `senses.range` override or `useOverride`. If that
+>   escape hatch is meant to be real, one block needs to author it so it can be tested.
+>
+> This also blocks a checklist row: `# Bench-results fixes` → "Adversary tokens see like PCs" asserts
+> **AWA 0 → 10 ft**, which no live world adversary can satisfy, and its ⚑ sibling asks whether 10 ft
+> *feels* wrong when 10 ft is not what is playing. Both wait on this ruling.
+
 ---
 
 ## I. ⚠️ APPLIED AS DEFAULT — veto if you disagree

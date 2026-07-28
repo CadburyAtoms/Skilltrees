@@ -33,6 +33,113 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-07-28j — BENCH RUN 22 (marathon 3): **fix pass E re-tested — 3 of 4 retired with every paired negative including the load-bearing one, and the 4th is BLOCKED by a harness limit that is permanent, not a shortage. The six re-test sections swept: 32 🤖 in, 24 retired, 4 not reached.** **27 rows retired total. Zero world drift.** DOCS-ONLY (no engine, no data, no pack rebuild).
+
+Live engine hash-verified at join: `2e34ea72f151ee47ef2f7c3d12e3e9af4a19b076a943ae9bbdf3c7407870ed99`
+(19389 lines) == `HEAD:module-src/scripts/register-skills.js` (git blob `9346245`). All six fix-pass-E
+byte markers matched (`edhaWalkRateFtFromSpd` 5 · `EDHA_HP_BONUS` 7 · `edhaParseStartingSkill` 2 ·
+`edhaSkillIdFromLabel` 3 · `edhaDialogNeedsReposition` 2 · `RATES[idx(cur.spd)]` **0**). Pack-rebuild
+list still **EMPTY**.
+
+### PART A — fix pass E
+
+- ✅ **Derived-stat preview v2 — RETIRED.** Panel and sheet agree cell for cell at the reported spread
+  (**Health 14 · Move 35 ft · Senses 10 ft**) and at a second spread (SPD 0/AWA 4 → **Move 20 · Senses
+  25**, not the system's 20/20); the six controls that already agreed still do. A hand-set Senses
+  override of 60 survived an F5 and the token's sight followed it. The engine now writes
+  `senses.range.derived` at all — token sight tracked AWA 0→10, 2→20, 4→25, 5→30.
+- ✅ **Finish tops up to a REACHABLE max — RETIRED, including the load-bearing negative.** Fresh PC
+  finished at **14/14 · 5/5 · 2/2**, no rest dialog (and a later second Finish at 14/14 · 5/5 · 6/6).
+  **Wounded stays wounded:** 9/14 → real F5 → **9/14**. **13/14 → F5 → 13/14**, not 14 — the case a
+  naive fill-to-max fix gets wrong. Focus 3/5 and Investiture 1/2 survived the same reload.
+- ✅ **Path training v2 — RETIRED, 6 for 6.** Warrior → no dialog, "+1 Athletics (rank 1)" card,
+  **Spent: 1 of 5**, `isStartingPath true`. Scholar → **+1 Lore**, not Athletics. ↺ Change → 0;
+  re-pick → 1, not 2. Hand-set rank 1 + Warrior = **2**, ↺ Change → **1**, not 0. Re-opening on a PC
+  that already has a path grants nothing (it shows a page banner, not the predicted toast).
+- ⛔ **Wizard fits the screen v2 — BLOCKED, and the blocker is structural.** **The agent bench can
+  never verify a ResizeObserver fix.** The browser pane is `document.hidden === true`, and a hidden
+  page runs no rendering steps: a rAF loop delivered **0 frames in 2.7 s**, and a newly-attached
+  `ResizeObserver` **and** `IntersectionObserver` each fired **0** times — including their
+  spec-mandated initial observation. Measured, not inferred. The symptom therefore reproduces exactly
+  (top 237 · h 788 · bottom 1025 · **125 px** over) but that is indistinguishable from an un-fired
+  observer. What run 22 *could* prove, and did: calling `setPosition({})` by hand on that dialog moves
+  it **237 → 112, bottom exactly 900** — the fix's repair is correct; `setPosition` re-clamps into
+  `[0, vh−height]` every call; and the render-callback contract holds (`DialogV2.wait` passes the
+  **instance**, verified against `client/applications/api/dialog.mjs` L389–392 and by probe), so
+  `watch(dlg)` does attach. NEG 1 also holds: heroic 169, attributes 142, both centred and fitting.
+
+### PART B — 24 of 32 retired
+
+- **`# Culture items` — 3/3.** Raw drag of Corvaine granted `cultural:corvaine`; the drag fired **our**
+  `edha-pick-expertises` dialog with the **five Corvaine options**, identical to the wizard's, so the
+  two paths do not differ; raw delete removed only the cultural expertise while the picked origins
+  stayed, and the wizard's ↺ Change wiped all three.
+- **`# Bench 07-18 fixes re-test` — 7/7.** Devastating Blow's node prereq resolves to the **warrior**
+  Combat Training (`M94PjyNgvjnSgHNu`), listed once. Hardy **45 → 52** at level 7 (+1/level). Clear
+  Mind + Focused Mind **5 → 7 → 9** at tier 2. Surefooted **20 → 30 → 20** (exactly +10). Using the
+  active stance again **leaves** it. Fresh PC token: `displayName 30`, `visionMode "sense"`, range =
+  Senses Range. AWA changes move actor, prototype and placed token together.
+- **`# Currency wiring` — 3/3.** Zero "sphere" text nodes on a PC sheet and the native widget collapsed
+  to height 0; three editable g/s/c inputs whose values reach `_source` with a correct copper-weighted
+  total (**🪙273 c**); all three purse flows seen (kit **+5 s**, ↺ Change **−5 s**, Start over **−5 s**,
+  the last leaving hand-typed gold and copper alone).
+- **`# Adversary pack sync` — 5/7.** One `⟳ Sync from Pack` click settled four rows at once: the button
+  and its **"(7 items, 1 placed token)"** toast; a hand-broken token restored to `sight 10` /
+  `"sense"` / `0.1` **without re-placing**; token keeping **HP 3** and **(600,1200)** while the world
+  actor reset **7 → 20/20**; and an unstamped hand-made item surviving while the 7 pack items were
+  replaced. Plus the Raider read. The two that stay are the **bulk-button** clauses — a bulk sync was
+  not authorised.
+- **`# Bench-results fixes` — 4/7.** Spearing Beak in **one** card with `1d20+0+5` **and** `1d8+2`, the
+  `+1d6[Spearing Beak]` rider present against a believer and **absent** with no seeming up. Seeming
+  recast: old copy gone, exactly one new copy, sweep genuinely re-ran (3 fooled → 2 fooled). Copy
+  carries `displayName 20` (OWNER_HOVER). Four Raiders all carry Shortsword as a **weapon**.
+- **`# Items-dump tranche` — 2/5.** Currency rows seeded in gold→silver→copper order and persisting;
+  the mirror at **113 items** with Sidesword **13 s** / `1d6 keen` / quickdraw + offhand, Lantern 65 c,
+  Breastplate 4 g.
+
+### What this run found that was not a re-test
+
+- ⚠️ **`# Bench-results fixes` → "Adversary tokens see like PCs" is a real PARTIAL and its number is
+  wrong.** Two clauses pass at population scale (all **47** world adversaries: `visionMode "sense"`,
+  token sight **exactly** = Senses Range, 0 mismatches). But **"AWA 0 → 10 ft" is 5 ft live**, because
+  `edhaDeriveSheetStats` opens `if (actor?.type !== "character") return;` (~L16296) and both
+  `preCreateActor` hooks do the same — the Edha table is character-only. Meanwhile **all 52 pack
+  adversaries ship token sight 10 against a Senses Range of 5**, and **`⟳ Sync` pushes that 10**: a
+  synced token sees 10, a freshly created one sees 5, same creature. Full measurement appended to
+  **R-56**, which already framed the question and now has its numbers. The row's fourth clause
+  ("a bespoke `senses` value still wins") is **unrunnable** — 0 of 52 pack and 0 of 47 world
+  adversaries carry one.
+- ℹ️ **There are FOUR "Corvaine Raider" actors, not five.** Two checklist rows asserted five.
+- ℹ️ **Investiture max is written as an `override` by Finish and only refreshed at Finish**, so a panel
+  reading 6* beside a sheet reading 2 is a stale override, not preview/sheet drift — confirmed by
+  re-finishing, which moved the sheet to 6.
+
+### Two harness traps that produced a false result before being caught
+
+- ❌ **Reading `movement.walk.rate.override` instead of `.value` reported Surefooted as +0.** The engine
+  writes the Edha rate into `override` and the DerivedValueField getter adds `.bonus` **on top** — the
+  engine says so in its own comment. Same family as "read `system.deflect.value`, never `.derived`".
+- ❌ **A "hand-added" item cloned from a compendium is not hand-added.** A renamed clone of the pack
+  Sidesword carries `_stats.compendiumSource`, so the sync correctly replaced it — which read as a FAIL
+  until re-driven with a genuinely hand-made item, which survived.
+
+### World state
+
+87 actors · 52 scene tokens · 117 walls at start **and at end**; Ben's combat `BerbNeuXp4iKduef`
+untouched at round 1 / turn null / active; no scene activated. Two actors created (`B22 Warrior` in
+`Edha PCs`, `Bench Adv — Mistheron` in `Edha Bench`) and both **deleted**; four tokens created and all
+four gone. `Bench — White`'s flag object was restored **byte-exact** to its start snapshot (378 → 378
+chars) after the culture pick stamped an `originPicks` key. ⚠️ **One residue reported, not cleaned:**
+`Bench — Blue` and `Bench — White` each lost the `edha-aura` effect **"Guardian Stance (+1 Deflect)"** —
+White owns the stance and is no longer in it, so the aura stopped radiating. Both are bench-folder
+fixtures; re-entering the stance restores it. Cause not attributable from this run's logs (two F5s and
+scene-token churn are both candidates) — **labelled an inference**, and it exposes a snapshot gap: the
+start snapshot captured effect **names**, not whole effect objects, for linked actors.
+
+Logged out; `Bench` selectable on `/join`.
+
+---
+
 ## 2026-07-28i — MARATHON-3 FIX PASS E (bench run 21's four wizard fails): **three of them were ONE bug that was really THREE, canon pointing a different way for each cell — and the "authoring gap" that needs no data change, again.** The pack-rebuild list **stays EMPTY** (six passes running). **ALL ENGINE-ONLY → ⟳ sync the module + F5.** No CSS change either, despite the report. 400 tests green.
 
 ### What shipped

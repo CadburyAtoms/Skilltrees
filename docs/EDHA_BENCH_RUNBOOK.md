@@ -793,6 +793,56 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   a section that is **one continuous flow over one subject** rewards keeping the subject open and
   asserting as you pass each page. Budget these sections by *pages in the flow*, not by rows.
 
+## Operating lessons from run 22 (2026-07-28j — these OVERRIDE older advice where they conflict)
+
+- ❌ **THE PANE IS `document.hidden`, SO rAF NEVER RUNS — AND NEITHER DOES ANY OBSERVER.** Measured:
+  a `requestAnimationFrame` loop delivered **0 frames in 2.7 s**, and a freshly-attached
+  `ResizeObserver` **and** `IntersectionObserver` each fired **0** times, including the initial
+  observation the spec guarantees. `tabs_select` does **not** un-hide it. **Any fix whose trigger is
+  a ResizeObserver / IntersectionObserver / rAF / `visibilitychange` is UNVERIFIABLE on the agent
+  bench** — record it **BLOCKED with the blocker named**, never FAIL, because the un-fired-observer
+  symptom is byte-identical to a broken fix. ⚠️ Note PIXI's ticker still self-reports
+  `started: true, FPS 60`; that is a stale nominal reading, not evidence frames are running.
+  What you CAN still do is prove the fix's *mechanism* by invoking its effect by hand (run 22 called
+  `app.setPosition({})` and watched 237 → 112, bottom exactly 900) and prove its *contract* by
+  reading Foundry's own source — that turns a dead row into a strong partial.
+- ❌ **Read a DerivedValueField's `.value`. Never `.override`, never `.derived`.** Run 22 read
+  `movement.walk.rate.override` and recorded Surefooted as **+0** — a clean false FAIL. The engine
+  writes the Edha walk rate into `override` **and** the getter adds `.bonus` on top, which it says in
+  its own comment; on `.value` the same drive read **20 → 30 → 20**, exactly +10. This is the
+  `system.deflect.value` rule generalised: **the field you want is always `.value`.**
+- ❌ **An item you "hand-added" from a compendium is not hand-added.** A renamed clone of a pack item
+  carries `_stats.compendiumSource`, so a pack sync treats it as pack-built and replaces it. Run 22
+  recorded "hand-added items survive → FAIL" and only got the right answer after re-driving with
+  `createEmbeddedDocuments('Item', [{name, type}])` — no source stamp — which survived. **Build
+  negative-control fixtures from scratch, not by cloning the thing under test.**
+- ❌ **`Actor.create(packDoc.toObject())` is NOT a drag: it leaves `_stats.compendiumSource` null**,
+  and the sheet's ⟳ Sync then refuses outright ("no pack source (name not in edha-adversaries)").
+  If a row is about sync/matching, **stamp `_stats.compendiumSource` to the pack UUID** after
+  importing, or you are testing your own import shortcut instead of the feature.
+- ✅ **One click can settle four rows if you stage all four preconditions first.** Run 22 hand-broke a
+  token's vision, damaged it, damaged the world actor, and added an unstamped item — *then* clicked
+  ⟳ Sync once, and read out the button row, the placed-token push, the state-preservation row and the
+  hand-added row from a single result, each acting as the others' control.
+- ✅ **Firing three `change` events in one tick races whole-array writes.** Setting g/s/c currency
+  simultaneously left only the last value, because each handler writes the entire `denominations`
+  array from its own stale snapshot. That is a harness artifact, not a defect — a user types one field
+  at a time. **Drive multi-field widgets sequentially, awaiting between fields, before calling a
+  partial write a bug.**
+- ✅ **A wizard-shaped section is still one flow even when the rows live in six other sections.** Run
+  22's single wizard walkthrough incidentally settled culture grants, the pick-2 dialog, all three
+  purse flows, the currency seed order and the fresh-PC token defaults — rows filed under four
+  different headings. **Read the other sections' rows BEFORE starting a flow**, so you assert them as
+  you pass rather than re-staging later.
+- **Snapshot whole effect OBJECTS, not effect names.** Run 22 could say *that* two bench PCs lost
+  "Guardian Stance (+1 Deflect)" but not restore it, because the snapshot held names only. Capture
+  `a.effects.map(e => e.toObject())` for bench-folder actors at least, so an unexplained loss is
+  reversible instead of merely reportable.
+- **Density, measured: 2 actors created + 4 tokens covered 36 rows and retired 27 — about 13.5 per
+  actor created**, the highest of the marathon, above run 21's 12.5. The cause is the same structural
+  one: **one long-lived subject that many rows can be asserted against** beats importing a fixture per
+  row. The adversary rows needed exactly one import because four of them shared a single sync click.
+
 ## Known limits
 
 - ❌ **RESOLVED AS UNFIXABLE (07-26i): there is no "no written Cognitive/Spiritual defense" creature.**
