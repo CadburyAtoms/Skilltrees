@@ -6240,9 +6240,15 @@ Hooks.on("combatTurnChange", (combat) => {
 async function edhaUpkeepInvClick(ev) {
   try {
     ev.preventDefault();
-    const ref = await fromUuid(ev.currentTarget.dataset.actor).catch(() => null); const a = ref?.actor ?? ref; if (!a) return;
+    // ⚠ CAPTURE THE BUTTON BEFORE THE FIRST await. `ev.currentTarget` is only set while the event is
+    // being DISPATCHED, and an await ends dispatch — the browser then nulls it, so any later
+    // `ev.currentTarget.…` throws TypeError. Bench runs 20–23 read this as "the Pay button charges
+    // nothing, for any user, ever": the read below threw every time and the outer catch swallowed it.
+    // The ELEMENT reference is fine to hold across an await; only the event's pointer to it is not.
+    const btn = ev.currentTarget, ds = btn.dataset;
+    const ref = await fromUuid(ds.actor).catch(() => null); const a = ref?.actor ?? ref; if (!a) return;
     // The button carries its DOCUMENT: cost and resource come off the rule that posted it.
-    const tal = ev.currentTarget.dataset.item ? await fromUuid(ev.currentTarget.dataset.item).catch(() => null) : null;
+    const tal = ds.item ? await fromUuid(ds.item).catch(() => null) : null;
     const h = (tal ? edhaRuleOf(tal, "edha-illusion-upkeep") : null) ?? edhaActorRuleOf(a, "edha-illusion-upkeep")?.handler ?? {};
     const cost = Math.max(1, Math.floor(Number(h.costPer)) || 1), res = String(h.resource || "inv").trim() || "inv";
     const rlab = EDHA_RES_LABEL[res] || res;
