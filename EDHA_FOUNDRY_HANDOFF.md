@@ -33,6 +33,126 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-07-28 — BENCH RUN 17 (Goldenport Coast + Ashkar Mesas bestiaries), with a full re-test of fix pass A: **fix pass A is 5-for-5, and 18 of 22 bestiary rows retired on evidence.** 2 fails root-caused, 2 blocked, **zero world drift** except one benign flag noted below. DOCS-ONLY — no engine, data or pack change this pass; both fails feed test-pass-fixes.
+
+**Deploy verified BY HASH before anything was driven.** The served
+`modules/edha-content/scripts/register-skills.js`, cache-busted and CRLF→LF normalised, hashes
+`894bead5c5a2982af991a0401276bf0eaeefae9e00f5552c4b42d2cd5e8f1b01` over 1,452,498 bytes — byte-identical
+to `HEAD:module-src/scripts/register-skills.js` (blob `02dfa5b`). Marker counts matched the 07-27y
+delta exactly (`edhaDerivedNum` 8 · `edhaFlagKey` 9 · `edhaAmbushMark` 2 · `edhaAmbushTested` 2 ·
+`edhaCueKey` 2) and the forbidden `Number(...movement.walk.rate)` string is absent. Nothing was
+NOT-DEPLOYED. Setup script re-run: **zero ⚠ lines, zero new creations** (87 actors before and after) —
+idempotency proven, not assumed.
+
+### PART A — fix pass A re-test: all five items PASS, every negative control driven
+
+1. **Ambush-belief family (items 1 + 2 together, one drive, as required).** Both fixes are live and
+   each was checked where the other could not mask it.
+   - **Real Perception modifier:** the belief roll formula was captured directly off `Roll#evaluate`.
+     Against a mod-**4** bench PC it read **`1d20 + 4`**; against a genuinely mod-**0** fixture it read
+     **`1d20 + 0`** — the negative control the row demanded, read off the sheet first, not inferred.
+   - **Ledger reads back:** a fooled target's next Ambush Bite rolled
+     `1d10 + 3 + (1d6)[Ambush Bite] + 0`; Wrongwake's Breach Strike likewise
+     `1d10 + 2 + (1d6)[Breach Strike] + 0`. **Negative:** two targets that saw through it rolled
+     `… + 0` with no rider term.
+   - **Once-per-scene guard holds:** the second attack on the same target posted **no** new belief card.
+   - **Key shape:** `ambushBelief.tested` carries **one dot-free key per token**
+     (`Scene_V0iTbYCyBKF3zBLC_Token_<id>`), never a single top-level `"Scene"`.
+   - **Scene change re-rolls:** with the stored ledger's `sceneId` pointed at another scene, the same
+     already-tested target was re-tested — `edhaAmbushLedgerFor`'s gate is live. *(Stated as what it
+     is: a simulated scene change, driven through the real code path, not a scene switch.)*
+   - ⚠️ **Two things to correct in the docs, both harmless.** The rider's flavor label is the
+     **carrying item's** name (`[Ambush Bite]`, `[Breach Strike]`), not the seeming's — several rows
+     say otherwise. And **`setFlag` MERGES**, so `edhaAmbushLedgerFor`'s intended `tested: {}` reset does
+     not clear the stored map on a scene change; the residue is inert (token uuids are scene-scoped, so
+     they cannot collide) but the ledger grows without bound across scenes. Low priority, worth a line.
+2. **Phantom Double / The Seeming belief loop — item 2's third site, PASS.** One cast, four onlookers,
+   each rolled with **its own** modifier: `1d20 + 1` (Cinderbrock, mod 1) · `1d20 + 0` × 2 (mod 0) ·
+   `1d20 + 3` (Keelshadow, mod 3 → total 19 → "sees through it" vs DC 16). **Negatives:** the mod-0
+   onlookers correctly read `+ 0`; **five GM-hidden Trooper tokens were never tested at all**; and an
+   onlooker behind a sight wall was also skipped — verified independently with Foundry's own
+   `polygonBackends.sight.testCollision` rather than assumed.
+3. **`edhaCueKey` — two `hp-below` cues on one item, PASS with both negatives.** One 60-damage
+   application to a fresh Gone-to-Weir Fen-Heart posted **both** cards — the bloodied "it stops
+   targeting downed characters" **and** the near-zero "It goes still — not dead" — and the flag read
+   exactly two keys, `cue:The Madness Slackens:hp-below:**0_5**:0:1` and `…:**0_05**:0:1`. Note the
+   underscores: escaped, so the guard is armed. **Negative 1 (the one that matters — a key that is too
+   wide stops de-duplicating):** on the Briar-Gone Grove, crossing half, healing to full and crossing
+   half **again in the same round** posted **zero** second cards. **Negative 2:** the Grove behaves
+   identically, and its 0-HP cue posted while the bloodied did **not** re-post.
+4. **Unstoppable's half-Speed half, PASS.** `walk.rate` reads `{derived: 20, override: 40,
+   useOverride: true}` → Speed **40**, half **20**. Driven, not just computed: the Slagbull posted
+   "💨 Unstoppable — … moves **20 ft** …, ignoring Reactions" and the token moved **1200 px = 20 ft**
+   at 60 px/ft. **Negative:** the same rule at `{byHalfSpeed: false, distanceFt: 10}` moved exactly
+   **600 px = 10 ft**. The `oncePerTurn` guard also held. The Fast-turn half stays **BLOCKED** (unchanged
+   `edhaIsFastTurn` / `game.combat`); Ben's campaign combat was never touched.
+   ⚠️ **The row's console instruction is unfollowable as written:** `edhaSpeedFt` and
+   `edhaMoveAllowanceFt` are **module-scoped and not on `globalThis.edha`** — run 15's
+   `edhaWatchersOfRule` lesson, one level over. The row has been corrected to say "drive the behaviour".
+5. **"Frayed Seeming advantage" — the half-earned run-16 retirement is now FULLY earned.** The
+   Wasting-Eater Stillback's belief roll read **`2d20kh + 4`** for a total of **24** — a number
+   arithmetically **impossible** under `2d20kh + 0`. Both halves proven in one roll. The matched flat
+   control (Wasting-Eater Wrongwake) read `1d20 + 4`, never `2d20kh`. The Lunavar retirement note has
+   been annotated rather than re-opened.
+
+### PART B — 18 of 22 rows retired
+
+**Goldenport Coast — 9 retired** (Nexus-Fed · Rooted Fury cue · Trampling Charge on-hit cue ·
+Hull-Shadow belief test · Breach and Drag rider · Sounding Dive cue · Drag cue · Furnace Heart cue ·
+Den Fury cue). Highlights: Nexus-Fed took the Sow **28 → 33** at turn end with its whisper, and both
+negatives were driven (full HP → no write, no card; 0 HP → no regen). Hull-Shadow rolled `2d20kh + 0`
+vs cog 12 and posted no second card on the repeat attack. Furnace Heart fired at exactly 5 ft.
+
+**Ashkar Mesas — 9 retired** (Scalding Bite + Kindle · Held Haze ambush ×2 · Bite fooled-rider ·
+Searing Bolt · Afterburn ×2 · Searing Bolt + Kindle · Reckless Advance). Highlights: Kindle's
+newly-live `lightRadiusFt: 5` really lights the **victim** (`{dim: 0} → {dim: 5, bright: 2.5}`); the
+Elder's Rend rider is `+1d8` and the Adult's Bite `+1d6`, both correct for their ranks; Reckless
+Advance moved a correct **5 ft** (`EDHA_SIZE_FT[2]`, red rank 2).
+
+### The two fails — both root-caused, both engine-side, neither symptom-patched here
+
+- ⛔ **Fire the Wrack places nothing (Goldenport §3). `edha-pre-use` HAS NO DISPATCHER.** Five drives
+  on a fresh import produced **0** Regions, no card and no error, with the caster controlled, no target
+  set, Bench holding `isActiveGM`, the rule enabled and its executor present. The rule sits on the
+  **`edha-pre-use`** event — and `edha-pre-use` occurs **exactly once in the whole 15k-line engine**:
+  its own `registerItemEventType`, whose hook is the sentinel `edha-content.noop-pre-use` that nothing
+  fires. The only `preUseItem` takeover glue that exists is burst-specific
+  (`const h = edhaRuleOf(item, "edha-burst"); if (!h) return;`), so an `edha-place-hazard` rule on that
+  event is unreachable and `edhaPlaceHazard` never runs. **Matched control, same session:** the
+  Destruction PC's Walking Ruin carries the same handler on the **`use`** event and fired instantly.
+  **Blast radius = 1 ability:** `data/` holds 9 `edha-pre-use` rules, 8 of them `edha-burst` (working),
+  and this is the only `edha-place-hazard` one; both PC place-hazard rules use `use`. The cheap fix is
+  a data change (`edha-pre-use` → `use`) and therefore a **pack rebuild** — the fix pass's call, not
+  the bench's. Takes **Pyre spread card BY ALIAS** with it (BLOCKED, stays 🤖).
+- ⛔ **Shockwave Slam pushes 0 ft (Ashkar §5).** The card posts with the right victim and the right
+  damage-type gate — "… is pushed **0 ft**" — and the token does not move. **Ruled out by measurement:**
+  the push lane was wall-free (`polygonBackends.move.testCollision` false at 10 ft and 20 ft) and the
+  destination square was unoccupied; and `maxFt` is **not** zero, because the identical `bySize: true`
+  dial on the same actor drove Reckless Advance a correct 5 ft minutes later. The loss is inside
+  `edhaRunPush`'s `edhaApplyMove(vtok, aim, maxFt, {gapPx: 0, hostile: true})` — the one call shape that
+  differs from the working `edha-move` path. The wall-collision half 1d6 is unreachable until it moves.
+
+### World state — zero drift, with one flag named
+
+End-state diff against the run-start snapshot (ids, flags, **effects**, HP, token positions): **0
+actors added or gone, 0 tokens added or gone, 0 token positions changed, 0 flag drift, 0 effect drift,
+0 HP drift**, 117 walls and 1 Region unchanged, and Ben's combat `BerbNeuXp4iKduef` still **active at
+round 1**. 13 imported adversaries, 14 tokens, 1 phantom copy and 1 bench combat were created and all
+deleted by id-diff against that snapshot.
+
+⚠️ **One change outside the bench folders, left in place deliberately.** Dropping the bench Briar-Gone
+Grove to 0 HP fired the `ally-drops` "Break" cue on three of Ben's **unlinked campaign token actors** —
+`Corvaine Line-Caller (1)` (`3Hr76JcP9CBIjGNr`), `Corvaine Raider (1)` (`9yz3h7oVYjbK0Q1f`),
+`Corvaine Raider (2)` (`3PhYgKLpI9VLDjkH`) — each of which gained the key
+`trigRound["cue:Break:ally-drops:0_5:0:1"] = 1`. This is correct engine behaviour on a shared scene
+(the cue has no range gate, so every same-disposition token on the map is eligible) and it is
+**benign**: a `trigRound` entry only suppresses one re-post, and it self-clears the moment the round
+advances. It was **not** reverted, because the run-start snapshot covered `game.actors` flags but **not
+unlinked token-actor flags**, and rule 6 says delete only what the snapshot proves you created. The
+harness gap is now a runbook lesson.
+
+---
+
 ## 2026-07-27y — FIX PASS A of bench marathon 3. Run 16's three defects: **all 3 FIXED, one of them bigger than reported (a THREE-site family, not two), plus a fourth bug found in the LINTER itself that was hiding it.** ENGINE-ONLY → ⟳ sync the module + F5; **no pack rebuild — the rebuild list stays EMPTY.** 329 tests green, every fix mutation-verified.
 
 Run 16 filed three defects. All three were real and all three are fixed. Two of the run's

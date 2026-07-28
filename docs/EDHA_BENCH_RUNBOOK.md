@@ -541,6 +541,53 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   against the `movement.fly` field — the header shows a single "N ft MOVE", so a rate parked on
   `walk.override` displays correctly regardless of which slot holds it.
 
+## Operating lessons from run 17 (2026-07-28 — these OVERRIDE older advice where they conflict)
+
+- ❌ **Snapshot UNLINKED TOKEN-ACTOR flags too, not just `game.actors`.** Run 17's snapshot covered
+  every world actor's flags and effects and still could not prove-and-revert a write: dropping a bench
+  adversary to 0 HP fired `ally-drops` cues on **Ben's unlinked campaign token actors**, writing
+  `trigRound` to each. `game.actors` does not contain them. Add
+  `canvas.scene.tokens.filter(t => !t.actorLink).map(t => [t.id, t.actor.flags])` to the start snapshot.
+  Note the shape of the exposure: an `ally-drops` cue with `rangeFt: 0` has **no range gate at all**, so
+  **every same-disposition token on the shared scene** is eligible — parking your fixture far away does
+  not help. Expect it, snapshot for it, and report it.
+- ❌ **`item.use()`'s damage does NOT apply itself, and `[...].pop()` on the chat log's apply-damage
+  buttons grabs a STALE card.** Six Keelshadow drives read "no on-hit cue" purely because the victim's
+  HP never moved (30 → 30 across all six). Drive the roll with `use()` (that is where riders show up),
+  then apply with `victim.applyDamage([{amount, type}], {edhaSource: dealerActor, originatingItem: item})`
+  — the explicit dealer is what `edhaDealerOf` wants and what makes `edha-on-hit` dispatch at all.
+- ❌ **`applyDamage` is the ONLY path that runs the GM-cue sweep.** A raw
+  `actor.update({"system.resources.hea.value": 0})` fires **nothing** — `edhaGmCueDamageSweep` hangs off
+  the applyDamage wrapper (`if (dealt) await edhaGmCueDamageSweep(...)`). A 60 → 0 write that posts no
+  cue card is your harness, not the engine.
+- ❌ **The belief roll's FORMULA never reaches chat — patch `Roll#evaluate` to see it.** The ambush and
+  phantom belief cards print only the total, so "is the modifier real?" is unanswerable from the card
+  unless the total exceeds what the buggy formula could produce. One read-only line settles it for the
+  whole run: wrap `Object.getPrototypeOf(new Roll("1d20")).evaluate` and push `this._formula` before
+  delegating. Restore it before logging out.
+- **Attribute belief and cue cards by `speaker`, never by capture window.** The Hazewyrm Adult's and
+  Elder's Held Haze both fired inside one drive's window and the cards are otherwise identical in shape;
+  reading the tail mis-assigned the Elder's DC 13 card to the Adult. `ChatMessage.getSpeaker({actor})` is
+  authoritative — same lesson as run 15's `userId` rule, one field over.
+- **The pane is hidden, so `setTimeout` is throttled to ~1 s.** Every `H.sleep(400)` in a dialog walker
+  costs a second, so a 12-iteration walker burns 12 s per use and a 10-target loop reads as a hang. Keep
+  walkers to ~5 iterations, break after the first empty pass, and put a `Promise.race` timeout around
+  `item.use()` — an unresolved `use()` promise otherwise wedges the whole batch.
+- **A "large token" is not a stale token.** `tok.object.center` read 300 px off `_source` and looked
+  exactly like run 1's ticker-freeze; the token was simply **2×2** (`w = 600`, so centre = x + 300).
+  Check `tok.w` before invoking the freeze lesson — and when an engine range/vision gate excludes
+  something, confirm with Foundry's own backend (`polygonBackends.sight` / `.move`) before calling it a
+  defect. Run 17 did, and the "missing" onlooker turned out to be correctly behind a wall.
+- **An adversary that is out of Focus rolls nothing and reads exactly like a dead ability.** The
+  Hazewyrm Elder's Searing Bolt costs 1 Focus; at 0 Focus the use produced "Cannot consume, not enough
+  of resource", no damage roll, and no card. Top the resource up before recording a FAIL.
+- **Cheapest high-yield trick of the run: use MANY fresh targets instead of resetting one ledger.**
+  A once-per-scene belief ledger is per-target, so driving the same ability at ten different tokens gives
+  ten independent rolls in one pass — far faster than clearing the flag and re-driving, and it produces
+  the fooled *and* un-fooled cases the rider rows need as a by-product.
+- **Density, measured:** 13 distinct adversary imports covered 22 rows and retired **18** — about
+  **1.4 retired per import**, close to run 16's 1.2 and nowhere near the old 4.5 estimate.
+
 ## Known limits
 
 - ❌ **RESOLVED AS UNFIXABLE (07-26i): there is no "no written Cognitive/Spiritual defense" creature.**
