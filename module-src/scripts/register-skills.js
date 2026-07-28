@@ -326,6 +326,25 @@ Hooks.once("ready", () => {
  */
 const EDHA_PHYSICAL_ATTRS = new Set(["str", "spd"]);
 
+/* PURE. Read a NUMBER that an author may legitimately have set to 0 — a free ability, a
+ * whole-scene (0 ft) cue, a zero-distance push, a zeroed injury cost.
+ *
+ * `Number(x) || fallback` is WRONG for those, because 0 is falsy: it silently reverts a deliberate
+ * authored 0 to the code's default. That shipped as a live bug — `edhaReknitClick` read
+ * `Number(ds.edhaCost) || 2`, so a rule authoring `costTemporary: 0` rendered "−0 Investiture" on
+ * the card (the generator uses a correct `== null` test) and then charged **2** on the click
+ * (bench run 20, 2026-07-28f). Use this instead wherever the value comes from a rule's config, a
+ * chat-card dataset, or a data file. Blank/absent/non-numeric falls back; 0 does not.
+ *
+ * NOT for runtime Foundry lookups (grid.size, actor.system.tier, a Math.hypot magnitude): 0 there
+ * is a failed/degenerate read, and `|| fallback` is the right guard. The provenance of the value
+ * decides, not the shape of the expression — see ENGINE_INDEX's ⛑ falsy-zero family. */
+function edhaNumOr(v, fallback) {
+  if (v === undefined || v === null || v === "") return fallback;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : fallback;
+}
+
 // Resolve the rolling actor from a d20Roll config: Item/Attack rolls carry the item in data.source;
 // plain skill rolls only identify the actor via messageData.speaker (set by rollSkill).
 function edhaD20RollActor(config) {
@@ -1318,7 +1337,9 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
         if (hc?.handler) {
           const color = hc.handler.color || "black";
           if (!color || edhaTalentColor(dealer.item) === color) {
-            await edhaApplyHealCut(target, dealer.actor, Number(hc.handler.fraction) || 0.5, hc.item.name);
+            // `fraction: 0` = CANNOT REGAIN HP AT ALL — edhaHealCutInfo implements it (`fraction === 0`
+            // → "full"), and the sibling `healCutFraction` writer preserves it. `|| 0.5` halved instead.
+            await edhaApplyHealCut(target, dealer.actor, edhaNumOr(hc.handler.fraction, 0.5), hc.item.name);
             ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealer.actor }), content: `<p>🩸 <strong>${hc.item.name}</strong>: ${target.name}'s healing is halved until the end of ${dealer.actor.name}'s next turn.</p>` });
           }
         }
@@ -6743,7 +6764,10 @@ function edhaDefBuffFor(actor) {
 async function edhaApplyDefBuff(actor) {
   const hit = edhaDefBuffFor(actor); if (!hit) return;
   if (actor.effects.find(e => e.getFlag?.("edha-content", "defBuff"))) return;          // already armed
-  const s = hit.spec; const amt = Number(s.amount) || 2;
+  // `amount: 0` means "no bonus" — the SAME field on this handler's scene-window branch already
+  // reads it that way (`|| 0; if (!amt) return`). `|| 2` made the round-until-turn branch hand out
+  // +2 instead. Latent (no shipped rule authors 0) but the two branches must not disagree.
+  const s = hit.spec; const amt = edhaNumOr(s.amount, 2); if (!amt) return;
   const defs = (Array.isArray(s.defenses) && s.defenses.length) ? s.defenses : ["phy", "cog", "spi"];
   const changes = defs.map(d => ({ key: `system.defenses.${d}.bonus`, mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: String(amt), priority: 20 }));
   try {
@@ -8506,7 +8530,10 @@ async function edhaSummon(caster, spec) {
         } : {}),
         resources: { hea: { value: hp, max: ov(hp) } },
         defenses: { phy: ov(dval("phy")), cog: ov(dval("cog")), spi: ov(dval("spi")) },
-        movement: { walk: { rate: ov(Number(spec.speed) || 25) } },
+        // `speed: 0` = IMMOBILE, and four shipped rules mean it: Holographic Illusion, Phantom
+        // Double, and The Seeming's two copies ("its image STANDS a pace from its body"). `|| 25`
+        // gave every static illusion a 25 ft walk. Same falsy-zero family as the Reknit cost.
+        movement: { walk: { rate: ov(edhaNumOr(spec.speed, 25)) } },
         // Attack competence: the summon rolls its OWN tests (Construct Slam was damage-only at the
         // 2026-06-11 playtest). Rank scales with the caster's tier; str attribute backs the test.
         skills: { ath: { rank: Math.min(5, Math.max(1, Number(caster.system?.tier) || 1)) } },
@@ -15568,7 +15595,7 @@ async function edhaReknitClick(ev) {
     const oref = await fromUuid(ds.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref;
     const tref = await fromUuid(ds.edhaTarget).catch(() => null); const target = tref?.actor ?? tref;
     if (!owner || !target) return;
-    const cost = Number(ds.edhaCost) || 2;
+    const cost = edhaNumOr(ds.edhaCost, 2);   // an authored 0 is LEGAL (a free removal) — never `|| 2`
     const inv = owner.system?.resources?.inv, cur = inv?.value ?? 0;
     try { await owner.update({ "system.resources.inv.value": Math.max(0, cur - cost) }); } catch (e) {}
     const label = target.items?.get?.(ds.edhaInjury)?.name || "injury";
