@@ -6394,13 +6394,20 @@ function edhaTokenAtDest(movingTok, center) {
   } catch (e) {}
   return null;
 }
+/* Returns { dest, movedFt, collided, blockedBy, blocker }.
+ * `blockedBy` (2026-07-28, bench run 17) names WHY a move fell short: "direction" (the aim collapsed
+ * onto the origin — no direction to travel), "wall", or "token" (with `blocker` = the occupier's
+ * name). It exists because a 0-ft result used to be indistinguishable from a broken engine: run 17
+ * spent a whole pass on "Shockwave Slam pushes 0 ft" and could not tell a body in the way from a
+ * wall from a dead handler, because every one of those posts the identical bare card. A fallback
+ * that hides the reason hides YOUR bug too — the callers now print it. */
 function edhaComputeMove(origin, aim, maxFt, movingTok = null) {
   const ppf = edhaPxPerFt();
   const dx = aim.x - origin.x, dy = aim.y - origin.y, len = Math.hypot(dx, dy);
-  if (len < 1) return { dest: { ...origin }, movedFt: 0, collided: false };
+  if (len < 1) return { dest: { ...origin }, movedFt: 0, collided: false, blockedBy: "direction", blocker: "" };
   const travel = Math.min(len, maxFt * ppf);
   let dest = { x: origin.x + dx / len * travel, y: origin.y + dy / len * travel };
-  let collided = false;
+  let collided = false, blockedBy = null, blocker = "";
   try {
     /* Straddle guard (2026-07-26l, bench run 3 defect 3). When the mover's own square straddles a
      * wall — its CENTER sitting on/within rounding distance of the wall line (the bench staged
@@ -6418,22 +6425,35 @@ function edhaComputeMove(origin, aim, maxFt, movingTok = null) {
     const nudge = Math.min(2, travel);
     const torigin = { x: origin.x + dx / len * nudge, y: origin.y + dy / len * nudge };
     const hit = CONFIG.Canvas?.polygonBackends?.move?.testCollision?.(torigin, dest, { type: "move", mode: "closest" });
-    if (hit) { collided = true; dest = { x: hit.x, y: hit.y }; }
+    if (hit) { collided = true; blockedBy = "wall"; dest = { x: hit.x, y: hit.y }; }
   } catch (e) { /* no movement backend → travel the full distance */ }
-  // Occupied destination → step back toward the origin one grid square at a time until clear (R2).
+  /* Occupied destination → step back toward the origin one grid square at a time until clear (R2).
+   * Note the step is a WHOLE square deliberately: `edhaTokenAtDest` is a bounding-box overlap, so
+   * for a push of exactly one square there is no intermediate position that clears the occupier —
+   * the origin is the only legal stop, and 0 ft is then the CORRECT answer, not a failure. That is
+   * why a 1-square push is all-or-nothing while run 12's 2-square push degraded to 5 ft; the bug
+   * was never the arithmetic, it was that the card never said a body was in the way. */
   if (movingTok) {
     try {
       const gs = canvas?.scene?.grid?.size || 100;
       let d = Math.hypot(dest.x - origin.x, dest.y - origin.y);
-      while (d > 1 && edhaTokenAtDest(movingTok, dest)) {
-        collided = true;
+      let occ;
+      while (d > 1 && (occ = edhaTokenAtDest(movingTok, dest))) {
+        collided = true; blockedBy = "token"; blocker = occ.actor?.name ?? occ.name ?? "";
         const nd = Math.max(0, d - gs);
         dest = { x: origin.x + dx / len * nd, y: origin.y + dy / len * nd };
         d = nd;
       }
     } catch (e) {}
   }
-  return { dest, movedFt: Math.hypot(dest.x - origin.x, dest.y - origin.y) / ppf, collided };
+  return { dest, movedFt: Math.hypot(dest.x - origin.x, dest.y - origin.y) / ppf, collided, blockedBy, blocker };
+}
+// One phrasing for "the move stopped short, and here is what stopped it" — shared by every mover.
+function edhaBlockedText(blockedBy, blocker) {
+  if (blockedBy === "wall") return " (stopped by a wall)";
+  if (blockedBy === "token") return ` (stopped by ${blocker || "another creature"})`;
+  if (blockedBy === "direction") return " (no direction to move)";
+  return "";
 }
 // Write a token to a CENTER destination — directly if we own it, else relay to the GM (push vs an enemy).
 // Every engine-driven relocation (edha-move/edha-push slides, Trade Routes teleport) funnels through
@@ -6503,8 +6523,9 @@ async function edhaRunMove(item, cfg) {
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>💨 <strong>${item.name}</strong> — ${actor.name} may move up to <strong>${maxFt} ft</strong> without provoking Reactions. <span style="opacity:.8">(no target selected — position manually)</span></p>` });
       return;
     }
-    const { movedFt, collided } = await edhaApplyMove(tok, ttok.center, maxFt, { gapPx: (tok.w || 0) / 2 });
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>💨 <strong>${item.name}</strong> — ${actor.name} moves <strong>${Math.round(movedFt)} ft</strong> toward ${ttok.actor?.name ?? "the target"}${collided ? " (stopped at an obstacle)" : ""}, ignoring Reactions.</p>` });
+    const { movedFt, collided, blockedBy, blocker } = await edhaApplyMove(tok, ttok.center, maxFt, { gapPx: (tok.w || 0) / 2 });
+    const stopTxt = blockedBy ? edhaBlockedText(blockedBy, blocker) : (collided ? " (stopped at an obstacle)" : "");
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>💨 <strong>${item.name}</strong> — ${actor.name} moves <strong>${Math.round(movedFt)} ft</strong> toward ${ttok.actor?.name ?? "the target"}${stopTxt}, ignoring Reactions.</p>` });
   } catch (e) { console.error("Edha Content | edha-move failed", e); }
 }
 
@@ -6534,17 +6555,29 @@ async function edhaRunPush(owner, victim, cfg) {
     const anchorTok = (String(cfg.awayFrom || "self") === "anchor" && cfg.anchorActor)
       ? (edhaCasterToken(cfg.anchorActor) ?? cfg.anchorActor.getActiveTokens?.()[0] ?? otok) : otok;
     const maxFt = cfg.bySize ? (EDHA_SIZE_FT[edhaColorRank(owner, cfg.sizeColor || "red")] || EDHA_SIZE_FT[1]) : (Number(cfg.distanceFt) || 5);
-    const dx = vtok.center.x - anchorTok.center.x, dy = vtok.center.y - anchorTok.center.y, len = Math.hypot(dx, dy) || 1;
+    const dx = vtok.center.x - anchorTok.center.x, dy = vtok.center.y - anchorTok.center.y, len = Math.hypot(dx, dy);
+    /* A push needs a DIRECTION, and "directly away" is undefined when the victim and the anchor
+     * share a centre (stacked tokens — which this engine's own R2 comment records as a thing that
+     * has happened). The old `|| 1` swallowed that: the aim collapsed onto the victim's own centre
+     * and the card read "pushed 0 ft" with no reason, indistinguishable from a broken handler.
+     * Refuse out loud instead (iron rule 3 — no silent no-ops). */
+    if (!(len >= 1)) {
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>💥 <strong>${cfg.note || "Push"}</strong> — ${victim.name} is in the same space as ${anchorTok.actor?.name ?? owner.name}, so "directly away" has no direction: nothing moves. <span style="opacity:.8">(Separate the tokens and re-apply.)</span></p>` });
+      return;
+    }
     const aim = { x: vtok.center.x + dx / len * (maxFt * edhaPxPerFt()), y: vtok.center.y + dy / len * (maxFt * edhaPxPerFt()) };
-    const { movedFt, collided } = await edhaApplyMove(vtok, aim, maxFt, { gapPx: 0, hostile: true });
+    const { movedFt, collided, blockedBy, blocker } = await edhaApplyMove(vtok, aim, maxFt, { gapPx: 0, hostile: true });
     let dmgTxt = "";
-    if (collided && cfg.collisionFormula) {
+    // A push that never travelled cannot have slammed into anything — the collision die only rolls
+    // on real displacement. (Before 07-28 a victim wedged against a body ate wall-collision damage
+    // while the same card said it was "pushed 0 ft".)
+    if (collided && movedFt > 0 && cfg.collisionFormula) {
       const roll = await (new Roll(cfg.collisionFormula, owner.getRollData())).evaluate();
       const amt = Math.max(0, Math.floor(roll.total));
       if (amt > 0) { await edhaCrossDamage(victim, amt, cfg.collisionType || "impact", { edhaSource: owner }); dmgTxt = ` and slams into an obstacle for <strong>${amt} ${cfg.collisionType || "impact"}</strong>`; }
     }
     const fromTxt = anchorTok !== otok ? ` directly away from ${anchorTok.actor?.name ?? "your target"}` : "";
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>💥 <strong>${cfg.note || "Push"}</strong> — ${victim.name} is pushed <strong>${Math.round(movedFt)} ft</strong>${fromTxt}${dmgTxt}.</p>` });
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>💥 <strong>${cfg.note || "Push"}</strong> — ${victim.name} is pushed <strong>${Math.round(movedFt)} ft</strong>${fromTxt}${edhaBlockedText(blockedBy, blocker)}${dmgTxt}.</p>` });
   } catch (e) { console.error("Edha Content | edha-push failed", e); }
 }
 
