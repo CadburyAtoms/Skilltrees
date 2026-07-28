@@ -169,7 +169,9 @@ test("edha-defense-buff amount 0 grants NOTHING (it granted +2), and 2 still gra
 /* ---- 5. text ledger: the two sites whose enclosing function needs a live Foundry --------------- */
 
 test("LEDGER — the swept sites keep the 0-safe read in engine code", () => {
-  const src = fs.readFileSync(path.join(REPO, "module-src", "scripts", "register-skills.js"), "utf8");
+  // CRLF normalised first — `.` does not match `\r`, so the `//` stripper is a no-op on a
+  // core.autocrlf=true checkout (see the note in tests/terrain-ownership.test.js, fix pass F).
+  const src = fs.readFileSync(path.join(REPO, "module-src", "scripts", "register-skills.js"), "utf8").replace(/\r\n/g, "\n");
   const code = src.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
   for (const dead of [
     "Number(ds.edhaCost) || 2",

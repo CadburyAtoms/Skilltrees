@@ -87,8 +87,13 @@ test("edhaTokenInOwnedTerrain opens on a Pyre-shaped zone, and stays shut outsid
 test("no placer writes the flat key any more — the vocabulary is one, not two", () => {
   const fs = require("fs");
   const path = require("path");
+  // ⚠ NORMALISE CRLF FIRST. Ben's checkout has core.autocrlf=true, so the working copy is CRLF,
+  // and JS `.` does not match `\r` — `/\/\/.*$/` therefore stripped NOTHING on his machine, the
+  // prose mention counted as a hit, and this test failed 2 !== 1 on a clean tree. CI is Linux/LF,
+  // so it stayed green there and the false red only ever hit the pre-commit hook (found 07-28,
+  // fix pass F). Any test that reasons about engine source lines must do this.
   const engine = fs.readFileSync(
-    path.join(__dirname, "..", "module-src", "scripts", "register-skills.js"), "utf8");
+    path.join(__dirname, "..", "module-src", "scripts", "register-skills.js"), "utf8").replace(/\r\n/g, "\n");
   // Comments are stripped first: the tree-section headers and this fix's own notes MENTION the flat
   // key on purpose, and a prose mention is not a write (the lint pass-7 convention).
   const code = engine.replace(/\/\*[\s\S]*?\*\//g, "").split("\n").map((l) => l.replace(/\/\/.*$/, ""));
