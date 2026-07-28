@@ -1936,6 +1936,13 @@ function edhaWatchMatches(h, ev) {
  * updateActor, which fires on every HP change and would make the cache useless without making it
  * more correct (rule enable/disable lives on the item, i.e. updateItem). */
 let _edhaRuleIndex = new Map();
+/* ⚠ IT IS WIRED — the registration is the LOOP on the next line, not a call site, so a grep for
+ * `edhaDropRuleIndex(` finds only the definition and reads as dead code. Bench run 14 reported
+ * exactly that ("defined at L1939 and called from nowhere; the index never invalidates"), which is
+ * wrong: it has been registered on all EIGHT hooks below since the index was introduced (dcd51a7,
+ * 2026-07-24), and `_edhaRuleIndex` is a module-level `let` reassigned wholesale, so every reader
+ * sees the drop. Do not "fix" this. (The symptom that report was chasing — a freshly imported
+ * adversary getting no automation until F5 — is still open and unexplained; it is NOT this.) */
 function edhaDropRuleIndex() { _edhaRuleIndex = new Map(); }
 for (const h of ["createItem", "updateItem", "deleteItem", "createToken", "deleteToken", "createActor", "deleteActor", "canvasReady"]) Hooks.on(h, edhaDropRuleIndex);
 
