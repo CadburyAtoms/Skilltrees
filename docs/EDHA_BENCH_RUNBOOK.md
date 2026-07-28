@@ -689,6 +689,51 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   run 17's 1.4 and run 18's 3.9, exactly as the brief predicted for a section that spreads few rows
   over many actors. Budget by rows-per-actor.
 
+## Operating lessons from run 20 (2026-07-28f — these OVERRIDE older advice where they conflict)
+
+- ❌ **THE BENCH PC TOKENS ARE ALREADY ON THE MAP. Never create a second one — MOVE the existing
+  one.** Run 20 placed fresh `Bench — Green`/`Bench — Black` tokens in its staging area and then
+  spent four calls chasing a "dead" `focus-change` watch. The engine resolves an owner's token with
+  **`edhaCasterToken() = actor.getActiveTokens()[0]`**, which returned the *pre-existing* token
+  parked 120 ft away at the bottom of the map — so every range-gated check measured from a token the
+  run wasn't looking at, and a correct filter read as broken. Enumerate bench PC tokens first, then
+  `tok.move({action:"displace"})` the real one into position. (Rows that pass an **explicit target**
+  — `edha-def-test` with `requireTarget` — are immune; this only bites `rangeColor`/`rangeFt` gates.)
+- ❌ **`item.use()` blocks on a "<Item> — Consume Resource" dialog, and a polling walker will blow the
+  30 s budget** because a hidden pane throttles `setTimeout` to ~1 s. Drive mechanics with
+  **`use({shouldConsume: false, configurable: false})`** — `shouldConsume:false` skips the resource
+  dialog (`options.shouldConsume !== false` gates it in the system's `use`) and `configurable:false`
+  fast-forwards the roll dialog. Deterministic, no dialogs, several drives per call. **Only** drop
+  `shouldConsume` when the row actually asserts a cost (W23's "inv 2→1"), and then click the dialog
+  in a **separate** tool call: fire without awaiting, return, then click.
+- ❌ **Queued dialogs replay a STALE roll.** Three timed-out `use()` calls left three dialogs open;
+  clicking them all posted "10 vs PHY 14" three times, which looks exactly like a hard-coded roll.
+  It is a harness artifact — the same evaluation re-rendered. Clear pending dialogs before sampling,
+  and confirm a live roll by seeing the total *vary* under the fast path.
+- ✅ **A cue's card may fire at COMBAT CREATION, before your capture window exists.** Run 20 recorded
+  Reactive Strike and Territorial Instinct as silent at Green's turn in round 2, then found both
+  cards timestamped at `Combat.create` + `update({round:1, turn:0})` — because turn 0 *was* Green.
+  By round 2 the once-per-round gate (keyed to **Ben's** `game.combat.round`, parked at 1) had
+  closed. **Search the whole chat log by ability name before recording any cue negative**, and read
+  the owner's `trigRound`: a stamped key means it already fired, not that it is dead.
+- ❌ **`nextTurn()` no-ops on a combat you never started** (`turn` stays `null`). Step with
+  **`combat.update({round, turn})`** — which is also what keeps Ben's combat untouched. Note
+  `combat.started` still reads `true` afterwards, so `edhaExpireTimedStatuses` does run.
+- **`edha-on-hit` and the Life mutation riders land on damage APPLICATION, not on the roll.** Rolling
+  an attack proves nothing for them — click the card's `button[data-action="apply-damage"]` (the ×1)
+  with the victim controlled. Bone Spurs' +2 keen and Frost Lance's Slowed were both invisible until
+  the damage was applied.
+- **Read the pack ONCE, up front, and plan the whole run from it.** One `game.packs.get(...)
+  .getDocuments()` sweep printing `adv | ability | rules= effects= [handler types]` turned a
+  26-row section into a per-actor drive plan, settled two rows on data shape before any driving, and
+  told the run which abilities needed a target vs a combat vs a damage application. Cheapest call of
+  the run. ⚠️ The on-disk `readPack` is unusable while Foundry holds the LevelDB lock — read the
+  **live** compendium from inside the world instead.
+- **Density, measured: 21 imports covered 26 rows and retired 13 — about 0.62 per import**, well
+  below run 18's 3.9. The cause is diagnosable: **9 of the 21 were imported in one speculative batch
+  and 4 were never driven at all.** Import the actors for the rows you will drive *next*, not the
+  ones you hope to reach.
+
 ## Known limits
 
 - ❌ **RESOLVED AS UNFIXABLE (07-26i): there is no "no written Cognitive/Spiritual defense" creature.**

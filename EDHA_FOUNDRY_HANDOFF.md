@@ -33,6 +33,84 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-07-28f — BENCH RUN 20 (marathon 3): **the never-benched `# Adversary ability wiring` block driven for the first time — 26 🤖 in, 13 retired on evidence, `# W23` retired WHOLE, 4 root-caused fails, 9 not reached.** Three NEW engine defects, each with a named line and a matched control. **Zero world drift — not one write to Ben's actors.** DOCS-ONLY (no engine, no data, no pack rebuild).
+
+Engine hash-verified live on join: served `register-skills.js` SHA-256
+`b1bd52c165b8ce0d1b8bc3651f862a6be81795c7adc16aabf7d86abe0bfb01b2` == `HEAD:module-src/scripts/register-skills.js`
+(git blob `c0b0c1e`, CRLF-normalised) — live engine **==** HEAD, so nothing here is BLOCKED-ON-DEPLOY.
+World on join: `edha`, user `Bench` (isGM + **isActiveGM**), system 2.1.0, 87 actors / 52 tokens /
+Ben's combat `BerbNeuXp4iKduef` active at round 1. Scope counted directly, not inherited: **24 🤖 in
+`# Adversary ability wiring` (0 ⚑ — the block's "26 of 26 ⚑" reputation was already gone) + 2 🤖 in
+`# W23`**.
+
+### Retired on evidence (13)
+
+| Row | Evidence |
+|---|---|
+| **edha-gm-cue registration held** | **87** `edha-*` handler types registered incl. `edha-gm-cue`; swept all **681** world rules (**51** gm-cues) — **0** referencing an unregistered type. |
+| **Probability Net** | Next test `1d20 + 4 - 1d6[Probability Net]`, flag consumed, following test clean `1d20 + 4`. |
+| **Frost Lance Slowed** | Slowed lands **on damage application**, not the attack roll (4 clean hits at 14/21/20/18 vs PHY 14 did nothing until damage was applied). Expiry then proven in combat: "💢 Slowed on Bench — Green ends (end of its turn)". |
+| **Vital Diagram → Scalpel-Strike** | Marked `1d8 + 4 + (4)[Scalpel-Strike] = 14`; unmarked control `1d8 + 4 + 0 = 8`. |
+| **Phase 2 cue** | One whispered ⏰ card at the 140→63 crossing (threshold 70 = 140 × `atFraction 0.5`, computed after Deflect 3); a further hit 63→56 fired **nothing**. |
+| **Turn cues** (both halves) | Glyph Pulse **quiet on round 1**, fired at end of the Lock's turn on **round 2** ("(end of The Living Lock's turn, round 2.)"). Reactive Strike: **one** whispered card at the enemy's turn start ("(Bench — Green's turn starts in range.)"). |
+| **2bAB-4 Guiding Signal ×3** | Range scales by role rank exactly: **Reckoning 30 ft** (rival/white 2, 3 candidates), **Bellwether 15 ft** (minion/white 1, 1 candidate), **Callthief 30 ft**. Clicking lands `plotDieMark`. |
+| **2bAB-5 Whispered Doubt** | Full truth table — in-range enemy (7.9 ft ≤ 15) drained the extra focus with the card; a **verified real** decrease out of range (28.5 ft) did nothing; a second same-round spend was gated. |
+| **2bAB-6 Grasping Vines + Territorial Instinct** | `21 vs PHY 14 SUCCESS` → Restrained; `6 vs SUR 5 SUCCESS` → Immobilized; **and** the turn-start cue floor posted. |
+| **2bAB-7 Drive the Prey** | `8 vs SUR 5 SUCCESS` → Slowed; move-away stayed GM-narrated per the card note. |
+| **2bAB-10 Intercept** | Confirm card resolved to the **targeted** actor (`data-edha-pick`); confirming made the next test roll **`2d20kl + 4`**, consumed it, next test clean `1d20 + 4`; both turn-end cues posted. |
+| **W23 Guiding Signal** | inv **2→1**; card listed the in-range opposing PC; Raider's attack got the Plot Die auto-injected (`1d20 + 0 + 4 + 1dp`) with a naming card; **one grant only** (second attack `1d20 + 0 + 4`, clean). Empty card **says why**: "nearest (Bench — Black) is **18 ft** away; 52 candidates" — matching my own measurement. |
+| **W23 Ordered Advance** | inv **1→0**, arm note posts; moving listed "Bench Adv — Corvaine Raider — **up to 12.5 ft**" (the row's exact expected number); with nobody near, the accounting line; with the window stale, **nothing**. |
+
+### Three NEW engine defects (all → test-pass-fixes; details inline in the checklist rows)
+
+1. **`edhaReknitClick` L15571 — falsy-zero cost.** `const cost = Number(ds.edhaCost) || 2;` — an
+   authored **0** is falsy, so `|| 2` wins. Reknit Form's card correctly *renders* "−0 Investiture"
+   (its generator uses a `== null` test) but the click **charged 2** (inv 10→8). Generic to any
+   `edha-remove-injury` rule authoring a 0 cost. (2bAB-8; its Adaptive Mutation half PASSED.)
+2. **`edhaSutureCradleCheck` L3367 — holder dedupe by object identity.** `holders.includes(tok.actor)`
+   cannot dedupe an unlinked token's synthetic actor against its directory twin: **different object,
+   same `id`, inherits the flag**. Reproduced the scan by hand — **2 entries, same id, one
+   `isToken:true` and one `isToken:false`** — matching the two observed cards and their two speaker
+   aliases. **Not** the two-GM duplicate: both cards were authored by user `Bench`, 75 ms apart.
+   Doubles the Discipline roll, so either result can end the cradle.
+3. **`EDHA_TIMED_STATUSES` L580 omits `braced`.** Brace authors `timed: true` and its text promises
+   "until the start of the Trooper's next turn", but `edhaIsTimedStatus()` keys on a hard-coded
+   status allowlist that the handler's own `timed` field is never checked against — so no
+   `expireAfter` stamp is ever written and the status is **immortal**. Control: a `slowed` expired
+   correctly in the SAME bench combat, proving the sweep was live. ⚠️ This makes Predictive Ward's
+   "permanent" read correct **for the wrong reason** — neither fixture expires today.
+
+### One authoring gap (not a bug — an empty document)
+
+**2bAB-9 Sovereign of Solitude ships `rules = 0, effects = 0`** while its own description claims it
+was "rule-keyed on this item since the 07-26 pre-deploy audit". Verified it is not secretly
+engine-owned either: the engine's three mentions (L308/L579/L586) are **all comments**, and the name
+is absent from `name-keyed-allowlist.json`. Genuinely dead. **Contrast — this is the distinction the
+"r=0" rule is for:** Suture Cradle also has `rules = 0` and is **fine**, because the engine
+legitimately name-keys it at L3357 (adversary bespoke, allowed by the ratchet's scope note).
+
+### Not reached (9 — all stay 🤖, none re-filed as ⚑)
+
+Cover Their Retreat · Press the Line rider · Morale cues · Per-bird seemings · Cinder Coat
+splash-back · Bite sheds light · Stalker Fade cue · Devastating Blow cue · Veil auto-toggle.
+Ran out of budget after the Stitchmother cluster and the designate flows; the Roek / Mistheron /
+Cinderhound / Stalker actors were imported but never driven.
+
+### World safety
+
+**Zero drift.** End-state diff against the join snapshot: **0** actor-id drift, **0** token-id drift,
+**0** flag drift and **0** effect drift on every unlinked token actor (Ben's Stonebound Captain,
+Mistheron and three Corvaine tokens byte-identical), scene token/wall/template counts unchanged,
+his combat still active at round 1 turn `null`. All 21 imported actors, 22 tokens and the bench
+combat deleted; the two bench PC tokens I moved were restored to their recorded home coordinates.
+⚠️ **The bench combat's `edhaTurnCueSweep` wrote `trigRound` keys onto FOUR tokens — all four were
+MINE.** Unlike run 19, nothing landed on Ben's actors (his Stonebound Captain already carried the
+run-19 key at the same value, so a same-value rewrite would be undetectable by value comparison —
+stated as an inference, not a measurement). Residue: Bench — Green at 25 HP / 3 focus, Bench — Black
+at 3 focus — ordinary bench-fixture residue.
+
+---
+
 ## 2026-07-28e — BENCH RUN 19 (marathon 3): **fix pass C re-tested 4-for-4 across 8 drives, and `# W29 Balance-Pass Bestiary` swept — 24 🤖 in, 21 retired on evidence, 3 left, ZERO not-reached.** DOCS-ONLY (no engine, no data, no pack rebuild).
 
 Engine hash-verified live on join: served `register-skills.js` SHA-256

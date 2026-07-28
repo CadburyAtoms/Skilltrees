@@ -1508,18 +1508,9 @@ from the index — it had been there the whole time.
 
 07-17 bench already passed Draw Mana on adversaries, token numbering, folders, and the
 role-default skill ranks; the Mistheron sheet row passed except Spearing Beak (its 07-17c row).
-The two ⚑⚑ Line-Caller flows below are the pipeline's remaining unknowns.
 
-- [ ] 🤖 **Guiding Signal designate flow (14n)** — the Line-Caller uses it (inv 2→1): the card
-      lists the **PC tokens** within 15 ft (opposing side); clicking one posts the designation
-      note; a RAIDER who **targets that PC** and tests gets "Raise the Stakes" auto-injected and
-      the mark clears (one grant). An empty card must SAY WHY (no token on scene / nearest
-      candidate + distance) — never a bare "no allies in range".
-- [ ] 🤖 **Ordered Advance movement card (14n)** — use it (2 Actions, inv −1; the arm note posts),
-      then MOVE the Line-Caller: a card lists the allies within 10 ft of where it stopped with
-      each one's half-Speed (Raider 12.5 ft); moving with nobody near posts the "no allies within
-      10 ft" accounting line instead. Next round (or combat end) the window is dead — moving
-      posts nothing.
+✅ **RETIRED WHOLE at bench run 20 (2026-07-28f).** Both Line-Caller flows passed end-to-end on a
+fresh `Bench Adv —` import; evidence per row in the 07-28f delta. This section is now empty.
 
 ## Illusion belief loop — ✅ RETIRED WHOLE at bench run 13 (2026-07-27p, two clients)
 
@@ -2169,30 +2160,42 @@ Mutation Upgrade); superseded hand-toggle AEs were removed — the engine does t
 - [ ] 🤖 **Braced status** — use a Trooper's (or the Captain's) **Brace**: the shield icon lands
       on ITS token and auto-expires after its next turn. The Frostbinder's token wears the icon
       PERMANENTLY (Predictive Ward) and it must NOT expire with combat turns.
-- [ ] 🤖 **Probability Net** — target a PC, use it: that PC's next test shows `-1d6[Probability
-      Net]` in the roll breakdown and the mod is consumed (their following test is clean).
+      - ⚠️ **2026-07-28f (bench run 20) — FAIL, half of it. The icon half PASSES**: Brace put
+        `Braced (attacks at disadvantage)` / status `braced` on the Trooper's OWN token, and the
+        Frostbinder carries Predictive Ward's `braced` via `appliedEffects` with
+        `duration.type: "none"`. **The auto-expire NEVER happens.**
+        `EDHA_TIMED_STATUSES` (engine L580) is `{weakened, immobilized, slowed, noactions,
+        noreactions}` — **`braced` is not in it**, so `edhaIsTimedStatus()` returns false, neither
+        the `createActiveEffect` stamp hook nor `edhaExpireTimedStatuses`'s lazy pass ever writes an
+        `expireAfter` flag, and the effect is immortal. Re-armed INSIDE a bench combat and stepped
+        the Trooper's turn start twice (r3t1, r4t1): still `braced`, no `expireAfter` stamp, no
+        "ends" card — while a `slowed` from Frost Lance expired correctly in the SAME combat
+        ("💢 Slowed on Bench — Green ends (end of its turn)"), which is the control proving the
+        sweep itself was live. Brace's own rule authors `timed: true`; the engine never consults it.
+        ⚠️ **The row's discriminating claim currently reads the same for both fixtures** — neither
+        expires — so Predictive Ward's "permanent" looks right for the wrong reason. → test-pass-fixes.
 - [ ] 🤖 **Cinder Coat splash-back** — melee-hit a Cinderhound: the attacker automatically takes
       1d4 Energy (card names the hound). A ranged hit from across the room must NOT splash.
 - [ ] 🤖 **Bite sheds light** — a bitten creature's token starts glowing (the Kindle light rider).
-- [ ] 🤖 **Frost Lance Slowed** — on a hit the victim gains Slowed automatically, expiring at the
-      end of the VICTIM's next turn.
-- [ ] 🤖 **Vital Diagram → Scalpel-Strike** — target a PC, use Vital Diagram: the red mark icon
-      lands. Scalpel-Strike vs the marked PC shows `+4[Scalpel-Strike]` in the damage; vs an
-      unmarked PC it doesn't.
 - [ ] 🤖 **Suture Cradle** — TARGET a creature, use the cradle (heal rolls); every time that
       creature is then hit, the Stitchmother's Discipline auto-rolls vs DC 10+damage with a
       keep/ends card. Cradle another creature: the flag moves.
-- [ ] 🤖 **Phase 2 cue** — drop the Stitchmother below 70: ONE whispered ⏰ card with the full
-      transformation checklist, once.
-- [ ] 🤖 **Turn cues** — Glyph Pulse: end of the Living Lock's turn on round 2/4/…: the adjacency
-      card; odd rounds quiet. Reactive Strike: an enemy starting its turn within reach of the
-      Captain: one whispered card (not one per action).
+      - ⚠️ **2026-07-28f (bench run 20) — PARTIAL: the mechanic is right, it just fires TWICE.**
+        Everything the row asks for happened — heal rolled `3d6 = 5`, the cradle flag landed
+        (`sutureCradle → Bench — Green`), a 6-damage hit auto-rolled Discipline vs **DC 16**
+        (10 + 6) and posted the ends card, the flag cleared on the failure, and cradling Black
+        afterwards **moved** the flag off Green. **But the keep/ends card posted twice**, 75 ms
+        apart, *both from user `Bench`* — so it is **NOT** the two-GM duplicate (attributed by
+        `userId`, per the standing rule). Root cause: `edhaSutureCradleCheck` (engine L3367) builds
+        `holders` and dedupes with **`holders.includes(tok.actor)` — object identity**. An unlinked
+        token's synthetic actor is a *different object* with the **same `id`** that inherits the
+        base actor's flags, so the canvas pass and the `game.actors` pass both push it. Reproduced
+        the scan by hand: **2 entries, same id `DtdyQdVRXolPGFOb`**, one `isToken:true`
+        (speaker alias "Stitchmother") and one `isToken:false` (alias "Bench Adv — Stitchmother") —
+        exactly the two aliases on the two cards. Dedupe by `id`/`uuid`. This doubles the Discipline
+        ROLL too, so either result can end the cradle. → test-pass-fixes.
 - [ ] 🤖 **Stalker Fade cue** — damage a Stalker: the graze-or-miss reminder card (once/round).
 - [ ] 🤖 **Devastating Blow cue** — on ITS hit: the margin-Prone reminder; on other attacks: none.
-- [ ] 🤖 **edha-gm-cue registration held** — console shows no DataModelValidationError for any
-      adversary item on world load (the 07-16 morning build shipped cue rules with the handler
-      type unregistered — this deploy carries the registration; if cues are silent, THIS is the
-      first thing to check).
 
 *(**Ruling wanted: Combat Training's garbled source** — moved to `EDHA_RULINGS.md` **R-29** on
 2026-07-27w. The cheatsheet sentence reads "turn one of its own **grazes into a graze**"; whether
@@ -2212,13 +2215,36 @@ applied by itself and was named in chat ("reduced by 1 — Shield Wall", calc "5
 retaliate PROMPT posted by itself from the damage — one per adjacent ring-mate — with the click
 running White vs Spiritual through the contest core and dealing "3 spirit" on the success.
 Retired; evidence in the 07-26k delta.)*
-- [ ] 🤖 **2bAB-4 — Guiding Signal — The Reckoning, Bellwether AND Callthief** — use it on each → The designate marker lands (White Attunement Range at role rank) and the raise-the-stakes note posts — the use used to resolve nothing.
-- [ ] 🤖 **2bAB-5 — Whispered Doubt — Tollbird Flock** — an enemy of the flock spends focus within its Black range → It loses 1 MORE focus, announced, once per round per enemy — the watch is on the item now.
-- [ ] 🤖 **2bAB-6 — Rootling Swarm — Grasping Vines + Territorial Instinct** — use each on a targeted character → Vines: Green vs Physical auto-resolves → Restrained on a success. Instinct: Green vs Survival through the contest core → Immobilized; the turn-start cue still posts as the floor.
-- [ ] 🤖 **2bAB-7 — Tussock-Sow — Drive the Prey** — use it on a targeted character → Green vs Survival through the contest core; Slowed on a success; the move-away stays GM-narrated per the card note.
 - [ ] 🤖 **2bAB-8 — Stitchmother — Adaptive Mutation + Reknit Form** — target a thrall, use Mutation; then use Reknit Form → Mutation posts the two-graft chooser (+2 keen / 2-vital venom, no third option) and the bonuses ride the thrall's Slam. Reknit posts the injury picker; the buttons charge NOTHING extra (her card's flat 1 Inv + 1 Focus already paid).
+      - ✅ **2026-07-28f (bench run 20) — the Adaptive Mutation HALF PASSES in full.** Chooser card
+        offered **exactly two** grafts (Bone Spurs / Venom Glands — **no third option**); picking
+        Bone Spurs wrote `mutation {kind:"boneSpurs", keen:2}` and the bonus **rode the thrall's
+        Slam**: damage `1d6+3 = 7` **+2 keen = 9**, card "🦴 Bone Spurs (Life): +2 keen on the
+        strike", victim 47 → 38 at Deflect 0.
+      - ⚠️ **The Reknit Form half FAILS — a falsy-zero bug charges the cost the authored rule
+        zeroed.** The picker posts correctly and the card even RENDERS the zeroes
+        ("(0 Inv temporary · 0 Inv permanent)", buttons "(−0 Investiture)") — but clicking one
+        **charged 2 Investiture** (10 → 8) and the result card said "(−2 Investiture)", i.e. exactly
+        the double-charge the rule's `costTemporary: 0 / costPermanent: 0` exists to prevent.
+        Root cause: `edhaReknitClick` (engine L15571) reads
+        **`const cost = Number(ds.edhaCost) || 2;`** — an authored **0** is falsy, so `|| 2` wins.
+        The card generator `edhaPostReknitCard` gets it right (`h?.costTemporary == null ? 2 : …`),
+        which is why display and behaviour disagree. Generic: it hits ANY `edha-remove-injury` rule
+        authoring a 0 cost. (The injury itself WAS removed — from the token actor; the directory
+        copy is a separate doc for an unlinked token, not a defect.) → test-pass-fixes.
 - [ ] 🤖 **2bAB-9 — Reeve-Owl — Sovereign of Solitude** — target the moving Weakened creature, use it → Immobilized lands, Black vs Spiritual auto-resolves, and a success rolls 1d6 vital — the cue's "use the item to auto-resolve" promise is true for the first time.
-- [ ] 🤖 **2bAB-10 — Surecat — Intercept** — use it with the Forewarned creature targeted → The confirm card posts; confirming puts disadvantage on that creature's next test. The turn-end cue still posts.
+      - ⚠️ **2026-07-28f (bench run 20) — FAIL: the item is EMPTY. This is an authoring gap, and
+        the 07-26 rewire never landed on it.** Read from the live pack: Sovereign of Solitude carries
+        **`rules = 0`, `effects = 0`** (activation `rea`, 2 Focus). Its own description asserts the
+        opposite — *"rule-keyed on this item since the 07-26 pre-deploy audit (the engine name-key
+        its use path rode is gone)"* — and then promises movement→0, Black vs Spiritual, and 1d6
+        vital on a success. **Nothing is wired.** Confirmed it is not secretly engine-owned either:
+        the engine's three "Sovereign of Solitude" mentions (L308 / L579 / L586) are **all comments**,
+        no code branch, and the name is absent from `name-keyed-allowlist.json`. So the talent is
+        genuinely dead, not merely un-migrated. Contrast with **Suture Cradle**, whose `rules = 0` is
+        fine because the engine legitimately name-keys it (L3357, an adversary bespoke — allowed).
+        Needs an authored `edha-def-test` (black vs spi) + `edha-triggered-effect` pair, mirroring
+        2bAB-6/2bAB-7. → test-pass-fixes.
 
 ## Still unbenched from the manual re-litigation (2026-07-16c)
 
