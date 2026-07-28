@@ -3081,8 +3081,24 @@ function edhaCueRules(actor, trigger) {
   }
   return out;
 }
+/* The once-per-round slot for a GM cue (07-27y, bench run 16). The key used to be
+ * `cue:<item>:<trigger>` — item + trigger and NOTHING else — so two `hp-below` cues on ONE item
+ * shared a single slot and the lower threshold could never fire: the Gone-to-Weir Fen-Heart's
+ * near-zero "it goes still" cue (atFraction 0.05) was permanently eaten by its own bloodied cue
+ * (0.5). Measured live: one 60 -> 0 write crossed both lines, posted one card, and left the flag
+ * reading exactly {"cue:The Madness Slackens:hp-below": 1}. Blast radius 2 (Gone-to-Weir Fen-Heart,
+ * Briar-Gone Grove) — the only two items in data/ carrying two cues of the same trigger.
+ * The key now carries every dial that can distinguish two rules of this handler type. Residual
+ * limit, stated: two cues identical in trigger AND all three dials, differing only in `note`, would
+ * still share a slot — no such pair exists in the data today. Pure — pinned in tests/.
+ * NOTE the decimal: this key reaches the `trigRound` flag VALUE as an object key, so it MUST go
+ * through edhaFlagKey — which edhaTriggerAllowed / edhaMarkTriggerUsed do at the ledger boundary. */
+function edhaCueKey(itemName, h) {   // pure — pinned in tests/
+  const dial = (v) => (v === undefined || v === null || v === "") ? "" : String(v);
+  return `cue:${itemName}:${h?.trigger || ""}:${dial(h?.atFraction)}:${dial(h?.rangeFt)}:${dial(h?.everyNRounds)}`;
+}
 async function edhaPostCueCard(owner, item, h, extra = "") {
-  const key = `cue:${item.name}:${h.trigger || ""}`;
+  const key = edhaCueKey(item.name, h);
   if (h.oncePerRound !== false) {
     if (!edhaTriggerAllowed(owner, key, { oncePerRound: true })) return;
     await edhaMarkTriggerUsed(owner, key, { oncePerRound: true });

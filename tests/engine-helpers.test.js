@@ -340,6 +340,37 @@ test("edhaCueCrossed: fires only when THIS write crosses maxHp×fraction, atFrac
   assert.strictEqual(env.edhaCueCrossed(13, 11, 24, undefined), true); // fraction defaults to half
 });
 
+// --- 07-27y bench run 16: two hp-below cues on ONE item shared a once-per-round slot -------------
+// The Gone-to-Weir Fen-Heart's near-zero "it goes still" cue (0.05) was permanently eaten by its
+// own bloodied cue (0.5) because the key was `cue:<item>:<trigger>` and nothing else. One 60 -> 0
+// write crossed both lines and posted exactly one card.
+test("edhaCueKey separates two cues that differ only in a dial (the Fen-Heart collision)", () => {
+  const bloodied = { trigger: "hp-below", atFraction: 0.5 };
+  const goesStill = { trigger: "hp-below", atFraction: 0.05 };
+  const theDrop = { trigger: "hp-below", atFraction: 0 };            // Briar-Gone Grove's second cue
+  const k = (h) => env.edhaCueKey("The Madness Slackens", h);
+  assert.notStrictEqual(k(bloodied), k(goesStill), "0.5 and 0.05 must not share a slot");
+  assert.notStrictEqual(k(bloodied), k(theDrop), "0.5 and 0 must not share a slot");
+  assert.notStrictEqual(k(goesStill), k(theDrop));
+  // …and the same separation must SURVIVE the flag-key escaping, or the fix dies on write:
+  // `0.05` is a DOTTED key, which Foundry expands into nested objects (see edhaFlagKey).
+  const esc = (h) => env.edhaFlagKey(k(h));
+  assert.ok(!esc(goesStill).includes("."), "an unescaped decimal would disarm the guard entirely");
+  assert.notStrictEqual(esc(bloodied), esc(goesStill));
+  assert.notStrictEqual(esc(bloodied), esc(theDrop));
+  assert.notStrictEqual(esc(goesStill), esc(theDrop));
+  // Negative controls: the SAME rule keeps ONE slot, and two items never share one.
+  assert.strictEqual(k(bloodied), k({ trigger: "hp-below", atFraction: 0.5 }), "same dials = same slot (once per round still holds)");
+  assert.notStrictEqual(k(bloodied), env.edhaCueKey("Wrong, Not Evil", bloodied));
+  // The other dials discriminate too (ally-drops / enemy-turn-start rangeFt, turn-end everyNRounds).
+  assert.notStrictEqual(env.edhaCueKey("X", { trigger: "ally-drops", rangeFt: 5 }),
+                        env.edhaCueKey("X", { trigger: "ally-drops", rangeFt: 30 }));
+  assert.notStrictEqual(env.edhaCueKey("X", { trigger: "turn-end", everyNRounds: 1 }),
+                        env.edhaCueKey("X", { trigger: "turn-end", everyNRounds: 3 }));
+  // A synthesized handler (the turn-end regen card passes a literal, not a rule) still keys cleanly.
+  assert.strictEqual(env.edhaCueKey("Nexus-Fed", { note: "n", trigger: "turn-end" }), "cue:Nexus-Fed:turn-end:::");
+});
+
 // --- 07-20 turn-end regen (edha-regen, the Garden Sow's Nexus-Fed): the pure clamp --------------
 test("edhaRegenClamp: flat heal at turn end — never while down, never past max, 0 on nonsense", () => {
   assert.strictEqual(env.edhaRegenClamp(5, 40, 62), 5);         // plain regen
