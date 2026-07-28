@@ -33,6 +33,39 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-07-28n — CAMPAIGN: the **Palewater Ford battle-map drawing brief** (`docs/BATTLEMAP_PALEWATER_FORD.md`), written from Ben's ask "how big are the barges, width of the river, how many enemy tokens, what do the banks look like". DOCS-ONLY — no engine, no data, no pack rebuild.
+
+Session 1 §3 specified the ford's *semantics* (channel/bars/shallows/scrub, the pile-up, the design
+goal) and left every *dimension* unstated, which is exactly what a Procreate pass needs. The brief
+fills them in and derives each one rather than inventing it:
+
+- **The river.** Canon **ruling 153** makes the ford's braided shallows the stated exception to the
+  Palewater's 250 m–1.2 km channel; the read-aloud calls it half a mile of braid. Half a mile is
+  **528 squares**, so a 30×20 map is **~6% of the ford** — meaning **the map has no true shoreline
+  on it at all**. §3's "willow scrub on the Corvaine bank" is drawn as a **withy bar** (a willow-grown
+  gravel island on the Corvaine side of the navigable slot), true east shore 1,500+ ft off-map. That
+  is the brief's §0 call 1; it keeps the read-aloud, ruling 153, and the tactical map all true at once.
+- **Dimensions derived, not guessed.** Channel **5–6 squares wide, 6–7 ft deep** (a 15-ft barge in a
+  28-ft slot *is* "single file, dead slow"); barges **40 × 15 ft = 8 × 3 squares**, 2.5-ft laden draft,
+  ~25 t each; four painted depth bands; the bar's channel-side lip as the half-cover edge.
+- **Two constraints the encounter breaks without** — found by walking §3's tactics against the
+  statblocks, not by reading the prose: the willow line must sit **within 12 squares (60 ft)** of the
+  barge string or round 1's shoot-from-cover inverts, and there must be **≤2 squares of Slowed water**
+  between the central bar and the gunwales or the Move-25 boarders need five rounds to reach a deck.
+- **Orientation from the gazetteer, not from memory:** Corvaine's polygon is **east** of the ford at
+  (1148,1669), so Corvaine = map right, Thalendor = left, downstream = bottom (toward Withervale at
+  (1220,1796)).
+- **Token count, plainly:** **4 statted enemies by default** (Roek + Line-Caller + 2 Raiders), **6 at
+  the scaling ceiling**, + Wick, + at most 2 flavor tokens in the scrub. The nine crew and the eight
+  second-line raiders get **no tokens** (ruling 39's "the dozen is the scene, not the fight").
+
+⚑ **Three calls sit at the top of the brief** (§0) — the withy-bar reading, a 1-token ambiguity
+between §3's "Roek + 2 Raiders + 1 Line-Caller" and §10's 2026-07-16 "Roek + 3 Raiders", and the
+8×3 barge footprint. All three have defaults; none is drawn yet. `EDHA_SESSION_1_SCRIPT.md` §9's
+Palewater bullet now points at the brief.
+
+---
+
 ## 2026-07-28m — FIX PASS F (marathon 3, the last fix pass): **run 23's two items, both root-caused in source before anything was touched — and they went opposite ways.** The `currentTarget` family swept to **35 occurrences on 34 lines across 33 handlers and came back genuinely ONE bug**; the `deleteCombat` scope sighting came back **20 of 24 sweeps defective and destroying player data**. Plus the swallowing catch (the deeper defect), a new **lint pass 19**, and a pre-existing **CRLF test bug that made two gates inert on Ben's machine**. ENGINE-only → **⟳ sync the module + F5**; the pack-rebuild list stays **EMPTY** (seven passes running).
 
 ### Rulings (defaults applied — both are live, both are vetoable)

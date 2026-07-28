@@ -665,7 +665,9 @@ player-safe nations/faiths/names guide). Any origin works with this session as w
 **Battle-map briefs for Ben's Procreate pass** (art lands at
 `source-materials/maps/battle/<site-slug>.png` + a `battle_maps` gazetteer entry):
 
-- **Palewater shallows** (⚑ not drawn): ~30×20 squares. Features: the deep channel snaking
+- **Palewater shallows** (⚑ not drawn) — **full drawing brief: `docs/BATTLEMAP_PALEWATER_FORD.md`**
+  (2026-07-28: dimensions, depths, the barge deck plan, the pile-up geometry, token counts, and
+  the two constraints the encounter breaks without). Summary: ~30×20 squares. Features: the deep channel snaking
   corner-to-corner; three barges **accordioned nose-to-stern against the central bar** (the
   pile-up, §3 — decks a hop apart so the party can concentrate); gravel bars (firm, half-cover
   at the sunken edges); knee-deep braided shallows everywhere else (difficult terrain); willow
