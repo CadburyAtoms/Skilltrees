@@ -6,10 +6,19 @@
  *
  * Reads THE map truth (source-materials/maps/thyrcross.map.json) and writes
  * module-src/assets/thyrcross-nations.json: canvas size + per-nation name/region/polygon.
- * Everything is data-derived — the hover line is the map's own `region` field. The image half
- * of the asset (assets/thyrcross-map.jpg) is a downscaled copy of thyrcross-labeled.png,
- * regenerated only when the labeled map changes (see the delta that introduced it).
+ * Everything is data-derived — the hover line is the map's own `region` field.
  * Deterministic output — commit the result; module-src-sync.js pushes both to the live module.
+ *
+ * ⚠️ THE IMAGE HALF IS NOT WRITTEN BY THIS SCRIPT, AND IT IS NOT A COPY OF thyrcross-labeled.png.
+ * assets/thyrcross-map.jpg must be a downscale of the RAW BASE PAINTING (thyrcross.png), NOT of
+ * thyrcross-labeled.png — the render toolchain's label overlay is what carries the nation letters
+ * (A Kettavar … J Canticle) and the numbered city labels, and the wizard's map picker is meant to
+ * be label-free (07-19s; the picker draws its own hover tooltips from the nations JSON above).
+ * This docstring used to say "downscaled copy of thyrcross-labeled.png" and was never corrected by
+ * the 07-19s fix, which is how TWO later re-registration passes (db79969, b114f7e) each silently
+ * regenerated the labelled render and undid it. Audited 2026-07-27v: the committed jpg is labelled
+ * again. Whether to regenerate it label-free is an open ruling — see the map defect row in
+ * EDHA_FOUNDRY_TEST_CHECKLIST.md. Keep the aspect at canvas aspect (2236x2976 -> 0.7513).
  */
 "use strict";
 const fs = require("fs");
