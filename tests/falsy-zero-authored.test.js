@@ -121,9 +121,12 @@ test("every shipped rule that authors a 0 resolves to 0, not to the code default
   };
   for (const f of files) walk(JSON.parse(fs.readFileSync(path.join(REPO, f), "utf8")));
 
-  assert.strictEqual(zeros.speed.length, 4,
-    "expected 4 static illusions authoring speed 0 (Holographic Illusion, Phantom Double, The Seeming ×2) — " +
-    "if this changed, re-read the family write-up before adjusting the number");
+  // `>=`, not `===`: the per-rule assertion below covers any NEW speed-0 rule automatically, so a
+  // legitimate fifth static illusion must not fail this file (a test people edit to make it pass is
+  // worse than no test). The floor of 4 is the tripwire for the four going MISSING.
+  assert.ok(zeros.speed.length >= 4,
+    `expected at least the 4 static illusions authoring speed 0 (Holographic Illusion, Phantom Double, ` +
+    `The Seeming ×2); found ${zeros.speed.length} — re-read the family write-up before adjusting this`);
   for (const h of zeros.speed) {
     assert.strictEqual(env.edhaNumOr(h.speed, 25), 0, "a static illusion must be IMMOBILE, not 25 ft");
   }
