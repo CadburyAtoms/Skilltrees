@@ -182,6 +182,43 @@ function systemSchemaTopLevelFields(bundle) {
   return [...fields].sort();
 }
 
+/* ---- DERIVED-VALUE leaves (added 2026-07-27y) --------------------------------------------------
+ *
+ * WHY. Pass 11's family is "the field does not exist". This is its twin: "the field exists but is
+ * an OBJECT, and the engine read it as a number". cosmere-rpg wraps a dozen derived stats in
+ * `DerivedValueField` — a SchemaField carrying {derived, override, useOverride[, bonus]} plus a
+ * getter-only `.value`. `Number(thatObject)` is NaN, so the near-universal `Number(x) || 0` idiom
+ * silently yields **0**: no error, no warning, the mechanic just reads as dead.
+ *
+ * Bench run 16 (07-27x) found two engine sites; an independent sweep found a third the run's own
+ * sweep had declared absent. Every belief test in the game rolled `1d20 + 0` instead of the
+ * target's Perception, and every `edha-move {byHalfSpeed}` moved 0 ft.
+ *
+ * LEAF NAMES, not paths, deliberately — for the same decidability reason as the union above. The
+ * paths are built at runtime by reducing over CONFIG key maps (`skills.<id>.mod`,
+ * `movement.<type>.rate`, `defenses.<id>`), so they cannot be enumerated statically; the leaf NAME
+ * is what a `Number(...)` expression actually terminates at, and that is the whole check.
+ *
+ * KNOWN GAP, stated so a green pass is not over-read: `constructDefenseSchema` builds the three
+ * `system.defenses.<phy|cog|spi>` fields anonymously, so the defense ids are not harvested here.
+ * Every engine defense read already terminates at `.value`/`.override`; if that changes, this is
+ * the blind spot. */
+function systemDerivedValueLeaves(bundle) {
+  const leaves = new Set();
+  for (const m of bundle.matchAll(/([A-Za-z_$][\w$]*)\s*:\s*new DerivedValueField\(/g)) leaves.add(m[1]);
+  // Rot alarm, same discipline as the schema harvest: 2.1.0 declares 12. A restructure that drops
+  // us to a handful must fail LOUDLY rather than silently shrink the checked set.
+  if (leaves.size < 8) {
+    fail(`derived-value extraction found only ${leaves.size} leaves — the bundle restructured (did DerivedValueField get renamed?); re-derive the extraction before trusting this file`);
+  }
+  for (const probe of ["mod", "rate", "max", "deflect"]) {
+    if (!leaves.has(probe)) fail(`derived-value extraction is missing the known leaf "${probe}" — the extractor is wrong, not the system`);
+  }
+  const anon = [...bundle.matchAll(/const\s+([A-Za-z_$][\w$]*)\s*=\s*\([^)]*\)\s*=>\s*new DerivedValueField\(/g)].map((m) => m[1]);
+  if (anon.length) console.warn(`  note: ${anon.length} DerivedValueField constructor(s) build fields anonymously (${anon.join(", ")}) — their leaf names are CONFIG ids and are not harvested; see the block comment.`);
+  return [...leaves].sort();
+}
+
 /* ---- CONTENT VOCABULARY ids (added 2026-07-27j) ------------------------------------------------
  *
  * WHY. Bench run 9 found eight talents wired to cosmere SKILL ids that do not exist — `itm` for
@@ -272,6 +309,13 @@ const snapshot = {
     "keys, so the write resolves and stores nothing. lint-refs pass 11 gates the engine and the build",
     "against it. It is a UNION, so a pass means 'not obviously dead', never 'right for this type'.",
     "",
+    "`systemDerivedValueLeaves` (added 07-27y) is the TWIN of the dead-field trap: the field EXISTS",
+    "but is a DerivedValueField OBJECT ({derived, override, useOverride[, bonus]} + a getter-only",
+    "`.value`), so `Number(it)` is NaN and the `Number(x) || 0` idiom silently yields 0. Three engine",
+    "sites shipped that way — every belief test rolled 1d20+0, every half-Speed move went 0 ft.",
+    "Read `.value` (engine helper: edhaDerivedNum). lint-refs pass 17 gates it. LEAF NAMES only —",
+    "the paths are built at runtime from CONFIG id maps and cannot be enumerated statically.",
+    "",
     "`contentVocabulary` (added 07-27j) is the same trap at the CONTENT layer: the real cosmere id",
     "sets for skills, attributes, defenses (attributeGroups), damage types, statuses and resources.",
     "An authored `skill`/`whenSkill`/`status` outside these never matches anything and an",
@@ -287,6 +331,7 @@ const snapshot = {
   handlerTargetChoices: targetChoices,
   updateActorTargetChoices: updateActorTargets,
   systemSchemaTopLevelFields: systemSchemaTopLevelFields(bundle),
+  systemDerivedValueLeaves: systemDerivedValueLeaves(bundle),
   contentVocabulary: contentVocabulary(bundle),
   events,
   handlers,

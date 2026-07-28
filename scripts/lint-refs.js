@@ -118,26 +118,83 @@ const engineCode = stripComments(engine);
 /* Comments AND string contents replaced by spaces, byte offsets and line breaks preserved — so a
  * match index in the result still points at the same place in the original. `stripComments` above
  * rebuilds line-by-line and cannot be indexed back into the source; pass 11 needs both (it reads
- * object literals out of the ORIGINAL text at offsets found in the blanked copy). */
+ * object literals out of the ORIGINAL text at offsets found in the blanked copy).
+ *
+ * TEMPLATE-AWARE since 07-27y, and that is not a nicety — it was silently disabling this whole
+ * file. The old scanner closed a backtick string at the FIRST backtick it saw, so a NESTED template
+ * inside `${…}` (the engine has ~30, e.g.
+ *     `…${a ? " strike" : `${x.name}'s hit`}…`
+ * ) closed the OUTER template early, dumped the remaining string text into "code", and the next
+ * apostrophe in prose ("the victim's healing") opened a runaway span that ate real code until the
+ * next stray quote. Measured on register-skills.js: 116 runaway spans, 598 code lines (5.9%)
+ * blanked to nothing. Every pass built on this helper — 11 (dead fields), 15 (isGM hooks), 16
+ * (Region flags), 17 (object-as-scalar) — was blind on those lines, and the hole was invisible
+ * because a blind pass reports SUCCESS. Verified by the very bug that exposed it: pass 17 did not
+ * see the third object-as-scalar site (register-skills.js:5933) until this was fixed.
+ *
+ * The scanner is now an explicit context stack: code / quoted-string / template, with `${…}`
+ * pushing a fresh CODE frame (brace-counted) so nested templates and the code inside interpolations
+ * are both handled. Code inside `${…}` is now EXPOSED to the passes, which is correct — it is code.
+ *
+ * REGEX LITERALS get the standard prev-token heuristic: a `/` starts a regex when the previous
+ * non-space code character cannot end an expression. Without it, `/[&<>"]/` (escCw, one line) opened
+ * a fake string on its `"` and swallowed the next 36 lines. The heuristic is not a tokeniser — it
+ * mis-reads `a /b/ c` as a regex — but that is division by an identifier on both sides, which does
+ * not occur here, and the failure direction is the safe one (blanking too much never invents a
+ * violation, it only hides one, and the per-pass rot alarms catch a collapse). */
+/* Does the `/` at `i` open a REGEX literal (rather than being division)? The standard heuristic:
+ * look back past whitespace at the previous code character — if it cannot END an expression, a
+ * regex must follow. `)` is deliberately treated as "can end" (so `(a+b) / c` is division), which
+ * mis-reads `if (x) /re/.test(y)`; no such form exists here. */
+function regexStartsHere(src, i) {
+  let j = i - 1;
+  while (j >= 0 && /\s/.test(src[j])) j--;
+  if (j < 0) return true;
+  const p = src[j];
+  if ("([{,;:=!&|?+-*%~^<>".includes(p)) return true;
+  return /\b(return|typeof|case|in|of|new|delete|void|do|else|yield|await)$/.test(src.slice(Math.max(0, j - 9), j + 1));
+}
 function blankStringsAndComments(src, { keepStrings = false } = {}) {
   let out = "";
+  const emit = (ch, blankIt) => { out += (ch === "\n") ? "\n" : (blankIt ? " " : ch); };
+  const stack = [{ k: "code", braces: 0, root: true }];
   for (let i = 0; i < src.length; ) {
+    const t = stack[stack.length - 1];
     const c = src[i];
-    if (c === '"' || c === "'" || c === "`") {
-      out += c; i++;
-      for (; i < src.length; i++) {
-        if (src[i] === "\\") { out += keepStrings ? src.slice(i, i + 2) : "  "; i++; continue; }
-        out += src[i] === "\n" ? "\n" : (keepStrings || src[i] === c ? src[i] : " ");
-        if (src[i] === c) { i++; break; }
+
+    if (t.k === "str" || t.k === "tpl") {
+      if (c === "\\") { emit(c, !keepStrings); emit(src[i + 1] ?? "", !keepStrings); i += 2; continue; }
+      if (c === (t.k === "tpl" ? "`" : t.q)) { out += c; i++; stack.pop(); continue; }   // the delimiter itself stays
+      if (t.k === "tpl" && c === "$" && src[i + 1] === "{") {   // interpolation: back to CODE until the matching }
+        out += "${"; i += 2; stack.push({ k: "code", braces: 0 }); continue;
       }
-      continue;
+      emit(c, !keepStrings); i++; continue;
     }
-    if (c === "/" && src[i + 1] === "/") { while (i < src.length && src[i] !== "\n") { out += " "; i++; } continue; }
+
+    // code frame
+    if (c === "/" && src[i + 1] === "/") { while (i < src.length && src[i] !== "\n") { emit(src[i], true); i++; } continue; }
     if (c === "/" && src[i + 1] === "*") {
       const e = src.indexOf("*/", i + 2);
       const end = e < 0 ? src.length : e + 2;
-      for (; i < end; i++) out += src[i] === "\n" ? "\n" : " ";
+      for (; i < end; i++) emit(src[i], true);
       continue;
+    }
+    if (c === '"' || c === "'") { out += c; i++; stack.push({ k: "str", q: c }); continue; }
+    if (c === "`") { out += c; i++; stack.push({ k: "tpl" }); continue; }
+    if (c === "/" && regexStartsHere(src, i)) {           // a REGEX literal, not division — skip it whole
+      out += c; i++;
+      for (let cls = false; i < src.length; i++) {
+        if (src[i] === "\\") { out += "  "; i++; continue; }
+        if (src[i] === "[") cls = true; else if (src[i] === "]") cls = false;
+        const done = src[i] === "/" && !cls;
+        out += src[i] === "\n" ? "\n" : (done ? "/" : " ");
+        if (done || src[i] === "\n") { i++; break; }       // a newline means it was division after all — bail
+      }
+      continue;
+    }
+    if (!t.root) {
+      if (c === "{") { t.braces++; out += c; i++; continue; }
+      if (c === "}") { out += c; i++; if (t.braces === 0) stack.pop(); else t.braces--; continue; }
     }
     out += c; i++;
   }
@@ -1246,6 +1303,107 @@ engine.split("\n").forEach((lineText, i) => {
   if (scanned < 5) {
     err(`lint-refs pass 16: only ${scanned} Region creates were delimited (expected 5+) — ` +
         `the scan rotted; fix it before trusting this pass.`);
+  }
+}
+
+/* --- pass 17: no NUMERIC read of a system field that is an OBJECT (the object-as-scalar family) --
+ *
+ * Pass 11 gates "the field does not exist". This is its twin, and it cost bench run 16 three rows:
+ * the field EXISTS but is a `DerivedValueField` — a SchemaField carrying {derived, override,
+ * useOverride[, bonus]} plus a getter-only `.value`. `Number(thatObject)` is **NaN**, so the
+ * near-universal `Number(x) || 0` idiom silently yields **0**. No error, no warning, no failed
+ * promise: the mechanic simply reads as dead.
+ *
+ *   · edhaSpeedFt            Number(getProperty(a, "system.movement.walk.rate"))  -> 0 ft, so EVERY
+ *                            `edha-move {byHalfSpeed}` moved nothing (3 pack blocks).
+ *   · edhaAmbushBeliefTest   Number(…system.skills.prc.mod ?? …rank)              -> 1d20 + 0.
+ *   · edhaPhantomBeliefSweep Number(…system.skills.<id>.mod ?? …rank)             -> 1d20 + 0. The
+ *                            run's own targeted sweep reported "these two sites and no others";
+ *                            this third one is why the check is a GATE and not a habit.
+ *
+ * WHAT IT CHECKS. Inside every `Number( … )` argument, every `system`-rooted property chain whose
+ * LAST segment is one of the system's DerivedValueField leaf names
+ * (`systemDerivedValueLeaves` in data/native-vocabulary.json, harvested from the bundle by
+ * scripts/dump-native-vocabulary.js) and which does NOT terminate at .value/.override/.derived/
+ * .bonus/.base. Both forms: property access (`a.system?.skills?.prc?.mod`) and the flat string
+ * (`getProperty(a, "system.movement.walk.rate")`).
+ *
+ * WHY `Number(` AND NOT EVERY READ. `const heaMax = actor.system?.resources?.hea?.max;` is CORRECT
+ * — the object is what those call sites want, and they branch on it. Only a numeric COERCION of the
+ * object is the bug, and that is the decidable half.
+ *
+ * LIMITS, stated so a green pass is not over-read:
+ *   · Leaf NAMES, not paths — `system.<anything>.mod` is checked, not just skills. That is
+ *     deliberate over-approximation; the fix (`edhaDerivedNum`) is right for all of them anyway.
+ *   · Only inside a literal `Number(...)`. `+x` and `x * 2` on a derived object are the same bug
+ *     and are NOT caught. Every site in the engine today uses Number().
+ *   · `system.defenses.<phy|cog|spi>` is a DerivedValueField too, but the system builds those three
+ *     anonymously, so the dumper cannot name them (see its block comment).
+ *   · Skipped with a warning when the snapshot predates the leaf list — warn, don't guess. */
+{
+  const SNAP17 = path.join(REPO_ROOT, "data", "native-vocabulary.json");
+  let leaves = null;
+  try {
+    const v = JSON.parse(fs.readFileSync(SNAP17, "utf8"));
+    if (Array.isArray(v.systemDerivedValueLeaves) && v.systemDerivedValueLeaves.length >= 8) leaves = new Set(v.systemDerivedValueLeaves);
+    else console.warn("⚠ lint-refs pass 17: native-vocabulary.json has no systemDerivedValueLeaves — object-as-scalar checking SKIPPED. Regenerate with: node scripts/dump-native-vocabulary.js");
+  } catch (e) { /* pass 2's block already warned about an unreadable snapshot */ }
+
+  if (leaves) {
+    const TERMINAL = new Set(["value", "override", "derived", "bonus", "base"]);
+    const lineOf17 = (idx) => engine.slice(0, idx).split("\n").length;
+    // Two views of the SAME offsets (blankStringsAndComments preserves them, which is the whole
+    // point of that helper): balance parens on the fully-blanked copy so a ")" inside a string
+    // cannot close the call early, then read the argument out of the copy that KEPT string bodies —
+    // the flat `"system.movement.walk.rate"` form lives inside a string.
+    const blank17 = blankStringsAndComments(engine);
+    const src17 = blankStringsAndComments(engine, { keepStrings: true });
+    const matchParen = (s, start) => {                       // s[start] must be "("
+      let depth = 0;
+      for (let i = start; i < s.length; i++) {
+        if (s[i] === "(") depth++;
+        else if (s[i] === ")") { depth--; if (depth === 0) return i; }
+      }
+      return -1;
+    };
+    let scanned = 0;
+
+    const flag = (line, path_, last) =>
+      err(`register-skills.js:${line}: \`${path_}\` is coerced with Number(), but \`${last}\` is a ` +
+          `cosmere DerivedValueField — an OBJECT ({derived, override, useOverride[, bonus]} + a ` +
+          `getter-only .value), so Number() is NaN and the \`|| 0\` next to it silently yields 0. ` +
+          `Read it through edhaDerivedNum(v, fallback), which takes .value first. Three engine ` +
+          `sites shipped this way and every one of them read as a dead mechanic, not as an error.`);
+
+    for (const m of blank17.matchAll(/\bNumber\s*\(/g)) {
+      const open = blank17.indexOf("(", m.index);
+      const close = matchParen(blank17, open);
+      if (close < 0) continue;
+      const arg = src17.slice(open + 1, close);
+      const argCode = blank17.slice(open + 1, close);   // strings blanked: a path QUOTED IN PROSE is form (b)'s job, not (a)'s
+      scanned++;
+      // (a) property access — system.a?.b.c ; the chain may use ?. and [expr] segments.
+      for (const c of argCode.matchAll(/\bsystem(?:\s*\?\.\s*|\s*\.\s*)(?:[A-Za-z_$][\w$]*|\[[^\]]*\])(?:(?:\s*\?\.\s*|\s*\.\s*)(?:[A-Za-z_$][\w$]*|\[[^\]]*\])|\?\.\[[^\]]*\])*/g)) {
+        const segs = c[0].split(/\s*\??\.\s*/).filter(Boolean);
+        const last = segs[segs.length - 1];
+        if (last && !last.startsWith("[") && leaves.has(last) && !TERMINAL.has(last)) {
+          flag(lineOf17(open + 1 + c.index), c[0].replace(/\s+/g, ""), last);
+        }
+      }
+      // (b) flat string paths — getProperty(a, "system.movement.walk.rate"), update keys, templates.
+      for (const c of arg.matchAll(/["'`]system\.([\w$.${}[\]]*)/g)) {
+        const segs = c[1].split(".").filter(Boolean);
+        const last = segs[segs.length - 1];
+        if (last && leaves.has(last) && !TERMINAL.has(last)) {
+          flag(lineOf17(open + 1 + c.index), `system.${c[1]}`, last);
+        }
+      }
+    }
+    // Rot alarm: the engine has hundreds of Number() calls. A regex that stops matching them turns
+    // this pass into a silent no-op, which is worse than not having it.
+    if (scanned < 100) {
+      err(`lint-refs pass 17: only ${scanned} Number() calls were delimited (expected 100+) — the scan rotted; fix it before trusting this pass.`);
+    }
   }
 }
 

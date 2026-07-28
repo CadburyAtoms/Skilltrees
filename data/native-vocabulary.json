@@ -22,6 +22,13 @@
     "keys, so the write resolves and stores nothing. lint-refs pass 11 gates the engine and the build",
     "against it. It is a UNION, so a pass means 'not obviously dead', never 'right for this type'.",
     "",
+    "`systemDerivedValueLeaves` (added 07-27y) is the TWIN of the dead-field trap: the field EXISTS",
+    "but is a DerivedValueField OBJECT ({derived, override, useOverride[, bonus]} + a getter-only",
+    "`.value`), so `Number(it)` is NaN and the `Number(x) || 0` idiom silently yields 0. Three engine",
+    "sites shipped that way — every belief test rolled 1d20+0, every half-Speed move went 0 ft.",
+    "Read `.value` (engine helper: edhaDerivedNum). lint-refs pass 17 gates it. LEAF NAMES only —",
+    "the paths are built at runtime from CONFIG id maps and cannot be enumerated statically.",
+    "",
     "`contentVocabulary` (added 07-27j) is the same trap at the CONTENT layer: the real cosmere id",
     "sets for skills, attributes, defenses (attributeGroups), damage types, statuses and resources.",
     "An authored `skill`/`whenSkill`/`status` outside these never matches anything and an",
@@ -139,6 +146,20 @@
     "value",
     "viewBounds",
     "weight"
+  ],
+  "systemDerivedValueLeaves": [
+    "carry",
+    "conversionRate",
+    "convertedValue",
+    "deflect",
+    "die",
+    "injuries",
+    "lift",
+    "max",
+    "mod",
+    "range",
+    "rate",
+    "total"
   ],
   "contentVocabulary": {
     "skills": [
