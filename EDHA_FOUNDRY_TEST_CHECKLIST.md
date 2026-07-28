@@ -256,7 +256,7 @@ the small-handler case is structurally intact (see the delta); the one 2bAC row 
 visual-legibility judgment — still ⚑ Ben.
 
 - [ ] 🤖 **2bAC-1 (mechanical half) — Edit Event Rule geometry** — open any converted talent → Events → edit its Triggered Effect rule → the window is ~660px wide, each control sits beside its label, the hint sits UNDER the pair in smaller type, the form scrolls inside the window, and Update is reachable at the bottom. *(Split from the row below 2026-07-27w. Bench run 12 already measured 660×447 with labels and controls on the same row — this is the six-property re-read, not a fresh question.)*
-- [ ] ⚑ **2bAC-1 (judgment half) — do the labels read as PHRASES?** — with that same dialog open: does every label read as a phrase in 2 lines or fewer, or are some still jargon that needs re-wording? A measurement cannot answer this; you have to read them. *(Split 2026-07-27w — the geometry half is the 🤖 row above.)*
+- [ ] ⚑ **2bAC-1 (judgment half) — do the labels read as PHRASES?** — with that same dialog open: does every label read as a phrase in 2 lines or fewer, or are some still jargon that needs re-wording? A measurement cannot answer this; you have to read them. *(Split 2026-07-27w — the geometry half is the bench row above.)*
 
 ## Migration machinery (cross-tree behaviour)
 

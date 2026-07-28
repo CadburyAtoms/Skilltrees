@@ -13,7 +13,17 @@
  *     TRIAGE_PLAYTEST_PC_MANUALS.md B/C → Engine tab
  *     FORCED_MOVEMENT_PILOT.md         → Engine tab (open verify items)
  *     TODO_REPO_HYGIENE.md             → Repo tab
- *   plus a computed "⚑ For Ben" tab: every non-bench ⚑ item, with jump links.
+ *     EDHA_RULINGS.md                  → ⚖ Rulings tab (the standing decisions doc)
+ *   plus two computed tabs, both jump-link mirrors that hold no marks of their own:
+ *     "⚑ For Ben"     — every open ⚑ item on EVERY tab, bench included.
+ *     "🤖 Bench queue" — every open 🤖 item: the work a bench run can drive.
+ *
+ * THE TWO MARKERS (re-cut 2026-07-27w — see EDHA_FOUNDRY_HANDOFF.md "⚑ vs 🤖"):
+ *   ⚑  = Ben's judgment only (design, feel, balance, a ruling).
+ *   🤖 = needs a live Foundry table and an agent can drive it — the bench queue.
+ * A row is classified by the marker on its OWN first line (`item.head`), never by one that
+ * happens to appear in an indented continuation quoting past evidence. Classifying on the
+ * merged text is how a `##` header's flag came to be inherited by 105 rows beneath it.
  *
  * Replaces build-test-sheet.js / EDHA_FOUNDRY_TEST_SHEET.html (2026-07-18). Bench rows keep
  * the SAME localStorage key and row-id scheme, so existing marks survive the rename.
@@ -82,7 +92,8 @@ function parseChecklist(md) {
     }
     if (box) {
       if (!sec) newSection('(preamble)');
-      item = { type: 'item', kind: 'bench', done: box[1].toLowerCase() === 'x', text: box[2] };
+      // `head` is the row's OWN first line — the only place a ⚑/🤖 marker counts.
+      item = { type: 'item', kind: 'bench', done: box[1].toLowerCase() === 'x', text: box[2], head: box[2] };
       container().push(item);
       continue;
     }
@@ -129,7 +140,7 @@ function parseTracker(md, { itemKind = 'track' } = {}) {
     if (box) {
       if (!sec) newSection('(items)');
       item = {
-        type: 'item', kind: itemKind, text: box[2],
+        type: 'item', kind: itemKind, text: box[2], head: box[2],
         done: box[1].toLowerCase() === 'x', partial: box[1] === '~', log: [],
       };
       sec.blocks.push(item);
@@ -148,6 +159,46 @@ function parseTracker(md, { itemKind = 'track' } = {}) {
     item = null;
     pushProse(trimmed);
     prevBlank = false;
+  }
+  return doc;
+}
+
+// ---------------------------------------------------------------------------
+// EDHA_RULINGS.md: sections on ## headings; every paragraph opening `**R-n.` or
+// `**F-n.` is one ruling. Ben answers them in the note box and Copy-for-Claude
+// carries the answers back, which is the whole point of putting them here.
+// ---------------------------------------------------------------------------
+
+function parseRulings(md) {
+  const lines = md.split('\n');
+  const doc = { intro: [], sections: [] };
+  let sec = null;
+  let item = null;
+
+  const newSection = (title) => { sec = { title, blocks: [] }; doc.sections.push(sec); item = null; };
+  const pushProse = (text) => {
+    if (!sec) { doc.intro.push(text); return; }
+    sec.blocks.push({ type: 'prose', text });
+  };
+
+  for (const raw of lines) {
+    const line = raw.replace(/\s+$/, '');
+    const h = line.match(/^##+ (.*)/);
+    const start = line.match(/^\*\*([RF]-\d+\..*)$/);
+
+    if (line.startsWith('# ') && !line.startsWith('## ')) { item = null; continue; }
+    if (h) { newSection(h[1]); continue; }
+    if (line === '' || line === '---') { item = null; continue; }
+    if (start) {
+      if (!sec) newSection('(rulings)');
+      // Settled rulings live under "## K. Settled" and are records, not asks.
+      const settled = /^K\./.test(sec.title);
+      item = { type: 'item', kind: 'ruling', text: '**' + start[1], head: '**' + start[1], done: settled, log: [] };
+      sec.blocks.push(item);
+      continue;
+    }
+    if (item) { item.text += ' ' + line.trim(); continue; }
+    if (line.trim()) pushProse(line.trim());
   }
   return doc;
 }
@@ -350,7 +401,11 @@ function deployChips(sec) {
 function renderItem(tabKey, secTitle, subTitle, it, counter) {
   // Bench ids keep the historical (tab-less) recipe so pre-dashboard marks survive.
   const id = it.kind === 'bench' ? rowId(secTitle, subTitle, it.text) : rowId(tabKey + '|' + secTitle, subTitle, it.text);
-  const flags = (it.text.match(/⚑/g) || []).length;
+  // Classify on the row's own first line only — a marker quoted in an indented continuation
+  // (or inherited from a header) is evidence about the past, not a classification.
+  const headText = it.head || it.text;
+  const flags = (headText.match(/⚑/g) || []).length;
+  const bots = (headText.match(/🤖/g) || []).length;
   const n = counter.n++;
   const label = rowLabel(it.text);
   const logHtml = it.log && it.log.length
@@ -360,12 +415,13 @@ function renderItem(tabKey, secTitle, subTitle, it, counter) {
   if (it.done) ctl = '<span class="donebadge" title="Recorded done in the source doc">✓ done</span>';
   else if (it.kind === 'bench')
     ctl = `<button class="st p" data-s="pass" title="Pass">✓</button><button class="st f" data-s="fail" title="Fail">✗</button><button class="st a" data-s="partial" title="Partial">◐</button><button class="st k" data-s="skip" title="Skip / can't test">–</button>`;
-  else if (it.kind === 'track')
+  else if (it.kind === 'track' || it.kind === 'ruling')
     ctl = (it.partial ? '<span class="partbadge" title="Recorded part-done in the source doc">◐</span>' : '') +
-      `<button class="st p one" data-s="done" title="Mark done (local note until the source doc is updated)">✓</button>`;
+      `<button class="st p one" data-s="done" title="${it.kind === 'ruling' ? 'Mark decided — type the decision in the note box' : 'Mark done (local note until the source doc is updated)'}">✓</button>`;
   else ctl = '<span class="infodot" title="Status row — informational">·</span>';
-  const noteBox = it.done ? '' : `<input class="note" type="text" placeholder="note for the agent…" spellcheck="false">`;
-  return `<div class="row k-${it.kind}${it.done ? ' done' : ''}" data-id="${id}" data-flags="${flags}" data-label="${esc(label)}" data-n="${n}" data-kind="${it.kind}">
+  const ph = it.kind === 'ruling' ? 'your ruling…' : 'note for the agent…';
+  const noteBox = it.done ? '' : `<input class="note" type="text" placeholder="${ph}" spellcheck="false">`;
+  return `<div class="row k-${it.kind}${it.done ? ' done' : ''}" data-id="${id}" data-flags="${flags}" data-bots="${bots}" data-label="${esc(label)}" data-n="${n}" data-kind="${it.kind}">
 <div class="ctl">${ctl}</div>
 <div class="txt">${inline(it.text)}${logHtml}${noteBox}</div>
 </div>`;
@@ -402,6 +458,7 @@ function build() {
   const handoffMd = src('EDHA_FOUNDRY_HANDOFF.md');
   const triageMd = src('TRIAGE_PLAYTEST_PC_MANUALS.md');
   const pilotMd = src('FORCED_MOVEMENT_PILOT.md');
+  const rulingsMd = src('EDHA_RULINGS.md');
   const hygieneMd = src('TODO_REPO_HYGIENE.md');
 
   // --- Bench (checklist), minus the DEPLOY STATE section which becomes the banner
@@ -422,6 +479,29 @@ function build() {
         `Copy-for-Claude). Convert the rows, then rebuild.`);
     }
   }
+
+  // GATE (2026-07-27w): a row's own first line may carry ⚑ OR 🤖, never both, and a `##` header
+  // may carry neither. The markers are a classification — ⚑ is Ben's judgment, 🤖 is the bench
+  // queue — and both mirrors read the first line, so a row naming the *other* marker in its own
+  // prose lands in both lists and inflates whichever count someone is trusting. A marker on a
+  // header is worse: it silently classified 105 of 108 rows in one bestiary section and 26 of 26
+  // in another, which is what buried ~30 real Ben rows under 182 flagged ones. Say "the bench row
+  // above" in prose instead of drawing the glyph.
+  {
+    const bad = [];
+    checklistMd.split(/\r?\n/).forEach((l, i) => {
+      const box = l.match(/^- \[[ xX]\] (.*)$/);
+      if (box && /⚑/.test(box[1]) && /🤖/.test(box[1])) bad.push(`line ${i + 1}: row carries BOTH ⚑ and 🤖`);
+      if (/^##+ /.test(l) && /[⚑🤖]/.test(l)) bad.push(`line ${i + 1}: '##' header carries a marker — mark the rows individually`);
+    });
+    if (bad.length) {
+      throw new Error(
+        `EDHA_FOUNDRY_TEST_CHECKLIST.md marker errors (${bad.length}):\n  ` + bad.join('\n  ') +
+        `\n⚑ = Ben's judgment only. 🤖 = needs a table, agent-drivable. One per row, none on headers.` +
+        `\nSee EDHA_FOUNDRY_HANDOFF.md "⚑ vs 🤖 — the two checklist markers".`);
+    }
+  }
+
   const checklist = parseChecklist(checklistMd);
   let deployBanner = null;
   const benchSections = checklist.sections.filter((s) => {
@@ -493,19 +573,35 @@ function build() {
     { key: 'world', label: 'Worldbuilding', sections: wbSections, srcNote: `TODO_WORLDBUILDING.md @${sources['TODO_WORLDBUILDING.md']} · canon @${sources['EDHA_CAMPAIGN_CANON.md']} · state @${sources['EDHA_CAMPAIGN_STATE.md']}` },
     { key: 'engine', label: 'Engine', sections: engineSections, srcNote: `EDHA_FOUNDRY_HANDOFF.md §9 @${sources['EDHA_FOUNDRY_HANDOFF.md']} · triage @${sources['TRIAGE_PLAYTEST_PC_MANUALS.md']} · pilot @${sources['FORCED_MOVEMENT_PILOT.md']}` },
     { key: 'repo', label: 'Repo', sections: repoSections, srcNote: `TODO_REPO_HYGIENE.md @${sources['TODO_REPO_HYGIENE.md']}` },
+    { key: 'rulings', label: '⚖ Rulings', sections: parseRulings(rulingsMd).sections, srcNote: `EDHA_RULINGS.md @${sources['EDHA_RULINGS.md']}` },
   ];
 
-  // --- ⚑ For Ben: aggregate non-bench ⚑ items (bench ⚑ means "bench-verify", different animal)
-  const forBen = [];
-  for (const tab of TABS) {
-    if (tab.key === 'bench') continue;
-    for (const sec of tab.sections) {
-      for (const b of sec.blocks) {
-        if (b.type === 'item' && !b.done && /⚑/.test(b.text)) forBen.push({ tab, sec, item: b });
-        if (b.type === 'sub') for (const bb of b.blocks) if (bb.type === 'item' && !bb.done && /⚑/.test(bb.text)) forBen.push({ tab, sec, sub: b, item: bb });
+  // --- The two computed mirrors. Both classify on the row's OWN first line (`head`).
+  //
+  // "⚑ For Ben" NO LONGER excludes the bench tab. It used to, on the reasoning that a bench ⚑
+  // meant "bench-verify — a different animal". That was true only while ⚑ meant "could not
+  // self-verify"; since 2026-07-27w ⚑ means Ben's judgment everywhere, so hiding the bench ones
+  // hid most of his actual list. "🤖 Bench queue" is the counterpart: the drivable backlog, which
+  // was invisible before and is what a marathon should be sized against.
+  const collect = (pred) => {
+    const out = [];
+    for (const tab of TABS) {
+      if (tab.key === 'rulings') continue; // rulings have their own tab, with their own text
+      for (const sec of tab.sections) {
+        for (const b of sec.blocks) {
+          if (b.type === 'item' && !b.done && pred(b.head || b.text)) out.push({ tab, sec, item: b });
+          if (b.type === 'sub') {
+            for (const bb of b.blocks) {
+              if (bb.type === 'item' && !bb.done && pred(bb.head || bb.text)) out.push({ tab, sec, sub: b, item: bb });
+            }
+          }
+        }
       }
     }
-  }
+    return out;
+  };
+  const forBen = collect((t) => /⚑/.test(t));
+  const benchQueue = collect((t) => /🤖/.test(t));
 
   // --- Render
   const stampAll = hash10(Object.values(sources).join('|'));
@@ -538,20 +634,37 @@ function build() {
     panesHtml += renderPane(tab, '');
   }
 
-  // For-Ben pane (read-only mirrors + jump links)
-  let fbHtml = `<div class="srcnote">computed: every open ⚑ item on the Art / Worldbuilding / Engine / Repo tabs — the things waiting on a ruling or an action from Ben. Bench ⚑ rows (bench-verify) live on the Bench tab.</div>`;
-  let curKey = '';
-  for (const e of forBen) {
-    if (e.tab.key !== curKey) { if (curKey) fbHtml += '</div></section>'; curKey = e.tab.key; fbHtml += `<section><h2>${e.tab.label}</h2><div class="body">`; }
-    const id = rowId(e.tab.key + '|' + e.sec.title, e.sub ? e.sub.title : null, e.item.text);
-    fbHtml += `<div class="row k-ref" data-ref="${id}" data-reftab="${e.tab.key}">
+  // The two mirror panes (read-only jump links — they hold no marks and are skipped by gather())
+  const renderMirror = (entries, note) => {
+    let html = `<div class="srcnote">${note}</div>`;
+    let curKey = '';
+    for (const e of entries) {
+      if (e.tab.key !== curKey) { if (curKey) html += '</div></section>'; curKey = e.tab.key; html += `<section><h2>${esc(plain(e.tab.label))}</h2><div class="body">`; }
+      const id = e.item.kind === 'bench'
+        ? rowId(e.sec.title, e.sub ? e.sub.title : null, e.item.text)
+        : rowId(e.tab.key + '|' + e.sec.title, e.sub ? e.sub.title : null, e.item.text);
+      html += `<div class="row k-ref" data-ref="${id}" data-reftab="${e.tab.key}">
 <div class="ctl"><button class="goto" title="Jump to this item on its tab">go →</button></div>
 <div class="txt"><span class="refsec">${inline(e.sec.title)}</span>${inline(e.item.text)}</div>
 </div>`;
-  }
-  if (curKey) fbHtml += '</div></section>';
+    }
+    if (curKey) html += '</div></section>';
+    return html;
+  };
+
+  const fbHtml = renderMirror(forBen,
+    'computed: every open <b>⚑</b> item on every tab, bench included — a judgment only you can make ' +
+    '(design, feel, balance). It is NOT "could not verify from here"; that is now 🤖, on the Bench queue tab. ' +
+    'Standing <b>decisions</b> live on the ⚖ Rulings tab, not here.');
   tabsBarHtml += `<button class="tab" data-tab="forben"><span class="flag">⚑</span> For Ben<span class="tabcount" data-tabcount="forben">${forBen.length}</span></button>`;
   panesHtml += `<div class="pane" data-tab="forben"><main><div class="content wide">${fbHtml}</div></main></div>`;
+
+  const bqHtml = renderMirror(benchQueue,
+    'computed: every open <b>🤖</b> item — needs a live Foundry table, and an <i>agent</i> can drive it. ' +
+    'This is the bench backlog a <code>bench-run</code> works through and a marathon is sized against. ' +
+    'Ben does not have to touch anything on this tab.');
+  tabsBarHtml += `<button class="tab" data-tab="benchqueue">🤖 Bench queue<span class="tabcount" data-tabcount="benchqueue">${benchQueue.length}</span></button>`;
+  panesHtml += `<div class="pane" data-tab="benchqueue"><main><div class="content wide">${bqHtml}</div></main></div>`;
 
   // Deploy banner
   let bannerHtml = '';
@@ -684,7 +797,8 @@ color:#141a2b;font-weight:600;padding:8px 18px;border-radius:8px;display:none;z-
 <button class="fbtn" data-f="open">Open</button>
 <button class="fbtn" data-f="marked">Marked</button>
 <button class="fbtn" data-f="fail">Fail/Partial</button>
-<button class="fbtn" data-f="flag">⚑ flagged</button>
+<button class="fbtn" data-f="flag" title="Only rows needing YOUR judgment">⚑ Ben</button>
+<button class="fbtn" data-f="bot" title="Only rows an agent can drive at a live table">🤖 bench queue</button>
 <span style="flex:1"></span>
 <button class="act primary" id="copyClaude" title="Copy every marked row (all tabs) as a report — paste straight into the Claude chat">Copy for Claude</button>
 <button class="act" id="copyTsv" title="Copy marked rows as TSV — paste into Excel">Copy TSV</button>
@@ -710,6 +824,9 @@ const S={pass:'✓ PASS',fail:'✗ FAIL',partial:'◐ PARTIAL',skip:'– SKIP',d
 
 // --- tabs
 const TABKEYS=[...document.querySelectorAll('.tab')].map(b=>b.dataset.tab);
+// Computed mirror panes: jump links only. They hold no marks, so they are excluded from
+// per-tab counts and from Copy-for-Claude.
+const MIRRORS=['forben','benchqueue'];
 let activeTab=localStorage.getItem('edha-dash-tab')||'bench';
 if(!TABKEYS.includes(activeTab))activeTab='bench';
 function setTab(k){
@@ -821,6 +938,7 @@ function visible(r){
   if(filter==='marked'&&!d.s&&!d.n)return false;
   if(filter==='fail'&&d.s!=='fail'&&d.s!=='partial')return false;
   if(filter==='flag'&&r.dataset.flags==='0')return false;
+  if(filter==='bot'&&r.dataset.bots==='0')return false;
   const needle=q.value.trim().toLowerCase();
   if(needle){
     const sec=r.closest('section').querySelector('h2');
@@ -855,7 +973,7 @@ function refresh(recount=true){
       cc.forEach(el=>el.textContent=secTot?secMarked+'/'+secTot:'');
     });
     const tc=document.querySelector('[data-tabcount="'+pane.dataset.tab+'"]');
-    if(tc&&pane.dataset.tab!=='forben')tc.textContent=paneTot?paneMarked+'/'+paneTot:'';
+    if(tc&&!MIRRORS.includes(pane.dataset.tab))tc.textContent=paneTot?paneMarked+'/'+paneTot:'';
   });
   const marked=c.pass+c.fail+c.partial+c.skip+c.done;
   const pb=document.getElementById('pbar');
@@ -895,7 +1013,7 @@ function toast(msg){
 function gather(){
   const out=[];
   document.querySelectorAll('.pane').forEach(pane=>{
-    if(pane.dataset.tab==='forben')return;
+    if(MIRRORS.includes(pane.dataset.tab))return;
     const tabName=document.querySelector('.tab[data-tab="'+pane.dataset.tab+'"]').textContent.replace(/[0-9/]+$/,'').trim();
     pane.querySelectorAll('section[id]').forEach(sec=>{
       const secTitle=sec.dataset.title;
