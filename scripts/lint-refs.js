@@ -1167,6 +1167,88 @@ engine.split("\n").forEach((lineText, i) => {
   }
 }
 
+/* --- pass 16: a hazard Region must declare its owner in the ONE vocabulary (the split-flag family) --
+ *
+ * Bench run 14 measured Combustion Chain unable to fire off a Pyre zone — the canonical Destruction
+ * pairing — and the cause was not the talent, the rule, or the gate above it. It was that the engine
+ * had grown TWO spellings for "who owns this dangerous terrain", one per placer:
+ *
+ *   edhaPlaceHazardRegionGM · the burst path · green terrain ->  terrain: { ownerUuid }   (nested)
+ *   edhaPlaceHazard (the `edha-place-hazard` handler)         ->  sourceOwnerUuid          (flat)
+ *
+ * ...and TWO readers, each understanding only one. `edhaOwnedTerrainRegions` — the membership spine
+ * behind `edhaTokenInOwnedTerrain` (which gates the ENTIRE `edha-zone-react {defeat-in-zone}` ignite
+ * sweep), behind `edhaEnemiesInOwnedTerrain` (Apex Predator) and behind Pack Sense — read only the
+ * nested one, so an entire family of Regions was invisible to every membership question in the
+ * engine. Nothing failed loudly; the gate simply never opened, for the mechanic's whole life. Six
+ * gates and 27 migration passes went past it because a written flag and a read flag both existed —
+ * they just were not the same flag.
+ *
+ * The rule: any Region-create whose `edha-content` flags declare `hazard:` must also declare
+ * `terrain: { ownerUuid: ... }`, and no Region-create may write a FLAT `*OwnerUuid` key beside it.
+ * Nested namespaces (terrain / fortified / ...) are the vocabulary; a flat owner key is the bug.
+ *
+ * Delimitation follows pass 15: `createEmbeddedDocuments("Region", ...)` delimited by paren balance
+ * on the string-blanked copy, then the flags literal read back out of the ORIGINAL text. The scan
+ * asserts it found a plausible number of Region creates, so a style change fails loudly rather than
+ * silently checking nothing (the pass-12 "the extraction rotted" convention).
+ */
+{
+  const blanked = blankStringsAndComments(engine);          // offsets preserved — see the helper
+  const parenDelta = (s) => {
+    const t = s.replace(/\\[()]/g, "  ");
+    return (t.split("(").length - 1) - (t.split(")").length - 1);
+  };
+  const lineOf = (idx) => engine.slice(0, idx).split("\n").length;
+  let scanned = 0;
+  const RE = /createEmbeddedDocuments\(\s*"Region"/g;
+  // The literal is quoted, so find the anchors in the string-KEEPING copy, then balance on the blanked one.
+  const withStrings = blankStringsAndComments(engine, { keepStrings: true });
+  for (const m of withStrings.matchAll(RE)) {
+    const open = withStrings.indexOf("(", m.index + "createEmbeddedDocuments".length);
+    let depth = 0, end = -1;
+    for (let i = open; i < blanked.length; i++) {
+      const d = parenDelta(blanked[i]);
+      depth += d;
+      if (depth <= 0 && d !== 0) { end = i; break; }
+    }
+    if (end < 0) {
+      err(`lint-refs pass 16: could not delimit the Region create at register-skills.js:${lineOf(m.index)} — ` +
+          `its parens never balance. Fix the scan before trusting this gate.`);
+      continue;
+    }
+    scanned++;
+    const body = engine.slice(m.index, end + 1);
+    const flags = (body.match(/flags\s*:\s*\{\s*"edha-content"\s*:\s*\{([\s\S]*)$/) || [])[1];
+    if (flags === undefined) continue;                       // a Region with no edha-content flags at all
+    const flagCode = stripComments(flags);
+    if (!/\bhazard\s*:/.test(flagCode)) continue;            // not a hazard/terrain Region — pass 16 says nothing
+    if (!/\bterrain\s*:\s*\{[^}]*\bownerUuid\s*:/.test(flagCode)) {
+      err(`register-skills.js:${lineOf(m.index)} — this hazard Region does not stamp ` +
+          `terrain: { ownerUuid: ... }. Every membership question in the engine ` +
+          `(edhaOwnedTerrainRegions -> edhaTokenInOwnedTerrain -> the edha-zone-react ` +
+          `{defeat-in-zone} sweep, edhaEnemiesInOwnedTerrain, Pack Sense, the trail dedupe) reads ` +
+          `that path, so a Region without it is invisible to all of them and the gate silently ` +
+          `never opens — which is exactly how Combustion Chain could never fire off a Pyre zone ` +
+          `(bench run 14).`);
+    }
+    // A flat owner key beside it is the split vocabulary re-opening. Nested namespaces are fine, so
+    // one level of sub-objects is removed before looking.
+    const flat = flagCode.replace(/\b[A-Za-z_$][\w$]*\s*:\s*\{[^{}]*\}/g, "");
+    const bad = flat.match(/\b([A-Za-z_$][\w$]*OwnerUuid)\s*:/);
+    if (bad) {
+      err(`register-skills.js:${lineOf(m.index)} — this Region writes a FLAT \`${bad[1]}\` flag. ` +
+          `Terrain ownership has exactly one spelling — terrain: { ownerUuid } — and a second one ` +
+          `is not a synonym: it is a Region that half the engine cannot see. Put the uuid in the ` +
+          `nested object (edhaTerrainOwnerUuid is the only reader that should ever know otherwise).`);
+    }
+  }
+  if (scanned < 5) {
+    err(`lint-refs pass 16: only ${scanned} Region creates were delimited (expected 5+) — ` +
+        `the scan rotted; fix it before trusting this pass.`);
+  }
+}
+
 // --- report --------------------------------------------------------------------
 if (errors.length) {
   for (const e of errors) console.error(`✗ ${e}`);

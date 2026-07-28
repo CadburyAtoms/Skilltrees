@@ -10539,7 +10539,7 @@ Hooks.on("updateToken", (tokenDoc, changes) => {
     const prev = tokenDoc._edhaPrevCenter; if (!prev || prev.x == null) return;
     const scene = tokenDoc.parent ?? canvas?.scene; if (!scene) return;
     // one patch per move step, at the vacated square; skip if a trail patch is already there
-    const near = (scene.regions ?? []).some(r => r.getFlag?.("edha-content", "terrain")?.ownerUuid === actor.uuid
+    const near = (scene.regions ?? []).some(r => edhaTerrainOwnerUuid(r) === actor.uuid
       && (r.shapes ?? []).some(s => s.type === "circle" && Math.hypot((s.x ?? 0) - prev.x, (s.y ?? 0) - prev.y) < (scene.grid?.size || 100) / 2));
     if (near) return;
     void edhaDropHazard(actor, scene, { type: "circle", x: prev.x, y: prev.y, radius: Math.round((scene.grid?.size || 100) / 2) },
@@ -10594,8 +10594,9 @@ async function edhaPyreTurnEnd(combat) {
     const actor = combat.turns?.[prevTurn]?.actor;
     if (!actor) return;
     const scene = canvas?.scene; if (!scene) return;
-    const zones = (scene.regions ?? []).filter(r => r.getFlag?.("edha-content", "spreads") === true
-      && r.getFlag?.("edha-content", "sourceOwnerUuid") === actor.uuid);
+    // Owner membership goes through the SPINE (07-27s) — this watcher used to be the only reader of
+    // the flat `sourceOwnerUuid` its placer wrote, which is what kept the vocabulary split alive.
+    const zones = edhaOwnedTerrainRegions(actor, scene).filter(r => r.getFlag?.("edha-content", "spreads") === true);
     for (const region of zones) {
       // 07-12 rework (Ben): expansion is SQUARE-BY-SQUARE and the GM picks the square, so the
       // confirm card whispers to the GM; the owner also gets an Extinguish control on the card
@@ -14964,10 +14965,28 @@ async function edhaDropGreenTerrain(owner, scene, cx, cy, sizeFt, sourceItem = n
   return null;
 }
 
-/* --- "Your difficult terrain" membership (the Territory spine) ----------------------------------- */
+/* --- "Your difficult terrain" membership (the Territory spine) -----------------------------------
+ * ⚠ THE ONE PLACE THAT KNOWS HOW A REGION SPELLS ITS OWNER (07-27s). Every hazard/terrain placer
+ * stamps `flags.edha-content.terrain = {ownerUuid, color}` and every consumer asks THIS function —
+ * because for two days they did not. `edhaPlaceHazard` (the `edha-place-hazard` handler behind Pyre,
+ * Walking Ruin's trail rule and Fire the Wrack) stamped a FLAT `sourceOwnerUuid` instead, read only
+ * by the Pyre spread watcher, so a Pyre zone was invisible to the entire membership spine and
+ * Combustion Chain could never fire off one — the canonical Destruction pairing, measured dead at
+ * bench run 14 against a matched Walking-Ruin control that fired instantly. Two placers, two
+ * vocabularies, two readers each matching only one. `lint-refs` pass 16 now fails the build on a
+ * hazard Region that does not carry `terrain.ownerUuid`, so the split cannot re-open.
+ * The flat key is read here ONLY as a legacy tolerance: hazard Regions are `scope: "scene"` and can
+ * outlive a deploy (the same caveat the spread watcher already carries), so a zone placed by a
+ * pre-07-27s engine would otherwise be stranded. Nothing writes it any more — delete this arm once
+ * no live scene carries one. */
+function edhaTerrainOwnerUuid(region) {
+  return region?.getFlag?.("edha-content", "terrain")?.ownerUuid
+      ?? region?.getFlag?.("edha-content", "sourceOwnerUuid")   // legacy (pre-07-27s edhaPlaceHazard) — see above
+      ?? null;
+}
 function edhaOwnedTerrainRegions(owner, scene) {
   scene = scene || canvas?.scene; if (!owner || !scene) return [];
-  return (scene.regions ?? []).filter(r => r.getFlag?.("edha-content", "terrain")?.ownerUuid === owner.uuid);
+  return (scene.regions ?? []).filter(r => edhaTerrainOwnerUuid(r) === owner.uuid);
 }
 function edhaPointInRegion(region, x, y) {
   for (const s of (region.shapes ?? [])) {
@@ -16170,7 +16189,11 @@ async function edhaPlaceHazard(item, cfg) {
         type: "edha-content.hazard", name: "Dangerous Terrain",
         system: { damageFormula: baked, damageType: cfg.damageType || "energy", sourceName: `${item.name} — ${actor.name}` },
       }],
-      flags: { "edha-content": { hazard: true, scope: "scene", sourceItem: item.name, sourceOwnerUuid: actor.uuid, ...(cfg.spreads ? { spreads: true } : {}) } },   // `spreads` read by the end-of-turn spread watcher (2bY — was the EDHA_PYRE_SOURCES name list)
+      /* OWNERSHIP IS `terrain.ownerUuid` — the one vocabulary (07-27s; this site used to stamp a flat
+       * `sourceOwnerUuid`, which no membership reader understood — see edhaTerrainOwnerUuid). */
+      flags: { "edha-content": { hazard: true, scope: "scene", sourceItem: item.name,
+                                 terrain: { ownerUuid: actor.uuid, color },
+                                 ...(cfg.spreads ? { spreads: true } : {}) } },   // `spreads` read by the end-of-turn spread watcher (2bY — was the EDHA_PYRE_SOURCES name list)
     }]);
     if (region) await edhaSquareVisual(scene, sq.x, sq.y, sq.w, sq.h, hex, region.id, `🔥 ${item.name}`);
     ChatMessage.create({
