@@ -4,8 +4,9 @@ Port of the **Edha** homebrew talent-tree system (Cosmere RPG homebrew) into Fou
 `edha-content` module: three talent atlases (leyline / deity / heroic) + a playtest-adversary pack,
 with all runtime automation in a single engine file. **Ben** (the user) runs the Foundry table on
 his Windows machine; Claude sessions do the repo-side engineering. Sessions here **cannot launch
-Foundry** — anything needing a live table gets flagged ⚑ for Ben's next bench pass instead of being
-silently assumed to work.
+Foundry** — but since 2026-07-26 they can **join one Ben already has running** (`bench-run`). So
+anything needing a live table gets marked **🤖** for the next agent bench run instead of being
+silently assumed to work; **⚑ is reserved for Ben's judgment alone** (see iron rule 5).
 
 ## Current phase (as of 2026-07-06)
 
@@ -36,7 +37,7 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
 |---|---|
 | `EDHA_FOUNDRY_HANDOFF.md` | THE knowledge base. Dated deltas newest-first at the top; core reference §1–§10 below them. §9 = canonical backlog; §10 = gotchas that each bit us at least once. |
 | `EDHA_FOUNDRY_TEST_CHECKLIST.md` | Per-tree in-Foundry test worklists + the **DEPLOY STATE** section (renamed from "DEPLOY FIRST" on 2026-07-16d — what's merged but not yet live on Ben's machine; read it before believing any "wrong text/old behavior" bug, and check its date against `git log` because only Ben can advance it). Agents edit THIS file; Ben tests from the generated `EDHA_DASHBOARD.html` (Bench tab) — after editing the checklist OR any dashboard source doc (TODO_*, art wishlist, campaign canon/state, handoff, triage, pilot, map JSON) run `node scripts/build-dashboard.js` and commit the dashboard (CI + pre-commit enforce sync). |
-| `.claude/skills/bench-run/` + `docs/EDHA_BENCH_RUNBOOK.md` | **The agent-driven bench** (2026-07-26): a session joins Ben's running Foundry at `localhost:30000` as the passwordless GM user `Bench`, builds the bench roster with `scripts/bench-setup-console.js` (tokens on the EXISTING "Playtest Map"; PCs "Tem parinaem"/"Soggy Bottom" hard-guarded), runs the `# BENCH —` checklist sections itself, and records results (PASS rows retire on evidence; fails feed test-pass-fixes; feel/canvas rows stay ⚑ Ben's). The SKILL is the operating loop; the runbook is the full procedure. |
+| `.claude/skills/bench-run/` + `docs/EDHA_BENCH_RUNBOOK.md` | **The agent-driven bench** (2026-07-26): a session joins Ben's running Foundry at `localhost:30000` as the passwordless GM user `Bench`, builds the bench roster with `scripts/bench-setup-console.js` (tokens on the EXISTING "Playtest Map"; PCs "Tem parinaem"/"Soggy Bottom" hard-guarded), runs the `# BENCH —` checklist sections itself, and records results (PASS rows retire on evidence; fails feed test-pass-fixes; **🤖 rows are the bench's queue, ⚑ rows are Ben's judgment and are left alone**). The SKILL is the operating loop; the runbook is the full procedure. |
 | `.claude/skills/test-pass-fixes/` | The test-results → fix workflow, plus `CASE_STUDIES.md` — worked root-cause examples. |
 | `.claude/skills/talent-migration/` | **THE iron-rule-2b migration skill** (added 07-24y, after sixteen passes had spread the knowledge across §9n/§9o and ever-longer session briefs). `SKILL.md` = the pass workflow (atom → scout → build → author → gates → ratchet → docs); `SESSION_PLAN.md` = the remaining 131 partitioned into sessions, with what is next; `LESSONS.md` = what each pass measured, including why the classification's `needs` column over-estimates. Read it INSTEAD of writing a long brief. |
 | `.claude/skills/leyline-tree-authoring/` | The authoring/consistency standard, `audit.py` (the pre-commit gate), and `ENGINE_INDEX.md` (primitives map — read it **instead of** scanning the 11k-line engine). |
@@ -167,8 +168,23 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
    `tests/`. **Never chain gates with `;` or pipe them through `tail`** — both mask the exit code
    that decides, and both have already let a failing lint into a commit (07-18g, 07-18j).
 5. **Docs are part of the change.** Every working session ends with: a dated delta at the TOP of
-   `EDHA_FOUNDRY_HANDOFF.md`, checklist rows for everything Ben must re-test, ⚑ flags on anything
-   you couldn't self-verify without Foundry, and new primitives added to `ENGINE_INDEX.md`.
+   `EDHA_FOUNDRY_HANDOFF.md`, checklist rows for everything that must be re-tested, **the right
+   marker on every new row**, and new primitives added to `ENGINE_INDEX.md`.
+
+   **There are TWO markers and they are not interchangeable** (split 2026-07-27w; the old wording
+   was "⚑ flags on anything you couldn't self-verify without Foundry", and that single sentence is
+   what filled Ben's queue with agent work — 182 of 240 open rows carried ⚑ when ~30 were his):
+   - **⚑ = Ben's judgment ONLY** — design, feel, balance, a ruling, a perception only a human
+     sitting at the table can have.
+   - **🤖 = needs a live Foundry table, and an agent can drive it** — the bench queue, i.e.
+     `bench-run`'s work, not Ben's.
+   - **Neither**, if the row is repo-side and settled or provable without a table.
+
+   Agents have had a Foundry client since **2026-07-26** (the `bench-run` skill), so **"I could not
+   verify this from here" is no longer a reason to flag a row for Ben** — it is a 🤖. And **a marker
+   on a `##` header is a bug**: it silently classifies every row beneath it (six bestiary sections
+   did exactly that). Mark rows individually. Full vocabulary: `EDHA_FOUNDRY_HANDOFF.md`
+   "⚑ vs 🤖 — the two checklist markers".
 6. **Commit hygiene.** Small themed commits (one per fixed item on multi-fix passes); state
    engine-only vs rebuild-needed; no model identifiers in commit text.
 7. **A tree must be walkable: the node graph is acyclic, and every talent is reachable.**

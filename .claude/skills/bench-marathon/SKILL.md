@@ -117,9 +117,20 @@ Before scheduling, count the rows:
 grep -c "^- \[ \]" EDHA_FOUNDRY_TEST_CHECKLIST.md
 ```
 
-Per section, and subtract the ⚑ rows (those are Ben's by nature and are not yours to run). If the
-plan Ben gave you is undersized for what is actually open, **say so and adjust** — "adjust freely
-based on what's actually open" is standing permission, and not using it is how a section gets
+Per section, then split the count by marker — **and read the markers correctly, because getting this
+wrong cost a whole marathon**:
+
+- **🤖 = the bench queue. These ARE yours.** Count them; they are the work you are scheduling.
+- **⚑ = Ben's judgment** (design, feel, balance, a ruling). Subtract them — not yours to run.
+- **No marker** = repo-side and settled. Not a bench row.
+
+Until 2026-07-27w ⚑ meant "could not self-verify (no Foundry here)" and this skill said "⚑ rows are
+Ben's by nature", which was true only before `bench-run` existed. **A five-run marathon skipped ~201
+agent-drivable rows on that sentence.** If a section reads as almost entirely ⚑, that is a re-tagging
+bug, not a light section — say so instead of scheduling around it.
+
+If the plan Ben gave you is undersized for what is actually open, **say so and adjust** — "adjust
+freely based on what's actually open" is standing permission, and not using it is how a section gets
 skipped while looking scheduled.
 
 ## The standing rules — pass these to EVERY bench subagent, verbatim
@@ -132,8 +143,12 @@ skipped while looking scheduled.
   campaign adversaries and could only restore two.
 - **Never resolve a token by NAME when duplicates exist** — use the id or `actorId`.
 - Cleanup is an id-diff against the run's **own** start snapshot. The roster tokens stay placed.
-- Design/feel/balance questions are **never decided silently** — they accumulate into ONE batch.
-- Multi-client and canvas-feel rows stay ⚑ Ben's.
+- Design/feel/balance questions are **never decided silently** — they accumulate into ONE batch,
+  and the standing decisions doc is `EDHA_RULINGS.md`.
+- **⚑ = leave it; 🤖 = that is your queue.** ⚑ is Ben's judgment only — feel, design, balance, a
+  ruling. 🤖 means "needs a table, an agent can drive it", and that is exactly what you are.
+  Multi-client rows are **🤖, not ⚑** — `PlayerBench` exists. A row you could not reach stays 🤖 or is
+  recorded BLOCKED with its blocker named; **never re-file it as ⚑**.
 - **Only claim what your own logs support; label inferences as inferences.**
 
 ## The ledger — keep it in the scratchpad, not the repo
@@ -152,15 +167,18 @@ One markdown file, updated after every phase. It is the raw material for the rep
 
 `docs/BENCH_MARATHON_REPORT.md`, and then repoint `docs/BENCH_NEXT_RUN.md` at it. Six sections:
 
-1. **Per-section disposition** — retired / open / of-which-⚑ / blocked, with row counts. Say plainly
-   how much of "open" is Ben's by nature; a raw open count overstates the remaining work by a lot.
-   Include an honest **NOT REACHED** list — that is a deliverable, not a failure.
+1. **Per-section disposition** — retired / open / of-which-🤖 (still the bench's) / of-which-⚑
+   (Ben's) / blocked, with row counts. Say plainly how much of "open" is Ben's by nature; a raw open
+   count overstates *his* remaining work by a lot, and a raw ⚑ count overstates it further if the
+   re-tagging has drifted. Include an honest **NOT REACHED** list — that is a deliverable, not a
+   failure, and those rows stay 🤖.
 2. **Every defect: found → fixed → re-tested**, with commit refs, grouped by the run that found it.
    State the **verified** root cause, and where it **diverged from the bench's inference**.
 3. **The rulings batch as ONE menu**, defaults marked, with anything applied-as-default flagged for
    veto — especially anything that changes live dice math.
 4. **The deploy queue in order**, with what each rebuild unlocks and what to re-test after.
-5. **The two-client ⚑ list.**
+5. **The two-client list** — these are **🤖**, not ⚑: `PlayerBench` makes them drivable. Separately
+   list rows that are genuinely **BLOCKED**, each with its named blocker.
 6. **World hygiene**, including anything left unrepaired.
 
 Then: rebuild the dashboard, run every gate individually, push, and close with a one-screen

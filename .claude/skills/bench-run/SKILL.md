@@ -1,6 +1,6 @@
 ---
 name: bench-run
-description: Run the EDHA in-Foundry bench YOURSELF through the in-app browser at localhost:30000 — join as the passwordless GM user "Bench", build/repair the bench roster with scripts/bench-setup-console.js, execute the checklist's `# BENCH —` sections row by row, and record results (PASS rows retire on evidence, FAIL/PARTIAL batches feed test-pass-fixes, feel/canvas rows stay ⚑ for Ben). Use whenever the task is to run, continue, or pilot "the bench", test trees in Foundry directly, or verify migration behaviour live. NOT for triaging Ben's own reported results — that is test-pass-fixes.
+description: Run the EDHA in-Foundry bench YOURSELF through the in-app browser at localhost:30000 — join as the passwordless GM user "Bench", build/repair the bench roster with scripts/bench-setup-console.js, execute the checklist's `# BENCH —` sections row by row, and record results (PASS rows retire on evidence, FAIL/PARTIAL batches feed test-pass-fixes, 🤖 rows are YOUR queue, ⚑ rows are Ben's judgment and you leave them alone). Use whenever the task is to run, continue, or pilot "the bench", test trees in Foundry directly, or verify migration behaviour live. NOT for triaging Ben's own reported results — that is test-pass-fixes.
 ---
 
 # Bench-run — the agent-driven Foundry bench
@@ -52,6 +52,12 @@ running (if `http://localhost:30000` doesn't answer, stop and ask).
    improvise in-world). Re-run to prove idempotency (no new creations). Tokens: view
    **"Playtest Map"**, pick a clear area, set `ORIGIN` + `PLACE_TOKENS = true`, run again.
 4. **Run the checklist** (`EDHA_FOUNDRY_TEST_CHECKLIST.md`, the `# BENCH —` sections):
+   - **Which rows are yours — this is the whole point of the two markers (split 2026-07-27w):**
+     **🤖 = that is your queue. ⚑ = leave it, it is Ben's judgment.** A row with no marker is
+     repo-side and settled. ⚑ used to mean "could not self-verify (no Foundry here)", which stopped
+     being the same thing as "only Ben can do this" the day this skill existed — a five-run marathon
+     skipped ~201 drivable rows on the old wording. **Never re-file a row as ⚑ because you could not
+     get to it**; leave it 🤖, or record it BLOCKED with the blocker named.
    - Order: **Engine-wide first** — if **2bA-7** (edit-round-trip) fails, STOP the run and
      report; everything rides on it. Then leylines (White→Blue→Black→Red→Green), deities,
      Heroic. First-ever run: **Red only** (the pilot), end-to-end through the commit.
@@ -66,7 +72,11 @@ running (if `http://localhost:30000` doesn't answer, stop and ask).
      handoff delta with a one-line evidence note each.
    - **FAIL/PARTIAL:** row stays, append a dated inline observation; afterwards run the
      batch through the **test-pass-fixes** skill (root-cause, never symptom-patch mid-run).
-   - **Feel/design/canvas-precision rows:** leave ⚑, untouched — they are Ben's.
+   - **⚑ rows (feel / design / balance / a ruling):** leave them untouched — they are Ben's
+     judgment, not a test you can run. Do **not** convert a 🤖 row you ran out of time for into a ⚑.
+   - **A new row you write gets a marker deliberately:** 🤖 if it needs a table and an agent could
+     drive it (most of them), ⚑ only if settling it needs a human at the table. A judgment call you
+     surface goes to `EDHA_RULINGS.md`, not into the checklist as a test row.
    - Rebuild the dashboard (`node scripts/build-dashboard.js`), run the gates (`python`, not
      `python3`; never `;`-chain), commit: `Bench run N (<tree>): X retired on evidence,
      Y fails -> test-pass-fixes`. Push.
@@ -98,7 +108,8 @@ as `Gamemaster`, `Amertron`, `Laustarr` or `Spidercam` — those are Ben's and h
   reload** — run 10's lesson applies to the second tab too.
 - **Verify Bench survived**, from Bench's own socket. **Run 13 measured NO displacement** (Bench +
   Gamemaster + PlayerBench all active at once). Keep this as a caution, not an expectation; if it
-  ever does bite, that row stays ⚑ rather than being fought.
+  ever does bite, that row is recorded **BLOCKED with the blocker named** rather than being fought —
+  it stays 🤖 (a technical blocker is not a judgment call, so it never becomes ⚑).
 - **Grant `PlayerBench` OWNER on bench-folder actors only**, snapshot `ownership` first, restore at
   the end.
 - **One PC per client is a staging step, not a detail.** If PlayerBench owns many PCs, a belief

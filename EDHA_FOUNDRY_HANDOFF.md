@@ -6,6 +6,33 @@ Backing detail (every session's notes) lives in agent memory `edha-foundry-modul
 
 ---
 
+## ⚑ vs 🤖 — the two checklist markers (READ THIS BEFORE FLAGGING ANY ROW; vocabulary split 2026-07-27w)
+
+- **⚑ = Ben's judgment, and ONLY that.** Design, feel, balance, a ruling, or a perception only a
+  human sitting at the table can have. If an agent could settle it by driving Foundry, it is **not** ⚑.
+- **🤖 = needs a live Foundry table, and an agent can drive it.** This is the **bench queue** —
+  `bench-run`'s work. Growing it is fine; it is the backlog that gets burned down.
+- **No marker** = repo-side and settled, or provable without a table.
+
+**⚑ used to expand to "Could not self-verify (no Foundry here)."** That was identical to "only Ben
+can do this" right up until **2026-07-26**, when the `bench-run` skill gave agents their own Foundry
+client. It has not been identical since, and nobody re-tagged. So: **"I could not verify this from
+here" is no longer a reason to flag a row for Ben.** It is a reason to mark it **🤖** and queue it for
+the next bench run. Flagging it ⚑ files agent work in a human's queue — which is how **182 of 240**
+open rows came to carry ⚑ when only ~30 were genuinely Ben's, and how a five-run marathon skipped
+~201 drivable rows because both bench skills read "⚑ rows stay ⚑ Ben's".
+
+**A marker on a `##` header is a bug.** Six bestiary sections stamped ⚑ on the subsection heading and
+every row beneath silently inherited it (105 of 108 in one section, 26 of 26 in another; the sections
+that flagged per-row marked 6 of 16). A header describes its section — it must never classify its
+rows. **Mark rows individually.**
+
+**Standing decisions do not belong in the checklist at all.** A row that asks Ben to *decide*
+something rather than *test* something goes in **`EDHA_RULINGS.md`**, numbered, with its recommended
+default and the checklist id it came from. The checklist is for tests.
+
+---
+
 ## 2026-07-27v — CHECKLIST AUDIT APPLIED: **294 → 240 open rows.** 38 retired on evidence, 17 retired as stale, 13 narrowed to their real residue, 5 false claims corrected, 1 new defect + 2 rulings raised. DOCS-ONLY + one script docstring. No engine, data or pack change.
 
 Ben pushed back that **294 rows were open and 227 carried ⚑**, including mechanical "does this roll
@@ -472,7 +499,7 @@ been a 5-entry allowlist of legitimately-unread metadata (`hazard`, `scope`, `te
 `fortified.disposition`, the snare's `owner`) and — decisively — **would not have caught this bug**,
 because the flat key *did* have a reader. It just wasn't the one that mattered.
 
-### ⚑ Could not self-verify (no Foundry here)
+### 🤖 Needs a table — bench queue (was "⚑ could not self-verify"; re-tagged 2026-07-27w)
 
 Both fixes. Re-test rows with explicit positive **and** negative controls are in the checklist. The
 negatives are the load-bearing halves: for (1) another caster's terrain must **not** become yours and
