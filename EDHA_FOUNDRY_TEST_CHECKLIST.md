@@ -281,18 +281,15 @@ visual-legibility judgment — still ⚑ Ben.
 > Investiture of Command 3. ⚠️ The row's "(2 rules)" for Set Charge is stale — `deity-destruction.json`
 > authors exactly one, `SetChargeZone000`, so 1 is correct).
 
-- [ ] **2bA-6 — edha-push default — ⚠️ DRIFT vs the row's wording, 2026-07-27i (needs a ruling, not a fix)** — Author a NEW push rule on any talent, leave Note blank → Card reads **"Push"**, not "Shockwave Slam". (Fixes a talent-specific default baked into a generic handler.) **Run 9:** authored a fresh `edha-push` rule (`distanceFt: 5`, `awayFrom: "self"`, `note: ""`) onto Vigilant Stance and used it. The old bug is definitively **GONE** — nothing said "Shockwave Slam". But the card did not say "Push" either; it read **"💥 Vigilant Stance — Bench Target — Adjacent B is pushed 3 ft."**, i.e. the blank-note default is now *the owning talent's name*. That is arguably better than a literal "Push"; Ben's call which is canon, then align card/row/engine. ⚠️ Two secondary observations from the same probe, both needing a dedicated look and **flagged as unconfirmed**: the push reported **3 ft** for a `distanceFt: 5` rule, and the target moved from x=4800 to x=4500 — i.e. **toward** the caster at (3900), not away, despite `awayFrom: "self"`. The probe rule was hand-authored, so a mis-specified field vocabulary is a live possibility; do not treat the direction claim as established without re-driving it from an authored talent.
-      ✅ **RE-DRIVEN FROM AN AUTHORED TALENT — bench run 12 (2026-07-27o): both secondary observations are
-      ARTIFACTS OF THE HAND-AUTHORED PROBE, not engine behaviour.** Shockwave Slam's own `edha-push`
-      rule pushed twice, in opposite compass directions, both **directly away from the caster**: the
-      victim at x=9300 went to x=**8700** with the caster east at x=9600, and a second victim at
-      y=9300 went to y=**8700** with the caster south at y=9600 (token `_source`, not the frozen
-      prepared value). The distance was **10 ft** both times, which is `bySize: true` reading
-      `EDHA_SIZE_FT[red rank 3]` — the rule's `distanceFt: 5` is ignored whenever `bySize` is set,
-      which is what the probe's "3 ft for a 5 ft rule" was really seeing. **Only the blank-note
-      default is still yours to rule on.**
+*(**2bA-6 — the `edha-push` blank-note default** — moved to `EDHA_RULINGS.md` **R-26** on 2026-07-27w.
+Every mechanical half is settled: the old talent-specific default is definitively gone, and run 12
+re-drove the two secondary observations from an authored talent and proved both were artifacts of the
+hand-authored probe (`bySize: true` overrides `distanceFt`, which is what "3 ft for a 5 ft rule" was
+really seeing; the push direction was correct on both axes). What is left is one choice — should a
+blank note read "Push", or the owning talent's name?)*
+
 - [ ] ⚑ **2bM-1 — ⚠️⚠️ H3 ordering (any ledger)** — as a PLAYER, with **no GM connected**, use **Covenant** on an ally you don't own → It refuses with "a GM must be online… nothing placed" and **no half-formed pact is left behind**. Before the fix the entry was written anyway and then hidden for ever. If a GM is always online at your table, skip — this cannot bite you.
-      ⛔ **BLOCKER (2026-07-27w): needs ZERO GM clients connected, and the bench joins as a GM.** So it is not simply a Ben row — it is **conditionally agent-drivable**: in a window where your own Gamemaster client is CLOSED and the agent joins only as `PlayerBench`, a bench run can drive it. Until such a window is arranged it stays ⛑.
+      ⛔ **BLOCKER (2026-07-27w): needs ZERO GM clients connected, and the bench joins as a GM.** So it is not simply a Ben row — it is **conditionally agent-drivable**: in a window where your own Gamemaster client is CLOSED and the agent joins only as `PlayerBench`, a bench run can drive it. Until such a window is arranged it stays ⚑.
 - [ ] 🤖 **2bL-14 — Bear Witness — mid-combat reload** — in round 3+, refresh Foundry (F5) → Nobody gains a fresh round of Temp HP just for reloading.
 - [ ] 🤖 **2bE-9 — adversary widening** — put an adversary carrying a combat-timing talent into a fight → It now gets its combat-start grant. **Deliberate change** — the retired hooks were gated `type === "character"`; rule-driven dispatch doesn't need that gate. Tell me if you'd rather it stayed PC-only.
 
@@ -446,6 +443,11 @@ Insight), 2bI-7, 2bI-8 + 2bH-11 (retired as PROVEN-UNREACHABLE fail-open, runboo
 2bM-10, 2bF-12. Evidence per row in the 07-26k delta. The rows below stayed open — two FAILs
 (→ test-pass-fixes) and the ⚑ ruling rows, each with a dated note.
 
+**✅ BLACK HAS NO OPEN BENCH ROWS (2026-07-27w).** Its two FAILs retired at run 4, and its three
+surviving rows were pure rulings with nothing left to test — 2bI-4 (cross-rider stacking),
+2bI-6 (Whispered Doubt vs Wary) and 2bJ-10 (the click-not-post budget). They are now
+**`EDHA_RULINGS.md` R-15, R-16 and R-17**. Nothing was closed; the questions moved.
+
 **Bench run 4 (2026-07-26m): the three 07-26l re-tests all PASSED and are retired** — 2bI-1
 (Whispered Doubt's loss card: "🧠 Whispered Doubt: Bench Target — Adjacent A loses 1 focus"; Red's
 Shatter Focus announces off the same helper), 2bJ-8 (Puppeteer's offer names the creature, no
@@ -453,9 +455,6 @@ literal braces), and the Cruel Step straddle spot-check (the x=5156 straddle sli
 and the ⚑ near-parallel residual also completed — `testCollision` from the collinear origin reads
 false while a genuine crossing ray reads true). Evidence in the 07-26m delta.
 
-- [ ] **2bI-4 — ⚑ Coercive Pressure stacking** — give the same creature Coercive Pressure's disadvantage **and** another next-test rider (e.g. Probability Net) → **NARROWING:** they no longer stack — the second write overwrites the first. The bespoke Cognitive-disadvantage flag that allowed both is gone. Tell me if that matters at the table. *(2026-07-26k: the single-slot shape is confirmed on the live actor — `flags.nextTestMod` is one object `{source: "Coercive Pressure", …}`; a Blood Price arm on the owner and a Coercive arm on the target each occupy their bearer's one slot. Cross-rider overwrite not staged; the ruling stays yours.)*
-- [ ] **2bI-6 — ⚑ Whispered Doubt vs Wary** — have the enemy own **Wary**, then trigger Whispered Doubt → **BEHAVIOUR CHANGE:** the extra loss is now reduced by their Discipline ranks (usually to zero), because it goes through the shared involuntary-focus path. Wary's text says involuntary focus loss, so this reads correct — but it did NOT happen before. Your ruling, not a bug report. *(2026-07-26k: OBSERVED live exactly as described — Wary + Discipline 1 → net extra 0, with a card "🛡️ Wary: involuntary focus loss reduced by 1"; Coercive still armed. Note Wary announces while Whispered Doubt itself is card-less — see 2bI-1.)*
-- [ ] **2bJ-10 — ⚑ Puppeteer / Unnerving Approach — the ignored card** — let one of their cards post and **do not click it**; then trigger the talent again the same round → It works again. ⚑ **BEHAVIOUR CHANGE:** the once-per-round budget is now spent when you **click**, not when the card posts, so declining no longer burns the use. *(2026-07-26k: VERIFIED — an ignored Unnerving picker did not block a same-round re-use, and its click pushed; after an accepted Puppeteer, the next 0-focus turn-start posts NO offer (budget suppresses at the offer stage). ⚑ One cost note for your ruling: each ignored USE still charges its Investiture — only the round budget waits for the click.)*
 ---
 
 # BENCH — Red (leyline)
@@ -465,32 +464,15 @@ round). No pack rebuild pending — this is the PILOT tree: it holds the migrati
 talents (2bA) and its rows ran end-to-end in **bench run 1 (2026-07-26g)**: 12 rows retired on
 evidence (2bQ-1/2/3, 2bA-1/2/3/4, 2bF-11, 2bY-11, 2bY-13, 2bY-14, 2bP-5 — 2bQ-1 retired as
 SUPERSEDED: the "(On Use)" spec predates the 07-25 Opportunity redesign that 2bQ-3 verified; a
-bare use arms nothing, by design). What remains below is the one FAIL, the ⚑ rows, and the
-spot-check row with a drift observation.
+bare use arms nothing, by design). **What remains below is ONE row: Flashpoint.** Red's three other
+survivors were pure rulings and moved to `EDHA_RULINGS.md` on 2026-07-27w — **R-23** (Volatile
+Strike: whose hit should it ride), **R-24** (is Reckless Advance the intended Momentum root — the
+graph half is verified live) and **R-27** (Battle Fever: the card says "resets at start of your
+turn", the engine rides every test until turn start — which side is canon). Arc Flash, the other
+half of the spot-check row, PASSED at run 1 and retired with it.
 
-- [ ] **⚑ Volatile Strike — whose hit should it ride? YOUR RULING, 2026-07-27n (found by the 2bA-5
-      family sweep; nothing changed)** — Volatile Strike is the only other talent the 2bA-5 gate can
-      affect, and its card says "**When you hit with a melee attack**, spend 1 Investiture and test
-      Red vs. Physical to add half [Tier][Die] impact" — a RIDER. But it is authored as `skill_test`
-      **with its own damage formula**, so it still derives ITEM-SPECIFIC: today its offer only appears
-      on **its own** damage application, never on your sword. It was left alone deliberately rather
-      than flipped, because it has two live paths and only you can say which is canon: (a) it is an
-      automatic rider on any melee impact hit — then it wants `whenDealer: "any"`, and using it
-      standalone will also offer itself on its own damage; or (b) it is the Special Action you take
-      *after* your weapon hits, in which case the on-hit rule is the redundant half and should be
-      `whenDealer: "self"` or removed. **You can settle this entirely from the Events tab** —
-      `whenDealer` is a field on the rule now; no code change either way. Never benched.
 - [ ] 🤖 **Flashpoint** — Red burst hits 2+: click the prompt → +1 Investiture AND your next Red test
       rolls with advantage automatically (pre-selected/fast-forwarded).
-- [ ] **Red spot-checks (like-for-like)** — run once: Arc Flash (any energy hit) and one Frenzy talent of your choice → identical to pre-migration behaviour; any drift is a bug. **Bench run 1 (2026-07-26):** Arc Flash ✓ (offer card posted on an energy weapon hit; Afterburn's too). Battle Fever (Frenzy) has a **card-vs-engine drift**: card says "+1 to your next test (max = Rank), resets at start of your turn" but the rally bonus rode EVERY test until turn start (`rally {count, resetOn: turn}` — it never consumed on a test; observed +2[Rally] on 6+ consecutive rolls; the max=Rank cap works). Decide which side is canonical → test-pass-fixes.
-- [ ] **Red / Momentum is takeable** — same check on Red: **Reckless Advance** is the branch root
-      (its card now reads **"Red 1+"**, not "Burning Drive"), and **Burning Drive**, **Volatile
-      Strike**, … **Unstoppable** chain down from it. ⚑ **Ben — eyeball the drawn tree**: the fix
-      trusted the layout + connections over the card text. If you intended Burning Drive to come
-      first, say so and it flips instead. **Bench run 1 (2026-07-26): the graph half is verified
-      live** — the compiled Red Leyline tree's nodes read Reckless Advance {skill red 1, no talent
-      prereq}, Burning Drive/Volatile Strike {Reckless Advance}, Unstoppable {Reckless Momentum,
-      red 3}. Only the drawn-tree eyeball remains.
 
 ---
 
@@ -548,7 +530,10 @@ evaluates a multi-talent group with `.some()`, so either parent alone suffices; 
 `data/domain.json` matches). Evidence per row in the 07-26m delta. ⚑ the drawn-tree eyeball for
 the prereq row is still Ben's.
 
-- [ ] ⚑ **Walking Ruin has no token indicator (2026-07-26m — ruling, not a bug)** — the toggle is tracked internally and nothing on the token says the character is leaving ruin behind, unlike every other scene-arm in the project (Cascade Armed, Crowned, `withernext`, `warlord`). Consistency call is Ben's.
+**✅ DESTRUCTION HAS NO OPEN BENCH ROWS (2026-07-27w).** Its last survivor — Walking Ruin having no
+token indicator, unlike every other scene-arm in the project — was a consistency call with nothing
+to test, and is now **`EDHA_RULINGS.md` R-34**.
+
 
 ---
 
@@ -636,16 +621,14 @@ delta.
 > **"(1/2)"**, proving the ledger really emptied. **Zero `Chaos sweep:` console.warn lines**, so the
 > guarded-per-await rewrite has no residual culprit.
 
-- [ ] ⚑ **Chaos residuals (run 5) — the two halves that are not engine work** — (a) 2bU-5's through-walls RENDERING of Omen-bearers: canvas-visual, a hidden-pane session cannot see highlights — Ben's eyeball. (b) 2bU-3's "a resister keeps its Omen" branch: not driven (dice luck, runs 5–7); the per-bearer gate itself is proven. Still a ruling: Unweaving's dispel card lists the OMEN MARKER itself as a dispellable effect button.
-      ✅ **(a) IS CLOSED — narrowed 2026-07-27v on bench run 13's sense-through evidence.** With
-      `PlayerBench` owning Bench — Chaos (Void Sense, `edha-sense-reveal` on status `omen`), an
-      **Omen-marked** target it could not otherwise see **rendered on the player's own client**, while
-      an identically-obscured **UNMARKED control stayed invisible** — the mark was the only difference.
-      That is the through-walls reveal, driven on a second client with its negative control, so it is
-      no longer an eyeball. **(b) was also driven** — run 13 and the runs since have exercised the
-      per-bearer gate repeatedly; the resister branch is dice luck, not doubt.
-      ⛔ **What actually remains on this row is ONE ruling, and nothing else**: should Unweaving's
-      dispel card list the **Omen marker itself** as a dispellable effect button? That is yours.
+**✅ CHAOS HAS NO OPEN BENCH ROWS (2026-07-27w).** All 15 rows passed at run 5; residual (c) retired
+at run 7; residual (a) — the through-walls rendering of Omen-bearers — closed at run 13 on
+sense-through evidence **with a negative control** (an identically-obscured UNMARKED token stayed
+invisible on the same client); residual (b)'s per-bearer gate has been exercised repeatedly and the
+resister branch is dice luck, not doubt. What was left was one question with nothing to test —
+should Unweaving's dispel card list the **Omen marker itself** as a dispellable button — and it is
+now **`EDHA_RULINGS.md` R-35**.
+
 
 ---
 
@@ -786,43 +769,16 @@ spirit to Bench Victim — V1, Bench Victim — V2 · 2d8"), THREE ✨ recover c
 "(1/2)" → "(2/2)" → "(2/2). The oldest (Bench Victim — V1) fades — you sustain at most 2",
 ledger ended holding the two newest, and the cascade did NOT re-detonate off the nested kills.
 The `chainBounded` clamp holds at the table.
-- [ ] ⚑ **Raise Dead — a raised creature keeps its own Harvested Remain (2026-07-26m — defect or ruling, Ben's call)** — an adversary that had itself been harvested was then raised by spending a DIFFERENT Remain: it came back at 1 HP still wearing the `harvested` marker, with its own entry still on the ledger — a living creature that is also a Remain. The card says nothing either way. Should the raise clear the target's own marker and entry?
-- [ ] **2bW-1 — Withering Touch — the two unrun halves** — still open from run 3 and not driven in run 4: **Temp HP still lands** on a blocked target, and the **turn-start expiry** of the No-Healing block. Everything else on this row is retired (see the run-4 block above).
-      *(2026-07-27r bench run 14 — **NOT REACHED, with the blocker named.** The ARM half is verified: the use posted "🥀 Withering Touch: next melee weapon hit withers — the talent's [Tier][Die]+Willpower vital is added automatically, and the target cannot regain HP until the start of your next turn" and wrote the `withernext` status onto Bench — Death. The **delivery** half could not be driven: the block only lands on a real melee weapon hit (`edha-damage-bonus` rides the weapon), and **out of combat a weapon `use()` is hard-vetoed by the action economy** — "Bench — Death does not have enough actions to use Sidesword!" produced no roll, no card and no damage. Talent `use()` warns and proceeds; **weapon `use()` warns and stops** — worth knowing for every future on-hit row. Needs Bench — Death in a live combat with actions available; then both halves (Temp HP still lands on the blocked target, e.g. via Bench — Life's `edha-overflow-thp`, and the turn-start expiry) can run together.)*
-      ⚠️ **PARTIAL — bench run 15 (2026-07-27t). The delivery half and the expiry half are DONE; one
-      half needs a RULING, and the row's own example is misleading.** Driven in a live bench combat
-      (Bench — Death activated, 3 actions): the arm posted and wrote `withernext`; **weapon `use()`
-      raised no action veto in combat** (run 14's blocker is gone), the Sidesword rolled, and applying
-      its damage fired the rider — "🐺 Withering Touch (Bench — Death): **+8 vital strike**" — and landed
-      the `Withering Touch — No Healing` effect on the target, consuming `withernext`.
-      ✅ **THE TURN-BOUNDARY EXPIRY PASSES.** The effect carried `expireAfter {round: 2, turn: 0}` and
-      cleared the moment the turn advanced past Bench — Death's round-2 turn, announcing
-      "💢 Withering Touch — No Healing on Bench Target — Undefended ends (end of its turn)."
-      ✅ **Temp HP DOES land on a fully blocked target** — a direct grant through the engine's own
-      primitive put 7 Temp HP on the target while HP stayed pinned at 29 and the block stayed on, and it
-      later absorbed damage ("Temp HP absorbs 4 of 4 damage · 3 Temp HP left"). Ben R3's intent holds.
-      ❓ **BUT the row's named example cannot show it, and that is a RULING not a bug.** Bench — Life's
-      `edha-overflow-thp` (Life Surge) produced **no** Temp HP on the blocked target: the heal was
-      correctly refused ("🩸 Bench Target — Undefended cannot regain HP (Withering Touch).") and a
-      **fraction-0 cut leaves no overflow to convert**, so the overflow rule has nothing to turn into
-      Temp HP. Decide which is intended: heal-overflow→THP is a *heal* (blocked — today's behaviour) or
-      a *Temp HP grant* (should bypass). Re-word this row's example either way — as written it asks for
-      something the mechanics cannot produce.
-      ❗ **CARD-vs-PROSE DRIFT found on the same row → test-pass-fixes.** The talent description says the
-      target "cannot regain HP until the **start** of your next turn"; the engine (`expireAfter
-      {round: 2, turn: 0}`), both chat cards ("until the **end** of Bench — Death's next turn", "ends
-      (end of its turn)") and the **measured** expiry all say **END** of your next turn. Engine and cards
-      agree with each other and disagree with the prose — align the prose (and the source in
-      `data/domain.json`) to "end", or change the engine; do not leave all three disagreeing.
-      ⛔ **RESIDUE, stated exactly — narrowed 2026-07-27v. EVERY MECHANICAL HALF OF THIS ROW HAS RUN.**
-      Arm ✅ · delivery ✅ (+8 vital strike off a real Sidesword hit in combat) · the No-Healing block
-      landing ✅ · turn-boundary expiry ✅ · Temp HP landing on a fully blocked target ✅ (direct grant,
-      7 THP with HP pinned, later absorbed 4). **What is left is TWO RULINGS and nothing testable:**
-      (1) does "cannot regain HP" block **heal-overflow → Temp HP** (blocked today) or should a Temp HP
-      grant bypass it (marathon-2 rulings 3A-7) — this also decides how the row's own `edha-overflow-thp`
-      example must be re-worded, because as written it asks for something the mechanics cannot produce;
-      and (2) "start" vs "end" of your next turn (3A-15; *recommended: fix the prose*). **Do not send
-      this row to a bench run — send it to the rulings menu.**
+
+**✅ DEATH HAS NO OPEN BENCH ROWS (2026-07-27w).** Its two survivors were both questions with nothing
+left to drive. **2bW-1 (Withering Touch)** ran every mechanical half at run 15 — arm ✅, delivery ✅
+(+8 vital strike off a real Sidesword hit in combat), the No-Healing block landing ✅, turn-boundary
+expiry ✅, and Temp HP landing on a fully blocked target ✅ (7 THP with HP pinned, later absorbing 4)
+— leaving two decisions, now **`EDHA_RULINGS.md` R-9** (is heal-overflow → Temp HP a heal or a
+grant; this also decides how the row's own example must be re-worded) and **R-28** ("start" vs "end"
+of your next turn; engine, both cards and measured behaviour all say *end*, only the prose says
+*start*). **Raise Dead / Remain** — should raising a creature clear its own `harvested` marker and
+ledger entry — is **R-12**.
 
 ---
 
@@ -1188,6 +1144,13 @@ paths).
 > by the 07-27u heroic build; they need a bench drive) · **1 ⚑ DESIGN CALL THAT IS YOURS** (the four
 > dead prereqs) · **1 out-of-scope row parked here** (Probability Cascade is a **Blue** talent).
 >
+> **Two Heroic rows left for `EDHA_RULINGS.md` on 2026-07-27w**, both pure decisions: **R-18** (should
+> quarry advantage refuse to stomp an active disadvantage? today it stomps, which is the house
+> convention) and **R-25** (Rallying Shout's reminder now prints on an ally above 0 HP — keep the
+> always-print or restore the old gate? its number defect is fixed and table-verified). The roll-dialog
+> row stays here as ⚑, because its remaining half is a *look* — is the die icon's colour readable — and
+> the "so what do we do" half is **R-39**.
+>
 > *(**2bC-1 · 2bF-14 · 2bF-16 — all three RETIRED on evidence 2026-07-27v.** Each had passed both of its
 > factual halves and was being held open by an **empty-Events-tab design question that Ben already
 > settled on 2026-07-24t** — the empty tab is ACCEPTABLE, because the test is editability, not which
@@ -1319,12 +1282,6 @@ paths).
       **What to check at the table (feel, not pass/fail):** open the attack dialog against a marked
       quarry and look at the die icon's **colour** — is that cue readable enough for you? If not, the
       answer is more whispered advantage cards like the quarry one, **not** an engine change.
-- [ ] **⚑ Quarry advantage vs. an active DISADVANTAGE — your ruling, 2026-07-27l** — attack your quarry
-      **while Weakened** → today the attack rolls **advantage** (the quarry site runs after Weakened's
-      and overwrites it). That is the house convention — pack advantage, the Opportunity adv-test and
-      `edha-next-test-mod` all stomp, and only `edha-test-rider` has the opt-in `unlessDisadvantage`
-      that Apex Predator uses. Left alone deliberately rather than changed silently. Tell me if quarry
-      should refuse to stomp instead.
 - [ ] 🤖 **2bD-7 — regression: the untouched rows — FAIL 2026-07-27i (2 of 4 are dead)** — **Sharp Eye**, **Tactical Ploy**, **Steadfast Challenge**, **Valiant Intervention** → All four still work exactly as before — they stay on the old `EDHA_HEROIC_DEFTESTS` path this pass. If any broke, the table edit went wrong. **Run 9:** Tactical Ploy ✅ (2bE-7, both branches) and Valiant Intervention ✅ (2bF-15). Steadfast Challenge rolled and resolved but only a FAIL was observed (2bF-13, below). **Sharp Eye is a silent no-op** — see 2bQ-4. Its cause is the dead-skill-key family below, not the table edit. **2026-07-27k: THREE OF FOUR ARE NOW CLEARED** — Steadfast Challenge's success branch passed (2bF-13, retired), joining Tactical Ploy and Valiant Intervention. ⛔ **This row now hangs on Sharp Eye alone, which is BLOCKED-ON-DEPLOY** (`foundry-build heroic` + ⟳ Sync Talents); a fresh console read on 07-27k confirms the live pack still carries `skill: "per"`. **2026-07-27m (bench run 11): still hangs on Sharp Eye alone, and it is no longer a deploy gap** — the heroic pack IS rebuilt and Sharp Eye still does nothing. Its cause is now root-caused as an `activation` defect, not the skill key; see 2bQ-4. The other three remain cleared. ⏳ **2026-07-27n: the activation fix is IN and this row is BLOCKED-ON-DEPLOY behind it** — it needs a **second** `foundry-build heroic` + ⟳ Sync Talents. Re-check Sharp Eye only; the other three are settled. ✅ **UNBLOCKED 2026-07-27u — that second heroic build is DONE.** Re-check Sharp Eye only.
       ⛔ **RESIDUE, stated exactly — narrowed 2026-07-27v: 3 OF 4 ARE CLOSED AND ONLY SHARP EYE IS
       LEFT.** ✅ Tactical Ploy (2bE-7, both branches, bench run 9) · ✅ Valiant Intervention (2bF-15,
@@ -1335,7 +1292,6 @@ paths).
       2bQ-4's result.
 - [ ] 🤖 **Probability Cascade (Blue) — the count-2 half of the 2bO-7 guard, NOT RUN 2026-07-27k** — `edhaNextModClaimOk` (the Pack Hunting double-dip guard) must stay inert for multi-use test-only mods: Probability Cascade is `count: 2`, `appliesTo: "test"` and must still apply to **two separate tests**. Run 10 verified the guard is inert for **count-1** test-only mods (Demonstrative / Shrewd / Overwhelm with Details / Decisive Command all applied normally on skill tests) but could not drive Probability Cascade itself — its chain needs an Opportunity plus 1 Investiture, which cannot be forced on demand. **This is a Blue row, not Heroic** — run it in a Blue pass.
 - [ ] 🤖 **2bQ-4 — Sharp Eye — FAIL 2026-07-27i: a total silent no-op** — target a creature and use it → You roll **Perception**; the card says SUCCESS or FAIL against their Cognitive defense. **On a success only**, a second whispered card lists *lowest attribute · lowest defense · below half*. **Run 9:** used twice on a valid target — **no roll, no card, no notification, and nothing spent** (focus 4→4, Investiture 4→4). The document is not empty: it carries `SharpEyeGate0000` (`edha-def-test`) and `SharpEyeReveal00` (`edha-reveal`, on `edha-test-success`). **Cause:** the gate's **`skill: "per"`** is a dead key — the cosmere Perception skill is **`prc`**, and `per` appears nowhere in `CONFIG.COSMERE.skills`, so no roll can ever fire and the success event never arrives. Same shape as run 2's "cost charged and nothing happened" lesson, here without even the charge. ✅ **FIXED 2026-07-27j — BLOCKED-ON-DEPLOY: needs `foundry-build heroic` + ⟳ Sync Talents.** The gate is now `prc`. **Re-test after the rebuild:** target a creature, use it → a Perception roll and a SUCCESS/FAIL card, and on a success the whispered fact list. ⛔ **STILL A TOTAL SILENT NO-OP AFTER THE REBUILD — bench run 11, 2026-07-27m. The dead key was real but it was NOT the whole cause.** The `prc` fix is live on BOTH the pack and the owned item (`SharpEyeGate0000`, `edha-def-test`, `skill: "prc"`), and a use on a correctly targeted creature still produced **no roll, no card, no notification and nothing spent** (focus 4→4) — twice, with the target asserted in `game.user.targets`. **ROOT CAUSE, now CONFIRMED IN SYSTEM SOURCE (2026-07-27n) rather than inferred:** Sharp Eye's `activation` was `{type: "utility", cost: {value: null, type: "spe"}}` with **no `activation.skill`**, and the system's own `use()` decides `rollRequired = activation.type === "skill_test" || hasDamage` (`systems/cosmere-rpg/index.js` ~L7188). With `utility` and `damage.formula: null` it took the else-branch: it posted the plain action card, fired `useItem` (so the `use` event and H1's executor really did run), and rolled **nothing**. H1 is a DECIDER, not a roller — it queued a contest and the entry simply expired after `EDHA_CONTEST_TTL`, with no error and no warning. ✅ **FIXED 2026-07-27n — BLOCKED-ON-DEPLOY: needs `foundry-build heroic` + ⟳ Sync Talents.** `activation.type` → `skill_test`, `activation.skill` → `prc`; the Special Action cost is unchanged, so the card text is untouched. Verified by reading the talent back out of a scratch-`EDHA_MODROOT` heroic build. **RE-TEST after the rebuild:** target a creature and use it → a **Perception** roll fires, a card reads "Sharp Eye: `<total>` vs `<name>`'s COG `<n>` — SUCCESS/FAIL", and on a success a second whispered card lists *lowest attribute · lowest defense · below half* with the "Pick ONE" note. **Family audit re-run independently: 37 authored rules carry `edha-def-test`, 35 are already `skill_test`;** the only other exception is Chaos's **Unravel Everything**, which is legitimately exempt (`targetList` + `vs: "none"` returns before the contest is ever queued). Zero skill mismatches across the other 35 and across all 7 adversary abilities. **This shape has now shipped twice** — six adversary abilities in 07-26j, this one on the talent surface — so **`lint-refs` pass 14** gates both surfaces from here (mutation-verified against this exact defect). ✅ **UNBLOCKED 2026-07-27u — the heroic rebuild is DONE and the fix is confirmed IN THE BUILT PACK** (`activation.type: "skill_test"`, `activation.skill: "prc"`, both rules intact). This row is no longer deploy-blocked; it needs a bench drive. **Drive it as written above** — target a creature, use it, expect a Perception roll, a SUCCESS/FAIL card vs COG, and on a success the whispered fact list.
-- [ ] **2bM-6 — ⚑ Rallying Shout — a deliberate change — ⚠️ and its number is broken** — own it, use Rousing Presence on an ally **above 0 HP** → The reminder **still prints**. Tell me if you preferred the old gate. *(2026-07-27i: the reminder DID print on an ally at 20 HP, so the deliberate change is live and the ruling is yours.)* ⛔ **Separately, a real defect in the same line:** it printed "recovers its recovery die + **0** health" with the owner's Leadership rank at **3**, because the note reads **`@skills.ldr.rank`** and the cosmere Leadership key is **`lea`**. ✅ **FIXED 2026-07-27j — BLOCKED-ON-DEPLOY: needs `foundry-build heroic` + ⟳ Sync Talents.** The note now reads `@skills.lea.rank`. **Re-test after the rebuild:** with Leadership rank 3 the line must read "recovery die + **3** health". ✅ **THE NUMBER DEFECT IS FIXED AND TABLE-VERIFIED — bench run 11, 2026-07-27m.** With Leadership rank 3, Rousing Presence on an ally at 32 HP printed "📣 Rousing Presence: You may revive an Unconscious ally. If the target is at 0 health it recovers its **recovery die + 3 health** (roll the target's own die)." — the `@skills.lea.rank` substitution resolves (was "+ 0"). **Only the ⚑ design question is left and it is yours**: the reminder still prints on an ally ABOVE 0 HP (re-confirmed this run) — tell me if you preferred the old gate.
 > **✅ On-hit riders — RETIRED on evidence 2026-07-27i.** One Sidesword hit fired the whole set:
 > **Startling Blow** → "Bench Target — Adjacent A is **Surprised**" (status asserted on the actor) ·
 > **Shattering Blow** → its 5 ft push card, with its own note (2bA-8) · **Subtle Takedown**,
@@ -1557,8 +1513,10 @@ report once.
 - [ ] 🤖 **Cues fire** — damage the Drownlight Colony (gutter-and-relight cue) and drop the
       Fen-Heart below half (madness-slackens cue) and near 0 (goes-still cue, atFraction
       0.05 — first use of a near-zero threshold; verify it fires before death cleanup).
-- [ ] 🤖 **Fen-Heart token scale** — creatureType "custom", size "large" (schema cap): confirm
-      the sheet looks right and set the token 3x3–4x4 on placement (noted in its biography).
+- [ ] 🤖 **Fen-Heart token scale (the sheet read)** — confirm the sheet shows creatureType
+      **"custom"** and size **"large"** (the schema cap), and that the biography carries the
+      hand-placement note. *(2026-07-27w: **which** footprint — 3×3 or 4×4 — is a decision, not a
+      test, and is now `EDHA_RULINGS.md` **R-40**. Set whatever it says at placement.)*
 - [ ] 🤖 **Leyline pair on a minion** — the Drownlight Colony carries blue+black (ruling 69
       pair-attunement, per-block override): confirm the build embeds both Attunement Keys +
       Draw Mana without complaint (ruling 49 auto-embed on a two-color minion is new).
@@ -1690,11 +1648,12 @@ so nothing was dropped.)*
       copy of thyrcross-labeled.png" — never updated by the 07-19s fix — so two later re-registration
       passes followed the docs straight back into the bug. *(The docstring was corrected 2026-07-27v;
       the ASSET was deliberately NOT regenerated, because which render is wanted is the ruling below.)*
-      ⚑ **RULING NEEDED — two rows in this file now contradict each other and one must be retired:**
-      **"Map v3: label-free"** (above) wants no labels, while **"Map picker shows the redrawn map"**
-      (further down) names *"Goldenport wash running the whole west coast"* as its giveaway — and that
-      wash exists **only on the political/labeled render**, which is what is shipped. Decide which map
-      the picker shows, then regenerate (or don't) and retire the losing row.
+      ⏸️ **GATED ON `EDHA_RULINGS.md` R-41 — two rows in this file contradict each other and one must
+      be retired:** **"Map v3: label-free"** (above) wants no labels, while **"Map picker shows the
+      redrawn map"** (further down) names *"Goldenport wash running the whole west coast"* as its
+      giveaway — and that wash exists **only on the political/labeled render**, which is what is
+      shipped. Once R-41 is answered: regenerate (or don't) and retire the losing row. Nothing here
+      needs a Foundry table.
       ℹ️ **The aspect half is fine either way and needs no test:** 1118/1488 = **0.7513**, identical to
       the canvas aspect 2236/2976, so "not stretched or letterboxed" holds for both renders.
 - [ ] 🤖 **Malcurr-Stamped Blade OUT of the weapon picker (07-19s) — ✅ UNBLOCKED 2026-07-27v; the
@@ -1843,10 +1802,11 @@ LOOK pickable, and the picked weapon is kitItem-stamped so Start over / ↺ Chan
       · **city-31 `[1244,1552]`** — tagged `corvaine`, resolves to **`thalendor`** (wrong nation).
       **Controls pass:** Aldercourt → corvaine, Heartholt → thalendor. **These are the same four
       `lint_map.py` already WARNs about**, so the gate saw them and nobody acted.
-      ⚑ **RULING NEEDED — is this a polygon fix or a gazetteer fix?** Either the Goldenport polygon is
-      missing its coastal lobe (redraw/extend it), or those four dots are tagged to the wrong nation
-      (retag them). Both are edits to `source-materials/maps/thyrcross.map.json` and both re-run
-      `build-map-picker-asset.js`; the choice is a map-truth call, not a mechanical one.
+      ⏸️ **GATED ON `EDHA_RULINGS.md` R-42 — is this a polygon fix or a gazetteer fix?** Either the
+      Goldenport polygon is missing its coastal lobe (redraw/extend it), or those four dots are tagged
+      to the wrong nation (retag them). Both are edits to `source-materials/maps/thyrcross.map.json`
+      and both re-run `build-map-picker-asset.js`; the choice is map truth, not a mechanical one.
+      Nothing here needs a Foundry table.
 
 ---
 
@@ -2224,9 +2184,11 @@ Mutation Upgrade); superseded hand-toggle AEs were removed — the engine does t
       adversary item on world load (the 07-16 morning build shipped cue rules with the handler
       type unregistered — this deploy carries the registration; if cues are silent, THIS is the
       first thing to check).
-- [ ] ⚑ **Ruling wanted: Combat Training's garbled source** — the cheatsheet sentence reads
-      "turn one of its own grazes into a graze"; rule whether that means miss→graze or
-      graze→hit and the text gets fixed to match.
+
+*(**Ruling wanted: Combat Training's garbled source** — moved to `EDHA_RULINGS.md` **R-29** on
+2026-07-27w. The cheatsheet sentence reads "turn one of its own **grazes into a graze**"; whether
+that means miss → graze or graze → hit is a decision, not a test, and it has sat in a test list
+since 2026-07-16.)*
 
 ## The 2bAB pre-deploy audit rewires (2026-07-26 — 15 dead adversary copies of tree talents, wired)
 

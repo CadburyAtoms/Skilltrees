@@ -174,8 +174,11 @@ One markdown file, updated after every phase. It is the raw material for the rep
    failure, and those rows stay 🤖.
 2. **Every defect: found → fixed → re-tested**, with commit refs, grouped by the run that found it.
    State the **verified** root cause, and where it **diverged from the bench's inference**.
-3. **The rulings batch as ONE menu**, defaults marked, with anything applied-as-default flagged for
-   veto — especially anything that changes live dice math.
+3. **The rulings batch — APPEND IT TO `EDHA_RULINGS.md`, do not re-list it in the report.** That
+   file is the single standing decisions doc (repo root); the report links to it. Each new ruling
+   gets the next number, its recommended default, and the run or checklist row it came from.
+   Anything applied-as-default is flagged for veto — especially anything that changes live dice math.
+   A ruling duplicated into the report drifts the moment Ben answers it.
 4. **The deploy queue in order**, with what each rebuild unlocks and what to re-test after.
 5. **The two-client list** — these are **🤖**, not ⚑: `PlayerBench` makes them drivable. Separately
    list rows that are genuinely **BLOCKED**, each with its named blocker.

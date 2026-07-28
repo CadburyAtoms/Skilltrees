@@ -275,122 +275,23 @@ Plus pinned regressions: `tests/on-hit-dealer.test.js`, `tests/refund-race.test.
 
 ---
 
-## 3. THE RULINGS BATCH — one menu, your call
+## 3. THE RULINGS BATCH — moved to `EDHA_RULINGS.md`
 
-**33 items pending: 15 new this marathon + 2 added by the 2026-07-27v checklist audit (§3A), 16 carried
-unanswered from marathon 1 (§3B).** Nothing was decided silently except where marked **APPLIED**.
+**This section is now a pointer, not a list.** On 2026-07-27w its 33 items were merged with every
+pure ruling that had been sitting in `EDHA_FOUNDRY_TEST_CHECKLIST.md` as if it were a test row, and
+the result is **`EDHA_RULINGS.md`** in the repo root — **45 numbered rulings** grouped by theme, each
+carrying its recommended default and the marathon item or checklist row id it came from.
 
-### 3A. New this marathon
+Read it there. A duplicate here would drift the moment one is answered, and the whole point of the
+new doc is that there is exactly one place to answer them.
 
-**Permissions & structure**
+**The three still worth reading first** (they were §3B-E, now `EDHA_RULINGS.md` §I): items already
+**APPLIED as defaults** and needing a veto if you disagree — above all **R-43, "a card that says
+‘tests Speed’ means the attribute"**, which **changes live dice math** on Concussive Yield and
+Inevitable Snare. The implementation is table-proven; the balance question is not.
 
-1. **Should the PLAYER role keep `ACTOR_CREATE`?** It has it in your world, which makes the
-   `summon-actor` **relay branch dead code at your table** — a player-cast Construct worked fine but
-   never used the relay. **That row can never pass as written until you decide.**
-2. **Should `bench-setup-console.js` give bench PCs a normal sight range?** They carry **10 ft**, which
-   makes a player client render almost nothing — and it already caused a near-false-PASS in run 13.
-   *Recommended: yes, give them normal vision.*
-3. **Volatile Strike — whose hit should it ride?** Card and rule description both say "when you hit
-   with a melee attack" (a rider), but it is authored `skill_test` **with** its own damage formula, so
-   it derives item-specific and only ever offers itself on its own damage. (a) `whenDealer: "any"`
-   → true rider, accepting that a standalone use also self-offers; or (b) it is the Special Action you
-   take *after* a hit, and the on-hit rule is redundant. **Settleable entirely from the Events tab, no
-   code change either way.** Never benched.
-
-**Scope & width**
-
-4. **Fault Line's dangerous-terrain Region catches bystanders scene-wide**, no friend/foe clause — the
-   same shape as marathon 1's still-open ⚑ ruling about the line sparing allies. It incidentally ticked
-   your **Stitchmother** during run 11 (effects verified back to snapshot state).
-5. **`applyButtonsTo` now runs on one GM**, so only that GM sees its notification — but the setting is
-   world-scope, so the effect is global. Confirm that's intended.
-6. **`edhaConsumeList` refunds `value.min`.** If a talent ever ships `min ≠ max`, the system's consume
-   dialog lets the player pay more and the refund would under-credit. No talent does today.
-
-**Mechanics**
-
-7. **Does "cannot regain HP" block heal-overflow → Temp HP?** (blocked today) — or is a Temp HP grant
-   not a heal, and should bypass? Directly decides 2bW-1.
-8. **Should Phantom Double's out-of-range refusal become a pre-cost veto?** Identical player outcome
-   and it removes the race *by construction* rather than by sequencing — but it drifts the rule's own
-   text and needs a leyline rebuild. **Default taken: leave it** (the text promises a refund).
-
-**Cosmetic / feel / text**
-
-9. **Should a PC's own Phantom Double token be labelled "(Illusion)"?** The plain name is deliberate for
-   The Seeming's veil, but no veil applies in the PC direction.
-10. **Black Draw Mana's sweep card says "affected 5"** when all 5 were already Weakened — intent vs
-    state.
-11. **2bM-6 / Rallying Shout** prints its reminder on an ally already **above 0 HP**.
-12. **2bR-17 spec vs rule** — the row says "vs the target's **Cognitive defense**"; the rule is
-    `vs: "prompt-dc"` (GM types the influence DC). Arguably correct for a counter, but row and rule
-    disagree.
-13. **Dread Presence's veto silently makes a Weakened target unmovable** — three moves resolved with no
-    error and did nothing; the only evidence anywhere was `ui.notifications`. Working as designed, but
-    it reads identically to a broken range gate.
-14. **Is the roll dialog's die-icon colour cue readable at the table?** If not, the answer is more
-    whispered advantage cards like the quarry one, **not** an engine change.
-15. **Withering Touch's duration** — "start" or "end" of your next turn? Engine, both cards **and
-    measured behaviour** all say *end*; only the prose says *start*. *Recommended: fix the prose.*
-
-**Added by the 2026-07-27v checklist audit — both are about the character-creation map picker**
-
-16. **Which map should the picker show — labelled or label-free?** The shipped asset
-    `module-src/assets/thyrcross-map.jpg` (1118×1488, byte-identical to the deployed copy) **still
-    carries every nation letter (`A Kettavar` … `J Canticle`) and all 13 numbered city labels** — the
-    07-19s "label-free map" fix was **silently reverted twice**, by `db79969` and `b114f7e`, each of
-    which regenerated the jpg from `thyrcross-labeled.png` again because
-    `scripts/build-map-picker-asset.js`'s docstring still told them to. *(The docstring is now fixed;
-    the asset was deliberately NOT regenerated, because that is this ruling.)* **Two checklist rows now
-    contradict each other and one must be retired either way:** *"Map v3: label-free"* wants no labels,
-    while *"Map picker shows the redrawn map"* names **"Goldenport wash running the whole west coast"**
-    as its giveaway — and that wash exists **only on the political/labelled render**. Aspect is fine
-    either way (0.7513 == canvas aspect), so this is purely a look call.
-17. **Map polygon dead spots — fix the polygon, or re-tag the dots?** Point-testing all 35 gazetteer
-    city dots against the 10 shipped nation polygons: **30 agree, 5 do not.** `city-04 [746,676]`,
-    `city-11 [484,1120]`, `city-14 [407,1324]` and `city-17 [595,916]` — all tagged `goldenport` —
-    fall **inside no polygon at all**, so clicking there selects nothing; and `city-31 [1244,1552]`,
-    tagged `corvaine`, resolves to **`thalendor`**. Controls pass (Aldercourt → corvaine, Heartholt →
-    thalendor), and `thyrcross-nations.json` is byte-identical to `thyrcross.map.json`'s polygons and
-    to the deployed copy, so this is map truth, not a deploy gap. **These are the same four
-    `lint_map.py` already WARNs about.** Either Goldenport's polygon is missing its coastal lobe, or
-    those dots are tagged to the wrong nation — both are edits to `thyrcross.map.json`, and only you
-    can say which is true.
-
-### 3B. Carried unanswered from marathon 1 — still yours
-
-**A. The big one — out-of-combat scope.** Every marathon-1 run saw it: any focus decrease counts as a
-spend (including your own GM bookkeeping edits); every rule-owner on the scene watches everything; an
-adversary's own ability cost is taxed by enemy watches; out of combat **per-round ledgers never reset**;
-Restrained "until your next turn" never expires; Final Decree bound five of your placed playtest
-adversaries. *Recommended default: gate scene/turn-keyed watches on an ACTIVE combat containing the
-owner, and tag engine bookkeeping writes so GM edits don't read as spends.*
-
-**B. Scope & width (3):** Fault Line spares allies (card says "each character", engine catches enemies
-only — same question for every `kind: line` zone) · Edict's Temp HP rider swept "17 ally(ies)" ·
-roster cross-talk between the 15 always-armed bench PCs.
-
-**C. Mechanics (6):** does "cannot regain HP" stop drop-to-1 stabilization? · a fully-blocked heal still
-spends the click's cost · a raised creature that was itself harvested stays a Remain · snare placed
-*under* a creature insta-springs vs "enter or pass through" (*recommended: arm, don't spring*) ·
-mutation riders fire on a nat-1 graze · 2bI-3's card text stays enemies-only.
-
-**D. Cosmetic / feel (4):** Walking Ruin has no token indicator · Unweaving lists the Omen marker itself
-as dispellable · Temp HP source relabelling misattributes a surviving 6 from Final Decree · Ordained
-eviction unverbalized / Inevitable's card grammar / Bulwark's THP attribution.
-
-**E. APPLIED as defaults — veto if you disagree (3):**
-- The Pack's placement no longer requires `amt > 0`.
-- Confident Command's `per` is **Persuasion** (Sharp Eye's `per` is **Perception** — the same dead id
-  resolved differently in two talents, which is why they could not be swept together).
-- ⚠️ **A "tests Speed" card means the attribute.** **This changes live dice math** — Concussive Yield
-  and Inevitable Snare now add the target's Speed where they previously added nothing. **Now
-  table-confirmed working** (run 11's 2bAD-1 rolled "Speed 29" with spd 10 — a bare d20 cannot exceed
-  20), so the *implementation* is proven; **the balance question is still open and worth one look.**
-
-**Also still flagged:** rank-3 Black Attunement Range measured at 60 ft (staging assumed 30) · marathon
-1 run 6's 2bX-5 PASS was recorded over a broken roll — its contest half is worth re-reading now that
-attribute contests demonstrably work.
+Cross-reference for anything that cites the old numbering: §3A-1… and §3B-A… ids are preserved
+inside each ruling entry, so `3A-7` is findable as the provenance note on **R-9**.
 
 ---
 
