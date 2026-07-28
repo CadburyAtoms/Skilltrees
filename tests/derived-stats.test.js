@@ -10,6 +10,12 @@
  *              at all, and the system's own ceil(AWA/2) ladder stood.
  *   • Health — preview 13, sheet 14. The +1 itself is the open ruling R-54, so these tests pin the
  *              AGREEMENT, never the number: they must keep passing whichever way R-54 lands.
+ *
+ * And the separately-reported "Finish leaves the actor at 13/14": the system clamps every resource
+ * to its max at the end of prepareSecondaryDerivedData — before the engine's wrapper adds the +1 —
+ * so a stored 14 was cut back to 13 on every prepare and the point was unreachable by ANY route.
+ * The clamp repair hands back only what _source genuinely holds; the negatives below are the
+ * load-bearing half, because a repair that invented health would be worse than the bug.
  */
 "use strict";
 const assert = require("assert");
@@ -108,6 +114,33 @@ test("edhaDeriveSheetStats raises max health by the Edha bonus", () => {
   const before = a.system.resources.hea.max.value;
   env.edhaDeriveSheetStats(a);
   assert.strictEqual(a.system.resources.hea.max.value - before, 1);   // R-54's number, read from ONE constant
+});
+
+test("THE 13/14 BUG: a stored max-health value the system clamped away is handed back", () => {
+  const a = pc({ str: 3, srcHea: 14 });                    // Finish wrote 14; the clamp cut it to 13
+  assert.strictEqual(a.system.resources.hea.value, 13);    // what Ben saw
+  env.edhaDeriveSheetStats(a);
+  assert.strictEqual(a.system.resources.hea.value, 14);
+  assert.strictEqual(a.system.resources.hea.max.value, 14);
+});
+
+test("NEGATIVE: a genuinely wounded character is NOT topped up", () => {
+  const a = pc({ str: 3, srcHea: 9 });
+  env.edhaDeriveSheetStats(a);
+  assert.strictEqual(a.system.resources.hea.value, 9);     // health is never invented
+  assert.strictEqual(a.system.resources.hea.max.value, 14);
+});
+
+test("NEGATIVE: a character sitting exactly at the system max is NOT bumped past it", () => {
+  const a = pc({ str: 3, srcHea: 13 });                    // stores 13, was never clamped
+  env.edhaDeriveSheetStats(a);
+  assert.strictEqual(a.system.resources.hea.value, 13);    // 13 of 14 is a real state
+});
+
+test("NEGATIVE: a stale over-max source value is capped at the new max, not restored whole", () => {
+  const a = pc({ str: 3, srcHea: 40 });
+  env.edhaDeriveSheetStats(a);
+  assert.strictEqual(a.system.resources.hea.value, 14);
 });
 
 test("NEGATIVE: a legacy pregen carrying its own hea bonus skips the block entirely", () => {

@@ -16194,7 +16194,7 @@ function edhaWalkRateFtFromSpd(spd) { return 20 + 5 * (Number(spd) || 0); }
  * per-actor hacks (hea.max.bonus:1 / movement override). Now derived for ALL characters:
  *  • HP: +EDHA_HP_BONUS to hea.max.bonus IN MEMORY — skipped while the actor's SOURCE still carries
  *    a manual bonus (legacy pregens), so nothing double-applies until edha.migrateDerivations()
- *    strips them.
+ *    strips them. Followed by the clamp repair — see the comment on it, it is load-bearing.
  *  • Speed: override = 20 + 5×SPD + (current bonus) — keeps AE speed buffs (Walking Ruin) additive.
  *    Skipped while the actor's SOURCE carries its own movement override (legacy pregens).
  *  • Senses: writes .derived (NOT .override), exactly as the system's own prepareSecondaryDerivedData
@@ -16207,7 +16207,23 @@ function edhaDeriveSheetStats(actor) {
     const heaMax = actor.system?.resources?.hea?.max;
     const srcHeaBonus = Number(actor._source?.system?.resources?.hea?.max?.bonus) || 0;
     if (heaMax && srcHeaBonus === 0) {
+      const before = Number(heaMax.value) || 0;
       try { heaMax.bonus = (Number(heaMax.bonus) || 0) + EDHA_HP_BONUS; } catch (e) { /* getter-only safety */ }
+      // THE CLAMP REPAIR (bench run 21: "Finish leaves the actor at 13/14", reproduced player-side).
+      // The system clamps every resource to its max at the END of prepareSecondaryDerivedData —
+      // i.e. BEFORE this wrapper adds the bonus. So a stored 14 was cut to 13 on every prepare and
+      // the extra point was unreachable by ANY route (long rest, heal, the wizard's top-up): the
+      // sheet read 13/14 forever. Same family as the Investiture source-persist gotcha above.
+      // Re-run the clamp the system would have run had it seen our max, starting from _source so
+      // nothing is invented — only a point the actor genuinely stores is handed back.
+      try {
+        const res = actor.system?.resources?.hea;
+        const after = Number(heaMax.value) || 0;
+        const src = Number(actor._source?.system?.resources?.hea?.value);
+        if (res && after > before && Number(res.value) === before && Number.isFinite(src) && src > before) {
+          res.value = Math.min(src, after);
+        }
+      } catch (e) { /* non-fatal */ }
     }
     // Speed = 20 + 5 × SPD. Do NOT fold rate.bonus into the override — the DerivedValueField's
     // value getter adds .bonus ON TOP of the override, so folding it in double-counted every
