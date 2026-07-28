@@ -33,6 +33,105 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-07-28c — BENCH RUN 18 (Canticle Plains + Kettavar Tundra bestiaries) + the full re-test of fix pass B: **fix pass B is 3-for-3, and all 27 🤖 bestiary rows retired on evidence — the first section-pair swept whole.** One NEW engine defect root-caused with a matched control. **Zero world drift** (proved and reverted, including unlinked token actors). DOCS-ONLY — no engine, data or pack change; the rebuild list stays **EMPTY**.
+
+**Deploy verified BY HASH on join**, not by marker counts: the served
+`register-skills.js`, cache-busted and normalised CRLF→LF, SHA-256s to
+`9699fcb8691ebd13c6c3e0907b6bc32bca224c56adc419f9a4cc4f66e3674c12` (1,467,524 bytes) — byte-identical
+to `HEAD:module-src/scripts/register-skills.js` (blob `fe39a60`). Bench held `isActiveGM`; Ben's
+`Gamemaster` was connected the whole run, which is what makes the two-GM negatives below meaningful.
+
+### Fix pass B — 3 for 3
+
+1. **The push reporting fix — and run 17's report is settled as NOT-A-DEFECT.** All four branches
+   driven on one fresh Slagbull import (grid 300 px / 5 ft = **60 px/ft**; the Slagbull is a **2×2**
+   token, so the victim was parked due east of its *centre* to make the push direction pure +x):
+   **clear lane** → "is pushed **5 ft**", `_source` delta exactly **300 px**, **no parenthetical**;
+   **a body on the destination** → "is pushed **0 ft (stopped by Bench Target — Adjacent A)**", 0 px,
+   and HP fell by exactly 4 (6 impact − 2 Deflect) so **no collision damage** was dealt; **a wall**
+   180 px in, 4 samples → "**3 ft (stopped by a wall)** and slams into an obstacle for N impact",
+   collisions **1, 2, 1, 3** (all within `floor(1d6 / 2)`); **stacked victim** → the explicit refusal
+   card, not a silent 0. **Run 17 hit the body branch.** Blast radius closed: of the 6 `edha-push`
+   rules in `data/`, all three one-square pushes are now proven to move — Shockwave Slam here,
+   **Unnerving Approach** (a real −300 px, W28 §3), and Shattering Blow (retired run 12, same
+   geometry, its own 0-ft/5-ft pair).
+2. **`edha-pre-use` dispatcher — positive and both negatives.** Fire the Wrack places **exactly one**
+   `Fire the Wrack — Dangerous Terrain` Region (10-ft rectangle, `edha-content.hazard` behavior,
+   flags `hazard / scope:"scene" / sourceItem / terrain.ownerUuid / spreads:true`) and the zone is
+   live — the caster immediately took "5 energy from dangerous terrain". **Not a takeover:** the
+   system's own item card posted alongside (`cosmere-rpg.message.type = "action"`, `action1` icon,
+   "Activation: One Action"), so cost and card stayed the system's job. **Bursts unchanged:** Flame
+   Surge fired **once** — one ring + one template, one Detonate card, one resolution, damage applied
+   once per target, both templates cleaned up, cost consumed once. **No double-place** with two GMs
+   connected.
+3. **The ambush ledger.** *Within a scene:* a second attack on an already-tested target rolled only
+   the attack die, posted no belief card, and left the entry byte-identical. *Across a genuine scene
+   change:* a ledger holding **3 entries** on `Playtest Map` was **replaced** by exactly **1** entry
+   on `Playtest Map (Copy)`, with **zero** old-scene keys surviving — which is the merge the fix
+   removed. (The second scene was **viewed, never activated**; the two temp tokens were deleted and
+   that scene is back to its original 30.)
+
+### The bestiaries — 27 of 27, at 3.9 rows retired per import
+
+**Canticle Plains (13):** Overwhelming Authority · Take the Answerer on-hit cue (with its
+nothing-dealt → no-card control) · Held Oasis belief test · Glare-Strike fooled rider · Kindle ·
+Afterburn · Heat of the Flats · Gone Into the Shimmer · Unnerving Approach · Predatory Patience ·
+Predator's Due · Worry the Straggler · Loadout sanity.
+**Kettavar Tundra (14):** The Doubling · Raking Grasp (+1d6) · Predatory Patience · Walk Out of the
+White · **The Seeming full loop** · Raking Grasp (+1d8, **both** ledgers) · Predatory Patience (1d8) ·
+Walk Out of the White (both triggers) · Never a Corpse · **Severance** ×2 · Predatory Patience (1d4) ·
+Predator's Due · Waits for the Failing.
+
+Four results worth carrying forward:
+
+- **Severance was settled numerically, not by card text.** Against a **Deflect 2** victim with a fixed
+  6 keen: Isolated → the convert card **and 6 lost** (Deflect bypassed); a living same-side ally moved
+  adjacent → **no card and 4 lost**. Staging note that cost time: `edhaIsIsolated` counts
+  **same-disposition** living adjacents, so the biting wolf must be on the **opposite** disposition or
+  the victim can never read as Isolated.
+- **The Predatory Patience die tracks role rank across four blocks in one run** — 1d4 minion
+  (Cullwolf), 1d6 rival (Dirgehound, The Doubled), 1d8 boss (Doubled Elder). Ruling 122 holds.
+- **`edhaTargetFooled` reads both ledgers — proven separately in each direction**, not inferred:
+  a target fooled only by the Doubling ledger and a target fooled only by a **live** Seeming copy each
+  took `+1d8`; a target in neither took none. ⚠️ The phantom half hangs off the live copy
+  (`edhaPhantomCopiesOf(caster)[0]`), so **test the Seeming half before breaking the copy** — once it
+  dissipates that ledger is correctly gone.
+- **Kindle's unrun half is now run:** after an energy hit the bitten token really carries
+  `{dim: 5, bright: 2.5, color: "#ff7a1a", animation: flame}` — it genuinely glows.
+
+### NEW DEFECT → test-pass-fixes: `ally-drops` fails OPEN when the victim has no token
+
+`edhaGmCueDamageSweep` does `const disp = vTok?.document?.disposition;` and then
+`if (disp !== undefined && … !== disp) continue;`. If the victim has **no token on canvas at sweep
+time**, `disp` is `undefined`, the same-side test is **skipped entirely**, and every `ally-drops` owner
+on the scene fires **across the disposition line**. The Seeming's phantom is exactly that case — the
+break handler removes its token during the same `applyDamage`. **Measured, with a matched control:**
+breaking a phantom set to disposition **0** (unique on the map) still fired all three of Ben's
+disposition **−1** Corvaine "Break" cues; a normal bench adversary at disposition 0 **with its token
+still present**, dropped the same way, fired **0**. Low severity (a spurious GM card + a `trigRound`
+key) but it reaches Ben's campaign token actors from a bench action. Suggested shape: treat "no token"
+as **no eligible ally**, not as "no filter". Re-test row is in the engine-wide bench section.
+
+### World state
+
+**Zero drift.** End-of-run counts match the start snapshot exactly: 87 actors, 52 tokens, 117 walls,
+0 templates, 1 region, 1 combat — Ben's `BerbNeuXp4iKduef` still ACTIVE and untouched, `Playtest Map`
+still the active scene. The 9 imported `Bench Adv — …` actors, their tokens, both Seeming phantoms,
+the Fire the Wrack region, the bench combat and the one bench wall are all deleted; Kindle lights
+cleared; the `Roll#evaluate` capture patch and the pinned `canvas.mousePosition` restored. The three
+`ally-drops` writes to Ben's Corvaine token actors were **reverted from the snapshot and re-verified
+deep-equal** — the run-17 harness requirement (snapshot **unlinked token-actor** flags) is what made
+that possible, and it paid for itself on its first outing. ⚠️ One self-inflicted lesson: the first
+revert used `update(…, {recursive: false})` on `flags.edha-content.trigRound`, which **stripped
+`plotDieMark` and `orderedAdvance`** off the Line-Caller; restoring the whole snapshot flag object
+fixed it. Compare flags **deep-equal**, not by `JSON.stringify` — key order changes after a rewrite and
+reads as false drift. Residual: five **bench-folder** fixture actors carry incremented `bpHits`
+counters (same key set), which is ordinary bench accumulation. 166 bench chat messages — flushable.
+
+Logged out; `Bench` confirmed selectable on `/join`.
+
+---
+
 ## 2026-07-28b — FIX PASS B of bench marathon 3. Run 17's two fails: **both fixed, and the one filed as a REGRESSION is not one — bisected to byte-identical code.** Plus the unbounded ledger and a new gate. **ENGINE-ONLY → ⟳ sync the module + F5; NO pack rebuild — the rebuild list stays EMPTY.** 337 tests green, every fix mutation-verified.
 
 Run 17 filed two fails. Both were real, both are fixed, and **the headline finding is that item 1's

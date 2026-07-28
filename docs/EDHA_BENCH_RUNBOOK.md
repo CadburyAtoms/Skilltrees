@@ -588,6 +588,58 @@ then the deities, Heroic, and the non-tree console-runnable sections).
 - **Density, measured:** 13 distinct adversary imports covered 22 rows and retired **18** — about
   **1.4 retired per import**, close to run 16's 1.2 and nowhere near the old 4.5 estimate.
 
+## Operating lessons from run 18 (2026-07-28c — these OVERRIDE older advice where they conflict)
+
+- ❌ **A plain `tokenDoc.update({x, y})` makes the token WALK, and v13 constrains that walk by walls.**
+  Repositioning a fixture across the map landed it 4,000 px short, wedged on scenery, and looked exactly
+  like a stale-ticker read. Use **`tok.move({x, y, action: "displace"}, {animate: false})`** for every
+  staging move — it is the same unconstrained teleport `edhaMoveTokenTo` uses. Only *engine* pushes
+  should ever travel a constrained path.
+- ❌ **Compare flags DEEP-EQUAL, never by `JSON.stringify`.** Reverting a flag rewrites the object and
+  changes **key order**, which a string compare reports as drift that is not there. Worse, run 18's
+  first revert used `update(…, {recursive: false})` on `flags.edha-content.trigRound` and **silently
+  stripped two sibling keys** off Ben's token actor. Restore the **whole** snapshot flag object, then
+  re-verify with a recursive key-sorted compare.
+- ❌ **One click per DIALOG, not one click per pass.** A walker that re-scans and re-clicks the same
+  roll dialog rolled a single attack **five times**. Keep a `Set` of dialog titles already clicked and
+  skip them. And widen the matcher beyond `Roll`: run 18 was blocked for two calls by **"Consume 1
+  Focus?" → Continue** *and* the Advanced-Encounters **"Which boss turn is this action being taken
+  from?" → Off-turn / Slow turn / Fast turn** picker, which appears for a **boss** as soon as any
+  encounter exists. Pick **Off-turn** so no real turn is consumed. While those sat unanswered the
+  `use()` promise stayed pending and the *next* drive's capture window scooped up the previous
+  ability's cards — which reads as the wrong actor firing.
+- ❌ **`edhaCastBurst` consumes the cost and then BLOCKS on `edhaPickPoint`**, which waits for a
+  `pointerdown` on `#board` and reads `canvas.mousePosition`. With the pane hidden this is the exact
+  "silently ate my Investiture and did nothing" shape from the Weave the Thread trap — and there is **no
+  dialog to find**, so sampling for dialogs proves nothing. Drive it: `Object.defineProperty(canvas,
+  'mousePosition', {get: () => ({x, y}), configurable: true})`, dispatch the `PointerEvent`, then click
+  the card's Detonate. **Escape cancels every pending picker and refunds**, which is also how you clean
+  up after a drive that hung.
+- ❌ **`ally-drops` fails OPEN when the victim has no token at sweep time** — `disp` is `undefined`, so
+  the same-side filter is skipped and cue owners on **both** sides fire. Phantom doubles are exactly
+  this case. Until it is fixed, expect a Seeming break to reach Ben's Corvaine tokens no matter what
+  disposition you set, and **snapshot for it**. Setting a victim to a disposition **no other token
+  shares** genuinely does contain the sweep for every *normal* kill — run 18 measured 0 cards that way.
+- **Drive the belief roll's FORMULA, then resample by unsetting the ambusher's own flag.** The
+  read-only `Roll#evaluate` patch is what proves `1d20` vs `2d20kh` (advantage) — the total cannot.
+  And when you need a **fooled** target and the dice will not cooperate, `unsetFlag("edha-content",
+  "ambushBelief")` on **your own bench import** and re-drive: it is a fresh sample, it is self-contained,
+  and it is far cheaper than hunting for a low-Perception fixture. Prove the once-per-scene gate
+  separately first so the resampling cannot be mistaken for it.
+- **Check a fixture's Deflect before choosing a victim for a damage-*type* test.** Severance's whole
+  claim is "vital bypasses Deflect", which is **unobservable on a Deflect-0 actor**. Pick the Deflect-2
+  fixture and apply a **fixed** amount via `applyDamage` rather than the rolled bite — the HP delta then
+  discriminates the branches by itself (6 vs 4), with no card-reading required.
+- **A cue whose trigger names a side needs a token on the OTHER side.** `enemy-turn-start` compares the
+  mover's disposition to the cue owner's, so a bench combat full of hostiles fires nothing. Put a
+  **friendly** token in the combat and step **forward** onto its turn. Also: `turn` order is not
+  initiative order here — run 18's first forward step landed on the boss, and the cue only came on the
+  step after.
+- **Density, measured: 7 imports covered 27 rows and retired 27 — about 3.9 retired per import**, well
+  above run 16's 1.2 and run 17's 1.4. The difference is not luck: these two sections concentrate
+  **many rows on few actors**, and the run drove *every* row touching an actor before moving on. Budget
+  by counting rows-per-actor, not imports.
+
 ## Known limits
 
 - ❌ **RESOLVED AS UNFIXABLE (07-26i): there is no "no written Cognitive/Spiritual defense" creature.**

@@ -375,6 +375,26 @@ it; Withering Touch's ranged half behaved identically. Evidence in the 07-26m de
 - [ ] 🤖 **Flame Surge / burst cards** — Detonate: button reads "Detonated ✓" and stays disabled after
       F5 / re-login; re-clicking is impossible. Cancel reads "Cancelled — refunded ✓". Old cards from
       before this fix still reset on refresh (only messages stamped from now on persist).
+- [ ] 🤖 **`ally-drops` must not fire across the disposition line when the victim has no token**
+      *(NEW DEFECT, found at bench run 18 — re-test after the fix)*. Drop a **phantom double** (The
+      Seeming's copy, or any victim whose token is removed as part of the same damage application) to 0
+      and confirm that **only same-disposition** `ally-drops` cue owners fire.
+      *(2026-07-28c bench run 18 — **FAIL, root-caused, measured with a matched control.**
+      `edhaGmCueDamageSweep` reads `const vTok = victim.getActiveTokens?.()[0] ?? null;` then
+      `const disp = vTok?.document?.disposition;` and gates with
+      `if (disp !== undefined && (t.document?.disposition ?? null) !== disp) continue;`. When the victim
+      has **no token on canvas at sweep time**, `disp` is `undefined`, the same-side test is **skipped
+      entirely**, and **every** `ally-drops` owner on the scene fires — across the disposition line. The
+      Seeming's phantom is exactly that case: the seeming-break handler removes its token during the same
+      `applyDamage`. **Observed:** breaking a phantom set to disposition **0** (unique on the map) still
+      fired all three of Ben's **disposition −1** Corvaine "Break" cues and wrote `trigRound` to each.
+      **CONTROL, same session:** a normal bench adversary at disposition 0 **with its token still on
+      canvas**, dropped to 0 the same way, fired **0** Break cards and left the Corvaine flags untouched.
+      So the filter works whenever a token exists, and fails **open** when one does not. Severity is low
+      (a spurious GM reminder card + a `trigRound` key), but it reaches **Ben's campaign token actors**
+      from a bench action, which is how run 18 noticed. Suggested shape: treat "no token" as **no
+      eligible ally** rather than as "no filter". All three writes were reverted from the start
+      snapshot this run.)*
 
 ## Structural (tree graphs + prereqs, from the 07-24 fixes)
 
@@ -2242,10 +2262,11 @@ surface …" on the first damage, silent on the second that round. ⚠️ **Row-
 rider's flavor label is the **carrying item's** name (`[Breach and Drag]`), not the seeming's.)*
 
 ## 3. Cinderbrock (rival — Fire the Wrack IS Pyre by alias)
-- [ ] 🤖 **Fire the Wrack places the region** — using the action click-places a 10-ft RED burning
-      Region; entering it / starting a turn in it auto-deals 1d6 energy (system damage card, no
-      GM math).
-      *(2026-07-28 bench run 17 — **FAIL, root-caused; engine-only fix, no rebuild.** Nothing is
+*(**Fire the Wrack places the region** — ✅ **RETIRED on evidence 2026-07-28c, bench run 18** — the
+run-17 FAIL below is fixed and re-driven; see the dispatcher row's evidence directly beneath. Kept for
+its root-cause history only.)*
+
+*(2026-07-28 bench run 17 — **FAIL, root-caused; engine-only fix, no rebuild.** Nothing is
       placed: five drives on a FRESH import created **0** Regions, posted no card and logged no
       error, with the caster's token controlled, no target set, Bench holding `isActiveGM`, the rule
       `disabled: false` and its executor present. **Cause:** the rule sits on the **`edha-pre-use`**
@@ -2268,15 +2289,24 @@ rider's flavor label is the **carrying item's** name (`[Breach and Drag]`), not 
       `preUseItem`, so the system's own `fireEvent` dispatches **every** handler type on
       `edha-pre-use`. Not a takeover — it does not return `false`, so the Action cost and card stay
       the system's job. `edha-burst` rules are skipped, so the 8 shipped burst rules are untouched.)*
-- [ ] 🤖 **Fire the Wrack — the pre-use dispatcher** *(engine-only, ⟳ sync + F5)*.
-      **POSITIVE:** using the ability now places **one** 10-ft red burning Region (centred on the
-      target if one is set, else on the caster) and the Action cost is still charged and the normal
-      use card still posts — the dispatcher is a rider, not a takeover.
-      **NEGATIVE 1 (bursts unchanged):** any `edha-burst` talent — Flame Surge, Mending Aura,
-      Sudden Growth — must behave **exactly** as before, one burst, no doubled resolution and no
-      second card; they are the 8 rules that already worked through this event.
-      **NEGATIVE 2 (no double-place):** with two GMs connected, one use must place **one** Region,
-      not two — the dispatcher runs only on the acting client.
+*(**Fire the Wrack — the pre-use dispatcher** — RETIRED on evidence 2026-07-28c, bench run 18, **all
+three controls, with Ben's `Gamemaster` connected throughout**.
+**POSITIVE:** one use placed **exactly one** Region — `Fire the Wrack — Dangerous Terrain`, a 10-ft
+rectangle on the caster (no target set), behavior `edha-content.hazard`, flags
+`{hazard, scope: "scene", sourceItem: "Fire the Wrack", terrain: {ownerUuid, color: "red"}, spreads: true}` —
+and the Cinderbrock immediately took "🔥 … **5 energy** from dangerous terrain", so the zone is live.
+**NOT A TAKEOVER:** the system's own item card posted alongside it (`cosmere-rpg.message.type = "action"`,
+rendering the `action1` icon and "Activation: One Action"), so the cost and card stayed the system's job.
+**NEGATIVE 1 (bursts unchanged):** Flame Surge fired **exactly once** — one range ring + one 10-ft
+template flagged `burst: "Flame Surge"`, one Detonate card, one resolution ("💥 Flame Surge hit: = 5 (2d8)
++ 5 (red) + 5 (Kindle) → 15 energy"), damage applied once per target (30→17 and 32→27 against Deflect 2),
+both templates cleaned up, cost consumed once. No doubled resolution, no second card.
+**NEGATIVE 2 (no double-place):** with two GM clients connected, the one use produced **one** Region and
+the one burst produced **one** template pair.
+⚠️ Harness note for future runs: `edhaCastBurst` **consumes the cost and then blocks on `edhaPickPoint`**,
+which waits for a `pointerdown` on `#board`. With the pane hidden that reads exactly like "the talent
+silently ate my Investiture and did nothing". Drive it by pinning `canvas.mousePosition` and dispatching
+the event; **Escape cancels and refunds**.)*
 - [ ] 🤖 **Pyre spread card BY ALIAS** — at the end of the CINDERBROCK's turn with a patch on the
       scene: the whispered spread card fires, labeled **Fire the Wrack** (not "Pyre"), with
       working Spread + Extinguish buttons. A PC Destruction player's own Pyre zones must still
@@ -2284,6 +2314,14 @@ rider's flavor label is the **carrying item's** name (`[Breach and Drag]`), not 
       *(2026-07-28 bench run 17 — **BLOCKED downstream of the row above, row stays 🤖.** The spread
       watcher keys on a Region stamped `spreads` by the placer, and the Cinderbrock cannot place one
       at all while `edha-pre-use` has no dispatcher. Re-drive this the moment that fix lands.)*
+      *(2026-07-28c bench run 18 — ✅ **UNBLOCKED, and the precondition is now confirmed present, but the
+      row itself is NOT RUN — it stays 🤖.** The placed Region carries `spreads: true` **and** the
+      `terrain.ownerUuid` stamp, which is exactly what the end-of-turn spread watcher and the
+      cross-owner check read, so nothing structural stands in the way any more. What run 18 did **not**
+      do is step a combat to the end of the **Cinderbrock's own** turn with a patch live and read the
+      card, nor stage the PC-Pyre-alongside control — so no claim is made about the spread card or its
+      buttons. Cheapest next drive: add the Cinderbrock to a bench combat, step forward to end its
+      turn, and check the card is labelled **Fire the Wrack**, not "Pyre".)*
 
 ## 4. Cold-Fire Cinderbrock (the wasting variant)
 
@@ -2319,13 +2357,20 @@ these rows answer is "does this item's own rule fire?", not "does a name reach a
 every "(name-keyed)" label in this section and in W29 is struck as false.**
 
 ## 1. Callthief (rival ×2 — the influence-duel kit)
-- [ ] 🤖 **Overwhelming Authority** **— a 30-second re-drive, kept deliberately (2026-07-27v)** —
-      after the callthief succeeds on an influence test: the target is marked **Disoriented** by the
-      ability's own `edha-prompt-pick` + `edha-triggered-effect` rules. *(Its PC twin **2bJ-13** retired
-      at bench run 2, but that retirement is a **bare line with no card quoted**, so this adversary copy
-      is not actually evidenced anywhere. Drive it once on a FRESH pack import and quote the card.)*
-- [ ] 🤖 **Take the Answerer on-hit cue** — damage lands → whispered GM card with the
-      "+1d4 if Disoriented" note (no card on a miss).
+
+*(**Overwhelming Authority** — RETIRED on evidence 2026-07-28c, bench run 18, on a **FRESH pack
+import** as `Bench Adv — Callthief`: the use posted its own prompt card — "🗣️ **Overwhelming
+Authority** — if the Callthief successfully influenced this character or beast, spend 1 Focus to also
+leave it Disoriented until the end of the Callthief's next turn. [Disorient]" — and clicking it
+printed "**Overwhelming Authority — Bench Target — Adjacent A is Disoriented** (Disoriented until the
+end of the Callthief's next turn)", asserted on the document as **both** an effect and a status. The
+1 Focus was charged through the system's own Consume Resource confirm.)*
+
+*(**Take the Answerer on-hit cue** — RETIRED on evidence 2026-07-28c, bench run 18, with its own
+negative: applying the damage with an explicit dealer posted "⏰ **Take the Answerer** (Bench Adv —
+Callthief): If the target is Disoriented, add **+1d4 keen** to the damage — the answerer taken
+mid-stumble. *(hit Bench Target — Adjacent A.)*" **CONTROL — the use alone, with nothing dealt**,
+posted only the system attack card and **no cue card**, which is the row's "no card on a miss" half.)*
 
 *(**Counterpoint** — RETIRED on evidence 2026-07-27v, bench run 14, on a **FRESH pack import** as
 `Bench Adv — Callthief`: it rolled the Callthief's **Deception** and printed "Counterpoint: **48 vs
@@ -2344,28 +2389,47 @@ tested the same thing on one block with an obsolete rationale.)*
 Take the Answerer **atk +6, 1d8+2 keen** · **Deception 4**. Every number the row asks for matches.)*
 
 ## 2. The False Spring (boss — Held Oasis ambush-belief + fooled rider)
-- [ ] 🤖 **Held Oasis belief test** — its FIRST attack against each target: engine rolls
-      Perception vs Cognitive 12 (NO advantage — its mirage is good, unlike Hull-Shadow's);
-      failure marks them fooled; no re-roll on the second attack.
-- [ ] 🤖 **Glare-Strike fooled rider** — vs a fooled target the energy damage gets +1d6
-      (flavor-labeled); unfooled, it doesn't.
-- [ ] 🤖 **Kindle (+3 energy rider, ruling 122 re-dice)** — every energy hit adds +3 (boss role rank as Red
-      modifier) via the damage-rider rule; the shed-light/lose-concealment half rides the **same rule's
-      own `lightRadiusFt: 5` field** (the "name-keyed engine path" wording is struck 2026-07-27v — there
-      is no such path) — verify both fire on one hit. *(The field's PRESENCE is confirmed in the shipped
-      data; what is unrun is whether a bitten creature's token actually starts glowing.)*
-- [ ] 🤖 **Afterburn opportunity prompt** — after an energy hit, targeting the creature and
-      accepting the prompt applies Afflicted [half 1d8 energy — ruling 122 re-dice]; Opportunity is TRUSTED (no
-      auto-deduct anywhere).
-- [ ] 🤖 **Heat of the Flats cue** — hostile starts its turn within 10 ft → the whispered
-      1-focus card fires. *(Split 2026-07-27w — the cue itself is drivable; the shade question
-      is the ⚑ row below.)*
+*(**Held Oasis belief test** — RETIRED on evidence 2026-07-28c, bench run 18: driven at **five fresh
+targets**, one engine roll each — "🌫️ **The Held Oasis** — Bench Target — Undefended: **Perception 12
+vs 12 → sees through it**". The roll formula was captured by a read-only `Roll#evaluate` patch and
+reads **`1d20 + <mod>`, never `2d20kh`** — the NO-advantage half, settled from the formula rather than
+the total. DC is the False Spring's own **cog 12**. **A SECOND attack on an already-tested target
+rolled only the attack die** (`1d20 + 0 + 7`), posted no belief card, and left the ledger entry
+byte-identical — the once-per-scene gate.)*
+
+*(**Glare-Strike fooled rider** — RETIRED on evidence 2026-07-28c, bench run 18, as a matched pair on
+one actor: vs a **fooled** target the damage formula read `1d10 + 3 + **(1d6)[Glare-Strike]** + (3)[Kindle] + 0`;
+vs a target that had tested and **seen through it**, the same attack read `1d10 + 3 + (3)[Kindle] + 0` —
+no rider. Flavor-labeled, as the row asks.)*
+
+*(**Kindle** — RETIRED on evidence 2026-07-28c, bench run 18, **both halves on one hit**. The +3 rider
+is in every energy damage formula as `**(3)[Kindle]**` (boss role rank). The previously-unrun half is
+now run: after the hit the bitten creature's **token document really carries light** —
+`{dim: 5, bright: 2.5, color: "#ff7a1a", animation: {type: "flame"}}` — i.e. it starts glowing, which
+is what `lightRadiusFt: 5` claimed. Cleared afterwards with `edha.clearKindleLights()`.)*
+
+*(**Afterburn opportunity prompt** — RETIRED on evidence 2026-07-28c, bench run 18: the prompt card
+posts after the energy hit ("Opportunity is trusted (no auto-deduct)"), and with the creature targeted,
+clicking **Fire Afterburn** printed "⚡ **Afterburn** (Bench Adv — The False Spring) — Bench Target —
+Undefended is **Afflicted [2 energy]** — auto-deals at the start of its turns until the condition is
+removed", rolled as **`floor(1d8 / 2)`** (ruling 122 re-dice). Afflicted asserted on the document. No
+resource was auto-deducted anywhere — Opportunity stays trusted.)*
+
+*(**Heat of the Flats cue** — RETIRED on evidence 2026-07-28c, bench run 18, in a bench combat built
+`scene: null` and stepped **forward**: when the friendly Bench — Black's turn started adjacent to the
+False Spring, it posted "⏰ **Heat of the Flats** (Bench Adv — The False Spring): This character loses
+1 focus (open glare; shade or full cover negates — table read). *(Bench — Black's turn starts in
+range.)*" ⚠️ Note for future runs: the cue is `enemy-turn-start`, so the mover must be on the **opposite
+disposition** — a same-side token starting its turn correctly fires nothing.)*
 - [ ] ⚑ **Heat of the Flats — when does SHADE negate the glare?** — the cue has no shade
       clause and no hook could give it one; it is a table read. Say what counts as shade
       (a wall? any cover? only a roofed square?) so the card can carry the answer.
       *(Split 2026-07-27w.)*
-- [ ] 🤖 **Gone Into the Shimmer cue** — first drop below 24 HP (half of 48): whispered
-      withdrawal card, no re-fire.
+*(**Gone Into the Shimmer cue** — RETIRED on evidence 2026-07-28c, bench run 18, **with its no-re-fire
+control**: the first crossing of 24 (48 → 22) posted "⏰ **Gone Into the Shimmer** (Bench Adv — The
+False Spring): It drops the mirage and disengages into the heat-haze — end of the fight, start of the
+walk home." Healing back to 48 and crossing **again** posted **nothing**, and the ledger key
+`cue:Gone Into the Shimmer:hp-below:0_5:0:1` explains why.)*
 
 ## 3. Dirgehound Pack (rival ×3 — the Dread Presence veto's first bestiary reuse)
 *(**Dread Presence VETO on an adversary owner** — retired 2026-07-27v as STALE: it is the **W28 headline
@@ -2373,17 +2437,32 @@ row that W29 §0 explicitly re-tests** ("RE-TEST of the W28 headline row" — it
 ruling-113 owner-scan widening, because the scan skipped adversary owners AND unlinked token copies).
 **Keep W29 §0's row**, which is the same test on the current engine.)*
 
-- [ ] 🤖 **Unnerving Approach** — on moving adjacent, the push→Isolated path fires as it does for a PC.
-      *(It carries its own `edha-prompt-pick` + `edha-push` + `edha-note` rules — the "(name-keyed)"
-      label is struck 2026-07-27v.)*
-- [ ] 🤖 **Predatory Patience test rider** — attack vs a Weakened target (target first):
-      +1d6 injected on the d20 test (ruling 122 re-dice); no rider vs un-Weakened.
-- [ ] 🤖 **Predator's Due on-defeat** — a dirgehound kill: +1d6 health engine-applied to it (ruling 122 re-dice)
-      + whispered card for the 1 Focus (GM adds — adversary focus has no auto-write).
-- [ ] 🤖 **Worry the Straggler on-hit cue** — damage lands → whispered "+1d4 if Isolated/
-      Weakened" card.
-- [ ] 🤖 **Loadout sanity (numbers)** — read the shipped block: **count 3, hp 14 each**.
-      *(Split 2026-07-27w — a data read, the same one that retired the other Loadout-sanity rows.)*
+*(**Unnerving Approach** — RETIRED on evidence 2026-07-28c, bench run 18, **and it is the third member
+of the `edha-push` blast radius**: the use offered its own `edha-prompt-pick` list of creatures allied
+to the target within 10 ft, and picking one posted "💥 **Unnerving Approach** — Bench Target —
+Undefended is **pushed 5 ft directly away from Bench Target — Adjacent A**" with a **real −300 px**
+`_source` displacement (one full square at 60 px/ft), immediately followed by its `edha-note`:
+"😨 **Unnerving Approach**: if no ally remains adjacent, the target is **Isolated** (the marker re-syncs
+on the move)." The push→Isolated path fires exactly as it does for a PC.)*
+
+*(**Predatory Patience test rider** — RETIRED on evidence 2026-07-28c, bench run 18, as a matched pair:
+un-Weakened target → `1d20 + 0 + 5`; the same target Weakened → `1d20 + 0 + 5 + **1d6[Predatory
+Patience]**` — the rank-2 rival die (ruling 122). The **on-hit half** fired too: "⏰ **Predatory
+Patience** (Bench Adv — Dirgehound Pack): If the target is Weakened: the dirgehound regains 1 Focus
+(GM adds — adversary focus has no auto-write). *(hit …)*")*
+
+*(**Predator's Due on-defeat** — RETIRED on evidence 2026-07-28c, bench run 18, with the killer's token
+**CONTROLLED** first (run-16 lesson — `edhaResolveKiller` reads `canvas.tokens.controlled`, not the
+dealer): dropping a victim to 0 posted "⚡ **Predator's Due** (Bench Adv — Dirgehound Pack) — Bench Adv —
+Dirgehound Pack **regains 1 health**. *(… +1d6 health … and 1 Focus on the kill (focus is a GM add).)*"
+and the heal was **engine-applied** (HP 5 → 6), not just narrated.)*
+
+*(**Worry the Straggler on-hit cue** — RETIRED on evidence 2026-07-28c, bench run 18: "⏰ **Worry the
+Straggler** (Bench Adv — Dirgehound Pack): If the target is Isolated or Weakened, add **+1d4 keen** —
+the pack takes the cut-out one. *(hit Bench Target — Floater.)*")*
+
+*(**Loadout sanity (numbers)** — RETIRED on evidence 2026-07-28c, bench run 18, read off a fresh pack
+import: **role rival · count 3 · hp 14** (`max.override = 14`). Both numbers the row asks for match.)*
 - [ ] ⚑ **Dirgehounds — pack or mob?** — play them once: do 3 × 14 HP dirgehounds read as a
       **pack that cuts one target out of the group**, or as an undifferentiated swarm? If they
       play as a mob, say so and the count/HP split gets re-cut. *(Split 2026-07-27w.)*
@@ -2695,9 +2774,12 @@ merge removed a duplicate, not a doubt.)*
 line is NPC intent and targeting, not module data"). Nothing exists that could automate it.)*
 
 ## 5. The Slagbull (rival Red bruiser)
-- [ ] 🤖 **Shockwave Slam** — on a melee impact hit, target pushed [Size] ft; a wall collision
-      deals half 1d6 impact (edha-push).
-      *(2026-07-28 bench run 17 — **FAIL: the push fires and moves the victim ZERO feet.** On a
+*(**Shockwave Slam** — ✅ **RETIRED on evidence 2026-07-28c, bench run 18.** Both halves the row asks
+for are proven in the re-test row below: the push moves **5 ft** on a clear lane (300 px measured), and
+the **wall collision really rolls half 1d6 impact** (4 samples: 1, 2, 1, 3). The run-17 FAIL kept below
+for its root-cause history — it was NEGATIVE 1, not a broken push.)*
+
+*(2026-07-28 bench run 17 — **FAIL: the push fires and moves the victim ZERO feet.** On a
       fresh import, an impact hit from the Slagbull posted "💥 Shockwave Slam — push [Size] ft on a
       melee impact hit; wall collision half 1d6 … — Bench Target — Undefended **is pushed 0 ft**",
       and the victim's token did not move (`_source` 2700,9900 → 2700,9900). So the trigger, the
@@ -2720,19 +2802,27 @@ line is NPC intent and targeting, not module data"). Nothing exists that could a
       re-drive: "the destination square was unoccupied" is not the check the engine makes** — the
       overlap box uses the mover's own width, so a Large attacker or an off-grid neighbour counts
       where a bare square check would not.)*
-- [ ] 🤖 **Shockwave Slam — the push now says WHY it stopped** *(engine-only, ⟳ sync + F5; this row
-      settles which of the three branches run 17 actually hit, by reading the card)*.
-      **POSITIVE:** an impact hit with a genuinely clear lane and no creature within one square of
-      the destination must move the victim **5 ft** (`_source` delta = 300 px at 60 px/ft) and the
-      card must carry **no** parenthetical.
-      **NEGATIVE 1 (a body):** park any token on the destination square and re-hit — the card must
-      read `is pushed 0 ft **(stopped by <that token's name>)**` and **no** collision damage may be
-      dealt (a push that never travelled cannot slam).
-      **NEGATIVE 2 (a wall):** push into a wall inside 5 ft — `(stopped by a wall)`, a partial
-      distance, and the half-1d6 collision **does** roll.
-      **NEGATIVE 3 (no direction):** stack the victim on the Slagbull and hit — no push, and an
-      explicit refusal card ("… is in the same space as … so 'directly away' has no direction"),
-      not a silent 0.
+*(**Shockwave Slam — the push now says WHY it stopped** — ✅ **RETIRED on evidence 2026-07-28c, bench
+run 18: all four branches driven on one fresh import, and they settle run 17's report as
+NOT-A-DEFECT.** Grid 300 px / 5 ft = **60 px/ft**; the Slagbull is a **2×2** token, so its centre is
+(x+300, y+300) — the victim was parked due east of that centre so the push direction was pure +x.
+**POSITIVE (clear lane):** "💥 Shockwave Slam … — Bench Target — Undefended **is pushed 5 ft**." —
+`_source` moved **exactly 300 px**, one full square, and the card carried **no parenthetical**.
+**NEGATIVE 1 (a body):** with a token on the destination square — "… **is pushed 0 ft (stopped by Bench
+Target — Adjacent A)**", 0 px moved, and the victim's HP fell by **exactly 4** (6 impact − 2 Deflect),
+i.e. **no collision damage** was dealt. A push that never travelled did not slam.
+**NEGATIVE 2 (a wall):** a bench wall 180 px into the lane, **4 samples**: every one read "… **is pushed
+3 ft (stopped by a wall)** and slams into an obstacle for N impact", partial distance 180 px, collision
+rolls **1, 2, 1, 3** — all inside `floor(1d6 / 2)`'s 0–3 range. The wall was deleted afterwards
+(scene back to its original 117).
+**NEGATIVE 3 (no direction):** victim stacked on the Slagbull's centre — "💥 Shockwave Slam … — Bench
+Target — Undefended **is in the same space as Bench Adv — The Slagbull, so "directly away" has no
+direction: nothing moves.** *(Separate the tokens and re-apply.)*" It refuses out loud; no silent 0.
+**So run 17 hit NEGATIVE 1** — the overlap box uses the mover's own width, and 0 ft was the correct
+answer all along; only the card was mute. **Blast radius confirmed: 6 `edha-push` rules across the
+data, and all three that push exactly one square are now proven to move** — this row, Unnerving
+Approach (Dirgehound Pack, W28 §3, a real −300 px), and Shattering Blow (already retired at bench
+run 12 with its own 0-ft/5-ft matched pair, which is the same geometry).)*
 - [ ] 🤖 **Unstoppable** — damage on a Fast turn → half-Speed engine move, once per turn.
       *(2026-07-28 bench run 17 — **BLOCKED, blocker unchanged, row stays 🤖.** `edhaIsFastTurn`
       reads `game.combat` (the ACTIVE combat), and making a bench combat active would deactivate
@@ -2756,42 +2846,88 @@ really moved 300 px = 5 ft. The 5 is arithmetically right, not a fallback: `bySi
 no behavior change, no re-test). All dice by ruling 122 (leyline rank = role rank).
 
 ## 1. The Doubled (rival, Black/Blue, solitary)
-- [ ] 🤖 **The Doubling ambush-belief** — first strike per target: engine-rolled Perception vs
-      cog 13; on a fail the target is "fooled".
-- [ ] 🤖 **Raking Grasp fooled-rider** — vs a fooled target the Grasp adds +1d6 (reads the
-      Doubling ledger; both halves present, not orphaned).
-- [ ] 🤖 **Predatory Patience** — +1d6 test-rider vs a Weakened target (target first) + on-hit
-      whispered Focus card.
-- [ ] 🤖 **Walk Out of the White** — damaged → whispered Reaction card (1 Focus, 10 ft unseen).
+*(**The Doubling ambush-belief** — RETIRED on evidence 2026-07-28c, bench run 18: "🌫️ **The Doubling** —
+Bench Target — Isolated: **Perception 6 vs 13 → taken in** (whenTargetFooled riders apply)". Formula
+captured read-only: **`1d20 + 3`**, no advantage; DC is The Doubled's own **cog 13**.)*
+
+*(**Raking Grasp fooled-rider** — RETIRED on evidence 2026-07-28c, bench run 18, both halves present:
+vs a target already in the Doubling ledger the damage read `1d8 + 2 + **(1d6)[Raking Grasp]** + 0`;
+against a target **not yet** in the ledger at damage-build time it read `1d8 + 2 + 0`. Not orphaned —
+the rider genuinely reads the ledger the sibling rule writes.)*
+
+*(**Predatory Patience** — RETIRED on evidence 2026-07-28c, bench run 18: control `1d20 + 0 + 6`,
+Weakened `1d20 + 0 + 6 + **1d6[Predatory Patience]**`, plus the on-hit card "⏰ Predatory Patience
+(Bench Adv — The Doubled): If the target is Weakened: it regains 1 Focus (GM adds …). *(hit …)*")*
+
+*(**Walk Out of the White** — RETIRED on evidence 2026-07-28c, bench run 18: damaging it posted
+"⏰ **Walk Out of the White** (Bench Adv — The Doubled): Reaction, 1 Focus — it moves 10 ft unseen into
+the white.")*
 
 ## 2. The Doubled Elder (boss, tier 2 in the tier-1 hp band, Black/Blue)
-- [ ] 🤖 **The Seeming (full loop, name verbatim)** — 1 Action: copy token beside the elder,
-      1 hp, per-enemy engine-rolled belief sweep, client veil; breaking it fires the
-      seeming-break cue.
-- [ ] 🤖 **Raking Grasp fooled-rider** — +1d8 vs a target fooled by EITHER the Doubling ledger
-      or the Seeming (edhaTargetFooled reads both).
+*(**The Seeming (full loop, name verbatim)** — RETIRED on evidence 2026-07-28c, bench run 18, every
+stage observed: the use created a copy token **beside** the elder (2400,2700 vs its 2100,2700) with
+**hp 1** (`max.override = 1`), defenses 0/0/0, flagged `phantomDouble / phantomOf / phantomDC 14 /
+phantomSkill prc / phantomSource "The Seeming"`; the per-enemy sweep rolled a real `1d20 + mod` for
+each and printed the two-column card — "**8 onlooker(s) tested — 4 taken in, 4 see through it**" —
+naming the client veil explicitly ("their client shows only the copy" / "only the original") with a
+**Re-test new viewers** button; and striking the copy posted "🌫️ The Seeming: the illusion … is struck
+and dissipates" + "the illusion breaks — the real one stands plainly seen", removing the token. Cards
+name **The Seeming**, not "Phantom Double".)*
+
+*(**Raking Grasp fooled-rider (+1d8, EITHER ledger)** — RETIRED on evidence 2026-07-28c, bench run 18,
+**proven separately in each direction** rather than assumed from one: (a) **Doubling ledger only** —
+Bench — Black, already marked fooled, took `1d10 + 4 + **(1d8)[Raking Grasp]** + 0`; (b) **Seeming
+ledger only** — Bench — Knowledge, fooled by a **live** copy's sweep and *not* in the Doubling ledger at
+damage-build time, also took `1d10 + 4 + **(1d8)[Raking Grasp]** + 0`; (c) **neither** — Bench — Blue
+took `1d10 + 4 + 0`. ⚠️ Worth knowing: the phantom half is read off the **live copy**
+(`edhaPhantomCopiesOf(caster)[0]`), so once the copy is broken that ledger is correctly gone — test the
+Seeming half **before** breaking it.)*
 *(**Dread Presence veto** — RETIRED on evidence 2026-07-27v, bench run 14 (**2bZ-10**), driven as its
 own isolated case rather than assumed from the Alpha's: **the Doubled Elder isolated at 25 ft** with the
 Cragdrake Alpha parked 105 ft away → the move was **blocked** with the same toast. **CONTROL — both
 owners parked >100 ft** → the identical move **succeeded** (x 9300→9600) with **no toast**. Each copy
 vetoes off its own rule, and the range gate is real. Card text reads 60 ft, authored right.)*
 
-- [ ] 🤖 **Predatory Patience** — +1d8 vs Weakened + Focus cue.
-- [ ] 🤖 **Walk Out of the White** — fires on BOTH damaged and seeming-break triggers.
-- [ ] 🤖 **Never a Corpse bloodied cue** — at half HP: whispered withdrawal card.
+*(**Predatory Patience** — RETIRED on evidence 2026-07-28c, bench run 18: control `1d20 + 0 + 8`,
+Weakened `1d20 + 0 + 8 + **1d8[Predatory Patience]**` — the **boss rank-3 die**, correctly one step up
+from The Doubled's 1d6 and the Cullwolf's 1d4 — plus the on-hit Focus cue.)*
+
+*(**Walk Out of the White (BOTH triggers)** — RETIRED on evidence 2026-07-28c, bench run 18, each fired
+from its own rule: **seeming-break** → "⏰ Walk Out of the White …: **its seeming broke**; it may move
+10 ft unseen, then raise The Seeming again once unseen"; **damaged** → "⏰ Walk Out of the White …: it
+moves 10 ft unseen; once unseen it may raise The Seeming again (a fresh belief sweep — the Doubling's
+once-per-scene ledger does NOT reset)." Two distinct notes, so the two rules are separately live.)*
+
+*(**Never a Corpse bloodied cue** — RETIRED on evidence 2026-07-28c, bench run 18: crossing half of 50
+posted "⏰ **Never a Corpse** (Bench Adv — The Doubled Elder): Bloodied — it abandons the fight and the
+shape; it does not return this scene.")*
 
 ## 3. Cullwolf Pack (minion ×4, Black)
-- [ ] 🤖 **Severance vital-convert** — THE headline test (first bestiary Severance): a bite
-      against an **Isolated** character (no ally within 5 ft) applies **vital** damage
-      (bypasses default Deflect); vs a non-Isolated target it stays keen.
-- [ ] 🤖 **Predatory Patience** — +1d4 test-rider vs Weakened (minion rank-1 die) + Focus cue.
+*(**Severance vital-convert** — RETIRED on evidence 2026-07-28c, bench run 18, **the headline test,
+settled numerically rather than by card text**. Against a **Deflect 2** victim with a fixed 6 keen
+applied by the wolf: **Isolated** → "🗡️ **Severance**: … is Isolated — **keen damage becomes vital**"
+and the victim lost **6** — the Deflect was genuinely bypassed; **not Isolated** (a living same-side
+ally moved adjacent) → **no Severance card** and the victim lost **4** (6 − 2 Deflect), i.e. it stayed
+keen. ⚠️ Staging note: `edhaIsIsolated` counts **same-disposition living adjacents**, so the biting
+wolf must be on the **opposite** disposition to the victim or the victim can never read as Isolated.)*
+
+*(**Predatory Patience** — RETIRED on evidence 2026-07-28c, bench run 18: control `1d20 + 0 + 5`,
+Weakened `1d20 + 0 + 5 + **1d4[Predatory Patience]**` — the **minion rank-1 die**, exactly as the row
+specifies — plus the on-hit Focus cue.)*
 *(**The Tithe Takes the Failing** — RETIRED on evidence 2026-07-27v: the shipped block carries
 **`rules = 0`, `effects = 0`** on it, with its own `NO NAMEABLE HOOK` rationale. Nothing exists that
 could automate it, which is exactly what the row asked.)*
 
 ## 4. The Cull-Alpha (rival, Black)
-- [ ] 🤖 **Severance vital-convert** — as the pack's, at rival numbers.
-- [ ] 🤖 **Predator's Due on-defeat** — reducing a character to 0: +1d6 health engine-applied
-      + whispered Focus card.
-- [ ] 🤖 **Waits for the Failing bloodied cue** — at half HP: whispered withdraw-and-watch card.
+*(**Severance vital-convert** — RETIRED on evidence 2026-07-28c, bench run 18, driven as its **own**
+case on a fresh Cull-Alpha import rather than assumed from the pack's: "🗡️ **Severance**: Bench Target —
+Undefended is Isolated — keen damage becomes vital", and the Deflect-2 victim lost the **full 6**.)*
+
+*(**Predator's Due on-defeat** — RETIRED on evidence 2026-07-28c, bench run 18, with the Alpha's token
+**CONTROLLED** first: "⚡ **Predator's Due** (Bench Adv — The Cull-Alpha) — Bench Adv — The Cull-Alpha
+**regains 4 health**" off `1d6`, engine-applied (HP 8 → 12), plus the whispered 1-Focus GM-add note.)*
+
+*(**Waits for the Failing bloodied cue** — RETIRED on evidence 2026-07-28c, bench run 18: crossing half
+of 18 posted "⏰ **Waits for the Failing** (Bench Adv — The Cull-Alpha): Bloodied — the alpha withdraws
+the pack to watching distance; they shadow, they do not press.")*
 - [ ] ⚑ **ART BACKLOG, not a test** — placeholder icons on all four Kettavar blocks (silhouette / wolf-shadow reuse). Tracked in `EDHA_ADVERSARY_ART_WISHLIST.md`; nothing to bench. *(Re-labelled 2026-07-27w.)*
