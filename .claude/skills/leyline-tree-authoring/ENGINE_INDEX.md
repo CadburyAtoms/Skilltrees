@@ -318,7 +318,84 @@ damage, either of which could end the cradle.
 - **Left on their own loops, deliberately** (do not "fix" these): `thpClear`, `edhaClearChaosState`,
   `edhaClearFateState`, `edhaClearCounterState` and the Suture Cradle `deleteCombat` clear all do
   **write-idempotent unsets** — a double visit costs a redundant write and nothing else. Churning
-  them on inference is the move 07-28d argued against.
+  them on inference is the move 07-28d argued against. ⚠️ This is a statement about **de-duplication
+  only**. All of them DID need the cross-combat guard in the next section — a redundant write is
+  harmless, a write to the wrong combat's actor is not.
+
+## ⛑ THE CROSS-COMBAT CLOBBER FAMILY — a per-combat hook doing a world-wide write (07-28, fix pass F)
+
+`deleteCombat` and `combatTurnChange` hand you **the combat**. 20 of the 24 `deleteCombat` sweeps
+ignored it and iterated `game.actors` / `canvas.tokens.placeables` / `game.scenes` instead. With one
+combat that is correct and stays correct — with **two**, the end of one encounter deletes the other's
+live state. Bench run 23 measured a bench combat's deletion clearing `lists.covenants` off an actor
+in Ben's still-running combat; runs 19/20 measured `trigRound` landing on Corvaine and Stonebound
+from bench turn ticks. **This is player data, and it goes silently.**
+
+- **`edhaCombatEndGuard(endedCombat)`** → a `Set` of the actor `id`s and `uuid`s that are combatants
+  in **some other still-existing combat**. Build it ONCE at the top of a sweep.
+- **`edhaStillFightingElsewhere(actor, guard)`** → the per-actor test. `continue` on true.
+
+```js
+Hooks.on("deleteCombat", (combat) => {                 // ← take the argument
+  const guard = edhaCombatEndGuard(combat);
+  for (const a of (game.actors ?? [])) {
+    if (edhaStillFightingElsewhere(a, guard)) continue;
+    …
+  }
+});
+```
+
+**The invariant is NOT "sweep only this combat's combatants"** — that is the tempting fix and it is
+wrong here. The wide enumeration is deliberate and pinned: `tempHp` is meant to reach adversaries,
+summons and unlinked token actors that never rolled initiative, and `tests/temphp-scene-reset.test.js`
+asserts a token-only NON-combatant still clears. What is wanted is only *"ending combat A must not
+clear state on a combatant of a still-existing combat B"*, which leaves single-combat play identical.
+
+- **Fail-safe direction:** a wrong SKIP leaves stale state (clearable); a wrong CLEAR destroys a live
+  encounter. So every ambiguity skips — any other combat counts, started or not, and matching is by
+  `id` **or** `uuid` (per the twin-actor table above, two unlinked tokens off one prototype share an
+  `id`, so a sibling of a real combatant is also skipped — over-skipping, on purpose).
+- **Un-attributable world props** (charge templates, Fate markers/Regions) carry no owner, so they
+  cannot be tested. Those sweeps are skipped **wholesale** while any other combat exists (`!guard.size`).
+- **Two registrations correctly take no combat** and should stay that way: the in-memory
+  `_edhaWatchBudget.clear()`, and the isolated-marker sync, which now recomputes from **every started
+  combat** rather than assuming `game.combat` is the only one.
+- Pinned in `tests/cross-combat-scope.test.js` — every case asserts BOTH directions, because a guard
+  that skipped everyone would pass a one-sided test.
+
+## ⛑ A CLICK HANDLER'S OUTER CATCH IS NEVER "non-fatal" (07-28, fix pass F)
+
+- **`edhaClickFailed(what, e)`** → `console.error` **and** `ui.notifications.error`. Use it for the
+  outer catch of any chat-card click handler; all 33 now do. Reaching that catch means the user
+  pressed a button and the promised thing did not happen — a console line is invisible at the table,
+  which is how a hard TypeError read as a silent no-op for four bench runs. The ~270 **inner**
+  defensive catches stay quiet on purpose (they guard genuinely optional work).
+
+## ⛑ `ev.currentTarget` IS NULL AFTER AN `await` — now GATED (lint pass 19, 07-28)
+
+`Event.currentTarget` is set **only while the event is being dispatched**. An `await` in an async
+listener returns control to the browser, dispatch finishes, and the browser nulls it — so a read
+afterwards throws `TypeError: Cannot read properties of null (reading 'dataset')`, which a click
+handler's catch then hides. **Always capture first:**
+
+```js
+const btn = ev.currentTarget, ds = btn.dataset;        // ← before ANY await
+const actor = await fromUuid(ds.actor);                // holding the ELEMENT across an await is fine
+```
+
+The **one legal-looking exception**, which lint pass 19 models so it does not false-positive: a read
+inside the await's **own operand** is evaluated before suspension, so
+`await fromUuid(ev.currentTarget.dataset.x)` is correct. Two sites in the engine look like the bug
+and are not (`edhaIllusionRetestClick` L6109, `edhaUpkeepInvClick`'s first line); the naive "any
+earlier await" check flags both.
+
+## ⚠️ TESTS THAT READ ENGINE SOURCE MUST NORMALISE CRLF FIRST (07-28)
+
+Ben's checkout is `core.autocrlf=true`. JS `.` does not match `\r`, so `/\/\/.*$/` and
+`/^\s*\/\/.*$/gm` strip **nothing** on his working copy — a comment then reads as live code. This
+made `tests/terrain-ownership.test.js` fail `2 !== 1` on a clean tree while CI (Linux/LF) stayed
+green, i.e. a false red that only ever fired on the pre-commit hook. `.replace(/\r\n/g, "\n")` at the
+read, every time.
 
 ## ⛑ A `timed: true` RULE IS NOT THE SAME AS A TIMED **STATUS** (07-28g)
 

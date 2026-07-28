@@ -294,6 +294,25 @@ Re-test rows: four in `# Character-creation wizard v2`, every one carrying its p
 Derived-stat preview v2 · Finish tops up to a REACHABLE max · Path training v2 · Wizard fits the
 screen v2.
 
+**⏳ NEW 2026-07-28m — the fix-pass-F ENGINE half needs ⟳ sync the module + F5 (no rebuild, no
+⟳ Sync Talents).** Three engine-only fixes from bench run 23; **the pack-rebuild list stays EMPTY —
+seven fix passes running.** (1) **Living Image's Pay button read `ev.currentTarget` AFTER an
+`await`.** `currentTarget` is set only while an event is being dispatched, and an await ends
+dispatch, so the browser had already nulled it — a guaranteed TypeError that the handler's catch
+swallowed, which is why it read as a silent no-op for four runs. **The family was swept, and it is
+genuinely ONE bug:** 35 occurrences on 34 lines across 33 click handlers, 33 of them capturing
+synchronously and correct. (2) **A failed chat-card button now raises an error toast** instead of
+writing only to the console — see R-59, the feel call is yours. (3) **Ending one combat wiped
+ledgers off actors in ANOTHER** — 20 of 24 `deleteCombat` sweeps ignored the combat they were handed
+and swept the world, which is how a bench combat's deletion took `lists.covenants` off an actor in
+your live combat, and how `trigRound` keys reached Corvaine and Stonebound. **With one combat in play
+nothing changed** (see R-58).
+**Byte-check after the sync:** the served `register-skills.js` must contain `edhaCombatEndGuard`
+(**21×**), `edhaStillFightingElsewhere` (**30×**) and `edhaClickFailed` (**34×**), and must NOT
+contain `ev.currentTarget.dataset.item` anywhere at all (zero occurrences, comments included).
+The SHA-256 against `HEAD:module-src/scripts/register-skills.js` is what decides.
+Re-test rows: three in `## Re-test after the fix pass F fixes` below.
+
 ⚠️ **2026-07-28g — Sovereign of Solitude is a SYNC question, not an authoring gap.** Run 20 read
 `rules = 0` and filed it as an empty item; the repo carries **four** rules on it, authored 07-26,
 and the 07-27u deploy rebuilt the adversaries pack clean. Before anyone re-opens the rebuild list
@@ -1532,6 +1551,27 @@ should land on the player's screen, not just the GM whisper.
 Cross-actor relay watch-items scattered through the tree sections (White Coordination §3, Life
 §5, Chaos §3…) need no dedicated tests — they self-verify while running the rows above; note
 anything that errors in the row's note box.
+
+## Re-test after the fix pass F fixes (2026-07-28m — three fixed; ⟳ sync the module + F5 first, NO rebuild, NO ⟳ Sync Talents)
+
+- [ ] 🤖 **Living Image's Pay button — RE-TEST after fix pass F (07-28m; engine-only → ⟳ sync + F5)** — with `Bench — Blue` holding a live COMPLEX illusion, start Blue's turn so the upkeep prompt whispers, then press the button.
+      **POSITIVE:** Investiture drops by the prompted amount (4 → 3 at `costPer` 1) **and** the card "🎭 **Living Image**: … pays 1 Investiture (3 left)" posts. Run 23 measured 4→4 and 3→3 with no card, for every user, on every click.
+      **POSITIVE 2 (the document still drives it):** edit `costPer` 1 → 2 on the Events tab; the next prompt must say "**2 Investiture** per COMPLEX illusion", the button must read "**Pay 2 Investiture**", **and pressing it must now charge 2** (4 → 2). Run 23 proved the first two and only the charge was broken — so a re-test that stops at the label proves nothing.
+      **NEGATIVE (load-bearing):** with Investiture at **0**, press it — you must get the warn toast "Edha: … has no Investiture left to pay upkeep", **no** charge, and **no** payment card. That branch sits after the same dataset read, so a fix that only papered over the throw would take this path down with it.
+      *(Root cause: `ev.currentTarget` is set ONLY during event dispatch, and an `await` ends dispatch — the browser had nulled it before L6245 re-read `.dataset.item`, throwing TypeError on every click while the outer catch swallowed it. Now captured before the first await. Family swept: 35 occurrences on 34 lines across 33 handlers, and it really was ONE bug. Gated by `lint-refs` pass 19 and pinned in `tests/current-target-after-await.test.js`.)*
+
+- [ ] 🤖 **A failed chat-card button now SAYS so (07-28m; engine-only → ⟳ sync + F5)** — this is the diagnostic that would have caught the row above in run 20 instead of run 23.
+      **POSITIVE:** break one deliberately — in the console, `game.actors.getName("Bench — Blue").sheet` aside, simplest is to post an upkeep prompt and then DELETE the talent it points at before clicking Pay. You must get a red toast reading "Edha: illusion upkeep failed — …", not silence.
+      **NEGATIVE (load-bearing):** a button that works must produce **NO** toast at all. Press a healthy Pay button (the row above) and confirm only the payment card appears — if routine operation toasts, the change is worse than the bug it fixes and R-59 should be vetoed.
+      *(All 33 outer click-handler catches now route through `edhaClickFailed`; the ~270 inner defensive catches are deliberately untouched and stay silent.)*
+
+- [ ] 🤖 **Two combats at once: ending one must not loot the other — RE-TEST after fix pass F (07-28m; engine-only → ⟳ sync + F5)** — the data-loss row. Needs TWO combats live simultaneously.
+      **SETUP:** put `Bench — Order` in combat A and give it a covenant (so `flags.edha-content.lists.covenants` is non-empty); put a *different* actor in combat B and give it one too. Start both.
+      **POSITIVE (the sweep still works):** delete combat A → **A's** actor loses its covenant ledger, its `edict`/`covenant`/`concord` statuses and its `trigRound` stamp, exactly as before.
+      **NEGATIVE (load-bearing, and the whole point):** **B's** actor keeps ALL of it — ledger, statuses, `trigRound`. Run 23 watched B's `lists.covenants` vanish when A was deleted.
+      **NEGATIVE 2 (single-combat play is unchanged):** with only ONE combat in the world, deleting it must still clear state on actors who were **never in it** — put a bystander on the scene with Temp HP from Bulwark, delete the lone combat, and its Temp HP must go. A fix that narrowed the sweep to combatants would fail this, and that is the tempting wrong fix.
+      **NEGATIVE 3 (turn cues):** while both combats run, advance a turn in combat A — no reaction cue card may be whispered to anyone whose only combat is B, and no `trigRound` key may appear on them. That is how runs 19/20 stamped Corvaine and Stonebound.
+      *(Root cause: `deleteCombat`/`combatTurnChange` are per-combat events, but 20 of the 24 sweeps ignored the combat argument and iterated `game.actors` / `canvas.tokens.placeables`. New primitives `edhaCombatEndGuard` + `edhaStillFightingElsewhere`, threaded through 21 sweeps. See R-58 for the one judgment call — an un-started leftover combat still counts as "live". Pinned in `tests/cross-combat-scope.test.js`, every case asserting both directions.)*
 
 ## Re-test after the run-13 fixes (2026-07-27q — all three fixed; ⟳ sync + F5 first, no rebuild)
 

@@ -509,6 +509,25 @@ pointer surviving, The Pack posts **no** bonus card but **still places** its Ins
 talents — Sharp Eye's `per` was **Perception** (`prc`) — which is exactly why the two could not be
 swept together. *(3B-E.)*
 
+**R-58. ⚠️ A scene reset now SKIPS any actor fighting in another combat — and "another combat" means
+any that still EXISTS, started or not.** Fix pass F, after run 23 watched a bench combat's deletion
+take `lists.covenants` off an actor in your live combat. The invariant applied is *"ending combat A
+must not clear state on a combatant of a still-existing combat B"* — deliberately **not** "sweep only
+combat A's own combatants", because the wide sweep is intended (Temp HP is meant to reach summons and
+unlinked adversaries that never rolled initiative). **With one combat in play nothing changed at
+all.** The judgment worth your veto is the *fail-safe direction*: an un-started leftover combat still
+counts, so if a stale empty combat sits in your sidebar containing a PC, that PC stops getting scene
+resets until you delete it. I chose that because a wrong skip leaves stale state you can clear, while
+a wrong clear destroys a live encounter's data. Say the word and it becomes `started`-only.
+*(Related to R-4 / R-7 / R-8 — this is the cross-COMBAT face of the scope family, not the
+out-of-combat one, which is still open.)*
+
+**R-59. ⚠️ A chat-card button that fails now raises an error toast**, where all 33 previously wrote
+only to the console. This is what let Living Image's Pay button read as a silent no-op for four bench
+runs. Bounded to the 33 *outer* click-handler catches — the ~270 inner defensive catches stay quiet.
+**The feel question is yours:** if a toast at the table is more disruptive than a button that quietly
+does nothing, say so and it goes back to console-only (or becomes GM-only). *(Fix pass F.)*
+
 ---
 
 ## J. Flagged, but not questions
