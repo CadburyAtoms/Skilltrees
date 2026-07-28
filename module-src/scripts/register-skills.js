@@ -3186,14 +3186,43 @@ async function edhaTurnCueSweep(combat, prior, current) {
  * defense (engine-rolled — iron rule 3); the result is written to the owner's `ambushBelief` flag
  * (token-actor safe: unlinked tokens each keep their own ledger) and `whenTargetFooled` damage
  * riders read it exactly like the phantom ledger. Scene change resets the ledger. */
+/* Make a string SAFE to use as an object key INSIDE a flag VALUE (the dotted-key family, bench
+ * run 16 / 07-27y). A flag value is persisted through Foundry's document update, and
+ * `ObjectField._updateDiff` (foundry v13 common/data/fields.mjs) merges it with
+ * `mergeObject(source[key], value, {insertKeys, insertValues, performDeletions})`. mergeObject
+ * expands dotted keys at merge depth 0 — and `_mergeInsert` restarts a FRESH `mergeObject({}, v)`
+ * (depth 0 again) for every nested object it inserts, so a dotted key at ANY depth inside a
+ * newly-inserted value is expanded into nested objects. Verified against the installed v13 source:
+ *   tested: {"Scene.<id>.Token.<id>": {...}}  ->  tested: {Scene: {<id>: {Token: {<id>: {...}}}}}
+ * and a flat `tested[uuid]` lookup then returns undefined FOREVER. Worse, the behaviour is
+ * asymmetric: on a LATER write the parent key already exists, `_mergeUpdate` preserves the depth,
+ * and the same dotted key is inserted literally — so the ledger ends up half-expanded, half-flat.
+ * This is NOT setFlag expanding the flag KEY (`setFlag(scope, "ambushBelief", v)` has no dots in
+ * its key, and a dotted flag key like `markedBy.<status>` is deliberate nesting that works fine) —
+ * it is the VALUE's own nested keys. Anything derived from a UUID, a decimal, or a user-supplied
+ * name must go through here first.
+ * Caveat, stated: two keys differing only by `.` vs `_` would collide. Foundry ids are alphanumeric,
+ * so no UUID can; only a hand-authored name could, and the cost would be a shared once-per-round
+ * slot, not data loss. */
+function edhaFlagKey(s) { return String(s ?? "").replace(/\./g, "_"); }   // pure — pinned in tests/
 function edhaAmbushLedgerFor(belief, sceneId) {   // pure — pinned in tests/
   if (!belief || belief.sceneId !== sceneId) return { sceneId, tested: {} };
   return { sceneId, tested: { ...(belief.tested || {}) } };
 }
+// The ledger owns its key shape: callers pass RAW token uuids at both ends and never see the
+// escaping (07-27y — the key was composed at the call site and the reader looked it up flat).
+function edhaAmbushMark(belief, tokenUuid, entry) {   // pure — pinned in tests/
+  const tested = { ...(belief?.tested || {}) };
+  tested[edhaFlagKey(tokenUuid)] = entry;
+  return { sceneId: belief?.sceneId ?? null, tested };
+}
+function edhaAmbushTested(belief, tokenUuid) {   // pure — pinned in tests/
+  return !!(belief?.tested || {})[edhaFlagKey(tokenUuid)];
+}
 function edhaAmbushFooledIn(belief, sceneId, tokenUuids) {   // pure — pinned in tests/
   if (!belief || belief.sceneId !== sceneId) return false;
   const tested = belief.tested || {};
-  return (tokenUuids || []).some(u => tested[u]?.fooled === true);
+  return (tokenUuids || []).some(u => tested[edhaFlagKey(u)]?.fooled === true);
 }
 Hooks.on("cosmere-rpg.useItem", (item) => {
   try {
@@ -3213,15 +3242,15 @@ async function edhaAmbushBeliefTest(actor, amb, tTok) {
   try {
     const sceneId = canvas?.scene?.id ?? null;
     const belief = edhaAmbushLedgerFor(actor.getFlag?.("edha-content", "ambushBelief"), sceneId);
-    const tokUuid = tTok.document?.uuid; if (!tokUuid || belief.tested[tokUuid]) return;   // once per scene per target
+    const tokUuid = tTok.document?.uuid; if (!tokUuid || edhaAmbushTested(belief, tokUuid)) return;   // once per scene per target
     const dcKey = amb.handler.dcFrom || "cog";
     const dc = Number(actor.system?.defenses?.[dcKey]?.value ?? actor.system?.defenses?.[dcKey]?.override) || 10;
     const sk = tTok.actor.system?.skills?.prc;
     const mod = edhaDerivedNum(sk?.mod, Number(sk?.rank) || 0);   // `.mod` is a DerivedValueField OBJECT — 07-27y
     const roll = await (new Roll(`${amb.handler.perceptionAdvantage ? "2d20kh" : "1d20"} + ${mod}`)).evaluate();
     const fooled = roll.total < dc;
-    belief.tested[tokUuid] = { fooled, total: roll.total, name: tTok.name };
-    await actor.setFlag("edha-content", "ambushBelief", belief);
+    const led = edhaAmbushMark(belief, tokUuid, { fooled, total: roll.total, name: tTok.name });
+    await actor.setFlag("edha-content", "ambushBelief", led);
     const gmIds = (game.users?.filter(u => u.active && u.isGM) ?? []).map(u => u.id);
     ChatMessage.create({ whisper: gmIds, speaker: ChatMessage.getSpeaker({ actor }),
       content: `<div class="edha-trigger-card"><p>🌫️ <strong>${amb.item.name}</strong> — ${tTok.name}: Perception <strong>${roll.total}</strong> vs ${dc} → ${fooled ? "<strong>taken in</strong> (whenTargetFooled riders apply)" : "<strong>sees through it</strong>"}.${amb.handler.note ? ` ${amb.handler.note}` : ""}</p></div>` });
@@ -8698,18 +8727,24 @@ function edhaOwnsTalent(actor, name) {
 }
 function edhaResVal(res) { return (res && typeof res.max === "object") ? res.max.value : res?.max; }
 
+// The `trigRound` ledger is a flag VALUE keyed by trigger name, so every key goes through
+// edhaFlagKey: a dot anywhere in the name would be EXPANDED into nested objects on write and the
+// flat read would then never match, silently disarming the once-per-round guard (see edhaFlagKey).
+// No talent or adversary ability is named with a dot today, but edhaPostCueCard's key now carries
+// an `atFraction` decimal, and a future rename must not be able to break the guard. Escaping is a
+// no-op for every key already persisted, so no migration is needed.
 function edhaTriggerAllowed(owner, name, spec) {
   if (!spec.oncePerRound) return true;
   const round = game.combat?.round;
   if (round == null) return true;                                   // no combat → unrestricted
-  return owner.getFlag?.("edha-content", "trigRound")?.[name] !== round;
+  return owner.getFlag?.("edha-content", "trigRound")?.[edhaFlagKey(name)] !== round;
 }
 async function edhaMarkTriggerUsed(owner, name, spec) {
   if (!spec.oncePerRound) return;
   const round = game.combat?.round;
   if (round == null) return;
   const tr = foundry.utils.deepClone(owner.getFlag("edha-content", "trigRound") ?? {});
-  tr[name] = round;
+  tr[edhaFlagKey(name)] = round;
   try { await owner.setFlag("edha-content", "trigRound", tr); } catch (e) { /* perms */ }
 }
 

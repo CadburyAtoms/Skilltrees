@@ -422,26 +422,73 @@ test("edhaDeriveSheetStats: speed override excludes rate.bonus (AE applies once 
 // whenTargetFooled damage riders read it via edhaTargetFooled. These pin the pure ledger logic so
 // the +1d6 ambush riders can't silently die again (the original bug: riders gated on a phantom
 // copy that ambush predators never cast).
+// 07-27y: these used to construct `tested` with RAW DOTTED uuids as flat keys and assert the flat
+// lookup found them — which is exactly the shape Foundry can never persist, so the tests passed
+// green for the entire time the feature was dead in Foundry. They now go through the ledger's own
+// writer and round-trip the result through persistLikeFoundry (below), so a key Foundry would
+// mangle fails here.
+//
+// Faithful model of what a flag VALUE becomes on its FIRST write. Foundry v13
+// common/data/fields.mjs ObjectField._updateDiff merges the value with
+// `mergeObject(source[key], value, {insertKeys, insertValues, performDeletions})`, and
+// common/utils/helpers.mjs mergeObject expands dotted keys at merge DEPTH 0 — while _mergeInsert
+// restarts a fresh `mergeObject({}, v)` (depth 0 again) for every nested object it inserts. Net
+// effect: expandObject at every level. Verified against the installed v13 source by running the
+// real mergeObject on this exact ledger shape.
+function persistLikeFoundry(v) {
+  if (Array.isArray(v)) return v.map(persistLikeFoundry);
+  if (!v || typeof v !== "object") return v;
+  const out = {};
+  for (const [k, val] of Object.entries(v)) {
+    const child = persistLikeFoundry(val);
+    if (!k.includes(".")) { out[k] = child; continue; }
+    const parts = k.split(".");
+    const last = parts.pop();
+    let t = out;
+    for (const p of parts) { if (!t[p] || typeof t[p] !== "object") t[p] = {}; t = t[p]; }
+    t[last] = child;
+  }
+  return out;
+}
+const UU1 = "Scene.aaaaaaaaaaaaaaaa.Token.1111111111111111";   // real uuids are DOTTED — that is the bug
+const UU2 = "Scene.aaaaaaaaaaaaaaaa.Token.2222222222222222";
+const UU9 = "Scene.aaaaaaaaaaaaaaaa.Token.9999999999999999";
+
+test("edhaFlagKey: dots die, everything else survives", () => {
+  assert.strictEqual(env.edhaFlagKey(UU1), "Scene_aaaaaaaaaaaaaaaa_Token_1111111111111111");
+  assert.strictEqual(env.edhaFlagKey("cue:The Madness Slackens:hp-below:0.05"), "cue:The Madness Slackens:hp-below:0_05");
+  assert.strictEqual(env.edhaFlagKey("no-dots-here"), "no-dots-here", "a dot-free key is untouched — no migration");
+  assert.strictEqual(env.edhaFlagKey(undefined), "");
+});
+test("the ambush ledger SURVIVES Foundry's flag persistence (dotted uuids were expanded away)", () => {
+  let led = env.edhaAmbushLedgerFor(null, "sceneA");
+  led = env.edhaAmbushMark(led, UU1, { fooled: true, total: 3, name: "Fooled" });
+  led = env.edhaAmbushMark(led, UU2, { fooled: false, total: 19, name: "Seer" });
+  const stored = persistLikeFoundry(led);                       // <- what Foundry actually writes
+  assert.ok(Object.keys(stored.tested).every(k => !k.includes(".")),
+    "a dotted key is expanded into nested objects on write and can never be read back flat");
+  assert.strictEqual(Object.keys(stored.tested).length, 2, "two targets, two entries — not one 'Scene' tree");
+  // The whenTargetFooled rider and the once-per-scene guard both read back, from RAW uuids.
+  assert.strictEqual(env.edhaAmbushFooledIn(stored, "sceneA", [UU1]), true);
+  assert.strictEqual(env.edhaAmbushTested(stored, UU1), true, "once per scene per target actually holds");
+  assert.strictEqual(env.edhaAmbushTested(stored, UU2), true);
+  // Negative controls.
+  assert.strictEqual(env.edhaAmbushFooledIn(stored, "sceneA", [UU2]), false, "a seer is never fooled");
+  assert.strictEqual(env.edhaAmbushFooledIn(stored, "sceneB", [UU1]), false, "stale scene = no belief");
+  assert.strictEqual(env.edhaAmbushFooledIn(stored, "sceneA", [UU9]), false, "untested = not fooled");
+  assert.strictEqual(env.edhaAmbushTested(stored, UU9), false, "an untested target still gets its roll");
+  assert.strictEqual(env.edhaAmbushFooledIn(null, "sceneA", [UU1]), false, "no ledger never throws");
+});
 test("edhaAmbushLedgerFor: fresh ledger on first use and on scene change", () => {
   eq(env.edhaAmbushLedgerFor(null, "sceneA"), { sceneId: "sceneA", tested: {} });
-  const old = { sceneId: "sceneA", tested: { "Scene.x.Token.1": { fooled: true, total: 3 } } };
+  const old = env.edhaAmbushMark({ sceneId: "sceneA", tested: {} }, UU1, { fooled: true, total: 3 });
   eq(env.edhaAmbushLedgerFor(old, "sceneB"), { sceneId: "sceneB", tested: {} });
 });
 test("edhaAmbushLedgerFor: same scene keeps tested entries (once per scene per target)", () => {
-  const old = { sceneId: "sceneA", tested: { "Scene.x.Token.1": { fooled: true, total: 3 } } };
+  const old = persistLikeFoundry(env.edhaAmbushMark({ sceneId: "sceneA", tested: {} }, UU1, { fooled: true, total: 3 }));
   const led = env.edhaAmbushLedgerFor(old, "sceneA");
-  eq(led.tested["Scene.x.Token.1"], { fooled: true, total: 3 });
-});
-test("edhaAmbushFooledIn: true only for a fooled uuid in the CURRENT scene", () => {
-  const belief = { sceneId: "sceneA", tested: {
-    "Scene.x.Token.1": { fooled: true, total: 3 },
-    "Scene.x.Token.2": { fooled: false, total: 19 },
-  } };
-  assert.strictEqual(env.edhaAmbushFooledIn(belief, "sceneA", ["Scene.x.Token.1"]), true);
-  assert.strictEqual(env.edhaAmbushFooledIn(belief, "sceneA", ["Scene.x.Token.2"]), false, "a seer is never fooled");
-  assert.strictEqual(env.edhaAmbushFooledIn(belief, "sceneB", ["Scene.x.Token.1"]), false, "stale scene = no belief");
-  assert.strictEqual(env.edhaAmbushFooledIn(belief, "sceneA", ["Scene.x.Token.9"]), false, "untested = not fooled");
-  assert.strictEqual(env.edhaAmbushFooledIn(null, "sceneA", ["Scene.x.Token.1"]), false, "no ledger never throws");
+  assert.strictEqual(env.edhaAmbushTested(led, UU1), true);
+  eq(led.tested[env.edhaFlagKey(UU1)], { fooled: true, total: 3 });
 });
 
 // --- W29 owner-scan widening (ruling 113) + the ruling-107 rank fallback -----------------------
