@@ -8516,6 +8516,44 @@ async function edhaDeleteActorWithTokens(actor) {
   } catch (e) { console.error("Edha Content | actor+token teardown failed", e); }
 }
 
+/* ...and the HAND-DELETE safety net (07-27s, bench run 14 attempt 2). ------------------------------
+ * The helper above is called from five ENGINE sites, so every teardown the engine drives is correct
+ * — run 14 verified two of them live. But a GM deleting the actor from the SIDEBAR goes through
+ * none of them, and Foundry cascades nothing: the token stands as an orphan, and because Foundry
+ * DOES cascade token→combatant but nothing cascades actor→combatant, the orphan keeps a live
+ * combatant that makes Advanced Encounters throw from its `initiative` getter on every later
+ * combatant add. One hand-deleted summon wedges the tracker mid-combat — reproduced exactly at run
+ * 14, and un-wedged instantly by sweeping that one combatant.
+ *
+ * SCOPE — this is a cascade over a hook that fires for EVERY actor, so it is narrowed to actors the
+ * engine minted, and that set is exact rather than heuristic: `Actor.create` appears twice in this
+ * file, and only `edhaSummonCreateGM` mints NPCs (the other is the creation wizard's PC). It always
+ * stamps `flags.edha-content.summon = true` — constructs, phantom copies and barriers all route
+ * through `edhaSummon` and differ only in `extraFlags`. So the predicate below cannot reach a
+ * hand-made adversary, a PC, or an imported pack actor.
+ *
+ * It deliberately does NOT delete the actor (it is already gone) and does not duplicate the
+ * last-token cleanup: that hook re-reads `game.actors.get(tokenDoc.actorId)`, which is null by the
+ * time our token deletes land, so it returns without a second `actor.delete()` — the "Actor does
+ * not exist" race stays closed. One applier, for the same reason every other world write is. */
+Hooks.on("deleteActor", (actor) => {
+  try {
+    if (!edhaDefBuffGmGate()) return;
+    if (actor?.getFlag?.("edha-content", "summon") !== true) return;   // engine-minted only — see above
+    void edhaSweepOrphanedTokens(actor.id);
+  } catch (e) { /* non-fatal */ }
+});
+// Delete every token still pointing at a now-deleted actor id (the combatant goes with it).
+async function edhaSweepOrphanedTokens(actorId) {
+  try {
+    if (!actorId) return;
+    for (const sc of (game.scenes ?? [])) {
+      const toks = sc.tokens.filter(t => t.actorId === actorId);
+      if (toks.length) await sc.deleteEmbeddedDocuments("Token", toks.map(t => t.id));
+    }
+  } catch (e) { console.error("Edha Content | orphaned-token sweep failed", e); }
+}
+
 /* --- Mode-gated summon items (REUSABLE primitive, bench 07-17) --------------------------------------
  * An extra baked item whose spec carries `requiresEffect: "<baked effect name>"` can only be used
  * while that summonEffect is toggled ON (first consumer: Siege Cannon requires Siege Form — Ben:

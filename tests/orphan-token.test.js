@@ -84,3 +84,45 @@ test("tokens are swept across EVERY scene, not just the viewed one", async () =>
   await withScenes([a, b], () => env.edhaDeleteActorWithTokens(actor));
   assert.deepStrictEqual([a.deleted, b.deleted], [["tok-a"], ["tok-b"]], "an off-scene copy is still an orphan");
 });
+
+/* --- the HAND-DELETE half (07-27s, bench run 14 attempt 2) --------------------------------------
+ * Run 14 confirmed the five engine call sites are correct and the negative control held, then failed
+ * the row anyway: `edhaDeleteActorWithTokens` is a helper, not a `deleteActor` hook, so a GM deleting
+ * the actor from the SIDEBAR — this row's own verb — was covered by nothing. The token stayed, its
+ * combatant stayed, and the next combatant add threw. `edhaSweepOrphanedTokens` is the missing half;
+ * these cases pin that it sweeps by actor id across scenes and touches nothing else. The SCOPE (only
+ * actors carrying the `summon` mint flag) is enforced at the hook, which is asserted separately. */
+
+test("the hand-delete sweep removes exactly the dead actor's tokens, on every scene", async () => {
+  const a = fakeScene([{ id: "tok-a", actorId: "summon-1" }, { id: "keep", actorId: "someone-else" }]);
+  const b = fakeScene([{ id: "tok-b", actorId: "summon-1" }]);
+  await withScenes([a, b], () => env.edhaSweepOrphanedTokens("summon-1"));
+  assert.deepStrictEqual([a.deleted, b.deleted], [["tok-a"], ["tok-b"]], "the orphan goes wherever it stands");
+  assert.deepStrictEqual(a.tokens.map((t) => t.id), ["keep"],
+    "NEGATIVE: a bystander token on the same scene must be untouched — this cascade runs on a hook " +
+    "that fires for every actor in the world");
+});
+
+test("the hand-delete sweep is a no-op when nothing points at the id (no second delete to race)", async () => {
+  const a = fakeScene([{ id: "keep", actorId: "someone-else" }]);
+  await withScenes([a], () => env.edhaSweepOrphanedTokens("summon-1"));
+  assert.deepStrictEqual(a.deleted, [], "no tokens, no writes");
+  await withScenes([a], () => env.edhaSweepOrphanedTokens(null));
+  assert.deepStrictEqual(a.deleted, [], "a missing id must never mean 'match everything'");
+});
+
+test("the deleteActor cascade is scoped to engine-MINTED actors, by the flag edhaSummon stamps", () => {
+  const fs = require("fs");
+  const path = require("path");
+  const engine = fs.readFileSync(
+    path.join(__dirname, "..", "module-src", "scripts", "register-skills.js"), "utf8");
+  const hook = engine.match(/Hooks\.on\("deleteActor",[\s\S]{0,900}?edhaSweepOrphanedTokens[^\n]*\n/);
+  assert.ok(hook, "the hand-delete safety net must be registered on deleteActor");
+  assert.ok(/getFlag\?\.\("edha-content", "summon"\) !== true/.test(hook[0]),
+    "the cascade must refuse any actor the engine did not mint — a blanket deleteActor sweep would " +
+    "delete tokens belonging to hand-made adversaries and imported pack actors");
+  assert.ok(/edhaDefBuffGmGate\(\)/.test(hook[0]),
+    "one applier: deleteActor fires on every client, and Ben's table runs two GMs");
+  assert.ok(!/\.delete\(\)/.test(hook[0]),
+    "it must not try to delete the actor — it is already gone, and that is the 'Actor does not exist' race");
+});
