@@ -6,6 +6,55 @@ Backing detail (every session's notes) lives in agent memory `edha-foundry-modul
 
 ---
 
+## 2026-07-27u — DEPLOY: **the pack-rebuild list is EMPTY for the first time in this project's tracked history.** Foundry closed; all five packs rebuilt and validated; Sharp Eye's fix confirmed IN THE BUILT ARTIFACT. No code change — deploy + docs only.
+
+Ben closed Foundry and asked for the outstanding updates to be run. All seven steps of
+`scripts/deploy-to-foundry.bat` were executed directly rather than via the `.bat` itself, because its
+step-0 `pause >nul` blocks a non-interactive shell. Every step was verified individually:
+
+| Step | Result |
+|---|---|
+| 1. Foundry closed | ✅ no `Foundry` process (checked before touching the LevelDB) |
+| 2. `git pull --ff-only` | ✅ already up to date |
+| 3. `module-src-sync status` | ✅ **6 in sync, 0 stale, 0 hand-edited** |
+| 4. `module-src-sync push` | ✅ 0 copied, 6 unchanged — the engine was already deployed during the marathon |
+| 5. `sync-art` | ✅ 0 copied, 1 current |
+| 6. `foundry-build` ×5 | ✅ leyline 136 items · deity 110 · **heroic 162** · adversaries 52 actors / 336 embedded items · items 113 |
+| 7. `validate-packs` | ✅ PASSED — badNode / badConn / badTree / badGrant / badFolder / badPathType **all 0** |
+| 7. `validate-adversaries` | ✅ **0 issues** (52 actors, 336 embedded item keys, 11 baked effect keys) |
+
+**The heroic build is the one that had been owed since fix pass A** (07-27n), and it is the last
+entry on `EDHA_FOUNDRY_TEST_CHECKLIST.md`'s pack-rebuild list. That list is now empty.
+
+**Sharp Eye verified in the BUILT PACK, not inferred.** Read back out of the rebuilt
+`edha-heroic` LevelDB via `edha-pack-io.js`'s `readPack`: `activation.type: "skill_test"`,
+`activation.skill: "prc"`, with both rules intact (`SharpEyeGate0000` = `edha-def-test`,
+`SharpEyeReveal00` = `edha-reveal`). **2bQ-4 and 2bD-7 are UNBLOCKED** — they need a bench drive now,
+not a deploy.
+
+**Lint pass 14's invariant, re-asked against the built artifact rather than the source:** 365 talents
+scanned across the three talent packs · **37 carry an `edha-def-test` rule** · **0 of those cannot
+roll a test.** The 37 matches fix pass A's independently-derived family audit exactly.
+
+> ⚠️ **A vacuous check was caught and corrected mid-verification, and the trap is worth recording.**
+> The first version of that scan tested `rule.type === "edha-def-test"` and reported a clean
+> "0 cannot roll" — but the **built** shape keys `system.events` by rule id and puts the type at
+> **`rule.handler.type`**, so the predicate matched nothing and the 0 was over an empty set. A check
+> that cannot fail proves nothing. The corrected scan reports the non-zero denominator (37) alongside
+> the result precisely so this cannot recur silently.
+
+**Engine byte-checks re-run on the live module** (the ones DEPLOY STATE specifies for 07-27s):
+`edhaSweepOrphanedTokens` **2** ✅ · `sourceOwnerUuid` outside comments **exactly 1** ✅ (the legacy
+read arm — the flat *write* did not come back) · `edhaTerrainOwnerUuid` **4**, and the doc's stated
+"3×" was **miscounted** — corrected in place. Same class of error as the run-8 prompt's wrong marker
+hints: trust a repo/live comparison, never a remembered count.
+
+**Still Ben's, and the script cannot do either:** **⟳ Sync Talents** on any PC he will play (owned
+talents are frozen snapshots), and **⟳ Sync Adversaries from Pack** — the adversary pack was rebuilt,
+so placed copies are stale until synced or re-dragged.
+
+---
+
 ## 2026-07-27t — BENCH RUN 15 (the marathon's final run): **fix pass C's re-tests all PASS, with every negative. 2 rows retired, the rule-index probe MEASURED and NOT REPRODUCED, 1 partial.** DOCS-ONLY — no engine or data change.
 
 Driven as `Bench` against a **hash-verified** HEAD engine — the served `register-skills.js`, CRLF→LF
