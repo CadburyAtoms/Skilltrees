@@ -33,6 +33,126 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-07-27y — FIX PASS A of bench marathon 3. Run 16's three defects: **all 3 FIXED, one of them bigger than reported (a THREE-site family, not two), plus a fourth bug found in the LINTER itself that was hiding it.** ENGINE-ONLY → ⟳ sync the module + F5; **no pack rebuild — the rebuild list stays EMPTY.** 329 tests green, every fix mutation-verified.
+
+Run 16 filed three defects. All three were real and all three are fixed. Two of the run's
+*mechanisms* were wrong in ways that mattered, and one of its *scope* claims was wrong in the way the
+marathon-2 retrospective predicted — so this delta leads with where the analysis diverged.
+
+### Where the run's analysis diverged from the code
+
+| Run 16 said | Verified |
+|---|---|
+| "Foundry's `setFlag` **expands dotted keys**" | `setFlag(scope, key, v)` does no such thing — the flag KEY here is `"ambushBelief"`, dotless, and a genuinely dotted flag key (`markedBy.<status>`) is deliberate nesting that works. The expansion is in the **value**, via `mergeObject`. See below. |
+| "the persisted `tested` has a single top-level key `Scene`" | True only of the FIRST write. The behaviour is **asymmetric** — a later write inserts the same dotted key literally, so a live ledger ends up half-expanded and half-flat. |
+| "A targeted sweep of the engine found these two sites and no others" | **Three.** `edhaPhantomBeliefSweep` (register-skills.js:5933) has the identical `skills.<id>.mod` object read, so the Phantom Double / The Seeming belief loop rolled `1d20 + 0` too. Nobody reported it; it has never worked. |
+| (Fen-Heart cue) "blast radius **2**" | Correct — confirmed item-by-item across `adversaries.json`, all 21 authored overlays and the three tree sources. Worth recording HOW, because a per-NAME scan reports **10**: seven different adversaries each carry an ability called "Predatory Patience". |
+| (Explosive Leap) "card-vs-engine drift → test-pass-fixes" | It is drift, but **neither side is wrong by itself** — `bySize` is *distance by RED rank*, and the Cragdrake Adult is a rival at rank 2, so 5 ft is exactly what the rule says. Sent to `EDHA_RULINGS.md` as **R-48**, decided nothing. |
+
+### Bug root causes
+
+**1. `edhaSpeedFt`, `edhaAmbushBeliefTest` and `edhaPhantomBeliefSweep` coerced an OBJECT with
+`Number()` — one family, three sites.** cosmere-rpg 2.1.0 wraps ~12 derived stats in a
+`DerivedValueField`: `{derived, override, useOverride[, bonus]}` plus a **getter-only `.value`**.
+`Number(thatObject)` is NaN, so the near-universal `Number(x) || 0` idiom yields **0**. The failure
+signature is identical to the dead-field family §9 already knows: no error, no warning, the mechanic
+simply reads as dead. Consequences: every `edha-move {byHalfSpeed}` moved **0 ft** (three
+"Unstoppable" blocks), and **every belief test in the game** — ambush *and* phantom — rolled
+`1d20 + 0` instead of the observer's Perception, which (since fooled = `roll < DC`) made onlookers
+far too easy to fool.
+
+The engine already had the correct read open-coded **twice** (`edhaHalfSpeed`, `edhaSensesRangeFt`),
+which is precisely how the family grew: two idioms for one job, and new code copied the wrong one.
+All four now go through one primitive, `edhaDerivedNum`.
+
+**2. The ambush-belief ledger was keyed by a token UUID, and a UUID has dots.** Re-derived from the
+installed Foundry v13 source rather than from the report:
+`ObjectField._updateDiff` (common/data/fields.mjs) merges a flag value with
+`mergeObject(source[key], value, {insertKeys, insertValues, performDeletions})`, and `mergeObject`
+(common/utils/helpers.mjs) **expands dotted keys at merge depth 0** — while `_mergeInsert` restarts a
+*fresh* `mergeObject({}, v)`, depth 0 again, for every nested object it inserts. So a dotted key at
+**any** depth inside a newly-inserted value is expanded:
+
+```
+tested: {"Scene.<id>.Token.<id>": {...}}  ->  tested: {Scene: {<id>: {Token: {<id>: {...}}}}}
+```
+
+Confirmed by running the real v13 `mergeObject` on this exact ledger shape, not inferred. Two
+symptoms, one cause, two adversaries: the `whenTargetFooled` +1d6 rider never fired, and the
+once-per-scene guard never held.
+
+**3. `edhaPostCueCard` keyed its once-per-round slot on item + trigger and nothing else**, so two
+`hp-below` cues on ONE item shared a slot and the lower threshold could never fire — the Fen-Heart's
+near-zero "it goes still" cue (0.05) was permanently eaten by its own bloodied cue (0.5).
+
+**4. (Found while fixing 1–3, not reported by anyone) `lint-refs.js`'s own string-blanker desynced on
+nested template literals, blinding four lint passes on 6% of the engine.** The scanner closed a
+backtick string at the first backtick it saw, so a nested template inside `${…}` (the engine has ~30)
+closed the outer one early, dumped string text into "code", and the next apostrophe in prose opened a
+runaway span that ate real code until the next stray quote. Measured: **116 runaway spans, 598 code
+lines fully blanked**. Passes 11 (dead fields), 15 (isGM hooks), 16 (Region flags) and the new 17
+were all blind there — **and a blind pass reports SUCCESS**, which is why it survived. It is also the
+concrete reason nobody had caught defect 1's third site. Now an explicit context stack (code /
+string / template, with `${…}` pushing a brace-counted code frame) plus the standard prev-token
+regex-literal heuristic; swallowed lines **598 → 23**, and all 23 are genuine multi-line HTML.
+
+### New REUSABLE primitives
+
+- **`edhaDerivedNum(v, fallback)`** — the one reader for any cosmere DerivedValueField: `.value`,
+  then `.override`, then `.derived` (the last two for a raw `_source` object, which has the fields
+  but not the getter). `null`/`undefined` return the fallback rather than `Number(null) === 0` — an
+  edge the tests caught, which was the same class of bug one layer down.
+- **`edhaFlagKey(s)`** — makes a computed string safe as an object key **inside a flag value**.
+  Apply at the **ledger boundary**, never the call site. Now owns the ambush ledger
+  (`edhaAmbushMark` / `edhaAmbushTested` / `edhaAmbushFooledIn` all take RAW uuids) and the
+  `trigRound` once-per-round ledger. No talent or ability name carries a dot today, but defect 3's
+  fix puts a **decimal** in the cue key, which would have walked straight into defect 2.
+- **`edhaCueKey(itemName, h)`** — the GM-cue once-per-round slot, discriminated by trigger **and**
+  `atFraction` / `rangeFt` / `everyNRounds`.
+- **`lint-refs.js` pass 17** — any `system`-rooted chain inside a `Number( … )` terminating at a
+  DerivedValueField leaf. Leaf list harvested from the system bundle by
+  `dump-native-vocabulary.js` (new `systemDerivedValueLeaves`, 12 leaves at 2.1.0), with rot alarms,
+  so it is not hand-maintained.
+
+### Why a gate, and why THAT gate
+
+Defect 1 is the only one of the three whose shape is statically decidable, and it is the one a human
+sweep already got wrong — the run swept for it deliberately and reported "no others" with a third
+site sitting in the file. That is the exact profile of passes 11/12. Defects 2 and 3 are not gateable
+(deciding "this string becomes an object key in a flag value" is not decidable here), so they are
+defended by construction instead: the escaping lives inside the ledger helpers, where a future caller
+cannot forget it.
+
+### Verification
+
+Every fix mutation-verified — re-introducing each original broken line fails the specific new test,
+and the pass count moves 326/1, 325/3, 328/1 respectively against 329/0 clean. Pass 17 mutation-
+verified against all three sites (it reports lines 3265, 5933, 6478); reverting only the blanker fix
+drops it to two, which is the demonstration that the linter bug was load-bearing.
+
+⚠️ **Two old tests were green while the feature was dead in Foundry** and were rewritten: they built
+`tested` with raw dotted uuids as flat keys and asserted the flat lookup found them — a shape Foundry
+can never persist. They now round-trip through `persistLikeFoundry()`, a faithful model of the
+depth-0 expansion, with negative controls.
+
+### Known limits / couldn't self-verify (no Foundry session)
+
+- ⚑ Nothing here was driven at a table. Re-test rows are 🤖 with explicit positive **and** negative
+  controls, in the Lunavar, Malcurr and Vorsk sections + a NEW row for the phantom-belief site.
+- **Run 16's "Frayed Seeming advantage" row was retired on the evidence `2d20kh + 0`.** The
+  *advantage* half of that was right; the **`+ 0`** was defect 1. That retirement is half-earned —
+  the re-test row says to confirm the modifier.
+- The `edhaIsFastTurn` / `game.combat` blocker on the **full** Unstoppable drive is unchanged. Its
+  half-Speed half is now separately testable from the console and has its own row, so the two
+  failures can no longer hide each other.
+- Legacy `ambushBelief` junk (an already-expanded `{Scene: …}` blob) survives in the current scene
+  until the scene changes. It is inert — the reader only looks up escaped keys — and needs no
+  migration.
+- Cosmetic: defect 3's key changed, so a cue that already fired this round under the old key gets one
+  extra card in the round the engine is reloaded. Self-healing next round.
+
+---
+
 ## 2026-07-27x — BENCH RUN 16 (Lunavar + Malcurr + Vorsk bestiaries): **18 of 23 rows retired on evidence, 2 fails, 2 partials, 1 blocked.** Three engine defects root-caused (one of them a two-site family), zero world drift. DOCS-ONLY — no engine, data or pack change this pass; every fix feeds test-pass-fixes.
 
 First run of marathon 3, and the first run to work the **bestiary** sections — which are cheap per

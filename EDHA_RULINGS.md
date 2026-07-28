@@ -254,9 +254,22 @@ exactly as configured — this is a design question, not a defect, and the card 
 nothing is drifting. But "charge toward it, ignoring Reactions — whelps arrive all at once or not at
 all" reads like a rush, and 3 ft is not a rush. *Recommended default: give it an explicit
 `distanceFt` (its Speed, 25 ft, or half that) rather than `bySize`, and say so on the card.*
-⚠️ **Distinct from the Explosive Leap defect** in the same section, which IS a defect: that card
-promises "up to 20 ft" and `bySize` delivers 5 — there the prose and the engine disagree, so it goes
-to test-pass-fixes, not here.
+⚠️ **Distinct from the Explosive Leap case** in the same section — see **R-48**, which test-pass-fixes
+sent back here on 2026-07-27y: it is the same `bySize` question, not a wiring bug.
+
+**R-48. The Cragdrake Adult's Explosive Leap says "up to 20 ft" and moves 5. Which side is canon?**
+Sent here by fix pass A (2026-07-27y) after root-causing it rather than fixing it — the run filed it
+as card-vs-engine drift, and it is, but **neither side is wrong by itself**, so it is a ruling, not a
+defect. `bySize: true` means *distance = `[Size]` by RED rank*, and `EDHA_SIZE_FT` is
+`[–, 2.5, 5, 10, 15, 20]`. The Cragdrake Adult is a **rival** attuned to red, so its rank is **2** and
+the leap is **5 ft** — the engine is doing exactly what the rule says. The card's flat "20 ft" is the
+**rank-5** value, so the prose reads as a promise the block can never keep. Same shape as R-46, one
+layer over: there the card states no distance, here it states the wrong one.
+*Recommended default: the CARD is canon for an adversary — a statted block should not scale, so give
+it `distanceFt: 20` and drop `bySize`.* The alternative (keep `bySize`, reword the card to "Leap
+`[Size]` ft") is defensible but makes an adversary card read like a PC talent. Whichever way it goes,
+authored data changes → **pack rebuild + ⟳ Sync**, which is why fix pass A left it alone: the
+rebuild list is currently empty and this is not worth re-opening it on its own.
 
 **R-47. Should the `NO NAMEABLE HOOK:` engineering note be visible on the player-facing card?**
 Bench run 16 drove Seize and Roll, Drag Under and Slip the Sound and all three posted their authoring

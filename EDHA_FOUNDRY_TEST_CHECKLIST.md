@@ -199,6 +199,27 @@ nothing and H1 had nothing to resolve). **Verified by reading the REBUILT pack**
 (`SharpEyeGate0000` = `edha-def-test`, `SharpEyeReveal00` = `edha-reveal`).
 **2bQ-4 and 2bD-7 are UNBLOCKED and now need a bench drive, not a deploy.**
 
+**⏳ NEW 2026-07-27y — the marathon-3 fix-pass-A ENGINE half needs ⟳ sync the module + F5 (no
+rebuild, no ⟳ Sync Talents). The pack-rebuild list stays EMPTY — nothing in this pass touches
+authored data.** Three defects from bench run 16, all engine-only. (1) **The object-as-scalar
+family, THREE sites not two** — cosmere exposes a dozen derived stats as DerivedValueField OBJECTS,
+so `Number(x) || 0` silently yields 0: `edhaSpeedFt` (`movement.walk.rate` → every
+`edha-move {byHalfSpeed}` moved **0 ft**), `edhaAmbushBeliefTest` and — the site run 16's own sweep
+declared absent — `edhaPhantomBeliefSweep` (both `skills.<id>.mod` → every belief test rolled
+**`1d20 + 0`**). All four object-aware readers now go through one helper, `edhaDerivedNum`.
+(2) **The ambush-belief ledger was keyed by a DOTTED token uuid**, and `mergeObject` expands dotted
+keys inside a flag VALUE, so the flat read never resolved — the `whenTargetFooled` rider never fired
+and the once-per-scene guard never held. Keys now go through `edhaFlagKey` at the ledger boundary
+(the `trigRound` once-per-round ledger too). (3) **Two `hp-below` cues on one item shared a
+once-per-round slot** — `edhaPostCueCard`'s key now carries `atFraction`/`rangeFt`/`everyNRounds`.
+**Byte-check after the sync** (raw counts against the served file, comments included, verified in the
+repo at commit time): `register-skills.js` must contain `edhaDerivedNum` (**8×**),
+`edhaFlagKey` (**9×**), `edhaAmbushMark` (2×), `edhaAmbushTested` (2×) and `edhaCueKey` (2×), and must
+NOT contain `Number(foundry.utils.getProperty(actor, "system.movement.walk.rate"))` anywhere.
+Un-blocks the Stillback / Wrongwake ambush-belief rows, the Fen-Heart near-zero cue, and the
+half-Speed half of Unstoppable (the `edhaIsFastTurn` / `game.combat` blocker on the full Unstoppable
+drive is UNCHANGED — that stays blocked while Ben's campaign combat is active).
+
 ⚠️ **You still owe ⟳ Sync Talents on any character you will PLAY** — an owned talent is a frozen
 snapshot until you click it. The 16 bench PCs sync themselves (`bench-setup-console.js` calls
 `edha.syncActorTalents`), so a bench run does not need it; your own PCs do.
@@ -1524,6 +1545,29 @@ run 16, on FRESH pack imports. See that run's handoff delta for the quoted evide
       `Number()` → NaN → `|| 0`. Corroborated arithmetically: a total of **4** is impossible with a
       +4 mod. Same family as `edhaSpeedFt` (Vorsk §3). Negative control present: Bench — Blue rolled
       16 vs 11 → "sees through it" and correctly got no rider.)*
+- [ ] 🤖 **Stillback ambush belief — RE-TEST after the 07-27y two-cause fix (engine-only, F5)** —
+      **both** causes are fixed and both must be checked in the same drive, because either one alone
+      still fails the row. **① The roll now carries the target's Perception.** Target a PC with a
+      known non-zero Perception mod and use Ambush Bite: the whisper's formula must read
+      `1d20 + <that mod>` (Frayed Seeming: `2d20kh + <mod>`), NOT `+ 0`. *Negative control:* a target
+      whose Perception mod really is 0 still reads `+ 0` — read the mod off the sheet first, don't
+      infer it. ⚠️ The "Frayed Seeming advantage" row retired in run 16 on the evidence
+      `2d20kh + 0`; the **advantage** half of that was right, the **`+ 0`** was this bug, so that
+      retirement is only half-earned — confirm the mod here. **② The ledger reads back.** A fooled
+      target's next Ambush Bite must show the `(1d6)[The Causeway Seeming]` term on the damage roll.
+      *Negative controls, all three:* a target that **saw through it** gets no d6; a **second**
+      Ambush Bite on the same target must NOT re-roll the belief test (once per scene); and changing
+      scene MUST re-roll it. **③ Read the flag.** `actor.getFlag("edha-content","ambushBelief").tested`
+      must have **one key per tested token**, each key dot-free (`Scene_<id>_Token_<id>`) — if you
+      see a single top-level `"Scene"` key, the fix did not deploy.
+- [ ] 🤖 **Phantom Double / The Seeming belief roll — NEW, nobody reported this (07-27y, engine-only)** —
+      the *other* belief loop had the same `skills.<id>.mod` object read, found by sweep, not by
+      bench. Cast Phantom Double (or the Mistheron's The Seeming) with at least two enemies who can
+      see the copy and differing Perception mods: each onlooker's line in the GM card must show a
+      total consistent with `1d20 + its own mod`, not `1d20 + 0`. *Negative control:* an onlooker
+      with a 0 mod, and an onlooker who **cannot see** the copy (must not be tested at all). Because
+      "fooled" is `roll < DC`, the bug made everyone far EASIER to fool — expect noticeably more
+      onlookers to see through it now, which is the correct behaviour, not a regression.
 - [ ] 🤖 **Cues fire** — damage the Drownlight Colony (gutter-and-relight cue) and drop the
       Fen-Heart below half (madness-slackens cue) and near 0 (goes-still cue, atFraction
       0.05 — first use of a near-zero threshold; verify it fires before death cleanup).
@@ -1540,6 +1584,17 @@ run 16, on FRESH pack imports. See that run's handoff delta for the quoted evide
       Gone-to-Weir Fen-Heart (0.5 + 0.05) and Briar-Gone Grove (0.5 + 0), both on an item named
       "The Madness Slackens"; a keying fix retires both. ⚠️ An earlier probe that cleared
       `flags.edha-content.**triggers**` was a no-op — the real flag is **`trigRound`**.)*
+- [ ] 🤖 **Fen-Heart near-zero cue — RE-TEST after the 07-27y cue-key fix (engine-only, F5)** —
+      the once-per-round slot now includes `atFraction`, so the two `hp-below` cues on "The Madness
+      Slackens" no longer collide. Take a fresh Gone-to-Weir Fen-Heart from 60 to 0 in **one** write:
+      **both** cards must post — the bloodied "it stops targeting downed characters" AND the
+      near-zero "It goes still — not dead". *Negative control 1:* the same single cue must still fire
+      only ONCE per round — damage it twice below half in one round and count exactly one bloodied
+      card. *Negative control 2:* the Briar-Gone Grove is the other affected block (0.5 + 0) — it
+      must behave the same way, and no OTHER adversary should start double-posting cues. **Read the
+      flag:** `trigRound` should now show two distinct keys ending `hp-below:0_5:...` and
+      `hp-below:0_05:...` — note the underscore; a **dot** there means the key was not escaped and
+      the guard is disarmed, which is a different bug, not a pass.
 
 ---
 
@@ -1569,6 +1624,14 @@ RETIRED on evidence 2026-07-27x, bench run 16, on FRESH pack imports. See that r
       written up once on the **Stillback** row in the Lunavar section above — fix there, re-test
       both. Ledger-independent halves all work: the whisper posts to both GMs and names the
       right defense.)*
+- [ ] 🤖 **Wrongwake ambush belief — RE-TEST after the 07-27y two-cause fix (engine-only, F5)** —
+      same two fixes as the Stillback row above (dotted-uuid ledger key + the `prc.mod` object read);
+      run the same three checks on Breach Strike: the whisper's formula carries the target's real
+      Perception mod, a fooled target's next Breach Strike shows the `(1d6)[The Thrown Voice]` term,
+      and a SECOND use on the same target does not re-roll the belief test. *Negative controls:* a
+      target that saw through it takes no d6, and the Wasting-Eater Wrongwake (flat roll, no
+      advantage) must show `1d20 + mod`, never `2d20kh`. If the Stillback passes and this fails, the
+      cause is NOT the shared ledger — say so, because that would be a new bug.
 *(**Fellstag green engine / Sudden Wall** · **Fellstag hand-placed maze thicket** · **Wake-eel
 drag-under cue** · **Smith bloodied cue** — RETIRED on evidence 2026-07-27x, bench run 16. Sudden Wall
 was click-placed for real (the burst-center pick IS drivable); the maze-thicket row got its
@@ -2585,7 +2648,17 @@ saves, with HP deltas matching exactly. For contrast, the pre-rebuild reading wa
       move zero. Effective speed should read **40**. Pack-wide blast radius **3**: Cragdrake Alpha,
       The Slagbull and Brandram, all on an item named "Unstoppable". Same object-as-scalar family as
       the ambush-belief Perception mod (Lunavar §Stillback); an engine sweep found these two sites
-      and no others.)*
+      and no others.)* ⚠️ **That last sentence was wrong** — an independent sweep on 07-27y found a
+      **third** site (the Phantom Double belief loop), and lint-refs pass 17 now gates the family.
+- [ ] 🤖 **Half-Speed movement — RE-TEST after the 07-27y `edhaSpeedFt` fix (engine-only, F5)** —
+      **testable WITHOUT resolving the Fast-turn blocker**, and worth doing separately so the two
+      failures never hide each other again. In the console on a Cragdrake Alpha (or Slagbull /
+      Brandram): `edhaSpeedFt(actor)` must return its real walking Speed (**40** on the Alpha, not
+      0), and `edhaMoveAllowanceFt(actor, {byHalfSpeed: true})` must return **20**. *Negative
+      control:* an actor with no movement block still returns 0, and `{byHalfSpeed: false,
+      distanceFt: 10}` still returns 10. Only then drive the full **Unstoppable** row — the
+      `edhaIsFastTurn`/`game.combat` blocker is unchanged and still makes the end-to-end drive a
+      ⚑ Ben row while his campaign combat is active.
 
 *(**Bloodied cue** — RETIRED on evidence 2026-07-27x, bench run 16: crossing half (56 → 23) posted
 "⏰ Culls, Never Duels (Bench Adv — Cragdrake Alpha): Bloodied — the pack disengages and circles for

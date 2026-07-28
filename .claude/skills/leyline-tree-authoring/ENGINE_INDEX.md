@@ -123,6 +123,74 @@ focus at Intimidation 3). Flamestance never worked in its life.
    the count on the sheet's Conditions widget, which cycles the same field and toggles the status off at
    ≤ 0 — so never write `name` yourself, and keep delete-at-zero.
 
+## ⛑ THE OBJECT-AS-SCALAR FAMILY — the field EXISTS and is still not a number (07-27y, now GATED)
+
+**The dead-field family's twin, and it hid for longer.** cosmere-rpg wraps ~12 derived stats in a
+`DerivedValueField`: a SchemaField carrying `{derived, override, useOverride[, bonus]}` plus a
+**getter-only `.value`** (`value = bonus present ? base + bonus : useOverride ? override : derived`).
+`Number(thatObject)` is **NaN**, so the near-universal `Number(x) || 0` idiom yields **0**. Identical
+failure signature to a dead field: no error, no warning, the mechanic reads as dead.
+
+**Always read it through `edhaDerivedNum(v, fallback)`** — `.value`, then `.override`, then `.derived`
+(the last two for a raw `_source` object, which has the fields but not the getter), and `null` /
+`undefined` return the fallback rather than `Number(null) === 0`.
+
+| Leaf | Where |
+|---|---|
+| `.mod` | `system.skills.<id>.mod` |
+| `.rate` | `system.movement.<walk\|fly\|swim>.rate` |
+| `.max` | `system.resources.<hea\|foc\|inv>.max` (`edhaResVal` is the existing reader) |
+| `.range` | `system.senses.range`, and a weapon's `system.attack.range` |
+| `deflect`, `injuries` | top-level on the actor |
+| `system.defenses.<phy\|cog\|spi>` | the whole field, not a wrapper |
+| `.lift` / `.carry`, `.total` / `.conversionRate` / `.convertedValue`, `recovery.die` | encumbrance, currency, recovery |
+
+**What it cost (all three shipped, all three found by one bench run):** `edhaSpeedFt` read
+`movement.walk.rate` → 0, so every `edha-move {byHalfSpeed}` moved **0 ft** (three "Unstoppable"
+blocks); `edhaAmbushBeliefTest` and `edhaPhantomBeliefSweep` read `skills.<id>.mod` → every belief
+test in the game rolled **`1d20 + 0`**, making onlookers far too easy to fool.
+
+**`@skills.<x>.mod` in a FORMULA is fine** — the system's `getRollData()` flattens it to `.value`
+before substitution. Only direct property reads are affected.
+
+- **`lint-refs.js` pass 17 gates it**: any `system`-rooted chain inside a `Number( … )` whose last
+  segment is a DerivedValueField leaf and does not end at `.value`/`.override`/`.derived`/`.bonus`/
+  `.base`. Leaf list comes from `data/native-vocabulary.json` → `systemDerivedValueLeaves`, harvested
+  from the system bundle. **Limits:** leaf names not paths; only inside a literal `Number()` (`+x`
+  and `x * 2` are the same bug and are NOT caught); the three anonymously-built `defenses.<id>`
+  fields are not in the harvested list.
+- **A human sweep already failed at this.** The bench run that found the family swept the engine and
+  reported "these two sites and no others"; there were three. That is why it is a gate.
+
+## ⛑ A COMPUTED OBJECT KEY INSIDE A FLAG VALUE MUST GO THROUGH `edhaFlagKey` (07-27y)
+
+**`setFlag` is not the problem; `mergeObject` is.** A flag *key* with dots (`markedBy.<status>`) is
+deliberate nesting and works. But a flag **value**'s own nested keys are merged by
+`ObjectField._updateDiff` → `mergeObject(source[key], value, {insertKeys, insertValues, ...})`, and
+`mergeObject` **expands dotted keys at merge depth 0** — while `_mergeInsert` restarts a *fresh*
+`mergeObject({}, v)` (depth 0 again) for every nested object it inserts. Net effect: a dotted key at
+**any** depth inside a newly-inserted value is expanded into nested objects.
+
+```
+tested: {"Scene.<id>.Token.<id>": {...}}   ->   tested: {Scene: {<id>: {Token: {<id>: {...}}}}}
+```
+
+and the flat lookup returns `undefined` forever. Worse, it is **asymmetric**: on a later write the
+parent key already exists, `_mergeUpdate` preserves the depth, and the same dotted key is inserted
+literally — so the ledger ends up half-expanded and half-flat. Verified against the installed v13
+source, not inferred.
+
+- **`edhaFlagKey(s)`** — dots → `_`. Apply it at the **ledger boundary**, not the call site.
+- Already applied: the ambush-belief ledger (`edhaAmbushMark` / `edhaAmbushTested` /
+  `edhaAmbushFooledIn` all take RAW uuids and escape internally) and the `trigRound` once-per-round
+  ledger (`edhaTriggerAllowed` / `edhaMarkTriggerUsed`). Escaping is a no-op on every dot-free key
+  already persisted, so adding it never needs a migration.
+- **Anything derived from a UUID, a decimal, or an authored name** is a candidate. `phantomBelief`
+  is the pattern to copy when starting fresh: it stores an **array of `{uuid, …}` records**, which
+  cannot hit this at all.
+- **Not gated** — statically detecting "this string becomes an object key in a flag value" is not
+  decidable here. Sanitising at the boundary is the defence.
+
 ## Dispatch — how a talent's behavior runs
 - **`preUseItem` takeover** — `Hooks.on("cosmere-rpg.preUseItem", ...)` returning **`false`** cancels the
   system's default use (no card, no auto-roll). Use it for click-to-place / fully-custom talents; you
@@ -1458,7 +1526,13 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   `edhaDispatchOnHit`) · `"enemy-turn-start"` `{rangeFt}` (a hostile starts its turn in range —
   Reactive Strike; per-ACTION cues would spam) · `"turn-end"` `{everyNRounds}` (end of the
   owner's own turn on matching rounds — Glyph Pulse). Turn triggers ride `combatTurnChange`,
-  one GM client (`edhaTurnCueSweep`). `oncePerRound` defaults ON (the `trigRound` gate). Author
+  one GM client (`edhaTurnCueSweep`). `oncePerRound` defaults ON (the `trigRound` gate) and its
+  slot key is **`edhaCueKey(itemName, h)`** (pure, pinned) = item + trigger + **`atFraction` +
+  `rangeFt` + `everyNRounds`. Until 07-27y it was item + trigger ALONE, so TWO cues of the same
+  trigger on ONE item shared a slot and the second could never fire** — the Gone-to-Weir Fen-Heart's
+  near-zero "goes still" cue (0.05) was permanently eaten by its own bloodied cue (0.5), and the
+  Briar-Gone Grove had the same pair. Residual limit: two cues identical in trigger and all three
+  dials, differing only in `note`, still share a slot. Author
   the cost into the `note` ("Reaction, 1 Focus — …"). Consumers: Fade, Break ×2, Cover Their
   Retreat, Press the Line, morale traits, Reactive Strike, Glyph Pulse, Phase 2, Devastating
   Blow's margin-Prone, Stalker Fade. **Iron-rule-3 corollary: text that names a hook gets a
