@@ -33,6 +33,180 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-07-28g — MARATHON-3 FIX PASS D (bench run 20's four items): **3 engine defects fixed — one of them 5× bigger than reported, one whose reported MECHANISM was wrong, and the "authoring gap" that turns out to need no data change at all.** Two family sweeps with the counts. A lint pass measured and **DECLINED, with its recall**. **ENGINE-ONLY → ⟳ sync the module + F5; the pack-rebuild list stays EMPTY** (a fourth pass running).
+
+### What shipped
+
+Four commits, three engine defects, three new test files (22 cases), **zero data files touched**.
+`38e0c40` falsy-zero · `27a4788` twin-actor dedupe · `d79d225` timed-status catch-up · `f0da467`
+a test-brittleness fix. 372 tests green; every fix mutation-verified, twice where a *wrong* fix was
+plausible.
+
+### Bug root causes
+
+**1. An authored `0` is falsy, so `|| <default>` silently reverted it.** `edhaReknitClick` read
+`Number(ds.edhaCost) || 2`. Reknit Form authors `costTemporary: 0` (the Stitchmother's card already
+charges 1 Inv + 1 Focus), so the menu **rendered** "−0 Investiture" — `edhaPostReknitCard` uses the
+correct `== null` test — and the click charged **2** (inv 10 → 8). Display and behaviour disagreed
+because the two halves of one feature used different idioms.
+
+**The sweep found the reported bug is the SMALL one.** `Number(spec.speed) || 25` in `edhaSummon`
+hits **four shipped rules**, every one a *static illusion* — Holographic Illusion, Blue's Phantom
+Double, and The Seeming's two copies, whose own text reads *"its image **stands** a pace from its
+body"* — and gave each of them a **25 ft walk speed**. Two of those four call sites pass `0`
+*from the engine itself* (the phantom-copy builder and the barrier placer), so this was never even
+an authoring mistake. Two more, both latent but both self-contradictory: `edha-heal-cut.fraction`
+(`edhaHealCutInfo` implements a `fraction === 0` "cannot regain HP" branch that its writer could
+never reach) and `edha-defense-buff.amount` (the **same handler's** scene-window branch already read
+0 as "grant nothing", while the round-until-turn branch turned it into +2).
+
+**2. A scene scan deduped actors by OBJECT IDENTITY.** `edhaSutureCradleCheck` unioned
+`canvas.tokens.placeables` with `game.actors` and filtered with `holders.includes(tok.actor)`. An
+unlinked token's `token.actor` is a **synthetic** Actor — different object, **same `id`**, inheriting
+the flag — so both passed and the cradle rolled Discipline **twice**, either result able to end it.
+Run 20 was right about the mechanism and right to rule out the two-GM duplicate by `userId`.
+
+The interesting part is the fix, not the bug: **`uuid` does not dedupe the twins** (`Scene.x.Token.y.
+Actor.z` ≠ `Actor.z`) and **`id` alone would collapse three unlinked Raiders stamped from one
+prototype into one** — a worse bug. Canvas pass by `uuid`, directory pass gated on `id`.
+
+**3. `timed: true` was immortal out of combat — and the report's mechanism was WRONG.** Run 20
+concluded "`EDHA_TIMED_STATUSES` omits `braced`, so no `expireAfter` is ever stamped". But
+`edha-self-status {timed: true}` calls `edhaApplyTimedStatus`, which stamps **explicitly** and never
+consults that Set. The real hole is the guard around the stamp — `if (expire && game.combat?.started)`,
+plus a `edhaCombatantTurnIndex(...) >= 0` — so with no started combat the status lands with **no
+coordinate**, and the turn-change pass that exists to catch exactly that (*"lazily stamp un-stamped
+Weakened"*) skipped it, because *it* keyed on `EDHA_TIMED_STATUSES`. **Brace used before initiative
+is rolled** is the ordinary table case. This also explains the run's own control: `slowed` IS on the
+allowlist, so the lazy pass rescued it in the same combat.
+
+**And it is five statuses, not one.** Auditing the allowlist against what authored rules actually
+mark timed: **7 shipped rules across 5 status ids** ride that single stamp — `braced` ×2, `tagged`,
+`unstoppable`, `compelled`, `disoriented`. Adding them to the Set would have been a category error
+(it means "auto-expire *however* applied, including a GM hand-toggling the icon") and would have
+fixed one of five. The fix records the applier's **intent** (`timedExpire`) and honours it on the
+next turn change — keyed on what the rule asked for, never on a status name.
+
+> **Predictive Ward, checked rather than assumed.** It is safe *by construction*: a `transfer: true`
+> AE on the item, so it never passes through `edhaApplyTimedStatus` and carries no intent. And on the
+> question the brief raised — would the *report's* fix have broken it? **No, but only by accident**:
+> a transfer effect's `parent` is the Item (the create-hook bails) and the sweep iterates
+> `actor.effects`, not `appliedEffects` (verified in the installed Foundry's `allApplicableEffects`).
+> So `EDHA_STATUSES` L183's stated reason is over-cautious. It would still have been the wrong fix.
+
+### The two family sweeps, with the counts
+
+| sweep | corpus | authored/dataset | **bugs** |
+|---|--:|--:|--:|
+| `x \|\| <non-zero number>` | 410 sites (165 non-zero default) | ~31 | **4** (1 reported, 3 found) |
+| canvas+directory actor unions | 7 | 7 | **1** (+1 latent, retrofitted) |
+
+The falsy-zero discriminator is **provenance, never shape** — the same lesson fix pass C reached for
+`!== undefined`, re-derived independently. A rule-config field, a dataset attribute or a data file
+usually *can* mean 0; a runtime Foundry lookup (grid size, tier, level, a `Math.hypot` magnitude)
+cannot, and `||` is correct there. Sites already clamped by `Math.max(1, …)` block 0 explicitly and
+visibly — a different question. And **`edha-detonate-list.radiusFt` is the model of doing it right**:
+its hint says *"0 = each marker keeps the size it was placed at"* and the call site normalises 0 to
+`null` so the `||` chain implements the hint.
+
+The dedupe sweep's other six unions are all **write-idempotent unsets** (`thpClear`,
+`edhaClearChaosState`, `edhaClearFateState`, `edhaClearCounterState`, the cradle's `deleteCombat`
+clear): a double visit costs one redundant write. Left alone deliberately. `edhaWatchActors` was the
+one worth retrofitting — a duplicate there double-fires every watch **rule** — and it is latent today
+only because its directory pass filters to `type === "character"` and PCs are normally linked.
+
+### The gate: measured, DECLINED — with its RECALL, which is the number that decided it
+
+A lint pass on `Number(<authored-prefix>.x) || <non-zero>` fires on **36 sites, 0 of them bugs**
+today: 36 allowlist entries on day one, at which point the allowlist *is* the gate. The sharper,
+mechanically computable variant — flag when the fallback **duplicates the field's own schema
+`initial`**, which is precisely the discriminator this pass used by hand — scores **12 hits and
+would have caught 0 of the 4 real bugs**, because not one of them is written `this.X`: they arrive
+through a chat-card dataset, a `spec` object assembled at four different call sites, an
+`edhaActorRuleOf` result, and an `edhaDefBuffFor` spec. **Zero recall on the entire known corpus is
+not a gate.**
+
+⚠️ **Unlike 07-28d's family, this one is GROWING** — 15 sites (07-16) → 16 (07-25) → 40 (07-26,
+during the rule-2b handler builds) → 36 now. That argues for a ratchet and against this ratchet: the
+population grows because every new handler legitimately reads authored numbers with sensible
+non-zero defaults. So the durable guard is the **LEDGER case** in
+`tests/falsy-zero-authored.test.js` (pins the four fixed expressions in code, fires even if a lint
+were disabled) plus a **data-driven case that checks every shipped rule authoring a 0** — including
+ones added later — and the ⛑ family write-up in `ENGINE_INDEX.md` so the next session meets the
+reasoning instead of re-deriving it.
+
+### Item 4 — Sovereign of Solitude is NOT an authoring gap, and needs no data change
+
+Run 20 read `rules = 0, effects = 0` and concluded the item ships empty. **The repo says otherwise.**
+`data/adversaries.json` → Reeve-Owl → Sovereign of Solitude carries **four** rules, and every event
+and handler type on them is registered:
+
+| # | event | handler | role |
+|---|---|---|---|
+| 0 | `edha-apply-watch` | `edha-gm-cue` | the enemy-turn-start cue floor (30 ft) |
+| 1 | `use` | `edha-def-test` | Black vs. Spiritual |
+| 2 | `use` | `edha-triggered-effect` | the movement-to-0 Immobilize |
+| 3 | `edha-test-success` | `edha-triggered-effect` | the 1d6 vital bite |
+
+They were authored **07-26** (`ea81141`, the pre-deploy audit the card's own text refers to);
+`adversaries.json` has **not changed since**, and the **07-27u deploy rebuilt the adversaries pack**
+with `validate-adversaries` reporting 0 issues over 52 actors / 336 embedded item keys. The build
+path was read line by line: it emits every `raw.events` entry into the DataModel map with a
+deterministic 16-char id and filters nothing.
+
+**So there is nothing to author, and the recommendation is to author NOTHING.** Writing the rule
+would have re-opened the pack-rebuild list — empty for the first time in the project's tracked
+history, and kept empty by four passes now — to add rules that already exist, and would have risked
+duplicating them. The residue is a **deploy/read question**, and the 07-27u delta already names the
+mechanism: *"⟳ Sync Adversaries from Pack — the adversary pack was rebuilt, so **placed copies are
+stale until synced or re-dragged**."* The re-test row below makes the next bench read the **pack**
+and a **placed copy** and print both counts, which is the one measurement that separates a stale
+snapshot from a genuine build gap. Only if the PACK reports 0 does a rebuild become owed.
+
+⚠️ **Not verified from here on purpose:** Ben is at the table, so the live LevelDB was not opened —
+reading it under a running Foundry is a single-writer hazard, and the brief forbade touching the live
+module. Note also that grepping compiled `.ldb` proves nothing either way (LevelDB compresses; a
+positive control returns zero hits too).
+
+**Contrast preserved:** **Suture Cradle**'s `rules = 0` is *correct* — the engine legitimately
+name-keys it at the `cosmere-rpg.useItem` hook, adversary bespoke, in scope for that surface by the
+ratchet's own scope note. `rules = 0` is a defect on a TALENT and a legal shape on an adversary
+ability that the engine owns.
+
+**The other queued data item — Unbreakable Line — is genuinely rule-less** (both blocks carry only
+the `edha-apply-watch` → `edha-gm-cue` rule) and stays queued behind its ruling. Nothing now forces a
+rebuild, so the two do not need to ship together; if a rebuild is ever triggered for another reason,
+Unbreakable Line is the one to fold in.
+
+### New REUSABLE primitives
+
+- **`edhaNumOr(v, fallback)`** → PURE. A number read from an **authored** source: blank / absent /
+  non-numeric falls back, **0 does not**. Rule config, chat-card datasets, data files. NOT for
+  runtime Foundry lookups.
+- **`edhaSceneActors({ directoryFilter })`** → the canvas + directory actor union, deduped by
+  `uuid` on the canvas pass and by `id` against the canvas on the directory pass. The single correct
+  answer to "everyone who could be carrying this right now". `edhaWatchActors()` is now exactly this
+  call with a `type === "character"` filter.
+- **`edhaTimedStampPlan(intent, allowlisted)`** → PURE. The turn-change catch-up decision; `null`
+  means *leave it alone*, which is the answer for a permanent marker.
+- **`flags.edha-content.timedExpire`** = `{expire, ownerUuid}` — an applier's recorded intent when it
+  cannot stamp an expiry yet. Any future timed effect can use it.
+
+### Known limits / couldn't self-verify
+
+- 🤖 **Nothing here was driven in Foundry** — Ben is at the table; no pack build, no
+  `module-src-sync`, no `deploy-to-foundry`. The re-test rows carry **positive AND negative controls**
+  on every cell.
+- 🤖 **The Sovereign of Solitude pack-vs-placed probe** is the one row that must be run before any
+  conclusion about that item is final.
+- **Backlog, not touched:** the six write-idempotent canvas+directory unions listed above, and the
+  ~27 correct-but-undocumented `|| <default>` reads — several have a **schema/code default mismatch**
+  worth tidying one day (`edha-snare-react.nearFt` has `initial: 10` but one read falls back to
+  **30**; `edha-status-sweep.rangeFt` has `initial: 0` and its read falls back to **30**). Cosmetic
+  today because both sit behind a boolean branch selector; recorded so nobody re-discovers them.
+
+---
+
 ## 2026-07-28f — BENCH RUN 20 (marathon 3): **the never-benched `# Adversary ability wiring` block driven for the first time — 26 🤖 in, 13 retired on evidence, `# W23` retired WHOLE, 4 root-caused fails, 9 not reached.** Three NEW engine defects, each with a named line and a matched control. **Zero world drift — not one write to Ben's actors.** DOCS-ONLY (no engine, no data, no pack rebuild).
 
 Engine hash-verified live on join: served `register-skills.js` SHA-256

@@ -232,6 +232,122 @@ there is no lint — the swept corpus was 3 sites and only 1 was wrong):
   failing closed. That is a third behaviour — *guessing* — and each would need its own bench control
   before changing. Listed in the 07-28d delta as a backlog family, not touched.
 
+## ⛑ AN AUTHORED **0** IS FALSY — the `x || <default>` revert (07-28g, 4 shipped bugs, NOT gated)
+
+**The shape:** read a number an author supplied, with a fallback for "they didn't supply one".
+
+```js
+const cost = Number(ds.edhaCost) || 2;      // an authored 0 IS a value. `|| 2` throws it away.
+```
+
+Reknit Form authors `costTemporary: 0`; the card rendered "−0 Investiture" (its generator uses the
+correct `== null` test) and the click charged **2** (bench run 20 measured inv 10 → 8). **In this
+engine 0 is routinely a legal authored value** — a free ability, a 0-ft "whole scene", an immobile
+summon, a zero-distance push, "cannot regain HP at all".
+
+- **`edhaNumOr(v, fallback)`** → PURE. Blank / absent / non-numeric falls back; **0 does not**.
+  Reach for it for **rule config, chat-card datasets and data files**. Do NOT use it for a runtime
+  Foundry lookup (`grid.size`, `actor.system.tier`, a `Math.hypot` magnitude) — 0 there is a failed
+  or degenerate read and `||` is the right guard. Pinned in `tests/falsy-zero-authored.test.js`.
+
+**The sweep (07-28g): 410 `|| <number>` sites · 165 with a non-zero default · ~31 reading an
+authored/dataset value · FOUR bugs.** Fixed: `edha-remove-injury` costs (LIVE, 1 rule) ·
+`edha-summon`/`edha-illusion-copy` **speed** (LIVE, 4 rules — Holographic Illusion, Phantom Double
+and The Seeming's two copies, every one a *static* illusion given a 25 ft walk) · `edha-heal-cut`
+`fraction` (latent; `edhaHealCutInfo` has a `fraction === 0` "cannot regain HP" branch the writer
+could never reach) · `edha-defense-buff` `amount` (latent; the same handler's scene-window branch
+already read 0 as "do nothing").
+
+**How to tell a bug from a correct instance** — provenance, never shape:
+
+| the value comes from… | is 0 legal? | correct code |
+|---|---|---|
+| a **rule config field / dataset / data file** | usually YES | `edhaNumOr`, or an explicit `> 0 ? :` |
+| a **runtime Foundry lookup** (grid, tier, level, magnitude) | no — 0 is a failed read | `|| <default>` is fine |
+| a field whose 0 is normalised **at the writer** (`Number(h.sizeFt) > 0 ? … : 10`) | already handled | the reader's `||` is harmless belt-and-braces |
+| a value already clamped by `Math.max(1, …)` | blocked explicitly and visibly | not this family |
+
+**`edha-detonate-list.radiusFt` is the model**: hint says *"0 = each marker keeps the size it was
+placed at"*, and the call site writes `Number(this.radiusFt) || null` so the `||` chain implements
+the hint exactly. **When 0 means something, say so in the field's `hint` and implement it at the
+writer.**
+
+⚠️ **A lint pass was considered and DECLINED — with the numbers.** `Number(<authored-prefix>.x) ||
+<non-zero>` fires on **36 sites, 0 of them bugs** today (36 allowlist entries on day one — the
+allowlist *is* the gate). The sharper, mechanically computable variant — flag when the fallback
+duplicates the field's own schema `initial`, so it can only fire on a deliberate 0 — scores **12
+hits, and would have caught 0 of the 4 real bugs**, because not one of them is written `this.X`
+(they arrive via a dataset, a `spec` object assembled at four call sites, an `edhaActorRuleOf`
+result, and an `edhaDefBuffFor` spec). **Zero recall on the entire known corpus is not a gate.**
+Unlike the 07-28d family this one **is growing** (15 sites on 07-16 → 16 on 07-25 → 40 on 07-26,
+during the rule-2b handler builds → 36 now), so the durable guard is the **LEDGER case in
+`tests/falsy-zero-authored.test.js`**, which pins the four fixed expressions textually and fires
+even if the lint were disabled, plus the data-driven case that checks *every* shipped rule authoring
+a 0 — including ones added later.
+
+## ⛑ THE TWIN-ACTOR FAMILY — an unlinked token's actor and its directory twin (07-28g)
+
+**The shape:** scan "everyone who could be carrying this", from the two places an actor can live.
+
+```js
+for (const tok of canvas.tokens.placeables) if (tok.actor && !holders.includes(tok.actor)) holders.push(tok.actor);
+for (const a of game.actors)                if (!holders.includes(a))                      holders.push(a);
+```
+
+An unlinked token's `token.actor` is a **synthetic** Actor: a *different object* with the **same
+`id`**, inheriting the base actor's flags. `includes` compares references, so both land in the list
+and the ability fires twice. Bench run 20: two Suture Cradle cards 75 ms apart **from one user**
+(attributed by `userId` first — not the two-GM duplicate), and two Discipline rolls vs DC 10 +
+damage, either of which could end the cradle.
+
+**Neither obvious key works alone, and this is the trap:**
+
+| key | unlinked token vs its directory twin | 3 unlinked tokens off ONE prototype |
+|---|---|---|
+| object identity | ❌ both kept | ✅ 3 |
+| `uuid` | ❌ both kept (`Scene.x.Token.y.Actor.z` ≠ `Actor.z`) | ✅ 3 |
+| `id` | ✅ deduped | ❌ **collapsed to 1** — a worse bug |
+
+- **`edhaSceneActors({ directoryFilter })`** → the canvas + directory union, deduped correctly:
+  the **canvas pass by `uuid`** (distinct tokens stay distinct; one linked actor's two tokens
+  collapse), then a directory actor only if **no canvas token already IS it, by `id`**. An
+  off-canvas actor is still included — "parked in the sidebar" is a real holder (07-28d).
+  `edhaWatchActors()` is exactly `edhaSceneActors({ directoryFilter: a => a.type === "character" })`.
+  Pinned in `tests/twin-actor-dedupe.test.js`, including the three-Raiders control that fails the
+  tempting id-only fix.
+- **Left on their own loops, deliberately** (do not "fix" these): `thpClear`, `edhaClearChaosState`,
+  `edhaClearFateState`, `edhaClearCounterState` and the Suture Cradle `deleteCombat` clear all do
+  **write-idempotent unsets** — a double visit costs a redundant write and nothing else. Churning
+  them on inference is the move 07-28d argued against.
+
+## ⛑ A `timed: true` RULE IS NOT THE SAME AS A TIMED **STATUS** (07-28g)
+
+`EDHA_TIMED_STATUSES` means *"auto-expire HOWEVER this was applied, including a GM hand-toggling the
+icon on the token HUD"*. It is **not** the list of statuses that can be timed, and **adding to it is
+almost never the fix for "X never expired"** — bench run 20 proposed exactly that for `braced` and it
+would have been wrong twice over (it auto-expires hand-placed markers, and it fixes only one of five
+affected status ids).
+
+A rule that authors `timed: true` (or `expire: owner-turn` / `target-turn`) calls
+**`edhaApplyTimedStatus`**, which stamps `flags.edha-content.expireAfter` explicitly — but only
+`if (game.combat?.started)` **and** only when the creature is in *that* combat. Out of combat the
+status landed with no coordinate and the turn-change catch-up pass skipped it (that pass keyed on
+`EDHA_TIMED_STATUSES`), so **Brace used before initiative was immortal**. Seven shipped rules across
+five status ids rode that single stamp: `braced` ×2, `tagged`, `unstoppable`, `compelled`,
+`disoriented` — all five deliberately absent from the allowlist, because each also has a legitimate
+untimed life (the Frostbinder's Predictive Ward is a *permanent* `braced`).
+
+- **`flags.edha-content.timedExpire` = `{expire, ownerUuid}`** — the applier's INTENT, written when
+  it cannot stamp yet, cleared when honoured. Keys the behaviour on what the *rule asked for*, never
+  on a status name.
+- **`edhaTimedStampPlan(intent, allowlisted)`** → PURE. The catch-up decision: intent wins,
+  allowlist is the fallback, **neither → `null` ("leave it alone")**. That null is what makes
+  Predictive Ward safe *by construction*: a `transfer: true` AE on the item never goes through
+  `edhaApplyTimedStatus`, so it carries no intent. Pinned in `tests/timed-status-catchup.test.js`,
+  whose negative control fails if `braced` is added to the allowlist.
+- The catch-up now resolves the **owner's** turn index for owner-relative expiry; the old lazy path
+  always stamped the carrier's turn, which was wrong for Kneel's Compelled and Disorient.
+
 ## Dispatch — how a talent's behavior runs
 - **`preUseItem` takeover** — `Hooks.on("cosmere-rpg.preUseItem", ...)` returning **`false`** cancels the
   system's default use (no card, no auto-roll). Use it for click-to-place / fully-custom talents; you

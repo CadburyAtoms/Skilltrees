@@ -234,6 +234,30 @@ must contain `edhaActorSide` (**2×**) and `edhaAllyDropEligible` (**3×**), and
 `# BENCH — Engine-wide & cross-tree` → "Engine-wide fixes still unbenched"; it wants **four cells**,
 two of them positive. **The pack-rebuild list stays EMPTY.**
 
+**⏳ NEW 2026-07-28g — the fix-pass-D ENGINE half needs ⟟ sync the module + F5 (no rebuild, no ⟳ Sync
+Talents).** Three engine-only fixes from bench run 20; **the pack-rebuild list stays EMPTY, and
+nothing in this batch wants a data change.** (1) **An authored `0` was falsy**, so `|| <default>`
+reverted it — Reknit Form's zeroed cost charged 2, and (not in the report) **four static illusions**
+(Holographic Illusion, Phantom Double, The Seeming ×2) were each given a **25 ft walk speed** by
+`Number(spec.speed) || 25`. (2) **A canvas+directory actor scan deduped by object identity**, so an
+unlinked token's synthetic actor and its directory twin both fired — Suture Cradle rolled Discipline
+twice. (3) **An authored `timed: true` never expired when the ability was used out of combat** — the
+stamp is guarded on a running combat and the catch-up pass keyed on a status allowlist that
+deliberately excludes `braced`, `tagged`, `unstoppable`, `compelled` and `disoriented`.
+**Byte-check after the sync:** the served `register-skills.js` must contain `edhaNumOr` (**5×**),
+`edhaSceneActors` (**5×**) and `edhaTimedStampPlan` (**2×**), and must NOT contain
+`Number(ds.edhaCost) || 2`, `Number(spec.speed) || 25` or `holders.includes(tok.actor)` anywhere.
+Re-test rows: the Stitchmother/Trooper block in `# Adversary ability wiring` (Braced expiry — four
+cells; Suture Cradle — three, one of them the three-Raiders control; Reknit — two; static illusions —
+two). ⚠️ **`braced` must still NOT be in `EDHA_TIMED_STATUSES`** — the Predictive Ward control
+depends on it.
+
+⚠️ **2026-07-28g — Sovereign of Solitude is a SYNC question, not an authoring gap.** Run 20 read
+`rules = 0` and filed it as an empty item; the repo carries **four** rules on it, authored 07-26,
+and the 07-27u deploy rebuilt the adversaries pack clean. Before anyone re-opens the rebuild list
+over it, click **⟳ Sync Adversaries from Pack** (or re-drag the Reeve-Owl) and re-read — placed
+copies are frozen snapshots. Its 2bAB-9 row now asks for the pack count AND the placed count.
+
 ⚠️ **You still owe ⟳ Sync Talents on any character you will PLAY** — an owned talent is a frozen
 snapshot until you click it. The 16 bench PCs sync themselves (`bench-setup-console.js` calls
 `edha.syncActorTalents`), so a bench run does not need it; your own PCs do.
@@ -2157,43 +2181,45 @@ Mutation Upgrade); superseded hand-toggle AEs were removed — the engine does t
       they share a world actor — the worst case): each bird raises its OWN seeming; the second
       cast must NOT clear the first bird's copy; each bird re-casting replaces only its own;
       Spearing Beak's +1d6 keys to the attacking bird's copy, not its partner's.
-- [ ] 🤖 **Braced status** — use a Trooper's (or the Captain's) **Brace**: the shield icon lands
-      on ITS token and auto-expires after its next turn. The Frostbinder's token wears the icon
-      PERMANENTLY (Predictive Ward) and it must NOT expire with combat turns.
-      - ⚠️ **2026-07-28f (bench run 20) — FAIL, half of it. The icon half PASSES**: Brace put
-        `Braced (attacks at disadvantage)` / status `braced` on the Trooper's OWN token, and the
-        Frostbinder carries Predictive Ward's `braced` via `appliedEffects` with
-        `duration.type: "none"`. **The auto-expire NEVER happens.**
-        `EDHA_TIMED_STATUSES` (engine L580) is `{weakened, immobilized, slowed, noactions,
-        noreactions}` — **`braced` is not in it**, so `edhaIsTimedStatus()` returns false, neither
-        the `createActiveEffect` stamp hook nor `edhaExpireTimedStatuses`'s lazy pass ever writes an
-        `expireAfter` flag, and the effect is immortal. Re-armed INSIDE a bench combat and stepped
-        the Trooper's turn start twice (r3t1, r4t1): still `braced`, no `expireAfter` stamp, no
-        "ends" card — while a `slowed` from Frost Lance expired correctly in the SAME combat
-        ("💢 Slowed on Bench — Green ends (end of its turn)"), which is the control proving the
-        sweep itself was live. Brace's own rule authors `timed: true`; the engine never consults it.
-        ⚠️ **The row's discriminating claim currently reads the same for both fixtures** — neither
-        expires — so Predictive Ward's "permanent" looks right for the wrong reason. → test-pass-fixes.
+- [ ] 🤖 **Braced expiry — RE-TEST after fix pass D (07-28g; engine-only → ⟟ sync + F5). FOUR cells,
+      and the point is that two of them must DIFFER** — run 20 found Brace immortal, but its stated
+      cause (`braced` missing from `EDHA_TIMED_STATUSES`) was wrong; the real hole was that
+      `edhaApplyTimedStatus` only stamps an expiry when a combat is already RUNNING, and the
+      catch-up pass ignored anything off that allowlist. So drive the out-of-combat order
+      deliberately. **(a) THE BUG'S OWN CASE:** with NO combat, use a Trooper's **Brace** → the
+      shield icon lands and the effect now carries `flags.edha-content.timedExpire`. THEN start a
+      combat with the Trooper in it and step turns: at the first turn change the flag becomes
+      `expireAfter`, and by the end of the Trooper's next turn the icon is GONE with a
+      "💢 … ends (end of its turn)" card. **(b) POSITIVE CONTROL:** use Brace INSIDE a running
+      combat → `expireAfter` is stamped immediately (no `timedExpire` at all) and it still expires
+      on schedule. **(c) NEGATIVE CONTROL, the one that matters:** the Frostbinder's token must
+      STILL wear `braced` permanently — step at least four rounds; Predictive Ward carries no
+      `timedExpire` and must never acquire an `expireAfter`. **(d) SECOND NEGATIVE CONTROL:** a
+      `slowed` in the same combat must expire exactly as before (the allowlist path is untouched).
+      Report all four; (a) and (c) reading the same is the failure the old row could not detect.
+- [ ] 🤖 **The other four timed statuses ride the same fix (07-28g)** — `braced` was one of FIVE
+      status ids whose authored `timed: true` relied on the single in-combat stamp. Spot-check ONE
+      of the others out of combat, then in combat: **Kneel's `compelled`** (owner-relative — it must
+      expire at the end of the OWNER's next turn, not the victim's, which the old lazy path got
+      wrong) or the Hunter's **`tagged`**. Negative control: a hand-toggled `compelled` from the
+      token HUD (no rule involved) must NOT auto-expire — that is why these are deliberately absent
+      from `EDHA_TIMED_STATUSES`.
 - [ ] 🤖 **Cinder Coat splash-back** — melee-hit a Cinderhound: the attacker automatically takes
       1d4 Energy (card names the hound). A ranged hit from across the room must NOT splash.
 - [ ] 🤖 **Bite sheds light** — a bitten creature's token starts glowing (the Kindle light rider).
-- [ ] 🤖 **Suture Cradle** — TARGET a creature, use the cradle (heal rolls); every time that
-      creature is then hit, the Stitchmother's Discipline auto-rolls vs DC 10+damage with a
-      keep/ends card. Cradle another creature: the flag moves.
-      - ⚠️ **2026-07-28f (bench run 20) — PARTIAL: the mechanic is right, it just fires TWICE.**
-        Everything the row asks for happened — heal rolled `3d6 = 5`, the cradle flag landed
-        (`sutureCradle → Bench — Green`), a 6-damage hit auto-rolled Discipline vs **DC 16**
-        (10 + 6) and posted the ends card, the flag cleared on the failure, and cradling Black
-        afterwards **moved** the flag off Green. **But the keep/ends card posted twice**, 75 ms
-        apart, *both from user `Bench`* — so it is **NOT** the two-GM duplicate (attributed by
-        `userId`, per the standing rule). Root cause: `edhaSutureCradleCheck` (engine L3367) builds
-        `holders` and dedupes with **`holders.includes(tok.actor)` — object identity**. An unlinked
-        token's synthetic actor is a *different object* with the **same `id`** that inherits the
-        base actor's flags, so the canvas pass and the `game.actors` pass both push it. Reproduced
-        the scan by hand: **2 entries, same id `DtdyQdVRXolPGFOb`**, one `isToken:true`
-        (speaker alias "Stitchmother") and one `isToken:false` (alias "Bench Adv — Stitchmother") —
-        exactly the two aliases on the two cards. Dedupe by `id`/`uuid`. This doubles the Discipline
-        ROLL too, so either result can end the cradle. → test-pass-fixes.
+- [ ] 🤖 **Suture Cradle fires ONCE — RE-TEST after fix pass D (07-28g; engine-only → ⟟ sync + F5),
+      and the second cell is the one that catches a wrong fix** — run 20 got the whole mechanic
+      right and posted every card TWICE (75 ms apart, both from user `Bench`, so not the two-GM
+      duplicate): the holder scan deduped by object identity, and an unlinked token's synthetic
+      actor is a different object with the same `id`. **(a)** From an **unlinked** Stitchmother
+      token, TARGET a creature and use the cradle; hit the cradled creature → **exactly ONE**
+      Discipline-vs-DC-10+damage roll and **ONE** keep/ends card (check the speaker alias too: the
+      bug showed "Stitchmother" and "Bench Adv — Stitchmother"). Cradle another creature: the flag
+      moves. **(b) POSITIVE CONTROL — THREE unlinked tokens stamped from ONE prototype must stay
+      three separate cradlers.** Drop three Stitchmothers from the same prototype, cradle a
+      different creature with each, then hit all three targets: **three** independent rolls. A
+      naive `id`-only dedupe collapses them to one, which is a worse bug than the one being fixed.
+      **(c) NEGATIVE CONTROL:** a Stitchmother holding nobody rolls nothing when anything is hit.
 - [ ] 🤖 **Stalker Fade cue** — damage a Stalker: the graze-or-miss reminder card (once/round).
 - [ ] 🤖 **Devastating Blow cue** — on ITS hit: the margin-Prone reminder; on other attacks: none.
 
@@ -2221,30 +2247,39 @@ Retired; evidence in the 07-26k delta.)*
         Bone Spurs wrote `mutation {kind:"boneSpurs", keen:2}` and the bonus **rode the thrall's
         Slam**: damage `1d6+3 = 7` **+2 keen = 9**, card "🦴 Bone Spurs (Life): +2 keen on the
         strike", victim 47 → 38 at Deflect 0.
-      - ⚠️ **The Reknit Form half FAILS — a falsy-zero bug charges the cost the authored rule
-        zeroed.** The picker posts correctly and the card even RENDERS the zeroes
-        ("(0 Inv temporary · 0 Inv permanent)", buttons "(−0 Investiture)") — but clicking one
-        **charged 2 Investiture** (10 → 8) and the result card said "(−2 Investiture)", i.e. exactly
-        the double-charge the rule's `costTemporary: 0 / costPermanent: 0` exists to prevent.
-        Root cause: `edhaReknitClick` (engine L15571) reads
-        **`const cost = Number(ds.edhaCost) || 2;`** — an authored **0** is falsy, so `|| 2` wins.
-        The card generator `edhaPostReknitCard` gets it right (`h?.costTemporary == null ? 2 : …`),
-        which is why display and behaviour disagree. Generic: it hits ANY `edha-remove-injury` rule
-        authoring a 0 cost. (The injury itself WAS removed — from the token actor; the directory
-        copy is a separate doc for an unlinked token, not a defect.) → test-pass-fixes.
-- [ ] 🤖 **2bAB-9 — Reeve-Owl — Sovereign of Solitude** — target the moving Weakened creature, use it → Immobilized lands, Black vs Spiritual auto-resolves, and a success rolls 1d6 vital — the cue's "use the item to auto-resolve" promise is true for the first time.
-      - ⚠️ **2026-07-28f (bench run 20) — FAIL: the item is EMPTY. This is an authoring gap, and
-        the 07-26 rewire never landed on it.** Read from the live pack: Sovereign of Solitude carries
-        **`rules = 0`, `effects = 0`** (activation `rea`, 2 Focus). Its own description asserts the
-        opposite — *"rule-keyed on this item since the 07-26 pre-deploy audit (the engine name-key
-        its use path rode is gone)"* — and then promises movement→0, Black vs Spiritual, and 1d6
-        vital on a success. **Nothing is wired.** Confirmed it is not secretly engine-owned either:
-        the engine's three "Sovereign of Solitude" mentions (L308 / L579 / L586) are **all comments**,
-        no code branch, and the name is absent from `name-keyed-allowlist.json`. So the talent is
-        genuinely dead, not merely un-migrated. Contrast with **Suture Cradle**, whose `rules = 0` is
-        fine because the engine legitimately name-keys it (L3357, an adversary bespoke — allowed).
-        Needs an authored `edha-def-test` (black vs spi) + `edha-triggered-effect` pair, mirroring
-        2bAB-6/2bAB-7. → test-pass-fixes.
+      - ⚠️ **The Reknit Form half FAILED (run 20) and is FIXED in 07-28g — see the dedicated
+        re-test row below.**
+- [ ] 🤖 **Reknit Form charges the ZERO its rule authors — RE-TEST after fix pass D (07-28g;
+      engine-only → ⟟ sync + F5)** — run 20's picker rendered "(−0 Investiture)" and then charged
+      **2** (inv 10 → 8): `edhaReknitClick` read `Number(ds.edhaCost) || 2`, and an authored 0 is
+      falsy. **(a)** Note the Stitchmother's Investiture, use Reknit Form on a creature with an
+      injury, click a button → the injury is removed and **Investiture does not move at all**; the
+      result card reads "(−0 Investiture)", matching the button. **(b) POSITIVE CONTROL — the
+      default must still bite:** a `edha-remove-injury` rule with the cost fields left BLANK still
+      charges 2 (temporary) / 3 (permanent). Absent is not zero, and the fix must keep them apart.
+- [ ] 🤖 **Static illusions are IMMOBILE — the same falsy-zero bug, four rules the report missed
+      (07-28g; engine-only → ⟟ sync + F5)** — `Number(spec.speed) || 25` gave every speed-0 summon a
+      25 ft walk. **(a)** Cast Blue's **Phantom Double** (or the Mistheron's **Seeming**, or
+      **Holographic Illusion**) → the created token's Speed reads **0**, and dragging it shows no
+      movement allowance. Its own card says the image *stands* a pace away; it must not walk.
+      **(b) POSITIVE CONTROL:** an ordinary summon (Civilization's or Death's, which author
+      `speed: 25`) still moves 25 ft. Both cells, or the row proves nothing.
+- [ ] 🤖 **2bAB-9 — Reeve-Owl — Sovereign of Solitude — READ THE PACK BEFORE CONCLUDING ANYTHING
+      (revised 07-28g; NO code or data change)** — run 20 reported `rules = 0, effects = 0` and
+      called it an authoring gap. **The repo disagrees and was checked line by line:**
+      `data/adversaries.json` carries **four** rules on this item (`edha-apply-watch`→`edha-gm-cue`,
+      `use`→`edha-def-test` black-vs-spi, `use`→`edha-triggered-effect` Immobilize,
+      `edha-test-success`→`edha-triggered-effect` 1d6 vital), every event and handler type
+      registered; they were authored 07-26, the file has not changed since, and the **07-27u deploy
+      rebuilt the adversaries pack** with `validate-adversaries` clean. **Nothing was authored this
+      pass — deliberately, to keep the pack-rebuild list EMPTY.** So: **(a)** read the item straight
+      out of the COMPENDIUM (`game.packs.get("edha-content.edha-adversaries")` → Reeve-Owl → its
+      `Sovereign of Solitude` → count `system.events`) and **(b)** read the same count off a
+      **placed/imported** copy on the canvas, and report BOTH numbers. Pack 4 + placed 0 = a stale
+      placed copy → **⟟ Sync Adversaries from Pack** or re-drag, then retest the mechanic. Pack 0 =
+      a genuine build/deploy gap, and only then is a rebuild owed. **(c)** Once a copy shows 4,
+      run the original test: target the moving Weakened creature, use it → Immobilized lands, Black
+      vs Spiritual auto-resolves, a success rolls 1d6 vital.
 
 ## Still unbenched from the manual re-litigation (2026-07-16c)
 
