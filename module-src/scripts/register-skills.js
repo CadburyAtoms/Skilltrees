@@ -7611,11 +7611,16 @@ function edhaCwSkillBudget(level) { return 5 + (Math.max(1, Number(level) || 1) 
 function edhaCwMaxSkillRank(level) { return Math.floor((Math.max(1, Number(level) || 1) - 1) / 5) + 2; }
 
 // Live derived-stat preview for the attributes page (Ben 07-19: "show what the character's
-// health, focus, investiture, and defenses WILL be at the current distribution"). Every number
-// mirrors the real derivation: health sums the system's advancement rules (rule.health +
-// STR where healthIncludeStrength — read from CONFIG at runtime); Focus 2+WIL; defenses
-// 10+pair; movement/recovery use the system's ceil(attr/2) ladders; senses uses our pinned
-// AWA table; Investiture 2+max(AWA,PRE) is the Edha rule (attunement-gated, footnoted).
+// health, focus, investiture, and defenses WILL be at the current distribution"). Its contract is
+// the SHEET, not the rulebook — every number must be what the finished sheet will read, so the
+// three stats Edha derives differently from the system come from the shared helpers
+// (EDHA_HP_BONUS / edhaWalkRateFtFromSpd / edhaSensesRangeFtFromAwa), never re-implemented here.
+// Bench run 21 caught all three drifting at once when they were: Health missed the +1, Move used
+// the SYSTEM's ceil(SPD/2) ladder against the sheet's 20+5×SPD, and Senses was the only one the
+// preview had right. The rest mirror the system: health sums the advancement rules (rule.health +
+// STR where healthIncludeStrength — read from CONFIG at runtime); Focus 2+WIL; defenses 10+pair;
+// recovery is the system's ceil(WIL/2) die ladder; Investiture 2+max(AWA,PRE) is the Edha rule
+// (attunement-gated, footnoted).
 function edhaCwDerivedPreview(actor, cur) {
   const level = Math.max(1, Number(actor.system?.level) || 1);
   let hp = 0;
@@ -7625,15 +7630,15 @@ function edhaCwDerivedPreview(actor, cur) {
       const r = rules[Math.min(i, Math.max(0, rules.length - 1))] ?? {};
       hp += (Number(r.health) || 0) + (r.healthIncludeStrength ? cur.str : 0);
     }
+    hp += EDHA_HP_BONUS;   // the sheet's own derivation adds it; the preview promises the sheet
   } catch (e) { hp = 0; }
   const DICE = ["d4", "d6", "d8", "d10", "d12", "d20"];
-  const RATES = [20, 25, 30, 40, 60, 80];
   const idx = (v) => Math.min(Math.ceil((Number(v) || 0) / 2), 5);
   const cell = (label, val) => `<span style="white-space:nowrap"><em style="opacity:.7">${label}</em> <strong>${val}</strong></span>`;
   return `<div class="edha-cw-stats-box" style="display:flex;flex-wrap:wrap;gap:4px 14px;justify-content:center;text-align:center;padding:5px 8px;border:1px solid rgba(127,208,255,.35);border-radius:4px;margin:4px auto">
     ${cell("Health", hp)} ${cell("Focus", 2 + cur.wil)} ${cell("Investiture", `${2 + Math.max(cur.awa, cur.pre)}*`)}
     ${cell("Phys def", 10 + cur.str + cur.spd)} ${cell("Cog def", 10 + cur.int + cur.wil)} ${cell("Spi def", 10 + cur.awa + cur.pre)}
-    ${cell("Move", `${RATES[idx(cur.spd)]} ft`)} ${cell("Recovery", DICE[idx(cur.wil)])} ${cell("Senses", `${edhaSensesRangeFtFromAwa(cur.awa)} ft`)}
+    ${cell("Move", `${edhaWalkRateFtFromSpd(cur.spd)} ft`)} ${cell("Recovery", DICE[idx(cur.wil)])} ${cell("Senses", `${edhaSensesRangeFtFromAwa(cur.awa)} ft`)}
     <span style="flex-basis:100%;font-size:.85em;opacity:.65;text-align:center">Live at this spread — path/item bonuses land on top. *Investiture needs a leyline attunement.</span>
   </div>`;
 }
@@ -7685,8 +7690,9 @@ async function edhaCwStepperDialog(DV2, { title, intro, rows, cur, budget, capFo
 // What each attribute actually feeds, read off the real wiring (bench take-two: "write a blurb
 // for each — make it accurate"): defenses are the system's 10+pair formulas; max Health adds STR
 // on level gains (deriveMaxHealth); Focus max = 2+WIL and the Recovery die steps with WIL (both
-// system-derived); movement rate derives from SPD (speedToMovementRate); Senses Range derives
-// from AWA (edhaSensesRangeFtFromAwa); Investiture 2 + max(AWA, PRE) is the Edha rule. The
+// system-derived); movement rate derives from SPD (edhaWalkRateFtFromSpd — the EDHA 20+5×SPD
+// formula, which replaces the system's ladder on the sheet); Senses Range derives from AWA
+// (edhaSensesRangeFtFromAwa); Investiture 2 + max(AWA, PRE) is the Edha rule. The
 // skill list per attribute is built LIVE from CONFIG.COSMERE.skills, so it stays accurate.
 const EDHA_CW_ATTR_STAT = {
   str: "Physical defense (10+STR+SPD) · max Health (each level's gain adds STR) · carry/lift capacity",
@@ -16167,13 +16173,32 @@ function edhaDeriveInvestiture(actor) {
   } catch (e) { console.error("Edha Content | Investiture derivation failed", e); }
 }
 
-/* --- Edha sheet derivations: HP = system + 1; Speed = 20 + 5 × SPD ------------------------------
+/* --- THE EDHA DERIVED-STAT RULES — one source of truth ------------------------------------------
+ * `source-materials/legacy-uploads/Character_Building_Rules.md` §Derived stats is canon for these
+ * three; the cosmere system derives all three differently. Both the SHEET (edhaDeriveSheetStats,
+ * below) and the WIZARD PREVIEW (edhaCwDerivedPreview) read these helpers, because when they each
+ * carried their own copy of the arithmetic they drifted in BOTH directions at once — bench run 21
+ * measured preview Health 13 / Move 30 / Senses 10 against sheet 14 / 35 / 5.
+ *  • Movement = 20 + SPD·5 ft   (canon; the system's own ladder is ceil(SPD/2) into [20,25,30,40,60,80])
+ *  • Senses Range = the AWA table (canon; the system's is ceil(AWA/2) into [5,10,20,50,100,∞], so
+ *    an AWA-0 PC read 5 ft on the sheet while their TOKEN sight was already built off the Edha table)
+ *  • HP = the system's per-level accumulation + EDHA_HP_BONUS
+ * ⚑ EDHA_HP_BONUS is the open question R-54 ("is 11 max HP at STR 0 intended?"). It is deliberately
+ * ONE constant read from ONE place: when R-54 lands, change it here and the sheet, the preview and
+ * the tests all move together. Do not re-inline it. */
+const EDHA_HP_BONUS = 1;
+function edhaWalkRateFtFromSpd(spd) { return 20 + 5 * (Number(spd) || 0); }
+
+/* --- Edha sheet derivations: HP = system + 1; Speed = 20 + 5 × SPD; Senses = the AWA table -------
  * The Edha reference sheets derive these differently from the cosmere system; the pregens carried
  * per-actor hacks (hea.max.bonus:1 / movement override). Now derived for ALL characters:
- *  • HP: +1 to hea.max.bonus IN MEMORY — skipped while the actor's SOURCE still carries a manual
- *    bonus (legacy pregens), so nothing double-applies until edha.migrateDerivations() strips them.
+ *  • HP: +EDHA_HP_BONUS to hea.max.bonus IN MEMORY — skipped while the actor's SOURCE still carries
+ *    a manual bonus (legacy pregens), so nothing double-applies until edha.migrateDerivations()
+ *    strips them.
  *  • Speed: override = 20 + 5×SPD + (current bonus) — keeps AE speed buffs (Walking Ruin) additive.
  *    Skipped while the actor's SOURCE carries its own movement override (legacy pregens).
+ *  • Senses: writes .derived (NOT .override), exactly as the system's own prepareSecondaryDerivedData
+ *    does, so a player's Configure Senses Range override still wins and the .bonus still adds.
  */
 function edhaDeriveSheetStats(actor) {
   try {
@@ -16182,7 +16207,7 @@ function edhaDeriveSheetStats(actor) {
     const heaMax = actor.system?.resources?.hea?.max;
     const srcHeaBonus = Number(actor._source?.system?.resources?.hea?.max?.bonus) || 0;
     if (heaMax && srcHeaBonus === 0) {
-      try { heaMax.bonus = (Number(heaMax.bonus) || 0) + 1; } catch (e) { /* getter-only safety */ }
+      try { heaMax.bonus = (Number(heaMax.bonus) || 0) + EDHA_HP_BONUS; } catch (e) { /* getter-only safety */ }
     }
     // Speed = 20 + 5 × SPD. Do NOT fold rate.bonus into the override — the DerivedValueField's
     // value getter adds .bonus ON TOP of the override, so folding it in double-counted every
@@ -16192,7 +16217,14 @@ function edhaDeriveSheetStats(actor) {
     const srcRate = actor._source?.system?.movement?.walk?.rate;
     if (rate && !(srcRate?.useOverride)) {
       const spd = Number(actor.system?.attributes?.spd?.value) || 0;
-      try { rate.override = 20 + 5 * spd; rate.useOverride = true; } catch (e) { /* non-fatal */ }
+      try { rate.override = edhaWalkRateFtFromSpd(spd); rate.useOverride = true; } catch (e) { /* non-fatal */ }
+    }
+    // Senses Range = the Edha AWA table. The system wrote its own .derived a moment ago; overwrite
+    // it, leaving override/useOverride/bonus alone so a hand-configured range still wins.
+    const senses = actor.system?.senses?.range;
+    if (senses) {
+      const awa = Number(actor.system?.attributes?.awa?.value) || 0;
+      try { senses.derived = edhaSensesRangeFtFromAwa(awa); } catch (e) { /* non-fatal */ }
     }
   } catch (e) { console.error("Edha Content | sheet-stat derivation failed", e); }
 }
