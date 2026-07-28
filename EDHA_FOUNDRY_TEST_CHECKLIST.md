@@ -389,27 +389,20 @@ it; Withering Touch's ranged half behaved identically. Evidence in the 07-26m de
 - [ ] 🤖 **Flame Surge / burst cards** — Detonate: button reads "Detonated ✓" and stays disabled after
       F5 / re-login; re-clicking is impossible. Cancel reads "Cancelled — refunded ✓". Old cards from
       before this fix still reset on refresh (only messages stamped from now on persist).
-- [ ] 🤖 **`ally-drops` side filter — the tokenless victim (FIXED 2026-07-28d; engine-only, ⟳ sync + F5
-      first)**. Run 18's defect: `edhaGmCueDamageSweep` resolved the victim's side from the canvas and
-      gated with `disp !== undefined && …`, so a victim with **no token at sweep time** skipped the
-      same-side filter entirely and every `ally-drops` owner on the scene fired across the disposition
-      line. Now: live token → `prototypeToken.disposition` → fail closed. Drive **all four** cells —
-      the fix is only proven by the pair, because the bug fired *more* cues, not fewer:
-      **① NEGATIVE (the defect itself)** — break a **phantom double** (The Seeming's copy) whose token is
-      removed by the break handler, with a **disposition −1** `ally-drops` owner on the map (Ben's
-      Corvaine Raider / Line-Caller). Expect **no Break card** and **no new `trigRound` key** on that
-      owner. This is the cell that failed at run 18.
-      **② POSITIVE (the fix must not over-correct)** — same tokenless drop, with a **same-disposition**
-      un-ranged `ally-drops` owner in play. Expect the card **to fire**: the copy's prototype carries the
-      duplicated creature's disposition, so its side is still known and a legitimate cue is not silenced.
-      **③ POSITIVE CONTROL (unchanged behaviour)** — a normal adversary **with its token present**,
-      dropped to 0: same-side owners fire, cross-side owners do not. Run 18 already measured this as 0
-      cross-side cards; it must stay 0.
-      **④ NEGATIVE, the second half** — a **ranged** cue (Sergeant Halden Roek 20 ft, Crownox Ring 5 ft,
-      The Reckoning 5 ft) with a **tokenless** victim: expect **no card**. Pre-fix it fired from anywhere
-      on the map and printed "within 5 ft" about a position it did not have.
-      ⚠️ **Check Ben's Corvaine token actors' `edha-content.trigRound` flags before and after** — the
-      original harm was stray writes onto campaign actors, and that is the thing to confirm is gone.
+*(**`ally-drops` side filter — the tokenless victim** — RETIRED on evidence 2026-07-28e, bench run 19,
+**all four cells, driven eight times** (4× a deterministic tokenless drop + 4× a real phantom-double
+break, because the mechanism is a hook race and the old symptom was intermittent). The decisive shape:
+ONE tokenless drop exercises all three filters at once, each acting as the others' control — a
+disposition-−2 tokenless victim with three owners whose once-per-round gate was **verified open before
+and after every drive**. Every drive: **exactly one card**, from the same-side un-ranged owner
+("⏰ Break … (Bench Adv — Victim Tokenless dropped.)"); the **cross-side −1 owner silent with its gate
+still open**; the **same-side 20-ft Roek silent with its gate still open** — and Roek's rule proven
+ALIVE by a control that fired it at 5 ft, then silent again at 35 ft, so the range filter genuinely
+*measures* rather than merely null-checking. ③ re-measured 0 cross-side cards with the token present.
+⚠️ **Harness note worth keeping:** Ben's three Corvaine owners were **already gate-closed** (`trigRound`
+stored round 1 == `game.combat.round` 1), so their silence is **over-determined** and proves nothing on
+its own — run 19 therefore used bench-imported owners whose gate it controlled. Their `trigRound` was
+byte-identical before and after regardless.)*
 
 ## Structural (tree graphs + prereqs, from the 07-24 fixes)
 
@@ -2492,12 +2485,26 @@ since 11), the adversaries pack was rebuilt **07-27u**, and the **world-wide syn
 46 synced, 0 skipped, zero effect drift**. Folders: *Thalendor Heartwood Bestiary* (4 blocks),
 *Riverlands Bestiary* (+1), *Corvaine River-Plains Bestiary* (1), *Malcurr Lakes Bestiary* (+2).
 
+📊 **Bench run 19 (2026-07-28e) swept this section: 24 🤖 in, 21 retired on evidence, 3 left, zero
+NOT REACHED.** 10 imports → **2.1 retired per import**. The 3 that remain are **two findings, not
+three**: the `ally-drops` 5-ft reach + missing `use` rule (§2), and one shared `bySize`/rank-scaling
+distance gap behind both §7 rows (with a third consumer noted in §8). The 2 ⚑ rows are Ben's and were
+left untouched. No "(name-keyed)" label was left standing anywhere in this section — the only two
+mentions are inside already-struck retired parentheticals that record the label as false.
+
 ## 0. Engine — the owner-scan widening (ruling 113; fixes a shipped W28 bug)
-- [ ] 🤖 **Dread Presence veto from the Dirgehound Pack** — RE-TEST of the W28 headline row:
-      it was DEAD before this fix (the scan skipped adversary owners AND unlinked token
-      copies). A Weakened character within 30 ft of a placed dirgehound tries to move
-      closer to an ally → the preUpdateToken veto blocks with the engine's message.
-      *(This row now also carries the Canticle §3 W28 original, retired into it 2026-07-27v.)*
+
+*(**Dread Presence veto from the Dirgehound Pack** — RETIRED on evidence 2026-07-28e, bench run 19,
+with a matched control. Owner in range (5 ft): the Weakened mover's willing `update({x,y})` toward a
+living same-disposition ally was **vetoed outright** — position **completely unchanged** — with the
+engine's message: *"Dread Presence: Bench Target — Adjacent A is Weakened and cannot willingly move
+closer to Stalker. (Engine-forced movement bypasses this.)"* Matched control, the **identical** move
+with the only in-range owner parked **115 ft** away (and the sole other `edha-move-veto` owner on the
+scene, `Bench — Black`, at 107 ft): the token **moved** and **zero notifications** fired. The veto
+resolves an ADVERSARY owner on an UNLINKED token copy, which is exactly what the ruling-113 widening
+added. ⚠️ Note for future drivers: the control's token landed 31 px short of the requested square —
+that is v13's **wall-constrained walk** on a plain `update({x,y})` (run 18's lesson), not a partial
+veto; the assertion that matters is "did it move at all".)*
 
 *(**Shield Wall engine pre-reduction from a crownox** — RETIRED on evidence 2026-07-27v, bench run 3,
 on a **FRESH pack import** with three unlinked ring tokens: the half-die pre-reduction **applied by
@@ -2514,18 +2521,31 @@ of the flock spends focus within its Black range → it loses 1 MORE focus, anno
 enemy — the watch is on the item now". Keep 2bAB-5.)*
 
 ## 1. Reeve-Owl (Black rival — the judgment kit)
-- [ ] 🤖 **Sapping Hex on-hit** — Stoop hits an Isolated character → Weakened applied by
-      the engine (timed status; nothing on a non-Isolated hit).
-- [ ] 🤖 **Predatory Patience rider + cue** — attack a Weakened target: +1d6 on the test (ruling 122 re-dice);
-      on the hit, whispered 1-Focus-regain card.
+
+*(**ALL FOUR Reeve-Owl rows RETIRED on evidence 2026-07-28e, bench run 19** — one import, four rows.
+⚠️ The staging that makes these runnable: the owl was placed at disposition **−2** so that it does not
+itself count as the victim's same-disposition adjacent and silently void every Isolated-gated row
+(`edhaIsIsolated`); the harness asserted `isolated: true` on the victim and `false` on the control pair
+before driving anything.
+· **Sapping Hex on-hit** — Isolated victim: *"Sapping Hex — Bench Target — Isolated is Weakened."* plus
+the `Weakened` effect on the actor; non-Isolated control: *"Sapping Hex — no Isolated target to affect"*
+and **no effect**. Both halves. (The status is genuinely **timed** — it later expired by itself:
+*"💢 Weakened on Bench Target — Isolated ends (end of its turn)."*)
+· **Predatory Patience rider + cue** — proven by FORMULA, not by total: Weakened target →
+`1d20 + 0 + 6 + 1d6[Predatory Patience]`; non-Weakened control → `1d20 + 0 + 6`. The whispered cue also
+posted: *"⏰ Predatory Patience …: the reeve-owl regains 1 Focus (GM adds …)"*.
+· **Cruel Step executor** — Isolated target: owl moved (2800,3950) → (2800,4550) = 600 px = **exactly
+10 ft** toward it. Non-Isolated target: **0 px moved** and an explicit refusal —
+*"🚫 Cruel Step — Bench Target — Adjacent A is not Isolated (a living ally is adjacent): no move."*
+The "no Reactions" clause is narrative (no opportunity-attack automation exists to observe).
+· **Cues** — *"⏰ The Bailiff's Eye …: its respondent is the most wounded …"* fired at a hostile
+mover's turn-start (mover −1 vs owner −2, gap 15 ft ≤ 60 ft), and the bloodied card
+*"⏰ The Verdict Is Not Appetite …: Bloodied — a sound reeve-owl breaks off and rises."* on 26 → 12.)*
 *(**Sovereign of Solitude use** — retired 2026-07-27v as STALE: **superseded by 2bAB-9**, the Reeve-Owl
 row that drives the same ability on the current wiring — "Immobilized lands, Black vs Spiritual
 auto-resolves, and a success rolls 1d6 vital — the cue's 'use the item to auto-resolve' promise is true
 for the first time". Keep 2bAB-9.)*
 
-- [ ] 🤖 **Cruel Step executor** — use with an Isolated target: 10-ft glide, no Reactions;
-      refuses without an Isolated target.
-- [ ] 🤖 **Cues** — Bailiff's Eye reminder at hostile turn-start; bloodied break-off card.
 
 ## 2. Crownox Ring (White rival ×3 — the wall)
 - [ ] 🤖 **Unbreakable Line ally-drops cue — NOW COVERS BOTH BLOCKS (2026-07-27v)** — a ring-mate would
@@ -2535,6 +2555,29 @@ for the first time". Keep 2bAB-9.)*
       retired into this one — **the ability has never been benched on either block**, so do not read the
       merge as evidence. Drive it on the Crownox and, if the wording differs, on The Reckoning too.
       *(It was NOT among the seven restored 07-26j rules that printed real numbers at bench run 3.)*
+      **2026-07-28e, bench run 19 — PARTIAL, row stays. Both blocks driven; two separate findings.**
+      ✅ The cue itself FIRES on **both** blocks, wordings differ as the row anticipated —
+      Crownox: *"⏰ Unbreakable Line (Bench Adv — Crownox Ring): … an adjacent ox may spend 3 Focus:
+      test White vs. DC = …"*; Reckoning: *"⏰ Unbreakable Line (Bench Adv — The Reckoning): A pack-mate
+      dropped within 5 ft: the lead may test White (DC = half the damage) via the contest core …
+      (Bench Adv — Victim Tokened dropped, **within 5 ft**.)"*
+      ❌ **(a) The 5-ft reach cannot reach an adjacent ally.** `edhaTokenGapFt` is **centre-to-centre**
+      and `edhaAllyDropEligible` applies **no slack**. Measured, four positions:
+      (i) Crownox Ring (**Large 2×2**), ally orthogonally adjacent → gap **7.5 ft** → ❌ no card;
+      (ii) Crownox Ring, ally overlapping the ring's own square → gap 0 ft → ✅ fires;
+      (iii) The Reckoning (Medium), ally orthogonally adjacent → gap 5.0 ft → ✅ fires;
+      (iv) The Reckoning, ally **diagonally** adjacent → gap **7.07 ft** → ❌ no card.
+      So a Large owner's 5-ft `ally-drops` can **never** reach a ring-mate standing beside it, and a
+      Medium owner's misses every diagonal — while both cards' prose says "an adjacent ox" / "a
+      pack-mate dropped within 5 ft". Note the engine's own `enemy-turn-start` sweep adds **`+ 2.5`
+      half-square slack "for adjacency reads"** and `ally-drops` has none. Blast radius: the two 5-ft
+      rules (Crownox Ring, The Reckoning); Roek's 20 ft is unaffected. **Whether the fix is slack or
+      edge-to-edge measurement is a design call — see `EDHA_RULINGS.md`.**
+      ❌ **(b) "the White test resolves through the contest core on use" is UNIMPLEMENTED on both
+      blocks.** Behaviour-tested, not merely read: using the item on either block posted an **empty
+      chat card** (`content: ""`) with the owner as speaker — no test, no contest core, no roll.
+      Both blocks' `Unbreakable Line` carries **only** the `edha-apply-watch` → `edha-gm-cue` rule;
+      there is no `use` rule at all.
 
 *(**Retributive Guard** — RETIRED on evidence 2026-07-27v, bench run 3, on a **FRESH pack import** with
 three unlinked ring tokens (this is **2bAB-3**): the retaliate **prompt posted by itself from the
@@ -2542,9 +2585,16 @@ damage**, one per adjacent ring-mate; the click ran **White vs Spiritual through
 dealt "**3 spirit**" — of which 2 were absorbed by the attacker's Warlord Temp HP, a clean cross-talent
 interaction that also proves the damage really landed.)*
 
-- [ ] 🤖 **Ring behavior rows (the two wired clauses)** — Guardian Stance gives +1 Deflect while
-      adjacent (sheet note), and going bloodied fires the ring-TIGHTENS cue.
-      *(Split 2026-07-27w.)*
+*(**Ring behavior rows (the two wired clauses)** — RETIRED on evidence 2026-07-28e, bench run 19.
+**Guardian Stance** carries an explicit **`NO NAMEABLE HOOK:`** declaration in its own description —
+*"a static adjacency read with no trigger — the tree twin's aura rides the PC stance machinery, which
+this trait does not enter; copying its rule would look live and never fire. While an ox stands adjacent
+to a ring-mate, both have +1 Deflect (GM-run static …)"* — which is iron rule 3's MANUAL exit declared
+ON the document, and matches the row's "(sheet note)" exactly; the listed Deflect reads **1** via
+`system.deflect.value` (override 1, `useOverride` true — read `.value`, never `.derived`). **Bloodied
+ring-TIGHTENS cue fired**: *"⏰ Stations Kept (Bench Adv — Crownox Ring): Bloodied — the ring tightens
+around the calves; it does not scatter and does not pursue."* on 26 → 13 (line 13). Incidentally
+re-confirmed **Retributive Guard** (2bAB-3) posting its retaliate prompt by itself from the damage.)*
 - [ ] ⚑ **Crownox — where does a ring stop being a ring?** — an ox pulled 10+ ft "loses the wall
       kit", but nothing enforces or measures that and no hook exists for it. Say the rule you
       actually want at the table (a distance? a broken adjacency chain? GM eyeball?) and it can
@@ -2557,23 +2607,51 @@ interaction that also proves the damage really landed.)*
 Restrained on a success. Instinct: Green vs Survival through the contest core → Immobilized; the
 turn-start cue still posts as the floor." Keep 2bAB-6.)*
 
-- [ ] 🤖 **Bloodied scatter cue**.
+*(**Bloodied scatter cue** — RETIRED on evidence 2026-07-28e, bench run 19:
+*"⏰ The Heart's Runners (Bench Adv — Rootling Swarm): Bloodied — the rootlings scatter into the soil."*
+⚠️ The first drive read as a dead hook and was **the harness, not the engine**: the swarm has
+**Deflect 1**, so a 6-impact hit landed 5 and left it at 7/12 — one short of the line-6 crossing.
+Re-driven at 9 raw (12 → 4) it fired. Compute the crossing **after** deflect.)*
 
 ## 4. Briar-Gone Grove (Green boss — "the Closing Arena")
-- [ ] 🤖 **The Briar Rises** — Draw Mana click-places a briar square (embedded Green Key).
-- [ ] 🤖 **Thorn Field** — engine-placed patches deal half 1d8 keen via the region hazard (ruling 122 re-dice)
-      automatically; hand-placed maze gets the turn-start cue instead.
-- [ ] 🤖 **Sudden Growth burst** — use → click-place difficult terrain near a sensed
-      character (the real edha-burst rule).
-- [ ] 🤖 **Spreading Roots cue** — character starts its turn in briar → whispered 1-Focus
-      spread card.
-- [ ] 🤖 **Register cues** — bloodied: stops targeting downed; 0 HP: goes still, not dead.
+
+*(**ALL FIVE Briar-Gone Grove rows RETIRED on evidence 2026-07-28e, bench run 19** — one import,
+five rows, the block the run brief expected to cost the most.
+· **The Briar Rises** — *"🌿 Green Leyline Attunement (Bench Adv — Briar-Gone Grove): **10 ft**
+difficult-terrain square placed (**Thorn Field rides it**)."* A real Region was created carrying
+`behaviors: [modifyMovementCost, edha-content.hazard]`, `flags.edha-content.hazard: true` and
+`terrain.ownerUuid` → the grove's token actor.
+· **Thorn Field** — BOTH halves. The engine-placed patch damaged automatically and repeatedly:
+*"🔥 Bench Target — Isolated takes 3 keen from dangerous terrain (Thorn Field — …)"*, HP deltas
+**3 / 1 / 1** across three sampled turn-starts (sampled deliberately — `floor(1d8/2)` can legitimately
+roll 0). Formula captured live: **`floor(((1)d(2 * 3 + 2)) / 2)`** = half 1d8, showing the ruling-122
+[Tier][Die] substitution (count = tier 1, die = 2×green rank 3 + 2 = 8). The hand-placed-maze cue also
+posts as the floor: *"⏰ Thorn Field …: half 1d8 keen to any character entering or starting a turn in
+HAND-PLACED briar (engine-placed patches apply it automatically)"*.
+· **Sudden Growth burst** — *"💥 Sudden Growth — **10 ft burst (Attunement Range 60 ft)**. Burst placed
+— click Detonate …"* → Detonate → *"💥 Sudden Growth :(dangerous terrain placed)"*, hazard Region created.
+· **Spreading Roots cue** — *"⏰ Spreading Roots …: If this character starts its turn in the briar:
+Spreading Roots (1 Focus) — the briar spreads 10 ft …"* fired on each hostile turn-start.
+· **Register cues** — **both** cues of the SAME item posted from ONE 60 → 0 write:
+*"⏰ The Madness Slackens …: Bloodied — it stops targeting downed characters."* and
+*"⏰ The Madness Slackens …: 0 HP — it goes still instead of dying; the blight stands."*, leaving
+`trigRound` holding **two distinct keys** (`…hp-below:0:0:1` and `…hp-below:0_5:0:1`). That is a live
+re-confirmation of the 07-27y `edhaCueKey` fix on one of the only two items in the data that can show
+it — before that fix the lower threshold was permanently eaten by the bloodied cue.
+⚠️ **Surfaced for a ruling, not a bug:** the grove still receives the generic **`Dead`** status at 0 HP
+while its own cue says it "goes still instead of dying". See `EDHA_RULINGS.md`.)*
 
 ## 5. Tollbird Flock (Black minion swarm)
-- [ ] 🤖 **Sapping Hex on-hit** — mob hits an Isolated character → Weakened (engine).
+
+*(**Sapping Hex on-hit** — RETIRED on evidence 2026-07-28e, bench run 19: the flock (staged at
+disposition −2 so it does not void the victim's isolation) hit an asserted-Isolated character and the
+engine applied the status — *"Sapping Hex — Bench Target — Isolated is Weakened."* plus the `Weakened`
+effect on the actor.)*
 - [ ] ⚑ **Swarm bookkeeping** — half damage from single-target Strikes, scatters on AoE
       (GM-run; NO NAMEABLE HOOK per the Wake-Eel precedent) — sanity-read at the table.
-- [ ] 🤖 **Bloodied re-settle cue**.
+*(**Bloodied re-settle cue** — RETIRED on evidence 2026-07-28e, bench run 19:
+*"⏰ It Re-Gathers on the Rooflines (Bench Adv — Tollbird Flock): Bloodied — the flock breaks and
+re-settles on the rooflines, out of reach."* on 14 → 7.)*
 
 ## 6. Surecat (Blue rival — the foresight duel; Ben's logged Blue exception)
 
@@ -2587,29 +2665,89 @@ SUCCESS**" — it rolled Blue, rolled the TARGET's Athletics, and printed the sa
 shape as the PC talent 2bF-3, plus its documented "no payload rule — resolve at the table" half.
 The "(name-keyed engine path)" label was false and is struck.)*
 
-- [ ] 🤖 **Pounce rider cue** — on-hit whispered "+1d4 if they did the declared thing".
-- [ ] 🤖 **Bloodied leave cue**.
+*(**Pounce rider cue** and **Bloodied leave cue** — BOTH RETIRED on evidence 2026-07-28e, bench run 19.
+Pounce: whispered to both GMs (`whisper: 2`) on the hit — *"⏰ The Pounce Already Taken (Bench Adv —
+Surecat): If the target took the Forewarned-declared action this round: add +1d4 keen — it was already
+there when they arrived."* Bloodied: *"⏰ Gone Unsure (Bench Adv — Surecat): Bloodied — it leaves. A
+predator of certainties does not gamble."* on 26 → 13.)*
 
 ## 7. Brandram (Red rival — the charge)
-- [ ] 🤖 **Momentum's Edge rider** — Ram after moving ≥20 ft toward the target this turn:
-      +2d4 impact, engine-measured via the turn-start position stamp (first ADVERSARY
-      consumer of whenMovedTowardFt). No rider on a standing hit. (Rate is Ben-ruled +2d4,
-      ruling 113 — the PC card's +Speed stands for PCs.)
+*(**Momentum's Edge rider** — RETIRED on evidence 2026-07-28e, bench run 19, with a matched control.
+A bench combat was stepped **forward** onto Brandram's turn (which is what stamps `_edhaTurnStartPos`
+— the hook is `combatTurnChange` on ANY combat, so this is drivable despite Ben's campaign combat
+being the active one), Brandram was then displaced **exactly 1200 px = 20 ft** toward the target, and
+the Ram damage formula came out **`1d10 + 3 + (2d4)[Momentum's Edge] + 0`** — the ruling-113 +2d4,
+labelled. Control: re-stamped at rest, 0 px moved → **`1d10 + 3 + 0`**, no rider. First ADVERSARY
+consumer of `whenMovedTowardFt`, working.)*
+
 - [ ] 🤖 **Shockwave Slam push** — melee hit pushes up to 10 ft; collision deals half 1d4
       impact (the real edha-push rule).
+      **2026-07-28e, bench run 19 — FAIL on the distance, row stays. Two corrections to the row
+      itself, and the cause is shared with the Reckless Advance row below.**
+      ✅ The push FIRES: *"💥 Shockwave Slam — Bench Adv — Victim Tokened is pushed **5 ft**."*,
+      measured 300 px = 5 ft.
+      ❌ **The card promises 10 ft and the engine delivers 5.** Card text (read live off the deployed
+      item): *"the target is pushed up to **10 ft**; collision with an obstacle deals half 1d6 impact
+      (half [Tier][Die]: count = tier 1, die = rival rank 2, ruling 122)"*. The rule is
+      `{bySize: true, distanceFt: 5, collisionFormula: "floor(1d6 / 2)"}` — and **`bySize: true` makes
+      `distanceFt` dead**: `edha-push` resolves `EDHA_SIZE_FT[edhaColorRank(owner, "red")]`, and
+      Brandram's **red rank is 2** → `EDHA_SIZE_FT[2]` = **5 ft**. The card was written against
+      rank-3 numbers; ruling 122 gives adversaries the **role** rank, which for a rival is 2.
+      📝 **The row's own "half 1d4" is WRONG and is corrected here** — card AND rule both say
+      **`floor(1d6 / 2)`**, they agree; only the row was stale.
+      ⚠️ The collision die could **not** be observed and that is geometry, not a defect: with a
+      one-square (5 ft) push, travel-then-collide is impossible — the next square is either free
+      (full 5 ft, no collision) or occupied (**"pushed 0 ft (stopped by Bench Target — Floater)"**,
+      and the engine correctly rolls no die on a push that never travelled). Same all-or-nothing
+      construction run 17 mis-filed as a bug.
 - [ ] 🤖 **Reckless Advance / Unstoppable executors** — use → 10-ft no-Reaction charge;
       Fast-turn damage → free half-Speed move (once/turn).
-- [ ] 🤖 **Bloodied withdraw cue**.
+      **2026-07-28e, bench run 19 — PARTIAL + BLOCKED, row stays 🤖.**
+      ✅❌ **Reckless Advance runs, at the same wrong distance as Shockwave Slam above — ONE root
+      cause, two rows.** Driven from 32.5 ft away (so there was ample room and it was not clipped):
+      *"💨 Reckless Advance — Bench Adv — Brandram moves **5 ft** toward Bench Adv — Victim Tokened,
+      ignoring Reactions."*, measured 300 px. Its card says *"charge **10 ft** toward it"*; its rule
+      is `{bySize: true, distanceFt: 0}` → `EDHA_SIZE_FT[red rank 2]` = 5 ft.
+      🔒 **Unstoppable is BLOCKED — blocker named, row stays 🤖 (a technical blocker never becomes ⚑).**
+      Its rule is `whenFastTurn: true`, and `edhaIsFastTurn` → `edhaCombatantOf` reads **`game.combat`**
+      — the ACTIVE combat. Confirmed empirically this run: `game.combat.id === "BerbNeuXp4iKduef"`
+      (Ben's campaign combat) and Brandram is **not** one of its combatants, so no `turnSpeed` flag on
+      a bench combat can ever make it fast. Unchanged from run 16's finding.
+      ⚠️ **A third consumer of the same rank-scaling gap, for whoever fixes it:** the Tussock-Sow
+      (green rank 2) placed a **5 ft** difficult-terrain square where its card says "~10-ft square",
+      while the Briar-Gone Grove (green rank **3**) placed **10 ft** from the same code path. The
+      pattern is consistent: `[Size]`-scaled adversary card text was written with rank-3 figures, and
+      every rank-2 rival lands one step down the `EDHA_SIZE_FT` table. Decide once, fix the family.
+
+*(**Bloodied withdraw cue** — RETIRED on evidence 2026-07-28e, bench run 19:
+*"⏰ Deny It the Run-Up (Bench Adv — Brandram): Bloodied — it withdraws uphill; it has proved what it
+came to prove."* on 32 → 14 (20 impact − Deflect 2 = 18 dealt, crossing line 16).)*
 
 ## 8. Tussock-Sow (Green rival — "the Closing Arena", mobile)
-- [ ] 🤖 **The Wrighting** — Draw Mana click-places churned mire (embedded Green Key).
-- [ ] 🤖 **Sudden Growth burst / Spreading Roots cue** — as the grove's rows, in mire key.
+*(**The Wrighting** and **Sudden Growth burst / Spreading Roots cue** — BOTH RETIRED on evidence
+2026-07-28e, bench run 19.
+· **The Wrighting** — *"Bench Adv — Tussock-Sow Draws Mana — recover 1 Investiture."* then the embedded
+Green Key fired: *"🌿 Green Leyline Attunement (Bench Adv — Tussock-Sow): 5 ft difficult-terrain square
+placed."*, creating a real Region with `modifyMovementCost` and `flags.edha-content.terrain`
+{`color: "green"`, `ownerUuid` → the sow's token actor}.
+· **Sudden Growth burst** — *"💥 Sudden Growth — 5 ft burst (Attunement Range 30 ft). Burst placed —
+click Detonate …"* → Detonate → *"💥 Sudden Growth :(dangerous terrain placed)"*.
+· **Spreading Roots cue** — *"⏰ Spreading Roots (Bench Adv — Tussock-Sow): If this character starts its
+turn in the mire: Spreading Roots (1 Focus) — the mire churns 10 ft toward them …"* at a hostile
+turn-start.
+⚠️ The **5 ft** figures here (green rank 2) against the card's "~10-ft square" are the same rank-scaling
+gap logged on the §7 Reckless Advance row — the Grove at green rank 3 placed 10 ft from the same path.
+Not re-filed separately; fix the family.)*
+
 *(**Drive the Prey use** — retired 2026-07-27v as STALE: **superseded by 2bAB-7**, which drives it on
 the Tussock-Sow against the current wiring — "Green vs Survival through the contest core; Slowed on a
 success; the move-away stays GM-narrated per the card note". The "(name-keyed engine path)" label was
 false. Keep 2bAB-7.)*
 
-- [ ] 🤖 **Bloodied stand-ground cue**.
+*(**Bloodied stand-ground cue** — RETIRED on evidence 2026-07-28e, bench run 19:
+*"⏰ It Is Construction, Not War (Bench Adv — Tussock-Sow): Bloodied — she plants herself at the wallow;
+the fight ends where her ground begins. (Blight-gray variant does not break off.)"* on 34 → 15
+(20 impact − Deflect 1 = 19 dealt, crossing line 17).)*
 
 
 # Vorsk Ranges Bestiary (rulings 121–122 — statted 2026-07-20; the Vorsk dive Phase-4c gate)

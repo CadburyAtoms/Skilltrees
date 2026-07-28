@@ -640,6 +640,55 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   **many rows on few actors**, and the run drove *every* row touching an actor before moving on. Budget
   by counting rows-per-actor, not imports.
 
+## Operating lessons from run 19 (2026-07-28e — these OVERRIDE older advice where they conflict)
+
+- ❌ **A "no card" negative is WORTHLESS unless you prove the once-per-round gate was OPEN first.**
+  `edhaTriggerAllowed` compares the owner's `trigRound[key]` against **`game.combat.round`** — Ben's
+  ACTIVE combat, which has sat at round **1** for many runs. Run 19 was handed "check Ben's Corvaine
+  owners stay silent" and found all three already gate-closed at round 1: their silence would have
+  proven the *gate*, not the side filter. Compute the key yourself
+  (`cue:<item>:<trigger>:<atFraction>:<rangeFt>:<everyNRounds>`, dots → `_`), read the stored value,
+  and **assert `gateOpen` before AND after every negative drive**. Where the confound is on Ben's
+  actors and you may not write to them, **import your own copy of the same block and control its gate**
+  — a bench owner with the identical rule at the identical disposition is a strictly better instrument.
+- ✅ **Design one drive that tests three filters at once, each the others' control.** One tokenless
+  drop with a same-side un-ranged owner, a cross-side un-ranged owner, and a same-side *ranged* owner
+  on the map yields the full truth table in a single sweep and is far more convincing than three
+  separate drives — a filter that wrongly fires shows up as an extra card in the same log line where
+  the correct card appears. And **always pair a negative with a control that makes the same rule
+  FIRE** (Roek silent at unknown position, but fired at 5 ft and silent again at 35 ft) — otherwise
+  "no card" is indistinguishable from a dead rule.
+- ❌ **`edhaIsIsolated` counts same-disposition adjacents, so stage the ATTACKER at a disposition no
+  one else uses.** Only dispositions **1** and **−1** are in use on the Playtest Map; **−2 (secret)
+  and 0 (neutral) are free**. Placing an attacking adversary at **−2** keeps a −1 victim Isolated *and*
+  keeps your bench `ally-drops` traffic off Ben's −1 campaign tokens. Assert `edha.isIsolated(victim)`
+  is `true` (and `false` on your control) *before* driving any Isolated-gated row.
+- ❌ **Stepping a BENCH combat writes cue ledgers onto BEN'S campaign tokens.** `edhaTurnCueSweep`
+  hangs off `combatTurnChange` for **any** combat and then scans **every token on the scene**, so a
+  bench turn-step posted a Reactive Strike cue for Ben's `Stonebound Captain` and stamped a new
+  `trigRound` key on it. This is the `enemy-turn-start` analogue of the `ally-drops` exposure runs
+  17/18 hit. **Snapshot for it, expect it, report it** — and do not "clean" his actor, since that is
+  itself another write.
+- ❌ **Compute a bloodied crossing AFTER deflect.** A Rootling Swarm read as a dead `hp-below` hook
+  because it has **Deflect 1**: 6 impact landed 5, leaving 7/12 against a line of 6. Re-driven at 9
+  raw it fired immediately. Check `system.deflect.value` (never `.derived`) and pick a damage type the
+  fixture does not deflect, or over-deal.
+- ❌ **Two `__use()` calls in one `javascript_tool` call will blow the 30 s tool budget.** Each carries
+  its own timeout plus dialog-walker sleeps (throttled to ~1 s with the pane hidden). **One `use()`
+  per call.** A timeout is not evidence of a hang — run 19 timed out twice with *no* dialog open and
+  the drive having already succeeded; check `_source` position and the chat tail before concluding
+  anything.
+- **The Advanced-Encounters "does not have enough actions to use X!" toast is a WARN, not a block.**
+  It fires for any actor absent from `game.combat` (Ben's), but the item still runs — Focus was spent
+  and the engine's own cards posted right through it. Do not record a FAIL on seeing it.
+- **A 2×2 owner cannot reach anything outside its own footprint with a 5-ft centre-to-centre gate**
+  (its centre is a full square in from its edge → ≥7.5 ft to any neighbour). Before calling a short
+  range broken, compute the gap from `tok.center` and `tok.w`; before picking a fixture for a ranged
+  row, prefer a **1×1** owner with a generous range (Roek's 20 ft) so the geometry cannot confound you.
+- **Density, measured: 10 imports covered 24 rows and retired 21 — about 2.1 per import**, between
+  run 17's 1.4 and run 18's 3.9, exactly as the brief predicted for a section that spreads few rows
+  over many actors. Budget by rows-per-actor.
+
 ## Known limits
 
 - ❌ **RESOLVED AS UNFIXABLE (07-26i): there is no "no written Cognitive/Spiritual defense" creature.**

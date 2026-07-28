@@ -298,6 +298,22 @@ it `distanceFt: 20` and drop `bySize`.* The alternative (keep `bySize`, reword t
 authored data changes → **pack rebuild + ⟳ Sync**, which is why fix pass A left it alone: the
 rebuild list is currently empty and this is not worth re-opening it on its own.
 
+⚠️ **UPDATED 2026-07-28e by bench run 19 — this is no longer one block, it is a FAMILY of at least
+four across two colours, and three of them state a wrong number on the card.** Measured live:
+| block | ability | card says | engine did | rank |
+|---|---|---|---|---|
+| Cragdrake Adult | Explosive Leap | 20 ft | 5 ft | red 2 |
+| **Brandram** | **Shockwave Slam** | **10 ft** | **5 ft** (measured 300 px) | red 2 |
+| **Brandram** | **Reckless Advance** | **10 ft** | **5 ft** (from 32.5 ft away, unclipped) | red 2 |
+| **Tussock-Sow** | Green Key terrain square | "~10-ft square" | **5 ft** | green 2 |
+| *Briar-Gone Grove* | *Green Key terrain square* | *10 ft* | ***10 ft*** ✅ | *green **3*** |
+The Grove row is the control that proves the mechanism rather than merely asserting it: **same code
+path, rank 3, and the card's number comes out right.** So every rank-**2** rival lands exactly one step
+down `EDHA_SIZE_FT` while its card carries the rank-3 figure. Note also that `bySize: true` makes an
+authored `distanceFt` **dead** — Shockwave Slam ships `distanceFt: 5` *and* `bySize: true`, and the 5
+is coincidence, not the source. **Deciding R-48 once now settles four blocks**, which is a much better
+trade for a pack rebuild than the single-block version was. *(Bench run 19; checklist W29 §7, §8.)*
+
 **R-49. Is a CREATURE an "obstacle" for a push's collision damage, or only a wall?**
 Sent here by fix pass B (2026-07-28b) rather than decided silently. `edha-push` stops the victim when
 the destination is occupied by a body exactly as it stops them at a wall, and both set the same
@@ -320,6 +336,42 @@ grip." The wiring is correct and the rows passed; the question is presentational
 default: keep the line in the item description (it is the rule-3 ledger and it must stay somewhere
 visible in Foundry), but move it behind a GM-only note field or an HTML comment so the table sees
 only the fiction.* Affects every adversary ability carrying the marker, not just these three.
+
+**R-52. A 5-ft `ally-drops` cue cannot reach an ally standing next to its owner. Slack, or edge-to-edge?**
+Raised by bench run 19 (2026-07-28e), which measured it four ways rather than asserting it.
+`edhaTokenGapFt` measures **centre-to-centre** and `edhaAllyDropEligible` applies **no slack**, so:
+
+| owner | ally position | gap | card |
+|---|---|---|---|
+| Crownox Ring (**Large 2×2**) | orthogonally adjacent | **7.5 ft** | ❌ |
+| Crownox Ring | overlapping the ring's own square | 0 ft | ✅ |
+| The Reckoning (Medium) | orthogonally adjacent | 5.0 ft | ✅ |
+| The Reckoning | **diagonally** adjacent | **7.07 ft** | ❌ |
+
+A **Large** owner's 5-ft cue can therefore *never* reach a ring-mate beside it — only one standing
+inside its footprint — and a Medium owner's misses every diagonal. Both cards promise the opposite:
+*"an **adjacent** ox may spend 3 Focus"* and *"a pack-mate dropped **within 5 ft**"*. This is a
+measurement convention, not a broken hook, which is why it is here and not in test-pass-fixes.
+⚠️ **The engine already answers this question elsewhere and disagrees with itself:** the
+`enemy-turn-start` sweep in the same file adds **`+ 2.5` half-square slack**, with the comment
+*"half-square slack for adjacency reads"*. `ally-drops` has none.
+*Recommended default: give `edhaAllyDropEligible` the same `+ 2.5` slack, which fixes the Medium
+diagonal immediately and is a one-line ENGINE-ONLY change (no pack rebuild).* That still leaves the
+Large owner at 7.5 ft, so if "adjacent to the ring" is meant to work, the fuller answer is to measure
+**edge-to-edge** for sized tokens — a bigger change that would touch every `rangeFt` gate in the
+engine, so it should be decided deliberately rather than slipped in. Blast radius today is the two
+5-ft rules (Crownox Ring, The Reckoning); Roek's 20 ft is unaffected. *(Checklist W29 §2.)*
+
+**R-53. Should a creature whose own cue says it "goes still instead of dying" still get the `Dead` status?**
+Raised by bench run 19. The Briar-Gone Grove's 0-HP cue posts *"0 HP — it goes still instead of dying;
+the blight stands."* — and the generic `updateActor` 0-HP branch then stamps the **`Dead`** status and
+its skull overlay anyway, so the table sees a corpse marker under a card that just said it is not a
+corpse. Both behaviours are individually correct; they just contradict each other on the canvas.
+*Recommended default: leave the engine alone and treat the skull as "out of the fight" shorthand —
+the cue is the authority and the GM reads it.* The alternative is a `noDeathStatus` dial on the
+0-HP branch for blocks that explicitly do not die, which is one small generic field (ENGINE-ONLY) and
+would also serve any future construct/blight. Not worth building on one block; worth building on three.
+*(Checklist W29 §4 "Register cues", which PASSED — this is a polish question, not a defect.)*
 
 ---
 

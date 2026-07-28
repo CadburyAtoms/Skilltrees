@@ -33,6 +33,116 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-07-28e — BENCH RUN 19 (marathon 3): **fix pass C re-tested 4-for-4 across 8 drives, and `# W29 Balance-Pass Bestiary` swept — 24 🤖 in, 21 retired on evidence, 3 left, ZERO not-reached.** DOCS-ONLY (no engine, no data, no pack rebuild).
+
+Engine hash-verified live on join: served `register-skills.js` SHA-256
+`b1bd52c165b8ce0d1b8bc3651f862a6be81795c7adc16aabf7d86abe0bfb01b2` == `HEAD:module-src/scripts/register-skills.js`
+(git blob `c0b0c1e`). Roster re-run for idempotency: **zero ⚠, zero creations**, and the ranged fixture
+was asserted directly rather than trusted (`Shortbow`, `system.attack.type === "ranged"`, range 80).
+
+### PART A — fix pass C: all four cells PASS, driven **eight** times
+
+The fix (`edhaGmCueDamageSweep` resolving a tokenless victim's side via `prototypeToken.disposition`
+and failing closed) holds on both paths. Because the mechanism is a **hook race** — the phantom break's
+`updateActor` runs concurrently with the applyDamage sweep — each cell was driven on a *deterministic*
+path (4× an actor with no token anywhere) **and** the real *racing* path (4× an actual Seeming break).
+
+⚠️ **The harness trap that had to be caught first, and the reason this run's evidence is stronger than
+a naive drive would have been.** Ben's three Corvaine `ally-drops` owners were **already gate-closed**:
+`edhaTriggerAllowed` compares `trigRound[key]` against **`game.combat.round`**, their stored value was
+**1**, and Ben's active campaign combat sits at round **1**. Their silence is therefore
+**over-determined** — it would have proven the once-per-round gate, not the side filter. Run 19 instead
+used **bench-imported owners whose gate it controlled and verified open before and after every single
+drive**. A negative with a provably-open gate is the only negative worth anything here.
+
+The decisive shape: **one tokenless drop exercises all three filters at once, each acting as the
+others' control.** Victim = a disposition-**−2** import with 0 active tokens.
+
+| owner (all gates verified OPEN before AND after) | disposition | `rangeFt` | expected | measured |
+|---|---|---|---|---|
+| Corvaine Line-Caller | **−2** (same side) | 0 | fires | ✅ **1 card**, every drive |
+| Corvaine Raider | **−1** (cross side) | 0 | silent | ✅ **0 cards**, gate still open |
+| Sergeant Halden Roek | **−2** (same side) | **20** | silent (no position) | ✅ **0 cards**, gate still open |
+
+- **① NEGATIVE** — the cross-side owner never fired, on 8/8 drives, with its gate provably still open.
+  This is the cell that failed at run 18.
+- **② POSITIVE** — the same-side un-ranged owner fired every time: *"⏰ Break (Bench Adv — Corvaine
+  Line-Caller) … (Bench Adv — Victim Tokenless dropped.)"*, and its gate flipped open→closed, which
+  independently confirms the card went through `edhaMarkTriggerUsed`. **Fail-closed did not
+  over-correct.** The phantom copy's prototype carried **−2**, stamped from the duplicated token
+  exactly as `edhaSummon` documents.
+- **③ POSITIVE CONTROL** — victim WITH a token: same-side owners fired, cross-side stayed at **0**.
+- **④ RANGED NEGATIVE** — Roek silent for the tokenless victim. **And its rule was proven ALIVE by a
+  control that fired it at 5 ft**, then silent again at **35 ft** — so the range filter genuinely
+  *measures* rather than merely null-checking, and ④'s silence is not a dead rule. A legitimate ranged
+  card also prints the clause correctly: *"(… dropped, **within 5 ft**.)"*
+- **Ben's Corvaine token actors: `trigRound` byte-identical before and after** (`cue:Break:ally-drops: 1`,
+  `cue:Break:ally-drops:0_5:0:1: 1` on all three). Stated honestly: with their gate closed at round 1
+  the bug *could* not have written to them this run either, so this is a clean bill of health but not
+  by itself proof of the fix — the bench-owner table above is the proof.
+
+### PART B — `# W29 Balance-Pass Bestiary`: 21 retired, 3 left
+
+Retired on evidence (see the checklist for the quoted card text on each): **§0** Dread Presence veto
+(with a matched control at 115 ft); **§1** all four Reeve-Owl rows; **§2** Ring behavior rows; **§3**
+Bloodied scatter; **§4** all five Briar-Gone Grove rows; **§5** Sapping Hex + Bloodied re-settle;
+**§6** Pounce cue + Bloodied leave; **§7** Momentum's Edge + Bloodied withdraw; **§8** all three
+Tussock-Sow rows. **10 imports → 2.1 retired per import** (run 16: 1.2, run 17: 1.4, run 18: 3.9 —
+W29 spreads rows thinly across many actors, as the run brief predicted).
+
+**Two findings feed test-pass-fixes** (three rows, but only two causes):
+
+1. **`ally-drops` 5-ft cues cannot reach an adjacent ally** (§2, Crownox Ring + The Reckoning).
+   `edhaTokenGapFt` is centre-to-centre and `edhaAllyDropEligible` applies **no slack**. Measured:
+   a **Large (2×2)** owner's orthogonally-adjacent ring-mate is **7.5 ft** away → no card (only an
+   *overlapping* one at 0 ft fires); a **Medium** owner fires at orthogonal 5.0 ft but **not** at
+   **diagonal 7.07 ft**. Both cards' prose says "adjacent". Note the engine's own `enemy-turn-start`
+   sweep adds **`+ 2.5` half-square slack "for adjacency reads"** and `ally-drops` has none.
+   Also on the same row: **"the White test resolves through the contest core on use" is unimplemented
+   on both blocks** — behaviour-tested, using the item posts an **empty** chat card; the item carries
+   only the `edha-apply-watch` cue, with no `use` rule at all.
+2. **One `bySize` rank-scaling gap behind BOTH §7 rows, with a third consumer in §8.** `bySize: true`
+   makes the authored `distanceFt` dead and resolves `EDHA_SIZE_FT[edhaColorRank(owner, <color>)]`.
+   Brandram is a **rival → role rank 2** (ruling 122), so `EDHA_SIZE_FT[2]` = **5 ft**, while both its
+   cards promise **10 ft**: Shockwave Slam pushed *"5 ft"* (measured 300 px) and Reckless Advance moved
+   *"5 ft"* from 32.5 ft away. Third consumer: the Tussock-Sow (green rank 2) placed a **5 ft** terrain
+   square where its card says "~10-ft", while the Briar-Gone Grove (green rank **3**) placed **10 ft**
+   from the same path. The adversary card text was written with rank-3 figures. **Decide once, fix the
+   family** — see `EDHA_RULINGS.md` R-52.
+
+**Two row corrections made in place, and two non-defects NOT filed:**
+- The §7 row's *"collision deals half 1d4"* was **stale** — card and rule both say `floor(1d6 / 2)`;
+  the row was wrong, not the engine.
+- The collision die is **unobservable on a 5-ft push** and that is geometry: a one-square push either
+  travels fully (no collision) or is stopped dead (*"pushed 0 ft (stopped by …)"*), and the engine
+  correctly declines to roll on a push that never travelled. Same all-or-nothing construction run 17
+  mis-filed as a bug — not re-filed.
+- The §0 control's token landed **31 px** short of the requested square: v13's **wall-constrained walk**
+  on a plain `update({x,y})` (run 18's lesson), not a partial veto.
+
+**One blocker, row stays 🤖:** §7 **Unstoppable** (`whenFastTurn: true`) — `edhaIsFastTurn` reads
+**`game.combat`**, confirmed live as Ben's `BerbNeuXp4iKduef`, and Brandram is not one of its
+combatants. A technical blocker never becomes ⚑.
+
+### ⚠️ World drift — ONE write landed on a campaign actor, reported not reverted
+
+`Stonebound Captain` (Ben's **unlinked token actor**, token `IQzWlfC7cfu4Bcll`) gained one **new**
+`trigRound` key: `cue:Reactive Strike:enemy-turn-start:0_5:10:1 → 1`. Its pre-existing
+`cue:Reactive Strike:enemy-turn-start → 4` is unchanged. **Cause:** stepping a *bench* combat fires
+`combatTurnChange`, and `edhaTurnCueSweep` scans **every token on the scene** — so it posted a Reactive
+Strike cue for his adversary and stamped its ledger. This is the `enemy-turn-start` analogue of the
+`ally-drops` exposure runs 17/18 hit. Per the run brief ("report it, don't fix it") it was **left in
+place**; it is additive and functionally inert once his combat advances past round 1.
+
+Everything else is clean: actors **87 → 87**, scene tokens **52 → 52**, walls 117, templates 0,
+regions 1 → 1, combats 1 (Ben's, still active, round 1, 4 combatants). All 16 bench imports deleted,
+the `Bench Adversaries` folder removed, no stray phantom copies, the read-only `Roll#evaluate` patch
+restored and re-verified, and the four moved bench fixtures returned to their snapshot positions.
+Bench-fixture residue only: `bpHits` counters ticked (documented as ordinary) and one `Disoriented`
+that a bench PC's Breaking Point applied to a bench target was cleared.
+
+---
+
 ## 2026-07-28d — MARATHON-3 FIX PASS C (bench run 18's one defect): **`ally-drops` cues fired ACROSS the disposition line whenever the victim had no token — and the same cause silently disabled the RANGE filter too.** The `!== undefined` guard family swept: **8 instances, exactly 1 is a bug.** A gate was considered and **declined, with the matrix.** ENGINE-ONLY → ⟳ sync the module + F5; **the pack-rebuild list stays EMPTY.**
 
 ### What shipped
