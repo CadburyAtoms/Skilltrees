@@ -8,6 +8,7 @@
 const assert = require("node:assert");
 const path = require("path");
 const fs = require("fs");
+const { readSourceLF } = require("./harness.js");
 
 const { applyAuthorable, isEmptyAuthored } = require(path.join(__dirname, "..", "scripts", "edha-pack-io.js"));
 
@@ -222,7 +223,7 @@ test("the deploy guard's baseline is keyed to the MODROOT, never the data dir (2
   // baselines describing Ben's LIVE packs - the first post-migration deploy then flagged 76
   // phantom "un-extracted Foundry edits" and the guard's real protection was long gone.
   for (const rel of ["scripts/foundry-build.js", "scripts/foundry-extract.js"]) {
-    const src = fs.readFileSync(path.join(__dirname, "..", rel), "utf8");
+    const src = readSourceLF(rel);
     assert.ok(/BASELINE_DIR = `\$\{MODROOT\}\/\.baselines`/.test(src),
       `${rel}: BASELINE_DIR must be \${MODROOT}/.baselines`);
     assert.ok(!/BASELINE_DIR = `\$\{(DATA|AUTHORED_DIR)\}/.test(src),

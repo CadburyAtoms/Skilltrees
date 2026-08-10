@@ -19,7 +19,8 @@ const cp = require("child_process");
 
 const REPO = path.resolve(__dirname, "..");
 const { parseHandlerSchemas, topLevelKeys, matchBrace } = require(path.join(REPO, "scripts", "handler-schemas.js"));
-const ENGINE = fs.readFileSync(path.join(REPO, "module-src", "scripts", "register-skills.js"), "utf8");
+const { readEngineSource } = require("./harness.js");
+const ENGINE = readEngineSource();
 
 /* --- the scanner primitives ------------------------------------------------------------------ */
 

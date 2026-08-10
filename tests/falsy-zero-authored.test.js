@@ -31,7 +31,7 @@
 const assert = require("assert");
 const fs = require("fs");
 const path = require("path");
-const { loadEngine } = require("./harness.js");
+const { loadEngine, readEngineSource, codeOnly } = require("./harness.js");
 
 const REPO = path.join(__dirname, "..");
 
@@ -169,10 +169,10 @@ test("edha-defense-buff amount 0 grants NOTHING (it granted +2), and 2 still gra
 /* ---- 5. text ledger: the two sites whose enclosing function needs a live Foundry --------------- */
 
 test("LEDGER — the swept sites keep the 0-safe read in engine code", () => {
-  // CRLF normalised first — `.` does not match `\r`, so the `//` stripper is a no-op on a
-  // core.autocrlf=true checkout (see the note in tests/terrain-ownership.test.js, fix pass F).
-  const src = fs.readFileSync(path.join(REPO, "module-src", "scripts", "register-skills.js"), "utf8").replace(/\r\n/g, "\n");
-  const code = src.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
+  // CRLF normalisation and comment-stripping now both live in tests/harness.js
+  // (readEngineSource/codeOnly) — see its module header for why that used to be a no-op here on
+  // Ben's checkout (core.autocrlf=true) while staying green on CI's LF checkout.
+  const code = codeOnly(readEngineSource());
   for (const dead of [
     "Number(ds.edhaCost) || 2",
     "Number(spec.speed) || 25",

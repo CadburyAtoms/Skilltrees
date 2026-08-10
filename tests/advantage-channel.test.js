@@ -27,31 +27,12 @@
  */
 "use strict";
 const assert = require("assert");
-const fs = require("fs");
-const path = require("path");
+const { readEngineSource, codeOnly } = require("./harness.js");
 
-const REPO = path.join(__dirname, "..");
-const ENGINE = path.join(REPO, "module-src", "scripts", "register-skills.js");
-const engine = fs.readFileSync(ENGINE, "utf8");
-
-/* Comment- and template-free engine text. The file's own prose quotes `= 1` while EXPLAINING the
- * bug, so a ledger assertion over the raw source would fail on its own documentation. */
-function codeOnly(src) {
-  let out = "";
-  for (let i = 0; i < src.length; ) {
-    const c = src[i];
-    if (c === '"' || c === "'" || c === "`") {
-      out += c; i++;
-      for (; i < src.length; i++) { out += src[i]; if (src[i] === "\\") { out += src[++i] ?? ""; continue; } if (src[i] === c) { i++; break; } }
-      continue;
-    }
-    if (c === "/" && src[i + 1] === "/") { while (i < src.length && src[i] !== "\n") i++; continue; }
-    if (c === "/" && src[i + 1] === "*") { const e = src.indexOf("*/", i + 2); i = e < 0 ? src.length : e + 2; continue; }
-    out += c; i++;
-  }
-  return out;
-}
-const code = codeOnly(engine);
+/* Comment-stripped, LF-normalized engine text (tests/harness.js). The file's own prose quotes
+ * `= 1` while EXPLAINING the bug, so a ledger assertion over the raw source would fail on its
+ * own documentation. */
+const code = codeOnly(readEngineSource());
 const codeLines = code.split("\n");
 
 /* Every `<something>.advantageMode = <rhs>` ASSIGNMENT in engine code, with its 1-based line.

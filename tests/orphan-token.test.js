@@ -18,7 +18,7 @@
  */
 "use strict";
 const assert = require("assert");
-const { loadEngine } = require("./harness.js");
+const { loadEngine, readEngineSource } = require("./harness.js");
 
 const env = loadEngine();
 
@@ -112,17 +112,27 @@ test("the hand-delete sweep is a no-op when nothing points at the id (no second 
 });
 
 test("the deleteActor cascade is scoped to engine-MINTED actors, by the flag edhaSummon stamps", () => {
-  const fs = require("fs");
-  const path = require("path");
-  const engine = fs.readFileSync(
-    path.join(__dirname, "..", "module-src", "scripts", "register-skills.js"), "utf8");
-  const hook = engine.match(/Hooks\.on\("deleteActor",[\s\S]{0,900}?edhaSweepOrphanedTokens[^\n]*\n/);
-  assert.ok(hook, "the hand-delete safety net must be registered on deleteActor");
-  assert.ok(/getFlag\?\.\("edha-content", "summon"\) !== true/.test(hook[0]),
+  // Was a `[\s\S]{0,900}` CHARACTER window over raw (CRLF) source — CRLF costs one extra byte
+  // per line, so the same char budget spans a different number of LINES depending on line-ending
+  // style, which is exactly the class of bug tests/harness.js's readEngineSource exists to kill.
+  // Rewritten against LF-normalized source with a line-count window instead: scan forward from
+  // each `Hooks.on("deleteActor", …)` site for edhaSweepOrphanedTokens within WINDOW lines. Three
+  // such sites exist in the engine; only the third (the hand-delete safety net) calls it.
+  const lines = readEngineSource().split("\n");
+  const WINDOW = 20;   // the real block is 6 lines; generous headroom without risking a false match
+  let hookText = null;
+  for (let i = 0; i < lines.length; i++) {
+    if (!/Hooks\.on\("deleteActor",/.test(lines[i])) continue;
+    const slice = lines.slice(i, i + WINDOW);
+    const j = slice.findIndex((l) => l.includes("edhaSweepOrphanedTokens"));
+    if (j >= 0) { hookText = slice.slice(0, j + 1).join("\n") + "\n"; break; }
+  }
+  assert.ok(hookText, "the hand-delete safety net must be registered on deleteActor");
+  assert.ok(/getFlag\?\.\("edha-content", "summon"\) !== true/.test(hookText),
     "the cascade must refuse any actor the engine did not mint — a blanket deleteActor sweep would " +
     "delete tokens belonging to hand-made adversaries and imported pack actors");
-  assert.ok(/edhaDefBuffGmGate\(\)/.test(hook[0]),
+  assert.ok(/edhaDefBuffGmGate\(\)/.test(hookText),
     "one applier: deleteActor fires on every client, and Ben's table runs two GMs");
-  assert.ok(!/\.delete\(\)/.test(hook[0]),
+  assert.ok(!/\.delete\(\)/.test(hookText),
     "it must not try to delete the actor — it is already gone, and that is the 'Actor does not exist' race");
 });

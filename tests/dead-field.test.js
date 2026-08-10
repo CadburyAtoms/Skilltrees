@@ -22,30 +22,15 @@
 const assert = require("assert");
 const fs = require("fs");
 const path = require("path");
+const { readEngineSource, codeOnly } = require("./harness.js");
 
 const REPO = path.join(__dirname, "..");
 const snapshot = JSON.parse(fs.readFileSync(path.join(REPO, "data", "native-vocabulary.json"), "utf8"));
-const engine = fs.readFileSync(path.join(REPO, "module-src", "scripts", "register-skills.js"), "utf8");
 
-/* Comment- and string-free engine text, so the ledger cases below mean "in CODE" — the engine's own
- * comments quote every one of these dead field names while explaining the bugs. */
-function codeOnly(src) {
-  let out = "";
-  for (let i = 0; i < src.length; ) {
-    const c = src[i];
-    if (c === '"' || c === "'" || c === "`") {
-      // Keep the delimiters and the body: a flat update path ("system.stacks") IS code.
-      out += c; i++;
-      for (; i < src.length; i++) { out += src[i]; if (src[i] === "\\") { out += src[++i] ?? ""; continue; } if (src[i] === c) { i++; break; } }
-      continue;
-    }
-    if (c === "/" && src[i + 1] === "/") { while (i < src.length && src[i] !== "\n") i++; continue; }
-    if (c === "/" && src[i + 1] === "*") { const e = src.indexOf("*/", i + 2); i = e < 0 ? src.length : e + 2; continue; }
-    out += c; i++;
-  }
-  return out;
-}
-const code = codeOnly(engine);
+/* Comment-stripped, LF-normalized engine text (tests/harness.js), so the ledger cases below mean
+ * "in CODE" — the engine's own comments quote every one of these dead field names while
+ * explaining the bugs. Strings survive stripping (a flat update path like "system.stacks" IS code). */
+const code = codeOnly(readEngineSource());
 
 test("native-vocabulary snapshot carries the document field list", () => {
   const f = snapshot.systemSchemaTopLevelFields;
