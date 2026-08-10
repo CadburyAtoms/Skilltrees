@@ -37,10 +37,12 @@
 const fs = require("fs");
 const path = require("path");
 const { parseHandlerSchemas, matchBrace, topLevelKeys } = require("./handler-schemas.js");
+const { loadJson } = require("./lib/data.js");
 
 const REPO_ROOT = path.resolve(__dirname, "..");
 const ENGINE_PATH = path.join(REPO_ROOT, "module-src", "scripts", "register-skills.js");
 const AUTHORED_DIR = path.join(REPO_ROOT, "data", "authored");
+const ADV_REL = "data/adversaries.json";
 
 // Talent overlay whitelist (CLAUDE.md: "description, activation, damage, events, effects, img
 // ONLY" — plus docId, the extract's document id).
@@ -204,17 +206,45 @@ function inEngineCode(lit) {
   return engineCode.includes(`"${lit}"`) || engineCode.includes(`'${lit}'`) || engineCode.includes("`" + lit + "`");
 }
 
-// --- pass 1+2: authored files -------------------------------------------------
-const talentNames = new Set();
+// --- shared data indexes: loaded ONCE, here, so every later pass reads the SAME parsed data ----
+// instead of re-hitting the filesystem — which is what six of the seven authored-overlay walks
+// and most of the adversary walks used to do, several of them via a silent `catch (e) { continue;
+// }` that made a broken JSON file invisible to the passes built on it: they simply reported
+// SUCCESS on a file they never read. A parse failure is now reported HERE, once, loudly (via
+// loadJson's throw), and every downstream pass just finds that file's entries absent from the
+// index rather than getting a false "clean" read of its own.
+const AUTHORED_DOCS = [];    // [{ file, rel, doc }] — one entry per data/authored/*.json file
+const AUTHORED_ENTRIES = []; // [{ file, rel, talentName, talent }] — one entry per talent therein
 for (const file of fs.readdirSync(AUTHORED_DIR).filter((f) => f.endsWith(".json")).sort()) {
   const rel = `data/authored/${file}`;
   let doc;
-  try { doc = JSON.parse(fs.readFileSync(path.join(AUTHORED_DIR, file), "utf8")); }
+  try { doc = loadJson(rel); }
   catch (e) { err(`${rel}: invalid JSON — ${e.message}`); continue; }
+  AUTHORED_DOCS.push({ file, rel, doc });
+  for (const [talentName, talent] of Object.entries(doc.talents || {})) {
+    AUTHORED_ENTRIES.push({ file, rel, talentName, talent });
+  }
+}
+// data/adversaries.json — loaded once the same way. ADVERSARY_ENTRIES simply stays empty (rather
+// than throwing further) on a parse failure, so every later pass finds nothing to check — exactly
+// what the "reported by the earlier adversaries.json pass" comments below already assumed, now
+// literally true instead of assumed.
+let ADVERSARY_DATA = null;
+const ADVERSARY_ENTRIES = []; // [{ advName, adv, item }]
+try { ADVERSARY_DATA = loadJson(ADV_REL); }
+catch (e) { err(`${ADV_REL}: invalid JSON — ${e.message}`); }
+if (ADVERSARY_DATA) {
+  for (const [advName, adv] of Object.entries(ADVERSARY_DATA)) {
+    if (advName.startsWith("_")) continue;
+    for (const item of adv.items || []) ADVERSARY_ENTRIES.push({ advName, adv, item });
+  }
+}
 
+// --- pass 1+2: authored files -------------------------------------------------
+const talentNames = new Set();
+for (const { rel, doc } of AUTHORED_DOCS) {
   for (const k of Object.keys(doc)) if (!TOP_KEYS.has(k)) err(`${rel}: unexpected top-level key "${k}"`);
-  const talents = doc.talents || {};
-  for (const [name, t] of Object.entries(talents)) {
+  for (const [name, t] of Object.entries(doc.talents || {})) {
     talentNames.add(name);
     for (const k of Object.keys(t)) {
       if (!TALENT_KEYS.has(k)) err(`${rel} (${name}): key "${k}" outside the authored-overlay whitelist [${[...TALENT_KEYS].join(", ")}]`);
@@ -277,37 +307,28 @@ const treeTalentNames = new Set(talentNames);
 // Bespoke adversary abilities (data/adversaries.json items) are talents for automation purposes
 // since 07-16: foundry-build flags trait/action kinds `adversaryTalent`, so engine name-keyed
 // automation (The Seeming) legitimately targets them — they join the resolvable-name universe.
-{
-  const rel = "data/adversaries.json";
-  try {
-    const advData = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, rel), "utf8"));
-    for (const [advName, adv] of Object.entries(advData)) {
-      if (advName.startsWith("_")) continue;
-      for (const it of adv.items || []) {
-        if (it?.kind !== "weapon" && typeof it?.name === "string" && it.name.trim()) talentNames.add(it.name.trim());
-        // Bespoke-ability event rules (simplified array form) join the same data↔engine checks
-        // as authored talents — a typo'd handler type on an adversary is the identical silent
-        // failure mode.
-        for (const [j, ev] of (Array.isArray(it?.events) ? it.events : []).entries()) {
-          const where = `${rel} (${advName} / ${it.name}) events[${j}]`;
-          const evName = ev?.event;
-          if (typeof evName === "string" && evName.startsWith("edha-") && !inEngine(evName)) {
-            err(`${where}: event "${evName}" has no dispatch site in register-skills.js`);
-          }
-          const h = ev?.handler || {};
-          if (typeof h.type === "string" && h.type.startsWith("edha-") && !inEngine(h.type)) {
-            err(`${where}: handler type "${h.type}" has no dispatch site in register-skills.js`);
-          }
-          if (typeof h.kind === "string" && h.kind && !inEngine(h.kind)) {
-            err(`${where}: handler kind "${h.kind}" is not consumed anywhere in register-skills.js`);
-          }
-          if (typeof h.statusId === "string" && h.statusId && !inEngine(h.statusId)) {
-            err(`${where}: statusId "${h.statusId}" is unknown to register-skills.js (typo?)`);
-          }
-        }
-      }
+for (const { advName, item: it } of ADVERSARY_ENTRIES) {
+  if (it?.kind !== "weapon" && typeof it?.name === "string" && it.name.trim()) talentNames.add(it.name.trim());
+  // Bespoke-ability event rules (simplified array form) join the same data↔engine checks
+  // as authored talents — a typo'd handler type on an adversary is the identical silent
+  // failure mode.
+  for (const [j, ev] of (Array.isArray(it?.events) ? it.events : []).entries()) {
+    const where = `${ADV_REL} (${advName} / ${it.name}) events[${j}]`;
+    const evName = ev?.event;
+    if (typeof evName === "string" && evName.startsWith("edha-") && !inEngine(evName)) {
+      err(`${where}: event "${evName}" has no dispatch site in register-skills.js`);
     }
-  } catch (e) { err(`${rel}: invalid JSON — ${e.message}`); }
+    const h = ev?.handler || {};
+    if (typeof h.type === "string" && h.type.startsWith("edha-") && !inEngine(h.type)) {
+      err(`${where}: handler type "${h.type}" has no dispatch site in register-skills.js`);
+    }
+    if (typeof h.kind === "string" && h.kind && !inEngine(h.kind)) {
+      err(`${where}: handler kind "${h.kind}" is not consumed anywhere in register-skills.js`);
+    }
+    if (typeof h.statusId === "string" && h.statusId && !inEngine(h.statusId)) {
+      err(`${where}: statusId "${h.statusId}" is unknown to register-skills.js (typo?)`);
+    }
+  }
 }
 
 // --- pass 3: engine name-literals must resolve --------------------------------
@@ -335,32 +356,26 @@ for (const [lit, line] of [...nameLits.entries()].sort((a, b) => a[1] - b[1])) {
 // label is exactly the soft laziness that left The Seeming dead — lint refuses it.
 {
   const TRIGGER_RE = /\bwhen(ever)?\b|\btriggered\b|\beach time\b|\bevery \d|\bfirst time\b|\bon a hit\b|\breduced below\b|\bdrops? to\b|\ban ally drops\b/i;
-  try {
-    const advData = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, "data/adversaries.json"), "utf8"));
-    for (const [advName, adv] of Object.entries(advData)) {
-      if (advName.startsWith("_")) continue;
-      for (const it of adv.items || []) {
-        if (!it || it.kind === "weapon") continue;
-        const prose = `${it.text || ""} ${it.rider || ""}`;
-        if (!TRIGGER_RE.test(prose)) continue;                          // no trigger named → conscious-use is fine
-        if (Array.isArray(it.events) && it.events.length) continue;     // wired via native rules
-        if (inEngineCode(it.name)) continue;                            // name-keyed engine wiring — CODE only (comments satisfied this for months; see stripComments)
-        if (/NO NAMEABLE HOOK/i.test(prose)) continue;                  // explicit, reasoned exemption
-        // The automation lives on ANOTHER item of the same actor (07-19: the Fellstag's Waking
-        // Ground rides the auto-embedded Draw Mana's terrain-on-draw). The named carrier must be
-        // real: an engine literal (Draw Mana, an aliased talent) — a typo'd carrier is the same
-        // silent failure this pass exists to kill.
-        const via = prose.match(/ENGINE-NATIVE VIA ([^:<]+):/i);
-        if (via) {
-          if (inEngineCode(via[1].trim())) continue;
-          err(`data/adversaries.json (${advName} / ${it.name}): ENGINE-NATIVE VIA "${via[1].trim()}" — that carrier isn't a quoted literal in register-skills.js (typo? unwired?)`);
-          continue;
-        }
-        err(`data/adversaries.json (${advName} / ${it.name}): text names a trigger but the ability has no events, ` +
-            `no engine name-wiring, and no "NO NAMEABLE HOOK: <reason>" line — wire it or justify it (Ben 07-16)`);
-      }
+  for (const { advName, item: it } of ADVERSARY_ENTRIES) {
+    if (!it || it.kind === "weapon") continue;
+    const prose = `${it.text || ""} ${it.rider || ""}`;
+    if (!TRIGGER_RE.test(prose)) continue;                          // no trigger named → conscious-use is fine
+    if (Array.isArray(it.events) && it.events.length) continue;     // wired via native rules
+    if (inEngineCode(it.name)) continue;                            // name-keyed engine wiring — CODE only (comments satisfied this for months; see stripComments)
+    if (/NO NAMEABLE HOOK/i.test(prose)) continue;                  // explicit, reasoned exemption
+    // The automation lives on ANOTHER item of the same actor (07-19: the Fellstag's Waking
+    // Ground rides the auto-embedded Draw Mana's terrain-on-draw). The named carrier must be
+    // real: an engine literal (Draw Mana, an aliased talent) — a typo'd carrier is the same
+    // silent failure this pass exists to kill.
+    const via = prose.match(/ENGINE-NATIVE VIA ([^:<]+):/i);
+    if (via) {
+      if (inEngineCode(via[1].trim())) continue;
+      err(`${ADV_REL} (${advName} / ${it.name}): ENGINE-NATIVE VIA "${via[1].trim()}" — that carrier isn't a quoted literal in register-skills.js (typo? unwired?)`);
+      continue;
     }
-  } catch (e) { /* reported by the earlier adversaries.json pass */ }
+    err(`${ADV_REL} (${advName} / ${it.name}): text names a trigger but the ability has no events, ` +
+        `no engine name-wiring, and no "NO NAMEABLE HOOK: <reason>" line — wire it or justify it (Ben 07-16)`);
+  }
 }
 
 // --- pass 6: cue triggers must be DISPATCHABLE (the 07-19 dead-wiring family) --
@@ -403,26 +418,16 @@ for (const [lit, line] of [...nameLits.entries()].sort((a, b) => a[1] - b[1])) {
           `"The Seeming" and no edha-ambush-belief rule; the ledger is never written, so the rider can never apply`);
     }
   };
-  try {
-    const advData = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, "data/adversaries.json"), "utf8"));
-    for (const [advName, adv] of Object.entries(advData)) {
-      if (advName.startsWith("_")) continue;
-      for (const it of adv.items || []) {
-        for (const [j, ev] of (Array.isArray(it?.events) ? it.events : []).entries()) {
-          const where = `data/adversaries.json (${advName} / ${it.name}) events[${j}]`;
-          checkRule(where, ev);
-          checkFooled(where, ev, adv.items);
-        }
-      }
+  for (const { advName, adv, item: it } of ADVERSARY_ENTRIES) {
+    for (const [j, ev] of (Array.isArray(it?.events) ? it.events : []).entries()) {
+      const where = `${ADV_REL} (${advName} / ${it.name}) events[${j}]`;
+      checkRule(where, ev);
+      checkFooled(where, ev, adv.items);
     }
-  } catch (e) { /* reported by the earlier adversaries.json pass */ }
-  for (const file of fs.readdirSync(AUTHORED_DIR).filter((f) => f.endsWith(".json")).sort()) {
-    let doc;
-    try { doc = JSON.parse(fs.readFileSync(path.join(AUTHORED_DIR, file), "utf8")); } catch (e) { continue; }
-    for (const [name, t] of Object.entries(doc.talents || {})) {
-      for (const [evId, ev] of Object.entries(t.events || {})) {
-        checkRule(`data/authored/${file} (${name}) event ${evId}`, ev);
-      }
+  }
+  for (const { rel, talentName: name, talent: t } of AUTHORED_ENTRIES) {
+    for (const [evId, ev] of Object.entries(t.events || {})) {
+      checkRule(`${rel} (${name}) event ${evId}`, ev);
     }
   }
 }
@@ -542,26 +547,16 @@ engine.split("\n").forEach((lineText, i) => {
     }
   };
 
-  for (const file of fs.readdirSync(AUTHORED_DIR).filter((f) => f.endsWith(".json")).sort()) {
-    let doc;
-    try { doc = JSON.parse(fs.readFileSync(path.join(AUTHORED_DIR, file), "utf8")); } catch (e) { continue; }
-    for (const [name, t] of Object.entries(doc.talents || {})) {
-      for (const [evId, ev] of Object.entries(t.events || {})) {
-        if (ev?.handler?.type === "execute-macro") checkMacro(`data/authored/${file} (${name}) event ${evId}`, ev.handler);
-      }
+  for (const { rel, talentName: name, talent: t } of AUTHORED_ENTRIES) {
+    for (const [evId, ev] of Object.entries(t.events || {})) {
+      if (ev?.handler?.type === "execute-macro") checkMacro(`${rel} (${name}) event ${evId}`, ev.handler);
     }
   }
-  try {
-    const advData = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, "data/adversaries.json"), "utf8"));
-    for (const [advName, adv] of Object.entries(advData)) {
-      if (advName.startsWith("_")) continue;
-      for (const it of adv.items || []) {
-        for (const [j, ev] of (Array.isArray(it?.events) ? it.events : []).entries()) {
-          if (ev?.handler?.type === "execute-macro") checkMacro(`data/adversaries.json (${advName} / ${it.name}) events[${j}]`, ev.handler);
-        }
-      }
+  for (const { advName, item: it } of ADVERSARY_ENTRIES) {
+    for (const [j, ev] of (Array.isArray(it?.events) ? it.events : []).entries()) {
+      if (ev?.handler?.type === "execute-macro") checkMacro(`${ADV_REL} (${advName} / ${it.name}) events[${j}]`, ev.handler);
     }
-  } catch (e) { /* pass 5 already reports a malformed adversaries.json */ }
+  }
 }
 
 // --- pass 7: the iron-rule-2b RATCHET (2026-07-24) -----------------------------
@@ -669,40 +664,30 @@ engine.split("\n").forEach((lineText, i) => {
     }
   };
 
-  for (const file of fs.readdirSync(AUTHORED_DIR).filter((f) => f.endsWith(".json")).sort()) {
-    let doc;
-    try { doc = JSON.parse(fs.readFileSync(path.join(AUTHORED_DIR, file), "utf8")); } catch (e) { continue; }
-    for (const [name, t] of Object.entries(doc.talents || {})) {
-      for (const [evId, ev] of Object.entries(t.events || {})) {
-        const where = `data/authored/${file} (${name}) event ${evId}`;
-        for (const k of Object.keys(ev || {})) {
-          if (!AUTHORED_RULE_KEYS.has(k)) {
-            err(`${where}: rule key "${k}" is not in the system's rule schema ` +
-                `[${[...AUTHORED_RULE_KEYS].join(", ")}] — it is silently dropped`);
-          }
+  for (const { rel, talentName: name, talent: t } of AUTHORED_ENTRIES) {
+    for (const [evId, ev] of Object.entries(t.events || {})) {
+      const where = `${rel} (${name}) event ${evId}`;
+      for (const k of Object.keys(ev || {})) {
+        if (!AUTHORED_RULE_KEYS.has(k)) {
+          err(`${where}: rule key "${k}" is not in the system's rule schema ` +
+              `[${[...AUTHORED_RULE_KEYS].join(", ")}] — it is silently dropped`);
         }
-        checkFields(where, ev?.handler);
       }
+      checkFields(where, ev?.handler);
     }
   }
-  try {
-    const advData = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, "data/adversaries.json"), "utf8"));
-    for (const [advName, adv] of Object.entries(advData)) {
-      if (advName.startsWith("_")) continue;
-      for (const it of adv.items || []) {
-        for (const [j, ev] of (Array.isArray(it?.events) ? it.events : []).entries()) {
-          const where = `data/adversaries.json (${advName} / ${it.name}) events[${j}]`;
-          for (const k of Object.keys(ev || {})) {
-            if (!ADVERSARY_RULE_KEYS.has(k)) {
-              err(`${where}: rule key "${k}" is not in the simplified adversary form ` +
-                  `[${[...ADVERSARY_RULE_KEYS].join(", ")}] — foundry-build discards it`);
-            }
-          }
-          checkFields(where, ev?.handler);
+  for (const { advName, item: it } of ADVERSARY_ENTRIES) {
+    for (const [j, ev] of (Array.isArray(it?.events) ? it.events : []).entries()) {
+      const where = `${ADV_REL} (${advName} / ${it.name}) events[${j}]`;
+      for (const k of Object.keys(ev || {})) {
+        if (!ADVERSARY_RULE_KEYS.has(k)) {
+          err(`${where}: rule key "${k}" is not in the simplified adversary form ` +
+              `[${[...ADVERSARY_RULE_KEYS].join(", ")}] — foundry-build discards it`);
         }
       }
+      checkFields(where, ev?.handler);
     }
-  } catch (e) { /* reported by the earlier adversaries.json pass */ }
+  }
 }
 
 /* --- pass 11: no DEAD `system.<field>` path (the dead-field family, 07-27h) ---------------------
@@ -926,41 +911,37 @@ engine.split("\n").forEach((lineText, i) => {
           `SILENTLY inert (a contest waits for a roll that never comes; an @skills ref substitutes to 0). ` +
           `Valid: ${[...set].sort().join(" ")}`);
 
-    for (const file of fs.readdirSync(AUTHORED_DIR).filter((f) => f.endsWith(".json")).sort()) {
-      let doc;
-      try { doc = JSON.parse(fs.readFileSync(path.join(AUTHORED_DIR, file), "utf8")); } catch (e) { continue; }
-      for (const [name, t] of Object.entries(doc.talents || {})) {
-        const base = `data/authored/${file} (${name})`;
+    for (const { rel, talentName: name, talent: t } of AUTHORED_ENTRIES) {
+      const base = `${rel} (${name})`;
 
-        // (a) handler id FIELDS. Values may be comma-lists; every member must resolve.
-        for (const [evId, ev] of Object.entries(t.events || {})) {
-          const h = ev?.handler; if (!h || typeof h !== "object") continue;
-          for (const [field, [kind, set, extra]] of Object.entries(FIELDS)) {
-            const raw = h[field];
-            if (typeof raw !== "string" || !raw.trim()) continue;
-            // `edha-watch {watch: "die-step"}` reads whenSkill as the ENTRY KEY, not a skill.
-            if (field === "whenSkill" && h.type === "edha-watch" && h.watch === "die-step") continue;
-            for (const id of raw.split(",").map((s) => s.trim()).filter(Boolean)) {
-              if (!set.has(id) && !extra.includes(id)) idErr(`${base} event ${evId}`, field, id, kind, set);
-            }
+      // (a) handler id FIELDS. Values may be comma-lists; every member must resolve.
+      for (const [evId, ev] of Object.entries(t.events || {})) {
+        const h = ev?.handler; if (!h || typeof h !== "object") continue;
+        for (const [field, [kind, set, extra]] of Object.entries(FIELDS)) {
+          const raw = h[field];
+          if (typeof raw !== "string" || !raw.trim()) continue;
+          // `edha-watch {watch: "die-step"}` reads whenSkill as the ENTRY KEY, not a skill.
+          if (field === "whenSkill" && h.type === "edha-watch" && h.watch === "die-step") continue;
+          for (const id of raw.split(",").map((s) => s.trim()).filter(Boolean)) {
+            if (!set.has(id) && !extra.includes(id)) idErr(`${base} event ${evId}`, field, id, kind, set);
           }
         }
-
-        // (b) @skills.<id> / @attr.<id> substitutions in ANY authored string (formulas, note text,
-        //     descriptions). This is the half that printed "0" rather than doing nothing.
-        const walk = (node, trail) => {
-          if (Array.isArray(node)) return node.forEach((v, i) => walk(v, `${trail}[${i}]`));
-          if (node && typeof node === "object") { for (const [k, v] of Object.entries(node)) walk(v, trail ? `${trail}.${k}` : k); return; }
-          if (typeof node !== "string") return;
-          for (const m of node.matchAll(/@skills\.([A-Za-z_]\w*)/g)) {
-            if (!SKILLS.has(m[1])) idErr(`${base} ${trail}`, "@skills ref", m[1], ATTRS.has(m[1]) ? "skill (it is an ATTRIBUTE — use @attr." + m[1] + ")" : "skill", SKILLS);
-          }
-          for (const m of node.matchAll(/@attr\.([A-Za-z_]\w*)/g)) {
-            if (!ATTRS.has(m[1])) idErr(`${base} ${trail}`, "@attr ref", m[1], "attribute", ATTRS);
-          }
-        };
-        walk(t, "");
       }
+
+      // (b) @skills.<id> / @attr.<id> substitutions in ANY authored string (formulas, note text,
+      //     descriptions). This is the half that printed "0" rather than doing nothing.
+      const walk = (node, trail) => {
+        if (Array.isArray(node)) return node.forEach((v, i) => walk(v, `${trail}[${i}]`));
+        if (node && typeof node === "object") { for (const [k, v] of Object.entries(node)) walk(v, trail ? `${trail}.${k}` : k); return; }
+        if (typeof node !== "string") return;
+        for (const m of node.matchAll(/@skills\.([A-Za-z_]\w*)/g)) {
+          if (!SKILLS.has(m[1])) idErr(`${base} ${trail}`, "@skills ref", m[1], ATTRS.has(m[1]) ? "skill (it is an ATTRIBUTE — use @attr." + m[1] + ")" : "skill", SKILLS);
+        }
+        for (const m of node.matchAll(/@attr\.([A-Za-z_]\w*)/g)) {
+          if (!ATTRS.has(m[1])) idErr(`${base} ${trail}`, "@attr ref", m[1], "attribute", ATTRS);
+        }
+      };
+      walk(t, "");
     }
   }
 }
@@ -1019,26 +1000,16 @@ engine.split("\n").forEach((lineText, i) => {
     }
   };
 
-  for (const file of fs.readdirSync(AUTHORED_DIR).filter((f) => f.endsWith(".json")).sort()) {
-    let doc;
-    try { doc = JSON.parse(fs.readFileSync(path.join(AUTHORED_DIR, file), "utf8")); } catch (e) { continue; }
-    for (const [name, t] of Object.entries(doc.talents || {})) {
-      for (const [evId, ev] of Object.entries(t.events || {})) {
-        checkEnums(`data/authored/${file} (${name}) event ${evId}`, ev?.handler);
-      }
+  for (const { rel, talentName: name, talent: t } of AUTHORED_ENTRIES) {
+    for (const [evId, ev] of Object.entries(t.events || {})) {
+      checkEnums(`${rel} (${name}) event ${evId}`, ev?.handler);
     }
   }
-  try {
-    const advData = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, "data/adversaries.json"), "utf8"));
-    for (const [advName, adv] of Object.entries(advData)) {
-      if (advName.startsWith("_")) continue;
-      for (const it of adv.items || []) {
-        for (const [j, ev] of (Array.isArray(it?.events) ? it.events : []).entries()) {
-          checkEnums(`data/adversaries.json (${advName} / ${it.name}) events[${j}]`, ev?.handler);
-        }
-      }
+  for (const { advName, item: it } of ADVERSARY_ENTRIES) {
+    for (const [j, ev] of (Array.isArray(it?.events) ? it.events : []).entries()) {
+      checkEnums(`${ADV_REL} (${advName} / ${it.name}) events[${j}]`, ev?.handler);
     }
-  } catch (e) { /* reported by the earlier adversaries.json pass */ }
+  }
 }
 
 /* --- pass 14: a gated test must be able to ROLL (the mute-def-test family, 07-26j + 07-27n) ------
@@ -1104,40 +1075,30 @@ engine.split("\n").forEach((lineText, i) => {
     }
   };
 
-  for (const file of fs.readdirSync(AUTHORED_DIR).filter((f) => f.endsWith(".json")).sort()) {
-    let doc;
-    try { doc = JSON.parse(fs.readFileSync(path.join(AUTHORED_DIR, file), "utf8")); } catch (e) { continue; }
-    for (const [name, t] of Object.entries(doc.talents || {})) {
-      const h = defTestOf(Object.values(t.events || {}));
-      if (!h) continue;
-      checkRollable(`data/authored/${file} (${name})`, h, t.activation, {
-        effectiveSkill: t.activation?.skill ?? null,
-      });
-    }
+  for (const { rel, talentName: name, talent: t } of AUTHORED_ENTRIES) {
+    const h = defTestOf(Object.values(t.events || {}));
+    if (!h) continue;
+    checkRollable(`${rel} (${name})`, h, t.activation, {
+      effectiveSkill: t.activation?.skill ?? null,
+    });
   }
   /* The adversary half. `advItemDoc` DERIVES the activation, so the authored JSON is `utility` by
    * design and only the derived skill is checkable here — mirrored from foundry-build.js
    * (`raw.skill || defTestSkill` for a non-attack, the weapon skill for an attack). The type check
    * is skipped for the same reason: the builder promotes it. Kept narrow deliberately — this is a
    * mirror of one builder line, not a re-implementation of the builder. */
-  try {
-    const advData = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, "data/adversaries.json"), "utf8"));
-    for (const [advName, adv] of Object.entries(advData)) {
-      if (advName.startsWith("_")) continue;
-      for (const it of adv.items || []) {
-        const h = defTestOf(Array.isArray(it?.events) ? it.events : []);
-        if (!h || !needsRoll(h) || !h.skill) continue;
-        const isAttack = it.attack != null;
-        const ranged = /\brange\b/i.test(it.range || "");
-        const effectiveSkill = isAttack ? (it.skill || (ranged ? "lwp" : "hwp")) : (it.skill || h.skill);
-        if (effectiveSkill !== h.skill) {
-          err(`data/adversaries.json (${advName} / ${it.name}): the ability rolls "${effectiveSkill}" but its ` +
-              `edha-def-test rule waits for "${h.skill}" — the contest is matched BY SKILL, so it never resolves ` +
-              `and the ability is a silent no-op. Align the ability's "skill" with the rule's.`);
-        }
-      }
+  for (const { advName, item: it } of ADVERSARY_ENTRIES) {
+    const h = defTestOf(Array.isArray(it?.events) ? it.events : []);
+    if (!h || !needsRoll(h) || !h.skill) continue;
+    const isAttack = it.attack != null;
+    const ranged = /\brange\b/i.test(it.range || "");
+    const effectiveSkill = isAttack ? (it.skill || (ranged ? "lwp" : "hwp")) : (it.skill || h.skill);
+    if (effectiveSkill !== h.skill) {
+      err(`${ADV_REL} (${advName} / ${it.name}): the ability rolls "${effectiveSkill}" but its ` +
+          `edha-def-test rule waits for "${h.skill}" — the contest is matched BY SKILL, so it never resolves ` +
+          `and the ability is a silent no-op. Align the ability's "skill" with the rule's.`);
     }
-  } catch (e) { /* reported by the earlier adversaries.json pass */ }
+  }
 }
 
 /* --- pass 15: a hook that WRITES the world must not be gated on a raw isGM (the two-GM family) ---
