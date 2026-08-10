@@ -462,16 +462,12 @@ function edhaTestRiderApply(roll, source, config) {
     const actor = edhaD20RollActor(config);
     if (!actor?.items) return;
     const ctx = config?.data?.context;                         // 'Skill' | 'Attack' | 'Item' (system casing)
-    const ttok = Array.from(game.user?.targets ?? [])[0] ?? null;
+    const ttok = edhaUserTargetToken();
     const target = ttok?.actor ?? null;
     const parts = [];
     let mode = "";                                             // advantage/disadvantage from a mode rule
     const activeStance = edhaActiveStance(actor);              // null unless a stance marker is up
-    for (const tal of actor.items) {
-      if (!edhaIsTalent(tal)) continue;
-      for (const rule of edhaEventRules(tal)) {
-        const h = rule?.handler;
-        if (h?.type !== "edha-test-rider") continue;
+    for (const { item: tal, handler: h } of edhaActorRulesOf(actor, "edha-test-rider")) {
         if (!h.bonusFormula && !h.mode) continue;              // 07-24j: a rule may be mode-only
         // ⚑ bench: weapon attack vs Weakened gains the die; Extract Thought's Deception does not.
         if (!edhaTestCtxMatch(h.appliesTo, ctx, !!config?.data?.source?.system?.damage?.formula)) continue;
@@ -492,7 +488,6 @@ function edhaTestRiderApply(roll, source, config) {
         if (!h.bonusFormula) continue;
         const resolved = Roll.replaceFormulaData(h.bonusFormula, actor.getRollData(), { missing: "0" });
         if (resolved) parts.push(`${edhaFoldDieMath(resolved)}[${tal.name}]`);   // flavor label → the breakdown names the source talent
-      }
     }
     if (mode) {
       // ⚠ The system's enum is the STRING "advantage"/"disadvantage", and a DIALOG roll overwrites
@@ -531,7 +526,7 @@ function edhaAggroRecord(roll, source, config) {
   try {
     const actor = edhaD20RollActor(config); if (!actor) return;
     if (!config?.data?.source?.system?.damage?.formula) return;   // damaging items only = attacks
-    const target = Array.from(game.user?.targets ?? [])[0] ?? null; if (!target?.actor) return;
+    const target = edhaUserTargetToken(); if (!target?.actor) return;
     void edhaSetEdhaFlag(actor, "aggro", { targetUuid: target.actor.uuid, targetName: target.name, round: game.combat?.round ?? null });
   } catch (e) { /* non-fatal */ }
 }
@@ -540,12 +535,9 @@ function edhaPackAdvantageApply(roll, source, config) {
     if (roll?.options?._edhaPackAdv) return;
     const actor = edhaD20RollActor(config); if (!actor?.items) return;
     if (!config?.data?.source?.system?.damage?.formula) return;
-    const target = Array.from(game.user?.targets ?? [])[0] ?? null; if (!target?.actor) return;
+    const target = edhaUserTargetToken(); if (!target?.actor) return;
     const myTok = edhaCasterToken(actor);
-    for (const tal of actor.items) {
-      if (!edhaIsTalent(tal)) continue;
-      for (const rule of edhaEventRules(tal)) {
-        if (rule?.handler?.type !== "edha-pack-advantage") continue;
+    for (const { item: tal } of edhaActorRulesOf(actor, "edha-pack-advantage")) {
         const mate = (canvas?.tokens?.placeables ?? []).find(t =>
           t !== myTok && t.actor && t.actor !== actor
           && (Number(t.actor.system?.resources?.hea?.value) || 0) > 0
@@ -558,7 +550,6 @@ function edhaPackAdvantageApply(roll, source, config) {
         roll.options._edhaPackAdv = true;
         ChatMessage.create({ whisper: edhaWhisperIds(actor), speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🐺 <strong>${tal.name}</strong>: ${mate.name} is also on ${target.name} — this attack rolls with <strong>advantage</strong>.</p>` });
         return;
-      }
     }
   } catch (e) { console.error("Edha Content | pack advantage failed", e); }
 }
@@ -673,8 +664,7 @@ async function edhaExpireTimedStatuses(combat) {
       if (!plan) continue;
       let ti = i;   // default: the CARRIER's own turn
       if (plan.expire === "owner" && plan.ownerUuid) {   // owner-relative (Brace, Kneel's Compelled, Disorient)
-        const oref = await fromUuid(plan.ownerUuid).catch(() => null);
-        const oa = oref?.actor ?? oref;
+        const oa = await edhaResolveActorRef(plan.ownerUuid);
         const oi = oa ? edhaCombatantTurnIndex(combat, oa) : -1;
         if (oi >= 0) ti = oi;
       }
@@ -730,13 +720,10 @@ function edhaRiderParts(item, actor) {
     if (!actor || !item?.system?.damage) return [];
     const dtype = item.system.damage.type;
     if (!dtype) return [];
-    const target = Array.from(game.user?.targets ?? [])[0]?.actor ?? null;   // for target-conditional riders
+    const target = edhaUserTargetActor();   // for target-conditional riders
     const parts = [];
-    for (const tal of actor.items) {
-      if (!edhaIsTalent(tal)) continue;
-      for (const rule of edhaEventRules(tal)) {
-        const h = rule?.handler;
-        if (h?.type !== "edha-damage-rider" || !h.bonusFormula) continue;
+    for (const { item: tal, handler: h } of edhaActorRulesOf(actor, "edha-damage-rider")) {
+        if (!h.bonusFormula) continue;
         if (!edhaRiderMatches(h.appliesTo, dtype)) continue;
         // Conditional riders (Prognosis: "+[Tier][Die] when healing a creature that has a condition"):
         // only apply when the current target carries a condition / the named status.
@@ -745,7 +732,6 @@ function edhaRiderParts(item, actor) {
         if (h.whenMovedTowardFt)   { if (!target || edhaMovedTowardFt(actor, target) < Number(h.whenMovedTowardFt)) continue; }   // Momentum's Edge: charged ≥ N ft toward it
         if (h.whenTargetFooled)    { if (!target || !edhaTargetFooled(actor, target)) continue; }   // Spearing Beak: only vs a believer in the roller's seeming
         parts.push({ formula: h.bonusFormula, name: tal.name });
-      }
     }
     return parts;
   } catch (e) {
@@ -849,14 +835,9 @@ Hooks.once("ready", async () => {
  */
 function edhaLightSpecFor(actor, dtype) {
   if (!actor?.items || !dtype) return null;
-  for (const tal of actor.items) {
-    if (!edhaIsTalent(tal)) continue;
-    for (const rule of edhaEventRules(tal)) {
-      const h = rule?.handler;
-      if (h?.type !== "edha-damage-rider") continue;
-      const radiusFt = Number(h.lightRadiusFt) || 0;
-      if (radiusFt > 0 && edhaRiderMatches(h.appliesTo, dtype)) return { radiusFt };
-    }
+  for (const { handler: h } of edhaActorRulesOf(actor, "edha-damage-rider")) {
+    const radiusFt = Number(h.lightRadiusFt) || 0;
+    if (radiusFt > 0 && edhaRiderMatches(h.appliesTo, dtype)) return { radiusFt };
   }
   return null;
 }
@@ -925,7 +906,7 @@ function edhaIsIsolated(actor, tok = null) {
     // (flags.edha-content.isoMarker, placed by the sync below) are display-only and must NOT feed back.
     for (const e of (actor?.effects ?? []))
       if (e.statuses?.has?.("isolated") && !e.getFlag?.("edha-content", "isoMarker")) return true;
-    tok = tok ?? actor?.getActiveTokens?.()[0] ?? (actor?.isToken ? actor.token?.object : null);
+    tok = tok ?? edhaCasterToken(actor) ?? (actor?.isToken ? actor.token?.object : null);
     if (!tok) return false;
     const disp = tok.document?.disposition ?? 0;
     return !(canvas?.tokens?.placeables ?? []).some(t =>
@@ -1023,6 +1004,23 @@ function edhaActorRuleOf(actor, type) {
   }
   return null;
 }
+/* ALL rules of the given handler type across an actor's talents, in item order → [{ item, handler }].
+ * ENGINE PASS 5.2 (2026-08-10): the plural half of edhaActorRuleOf, built to retire the 27
+ * open-coded `for (tal of actor.items) { if (!edhaIsTalent) continue; for (rule of
+ * edhaEventRules(tal)) { if (h?.type !== "X") continue; ... } }` sweeps that had grown their own
+ * copy of this exact double loop. A talent carrying two rules of the SAME handler type (rare, but
+ * not schema-forbidden) yields two entries here — matching what the hand-rolled sweeps already did,
+ * since they iterated `edhaEventRules(tal)` (every rule) rather than stopping at one per item. */
+function edhaActorRulesOf(actor, type) {
+  const out = [];
+  for (const tal of (actor?.items ?? [])) {
+    if (!edhaIsTalent(tal)) continue;
+    for (const rule of edhaEventRules(tal)) {
+      if (rule?.handler?.type === type) out.push({ item: tal, handler: rule.handler });
+    }
+  }
+  return out;
+}
 /* `edha-damage-bonus` placeCounter queue (07-25 pass 2bT): a bonus rule that also PLACES counter
  * points (Predatory Strike's 1 Insight, the armed pack riders' first-hit point) must write AFTER the
  * damage lands, so the pre-pass queues the write and the post-pass below drains it — the generic
@@ -1050,9 +1048,7 @@ async function edhaDamageBonusPost(dealer, target, prevHp = null) {
           const cur = edhaOwnerList(owner, e.key, e.status);
           if (cur.some(x => x.uuid === target.uuid)) return;
           const mark = { actorId: owner.id, talent: e.itemName };
-          if (target.isOwner) { await target.toggleStatusEffect?.(e.status, { active: true }); try { await target.setFlag("edha-content", `markedBy.${e.status}`, mark); } catch (err) {} }
-          else if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "apply-status-mark", payload: { actorUuid: target.uuid, statusId: e.status, mark } }); } catch (err) {} }
-          else { ui.notifications?.warn(`Edha: a GM must be online to mark ${target.name} — nothing placed.`); return; }
+          if (!(await edhaWriteStatusMark(target, e.status, mark))) return;   // Job 6b: shared body (warns on no-GM)
           const entry = { id: foundry.utils.randomID(), uuid: target.uuid, name: target.name, talent: e.itemName };
           const res = edhaListPush(cur, entry, { cap: e.cap, evict: "oldest" });
           await edhaSetOwnerList(owner, e.key, res.list);
@@ -1092,11 +1088,8 @@ async function edhaDamageBonusPost(dealer, target, prevHp = null) {
         && !target.getFlag?.("edha-content", "summon") && edhaDisposHostile(dealer.actor, target)) {
       const hea = target?.system?.resources?.hea;
       const maxHp = Number(hea?.max?.value ?? hea?.max) || 0;
-      for (const tal of (dealer.actor.items ?? [])) {
-        if (!edhaIsTalent(tal)) continue;
-        for (const rule of edhaEventRules(tal)) {
-          const h = rule?.handler;
-          if (h?.type !== "edha-damage-bonus" || h.tallyKills !== true) continue;
+      for (const { item: tal, handler: h } of edhaActorRulesOf(dealer.actor, "edha-damage-bonus")) {
+          if (h.tallyKills !== true) continue;
           if (h.requireSelfStatus && !dealer.actor.statuses?.has?.(h.requireSelfStatus)) continue;
           const rec = foundry.utils.deepClone(dealer.actor.getFlag?.("edha-content", `bonusTally.${tal.id}`) ?? { belowHalf: [], kills: 0 });
           rec.belowHalf = rec.belowHalf || []; rec.kills = Number(rec.kills) || 0;
@@ -1108,7 +1101,6 @@ async function edhaDamageBonusPost(dealer, target, prevHp = null) {
             ChatMessage.create({ whisper: edhaWhisperIds(dealer.actor), speaker: ChatMessage.getSpeaker({ actor: dealer.actor }),
               content: `<p>🗡️ <strong>${tal.name}</strong>: the tally rises — now <strong>${rec.belowHalf.length + rec.kills}</strong> (the formula caps it).</p>` });
           }
-        }
       }
     }
   } catch (e) { console.error("Edha Content | damage-bonus post-pass failed", e); }
@@ -1136,7 +1128,7 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
     // an adversary and the skill rank for a PC (edhaColorRank), `@tier` substitutes system.tier.
     // First qualifying owner per TALENT wins, exactly as the retired loops' `break` had it.
     try {
-      const vtok = edhaCasterToken(target) ?? target.getActiveTokens?.()[0];
+      const vtok = edhaCasterToken(target);
       if (vtok && list.some(i => Number(i?.amount) > 0 && i?.type && i.type !== "heal")) {
         let reduce = 0; const why = []; const doneNames = new Set();
         for (const { actor: owner, item: tal, handler: h } of edhaWatchersOfRule("edha-damage-reduce")) {
@@ -1144,7 +1136,7 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
             if (owner === target || doneNames.has(tal.name)) continue;
             if (String(h.when || "damaged") === "redirected" && !options?.edhaRedirected) continue;
             const otok = edhaCasterToken(owner);
-            if (!otok || (otok.document?.disposition ?? 1) !== (vtok.document?.disposition ?? 1)) continue;
+            if (!edhaSameDisposition(owner, vtok)) continue;   // R-63: routed through the shared helper (Number.isFinite fail-closed) — 🤖 bench row
             if (h.requireVictimAdjacent && !edhaAdjacent(otok, vtok)) continue;
             if (h.rangeColor && !edhaAllyInAttune(owner, vtok, h.rangeColor)) continue;
             const needAllies = Number(h.requireAdjacentAllies) || 0;
@@ -1205,11 +1197,16 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
           let hunters = 0;
           const req = String(h.require || "window");
           if (req === "pack-on-target") {
-            const vtok3 = edhaCasterToken(target) ?? target.getActiveTokens?.()[0];
+            const vtok3 = edhaCasterToken(target);
             const otok3 = edhaCasterToken(ruleOwner);
             if (!vtok3 || !otok3) return;
             const atk = edhaFocusFireSet(vtok3);
-            const ally = [...atk].some(id => { const t = canvas?.tokens?.get(id); return t && t.id !== otok3.id && (t.document?.disposition ?? 1) === (otok3.document?.disposition ?? 1); });
+            const ally = [...atk].some(id => {
+              const t = canvas?.tokens?.get(id); if (!t || t.id === otok3.id) return false;
+              // R-63: Number.isFinite fail-closed (was `?? 1`, defaulting an unresolvable side to FRIENDLY) — 🤖 bench row
+              const td = t.document?.disposition, od = otok3.document?.disposition;
+              return Number.isFinite(td) && Number.isFinite(od) && td === od;
+            });
             if (!atk.has(otok3.id) || !ally) return;
             hunters = atk.size;
           } else if (req === "window") {
@@ -1322,13 +1319,9 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
       // The three CROSS-ACTOR require modes ride the arming owner's document, not the dealer's —
       // the dealer walk below must skip them and the scene sweep must carry them (2bT; +2 in 2bV).
       const crossModes = ["ally-hits-counter-bearer", "list-member-hits", "summon-hits"];
-      for (const tal of (dealer.actor.items ?? [])) {
-        if (!edhaIsTalent(tal)) continue;
-        for (const rule of edhaEventRules(tal)) {
-          const h = rule?.handler;
-          if (h?.type !== "edha-damage-bonus" || crossModes.includes(String(h.require || "window"))) continue;
+      for (const { item: tal, handler: h } of edhaActorRulesOf(dealer.actor, "edha-damage-bonus")) {
+          if (crossModes.includes(String(h.require || "window"))) continue;
           runBonusRule(dealer.actor, tal, h);
-        }
       }
       // The cross-actor sweep (2bT): rules that ride SOMEONE ELSE's hit live on the arming owner's
       // document, so the dealer's item walk above can never see them — sweep the scene's rules
@@ -1433,7 +1426,7 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
         const newHp = Number(target.system?.resources?.hea?.value) || 0;
         const half = maxHp / 2;
         if (prevHp > half && newHp <= half) {
-          const ttok = edhaCasterToken(target) ?? target.getActiveTokens?.()[0] ?? null;
+          const ttok = edhaCasterToken(target) ?? null;
           for (const owner of (game.actors?.filter(a => a.type === "character") ?? [])) {
             const rule = edhaActorRuleOf(owner, "edha-hp-threshold");
             const h = rule?.handler;
@@ -1596,43 +1589,41 @@ async function edhaDispatchOnHit(dealer, target, list) {
   if (!owner || _edhaInTrigger || owner === target) return;
   const dealtTypes = list.filter(i => Number(i?.amount) > 0 && i?.type && i.type !== "heal").map(i => i.type);
   if (!dealtTypes.length) return;
-  for (const tal of owner.items) {
-    if (!edhaIsTalent(tal)) continue;
-    for (const rule of edhaEventRules(tal)) {
-      if (rule?.event !== "edha-on-hit") continue;
-      if (edhaOnHitIsItemSpecific(tal, rule) && dealer.item !== tal) continue;
-      // GM cue on the owner's own hit (Press the Line: allied Raider reaction shot, 07-16).
-      if (rule?.handler?.type === "edha-gm-cue") {
-        await edhaPostCueCard(owner, tal, rule.handler, ` <em>(hit ${target.name}.)</em>`);
-        continue;
-      }
-      // Shockwave Slam: push the creature you just hit (Red movement pilot) — runs alongside triggered effects.
-      if (rule?.handler?.type === "edha-push") {
-        const hp = rule.handler;
-        if (hp.whenDamageType && hp.whenDamageType !== "any" && !dealtTypes.some(dt => edhaRiderMatches(hp.whenDamageType, dt))) continue;
-        await edhaRunPush(owner, target, hp);
-        continue;
-      }
-      /* ANY OTHER handler type runs its own executor (07-24s). This dispatcher used to hand-list the
-       * three types it knew, so an `edha-focus` or `edha-cae-grant` rule on `edha-on-hit` was
-       * SILENTLY INERT — which is why Feinting Strike's focus drain and Reaction burn had to stay
-       * name-keyed in edhaHeroicOnHit. It is the pass-D lesson one level down: edhaDispatchTestResult
-       * deliberately knows no payload type, and hand-listing them here reproduced the name-keyed
-       * mistake in the dispatcher instead of the talent. Provably inert for existing data — every
-       * shipped edha-on-hit rule in data/ uses one of the three cases above and never reaches here. */
-      if (rule.handler?.type !== "edha-triggered-effect") {
-        try { await rule.handler?.execute?.({ item: tal, rule, options: { victim: target, target, owner, dealtTypes } }); }
-        catch (e) { console.error(`Edha Content | ${tal.name} on-hit payload failed`, e); }
-        continue;
-      }
-      const h = rule.handler;
-      if (h.whenDamageType && h.whenDamageType !== "any" && !dealtTypes.some(dt => edhaRiderMatches(h.whenDamageType, dt))) continue;
-      if (h.whenTargetStatus && !target?.statuses?.has?.(h.whenTargetStatus)) continue;
-      const spec = edhaTrigSpecFromCfg(h);
-      const ctx = { victim: target };
-      if (spec.cost?.optional) edhaPostTriggerCard(owner, tal.name, spec, ctx);
-      else await edhaFireTrigger(owner, tal.name, spec, ctx);
+  // ENGINE PASS 5.2 (Job 2): edhaRulesForEvent replaces the hand-rolled actor.items double loop —
+  // it already filters by event and item-talent-ness, ordered exactly the same way.
+  for (const { item: tal, rule } of edhaRulesForEvent(owner, "edha-on-hit")) {
+    if (edhaOnHitIsItemSpecific(tal, rule) && dealer.item !== tal) continue;
+    // GM cue on the owner's own hit (Press the Line: allied Raider reaction shot, 07-16).
+    if (rule?.handler?.type === "edha-gm-cue") {
+      await edhaPostCueCard(owner, tal, rule.handler, ` <em>(hit ${target.name}.)</em>`);
+      continue;
     }
+    // Shockwave Slam: push the creature you just hit (Red movement pilot) — runs alongside triggered effects.
+    if (rule?.handler?.type === "edha-push") {
+      const hp = rule.handler;
+      if (hp.whenDamageType && hp.whenDamageType !== "any" && !dealtTypes.some(dt => edhaRiderMatches(hp.whenDamageType, dt))) continue;
+      await edhaRunPush(owner, target, hp);
+      continue;
+    }
+    /* ANY OTHER handler type runs its own executor (07-24s). This dispatcher used to hand-list the
+     * three types it knew, so an `edha-focus` or `edha-cae-grant` rule on `edha-on-hit` was
+     * SILENTLY INERT — which is why Feinting Strike's focus drain and Reaction burn had to stay
+     * name-keyed in edhaHeroicOnHit. It is the pass-D lesson one level down: edhaDispatchTestResult
+     * deliberately knows no payload type, and hand-listing them here reproduced the name-keyed
+     * mistake in the dispatcher instead of the talent. Provably inert for existing data — every
+     * shipped edha-on-hit rule in data/ uses one of the three cases above and never reaches here. */
+    if (rule.handler?.type !== "edha-triggered-effect") {
+      try { await rule.handler?.execute?.({ item: tal, rule, options: { victim: target, target, owner, dealtTypes } }); }
+      catch (e) { console.error(`Edha Content | ${tal.name} on-hit payload failed`, e); }
+      continue;
+    }
+    const h = rule.handler;
+    if (h.whenDamageType && h.whenDamageType !== "any" && !dealtTypes.some(dt => edhaRiderMatches(h.whenDamageType, dt))) continue;
+    if (h.whenTargetStatus && !target?.statuses?.has?.(h.whenTargetStatus)) continue;
+    const spec = edhaTrigSpecFromCfg(h);
+    const ctx = { victim: target };
+    if (spec.cost?.optional) edhaPostTriggerCard(owner, tal.name, spec, ctx);
+    else await edhaFireTrigger(owner, tal.name, spec, ctx);
   }
 }
 
@@ -1675,14 +1666,11 @@ function edhaDispatchCombatTiming(combat, moment) {
     if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;
     for (const c of combat?.combatants ?? []) {
       const a = c?.actor; if (!a?.items) continue;
-      for (const tal of a.items) {
-        if (!edhaIsTalent(tal)) continue;
-        for (const rule of edhaEventRules(tal)) {
-          if (rule?.event !== "edha-combat-timing") continue;
-          if ((rule.handler?.whenMoment || "combat-start") !== moment) continue;
-          try { void rule.handler?.execute?.({ item: tal, rule, options: { moment, combat } }); }
-          catch (e) { console.error(`Edha Content | ${tal.name} combat-timing rule failed`, e); }
-        }
+      // ENGINE PASS 5.2 (Job 2): edhaRulesForEvent replaces the hand-rolled items double loop.
+      for (const { item: tal, rule } of edhaRulesForEvent(a, "edha-combat-timing")) {
+        if ((rule.handler?.whenMoment || "combat-start") !== moment) continue;
+        try { void rule.handler?.execute?.({ item: tal, rule, options: { moment, combat } }); }
+        catch (e) { console.error(`Edha Content | ${tal.name} combat-timing rule failed`, e); }
       }
     }
   } catch (e) { console.error("Edha Content | combat-timing dispatch failed", e); }
@@ -1787,15 +1775,19 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
     }
     if (h.targetList) return;   // owner-sweep mode (2bU) reads the ledger, never a user target — an
                                 // empty ledger still spends, matching the hand-rolled Chaos sweeps
-    const ttok = Array.from(game.user?.targets ?? [])[0] ?? null;
+    const ttok = edhaUserTargetToken();
     if (h.requireTarget !== false && !ttok?.actor) {
       ui.notifications?.warn(`Edha: ${item.name} — target the creature first (nothing spent).`);
       return false;
     }
     if (h.requireDisposition && ttok?.actor) {
       const otok = edhaCasterToken(item.actor);
-      const same = (ttok.document?.disposition ?? 1) === (otok?.document?.disposition ?? 1);
-      if (!otok || same !== (h.requireDisposition === "ally")) {
+      // R-63: Number.isFinite fail-closed (was `?? 1` on both sides) — unknown disposition refuses the
+      // use exactly like the missing-token branch already did. 🤖 bench row.
+      const td = ttok.document?.disposition, od = otok?.document?.disposition;
+      const dispKnown = Number.isFinite(td) && Number.isFinite(od);
+      const same = dispKnown && td === od;
+      if (!otok || !dispKnown || same !== (h.requireDisposition === "ally")) {
         ui.notifications?.warn(`Edha: ${ttok.actor.name} is not ${h.requireDisposition === "ally" ? "an ally" : "an enemy"} — nothing spent.`);
         return false;
       }
@@ -2171,12 +2163,7 @@ function edhaWatchersOfRule(type) {
   const out = [];
   try {
     for (const actor of edhaWatchActors()) {
-      for (const tal of (actor.items ?? [])) {
-        if (!edhaIsTalent(tal)) continue;
-        for (const rule of edhaEventRules(tal)) {
-          if (rule?.handler?.type === type) out.push({ actor, item: tal, handler: rule.handler });
-        }
-      }
+      for (const { item: tal, handler } of edhaActorRulesOf(actor, type)) out.push({ actor, item: tal, handler });
     }
   } catch (e) { console.error("Edha Content | rule sweep failed", e); }
   _edhaRuleIndex.set(type, out);
@@ -2331,7 +2318,7 @@ function edhaWatchSkillRoll(roll, source, config) {
   try {
     const actor = edhaD20RollActor(config); if (!actor) return;
     const skill = roll?.data?.skill?.id; if (!skill) return;
-    const victim = [...(game.user?.targets ?? [])][0]?.actor ?? null;
+    const victim = edhaUserTargetActor();
     if (victim === actor) return;
     void edhaDispatchWatchers({ kind: "skill-roll", owner: actor, victim, skill, def: null, ok: null, total: Number(roll.total) || 0 });
   } catch (e) { console.error("Edha Content | skill-roll watch failed", e); }
@@ -2399,7 +2386,7 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
       return;
     }
     if ((h.op || "place") !== "place" || (h.target || "victim") !== "prompt") return;
-    const ttok = Array.from(game.user?.targets ?? [])[0] ?? null;
+    const ttok = edhaUserTargetToken();
     if (!ttok?.actor) {
       ui.notifications?.warn(`Edha: ${item.name} — target the creature first (nothing spent).`);
       return false;
@@ -2422,8 +2409,11 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
     if ((h.mode || "list") === "counter") return;   // the duplicate/cap gates below are list-shape only
     const otok = edhaCasterToken(actor);
     if (h.requireDisposition) {
-      const same = (ttok.document?.disposition ?? 1) === (otok?.document?.disposition ?? 1);
-      if (!otok || same !== (h.requireDisposition === "ally")) {
+      // R-63: Number.isFinite fail-closed (was `?? 1` on both sides) — 🤖 bench row.
+      const td = ttok.document?.disposition, od = otok?.document?.disposition;
+      const dispKnown = Number.isFinite(td) && Number.isFinite(od);
+      const same = dispKnown && td === od;
+      if (!otok || !dispKnown || same !== (h.requireDisposition === "ally")) {
         ui.notifications?.warn(`Edha: ${ttok.actor.name} is not ${h.requireDisposition === "ally" ? "an ally" : "an enemy"} — nothing spent.`);
         return false;
       }
@@ -2527,7 +2517,7 @@ async function edhaListReleaseClick(ev) {
   try {
     ev.preventDefault();
     const btn = ev.currentTarget, ds = btn.dataset;
-    const oref = await fromUuid(ds.owner).catch(() => null); const owner = oref?.actor ?? oref;
+    const owner = await edhaResolveActorRef(ds.owner);
     if (!owner) { ui.notifications?.warn("Edha: could not work out whose ledger this is."); return; }
     if (!owner.isOwner && !game.user?.isGM) { ui.notifications?.warn("Edha: only the talent's owner (or the GM) resolves this."); return; }
     const key = ds.list, status = ds.status || key;
@@ -2598,7 +2588,7 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
     const otok = edhaCasterToken(actor);
     if (!otok) { ui.notifications?.warn("Edha: no token for the caster. Nothing spent."); return false; }
     const ft = edhaAttuneFtColor(actor, h.rangeColor || "blue");
-    const foes = edhaTokensWithin(otok, ft).filter(t => t.actor && (t.document?.disposition ?? 1) !== (otok.document?.disposition ?? 1)
+    const foes = edhaTokensWithin(otok, ft).filter(t => t.actor && edhaDisposHostile(actor, t.actor)   // R-63 🤖 bench row
       && (Number(t.actor.system?.resources?.hea?.value) || 0) > 0);
     if (!foes.length) { ui.notifications?.warn(`Edha: no enemies within your Attunement Range (${h.rangeColor || "blue"}). Nothing spent.`); return false; }
   } catch (e) { /* never block a use on a guard failure */ }
@@ -2610,7 +2600,7 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
   try {
     const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
     if (!edhaEventRules(item).some(r => r?.handler?.type === "edha-ward")) return;
-    const t = Array.from(game.user?.targets ?? [])[0]?.actor ?? null; if (!t) return;
+    const t = edhaUserTargetActor(); if (!t) return;
     if (t.getFlag?.("edha-content", "deathWard")) { ui.notifications?.warn(`Edha: ${t.name} already bears a ward — nothing spent.`); return false; }
     if (!t.isOwner && !game.users?.activeGM) { ui.notifications?.warn(`Edha: a GM must be online to ward ${t.name} — nothing spent.`); return false; }
   } catch (e) { /* never block a use on a guard failure */ }
@@ -2623,9 +2613,9 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
   try {
     const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
     const h = edhaRuleOf(item, "edha-turn-dot"); if (!h) return;
-    const toks = Array.from(game.user?.targets ?? []); const target = toks[0]?.actor;
+    const tTok = edhaUserTargetToken(); const target = tTok?.actor;
     if (!target || target === actor) { ui.notifications?.warn(`Edha: target the creature for ${item.name}. Nothing spent.`); return false; }
-    if (h.rangeColor && !edhaDeathInRange(actor, toks[0], h.rangeColor)) {
+    if (h.rangeColor && !edhaDeathInRange(actor, tTok, h.rangeColor)) {
       ui.notifications?.warn(`Edha: ${target.name} is outside your Attunement Range (${h.rangeColor}). Nothing spent.`);
       return false;
     }
@@ -2655,7 +2645,7 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
       ui.notifications?.warn(`Edha: ${item.name} was already used this scene. Nothing spent.`);
       return false;
     }
-    const t = Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
+    const t = edhaUserTargetActor();
     if (!t) { ui.notifications?.warn(`Edha: target the remains (a token at 0 HP) for ${item.name}. Nothing spent.`); return false; }
     if ((t.system?.resources?.hea?.value ?? 1) > 0) { ui.notifications?.warn(`Edha: ${t.name} is not at 0 HP. Nothing spent.`); return false; }
   } catch (e) { /* never block a use on a guard failure */ }
@@ -2766,10 +2756,10 @@ async function edhaWatchManualClick(ev, msg) {
     // would have been substituted to "0" long before this handler ever saw it.
     let owner = null;
     try { owner = ChatMessage.getSpeakerActor?.(msg?.speaker) ?? (msg?.speaker?.actor ? game.actors?.get(msg.speaker.actor) : null); } catch (e) {}
-    if (!owner && btn.dataset.owner) { const oref = await fromUuid(btn.dataset.owner).catch(() => null); owner = oref?.actor ?? oref; }
+    if (!owner && btn.dataset.owner) { owner = await edhaResolveActorRef(btn.dataset.owner); }
     if (!owner) { ui.notifications?.warn("Edha: could not work out whose talent this is."); return; }
     if (!owner.isOwner) { ui.notifications?.warn("Edha: only the talent's owner (or the GM) can resolve this."); return; }
-    const victim = Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
+    const victim = edhaUserTargetActor();
     if (!victim) { ui.notifications?.warn("Edha: target the creature whose test this was, then click."); return; }
     btn.disabled = true;
     const fired = await edhaDispatchWatchers({
@@ -2871,7 +2861,7 @@ function edhaParseCosts(s) {
 /* Build the candidate list. Measured from the ANCHOR — you, or the creature this rule's trigger
  * resolved against — because "an ally of your target within 10 ft" is a circle round the TARGET. */
 function edhaPickCandidates(owner, h, anchor) {
-  const atok = edhaCasterToken(anchor) ?? anchor?.getActiveTokens?.()[0];
+  const atok = edhaCasterToken(anchor);
   if (!atok) return [];
   const ft = h.rangeColor ? edhaAttuneFtColor(owner, h.rangeColor) : (Number(h.rangeFt) || 0);
   if (!ft) return [];
@@ -2902,7 +2892,7 @@ function edhaFillName(text, name) { return String(text ?? "").split("{name}").jo
 async function edhaRunPromptPick(item, h, event) {
   const owner = item?.actor; if (!owner) return;
   const source = String(h.source || "confirm");
-  const victim = event?.options?.victim ?? event?.options?.target ?? Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
+  const victim = edhaResolveVictim(event);
   const anchor = String(h.relativeTo || "self") === "victim" ? victim : owner;
   /* {name} on the OFFER card (2026-07-26l, bench run 3 defect 2): the accept-note path always
    * substituted, but the offer path posted `prompt` raw — Puppeteer's whisper printed a literal
@@ -2965,10 +2955,9 @@ async function edhaPromptPickClick(ev) {
      * ENGINE-OWNED exit, not a second rule. If that ever changes, key the button on the rule id. */
     const h = edhaRuleOf(item, "edha-prompt-pick");
     if (!h) { ui.notifications?.warn(`Edha: ${item.name} no longer carries a prompt rule.`); return; }
-    const pref = await fromUuid(ds.edhaPick).catch(() => null); const picked = pref?.actor ?? pref;
+    const picked = await edhaResolveActorRef(ds.edhaPick);
     if (!picked) { ui.notifications?.warn("Edha: that creature is no longer on the canvas."); return; }
-    const aref = ds.edhaAnchor ? await fromUuid(ds.edhaAnchor).catch(() => null) : null;
-    const anchor = aref?.actor ?? aref ?? null;
+    const anchor = await edhaResolveActorRef(ds.edhaAnchor);
     // The budget is spent HERE, not at post time: posting a card the player declines must not burn
     // the round's use. Same reasoning as edhaWatchBudgetGate running last.
     if (String(h.once || "no") !== "no" && !edhaCoordOPRAllowed(owner, item.uuid, "_pick")) {
@@ -3182,13 +3171,9 @@ function edhaListSharedHold(ledgers, uuid, excludeOwnerId) {
  * scene cleanup unsets the key ("[] ≠ unset"). */
 function edhaLedgerFreebie(owner, key) {
   try {
-    for (const tal of (owner?.items ?? [])) {
-      if (!edhaIsTalent(tal)) continue;
-      for (const r of edhaEventRules(tal)) {
-        const h = r?.handler;
-        if (h?.type === "edha-owner-list" && h.sceneFreebie === true && String(h.list || "").trim() === key)
-          return { label: String(h.freebieLabel || "").trim() || "Scene-start" };
-      }
+    for (const { handler: h } of edhaActorRulesOf(owner, "edha-owner-list")) {
+      if (h.sceneFreebie === true && String(h.list || "").trim() === key)
+        return { label: String(h.freebieLabel || "").trim() || "Scene-start" };
     }
   } catch (e) {}
   return null;
@@ -3228,7 +3213,7 @@ async function edhaLedgerSpend(owner, key, status = null, source = "") {
 function edhaNearestListCandidate(owner, victim, ft, list) {
   try {
     if (!victim) return null;
-    const vtok = edhaCasterToken(victim) ?? victim.getActiveTokens?.()[0]; if (!vtok) return null;
+    const vtok = edhaCasterToken(victim); if (!vtok) return null;
     const odisp = edhaCasterToken(owner)?.document?.disposition ?? 1;
     const cands = edhaTokensWithin(vtok, Number(ft) || 10).filter(t => t.actor && t.actor !== victim && t.actor !== owner
       && (t.document?.disposition ?? 1) !== odisp
@@ -3253,6 +3238,8 @@ function edhaListPlaceNotes(owner, key) {
         out.push(`<p style="opacity:.85">${h.placeNote}</p>`);
       }
     }
+    /* NOTE: intentionally NOT migrated to edhaActorRulesOf — this reads `h.placeNote` across EVERY
+     * handler type (no single type filters it), so the plural-by-type primitive does not fit. */
   } catch (e) {}
   return out.join("");
 }
@@ -3262,11 +3249,11 @@ async function edhaListUnmark(entry, status, { key = null, ownerId = null, multi
   try {
     if (!entry?.uuid || !status) return;
     if (multiOwner && key && edhaListSharedHold(edhaOwnerLedgers(key, status), entry.uuid, ownerId)) return;
-    const ref = await fromUuid(entry.uuid).catch(() => null);
-    const a = ref?.actor ?? ref; if (!a) return;
+    const a = await edhaResolveActorRef(entry.uuid); if (!a) return;
     await edhaToggleStatus(a, status, false);
-    if (a.isOwner) { try { await a.unsetFlag("edha-content", `markedBy.${status}`); } catch (e) {} }
-    else if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "set-flag", payload: { actorUuid: a.uuid, key: `markedBy.${status}`, value: null } }); } catch (e) {} }
+    // Job 6a: routed through edhaSetEdhaFlag — behavior flip, was a SILENT drop with no GM online
+    // (no warning), now warns + returns false like the majority convention. 🤖 bench row.
+    await edhaSetEdhaFlag(a, `markedBy.${status}`, null);
   } catch (e) {}
 }
 
@@ -3282,12 +3269,8 @@ async function edhaListUnmark(entry, status, { key = null, ownerId = null, multi
  * Consumers: Fade, Break ×2, Cover Their Retreat, Press the Line, the session-1 morale traits. */
 function edhaCueRules(actor, trigger) {
   const out = [];
-  for (const tal of (actor?.items ?? [])) {
-    if (!edhaIsTalent(tal)) continue;
-    for (const rule of edhaEventRules(tal)) {
-      const h = rule?.handler;
-      if (h?.type === "edha-gm-cue" && (h.trigger || "damaged") === trigger) out.push({ item: tal, h });
-    }
+  for (const { item: tal, handler: h } of edhaActorRulesOf(actor, "edha-gm-cue")) {
+    if ((h.trigger || "damaged") === trigger) out.push({ item: tal, h });
   }
   return out;
 }
@@ -3345,7 +3328,7 @@ function edhaRegenClamp(amount, hp, max) {
  * DUPLICATED token's disposition — so a copy resolves to the side of the thing it is a copy of,
  * which is the side it was created wearing. `null` only when there is no actor at all. */
 function edhaActorSide(actor) {
-  const live = actor?.getActiveTokens?.()[0]?.document?.disposition;
+  const live = edhaCasterToken(actor)?.document?.disposition;
   if (Number.isFinite(live)) return live;
   const proto = actor?.prototypeToken?.disposition;
   return Number.isFinite(proto) ? proto : null;
@@ -3377,7 +3360,7 @@ async function edhaGmCueDamageSweep(victim, prevHp, newHp, maxHp) {
       if (edhaCueCrossed(prevHp, newHp, maxHp, h.atFraction)) await edhaPostCueCard(victim, item, h);
     }
     if (prevHp > 0 && newHp <= 0) {
-      const vTok = victim.getActiveTokens?.()[0] ?? null;
+      const vTok = edhaCasterToken(victim);
       const vSide = edhaActorSide(victim);
       for (const t of (canvas?.tokens?.placeables ?? [])) {
         if (!t.actor || t.actor === victim) continue;
@@ -3435,16 +3418,12 @@ async function edhaTurnCueSweep(combat, prior, current) {
       }
       // `edha-regen` rules: engine-applied turn-end regen (clamped by edhaRegenClamp; a whispered
       // card keeps the heal visible at the table). Config-only handler; this sweep is its engine.
-      for (const tal of (prevTok.actor.items ?? [])) {
-        if (!edhaIsTalent(tal)) continue;
-        for (const rule of edhaEventRules(tal)) {
-          const h = rule?.handler; if (h?.type !== "edha-regen") continue;
+      for (const { item: tal, handler: h } of edhaActorRulesOf(prevTok.actor, "edha-regen")) {
           const res = prevTok.actor.system?.resources?.hea;
           const heal = edhaRegenClamp(h.amount, res?.value, edhaResVal(res));
           if (!heal) continue;
           await prevTok.actor.update({ "system.resources.hea.value": (Number(res?.value) || 0) + heal });
           await edhaPostCueCard(prevTok.actor, tal, { note: h.note || `regains ${heal} HP.`, trigger: "turn-end" }, ` <em>(+${heal} HP applied, end of turn.)</em>`);
-        }
       }
     }
   } catch (e) { console.error("Edha Content | turn cue sweep failed", e); }
@@ -3501,7 +3480,7 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
     const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
     if (item.system?.activation?.type !== "skill_test") return;   // attacks only — the seeming tests on the strike
     const amb = edhaActorRuleOf(actor, "edha-ambush-belief"); if (!amb) return;
-    const tTok = [...(game.user?.targets ?? [])][0] ?? null;
+    const tTok = edhaUserTargetToken();
     if (!tTok?.actor) {
       ChatMessage.create({ whisper: edhaWhisperIds(actor), speaker: ChatMessage.getSpeaker({ actor }),
         content: `<div class="edha-trigger-card"><p>🌫️ <strong>${amb.item.name}</strong>: target the victim before rolling the attack so the belief test auto-rolls (first attack on each target this scene).</p></div>` });
@@ -3548,19 +3527,15 @@ async function edhaThornsCheck(victim, dealer, options) {
   try {
     if (options?.edhaThorns) return;
     const attacker = dealer?.actor; if (!attacker || attacker === victim) return;
-    for (const tal of (victim?.items ?? [])) {
-      if (!edhaIsTalent(tal)) continue;
-      for (const rule of edhaEventRules(tal)) {
-        const h = rule?.handler;
-        if (h?.type !== "edha-thorns" || !h.formula) continue;
+    for (const { item: tal, handler: h } of edhaActorRulesOf(victim, "edha-thorns")) {
+        if (!h.formula) continue;
         if (h.meleeOnly !== false) {
-          const vTok = victim.getActiveTokens?.()[0], aTok = attacker.getActiveTokens?.()[0];
+          const vTok = edhaCasterToken(victim), aTok = edhaCasterToken(attacker);
           if (!vTok || !aTok || edhaTokenGapFt(aTok, vTok) > 7.5) continue;   // adjacent-ish (medium diagonals)
         }
         const roll = await (new Roll(String(h.formula), victim.getRollData?.() ?? {})).evaluate();
         try { await attacker.applyDamage([{ amount: roll.total, type: h.damageType || "energy" }], { chatMessage: false, edhaThorns: true }); } catch (e) { continue; }
         ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: victim }), content: `<p>🔥 <strong>${tal.name}</strong>: ${attacker.name} takes <strong>${roll.total}</strong> ${h.damageType || "energy"} splash for striking ${victim.name} in melee.</p>` });
-      }
     }
   } catch (e) { console.error("Edha Content | thorns check failed", e); }
 }
@@ -3571,7 +3546,7 @@ async function edhaThornsCheck(victim, dealer, options) {
 Hooks.on("cosmere-rpg.useItem", (item) => {
   try {
     const actor = item?.actor; if (!actor || !edhaIsTalent(item) || item.name !== "Suture Cradle") return;
-    const t = [...(game.user?.targets ?? [])][0] ?? null;
+    const t = edhaUserTargetToken();
     if (!t?.actor) { ui.notifications?.warn("Edha: target the creature being cradled, then use Suture Cradle again."); return; }
     void edhaSetEdhaFlag(actor, "sutureCradle", { targetUuid: t.actor.uuid, targetName: t.name });
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🪡 <strong>Suture Cradle</strong>: ${t.name} is cradled — when it takes damage, ${actor.name} must keep it (Discipline vs DC 10 + damage, auto-rolled). Sustained: 1 Investiture at the start of each of her turns (GM).</p>` });
@@ -3804,7 +3779,7 @@ async function edhaRitualHpCost(item, cfg) {
     // Double Dip: the talent's target is marked by THIS owner and Reserve covers the price → offer to
     // pay from Reserve instead of HP. Not a health loss: no Blood Price flag, nothing banked.
     if (amt > 0) {
-      const target = [...(game.user?.targets ?? [])][0]?.actor ?? null;
+      const target = edhaUserTargetActor();
       const marked = edhaMarkOwner(target, "doubledipped")?.owner?.id === actor.id;   // Double Dip's scene mark
       const reserve = edhaGetReserve(actor);
       if (marked && reserve >= amt) {
@@ -3908,9 +3883,16 @@ async function edhaRitualHpCost(item, cfg) {
  * pre-deploy orphan sweep): it was the name-keyed sweeps' entry point, and the migration deleted
  * its last caller — a name-keyed owner scan has no legitimate future consumer. */
 function edhaDisposHostile(owner, target) {
-  const ot = edhaCasterToken(owner), tt = edhaCasterToken(target) ?? target.getActiveTokens?.()[0];
-  if (!ot || !tt) return true;   // unknown positions → treat as enemy (don't silently no-op)
-  return (ot.document?.disposition ?? 0) !== (tt.document?.disposition ?? 0);
+  // R-63 (hygiene campaign 2026-08-10): was `!ot || !tt` -> true (fail OPEN to "enemy"), and even with
+  // both tokens present the `?? 0` defaults an unresolvable disposition to NEUTRAL on either side —
+  // one known + one unknown compared unequal and read as hostile. Number.isFinite unifies both cases:
+  // no token AND a token with a non-numeric disposition both fail CLOSED (not hostile) the same way
+  // edhaAllyDropEligible already does. Behavior flip: a genuinely tokenless/unset-disposition actor
+  // used to count as hostile; it does not now. 🤖 bench row.
+  const od = edhaCasterToken(owner)?.document?.disposition;
+  const td = edhaCasterToken(target)?.document?.disposition;
+  if (!Number.isFinite(od) || !Number.isFinite(td)) return false;
+  return od !== td;
 }
 // The once-per-round-per-creature pair (flags.edha-content.focusRound, keyed by talent NAME) retired
 // 07-24r with its only two callers. H8's `once: "round-per-target"` budget is the generic form and it
@@ -4099,14 +4081,10 @@ const EDHA_OPP_PENDING = {};   // pid -> [{ itemUuid, itemName, label, costResou
  * actually happened. `itemUuid` is carried so the click can run the talent's OWN rules. */
 function edhaOpportunityOptions(actor, attr = null) {
   const out = [];
-  for (const tal of (actor?.items ?? [])) {
-    if (!edhaIsTalent(tal)) continue;
-    for (const rule of edhaEventRules(tal)) {
-      const h = rule?.handler;
-      if (h?.type !== "edha-opportunity-option" || !h.label) continue;
-      if (h.whenAttribute && attr && !String(h.whenAttribute).split(/[,\s]+/).filter(Boolean).includes(attr)) continue;
-      out.push({ itemUuid: tal.uuid, itemName: tal.name, label: h.label, costResource: h.costResource || "", costValue: Number(h.costValue) || 0, kind: h.kind || "note", skill: h.skill || "", note: h.note || "" });
-    }
+  for (const { item: tal, handler: h } of edhaActorRulesOf(actor, "edha-opportunity-option")) {
+    if (!h.label) continue;
+    if (h.whenAttribute && attr && !String(h.whenAttribute).split(/[,\s]+/).filter(Boolean).includes(attr)) continue;
+    out.push({ itemUuid: tal.uuid, itemName: tal.name, label: h.label, costResource: h.costResource || "", costValue: Number(h.costValue) || 0, kind: h.kind || "note", skill: h.skill || "", note: h.note || "" });
   }
   return out;
 }
@@ -4147,7 +4125,7 @@ async function edhaOpportunityClick(ev) {
   try {
     ev.preventDefault();
     const btn = ev.currentTarget;
-    const ref = await fromUuid(btn.dataset.edhaActor).catch(() => null); const owner = ref?.actor ?? ref; if (!owner) return;
+    const owner = await edhaResolveActorRef(btn.dataset.edhaActor); if (!owner) return;
     const o = EDHA_OPP_PENDING[btn.dataset.edhaPid]?.[Number(btn.dataset.edhaIdx)];
     if (!o) { ui.notifications?.info("Edha: this Opportunity menu has expired (posted before the last reload)."); btn.disabled = true; return; }
     if (o.costValue > 0 && (o.costResource === "inv" || o.costResource === "foc")) {
@@ -4289,6 +4267,21 @@ function edhaRoundWindowValid(mark, combat) {
 async function edhaGrantPlotDie(actor, { skill = null, source = "Raise the Stakes" } = {}) {
   return edhaSetEdhaFlag(actor, "plotDieNext", { skill: skill || null, source });
 }
+/* ENGINE PASS 5.2 (Job 3): `await fromUuid(x).catch(() => null)` + `ref?.actor ?? ref` was hand-rolled
+ * ~94 times — a socket-relay payload uuid, a chat-card button's dataset, a stored owner/target/victim
+ * ref. One place to resolve "this uuid, whatever it points at (Token or Actor), as an ACTOR":
+ * - a Token(Document) uuid resolves via its `.actor`; an Actor uuid resolves directly (`.actor` is
+ *   undefined on an Actor document, so the `?? ref` fallback returns the actor itself)
+ * - a falsy/blank uuid returns null WITHOUT calling fromUuid — every call site that used to guard
+ *   with `uuid ? await fromUuid(...) : null` can now just pass the (possibly blank) uuid straight in
+ * - a failed lookup (deleted document, bad uuid) returns null rather than throwing */
+async function edhaResolveActorRef(uuid) {
+  if (!uuid) return null;
+  try {
+    const ref = await fromUuid(uuid).catch(() => null);
+    return ref?.actor ?? ref ?? null;
+  } catch (e) { return null; }
+}
 // console/macro API: edha.raiseStakes(tokenOrActorOrName, skillId?, source?) — manual Unity of Purpose etc.
 function edhaResolveActorArg(arg) {
   if (!arg) return canvas?.tokens?.controlled?.[0]?.actor ?? game.user?.character ?? null;
@@ -4356,7 +4349,7 @@ async function edhaPlotGrantClick(ev) {
   try {
     ev.preventDefault();
     const btn = ev.currentTarget;
-    const ref = await fromUuid(btn.dataset.edhaAlly).catch(() => null); const ally = ref?.actor ?? ref;
+    const ally = await edhaResolveActorRef(btn.dataset.edhaAlly);
     if (!ally) return;
     const skill = btn.dataset.edhaSkill || null;
     const src = decodeURIComponent(btn.dataset.edhaSource || "Raise the Stakes");
@@ -4387,7 +4380,7 @@ function edhaPostDesignateCard(owner, name, { color = "white", note = "" } = {})
   try {
     const ot = edhaCasterToken(owner);
     const ft = edhaAttuneFtColor(owner, color);
-    const targets = ot ? edhaTokensWithin(ot, ft).filter(t => t.actor && (t.document?.disposition ?? 1) !== (ot.document?.disposition ?? 1)) : [];
+    const targets = ot ? edhaTokensWithin(ot, ft).filter(t => t.actor && edhaDisposHostile(owner, t.actor)) : [];   // R-63 🤖 bench row
     const body = !targets.length
       ? `<p style="opacity:.8">${edhaSweepEmptyNote(owner, ft, false)}</p>`
       : targets.map(t => `<button type="button" class="edha-designate-btn" data-edha-target="${t.document.uuid}" data-edha-owner="${owner.uuid}" data-edha-source="${encodeURIComponent(name)}">${t.name || t.actor.name}</button>`).join(" ");   // TOKEN name — duplicate unlinked drops share an actor name
@@ -4402,8 +4395,7 @@ async function edhaDesignateClick(ev) {
   try {
     ev.preventDefault();
     const btn = ev.currentTarget;
-    const ownerRef = await fromUuid(btn.dataset.edhaOwner).catch(() => null);
-    const owner = ownerRef?.actor ?? ownerRef; if (!owner) return;
+    const owner = await edhaResolveActorRef(btn.dataset.edhaOwner); if (!owner) return;
     const tDoc = await fromUuid(btn.dataset.edhaTarget).catch(() => null); if (!tDoc) return;
     const src = decodeURIComponent(btn.dataset.edhaSource || "Designate");
     const c = game.combat ?? null;
@@ -4647,7 +4639,7 @@ async function edhaCoordReactClick(ev) {
   try {
     ev.preventDefault();
     const btn = ev.currentTarget;
-    const ref = await fromUuid(btn.dataset.edhaOwner).catch(() => null); const owner = ref?.actor ?? ref; if (!owner) return;
+    const owner = await edhaResolveActorRef(btn.dataset.edhaOwner); if (!owner) return;
     const name = decodeURIComponent(btn.dataset.edhaName || "");
     let costs = []; try { costs = JSON.parse(decodeURIComponent(btn.dataset.edhaCosts || "[]")) || []; } catch (e) {}
     let contest = null; try { contest = btn.dataset.edhaContest ? JSON.parse(decodeURIComponent(btn.dataset.edhaContest)) : null; } catch (e) {}
@@ -4697,7 +4689,7 @@ async function edhaTestReactWatch(rollCtx, roll, source, config) {
   try {
     if (!edhaDefBuffGmGate()) return;                              // exactly one GM posts the (whispered) cards
     const roller = edhaD20RollActor(config); if (!roller) return;
-    const rtok = edhaCasterToken(roller) ?? roller.getActiveTokens?.()[0]; if (!rtok) return;
+    const rtok = edhaCasterToken(roller); if (!rtok) return;
     const skillId = roll?.data?.skill?.id ?? null;
     let comps = 0; try { comps = roll.complicationsCount || 0; } catch (e) {}
     const nat = edhaKeptD20Nat(roll);
@@ -4707,7 +4699,7 @@ async function edhaTestReactWatch(rollCtx, roll, source, config) {
         if (owner === roller) continue;
         if (!String(h.rolls || "skill,attack,item").split(/[,\s]+/).filter(Boolean).includes(rollCtx)) continue;
         const otok = edhaCasterToken(owner); if (!otok || otok.id === rtok.id) continue;
-        const sameSide = (otok.document?.disposition ?? 1) === (rtok.document?.disposition ?? 1);
+        const sameSide = edhaSameDisposition(owner, rtok);   // R-63 — 🤖 bench row
         if (String(h.rollerIs || "ally") === "enemy" ? sameSide : !sameSide) continue;
         if (h.requireSkillTest && !skillId) continue;
         const when = String(h.when || "any");
@@ -4808,8 +4800,8 @@ async function edhaBeaconClick(ev) {
   try {
     ev.preventDefault();
     const btn = ev.currentTarget;
-    const oref = await fromUuid(btn.dataset.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref;
-    const aref = await fromUuid(btn.dataset.edhaAlly).catch(() => null); const ally = aref?.actor ?? aref;
+    const owner = await edhaResolveActorRef(btn.dataset.edhaOwner);
+    const ally = await edhaResolveActorRef(btn.dataset.edhaAlly);
     const statusId = btn.dataset.edhaStatus;
     const name = decodeURIComponent(btn.dataset.edhaName || "");
     if (!owner || !ally || !statusId) return;
@@ -5018,11 +5010,14 @@ async function edhaPostGmCard(actor, content) {
 async function edhaBulwarkReactions(victim, dealer, dealtAmt, prevHp, newHp, redirected) {
   try {
     if (!edhaDefBuffGmGate() || redirected || dealtAmt <= 0) return;
-    const vtok = edhaCasterToken(victim) ?? victim.getActiveTokens?.()[0]; if (!vtok) return;
-    const vdisp = vtok.document?.disposition ?? 1;
+    const vtok = edhaCasterToken(victim); if (!vtok) return;
+    const vdisp = vtok.document?.disposition;   // R-63: no `?? 1` default — allyOwnerTok below Number.isFinite-guards it
     const attacker = (dealer?.actor && dealer.actor !== victim) ? dealer.actor : null;
-    const atok = attacker ? (edhaCasterToken(attacker) ?? attacker.getActiveTokens?.()[0]) : null;
-    const allyOwnerTok = (owner) => { const o = edhaCasterToken(owner); return (o && owner !== victim && (o.document?.disposition ?? 1) === vdisp) ? o : null; };
+    const atok = attacker ? (edhaCasterToken(attacker)) : null;
+    // R-63: Number.isFinite fail-closed (was `?? 1` on both sides, comparing against the captured
+    // vdisp) — an owner whose token's disposition cannot be resolved no longer counts as an ally by
+    // default. 🤖 bench row.
+    const allyOwnerTok = (owner) => { const o = edhaCasterToken(owner); const od = o?.document?.disposition; return (o && owner !== victim && Number.isFinite(od) && Number.isFinite(vdisp) && od === vdisp) ? o : null; };
 
     /* H25 `edha-damage-react` (07-25) — the four White Bulwark reactions used to be four
      * hand-written blocks here, each one an edhaCharacterOwnersOf(NAME) loop followed by a
@@ -5095,13 +5090,13 @@ async function edhaBulwarkClick(ev) {
   try {
     ev.preventDefault();
     const btn = ev.currentTarget, ds = btn.dataset;
-    const oref = await fromUuid(ds.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref; if (!owner) return;
+    const owner = await edhaResolveActorRef(ds.edhaOwner); if (!owner) return;
     const name = decodeURIComponent(ds.edhaName || ""), action = ds.edhaAction || "";
     const amount = Math.max(0, Math.floor(Number(ds.edhaAmount) || 0)), once = ds.edhaOnce === "1";
     let costs = []; try { costs = JSON.parse(decodeURIComponent(ds.edhaCosts || "[]")) || []; } catch (e) {}
     if (once && !edhaCoordOPRAllowed(owner, name, "_react")) { ui.notifications?.info(`${name} already used this round.`); btn.disabled = true; return; }
-    const vref = ds.edhaVictim ? await fromUuid(ds.edhaVictim).catch(() => null) : null; const victim = vref?.actor ?? vref;
-    const aref = ds.edhaAttacker ? await fromUuid(ds.edhaAttacker).catch(() => null) : null; const attacker = aref?.actor ?? aref;
+    const victim = await edhaResolveActorRef(ds.edhaVictim);
+    const attacker = await edhaResolveActorRef(ds.edhaAttacker);
     if (once) await edhaCoordOPRMark(owner, name, "_react");
     for (const c of costs) { try { const res = owner.system?.resources?.[c.resource], cur = res?.value ?? 0; await owner.update({ [`system.resources.${c.resource}.value`]: Math.max(0, cur - c.value) }); } catch (e) {} }
     let note = "";
@@ -5220,11 +5215,11 @@ async function edhaAccordVoiceClick(ev) {
   try {
     ev.preventDefault();
     const btn = ev.currentTarget, ds = btn.dataset;
-    const oref = await fromUuid(ds.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref; if (!owner) return;
+    const owner = await edhaResolveActorRef(ds.edhaOwner); if (!owner) return;
     const name = decodeURIComponent(ds.edhaName || "");
     if (!edhaCoordOPRAllowed(owner, name, "_react")) { ui.notifications?.info(`${name} already used this round.`); btn.disabled = true; return; }
     await edhaCoordOPRMark(owner, name, "_react");
-    const aref = ds.edhaAttacker ? await fromUuid(ds.edhaAttacker).catch(() => null) : null; const attacker = aref?.actor ?? aref;
+    const attacker = await edhaResolveActorRef(ds.edhaAttacker);
     const origNat = Number(ds.edhaNat) || 0, origTotal = Number(ds.edhaTotal) || 0;
     let costs = []; try { costs = JSON.parse(decodeURIComponent(ds.edhaCosts || "[]")) || []; } catch (e) {}
     for (const c of costs) { try { const res = owner.system?.resources?.[c.resource], cur = res?.value ?? 0; await owner.update({ [`system.resources.${c.resource}.value`]: Math.max(0, cur - c.value) }); } catch (e) {} }
@@ -5253,7 +5248,7 @@ async function edhaAccordBoundClick(ev) {
   try {
     ev.preventDefault();
     const btn = ev.currentTarget, ds = btn.dataset;
-    const pref = await fromUuid(ds.edhaPartner).catch(() => null); const partner = pref?.actor ?? pref; if (!partner) return;
+    const partner = await edhaResolveActorRef(ds.edhaPartner); if (!partner) return;
     btn.disabled = true; btn.textContent = "Bound by Word applied";
     const newTotal = Number(ds.edhaTotal) || 0, wasTotal = Number(ds.edhaWas) || 0;
     const amend = `🤝 <strong>Bound by Word</strong>: using the accord-maker's White modifier → total <strong>${newTotal}</strong> (was ${wasTotal}).`;
@@ -5358,10 +5353,7 @@ async function edhaSetNextTestMod(target, mod) {
     // Done before the socket emit so the owner and the relayed write agree on the same gid.
     try { if (mod && !mod.gid) mod.gid = foundry.utils.randomID(); } catch (e) { /* non-fatal */ }
     try { _edhaNextModClaim.delete(target?.id); } catch (e) { /* non-fatal */ }
-    if (target.isOwner) { await target.setFlag("edha-content", "nextTestMod", mod); return true; }
-    if (!game.users?.activeGM) { ui.notifications?.warn("Edha: a GM must be online to affect that creature's next test."); return false; }
-    game.socket.emit("module.edha-content", { action: "set-flag", payload: { actorUuid: target.uuid, key: "nextTestMod", value: mod } });
-    return true;
+    return await edhaSetEdhaFlag(target, "nextTestMod", mod);   // Job 6a: routed through the canonical helper
   } catch (e) { console.error("Edha Content | set next-test mod failed", e); return false; }
 }
 function edhaNextTestMatches(mod, roll, actor = null, round = undefined, wantDamage = false) {
@@ -5590,7 +5582,7 @@ function edhaCaeCombatant(actor) {
  * deadlock rule is respected. */
 async function edhaCaeApplyGM(p) {
   try {
-    const ref = await fromUuid(p.actorUuid).catch(() => null); const a = ref?.actor ?? ref;
+    const a = await edhaResolveActorRef(p.actorUuid);
     const c = edhaCaeCombatant(a); if (!c) return;
     const key = (p.kind === "burn-reaction" || p.kind === "reaction") ? "reactionsAvailable" : "actionsAvailableGroups";
     await edhaOwnerListQueue(c, key, async () => {
@@ -5850,7 +5842,7 @@ function edhaQuarryAdvPreRoll(roll, source, config) {
     if (roll?.options?._edhaQuarryAdv) return;                 // idempotent (a re-fired pre-roll)
     const actor = edhaD20RollActor(config); if (!actor) return;
     const q = edhaQuarryOf(actor); if (!q) return;
-    const ttok = [...(game.user?.targets ?? [])][0] ?? null;
+    const ttok = edhaUserTargetToken();
     const t = ttok?.actor ?? null;
     if (!t || t.uuid !== q) return;
     roll.options.advantageMode = "advantage"; roll.configureModifiers?.();
@@ -5987,7 +5979,7 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
   try {
     const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
     const g = EDHA_HEROIC_DEFTESTS[item.name]; if (!g || !edhaOwnsTalent(actor, item.name)) return;
-    const target = [...(game.user?.targets ?? [])][0]?.actor ?? null;
+    const target = edhaUserTargetActor();
     if (!target) { ui.notifications?.warn(`Edha: ${item.name} — target the creature first, then use it (the roll resolves against their defense).`); return; }
     edhaQueueContest(actor, g.skill, async ({ total }) => {
       const dc = edhaReadDefense(target, g.def);
@@ -6105,7 +6097,7 @@ Hooks.on("preUpdateActor", (actor, changes) => {
 // (edhaSizeFt is GONE with Holographic Illusion's conversion — [Size] off a colour is the
 //  `tokenSizeColor` field on edha-summon now, resolved in its executor.)
 function edhaTokenArt(actor) {
-  const tok = actor?.getActiveTokens?.()[0];
+  const tok = edhaCasterToken(actor);
   return tok?.document?.texture?.src || actor?.prototypeToken?.texture?.src || actor?.img || "icons/svg/mystery-man.svg";
 }
 // Is this target currently taken in by the caster's active seeming? Reads the caster's phantom
@@ -6239,7 +6231,7 @@ async function edhaIllusionRetestClick(ev) {
     ev.preventDefault();
     if (!game.user?.isGM) { ui.notifications?.warn("Edha: the belief re-test is GM-side."); return; }
     const copyActor = await fromUuid(ev.currentTarget.dataset.edhaCopy).catch(() => null);
-    const doc = copyActor?.getActiveTokens?.()[0]?.document; if (!doc) { ui.notifications?.warn("Edha: the illusion's token is gone."); return; }
+    const doc = edhaCasterToken(copyActor)?.document; if (!doc) { ui.notifications?.warn("Edha: the illusion's token is gone."); return; }
     await edhaPhantomBeliefSweep(doc);
   } catch (e) { edhaClickFailed("illusion re-test", e); }
 }
@@ -6269,8 +6261,7 @@ async function edhaPhantomRestore(copyActor) {
     // Resolve the CASTER TOKEN first (per-bird — unlinked tokens share a world actor id); the
     // token's synthetic actor carries the right name and per-token cue gates.
     const casterTokUuid = copyActor.getFlag("edha-content", "phantomCasterTok");
-    const casterTokDoc = casterTokUuid ? await fromUuid(casterTokUuid).catch(() => null) : null;
-    const summoner = casterTokDoc?.actor ?? game.actors?.get(copyActor.getFlag("edha-content", "summoner")) ?? null;
+    const summoner = (await edhaResolveActorRef(casterTokUuid)) ?? game.actors?.get(copyActor.getFlag("edha-content", "summoner")) ?? null;
     if (summoner) for (const { item, h } of edhaCueRules(summoner, "seeming-break")) await edhaPostCueCard(summoner, item, h);
   } catch (e) { console.error("Edha Content | phantom restore failed", e); }
 }
@@ -6378,7 +6369,7 @@ async function edhaUpkeepInvClick(ev) {
     // nothing, for any user, ever": the read below threw every time and the outer catch swallowed it.
     // The ELEMENT reference is fine to hold across an await; only the event's pointer to it is not.
     const btn = ev.currentTarget, ds = btn.dataset;
-    const ref = await fromUuid(ds.actor).catch(() => null); const a = ref?.actor ?? ref; if (!a) return;
+    const a = await edhaResolveActorRef(ds.actor); if (!a) return;
     // The button carries its DOCUMENT: cost and resource come off the rule that posted it.
     const tal = ds.item ? await fromUuid(ds.item).catch(() => null) : null;
     const h = (tal ? edhaRuleOf(tal, "edha-illusion-upkeep") : null) ?? edhaActorRuleOf(a, "edha-illusion-upkeep")?.handler ?? {};
@@ -6644,7 +6635,7 @@ Hooks.on("combatStart",      (combat) => edhaStampTurnStart(combat));
 function edhaPxPerFt() { const s = canvas?.scene; return (s?.grid?.size || 100) / (s?.grid?.distance || 5); }
 function edhaMovedTowardFt(actor, target) {
   try {
-    const tok = edhaCasterToken(actor), ttok = target ? (edhaCasterToken(target) ?? target.getActiveTokens?.()[0]) : null;
+    const tok = edhaCasterToken(actor), ttok = target ? (edhaCasterToken(target)) : null;
     if (!tok || !ttok) return 0;
     const start = _edhaTurnStartPos.get(tok.id);
     if (!start) return 0;
@@ -6802,7 +6793,7 @@ async function edhaRunMove(item, cfg) {
     if (cfg.oncePerTurn && !edhaOncePerTurnAllowed(actor, key)) return;
     const maxFt = edhaMoveAllowanceFt(actor, cfg);
     const tok = edhaCasterToken(actor);
-    const ttok = Array.from(game.user?.targets ?? [])[0] ?? null;
+    const ttok = edhaUserTargetToken();
     // Cruel Step (07-12): the slide is only legal toward an ISOLATED target — warn and stand down
     // otherwise (the activation cost has already been paid; the GM can refund if it was a misclick).
     if (cfg.requireTargetIsolated && ttok?.actor && !edhaIsIsolated(ttok.actor, ttok)) {
@@ -6831,7 +6822,7 @@ async function edhaRunPush(owner, victim, cfg) {
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: victim }), content: `<p>🧬 <strong>Dense Tissue</strong>: ${victim.name} is immune to forced movement — the push does nothing.</p>` });
       return;
     }
-    const otok = edhaCasterToken(owner), vtok = edhaCasterToken(victim) ?? victim.getActiveTokens?.()[0];
+    const otok = edhaCasterToken(owner), vtok = edhaCasterToken(victim);
     if (!otok || !vtok) {
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>💥 <strong>${cfg.note || "Push"}</strong> — push ${victim.name} (no token on canvas — apply manually).</p>` });
       return;
@@ -6844,7 +6835,7 @@ async function edhaRunPush(owner, victim, cfg) {
      * its candidate list was measured around). A missing anchor falls back to you rather than
      * refusing — the push still happens, from the wrong origin, and the card says who it was from. */
     const anchorTok = (String(cfg.awayFrom || "self") === "anchor" && cfg.anchorActor)
-      ? (edhaCasterToken(cfg.anchorActor) ?? cfg.anchorActor.getActiveTokens?.()[0] ?? otok) : otok;
+      ? (edhaCasterToken(cfg.anchorActor) ?? otok) : otok;
     const maxFt = cfg.bySize ? (EDHA_SIZE_FT[edhaColorRank(owner, cfg.sizeColor || "red")] || EDHA_SIZE_FT[1]) : (Number(cfg.distanceFt) || 5);
     const dx = vtok.center.x - anchorTok.center.x, dy = vtok.center.y - anchorTok.center.y, len = Math.hypot(dx, dy);
     /* A push needs a DIRECTION, and "directly away" is undefined when the victim and the anchor
@@ -6888,9 +6879,7 @@ async function edhaRallyClear(actor) { try { if (actor?.getFlag?.("edha-content"
 function edhaRallyOnDeal(actor) {
   try {
     if (!actor?.items) return;
-    for (const tal of actor.items) {
-      if (!edhaIsTalent(tal)) continue;
-      const h = edhaRuleOf(tal, "edha-rally-stack"); if (!h) continue;
+    for (const { item: tal, handler: h } of edhaActorRulesOf(actor, "edha-rally-stack")) {
       if ((h.trigger || "deal-damage") !== "deal-damage") continue;
       void edhaRallyBump(actor, h.resetOn || "turn").then((n) => {
         if (n > 0) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🔥 <strong>${tal.name}</strong> — ${actor.name} (and allies in Attunement Range) gain <strong>+${n}</strong> to their next test (max ${edhaColorRank(actor, "red")}). <span style="opacity:.8">Allies: apply +${n} yourselves.</span></p>` });
@@ -6975,10 +6964,8 @@ Hooks.once("ready", () => {
 function edhaDefBuffGmGate() { return !!game.user?.isGM && !(game.users?.activeGM && !game.users.activeGM.isSelf); }   // exactly one GM writes
 function edhaDefBuffFor(actor) {
   if (!actor?.items) return null;
-  for (const tal of actor.items) {
-    if (!edhaIsTalent(tal)) continue;
-    const h = edhaRuleOf(tal, "edha-defense-buff");
-    if (h && (h.window || "round-until-turn") === "round-until-turn") {
+  for (const { item: tal, handler: h } of edhaActorRulesOf(actor, "edha-defense-buff")) {
+    if ((h.window || "round-until-turn") === "round-until-turn") {
       return { name: tal.name, spec: { amount: h.amount, defenses: String(h.defenses || "phy, cog, spi").split(/[\s,]+/).filter(Boolean), label: h.label || `${tal.name} (Ready)`, img: h.img } };
     }
   }
@@ -8737,8 +8724,8 @@ Hooks.on("cosmere-rpg.preApplyDamage", (actor, damage) => {
 // Auto-apply: when a registered THP talent is used, roll its formula and set the target's Temp HP.
 function edhaThpTarget(item, mode) {
   if (mode === "self") return { actor: item.actor ?? null, via: "self" };
-  const targeted = Array.from(game.user?.targets ?? []);
-  if (targeted[0]?.actor) return { actor: targeted[0].actor, via: "target" };
+  const t0 = edhaUserTargetToken();
+  if (t0?.actor) return { actor: t0.actor, via: "target" };
   const sel = canvas?.tokens?.controlled?.[0]?.actor;
   if (sel && sel !== item.actor) return { actor: sel, via: "selected token" };
   return { actor: item.actor ?? null, via: "caster (no target)" };
@@ -8920,7 +8907,7 @@ async function edhaSummon(caster, spec) {
        * ever correct while the cap happened to be 1. */
       flags: { "edha-content": { summon: true, summoner: caster.id, summonTalent: spec.talentName || null, summonedAt: Date.now(), ...(spec.extraFlags || {}) } },
     };
-    const ct = spec.anchorTok ?? caster.getActiveTokens?.()[0];   // anchorTok: place beside a token other than the caster's (Phantom Double of an ally)
+    const ct = spec.anchorTok ?? edhaCasterToken(caster);   // anchorTok: place beside a token other than the caster's (Phantom Double of an ally)
     const gs = scene.grid?.size ?? 100;
     // `at` (2bAA): an explicit CENTRE point from the placement picker — no summon could be placed
     // at a chosen square before, which is why every "at a point within Attunement Range" card was
@@ -9315,7 +9302,7 @@ function edhaVeilSuppressed(tok) {
     for (const { actor: owner, handler: h } of edhaWatchersOfRule("edha-suppress-veil")) {
       if (h.requireSelfStatus && !owner.statuses?.has?.(h.requireSelfStatus)) continue;
       const otok = edhaCasterToken(owner); if (!otok || otok.id === tok.id) continue;
-      if ((otok.document?.disposition ?? 1) === (tok.document?.disposition ?? 1)) continue;   // enemies of the owner only
+      if (edhaSameDisposition(owner, tok)) continue;   // enemies of the owner only — R-63 🤖 bench row
       if (edhaTokensWithin(otok, edhaAttuneFtColor(owner, h.rangeColor || "green")).some(t => t.id === tok.id)) return true;
     }
   } catch (e) {}
@@ -9326,11 +9313,7 @@ async function edhaDarkVeilSweep() {
     if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;   // one applier
     for (const tok of (canvas?.tokens?.placeables ?? [])) {
       const a = tok.actor; if (!a) continue;
-      for (const tal of (a.items ?? [])) {
-        if (!edhaIsTalent(tal)) continue;
-        for (const rule of edhaEventRules(tal)) {
-          const h = rule?.handler;
-          if (h?.type !== "edha-dark-veil") continue;
+      for (const { item: tal, handler: h } of edhaActorRulesOf(a, "edha-dark-veil")) {
           const effName = h.effectName || tal.name;
           const eff = [...(a.effects ?? [])].find(e => String(e.name || e.label || "").startsWith(effName));
           if (!eff) continue;
@@ -9343,7 +9326,6 @@ async function edhaDarkVeilSweep() {
             await eff.update({ disabled: true, "flags.edha-content.autoVeil": false });
             if (suppressed) ChatMessage.create({ whisper: (game.users?.filter(u => u.active && u.isGM) ?? []).map(u => u.id), content: `<p>🌿 <strong>${tal.name}</strong>: ${tok.name}'s veil is SUPPRESSED — an armed veil-suppressing enemy holds it within Attunement Range.</p>` });
           }
-        }
       }
     }
   } catch (e) { console.error("Edha Content | dark-veil sweep failed", e); }
@@ -9421,13 +9403,34 @@ async function edhaSenseRevealOnDamage(victim, list) {
   } catch (e) { console.error("Edha Content | sense-reveal recovery failed", e); }
 }
 
+/* R-64 (hygiene campaign 2026-08-10, ENGINE PASS 5.2). The single reader every inline
+ * `Array.from(game.user?.targets ?? [])[0]` site used to hand-roll (four spellings: Array.from vs
+ * spread, `?? null` vs bare, wanting the TOKEN vs its `.actor`) — one place now, so a future
+ * Foundry API change (User#targets is already a Set, not an array) breaks one line. */
+function edhaUserTargetToken() {
+  return Array.from(game.user?.targets ?? [])[0] ?? null;
+}
+function edhaUserTargetActor() {
+  return edhaUserTargetToken()?.actor ?? null;
+}
+
+/* R-64's full 3-term victim chain: an explicit hand-off (`options.victim`) beats the event's own
+ * target (`options.target`, e.g. a contest payload) beats whatever the CLICKING user currently has
+ * targeted. Six+ sites skipped the middle term, so an event carrying `options.target` but no
+ * `victim` fell through straight to the clicking user's targets — a different creature than the one
+ * the event was actually about. `owner` is an optional trailing fallback for call sites that used to
+ * read `?? actor` / `?? owner` after the chain — pass it, don't OR it in at the call site. */
+function edhaResolveVictim(event, { owner = null } = {}) {
+  return event?.options?.victim ?? event?.options?.target ?? edhaUserTargetActor() ?? owner ?? null;
+}
+
 // Resolve the actor list an effect lands on.
 function edhaEffectTargets(owner, eff, ctx) {
   switch (eff.target) {
     case "self": return [owner];
     case "victim": case "triggering": return ctx.victim ? [ctx.victim] : [];
     case "near-victim": {
-      const vtok = edhaCasterToken(ctx.victim) ?? ctx.victim?.getActiveTokens?.()[0];
+      const vtok = edhaCasterToken(ctx.victim);
       if (!vtok) return [];
       // edhaTokensWithin already excludes the centre token, so the victim itself is never caught.
       // `nearAffects` (07-24r) is the splash's disposition filter: Necrotic Cascade detonates a corpse
@@ -9459,7 +9462,7 @@ function edhaEffectTargets(owner, eff, ctx) {
         const a = ref?.actor ?? ref; if (!a || a === owner) continue;
         if ((Number(a.system?.resources?.hea?.value) || 0) <= 0) continue;   // skip the downed
         if (inRange) {
-          const atok = a.getActiveTokens?.()[0];
+          const atok = edhaCasterToken(a);
           // A range gate needs BOTH tokens on the map — the same rule H8's rangeColor follows.
           if (!otok || !atok || !inRange.some(t => t.id === atok.id)) continue;
         }
@@ -9480,8 +9483,10 @@ function edhaEffectTargets(owner, eff, ctx) {
         if (t.actor === owner) return false;
         if ((t.actor.system?.resources?.hea?.value ?? 0) <= 0) return false;
         if (eff.requireDisposition && otok) {
-          const same = (t.document?.disposition ?? 1) === (otok.document?.disposition ?? 1);
-          if (same !== (eff.requireDisposition === "ally")) return false;
+          // R-63: Number.isFinite fail-closed (was `?? 1` on both sides) — 🤖 bench row.
+          const td = t.document?.disposition, od = otok.document?.disposition;
+          if (!Number.isFinite(td) || !Number.isFinite(od)) return false;
+          if ((td === od) !== (eff.requireDisposition === "ally")) return false;
         }
         if (inRange && !inRange.some(x => x.id === t.id)) return false;
         return true;
@@ -9932,7 +9937,7 @@ async function edhaPlaceAoe(item, spec) {
     const color = spec.color || edhaTalentColor(item) || "red";
     const rank = edhaColorRank(actor, color);
     const ft = area.sizeByRank ? (EDHA_SIZE_FT[rank] || EDHA_SIZE_FT[1]) : (Number(area.sizeFt) || EDHA_SIZE_FT[1]);
-    const center = Array.from(game.user?.targets ?? [])[0] ?? edhaCasterToken(actor);
+    const center = edhaUserTargetToken() ?? edhaCasterToken(actor);
     if (!center) { ui.notifications?.warn(`Edha: target the ${item.name} burst center (or select your token).`); return; }
     const cx = center.center.x, cy = center.center.y;
     await edhaDrawCircle(cx, cy, ft, EDHA_COLOR_HEX[color] || "#d23b2e");
@@ -10390,11 +10395,9 @@ function edhaBurstCancel(pid) {
 async function edhaApplyBurstResults(payload) {
   try {
     const p = payload || {};
-    const casterRef = p.casterActorUuid ? await fromUuid(p.casterActorUuid).catch(() => null) : null;
-    const caster = casterRef?.actor ?? casterRef;   // pass as edhaSource so the Kindle-light wrapper can attribute it
+    const caster = await edhaResolveActorRef(p.casterActorUuid);   // pass as edhaSource so the Kindle-light wrapper can attribute it
     for (const h of (p.hits || [])) {
-      const ref = await fromUuid(h.actorUuid).catch(() => null);
-      const target = ref?.actor ?? ref;            // accept an Actor (or, defensively, a token doc)
+      const target = await edhaResolveActorRef(h.actorUuid);            // accept an Actor (or, defensively, a token doc)
       if (!target?.update) continue;
       if (h.heal) {
         const cur = Number(target.system?.resources?.hea?.value) || 0;
@@ -10407,8 +10410,7 @@ async function edhaApplyBurstResults(payload) {
     const tr = p.terrain;
     if (tr) {
       const scene = game.scenes?.get(tr.sceneId);
-      const ref = await fromUuid(tr.casterActorUuid).catch(() => null);
-      const caster = ref?.actor ?? ref;
+      const caster = await edhaResolveActorRef(tr.casterActorUuid);
       if (scene && caster) {
         if (tr.color === "green") {           // Green = ENFORCED difficult terrain (+Thorn Field keen if owned)
           await edhaCreateGreenTerrain(caster, scene, tr.x, tr.y, tr.sizeFt);
@@ -10428,6 +10430,127 @@ async function edhaApplyBurstResults(payload) {
     }
   } catch (e) { console.error("Edha Content | apply burst results failed", e); }
 }
+/* ENGINE PASS 5.2 (Job 3): the socket relay's 22-branch `if (data?.action === "X") { ... return; }`
+ * chain becomes an {action: handler} table — same dispatch a player's client already builds
+ * (game.socket.emit({ action, payload })), just addressed by lookup instead of a sequential string
+ * compare. Every handler body is copied verbatim (only the trailing `return;` is dropped, since the
+ * table's own `if (handler) await handler(...)` in the socket.on callback below is the new "then
+ * stop" — no branch here does anything AFTER its own return). Actor refs already went through
+ * edhaResolveActorRef in Job 3's mechanical pass above; kept exactly as each branch resolved them. */
+const EDHA_SOCKET_ACTIONS = {
+  "burst-apply": async (payload) => { await edhaApplyBurstResults(payload); },
+  "cae-flag": async (payload) => { await edhaCaeApplyGM(payload); },                 // players lack combatant-write perms (Combat is GM-owned)
+  "foundation-place": async (payload) => { await edhaFoundationPlace(payload); },    // players lack DRAWING_CREATE
+  "summon-actor": async (payload) => { await edhaSummonCreateGM(payload); },         // players lack ACTOR_CREATE — spec baked owner-side
+  "create-item": async (payload) => {                            // injury tool → add an Item GM-side (inverse of delete-item)
+    const p = payload || {};
+    const a = await edhaResolveActorRef(p.actorUuid);
+    if (a && p.itemData) await edhaCreateItemDocs(a, p.itemData);
+  },
+  "toggle-status": async (payload) => {
+    const p = payload || {};
+    const a = await edhaResolveActorRef(p.actorUuid);
+    if (a?.toggleStatusEffect) await a.toggleStatusEffect(p.statusId, { active: p.active !== false });
+  },
+  "apply-status-mark": async (payload) => {
+    const p = payload || {};
+    const a = await edhaResolveActorRef(p.actorUuid);
+    if (!a) return;
+    if (a.toggleStatusEffect) await a.toggleStatusEffect(p.statusId, { active: true });
+    if (p.mark) await a.setFlag("edha-content", `markedBy.${p.statusId}`, p.mark);
+    if (p.combatExpire) { try { await a.setFlag("edha-content", `combatExpire.${p.statusId}`, true); } catch (e) {} }
+  },
+  "set-flag": async (payload) => {                              // cross-actor flag write (e.g. plot-die grant onto an ally)
+    const p = payload || {};
+    const a = await edhaResolveActorRef(p.actorUuid);
+    if (a && p.key) await a.setFlag("edha-content", p.key, p.value);
+  },
+  "apply-timed-status": async (payload) => {                     // status + owner-relative expiry (Disoriented)
+    const p = payload || {};
+    const t = await edhaResolveActorRef(p.targetUuid);
+    if (!t?.toggleStatusEffect) return;
+    await t.toggleStatusEffect(p.statusId, { active: true });
+    if (p.expire) {
+      const eff = [...(t.effects ?? [])].find(e => e.statuses?.has?.(p.statusId));
+      let who = t;
+      if (p.expire === "owner" && p.ownerUuid) { who = (await edhaResolveActorRef(p.ownerUuid)) ?? t; }
+      const ti = game.combat?.started ? edhaCombatantTurnIndex(game.combat, who) : -1;
+      if (eff && ti >= 0) await eff.setFlag("edha-content", "expireAfter", edhaNextTurnCoord(game.combat, ti));
+      else if (eff) {   // relay half of the same catch-up intent (see edhaApplyTimedStatus)
+        try { await eff.unsetFlag("edha-content", "expireAfter"); } catch (x) {}
+        await eff.setFlag("edha-content", "timedExpire", { expire: p.expire, ownerUuid: p.ownerUuid ?? null });
+      }
+    }
+  },
+  "move-token": async (payload) => {                             // GM-applied forced movement (Red push pilot)
+    const p = payload || {};
+    const td = await fromUuid(p.tokenUuid).catch(() => null);
+    // Socket options don't ride the emit — re-stamp edhaForced on the GM-side write (this relay
+    // only ever carries engine-driven moves). Order's violation watcher + Dread Presence's veto read it.
+    const mvOpts = p.hostile ? { edhaForced: true, edhaHostileMove: true } : { edhaForced: true };
+    if (p.teleport && typeof td?.move === "function") { await td.move({ x: p.x, y: p.y, action: "displace" }, mvOpts); return; }
+    if (td?.update) await td.update({ x: p.x, y: p.y }, { animate: !p.teleport, teleport: !!p.teleport, ...mvOpts });
+  },
+  "remove-terrain": async (payload) => {                         // player extinguish (07-12 region rework)
+    const p = payload || {};
+    try { await game.scenes?.get(p.sceneId)?.regions?.get(p.regionId)?.delete(); } catch (e) {}
+  },
+  "set-resource": async (payload) => {                           // cross-actor resource write (Shatter Focus)
+    const p = payload || {};
+    const a = await edhaResolveActorRef(p.actorUuid);
+    if (a && p.path) await a.update({ [p.path]: p.value });
+  },
+  "rewrite-roll": async (payload) => {                           // Voice of Authority / Bound by Word — change a rendered roll's total
+    const p = payload || {};
+    const a = await edhaResolveActorRef(p.actorUuid);
+    const msg = edhaFindRecentRollMessage(a, p.oldTotal);
+    if (msg) await edhaApplyRollRewrite(msg, p.newTotal, p.noteHtml);
+  },
+  "green-terrain": async (payload) => {                          // player Green Draw Mana → drop enforced terrain GM-side
+    const p = payload || {};
+    const scene = game.scenes?.get(p.sceneId);
+    const owner = await edhaResolveActorRef(p.ownerUuid);
+    const srcItem = p.itemUuid ? await fromUuid(p.itemUuid).catch(() => null) : null;
+    if (scene && owner) await edhaCreateGreenTerrain(owner, scene, p.cx, p.cy, p.sizeFt, srcItem);
+  },
+  "grow-terrain": async (payload) => {                           // Spreading Roots expand → GM-side Region update
+    const p = payload || {};
+    await edhaGrowTerrain(p.sceneId, p.regionId, p.sizeFt);
+  },
+  "delete-item": async (payload) => {                            // Reknit Form → remove an injury Item GM-side
+    const p = payload || {};
+    const a = await edhaResolveActorRef(p.actorUuid);
+    if (a?.deleteEmbeddedDocuments && p.itemId) await a.deleteEmbeddedDocuments("Item", [p.itemId]);
+  },
+  "place-fate-snare": async (payload) => {                       // FATE Snare → arm its trigger Region GM-side (players lack Region create)
+    const p = payload || {};
+    const scene = game.scenes?.get(p.sceneId);
+    const owner = await edhaResolveActorRef(p.ownerUuid);
+    if (scene && owner) await edhaFateCreateSnareRegionGM(scene, owner, p.x, p.y, p.snareId);
+  },
+  "delete-fate-snare": async (payload) => {                      // FATE Snare sprung/moved → drop its trigger Region GM-side
+    const p = payload || {};
+    const scene = game.scenes?.get(p.sceneId);
+    const r = scene ? edhaFateFindSnareRegion(scene, p.snareId) : null;
+    if (r) await scene.deleteEmbeddedDocuments("Region", [r.id]);
+  },
+  "gm-card": async (payload) => {                                // GM-only card a player must not author (Black Draw Mana behind-a-wall counts)
+    const p = payload || {};
+    const a = await edhaResolveActorRef(p.actorUuid);
+    const gmIds = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
+    if (gmIds.length && p.content) await ChatMessage.create({ whisper: gmIds, speaker: ChatMessage.getSpeaker({ actor: a }), content: p.content });
+  },
+  "resolve-card": async (payload) => {                           // card-persistence: a non-author clicked a one-shot card
+    const p = payload || {};
+    const m = game.messages?.get(p.messageId);
+    if (m) await m.setFlag("edha-content", "cardResolved", { label: p.label || "Resolved ✓" });
+  },
+  "counter-set": async (payload) => {                     // counter write GM-side (player lacks perms on the bearer) — was gnosis-set-insight pre-2bT
+    const p = payload || {};
+    const a = await edhaResolveActorRef(p.targetUuid);
+    if (a) await edhaCounterApplyGM(a, String(p.status || "insight"), Number(p.count) || 0, p.mark || null);
+  },
+};
 // Socket relay: a player's Detonate emits the resolved writes; only the primary active GM applies them.
 Hooks.once("ready", () => {
   try {
@@ -10435,143 +10558,8 @@ Hooks.once("ready", () => {
       try {
         if (!game.user?.isGM) return;
         if (game.users?.activeGM && !game.users.activeGM.isSelf) return;   // exactly one GM applies
-        if (data?.action === "burst-apply") { await edhaApplyBurstResults(data.payload); return; }
-        if (data?.action === "cae-flag") { await edhaCaeApplyGM(data.payload); return; }               // players lack combatant-write perms (Combat is GM-owned)
-        if (data?.action === "foundation-place") { await edhaFoundationPlace(data.payload); return; }   // players lack DRAWING_CREATE
-        if (data?.action === "summon-actor") { await edhaSummonCreateGM(data.payload); return; }        // players lack ACTOR_CREATE — spec baked owner-side
-        if (data?.action === "create-item") {                          // injury tool → add an Item GM-side (inverse of delete-item)
-          const p = data.payload || {};
-          const ref = await fromUuid(p.actorUuid).catch(() => null);
-          const a = ref?.actor ?? ref;
-          if (a && p.itemData) await edhaCreateItemDocs(a, p.itemData);
-          return;
-        }
-        if (data?.action === "toggle-status") {
-          const p = data.payload || {};
-          const ref = await fromUuid(p.actorUuid).catch(() => null);
-          const a = ref?.actor ?? ref;
-          if (a?.toggleStatusEffect) await a.toggleStatusEffect(p.statusId, { active: p.active !== false });
-          return;
-        }
-        if (data?.action === "apply-status-mark") {
-          const p = data.payload || {};
-          const ref = await fromUuid(p.actorUuid).catch(() => null);
-          const a = ref?.actor ?? ref;
-          if (!a) return;
-          if (a.toggleStatusEffect) await a.toggleStatusEffect(p.statusId, { active: true });
-          if (p.mark) await a.setFlag("edha-content", `markedBy.${p.statusId}`, p.mark);
-          if (p.combatExpire) { try { await a.setFlag("edha-content", `combatExpire.${p.statusId}`, true); } catch (e) {} }
-          return;
-        }
-        if (data?.action === "set-flag") {                            // cross-actor flag write (e.g. plot-die grant onto an ally)
-          const p = data.payload || {};
-          const ref = await fromUuid(p.actorUuid).catch(() => null);
-          const a = ref?.actor ?? ref;
-          if (a && p.key) await a.setFlag("edha-content", p.key, p.value);
-          return;
-        }
-        if (data?.action === "apply-timed-status") {                   // status + owner-relative expiry (Disoriented)
-          const p = data.payload || {};
-          const tref = await fromUuid(p.targetUuid).catch(() => null); const t = tref?.actor ?? tref;
-          if (!t?.toggleStatusEffect) return;
-          await t.toggleStatusEffect(p.statusId, { active: true });
-          if (p.expire) {
-            const eff = [...(t.effects ?? [])].find(e => e.statuses?.has?.(p.statusId));
-            let who = t;
-            if (p.expire === "owner" && p.ownerUuid) { const oref = await fromUuid(p.ownerUuid).catch(() => null); who = oref?.actor ?? oref ?? t; }
-            const ti = game.combat?.started ? edhaCombatantTurnIndex(game.combat, who) : -1;
-            if (eff && ti >= 0) await eff.setFlag("edha-content", "expireAfter", edhaNextTurnCoord(game.combat, ti));
-            else if (eff) {   // relay half of the same catch-up intent (see edhaApplyTimedStatus)
-              try { await eff.unsetFlag("edha-content", "expireAfter"); } catch (x) {}
-              await eff.setFlag("edha-content", "timedExpire", { expire: p.expire, ownerUuid: p.ownerUuid ?? null });
-            }
-          }
-          return;
-        }
-        if (data?.action === "move-token") {                          // GM-applied forced movement (Red push pilot)
-          const p = data.payload || {};
-          const td = await fromUuid(p.tokenUuid).catch(() => null);
-          // Socket options don't ride the emit — re-stamp edhaForced on the GM-side write (this relay
-          // only ever carries engine-driven moves). Order's violation watcher + Dread Presence's veto read it.
-          const mvOpts = p.hostile ? { edhaForced: true, edhaHostileMove: true } : { edhaForced: true };
-          if (p.teleport && typeof td?.move === "function") { await td.move({ x: p.x, y: p.y, action: "displace" }, mvOpts); return; }
-          if (td?.update) await td.update({ x: p.x, y: p.y }, { animate: !p.teleport, teleport: !!p.teleport, ...mvOpts });
-          return;
-        }
-        if (data?.action === "remove-terrain") {                      // player extinguish (07-12 region rework)
-          const p = data.payload || {};
-          try { await game.scenes?.get(p.sceneId)?.regions?.get(p.regionId)?.delete(); } catch (e) {}
-          return;
-        }
-        if (data?.action === "set-resource") {                        // cross-actor resource write (Shatter Focus)
-          const p = data.payload || {};
-          const ref = await fromUuid(p.actorUuid).catch(() => null);
-          const a = ref?.actor ?? ref;
-          if (a && p.path) await a.update({ [p.path]: p.value });
-          return;
-        }
-        if (data?.action === "rewrite-roll") {                         // Voice of Authority / Bound by Word — change a rendered roll's total
-          const p = data.payload || {};
-          const aref = p.actorUuid ? await fromUuid(p.actorUuid).catch(() => null) : null;
-          const a = aref?.actor ?? aref;
-          const msg = edhaFindRecentRollMessage(a, p.oldTotal);
-          if (msg) await edhaApplyRollRewrite(msg, p.newTotal, p.noteHtml);
-          return;
-        }
-        if (data?.action === "green-terrain") {                        // player Green Draw Mana → drop enforced terrain GM-side
-          const p = data.payload || {};
-          const scene = game.scenes?.get(p.sceneId);
-          const oref = await fromUuid(p.ownerUuid).catch(() => null); const owner = oref?.actor ?? oref;
-          const srcItem = p.itemUuid ? await fromUuid(p.itemUuid).catch(() => null) : null;
-          if (scene && owner) await edhaCreateGreenTerrain(owner, scene, p.cx, p.cy, p.sizeFt, srcItem);
-          return;
-        }
-        if (data?.action === "grow-terrain") {                         // Spreading Roots expand → GM-side Region update
-          const p = data.payload || {};
-          await edhaGrowTerrain(p.sceneId, p.regionId, p.sizeFt);
-          return;
-        }
-        if (data?.action === "delete-item") {                          // Reknit Form → remove an injury Item GM-side
-          const p = data.payload || {};
-          const ref = await fromUuid(p.actorUuid).catch(() => null); const a = ref?.actor ?? ref;
-          if (a?.deleteEmbeddedDocuments && p.itemId) await a.deleteEmbeddedDocuments("Item", [p.itemId]);
-          return;
-        }
-        if (data?.action === "place-fate-snare") {                     // FATE Snare → arm its trigger Region GM-side (players lack Region create)
-          const p = data.payload || {};
-          const scene = game.scenes?.get(p.sceneId);
-          const oref = await fromUuid(p.ownerUuid).catch(() => null); const owner = oref?.actor ?? oref;
-          if (scene && owner) await edhaFateCreateSnareRegionGM(scene, owner, p.x, p.y, p.snareId);
-          return;
-        }
-        if (data?.action === "delete-fate-snare") {                    // FATE Snare sprung/moved → drop its trigger Region GM-side
-          const p = data.payload || {};
-          const scene = game.scenes?.get(p.sceneId);
-          const r = scene ? edhaFateFindSnareRegion(scene, p.snareId) : null;
-          if (r) await scene.deleteEmbeddedDocuments("Region", [r.id]);
-          return;
-        }
-        if (data?.action === "gm-card") {                              // GM-only card a player must not author (Black Draw Mana behind-a-wall counts)
-          const p = data.payload || {};
-          const aref = p.actorUuid ? await fromUuid(p.actorUuid).catch(() => null) : null;
-          const a = aref?.actor ?? aref;
-          const gmIds = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
-          if (gmIds.length && p.content) await ChatMessage.create({ whisper: gmIds, speaker: ChatMessage.getSpeaker({ actor: a }), content: p.content });
-          return;
-        }
-        if (data?.action === "resolve-card") {                         // card-persistence: a non-author clicked a one-shot card
-          const p = data.payload || {};
-          const m = game.messages?.get(p.messageId);
-          if (m) await m.setFlag("edha-content", "cardResolved", { label: p.label || "Resolved ✓" });
-          return;
-        }
-        if (data?.action === "counter-set") {                   // counter write GM-side (player lacks perms on the bearer) — was gnosis-set-insight pre-2bT
-          const p = data.payload || {};
-          const ref = await fromUuid(p.targetUuid).catch(() => null);
-          const a = ref?.actor ?? ref;
-          if (a) await edhaCounterApplyGM(a, String(p.status || "insight"), Number(p.count) || 0, p.mark || null);
-          return;
-        }
+        const handler = EDHA_SOCKET_ACTIONS[data?.action];
+        if (handler) await handler(data.payload || {});
       } catch (e) { console.error("Edha Content | socket relay failed", e); }
     });
   } catch (e) { console.error("Edha Content | socket registration failed", e); }
@@ -10873,14 +10861,14 @@ async function edhaChargeArmClick(ev) {
   try {
     ev.preventDefault();
     const btn = ev.currentTarget, ds = btn.dataset;
-    const oref = await fromUuid(ds.owner).catch(() => null); const owner = oref?.actor ?? oref; if (!owner) return;
+    const owner = await edhaResolveActorRef(ds.owner); if (!owner) return;
     await edhaOwnerListQueue(owner, "charges", async () => {   // queued RMW (07-26n) — fresh read inside
       const list = foundry.utils.deepClone(edhaGetCharges(owner));
       const ch = list.find(c => c.id === ds.charge); if (!ch) { ui.notifications?.warn("Edha: that Charge is gone (past the cap or detonated)."); return; }
       if (ds.kind === "manual") delete ch.trig;
       else if (ds.kind === "enter") ch.trig = { kind: "enter" };
       else {
-        const t = Array.from(game.user?.targets ?? [])[0] ?? null;
+        const t = edhaUserTargetToken();
         if (!t?.actor) { ui.notifications?.warn("Edha: target the creature first, then click the arm button."); return; }
         ch.trig = { kind: ds.kind, targetUuid: t.actor.uuid, targetName: t.name };
       }
@@ -11015,16 +11003,12 @@ async function edhaResolveCharges(owner, charges, { radiusFt = null, bonusFormul
     /* `edha-detonate-react` sweep (2bY — was the name-keyed edhaOwnsTalent rider on the
      * Concussive Yield name; the 2bX edha-snare-react shape): config rules on the OWNER's talents
      * ride every detonation, each with its own save dials. The sweep names no talent. */
-    for (const tal of (owner?.items ?? [])) {
-      if (!edhaIsTalent(tal)) continue;
-      for (const r of edhaEventRules(tal)) {
-        const dh = r?.handler; if (dh?.type !== "edha-detonate-react") continue;
+    for (const { item: tal, handler: dh } of edhaActorRulesOf(owner, "edha-detonate-react")) {
         const st = String(dh.failStatus || "prone").trim() || "prone";
         await edhaFoeSkillVsColor(owner, everyCaught, {
           skill: dh.skill || "spd", label: dh.skillLabel || null, color: dh.color || "red", sourceName: tal.name,
           failText: edhaConditionLabel(st) || st, okText: "stays up",
           onFail: (t) => edhaToggleStatus(t.actor, st, true) });
-      }
     }
     // Remove the detonated charges + their markers (canvas cleanup by hand — §9o trap 3).
     const dets = new Set(charges.map(c => c.id));
@@ -11037,13 +11021,13 @@ async function edhaResolveCharges(owner, charges, { radiusFt = null, bonusFormul
 function edhaFtToPx(ft) { const s = canvas?.scene; const gs = s?.grid?.size || 100, gd = s?.grid?.distance || 5; return Math.max(Math.round(gs / 2), Math.round((ft / gd) * gs)); }
 
 async function edhaDetonateOne(ownerUuid, chargeId) {
-  const ref = await fromUuid(ownerUuid).catch(() => null); const owner = ref?.actor ?? ref; if (!owner) return;
+  const owner = await edhaResolveActorRef(ownerUuid); if (!owner) return;
   const ch = edhaGetCharges(owner).find(c => c.id === chargeId); if (!ch) { ui.notifications?.info("That Charge is already gone."); return; }
   await edhaResolveCharges(owner, [ch], { label: "Detonate Charge" });
   edhaPostChargesCard(owner);
 }
 async function edhaDetonateAllFree(ownerUuid) {
-  const ref = await fromUuid(ownerUuid).catch(() => null); const owner = ref?.actor ?? ref; if (!owner) return;
+  const owner = await edhaResolveActorRef(ownerUuid); if (!owner) return;
   await edhaResolveCharges(owner, edhaGetCharges(owner), { label: "Detonate All" });
 }
 function edhaBindChargeButtons(html) {
@@ -11112,12 +11096,8 @@ async function edhaFaultLine(item, h) {
 // The move watcher was always flag-driven; only the name gate moved onto data — the formula, type
 // and colour now ride the rule, so editing the talent in Foundry changes what the trail burns.
 function edhaTrailRuleOf(actor) {
-  for (const tal of (actor?.items ?? [])) {
-    if (!edhaIsTalent(tal)) continue;
-    for (const r of edhaEventRules(tal)) {
-      const h = r?.handler;
-      if (h?.type === "edha-place-hazard" && h.mode === "trail") return { item: tal, handler: h };
-    }
+  for (const { item: tal, handler: h } of edhaActorRulesOf(actor, "edha-place-hazard")) {
+    if (h.mode === "trail") return { item: tal, handler: h };
   }
   return null;
 }
@@ -11219,7 +11199,7 @@ Hooks.on("renderChatMessageHTML", (msg, html) => {
     const root = html instanceof HTMLElement ? html : html?.[0];
     root?.querySelectorAll?.(".edha-combustion").forEach(btn => btn.addEventListener("click", async (ev) => {
       ev.preventDefault(); btn.disabled = true;
-      const ref = await fromUuid(btn.dataset.owner).catch(() => null); const owner = ref?.actor ?? ref; if (!owner) return;
+      const owner = await edhaResolveActorRef(btn.dataset.owner); if (!owner) return;
       const label = btn.dataset.label || "Ignite"; const spreadFt = Number(btn.dataset.spread) || 5; const igniteFt = Number(btn.dataset.ignite) || 10;
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
         content: `<p>🔥 <strong>${label}</strong>: each of ${owner.name}'s dangerous-terrain zones spreads ${spreadFt} ft, and a ${igniteFt} ft zone ignites on the fallen character. GM grows the Regions / drops the new zone.</p>` });
@@ -11264,7 +11244,7 @@ Hooks.once("ready", () => {
         if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;
         if (data?.action !== "place-hazard-region") return;
         const p = data.payload || {}; const scene = game.scenes?.get(p.sceneId);
-        const oref = await fromUuid(p.ownerUuid).catch(() => null); const owner = oref?.actor ?? oref;
+        const owner = await edhaResolveActorRef(p.ownerUuid);
         if (scene && owner) await edhaPlaceHazardRegionGM(scene, owner, p.shape, p.baked, p.type, p.color, p.label, p.extraFlags ?? null);
       } catch (e) { console.error("Edha Content | place-hazard-region relay failed", e); }
     });
@@ -11395,14 +11375,6 @@ Hooks.on("deleteCombat", (combat) => {   // end of encounter ≈ end of scene (K
 const EDHA_LIFE_GREEN_DIE = "(@tier)d(2 * @skills.green.rank + 2)";   // [Tier][Die] on the Green heal track
 const EDHA_MUTATION_LABEL = { boneSpurs: "Bone Spurs", venomGlands: "Venom Glands", denseTissue: "Dense Tissue" };   // adaptation KINDS (flag values), not talent names
 const _edhaSurgicalDebounce = new Map();   // dedupe the twin (main + graze) damageRoll fire per use (the cleanse watcher)
-
-// Cross-actor flag write (self → setFlag; else relay to the GM via the generic set-flag socket).
-async function edhaSetActorFlagCross(actor, key, value) {
-  if (!actor || !key) return;
-  if (actor.isOwner) { try { await actor.setFlag("edha-content", key, value); } catch (e) {} return; }
-  if (!game.users?.activeGM) { ui.notifications?.warn(`Edha: a GM must be online to apply that to ${actor.name}.`); return; }
-  try { game.socket.emit("module.edha-content", { action: "set-flag", payload: { actorUuid: actor.uuid, key, value } }); } catch (e) {}
-}
 
 /* --- Buff reads for the applyDamage pre/post-pass (called from the central wrapper) ---------------- */
 // Extra Deflect granted by Dense Tissue / Apex Form (read off the buffed creature when IT takes damage).
@@ -11550,8 +11522,8 @@ function edhaPostMutationCard(owner, target, label, h) {
 async function edhaMutationClick(ev) {
   try {
     ev.preventDefault(); const btn = ev.currentTarget, ds = btn.dataset;
-    const oref = await fromUuid(ds.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref;
-    const tref = await fromUuid(ds.edhaTarget).catch(() => null); const target = tref?.actor ?? tref;
+    const owner = await edhaResolveActorRef(ds.edhaOwner);
+    const target = await edhaResolveActorRef(ds.edhaTarget);
     if (!owner || !target || !ds.edhaKind) return;
     /* The once-per-creature BELT (2026-07-27b — bench run 5, 2bW-12): a stale chooser card (posted
      * before the pre-cost veto below existed, or a second chooser whispered before the first was
@@ -11569,7 +11541,7 @@ async function edhaMutationClick(ev) {
     if (kind === "venomGlands") { const r = await edhaRollFormula(rd, decodeURIComponent(ds.edhaVenomf || "0")); venom = Math.max(0, Math.floor(r.total)); }
     const flag = { kind, sceneId: canvas?.scene?.id ?? null, ownerUuid: owner.uuid,
       keen, venom, deflect: kind === "denseTissue" ? Math.max(0, Number(ds.edhaDeflect) || 0) : 0 };
-    await edhaSetActorFlagCross(target, "mutation", flag);
+    await edhaSetEdhaFlag(target, "mutation", flag);   // Job 6: edhaSetActorFlagCross retired (literal twin of edhaSetEdhaFlag)
     btn.closest(".edha-trigger-card")?.querySelectorAll(".edha-mutation-btn").forEach(b => b.disabled = true);
     btn.textContent = "✓ applied";
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🧬 ${target.name} gains <strong>${EDHA_MUTATION_LABEL[kind] || kind}</strong> for the scene.</p>` });
@@ -11591,7 +11563,7 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
   try {
     const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
     const h = edhaRuleOf(item, "edha-mutation"); if (!h) return;
-    const target = Array.from(game.user?.targets ?? [])[0]?.actor ?? actor;
+    const target = edhaUserTargetActor() ?? actor;
     const cur = target.getFlag?.("edha-content", "mutation");
     if (cur) {
       ui.notifications?.warn(`Edha: ${target.name} already carries ${EDHA_MUTATION_LABEL[cur.kind] || "an adaptation"} — one adaptation per creature per scene. Nothing spent.`);
@@ -11614,8 +11586,8 @@ function edhaPostLifeCleanseCard(owner, target, label, conditions) {
 async function edhaLifeCleanseClick(ev) {
   try {
     ev.preventDefault(); const btn = ev.currentTarget, ds = btn.dataset;
-    const oref = await fromUuid(ds.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref;
-    const tref = await fromUuid(ds.edhaTarget).catch(() => null); const target = tref?.actor ?? tref;
+    const owner = await edhaResolveActorRef(ds.edhaOwner);
+    const target = await edhaResolveActorRef(ds.edhaTarget);
     if (!owner || !target || !ds.edhaStatus) return;
     await edhaToggleStatus(target, ds.edhaStatus, false);
     btn.closest(".edha-trigger-card")?.querySelectorAll(".edha-lifecleanse-btn").forEach(b => b.disabled = true);
@@ -11676,7 +11648,7 @@ Hooks.on("cosmere-rpg.damageRoll", (roll, item) => {
     const key = item.uuid ?? item.id ?? item.name, now = Date.now();
     if (now - (_edhaSurgicalDebounce.get(key) || 0) < 600) return;     // one arm per use (the twin damageRoll fires)
     _edhaSurgicalDebounce.set(key, now);
-    const target = Array.from(game.user?.targets ?? [])[0]?.actor ?? actor;
+    const target = edhaUserTargetActor() ?? actor;
     const defId = (h.def === undefined || h.def === null) ? "phy" : String(h.def).trim();   // absent (pre-07-27b rule) = phy; explicitly blank = no comparison
     const conditions = String(h.conditions || "").split(/[,\s]+/).filter(Boolean);
     const want = String(item.system?.activation?.skill || "").trim();
@@ -11704,7 +11676,7 @@ function edhaCleanseRollWatch(roll, source, config) {
     _edhaCleansePending.delete(actor.id);
     const total = Number(roll.total) || 0;
     void (async () => {
-      const tref = await fromUuid(p.targetUuid).catch(() => null); const target = tref?.actor ?? tref;
+      const target = await edhaResolveActorRef(p.targetUuid);
       if (!target) return;
       edhaCleanseDecide(actor, target, p.label, p.defId, p.conditions, total);
     })();
@@ -11852,8 +11824,9 @@ function edhaChaosCard(owner, rolls, html) {
 async function edhaRemoveMark(owner, target, status = "omen") {
   if (!target) return;
   await edhaToggleStatus(target, status, false);
-  if (target.isOwner) { try { await target.unsetFlag("edha-content", `markedBy.${status}`); } catch (e) {} }
-  else if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "set-flag", payload: { actorUuid: target.uuid, key: `markedBy.${status}`, value: null } }); } catch (e) {} }
+  // Job 6a: routed through edhaSetEdhaFlag — behavior flip, was a SILENT drop with no GM online, now
+  // warns + returns false like the majority convention. 🤖 bench row.
+  await edhaSetEdhaFlag(target, `markedBy.${status}`, null);
 }
 
 
@@ -11887,7 +11860,7 @@ async function edhaRerollReactFlow(item, h) {
     // re-arm the auto-prompts — a real use is the opt-back-in (the mute is per-rule)
     try { if (owner.getFlag?.("edha-content", `promptOff.${item.id}`)) await owner.unsetFlag("edha-content", `promptOff.${item.id}`); } catch (e) {}
     try { if (owner.getFlag?.("edha-content", "shatterPromptOff")) await owner.unsetFlag("edha-content", "shatterPromptOff"); } catch (e) {}   // legacy pre-2bY key
-    const target = Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
+    const target = edhaUserTargetActor();
     if (!target) { ui.notifications?.warn("Edha: target the enemy who is making the test."); return; }
     if (!edhaBearsMyMark(owner, target, status)) { ui.notifications?.warn(`Edha: ${target.name} bears no ${statusLabel} of yours.`); return; }
     await edhaRemoveMark(owner, target, status);
@@ -11914,7 +11887,7 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
     const actor = item?.actor; if (!actor || !edhaIsTalent(item)) return;
     const h = edhaRuleOf(item, "edha-reroll-react"); if (!h) return;
     const status = String(h.markStatus || "omen").trim() || "omen";
-    const target = Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
+    const target = edhaUserTargetActor();
     if (!target) { ui.notifications?.warn(`Edha: ${item.name} — target the enemy who is making the test (nothing spent).`); return false; }
     if (!edhaBearsMyMark(actor, target, status)) {
       ui.notifications?.warn(`Edha: ${target.name} bears no ${edhaConditionLabel(status) || status} of yours — nothing spent.`);
@@ -11949,15 +11922,13 @@ function edhaChaosShatterPrompt(roll, source, config) {
       const owner = mk?.actorId ? game.actors?.get(mk.actorId) : null;
       if (!owner || owner === foe) continue;
       let rule = null;
-      for (const tal of (owner.items ?? [])) {
-        if (!edhaIsTalent(tal)) continue;
-        const rh = edhaRuleOf(tal, "edha-reroll-react");
-        if (rh && String(rh.markStatus || "omen") === status) { rule = { item: tal, handler: rh }; break; }
+      for (const { item: tal, handler: rh } of edhaActorRulesOf(owner, "edha-reroll-react")) {
+        if (String(rh.markStatus || "omen") === status) { rule = { item: tal, handler: rh }; break; }
       }
       if (!rule || rule.handler.autoPrompt === false) continue;
       if (owner.getFlag?.("edha-content", `promptOff.${rule.item.id}`) || owner.getFlag?.("edha-content", "shatterPromptOff")) continue;
-      const otok = edhaCasterToken(owner), ftok = edhaCasterToken(foe);
-      if (otok && ftok && (otok.document?.disposition ?? 1) === (ftok.document?.disposition ?? 1)) continue;   // enemies only
+      const ftok = edhaCasterToken(foe);
+      if (edhaSameDisposition(owner, ftok)) continue;   // enemies only — R-63 🤖 bench row
       if (!edhaShatterPromptGate(`${owner.id}:${foe.id}`)) continue;
       const statusLabel = edhaConditionLabel(status) || status;
       ChatMessage.create({
@@ -11973,7 +11944,7 @@ Hooks.on("renderChatMessageHTML", (msg, html) => {
   const root = html instanceof HTMLElement ? html : html?.[0];
   root?.querySelectorAll?.(".edha-shatter-mute").forEach(b => b.addEventListener("click", async (ev) => {
     ev.preventDefault(); b.disabled = true;
-    const ref = await fromUuid(b.dataset.edhaOwner).catch(() => null); const owner = ref?.actor ?? ref; if (!owner) return;
+    const owner = await edhaResolveActorRef(b.dataset.edhaOwner); if (!owner) return;
     try { await owner.setFlag("edha-content", b.dataset.edhaItem ? `promptOff.${b.dataset.edhaItem}` : "shatterPromptOff", true); } catch (e) {}
     b.textContent = "Prompts muted";
   }));
@@ -12320,10 +12291,7 @@ async function edhaFateSpringSnare(owner, snare, triggerActor, { source = "", bo
  *     finally gives that field its reader; pre-2bX it had one write and zero reads). */
 function edhaFateSpringReacts(owner, snare, triggerActor) {
   try {
-    for (const tal of (owner?.items ?? [])) {
-      if (!edhaIsTalent(tal)) continue;
-      for (const r of edhaEventRules(tal)) {
-        const h = r?.handler; if (h?.type !== "edha-snare-react") continue;
+    for (const { item: tal, handler: h } of edhaActorRulesOf(owner, "edha-snare-react")) {
         if ((h.mode || "offer-mark") === "offer-mark") {
           if (!triggerActor) continue;
           const amt = Math.max(0, Math.floor(edhaEvalSync(h.bonusFormula || "@tier", owner.getRollData())));
@@ -12335,7 +12303,6 @@ function edhaFateSpringReacts(owner, snare, triggerActor) {
           ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
             content: `<div class="edha-trigger-card"><p>🪢 <strong>${tal.name}</strong>: ${h.note || "a linked-square reaction is available (see the talent)."}</p></div>` });
         }
-      }
     }
   } catch (e) { console.error("Edha Content | snare-react sweep failed", e); }
 }
@@ -12346,7 +12313,7 @@ function edhaLinkedSquareNear(list, x, y, rPx) {
 async function edhaFateApplyMark(owner, target, tal, h) {
   if (!owner || !target) return;
   const markKey = String(h?.markKey || "hexmark").trim() || "hexmark";
-  await edhaSetActorFlagCross(target, `markedBy.${markKey}`, { actorId: owner.id });
+  await edhaSetEdhaFlag(target, `markedBy.${markKey}`, { actorId: owner.id });   // Job 6: edhaSetActorFlagCross retired
   const amt = Math.max(0, Math.floor(edhaEvalSync(h?.bonusFormula || "@tier", owner.getRollData())));
   edhaFateCard(owner, null, `<p>🎯 <strong>${tal?.name ?? "Mark"}</strong> on <strong>${target.name}</strong> — +${amt} ${h?.bonusType || "keen"} near your marker squares (this scene).</p>`);
 }
@@ -12359,18 +12326,13 @@ function edhaMarkedNearZonesBonus(target, list) {
   try {
     const marks = target?.flags?.["edha-content"]?.markedBy; if (!marks) return;
     if (!list?.some(i => Number(i?.amount) > 0 && i?.type && i.type !== "heal")) return;
-    const ttok = edhaCasterToken(target) ?? target.getActiveTokens?.()[0];
+    const ttok = edhaCasterToken(target);
     if (!ttok?.center) return;
     for (const [markKey, mk] of Object.entries(marks)) {
       const owner = mk?.actorId ? game.actors?.get(mk.actorId) : null; if (!owner) continue;
       let rule = null;
-      for (const tal of (owner.items ?? [])) {
-        if (!edhaIsTalent(tal)) continue;
-        for (const r of edhaEventRules(tal)) {
-          const h = r?.handler;
-          if (h?.type === "edha-snare-react" && (h.mode || "offer-mark") === "offer-mark" && String(h.markKey || "hexmark") === markKey) { rule = { item: tal, handler: h }; break; }
-        }
-        if (rule) break;
+      for (const { item: tal, handler: h } of edhaActorRulesOf(owner, "edha-snare-react")) {
+        if ((h.mode || "offer-mark") === "offer-mark" && String(h.markKey || "hexmark") === markKey) { rule = { item: tal, handler: h }; break; }
       }
       if (!rule) continue;
       if (!edhaFateZonesNear(owner, ttok.center.x, ttok.center.y, Number(rule.handler.nearFt) || 10)) continue;
@@ -12410,7 +12372,7 @@ async function edhaMarkerCommand(item, h) {
       return;
     }
     // mode "move"
-    const target = Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
+    const target = edhaUserTargetActor();
     const maxFt = Number(h.maxFt) || 10;
     const markers = [...edhaGetOrdained(owner).map((m, i) => ({ key: "ordained", id: m.id, label: `${m.talent || "Marker"} #${i + 1}` })),
                      ...edhaGetSnares(owner).map((m, i) => ({ key: "snares", id: m.id, label: `${m.talent || "Trap"} #${i + 1}` }))];
@@ -12578,8 +12540,8 @@ function edhaZoneGuardOf(tok) {
   for (const { actor: owner, item: tal, handler: h } of edhaWatchersOfRule("edha-zone-guard")) {
     if (h.noAdvantage !== true) continue;
     if (!edhaGetOrdained(owner).length) continue;
-    const otok = edhaCasterToken(owner);
-    const ally = tok.actor === owner || (otok && (tok.document?.disposition ?? 1) === (otok.document?.disposition ?? 1));   // the protected creature is the owner's ally (or the owner)
+    // R-63: Number.isFinite fail-closed, via edhaSameDisposition — 🤖 bench row.
+    const ally = tok.actor === owner || edhaSameDisposition(owner, tok);   // the protected creature is the owner's ally (or the owner)
     if (ally && edhaTokenOnAnyOrdained(owner, tok)) return { owner, item: tal };
   }
   return null;
@@ -12610,20 +12572,20 @@ Hooks.on("renderChatMessageHTML", (msg, html) => {
     const root = html instanceof HTMLElement ? html : html?.[0];
     root?.querySelectorAll?.(".edha-mark-offer").forEach(btn => btn.addEventListener("click", async (ev) => {
       ev.preventDefault(); btn.disabled = true;
-      const o = await fromUuid(btn.dataset.owner).catch(() => null); const owner = o?.actor ?? o;
-      const t = await fromUuid(btn.dataset.target).catch(() => null); const target = t?.actor ?? t;
+      const owner = await edhaResolveActorRef(btn.dataset.owner);
+      const target = await edhaResolveActorRef(btn.dataset.target);
       const tal = await fromUuid(btn.dataset.item).catch(() => null);
       const h = tal ? edhaEventRules(tal).map(r => r?.handler).find(x => x?.type === "edha-snare-react" && (x.mode || "offer-mark") === "offer-mark") : null;
       if (owner && target) await edhaFateApplyMark(owner, target, tal, h);
     }));
     root?.querySelectorAll?.(".edha-fate-reposition").forEach(btn => btn.addEventListener("click", async (ev) => {
       ev.preventDefault(); btn.disabled = true;
-      const o = await fromUuid(btn.dataset.owner).catch(() => null); const owner = o?.actor ?? o;
+      const owner = await edhaResolveActorRef(btn.dataset.owner);
       if (owner) await edhaFateReposition(owner, btn.dataset.key, btn.dataset.id, btn.dataset.ft);
     }));
     root?.querySelectorAll?.(".edha-fate-springsnare").forEach(btn => btn.addEventListener("click", async (ev) => {
       ev.preventDefault(); btn.disabled = true;
-      const o = await fromUuid(btn.dataset.owner).catch(() => null); const owner = o?.actor ?? o;
+      const owner = await edhaResolveActorRef(btn.dataset.owner);
       const it = await fromUuid(btn.dataset.item).catch(() => null);
       // The bonus is the commanding item's OWN damage formula (2bX — was a hard-coded module constant).
       const f = it?.system?.damage?.formula || "";
@@ -12631,7 +12593,7 @@ Hooks.on("renderChatMessageHTML", (msg, html) => {
     }));
     root?.querySelectorAll?.(".edha-fate-thread").forEach(btn => btn.addEventListener("click", async (ev) => {
       ev.preventDefault(); btn.disabled = true;
-      const o = await fromUuid(btn.dataset.owner).catch(() => null); const owner = o?.actor ?? o;
+      const owner = await edhaResolveActorRef(btn.dataset.owner);
       const it = await fromUuid(btn.dataset.item).catch(() => null);
       if (owner) await edhaFateThreadResolve(owner, it);
     }));
@@ -12653,9 +12615,8 @@ async function edhaClearFateState(endedCombat) {
     // Marks are cleared by DATA: any markedBy key that some `edha-snare-react` offer-mark rule
     // names is scene-scoped and dies here (was a hard-coded markedBy.hexmark unset).
     const markKeys = new Set();
-    for (const a0 of (game.actors ?? [])) for (const tal of (a0.items ?? [])) {
-      if (!edhaIsTalent(tal)) continue;
-      for (const r of edhaEventRules(tal)) { const h = r?.handler; if (h?.type === "edha-snare-react" && (h.mode || "offer-mark") === "offer-mark") markKeys.add(String(h.markKey || "hexmark").trim() || "hexmark"); }
+    for (const a0 of (game.actors ?? [])) for (const { handler: h } of edhaActorRulesOf(a0, "edha-snare-react")) {
+      if ((h.mode || "offer-mark") === "offer-mark") markKeys.add(String(h.markKey || "hexmark").trim() || "hexmark");
     }
     await edhaSceneReset(endedCombat, {
       key: "fate",
@@ -12736,10 +12697,7 @@ function edhaSovSteps(actor) {
 async function edhaSovSetSteps(target, list) {
   const value = list?.length ? list : null;
   try {
-    if (target.isOwner) { if (value) await target.setFlag("edha-content", "dieStep", value); else await target.unsetFlag("edha-content", "dieStep"); return true; }
-    if (!game.users?.activeGM) { ui.notifications?.warn(`Edha: a GM must be online to (un)step ${target.name}'s damage die.`); return false; }
-    game.socket.emit("module.edha-content", { action: "set-flag", payload: { actorUuid: target.uuid, key: "dieStep", value } });
-    return true;
+    return await edhaSetEdhaFlag(target, "dieStep", value);   // Job 6a: routed through the canonical helper (setFlag(key, null) reads the same as unset for every edhaSovSteps consumer)
   } catch (e) { console.error("Edha Content | set dieStep failed", e); return false; }
 }
 // Keep the exalted/diminished token icons in sync with the entry list (idempotent toggles).
@@ -12844,7 +12802,7 @@ function edhaSovPostExposeCard(owner, sourceName, victim, total, recoverN) {
 async function edhaSovExposeClick(ev) {
   try {
     const btn = ev.currentTarget;
-    const oref = await fromUuid(btn.dataset.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref;
+    const owner = await edhaResolveActorRef(btn.dataset.edhaOwner);
     if (!owner) return;
     btn.disabled = true; btn.textContent = "✓ recovered";
     await edhaSovRecoverInv(owner, decodeURIComponent(btn.dataset.edhaSource || "the talent"), btn.dataset.edhaVictim || "the creature", Number(btn.dataset.edhaN) || 1);
@@ -12984,7 +12942,7 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
       const mode = h.target || "victim";
       const prospect = mode === "ally" || mode === "pair" ? allies[0]?.actor
         : mode === "enemy" ? enemies[0]?.actor
-        : (Array.from(game.user?.targets ?? [])[0]?.actor ?? null);
+        : (edhaUserTargetActor());
       if (h.oncePerTarget && prospect
           && prospect.flags?.["edha-content"]?.dieStepOnceBy?.[h.key || "step"]?.[actor.id]) {
         ui.notifications?.warn(`Edha: ${item.name} was already used on ${prospect.name} this scene.`);
@@ -13091,7 +13049,7 @@ Hooks.on("updateActor", async (victim, changes, options) => {
     if (victim.type === "character") return;                       // PC drops don't count (Ben R2)
     if (victim.getFlag?.("edha-content", "summon")) return;        // summons dissolve — no corpse
     if (victim.getFlag?.("edha-content", "deathWard")) return;     // the Ward restores them (post-pass)
-    const vtok = edhaCasterToken(victim) ?? victim.getActiveTokens?.()[0]; if (!vtok) return;
+    const vtok = edhaCasterToken(victim); if (!vtok) return;
     /* ANNOUNCE the drop (07-24r) — this is the `defeat` watch kind, and everything above it is the
      * SHARED precondition set the announcement inherits for free: one applier, a real live→0 crossing,
      * not a PC, not a summon, not saved by a Death Ward. Necrotic Cascade converted onto it 07-24r;
@@ -13205,7 +13163,7 @@ async function edhaDeathWardCheck(target, prevHp) {
 async function edhaReviveUse(item, h) {
   try {
     const owner = item?.actor; if (!owner) return;
-    const toks = Array.from(game.user?.targets ?? []); const tok = toks[0]; const target = tok?.actor;
+    const tok = edhaUserTargetToken(); const target = tok?.actor;
     if (!target || (target.system?.resources?.hea?.value ?? 1) > 0) { ui.notifications?.warn(`Edha: target a token at 0 HP for ${item.name}.`); return; }
     if (h.oncePerScene !== false) { try { await owner.setFlag("edha-content", `sceneOnce.${item.id}`, true); } catch (e) {} }
     // The optional ledger confirm — declined consumes nothing ("died within the last hour" + touch
@@ -13364,11 +13322,8 @@ const EDHA_CIV_RED_DIE = "(@tier)d(2 * @skills.red.rank + 2)";
 // EDHA_CIV_WHITE_DIE retired 07-26 (orphan sweep): Bonds of Community's THP formula is authored data.
 // 2bV: the owner's fortify rule (edha-zone {kind: fortify}) — the enter damage bakes off its item.
 function edhaCivFortifyRuleOf(owner) {
-  for (const item of (owner?.items ?? [])) {
-    if (!edhaIsTalent(item)) continue;
-    for (const r of edhaEventRules(item)) {
-      if (r?.handler?.type === "edha-zone" && r.handler.kind === "fortify") return { item, handler: r.handler };
-    }
+  for (const { item, handler } of edhaActorRulesOf(owner, "edha-zone")) {
+    if (handler.kind === "fortify") return { item, handler };
   }
   return null;
 }
@@ -13394,14 +13349,10 @@ function edhaCivCard(owner, rolls, html, { whisper = false } = {}) {
  * flags — no talent names, and it survives a summon rename (the flag, not the prefix, selects). */
 let _edhaCivSplashBusy = false;
 function edhaSummonEffectRuleOf(owner, mode, itemId = null) {
-  for (const item of (owner?.items ?? [])) {
-    if (!edhaIsTalent(item)) continue;
-    for (const r of edhaEventRules(item)) {
-      const h = r?.handler;
-      if (h?.type !== "edha-summon-effect" || (h.mode || "toggle-baked") !== mode) continue;
-      if (itemId && item.id !== itemId) continue;
-      return { item, handler: h };
-    }
+  for (const { item, handler: h } of edhaActorRulesOf(owner, "edha-summon-effect")) {
+    if ((h.mode || "toggle-baked") !== mode) continue;
+    if (itemId && item.id !== itemId) continue;
+    return { item, handler: h };
   }
   return itemId ? edhaSummonEffectRuleOf(owner, mode, null) : null;
 }
@@ -13416,7 +13367,7 @@ async function edhaCivConstructHitRiders(dealer, target, prevHp) {
       const h = dec?.handler;
       const radius = Number(h?.splashRadiusFt) || 0;
       if (dec && radius > 0) {
-        const vtok = edhaCasterToken(target) ?? target.getActiveTokens?.()[0];
+        const vtok = edhaCasterToken(target);
         if (vtok) {
           const foes = edhaEnemyTokensInCircle(owner, vtok.center.x, vtok.center.y, radius)
             .filter(t => t.actor && (t.actor.system?.resources?.hea?.value ?? 1) > 0);
@@ -13480,7 +13431,7 @@ async function edhaZoneFortify(item, h) {
 async function edhaCivFortifyGM(p) {
   try {
     const scene = game.scenes?.get(p.sceneId); if (!scene) return;
-    const oref = await fromUuid(p.ownerUuid).catch(() => null); const owner = oref?.actor ?? oref; if (!owner) return;
+    const owner = await edhaResolveActorRef(p.ownerUuid); if (!owner) return;
     for (const id of (p.drawingIds || [])) {
       const d = scene.drawings.get(id);
       if (!d?.getFlag?.("edha-content", "foundation")) continue;
@@ -13562,7 +13513,7 @@ class EdhaCivFortifiedRegionBehavior extends foundry.data.regionBehaviors.Region
       const now = Date.now();
       if (now - (_edhaCivEnterGuard.get(key) || 0) < 1000) return;       // tokenEnter + tokenMoveIn double-fire
       _edhaCivEnterGuard.set(key, now);
-      const oref = await fromUuid(this.ownerUuid).catch(() => null); const owner = oref?.actor ?? oref; if (!owner) return;
+      const owner = await edhaResolveActorRef(this.ownerUuid); if (!owner) return;
       const dr = await new Roll(this.damageFormula || "0").evaluate();
       const amt = Math.max(0, Math.floor(dr.total));
       if (amt > 0) {
@@ -13725,7 +13676,7 @@ async function edhaCivToggleBakedEffect(item, h, c) {
 async function edhaCivSummonEffectEndClick(ev) {
   try {
     const btn = ev.currentTarget;
-    const cref = await fromUuid(btn.dataset.edhaConstruct).catch(() => null); const c = cref?.actor ?? cref;
+    const c = await edhaResolveActorRef(btn.dataset.edhaConstruct);
     if (!c) { ui.notifications?.warn("Edha: that summon is gone."); return; }
     if (!c.isOwner) { ui.notifications?.warn("Edha: only the summon's owner (or the GM) ends this."); return; }
     const eff = c.effects?.find(e => e.getFlag?.("edha-content", "summonEffect") && e.name === btn.dataset.edhaEffect);
@@ -14081,11 +14032,8 @@ Hooks.on("createActiveEffect", (effect) => {
     if (!edhaDefBuffGmGate()) return;
     const a = effect.parent; if (a?.documentName !== "Actor") return;
     const landing = [...(effect.statuses ?? [])]; if (!landing.length) return;
-    for (const tal of (a.items ?? [])) {
-      if (!edhaIsTalent(tal)) continue;
-      for (const rule of edhaEventRules(tal)) {
-        const h = rule?.handler;
-        if (h?.type !== "edha-self-status" || !h.immuneStatuses || !h.statusId) continue;
+    for (const { item: tal, handler: h } of edhaActorRulesOf(a, "edha-self-status")) {
+        if (!h.immuneStatuses || !h.statusId) continue;
         if (!a.statuses?.has?.(h.statusId)) continue;
         const immune = String(h.immuneStatuses).split(",").map(s => s.trim().toLowerCase()).filter(Boolean);
         const blocked = landing.filter(s => immune.includes(s));
@@ -14093,7 +14041,6 @@ Hooks.on("createActiveEffect", (effect) => {
         void effect.delete().then(() => ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: a }),
           content: `<p>🏃 <strong>${tal.name}</strong>: ${a.name} cannot be ${blocked.join("/")} — the condition is shrugged off.</p>` })).catch(() => {});
         return;
-      }
     }
   } catch (e) { console.error("Edha Content | status-immunity shrug failed", e); }
 });
@@ -14124,7 +14071,7 @@ async function edhaRedirectPromptSweep(target, list, prevHp) {
 async function edhaRedirectClick(ev) {
   try {
     const btn = ev.currentTarget;
-    const oref = await fromUuid(btn.dataset.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref;
+    const owner = await edhaResolveActorRef(btn.dataset.edhaOwner);
     if (!owner) return;
     const talName = btn.dataset.edhaName || "Redirect", range = btn.dataset.edhaRange || "black";
     if (!owner.isOwner) { ui.notifications?.warn("Edha: only the wearer (or the GM) redirects."); return; }
@@ -14173,7 +14120,7 @@ async function edhaRedirectClick(ev) {
 async function edhaInterceptPromptSweep(victim, dealer, dealtAmt, list, redirected) {
   try {
     if (!edhaDefBuffGmGate() || redirected || dealtAmt <= 0) return;
-    const vtok = edhaCasterToken(victim) ?? victim.getActiveTokens?.()[0]; if (!vtok) return;
+    const vtok = edhaCasterToken(victim); if (!vtok) return;
     const dtype = (list ?? []).find(i => Number(i?.amount) > 0 && i?.type && i.type !== "heal")?.type || "vital";
     for (const w of edhaWatchersOfRule("edha-redirect")) {
       const h = w.handler; if ((h?.direction || "to-allies") !== "intercept") continue;
@@ -14219,12 +14166,12 @@ async function edhaInterceptClick(ev) {
   try {
     ev.preventDefault();
     const btn = ev.currentTarget, ds = btn.dataset;
-    const oref = await fromUuid(ds.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref; if (!owner) return;
+    const owner = await edhaResolveActorRef(ds.edhaOwner); if (!owner) return;
     if (!owner.isOwner && !game.user?.isGM) { ui.notifications?.warn("Edha: only the talent's owner (or the GM) resolves this."); return; }
     const item = await fromUuid(ds.edhaItem).catch(() => null);
     const name = item?.name || "the Reaction";
     if (ds.edhaOnce === "1" && !edhaCoordOPRAllowed(owner, item?.id || name, "_react")) { ui.notifications?.info(`${name} already used this round.`); btn.disabled = true; return; }
-    const vref = await fromUuid(ds.edhaVictim).catch(() => null); const victim = vref?.actor ?? vref; if (!victim) return;
+    const victim = await edhaResolveActorRef(ds.edhaVictim); if (!victim) return;
     let half = Math.max(0, Math.floor(Number(ds.edhaHalf) || 0));
     let heal = Math.max(0, Math.floor(Number(ds.edhaHeal) || 0));
     /* CHOOSE-AMOUNT (2bW — Lifeline): the input decides how much is absorbed — read BEFORE the
@@ -14271,7 +14218,7 @@ function edhaTestAuraApply(roll, source, config) {
       if (owner === actor) { if (h.includeSelf !== true) continue; }
       else {
         const otok = edhaCasterToken(owner); if (!otok) continue;
-        const same = (otok.document?.disposition ?? 1) === (tok.document?.disposition ?? 1);
+        const same = edhaSameDisposition(owner, tok);   // R-63 🤖 bench row
         const want = String(h.affects || "allies");
         if (want === "allies" && !same) continue;
         if (want === "enemies" && same) continue;
@@ -14367,8 +14314,7 @@ async function edhaClearPowerState(endedCombat) {
 function edhaCounterBearerUuid(owner, key) { return owner?.getFlag?.("edha-content", `counters.${key}`) ?? null; }
 async function edhaCounterBearerOf(owner, key) {
   const uuid = edhaCounterBearerUuid(owner, key); if (!uuid) return null;
-  const ref = await fromUuid(uuid).catch(() => null);
-  return ref?.actor ?? ref ?? null;
+  return edhaResolveActorRef(uuid);
 }
 function edhaCounterIsBearer(owner, key, target) { return !!(owner && target && edhaCounterBearerUuid(owner, key) === target.uuid); }
 // Read the count only if `target` IS this owner's current bearer (a rival owner's mark on the same
@@ -14432,8 +14378,7 @@ async function edhaCounterSet(owner, target, count, { key, status = null, cap = 
     const n = Math.max(0, Math.min(Math.max(1, Number(cap) || 5), Math.floor(Number(count) || 0)));
     const prevUuid = edhaCounterBearerUuid(owner, key);
     if (prevUuid && prevUuid !== target?.uuid) {
-      const ref = await fromUuid(prevUuid).catch(() => null);
-      const prev = ref?.actor ?? ref;
+      const prev = await edhaResolveActorRef(prevUuid);
       if (prev) await edhaCounterWriteRemote(prev, st, 0, null);
     }
     if (!target || n <= 0) {
@@ -14537,8 +14482,8 @@ function edhaCounterPostTransferCard(owner, sourceName, amount, candidates, { ke
 async function edhaCounterTransferClick(ev) {
   try {
     ev.preventDefault(); const btn = ev.currentTarget, ds = btn.dataset;
-    const oref = await fromUuid(ds.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref;
-    const tref = await fromUuid(ds.edhaTarget).catch(() => null); const target = tref?.actor ?? tref;
+    const owner = await edhaResolveActorRef(ds.edhaOwner);
+    const target = await edhaResolveActorRef(ds.edhaTarget);
     if (!owner || !target) return;
     const amount = Number(ds.edhaAmount) || 0;
     const name = decodeURIComponent(ds.edhaName || "");
@@ -14563,9 +14508,9 @@ function edhaCounterPostAllyBurstCard(owner, sourceName, allyTokens, formula) {
 async function edhaCounterBurstClick(ev) {
   try {
     ev.preventDefault(); const btn = ev.currentTarget, ds = btn.dataset;
-    const oref = await fromUuid(ds.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref;
-    const aref = await fromUuid(ds.edhaAlly).catch(() => null); const ally = aref?.actor ?? aref;
-    const target = Array.from(game.user?.targets ?? [])[0]?.actor;
+    const owner = await edhaResolveActorRef(ds.edhaOwner);
+    const ally = await edhaResolveActorRef(ds.edhaAlly);
+    const target = edhaUserTargetActor();
     const name = decodeURIComponent(ds.edhaName || "");
     if (!owner || !ally) return;
     if (!target) { ui.notifications?.warn("Edha: target the enemy, then click."); return; }
@@ -14584,7 +14529,7 @@ Hooks.on("updateActor", async (victim, changes, options) => {
     if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;   // one applier
     const h = options?.edhaHea;
     if (!h || h.new > 0 || h.old <= 0) return;   // only a live→0 crossing counts
-    const vtok = edhaCasterToken(victim) ?? victim.getActiveTokens?.()[0];
+    const vtok = edhaCasterToken(victim);
     // SELECTION rides the rules (07-25 pass 2bT): any talent carrying an `edha-counter-transfer` rule
     // whose owner's counter bearer just dropped gets its prompt(s). Hunter's Discipline (fraction .5)
     // and Death Mark (fraction 1 + allyBurst) both fire on the same kill — Ben R9: independently,
@@ -14827,22 +14772,14 @@ function edhaGetEdicts(owner) { return edhaOwnerList(owner, "edicts", "edict"); 
  * prohibition entries on a ledger (its damage formula backs the violation roll), and the talent
  * that ANNOTATES them (its riderSkill/riderColor + damage formula back the notarize rider). */
 function edhaProhPlaceRuleOf(owner, key) {
-  for (const item of (owner?.items ?? [])) {
-    if (!edhaIsTalent(item)) continue;
-    for (const r of edhaEventRules(item)) {
-      const h = r?.handler;
-      if (h?.type === "edha-owner-list" && h.prohibition === true && String(h.list || "").trim() === key) return { item, handler: h };
-    }
+  for (const { item, handler: h } of edhaActorRulesOf(owner, "edha-owner-list")) {
+    if (h.prohibition === true && String(h.list || "").trim() === key) return { item, handler: h };
   }
   return null;
 }
 function edhaProhAnnotateRuleOf(owner, key) {
-  for (const item of (owner?.items ?? [])) {
-    if (!edhaIsTalent(item)) continue;
-    for (const r of edhaEventRules(item)) {
-      const h = r?.handler;
-      if (h?.type === "edha-owner-list" && (h.op || "place") === "annotate" && String(h.list || "").trim() === key) return { item, handler: h };
-    }
+  for (const { item, handler: h } of edhaActorRulesOf(owner, "edha-owner-list")) {
+    if ((h.op || "place") === "annotate" && String(h.list || "").trim() === key) return { item, handler: h };
   }
   return null;
 }
@@ -14957,7 +14894,7 @@ async function edhaProhResolveViolation(owner, key, entryId, { via = "declared v
       return ent;
     });
     if (!e) { ui.notifications?.info("Edha: that Edict is no longer active."); return false; }
-    const tref = await fromUuid(e.uuid).catch(() => null); const target = tref?.actor ?? tref;
+    const target = await edhaResolveActorRef(e.uuid);
     if (!target) { edhaOrderCard(owner, null, `<p>⚖️ The Edict on ${e.name} resolves — the target is gone; the Edict is consumed.</p>`); return true; }
     const alive = (Number(target.system?.resources?.hea?.value) || 0) > 0;
     const tal = edhaProhPlaceRuleOf(owner, key)?.item;
@@ -15335,7 +15272,7 @@ async function edhaDecreeUse(item, h) {
     await owner.setFlag("edha-content", `sceneOnce.${item.id}`, true);
     const otok = edhaCasterToken(owner);
     const ft = edhaAttuneFtColor(owner, h.rangeColor || "blue");
-    const foes = edhaTokensWithin(otok, ft).filter(t => t.actor && (t.document?.disposition ?? 1) !== (otok.document?.disposition ?? 1)
+    const foes = edhaTokensWithin(otok, ft).filter(t => t.actor && edhaDisposHostile(owner, t.actor)   // R-63 🤖 bench row
       && (Number(t.actor.system?.resources?.hea?.value) || 0) > 0);
     const proh = await edhaPickProhibition(owner, `${item.name} — name ONE prohibited action (binds every enemy in range)`);
     if (!proh) { edhaRefundCost(item); ui.notifications?.info(`${item.name} cancelled — cost refunded.`); return; }
@@ -15352,13 +15289,9 @@ async function edhaDecreeUse(item, h) {
 }
 // The rule that armed the decree (2bV): itemId first, rule-scan fallback — never a name.
 function edhaDecreeRuleOf(owner, itemId = null) {
-  for (const item of (owner?.items ?? [])) {
-    if (!edhaIsTalent(item)) continue;
-    for (const r of edhaEventRules(item)) {
-      if (r?.handler?.type !== "edha-decree") continue;
-      if (itemId && item.id !== itemId) continue;
-      return { item, handler: r.handler };
-    }
+  for (const { item, handler } of edhaActorRulesOf(owner, "edha-decree")) {
+    if (itemId && item.id !== itemId) continue;
+    return { item, handler };
   }
   return itemId ? edhaDecreeRuleOf(owner, null) : null;
 }
@@ -15379,7 +15312,7 @@ async function edhaDecreeResolve(owner, violator) {
       const thp = Math.max(0, Math.floor(wr.total));
       const names = [];
       for (const w of d.witnesses) {
-        const ref = await fromUuid(w.uuid).catch(() => null); const a = ref?.actor ?? ref; if (!a) continue;
+        const a = await edhaResolveActorRef(w.uuid); if (!a) continue;
         if (thp > 0) await edhaGrantTempHpCross(a, thp, dec?.item?.name ?? "the Decree");
         await edhaGrantAdvAttack(a, dec?.item?.name ?? "the Decree");
         names.push(a.name);
@@ -15398,7 +15331,7 @@ async function edhaDecreeResolve(owner, violator) {
       hitNames = foes.map(t => t.name);
     }
     for (const uuid of (d.bound ?? [])) {                     // decree binding ends — clear icons where no real Edict remains
-      const ref = await fromUuid(uuid).catch(() => null); const a = ref?.actor ?? ref;
+      const a = await edhaResolveActorRef(uuid);
       if (a) await edhaOrderRefreshBoundIcon(a);
     }
     edhaOrderCard(owner, rolls,
@@ -15416,7 +15349,7 @@ async function edhaOrderBtnClick(ev) {
   try {
     ev.preventDefault();
     const btn = ev.currentTarget, ds = btn.dataset;
-    const oref = await fromUuid(ds.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref; if (!owner) return;
+    const owner = await edhaResolveActorRef(ds.edhaOwner); if (!owner) return;
     if (!owner.isOwner && !game.user?.isGM) { ui.notifications?.warn("Edha: only the talent's owner (or the GM) resolves this."); return; }
     const action = ds.edhaAction;
     if (action === "violated") {
@@ -15424,7 +15357,7 @@ async function edhaOrderBtnClick(ev) {
       const ok = await edhaProhResolveViolation(owner, ds.edhaList || "edicts", ds.edhaEdict, { via: "declared violation" });
       btn.textContent = ok ? "⚖ resolved" : "⚖ (already gone)";
     } else if (action === "decree-violated") {
-      const violator = Array.from(game.user?.targets ?? [])[0]?.actor;
+      const violator = edhaUserTargetActor();
       if (!violator) { ui.notifications?.warn("Edha: target the violator, then click."); return; }
       btn.disabled = true;
       await edhaDecreeResolve(owner, violator);
@@ -15619,7 +15552,11 @@ function edhaEnemiesInOwnedTerrain(owner) {
 }
 function edhaSameDisposition(owner, tok) {
   const ot = edhaCasterToken(owner); if (!ot || !tok || ot.id === tok.id) return false;
-  return (tok.document?.disposition ?? 1) === (ot.document?.disposition ?? 1);
+  // R-63: was `?? 1` on both sides (unknown defaults to FRIENDLY) — Number.isFinite fails CLOSED
+  // instead, matching edhaAllyDropEligible/edhaDisposHostile. 🤖 bench row.
+  const od = ot.document?.disposition, td = tok.document?.disposition;
+  if (!Number.isFinite(od) || !Number.isFinite(td)) return false;
+  return od === td;
 }
 
 /* --- Apex Predator — ON ITS OWN DOCUMENT since 07-25 pass 2bS (iron rule 2b): an `edha-test-rider`
@@ -15674,7 +15611,7 @@ async function edhaGrowTerrain(sceneId, regionId, sizeFt) {
 async function edhaSpreadClick(ev) {
   try {
     ev.preventDefault(); const btn = ev.currentTarget, ds = btn.dataset;
-    const oref = await fromUuid(ds.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref; if (!owner) return;
+    const owner = await edhaResolveActorRef(ds.edhaOwner); if (!owner) return;
     const free = ds.edhaFree === "1";                        // Pyre's turn-end spread costs nothing
     const cost = free ? 0 : (ds.edhaCost == null ? 1 : Math.max(0, Number(ds.edhaCost) || 0));
     if (cost > 0) {
@@ -15776,11 +15713,7 @@ const EDHA_NATREC_CONDITIONS = ["afflicted", "disoriented", "stunned", "weakened
 async function edhaDispatchHealReact(healer, healItem, target, amount, prevHp) {
   try {
     if (!healer || !target || !(amount > 0)) return;
-    for (const tal of (healer.items ?? [])) {
-      if (!edhaIsTalent(tal)) continue;
-      for (const rule of edhaEventRules(tal)) {
-        const h = rule?.handler;
-        if (h?.type !== "edha-heal-react") continue;
+    for (const { item: tal, handler: h } of edhaActorRulesOf(healer, "edha-heal-react")) {
         try {
           if (h.whenColor && (!healItem || edhaTalentColor(healItem) !== h.whenColor)) continue;
           const action = String(h.action || "");
@@ -15795,7 +15728,6 @@ async function edhaDispatchHealReact(healer, healItem, target, amount, prevHp) {
             edhaPostNaturalRecoveryCard(healer, target, tal, h);
           }
         } catch (e) { console.error(`Edha Content | edha-heal-react (${tal?.name}) failed`, e); }
-      }
     }
   } catch (e) { console.error("Edha Content | heal-react dispatch failed", e); }
 }
@@ -15811,12 +15743,8 @@ async function edhaQueueRegrowth(owner, target) {
   } catch (e) { /* perms */ }
 }
 function edhaRegrowthRuleOf(actor) {
-  for (const tal of (actor?.items ?? [])) {
-    if (!edhaIsTalent(tal)) continue;
-    for (const rule of edhaEventRules(tal)) {
-      const h = rule?.handler;
-      if (h?.type === "edha-heal-react" && String(h.action) === "queue-regrowth") return { item: tal, handler: h };
-    }
+  for (const { item: tal, handler: h } of edhaActorRulesOf(actor, "edha-heal-react")) {
+    if (String(h.action) === "queue-regrowth") return { item: tal, handler: h };
   }
   return null;
 }
@@ -15832,7 +15760,7 @@ async function edhaResolveRegrowth(combat) {
     const f = edhaSubstRankTier(h.amountFormula || "0", edhaColorRank(curActor, h.color || h.rangeColor || "green") || 1, Number(curActor.system?.tier) || 1);
     const amount = Math.max(0, Math.floor(edhaEvalSync(f, curActor.getRollData())));
     for (const e of list) {
-      const ref = await fromUuid(e.targetUuid).catch(() => null); const t = ref?.actor ?? ref; if (!t) continue;
+      const t = await edhaResolveActorRef(e.targetUuid); if (!t) continue;
       const ttok = edhaCasterToken(t);
       if (ft > 0 && otok && ttok && !edhaTokensWithin(otok, ft).some(x => x.id === ttok.id)) continue;   // left range → skip
       if (amount > 0) { await edhaCrossHeal(t, amount); ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: curActor }), content: `<p>🌿 <strong>${spec.item.name}</strong> (${curActor.name}): ${t.name} regains <strong>${amount}</strong> health.</p>` }); }
@@ -15846,8 +15774,9 @@ Hooks.on("combatTurnChange", (combat) => { if (edhaDefBuffGmGate()) void edhaRes
 async function edhaGrantTempHpCross(target, amount, source) {
   const final = Math.max(edhaGetTempHp(target)?.value ?? 0, Math.max(0, Math.floor(amount)));   // THP doesn't stack — keep the higher
   if (target.isOwner) { await edhaWriteTempHp(target, final, source); return; }
-  if (!game.users?.activeGM) { ui.notifications?.warn("Edha: a GM must be online to grant Temp HP."); return; }
-  try { game.socket.emit("module.edha-content", { action: "set-flag", payload: { actorUuid: target.uuid, key: "tempHp", value: { value: final, source: source || "" } } }); } catch (e) {}
+  // Job 6a (found via the setFlagEmit ratchet re-measure, an 8th split beyond the named 7): routed
+  // through the canonical helper.
+  await edhaSetEdhaFlag(target, "tempHp", { value: final, source: source || "" });
 }
 function edhaPostVitalSurgeCard(owner, target, tal, h) {
   try {
@@ -15864,8 +15793,8 @@ function edhaPostVitalSurgeCard(owner, target, tal, h) {
 async function edhaVitalSurgeClick(ev) {
   try {
     ev.preventDefault(); const btn = ev.currentTarget, ds = btn.dataset;
-    const oref = await fromUuid(ds.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref;
-    const tref = await fromUuid(ds.edhaTarget).catch(() => null); const target = tref?.actor ?? tref;
+    const owner = await edhaResolveActorRef(ds.edhaOwner);
+    const target = await edhaResolveActorRef(ds.edhaTarget);
     if (!owner || !target) return;
     const cost = ds.edhaCost == null ? 1 : Math.max(0, Number(ds.edhaCost) || 0);
     if (cost > 0) {
@@ -15900,8 +15829,8 @@ function edhaPostNaturalRecoveryCard(owner, target, tal, h) {
 async function edhaNaturalRecoveryClick(ev) {
   try {
     ev.preventDefault(); const btn = ev.currentTarget, ds = btn.dataset;
-    const oref = await fromUuid(ds.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref;
-    const tref = await fromUuid(ds.edhaTarget).catch(() => null); const target = tref?.actor ?? tref;
+    const owner = await edhaResolveActorRef(ds.edhaOwner);
+    const target = await edhaResolveActorRef(ds.edhaTarget);
     if (!owner || !target || !ds.edhaStatus) return;
     await edhaToggleStatus(target, ds.edhaStatus, false);
     btn.closest(".edha-trigger-card")?.querySelectorAll(".edha-natrec-btn").forEach(b => b.disabled = true);
@@ -15918,7 +15847,7 @@ function edhaPostReknitCard(owner, tal, h) {
   try {
     const costT = h?.costTemporary == null ? 2 : Math.max(0, Number(h.costTemporary) || 0);
     const costP = h?.costPermanent == null ? 3 : Math.max(0, Number(h.costPermanent) || 0);
-    const target = Array.from(game.user?.targets ?? [])[0]?.actor ?? owner;   // touch a creature (default: self)
+    const target = edhaUserTargetActor() ?? owner;   // touch a creature (default: self)
     const injuries = (target.items ?? []).filter(i => i.type === "injury" && String(i.system?.type || "") !== "death");
     if (!injuries.length) { ui.notifications?.info(`Edha: ${target.name} has no removable injuries.`); return; }
     const rows = injuries.map(inj => {
@@ -15941,8 +15870,8 @@ async function edhaDeleteItemCross(actor, itemId) {
 async function edhaReknitClick(ev) {
   try {
     ev.preventDefault(); const btn = ev.currentTarget, ds = btn.dataset;
-    const oref = await fromUuid(ds.edhaOwner).catch(() => null); const owner = oref?.actor ?? oref;
-    const tref = await fromUuid(ds.edhaTarget).catch(() => null); const target = tref?.actor ?? tref;
+    const owner = await edhaResolveActorRef(ds.edhaOwner);
+    const target = await edhaResolveActorRef(ds.edhaTarget);
     if (!owner || !target) return;
     const cost = edhaNumOr(ds.edhaCost, 2);   // an authored 0 is LEGAL (a free removal) — never `|| 2`
     const inv = owner.system?.resources?.inv, cur = inv?.value ?? 0;
@@ -15994,10 +15923,7 @@ Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindRestorationButtons(html
 // "Advantage on your next attack" flag (Pack Hunter / Scent the Weak), consumed on the next attack.
 async function edhaGrantAdvAttack(actor, source) {
   try {
-    if (actor.isOwner) { await actor.setFlag("edha-content", "advAttackNext", source || true); return true; }
-    if (!game.users?.activeGM) { ui.notifications?.warn("Edha: a GM must be online to grant attack advantage."); return false; }
-    game.socket.emit("module.edha-content", { action: "set-flag", payload: { actorUuid: actor.uuid, key: "advAttackNext", value: source || true } });
-    return true;
+    return await edhaSetEdhaFlag(actor, "advAttackNext", source || true);   // Job 6a: routed through the canonical helper
   } catch (e) { return false; }
 }
 function edhaAdvAttackPreRoll(roll, source, config) {
@@ -16802,11 +16728,10 @@ class EdhaFateSnareRegionBehavior extends foundry.data.regionBehaviors.RegionBeh
       if (game.users?.activeGM && !game.users.activeGM.isSelf) return;   // one applier (the primary GM)
       const actor = event?.data?.token?.actor; if (!actor) return;
       if ((actor.system?.resources?.hea?.value ?? 1) <= 0) return;       // dead tokens don't spring traps
-      const oref = await fromUuid(this.ownerUuid).catch(() => null); const owner = oref?.actor ?? oref;
+      const owner = await edhaResolveActorRef(this.ownerUuid);
       if (!owner) return;
       const snare = edhaGetSnares(owner).find(s => s.id === this.snareId); if (!snare) return;   // already sprung / stale
-      const otok = edhaCasterToken(owner), mtok = actor.getActiveTokens?.()[0];
-      if (otok && mtok && (mtok.document?.disposition ?? 1) === (otok.document?.disposition ?? 1)) return;   // only ENEMIES of the owner spring it
+      if (edhaSameDisposition(owner, edhaCasterToken(actor))) return;   // only ENEMIES of the owner spring it — R-63 🤖 bench row
       await edhaFateSpringSnare(owner, snare, actor);   // label = the entry's own `talent` stamp (2bX)
     } catch (e) { console.error("Edha Content | fate-snare region event failed", e); }
   }
@@ -16821,7 +16746,7 @@ async function edhaPlaceHazard(item, cfg) {
     const color = cfg.color || edhaTalentColor(item) || "red";
     const rank = edhaColorRank(actor, color);
     const sizeFt = cfg.sizeByRank ? (EDHA_SIZE_FT[rank] || EDHA_SIZE_FT[1]) : (Number(cfg.sizeFt) || EDHA_SIZE_FT[2]);
-    const center = Array.from(game.user?.targets ?? [])[0] ?? edhaCasterToken(actor);
+    const center = edhaUserTargetToken() ?? edhaCasterToken(actor);
     if (!center) { ui.notifications?.warn(`Edha: target a token/point for ${item.name}'s dangerous terrain.`); return null; }
     const gs = scene.grid?.size || 100, gd = scene.grid?.distance || 5;
     // SQUARE region (07-12 rework, Ben: same shape as the Foundation) — sizeFt square, grid-snapped.
@@ -17011,8 +16936,8 @@ function edhaRegisterNativeEventSystem() {
     } },
     executor: async function (event) {
       const item = event.item, owner = item?.actor; if (!owner) return;
-      const who = this.target === "victim" ? (event.options?.victim ?? Array.from(game.user?.targets ?? [])[0]?.actor ?? null)
-        : this.target === "target" ? (Array.from(game.user?.targets ?? [])[0]?.actor ?? null) : owner;
+      const who = this.target === "victim" ? edhaResolveVictim(event)
+        : this.target === "target" ? edhaUserTargetActor() : owner;
       if (!who) { ui.notifications?.warn(`Edha: ${item.name} — target the creature first, then use it again.`); return; }
       const gate = Number(this.whenDeflectBelow) || 0;
       if (gate > 0 && (Number(owner.system?.deflect?.value) || 0) >= gate) return;   // Sidestep in heavy armour: silent no-op
@@ -17093,7 +17018,7 @@ function edhaRegisterNativeEventSystem() {
         edhaQueueContest(owner, this.skill, async ({ total }) => sweep(total));
         return;
       }
-      const ttok = Array.from(game.user?.targets ?? [])[0] ?? null;
+      const ttok = edhaUserTargetToken();
       let target = ttok?.actor ?? null;
       if (this.targetCounter) {
         target = await edhaCounterBearerOf(owner, String(this.targetCounter).trim());
@@ -17283,7 +17208,7 @@ function edhaRegisterNativeEventSystem() {
       try {
         const item = event.item, owner = item?.actor; if (!owner) return;
         if (!edhaRuleOwnsGate(owner, this.whenOwnsTalent)) return;   // upgrade-talent gate (Siphoned Will)
-        const who = this.target === "victim" ? (event.options?.victim ?? Array.from(game.user?.targets ?? [])[0]?.actor ?? null) : owner;
+        const who = this.target === "victim" ? edhaResolveVictim(event) : owner;
         if (!who) { ui.notifications?.warn(`Edha: ${item.name} — target the creature first, then use it again.`); return; }
         const source = this.label || item.name;
         /* H17 (2bZ): @target.* resolves against WHO the rule acts on, then the Roll resolves the
@@ -17572,9 +17497,9 @@ function edhaRegisterNativeEventSystem() {
     executor: async function (event) {
       const item = event.item, owner = item?.actor; if (!owner) return;
       const who = this.target === "self" ? owner
-        : this.target === "victim" ? (event.options?.victim ?? Array.from(game.user?.targets ?? [])[0]?.actor ?? null)
+        : this.target === "victim" ? edhaResolveVictim(event)
         : this.target === "counter-bearer" ? await edhaCounterBearerOf(owner, String(this.counterStatus || "insight").trim())
-        : (Array.from(game.user?.targets ?? [])[0]?.actor ?? null);
+        : edhaUserTargetActor();
       if (!who && this.target === "counter-bearer") {
         const lbl = edhaConditionLabel(this.counterStatus || "insight") || this.counterStatus || "counter";
         ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
@@ -17668,9 +17593,9 @@ function edhaRegisterNativeEventSystem() {
       const item = event.item, owner = item?.actor; if (!owner) return;
       const key = String(this.list || "").trim(); if (!key) return;
       const status = String(this.status || key).trim();
-      const victim = event.options?.victim ?? event.options?.target ?? Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
+      const victim = edhaResolveVictim(event);
       const who = this.target === "self" ? owner
-        : this.target === "prompt" ? (Array.from(game.user?.targets ?? [])[0]?.actor ?? null)
+        : this.target === "prompt" ? edhaUserTargetActor()
         : this.target === "near-victim" ? edhaNearestListCandidate(owner, victim, Number(this.nearFt) || 10, edhaOwnerList(owner, key, status))
         : victim;
       const cap = edhaListCap(owner, this.capFormula);
@@ -17788,9 +17713,7 @@ function edhaRegisterNativeEventSystem() {
             const res = edhaListPush(list, entry, { cap, evict: "refuse" });
             if (res.refused) break;
             const mark = { actorId: owner.id, talent: item.name };
-            if (t.actor.isOwner) { await t.actor.toggleStatusEffect?.(status, { active: true }); try { await t.actor.setFlag("edha-content", `markedBy.${status}`, mark); } catch (e) {} }
-            else if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "apply-status-mark", payload: { actorUuid: t.actor.uuid, statusId: status, mark } }); } catch (e) {} }
-            else { ui.notifications?.warn(`Edha: a GM must be online to mark ${t.actor.name} — the fill stops here.`); break; }
+            if (!(await edhaWriteStatusMark(t.actor, status, mark))) break;   // Job 6b: shared body (warns on no-GM)
             list = res.list; placed.push(t.actor.name);
           }
           if (placed.length) await edhaSetOwnerList(owner, key, list);
@@ -17854,9 +17777,7 @@ function edhaRegisterNativeEventSystem() {
          * to do nothing, the cap never saw it, and junk accumulated in the flag. This affects EVERY H3
          * consumer, including the covenants ledger migrated on 07-24u. */
         const mark = { actorId: owner.id, talent: item.name };
-        if (who.isOwner) { await who.toggleStatusEffect?.(status, { active: true }); try { await who.setFlag("edha-content", `markedBy.${status}`, mark); } catch (e) {} }
-        else if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "apply-status-mark", payload: { actorUuid: who.uuid, statusId: status, mark } }); } catch (e) {} }
-        else { ui.notifications?.warn(`Edha: a GM must be online to mark ${who.name} — nothing placed.`); return; }
+        if (!(await edhaWriteStatusMark(who, status, mark))) return;   // Job 6b: shared body (warns on no-GM)
         await edhaSetOwnerList(owner, key, list);
         const mo = this.multiOwner === true;
         for (const e of evicted) await edhaListUnmark(e, status, { key, ownerId: owner.id, multiOwner: mo });
@@ -17915,11 +17836,11 @@ function edhaRegisterNativeEventSystem() {
         // Target-status gate (Predatory Patience: Investiture only on a hit vs a Weakened creature). For
         // deal-damage/use events there's no event victim → fall back to your current target.
         if (this.whenTargetStatus) {
-          const tgt = event.options?.victim ?? Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
+          const tgt = edhaResolveVictim(event);
           if (!tgt?.statuses?.has?.(this.whenTargetStatus)) return;
         }
         if (this.unlessTargetStatus) {
-          const tgt = event.options?.victim ?? Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
+          const tgt = edhaResolveVictim(event);
           if (tgt?.statuses?.has?.(this.unlessTargetStatus)) return;   // silent skip, never a stop
         }
         const spec = edhaTrigSpecFromCfg(this);
@@ -18048,7 +17969,7 @@ function edhaRegisterNativeEventSystem() {
     executor: async function (event) {
       try {
         const item = event.item, owner = item?.actor; if (!owner) return;
-        const victim = event.options?.victim ?? event.options?.target ?? Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
+        const victim = edhaResolveVictim(event);
         if (!victim) { ui.notifications?.warn(`Edha: ${item.name} — no creature to push.`); return; }
         await edhaRunPush(owner, victim, {
           bySize: this.bySize !== false, sizeColor: this.sizeColor || "", distanceFt: this.distanceFt,
@@ -18232,7 +18153,7 @@ function edhaRegisterNativeEventSystem() {
     executor: async function (event) {
       try {
         const item = event.item, owner = item?.actor; if (!owner) return;
-        const victim = event.options?.victim ?? Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
+        const victim = edhaResolveVictim(event);
         if (!victim) { ui.notifications?.warn(`Edha: ${item.name} — target the character first.`); return; }
         if (victim.getFlag?.("edha-content", "deathWard")) { ui.notifications?.info(`Edha: ${victim.name} already bears a ward.`); return; }
         const baked = edhaFoldDieMath(Roll.replaceFormulaData(this.thpFormula || item.system?.damage?.formula || "0", owner.getRollData(), { missing: "0" }));
@@ -18263,7 +18184,7 @@ function edhaRegisterNativeEventSystem() {
     executor: async function (event) {
       try {
         const item = event.item, owner = item?.actor; if (!owner) return;
-        const target = Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
+        const target = edhaUserTargetActor();
         if (!target || target === owner) { ui.notifications?.warn(`Edha: target the creature for ${item.name}.`); return; }
         if (target.getFlag?.("edha-content", "decay")) { ui.notifications?.warn(`Edha: ${target.name} is already decaying (one instance per creature).`); return; }
         const formula = edhaFoldDieMath(Roll.replaceFormulaData(this.formula || item.system?.damage?.formula || "0", owner.getRollData(), { missing: "0" }));
@@ -18315,7 +18236,7 @@ function edhaRegisterNativeEventSystem() {
     executor: async function (event) {
       try {
         const item = event.item, owner = item?.actor; if (!owner) return;
-        const target = Array.from(game.user?.targets ?? [])[0]?.actor ?? owner;
+        const target = edhaUserTargetActor() ?? owner;
         edhaPostMutationCard(owner, target, item.name, this);
       } catch (e) { console.error("Edha Content | edha-mutation executor failed", e); }
     },
@@ -18341,11 +18262,11 @@ function edhaRegisterNativeEventSystem() {
     executor: async function (event) {
       try {
         const item = event.item, owner = item?.actor; if (!owner) return;
-        const t = Array.from(game.user?.targets ?? [])[0]?.actor ?? owner;
+        const t = edhaUserTargetActor() ?? owner;
         const deflect = Math.max(0, Number(this.deflect) || 0);
         const vital = this.vitalFormula ? Math.max(0, Math.floor(edhaEvalSync(this.vitalFormula, owner.getRollData()))) : 0;
         if (deflect > 0 || vital > 0)
-          await edhaSetActorFlagCross(t, "apexForm", { deflect, vital, ownerUuid: owner.uuid, sourceName: item.name, sceneId: canvas?.scene?.id ?? null });
+          await edhaSetEdhaFlag(t, "apexForm", { deflect, vital, ownerUuid: owner.uuid, sourceName: item.name, sceneId: canvas?.scene?.id ?? null });   // Job 6: edhaSetActorFlagCross retired
         await edhaAddLifeRegen(owner, { targetUuid: t.uuid, formula: this.formula || "@tier + 1",
           endOnVitalSpirit: this.endOnVitalSpirit === true, sourceName: item.name,
           mutationFormula: String(this.mutationFormula || "").trim() });
@@ -18459,7 +18380,7 @@ function edhaRegisterNativeEventSystem() {
     executor: async function (event) {
       try {
         const item = event.item, owner = item?.actor; if (!owner) return;
-        const targeted = Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
+        const targeted = edhaUserTargetActor();
         const dup = (this.copyOf || "target-or-self") === "self" ? owner : (targeted ?? owner);
         if (dup !== owner && this.rangeColor) {
           const dtok = edhaCasterToken(dup);
@@ -18654,7 +18575,7 @@ function edhaRegisterNativeEventSystem() {
       if (this.linkOnUse !== true) return;
       try {
         const item = event.item, owner = item?.actor; if (!owner) return;
-        const t = Array.from(game.user?.targets ?? [])[0]?.actor ?? owner;
+        const t = edhaUserTargetActor() ?? owner;
         const key = String(this.watchFlag || "lifeline").trim();
         await owner.setFlag("edha-content", key, { targetUuid: t.uuid, sceneId: canvas?.scene?.id ?? null });
         ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
@@ -18994,10 +18915,11 @@ function edhaRegisterNativeEventSystem() {
     } },
     executor: async function (event) {
       const item = event.item, actor = item?.actor; if (!actor) return;
-      const otok = edhaCasterToken(actor), disp = otok?.document?.disposition ?? 1;
+      // R-63: no `?? 1` default — every `disp` comparison below Number.isFinite-guards it (🤖 bench row).
+      const otok = edhaCasterToken(actor), disp = otok?.document?.disposition;
       if (this.vsLowestHp) {
         const ft = edhaAttuneFtColor(actor, this.rangeColor || "green");
-        const enemies = otok ? edhaTokensWithin(otok, ft).filter(t => (t.document?.disposition ?? 1) !== disp && (t.actor?.system?.resources?.hea?.value ?? 1) > 0) : [];
+        const enemies = (otok && Number.isFinite(disp)) ? edhaTokensWithin(otok, ft).filter(t => Number.isFinite(t.document?.disposition) && t.document.disposition !== disp && (t.actor?.system?.resources?.hea?.value ?? 1) > 0) : [];
         enemies.sort((a, b) => (a.actor?.system?.resources?.hea?.value ?? 0) - (b.actor?.system?.resources?.hea?.value ?? 0));
         const low = enemies[0];
         if (low && (this.once !== "round" || edhaCoordOPRAllowed(actor, item.name, "_adv"))) {
@@ -19016,7 +18938,7 @@ function edhaRegisterNativeEventSystem() {
         const ft = this.rangeColor ? edhaAttuneFtColor(actor, this.rangeColor) : 0;
         const inRange = ft > 0 && otok ? edhaTokensWithin(otok, ft) : null;
         let picked = Array.from(game.user?.targets ?? []).filter(t => t.actor && t.actor !== actor
-          && (t.document?.disposition ?? 1) === disp
+          && Number.isFinite(t.document?.disposition) && Number.isFinite(disp) && t.document.disposition === disp
           && (t.actor.system?.resources?.hea?.value ?? 0) > 0
           && (!inRange || inRange.some(x => x.id === t.id)));
         if (max > 0) picked = picked.slice(0, max);
@@ -19028,9 +18950,9 @@ function edhaRegisterNativeEventSystem() {
       }
       void edhaGrantAdvAttack(actor, item.name);
       if (this.to === "pack") {
-        const enemyTok = Array.from(game.user?.targets ?? [])[0]; let n = 1;
+        const enemyTok = edhaUserTargetToken(); let n = 1;
         if (enemyTok && otok) for (const t of (canvas?.tokens?.placeables ?? [])) {
-          if (t.id === otok.id || !t.actor || (t.document?.disposition ?? 1) !== disp || !edhaAdjacent(t, enemyTok)) continue;
+          if (t.id === otok.id || !t.actor || !Number.isFinite(t.document?.disposition) || !Number.isFinite(disp) || t.document.disposition !== disp || !edhaAdjacent(t, enemyTok)) continue;
           void edhaGrantAdvAttack(t.actor, item.name); n++;
         }
         ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🐾 <strong>${item.name}</strong> (${actor.name}): ${n} hunter(s) gain advantage on their next attack${enemyTok ? ` against ${enemyTok.name}` : ""}.</p>` });
@@ -19141,8 +19063,9 @@ function edhaRegisterNativeEventSystem() {
         const stampOnce = async (t) => {
           if (!this.oncePerTarget || !t) return;
           const flagKey = `dieStepOnceBy.${key}.${owner.id}`;
-          if (t.isOwner) { try { await t.setFlag("edha-content", flagKey, true); } catch (e) {} }
-          else if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "set-flag", payload: { actorUuid: t.uuid, key: flagKey, value: true } }); } catch (e) {} }
+          // Job 6a: routed through edhaSetEdhaFlag — behavior flip, was a SILENT drop with no GM
+          // online (no warning at all), now warns + returns false. 🤖 bench row.
+          await edhaSetEdhaFlag(t, flagKey, true);
         };
         const announce = (t, steps) => edhaDispatchWatchers({ kind: "die-step", owner, victim: t, skill: key, def: null, ok: true, total: Number(steps) || 0 });
         const stepWord = (n) => `damage die ${n > 0 ? "+" : "−"}${Math.abs(n)} step${Math.abs(n) === 1 ? "" : "s"}`;
@@ -19163,7 +19086,7 @@ function edhaRegisterNativeEventSystem() {
         const mode = this.target || "victim";
         const who = mode === "ally" ? edhaSovAlly(owner)
           : mode === "enemy" ? edhaSovEnemy(owner)
-          : (event.options?.victim ?? Array.from(game.user?.targets ?? [])[0]?.actor ?? null);
+          : edhaResolveVictim(event);
         if (!who) { ui.notifications?.warn(`Edha: ${item.name} — target the creature, then use it again.`); return; }
         const steps = Number(this.steps) || -1;
         const entry = { key, steps, scope: this.scope || "all", source: item.name, expire: expire(),
@@ -19282,7 +19205,7 @@ function edhaRegisterNativeEventSystem() {
       const rangeFt = Math.max(0, (Number(this.rangeFt) || 0) * dbl);
       let picked;
       if (toSelf) picked = [owner];
-      else if (this.target === "victim") picked = [event.options?.victim ?? Array.from(game.user?.targets ?? [])[0]?.actor ?? null].filter(Boolean);
+      else if (this.target === "victim") picked = [edhaResolveVictim(event)].filter(Boolean);
       else {
         const otok = edhaCasterToken(owner);
         picked = Array.from(game.user?.targets ?? [])
@@ -19303,7 +19226,7 @@ function edhaRegisterNativeEventSystem() {
         if (this.attr) mod.attr = this.attr;
         if (this.expireEndOfRound) mod.round = game.combat?.round ?? null;
         if (this.bindToTarget) {
-          const bind = Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
+          const bind = edhaUserTargetActor();
           if (bind && bind !== target) mod.targetUuid = bind.uuid;   // nothing targeted → unbound, not broken
         }
         if (this.mode) mod.mode = this.mode;
@@ -19391,6 +19314,29 @@ function edhaRegisterNativeEventSystem() {
   return true;
 }
 
+/* ENGINE PASS 5.2 (Job 6b): the shared body behind every "toggle a status ON + record
+ * markedBy.<status>" site — isOwner writes directly; else an online GM relays via the
+ * apply-status-mark socket action; else warn + false. Four near-duplicate copies of this existed
+ * (edhaApplyStatusMark's own non-timed branch below, plus three marker-tree placement sites) — this
+ * is that shared body. NOTE: named `edhaWriteStatusMark`, not `edhaApplyStatusMark` — that name is
+ * already the higher-level per-ITEM handler below (item/cfg/boundVictim, resolves its own victim,
+ * posts the card); this one is the lower-level primitive it (and everything else) now calls with an
+ * already-resolved target actor. `combatExpire` is opt-in and forwarded through the relay exactly
+ * like the canonical H1 branch already did. */
+async function edhaWriteStatusMark(targetActor, statusId, mark, { combatExpire = false } = {}) {
+  if (!targetActor || !statusId) return false;
+  if (targetActor.isOwner) {
+    await targetActor.toggleStatusEffect?.(statusId, { active: true });
+    if (mark) { try { await targetActor.setFlag("edha-content", `markedBy.${statusId}`, mark); } catch (e) {} }
+    if (combatExpire) { try { await targetActor.setFlag("edha-content", `combatExpire.${statusId}`, true); } catch (e) {} }
+    return true;
+  }
+  if (!game.users?.activeGM) { ui.notifications?.warn(`Edha: a GM must be online to mark ${targetActor.name}.`); return false; }
+  try {
+    game.socket.emit("module.edha-content", { action: "apply-status-mark", payload: { actorUuid: targetActor.uuid, statusId, ...(mark ? { mark } : {}), ...(combatExpire ? { combatExpire: true } : {}) } });
+  } catch (e) {}
+  return true;
+}
 /* --- v3 executors: status marks + status sweeps ------------------------------------------------ */
 // Apply a status to the user's targeted creature and record the mark owner on the victim
 // (flags.edha-content.markedBy.<status> = { actorId, talent }). GM-relayed when needed.
@@ -19400,7 +19346,7 @@ async function edhaApplyStatusMark(item, cfg, boundVictim = null) {
     if (!edhaRuleOwnsGate(owner, cfg.whenOwnsTalent)) return;   // upgrade-talent gate
     // The trigger's victim wins over your current targets (2bU — H1's victim doctrine): a payload
     // rule binds to the creature the TEST resolved against, not whatever is targeted at click time.
-    const victim = boundVictim ?? Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
+    const victim = boundVictim ?? edhaUserTargetActor();
     if (!victim) { ui.notifications?.warn(`Edha: target a creature for ${item.name}.`); return; }
     const status = cfg.status || "diagnosed";
     const mark = { actorId: owner.id, talent: item.name };
@@ -19415,17 +19361,13 @@ async function edhaApplyStatusMark(item, cfg, boundVictim = null) {
     const timed = cfg.expire === "owner-turn" ? "owner" : cfg.expire === "target-turn" ? "target" : null;
     if (timed) {
       await edhaApplyTimedStatus(victim, status, { owner, expire: timed });
-      if (wantMark) {
-        if (victim.isOwner) { try { await victim.setFlag("edha-content", `markedBy.${status}`, mark); } catch (e) {} }
-        else if (game.users?.activeGM) { try { game.socket.emit("module.edha-content", { action: "set-flag", payload: { actorUuid: victim.uuid, key: `markedBy.${status}`, value: mark } }); } catch (e) {} }
-      }
-    } else if (victim.isOwner) {
-      await victim.toggleStatusEffect?.(status, { active: true });
-      if (wantMark) await victim.setFlag("edha-content", `markedBy.${status}`, mark);
-      if (combatExpire) { try { await victim.setFlag("edha-content", `combatExpire.${status}`, true); } catch (e) {} }
-    } else if (game.users?.activeGM) {
-      game.socket.emit("module.edha-content", { action: "apply-status-mark", payload: { actorUuid: victim.uuid, statusId: status, ...(wantMark ? { mark } : {}), ...(combatExpire ? { combatExpire: true } : {}) } });
-    } else { ui.notifications?.warn(`Edha: a GM must be online to mark ${victim.name}.`); return; }
+      // Job 6a: routed through edhaSetEdhaFlag — behavior flip, was a SILENT drop with no GM online
+      // (no warning at all). 🤖 bench row.
+      if (wantMark) await edhaSetEdhaFlag(victim, `markedBy.${status}`, mark);
+    } else {
+      const ok = await edhaWriteStatusMark(victim, status, wantMark ? mark : null, { combatExpire });
+      if (!ok) return;
+    }
     /* 07-27f: this three-term inline (07-24v) reached CONFIG.COSMERE.statuses for native ids and
      * printed its raw i18n KEY — bench run 1's "COSMERE.Status.Disoriented", open since 07-26h.
      * edhaConditionLabel is the same lookup order PLUS localization. */

@@ -25,11 +25,11 @@
   "resourceWrite": 17
  },
  "counts": {
-  "userTargets": 63,
-  "casterToken": 29,
+  "userTargets": 10,
+  "casterToken": 1,
   "rollFold": 0,
   "renderChatHook": 29,
-  "setFlagEmit": 11,
+  "setFlagEmit": 2,
   "sceneOnceRaw": 16,
   "gmWhisper": 9,
   "primaryGmGate": 20,

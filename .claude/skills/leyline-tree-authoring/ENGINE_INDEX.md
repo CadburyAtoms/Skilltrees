@@ -227,10 +227,21 @@ there is no lint — the swept corpus was 3 sites and only 1 was wrong):
   `ally-drops` decision lives. Unknown side on **either** end → `false`. `rangeFt` 0/absent → whole
   scene (an authored dial). A ranged cue with an unknown gap → `false`, because "within N ft" cannot
   be true of a position you do not have. Pinned in `tests/ally-drop-side.test.js`.
-- **Still carrying the old shape, deliberately** (do not "fix" these): the ~8 sites reading
-  `edhaCasterToken(x)?.document?.disposition ?? 1` default a missing token to FRIENDLY rather than
-  failing closed. That is a third behaviour — *guessing* — and each would need its own bench control
-  before changing. Listed in the 07-28d delta as a backlog family, not touched.
+- **R-63 (ENGINE PASS 5.2, Job 5, 2026-08-10) — `edhaDisposHostile(owner, target)` and
+  `edhaSameDisposition(owner, tok)` now fail CLOSED on the Number.isFinite convention**, matching
+  `edhaAllyDropEligible` above. Before: `edhaDisposHostile` returned `true` (hostile) when either
+  token was simply missing, AND defaulted a resolvable-but-unknown disposition to NEUTRAL (`?? 0`)
+  on both sides, so a known side compared against an unresolvable one read as hostile;
+  `edhaSameDisposition` defaulted to FRIENDLY (`?? 1`) on both sides. Both now: unknown disposition
+  on EITHER side → `false` (not hostile / not same-side). **Route new same-side/hostile checks
+  through these two rather than hand-rolling the comparison** — 16 inline sites (12 same-side
+  checks, 4 `edhaTokensWithin(...).filter(...)` enemies-in-range predicates) were migrated onto them
+  or given the equivalent inline `Number.isFinite` guard this pass; ~74 more `?? 1`/`?? 0`
+  disposition-default occurrences remain in the file (a much larger blast radius than the 16 named
+  in the audit — most are the SAME idiom on sites not yet swept) and are an explicit backlog for a
+  future pass, not silently fixed here. Pinned in `tests/disposition-failclosed.test.js`.
+  Every flip is R-63-sanctioned but IS a live-behavior change for a genuinely tokenless/unset-
+  disposition actor; flagged 🤖 on the checklist for bench re-verification.
 
 ## ⛑ AN AUTHORED **0** IS FALSY — the `x || <default>` revert (07-28g, 4 shipped bugs, NOT gated)
 
@@ -1567,7 +1578,25 @@ pre-07-24r consumer did. Necrotic Cascade's corpse detonation is the first `enem
   `afflictions`, `charges`). Clear at scene/combat end: `Hooks.on("deleteCombat", ...)` (see
   `edhaClearCharges`, `edhaClearKindleLights`).
 - **`edhaSetEdhaFlag(actor, key, value)`** — the generic write with the GM `set-flag` relay
-  (value `null` clears). Use it instead of hand-rolling isOwner/socket splits.
+  (value `null` clears). Use it instead of hand-rolling isOwner/socket splits. **THE sole GM-relay
+  flag writer** since ENGINE PASS 5.2 (Job 6, 2026-08-10) — its literal twin
+  `edhaSetActorFlagCross` (identical body, no return value) is deleted; all 3 callers repointed.
+  8 more inline `isOwner ? direct : GM-online ? relay : ...` splits were migrated onto it, unifying
+  the no-GM behavior to warn + return false — 4 of the 8 used to fall through SILENTLY (no warning
+  at all) when no GM was online, quietly losing the write. `scripts/lint-refs.js` pass 20 ratchets
+  `setFlagEmit` to 2 (this helper's own `emit` + one unrelated `set-resource` emit, a different
+  idiom not touched this pass). Pinned in `tests/flag-relay.test.js`.
+- **`async edhaWriteStatusMark(targetActor, statusId, mark, { combatExpire = false } = {})`**
+  (ENGINE PASS 5.2, Job 6b) — the shared isOwner/socket-relay body behind every "toggle a status ON
+  + record `markedBy.<status>`" site (owner: `toggleStatusEffect` + `setFlag` [+ `combatExpire`
+  flag]; else GM-relay via the `apply-status-mark` socket action carrying the same fields; else warn
+  + `false`). Four near-duplicate copies of this existed — `edhaApplyStatusMark`'s own non-timed
+  branch plus three marker-tree placement sites (list-kind marking, the enemies-range fill, the
+  plain victim placement) — all four now call this. **Not named `edhaApplyStatusMark`** — that name
+  was already the higher-level per-ITEM handler (`item, cfg, boundVictim` — resolves its own victim
+  off `edhaUserTargetActor()`/`options.victim`, posts the result card) that this lower-level
+  primitive now backs; a second same-named function would have silently SHADOWED it. Pinned in
+  `tests/flag-relay.test.js`.
 - **`edhaRoundWindowValid(mark, combat)`** — is a `{round, combatId}` window still open? Armed
   out of combat = open until consumed; in combat = that combat's same round only. Pinned in tests/.
 
@@ -1616,6 +1645,11 @@ pre-07-24r consumer did. Necrotic Cascade's corpse detonation is the first `enem
 ## Targeting / costs / math utils
 - `edhaPickPoint(prompt)` → grid-snapped `{x,y}` or null (click-to-place). `edhaTokensInCircle(cx,cy,ft)`,
   `edhaEnemyTokensInCircle(owner,cx,cy,ft)` (Destruction). `edhaCasterToken(actor)`, `edhaColorRank(actor,"red")`.
+  **`edhaCasterToken` adoption (ENGINE PASS 5.2, Job 4, 2026-08-10)**: bare `x.getActiveTokens?.()[0]`
+  reads (losing the canvas-controlled fallback the primitive has) and the dead-tail idiom
+  `edhaCasterToken(x) ?? x.getActiveTokens?.()[0]` (the `??` half is the primitive's own FIRST
+  branch — always dead code) are both gone; `scripts/lint-refs.js` pass 20 ratchets `casterToken` to
+  1 occurrence (the primitive's own body).
 - `edhaConsumeCost(item)` (reads `activation.consume`; false if can't pay) / **`await edhaRefundCost(item)`
   — ASYNC since 07-27q, and it must stay that way.** A refund is a CREDIT against a resource the
   cosmere system also writes ABSOLUTELY, and the two writes race: `Item#use()` pushes the cost
@@ -1689,6 +1723,48 @@ pre-07-24r consumer did. Necrotic Cascade's corpse detonation is the first `enem
   next-test-mod formula) call `edhaFoldDieMath(Roll.replaceFormulaData(...))` directly instead,
   because there is no immediate Roll to build; if you add one, fold at the point the formula is BAKED,
   not deferred to whoever rolls it later. Pinned in `tests/roll-formula.test.js`.
+- **Target/victim readers** (ENGINE PASS 5.2, hygiene campaign 2026-08-10, Job 1) — replace every
+  hand-rolled `Array.from(game.user?.targets ?? [])[0]` (four spellings existed: `Array.from` vs
+  spread, `?? null` vs bare, wanting the TOKEN vs its `.actor`):
+  - **`edhaUserTargetToken()`** → the first targeted token, or `null`.
+  - **`edhaUserTargetActor()`** → that token's `.actor`, or `null`.
+  - **`edhaResolveVictim(event, { owner = null } = {})`** (R-64) → the full 3-term chain
+    `options.victim ?? options.target ?? edhaUserTargetActor() ?? owner ?? null`. Six-plus sites
+    had DROPPED the `options.target` middle term, so an event carrying a `target` but no `victim`
+    fell through straight to whatever the CLICKING user had targeted — a different creature than
+    the one the event was actually about; that was live on 18 handler bodies before this pass, not
+    just the six flagged in the audit. A call site that used to end `?? actor` / `?? owner` passes
+    it as `{ owner }` — it is NOT folded into the chain's own default. Pinned in
+    `tests/victim-resolve.test.js`. `scripts/lint-refs.js` pass 20 ratchets `userTargets` (was 63,
+    now single digits — the reader's own body plus the handful of genuine ALL-targets reads that
+    have no first-target shape to migrate to, e.g. `edhaSovTargets`'s ally/enemy split).
+  - Sites inside `edhaEffectTargets` may still read `game.user?.targets` directly — it IS a
+    canonical consumer, not a violation.
+- **`edhaActorRulesOf(actor, type)`** (ENGINE PASS 5.2, Job 2) — ALL rules of a handler type across
+  an actor's talents, in item order → `[{ item, handler }]`. The plural sibling of the existing
+  first-match `edhaActorRuleOf(actor, type)` (unchanged). Retired ~29 open-coded
+  `for (tal of actor.items) { if (!edhaIsTalent(tal)) continue; for (rule of edhaEventRules(tal)) {
+  if (h?.type !== "X") continue; ... } }` sweeps, including `edhaWatchersOfRule`'s own per-actor
+  inner loop (the cross-actor watcher index now calls this per actor instead of re-deriving the
+  double loop). A talent carrying two rules of the SAME handler type yields two entries — matches
+  what every hand-rolled sweep already did (they iterated every rule, never stopped at one per
+  item). No caching added; call sites that memoized (`edhaWatchersOfRule`'s `_edhaRuleIndex`) keep
+  their own cache untouched. Pinned in `tests/actor-rules-of.test.js`.
+- **`async edhaResolveActorRef(uuid)`** (ENGINE PASS 5.2, Job 3) — resolves a uuid (Token OR Actor)
+  to an ACTOR: `fromUuid` → `ref?.actor ?? ref ?? null`, with a falsy uuid short-circuiting to
+  `null` WITHOUT calling `fromUuid` at all (so a ternary-guarded call site — `uuid ? await
+  fromUuid(uuid).catch(() => null) : null` — could drop its own guard entirely) and a failed lookup
+  resolving to `null` rather than throwing. Replaced ~94 hand-rolled `await
+  fromUuid(x).catch(() => null)` + `ref?.actor ?? ref` pairs. Sites that deliberately want the raw
+  Token/Item/Effect document (never call `.actor`) were left alone — grep for bare
+  `fromUuid(...).catch(() => null)` with no downstream `.actor` read. Pinned in
+  `tests/actor-ref-resolve.test.js`.
+  - **`EDHA_SOCKET_ACTIONS`** (Job 3) — the GM-relay socket handler's 22-branch
+    `if (data?.action === "X") { ...; return; }` chain is now a `{ action: async (payload) => {...}
+    }` lookup table; the `game.socket.on(...)` callback is just `const handler =
+    EDHA_SOCKET_ACTIONS[data?.action]; if (handler) await handler(data.payload || {});`. Every
+    branch body is unchanged (actor refs already route through `edhaResolveActorRef`). Add a new
+    relay action by adding a table entry, not another `if`.
 - `edhaFtToPx(ft)`, `edhaWhisperIds(owner)`,
   `edhaOwnsTalent(actor,name)`. (`edhaCharacterOwnersOf` deleted 07-26 with the orphan sweep —
   the name-keyed sweeps' entry point; a name-keyed owner scan has no legitimate future consumer.)

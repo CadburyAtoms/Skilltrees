@@ -3426,3 +3426,71 @@ a token you can remove from the canvas (or simply not place) to test the off-sce
 - [ ] 🤖 **Venom Glands (adversary bespoke ability) — the poison-damage roll folds.** An adversary
       ability, not a talent — flagged separately per the adversary-wiring standard. Trigger an attack
       that inflicts venom; confirm the damage amount is a real rolled die. *(R-65.)*
+
+## pass 5.2 (2026-08-10, engine consolidation — target/actor readers, R-63, R-64, GM-relay writer)
+
+Engine-only, no pack rebuild pending. Four consolidations: **R-64** fixes the 3-term victim-resolve
+chain (six-plus handler bodies had dropped the `options.target` middle term); **R-63** makes
+`edhaDisposHostile`/`edhaSameDisposition` and 16 inline same-side/enemies-in-range sites fail CLOSED
+on an unresolvable disposition instead of guessing FRIENDLY/NEUTRAL; `edhaSetActorFlagCross` (a
+literal twin of `edhaSetEdhaFlag`) is deleted and 8 inline isOwner/socket splits are unified onto
+`edhaSetEdhaFlag`/the new `edhaWriteStatusMark`, 4 of which used to drop a write SILENTLY (no
+warning) with no GM online; `edhaCasterToken`/`edhaActorRulesOf`/`edhaResolveActorRef` absorbed the
+remaining hand-rolled target-token, rule-sweep, and uuid-resolve duplication (repo-side only — no
+observable behavior change, not rows below).
+
+- [ ] 🤖 **R-64 — a `whenTargetStatus`/`unlessTargetStatus` gate now reads the right creature when
+      BOTH an event target and a stale user-target exist.** Predatory Patience (or any
+      `edha-triggered-effect` rule with `whenTargetStatus`/`unlessTargetStatus`) fired from a
+      `deal-damage`/`use` event that carries `options.target` — target a DIFFERENT creature on your
+      canvas selection than the one the attack actually hit, then land the hit; confirm the gate
+      reads the HIT creature's status, not whatever you have currently targeted. Before this pass
+      the gate silently re-read your current targets instead.
+- [ ] 🤖 **R-64 — Edha: Gain/Drain Focus, Edha: Reveal, and Edha: Next-Test-Mod's `victim` mode all
+      resolve against the event's actual target, not a stale selection.** Pick a representative
+      talent per handler (Siphoned Will / Galvanize-style `edha-focus {target: victim}`; Sharp
+      Eye-style `edha-reveal {target: victim}`; Coercive Pressure-style `edha-next-test-mod
+      {target: victim}`); fire each from a payload that carries `options.target` while your canvas
+      selection points at someone else; confirm the effect lands on the payload's creature.
+- [ ] 🤖 **R-64 — the `edha-cae-grant`/`edha-owner-list` (H3 annotate/near-victim) `victim` picks
+      agree with the payload, not the clicking user's canvas selection.** Same shape as above, for
+      Through the Fray-style CAE grants and any H3 list rule using `target: victim` — including
+      Order's covenant/edict-annotate placements and the multi-target Investiture-of-Command-style
+      `to: targets` sweep, which reads the SAME fixed `edhaUserTargetActor()` reader as everywhere
+      else and should behave identically to before (regression-only, no chain to verify there).
+- [ ] 🤖 **R-63 — a token with genuinely UNSET disposition is no longer treated as an enemy by
+      default.** Create/borrow a token whose `disposition` cannot resolve (a bare unlinked prototype
+      with no explicit disposition, if your test scene has one — otherwise this is a repo-side
+      pin only, see `tests/disposition-failclosed.test.js`) and confirm a hostile-only effect
+      (Consuming Decay's `edhaDisposHostile`-gated enemy check, or any `edha-owner-list
+      {requireDisposition: "enemy"}` prompt-mode placement) now REFUSES against it instead of
+      treating it as hostile.
+- [ ] 🤖 **R-63 — same-side checks (auras, Reroll Reaction's "enemies only", the Fate snare's
+      "enemies only spring it", the zone-guard's "protects the owner's ally") still fire correctly
+      for ordinary tokens with a normal disposition — this is a regression check on the 12 migrated
+      same-side sites and the 4 enemies-in-range filters.** Pick 2–3 of: an aura talent
+      (`edha-buff-aura`-family with `affects: allies`/`enemies`), Reroll Reaction against a marked
+      foe, a Fate snare stepped on by an ally vs. an enemy, Reveal Facts / Investiture-of-Command's
+      enemies-in-range button. Confirm normal-disposition behavior is unchanged.
+- [ ] 🤖 **Job 6a — 4 flag/status writes that used to fail SILENTLY with no GM online now warn the
+      player instead.** With no GM connected (or `game.users.activeGM` unset), as a non-owning
+      player: (1) unmark a ledger entry via `edhaListUnmark`'s consumer (any H3 list release/evict
+      on a creature you don't own), (2) `edhaRemoveMark`'s reroll-reaction removal, (3) an
+      `edha-die-step {oncePerTarget: true}` talent's per-target stamp (e.g. a Sovereignty die-step
+      rule with the once-per-target box checked), (4) a `edha-apply-status`/`edha-owner-list` timed
+      mark (`expire: owner-turn`/`target-turn`, e.g. Kneel's Compelled) applied to a creature you
+      don't own. Confirm each now shows "Edha: a GM must be online…" instead of quietly doing
+      nothing. Also confirm the OTHER 3 unified sites (`edhaSetNextTestMod`, `edhaSovSetSteps`,
+      `edhaGrantAdvAttack`, `edhaGrantTempHpCross`) still warn as before (they already did — this is
+      a wording-consolidation regression check, not a behavior flip).
+- [ ] 🤖 **Job 6b — `edhaWriteStatusMark`'s GM-relay consolidation is a regression check, not a new
+      capability.** Place a marker via the list-kind placement path (H3's `target: list-members`
+      shape), the enemies-in-range fill (`target: enemies-range`), and a plain victim mark, each
+      relayed to a GM (non-owner marking a creature they don't own) — confirm the status toggles and
+      `markedBy.<status>` lands identically to before. NOTE: the audit that requested this pass
+      described a `combatExpire` field being dropped from two of these three sites' socket payloads;
+      root-causing found no such field on the `edha-owner-list` handler schema at all (checked
+      `data/*.json` + the schema registration) — there was nothing to drop. If a talent DOES need an
+      H3-placed mark to expire at end of combat, that is a missing FEATURE (no authored field exists
+      yet), not a bug this pass fixed — file it as a new ruling if wanted, don't expect a card that
+      changes.
