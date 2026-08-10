@@ -20,10 +20,8 @@ Without --write it prints the before/after table and touches nothing.
 import json
 import random
 import sys
-from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
-GAZ = ROOT / "source-materials/maps/thyrcross.map.json"
+import maplib
 
 # City-tier totals per nation. thalendor/corvaine are the walked rosters
 # (rulings 151/152); the rest are PROVISIONAL (flagged) pending their passes.
@@ -65,7 +63,7 @@ def zipf_sizes(n, total, rng):
 def main():
     sidecar = json.load(open(sys.argv[1]))
     write = "--write" in sys.argv
-    gaz = json.load(open(GAZ))
+    gaz = maplib.load_gazetteer()
     rng = random.Random(SEED)
 
     towns_by_nation = {}
@@ -141,8 +139,8 @@ def main():
                 "ruling 161 bottom-up (settlement layer / frontier saturation); "
                 "supersedes the ruling-85 top-down figure. Clearing now derives "
                 "FROM population (demand-side ledger, lore-forge Phase 4b).")
-    json.dump(gaz, open(GAZ, "w"), indent=1)
-    print(f"\nwrote {GAZ}: {len(towns_out)} towns, {len(ledgers)} ledgers")
+    maplib.save_gazetteer(gaz)
+    print(f"\nwrote {maplib.GAZETTEER}: {len(towns_out)} towns, {len(ledgers)} ledgers")
 
 
 if __name__ == "__main__":
