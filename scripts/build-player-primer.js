@@ -28,101 +28,34 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const { esc, inline, parseMd, renderBlocks } = require('./lib/md.js');
+const buildDoc = require('./lib/build-doc.js');
 
 const ROOT = path.join(__dirname, '..');
 const OUT = path.join(ROOT, 'EDHA_PLAYER_PRIMER.html');
 
-const read = (rel) => fs.readFileSync(path.join(ROOT, rel), 'utf8').replace(/\r\n/g, '\n');
-const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-  .replace(/"/g, '&quot;');
+const read = (rel) => buildDoc.read(rel, ROOT);
 
 // ---------------------------------------------------------------------------
-// Markdown (the primer subset: h1-h3, tables, lists, blockquotes, hr, inline
-// bold/italic/code) — same dialect the canon codex renders.
+// Markdown (the primer subset: h1-h4, tables, ordered/unordered lists, blockquotes, hr, inline
+// bold/italic/code) — scripts/lib/md.js's shared engine, same dialect the canon codex renders.
+//
+// worldSlug is deliberately its OWN algorithm, not md.js's slugifyAnchor: the two disagree on real
+// headings in this doc (slugifyAnchor keeps `§` and eats en/em dashes outright, e.g. collapsing
+// "54–59" to "5459"; worldSlug replaces any non-alnum run with one dash). Switching would change
+// EDHA_PLAYER_PRIMER.html's heading ids, which is not one of the drift fixes this consolidation
+// ships — see scripts/lib/md.js's module header.
 // ---------------------------------------------------------------------------
 
-function inline(text) {
-  let s = esc(text);
-  s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
-  s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-  s = s.replace(/\*([^*]+)\*/g, '<em>$1</em>');
-  return s;
-}
+const worldSlug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
-const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-
-function mdToHtml(md, { stripGmNote = true, headings = null } = {}) {
-  const lines = md.split('\n');
-  const out = [];
-  let i = 0;
-  let para = [];
-  const flushPara = () => {
-    if (para.length) { out.push('<p>' + inline(para.join(' ')) + '</p>'); para = []; }
-  };
-  while (i < lines.length) {
-    const line = lines[i];
-
-    // blockquote (possibly the GM note — drop that one entirely)
-    if (/^>/.test(line)) {
-      flushPara();
-      const quote = [];
-      while (i < lines.length && /^>/.test(lines[i])) { quote.push(lines[i].replace(/^>\s?/, '')); i++; }
-      const text = quote.join(' ');
-      if (!(stripGmNote && /GM note/i.test(text))) {
-        out.push('<blockquote>' + inline(text) + '</blockquote>');
-      }
-      continue;
-    }
-    // table
-    if (/^\|/.test(line) && i + 1 < lines.length && /^\|[\s:|-]+\|$/.test(lines[i + 1].replace(/[^|\s:-]/g, ''))) {
-      flushPara();
-      const rows = [];
-      while (i < lines.length && /^\|/.test(lines[i])) {
-        rows.push(lines[i].replace(/^\||\|$/g, '').split('|').map((c) => c.trim()));
-        i++;
-      }
-      const head = rows[0];
-      const body = rows.slice(2);
-      out.push('<table><thead><tr>' + head.map((c) => '<th>' + inline(c) + '</th>').join('') +
-        '</tr></thead><tbody>' +
-        body.map((r) => '<tr>' + r.map((c) => '<td>' + inline(c) + '</td>').join('') + '</tr>').join('') +
-        '</tbody></table>');
-      continue;
-    }
-    // list (items may wrap onto indented continuation lines)
-    if (/^- /.test(line)) {
-      flushPara();
-      const items = [];
-      while (i < lines.length && /^- /.test(lines[i])) {
-        let item = lines[i].slice(2);
-        i++;
-        while (i < lines.length && /^\s+\S/.test(lines[i]) && !/^- /.test(lines[i])) {
-          item += ' ' + lines[i].trim();
-          i++;
-        }
-        items.push(item);
-      }
-      out.push('<ul>' + items.map((t) => '<li>' + inline(t) + '</li>').join('') + '</ul>');
-      continue;
-    }
-    const h = line.match(/^(#{1,3}) (.*)/);
-    if (h) {
-      flushPara();
-      const level = h[1].length;
-      const text = h[2];
-      const id = 'w-' + slugify(text);
-      if (headings && level >= 2) headings.push({ level, text, id });
-      out.push(`<h${level} id="${id}">` + inline(text) + `</h${level}>`);
-      i++;
-      continue;
-    }
-    if (line.trim() === '---') { flushPara(); out.push('<hr>'); i++; continue; }
-    if (line.trim() === '') { flushPara(); i++; continue; }
-    para.push(line.trim());
-    i++;
-  }
-  flushPara();
-  return out.join('\n');
+function mdToHtml(md, { stripGmNote = true } = {}) {
+  let blocks = parseMd(md);
+  // Drop the GM-note blockquote entirely rather than rendering it (possibly the only blockquote
+  // in the doc) — same filter the old fused parser applied inline.
+  if (stripGmNote) blocks = blocks.filter((b) => !(b.type === 'quote' && /GM note/i.test(b.text)));
+  const { article, toc } = renderBlocks(blocks, { idPrefix: 'w-', slugify: worldSlug });
+  return { html: article, headings: toc };
 }
 
 // ---------------------------------------------------------------------------
@@ -281,8 +214,7 @@ function main() {
   const check = process.argv.includes('--check');
 
   const primerMd = read('EDHA_PLAYER_PRIMER.md');
-  const headings = [];
-  const worldHtml = mdToHtml(primerMd, { stripGmNote: true, headings });
+  const { html: worldHtml, headings } = mdToHtml(primerMd, { stripGmNote: true });
 
   const mapJpg = fs.readFileSync(path.join(ROOT, 'source-materials/maps/thyrcross-player.jpg'));
   const mapUri = 'data:image/jpeg;base64,' + mapJpg.toString('base64');
@@ -299,7 +231,7 @@ function main() {
     .digest('hex').slice(0, 10);
 
   const nav = headings.map((h) =>
-    `<a class="lv${h.level}" href="#${h.id}">${inline(h.text)}</a>`).join('\n');
+    `<a class="lv${h.level}" href="#${h.slug}">${inline(h.text, { italic: true })}</a>`).join('\n');
 
   const DATA = JSON.stringify(atlases).replace(/</g, '\\u003c');
 
@@ -584,18 +516,13 @@ $('#q').addEventListener('input', () => {
 </html>
 `;
 
-  if (check) {
-    const existing = fs.existsSync(OUT) ? fs.readFileSync(OUT, 'utf8') : '';
-    if (existing.replace(/\r\n/g, '\n') !== html.replace(/\r\n/g, '\n')) {
-      console.error('EDHA_PLAYER_PRIMER.html is stale — run: node scripts/build-player-primer.js');
-      process.exit(1);
-    }
-    console.log('EDHA_PLAYER_PRIMER.html is up to date.');
-    return;
-  }
-  fs.writeFileSync(OUT, html);
-  console.log('wrote EDHA_PLAYER_PRIMER.html (' + Math.round(html.length / 1024) + ' KB, ' +
-    talentCount + ' talents, build ' + stamp + ')');
+  buildDoc.emit(OUT, html, {
+    checkMode: check,
+    staleMessage: () => 'EDHA_PLAYER_PRIMER.html is stale — run: node scripts/build-player-primer.js',
+    upToDateMessage: () => 'EDHA_PLAYER_PRIMER.html is up to date.',
+    afterWrite: () => console.log('wrote EDHA_PLAYER_PRIMER.html (' + Math.round(html.length / 1024) + ' KB, ' +
+      talentCount + ' talents, build ' + stamp + ')'),
+  });
 }
 
 main();

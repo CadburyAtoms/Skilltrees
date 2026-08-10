@@ -27,6 +27,7 @@
 const fs = require("fs");
 const path = require("path");
 const { matchBrace, topLevelKeys } = require("./handler-schemas.js");
+const buildDoc = require("./lib/build-doc.js");
 
 const REPO_ROOT = path.resolve(__dirname, "..");
 const OUT = path.join(REPO_ROOT, "data", "native-vocabulary.json");
@@ -339,18 +340,15 @@ const snapshot = {
 
 const serialized = JSON.stringify(snapshot, null, 2) + "\n";
 
-if (checkMode) {
-  const current = fs.existsSync(OUT) ? fs.readFileSync(OUT, "utf8") : "";
-  if (current.replace(/\r\n/g, "\n") !== serialized) {
-    console.error("✗ data/native-vocabulary.json is stale — run: node scripts/dump-native-vocabulary.js");
-    process.exit(1);
-  }
-  console.log(`✓ native-vocabulary in sync (${systemJson.id} ${systemJson.version}: ${events.length} events, ${handlers.length} handlers)`);
-  process.exit(0);
-}
-
-fs.writeFileSync(OUT, serialized);
-console.log(`✓ wrote data/native-vocabulary.json — ${systemJson.id} ${systemJson.version}: ${events.length} native events, ${handlers.length} native handlers`);
-console.log(`  events:   ${events.map((e) => e.type).join(", ")}`);
-console.log(`  handlers: ${handlers.map((h) => h.type).join(", ")}`);
-console.log(`  document system fields (top level, union): ${snapshot.systemSchemaTopLevelFields.length}`);
+buildDoc.emit(OUT, serialized, {
+  checkMode,
+  checkExitCode: 0,
+  staleMessage: () => "✗ data/native-vocabulary.json is stale — run: node scripts/dump-native-vocabulary.js",
+  upToDateMessage: () => `✓ native-vocabulary in sync (${systemJson.id} ${systemJson.version}: ${events.length} events, ${handlers.length} handlers)`,
+  afterWrite: () => {
+    console.log(`✓ wrote data/native-vocabulary.json — ${systemJson.id} ${systemJson.version}: ${events.length} native events, ${handlers.length} native handlers`);
+    console.log(`  events:   ${events.map((e) => e.type).join(", ")}`);
+    console.log(`  handlers: ${handlers.map((h) => h.type).join(", ")}`);
+    console.log(`  document system fields (top level, union): ${snapshot.systemSchemaTopLevelFields.length}`);
+  },
+});

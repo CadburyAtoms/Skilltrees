@@ -38,14 +38,15 @@
  */
 'use strict';
 
-const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const { esc, inline: mdInline } = require('./lib/md.js');
+const buildDoc = require('./lib/build-doc.js');
 
 const ROOT = path.join(__dirname, '..');
 const OUT = path.join(ROOT, 'EDHA_DASHBOARD.html');
 
-const read = (rel) => fs.readFileSync(path.join(ROOT, rel), 'utf8').replace(/\r\n/g, '\n');
+const read = (rel) => buildDoc.read(rel, ROOT);
 const hash10 = (s) => crypto.createHash('sha1').update(s).digest('hex').slice(0, 10);
 
 // ---------------------------------------------------------------------------
@@ -352,20 +353,14 @@ function parseTable(sectionMd) {
 }
 
 // ---------------------------------------------------------------------------
-// HTML rendering
+// HTML rendering — esc/inline now come from scripts/lib/md.js (moved 2026-08-10, hygiene campaign
+// wave 2A). `inline` here is a thin wrapper pinning the dashboard's old feature set (bold, ~~strike~~,
+// backtick code, the ⚑ flag span — NO italics; the dashboard's markdown never rendered *italic* and
+// adding it now would be a behavior change no bench row asked for) so every call site below keeps
+// its original single-argument shape.
 // ---------------------------------------------------------------------------
 
-const esc = (s) =>
-  s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-
-function inline(s) {
-  let h = esc(s);
-  h = h.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-  h = h.replace(/~~([^~]+)~~/g, '<s>$1</s>');
-  h = h.replace(/`([^`]+)`/g, '<code>$1</code>');
-  h = h.replace(/⚑/g, '<span class="flag">⚑</span>');
-  return h;
-}
+const inline = (s) => mdInline(s, { strike: true, flag: true });
 
 const plain = (s) => s.replace(/\*\*([^*]+)\*\*/g, '$1').replace(/`([^`]+)`/g, '$1');
 
@@ -1072,32 +1067,26 @@ refresh();
 // ---------------------------------------------------------------------------
 function main() {
   const html = build();
-  const check = process.argv.includes('--check');
-  if (check) {
-    const existing = fs.existsSync(OUT) ? fs.readFileSync(OUT, 'utf8') : '';
-    if (existing.replace(/\r\n/g, '\n') !== html.replace(/\r\n/g, '\n')) {
-      console.error(
-        'STALE: EDHA_DASHBOARD.html does not match its source docs.\n' +
-          'Run: node scripts/build-dashboard.js  (and commit the regenerated dashboard)'
-      );
-      process.exit(1);
-    }
-    console.log('dashboard up to date ✓');
-    return;
-  }
-  fs.writeFileSync(OUT, html);
-  const rowCount = (html.match(/class="row/g) || []).length;
-  // Drift floor re-based after the 2026-07-18 checklist consolidation (691 → ~555 rows: passed/
-  // superseded rows retired, setup boilerplate removed). Keep it below any legitimate cleanup
-  // but high enough to catch a section-parser regression zeroing out whole tabs.
-  // Re-based again 2026-07-28l: bench run 23 retired 7 rows and crossed the old 400 floor at 398.
-  // Verified legitimate rather than parser drift — the checklist's own `- [ ]` count moved 79 → 72
-  // (exactly the 7 retired) and the `# BENCH —` 🤖 queue moved 22 → 15, so no section zeroed out.
-  if (rowCount < 380) {
-    console.error(`SUSPICIOUS: only ${rowCount} rows parsed across the sources — parser drift?`);
-    process.exit(1);
-  }
-  console.log(`Wrote ${path.basename(OUT)} (${rowCount} rows).`);
+  buildDoc.emit(OUT, html, {
+    checkMode: process.argv.includes('--check'),
+    staleMessage: () => 'STALE: EDHA_DASHBOARD.html does not match its source docs.\n' +
+      'Run: node scripts/build-dashboard.js  (and commit the regenerated dashboard)',
+    upToDateMessage: () => 'dashboard up to date ✓',
+    afterWrite: () => {
+      const rowCount = (html.match(/class="row/g) || []).length;
+      // Drift floor re-based after the 2026-07-18 checklist consolidation (691 → ~555 rows: passed/
+      // superseded rows retired, setup boilerplate removed). Keep it below any legitimate cleanup
+      // but high enough to catch a section-parser regression zeroing out whole tabs.
+      // Re-based again 2026-07-28l: bench run 23 retired 7 rows and crossed the old 400 floor at 398.
+      // Verified legitimate rather than parser drift — the checklist's own `- [ ]` count moved 79 → 72
+      // (exactly the 7 retired) and the `# BENCH —` 🤖 queue moved 22 → 15, so no section zeroed out.
+      if (rowCount < 380) {
+        console.error(`SUSPICIOUS: only ${rowCount} rows parsed across the sources — parser drift?`);
+        process.exit(1);
+      }
+      console.log(`Wrote ${path.basename(OUT)} (${rowCount} rows).`);
+    },
+  });
 }
 
 main();

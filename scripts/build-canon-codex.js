@@ -31,9 +31,10 @@
  */
 'use strict';
 
-const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const { esc, inline, parseMd, renderBlocks, makeLinkifier, slugifyAnchor } = require('./lib/md.js');
+const buildDoc = require('./lib/build-doc.js');
 
 const ROOT = path.join(__dirname, '..');
 const SRC_MD = path.join(ROOT, 'EDHA_CAMPAIGN_CANON.md');
@@ -41,188 +42,18 @@ const SRC_GAZ = path.join(ROOT, 'source-materials', 'maps', 'thyrcross.map.json'
 const OUT = path.join(ROOT, 'EDHA_CANON_CODEX.html');
 
 // ---------------------------------------------------------------------------
-// The MD engine. Everything between the ENGINE markers is ALSO embedded into
-// the page verbatim (via Function.prototype.toString), so the browser re-render
-// after an edit is pixel-identical to the build-time render. Keep these six
-// functions dependency-free (no fs/require/node globals) and declared as plain
-// `function` statements — arrow consts don't stringify with their names.
+// The MD engine now lives in scripts/lib/md.js (moved 2026-08-10, hygiene campaign wave 2A —
+// esc/parseMd/makeLinkifier/inline/renderBlocks were 3 independently-drifted copies across the
+// three HTML doc builders; see that module's header). esc, slugifyAnchor, parseMd, makeLinkifier,
+// inline, and renderBlocks are STILL embedded into the page verbatim below (ENGINE_SRC) — they
+// remain plain dependency-free `function` statements in md.js for exactly that reason. renderBlocks
+// is called here with the codex's full feature set (dataL/hlink/tableWrap all on, idPrefix '') —
+// see md.js's renderBlocks header for what those opt flags mean and why build-player-primer.js
+// passes different ones.
 // ---------------------------------------------------------------------------
 
-function esc(s) {
-  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
-
-function slugify(text) {
-  return text.toLowerCase().replace(/[^\w\s§-]/g, '').trim().replace(/\s+/g, '-').slice(0, 70);
-}
-
-// Markdown → blocks (the subset the canon doc actually uses: h1–h4, tables,
-// flat - / 1. lists, > blockquotes, ---, prose paragraphs w/ hard-wrap reflow).
-// Every block records its source line range [l0, l1) so the editor can splice.
-function parseMd(md) {
-  const lines = md.split(/\r?\n/);
-  const blocks = [];
-  let i = 0;
-  const peek = () => lines[i];
-
-  while (i < lines.length) {
-    const line = lines[i];
-    const l0 = i;
-
-    if (/^\s*$/.test(line)) { i++; continue; }
-
-    const h = line.match(/^(#{1,4}) (.*)$/);
-    if (h) { i++; blocks.push({ type: 'h', level: h[1].length, text: h[2], l0, l1: i }); continue; }
-
-    if (/^---+\s*$/.test(line)) { i++; blocks.push({ type: 'hr', l0, l1: i }); continue; }
-
-    if (/^\|/.test(line)) {
-      const rows = [];
-      while (i < lines.length && /^\|/.test(peek())) {
-        const cells = peek().replace(/^\||\|$/g, '').split('|').map(c => c.trim());
-        if (!/^[-:\s|]+$/.test(peek().replace(/\|/g, ''))) rows.push(cells);
-        i++;
-      }
-      blocks.push({ type: 'table', rows, l0, l1: i });
-      continue;
-    }
-
-    const bq = line.match(/^> ?(.*)$/);
-    if (bq) {
-      const parts = [bq[1]];
-      i++;
-      while (i < lines.length && /^> ?/.test(peek())) { parts.push(peek().replace(/^> ?/, '')); i++; }
-      blocks.push({ type: 'quote', text: parts.join(' '), l0, l1: i });
-      continue;
-    }
-
-    const li = line.match(/^- (.*)$/);
-    if (li) {
-      const items = [];
-      while (i < lines.length) {
-        const m = peek().match(/^- (.*)$/);
-        if (m) { items.push(m[1]); i++; }
-        else if (/^ {2,}\S/.test(peek()) && items.length) { items[items.length - 1] += ' ' + peek().trim(); i++; }
-        else break;
-      }
-      blocks.push({ type: 'ul', items, l0, l1: i });
-      continue;
-    }
-
-    const ol = line.match(/^(\d+)\. (.*)$/);
-    if (ol) {
-      const items = [];
-      while (i < lines.length) {
-        const m = peek().match(/^(\d+)\. (.*)$/);
-        if (m) { items.push({ n: +m[1], text: m[2] }); i++; }
-        else if (/^ {2,}\S/.test(peek()) && items.length) { items[items.length - 1].text += ' ' + peek().trim(); i++; }
-        else break;
-      }
-      blocks.push({ type: 'ol', items, l0, l1: i });
-      continue;
-    }
-
-    // prose paragraph — reflow hard-wrapped lines until a blank or a block starter
-    const parts = [line];
-    i++;
-    while (i < lines.length && !/^\s*$/.test(peek()) &&
-           !/^(#{1,4} |---+\s*$|\||- |\d+\. |> )/.test(peek())) {
-      parts.push(peek().trim());
-      i++;
-    }
-    blocks.push({ type: 'p', text: parts.join(' '), l0, l1: i });
-  }
-  return blocks;
-}
-
-function makeLinkifier(places) {
-  // longest names first so "Palewater Ford" wins over any shorter overlap
-  const sorted = places.slice().sort((a, b) => b.name.length - a.name.length);
-  const re = new RegExp(
-    '\\b(' + sorted.map(p => p.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')\\b', 'g');
-  const byLower = new Map(sorted.map(p => [p.name.toLowerCase(), p]));
-  return function (html) {
-    // operate on text between tags only, so attribute values never get linkified
-    return html.split(/(<[^>]+>)/).map(seg => {
-      if (seg.startsWith('<')) return seg;
-      return seg.replace(re, m => {
-        const p = byLower.get(m.toLowerCase());
-        return '<a class="pl" data-px="' + p.px[0] + ',' + p.px[1] + '" data-place="' +
-          esc(p.name) + '">' + m + '</a>';
-      });
-    }).join('');
-  };
-}
-
-// Inline rendering: escape → `code` / **bold** / *italic* → place-name links
-function inline(text, linkify) {
-  let h = esc(text);
-  h = h.replace(/`([^`]+)`/g, '<code>$1</code>');
-  h = h.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-  h = h.replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
-  return linkify ? linkify(h) : h;
-}
-
-// Blocks → article HTML + TOC + place→anchor map. Every top-level element
-// carries data-l="l0:l1" (source line range) for the block editor.
-function renderDoc(blocks, places, linkify) {
-  const toc = [];
-  const seen = new Map(); // slug → count, for uniqueness
-  const out = [];
-  const anchorFor = new Map(); // place name (lower) → slug
-  let curSlug = '';
-
-  const noteMention = text => {
-    const low = text.toLowerCase();
-    for (const p of places) {
-      const key = p.name.toLowerCase();
-      if (!anchorFor.has(key) && curSlug && low.includes(key)) anchorFor.set(key, curSlug);
-    }
-  };
-  const dl = b => ' data-l="' + b.l0 + ':' + b.l1 + '"';
-
-  for (const b of blocks) {
-    if (b.type === 'h') {
-      let slug = slugify(b.text) || 'section';
-      const n = (seen.get(slug) || 0) + 1;
-      seen.set(slug, n);
-      if (n > 1) slug += '-' + n;
-      curSlug = slug;
-      if (b.level >= 2) toc.push({ level: b.level, text: b.text, slug });
-      out.push('<h' + b.level + ' id="' + slug + '"' + dl(b) + '>' + inline(b.text, linkify) +
-        '<a class="hlink" href="#' + slug + '">#</a></h' + b.level + '>');
-      const low = b.text.toLowerCase();
-      for (const p of places) {
-        const key = p.name.toLowerCase();
-        if (low.includes(key)) anchorFor.set(key, slug);
-      }
-      continue;
-    }
-    if (b.type === 'hr') { out.push('<hr' + dl(b) + '>'); continue; }
-    if (b.type === 'p') { noteMention(b.text); out.push('<p' + dl(b) + '>' + inline(b.text, linkify) + '</p>'); continue; }
-    if (b.type === 'quote') { noteMention(b.text); out.push('<blockquote' + dl(b) + '>' + inline(b.text, linkify) + '</blockquote>'); continue; }
-    if (b.type === 'ul') {
-      noteMention(b.items.join(' '));
-      out.push('<ul' + dl(b) + '>' + b.items.map(t => '<li>' + inline(t, linkify) + '</li>').join('') + '</ul>');
-      continue;
-    }
-    if (b.type === 'ol') {
-      noteMention(b.items.map(x => x.text).join(' '));
-      out.push('<ol' + dl(b) + '>' + b.items.map(x => '<li value="' + x.n + '">' + inline(x.text, linkify) + '</li>').join('') + '</ol>');
-      continue;
-    }
-    if (b.type === 'table') {
-      noteMention(b.rows.flat().join(' '));
-      const head = b.rows[0], body = b.rows.slice(1);
-      out.push('<div class="tblwrap"' + dl(b) + '><table><thead><tr>' +
-        head.map(c => '<th>' + inline(c, linkify) + '</th>').join('') + '</tr></thead><tbody>' +
-        body.map(r => '<tr>' + r.map(c => '<td>' + inline(c, linkify) + '</td>').join('') + '</tr>').join('') +
-        '</tbody></table></div>');
-      continue;
-    }
-  }
-  return { article: out.join('\n'), toc, anchorFor };
-}
+const ENGINE_SRC = [esc, slugifyAnchor, parseMd, makeLinkifier, inline, renderBlocks]
+  .map(f => f.toString()).join('\n\n');
 
 // ---------------------------------------------------------------------------
 // Build-side helpers (NOT embedded)
@@ -244,9 +75,6 @@ function buildPlaceIndex(gaz) {
   return places;
 }
 
-const ENGINE_SRC = [esc, slugify, parseMd, makeLinkifier, inline, renderDoc]
-  .map(f => f.toString()).join('\n\n');
-
 // ---------------------------------------------------------------------------
 // Page template
 // ---------------------------------------------------------------------------
@@ -255,8 +83,8 @@ function buildPage() {
   // LF-normalize at the read so the stamp is platform-independent: an autocrlf
   // working tree (CRLF) and CI's LF checkout must hash identically (the 15c/15d
   // bench-sheet lesson — a --check failing on the stamp alone is line endings)
-  const md = fs.readFileSync(SRC_MD, 'utf8').replace(/\r\n/g, '\n');
-  const gazText = fs.readFileSync(SRC_GAZ, 'utf8').replace(/\r\n/g, '\n');
+  const md = buildDoc.read(SRC_MD, ROOT);
+  const gazText = buildDoc.read(SRC_GAZ, ROOT);
   const gaz = JSON.parse(gazText);
   const stamp = crypto.createHash('sha256')
     .update(md).update(gazText).digest('hex').slice(0, 12);
@@ -264,7 +92,9 @@ function buildPage() {
   const places = buildPlaceIndex(gaz);
   const linkify = makeLinkifier(places);
   const blocks = parseMd(md);
-  const { article, toc, anchorFor } = renderDoc(blocks, places, linkify);
+  const { article, toc, anchorFor } = renderBlocks(blocks, {
+    slugify: slugifyAnchor, dataL: true, hlink: true, tableWrap: true, linkify, places,
+  });
 
   const markers = places.map(p => {
     const site = p.kind === 'site' ? gaz.sites.find(s => s.id === p.id) : null;
@@ -525,7 +355,9 @@ doc.addEventListener('click', e => {
 function rerender(){
   clearMarks();
   const linkify = makeLinkifier(PLACES);
-  const r = renderDoc(parseMd(mdText()), PLACES, linkify);
+  const r = renderBlocks(parseMd(mdText()), {
+    slugify: slugifyAnchor, dataL: true, hlink: true, tableWrap: true, linkify, places: PLACES,
+  });
   doc.innerHTML = r.article;
   tocEl.innerHTML = r.toc.map(t =>
     '<a class="t' + t.level + '" href="#' + t.slug + '">' + esc(t.text) + '</a>').join('\\n');
@@ -768,17 +600,12 @@ window.addEventListener('beforeunload', e => { if (dirty) e.preventDefault(); })
 
 function main() {
   const html = buildPage();
-  if (process.argv.includes('--check')) {
-    const committed = fs.existsSync(OUT) ? fs.readFileSync(OUT, 'utf8') : '';
-    if (committed.replace(/\r\n/g, '\n') !== html.replace(/\r\n/g, '\n')) {
-      console.error('EDHA_CANON_CODEX.html is stale — run: node scripts/build-canon-codex.js');
-      process.exit(1);
-    }
-    console.log('codex in sync');
-    return;
-  }
-  fs.writeFileSync(OUT, html);
-  console.log(`codex -> ${OUT}  (open by double-clicking; regenerate after canon/gazetteer edits)`);
+  buildDoc.emit(OUT, html, {
+    checkMode: process.argv.includes('--check'),
+    staleMessage: () => 'EDHA_CANON_CODEX.html is stale — run: node scripts/build-canon-codex.js',
+    upToDateMessage: () => 'codex in sync',
+    afterWrite: () => console.log(`codex -> ${OUT}  (open by double-clicking; regenerate after canon/gazetteer edits)`),
+  });
 }
 
 main();
