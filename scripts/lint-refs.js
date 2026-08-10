@@ -1566,6 +1566,94 @@ engine.split("\n").forEach((lineText, i) => {
   if (seen19 < 20) err(`lint-refs pass 19: only ${seen19} \`currentTarget\` reads were found (expected 20+) — the scan rotted; fix it before trusting this pass.`);
 }
 
+/* --- pass 20: the ENGINE IDIOM ratchet (2026-08-10, the hygiene-campaign ratchet) ----------------
+ *
+ * register-skills.js (19.5k lines) has accumulated hand-rolled copies of idioms that already have
+ * canonical helpers elsewhere in the engine: reading `game.user.targets` directly instead of going
+ * through the target-reader primitive, re-deriving a caster's token instead of calling
+ * `edhaCasterToken`, folding a Roll formula by hand instead of `edhaRollFormula`, binding a chat-card
+ * button with a raw `renderChatMessageHTML` hook instead of the button-binder table, emitting the
+ * GM-relay socket action by hand instead of `edhaSetEdhaFlag`/`edhaSpendResource`, poking the
+ * once-per-scene ledger by its raw flag keys instead of the oncePerScene gate/stamp pair, hand-rolling
+ * the GM-whisper recipient list instead of `edhaGmIds`, re-deriving the primary-GM gate instead of
+ * `edhaDefBuffGmGate`, and writing a `system.resources.<id>.value`/`.max` update path by hand instead
+ * of `edhaSpendResource`/`edhaConsumeCost`. An upcoming migration will consolidate these onto their
+ * canonical helpers; this pass exists so that consolidation is FORCED to record its progress, the
+ * same way pass 7 forces the name-keyed migration to.
+ *
+ * scripts/engine-idiom-ratchet.json freezes today's measured count per idiom. Same two-way
+ * enforcement as pass 7's allowlist:
+ *   - actual > recorded  -> ERROR (the count may not grow; the site must go through the canonical
+ *     helper instead of hand-rolling the idiom again)
+ *   - actual < recorded  -> ERROR (some site(s) migrated off the idiom, but the ratchet file was
+ *     never lowered to match — "the ratchet must not become fiction")
+ *
+ * Scanned against the SAME comment-stripped source pass 7 uses (`engineCode` = `stripComments(engine)`
+ * above), with STRING CONTENTS KEPT — several of these idioms live inside string/template literals
+ * (a hook name, a flag key, an update-path key), and blanking strings would blind the pass to exactly
+ * what it exists to count. */
+{
+  const RATCHET_PATH = path.join(__dirname, "engine-idiom-ratchet.json");
+  let ratchet;
+  try { ratchet = JSON.parse(fs.readFileSync(RATCHET_PATH, "utf8")); }
+  catch (e) { err(`pass 20: cannot read scripts/engine-idiom-ratchet.json — ${e.message}`); ratchet = null; }
+
+  if (ratchet) {
+    const CHECKS = [
+      // game.user.targets read directly — canonical: the target-reader primitive.
+      { key: "userTargets", re: /game\.user\??\.targets/g,
+        helper: "the target-reader primitive (edhaEffectTargets / upcoming reader)" },
+      // Re-deriving the caster's active token by hand — canonical: edhaCasterToken.
+      { key: "casterToken", re: /getActiveTokens\??\.?\(\)\s*\[\s*0\s*\]/g,
+        helper: "edhaCasterToken" },
+      // Hand-folding a Roll formula against roll data — canonical: edhaRollFormula (upcoming).
+      { key: "rollFold", re: /new Roll\(\s*Roll\.replaceFormulaData/g,
+        helper: "edhaRollFormula (upcoming)" },
+      // Binding a chat-card button with a raw renderChatMessageHTML hook — canonical: the
+      // button-binder table (upcoming).
+      { key: "renderChatHook", re: /Hooks\.(on|once)\(\s*["'`]renderChatMessageHTML["'`]/g,
+        helper: "the button-binder table (upcoming)" },
+      // Emitting the GM-relay set-flag/set-resource socket action by hand — canonical:
+      // edhaSetEdhaFlag / edhaSpendResource.
+      { key: "setFlagEmit", re: /game\.socket\.emit\(\s*["'`]module\.edha-content["'`]\s*,\s*\{\s*action:\s*["'`]set-(flag|resource)["'`]/g,
+        helper: "edhaSetEdhaFlag / edhaSpendResource" },
+      // Reading/writing the once-per-scene ledger by its raw flag keys — canonical: the
+      // oncePerScene gate/stamp pair (upcoming).
+      { key: "sceneOnceRaw", re: /["'`](sceneOnce|detonateUsed)\./g,
+        helper: "the oncePerScene gate/stamp pair (upcoming)" },
+      // Hand-rolling the GM-whisper recipient list — canonical: edhaGmIds (upcoming).
+      { key: "gmWhisper", re: /getWhisperRecipients\(\s*["']GM["']\)|u\.active\s*&&\s*u\.isGM\b/g,
+        helper: "edhaGmIds (upcoming)" },
+      // Re-deriving the primary-GM gate by hand — canonical: edhaDefBuffGmGate.
+      { key: "primaryGmGate", re: /activeGM\s*&&\s*!game\.users\.activeGM\.isSelf/g,
+        helper: "edhaDefBuffGmGate" },
+      // Writing a system.resources.<id>.value/.max update path by hand — canonical:
+      // edhaSpendResource / edhaConsumeCost.
+      { key: "resourceWrite", re: /["']system\.resources\.[a-z]{2,4}\.(value|max)["']\s*(?::|\]\s*[=:])/g,
+        helper: "edhaSpendResource / edhaConsumeCost" },
+    ];
+
+    const recorded = ratchet.counts || {};
+    for (const { key, re, helper } of CHECKS) {
+      const actual = (engineCode.match(re) || []).length;
+      const rec = recorded[key];
+      if (typeof rec !== "number") {
+        err(`pass 20: scripts/engine-idiom-ratchet.json has no recorded count for "${key}" — add it (measured today: ${actual})`);
+        continue;
+      }
+      if (actual > rec) {
+        err(`pass 20: engine idiom "${key}" grew from ${rec} to ${actual} occurrence(s) in register-skills.js — ` +
+            `use the canonical helper (${helper}) instead of hand-rolling this idiom again. The ratchet may ` +
+            `only shrink; if this site is legitimate, migrate it onto the helper rather than raising the count.`);
+      } else if (actual < rec) {
+        err(`pass 20: engine idiom "${key}" dropped from ${rec} to ${actual} occurrence(s) in register-skills.js, ` +
+            `but scripts/engine-idiom-ratchet.json still records ${rec} — lower "counts.${key}" to ${actual} so the ` +
+            `ratchet reflects reality (the ratchet must not become fiction).`);
+      }
+    }
+  }
+}
+
 // --- report --------------------------------------------------------------------
 if (errors.length) {
   for (const e of errors) console.error(`✗ ${e}`);

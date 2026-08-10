@@ -1,0 +1,38 @@
+{
+ "_README": [
+  "ENGINE IDIOM RATCHET — frozen 2026-08-10.",
+  "",
+  "register-skills.js (19.5k lines) has many hand-rolled copies of idioms that already have canonical helpers elsewhere in the engine: reading game.user.targets directly instead of the target-reader primitive, re-deriving a caster's token instead of calling edhaCasterToken, folding a Roll formula by hand instead of edhaRollFormula, binding chat-card buttons with a raw renderChatMessageHTML hook instead of the button-binder table, emitting the GM-relay socket action by hand instead of edhaSetEdhaFlag/edhaSpendResource, reading/writing the once-per-scene ledger by its raw flag keys instead of the oncePerScene gate/stamp pair, hand-rolling the GM-whisper recipient list instead of edhaGmIds, re-deriving the primary-GM gate instead of edhaDefBuffGmGate, and writing system.resources.<id>.value/max update paths by hand instead of edhaSpendResource/edhaConsumeCost.",
+  "",
+  "An upcoming hygiene pass will consolidate these onto their canonical helpers. This file freezes TODAY'S measured counts so scripts/lint-refs.js pass 20 can enforce a RATCHET the same way pass 7 does for name-keyed dispatch:",
+  "  - actual occurrences > counts.<key>  -> ERROR (the count may not grow; use the canonical helper instead of hand-rolling the idiom again)",
+  "  - actual occurrences < counts.<key>  -> ERROR (lower counts.<key> so the ratchet reflects reality — do not let it become fiction)",
+  "",
+  "The regexes that measure each idiom live in scripts/lint-refs.js pass 20, not here. An entry whose count reaches 0 STAYS in this file as a tombstone — it still gates regrowth even after full migration (see name-keyed-allowlist.json's empty-but-present talents list for the same pattern).",
+  "",
+  "DO NOT bump a count to make the gate pass. A grown count is the violation the gate exists to catch; migrate the site onto its canonical helper instead."
+ ],
+ "frozen": "2026-08-10",
+ "originalCounts": {
+  "userTargets": 63,
+  "casterToken": 29,
+  "rollFold": 20,
+  "renderChatHook": 29,
+  "setFlagEmit": 11,
+  "sceneOnceRaw": 16,
+  "gmWhisper": 9,
+  "primaryGmGate": 20,
+  "resourceWrite": 17
+ },
+ "counts": {
+  "userTargets": 63,
+  "casterToken": 29,
+  "rollFold": 20,
+  "renderChatHook": 29,
+  "setFlagEmit": 11,
+  "sceneOnceRaw": 16,
+  "gmWhisper": 9,
+  "primaryGmGate": 20,
+  "resourceWrite": 17
+ }
+}
