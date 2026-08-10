@@ -19,25 +19,13 @@ import argparse
 import math
 import os
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 
 import maplib
+from maprender import INK, font, haloed_text
 
 OUT_GUIDE = os.path.join(os.path.dirname(maplib.GAZETTEER), "hydro-overlay.png")
 OUT_COMP = os.path.join(os.path.dirname(maplib.GAZETTEER), "hydro-composite.jpg")
-INK = (255, 0, 230, 255)          # magenta — the paint_overlay.py guide ink
-HALO = (0, 0, 0, 235)
-FONTS = ["C:/Windows/Fonts/arialbd.ttf",
-         "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"]
-
-
-def font(size):
-    for path in FONTS:
-        try:
-            return ImageFont.truetype(path, size)
-        except OSError:
-            continue
-    return ImageFont.load_default()
 
 
 def dashed(draw, pts, fill, width=4, dash=14, gap=9):
@@ -74,15 +62,6 @@ def arrowhead(draw, p_from, p_to, fill, size=16, width=4):
                    p_to[0] - ux * size + px[0] * size * 0.6,
                    p_to[1] - uy * size + px[1] * size * 0.6],
                   fill=fill, width=width)
-
-
-def haloed_text(draw, xy, text, fnt, ink=INK):
-    x, y = xy
-    for ox in (-3, 0, 3):
-        for oy in (-3, 0, 3):
-            if ox or oy:
-                draw.text((x + ox, y + oy), text, fill=HALO, font=fnt)
-    draw.text((x, y), text, fill=ink, font=fnt)
 
 
 def draw_waterway(draw, w, ink, fnt, label=True):
@@ -148,7 +127,7 @@ def render_composite(gaz, out):
             ink = (0, 90, 255, 255)
             draw.line(pts, fill=ink, width=4)
         else:
-            ink = (255, 0, 230, 255)
+            ink = INK
             dashed(draw, pts, ink, width=4)
         arrowhead(draw, pts[-2], pts[-1], ink)
         for hole in way.get("waterholes", []):

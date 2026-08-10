@@ -20,23 +20,12 @@ layers pick up the new art (this script warns when meta.source is stale vs the .
 import argparse
 import os
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 
 import maplib
+from maprender import INK, font, haloed_text
 
 OUT_DEFAULT = os.path.join(os.path.dirname(maplib.GAZETTEER), "paint-overlay.png")
-INK = (255, 0, 230, 255)        # magenta — clashes with nothing on the painted map
-HALO = (0, 0, 0, 235)
-FONTS = ["C:/Windows/Fonts/arialbd.ttf", "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"]
-
-
-def font(size):
-    for path in FONTS:
-        try:
-            return ImageFont.truetype(path, size)
-        except OSError:
-            continue
-    return ImageFont.load_default()
 
 
 def unpainted_places(gaz, include_painted=False):
@@ -65,15 +54,6 @@ def crosshair(draw, x, y, r=26, gap=9, w=5):
     for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
         draw.line([x + dx * gap, y + dy * gap, x + dx * (r + 18), y + dy * (r + 18)],
                   fill=INK, width=w)
-
-
-def haloed_text(draw, xy, text, fnt):
-    x, y = xy
-    for ox in (-3, 0, 3):
-        for oy in (-3, 0, 3):
-            if ox or oy:
-                draw.text((x + ox, y + oy), text, fill=HALO, font=fnt)
-    draw.text((x, y), text, fill=INK, font=fnt)
 
 
 def check_extraction_stale(gaz):

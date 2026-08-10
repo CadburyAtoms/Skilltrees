@@ -11,23 +11,18 @@ Usage: python scripts/map/render_settlements.py <out-overlay.png> [<out-composit
 """
 
 import json
-import math
 import sys
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
+
+import maprender
+from maprender import DRIVER_STYLE
 
 ROOT = Path(__file__).resolve().parents[2]
 GAZ = ROOT / "source-materials/maps/thyrcross.map.json"
 BASE = ROOT / "source-materials/maps/thyrcross.png"
 
-DRIVER_STYLE = {
-    "water": (91, 141, 184),
-    "shrine": (122, 158, 95),
-    "specialty": (201, 123, 74),
-    "junction": (217, 164, 65),
-    "fort": (176, 74, 74),
-}
 # Pop tier -> SHAPE (Ben 2026-07-22: sizes must be identifiable at a glance;
 # shape beats radius on a dense map): circle < square < triangle < diamond.
 TIERS = [(3500, "circle", 3), (6000, "square", 4), (8000, "triangle", 6),
@@ -61,34 +56,13 @@ def main():
     W, H = gaz["meta"]["canvas_px"]
     ov = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     dr = ImageDraw.Draw(ov)
-    for bold, reg in (("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
-                       "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"),
-                      ("C:/Windows/Fonts/arialbd.ttf", "C:/Windows/Fonts/arial.ttf")):
-        try:
-            F = ImageFont.truetype(bold, 26)
-            Fs = ImageFont.truetype(reg, 18)
-            break
-        except OSError:
-            F = Fs = ImageFont.load_default()
+    F, Fs = maprender.load_fonts(26, 18)
 
     def text_outlined(xy, s, font, fill=(255, 250, 235, 255)):
-        x, y = xy
-        for ox, oy in ((-1, 0), (1, 0), (0, -1), (0, 1)):
-            dr.text((x + ox, y + oy), s, font=font, fill=(20, 15, 5, 220))
-        dr.text((x, y), s, font=font, fill=fill)
+        return maprender.text_outlined(dr, xy, s, font, fill=fill)
 
     # region frame (orientation)
-    rm = gaz["region_maps"][0]["world_transform"]
-    s, rot = rm["scale_region_px_per_world_px"], math.radians(rm["rotation_deg"])
-    a_, b_ = s * math.cos(rot), s * math.sin(rot)
-    ax, ay = rm["anchors"]["elmsworth"]["region_px"]
-    tx, ty = ax - (a_ * 1036 - b_ * 1359), ay - (b_ * 1036 + a_ * 1359)
-    det = a_ * a_ + b_ * b_
-
-    def r2w(p):
-        X, Y = p[0] - tx, p[1] - ty
-        return ((a_ * X + b_ * Y) / det, (-b_ * X + a_ * Y) / det)
-    corners = [r2w(p) for p in ((0, 0), (1384, 0), (1384, 1384), (0, 1384), (0, 0))]
+    corners = maprender.region_frame_corners(gaz)
     dr.line([tuple(map(int, c)) for c in corners], fill=(255, 255, 255, 80), width=2)
 
     # city rings (Ben's glyph tier — orientation only)

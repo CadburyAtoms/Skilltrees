@@ -17,11 +17,11 @@ Usage:
 """
 import os
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 
 import maplib
-
-FONTS = ["C:/Windows/Fonts/arialbd.ttf", "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"]
+import maprender
+from maprender import font
 
 # Public common-knowledge sites (everything else in gazetteer["sites"] is GM-only).
 # City-mirror sites (Kaelmouth, Raskeld, Kaelgate, ...) are covered by the named-cities pass.
@@ -36,21 +36,11 @@ PUBLIC_SITES = {
 CAPITAL_CITIES = {"Maelstrand", "Kenmere", "Aldercourt", "Goldenport", "Moonmere", "Kragmoot", "Kaelmouth"}
 
 
-def font(size):
-    for path in FONTS:
-        try:
-            return ImageFont.truetype(path, size)
-        except OSError:
-            continue
-    return ImageFont.load_default()
-
-
 def boxed_label(draw, x, y, text, fill, fnt, bg=(0, 0, 0, 170)):
-    bb = draw.textbbox((0, 0), text, font=fnt)
-    tw, th = bb[2] - bb[0], bb[3] - bb[1]
-    x0, y0 = x - tw // 2, y - th // 2
-    draw.rectangle([x0 - 8, y0 - 6, x0 + tw + 8, y0 + th + 10], fill=bg)
-    draw.text((x0, y0), text, fill=fill, font=fnt)
+    """This tree's box is tighter than the GM render's (render.py) — kept as
+    an explicit wrapper over maprender.boxed_label's shared defaults rather
+    than silently drifting the shared default (2026-08-10)."""
+    return maprender.boxed_label(draw, x, y, text, fill, fnt, bg=bg, pad=(8, 6, 10))
 
 
 def main():

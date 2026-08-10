@@ -8,28 +8,10 @@ Usage:
 import argparse
 import os
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 
 import maplib
-
-FONTS = ["C:/Windows/Fonts/arialbd.ttf", "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"]
-
-
-def font(size):
-    for path in FONTS:
-        try:
-            return ImageFont.truetype(path, size)
-        except OSError:
-            continue
-    return ImageFont.load_default()
-
-
-def boxed_label(draw, x, y, text, fill, fnt, bg=(0, 0, 0, 190)):
-    bb = draw.textbbox((0, 0), text, font=fnt)
-    tw, th = bb[2] - bb[0], bb[3] - bb[1]
-    x0, y0 = x - tw // 2, y - th // 2
-    draw.rectangle([x0 - 12, y0 - 9, x0 + tw + 12, y0 + th + 16], fill=bg)
-    draw.text((x0, y0), text, fill=fill, font=fnt)
+from maprender import boxed_label, font
 
 
 def main():
