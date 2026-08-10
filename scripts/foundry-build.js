@@ -332,7 +332,8 @@ function talentEffects(t) {
 }
 
 // ---------- helpers ----------
-const G = (o, ...keys) => { for (const k of keys) if (o[k] != null && o[k] !== "") return o[k]; return ""; };
+// G (the row-field-fallback helper) moved to scripts/lib/data.js (2026-08-10) alongside norm/
+// buildTrees, which were its only call sites in this file — see the require below.
 const fid = seed => crypto.createHash("sha1").update(seed).digest("base64").replace(/[^A-Za-z0-9]/g, "").slice(0, 16);
 // slugify itself now comes from the edha-pack-io.js require above (2026-08-10) — this was a
 // byte-identical local re-declaration.
@@ -378,60 +379,12 @@ function classifyToken(tok, index, heroicIds, localByName) {
   if (heroicIds[t]) return { kind:"talent", slug:slugify(t), uuid:`Compendium.cosmere-rpg.heroic-paths.Item.${heroicIds[t]}`, label:t, external:true };
   return { kind:"narrative", text:t };
 }
-function norm(raw, atlas, group, treeId) {
-  return {
-    atlas, group, treeId,
-    name: G(raw, "name", "Name", "Talent Name"),
-    action: G(raw, "action", "Action", "Action Type"),
-    cost: G(raw, "cost", "Cost") || "—",
-    prereqs: G(raw, "prerequisites", "Prerequisites"),
-    description: G(raw, "description", "Description"),
-    flavor: G(raw, "flavor", "Flavor Text", "Flavor"),
-    tags: G(raw, "tags", "Tags"),
-    specialty: G(raw, "specialty", "Specialty", "Tree"),
-    layout: raw.layout && typeof raw.layout.x === "number" ? { x: raw.layout.x, y: raw.layout.y } : null,
-    connections: Array.isArray(raw.connections) ? raw.connections.slice() : null,
-  };
-}
-
-const LEYLINE_COLORS = ["White", "Blue", "Black", "Red", "Green"];
-const HEROIC_PATHS = ["Agent", "Envoy", "Hunter", "Leader", "Scholar", "Warrior"];
-
-function buildTrees() {
-  const trees = [];
-  // ALL atlases are always ASSEMBLED (in memory) so adversary `talents` references can resolve
-  // under any scope — SCOPE gates which packs get WRITTEN (see toWrite in main), not assembly.
-  const want = () => true;
-  if (want("leyline")) {
-    const ley = JSON.parse(fs.readFileSync(`${DATA}/leyline.json`, "utf-8"));
-    for (const color of LEYLINE_COLORS) {
-      const id = `leyline/${color}`;
-      const talents = ley.filter(t => (t.path || t.Path) === color).map(r => norm(r, "leyline", color, id));
-      trees.push({ id, atlas:"leyline", pack:ATLAS_PACK.leyline, group:color, color:color.toLowerCase(), treeName:`${color} Leyline`, talents });
-    }
-  }
-  if (want("deity")) {
-    const dom = JSON.parse(fs.readFileSync(`${DATA}/domain.json`, "utf-8"));
-    const byDeity = {};
-    for (const r of dom) (byDeity[r.Deity] = byDeity[r.Deity] || []).push(r);
-    for (const deity of Object.keys(byDeity)) {
-      // Display by DOMAIN (e.g. "Chaos"), not deity name ("Maelith"). Folder + path Item = domain;
-      // tree = "<Domain> Talents" (mirrors heroic "Agent" vs "Agent Talents"). Deity name lives only in the description.
-      const rows = byDeity[deity], id = `deity/${deity}`, domain = rows[0].Domain;
-      const color = slugify(((rows[0].Colors || "white").split(/[\/,]/)[0] || "white").trim());
-      trees.push({ id, atlas:"deity", pack:ATLAS_PACK.deity, group:domain, deity, domain, color, treeName:`${domain} Talents`, talents: rows.map(r => norm(r, "deity", domain, id)) });
-    }
-  }
-  if (want("heroic")) {
-    const cos = JSON.parse(fs.readFileSync(`${DATA}/cosmere.json`, "utf-8"));
-    for (const path of HEROIC_PATHS) {
-      const id = `heroic/${path}`;
-      const talents = cos.filter(t => (t.Path || t.path) === path).map(r => norm(r, "heroic", path, id));
-      trees.push({ id, atlas:"heroic", pack:ATLAS_PACK.heroic, group:path, color:"", treeName:`${path} Talents`, icon:HEROIC_ICON(path), talents });
-    }
-  }
-  return trees;
-}
+// norm/LEYLINE_COLORS/HEROIC_PATHS/buildTrees moved to scripts/lib/data.js (2026-08-10 hygiene
+// campaign) — the canonical "normalize a row across the three atlas key dialects and group into
+// trees" implementation, now shared instead of re-implemented per consumer. Behavior-preserving
+// move: buildTrees() there still reads DATA (env EDHA_DATA-aware, via scripts/lib/paths.js) and
+// the same ATLAS_PACK values this file's own DATA/ATLAS_PACK constants resolve to.
+const { buildTrees } = require("./lib/data.js");
 
 function talentImg(tree) {
   if (tree.atlas === "leyline") return COLOR_ICON[tree.color] || DEITY_ICON;

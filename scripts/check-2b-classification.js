@@ -16,22 +16,26 @@
  * Not wired into `npm run gates` — the classification is a scoped migration artifact, and it is
  * expected to SHRINK as talents convert. Run it whenever you touch either file.
  */
-const fs = require("fs");
-const path = require("path");
+const { loadJson } = require("./lib/data.js");
 
-const ROOT = path.join(__dirname, "..");
 const errors = [];
 const err = (m) => errors.push(m);
 
-function readJson(rel) {
-  try { return JSON.parse(fs.readFileSync(path.join(ROOT, rel), "utf8")); }
-  catch (e) { err(`${rel}: cannot read/parse — ${e.message}`); return null; }
+// loadJson (scripts/lib/data.js) THROWS on a read or parse failure — no null path, so there is no
+// way to fall through to the unguarded `cls.talents` dereference further down with `cls` still
+// null (the bug this migration closes: the old local `readJson` caught, pushed to `errors`, and
+// returned null, and nothing downstream was guarded against that null). A bad file is reported
+// once, here, and the script exits immediately — every check below can assume both files parsed.
+let cls, allow;
+try {
+  cls = loadJson("EDHA_RULE_2B_CLASSIFICATION.json");
+  allow = loadJson("scripts/name-keyed-allowlist.json");
+} catch (e) {
+  console.error(`✗ ${e.message}`);
+  process.exit(1);
 }
 
-const cls = readJson("EDHA_RULE_2B_CLASSIFICATION.json");
-const allow = readJson("scripts/name-keyed-allowlist.json");
-
-if (cls && allow) {
+{
   const talents = cls.talents || {};
   const listed = new Set(allow.talents || []);
   const classified = new Set(Object.keys(talents));
