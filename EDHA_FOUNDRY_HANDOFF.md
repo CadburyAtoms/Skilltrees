@@ -33,6 +33,78 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-08-10 — THE HYGIENE CAMPAIGN: **~2,400 duplicated lines consolidated across all four code surfaces, ten engine drift families unified behind nine new rulings, and TWO new lint passes that make the duplication one-way.** Twenty-one commits. ENGINE portions → **⟳ sync the module + F5**; the pack-rebuild list stays **EMPTY** (no authored data touched).
+
+A repo-wide review found the pattern behind "Opus rebuilds the wheel": the canonical modules
+existed (`edha-pack-io.js`, `foundry-build-parts.js`, `harness.js`, `maplib.py`) and sessions
+bypassed them — fixes propagated to ONE copy while siblings kept the bug, twice inside CI gates
+themselves. Everything below was executed by targeted subagent waves, each gate-verified and
+parity-proven before commit.
+
+### The four correctness fixes (each was live)
+- **`validate.js` ran the PRE-FIX `prereqGroups`** (unconditional `" and "` split) under a comment
+  claiming it mirrored the build — the iron-rule-7 gate modeled fewer requirement edges than
+  Foundry evaluates ("Mind and Body" tore apart and the group was silently dropped). Now imports
+  the one resolver-aware implementation; six pinned tests incl. the live Know-Your-Moment case.
+- **`settle_gazetteer.py` wrote the gazetteer raw** (`ensure_ascii=True`, platform encoding) — the
+  next `--write` would have re-encoded all 337 non-ASCII bytes. Now via `maplib.save_gazetteer`.
+- **`validate-adversaries.js` hand-rolled pack reading minus `keyEncoding:"utf8"`**, the existence
+  guard, and leak-proof cleanup. Now through `edha-pack-io.readPack` (new raw-prefix mode).
+- **Six of lint-refs' seven authored-file walks silently skipped broken JSON** — a bad authored
+  file was invisible to passes 6/8/9/12/13/14, which reported SUCCESS on files they never read.
+  One loaded-once index, one loud error.
+
+### Shared modules created (tooling + tests + python)
+`scripts/lib/paths.js` (env-aware MODROOT/DATA — completes foundry-extract's half-applied 07-26c
+fix), `lib/data.js` (loadJson + the atlas loader MOVED out of foundry-build — all-5-packs
+before/after build compared byte-identical), `lib/md.js` + `lib/build-doc.js` (one markdown
+engine for dashboard/codex/primer; the codex `"` injection hole closed), `lib/strip-comments.js`
+(the ONE comment stripper — five test-suite variants with four semantics deleted; the CRLF rule
+that lived as prose in a terrain-ownership comment is now `harness.readEngineSource()`),
+`maplib.py` additions + `maprender.py` (parity-harness-proven, incl. the discovery that
+`nearest_true` is provably NOT the argmin — left split, documented), harness `mockActor`/
+`stageWorld`/`captureChat`/`RollStub` (19 test files migrated; every staging site now restores).
+
+### Engine passes 5.1–5.3 (ENGINE-ONLY, the behavior-visible part — R-60..R-67 govern, all §I vetoable)
+- **`edhaRollFormula`** — R-65: all 22 formula-roll sites now fold die math (20 rolled computed
+  dice UNFOLDED; [Tier][Die] silently failed on them). **THIS CHANGES LIVE DICE MATH.**
+- **`edhaSceneReset`** — R-60: ten per-tree deleteCombat sweeps had FIVE different populations
+  (Sov never reset off-scene actors; Life swept adversaries); now one deduped
+  directory∪tokens applier, per-family lists verbatim, per-actor error isolation.
+- **Targeting/state** — R-64: eight victim chains gained the missing `options.target` term;
+  R-63: dispositions fail CLOSED (helpers + 16 sites; 76-site backlog now ratcheted);
+  `edhaSetActorFlagCross` deleted; silent mark-drops now warn; one socket action table.
+- **Cards/costs** — R-66: 11 one-shot cards survive F5 via `edhaMarkCardResolved`; R-62: GM
+  whispers have explicit audiences (7 flips, listed); R-61: one sceneOnce gate/stamp, polarity
+  explicit, `detonateUsed` merged, decree's stamp matches its veto; `edhaSpendResource` +
+  falsy-zero everywhere; one button-binder table replaces 29 render hooks.
+- **NOT reproduced:** the review's "combatExpire dropped from socket payload" claim — no such
+  schema field exists; recorded honestly instead of fabricated.
+
+### The gates that make it stick
+- **lint pass 20** — the engine idiom RATCHET (`scripts/engine-idiom-ratchet.json`, pass-7-style
+  two-way): frozen at measured counts, now at `userTargets 63→10, casterToken 29→1, rollFold
+  20→0, renderChatHook 29→2, setFlagEmit 11→2, sceneOnceRaw 16→3, gmWhisper 9→0, primaryGmGate
+  20 (freeze-only), resourceWrite 17→12, dispoFailOpen 76 (frozen wave 6)`. Hand-roll one of
+  these idioms again and the build fails.
+- **lint pass 21** — CANONICAL HOMES: twelve two-way table entries (a protected definition
+  outside its home file fails; shrink lists for the deferred fork and the six unmigrated
+  path-literal scripts must be pruned as they drain). Every entry mutation-verified.
+- New pinned suites: 520 tests (was 408), incl. md-roundtrip's `Function.prototype.toString`
+  pin for the codex embed and harness-source's CRLF/stripper pins.
+
+### Retired / deferred / open
+- `playtest-setup-console.js` **DELETED** (Ben 2026-08-10: no PROTECTED guard — it could delete
+  talents off Tem parinaem/Soggy Bottom; PC provenance recorded in bench-setup-console.js).
+  The two superseded schema dumps carry pointer headers.
+- **DEFERRED (own session):** the `region_overlay.py` ↔ `world_settlement.py` fork (~280 lines,
+  canon-visible MST/bridge-rule divergence) — held on pass-21 shrink lists; needs a bridge/MST
+  rulings batch first. `TODO_REPO_HYGIENE.md` carries the full open ledger.
+- **🤖 for the bench:** `EDHA_FOUNDRY_TEST_CHECKLIST.md` § "BENCH — hygiene campaign 2026-08-10"
+  (passes 5.1/5.2/5.3 subsections) — folded dice, per-tree scene resets, victim chains,
+  disposition flips, card persistence, whisper audiences. Rulings **R-60..R-68** are in
+  `EDHA_RULINGS.md` §I awaiting veto; **R-63/R-64/R-65 change live behavior.**
+
 ## 2026-07-28m — FIX PASS F (marathon 3, the last fix pass): **run 23's two items, both root-caused in source before anything was touched — and they went opposite ways.** The `currentTarget` family swept to **35 occurrences on 34 lines across 33 handlers and came back genuinely ONE bug**; the `deleteCombat` scope sighting came back **20 of 24 sweeps defective and destroying player data**. Plus the swallowing catch (the deeper defect), a new **lint pass 19**, and a pre-existing **CRLF test bug that made two gates inert on Ben's machine**. ENGINE-only → **⟳ sync the module + F5**; the pack-rebuild list stays **EMPTY** (seven passes running).
 
 ### Rulings (defaults applied — both are live, both are vetoable)
