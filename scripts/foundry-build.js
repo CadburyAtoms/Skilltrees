@@ -18,15 +18,17 @@ const fs = require("fs");
 const crypto = require("crypto");
 // classic-level + paths are overridable so the build can run off the Foundry machine
 // (e.g. a sandbox where the folders are mounted elsewhere): EDHA_DATA / EDHA_MODROOT.
-function requireClassicLevel() {
-  const candidates = [
-    "C:/Program Files/Foundry Virtual Tabletop/resources/app/node_modules/classic-level",
-    "classic-level",
-  ];
-  for (const c of candidates) { try { return require(c); } catch (e) { /* next */ } }
-  throw new Error("classic-level not found — run on the Foundry machine or `npm install classic-level` (NODE_PATH supported).");
-}
-const { ClassicLevel } = requireClassicLevel();
+// requireClassicLevel() now comes from edha-pack-io.js (2026-08-10 dedupe of the byte-identical
+// inline resolver this file used to carry). Called right here, at the same top-level spot the
+// old inline resolver was invoked from — so this preserves today's EAGER/load-time behavior
+// (foundry-build.js has always hard-required classic-level at import time; that is unchanged).
+// This is deliberately NOT the lazy pattern edha-pack-io.js uses internally for its OWN
+// requireClassicLevel() call (inside readPack(), resolved only when that function runs) —
+// here the call is at module top level, so ClassicLevel is resolved (and classic-level must be
+// installed) the moment this file is required, same as before. writePack()/writeActorPack()
+// below just consume the already-resolved `ClassicLevel` constant. Going lazy here would be a
+// behavior change (deferring the hard dependency), not a preservation.
+const { ClassicLevel } = require("./edha-pack-io.js").requireClassicLevel();
 
 const DATA = process.env.EDHA_DATA || "C:/Users/benhe/OneDrive/Documentos/Worldbuilding/Claude Design/skilltrees/data";
 const MODROOT = process.env.EDHA_MODROOT || "C:/Users/benhe/AppData/Local/FoundryVTT/Data/modules/edha-content";
@@ -46,7 +48,14 @@ const ATLAS_PACK = { leyline: "edha-leyline", deity: "edha-deity", heroic: "edha
 const STANCE_TALENTS = new Set(["Vigilant Stance", "Flamestance", "Ironstance", "Bloodstance", "Stonestance", "Windstance", "Vinestance"]);
 const ADV_PACK = "edha-adversaries";
 const ITEMS_PACK = "edha-items";
-const slugifyItem = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+// slugifyItem used to be a SEPARATE slugifier here (no NFKD normalize, single-dash trim) from the
+// pack-io `slugify` required below — a drift risk (a non-ASCII or dash-edge name would slug
+// differently in the two, silently breaking IDs/art lookups). Audited 2026-08-10 against every
+// live name it's actually fed (data/items.json items, data/cultures.json cultures + ancestries,
+// 113 names total): all 113 produce IDENTICAL output under both slugifiers today, so the item/
+// culture/ancestry call sites below now call the shared `slugify` (from edha-pack-io.js) directly
+// — no more second implementation to drift. If that ever stops being true for a new name, this is
+// the place to look.
 // Default item icons by item flavour (all verified to exist under public/icons; a 404 = blank item icon).
 const ADV_ITEM_ICON = {
   melee:   "icons/skills/melee/strike-blade-knife-white-red.webp",
@@ -94,7 +103,9 @@ const ADV_EFFECTS      = loadTable("adversary-effects.json"); // adversary item 
 // Per-talent thematic icons (keyword map + per-specialty fallback). All paths verified under public/icons.
 const { pickTalentIcon } = require("./talent-icons.js");
 // Round-trip helpers: overlay Foundry-authored edits + guard against overwriting them.
-const { applyAuthorable, fingerprint, readPack } = require("./edha-pack-io.js");
+// `slugify` also comes from here now (2026-08-10) — this file used to re-declare a byte-identical
+// copy at what was line 326, despite already requiring this module; that duplicate is gone.
+const { applyAuthorable, fingerprint, readPack, slugify } = require("./edha-pack-io.js");
 // Foundry-authored overrides (data/authored/*.json, captured by foundry-extract.js). Each maps a
 // talent (by docId, falling back to name) to an authorable projection — description/activation/damage/
 // events/effects/img — that OVERLAYS the generated talent so edits made directly in Foundry win and
@@ -323,7 +334,8 @@ function talentEffects(t) {
 // ---------- helpers ----------
 const G = (o, ...keys) => { for (const k of keys) if (o[k] != null && o[k] !== "") return o[k]; return ""; };
 const fid = seed => crypto.createHash("sha1").update(seed).digest("base64").replace(/[^A-Za-z0-9]/g, "").slice(0, 16);
-const slugify = s => String(s).toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+// slugify itself now comes from the edha-pack-io.js require above (2026-08-10) — this was a
+// byte-identical local re-declaration.
 const esc = s => String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 const paras = t => { t = String(t || "").trim(); return t ? t.split(/\n{2,}/).map(p => `<p>${esc(p.trim()).replace(/\n/g, "<br>")}</p>`).join("") : ""; };
 const iconSpan = s => `<span class="cosmere-icon" data-tooltip="${s.tip}" aria-label="${s.tip}">${s.glyph}</span>`;
@@ -765,7 +777,7 @@ function pathEvents(tree) {
     }
     let sortI = 0;
     for (const it of itemsSrc.items) {
-      const slug = slugifyItem(it.name);
+      const slug = slugify(it.name);
       const priceLine = it.price?.value
         ? `<p><strong>Price</strong> ${it.price.value} ${({ copper: "c", silver: "s", gold: "g" })[it.price.denomination] || it.price.denomination}; <strong>Weight</strong> ${it.weight ?? 0} lb.;</p>`
         : "";
@@ -809,7 +821,7 @@ function pathEvents(tree) {
     }
     const expertiseMap = (entries) => Object.fromEntries(entries.map(e => [`${e.type}:${e.id}`, { id: e.id, type: e.type, label: e.label, locked: false }]));
     for (const c of cultSrc.cultures) {
-      const slug = slugifyItem(c.name);
+      const slug = slugify(c.name);
       const ev = {};
       const g = fid(`ev:cult:grant:${slug}`);
       ev[g] = { id: g, description: "Grant Cultural Expertise", event: "add-to-actor",
@@ -840,7 +852,7 @@ function pathEvents(tree) {
       });
     }
     for (const a of cultSrc.ancestries || []) {
-      const slug = slugifyItem(a.name);
+      const slug = slugify(a.name);
       docs.push({
         folder: folderId["Ancestry"], name: a.name, type: "ancestry", _id: fid(`ancestry:${slug}`),
         img: a.img || "icons/svg/mystery-man.svg", sort: (sortI += 100000), ownership: { default: 0 },
