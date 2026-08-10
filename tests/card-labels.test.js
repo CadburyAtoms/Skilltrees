@@ -19,7 +19,7 @@
  */
 "use strict";
 const assert = require("assert");
-const { loadEngine } = require("./harness.js");
+const { loadEngine, RollStub, captureChat } = require("./harness.js");
 
 /* The real cosmere-rpg 2.1.0 shape: config labels are KEYS, and the i18n table resolves them.
  * (Values taken from source-materials/edha-items-dump.json + the bench's observed card text.) */
@@ -112,25 +112,27 @@ test("edhaConditionLabel: an unknown status falls back to the bare id, never to 
 });
 
 /* The END-TO-END pin: the CARD TEXT, which is the thing the bench actually reads. The harness's
- * arithmetic-only RollStub refuses "1d20 + @skills.red.mod", and edhaFoeSkillVsColor swallows the
- * throw — so this case supplies a deterministic dice-capable Roll. Without it the helper posts
- * nothing and the assertion below would vacuously "pass" on an empty card. */
+ * default (arithmetic-only) RollStub refuses "1d20 + @skills.red.mod", and edhaFoeSkillVsColor
+ * swallows the throw — so this case supplies a deterministic dice-capable Roll via
+ * RollStub({total}): d20 fixed at 11, plus any resolved @refs.
+ *
+ * ⚠ STRICTNESS FIX: this test used to hand-roll its own Roll class whose `replaceFormulaData` was
+ * a no-op (`return f`) — it got away with that because its `evaluateSync` did its OWN @-ref
+ * substitution inline, bypassing `replaceFormulaData` entirely. Swapping in the harness's
+ * RollStub restores the REAL `replaceFormulaData` for that static path; the `total` function below
+ * still does the deterministic d20-fixed-at-11 arithmetic the assertions were written against, so
+ * no assertion needed to change — confirmed by the case staying green with the real substitution
+ * live underneath it. */
 test("the save-card helper localizes its own skill id — no caller needs to pass a label", () => {
   const env = withCosmereI18n(loadEngine());
-  const posted = [];
-  env.ChatMessage = class { static create(d) { posted.push(d); } static getSpeaker() { return {}; } };
-  env.Roll = class DiceRoll {
-    constructor(formula, data = {}) { this.formula = String(formula); this.data = data; this.total = undefined; }
-    evaluateSync() {
-      // d20 = a fixed 11, plus any resolved @refs; enough for a deterministic pass/fail line.
-      const subst = this.formula.replace(/@([a-zA-Z0-9_.]+)/g, (m, p) =>
-        String(p.split(".").reduce((v, k) => (v == null ? undefined : v[k]), this.data) ?? 0));
-      this.total = subst.replace(/\b1?d20\b/g, "11").split("+").reduce((a, b) => a + (Number(b.trim()) || 0), 0);
-      return this;
-    }
-    async evaluate() { return this.evaluateSync(); }
-    static replaceFormulaData(f) { return f; }
-  };
+  const posted = captureChat(env);
+  env.Roll = RollStub({
+    total: (roll) => {
+      const subst = roll.formula.replace(/@([a-zA-Z0-9_.]+)/g, (m, p) =>
+        String(p.split(".").reduce((v, k) => (v == null ? undefined : v[k]), roll.data) ?? 0));
+      return subst.replace(/\b1?d20\b/g, "11").split("+").reduce((a, b) => a + (Number(b.trim()) || 0), 0);
+    },
+  });
   const foe = { id: "t1", name: "Bench Dummy", actor: { name: "Bench Dummy", getRollData: () => ({ skills: { agi: { rank: 2 } }, attr: { spd: 1 } }) } };
   const owner = { name: "Tem", getRollData: () => ({ skills: { red: { mod: 3 } } }) };
   return env.edhaFoeSkillVsColor(owner, [foe], { skill: "agi", color: "red", sourceName: "Magnum Opus" }).then(() => {

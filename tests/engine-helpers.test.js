@@ -6,13 +6,16 @@
  */
 "use strict";
 const assert = require("assert");
-const { loadEngine } = require("./harness.js");
+const { loadEngine, eq, mockActor, stageWorld, withStubs } = require("./harness.js");
 
+/* This file's ~200 tests deliberately share ONE engine load (a per-test reload would be wasteful
+ * runtime for no correctness benefit): nothing here leaves game/canvas state un-restored — every
+ * mutation site below goes through stageWorld/withStubs (which restore) or its own try/finally.
+ * Left as a module-level eager load rather than converted to a lazy singleton: doing that safely
+ * would mean touching several hundred `env.` call sites in this 1500+ line file for a purely
+ * cosmetic win (deferring one engine parse from require-time to first-test-time), which is a bad
+ * risk/reward trade for a file this size — a deliberate judgement call, not an oversight. */
 const env = loadEngine();
-
-// Values built inside the vm context carry that realm's prototypes, which deepStrictEqual
-// rejects; JSON-normalize the actual value before structural comparison.
-const eq = (actual, expected) => assert.deepStrictEqual(JSON.parse(JSON.stringify(actual)), expected);
 
 test("engine loads headlessly and registers its hooks", () => {
   assert.ok(env.__hooks.on.length > 100, `expected >100 Hooks.on registrations, got ${env.__hooks.on.length}`);
@@ -155,12 +158,13 @@ test("edhaColorRank clamps to 0..5 and defaults to 0", () => {
 });
 
 // --- edhaFtToPx (grid math) ----------------------------------------------------
-test("edhaFtToPx converts feet via the scene grid, min half a grid square", () => {
-  env.canvas.scene = { grid: { size: 100, distance: 5 } };
-  assert.strictEqual(env.edhaFtToPx(30), 600);
-  assert.strictEqual(env.edhaFtToPx(5), 100);
-  assert.strictEqual(env.edhaFtToPx(0), 50); // never collapses below half a square
-  env.canvas.scene = null;
+test("edhaFtToPx converts feet via the scene grid, min half a grid square", async () => {
+  await withStubs(env, { canvas: { ...env.canvas, scene: { grid: { size: 100, distance: 5 } } } }, () => {
+    assert.strictEqual(env.edhaFtToPx(30), 600);
+    assert.strictEqual(env.edhaFtToPx(5), 100);
+    assert.strictEqual(env.edhaFtToPx(0), 50); // never collapses below half a square
+  });
+  // canvas.scene is back to its prior value (null, per loadEngine's default) now that withStubs restored it.
   assert.strictEqual(env.edhaFtToPx(5), 100); // 100/5 defaults hold without a scene
 });
 
@@ -418,14 +422,14 @@ test("edhaAdvSyncPlan: pack-built (flagged) and source-colliding items drop; han
     { id: "worldRandomId003", name: "Old Stale Ability", flags: { "edha-content": { adversary: "Mistheron" } } }, // pack-built, REMOVED from source — drop
   ];
   const plan = env.edhaAdvSyncPlan(owned, src);
-  assert.deepStrictEqual(JSON.parse(JSON.stringify(plan.drop)), ["packItemAAAAAAAA", "worldRandomId001", "packItemBBBBBBBB", "worldRandomId003"]);
-  assert.deepStrictEqual(JSON.parse(JSON.stringify(plan.keep)), ["worldRandomId002"]);
+  eq(plan.drop, ["packItemAAAAAAAA", "worldRandomId001", "packItemBBBBBBBB", "worldRandomId003"]);
+  eq(plan.keep, ["worldRandomId002"]);
 });
 test("edhaAdvSyncPlan: missing flags object never throws; empty source drops only flagged items", () => {
   const owned = [{ id: "a", name: "X" }, { id: "b", name: "Y", flags: { "edha-content": {} } }];
   const plan = env.edhaAdvSyncPlan(owned, []);
-  assert.deepStrictEqual(JSON.parse(JSON.stringify(plan.drop)), ["b"]);
-  assert.deepStrictEqual(JSON.parse(JSON.stringify(plan.keep)), ["a"]);
+  eq(plan.drop, ["b"]);
+  eq(plan.keep, ["a"]);
 });
 
 // --- 07-18 bench: Surefooted +10 displayed as +20 — the derivation folded rate.bonus into the
@@ -535,14 +539,16 @@ test("edhaWatchersOfRule: sees rules on character, adversary-token, and unlinked
   const pc = { id: "pc1", uuid: "Actor.pc1", type: "character", items: [talWith("Dread Presence")] };
   const bystander = { id: "adv2", uuid: "Actor.adv2", type: "adversary", items: [advBare("Sapping Hex")] };
   const tokenAdv = { id: "adv3", uuid: "Actor.adv3", type: "adversary", items: [advWith("Dread Presence")] };
-  env.game = { actors: [pc, bystander] };
-  env.canvas = { tokens: { placeables: [ { actor: tokenAdv }, { actor: tokenAdv }, { actor: null } ] } };
+  const { undo } = stageWorld(env, {
+    actors: [pc, bystander],
+    placeables: [{ actor: tokenAdv }, { actor: tokenAdv }, { actor: null }],
+  });
   env.edhaDropRuleIndex();
   try {
     const owners = [...env.edhaWatchersOfRule("edha-move-veto")].map(w => w.actor.id);
     assert.deepStrictEqual(owners.sort(), ["adv3", "pc1"], "canvas-only adversary + directory character, deduped");
     assert.ok(!owners.includes("adv2"), "a carrier of no such rule is excluded");
-  } finally { env.edhaDropRuleIndex(); }
+  } finally { env.edhaDropRuleIndex(); undo(); }
 });
 // edhaCharacterOwnersOf's pinned case retired with the helper (07-26 orphan sweep): the migration
 // deleted its last caller, and a name-keyed owner scan has no legitimate future consumer.
@@ -799,20 +805,20 @@ test("edhaListSharedHold: with no owner excluded, any holder counts", () => {
 // EMPTY: the Covenant proximity AE, the break watch and the multiOwner shared-hold all silently
 // died for any entry whose uuid resolved. Mutation-checked both ways (drop the status argument in
 // edhaOwnerLedgers' edhaOwnerList call and the first assertion fails).
-test("edhaOwnerLedgers reconciles on the passed marker status (plural key, singular marker)", () => {
+test("edhaOwnerLedgers reconciles on the passed marker status (plural key, singular marker)", async () => {
   const ally = { uuid: "Actor.ally", statuses: new Set(["covenant"]) };
   const owner = { id: "own1", type: "character", flags: { "edha-content": { lists: { covenants: [{ id: "e1", uuid: "Actor.ally", name: "Ally" }] } } } };
-  const oldActors = env.game.actors, oldFrom = env.fromUuidSync;
-  env.game.actors = [owner];
-  env.fromUuidSync = (u) => (u === "Actor.ally" ? { actor: ally } : null);
+  const { undo } = stageWorld(env, { actors: [owner] });
   try {
-    const swept = env.edhaOwnerLedgers("covenants", "covenant");
-    assert.strictEqual(swept.length, 1, "a correctly-marked, resolvable ally must be swept");
-    assert.strictEqual(swept[0].list[0].uuid, "Actor.ally");
-    // The regression itself, pinned: key-as-status drops the resolvable marked entry.
-    assert.strictEqual(env.edhaOwnerLedgers("covenants").length, 0,
-      "no status = the pre-2bV bug — reconciling vs the KEY drops every marked entry");
-  } finally { env.game.actors = oldActors; env.fromUuidSync = oldFrom; }
+    await withStubs(env, { fromUuidSync: (u) => (u === "Actor.ally" ? { actor: ally } : null) }, () => {
+      const swept = env.edhaOwnerLedgers("covenants", "covenant");
+      assert.strictEqual(swept.length, 1, "a correctly-marked, resolvable ally must be swept");
+      assert.strictEqual(swept[0].list[0].uuid, "Actor.ally");
+      // The regression itself, pinned: key-as-status drops the resolvable marked entry.
+      assert.strictEqual(env.edhaOwnerLedgers("covenants").length, 0,
+        "no status = the pre-2bV bug — reconciling vs the KEY drops every marked entry");
+    });
+  } finally { undo(); }
 });
 
 // --- edhaWatchMatches — H8's pure observation filter (07-24q) -----------------
@@ -902,16 +908,14 @@ const talent = (rules) => ({
   type: "talent", name: "t", hasEvents: () => true,
   enabledEvents: rules.map((type) => ({ handler: { type } })),
 });
-const actor = (uuid, type, items) => ({ uuid, id: uuid, type, items });
+// uuid doubles as id here (mockActor's default uuid derivation would prefix "Actor." onto it,
+// which several of this section's assertions compare against the bare id) — passed explicitly.
+const actor = (uuid, type, items) => mockActor({ id: uuid, uuid, type, items });
 
 function withWorld(env, { directory = [], tokens = [] }, fn) {
-  const oldActors = env.game.actors, oldPlaceables = env.canvas.tokens.placeables;
-  env.game.actors = directory;
-  env.canvas.tokens.placeables = tokens;
+  const { undo } = stageWorld(env, { actors: directory, placeables: tokens });
   env.edhaDropRuleIndex();
-  try { return fn(); } finally {
-    env.game.actors = oldActors; env.canvas.tokens.placeables = oldPlaceables; env.edhaDropRuleIndex();
-  }
+  try { return fn(); } finally { undo(); env.edhaDropRuleIndex(); }
 }
 
 test("edhaWatchersOfRule finds only documents carrying that handler type", () => {
@@ -972,7 +976,7 @@ test("edhaWatchersOfRule memoizes, and edhaDropRuleIndex actually drops it", () 
 });
 test("edhaWatchersOfRule survives a world with no canvas and no directory", () => {
   withWorld(env, { directory: [], tokens: [] }, () => {
-    assert.deepStrictEqual(JSON.parse(JSON.stringify(env.edhaWatchersOfRule("edha-watch"))), []);
+    eq(env.edhaWatchersOfRule("edha-watch"), []);
   });
 });
 
@@ -1177,64 +1181,56 @@ const cpCombatant = (turnSpeed) => ({
   actorId: "cp1",
   getFlag: (ns, key) => (ns === "cosmere-rpg" && key === "turnSpeed" ? turnSpeed : undefined),
 });
-const withCombat = (combat, fn) => {
-  const old = env.game.combat;
-  env.game.combat = combat;
-  try { return fn(); } finally { env.game.combat = old; }
-};
+// Backed by withStubs (patches game.combat as a spread of the existing game object, restores it
+// after) instead of a hand-rolled save/restore — same semantics, now via the shared primitive.
+const withCombat = (combat, fn) => withStubs(env, { game: { ...env.game, combat } }, fn);
 
-test("edhaIsSlowTurn: OUT OF COMBAT it is false — the fail-open case a naive !fast would get wrong", () => {
-  withCombat(null, () => {
-    assert.strictEqual(env.edhaIsSlowTurn(CP_ACTOR), false);
-    // The mutation check that matters: the naive implementation would have returned TRUE here,
-    // because edhaIsFastTurn is also false out of combat. Both false is the correct answer.
-    assert.strictEqual(env.edhaIsFastTurn(CP_ACTOR), false);
-  });
-});
+test("edhaIsSlowTurn: OUT OF COMBAT it is false — the fail-open case a naive !fast would get wrong", () => withCombat(null, () => {
+  assert.strictEqual(env.edhaIsSlowTurn(CP_ACTOR), false);
+  // The mutation check that matters: the naive implementation would have returned TRUE here,
+  // because edhaIsFastTurn is also false out of combat. Both false is the correct answer.
+  assert.strictEqual(env.edhaIsFastTurn(CP_ACTOR), false);
+}));
 
-test("edhaIsSlowTurn: a combat that has not STARTED is still not a slow turn", () => {
-  withCombat({ started: false, combatants: [cpCombatant("slow")] }, () => {
-    assert.strictEqual(env.edhaIsSlowTurn(CP_ACTOR), false);
-  });
-});
+test("edhaIsSlowTurn: a combat that has not STARTED is still not a slow turn", () => withCombat({ started: false, combatants: [cpCombatant("slow")] }, () => {
+  assert.strictEqual(env.edhaIsSlowTurn(CP_ACTOR), false);
+}));
 
-test("edhaIsSlowTurn: in combat but NOT a combatant is false (a bystander gets no rider)", () => {
-  withCombat({ started: true, combatants: [{ actorId: "someone-else", getFlag: () => undefined }] }, () => {
-    assert.strictEqual(env.edhaIsSlowTurn(CP_ACTOR), false);
-  });
-});
+test("edhaIsSlowTurn: in combat but NOT a combatant is false (a bystander gets no rider)", () => withCombat({ started: true, combatants: [{ actorId: "someone-else", getFlag: () => undefined }] }, () => {
+  assert.strictEqual(env.edhaIsSlowTurn(CP_ACTOR), false);
+}));
 
-test("edhaIsSlowTurn: an UNSET turnSpeed in combat IS slow (the system's default is Slow)", () => {
+test("edhaIsSlowTurn: an UNSET turnSpeed in combat IS slow (the system's default is Slow)", async () => {
   // The engine reads the raw combatant flag, which stays undefined until the player toggles;
   // the system's own getter is `?? TurnSpeed.Slow` and its schema initial is "slow".
   for (const unset of [undefined, null]) {
-    withCombat({ started: true, combatants: [cpCombatant(unset)] }, () => {
+    await withCombat({ started: true, combatants: [cpCombatant(unset)] }, () => {
       assert.strictEqual(env.edhaIsSlowTurn(CP_ACTOR), true, `turnSpeed ${String(unset)} should read Slow`);
       assert.strictEqual(env.edhaIsFastTurn(CP_ACTOR), false);
     });
   }
 });
 
-test("edhaIsSlowTurn: an explicit slow turn is true and an explicit fast turn is false", () => {
-  withCombat({ started: true, combatants: [cpCombatant("slow")] }, () => {
+test("edhaIsSlowTurn: an explicit slow turn is true and an explicit fast turn is false", async () => {
+  await withCombat({ started: true, combatants: [cpCombatant("slow")] }, () => {
     assert.strictEqual(env.edhaIsSlowTurn(CP_ACTOR), true);
     assert.strictEqual(env.edhaIsFastTurn(CP_ACTOR), false);
   });
-  withCombat({ started: true, combatants: [cpCombatant("fast")] }, () => {
+  await withCombat({ started: true, combatants: [cpCombatant("fast")] }, () => {
     assert.strictEqual(env.edhaIsSlowTurn(CP_ACTOR), false, "fast is never slow");
     assert.strictEqual(env.edhaIsFastTurn(CP_ACTOR), true);
   });
 });
 
-test("edhaIsSlowTurn: IN combat the two predicates are exact opposites; OUT of combat both are false", () => {
+test("edhaIsSlowTurn: IN combat the two predicates are exact opposites; OUT of combat both are false", async () => {
   // This is the whole invariant in one case. If someone later 'simplifies' edhaIsSlowTurn to
   // `!edhaIsFastTurn`, the in-combat half keeps passing and only this out-of-combat row fails.
   for (const ts of ["slow", "fast", undefined]) {
-    withCombat({ started: true, combatants: [cpCombatant(ts)] }, () => {
+    await withCombat({ started: true, combatants: [cpCombatant(ts)] }, () => {
       assert.notStrictEqual(env.edhaIsSlowTurn(CP_ACTOR), env.edhaIsFastTurn(CP_ACTOR), `turnSpeed ${String(ts)}`);
     });
   }
-  withCombat(null, () => {
+  await withCombat(null, () => {
     assert.strictEqual(env.edhaIsSlowTurn(CP_ACTOR), env.edhaIsFastTurn(CP_ACTOR), "out of combat neither fires");
     assert.strictEqual(env.edhaIsSlowTurn(CP_ACTOR), false);
   });
@@ -1244,11 +1240,11 @@ test("edhaIsSlowTurn: IN combat the two predicates are exact opposites; OUT of c
 // Summon identity used to be a NAME PREFIX, so renaming a summon silently broke its cap and its
 // riders. The flag is authoritative now; the prefix survives only as a fallback for creatures
 // summoned before the flag existed, and it compares against the RULE's own summonName.
-const summonActor = (o) => ({
-  name: o.name,
-  system: { resources: { hea: { value: o.hp === undefined ? 5 : o.hp } } },
-  getFlag: (ns, k) => (ns === "edha-content" ? o.flags[k] : undefined),
-});
+const summonActor = (o) => {
+  const a = mockActor({ name: o.name, flags: o.flags });
+  a.system = { resources: { hea: { value: o.hp === undefined ? 5 : o.hp } } };
+  return a;
+};
 const construct = (o = {}) => summonActor({
   name: o.name ?? "Combat Construct",
   hp: o.hp,
@@ -1268,32 +1264,30 @@ test("edhaSummonIsFrom: an UNSTAMPED legacy summon still matches by its rule's s
 });
 
 test("edhaOwnedSummons: counts only MY live summons of THIS talent", () => {
-  const old = env.game.actors;
-  env.game.actors = [
+  const { undo } = stageWorld(env, { actors: [
     construct({ talent: "Forge Construct", at: 100 }),
     construct({ talent: "Forge Construct", summoner: "someone-else", at: 101 }),   // not mine
     construct({ talent: "Risen Servant", name: "Risen Servant", at: 102 }),        // different talent
     construct({ talent: "Forge Construct", at: 103, hp: 0 }),                      // dead
-  ];
+  ] });
   try {
     const got = env.edhaOwnedSummons({ id: "ben" }, "Forge Construct", "Combat Construct");
     assert.strictEqual(got.length, 1);
-  } finally { env.game.actors = old; }
+  } finally { undo(); }
 });
 
 test("edhaOwnedSummons: returns OLDEST FIRST, and un-stamped legacy summons sort as oldest", () => {
   // replaceOldest dismisses from the front of this list, so the order is load-bearing:
   // before 07-24y nothing stamped a creation time and `.find()` was only ever correct at cap 1.
-  const old = env.game.actors;
-  env.game.actors = [
+  const { undo } = stageWorld(env, { actors: [
     construct({ name: "Combat Construct newest", talent: "Forge Construct", at: 300 }),
     construct({ name: "Combat Construct legacy", talent: undefined, at: undefined }),   // unstamped -> 0
     construct({ name: "Combat Construct mid", talent: "Forge Construct", at: 200 }),
-  ];
+  ] });
   try {
     const got = env.edhaOwnedSummons({ id: "ben" }, "Forge Construct", "Combat Construct");
     eq(got.map((a) => a.name), ["Combat Construct legacy", "Combat Construct mid", "Combat Construct newest"]);
-  } finally { env.game.actors = old; }
+  } finally { undo(); }
 });
 
 // --- edhaRulesForEvent — H20's dispatch selection (07-24y) --------------------------
@@ -1346,7 +1340,7 @@ test("edhaRulesForEvent: gathers across several talents, so two Keys both fire",
 test("edhaIsSlowTurn: a token actor matches its combatant by tokenId, not actorId", () => {
   const tokActor = { id: "world-actor", isToken: true, token: { id: "tok9" } };
   const byToken = { tokenId: "tok9", actorId: "someone-else", getFlag: () => "slow" };
-  withCombat({ started: true, combatants: [byToken] }, () => {
+  return withCombat({ started: true, combatants: [byToken] }, () => {
     assert.strictEqual(env.edhaIsSlowTurn(tokActor), true);
   });
 });
@@ -1386,37 +1380,29 @@ test("edhaSubstRankTier end-to-end: substituted thorn formula folds to half [Tie
 // Fate's snares carry no uuid and NO marker status, so H3's mark-wins reconcile must KEEP every
 // entry (the covenants fail-open convention — there is nothing to pass), while the scene filter
 // still hides another scene's traps. Getting either wrong silently empties a live trap field.
-test("edhaOwnerList keeps point-bound entries (no uuid) and scene-filters them (the snares shape)", () => {
-  const oldScene = env.canvas.scene;
-  env.canvas.scene = { id: "S1", grid: { size: 100, distance: 5 } };
-  try {
-    const owner = { flags: { "edha-content": { lists: { snares: [
-      { id: "a", sceneId: "S1", x: 100, y: 100, inevitable: false },
-      { id: "b", sceneId: "S2", x: 200, y: 200, inevitable: false },
-    ] } } } };
-    eq(env.edhaOwnerList(owner, "snares").map(e => e.id), ["a"]);
-  } finally { env.canvas.scene = oldScene; }
-});
+test("edhaOwnerList keeps point-bound entries (no uuid) and scene-filters them (the snares shape)", () => withStubs(env, { canvas: { ...env.canvas, scene: { id: "S1", grid: { size: 100, distance: 5 } } } }, () => {
+  const owner = { flags: { "edha-content": { lists: { snares: [
+    { id: "a", sceneId: "S1", x: 100, y: 100, inevitable: false },
+    { id: "b", sceneId: "S2", x: 200, y: 200, inevitable: false },
+  ] } } } };
+  eq(env.edhaOwnerList(owner, "snares").map(e => e.id), ["a"]);
+}));
 
 // --- edhaQuarryOf — the quarry adapter over the H3 ledger (07-25 pass 2bX) ----
 // The covenants-style accessor repoint did NOT transfer here (the 07-24v correction): the stored
 // shape changed from a bare uuid STRING to an entry array, so this adapter is the whole bridge.
 // The newest entry wins (cap 1 makes it the only one, but a mid-write cap-2 moment must not
 // return the doomed older mark), and an empty/unset ledger reads null, never undefined-crash.
-test("edhaQuarryOf: newest entry wins; empty and unset read null (the string→array bridge)", () => {
-  const oldScene = env.canvas.scene;
-  env.canvas.scene = { id: "S1", grid: { size: 100, distance: 5 } };
-  try {
-    const owner = { flags: { "edha-content": { lists: { quarry: [
-      { id: "a", uuid: "Actor.old", name: "Old" },
-      { id: "b", uuid: "Actor.new", name: "New" },
-    ] } } } };
-    assert.strictEqual(env.edhaQuarryOf(owner), "Actor.new");
-    assert.strictEqual(env.edhaQuarryOf({ flags: { "edha-content": { lists: { quarry: [] } } } }), null);
-    assert.strictEqual(env.edhaQuarryOf({}), null);
-    assert.strictEqual(env.edhaQuarryOf(null), null);
-  } finally { env.canvas.scene = oldScene; }
-});
+test("edhaQuarryOf: newest entry wins; empty and unset read null (the string→array bridge)", () => withStubs(env, { canvas: { ...env.canvas, scene: { id: "S1", grid: { size: 100, distance: 5 } } } }, () => {
+  const owner = { flags: { "edha-content": { lists: { quarry: [
+    { id: "a", uuid: "Actor.old", name: "Old" },
+    { id: "b", uuid: "Actor.new", name: "New" },
+  ] } } } };
+  assert.strictEqual(env.edhaQuarryOf(owner), "Actor.new");
+  assert.strictEqual(env.edhaQuarryOf({ flags: { "edha-content": { lists: { quarry: [] } } } }), null);
+  assert.strictEqual(env.edhaQuarryOf({}), null);
+  assert.strictEqual(env.edhaQuarryOf(null), null);
+}));
 
 // --- edhaLinkedSquareNear — the Weave spring-watch gate (07-25 pass 2bX) ------
 // The `linked` annotation had one write and ZERO reads pre-2bX; this is its first reader. Only

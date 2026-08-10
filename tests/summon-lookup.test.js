@@ -20,12 +20,13 @@
  */
 "use strict";
 const assert = require("assert");
-const { loadEngine } = require("./harness.js");
+const { loadEngine, mockActor } = require("./harness.js");
 
 // A summon actor stub: `name` + the edha-content flags edhaSummonIsFrom / edhaOwnedSummons read.
 function summon({ name = "Combat Construct (Bench)", stamp = null, summoner = "own1", hp = 20, at = 1 } = {}) {
-  const flags = { summon: true, summoner, summonTalent: stamp, summonedAt: at };
-  return { name, system: { resources: { hea: { value: hp } } }, getFlag: (ns, k) => (ns === "edha-content" ? flags[k] : undefined) };
+  const actor = mockActor({ name, flags: { summon: true, summoner, summonTalent: stamp, summonedAt: at } });
+  actor.system = { resources: { hea: { value: hp } } };
+  return actor;
 }
 
 test("edhaSummonIsFrom: a CONSUMER (null talentName) finds a stamped summon by name — the run-7 defect", () => {

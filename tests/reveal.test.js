@@ -15,7 +15,15 @@
 const assert = require("assert");
 const { loadEngine } = require("./harness.js");
 
-const env = loadEngine();
+/* Lazy load: this file never mutates persistent env.game/env.canvas state (every case is a pure
+ * call against a self-contained creature() object), so one engine instance safely serves the
+ * whole file — via a Proxy so the parse itself is deferred to the first test that actually runs,
+ * not paid at require() time. */
+let _env = null;
+const env = new Proxy({}, {
+  get(_, prop) { return (_env || (_env = loadEngine()))[prop]; },
+  set(_, prop, value) { (_env || (_env = loadEngine()))[prop] = value; return true; },
+});
 
 // A creature whose numbers are all distinct, so "lowest" has exactly one right answer.
 const creature = (over = {}) => ({

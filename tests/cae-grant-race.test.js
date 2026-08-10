@@ -19,23 +19,30 @@
  */
 "use strict";
 const assert = require("assert");
-const { loadEngine } = require("./harness.js");
+const { loadEngine, mockActor, sleep } = require("./harness.js");
 
-const env = loadEngine();
+/* Lazy load: nothing in this file mutates persistent env.game/env.canvas state (only
+ * env.fromUuid/env.game.combat, both freshly overwritten by every fakeCombat() call), so one
+ * engine instance safely serves the whole file — via a Proxy so the parse itself is deferred to
+ * the first test that actually runs, not paid at require() time. */
+let _env = null;
+const env = new Proxy({}, {
+  get(_, prop) { return (_env || (_env = loadEngine()))[prop]; },
+  set(_, prop, value) { (_env || (_env = loadEngine()))[prop] = value; return true; },
+});
 const CAE = "cosmere-advanced-encounters";
 
 /* A minimal combatant whose flag write has the async gap real Foundry writes have, plus the actor
- * plumbing edhaCaeApplyGM walks (fromUuid → actor → combatant lookup). */
+ * plumbing edhaCaeApplyGM walks (fromUuid → actor → combatant lookup). Built on mockActor for the
+ * flag store, with the server round-trip delay layered on top — the behavior-critical quirk that
+ * makes the OLD unserialised interleaving reproducible (see the file header). */
 function fakeCombat(uuid = "Combatant.cae-1") {
-  const combatant = {
-    uuid, id: uuid.split(".").pop(),
-    flags: { [CAE]: {} },
-    getFlag(scope, key) { return this.flags[scope]?.[key]; },
-    async setFlag(scope, key, value) {
-      await new Promise((r) => setTimeout(r, 1));   // the server round-trip
-      (this.flags[scope] ?? (this.flags[scope] = {}))[key] = JSON.parse(JSON.stringify(value));
-      return this;
-    },
+  const id = uuid.split(".").pop();
+  const combatant = mockActor({ name: id, id, uuid, type: "combatant" });
+  const baseSetFlag = combatant.setFlag.bind(combatant);
+  combatant.setFlag = async (scope, key, value) => {
+    await sleep(1);   // the server round-trip
+    return baseSetFlag(scope, key, JSON.parse(JSON.stringify(value)));
   };
   const actor = { uuid: "Actor.cae-owner", id: "cae-owner", name: "CAE Owner" };
   combatant.actor = actor;

@@ -21,18 +21,14 @@
  */
 "use strict";
 const assert = require("assert");
-const { loadEngine } = require("./harness.js");
+const { loadEngine, RollStub } = require("./harness.js");
 
 /* Capture the formulas `edhaRollOpposedSkill` builds. The harness's arithmetic-only RollStub
  * cannot evaluate dice or unsubstituted `@refs`, so the helper's own try/catch would swallow the
  * result and return 0 — the formula is the observable, not the total. */
 function withCapturingRoll(env, { total = 11 } = {}) {
   const seen = [];
-  env.Roll = class {
-    constructor(formula, data = {}) { this.formula = String(formula); this.data = data; seen.push(this.formula); }
-    async evaluate() { this.total = total; return this; }
-    evaluateSync() { this.total = total; return this; }
-  };
+  env.Roll = RollStub({ total, capture: seen });
   return seen;
 }
 

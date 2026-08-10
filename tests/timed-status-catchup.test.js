@@ -26,31 +26,28 @@
  */
 "use strict";
 const assert = require("assert");
-const { loadEngine } = require("./harness.js");
+const { loadEngine, mockActor, mockEffect, captureChat } = require("./harness.js");
 
+/* ⚠ STRICTNESS FIX: the original local getFlag here was FLAT (`this.flags[scope]?.[key]`), not
+ * dotted-path. None of this file's keys ("expireAfter", "timedExpire") contain a dot, so
+ * mockEffect's dotted getFlag/setFlag/unsetFlag are behavior-identical for every case below —
+ * confirmed by the full suite staying green after the swap. */
 function makeEffect(name, statusId, flags = {}) {
-  const eff = {
-    id: `eff-${statusId}`, name, statuses: new Set([statusId]), deleted: false,
-    flags: { "edha-content": { ...flags } },
-    getFlag(scope, key) { return this.flags[scope]?.[key]; },
-    async setFlag(scope, key, v) { (this.flags[scope] ??= {})[key] = v; },
-    async unsetFlag(scope, key) { delete this.flags[scope]?.[key]; },
-    async delete() { this.deleted = true; },
-  };
-  return eff;
+  return mockEffect({ name, id: `eff-${statusId}`, statusId, flags });
 }
 
 function makeActor(name, effects = [], { isToken = false, id = name } = {}) {
   const list = effects.slice();
-  return {
-    name, id, isToken, uuid: `Actor.${id}`, isOwner: true,
-    token: isToken ? { id: `tok-${id}` } : null,
-    effects: Object.assign(list, { get: (eid) => list.find(e => e.id === eid) }),
-    async toggleStatusEffect(statusId) {
-      if (!list.some(e => e.statuses.has(statusId))) list.push(makeEffect(statusId, statusId));
-      return true;
-    },
+  const actor = mockActor({ name, id, uuid: `Actor.${id}`, effects: list });
+  actor.isToken = isToken;
+  actor.isOwner = true;
+  actor.token = isToken ? { id: `tok-${id}` } : null;
+  Object.assign(actor.effects, { get: (eid) => list.find(e => e.id === eid) });
+  actor.toggleStatusEffect = async (statusId) => {
+    if (!list.some(e => e.statuses.has(statusId))) list.push(makeEffect(statusId, statusId));
+    return true;
   };
+  return actor;
 }
 
 function makeCombat(actors, { round = 1, turn = 0, started = true } = {}) {
@@ -115,15 +112,14 @@ test("the turn-change pass stamps an intent-carrying status, then expires it", a
   const eff = makeEffect("Braced (attacks at disadvantage)", "braced", { timedExpire: { expire: "owner", ownerUuid: "Actor.Trooper" } });
   const trooper = makeActor("Trooper", [eff]);
   env.fromUuid = async (u) => (u === "Actor.Trooper" ? trooper : null);
-  env.ChatMessage = { create: () => {}, getSpeaker: () => ({}) };
+  captureChat(env);
 
   await env.edhaExpireTimedStatuses(makeCombat([makeActor("Other"), trooper], { round: 2, turn: 1 }));
   assert.deepStrictEqual({ ...eff.getFlag("edha-content", "expireAfter") }, { round: 3, turn: 1 },
     "caught up on the first turn change — the bug left this undefined forever");
   assert.strictEqual(eff.getFlag("edha-content", "timedExpire"), undefined, "the intent is consumed");
 
-  const cards = [];
-  env.ChatMessage = { create: (m) => cards.push(m), getSpeaker: () => ({}) };
+  const cards = captureChat(env);
   await env.edhaExpireTimedStatuses(makeCombat([makeActor("Other"), trooper], { round: 4, turn: 1 }));
   assert.strictEqual(eff.deleted, true, "and then it actually ends — Brace was immortal");
   assert.ok(/ends \(end of its turn\)/.test(cards.map(c => c.content).join("")));
@@ -135,7 +131,7 @@ test("an owner-relative intent expires on the OWNER's turn, not the carrier's", 
   const victim = makeActor("Victim", [eff], { id: "Victim" });
   const tyrant = makeActor("Tyrant", [], { id: "Tyrant" });
   env.fromUuid = async (u) => (u === "Actor.Tyrant" ? tyrant : null);
-  env.ChatMessage = { create: () => {}, getSpeaker: () => ({}) };
+  captureChat(env);
 
   // turn order: [Tyrant(0), Victim(1)]; we are at r5 t1 (the victim's turn).
   await env.edhaExpireTimedStatuses(makeCombat([tyrant, victim], { round: 5, turn: 1 }));
@@ -147,7 +143,7 @@ test("POSITIVE CONTROL — an allowlisted status with no intent is still lazily 
   const env = loadEngine();
   const eff = makeEffect("Slowed", "slowed");
   const victim = makeActor("Victim", [eff]);
-  env.ChatMessage = { create: () => {}, getSpeaker: () => ({}) };
+  captureChat(env);
 
   await env.edhaExpireTimedStatuses(makeCombat([victim], { round: 3, turn: 0 }));
   assert.deepStrictEqual({ ...eff.getFlag("edha-content", "expireAfter") }, { round: 4, turn: 0 },
@@ -160,7 +156,7 @@ test("NEGATIVE CONTROL — a `braced` with no intent (Predictive Ward) is never 
   const env = loadEngine();
   const ward = makeEffect("Predictive Ward — Attacks against have 1 disadvantage", "braced");
   const frostbinder = makeActor("Frostbinder", [ward]);
-  env.ChatMessage = { create: () => {}, getSpeaker: () => ({}) };
+  captureChat(env);
 
   for (const r of [1, 2, 3, 9]) await env.edhaExpireTimedStatuses(makeCombat([frostbinder], { round: r, turn: 0 }));
 

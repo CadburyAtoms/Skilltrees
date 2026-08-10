@@ -22,7 +22,7 @@
  */
 "use strict";
 const assert = require("assert");
-const { loadEngine } = require("./harness.js");
+const { loadEngine, mockActor, stageWorld, captureChat } = require("./harness.js");
 
 function upkeepTalent(costPer) {
   return {
@@ -32,19 +32,16 @@ function upkeepTalent(costPer) {
   };
 }
 function mage() {
-  return {
-    name: "Bench — Blue", id: "mage", uuid: "Actor.mage", type: "character",
-    system: { resources: { inv: { value: 4, max: { value: 4 } } } },
-    items: [], effects: [], statuses: new Set(), flags: { "edha-content": {} },
-    getFlag() { return undefined; },
-    async update(patch) {
-      for (const [k, v] of Object.entries(patch)) {
-        const parts = k.split("."); let o = this;
-        for (const p of parts.slice(0, -1)) o = o[p];
-        o[parts[parts.length - 1]] = v;
-      }
-    },
+  const actor = mockActor({ name: "Bench — Blue", id: "mage", uuid: "Actor.mage", type: "character" });
+  actor.system = { resources: { inv: { value: 4, max: { value: 4 } } } };
+  actor.update = async function (patch) {
+    for (const [k, v] of Object.entries(patch)) {
+      const parts = k.split("."); let o = this;
+      for (const p of parts.slice(0, -1)) o = o[p];
+      o[parts[parts.length - 1]] = v;
+    }
   };
+  return actor;
 }
 
 /* An event whose `currentTarget` behaves the way a real browser's does. */
@@ -63,11 +60,8 @@ test("edhaUpkeepInvClick charges the resource — the dataset survives the await
   const el = { dataset: { actor: "Actor.mage", item: "Item.LivingImage" } };
   const { ev, state } = dispatchedEvent(el);
 
-  env.game.user = { isGM: true };
-  env.game.users = null;
-  env.game.actors = Object.assign([a], { get: (id) => (id === a.id ? a : null) });
-  const posted = [];
-  env.ChatMessage = class { static create(m) { posted.push(m); } static getSpeaker() { return {}; } };
+  const { undo } = stageWorld(env, { user: { isGM: true }, users: null, actors: [a] });
+  const posted = captureChat(env);
   env.fromUuid = async (uuid) => {
     state.dispatching = false;          // ⚠ awaiting is what ends dispatch — the browser nulls currentTarget here
     return uuid === "Actor.mage" ? a : uuid === "Item.LivingImage" ? tal : null;
@@ -78,6 +72,7 @@ test("edhaUpkeepInvClick charges the resource — the dataset survives the await
   assert.strictEqual(a.system.resources.inv.value, 3, "1 Investiture must be charged (4 → 3)");
   assert.strictEqual(posted.length, 1, "the upkeep-paid card must post");
   assert.ok(/pays 1 Investiture/.test(posted[0].content), `card should state the payment, got: ${posted[0].content}`);
+  undo();
 });
 
 test("edhaUpkeepInvClick reads the COST off the document, not a default", async () => {
@@ -86,11 +81,8 @@ test("edhaUpkeepInvClick reads the COST off the document, not a default", async 
   const el = { dataset: { actor: "Actor.mage", item: "Item.LivingImage" } };
   const { ev, state } = dispatchedEvent(el);
 
-  env.game.user = { isGM: true };
-  env.game.users = null;
-  env.game.actors = Object.assign([a], { get: () => null });
-  const posted = [];
-  env.ChatMessage = class { static create(m) { posted.push(m); } static getSpeaker() { return {}; } };
+  const { undo } = stageWorld(env, { user: { isGM: true }, users: null, actors: [] });
+  captureChat(env);
   env.fromUuid = async (uuid) => {
     state.dispatching = false;
     return uuid === "Actor.mage" ? a : uuid === "Item.LivingImage" ? upkeepTalent(2) : null;
@@ -98,6 +90,7 @@ test("edhaUpkeepInvClick reads the COST off the document, not a default", async 
 
   await env.edhaUpkeepInvClick(ev);
   assert.strictEqual(a.system.resources.inv.value, 2, "costPer 2 on the document must charge 2 (4 → 2)");
+  undo();
 });
 
 test("the harness models the browser: currentTarget IS null once dispatch ends", async () => {

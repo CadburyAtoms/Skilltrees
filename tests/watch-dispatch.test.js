@@ -24,21 +24,21 @@
  */
 "use strict";
 const assert = require("assert");
-const { loadEngine } = require("./harness.js");
-
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const { loadEngine, mockActor, sleep } = require("./harness.js");
 
 function talent(name, rules) {
   return { type: "talent", name, uuid: `Item.${name}`, id: name,
     hasEvents: () => true, enabledEvents: rules };
 }
 function watcherActor(name, items) {
-  return { uuid: `Actor.${name}`, id: name, name, type: "character", items,
-    statuses: new Set(), getActiveTokens: () => [], getFlag: () => undefined };
+  const actor = mockActor({ name, id: name, uuid: `Actor.${name}`, type: "character", items });
+  actor.getActiveTokens = () => [];
+  return actor;
 }
 function subject(name) {
-  return { uuid: `Actor.${name}`, id: name, name, type: "npc",
-    statuses: new Set(), getActiveTokens: () => [], getFlag: () => undefined };
+  const actor = mockActor({ name, id: name, uuid: `Actor.${name}`, type: "npc" });
+  actor.getActiveTokens = () => [];
+  return actor;
 }
 const watchRule = (chain) => ({ event: "edha-watch-rule", handler: {
   type: "edha-watch", watch: "defeat", scope: "scene", payloadTarget: "actor",

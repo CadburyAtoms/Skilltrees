@@ -38,7 +38,7 @@
  */
 "use strict";
 const assert = require("assert");
-const { loadEngine } = require("./harness.js");
+const { loadEngine, mockActor, withStubs, captureChat } = require("./harness.js");
 
 const GS = 100, DIST = 5, PPF = GS / DIST;   // 20 px/ft
 
@@ -58,14 +58,8 @@ function cueItem(name, rangeFt) {
 
 // An actor + its placeable. `side` is the TOKEN disposition; `protoSide` the prototype's.
 function makeActor(name, { side = HOSTILE, protoSide = null, items = [], token = true, x = 0, y = 0 } = {}) {
-  const flags = {};
-  const actor = {
-    name, items,
-    prototypeToken: { disposition: protoSide === null ? side : protoSide },
-    getFlag: (_s, k) => flags[k],
-    setFlag: (_s, k, v) => { flags[k] = v; return Promise.resolve(); },
-    __flags: flags,
-  };
+  const actor = mockActor({ name, items });
+  actor.prototypeToken = { disposition: protoSide === null ? side : protoSide };
   const tok = token
     ? { actor, document: { disposition: side }, center: { x, y } }
     : null;
@@ -74,22 +68,21 @@ function makeActor(name, { side = HOSTILE, protoSide = null, items = [], token =
 }
 
 /* Stage the scene and run the real sweep. Returns the owner names that got a card, plus every
- * actor that had a `trigRound` ledger written to it (the second, quieter half of the harm). */
+ * actor that had a `trigRound` ledger written to it (the second, quieter half of the harm).
+ * Read the OWNER off the message SPEAKER, never by matching names inside the content: "Ally" is
+ * a substring of all three ally names, and the victim's own name rides in the extra text —
+ * captureChat's speaker-attributing default is exactly that lesson. */
 async function sweepDrop(env, victim, placeables, { round = 1 } = {}) {
-  const cards = [];
-  env.canvas = { scene: { grid: { size: GS, distance: DIST } }, tokens: { placeables, controlled: [] } };
-  env.game.combat = { round };            // oncePerRound is live, so the trigRound writes are real
-  env.game.users = null;                  // no connected users → whisper list is []
-  env.ChatMessage = class ChatMessage {
-    static create(data) { cards.push({ owner: data?.speaker?.alias ?? null, content: String(data?.content ?? "") }); }
-    static getSpeaker({ actor } = {}) { return { alias: actor?.name }; }
-  };
-  await env.edhaGmCueDamageSweep(victim, 7, 0, 7);
-  // Read the OWNER off the message SPEAKER, never by matching names inside the content: "Ally"
-  // is a substring of all three ally names, and the victim's own name rides in the extra text.
-  const fired = cards.map(c => c.owner);
-  const ledgered = placeables.filter(p => p.actor.__flags.trigRound !== undefined).map(p => p.actor.name);
-  return { cards, fired, ledgered };
+  const cards = captureChat(env);
+  return withStubs(env, {
+    canvas: { scene: { grid: { size: GS, distance: DIST } }, tokens: { placeables, controlled: [] } },
+    game: { ...env.game, combat: { round }, users: null },   // oncePerRound is live, so the trigRound writes are real; no connected users → whisper list is []
+  }, async () => {
+    await env.edhaGmCueDamageSweep(victim, 7, 0, 7);
+    const fired = cards.map(c => c.owner);
+    const ledgered = placeables.filter(p => p.actor.getFlag("edha-content", "trigRound") !== undefined).map(p => p.actor.name);
+    return { cards, fired, ledgered };
+  });
 }
 
 /* The cast, mirroring run 18's control: a NEUTRAL (disposition 0) victim, one HOSTILE cue owner

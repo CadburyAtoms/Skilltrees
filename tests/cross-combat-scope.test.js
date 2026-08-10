@@ -26,44 +26,33 @@
  */
 "use strict";
 const assert = require("assert");
-const { loadEngine } = require("./harness.js");
+const { loadEngine, mockActor, stageWorld, sleep } = require("./harness.js");
 
 function makeActor({ name, type = "character", flags = {} }) {
-  return {
-    name, type, id: name, uuid: `Actor.${name}`,
-    statuses: new Set(), items: [], effects: [],
-    flags: { "edha-content": flags },
-    getFlag(scope, key) {
-      let v = this.flags[scope];
-      for (const k of String(key).split(".")) { if (v == null) return undefined; v = v[k]; }
-      return v;
-    },
-    async unsetFlag(scope, key) {
-      const parts = String(key).split("."); let o = this.flags[scope];
-      for (const k of parts.slice(0, -1)) { if (o == null) return; o = o[k]; }
-      if (o) delete o[parts[parts.length - 1]];
-    },
-    async setFlag() {}, async toggleStatusEffect() {}, async deleteEmbeddedDocuments() {},
+  const a = mockActor({ name, id: name, uuid: `Actor.${name}`, type, flags });
+  return Object.assign(a, {
+    async toggleStatusEffect() {}, async deleteEmbeddedDocuments() {},
     getActiveTokens: () => [], getRollData: () => ({}),
-  };
+  });
 }
 const combatOf = (id, actors) => ({ id, started: true, combatants: actors.map(a => ({ actorId: a.id, actor: a })), turns: [] });
 
 /* Fire every registered deleteCombat hook for `ended`, with `others` still in game.combats. */
 async function endCombat(env, { ended, others, actors, tokenActors = [] }) {
-  env.game.user = { isGM: true };
-  env.game.users = null;
-  env.game.actors = Object.assign([...actors], { get: (id) => actors.find(a => a.id === id) ?? null });
-  env.game.actors.filter = Array.prototype.filter;
-  env.canvas.tokens.placeables = tokenActors.map(a => ({ actor: a, document: {} }));
+  const { undo } = stageWorld(env, {
+    user: { isGM: true }, users: null,
+    actors,
+    placeables: tokenActors.map(a => ({ actor: a, document: {} })),
+    scenes: Object.assign([], { current: null }),
+    combats: Object.assign([...others], { active: others[0] ?? null }),
+  });
   env.game.combat = others[0] ?? null;
-  env.game.scenes = Object.assign([], { current: null });
-  env.game.combats = Object.assign([...others], { active: others[0] ?? null });
 
   for (const h of env.__hooks.on.filter(x => x.name === "deleteCombat")) {
     try { await h.fn(ended, {}, "user"); } catch (e) { /* sibling sweeps may want richer stubs */ }
   }
-  await new Promise((r) => setTimeout(r, 0));   // flush the void-fired unsets
+  await sleep(0);   // flush the void-fired unsets
+  undo();
 }
 
 test("Order covenants: the ended combat's actor clears, the LIVE combat's actor keeps its ledger", async () => {

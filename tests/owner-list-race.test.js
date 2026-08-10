@@ -20,25 +20,30 @@
  */
 "use strict";
 const assert = require("assert");
-const { loadEngine } = require("./harness.js");
+const { loadEngine, mockActor, sleep } = require("./harness.js");
 
-const env = loadEngine();
+/* Lazy load: this file never mutates persistent env.game/env.canvas state (only calls
+ * env.edhaOwnerListQueue/env.edhaOwnerList against fakeOwner objects), so one engine instance
+ * safely serves the whole file — via a Proxy so the parse itself is deferred to the first test
+ * that actually runs, not paid at require() time. */
+let _env = null;
+const env = new Proxy({}, {
+  get(_, prop) { return (_env || (_env = loadEngine()))[prop]; },
+  set(_, prop, value) { (_env || (_env = loadEngine()))[prop] = value; return true; },
+});
 
-// A minimal actor whose flag write has the async gap real Foundry writes have.
+// A minimal actor whose flag write has the async gap real Foundry writes have. Built on mockActor
+// (its dotted-path setFlag already walks "lists.remains" under the scope namespace), with the
+// server round-trip delay layered on top — the behavior-critical quirk that makes the OLD
+// unserialised interleaving reproducible (see the file header).
 function fakeOwner(uuid = "Actor.race-owner") {
-  return {
-    uuid, id: uuid.split(".").pop(), name: "Race Owner",
-    flags: { "edha-content": { lists: {} } },
-    async setFlag(scope, key, value) {
-      await new Promise((r) => setTimeout(r, 1));   // the server round-trip
-      // key is e.g. "lists.remains" — walk it under the scope namespace.
-      const parts = key.split(".");
-      let o = this.flags[scope] ?? (this.flags[scope] = {});
-      for (const k of parts.slice(0, -1)) o = o[k] ?? (o[k] = {});
-      o[parts[parts.length - 1]] = JSON.parse(JSON.stringify(value));
-      return this;
-    },
+  const owner = mockActor({ uuid, id: uuid.split(".").pop(), name: "Race Owner", flags: { lists: {} } });
+  const baseSetFlag = owner.setFlag.bind(owner);
+  owner.setFlag = async (scope, key, value) => {
+    await sleep(1);   // the server round-trip
+    return baseSetFlag(scope, key, JSON.parse(JSON.stringify(value)));
   };
+  return owner;
 }
 
 // The executor's place-shaped RMW, exactly as it now runs INSIDE the queue: fresh read →

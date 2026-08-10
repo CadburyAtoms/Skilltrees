@@ -6,7 +6,7 @@
  */
 "use strict";
 const assert = require("assert");
-const { loadEngine } = require("./harness.js");
+const { loadEngine, eq } = require("./harness.js");
 
 const env = loadEngine();
 
@@ -63,7 +63,7 @@ test("edhaCreationWipeIds: wipes talents, paths, culture, ancestry, and kit-stam
 test("edhaCreationWipeIds: falls back to _id and drops id-less entries", () => {
   const ids = env.edhaCreationWipeIds([{ _id: "abc", type: "talent", name: "X" }, { type: "path", name: "no-id" }]);
   // vm-realm arrays carry that realm's prototypes — JSON-normalize before structural comparison.
-  assert.deepStrictEqual(JSON.parse(JSON.stringify(ids)), ["abc"]);
+  eq(ids, ["abc"]);
 });
 
 test("edhaKeyPickAllowed: level 1 always; above level 1 only inside the wizard's per-actor window", () => {

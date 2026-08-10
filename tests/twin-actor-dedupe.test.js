@@ -25,35 +25,28 @@
  */
 "use strict";
 const assert = require("assert");
-const { loadEngine } = require("./harness.js");
+const { loadEngine, mockActor, stageWorld, captureChat } = require("./harness.js");
 
 /* A directory actor. `synthetic()` returns its unlinked-token twin: same id, different object,
- * different uuid, inheriting the flags — exactly what TokenDocument#actor hands back. */
+ * different uuid, inheriting the flags — exactly what TokenDocument#actor hands back. mockActor's
+ * getFlag/setFlag/unsetFlag close over their own `scopes` object (not `this.flags`), so copying
+ * them onto the twin via Object.assign still shares the SAME underlying flags — the twin genuinely
+ * inherits the base document's flags, exactly like a real synthetic actor. */
 function directoryActor(name, { id = name, type = "adversary", flags = {} } = {}) {
-  const a = {
-    name, id, type, uuid: `Actor.${id}`, isToken: false,
-    flags: { "edha-content": flags },
-    getFlag(scope, key) { let v = this.flags[scope]; for (const k of String(key).split(".")) { if (v == null) return undefined; v = v[k]; } return v; },
-    async unsetFlag() {}, async setFlag() {},
-    getRollData: () => ({}),
-  };
+  const a = mockActor({ name, id, uuid: `Actor.${id}`, type, flags });
+  a.isToken = false;
+  a.getRollData = () => ({});
   a.synthetic = (sceneId, tokenId) => Object.assign(Object.create(Object.getPrototypeOf(a)), a, {
     isToken: true, uuid: `Scene.${sceneId}.Token.${tokenId}.Actor.${id}`,
   });
   return a;
 }
 
-function ctx(env, { placeables = [], actors = [] } = {}) {
-  env.canvas.tokens = { placeables };
-  env.game.actors = actors;
-  return env;
-}
-
 test("edhaSceneActors: an unlinked token and its directory twin count ONCE (the bug)", () => {
   const env = loadEngine();
   const base = directoryActor("Stitchmother", { id: "DtdyQdVRXolPGFOb", flags: { sutureCradle: { targetUuid: "Actor.Green" } } });
   const tokenActor = base.synthetic("s1", "t1");
-  ctx(env, { placeables: [{ actor: tokenActor }], actors: [base] });
+  stageWorld(env, { placeables: [{ actor: tokenActor }], actors: [base] });
 
   const out = env.edhaSceneActors();
   assert.strictEqual(out.length, 1, "same id, two objects — one holder, not two");
@@ -64,7 +57,7 @@ test("POSITIVE CONTROL — three unlinked tokens off ONE prototype stay THREE", 
   const env = loadEngine();
   const base = directoryActor("Corvaine Raider", { id: "raiderBaseId000" });
   const toks = ["t1", "t2", "t3"].map(t => ({ actor: base.synthetic("s1", t) }));
-  ctx(env, { placeables: toks, actors: [base] });
+  stageWorld(env, { placeables: toks, actors: [base] });
 
   const out = env.edhaSceneActors();
   assert.strictEqual(out.length, 3, "an id-keyed dedupe would collapse these to 1 — that is the trap");
@@ -74,7 +67,7 @@ test("POSITIVE CONTROL — three unlinked tokens off ONE prototype stay THREE", 
 test("a LINKED token and its directory actor are the same document — counted once", () => {
   const env = loadEngine();
   const pc = directoryActor("Tem parinaem", { id: "pcId0000000000", type: "character" });
-  ctx(env, { placeables: [{ actor: pc }, { actor: pc }], actors: [pc] });   // two tokens, one linked actor
+  stageWorld(env, { placeables: [{ actor: pc }, { actor: pc }], actors: [pc] });   // two tokens, one linked actor
   assert.strictEqual(env.edhaSceneActors().length, 1);
 });
 
@@ -82,7 +75,7 @@ test("an off-canvas directory actor is still included (the sidebar precedent, 07
   const env = loadEngine();
   const onScene = directoryActor("On Scene", { id: "onScene00000000" });
   const parked = directoryActor("The Vivisectionist", { id: "parked000000000" });
-  ctx(env, { placeables: [{ actor: onScene.synthetic("s1", "t1") }], actors: [onScene, parked] });
+  stageWorld(env, { placeables: [{ actor: onScene.synthetic("s1", "t1") }], actors: [onScene, parked] });
 
   const names = env.edhaSceneActors().map(a => a.name).sort().join(" | ");   // join: cross-realm arrays are not deepStrictEqual
   assert.strictEqual(names, "On Scene | The Vivisectionist");
@@ -93,7 +86,7 @@ test("directoryFilter narrows only the DIRECTORY pass (edhaWatchActors' characte
   const advTok = directoryActor("Adv", { id: "adv000000000000" }).synthetic("s1", "t1");
   const pc = directoryActor("PC", { id: "pc0000000000000", type: "character" });
   const dirAdv = directoryActor("Directory Adv", { id: "dirAdv000000000" });
-  ctx(env, { placeables: [{ actor: advTok }], actors: [pc, dirAdv] });
+  stageWorld(env, { placeables: [{ actor: advTok }], actors: [pc, dirAdv] });
 
   const names = env.edhaSceneActors({ directoryFilter: (a) => a.type === "character" }).map(a => a.name).sort().join(" | ");
   assert.strictEqual(names, "Adv | PC",
@@ -107,10 +100,9 @@ test("directoryFilter narrows only the DIRECTORY pass (edhaWatchActors' characte
 test("Suture Cradle rolls Discipline ONCE for a cradler that is both a token and a directory twin", async () => {
   const env = loadEngine();
   const base = directoryActor("Stitchmother", { id: "DtdyQdVRXolPGFOb", flags: { sutureCradle: { targetUuid: "Actor.Green", targetName: "Bench — Green" } } });
-  ctx(env, { placeables: [{ actor: base.synthetic("s1", "t1") }], actors: [base] });
+  stageWorld(env, { placeables: [{ actor: base.synthetic("s1", "t1") }], actors: [base] });
 
-  const cards = [];
-  env.ChatMessage = { create: (m) => cards.push(m), getSpeaker: () => ({}) };
+  const cards = captureChat(env);
   let rolls = 0;
   env.edhaRollOpposedSkill = async () => { rolls++; return 20; };   // 20 ≥ DC 16 → the cradle holds
 
@@ -124,9 +116,9 @@ test("Suture Cradle rolls Discipline ONCE for a cradler that is both a token and
 test("NEGATIVE CONTROL — a cradler holding NOBODY rolls nothing", async () => {
   const env = loadEngine();
   const base = directoryActor("Stitchmother", { id: "DtdyQdVRXolPGFOb" });        // no sutureCradle flag
-  ctx(env, { placeables: [{ actor: base.synthetic("s1", "t1") }], actors: [base] });
+  stageWorld(env, { placeables: [{ actor: base.synthetic("s1", "t1") }], actors: [base] });
   let rolls = 0;
-  env.ChatMessage = { create: () => {}, getSpeaker: () => ({}) };
+  captureChat(env);
   env.edhaRollOpposedSkill = async () => { rolls++; return 20; };
 
   await env.edhaSutureCradleCheck({ uuid: "Actor.Green", name: "Bench — Green" }, 6);

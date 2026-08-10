@@ -24,20 +24,21 @@
  */
 "use strict";
 const assert = require("assert");
-const { loadEngine } = require("./harness.js");
+const { loadEngine, mockActor } = require("./harness.js");
 
-const env = loadEngine();
+/* Lazy load: this file never mutates persistent env.game/env.canvas state (the last case touches
+ * env.CONFIG, but it is also the LAST test in the file, so nothing after it could see the leak
+ * anyway), so one engine instance safely serves the whole file — via a Proxy so the parse itself
+ * is deferred to the first test that actually runs, not paid at require() time. */
+let _env = null;
+const env = new Proxy({}, {
+  get(_, prop) { return (_env || (_env = loadEngine()))[prop]; },
+  set(_, prop, value) { (_env || (_env = loadEngine()))[prop] = value; return true; },
+});
 
-const flagStore = (flags) => ({ getFlag: (scope, key) => {
-  let v = flags;
-  for (const k of `${scope === "edha-content" ? "" : "MISS."}${key}`.split(".").filter(Boolean)) {
-    if (v === undefined || v === null) return undefined;
-    v = v[k];
-  }
-  return v;
-} });
-
-const bearerOwner = (uuid) => flagStore({ counters: { insight: uuid } });
+// mockActor's dotted-path, scope-aware getFlag already refuses any scope but "edha-content" —
+// exactly the semantics this file's owner stub needs.
+const bearerOwner = (uuid) => mockActor({ flags: { counters: { insight: uuid } } });
 // `system` is written exactly as a real ActiveEffect stores it: the schema is {isStackable, stacks}.
 const creature = (uuid, stacks) => ({
   uuid,
@@ -52,7 +53,7 @@ test("edhaCounterOn: reads system.stacks for the owner's own bearer", () => {
 test("edhaCounterOn: OWNER ISOLATION — a rival's marked creature reads 0 for a non-bearer owner", () => {
   const rivalMarked = creature("Actor.abc", 4);
   const notMyBearer = bearerOwner("Actor.other");
-  const noBearerAtAll = flagStore({});
+  const noBearerAtAll = mockActor({});
   assert.strictEqual(env.edhaCounterOn(notMyBearer, "insight", rivalMarked, "insight"), 0);
   assert.strictEqual(env.edhaCounterOn(noBearerAtAll, "insight", rivalMarked, "insight"), 0);
 });

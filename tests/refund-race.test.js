@@ -27,26 +27,38 @@
  */
 "use strict";
 const assert = require("assert");
-const { loadEngine } = require("./harness.js");
+const { loadEngine, sleep } = require("./harness.js");
 
-const env = loadEngine();
-
-/* Fire the WHOLE `cosmere-rpg.preUseItem` chain the way Foundry's `Hooks.call` does — in
- * registration order, stopping at the first handler that returns false. Calling only "the snapshot
- * hook" would not be the same test: 21 handlers are registered on this hook and several are vetoes
- * or takeovers that return false, so this also pins that the snapshot is actually REACHED for an
- * ordinary consuming item. (The engine wraps every hook in its debug tracer, so a handler cannot be
- * identified by its source text — fire the chain instead.) */
-const preUseChain = env.__hooks.on.filter((h) => h.name === "cosmere-rpg.preUseItem").map((h) => h.fn);
-assert.ok(preUseChain.length, "no cosmere-rpg.preUseItem handlers registered — the harness or the engine changed shape");
+/* A lazy, file-shared engine context: nothing here mutates env.game/env.canvas state (every test
+ * only builds its own actor/item objects and calls env.edhaRefundCost / env.edhaAwaitCostCharged),
+ * so one engine load safely serves the whole file — but the load itself is deferred to the first
+ * test that actually runs, not paid at require() time. */
+let _ctx = null;
+function ctx() {
+  if (_ctx) return _ctx;
+  const env = loadEngine();
+  /* Fire the WHOLE `cosmere-rpg.preUseItem` chain the way Foundry's `Hooks.call` does — in
+   * registration order, stopping at the first handler that returns false. Calling only "the
+   * snapshot hook" would not be the same test: 21 handlers are registered on this hook and several
+   * are vetoes or takeovers that return false, so this also pins that the snapshot is actually
+   * REACHED for an ordinary consuming item. (The engine wraps every hook in its debug tracer, so a
+   * handler cannot be identified by its source text — fire the chain instead.) */
+  const preUseChain = env.__hooks.on.filter((h) => h.name === "cosmere-rpg.preUseItem").map((h) => h.fn);
+  _ctx = { env, preUseChain };
+  return _ctx;
+}
 function firePreUseItem(item) {
-  for (const fn of preUseChain) {
+  for (const fn of ctx().preUseChain) {
     let out;
     try { out = fn(item); } catch (e) { continue; }
     if (out === false) return false;
   }
   return true;
 }
+
+test("harness sanity: cosmere-rpg.preUseItem handlers are registered", () => {
+  assert.ok(ctx().preUseChain.length, "no cosmere-rpg.preUseItem handlers registered — the harness or the engine changed shape");
+});
 
 /* An actor whose resource write has the async gap a real Foundry write has: `update()` resolves
  * only after the round-trip, and the value it writes is ABSOLUTE (there is no delta API in the
@@ -57,8 +69,8 @@ function fakeActor({ value = 4, max = 4, writeMs = 5 } = {}) {
     system: { resources: { inv: { value, max: { value: max } } } },
     writeMs,
     async update(updates) {
-      await new Promise((r) => setTimeout(r, this.writeMs));
-      for (const [k, v] of Object.entries(updates)) env.foundry.utils.setProperty(this, k, v);
+      await sleep(this.writeMs);
+      for (const [k, v] of Object.entries(updates)) ctx().env.foundry.utils.setProperty(this, k, v);
       return this;
     },
   };
@@ -86,28 +98,31 @@ function snapshot(item) {
 }
 
 test("A. the charge landing LAST cannot eat the refund (inv 4 -> ended at 2)", async () => {
+  const { env } = ctx();
   const actor = fakeActor({ value: 4, max: 4, writeMs: 5 });
   const item = fakeItem(actor);
   snapshot(item);                       // preUseItem — before anything is charged
   chargeLikeTheSystem(actor, 2, 60);    // the un-awaited absolute write, slow to land
   await env.edhaRefundCost(item);       // the executor refuses in the SAME tick
-  await new Promise((r) => setTimeout(r, 120));
+  await sleep(120);
   assert.strictEqual(actor.system.resources.inv.value, 4,
     `a refused use must leave the actor exactly as it started; got ${actor.system.resources.inv.value} (the bench measured 2)`);
 });
 
 test("B. the charge landing FIRST cannot make a stale read over-credit (inv 3 -> ended at 4)", async () => {
+  const { env } = ctx();
   const actor = fakeActor({ value: 3, max: 4, writeMs: 40 });
   const item = fakeItem(actor);
   snapshot(item);
   chargeLikeTheSystem(actor, 2, 2);     // lands almost immediately; a stale read still says 3
   await env.edhaRefundCost(item);
-  await new Promise((r) => setTimeout(r, 120));
+  await sleep(120);
   assert.strictEqual(actor.system.resources.inv.value, 3,
     `the refund must restore 3, not clamp a stale 3+2 to the max; got ${actor.system.resources.inv.value} (the bench measured 4)`);
 });
 
 test("C. a refund with no pre-cost snapshot still credits at once (the late chat-card cancel)", async () => {
+  const { env } = ctx();
   const actor = fakeActor({ value: 1, max: 4, writeMs: 1 });
   const item = fakeItem(actor, { uuid: "Item.no-snapshot" });
   // No snapshot: the charge landed long ago (this is edhaBurstCancel / the picker paths).
@@ -118,6 +133,7 @@ test("C. a refund with no pre-cost snapshot still credits at once (the late chat
 });
 
 test("D. the refund never exceeds the resource max", async () => {
+  const { env } = ctx();
   const actor = fakeActor({ value: 4, max: 4, writeMs: 1 });
   const item = fakeItem(actor, { uuid: "Item.at-max" });
   await env.edhaRefundCost(item);
@@ -125,6 +141,7 @@ test("D. the refund never exceeds the resource max", async () => {
 });
 
 test("E. edhaAwaitCostCharged reports FALSE when nothing was ever charged (so no refund mints)", async () => {
+  const { env } = ctx();
   const actor = fakeActor({ value: 4, max: 4 });
   const list = [{ resource: "inv", amount: 2 }];
   const landed = await env.edhaAwaitCostCharged(actor, list, { inv: 4 }, 60, 10);
@@ -132,6 +149,7 @@ test("E. edhaAwaitCostCharged reports FALSE when nothing was ever charged (so no
 });
 
 test("F. edhaAwaitCostCharged returns TRUE as soon as every charged resource has moved", async () => {
+  const { env } = ctx();
   const actor = fakeActor({ value: 4, max: 4 });
   const list = [{ resource: "inv", amount: 2 }];
   setTimeout(() => { actor.system.resources.inv.value = 2; }, 15);
