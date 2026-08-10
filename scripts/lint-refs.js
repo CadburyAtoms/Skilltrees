@@ -38,6 +38,7 @@ const fs = require("fs");
 const path = require("path");
 const { parseHandlerSchemas, matchBrace, topLevelKeys } = require("./handler-schemas.js");
 const { loadJson } = require("./lib/data.js");
+const { stripComments } = require("./lib/strip-comments.js");
 
 const REPO_ROOT = path.resolve(__dirname, "..");
 const ENGINE_PATH = path.join(REPO_ROOT, "module-src", "scripts", "register-skills.js");
@@ -97,25 +98,9 @@ function inEngine(lit) {
 // migration deleted the last tree-talent name from code (2026-07-26: two adversary abilities
 // whose cues promised "use the item to auto-resolve" had been dead since their name-key was
 // deleted, and pass 5 kept exempting them on the strength of a comment).
-function stripComments(src) {
-  const out = [];
-  let inBlock = false;
-  for (const raw of src.split("\n")) {
-    let l = raw;
-    if (inBlock) { const e = l.indexOf("*/"); if (e < 0) { out.push(""); continue; } l = l.slice(e + 2); inBlock = false; }
-    for (;;) {
-      const b = l.indexOf("/*"); if (b < 0) break;
-      const e = l.indexOf("*/", b + 2);
-      if (e < 0) { l = l.slice(0, b); inBlock = true; break; }
-      l = l.slice(0, b) + " " + l.slice(e + 2);
-    }
-    const s = l.indexOf("//");
-    // only treat // as a comment when it isn't inside a string literal
-    if (s >= 0 && (l.slice(0, s).split('"').length - 1) % 2 === 0) l = l.slice(0, s);
-    out.push(l);
-  }
-  return out.join("\n");
-}
+// `stripComments` itself now lives in ./lib/strip-comments.js (2026-08-10, hygiene campaign wave
+// 4A) — required back here so this file's behavior is unchanged; tests/harness.js's `codeOnly`
+// is the same function, so a source-reading test and this linter always agree on what "code" means.
 const engineCode = stripComments(engine);
 /* Comments AND string contents replaced by spaces, byte offsets and line breaks preserved — so a
  * match index in the result still points at the same place in the original. `stripComments` above
