@@ -1496,7 +1496,7 @@ Hooks.once("ready", () => {
   } catch (e) { console.error("Edha Content | applyDamage wrap failed", e); }
 });
 // Auto-clear Kindle lights when an encounter ends (a reasonable "end of scene" trigger).
-Hooks.on("deleteCombat", (combat) => { try { if (edhaDefBuffGmGate()) void edhaClearKindleLights(combat); } catch (e) {} });   // one applier (07-27b — the 2bW-13 family: raw isGM doubles with two GM clients)
+// (deleteCombat registration centralized 2026-08-10 (R-60) — see EDHA_SCENE_RESET_FAMILIES / the shared hook after edhaClearOrderState.)
 
 /* ============================================================================================
  * BLACK / RITUAL tree engine (2026-06-13)
@@ -2107,6 +2107,49 @@ function edhaStillFightingElsewhere(actor, guard) {
   if (!actor || !guard || !guard.size) return false;
   try { return (actor.id && guard.has(actor.id)) || (actor.uuid && guard.has(actor.uuid)); }
   catch (e) { return false; }
+}
+
+/* R-60 (hygiene campaign 2026-08-10): the ONE scene-reset population + applier every deleteCombat
+ * clear now shares, replacing ten hand-rolled sweeps that answered "who gets reset" FIVE different
+ * ways — Sovereignty swept canvas tokens ONLY (an off-scene character kept `dieStep` forever), Life
+ * alone reached every directory actor including adversaries/summons, and only Chaos deduped a token
+ * actor against its own directory entry (the rest could double-visit the same actor harmlessly, but
+ * still inconsistently). The population is `edhaSceneActors()` — directory ∪ canvas tokens, deduped
+ * by uuid/id, the SAME primitive `edhaWatchActors` already reaches for instead of hand-rolling the
+ * union (see its comment above) — so Chaos's pattern is now everyone's pattern. Each family keeps
+ * its OWN flag/status lists, UNCHANGED by this pass; only WHO they reach moves, which is the whole
+ * point (Sovereignty's off-scene actor now resets; Life's population widens to match the other
+ * nine instead of staying the one outlier). `edhaStillFightingElsewhere` (R-58) still applies per
+ * actor, and every step — each flag unset, each status clear, the bespoke `extra` — is its own
+ * try/catch so one actor's rejection (Chaos's proven shape: a concurrent sweep already deleted the
+ * AE `toggleStatusEffect` is trying to touch) never starves the rest of the sweep.
+ * `key` generalizes Life's `_edhaLifeClearBusy` (07-27b: two combats ending back-to-back could
+ * overlap the SAME family's sweep mid-actor, double-creating Apex Form's ended-injury) into one
+ * shared busy-set entry per family per ended combat, instead of a bespoke module-level boolean only
+ * Life had. */
+const _edhaSceneResetBusy = new Set();
+async function edhaSceneReset(endedCombat, { flags = [], statuses = [], extra = null, key = "" } = {}) {
+  if (!edhaDefBuffGmGate()) return;
+  const busyKey = `${key || "?"}:${endedCombat?.id ?? "?"}`;
+  if (_edhaSceneResetBusy.has(busyKey)) return;
+  _edhaSceneResetBusy.add(busyKey);
+  try {
+    const guard = edhaCombatEndGuard(endedCombat);   // ⛑ cross-combat clobber guard (R-58)
+    for (const a of edhaSceneActors()) {
+      if (edhaStillFightingElsewhere(a, guard)) continue;
+      for (const fkey of flags) {
+        try { await a.unsetFlag("edha-content", fkey); }
+        catch (e) { console.warn(`Edha Content | scene reset (${key || "?"}): unset ${fkey} failed on ${a?.name ?? "?"}`, e); }
+      }
+      for (const st of statuses) {
+        try { if (a.statuses?.has?.(st)) await a.toggleStatusEffect?.(st, { active: false }); }
+        catch (e) { console.warn(`Edha Content | scene reset (${key || "?"}): status ${st} clear failed on ${a?.name ?? "?"}`, e); }
+      }
+      try { await extra?.(a); }
+      catch (e) { console.warn(`Edha Content | scene reset (${key || "?"}): extra step failed on ${a?.name ?? "?"}`, e); }
+    }
+  } catch (e) { console.error(`Edha Content | scene reset (${key || "?"}) failed`, e); }
+  finally { _edhaSceneResetBusy.delete(busyKey); }
 }
 
 /* ⛑ A CLICK HANDLER'S OUTER CATCH IS NEVER "non-fatal" (bench run 23, 2026-07-28).
@@ -8765,7 +8808,7 @@ async function edhaSummon(caster, spec) {
     const hpRoll = await (new Roll(spec.hpFormula || "(@tier)d6", rollData)).evaluate();
     const hp = Math.max(1, hpRoll.total);
     const atk = spec.attack || {};
-    const atkFormula = atk.damageFormula ? Roll.replaceFormulaData(atk.damageFormula, rollData, { missing: "0" }) : null;
+    const atkFormula = atk.damageFormula ? edhaFoldDieMath(Roll.replaceFormulaData(atk.damageFormula, rollData, { missing: "0" })) : null;
     const pen = Number(spec.defensePenalty) || 0;
     const dval = (k) => Math.max(0, (caster.system?.defenses?.[k]?.value ?? 0) - pen);
     const cond = {}; const skipped = [];
@@ -8855,7 +8898,7 @@ async function edhaSummon(caster, spec) {
               activation: isAtk
                 ? { type: "skill_test", cost: { value: Number(x.actions) || 1, type: "act" }, skill: x.skill || "ath", attribute: x.attribute || "str" }
                 : { type: "utility", cost: { value: Number(x.actions) || 1, type: "act" } },
-              damage: x.damageFormula ? { formula: Roll.replaceFormulaData(x.damageFormula, rollData, { missing: "0" }), type: x.damageType || "keen" } : { formula: null, type: null },
+              damage: x.damageFormula ? { formula: edhaFoldDieMath(Roll.replaceFormulaData(x.damageFormula, rollData, { missing: "0" })), type: x.damageType || "keen" } : { formula: null, type: null },
             },
           };
         })),
@@ -9473,7 +9516,7 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
   // Fold BEFORE constructing: the rendered card's formula bar shows the Roll's own formula string, so
   // "(3)d(2 * 3 + 2)" must become "3d8" here — folding only the breakdown missed this surface (Ben 07-12,
   // Predator's Due; same family as the 07-05 roll-label fixes).
-  const roll = await (new Roll(edhaFoldDieMath(Roll.replaceFormulaData(eff.formula || "0", rollData, { missing: "0" })))).evaluate();
+  const roll = await edhaRollFormula(rollData, eff.formula || "0");
   const amt = Math.max(0, Math.floor(roll.total));
   const speaker = ChatMessage.getSpeaker({ actor: owner });
   const rolled = (roll.dice?.length ?? 0) > 0;   // a flat "0" formula posts NO naked roll card (the 07-05 "blank card" bug)
@@ -10034,6 +10077,23 @@ function edhaEvalSync(formula, rd) {
     return Number(r.total) || 0;
   } catch (e) { return 0; }
 }
+/* R-65 (hygiene campaign 2026-08-10): the ONE async formula-roll path every damage/heal/DC roll now
+ * shares. Before this, only 2 of 22 `new Roll(Roll.replaceFormulaData(...))` evaluate sites folded
+ * computed die math (edhaFoldDieMath) before rolling — the rest reached Foundry's Roll with the
+ * documented [Tier][Die] convention, e.g. "(@tier)d(2 * @colorRank + 2)", still UNRESOLVED after
+ * @-ref substitution: Roll has no arithmetic-inside-dice-notation support, so the die term silently
+ * failed. The smoking gun was two adjacent lines: a heal branch that didn't fold sitting eight lines
+ * above its damage twin that did. `actorOrRd` accepts either an actor (`.getRollData()` is called
+ * once) or an already-resolved roll-data object (several call sites already had one in scope as
+ * `rd` and should keep passing that, not re-derive it). Returns the evaluated Roll — `.total`,
+ * `.dice`, `.toMessage()` all behave exactly as the inline `new Roll(...).evaluate()` they replace. */
+async function edhaRollFormula(actorOrRd, formula) {
+  const rd = (actorOrRd && typeof actorOrRd.getRollData === "function") ? actorOrRd.getRollData() : (actorOrRd || {});
+  const baked = Roll.replaceFormulaData(String(formula ?? "0"), rd, { missing: "0" });
+  const roll = new Roll(edhaFoldDieMath(baked));
+  await roll.evaluate();
+  return roll;
+}
 // Pure (pinned in tests/): resolve the two Edha-vocabulary refs the system's roll data cannot —
 // @colorRank (skill rank for a PC, ROLE rank for an adversary owner — ruling 122) and @tier.
 // Callers pass the already-resolved numbers; anything else in the formula stays for roll data.
@@ -10260,7 +10320,7 @@ async function edhaBurstDetonate(pid, messageId = null) {
     const dtype = item.system?.damage?.type || "energy";
 
     if (b.heal) {
-      const hr = await new Roll(Roll.replaceFormulaData(dmgF, rd, { missing: "0" })).evaluate();
+      const hr = await edhaRollFormula(rd, dmgF);
       rolls.push(hr);
       const amt = Math.max(0, Math.floor(hr.total));
       for (const t of caught) {
@@ -10268,7 +10328,7 @@ async function edhaBurstDetonate(pid, messageId = null) {
         lines.push(`${t.name}: +${amt} HP (capped at max)`);
       }
     } else if (affects !== "none") {
-      const dice = await new Roll(edhaFoldDieMath(Roll.replaceFormulaData(dmgF, rd, { missing: "0" }))).evaluate();
+      const dice = await edhaRollFormula(rd, dmgF);
       rolls.push(dice);
       let mod = 0;
       const skillModVal = b.addSkillMod ? edhaEvalSync(`@skills.${b.addSkillMod}.mod`, rd) : 0;   // match the system's full-hit skill mod
@@ -10286,7 +10346,7 @@ async function edhaBurstDetonate(pid, messageId = null) {
       for (const t of caught) {
         let amt = full, note = "";
         if (b.save) {
-          const sv = await new Roll(Roll.replaceFormulaData(`1d20 + @skills.${b.save.skill || "ath"}.mod`, t.actor.getRollData(), { missing: "0" })).evaluate();
+          const sv = await edhaRollFormula(t.actor, `1d20 + @skills.${b.save.skill || "ath"}.mod`);
           const saved = sv.total >= dc; if (saved) amt = Math.floor(full / 2);
           note = ` (save ${sv.total} vs ${dc} → ${saved ? "half" : "full"})`;
         }
@@ -10355,7 +10415,7 @@ async function edhaApplyBurstResults(payload) {
         } else {                              // Red/other = dangerous terrain (damage on enter), now owner-tagged
           const gs = scene.grid?.size || 100, gd = scene.grid?.distance || 5;
           const radiusPx = Math.max(Math.round(gs / 2), Math.round((tr.sizeFt / gd) * gs));
-          const baked = Roll.replaceFormulaData(tr.formula || "(@tier)d6", caster.getRollData(), { missing: "0" });
+          const baked = edhaFoldDieMath(Roll.replaceFormulaData(tr.formula || "(@tier)d6", caster.getRollData(), { missing: "0" }));
           const [trRegion] = await scene.createEmbeddedDocuments("Region", [{
             name: `${caster.name} — Dangerous Terrain`, color: EDHA_COLOR_HEX[tr.color] || "#d23b2e",
             shapes: [{ type: "circle", x: tr.x, y: tr.y, radius: radiusPx, hole: false }],
@@ -10742,7 +10802,7 @@ async function edhaPlaceHazardRegionGM(scene, owner, shape, bakedFormula, type, 
 // Drop a hazard: bake the formula against the OWNER, then write GM-side (direct or via socket for players).
 // `extraFlags` merges into the Region's edha-content flags (e.g. Pinpoint's followTokenUuid).
 async function edhaDropHazard(owner, scene, shape, formulaRaw, type, color, label, extraFlags = null) {
-  const baked = Roll.replaceFormulaData(formulaRaw || EDHA_CHARGE_DMG, owner.getRollData(), { missing: "0" });
+  const baked = edhaFoldDieMath(Roll.replaceFormulaData(formulaRaw || EDHA_CHARGE_DMG, owner.getRollData(), { missing: "0" }));
   if (game.user?.isGM) return edhaPlaceHazardRegionGM(scene, owner, shape, baked, type, color, label, extraFlags);
   if (!game.users?.activeGM) { ui.notifications?.warn("Edha: a GM must be online to place dangerous terrain."); return null; }
   try { game.socket.emit("module.edha-content", { action: "place-hazard-region", payload: { sceneId: scene.id, ownerUuid: owner.uuid, shape, baked, type, color, label, extraFlags } }); } catch (e) {}
@@ -10908,7 +10968,7 @@ async function edhaResolveCharges(owner, charges, { radiusFt = null, bonusFormul
       const sizeFt = radiusFt || ch.sizeFt || 10;
       const caught = edhaEnemyTokensInCircle(owner, ch.x, ch.y, sizeFt);
       for (const t of caught) { countById.set(t.id, (countById.get(t.id) || 0) + 1); everyCaught.push(t); }
-      const dice = await new Roll(Roll.replaceFormulaData((ch.formula || EDHA_CHARGE_DMG) + (bonusFormula || ""), rd, { missing: "0" })).evaluate();
+      const dice = await edhaRollFormula(rd, (ch.formula || EDHA_CHARGE_DMG) + (bonusFormula || ""));
       allRolls.push(dice);
       const amt = Math.max(0, Math.floor(dice.total));
       for (const t of caught) {
@@ -10917,7 +10977,7 @@ async function edhaResolveCharges(owner, charges, { radiusFt = null, bonusFormul
         lines.push(`${t.name}: ${a} ${ch.type || "energy"}${ignoreDeflect && edhaDeflectOf(t.actor) ? " (deflect ignored)" : ""}`);
       }
       if (ch.pinpoint && pinDoc && caught[0]) {   // Pinpoint: extra keen to the primary target, ignoring its deflect
-        const pin = await new Roll(Roll.replaceFormulaData(pinDoc.system?.damage?.formula || "(@tier)d6", rd, { missing: "0" })).evaluate();
+        const pin = await edhaRollFormula(rd, pinDoc.system?.damage?.formula || "(@tier)d6");
         allRolls.push(pin);
         const pa = Math.max(0, Math.floor(pin.total)) + edhaDeflectOf(caught[0].actor);
         hits.push({ actorUuid: caught[0].actor.uuid, amount: pa, type: pinDoc.system?.damage?.type || "keen", heal: false });
@@ -10937,7 +10997,7 @@ async function edhaResolveCharges(owner, charges, { radiusFt = null, bonusFormul
       for (const [id, n] of countById) {
         if (n < 2) continue;
         const t = everyCaught.find(x => x.id === id); if (!t) continue;
-        const extra = await new Roll(Roll.replaceFormulaData(doubleCaughtFormula, rd, { missing: "0" })).evaluate();
+        const extra = await edhaRollFormula(rd, doubleCaughtFormula);
         allRolls.push(extra);
         // 07-24s: the type was hard-coded "energy". Both shipped consumers still are, so this is a
         // schema field with no behaviour change — it exists because the NEXT one will not be.
@@ -11024,7 +11084,7 @@ async function edhaFaultLine(item, h) {
     if (!pt) { edhaRefundCost(item); ui.notifications?.info(`${item.name} canceled — cost refunded.`); return; }
     const caught = edhaEnemyTokensInLine(owner, cx, cy, pt.x, pt.y, lengthFt, widthFt);
     const rd = owner.getRollData();
-    const dice = await new Roll(Roll.replaceFormulaData(item.system?.damage?.formula || EDHA_CHARGE_DMG, rd, { missing: "0" })).evaluate();
+    const dice = await edhaRollFormula(rd, item.system?.damage?.formula || EDHA_CHARGE_DMG);
     const amt = Math.max(0, Math.floor(dice.total));
     const dtype = item.system?.damage?.type || "energy";
     const mult = Number(h.constructMult) > 1 ? Number(h.constructMult) : 3;
@@ -11212,30 +11272,29 @@ Hooks.once("ready", () => {
 });
 
 // Scene / combat end: fizzle Charges, clear markers, and reset the once-per-scene + trail flags.
+// R-60: population moves from "characters only" to edhaSceneReset's directory∪tokens dedup — a
+// summon/adversary carrying one of these keys (rare, never authored today) now clears too, same as
+// every other family. Flag list is verbatim. The un-attributable-template cleanup is NOT per-actor
+// (a charge template carries no owner) so it stays a bespoke top-level step, gated on the SAME
+// guard edhaSceneReset computes internally — deleteCombat hooks fire synchronously up to the first
+// await, so this second edhaCombatEndGuard(endedCombat) call reads identical game state.
 async function edhaClearCharges(endedCombat) {
   try {
-    if (!game.user?.isGM) return;
-    const guard = edhaCombatEndGuard(endedCombat);   // ⛑ cross-combat clobber guard
-    for (const a of (game.actors?.filter(x => x.type === "character") ?? [])) {
-      if (edhaStillFightingElsewhere(a, guard)) continue;
-      // ⚠ raw path (§9o trap 3): the repointed charges ledger key is hand-edited here (2bY).
-      if (a.flags?.["edha-content"]?.lists?.charges) { try { await a.unsetFlag("edha-content", "lists.charges"); } catch (e) {} }
-      if (a.getFlag?.("edha-content", "charges")) await a.unsetFlag("edha-content", "charges");               // legacy: the pre-2bY flat key, cleared for old saves
-      if (a.getFlag?.("edha-content", "unmooringUsed")) await a.unsetFlag("edha-content", "unmooringUsed");   // legacy: pre-H12 flag, cleared for old saves
-      if (a.getFlag?.("edha-content", "detonateUsed")) await a.unsetFlag("edha-content", "detonateUsed");     // H12 `oncePerScene`, keyed per item id
-      if (a.getFlag?.("edha-content", "hazardTrail")) await a.unsetFlag("edha-content", "hazardTrail");       // the `edha-place-hazard {mode: trail}` toggle (2bY)
-      if (a.getFlag?.("edha-content", "walkingRuin")) await a.unsetFlag("edha-content", "walkingRuin");       // legacy: the pre-2bY trail flag
-    }
+    await edhaSceneReset(endedCombat, {
+      key: "charges",
+      flags: ["lists.charges", "charges", "unmooringUsed", "detonateUsed", "hazardTrail", "walkingRuin"],
+    });
     // Un-attributable world props: a charge template carries no owner, so it cannot be tested
     // against the guard. While another combat is still running, leave them ALL alone — a stale
     // template is a visible, hand-deletable nuisance; deleting a live encounter's is not.
+    const guard = edhaCombatEndGuard(endedCombat);
     if (!guard.size) for (const scene of game.scenes ?? []) {
       const stale = (scene.templates ?? []).filter(t => t.getFlag?.("edha-content", "charge"));
       if (stale.length) await scene.deleteEmbeddedDocuments("MeasuredTemplate", stale.map(t => t.id));
     }
   } catch (e) { console.error("Edha Content | clear charges failed", e); }
 }
-Hooks.on("deleteCombat", (combat) => { try { if (edhaDefBuffGmGate()) void edhaClearCharges(combat); } catch (e) {} });   // one applier (07-27b)
+// (deleteCombat registration centralized — see the scene-reset dispatch table after Order, below.)
 
 /* ============================================================================================
  * LIFE (Anaveth, deity) tree engine (2026-06-17) — a Blue/Green healer-buffer. Reuses the Green heal
@@ -11448,7 +11507,7 @@ async function edhaResolveLifeRegen(combat) {
         // the boolean, kept as a fallback so a live scene survives the deploy.
         const mf = String(e.mutationFormula || "").trim() || (e.mutationBonus ? `${EDHA_LIFE_GREEN_DIE} + 1` : "");
         if (mf && cur.getFlag?.("edha-content", "mutation")) formula = mf;
-        const roll = await new Roll(Roll.replaceFormulaData(formula, owner.getRollData(), { missing: "0" })).evaluate();
+        const roll = await edhaRollFormula(owner, formula);
         const amt = Math.max(0, Math.floor(roll.total));
         if (amt > 0) { await edhaCrossHeal(cur, amt); ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🌿 <strong>${e.sourceName}</strong> (${owner.name}): ${cur.name} regenerates <strong>${amt}</strong> HP.</p>` }); }
       }
@@ -11507,7 +11566,7 @@ async function edhaMutationClick(ev) {
     const kind = ds.edhaKind, rd = owner.getRollData();
     let keen = 0, venom = 0;
     if (kind === "boneSpurs") keen = Math.max(0, Math.floor(edhaEvalSync(decodeURIComponent(ds.edhaKeenf || "@tier"), rd)));
-    if (kind === "venomGlands") { const r = await new Roll(Roll.replaceFormulaData(decodeURIComponent(ds.edhaVenomf || "0"), rd, { missing: "0" })).evaluate(); venom = Math.max(0, Math.floor(r.total)); }
+    if (kind === "venomGlands") { const r = await edhaRollFormula(rd, decodeURIComponent(ds.edhaVenomf || "0")); venom = Math.max(0, Math.floor(r.total)); }
     const flag = { kind, sceneId: canvas?.scene?.id ?? null, ownerUuid: owner.uuid,
       keen, venom, deflect: kind === "denseTissue" ? Math.max(0, Number(ds.edhaDeflect) || 0) : 0 };
     await edhaSetActorFlagCross(target, "mutation", flag);
@@ -11668,34 +11727,33 @@ Hooks.on("renderChatMessageHTML", (msg, html) => {
  * (edhaDefBuffGmGate, the engine's one-applier convention), the function refuses to overlap
  * itself (two combats deleted together fire two hooks), and the apex branch unsets the flag
  * BEFORE the injury round-trip so a re-read inside the window finds nothing to double. */
-let _edhaLifeClearBusy = false;
+// R-60: population widens from "every game.actors entry" (already the widest of the ten) to
+// edhaSceneReset's directory∪tokens dedup — an unlinked-token-only actor now also clears, matching
+// the other nine. The re-entry guard (07-27b: two combats ending back-to-back could overlap this
+// SAME sweep mid-actor and double-create Apex Form's ended-injury) is now edhaSceneReset's shared
+// `key`-scoped busy-set instead of this module-level boolean. "mutation"/"lifeline"/"lifeRegen" are
+// plain flags; "apexForm" alone creates a document, so it stays bespoke `extra` — read the value
+// BEFORE unsetting (unset-first-create-after, 07-27b, so a re-read inside the create's round-trip
+// finds nothing to double).
 async function edhaClearLifeState(endedCombat) {
-  if (_edhaLifeClearBusy) return;
-  _edhaLifeClearBusy = true;
-  try {
-    if (!game.user?.isGM) return;
-    const guard = edhaCombatEndGuard(endedCombat);   // ⛑ cross-combat clobber guard
-    for (const a of (game.actors ?? [])) {
-      if (edhaStillFightingElsewhere(a, guard)) continue;   // apexForm ending costs an INJURY — never on someone else's combat
-      for (const k of ["mutation", "apexForm", "lifeline", "lifeRegen"]) {   // ⚠ raw key list (§9o trap 3) — a Lifeline rule using a different watchFlag needs its own cleanup
-        const fv = a.getFlag?.("edha-content", k);
-        if (!fv) continue;
-        // The apex price lands when it ends (scene end IS the end) — the shared injury tool
-        // creates the Item GM-side; the flag carries the granting talent's name (2bW).
-        // UNSET FIRST, create after (07-27b): the creation awaits a server round-trip and must
-        // never be reachable twice off one still-set flag.
-        await a.unsetFlag("edha-content", k);
-        if (k === "apexForm") {
-          const src = fv?.sourceName || "Apex";
-          const injName = await edhaAddInjury(a, { source: `${src} (ended)`, damageType: "vital" });
-          if (injName) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: a }), content: `<p>🌟 <strong>${src}</strong> ends — ${a.name} takes an injury: <strong>${injName}</strong>.</p>` });
-        }
-      }
-    }
-  } catch (e) { console.error("Edha Content | clear Life state failed", e); }
-  finally { _edhaLifeClearBusy = false; }
+  await edhaSceneReset(endedCombat, {
+    key: "life",
+    flags: ["mutation", "lifeline", "lifeRegen"],
+    extra: async (a) => {
+      const fv = a.getFlag?.("edha-content", "apexForm");
+      if (!fv) return;
+      // The apex price lands when it ends (scene end IS the end) — the shared injury tool
+      // creates the Item GM-side; the flag carries the granting talent's name (2bW).
+      // UNSET FIRST, create after (07-27b): the creation awaits a server round-trip and must
+      // never be reachable twice off one still-set flag.
+      await a.unsetFlag("edha-content", "apexForm");
+      const src = fv?.sourceName || "Apex";
+      const injName = await edhaAddInjury(a, { source: `${src} (ended)`, damageType: "vital" });
+      if (injName) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: a }), content: `<p>🌟 <strong>${src}</strong> ends — ${a.name} takes an injury: <strong>${injName}</strong>.</p>` });
+    },
+  });
 }
-Hooks.on("deleteCombat", (combat) => { try { if (edhaDefBuffGmGate()) void edhaClearLifeState(combat); } catch (e) {} });
+// (deleteCombat registration centralized — see the scene-reset dispatch table after Order, below.)
 
 /* ============================================================================================
  * CHAOS (Maelith, deity) tree engine (2026-06-18) — the "Omen" fracture lifecycle. ENGINE-ONLY,
@@ -11956,42 +12014,20 @@ Hooks.on("renderChatMessageHTML", (msg, html) => {
 //      statuses-getter throw skips that actor alone.
 //   3. Failures console.warn WITH the actor's name — if anything still rejects at run 7, the
 //      console names the culprit instead of silently eating two loops.
+// Chaos was already the "Chaos-pattern population" reference (07-27d: tokens ∪ directory, deduped,
+// per-call try/catch) — edhaSceneReset generalizes exactly this shape, so this collapses to one
+// call. The omens ledger no longer needs to run FIRST in its own characters-only pass: since every
+// flag/status now shares one per-actor try/catch block, a rejecting status toggle on one actor can
+// no longer starve another actor's ledger unset (07-27d's bug) — isolation is per-actor, not by
+// which half of the sweep runs first.
 async function edhaClearChaosState(endedCombat) {
-  try {
-    if (!game.user?.isGM) return;
-    const guard = edhaCombatEndGuard(endedCombat);   // ⛑ cross-combat clobber guard
-    // (1) The omens ledger, FIRST (⚠ raw ledger path, §9o trap 3 — the Death `lists.remains`
-    // precedent, hand-edited here too).
-    for (const a of (game.actors?.filter(x => x.type === "character") ?? [])) {
-      if (edhaStillFightingElsewhere(a, guard)) continue;
-      if (a.getFlag?.("edha-content", "lists.omens") !== undefined) {
-        try { await a.unsetFlag("edha-content", "lists.omens"); }
-        catch (e) { console.warn(`Edha Content | Chaos sweep: omens-ledger unset failed on ${a.name}`, e); }
-      }
-    }
-    // (2) Statuses + markedBy, every await its own guard (Death's per-call convention).
-    const sweepActor = async (a) => {
-      if (!a || edhaStillFightingElsewhere(a, guard)) return;
-      try { if (a.statuses?.has?.("omen")) await a.toggleStatusEffect?.("omen", { active: false }); }
-      catch (e) { console.warn(`Edha Content | Chaos sweep: omen status clear failed on ${a.name}`, e); }
-      try { if (a.statuses?.has?.("isolated")) await a.toggleStatusEffect?.("isolated", { active: false }); }
-      catch (e) { console.warn(`Edha Content | Chaos sweep: isolated status clear failed on ${a.name}`, e); }
-      try { if (a.flags?.["edha-content"]?.markedBy?.omen) await a.unsetFlag("edha-content", "markedBy.omen"); } catch (e) {}
-      try { if (a.flags?.["edha-content"]?.markedBy?.isolated) await a.unsetFlag("edha-content", "markedBy.isolated"); } catch (e) {}
-    };
-    const seen = new Set();
-    for (const t of (canvas?.tokens?.placeables ?? [])) {
-      const a = t.actor; if (!a) continue;
-      const k = a.uuid ?? a.id; if (seen.has(k)) continue; seen.add(k);
-      try { await sweepActor(a); } catch (e) { console.warn(`Edha Content | Chaos sweep: token actor ${a?.name ?? "?"} failed`, e); }
-    }
-    for (const a of (game.actors ?? [])) {
-      const k = a.uuid ?? a.id; if (seen.has(k)) continue; seen.add(k);
-      try { await sweepActor(a); } catch (e) { console.warn(`Edha Content | Chaos sweep: directory actor ${a?.name ?? "?"} failed`, e); }
-    }
-  } catch (e) { console.error("Edha Content | clear Chaos state failed", e); }
+  await edhaSceneReset(endedCombat, {
+    key: "chaos",
+    flags: ["lists.omens", "markedBy.omen", "markedBy.isolated"],
+    statuses: ["omen", "isolated"],
+  });
 }
-Hooks.on("deleteCombat", (combat) => { try { if (edhaDefBuffGmGate()) void edhaClearChaosState(combat); } catch (e) {} });   // one applier (07-27b)
+// (deleteCombat registration centralized — see the scene-reset dispatch table after Order, below.)
 
 /* ============================================================================================
  * FATE (Olvarra, deity) tree engine (2026-06-18; iron rule 2b pass 2bX 2026-07-25) — the
@@ -12238,7 +12274,7 @@ async function edhaFateSpringSnare(owner, snare, triggerActor, { source = "", bo
     if (!triggerActor) { edhaFateCard(owner, null, `<p>🪢 <strong>${label}</strong> sprang with no creature in the square.</p>`); return; }
     const rd = owner.getRollData();
     const rolls = [];
-    const baseRoll = await new Roll(Roll.replaceFormulaData((snare.formula || EDHA_FATE_SNARE_DMG) + (bonusFormula || ""), rd, { missing: "0" })).evaluate();
+    const baseRoll = await edhaRollFormula(rd, (snare.formula || EDHA_FATE_SNARE_DMG) + (bonusFormula || ""));
     rolls.push(baseRoll); let amt = Math.max(0, Math.floor(baseRoll.total));
     /* The annotated rider reads its dials off the ANNOTATING DOCUMENT via the entry's
      * sourceItemUuid (2bX — the Pinpoint correction): the extra die is that item's own damage
@@ -12250,7 +12286,7 @@ async function edhaFateSpringSnare(owner, snare, triggerActor, { source = "", bo
     const srcRule = srcDoc ? (edhaEventRules(srcDoc).map(r => r?.handler).find(x => x?.type === "edha-owner-list" && (x.op || "place") === "annotate") ?? null) : null;
     if (snare.inevitable) {
       const extraF = srcDoc?.system?.damage?.formula || EDHA_FATE_GREEN_DIE;
-      const ir = await new Roll(Roll.replaceFormulaData(extraF, rd, { missing: "0" })).evaluate();
+      const ir = await edhaRollFormula(rd, extraF);
       rolls.push(ir); amt += Math.max(0, Math.floor(ir.total));
     }
     await edhaFateApplyHits(owner, [{ actorUuid: triggerActor.uuid, amount: amt, type: snare.type || "keen", heal: false }]);
@@ -12608,20 +12644,12 @@ Hooks.on("renderChatMessageHTML", (msg, html) => {
  * a takeover, and do not re-add the seven names. Bulwark Ground and Hexmark stay config-only. */
 
 // Clear Fate markers / flags / buffs at scene/combat end (GM-side), like the Charge/Chaos state.
+// R-60: the ledger/legacy-flag pass widens from characters-only to edhaSceneReset's wide dedup; the
+// markedBy sweep widens from canvas-tokens-only to the same population (an off-scene hexmark bearer
+// now clears too). markKeys is computed ONCE, outside the per-actor applier, then closed over by
+// `extra` — it depends on scanning every actor's talents, not on which actor is being swept.
 async function edhaClearFateState(endedCombat) {
   try {
-    if (!game.user?.isGM) return;
-    const guard = edhaCombatEndGuard(endedCombat);   // ⛑ cross-combat clobber guard
-    for (const a of (game.actors?.filter(x => x.type === "character") ?? [])) {
-      if (edhaStillFightingElsewhere(a, guard)) continue;
-      // ⚠ raw path (§9o trap 3): BOTH repointed ledger keys are hand-edited here — a repoint
-      // does NOT update the sweeps, and a missed key silently leaves a live list at the table.
-      for (const lk of ["ordained", "snares"]) if (a.flags?.["edha-content"]?.lists?.[lk]) { try { await a.unsetFlag("edha-content", `lists.${lk}`); } catch (e) {} }
-      // Pre-repoint flat keys + pre-2bX residue on deployed actors: keep unsetting them so a
-      // mid-scene actor doesn't keep a fossil list.
-      for (const key of ["fateOrdained", "fateSnares", "fateForeknown", "fateThreadUsed"]) if (a.getFlag?.("edha-content", key)) await a.unsetFlag("edha-content", key);
-      await edhaFateRemoveOrdainedBuff(a);
-    }
     // Marks are cleared by DATA: any markedBy key that some `edha-snare-react` offer-mark rule
     // names is scene-scoped and dies here (was a hard-coded markedBy.hexmark unset).
     const markKeys = new Set();
@@ -12629,12 +12657,20 @@ async function edhaClearFateState(endedCombat) {
       if (!edhaIsTalent(tal)) continue;
       for (const r of edhaEventRules(tal)) { const h = r?.handler; if (h?.type === "edha-snare-react" && (h.mode || "offer-mark") === "offer-mark") markKeys.add(String(h.markKey || "hexmark").trim() || "hexmark"); }
     }
-    for (const t of (canvas?.tokens?.placeables ?? [])) {
-      const a = t.actor; const mb = a?.flags?.["edha-content"]?.markedBy; if (!mb) continue;
-      if (edhaStillFightingElsewhere(a, guard)) continue;
-      for (const k of Object.keys(mb)) if (markKeys.has(k)) { try { await a.unsetFlag("edha-content", `markedBy.${k}`); } catch (e) {} }
-    }
+    await edhaSceneReset(endedCombat, {
+      key: "fate",
+      // ⚠ raw path (§9o trap 3): BOTH repointed ledger keys are hand-edited here — a repoint does
+      // NOT update the sweeps, and a missed key silently leaves a live list at the table. The four
+      // flat keys are pre-repoint / pre-2bX residue, kept so a mid-scene actor doesn't keep a fossil.
+      flags: ["lists.ordained", "lists.snares", "fateOrdained", "fateSnares", "fateForeknown", "fateThreadUsed"],
+      extra: async (a) => {
+        await edhaFateRemoveOrdainedBuff(a);
+        const mb = a.flags?.["edha-content"]?.markedBy; if (!mb) return;
+        for (const k of Object.keys(mb)) if (markKeys.has(k)) { try { await a.unsetFlag("edha-content", `markedBy.${k}`); } catch (e) {} }
+      },
+    });
     // Un-attributable world props (no owner on the template/Region) — see the charges sweep.
+    const guard = edhaCombatEndGuard(endedCombat);
     if (!guard.size) for (const scene of game.scenes ?? []) {
       const stale = (scene.templates ?? []).filter(t => t.getFlag?.("edha-content", "fateMarker"));
       if (stale.length) await scene.deleteEmbeddedDocuments("MeasuredTemplate", stale.map(t => t.id));
@@ -12643,7 +12679,7 @@ async function edhaClearFateState(endedCombat) {
     }
   } catch (e) { console.error("Edha Content | clear Fate state failed", e); }
 }
-Hooks.on("deleteCombat", (combat) => { try { if (edhaDefBuffGmGate()) void edhaClearFateState(combat); } catch (e) {} });   // one applier (07-27b)
+// (deleteCombat registration centralized — see the scene-reset dispatch table after Order, below.)
 
 /* ============================================================================================
  * SOVEREIGNTY (Verdannis, deity) tree engine (2026-07-01; iron rule 2b pass 2bT 2026-07-25) — the
@@ -12917,19 +12953,17 @@ async function edhaSovSweep(combat) {
 }
 Hooks.on("combatTurnChange", (c) => { if (edhaDefBuffGmGate()) void edhaSovSweep(c); });
 
+// R-60 FLAGSHIP CASE: population widens from "canvas tokens ONLY" to edhaSceneReset's directory∪
+// tokens dedup — an off-scene character used to keep `dieStep` forever (the bug R-60 names). Flags
+// and statuses are verbatim.
 async function edhaClearSovState(endedCombat) {
-  try {
-    if (!game.user?.isGM) return;
-    const guard = edhaCombatEndGuard(endedCombat);   // ⛑ cross-combat clobber guard
-    for (const tok of (canvas?.tokens?.placeables ?? [])) {
-      const a = tok.actor; if (!a || edhaStillFightingElsewhere(a, guard)) continue;
-      for (const key of ["dieStep", "dieStepOnceBy"]) if (a.getFlag?.("edha-content", key)) { try { await a.unsetFlag("edha-content", key); } catch (e) {} }
-      if (a.statuses?.has?.("exalted")) await a.toggleStatusEffect?.("exalted", { active: false });
-      if (a.statuses?.has?.("diminished")) await a.toggleStatusEffect?.("diminished", { active: false });
-    }
-  } catch (e) { console.error("Edha Content | clear Sovereignty state failed", e); }
+  await edhaSceneReset(endedCombat, {
+    key: "sov",
+    flags: ["dieStep", "dieStepOnceBy"],
+    statuses: ["exalted", "diminished"],
+  });
 }
-Hooks.on("deleteCombat", (combat) => { try { if (edhaDefBuffGmGate()) void edhaClearSovState(combat); } catch (e) {} });   // one applier (07-27b)
+// (deleteCombat registration centralized — see the scene-reset dispatch table after Order, below.)
 
 /* --- H9 `edha-die-step`'s pre-cost VETO (2bT). Rules on `use` need their own targeting gates (a
  * willing ally / an ally-and-enemy pair); the once-per-target and once-per-scene stamps veto for
@@ -13220,27 +13254,20 @@ async function edhaReviveUse(item, h) {
 }
 
 /* --- Scene cleanup (deleteCombat): the whole Death state resets ------------------------------------- */
+// Death was already ENGINE_INDEX's "template" (statuses on tokens AND directory actors, the raw
+// lists.<key> unset on characters) — it just ran that as two separate, non-deduped loops. R-60
+// folds both into edhaSceneReset's one deduped pass: "decay"/"deathWard" (previously token-only, so
+// an off-scene bearer kept them forever — the same shape as the Sovereignty bug) now reach the wide
+// population, same as "lists.remains" (previously character-only). `cascadearmed`/`withernext` were
+// already effectively wide (visited via both loops when on-scene); now visited exactly once.
 async function edhaClearDeathState(endedCombat) {
-  try {
-    if (!game.user?.isGM) return;
-    const guard = edhaCombatEndGuard(endedCombat);   // ⛑ cross-combat clobber guard
-    for (const tok of (canvas?.tokens?.placeables ?? [])) {
-      const a = tok.actor; if (!a || edhaStillFightingElsewhere(a, guard)) continue;
-      for (const key of ["decay", "deathWard"]) if (a.getFlag?.("edha-content", key)) { try { await a.unsetFlag("edha-content", key); } catch (e) {} }
-      // `cascadearmed` joined the status list 07-24r; `withernext` 2bW — both scene arms are
-      // statuses now, so the scene reset clears them here rather than as flags below.
-      for (const s of ["decaying", "harvested", "cascadearmed", "withernext"]) if (a.statuses?.has?.(s)) { try { await a.toggleStatusEffect?.(s, { active: false }); } catch (e) {} }
-    }
-    for (const a of (game.actors?.filter(x => x.type === "character") ?? [])) {
-      if (edhaStillFightingElsewhere(a, guard)) continue;
-      for (const s of ["cascadearmed", "withernext"]) if (a.statuses?.has?.(s)) { try { await a.toggleStatusEffect?.(s, { active: false }); } catch (e) {} }
-      for (const key of ["lists.remains"]) {   // ⚠ raw path (§9o trap 3): the repointed ledger key must be hand-edited here; raiseDeadUsed → the generic sceneOnce sweep, witherNext → the status above (2bW)
-        if (a.getFlag?.("edha-content", key) !== undefined) { try { await a.unsetFlag("edha-content", key); } catch (e) {} }
-      }
-    }
-  } catch (e) { console.error("Edha Content | clear Death state failed", e); }
+  await edhaSceneReset(endedCombat, {
+    key: "death",
+    flags: ["decay", "deathWard", "lists.remains"],   // ⚠ raw path (§9o trap 3): lists.remains is the repointed ledger key, hand-edited here
+    statuses: ["decaying", "harvested", "cascadearmed", "withernext"],
+  });
 }
-Hooks.on("deleteCombat", (combat) => { try { if (edhaDefBuffGmGate()) void edhaClearDeathState(combat); } catch (e) {} });   // one applier (07-27b)
+// (deleteCombat registration centralized — see the scene-reset dispatch table after Order, below.)
 
 /* ============================================================================================
  * CIVILIZATION (Kethane, deity) tree engine (2026-07-02) — Foundations + the Combat Construct.
@@ -13396,7 +13423,7 @@ async function edhaCivConstructHitRiders(dealer, target, prevHp) {
           if (foes.length) {
             const formula = dec.item.system?.damage?.formula || EDHA_CIV_RED_DIE;
             const dtype = dec.item.system?.damage?.type || "energy";
-            const dr = await new Roll(Roll.replaceFormulaData(formula, owner.getRollData(), { missing: "0" })).evaluate();
+            const dr = await edhaRollFormula(owner, formula);
             const amt = Math.max(0, Math.floor(dr.total));
             if (amt > 0) {
               _edhaCivSplashBusy = true;
@@ -13440,7 +13467,7 @@ async function edhaZoneFortify(item, h) {
     await owner.setFlag("edha-content", "bastionActive", true);   // Ben R4: Foundations laid later fortify on placement
     const payload = {
       sceneId: scene.id, ownerUuid: owner.uuid, drawingIds: founds.map(d => d.id),
-      baked: Roll.replaceFormulaData(item.system?.damage?.formula || EDHA_CIV_RED_DIE, owner.getRollData(), { missing: "0" }),
+      baked: edhaFoldDieMath(Roll.replaceFormulaData(item.system?.damage?.formula || EDHA_CIV_RED_DIE, owner.getRollData(), { missing: "0" })),
       type: item.system?.damage?.type || "impact", label: item.name,
       disposition: edhaCasterToken(owner)?.document?.disposition ?? 1,
     };
@@ -13716,7 +13743,7 @@ async function edhaCivTransformSummon(item, h, c) {
     if (Number(h.zoneBuffUpgrade) > 0) await owner.setFlag("edha-content", "civFoundationBonus", Number(h.zoneBuffUpgrade));   // Ben R7b
     let bonusHp = 0, dr = null;
     if (h.hpBonusFormula) {
-      dr = await new Roll(Roll.replaceFormulaData(h.hpBonusFormula, owner.getRollData(), { missing: "0" })).evaluate();
+      dr = await edhaRollFormula(owner, h.hpBonusFormula);
       bonusHp = Math.max(0, Math.floor(dr.total));
     }
     const hea = c.system?.resources?.hea;
@@ -13792,30 +13819,28 @@ Hooks.once("ready", () => {
 });
 
 /* --- Scene cleanup (deleteCombat): the Civilization scene state resets ------------------------------- */
+// R-60: both populations (characters-only for the PC flags, actors-flagged-"summon" for the
+// Construct flags/effects) widen to edhaSceneReset's wide dedup. The PC flags are harmless to
+// attempt-unset universally (a summon never carries them); the summon-specific flags/effects stay
+// gated INSIDE extra on the "summon" flag so a non-summon actor's document is never touched for
+// keys it was never going to have — flag-keyed, not name-prefix-keyed (2bV): any summon qualifies.
 async function edhaClearCivState(endedCombat) {
-  try {
-    if (!game.user?.isGM) return;
-    const guard = edhaCombatEndGuard(endedCombat);   // ⛑ cross-combat clobber guard
-    for (const a of (game.actors?.filter(x => x.type === "character") ?? [])) {
-      if (edhaStillFightingElsewhere(a, guard)) continue;
-      for (const key of ["bastionActive", "magnumUsed", "civFoundationBonus"]) {
-        if (a.getFlag?.("edha-content", key) !== undefined) { try { await a.unsetFlag("edha-content", key); } catch (e) {} }
-      }
-    }
-    // Flag-keyed, not name-prefix-keyed (2bV): any summon can carry these now.
-    for (const a of (game.actors ?? []).filter(x => x?.getFlag?.("edha-content", "summon"))) {
-      if (edhaStillFightingElsewhere(a, guard)) continue;
+  await edhaSceneReset(endedCombat, {
+    key: "civ",
+    flags: ["bastionActive", "magnumUsed", "civFoundationBonus"],
+    extra: async (a) => {
+      if (!a.getFlag?.("edha-content", "summon")) return;
       for (const key of ["arsenalActive", "summonArmed", "colossus"]) {   // arsenalActive = legacy pre-2bV state
-        if (a.getFlag?.("edha-content", key) !== undefined) { try { await a.unsetFlag("edha-content", key); } catch (e) {} }
+        try { await a.unsetFlag("edha-content", key); } catch (e) {}
       }
       const fx = a.effects?.filter(e => e.getFlag?.("edha-content", "civBastionBuff") || e.getFlag?.("edha-content", "civArsenal") || e.getFlag?.("edha-content", "civColossus") || e.getFlag?.("edha-content", "summonGranted")) ?? [];
       if (fx.length) { try { await a.deleteEmbeddedDocuments("ActiveEffect", fx.map(e => e.id)); } catch (e) {} }
-    }
-    // Fortified Regions + Foundation links ride the Drawings and follow the terrain convention
-    // (persist until the GM clears the map) — deleting a Foundation drawing takes its Region along.
-  } catch (e) { console.error("Edha Content | clear Civilization state failed", e); }
+    },
+  });
+  // Fortified Regions + Foundation links ride the Drawings and follow the terrain convention
+  // (persist until the GM clears the map) — deleting a Foundation drawing takes its Region along.
 }
-Hooks.on("deleteCombat", (combat) => { try { if (edhaDefBuffGmGate()) void edhaClearCivState(combat); } catch (e) {} });   // one applier (07-27b)
+// (deleteCombat registration centralized — see the scene-reset dispatch table after Order, below.)
 
 /* ============================================================================================
  * POWER (Tyrith, deity) tree engine (2026-07-02c) — dominate (Black control) → kill → escalate (Red).
@@ -14211,7 +14236,7 @@ async function edhaInterceptClick(ev) {
       if (amt <= 0) { btn.disabled = true; btn.textContent = "no absorb"; return; }
       half = amt;
       const hf = decodeURIComponent(ds.edhaHealf || "");
-      const extra = hf ? Math.max(0, Math.floor((await new Roll(Roll.replaceFormulaData(hf, owner.getRollData(), { missing: "0" })).evaluate()).total)) : 0;
+      const extra = hf ? Math.max(0, Math.floor((await edhaRollFormula(owner, hf)).total)) : 0;
       heal = amt + extra;
     }
     if (ds.edhaOnce === "1") await edhaCoordOPRMark(owner, item?.id || name, "_react");
@@ -14266,26 +14291,21 @@ function edhaTestAuraApply(roll, source, config) {
 for (const ctx of ["Skill", "Attack", "Item"]) Hooks.on(`cosmere-rpg.pre${ctx}Roll`, edhaTestAuraApply);
 
 /* --- Scene cleanup (deleteCombat): the whole Power state resets -------------------------------------- */
+// R-60: the flag/effects pass (characters-only) and the statuses pass (tokens-only) both widen to
+// edhaSceneReset's one deduped population. The flag list is LEGACY-ONLY since 2bU (stale
+// pre-conversion worlds); live state is statuses.
 async function edhaClearPowerState(endedCombat) {
-  try {
-    if (!game.user?.isGM) return;
-    const guard = edhaCombatEndGuard(endedCombat);   // ⛑ cross-combat clobber guard
-    for (const a of (game.actors?.filter(x => x.type === "character") ?? [])) {
-      if (edhaStillFightingElsewhere(a, guard)) continue;
-      // The flag list is LEGACY-ONLY since 2bU (stale pre-conversion worlds); live state is statuses.
-      for (const key of ["crownActive", "warlordNext", "momentumNext", "fury", "unstoppable", "mantleActive", "mantleUsed", "kneelBy"]) {
-        if (a.getFlag?.("edha-content", key) !== undefined) { try { await a.unsetFlag("edha-content", key); } catch (e) {} }
-      }
+  await edhaSceneReset(endedCombat, {
+    key: "power",
+    flags: ["crownActive", "warlordNext", "momentumNext", "fury", "unstoppable", "mantleActive", "mantleUsed", "kneelBy"],
+    statuses: ["compelled", "frightened", "crowned", "warlord", "momentum", "fury", "unstoppable", "mantled"],
+    extra: async (a) => {
       const fx = a.effects?.filter(e => e.getFlag?.("edha-content", "powerMantle")) ?? [];
       if (fx.length) { try { await a.deleteEmbeddedDocuments("ActiveEffect", fx.map(e => e.id)); } catch (e) {} }
-    }
-    for (const tok of (canvas?.tokens?.placeables ?? [])) {
-      const a = tok.actor; if (!a || edhaStillFightingElsewhere(a, guard)) continue;
-      for (const s of ["compelled", "frightened", "crowned", "warlord", "momentum", "fury", "unstoppable", "mantled"]) if (a.statuses?.has?.(s)) { try { await a.toggleStatusEffect?.(s, { active: false }); } catch (e) {} }
-    }
-  } catch (e) { console.error("Edha Content | clear Power state failed", e); }
+    },
+  });
 }
-Hooks.on("deleteCombat", (combat) => { try { if (edhaDefBuffGmGate()) void edhaClearPowerState(combat); } catch (e) {} });   // one applier (07-27b)
+// (deleteCombat registration centralized — see the scene-reset dispatch table after Order, below.)
 
 /* ============================================================================================
  * KNOWLEDGE (Gnothis, deity) tree engine (2026-07-03; iron rule 2b pass 2bT 2026-07-25) — study
@@ -14549,7 +14569,7 @@ async function edhaCounterBurstClick(ev) {
     const name = decodeURIComponent(ds.edhaName || "");
     if (!owner || !ally) return;
     if (!target) { ui.notifications?.warn("Edha: target the enemy, then click."); return; }
-    const dr = await new Roll(Roll.replaceFormulaData(decodeURIComponent(ds.edhaFormula || "0"), owner.getRollData(), { missing: "0" })).evaluate();
+    const dr = await edhaRollFormula(owner, decodeURIComponent(ds.edhaFormula || "0"));
     const amt = Math.max(0, Math.floor(dr.total));
     const payload = { casterActorUuid: owner.uuid, hits: [{ actorUuid: target.uuid, amount: amt, type: "vital", heal: false }] };
     if (game.user?.isGM) await edhaApplyBurstResults(payload);
@@ -14596,26 +14616,21 @@ function edhaBindCounterButtons(html) {
 Hooks.on("renderChatMessageHTML", (msg, html) => edhaBindCounterButtons(html));
 
 /* --- Scene cleanup (deleteCombat): counters + arming statuses reset ("fades at the end of the scene") - */
+// R-60: the "counters" ledger (characters-only) and the insight/markedBy/statuses half
+// (tokens-only) both widen to edhaSceneReset's one deduped population. Insight is a STACKABLE
+// counter effect (edhaEffectStacks family) deleted outright, not toggled — stays bespoke `extra`.
 async function edhaClearCounterState(endedCombat) {
-  try {
-    if (!game.user?.isGM) return;
-    const guard = edhaCombatEndGuard(endedCombat);   // ⛑ cross-combat clobber guard
-    for (const a of (game.actors?.filter(x => x.type === "character") ?? [])) {
-      if (edhaStillFightingElsewhere(a, guard)) continue;
-      if (a.getFlag?.("edha-content", "counters") !== undefined) { try { await a.unsetFlag("edha-content", "counters"); } catch (e) {} }
-    }
-    for (const tok of (canvas?.tokens?.placeables ?? [])) {
-      const a = tok.actor; if (!a || edhaStillFightingElsewhere(a, guard)) continue;
+  await edhaSceneReset(endedCombat, {
+    key: "counter",
+    flags: ["counters", "markedBy.insight"],
+    statuses: ["packsight", "packmind", "predprimed"],
+    extra: async (a) => {
       const eff = a.effects?.find(e => e.statuses?.has?.("insight"));
       if (eff) { try { await eff.delete(); } catch (e) {} }
-      if (a.flags?.["edha-content"]?.markedBy?.insight) { try { await a.unsetFlag("edha-content", "markedBy.insight"); } catch (e) {} }
-      for (const st of ["packsight", "packmind", "predprimed"]) {
-        if (a.statuses?.has?.(st)) { try { await a.toggleStatusEffect?.(st, { active: false }); } catch (e) {} }
-      }
-    }
-  } catch (e) { console.error("Edha Content | clear counter state failed", e); }
+    },
+  });
 }
-Hooks.on("deleteCombat", (combat) => { try { if (edhaDefBuffGmGate()) void edhaClearCounterState(combat); } catch (e) {} });   // one applier (07-27b)
+// (deleteCombat registration centralized — see the scene-reset dispatch table after Order, below.)
 
 /* ============================================================================================
  * ORDER (Tessavain, deity) tree engine (2026-07-03) — the LAST of the 15 trees: declare law
@@ -14946,7 +14961,7 @@ async function edhaProhResolveViolation(owner, key, entryId, { via = "declared v
     if (!target) { edhaOrderCard(owner, null, `<p>⚖️ The Edict on ${e.name} resolves — the target is gone; the Edict is consumed.</p>`); return true; }
     const alive = (Number(target.system?.resources?.hea?.value) || 0) > 0;
     const tal = edhaProhPlaceRuleOf(owner, key)?.item;
-    const dr = await new Roll(Roll.replaceFormulaData(tal?.system?.damage?.formula || (EDHA_ORDER_BLUE_DIE + " + @attr.int"), owner.getRollData(), { missing: "0" })).evaluate();
+    const dr = await edhaRollFormula(owner, tal?.system?.damage?.formula || (EDHA_ORDER_BLUE_DIE + " + @attr.int"));
     const amt = Math.max(0, Math.floor(dr.total));
     if (alive && amt > 0) await edhaOrderApplyHits(owner, [{ actorUuid: target.uuid, amount: amt, type: tal?.system?.damage?.type || "spirit", heal: false }]);
     if (alive) await edhaApplyTimedStatus(target, "disoriented", { owner, expire: "owner" });
@@ -14968,7 +14983,7 @@ async function edhaProhAnnotateRider(owner, key, target) {
       skill, color, sourceName: ann.item.name, icon: "⚖️",   // 07-27f: the helper localizes the skill id
       failText: "breaks — +[Tier][Die] spirit + Weakened", okText: "holds firm",
       onFail: async (t) => {
-        const sr = await new Roll(Roll.replaceFormulaData(ann.item.system?.damage?.formula || EDHA_ORDER_BLUE_DIE, owner.getRollData(), { missing: "0" })).evaluate();
+        const sr = await edhaRollFormula(owner, ann.item.system?.damage?.formula || EDHA_ORDER_BLUE_DIE);
         const sa = Math.max(0, Math.floor(sr.total));
         if (sa > 0) await edhaOrderApplyHits(owner, [{ actorUuid: t.actor.uuid, amount: sa, type: ann.item.system?.damage?.type || "spirit", heal: false }]);
         await edhaApplyTimedStatus(t.actor, "weakened", { owner, expire: "target" });   // until the end of ITS next turn
@@ -15359,7 +15374,7 @@ async function edhaDecreeResolve(owner, violator) {
     const rolls = [];
     let wLine = "no Witnesses stood";
     if (d.witnesses?.length) {                                // ONE shared [T][D white] roll (Ben R0/R9)
-      const wr = await new Roll(Roll.replaceFormulaData(h.witnessThpFormula || EDHA_ORDER_WHITE_DIE, owner.getRollData(), { missing: "0" })).evaluate();
+      const wr = await edhaRollFormula(owner, h.witnessThpFormula || EDHA_ORDER_WHITE_DIE);
       rolls.push(wr);
       const thp = Math.max(0, Math.floor(wr.total));
       const names = [];
@@ -15372,7 +15387,7 @@ async function edhaDecreeResolve(owner, violator) {
       if (names.length) wLine = `${names.join(", ")} gain <strong>${thp}</strong> Temp HP + advantage on their next attack test`;
     }
     const tal = dec?.item;                                    // ONE shared [T][D blue]+Int roll, violator INCLUDED (R9/Magnum R7a)
-    const dr = await new Roll(Roll.replaceFormulaData(tal?.system?.damage?.formula || (EDHA_ORDER_BLUE_DIE + " + @attr.int"), owner.getRollData(), { missing: "0" })).evaluate();
+    const dr = await edhaRollFormula(owner, tal?.system?.damage?.formula || (EDHA_ORDER_BLUE_DIE + " + @attr.int"));
     rolls.push(dr);
     const amt = Math.max(0, Math.floor(dr.total));
     const vtok = edhaOrderTokenOf(violator.uuid);
@@ -15425,34 +15440,57 @@ Hooks.on("renderChatMessageHTML", (msg, html) => {
 });
 
 /* --- Scene cleanup (deleteCombat): the whole Order state resets --------------------------------------- */
+// ⛑ THE ROW edhaCombatEndGuard WAS BUILT FOR: run 23 watched a bench combat delete take Ben's
+// still-live actor's covenant ledger with it — edhaSceneReset's cross-combat guard (R-58) still
+// applies per actor. R-60: the ledger/legacy-flag pass (characters-only) and the statuses/covBuff
+// pass (tokens-only) both widen to the one deduped population. `_edhaOrderPrompted.clear()` is a
+// scene-wide reset of a local Set, not per-actor, so it stays a bespoke top-level statement.
 async function edhaClearOrderState(endedCombat) {
   try {
-    if (!game.user?.isGM) return;
-    const guard = edhaCombatEndGuard(endedCombat);   // ⛑ cross-combat clobber guard
-    for (const a of (game.actors?.filter(x => x.type === "character") ?? [])) {
-      // ⛑ THE ROW THIS GUARD WAS BUILT FOR: run 23 watched a bench combat delete take Ben’s
-      // still-live actor’s covenant ledger with it.
-      if (edhaStillFightingElsewhere(a, guard)) continue;
+    await edhaSceneReset(endedCombat, {
+      key: "order",
       // `lists.covenants` — the second raw path the accessor repoint could not reach (§9o trap 3).
       // unsetFlag resolves a dotted key, so this deletes the ledger and leaves the `lists` object.
       // "edicts"/"concordActive"/"finalDecreeUsed" are LEGACY keys (pre-2bV state on Ben's actors);
       // the live state is lists.edicts / the `concord` status / the generic sceneOnce stamp.
-      for (const key of ["edicts", "lists.edicts", "lists.covenants", "concordActive", "finalDecreeUsed", "decree"]) {
-        if (a.getFlag?.("edha-content", key) !== undefined) { try { await a.unsetFlag("edha-content", key); } catch (e) {} }
-      }
-    }
-    for (const tok of (canvas?.tokens?.placeables ?? [])) {
-      const a = tok.actor; if (!a || edhaStillFightingElsewhere(a, guard)) continue;
-      if (a.statuses?.has?.("edict")) { try { await a.toggleStatusEffect?.("edict", { active: false }); } catch (e) {} }
-      if (a.statuses?.has?.("covenant")) { try { await a.toggleStatusEffect?.("covenant", { active: false }); } catch (e) {} }
-      if (a.statuses?.has?.("concord")) { try { await a.toggleStatusEffect?.("concord", { active: false }); } catch (e) {} }
-      const buffs = (a.effects ?? []).filter(e => e.getFlag?.("edha-content", "covBuff"));
-      if (buffs.length) { try { await a.deleteEmbeddedDocuments("ActiveEffect", buffs.map(e => e.id)); } catch (e) {} }
-    }
+      flags: ["edicts", "lists.edicts", "lists.covenants", "concordActive", "finalDecreeUsed", "decree"],
+      statuses: ["edict", "covenant", "concord"],
+      extra: async (a) => {
+        const buffs = (a.effects ?? []).filter(e => e.getFlag?.("edha-content", "covBuff"));
+        if (buffs.length) { try { await a.deleteEmbeddedDocuments("ActiveEffect", buffs.map(e => e.id)); } catch (e) {} }
+      },
+    });
     _edhaOrderPrompted.clear();
   } catch (e) { console.error("Edha Content | clear Order state failed", e); }
 }
-Hooks.on("deleteCombat", (combat) => { try { if (edhaDefBuffGmGate()) void edhaClearOrderState(combat); } catch (e) {} });   // one applier (07-27b)
+
+/* R-60: the eleven byte-identical `Hooks.on("deleteCombat", (combat) => { try { if
+ * (edhaDefBuffGmGate()) void edhaClearXState(combat); } catch (e) {} }); // one applier (07-27b)`
+ * registrations (Kindle Lights + the ten families above) collapse to ONE hook that gates once, then
+ * fires every family. Each family function still gates again internally (edhaSceneReset's own
+ * edhaDefBuffGmGate() check) — cheap, and it means a family function stays safe to call directly
+ * (tests call e.g. edhaClearChaosState() with no combat argument at all). Kindle Lights sweeps
+ * TokenDocuments across every scene, not actor flags/statuses, so it is NOT an edhaSceneReset family
+ * — it keeps its own body untouched and just joins the shared table. */
+const EDHA_SCENE_RESET_FAMILIES = [
+  edhaClearKindleLights,
+  edhaClearCharges,
+  edhaClearLifeState,
+  edhaClearChaosState,
+  edhaClearFateState,
+  edhaClearSovState,
+  edhaClearDeathState,
+  edhaClearCivState,
+  edhaClearPowerState,
+  edhaClearCounterState,
+  edhaClearOrderState,
+];
+Hooks.on("deleteCombat", (combat) => {
+  try {
+    if (!edhaDefBuffGmGate()) return;   // one applier (07-27b) — gated ONCE for the whole table
+    for (const fn of EDHA_SCENE_RESET_FAMILIES) void fn(combat);
+  } catch (e) {}
+});
 
 /* ============================================================================================
  * GREEN / TERRITORY tree engine (2026-06-16) — difficult terrain as an ENFORCED map Region.
@@ -15508,7 +15546,7 @@ async function edhaCreateGreenTerrain(owner, scene, cx, cy, sizeFt, sourceItem =
     if (thorn) {   // hazard rider (Thorn Field's shape): terrain you create also damages on enter / turn-start — or at turn END (moment, 2bW).
       const h = thorn.handler;
       const f = edhaSubstRankTier(h.damageFormula || "0", edhaColorRank(owner, h.color || "green") || 1, Number(owner.system?.tier) || 1);
-      const baked = Roll.replaceFormulaData(f, owner.getRollData(), { missing: "0" });
+      const baked = edhaFoldDieMath(Roll.replaceFormulaData(f, owner.getRollData(), { missing: "0" }));
       if ((h.moment || "enter-turn-start") === "turn-end")
         turnEnd = { formula: baked, type: h.damageType || "keen", source: `${thornLabel} — ${owner.name}` };
       else behaviors.push({ type: "edha-content.hazard", name: thornLabel, system: { damageFormula: baked, damageType: h.damageType || "keen", sourceName: `${thornLabel} — ${owner.name}` } });
@@ -16286,7 +16324,7 @@ async function edhaFoundationPlace(p) {
       const fort = edhaCivFortifyRuleOf(caster);
       await edhaCivFortifyGM({
         sceneId: scene.id, ownerUuid: caster.uuid, drawingIds: [drawing.id],
-        baked: Roll.replaceFormulaData(fort?.item.system?.damage?.formula || EDHA_CIV_RED_DIE, caster.getRollData(), { missing: "0" }),
+        baked: edhaFoldDieMath(Roll.replaceFormulaData(fort?.item.system?.damage?.formula || EDHA_CIV_RED_DIE, caster.getRollData(), { missing: "0" })),
         type: fort?.item.system?.damage?.type || "impact", label: fort?.item.name ?? "", disposition: p.disposition,
       });
     }
@@ -16788,7 +16826,7 @@ async function edhaPlaceHazard(item, cfg) {
     const gs = scene.grid?.size || 100, gd = scene.grid?.distance || 5;
     // SQUARE region (07-12 rework, Ben: same shape as the Foundation) — sizeFt square, grid-snapped.
     const sq = edhaSnapCellRect(scene, center.center.x, center.center.y, Math.max(1, Math.round(sizeFt / gd)));
-    const baked = Roll.replaceFormulaData(cfg.damageFormula || "(@tier)d6", actor.getRollData(), { missing: "0" });
+    const baked = edhaFoldDieMath(Roll.replaceFormulaData(cfg.damageFormula || "(@tier)d6", actor.getRollData(), { missing: "0" }));
     const hex = EDHA_COLOR_HEX[color] || "#d23b2e";
     const [region] = await scene.createEmbeddedDocuments("Region", [{
       name: `${item.name} — Dangerous Terrain`,
@@ -17255,8 +17293,7 @@ function edhaRegisterNativeEventSystem() {
          * old evaluateSync path. */
         let f = String(this.formula ?? "1") || "1";
         if (f.includes("@target.")) f = edhaTargetFormula(f, who.getRollData?.() ?? {}, edhaRecoveryDie(who));
-        const roll = new Roll(Roll.replaceFormulaData(f, owner.getRollData(), { missing: "0" }));
-        await roll.evaluate();
+        const roll = await edhaRollFormula(owner, f);
         if (roll.dice?.length) {
           try { await roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor: owner }), flavor: `${source} — ${who === owner ? "your" : `${who.name}'s`} die` }); } catch (e) {}
         }
@@ -18198,7 +18235,7 @@ function edhaRegisterNativeEventSystem() {
         const victim = event.options?.victim ?? Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
         if (!victim) { ui.notifications?.warn(`Edha: ${item.name} — target the character first.`); return; }
         if (victim.getFlag?.("edha-content", "deathWard")) { ui.notifications?.info(`Edha: ${victim.name} already bears a ward.`); return; }
-        const baked = Roll.replaceFormulaData(this.thpFormula || item.system?.damage?.formula || "0", owner.getRollData(), { missing: "0" });
+        const baked = edhaFoldDieMath(Roll.replaceFormulaData(this.thpFormula || item.system?.damage?.formula || "0", owner.getRollData(), { missing: "0" }));
         await edhaSetEdhaFlag(victim, "deathWard", { ownerId: owner.id, ownerName: owner.name, sourceName: item.name, formula: baked });
         ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
           content: `<p>💀 <strong>${item.name}</strong>: ${victim.name} is warded — the first time they would drop to 0 HP this scene, they drop to 1 HP instead and gain the Temp HP. The ward then ends.${this.note ? ` <span style="opacity:.8">${this.note}</span>` : ""}</p>` });
@@ -18229,7 +18266,7 @@ function edhaRegisterNativeEventSystem() {
         const target = Array.from(game.user?.targets ?? [])[0]?.actor ?? null;
         if (!target || target === owner) { ui.notifications?.warn(`Edha: target the creature for ${item.name}.`); return; }
         if (target.getFlag?.("edha-content", "decay")) { ui.notifications?.warn(`Edha: ${target.name} is already decaying (one instance per creature).`); return; }
-        const formula = Roll.replaceFormulaData(this.formula || item.system?.damage?.formula || "0", owner.getRollData(), { missing: "0" });
+        const formula = edhaFoldDieMath(Roll.replaceFormulaData(this.formula || item.system?.damage?.formula || "0", owner.getRollData(), { missing: "0" }));
         const st = this.statusId || "decaying";
         const value = { ownerId: owner.id, ownerName: owner.name, formula, type: this.damageType || item.system?.damage?.type || "vital",
           healFraction: Math.max(0, Math.min(1, Number(this.healOwnerFraction ?? 0.5))), status: st, sourceName: item.name };
@@ -18666,7 +18703,7 @@ function edhaRegisterNativeEventSystem() {
         if (!foes.length) return;
         const skill = this.courtSkill || "dis", color = this.courtColor || "blue";
         const slabel = edhaSkillLabel(skill);   // 07-27f: was the raw i18n KEY in the prose line below
-        const dr = await new Roll(Roll.replaceFormulaData(item.system?.damage?.formula || EDHA_ORDER_BLUE_DIE, owner.getRollData(), { missing: "0" })).evaluate();
+        const dr = await edhaRollFormula(owner, item.system?.damage?.formula || EDHA_ORDER_BLUE_DIE);
         const amt = Math.max(0, Math.floor(dr.total));
         edhaOrderCard(owner, [dr], `<p>⚖️ <strong>${item.name}</strong> — the court turns on the accomplices (${foes.length} within ${radius} ft): one shared roll, <strong>${amt}</strong> ${item.system?.damage?.type || "spirit"} to each who fails ${slabel} vs your ${color[0].toUpperCase()}${color.slice(1)}.</p>`);
         await edhaFoeSkillVsColor(owner, foes, {
@@ -19283,7 +19320,7 @@ function edhaRegisterNativeEventSystem() {
             const names = String(this.ownedFrom).split(",").map(s => s.trim()).filter(Boolean);
             f = f.replace(/@owned\b/g, String(names.filter(n => edhaOwnsTalent(owner, n)).length));
           }
-          mod.formula = String(Roll.replaceFormulaData(f, owner.getRollData(), { missing: "0" })).trim() || f;
+          mod.formula = edhaFoldDieMath(String(Roll.replaceFormulaData(f, owner.getRollData(), { missing: "0" })).trim() || f);
         }
         if (quarryUuid) mod.quarryUuid = quarryUuid;
         if (this.appliesTo && this.appliesTo !== "test") mod.appliesTo = this.appliesTo;

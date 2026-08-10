@@ -3322,3 +3322,107 @@ Undefended is Isolated — keen damage becomes vital", and the Deflect-2 victim 
 of 18 posted "⏰ **Waits for the Failing** (Bench Adv — The Cull-Alpha): Bloodied — the alpha withdraws
 the pack to watching distance; they shadow, they do not press.")*
 - [ ] ⚑ **ART BACKLOG, not a test** — placeholder icons on all four Kettavar blocks (silhouette / wolf-shadow reuse). Tracked in `EDHA_ADVERSARY_ART_WISHLIST.md`; nothing to bench. *(Re-labelled 2026-07-27w.)*
+
+---
+
+# BENCH — hygiene campaign 2026-08-10 (engine consolidation, pass 5.1)
+
+Engine-only, no pack rebuild pending. Two consolidations, both changing LIVE behavior on purpose
+(both are applied-as-default rulings — `EDHA_RULINGS.md` §I — vetoable but ALREADY the shipped
+default, so these rows verify the new behavior, not a proposal): **R-60** collapses ten per-tree
+`deleteCombat` scene-reset sweeps onto one `edhaSceneReset` applier and ONE population (directory ∪
+canvas tokens, deduped); **R-65** folds computed die math on every formula roll via one
+`edhaRollFormula` helper. Any bench actor works for the roll-formula rows; the scene-reset rows need
+a token you can remove from the canvas (or simply not place) to test the off-scene half.
+
+## R-60 — scene-reset population (one per family with an observably different population)
+
+- [ ] 🤖 **Sovereignty — an off-scene actor's dieStep now resets (the flagship case).** Step a
+      Sovereignty actor's damage die (any `edha-die-step` rule — e.g. Kneel/Absolute Authority-style
+      talents), remove its token from the canvas (or don't place one) so it is directory-only, then
+      end combat. Before this pass the sweep was canvas-tokens-ONLY, so an off-scene actor kept
+      `dieStep`/`dieStepOnceBy` and the `exalted`/`diminished` statuses forever. Now: place the actor
+      back on any scene afterward and confirm the die is back to baseline. *(R-60.)*
+- [ ] 🤖 **Life — the apex-form/mutation/lifeline/lifeRegen sweep is a regression check, not a new
+      behavior.** Life's population was already the widest of the ten (every `game.actors` entry,
+      including adversaries/summons) — `edhaSceneReset`'s `edhaSceneActors()` reaches the same real
+      actors, so nothing should observably change. What DOES need live verification: the re-entry
+      guard. End TWO combats back-to-back (or as close together as you can manage) with an actor
+      carrying `apexForm` in both — confirm exactly ONE "ends — takes an injury" card and ONE
+      injury item, not two (07-27b's original bug, now guarded by `edhaSceneReset`'s shared
+      `key`-scoped busy-set instead of Life's own one-off `_edhaLifeClearBusy` boolean). *(R-60.)*
+- [ ] 🤖 **Death — decay/deathWard now reach an off-scene actor.** Apply a `edha-turn-dot` decay (e.g.
+      Consuming Decay) or a `edha-ward` (Death Ward) to a creature, pull its token off the canvas,
+      end combat, and confirm the flag clears (previously token-only, so an off-scene bearer decayed
+      or stayed warded forever). `cascadearmed`/`withernext`/`decaying`/`harvested` and `lists.remains`
+      should all still clear on-scene exactly as before. *(R-60.)*
+- [ ] 🤖 **Fate — Hexmark and the Ordained buff now reach an off-scene actor.** Place a Hexmark (or
+      any `edha-snare-react offer-mark` rule's mark) or an Ordained buff, pull the bearer's token off
+      the canvas, end combat, and confirm `markedBy.<key>` and the Ordained ActiveEffect both clear
+      (previously the markedBy sweep was canvas-tokens-only). The un-attributable Region/template
+      cleanup (Ordained Ground markers, Snare regions) should be unchanged — verify it still only
+      runs when no OTHER combat is in play. *(R-60.)*
+- [ ] 🤖 **Order — Edict/Covenant/Concord statuses and the covBuff Concord ActiveEffect now reach an
+      off-scene actor.** Place an Edict or Covenant on a creature, pull its token off the canvas, end
+      combat, and confirm the `edict`/`covenant`/`concord` statuses and any `covBuff` effect clear
+      (previously the statuses/effects half was canvas-tokens-only; the ledger/legacy-flag half —
+      `lists.edicts`, `lists.covenants`, `decree` — was already characters-only and unaffected here).
+      *(R-60, and note this is Order's OWN R-58 guard row's neighbor — `edhaStillFightingElsewhere`
+      still applies; don't confuse a skip with a miss.)*
+- [ ] 🤖 **Power — the legacy-flag half and the status half now share one pass.** Kneel/Crown/Mantle a
+      creature so it carries at least one Power status (`compelled`/`crowned`/`warlord`/`mantled`/…),
+      pull its token off the canvas, end combat, and confirm the statuses AND any `powerMantle`
+      ActiveEffect clear together (previously the legacy-flag+effects half was characters-only and the
+      statuses half was canvas-tokens-only — an off-scene NON-character bearer, e.g. a dominated
+      adversary, could keep its statuses forever). *(R-60.)*
+- [ ] 🤖 **Knowledge (Gnothis) — Insight/packsight/markedBy.insight now reach an off-scene actor.**
+      Mark a creature with Insight (Studied Mark or similar) or apply `packsight`/`packmind`/
+      `predprimed`, pull its token off the canvas, end combat, and confirm the Insight ActiveEffect is
+      deleted (not merely toggled — it's a stackable counter, `edhaEffectStacks` family) and the
+      statuses/`markedBy.insight` clear. Previously this whole half was canvas-tokens-only; the
+      `counters` ledger (characters-only) is unaffected. *(R-60.)*
+- [ ] 🤖 **Charges / Chaos / Civilization — dedup-only hygiene, low table visibility.** These three
+      widen from a narrower population to the wide dedup too, but the affected flags are ones an
+      adversary/summon essentially never carries in practice (Charges' trail flags, Chaos's
+      characters-only omens ledger, Civilization's PC-only bastion/magnum flags) — the real fix here
+      is that an actor present as BOTH a token and a directory entry is now swept exactly once instead
+      of twice. Sanity check only: end combat with a Chaos Omen placed on a creature that IS on the
+      canvas, and confirm no double status-toggle / no console warning about a redundant write.
+      *(R-60.)*
+
+## R-65 — folded roll formulas (one per affected roll family; representative talent per family)
+
+- [ ] 🤖 **Set Charge / Pinpoint Charge (Destruction) — Detonate's heal AND damage branches now fold
+      identically.** This is the smoking-gun pair: before this pass, a Detonate configured to HEAL
+      (`b.heal`) did not fold computed die math while the DAMAGE branch eight lines below it did.
+      Place a Charge with a [Tier][Die]-shaped formula, Detonate it against both an ally-heal
+      configuration and an enemy-damage configuration, and confirm BOTH roll a real die (not a
+      formula string like "(2)d(2 * 3 + 2)" reaching the chat card unrolled/zeroed). The DC-save
+      branch (Concussive Yield-style saves) rides the same helper — confirm its `1d20 + @skills.…`
+      formula still resolves normally (no dice in its die-count, so folding is a no-op there). *(R-65.)*
+- [ ] 🤖 **Snare / Inevitable Snare (Fate) — snare trigger damage folds.** Spring a Snare (or
+      Inevitable Snare) whose damage formula uses the [Tier][Die] convention; confirm the triggered
+      damage rolls a real die and the chat card shows plain dice notation (e.g. "2d8"), not an
+      unresolved parenthetical. *(R-65.)*
+- [ ] 🤖 **Magnum Opus (Civilization) — the Construct's transform HP bonus AND splash damage both
+      fold.** Trigger Magnum Opus's transform (hpBonusFormula) and its splash-radius damage against
+      multiple enemies; confirm both use real dice. *(R-65.)*
+- [ ] 🤖 **Edict / Sealed Edict / Final Decree / Verdict (Order) — every Blue Edict payoff folds.**
+      Violate an Edict (plain and Sealed — the annotate rider's own damage formula), and resolve a
+      Final Decree (the shared witness Temp HP roll AND the shared violator damage roll — two
+      different formulas, same helper) and a Verdict's court-radius spread; confirm every one rolls
+      real dice, not a static or zeroed amount. *(R-65.)*
+- [ ] 🤖 **Lifeline (White / Coordination) — the choose-amount heal-back die folds.** Trigger
+      Lifeline's CHOOSE-AMOUNT reaction with a nonzero absorb amount; confirm the heal-back die
+      (`edhaHealf`) rolls for real instead of contributing 0 silently. *(R-65.)*
+- [ ] 🤖 **Pack Share (Knowledge) — each ally's shared-strike die folds.** Trigger Pack Share (or the
+      same burst-click family) so at least one ally clicks their damage button; confirm the rolled
+      amount is a real die result, not the formula string. *(R-65.)*
+- [ ] 🤖 **Siphoned Will / Galvanize / Field Medicine (the generic `edha-focus` handler, H17/2bZ) — a
+      focus/Investiture/heal formula with dice folds.** Any talent using the `edha-focus` handler with
+      a dice-bearing "How much" formula (not a flat number) — confirm the roll posts to chat with a
+      real die and the focus/Investiture/HP change matches the rolled total, not a silently-zeroed one.
+      *(R-65.)*
+- [ ] 🤖 **Venom Glands (adversary bespoke ability) — the poison-damage roll folds.** An adversary
+      ability, not a talent — flagged separately per the adversary-wiring standard. Trigger an attack
+      that inflicts venom; confirm the damage amount is a real rolled die. *(R-65.)*

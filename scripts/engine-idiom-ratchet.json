@@ -27,7 +27,7 @@
  "counts": {
   "userTargets": 63,
   "casterToken": 29,
-  "rollFold": 20,
+  "rollFold": 0,
   "renderChatHook": 29,
   "setFlagEmit": 11,
   "sceneOnceRaw": 16,

@@ -363,6 +363,44 @@ clear state on a combatant of a still-existing combat B"*, which leaves single-c
 - Pinned in `tests/cross-combat-scope.test.js` — every case asserts BOTH directions, because a guard
   that skipped everyone would pass a one-sided test.
 
+**`async edhaSceneReset(endedCombat, { flags = [], statuses = [], extra = null, key = "" })`** (R-60,
+hygiene campaign 2026-08-10) — the ONE population + applier every `deleteCombat` scene-reset clear
+now shares: `edhaClearCharges` / `…LifeState` / `…ChaosState` / `…FateState` / `…SovState` /
+`…DeathState` / `…CivState` / `…PowerState` / `…CounterState` / `…OrderState`. It gates on
+`edhaDefBuffGmGate()`, builds the cross-combat guard above ONCE, then sweeps `edhaSceneActors()` —
+directory ∪ canvas tokens, deduped (the twin-actor table above) — which REPLACES five different
+narrower populations the ten sweeps had grown independently (Sovereignty was canvas-tokens-ONLY, an
+off-scene actor kept `dieStep` forever; Life alone reached every directory actor; only Chaos deduped
+a token against its own directory entry). Per actor: skip on `edhaStillFightingElsewhere`, unset
+each `flags` key, clear each `statuses` id via `toggleStatusEffect`, then `await extra?.(actor)` for
+whatever a family's clear could not express as a flat list (Life's apex-form injury creation, an
+ActiveEffect delete keyed on a flag). **Every step is its own try/catch** — one actor's rejecting
+write (Chaos's proven shape: `toggleStatusEffect`'s `deleteEmbeddedDocuments` throwing on an AE a
+concurrent sweep already deleted) must not starve a DIFFERENT actor's sweep, let alone the rest of
+this one. `key` (a short family id, e.g. `"life"`, `"sov"`) scopes a shared busy-set entry keyed
+`` `${key}:${endedCombat.id}` `` — the generalized form of Life's old one-off `_edhaLifeClearBusy`
+boolean (07-27b: two combats ending back-to-back could overlap the SAME family's sweep mid-actor and
+double-create its injury); every family gets this for free now, not just Life.
+```js
+async function edhaClearSovState(endedCombat) {
+  await edhaSceneReset(endedCombat, {
+    key: "sov",
+    flags: ["dieStep", "dieStepOnceBy"],
+    statuses: ["exalted", "diminished"],
+  });
+}
+```
+Bespoke NON-per-actor steps (Charges'/Fate's un-attributable world-prop cleanup, Order's
+`_edhaOrderPrompted.clear()`) stay OUTSIDE the applier call, in the family's own thin wrapper — they
+are not actor-scoped, so `extra` is the wrong shape for them; Charges/Fate compute their own
+`edhaCombatEndGuard(endedCombat)` a second time for the `!guard.size` gate (cheap, and deterministic
+against the same synchronous-until-first-await game state). The eleven byte-identical
+`Hooks.on("deleteCombat", …)` registrations (the ten families + Kindle Lights, which sweeps
+TokenDocuments across every scene and is NOT an `edhaSceneReset` family) collapse to one
+`EDHA_SCENE_RESET_FAMILIES` array + one hook, defined right after `edhaClearOrderState`. Pinned in
+`tests/scene-reset.test.js` (dedup, off-scene sweep, cross-combat skip, per-actor error isolation,
+the busy-set).
+
 ## ⛑ A CLICK HANDLER'S OUTER CATCH IS NEVER "non-fatal" (07-28, fix pass F)
 
 - **`edhaClickFailed(what, e)`** → `console.error` **and** `ui.notifications.error`. Use it for the
@@ -1635,6 +1673,22 @@ pre-07-24r consumer did. Necrotic Cascade's corpse detonation is the first `enem
   a dice formula survives sync evaluation; `rollFace` is injectable for tests. Anything that is not
   a bare `NdM` (e.g. `2d20kh`) is left ALONE rather than mangled. Pinned in `tests/`.
   `edhaRandomFace(faces)` draws from Foundry's own RNG (`CONFIG.Dice.randomUniform`), not `Math.random`.
+- **`async edhaRollFormula(actorOrRd, formula)`** (R-65, hygiene campaign 2026-08-10) — the ONE async
+  formula-roll path: `Roll.replaceFormulaData` → `edhaFoldDieMath` → `new Roll(...).evaluate()`,
+  returning the evaluated Roll (`.total`, `.dice`, `.toMessage()` all behave normally). `actorOrRd`
+  accepts either an actor (`.getRollData()` is called once) or an already-resolved roll-data object —
+  pass whatever the call site already has in scope, don't re-derive one. This is the ASYNC sibling of
+  `edhaEvalSync` (which stays for synchronous passive amounts); reach for THIS one anywhere a damage/
+  heal/DC formula is actually rolled and posted. Before this pass, 20 of 22 `new Roll(Roll.
+  replaceFormulaData(...))` evaluate sites reached Foundry's Roll with computed die math
+  ("(@tier)d(2 * @colorRank + 2)") still unresolved after @-ref substitution — Roll has no
+  arithmetic-inside-dice-notation support, so the die term silently failed. Do not hand-roll
+  `new Roll(Roll.replaceFormulaData(...))` again — `scripts/lint-refs.js` pass 20 (the engine-idiom
+  ratchet) gates the raw idiom at 0 occurrences. A handful of BAKE-only sites (a formula resolved once
+  and stored for a LATER roll — dangerous-terrain regions, Fortify, Death Ward, Decay, the
+  next-test-mod formula) call `edhaFoldDieMath(Roll.replaceFormulaData(...))` directly instead,
+  because there is no immediate Roll to build; if you add one, fold at the point the formula is BAKED,
+  not deferred to whoever rolls it later. Pinned in `tests/roll-formula.test.js`.
 - `edhaFtToPx(ft)`, `edhaWhisperIds(owner)`,
   `edhaOwnsTalent(actor,name)`. (`edhaCharacterOwnersOf` deleted 07-26 with the orphan sweep —
   the name-keyed sweeps' entry point; a name-keyed owner scan has no legitimate future consumer.)
