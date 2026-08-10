@@ -3494,3 +3494,89 @@ observable behavior change, not rows below).
       H3-placed mark to expire at end of combat, that is a missing FEATURE (no authored field exists
       yet), not a bug this pass fixed — file it as a new ruling if wanted, don't expect a card that
       changes.
+
+## pass 5.3 (2026-08-10, engine consolidation — cards, costs, dialogs; R-61, R-62, R-66, R-67)
+
+Engine-only, no pack rebuild pending. Eight consolidations over `EDHA_CARD_BUTTONS` (button
+binding), `edhaMarkCardResolved` (R-66 persistence), `edhaPostChoiceCard`/`edhaTreeCard` (card
+posters), `edhaGmIds` (R-62 whisper audience), `edhaSpendResource`/`edhaGainResource` (resource
+writes), `edhaSceneOnceUsed`/`edhaStampSceneOnce` (R-61 oncePerScene), `edhaDialogPick` (pickers),
+and `edhaSheetRoot`/`edhaPostCleanseCard` (sheet injectors + Life/Restoration cleanse cards). Most
+rows below are regression checks (repo-side unified, no live behavior change); the ones flagged
+VISIBLE are the actual behavior flips this pass made on purpose.
+
+- [ ] 🤖 **VISIBLE — R-59 outer catch now covers eleven chat-card buttons that had NONE before:
+      burst-btn, burst-cancel, charge-btn, charge-all, combustion (Ignite-spread), shatter-mute, and
+      the four Fate buttons (mark-offer, reposition, spring-snare, thread-resolve).** Force one to
+      fail (e.g. click a burst-detonate button after deleting the pending burst's server-side entry,
+      or click a Fate spring-snare button with the snare already gone) and confirm an error TOAST
+      appears (`ui.notifications.error`), not just a console line. Before this pass these eleven had
+      no outer catch at all — a rejected promise from the click failed completely silently.
+- [ ] 🤖 **R-66 — eleven more one-shot cards now stay spent across an F5 / a second client.** Pick
+      3–4 of: Plot Grant (White), Designate (White), Beacon/cleanse (White), a Charge's arm-trigger
+      card (Destruction), Mutation adaptation (Green), Life Cleanse, Counter-Transfer (Knowledge),
+      terrain Extinguish (Green/Destruction), Natural Recovery (Restoration), Reknit Form (Life/
+      injury removal), Vital Surge's Temp-HP offer. Click the button, then hard-refresh (F5) or open
+      the same world on a second client — confirm the button stays disabled/relabeled instead of
+      reviving (the exact Flame Surge bug R-66 exists for).
+- [ ] 🤖 **VISIBLE — Beacon's cleanse confirmation message now prints costs in the majority "N + N"
+      form, not "−N, −N".** Trigger a Beacon cleanse that spends a listed cost (e.g. Investiture);
+      confirm the confirmation card reads "(2 Investiture)" rather than "(−2 Investiture)". Purely a
+      text-format change — the resource still spends the same amount.
+- [ ] 🤖 **VISIBLE — R-62 audience flips, seven sites.** Read carefully — FOUR flip toward wider
+      (active-only → all GMs, so a GM who was offline when it fired can still find it after logging
+      back in): the scene-cue trigger note (`edhaPostCueCard`, any `edha-note`/trigger-card
+      talent), the ambush-belief Perception result note (Phantom Double/illusion family), the
+      illusion belief-sweep card (including its "Re-test viewers" button), and the Kindle Lights
+      auto-veil ON/SUPPRESSED status notes. ONE flips toward narrower (all GMs → active-only, so a
+      GM who logs in hours later doesn't see a stale dead button): the Pyre/Ignite-spread
+      Spread-or-Extinguish confirm card. TWO stay unchanged as a regression check: `edhaPostGmCard`
+      (Black Draw Mana's hidden-info card) and its `gm-card` socket-relay twin — both were and stay
+      all-GMs. For each: with a GM logged OUT, trigger the card from a player client, then log the
+      GM back in and confirm whether the card is there (record cards) or correctly absent (the Pyre
+      action card, which should NOT be waiting for a GM who missed the live moment).
+- [ ] 🤖 **VISIBLE — R-61: `edha-decree` (Final Decree) no longer stamps its once-per-scene flag when
+      authored `oncePerScene: false`.** Author (or find) a Final Decree with `oncePerScene: false` on
+      its `edha-decree` rule, use it twice in the same scene, and confirm BOTH uses go through with
+      no "once per scene" refusal (previously the SECOND use still worked because the veto correctly
+      read `oncePerScene: false`, but the stamp fired unconditionally on the first use regardless —
+      so this row is really confirming nothing regressed; the stamp fix is otherwise invisible at
+      the table since the veto already ignored it). The default case (no `oncePerScene` field, or
+      `true`) should refuse a second use exactly as before.
+- [ ] 🤖 **R-61 — regression check: every other oncePerScene gate (H1 def-test, self-status arm,
+      revive, marker-command spring-all, summon-effect transform, the die-step family, the
+      detonate-list family) still refuses a repeat use with its OWN unchanged polarity.** Pick 2–3
+      talents across different polarities (e.g. a def-test talent with default-off `oncePerScene`,
+      a revive/decree-style default-on talent, a marker-command strict-`true` talent) and confirm
+      first use succeeds, second use in the same scene is refused with the same wording as before.
+- [ ] 🤖 **R-61 — a scene mid-flight when this shipped keeps working (the legacy `detonateUsed` read
+      fallback).** Not independently testable without a stale flag already on an actor from before
+      this deploy — informational only; the gate now reads `sceneOnce.<id>` OR `detonateUsed.<id>`,
+      so an actor that already has ONLY the legacy flag set (from before this pass) still gates
+      correctly instead of getting a free extra use. If you have a save/actor from before 2026-08-10
+      with a Cascading Failure / The Unmooring already detonated this scene, confirm it still refuses
+      a second detonate.
+- [ ] 🤖 **Regression check — resource spend/gain amounts are unchanged across the ~18 migrated
+      sites.** Pick 2–3 representative spends (a Coordination reaction card's listed cost, Reknit
+      Form's Investiture cost, the Opportunity menu's spend) and 2–3 gains (a marked-damage-trigger
+      recovery, a sense-reveal recovery, Sovereignty's Inv-recovery-on-foe-fail) — confirm the
+      resource ends at the same value it always did, including an actor starting at EXACTLY 0 of the
+      resource (falsy-zero case: a 0-Investiture actor's next gain should add normally, not read as
+      broken).
+- [ ] 🤖 **Regression check — the three DialogV2-with-fallback pickers (the GM DC prompt, the Weave
+      link-two-squares picker, the Edict prohibition picker) still work identically.** These only
+      show a visible difference on a Foundry version old enough to hit the AppV1 fallback (unlikely
+      on Ben's current install) — exercise all three on the live table as a plain regression check:
+      prompt for a DC and confirm Resolve/"No DC — judge it" both work, link two Ordained squares
+      (Weave), and declare an Edict prohibition (Order), confirming each picker's Cancel button and
+      submit button behave as before.
+- [ ] 🤖 **Regression check — the character-sheet injectors (path-pick slots, the creation-wizard
+      bar, the ancestry/currency patches, the XP-budget panel, the Attunement-range preview button)
+      still render identically on a PC sheet and do NOT render on an adversary sheet.** Open a PC
+      sheet and confirm all five still appear/behave; open an adversary sheet and confirm none of
+      them leak onto it (the `edhaSheetRoot` type guard is what prevents that).
+- [ ] 🤖 **Regression check — Life Cleanse and Natural Recovery's offer cards/confirmations are
+      byte-identical to before.** Trigger a Life Cleanse (🩺, no cost note) and a Natural Recovery
+      offer (🍃, "spend an Opportunity" or the talent's own cost note) — confirm the emoji, prompt
+      wording, and confirmation message text on EACH match what they always said (Life still shows
+      no parenthetical cost note; Restoration still shows its cost note in parentheses).

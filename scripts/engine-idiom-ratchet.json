@@ -28,11 +28,11 @@
   "userTargets": 10,
   "casterToken": 1,
   "rollFold": 0,
-  "renderChatHook": 29,
+  "renderChatHook": 2,
   "setFlagEmit": 2,
-  "sceneOnceRaw": 16,
-  "gmWhisper": 9,
+  "sceneOnceRaw": 3,
+  "gmWhisper": 0,
   "primaryGmGate": 20,
-  "resourceWrite": 17
+  "resourceWrite": 12
  }
 }

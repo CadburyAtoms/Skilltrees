@@ -1830,6 +1830,100 @@ pre-07-24r consumer did. Necrotic Cascade's corpse detonation is the first `enem
   joins them flavor-labeled (`(...)[Talent]`) so rolls/cards name every bonus. Burst cards print the
   full breakdown line.
 
+## ENGINE PASS 5.3 (2026-08-10, hygiene campaign wave 2) — cards, costs, dialogs
+Third of three sequential hygiene passes on `register-skills.js` (5.1 `edhaRollFormula`/
+`edhaSceneReset`; 5.2 targeting/state unification R-63/R-64; this one). Governing rulings:
+**R-61** (one oncePerScene gate/stamp), **R-62** (one GM-whisper helper), **R-66** (one-shot cards
+persist), **R-67** (Chaos/Fate tree-cards gain `whisper`). All eight helpers below are `function`
+declarations (hoisted) — callable from anywhere in the file regardless of textual position.
+
+- **`EDHA_CARD_BUTTONS`** (cssClass → handler) + the ONE `renderChatMessageHTML` hook that walks it
+  (end of file, right before the debug-tracer `Hooks.on` restore) — the button-binder table. 29
+  registrations (12 named `edhaBind*` wrappers + ~17 inline) collapsed to 2: this table-walker, and a
+  second "decorations" hook (dice-formula tidy + R-66's card-resolved disable-all — NOT a button
+  dispatch, so it stays separate). Add a new chat-card button by adding ONE entry to the table; do
+  not write a new `Hooks.on("renderChatMessageHTML", …)`. Handler signature `(ev, msg)` — `msg` (the
+  ChatMessage) is read only by `edha-watch-manual`. Every entry either is or GAINED an R-59 outer
+  `edhaClickFailed` catch (eleven inline handlers — burst-btn/-cancel, charge-btn/-all, combustion,
+  shatter-mute, the four Fate buttons — had NO outer catch before this pass, so a rejected promise
+  from those clicks used to fail completely silently).
+- **`edhaMarkCardResolved` / `edhaMessageIdOf`** — unchanged (R-66's existing persistence primitive,
+  documented in "Chat-card conventions" above); this pass widened its CALLERS. Eleven one-shot
+  card handlers that only disabled their DOM siblings — plot-grant, designate, beacon (cleanse),
+  charge-arm, mutation ×2 exits, life-cleanse, counter-transfer, extinguish, natural-recovery,
+  reknit, plus vital-surge (self-disable) — now also call `edhaMarkCardResolved`, so F5 or a second
+  client no longer revives a spent button. A card that is legitimately multi-use is NOT wired (none
+  found in this sweep beyond the already-excluded ones).
+- **`edhaPostChoiceCard(owner, { name, emoji, prompt, rows, onceGate, whisper, emptyNote, noteHtml })`**
+  — the shared shell for "whisper (or post) an offer, maybe list costs, wait for a click" cards.
+  Consumed by `edhaPostCoordReactionCard`, `edhaPostBeaconCard`, `edhaPostBulwarkCard`,
+  `edhaPostVoiceCard`, `edhaPostPlotGrantCard` — each still builds its OWN button markup (the
+  data-attributes differ too much between families to genericize) and hands the finished `rows`
+  HTML in. `onceGate`: `true` (CoordReaction/Voice — unconditional), the caller's own boolean
+  (Bulwark — opt-in), or omitted/`false` (Beacon/PlotGrant — never gated at post time).
+  `edhaChoiceCostLabel(costs, {signed})` is the shared cost-label formatter — unifies Beacon's
+  click-side confirmation text from `"−N, −N"` to the majority `"N + N"` form (visible change).
+- **`edhaTreeCard(owner, rolls, html, { whisper = false } = {})`** — the ONE poster for "post a
+  burst-card carrying this tree's dice". Replaces `edhaChaosCard` / `edhaFateCard` / `edhaDeathCard`
+  / `edhaCivCard` / `edhaPowerCard` / `edhaOrderCard` (deleted; all ~22 call sites now call
+  `edhaTreeCard` directly) and a 7th locally-scoped `say()` closure (the H3 counter-mode card, still
+  named `say` at its call sites, now a one-line delegate). R-67: Chaos/Fate gain the `whisper` option
+  Death/Civ/Power/Order already had — additive, no call site passes `whisper: true` for them today.
+- **`edhaGmIds({ activeOnly = false } = {})`** — the ONE "the GM(s)" whisper-recipient reader.
+  Computed directly off `game.users.filter(u => u.isGM && (!activeOnly || u.active))` (this is what
+  Foundry core's `ChatMessage.getWhisperRecipients("GM")` does internally for "GM" — implemented this
+  way so the helper depends on one Foundry surface, not two, and needs no `ChatMessage` stub to
+  test). R-62's rule, applied by reading what each card DOES: an action-prompt (someone must click
+  NOW, the situation is live — e.g. the Pyre spread card) → `activeOnly: true`; a record/audit card
+  (worth finding later — the whisper list is fixed at POST time, so an offline GM's id must already
+  be in it to ever see the message) → `activeOnly: false` (the default). Seven sites' AUDIENCE
+  changed (🤖 bench rows): the cue/ambush/Kindle-Lights/illusion-retest/edha-note "gm" option record
+  cards flipped from active-only to all-GMs; the Pyre spread action card flipped the other way, from
+  all-GMs to active-only. `edhaWhisperIds(owner)` (owner+GM compound) refactors onto this internally,
+  same name/signature, unchanged behavior (active GMs ∪ actor's active owning users).
+- **`edhaSpendResource(actor, resource, n)` / `edhaGainResource(actor, resource, n)`** — the
+  canonical clamped resource write. Spend clamps at 0 (`Math.max(0, cur - n)`); gain clamps at
+  `edhaResVal(res)` when the resource has a readable derived max, else uncapped at `cur + n`. Both
+  read `res?.value ?? 0` (falsy-zero-safe — an actor at exactly 0 stays 0, never reads as "unset")
+  and no-op for `n <= 0`. Migrated ~13 spend + 5 gain sites (a 6th, the Temp-HP cross-writer with a
+  GM-relay-on-failure fallback, is a genuinely different shape and was NOT migrated). The falsy-zero
+  convention (`edhaNumOr`, see the ⛑ family above) is now applied at all 3 dataset-cost-read sites
+  that needed it (spread/reknit/vital-surge) — 2 of the 3 were already correct by hand; unified onto
+  `edhaNumOr` for consistency, no behavior change.
+- **`edhaSceneOnceUsed(actor, item)` / `edhaStampSceneOnce(actor, item)`** — the ONE oncePerScene
+  gate read + stamp write. The read checks BOTH `sceneOnce.<id>` and the legacy `detonateUsed.<id>`
+  namespace (a scene mid-flight when this shipped keeps working); the stamp writes ONLY
+  `sceneOnce.<id>` — `detonateUsed.*` is now read-only. **The polarity stays at the CALL SITE**, not
+  in the helper: each of the 9 gate sites keeps its own `h.oncePerScene &&` (default-off) /
+  `h.oncePerScene !== false` (default-on) / `h.oncePerScene === true` (strict) expression, ANDed
+  with `edhaSceneOnceUsed(actor, item)`. One real fix rode along: `edhaDecreeUse`'s stamp was
+  UNCONDITIONAL while its own veto gated on `h.oncePerScene !== false` — the stamp now takes the
+  SAME polarity (visible change, 🤖 bench row: a Decree authored `oncePerScene: false` used to still
+  burn a stamp nothing could read; now it stamps nothing, matching its veto). Pinned in
+  `tests/pass-5.3-hygiene.test.js`, including a source-text pin on the fixed call site.
+- **`edhaDialogPick({ title, content, buttons })`** — the ONE DialogV2-with-AppV1-fallback picker.
+  `buttons` is `[{ action, label, default, parse(root) }]`; DV2 hands `parse` the submitted
+  `btn.form`, the legacy path hands it the dialog's root element — both support `.querySelector`, so
+  one `parse` works for either. A button with no `parse` resolves to `null` (a plain Cancel); any
+  reject/close resolves to `undefined`. Consumed by `edhaPromptDC`, the Weave link picker
+  (`edhaZoneLinkMarkers`), and the Edict prohibition picker (`edhaPickProhibition`). Fixed riding
+  along: `edhaPromptDC`'s AppV1 fallback rendered its content with no `<form>` wrap (the other two
+  always wrapped theirs) — `edhaDialogPick` always wraps the fallback body now.
+- **`edhaSheetRoot(app, element)`** — the shared `renderCharacterSheet` preamble: resolves the root
+  HTMLElement + actor, gates to `actor.type === "character"` (an adversary shares the same render
+  hook via the base class). Returns `{root, actor}` or `null`. 5 of the 6 `renderCharacterSheet`
+  registrations use it (the 6th, the sheet-scale CSS-zoom hook, takes no `element` at all and needed
+  no guard). Callers needing more (e.g. `.isOwner`) test the extra condition right after the `!rs`
+  check.
+- **`edhaPostCleanseCard(owner, target, label, present, { cssClass, emoji, prompt, costNote })` /
+  `edhaCleanseOfferClick(ev)`** — the shared poster/click for "offer to remove one of these
+  conditions from a target" cards. Life (`edhaPostLifeCleanseCard`) and Restoration
+  (`edhaPostNaturalRecoveryCard`) each still compute their OWN `present` list (which conditions
+  qualify — genuinely different logic: Life offers any condition-type status or an explicit list,
+  Restoration defaults to `EDHA_NATREC_CONDITIONS`) and hand it in. Cost-note support is now on BOTH,
+  additive: Life's caller passes none, so its card/message text is byte-identical to before (no
+  parenthetical) — nothing prior could have asked Life for a cost note.
+
 ## Roll-context / rule-id gotchas (07-12f)
 - **`edhaTestCtxMatch(appliesTo, rawCtx, sourceHasDamage)`** — the appliesTo gate for
   `edha-test-rider` rules, CASE-NORMALIZED: the system's `config.data.context` is capitalized
