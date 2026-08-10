@@ -528,6 +528,65 @@ runs. Bounded to the 33 *outer* click-handler catches — the ~270 inner defensi
 **The feel question is yours:** if a toast at the table is more disruptive than a button that quietly
 does nothing, say so and it goes back to console-only (or becomes GM-only). *(Fix pass F.)*
 
+**R-60. ⚠️ Scene-reset sweeps now cover ONE population: directory actors ∪ canvas tokens,
+deduplicated.** Before, the ten per-tree sweeps answered "who gets reset" five different ways —
+Sovereignty reset canvas tokens ONLY (an off-scene character kept `dieStep` forever), Life swept
+every directory actor including adversaries and summons, and only Chaos deduped an actor with a
+token against its directory entry (the rest swept it twice). All ten now run through one
+`edhaSceneReset` applier using the Chaos-pattern population; each tree's flag/status lists are
+unchanged, and the R-58 cross-combat guard still applies per actor. The veto surface: if some
+tree's narrower sweep was intentional, name it and that tree gets a scoped population.
+*(Hygiene campaign 2026-08-10.)*
+
+**R-61. `oncePerScene` now has ONE gate and ONE stamp — each handler type keeping its CURRENT
+polarity.** The same field name meant four things (default-off, default-on, strict-true, plus a
+rogue `detonateUsed.*` flag namespace with its own scene-clear). No live behavior changes: the
+shared gate takes the polarity as an explicit per-type argument matching what each did before, and
+`detonateUsed.*` merges into `sceneOnce.*` (the gate reads both keys, writes only `sceneOnce`).
+One real fix rides along: `edha-decree` stamped its scene-once flag UNCONDITIONALLY while vetoing
+conditionally — the stamp now matches its own veto. Whether all types should converge on one
+polarity is a separate, untaken ruling. *(Hygiene campaign 2026-08-10.)*
+
+**R-62. "Whisper the GM" now has one helper with an explicit audience.** Two spellings disagreed:
+`getWhisperRecipients("GM")` reaches every GM including offline ones; the `u.active && u.isGM`
+filter reaches online GMs only. Applied mapping: action-prompt cards (someone must click NOW) →
+active GMs; record/audit cards → all GMs, so the log survives to a later login. If a specific card
+lands on the wrong side of that line, name it. *(Hygiene campaign 2026-08-10.)*
+
+**R-63. ⚠️ Unknown token disposition now fails CLOSED everywhere.** Twelve inline checks still
+defaulted a missing disposition to FRIENDLY (`?? 1`) — the convention the ally-drop fix explicitly
+retired after bench run 18 measured the cross-disposition bug — and one helper failed OPEN to
+"enemy". All now use the Number.isFinite guard: no disposition, no effect. This can change live
+behavior for tokens with genuinely unset disposition; if a talent should treat unknown as friendly,
+that is one veto away. *(Hygiene campaign 2026-08-10.)*
+
+**R-64. ⚠️ Victim resolution now uses the full 3-term chain everywhere:
+`options.victim → options.target → the clicking user's current target`.** Six handler sites skipped
+the middle term, so an event that carried `options.target` (but no `victim`) fell through to
+whatever the CLICKING USER happened to have targeted — a different creature. This changes live
+targeting on those six paths, in the direction of "the creature the event was actually about."
+*(Hygiene campaign 2026-08-10.)*
+
+**R-65. ⚠️ Every formula roll now passes through `edhaFoldDieMath`, via one `edhaRollFormula`
+helper — THIS CHANGES LIVE DICE MATH on ~25 sites.** Only 4 of 29 roll sites folded computed dice;
+the documented [Tier][Die] convention (`(@tier)d(2 * rank + 2)`) silently failed on the rest —
+including a heal branch whose own damage twin, eight lines below it, folded correctly. Talents
+whose formulas use no computed dice are unaffected. *(Hygiene campaign 2026-08-10.)*
+
+**R-66. One-shot card buttons now persist their used state via `edhaMarkCardResolved`.** Fifteen
+cards disabled their buttons in the DOM only — an F5 or a second client revived them (the exact
+Flame Surge bug the helper was built for). Cleanse, reknit, counter-transfer, mutation, plot-grant,
+designate and friends now stay spent on every client. *(Hygiene campaign 2026-08-10.)*
+
+**R-67. Chaos and Fate burst cards gained the `whisper` option the other four tree-card helpers
+already had.** Additive — nothing whispers that didn't before; it just becomes possible.
+*(Hygiene campaign 2026-08-10.)*
+
+**R-68. The map toolchain's "is this pixel painted" alpha threshold is now ONE constant, 128.**
+`trace_regions` used 120 and `trace_nations` used 128 for the same question against the same
+layers. Applied 128 — the explicitly named constant. If a re-trace ever shifts a boundary by a
+pixel, this is why; 120 is one veto away. *(Hygiene campaign 2026-08-10.)*
+
 ---
 
 ## J. Flagged, but not questions
