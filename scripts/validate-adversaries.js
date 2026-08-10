@@ -4,48 +4,31 @@
  * (`!actors.items.effects!…`), and folder links. Prints each adversary's
  * stat line + items so deviations are eyeballable.
  *
- * Reads via a temp copy, so safe with Foundry OPEN. Run after
+ * Reads via a temp copy (edha-pack-io.readPack), so safe with Foundry OPEN. Run after
  * `foundry-build.js adversaries` — expect "✓ 0 issues".
  *
  *   node validate-adversaries.js
  *
  * Honors EDHA_MODROOT (same as foundry-build.js).
  */
-const fs = require("fs");
-const os = require("os");
-const path = require("path");
-function requireClassicLevel() {
-  const candidates = [
-    "C:/Program Files/Foundry Virtual Tabletop/resources/app/node_modules/classic-level",
-    "classic-level",
-  ];
-  for (const c of candidates) { try { return require(c); } catch (e) { /* next */ } }
-  throw new Error("classic-level not found");
-}
-const { ClassicLevel } = requireClassicLevel();
+const { readPack } = require("./edha-pack-io.js");
 
 const MODROOT = process.env.EDHA_MODROOT || "C:/Users/benhe/AppData/Local/FoundryVTT/Data/modules/edha-content";
 const dir = `${MODROOT}/packs/edha-adversaries`;
 
 (async () => {
-  // Copy to a temp dir (skip LOCK) so we can read while Foundry holds the lock.
-  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "edha-adv-"));
-  for (const f of fs.readdirSync(dir)) {
-    if (f === "LOCK") continue;
-    const src = path.join(dir, f);
-    if (fs.statSync(src).isFile()) fs.copyFileSync(src, path.join(tmp, f));
-  }
-  const db = new ClassicLevel(tmp, { valueEncoding: "json" });
-  await db.open();
+  // Raw-prefix mode (edha-pack-io.readPack): the adversary pack's key layout isn't the
+  // items[]/folders[] talent-pack shape, so ask for the four prefixes this script needs
+  // as raw [key, value] pairs and index them exactly as before — actors/folders by their
+  // own `_id` (looked up directly), items/effects by the full raw key (which encodes the
+  // parent actor/item id in the path, same as the original hand-rolled reader).
+  const raw = await readPack(dir, { prefixes: ["!actors!", "!actors.items.effects!", "!actors.items!", "!folders!"] });
+  if (!raw) { console.log(`PACK NOT FOUND ✗ (${dir})`); process.exit(1); }
   const actors = {}, items = {}, effects = {}, folders = {};
-  for await (const [k, v] of db.iterator()) {
-    if (k.startsWith("!actors!")) actors[v._id] = v;
-    else if (k.startsWith("!actors.items.effects!")) effects[k] = v;
-    else if (k.startsWith("!actors.items!")) items[k] = v;
-    else if (k.startsWith("!folders!")) folders[v._id] = v;
-  }
-  await db.close();
-  fs.rmSync(tmp, { recursive: true, force: true });
+  for (const [, v] of raw["!actors!"]) actors[v._id] = v;
+  for (const [k, v] of raw["!actors.items.effects!"]) effects[k] = v;
+  for (const [k, v] of raw["!actors.items!"]) items[k] = v;
+  for (const [, v] of raw["!folders!"]) folders[v._id] = v;
 
   let issues = 0;
   const fail = m => { console.log("  ✗", m); issues++; };

@@ -116,8 +116,27 @@ function stableStringify(v) {
 const fingerprint = doc => stableStringify(authorable(doc));
 
 // Read a pack by copying it to a temp dir first (skipping the LOCK file), so it
-// works even while Foundry holds the lock. Returns { items:[], folders:[] } or null.
-async function readPack(packDir) {
+// works even while Foundry holds the lock. Returns { items:[], folders:[] } or null
+// by default — see options below for the other consumer shape.
+//
+// options.prefixes (added 2026-08-10, folding in validate-adversaries.js's hand-rolled
+// copy of this same temp-copy/open/iterate/cleanup dance): an array of raw LevelDB key
+// prefixes (e.g. `["!actors!", "!actors.items!", "!actors.items.effects!", "!folders!"]`
+// for the adversary pack, vs. this function's own default `!items!`/`!folders!` shape).
+// When given, returns `{ [prefix]: [[key, value], ...] }` — the RAW key/value pairs for
+// each requested prefix, in iteration order, with no reassembly and no re-indexing (the
+// adversary pack's `!actors!`/`!folders!` docs are indexed by `_id` while its
+// `!actors.items!`/`!actors.items.effects!` docs are looked up by the full raw key —
+// that indexing choice stays the caller's, same as it was before this was shared).
+// Prefixes here are mutually exclusive by construction (Foundry always terminates a
+// collection-path segment with `!`, so e.g. `!actors!` never matches an
+// `!actors.items!...` key) — a key matches at most one requested prefix.
+//
+// With no options (or options.prefixes omitted), behavior is UNCHANGED from before this
+// parameter existed: the items[]/folders[] shape below, effect-ID arrays reassembled into
+// full docs. `validate-packs.js` and `inspect-pack.js` call `readPack(packDir)` with no
+// second argument and must keep getting exactly this.
+async function readPack(packDir, options = {}) {
   if (!fs.existsSync(packDir)) return null;
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "edha-pack-"));
   try {
@@ -129,6 +148,19 @@ async function readPack(packDir) {
     const { ClassicLevel } = requireClassicLevel();
     const db = new ClassicLevel(tmp, { keyEncoding: "utf8", valueEncoding: "json" });
     await db.open();
+
+    if (options.prefixes) {
+      const buckets = {};
+      for (const p of options.prefixes) buckets[p] = [];
+      for await (const [k, v] of db.iterator()) {
+        for (const p of options.prefixes) {
+          if (k.startsWith(p)) { buckets[p].push([k, v]); break; }
+        }
+      }
+      await db.close();
+      return buckets;
+    }
+
     const items = [], folders = [];
     const effectsByParent = {};   // Foundry stores embedded effects as separate `!items.effects!<itemId>.<effectId>` keys
     for await (const [k, v] of db.iterator()) {
@@ -157,4 +189,4 @@ async function readPack(packDir) {
 // slugify shared with the generator (kept identical so authored filenames are stable).
 const slugify = s => String(s).toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 
-module.exports = { authorable, authorableEffect, applyAuthorable, isEmptyAuthored, stableStringify, fingerprint, readPack, slugify, AUTHORABLE_SYSTEM };
+module.exports = { authorable, authorableEffect, applyAuthorable, isEmptyAuthored, stableStringify, fingerprint, readPack, slugify, AUTHORABLE_SYSTEM, requireClassicLevel };
