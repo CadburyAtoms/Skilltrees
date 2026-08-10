@@ -12,7 +12,6 @@ Usage:
 """
 import argparse
 import sys
-from collections import deque
 
 import numpy as np
 from PIL import Image
@@ -20,74 +19,20 @@ from PIL import Image
 import maplib
 
 
-def zhang_suen(mask):
-    """Thin a bool mask to a 1-px skeleton (vectorized Zhang-Suen)."""
-    img = mask.copy()
-
-    def neighbors(a):
-        p2 = np.roll(a, 1, 0)
-        p3 = np.roll(np.roll(a, 1, 0), -1, 1)
-        p4 = np.roll(a, -1, 1)
-        p5 = np.roll(np.roll(a, -1, 0), -1, 1)
-        p6 = np.roll(a, -1, 0)
-        p7 = np.roll(np.roll(a, -1, 0), 1, 1)
-        p8 = np.roll(a, 1, 1)
-        p9 = np.roll(np.roll(a, 1, 0), 1, 1)
-        return p2, p3, p4, p5, p6, p7, p8, p9
-
-    while True:
-        changed = False
-        for phase in (0, 1):
-            p2, p3, p4, p5, p6, p7, p8, p9 = neighbors(img)
-            b = (p2.astype(np.uint8) + p3 + p4 + p5 + p6 + p7 + p8 + p9)
-            seq = [p2, p3, p4, p5, p6, p7, p8, p9, p2]
-            a = np.zeros_like(b)
-            for i in range(8):
-                a += (~seq[i] & seq[i + 1]).astype(np.uint8)
-            if phase == 0:
-                cond = (~p2 | ~p4 | ~p6) & (~p4 | ~p6 | ~p8)
-            else:
-                cond = (~p2 | ~p4 | ~p8) & (~p2 | ~p6 | ~p8)
-            kill = img & (b >= 2) & (b <= 6) & (a == 1) & cond
-            if kill.any():
-                img &= ~kill
-                changed = True
-        if not changed:
-            return img
-
-
 def nearest_skel(skel_pts, p):
+    """Exact nearest-neighbour search over an explicit list of skeleton points
+    (as opposed to maplib.nearest_true's expanding-window raster search).
+    NOT migrated to maplib.nearest_true: the two are not interchangeable —
+    nearest_true's window search finds the nearest point WITHIN the first
+    non-empty window, which is not always the true global nearest (a point
+    just outside the window can be closer in Euclidean terms than the window's
+    argmin; verified with a constructed counterexample in the wave-3A parity
+    harness). nearest_skel here is an exact argmin, which this script's
+    endpoint-snapping wants. See wave-3A report for the parity evidence."""
     arr = np.array(skel_pts)
     d = ((arr - np.array(p)) ** 2).sum(axis=1)
     i = int(d.argmin())
     return skel_pts[i], float(d[i] ** 0.5)
-
-
-def shortest_path(skel, a, b):
-    """BFS shortest path along skeleton pixels (8-connected)."""
-    h, w = skel.shape
-    prev = {}
-    q = deque([a])
-    seen = {a}
-    while q:
-        cur = q.popleft()
-        if cur == b:
-            path = [cur]
-            while cur in prev:
-                cur = prev[cur]
-                path.append(cur)
-            return path[::-1]
-        x, y = cur
-        for dx in (-1, 0, 1):
-            for dy in (-1, 0, 1):
-                if dx == dy == 0:
-                    continue
-                nxt = (x + dx, y + dy)
-                if 0 <= nxt[0] < w and 0 <= nxt[1] < h and skel[nxt[1], nxt[0]] and nxt not in seen:
-                    seen.add(nxt)
-                    prev[nxt] = cur
-                    q.append(nxt)
-    return None
 
 
 def main():
@@ -107,9 +52,9 @@ def main():
     ds = args.ds
     img = Image.open(args.rivers_png).convert("RGBA")
     small = img.resize((img.width // ds, img.height // ds), Image.NEAREST)
-    mask = np.array(small)[..., 3] > 60
+    mask = np.array(small)[..., 3] > maplib.WATER_ALPHA
     print(f"skeletonizing {int(mask.sum())} water px at 1/{ds}...")
-    skel = zhang_suen(mask)
+    skel = maplib.zhang_suen(mask)
     ys, xs = np.where(skel)
     pts = list(zip(xs.tolist(), ys.tolist()))
     print(f"skeleton: {len(pts)} px")
@@ -120,7 +65,7 @@ def main():
     b, db = nearest_skel(pts, dst)
     print(f"endpoints snapped: {tuple(v * ds for v in a)} (off {da * ds:.0f}px), "
           f"{tuple(v * ds for v in b)} (off {db * ds:.0f}px)")
-    path = shortest_path(skel, a, b)
+    path = maplib.skeleton_path(skel, a, b)
     if path is None:
         sys.exit("ERROR: endpoints are not connected on the skeleton (different water bodies?)")
     simp = maplib.simplify_dp(path, args.eps)

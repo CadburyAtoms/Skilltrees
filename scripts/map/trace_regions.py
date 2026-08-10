@@ -91,10 +91,12 @@ def main():
         sys.exit(f"ERROR: layer size {pol.size} != canvas {gaz['meta']['canvas_px']}")
     small = pol.resize((pol.width // ds, pol.height // ds), Image.NEAREST)
     arr = np.array(small)
-    rgb, alpha = arr[..., :3].astype(int), arr[..., 3] > 120
+    # R-68 (2026-08-10): was >120, reconciled onto trace_nations.py's PAINT_ALPHA
+    # (128) — can shift a re-traced boundary by a pixel; intended, on record.
+    rgb, alpha = arr[..., :3].astype(int), arr[..., 3] > maplib.PAINT_ALPHA
 
     bor = Image.open(args.borders_png).convert("RGBA").resize(small.size, Image.NEAREST)
-    wall = np.array(bor)[..., 3] > 60
+    wall = np.array(bor)[..., 3] > maplib.WATER_ALPHA
     for _ in range(args.wall_dilate):  # close the dash gaps
         wall = (wall | np.roll(wall, 1, 0) | np.roll(wall, -1, 0)
                 | np.roll(wall, 1, 1) | np.roll(wall, -1, 1))

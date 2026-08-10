@@ -42,7 +42,7 @@ import maplib
 
 DS = 2          # skeleton downsample (finer than trace_rivers' 3: braided reaches)
 BASIN_DS = 4    # geodesic-partition downsample
-ALPHA = 60      # rivers-layer paint threshold
+ALPHA = maplib.WATER_ALPHA  # rivers-layer paint threshold
 EPS = 1.5       # Douglas-Peucker (skeleton px units)
 SHORE_EPS = 2.0
 
@@ -417,87 +417,6 @@ COASTAL_FRINGE_BASIS = (
 # machinery
 # ---------------------------------------------------------------------------
 
-def zhang_suen(mask):
-    """Thin a bool mask to a 1-px skeleton (vectorized Zhang-Suen) — trace_rivers.py."""
-    img = mask.copy()
-
-    def neighbors(a):
-        p2 = np.roll(a, 1, 0)
-        p3 = np.roll(np.roll(a, 1, 0), -1, 1)
-        p4 = np.roll(a, -1, 1)
-        p5 = np.roll(np.roll(a, -1, 0), -1, 1)
-        p6 = np.roll(a, -1, 0)
-        p7 = np.roll(np.roll(a, -1, 0), 1, 1)
-        p8 = np.roll(a, 1, 1)
-        p9 = np.roll(np.roll(a, 1, 0), 1, 1)
-        return p2, p3, p4, p5, p6, p7, p8, p9
-
-    while True:
-        changed = False
-        for phase in (0, 1):
-            p2, p3, p4, p5, p6, p7, p8, p9 = neighbors(img)
-            b = (p2.astype(np.uint8) + p3 + p4 + p5 + p6 + p7 + p8 + p9)
-            seq = [p2, p3, p4, p5, p6, p7, p8, p9, p2]
-            a = np.zeros_like(b)
-            for i in range(8):
-                a += (~seq[i] & seq[i + 1]).astype(np.uint8)
-            if phase == 0:
-                cond = (~p2 | ~p4 | ~p6) & (~p4 | ~p6 | ~p8)
-            else:
-                cond = (~p2 | ~p4 | ~p8) & (~p2 | ~p6 | ~p8)
-            kill = img & (b >= 2) & (b <= 6) & (a == 1) & cond
-            if kill.any():
-                img &= ~kill
-                changed = True
-        if not changed:
-            return img
-
-
-def bfs_path(skel, a, b):
-    """Shortest 8-connected path along skeleton px, (x, y) tuples."""
-    from collections import deque
-    h, w = skel.shape
-    prev = {}
-    q = deque([a])
-    seen = {a}
-    while q:
-        cur = q.popleft()
-        if cur == b:
-            path = [cur]
-            while cur in prev:
-                cur = prev[cur]
-                path.append(cur)
-            return path[::-1]
-        x, y = cur
-        for dx in (-1, 0, 1):
-            for dy in (-1, 0, 1):
-                if dx == dy == 0:
-                    continue
-                nxt = (x + dx, y + dy)
-                if 0 <= nxt[0] < w and 0 <= nxt[1] < h \
-                        and skel[nxt[1], nxt[0]] and nxt not in seen:
-                    seen.add(nxt)
-                    prev[nxt] = cur
-                    q.append(nxt)
-    return None
-
-
-def nearest_true(mask, p):
-    """Nearest true px of mask to (x, y) — small local search, then global."""
-    x, y = p
-    for r in (6, 15, 40, 120):
-        y0, y1 = max(0, y - r), min(mask.shape[0], y + r + 1)
-        x0, x1 = max(0, x - r), min(mask.shape[1], x + r + 1)
-        win = mask[y0:y1, x0:x1]
-        if win.any():
-            ys, xs = np.where(win)
-            i = int(np.hypot(xs + x0 - x, ys + y0 - y).argmin())
-            return (int(xs[i] + x0), int(ys[i] + y0))
-    ys, xs = np.where(mask)
-    i = int(np.hypot(xs - x, ys - y).argmin())
-    return (int(xs[i]), int(ys[i]))
-
-
 def shore_polygon(mask, eps=SHORE_EPS):
     """Largest outer contour of a bool mask as a simplified [[x,y],...] polygon.
     Closed contour: DP anchors endpoints, so simplify the two halves separately."""
@@ -574,7 +493,7 @@ def main():
     print("extracting lakes...")
     lake_masks, lake_entries = {}, []
     for cfg in LAKES:
-        seed = nearest_true(water, cfg["seed"])
+        seed = maplib.nearest_true(water, cfg["seed"])
         if cfg["radius"] is None:
             mask = comp_lab == comp_lab[seed[1], seed[0]]
         else:
@@ -584,7 +503,7 @@ def main():
             st[yy * yy + xx * xx <= r * r] = True
             opened = ndimage.binary_opening(water, structure=st)
             olab, _ = ndimage.label(opened, structure=np.ones((3, 3)))
-            oseed = nearest_true(opened, seed)
+            oseed = maplib.nearest_true(opened, seed)
             core = olab == olab[oseed[1], oseed[0]]
             mask = ndimage.binary_dilation(core, structure=st) & water
         lake_masks[cfg["id"]] = mask
@@ -609,14 +528,14 @@ def main():
     print(f"skeletonizing at 1/{DS}...")
     small = np.array(Image.open(riv_path).convert("RGBA").resize(
         (wh[0] // DS, wh[1] // DS), Image.NEAREST))[..., 3] > ALPHA
-    skel = zhang_suen(small)
+    skel = maplib.zhang_suen(small)
 
     # --- painted traces ------------------------------------------------------
     new_ways = []
     for cfg in TRACES:
-        src = nearest_true(skel, (cfg["src"][0] // DS, cfg["src"][1] // DS))
-        dst = nearest_true(skel, (cfg["dst"][0] // DS, cfg["dst"][1] // DS))
-        path = bfs_path(skel, src, dst)
+        src = maplib.nearest_true(skel, (cfg["src"][0] // DS, cfg["src"][1] // DS))
+        dst = maplib.nearest_true(skel, (cfg["dst"][0] // DS, cfg["dst"][1] // DS))
+        path = maplib.skeleton_path(skel, src, dst)
         if path is None:
             sys.exit(f"ERROR {cfg['id']}: endpoints not connected on the skeleton")
         full = [(x * DS, y * DS) for x, y in path]
@@ -642,22 +561,6 @@ def main():
         print(f"  traced {cfg['id']:24s} {entry['length_km']:5d} km  "
               f"{len(entry['polyline'])} pts")
 
-    def snap_to_ring(p, ring):
-        """Nearest point ON the ring's segments to p (mouths anchor to shores)."""
-        best, bp = 1e18, p
-        n = len(ring)
-        for i in range(n):
-            ax, ay = ring[i]
-            bx, by = ring[(i + 1) % n]
-            dx, dy = bx - ax, by - ay
-            dd = dx * dx + dy * dy or 1e-9
-            t = max(0.0, min(1.0, ((p[0] - ax) * dx + (p[1] - ay) * dy) / dd))
-            qx, qy = ax + t * dx, ay + t * dy
-            d = (p[0] - qx) ** 2 + (p[1] - qy) ** 2
-            if d < best:
-                best, bp = d, (qx, qy)
-        return [int(round(bp[0])), int(round(bp[1]))]
-
     # snap traced non-sea mouths onto their target geometry (simplification on
     # both sides can leave a few px of daylight; mouths must anchor)
     traced_by_id = {w["id"]: w for w in new_ways}
@@ -665,9 +568,9 @@ def main():
         m = w["mouth"]
         if m["type"] == "lake":
             shore = next(l["shore"] for l in lake_entries if l["id"] == m["ref"])
-            w["polyline"][-1] = snap_to_ring(w["polyline"][-1], shore)
+            w["polyline"][-1] = maplib.project_on_polyline(w["polyline"][-1], shore)
         elif m["type"] == "waterway" and m["ref"] in traced_by_id:
-            w["polyline"][-1] = snap_to_ring(
+            w["polyline"][-1] = maplib.project_on_polyline(
                 w["polyline"][-1], traced_by_id[m["ref"]]["polyline"])
         w["length_km"] = round(maplib.polyline_length_px(w["polyline"]) * kpp)
 
@@ -677,7 +580,7 @@ def main():
         if cfg["mouth"]["type"] == "lake":
             shore = next(l["shore"] for l in lake_entries
                          if l["id"] == cfg["mouth"]["ref"])
-            pts[-1] = snap_to_ring(pts[-1], shore)
+            pts[-1] = maplib.project_on_polyline(pts[-1], shore)
         entry = {
             "id": cfg["id"], "name": None, "name_provisional": True,
             "kind": "river", "flow": cfg["flow"],

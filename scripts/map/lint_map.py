@@ -38,29 +38,8 @@ WATER_TOWN_KM = 15   # water-driver towns should resolve within this (warn tier)
 
 errors, warnings = [], []
 
-
-def seg_dist(p, a, b):
-    """Distance from point p to segment a-b."""
-    px, py = p
-    ax, ay = a
-    bx, by = b
-    dx, dy = bx - ax, by - ay
-    dd = dx * dx + dy * dy
-    if dd == 0:
-        return math.hypot(px - ax, py - ay)
-    t = max(0.0, min(1.0, ((px - ax) * dx + (py - ay) * dy) / dd))
-    return math.hypot(px - ax - t * dx, py - ay - t * dy)
-
-
-def polyline_dist(p, pts, closed=False):
-    """Distance from point p to a polyline (or closed polygon ring)."""
-    if len(pts) < 2:
-        return math.hypot(p[0] - pts[0][0], p[1] - pts[0][1]) if pts else 1e9
-    best = 1e9
-    n = len(pts)
-    for i in range(n if closed else n - 1):
-        best = min(best, seg_dist(p, pts[i], pts[(i + 1) % n]))
-    return best
+# seg_dist / polyline_dist now live in maplib.py (wave 3A, 2026-08-10) — this
+# module still calls them as maplib.seg_dist / maplib.polyline_dist below.
 
 
 def lint_hydrology(gaz, kpp):
@@ -88,14 +67,14 @@ def lint_hydrology(gaz, kpp):
             lake = lakes.get(ref)
             if lake is None:
                 errors.append(f"waterway {w['id']}: mouth lake {ref!r} not found")
-            elif polyline_dist(tail, lake["shore"], closed=True) > TOL_MOUTH_PX:
+            elif maplib.polyline_dist(tail, lake["shore"], closed=True) > TOL_MOUTH_PX:
                 errors.append(f"waterway {w['id']}: mouth {tail} not on "
                               f"{ref}'s shore (tol {TOL_MOUTH_PX}px)")
         elif kind == "waterway":
             parent = ways.get(ref)
             if parent is None:
                 errors.append(f"waterway {w['id']}: mouth waterway {ref!r} not found")
-            elif polyline_dist(tail, parent["polyline"]) > TOL_MOUTH_PX:
+            elif maplib.polyline_dist(tail, parent["polyline"]) > TOL_MOUTH_PX:
                 errors.append(f"waterway {w['id']}: mouth {tail} not on "
                               f"{ref}'s channel (tol {TOL_MOUTH_PX}px)")
         elif kind == "pan":
@@ -128,7 +107,7 @@ def lint_hydrology(gaz, kpp):
             ow = ways.get(outlet)
             if ow is None:
                 errors.append(f"lake {lake['id']}: outlet {outlet!r} not found")
-            elif polyline_dist(ow["polyline"][0], lake["shore"],
+            elif maplib.polyline_dist(ow["polyline"][0], lake["shore"],
                                closed=True) > TOL_OUTLET_SRC_PX:
                 errors.append(f"lake {lake['id']}: outlet {outlet}'s source "
                               f"{ow['polyline'][0]} is not on the shore")
@@ -146,7 +125,7 @@ def lint_hydrology(gaz, kpp):
         for w in ways.values():
             if w["id"] == outlet or not w.get("polyline"):
                 continue
-            if polyline_dist(w["polyline"][0], lake["shore"],
+            if maplib.polyline_dist(w["polyline"][0], lake["shore"],
                              closed=True) <= TOL_HEAD_PX:
                 errors.append(f"lake {lake['id']}: {w['id']} sources on the "
                               f"shore but is not the declared outlet (ONE "
@@ -226,7 +205,7 @@ def lint_hydrology(gaz, kpp):
         if t.get("driver") != "water":
             continue
         p = t["px"]
-        d = min(polyline_dist(p, pts, closed) for pts, closed in features)
+        d = min(maplib.polyline_dist(p, pts, closed) for pts, closed in features)
         if d * kpp > WATER_TOWN_KM:
             unresolved.append((t["id"], round(d * kpp)))
     if unresolved:

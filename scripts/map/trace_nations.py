@@ -40,7 +40,7 @@ import extract_procreate as ep
 import maplib
 from trace_regions import trace_boundary, simplify_closed
 
-ALPHA_T = 128
+ALPHA_T = maplib.PAINT_ALPHA
 DS = 4
 EPS = 2.5
 BORDER_INK = (40, 30, 25, 220)

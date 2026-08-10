@@ -13,7 +13,7 @@ import os
 import sys
 
 import numpy as np
-from PIL import Image, ImageDraw
+from PIL import Image
 
 import maplib
 
@@ -23,16 +23,10 @@ CALIBRATION_NATION = "Thalendor"
 CALIBRATION_TOL = 0.005
 
 
-def polygon_mask(polygon, shape):
-    m = Image.new("1", (shape[1], shape[0]), 0)
-    ImageDraw.Draw(m).polygon([tuple(p) for p in polygon], fill=1)
-    return np.array(m, bool)
-
-
 def nation_water_frac(nation, water, shape):
     if not nation.get("polygon"):
         return None
-    m = polygon_mask(nation["polygon"], shape)
+    m = maplib.polygon_mask(nation["polygon"], shape)
     return float((water & m).sum() / m.sum())
 
 
@@ -42,7 +36,7 @@ def main():
     args = ap.parse_args()
 
     gaz = maplib.load_gazetteer()
-    water = np.array(Image.open(RIVERS_LAYER))[..., 3] > 60
+    water = np.array(Image.open(RIVERS_LAYER))[..., 3] > maplib.WATER_ALPHA
     if list(water.shape[::-1]) != gaz["meta"]["canvas_px"]:
         sys.exit(f"ERROR: {os.path.basename(RIVERS_LAYER)} size {water.shape[::-1]} != canvas "
                  f"{gaz['meta']['canvas_px']} — re-extract the Rivers And Lakes layer.")
