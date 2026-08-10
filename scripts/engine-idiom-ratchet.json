@@ -10,7 +10,9 @@
   "",
   "The regexes that measure each idiom live in scripts/lint-refs.js pass 20, not here. An entry whose count reaches 0 STAYS in this file as a tombstone — it still gates regrowth even after full migration (see name-keyed-allowlist.json's empty-but-present talents list for the same pattern).",
   "",
-  "DO NOT bump a count to make the gate pass. A grown count is the violation the gate exists to catch; migrate the site onto its canonical helper instead."
+  "DO NOT bump a count to make the gate pass. A grown count is the violation the gate exists to catch; migrate the site onto its canonical helper instead.",
+  "",
+  "dispoFailOpen was ADDED 2026-08-10 (hygiene campaign wave 6), separately from the eight keys above: those eight were all measured on the SAME day this file was first frozen, but dispoFailOpen's originalCount below is wave 6's own landing measurement, not a retroactive part of that first freeze. It tracks the disposition-default fail-open idiom pass 5.2 (R-63) fixed in the shared helpers plus 16 named sites, leaving an explicit ~74-site backlog — this entry ratchets that backlog so it can only shrink from here, the same way the other eight ratchet theirs."
  ],
  "frozen": "2026-08-10",
  "originalCounts": {
@@ -22,7 +24,8 @@
   "sceneOnceRaw": 16,
   "gmWhisper": 9,
   "primaryGmGate": 20,
-  "resourceWrite": 17
+  "resourceWrite": 17,
+  "dispoFailOpen": 76
  },
  "counts": {
   "userTargets": 10,
@@ -33,6 +36,7 @@
   "sceneOnceRaw": 3,
   "gmWhisper": 0,
   "primaryGmGate": 20,
-  "resourceWrite": 12
+  "resourceWrite": 12,
+  "dispoFailOpen": 76
  }
 }

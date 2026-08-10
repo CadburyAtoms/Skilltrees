@@ -1577,6 +1577,14 @@ engine.split("\n").forEach((lineText, i) => {
       // edhaSpendResource / edhaConsumeCost.
       { key: "resourceWrite", re: /["']system\.resources\.[a-z]{2,4}\.(value|max)["']\s*(?::|\]\s*[=:])/g,
         helper: "edhaSpendResource / edhaConsumeCost" },
+      // Defaulting a resolvable-but-unknown disposition to NEUTRAL/FRIENDLY by hand instead of
+      // failing closed — the fail-open idiom pass 5.2 (R-63, ENGINE_INDEX.md "A FAILED LOOKUP IS
+      // NOT NO RESTRICTION") fixed in the shared helpers plus 16 named sites, with ~74 more sites
+      // of the SAME idiom left as an explicit backlog. Added 2026-08-10 (hygiene campaign wave 6);
+      // its "original" freeze is THIS pass landing, not the 2026-08-10 idiom-ratchet freeze the
+      // other eight keys share — see engine-idiom-ratchet.json's _README.
+      { key: "dispoFailOpen", re: /disposition\s*\?\?\s*[01]\b/g,
+        helper: "edhaDisposHostile / edhaSameDisposition (or the equivalent inline Number.isFinite guard, per R-63)" },
     ];
 
     const recorded = ratchet.counts || {};
@@ -1595,6 +1603,327 @@ engine.split("\n").forEach((lineText, i) => {
         err(`pass 20: engine idiom "${key}" dropped from ${rec} to ${actual} occurrence(s) in register-skills.js, ` +
             `but scripts/engine-idiom-ratchet.json still records ${rec} — lower "counts.${key}" to ${actual} so the ` +
             `ratchet reflects reality (the ratchet must not become fiction).`);
+      }
+    }
+  }
+}
+
+/* --- pass 21: CANONICAL HOMES (2026-08-10, hygiene campaign wave 6, the gate-landing pass) ------
+ *
+ * Waves 1-5 moved a dozen duplicated idioms — the prereq-string parser, the NFKD slugifier, the
+ * classic-level resolver, the comment stripper, the markdown engine, the Foundry/repo path
+ * constants, the map gazetteer path, and two families of map-rendering helpers — out of their
+ * scattered copies and into one canonical file each (scripts/foundry-build-parts.js,
+ * scripts/edha-pack-io.js, scripts/lib/strip-comments.js, scripts/lib/md.js, scripts/lib/paths.js,
+ * scripts/map/maplib.py, scripts/map/maprender.py). Nothing stopped a copy from growing BACK —
+ * pass 7 (name-keyed dispatch) and pass 20 (engine idioms) both learned this the hard way for their
+ * own migrations, which is why both are ratchets and not one-off sweeps. This pass is the same
+ * defense for the wave 1-5 consolidations: it does not care whether a duplicate is a byte-for-byte
+ * copy or a plausible-looking reimplementation — either one means the fix a future bug needs has to
+ * be applied twice, which is exactly how these got here.
+ *
+ * TABLE-DRIVEN, one row per consolidated idiom: `{ id, scope, mode, re, home, shrink, msg }`.
+ *   - `scope`   — glob list resolved by the tiny walker below: a two-star segment (`<dir>/**` then
+ *     an extension suffix) means recursive, a bare star (`<dir>` then a direct-child extension
+ *     suffix) means direct children only, or a literal path with no star at all.
+ *   - `mode`    — `"code"` scans `blankStringsAndComments(src)` (strings AND comments blanked, same
+ *     helper pass 11/15/16/17 already use) for a pattern that lives in actual CODE structure
+ *     (a function/const definition, a `new X(` call). `"text"` scans `stripComments(src)` (the
+ *     shared ./lib/strip-comments.js — comments stripped, STRING CONTENTS KEPT) for a pattern that
+ *     is itself partly or wholly a string/regex literal — code mode would blank the very quotes the
+ *     pattern needs to see. `"text-py"` is the same idea for the map scripts' Python: strip `#`
+ *     line-comments only (Python docstrings survive as text, which is safe here because every
+ *     Python pattern below is either quote-anchored — the pattern itself starts with a quote char,
+ *     so prose mentioning the filename unquoted cannot match — or `^`-line-anchored to a `def`/
+ *     constant-assignment statement, which a docstring's prose does not shape).
+ *   - `home`    — the canonical file (or, for one entry, TWO files — see maprender-helper-def).
+ *   - `shrink`  — files still carrying a legitimate secondary copy pending a later pass; every
+ *     shrink file must itself have ≥1 match (rule c) or it is fiction and must be delisted.
+ *   - `banned`  — no home at all; the pattern must have ZERO matches anywhere in scope (used for
+ *     the naive comment-regex entry, which is not "not yet consolidated" but "must never come back").
+ *
+ * TWO-WAY ENFORCEMENT per entry, mirroring pass 7/20's ratchet shape:
+ *   (a) any file with a match that is outside home ∪ shrink -> ERROR (entry's own msg) — a NEW
+ *       copy, or an old one regrowing.
+ *   (b) every home file must have ≥1 match, unless `banned` -> ERROR "pattern rotted or home moved"
+ *       — a silently-passing gate that stopped checking anything is worse than no gate.
+ *   (c) every shrink-listed file must have ≥1 match -> ERROR "remove it from the shrink list" — a
+ *       shrink entry nobody ever deletes is exactly how the name-keyed allowlist used to drift
+ *       before pass 7 made staleness itself an error.
+ *
+ * TWO DEVIATIONS from the pass this table was speced against, found by measuring rather than
+ * assuming, and shrink-listed rather than silently widened away (this file may not touch either
+ * offending file — both are outside the files this pass may write):
+ *   - `engine-read-in-tests`: tests/advantage-channel.test.js names "register-skills.js" three
+ *     times, but only as a COSMETIC label prefix inside assert.fail/assert.ok messages (its actual
+ *     engine read goes through tests/harness.js like everything else) — not the raw-path-literal
+ *     failure mode this entry exists to catch. Shrink-listed with that reasoning on record.
+ *   - `md-fn-def`: scripts/build-dashboard.js defines its OWN `function renderBlocks(tabKey,
+ *     secTitle, subTitle, blocks, counter)` — a dashboard-tab-section renderer that predates/is
+ *     unrelated to scripts/lib/md.js's markdown-block renderer `renderBlocks(blocks, opts)` and
+ *     merely collides on the name. Shrink-listed rather than mis-shaping the regex around one
+ *     file's naming accident; a future pass could rename the dashboard-local one to retire the
+ *     shrink entry. (The file's OTHER near-miss — `const inline = (s) => mdInline(s, {...})`, a
+ *     thin options-wrapper around the real import — is legitimately exempt: see the regex note.)
+ */
+{
+  // Python '#'-comment stripper. Python has no block-comment syntax, so the only cross-line state
+  // is "am I inside a triple-quoted string" — tracked exactly like the JS stripComments carries
+  // block-comment state across lines. Prefix letters on a string (r"...", f"...", b"...") need no
+  // special handling: they are plain code characters copied through until the quote char itself
+  // opens string-tracking. Backslash-escapes are honored inside single-line quotes so an escaped
+  // quote can't end the string early (and can't be mistaken for a '#' comment starter either).
+  function pyStripComments(src) {
+    const lines = src.replace(/\r\n/g, "\n").split("\n");
+    const out = [];
+    let tripleQ = null; // "'''" or '"""' while inside one, else null
+    for (const raw of lines) {
+      let line = "";
+      let i = 0;
+      while (i < raw.length) {
+        if (tripleQ) {
+          const idx = raw.indexOf(tripleQ, i);
+          if (idx < 0) { i = raw.length; break; }               // whole rest of line is inside the string
+          line += raw.slice(i, idx + 3);
+          i = idx + 3;
+          tripleQ = null;
+          continue;
+        }
+        const c = raw[i];
+        if (c === "#") break;                                    // rest of the line is a comment
+        if (c === '"' || c === "'") {
+          if (raw.slice(i, i + 3) === c + c + c) { tripleQ = c + c + c; line += raw.slice(i, i + 3); i += 3; continue; }
+          let j = i + 1;
+          while (j < raw.length) { if (raw[j] === "\\") { j += 2; continue; } if (raw[j] === c) { j++; break; } j++; }
+          line += raw.slice(i, j);
+          i = j;
+          continue;
+        }
+        line += c;
+        i++;
+      }
+      out.push(line);
+    }
+    return out.join("\n");
+  }
+
+  // Tiny glob resolver — only the three shapes this table actually uses. Every returned path is
+  // repo-relative with forward slashes, matching how `home`/`shrink` are written below.
+  function walkTree(absDir, recursive) {
+    const out = [];
+    if (!fs.existsSync(absDir)) return out;
+    for (const f of fs.readdirSync(absDir, { withFileTypes: true })) {
+      if (f.name === "node_modules" || f.name === ".git") continue;
+      const abs = path.join(absDir, f.name);
+      if (f.isDirectory()) { if (recursive) out.push(...walkTree(abs, true)); continue; }
+      out.push(path.relative(REPO_ROOT, abs).split(path.sep).join("/"));
+    }
+    return out;
+  }
+  function globFiles(pattern) {
+    let m = pattern.match(/^(.+)\/\*\*\/\*\.(\w+)$/);              // "<dir>/**/*.ext" — recursive
+    if (m) return walkTree(path.join(REPO_ROOT, m[1]), true).filter((f) => f.endsWith(`.${m[2]}`));
+    m = pattern.match(/^(.+)\/\*\.(\w+)$/);                        // "<dir>/*.ext" — direct children
+    if (m) return walkTree(path.join(REPO_ROOT, m[1]), false).filter((f) => f.endsWith(`.${m[2]}`));
+    if (!pattern.includes("*")) {                                  // a literal file path
+      return fs.existsSync(path.join(REPO_ROOT, pattern)) ? [pattern] : [];
+    }
+    throw new Error(`pass 21: unsupported scope glob "${pattern}" — teach globFiles the shape`);
+  }
+
+  // The naive block-comment regex wave 4A retired — built by escaping the literal 16-character
+  // text, not hand-escaped in source, so there is no risk of the escaping itself drifting from
+  // what it is supposed to detect.
+  const NAIVE_COMMENT_LITERAL = "/\\*[\\s\\S]*?\\*\\//";
+  const naiveCommentRe = new RegExp(NAIVE_COMMENT_LITERAL.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g");
+
+  const HOMES = [
+    { id: "prereqGroups-def", scope: ["scripts/**/*.js", "tests/**/*.js"], mode: "code",
+      re: /(?:function\s+prereqGroups\s*\(|const\s+prereqGroups\s*=)/g,
+      home: "scripts/foundry-build-parts.js",
+      msg: "prereqGroups (the prerequisite-string -> AND/OR group parser) has ONE implementation in " +
+           "scripts/foundry-build-parts.js, imported by both foundry-build.js and validate.js. " +
+           "validate.js used to carry its own copy that split unconditionally on \" and \"/\" or \" — " +
+           "which is exactly the drift that tore \"Mind and Body\" and \"Fight or Flight\" apart on the " +
+           "validator side while the builder read them correctly. Import it; do not redefine it." },
+
+    { id: "nfkd-slugify", scope: ["scripts/**/*.js"], mode: "text",
+      re: /normalize\(\s*["']NFKD["']\s*\)/g,
+      home: "scripts/edha-pack-io.js",
+      msg: "the NFKD filename/id slugifier has ONE implementation — scripts/edha-pack-io.js's exported " +
+           "`slugify`. A second normalize(\"NFKD\") elsewhere is a second slugifier that can silently " +
+           "disagree with the first on the same authored-overlay filename." },
+
+    { id: "classic-level-resolution", scope: ["scripts/**/*.js"], mode: "text",
+      re: /["']classic-level["']/g,
+      home: "scripts/edha-pack-io.js",
+      msg: "resolving the classic-level module (Foundry's bundled copy first, falling back to a normal " +
+           "install) is ONE function — edha-pack-io.js's `requireClassicLevel`. foundry-build.js imports " +
+           "it (see foundry-build.js's own 2026-08-10 dedupe note) rather than re-resolving the module " +
+           "path itself; a new consumer should do the same instead of re-deriving the fallback logic." },
+
+    { id: "ClassicLevel-ctor", scope: ["scripts/**/*.js"], mode: "code",
+      re: /new ClassicLevel\(/g,
+      home: "scripts/edha-pack-io.js", shrink: ["scripts/foundry-build.js"],
+      msg: "opening a pack's LevelDB directly (`new ClassicLevel(...)`) belongs behind edha-pack-io.js's " +
+           "readPack/applyAuthorable — a caller that just needs pack contents should never touch the " +
+           "constructor itself. foundry-build.js's two sites are the pack WRITE path (it clears and " +
+           "rebuilds the directory before opening it, which read-only helpers must never do) and are " +
+           "the one legitimate exception; any other new `new ClassicLevel(` is a copy of the read path." },
+
+    { id: "engine-read-in-tests", scope: ["tests/*.js"], mode: "text",
+      re: /register-skills\.js/g,
+      home: "tests/harness.js", shrink: ["tests/advantage-channel.test.js"],
+      msg: "a test that needs the engine's source reads it through tests/harness.js's readEngineSource() " +
+           "/ ENGINE_PATH — never a hard-coded \"register-skills.js\" path or filename literal of its " +
+           "own, which is exactly the drift wave 4A closed (five near-duplicate readers/strippers " +
+           "before the consolidation). tests/advantage-channel.test.js's three mentions are COSMETIC — " +
+           "a \"register-skills.js:<line>\" label prefix inside assert.fail/assert.ok messages; its " +
+           "actual engine read is `codeOnly(readEngineSource())` like everything else — so they are " +
+           "shrink-listed rather than the false positive this entry would otherwise raise on them." },
+
+    { id: "stripper-def", scope: ["scripts/**/*.js", "tests/**/*.js"], mode: "code",
+      // The lookahead is deliberately wider than "not a require import": tests/harness.js's
+      // `codeOnly` is a re-export by ALIAS (`const codeOnly = stripComments;`, not `= require(...)`),
+      // which is equally legitimate and must equally not count as a second implementation. The `\s*`
+      // sits INSIDE the lookahead (not between `=` and the lookahead) on purpose — with it outside,
+      // the engine can backtrack the outer `\s*` to zero width and test the lookahead one character
+      // too early, where none of the literal alternatives line up with the leading space and the
+      // lookahead vacuously passes. Verified against `const codeOnly = stripComments;` while writing
+      // this entry: the naive placement (matching the task's literal wording) let it through as a
+      // false violation; this placement does not.
+      re: /(?:function\s+(stripComments|codeOnly)\s*\(|const\s+(stripComments|codeOnly)\s*=(?!\s*(?:require\b|stripComments\b|codeOnly\b)))/g,
+      home: "scripts/lib/strip-comments.js",
+      msg: "the comment-stripped-engine-text primitive has ONE implementation — scripts/lib/strip-" +
+           "comments.js's `stripComments`, re-exported (not reimplemented) by tests/harness.js as " +
+           "`codeOnly`. Wave 4A's whole point was collapsing five near-duplicate copies (differing on " +
+           "string-keeping, CRLF handling, and quote-awareness) into this one; a new `function " +
+           "stripComments`/`codeOnly` — or a `const` assigned anything other than the shared import — " +
+           "reopens exactly that drift." },
+
+    { id: "naive-comment-regex", scope: ["scripts/**/*.js", "tests/**/*.js"], mode: "text",
+      re: naiveCommentRe, banned: true,
+      msg: "the naive `/\\*[\\s\\S]*?\\*\\//` block-comment regex is not a not-yet-consolidated copy — " +
+           "it is the specific bug wave 4A's strip-comments.js replaced (quote-unaware: it closes on " +
+           "the FIRST \"*/\" it finds, including one sitting inside a string or another comment's " +
+           "prose). It has no home and is banned everywhere, not just outside one; use stripComments." },
+
+    { id: "md-fn-def",
+      scope: ["scripts/build-dashboard.js", "scripts/build-canon-codex.js", "scripts/build-player-primer.js", "scripts/lib/*.js"],
+      mode: "code",
+      // build-dashboard.js imports `inline` under an ALIAS (`const { esc, inline: mdInline } =
+      // require(...)`) and then defines `const inline = (s) => mdInline(s, {...})` — a one-line
+      // options-wrapper around the real import, not a reimplementation. Requiring the assigned side
+      // to actually OPEN a block body (`function` or `=> {`) is what tells the two apart: a
+      // delegating one-liner like `=> mdInline(...)` never opens a `{`, a from-scratch copy (the
+      // shape every one of md.js's own definitions uses) always does.
+      re: /(?:function\s+(esc|inline|parseMd|renderBlocks)\s*\(|const\s+(esc|inline|parseMd|renderBlocks)\s*=(?!\s*require\b)(?:function\b|(?:\([^()]*\)|[A-Za-z_$][\w$]*)\s*=>\s*\{))/g,
+      home: "scripts/lib/md.js", shrink: ["scripts/build-dashboard.js"],
+      msg: "esc/inline/parseMd/renderBlocks are the shared markdown engine — scripts/lib/md.js, wave " +
+           "2A's fix for three builders' independently-drifted copies (esc()'s missing quote-escaping, " +
+           "mismatched heading depth, an italic regex that could swallow a whole paragraph, no ordered- " +
+           "list support in one copy). A `function`/block-bodied `const` under any of these four names " +
+           "outside md.js is that drift reopening. scripts/build-dashboard.js's shrink entry is its OWN " +
+           "unrelated `renderBlocks(tabKey, secTitle, subTitle, blocks, counter)` — a dashboard-tab-" +
+           "section renderer that only collides on the name; not a copy of md.js's markdown renderer." },
+
+    { id: "foundry-path-literal", scope: ["scripts/**/*.js"], mode: "text",
+      re: /FoundryVTT\/Data\/modules\/edha-content|Claude Design\/[Ss]killtrees\/data/g,
+      home: "scripts/lib/paths.js",
+      shrink: ["scripts/foundry-build.js", "scripts/inspect-pack.js", "scripts/module-src-sync.js",
+               "scripts/sync-art.js", "scripts/validate-packs.js", "scripts/validate-adversaries.js"],
+      msg: "Ben's live Foundry modules directory and the repo's own data directory are ONE constant " +
+           "each — scripts/lib/paths.js's MODROOT/DATA, added because foundry-extract.js's own copy had " +
+           "silently lost the EDHA_DATA/EDHA_MODROOT env override foundry-build.js's copy had, so a " +
+           "session extracting into a scratch modroot could read/write Ben's LIVE install instead. The " +
+           "shrink-listed files are not yet migrated onto paths.js (a later pass); a NEW hard-coded " +
+           "copy of either literal is not one of them. (deploy-to-foundry.bat is out of scope — .bat, " +
+           "not .js.)" },
+
+    { id: "gazetteer-literal", scope: ["scripts/map/*.py"], mode: "text-py",
+      re: /["'][^"']*thyrcross\.map\.json["']/g,
+      home: "scripts/map/maplib.py",
+      shrink: ["scripts/map/trace_hydrology.py", "scripts/map/region_overlay.py",
+               "scripts/map/world_settlement.py", "scripts/map/render_settlements.py"],
+      msg: "the gazetteer's path is ONE constant — scripts/map/maplib.py's GAZETTEER. A script that " +
+           "hard-codes the \"thyrcross.map.json\" filename again (rather than importing GAZETTEER, or " +
+           "deriving a sibling path from it) can silently point at a different file than every other " +
+           "map script if the two ever drift. make_viewer.py was checked and does not reference the " +
+           "literal at all — it is not on the shrink list." },
+
+    { id: "maplib-helper-def", scope: ["scripts/map/*.py"], mode: "text-py",
+      re: /^\s*def\s+(zhang_suen|skeleton_path|nearest_true|seg_dist|polyline_dist|project_on_polyline|polygon_mask|save_gazetteer|load_gazetteer)\s*\(/gm,
+      home: "scripts/map/maplib.py",
+      msg: "these nine geometry/gazetteer-IO helpers (skeletonization, point/segment/polyline distance, " +
+           "polygon rasterizing, gazetteer load/save) have ONE implementation each, in maplib.py, since " +
+           "wave 3A. region_overlay.py and world_settlement.py compute similar distances under " +
+           "DIFFERENTLY-NAMED functions (poly_distance, etc.) — those are a deferred consolidation, not " +
+           "this one, and are deliberately NOT matched by these exact names; a def under one of THESE " +
+           "nine names outside maplib.py is the wave-3A drift coming back, not the deferred one." },
+
+    { id: "maprender-helper-def", scope: ["scripts/map/*.py"], mode: "text-py",
+      re: /^\s*def\s+(font|load_fonts|boxed_label|haloed_text|text_outlined|region_frame_corners)\s*\(|^(FONTS|DRIVER_STYLE|INK|HALO|WATER_ALPHA|PAINT_ALPHA)\s*=/gm,
+      // Two homes, not a split entry: WATER_ALPHA/PAINT_ALPHA are maplib.py module constants (used
+      // by the overlay alpha math there) while the rest of this label/font-rendering idiom family
+      // lives in maprender.py — one bookkeeping unit for one idiom family beats two near-identical
+      // table rows that would only ever move in lockstep.
+      home: ["scripts/map/maprender.py", "scripts/map/maplib.py"],
+      shrink: ["scripts/map/region_overlay.py", "scripts/map/world_settlement.py",
+               "scripts/map/render_player.py", "scripts/map/render_settlements.py"],
+      msg: "the map-rendering label/font/style helpers and constants have ONE implementation each, " +
+           "split across maprender.py (FONTS/INK/HALO/DRIVER_STYLE, font/load_fonts/boxed_label/" +
+           "haloed_text/text_outlined/region_frame_corners) and maplib.py (WATER_ALPHA/PAINT_ALPHA). " +
+           "The shrink-listed files keep their own DRIVER_STYLE/text_outlined/boxed_label copies until " +
+           "a deferred consolidation session; a NEW copy under any of these exact names outside that " +
+           "set is not one of them." },
+  ];
+
+  for (const entry of HOMES) {
+    let files;
+    try { files = [...new Set(entry.scope.flatMap(globFiles))]; }
+    catch (e) { err(`pass 21 (${entry.id}): ${e.message}`); continue; }
+    if (!files.length) { err(`pass 21 (${entry.id}): scope glob resolved to 0 files — a path moved or the glob rotted`); continue; }
+
+    const counts = new Map(); // repo-relative file -> match count
+    for (const rel of files) {
+      const src = fs.readFileSync(path.join(REPO_ROOT, rel), "utf8");
+      const scanned = entry.mode === "code" ? blankStringsAndComments(src)
+        : entry.mode === "text-py" ? pyStripComments(src)
+        : stripComments(src);
+      const n = (scanned.match(entry.re) || []).length;
+      if (n > 0) counts.set(rel, n);
+    }
+
+    if (entry.banned) {
+      for (const [rel, n] of counts) {
+        err(`pass 21 (${entry.id}): ${rel}: ${n} occurrence(s) of a BANNED pattern — ${entry.msg}`);
+      }
+      continue;
+    }
+
+    const homes = Array.isArray(entry.home) ? entry.home : [entry.home];
+    const shrink = entry.shrink || [];
+    const allowed = new Set([...homes, ...shrink]);
+
+    // (a) any match outside home ∪ shrink
+    for (const [rel, n] of counts) {
+      if (allowed.has(rel)) continue;
+      err(`pass 21 (${entry.id}): ${rel}: ${n} occurrence(s) of a pattern whose canonical home is ` +
+          `${homes.join(" / ")} — ${entry.msg}`);
+    }
+    // (b) every home must have >=1 match — the rot alarm
+    for (const h of homes) {
+      if (!counts.get(h)) {
+        err(`pass 21 (${entry.id}): home file ${h} has 0 matches for its own pattern — the pattern ` +
+            `rotted or the home moved. Fix the regex or update "home" before trusting this entry.`);
+      }
+    }
+    // (c) every shrink-listed file must have >=1 match — must not become fiction
+    for (const s of shrink) {
+      if (!counts.get(s)) {
+        err(`pass 21 (${entry.id}): remove ${s} from the shrink list — it must not become fiction. ` +
+            `It has 0 matches; either it was already migrated onto ${homes.join(" / ")}, or it never ` +
+            `carried this pattern and was added to the list in error.`);
       }
     }
   }

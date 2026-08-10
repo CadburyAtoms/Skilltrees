@@ -1,3 +1,4 @@
+// ⚠ SUPERSEDED (2026-08-10): items-dump-console.js is the full read — use it instead. Kept for provenance of source-materials/system-schemas/.
 /* Edha system-schema dump — PASTE INTO THE FOUNDRY CONSOLE (GM, world open). READ-ONLY.
  *
  * Purpose (2026-07-15 equipment/items initiative): repo sessions cannot see the cosmere-rpg

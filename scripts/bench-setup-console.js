@@ -102,6 +102,27 @@
   const allColors3 = Object.fromEntries(COLORS.map(c => [c, 3]));
   const LEYLINE = ["White", "Blue", "Black", "Red", "Green"];
   const DEITY = ["Destruction", "Life", "Chaos", "Fate", "Sovereignty", "Death", "Civilization", "Power", "Knowledge", "Order"];
+
+  // ---- RETIRED: the 4 named playtest PCs (scripts/playtest-setup-console.js, deleted 2026-08-10)
+  // Ben's ruling: the standalone playtest-PC script lacked THIS console's PROTECTED guard and
+  // skipBudget bypass (see ensureActor/assertNotProtected above and the createEmbeddedDocuments
+  // call further down), so it is retired rather than kept as a second, less-safe roster builder.
+  // Recorded here as comments — not wired to build, not part of this pass — so the four sheets
+  // aren't lost. A future session could promote them to real PCS entries (per-CHARACTER coverage,
+  // distinct from this file's per-TREE PCs below) if that's ever wanted again.
+  //   The Demolisher      — L7 — Scholar (heroic) / Red (leyline)   / Destruction (deity)
+  //   The Forgemaster      — L7 — Leader  (heroic) / White (leyline) / Civilization (deity)
+  //   The Outlaw           — L7 — Warrior (heroic) / Black (leyline) / Power (deity)
+  //   The Vivisectionist   — L7 — Scholar (heroic) / Green (leyline) / Life (deity)
+  // Coverage overlap, checked before deleting the file rather than assumed: every leyline/deity
+  // talent each PC carried is already exercised by this file's whole-tree Bench — <Tree> PCs below
+  // (Red/White/Black/Green leyline; Destruction/Civilization/Power/Life deity all appear in LEYLINE/
+  // DEITY above). The heroic side overlaps only PARTIALLY with "Bench — Heroic"'s curated list below
+  // — Decisive Command, Through the Fray (Leader), Vigilant Stance/Flamestance/Practiced Kata
+  // (Warrior), and Field Medicine/Vital Diagnosis (Scholar/Agent) are already there, but several
+  // Scholar picks (Erudition, Mind and Body, Strategize, Emotional Intelligence, Collected, Swift
+  // Healer) and the cross-tree Envoy pick (Composed) are NOT — a real, if narrow, coverage gap this
+  // retirement leaves open rather than silently papering over.
   const PCS = [
     ...LEYLINE.map(t => ({ name: `Bench — ${t}`, atlas: "leyline", tree: t, path: t, skills: { ...MUNDANE, [t.toLowerCase()]: 3 } })),
     ...DEITY.map(t => ({ name: `Bench — ${t}`, atlas: "deity", tree: t, path: t, skills: { ...MUNDANE, ...allColors3 } })),
