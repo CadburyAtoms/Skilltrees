@@ -61,16 +61,22 @@ function validateConnections(row, idx, file, errors, warnings, treeNameSet) {
 // The requirement model MIRRORS foundry-build.js exactly, because that is what Foundry evaluates:
 //   - every `connections` entry becomes ONE managed talent prereq whose `talents` map holds every
 //     parent -> satisfied by owning ANY one of them (OR within the group);
-//   - each prose prerequisite GROUP (split on ; and ,) contributes its own prereq -> AND across
-//     groups, OR within a group (split on " or ").
+//   - each prose prerequisite GROUP (split on ; and ,, then on " and " / " or ") contributes its
+//     own prereq -> AND across groups, OR within a group.
 // So a node is takeable iff EVERY group has at least one takeable member. A node with no groups
 // is a root. Anything never reachable from a root is dead content, whether or not it sits on a cycle.
-const prereqGroups = (s) => (!s || /^\s*[—-]\s*$/.test(String(s)))
-  ? []
-  : String(s).split(/\s*[;,]\s*|\s+and\s+/i).map(p => p.trim()).filter(Boolean)
-      .map(part => part.split(/\s+or\s+/i).map(x => x.trim()).filter(Boolean));
+//
+// `prereqGroups` is IMPORTED from foundry-build-parts.js, not redefined here. It used to be a
+// local copy that split unconditionally on /\s+and\s+/ — the separators are English words that
+// also occur INSIDE talent names, so Scholar's "Mind and Body" tore into "Mind" + "Body", neither
+// of which resolves, and `g.filter(local)` below silently DROPS a group where nothing resolves —
+// so this gate modeled FEWER requirement edges than Foundry actually evaluates (found 2026-08-10,
+// live on "Know Your Moment"'s "Mind and Body; Deduction 2+" prereq). Sharing the one function
+// with the generator (which passes it the same `isName` resolver below) means the two can never
+// drift apart again.
+const { prereqGroups } = require("./foundry-build-parts.js");
 
-function validateTreeGraph(rows, atlas, file, errors, warnings, treeKeyOf) {
+function validateTreeGraph(rows, atlas, file, errors, warnings, treeKeyOf, globalNames) {
   const byTree = {};
   for (const row of rows) {
     if (!row || typeof row !== 'object' || Array.isArray(row)) continue;
@@ -84,6 +90,12 @@ function validateTreeGraph(rows, atlas, file, errors, warnings, treeKeyOf) {
     const byName = {};
     for (const r of treeRows) byName[rowName(r).toLowerCase()] = r;
     const local = (n) => byName[String(n).trim().toLowerCase()];
+    // Resolver handed to prereqGroups, mirroring foundry-build.js's `isTreeName` (build ~line 513)
+    // EXACTLY: tree-local name first, then the atlas-wide index — every talent name across all
+    // three atlas files, not just this tree or this file — same precedence classifyToken uses.
+    // `globalNames` is the Map buildTalentGroups() already builds for validateAdversaries, reused
+    // here because it IS that same atlas-wide name universe.
+    const isName = (x) => !!local(x) || globalNames.has(String(x).trim().toLowerCase());
 
     // requirement groups per talent, in build order (connections first, then prose)
     const req = {}, connOf = {}, proseOf = {};
@@ -94,7 +106,7 @@ function validateTreeGraph(rows, atlas, file, errors, warnings, treeKeyOf) {
         .filter(local).map(n => rowName(local(n)));
       if (conn.length) groups.push(conn);
       const prose = [];
-      for (const g of prereqGroups(r.prerequisites || r.Prerequisites)) {
+      for (const g of prereqGroups(r.prerequisites || r.Prerequisites, isName)) {
         const talents = g.filter(local).map(t => rowName(local(t)));
         if (talents.length) { groups.push(talents); prose.push(...talents); }
       }
@@ -205,7 +217,7 @@ function isLoadedByApp(row, atlas) {
   return false;
 }
 
-function validateOneFile(rows, file, atlas, errors, warnings) {
+function validateOneFile(rows, file, atlas, errors, warnings, globalNames) {
   if (!Array.isArray(rows)) {
     errors.push({ file, idx: -1, msg: 'top-level value is not an array' });
     return;
@@ -217,7 +229,7 @@ function validateOneFile(rows, file, atlas, errors, warnings) {
     if (atlas === 'deity')   { return row.Deity || row.deity || null; }
     return null;
   };
-  validateTreeGraph(rows, atlas, file, errors, warnings, treeKeyOf);
+  validateTreeGraph(rows, atlas, file, errors, warnings, treeKeyOf, globalNames);
   rows.forEach((row, idx) => {
     if (!row || typeof row !== 'object' || Array.isArray(row)) {
       errors.push({ file, idx, msg: 'row is not an object' });
@@ -352,10 +364,15 @@ function main() {
     console.error('✗ ' + e.message);
     process.exit(1);
   }
-  validateOneFile(leyline, 'data/leyline.json', 'leyline', errors, warnings);
-  validateOneFile(cosmere, 'data/cosmere.json', 'heroic',  errors, warnings);
-  validateOneFile(domain,  'data/domain.json',  'deity',   errors, warnings);
-  validateAdversaries(adversaries, buildTalentGroups(leyline, domain, cosmere), errors, warnings);
+  // Built ONCE, atlas-wide (every talent name across all three files): the same name universe
+  // foundry-build.js's pass-1 `index.byName` resolves prereq fragments against (see the `isName`
+  // resolver in validateTreeGraph) and that validateAdversaries already resolved `talents` refs
+  // against — one Map, two consumers, so the two can't quietly diverge on what "resolves" means.
+  const globalNames = buildTalentGroups(leyline, domain, cosmere);
+  validateOneFile(leyline, 'data/leyline.json', 'leyline', errors, warnings, globalNames);
+  validateOneFile(cosmere, 'data/cosmere.json', 'heroic',  errors, warnings, globalNames);
+  validateOneFile(domain,  'data/domain.json',  'deity',   errors, warnings, globalNames);
+  validateAdversaries(adversaries, globalNames, errors, warnings);
 
   for (const w of warnings) {
     console.warn(`! ${w.file}${w.idx >= 0 ? ` row ${w.idx}` : ''}${w.name ? ` (${w.name})` : ''}: ${w.msg}`);
