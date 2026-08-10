@@ -48,7 +48,7 @@ jobs:
       - name: Engine syntax (node --check)
         run: |
           node --check module-src/scripts/register-skills.js
-          for f in scripts/*.js tests/*.js; do node --check "$f"; done
+          for f in scripts/*.js scripts/lib/*.js tests/*.js; do node --check "$f"; done
       - name: Validate data/*.json (schema)
         run: node scripts/validate.js
       - name: Cross-reference lint (data↔engine)

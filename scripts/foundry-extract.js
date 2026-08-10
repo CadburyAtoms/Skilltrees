@@ -24,14 +24,17 @@
 const fs = require("fs");
 const path = require("path");
 const { authorable, fingerprint, readPack, slugify } = require("./edha-pack-io.js");
+// DATA/MODROOT/ATLAS_PACK moved to scripts/lib/paths.js (2026-08-10 hygiene campaign). This
+// file's own copies were hardcoded with NO env override — unlike foundry-build.js's EDHA_DATA/
+// EDHA_MODROOT — so a session extracting into a scratch modroot would silently read/write Ben's
+// LIVE modroot instead (the exact hole the BASELINE_DIR comment below, from 2026-07-26c, already
+// half-fixed for the baseline specifically). paths.js closes it for DATA/MODROOT/ATLAS_PACK too.
+const { DATA, MODROOT, ATLAS_PACK } = require("./lib/paths.js");
 
-const DATA = "C:/Users/benhe/OneDrive/Documentos/Worldbuilding/Claude Design/skilltrees/data";
-const MODROOT = "C:/Users/benhe/AppData/Local/FoundryVTT/Data/modules/edha-content";
 const AUTHORED_DIR = `${DATA}/authored`;
 // Beside the packs it describes — matches foundry-build.js (moved 2026-07-26c; the shared
 // data-keyed location let scratch-modroot builds clobber the LIVE packs' baselines).
 const BASELINE_DIR = `${MODROOT}/.baselines`;
-const ATLAS_PACK = { leyline: "edha-leyline", deity: "edha-deity", heroic: "edha-heroic" };
 
 const arg = (process.argv[2] || "all").trim();
 const scope = arg.toLowerCase();
