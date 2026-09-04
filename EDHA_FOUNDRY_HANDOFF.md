@@ -33,6 +33,30 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-04 — THE ONGOING PROJECT: fresh-eyes review filed as items 15–25, a PM board, and the two skills that run it (DOCS-ONLY; PRs #130 / #131)
+
+A fresh-eyes review of the whole repo (artifact "Skilltrees Repo Review") found three live
+defects — the installed pre-commit hook is the stale 25-line version, `foundry-build.js:119`
+silently skips a malformed authored file, and `:423` reads heroic-path ids from a hard-coded
+`C:/tmp` path with a silent empty fallback — plus the handoff's 95%-log shape, the engine's 3,700
+unbannered lines, a cross-tree name-collision hazard in the overlay's name fallback, and the usual
+stale-doc drift. Ben made it an **ongoing project** with Claude as project manager:
+
+- **`TODO_REPO_HYGIENE.md` items 15–25** hold the substance, each with a `PM:` line (lane, model,
+  size, proof).
+- **`docs/PM_BOARD.md`** holds the scheduling state: operating rules (one Fable PM; Sonnet/Opus
+  workers; branch + PR per item; PM merges on green CI), lanes R/B/H, the measured budget model
+  and caps (Max 20x: 2 dispatches per 5 h, at most 1 Opus, quiet hours 23:00–07:00), six rulings
+  Ben answered the same day (PM-R1..R6), the ordered queue, Foundry windows, and the run log.
+- **`.claude/skills/project-manager/`** (the PM loop) and **`.claude/skills/work-item/`** (the
+  worker contract). CLAUDE.md routes "continue the project" to the former.
+- **Deploy fact recorded:** the live engine is the 2026-07-28 build — the 08-10 campaign has not
+  been deployed; `deploy-to-foundry.bat` before any bench window.
+
+Nothing here is 🤖/⚑. The first dispatched item (25) is the delta below this one.
+
+---
+
 ## 2026-09-04 — PM tooling: `pm-usage.py` + the dashboard's Project tab (item 25, remaining scope) (TOOLING-only)
 
 `docs/PM_BOARD.md` and the `project-manager`/`work-item` skills landed earlier today (PRs #130/#131);

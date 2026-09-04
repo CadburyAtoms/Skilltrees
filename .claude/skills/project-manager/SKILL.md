@@ -21,7 +21,11 @@ State lives in two files and nowhere else:
 
 1. **Workers are `Agent(model: "sonnet" | "opus")`, always with `model` passed explicitly.** Never
    `"fable"`. Never leave `model` unset.
-2. **One worker at a time.** Two only when both are lane R, docs-only, and touch disjoint files.
+2. **One worker at a time.** Two only when both are lane R, docs-only, and touch disjoint files —
+   and then only with `isolation: "worktree"`, because **a local worker shares this checkout**: it
+   runs `git checkout -b` in the same working tree you are sitting in. While a worker runs, the PM
+   touches nothing in the repo (any edit lands in the worker's branch), and board bookkeeping
+   waits until the worker has reported.
 3. **Every worker gets a branch, opens a PR, and CI must be green before you merge.** Workers never
    push to `main`. Your own bookkeeping (board, run log) rides as a commit **on the item's branch
    before you merge it** — `main` stays PR-only.

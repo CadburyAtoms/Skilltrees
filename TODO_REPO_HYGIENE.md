@@ -499,7 +499,11 @@ and no doc carries its own gate list.
   keeps it) — **ruling PM-R2**. `data/authored/.baselines/` is an orphan local dir (gitignored):
   add one line to AUTHORING_WORKFLOW.md saying it may be deleted.
 - `.claude/worktrees/` holds four clean, stale worktrees; `git worktree prune` after Ben confirms
-  none is live — **ruling PM-R2**.
+  none is live — **ruling PM-R2** (answered yes).
+- Found by the item-25 worker (2026-09-04): `scripts/pre-commit`'s dashboard-source regex is
+  missing `EDHA_RULINGS.md`, which `build-dashboard.js` already renders (the ⚖ Rulings tab); and
+  the untracked empty `screenshots/` and `src/` directories at the root are leftovers of the
+  removed atlas app — delete them locally, nothing tracks them.
 
 **Done when:** every listed correction is in, and `scripts/README.md`'s table matches `ls scripts`.
 

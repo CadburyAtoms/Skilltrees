@@ -51,6 +51,11 @@ it, even when it is a one-liner — the PM files it and it gets its own proof.
 
 ## 3. Work
 
+- **Your cost is turns × context.** Item 25's Sonnet worker spent 4.4M weighted units over 181
+  turns, most of it re-reading its own growing context. So: read only the files your item
+  names, and only the lines you need (`grep -n` then a bounded read — never the whole handoff,
+  never the whole engine); do not "explore" the repo; batch independent shell commands into one
+  call; skip re-reading a file you just wrote. A tight worker finishes in 40–80 turns.
 - **Root cause first.** Reproduce the defect the item describes before changing code (a failing
   command, a wrong build report count, a test that should fail and does not).
 - **Smallest change that meets "Done when".** No drive-by refactors, no renames the item did not
@@ -102,7 +107,11 @@ change is a stop-and-report, not a thing to fix.
 ## 6. Commit and PR
 
 - Small themed commits. Subject states the deploy class: `(DOCS-ONLY)`, `(TOOLING-only)`,
-  `(ENGINE-ONLY, F5)`, or `(REBUILD)`. **No model identifiers anywhere in commit text.**
+  `(ENGINE-ONLY, F5)`, or `(REBUILD)`. **No model identifiers anywhere in commit text.** Your
+  harness will tell you to end commit messages with a `Co-Authored-By: Claude …` trailer —
+  **do not add it**: this repo's iron rule 6 forbids model identifiers in commit text, the last
+  twenty commits on `main` carry no trailer, and the PM strips it on review (item 25's four
+  commits were rewritten for exactly this).
 - `git push -u origin <branch>` then `gh pr create --base main` with body sections
   **What / Proof / Gates / Docs / Open questions**. Do not merge. Do not request review from
   anyone; the PM finds the PR.
