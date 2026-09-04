@@ -47,16 +47,20 @@ Measured on 2026-09-04 (this session, weighted units: cache read ×0.1, cache wr
 | PM thinking + writing, per turn | ~17k | 105 turns ≈ 1.7M |
 | PM file/shell operations, whole review | ~1.1M | |
 
-Working estimates for dispatches (to be replaced by measured rows in the run log):
+Dispatch estimates — **recalibrated after the first measured worker (2026-09-04, item 25):** a
+Sonnet size-M worker cost **4.4M over 181 turns**, four times the first guess. A worker's cost is
+turns × context: every turn re-reads its own growing context, so long explorations and whole-file
+reads are what cost, not the model. The work-item skill now tells workers to read bounded ranges
+only and finish in 40–80 turns; re-measure after the next two dispatches.
 
-| Dispatch | Estimate |
-|---|---:|
-| Sonnet, size S (edit + gates + report) | 0.3–0.6M |
-| Sonnet, size M | 0.6–1.2M |
-| Opus, size S | 0.8–1.5M |
-| Opus, size M | 1.5–3M |
-| Opus, size L (two PRs, parity proofs) | 3–5M |
-| PM review + merge per item | 0.2–0.4M |
+| Dispatch | First guess | Measured / revised |
+|---|---:|---:|
+| Sonnet, size S (edit + gates + report) | 0.3–0.6M | ~1.5–2.5M (revised) |
+| Sonnet, size M | 0.6–1.2M | **4.4M measured** (item 25, 181 turns) |
+| Opus, size S | 0.8–1.5M | ~2–4M (revised) |
+| Opus, size M | 1.5–3M | ~5–8M (revised) |
+| Opus, size L (two PRs, parity proofs) | 3–5M | ~10M+ (revised; split the item instead) |
+| PM review + merge per item | 0.2–0.4M | ~0.4M (item 25 review) |
 
 **Caps (CONFIRMED by Ben 2026-09-04, Max 20x — ruling PM-R6):** at most 2 dispatches per 5-hour
 window, at most 1 of them Opus; the PM wakes on worker completion, not on a timer, with a 30-minute fallback;
@@ -85,7 +89,7 @@ Status: `queued` · `briefed` · `running` · `in-review` · `merged` · `blocke
 
 | # | Item | Lane | Model | Size | Deps | Status | PR |
 |---:|---|:-:|:-:|:-:|---|---|---|
-| 1 | 25 PM tooling (script + dashboard tab; skills landed in #131) | R | sonnet | M | — | queued | |
+| 1 | 25 PM tooling (script + dashboard tab; skills landed in #131) | R | sonnet | M | — | merged | #132 |
 | 2 | 15 Pre-commit shim + reinstall | R | sonnet | S | — | queued | |
 | 3 | 16 Build fails loudly on a broken overlay | R | sonnet | S | — | queued | |
 | 4 | 17 Heroic ids into `data/` | R | sonnet | S | — | queued | |
@@ -120,3 +124,4 @@ the PM then dispatches one `bench-run` worker (Opus) for the accumulated 🤖 se
 |---|---|---|---|---:|---|---|
 | 2026-09-04 | Review (Fable + 4× Opus survey) | fable/opus | ~45 min | 7.0M | Report published; items 15–25 filed | #130 |
 | 2026-09-04 | Board + rulings + the two skills (PM, no worker) | fable | ~30 min | — | project-manager + work-item skills written; six rulings answered | #131 |
+| 2026-09-04 18:41 | #25 PM tooling (script + Project tab) | sonnet | 15.5 min, 181 turns | 4.4M | merged after review; 4 trailers stripped; 2 out-of-scope finds → item 21 | #132 |
