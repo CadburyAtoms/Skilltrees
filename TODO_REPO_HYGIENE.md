@@ -569,7 +569,7 @@ Events tab picker and one talent per handler family still fires.
 
 ---
 
-## 25. [ ] PM project tooling: board, usage ledger, and the two skills
+## 25. [x] PM project tooling: board, usage ledger, and the two skills (2026-09-04, #132)
 
 **Why:** the ongoing-project model (2026-09-04) needs a place for scheduling state, a way to
 measure what each worker dispatch cost, and a repeatable procedure for the PM and for workers.
