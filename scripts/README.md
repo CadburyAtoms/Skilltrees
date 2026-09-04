@@ -26,7 +26,8 @@ authored data, or tests also run `lint-refs.js` + the unit suites. Bypass with
 | `validate-adversaries.js`  | Same for the adversary pack incl. baked effect keys                 |
 | `lint-refs.js`             | Data↔engine cross-reference lint: authored `edha-*` handler types/kinds/statusIds must have engine dispatch sites; engine talent-name literals must resolve to a talent (see `tests/` for the unit suites) |
 | `inspect-pack.js`          | Print a talent's rules/effects exactly as Foundry loads them        |
-| `build-dashboard.js`       | Checklist + TODO docs + art wishlist + handoff §9 + campaign canon/state + map paint flags → `EDHA_DASHBOARD.html`, the tabbed all-in-one dashboard Ben works from (Bench/Art/Worldbuilding/Engine/Repo/⚑ For Ben; `--check` = CI/pre-commit drift gate). Replaced `build-test-sheet.js` 2026-07-18 — bench marks carry over. |
+| `build-dashboard.js`       | Checklist + TODO docs + art wishlist + handoff §9 + campaign canon/state + map paint flags + `docs/PM_BOARD.md` → `EDHA_DASHBOARD.html`, the tabbed all-in-one dashboard Ben works from (Bench/Art/Worldbuilding/Engine/Repo/⚖ Rulings/Project/⚑ For Ben; `--check` = CI/pre-commit drift gate). Replaced `build-test-sheet.js` 2026-07-18 — bench marks carry over. |
+| `pm-usage.py`              | Zero-dependency weighted usage ledger for the PM workflow: reads `~/.claude/projects/<repo>/` session transcripts (+ subagent transcripts) and prints weighted totals (`--session <id>`, `--last`, `--json`). Run with `python`, not `python3`. |
 | `talent-icons.js`          | Icon assignment helper                                              |
 | `module-src-sync.js`       | Mirror the live module runtime ↔ `module-src/` in this repo         |
 | `playtest-setup-console.js`| Paste-into-Foundry console setup for playtest characters            |
