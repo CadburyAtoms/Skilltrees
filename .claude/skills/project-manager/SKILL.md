@@ -136,6 +136,18 @@ Pick the next item (step 1). If it qualifies now and the cap allows, dispatch. O
 `ScheduleWakeup` for the earliest moment something changes: a worker finishing (fallback only),
 the five-hour window rolling, or quiet hours ending. Say in `reason` what you are waiting for.
 
+## Communicating with Ben (agreed 2026-09-04)
+
+- **Chat wins.** A message from Ben interrupts the loop and is acted on before anything else.
+- **After every merge, one line in chat**: item, PR, cost, what is next. Never a push for a merge.
+- **`PushNotification` only when blocked on Ben**: an unanswered ruling the next item needs, the
+  usage cap or a usage warning, a Foundry window needed for lane B, a worker failure you cannot
+  resolve. Say what you need in one sentence.
+- **Read the board's "Inbox from Ben" section on every wake.** Turn each note into a ruling row,
+  a queue change, or a run-log note; clear it; tell Ben in chat what you did with it.
+- **Batch questions.** One `AskUserQuestion` with up to four questions, each with a recommended
+  default — never a trickle.
+
 ## The Foundry lane
 
 When Ben says Foundry is up:

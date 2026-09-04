@@ -33,6 +33,25 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-04 — pre-commit hook is now a shim; the installed copy can't go stale (item 15, TOOLING-only; PR #133)
+
+`.git/hooks/pre-commit` on this machine was still the 25-line first version (data validate only)
+while the tracked `scripts/pre-commit` had grown to ~50 lines (dashboard `--check`, `lint-refs`,
+engine tests) without a reinstall — CLAUDE.md and `scripts/README.md` both claimed the hook
+enforced those, and it didn't; CI was the only real net. Split the logic into a new
+`scripts/pre-commit-body` (marked `+x` in git); `scripts/pre-commit` is now a 3-line shim that
+`exec bash`'s the body via `git rev-parse --show-toplevel`, so a future body edit is live without
+reinstalling. Reinstalled locally via `bash scripts/install-hooks.sh` — `diff scripts/pre-commit
+.git/hooks/pre-commit` is now empty. Checked: the hook makes no `python`/`python3` calls at all,
+so the "fall back to python" bullet in the item did not apply. Dry-run proof: a probe commit on a
+throwaway branch touching `module-src/scripts/register-skills.js` triggered
+`[pre-commit] running lint-refs + engine tests…`, ran `lint-refs.js` (608 names clean) and
+`tests/run.js` (520 passed), and the commit went through. No engine or data changed on this
+branch. Updated `scripts/README.md`'s "One-time setup" paragraph and the `pre-commit` row to
+describe the shim.
+
+---
+
 ## 2026-09-04 — THE ONGOING PROJECT: fresh-eyes review filed as items 15–25, a PM board, and the two skills that run it (DOCS-ONLY; PRs #130 / #131)
 
 A fresh-eyes review of the whole repo (artifact "Skilltrees Repo Review") found three live

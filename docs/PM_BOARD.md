@@ -28,6 +28,24 @@ session resumes from this file alone.
   worker reports a behaviour change it did not expect; gates fail for a reason outside the brief;
   or the usage cap for the window is reached.
 
+## How Ben and the PM talk (agreed 2026-09-04)
+
+- **Chat is the control channel.** Anything Ben types wins over the loop: "pause", "stop",
+  "skip 20", "do 19 next", "Foundry is up", "I got a usage warning". Rulings are asked in chat,
+  batched, with the question UI.
+- **This board is the status channel.** The PM re-reads it every wake, so Ben's edits to this
+  file are picked up; marks on the generated dashboard are NOT (they live in the browser).
+- **The inbox below is the async channel.** Ben writes free text; the PM clears it into rulings,
+  queue changes, or notes on its next wake and says so in chat.
+- **Push notifications only when the PM is blocked on Ben** — a ruling, the usage cap, a Foundry
+  window, a worker failure it cannot resolve. A merge gets one line in chat, never a push.
+- **Only Ben can:** open a Foundry window, run `scripts/deploy-to-foundry.bat`, answer a ruling.
+
+## Inbox from Ben
+
+_(Write anything here — a priority change, a question, "Foundry is up tonight 8–10". The PM
+reads it every wake, acts, and clears it.)_
+
 ## Lanes
 
 | Lane | Meaning | When it can run |
@@ -55,7 +73,7 @@ only and finish in 40–80 turns; re-measure after the next two dispatches.
 
 | Dispatch | First guess | Measured / revised |
 |---|---:|---:|
-| Sonnet, size S (edit + gates + report) | 0.3–0.6M | ~1.5–2.5M (revised) |
+| Sonnet, size S (edit + gates + report) | 0.3–0.6M | **1.3M measured** (item 15, 73 turns) |
 | Sonnet, size M | 0.6–1.2M | **4.4M measured** (item 25, 181 turns) |
 | Opus, size S | 0.8–1.5M | ~2–4M (revised) |
 | Opus, size M | 1.5–3M | ~5–8M (revised) |
@@ -90,7 +108,7 @@ Status: `queued` · `briefed` · `running` · `in-review` · `merged` · `blocke
 | # | Item | Lane | Model | Size | Deps | Status | PR |
 |---:|---|:-:|:-:|:-:|---|---|---|
 | 1 | 25 PM tooling (script + dashboard tab; skills landed in #131) | R | sonnet | M | — | merged | #132 |
-| 2 | 15 Pre-commit shim + reinstall | R | sonnet | S | — | queued | |
+| 2 | 15 Pre-commit shim + reinstall | R | sonnet | S | — | merged | #133 |
 | 3 | 16 Build fails loudly on a broken overlay | R | sonnet | S | — | queued | |
 | 4 | 17 Heroic ids into `data/` | R | sonnet | S | — | queued | |
 | 5 | 20 One gate list, Windows-clean gates | R | sonnet | M | — | queued | |
@@ -125,3 +143,4 @@ the PM then dispatches one `bench-run` worker (Opus) for the accumulated 🤖 se
 | 2026-09-04 | Review (Fable + 4× Opus survey) | fable/opus | ~45 min | 7.0M | Report published; items 15–25 filed | #130 |
 | 2026-09-04 | Board + rulings + the two skills (PM, no worker) | fable | ~30 min | — | project-manager + work-item skills written; six rulings answered | #131 |
 | 2026-09-04 18:41 | #25 PM tooling (script + Project tab) | sonnet | 15.5 min, 181 turns | 4.4M | merged after review; 4 trailers stripped; 2 out-of-scope finds → item 21 | #132 |
+| 2026-09-04 19:02 | #15 Pre-commit shim + reinstall | sonnet | 7 min, 73 turns | 1.3M | merged after review; clean first pass, no trailers | #133 |
