@@ -30,6 +30,7 @@ ever need to.
 | `inspect-pack.js`          | Print a talent's rules/effects exactly as Foundry loads them        |
 | `build-dashboard.js`       | Checklist + TODO docs + art wishlist + handoff §9 + campaign canon/state + map paint flags + `docs/PM_BOARD.md` → `EDHA_DASHBOARD.html`, the tabbed all-in-one dashboard Ben works from (Bench/Art/Worldbuilding/Engine/Repo/⚖ Rulings/Project/⚑ For Ben; `--check` = CI/pre-commit drift gate). Replaced `build-test-sheet.js` 2026-07-18 — bench marks carry over. |
 | `pm-usage.py`              | Zero-dependency weighted usage ledger for the PM workflow: reads `~/.claude/projects/<repo>/` session transcripts (+ subagent transcripts) and prints weighted totals (`--session <id>`, `--last`, `--json`). Run with `python`, not `python3`. |
+| `pm-state.js`              | Projects `docs/PM_BOARD.md` (+ an optional `--live` overlay and `pm-usage.py --json` output) into the JSON the mobile PM board reads; `--inject docs/pm-board-mobile.html --out …` embeds it into the page for publishing. The board stays the source of truth; see project-manager SKILL.md §"The mobile board". |
 | `talent-icons.js`          | Icon assignment helper                                              |
 | `module-src-sync.js`       | Mirror the live module runtime ↔ `module-src/` in this repo         |
 | `playtest-setup-console.js`| Paste-into-Foundry console setup for playtest characters            |
