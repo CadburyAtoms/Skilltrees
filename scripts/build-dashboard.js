@@ -14,6 +14,7 @@
  *     FORCED_MOVEMENT_PILOT.md         → Engine tab (open verify items)
  *     TODO_REPO_HYGIENE.md             → Repo tab
  *     EDHA_RULINGS.md                  → ⚖ Rulings tab (the standing decisions doc)
+ *     docs/PM_BOARD.md                 → Project tab (static render — no marks, see below)
  *   plus two computed tabs, both jump-link mirrors that hold no marks of their own:
  *     "⚑ For Ben"     — every open ⚑ item on EVERY tab, bench included.
  *     "🤖 Bench queue" — every open 🤖 item: the work a bench run can drive.
@@ -40,7 +41,7 @@
 
 const path = require('path');
 const crypto = require('crypto');
-const { esc, inline: mdInline } = require('./lib/md.js');
+const { esc, inline: mdInline, parseMd, renderBlocks: mdRenderBlocks, slugifyAnchor } = require('./lib/md.js');
 const buildDoc = require('./lib/build-doc.js');
 
 const ROOT = path.join(__dirname, '..');
@@ -433,6 +434,21 @@ function renderBlocks(tabKey, secTitle, subTitle, blocks, counter) {
 }
 
 // ---------------------------------------------------------------------------
+// Project tab (docs/PM_BOARD.md) — the PM board has nothing to mark pass/fail on (operating
+// rules, budget tables, the queue, the run log are records, not test rows), so unlike every
+// other tab it is NOT run through parseChecklist/parseTracker/renderItem above. It is rendered
+// straight through the shared markdown engine (parseMd/renderBlocks from scripts/lib/md.js —
+// see that file's header and lint-refs.js pass 21 "md-fn-def": those four functions may not be
+// redefined outside md.js, only imported) into one static article, the same way
+// build-canon-codex.js renders lore pages. Paneled like the ⚑/🤖 mirror tabs (`.content.wide`,
+// no per-row nav) rather than the interactive tabs, for the same reason: nothing here is a row.
+// ---------------------------------------------------------------------------
+function renderProjectPane(md, srcNote) {
+  const { article } = mdRenderBlocks(parseMd(md), { idPrefix: 'pm-', slugify: slugifyAnchor, tableWrap: true });
+  return `<div class="pane" data-tab="project"><main><div class="content wide"><div class="srcnote">source: ${esc(srcNote)}</div><article class="pmboard">${article}</article></div></main></div>`;
+}
+
+// ---------------------------------------------------------------------------
 // Assemble the tab model
 // ---------------------------------------------------------------------------
 
@@ -455,6 +471,7 @@ function build() {
   const pilotMd = src('FORCED_MOVEMENT_PILOT.md');
   const rulingsMd = src('EDHA_RULINGS.md');
   const hygieneMd = src('TODO_REPO_HYGIENE.md');
+  const pmBoardMd = src('docs/PM_BOARD.md');
 
   // --- Bench (checklist), minus the DEPLOY STATE section which becomes the banner
   // GATE (2026-07-26d): the bench parser only turns "- [ ]" checkbox lines into bench items — a
@@ -629,6 +646,10 @@ function build() {
     panesHtml += renderPane(tab, '');
   }
 
+  // Project (docs/PM_BOARD.md) — a static article, not an interactive tab; see renderProjectPane.
+  tabsBarHtml += `<button class="tab" data-tab="project">Project<span class="tabcount" data-tabcount="project"></span></button>`;
+  panesHtml += renderProjectPane(pmBoardMd, `docs/PM_BOARD.md @${sources['docs/PM_BOARD.md']}`);
+
   // The two mirror panes (read-only jump links — they hold no marks and are skipped by gather())
   const renderMirror = (entries, note) => {
     let html = `<div class="srcnote">${note}</div>`;
@@ -777,6 +798,19 @@ details.log>div{background:#0e1322;border-left:3px solid var(--line);border-radi
 .row.flash{outline:2px solid var(--gold)}
 .row.hidden{display:none}
 section.hidden,section.sechidden{display:none}
+.pmboard h1{color:var(--gold);font-size:22px;border-bottom:1px solid var(--line);padding-bottom:6px;margin-top:0}
+.pmboard h2{color:var(--gold);font-size:17px;margin-top:28px;border-bottom:1px solid var(--line);padding-bottom:4px}
+.pmboard h3{font-size:14.5px;margin-top:20px;color:#ffe9a8}
+.pmboard p{margin:10px 0}
+.pmboard ul,.pmboard ol{padding-left:22px}
+.pmboard li{margin:4px 0}
+.pmboard blockquote{border-left:3px solid var(--line);margin:12px 0;padding:4px 14px;color:var(--dim);font-style:italic}
+.pmboard code{background:#0e1322;border:1px solid var(--line);border-radius:4px;padding:0 4px;font-size:12.5px}
+.pmboard .tblwrap{overflow-x:auto;margin:12px 0}
+.pmboard table{border-collapse:collapse;font-size:12.5px;width:100%}
+.pmboard th,.pmboard td{border:1px solid var(--line);padding:5px 9px;text-align:left;vertical-align:top}
+.pmboard th{background:var(--panel2);color:var(--gold)}
+.pmboard tr:nth-child(even){background:#161d30}
 #toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--gold);
 color:#141a2b;font-weight:600;padding:8px 18px;border-radius:8px;display:none;z-index:20}
 @media (max-width:900px){nav{display:none}}
