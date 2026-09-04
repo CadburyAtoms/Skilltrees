@@ -336,3 +336,254 @@ primitive (`edhaEffectTargets` / the upcoming reader named in the ratchet's comm
 `register-skills.js`, lowering `counts.userTargets` as they migrate.
 
 **Done when:** `counts.userTargets` reaches 0.
+
+---
+
+<!-- Items 15–25 were added 2026-09-04 from the fresh-eyes repo review (artifact "Skilltrees Repo
+     Review"). They are worked by the PM project — see docs/PM_BOARD.md for lane / model / order /
+     status, and .claude/skills/project-manager/ for the operating loop. Substance lives HERE;
+     scheduling state lives on the board. Each item's "PM:" line is the board's seed. -->
+
+## 15. [ ] Reinstall the pre-commit hook and make it a shim that cannot go stale
+
+**Why:** `.git/hooks/pre-commit` on Ben's machine is the 25-line first version (runs
+`validate.js` only when `data/*.json` is staged). The tracked `scripts/pre-commit` is ~50 lines and
+ALSO runs the dashboard `--check`, `lint-refs.js`, and `tests/run.js`. CLAUDE.md and
+`scripts/README.md` both say the hook enforces those. It does not — CI has been the only net.
+Found 2026-09-04 by diffing the two files.
+
+**What to do:**
+- Change `scripts/pre-commit` so the *installed* copy is a two-line shim:
+  `exec "$(git rev-parse --show-toplevel)/scripts/pre-commit-body" "$@"` (or equivalent), and move
+  the real logic into that body file. Then a future edit to the body is live without reinstalling.
+- Re-run `bash scripts/install-hooks.sh` on this machine (a local worker can — it is a repo-local
+  file, not a system setting). Verify with `diff scripts/pre-commit .git/hooks/pre-commit`.
+- Fix the `python3` calls in the hook body to fall back to `python` (Windows has no `python3`).
+
+**Done when:** the installed hook is the shim, a staged `register-skills.js` change triggers
+lint + tests locally, and the docs' claim is true again.
+
+**PM:** lane R (repo-only) · model sonnet · size S · deps none · verify: diff + a dry commit on a throwaway branch.
+
+---
+
+## 16. [ ] `foundry-build.js` must not silently skip a malformed authored file
+
+**Why:** `scripts/foundry-build.js:119` reads each `data/authored/*.json` inside
+`try { … } catch { continue; }`. A file that fails to parse is dropped without a message and the
+build ships that whole tree from the generator + side tables — 25 talents with bootstrap text and no
+automation. This is the exact swallow-and-continue pattern the 2026-08-10 campaign removed from six
+`lint-refs.js` walks, still present in the one script that writes packs. `deploy-to-foundry.bat`
+never runs `lint-refs.js`, so on Ben's machine nothing stands in front of it.
+
+**What to do:** load the authored index through `loadJson` from `scripts/lib/data.js` (it throws)
+and let the build fail loudly, naming the file. Add a pinned test (mutation-verified: a deliberately
+broken authored fixture must fail the loader) — `tests/pipeline.test.js` is the natural home if the
+loader can be exported from `foundry-build-parts.js`; otherwise a lint-refs pass-21 shrink entry.
+Prove pack parity: all five packs byte-identical before/after on a clean tree.
+
+**Done when:** a broken authored file fails `foundry-build.js` with the filename in the error, the
+regression is pinned, and the pack build is byte-identical on good input.
+
+**PM:** lane R · model sonnet · size S · deps none · verify: mutation test + pack parity (needs `classic-level`, `npm install --no-save classic-level@2.0.0`).
+
+---
+
+## 17. [ ] Move `C:/tmp/heroic_ids.json` into `data/` as a tracked snapshot
+
+**Why:** `scripts/foundry-build.js:423` reads the cosmere-rpg system's heroic-path talent ids from a
+hard-coded temp path with `catch { return {}; }`. The map resolves prose prerequisites that name a
+SYSTEM talent (e.g. "Composed", "Seek Quarry") to `Compendium.cosmere-rpg.heroic-paths.Item.<id>`.
+On CI and any other machine the map is empty, so those prerequisites silently degrade to narrative
+clauses — the CI pack build is not building what Ben's machine builds.
+
+**What to do:** commit the file as `data/system-heroic-ids.json` with a `_meta` block (system
+version, dumped-on date, the console snippet that produced it — same shape as
+`data/native-vocabulary.json`); read it from `DATA` via `loadJson`; keep an `EDHA_HEROIC_IDS` env
+override for regeneration; fail loudly if it is missing. Note in AUTHORING_WORKFLOW.md's toolbox
+that it needs re-dumping after a system upgrade.
+
+**Done when:** the CI pack build resolves the same external prerequisites as the local build
+(compare `report.narrative` counts before/after), and the temp-path read is gone.
+
+**PM:** lane R · model sonnet · size S · deps none · verify: build report diff + `validate-packs.js`.
+
+---
+
+## 18. [ ] Guard the authored overlay's name-fallback against cross-tree collisions
+
+**Why:** `foundry-build.js:122` builds `AUTHORED.byName` last-file-wins across all 21 overlays, and
+`:577` uses it whenever the docId lookup misses. Twelve talent names appear in 2–7 authored files
+(Hardy ×7, Mighty ×6, Collected ×5, Composed, Baleful, Surefooted, Shatter Focus, …). Today every
+overlay carries a matching docId so the fallback is dormant, but a docId changes on rename
+(`fid("talent:<tree>:<name>")`), and the first rename after an extract would silently apply
+another tree's overlay to the renamed talent.
+
+**What to do:** scope the fallback to the talent's own atlas+group (`_meta.group` is on every
+authored file), and print a build warning listing any name that resolves ambiguously. Pin it:
+a test that constructs two overlays sharing a name and asserts the right one is chosen and the
+collision is reported. Prove pack parity on the current data (no overlay should change hands).
+
+**Done when:** the fallback cannot cross trees, collisions are visible in the build log, and the
+packs are byte-identical before/after.
+
+**PM:** lane R · model opus · size S · deps #16 (same loader) · verify: pinned test + pack parity.
+
+---
+
+## 19. [ ] Split `EDHA_FOUNDRY_HANDOFF.md` into a current reference and a dated changelog
+
+**Why:** 10,157 lines / 1 MB; 88 dated delta headers; the §1–§10 reference a cold session needs
+begins at line 9,696 and is ~460 lines. ~95% of the file is log, with no table of contents, and
+§7.0 / §9a–§9g are kept inline under "historical, since reversed" warnings. Every session that
+follows "read top to bottom" pays for this first.
+
+**What to do (shape needs Ben's OK before the cut — see docs/PM_BOARD.md rulings):**
+- `EDHA_FOUNDRY_HANDOFF.md` becomes the REFERENCE: the two-markers section, §1–§10 rewritten to
+  be true today (fold in what the deltas changed; retire §7.0 and §9a–§9g to the archive), a table
+  of contents, and a pointer to the changelog. Target ≤ 800 lines.
+- `docs/handoff-changelog/2026-MM.md` (one file per month, newest first inside) receives the dated
+  deltas verbatim. `HANDOFF_ARCHIVE.md` folds into the same folder.
+- `scripts/build-dashboard.js` reads handoff §9 (Engine tab) — re-point it and keep `--check`
+  green. CLAUDE.md's map row and the delta rule (iron rule 5: "a dated delta at the TOP of the
+  handoff") change to name the changelog.
+- Keep the split reviewable: the reference rewrite is one PR; the mechanical move is another.
+
+**Done when:** a new session can read the reference in one sitting, `git log --follow` still
+finds every delta, and CI is green.
+
+**PM:** lane R · model opus · size L (two PRs) · deps ruling PM-R1 · verify: dashboard `--check`, a cold-read by a Sonnet worker that answers ten questions from the reference alone.
+
+---
+
+## 20. [ ] One gate list, and gates that pass on Windows
+
+**Why:** the gate list exists in five places (`package.json`, README, CLAUDE.md, `scripts/README.md`,
+`validate.yml`) and they disagree: `npm run gates` omits `lint_map.py` and the pack build, each doc
+carries its own prose explaining the gap, and the workflow's `paths:` filter is a sixth
+hand-maintained list. Separately, every gate invokes `python3`, which is not on Ben's PATH, so
+`npm run gates` always exits non-zero here even when every check passes.
+
+**What to do:**
+- Add `scripts/gates.js` (or a `gates:ci` npm script) that runs the ordered list, resolves the
+  Python interpreter (`python3` → `python` → `py -3`), and prints one PASS/FAIL table. Make
+  `validate.yml` call it, so CI and local runs share the list. Keep the optional-dependency gates
+  (`lint_map`, pack build) behind a `--ci` flag that CI passes.
+- Replace the five copies with one sentence each pointing at the runner.
+
+**Done when:** `npm run gates` exits 0 on Ben's machine on a clean tree, CI uses the same runner,
+and no doc carries its own gate list.
+
+**PM:** lane R · model sonnet · size M · deps none · verify: run on this machine + a CI run on the PR.
+
+---
+
+## 21. [ ] Stale-doc sweep from the 2026-09-04 review
+
+**Why:** each of these costs a session a wrong assumption.
+
+**What to do:**
+- `scripts/README.md`: document the 22 present-but-missing scripts (all of `lib/`, `map/` by
+  pointer, `bench-setup-console.js`, `dump-native-vocabulary.js`, `check-2b-classification.js`,
+  `author-rules.js`, `handler-schemas.js`, the three doc builders, `sync-art.js`,
+  `deploy-to-foundry.bat`, the two ratchet JSONs, …) and drop `playtest-setup-console.js`
+  (deleted 2026-08-10).
+- CLAUDE.md: "11k-line engine" → the real number (state it as approximate and dated); the overlay
+  field list is SEVEN keys (`docId` is on every entry — `lint-refs.js:50` is the authority).
+- `TODO_REPO_HYGIENE.md` items 4 and 5: same 11k → 19.5k correction.
+- `.claude/skills/talent-balance/SKILL.md`: remove the duplicated frontmatter block.
+- `EDHA_EDITABILITY_AUDIT.md` (2,150 lines) says on line 4 to retire itself when the migration
+  closes; it closed 2026-07-26. Move to `docs/archive/` with a pointer stub — **needs Ben's OK
+  (ruling PM-R2)**.
+- `Actor pages design review/` shipped 2026-07-12c; move to `docs/archive/` (or delete — history
+  keeps it) — **ruling PM-R2**. `data/authored/.baselines/` is an orphan local dir (gitignored):
+  add one line to AUTHORING_WORKFLOW.md saying it may be deleted.
+- `.claude/worktrees/` holds four clean, stale worktrees; `git worktree prune` after Ben confirms
+  none is live — **ruling PM-R2**.
+
+**Done when:** every listed correction is in, and `scripts/README.md`'s table matches `ls scripts`.
+
+**PM:** lane R · model sonnet · size S · deps ruling PM-R2 for the moves · verify: a script that diffs README rows against `git ls-files scripts`.
+
+---
+
+## 22. [ ] Structure data: park the unbuilt Radiant rows and normalise the three key dialects
+
+**Why:** 225 of `data/cosmere.json`'s 375 rows are Radiant orders the build never reads (60% of
+the file). The three structure files spell the same concept three ways (`name` / `Talent Name` /
+`Name`, `flavor` / `Flavor Text` / absent) and `domain.json` mixes cases inside one row; the whole
+reconciliation is `normRow` in `scripts/lib/data.js`, so `validate.js` cannot check real fields.
+
+**What to do:**
+- First check every consumer of the Radiant rows (`build-player-primer.js` reads the atlas JSONs —
+  does the primer show the orders?). If nothing reads them, move them to
+  `source-materials/radiant-orders.json`; if the primer does, leave them and record why here.
+  **Ruling PM-R3.**
+- Normalise keys to the lowercase leyline dialect in all three files, delete the aliases from
+  `normRow`, tighten `validate.js` to the real field names. The docId hash uses the VALUE of the
+  name, not the key, so ids do not move — prove it with a byte-identical pack build before/after.
+
+**Done when:** one dialect, `normRow` is a pass-through or gone, and the packs are byte-identical.
+
+**PM:** lane R · model opus · size M · deps ruling PM-R3 · verify: pack parity + `validate.js` + primer `--check`.
+
+---
+
+## 23. [ ] Banner the 3,700 unbannered engine lines (prep for #4)
+
+**Why:** between the Red tree section (~6,599) and Destruction (~10,660), `register-skills.js`
+carries defence buffs, the talent budget, sheet slots, the character-creation wizard, sheet QoL,
+talent sync, adversary sync, temp HP, summons, injuries, triggered effects, targeting/AoE, and
+bursts with no `/* === */` banner. A cold reader cannot find them from the section index, and the
+#4 split has no seam names to use.
+
+**What to do:** comment-only change — add a banner per subsystem in the house style, list the
+primitives each owns, and add the sections to `ENGINE_INDEX.md`. Zero behaviour change: `node
+--check`, lint pass 20/21 unchanged, `tests/run.js` green, and `git diff --stat` shows only
+comment lines (verify with the comment stripper: `codeOnly(before) === codeOnly(after)`).
+
+**Done when:** every top-level function sits under a banner and the index names every section.
+
+**PM:** lane R · model opus · size M · deps none · verify: stripped-source equality + gates.
+
+---
+
+## 24. [ ] Table-driven handler registry (the first real cut of #4)
+
+**Why:** `edhaRegisterNativeEventSystem` is 2,537 lines of 103 sequential
+`registerItemEventType` / `registerItemEventHandlerType` calls. Because it is code, not data,
+`scripts/handler-schemas.js` recovers each handler's field schema by parsing engine source text,
+and lint pass 9 is only as good as that parser.
+
+**What to do:** hoist the definitions into `EDHA_EVENT_TYPES` / `EDHA_HANDLER_TYPES` arrays (still
+in the one engine file — iron rule 2a) and register them in one loop. Expose the arrays on the
+`edha` API and make `handler-schemas.js` evaluate them through the test harness instead of
+regex-parsing source. Behaviour must be identical: same registration order, same labels, same
+schema fields — pin a test that snapshots (type → field names) before and after.
+
+**Done when:** the loop is the only registration site, pass 9 reads the table, and the snapshot
+test is green. **Then 🤖 bench:** a smoke pass that every handler type still appears in the
+Events tab picker and one talent per handler family still fires.
+
+**PM:** lane B (bench after) · model opus · size L · deps #23 · verify: snapshot test + a bench-run smoke section.
+
+---
+
+## 25. [ ] PM project tooling: board, usage ledger, and the two skills
+
+**Why:** the ongoing-project model (2026-09-04) needs a place for scheduling state, a way to
+measure what each worker dispatch cost, and a repeatable procedure for the PM and for workers.
+
+**What to do:**
+- `docs/PM_BOARD.md` — queue, lanes, run log, budget config (seeded 2026-09-04 by the PM).
+- `scripts/pm-usage.py` — read the session transcripts under `~/.claude/projects/<repo>/` and
+  print weighted usage per session and per subagent (weights: cache read 0.1×, cache write 2×,
+  output 5×). The PM appends the number to the board's run log after every dispatch.
+- `.claude/skills/project-manager/SKILL.md` — the PM loop (Fable only).
+- `.claude/skills/work-item/SKILL.md` — the worker contract (Sonnet/Opus).
+- Wire the board into the dashboard as its own tab (parser + `--check`).
+- CLAUDE.md: a routing line — "continue the project" → `project-manager`.
+
+**Done when:** a fresh PM session can resume from the board alone, and the dashboard shows it.
+
+**PM:** lane R · model sonnet for the script + dashboard tab, PM writes the skills · size M · deps none.
