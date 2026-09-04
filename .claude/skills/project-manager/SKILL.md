@@ -37,6 +37,10 @@ State lives in two files and nowhere else:
 6. **Stop and ask Ben** only for: an unanswered ruling the next item depends on; a worker reporting
    a behaviour change it did not expect; a gate failing for a reason outside the brief; the cap
    being reached. Everything else is your call — make it and write it on the board.
+7. **Trust files, not memory.** Your context is finite and gets summarised; a summary turns a
+   verified fact into a remembered one. Before any dispatch or merge: re-read the board, run
+   `git status --short`, list open PRs. If a compaction summary appears in your context, treat
+   every claim in it as unverified until you have checked it against disk.
 
 ## The loop
 
@@ -135,6 +139,23 @@ usage, outcome. Handoff delta if the worker's is missing or wrong. This bookkeep
 Pick the next item (step 1). If it qualifies now and the cap allows, dispatch. Otherwise
 `ScheduleWakeup` for the earliest moment something changes: a worker finishing (fallback only),
 the five-hour window rolling, or quiet hours ending. Say in `reason` what you are waiting for.
+
+## Session rotation (agreed 2026-09-04)
+
+One PM session per day, never two at once. The app's scheduled task **`edha-pm-daily`**
+(`~/.claude/scheduled-tasks/edha-pm-daily/SKILL.md`, cron `0 7 * * *` local, fires ~07:02) starts
+a **fresh** session each morning that changes into the repo, invokes this skill, and resumes from
+the board. Ben interacts with whichever session is current by opening it from his chat history.
+Therefore:
+- **Stop your loop at your last wake before 07:00** (`ScheduleWakeup` with `stop: true`), after a
+  one-line handoff in the board's run log ("<date> PM handoff: <what is running / queued next>").
+  If nothing can be dispatched before then anyway (cap reached, quiet hours), stop earlier — an
+  idle loop only spends context.
+- **A new session verifies it is alone**: `gh pr list --state open` and the board's queue must
+  agree with what is on disk; if a worker appears to be `running` from a session that no longer
+  exists, set it back to `queued` and say so.
+- The scheduled task runs only while the app is open; if it missed 07:00 it runs at next launch.
+  It uses the app's default model, which must remain Fable.
 
 ## Communicating with Ben (agreed 2026-09-04)
 

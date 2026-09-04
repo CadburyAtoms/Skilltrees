@@ -24,6 +24,9 @@ session resumes from this file alone.
   **lane B** item and waits for a Foundry window.
 - **Every merged item** gets: the TODO item checked `[x]` with the PR, a run-log row here, and a
   dated delta in the handoff (or the changelog, after item 19).
+- **One PM session per day.** The app's scheduled task `edha-pm-daily` starts a fresh session at
+  ~07:02 each morning; the previous one stops its loop before then. Ben opens whichever session is
+  current from his chat history.
 - **Stop and ask Ben** when: a ruling below is unanswered and the next item depends on it; a
   worker reports a behaviour change it did not expect; gates fail for a reason outside the brief;
   or the usage cap for the window is reached.
@@ -144,3 +147,4 @@ the PM then dispatches one `bench-run` worker (Opus) for the accumulated 🤖 se
 | 2026-09-04 | Board + rulings + the two skills (PM, no worker) | fable | ~30 min | — | project-manager + work-item skills written; six rulings answered | #131 |
 | 2026-09-04 18:41 | #25 PM tooling (script + Project tab) | sonnet | 15.5 min, 181 turns | 4.4M | merged after review; 4 trailers stripped; 2 out-of-scope finds → item 21 | #132 |
 | 2026-09-04 19:02 | #15 Pre-commit shim + reinstall | sonnet | 7 min, 73 turns | 1.3M | merged after review; clean first pass, no trailers | #133 |
+| 2026-09-04 19:45 | PM handoff | fable | — | — | loop stopped: window cap reached (2/2), quiet hours next; `edha-pm-daily` created, first run 2026-09-05 ~07:02; next dispatch is #16 (sonnet, S) | #134 |
