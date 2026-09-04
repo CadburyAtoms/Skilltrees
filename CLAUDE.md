@@ -29,7 +29,9 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
 > when Ben reports **what happened at the table** after play, invoke `session-debrief`. For
 > writing, deepening, or fixing **world/lore canon** — a nation's culture, a god's rites, a
 > cosmology mechanic, "the logic of X doesn't make sense," a `TODO_WORLDBUILDING` W-item —
-> invoke `lore-forge`.
+> invoke `lore-forge`. **For the ongoing repo project (since 2026-09-04) — "continue the
+> project", "check the board", "dispatch the next item" — invoke `project-manager`**; it resumes
+> from `docs/PM_BOARD.md`. Fable runs it; the workers it dispatches invoke `work-item`.
 
 ## The map — read these, don't re-derive
 
@@ -49,6 +51,7 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
 | `EDHA_CAMPAIGN_STATE.md` | THE play ledger — what has *happened* (player knowledge, thread status, NPC dispositions, clocks, session log), vs. canon's what is *true*. session-forge reads it first; session-debrief writes it after play. |
 | `.claude/skills/session-forge/` | The build-a-session workflow (state → geography-first → premise stress-test → batched rulings → scenes/stats → clue ledger → close-out), plus `RUN_SHEET_TEMPLATE.md`, the session-1 `CASE_STUDY.md`, and `MAP_CHEATSHEET.md`. |
 | `.claude/skills/session-debrief/` | Ben's post-play table notes → updated state doc, table rulings into canon §9, consequences + next-session seeds. The campaign-play counterpart of test-pass-fixes. |
+| `docs/PM_BOARD.md` + `.claude/skills/project-manager/` + `.claude/skills/work-item/` | **The ongoing repo project** (started 2026-09-04 from the fresh-eyes review). The board is the scheduling state — queue, lanes, budget caps, rulings, run log; substance stays in `TODO_REPO_HYGIENE.md`. `project-manager` is the PM loop (Fable only: brief → dispatch one Sonnet/Opus worker → review checklist → merge on green CI → board). `work-item` is the worker contract (branch per item, proofs, gates, docs, PR, fixed-shape report; never merges). |
 | `.claude/skills/lore-forge/` | The author/audit-world-canon workflow (load load-bearing canon → derive every claim from a named ruling → logic-audit against the death model → batch design questions as a GATE and wait → write at the §5b depth standard → sweep dependents → close-out), plus `CASE_STUDY.md` (the famine layer-1 correction worked through). The worldbuilding counterpart of session-forge. |
 | **Game-design skills** (added to the repo 2026-07-24 — they lived only in Ben's user-level `~/.claude/skills/` and so were invisible to a fresh clone and to CI) | `leyline-revision-guide` + `deity-revision-guide` — the DESIGN standards for the two tree families (color/deity identity, action-type mix, cost curves); `talent-balance` — is this talent balanced/well-named; `phrasing-verifier` — Stormlight-canon phrasing conventions for card text; `cosmere-canon-reference` — the lookup file for canon terms, conditions, skills, capitalization. Distinct from `leyline-tree-authoring`, which is the ENGINEERING standard (wiring, events-vs-effects, audit.py). Design question → these. Wiring question → that. |
 

@@ -3,8 +3,8 @@
 The scheduling state for the project that works `TODO_REPO_HYGIENE.md` items 4–25 (and whatever
 gets added). **Substance lives in the TODO file; this board holds only order, ownership, status,
 cost, and the decisions the PM is waiting on.** The operating procedure is
-`.claude/skills/project-manager/` (PM) and `.claude/skills/work-item/` (workers) — once item 25
-lands. A fresh PM session resumes from this file alone.
+`.claude/skills/project-manager/` (PM) and `.claude/skills/work-item/` (workers). A fresh PM
+session resumes from this file alone.
 
 ## Operating rules (the short form — the skill carries the long form)
 
@@ -58,22 +58,26 @@ Working estimates for dispatches (to be replaced by measured rows in the run log
 | Opus, size L (two PRs, parity proofs) | 3–5M |
 | PM review + merge per item | 0.2–0.4M |
 
-**Caps (PROPOSED — waiting on ruling PM-R6):** at most 2 dispatches per 5-hour window, at most
-1 of them Opus; the PM wakes on worker completion, not on a timer, with a 30-minute fallback;
+**Caps (CONFIRMED by Ben 2026-09-04, Max 20x — ruling PM-R6):** at most 2 dispatches per 5-hour
+window, at most 1 of them Opus; the PM wakes on worker completion, not on a timer, with a 30-minute fallback;
 no dispatch between 23:00 and 07:00 America/New_York unless it is a cloud routine; hard stop the
 moment Ben reports a usage warning. Reserve roughly a third of the weekly allowance for Ben's own
 sessions.
 
-## Rulings the PM is waiting on
+## Rulings
 
-| Id | Question | Recommended default | Blocks |
-|---|---|---|---|
-| **PM-R1** | Handoff split shape: reference stays at `EDHA_FOUNDRY_HANDOFF.md` (≤800 lines, with TOC); dated deltas move verbatim to `docs/handoff-changelog/2026-MM.md`; `HANDOFF_ARCHIVE.md` folds in. | Yes as stated | #19 |
-| **PM-R2** | Archive moves: `EDHA_EDITABILITY_AUDIT.md` and `Actor pages design review/` to `docs/archive/` with pointer stubs; prune the four clean stale worktrees under `.claude/worktrees/`. | Yes to all three | #21 (partly) |
-| **PM-R3** | The 225 Radiant-order rows in `data/cosmere.json`: park in `source-materials/` if no consumer reads them. | Park them | #22 |
-| **PM-R4** | Branch policy: PR per item, PM merges after green CI (vs. direct to `main`). | PR per item | every dispatch |
-| **PM-R5** | Cloud lane: allow scheduled cloud routines (Sonnet, fresh GitHub checkout, PR output) for lane-R docs work overnight, so progress does not depend on the app being open. | Yes, docs-only items, one routine, nightly | optional |
-| **PM-R6** | Usage tier and caps: which plan, and are the proposed caps right. | The caps above | every dispatch |
+Answered by Ben on 2026-09-04 (all six, as recommended). Kept here so a worker can quote them.
+
+| Id | Question | Ruling |
+|---|---|---|
+| **PM-R1** | Handoff split shape | **Yes.** Reference stays at `EDHA_FOUNDRY_HANDOFF.md` (≤800 lines, with TOC); dated deltas move verbatim to `docs/handoff-changelog/2026-MM.md`; `HANDOFF_ARCHIVE.md` folds in. |
+| **PM-R2** | Archive moves | **Yes.** `EDHA_EDITABILITY_AUDIT.md` and `Actor pages design review/` → `docs/archive/` with pointer stubs; prune the four clean stale worktrees under `.claude/worktrees/`. |
+| **PM-R3** | Radiant-order rows | **Park them** in `source-materials/` if no consumer reads them (the worker checks the primer first). |
+| **PM-R4** | Branch policy | **PR per item; the PM merges after green CI.** Workers never push to `main`. |
+| **PM-R5** | Cloud lane | **Yes, docs-only items**, one nightly Sonnet routine, PR output, PM reviews next wake. |
+| **PM-R6** | Usage tier and caps | **Max 20x; the caps above stand.** |
+
+New rulings go in this table with a `(waiting)` mark; the PM asks Ben in one batch, not one at a time.
 
 ## Queue (in order)
 
@@ -81,15 +85,15 @@ Status: `queued` · `briefed` · `running` · `in-review` · `merged` · `blocke
 
 | # | Item | Lane | Model | Size | Deps | Status | PR |
 |---:|---|:-:|:-:|:-:|---|---|---|
-| 1 | 25 PM tooling (script + dashboard tab; PM writes skills) | R | sonnet | M | — | queued | |
+| 1 | 25 PM tooling (script + dashboard tab; skills landed in #131) | R | sonnet | M | — | queued | |
 | 2 | 15 Pre-commit shim + reinstall | R | sonnet | S | — | queued | |
 | 3 | 16 Build fails loudly on a broken overlay | R | sonnet | S | — | queued | |
 | 4 | 17 Heroic ids into `data/` | R | sonnet | S | — | queued | |
 | 5 | 20 One gate list, Windows-clean gates | R | sonnet | M | — | queued | |
-| 6 | 21 Stale-doc sweep | R | sonnet | S | PM-R2 for the moves | queued | |
+| 6 | 21 Stale-doc sweep | R | sonnet | S | PM-R2 ✓ | queued | |
 | 7 | 18 Overlay name-collision guard | R | opus | S | #16 | queued | |
-| 8 | 19a Handoff reference rewrite | R | opus | L | PM-R1 | blocked(PM-R1) | |
-| 9 | 19b Handoff changelog move + dashboard re-point | R | opus | M | 19a | blocked(PM-R1) | |
+| 8 | 19a Handoff reference rewrite | R | opus | L | PM-R1 ✓ | queued | |
+| 9 | 19b Handoff changelog move + dashboard re-point | R | opus | M | 19a | queued | |
 | 10 | 5 Hook-firing test driver | R | opus | L | — | queued | |
 | 11 | 23 Banner the unbannered engine lines | R | opus | M | — | queued | |
 | 12 | 24 Table-driven handler registry | B | opus | L | #23 | queued | |
@@ -98,18 +102,21 @@ Status: `queued` · `briefed` · `running` · `in-review` · `merged` · `blocke
 | 15 | 14 `userTargets` sites onto the reader | B | opus | S | — | queued | |
 | 16 | 12 `edhaDefBuffGmGate` at the 20 sites | B | opus | M | — | queued | |
 | 17 | 10 Disposition fail-open backlog (76 sites, batched) | B | opus | L | — | queued | |
-| 18 | 22 Radiant rows + key dialects | R | opus | M | PM-R3 | blocked(PM-R3) | |
+| 18 | 22 Radiant rows + key dialects | R | opus | M | PM-R3 ✓ | queued | |
 | 19 | 4 Engine split into concatenated sources | R | opus | L | #23, #24 | queued | |
 | 20 | 9 Map fork consolidation | H | opus | M | bridge/MST rulings batch | blocked(rulings) | |
 | — | 2 History purge · 3 LICENSE | H | Ben | — | — | Ben-only | |
 
 ## Foundry windows
 
-None scheduled. Lane-B items merge to `main` but stay `bench-pending` until Ben opens a window;
+None scheduled. **Deploy fact (2026-09-04):** `module-src-sync.js status` reports the live engine is
+the 2026-07-28 version — the 2026-08-10 hygiene campaign (R-60..R-67, live dice math) has not been
+deployed. Ben must run `scripts/deploy-to-foundry.bat` before any bench run is meaningful. Lane-B items merge to `main` but stay `bench-pending` until Ben opens a window;
 the PM then dispatches one `bench-run` worker (Opus) for the accumulated 🤖 sections.
 
 ## Run log
 
 | Date | Item | Model | Duration | Weighted usage | Outcome | PR |
 |---|---|---|---|---:|---|---|
-| 2026-09-04 | Review (Fable + 4× Opus survey) | fable/opus | ~45 min | 7.0M | Report published; items 15–25 filed | — |
+| 2026-09-04 | Review (Fable + 4× Opus survey) | fable/opus | ~45 min | 7.0M | Report published; items 15–25 filed | #130 |
+| 2026-09-04 | Board + rulings + the two skills (PM, no worker) | fable | ~30 min | — | project-manager + work-item skills written; six rulings answered | #131 |
