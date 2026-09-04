@@ -344,7 +344,7 @@ primitive (`edhaEffectTargets` / the upcoming reader named in the ratchet's comm
      status, and .claude/skills/project-manager/ for the operating loop. Substance lives HERE;
      scheduling state lives on the board. Each item's "PM:" line is the board's seed. -->
 
-## 15. [x] Reinstall the pre-commit hook and make it a shim that cannot go stale (2026-09-04, PR #PENDING)
+## 15. [x] Reinstall the pre-commit hook and make it a shim that cannot go stale (2026-09-04, PR #133)
 
 **Why:** `.git/hooks/pre-commit` on Ben's machine is the 25-line first version (runs
 `validate.js` only when `data/*.json` is staged). The tracked `scripts/pre-commit` is ~50 lines and

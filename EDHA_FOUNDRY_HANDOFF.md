@@ -33,7 +33,7 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
-## 2026-09-04 — pre-commit hook is now a shim; the installed copy can't go stale (item 15, TOOLING-only; PR #PENDING)
+## 2026-09-04 — pre-commit hook is now a shim; the installed copy can't go stale (item 15, TOOLING-only; PR #133)
 
 `.git/hooks/pre-commit` on this machine was still the 25-line first version (data validate only)
 while the tracked `scripts/pre-commit` had grown to ~50 lines (dashboard `--check`, `lint-refs`,
