@@ -9,10 +9,12 @@ Foundry open/closed, etc.) is the toolbox table in `AUTHORING_WORKFLOW.md`.
 bash scripts/install-hooks.sh
 ```
 
-Installs `scripts/pre-commit` as `.git/hooks/pre-commit`. From then on, any commit that
-touches `data/*.json` is gated by `scripts/validate.js`, and commits touching the engine,
-authored data, or tests also run `lint-refs.js` + the unit suites. Bypass with
-`git commit --no-verify` if you ever need to.
+Installs `scripts/pre-commit` (a thin shim) as `.git/hooks/pre-commit`. The shim execs
+`scripts/pre-commit-body`, so an edit to the body is live on your very next commit — you only
+need to re-run this if the shim itself changes. From then on, any commit that touches
+`data/*.json` is gated by `scripts/validate.js`, and commits touching the engine, authored data,
+or tests also run `lint-refs.js` + the unit suites. Bypass with `git commit --no-verify` if you
+ever need to.
 
 ## Files
 
@@ -33,7 +35,7 @@ authored data, or tests also run `lint-refs.js` + the unit suites. Bypass with
 | `playtest-setup-console.js`| Paste-into-Foundry console setup for playtest characters            |
 | `schema-dump-console.js`   | Paste-into-Foundry console dump of the system's item/currency schemas (read-only) → commit to `source-materials/system-schemas/`; unblocks the §9h equipment work |
 | `run-playtest-build.bat`   | One-click deity+heroic build + validate → `scripts/build-log.txt`   |
-| `pre-commit`               | The actual hook script. Copied into `.git/hooks/` by the installer  |
+| `pre-commit`               | Thin shim copied into `.git/hooks/` by the installer — execs `pre-commit-body` (data validate, dashboard `--check`, lint-refs + engine tests) so edits to the body are live without reinstalling |
 | `install-hooks.sh`         | Copies `pre-commit` into `.git/hooks/` and marks it executable      |
 
 > The old GitHub Pages atlas publish flow (`publish.sh` / `publish.bat`) was removed
