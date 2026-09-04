@@ -33,6 +33,40 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-04 — PM tooling: `pm-usage.py` + the dashboard's Project tab (item 25, remaining scope) (TOOLING-only)
+
+`docs/PM_BOARD.md` and the `project-manager`/`work-item` skills landed earlier today (PRs #130/#131);
+this closes the rest of TODO_REPO_HYGIENE.md item 25:
+
+- **`scripts/pm-usage.py`** — zero-dependency Python 3 (stdlib only; runs under `python`, not
+  `python3`) that reads Claude Code transcripts under `~/.claude/projects/<project-dir>/` (derived
+  from cwd the same way Claude Code names the folder — every non-alphanumeric char → `-`;
+  `--project-dir` overrides) plus `<session>/subagents/**/*.jsonl`, and prints weighted usage
+  (input ×1, cache read ×0.1, cache write ×2, output ×5) summed over every `type=="assistant"`
+  line's `message.usage`. Default: newest 10 sessions as a table. `--session <id>` (full id or a
+  unique prefix): one session's per-subagent breakdown (model, turns, weighted). `--last`: the
+  most recently modified session's summary + subagents, one line each — the call the PM makes
+  after every dispatch. `--json` on any mode. This is the PM's own usage ledger, so transcript
+  content is only ever summed/counted, never parsed as instructions.
+- **Dashboard "Project" tab** — `scripts/build-dashboard.js` now reads `docs/PM_BOARD.md` and
+  renders it as a static article (headings/tables/lists) via the shared `parseMd`/`renderBlocks`
+  from `scripts/lib/md.js` — NOT the checklist/tracker item parsers the other tabs use, because
+  the board has nothing to mark pass/fail on. Paneled like the ⚑/🤖 mirror tabs (no per-row nav,
+  holds no marks). `docs/PM_BOARD.md` added to: the pre-commit dashboard-source regex
+  (`scripts/pre-commit`), `.github/workflows/validate.yml`'s `push`/`pull_request` path filters,
+  and `scripts/README.md`'s `build-dashboard.js` row.
+- **Proof (snapshot):** committed dashboard was confirmed up to date before this change
+  (`node scripts/build-dashboard.js --check` on a scratch checkout of the pre-change HEAD →
+  `dashboard up to date ✓`; blob hash `4ec1a3a327891a79bf04b5f31fc5349c1e710002`). After adding the
+  Project tab and rebuilding, the interactive-item counter is unchanged (388 rows before and
+  after — the new tab adds zero `.row[data-id]` items) and `git diff --stat` on
+  `EDHA_DASHBOARD.html` shows only the intended additions (tab button, `.pmboard` CSS, the
+  rendered article, and the recomputed content stamp).
+
+Nothing here is 🤖/⚑ — no Foundry involvement, repo-side only.
+
+---
+
 ## 2026-08-10 — THE HYGIENE CAMPAIGN: **~2,400 duplicated lines consolidated across all four code surfaces, ten engine drift families unified behind nine new rulings, and TWO new lint passes that make the duplication one-way.** Twenty-one commits. ENGINE portions → **⟳ sync the module + F5**; the pack-rebuild list stays **EMPTY** (no authored data touched).
 
 A repo-wide review found the pattern behind "Opus rebuilds the wheel": the canonical modules
