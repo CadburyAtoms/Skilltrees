@@ -2088,6 +2088,18 @@ function edhaCombatEndGuard(endedCombat) {
   } catch (e) { /* no combats collection (out of combat, or a headless load) → guard is empty */ }
   return keys;
 }
+/* Is an `edha-content` flag key actually SET on this actor? Dotted keys included ("lists.omens",
+ * "markedBy.insight") — `Document#getFlag` resolves those through `foundry.utils.getProperty`, and
+ * returns `undefined` when the whole scope is absent. PURE apart from the read, so the skip-absent
+ * contract is pinned without Foundry (tests/scene-reset-reentry.test.js).
+ * FAIL-SAFE DIRECTION, stated: every uncertain answer is TRUE — no readable `getFlag`, or a throw —
+ * so the write still happens and the worst case is the old behaviour, never stale state left behind.
+ * A stored `null` / `false` / `0` is PRESENT and must still be cleared; only `undefined` is absent. */
+function edhaFlagKeyPresent(actor, key) {
+  if (typeof actor?.getFlag !== "function") return true;
+  try { return actor.getFlag("edha-content", key) !== undefined; }
+  catch (e) { return true; }
+}
 // True when this actor is still fighting in ANOTHER combat, so this combat's reset must leave it alone.
 function edhaStillFightingElsewhere(actor, guard) {
   if (!actor || !guard || !guard.size) return false;
@@ -2134,7 +2146,25 @@ function edhaStillFightingElsewhere(actor, guard) {
  *     and the claim releases only once the winner's `extra` has settled — by which time the flag
  *     the second sweep would have re-read is gone.
  * Both are per-client Sets; the ONE-applier half is `edhaDefBuffGmGate` above, unchanged (07-27b's
- * other half was two GM clients, one applier each). */
+ * other half was two GM clients, one applier each).
+ *
+ * ⛑ AN UNSET OF AN ABSENT FLAG IS NOT FREE — IT IS A FULL DOCUMENT UPDATE (bench run 24). Every
+ * `Document#unsetFlag` ends in `this.update({[`flags.<scope>.<head>.-=<tail>`]: null})` whether or
+ * not the key is there, so R-60's directory∪canvas population turned one combat end into ~40 flag
+ * writes × EVERY ACTOR IN THE WORLD. Measured on a 51-actor world: it left an empty `lists: {}` and
+ * `markedBy: {}` on 33 actors that had NEITHER (a dotted `-=` delete creates its parent object on
+ * the way past — that is `flags.edha-content.lists.-=omens` expanding), `Tem parinaem` and
+ * `Soggy Bottom` included, and the volume tripped Foundry's own socket limiter — *"Exceeded maximum
+ * number of update-actor events in a short period of time. Aborting event execution."* — which then
+ * silently swallowed an UNRELATED talent use for the rest of that window. Silent, on a hook nobody
+ * is watching, on other people's actors.
+ * The fix is the guard the STATUS loop has always had, one line down: test before you write. Flags
+ * now gate on `edhaFlagKeyPresent`, so an actor carrying none of a family's keys costs ZERO updates
+ * and the only actors written are the ones that actually hold state. A stored `null`/`false`/`0` is
+ * still present and still cleared; only genuinely-absent keys are skipped, so no sweep's outcome
+ * changes. (Batching a family's keys into ONE `a.update()` per actor was considered and NOT taken:
+ * it would trade the per-key try/catch — the isolation that keeps one rejecting write from starving
+ * the rest — for a marginal saving on the handful of actors that are left after this gate.) */
 const _edhaSceneResetBusy = new Set();
 const _edhaSceneResetActorBusy = new Set();
 async function edhaSceneReset(endedCombat, { flags = [], statuses = [], extra = null, key = "" } = {}) {
@@ -2153,6 +2183,7 @@ async function edhaSceneReset(endedCombat, { flags = [], statuses = [], extra = 
       _edhaSceneResetActorBusy.add(claim);
       try {
         for (const fkey of flags) {
+          if (!edhaFlagKeyPresent(a, fkey)) continue;   // ⛑ absent → skip; unsetFlag ALWAYS writes (see above)
           try { await a.unsetFlag("edha-content", fkey); }
           catch (e) { console.warn(`Edha Content | scene reset (${fam}): unset ${fkey} failed on ${a?.name ?? "?"}`, e); }
         }

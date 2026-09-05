@@ -409,6 +409,18 @@ flag inside that window. So:
 **Any new `extra` that CREATES a document rides this and needs no guard of its own.** Pinned in
 `tests/scene-reset-reentry.test.js`, whose mock writes all yield (a synchronous mock cannot
 interleave, so it would pass on the broken engine); verified by mutation.
+
+⛑ **An unset of an ABSENT flag is a full document update** (same run). `Document#unsetFlag` always
+ends in `this.update({"flags.<scope>.<head>.-=<tail>": null})`, so R-60's wide population turned one
+combat end into ~40 flag writes × every actor in the world: on a 51-actor world it left an empty
+`lists: {}` / `markedBy: {}` on **33 actors that had neither** (the dotted `-=` delete creates its
+parent on the way past), `Tem parinaem` and `Soggy Bottom` included, and tripped Foundry's socket
+limiter (*"Exceeded maximum number of update-actor events…"*), which then silently ate an unrelated
+talent use. The flag loop now gates on **`edhaFlagKeyPresent(actor, key)`** — the guard the status
+loop always had, one line down. Dotted keys included; only `undefined` is absent, so a stored
+`null`/`false`/`0` still clears and no sweep's outcome changes; every uncertain answer (no `getFlag`,
+a throw) is TRUE, so the fail-safe direction is "write anyway", never stale state. **Reach for it
+before any bulk `unsetFlag` sweep** — this is a repo-wide shape, not a scene-reset one.
 ```js
 async function edhaClearSovState(endedCombat) {
   await edhaSceneReset(endedCombat, {

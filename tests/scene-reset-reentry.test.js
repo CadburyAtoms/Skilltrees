@@ -21,11 +21,14 @@
 const assert = require("assert");
 const { loadEngine, mockActor, stageWorld, sleep } = require("./harness.js");
 
-/* An actor whose flag writes are ASYNC — one macrotask, standing in for the server round-trip. */
+/* An actor whose flag writes are ASYNC — one macrotask, standing in for the server round-trip.
+ * `.unsets` records every key an unsetFlag was actually ISSUED for, which is what the write-volume
+ * cases below count: in Foundry each of those is a full `update()` on the actor document. */
 function slowActor({ name, flags = {}, statuses = [] }) {
   const a = mockActor({ name, id: name, uuid: `Actor.${name}`, statuses, flags });
+  a.unsets = [];
   const baseUnset = a.unsetFlag.bind(a);
-  a.unsetFlag = async (scope, key) => { await sleep(0); return baseUnset(scope, key); };
+  a.unsetFlag = async (scope, key) => { a.unsets.push(key); await sleep(0); return baseUnset(scope, key); };
   a.toggleStatusEffect = async (id, { active } = {}) => { await sleep(0); if (active === false) a.statuses.delete(id); };
   return a;
 }
@@ -126,5 +129,70 @@ test("edhaSceneReset: the claim is per FAMILY — two different families sweep t
   assert.strictEqual(sov, 1);
   assert.strictEqual(a.getFlag("edha-content", "apexForm"), undefined);
   assert.strictEqual(a.getFlag("edha-content", "dieStep"), undefined);
+  undo();
+});
+
+/* ---------------------------------------------------------------------------------------------
+ * The write-volume half (bench run 24's third finding). `Document#unsetFlag` ALWAYS ends in an
+ * `update()`, so R-60's directory∪canvas population made one combat end write ~40 keys to every
+ * actor in the world: on a 51-actor world it left empty `lists: {}` / `markedBy: {}` on 33 actors
+ * that had neither (the dotted `-=` delete creates its parent), and tripped Foundry's socket
+ * limiter, which then silently ate an unrelated talent use.
+ * ------------------------------------------------------------------------------------------- */
+
+test("edhaFlagKeyPresent: only `undefined` is absent — null/false/0 are set values and must still clear", () => {
+  const env = loadEngine();
+  const a = mockActor({ name: "A", flags: { zero: 0, no: false, nul: null, lists: { omens: [] } } });
+  assert.strictEqual(env.edhaFlagKeyPresent(a, "zero"), true);
+  assert.strictEqual(env.edhaFlagKeyPresent(a, "no"), true);
+  assert.strictEqual(env.edhaFlagKeyPresent(a, "nul"), true);
+  assert.strictEqual(env.edhaFlagKeyPresent(a, "lists.omens"), true, "dotted keys resolve through getProperty");
+  assert.strictEqual(env.edhaFlagKeyPresent(a, "lists.remains"), false, "an absent dotted key is absent");
+  assert.strictEqual(env.edhaFlagKeyPresent(a, "markedBy.insight"), false, "…including one whose PARENT is absent too");
+  assert.strictEqual(env.edhaFlagKeyPresent(a, "nope"), false);
+});
+
+test("edhaFlagKeyPresent: every uncertain answer is TRUE — the write still happens, never stale state", () => {
+  const env = loadEngine();
+  assert.strictEqual(env.edhaFlagKeyPresent(null, "x"), true);
+  assert.strictEqual(env.edhaFlagKeyPresent({}, "x"), true, "no getFlag at all → cannot tell → write");
+  assert.strictEqual(env.edhaFlagKeyPresent({ getFlag() { throw new Error("scope not active"); } }, "x"), true);
+});
+
+test("edhaSceneReset: an actor carrying NONE of the family's keys costs ZERO document updates", async () => {
+  const env = loadEngine();
+  const bystander = slowActor({ name: "Tem parinaem" });                       // no edha flags at all
+  const bearer = slowActor({ name: "Bench — Blue", flags: { lists: { omens: [1] } } });
+  const { undo } = stageWorld(env, { user: { isGM: true }, actors: [bystander, bearer], placeables: [], combats: [] });
+
+  await env.edhaSceneReset({ id: "c" }, { key: "chaos", flags: ["lists.omens", "markedBy.omen", "counters", "decay"] });
+
+  assert.deepStrictEqual(bystander.unsets, [], "33 uninvolved actors used to take ~40 updates EACH, and got empty parents for it");
+  assert.deepStrictEqual(bystander.flags["edha-content"], {}, "…and no `lists: {}` / `markedBy: {}` left behind");
+  assert.deepStrictEqual(bearer.unsets, ["lists.omens"], "the actor that HOLDS state is written, once, for the key it holds");
+  assert.strictEqual(bearer.getFlag("edha-content", "lists.omens"), undefined);
+  undo();
+});
+
+test("edhaSceneReset: skipping absent keys changes no OUTCOME — every present key still clears", async () => {
+  const env = loadEngine();
+  const a = slowActor({
+    name: "Loaded",
+    flags: { decay: 0, deathWard: false, lists: { remains: [{ id: "r" }] }, markedBy: { hexmark: null } },
+    statuses: ["decaying"],
+  });
+  const { undo } = stageWorld(env, { user: { isGM: true }, actors: [a], placeables: [], combats: [] });
+
+  await env.edhaSceneReset({ id: "c" }, {
+    key: "death",
+    flags: ["decay", "deathWard", "lists.remains", "markedBy.hexmark", "neverSet"],
+    statuses: ["decaying", "harvested"],
+  });
+
+  for (const k of ["decay", "deathWard", "lists.remains", "markedBy.hexmark"]) {
+    assert.strictEqual(a.getFlag("edha-content", k), undefined, `${k} must still clear — falsy is not absent`);
+  }
+  assert.ok(!a.unsets.includes("neverSet"), "only the absent key is skipped");
+  assert.strictEqual(a.statuses.has("decaying"), false, "the status half is untouched by this change");
   undo();
 });
