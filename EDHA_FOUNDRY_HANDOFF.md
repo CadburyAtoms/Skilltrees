@@ -33,6 +33,69 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-05 — heroic-path id map moved from a hard-coded temp path into tracked `data/` (item 17, TOOLING-only; no pack content change on any machine today)
+
+`scripts/foundry-build.js:416` used to read the cosmere-rpg system's heroic-path talent ids
+(system talent name → docId, used by `classifyToken()` to resolve a prose prerequisite naming a
+system talent to `Compendium.cosmere-rpg.heroic-paths.Item.<id>`) from a hard-coded
+`"C:/tmp/heroic_ids.json"` with `catch { return {}; }` — empty on CI and any machine besides
+Ben's. The map is now tracked at **`data/system-heroic-ids.json`** (the original snapshot's 82
+entries, unchanged; `EDHA_HEROIC_IDS` overrides the path for regeneration) and read through
+**`loadJson`** (`scripts/lib/data.js`), which THROWS naming the file if it is missing or
+malformed — no more silent `{}`.
+
+**Provenance block deviates from the item text on purpose** (checked before writing, per the
+dispatch brief): `data/native-vocabulary.json` has no `_meta` key — its real convention is
+top-level `_README` / `system` / `generatedFrom`, matched here, with the map nested under
+`heroicIds`. **System version is an inference, not a confirmed read**: `foundry-build.js` did not
+exist yet on the dump's date (2026-06-04; the script was added 2026-06-08), so the repo has no
+build-time record of what was installed that day. The repo's own `SYSVER` const held `"2.0.4"`
+from its addition until bumped to `"2.1.0"` in `8456a97` (2026-06-12, alongside
+`native-vocabulary.json`'s own system-upgrade re-dump) — since the heroic-ids dump predates that
+bump, `"2.0.4"` is recorded as the best-evidence inference (Ben's live install today reports
+`"2.1.0"`, which is the *current* version, not what was running 2026-06-04). See the data file's
+own `_versionProvenance` block.
+
+**Build-report diff (the item's proof requirement) found the map currently makes NO measured
+difference to shipped content** — worth stating plainly rather than assuming the expected
+REBUILD materialized. 79 of the snapshot's 82 names collide with an EDHA-authored talent of the
+same name (the free-tier heroic paths are deliberately re-implemented under matching names in
+`data/cosmere.json`), so `classifyToken()`'s own-tree/global-index lookup already satisfies those
+prereqs before ever reaching the `heroicIds` fallback.
+
+**The remaining 3 are punctuation variants, not genuine gaps** (PM review, 2026-09-05 — the
+original delta said only that they "do not appear as an exact prereq token"): `Erudition*` (a
+stray asterisk), `Trickster’s Hand` (U+2019 curly apostrophe) and `Well-Supplied` (hyphen) all
+normalize onto EDHA talents that DO exist — `Erudition`, `Trickster's Hand` (straight apostrophe)
+and `Well Supplied` (space). So **all 82 snapshot names correspond to an EDHA talent**, and the
+map is entirely dormant rather than 79/82 dormant. Two consequences worth carrying forward: the
+"latent landmine" this item closes is thinner than the item's text assumed (no future talent can
+collide with a system-only name, because there are none), and the snapshot carries **punctuation
+drift against `data/`** — the curly-vs-straight apostrophe is the same class of gotcha §10 already
+records for JS data files. If the map is ever re-dumped, normalize its keys against the build
+index rather than trusting the compendium's spelling.
+
+Measured directly: building all 5 packs
+(`scope=all`) with (a) `main`'s pre-fix script + temp path unavailable [simulated CI], (b)
+`main`'s pre-fix script + temp path present [Ben's machine today], (c) this fix + temp path
+unavailable, (d) this fix + temp path present — all four report **`narrative:9`** identically, and
+content-level hashing (`readPack` + `stableStringify`, `_stats.createdTime`/`modifiedTime`
+stripped, matching item 16's method) shows **all five packs byte-identical across all four
+scenarios**. So: **Ben's own machine's build is unaffected** (confirmed byte-identical), and so,
+today, is CI's — the fix closes a latent landmine (any future authored talent naming one of the 3
+non-colliding system talents, or CI drifting further from Ben's machine) rather than changing
+anything currently shipped. `validate-packs.js` and `validate-adversaries.js` both pass 0 issues
+against the fixed build.
+
+Pinned in `tests/pipeline.test.js`: a missing snapshot throws naming the file (via `loadJson`,
+same mechanism item 16 established); the tracked file loads and exposes `heroicIds` plus the
+`_README` provenance convention.
+
+AUTHORING_WORKFLOW.md's toolbox now notes `data/system-heroic-ids.json` needs re-dumping after a
+system upgrade.
+
+---
+
 ## 2026-09-05 — `foundry-build.js` no longer swallows a malformed authored file (item 16, TOOLING-only; no engine or pack change)
 
 `scripts/foundry-build.js:119` used to read each `data/authored/*.json` inline with
