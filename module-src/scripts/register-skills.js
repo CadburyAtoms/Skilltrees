@@ -2112,29 +2112,59 @@ function edhaStillFightingElsewhere(actor, guard) {
  * `key` generalizes Life's `_edhaLifeClearBusy` (07-27b: two combats ending back-to-back could
  * overlap the SAME family's sweep mid-actor, double-creating Apex Form's ended-injury) into one
  * shared busy-set entry per family per ended combat, instead of a bespoke module-level boolean only
- * Life had. */
+ * Life had.
+ *
+ * ⛑ THE COMBAT ID IN THAT BUSY KEY IS WHY THE GUARD GOT WEAKER, NOT STRONGER (bench run 24,
+ * 2026-09-05 — 07-27b's bug, live again). `${key}:${endedCombat.id}` means two DIFFERENT combats
+ * never collide in the set, and TWO combats ending together is the exact case the guard exists for:
+ * one `apexForm` flag, two sweeps, TWO "🌟 Apex Form ends — takes an injury" cards and TWO injury
+ * Items. The boolean it replaced could not miss this; the scoped key can, and does. Unset-first /
+ * create-after does not save it either — `unsetFlag` awaits a server round-trip, and the second
+ * sweep reads the flag inside that window.
+ *
+ * So there are now TWO fences, and they answer different questions:
+ *   • `_edhaSceneResetBusy` — "is this family already sweeping FOR THIS COMBAT?" Drops a duplicate
+ *     hook for one combat. Combat-scoped on purpose: a SECOND combat's sweep must still run, or its
+ *     actors (skipped by `edhaStillFightingElsewhere` while that combat existed) keep their state
+ *     for ever.
+ *   • `_edhaSceneResetActorBusy` — "is this family already mid-sweep ON THIS ACTOR?", `key:uuid`,
+ *     ACROSS combats. This is the one that stops the double-create. The check-and-claim is
+ *     synchronous with no `await` between, so it is atomic on JS's single thread; the loser skips
+ *     the actor entirely (every step is idempotent and the winner is doing exactly the same work),
+ *     and the claim releases only once the winner's `extra` has settled — by which time the flag
+ *     the second sweep would have re-read is gone.
+ * Both are per-client Sets; the ONE-applier half is `edhaDefBuffGmGate` above, unchanged (07-27b's
+ * other half was two GM clients, one applier each). */
 const _edhaSceneResetBusy = new Set();
+const _edhaSceneResetActorBusy = new Set();
 async function edhaSceneReset(endedCombat, { flags = [], statuses = [], extra = null, key = "" } = {}) {
   if (!edhaDefBuffGmGate()) return;
-  const busyKey = `${key || "?"}:${endedCombat?.id ?? "?"}`;
+  const fam = key || "?";
+  const busyKey = `${fam}:${endedCombat?.id ?? "?"}`;
   if (_edhaSceneResetBusy.has(busyKey)) return;
   _edhaSceneResetBusy.add(busyKey);
   try {
     const guard = edhaCombatEndGuard(endedCombat);   // ⛑ cross-combat clobber guard (R-58)
     for (const a of edhaSceneActors()) {
       if (edhaStillFightingElsewhere(a, guard)) continue;
-      for (const fkey of flags) {
-        try { await a.unsetFlag("edha-content", fkey); }
-        catch (e) { console.warn(`Edha Content | scene reset (${key || "?"}): unset ${fkey} failed on ${a?.name ?? "?"}`, e); }
-      }
-      for (const st of statuses) {
-        try { if (a.statuses?.has?.(st)) await a.toggleStatusEffect?.(st, { active: false }); }
-        catch (e) { console.warn(`Edha Content | scene reset (${key || "?"}): status ${st} clear failed on ${a?.name ?? "?"}`, e); }
-      }
-      try { await extra?.(a); }
-      catch (e) { console.warn(`Edha Content | scene reset (${key || "?"}): extra step failed on ${a?.name ?? "?"}`, e); }
+      // ⛑ per-actor claim, ACROSS combats — see the note above. No `await` between has() and add().
+      const claim = `${fam}:${a?.uuid ?? a?.id ?? ""}`;
+      if (_edhaSceneResetActorBusy.has(claim)) continue;
+      _edhaSceneResetActorBusy.add(claim);
+      try {
+        for (const fkey of flags) {
+          try { await a.unsetFlag("edha-content", fkey); }
+          catch (e) { console.warn(`Edha Content | scene reset (${fam}): unset ${fkey} failed on ${a?.name ?? "?"}`, e); }
+        }
+        for (const st of statuses) {
+          try { if (a.statuses?.has?.(st)) await a.toggleStatusEffect?.(st, { active: false }); }
+          catch (e) { console.warn(`Edha Content | scene reset (${fam}): status ${st} clear failed on ${a?.name ?? "?"}`, e); }
+        }
+        try { await extra?.(a); }
+        catch (e) { console.warn(`Edha Content | scene reset (${fam}): extra step failed on ${a?.name ?? "?"}`, e); }
+      } finally { _edhaSceneResetActorBusy.delete(claim); }
     }
-  } catch (e) { console.error(`Edha Content | scene reset (${key || "?"}) failed`, e); }
+  } catch (e) { console.error(`Edha Content | scene reset (${fam}) failed`, e); }
   finally { _edhaSceneResetBusy.delete(busyKey); }
 }
 
@@ -11758,7 +11788,10 @@ for (const ctx of ["skill", "attack", "item"]) Hooks.on(`cosmere-rpg.${ctx}Roll`
 // edhaSceneReset's directory∪tokens dedup — an unlinked-token-only actor now also clears, matching
 // the other nine. The re-entry guard (07-27b: two combats ending back-to-back could overlap this
 // SAME sweep mid-actor and double-create Apex Form's ended-injury) is now edhaSceneReset's shared
-// `key`-scoped busy-set instead of this module-level boolean. "mutation"/"lifeline"/"lifeRegen" are
+// busy-set instead of this module-level boolean. ⚠️ R-60 first scoped that set by ENDED COMBAT, which
+// silently un-guarded exactly this case — bench run 24 measured two cards and two injury Items off
+// one flag; the fence that actually holds is edhaSceneReset's per-ACTOR claim (`key:uuid`, across
+// combats), added 2026-09-05. This function needs nothing of its own. "mutation"/"lifeline"/"lifeRegen" are
 // plain flags; "apexForm" alone creates a document, so it stays bespoke `extra` — read the value
 // BEFORE unsetting (unset-first-create-after, 07-27b, so a re-read inside the create's round-trip
 // finds nothing to double).

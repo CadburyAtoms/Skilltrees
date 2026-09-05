@@ -392,6 +392,23 @@ this one. `key` (a short family id, e.g. `"life"`, `"sov"`) scopes a shared busy
 `` `${key}:${endedCombat.id}` `` — the generalized form of Life's old one-off `_edhaLifeClearBusy`
 boolean (07-27b: two combats ending back-to-back could overlap the SAME family's sweep mid-actor and
 double-create its injury); every family gets this for free now, not just Life.
+
+⛑ **TWO fences, and the combat-scoped one is NOT the re-entry guard** (bench run 24, 2026-09-05 —
+07-27b's bug was live again for the whole of R-60). `${key}:${combat.id}` means two DIFFERENT combats
+never collide, and "two combats ending together" is the exact case the old boolean covered: one
+`apexForm` flag produced TWO "ends — takes an injury" cards and TWO injury Items. Unset-first /
+create-after does not save it — `unsetFlag` awaits a server round-trip and the second sweep reads the
+flag inside that window. So:
+- `_edhaSceneResetBusy` — `key:combatId`. Drops a **duplicate hook for one combat**. Stays
+  combat-scoped ON PURPOSE: a second combat's sweep must still run, or the actors
+  `edhaStillFightingElsewhere` skipped while that combat existed keep their state for ever.
+- `_edhaSceneResetActorBusy` — `key:actorUuid`, **across combats**. This is the re-entry guard. The
+  check-and-claim is synchronous (no `await` between `has` and `add`, so it is atomic on JS's one
+  thread); the loser skips that actor entirely — every step is idempotent and the winner is doing the
+  same work — and the claim releases only once the winner's `extra` has settled.
+**Any new `extra` that CREATES a document rides this and needs no guard of its own.** Pinned in
+`tests/scene-reset-reentry.test.js`, whose mock writes all yield (a synchronous mock cannot
+interleave, so it would pass on the broken engine); verified by mutation.
 ```js
 async function edhaClearSovState(endedCombat) {
   await edhaSceneReset(endedCombat, {
