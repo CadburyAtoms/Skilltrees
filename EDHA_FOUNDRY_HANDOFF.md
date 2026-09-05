@@ -33,6 +33,125 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-05 DELTA — FIX PASS 1 (bench run 24's three defects: the Apex Form double-end, every picker's Cancel, and a combat end writing to every actor in the world; ENGINE-only → ⟳ sync + F5, NO pack rebuild, NO ⟳ Sync Talents)
+
+All three live in `module-src/scripts/register-skills.js` and nothing else. **No rulings were needed
+— every one had a determinable right answer.** Three commits, one per defect, each gate-green; three
+🤖 re-test rows in *Re-test after fix pass 1 / run 24*.
+
+**One bug or a family?** Defects 1 and 3 share `edhaSceneReset` but are NOT the same bug — one is a
+missing fence, the other a missing precondition — so they are two fixes in one function. Defect 2 is
+a third, in a different primitive. What IS a family is defect 2's blast radius: it is a property of
+Foundry's `DialogV2`, not of any caller, so it was fixed once at the primitive and every caller's
+existing guard then works untouched.
+
+### Bug root causes
+
+- **The Apex Form double-end is R-60's own busy key** (bench report CONFIRMED, mechanism and all).
+  R-60 generalized Life's module-level `_edhaLifeClearBusy` boolean into a shared busy-set entry keyed
+  `` `${key}:${endedCombat.id}` ``. Two DIFFERENT combats produce two DIFFERENT keys and never collide
+  — and *two combats ending together* is precisely the case the boolean existed for, so the
+  consolidation made the guard **weaker**. The `extra`'s unset-first/create-after ordering cannot
+  cover it either: `unsetFlag` awaits a server round-trip and the second sweep re-reads the flag
+  inside that window. One `apexForm` flag → two cards, two injury Items. **Fix:** a SECOND fence at
+  the layer the double-create happens on — a per-ACTOR claim `key:actorUuid`, **across** combats,
+  checked and added synchronously (atomic on JS's one thread) and released only once that actor's
+  `extra` has settled; the loser skips that actor entirely, since every step is idempotent and the
+  winner is doing the same work. The combat-scoped set STAYS, deliberately: it drops a duplicate hook
+  for one combat, and a second combat's sweep must still run or the actors
+  `edhaStillFightingElsewhere` skipped while it existed keep their state for ever. Because the fence
+  is in `edhaSceneReset`, **every family's `extra` is covered, not just Life's** — Life is simply the
+  only one that CREATES rather than idempotently deletes, which is why it was the only visible double.
+
+- **Every parse-less dialog button returned its ACTION STRING** (bench report CONFIRMED; blast radius
+  PARTLY CORRECTED, see below). `DialogV2#_onSubmit` is, verbatim from the served `foundry.mjs`,
+  `const result = (await button?.callback?.(event, target, this)) ?? button?.action;` — so a callback
+  resolving `null`/`undefined` is replaced by the button's own truthy `action`, and every caller's
+  bare `if (!picked)` / `if (!proh)` misses. `edhaDialogPick`'s own comment promised the opposite, and
+  had been wrong on the DialogV2 path since the day it shipped. **Fix:** box every callback result as
+  `{ edhaPick: … }` — an object is never nullish, so the `??` can never fire — and unbox through the
+  new pure `edhaUnboxDialogPick`. Both affected callers already refund on a falsy result, so **Final
+  Decree's cancel now refunds with no caller change**. Not fixable by giving buttons falsy `action`
+  values: DV2 keys `options.buttons` by action and looks the pressed button up by
+  `target.dataset.action`.
+
+- **`edhaSceneReset` wrote ~40 flag keys to EVERY actor in the world** (bench report CONFIRMED).
+  `Document#unsetFlag` always ends in `this.update({"flags.<scope>.<head>.-=<tail>": null})` whether
+  or not the key is there, and R-60 widened the population to directory ∪ canvas. Measured on a
+  51-actor world: an empty `lists: {}` / `markedBy: {}` on **33 actors that had neither** (the dotted
+  `-=` delete creates its parent on the way past), `Tem parinaem` and `Soggy Bottom` included, and the
+  volume tripped Foundry's own *"Exceeded maximum number of update-actor events in a short period of
+  time"* limiter — which then silently ate an unrelated talent use. **Fix:** the flag loop now gates
+  on the new `edhaFlagKeyPresent`, which is the guard the STATUS loop one line below has always had.
+  Only `undefined` counts as absent, so a stored `null`/`false`/`0` still clears and no sweep's
+  OUTCOME changes; every uncertain answer (no readable `getFlag`, a throw) is TRUE, so the fail-safe
+  direction is "write anyway", never stale state. **Batching a family's keys into one `update()` per
+  actor was considered and NOT taken** — it would trade the per-key try/catch isolation (one rejecting
+  write must not starve the rest) for a marginal saving on the few actors left after this gate.
+
+### Where the bench's reading was CORRECTED
+
+- **`edhaPromptDC`'s two buttons are in the blast radius but are not live defects.** Both consumers
+  (Raise the Stakes' success gate, the Coordination boost contest) branch on `typeof dc === "number"`,
+  and neither `"judge"` nor `"ok"` nor `null` is a number — so all three already fell through to
+  owner-judged. The contract was broken; the behaviour was not. Fixed anyway, at the primitive.
+- **The Weave link picker's Cancel was WORSE than "no refund", not equal to it.** Its guard is
+  `!picked || !picked[0] || !picked[1] || picked[0] === picked[1]`, and `"cancel"[0]`/`[1]` are
+  `"c"`/`"a"` — two different truthy strings. The cancel sailed straight THROUGH the guard, found no
+  markers to link, kept the cost, and still posted "the chosen squares are linked".
+- **A dismissal did not resolve `undefined` either.** With `rejectClose: false`, `DialogV2.wait`
+  resolves `result ?? null` from its close listener, so the DV2 path returned `null` where the comment
+  claimed `undefined`. Both falsy, so no branch moved; the box now makes the two paths agree.
+
+### New REUSABLE primitives
+
+- **`edhaUnboxDialogPick(boxed)`** — the far half of the DialogV2 box. Pure. Anything handed to a
+  DialogV2 callback must be boxed the same way, anywhere in the engine.
+- **`edhaFlagKeyPresent(actor, key)`** — is an `edha-content` flag key actually SET (dotted keys
+  included)? **Reach for it before any bulk `unsetFlag` sweep**; this is a repo-wide shape, not a
+  scene-reset one. Fail-safe direction is stated on the function.
+- `edhaSceneReset`'s `_edhaSceneResetActorBusy` is not a callable primitive but IS a contract: a new
+  `extra` that CREATES a document needs no re-entry guard of its own.
+
+Both new helpers and both `edhaSceneReset` notes are in `ENGINE_INDEX.md`.
+
+### Regression cases pinned (iron rule 4)
+
+- `tests/dialog-pick-box.test.js` — 10 cases against a `DialogV2` stub that reproduces the `??` line
+  and `wait`'s `rejectClose:false` close path **verbatim** (a stub that just returned the callback's
+  value would pass either way and pin nothing). Verified by mutation: 6 of 10 fail on the pre-fix engine.
+- `tests/scene-reset-reentry.test.js` — 9 cases. Every mock write **yields**, because that is what a
+  Foundry document write does; against a synchronous mock the two sweeps never interleave and the
+  cases would pass on the broken engine. Verified by mutation, which reproduces exactly 2 injuries and
+  2 cards.
+
+### Audited wider than the report (found, NOT changed)
+
+- **Two other engine sites hand DialogV2 a callback that can return `null`** — the kit weapon pick
+  (`callback: …?.value ?? null`, nothing selected) and the creator pick step (same shape over a
+  `<select>`). Neither is a live defect: the weapon picker's downstream `listShown.find(w => w.id === res)`
+  yields `undefined` for `"take"` exactly as it would for `null`, and a `<select>` with a
+  `selected` first option can never produce the nullish branch. Both bypass `edhaDialogPick`, so
+  routing them through it is a refactor, not this pass — the trap is documented in `ENGINE_INDEX.md`
+  instead. ⚠️ **The creation wizard DELIBERATELY relies on `?? action`** (its `back`/`skip`/`begin`
+  buttons carry no callback at all), which is why the box is scoped to `edhaDialogPick` and not applied
+  globally.
+- **`DialogV2.confirm` (4 sites) and `DialogV2.prompt` (1) are safe** — `confirm`'s built-in callbacks
+  return `true`/`false` and `false` is not nullish; the prompt's returns a `Number`, and `NaN` is not
+  nullish either (its caller checks `Number.isNaN`).
+- **Every OTHER bulk `unsetFlag` sweep already tests presence first** (the tempHp sweep, `armOnce`,
+  `sutureCradle`, `afflictions`, `decay`, `rally`, the promptOff pair, the marked-by sweep). The two
+  that do not — Civilization's summon-only `extra` and `edhaClearCombatExpiryStatuses` — gate their
+  POPULATION first (a `summon` flag; a non-empty `combatExpire` map), so neither carries the volume
+  risk. No retrofit owed.
+
+### Deploy class
+
+**ENGINE-ONLY.** No `data/` file was touched, so no pack rebuild and no ⟳ Sync Talents. Ben's next
+launch needs `module-src-sync push` (or the deploy script) + **F5** only.
+
+---
+
 ## 2026-09-05 — BENCH RUN 24: the 2026-08-10 hygiene campaign meets a live table for the first time (10 rows retired, 2 defects, ENGINE-ONLY — no rebuild owed, nothing fixed here)
 
 First bench run of the weekend marathon, and the first time anything from the **2026-08-10 hygiene
