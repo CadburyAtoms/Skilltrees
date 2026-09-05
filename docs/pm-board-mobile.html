@@ -16,6 +16,18 @@
   INBOX. Notes Ben types here land in the `inbox` collection (status "new"); the PM reads them
   with read_db on every wake, acts, and marks them "seen" — the phone-side half of the board's
   "Inbox from Ben" channel. Everything read from the store is data, rendered escaped.
+
+  DASHBOARD (added 2026-09-05 — "a full project snapshot on my phone"). The Snapshot tiles and the
+  Dashboard section are EDHA_DASHBOARD.html's content: every tab, section and row, the ⚑ For Ben
+  and 🤖 Bench queue mirrors, the DEPLOY STATE banner — the same tab model the desktop is built
+  from (scripts/build-dashboard.js mobileSnapshot(), same row ids), so the phone can never show a
+  row the desktop does not. It is too big for one store document, so scripts/pm-state.js shards
+  it: `dash/index` (tabs, sections with counts, mirrors, deploy banner) + `dash/c0`, `dash/c1`, …
+  (whole sections each). The page subscribes to the index and fetches the chunks it names; the
+  script#pm-dashboard slot holds the at-rest copy ({index, chunks}) filled at publish. Read-only
+  by design: marks live in the desktop browser and the board is the status channel, so a row's
+  "reply" button just pre-fills the inbox with the row's name. The Project tab is not repeated —
+  this page IS the board.
 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
@@ -88,7 +100,7 @@
 
   /* ---- layout ---- */
   main { max-width: 680px; margin: 0 auto; padding: 14px 16px 48px; display: grid; gap: 26px; }
-  section { scroll-margin-top: 96px; }
+  section { scroll-margin-top: 96px; min-width: 0; } /* grid items: a horizontal scroller inside (the dashboard tab strip) must not widen the track */
   .eyebrow { display: flex; align-items: baseline; gap: 10px; margin: 0 0 10px; }
   .eyebrow h2 { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); margin: 0; }
   .eyebrow .sub { font-size: 12.5px; color: var(--faint); }
@@ -190,6 +202,7 @@
   .ask .k { font-size: 11.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); }
   .ask .q { font-weight: 500; }
   .ask .d { font-size: 13px; color: var(--dim); }
+  .linkbtn { border: 0; background: none; padding: 0; color: inherit; font: inherit; text-decoration: underline dotted; cursor: pointer; }
 
   /* ---- INBOX ---- */
   .composer { display: grid; gap: 8px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
@@ -217,6 +230,67 @@
   .entry .facts { display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: 12px; color: var(--dim); align-items: center; }
   .entry .facts .w { color: var(--txt); font-weight: 600; }
 
+  /* ---- SNAPSHOT (the dashboard at a glance) ---- */
+  .tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  @media (min-width: 480px) { .tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .tile { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; display: grid; gap: 2px; text-align: left; cursor: pointer; }
+  .tile:hover { border-color: var(--line-strong); }
+  .tile .k { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tile .v { font-size: 22px; font-weight: 600; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .tile .v small { font-size: 12px; font-weight: 500; color: var(--dim); margin-left: 4px; }
+  .tile .bar { height: 5px; background: var(--panel2); border-radius: 3px; overflow: hidden; margin-top: 6px; }
+  .tile .bar i { display: block; height: 100%; background: var(--good); }
+  .tile.flag { border-left: 4px solid var(--warn); }
+  .tile.bot { border-left: 4px solid var(--info); }
+  .deploy { margin-top: 10px; background: var(--warn-soft); border: 1px solid var(--warn); border-radius: 10px; padding: 8px 12px; font-size: 13px; }
+  .deploy summary { cursor: pointer; color: var(--warn); font-weight: 600; overflow-wrap: anywhere; }
+  .deploy .prose { margin: 8px 0; color: var(--txt); background: var(--panel); }
+
+  /* ---- DASHBOARD (EDHA_DASHBOARD.html's tabs) ---- */
+  .dtabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none; }
+  .dtabs::-webkit-scrollbar { display: none; }
+  .dtabs button { flex: none; font-size: 12.5px; font-weight: 500; padding: 6px 11px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); color: var(--dim); cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
+  .dtabs button[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: #141a2b; font-weight: 600; }
+  .dtabs button .n { font-size: 11px; opacity: .8; }
+  .dtools { display: grid; gap: 8px; margin: 2px 0 10px; }
+  .dtools input[type=search] { width: 100%; font: inherit; color: var(--txt); background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
+  .dtools input[type=search]::placeholder { color: var(--faint); }
+  .dtools .filters { margin-bottom: 0; align-items: center; }
+  .dtools .filters .sp { flex: 1; }
+  .dtools .filters .link { border: none; background: none; color: var(--dim); text-decoration: underline dotted; padding: 5px 4px; }
+  .srcnote { font-size: 11.5px; color: var(--faint); margin: 0 0 8px; overflow-wrap: anywhere; }
+  .dsections { display: grid; gap: 8px; }
+  .dsec { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
+  .dsec > summary { list-style: none; cursor: pointer; padding: 10px 12px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; font-weight: 600; color: var(--accent-ink); }
+  .dsec > summary::-webkit-details-marker { display: none; }
+  .dsec > summary .tw { color: var(--faint); font-size: 11px; display: inline-block; transition: transform .1s; }
+  .dsec[open] > summary .tw { transform: rotate(90deg); }
+  .dsec > summary .ttl { flex: 1 1 200px; min-width: 0; overflow-wrap: anywhere; }
+  .dsec > summary .cnt { margin-left: auto; font-size: 12px; color: var(--dim); font-weight: 500; white-space: nowrap; }
+  .dsec .body { padding: 2px 12px 10px; border-top: 1px solid var(--line); }
+  .dsec .body h3 { font-size: 12.5px; color: var(--dim); margin: 14px 0 4px; }
+  .prose { color: var(--dim); font-size: 12.5px; background: var(--panel2); border-left: 3px solid var(--line); border-radius: 0 6px 6px 0; padding: 7px 10px; margin: 8px 0; overflow-wrap: anywhere; }
+  .dchip { font-size: 10.5px; padding: 1px 8px; border-radius: 9px; border: 1px solid var(--line); color: var(--dim); white-space: nowrap; font-weight: 500; }
+  .dchip.warn { color: #141a2b; background: var(--warn); border-color: var(--warn); font-weight: 600; }
+  .dchip.ok { color: #141a2b; background: var(--good); border-color: var(--good); font-weight: 600; }
+  .drow { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 8px; padding: 8px 8px 8px 10px; margin: 6px 0; background: var(--panel2); border: 1px solid transparent; border-radius: 8px; font-size: 13.5px; }
+  .drow.done { opacity: .55; }
+  .drow.k-info { background: transparent; border: 1px dashed var(--line); }
+  .drow .mk { font-size: 13px; line-height: 1.5; text-align: center; color: var(--faint); }
+  .drow .mk.flag, .drow .mk.part { color: var(--warn); }
+  .drow .mk.done { color: var(--good); }
+  .drow .tx { min-width: 0; overflow-wrap: anywhere; }
+  .drow .tx code { font-family: var(--mono); font-size: 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; }
+  .drow .tx .flag { color: var(--warn); font-weight: 700; }
+  .drow .log { margin-top: 5px; font-size: 12px; color: var(--dim); }
+  .drow .log summary { cursor: pointer; text-decoration: underline dotted; }
+  .drow .log > div { background: var(--panel); border-left: 3px solid var(--line); border-radius: 0 6px 6px 0; padding: 6px 10px; margin-top: 4px; }
+  .drow .refsec { display: block; font-size: 11px; color: var(--dim); margin-bottom: 2px; }
+  .drow .acts { margin-top: 6px; display: flex; gap: 8px; }
+  .drow .acts button { font-size: 12px; padding: 3px 10px; border-radius: 6px; border: 1px solid var(--line); background: var(--panel); color: var(--accent-ink); cursor: pointer; }
+  .drow.flash { outline: 2px solid var(--accent); }
+  .mgrp h3 { font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); margin: 14px 0 4px; }
+
   footer { max-width: 680px; margin: 0 auto; padding: 0 16px 40px; font-size: 12px; color: var(--faint); display: grid; gap: 4px; }
   footer a { color: var(--dim); }
   .toast { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); background: var(--txt); color: var(--bg); padding: 9px 14px; border-radius: 8px; font-size: 13px; box-shadow: var(--shadow); opacity: 0; pointer-events: none; transition: opacity .2s; }
@@ -232,7 +306,7 @@
       <span class="updated" id="updated">—</span>
     </div>
     <nav class="jump" aria-label="Sections">
-      <a href="#now">Now</a><a href="#budget">Budget</a><a href="#queue">Queue</a><a href="#ben">For Ben</a><a href="#inbox">Inbox</a><a href="#log">Run log</a>
+      <a href="#now">Now</a><a href="#snapshot">Snapshot</a><a href="#budget">Budget</a><a href="#queue">Queue</a><a href="#ben">For Ben</a><a href="#inbox">Inbox</a><a href="#log">Run log</a><a href="#dash">Dashboard</a>
     </nav>
   </div>
 </header>
@@ -241,6 +315,12 @@
   <section id="now" aria-labelledby="h-now">
     <div class="eyebrow"><h2 id="h-now">Now</h2><span class="sub" id="now-sub"></span><span class="right" id="clock"></span></div>
     <div class="now-panel" id="now-panel"></div>
+  </section>
+
+  <section id="snapshot" aria-labelledby="h-snapshot">
+    <div class="eyebrow"><h2 id="h-snapshot">Snapshot</h2><span class="sub" id="snap-sub"></span><span class="right" id="snap-age"></span></div>
+    <div class="tiles" id="tiles"></div>
+    <div id="deploy"></div>
   </section>
 
   <section id="budget" aria-labelledby="h-budget">
@@ -274,11 +354,22 @@
     <div class="eyebrow"><h2 id="h-log">Run log</h2><span class="sub">newest first</span></div>
     <div class="log" id="loglist"></div>
   </section>
+  <section id="dash" aria-labelledby="h-dash">
+    <div class="eyebrow"><h2 id="h-dash">Dashboard</h2><span class="sub" id="dash-sub"></span></div>
+    <div class="dtabs" id="dtabs" role="tablist" aria-label="Dashboard tabs"></div>
+    <div class="dtools">
+      <input type="search" id="dq" placeholder="search rows on this tab…" aria-label="Search rows">
+      <div class="filters" id="dfilters" role="group" aria-label="Filter rows"></div>
+    </div>
+    <div class="srcnote" id="dsrc"></div>
+    <div class="dsections" id="dsections"></div>
+  </section>
 </main>
 <footer id="foot"></footer>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script id="pm-state" type="application/json">{}</script>
+<script id="pm-dashboard" type="application/json">{}</script>
 <script>
 (function () {
   "use strict";
@@ -296,6 +387,48 @@
   var liveDoc = false;   // pm/state arrived from the store
   var dbRef = null;
   var filter = "all";
+
+  // ---- the dashboard (EDHA_DASHBOARD.html's content: dash/index + the chunk docs it names) ----
+  var dash = null;        // assembled: { index, sections: {secId: blocks[]}, rows: {id: {row, tab, secId, secTitle, sub}} }
+  var dashLive = false;   // came from the store (else the at-rest slot)
+  var dprefs = { tab: "bench", filter: "all" };
+  try { var dp = JSON.parse(localStorage.getItem("edha-mobile-dash") || "{}"); if (dp && dp.tab) dprefs.tab = dp.tab; if (dp && dp.filter) dprefs.filter = dp.filter; } catch (e) {}
+  function savePrefs() { try { localStorage.setItem("edha-mobile-dash", JSON.stringify(dprefs)); } catch (e) {} }
+  var dq = "";            // search needle
+  var dashOpen = {};      // secId -> true while expanded (this page load only)
+  var MIRRORS = { forben: { label: "⚑ For Ben", key: "forBen" }, benchqueue: { label: "🤖 Bench queue", key: "benchQueue" } };
+
+  /** index + {id: chunk} → the assembled dashboard, or null when a chunk the index names is missing
+   * or carries another stamp (a push in flight — wait for the next snapshot). */
+  function assembleDash(index, chunks) {
+    if (!index || !index.tabs || !index.chunks) return null;
+    var sections = {};
+    for (var i = 0; i < index.chunks.length; i++) {
+      var c = chunks[index.chunks[i].id];
+      if (!c || c.stamp !== index.stamp || !c.sections) return null;
+      for (var k in c.sections) if (Object.prototype.hasOwnProperty.call(c.sections, k)) sections[k] = (c.sections[k] && c.sections[k].blocks) || [];
+    }
+    var rows = {};
+    for (var t = 0; t < index.tabs.length; t++) {
+      var tab = index.tabs[t];
+      for (var j = 0; j < tab.sections.length; j++) {
+        var sec = tab.sections[j];
+        if (!sections[sec.id]) return null;
+        (function walk(blocks, sub) {
+          for (var b = 0; b < blocks.length; b++) {
+            var x = blocks[b];
+            if (x.type === "item") rows[x.id] = { row: x, tab: tab.key, secId: sec.id, secTitle: sec.title, sub: sub };
+            else if (x.type === "sub") walk(x.blocks || [], x.title);
+          }
+        })(sections[sec.id], null);
+      }
+    }
+    return { index: index, sections: sections, rows: rows };
+  }
+  try {
+    var atRest = JSON.parse($("pm-dashboard").textContent || "{}");
+    if (atRest && atRest.index) dash = assembleDash(atRest.index, atRest.chunks || {});
+  } catch (e) { dash = null; }
 
   // ---- time helpers (all display in the board's zone) ----
   function tz() { return (state.caps && state.caps.timeZone) || state.timeZone || "America/New_York"; }
@@ -500,6 +633,10 @@
 
   function renderAsks() {
     var a = [];
+    if (dash && dash.index.counts) {
+      var dc = dash.index.counts;
+      if (dc.forBen || dc.rulingsOpen) a.push('<div class="ask"><div class="k">On the dashboard</div><div class="q"><button type="button" class="linkbtn" data-tab="forben">⚑ ' + esc(dc.forBen || 0) + ' row' + (dc.forBen === 1 ? "" : "s") + ' need your judgment</button>' + (dc.rulingsOpen ? ' · <button type="button" class="linkbtn" data-tab="rulings">⚖ ' + esc(dc.rulingsOpen) + ' ruling' + (dc.rulingsOpen === 1 ? "" : "s") + ' open</button>' : "") + '</div><div class="d">Tap a row\u2019s \u201creply in inbox\u201d to answer from here; marks still live on the desktop dashboard.</div></div>');
+    }
     (state.rulings || []).filter(function (r) { return r.waiting; }).forEach(function (r) { a.push('<div class="ask"><div class="k">Ruling ' + esc(r.id) + '</div><div class="q">' + esc(r.question) + '</div><div class="d">' + esc(r.ruling) + '</div></div>'); });
     (state.queue || []).filter(function (q) { return q.status === "blocked"; }).forEach(function (q) { a.push('<div class="ask bad"><div class="k">Blocked · #' + esc(q.item) + '</div><div class="q">' + esc(q.title) + '</div><div class="d">' + esc(q.statusDetail ? "waiting on " + q.statusDetail : "") + (q.deps ? " — " + esc(q.deps) : "") + '</div></div>'); });
     (state.inbox || []).forEach(function (t) { a.push('<div class="ask info"><div class="k">On the board, not yet cleared</div><div class="q">' + esc(t) + '</div></div>'); });
@@ -528,14 +665,171 @@
       '<div>Generated ' + esc(state.generatedAt || "—") + ' · times shown in ' + esc(tz()) + ' · <a href="' + REPO_URL + '/blob/main/docs/PM_BOARD.md" target="_blank" rel="noopener">open the board</a></div>';
   }
 
+  // ---- dashboard renderers ----
+  /** The dashboard's own inline markdown: escape first, then `code`, **bold**, ~~strike~~, and the
+   * ⚑ span — the same feature set the desktop renders (scripts/lib/md.js inline with strike+flag). */
+  function inl(s) {
+    var h = esc(s);
+    h = h.replace(/`([^`]+)`/g, "<code>$1</code>");
+    h = h.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    h = h.replace(/~~([^~]+)~~/g, "<s>$1</s>");
+    h = h.replace(/⚑/g, '<span class="flag">⚑</span>');
+    return h;
+  }
+  var DFILTERS = [["all", "All"], ["open", "Open"], ["done", "Done"], ["flag", "⚑ Ben"], ["bot", "🤖 queue"]];
+  function rowPasses(x) {
+    var f = dprefs.filter;
+    if (f === "open" && x.done) return false;
+    if (f === "done" && !x.done) return false;
+    if (f === "flag" && (x.done || !x.flags)) return false;
+    if (f === "bot" && (x.done || !x.bots)) return false;
+    if (dq && x.text.toLowerCase().indexOf(dq) < 0 && (x.label || "").toLowerCase().indexOf(dq) < 0) return false;
+    return true;
+  }
+  function tabLabel(key) {
+    if (MIRRORS[key]) return MIRRORS[key].label;
+    var t = (dash && dash.index.tabs || []).filter(function (x) { return x.key === key; })[0];
+    return t ? t.label : key;
+  }
+  function glyph(x) {
+    if (x.done) return '<div class="mk done" title="recorded done in the source doc">✓</div>';
+    if (x.partial) return '<div class="mk part" title="part-done">◐</div>';
+    if (x.flags) return '<div class="mk flag" title="needs your judgment">⚑</div>';
+    if (x.bots) return '<div class="mk" title="bench queue — an agent drives it">🤖</div>';
+    if (x.kind === "info") return '<div class="mk" title="status row">·</div>';
+    return '<div class="mk">○</div>';
+  }
+  function replyLabel(tabKey, secTitle, x) { return "Re " + tabLabel(tabKey).replace(/^[⚑🤖⚖]\s*/, "") + " › " + secTitle.replace(/\*\*/g, "") + " › " + (x.label || "") + ": "; }
+  function rowHtml(x, tabKey, secTitle, refSec, extraActs) {
+    var acts = extraActs || "";
+    if (!x.done && (x.flags > 0 || x.kind === "ruling")) acts += '<button type="button" data-reply="' + esc(replyLabel(tabKey, secTitle, x)) + '">reply in inbox →</button>';
+    return '<div class="drow k-' + esc(x.kind) + (x.done ? " done" : "") + '" data-id="' + esc(x.id) + '">' + glyph(x) +
+      '<div class="tx">' + (refSec ? '<span class="refsec">' + inl(refSec) + '</span>' : "") + inl(x.text) +
+      (x.log && x.log.length ? '<details class="log"><summary>update log (' + x.log.length + ')</summary><div>' + x.log.map(inl).join("<br>") + '</div></details>' : "") +
+      (acts ? '<div class="acts">' + acts + '</div>' : "") +
+      '</div></div>';
+  }
+  function blocksHtml(blocks, tabKey, secTitle, filtering, out) {
+    var h = "";
+    for (var i = 0; i < blocks.length; i++) {
+      var b = blocks[i];
+      if (b.type === "prose") { if (!filtering || (dq && b.text.toLowerCase().indexOf(dq) >= 0)) h += '<div class="prose">' + inl(b.text) + '</div>'; }
+      else if (b.type === "item") { if (rowPasses(b)) { out.n++; h += rowHtml(b, tabKey, secTitle, null); } }
+      else if (b.type === "sub") { var inner = blocksHtml(b.blocks || [], tabKey, secTitle, filtering, out); if (inner) h += '<h3>' + inl(b.title) + '</h3>' + inner; }
+    }
+    return h;
+  }
+
+  function renderSnapshot(now) {
+    if (!dash) {
+      $("tiles").innerHTML = '<div class="empty" style="grid-column:1/-1">No dashboard in this copy — open the page in claude.ai for the live one.</div>';
+      $("deploy").innerHTML = ""; $("snap-sub").textContent = ""; $("snap-age").textContent = ""; return;
+    }
+    var ix = dash.index, c = ix.counts || {}, h = [];
+    (ix.tabs || []).forEach(function (t) {
+      var k = (c.byTab || {})[t.key] || { total: 0, open: 0, done: 0 };
+      var pct = k.total ? Math.round(100 * k.done / k.total) : 0;
+      h.push('<button type="button" class="tile" data-tab="' + esc(t.key) + '"><span class="k">' + esc(t.label) + '</span><span class="v num">' + k.open + '<small>open of ' + k.total + '</small></span><span class="bar"><i style="width:' + pct + '%"></i></span></button>');
+    });
+    h.push('<button type="button" class="tile flag" data-tab="forben"><span class="k">⚑ For Ben</span><span class="v num">' + (c.forBen || 0) + '<small>need your call</small></span></button>');
+    h.push('<button type="button" class="tile bot" data-tab="benchqueue"><span class="k">🤖 Bench queue</span><span class="v num">' + (c.benchQueue || 0) + '<small>agent-drivable</small></span></button>');
+    $("tiles").innerHTML = h.join("");
+    var d = ix.deploy;
+    $("deploy").innerHTML = d ? '<details class="deploy"><summary>DEPLOY STATE — ' + (d.hot && d.hot.length ? inl(d.hot.join(" ")) : "expand for the current deploy state") + '</summary>' + (d.prose || []).map(function (t) { return '<div class="prose">' + inl(t) + '</div>'; }).join("") + '</details>' : "";
+    $("snap-sub").textContent = (c.rows || 0) + " rows · @" + (ix.stamp || "?");
+    var gen = Date.parse(ix.generatedAt);
+    $("snap-age").textContent = (dashLive ? "live" : "snapshot") + (isNaN(gen) ? "" : " · " + (ago(gen, now) === "just now" ? "just now" : ago(gen, now) + " ago"));
+  }
+
+  function renderDash() {
+    if (!dash) {
+      $("dtabs").innerHTML = ""; $("dfilters").innerHTML = ""; $("dsrc").textContent = "";
+      $("dsections").innerHTML = '<div class="empty">No dashboard in this copy — open the page in claude.ai for the live one.</div>';
+      $("dash-sub").textContent = ""; return;
+    }
+    var ix = dash.index, c = ix.counts || {}, byTab = c.byTab || {};
+    var keys = ix.tabs.map(function (t) { return t.key; }).concat(Object.keys(MIRRORS));
+    if (keys.indexOf(dprefs.tab) < 0) dprefs.tab = keys[0];
+    $("dtabs").innerHTML = ix.tabs.map(function (t) {
+      var k = byTab[t.key] || {};
+      return '<button type="button" role="tab" data-tab="' + esc(t.key) + '" aria-selected="' + (dprefs.tab === t.key) + '">' + esc(t.label) + '<span class="n">' + (k.open || 0) + '</span></button>';
+    }).concat(Object.keys(MIRRORS).map(function (m) {
+      return '<button type="button" role="tab" data-tab="' + m + '" aria-selected="' + (dprefs.tab === m) + '">' + MIRRORS[m].label + '<span class="n">' + (c[MIRRORS[m].key] || 0) + '</span></button>';
+    })).join("");
+    var isMirror = !!MIRRORS[dprefs.tab];
+    $("dfilters").innerHTML = (isMirror ? "" : DFILTERS.map(function (f) { return '<button type="button" data-f="' + f[0] + '" aria-pressed="' + (dprefs.filter === f[0]) + '">' + f[1] + "</button>"; }).join("")) +
+      '<span class="sp"></span>' + (isMirror ? "" : '<button type="button" class="link" data-expand="1">expand all</button><button type="button" class="link" data-expand="0">collapse all</button>');
+    var filtering = dprefs.filter !== "all" || !!dq;
+    var h = [], shown = 0;
+    if (isMirror) {
+      var refs = ix[MIRRORS[dprefs.tab].key] || [], cur = "", open = false;
+      refs.forEach(function (r) {
+        var e = dash.rows[r.id]; if (!e) return;
+        if (dq && e.row.text.toLowerCase().indexOf(dq) < 0 && e.secTitle.toLowerCase().indexOf(dq) < 0) return;
+        if (r.tab !== cur) { if (open) h.push("</div>"); cur = r.tab; open = true; h.push('<div class="mgrp"><h3>' + esc(tabLabel(r.tab)) + '</h3>'); }
+        shown++;
+        h.push(rowHtml(e.row, r.tab, e.secTitle, e.secTitle + (e.sub ? " / " + e.sub : ""),
+          '<button type="button" data-go="' + esc(r.id) + '" data-gotab="' + esc(r.tab) + '" data-gosec="' + esc(r.secId) + '">go to row →</button>'));
+      });
+      if (open) h.push("</div>");
+      $("dsrc").textContent = dprefs.tab === "forben"
+        ? "computed: every open ⚑ row on every tab — a judgment only you can make. Standing decisions are on the ⚖ Rulings tab."
+        : "computed: every open 🤖 row — needs a live Foundry table, and an agent drives it. Nothing here is yours to do.";
+    } else {
+      var tab = ix.tabs.filter(function (t) { return t.key === dprefs.tab; })[0];
+      $("dsrc").textContent = "source: " + (tab.srcNote || "");
+      tab.sections.forEach(function (sec) {
+        var blocks = dash.sections[sec.id] || [], out = { n: 0 };
+        var body = blocksHtml(blocks, tab.key, sec.title, filtering, out);
+        if (filtering && out.n === 0) return;
+        shown += out.n;
+        var isOpen = filtering ? true : !!dashOpen[sec.id];
+        var k = sec.counts || {};
+        var cnt = filtering ? out.n + " match" + (out.n === 1 ? "" : "es") : (k.open || 0) + " open" + (k.done ? " · " + k.done + " done" : "") + (k.flags ? " · ⚑" + k.flags : "") + (k.bots ? " · 🤖" + k.bots : "");
+        h.push('<details class="dsec" data-sec="' + esc(sec.id) + '"' + (isOpen ? " open" : "") + '><summary><span class="tw">▶</span><span class="ttl">' + inl(sec.title) + '</span>' +
+          (sec.chips || []).map(function (ch) { return '<span class="dchip ' + esc(ch[1]) + '">' + esc(ch[0]) + '</span>'; }).join("") +
+          '<span class="cnt">' + esc(cnt) + '</span></summary><div class="body">' + (body || '<div class="empty">Nothing here.</div>') + '</div></details>');
+      });
+    }
+    $("dsections").innerHTML = h.join("") || '<div class="empty">Nothing matches on this tab.</div>';
+    $("dash-sub").textContent = filtering ? shown + " matching row" + (shown === 1 ? "" : "s") : (isMirror ? shown + " row" + (shown === 1 ? "" : "s") : (byTab[dprefs.tab] || {}).open + " open · " + ((byTab[dprefs.tab] || {}).done || 0) + " done");
+  }
+  function setDashTab(key) { dprefs.tab = key; savePrefs(); renderDash(); }
+  function gotoRow(id, tabKey, secId) {
+    dprefs.tab = tabKey; dprefs.filter = "all"; dq = ""; $("dq").value = ""; dashOpen[secId] = true; savePrefs(); renderDash();
+    var el = $("dsections").querySelector('.drow[data-id="' + id + '"]'); if (!el) return;
+    el.scrollIntoView({ block: "center" }); el.classList.add("flash"); setTimeout(function () { el.classList.remove("flash"); }, 1600);
+  }
+  function replyTo(label) {
+    var ta = $("note"); ta.value = label; $("inbox").scrollIntoView({ block: "start" });
+    if (ta.disabled) toast("Open this page in claude.ai to send inbox notes"); else { ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); }
+  }
+
   function render() {
     var now = Date.now();
-    try { renderHeader(now); renderNow(now); renderBudget(now); renderQueue(); renderAsks(); renderLog(now); renderFoot(); }
+    try { renderHeader(now); renderNow(now); renderBudget(now); renderQueue(); renderAsks(); renderLog(now); renderFoot(); renderSnapshot(now); renderDash(); }
     catch (e) { console.error(e); }
   }
   function tick() { var now = Date.now(); try { renderHeader(now); renderNow(now); renderBudget(now); } catch (e) { console.error(e); } }
 
   $("filters").addEventListener("click", function (ev) { var b = ev.target.closest("button[data-f]"); if (!b) return; filter = b.getAttribute("data-f"); renderQueue(); });
+  // dashboard: tabs, filters, search, section toggles, go/reply, tiles
+  $("dtabs").addEventListener("click", function (ev) { var b = ev.target.closest("button[data-tab]"); if (b) setDashTab(b.getAttribute("data-tab")); });
+  $("dfilters").addEventListener("click", function (ev) {
+    var f = ev.target.closest("button[data-f]"), x = ev.target.closest("button[data-expand]");
+    if (f) { dprefs.filter = f.getAttribute("data-f"); savePrefs(); renderDash(); }
+    if (x && dash) { var on = x.getAttribute("data-expand") === "1"; var t = dash.index.tabs.filter(function (q) { return q.key === dprefs.tab; })[0]; if (t) t.sections.forEach(function (sec) { dashOpen[sec.id] = on; }); renderDash(); }
+  });
+  var dqT; $("dq").addEventListener("input", function () { clearTimeout(dqT); dqT = setTimeout(function () { dq = $("dq").value.trim().toLowerCase(); renderDash(); }, 120); });
+  $("dsections").addEventListener("toggle", function (ev) { var d = ev.target; if (d && d.classList && d.classList.contains("dsec") && !(dprefs.filter !== "all" || dq)) dashOpen[d.getAttribute("data-sec")] = d.open; }, true);
+  $("dsections").addEventListener("click", function (ev) {
+    var g = ev.target.closest("button[data-go]"), r = ev.target.closest("button[data-reply]");
+    if (g) gotoRow(g.getAttribute("data-go"), g.getAttribute("data-gotab"), g.getAttribute("data-gosec"));
+    if (r) replyTo(r.getAttribute("data-reply"));
+  });
+  function jumpToDash(key) { setDashTab(key); $("dash").scrollIntoView({ block: "start" }); }
+  $("tiles").addEventListener("click", function (ev) { var b = ev.target.closest("button[data-tab]"); if (b) jumpToDash(b.getAttribute("data-tab")); });
+  $("asks").addEventListener("click", function (ev) { var b = ev.target.closest("button[data-tab]"); if (b) jumpToDash(b.getAttribute("data-tab")); });
 
   var toastT; function toast(msg) { var t = $("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(function () { t.classList.remove("show"); }, 2400); }
 
@@ -556,6 +850,24 @@
       if (snap.exists) { state = snap.data(); liveDoc = true; render(); }
       else { liveDoc = false; renderHeader(Date.now()); }
     }, function (err) { console.warn("pm/state subscription ended", err); liveDoc = false; renderHeader(Date.now()); });
+    // The dashboard: subscribe to the small index, fetch the chunks it names. A chunk whose stamp
+    // is not the index's is a push in flight — one retry, then wait for the next index snapshot.
+    function loadDash(idx, retried) {
+      var ids = (idx.chunks || []).map(function (c) { return c.id; });
+      Promise.all(ids.map(function (id) { return db.doc("dash/" + id).get(); })).then(function (docs) {
+        var chunks = {}; docs.forEach(function (d, i) { if (d.exists) chunks[ids[i]] = d.data(); });
+        var a = assembleDash(idx, chunks);
+        if (a) { dash = a; dashLive = true; renderSnapshot(Date.now()); renderDash(); renderAsks(); }
+        else if (!retried) setTimeout(function () { loadDash(idx, true); }, 3000);
+        else console.warn("dash: chunks incomplete for stamp", idx.stamp);
+      }).catch(function (e) { console.warn("dash: chunk load failed", e); });
+    }
+    db.doc("dash/index").onSnapshot(function (snap) {
+      if (!snap.exists) return;
+      var idx = snap.data();
+      if (dashLive && dash && dash.index.stamp === idx.stamp && dash.index.generatedAt === idx.generatedAt) return;
+      loadDash(idx, false);
+    }, function (err) { console.warn("dash/index subscription ended", err); });
     db.collection("inbox").orderBy("createdAt", "desc").limit(30).onSnapshot(function (snap) {
       renderNotes(snap.docs.map(function (d) { var b = d.data() || {}; return { id: d.id, text: b.text, status: b.status, createdAt: b.createdAt }; }), Date.now());
     }, function (err) { console.warn("inbox subscription ended", err); });

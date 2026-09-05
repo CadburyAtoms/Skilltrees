@@ -12,6 +12,12 @@
  *   - a `running` queue row synthesises a worker entry when no --live overlay is given, and a
  *     --live overlay replaces it wholesale;
  *   - --inject fills the page slot and can never emit a literal "</script>" inside it.
+ * And, since 2026-09-05 (the dashboard on the phone), three more against the REAL sources:
+ *   - the mobile snapshot's rows ARE the desktop's rows — every `data-id` in the committed
+ *     EDHA_DASHBOARD.html is a snapshot row id and vice versa, the two mirrors match `data-ref`
+ *     for `data-ref`, and the stamps agree — so the phone can never show a row the desktop lacks;
+ *   - the shards never exceed the chunk cap and cover every section exactly once;
+ *   - --inject fills BOTH slots (board state + dashboard) and the page can assemble the second.
  */
 "use strict";
 const assert = require("assert");
@@ -19,7 +25,9 @@ const fs = require("fs");
 const path = require("path");
 
 const REPO = path.resolve(__dirname, "..");
-const { parseBoard, injectState, wallToIso, inWindow, nextWindowOpen, parseWindowEntry, STATUS_VOCAB } = require(path.join(REPO, "scripts", "pm-state.js"));
+const { parseBoard, injectState, injectPage, shardDashboard, wallToIso, inWindow, nextWindowOpen,
+  parseWindowEntry, STATUS_VOCAB, DASH_CHUNK_BYTES } = require(path.join(REPO, "scripts", "pm-state.js"));
+const dashboard = require(path.join(REPO, "scripts", "build-dashboard.js"));
 
 const FIXTURE = `# PM Board — fixture
 
@@ -222,4 +230,82 @@ test("pm-state: the real board parses and every status is in the vocabulary", ()
   assert.ok(s.rulings.length >= 6);
   assert.strictEqual(s.caps.timeZone, "America/New_York");
   assert.ok(fs.existsSync(path.join(REPO, "docs", "pm-board-mobile.html")), "the page the state is injected into is tracked");
+});
+
+// ---- the dashboard on the phone (2026-09-05) ----
+
+let SNAP = null;
+const snapshot = () => (SNAP = SNAP || dashboard.mobileSnapshot(dashboard.buildModel()));
+const walkItems = (blocks, fn) => { for (const b of blocks) { if (b.type === "item") fn(b); else if (b.type === "sub") walkItems(b.blocks, fn); } };
+
+test("pm-state: the mobile snapshot's rows are exactly the committed dashboard's rows, same ids, same stamp", () => {
+  const snap = snapshot();
+  const html = fs.readFileSync(path.join(REPO, "EDHA_DASHBOARD.html"), "utf8");
+  const htmlIds = new Set([...html.matchAll(/class="row k-[a-z]+(?: done)?" data-id="([0-9a-f]{12})"/g)].map((m) => m[1]));
+  const snapIds = [];
+  let counted = 0;
+  for (const tab of snap.tabs) for (const sec of tab.sections) walkItems(sec.blocks, (it) => { snapIds.push(it.id); counted++; });
+  assert.strictEqual(counted, snap.counts.rows, "counts.rows is the number of items");
+  assert.strictEqual(new Set(snapIds).size, snapIds.length, "row ids are unique");
+  assert.deepStrictEqual([...new Set(snapIds)].sort(), [...htmlIds].sort(), "snapshot row ids == desktop data-ids");
+  const stamp = html.match(/combined stamp @([0-9a-f]{10})/);
+  assert.ok(stamp && stamp[1] === snap.stamp, `stamp ${snap.stamp} matches the HTML's ${stamp && stamp[1]}`);
+  // The two mirrors: same refs, same order, as the HTML's jump links.
+  const refs = [...html.matchAll(/data-ref="([0-9a-f]{12})" data-reftab="([a-z]+)"/g)].map((m) => m[1]);
+  assert.deepStrictEqual(snap.forBen.concat(snap.benchQueue).map((r) => r.id), refs, "⚑ then 🤖 mirror refs match the HTML");
+  assert.strictEqual(snap.counts.forBen, snap.forBen.length);
+  assert.strictEqual(snap.counts.benchQueue, snap.benchQueue.length);
+  const tabcount = (k) => +html.match(new RegExp(`data-tabcount="${k}">(\\d+)<`))[1];
+  assert.strictEqual(tabcount("forben"), snap.counts.forBen);
+  assert.strictEqual(tabcount("benchqueue"), snap.counts.benchQueue);
+  // Every ref resolves to a row that is open and carries the marker on its own first line.
+  const byId = new Map();
+  for (const tab of snap.tabs) for (const sec of tab.sections) walkItems(sec.blocks, (it) => byId.set(it.id, it));
+  for (const r of snap.forBen) { const it = byId.get(r.id); assert.ok(it && !it.done && it.flags > 0, `forBen ref ${r.id} is an open ⚑ row`); }
+  for (const r of snap.benchQueue) { const it = byId.get(r.id); assert.ok(it && !it.done && it.bots > 0, `benchQueue ref ${r.id} is an open 🤖 row`); }
+  assert.deepStrictEqual(snap.tabs.map((t) => t.key), ["bench", "art", "world", "engine", "repo", "rulings"], "desktop tab order, Project excluded (the page is the board)");
+  assert.ok(snap.deploy && snap.deploy.prose.length > 0, "the DEPLOY STATE banner rides along");
+});
+
+test("pm-state: the shards stay under the chunk cap and cover every section exactly once", () => {
+  const snap = snapshot();
+  const B = (o) => Buffer.byteLength(JSON.stringify(o));
+  for (const maxBytes of [DASH_CHUNK_BYTES, 64 * 1024]) {
+    const { index, chunks } = shardDashboard(snap, { maxBytes, now: NOW });
+    assert.ok(B(index) < 256 * 1024, "index under the store's document cap");
+    const seen = new Map();
+    for (const id of Object.keys(chunks)) {
+      assert.ok(B(chunks[id]) <= maxBytes, `${id} is ${B(chunks[id])} bytes, cap ${maxBytes}`);
+      assert.strictEqual(chunks[id].stamp, snap.stamp);
+      for (const secId of Object.keys(chunks[id].sections)) { assert.ok(!seen.has(secId), `${secId} appears twice`); seen.set(secId, id); }
+    }
+    for (const tab of index.tabs) for (const sec of tab.sections) {
+      assert.strictEqual(seen.get(sec.id), sec.chunk, `${sec.id} points at the chunk that holds it`);
+      assert.ok(!("blocks" in sec), "the index carries no row blocks");
+      seen.delete(sec.id);
+    }
+    assert.strictEqual(seen.size, 0, "no chunk section is outside the index");
+    assert.deepStrictEqual(index.chunks.map((c) => c.id), Object.keys(chunks));
+    assert.strictEqual(index.generatedAt, NOW);
+    assert.strictEqual(index.stamp, snap.stamp);
+  }
+  assert.ok(Object.keys(shardDashboard(snap, { maxBytes: 64 * 1024 }).chunks).length > Object.keys(shardDashboard(snap, { maxBytes: DASH_CHUNK_BYTES }).chunks).length, "a smaller cap means more chunks");
+  assert.throws(() => shardDashboard(snap, { maxBytes: 2048 }), /alone exceeds/, "a section bigger than the cap is an error, not an oversized document");
+});
+
+test("pm-state: --inject fills both slots and the page can assemble the dashboard from the second", () => {
+  const page = fs.readFileSync(path.join(REPO, "docs", "pm-board-mobile.html"), "utf8");
+  assert.ok(/<script id="pm-state" type="application\/json">\{\}<\/script>/.test(page), "tracked page keeps an empty state slot");
+  assert.ok(/<script id="pm-dashboard" type="application\/json">\{\}<\/script>/.test(page), "tracked page keeps an empty dashboard slot");
+  const state = parseBoard(FIXTURE, { now: NOW, git: GIT });
+  const shards = shardDashboard(snapshot(), { now: NOW });
+  const out = injectPage(page, state, shards);
+  const slot = (id) => JSON.parse(out.match(new RegExp(`<script id="${id}" type="application\\/json">([^<]*)<\\/script>`))[1]);
+  assert.strictEqual(slot("pm-state").queue.length, 5);
+  const d = slot("pm-dashboard");
+  assert.deepStrictEqual(Object.keys(d).sort(), ["chunks", "index"]);
+  assert.strictEqual(d.index.stamp, snapshot().stamp);
+  for (const c of d.index.chunks) assert.ok(d.chunks[c.id] && d.chunks[c.id].stamp === d.index.stamp, `chunk ${c.id} present under the index's stamp`);
+  assert.ok(!out.includes("</script><script>alert"), "nothing in the sources can close the slot early");
+  assert.ok(out.length > page.length + 500000, "the whole dashboard rides in the page");
 });

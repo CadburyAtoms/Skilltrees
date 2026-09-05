@@ -36,6 +36,15 @@
  * Usage:
  *   node scripts/build-dashboard.js           # (re)write EDHA_DASHBOARD.html
  *   node scripts/build-dashboard.js --check   # exit 1 if the committed dashboard is stale
+ *
+ * ALSO A MODULE (2026-09-05): `require('./build-dashboard.js')` runs nothing and exports
+ *   buildModel()          sources → the tab model (TABS, the two mirrors, the deploy banner)
+ *   renderHtml(model)     the tab model → EDHA_DASHBOARD.html's text (build() = both)
+ *   mobileSnapshot(model) the tab model → the JSON the mobile PM board's Dashboard section renders
+ *                         (docs/pm-board-mobile.html, pushed by scripts/pm-state.js). Same rows,
+ *                         same row ids, same ⚑/🤖 classification as the HTML — one model, two views,
+ *                         so the phone can never show a row the desktop does not (pinned in
+ *                         tests/pm-state.test.js against the committed HTML).
  */
 'use strict';
 
@@ -373,6 +382,19 @@ function rowId(secTitle, subTitle, text) {
     .slice(0, 12);
 }
 
+// The id a row carries in the HTML (`data-id`) and in the mobile snapshot. Bench rows keep the
+// historical (tab-less) recipe so pre-dashboard marks survive; every other tab is namespaced.
+function itemId(tabKey, secTitle, subTitle, it) {
+  return it.kind === 'bench' ? rowId(secTitle, subTitle, it.text) : rowId(tabKey + '|' + secTitle, subTitle, it.text);
+}
+
+// ⚑/🤖 on the row's OWN first line only — a marker quoted in an indented continuation (or
+// inherited from a header) is evidence about the past, not a classification.
+function markers(it) {
+  const headText = it.head || it.text;
+  return { flags: (headText.match(/⚑/g) || []).length, bots: (headText.match(/🤖/g) || []).length };
+}
+
 function rowLabel(text) {
   const b = text.match(/\*\*([^*]+)\*\*/);
   if (b) return b[1];
@@ -395,13 +417,8 @@ function deployChips(sec) {
 }
 
 function renderItem(tabKey, secTitle, subTitle, it, counter) {
-  // Bench ids keep the historical (tab-less) recipe so pre-dashboard marks survive.
-  const id = it.kind === 'bench' ? rowId(secTitle, subTitle, it.text) : rowId(tabKey + '|' + secTitle, subTitle, it.text);
-  // Classify on the row's own first line only — a marker quoted in an indented continuation
-  // (or inherited from a header) is evidence about the past, not a classification.
-  const headText = it.head || it.text;
-  const flags = (headText.match(/⚑/g) || []).length;
-  const bots = (headText.match(/🤖/g) || []).length;
+  const id = itemId(tabKey, secTitle, subTitle, it);
+  const { flags, bots } = markers(it);
   const n = counter.n++;
   const label = rowLabel(it.text);
   const logHtml = it.log && it.log.length
@@ -452,7 +469,7 @@ function renderProjectPane(md, srcNote) {
 // Assemble the tab model
 // ---------------------------------------------------------------------------
 
-function build() {
+function buildModel() {
   const sources = {};
   const src = (rel) => {
     const text = read(rel);
@@ -615,8 +632,17 @@ function build() {
   const forBen = collect((t) => /⚑/.test(t));
   const benchQueue = collect((t) => /🤖/.test(t));
 
+  return { sources, TABS, forBen, benchQueue, deployBanner, pmBoardMd, stampAll: hash10(Object.values(sources).join('|')) };
+}
+
+// ---------------------------------------------------------------------------
+// Render the tab model to EDHA_DASHBOARD.html
+// ---------------------------------------------------------------------------
+
+function renderHtml(model) {
+  const { sources, TABS, forBen, benchQueue, deployBanner, pmBoardMd, stampAll } = model;
+
   // --- Render
-  const stampAll = hash10(Object.values(sources).join('|'));
   const counter = { n: 1 };
   let tabsBarHtml = '';
   let panesHtml = '';
@@ -656,9 +682,7 @@ function build() {
     let curKey = '';
     for (const e of entries) {
       if (e.tab.key !== curKey) { if (curKey) html += '</div></section>'; curKey = e.tab.key; html += `<section><h2>${esc(plain(e.tab.label))}</h2><div class="body">`; }
-      const id = e.item.kind === 'bench'
-        ? rowId(e.sec.title, e.sub ? e.sub.title : null, e.item.text)
-        : rowId(e.tab.key + '|' + e.sec.title, e.sub ? e.sub.title : null, e.item.text);
+      const id = itemId(e.tab.key, e.sec.title, e.sub ? e.sub.title : null, e.item);
       html += `<div class="row k-ref" data-ref="${id}" data-reftab="${e.tab.key}">
 <div class="ctl"><button class="goto" title="Jump to this item on its tab">go →</button></div>
 <div class="txt"><span class="refsec">${inline(e.sec.title)}</span>${inline(e.item.text)}</div>
@@ -1098,6 +1122,90 @@ refresh();
 `;
 }
 
+function build() {
+  return renderHtml(buildModel());
+}
+
+// ---------------------------------------------------------------------------
+// The mobile snapshot — the same tab model as JSON, for docs/pm-board-mobile.html's Dashboard
+// section (added 2026-09-05: Ben asked for the whole dashboard on his phone, not just the PM
+// board). Deterministic like the HTML: no timestamps, the only stamp is the sources' hash, so
+// scripts/pm-state.js can tell "the docs changed" from "nothing changed" by comparing stamps.
+//
+// Shape (schema 1):
+//   { schema, stamp, sources: {rel: hash}, tabs: [{ key, label, srcNote, sections: [{ id, title,
+//     chips: [[text, kind]], counts: {total, open, done, flags, bots}, blocks: [block] }] }],
+//     deploy: { hot: [prose], prose: [prose] } | null,
+//     forBen / benchQueue: [{ tab, secId, sub, id }]   (refs into the rows — the text is on the row),
+//     counts: { rows, byTab: {key: counts}, forBen, benchQueue, rulingsOpen } }
+//   block = { type: 'prose', text } | { type: 'sub', title, blocks } |
+//           { type: 'item', id, kind, text, label, done, partial?, flags, bots, log? }
+// Item ids are the HTML's `data-id`s (itemId above). `total`/`open` skip `info` rows and `open`
+// skips done rows — the desktop's per-tab count recipe. The Project tab is NOT here: the mobile
+// page IS the PM board (scripts/pm-state.js projects it separately).
+// ---------------------------------------------------------------------------
+function mobileSnapshot(model) {
+  const { sources, TABS, forBen, benchQueue, deployBanner, stampAll } = model;
+  const zero = () => ({ total: 0, open: 0, done: 0, flags: 0, bots: 0 });
+  const add = (into, c) => { for (const k of Object.keys(c)) into[k] += c[k]; };
+  let rows = 0;
+  let rulingsOpen = 0;
+
+  const projectItem = (tabKey, secTitle, subTitle, it, counts) => {
+    const { flags, bots } = markers(it);
+    rows++;
+    if (it.kind !== 'info') {
+      counts.total++;
+      if (it.done) counts.done++;
+      else { counts.open++; counts.flags += flags ? 1 : 0; counts.bots += bots ? 1 : 0; }
+    }
+    if (it.kind === 'ruling' && !it.done) rulingsOpen++;
+    const o = { type: 'item', id: itemId(tabKey, secTitle, subTitle, it), kind: it.kind, text: it.text, label: rowLabel(it.text), done: !!it.done, flags, bots };
+    if (it.partial) o.partial = true;
+    if (it.log && it.log.length) o.log = it.log.slice();
+    return o;
+  };
+  const projectBlocks = (tabKey, secTitle, subTitle, blocks, counts) => blocks.map((b) => {
+    if (b.type === 'prose') return { type: 'prose', text: b.text };
+    if (b.type === 'item') return projectItem(tabKey, secTitle, subTitle, b, counts);
+    if (b.type === 'sub') return { type: 'sub', title: b.title, blocks: projectBlocks(tabKey, secTitle, b.title, b.blocks, counts) };
+    return null;
+  }).filter(Boolean);
+
+  const byTab = {};
+  const tabs = TABS.map((tab) => {
+    const tc = zero();
+    const sections = tab.sections.map((sec, i) => {
+      const sc = zero();
+      const blocks = projectBlocks(tab.key, sec.title, null, sec.blocks, sc);
+      add(tc, sc);
+      return { id: tab.key + '-sec' + i, title: sec.title, chips: tab.key === 'bench' ? deployChips(sec) : [], counts: sc, blocks };
+    });
+    byTab[tab.key] = tc;
+    return { key: tab.key, label: tab.label, srcNote: tab.srcNote, sections };
+  });
+
+  const secIndex = (tab, sec) => tab.key + '-sec' + tab.sections.indexOf(sec);
+  const refs = (entries) => entries.map((e) => ({ tab: e.tab.key, secId: secIndex(e.tab, e.sec), sub: e.sub ? e.sub.title : null, id: itemId(e.tab.key, e.sec.title, e.sub ? e.sub.title : null, e.item) }));
+
+  let deploy = null;
+  if (deployBanner) {
+    const prose = deployBanner.blocks.filter((b) => b.type === 'prose').map((b) => b.text);
+    deploy = { title: deployBanner.title, hot: prose.filter((t) => /MERGED BUT NOT YET DEPLOYED/i.test(t)), prose };
+  }
+
+  return {
+    schema: 1,
+    stamp: stampAll,
+    sources,
+    tabs,
+    deploy,
+    forBen: refs(forBen),
+    benchQueue: refs(benchQueue),
+    counts: { rows, byTab, forBen: forBen.length, benchQueue: benchQueue.length, rulingsOpen },
+  };
+}
+
 // ---------------------------------------------------------------------------
 function main() {
   const html = build();
@@ -1123,4 +1231,6 @@ function main() {
   });
 }
 
-main();
+module.exports = { buildModel, renderHtml, build, mobileSnapshot, itemId, rowId, markers, rowLabel, parseChecklist };
+
+if (require.main === module) main();
