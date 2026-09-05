@@ -1,5 +1,5 @@
 @echo off
-cd /d "C:\Users\benhe\OneDrive\Documentos\Worldbuilding\Claude Design\Skilltrees\scripts"
+cd /d "%~dp0"
 echo === process check === > build-log.txt
 powershell -NoProfile -Command "Get-Process | Where-Object {$_.ProcessName -match 'foundry|electron'} | Select-Object ProcessName,Id" >> build-log.txt 2>&1
 echo === build deity === >> build-log.txt
