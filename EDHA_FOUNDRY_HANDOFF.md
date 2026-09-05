@@ -664,6 +664,44 @@ pre-existing actor.** Everything created lives in `Edha Bench`. Bench chat can b
 - **An ActiveEffect created with exactly ONE status and no `_id` throws** in cosmere 2.1.0
   (`isStatusEffect` reads `this.id.startsWith(...)` and `id` is null pre-insert). Pass an explicit `_id`.
 
+## 2026-09-05 — `deploy-to-foundry.bat` can no longer hang on git's "Should I try again? (y/n)" (TOOLING-only; the script runs only on Ben's machine; no engine or pack change)
+
+Two deploys on 2026-09-04 sat forever on `Deletion of directory '.git/worktrees/edha-map-extraction-d034d4/logs'
+failed. Should I try again? (y/n)`, and after that record was cleared by hand, on `.git/refs/remotes/origin/pm`.
+**Root cause is in Git for Windows' `compat/mingw.c`**: `mingw_unlink` does a `chmod 0666` before retrying a
+FILE delete, but `mingw_rmdir` does not — a read-only DIRECTORY fails RemoveDirectory with ACCESS_DENIED,
+`is_file_in_use_error` treats that as "in use", and on a console `ask_yes_no_if_possible` turns it into the
+y/n question. **OneDrive marks every directory under `.git` read-only** (Ben measured 308 of 308; this
+session's own new worktree record was re-marked within the hour of being created), so any git command that
+removes an emptied directory — the post-fetch auto-maintenance `worktree-prune` task, a loose-ref prune that
+empties `refs/remotes/origin/pm/` — is a coin-flip stall for anyone sitting at a console.
+
+**The script is now 8 steps.** New **step 2** clears the read-only flag on every DIRECTORY under `.git`
+(files left alone — git makes objects and packs read-only on purpose; enumerated with `dir /s /b /ad`
+rather than `for /d`, which skips hidden folders) and then runs `git worktree prune --verbose < nul` —
+records only, never a checkout under `.claude/worktrees` (Ben's call), never a worktree whose folder still
+exists. **Step 3's pull** is now `git -c maintenance.auto=false -c gc.auto=0 pull --ff-only < nul` (both
+keys confirmed in git 2.54's `help --config` list). The `< nul` is the actual guarantee: git only asks its
+y/n question when stdin is a terminal, so the worst case anywhere in the script is an error line and a
+stop, never a hang. Sign-in prompts are unaffected (they use the console handle, not stdin). Cost ≈ 2 s per
+deploy for ~300 `attrib` spawns. The `:failed` footnote also pointed at "step 1" for the pull since 07-27;
+it now says step 3.
+
+**Proven in a scratch clone** (short `%TEMP%` path with a space in it, like Ben's — the session scratchpad
+path exceeds MAX_PATH for git): fabricated `.git/worktrees/fake/{logs,refs}` + `ORIG_HEAD` with no `gitdir`
+(exactly what Ben's stale record looked like), a remote branch deleted so `refs/remotes/origin/pm/` empties on
+the next prune, `attrib +R` on all 277 directories. BEFORE: `git worktree prune` → `error: failed to delete
+'.git/worktrees/fake': Permission denied` (the non-console form of the prompt), a plain `git pull --ff-only`
+spawned `git maintenance run --auto --no-quiet --detach` (GIT_TRACE) and left the emptied `pm` folder behind
+still read-only, and a plain `git fetch` reproduced Ben's exact path (maintenance → prune → Permission
+denied). AFTER, running lines 33–74 of the new script byte-identical (sha256 `499acfe5…`): 277 folders
+cleared, `Removing worktrees/fake: gitdir file does not exist`, pull fast-forwarded, `pm` folder gone, 0
+`maintenance` lines in the trace, 7 of 7 object files still read-only, 0 directories read-only, exit 0, no
+`:failed`. The y/n text itself cannot be captured from an agent shell (no TTY) — **Ben's next deploy is the
+live confirmation.** No 🤖 rows: the bench cannot run the deploy. Gotcha added to §10.
+
+---
+
 ## 2026-09-05 — heroic-path id map moved from a hard-coded temp path into tracked `data/` (item 17, TOOLING-only; no pack content change on any machine today)
 
 `scripts/foundry-build.js:416` used to read the cosmere-rpg system's heroic-path talent ids
@@ -10956,6 +10994,7 @@ Weakened/Diagnosed/Insight statuses; sheet derivations (HP+1 / Speed 20+5×SPD v
 
 ## 10. Gotchas
 
+- **OneDrive sets the read-only attribute on every directory under `.git`, and Git for Windows' `rmdir` then asks "Deletion of directory '…' failed. Should I try again? (y/n)" on a console** (09-05). `compat/mingw.c`: `mingw_unlink` chmods a read-only FILE before retrying, `mingw_rmdir` does not, and it treats ACCESS_DENIED as "file in use". Any git command that removes an emptied directory — the post-fetch auto-maintenance `worktree-prune` task, a loose-ref prune emptying `refs/remotes/origin/pm/` — stalls an interactive window forever and *silently* fails in an agent shell (`error: failed to delete … Permission denied`; stdin is not a TTY, so git answers "no" for you and, for a ref's parent folder, says nothing at all). Clear DIRECTORIES only (`attrib -R` per folder from `dir /s /b /ad` — files are read-only by git's own design) and feed git `< nul`; `deploy-to-foundry.bat` step 2 does both on every run because OneDrive re-marks new folders within the hour. `git worktree prune` removes records under `.git/worktrees/` only — it never touches a checkout under `.claude/worktrees/`.
 - **Adversary art: the two extension lists must stay in lockstep** (07-15c). `sync-art.js`'s `EXTS` and `advArt()`'s probe list in `foundry-build.js` are both `["jpg","jpeg","webp","png"]`. If `sync-art` accepts an extension the build does not probe, the file COPIES, the deploy prints a SUCCESS line, and the art then silently never appears — no error anywhere. That is how `.jpeg` was broken from the pipeline's first commit. `.jpg` is the default (Procreate has no WebP export); order is precedence in `advArt()` only, so `.jpg` wins on a slug collision.
 - **The deploy only sees art files present WHEN IT RUNS** (07-15c). `art: 0 copied, 0 already current` with **no IGNORED list** = it saw an empty folder (deployed too early / OneDrive still syncing). A *misnamed* file instead prints an explicit "These files were NOT installed" block. Different message, different cause — read which one you got before debugging filenames.
 - **A generated-doc `--check` failure whose ONLY diff is the `@stamp` is a CRLF bug, not a stale file** (07-15c; re-pointed 07-24). All three generators (`build-dashboard.js`, `build-canon-codex.js`, `build-player-primer.js`) normalize their sources to LF before hashing — the rule was earned on the retired `build-test-sheet.js`, where they did not: Windows (CRLF working tree) and CI (LF) stamped the same checklist differently, so every Windows-side regen failed the gate with rows byte-identical. Regenerating harder never fixes that class — check whether the row hashes match first. **Any new generator must LF-normalize at the read**, or it reintroduces this.

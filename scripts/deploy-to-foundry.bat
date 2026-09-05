@@ -14,7 +14,7 @@ echo   Press any key to start, or close this window to cancel.
 pause >nul
 
 echo.
-echo   [1 of 7]  Checking that Foundry is really closed...
+echo   [1 of 8]  Checking that Foundry is really closed...
 REM The packs are a LevelDB; a running Foundry holds a lock on them and the pack
 REM rebuild fails part-way, leaving some packs rebuilt and others not. Cheaper to
 REM catch it here than to explain a half-deploy afterwards.
@@ -30,10 +30,47 @@ if not errorlevel 1 goto :stillrunning
 echo   Foundry is closed. Good.
 
 echo.
-echo   [2 of 7]  Getting the latest work from GitHub...
+echo   [2 of 8]  Clearing OneDrive's read-only flag from git's own folders...
+REM OneDrive marks every DIRECTORY under .git read-only (308 of 308 on 2026-09-04).
+REM Git for Windows clears that flag before deleting a FILE, but not before removing
+REM a DIRECTORY: RemoveDirectory fails with ACCESS_DENIED, git treats that as "file
+REM in use" and asks "Deletion of directory '...' failed. Should I try again? (y/n)"
+REM - and this window sits on that question forever. Two deploys stalled on it
+REM (2026-09-04): a stale .git\worktrees record that post-fetch maintenance tried to
+REM prune, and an emptied .git\refs\remotes\origin\pm folder. Directories ONLY:
+REM git makes its object and pack FILES read-only on purpose, those are left alone.
+REM OneDrive puts the flag back over time, so this runs on every deploy.
+REM (dir /ad rather than for /d: for /d skips hidden folders, dir /ad does not.)
+for /f "delims=" %%g in ('git rev-parse "--path-format=absolute" --git-common-dir') do set "EDHA_GITDIR=%%g"
+if not defined EDHA_GITDIR goto :failed
+set "EDHA_GITDIR=%EDHA_GITDIR:/=\%"
+set EDHA_DIRS=0
+for /f "delims=" %%d in ('dir /s /b /ad "%EDHA_GITDIR%"') do (
+  attrib -R "%%d"
+  set /a EDHA_DIRS+=1
+)
+echo   Cleared the read-only flag on %EDHA_DIRS% folders under "%EDHA_GITDIR%".
+REM Now the stale worktree records can go without a question. This removes ONLY
+REM git's bookkeeping under .git\worktrees for checkouts that no longer exist -
+REM never a checkout folder under .claude\worktrees (deleting those is Ben's call)
+REM and never the record of a worktree whose folder is still there. "< nul" keeps
+REM git's stdin off the console: git only asks its y/n question when stdin is a
+REM terminal, so if a folder still refuses to go this prints an error and moves on.
+git worktree prune --verbose < nul
+if errorlevel 1 echo   (Could not tidy the old worktree records - see above. Continuing: the deploy does not depend on it.)
+
+echo.
+echo   [3 of 8]  Getting the latest work from GitHub...
 REM --ff-only: if GitHub and this machine have drifted apart, STOP instead of
 REM quietly merging in the middle of a deploy.
-git pull --ff-only
+REM maintenance.auto=false / gc.auto=0: the fetch inside pull normally kicks off
+REM git's background housekeeping, which is what tried to prune the stale worktree
+REM record and hit the read-only question on 2026-09-04. Both keys exist in the
+REM installed git (2.54). A deploy is not the moment for housekeeping anyway.
+REM "< nul": same reason as step 2 - with stdin off the console git cannot ask a
+REM y/n question, so the worst case is an error and a stop, never a hang.
+REM (Sign-in prompts are unaffected: they use the console directly, not stdin.)
+git -c maintenance.auto=false -c gc.auto=0 pull --ff-only < nul
 if errorlevel 1 goto :failed
 for /f "delims=" %%b in ('git rev-parse --abbrev-ref HEAD') do set DEPLOY_BRANCH=%%b
 for /f "delims=" %%s in ('git rev-parse --short HEAD') do set DEPLOY_SHA=%%s
@@ -43,7 +80,7 @@ echo   If that is not the branch you expected, close this window now -
 echo   nothing has been installed yet.
 
 echo.
-echo   [3 of 7]  Checking whether you hand-edited the live engine...
+echo   [4 of 8]  Checking whether you hand-edited the live engine...
 REM A plain "the files differ" check cannot tell BEHIND from HAND-EDITED, and they
 REM want opposite answers. `status` decides by asking whether the live content
 REM matches any past commit: if it does it is merely stale (push away), if it
@@ -54,17 +91,17 @@ if errorlevel 2 goto :handedited
 if errorlevel 1 goto :failed
 
 echo.
-echo   [4 of 7]  Installing the engine into your live module...
+echo   [5 of 8]  Installing the engine into your live module...
 node module-src-sync.js push
 if errorlevel 1 goto :failed
 
 echo.
-echo   [5 of 7]  Installing your adversary art...
+echo   [6 of 8]  Installing your adversary art...
 node sync-art.js
 if errorlevel 1 goto :failed
 
 echo.
-echo   [6 of 7]  Rebuilding the packs (leyline + deity + heroic + adversaries + items)...
+echo   [7 of 8]  Rebuilding the packs (leyline + deity + heroic + adversaries + items)...
 node foundry-build.js leyline
 if errorlevel 1 goto :failed
 node foundry-build.js deity
@@ -77,7 +114,7 @@ node foundry-build.js items
 if errorlevel 1 goto :failed
 
 echo.
-echo   [7 of 7]  Validating the packs...
+echo   [8 of 8]  Validating the packs...
 node validate-packs.js
 if errorlevel 1 goto :failed
 node validate-adversaries.js
@@ -155,7 +192,7 @@ echo    (Common cause: talents you edited inside Foundry have not been
 echo     saved back to the project yet - the builder stops on purpose
 echo     so your edits are not lost. That is a safe stop, not a break.)
 echo.
-echo    (Another safe stop: step 1 refuses to pull when GitHub and this
+echo    (Another safe stop: step 3 refuses to pull when GitHub and this
 echo     machine disagree about history - nothing was installed.)
 echo   ****************************************************************
 echo.
