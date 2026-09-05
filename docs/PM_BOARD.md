@@ -17,11 +17,22 @@ session resumes from this file alone.
 - **One PM, and it is Fable.** The PM plans, writes briefs, dispatches, reviews, gates, merges,
   and keeps this board. **The PM does not write fixes itself** beyond one-line corrections found
   in review.
-- **Workers are Sonnet or Opus, never Fable.** Sonnet for mechanical, doc, config, and
+- **Workers are Sonnet or Opus by default.** Sonnet for mechanical, doc, config, and
   well-specified script work. Opus for anything that changes engine or build semantics, needs a
   byte-parity proof, or designs a test driver. The model is fixed per item on the queue below.
+  **Weekend sprints (PM-R8, Ben 2026-09-05 13:44): Fable subagents are authorized, at MEDIUM
+  effort only**, dispatched solely through the `fable-worker` agent definition
+  (`.claude/agents/fable-worker.md`, mirrored at `~/.claude/agents/`), whose frontmatter pins
+  `model: fable` / `effort: medium`. Never `Agent(model: "fable")` on a generic agent — that
+  inherits the PM's effort. Use Fable where Opus was queued for size-L engine-semantics work;
+  bench-run and test-pass-fixes stay Opus. A new agent type is visible only after a Claude Code
+  restart, so the session that created the file (09-05) cannot use it; the next one can.
 - **One worker at a time by default.** Two in parallel only when both are docs-only and touch
-  disjoint files.
+  disjoint files. **Weekend sprints (PM-R8 "increased usage"):** up to TWO concurrent workers —
+  the bench-loop worker in the main checkout plus ONE lane-R worker with `isolation: "worktree"`
+  on files the bench does not touch (not the checklist, handoff, runbook, or next-run file; the
+  generated dashboard may collide and the PM rebuilds it at merge). The bench loop itself stays
+  strictly serial: one Bench slot.
 - **Branch per item, PR per item, CI must be green, PM merges.** Workers never push to `main`.
   Branch name `pm/<item>-<slug>`. Commit messages follow iron rule 6 (engine-only vs rebuild
   stated; no model identifiers).
@@ -124,8 +135,9 @@ warning. **The old quiet hours (23:00–07:00) are gone — nights are now PM ti
 - **Per-shift ceilings (PM-R7, amended by Ben 2026-09-05 10:40 — "bump up the threshold for # of
   agents you can send in a period on the weekend"; numbers are the PM's default, Ben may set
   others):** a weeknight shift (21:00→07:00) dispatches **at most 2** under the normal 2-per-5h cap.
-  **On the weekend (Fri 21:00 → Mon 07:00) the trailing-5h cap is 4 dispatches of any model,**
-  and a weekend day-shift (07:00→07:00) dispatches **at most 8**. (The ≤2-Opus sub-cap written at
+  **On the weekend (Fri 21:00 → Mon 07:00) the trailing-5h cap is 6 dispatches of any model,**
+  and a weekend day-shift (07:00→07:00) dispatches **at most 12** (raised from 4 / 8 at 13:50 on
+  Ben's "increased usage for weekend sprints", PM-R8; the numbers are the PM's default). (The ≤2-Opus sub-cap written at
   10:45 was dropped at 11:55: every bench-loop worker is Opus by the skills' own design, so the
   sub-cap would have idled the table for four hours after two dispatches — the exact stall Ben
   objected to. Serialization, not model mix, is what bounds the weekend's spend.) The bench loop is
@@ -151,6 +163,7 @@ Answered by Ben on 2026-09-04 (all six, as recommended). Kept here so a worker c
 | **PM-R6** | Usage tier and caps | **Max 20x; the caps above stand.** |
 | **PM-R7** | Nights-and-weekends schedule (Ben's instruction 2026-09-05, amended 10:40: raise the weekend threshold) | **Instruction recorded; the exact cut is a PM default awaiting veto:** windows Mon–Thu 21:00→07:00 and Fri 21:00→Mon 07:00; weekday daytime is Ben's; weeknight ceiling 2 under the 2-per-5h cap; **weekend: 4 per trailing 5h of any model, 8 per day-shift** (Opus sub-cap dropped 11:55 — the bench loop is all-Opus and serial). Ben: say a different hour or number and it changes. |
 
+| **PM-R8** | Weekend sprints: Fable subagents + increased usage (Ben, 2026-09-05 13:44: "I'm authorizing Fable agents and increased usage for weekend sprints. Fable subagents are limited in effort to medium.") | **Recorded.** Fable workers only via `fable-worker` (model fable, effort medium), weekend windows only; weekend caps 6 per trailing 5h / 12 per day-shift; one parallel lane-R worktree worker allowed beside the bench loop. Numbers are PM defaults — Ben may set others. |
 | **R-69** (in `EDHA_RULINGS.md`) | Should a CANCELLED picker still burn the talent's once-per-scene use? Found by bench run 25: Final Decree → Cancel refunds the Investiture but leaves `sceneOnce` stamped, so the scene's only use is spent without resolving. | **(waiting)** — recommended default: move the stamp to after a successful pick; the alternative is to stop refunding on cancel so cost and use agree. Engine-only, one line. |
 
 New rulings go in this table with a `(waiting)` mark; the PM asks Ben in one batch, not one at a time.
@@ -174,11 +187,11 @@ Status: `queued` · `briefed` · `running` · `in-review` · `merged` · `blocke
 | 2 | 15 Pre-commit shim + reinstall | R | sonnet | S | — | merged | #133 |
 | 3 | 16 Build fails loudly on a broken overlay | R | sonnet | S | — | merged | #136 |
 | 4 | 17 Heroic ids into `data/` | R | sonnet | S | — | merged | #137 |
-| 5 | **Weekend bench marathon** — run 1 (hygiene 34 🤖 + engine-wide 4): 10 retired, 2 FAIL, 1 new defect → merged #142. Fix pass 1 (3 defects, 3 pinned tests) → merged #143, deployed 11:50 by hash. **Run 2 = re-test the 3 fixes, then hygiene part 2 (26 🤖 left there)**; run 3 = leyline scatter (11) + Heroic (1, not 54 — the 10:45 count matched the emoji, not open rows). Run 2 (#145): the 3 fixes re-tested PASS, 11 retired, 0 FAIL, 4 partial, 2 BLOCKED (need zero GM clients), **R-60 CLOSED**, new ruling R-69. Open 🤖 queue 85 → 69. **Now running: run 3** (leyline scatter 11 + Heroic 1 + hygiene remainder) | B | opus | L | Foundry window ✓ | running | #142 #143 #145 |
+| 5 | **Weekend bench marathon** — run 1 (hygiene 34 🤖 + engine-wide 4): 10 retired, 2 FAIL, 1 new defect → merged #142. Fix pass 1 (3 defects, 3 pinned tests) → merged #143, deployed 11:50 by hash. **Run 2 = re-test the 3 fixes, then hygiene part 2 (26 🤖 left there)**; run 3 = leyline scatter (11) + Heroic (1, not 54 — the 10:45 count matched the emoji, not open rows). Run 2 (#145): the 3 fixes re-tested PASS, 11 retired, 0 FAIL, 4 partial, 2 BLOCKED (need zero GM clients), **R-60 CLOSED**, new ruling R-69. Run 3 (#147): 11 PASS, 1 FAIL (Spreading Roots — `edhaGrowTerrain` mutates DataModel clones), 1 data anomaly (Reeve-Owl builds with empty `events`), veil half BLOCKED (scene has global light). **Per-tree bench block exhausted**; next block = `# Adversary ability wiring` (12 🤖). Open 🤖 queue 85 → ~55. **Now running: fix pass 2** (the two run-26 defects) | B | opus | L | Foundry window ✓ | running | #142 #143 #145 #147 |
 | 6 | 26 Bench PCs get normal vision (R-2) | R | sonnet | S | R-2 ✓ | queued | |
 | 7 | 27 Retire the `GM summon relay` row (R-1) | R | sonnet | S | R-1 ✓ | queued | |
 | 8 | **30** Rulings close-out R-7/R-19/R-34/R-49 (docs only, cloud-eligible) | R | sonnet | S | R-7/19/34/49 ✓ | queued | |
-| 9 | **31** Mobile board models operating windows, not quiet hours (`pm-state.js` + page + test) | R | sonnet | S | PM-R7 | queued | |
+| 9 | **31** Mobile board models operating windows, not quiet hours (`pm-state.js` + page + test) — in a worktree, parallel to fix pass 2 under PM-R8 | R | sonnet | S | PM-R7 | running | |
 | 10 | 20 One gate list, Windows-clean gates | R | sonnet | M | — | queued | |
 | 11 | 21 Stale-doc sweep (⚠️ `.claude/worktrees/focused-booth-7259bf` is LIVE as of 09-05 — Ben's deploy-script fix session; not one of the four stale ones) | R | sonnet | S | PM-R2 ✓ | queued | |
 | 12 | 18 Overlay name-collision guard | R | opus | S | #16 | queued | |
@@ -240,3 +253,5 @@ prompt on the way, which he is fixing in his own session in the `focused-booth-7
 | 2026-09-05 11:33 | Fix pass 1 — run 24's three defects — `test-pass-fixes` | opus | 18.5 min, 161 turns | 3.4M | merged after review, no bounce, no trailers. All three root causes verified in source; `edhaDialogPick` fixed once at the primitive (a `{edhaPick}` box that survives DialogV2's `?? action`), `edhaSceneReset` gained a per-actor claim across combats and an `edhaFlagKeyPresent` gate; 3 pinned tests (550 total, mutation-verified); 3 🤖 re-test rows; ENGINE_INDEX updated. Worker corrected the bench's blast radius (edhaPromptDC's two buttons were not live defects; the Weave cancel was worse than reported). **ENGINE-ONLY — deployed by the PM at 11:50 via `module-src-sync.js push`, hash-verified equal** | #143 |
 | 2026-09-05 11:55 | PM lesson (no worker) | fable | — | — | #142 was merged before CI had finished on its amended (trailer-stripped) commit: `gh pr checks --watch` returned the OLD run's green. Content was byte-identical and the main run went green, but the rule is now explicit: **after any force-push, wait for the run on the NEW sha** (`gh run list --branch <b>` shows it). Also: PM session cost so far 6.7M / 214 turns — most of it the two long-report reviews | |
 | 2026-09-05 12:08 | Bench run 2 = bench run 25 (re-test fix pass 1, then hygiene part 2) — `bench-run` | opus | 45 min, 396 turns | 10.6M | merged after review, no bounce, no trailers. Deploy hash-verified (installed AND served, after CRLF normalisation — a raw-bytes hash reads a good deploy as bad on Windows; runbook lesson). **All three fix-pass-1 rows PASS** with negatives (one card/one injury; Cancel refunds 4→1→4 with no flag; 4 of 74 actors written, none of Ben's PCs). 11 retired incl. both remaining R-60 rows (**R-60 closed**), R-64, four R-65 families; 4 partial with the open half written on the row; 2 BLOCKED (need zero GM clients — Ben's Gamemaster client was connected). 0 FAIL → no fix pass this cycle. New low-severity 🤖 row (system's own damage card prints the unfolded formula; maths correct). **New ruling R-69** for Ben. World restored: 3 pre-existing Covenant effects the sweep ate were recreated with original ids; final id-diff clean; roster idempotency 0 ⚠ / 0 created; Bench logged out | #145 |
+| 2026-09-05 12:57 | Bench run 3 = bench run 26 (engine-wide 2 + leyline scatter 12 + hygiene remainder) — `bench-run` | opus | 52 min, 358 turns | 9.5M | merged after review, no bounce, no trailers. Deploy hash-verified (installed + served-normalised). 11 PASS retired (both engine-wide rows, Flashpoint, Living Image, The Seeming, three Green rows, Devoted Conduit, White burst riders, Covenant icon, Probability Cascade); **1 FAIL** Spreading Roots — `edhaGrowTerrain` deep-clones DataModel shape instances so `region.update` diffs to nothing while the Drawing grows (measured by re-running the path live); **1 data anomaly** Reeve-Owl / Sovereign of Solitude builds with `system.events === {}` against four authored rules, stale pack ruled out by six correct siblings; 2 PARTIAL; veil half BLOCKED (Playtest Map has darkness 0 + global light — needs a bench-created scene). Green's stale "needs an Opportunity" blocker struck. **Per-tree `# BENCH —` block exhausted.** World restored: 3 Covenant effects recreated with original ids, final diff empty; roster 0 ⚠; logged out | #147 |
+| 2026-09-05 13:44 | Ben: "I'm authorizing Fable agents and increased usage for weekend sprints. Fable subagents are limited in effort to medium." → **PM-R8** (PM bookkeeping, no worker) | fable | — | — | `fable-worker` agent definition written (user-level, mirrored into the repo); board + skill amended; weekend caps 6/5h, 12/day; one parallel lane-R worktree worker allowed. The Fable agent type is visible only after a restart — this session keeps dispatching Opus/Sonnet | (this PR) |
