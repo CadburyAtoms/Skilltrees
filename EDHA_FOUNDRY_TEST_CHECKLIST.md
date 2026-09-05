@@ -1551,31 +1551,6 @@ Cross-actor relay watch-items scattered through the tree sections (White Coordin
 §5, Chaos §3…) need no dedicated tests — they self-verify while running the rows above; note
 anything that errors in the row's note box.
 
-## Re-test after fix pass 1 / run 24 (2026-09-05 — all three fixed; ⟳ sync the module + F5 first, engine-only, NO rebuild, NO ⟳ Sync Talents)
-
-Run these FIRST on the next bench. All three are `module-src/scripts/register-skills.js` only — no
-pack rebuild, no ⟳ Sync Talents; ⟳ sync the module and F5.
-
-- [ ] 🤖 **Apex Form ends ONCE when two combats end together — RE-TEST after fix pass 1 (2026-09-05; engine-only → ⟳ sync + F5)** — the exact staging run 24 used: put `apexForm` on ONE off-canvas actor (token deleted, absence asserted against `canvas.tokens.placeables`), create TWO combats `{active:false}`, then delete both in the same tick.
-      **POSITIVE:** exactly **ONE** "🌟 **Apex Form** ends — … takes an injury: …" card and exactly **ONE** injury Item on that actor. Run 24 got two of each, off one flag.
-      **NEGATIVE (load-bearing — the tempting wrong fix fails here):** ending combat A must NOT stop combat B's own sweep. Put an actor in combat B ONLY, give it `apexForm` and a `mutation` flag, delete combat A first (B's actor is correctly skipped, R-58), then delete B — B's actor must now lose both, and get its own single injury card. A guard that dropped the second sweep wholesale would strand it for ever, which is why the old boolean was replaced.
-      **NEGATIVE 2 (the claim is per family, not global):** with Life and Sovereignty state on the same actor, ending one combat must still run BOTH families — the `dieStep`/`exalted` clear and the apex injury in the same pass.
-      *(Root cause: R-60's busy key was `` `${key}:${endedCombat.id}` ``, so two different combats never collide — the boolean it replaced could not miss this. Unset-first/create-after loses the race because `unsetFlag` awaits a server round-trip. Fixed with a second, per-ACTOR claim `key:actorUuid` in `edhaSceneReset`, across combats, claimed synchronously. Pinned in `tests/scene-reset-reentry.test.js`; verified by mutation.)*
-
-- [ ] 🤖 **Every picker's Cancel actually cancels — RE-TEST after fix pass 1 (2026-09-05; engine-only → ⟳ sync + F5)** — three pickers, one primitive. Note the Investiture value before each.
-      **POSITIVE 1 (the measured one):** Final Decree → prohibition picker → **Cancel** → the toast "*Final Decree cancelled — cost refunded.*", Investiture back where it started, **no** ⚖ card, and **no** `flags.edha-content.decree` on the actor. Run 24 spent 3 Investiture, refunded nothing, armed the Decree with `proh === "cancel"` and printed "*must not **undefined***".
-      **POSITIVE 2:** the Weave link picker (two Ordained squares) → **Cancel** → "*… canceled — cost refunded*", cost back, **no** "the chosen squares are linked" card and no `linked` flag on any marker. This was the worse half: `"cancel"[0]`/`[1]` are `"c"`/`"a"`, two different truthy strings, so the cancel used to sail through the guard and post a success card.
-      **POSITIVE 3:** the GM DC prompt → **"No DC — judge it"**, and separately **"Resolve" with the box left blank** — both must fall through to owner-judged exactly as before (no DC named in the resulting card/toast).
-      **NEGATIVE (load-bearing):** the OK paths must be untouched — declare a real prohibition and confirm the ⚖ card names it; link two DIFFERENT squares and confirm both mark `linked`; enter a real DC (try **0** as well as 14) and confirm it is used as a number, not treated as "no DC".
-      **NEGATIVE 2:** dismissing a picker with **Escape / the window X** must behave like Cancel (refund, no card), not like OK.
-      *(Root cause: `DialogV2#_onSubmit` is `const result = (await button?.callback?.(…)) ?? button?.action;` — a callback resolving `null`/`undefined` is replaced by the truthy action string, so every caller's `if (!picked)` missed. Fixed once in `edhaDialogPick` by boxing every callback result as `{edhaPick: …}`; both callers already refunded on a falsy result. Pinned in `tests/dialog-pick-box.test.js` against a stub that reproduces the `??` line verbatim.)*
-
-- [ ] 🤖 **A combat end no longer writes to every actor in the world — RE-TEST after fix pass 1 (2026-09-05; engine-only → ⟳ sync + F5)** — hook `updateActor` and count, the way run 24 did.
-      **POSITIVE:** with ONE bench actor carrying state and the rest of the world carrying none, end a combat and confirm the uninvolved actors take **ZERO** `updateActor` events — including `Tem parinaem` and `Soggy Bottom` — and that no actor gains an empty `lists: {}` or `markedBy: {}` it did not have. Run 24 measured 33 actors polluted that way and tripped Foundry's *"Exceeded maximum number of update-actor events in a short period of time"* limiter, which then silently swallowed an unrelated talent use.
-      **NEGATIVE (load-bearing — this is the fix's whole risk):** nothing may be left behind. Stage a bearer with a FALSY-but-present flag value (`decay: 0`, `deathWard: false`, `markedBy.hexmark: null`) alongside real ones, end a combat, and confirm every one of them is gone. Only genuinely absent keys are skipped; `0`/`false`/`null` are set values.
-      **NEGATIVE 2:** run the whole R-60 population sweep again (the flagship Sovereignty case — `dieStep` + `exalted` on an OFF-CANVAS actor) and confirm it still clears. The gate is per key, not per actor, so a wide sweep must be indistinguishable from before except in write count.
-      *(Root cause: `Document#unsetFlag` always ends in an `update()` whether or not the key is there, and a dotted `-=` delete creates its parent object on the way past. The flag loop now gates on the new `edhaFlagKeyPresent`, which is the guard the status loop one line below always had. Batching a family's keys into one `update()` per actor was considered and not taken — it would cost the per-key try/catch isolation.)*
-
 ## Re-test after the fix pass F fixes (2026-07-28m — three fixed; ⟳ sync the module + F5 first, NO rebuild, NO ⟳ Sync Talents)
 
 - [ ] 🤖 **Living Image's Pay button — RE-TEST after fix pass F (07-28m; engine-only → ⟳ sync + F5)** — with `Bench — Blue` holding a live COMPLEX illusion, start Blue's turn so the upkeep prompt whispers, then press the button.
@@ -3367,40 +3342,12 @@ a token you can remove from the canvas (or simply not place) to test the off-sce
 > Order, Power (driven on an off-canvas **adversary**-typed bearer, the exact gap the row names), Knowledge,
 > and the Charges/Chaos/Civ dedup check (one `updateActor` per key, one `deleteActiveEffect` per status,
 > zero Edha console warnings). Evidence in the 2026-09-05 delta. **Life FAILED** — see its row.
-
-- [ ] 🤖 **NEW (run 24) — the widened sweep writes to EVERY actor in the world, and creates empty
-      `lists {}` / `markedBy {}` containers on all of them (PCs included).** `edhaSceneReset` calls
-      `a.unsetFlag(...)` unconditionally, and `Document#unsetFlag` always issues an `update()` — it never
-      checks whether the key exists. With R-60's directory∪canvas population that is ~40 flag keys × every
-      actor in the world per combat end. Measured on this world (51 actors): one combat end left an empty
-      `lists: {}` and `markedBy: {}` on **33 actors that had neither**, including `Tem parinaem` and
-      `Soggy Bottom` (the dotted keys — `lists.omens`, `markedBy.insight`, … — create their parent object
-      as a side effect of the `-=` delete), and the write volume tripped Foundry's own
-      *"Exceeded maximum number of update-actor events in a short period of time. Aborting event
-      execution."* limiter, which then silently ate an unrelated talent use. No data was lost and run 24
-      restored all 33 actors to their snapshot state. Cheap fix shape: skip the `unsetFlag` when the key is
-      absent. → `test-pass-fixes`. *(R-60.)*
-      ✅ **FIXED in fix pass 1 (2026-09-05, engine-only)** — the flag loop now gates on `edhaFlagKeyPresent`.
-      Re-test row: *Re-test after fix pass 1 / run 24*.
-
-- [ ] 🤖 **Life — the apex-form/mutation/lifeline/lifeRegen sweep is a regression check, not a new
-      behavior.** Life's population was already the widest of the ten (every `game.actors` entry,
-      including adversaries/summons) — `edhaSceneReset`'s `edhaSceneActors()` reaches the same real
-      actors, so nothing should observably change. What DOES need live verification: the re-entry
-      guard. End TWO combats back-to-back (or as close together as you can manage) with an actor
-      carrying `apexForm` in both — confirm exactly ONE "ends — takes an injury" card and ONE
-      injury item, not two (07-27b's original bug, now guarded by `edhaSceneReset`'s shared
-      `key`-scoped busy-set instead of Life's own one-off `_edhaLifeClearBusy` boolean). *(R-60.)*
-      ❌ **FAILED, bench run 24 (2026-09-05).** Two bench combats deleted in the same tick with ONE
-      `apexForm` flag on an off-canvas actor produced **TWO** cards and **TWO** injury items:
-      "🌟 **Apex Form** ends — Bench Ally — Two takes an injury: Exausted (-2)…" and
-      "… takes an injury: Slowed…". Root cause (read in source, not fixed here): `edhaSceneReset`'s
-      busy key is ``${key}:${endedCombat?.id}``, so two DIFFERENT combats get two DIFFERENT keys and the
-      shared busy-set never dedupes them — the retired `_edhaLifeClearBusy` was a module-level BOOLEAN and
-      did. The remaining protection is `extra`'s unset-first/create-after ordering, which loses the race
-      because `unsetFlag` awaits a server round-trip. → `test-pass-fixes`.
-      ✅ **FIXED in fix pass 1 (2026-09-05, engine-only)** — `edhaSceneReset` gained a second, per-ACTOR
-      claim (`key:actorUuid`, across combats). Re-test row: *Re-test after fix pass 1 / run 24*.
+>
+> **Bench run 25 (2026-09-05): R-60 is now CLOSED.** Life's re-entry guard and the run-24 world-wide-write
+> defect were both fixed in fix pass 1 and both re-tested green on the live table — two combats deleted in
+> the same tick produced exactly ONE apex card and ONE injury, and one combat end wrote to only the
+> **3 actors carrying state** out of 74, with `Tem parinaem` and `Soggy Bottom` taking zero writes and no
+> actor gaining an empty `lists {}` / `markedBy {}`. Both rows are retired; evidence in the run-25 delta.
 
 ## R-65 — folded roll formulas (one per affected roll family; representative talent per family)
 
@@ -3412,38 +3359,34 @@ a token you can remove from the canvas (or simply not place) to test the off-sce
       formula string like "(2)d(2 * 3 + 2)" reaching the chat card unrolled/zeroed). The DC-save
       branch (Concussive Yield-style saves) rides the same helper — confirm its `1d20 + @skills.…`
       formula still resolves normally (no dice in its die-count, so folding is a no-op there). *(R-65.)*
-- [ ] 🤖 **Snare / Inevitable Snare (Fate) — snare trigger damage folds.** Spring a Snare (or
-      Inevitable Snare) whose damage formula uses the [Tier][Die] convention; confirm the triggered
-      damage rolls a real die and the chat card shows plain dice notation (e.g. "2d8"), not an
-      unresolved parenthetical. *(R-65.)*
+      ✅ **DAMAGE branch and the DC-save branch PROVEN, bench run 25 (2026-09-05)** — a real Set Charge placed
+      on the Playtest Map (formula `(@tier)d(2 * @skills.red.rank + 2)`), detonated with the card's own **Detonate
+      ALL** button: `2d8` → **8**, applied as “8 energy” to both caught enemies — plain dice notation, nothing
+      unrolled or zeroed. The DC-save branch rode the same detonation: **Concussive Yield** rolled `1d20 + 5` → **14**
+      and resolved normally (no dice in its die-count, so the fold is a no-op there, exactly as this row predicts).
+      ⛔ **Still open:** the ALLY-HEAL configuration (`b.heal`) — no heal-configured Detonate was staged this run.
 - [ ] 🤖 **Magnum Opus (Civilization) — the Construct's transform HP bonus AND splash damage both
       fold.** Trigger Magnum Opus's transform (hpBonusFormula) and its splash-radius damage against
       multiple enemies; confirm both use real dice. *(R-65.)*
-- [ ] 🤖 **Edict / Sealed Edict / Final Decree / Verdict (Order) — every Blue Edict payoff folds.**
-      Violate an Edict (plain and Sealed — the annotate rider's own damage formula), and resolve a
-      Final Decree (the shared witness Temp HP roll AND the shared violator damage roll — two
-      different formulas, same helper) and a Verdict's court-radius spread; confirm every one rolls
-      real dice, not a static or zeroed amount. *(R-65.)*
-      ✅ **Final Decree half PROVEN, bench run 24 (2026-09-05)** — one resolve posted BOTH of its formulas
-      as real folded dice on the same card: the shared Witness Temp HP roll `2d8` → **7** (from the authored
-      `(@tier)d(2 * @skills.white.rank + 2)`; `Bench — White` ended with `tempHp {value: 7}`) and the shared
-      violator roll `2d8 + 2` → **12** (from `(@tier)d(2 * @skills.blue.rank + 2) + @attr.int`; both bound
-      enemies went 41 → 32 HP). Plain dice notation, no parenthetical, nothing zeroed. ⛔ **Still open:** the
-      plain-Edict violation, the Sealed-Edict annotate rider, and Verdict's court-radius spread.
-- [ ] 🤖 **Lifeline (White / Coordination) — the choose-amount heal-back die folds.** Trigger
-      Lifeline's CHOOSE-AMOUNT reaction with a nonzero absorb amount; confirm the heal-back die
-      (`edhaHealf`) rolls for real instead of contributing 0 silently. *(R-65.)*
 - [ ] 🤖 **Pack Share (Knowledge) — each ally's shared-strike die folds.** Trigger Pack Share (or the
       same burst-click family) so at least one ally clicks their damage button; confirm the rolled
       amount is a real die result, not the formula string. *(R-65.)*
-- [ ] 🤖 **Siphoned Will / Galvanize / Field Medicine (the generic `edha-focus` handler, H17/2bZ) — a
-      focus/Investiture/heal formula with dice folds.** Any talent using the `edha-focus` handler with
-      a dice-bearing "How much" formula (not a flat number) — confirm the roll posts to chat with a
-      real die and the focus/Investiture/HP change matches the rolled total, not a silently-zeroed one.
-      *(R-65.)*
 - [ ] 🤖 **Venom Glands (adversary bespoke ability) — the poison-damage roll folds.** An adversary
       ability, not a talent — flagged separately per the adversary-wiring standard. Trigger an attack
       that inflicts venom; confirm the damage amount is a real rolled die. *(R-65.)*
+
+- [ ] 🤖 **NEW (run 25) — the SYSTEM's own item-damage card still prints the UNFOLDED formula.** R-65
+      folds every roll that goes through `edhaRollFormula`, and every engine roll measured this run did
+      show plain dice (`2d8`, `2d8 + 2`, `1d6 + 2`). But a talent whose damage the **cosmere system**
+      rolls for itself — `item.system.damage.formula`, rolled by the system's `use()` before any Edha
+      rule sees it — never reaches that helper, so its card shows the raw parenthetical. Measured on
+      **Verdict**: the system card read `(2)d(2 * 3 + 2) + 5 = 10` while the same talent's engine-rolled
+      Edict payoff on the very next card read `2d8 + 2 = 7`. **The maths is right** (Foundry's parser
+      evaluates the parenthetical correctly — 10 and 7 are both valid), so this is a DISPLAY gap, not a
+      damage bug, and it is the same string run 24 saw on Exalt's card. Decide whether R-65's fold should
+      also be applied to the authored `system.damage.formula` at build time (which would make every
+      system-rolled card read `2d8`), or whether the parenthetical is acceptable on those cards.
+      → `test-pass-fixes` (low severity, cosmetic). *(R-65.)*
 
 ## pass 5.2 (2026-08-10, engine consolidation — target/actor readers, R-63, R-64, GM-relay writer)
 
@@ -3457,25 +3400,34 @@ warning) with no GM online; `edhaCasterToken`/`edhaActorRulesOf`/`edhaResolveAct
 remaining hand-rolled target-token, rule-sweep, and uuid-resolve duplication (repo-side only — no
 observable behavior change, not rows below).
 
-- [ ] 🤖 **R-64 — a `whenTargetStatus`/`unlessTargetStatus` gate now reads the right creature when
-      BOTH an event target and a stale user-target exist.** Predatory Patience (or any
-      `edha-triggered-effect` rule with `whenTargetStatus`/`unlessTargetStatus`) fired from a
-      `deal-damage`/`use` event that carries `options.target` — target a DIFFERENT creature on your
-      canvas selection than the one the attack actually hit, then land the hit; confirm the gate
-      reads the HIT creature's status, not whatever you have currently targeted. Before this pass
-      the gate silently re-read your current targets instead.
 - [ ] 🤖 **R-64 — Edha: Gain/Drain Focus, Edha: Reveal, and Edha: Next-Test-Mod's `victim` mode all
       resolve against the event's actual target, not a stale selection.** Pick a representative
       talent per handler (Siphoned Will / Galvanize-style `edha-focus {target: victim}`; Sharp
       Eye-style `edha-reveal {target: victim}`; Coercive Pressure-style `edha-next-test-mod
       {target: victim}`); fire each from a payload that carries `options.target` while your canvas
       selection points at someone else; confirm the effect lands on the payload's creature.
+      ✅ **TWO of the three handlers PROVEN, bench run 25 (2026-09-05).** `edha-focus`: **Feinting Strike**
+      (`op: drain, target: victim`) fired from an `edha-on-hit` payload against `Bench Target — Adjacent A` while the
+      canvas selection pointed at **Adjacent B** — A lost 3 focus (4→1), B stayed at 4; **Whispered Doubt** landed on
+      A the same way. `edha-next-test-mod`: **Coercive Pressure**'s focus-change watch stamped
+      `nextTestMod {source: "Coercive Pressure", mode: "disadvantage"}` on **A** (the payload's creature) with the
+      selection on **B**, which got nothing — card: “Bench Target — Adjacent A's next test — at disadvantage”.
+      ⛔ **Still open: `edha-reveal`.** Sharp Eye is the only `edha-reveal {target: victim}` rule and its H1 def-test
+      resolves its own target AFTER the roll, so on this harness the payload's target and the canvas selection cannot
+      be made to diverge (driven anyway: both read `Adjacent B` consistently, which proves nothing either way).
 - [ ] 🤖 **R-64 — the `edha-cae-grant`/`edha-owner-list` (H3 annotate/near-victim) `victim` picks
       agree with the payload, not the clicking user's canvas selection.** Same shape as above, for
       Through the Fray-style CAE grants and any H3 list rule using `target: victim` — including
       Order's covenant/edict-annotate placements and the multi-target Investiture-of-Command-style
       `to: targets` sweep, which reads the SAME fixed `edhaUserTargetActor()` reader as everywhere
       else and should behave identically to before (regression-only, no chain to verify there).
+      ✅ **`edha-cae-grant` half PROVEN, bench run 25 (2026-09-05)** — **Feinting Strike**'s
+      `edha-cae-grant {kind: burn-reaction, target: victim}` fired from the same `edha-on-hit` payload and burned the
+      reaction of the **hit** creature: “⚡ Feinting Strike: Bench Target — Adjacent A loses one Reaction”, with the
+      canvas selection on Adjacent B throughout.
+      ⛔ **Still open:** an H3 `edha-owner-list {target: victim}` placement. Every such rule shipped today (Chaos ×7,
+      Death ×1) sits on `edha-test-success` behind an H1 def-test, which hits the same harness limit as Sharp Eye
+      above. Note the row's own text rates the `to: targets` sweep regression-only, with no chain to verify.
 - [ ] 🤖 **R-63 — a token with genuinely UNSET disposition is no longer treated as an enemy by
       default.** Create/borrow a token whose `disposition` cannot resolve (a bare unlinked prototype
       with no explicit disposition, if your test scene has one — otherwise this is a repo-side
@@ -3530,6 +3482,10 @@ VISIBLE are the actual behavior flips this pass made on purpose.
       or click a Fate spring-snare button with the snare already gone) and confirm an error TOAST
       appears (`ui.notifications.error`), not just a console line. Before this pass these eleven had
       no outer catch at all — a rejected promise from the click failed completely silently.
+      ⚠️ **NEGATIVE half only, bench run 25 (2026-09-05)** — the **charge-all** button was clicked in anger (a real
+      Set Charge → “Detonate ALL”) and behaved correctly with **NO** toast of any kind, only its own detonation card.
+      That settles this row's load-bearing negative (“routine operation must not toast”) for one of the eleven.
+      ⛔ **Still open:** the POSITIVE — no button was deliberately broken this run, and the other ten were not clicked.
 - [ ] 🤖 **R-66 — eleven more one-shot cards now stay spent across an F5 / a second client.** Pick
       3–4 of: Plot Grant (White), Designate (White), Beacon/cleanse (White), a Charge's arm-trigger
       card (Destruction), Mutation adaptation (Green), Life Cleanse, Counter-Transfer (Knowledge),
@@ -3577,28 +3533,6 @@ VISIBLE are the actual behavior flips this pass made on purpose.
       resource ends at the same value it always did, including an actor starting at EXACTLY 0 of the
       resource (falsy-zero case: a 0-Investiture actor's next gain should add normally, not read as
       broken).
-- [ ] 🤖 **Regression check — the three DialogV2-with-fallback pickers (the GM DC prompt, the Weave
-      link-two-squares picker, the Edict prohibition picker) still work identically.** These only
-      show a visible difference on a Foundry version old enough to hit the AppV1 fallback (unlikely
-      on Ben's current install) — exercise all three on the live table as a plain regression check:
-      prompt for a DC and confirm Resolve/"No DC — judge it" both work, link two Ordained squares
-      (Weave), and declare an Edict prohibition (Order), confirming each picker's Cancel button and
-      submit button behave as before.
-      ❌ **FAILED, bench run 24 (2026-09-05) — every parse-less button in `edhaDialogPick` returns its own
-      ACTION STRING, not the `null` the function's own comment promises.** Driven: Final Decree → the
-      prohibition picker → **Cancel**. Result: 3 Investiture spent and **not refunded**, the Decree armed
-      anyway with `flags.edha-content.decree.proh === "cancel"` (the string), and the card read
-      *"every enemy in Attunement Range … must not **undefined**"*. Root cause, read out of the served
-      `foundry.mjs`: `DialogV2#_onSubmit` does
-      `const result = (await button?.callback?.(event, target, this)) ?? button?.action;` — so a callback
-      returning `null`/`undefined` is replaced by the button's `action`, which is truthy, and every caller's
-      `if (!picked)` guard misses it. Blast radius by inspection (3 callers, 4 affected buttons): this
-      Edict/Decree **Cancel** (measured), the Weave link picker's **Cancel** (`"cancel"`), `edhaPromptDC`'s
-      **"No DC — judge it"** (`parse: () => undefined` → `"judge"` instead of `undefined`) and
-      `edhaPromptDC`'s **"Resolve" with a blank DC** (`readDC` → `null` → `"ok"` instead of `null`).
-      Unaffected: the two `ok` buttons whose `parse` returns an object/array. → `test-pass-fixes`.
-      ✅ **FIXED in fix pass 1 (2026-09-05, engine-only)** — `edhaDialogPick` boxes every callback result
-      as `{edhaPick: …}`, which the `??` can never replace. Re-test row: *Re-test after fix pass 1 / run 24*.
 - [ ] 🤖 **Regression check — Life Cleanse and Natural Recovery's offer cards/confirmations are
       byte-identical to before.** Trigger a Life Cleanse (🩺, no cost note) and a Natural Recovery
       offer (🍃, "spend an Opportunity" or the talent's own cost note) — confirm the emoji, prompt

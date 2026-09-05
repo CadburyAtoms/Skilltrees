@@ -33,6 +33,140 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-05 — BENCH RUN 25 (weekend marathon run 2): **fix pass 1 verified GREEN on all three re-tests, and hygiene part 2 retired 8 more rows.** 11 rows retired, 4 partials, 1 new row, 1 new ruling. **World restored to the start snapshot EXACTLY (id-diff clean).** DOCS-ONLY — no engine, no data, no pack rebuild owed.
+
+**Deploy verified from both sides before anything was driven.** `git hash-object` of the installed
+`register-skills.js` = `HEAD:module-src/scripts/register-skills.js` = `9575fba20c88efa57e4a7ba05e3685b167572466`,
+and the **served** script (cache-busted fetch, CRLF→LF normalised, git-blob SHA-1) hashed to the same
+value, with `decodedBodySize` equal (1 525 467 B) for the original `<script>` entry and the re-fetch —
+so the page really was running the hashed engine. ⚠️ **The RAW served bytes hash to a DIFFERENT
+value** (`25bd55fa…`): the installed file is CRLF and `git hash-object` normalises it on Windows.
+Normalise before comparing or a good deploy reads as a bad one.
+
+### The three fix-pass-1 re-tests — ALL PASS, positives and every load-bearing negative
+
+- ✅ **Apex Form ends ONCE when two combats end together.** `apexForm` + `mutation` on ONE off-canvas
+  actor (`Bench Ally — Two`, absence asserted against `canvas.tokens.placeables`), two
+  `Combat.create({active:false})`, both deleted **in the same tick** (`delete()` fired without awaiting
+  the first): exactly **ONE** card — "🌟 **Apex Form** ends — Bench Ally — Two takes an injury: Slowed…"
+  — and exactly **ONE** injury Item (one `createItem` event). Run 24 got two of each.
+  **NEGATIVE (the tempting wrong fix):** `Bench — Red` in combat B only, `apexForm` + `mutation` on it;
+  deleting **A** left both flags intact and posted **no** card (R-58 skip); deleting **B** then cleared
+  both and posted its own single card + single injury. The guard skips, it does not strand.
+  **NEGATIVE 2 (per family, not global):** Life **and** Sovereignty state on one off-canvas actor —
+  ending one combat ran BOTH families in the same pass (`apexForm` → one injury + one card, **and**
+  `dieStep` cleared + `exalted` removed).
+- ✅ **Every picker's Cancel actually cancels — all three pickers, both directions.**
+  **Final Decree → prohibition picker → Cancel:** toast *"Final Decree cancelled — cost refunded."*,
+  Investiture **4 → 1 → 4**, **no** ⚖ card, **no** `flags.edha-content.decree`. (Run 24: 3 spent,
+  nothing refunded, armed with `proh === "cancel"`, card read "must not **undefined**".)
+  **Weave the Thread → link picker → Cancel** (the worse half, where `"cancel"[0]`/`[1]` used to sail
+  through): toast *"Weave the Thread canceled — cost refunded."*, Investiture **4 → 2 → 4**, **no**
+  "the chosen squares are linked" card, **no** `linked` on either marker.
+  **GM DC prompt:** *"No DC — judge it"* → card "…vs Bench Target — Adjacent A's **DC ?** — SUCCESS"
+  (owner-judged, no DC named); **Resolve with the box blank** → identical.
+  **NEGATIVE (OK paths untouched):** a real prohibition armed the Decree and the card named it
+  ("must not **move from its space**"), cost correctly **kept**; linking two DIFFERENT squares marked
+  **both** `linked: true` and posted the success card; a real DC was used **as a number** — **DC 14**
+  and, critically, **DC 0** both printed as `DC 14` / `DC 0`, not as "no DC".
+  **NEGATIVE 2:** dismissing with the window **X** behaved exactly like Cancel (refund, no card, no flag).
+- ✅ **A combat end no longer writes to every actor in the world.** `updateActor` hooked and counted
+  across a combat end: **4 actors written out of 74**, and every one of them was an actor this run had
+  staged state on (`Bench Ally — Two` 2, `Bench — Order` 3, `Bench — White` 2, `Bench — Fate` 1). A
+  second, cleaner end wrote to **3 of 74**. `Tem parinaem` and `Soggy Bottom` took **ZERO**, and a
+  snapshot-wide sweep found **zero** actors that gained an empty `lists {}` or `markedBy {}`. Run 24
+  measured 33 polluted and tripped Foundry's own update limiter.
+  **NEGATIVE (the fix's whole risk — falsy values are SET values):** `decay: 0`, `deathWard: false`,
+  `markedBy.hexmark: null` staged alongside a real `lists.remains` entry — after one combat end **all
+  four read `undefined`** (4 writes on that actor, exactly the 4 keys). Nothing was skipped for being
+  falsy. **NEGATIVE 2:** the R-60 flagship (`dieStep` + `exalted` on an OFF-CANVAS actor) still cleared.
+
+### Hygiene part 2 — 8 more rows retired
+
+- ✅ **R-64, the `whenTargetStatus` victim chain (Predatory Patience).** Hit `Bench Target — Adjacent A`
+  (**Weakened**) with the canvas target on `Bench Target — Adjacent B` (**not** Weakened): `Bench — Black`
+  regained 1 Investiture (2 → 3) — the gate read the HIT creature. **Inverse control:** hit an
+  UNweakened A while the stale target B **was** Weakened → **no** regain (2 → 2). Decisive both ways.
+- ✅ **R-65 Order — all three remaining halves, on one Verdict.** Edict placed and Sealed on Adjacent A,
+  then Verdict resolved it: the **plain-Edict violation** rolled `2d8 + 2` → **7** spirit, the
+  **Sealed-Edict annotate rider** rolled `2d8` → **5** ("an additional 5 spirit and is Weakened"), and
+  **Verdict's court-radius spread** rolled `2d8` → **10** against the one accomplice within 10 ft
+  (Adjacent B, which then stood firm on Discipline 22 vs Blue 10 — the spread reached it, which is what
+  the row asks). All plain dice notation, nothing zeroed.
+- ✅ **R-65 Fate — Snare.** A real Set-Charge-style placement (`edhaPickPoint` driven with run 23's
+  declared mouse-position shadow), then an enemy token **walked into the square**: `2d8 + 2` → **5**,
+  card "🪢 Snare springs on Bench Target — Adjacent B: 5 keen + Restrained", HP 20 → 15, and the snare
+  consumed itself — ledger emptied, template deleted, region deleted.
+- ✅ **R-65 Life — Lifeline's choose-amount heal-back die.** Linked to `Bench Ally — One`, ally took 8
+  impact, absorbed **4** on the intercept card: `Bench — Life` took 4 spirit (60 → 56) and the ally
+  healed **11** (12 → 23). Heal-back die = 11 − 4 = **7**, a real `2d8` — *not* the silent 0 this row
+  exists to catch. *(The die's own Roll is consumed inline by `edhaRollFormula` and is not attached to
+  the card, so "7 = 2d8" is arithmetic; that it rolled non-zero is measured.)*
+- ✅ **R-65 the `edha-focus` family.** **Field Medicine** is the decisive one: `1d6 + 2` → **4**
+  (target's recovery die d6 + Medicine rank 2) and `Bench Ally — One` healed **exactly 4** (10 → 14,
+  max 41, no clamp) — the change matches the rolled total. **Galvanize** posted `1d6` → **6** the same
+  way. ⚠️ Galvanize's *first* run looked like a mismatch (rolled 6, gained 4) purely because focus max
+  was 4 — a resource clamp, not a fold failure; raise the cap before reading these rows.
+- ✅ **pass 5.3 — the three DialogV2-with-fallback pickers regression row is RETIRED by the re-test
+  above**, which exercised all three pickers' submit AND cancel paths (DC prompt Resolve / "No DC" /
+  blank / 0 / 14, Weave Link + Cancel, Edict prohibition Declare + Cancel, plus a plain Edict Declare).
+- Also retired: both remaining **R-60** rows (Life's re-entry guard and the run-24 world-write defect),
+  now green via the re-tests above. **R-60 is CLOSED.**
+
+### Four partials — driven, but not all the way (rows stay 🤖 with the open half named)
+
+- **R-64 `victim` mode across three handlers** — `edha-focus` ✅ (Feinting Strike's drain took 3 focus
+  off the HIT creature, 4 → 1, while the selection sat on another target at 4; Whispered Doubt agreed)
+  and `edha-next-test-mod` ✅ (Coercive Pressure's focus-change watch stamped `nextTestMod` on the
+  focus-loser, not the selection). ⛔ **`edha-reveal` is not drivable here**: Sharp Eye is its only
+  `target: victim` rule and its H1 def-test resolves its own target **after** the roll, so payload
+  target and canvas selection cannot be made to diverge.
+- **R-64 `edha-cae-grant` / H3 `edha-owner-list`** — CAE ✅ (Feinting Strike burned the **hit**
+  creature's reaction). ⛔ No H3 `edha-owner-list {target: victim}` driven: all eight shipped ones sit
+  on `edha-test-success`, same harness limit.
+- **R-65 Set Charge / Detonate** — damage ✅ (`2d8` → 8 via the card's own **Detonate ALL** button) and
+  the DC-save branch ✅ (Concussive Yield `1d20 + 5` → 14, folding correctly a no-op). ⛔ The
+  **ally-heal** configuration (`b.heal`) was not staged.
+- **pass 5.3 R-59's eleven un-caught buttons** — the NEGATIVE half ✅ only: `charge-all` clicked in
+  anger, worked, and produced **no toast at all**. ⛔ Nothing was deliberately broken, and the other ten
+  buttons were not clicked.
+
+### One new row and one new ruling
+
+- 🆕 **Checklist row (R-65):** the **system's own** item-damage card still prints the UNFOLDED formula.
+  Verdict's system-rolled card read `(2)d(2 * 3 + 2) + 5 = 10` while the very next, engine-rolled card
+  read `2d8 + 2 = 7`. R-65 folds everything that reaches `edhaRollFormula`; `item.system.damage.formula`
+  is rolled by the cosmere system before any Edha rule sees it, so it never does. **The maths is
+  correct** — Foundry's parser evaluates the parenthetical — so this is cosmetic. Same string run 24 saw
+  on Exalt.
+- 🆕 **`EDHA_RULINGS.md` R-68:** a **cancelled** picker still burns the once-per-scene stamp.
+  `edhaDecreeUse` calls `edhaStampSceneOnce` **before** `edhaPickProhibition`, so Final Decree →
+  Cancel refunds the Investiture (correct, verified above) but the talent is spent for the scene.
+  Measured: `sceneOnce.<itemId> === true` after a cancel. This is a design call, not a bug.
+
+### World hygiene — restored EXACTLY
+
+Start snapshot captured ids, flags **and whole effect objects** (plus token positions, templates, walls,
+regions, combats), held in `localStorage.edhaBenchSnap_run25` so it survived any reload. Created this
+run and removed: **4 tokens** (Bench — Black / Fate / Ally One / Destruction), **3 injury Items**,
+**5 status effects**, **1 region** (`Bench — Destruction — Dangerous Terrain`), 2 combats, 1 snare
+template + region (self-consumed). The combat-end sweeps also removed **3 PRE-EXISTING Covenant effects**
+(`Bench — Order` ×1, `Bench — White` ×2) that were in the start snapshot — all three were **recreated
+with their original `_id`s** and verified present. Flags on 9 actors were restored by deleting the whole
+`flags.edha-content` namespace and rewriting the snapshot object (never a sub-path). Final id-diff:
+**zero** extra/missing actors, items, effects, flags, tokens, templates or resources; only Ben's own
+pre-existing combat remains. ⚠️ Focus values and two max-overrides are **not** in the snapshot's captured
+fields — `Bench — Life`'s HP-max override and `Bench Ally — One`'s focus-max override were explicitly
+cleared and focus set back to max, which is the resting state, not a proven restore. Bench chat grew
+16 → 101 messages and can be flushed.
+
+⚠️ **Ben's own `Gamemaster` client was connected throughout**, so **Job 6a**, **2bM-1** and **R-62's
+audience rows** stayed BLOCKED (they need zero GM clients). Ben's live combat still holds **zero
+combatants**, so `edhaCombatEndGuard` was empty and every bench combat delete swept world-wide — which
+is exactly the condition the write-count re-test needed.
+
+---
+
 ## 2026-09-05 DELTA — FIX PASS 1 (bench run 24's three defects: the Apex Form double-end, every picker's Cancel, and a combat end writing to every actor in the world; ENGINE-only → ⟳ sync + F5, NO pack rebuild, NO ⟳ Sync Talents)
 
 All three live in `module-src/scripts/register-skills.js` and nothing else. **No rulings were needed

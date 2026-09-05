@@ -1,22 +1,23 @@
 # Next bench session
 
-> **Weekend marathon, run 1 (bench run 24, 2026-09-05) is done.** First live drive of the
-> **2026-08-10 hygiene campaign (R-60..R-67)**. **10 rows retired, 2 defects root-caused, 1 new row
-> filed, 2 partials.** Open queue **85 🤖 → 76 🤖** (⚑ unchanged at 22). No `⛔ STOP`, **no pack
-> rebuild owed**, world restored to its start snapshot exactly.
+> **Weekend marathon, run 2 (bench run 25, 2026-09-05) is done.** It re-tested **fix pass 1** and then
+> continued the **2026-08-10 hygiene campaign**. **11 rows retired, 4 partials, 1 new row, 1 new ruling
+> (R-69).** Open queue **79 🤖 → 69 🤖** (⚑ unchanged at **22** — no ⚑ row was touched). No `⛔ STOP`,
+> **no pack rebuild owed**, world restored to its start snapshot exactly (id-diff clean).
 
 ## Read this first
 
-**→ `EDHA_FOUNDRY_HANDOFF.md`, the `2026-09-05 — BENCH RUN 24` delta at the top** — every retirement
-with its evidence, both defects with their root cause read out of source, and the world-hygiene diff.
+**→ `EDHA_FOUNDRY_HANDOFF.md`, the `2026-09-05 — BENCH RUN 25` delta at the top** — every retirement
+with its evidence, the four partials with the exact half still open, and the world-hygiene diff.
 
-**→ `docs/EDHA_BENCH_RUNBOOK.md`, "Operating lessons from run 24"** — four traps that each cost a row
-this run and will cost you one too: Foundry's **socket rate limiter** (silent), bench PCs' **Investiture
-max of 2** (silent), **`item.use()` hanging on `ItemConsumeDialog`**, and the **one-status ActiveEffect
-`_id` crash**.
+**→ `docs/EDHA_BENCH_RUNBOOK.md`, "Operating lessons from run 25"** — the CRLF hash trap, the two
+SILENT causes of a refused token move (the engine's own Dread Presence veto, and walls), serving the
+setup script over HTTP instead of pasting it, and why resource clamps make a correct roll look broken.
+**Read run 24's lessons too** — the rate limiter, Investiture max 2, `item.use()` hanging on
+`ItemConsumeDialog`, and the one-status ActiveEffect `_id` crash all still apply.
 
-**→ `EDHA_RULINGS.md`** — R-1, R-2 and R-4 were answered by Ben on 2026-09-05; R-43 is applied and
-changes live dice math.
+**→ `EDHA_RULINGS.md`** — R-1, R-2, R-4 answered 2026-09-05; R-43 is applied and changes live dice
+math; **R-69 is new** (a cancelled picker still burns the once-per-scene stamp).
 
 ## ⚑ vs 🤖 — read this before picking rows
 
@@ -27,105 +28,124 @@ changes live dice math.
 BLOCKED with the blocker named. **Design questions go to `EDHA_RULINGS.md`, never to the checklist as a
 new ⚑ row.**
 
-## Two corrections for the PM before run 2 is dispatched
+## Run 3 — the leyline scatter, then Engine-wide (the PM's plan, and it is now the right one)
 
-1. **"Heroic has 54 🤖 rows" is not true of the current checklist.** `# BENCH — Heroic paths` holds
-   exactly **1 🤖** row (and 2 ⚑). It does not need dedicated runs. The counted state is in the table
-   below — it was measured off the file, not inherited.
-2. **The hygiene campaign is still the biggest and most valuable block: 26 🤖 rows, 21 of them never
-   reached.** It is the reason this marathon exists, its 34 rows have never been at a table before this
-   run, and the bench roster is now built and warm for exactly those trees. **Recommendation: make run 2
-   hygiene part 2, and fold the 11-row leyline scatter into run 3.** The scope written below is the one
-   the PM directed; this note exists so the choice is made deliberately.
-
-## Run 2 as directed — the leyline scatter, then Heroic
+Hygiene was the big block and it is no longer the biggest *per-row* value: what remains there is mostly
+rows that need a second client, a GM-free window, or a staging shape this bench cannot make (see
+"What is left of hygiene"). The leyline scatter is 12 rows of ordinary talent mechanics on a roster
+that is already built and warm.
 
 | Section | 🤖 | Note |
 |---|---|---|
-| Green (leyline) | 4 | Needs a turn boundary (drivable — run 23 proved `Combat.create({active:false})` + `combat.update({round,turn})` fires `combatTurnChange` with the bench combat) or an **Opportunity** (genuinely awkward) |
+| Green (leyline) | 4 | Turn boundaries are drivable — `Combat.create({active:false})` + `combat.update({round,turn})` fires `combatTurnChange` with the bench combat (run 23). **Opportunity**-gated rows are the awkward ones. |
 | White (leyline) | 3 | |
 | Blue (leyline) | 2 | |
 | Red (leyline) | 1 | |
 | Order (deity) | 1 | |
-| Heroic paths | 1 | **not 54** |
-| **total** | **12** | |
+| Heroic paths | 1 | |
+| **leyline scatter total** | **12** | |
+| Engine-wide & cross-tree | 2 | Run these FIRST if you touch them at all — **2bA-7** (edit round-trip) gates everything. One of the two is the `Flame Surge / burst cards` F5 row, which the hygiene **R-66** row settles at the same time. |
 
-The roster is already built: `Bench — White/Blue/Black/Red/Green` each carry their whole 25-talent tree,
-and `Bench — Red`, `Bench — White`, `Bench — Order`, `Bench Target — Adjacent A/B` already have tokens on
-the Playtest Map around (2700–3000, 4500–5100). **Give every PC you drive Investiture and HP before you
-touch a row** (see the runbook lesson) — that alone would have saved this run twenty minutes.
+**The roster is built and idempotent.** Run 25 re-ran `scripts/bench-setup-console.js` as a real step:
+**zero ⚠ lines, zero errors, zero actors created** — 16 PCs + 7 fixtures, each PC carrying its whole
+tree (leylines 25 talents, deities 9, Heroic 62), and the ranged-weapon fixture is real
+(`Shortbow`, `system.attack.type === "ranged"` — assert it, don't trust the summary).
+**5 tokens are placed** on the Playtest Map around (2700–3000, 4500–5100): `Bench — Red`,
+`Bench — White`, `Bench — Order`, `Bench Target — Adjacent A`, `Bench Target — Adjacent B`. Three
+**orphan** `Bench — *` tokens from the previous marathon are still there (their actors were deleted;
+`tok.actor` is null so the engine skips them) — leave them.
 
-## What is left overall: 76 🤖
+⚠️ **Give every PC you drive Investiture and HP before you touch a row**, and raise the receiving
+resource's max on any row that asserts "the change matches the roll".
 
-| Section | 🤖 | Note |
-|---|---|---|
-| **Hygiene campaign 2026-08-10** | **26** | **The biggest block and the marathon's purpose.** R-65 7 of 8 untouched · pass 5.2 all 7 untouched · pass 5.3 7 left · R-60 has 1 fail + 1 new row |
-| Adversary ability wiring | 12 | Clusters on 4 actors (Roek+Raider, Mistheron ×2, Cinderhound, Stalker) |
-| Wizard v2 | 6 | Weapon-slot variants; the rest are observer-dependent |
-| Green (leyline) | 4 | |
-| White · Player-client · Items-dump · Bench-results · W29 | 3 each | Player-client rows need `PlayerBench`; W29's are ruling-gated on R-48 |
-| Blue · Engine-wide · Adversary pack sync · Vorsk | 2 each | |
-| Red · Order · Heroic · Goldenport · Ashkar | 1 each | |
+## What is left of hygiene — 19 🤖, and they are NOT all cheap
 
-## Where hygiene part 2 should start (if the PM takes the recommendation)
+Run 25 took the eight cheapest. What remains, honestly graded:
 
-1. **pass 5.2's R-64 rows (3).** Real behaviour fixes, and the cheapest live shape available:
-   `Bench — Black`'s **Predatory Patience** carries `edha-on-hit → edha-triggered-effect
-   {whenTargetStatus: "weakened", target: "self"}` — the row's own named example, already on the roster.
-2. **R-65's remaining 7.** All ride ONE choke point, `edhaRollFormula`, and run 24 proved the fold works
-   there on two distinct formulas (`2d8` and `2d8 + 2`, both from `(@tier)d(2 * @skills.<c>.rank + 2)`
-   shapes). Each row is now "does THIS family reach the shared helper" — pick the cheapest driver per
-   family rather than staging the flagship Set Charge → Detonate flow first.
-3. **pass 5.3's R-66 F5-persistence row** — it settles the Engine-wide `Flame Surge / burst cards` row at
-   the same time. Persist your start snapshot to `localStorage` first (run 23's lesson); run 24 did and
-   it is still there under `edhaBenchSnap_run1`.
+- **Drivable, just not reached (5):** R-65's **Magnum Opus** (Civ — needs a Combat Construct summoned
+  and transformed), **Pack Share** (Knowledge — needs an ally to click a shared-strike button),
+  **Venom Glands** (an adversary bespoke ability), **Job 6b** (`edhaWriteStatusMark` relay regression),
+  and pass 5.3's **resource spend/gain** regression. These are the next hygiene rows worth doing.
+- **Partly done, with the open half named on the row (4):** R-64 `victim` mode (`edha-reveal` only),
+  R-64 CAE/owner-list (an H3 `target: victim` placement only), R-65 Set Charge/Detonate (the
+  **ally-heal** `b.heal` configuration only), R-59's eleven buttons (the POSITIVE only — break one
+  deliberately).
+- **Blocked or awkward (the rest):** Job 6a and R-62's audience rows need **zero GM clients**;
+  R-63's unset-disposition row needs a token whose disposition genuinely cannot resolve; R-61's
+  remaining polarities and R-66's F5 persistence are doable but fiddly.
+
+**The `edha-reveal` and H3-owner-list halves may not be drivable at all from one client** — every
+`target: victim` rule on `edha-test-success` sits behind an H1 def-test that resolves its own target
+*after* the roll, so the payload's creature and the canvas selection can never be made to differ. If a
+future run confirms that, those halves should be recorded BLOCKED with that blocker named rather than
+chased again. The drivable shape is an event that carries its own victim: `edha-on-hit` (drive it with
+`actor.applyDamage(list, {edhaSource, originatingItem})`) or an `edha-watch` rule whose `payloadTarget`
+is the watched actor.
 
 ## Known blockers — do not fight these
 
-- **Job 6a (pass 5.2) and 2bM-1** need **zero GM clients connected**; the bench joins as a GM and Ben's
-  is up. Record BLOCKED with the blocker named — never re-file as ⚑.
-- **R-62's audience rows** need a GM logged OUT while a player client fires the card. Same blocker.
-- **`edhaIsFastTurn` / anything reading `game.combat`** resolves to Ben's live campaign combat.
-  **Never activate a bench combat.** ⚠️ New this run: Ben's combat currently has **zero combatants**, so
-  `edhaCombatEndGuard` is EMPTY and a bench combat delete sweeps his actors too. Nothing was lost (run 24
-  diffed and restored), but check `game.combats.get(...).combatants.size` before assuming the guard shields
+- **Job 6a (pass 5.2), 2bM-1 and R-62's audience rows** need **zero GM clients** connected; the bench
+  joins as a GM and Ben's `Gamemaster` client was up all through run 25. Record BLOCKED with the
+  blocker named — never re-file as ⚑.
+- **`edhaIsFastTurn` / anything reading `game.combat`** resolves to Ben's live campaign combat. **Never
+  activate a bench combat.** Ben's combat still has **zero combatants**, so `edhaCombatEndGuard` is
+  EMPTY and a bench combat delete sweeps world-wide. Run 25 relied on exactly that and restored
+  everything — but check `game.combats.get(...).combatants.size` before assuming the guard shields
   anything.
-- **Observer/rAF-dependent rows are unverifiable on this bench** (run 22: 0 animation frames in 2.7 s,
-  0 ResizeObserver callbacks). Prove the mechanism by hand and record BLOCKED, not FAILED.
-- **`canvas.mousePosition` is frozen at (0,0)** with the pane hidden, so `edhaPickPoint` cannot be driven
-  by synthetic pointer events — shadow just that getter and declare it (run 23).
+- **Observer/rAF-dependent rows are unverifiable on this bench** (run 22). Prove the mechanism by hand
+  and record BLOCKED, not FAILED.
+- **`canvas.mousePosition` is frozen at (0,0)** with the pane hidden — shadow just that getter
+  (run 23's technique; run 25 used it to place a real Snare and a real Set Charge) and declare it.
+- **Token movement can be refused SILENTLY** — `move()` returns `false` with no error. Two causes, both
+  real: the engine's **`edha-move-veto`** (a Weakened creature cannot willingly approach a Dread
+  Presence bearer, and the map has several), and **walls** (a move can land at an interpolated midpoint
+  and stop). `game.paused` is **not** a gate — that was tested and it is not. Record notifications and
+  test collisions before planning a row around a move.
 
 ## Harness traps — each has already produced or nearly produced a false result
 
-- **The socket rate limiter fails silently into your rows** (run 24). A talent that produces no card, no
-  notification and no console error may be a discarded write, not a dead talent. Check
-  `read_console_messages({onlyErrors:true})`; wait ~30 s; space bulk writes ~400 ms apart.
-- **Bench PCs have Investiture max 2 and target fixtures have 0 HP** (run 24). Both make correct talents
-  look broken, with no diagnostic anywhere.
-- **`item.use()` never settles while `ItemConsumeDialog` is open** (run 24) — fire-and-poll.
-- **A one-status ActiveEffect with no `_id` throws and aborts the whole create batch** (run 24).
-- **Verify a deploy by HASH, and prove the RUNNING code** — compare the original `<script>` resource
-  entry's `decodedBodySize` against your cache-busted fetch (run 24).
+- **Verify the deploy by HASH from BOTH sides, and NORMALISE CRLF.** The installed file is CRLF;
+  `git hash-object` normalises it, a raw hash of the served bytes does not (`25bd55fa…` vs
+  `9575fba…`). Strip the CR before each LF, then compare `decodedBodySize` of the original `<script>`
+  entry against your cache-busted fetch to prove the page runs that code.
+- **Foundry's socket rate limiter fails silently into your rows** (run 24). Space bulk writes ~400 ms
+  apart; check `read_console_messages({onlyErrors:true})`; ~30 s clears it.
+- **Bench PCs have Investiture max 2, target fixtures start at 0 HP** (run 24), and **resource maxes
+  clamp** (run 25 — Galvanize rolled 6 and granted 4 because focus max was 4).
+- **`item.use()` never settles while `ItemConsumeDialog` is open** (run 24) — fire and poll for
+  `button[data-action="continue"]`.
+- **A one-status ActiveEffect with no `_id` THROWS** and aborts the whole create batch (run 24).
+- **"Cannot consume, not enough uses left"** is another silent no-op class (run 25 — limited-use heroic
+  talents). Wrap `ui.notifications.info/warn/error` in a recorder at the start of the run; it is often
+  the only evidence.
+- **Filter the standing UI apps out of your dialog probe** — `foundry.applications.instances` holds
+  ~20 permanent AppV2s and an unfiltered dump buries the one `DialogV2` you want. Sample both AppV2
+  instances and `div.app.window-app`.
 - **Verify a gate is OPEN before treating silence as evidence** (run 19).
-- **Bench PC tokens may already exist on the map** — duplicates made the engine measure range from a
-  token 121 ft away (run 20).
+- **Bench PC tokens may already exist** — duplicates made the engine measure range from a token 121 ft
+  away (run 20). Resolve tokens by **id or actorId**, never by name.
 - **Read `movement.walk.rate.value`, not `.override`**; same family as `system.deflect.value`.
-- **Snapshot whole effect OBJECTS, not names**, include unlinked token actors *and their flags*, and
-  **persist it outside the page** if any row needs an F5.
-- **When reverting a flag, restore the whole snapshot object** — `{recursive:false}` on a sub-path strips
-  siblings.
+- **Snapshot whole effect OBJECTS, not names** (run 25 restored three pre-existing Covenant effects the
+  combat-end sweeps legitimately ate, by recreating them with `{keepId:true}` and their original
+  `_id`s). Restore flags by deleting the whole `flags.edha-content` namespace and rewriting the
+  snapshot object — never patch a sub-path. **Persist the snapshot to `localStorage`** if any row needs
+  an F5.
 - In the **built** pack, `system.events` is an OBJECT keyed by rule id with the type at
-  `rule.handler.type`; but the combat-timing dispatcher filters on `rule.event`. **Read the consuming code
-  before writing the scan.**
-- **Delete bench combats LAST** — a `deleteCombat` sweep is unscoped and will clear ledgers you still need.
+  `rule.handler.type`; but the combat-timing dispatcher filters on `rule.event`. **Read the consuming
+  code before writing the scan.**
+- **Delete bench combats LAST** — a `deleteCombat` sweep is unscoped and will clear ledgers you still
+  need.
 - Chat log is `ol.chat-log` in v13.
 
 ## Standing lessons
 
-- **Verify the root cause in code before touching anything.** Run 24's two defects were both confirmed by
-  reading source (`edhaSceneReset`'s busy key; Foundry's `DialogV2#_onSubmit`) before being written down.
-- **A re-test without its negative control is not a re-test.** Run 24's Fate row is only decisive because
-  the marker template *survived* the first delete and *died* on the second.
-- **Check your own harness before reporting a defect.** Three "silent no-ops" this run were the consume
-  dialog, an Investiture max of 2, and the rate limiter — none were the talent.
+- **Verify the root cause in code before touching anything**, and **check your own harness before
+  reporting a defect.** Run 25 spent four calls on a "broken" token move that was the engine's own
+  Dread Presence veto, armed by a Weakened status the run had applied itself two rows earlier.
+- **A re-test without its negative control is not a re-test.** Fix pass 1's Apex Form row is only
+  decisive because deleting combat A *left B's actor alone* and deleting B *then* paid it out.
+- **One flow can retire several halves.** Order's whole remaining R-65 set came off ONE Verdict against
+  a Sealed Edict. Read the payload chain before staging three tests.
+- **Prefer the family whose failure mode is "silently contributes 0"** — Lifeline's heal-back die was
+  worth more than another damage row.
 - **Only claim what your own logs support, and label inferences as inferences.**
