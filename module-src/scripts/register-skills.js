@@ -11256,7 +11256,9 @@ async function edhaRecenterTerrain(scene, region, tokenDoc) {
     const gs = scene.grid?.size || 100;
     const cx = Math.round(tokenDoc.x + ((tokenDoc.width || 1) * gs) / 2);
     const cy = Math.round(tokenDoc.y + ((tokenDoc.height || 1) * gs) / 2);
-    const shapes = foundry.utils.deepClone(region.shapes ?? []);
+    // SOURCE objects (edhaRegionShapes): mutating region.shapes' live DataModels writes NOTHING —
+    // the Drawing would follow the token while the Region stayed put, the bench-run-26 family.
+    const shapes = edhaRegionShapes(region);
     const c = shapes.find(s => s.type === "circle" && !s.hole); if (!c) return;
     c.x = cx; c.y = cy;
     await region.update({ shapes });
@@ -15607,24 +15609,62 @@ function edhaPostSpreadCard(owner, regionId, sceneId, sizeFt, { label = "Expand 
     });
   } catch (e) { console.error("Edha Content | zone-spread card failed", e); }
 }
+/* --- Region SHAPE writes: always edit the SOURCE, never the live models (bench run 26) ----------
+ * `region.shapes` is an array of shape DataModel instances (RectangleShapeData / CircleShapeData /
+ * …), and `foundry.utils.deepClone` returns any object whose constructor is not `Object` BY
+ * REFERENCE (common/utils/helpers.mjs `_deepClone`: "Unsupported advanced objects" → `return
+ * original` unless `strict`). So `deepClone(region.shapes)` hands back a new ARRAY holding the LIVE
+ * models — mutating `r.x` only touches that model's initialized accessor, never its `_source`, and
+ * `region.update({shapes})` then re-reads the source on the way in (`EmbeddedDataField._cast` calls
+ * `value.toObject()`, which is `deepClone(this._source)`) and diffs to NOTHING. The write returns
+ * cleanly, no error anywhere, and the Region never moves.
+ *
+ * That is exactly how Spreading Roots charged its Investiture, posted "the terrain expands 10 ft",
+ * grew the player-visible Drawing to 1200×1200 (those lines write explicit numbers read off the
+ * mutated live model) and left the Region enforcing 600×600 (bench run 26, measured: re-running the
+ * old path in the page changed nothing; the same mutation over `region.toObject().shapes` grew it).
+ *
+ * THE RULE: every writer of `shapes` goes through `edhaRegionShapes(region)`, which hands back plain
+ * source objects that are safe to mutate. `tests/region-shape-write.test.js` pins it, including a
+ * source scan so a future `deepClone(<x>.shapes)` cannot land again. */
+function edhaRegionShapes(region) {
+  const src = region?.toObject?.()?.shapes;                       // toObject() = deepClone(_source)
+  if (Array.isArray(src)) return src;
+  return (region?.shapes ?? []).map(s => (s?.toObject ? s.toObject() : foundry.utils.deepClone(s)));
+}
+/* PURE. Grow a terrain Region's shape array in place by `addPx` and report which shape grew:
+ * a solid circle gains radius, a solid square/rect grows SYMMETRICALLY (07-12 rework — the patch
+ * stays centred and stays square). Returns null when the Region carries neither, so the caller
+ * writes nothing. Split out of edhaGrowTerrain so the geometry is testable without a canvas. */
+function edhaGrowShapes(shapes, addPx) {
+  const list = Array.isArray(shapes) ? shapes : [];
+  const c = list.find(s => s && s.type === "circle" && !s.hole);
+  if (c) { c.radius = (Number(c.radius) || 0) + addPx; return { kind: "circle", shape: c }; }
+  const r0 = list.find(s => s && s.type === "rectangle" && !s.hole);
+  if (r0) {
+    r0.x = (Number(r0.x) || 0) - addPx / 2; r0.y = (Number(r0.y) || 0) - addPx / 2;
+    r0.width = (Number(r0.width) || 0) + addPx; r0.height = (Number(r0.height) || 0) + addPx;
+    return { kind: "rectangle", shape: r0 };
+  }
+  return null;
+}
 async function edhaGrowTerrain(sceneId, regionId, sizeFt) {
   try {
     const scene = game.scenes?.get(sceneId); const region = scene?.regions?.get(regionId); if (!region) return;
     const gs = scene.grid?.size || 100, gd = scene.grid?.distance || 5;
     const addPx = Math.round((Number(sizeFt) / gd) * gs);
-    const shapes = foundry.utils.deepClone(region.shapes ?? []);
-    const c = shapes.find(s => s.type === "circle" && !s.hole);
-    const r0 = shapes.find(s => s.type === "rectangle" && !s.hole);
-    if (c) {                                    // legacy circle terrain
-      c.radius = (Number(c.radius) || 0) + addPx;
-      await region.update({ shapes });
-      const draw = (scene.drawings ?? []).find(d => d.getFlag?.("edha-content", "hazardVisual")?.regionId === region.id);
-      if (draw) { const r = c.radius; await draw.update({ x: c.x - r, y: c.y - r, "shape.width": r * 2, "shape.height": r * 2 }); }
-    } else if (r0) {                            // square terrain (07-12 rework): grow symmetrically, stays square
-      r0.x -= addPx / 2; r0.y -= addPx / 2; r0.width += addPx; r0.height += addPx;
-      await region.update({ shapes });
-      const draw = (scene.drawings ?? []).find(d => d.getFlag?.("edha-content", "hazardVisual")?.regionId === region.id);
-      if (draw) await draw.update({ x: r0.x, y: r0.y, "shape.width": r0.width, "shape.height": r0.height });
+    const shapes = edhaRegionShapes(region);    // SOURCE objects — mutating region.shapes writes nothing
+    const grown = edhaGrowShapes(shapes, addPx);
+    if (!grown) return;
+    await region.update({ shapes });
+    const draw = (scene.drawings ?? []).find(d => d.getFlag?.("edha-content", "hazardVisual")?.regionId === region.id);
+    if (!draw) return;
+    if (grown.kind === "circle") {              // legacy circle terrain
+      const c = grown.shape, r = c.radius;
+      await draw.update({ x: c.x - r, y: c.y - r, "shape.width": r * 2, "shape.height": r * 2 });
+    } else {                                    // square terrain (07-12 rework): grow symmetrically, stays square
+      const r0 = grown.shape;
+      await draw.update({ x: r0.x, y: r0.y, "shape.width": r0.width, "shape.height": r0.height });
     }
   } catch (e) { console.error("Edha Content | grow terrain failed", e); }
 }
@@ -16657,7 +16697,9 @@ async function edhaGrowTerrainSquareGM(sceneId, regionId, x, y) {
     const cell = edhaSnapCellRect(scene, x, y, 1);
     if (edhaRectCovered(region, cell)) { ui.notifications?.warn("Edha: that square is already burning."); return false; }
     if (!edhaRectAdjacent(region, cell)) { ui.notifications?.warn("Edha: pick a square ADJACENT to the existing terrain."); return false; }
-    const shapes = foundry.utils.deepClone(region.shapes ?? []);
+    // This one PUSHES (the array length changes, so the diff was never empty and the square spread
+    // did work) — but it goes through the same door so the family has exactly one shape reader.
+    const shapes = edhaRegionShapes(region);
     shapes.push({ type: "rectangle", x: cell.x, y: cell.y, width: cell.w, height: cell.h, rotation: 0, hole: false });
     await region.update({ shapes });
     const hex = region.color?.css ?? region.color ?? "#d23b2e";

@@ -719,7 +719,7 @@ lists every row touched with its ruling id.
 
 ---
 
-## 31. [ ] Mobile board models the operating windows, not a single quiet range (PM-R7)
+## 31. [x] Mobile board models the operating windows, not a single quiet range (PM-R7) (2026-09-05, PR #150)
 
 **Why:** On 2026-09-05 Ben moved the PM to **nights and weekends** (board ruling PM-R7: windows
 Mon–Thu 21:00→07:00 and Fri 21:00→Mon 07:00, America/New_York; weekday daytime is his). The phone
