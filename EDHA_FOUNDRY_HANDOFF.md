@@ -33,6 +33,96 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-05 — BENCH RUN 27 (weekend marathon run 4): **fix pass 2 verified GREEN on all three re-tests, and the adversary-ability-wiring section is CLEARED — 14 rows retired, 0 fails, 1 blocker named, 1 new row.** **World restored to the start snapshot EXACTLY (id-diff clean).** DOCS-ONLY — no engine, no data, no pack rebuild owed.
+
+**Served-engine check (the first act of the run, before anything was driven).** Ben's 16:15
+`deploy-to-foundry.bat` is confirmed live: the served
+`/modules/edha-content/scripts/register-skills.js`, fetched cache-busted and CRLF-normalised
+(1 528 379 raw → 1 508 679 bytes), hashes to git blob **`a59b0c41e53118e8fcb401650865ed56cbe7678b`**,
+byte-identical to `main:module-src/scripts/register-skills.js`. World `edha`, user `Bench` (GM),
+`edha-content` active, `globalThis.edha` present, system 2.1.0, Foundry 13.351. **Ben's `Gamemaster`
+client was connected throughout**, so every row below was measured with TWO GM clients live.
+`bench-setup-console.js` re-ran clean — 16 PCs / 7 targets, **zero ⚠ lines**, no new creations.
+
+**FIX PASS 2 — all three re-tests PASS.**
+- **Reeve-Owl / Sovereign of Solitude (2bAB-9).** The `target: "prompt"` correction is live: the
+  COMPENDIUM document carries **4** rules and a fresh import reads **4**, so run 20's `rules = 0` was
+  the whole-`events`-map `{}` collapse and not a stale placed copy. Driven: "10 vs SPI 14 — FAIL"
+  still applied **Immobilized to the target's document**; "18 vs SPI 14 — SUCCESS" added 1d6 → **4
+  vital** (HP 20 → 16). Both the row at the top of the White section and 2bAB-9 retire.
+- **Spreading Roots (2bS-4).** `edhaRegionShapes` works where `deepClone` did not, asserted on the
+  REGION source: `600×600 @ 2400,5100` → click → **`1200×1200 @ 2100,4800`** → next round's offer →
+  **`1800×1800 @ 1800,4500`**, Drawing in lockstep, 1 Investiture per expand.
+- **Pinpoint Charge terrain-follow** — the same fix's never-tested second consumer. Positive: a
+  living target moved and `region._source.shapes[0]` recentred to its new centre (`3750,4650`) with
+  the visual Drawing following. Negative: the SAME hazard, with the target at **0 HP**, stayed put
+  while the token moved — a downed target leaves the blaze behind.
+
+**ADVERSARY ABILITY WIRING — the section's whole 🤖 queue is gone (11 rows retired, 1 BLOCKED).**
+Cover Their Retreat (both range cells) · Press the Line (hit / zero-damage / different-weapon) ·
+Morale cues (Not a Bandit, The Line Falls Apart, Starving Not Fanatic — one whisper each, at the
+crossing only) · Per-bird seemings (all four cells, two unlinked Mistherons off one world actor) ·
+Braced expiry cell **(b)** · Cinder Coat splash-back (melee 5 ft splashes, 45 ft does not) · Bite
+sheds light (`dim 20 / bright 10 / flame`) · Stalker Fade cue (once per round) · Devastating Blow
+cue (own hit only) · 2bAB-8 Stitchmother (the Reknit half now charges **nothing** on the click) ·
+2bAB-9. Per-row evidence is in the checklist notes.
+
+⚠️ **Run 21's Braced-(b) blocker was WRONG, and the correction generalises.** It read
+`edhaApplyTimedStatus`'s `game.combat` as "the scene's ACTIVE combat", concluded the Brace user had
+to join **Ben's** combat, and recorded BLOCKED. But `game.combat` is the client's **VIEWED** combat —
+run 1 already wrote this down. A bench combat created `active: false` and then
+`ui.combat.initialize({combat})` **becomes** `game.combat` on this client, Ben's combat is never
+touched, and no token is ever added to it. Brace used inside it stamped `expireAfter {round: 25,
+turn: 2}` immediately with **no** `timedExpire`, and expired on schedule. **Any row previously parked
+on "needs the active combat" should be re-read against this.**
+
+⛔ **BLOCKED, blocker named, row stays 🤖: Veil auto-toggle (Stalker).** Re-measured, confirming run
+26: the Playtest Map has `environment.darknessLevel = 0` and `globalLight.enabled = true`, so no
+square on it is ever unlit and `edha-dark-veil` is structurally unreachable there. The drivable shape
+is a bench-created scene with darkness (viewed, never activated), not a workaround on this map.
+
+**NEW 🤖 ROW (filed, not diagnosed): does a two-`consume` activation charge BOTH resources?** The
+Stitchmother's Reknit Form declares 1 Investiture **and** 1 Focus; driven through `item.use()` with
+the ItemConsumeDialog dismissed by its default Continue button, Investiture went 10 → 9 and **Focus
+stayed at 8**. That is either a per-resource checkbox defaulting to unchecked (no bug) or a dropped
+second consume — the row says to open the dialog and READ it instead of blind-clicking.
+
+**Operating lessons (added to `docs/EDHA_BENCH_RUNBOOK.md` as run 27) —**
+`createEmbeddedDocuments("Token", …)` returns docs **out of input order**, so a name→id map built by
+index is silently CROSSED; this run's first Cover-Their-Retreat reading was exactly inverted by it
+and only a re-derived, name-keyed map caught it. `edha-gm-cue` cards are **once per round per owner**
+(`flags.edha-content.trigRound`), so a second attempt in the same round is indistinguishable from a
+dead rule — step the round, and read `trigRound` as the ground truth rather than the chat. Cue and
+rider dispatch also happens at **different chokepoints**: `edha-gm-cue`/`edha-thorns` ride
+`applyDamage`, but `edha-damage-rider` rides `CosmereItem#rollDamage` and reads
+`edhaUserTargetActor()` — so `applyDamage` alone can never show a `whenTargetFooled` bonus, and a
+"nothing happened" there is the harness, not the talent.
+
+**World restore.** Id-diff at the end is **empty**: actors added 0 / removed 0, tokens added 0 /
+removed 0, **no token moved**, combats back to Ben's one, regions 1 → 1, drawings 0, walls 117,
+templates 0, scenes 2. Everything this run created (12 actors incl. 2 phantom summons, 18 tokens,
+1 combat, 4 regions with their paired drawings, 1 injury item) was deleted; the orphan `Bench — Green`
+token and `Bench Target — Adjacent A` were both returned to their snapshot coordinates. **Honest
+residue, three items:** (1) the seven bench-folder actors this run damaged were restored to **full
+HP**, not to their pre-run values — only `Bench Target — Adjacent A` had its resources snapshotted;
+(2) `Bench — White`'s pre-existing Temp HP was consumed by a staged detonation and could not be
+restored, because it was not snapshotted (run 26 warned about exactly this and it still happened —
+snapshot `flags.edha-content.tempHp` for every actor you might splash, not just the ones you aim at);
+(3) `Bench — Green` is 2 Investiture down from the two Spreading Roots expands. Bench chat can be
+flushed.
+
+⚠️ **A bench-harness defect worth a repo fix, found by accident.** Three tokens on the Playtest Map —
+`Bench — Green`, `Bench — Heroic`, `Bench Target — Floater` — are **ORPHANS**: their `actorId` does
+not resolve to any actor, because `bench-setup-console.js` recreated those actors at some point and
+the old tokens were left behind. Anything driven through them fails with "no token on the scene to
+place terrain from" and looks like an engine bug; this run lost several calls to it before creating
+real tokens instead. The setup script's placement path matches on `scene.tokens.find(t => t.actorId
+=== a.id)`, which an orphan can never satisfy, and `PLACE_TOKENS` defaults to false, so nothing ever
+repairs them. **Ben's tokens were not touched; the orphans were left in place** (they are
+pre-existing) — the fix belongs in the script.
+
+---
+
 ## 2026-09-05 DELTA — items 32+11: OneDrive path literals off six scripts, `run-playtest-build.bat` repo-relative, `.gitattributes` landed. **TOOLING-only** — no engine change, no pack content change; `DATA`/`MODROOT` resolve to the identical directories on Ben's machine.
 
 **Item 11** (path-literal ratchet, lint-refs.js pass 21's `foundry-path-literal` entry): the six
