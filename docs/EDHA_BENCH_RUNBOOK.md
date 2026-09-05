@@ -916,6 +916,60 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   23 deliberately dropped the Green spot-check row on discovering it cannot retire until an Opportunity-gated
   talent is driven.
 
+## Operating lessons from run 24 (2026-09-05 — these OVERRIDE older advice where they conflict)
+
+- ❌ **FOUNDRY'S OWN SOCKET RATE LIMITER WILL EAT YOUR ROWS, SILENTLY.** After a burst of actor writes
+  (six `Actor#update`s in a loop, on top of a scene-reset sweep that itself writes to every actor in the
+  world), the server logged *"Exceeded maximum number of update-actor events in a short period of time.
+  Aborting event execution."* and then **discarded** writes for a window. The symptom at the row level is
+  a talent `use()` that produces no card, no notification and no console error — indistinguishable from a
+  dead talent. **Space bulk writes ~400 ms apart, and when something "does nothing", check
+  `read_console_messages({onlyErrors:true})` for the limiter before you write FAIL.** Waiting ~30 s clears it.
+- ❌ **A BENCH PC'S INVESTITURE MAX IS 2.** `bench-setup-console.js` sets level, attributes, skills and
+  talents but no resources, and the system derives `inv.max` = 2. Every talent costing 3+ Investiture —
+  Final Decree among them — silently no-ops: the system's consume step just declines, with no card and no
+  warning. Raise it first (`system.resources.inv.max.override` + `useOverride`, then `.value`), and note
+  the max still **clamps at 4** however high the override goes. Target fixtures likewise start at 0 HP,
+  so any "does it take damage / is it a legal target" row needs `hea` set before it means anything.
+  (Both are good candidates for the setup script, alongside TODO #26's sight-range change.)
+- ❌ **`item.use()` NEVER SETTLES while the system's `ItemConsumeDialog` is open** — the `javascript_tool`
+  call just times out at 45 s. Do not await it. Fire it, then poll
+  `[...foundry.applications.instances.values()]` for `ItemConsumeDialog` and click
+  `button[data-action="continue"]`. Keep that as a reusable `globalThis.__use(actorName, talentName)`
+  helper for the whole run; every talent with a resource cost needs it.
+- ❌ **Creating an ActiveEffect with EXACTLY ONE status and no `_id` THROWS** in cosmere-rpg 2.1.0:
+  `CosmereActiveEffect#_preCreate` → `isCondition` → `isStatusEffect` → `this.statuses.size === 1 &&
+  this.id.startsWith(...)`, and `this.id` is `null` before insert. It aborts the whole
+  `createEmbeddedDocuments` batch, so one bad fixture kills three good ones. Pass an explicit
+  `_id: foundry.utils.randomID()` (with `{keepId: true}`) whenever a probe effect carries one status.
+  Zero-status and multi-status effects are unaffected.
+- ✅ **ONE off-canvas actor + ONE combat delete settles the whole R-60 family.** The `deleteCombat` sweeps
+  are world-wide and unscoped, so staging every family's flags/statuses/effects on a SINGLE directory-only
+  actor and then deleting one bench combat exercises all ten families at once, each acting as the others'
+  control. Six rows off two tool calls. The staging is honest as long as you say which half was
+  hand-written: the sweep's READ/population half is what R-60 changed, and that is the half being driven.
+- ✅ **`Combat.create({active:false})` + `delete()` is safe and sufficient**, and `game.combat` stays Ben's
+  throughout. Ben's live combat had **zero combatants**, which makes `edhaCombatEndGuard` EMPTY — so
+  nothing was protected and the sweep ran world-wide. **Check `combat.combatants.size` on Ben's combat
+  before you assume the guard will shield his actors**; an empty leftover combat protects nobody.
+- ✅ **The best negative control is one the engine hands you.** Fate's "un-attributable props only clear
+  when no OTHER combat is in play" clause was proven by creating a combat *with a combatant*, deleting a
+  second combat (marker template survived), then deleting the first (marker template deleted). Positive
+  and negative from the same fixture, two calls.
+- ⚠️ **Verify the deploy from BOTH sides and prove the RUNNING code, not just the file on disk.**
+  `git hash-object` of the installed file matching `HEAD:module-src/...` proves the deploy; it does not
+  prove the browser is not serving a cached older script. Compare
+  `performance.getEntriesByType("resource")`'s `decodedBodySize` for the ORIGINAL `<script>` load against
+  your cache-busted fetch — equal sizes mean the page is running what you just hashed.
+- ⚠️ **The bench roster can be entirely GONE.** It was, this run: 0 bench actors, but three orphan
+  `Bench — *` tokens still on the Playtest Map whose actors had been deleted (`tok.actor` is null, so the
+  engine skips them). Rebuild is ~25 s and produced zero ⚠ lines. **Enumerate `game.actors` by folder
+  before planning any row** rather than assuming last marathon's fixtures survived.
+- ⚠️ **A row's subject may need to be a NON-character.** Several R-60 rows are specifically about an
+  adversary/summon bearer, because the old sweep halves split characters-only vs canvas-only. Driving them
+  on a `character` proves the wrong half. `Bench Target — Undefended` is the only adversary-typed bench
+  fixture — take its token off the canvas to get an off-scene adversary.
+
 ## Known limits
 
 - ❌ **RESOLVED AS UNFIXABLE (07-26i): there is no "no written Cognitive/Spiritual defense" creature.**
