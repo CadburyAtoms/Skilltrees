@@ -33,6 +33,31 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-04 — Mobile PM board: a phone-sized live projection of `docs/PM_BOARD.md` (TOOLING + DOCS-only; no engine or pack change)
+
+Ben asked the project manager for a mobile-friendly way to see what the workers are doing and
+what the usage window looks like. Built by the PM itself (like the board and the two skills, not a
+queue item): **`scripts/pm-state.js`** projects the board — queue, run log, rulings, inbox, Foundry
+windows, and the caps prose — into one JSON document, by section heading and table header (never
+row position), converting the run log's America/New_York wall-clock times into instants so the
+page can count the trailing five-hour window in the viewer's own clock; a `--live` overlay carries
+what the board cannot while a worker holds the checkout (the running worker, the PM's own state).
+**`docs/pm-board-mobile.html`** is the page, published as a claude.ai Artifact with the `db`
+capability: it renders the snapshot injected at publish, then subscribes to the artifact's
+`pm/state` document, so the PM updates Ben's phone with one `write_db` and no republish. It also
+carries an **inbox** Ben types into from the phone; the PM reads it in step 0 and marks notes seen.
+**`tests/pm-state.test.js`** pins the parser (fixture + the real board), the DST conversion, the
+overlay, and the inject step. Procedure and URL live in `project-manager/SKILL.md` §"The mobile
+board" and on the board under "Mobile board".
+
+Gotcha worth keeping: the first render was blank because `--inject`'s slot regex was a lazy
+`[\s\S]*?` and the page's own header comment *mentioned* the slot tag, so the match started in the
+comment and swallowed the whole stylesheet down to the real slot. The body of the slot is JSON with
+`<` escaped, so `[^<]*` is the correct shape; pinned in the test. Also: headless Chromium's
+`--window-size=390` does not give a 390px viewport (there is a minimum window width) — force
+`html{width:390px}` in the wrapper when checking a phone layout, or the right edge is the harness
+clipping, not the page.
+
 ## 2026-09-04 — pre-commit hook is now a shim; the installed copy can't go stale (item 15, TOOLING-only; PR #133)
 
 `.git/hooks/pre-commit` on this machine was still the 25-line first version (data validate only)

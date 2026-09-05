@@ -1,0 +1,541 @@
+<title>Skilltrees PM Board</title>
+<!--
+  docs/pm-board-mobile.html — the phone-sized view of docs/PM_BOARD.md, published as a claude.ai
+  Artifact (added 2026-09-04 at Ben's request). This file is an artifact BODY fragment: the
+  Artifact tool wraps it in the doctype/head/body skeleton at publish time, so it carries no
+  <html>/<head>/<body> of its own.
+
+  DATA FLOW. The board stays the source of truth. `node scripts/pm-state.js` projects it into JSON;
+  the PM pushes that JSON into the artifact's `pm/state` document (Artifact tool → write_db) on
+  every state change, and this page subscribes to it live (`claude.use("db")`). The
+  script#pm-state JSON slot at the bottom holds the at-rest snapshot that
+  `pm-state.js --inject` fills at publish time — what the page shows before the live document
+  arrives, or when the runtime is absent (a saved copy, a preview). NEVER commit a filled slot:
+  the tracked file keeps `{}` so the board's every edit does not churn this file.
+
+  INBOX. Notes Ben types here land in the `inbox` collection (status "new"); the PM reads them
+  with read_db on every wake, acts, and marks them "seen" — the phone-side half of the board's
+  "Inbox from Ben" channel. Everything read from the store is data, rendered escaped.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #f3f4f8; --panel: #ffffff; --panel2: #eaedf4; --line: #d5dae6; --line-strong: #b9c1d3;
+    --txt: #1b2233; --dim: #5c6880; --faint: #8b95ab;
+    --accent: #9a7a2a; --accent-ink: #6e5514; --accent-soft: #f3ead0;
+    --good: #1f8f4e; --good-soft: #dcf2e4; --warn: #b0761c; --warn-soft: #f8ecd6; --bad: #c9404d; --bad-soft: #f9dfe2;
+    --info: #2a78d6; --info-soft: #dce9fa; --violet: #4a3aa7; --violet-soft: #e6e1f7;
+    --m-sonnet: #2a78d6; --m-opus: #eb6834; --m-fable: #4a3aa7;
+    --bar: #2a78d6;
+    --shadow: 0 1px 2px rgba(20, 26, 43, .06), 0 6px 20px rgba(20, 26, 43, .06);
+    --sans: "Public Sans", "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: #141a2b; --panel: #1c2438; --panel2: #232d46; --line: #32405f; --line-strong: #46567c;
+      --txt: #dde4f2; --dim: #93a0bd; --faint: #6f7d9c;
+      --accent: #d8b76a; --accent-ink: #e8cf8f; --accent-soft: #2e2a1f;
+      --good: #4fc57e; --good-soft: #1b3a2a; --warn: #e0a84f; --warn-soft: #3a2f1b; --bad: #e2606c; --bad-soft: #3d2229;
+      --info: #5598e7; --info-soft: #1e2d4a; --violet: #9085e9; --violet-soft: #29264a;
+      --m-sonnet: #3987e5; --m-opus: #d95926; --m-fable: #9085e9;
+      --bar: #3987e5;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #141a2b; --panel: #1c2438; --panel2: #232d46; --line: #32405f; --line-strong: #46567c;
+    --txt: #dde4f2; --dim: #93a0bd; --faint: #6f7d9c;
+    --accent: #d8b76a; --accent-ink: #e8cf8f; --accent-soft: #2e2a1f;
+    --good: #4fc57e; --good-soft: #1b3a2a; --warn: #e0a84f; --warn-soft: #3a2f1b; --bad: #e2606c; --bad-soft: #3d2229;
+    --info: #5598e7; --info-soft: #1e2d4a; --violet: #9085e9; --violet-soft: #29264a;
+    --m-sonnet: #3987e5; --m-opus: #d95926; --m-fable: #9085e9;
+    --bar: #3987e5;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25);
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--txt); font: 15px/1.45 var(--sans); -webkit-text-size-adjust: 100%; }
+  a { color: var(--info); text-decoration: none; }
+  a:hover, a:focus-visible { text-decoration: underline; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+  button { font: inherit; color: inherit; }
+  .mono, .num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  .num { font-variant-numeric: tabular-nums; }
+
+  /* ---- header ---- */
+  .top { position: sticky; top: 0; z-index: 5; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+  .top-in { max-width: 680px; margin: 0 auto; padding: 10px 16px 0; }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand h1 { font-size: 17px; font-weight: 700; margin: 0; letter-spacing: -.01em; }
+  .brand .updated { margin-left: auto; font-size: 12px; color: var(--dim); white-space: nowrap; }
+  .brand .updated.stale { color: var(--warn); }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--faint); flex: none; position: relative; }
+  .dot.on { background: var(--good); }
+  .dot.wait { background: var(--warn); }
+  .dot.off { background: var(--faint); }
+  .dot.busy::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; border: 2px solid var(--good); opacity: .6; animation: ring 1.8s ease-out infinite; }
+  @keyframes ring { from { transform: scale(.6); opacity: .7; } to { transform: scale(1.5); opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .dot.busy::after { animation: none; opacity: .35; } }
+  .jump { display: flex; gap: 6px; overflow-x: auto; padding: 8px 0 10px; scrollbar-width: none; }
+  .jump::-webkit-scrollbar { display: none; }
+  .jump a { flex: none; font-size: 12.5px; font-weight: 500; color: var(--dim); padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--panel); }
+  .jump a:hover { color: var(--txt); text-decoration: none; border-color: var(--line-strong); }
+
+  /* ---- layout ---- */
+  main { max-width: 680px; margin: 0 auto; padding: 14px 16px 48px; display: grid; gap: 26px; }
+  section { scroll-margin-top: 96px; }
+  .eyebrow { display: flex; align-items: baseline; gap: 10px; margin: 0 0 10px; }
+  .eyebrow h2 { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); margin: 0; }
+  .eyebrow .sub { font-size: 12.5px; color: var(--faint); }
+  .eyebrow .right { margin-left: auto; font-size: 12.5px; color: var(--dim); }
+
+  /* ---- chips & pills ---- */
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .chip { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 500; line-height: 1; padding: 4px 8px; border-radius: 999px; border: 1px solid var(--line); color: var(--dim); background: var(--panel); white-space: nowrap; }
+  .chip .swatch { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .chip.model { color: var(--txt); }
+  .chip.model[data-model="sonnet"] .swatch { background: var(--m-sonnet); }
+  .chip.model[data-model="opus"] .swatch { background: var(--m-opus); }
+  .chip.model[data-model="fable"] .swatch, .chip.model[data-model="fable/opus"] .swatch { background: var(--m-fable); }
+  .chip.model[data-model="ben"] .swatch { background: var(--accent); }
+  .pill { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 600; line-height: 1; padding: 4px 9px; border-radius: 6px; white-space: nowrap; }
+  .pill.queued, .pill.briefed, .pill.Ben-only, .pill.unknown { background: var(--panel2); color: var(--dim); }
+  .pill.running, .pill.awake { background: var(--good-soft); color: var(--good); }
+  .pill.in-review, .pill.waiting { background: var(--warn-soft); color: var(--warn); }
+  .pill.merged { background: var(--good-soft); color: var(--good); }
+  .pill.blocked { background: var(--bad-soft); color: var(--bad); }
+  .pill.bench-pending { background: var(--violet-soft); color: var(--violet); }
+  .pill.stopped { background: var(--panel2); color: var(--dim); }
+  .pill.new { background: var(--info-soft); color: var(--info); }
+  .pill.seen { background: var(--panel2); color: var(--dim); }
+
+  /* ---- NOW (the one lifted panel) ---- */
+  .now-panel { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); padding: 14px 16px; display: grid; gap: 12px; border-top: 3px solid var(--accent); }
+  .pm-line { display: flex; align-items: flex-start; gap: 10px; flex-wrap: wrap; }
+  .pm-line .text { flex: 1 1 200px; color: var(--txt); }
+  .pm-line .text small { display: block; color: var(--dim); font-size: 13px; margin-top: 2px; }
+  .worker { background: var(--panel2); border-radius: 10px; padding: 12px 12px 10px; display: grid; gap: 8px; }
+  .worker .title { display: flex; gap: 8px; align-items: baseline; font-weight: 600; }
+  .worker .title .id { color: var(--accent-ink); font-weight: 600; }
+  .worker .meta { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12.5px; color: var(--dim); }
+  .worker .elapsed { color: var(--txt); font-weight: 600; }
+  .empty { color: var(--dim); }
+  .empty strong { color: var(--txt); }
+
+  /* ---- BUDGET ---- */
+  .meters { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .meter { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+  .meter .lbl { font-size: 12px; color: var(--dim); display: flex; justify-content: space-between; }
+  .meter .segs { display: flex; gap: 4px; margin: 8px 0 6px; }
+  .meter .seg { flex: 1; height: 8px; border-radius: 4px; background: var(--panel2); border: 1px solid var(--line); }
+  .meter .seg.used { background: var(--txt); border-color: var(--txt); }
+  .meter .seg.used[data-model="opus"] { background: var(--m-opus); border-color: var(--m-opus); }
+  .meter .seg.used[data-model="sonnet"] { background: var(--m-sonnet); border-color: var(--m-sonnet); }
+  .meter .val { font-size: 20px; font-weight: 600; line-height: 1.1; }
+  .meter .val small { font-size: 12px; font-weight: 500; color: var(--dim); margin-left: 4px; }
+  .slot { margin-top: 10px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; display: grid; gap: 4px; }
+  .slot .k { font-size: 12px; color: var(--dim); }
+  .slot .v { font-weight: 600; }
+  .slot .why { font-size: 12.5px; color: var(--dim); }
+  .usage { margin-top: 10px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
+  .usage .hero { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+  .usage .hero .big { font-size: 26px; font-weight: 600; line-height: 1; }
+  .usage .hero .big small { font-size: 13px; color: var(--dim); font-weight: 500; margin-left: 4px; }
+  .usage .hero .side { font-size: 12.5px; color: var(--dim); }
+  .bars { display: grid; gap: 8px; margin-top: 12px; font-size: 12.5px; }
+  .bar-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 3px 10px; align-items: baseline; }
+  .bar-row .l { color: var(--dim); overflow-wrap: anywhere; }
+  .bar-row .l b { color: var(--txt); font-weight: 600; }
+  .bar-row .track { grid-column: 1 / -1; height: 8px; background: var(--panel2); border-radius: 0 4px 4px 0; position: relative; }
+  .bar-row .fill { position: absolute; inset: 0 auto 0 0; background: var(--bar); border-radius: 0 4px 4px 0; min-width: 2px; }
+  .bar-row .fill.pm { background: var(--m-fable); }
+  .bar-row .v { text-align: right; white-space: nowrap; }
+  .legend { display: flex; gap: 12px; margin-top: 8px; font-size: 11.5px; color: var(--dim); }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; vertical-align: -1px; margin-right: 5px; background: var(--bar); }
+  .legend i.pm { background: var(--m-fable); }
+  .measure { margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--line); font-size: 12.5px; color: var(--dim); display: grid; gap: 4px; }
+  .measure b { color: var(--txt); }
+
+  /* ---- QUEUE ---- */
+  .filters { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+  .filters button { font-size: 12.5px; font-weight: 500; padding: 5px 11px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); color: var(--dim); cursor: pointer; }
+  .filters button[aria-pressed="true"] { background: var(--txt); color: var(--bg); border-color: var(--txt); }
+  .rows { display: grid; gap: 6px; }
+  .row { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 2px 10px; padding: 9px 10px 9px 12px; background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--faint); border-radius: 8px; }
+  .row[data-status="queued"], .row[data-status="briefed"] { border-left-color: var(--line-strong); }
+  .row[data-status="running"] { border-left-color: var(--good); }
+  .row[data-status="in-review"] { border-left-color: var(--warn); }
+  .row[data-status="merged"] { border-left-color: var(--good); opacity: .72; }
+  .row[data-status="blocked"] { border-left-color: var(--bad); }
+  .row[data-status="bench-pending"] { border-left-color: var(--violet); }
+  .row[data-status="Ben-only"] { border-left-color: var(--accent); }
+  .row .pos { grid-row: 1 / span 2; color: var(--faint); font-size: 12.5px; padding-top: 3px; }
+  .row .head { display: flex; gap: 8px; align-items: baseline; min-width: 0; }
+  .row .head .id { color: var(--accent-ink); font-weight: 600; font-size: 13px; flex: none; }
+  .row .head .t { font-weight: 500; overflow-wrap: anywhere; }
+  .row .tail { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 4px; font-size: 12px; color: var(--dim); }
+  .row .tail .deps { margin-left: 2px; }
+  .row .tail .pr { margin-left: auto; }
+
+  /* ---- FOR BEN ---- */
+  .asks { display: grid; gap: 8px; }
+  .ask { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; display: grid; gap: 3px; border-left: 4px solid var(--warn); }
+  .ask.bad { border-left-color: var(--bad); }
+  .ask.info { border-left-color: var(--info); }
+  .ask .k { font-size: 11.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); }
+  .ask .q { font-weight: 500; }
+  .ask .d { font-size: 13px; color: var(--dim); }
+
+  /* ---- INBOX ---- */
+  .composer { display: grid; gap: 8px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
+  .composer textarea { width: 100%; min-height: 72px; resize: vertical; font: inherit; color: var(--txt); background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 9px 10px; }
+  .composer textarea::placeholder { color: var(--faint); }
+  .composer .act { display: flex; align-items: center; gap: 10px; }
+  .composer .act .hint { font-size: 12px; color: var(--dim); flex: 1; }
+  .btn { padding: 8px 14px; border-radius: 8px; border: 1px solid var(--txt); background: var(--txt); color: var(--bg); font-weight: 600; cursor: pointer; }
+  .btn:disabled { opacity: .45; cursor: default; }
+  .notes { display: grid; gap: 6px; margin-top: 10px; }
+  .note { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 9px 12px; display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; }
+  .note .t { overflow-wrap: anywhere; grid-column: 1 / -1; }
+  .note .m { font-size: 12px; color: var(--dim); display: flex; gap: 8px; align-items: center; }
+  .note .x { background: none; border: 0; color: var(--faint); cursor: pointer; padding: 0 4px; font-size: 16px; line-height: 1; }
+  .note .x:hover { color: var(--bad); }
+  .offline { font-size: 13px; color: var(--dim); background: var(--panel2); border-radius: 8px; padding: 10px 12px; }
+
+  /* ---- RUN LOG ---- */
+  .log { display: grid; gap: 6px; }
+  .entry { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 9px 12px; display: grid; gap: 4px; }
+  .entry .h { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+  .entry .when { color: var(--dim); font-size: 12.5px; }
+  .entry .it { font-weight: 600; }
+  .entry .o { font-size: 13px; color: var(--dim); overflow-wrap: anywhere; }
+  .entry .facts { display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: 12px; color: var(--dim); align-items: center; }
+  .entry .facts .w { color: var(--txt); font-weight: 600; }
+
+  footer { max-width: 680px; margin: 0 auto; padding: 0 16px 40px; font-size: 12px; color: var(--faint); display: grid; gap: 4px; }
+  footer a { color: var(--dim); }
+  .toast { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); background: var(--txt); color: var(--bg); padding: 9px 14px; border-radius: 8px; font-size: 13px; box-shadow: var(--shadow); opacity: 0; pointer-events: none; transition: opacity .2s; }
+  .toast.show { opacity: 1; }
+  @media (min-width: 560px) { .brand h1 { font-size: 18px; } }
+</style>
+
+<header class="top">
+  <div class="top-in">
+    <div class="brand">
+      <span class="dot off" id="dot" aria-hidden="true"></span>
+      <h1>Skilltrees PM Board</h1>
+      <span class="updated" id="updated">—</span>
+    </div>
+    <nav class="jump" aria-label="Sections">
+      <a href="#now">Now</a><a href="#budget">Budget</a><a href="#queue">Queue</a><a href="#ben">For Ben</a><a href="#inbox">Inbox</a><a href="#log">Run log</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section id="now" aria-labelledby="h-now">
+    <div class="eyebrow"><h2 id="h-now">Now</h2><span class="sub" id="now-sub"></span><span class="right" id="clock"></span></div>
+    <div class="now-panel" id="now-panel"></div>
+  </section>
+
+  <section id="budget" aria-labelledby="h-budget">
+    <div class="eyebrow"><h2 id="h-budget">Budget window</h2><span class="sub" id="budget-sub"></span></div>
+    <div class="meters" id="meters"></div>
+    <div class="slot" id="slot"></div>
+    <div class="usage" id="usage"></div>
+  </section>
+
+  <section id="queue" aria-labelledby="h-queue">
+    <div class="eyebrow"><h2 id="h-queue">Queue</h2><span class="sub" id="queue-sub"></span></div>
+    <div class="filters" id="filters" role="group" aria-label="Filter queue"></div>
+    <div class="rows" id="rows"></div>
+  </section>
+
+  <section id="ben" aria-labelledby="h-ben">
+    <div class="eyebrow"><h2 id="h-ben">For Ben</h2><span class="sub">what only you can unblock</span></div>
+    <div class="asks" id="asks"></div>
+  </section>
+
+  <section id="inbox" aria-labelledby="h-inbox">
+    <div class="eyebrow"><h2 id="h-inbox">Inbox to the PM</h2><span class="sub">read on its next wake</span></div>
+    <form class="composer" id="composer">
+      <textarea id="note" placeholder="Foundry is up tonight 8–10 · skip 20, do 19a next · pause after this one" aria-label="Note to the PM" disabled></textarea>
+      <div class="act"><span class="hint" id="inbox-hint">Connecting…</span><button class="btn" type="submit" id="send" disabled>Send</button></div>
+    </form>
+    <div class="notes" id="notes"></div>
+  </section>
+
+  <section id="log" aria-labelledby="h-log">
+    <div class="eyebrow"><h2 id="h-log">Run log</h2><span class="sub">newest first</span></div>
+    <div class="log" id="loglist"></div>
+  </section>
+</main>
+<footer id="foot"></footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script id="pm-state" type="application/json">{}</script>
+<script>
+(function () {
+  "use strict";
+  var REPO_URL = "https://github.com/CadburyAtoms/Skilltrees";
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); };
+
+  var state = null;
+  try { state = JSON.parse($("pm-state").textContent || "{}"); } catch (e) { state = {}; }
+  if (!state || !state.queue) state = { queue: [], runLog: [], rulings: [], inbox: [], workers: [], dispatches: [], caps: { dispatchesPerWindow: 2, opusPerWindow: 1, windowHours: 5, quietStart: "23:00", quietEnd: "07:00" }, timeZone: "America/New_York", pm: { status: "unknown" }, foundry: {}, source: {} };
+  var liveDoc = false;   // pm/state arrived from the store
+  var dbRef = null;
+  var filter = "all";
+
+  // ---- time helpers (all display in the board's zone) ----
+  function tz() { return (state.caps && state.caps.timeZone) || state.timeZone || "America/New_York"; }
+  function parts(t) {
+    var f = new Intl.DateTimeFormat("en-US", { timeZone: tz(), hour12: false, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", weekday: "short" });
+    var o = {}; f.formatToParts(new Date(t)).forEach(function (p) { o[p.type] = p.value; });
+    o.hour = o.hour === "24" ? "00" : o.hour;
+    return o;
+  }
+  function offsetMin(t) {
+    var v = new Intl.DateTimeFormat("en-US", { timeZone: tz(), timeZoneName: "longOffset" }).formatToParts(new Date(t)).filter(function (p) { return p.type === "timeZoneName"; })[0].value;
+    var m = v.match(/GMT([+-])(\d{1,2})(?::?(\d{2}))?/); if (!m) return 0;
+    return (m[1] === "-" ? -1 : 1) * (parseInt(m[2], 10) * 60 + parseInt(m[3] || "0", 10));
+  }
+  function wallToInstant(y, mo, d, hh, mm) {
+    var guess = Date.UTC(y, mo - 1, d, hh, mm), off = offsetMin(guess), inst = guess - off * 60000, off2 = offsetMin(inst);
+    return off2 !== off ? guess - off2 * 60000 : inst;
+  }
+  function sameDay(a, b) { var pa = parts(a), pb = parts(b); return pa.year === pb.year && pa.month === pb.month && pa.day === pb.day; }
+  function fmtTime(t) { var p = parts(t); return p.hour + ":" + p.minute; }
+  var toMs = function (t) { return typeof t === "number" ? t : Date.parse(t); };
+  function fmtWhen(t, now) {
+    if (t == null || t === "") return "—"; var ms = toMs(t); if (isNaN(ms)) return String(t);
+    var p = parts(ms);
+    if (sameDay(ms, now)) return "today " + p.hour + ":" + p.minute;
+    if (sameDay(ms, now + 864e5)) return "tomorrow " + p.hour + ":" + p.minute;
+    if (sameDay(ms, now - 864e5)) return "yesterday " + p.hour + ":" + p.minute;
+    return p.weekday + " " + p.month + "/" + p.day + " " + p.hour + ":" + p.minute;
+  }
+  function ago(t, now) {
+    var ms = now - toMs(t); if (isNaN(ms)) return "";
+    var m = Math.max(0, Math.round(ms / 60000));
+    if (m < 1) return "just now"; if (m < 60) return m + "m"; var h = Math.floor(m / 60);
+    if (h < 48) return h + "h " + (m % 60) + "m"; return Math.floor(h / 24) + "d";
+  }
+  function quietMinutes(hhmm) { var a = hhmm.split(":"); return parseInt(a[0], 10) * 60 + parseInt(a[1], 10); }
+  function isQuiet(t) {
+    var c = state.caps, p = parts(t), m = parseInt(p.hour, 10) * 60 + parseInt(p.minute, 10);
+    var s = quietMinutes(c.quietStart), e = quietMinutes(c.quietEnd);
+    return s > e ? (m >= s || m < e) : (m >= s && m < e);
+  }
+  function nextQuietEnd(t) {
+    var c = state.caps, p = parts(t), e = c.quietEnd.split(":"), m = parseInt(p.hour, 10) * 60 + parseInt(p.minute, 10);
+    var y = +p.year, mo = +p.month, d = +p.day;
+    var todayEnd = wallToInstant(y, mo, d, +e[0], +e[1]);
+    if (m < quietMinutes(c.quietEnd)) return todayEnd;
+    var next = new Date(Date.UTC(y, mo - 1, d) + 864e5); return wallToInstant(next.getUTCFullYear(), next.getUTCMonth() + 1, next.getUTCDate(), +e[0], +e[1]);
+  }
+  function windowFacts(now) {
+    var c = state.caps, H = c.windowHours * 3600e3;
+    var inWin = (state.dispatches || []).filter(function (d) { var a = Date.parse(d.at); return !isNaN(a) && a <= now && now - a < H; });
+    var used = inWin.length, opus = inWin.filter(function (d) { return d.model === "opus"; }).length;
+    var why = [], slot = now;
+    if (used >= c.dispatchesPerWindow) { slot = Math.min.apply(null, inWin.map(function (d) { return Date.parse(d.at); })) + H; why.push("window frees " + fmtWhen(slot, now)); }
+    if (isQuiet(slot)) { slot = nextQuietEnd(slot); why.push("quiet hours until " + fmtWhen(slot, now)); }
+    return { inWin: inWin, used: used, opus: opus, slot: slot, why: why, quietNow: isQuiet(now) };
+  }
+
+  // ---- renderers ----
+  function modelChip(m) { if (!m || m === "ben") return ""; return '<span class="chip model" data-model="' + esc(m) + '"><span class="swatch"></span>' + esc(m) + '</span>'; }
+  function pill(s, label) { return '<span class="pill ' + esc(s) + '">' + esc(label || s) + '</span>'; }
+  function prLink(n) { return n ? '<a class="pr mono" href="' + REPO_URL + '/pull/' + (+n) + '" target="_blank" rel="noopener">PR #' + (+n) + '</a>' : ""; }
+
+  function renderHeader(now) {
+    var gen = Date.parse(state.generatedAt), u = $("updated");
+    var age = isNaN(gen) ? null : now - gen;
+    var a = isNaN(gen) ? "" : ago(state.generatedAt, now);
+    u.textContent = isNaN(gen) ? "no snapshot" : (liveDoc ? "live · " : "snapshot · ") + (a === "just now" ? a : a + " ago");
+    u.className = "updated" + (age !== null && age > 6 * 3600e3 ? " stale" : "");
+    var busy = (state.workers || []).length > 0, st = (state.pm && state.pm.status) || "unknown";
+    var cls = busy || st === "awake" ? "on" : st === "waiting" ? "wait" : "off";
+    $("dot").className = "dot " + cls + (busy ? " busy" : "");
+    $("clock").textContent = fmtTime(now) + " " + tz().split("/").pop().replace("_", " ");
+  }
+
+  function renderNow(now) {
+    var pm = state.pm || { status: "unknown" }, wf = windowFacts(now), h = [];
+    var stLabel = { awake: "PM awake", waiting: "PM waiting", stopped: "PM stopped", unknown: "PM state unknown" }[pm.status] || pm.status;
+    var text = pm.note || "";
+    if (!text) {
+      if (pm.status === "stopped") text = "Loop handed off; the daily session picks up at " + esc(state.caps.quietEnd) + ".";
+      else if (pm.status === "waiting" && pm.nextWakeAt) text = "Asleep until " + fmtWhen(pm.nextWakeAt, now) + ".";
+      else if (pm.status === "unknown") text = "The board carries no live PM overlay; this is the board as last committed.";
+    }
+    var sub = [];
+    if (pm.waitingOn) sub.push("waiting on " + pm.waitingOn);
+    if (pm.nextWakeAt && pm.status !== "waiting") sub.push("next wake " + fmtWhen(pm.nextWakeAt, now));
+    if (pm.session) sub.push("session " + pm.session);
+    h.push('<div class="pm-line">' + pill(pm.status, stLabel) + '<div class="text">' + esc(text) + (sub.length ? "<small>" + esc(sub.join(" · ")) + "</small>" : "") + "</div></div>");
+
+    var ws = state.workers || [];
+    if (!ws.length) {
+      var reason = wf.used >= state.caps.dispatchesPerWindow ? "dispatch cap reached (" + wf.used + " of " + state.caps.dispatchesPerWindow + " in the last " + state.caps.windowHours + "h)" : wf.quietNow ? "quiet hours" : "nothing dispatched yet";
+      var next = (state.queue || []).filter(function (q) { return q.status === "queued"; })[0];
+      h.push('<div class="empty"><strong>No worker running.</strong> ' + esc(reason) + '. Next slot ' + esc(fmtWhen(wf.slot, now)) + (next ? '; next up <span class="mono">#' + esc(next.item) + '</span> ' + esc(next.title) + ' (' + esc(next.model || "?") + ', ' + esc(next.size || "?") + ')' : "") + ".</div>");
+    }
+    ws.forEach(function (w) {
+      var started = w.startedAt ? Date.parse(w.startedAt) : NaN;
+      h.push('<div class="worker">' +
+        '<div class="title"><span class="id mono">#' + esc(w.item) + '</span><span>' + esc(w.title || lookupTitle(w.item)) + '</span></div>' +
+        '<div class="chips">' + modelChip(w.model) + (w.size ? '<span class="chip">size ' + esc(w.size) + '</span>' : "") + (w.lane ? '<span class="chip">lane ' + esc(w.lane) + '</span>' : "") + (w.phase ? pill(w.phase === "in-review" ? "in-review" : "running", w.phase) : pill("running", "working")) + '</div>' +
+        '<div class="meta">' + (isNaN(started) ? '<span>start time unknown</span>' : '<span>started ' + esc(fmtWhen(started, now)) + '</span><span class="elapsed num">' + esc(ago(w.startedAt, now)) + ' elapsed</span>') +
+          (w.branch ? '<span class="mono">' + esc(w.branch) + '</span>' : "") + (w.agent ? '<span>agent ' + esc(w.agent) + '</span>' : "") + prLink(w.pr) + '</div>' +
+        (w.note ? '<div class="meta"><span>' + esc(w.note) + '</span></div>' : "") +
+        '</div>');
+    });
+    $("now-panel").innerHTML = h.join("");
+    $("now-sub").textContent = ws.length ? ws.length + (ws.length === 1 ? " worker" : " workers") : "";
+  }
+  function lookupTitle(item) { var q = (state.queue || []).filter(function (x) { return String(x.item) === String(item); })[0]; return q ? q.title : ""; }
+
+  function renderBudget(now) {
+    var c = state.caps, wf = windowFacts(now), h = [];
+    function meter(label, used, cap, segsModels) {
+      var segs = ""; for (var i = 0; i < cap; i++) segs += '<span class="seg' + (i < used ? " used" : "") + '"' + (i < used && segsModels[i] ? ' data-model="' + esc(segsModels[i]) + '"' : "") + '></span>';
+      return '<div class="meter"><div class="lbl"><span>' + esc(label) + '</span><span>last ' + c.windowHours + 'h</span></div><div class="segs">' + segs + '</div><div class="val num">' + used + '<small>of ' + cap + ' used</small></div></div>';
+    }
+    var models = wf.inWin.slice().sort(function (a, b) { return Date.parse(a.at) - Date.parse(b.at); }).map(function (d) { return d.model; });
+    h.push(meter("Dispatches", wf.used, c.dispatchesPerWindow, models));
+    h.push(meter("Opus", wf.opus, c.opusPerWindow, wf.inWin.filter(function (d) { return d.model === "opus"; }).map(function () { return "opus"; })));
+    $("meters").innerHTML = h.join("");
+    $("budget-sub").textContent = wf.quietNow ? "quiet hours now" : "quiet " + c.quietStart + "–" + c.quietEnd;
+
+    var canNow = wf.slot <= now;
+    $("slot").innerHTML = '<div class="k">Next dispatch possible</div><div class="v">' + (canNow ? "Now" : esc(fmtWhen(wf.slot, now))) + '</div>' + (wf.why.length ? '<div class="why">' + esc(wf.why.join(" → ")) + "</div>" : "") +
+      (wf.inWin.length ? '<div class="why">In window: ' + wf.inWin.map(function (d) { return "#" + esc(d.item) + " (" + esc(d.model) + ", " + esc(fmtTime(Date.parse(d.at))) + ")"; }).join(", ") + "</div>" : "");
+
+    var log = (state.runLog || []).filter(function (r) { return r.weightedM != null; });
+    var today = log.filter(function (r) { return r.at ? sameDay(Date.parse(r.at), now) : (r.date && r.date === parts(now).year + "-" + parts(now).month + "-" + parts(now).day); });
+    var sum = function (rows) { return rows.reduce(function (a, r) { return a + r.weightedM; }, 0); };
+    var u = ['<div class="hero"><div class="big num">' + sum(today).toFixed(1) + '<small>M weighted today</small></div><div class="side">all logged ' + sum(log).toFixed(1) + 'M · workers ' + sum(log.filter(function (r) { return r.isDispatch; })).toFixed(1) + 'M</div></div>'];
+    var max = Math.max.apply(null, log.map(function (r) { return r.weightedM; }).concat([0.1]));
+    if (log.length) {
+      u.push('<div class="bars">');
+      log.slice().reverse().forEach(function (r) {
+        var label = (r.itemNo ? "<b>#" + esc(r.itemNo) + "</b> " : "") + esc(r.item.replace(/^#\d+[a-z]?\s*/, ""));
+        u.push('<div class="bar-row"><div class="l">' + label + '</div><div class="v num">' + r.weightedM.toFixed(1) + 'M · ' + esc(r.model || "") + '</div><div class="track"><div class="fill' + (r.isDispatch ? "" : " pm") + '" style="width:' + (r.weightedM / max * 100).toFixed(1) + '%"></div></div></div>');
+      });
+      u.push('</div><div class="legend"><span><i></i>worker dispatch</span><span><i class="pm"></i>PM / review</span></div>');
+    }
+    var us = state.usage && state.usage.lastSession;
+    if (us) {
+      u.push('<div class="measure"><div>Live measure (pm-usage.py' + (state.usage.measuredAt ? ", " + esc(ago(state.usage.measuredAt, now)) + " ago" : "") + '): <b>' + esc(((us.weighted_total || 0) / 1e6).toFixed(2)) + 'M</b> weighted over <b>' + esc(us.turns || 0) + '</b> PM turns' + (us.subagent_count ? ', ' + esc(us.subagent_count) + ' subagent(s) ' + esc(((us.subagents_weighted_total || 0) / 1e6).toFixed(2)) + 'M' : "") + '</div>' +
+        (us.subagents || []).map(function (s) { return '<div>· <span class="mono">' + esc((s.id || "").slice(0, 12)) + '</span> ' + esc(s.model || "") + ' — ' + esc(s.turns) + ' turns, <b>' + esc(((s.weighted_total || 0) / 1e6).toFixed(2)) + 'M</b></div>'; }).join("") + '</div>');
+    }
+    $("usage").innerHTML = u.join("");
+  }
+
+  var FILTERS = [["all", "All"], ["open", "Open"], ["merged", "Merged"], ["blocked", "Blocked"]];
+  function renderQueue() {
+    $("filters").innerHTML = FILTERS.map(function (f) { return '<button type="button" data-f="' + f[0] + '" aria-pressed="' + (filter === f[0]) + '">' + f[1] + "</button>"; }).join("");
+    var q = state.queue || [];
+    var open = q.filter(function (x) { return x.status !== "merged" && x.status !== "Ben-only"; }).length;
+    $("queue-sub").textContent = open + " open · " + q.filter(function (x) { return x.status === "merged"; }).length + " merged";
+    var shown = q.filter(function (x) {
+      if (filter === "all") return true; if (filter === "merged") return x.status === "merged";
+      if (filter === "blocked") return x.status === "blocked" || x.status === "Ben-only"; return x.status !== "merged";
+    });
+    $("rows").innerHTML = shown.map(function (x) {
+      return '<div class="row" data-status="' + esc(x.status) + '"><div class="pos num">' + (x.pos == null ? "—" : esc(x.pos)) + '</div>' +
+        '<div class="head"><span class="id mono">#' + esc(x.item) + '</span><span class="t">' + esc(x.title) + '</span></div>' +
+        '<div class="tail">' + pill(x.status, x.status + (x.statusDetail ? " · " + x.statusDetail : "")) + (x.lane ? '<span class="chip">' + esc(x.lane) + '</span>' : "") + modelChip(x.model) + (x.size ? '<span class="chip">' + esc(x.size) + '</span>' : "") + (x.deps ? '<span class="deps">needs ' + esc(x.deps) + '</span>' : "") + prLink(x.pr) + '</div></div>';
+    }).join("") || '<div class="empty">Nothing in this view.</div>';
+  }
+
+  function renderAsks() {
+    var a = [];
+    (state.rulings || []).filter(function (r) { return r.waiting; }).forEach(function (r) { a.push('<div class="ask"><div class="k">Ruling ' + esc(r.id) + '</div><div class="q">' + esc(r.question) + '</div><div class="d">' + esc(r.ruling) + '</div></div>'); });
+    (state.queue || []).filter(function (q) { return q.status === "blocked"; }).forEach(function (q) { a.push('<div class="ask bad"><div class="k">Blocked · #' + esc(q.item) + '</div><div class="q">' + esc(q.title) + '</div><div class="d">' + esc(q.statusDetail ? "waiting on " + q.statusDetail : "") + (q.deps ? " — " + esc(q.deps) : "") + '</div></div>'); });
+    (state.inbox || []).forEach(function (t) { a.push('<div class="ask info"><div class="k">On the board, not yet cleared</div><div class="q">' + esc(t) + '</div></div>'); });
+    var f = state.foundry || {};
+    if (f.deployStale) a.push('<div class="ask"><div class="k">Deploy</div><div class="q">Live engine is behind main' + (f.liveEngineVersion ? " (" + esc(f.liveEngineVersion) + ")" : "") + '</div><div class="d">Run scripts/deploy-to-foundry.bat before any bench run is meaningful.</div></div>');
+    var laneB = (state.queue || []).filter(function (q) { return q.lane === "B" && q.status !== "merged"; }).length;
+    if (!f.scheduled && laneB) a.push('<div class="ask info"><div class="k">Foundry window</div><div class="q">None scheduled · ' + laneB + ' lane-B item' + (laneB === 1 ? "" : "s") + ' will wait on one</div><div class="d">Tell the PM when Foundry is up (inbox below works).</div></div>');
+    var benOnly = (state.queue || []).filter(function (q) { return q.status === "Ben-only"; });
+    benOnly.forEach(function (q) { a.push('<div class="ask"><div class="k">Yours to do · #' + esc(q.item) + '</div><div class="q">' + esc(q.title) + '</div></div>'); });
+    $("asks").innerHTML = a.join("") || '<div class="empty">Nothing waiting on you.</div>';
+  }
+
+  function renderLog(now) {
+    var rows = (state.runLog || []).slice().reverse();
+    $("loglist").innerHTML = rows.map(function (r) {
+      var when = r.at ? fmtWhen(Date.parse(r.at), now) : (r.date || "");
+      return '<div class="entry"><div class="h"><span class="when num">' + esc(when) + '</span><span class="it">' + esc(r.item) + '</span></div>' +
+        '<div class="facts">' + modelChip(r.model) + (r.duration ? '<span>' + esc(r.duration) + '</span>' : "") + (r.weighted ? '<span class="w num">' + esc(r.weighted) + '</span>' : "") + prLink(r.pr) + '</div>' +
+        (r.outcome ? '<div class="o">' + esc(r.outcome) + '</div>' : "") + '</div>';
+    }).join("") || '<div class="empty">No runs logged.</div>';
+  }
+
+  function renderFoot() {
+    var s = state.source || {};
+    $("foot").innerHTML = '<div>Source <span class="mono">' + esc(s.path || "docs/PM_BOARD.md") + '</span>' + (s.hash ? ' @<span class="mono">' + esc(s.hash) + '</span>' : "") + (s.commit ? ' · commit <span class="mono">' + esc(s.commit) + '</span>' : "") + (s.branch ? ' on <span class="mono">' + esc(s.branch) + '</span>' : "") + '</div>' +
+      '<div>Generated ' + esc(state.generatedAt || "—") + ' · times shown in ' + esc(tz()) + ' · <a href="' + REPO_URL + '/blob/main/docs/PM_BOARD.md" target="_blank" rel="noopener">open the board</a></div>';
+  }
+
+  function render() {
+    var now = Date.now();
+    try { renderHeader(now); renderNow(now); renderBudget(now); renderQueue(); renderAsks(); renderLog(now); renderFoot(); }
+    catch (e) { console.error(e); }
+  }
+  function tick() { var now = Date.now(); try { renderHeader(now); renderNow(now); renderBudget(now); } catch (e) { console.error(e); } }
+
+  $("filters").addEventListener("click", function (ev) { var b = ev.target.closest("button[data-f]"); if (!b) return; filter = b.getAttribute("data-f"); renderQueue(); });
+
+  var toastT; function toast(msg) { var t = $("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(function () { t.classList.remove("show"); }, 2400); }
+
+  // ---- inbox (needs the store) ----
+  function renderNotes(docs, now) {
+    $("notes").innerHTML = docs.map(function (d) {
+      return '<div class="note" data-id="' + esc(d.id) + '"><div class="t">' + esc(d.text) + '</div><div class="m">' + pill(d.status === "seen" ? "seen" : "new", d.status === "seen" ? "seen by PM" : "new") + '<span class="num">' + esc(d.createdAt ? fmtWhen(Date.parse(d.createdAt), now) : "") + '</span></div><button class="x" type="button" data-del="' + esc(d.id) + '" aria-label="Delete note">×</button></div>';
+    }).join("");
+  }
+  function setInbox(enabled, hint) { $("note").disabled = !enabled; $("send").disabled = !enabled; $("inbox-hint").textContent = hint; }
+
+  async function connect() {
+    var db = null;
+    try { if (window.claude && typeof window.claude.use === "function") db = await window.claude.use("db"); } catch (e) { db = null; }
+    if (!db) { setInbox(false, "Live store unavailable here — this is the last published snapshot."); $("notes").innerHTML = '<div class="offline">Open this page in claude.ai to send notes and see live updates.</div>'; return; }
+    dbRef = db;
+    db.doc("pm/state").onSnapshot(function (snap) {
+      if (snap.exists) { state = snap.data(); liveDoc = true; render(); }
+      else { liveDoc = false; renderHeader(Date.now()); }
+    }, function (err) { console.warn("pm/state subscription ended", err); liveDoc = false; renderHeader(Date.now()); });
+    db.collection("inbox").orderBy("createdAt", "desc").limit(30).onSnapshot(function (snap) {
+      renderNotes(snap.docs.map(function (d) { var b = d.data() || {}; return { id: d.id, text: b.text, status: b.status, createdAt: b.createdAt }; }), Date.now());
+    }, function (err) { console.warn("inbox subscription ended", err); });
+    setInbox(true, "Lands in the PM's inbox; it acts on its next wake and marks the note seen.");
+  }
+
+  $("composer").addEventListener("submit", async function (ev) {
+    ev.preventDefault();
+    var text = $("note").value.trim(); if (!text || !dbRef) return;
+    $("send").disabled = true;
+    try { await dbRef.collection("inbox").add({ text: text, createdAt: new Date().toISOString(), status: "new", from: "mobile-board" }); $("note").value = ""; toast("Sent to the PM"); }
+    catch (e) { toast(e && e.code === "quota_exceeded" ? "Inbox is full — delete old notes first" : "Could not send: " + (e && e.message || "unknown error")); }
+    $("send").disabled = false;
+  });
+  $("notes").addEventListener("click", async function (ev) {
+    var b = ev.target.closest("button[data-del]"); if (!b || !dbRef) return;
+    try { await dbRef.doc("inbox/" + b.getAttribute("data-del")).delete(); toast("Note deleted"); } catch (e) { toast("Could not delete: " + (e && e.message || "")); }
+  });
+
+  render();
+  setInterval(tick, 30000);
+  connect();
+})();
+</script>

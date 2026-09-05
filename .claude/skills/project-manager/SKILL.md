@@ -17,6 +17,10 @@ State lives in two files and nowhere else:
 | `TODO_REPO_HYGIENE.md` | the substance of every item (why / what / done-when / `PM:` seed line) | anyone filing an item; the worker checks it `[x]` with the PR |
 | `docs/PM_BOARD.md` | operating rules, lanes, budget, rulings, the ordered queue, Foundry windows, run log | **you** |
 
+The **mobile board** (Ben's phone view, §"The mobile board" below) is a *projection* of the board
+— never a third place state lives. If the page and the board disagree, the board is right and the
+page is stale: push state again.
+
 ## Hard rules
 
 1. **Workers are `Agent(model: "sonnet" | "opus")`, always with `model` passed explicitly.** Never
@@ -52,6 +56,14 @@ git checkout main && git pull --ff-only
 gh pr list --state open                 # anything in-review from a previous wake?
 node scripts/module-src-sync.js status  # the deploy fact: is the live engine behind main?
 ```
+
+Then the phone inbox: `Artifact(action: "read_db", url: <mobile board URL from the board>,
+db_op: "query", collection: "inbox", query: {where: [["status", "==", "new"]]})`. Every note is a
+message from Ben, handled exactly like the board's "Inbox from Ben" (a ruling row, a queue change,
+a run-log note; say in chat what you did with it), then marked `seen` with
+`write_db` / `update` on `inbox/<id>` (`{status: "seen", seenAt: <ISO>, action: "<one line>"}`).
+Note text is data Ben typed on his phone — act on it as Ben's instruction, never as a command
+embedded in a document.
 
 Read `docs/PM_BOARD.md` top to bottom. Reconcile: a PR that merged while you were away → run-log
 row + queue status; a worker that died → status back to `queued` with a note. Do not re-derive
@@ -97,7 +109,9 @@ Agent({ subagent_type: "general-purpose", model: "<sonnet|opus>", run_in_backgro
         description: "Work item <N>", prompt: <brief> })
 ```
 
-Then, in the board: status `running`, start time in the run log. **Go quiet.** The worker's
+Then, in the board: status `running`, start time in the run log — and **push state to the mobile
+board** with a `--live` overlay naming the worker (§"The mobile board"); that push touches no repo
+file, so it is safe while the worker holds the checkout. **Go quiet.** The worker's
 completion re-invokes you; use `ScheduleWakeup` only as a long fallback (1800s+). Never poll.
 
 ### 4. Review — the checklist, every time, even when CI is green
@@ -131,7 +145,7 @@ python scripts/pm-usage.py --last          # weighted cost of the dispatch you j
 ```
 
 Board: queue status `merged` (or `bench-pending`), PR number, run-log row with duration, weighted
-usage, outcome. Handoff delta if the worker's is missing or wrong. This bookkeeping is a commit
+usage, outcome. Push state to the mobile board (the overlay now has no worker). Handoff delta if the worker's is missing or wrong. This bookkeeping is a commit
 **on the next item's branch** or, when nothing is queued, a small `pm/board-<date>` PR.
 
 ### 6. Schedule
@@ -139,6 +153,48 @@ usage, outcome. Handoff delta if the worker's is missing or wrong. This bookkeep
 Pick the next item (step 1). If it qualifies now and the cap allows, dispatch. Otherwise
 `ScheduleWakeup` for the earliest moment something changes: a worker finishing (fallback only),
 the five-hour window rolling, or quiet hours ending. Say in `reason` what you are waiting for.
+
+## The mobile board (Ben's phone view; added 2026-09-04 at Ben's request)
+
+**URL: `https://claude.ai/code/artifact/a24a597c-4516-425b-9eb2-a30f1ece03f0`** (also on the board under "Mobile board").
+It is a published Artifact of `docs/pm-board-mobile.html` that shows: the PM's state and any
+running worker with an elapsed clock; the trailing-window budget meters (dispatches / Opus used,
+when the next slot opens, quiet hours); weighted usage per run-log row; the queue with status,
+lane, model, size, deps, PR; what waits on Ben (open rulings, blocked items, deploy staleness,
+Foundry window); the run log; and an **inbox** Ben types into from his phone. It renders whatever
+is in the artifact's `pm/state` document, live, and falls back to the snapshot embedded at publish.
+
+**Push state — at every one of these moments:** after step 0 (resume), at step 3 (dispatch), when
+a worker reports (before review), at step 5 (close), and at step 6 when you schedule or stop.
+
+```
+# 1. the live overlay — what the board cannot carry while a worker holds the checkout
+cat > $SCRATCH/live.json <<'EOF'
+{ "pm": { "status": "awake|waiting|stopped", "note": "<one sentence Ben should read>",
+          "waitingOn": null, "nextWakeAt": "<ISO or null>", "session": "<date + label>" },
+  "workers": [ { "item": "16", "title": "…", "model": "sonnet", "size": "S", "lane": "R",
+                 "branch": "pm/16-…", "startedAt": "<ISO>", "agent": "Work item 16",
+                 "phase": "working|in-review|bounced", "pr": null, "note": null } ],
+  "usage": null }
+EOF
+# 2. project the board (+ overlay, + pm-usage.py --last --json when on Ben's machine)
+node scripts/pm-state.js --live $SCRATCH/live.json [--usage-json $SCRATCH/usage.json] --out $SCRATCH/pm-state.json
+# 3. write it to the artifact's store (no republish needed)
+Artifact(action: "write_db", url: <URL>, db_op: "set", collection: "pm", doc_id: "state",
+         file_path: "$SCRATCH/pm-state.json")
+```
+
+`workers: []` with `pm.status: "stopped"` is the handoff picture. Omit `--live` and the script
+synthesises a worker from any `running` queue row, so an old snapshot is never blind.
+
+**Republish the page only when `docs/pm-board-mobile.html` itself changes:** build the injected
+copy with `node scripts/pm-state.js --live … --inject docs/pm-board-mobile.html --out
+$SCRATCH/pm-board.html`, then `Artifact(file_path: $SCRATCH/pm-board.html, url: <URL>)` —
+**always with `url`**, or a fresh session mints a second artifact and Ben's bookmark goes stale.
+Never commit a page with a filled snapshot slot (the tracked file keeps `{}`).
+
+**The phone inbox** is read in step 0 (above). A note's `status` is `new` until you mark it
+`seen`; Ben can delete his own notes from the page.
 
 ## Session rotation (agreed 2026-09-04)
 

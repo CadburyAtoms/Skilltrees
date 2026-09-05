@@ -49,6 +49,16 @@ session resumes from this file alone.
 _(Write anything here — a priority change, a question, "Foundry is up tonight 8–10". The PM
 reads it every wake, acts, and clears it.)_
 
+## Mobile board (added 2026-09-04)
+
+**https://claude.ai/code/artifact/a24a597c-4516-425b-9eb2-a30f1ece03f0** — the phone view of this
+file: PM state and any running worker (elapsed clock), the trailing-window budget meters and when
+the next slot opens, weighted usage per run, the queue, what waits on Ben, the run log, and an
+**inbox** Ben can type into from his phone (the PM reads it every wake, exactly like the section
+above, and marks each note seen). It is a *projection*: `scripts/pm-state.js` reads this board and
+the PM pushes the result into the artifact's `pm/state` document on every state change; the page
+source is `docs/pm-board-mobile.html`. If the phone and this file disagree, this file is right.
+
 ## Lanes
 
 | Lane | Meaning | When it can run |
@@ -148,3 +158,4 @@ the PM then dispatches one `bench-run` worker (Opus) for the accumulated 🤖 se
 | 2026-09-04 18:41 | #25 PM tooling (script + Project tab) | sonnet | 15.5 min, 181 turns | 4.4M | merged after review; 4 trailers stripped; 2 out-of-scope finds → item 21 | #132 |
 | 2026-09-04 19:02 | #15 Pre-commit shim + reinstall | sonnet | 7 min, 73 turns | 1.3M | merged after review; clean first pass, no trailers | #133 |
 | 2026-09-04 19:45 | PM handoff | fable | — | — | loop stopped: window cap reached (2/2), quiet hours next; `edha-pm-daily` created, first run 2026-09-05 ~07:02; next dispatch is #16 (sonnet, S) | #134 |
+| 2026-09-04 19:30 | Mobile PM board (Ben's request; PM built it, no worker) | fable | ~40 min | — | `scripts/pm-state.js` + `tests/pm-state.test.js` + `docs/pm-board-mobile.html`; artifact published, `pm/state` seeded; skill gained the push/inbox procedure. Resume check: no worker running, open PRs #103/#93 are unrelated July branches, window still 2/2 → no dispatch. **Not merged**: on branch `claude/mobile-project-dashboard-7kkbuk`, needs a PR + Ben's merge | branch |
