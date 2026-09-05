@@ -78,6 +78,15 @@ symptoms rather than one row. *(3B-A.)*
 
 **R-5. Does Fault Line's line spare allies?** The card says "each character"; the engine catches
 enemies only. The same question applies to **every `kind: line` zone**. *(3B-B.)*
+> **ANSWERED 2026-09-05 (Ben, via the mobile board inbox): "no it does not"** — the line catches
+> **every character in it, allies included**. The card ("each character") is canon and the engine is
+> the side that drifts: `edhaFaultLine` builds its caught set with `edhaEnemyTokensInLine`, so allies
+> are neither damaged nor asked for the save. Consequence: the `kind: line` caught set becomes every
+> token in the line except the caster (damage, the Construct multiplier AND the save/prone rider,
+> because the card draws no friend/foe line), for every `kind: line` rule, not Fault Line alone. This
+> is live engine behaviour → lane B, bench-verified before it counts. Filed as **TODO_REPO_HYGIENE
+> #29**. **R-6 (the Region catching bystanders) is NOT decided by this** — same shape, separate
+> ruling, still open. Moves to §K when #29 lands.
 
 **R-6. Fault Line's dangerous-terrain Region catches bystanders scene-wide**, with no friend/foe
 clause — it incidentally ticked your **Stitchmother** during run 11 (effects verified back to
@@ -87,6 +96,11 @@ snapshot state afterwards). Same shape as R-5 but on the Region rather than the 
 in Attunement Range" has no encounter scoping at all, so on a shared map it decree-bound five of your
 placed playtest adversaries alongside the bench targets. Is Attunement Range the intended scope, or
 should it be the encounter? *(3B-B, corroborated by run 8's 2bV-9 sighting.)*
+> **ANSWERED 2026-09-05 (Ben, via the mobile board inbox): "attunement range is correct."** The
+> shipped scope stands; the "17 ally(ies)" count was the bench fixture's 15 always-armed PCs (that is
+> **R-8**, still open), not a scoping defect. **No engine change.** Consequence is docs-only: retire
+> or re-word any checklist row that frames the wide sweep as a defect, and move this ruling to §K.
+> Filed with R-19 / R-34 / R-49 as **TODO_REPO_HYGIENE #30**.
 
 **R-8. Roster cross-talk between the 15 always-armed bench PCs** — every bench PC watches every
 event, which is not a table condition. Is this only a bench-fixture problem, or does it say something
@@ -146,6 +160,10 @@ deliberately rather than changed silently. *(Checklist Quarry row, Heroic.)*
 retired hooks were gated `type === "character"` and rule-driven dispatch does not need that gate, so
 an adversary carrying a combat-timing talent gets its combat-start grant. Deliberate change; say if
 you would rather it stayed PC-only. *(Checklist 2bE-9. The mechanical half stays a 🤖 row.)*
+> **ANSWERED 2026-09-05 (Ben, via the mobile board inbox): "yes"** — adversaries get the grant too.
+> Confirms the shipped behaviour; **no engine change**. Consequence is docs-only: drop the
+> "say if you would rather it stayed PC-only" hedge wherever the checklist repeats it (2bE-9 was
+> already retired on evidence) and move this ruling to §K. Filed in **TODO_REPO_HYGIENE #30**.
 
 **R-20. Should Pattern Recognition's disadvantage expire at the ROUND change?** It does now: the card
 always said "their next test **this round**", and the old flag waited for ever. Say if you would
@@ -271,6 +289,16 @@ the behaviour. *(3B-C.)*
 token says the character is leaving ruin behind — unlike **every** other scene-arm in the project
 (Cascade Armed, Crowned, `withernext`, `warlord`). Consistency call. *(3B-D + checklist Destruction
 row.)*
+> **ANSWERED 2026-09-05 (Ben, via the mobile board inbox): "needs a region left behind."** Read by
+> the PM as: **no token status icon — the ruin the character leaves behind is the indicator.** The
+> engine already does this: the trail rule (`edha-place-hazard {mode: trail}`) drops a dangerous-
+> terrain **Region** with a player-visible Drawing into every square the armed character moves
+> through (bench run 14 fired Combustion Chain off exactly such a patch). So the consequence is a
+> bench **confirmation**, not a build: one 🤖 row — arm Walking Ruin, move three squares on a player
+> client, and see three ruin patches render for the player, not GM-only. If that row fails, it is a
+> visibility bug in the hazard Drawing, not a new indicator. Filed in **TODO_REPO_HYGIENE #30**.
+> *(Ben: if you meant something else by "left behind" — e.g. a lasting Region at the spot where the
+> toggle ENDS — say so and #30 gets a build half.)*
 
 **R-35. Should Unweaving's dispel card list the OMEN MARKER itself as a dispellable effect button?**
 Today the card lists enabled effects; the Omen marker is not among them. *(3B-D + checklist Chaos
@@ -363,6 +391,10 @@ call. Whether a push that moves 2.5 ft and *then* hits a body should roll the di
 one rule for both cases, and it is the behaviour that has shipped all along.* The alternative (walls
 only) is a one-word engine change: gate the collision roll on `blockedBy === "wall"`. Engine-only
 either way — **no pack rebuild**, so this can be flipped whenever you decide.
+> **ANSWERED 2026-09-05 (Ben, via the mobile board inbox): "an actor is an obstacle."** Matches the
+> recommended default and the behaviour that has shipped all along — **no engine change**, no card
+> change (Shockwave Slam's "collision with an obstacle" now reads as including a body). Consequence is
+> docs-only: move to §K. Filed in **TODO_REPO_HYGIENE #30**.
 
 **R-47. Should the `NO NAMEABLE HOOK:` engineering note be visible on the player-facing card?**
 Bench run 16 drove Seize and Roll, Drag Under and Slip the Sound and all three posted their authoring
