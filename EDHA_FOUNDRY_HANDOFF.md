@@ -33,6 +33,72 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-05 DELTA — fix pass 2, defect ① : **Spreading Roots grew nothing — `deepClone(region.shapes)` clones a DataModel BY REFERENCE.** ENGINE-only → ⟳ Sync + F5, **no pack rebuild**.
+
+### Bug root causes
+
+- **The Region never moved because the update was diffed away, not because `_source` was "not touched
+  by an accessor".** Run 26 called it right at the symptom and one step short at the mechanism, so here
+  is the chain read off Foundry v13.351's own source rather than inferred:
+  1. `region.shapes` is an array of shape **DataModel** instances (`RectangleShapeData` / `CircleShapeData`).
+  2. `foundry.utils.deepClone` (`common/utils/helpers.mjs` → `_deepClone`) returns **any object whose
+     `constructor !== Object` BY REFERENCE** — literally `if (strict) throw …; return original;`. So
+     `deepClone(region.shapes)` was a new ARRAY holding the **same live models**.
+  3. Mutating `r0.x` / `r0.width` writes the model's *initialized* own property. Fine so far.
+  4. **`region.update({shapes})` throws those edits away on the way in.** `DataModel.updateSource` runs
+     `this.constructor.cleanData(changes)` BEFORE it diffs, and the Region's field is
+     `shapes: new fields.ArrayField(new fields.TypedSchemaField(BaseShapeData.TYPES))`
+     (`common/documents/region.mjs` L45) — whose types are DataModel subclasses, so `TypedSchemaField`
+     wraps each in an **`EmbeddedDataField`**. The clean therefore runs
+     `ArrayField._cleanType` → `TypedSchemaField._cleanType` → `EmbeddedDataField.clean` →
+     `DataField.clean` → **`EmbeddedDataField._cast`, whose first line is
+     `if (value.toObject instanceof Function) value = value.toObject();`** — and `toObject()` is
+     `deepClone(this._source)`. The cleaned update therefore carries the ORIGINAL numbers, the diff is
+     empty, and the write is a silent no-op with no error and no warning.
+  5. The Drawing update two lines later writes **explicit numbers read off the mutated live model**, so
+     the visual grew and the mechanics did not. That split is the whole reported symptom.
+- **It was a family of three, and only one of them had been reported.**
+  - `edhaGrowTerrain` **rectangle** branch — the reported Spreading Roots fail.
+  - `edhaGrowTerrain` **circle** branch — identical latent bug (legacy circle terrain / Set Charge shapes).
+  - `edhaRecenterTerrain` — **Pinpoint Charge's "the terrain moves with the target"**: same no-op, so the
+    hazard Drawing followed the token while the Region stayed where it fell. Never reported, never tested.
+  - `edhaGrowTerrainSquareGM` — run 26 guessed "probably safe"; **verified, and it is**: it `push`es a
+    plain object, so the array LENGTH changes and the diff is never empty, and the pre-existing models
+    clean correctly through the same `toObject()` (they were never mutated). It still moves onto the
+    shared reader so the family has exactly one door.
+
+### The fix (ENGINE-only)
+
+- **`edhaRegionShapes(region)`** — the one way to read a Region's shapes for writing. Returns plain
+  `_source` objects (`region.toObject().shapes`, with a per-shape `toObject()` fallback) that are safe
+  to mutate. All three writers now go through it.
+- **`edhaGrowShapes(shapes, addPx)`** — PURE, split out of `edhaGrowTerrain` so the geometry is testable
+  without a canvas: solid circle gains radius; solid rectangle grows **symmetrically** (stays centred,
+  stays square); returns `{kind, shape}` for the Drawing sync or `null` when there is nothing to grow —
+  which also means the function now writes **nothing** to a Region that has neither, instead of calling
+  `region.update` with an untouched array.
+
+### New REUSABLE primitives
+
+`edhaRegionShapes(region)` · `edhaGrowShapes(shapes, addPx)` — both indexed in `ENGINE_INDEX.md` under the
+square-terrain toolkit, with the ⚠️ "never mutate `region.shapes`" rule beside them.
+
+### Pinned regression — `tests/region-shape-write.test.js` (8 cases)
+
+Both helpers, plus a **negative control** that re-implements Foundry's `_deepClone` verbatim and asserts a
+class instance really does come back by reference (the harness's shared stub is a JSON round-trip and
+cannot show this), plus **two source scans**: no `deepClone(<x>.shapes)` may reappear, and every
+`region.update({shapes})` site must be fed by an `edhaRegionShapes(...)` declaration. **Verified by
+mutation**: restoring the old `deepClone(region.shapes)` line fails both scans; the behavioural cases pass
+either way, which is exactly why the scans exist.
+
+### Re-test (🤖, both ENGINE-only → ⟳ Sync + F5)
+
+**Spreading Roots (2bS-4)** — assert the growth on `region._source.shapes[0]`, not on the Drawing, and
+check a second expand compounds. **Pinpoint Charge terrain-follow** — the fix's untested second consumer.
+
+---
+
 ## 2026-09-05 — BENCH RUN 26 (weekend marathon run 3): **the leyline scatter is CLEARED — 11 rows retired, 2 fails with proven root causes, 1 blocker named.** Open 🤖 **69 → 58**; ⚑ unchanged at **22** (no ⚑ row was touched). **World restored to the start snapshot EXACTLY (id-diff clean).** DOCS-ONLY — no engine, no data, no pack rebuild owed.
 
 **Deploy verified from both sides before anything was driven.** `git hash-object` of the installed
