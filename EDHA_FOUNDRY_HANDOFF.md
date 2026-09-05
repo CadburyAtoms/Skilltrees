@@ -61,8 +61,21 @@ difference to shipped content** — worth stating plainly rather than assuming t
 REBUILD materialized. 79 of the snapshot's 82 names collide with an EDHA-authored talent of the
 same name (the free-tier heroic paths are deliberately re-implemented under matching names in
 `data/cosmere.json`), so `classifyToken()`'s own-tree/global-index lookup already satisfies those
-prereqs before ever reaching the `heroicIds` fallback; the 3 non-colliding names do not appear as
-an exact prereq token anywhere in the current data. Measured directly: building all 5 packs
+prereqs before ever reaching the `heroicIds` fallback.
+
+**The remaining 3 are punctuation variants, not genuine gaps** (PM review, 2026-09-05 — the
+original delta said only that they "do not appear as an exact prereq token"): `Erudition*` (a
+stray asterisk), `Trickster’s Hand` (U+2019 curly apostrophe) and `Well-Supplied` (hyphen) all
+normalize onto EDHA talents that DO exist — `Erudition`, `Trickster's Hand` (straight apostrophe)
+and `Well Supplied` (space). So **all 82 snapshot names correspond to an EDHA talent**, and the
+map is entirely dormant rather than 79/82 dormant. Two consequences worth carrying forward: the
+"latent landmine" this item closes is thinner than the item's text assumed (no future talent can
+collide with a system-only name, because there are none), and the snapshot carries **punctuation
+drift against `data/`** — the curly-vs-straight apostrophe is the same class of gotcha §10 already
+records for JS data files. If the map is ever re-dumped, normalize its keys against the build
+index rather than trusting the compendium's spelling.
+
+Measured directly: building all 5 packs
 (`scope=all`) with (a) `main`'s pre-fix script + temp path unavailable [simulated CI], (b)
 `main`'s pre-fix script + temp path present [Ben's machine today], (c) this fix + temp path
 unavailable, (d) this fix + temp path present — all four report **`narrative:9`** identically, and

@@ -121,6 +121,15 @@ Answered by Ben on 2026-09-04 (all six, as recommended). Kept here so a worker c
 
 New rulings go in this table with a `(waiting)` mark; the PM asks Ben in one batch, not one at a time.
 
+**PM-D1 — deploy class is what Ben must DO, not what an item feared** (PM's call, 2026-09-05,
+item 17; not a Ben ruling — recorded so workers stop asking). Item 17 expected REBUILD; the
+measured build-report diff showed every pack byte-identical on all four machine/scenario
+combinations, so it shipped **TOOLING-only** and the worker asked whether to label it REBUILD "on
+principle". The label answers one question — *does Ben have to rebuild packs and ⟳ Sync?* — and
+the answer was no. Label from the measurement, never from the item's prediction; if the two
+disagree, that disagreement is a finding and belongs in the delta (it did). A latent behaviour
+that *could* change content later is a note, not a deploy class.
+
 ## Queue (in order)
 
 Status: `queued` · `briefed` · `running` · `in-review` · `merged` · `blocked(<ruling>)` · `bench-pending`
@@ -130,7 +139,7 @@ Status: `queued` · `briefed` · `running` · `in-review` · `merged` · `blocke
 | 1 | 25 PM tooling (script + dashboard tab; skills landed in #131) | R | sonnet | M | — | merged | #132 |
 | 2 | 15 Pre-commit shim + reinstall | R | sonnet | S | — | merged | #133 |
 | 3 | 16 Build fails loudly on a broken overlay | R | sonnet | S | — | merged | #136 |
-| 4 | 17 Heroic ids into `data/` | R | sonnet | S | — | queued | |
+| 4 | 17 Heroic ids into `data/` | R | sonnet | S | — | merged | #137 |
 | 5 | 20 One gate list, Windows-clean gates | R | sonnet | M | — | queued | |
 | 6 | 21 Stale-doc sweep | R | sonnet | S | PM-R2 ✓ | queued | |
 | 7 | 18 Overlay name-collision guard | R | opus | S | #16 | queued | |
@@ -167,3 +176,4 @@ the PM then dispatches one `bench-run` worker (Opus) for the accumulated 🤖 se
 | 2026-09-04 19:45 | PM handoff | fable | — | — | loop stopped: window cap reached (2/2), quiet hours next; `edha-pm-daily` created, first run 2026-09-05 ~07:02; next dispatch is #16 (sonnet, S) | #134 |
 | 2026-09-04 19:30 | Mobile PM board (Ben's request; PM built it, no worker) | fable | ~40 min | — | `scripts/pm-state.js` + `tests/pm-state.test.js` + `docs/pm-board-mobile.html`; artifact published, `pm/state` seeded; skill gained the push/inbox procedure. **Merged 2026-09-05** as PR #135 (`main` at `ac170d0`) — the earlier "Not merged / needs Ben" note in this row was corrected by the 09-05 session | #135 |
 | 2026-09-05 07:05 | #16 Build fails loudly on a broken overlay | sonnet | 10.9 min, 171 turns | 3.1M | merged after review; clean first pass, no trailers, no bounce. PM re-verified the mutation itself (reintroducing `catch { continue; }` → "Missing expected exception"), re-ran all 8 gates locally green, CI green in 28s | #136 |
+| 2026-09-05 07:30 | #17 Heroic ids into `data/` | sonnet | 11.6 min, 174 turns | 3.3M | merged after review, no bounce. **The item's premise did not survive measurement**: the map is fully dormant, so shipping content is unchanged everywhere — see PM-D1 for the deploy-class call. PM re-derived the collision count through `buildTrees()` (79/82 confirmed) and found the worker's 3 "non-colliding" names are punctuation variants (`Erudition*`, U+2019 apostrophe, hyphen) of talents that DO exist → all 82 are dormant; PM corrected that paragraph in the delta itself rather than spending a bounce. Snapshot has punctuation drift vs `data/` — noted for any re-dump | #137 |
