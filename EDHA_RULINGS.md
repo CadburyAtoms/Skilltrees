@@ -225,6 +225,7 @@ rebuild. Applies to every `edhaDialogPick` caller that stamps before prompting.
 > resolves — so it is one change, not one per talent. Engine-only, no pack rebuild. **Live engine
 > behaviour → lane B**, bench-verified before it counts. Filed as **TODO_REPO_HYGIENE #36**; moves
 > to §K when #36 lands.
+> Shipped in PR #160 (2026-09-05); moves to §K after the bench pass.
 
 ---
 

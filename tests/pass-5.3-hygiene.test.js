@@ -61,13 +61,20 @@ test("edhaStampSceneOnce: a rejected setFlag (no perms) is swallowed, not thrown
  * sceneOnce UNCONDITIONALLY while its OWN veto (above) gated on `h.oncePerScene !== false`. The fix
  * is that the stamp call is now wrapped in the SAME condition. edhaDecreeUse is a big canvas/token
  * flow (picker dialogs, foe sweeps) that is impractical to unit-test end-to-end here — the load-
- * bearing claim is the wrapping itself, which this pins directly against the source. */
+ * bearing claim is the wrapping itself, which this pins directly against the source.
+ *
+ * 2026-09-05 (R-69, TODO #36): the stamp MOVED — it now sits after the prohibition picker's
+ * `if (!proh)` refund guard instead of on the function's first line, so a cancelled pick burns
+ * nothing. The polarity this case pins is unchanged; only the offset is, so the fixed 400-char
+ * window became a false failure and is now the whole function body. The ORDER is pinned in
+ * tests/picker-cancel-stamp.test.js, which also drives edhaDecreeUse end-to-end with a stubbed
+ * picker — "impractical to unit-test" above is no longer quite true. */
 test("edhaDecreeUse: the sceneOnce stamp is now gated on the SAME polarity as its own veto", () => {
   const { readEngineSource, codeOnly } = require("./harness.js");
   const src = codeOnly(readEngineSource());
   const fnStart = src.indexOf("async function edhaDecreeUse(item, h)");
   assert.ok(fnStart >= 0, "edhaDecreeUse not found — engine shape changed");
-  const body = src.slice(fnStart, fnStart + 400);
+  const body = src.slice(fnStart, src.indexOf("\n}", fnStart));
   assert.ok(
     /if\s*\(\s*h\.oncePerScene\s*!==\s*false\s*\)\s*await edhaStampSceneOnce\(owner,\s*item\)/.test(body),
     "edhaDecreeUse must gate its stamp on `h.oncePerScene !== false` — an unconditional stamp regressed R-61"

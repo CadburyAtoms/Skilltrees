@@ -1946,6 +1946,18 @@ declarations (hoisted) — callable from anywhere in the file regardless of text
   SAME polarity (visible change, 🤖 bench row: a Decree authored `oncePerScene: false` used to still
   burn a stamp nothing could read; now it stamps nothing, matching its veto). Pinned in
   `tests/pass-5.3-hygiene.test.js`, including a source-text pin on the fixed call site.
+  ⛑ **WHERE the stamp goes: AFTER a successful pick, never before a cancellable prompt** (R-69, Ben
+  2026-09-05; TODO #36). A flow that opens a picker and REFUNDS on cancel must not have stamped yet —
+  otherwise the cancel costs nothing but still eats the scene's only use (bench run 25 measured
+  exactly that on Final Decree: 4 → 1 → 4, no card, no `decree` flag, `sceneOnce.<id> === true`).
+  `edhaDecreeUse` is the one flow that had this shape; its stamp now sits after the `if (!proh)`
+  refund guard. **The VETO's polarity is a different question and is unchanged** — R-61's "refused
+  BEFORE the system charges" still governs a *repeat* use, in the `preUseItem` hook; R-69 governs
+  only the *cancelled* one, inside the use flow. The invariant is pinned generically in
+  `tests/picker-cancel-stamp.test.js`: no engine function may reach an `edhaRefundCost(...)` cancel
+  guard with an `edhaStampSceneOnce(...)` already behind it, so the next handler that grows a picker
+  fails the gate rather than shipping the bug. `edhaPromptDC` is NOT such a prompt — declining it is
+  fail-open (`dc = null`) and the use resolves either way, so a stamp may precede it (H1's flow does).
 - **`edhaDialogPick({ title, content, buttons })`** — the ONE DialogV2-with-AppV1-fallback picker.
   `buttons` is `[{ action, label, default, parse(root) }]`; DV2 hands `parse` the submitted
   `btn.form`, the legacy path hands it the dialog's root element — both support `.querySelector`, so
