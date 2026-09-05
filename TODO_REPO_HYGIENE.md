@@ -389,7 +389,7 @@ regression is pinned, and the pack build is byte-identical on good input.
 
 ---
 
-## 17. [x] Move `C:/tmp/heroic_ids.json` into `data/` as a tracked snapshot (2026-09-05, PR #TBD)
+## 17. [x] Move `C:/tmp/heroic_ids.json` into `data/` as a tracked snapshot (2026-09-05, PR #137)
 
 **Why:** `scripts/foundry-build.js:423` reads the cosmere-rpg system's heroic-path talent ids from a
 hard-coded temp path with `catch { return {}; }`. The map resolves prose prerequisites that name a
