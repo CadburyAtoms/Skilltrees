@@ -214,10 +214,15 @@ function parseRulings(md) {
   return doc;
 }
 
-// Repo hygiene: `## N. [x|~| ] Title` headings ARE the items; body → log.
+// Repo hygiene: `## N. [x|~| ] Title` headings ARE the items; body → log. One section PER item
+// (plus a leading intro-prose section) — not one giant section for the whole doc — because a
+// single ~66 KB "everything" section can outgrow a dashboard chunk cap the moment one more item
+// is added (item 38, 2026-09-05: repo-sec0 hit 65 443 bytes on ~390 bytes of headroom). Splitting
+// this way also gives the phone one collapsible card per item instead of one wall of text.
 function parseRepoHygiene(md) {
   const lines = md.split('\n');
-  const sec = { title: 'Repo hygiene backlog (TODO_REPO_HYGIENE.md)', blocks: [] };
+  const sections = [];
+  const introSec = { title: 'Repo hygiene backlog (TODO_REPO_HYGIENE.md)', blocks: [] };
   let item = null;
   let intro = [];
   let sawFirst = false;
@@ -227,19 +232,21 @@ function parseRepoHygiene(md) {
     if (h) {
       sawFirst = true;
       const st = h[2] || ' ';
+      const title = line.replace(/^## /, '').replace(/\[( |x|~)\]\s*/, '');
       item = {
-        type: 'item', kind: 'track', text: line.replace(/^## /, '').replace(/\[( |x|~)\]\s*/, ''),
+        type: 'item', kind: 'track', text: title,
         done: st.toLowerCase() === 'x', partial: st === '~', log: [],
       };
-      sec.blocks.push(item);
+      sections.push({ title, blocks: [item] });
       continue;
     }
     if (line.startsWith('# ')) continue;
     if (!sawFirst) { if (line.trim() && line !== '---') intro.push(line.trim()); continue; }
     if (item && line.trim() && line !== '---') item.log.push(line.replace(/^>\s?/, '').trim());
   }
-  if (intro.length) sec.blocks.unshift({ type: 'prose', text: intro.join(' ') });
-  return sec;
+  if (intro.length) introSec.blocks.push({ type: 'prose', text: intro.join(' ') });
+  if (introSec.blocks.length) sections.unshift(introSec);
+  return sections;
 }
 
 // Art wishlist: `### Creature — files` entries become items; everything else prose.
@@ -594,7 +601,7 @@ function buildModel() {
   }
 
   // --- Repo
-  const repoSections = [parseRepoHygiene(hygieneMd)];
+  const repoSections = parseRepoHygiene(hygieneMd);
 
   const TABS = [
     { key: 'bench', label: 'Bench', sections: benchSections, srcNote: `EDHA_FOUNDRY_TEST_CHECKLIST.md @${sources['EDHA_FOUNDRY_TEST_CHECKLIST.md']}` },

@@ -270,7 +270,21 @@ test("pm-state: the mobile snapshot's rows are exactly the committed dashboard's
 test("pm-state: the shards stay under the chunk cap and cover every section exactly once", () => {
   const snap = snapshot();
   const B = (o) => Buffer.byteLength(JSON.stringify(o));
-  for (const maxBytes of [DASH_CHUNK_BYTES, 64 * 1024]) {
+  // The stress cap used to be a fixed 64 KiB — which is a real-world size ONLY by coincidence: on
+  // 2026-09-05 the repo tab was ONE section holding the whole TODO doc (65 443 bytes), so this same
+  // "stress" pass was silently pinning that section 93 bytes under its own ceiling. A 1.2 KB TODO
+  // addition then failed `tests/run.js` with `alone exceeds`, and every future addition would too.
+  // The fix (item 38) split the repo tab into one section per `## N.` item, so no single section
+  // should organically approach a chunk cap again — assert that, then derive the stress cap from
+  // whatever the largest REAL section actually is. This makes the pass a stress test of the
+  // SHARDER's behaviour under a tight cap (does it still shard correctly, still throw correctly),
+  // not a size limit on how much Ben is allowed to write in one TODO item or bench section.
+  const sectionBytes = [];
+  for (const tab of snap.tabs) for (const sec of tab.sections) sectionBytes.push(B({ blocks: sec.blocks }) + B(sec.id) + 2);
+  const largest = Math.max(...sectionBytes);
+  assert.ok(largest < 64 * 1024, `largest section is ${largest} bytes — a single section should stay well under a 64 KiB chunk cap`);
+  const stressCap = Math.ceil(largest * 1.5);
+  for (const maxBytes of [DASH_CHUNK_BYTES, stressCap]) {
     const { index, chunks } = shardDashboard(snap, { maxBytes, now: NOW });
     assert.ok(B(index) < 256 * 1024, "index under the store's document cap");
     const seen = new Map();
@@ -289,7 +303,7 @@ test("pm-state: the shards stay under the chunk cap and cover every section exac
     assert.strictEqual(index.generatedAt, NOW);
     assert.strictEqual(index.stamp, snap.stamp);
   }
-  assert.ok(Object.keys(shardDashboard(snap, { maxBytes: 64 * 1024 }).chunks).length > Object.keys(shardDashboard(snap, { maxBytes: DASH_CHUNK_BYTES }).chunks).length, "a smaller cap means more chunks");
+  assert.ok(Object.keys(shardDashboard(snap, { maxBytes: stressCap }).chunks).length > Object.keys(shardDashboard(snap, { maxBytes: DASH_CHUNK_BYTES }).chunks).length, "a smaller cap means more chunks");
   assert.throws(() => shardDashboard(snap, { maxBytes: 2048 }), /alone exceeds/, "a section bigger than the cap is an error, not an oversized document");
 });
 
