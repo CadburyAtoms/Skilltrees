@@ -4599,16 +4599,40 @@ async function edhaTryResolveContest(ownerId) {
  * it" (edhaPromptDC's blank-DC case), which only edhaPromptDC's own `parse` can still produce.
  * Fixed riding along: edhaPromptDC's AppV1 fallback rendered its content RAW, with no `<form>` wrap —
  * Weave's and Edict's always wrapped theirs. `edhaDialogPick` always wraps the fallback body now, so
- * every caller behaves the same on Foundry versions old enough to hit that path. */
+ * every caller behaves the same on Foundry versions old enough to hit that path.
+ *
+ * ⛑ THE `??` THAT ATE EVERY CANCEL (bench run 24, 2026-09-05 — the contract above was a LIE on the
+ * DialogV2 path from the day this function shipped). `DialogV2#_onSubmit` is, verbatim:
+ *
+ *     const result = (await button?.callback?.(event, target, this)) ?? button?.action;
+ *
+ * so a callback that resolves `null` or `undefined` is REPLACED by the button's own `action` string,
+ * which is always truthy. Every parse-less Cancel therefore returned `"cancel"`, and every caller's
+ * `if (!picked)` / `if (!proh)` guard missed it: Final Decree charged 3 Investiture, refunded
+ * nothing, and armed itself with `proh === "cancel"` ("…must not **undefined**"); the Weave link
+ * picker's Cancel is worse still — `"cancel"[0]`/`[1]` are `"c"`/`"a"`, two DIFFERENT truthy
+ * strings, so it sailed past its `!picked[0] || picked[0] === picked[1]` guard, linked nothing, kept
+ * the cost and posted a "the chosen squares are linked" card anyway.
+ *
+ * THE FIX IS A BOX, not a per-caller guard. Every callback result is wrapped in `{ edhaPick: … }` —
+ * an object is never nullish, so the `??` can never fire — and unboxed on the far side. This
+ * restores the documented contract EXACTLY, including the two values `??` was destroying:
+ * `null` (parse-less button) and `undefined` (edhaPromptDC's "No DC — judge it", whose
+ * `parse: () => undefined` was arriving as `"judge"`). A dismissal is not boxed at all: with
+ * `rejectClose: false`, `DialogV2.wait` resolves `result ?? null` from its close listener, so an
+ * unboxed value of ANY shape means "dismissed" → `undefined`, matching the legacy path's `close`.
+ * Do NOT "fix" this by giving buttons falsy `action` values — DV2 keys `options.buttons` by action
+ * and `_onSubmit` looks the pressed button up by `target.dataset.action`. */
 async function edhaDialogPick({ title, content, buttons }) {
   const DV2 = foundry.applications?.api?.DialogV2;
   if (DV2) {
     try {
-      return await DV2.wait({
+      const boxed = await DV2.wait({
         window: { title }, content, rejectClose: false,
         buttons: buttons.map((b) => ({ action: b.action, label: b.label, default: !!b.default,
-          callback: (ev, btn) => (b.parse ? b.parse(btn.form) : null) })),
+          callback: async (ev, btn) => ({ edhaPick: b.parse ? await b.parse(btn.form) : null }) })),
       });
+      return edhaUnboxDialogPick(boxed);
     } catch (e) { return undefined; }
   }
   return await new Promise((resolve) => new Dialog({
@@ -4619,6 +4643,15 @@ async function edhaDialogPick({ title, content, buttons }) {
     default: buttons.find((b) => b.default)?.action || buttons[0]?.action,
     close: () => resolve(undefined),
   }).render(true));
+}
+/* The far half of the box above — PURE, so the `??`-survival contract is pinned in
+ * tests/dialog-pick-box.test.js without a DOM. A box is `{ edhaPick: <the parse result> }` and its
+ * payload is returned verbatim (including `null` and `undefined`); anything NOT a box — the `null`
+ * DialogV2.wait resolves on a dismissal with `rejectClose:false`, or an action string if a future
+ * Foundry ever bypasses the callback — means "no choice was made" → `undefined`. `in` is the test,
+ * not truthiness: `{edhaPick: undefined}` is a REAL answer ("No DC — judge it"). */
+function edhaUnboxDialogPick(boxed) {
+  return (boxed && typeof boxed === "object" && "edhaPick" in boxed) ? boxed.edhaPick : undefined;
 }
 async function edhaPromptDC(title, hint) {
   const content = `<p>${hint}</p><p><label>Difficulty (DC): <input type="number" name="edhaDC" style="width:6em" autofocus></label></p>`;

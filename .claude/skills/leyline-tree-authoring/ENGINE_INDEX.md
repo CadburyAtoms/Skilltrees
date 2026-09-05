@@ -1909,6 +1909,15 @@ declarations (hoisted) — callable from anywhere in the file regardless of text
   (`edhaZoneLinkMarkers`), and the Edict prohibition picker (`edhaPickProhibition`). Fixed riding
   along: `edhaPromptDC`'s AppV1 fallback rendered its content with no `<form>` wrap (the other two
   always wrapped theirs) — `edhaDialogPick` always wraps the fallback body now.
+  ⛑ **That contract is only true because every callback result is BOXED** (`{ edhaPick: … }`, unboxed
+  by **`edhaUnboxDialogPick(boxed)`** — pure, pinned in `tests/dialog-pick-box.test.js`). It was
+  FALSE from the day the picker shipped until 2026-09-05: `DialogV2#_onSubmit` is
+  `const result = (await button?.callback?.(…)) ?? button?.action;`, so a callback resolving
+  `null`/`undefined` is replaced by the truthy action string and every caller's `if (!picked)` misses.
+  Measured (bench run 24): Final Decree's Cancel spent 3 Investiture, refunded nothing and armed the
+  Decree with `proh === "cancel"`. An object is never nullish, so the `??` can never fire. **Anything
+  you hand DialogV2 as a callback result must be boxed the same way** — and do not try to escape this
+  by giving a button a falsy `action`, which is the key DV2 looks the pressed button up by.
 - **`edhaSheetRoot(app, element)`** — the shared `renderCharacterSheet` preamble: resolves the root
   HTMLElement + actor, gates to `actor.type === "character"` (an adversary shares the same render
   hook via the base class). Returns `{root, actor}` or `null`. 5 of the 6 `renderCharacterSheet`
