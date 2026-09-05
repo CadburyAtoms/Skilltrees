@@ -1551,6 +1551,31 @@ Cross-actor relay watch-items scattered through the tree sections (White Coordin
 §5, Chaos §3…) need no dedicated tests — they self-verify while running the rows above; note
 anything that errors in the row's note box.
 
+## Re-test after fix pass 1 / run 24 (2026-09-05 — all three fixed; ⟳ sync the module + F5 first, engine-only, NO rebuild, NO ⟳ Sync Talents)
+
+Run these FIRST on the next bench. All three are `module-src/scripts/register-skills.js` only — no
+pack rebuild, no ⟳ Sync Talents; ⟳ sync the module and F5.
+
+- [ ] 🤖 **Apex Form ends ONCE when two combats end together — RE-TEST after fix pass 1 (2026-09-05; engine-only → ⟳ sync + F5)** — the exact staging run 24 used: put `apexForm` on ONE off-canvas actor (token deleted, absence asserted against `canvas.tokens.placeables`), create TWO combats `{active:false}`, then delete both in the same tick.
+      **POSITIVE:** exactly **ONE** "🌟 **Apex Form** ends — … takes an injury: …" card and exactly **ONE** injury Item on that actor. Run 24 got two of each, off one flag.
+      **NEGATIVE (load-bearing — the tempting wrong fix fails here):** ending combat A must NOT stop combat B's own sweep. Put an actor in combat B ONLY, give it `apexForm` and a `mutation` flag, delete combat A first (B's actor is correctly skipped, R-58), then delete B — B's actor must now lose both, and get its own single injury card. A guard that dropped the second sweep wholesale would strand it for ever, which is why the old boolean was replaced.
+      **NEGATIVE 2 (the claim is per family, not global):** with Life and Sovereignty state on the same actor, ending one combat must still run BOTH families — the `dieStep`/`exalted` clear and the apex injury in the same pass.
+      *(Root cause: R-60's busy key was `` `${key}:${endedCombat.id}` ``, so two different combats never collide — the boolean it replaced could not miss this. Unset-first/create-after loses the race because `unsetFlag` awaits a server round-trip. Fixed with a second, per-ACTOR claim `key:actorUuid` in `edhaSceneReset`, across combats, claimed synchronously. Pinned in `tests/scene-reset-reentry.test.js`; verified by mutation.)*
+
+- [ ] 🤖 **Every picker's Cancel actually cancels — RE-TEST after fix pass 1 (2026-09-05; engine-only → ⟳ sync + F5)** — three pickers, one primitive. Note the Investiture value before each.
+      **POSITIVE 1 (the measured one):** Final Decree → prohibition picker → **Cancel** → the toast "*Final Decree cancelled — cost refunded.*", Investiture back where it started, **no** ⚖ card, and **no** `flags.edha-content.decree` on the actor. Run 24 spent 3 Investiture, refunded nothing, armed the Decree with `proh === "cancel"` and printed "*must not **undefined***".
+      **POSITIVE 2:** the Weave link picker (two Ordained squares) → **Cancel** → "*… canceled — cost refunded*", cost back, **no** "the chosen squares are linked" card and no `linked` flag on any marker. This was the worse half: `"cancel"[0]`/`[1]` are `"c"`/`"a"`, two different truthy strings, so the cancel used to sail through the guard and post a success card.
+      **POSITIVE 3:** the GM DC prompt → **"No DC — judge it"**, and separately **"Resolve" with the box left blank** — both must fall through to owner-judged exactly as before (no DC named in the resulting card/toast).
+      **NEGATIVE (load-bearing):** the OK paths must be untouched — declare a real prohibition and confirm the ⚖ card names it; link two DIFFERENT squares and confirm both mark `linked`; enter a real DC (try **0** as well as 14) and confirm it is used as a number, not treated as "no DC".
+      **NEGATIVE 2:** dismissing a picker with **Escape / the window X** must behave like Cancel (refund, no card), not like OK.
+      *(Root cause: `DialogV2#_onSubmit` is `const result = (await button?.callback?.(…)) ?? button?.action;` — a callback resolving `null`/`undefined` is replaced by the truthy action string, so every caller's `if (!picked)` missed. Fixed once in `edhaDialogPick` by boxing every callback result as `{edhaPick: …}`; both callers already refunded on a falsy result. Pinned in `tests/dialog-pick-box.test.js` against a stub that reproduces the `??` line verbatim.)*
+
+- [ ] 🤖 **A combat end no longer writes to every actor in the world — RE-TEST after fix pass 1 (2026-09-05; engine-only → ⟳ sync + F5)** — hook `updateActor` and count, the way run 24 did.
+      **POSITIVE:** with ONE bench actor carrying state and the rest of the world carrying none, end a combat and confirm the uninvolved actors take **ZERO** `updateActor` events — including `Tem parinaem` and `Soggy Bottom` — and that no actor gains an empty `lists: {}` or `markedBy: {}` it did not have. Run 24 measured 33 actors polluted that way and tripped Foundry's *"Exceeded maximum number of update-actor events in a short period of time"* limiter, which then silently swallowed an unrelated talent use.
+      **NEGATIVE (load-bearing — this is the fix's whole risk):** nothing may be left behind. Stage a bearer with a FALSY-but-present flag value (`decay: 0`, `deathWard: false`, `markedBy.hexmark: null`) alongside real ones, end a combat, and confirm every one of them is gone. Only genuinely absent keys are skipped; `0`/`false`/`null` are set values.
+      **NEGATIVE 2:** run the whole R-60 population sweep again (the flagship Sovereignty case — `dieStep` + `exalted` on an OFF-CANVAS actor) and confirm it still clears. The gate is per key, not per actor, so a wide sweep must be indistinguishable from before except in write count.
+      *(Root cause: `Document#unsetFlag` always ends in an `update()` whether or not the key is there, and a dotted `-=` delete creates its parent object on the way past. The flag loop now gates on the new `edhaFlagKeyPresent`, which is the guard the status loop one line below always had. Batching a family's keys into one `update()` per actor was considered and not taken — it would cost the per-key try/catch isolation.)*
+
 ## Re-test after the fix pass F fixes (2026-07-28m — three fixed; ⟳ sync the module + F5 first, NO rebuild, NO ⟳ Sync Talents)
 
 - [ ] 🤖 **Living Image's Pay button — RE-TEST after fix pass F (07-28m; engine-only → ⟳ sync + F5)** — with `Bench — Blue` holding a live COMPLEX illusion, start Blue's turn so the upkeep prompt whispers, then press the button.
@@ -3355,6 +3380,8 @@ a token you can remove from the canvas (or simply not place) to test the off-sce
       execution."* limiter, which then silently ate an unrelated talent use. No data was lost and run 24
       restored all 33 actors to their snapshot state. Cheap fix shape: skip the `unsetFlag` when the key is
       absent. → `test-pass-fixes`. *(R-60.)*
+      ✅ **FIXED in fix pass 1 (2026-09-05, engine-only)** — the flag loop now gates on `edhaFlagKeyPresent`.
+      Re-test row: *Re-test after fix pass 1 / run 24*.
 
 - [ ] 🤖 **Life — the apex-form/mutation/lifeline/lifeRegen sweep is a regression check, not a new
       behavior.** Life's population was already the widest of the ten (every `game.actors` entry,
@@ -3372,6 +3399,8 @@ a token you can remove from the canvas (or simply not place) to test the off-sce
       shared busy-set never dedupes them — the retired `_edhaLifeClearBusy` was a module-level BOOLEAN and
       did. The remaining protection is `extra`'s unset-first/create-after ordering, which loses the race
       because `unsetFlag` awaits a server round-trip. → `test-pass-fixes`.
+      ✅ **FIXED in fix pass 1 (2026-09-05, engine-only)** — `edhaSceneReset` gained a second, per-ACTOR
+      claim (`key:actorUuid`, across combats). Re-test row: *Re-test after fix pass 1 / run 24*.
 
 ## R-65 — folded roll formulas (one per affected roll family; representative talent per family)
 
@@ -3568,6 +3597,8 @@ VISIBLE are the actual behavior flips this pass made on purpose.
       **"No DC — judge it"** (`parse: () => undefined` → `"judge"` instead of `undefined`) and
       `edhaPromptDC`'s **"Resolve" with a blank DC** (`readDC` → `null` → `"ok"` instead of `null`).
       Unaffected: the two `ok` buttons whose `parse` returns an object/array. → `test-pass-fixes`.
+      ✅ **FIXED in fix pass 1 (2026-09-05, engine-only)** — `edhaDialogPick` boxes every callback result
+      as `{edhaPick: …}`, which the `??` can never replace. Re-test row: *Re-test after fix pass 1 / run 24*.
 - [ ] 🤖 **Regression check — Life Cleanse and Natural Recovery's offer cards/confirmations are
       byte-identical to before.** Trigger a Life Cleanse (🩺, no cost note) and a Natural Recovery
       offer (🍃, "spend an Opportunity" or the talent's own cost note) — confirm the emoji, prompt
