@@ -36,7 +36,7 @@
 "use strict";
 const fs = require("fs");
 const path = require("path");
-const { parseHandlerSchemas, matchBrace, topLevelKeys } = require("./handler-schemas.js");
+const { parseHandlerSchemas, parseHandlerChoices, matchBrace, topLevelKeys } = require("./handler-schemas.js");
 const { loadJson } = require("./lib/data.js");
 const { stripComments } = require("./lib/strip-comments.js");
 
@@ -616,10 +616,35 @@ engine.split("\n").forEach((lineText, i) => {
 // (scripts/handler-schemas.js — hard-fails if the parse rots); native schemas come from
 // native-vocabulary.json's schemaFields. Rule-level keys are held to the system's rule schema
 // too ({id, description, order, event, handler}) — a typo'd "hander" is a dead rule the same way.
+//
+// --- pass 9b (2026-09-05): and a handler field's VALUE must be one the schema OFFERS -------------
+// Pass 9's twin, and the harsher half. An unknown KEY is silently dropped; a value outside a
+// StringField's `choices` is REJECTED — `StringField._validateType` throws "<v> is not a valid
+// choice" — and because the cosmere system holds rules in a `CollectionField` whose `_validateType`
+// throws for the whole object as soon as ONE entry fails, the item's ENTIRE `system.events` map
+// then falls back to its initial `{}` (`SchemaField._validateType`: `data[name] = failure.fallback
+// = initial`, under the fallback a non-strict document load turns on). So one bad character in one
+// optional field silently deletes EVERY rule on that document, at load, with a console warning and
+// nothing else.
+//
+// That is exactly how the Reeve-Owl's **Sovereign of Solitude** shipped four authored rules and ran
+// zero (bench run 26): `edha-triggered-effect` was given `target: "target"` — the `edha-cae-grant`
+// vocabulary, not this one, whose choices are self/victim/near-victim/prompt/list-members. The
+// build was innocent and so was the pack: both the scratch build AND Ben's installed
+// `edha-adversaries` carried all four rules byte-for-byte. Nothing in the repo compared an authored
+// VALUE to the engine's own `choices()`; pass 13 gates two hand-listed fields for a different
+// reason (values the ENGINE misreads), and would never have grown this case on its own.
+//
+// BLANK is deliberately exempt: `DataField.clean` catches `_validateSpecial`'s "may not be a blank
+// string" and returns the field's initial, so `""` on a choices-field with a legal initial is
+// healed, not fatal. It is flagged only when the initial cannot rescue it.
 {
   let handlerSchemas = null;
   try { handlerSchemas = parseHandlerSchemas(engine); }
   catch (e) { err(`pass 9: cannot parse engine handler schemas — ${e.message}`); }
+  let handlerChoices = null;
+  try { handlerChoices = parseHandlerChoices(engine); }
+  catch (e) { err(`pass 9b: cannot parse engine handler choices — ${e.message}`); }
 
   const AUTHORED_RULE_KEYS = new Set(["id", "description", "order", "event", "handler"]);
   // foundry-build's simplified adversary form carries ONLY these; anything else (an `order`, an
@@ -627,6 +652,22 @@ engine.split("\n").forEach((lineText, i) => {
   // earlier in the pipeline.
   const ADVERSARY_RULE_KEYS = new Set(["event", "handler", "description"]);
 
+  // pass 9b — the value half (see the header block above).
+  const checkChoices = (where, h) => {
+    const spec = handlerChoices && h && typeof h.type === "string" ? handlerChoices.get(h.type) : null;
+    if (!spec) return;
+    for (const [field, { choices, initial }] of spec) {
+      if (!(field in h)) continue;
+      const v = h[field];
+      if (v === undefined || v === null) continue;              // absent = the field's own initial
+      if (v === "" && initial !== null && choices.has(initial)) continue;   // clean() heals blank to the initial
+      if (typeof v === "string" && choices.has(v)) continue;
+      err(`${where}: handler "${h.type}" field "${field}" is ${JSON.stringify(v)}, which its schema ` +
+          `does not offer — Foundry REJECTS it, and because rules live in a CollectionField that ` +
+          `fails whole, EVERY rule on this document falls back to {} at load. The item goes silent ` +
+          `with a correct pack. Allowed: ${[...choices].map(c => JSON.stringify(c)).join(", ")}`);
+    }
+  };
   const checkFields = (where, h) => {
     if (!handlerSchemas || !h || typeof h.type !== "string" || !h.type) return;
     let fields;
@@ -647,7 +688,10 @@ engine.split("\n").forEach((lineText, i) => {
           `unknown keys, so the rule loads, the tab looks right, and this key does NOTHING. ` +
           `Registered fields: ${[...fields].sort().join(", ")}`);
     }
+    checkChoices(where, h);
   };
+
+
 
   for (const { rel, talentName: name, talent: t } of AUTHORED_ENTRIES) {
     for (const [evId, ev] of Object.entries(t.events || {})) {
