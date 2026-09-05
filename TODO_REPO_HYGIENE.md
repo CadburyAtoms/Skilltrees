@@ -860,3 +860,30 @@ pushes `dash/*` + `pm/state` to the artifact. Then the branch moves from KEEP to
 **PM:** lane R · model opus (a conflict-heavy merge) · size M · deps none · verify: tests + a `--out`
 snapshot showing the `dash` chunks. **First dispatch of the next session.**
 
+
+---
+
+## 36. [ ] Picker cancel must not burn the once-per-scene use (ruling R-69)
+
+**Why:** Ben answered **R-69 on 2026-09-05: "stamp only after a successful pick."** Today
+`edhaDecreeUse` calls `edhaStampSceneOnce(owner, item)` **before** it opens the prohibition picker,
+so **Cancel** refunds the Investiture (bench run 25: 4 → 1 → 4, no card, no `decree` flag) but leaves
+`sceneOnce.<itemId> === true` — Final Decree is spent for the scene without ever resolving. The
+pre-cost stamp was R-61's "vetoed BEFORE cost" polarity guarding against probing the picker for free;
+Ben chose the table-friendly side: a cancel costs nothing and burns nothing.
+
+**What to do:** at the primitive, not per talent — find every `edhaDialogPick` caller (and any other
+picker primitive) that stamps `sceneOnce` (or any once-per-X marker) before the pick resolves, and
+move the stamp to after a successful pick; `null`/cancel leaves no stamp. Report the list of callers
+touched. Pin a regression in `tests/` on the pure ordering helper if one exists, otherwise on the
+stamp-after-pick path with a stubbed pick returning `null` (no stamp) vs a value (stamp). Add one
+🤖 checklist row: Final Decree → Cancel → the talent is still usable this scene; Final Decree →
+pick → `sceneOnce` stamped and a second use refused.
+
+**Done when:** a cancelled pick leaves `sceneOnce` untouched everywhere, a successful pick still
+stamps it, the regression is pinned, the 🤖 row exists, and R-69 moves to `EDHA_RULINGS.md` §K
+citing the PR. **Live engine behaviour: not settled until the bench confirms it.**
+
+**PM:** lane B · model opus · size S · deps R-69 ✓ · verify: pinned regression + a bench pass.
+ENGINE-ONLY (F5), no pack rebuild. Fold into the next `test-pass-fixes` dispatch if bench run 27
+produces one; otherwise a standalone S worker.
