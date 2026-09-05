@@ -457,18 +457,17 @@ answered yes, because world tables are searched first. Evidence in the delta.)*
       the quoted string above. What is left is exactly one thing — **look at a formula bar yourself and
       say whether it reads right** — plus the standing instruction to note the roll dialog's Temporary
       Bonus field if the garble ever recurs.
-- [ ] 🤖 **Engine-move collision** — Unnerving Approach push (and Cruel Step slide) toward an occupied
-      square: the moved token stops in the last free square, never stacking. Manual drags still stack
-      (intended — R2 engine-only).
-      ✅ **THE ENGINE HALF IS PROVEN — narrowed 2026-07-27v (bench run 9, 2026-07-27i).** Shattering
-      Blow pushed Adjacent A **0 ft** when Adjacent B occupied the destination square and **5 ft**
-      (4500 → 4800) when the lane was clear — same talent, same round, a negative and a positive
-      against each other. **Tokens never stacked.** ⛔ **Only the manual-drag half remains**, and it is
-      a canvas act: drag a token by hand onto an occupied square and confirm it still stacks (intended
-      — the engine executor is not in that path).
 - [ ] 🤖 **Flame Surge / burst cards** — Detonate: button reads "Detonated ✓" and stays disabled after
       F5 / re-login; re-clicking is impossible. Cancel reads "Cancelled — refunded ✓". Old cards from
       before this fix still reset on refresh (only messages stamped from now on persist).
+*(**Engine-move collision** — RETIRED on evidence 2026-09-05, bench run 24. The engine half was already
+proven at run 9; the last clause was the manual-drag half, and a hand drag ends in exactly one write — a
+`TokenDocument` x/y update. Driven: `Bench Target — Adjacent B` updated onto `Bench Target — Adjacent A`'s
+square landed at (3000, 4500) on top of it — **tokens still stack on a manual move**, which is the intended
+behaviour (the engine executor is not in that path). ⚠️ The pointer-drag GESTURE is not reproducible in a
+hidden pane (run 23: PIXI pointer state is frozen); that a drag issues this same update is read from Foundry,
+not measured here.)*
+
 *(**`ally-drops` side filter — the tokenless victim** — RETIRED on evidence 2026-07-28e, bench run 19,
 **all four cells, driven eight times** (4× a deterministic tokenless drop + 4× a real phantom-double
 break, because the mechanism is a hook race and the old symptom was intermittent). The decisive shape:
@@ -3337,12 +3336,26 @@ a token you can remove from the canvas (or simply not place) to test the off-sce
 
 ## R-60 — scene-reset population (one per family with an observably different population)
 
-- [ ] 🤖 **Sovereignty — an off-scene actor's dieStep now resets (the flagship case).** Step a
-      Sovereignty actor's damage die (any `edha-die-step` rule — e.g. Kneel/Absolute Authority-style
-      talents), remove its token from the canvas (or don't place one) so it is directory-only, then
-      end combat. Before this pass the sweep was canvas-tokens-ONLY, so an off-scene actor kept
-      `dieStep`/`dieStepOnceBy` and the `exalted`/`diminished` statuses forever. Now: place the actor
-      back on any scene afterward and confirm the die is back to baseline. *(R-60.)*
+> **Bench run 24 (2026-09-05): seven of the eight rows RETIRED on evidence** — Sovereignty (the flagship;
+> a real `Exalt` wrote `dieStep`+`exalted`, the token was then removed from the canvas, and ending a combat
+> cleared both), Death, Fate (incl. the un-attributable-prop clause, driven as a positive/negative pair),
+> Order, Power (driven on an off-canvas **adversary**-typed bearer, the exact gap the row names), Knowledge,
+> and the Charges/Chaos/Civ dedup check (one `updateActor` per key, one `deleteActiveEffect` per status,
+> zero Edha console warnings). Evidence in the 2026-09-05 delta. **Life FAILED** — see its row.
+
+- [ ] 🤖 **NEW (run 24) — the widened sweep writes to EVERY actor in the world, and creates empty
+      `lists {}` / `markedBy {}` containers on all of them (PCs included).** `edhaSceneReset` calls
+      `a.unsetFlag(...)` unconditionally, and `Document#unsetFlag` always issues an `update()` — it never
+      checks whether the key exists. With R-60's directory∪canvas population that is ~40 flag keys × every
+      actor in the world per combat end. Measured on this world (51 actors): one combat end left an empty
+      `lists: {}` and `markedBy: {}` on **33 actors that had neither**, including `Tem parinaem` and
+      `Soggy Bottom` (the dotted keys — `lists.omens`, `markedBy.insight`, … — create their parent object
+      as a side effect of the `-=` delete), and the write volume tripped Foundry's own
+      *"Exceeded maximum number of update-actor events in a short period of time. Aborting event
+      execution."* limiter, which then silently ate an unrelated talent use. No data was lost and run 24
+      restored all 33 actors to their snapshot state. Cheap fix shape: skip the `unsetFlag` when the key is
+      absent. → `test-pass-fixes`. *(R-60.)*
+
 - [ ] 🤖 **Life — the apex-form/mutation/lifeline/lifeRegen sweep is a regression check, not a new
       behavior.** Life's population was already the widest of the ten (every `game.actors` entry,
       including adversaries/summons) — `edhaSceneReset`'s `edhaSceneActors()` reaches the same real
@@ -3351,44 +3364,14 @@ a token you can remove from the canvas (or simply not place) to test the off-sce
       carrying `apexForm` in both — confirm exactly ONE "ends — takes an injury" card and ONE
       injury item, not two (07-27b's original bug, now guarded by `edhaSceneReset`'s shared
       `key`-scoped busy-set instead of Life's own one-off `_edhaLifeClearBusy` boolean). *(R-60.)*
-- [ ] 🤖 **Death — decay/deathWard now reach an off-scene actor.** Apply a `edha-turn-dot` decay (e.g.
-      Consuming Decay) or a `edha-ward` (Death Ward) to a creature, pull its token off the canvas,
-      end combat, and confirm the flag clears (previously token-only, so an off-scene bearer decayed
-      or stayed warded forever). `cascadearmed`/`withernext`/`decaying`/`harvested` and `lists.remains`
-      should all still clear on-scene exactly as before. *(R-60.)*
-- [ ] 🤖 **Fate — Hexmark and the Ordained buff now reach an off-scene actor.** Place a Hexmark (or
-      any `edha-snare-react offer-mark` rule's mark) or an Ordained buff, pull the bearer's token off
-      the canvas, end combat, and confirm `markedBy.<key>` and the Ordained ActiveEffect both clear
-      (previously the markedBy sweep was canvas-tokens-only). The un-attributable Region/template
-      cleanup (Ordained Ground markers, Snare regions) should be unchanged — verify it still only
-      runs when no OTHER combat is in play. *(R-60.)*
-- [ ] 🤖 **Order — Edict/Covenant/Concord statuses and the covBuff Concord ActiveEffect now reach an
-      off-scene actor.** Place an Edict or Covenant on a creature, pull its token off the canvas, end
-      combat, and confirm the `edict`/`covenant`/`concord` statuses and any `covBuff` effect clear
-      (previously the statuses/effects half was canvas-tokens-only; the ledger/legacy-flag half —
-      `lists.edicts`, `lists.covenants`, `decree` — was already characters-only and unaffected here).
-      *(R-60, and note this is Order's OWN R-58 guard row's neighbor — `edhaStillFightingElsewhere`
-      still applies; don't confuse a skip with a miss.)*
-- [ ] 🤖 **Power — the legacy-flag half and the status half now share one pass.** Kneel/Crown/Mantle a
-      creature so it carries at least one Power status (`compelled`/`crowned`/`warlord`/`mantled`/…),
-      pull its token off the canvas, end combat, and confirm the statuses AND any `powerMantle`
-      ActiveEffect clear together (previously the legacy-flag+effects half was characters-only and the
-      statuses half was canvas-tokens-only — an off-scene NON-character bearer, e.g. a dominated
-      adversary, could keep its statuses forever). *(R-60.)*
-- [ ] 🤖 **Knowledge (Gnothis) — Insight/packsight/markedBy.insight now reach an off-scene actor.**
-      Mark a creature with Insight (Studied Mark or similar) or apply `packsight`/`packmind`/
-      `predprimed`, pull its token off the canvas, end combat, and confirm the Insight ActiveEffect is
-      deleted (not merely toggled — it's a stackable counter, `edhaEffectStacks` family) and the
-      statuses/`markedBy.insight` clear. Previously this whole half was canvas-tokens-only; the
-      `counters` ledger (characters-only) is unaffected. *(R-60.)*
-- [ ] 🤖 **Charges / Chaos / Civilization — dedup-only hygiene, low table visibility.** These three
-      widen from a narrower population to the wide dedup too, but the affected flags are ones an
-      adversary/summon essentially never carries in practice (Charges' trail flags, Chaos's
-      characters-only omens ledger, Civilization's PC-only bastion/magnum flags) — the real fix here
-      is that an actor present as BOTH a token and a directory entry is now swept exactly once instead
-      of twice. Sanity check only: end combat with a Chaos Omen placed on a creature that IS on the
-      canvas, and confirm no double status-toggle / no console warning about a redundant write.
-      *(R-60.)*
+      ❌ **FAILED, bench run 24 (2026-09-05).** Two bench combats deleted in the same tick with ONE
+      `apexForm` flag on an off-canvas actor produced **TWO** cards and **TWO** injury items:
+      "🌟 **Apex Form** ends — Bench Ally — Two takes an injury: Exausted (-2)…" and
+      "… takes an injury: Slowed…". Root cause (read in source, not fixed here): `edhaSceneReset`'s
+      busy key is ``${key}:${endedCombat?.id}``, so two DIFFERENT combats get two DIFFERENT keys and the
+      shared busy-set never dedupes them — the retired `_edhaLifeClearBusy` was a module-level BOOLEAN and
+      did. The remaining protection is `extra`'s unset-first/create-after ordering, which loses the race
+      because `unsetFlag` awaits a server round-trip. → `test-pass-fixes`.
 
 ## R-65 — folded roll formulas (one per affected roll family; representative talent per family)
 
@@ -3412,6 +3395,12 @@ a token you can remove from the canvas (or simply not place) to test the off-sce
       Final Decree (the shared witness Temp HP roll AND the shared violator damage roll — two
       different formulas, same helper) and a Verdict's court-radius spread; confirm every one rolls
       real dice, not a static or zeroed amount. *(R-65.)*
+      ✅ **Final Decree half PROVEN, bench run 24 (2026-09-05)** — one resolve posted BOTH of its formulas
+      as real folded dice on the same card: the shared Witness Temp HP roll `2d8` → **7** (from the authored
+      `(@tier)d(2 * @skills.white.rank + 2)`; `Bench — White` ended with `tempHp {value: 7}`) and the shared
+      violator roll `2d8 + 2` → **12** (from `(@tier)d(2 * @skills.blue.rank + 2) + @attr.int`; both bound
+      enemies went 41 → 32 HP). Plain dice notation, no parenthetical, nothing zeroed. ⛔ **Still open:** the
+      plain-Edict violation, the Sealed-Edict annotate rider, and Verdict's court-radius spread.
 - [ ] 🤖 **Lifeline (White / Coordination) — the choose-amount heal-back die folds.** Trigger
       Lifeline's CHOOSE-AMOUNT reaction with a nonzero absorb amount; confirm the heal-back die
       (`edhaHealf`) rolls for real instead of contributing 0 silently. *(R-65.)*
@@ -3535,20 +3524,16 @@ VISIBLE are the actual behavior flips this pass made on purpose.
       all-GMs. For each: with a GM logged OUT, trigger the card from a player client, then log the
       GM back in and confirm whether the card is there (record cards) or correctly absent (the Pyre
       action card, which should NOT be waiting for a GM who missed the live moment).
-- [ ] 🤖 **VISIBLE — R-61: `edha-decree` (Final Decree) no longer stamps its once-per-scene flag when
-      authored `oncePerScene: false`.** Author (or find) a Final Decree with `oncePerScene: false` on
-      its `edha-decree` rule, use it twice in the same scene, and confirm BOTH uses go through with
-      no "once per scene" refusal (previously the SECOND use still worked because the veto correctly
-      read `oncePerScene: false`, but the stamp fired unconditionally on the first use regardless —
-      so this row is really confirming nothing regressed; the stamp fix is otherwise invisible at
-      the table since the veto already ignored it). The default case (no `oncePerScene` field, or
-      `true`) should refuse a second use exactly as before.
 - [ ] 🤖 **R-61 — regression check: every other oncePerScene gate (H1 def-test, self-status arm,
       revive, marker-command spring-all, summon-effect transform, the die-step family, the
       detonate-list family) still refuses a repeat use with its OWN unchanged polarity.** Pick 2–3
       talents across different polarities (e.g. a def-test talent with default-off `oncePerScene`,
       a revive/decree-style default-on talent, a marker-command strict-`true` talent) and confirm
       first use succeeds, second use in the same scene is refused with the same wording as before.
+      ✅ **One polarity done, bench run 24 (2026-09-05)** — the default-on case (`edha-decree`, Final
+      Decree, authored `oncePerScene: true`): first use went through, second use in the same scene was
+      refused with *"Edha: Final Decree is once per scene. Nothing spent."* and Investiture was unchanged
+      (4 → 4). ⛔ **Still open:** a default-off talent and a strict-`true` marker-command talent.
 - [ ] 🤖 **R-61 — a scene mid-flight when this shipped keeps working (the legacy `detonateUsed` read
       fallback).** Not independently testable without a stale flag already on an actor from before
       this deploy — informational only; the gate now reads `sceneOnce.<id>` OR `detonateUsed.<id>`,
@@ -3570,11 +3555,19 @@ VISIBLE are the actual behavior flips this pass made on purpose.
       prompt for a DC and confirm Resolve/"No DC — judge it" both work, link two Ordained squares
       (Weave), and declare an Edict prohibition (Order), confirming each picker's Cancel button and
       submit button behave as before.
-- [ ] 🤖 **Regression check — the character-sheet injectors (path-pick slots, the creation-wizard
-      bar, the ancestry/currency patches, the XP-budget panel, the Attunement-range preview button)
-      still render identically on a PC sheet and do NOT render on an adversary sheet.** Open a PC
-      sheet and confirm all five still appear/behave; open an adversary sheet and confirm none of
-      them leak onto it (the `edhaSheetRoot` type guard is what prevents that).
+      ❌ **FAILED, bench run 24 (2026-09-05) — every parse-less button in `edhaDialogPick` returns its own
+      ACTION STRING, not the `null` the function's own comment promises.** Driven: Final Decree → the
+      prohibition picker → **Cancel**. Result: 3 Investiture spent and **not refunded**, the Decree armed
+      anyway with `flags.edha-content.decree.proh === "cancel"` (the string), and the card read
+      *"every enemy in Attunement Range … must not **undefined**"*. Root cause, read out of the served
+      `foundry.mjs`: `DialogV2#_onSubmit` does
+      `const result = (await button?.callback?.(event, target, this)) ?? button?.action;` — so a callback
+      returning `null`/`undefined` is replaced by the button's `action`, which is truthy, and every caller's
+      `if (!picked)` guard misses it. Blast radius by inspection (3 callers, 4 affected buttons): this
+      Edict/Decree **Cancel** (measured), the Weave link picker's **Cancel** (`"cancel"`), `edhaPromptDC`'s
+      **"No DC — judge it"** (`parse: () => undefined` → `"judge"` instead of `undefined`) and
+      `edhaPromptDC`'s **"Resolve" with a blank DC** (`readDC` → `null` → `"ok"` instead of `null`).
+      Unaffected: the two `ok` buttons whose `parse` returns an object/array. → `test-pass-fixes`.
 - [ ] 🤖 **Regression check — Life Cleanse and Natural Recovery's offer cards/confirmations are
       byte-identical to before.** Trigger a Life Cleanse (🩺, no cost note) and a Natural Recovery
       offer (🍃, "spend an Opportunity" or the talent's own cost note) — confirm the emoji, prompt

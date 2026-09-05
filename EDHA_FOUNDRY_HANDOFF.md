@@ -33,6 +33,131 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-05 — BENCH RUN 24: the 2026-08-10 hygiene campaign meets a live table for the first time (10 rows retired, 2 defects, ENGINE-ONLY — no rebuild owed, nothing fixed here)
+
+First bench run of the weekend marathon, and the first time anything from the **2026-08-10 hygiene
+campaign (R-60..R-67)** has been driven live. Deploy verified BY HASH on both sides before any row was
+recorded: `git hash-object` of Ben's live `modules/edha-content/scripts/register-skills.js` **and** the
+SHA-1 git-blob of the page's own cache-busted fetch of the served file both equal
+`9027cd172ad8ccc06fc48847ee217d62932e4de8` = `HEAD:module-src/scripts/register-skills.js`, and the
+originally-loaded `<script>` and the cache-busted fetch report an identical `decodedBodySize`
+(1 517 682 B), so the RUNNING engine is HEAD's engine, not a cached older one. `edhaSceneReset`,
+`edhaRollFormula`, `edhaWriteStatusMark`, `edhaSceneOnceUsed`, `edhaDialogPick` all present; the
+deleted `edhaSetActorFlagCross` absent.
+
+**This run recorded evidence only. Nothing was fixed — the two defects below go to `test-pass-fixes`.**
+
+### The roster had to be rebuilt from scratch
+
+The `Edha Bench` folder was EMPTY on join (0 bench actors; three orphan `Bench — *` tokens whose actors
+are already deleted still sit on the Playtest Map — pre-existing, left alone).
+`scripts/bench-setup-console.js` rebuilt it with **zero ⚠ lines** — 16 PCs (5 leyline × 25 talents,
+10 deity × 9, Heroic × 62) + 7 target fixtures, and it DID find both a melee and a ranged weapon this
+time. Two new sub-folders (`Bench PCs`, `Bench Targets`) and 5 roster tokens on the Playtest Map are the
+only new documents. ⚠️ The idempotency re-run was NOT performed — the roster was created fresh this run,
+so there was no drift to repair; next run should do it.
+
+### RETIRED on evidence (10)
+
+**R-60 scene-reset population — 7 of 8.** One staging move settled six of them: every family's flags,
+statuses and effects were put on ONE **directory-only** bench actor (token deleted, absence asserted
+against `canvas.tokens.placeables`), then two bench combats were created `{active:false}` and deleted.
+
+- **Sovereignty (the flagship)** — driven END TO END, not hand-staged: `Exalt` used for real wrote
+  `dieStep [{key:"exalt", steps:1, scope:"all", source:"Exalt"}]` + the `exalted` status onto
+  `Bench Ally — One` ("👑 **Exalt**: Bench Ally — One is Exalted — damage die +1 step…"); its token was
+  then removed from the canvas and ending a combat cleared BOTH. That is exactly the bug R-60 names.
+- **Death / Fate / Order / Knowledge** — all flags, statuses and effects cleared off the same off-canvas
+  bearer: `decay`/`deathWard`/`lists.remains` + decaying/harvested/cascadearmed/withernext;
+  `markedBy.hexmark` + the `fateOrdainedBuff` AE + `lists.ordained`/`fateForeknown`;
+  `lists.edicts`/`lists.covenants` + edict/covenant/concord + the `covBuff` AE; `counters` +
+  `markedBy.insight` + packsight/packmind/predprimed + the `insight` AE **deleted, not toggled**.
+- **Fate's second clause driven as a positive/negative PAIR** — a `fateMarker` MeasuredTemplate
+  **survived** deleting a combat while another combat still existed (guard non-empty) and **was deleted**
+  when the last combat ended. The un-attributable-prop cleanup still gates on "no OTHER combat in play".
+- **Power** — deliberately driven on an off-canvas **adversary**-typed bearer, the exact hole the row
+  names (the legacy-flag half was characters-only, the status half canvas-only): compelled/crowned/
+  warlord/mantled AND the `powerMantle` AE AND `crownActive`/`kneelBy` all cleared in the same pass.
+- **Charges / Chaos / Civilization (dedup-only)** — hooks counted the document ops on an ON-canvas Omen
+  bearer: exactly ONE `updateActor` per flag key and ONE `deleteActiveEffect` per status, zero Edha
+  console warnings. The actor is visited once, not twice.
+
+**pass 5.3 — sheet injectors.** `Bench — Red`'s PC sheet carries all five (`edha-path-slot` ×2,
+`edha-creator-bar`, `edha-coin-row`, `edha-budget-panel`, `edha-range-btn`); `Bench Target — Undefended`'s
+AdversarySheet carries ONLY `edha-adv-sync-bar` + its `edha-sync-btn` — none of the five leak. The
+`edhaSheetRoot` `type !== "character"` guard holds.
+
+**pass 5.3 — R-61 `edha-decree` stamp polarity.** With `oncePerScene: false` authored on Final Decree's
+rule (edited on the owned item, in Foundry, then restored), the first use went through **and left
+`sceneOnce` unset** — the stamp no longer fires unconditionally — and the second use in the same scene
+also went through. The default-on control refused with *"Edha: Final Decree is once per scene. Nothing
+spent."* and Investiture was unchanged (4 → 4).
+
+**Engine-wide — engine-move collision (manual-drag half).** A hand drag ends in one write, a
+`TokenDocument` x/y update; driven, `Bench Target — Adjacent B` landed **on top of** Adjacent A at
+(3000, 4500). Tokens still stack on a manual move — intended, the engine executor is not in that path.
+⚠️ The pointer GESTURE is unreproducible in a hidden pane (run 23); that it issues this same update is
+read from Foundry, not measured.
+
+### DEFECTS for `test-pass-fixes` (2, both root-caused in source, neither fixed)
+
+**1. R-60 / Life — the re-entry guard is WEAKER after the consolidation, not stronger.** Two bench
+combats deleted in the same tick, ONE `apexForm` flag → **TWO** "🌟 Apex Form ends — … takes an injury"
+cards and **TWO** injury Items. `edhaSceneReset`'s busy key is `` `${key}:${endedCombat?.id}` ``, so two
+DIFFERENT combats never collide in the busy-set; the retired `_edhaLifeClearBusy` was a module-level
+BOOLEAN and did. What is left is `extra`'s unset-first/create-after ordering, which loses the race
+because `unsetFlag` awaits a server round-trip. This is 07-27b's original bug, live again.
+
+**2. pass 5.3 / `edhaDialogPick` — every parse-less button returns its ACTION STRING, not `null`.**
+Driven: Final Decree → prohibition picker → **Cancel** → 3 Investiture spent and **not refunded**, the
+Decree armed anyway with `flags.edha-content.decree.proh === "cancel"`, and the card read *"…must not
+**undefined**"*. Root cause read out of the served `foundry.mjs`: `DialogV2#_onSubmit` does
+`const result = (await button?.callback?.(event, target, this)) ?? button?.action;` — a callback that
+returns `null`/`undefined` is replaced by the truthy `action`, and every caller's `if (!picked)` guard
+misses it. `edhaDialogPick`'s own comment promises the opposite ("a button with no `parse` resolves to
+`null`"). **Blast radius, 3 callers / 4 buttons:** this Cancel (measured), the Weave link picker's
+Cancel, `edhaPromptDC`'s "No DC — judge it" (→ `"judge"` instead of `undefined`) and `edhaPromptDC`'s
+"Resolve" with a blank DC (→ `"ok"` instead of `null`). The two `ok` buttons whose `parse` returns an
+object/array are unaffected.
+
+### A third finding, filed as a NEW 🤖 row rather than a fail
+
+`edhaSceneReset` calls `unsetFlag` unconditionally and `Document#unsetFlag` always issues an
+`update()` — so with R-60's directory∪canvas population, one combat end writes ~40 flag keys to **every
+actor in the world**. Measured here (51 actors): it left an empty `lists: {}` and `markedBy: {}` on
+**33 actors that had neither**, `Tem parinaem` and `Soggy Bottom` included (a dotted `-=` delete creates
+its parent object as a side effect), and the volume tripped Foundry's own *"Exceeded maximum number of
+update-actor events in a short period of time. Aborting event execution."* limiter — which then silently
+swallowed an unrelated talent use for the rest of that window. No data was lost; run 24 restored all 33
+actors to their start snapshot exactly. Cheap fix shape: skip the `unsetFlag` when the key is absent.
+
+### PARTIALS (rows stay open with a dated observation)
+
+- **R-65 / Order** — Final Decree's half is PROVEN: one resolve posted BOTH formulas as real folded dice
+  on one card, the shared Witness Temp HP roll `2d8` → **7** and the shared violator roll `2d8 + 2` → **12**
+  (both bound enemies 41 → 32 HP). Plain dice notation, no unresolved parenthetical, nothing zeroed.
+  Still open: plain Edict, Sealed Edict's annotate rider, Verdict's court-radius spread.
+- **R-61 regression sweep** — one polarity (default-on) done; a default-off and a strict-`true` talent left.
+
+### World hygiene
+
+Snapshot at join captured ids, `edha-content` flags AND whole effect OBJECTS for every actor, every
+scene's tokens (including unlinked token actors' effects and flags), walls, templates, regions,
+drawings, combats and macros — persisted to `localStorage` so it would survive an F5. Final id-diff:
+**0 actors lost, 0 tokens lost, walls/templates/regions/drawings identical on both scenes, macros
+42 → 42, Ben's combat untouched and never activated or deactivated, and 0 flag/effect diffs on every
+pre-existing actor.** Everything created lives in `Edha Bench`. Bench chat can be flushed. Logged out;
+`Bench` is selectable on `/join` again.
+
+### Operating lessons (also added to `docs/EDHA_BENCH_RUNBOOK.md` as run 24)
+
+- **Foundry's socket rate limiter is a real bench hazard and it fails SILENTLY into your rows.**
+- **A bench PC's Investiture max is 2** — a 3-Investiture talent simply no-ops with no card, no
+  notification and no console line until you raise it (and it clamps at 4 even with a 20 override).
+- **`item.use()` blocks forever on the system's `ItemConsumeDialog`** — fire-and-poll, click Continue.
+- **An ActiveEffect created with exactly ONE status and no `_id` throws** in cosmere 2.1.0
+  (`isStatusEffect` reads `this.id.startsWith(...)` and `id` is null pre-insert). Pass an explicit `_id`.
+
 ## 2026-09-05 — heroic-path id map moved from a hard-coded temp path into tracked `data/` (item 17, TOOLING-only; no pack content change on any machine today)
 
 `scripts/foundry-build.js:416` used to read the cosmere-rpg system's heroic-path talent ids
