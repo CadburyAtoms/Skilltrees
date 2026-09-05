@@ -34,7 +34,7 @@ page is stale: push state again.
    push to `main`. Your own bookkeeping (board, run log) rides as a commit **on the item's branch
    before you merge it** — `main` stays PR-only.
 4. **Budget caps are on the board** (§Budget model). Count dispatches in the trailing five hours
-   from the run log before every dispatch. Quiet hours are real. A usage warning from Ben is a hard
+   from the run log before every dispatch. The operating windows and shift ceilings are real. A usage warning from Ben is a hard
    stop for the window — finish the review in flight, dispatch nothing.
 5. **Lane B waits for a Foundry window.** Merge it, mark it `bench-pending`, and do not pretend a
    harness pass is a table pass.
@@ -75,7 +75,7 @@ The **first** queued item, in board order, that satisfies all of:
 - every `Deps` entry is `merged` (or the ruling is answered on the board);
 - lane R, or lane B **and** a Foundry window is open right now;
 - the trailing-five-hour dispatch count is under the cap, and the Opus cap holds if the item is Opus;
-- not inside quiet hours (23:00–07:00 America/New_York), unless it goes to the cloud lane.
+- inside an **operating window** (PM-R7: Mon–Thu 21:00→07:00, Fri 21:00→Mon 07:00, America/New_York) — weekday daytime is Ben's, cloud lane included — and under the **shift ceiling** (§Budget).
 
 If nothing qualifies, do not lower the bar: schedule a wake for when the window clears, or ask Ben
 the blocking ruling, and stop.
@@ -152,7 +152,7 @@ usage, outcome. Push state to the mobile board (the overlay now has no worker). 
 
 Pick the next item (step 1). If it qualifies now and the cap allows, dispatch. Otherwise
 `ScheduleWakeup` for the earliest moment something changes: a worker finishing (fallback only),
-the five-hour window rolling, or quiet hours ending. Say in `reason` what you are waiting for.
+the five-hour window rolling, or the next operating window opening (never a wake inside Ben's hours). Say in `reason` what you are waiting for.
 
 ## The mobile board (Ben's phone view; added 2026-09-04 at Ben's request)
 
@@ -196,22 +196,40 @@ Never commit a page with a filled snapshot slot (the tracked file keeps `{}`).
 **The phone inbox** is read in step 0 (above). A note's `status` is `new` until you mark it
 `seen`; Ben can delete his own notes from the page.
 
-## Session rotation (agreed 2026-09-04)
+## Operating windows and session rotation (Ben, 2026-09-05 — replaces the 09-04 daily rotation)
 
-One PM session per day, never two at once. The app's scheduled task **`edha-pm-daily`**
-(`~/.claude/scheduled-tasks/edha-pm-daily/SKILL.md`, cron `0 7 * * *` local, fires ~07:02) starts
-a **fresh** session each morning that changes into the repo, invokes this skill, and resumes from
-the board. Ben interacts with whichever session is current by opening it from his chat history.
-Therefore:
+Ben's instruction, verbatim: *"I want you to run on nights and weekends, and save compute during
+the week for my actual work products like Caseware and audit workpaper templating."* The PM's
+cut of that (board ruling **PM-R7**, a default Ben can veto with an hour or a number):
+
+| Window | America/New_York | Started by |
+|---|---|---|
+| Weeknight shift | Mon–Thu **21:00 → 07:00** next day | `edha-pm-weeknight` (cron `0 21 * * 1-5`) |
+| Weekend | **Fri 21:00 → Mon 07:00**, continuous | Fri: `edha-pm-weeknight`; Sat, Sun: `edha-pm-daily` (cron `0 7 * * 0,6`) |
+| **Ben's hours** | **Mon–Fri 07:00–21:00** | nothing — no session, no dispatch, no cloud routine, no wakeup |
+
+The only PM activity permitted in Ben's hours is answering a chat message Ben himself sends (chat
+always wins). The old quiet hours (23:00–07:00) are **gone**: overnight is PM time now.
+
+One PM session at a time, never two. Each task starts a **fresh** session that changes into the
+repo, invokes this skill, and resumes from the board; Ben opens whichever is current from his chat
+history. Therefore:
 - **Stop your loop at your last wake before 07:00** (`ScheduleWakeup` with `stop: true`), after a
   one-line handoff in the board's run log ("<date> PM handoff: <what is running / queued next>").
-  If nothing can be dispatched before then anyway (cap reached, quiet hours), stop earlier — an
-  idle loop only spends context.
+  A weeknight session that reaches its shift ceiling (§Budget) stops early — an idle loop only
+  spends context. **The Monday 07:00 handoff line also reports the week's PM total** from
+  `python scripts/pm-usage.py`, so Ben can compare it with his weekly meter.
+- **A late-firing task is Ben's hours, not yours.** The tasks run only while the app is open; a
+  missed 21:00 fires at next launch, which may be 09:00 on a workday. Both task prompts therefore
+  check the clock first and exit without touching anything if it is Mon–Fri 07:00–21:00. If YOU
+  find yourself awake in Ben's hours for any reason other than his chat message, do the same.
 - **A new session verifies it is alone**: `gh pr list --state open` and the board's queue must
   agree with what is on disk; if a worker appears to be `running` from a session that no longer
-  exists, set it back to `queued` and say so.
-- The scheduled task runs only while the app is open; if it missed 07:00 it runs at next launch.
-  It uses the app's default model, which must remain Fable.
+  exists, set it back to `queued` and say so. A scheduled-task session **cannot be messaged**
+  (unattended), so the way to stand one down is the **"session of record" line at the top of the
+  board** — it re-reads the board on every wake. Write that line when Ben moves control to you;
+  rewrite it on your own first wake.
+- The tasks use the app's default model, which must remain Fable.
 
 ## Communicating with Ben (agreed 2026-09-04)
 
@@ -248,8 +266,13 @@ re-armed with the next brief.
 
 ## Budget
 
-- Caps: **2 dispatches per trailing 5 hours, at most 1 Opus; quiet hours 23:00–07:00 local;
-  hard stop on a usage warning** (Max 20x, confirmed 2026-09-04).
+- Caps: **2 dispatches per trailing 5 hours, at most 1 Opus; hard stop on a usage warning**
+  (Max 20x, confirmed 2026-09-04). Quiet hours were replaced on 2026-09-05 by the **operating
+  windows** above (PM-R7): dispatch only inside a window, cloud lane included.
+- **Per-shift ceilings** (PM-R7 default, awaiting Ben's veto): a weeknight shift dispatches **at
+  most 2**; a weekend day-shift (07:00→07:00) **at most 4, at most 2 Opus**. Weekly maximum 18 —
+  the "save compute for the week" half of Ben's instruction, made countable. Count the shift's
+  dispatches in the run log before every dispatch, exactly like the trailing-five-hour count.
 - Measure, do not guess: `scripts/pm-usage.py` (item 25) reads the transcripts and prints weighted
   usage per session and subagent (cache read ×0.1, cache write ×2, output ×5). Log the number.
 - Your own cost is dominated by re-reading context; keep wakes rare and reviews decisive.
