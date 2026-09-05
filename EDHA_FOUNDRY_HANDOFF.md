@@ -33,6 +33,90 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-05 DELTA — fix pass 2, defect ② : **Sovereign of Solitude's four rules died at LOAD, not in the build — one enum value outside its schema nukes an item's whole `events` map.** DATA + LINT → **pack REBUILD** (`foundry-build adversaries`) + ⟳ Sync, **Ben only**.
+
+### Bug root cause — the bench's lead was the right STRING on the wrong FIELD, and the build was innocent
+
+Run 26 read the symptom exactly right (4 authored, 0 on the compendium document, siblings fine) and
+named `statusExpire: "target"` as the first suspect for "a validation drop in the build or the events
+vocabulary". Both halves of that are wrong, and the difference matters because it decides where the
+fix goes:
+
+- **`statusExpire` legitimately accepts `"target"`** — the engine registers it
+  `choices("", "owner", "target")` (`edha-triggered-effect`, register-skills.js). Nothing wrong there.
+- **The build never dropped anything.** A scratch build (`EDHA_MODROOT` to a temp dir) emitted the item
+  with all four rules — and so, decisively, does **Ben's INSTALLED `edha-adversaries` pack**, read back
+  through `edha-pack-io.readPack`: `system.events` on the live compendium document holds
+  `edha-gm-cue` / `edha-def-test` / `edha-triggered-effect` / `edha-triggered-effect`, byte-for-byte
+  what `data/adversaries.json` authors. So this was never a deploy gap and never a generator bug.
+- **The real cause is one field: the same rule authored `target: "target"`, which
+  `edha-triggered-effect` does not offer.** Its choices are `self · victim · near-victim · prompt ·
+  list-members`. `"target"` is **`edha-cae-grant`'s** vocabulary — a copy across handler families.
+
+**Why ONE bad value silences FOUR rules** (chain read off the installed cosmere-rpg 2.1.0 bundle and
+Foundry v13.351, not inferred):
+
+1. `StringField._validateType` **throws** on a value outside `choices` — `"target is not a valid
+   choice"`. Unlike an unknown KEY, which pass 9 exists to catch because it is silently *dropped*,
+   a bad VALUE is *rejected*.
+2. The system stores rules as `events: new CollectionField(new RuleField(), {required: true})`, and
+   `CollectionField._validateType` throws a `DataModelValidationError` **for the whole object** as soon
+   as one entry fails — there is no per-entry drop.
+3. A document loaded from a compendium is non-strict, so `DataModel.validate` runs with
+   `fallback: true`, and `SchemaField._validateType` does `data[name] = failure.fallback = initial`.
+   `CollectionField.getInitialValue()` is `{}`.
+
+So the item loads, the Events tab is empty, the pack is correct, and the only trace is a console
+warning. It rolled its named skill (the 07-26j `activation.skill` fix, which is derived at BUILD time
+from the def-test rule and so survives) and then did nothing, which is exactly what the bench saw.
+
+**A BLANK value is not this bug** and must not be gated as if it were: `DataField.clean` catches
+`_validateSpecial`'s "may not be a blank string" and returns the field's initial, so `""` on a
+choices-field with a legal initial is silently healed. (`data/authored/leyline-red.json` — Reckless
+Gambit — carries `edha-apply-status.bonusDamageType: ""`, which cleans to `"vital"`, which is also
+what the engine's `|| "vital"` read produces. Inert, left alone, reported not fixed.)
+
+### The fix
+
+- **`data/adversaries.json`** — Reeve-Owl / Sovereign of Solitude, rule [2]: `target: "target"` →
+  **`"prompt"`**. That is the value the card wants (*"the creature you have targeted"*), the sibling
+  `edha-def-test` on the same `use` event carries `requireTarget: true` so a target is guaranteed
+  before any cost, and `prompt` is also what `edhaEffectTargets`' `default:` arm would have done had
+  the value ever survived — so this is a data correction with no engine change behind it.
+- **`scripts/lint-refs.js` — new PASS 9b, the value half of pass 9.** Every schema field the engine
+  declares with `choices(…)` is a closed set; an authored value outside it now fails the build, with
+  the message saying it takes the *whole* events map down. Blank is exempt for the reason above.
+  Backed by **`parseHandlerChoices()`** in `scripts/handler-schemas.js` (textual, hard-fails if the
+  parse rots — same discipline as `parseHandlerSchemas`).
+
+### Why no existing gate caught it
+
+- **Pass 5** (no silent manual adversary cards) was RIGHT to pass: it asks whether trigger-naming text
+  carries `events` in the DATA, and this item's data carries four. Pass 5 needs no new case.
+- **Pass 9** checks field NAMES; `target` is a real field. **Pass 2** checks handler/event TYPES.
+  **Pass 12** checks ids. **Pass 13** does check enum VALUES — but as a hand-maintained two-field table
+  aimed at values the *engine* misreads (`advantageMode`), and by design "only closed sets belong
+  here", added one at a time. Nothing derived the closed sets from the engine's own registrations,
+  which is what 9b now does: 88 handler types, **137** choice-constrained fields, gated mechanically.
+- Swept the whole repo with it: across 365 authored talents (400 rules), all 52 adversaries and the
+  `talent-*.json` side tables, **this was the only rejected value in the repository.**
+
+### Proof (no Foundry needed, and none of it trusts a grep of a `.ldb`)
+
+Scratch build of `adversaries` before and after, both read back through `readPack` and compared
+document-by-document with `_stats` normalised: **413 documents, 0 added, 0 removed, exactly 1 changed**
+— `Sovereign of Solitude`, and within it exactly `handler.target` (`"target"` → `"prompt"`) plus the
+rule's own `description`. Full scratch build of every pack + `validate-packs.js` (PASSED) and
+`validate-adversaries.js` (0 issues). Pass 9b mutation-checked in both directions: restoring
+`"target"` fails the lint by name; the fixed value is clean.
+
+### Re-test (🤖) — **BLOCKED-ON-DEPLOY**
+
+This is a DATA change: it does nothing on Ben's machine until **Ben** runs
+`scripts/deploy-to-foundry.bat` (pack rebuild) and ⟳ Syncs. The bench cannot clear the row before that.
+
+---
+
 ## 2026-09-05 DELTA — fix pass 2, defect ① : **Spreading Roots grew nothing — `deepClone(region.shapes)` clones a DataModel BY REFERENCE.** ENGINE-only → ⟳ Sync + F5, **no pack rebuild**.
 
 ### Bug root causes
