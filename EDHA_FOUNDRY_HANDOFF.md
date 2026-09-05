@@ -33,6 +33,36 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-05 — `foundry-build.js` no longer swallows a malformed authored file (item 16, TOOLING-only; no engine or pack change)
+
+`scripts/foundry-build.js:119` used to read each `data/authored/*.json` inline with
+`try { JSON.parse(...) } catch { continue; }` — a broken file was dropped with **no message**, and
+the build shipped that whole tree from the generator + side tables (bootstrap text, no automation).
+The index is now built by **`loadAuthoredIndex(dataDir)`** (moved to `scripts/foundry-build-parts.js`,
+alongside `prereqGroups`, for the same reason: `foundry-build.js` can't be `require()`d by a test),
+which reads each file through **`loadJson`** (`scripts/lib/data.js`) — `loadJson` THROWS, naming the
+file, on a read or parse failure, and the loader does not catch it. A missing `authored/` directory
+itself is still not an error (unchanged from before — some scratch/test data dirs omit it).
+
+Pinned in `tests/pipeline.test.js` (fixtures under `tests/fixtures/authored-{broken,good}/`):
+a malformed file throws naming it, a well-formed directory still loads normally, and a missing
+directory still returns an empty index. **Mutation-verified**: reintroducing the old
+`catch { continue; }` swallow makes the "malformed file throws" test fail with "Missing expected
+exception"; restoring the fix makes it pass again.
+
+**Pack parity proven** (all five packs, content-level: `readPack()` + `stableStringify`, with each
+doc's `_stats.createdTime`/`modifiedTime` stripped — those two fields are the only thing that
+differs between two runs of *identical* code+data, verified by a build-vs-build control before
+trusting the method): building `main`'s pre-fix `foundry-build.js` and this branch's fixed version
+against the same real `data/` tree produced **byte-identical hashes on every one of the five packs**
+(edha-leyline, edha-deity, edha-heroic, edha-adversaries, edha-items). A deliberately broken
+authored file (a truncated-JSON copy fed via `EDHA_DATA`) now crashes the real build process with
+`Error: Invalid JSON in .../authored/zz-broken-fixture.json: ...` instead of silently continuing.
+
+Nothing to deploy — this is a repo tool, not the engine or a pack. Out of scope, filed separately:
+the `C:/tmp/heroic_ids.json` hard-coded-path swallow at `foundry-build.js:423` (item 17) and the
+`AUTHORED.byName` last-file-wins fallback (item 18).
+
 ## 2026-09-04 — Mobile PM board: a phone-sized live projection of `docs/PM_BOARD.md` (TOOLING + DOCS-only; no engine or pack change)
 
 Ben asked the project manager for a mobile-friendly way to see what the workers are doing and

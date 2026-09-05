@@ -6,8 +6,15 @@
  * copy-pasted, or the copy drifts from the shipped behaviour and the test starts lying.
  *
  * Required by: scripts/foundry-build.js, tests/pipeline.test.js.
+ *
+ * `loadJson` (from ./lib/data.js, required below) pulls in ./edha-pack-io.js for `slugify` —
+ * that module resolves classic-level LAZILY inside readPack() only, so requiring it here does
+ * NOT require classic-level to be installed (verified: this file loads fine with no
+ * node_modules/classic-level present, which is the state a bare test run is in).
  */
 "use strict";
+const fs = require("fs");
+const { loadJson } = require("./lib/data.js");
 
 // Split a prerequisite string into AND-groups of OR-alternatives.
 //   "Bone Garden or Speak with the Fallen; Green 2+"  ->  [[Bone Garden, Speak with the Fallen], [Green 2+]]
@@ -34,4 +41,32 @@ function prereqGroups(s, isName) {
   return out;
 }
 
-module.exports = { prereqGroups };
+// Build the authored-overlay index: <dataDir>/authored/*.json -> { byId, byName, count }.
+//
+// TODO_REPO_HYGIENE #16: foundry-build.js used to read this directory inline with
+// `try { j = JSON.parse(...) } catch { continue; }` per file — a malformed authored file was
+// dropped with NO message, and the build shipped that whole tree from the generator + side
+// tables (bootstrap text, no automation) instead of failing. Each file is now read through
+// `loadJson` (scripts/lib/data.js), which THROWS, naming the file, on a read or parse failure —
+// the caller (foundry-build.js) is expected to let that propagate and fail the build loudly.
+//
+// A MISSING `authored/` directory itself is not an error (matches the pre-existing behaviour:
+// some data dirs used in tests/scratch builds omit it entirely) — only a per-file read/parse
+// failure throws.
+function loadAuthoredIndex(dataDir) {
+  const byId = {}, byName = {};
+  let files = [];
+  try { files = fs.readdirSync(`${dataDir}/authored`).filter((f) => f.endsWith(".json")); }
+  catch { return { byId, byName, count: 0 }; }
+  let count = 0;
+  for (const f of files) {
+    const j = loadJson(`${dataDir}/authored/${f}`);   // throws, naming the file, on a broken read/parse
+    for (const [name, entry] of Object.entries(j.talents || {})) {
+      if (entry && entry.docId) byId[entry.docId] = entry;
+      byName[name] = entry; count++;
+    }
+  }
+  return { byId, byName, count };
+}
+
+module.exports = { prereqGroups, loadAuthoredIndex };

@@ -106,24 +106,17 @@ const { pickTalentIcon } = require("./talent-icons.js");
 // `slugify` also comes from here now (2026-08-10) — this file used to re-declare a byte-identical
 // copy at what was line 326, despite already requiring this module; that duplicate is gone.
 const { applyAuthorable, fingerprint, readPack, slugify } = require("./edha-pack-io.js");
+// loadAuthoredIndex lives in foundry-build-parts.js so tests can require it (this file cannot be
+// imported: classic-level at load + a top-level async IIFE). Do not re-inline it here — see
+// TODO_REPO_HYGIENE #16 (a malformed authored file used to be dropped silently; the shared loader
+// throws, naming the file, instead).
+const { loadAuthoredIndex } = require("./foundry-build-parts.js");
 // Foundry-authored overrides (data/authored/*.json, captured by foundry-extract.js). Each maps a
 // talent (by docId, falling back to name) to an authorable projection — description/activation/damage/
 // events/effects/img — that OVERLAYS the generated talent so edits made directly in Foundry win and
 // persist across rebuilds. Talents with no override fall back to the generator + side-file behaviour.
-const AUTHORED = (() => {
-  const byId = {}, byName = {};
-  let files = [];
-  try { files = fs.readdirSync(`${DATA}/authored`).filter(f => f.endsWith(".json")); } catch { return { byId, byName, count: 0 }; }
-  let count = 0;
-  for (const f of files) {
-    let j; try { j = JSON.parse(fs.readFileSync(`${DATA}/authored/${f}`, "utf-8")); } catch { continue; }
-    for (const [name, entry] of Object.entries(j.talents || {})) {
-      if (entry && entry.docId) byId[entry.docId] = entry;
-      byName[name] = entry; count++;
-    }
-  }
-  return { byId, byName, count };
-})();
+// A broken file here now FAILS THE BUILD (naming the file) instead of being skipped.
+const AUTHORED = loadAuthoredIndex(DATA);
 
 const ACTION_CANON = { "∞":"Passive", "Passive":"Passive", "◇":"Free Action", "Free Action":"Free Action", "★":"Special", "Special":"Special", "⟲":"Reaction", "Reaction":"Reaction", "1 Action":"1 Action", "Action":"1 Action", "2 Actions":"2 Actions", "3 Actions":"3 Actions" };
 function activationSpec(action) {

@@ -367,7 +367,7 @@ lint + tests locally, and the docs' claim is true again.
 
 ---
 
-## 16. [ ] `foundry-build.js` must not silently skip a malformed authored file
+## 16. [x] `foundry-build.js` must not silently skip a malformed authored file (2026-09-05, PR #136)
 
 **Why:** `scripts/foundry-build.js:119` reads each `data/authored/*.json` inside
 `try { … } catch { continue; }`. A file that fails to parse is dropped without a message and the
