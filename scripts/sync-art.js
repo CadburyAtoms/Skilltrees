@@ -14,7 +14,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const MODROOT = process.env.EDHA_MODROOT || "C:/Users/benhe/AppData/Local/FoundryVTT/Data/modules/edha-content";
+const { MODROOT } = require("./lib/paths.js");
 const REPO = path.join(__dirname, "..");
 const SRC_DIR = path.join(REPO, "source-materials", "art", "adversaries");
 const DST_DIR = path.join(MODROOT, "art", "adversaries");

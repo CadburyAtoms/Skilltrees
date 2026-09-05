@@ -6,12 +6,14 @@ cost, and the decisions the PM is waiting on.** The operating procedure is
 `.claude/skills/project-manager/` (PM) and `.claude/skills/work-item/` (workers). A fresh PM
 session resumes from this file alone.
 
-> **PM session of record: the NEXT session Ben opens at his PC** (Ben, 2026-09-05 ~14:40: *"I'll be
-> back at my PC soon and can start another 'real' Project Manager session then"*). The 14:30 cloud
-> session merged #151, #150 and #139, filed item 32, and **stopped at ~15:00 with nothing running** —
-> no workers, no wakeups, no routines. Any other session — including the 07:02 `edha-pm-daily` one,
-> which cannot be messaged — must stop on waking: dispatch nothing, write nothing. The new session
-> rewrites this line on its first wake. **Its first dispatch is item 35** (queue row 6), then 33.
+> **PM session of record: the desktop session Ben opened at ~16:10 on 2026-09-05 (Saturday)** — Ben:
+> *"okay back on the desktop at home… start working on what you can."* It unblocked Ben's deploy
+> (the worktree-prune prompt again, from the pre-#139 script — see the 16:10 run-log row), verified
+> the deploy by hash at 16:20, and dispatched **bench run 4 (16:23) + item 32 with 11 folded in
+> (16:38, worktree)** under PM-R8. Any other session — including the 07:02 `edha-pm-daily` one, which
+> cannot be messaged — must stop on waking: dispatch nothing, write nothing. The next session rewrites
+> this line on its first wake. **Next dispatches in order: a fix pass for bench run 4 if it fails
+> anything (fold item 36 in), then item 35, then 33.** Tonight's day-shift ceiling is **16** (PM-R10).
 
 ## Operating rules (the short form — the skill carries the long form)
 
@@ -166,7 +168,9 @@ Answered by Ben on 2026-09-04 (all six, as recommended). Kept here so a worker c
 | **PM-R7** | Nights-and-weekends schedule (Ben's instruction 2026-09-05, amended 10:40: raise the weekend threshold) | **Instruction recorded; the exact cut is a PM default awaiting veto:** windows Mon–Thu 21:00→07:00 and Fri 21:00→Mon 07:00; weekday daytime is Ben's; weeknight ceiling 2 under the 2-per-5h cap; **weekend: 4 per trailing 5h of any model, 8 per day-shift** (Opus sub-cap dropped 11:55 — the bench loop is all-Opus and serial). Ben: say a different hour or number and it changes. |
 
 | **PM-R8** | Weekend sprints: Fable subagents + increased usage (Ben, 2026-09-05 13:44: "I'm authorizing Fable agents and increased usage for weekend sprints. Fable subagents are limited in effort to medium.") | **Recorded.** Fable workers only via `fable-worker` (model fable, effort medium), weekend windows only; weekend caps 6 per trailing 5h / 12 per day-shift; one parallel lane-R worktree worker allowed beside the bench loop. Numbers are PM defaults — Ben may set others. |
-| **R-69** (in `EDHA_RULINGS.md`) | Should a CANCELLED picker still burn the talent's once-per-scene use? Found by bench run 25: Final Decree → Cancel refunds the Investiture but leaves `sceneOnce` stamped, so the scene's only use is spent without resolving. | **(waiting)** — recommended default: move the stamp to after a successful pick; the alternative is to stop refunding on cancel so cost and use agree. Engine-only, one line. |
+| **R-69** (in `EDHA_RULINGS.md`) | Should a CANCELLED picker still burn the talent's once-per-scene use? Found by bench run 25: Final Decree → Cancel refunds the Investiture but leaves `sceneOnce` stamped, so the scene's only use is spent without resolving. | **Answered 2026-09-05 16:30 (chat): stamp only after a successful pick.** Recorded inline in `EDHA_RULINGS.md`; filed as **TODO #36** (lane B, opus, S — fold into the next fix pass). |
+| **PM-R9** | Item 32's optional line-ending piece: add `.gitattributes` (`* text=auto eol=lf`, `*.bat text eol=crlf`) in the same PR and `core.autocrlf=false` on Ben's fresh clone? | **Yes (Ben, 2026-09-05 16:30, chat).** In the item 32 PR; the worker renormalises only if ≤ 10 files change, else reports. |
+| **PM-R10** | Tonight's weekend day-shift ceiling (12 would leave one slot after bench run 4 + item 32) | **Raised to 16 for the 2026-09-05 day-shift (Ben, 16:30, chat).** Trailing-5h cap of 6 unchanged; the 12 default stands for other days unless Ben says otherwise. Also ruled: **close PRs #93 and #103 now** (items 33/34 re-do them; branches stay KEEP) — done 16:35. |
 
 New rulings go in this table with a `(waiting)` mark; the PM asks Ben in one batch, not one at a time.
 
@@ -189,7 +193,7 @@ Status: `queued` · `briefed` · `running` · `in-review` · `merged` · `blocke
 | 2 | 15 Pre-commit shim + reinstall | R | sonnet | S | — | merged | #133 |
 | 3 | 16 Build fails loudly on a broken overlay | R | sonnet | S | — | merged | #136 |
 | 4 | 17 Heroic ids into `data/` | R | sonnet | S | — | merged | #137 |
-| 5 | **Weekend bench marathon** — runs 24/25/26 done (32 rows retired, fix passes 1–2 merged; per-tree bench block exhausted). Next: Ben deploys #151, then bench run 4 (`# Adversary ability wiring`, 12 🤖) + the three #151 re-tests | B | opus | L | Foundry window ✓ | bench-pending | #142 #143 #145 #147 #151 |
+| 5 | **Weekend bench marathon** — runs 24/25/26 done (32 rows retired, fix passes 1–2 merged; per-tree bench block exhausted). #151 deployed by Ben 16:15 (hash-verified 16:20: 6 in sync). **Now running: bench run 4** (= run 27: `# Adversary ability wiring`, 13 🤖, + the three #151 re-tests), dispatched 16:23 | B | opus | L | Foundry window ✓ | running | #142 #143 #145 #147 #151 |
 | 6 | **35** Re-land the dashboard-on-the-phone branch (`claude/in-app-dashboard-snapshot-ecwudz`, 3 commits, 5-file conflict with today's `pm-state.js`) — the phone lost its Snapshot/Dashboard on 09-05 14:55; **first dispatch of the next session** | R | opus | M | — | queued | |
 | 7 | **33** Re-land handout-forge skill + session-zero one-pager from PR #93 (`fbc8e20`) | R | sonnet | S | — | queued | |
 | 8 | 26 Bench PCs get normal vision (R-2) | R | sonnet | S | R-2 ✓ | queued | |
@@ -204,7 +208,7 @@ Status: `queued` · `briefed` · `running` · `in-review` · `merged` · `blocke
 | 17 | 5 Hook-firing test driver | R | opus | L | — | queued | |
 | 18 | 23 Banner the unbannered engine lines | R | opus | M | — | queued | |
 | 19 | 24 Table-driven handler registry | B | opus | L | #23 | queued | |
-| 20 | 11 Path-literal scripts onto `lib/paths.js` | R | sonnet | S | — | queued | |
+| 20 | 11 Path-literal scripts onto `lib/paths.js` — **folded into item 32's PR** (row 32) | R | sonnet | S | — | running(folded into 32) | |
 | 21 | 13 `resourceWrite` sites onto `edhaSpendResource` | B | opus | M | — | queued | |
 | 22 | 14 `userTargets` sites onto the reader | B | opus | S | — | queued | |
 | 23 | 12 `edhaDefBuffGmGate` at the 20 sites | B | opus | M | — | queued | |
@@ -212,19 +216,17 @@ Status: `queued` · `briefed` · `running` · `in-review` · `merged` · `blocke
 | 25 | **29** `kind: line` zones catch allies too (R-5) | B | opus | S | R-5 ✓ | queued | |
 | 26 | **28a** Out-of-combat scope: gate watches on an ACTIVE combat (R-4) | B | opus | M | R-4 ✓ | queued | |
 | 27 | **28b** Out-of-combat scope: tag bookkeeping writes (R-4) | B | opus | M | R-4 ✓, 28a | queued | |
-| 28 | **34** Fleet weapon migration (34a, REBUILD) + loot caches: player-clickable chest + body search (34b) — re-do PR #103 on current main | B | opus / fable-worker | L | Foundry window for the bench | queued | |
-| 29 | 22 Radiant rows + key dialects | R | opus | M | PM-R3 ✓ | queued | |
-| 30 | 4 Engine split into concatenated sources | R | opus | L | #23, #24 | queued | |
-| 31 | 9 Map fork consolidation | H | opus | M | bridge/MST rulings batch | blocked(rulings) | |
-| 32 | **32** Move the repo off OneDrive (`docs/REPO_MIGRATION_BRIEF.md`) — one lane-R worker PR first (path literals: `foundry-build.js` DATA, `run-playtest-build.bat`, three prose paths = item 11's first consumer), then Ben's fresh clone (lane H) | R | sonnet | S | #139 #150 #151 ✓ · fold item 11 in | queued | |
+| 28 | **36** Picker cancel must not burn the once-per-scene use (R-69) — fold into the next fix pass | B | opus | S | R-69 ✓ | queued | |
+| 29 | **34** Fleet weapon migration (34a, REBUILD) + loot caches: player-clickable chest + body search (34b) — re-do PR #103 on current main | B | opus / fable-worker | L | Foundry window for the bench | queued | |
+| 30 | 22 Radiant rows + key dialects | R | opus | M | PM-R3 ✓ | queued | |
+| 31 | 4 Engine split into concatenated sources | R | opus | L | #23, #24 | queued | |
+| 32 | 9 Map fork consolidation | H | opus | M | bridge/MST rulings batch | blocked(rulings) | |
+| 33 | **32** Move the repo off OneDrive (`docs/REPO_MIGRATION_BRIEF.md`) — one lane-R worker PR first (path literals: `foundry-build.js` DATA, `run-playtest-build.bat`, three prose paths, item 11 folded in, `.gitattributes` per PM-R9) — dispatched 16:38 in a worktree, branch `pm/32-onedrive-path-literals`, then Ben's fresh clone (lane H) | R | sonnet | S | #139 #150 #151 ✓ · fold item 11 in | running | |
 | — | 2 History purge → **delete the 61 SAFE branches** (`docs/BRANCH_CLEANUP.md`, Ben's hands only) · 3 LICENSE | H | Ben | — | — | Ben-only | |
 
 ## Foundry windows
 
-**⏳ DEPLOY OWED (2026-09-05 14:44, PR #151):** the live engine is still `9575fba2…` (fix pass 1). Fix pass 2's engine
-half (`edhaRegionShapes`) and the Reeve-Owl data fix both wait on Ben's `deploy-to-foundry.bat` (engine push +
-adversaries REBUILD, Foundry closed; the script now carries #139's read-only-clearing step 2). Bench run 4 verifies the
-served hash against `HEAD` before driving anything.
+**✅ DEPLOYED (2026-09-05 ~16:15, Ben, `deploy-to-foundry.bat`, Foundry closed): #151's engine half and the Reeve-Owl data fix are LIVE.** PM verification 16:20: `module-src-sync.js status` → **6 in sync, 0 stale, 0 hand-edited**; repo engine blob `a59b0c41…` at `main` = `7b4bcc8`; Foundry relaunched, `localhost:30000` answers. The run was the **live confirmation of #139's step 2** in the sense that it completed, but note how it got there: Ben's checkout was still pre-#139 when he double-clicked, so the OLD 7-step script ran and hung on the same worktree-prune `(y/n)` prompt (this time a half-removed `.git/worktrees/hw` record from a ~13:58 worker). The PM removed the record, had Ben close the window rather than answer `y` (the pull would have rewritten the running script under `cmd`, which resumes by byte offset), pulled `main` in the checkout, and Ben re-ran the new 8-step script clean. **Lesson for the runbook: a deploy-script fix only protects the run AFTER the one that pulls it — when the script itself changes, pull first, then run.** Bench run 4 verifies the served hash before driving anything.
 
 **OPEN — Saturday 2026-09-05 from 09:13** (Ben: "foundry has been updated and is open"). **Deploy
 fact (2026-09-05 11:50, PM push after fix pass 1):** `module-src-sync.js push` → 1 copied; live and repo
@@ -273,3 +275,7 @@ prompt on the way, which he is fixing in his own session in the `focused-booth-7
 | 2026-09-05 14:56 | Ben's deploy-script fix (#139) — merge (PM, cloud) | fable | — | — | merged after CI green. Needed TWO main merges: the first resolved the handoff (#139's delta placed in date order beneath run 24) and the dashboard; #150 landing in between re-conflicted the dashboard → second merge, rebuild, CI. Live evidence for the "generated dashboard collides on every parallel PR" finding. Ben's next deploy is the live confirmation of step 2 | #139 |
 | 2026-09-05 15:00 | **PM handoff** (Ben: "let me know when there is no agents or work going on… I'll start another real PM session at my PC") | fable | ~30 min PM work | — (cloud) | Loop stopped. **Nothing running**: no worker dispatched this session, no wakeup scheduled, no routine armed, all three PRs merged, all worktrees removed. Open PRs left: **#103 and #93** (July, untouched since 07-28 — Ben's call: close or rebase). **Deploy owed**: #151 → `deploy-to-foundry.bat` with Foundry closed. **Next local session**: verify the deploy by hash, bench run 4 (`# Adversary ability wiring`, 12 🤖) plus the three #151 re-tests, then item 32's path-literal PR (lane R, sonnet, S) as the first repo dispatch. Trailing-5h dispatches at 15:00: 10:52, 11:33, 12:08, 12:57, 13:55, 13:56 = 6 of 6 until 15:52; day-shift 9 of 12 | (this PR) |
 | 2026-09-05 15:35 | Branch audit + items 33/34/35 (Ben: "add both as fresh to-dos", "make me a list of branches that can be deleted") — PM, cloud, no worker | fable | ~25 min | — (cloud) | **66 remote branches classified from git, not memory** → `docs/BRANCH_CLEANUP.md` (+ phone copy): 61 SAFE, 2 Ben's call, 3 KEEP. Main's history was **restarted 2026-07-28** (root `aed1a76`); 57 branches are orphaned by it and are what keeps the Stormlight PDF alive — item 2 rewritten accordingly. **Found while auditing:** `claude/in-app-dashboard-snapshot-ecwudz` (the Snapshot/Dashboard-on-the-phone work, 743 lines) was never merged and the PM's 14:55 page republish from main dropped those sections from Ben's phone → **item 35, first dispatch next session**. Items 33 (handout-forge from #93) and 34 (fleet weapons + loot caches from #103) filed at Ben's request; both source branches are KEEP until they land | (this PR) |
+| 2026-09-05 16:10 | **New PM session of record — desktop** (Ben: "back on the desktop… I tried running the deploy to foundry.bat and it failed, again. do the fix… start working on what you can"). Deploy unblock + resume (PM, no worker) | fable | ~30 min | — | The deploy hung on git's worktree-prune `(y/n)` prompt — the pre-#139 script, because the bat pulls #139 *during* the run it cannot benefit from. Root cause on disk: `.git/worktrees/hw` half-removed (no `gitdir`/`HEAD`, empty `logs`/`refs`) by some ~13:58 process; maintenance's `worktree prune` hit the OneDrive lock on `logs`. PM removed the record, told Ben to close the window (not `y`: `cmd` resumes a rewritten batch file by byte offset), pulled `main` → `7b4bcc8`, pre-ran `module-src-sync.js status` (stale, not hand-edited), Ben re-ran → clean. Resume: tree clean, no open PM PRs, phone inbox empty, `#93`/`#103` still open from July | — |
+| 2026-09-05 16:23 | Bench run 4 = bench run 27 (`# Adversary ability wiring` 13 🤖 + the three #151 re-tests) — `bench-run` | opus | running | — | Dispatched after the 16:20 hash verification; main checkout; branch `pm/bench-run-4-adversary-wiring`. Trailing-5h at dispatch: 11:33, 12:08, 12:57, 13:55, 13:56 + this = 6 of 6 until 16:33; day-shift 10 | |
+| 2026-09-05 16:30 | Rulings batch (chat, 4 questions, all answered as recommended) — PM bookkeeping, no worker | fable | — | — | **R-69** = stamp after a successful pick → TODO **36**; **PM-R9** `.gitattributes` yes, in the item 32 PR; **PM-R10** tonight's day-shift ceiling 16; **close #93 and #103 now** → closed 16:35 with pointers to items 33/34 | (this PR) |
+| 2026-09-05 16:38 | Items **32 + 11** (path literals onto `lib/paths.js`, `run-playtest-build.bat` relative, three prose paths, `.gitattributes`) — `work-item` | sonnet | running | — | Dispatched in a worktree (PM-R8's one parallel lane-R slot) on branch `pm/32-onedrive-path-literals`; proof = scratch clone at `%TEMP%\edha-32-clone` printing the resolved DATA + pass-21 mutation. Trailing-5h at dispatch: 12:08, 12:57, 13:55, 13:56, 16:23 + this = 6 of 6 until 17:08; day-shift 11 of 16 | |

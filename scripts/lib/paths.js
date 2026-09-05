@@ -13,10 +13,10 @@
  * levels up), so it is correct regardless of the process's cwd — same technique validate.js uses
  * from scripts/.
  *
- * NOT every consumer is migrated onto this yet — foundry-build.js, inspect-pack.js,
- * module-src-sync.js, sync-art.js, validate-packs.js, and validate-adversaries.js still carry
- * their own local copies (a later shrink-list gate tracks them down). Migrate a file onto this
- * module rather than adding a new local copy.
+ * All six formerly-independent consumers — foundry-build.js, inspect-pack.js, module-src-sync.js,
+ * sync-art.js, validate-packs.js, and validate-adversaries.js — are migrated onto this module as
+ * of 2026-09-05 (item 11; lint-refs.js pass 21's foundry-path-literal shrink list is now empty).
+ * Add a new consumer onto this module rather than a new local copy.
  */
 "use strict";
 const path = require("path");
