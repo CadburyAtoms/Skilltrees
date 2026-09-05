@@ -1874,15 +1874,15 @@ engine.split("\n").forEach((lineText, i) => {
     { id: "foundry-path-literal", scope: ["scripts/**/*.js"], mode: "text",
       re: /FoundryVTT\/Data\/modules\/edha-content|Claude Design\/[Ss]killtrees\/data/g,
       home: "scripts/lib/paths.js",
-      shrink: ["scripts/foundry-build.js", "scripts/inspect-pack.js", "scripts/module-src-sync.js",
-               "scripts/sync-art.js", "scripts/validate-packs.js", "scripts/validate-adversaries.js"],
+      shrink: [],
       msg: "Ben's live Foundry modules directory and the repo's own data directory are ONE constant " +
            "each — scripts/lib/paths.js's MODROOT/DATA, added because foundry-extract.js's own copy had " +
            "silently lost the EDHA_DATA/EDHA_MODROOT env override foundry-build.js's copy had, so a " +
-           "session extracting into a scratch modroot could read/write Ben's LIVE install instead. The " +
-           "shrink-listed files are not yet migrated onto paths.js (a later pass); a NEW hard-coded " +
-           "copy of either literal is not one of them. (deploy-to-foundry.bat is out of scope — .bat, " +
-           "not .js.)" },
+           "session extracting into a scratch modroot could read/write Ben's LIVE install instead. All " +
+           "six formerly shrink-listed consumers (foundry-build.js, inspect-pack.js, module-src-sync.js, " +
+           "sync-art.js, validate-packs.js, validate-adversaries.js) migrated onto paths.js (item 11, " +
+           "2026-09-05); a NEW hard-coded copy of either literal is not one of them. (deploy-to-foundry.bat " +
+           "is out of scope — .bat, not .js.)" },
 
     { id: "gazetteer-literal", scope: ["scripts/map/*.py"], mode: "text-py",
       re: /["'][^"']*thyrcross\.map\.json["']/g,

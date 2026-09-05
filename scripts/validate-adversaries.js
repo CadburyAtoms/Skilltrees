@@ -12,8 +12,7 @@
  * Honors EDHA_MODROOT (same as foundry-build.js).
  */
 const { readPack } = require("./edha-pack-io.js");
-
-const MODROOT = process.env.EDHA_MODROOT || "C:/Users/benhe/AppData/Local/FoundryVTT/Data/modules/edha-content";
+const { MODROOT } = require("./lib/paths.js");
 const dir = `${MODROOT}/packs/edha-adversaries`;
 
 (async () => {

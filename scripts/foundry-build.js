@@ -30,8 +30,8 @@ const crypto = require("crypto");
 // behavior change (deferring the hard dependency), not a preservation.
 const { ClassicLevel } = require("./edha-pack-io.js").requireClassicLevel();
 
-const DATA = process.env.EDHA_DATA || "C:/Users/benhe/OneDrive/Documentos/Worldbuilding/Claude Design/skilltrees/data";
-const MODROOT = process.env.EDHA_MODROOT || "C:/Users/benhe/AppData/Local/FoundryVTT/Data/modules/edha-content";
+// DATA/MODROOT: shared constants (scripts/lib/paths.js) — both still honor EDHA_DATA/EDHA_MODROOT.
+const { DATA, MODROOT } = require("./lib/paths.js");
 // HEROIC_IDS_PATH: the cosmere-rpg system's heroic-paths compendium ids (system talent name ->
 // docId), tracked as data/system-heroic-ids.json (TODO_REPO_HYGIENE #17 — this used to be a
 // hard-coded "C:/tmp/heroic_ids.json" read with `catch { return {}; }`, which was empty on CI and

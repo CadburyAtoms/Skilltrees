@@ -59,7 +59,7 @@ Results: build clean (`VALIDATION PASSED ✓`), synced 6 characters / 50 talents
 
 1. **Foundry fully closed** (`Get-Process | ? {$_.ProcessName -match 'foundry|electron'}` — kill if needed; setup screen still holds pack locks).
 2. ```
-   cd "C:\Users\benhe\OneDrive\Documentos\Worldbuilding\Claude Design\Skilltrees\scripts"
+   cd "…/Skilltrees/scripts"
    node foundry-build.js deity
    node foundry-build.js heroic
    ```

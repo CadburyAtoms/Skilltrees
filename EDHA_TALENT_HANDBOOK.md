@@ -480,7 +480,7 @@ Get-Process | ? { $_.ProcessName -match 'foundry|electron' }
 #    (Or from inside a running world, game.shutDown() returns to Setup and releases locks.)
 
 # 2. Build (default = all; or one scope at a time — NOTE: a single scope arg only).
-cd "C:\Users\benhe\OneDrive\Documentos\Worldbuilding\Claude Design\skilltrees\scripts"
+cd "…/Skilltrees/scripts"
 node foundry-build.js all     # leyline | deity | heroic | adversaries | all
 
 # 3. Validate (expect VALIDATION PASSED, 0 issues).

@@ -277,7 +277,7 @@ after that, same as `rollFold`/`gmWhisper` today).
 
 ---
 
-## 11. [ ] Migrate the 6 remaining Foundry/repo path-literal scripts onto scripts/lib/paths.js
+## 11. [x] Migrate the 6 remaining Foundry/repo path-literal scripts onto scripts/lib/paths.js — DONE 2026-09-05, PR #156
 
 **Why:** `scripts/lib/paths.js` (added wave 1) is the canonical MODROOT/DATA constant, but six
 consumers still carry their own hard-coded copy of the `FoundryVTT/Data/modules/edha-content` or
@@ -776,6 +776,9 @@ decide the art-drop handling (default: a OneDrive drop folder, moved by hand bef
 **Done when:** `git rev-parse --show-toplevel` on Ben's machine is outside OneDrive, the deploy
 script builds from the new `data/`, `module-src-sync.js status` reports in sync, and the
 "PM worktrees under `C:/tmp`" rule is deleted from the board.
+
+Repo-side worker PR: #156 (2026-09-05). Ben's steps in `docs/REPO_MIGRATION_BRIEF.md`
+remain.
 
 **PM:** lane H (Ben) after one lane-R worker PR (sonnet, S) · deps #139 #150 #151 merged, item 11 · verify: the worker's PR runs `node scripts/foundry-build.js` with `EDHA_DATA` unset from a scratch clone at a non-OneDrive path and pastes the resolved DATA line.
 
