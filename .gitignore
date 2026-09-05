@@ -1,5 +1,6 @@
 .claude/*
 !.claude/skills/
+!.claude/agents/
 .codex/
 
 # Local OS/editor noise

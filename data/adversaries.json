@@ -2841,11 +2841,11 @@
               "kind": "status",
               "statusId": "immobilized",
               "statusExpire": "target",
-              "target": "target",
+              "target": "prompt",
               "formula": "0",
               "damageType": "energy"
             },
-            "description": "The movement-to-0 half: Immobilized until the end of the target's next turn, exactly as the tree twin applies it."
+            "description": "The movement-to-0 half: Immobilized until the end of the target's next turn, exactly as the tree twin applies it. Target is `prompt` = the creature you have targeted; the sibling Gated Test carries requireTarget, so one is guaranteed before any cost. It read `target` until 2026-09-05 — a value this handler's schema does not offer, which failed validation and took ALL FOUR of this item's rules down to {} at load (bench run 26)."
           },
           {
             "event": "edha-test-success",

@@ -107,4 +107,60 @@ function parseHandlerSchemas(src) {
   return schemas;
 }
 
-module.exports = { parseHandlerSchemas, matchBrace, topLevelKeys };
+/* Map<handlerType, Map<fieldName, {choices:Set<string>, initial:string|null}>> — the CLOSED value
+ * sets, for every schema field declared `choices: choices(…)`.
+ *
+ * Pass 9 (field NAMES) exists because Foundry silently DROPS an unknown key. This is the harsher
+ * twin: a value outside a StringField's `choices` is not dropped, it THROWS
+ * (`common/data/fields.mjs` StringField._validateType: "<v> is not a valid choice"), and because
+ * the cosmere system stores rules in a `CollectionField` whose `_validateType` throws for the whole
+ * object on any bad entry, the item's ENTIRE `system.events` map then falls back to its initial
+ * `{}` (SchemaField._validateType: `data[name] = failure.fallback = initial` under the fallback
+ * that a non-strict document load turns on). One bad character in one field kills every rule on
+ * the document — which is exactly what happened to the Reeve-Owl's Sovereign of Solitude: four
+ * authored rules, zero at the table, no error, on a pack whose bytes were verified correct.
+ *
+ * `initial` is captured because a BLANK value is NOT the same failure: `DataField.clean` catches
+ * `_validateSpecial`'s "may not be a blank string" and returns the initial, so `""` on a
+ * choices-field with a legal initial is silently healed rather than fatal. Callers gate on that.
+ *
+ * Textual for the same reason parseHandlerSchemas is: the registrations only run inside Foundry. */
+function parseHandlerChoices(src) {
+  const out = new Map();
+  let sites = 0;
+  for (let idx = src.indexOf(CALL); idx !== -1; idx = src.indexOf(CALL, idx + CALL.length)) {
+    sites++;
+    const next = src.indexOf(CALL, idx + CALL.length);
+    const slice = src.slice(idx, next === -1 ? src.length : next);
+    const tm = slice.match(/type:\s*"([^"]+)"/);
+    if (!tm) throw new Error(`parseHandlerChoices: call at index ${idx} has no type: "…" literal`);
+    const fields = new Map();
+    const cm = slice.match(/config:\s*\{\s*schema:\s*\{/);
+    if (cm) {
+      const schemaOpen = idx + cm.index + cm[0].length - 1;
+      const body = src.slice(schemaOpen + 1, matchBrace(src, schemaOpen));
+      // `<field>: new FF.<Kind>Field({ … })` — walk to the matching brace so a hint containing
+      // braces or parens cannot end the definition early.
+      const decl = /([A-Za-z_$][\w$]*)\s*:\s*new\s+FF\.(\w+)\(\{/g;
+      let m;
+      while ((m = decl.exec(body))) {
+        const braceAt = m.index + m[0].length - 1;
+        const end = matchBrace(body, braceAt);
+        const def = body.slice(m.index, end + 1);
+        decl.lastIndex = end;
+        const ch = def.match(/choices:\s*choices\(([^)]*)\)/);
+        if (!ch) continue;
+        const values = [...ch[1].matchAll(/"([^"]*)"/g)].map(x => x[1]);
+        if (!values.length) throw new Error(`parseHandlerChoices: ${tm[1]}.${m[1]} declares choices() with no string literals`);
+        const init = def.match(/initial:\s*"([^"]*)"/);
+        fields.set(m[1], { choices: new Set(values), initial: init ? init[1] : null });
+      }
+    }
+    out.set(tm[1], fields);
+  }
+  if (!sites) throw new Error("parseHandlerChoices: no registerItemEventHandlerType call sites found — engine renamed the API?");
+  if (out.size !== sites) throw new Error(`parseHandlerChoices: ${sites} call sites but ${out.size} parsed types`);
+  return out;
+}
+
+module.exports = { parseHandlerSchemas, parseHandlerChoices, matchBrace, topLevelKeys };

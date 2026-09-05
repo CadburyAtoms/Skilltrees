@@ -2088,6 +2088,18 @@ function edhaCombatEndGuard(endedCombat) {
   } catch (e) { /* no combats collection (out of combat, or a headless load) → guard is empty */ }
   return keys;
 }
+/* Is an `edha-content` flag key actually SET on this actor? Dotted keys included ("lists.omens",
+ * "markedBy.insight") — `Document#getFlag` resolves those through `foundry.utils.getProperty`, and
+ * returns `undefined` when the whole scope is absent. PURE apart from the read, so the skip-absent
+ * contract is pinned without Foundry (tests/scene-reset-reentry.test.js).
+ * FAIL-SAFE DIRECTION, stated: every uncertain answer is TRUE — no readable `getFlag`, or a throw —
+ * so the write still happens and the worst case is the old behaviour, never stale state left behind.
+ * A stored `null` / `false` / `0` is PRESENT and must still be cleared; only `undefined` is absent. */
+function edhaFlagKeyPresent(actor, key) {
+  if (typeof actor?.getFlag !== "function") return true;
+  try { return actor.getFlag("edha-content", key) !== undefined; }
+  catch (e) { return true; }
+}
 // True when this actor is still fighting in ANOTHER combat, so this combat's reset must leave it alone.
 function edhaStillFightingElsewhere(actor, guard) {
   if (!actor || !guard || !guard.size) return false;
@@ -2112,29 +2124,78 @@ function edhaStillFightingElsewhere(actor, guard) {
  * `key` generalizes Life's `_edhaLifeClearBusy` (07-27b: two combats ending back-to-back could
  * overlap the SAME family's sweep mid-actor, double-creating Apex Form's ended-injury) into one
  * shared busy-set entry per family per ended combat, instead of a bespoke module-level boolean only
- * Life had. */
+ * Life had.
+ *
+ * ⛑ THE COMBAT ID IN THAT BUSY KEY IS WHY THE GUARD GOT WEAKER, NOT STRONGER (bench run 24,
+ * 2026-09-05 — 07-27b's bug, live again). `${key}:${endedCombat.id}` means two DIFFERENT combats
+ * never collide in the set, and TWO combats ending together is the exact case the guard exists for:
+ * one `apexForm` flag, two sweeps, TWO "🌟 Apex Form ends — takes an injury" cards and TWO injury
+ * Items. The boolean it replaced could not miss this; the scoped key can, and does. Unset-first /
+ * create-after does not save it either — `unsetFlag` awaits a server round-trip, and the second
+ * sweep reads the flag inside that window.
+ *
+ * So there are now TWO fences, and they answer different questions:
+ *   • `_edhaSceneResetBusy` — "is this family already sweeping FOR THIS COMBAT?" Drops a duplicate
+ *     hook for one combat. Combat-scoped on purpose: a SECOND combat's sweep must still run, or its
+ *     actors (skipped by `edhaStillFightingElsewhere` while that combat existed) keep their state
+ *     for ever.
+ *   • `_edhaSceneResetActorBusy` — "is this family already mid-sweep ON THIS ACTOR?", `key:uuid`,
+ *     ACROSS combats. This is the one that stops the double-create. The check-and-claim is
+ *     synchronous with no `await` between, so it is atomic on JS's single thread; the loser skips
+ *     the actor entirely (every step is idempotent and the winner is doing exactly the same work),
+ *     and the claim releases only once the winner's `extra` has settled — by which time the flag
+ *     the second sweep would have re-read is gone.
+ * Both are per-client Sets; the ONE-applier half is `edhaDefBuffGmGate` above, unchanged (07-27b's
+ * other half was two GM clients, one applier each).
+ *
+ * ⛑ AN UNSET OF AN ABSENT FLAG IS NOT FREE — IT IS A FULL DOCUMENT UPDATE (bench run 24). Every
+ * `Document#unsetFlag` ends in `this.update({[`flags.<scope>.<head>.-=<tail>`]: null})` whether or
+ * not the key is there, so R-60's directory∪canvas population turned one combat end into ~40 flag
+ * writes × EVERY ACTOR IN THE WORLD. Measured on a 51-actor world: it left an empty `lists: {}` and
+ * `markedBy: {}` on 33 actors that had NEITHER (a dotted `-=` delete creates its parent object on
+ * the way past — that is `flags.edha-content.lists.-=omens` expanding), `Tem parinaem` and
+ * `Soggy Bottom` included, and the volume tripped Foundry's own socket limiter — *"Exceeded maximum
+ * number of update-actor events in a short period of time. Aborting event execution."* — which then
+ * silently swallowed an UNRELATED talent use for the rest of that window. Silent, on a hook nobody
+ * is watching, on other people's actors.
+ * The fix is the guard the STATUS loop has always had, one line down: test before you write. Flags
+ * now gate on `edhaFlagKeyPresent`, so an actor carrying none of a family's keys costs ZERO updates
+ * and the only actors written are the ones that actually hold state. A stored `null`/`false`/`0` is
+ * still present and still cleared; only genuinely-absent keys are skipped, so no sweep's outcome
+ * changes. (Batching a family's keys into ONE `a.update()` per actor was considered and NOT taken:
+ * it would trade the per-key try/catch — the isolation that keeps one rejecting write from starving
+ * the rest — for a marginal saving on the handful of actors that are left after this gate.) */
 const _edhaSceneResetBusy = new Set();
+const _edhaSceneResetActorBusy = new Set();
 async function edhaSceneReset(endedCombat, { flags = [], statuses = [], extra = null, key = "" } = {}) {
   if (!edhaDefBuffGmGate()) return;
-  const busyKey = `${key || "?"}:${endedCombat?.id ?? "?"}`;
+  const fam = key || "?";
+  const busyKey = `${fam}:${endedCombat?.id ?? "?"}`;
   if (_edhaSceneResetBusy.has(busyKey)) return;
   _edhaSceneResetBusy.add(busyKey);
   try {
     const guard = edhaCombatEndGuard(endedCombat);   // ⛑ cross-combat clobber guard (R-58)
     for (const a of edhaSceneActors()) {
       if (edhaStillFightingElsewhere(a, guard)) continue;
-      for (const fkey of flags) {
-        try { await a.unsetFlag("edha-content", fkey); }
-        catch (e) { console.warn(`Edha Content | scene reset (${key || "?"}): unset ${fkey} failed on ${a?.name ?? "?"}`, e); }
-      }
-      for (const st of statuses) {
-        try { if (a.statuses?.has?.(st)) await a.toggleStatusEffect?.(st, { active: false }); }
-        catch (e) { console.warn(`Edha Content | scene reset (${key || "?"}): status ${st} clear failed on ${a?.name ?? "?"}`, e); }
-      }
-      try { await extra?.(a); }
-      catch (e) { console.warn(`Edha Content | scene reset (${key || "?"}): extra step failed on ${a?.name ?? "?"}`, e); }
+      // ⛑ per-actor claim, ACROSS combats — see the note above. No `await` between has() and add().
+      const claim = `${fam}:${a?.uuid ?? a?.id ?? ""}`;
+      if (_edhaSceneResetActorBusy.has(claim)) continue;
+      _edhaSceneResetActorBusy.add(claim);
+      try {
+        for (const fkey of flags) {
+          if (!edhaFlagKeyPresent(a, fkey)) continue;   // ⛑ absent → skip; unsetFlag ALWAYS writes (see above)
+          try { await a.unsetFlag("edha-content", fkey); }
+          catch (e) { console.warn(`Edha Content | scene reset (${fam}): unset ${fkey} failed on ${a?.name ?? "?"}`, e); }
+        }
+        for (const st of statuses) {
+          try { if (a.statuses?.has?.(st)) await a.toggleStatusEffect?.(st, { active: false }); }
+          catch (e) { console.warn(`Edha Content | scene reset (${fam}): status ${st} clear failed on ${a?.name ?? "?"}`, e); }
+        }
+        try { await extra?.(a); }
+        catch (e) { console.warn(`Edha Content | scene reset (${fam}): extra step failed on ${a?.name ?? "?"}`, e); }
+      } finally { _edhaSceneResetActorBusy.delete(claim); }
     }
-  } catch (e) { console.error(`Edha Content | scene reset (${key || "?"}) failed`, e); }
+  } catch (e) { console.error(`Edha Content | scene reset (${fam}) failed`, e); }
   finally { _edhaSceneResetBusy.delete(busyKey); }
 }
 
@@ -4599,16 +4660,40 @@ async function edhaTryResolveContest(ownerId) {
  * it" (edhaPromptDC's blank-DC case), which only edhaPromptDC's own `parse` can still produce.
  * Fixed riding along: edhaPromptDC's AppV1 fallback rendered its content RAW, with no `<form>` wrap —
  * Weave's and Edict's always wrapped theirs. `edhaDialogPick` always wraps the fallback body now, so
- * every caller behaves the same on Foundry versions old enough to hit that path. */
+ * every caller behaves the same on Foundry versions old enough to hit that path.
+ *
+ * ⛑ THE `??` THAT ATE EVERY CANCEL (bench run 24, 2026-09-05 — the contract above was a LIE on the
+ * DialogV2 path from the day this function shipped). `DialogV2#_onSubmit` is, verbatim:
+ *
+ *     const result = (await button?.callback?.(event, target, this)) ?? button?.action;
+ *
+ * so a callback that resolves `null` or `undefined` is REPLACED by the button's own `action` string,
+ * which is always truthy. Every parse-less Cancel therefore returned `"cancel"`, and every caller's
+ * `if (!picked)` / `if (!proh)` guard missed it: Final Decree charged 3 Investiture, refunded
+ * nothing, and armed itself with `proh === "cancel"` ("…must not **undefined**"); the Weave link
+ * picker's Cancel is worse still — `"cancel"[0]`/`[1]` are `"c"`/`"a"`, two DIFFERENT truthy
+ * strings, so it sailed past its `!picked[0] || picked[0] === picked[1]` guard, linked nothing, kept
+ * the cost and posted a "the chosen squares are linked" card anyway.
+ *
+ * THE FIX IS A BOX, not a per-caller guard. Every callback result is wrapped in `{ edhaPick: … }` —
+ * an object is never nullish, so the `??` can never fire — and unboxed on the far side. This
+ * restores the documented contract EXACTLY, including the two values `??` was destroying:
+ * `null` (parse-less button) and `undefined` (edhaPromptDC's "No DC — judge it", whose
+ * `parse: () => undefined` was arriving as `"judge"`). A dismissal is not boxed at all: with
+ * `rejectClose: false`, `DialogV2.wait` resolves `result ?? null` from its close listener, so an
+ * unboxed value of ANY shape means "dismissed" → `undefined`, matching the legacy path's `close`.
+ * Do NOT "fix" this by giving buttons falsy `action` values — DV2 keys `options.buttons` by action
+ * and `_onSubmit` looks the pressed button up by `target.dataset.action`. */
 async function edhaDialogPick({ title, content, buttons }) {
   const DV2 = foundry.applications?.api?.DialogV2;
   if (DV2) {
     try {
-      return await DV2.wait({
+      const boxed = await DV2.wait({
         window: { title }, content, rejectClose: false,
         buttons: buttons.map((b) => ({ action: b.action, label: b.label, default: !!b.default,
-          callback: (ev, btn) => (b.parse ? b.parse(btn.form) : null) })),
+          callback: async (ev, btn) => ({ edhaPick: b.parse ? await b.parse(btn.form) : null }) })),
       });
+      return edhaUnboxDialogPick(boxed);
     } catch (e) { return undefined; }
   }
   return await new Promise((resolve) => new Dialog({
@@ -4619,6 +4704,15 @@ async function edhaDialogPick({ title, content, buttons }) {
     default: buttons.find((b) => b.default)?.action || buttons[0]?.action,
     close: () => resolve(undefined),
   }).render(true));
+}
+/* The far half of the box above — PURE, so the `??`-survival contract is pinned in
+ * tests/dialog-pick-box.test.js without a DOM. A box is `{ edhaPick: <the parse result> }` and its
+ * payload is returned verbatim (including `null` and `undefined`); anything NOT a box — the `null`
+ * DialogV2.wait resolves on a dismissal with `rejectClose:false`, or an action string if a future
+ * Foundry ever bypasses the callback — means "no choice was made" → `undefined`. `in` is the test,
+ * not truthiness: `{edhaPick: undefined}` is a REAL answer ("No DC — judge it"). */
+function edhaUnboxDialogPick(boxed) {
+  return (boxed && typeof boxed === "object" && "edhaPick" in boxed) ? boxed.edhaPick : undefined;
 }
 async function edhaPromptDC(title, hint) {
   const content = `<p>${hint}</p><p><label>Difficulty (DC): <input type="number" name="edhaDC" style="width:6em" autofocus></label></p>`;
@@ -11162,7 +11256,9 @@ async function edhaRecenterTerrain(scene, region, tokenDoc) {
     const gs = scene.grid?.size || 100;
     const cx = Math.round(tokenDoc.x + ((tokenDoc.width || 1) * gs) / 2);
     const cy = Math.round(tokenDoc.y + ((tokenDoc.height || 1) * gs) / 2);
-    const shapes = foundry.utils.deepClone(region.shapes ?? []);
+    // SOURCE objects (edhaRegionShapes): mutating region.shapes' live DataModels writes NOTHING —
+    // the Drawing would follow the token while the Region stayed put, the bench-run-26 family.
+    const shapes = edhaRegionShapes(region);
     const c = shapes.find(s => s.type === "circle" && !s.hole); if (!c) return;
     c.x = cx; c.y = cy;
     await region.update({ shapes });
@@ -11725,7 +11821,10 @@ for (const ctx of ["skill", "attack", "item"]) Hooks.on(`cosmere-rpg.${ctx}Roll`
 // edhaSceneReset's directory∪tokens dedup — an unlinked-token-only actor now also clears, matching
 // the other nine. The re-entry guard (07-27b: two combats ending back-to-back could overlap this
 // SAME sweep mid-actor and double-create Apex Form's ended-injury) is now edhaSceneReset's shared
-// `key`-scoped busy-set instead of this module-level boolean. "mutation"/"lifeline"/"lifeRegen" are
+// busy-set instead of this module-level boolean. ⚠️ R-60 first scoped that set by ENDED COMBAT, which
+// silently un-guarded exactly this case — bench run 24 measured two cards and two injury Items off
+// one flag; the fence that actually holds is edhaSceneReset's per-ACTOR claim (`key:uuid`, across
+// combats), added 2026-09-05. This function needs nothing of its own. "mutation"/"lifeline"/"lifeRegen" are
 // plain flags; "apexForm" alone creates a document, so it stays bespoke `extra` — read the value
 // BEFORE unsetting (unset-first-create-after, 07-27b, so a re-read inside the create's round-trip
 // finds nothing to double).
@@ -15510,24 +15609,62 @@ function edhaPostSpreadCard(owner, regionId, sceneId, sizeFt, { label = "Expand 
     });
   } catch (e) { console.error("Edha Content | zone-spread card failed", e); }
 }
+/* --- Region SHAPE writes: always edit the SOURCE, never the live models (bench run 26) ----------
+ * `region.shapes` is an array of shape DataModel instances (RectangleShapeData / CircleShapeData /
+ * …), and `foundry.utils.deepClone` returns any object whose constructor is not `Object` BY
+ * REFERENCE (common/utils/helpers.mjs `_deepClone`: "Unsupported advanced objects" → `return
+ * original` unless `strict`). So `deepClone(region.shapes)` hands back a new ARRAY holding the LIVE
+ * models — mutating `r.x` only touches that model's initialized accessor, never its `_source`, and
+ * `region.update({shapes})` then re-reads the source on the way in (`EmbeddedDataField._cast` calls
+ * `value.toObject()`, which is `deepClone(this._source)`) and diffs to NOTHING. The write returns
+ * cleanly, no error anywhere, and the Region never moves.
+ *
+ * That is exactly how Spreading Roots charged its Investiture, posted "the terrain expands 10 ft",
+ * grew the player-visible Drawing to 1200×1200 (those lines write explicit numbers read off the
+ * mutated live model) and left the Region enforcing 600×600 (bench run 26, measured: re-running the
+ * old path in the page changed nothing; the same mutation over `region.toObject().shapes` grew it).
+ *
+ * THE RULE: every writer of `shapes` goes through `edhaRegionShapes(region)`, which hands back plain
+ * source objects that are safe to mutate. `tests/region-shape-write.test.js` pins it, including a
+ * source scan so a future `deepClone(<x>.shapes)` cannot land again. */
+function edhaRegionShapes(region) {
+  const src = region?.toObject?.()?.shapes;                       // toObject() = deepClone(_source)
+  if (Array.isArray(src)) return src;
+  return (region?.shapes ?? []).map(s => (s?.toObject ? s.toObject() : foundry.utils.deepClone(s)));
+}
+/* PURE. Grow a terrain Region's shape array in place by `addPx` and report which shape grew:
+ * a solid circle gains radius, a solid square/rect grows SYMMETRICALLY (07-12 rework — the patch
+ * stays centred and stays square). Returns null when the Region carries neither, so the caller
+ * writes nothing. Split out of edhaGrowTerrain so the geometry is testable without a canvas. */
+function edhaGrowShapes(shapes, addPx) {
+  const list = Array.isArray(shapes) ? shapes : [];
+  const c = list.find(s => s && s.type === "circle" && !s.hole);
+  if (c) { c.radius = (Number(c.radius) || 0) + addPx; return { kind: "circle", shape: c }; }
+  const r0 = list.find(s => s && s.type === "rectangle" && !s.hole);
+  if (r0) {
+    r0.x = (Number(r0.x) || 0) - addPx / 2; r0.y = (Number(r0.y) || 0) - addPx / 2;
+    r0.width = (Number(r0.width) || 0) + addPx; r0.height = (Number(r0.height) || 0) + addPx;
+    return { kind: "rectangle", shape: r0 };
+  }
+  return null;
+}
 async function edhaGrowTerrain(sceneId, regionId, sizeFt) {
   try {
     const scene = game.scenes?.get(sceneId); const region = scene?.regions?.get(regionId); if (!region) return;
     const gs = scene.grid?.size || 100, gd = scene.grid?.distance || 5;
     const addPx = Math.round((Number(sizeFt) / gd) * gs);
-    const shapes = foundry.utils.deepClone(region.shapes ?? []);
-    const c = shapes.find(s => s.type === "circle" && !s.hole);
-    const r0 = shapes.find(s => s.type === "rectangle" && !s.hole);
-    if (c) {                                    // legacy circle terrain
-      c.radius = (Number(c.radius) || 0) + addPx;
-      await region.update({ shapes });
-      const draw = (scene.drawings ?? []).find(d => d.getFlag?.("edha-content", "hazardVisual")?.regionId === region.id);
-      if (draw) { const r = c.radius; await draw.update({ x: c.x - r, y: c.y - r, "shape.width": r * 2, "shape.height": r * 2 }); }
-    } else if (r0) {                            // square terrain (07-12 rework): grow symmetrically, stays square
-      r0.x -= addPx / 2; r0.y -= addPx / 2; r0.width += addPx; r0.height += addPx;
-      await region.update({ shapes });
-      const draw = (scene.drawings ?? []).find(d => d.getFlag?.("edha-content", "hazardVisual")?.regionId === region.id);
-      if (draw) await draw.update({ x: r0.x, y: r0.y, "shape.width": r0.width, "shape.height": r0.height });
+    const shapes = edhaRegionShapes(region);    // SOURCE objects — mutating region.shapes writes nothing
+    const grown = edhaGrowShapes(shapes, addPx);
+    if (!grown) return;
+    await region.update({ shapes });
+    const draw = (scene.drawings ?? []).find(d => d.getFlag?.("edha-content", "hazardVisual")?.regionId === region.id);
+    if (!draw) return;
+    if (grown.kind === "circle") {              // legacy circle terrain
+      const c = grown.shape, r = c.radius;
+      await draw.update({ x: c.x - r, y: c.y - r, "shape.width": r * 2, "shape.height": r * 2 });
+    } else {                                    // square terrain (07-12 rework): grow symmetrically, stays square
+      const r0 = grown.shape;
+      await draw.update({ x: r0.x, y: r0.y, "shape.width": r0.width, "shape.height": r0.height });
     }
   } catch (e) { console.error("Edha Content | grow terrain failed", e); }
 }
@@ -16560,7 +16697,9 @@ async function edhaGrowTerrainSquareGM(sceneId, regionId, x, y) {
     const cell = edhaSnapCellRect(scene, x, y, 1);
     if (edhaRectCovered(region, cell)) { ui.notifications?.warn("Edha: that square is already burning."); return false; }
     if (!edhaRectAdjacent(region, cell)) { ui.notifications?.warn("Edha: pick a square ADJACENT to the existing terrain."); return false; }
-    const shapes = foundry.utils.deepClone(region.shapes ?? []);
+    // This one PUSHES (the array length changes, so the diff was never empty and the square spread
+    // did work) — but it goes through the same door so the family has exactly one shape reader.
+    const shapes = edhaRegionShapes(region);
     shapes.push({ type: "rectangle", x: cell.x, y: cell.y, width: cell.w, height: cell.h, rotation: 0, hole: false });
     await region.update({ shapes });
     const hex = region.color?.css ?? region.color ?? "#d23b2e";

@@ -392,6 +392,35 @@ this one. `key` (a short family id, e.g. `"life"`, `"sov"`) scopes a shared busy
 `` `${key}:${endedCombat.id}` `` — the generalized form of Life's old one-off `_edhaLifeClearBusy`
 boolean (07-27b: two combats ending back-to-back could overlap the SAME family's sweep mid-actor and
 double-create its injury); every family gets this for free now, not just Life.
+
+⛑ **TWO fences, and the combat-scoped one is NOT the re-entry guard** (bench run 24, 2026-09-05 —
+07-27b's bug was live again for the whole of R-60). `${key}:${combat.id}` means two DIFFERENT combats
+never collide, and "two combats ending together" is the exact case the old boolean covered: one
+`apexForm` flag produced TWO "ends — takes an injury" cards and TWO injury Items. Unset-first /
+create-after does not save it — `unsetFlag` awaits a server round-trip and the second sweep reads the
+flag inside that window. So:
+- `_edhaSceneResetBusy` — `key:combatId`. Drops a **duplicate hook for one combat**. Stays
+  combat-scoped ON PURPOSE: a second combat's sweep must still run, or the actors
+  `edhaStillFightingElsewhere` skipped while that combat existed keep their state for ever.
+- `_edhaSceneResetActorBusy` — `key:actorUuid`, **across combats**. This is the re-entry guard. The
+  check-and-claim is synchronous (no `await` between `has` and `add`, so it is atomic on JS's one
+  thread); the loser skips that actor entirely — every step is idempotent and the winner is doing the
+  same work — and the claim releases only once the winner's `extra` has settled.
+**Any new `extra` that CREATES a document rides this and needs no guard of its own.** Pinned in
+`tests/scene-reset-reentry.test.js`, whose mock writes all yield (a synchronous mock cannot
+interleave, so it would pass on the broken engine); verified by mutation.
+
+⛑ **An unset of an ABSENT flag is a full document update** (same run). `Document#unsetFlag` always
+ends in `this.update({"flags.<scope>.<head>.-=<tail>": null})`, so R-60's wide population turned one
+combat end into ~40 flag writes × every actor in the world: on a 51-actor world it left an empty
+`lists: {}` / `markedBy: {}` on **33 actors that had neither** (the dotted `-=` delete creates its
+parent on the way past), `Tem parinaem` and `Soggy Bottom` included, and tripped Foundry's socket
+limiter (*"Exceeded maximum number of update-actor events…"*), which then silently ate an unrelated
+talent use. The flag loop now gates on **`edhaFlagKeyPresent(actor, key)`** — the guard the status
+loop always had, one line down. Dotted keys included; only `undefined` is absent, so a stored
+`null`/`false`/`0` still clears and no sweep's outcome changes; every uncertain answer (no `getFlag`,
+a throw) is TRUE, so the fail-safe direction is "write anyway", never stale state. **Reach for it
+before any bulk `unsetFlag` sweep** — this is a repo-wide shape, not a scene-reset one.
 ```js
 async function edhaClearSovState(endedCombat) {
   await edhaSceneReset(endedCombat, {
@@ -539,6 +568,22 @@ untimed life (the Frostbinder's Predictive Ward is a *permanent* `braced`).
   cell + visual; validates adjacency/coverage), `edhaRemoveTerrain(sceneId,regionId)` (player-safe
   extinguish via the `remove-terrain` relay). `edhaPointInRegion`/`edhaGrowTerrain` handle rects.
   Set Charge hazards stay circles. Pyre spread card whispers GM+owner; the GM click-places.
+- ⚠️ **NEVER mutate `region.shapes` — read it with `edhaRegionShapes(region)` (2026-09-05, bench
+  run 26).** `region.shapes` is an array of shape **DataModel instances**, and
+  `foundry.utils.deepClone` returns any non-plain object **by reference** (helpers.mjs `_deepClone`:
+  "Unsupported advanced objects → return original"). So `deepClone(region.shapes)` → mutate → 
+  `region.update({shapes})` is a **silent no-op**: the update cleans the incoming shapes through
+  `EmbeddedDataField._cast`, which calls `toObject()` (= `deepClone(_source)`), and the edits are
+  thrown away before the diff. No error, no warning, nothing moves. It cost Spreading Roots its
+  whole mechanic — the Region stayed 600×600 while the Drawing (written from explicit numbers read
+  off the mutated live model) grew to 1200×1200, so the table and the engine disagreed.
+  **`edhaRegionShapes(region)`** returns plain `_source` objects that are safe to mutate; all three
+  writers (`edhaGrowTerrain`, `edhaRecenterTerrain`, `edhaGrowTerrainSquareGM`) go through it, and
+  `tests/region-shape-write.test.js` scans the source so a fourth cannot land on the old pattern.
+- **`edhaGrowShapes(shapes, addPx)`** — PURE. Grows a terrain Region's shape array in place: a solid
+  circle gains radius, a solid rectangle grows **symmetrically** (stays centred, stays square);
+  returns `{kind, shape}` for the Drawing sync, or `null` when the Region has neither so the caller
+  writes nothing. Split out of `edhaGrowTerrain` so the geometry is testable without a canvas.
 - **Pyre spread ALIASES (07-20, ruling 98)** — `EDHA_PYRE_SOURCES` (engine const): the spread
   watcher runs any hazard whose `sourceItem` flag is in the list (owner-scoped via
   `sourceOwnerUuid`; the card labels itself by source). A new Pyre-class adaptation = add its
@@ -1909,6 +1954,15 @@ declarations (hoisted) — callable from anywhere in the file regardless of text
   (`edhaZoneLinkMarkers`), and the Edict prohibition picker (`edhaPickProhibition`). Fixed riding
   along: `edhaPromptDC`'s AppV1 fallback rendered its content with no `<form>` wrap (the other two
   always wrapped theirs) — `edhaDialogPick` always wraps the fallback body now.
+  ⛑ **That contract is only true because every callback result is BOXED** (`{ edhaPick: … }`, unboxed
+  by **`edhaUnboxDialogPick(boxed)`** — pure, pinned in `tests/dialog-pick-box.test.js`). It was
+  FALSE from the day the picker shipped until 2026-09-05: `DialogV2#_onSubmit` is
+  `const result = (await button?.callback?.(…)) ?? button?.action;`, so a callback resolving
+  `null`/`undefined` is replaced by the truthy action string and every caller's `if (!picked)` misses.
+  Measured (bench run 24): Final Decree's Cancel spent 3 Investiture, refunded nothing and armed the
+  Decree with `proh === "cancel"`. An object is never nullish, so the `??` can never fire. **Anything
+  you hand DialogV2 as a callback result must be boxed the same way** — and do not try to escape this
+  by giving a button a falsy `action`, which is the key DV2 looks the pressed button up by.
 - **`edhaSheetRoot(app, element)`** — the shared `renderCharacterSheet` preamble: resolves the root
   HTMLElement + actor, gates to `actor.type === "character"` (an adversary shares the same render
   hook via the base class). Returns `{root, actor}` or `null`. 5 of the 6 `renderCharacterSheet`

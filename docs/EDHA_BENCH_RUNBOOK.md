@@ -916,6 +916,185 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   23 deliberately dropped the Green spot-check row on discovering it cannot retire until an Opportunity-gated
   talent is driven.
 
+## Operating lessons from run 24 (2026-09-05 — these OVERRIDE older advice where they conflict)
+
+- ❌ **FOUNDRY'S OWN SOCKET RATE LIMITER WILL EAT YOUR ROWS, SILENTLY.** After a burst of actor writes
+  (six `Actor#update`s in a loop, on top of a scene-reset sweep that itself writes to every actor in the
+  world), the server logged *"Exceeded maximum number of update-actor events in a short period of time.
+  Aborting event execution."* and then **discarded** writes for a window. The symptom at the row level is
+  a talent `use()` that produces no card, no notification and no console error — indistinguishable from a
+  dead talent. **Space bulk writes ~400 ms apart, and when something "does nothing", check
+  `read_console_messages({onlyErrors:true})` for the limiter before you write FAIL.** Waiting ~30 s clears it.
+- ❌ **A BENCH PC'S INVESTITURE MAX IS 2.** `bench-setup-console.js` sets level, attributes, skills and
+  talents but no resources, and the system derives `inv.max` = 2. Every talent costing 3+ Investiture —
+  Final Decree among them — silently no-ops: the system's consume step just declines, with no card and no
+  warning. Raise it first (`system.resources.inv.max.override` + `useOverride`, then `.value`), and note
+  the max still **clamps at 4** however high the override goes. Target fixtures likewise start at 0 HP,
+  so any "does it take damage / is it a legal target" row needs `hea` set before it means anything.
+  (Both are good candidates for the setup script, alongside TODO #26's sight-range change.)
+- ❌ **`item.use()` NEVER SETTLES while the system's `ItemConsumeDialog` is open** — the `javascript_tool`
+  call just times out at 45 s. Do not await it. Fire it, then poll
+  `[...foundry.applications.instances.values()]` for `ItemConsumeDialog` and click
+  `button[data-action="continue"]`. Keep that as a reusable `globalThis.__use(actorName, talentName)`
+  helper for the whole run; every talent with a resource cost needs it.
+- ❌ **Creating an ActiveEffect with EXACTLY ONE status and no `_id` THROWS** in cosmere-rpg 2.1.0:
+  `CosmereActiveEffect#_preCreate` → `isCondition` → `isStatusEffect` → `this.statuses.size === 1 &&
+  this.id.startsWith(...)`, and `this.id` is `null` before insert. It aborts the whole
+  `createEmbeddedDocuments` batch, so one bad fixture kills three good ones. Pass an explicit
+  `_id: foundry.utils.randomID()` (with `{keepId: true}`) whenever a probe effect carries one status.
+  Zero-status and multi-status effects are unaffected.
+- ✅ **ONE off-canvas actor + ONE combat delete settles the whole R-60 family.** The `deleteCombat` sweeps
+  are world-wide and unscoped, so staging every family's flags/statuses/effects on a SINGLE directory-only
+  actor and then deleting one bench combat exercises all ten families at once, each acting as the others'
+  control. Six rows off two tool calls. The staging is honest as long as you say which half was
+  hand-written: the sweep's READ/population half is what R-60 changed, and that is the half being driven.
+- ✅ **`Combat.create({active:false})` + `delete()` is safe and sufficient**, and `game.combat` stays Ben's
+  throughout. Ben's live combat had **zero combatants**, which makes `edhaCombatEndGuard` EMPTY — so
+  nothing was protected and the sweep ran world-wide. **Check `combat.combatants.size` on Ben's combat
+  before you assume the guard will shield his actors**; an empty leftover combat protects nobody.
+- ✅ **The best negative control is one the engine hands you.** Fate's "un-attributable props only clear
+  when no OTHER combat is in play" clause was proven by creating a combat *with a combatant*, deleting a
+  second combat (marker template survived), then deleting the first (marker template deleted). Positive
+  and negative from the same fixture, two calls.
+- ⚠️ **Verify the deploy from BOTH sides and prove the RUNNING code, not just the file on disk.**
+  `git hash-object` of the installed file matching `HEAD:module-src/...` proves the deploy; it does not
+  prove the browser is not serving a cached older script. Compare
+  `performance.getEntriesByType("resource")`'s `decodedBodySize` for the ORIGINAL `<script>` load against
+  your cache-busted fetch — equal sizes mean the page is running what you just hashed.
+- ⚠️ **The bench roster can be entirely GONE.** It was, this run: 0 bench actors, but three orphan
+  `Bench — *` tokens still on the Playtest Map whose actors had been deleted (`tok.actor` is null, so the
+  engine skips them). Rebuild is ~25 s and produced zero ⚠ lines. **Enumerate `game.actors` by folder
+  before planning any row** rather than assuming last marathon's fixtures survived.
+- ⚠️ **A row's subject may need to be a NON-character.** Several R-60 rows are specifically about an
+  adversary/summon bearer, because the old sweep halves split characters-only vs canvas-only. Driving them
+  on a `character` proves the wrong half. `Bench Target — Undefended` is the only adversary-typed bench
+  fixture — take its token off the canvas to get an off-scene adversary.
+
+## Operating lessons from run 25 (2026-09-05 — these OVERRIDE older advice where they conflict)
+
+- ❌ **`git hash-object` NORMALISES CRLF; the served file does not.** The installed
+  `register-skills.js` is CRLF on Ben's machine, so `git hash-object` (which applies the text filter)
+  matches `HEAD:module-src/...` while a git-blob SHA-1 of the **raw served bytes** does not
+  (`25bd55fa…` vs `9575fba…`, 19 658 CR bytes, 1 525 467 → 1 505 809). **Strip the CR that precedes
+  each LF before hashing the fetch**, or a perfectly good deploy reads as NOT-DEPLOYED. Pair it with
+  the run-24 `decodedBodySize` check to prove the page is running that script and not a cache.
+- ❌ **A refused token move looks like nothing at all — `move()` returns `false`, with no error and no
+  console line.** Two different causes bit this run and both are silent:
+  1. **The engine's own `edha-move-veto` (Dread Presence).** A **Weakened** creature cannot willingly
+     move closer to a veto bearer, and the Playtest Map has several (Frostbinder, Wrenchmaster). The
+     only evidence is a `ui.notifications.warn` — so **wrap `ui.notifications.info/warn/error` in a
+     recorder at the start of the run** and read it whenever a move does nothing. This run weakened a
+     target for an R-64 control and then spent four calls wondering why it could not walk it onto a
+     snare. **The engine was right; the harness had armed the veto against itself.**
+  2. **Walls.** `update({x,y})` can land the token at an interpolated **midpoint** against a wall
+     (2700,5100 → 2905,5304) and stop there. `CONFIG.Canvas.polygonBackends.move.testCollision(from,
+     to, {type:"move", mode:"any"})` over the eight neighbours tells you which squares are reachable
+     before you plan a row around one. **Re-read the position after every move.**
+  **Not the cause, and now measured:** `game.paused` is NOT a movement gate — unpausing changed
+  nothing, and the pause was restored. Do not go near it.
+- ✅ **Serve `scripts/bench-setup-console.js` over a throwaway HTTP server and inject it as a classic
+  `<script>` tag** (`python -m http.server 8099 --bind 127.0.0.1` in `scripts/`, then append a
+  `<script src="http://127.0.0.1:8099/bench-setup-console.js?cb=…">`). Classic scripts are not
+  CORS-restricted, so this runs the repo's real file without pasting 17 KB through the console — and
+  re-running is then cheap enough to actually do. Kill the server at the end.
+- ⚠️ **Your dialog probe MUST filter the standing UI apps.** `foundry.applications.instances` holds
+  ~20 permanent AppV2s (Sidebar, ChatLog, every Directory, SceneControls…). An unfiltered dump is
+  thousands of tokens of chrome and buries the one `DialogV2` you care about. Skip by
+  `constructor.name`, and sample **both** shapes (AppV2 instances **and** `div.app.window-app`).
+- ⚠️ **"Cannot consume, not enough uses left" is another silent no-op class.** Limited-use heroic
+  talents (Galvanize) simply do nothing on a second use, with the reason only in a notification. Same
+  family as run 24's consume dialog / Investiture max / rate limiter: **before writing FAIL, read the
+  notification log.**
+- ⚠️ **Resource CLAMPS make a correct roll look wrong.** Galvanize rolled `1d6` → 6 and the target
+  gained 4, because focus max was 4. That reads exactly like a fold bug. **Raise the receiving
+  resource's max before any row whose assertion is "the change matches the rolled total"** — or pick a
+  target with headroom (Field Medicine into a 41-HP ally settled the same row in one call).
+- ✅ **Run 23's `edhaPickPoint` mouse shadow works and is cheap — use it freely.**
+  `Object.defineProperty(canvas, "mousePosition", {get: () => new PIXI.Point(x,y), configurable:true})`
+  then `document.getElementById("board").dispatchEvent(new PointerEvent("pointerdown",{button:0,
+  bubbles:true,cancelable:true}))`. It placed a real Snare and a real Set Charge this run, each with a
+  live template + Region, and both self-consumed correctly. Snap to the square's **centre**
+  (top-left + half a grid) because the picker snaps with `GRID_SNAPPING_MODES.CENTER`.
+- ✅ **One flow can retire three halves of a row.** Order's whole remaining R-65 set (plain-Edict
+  violation damage, the Sealed annotate rider, Verdict's court spread) came off **one** Verdict against
+  a Sealed Edict, because Verdict's `edha-prohibition-resolve` fires all three. Read the payload chain
+  before staging three separate tests.
+- ⚠️ **A combat-end sweep will eat PRE-EXISTING state, and that is not a bug you can avoid.** The
+  Covenant effects run 24 left on `Bench — Order` / `Bench — White` were legitimately swept by the
+  combat ends these rows require. **Snapshot whole effect OBJECTS and recreate them with
+  `{keepId: true}` and their original `_id`** — that is the only way the end-of-run diff comes back
+  clean. Restore flags by deleting the whole `flags.edha-content` namespace and rewriting the snapshot
+  object; never patch a sub-path.
+- ⚠️ **Some R-64 rows are simply not drivable from one client, and saying so beats manufacturing a
+  pass.** Every `target: victim` rule on `edha-test-success` sits behind an H1 def-test that resolves
+  its own target **after** the roll — so the payload's creature and the canvas selection can never be
+  made to differ. The drivable shape is an event that carries its own victim: `edha-on-hit` (via
+  `actor.applyDamage(list, {edhaSource, originatingItem})`) or an `edha-watch` rule whose
+  `payloadTarget` is the watched actor (Coercive Pressure). **Pick the event, not the talent.**
+- **Density, measured: 3 re-tests + 19 hygiene 🤖 in; 11 rows retired, 4 partials, 1 new row, 1 new
+  ruling — about 1 retirement per 5 tool calls.** The re-tests were far denser than the hygiene rows
+  (3 rows off ~8 calls) because they share one subject; the R-65 rows each needed their own tree, its
+  own resources and often its own token. **Budget per family, and prefer the family whose failure mode
+  is "silently contributes 0" — those are where the information is.**
+
+## Operating lessons from run 26 (2026-09-05 — these OVERRIDE older advice where they conflict)
+
+- ❌ **A `javascript_tool` TIMEOUT DOES NOT CANCEL THE SCRIPT — it keeps running in the page and can fire
+  a second copy of everything after the hang.** Run 26 lost four calls to a "double-fire" that was its own:
+  a call that hung on `canvas.animatePan` timed out at 45 s, then completed later and used Draw Mana a
+  SECOND time, arming a second `edhaPickPoint` listener on `#board`. One dispatched pointerdown then
+  resolved BOTH listeners and produced two identical refusals and two identical notifications — which reads
+  exactly like an engine double-dispatch. **After any timeout, assume the tail of that script still ran**;
+  re-establish state and re-drive cleanly before recording anything.
+- ❌ **`canvas.animatePan` NEVER SETTLES with the pane hidden** (it is a ticker/rAF animation — run 22's
+  family). Use `canvas.pan({x, y, scale})`, which is instant and works. This is what caused the timeout
+  above.
+- ❌ **SNAPSHOT `_source.system.resources`, NOT the derived `actor.system.resources`.** Run 26 snapshotted
+  the derived object, and restoring it wrote AE-derived values into `_source`, where `prepareDerivedData`
+  then added the AE contribution a SECOND time (`hea.max.bonus` 15 → 22, `foc.max.bonus` 4 → 6). The
+  restore has to be `target_derived − (current_derived − current_source)`. Snapshot `_source` and this
+  whole class of drift disappears. **Also snapshot `flags.edha-content.tempHp`** — `edha.setTempHp(a, 0)`
+  is the right way to clear Temp HP, but it will silently delete a PRE-EXISTING Temp HP (Bench — White was
+  carrying `{source: "Final Decree", value: 7}` from an earlier run).
+- ⚠️ **A watcher-managed AE can be deleted again while you are restoring it.** Recreating Bench — Order's
+  `Covenant (Bench — Order)` AE *before* rewriting `flags.edha-content` let the ledger go momentarily empty
+  and the watcher took the AE straight back out. **Restore the flags FIRST, then the effects** — or check
+  and re-create afterwards, which is what run 26 had to do.
+- ✅ **Turn boundaries are cheap and completely reliable, and `combat.started` is derived.** `Combat.create(
+  {scene, active: false})` + a Combatant + `ui.combat.initialize({combat})` + `combat.update({round, turn})`
+  fires `combatTurnChange`; `combat.nextTurn()` sets `combat.previous.turn`, which is what the turn-END
+  sweeps read. `started` is `round > 0 && turns.length > 0` — no `startCombat()` call is needed, and
+  Ben's own combat stays untouched throughout. Run 26 drove Living Image's upkeep, Spreading Roots'
+  turn-end offer and Resurgent Growth's turn-start payout off ONE two-combatant bench combat.
+- ✅ **Read the row's rule config out of `data/authored/*.json` BEFORE staging — half the "blockers" in the
+  checklist are stale cost notes.** Natural Recovery and Probability Cascade were both parked for years on
+  "needs an Opportunity, which cannot be forced"; both carry the Opportunity as **honour-system text**
+  (`costNote` / prompt wording), and the only real cost is a resource the activation consumes. Two rows off
+  one grep.
+- ✅ **One flow can settle several rows when you pick the flow by its EVENT, not by its talent.** One Flame
+  Surge detonation retired the burst-card row, Flashpoint, and the formula-bar row (the advantage Flashpoint
+  arms is the advantage roll the formula row wants). One Verdant Mend retired both Natural Recovery and
+  Resurgent Growth. One `Draw Mana` placement gave 2bS-1 its refusal, its ring screenshot and the terrain
+  that Spreading Roots needed.
+- ✅ **When a row names an ADVERSARY behaviour, grep `data/adversaries.json` for who can actually stage
+  it.** The "13 burst-only riders" row looked unstageable until a data scan showed **Hazewyrm Elder** is the
+  only one of the thirteen that owns an `edha-burst` at all — and it carries a Kindle rider, so its own
+  Flame Surge is a one-call proof. The same scan is what proved the other eleven *cannot* be driven as
+  written, which is a result worth reporting rather than a row worth re-queuing.
+- ⚠️ **Compare the COMPENDIUM document, not your imported copy, before blaming a build.** Run 26 read the
+  imported Reeve-Owl, saw `system.events === {}` on one item, and could have called it an import artifact;
+  reading `pack.getDocument(id)` directly, and then diffing every item's rule COUNT against
+  `data/adversaries.json` for six adversaries, is what turned it into a precise finding — 5 actors matching
+  item-for-item, one item missing exactly its four rules.
+- ⚠️ **`token.update({x, y})` refusals are still silent, and re-creating the token is often cheaper than
+  diagnosing.** A staged Order duplicate would not move from (2700,4200) to (3600,4500) — no error, no
+  notification. Deleting the bench token and creating a new one at the destination took one call. Do not
+  spend a diagnosis budget on a token you own.
+- ⚠️ **A scene-lighting row can be structurally impossible on the Playtest Map.** `environment.darknessLevel`
+  is 0 and `environment.globalLight.enabled` is true, so **no square is ever unlit** and every
+  `edha-dark-veil` row is unreachable there. Do not stage around it — record BLOCKED and name it. A
+  bench-created scene is the drivable shape if a future run wants those rows.
+
 ## Known limits
 
 - ❌ **RESOLVED AS UNFIXABLE (07-26i): there is no "no written Cognitive/Spiritual defense" creature.**
