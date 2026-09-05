@@ -6,16 +6,16 @@ cost, and the decisions the PM is waiting on.** The operating procedure is
 `.claude/skills/project-manager/` (PM) and `.claude/skills/work-item/` (workers). A fresh PM
 session resumes from this file alone.
 
-> **PM session of record: the desktop session Ben opened at ~16:10 on 2026-09-05 (Saturday)** — Ben:
-> *"okay back on the desktop at home… start working on what you can."* It unblocked Ben's deploy
-> (the worktree-prune prompt again, from the pre-#139 script — see the 16:10 run-log row), verified
-> the deploy by hash at 16:20, and dispatched **bench run 4 (16:23) + item 32 with 11 folded in
-> (16:38, worktree)** under PM-R8. Any other session — including the 07:02 `edha-pm-daily` one, which
-> cannot be messaged — must stop on waking: dispatch nothing, write nothing. The next session rewrites
-> this line on its first wake. Bench run 4 = run 27 came back **0 FAIL** (14 retired) — no fix pass;
-> #155/#156/#157 merged by 17:05. **Item 35 dispatched 17:12** (worktree). **Next: item 36 at the 17:57
-> slot (main checkout), PM engine-only deploy when it merges, then bench run 5 at ~18:55** (46 🤖 rows
-> remain: hygiene 19, wizard 9, bestiaries 15). Tonight's day-shift ceiling is **16** (PM-R10).
+> **PM session of record: the desktop session Ben opened at ~16:10 on 2026-09-05 — STOPPED 18:35 on Ben's
+> instruction** (*"I'm about to perform the clone and transfer to C:\dev\Skilltrees. Once the current subs are
+> done let me know and stop your next action."*). **Nothing running, nothing scheduled.** Merged tonight: #155,
+> #156 (items 32+11), #157 (bench run 27), #158, #159 (item 35), #160 (item 36). **Deploy owed: #160, ENGINE-ONLY**
+> (`module-src-sync.js push` + hash verify — do it from the NEW clone as item 32's proof). **The repo is moving to
+> `C:\dev\Skilltrees` (item 32, Ben's half)**: the next session must start in the new folder, check
+> `git rev-parse --show-toplevel`, and expect the old OneDrive checkout to be retired. Any other session —
+> including the 07:02 `edha-pm-daily` one — must stop on waking until Ben opens a session in the new folder.
+> **Next dispatches in order: item 38 FIRST (it blocks filing any new TODO item — see the row), then bench run 5
+> (46 open 🤖 + the R-69 row) if Foundry is up, then item 33.** Day-shift used 13 of 16 (PM-R10).
 
 ## Operating rules (the short form — the skill carries the long form)
 
@@ -196,39 +196,41 @@ Status: `queued` · `briefed` · `running` · `in-review` · `merged` · `blocke
 | 3 | 16 Build fails loudly on a broken overlay | R | sonnet | S | — | merged | #136 |
 | 4 | 17 Heroic ids into `data/` | R | sonnet | S | — | merged | #137 |
 | 5 | **Weekend bench marathon** — runs 24/25/26 done (32 rows retired, fix passes 1–2 merged; per-tree bench block exhausted). #151 deployed by Ben 16:15 (hash-verified 16:20: 6 in sync). **Run 27 (16:23–17:02): 14 PASS retired, 0 FAIL, 1 BLOCKED (veil needs a dark scene), 1 new 🤖 (two-`consume` activation charged only Investiture)** → merged #157. Run 21's Braced-(b) blocker disproved (`game.combat` is the VIEWED combat). **Next: bench run 5** — the 46 open 🤖 rows (hygiene remainder 19, creation wizard 9, bestiaries 15, player-client 4, pack-sync 4, items 3) after item 36 is deployed | B | opus | L | Foundry window ✓ | bench-pending | #142 #143 #145 #147 #151 #157 |
-| 6 | **35** Re-land the dashboard-on-the-phone branch (`claude/in-app-dashboard-snapshot-ecwudz`, 3 commits, 5-file conflict with today's `pm-state.js`) — the phone lost its Snapshot/Dashboard on 09-05 14:55; dispatched 17:12 in a worktree, branch `pm/35-phone-snapshot-dashboard` | R | opus | M | — | running | |
-| 7 | **33** Re-land handout-forge skill + session-zero one-pager from PR #93 (`fbc8e20`) | R | sonnet | S | — | queued | |
-| 8 | 26 Bench PCs get normal vision (R-2) | R | sonnet | S | R-2 ✓ | queued | |
-| 9 | 27 Retire the `GM summon relay` row (R-1) | R | sonnet | S | R-1 ✓ | queued | |
-| 10 | **30** Rulings close-out R-7/R-19/R-34/R-49 (docs only, cloud-eligible) | R | sonnet | S | R-7/19/34/49 ✓ | queued | |
-| 11 | **31** Mobile board models operating windows, not quiet hours (`pm-state.js` + page + test) — in a worktree, parallel to fix pass 2 under PM-R8 | R | sonnet | S | PM-R7 | merged | #150 |
-| 12 | 20 One gate list, Windows-clean gates | R | sonnet | M | — | queued | |
-| 13 | 21 Stale-doc sweep (⚠️ `.claude/worktrees/focused-booth-7259bf` is LIVE as of 09-05 — Ben's deploy-script fix session; not one of the four stale ones) | R | sonnet | S | PM-R2 ✓ | queued | |
-| 14 | 18 Overlay name-collision guard | R | opus | S | #16 | queued | |
-| 15 | 19a Handoff reference rewrite | R | opus | L | PM-R1 ✓ | queued | |
-| 16 | 19b Handoff changelog move + dashboard re-point | R | opus | M | 19a | queued | |
-| 17 | 5 Hook-firing test driver | R | opus | L | — | queued | |
-| 18 | 23 Banner the unbannered engine lines | R | opus | M | — | queued | |
-| 19 | 24 Table-driven handler registry | B | opus | L | #23 | queued | |
-| 20 | 11 Path-literal scripts onto `lib/paths.js` — **folded into item 32's PR** (row 32) | R | sonnet | S | — | merged | #156 |
-| 21 | 13 `resourceWrite` sites onto `edhaSpendResource` | B | opus | M | — | queued | |
-| 22 | 14 `userTargets` sites onto the reader | B | opus | S | — | queued | |
-| 23 | 12 `edhaDefBuffGmGate` at the 20 sites | B | opus | M | — | queued | |
-| 24 | 10 Disposition fail-open backlog (76 sites, batched) | B | opus | L | — | queued | |
-| 25 | **29** `kind: line` zones catch allies too (R-5) | B | opus | S | R-5 ✓ | queued | |
-| 26 | **28a** Out-of-combat scope: gate watches on an ACTIVE combat (R-4) | B | opus | M | R-4 ✓ | queued | |
-| 27 | **28b** Out-of-combat scope: tag bookkeeping writes (R-4) | B | opus | M | R-4 ✓, 28a | queued | |
-| 28 | **36** Picker cancel must not burn the once-per-scene use (R-69) — fold into the next fix pass | B | opus | S | R-69 ✓ | queued | |
-| 29 | **34** Fleet weapon migration (34a, REBUILD) + loot caches: player-clickable chest + body search (34b) — re-do PR #103 on current main | B | opus / fable-worker | L | Foundry window for the bench | queued | |
-| 30 | 22 Radiant rows + key dialects | R | opus | M | PM-R3 ✓ | queued | |
-| 31 | 4 Engine split into concatenated sources | R | opus | L | #23, #24 | queued | |
-| 32 | 9 Map fork consolidation | H | opus | M | bridge/MST rulings batch | blocked(rulings) | |
-| 33 | **32** Move the repo off OneDrive (`docs/REPO_MIGRATION_BRIEF.md`) — one lane-R worker PR first (path literals: `foundry-build.js` DATA, `run-playtest-build.bat`, three prose paths, item 11 folded in, `.gitattributes` per PM-R9) — dispatched 16:38 in a worktree, branch `pm/32-onedrive-path-literals`, then Ben's fresh clone (lane H) | R | sonnet | S | #139 #150 #151 ✓ · fold item 11 in | merged(repo side; Ben's fresh clone is the lane-H half) | #156 |
+| 6 | **35** Re-land the dashboard-on-the-phone branch (`claude/in-app-dashboard-snapshot-ecwudz`, 3 commits, 5-file conflict with today's `pm-state.js`) — the phone lost its Snapshot/Dashboard on 09-05 14:55; dispatched 17:12 in a worktree, branch `pm/35-phone-snapshot-dashboard` | R | opus | M | — | merged | #159 |
+| 7 | **38** The TODO doc is ONE dashboard section (`repo-sec0`, 66 KB) and `tests/pm-state.test.js` shards the real dashboard against a 64 KiB stress cap — item 36's worker had ~390 bytes of headroom and a 1.2 KB note failed the gate. **Every new TODO item now fails `tests/run.js` until this lands.** Fix: split the repo tab into one section per `## N.` item in `build-dashboard.js` (better phone rendering too) and re-pin the stress test against the largest real section; the TODO entries for 38 and 39 are written by THIS worker (they cannot be written before it) | R | sonnet | S | — | queued | |
+| 8 | **39** `audit.py <tree>` exits 0 on a tree name that does not exist (`audit.py verdannis` → "verdannis: NO FILE", exit 0; the key is `sovereignty`) — a misspelt gate passes silently. Exit non-zero on NO FILE, list the valid keys in the message, and show the deity KEYS in the gate lists (CLAUDE.md, work-item skill) | R | sonnet | S | — | queued | |
+| 9 | **33** Re-land handout-forge skill + session-zero one-pager from PR #93 (`fbc8e20`) | R | sonnet | S | — | queued | |
+| 10 | 26 Bench PCs get normal vision (R-2) | R | sonnet | S | R-2 ✓ | queued | |
+| 11 | 27 Retire the `GM summon relay` row (R-1) | R | sonnet | S | R-1 ✓ | queued | |
+| 12 | **30** Rulings close-out R-7/R-19/R-34/R-49 (docs only, cloud-eligible) | R | sonnet | S | R-7/19/34/49 ✓ | queued | |
+| 13 | **31** Mobile board models operating windows, not quiet hours (`pm-state.js` + page + test) — in a worktree, parallel to fix pass 2 under PM-R8 | R | sonnet | S | PM-R7 | merged | #150 |
+| 14 | 20 One gate list, Windows-clean gates | R | sonnet | M | — | queued | |
+| 15 | 21 Stale-doc sweep (⚠️ `.claude/worktrees/focused-booth-7259bf` is LIVE as of 09-05 — Ben's deploy-script fix session; not one of the four stale ones) | R | sonnet | S | PM-R2 ✓ | queued | |
+| 16 | 18 Overlay name-collision guard | R | opus | S | #16 | queued | |
+| 17 | 19a Handoff reference rewrite | R | opus | L | PM-R1 ✓ | queued | |
+| 18 | 19b Handoff changelog move + dashboard re-point | R | opus | M | 19a | queued | |
+| 19 | 5 Hook-firing test driver | R | opus | L | — | queued | |
+| 20 | 23 Banner the unbannered engine lines | R | opus | M | — | queued | |
+| 21 | 24 Table-driven handler registry | B | opus | L | #23 | queued | |
+| 22 | 11 Path-literal scripts onto `lib/paths.js` — **folded into item 32's PR** (row 32) | R | sonnet | S | — | merged | #156 |
+| 23 | 13 `resourceWrite` sites onto `edhaSpendResource` | B | opus | M | — | queued | |
+| 24 | 14 `userTargets` sites onto the reader | B | opus | S | — | queued | |
+| 25 | 12 `edhaDefBuffGmGate` at the 20 sites | B | opus | M | — | queued | |
+| 26 | 10 Disposition fail-open backlog (76 sites, batched) | B | opus | L | — | queued | |
+| 27 | **29** `kind: line` zones catch allies too (R-5) | B | opus | S | R-5 ✓ | queued | |
+| 28 | **28a** Out-of-combat scope: gate watches on an ACTIVE combat (R-4) | B | opus | M | R-4 ✓ | queued | |
+| 29 | **28b** Out-of-combat scope: tag bookkeeping writes (R-4) | B | opus | M | R-4 ✓, 28a | queued | |
+| 30 | **36** Picker cancel must not burn the once-per-scene use (R-69) — one moved statement + 8-case regression + a generic pin; 🤖 row under `# BENCH — Sovereignty` | B | opus | S | R-69 ✓ | bench-pending | #160 |
+| 31 | **34** Fleet weapon migration (34a, REBUILD) + loot caches: player-clickable chest + body search (34b) — re-do PR #103 on current main | B | opus / fable-worker | L | Foundry window for the bench | queued | |
+| 32 | 22 Radiant rows + key dialects | R | opus | M | PM-R3 ✓ | queued | |
+| 33 | 4 Engine split into concatenated sources | R | opus | L | #23, #24 | queued | |
+| 34 | 9 Map fork consolidation | H | opus | M | bridge/MST rulings batch | blocked(rulings) | |
+| 35 | **32** Move the repo off OneDrive (`docs/REPO_MIGRATION_BRIEF.md`) — one lane-R worker PR first (path literals: `foundry-build.js` DATA, `run-playtest-build.bat`, three prose paths, item 11 folded in, `.gitattributes` per PM-R9) — dispatched 16:38 in a worktree, branch `pm/32-onedrive-path-literals`, then Ben's fresh clone (lane H) | R | sonnet | S | #139 #150 #151 ✓ · fold item 11 in | merged(repo side; Ben's fresh clone is the lane-H half) | #156 |
 | — | 2 History purge → **delete the 61 SAFE branches** (`docs/BRANCH_CLEANUP.md`, Ben's hands only) · 3 LICENSE | H | Ben | — | — | Ben-only | |
 
 ## Foundry windows
 
-**✅ DEPLOYED (2026-09-05 ~16:15, Ben, `deploy-to-foundry.bat`, Foundry closed): #151's engine half and the Reeve-Owl data fix are LIVE.** PM verification 16:20: `module-src-sync.js status` → **6 in sync, 0 stale, 0 hand-edited**; repo engine blob `a59b0c41…` at `main` = `7b4bcc8`; Foundry relaunched, `localhost:30000` answers. The run was the **live confirmation of #139's step 2** in the sense that it completed, but note how it got there: Ben's checkout was still pre-#139 when he double-clicked, so the OLD 7-step script ran and hung on the same worktree-prune `(y/n)` prompt (this time a half-removed `.git/worktrees/hw` record from a ~13:58 worker). The PM removed the record, had Ben close the window rather than answer `y` (the pull would have rewritten the running script under `cmd`, which resumes by byte offset), pulled `main` in the checkout, and Ben re-ran the new 8-step script clean. **Lesson for the runbook: a deploy-script fix only protects the run AFTER the one that pulls it — when the script itself changes, pull first, then run.** Bench run 4 verifies the served hash before driving anything.
+**⏳ DEPLOY OWED (2026-09-05 18:35, PR #160, ENGINE-ONLY):** item 36's one moved statement is on `main` but not live — `module-src-sync.js push` + hash verify from the NEW clone (`C:\dev\Skilltrees`) is the next session's first act if Foundry is up; the 🤖 row under `# BENCH — Sovereignty` waits on it. Ben closed Foundry for the OneDrive move (~18:30). _(Previous fact:)_ **✅ DEPLOYED (2026-09-05 ~16:15, Ben, `deploy-to-foundry.bat`, Foundry closed): #151's engine half and the Reeve-Owl data fix are LIVE.** PM verification 16:20: `module-src-sync.js status` → **6 in sync, 0 stale, 0 hand-edited**; repo engine blob `a59b0c41…` at `main` = `7b4bcc8`; Foundry relaunched, `localhost:30000` answers. The run was the **live confirmation of #139's step 2** in the sense that it completed, but note how it got there: Ben's checkout was still pre-#139 when he double-clicked, so the OLD 7-step script ran and hung on the same worktree-prune `(y/n)` prompt (this time a half-removed `.git/worktrees/hw` record from a ~13:58 worker). The PM removed the record, had Ben close the window rather than answer `y` (the pull would have rewritten the running script under `cmd`, which resumes by byte offset), pulled `main` in the checkout, and Ben re-ran the new 8-step script clean. **Lesson for the runbook: a deploy-script fix only protects the run AFTER the one that pulls it — when the script itself changes, pull first, then run.** Bench run 4 verifies the served hash before driving anything.
 
 **OPEN — Saturday 2026-09-05 from 09:13** (Ben: "foundry has been updated and is open"). **Deploy
 fact (2026-09-05 11:50, PM push after fix pass 1):** `module-src-sync.js push` → 1 copied; live and repo
@@ -282,4 +284,6 @@ prompt on the way, which he is fixing in his own session in the `focused-booth-7
 | 2026-09-05 16:30 | Rulings batch (chat, 4 questions, all answered as recommended) — PM bookkeeping, no worker | fable | — | — | **R-69** = stamp after a successful pick → TODO **36**; **PM-R9** `.gitattributes` yes, in the item 32 PR; **PM-R10** tonight's day-shift ceiling 16; **close #93 and #103 now** → closed 16:35 with pointers to items 33/34 | (this PR) |
 | 2026-09-05 16:38 | Items **32 + 11** (path literals onto `lib/paths.js`, `run-playtest-build.bat` relative, three prose paths, `.gitattributes`) — `work-item` | sonnet | 18.4 min, 263 turns | 5.0M | Dispatched in a worktree (PM-R8's one parallel lane-R slot) on branch `pm/32-onedrive-path-literals`; proof = scratch clone at `%TEMP%\edha-32-clone` printing the resolved DATA + pass-21 mutation → **merged 16:59** after review, no bounce, no trailers. Six scripts onto `lib/paths.js` (pass 21 shrink array empty, mutation-verified), `run-playtest-build.bat` → `%~dp0`, three prose paths, `.gitattributes` (renormalize touched exactly one file, the deity-revision-guide SKILL.md, CRLF→LF content-identical). Proof: the scratch clone printed its own `data` dir and built `edha-leyline` (136 items) into a scratch modroot. Cost confirms the calibration: a parity-class proof made an S+S item cost like an M. **Item 11 closed; item 32 is now Ben's (fresh clone, `core.autocrlf=false`).** PM note: `git worktree remove` on the worker's worktree failed with `Permission denied` on the dir AND its `.git/worktrees` record — the same read-only-directory mechanism as the deploy hang, leaving exactly the half-removed shape (`ORIG_HEAD`, `logs`, `refs`) `hw` had at 13:58; `rm -rf` + `git worktree prune` cleared it | #156 |
 | 2026-09-05 16:55 | Board PR (session of record, deploy fact, rulings R-69/PM-R9/PM-R10, TODO 36) — PM, no worker | fable | — | — | merged after CI green on the trailer-stripped sha (the PM's own commit had carried a `Co-Authored-By` trailer; iron rule 6 wins over the harness default — stripped, force-pushed, waited for the NEW sha's run). Merge order #155 → #156 → #157, regenerating the dashboard at each step and keeping both handoff deltas newest-first at #157 | #155 |
-| 2026-09-05 17:12 | Item **35** (re-land Snapshot + Dashboard on the mobile board over #150/#153) — `work-item` | opus | running | — | Dispatched in a worktree, branch `pm/35-phone-snapshot-dashboard`; tooling only from the old branch, board/handoff/dashboard NOT carried over, fresh delta; proof = tests naming the four seams + `--out` dash chunks + an `item: null` mutation. Trailing-5h at dispatch: 12:57, 13:55, 13:56, 16:23, 16:38 + this = 6 of 6 until 17:57; day-shift 12 of 16. PM session cost so far 5.5M / 195 turns | |
+| 2026-09-05 17:12 | Item **35** (re-land Snapshot + Dashboard on the mobile board over #150/#153) — `work-item` | opus | 13.6 min, 179 turns | 3.3M | merged 17:40 after review, no bounce, no trailers. A real merge of the old branch over #150/#153 (`caps.windows` and `item: null` intact, mutation-proven); 570 tests; the phone page's 582 HTML lines verified from the DOM. **PM republished the page to the existing URL at 17:50 and pushed `pm/state` + `dash/index` + `c0..c3` in one batch** — the phone has its Snapshot and Dashboard back. Out-of-scope finds: dispatch chips render a bare `#` for a run-log row without an item number (same family as #153); the PM skill still says "quiet hours" in one place. `claude/in-app-dashboard-snapshot-ecwudz` → SAFE in `docs/BRANCH_CLEANUP.md` terms | #159 |
+| 2026-09-05 18:14 | Item **36** (a cancelled picker leaves no once-per-scene stamp — R-69) — `work-item` | opus | 16.6 min, 155 turns | 2.9M | merged 18:40 after review, no bounce, no trailers. Engine diff = ONE statement moved (`edhaDecreeUse`'s stamp below the `if (!proh)` refund guard); all 9 stamp sites and 5 picker callers inspected, exactly 1 affected (per-site table in the PR); 8-case headless regression + a generic pin (no function may reach a refund-and-return with a stamp behind it) — mutation 573/5 → 578/0. 🤖 row under `# BENCH — Sovereignty`. **ENGINE-ONLY, DEPLOY OWED** (not pushed — Ben is moving the repo). Out-of-scope finds → items **38** (TODO doc vs the 64 KiB stress cap — blocks filing) and **39** (`audit.py` exits 0 on a nonexistent tree). Main checkout; trailing-5h at dispatch 5 of 6; day-shift 13 of 16 | #160 |
+| 2026-09-05 18:35 | **PM handoff — STOPPED on Ben's instruction** ("Once the current subs are done let me know and stop your next action" — he is cloning to `C:\dev\Skilltrees`) | fable | session ~2h25m; PM 9.1M / 286 turns; workers 18.1M (4 dispatches) | — | Loop stopped. Nothing running, nothing scheduled, all six PRs of the session merged, PM worktree removed, old checkout clean and pushed. **Deploy owed: #160 (ENGINE-ONLY)**. **Repo location is changing**: the next session starts in the new folder (Ben copies `.claude/settings.local.json`, `CLAUDE.local.md`, the memory folder, re-points the two scheduled tasks; `Worldbuilding\CLAUDE.md` is no longer an ancestor — copy to `C:\dev\CLAUDE.md`; `npm install --no-save classic-level@2.0.0`). Bench queue: 46 open 🤖 + the R-69 row. Day-shift 13 of 16 | (this PR) |
