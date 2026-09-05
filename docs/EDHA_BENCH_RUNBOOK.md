@@ -1037,6 +1037,64 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   own resources and often its own token. **Budget per family, and prefer the family whose failure mode
   is "silently contributes 0" — those are where the information is.**
 
+## Operating lessons from run 26 (2026-09-05 — these OVERRIDE older advice where they conflict)
+
+- ❌ **A `javascript_tool` TIMEOUT DOES NOT CANCEL THE SCRIPT — it keeps running in the page and can fire
+  a second copy of everything after the hang.** Run 26 lost four calls to a "double-fire" that was its own:
+  a call that hung on `canvas.animatePan` timed out at 45 s, then completed later and used Draw Mana a
+  SECOND time, arming a second `edhaPickPoint` listener on `#board`. One dispatched pointerdown then
+  resolved BOTH listeners and produced two identical refusals and two identical notifications — which reads
+  exactly like an engine double-dispatch. **After any timeout, assume the tail of that script still ran**;
+  re-establish state and re-drive cleanly before recording anything.
+- ❌ **`canvas.animatePan` NEVER SETTLES with the pane hidden** (it is a ticker/rAF animation — run 22's
+  family). Use `canvas.pan({x, y, scale})`, which is instant and works. This is what caused the timeout
+  above.
+- ❌ **SNAPSHOT `_source.system.resources`, NOT the derived `actor.system.resources`.** Run 26 snapshotted
+  the derived object, and restoring it wrote AE-derived values into `_source`, where `prepareDerivedData`
+  then added the AE contribution a SECOND time (`hea.max.bonus` 15 → 22, `foc.max.bonus` 4 → 6). The
+  restore has to be `target_derived − (current_derived − current_source)`. Snapshot `_source` and this
+  whole class of drift disappears. **Also snapshot `flags.edha-content.tempHp`** — `edha.setTempHp(a, 0)`
+  is the right way to clear Temp HP, but it will silently delete a PRE-EXISTING Temp HP (Bench — White was
+  carrying `{source: "Final Decree", value: 7}` from an earlier run).
+- ⚠️ **A watcher-managed AE can be deleted again while you are restoring it.** Recreating Bench — Order's
+  `Covenant (Bench — Order)` AE *before* rewriting `flags.edha-content` let the ledger go momentarily empty
+  and the watcher took the AE straight back out. **Restore the flags FIRST, then the effects** — or check
+  and re-create afterwards, which is what run 26 had to do.
+- ✅ **Turn boundaries are cheap and completely reliable, and `combat.started` is derived.** `Combat.create(
+  {scene, active: false})` + a Combatant + `ui.combat.initialize({combat})` + `combat.update({round, turn})`
+  fires `combatTurnChange`; `combat.nextTurn()` sets `combat.previous.turn`, which is what the turn-END
+  sweeps read. `started` is `round > 0 && turns.length > 0` — no `startCombat()` call is needed, and
+  Ben's own combat stays untouched throughout. Run 26 drove Living Image's upkeep, Spreading Roots'
+  turn-end offer and Resurgent Growth's turn-start payout off ONE two-combatant bench combat.
+- ✅ **Read the row's rule config out of `data/authored/*.json` BEFORE staging — half the "blockers" in the
+  checklist are stale cost notes.** Natural Recovery and Probability Cascade were both parked for years on
+  "needs an Opportunity, which cannot be forced"; both carry the Opportunity as **honour-system text**
+  (`costNote` / prompt wording), and the only real cost is a resource the activation consumes. Two rows off
+  one grep.
+- ✅ **One flow can settle several rows when you pick the flow by its EVENT, not by its talent.** One Flame
+  Surge detonation retired the burst-card row, Flashpoint, and the formula-bar row (the advantage Flashpoint
+  arms is the advantage roll the formula row wants). One Verdant Mend retired both Natural Recovery and
+  Resurgent Growth. One `Draw Mana` placement gave 2bS-1 its refusal, its ring screenshot and the terrain
+  that Spreading Roots needed.
+- ✅ **When a row names an ADVERSARY behaviour, grep `data/adversaries.json` for who can actually stage
+  it.** The "13 burst-only riders" row looked unstageable until a data scan showed **Hazewyrm Elder** is the
+  only one of the thirteen that owns an `edha-burst` at all — and it carries a Kindle rider, so its own
+  Flame Surge is a one-call proof. The same scan is what proved the other eleven *cannot* be driven as
+  written, which is a result worth reporting rather than a row worth re-queuing.
+- ⚠️ **Compare the COMPENDIUM document, not your imported copy, before blaming a build.** Run 26 read the
+  imported Reeve-Owl, saw `system.events === {}` on one item, and could have called it an import artifact;
+  reading `pack.getDocument(id)` directly, and then diffing every item's rule COUNT against
+  `data/adversaries.json` for six adversaries, is what turned it into a precise finding — 5 actors matching
+  item-for-item, one item missing exactly its four rules.
+- ⚠️ **`token.update({x, y})` refusals are still silent, and re-creating the token is often cheaper than
+  diagnosing.** A staged Order duplicate would not move from (2700,4200) to (3600,4500) — no error, no
+  notification. Deleting the bench token and creating a new one at the destination took one call. Do not
+  spend a diagnosis budget on a token you own.
+- ⚠️ **A scene-lighting row can be structurally impossible on the Playtest Map.** `environment.darknessLevel`
+  is 0 and `environment.globalLight.enabled` is true, so **no square is ever unlit** and every
+  `edha-dark-veil` row is unreachable there. Do not stage around it — record BLOCKED and name it. A
+  bench-created scene is the drivable shape if a future run wants those rows.
+
 ## Known limits
 
 - ❌ **RESOLVED AS UNFIXABLE (07-26i): there is no "no written Cognitive/Spiritual defense" creature.**

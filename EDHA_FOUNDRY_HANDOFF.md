@@ -33,6 +33,109 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-05 — BENCH RUN 26 (weekend marathon run 3): **the leyline scatter is CLEARED — 11 rows retired, 2 fails with proven root causes, 1 blocker named.** Open 🤖 **69 → 58**; ⚑ unchanged at **22** (no ⚑ row was touched). **World restored to the start snapshot EXACTLY (id-diff clean).** DOCS-ONLY — no engine, no data, no pack rebuild owed.
+
+**Deploy verified from both sides before anything was driven.** `git hash-object` of the installed
+`register-skills.js` = `HEAD:module-src/scripts/register-skills.js` =
+`9575fba20c88efa57e4a7ba05e3685b167572466`, and the **served** script (cache-busted fetch, CRLF→LF
+normalised, git-blob SHA-1) hashed to the same value — 19 658 CR bytes stripped, 1 525 467 → 1 505 809 —
+with `decodedBodySize` equal (1 525 467 B) for the original `<script>` entry and the re-fetch, so the page
+really was running the hashed engine. Roster idempotency was run as a real step (the repo's own
+`bench-setup-console.js`, served over a throwaway `127.0.0.1:8099` and injected as a classic `<script>`):
+**zero ⚠ lines, zero errors, actor count unchanged at 74** — 16 PCs + 7 fixtures, and the ranged fixture
+asserted on the document (`Shortbow`, `system.attack.type === "ranged"`) rather than trusted from the summary.
+
+### Retired on evidence (11)
+
+| Row | Evidence |
+|---|---|
+| **Formula bar** (Engine-wide) | Flashpoint-armed advantage roll rendered `.dice-formula` as exactly `"2d20kh + 5"`, Roll formula `2d20kh + 5`, Temporary Bonus field empty. |
+| **Flame Surge / burst cards** (Engine-wide) | Detonate → "Detonated ✓", both buttons `disabled`, `cardResolved` flag written; Cancel → "Cancelled — refunded ✓" with Inv 3 → 1 → 3; **a real F5** brought all three stamped cards back disabled with their labels. |
+| **Flashpoint** (Red) | Burst caught 2 → prompt → Inv 2 → 3 **and** `nextTestMod {advantage, red, count 1}`; next Red test opened pre-classed `advantage` and rolled `2d20kh + 5`, flag consumed. |
+| **2bAA-6 Living Image** (Blue) | The run-23 hard FAIL is fixed and live: Pay button charged 3 → 2 with no console error; `costPer` 1 → 2 on the document changed prompt, button label and the charge (4 → 2). |
+| **2bAA-9 The Seeming** (Blue) | Mistheron **and** The Doubled Elder, fresh imports: raise + belief sweep + break, every card naming **The Seeming**; Spearing Beak `1d6` and Raking Grasp `1d8` fooled riders both found the ledger. |
+| **2bS-1 Green Leyline Attunement** | Out-of-range pick at 67.5 ft refused ("beyond Attunement Range (60 ft)"), no Region created; ring screenshotted and legible; in-range placement re-proven. |
+| **2bS-3 Briar-Gone Grove** | Boss patch baked `floor((1d8) / 2)` keen (**d8**), control patch from Bench — Green baked `floor((2d8) / 2)`, and both ticked live on a crossing token. |
+| **2bS-12 Resurgent Growth** (part of the Green spot-checks row) | Heal queued `regrowth`; Green's next turn start paid "regains **7** health" = `@tier 2 + green mod 5`, queue consumed. |
+| **2bS-14 Natural Recovery** (same row) | Green heal into a Weakened ally offered exactly one button for the one condition present; the click removed Weakened from the document. |
+| **2bR-10 Devoted Conduit** (White) | Positive/negative pair against a staged second White PC — reduces the SECOND White's redirect ("reduced by 2 — Devoted Conduit (Bench — White)"), does **not** reduce the redirect the owner takes itself. |
+| **2bL-7 Covenant — the SHARED icon** (Order) | Two staged Order PCs on one ally: breaking the first left the `covenant` status up, breaking the second removed it. |
+| **Burst-only: the 13 damage riders** (White) | `edhaRiderParts` inside `edhaBurstDetonate` proven on two real bursts — Bench — Red's Kindle (+5) and, decisively, a fresh **Hazewyrm Elder** casting its OWN Flame Surge with its own Kindle (+3). |
+| **Probability Cascade — the count-2 half of 2bO-7** (Heroic/Blue) | Three tests in one pass: `2d20kl` (count 2 → 1), `2d20kl` (consumed), then `1d20` — the guard stays inert for multi-use test-only mods. |
+
+*(Thirteen rows of evidence, eleven checklist rows — Resurgent Growth and Natural Recovery are two
+talents inside the single Green spot-checks row, which stays open for the third.)*
+
+### Two FAILs, both with the root cause PROVEN rather than guessed → `test-pass-fixes`
+
+**① Spreading Roots expands nothing — `edhaGrowTerrain` mutates DataModel clones.** The offer, the
+once-per-round budget, the 1-Investiture charge and the "the terrain expands 10 ft" card all work. The
+**Region's geometry never changes** (`shapes` and `_source.shapes` both stay 600×600 at 2400,5100) while the
+player-visible **Drawing grows correctly** to 1200×1200 at 2100,4800 — so the table sees 20 ft of difficult
+terrain and the engine still enforces 10 ft. `region.shapes` is an array of **`RectangleShapeData` DataModel
+instances** (asserted live: `constructor.name`, `instanceof foundry.abstract.DataModel`), so
+`foundry.utils.deepClone(region.shapes)` → mutate `r0.x/.width` → `region.update({shapes})` diffs to nothing;
+the Drawing update that follows writes explicit numbers read off the mutated live model, which is why the
+visual and the mechanics disagree. **Measured, not inferred:** re-running the engine's exact code path in the
+page left the Region at 600×600, and the identical mutation over `region.toObject().shapes` grew it to
+1200×1200 on the very next call. Fix shape: clone `region.toObject().shapes`. ⚠️ **Audit the family** — the
+circle branch of the same function has the identical latent bug, and every other caller that mutates
+`deepClone(region.shapes)` in place should be checked (`edhaGrowTerrainSquareGM` *pushes* a plain object,
+changing the array length, so it is probably safe — verify).
+
+**② Reeve-Owl's Sovereign of Solitude ships ZERO rules in the built pack — a build defect, not a stale
+deploy.** The ability rolls its named skill (`1d20 + 2`, black — the 07-26j `activation.skill` fix is live)
+but posts no `N vs <DEF> M` card and applies nothing, because the compendium document's `system.events` is
+`{}` while `data/adversaries.json` authors **four** rules for it (`edha-gm-cue`; `edha-def-test` black vs
+Spiritual with `requireTarget`; `edha-triggered-effect` Immobilized with `statusExpire: "target"`;
+`edha-triggered-effect` vital damage on `edha-test-success` with `target: "victim"`). **A stale pack is ruled
+out**: every sibling item on the SAME actor built its rules correctly (6 of 6), and Rootling Swarm,
+Tussock-Sow, Mistheron, The Doubled Elder and Briar-Gone Grove match their authored counts item-for-item.
+Exactly one item loses exactly its four rules. The `statusExpire: "target"` value is the obvious first
+suspect for a schema-validation drop that takes the whole `events` object with it — that is a lead, not a
+finding.
+
+### One blocker named, and it retires an assumption
+
+**2bS-11's veil half is not stageable on the Playtest Map, ever.** `edhaDarkVeilSweep` only acts when
+`edhaPointIlluminated(tok.center)` is FALSE, and the Playtest Map has `environment.darknessLevel === 0` with
+`environment.globalLight.enabled === true` — **no square on it can be unlit**. Driving it needs a change to
+Ben's scene config (out of bounds for a bench run) or a bench-created scene. The rest of the fixture is
+identified for whoever takes it: the `edha-dark-veil` adversary is the **Stalker**
+(`effectName: "Veil"`, pack id `l924euoyx3pYFk2T`). **2bS-11's combat-end clear half PASSED** in the same
+run — deleting the bench combat removed `clearsight` from Bench — Green and left its unrelated
+Immobilized/Slowed alone.
+
+### One cosmetic observation for Ben's eye (NOT filed as a defect, and not a ⚑ row)
+
+The roll dialog's own `.roll-config .formula` preview span reads the BASE `1d20 + 5` while the die control is
+already classed `advantage` (Flashpoint-armed). It read `1d20 + 5` at `none` too, so the span appears never
+to reflect the adv/dis state at all; a synthetic click could not toggle the control to prove the contrast, so
+this is recorded as an observation about the *system's own widget*, not a claim about the engine. The chat
+formula bar — the thing the row is about — is correct.
+
+### World hygiene — id-diff clean against this run's own start snapshot
+
+**Created and then deleted, all tracked:** 16 tokens (5 bench PC/fixture tokens, 8 fresh adversary tokens,
+the 2 staged Order/White duplicates' tokens, 1 engine-created illusion token), 12 actors (7 fresh pack
+imports + Hazewyrm Elder + 2 engine-created illusion summons + 3 staged PC duplicates — the two illusion
+actors were auto-deleted by the engine when their copies broke), 2 Regions + their hazard Drawings,
+1 inactive bench Combat, and every MeasuredTemplate the bursts and range rings made.
+**Nothing outside the bench folders was created, and nothing pre-existing was deleted.** The three orphan
+`Bench — *` tokens from the earlier marathon were left alone; Ben's scene was viewed, never activated; his
+combat (`BerbNeuXp4iKduef`, still 0 combatants) was untouched; 117 walls unchanged.
+
+**The combat-end sweep ate pre-existing state again, exactly as run 25 warned, and it was restored
+byte-for-byte**: deleting the bench combat swept `Covenant` + `Covenant (Bench — Order)` off Bench — White
+and `Covenant (Bench — Order)` off Bench — Order. All three were recreated from the start snapshot's **whole
+effect objects** with `{keepId: true}` and their original `_id`s, and Bench — Order's `covenants` ledger flag
+was restored by rewriting the whole `flags.edha-content` namespace. Final diff over all 74 actors — effects
+by id, `flags.edha-content`, resources and statuses — is **empty**; token count, positions, template count,
+Region set, Drawing count, wall count and combat set all match the start snapshot. Only the chat log grew
+(101 → 241 messages); **bench chat can be flushed whenever Ben likes.**
+
+---
+
 ## 2026-09-05 — BENCH RUN 25 (weekend marathon run 2): **fix pass 1 verified GREEN on all three re-tests, and hygiene part 2 retired 8 more rows.** 11 rows retired, 4 partials, 1 new row, 1 new ruling. **World restored to the start snapshot EXACTLY (id-diff clean).** DOCS-ONLY — no engine, no data, no pack rebuild owed.
 
 **Deploy verified from both sides before anything was driven.** `git hash-object` of the installed
