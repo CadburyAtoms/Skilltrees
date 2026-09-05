@@ -899,3 +899,28 @@ citing the PR. **Live engine behaviour: not settled until the bench confirms it.
 **PM:** lane B · model opus · size S · deps R-69 ✓ · verify: pinned regression + a bench pass.
 ENGINE-ONLY (F5), no pack rebuild. Fold into the next `test-pass-fixes` dispatch if bench run 27
 produces one; otherwise a standalone S worker.
+
+---
+
+## 37. [ ] `bench-setup-console.js` must detect and repair ORPHAN tokens on the Playtest Map
+
+**Why:** bench run 27 (2026-09-05) found three Playtest-Map tokens whose `actorId` resolves to no
+actor — `Bench — Green`, `Bench — Heroic`, `Bench Target — Floater`. Driving one fails as "no token on
+the scene", which reads exactly like an engine fault and costs a bench run its diagnosis time. The
+setup script reports "16 PCs / 7 targets, zero ⚠" against that scene because it keys on names and
+never checks that a token's actor exists; it can neither see nor repair an orphan.
+
+**What to do:** in `scripts/bench-setup-console.js`, after the roster pass, walk the scene's tokens
+whose names match the bench roster and check `token.actor` (or `game.actors.get(token.actorId)`);
+for each orphan, print a ⚠ line naming it, then repair by re-pointing the token at the roster actor
+of the same name when one exists (`token.update({actorId})`, unlinked tokens keep their delta) or
+deleting and re-placing it at the same position when none does. Never touch a token whose name is
+not on the bench roster (Ben's PCs "Tem parinaem" / "Soggy Bottom" stay hard-guarded). Report the
+count in the summary line so a future run's "zero ⚠" means it.
+
+**Done when:** running the setup script against the current Playtest Map prints the three orphans,
+repairs them, and a second run prints zero; a 🤖 row in the checklist asks the next bench run to
+confirm the three tokens drive. Pure harness — no engine, no pack, no talent change.
+
+**PM:** lane B (needs the live scene to prove) · model sonnet · size S · deps none · verify: the
+script's own before/after output pasted from the live table, and the 🤖 row. TOOLING-only.
