@@ -33,6 +33,56 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-05 DELTA — item 38: the Repo tab was ONE dashboard section (`repo-sec0`, ~65 KB) and the pm-state stress cap failed on any new TODO item. **TOOLING-only** — `build-dashboard.js` and `tests/pm-state.test.js` only; no engine, no data, no pack change.
+
+**The defect, as measured (item 36's worker, 2026-09-05).** `parseRepoHygiene()` in
+`scripts/build-dashboard.js` (was around line 218) folded every `## N.` item in
+`TODO_REPO_HYGIENE.md` into ONE section, `repo-sec0`. On the real doc that section serialised to
+**65 443 bytes**. `tests/pm-state.test.js`'s "the shards stay under the chunk cap and cover every
+section exactly once" test sharded the real dashboard snapshot against a **fixed 64 KiB (65 536
+byte) stress cap** — a coincidence, not a deliberate ceiling, since `shardDashboard`'s real cap is
+`DASH_CHUNK_BYTES` (200 KiB). Item 36's worker had **93 bytes of headroom** inside that accidental
+ceiling; item 36 and 37's own TODO entries pushed it over, so **every new TODO item failed
+`tests/run.js`** with `pm-state: dashboard section repo-sec0 (N bytes) alone exceeds the
+65536-byte chunk cap` until this landed.
+
+**The fix.** `parseRepoHygiene()` now emits **one section per `## N.` item** (title = the item's
+own heading text, `done`/`partial` preserved on its block) plus a leading intro-prose section for
+the text above item 1 — the same "Repo hygiene backlog (TODO_REPO_HYGIENE.md)" title the old single
+section carried. `repoSections` (`build-dashboard.js` ~line 597) is now the array
+`parseRepoHygiene()` returns directly. Every downstream consumer (`renderPane`'s per-tab section
+loop, `mobileSnapshot()`'s `tab.sections.map`, the `tab.key + '-sec' + i` id scheme, `forBen`/
+`benchQueue` collection) was already generic over `tab.sections` arrays — nothing else needed to
+change. **Row ids changed for the Repo tab only** (`itemId()` hashes the section title into the id,
+and each item's section title is now its own heading instead of the one shared title) — any
+existing localStorage marks on Repo-tab rows reset; Bench/Art/World/Engine/Rulings ids are
+untouched. Per-item sections also collapse better on the phone (one card per TODO item instead of
+one 65 KB wall of text).
+
+**The stress test, re-pinned.** The old `64 * 1024` stress pass in
+`tests/pm-state.test.js` measured nothing real — it was pinning the accidental 65 443-byte
+`repo-sec0` blob against an equally accidental 65 536-byte cap. It now: (1) asserts the largest
+REAL section across the whole dashboard stays under 64 KiB (a regression guard against a section
+growing back into "one big blob" territory), then (2) derives the stress cap as **1.5× the largest
+real section** and re-runs the same shard/cover/id checks at that cap, so "a smaller cap means more
+chunks" is still exercised against a real, moving number instead of a magic constant. The `alone
+exceeds` throw-on-oversized-section assertion (cap 2048) is unchanged.
+
+**Proof (mutation).** On a ~1.3 KB scratch addition to `TODO_REPO_HYGIENE.md`: with the *pre-fix*
+parser + test, `node tests/run.js` failed 577/1 — `pm-state: dashboard section repo-sec0 (66967
+bytes) alone exceeds the 65536-byte chunk cap`; with the fix applied to the same mutated doc, the
+same run passed 578/0. Real (unmutated) doc, before → after: largest section 65 443 B (1 section,
+`repo-sec0`) → 28 491 B (the `world` tab's demographics section, now the largest of 121 sections,
+up from 84); chunks at `DASH_CHUNK_BYTES` (200 KiB) unchanged at 4 either way; stress-cap chunks
+11 (old fixed 64 KiB cap) → 17 (new derived ~42.7 KiB cap, 1.5× the new largest section).
+`node scripts/build-dashboard.js` row count: **438 before, 438 after** (items are rows either way).
+
+**Out of scope, found and reported, not fixed:** the mobile page's dispatch chips render a bare
+`#` for a run-log row with no item number (`scripts/pm-state.js`, untouched here); item 39 (below)
+is `audit.py` exiting 0 on a misspelt tree name.
+
+---
+
 ## 2026-09-05 DELTA — item 36: a **cancelled picker leaves no once-per-scene stamp** (ruling R-69). **ENGINE-ONLY (F5 / ⟳ Sync, no pack rebuild)** — one statement moved in `register-skills.js`; no data, no authored file, no pack content changed.
 
 **The defect, as measured.** Bench run 25 drove Final Decree's prohibition picker and pressed
