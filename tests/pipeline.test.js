@@ -230,3 +230,43 @@ test("the deploy guard's baseline is keyed to the MODROOT, never the data dir (2
       `${rel}: BASELINE_DIR re-keyed to the data dir - the scratch-build clobber returns`);
   }
 });
+
+/* ---------------------------------------------------------------------------
+ * 4. A malformed authored file must fail the build loudly, naming the file
+ *    (TODO_REPO_HYGIENE #16)
+ *
+ * foundry-build.js used to read data/authored/*.json inline with
+ * `try { j = JSON.parse(...) } catch { continue; }` — a broken file was dropped with NO
+ * message and the build shipped that whole tree from the generator + side tables (bootstrap
+ * text, no automation). The index is now built by loadAuthoredIndex() (foundry-build-parts.js),
+ * which reads each file through loadJson (scripts/lib/data.js) — loadJson THROWS, naming the
+ * file, on a read or parse failure, and loadAuthoredIndex does not catch that per-file.
+ *
+ * Fixtures: tests/fixtures/authored-broken/authored/talent-broken.json is deliberately
+ * truncated JSON; tests/fixtures/authored-good/authored/talent-good.json is well-formed, to
+ * prove the loader's ordinary behaviour is unchanged.
+ * ------------------------------------------------------------------------ */
+
+const { loadAuthoredIndex } = require(path.join(__dirname, "..", "scripts", "foundry-build-parts.js"));
+
+test("loadAuthoredIndex: a malformed authored file throws, naming the file, instead of being skipped", () => {
+  const dataDir = path.join(__dirname, "fixtures", "authored-broken");
+  assert.throws(
+    () => loadAuthoredIndex(dataDir),
+    (e) => /talent-broken\.json/.test(e.message),
+    "a broken authored/*.json file must fail loudly and name the file (TODO_REPO_HYGIENE #16)"
+  );
+});
+
+test("loadAuthoredIndex: a well-formed authored directory still loads normally", () => {
+  const dataDir = path.join(__dirname, "fixtures", "authored-good");
+  const idx = loadAuthoredIndex(dataDir);
+  assert.strictEqual(idx.count, 1);
+  assert.ok(idx.byName["Test Talent"], "byName must carry the fixture talent");
+  assert.strictEqual(idx.byId["fixture001"], idx.byName["Test Talent"], "byId must map docId to the same entry");
+});
+
+test("loadAuthoredIndex: a missing authored/ directory returns an empty index, not an error", () => {
+  const dataDir = path.join(__dirname, "fixtures", "authored-directory-does-not-exist");
+  assert.deepStrictEqual(loadAuthoredIndex(dataDir), { byId: {}, byName: {}, count: 0 });
+});

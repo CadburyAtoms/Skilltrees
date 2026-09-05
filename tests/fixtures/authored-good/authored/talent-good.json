@@ -1,0 +1,6 @@
+{
+  "_meta": { "note": "fixture for tests/pipeline.test.js loadAuthoredIndex tests" },
+  "talents": {
+    "Test Talent": { "docId": "fixture001", "description": "A fixture talent for the loader test." }
+  }
+}
