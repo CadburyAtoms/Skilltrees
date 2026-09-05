@@ -149,3 +149,11 @@ talent refs on every push.
 
 **Packs live at `modules/edha-content/packs/` — there is no `packs/v3/` anymore** (the 06-11
 sandbox split was consolidated 2026-06-12; if you ever see a v3 dir again, something is wrong).
+
+`data/system-heroic-ids.json` is a tracked snapshot of the cosmere-rpg system's heroic-paths
+compendium ids (system talent name → docId) that `foundry-build.js` reads to resolve a prose
+prerequisite naming a system talent (e.g. "Composed") to `Compendium.cosmere-rpg.heroic-paths.
+Item.<id>` instead of a plain narrative clause. **Re-dump it after a system upgrade** — ids can
+change with the compendium — by re-running the console snippet described in the file's own
+`_README` against the heroic-paths compendium and overwriting the `heroicIds` map;
+`EDHA_HEROIC_IDS` points the build at an alternate path while you're regenerating it.
