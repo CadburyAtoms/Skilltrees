@@ -1095,6 +1095,61 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   `edha-dark-veil` row is unreachable there. Do not stage around it — record BLOCKED and name it. A
   bench-created scene is the drivable shape if a future run wants those rows.
 
+## Operating lessons from run 27 (2026-09-05 — these OVERRIDE older advice where they conflict)
+
+- ❌ **`createEmbeddedDocuments("Token", [...])` DOES NOT RETURN THE DOCS IN INPUT ORDER.** Run 27 built its
+  name→id map as `out.forEach((t,i) => map[spots[i].name] = t.id)` and got a **crossed** map: the token it
+  called "Raider NEAR" was the one 35 ft away. The first Cover-Their-Retreat reading was therefore exactly
+  inverted, and four calls went into "diagnosing" a defect that did not exist. **Read the map back off the
+  created documents' own `name`/`x`/`y`, never off the input index** — and when a range-gated result comes out
+  backwards, suspect the map before the engine.
+- ❌ **`edha-gm-cue` is ONCE PER ROUND PER OWNER, and a spent budget is indistinguishable from a dead rule.**
+  The ledger is `actor.flags["edha-content"].trigRound`, keyed
+  `cue:<item>:<trigger>:<atFraction>:<rangeFt>:1` → round number. A second attempt in the same round produces
+  **absolutely nothing** — no card, no notification. **Step `combat.update({round: N+1})` between every cell,
+  and read `trigRound` as the ground truth** (it is also how you prove which of two staged drops actually
+  fired the cue). `edha.resetTriggers()` did NOT clear it in this run; the round bump did.
+- ❌ **Cues and damage RIDERS ride different chokepoints — pick the driver to match.** `edha-gm-cue`,
+  `edha-thorns`, `edha-on-hit` and the kindle-light rider all run inside the **`applyDamage`** wrapper, so
+  `victim.applyDamage(list, {edhaSource: <dealer actor>, originatingItem: <the item>})` drives them exactly.
+  But `edha-damage-rider` (Spearing Beak's `whenTargetFooled` +1d6, Kindle, Prognosis) is applied by the
+  **`CosmereItem#rollDamage`** wrapper and reads `edhaUserTargetActor()` — so `applyDamage` can never show it,
+  and "the bonus did not apply" measured that way is the harness. Control the dealer's token, target the
+  victim, and call `item.rollDamage()`; the proof is the formula string
+  (`1d8 + 2 + (1d6[Spearing Beak])[Spearing Beak]` vs `1d8 + 2 + 0`).
+- ✅ **An `edha-on-hit` rule on a DAMAGING ability is item-specific, and that is `edhaOnHitIsItemSpecific`,
+  not a bug.** With no `whenDealer` field, the rule fires only on its OWN item's hit whenever that item has
+  both `system.damage.formula` and `activation.type === "skill_test"`. Press the Line and Devastating Blow are
+  both in that shape, so a hit with the actor's *other* weapon correctly cues nothing — which is also the
+  row's negative control, free.
+- ✅ **`game.combat` is the VIEWED combat, so an `active: false` bench combat can satisfy rows that "need the
+  active combat".** Run 21 recorded Braced cell (b) BLOCKED on the belief that the Brace user had to be a
+  combatant in Ben's combat. `Combat.create({scene, active: false})` + combatants +
+  `ui.combat.initialize({combat})` makes `game.combat` **yours**, and `edhaApplyTimedStatus` then stamps
+  `expireAfter` immediately. Ben's combat is never touched. **Re-read any row parked on "needs the active
+  combat" before believing it.**
+- ⚠️ **Bench tokens can be ORPHANS — check `game.actors.get(tok.actorId)` before driving one.** Three tokens
+  on the Playtest Map (`Bench — Green`, `Bench — Heroic`, `Bench Target — Floater`) point at actor ids that no
+  longer exist, because `bench-setup-console.js` recreated the actors and left the tokens. `edhaCasterToken`
+  then finds nothing and the talent refuses with "no token on the scene to place terrain from" — which reads
+  exactly like an engine fault. **Create a fresh token from the bench actor instead** (and delete it at the
+  end); do not delete the orphan, it is pre-existing.
+- ⚠️ **A token `update({x,y})` that lands somewhere else is the wall-interpolation case, and it MOVES the
+  token.** Run 27 tried to walk the orphan Green token from (4800,14100) to (2400,4800) and it stopped at
+  (4544,13106) with no error. Restoring it worked, but the lesson is: **snapshot the position before the
+  move, not after**, and prefer creating a token at the destination.
+- ⚠️ **Your own staged hazard will keep damaging the scene between rows.** A Pinpoint Charge Region left on
+  the map burned an adversary from 8 HP to 0 across three round bumps, which briefly looked like a cue firing
+  for a creature that had not been touched. **Delete a staged Region the moment its row is done**, and treat
+  any unexplained HP change as your own terrain until you have checked the region list.
+- ✅ **`ChatMessage.getSpeaker({actor})` picks the FIRST token of that actor**, so with two unlinked copies of
+  one adversary the card alias can name the wrong token. Do not read identity off the speaker line — read it
+  off `trigRound`, the effect flags, or the card's `(<victim> dropped.)` suffix.
+- **Density, measured: 3 re-tests + 12 adversary rows in; 14 rows retired, 0 fails, 1 BLOCKED, 1 new row —
+  about 1 retirement per 4.5 tool calls.** The adversary cues were the densest family yet because they share
+  ONE driver (`applyDamage` with an explicit dealer) and one budget ledger; once the harness was right, six
+  rows came off in four calls. **Prefer a family with a shared chokepoint over a family that shares a theme.**
+
 ## Known limits
 
 - ❌ **RESOLVED AS UNFIXABLE (07-26i): there is no "no written Cognitive/Spiritual defense" creature.**

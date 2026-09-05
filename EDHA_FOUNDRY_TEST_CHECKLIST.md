@@ -367,6 +367,18 @@ section — but the two **2bAD** rows added 2026-07-27j need the **engine-only r
 bench and report it** — every converted talent rides the same premise. The dialog rows (2bAC) were
 the day-1 bench report, already fixed.
 
+- [ ] 🤖 **NEW (bench run 27, 2026-09-05) — does an activation with TWO `consume` resources charge
+      BOTH?** Observed in passing, NOT root-caused, and possibly a harness artifact — recorded so the
+      next run settles it deliberately rather than re-noticing it. The Stitchmother's **Reknit Form**
+      declares `activation.consume = [{resource: "inv", min/max 1}, {resource: "foc", min/max 1}]` and
+      its description reads "Activation: 2 (1 Investiture, 1 Focus)". Driven through `item.use()` with
+      the ItemConsumeDialog dismissed by its default **Continue** button, **Investiture went 10 → 9 and
+      Focus stayed at 8**. Two candidate causes and they need different fixes: (i) the dialog renders a
+      per-resource checkbox and the second row is UNCHECKED by default — a UI default, no bug; or
+      (ii) the second `consume` entry is dropped. **Do**: open the dialog on any two-resource
+      activation, READ it (do not blind-click), screenshot it, then compare both resources before and
+      after. Roek's Draw-Mana-adjacent abilities and any tree talent with two costs work as well.
+
 ## The premise (stop if these fail)
 
 **Bench run 1 (2026-07-26g): the five premise rows PASSED on the live table and are retired** —
@@ -540,7 +552,16 @@ Keelshadow · The False Spring · Brandram · Hazewyrm Adult · The Doubled · T
 actor owns both — so it cannot be staged either. Mistheron's rider was separately proven ALIVE this run on an
 ordinary hit: Spearing Beak rolled `1d8 + 2 + (1d6[Spearing Beak])[Spearing Beak]` = 10 against a fooled
 target.)*
-- [ ] 🤖 **Reeve-Owl / Sovereign of Solitude — RE-TEST the contest half. ⛔ BLOCKED-ON-DEPLOY: nothing to drive until BEN runs `scripts/deploy-to-foundry.bat` (pack REBUILD) and ⟳ Syncs — this is a DATA fix.** Run 26's fail was real and its symptom reading was right (4 rules authored, 0 on the compendium document, 6 of 6 siblings fine) — but the cause was NOT `statusExpire` and NOT the build. Both the scratch build and **Ben's installed pack** carry all four rules byte-for-byte; the item authored `target: "target"` on an `edha-triggered-effect`, a value that handler's schema does not offer (`self/victim/near-victim/prompt/list-members` — `"target"` belongs to `edha-cae-grant`). Foundry REJECTS it, the system's `CollectionField` fails whole, and a non-strict load falls the ENTIRE `system.events` map back to `{}`. Fixed to `"prompt"`, and lint pass 9b now gates every choice-constrained field. **Drive it after the rebuild**: target a Weakened creature within 30 ft, use the ability, and expect the `N vs <DEF> M` card AND **Immobilized on the target's document** — then check the Events tab shows **four** rules, not an empty tab.
+
+*(**Reeve-Owl / Sovereign of Solitude — the contest half** — RETIRED on evidence 2026-09-05, bench run 27,
+after Ben's 16:15 pack REBUILD. The compendium document now carries **4** rules on `Sovereign of Solitude`
+(`edha-apply-watch`→`edha-gm-cue`, `use`→`edha-def-test` black-vs-spi, `use`→`edha-triggered-effect`
+Immobilize with the corrected `target: "prompt"`, `edha-test-success`→`edha-triggered-effect` 1d6 vital), and
+a FRESH import into the bench folder read **4** as well — the `{}` collapse is gone. Driven on a Weakened
+target 10 ft away: the FAIL branch printed "Sovereign of Solitude: **10** vs Bench Target — Adjacent A's SPI
+**14** — FAIL" and still landed **Immobilized on the target's document** (`statuses` = weakened, immobilized);
+a second use rolled "**18** vs … SPI **14** — SUCCESS" and added "⚡ Sovereign of Solitude — **4 vital**
+(1d6 → 4)", HP 20 → 16. Both halves of "the Immobilized lands whether or not the test succeeds" observed.)*
 
 *(**Grasping Vines**, **Territorial Instinct** and **Drive the Prey** — RETIRED on evidence 2026-09-05, bench
 run 26, out of the old "other five restored adversary abilities" row, all on FRESH pack imports. Rootling Swarm /
@@ -684,8 +705,22 @@ template cleaned itself up. ⚠️ **Harness note, NOT an engine double-fire**: 
 identical refusals from ONE click. Cause was mine — a `javascript_tool` call that TIMED OUT kept running in
 the page and fired Draw Mana a second time, arming a second `edhaPickPoint` listener on `#board`. A clean
 single run produced exactly one prompt and one refusal.)*
-- [ ] 🤖 **Spreading Roots (2bS-4) — RE-TEST the terrain growth after the 2026-09-05 shape-write fix (ENGINE-ONLY — ⟳ Sync + F5, no pack rebuild).** Run 26's fail: the offer, the 1-Investiture charge and the "the terrain expands 10 ft" card all worked, the **Drawing** grew to `1200×1200 @ 2100,4800` and the **Region** stayed `600×600 @ 2400,5100`, so the table saw 20 ft and the engine enforced 10 ft. Root cause (verified against Foundry's own source, and it is NOT quite what run 26 wrote): `foundry.utils.deepClone` returns a shape **DataModel by reference**, so `deepClone(region.shapes)` handed back the LIVE models and `region.update({shapes})` re-read `_source` through `EmbeddedDataField._cast → toObject()` and diffed to nothing. All three shape writers now read through `edhaRegionShapes(region)`. **Drive it**: stage a creature ending its turn in Green's difficult terrain, click Expand, then assert on the DOCUMENT that `region._source.shapes[0]` is `1200×1200 @ 2100,4800` — the Region, not just the Drawing — and that a second expand takes it to `1800×1800 @ 1800,4500`.
-- [ ] 🤖 **Pinpoint Charge terrain-follow — the SAME fix's second consumer, never tested (ENGINE-ONLY — ⟳ Sync + F5).** `edhaRecenterTerrain` carried the identical latent no-op: the hazard Drawing followed the surviving target while the Region stayed where it was placed. Put a `followTokenUuid` hazard (Pinpoint Charge) on a living target, move the token, and assert `region._source.shapes[0].x/.y` recentred on the token — plus the negative: a target at 0 HP must leave the Region behind.
+
+*(**Spreading Roots (2bS-4)** and **Pinpoint Charge terrain-follow** — BOTH RETIRED on evidence 2026-09-05,
+bench run 27: the `edhaRegionShapes` shape-write fix works on **both** of its consumers, asserted on the
+REGION `_source`, not on the Drawing.
+· **Spreading Roots** — a Green Draw Mana placement made the same fixture run 26 measured (Region
+`600×600 @ 2400,5100`); Bench Target — Floater ended its turn inside it in a bench combat, the whispered
+offer posted ("Spend 1 Investiture to expand it 10 ft"), and the click took `region._source.shapes[0]` to
+**`1200×1200 @ 2100,4800`** with the Drawing in lockstep and Investiture 4 → 3. A second offer the next round
+took it to **`1800×1800 @ 1800,4500`**, Drawing matching, Investiture → 2. The Region, not just the table's
+picture, now enforces what the card says.
+· **Pinpoint Charge** — a real Set Charge → Pinpoint annotate → Detonate #1 dropped the circle hazard on the
+primary target with `followTokenUuid` set to that token. The NEGATIVE control came first by accident and is
+the stronger half: with the target at **0 HP** the token moved 3000,4500 → 3300,4500 and the Region stayed at
+`x 3150, y 4650` — a downed target leaves the blaze behind. Healed to 20 HP and moved again to 3600,4500, the
+Region's `_source.shapes[0]` recentred to **`x 3750, y 4650`** (the token's new centre) and the visual Drawing
+followed to `3150,4050` (= centre − radius).)*
 
 *(**Natural Recovery (2bS-14)** and **Resurgent Growth (2bS-12)** — RETIRED on evidence 2026-09-05,
 bench run 26, out of the old "Green spot-checks" row. Natural Recovery: run 10's "needs an Opportunity,
@@ -2421,64 +2456,53 @@ session-1 cues nobody triggered, the per-bird fix, and the whole playtest-9 wiri
 hand-run ability carries a written no-hook rationale (Combat Training, Pack Tactics, Veil,
 Mutation Upgrade); superseded hand-toggle AEs were removed — the engine does those now.
 
-- [ ] 🤖 **Cover Their Retreat** — drop a Raider within 20 ft of Roek: his card offers the
-      shove-behind-cover roll-back. Drop one beyond 20 ft: no card.
-- [ ] 🤖 **Press the Line rider** — on a HIT: the allied-Raider-reaction-shot card; on a miss or
-      graze-to-zero: nothing.
-- [ ] 🤖 **Morale cues** — Roek crossing 1/3 HP (Not a Bandit), the Line-Caller dropping (The
-      Line Falls Apart), a Mistheron bloodied (Starving, Not Fanatic): one whispered card each,
-      at the crossing only (no re-fire while it stays below).
-- [ ] 🤖 **Per-bird seemings (fixed 07-16b)** — TWO Mistherons on scene (copy-paste the token so
-      they share a world actor — the worst case): each bird raises its OWN seeming; the second
-      cast must NOT clear the first bird's copy; each bird re-casting replaces only its own;
-      Spearing Beak's +1d6 keys to the attacking bird's copy, not its partner's.
-- [ ] 🤖 **Braced expiry — RE-TEST after fix pass D (07-28g; engine-only → ⟟ sync + F5). FOUR cells,
-      and the point is that two of them must DIFFER** — run 20 found Brace immortal, but its stated
-      cause (`braced` missing from `EDHA_TIMED_STATUSES`) was wrong; the real hole was that
-      `edhaApplyTimedStatus` only stamps an expiry when a combat is already RUNNING, and the
-      catch-up pass ignored anything off that allowlist. So drive the out-of-combat order
-      deliberately. **(a) THE BUG'S OWN CASE:** with NO combat, use a Trooper's **Brace** → the
-      shield icon lands and the effect now carries `flags.edha-content.timedExpire`. THEN start a
-      combat with the Trooper in it and step turns: at the first turn change the flag becomes
-      `expireAfter`, and by the end of the Trooper's next turn the icon is GONE with a
-      "💢 … ends (end of its turn)" card. **(b) POSITIVE CONTROL:** use Brace INSIDE a running
-      combat → `expireAfter` is stamped immediately (no `timedExpire` at all) and it still expires
-      on schedule. **(c) NEGATIVE CONTROL, the one that matters:** the Frostbinder's token must
-      STILL wear `braced` permanently — step at least four rounds; Predictive Ward carries no
-      `timedExpire` and must never acquire an `expireAfter`. **(d) SECOND NEGATIVE CONTROL:** a
-      `slowed` in the same combat must expire exactly as before (the allowlist path is untouched).
-      Report all four; (a) and (c) reading the same is the failure the old row could not detect.
-      - ✅ **2026-07-28h (bench run 21) — (a), (c) and (d) ALL PASS and (a) ≠ (c). (b) is
-        BLOCKED.** Staged one bench combat holding my own unlinked Trooper + Frostbinder tokens
-        and Bench — Heroic, created `active:false` and stepped with `combat.update({round,turn})`
-        so Ben's combat was never touched.
-        · **(a) THE BUG'S OWN CASE — PASSES.** Brace used with the Trooper in no running combat
-        stamped **no** `expireAfter` and instead recorded the intent
-        `timedExpire {expire:"owner", ownerUuid:…}`. At the first turn change the catch-up pass
-        consumed it — intent **null**, `expireAfter {round:1, turn:2}` (the Trooper's own index,
-        owner-relative) — and at (2,0) the icon was **GONE** with
-        "💢 Braced (attacks at disadvantage) on Trooper ends (end of its turn)."
-        · **(c) NEGATIVE CONTROL — PASSES, and reads DIFFERENTLY from (a).** The Frostbinder's
-        Predictive Ward `braced` (a transfer AE that never went through `edhaApplyTimedStatus`)
-        survived **5 rounds / 14 turn-changes** with `expireAfter` **null** and `timedExpire`
-        **null** throughout — it never acquired a stamp.
-        · **(d) SECOND NEGATIVE CONTROL — PASSES.** A hand-toggled `slowed` on the same
-        Frostbinder stamped `{round:1, turn:1}` off the allowlist path and expired on schedule at
-        (1,2): "💢 Slowed on Frostbinder ends (end of its turn)." Allowlist path untouched.
-        · **Confirmed on the engine as the row requires: `braced` is NOT in
-        `EDHA_TIMED_STATUSES`** (L608 = weakened, immobilized, slowed, noactions, noreactions).
-      - ⛔ **(b) BLOCKED — blocker named; row stays 🤖.** (b) wants Brace used INSIDE a running
-        combat so the stamp lands immediately. `edhaApplyTimedStatus` reads **`game.combat`**,
-        which resolves to the scene's **ACTIVE** combat — Ben's `BerbNeuXp4iKduef`. Reaching that
-        branch needs the Brace user to be a combatant in **Ben's** combat, and the bench may
-        neither add a token to it nor activate a combat of its own (both are standing rules). A
-        bench combat created `active:false` cannot satisfy it: `game.combat` still returned
-        `BerbNeuXp4iKduef` throughout. Needs Ben, or a rule change.
-- [ ] 🤖 **Cinder Coat splash-back** — melee-hit a Cinderhound: the attacker automatically takes
-      1d4 Energy (card names the hound). A ranged hit from across the room must NOT splash.
-- [ ] 🤖 **Bite sheds light** — a bitten creature's token starts glowing (the Kindle light rider).
-- [ ] 🤖 **Stalker Fade cue** — damage a Stalker: the graze-or-miss reminder card (once/round).
-- [ ] 🤖 **Devastating Blow cue** — on ITS hit: the margin-Prone reminder; on other attacks: none.
+✅ **THE SESSION-1 + PLAYTEST-9 CUES ARE BENCHED — nine rows RETIRED on evidence 2026-09-05, bench run 27**
+(fresh pack imports into the "Edha Bench" folder, all driven through `applyDamage` with an explicit
+`edhaSource`/`originatingItem`; every cue's once-per-round budget was stepped past with a real round change
+before each control, so a silent budget could not be mistaken for a silent rule).
+- **Cover Their Retreat** — BOTH cells. The Raider **5 ft** from Roek dropped → "⏰ Cover Their Retreat
+  (…Roek): Reaction, 1 Focus — Roek may shove them behind cover instead…", `trigRound` stamped that round.
+  The Raider **35 ft** away dropped in the next round → **no card**, `trigRound` unchanged. ⚠️ Note for the
+  next run: `createEmbeddedDocuments("Token", …)` returns the created docs **out of input order**, so a
+  name→id map built by index is silently CROSSED; this run read the map back off the token NAMES and the
+  first, contradictory result inverted itself.
+- **Press the Line rider** — on **its own** hit: "⏰ Press the Line (…Roek): One allied Raider may
+  immediately make a crossbow shot as a Reaction. (hit Bench Target — Adjacent B.)". Zero-damage
+  (miss / graze-to-zero) with the same item: **nothing**. A real hit with a DIFFERENT weapon (Issued Blade):
+  **nothing** — the rule is item-specific because `Press the Line` carries `damage.formula 1d8+2` +
+  `activation skill_test`, which is exactly what `edhaOnHitIsItemSpecific` reads.
+- **Morale cues** — all three, each **once**, each **whispered** (GM-only recipients). Roek at 10/28 HP (above
+  the 0.34 line = 9.52) → no card; the next write to 8 HP → "⏰ Not a Bandit (…): Below 1/3 HP — Roek calls
+  the break himself"; a further write **in a later round while still below** → **no re-fire**. Line-Caller
+  12 → 0 → "⏰ The Line Falls Apart … the volleys stop". Mistheron 20 → 8 → "⏰ Starving, Not Fanatic:
+  Bloodied — it breaks off into the fog".
+- **Per-bird seemings (fixed 07-16b)** — all FOUR cells, two unlinked Mistheron tokens off ONE world actor
+  (`birdA.actor.id === birdB.actor.id`, the worst case). Bird A cast → copy stamped
+  `phantomOf`/`phantomCasterTok` = **Bird A's token uuid**. Bird B cast → **Bird A's copy survived**; two
+  phantoms coexisted, each stamped to its own bird. Bird A re-cast → **only Bird A's** copy was replaced
+  (old token id gone, new one stamped to Bird A) and Bird B's was untouched. Spearing Beak keyed to the
+  ATTACKING bird: rolled through `rollDamage` with the hero targeted, Bird A (whose copy had fooled that hero,
+  Perception 5 vs DC 14) got `1d8 + 2 + (1d6[Spearing Beak])[Spearing Beak]`, Bird B against the **same** hero
+  got `1d8 + 2 + 0`.
+- **Braced expiry — the whole four-cell row, including (b), which run 21 recorded BLOCKED.** ⚠️ **The blocker
+  was wrong and is now disproved**: `game.combat` is the client's **VIEWED** combat (run 1's lesson), so a
+  bench combat created `active: false` + `ui.combat.initialize({combat})` **is** `game.combat` — Ben's combat
+  is never touched and no token is ever added to it. Brace used by a bench Trooper on its own turn inside
+  that running combat stamped `expireAfter {round: 25, turn: 2}` **immediately** with **no** `timedExpire`
+  intent at all, survived its own turn, and expired at the next turn change with "💢 Braced (attacks at
+  disadvantage) on BENCH Trooper ends (end of its turn)." (a)/(c)/(d) stand from run 21.
+- **Cinder Coat splash-back** — melee (5 ft): "🔥 Cinder Coat: Bench — Heroic takes **2** energy splash for
+  striking BENCH Cinderhound in melee", HP 4 → 2, and the card names the hound. From **45 ft** the same
+  damage to the hound produced **no** Cinder Coat card and the far attacker's HP was unchanged (1 → 1).
+- **Bite sheds light** — the bitten token's light went from `dim 0 / bright 0 / color null / animation null`
+  to **`dim 20, bright 10, color #ff7a1a, animation flame`** — the Kindle rider's `lightRadiusFt: 20`.
+- **Stalker Fade cue** — first damage → "⏰ Fade (BENCH Stalker): Reaction, 1 Investiture — if that was a
+  GRAZE, Fade: Concealment until the end of its next turn"; a second damage **in the same round** → nothing
+  (`trigRound` unchanged).
+- **Devastating Blow cue** — on **its own** hit: "⏰ Devastating Blow (BENCH Stonebound Captain): Devastating
+  Blow landed — if the attack total exceeded the target's Physical defense by 5+…". The same Captain hitting
+  with **Poleaxe**: nothing.
+
 
 *(**Ruling wanted: Combat Training's garbled source** — moved to `EDHA_RULINGS.md` **R-29** on
 2026-07-27w. The cheatsheet sentence reads "turn one of its own **grazes into a graze**"; whether
@@ -2498,30 +2522,21 @@ applied by itself and was named in chat ("reduced by 1 — Shield Wall", calc "5
 retaliate PROMPT posted by itself from the damage — one per adjacent ring-mate — with the click
 running White vs Spiritual through the contest core and dealing "3 spirit" on the success.
 Retired; evidence in the 07-26k delta.)*
-- [ ] 🤖 **2bAB-8 — Stitchmother — Adaptive Mutation + Reknit Form** — target a thrall, use Mutation; then use Reknit Form → Mutation posts the two-graft chooser (+2 keen / 2-vital venom, no third option) and the bonuses ride the thrall's Slam. Reknit posts the injury picker; the buttons charge NOTHING extra (her card's flat 1 Inv + 1 Focus already paid).
-      - ✅ **2026-07-28f (bench run 20) — the Adaptive Mutation HALF PASSES in full.** Chooser card
-        offered **exactly two** grafts (Bone Spurs / Venom Glands — **no third option**); picking
-        Bone Spurs wrote `mutation {kind:"boneSpurs", keen:2}` and the bonus **rode the thrall's
-        Slam**: damage `1d6+3 = 7` **+2 keen = 9**, card "🦴 Bone Spurs (Life): +2 keen on the
-        strike", victim 47 → 38 at Deflect 0.
-      - ⚠️ **The Reknit Form half FAILED (run 20) and is FIXED in 07-28g — see the dedicated
-        re-test row below.**
-- [ ] 🤖 **2bAB-9 — Reeve-Owl — Sovereign of Solitude — READ THE PACK BEFORE CONCLUDING ANYTHING
-      (revised 07-28g; NO code or data change)** — run 20 reported `rules = 0, effects = 0` and
-      called it an authoring gap. **The repo disagrees and was checked line by line:**
-      `data/adversaries.json` carries **four** rules on this item (`edha-apply-watch`→`edha-gm-cue`,
-      `use`→`edha-def-test` black-vs-spi, `use`→`edha-triggered-effect` Immobilize,
-      `edha-test-success`→`edha-triggered-effect` 1d6 vital), every event and handler type
-      registered; they were authored 07-26, the file has not changed since, and the **07-27u deploy
-      rebuilt the adversaries pack** with `validate-adversaries` clean. **Nothing was authored this
-      pass — deliberately, to keep the pack-rebuild list EMPTY.** So: **(a)** read the item straight
-      out of the COMPENDIUM (`game.packs.get("edha-content.edha-adversaries")` → Reeve-Owl → its
-      `Sovereign of Solitude` → count `system.events`) and **(b)** read the same count off a
-      **placed/imported** copy on the canvas, and report BOTH numbers. Pack 4 + placed 0 = a stale
-      placed copy → **⟟ Sync Adversaries from Pack** or re-drag, then retest the mechanic. Pack 0 =
-      a genuine build/deploy gap, and only then is a rebuild owed. **(c)** Once a copy shows 4,
-      run the original test: target the moving Weakened creature, use it → Immobilized lands, Black
-      vs Spiritual auto-resolves, a success rolls 1d6 vital.
+
+*(**2bAB-8 — Stitchmother — Adaptive Mutation + Reknit Form** — RETIRED WHOLE 2026-09-05, bench run 27. The
+Adaptive Mutation half passed at run 20 (two grafts, no third option, +2 keen riding the thrall's Slam). The
+Reknit Form half — the run-20 fail, fixed in 07-28g's falsy-zero pass — now passes on a fresh pack import:
+targeting a creature carrying an injury, the use posted "🩹 Reknit Form — remove an injury from Bench Target —
+Adjacent B (**0 Inv temporary · 0 Inv permanent**)" with a button reading "Bench Test Injury (temporary)
+(**−0 Investiture**)"; the click removed the injury and charged **nothing** — Investiture 9 → 9, Focus 8 → 8,
+and the confirmation card read "removed … (−0 Investiture)". Her flat activation cost had already been taken
+at use.)*
+
+*(**2bAB-9 — Reeve-Owl — Sovereign of Solitude** — RETIRED 2026-09-05, bench run 27; see the White-section
+note for the full evidence. All three cells: **(a)** the COMPENDIUM document reads **4** rules, **(b)** a
+FRESH import reads **4** (so run 20's "0" was the pre-fix `{}` collapse, not a stale placed copy and not a
+build gap), **(c)** the mechanic runs — Immobilized lands on fail AND on success, Black vs Spiritual
+auto-resolves through the contest core, and a success rolled 1d6 → 4 vital.)*
 
 ## Still unbenched from the manual re-litigation (2026-07-16c)
 
@@ -2534,6 +2549,12 @@ one** — put an explicit `senses` on a block, rebuild, and open its sheet — n
 - [ ] 🤖 **Veil auto-toggle (Stalker)** — Stalker standing in darkness: the Veil marker enables
       itself + a GM whisper; walk it into light: the marker releases. Toggle it ON manually in
       light (cover): the engine leaves it alone.
+      - ⛔ **BLOCKED on the Playtest Map — re-measured at bench run 27 (2026-09-05), confirming run
+        26.** The scene's `environment.darknessLevel` is **0** and `environment.globalLight.enabled`
+        is **true**, so **no square on it is ever unlit** and the Stalker's `edha-dark-veil` rule can
+        never see darkness. This is a fixture problem, not an engine one — the row stays 🤖 and the
+        drivable shape is a **bench-created scene** with darkness, which the standing rules
+        (never activate/deactivate a scene) permit as long as it is only ever *viewed*.
 
 ---
 
