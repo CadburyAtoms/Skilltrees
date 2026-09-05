@@ -140,7 +140,9 @@ Status: `queued` · `briefed` · `running` · `in-review` · `merged` · `blocke
 | 2 | 15 Pre-commit shim + reinstall | R | sonnet | S | — | merged | #133 |
 | 3 | 16 Build fails loudly on a broken overlay | R | sonnet | S | — | merged | #136 |
 | 4 | 17 Heroic ids into `data/` | R | sonnet | S | — | merged | #137 |
-| 5 | 20 One gate list, Windows-clean gates | R | sonnet | M | — | queued | |
+| 5 | 26 Bench PCs get normal vision (R-2) | R | sonnet | S | R-2 ✓ | queued | |
+| 6 | 27 Retire the `GM summon relay` row (R-1) | R | sonnet | S | R-1 ✓ | queued | |
+| 7 | 20 One gate list, Windows-clean gates | R | sonnet | M | — | queued | |
 | 6 | 21 Stale-doc sweep | R | sonnet | S | PM-R2 ✓ | queued | |
 | 7 | 18 Overlay name-collision guard | R | opus | S | #16 | queued | |
 | 8 | 19a Handoff reference rewrite | R | opus | L | PM-R1 ✓ | queued | |
@@ -153,6 +155,8 @@ Status: `queued` · `briefed` · `running` · `in-review` · `merged` · `blocke
 | 15 | 14 `userTargets` sites onto the reader | B | opus | S | — | queued | |
 | 16 | 12 `edhaDefBuffGmGate` at the 20 sites | B | opus | M | — | queued | |
 | 17 | 10 Disposition fail-open backlog (76 sites, batched) | B | opus | L | — | queued | |
+| 17b | **28a** Out-of-combat scope: gate watches on an ACTIVE combat (R-4) | B | opus | M | R-4 ✓ | queued | |
+| 17c | **28b** Out-of-combat scope: tag bookkeeping writes (R-4) | B | opus | M | R-4 ✓, 28a | queued | |
 | 18 | 22 Radiant rows + key dialects | R | opus | M | PM-R3 ✓ | queued | |
 | 19 | 4 Engine split into concatenated sources | R | opus | L | #23, #24 | queued | |
 | 20 | 9 Map fork consolidation | H | opus | M | bridge/MST rulings batch | blocked(rulings) | |
@@ -176,4 +180,5 @@ the PM then dispatches one `bench-run` worker (Opus) for the accumulated 🤖 se
 | 2026-09-04 19:45 | PM handoff | fable | — | — | loop stopped: window cap reached (2/2), quiet hours next; `edha-pm-daily` created, first run 2026-09-05 ~07:02; next dispatch is #16 (sonnet, S) | #134 |
 | 2026-09-04 19:30 | Mobile PM board (Ben's request; PM built it, no worker) | fable | ~40 min | — | `scripts/pm-state.js` + `tests/pm-state.test.js` + `docs/pm-board-mobile.html`; artifact published, `pm/state` seeded; skill gained the push/inbox procedure. **Merged 2026-09-05** as PR #135 (`main` at `ac170d0`) — the earlier "Not merged / needs Ben" note in this row was corrected by the 09-05 session | #135 |
 | 2026-09-05 07:05 | #16 Build fails loudly on a broken overlay | sonnet | 10.9 min, 171 turns | 3.1M | merged after review; clean first pass, no trailers, no bounce. PM re-verified the mutation itself (reintroducing `catch { continue; }` → "Missing expected exception"), re-ran all 8 gates locally green, CI green in 28s | #136 |
+| 2026-09-05 08:35 | Phone inbox: R-1, R-2, R-4 answered (PM bookkeeping, no worker) | fable | ~20 min | — | Ben answered three standing rulings from the mobile board. Recorded inline in `EDHA_RULINGS.md` (NOT moved to §K — the doc's own rule is that a ruling is settled only once the thing it decides has changed); filed the consequences as TODO items **26** (R-2 bench vision), **27** (R-1 retire the summon-relay row), **28a/28b** (R-4 out-of-combat scope, split before dispatch). R-4 is lane B and cannot be called done without a bench pass | #138 |
 | 2026-09-05 07:30 | #17 Heroic ids into `data/` | sonnet | 11.6 min, 174 turns | 3.3M | merged after review, no bounce. **The item's premise did not survive measurement**: the map is fully dormant, so shipping content is unchanged everywhere — see PM-D1 for the deploy-class call. PM re-derived the collision count through `buildTrees()` (79/82 confirmed) and found the worker's 3 "non-colliding" names are punctuation variants (`Erudition*`, U+2019 apostrophe, hyphen) of talents that DO exist → all 82 are dormant; PM corrected that paragraph in the delta itself rather than spending a bounce. Snapshot has punctuation drift vs `data/` — noted for any re-dump | #137 |
