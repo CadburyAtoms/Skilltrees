@@ -219,6 +219,12 @@ anti-probing behaviour, the honest fix is the other direction: **don't refund on
 the cost and the use agree. Either way the two should not disagree. Engine-only, one line, no pack
 rebuild. Applies to every `edhaDialogPick` caller that stamps before prompting.
 *(From bench run 25, found while re-testing fix pass 1's picker-cancel row.)*
+> **ANSWERED 2026-09-05 16:30 (Ben, in chat, the PM's batch): "Stamp only after a successful pick."**
+> Cancel costs nothing and burns nothing; cost and use agree. The fix goes at the primitive — every
+> `edhaDialogPick` caller that stamps `sceneOnce` before prompting moves the stamp to after the pick
+> resolves — so it is one change, not one per talent. Engine-only, no pack rebuild. **Live engine
+> behaviour → lane B**, bench-verified before it counts. Filed as **TODO_REPO_HYGIENE #36**; moves
+> to §K when #36 lands.
 
 ---
 
