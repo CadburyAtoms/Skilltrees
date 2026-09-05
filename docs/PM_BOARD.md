@@ -6,12 +6,12 @@ cost, and the decisions the PM is waiting on.** The operating procedure is
 `.claude/skills/project-manager/` (PM) and `.claude/skills/work-item/` (workers). A fresh PM
 session resumes from this file alone.
 
-> **PM session of record: the NEW session Ben opens after 14:00 on 2026-09-05 (Saturday)** — Ben:
-> *"Stop after this turn and I'll continue the project manager weekend sprint in a new session."*
-> The 09:13 session stopped its loop at 14:00 with two workers in flight (see the handoff row at the
-> end of the run log). Any other session — including the 07:02 `edha-pm-daily` one, which cannot be
-> messaged — must stop on waking: dispatch nothing, write nothing. The new session rewrites this line
-> on its first wake.
+> **PM session of record: the NEXT session Ben opens at his PC** (Ben, 2026-09-05 ~14:40: *"I'll be
+> back at my PC soon and can start another 'real' Project Manager session then"*). The 14:30 cloud
+> session merged #151, #150 and #139, filed item 32, and **stopped at ~15:00 with nothing running** —
+> no workers, no wakeups, no routines. Any other session — including the 07:02 `edha-pm-daily` one,
+> which cannot be messaged — must stop on waking: dispatch nothing, write nothing. The new session
+> rewrites this line on its first wake.
 
 ## Operating rules (the short form — the skill carries the long form)
 
@@ -150,9 +150,6 @@ above, to change the schedule):** Mon-Thu 21:00-07:00; Fri 21:00-Mon 07:00 Ameri
   bench → fix → deploy → re-bench chain moving, not to run workers in parallel. Weekly maximum 24.
 - **Monday 07:00 handoff line reports the week's PM total** from `python scripts/pm-usage.py` so
   Ben can compare it with his weekly meter and re-cut the ceilings.
-- ⚠️ **The mobile board's meters still model the OLD quiet hours** (`scripts/pm-state.js` parses one
-  daily quiet range and falls back to 23:00–07:00). Until **TODO #31** lands, read the schedule
-  from this file, not from the phone's "quiet hours" line.
 
 ## Rulings
 
@@ -192,11 +189,11 @@ Status: `queued` · `briefed` · `running` · `in-review` · `merged` · `blocke
 | 2 | 15 Pre-commit shim + reinstall | R | sonnet | S | — | merged | #133 |
 | 3 | 16 Build fails loudly on a broken overlay | R | sonnet | S | — | merged | #136 |
 | 4 | 17 Heroic ids into `data/` | R | sonnet | S | — | merged | #137 |
-| 5 | **Weekend bench marathon** — run 1 (hygiene 34 🤖 + engine-wide 4): 10 retired, 2 FAIL, 1 new defect → merged #142. Fix pass 1 (3 defects, 3 pinned tests) → merged #143, deployed 11:50 by hash. **Run 2 = re-test the 3 fixes, then hygiene part 2 (26 🤖 left there)**; run 3 = leyline scatter (11) + Heroic (1, not 54 — the 10:45 count matched the emoji, not open rows). Run 2 (#145): the 3 fixes re-tested PASS, 11 retired, 0 FAIL, 4 partial, 2 BLOCKED (need zero GM clients), **R-60 CLOSED**, new ruling R-69. Run 3 (#147): 11 PASS, 1 FAIL (Spreading Roots — `edhaGrowTerrain` mutates DataModel clones), 1 data anomaly (Reeve-Owl builds with empty `events`), veil half BLOCKED (scene has global light). **Per-tree bench block exhausted**; next block = `# Adversary ability wiring` (12 🤖). Open 🤖 queue 85 → ~55. **Now running: fix pass 2** (the two run-26 defects) | B | opus | L | Foundry window ✓ | running | #142 #143 #145 #147 |
+| 5 | **Weekend bench marathon** — run 1 (hygiene 34 🤖 + engine-wide 4): 10 retired, 2 FAIL, 1 new defect → merged #142. Fix pass 1 (3 defects, 3 pinned tests) → merged #143, deployed 11:50 by hash. **Run 2 = re-test the 3 fixes, then hygiene part 2 (26 🤖 left there)**; run 3 = leyline scatter (11) + Heroic (1, not 54 — the 10:45 count matched the emoji, not open rows). Run 2 (#145): the 3 fixes re-tested PASS, 11 retired, 0 FAIL, 4 partial, 2 BLOCKED (need zero GM clients), **R-60 CLOSED**, new ruling R-69. Run 3 (#147): 11 PASS, 1 FAIL (Spreading Roots — `edhaGrowTerrain` mutates DataModel clones), 1 data anomaly (Reeve-Owl builds with empty `events`), veil half BLOCKED (scene has global light). **Per-tree bench block exhausted**; next block = `# Adversary ability wiring` (12 🤖). Open 🤖 queue 85 → ~55. **Fix pass 2 = PR #151, MERGED 14:44** — DEPLOY OWED: Ben's `deploy-to-foundry.bat` (engine push + adversaries REBUILD); then bench run 4 re-tests Spreading Roots, Pinpoint Charge terrain-follow, Reeve-Owl | B | opus | L | Foundry window ✓ | bench-pending | #142 #143 #145 #147 #151 |
 | 6 | 26 Bench PCs get normal vision (R-2) | R | sonnet | S | R-2 ✓ | queued | |
 | 7 | 27 Retire the `GM summon relay` row (R-1) | R | sonnet | S | R-1 ✓ | queued | |
 | 8 | **30** Rulings close-out R-7/R-19/R-34/R-49 (docs only, cloud-eligible) | R | sonnet | S | R-7/19/34/49 ✓ | queued | |
-| 9 | **31** Mobile board models operating windows, not quiet hours (`pm-state.js` + page + test) — in a worktree, parallel to fix pass 2 under PM-R8 | R | sonnet | S | PM-R7 | running | |
+| 9 | **31** Mobile board models operating windows, not quiet hours (`pm-state.js` + page + test) — in a worktree, parallel to fix pass 2 under PM-R8 | R | sonnet | S | PM-R7 | merged | #150 |
 | 10 | 20 One gate list, Windows-clean gates | R | sonnet | M | — | queued | |
 | 11 | 21 Stale-doc sweep (⚠️ `.claude/worktrees/focused-booth-7259bf` is LIVE as of 09-05 — Ben's deploy-script fix session; not one of the four stale ones) | R | sonnet | S | PM-R2 ✓ | queued | |
 | 12 | 18 Overlay name-collision guard | R | opus | S | #16 | queued | |
@@ -216,9 +213,15 @@ Status: `queued` · `briefed` · `running` · `in-review` · `merged` · `blocke
 | 26 | 22 Radiant rows + key dialects | R | opus | M | PM-R3 ✓ | queued | |
 | 27 | 4 Engine split into concatenated sources | R | opus | L | #23, #24 | queued | |
 | 28 | 9 Map fork consolidation | H | opus | M | bridge/MST rulings batch | blocked(rulings) | |
+| 29 | **32** Move the repo off OneDrive (`docs/REPO_MIGRATION_BRIEF.md`) — one lane-R worker PR first (path literals: `foundry-build.js` DATA, `run-playtest-build.bat`, three prose paths = item 11's first consumer), then Ben's fresh clone (lane H) | R | sonnet | S | #139 #150 #151 ✓ · fold item 11 in | queued | |
 | — | 2 History purge · 3 LICENSE | H | Ben | — | — | Ben-only | |
 
 ## Foundry windows
+
+**⏳ DEPLOY OWED (2026-09-05 14:44, PR #151):** the live engine is still `9575fba2…` (fix pass 1). Fix pass 2's engine
+half (`edhaRegionShapes`) and the Reeve-Owl data fix both wait on Ben's `deploy-to-foundry.bat` (engine push +
+adversaries REBUILD, Foundry closed; the script now carries #139's read-only-clearing step 2). Bench run 4 verifies the
+served hash against `HEAD` before driving anything.
 
 **OPEN — Saturday 2026-09-05 from 09:13** (Ben: "foundry has been updated and is open"). **Deploy
 fact (2026-09-05 11:50, PM push after fix pass 1):** `module-src-sync.js push` → 1 copied; live and repo
@@ -261,3 +264,8 @@ prompt on the way, which he is fixing in his own session in the `focused-booth-7
 | 2026-09-05 12:57 | Bench run 3 = bench run 26 (engine-wide 2 + leyline scatter 12 + hygiene remainder) — `bench-run` | opus | 52 min, 358 turns | 9.5M | merged after review, no bounce, no trailers. Deploy hash-verified (installed + served-normalised). 11 PASS retired (both engine-wide rows, Flashpoint, Living Image, The Seeming, three Green rows, Devoted Conduit, White burst riders, Covenant icon, Probability Cascade); **1 FAIL** Spreading Roots — `edhaGrowTerrain` deep-clones DataModel shape instances so `region.update` diffs to nothing while the Drawing grows (measured by re-running the path live); **1 data anomaly** Reeve-Owl / Sovereign of Solitude builds with `system.events === {}` against four authored rules, stale pack ruled out by six correct siblings; 2 PARTIAL; veil half BLOCKED (Playtest Map has darkness 0 + global light — needs a bench-created scene). Green's stale "needs an Opportunity" blocker struck. **Per-tree `# BENCH —` block exhausted.** World restored: 3 Covenant effects recreated with original ids, final diff empty; roster 0 ⚠; logged out | #147 |
 | 2026-09-05 13:44 | Ben: "I'm authorizing Fable agents and increased usage for weekend sprints. Fable subagents are limited in effort to medium." → **PM-R8** (PM bookkeeping, no worker) | fable | — | — | `fable-worker` agent definition written (user-level, mirrored into the repo); board + skill amended; weekend caps 6/5h, 12/day; one parallel lane-R worktree worker allowed. The Fable agent type is visible only after a restart — this session keeps dispatching Opus/Sonnet | (this PR) |
 | 2026-09-05 14:00 | **PM handoff** (Ben: "Stop after this turn and I'll continue the project manager weekend sprint in a new session") | fable | session ~4h50m, 9.7M weighted so far | — | Loop stopped. **IN FLIGHT at 14:00, both dispatched ~13:55 under PM-R8:** (a) **fix pass 2** — Opus, `test-pass-fixes`, branch `pm/fix-pass-2-run26` (not yet pushed at 13:57; the worker holds the MAIN checkout); (b) **item 31** — Sonnet, `work-item`, in worktree `.claude/worktrees/agent-a100f1efd45d7e319`, branch `pm/31-mobile-board-windows`. **Next session:** `gh pr list` — if their PRs exist, review per the checklist (rebuild `EDHA_DASHBOARD.html` at merge, both touch it); if a branch never appeared, the worker died with the old session → set the row back to `queued` and re-dispatch. Fix pass 2's engine-only half needs the PM's `module-src-sync.js push` + hash verify before bench run 4; its Reeve-Owl half is probably **REBUILD** (Ben's `deploy-to-foundry.bat`) → its row stays BLOCKED-ON-DEPLOY. **Bench run 4** = `# Adversary ability wiring` (12 🤖) per `docs/BENCH_NEXT_RUN.md`; per-tree block is exhausted. After item 31 merges, republish the mobile page to the existing artifact URL. Trailing-5h dispatches at 14:00: 10:52, 11:33, 12:08, 12:57, 13:55, 13:56 = **6 of 6** → next slot 15:52; day-shift 9 of 12. **`fable-worker` became visible in the 09:13 session WITHOUT a restart** (the earlier "restart needed" note was wrong) — usable now. Waiting on Ben, not blocking: **R-69**. Foundry still up at 13:57; Bench logged out by run 26. PM-side lesson: a PM worktree must live at a SHORT path (`C:/tmp/…`) — the scratchpad path + this repo's long filenames exceed MAX_PATH | (this PR) |
+| 2026-09-05 14:30 | **New PM session of record — status wake** (Ben: status report first, then the queue; cloud session) | fable | ~40 min | — (cloud; no transcripts for `pm-usage.py`) | Both 13:55 workers **survived the 14:00 handoff** and opened their PRs at 14:13 (#150) and 14:20 (#151) — a stopped PM loop does not kill background workers. #151 CI green + mergeable (the worker merged main and rebuilt the dashboard itself); #150 conflicts on `EDHA_DASHBOARD.html` only, and GitHub runs no `pull_request` workflow on a conflicting PR, hence 0 check runs; #139 (Ben's deploy-script fix, CI green 13:25) conflicts on the handoff + dashboard. Phone inbox: the PM-R8 note marked seen (already recorded). Wrote `docs/REPO_MIGRATION_BRIEF.md` + TODO **32** (OneDrive → SSD) at Ben's request; the phone board still shows the 14:00 handoff picture until the next push. Trailing-5h cap 6 of 6 until 15:52; day-shift 9 of 12 | (this branch) |
+| 2026-09-05 14:44 | Fix pass 2 (#151) — review + merge (PM, cloud) | fable | — | — | merged after review; diff read with the generated dashboard excluded (engine 72 lines: one source reader `edhaRegionShapes` behind all three Region shape writers; data: one enum value; lint pass 9b derives every closed `choices()` set from the engine — 88 handler types, 137 fields; 13 pinned tests, 563 total). The worker had already merged main and rebuilt the dashboard itself; no trailers, no bounce. **DEPLOY OWED to Ben** (engine + adversaries REBUILD) — a cloud PM cannot push the engine | #151 |
+| 2026-09-05 14:52 | Item 31 (#150) — merge (PM, cloud) | fable | — | — | merged after review. The PR sat with 0 check runs because GitHub runs no `pull_request` workflow on a conflicting PR; the PM merged main in a worktree, regenerated the dashboard, CI green in 28 s on the new head. Stale "OLD quiet hours" board note retired, TODO 31 checked, mobile page republished to the existing artifact | #150 |
+| 2026-09-05 14:56 | Ben's deploy-script fix (#139) — merge (PM, cloud) | fable | — | — | merged after CI green. Needed TWO main merges: the first resolved the handoff (#139's delta placed in date order beneath run 24) and the dashboard; #150 landing in between re-conflicted the dashboard → second merge, rebuild, CI. Live evidence for the "generated dashboard collides on every parallel PR" finding. Ben's next deploy is the live confirmation of step 2 | #139 |
+| 2026-09-05 15:00 | **PM handoff** (Ben: "let me know when there is no agents or work going on… I'll start another real PM session at my PC") | fable | ~30 min PM work | — (cloud) | Loop stopped. **Nothing running**: no worker dispatched this session, no wakeup scheduled, no routine armed, all three PRs merged, all worktrees removed. Open PRs left: **#103 and #93** (July, untouched since 07-28 — Ben's call: close or rebase). **Deploy owed**: #151 → `deploy-to-foundry.bat` with Foundry closed. **Next local session**: verify the deploy by hash, bench run 4 (`# Adversary ability wiring`, 12 🤖) plus the three #151 re-tests, then item 32's path-literal PR (lane R, sonnet, S) as the first repo dispatch. Trailing-5h dispatches at 15:00: 10:52, 11:33, 12:08, 12:57, 13:55, 13:56 = 6 of 6 until 15:52; day-shift 9 of 12 | (this PR) |
