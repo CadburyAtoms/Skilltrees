@@ -928,3 +928,68 @@ confirm the three tokens drive. Pure harness — no engine, no pack, no talent c
 
 **PM:** lane B (needs the live scene to prove) · model sonnet · size S · deps none · verify: the
 script's own before/after output pasted from the live table, and the 🤖 row. TOOLING-only.
+
+---
+
+## 38. [x] The TODO doc is one dashboard section and the pm-state stress cap fails on any new item (2026-09-05, PR #162)
+
+**Why:** Item 36's worker measured it: `scripts/build-dashboard.js`'s `parseRepoHygiene()` folded
+every `## N.` item in this file into ONE dashboard section, `repo-sec0`, which serialised to
+**65 443 bytes**. `tests/pm-state.test.js`'s "the shards stay under the chunk cap" test sharded the
+real dashboard snapshot against a **fixed 64 KiB (65 536 byte) stress cap** — an accident of that
+one section's size at the time the test was written, not a deliberate ceiling. Item 36's worker had
+~93 bytes of headroom inside it; item 36 and 37's own entries used it up, so `shardDashboard` threw
+`alone exceeds` and **every new TODO item failed `tests/run.js`** — including this very entry,
+until the fix landed.
+
+**What to do:** in `parseRepoHygiene()`, emit one section per `## N.` item (title = the item's own
+heading text, `done`/`partial` preserved on the block) plus a leading intro-prose section for the
+text above item 1, instead of one section for the whole doc. Confirm every downstream consumer
+(`renderPane`, `mobileSnapshot()`, the `tab.key + '-sec' + i` id scheme, the `forBen`/`benchQueue`
+mirrors) still works — they were already generic over `tab.sections` arrays. Re-pin the stress
+test off the largest REAL section (assert it stays under a sane ceiling, stress-shard at ~1.5× it)
+instead of the magic 64 KiB constant, so the pass measures the sharder's behaviour under a tight
+cap rather than accidentally capping Ben's docs. Keep the `alone exceeds` throw-on-oversize
+assertion.
+
+**Done when:** a ~1.5 KB addition to this file builds and passes `node tests/run.js` cleanly;
+`node scripts/build-dashboard.js`'s row count is unchanged; the stress test's cap is derived from
+real data, not a fixed number that happens to be close to one section's size.
+
+**PM:** lane R · sonnet · S · deps none · verify: mutation (append ~1.5 KB, show `alone exceeds`
+pre-fix, show it pass post-fix, on both a scratch mutation and the real doc). TOOLING-only, no
+engine, no pack rebuild.
+
+**Done 2026-09-05, PR #162 (TOOLING-only).** `parseRepoHygiene()` now returns one section per item
+(121 sections total, up from 84); real-doc largest section dropped from 65 443 B (`repo-sec0`) to
+28 491 B (now the `world` tab's demographics section). Stress test re-pinned at 1.5× the largest
+real section (~42.7 KiB, 17 chunks) with an added `< 64 KiB` regression assertion on the largest
+section; `DASH_CHUNK_BYTES` sharding unchanged at 4 chunks. Mutation-verified: pre-fix, a ~1.3 KB
+scratch addition failed `tests/run.js` 577/1 with `alone exceeds`; post-fix, the identical addition
+passed 578/0. `build-dashboard.js` row count unchanged at 438 either way. Row ids on the Repo tab
+changed (expected — each item is now its own section); every other tab's ids are untouched.
+
+---
+
+## 39. [ ] `audit.py <tree>` exits 0 on a tree name that does not exist
+
+**Why:** `python .claude/skills/leyline-tree-authoring/audit.py verdannis` prints `verdannis: NO
+FILE` and exits **0** — the deity's data key is `sovereignty`, not the deity's proper name
+`verdannis`, so a misspelt or wrong-key gate invocation passes silently instead of failing the
+commit. `CLAUDE.md`'s iron rule 4 and the `work-item` skill both tell a session to run
+`audit.py <color|deity-name>`, but neither doc lists the actual deity KEYS the script expects, so
+a session has no way to know `verdannis` is wrong without already having read the script's own
+data.
+
+**What to do:** in `audit.py`, make a `NO FILE` result for an unknown tree name exit non-zero and
+print the list of valid keys in the same message (so the failure is self-diagnosing). Add the
+deity KEYS (not just the proper names) to the gate command lists in `CLAUDE.md` (iron rule 4) and
+in `.claude/skills/work-item/SKILL.md`'s gate list, so `audit.py <key>` is copy-pasteable without
+guessing.
+
+**Done when:** `python .claude/skills/leyline-tree-authoring/audit.py verdannis` (or any other
+misspelt/nonexistent name) exits non-zero and lists the valid keys; the deity KEYS appear in the
+gate command lists in `CLAUDE.md` and the `work-item` skill.
+
+**PM:** lane R · sonnet · S · deps none · verify: mutation (run the misspelt name before and after,
+show the exit code change from 0 to non-zero). TOOLING-only, no engine, no pack rebuild.
