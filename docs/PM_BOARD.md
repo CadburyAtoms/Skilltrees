@@ -130,6 +130,10 @@ roughly doubles a dispatch. Items 17 and 18 both demand parity-class proofs; bud
 at most 2 dispatches per 5-hour window, at most 1 of them Opus (trailing window); the PM wakes on worker
 completion, not on a timer, with a 30-minute fallback; hard stop the moment Ben reports a usage
 warning. **The old quiet hours (23:00–07:00) are gone — nights are now PM time.** In their place:
+
+**Windows (machine-readable, PM-R7 — parsed by `scripts/pm-state.js`; edit this line, not the prose
+above, to change the schedule):** Mon-Thu 21:00-07:00; Fri 21:00-Mon 07:00 America/New_York
+
 - **Windows:** dispatch only inside the operating windows above (weeknights 21:00–07:00, the whole
   weekend Fri 21:00 → Mon 07:00). Cloud routines obey the same windows.
 - **Per-shift ceilings (PM-R7, amended by Ben 2026-09-05 10:40 — "bump up the threshold for # of

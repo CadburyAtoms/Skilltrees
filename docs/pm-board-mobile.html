@@ -288,7 +288,11 @@
 
   var state = null;
   try { state = JSON.parse($("pm-state").textContent || "{}"); } catch (e) { state = {}; }
-  if (!state || !state.queue) state = { queue: [], runLog: [], rulings: [], inbox: [], workers: [], dispatches: [], caps: { dispatchesPerWindow: 2, opusPerWindow: 1, windowHours: 5, quietStart: "23:00", quietEnd: "07:00" }, timeZone: "America/New_York", pm: { status: "unknown" }, foundry: {}, source: {} };
+  var DEFAULT_WINDOWS = [
+    { dow: ["Mon", "Tue", "Wed", "Thu"], start: "21:00", end: "07:00", spanDays: 1 },
+    { dow: ["Fri"], start: "21:00", end: "07:00", spanDays: 3 }
+  ];
+  if (!state || !state.queue) state = { queue: [], runLog: [], rulings: [], inbox: [], workers: [], dispatches: [], caps: { dispatchesPerWindow: 2, opusPerWindow: 1, windowHours: 5, windows: DEFAULT_WINDOWS }, timeZone: "America/New_York", pm: { status: "unknown" }, foundry: {}, source: {} };
   var liveDoc = false;   // pm/state arrived from the store
   var dbRef = null;
   var filter = "all";
@@ -327,27 +331,64 @@
     if (m < 1) return "just now"; if (m < 60) return m + "m"; var h = Math.floor(m / 60);
     if (h < 48) return h + "h " + (m % 60) + "m"; return Math.floor(h / 24) + "d";
   }
-  function quietMinutes(hhmm) { var a = hhmm.split(":"); return parseInt(a[0], 10) * 60 + parseInt(a[1], 10); }
-  function isQuiet(t) {
-    var c = state.caps, p = parts(t), m = parseInt(p.hour, 10) * 60 + parseInt(p.minute, 10);
-    var s = quietMinutes(c.quietStart), e = quietMinutes(c.quietEnd);
-    return s > e ? (m >= s || m < e) : (m >= s && m < e);
+  // ---- operating windows (item 31, board ruling PM-R7 — replaces isQuiet/nextQuietEnd; a
+  // weeknight closes and reopens the SAME day, but the weekend is one continuous open span from
+  // Friday night through Monday morning, so this has to work off day-of-week + a calendar span,
+  // not a single wrap-to-next-day range). Mirrors scripts/pm-state.js's inWindow/nextWindowOpen —
+  // same shape, this copy just runs in the browser off `state.caps.windows`.
+  var DOW_ORDER = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  function addDaysYmd(y, mo, d, n) {
+    var dt = new Date(Date.UTC(y, mo - 1, d) + n * 864e5);
+    return { y: dt.getUTCFullYear(), mo: dt.getUTCMonth() + 1, d: dt.getUTCDate() };
   }
-  function nextQuietEnd(t) {
-    var c = state.caps, p = parts(t), e = c.quietEnd.split(":"), m = parseInt(p.hour, 10) * 60 + parseInt(p.minute, 10);
-    var y = +p.year, mo = +p.month, d = +p.day;
-    var todayEnd = wallToInstant(y, mo, d, +e[0], +e[1]);
-    if (m < quietMinutes(c.quietEnd)) return todayEnd;
-    var next = new Date(Date.UTC(y, mo - 1, d) + 864e5); return wallToInstant(next.getUTCFullYear(), next.getUTCMonth() + 1, next.getUTCDate(), +e[0], +e[1]);
+  function dowOfYmd(y, mo, d) {
+    var noon = wallToInstant(y, mo, d, 12, 0); // noon, not midnight — clear of any DST transition at 00:00
+    return DOW_ORDER.indexOf(parts(noon).weekday);
   }
+  /** Every window occurrence whose start day falls within `[today-daysBack, today+daysFwd]`, as
+   * `{ start, end }` epoch-ms pairs. */
+  function windowOccurrences(now, daysBack, daysFwd) {
+    var p = parts(now), y = +p.year, mo = +p.month, d = +p.day, out = [];
+    var windows = (state.caps && state.caps.windows) || DEFAULT_WINDOWS;
+    for (var off = -daysBack; off <= daysFwd; off++) {
+      var cand = addDaysYmd(y, mo, d, off), wd = DOW_ORDER[dowOfYmd(cand.y, cand.mo, cand.d)];
+      for (var i = 0; i < windows.length; i++) {
+        var wnd = windows[i];
+        if (wnd.dow.indexOf(wd) === -1) continue;
+        var sh = wnd.start.split(":"), eh = wnd.end.split(":");
+        var start = wallToInstant(cand.y, cand.mo, cand.d, +sh[0], +sh[1]);
+        var e = addDaysYmd(cand.y, cand.mo, cand.d, wnd.spanDays || 0);
+        var end = wallToInstant(e.y, e.mo, e.d, +eh[0], +eh[1]);
+        out.push({ start: start, end: end });
+      }
+    }
+    return out;
+  }
+  /** Is `now` inside an operating window? `{ open, changeAt }` — `changeAt` (epoch ms) is when the
+   * open window closes, else null (use nextWindowOpen for when it reopens). */
+  function inWindow(now) {
+    var occ = windowOccurrences(now, 7, 0), until = null, i;
+    for (i = 0; i < occ.length; i++) if (occ[i].start <= now && now < occ[i].end) until = until === null ? occ[i].end : Math.max(until, occ[i].end);
+    return until === null ? { open: false, changeAt: null } : { open: true, changeAt: until };
+  }
+  /** Epoch ms of the next window that opens strictly after `now` (every entry recurs at least
+   * weekly, so 8 days forward always finds one), or null. */
+  function nextWindowOpen(now) {
+    var occ = windowOccurrences(now, 0, 8), best = null, i;
+    for (i = 0; i < occ.length; i++) if (occ[i].start > now && (best === null || occ[i].start < best)) best = occ[i].start;
+    return best;
+  }
+  function fmtDowTime(t) { if (t == null) return "—"; var p = parts(t); return p.weekday + " " + p.hour + ":" + p.minute; }
   function windowFacts(now) {
     var c = state.caps, H = c.windowHours * 3600e3;
     var inWin = (state.dispatches || []).filter(function (d) { var a = Date.parse(d.at); return !isNaN(a) && a <= now && now - a < H; });
     var used = inWin.length, opus = inWin.filter(function (d) { return d.model === "opus"; }).length;
     var why = [], slot = now;
     if (used >= c.dispatchesPerWindow) { slot = Math.min.apply(null, inWin.map(function (d) { return Date.parse(d.at); })) + H; why.push("window frees " + fmtWhen(slot, now)); }
-    if (isQuiet(slot)) { slot = nextQuietEnd(slot); why.push("quiet hours until " + fmtWhen(slot, now)); }
-    return { inWin: inWin, used: used, opus: opus, slot: slot, why: why, quietNow: isQuiet(now) };
+    var slotWin = inWindow(slot);
+    if (!slotWin.open) { slot = nextWindowOpen(slot); why.push("PM window closed until " + fmtDowTime(slot)); }
+    var nowWin = inWindow(now);
+    return { inWin: inWin, used: used, opus: opus, slot: slot, why: why, open: nowWin.open, changeAt: nowWin.changeAt, nextOpenAt: nowWin.open ? null : nextWindowOpen(now) };
   }
 
   // ---- renderers ----
@@ -372,7 +413,7 @@
     var stLabel = { awake: "PM awake", waiting: "PM waiting", stopped: "PM stopped", unknown: "PM state unknown" }[pm.status] || pm.status;
     var text = pm.note || "";
     if (!text) {
-      if (pm.status === "stopped") text = "Loop handed off; the daily session picks up at " + esc(state.caps.quietEnd) + ".";
+      if (pm.status === "stopped") { var hw = inWindow(now); text = "Loop handed off; the next session starts " + fmtWhen(hw.open ? nextWindowOpen(hw.changeAt) : nextWindowOpen(now), now) + "."; }
       else if (pm.status === "waiting" && pm.nextWakeAt) text = "Asleep until " + fmtWhen(pm.nextWakeAt, now) + ".";
       else if (pm.status === "unknown") text = "The board carries no live PM overlay; this is the board as last committed.";
     }
@@ -384,7 +425,7 @@
 
     var ws = state.workers || [];
     if (!ws.length) {
-      var reason = wf.used >= state.caps.dispatchesPerWindow ? "dispatch cap reached (" + wf.used + " of " + state.caps.dispatchesPerWindow + " in the last " + state.caps.windowHours + "h)" : wf.quietNow ? "quiet hours" : "nothing dispatched yet";
+      var reason = wf.used >= state.caps.dispatchesPerWindow ? "dispatch cap reached (" + wf.used + " of " + state.caps.dispatchesPerWindow + " in the last " + state.caps.windowHours + "h)" : !wf.open ? "PM window closed" : "nothing dispatched yet";
       var next = (state.queue || []).filter(function (q) { return q.status === "queued"; })[0];
       h.push('<div class="empty"><strong>No worker running.</strong> ' + esc(reason) + '. Next slot ' + esc(fmtWhen(wf.slot, now)) + (next ? '; next up <span class="mono">#' + esc(next.item) + '</span> ' + esc(next.title) + ' (' + esc(next.model || "?") + ', ' + esc(next.size || "?") + ')' : "") + ".</div>");
     }
@@ -413,7 +454,7 @@
     h.push(meter("Dispatches", wf.used, c.dispatchesPerWindow, models));
     h.push(meter("Opus", wf.opus, c.opusPerWindow, wf.inWin.filter(function (d) { return d.model === "opus"; }).map(function () { return "opus"; })));
     $("meters").innerHTML = h.join("");
-    $("budget-sub").textContent = wf.quietNow ? "quiet hours now" : "quiet " + c.quietStart + "–" + c.quietEnd;
+    $("budget-sub").textContent = wf.open ? "window open until " + fmtTime(wf.changeAt) : "PM window closed until " + fmtDowTime(wf.nextOpenAt);
 
     var canNow = wf.slot <= now;
     $("slot").innerHTML = '<div class="k">Next dispatch possible</div><div class="v">' + (canNow ? "Now" : esc(fmtWhen(wf.slot, now))) + '</div>' + (wf.why.length ? '<div class="why">' + esc(wf.why.join(" → ")) + "</div>" : "") +
