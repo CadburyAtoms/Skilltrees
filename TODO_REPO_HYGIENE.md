@@ -591,3 +591,66 @@ measure what each worker dispatch cost, and a repeatable procedure for the PM an
 **Done when:** a fresh PM session can resume from the board alone, and the dashboard shows it.
 
 **PM:** lane R · model sonnet for the script + dashboard tab, PM writes the skills · size M · deps none.
+
+---
+
+## 26. [ ] Bench PCs get a normal sight range (ruling R-2)
+
+**Why:** `scripts/bench-setup-console.js` builds the bench PCs with a **10 ft** sight range, so a
+player client renders almost nothing — it already caused a near-false-PASS at bench run 13. Ben
+answered **R-2 on 2026-09-05: yes, give them normal vision.**
+
+**What to do:** raise the bench PCs' sight to a normal range in `scripts/bench-setup-console.js`.
+**Do NOT touch the adversary 10 ft** — R-2 says explicitly that is a deliberate design dial and
+stays a ⚑ row ("Adversary sight range — does 10 ft feel wrong? Say a number"). Add a 🤖 checklist
+row to re-verify a player client renders the map at the next bench run.
+
+**Done when:** bench PCs are created with normal vision, the adversary dial is provably untouched
+(diff shows one changed value), and a 🤖 row exists for the next bench run.
+
+**PM:** lane R (edit) with a 🤖 verification row · model sonnet · size S · deps R-2 ✓ · verify: diff + the 🤖 row.
+
+---
+
+## 27. [ ] Retire the `GM summon relay` checklist row (ruling R-1)
+
+**Why:** Ben answered **R-1 on 2026-09-05: yes, the PLAYER role keeps `ACTOR_CREATE`.** By that
+ruling's own terms the `summon-actor` **relay branch is dead code at Ben's table** — run 13's
+player-cast Construct worked but never used the relay — and the checklist's `GM summon relay` row
+**can never pass as written**.
+
+**What to do:** retire that checklist row, recording *why* (the permission is kept by ruling, so the
+relay is unreachable at this table) rather than deleting it silently. **Do not delete the relay
+code**: R-1 decided the permission, not the code's fate, and a world that revokes `ACTOR_CREATE`
+would need the branch. Instead document it in the engine's tree-section header / `ENGINE_INDEX.md`
+as reachable only when `ACTOR_CREATE` is revoked, so a future reader does not "clean up" live code.
+
+**Done when:** the row is retired with its reason, the relay branch is documented as conditionally
+dead rather than removed, and R-1 moves to `EDHA_RULINGS.md` §K citing the PR.
+
+**PM:** lane R · model sonnet · size S · deps R-1 ✓ · verify: doc diff; no engine behaviour change.
+
+---
+
+## 28. [ ] Out-of-combat scope: gate scene/turn watches, tag bookkeeping writes (ruling R-4 — THE BIG ONE)
+
+**Why:** Ben answered **R-4 on 2026-09-05: "go with your recommendations"** — apply the recommended
+default. Today, out of combat: any focus **decrease** counts as a spend (including Ben's own GM
+bookkeeping edits); every rule-owner on the scene watches everything; an adversary's own ability cost
+is taxed by enemy watches; per-round ledgers **never reset**; "Restrained until your next turn" never
+expires. Every run of both bench marathons saw some face of this. It retires a *family* of symptoms.
+
+**What to do — as TWO PRs, not one** (they fail differently and must be pinned separately):
+- **28a** — gate scene/turn-keyed watches on an **ACTIVE combat containing the owner**. Risk to pin
+  against: wrongly silencing a legitimate out-of-combat rule.
+- **28b** — **tag engine bookkeeping writes** so a GM edit is not read as a spend. Risk to pin
+  against: wrongly classifying a real spend as bookkeeping.
+
+**Do NOT fold in R-5..R-8.** They are separate rulings, still open; R-8 is explicitly flagged as
+overlapping R-4 and must stay its own decision.
+
+**Done when:** both halves are merged with pinned regressions in `tests/`, the symptom family above
+is re-tested at a bench run (🤖 rows, not ⚑), and R-4 moves to §K citing both PRs. **This is live
+engine behaviour: it is not settled until the bench confirms it.**
+
+**PM:** lane B · model opus · size L — **split into 28a and 28b before dispatch** · deps R-4 ✓ · verify: pinned regressions + a bench pass. ENGINE-ONLY (F5), no pack rebuild expected.

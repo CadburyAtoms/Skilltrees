@@ -25,6 +25,13 @@ that was waiting on it. A ruling is not done until the thing it decides has actu
 ## A. Permissions & world settings
 
 **R-1. Should the PLAYER role keep `ACTOR_CREATE`?**
+> **ANSWERED 2026-09-05 (Ben, via the mobile board inbox): YES — keep the permission.**
+> Consequence, per this ruling's own text: the `summon-actor` **relay branch is dead code at Ben's
+> table**, and the checklist's `GM summon relay` row can never pass as written → **retire that row**.
+> The relay code itself is NOT being deleted on this answer (the ruling decided the permission, not
+> the code's fate; another world could revoke it). Filed as **TODO_REPO_HYGIENE #27**. Moves to §K
+> when that lands — a ruling is not settled until the thing it decides has changed.
+
 It has it in your world, which makes the `summon-actor` **relay branch dead code at your table** —
 run 13's player-cast Construct worked perfectly but never used the relay. This is the only thing
 blocking the checklist's `GM summon relay` row, and that row can never pass as written until you
@@ -32,6 +39,11 @@ answer: revoke the permission and the relay becomes reachable (the row becomes �
 relay is dead code and the row should be retired. *(From marathon 3A-1; blocks a checklist row.)*
 
 **R-2. Should `scripts/bench-setup-console.js` give bench PCs a normal sight range?**
+> **ANSWERED 2026-09-05 (Ben, via the mobile board inbox): YES — give them normal vision.**
+> Matches the recommendation. Consequence: raise the bench PCs' 10 ft sight in
+> `scripts/bench-setup-console.js`. Filed as **TODO_REPO_HYGIENE #26**. The **adversary** 10 ft is
+> explicitly NOT touched — it stays a design dial and a ⚑ row, exactly as this ruling says.
+
 They carry **10 ft**, which makes a player client render almost nothing — it already caused a
 near-false-PASS at run 13. *Recommended: yes, give them normal vision.* Distinct from the adversary
 10 ft, which is a deliberate design dial and stays a ⚑ checklist row ("Adversary sight range — does
@@ -51,6 +63,18 @@ watches; per-round ledgers **never reset**; "Restrained until your next turn" ne
 *Recommended: gate scene/turn-keyed watches on an ACTIVE combat containing the owner, and tag engine
 bookkeeping writes so GM edits do not read as spends.* This one decision retires a family of
 symptoms rather than one row. *(3B-A.)*
+> **ANSWERED 2026-09-05 (Ben, via the mobile board inbox): "go with your recommendations"** — i.e.
+> **apply the recommended default above, both halves of it**: (a) gate scene/turn-keyed watches on
+> an ACTIVE combat containing the owner, and (b) tag engine bookkeeping writes so GM edits are not
+> read as spends. Filed as **TODO_REPO_HYGIENE #28** (lane B, Opus — this changes live engine
+> behaviour and must be bench-verified before it counts as settled).
+> **Scope note recorded by the PM at answer time:** this is the widest live-behaviour change in the
+> current backlog. It should land in the two halves above as separate PRs, each with its own
+> regression pinned, because (a) and (b) fail differently — (a) can wrongly silence a legitimate
+> out-of-combat rule, (b) can wrongly classify a real spend as bookkeeping. R-5..R-8 all overlap
+> this; **do not fold them in** — they are separate rulings still open, and R-8 in particular is
+> explicitly flagged as overlapping R-4.
+
 
 **R-5. Does Fault Line's line spare allies?** The card says "each character"; the engine catches
 enemies only. The same question applies to **every `kind: line` zone**. *(3B-B.)*
