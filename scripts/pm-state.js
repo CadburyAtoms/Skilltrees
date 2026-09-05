@@ -164,7 +164,10 @@ function parseQueue(rows) {
     const pos = dashOrNull(col(r, "#"));
     return {
       pos: pos === null ? null : +pos,
-      item: im ? im[1] : itemCell,
+      // A row whose cell carries no item number (a campaign row like "Weekend bench marathon — …")
+      // has NO id: emitting the whole cell as `item` made the page render a 900-character
+      // monospace `#id` that could not wrap (2026-09-05, Ben's screenshot).
+      item: im ? im[1] : null,
       title: im ? im[2] : itemCell,
       lane: dashOrNull(col(r, "lane")),
       model: (dashOrNull(col(r, "model")) || "").toLowerCase() || null,
