@@ -24,9 +24,17 @@ page is stale: push state again.
 ## Hard rules
 
 1. **Workers are `Agent(model: "sonnet" | "opus")`, always with `model` passed explicitly.** Never
-   `"fable"`. Never leave `model` unset.
+   leave `model` unset. **Fable workers exist only on weekend sprints (PM-R8, Ben 2026-09-05) and
+   only as `Agent(subagent_type: "fable-worker")`** — the definition in `.claude/agents/fable-worker.md`
+   pins `model: fable` and `effort: medium`, which is the whole point of Ben's authorization. Never
+   `Agent(model: "fable")` on a generic agent type: that inherits YOUR effort, not medium. Use it where
+   Opus was queued for size-L engine-semantics work; `bench-run` / `test-pass-fixes` stay Opus. (A
+   new agent type is visible only after a Claude Code restart.)
 2. **One worker at a time.** Two only when both are lane R, docs-only, and touch disjoint files —
-   and then only with `isolation: "worktree"`, because **a local worker shares this checkout**: it
+   and then only with `isolation: "worktree"` — **or, on a weekend sprint (PM-R8), one bench-loop
+   worker in the main checkout plus ONE lane-R worker in a worktree on files the bench never
+   touches** (never the checklist, handoff, runbook, or next-run file; the generated dashboard may
+   collide and you rebuild it at merge). Why the caution at all: **a local worker shares this checkout**: it
    runs `git checkout -b` in the same working tree you are sitting in. While a worker runs, the PM
    touches nothing in the repo (any edit lands in the worker's branch), and board bookkeeping
    waits until the worker has reported.
@@ -269,10 +277,11 @@ re-armed with the next brief.
 - Caps: **2 dispatches per trailing 5 hours, at most 1 Opus; hard stop on a usage warning**
   (Max 20x, confirmed 2026-09-04). Quiet hours were replaced on 2026-09-05 by the **operating
   windows** above (PM-R7): dispatch only inside a window, cloud lane included.
-- **Per-shift ceilings** (PM-R7 default, awaiting Ben's veto): a weeknight shift dispatches **at
-  most 2**; a weekend day-shift (07:00→07:00) **at most 4, at most 2 Opus**. Weekly maximum 18 —
-  the "save compute for the week" half of Ben's instruction, made countable. Count the shift's
-  dispatches in the run log before every dispatch, exactly like the trailing-five-hour count.
+- **Per-shift ceilings** (PM-R7/R8 defaults, Ben may set other numbers): a weeknight shift dispatches
+  **at most 2** under the 2-per-5h cap; on the **weekend** (Fri 21:00 → Mon 07:00) the trailing-5h
+  cap is **6 of any model** and a day-shift **at most 12** (Ben, 09-05: "increased usage for weekend
+  sprints"). The bench loop is serial regardless — one Bench slot. Count the shift's dispatches in
+  the run log before every dispatch, exactly like the trailing-five-hour count.
 - Measure, do not guess: `scripts/pm-usage.py` (item 25) reads the transcripts and prints weighted
   usage per session and subagent (cache read ×0.1, cache write ×2, output ×5). Log the number.
 - Your own cost is dominated by re-reading context; keep wakes rare and reviews decisive.
