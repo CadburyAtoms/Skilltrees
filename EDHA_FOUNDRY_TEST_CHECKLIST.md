@@ -447,19 +447,20 @@ already unreachable on Ben's install.** `edhaFindInjuryTable` matches `/injur/i`
 `cosmere-rpg.tables` pack ships **"Injury Effects"** and **"Injury Duration"**, so the pack table wins
 long before the built-in fallback. The row's real question — does a WORLD table outrank that — is
 answered yes, because world tables are searched first. Evidence in the delta.)*
-- [ ] 🤖 **Formula bar** — any advantage roll reads "2d20kh + 6" (spaced, no stray ")"). If garbling
-      recurs, note whether the roll dialog's Temporary Bonus field had anything typed in it.
-      *(2026-07-27o, bench run 12: the FACTUAL half is clean and the garble did not reproduce —
-      Withering Ray rolled at advantage read exactly `2d20kh + 5 + 1d8[Predatory Patience]`, spaced,
-      no stray ")". The dedicated Withering Ray row is retired; this one stays only for the
-      look-at-it-yourself half.)*
-      ⛔ **Narrowed 2026-07-27v: NOTHING MECHANICAL IS OPEN HERE.** The chat-formula half is closed on
-      the quoted string above. What is left is exactly one thing — **look at a formula bar yourself and
-      say whether it reads right** — plus the standing instruction to note the roll dialog's Temporary
-      Bonus field if the garble ever recurs.
-- [ ] 🤖 **Flame Surge / burst cards** — Detonate: button reads "Detonated ✓" and stays disabled after
-      F5 / re-login; re-clicking is impossible. Cancel reads "Cancelled — refunded ✓". Old cards from
-      before this fix still reset on refresh (only messages stamped from now on persist).
+*(**Formula bar** and **Flame Surge / burst cards** — BOTH RETIRED on evidence 2026-09-05, bench run 26.
+**Formula bar**: Bench — Red's advantage roll (armed by Flashpoint, no Temporary Bonus typed — the field
+read `value=""`) rendered `.dice-formula` as exactly `"2d20kh + 5"` in the chat DOM, and the Roll's own
+`formula` was `2d20kh + 5` — spaced, no stray ")". ⚠️ One cosmetic observation kept, NOT a fail: the roll
+DIALOG's own `.roll-config .formula` preview span reads the BASE `1d20 + 5` while the die control is
+already classed `advantage`; it read `1d20 + 5` at `none` too, so the span appears never to reflect the
+adv/dis state. That is the system's own widget, and a synthetic click could not toggle it to prove the
+contrast — recorded as an observation for Ben's eye, not filed as a defect.
+**Flame Surge / burst cards**: Detonate stamped the card "Detonated ✓" with **both** buttons `disabled`
+and `flags.edha-content.cardResolved = {label:"Detonated ✓"}`; a second cast Cancelled read
+"Cancelled — refunded ✓" with Investiture refunded 3 → 1 → 3 and the template cleaned up; and a **real F5**
+(full page reload, re-joined as Bench) brought all three stamped cards back still disabled with their
+labels intact — Detonate, Cancel, and Flashpoint's "Flashpoint fired ✓". Re-clicking is impossible.)*
+
 *(**Engine-move collision** — RETIRED on evidence 2026-09-05, bench run 24. The engine half was already
 proven at run 9; the last clause was the manual-drag half, and a hand drag ends in exactly one write — a
 `TokenDocument` x/y update. Driven: `Bench Target — Adjacent B` updated onto `Bench Target — Adjacent A`'s
@@ -511,9 +512,33 @@ root cause except 2bR-17.
 > fall/hazard damage offers NOTHING) all passed and are retired — evidence in the 07-26k delta.
 > All 7 restored rules in the other five trees were benched the same run and printed real numbers.
 
-- [ ] 🤖 **Devoted Conduit (2bR-10)** — have a SECOND White character redirect damage onto an ally in your Attunement Range (Shared Burden's redirect is the trigger) → you reduce that redirected damage by **half [Tier][Die] (1–8)**, on a card naming Devoted Conduit. It deliberately never reduces the redirect the owner took **themselves** — the card reads "when an ally… takes damage intended for another creature", so it needs two White characters to observe. The other four White spot-checks (Pillar of Order · Concordant Presence · Voice of Authority · Collective Resolve) passed 07-26i and are retired. *(2026-07-26k: the shared evaluator is proven — its three sibling rules on the same call site all rolled real numbers this run; only the two-White staging remains, and the bench roster has one White PC → Ben or a two-client run.)*
-- [ ] 🤖 **Burst-only: the 13 damage riders that lost their bonus inside an AoE** — `edha-damage-rider` was fine on ordinary hits but went through the broken evaluator on the **`edha-burst` detonate** path, so these lost their rider **only when the damage came from a burst**: Life's **Prognosis**, and the bite/strike riders on Mistheron · Stillback · Wasting-Eater Stillback · Wrongwake · Wasting-Eater Wrongwake · Keelshadow · The False Spring · Brandram · Hazewyrm Adult · Hazewyrm Elder · The Doubled · The Doubled Elder. Needs the owner to deal damage through an AoE specifically — awkward to stage — which makes it a heavy bench row, not a Ben row.
-- [ ] 🤖 **The other five restored adversary abilities (same 07-26j fix)** — run each once on a FRESH pack import: **Reeve-Owl** Sovereign of Solitude (black) · **Rootling Swarm** Grasping Vines + Territorial Instinct (green) · **Tussock-Sow** Drive the Prey (green). Each must now ROLL its named skill and print a `N vs <DEF> M — SUCCESS/FAIL` card instead of silently charging its cost. (Surecat's Redirect Momentum is 2bF-17 in the Blue section.) *(2026-07-26k: rebuild confirmed live — all five read `skill_test` with their skills on a fresh pack read. ⚠️ The Fellstag's **Herding Antlers** was MISSED by the same fix — see the Green spot-check row.)*
+*(**Devoted Conduit (2bR-10)** — RETIRED on evidence 2026-09-05, bench run 26, as a **positive/negative
+pair**, using a second White PC staged for the purpose (`Bench — White II`, a full duplicate of Bench — White
+in the bench folder, deleted at cleanup). ✅ POSITIVE: Bench Ally — Two took 20 impact adjacent to White II;
+White II's Shared Burden offer (`data-edha-owner = Actor.kvmRPRG17KaMOg4L`, amount 7) was clicked, and the
+engine posted "🛡️ **Bench — White II's damage reduced by 2 — Devoted Conduit (Bench — White)**" — the owner
+reduced the SECOND White's redirect, on a card naming Devoted Conduit, with 2 inside the 1–8 =
+`floor(2d8/2)` band. ✅ NEGATIVE (the "never reduces the redirect the owner took themselves" clause):
+Bench — Blue was damaged adjacent to Bench — White, White took the redirect **itself**, and the only
+reduction card was "Devoted Conduit (**Bench — White II**)" — White's own Devoted Conduit did not fire on
+White's own redirect.)*
+*(**Burst-only: the 13 damage riders that lost their bonus inside an AoE** — RETIRED on evidence
+2026-09-05, bench run 26. The shared code path is `edhaBurstDetonate` → `edhaRiderParts(item, actor)`, and it
+was driven **twice on real bursts**: Bench — Red's Flame Surge printed "= 15 (2d8) + 5 (red) + **5 (Kindle)**
+→ 25 energy", and — the decisive one — a FRESH pack import of **Hazewyrm Elder**, which is one of the 13 named
+and is the only one of them that owns an AoE, cast its OWN Flame Surge and printed
+"= 9 (2d8) + 3 (red) + **3 (Kindle)** → 15 energy". Both riders are `edha-damage-rider` on
+`edha-pre-deal-damage` — exactly the shape the row is about.
+⚠️ **Why the other twelve cannot be driven as written, read off `data/adversaries.json` (labelled: this half
+is a data read, not a measurement).** "The owner deals damage through an AoE" is structurally impossible for
+eleven of them — Mistheron · Stillback · Wasting-Eater Stillback · Wrongwake · Wasting-Eater Wrongwake ·
+Keelshadow · The False Spring · Brandram · Hazewyrm Adult · The Doubled · The Doubled Elder own **no
+`edha-burst` talent at all**; being *caught in* someone else's burst never consults their riders. And Life's
+**Prognosis** is `appliesTo: "heal"`, while the only heal-burst in the data is White's Mending Aura and no
+actor owns both — so it cannot be staged either. Mistheron's rider was separately proven ALIVE this run on an
+ordinary hit: Spearing Beak rolled `1d8 + 2 + (1d6[Spearing Beak])[Spearing Beak]` = 10 against a fooled
+target.)*
+- [ ] 🤖 **The other five restored adversary abilities (same 07-26j fix) — NARROWED 2026-09-05, bench run 26: THREE PASS, ONE IS A FAIL WITH A DATA ROOT CAUSE.** ✅ **Rootling Swarm / Grasping Vines** rolled `1d20 + 1` = 10 and printed "Grasping Vines: **10 vs Bench — Green's PHY 14 — FAIL**". ✅ **Rootling Swarm / Territorial Instinct** rolled `1d20 + 1` = 15, printed "**15 vs Bench — Green's SUR 12 — SUCCESS**" and applied **Immobilized** (asserted on the document). ✅ **Tussock-Sow / Drive the Prey** rolled `1d20 + 2` = 21, printed "**21 vs Bench — Green's SUR 12 — SUCCESS**" and applied **Slowed**. All three on FRESH pack imports into the bench folder. ❌ **Reeve-Owl / Sovereign of Solitude — the roll half passes, the contest half is DEAD, and the cause is the BUILT PACK, not the engine.** It rolled its named skill (`1d20 + 2` = 6, black) — the 07-26j `activation.skill` fix is live — but posted **no `N vs <DEF> M` card and applied nothing**, because the pack item's `system.events` is `{}`. Read off the compendium document itself (not the imported copy): `edha-content.edha-adversaries` → Reeve-Owl → Sovereign of Solitude has **0 rules**, while `data/adversaries.json` authors **4** (`edha-gm-cue`, `edha-def-test` black vs Spiritual, `edha-triggered-effect` Immobilized, `edha-triggered-effect` vital on success). **This is NOT a stale pack**: every sibling item on the SAME actor built its rules correctly (The Bailiff's Eye 1, Sapping Hex 1, Predatory Patience 2, Cruel Step 1, The Verdict Is Not Appetite 1, Black Leyline Attunement 1), and all of Rootling Swarm / Tussock-Sow / Mistheron / The Doubled Elder / Briar-Gone Grove match their authored counts item-for-item. Exactly one item loses its four rules in the build. → **test-pass-fixes** (build/validation, not engine). This row stays 🤖 only to re-run Sovereign of Solitude once that is fixed.
 
 ---
 
@@ -529,55 +554,36 @@ defense, one without). No pack rebuild pending. Priority: 2bJ-1 (first prompt-pi
 walls), 2bP-1, 2bP-2 (the trap row), 2bP-3, 2bP-4, 2bJ-5, 2bF-2, 2bF-4, 2bF-5, 2bF-6, 2bI-12,
 2bAA-7, and the Blue spot-check row. Evidence per row in the 07-26i delta.
 
-- [ ] 🤖 **2bAA-6 — Living Image** — open it → **Events tab**; then start your turn with an illusion up → TWO rules where the tab was empty: `edha-illusion-upkeep` (config) + `edha-note` (use). The turn-start prompt still whispers with a one-click pay. **Edit `costPer` to 2 and the button must then charge 2** — that is the whole point of the conversion.
-      *(2026-07-26i: NOT RUN — "the turn-start upkeep needs a live combat turn change, which the
-      cosmere activation model does not expose from the console".* ⚠️ **THAT BLOCKER IS STALE and is
-      struck, 2026-07-27v** — a turn boundary IS drivable: bench run 9's own method was
-      `combat.update({turn})` (recorded on the Knowledge section's Accumulate note), and **2bL-10 drove
-      rounds 1 and 2** to prove Bear Witness fires every round. This row is agent-runnable; it was
-      parked on a limit that does not exist.*)
-      ⛔ **RUN 2026-07-28l (bench run 23) — THREE OF FOUR CLAUSES PASS, THE BUTTON IS A HARD FAIL.**
-      ✅ **Events tab**: Living Image carries exactly the two rules the row names — `LivingUpkeep0000`
-      (`edha-illusion-upkeep`, on `edha-watch-rule` = config) + `LivingImgNote000` (`edha-note`, on
-      `use`), read live off the owned item. ✅ **Turn-start prompt**: with a real Holographic Illusion up
-      (`summoner` = Blue, HP 1), Blue's turn start whispered (2 recipients) "🎭 **Living Image**
-      (Bench — Blue) — turn start with 1 illusion(s) up (Holographic Illusion (Bench — Blue)):
-      **1 Investiture per COMPLEX illusion** to maintain…" with a **Pay 1 Investiture** button.
-      ✅ **THE DOCUMENT DRIVES IT — the conversion's whole point**: editing
-      `system.events.LivingUpkeep0000.handler.costPer` from 1 → **2** changed the very next turn-start
-      prompt to "**2 Investiture** per COMPLEX illusion" and the button label to "**Pay 2
-      Investiture**". (Restored to 1.)
-      ❌ **THE BUTTON NEVER CHARGES — every click, every user, silently.** Clicking "Pay 1 Investiture"
-      left Investiture at 4→4 and posted no card; clicking "Pay 2 Investiture" left it at 3→3. A probe
-      listener on the same element fired, so dispatch works — the engine's own handler **throws**:
-      `Edha Content | illusion upkeep failed TypeError: Cannot read properties of null (reading
-      'dataset') at edhaUpkeepInvClick (register-skills.js:6245)`.
-      **ROOT CAUSE (read off the source, not inferred):** `edhaUpkeepInvClick` L6243 reads
-      `ev.currentTarget.dataset.actor` — fine, that is evaluated *before* the `await fromUuid(...)`.
-      The await ends event dispatch, so the browser resets `ev.currentTarget` to **null**, and L6245's
-      `ev.currentTarget.dataset.item` throws. The `try/catch` at L6253 swallows it into a console
-      error, which is why it presents as a silent no-op. **Isolated and confirmed**: re-running the
-      handler's exact logic with the dataset captured *synchronously* charged 1 Investiture (4 → 3) and
-      posted the card, so nothing else in the chain is wrong.
-      **The fix is one line** — `const btn = ev.currentTarget;` before the first await, then read
-      `btn.dataset` — the idiom the codebase already uses at L4272 (`edhaDesignateClick`) and L10424.
-      ⚠️ **Audit the family, do not point-fix**: any handler that reads `ev.currentTarget` after an
-      `await` has the same latent bug. → **test-pass-fixes**.
+*(**2bAA-6 — Living Image** — RETIRED IN FULL on evidence 2026-09-05, bench run 26. The run-23 hard FAIL
+(the Pay button charging nothing, `edhaUpkeepInvClick` reading `ev.currentTarget` after an `await`) is
+**FIXED AND CONFIRMED LIVE** — the engine now captures `const btn = ev.currentTarget, ds = btn.dataset;`
+before the first await. Driven end to end on a real illusion: Blue cast Holographic Illusion (a real summon
+actor, HP 1), a bench combat's turn start whispered "🎭 **Living Image** (Bench — Blue) — turn start with 1
+illusion(s) up … **1 Investiture per COMPLEX illusion**" with a live **Pay 1 Investiture** button, and the
+click charged **3 → 2** and posted "🎭 Living Image: Bench — Blue pays 1 Investiture of upkeep (2 left)."
+with **no console error**. The document-drives-it clause was re-proven the same run: editing
+`system.events.LivingUpkeep0000.handler.costPer` 1 → **2** changed the next prompt to "2 Investiture per
+COMPLEX illusion", relabelled the button "**Pay 2 Investiture**", and the click charged **4 → 2**
+("pays 2 Investiture of upkeep"). `costPer` restored to 1.)*
+
 *(**2bJ-3 — Pattern Recognition** — RETIRED on evidence 2026-07-28l, bench run 23, as a paired
 positive/negative. ⚠️ **The behaviour-change question the row asks is Ben's and is now in
 `EDHA_RULINGS.md` R-57** — should it keep waiting instead of expiring? Evidence in the delta.)*
-- [ ] 🤖 **2bAA-9 — The Seeming — Mistheron AND The Doubled Elder** — use it on each; break the copy → Each adversary ability now carries its OWN `use` rule (⟳ Sync Adversaries / re-drag first). Both must still raise the copy and run the belief sweep, and **the cards must name "The Seeming", not "Phantom Double"**. Spearing Beak's / the Grasp's fooled-target rider must still find the belief ledger.
-      *(2026-07-26i: NOT RUN — same second-client need as 2bAA-8.* ⚠️ **THAT NOTE IS STALE and is
-      struck, 2026-07-27v: 2bAA-8 was driven SOLO at bench run 14** — the second-client label was
-      over-applied, as marathon 2's report §5 records for three separate rows.*)
-      ✅ **THE RAISE AND THE BELIEF SWEEP ARE PROVEN — narrowed 2026-07-27v.** Bench run 13 drove the
-      Cognitive-14 raise and the four-PC Perception belief sweep end to end (the whole Illusion belief
-      loop retired that run, client veil proven in all three directions). ⛔ **What is left is
-      specifically the ADVERSARY copies of this ability** — Mistheron and The Doubled Elder, each on a
-      FRESH pack import — the "cards name **The Seeming**, not Phantom Double" wording, and the
-      fooled-target rider (Spearing Beak / Raking Grasp) finding the belief ledger.
+*(**2bAA-9 — The Seeming (Mistheron AND The Doubled Elder)** — RETIRED IN FULL on evidence 2026-09-05,
+bench run 26, on FRESH pack imports of both adversaries. **Mistheron**: use raised a real copy
+("Mistheron summons Mistheron (Illusion) — HP 1"), the belief sweep ran over three onlookers
+("🌫️ **The Seeming** — belief vs DC 14 … Bench — Red: Perception 11 vs 14 · Bench — Green: 10 vs 14 · sees
+through: Bench Ally — Two: 20 vs 14" → "2 taken in, 1 see through it"), and the ledger on the copy stores
+`phantomSource: "The Seeming"`. The break: 5 keen to the copy posted "🌫️ **The Seeming**: the illusion of …
+is struck and dissipates" + "the illusion breaks — the real one stands plainly seen", and the copy's token
+was deleted. **The Doubled Elder**: identical, its own copy and its own belief sweep (Green fooled 12 vs 14,
+Red saw through 21 vs 14), same break wording. **Every card names "The Seeming" — "Phantom Double" appears
+nowhere.** The fooled-target riders both found the belief ledger: **Spearing Beak** rolled
+`1d8 + 2 + (1d6[Spearing Beak])[Spearing Beak]` = 10 against fooled Bench — Red, and **Raking Grasp** rolled
+`1d10 + 4 + (1d8[Raking Grasp])[Raking Grasp]` = 15.)*
 
 ---
+
 
 # BENCH — Black (leyline)
 
@@ -625,8 +631,13 @@ graph half is verified live) and **R-27** (Battle Fever: the card says "resets a
 turn", the engine rides every test until turn start — which side is canon). Arc Flash, the other
 half of the spot-check row, PASSED at run 1 and retired with it.
 
-- [ ] 🤖 **Flashpoint** — Red burst hits 2+: click the prompt → +1 Investiture AND your next Red test
-      rolls with advantage automatically (pre-selected/fast-forwarded).
+*(**Flashpoint** — RETIRED on evidence 2026-09-05, bench run 26. One Flame Surge detonation caught
+**2** enemies (Bench Target — Adjacent A and B, 12 energy each after their Athletics saves) and fired the
+`edha-multi-hit` prompt. Clicking "Fire Flashpoint": Investiture **2 → 3** ("⚡ Flashpoint — Bench — Red
+regains 1 Investiture") **and** `flags.edha-content.nextTestMod = {mode:"advantage", skill:"red", count:1,
+source:"Flashpoint"}` written to the actor. The very next Red test opened with its die control already
+classed `advantage` — nothing clicked — and rolled **`2d20kh + 5`** = 21, after which the `nextTestMod`
+flag was consumed. Pre-selected AND enforced. The card also stamps "Flashpoint fired ✓" and disables.)*
 
 ---
 
@@ -651,11 +662,30 @@ unchanged), and **Green / Instinct is takeable** (compiled tree: Pack Hunter = r
 talent prereq, Predator's Instinct and Scent the Weak hang off it, column walks to Natural
 Order — the session-0 mutual pair is dead). Evidence per row in the 07-26k delta.
 
-- [ ] 🤖 **2bS-11 — Natural Order — NARROWED 2026-07-26k** — the use half PASSED: 2 Inv spent, the **"Clearsight (veils suppressed nearby)"** marker landed with the explanatory card. Still open: the veil half — a veiled enemy standing in **darkness** in range keeps its auto dark-veil marker DOWN (needs scene darkness + a veil-capable adversary — staging left for a run that owns the darkness question, or Ben), and the combat-end clear.
-- [ ] 🤖 **2bS-1 — Green Leyline Attunement — NARROWED 2026-07-26k** — placement PASSED (click-to-place placed the 10 ft difficult-terrain Region, "Thorn Field rides it"), and the ⚠️ cosmetic drift is confirmed (its own card; the Draw Mana summary prints no Green line). Still open: the out-of-range refusal (not driven this run), plus the range ring + snap feel — screenshot the placement overlay and say whether the ring reads; escalate to ⛑ only if a screenshot cannot settle it.
-- [ ] 🤖 **Green spot-checks (like-for-like) — Mender's ENGINE halves PASSED 2026-07-26m; the DATA halves are BLOCKED-ON-DEPLOY** — bench run 4 retired (1) the ally gate (a HOSTILE fixture taken 32 → 12 HP drew NO offer) and (2) the scene scope (with Green's own copy temporarily removed, The Vivisectionist — owner, no token on the scene — stayed SILENT; its silence was the test). (3) the heal-block passed under 2bW-1. **Still BLOCKED-ON-DEPLOY:** run 4 read the live pack and confirmed the authored green fix has NOT shipped — the rule's `note` is still 228 chars and `rangeColor` is still `""`, so the card prints the long description and an out-of-Attunement ally (~70 ft) still draws an offer. After `foundry-build leyline` + ⟳ Sync Talents, re-check for the engine's tight "<ally> dropped to N/M HP" line and the range refusal. Green's own `oncePerRound` held in run 3 — don't re-prove it. **Herding Antlers on the Fellstag (2bF-10): BLOCKED-ON-DEPLOY, confirmed still dead 2026-07-26m** — a FRESH pack read of the Fellstag shows Herding Antlers with **0 events** and no `activation.skill`; the live pack predates commit `8917cbb`. Re-test only after `foundry-build adversaries` + ⟳ Sync Adversaries + a FRESH re-drag: target a character, use → Green vs Survival through the contest core; success → Slowed + the move-away note. **Still unrun**: Spreading Roots (2bS-4) · Pack Hunter (2bS-6) · Scent the Weak (2bS-7, though its advantage was seen arming incidentally) · Resurgent Growth (2bS-12, seen ticking incidentally in run 4 — "Resurgent Growth: Bench Ally — One regains 7 health" at a round boundary) · Natural Recovery (2bS-14) · Reknit Form (2bS-15). ✅ **BOTH BLOCKED HALVES NOW PASS — bench run 11, 2026-07-27m, on the rebuilt leyline + adversaries packs.** (a) **Mender's card text**: the live rule reads `note: ""` (was 228 chars) and `rangeColor: "green"`, and an ally taken 32 → 12 HP at **15 ft** drew the engine's tight one-liner — "⚡ Mender's Instinct — 1 Investiture · Bench Ally — Two dropped to **12/33 HP** — you may react to heal them." (b) **The green range gate is REAL, with a clean positive/negative pair in the same minute**: an ally at **85 ft** taken through the identical 20-impact `applyDamage` (32 → 12) drew **NO offer at all**, while the 15 ft ally did. (c) **Herding Antlers on a FRESHLY IMPORTED Fellstag PASSES (2bF-10)** — the pack now reads 2 events + `activation.skill: "green"`, and a use on a character rolled `1d20 + 2 = 22` and posted "Herding Antlers: 22 vs Bench Ally — One's **SUR 19** — SUCCESS", applied **Slowed** (asserted on the document) and printed the move-away note. ⛔ ~~The row STAYS only for the six still-unrun Green talents~~ — **THREE of the six PASSED at bench run 14 (2026-07-27r) and are retired**: **Pack Hunter (2bS-6)** — staged Green(9000)/enemy(9300)/ally(9600) all adjacent, use charged 1 Inv (4→3) and posted "🐾 Pack Hunter (Bench — Green): **2 hunter(s)** gain advantage on their next attack against Bench Target — Undefended", with `advAttackNext: "Pack Hunter"` written to **both** the caster and the ally (the card's "you both" half, asserted on two documents) · **Scent the Weak (2bS-7)** — free, posted "🩸 Scent the Weak (Bench — Green): lowest HP in range = **Cragdrake Whelp Pack (1) (6 HP)**. Advantage on your first attack against it this round" and armed `coordRound {"Scent the Weak": {_adv: 1}}`; note it correctly named one of *Ben's* placed tokens rather than my 8-HP fixture — it really does scan Attunement Range for the true minimum · **Reknit Form (2bS-15)** — **both halves**: with no injury on the target it refused pre-cost ("Edha: Bench — Life has no removable injuries.") with Investiture **unchanged at 4**; with a `flesh_wound` injury present it posted the picker card "🩹 Reknit Form — remove an injury from Bench — Life (2 Inv temporary · 3 Inv permanent)" and the click removed the injury item from the ally and charged exactly **4 → 2**.
-⛔ **The row now STAYS only for the THREE that need a live combat turn / an Opportunity**: **Spreading Roots (2bS-4)** (`edha-zone-react {turn-end-in-zone}` — needs a character *ending its turn* in Green's difficult terrain) · **Resurgent Growth (2bS-12)** (`edha-heal-react` — the tick lands at the start of your NEXT turn) · **Natural Recovery (2bS-14)** (costs an **Opportunity**, which run 10 could not force either). All three are turn-boundary/Opportunity staging, not talent doubt.
-- [ ] 🤖 **2bS-3 — Briar-Gone Grove (adversary) — NARROWED 2026-07-26k** — the Grove's Thorn Field (boss → d8) keen rider baking into its engine-placed patches is still to bench. *(The Fellstag half PASSED and is retired: a FRESH pack import's Draw Mana placed its own 5 ft square, "Thorn Hedge rides it", and the hazard tick dealt "2 keen … (Thorn Hedge — Bench Adv — Fellstag)" — rival d6 family, its own zone-hazard rule.)*
+- [ ] 🤖 **2bS-11 — Natural Order — RE-NARROWED 2026-09-05, bench run 26: only the VEIL half is left, and it is BLOCKED with the blocker named.** ✅ The use half passed again (2 Inv spent 4 → 2, `clearsight` status + `condclearsight00` effect written to Bench — Green, scene card posted). ✅ **The combat-end clear PASSES**: deleting the bench combat removed `clearsight` from Bench — Green while leaving its unrelated Immobilized/Slowed alone. ⛔ **BLOCKER for the veil half — the Playtest Map can never make a token `unlit`.** `edhaDarkVeilSweep` only raises or suppresses a marker when `edhaPointIlluminated(tok.center)` is FALSE, and the Playtest Map has `environment.darknessLevel === 0` with `environment.globalLight.enabled === true`, so **every square on it is lit**. Driving this needs either a change to Ben's scene config (out of bounds for a bench run) or a bench-created scene. **The fixture is otherwise ready and identified**: the `edha-dark-veil` adversary is the **Stalker** (`effectName: "Veil"`, `edha-content.edha-adversaries` id `l924euoyx3pYFk2T`) — import it fresh, put it on an unlit square within 60 ft of an armed Green, and the positive/negative pair is one flow.
+*(**2bS-1 — Green Leyline Attunement** — RETIRED IN FULL on evidence 2026-09-05, bench run 26. ✅ **The
+out-of-range refusal, the half that was never driven**: with rank-3 Green Attunement Range = 60 ft, a pick at
+**67.5 ft** was refused — "Edha: that point is beyond Attunement Range (60 ft) — terrain not placed." plus the
+card "🌿 Green Leyline Attunement (Bench — Green): terrain NOT placed (out of range)" — and **no Region was
+created**. ✅ **The ring reads**: screenshotted with the picker live at scene scale 0.12 — a single pale
+circle outline centred on the caster's token, clearly separable from the map, with the prompt
+"Click where the 10 ft difficult-terrain square grows … Attunement Range 60 ft" above it. No escalation
+needed. ✅ Placement re-proven in the same minute: an in-range pick created
+`Bench — Green — Difficult Terrain` (rectangle 600×600 px = 10 ft) with `Thorn Field rides it`, and the ring
+template cleaned itself up. ⚠️ **Harness note, NOT an engine double-fire**: an earlier attempt produced TWO
+identical refusals from ONE click. Cause was mine — a `javascript_tool` call that TIMED OUT kept running in
+the page and fired Draw Mana a second time, arming a second `edhaPickPoint` listener on `#board`. A clean
+single run produced exactly one prompt and one refusal.)*
+- [ ] 🤖 **Green spot-checks — NARROWED 2026-09-05, bench run 26 to ONE talent, and it is a FAIL.** ✅ **Natural Recovery (2bS-14) PASSES** — run 10's "needs an Opportunity, cannot be forced" blocker is **STALE and struck**: the rule's Opportunity cost is honour-system (`costNote: "spend an Opportunity"`), so a plain Green heal is the whole trigger. Verdant Mend into a Weakened Bench Ally — One posted "🍃 **Natural Recovery** — spend an Opportunity to remove a condition from Bench Ally — One: **Weakened**" with **exactly one button, for the one condition the target actually had**; the click removed Weakened from the actor (statuses AND effects both empty afterwards), posted "removed Weakened from Bench Ally — One (spend an Opportunity)" and disabled the button "✓ cleansed". ✅ **Resurgent Growth (2bS-12) PASSES** — the same heal wrote `flags.edha-content.regrowth = [{targetUuid: …Ally — One}]`, and at the start of Green's NEXT turn (bench combat, `combat.update({round:3, turn:0})`) the engine posted "🌿 **Resurgent Growth** (Bench — Green): Bench Ally — One regains **7** health" — HP 32 → 39, and 7 = `@tier 2 + green mod 5` exactly; the queue flag was consumed. ❌ **Spreading Roots (2bS-4) — THE OFFER WORKS, THE TERRAIN DOES NOT GROW.** Turn-boundary staging works: with Bench — Blue standing in Green's difficult terrain, ending its turn whispered "🌱 **Spreading Roots** — a creature ended its turn in your difficult terrain. Spend 1 Investiture to expand it 10 ft." and the click charged **4 → 3**, posted "the terrain expands 10 ft (−1 Investiture)" and disabled the button "Terrain expanded". **But the Region's geometry never changed** — `shapes` and `_source.shapes` both stayed `x 2400, y 5100, 600×600` — while the player-visible **Drawing DID grow** to `x 2100, y 4800, 1200×1200`. So the table sees a 20 ft patch and the engine still enforces 10 ft, and the Investiture is spent for nothing mechanical. **ROOT CAUSE PROVEN BY MUTATION, not inferred**: `edhaGrowTerrain` does `const shapes = foundry.utils.deepClone(region.shapes ?? []);` then mutates `r0.x/.y/.width/.height` and calls `region.update({shapes})`. `region.shapes` is an array of **`RectangleShapeData` DataModel instances** (asserted live: `constructor.name === "RectangleShapeData"`, `instanceof foundry.abstract.DataModel === true`), and mutating a DataModel's accessor does not touch its `_source`, so the update diffs to nothing. Re-running the engine's exact code path in the page left the Region at 600×600; the identical mutation over `region.toObject().shapes` grew it to **1200×1200 at (2100, 4800)** on the next call. The Drawing grows because the very next lines write explicit numbers read off the mutated live model. Fix shape: clone `region.toObject().shapes` (or `region.shapes.map(s => s.toObject())`) — and the **circle branch of the same function has the identical latent bug**, as does any other caller that mutates `deepClone(region.shapes)` in place (⚠️ `edhaGrowTerrainSquareGM` *pushes* a plain object instead, which changes the array length and so is probably safe — verify, don't assume). → **test-pass-fixes**.
+
+*(**2bS-3 — Briar-Gone Grove** — RETIRED on evidence 2026-09-05, bench run 26, on a FRESH pack import.
+The Grove (role `boss`, tier 1) drew Mana and placed its own patch; the Region it created carries the
+`edha-content.hazard` behavior with the **baked** `damageFormula: "floor((1d8) / 2)"`, keen, `sourceName:
+"Thorn Field — Briar-Gone Grove"` — the **boss → d8** die family, `@colorRank` resolving to the role rank
+(ruling 122) and `@tier` to 1. **Control in the same scene**: Bench — Green's own patch baked
+`floor((2d8) / 2)` — same die, different count — so the substitution is genuinely evaluated, not a constant.
+And it TICKS: a token crossing both patches took "🔥 … 4 keen from dangerous terrain (Thorn Field —
+Bench — Green)" and "🔥 … **3 keen** from dangerous terrain (**Thorn Field — Briar-Gone Grove**)".)*
 
 ---
 
@@ -1269,7 +1299,17 @@ every hostile token in range — this run it decree-bound five of Ben's placed p
 (Frostbinder, Stitchmother, three Mutated Thralls) alongside the four bench targets, writing the
 `Edict-Bound` status to them. Same family as the standing out-of-combat scope characterization (07-26k).
 The run cleared what it applied.
-- [ ] 🤖 **2bL-7 — Covenant — the SHARED icon (needs two Order PCs)** — have two Order characters both covenant the **same** ally, then have one of them break/fizzle theirs → The ally **keeps** the Covenant icon, because the other pact is still live. Getting this wrong strips the second player's marker silently — it is why the rule carries `multiOwner`. **Still open after run 8**: the bench has one Order PC and staging a second would mean granting the whole Order path to another actor mid-run; left for Ben's two-client bench or a run that stages a second Order actor deliberately.
+*(**2bL-7 — Covenant — the SHARED icon** — RETIRED on evidence 2026-09-05, bench run 26, as a
+**positive/negative pair**, by staging TWO extra Order PCs deliberately (`Bench — Order II` and
+`Bench — Order III`, full duplicates in the bench folder with their `edha-content` flags cleared, both
+deleted at cleanup — **Ben's own `Bench — Order` and its pre-existing pact were left alone**). Both
+covenanted the SAME ally (Bench Ally — Two, adjacency gate honoured: an earlier attempt at range was refused
+with "Covenant requires touch … Nothing spent"). The ally then carried the shared `covenant` status
+(`condcovenant0000`) plus one per-owner proximity AE each. ✅ **POSITIVE**: Order II clicked
+"Break the Covenant" — its ledger emptied, its own "Covenant (Bench — Order II)" AE went, the card read
+"Bench — Order II's bond with Bench Ally — Two ends", and **the ally KEPT the `covenant` status**, because
+Order III's pact was still live. That is `multiOwner`. ✅ **NEGATIVE**: Order III then broke its pact and the
+`covenant` status went away. Nothing about a second player's marker was stripped silently.)*
 
 ---
 
@@ -1444,7 +1484,16 @@ paths).
       **Sharp Eye** on a targeted creature and confirm it now rolls — it is no longer deploy-blocked
       (07-27u), so a silent no-op here would be a NEW finding, not the old one. Score this row off
       2bQ-4's result.
-- [ ] 🤖 **Probability Cascade (Blue) — the count-2 half of the 2bO-7 guard, NOT RUN 2026-07-27k** — `edhaNextModClaimOk` (the Pack Hunting double-dip guard) must stay inert for multi-use test-only mods: Probability Cascade is `count: 2`, `appliesTo: "test"` and must still apply to **two separate tests**. Run 10 verified the guard is inert for **count-1** test-only mods (Demonstrative / Shrewd / Overwhelm with Details / Decisive Command all applied normally on skill tests) but could not drive Probability Cascade itself — its chain needs an Opportunity plus 1 Investiture, which cannot be forced on demand. **This is a Blue row, not Heroic** — run it in a Blue pass.
+*(**Probability Cascade (Blue) — the count-2 half of the 2bO-7 guard** — RETIRED on evidence 2026-09-05,
+bench run 26. Run 10's blocker ("needs an Opportunity plus 1 Investiture, cannot be forced") is **stale**:
+the Opportunity is honour-system in the prompt text, and the only real cost is the 1 Investiture the
+activation consumes. Blue used it (Inv 4 → 3), the `edha-prompt-pick` card offered
+"🔮 Probability Cascade — … give this creature disadvantage on its next two tests", and the click wrote
+`nextTestMod = {count: 2, mode: "disadvantage", source: "Probability Cascade"}` to Bench Ally — Two.
+**Three consecutive skill tests on that actor, in one pass**: ① die control pre-classed `disadvantage`,
+rolled `2d20kl + 4` = 14, `count` decremented **2 → 1**; ② still `disadvantage`, `2d20kl + 4` = 12, flag
+consumed; ③ **negative control** — die `none`, `1d20 + 4` = 16. So `edhaNextModClaimOk` stays inert for
+multi-use test-only mods: the count-2 mod applied to two SEPARATE tests and then expired.)*
 *(**2bQ-4 — Sharp Eye** — RETIRED on evidence 2026-07-28l, bench run 23, after two deploy-blocked re-tests and two root causes (the dead `per` skill key, then the `utility` activation). The 07-27n activation fix is live on the owned item — `activation.type: "skill_test"`, `activation.skill: "prc"`, both rules intact — and **both branches drove end to end**. Evidence in the delta.)*
 > **✅ On-hit riders — RETIRED on evidence 2026-07-27i.** One Sidesword hit fired the whole set:
 > **Startling Blow** → "Bench Target — Adjacent A is **Surprised**" (status asserted on the actor) ·
