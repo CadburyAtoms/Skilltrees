@@ -30,7 +30,7 @@ const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 
-const MODROOT = process.env.EDHA_MODROOT || "C:/Users/benhe/AppData/Local/FoundryVTT/Data/modules/edha-content";
+const { MODROOT } = require("./lib/paths.js");
 const REPO_SRC = path.join(__dirname, "..", "module-src");
 const FILES = [
   "module.json",

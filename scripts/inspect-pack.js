@@ -12,8 +12,7 @@
  * Honors EDHA_MODROOT.
  */
 const { readPack } = require("./edha-pack-io.js");
-
-const MODROOT = process.env.EDHA_MODROOT || "C:/Users/benhe/AppData/Local/FoundryVTT/Data/modules/edha-content";
+const { MODROOT } = require("./lib/paths.js");
 const DEFAULT_WANT = {
   "edha-leyline": ["Arc Flash", "Kindle", "Flame Surge", "Afterburn", "Chain Detonation", "Searing Bolt"],
   "edha-deity": ["Set Charge", "Pyre", "Fault Line", "Walking Ruin", "Life Surge", "Vital Diagnosis"],
