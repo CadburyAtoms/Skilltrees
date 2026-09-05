@@ -176,7 +176,7 @@
   .row[data-status="Ben-only"] { border-left-color: var(--accent); }
   .row .pos { grid-row: 1 / span 2; color: var(--faint); font-size: 12.5px; padding-top: 3px; }
   .row .head { display: flex; gap: 8px; align-items: baseline; min-width: 0; }
-  .row .head .id { color: var(--accent-ink); font-weight: 600; font-size: 13px; flex: none; }
+  .row .head .id { color: var(--accent-ink); font-weight: 600; font-size: 13px; flex: none; max-width: 40%; overflow-wrap: anywhere; }
   .row .head .t { font-weight: 500; overflow-wrap: anywhere; }
   .row .tail { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 4px; font-size: 12px; color: var(--dim); }
   .row .tail .deps { margin-left: 2px; }
@@ -493,7 +493,7 @@
     });
     $("rows").innerHTML = shown.map(function (x) {
       return '<div class="row" data-status="' + esc(x.status) + '"><div class="pos num">' + (x.pos == null ? "—" : esc(x.pos)) + '</div>' +
-        '<div class="head"><span class="id mono">#' + esc(x.item) + '</span><span class="t">' + esc(x.title) + '</span></div>' +
+        '<div class="head">' + (x.item ? '<span class="id mono">#' + esc(x.item) + '</span>' : '') + '<span class="t">' + esc(x.title) + '</span></div>' +
         '<div class="tail">' + pill(x.status, x.status + (x.statusDetail ? " · " + x.statusDetail : "")) + (x.lane ? '<span class="chip">' + esc(x.lane) + '</span>' : "") + modelChip(x.model) + (x.size ? '<span class="chip">' + esc(x.size) + '</span>' : "") + (x.deps ? '<span class="deps">needs ' + esc(x.deps) + '</span>' : "") + prLink(x.pr) + '</div></div>';
     }).join("") || '<div class="empty">Nothing in this view.</div>';
   }

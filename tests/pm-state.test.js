@@ -85,6 +85,16 @@ test("pm-state: queue rows parse by header, status splits its parenthetical", ()
   for (const q of s.queue) assert.ok(STATUS_VOCAB.includes(q.status), `unknown status ${q.status}`);
 });
 
+test("pm-state: a queue row with no item number has item null and keeps the whole cell as its title", () => {
+  // Ben's 2026-09-05 screenshot: the marathon row (no TODO number) came out as a 900-character
+  // monospace #id that could not wrap, widening AND lengthening the phone board.
+  const fixture = FIXTURE.replace("| 3 | 19a Handoff reference rewrite |", "| 3 | **Weekend bench marathon** — run 1 done, `# Adversary ability wiring` next |");
+  const s = parseBoard(fixture, { now: NOW, git: GIT });
+  assert.strictEqual(s.queue[2].item, null);
+  assert.strictEqual(s.queue[2].title, "Weekend bench marathon — run 1 done, # Adversary ability wiring next");
+  assert.strictEqual(s.queue[1].item, "16");                    // numbered rows are untouched
+});
+
 test("pm-state: caps, rulings, inbox, foundry come from their own sections", () => {
   const s = parseBoard(FIXTURE, { now: NOW, git: GIT });
   assert.deepStrictEqual(s.caps, {
