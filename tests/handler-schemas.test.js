@@ -18,7 +18,7 @@ const path = require("path");
 const cp = require("child_process");
 
 const REPO = path.resolve(__dirname, "..");
-const { parseHandlerSchemas, topLevelKeys, matchBrace } = require(path.join(REPO, "scripts", "handler-schemas.js"));
+const { parseHandlerSchemas, parseHandlerChoices, topLevelKeys, matchBrace } = require(path.join(REPO, "scripts", "handler-schemas.js"));
 const { readEngineSource } = require("./harness.js");
 const ENGINE = readEngineSource();
 
@@ -134,3 +134,72 @@ for (const [label, name, expect] of [
     assert.ok(line.includes(expect), `expected "${expect}" in:\n  ${line}`);
   });
 }
+
+/* --- lint-refs PASS 9b — handler field VALUES vs the registered choices (2026-09-05) -----------
+ *
+ * The harsher twin of pass 9, and the reason this block exists: an unknown KEY is silently dropped,
+ * but a value outside a StringField's `choices` is REJECTED — and the cosmere system stores rules in
+ * a `CollectionField` whose `_validateType` throws for the whole object on ONE bad entry, so the
+ * item's ENTIRE `system.events` map falls back to its initial `{}` at load. The Reeve-Owl's
+ * Sovereign of Solitude authored four rules and ran zero because `edha-triggered-effect` was given
+ * `target: "target"` — the `edha-cae-grant` vocabulary, not this one (bench run 26). The build was
+ * innocent: the scratch build and Ben's installed pack both carried all four rules.
+ *
+ * The blank case is pinned as a NON-error on purpose: `DataField.clean` catches "may not be a blank
+ * string" and returns the field's initial, so `""` is healed rather than fatal. A gate that cried
+ * about it would be a false positive on live authored data. */
+
+let choicesMap = null;
+test("parseHandlerChoices: every registration parses, and the closed sets are found", () => {
+  choicesMap = parseHandlerChoices(ENGINE);
+  assert.ok(choicesMap.size >= 80, `expected >= 80 handler types, got ${choicesMap.size}`);
+  const total = [...choicesMap.values()].reduce((n, m) => n + m.size, 0);
+  assert.ok(total >= 100, `expected >= 100 choice-constrained fields, got ${total} — parser rotted?`);
+});
+
+test("parseHandlerChoices: the exact field the Reeve-Owl tripped over", () => {
+  assert.ok(choicesMap, "parse did not complete");
+  const t = choicesMap.get("edha-triggered-effect").get("target");
+  assert.deepStrictEqual([...t.choices].sort(), ["list-members", "near-victim", "prompt", "self", "victim"]);
+  assert.strictEqual(t.initial, "prompt");
+  assert.ok(!t.choices.has("target"),
+    '"target" is edha-cae-grant\'s vocabulary — if edha-triggered-effect ever gains it, this ' +
+    "regression is moot and the delta should say so");
+  // The initial is captured because it decides whether a BLANK value is fatal or healed.
+  assert.strictEqual(choicesMap.get("edha-triggered-effect").get("damageType").initial, "energy");
+});
+
+test("parseHandlerChoices rots LOUDLY: an empty choices() and a lost API both throw", () => {
+  assert.throws(() => parseHandlerChoices(
+    `api.registerItemEventHandlerType({ type: "edha-a", config: { schema: {\n` +
+    `  f: new FF.StringField({ choices: choices() }),\n} } });`), /no string literals/);
+  assert.throws(() => parseHandlerChoices("nothing here"), /no registerItemEventHandlerType/);
+});
+
+let errs9b = null;
+test("pass 9b: a legal choice and a healed BLANK pass untouched", () => {
+  const status = (extra) => ({ events: { HdlrChoiceProb00: {
+    id: "HdlrChoiceProb00", description: "fixture", event: "edha-on-hit",
+    handler: { type: "edha-triggered-effect", kind: "status", statusId: "weakened", formula: "0", ...extra },
+  } } });
+  errs9b = fixtureErrors({
+    "Fixture Choice Valid": status({ target: "prompt", damageType: "energy" }),
+    // "" is cleaned back to the field's initial by Foundry, so it must NOT be reported.
+    "Fixture Choice Blank": status({ target: "prompt", damageType: "" }),
+    // The live defect, restored: not a dropped key, a REJECTED value that takes the whole map down.
+    "Fixture Choice Bad": status({ target: "target", damageType: "energy" }),
+  });
+  for (const name of ["Fixture Choice Valid", "Fixture Choice Blank"]) {
+    assert.ok(!errs9b.some((l) => l.includes(name)),
+      `a legal value was reported:\n  ${errs9b.filter((l) => l.includes(name)).join("\n  ")}`);
+  }
+});
+
+test("pass 9b rejects a value the schema does not offer, and says what it costs", () => {
+  assert.ok(errs9b, "the batch run did not complete");
+  const line = errs9b.find((l) => l.includes("Fixture Choice Bad"));
+  assert.ok(line, `the bad value was NOT reported; got:\n  ${errs9b.join("\n  ")}`);
+  assert.ok(line.includes('field "target" is "target"'), `wrong field named in:\n  ${line}`);
+  assert.ok(/falls back to \{\}/.test(line),
+    "the message must say the WHOLE events map dies, or the next reader will treat it as one dead rule");
+});

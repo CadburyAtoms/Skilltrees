@@ -568,6 +568,22 @@ untimed life (the Frostbinder's Predictive Ward is a *permanent* `braced`).
   cell + visual; validates adjacency/coverage), `edhaRemoveTerrain(sceneId,regionId)` (player-safe
   extinguish via the `remove-terrain` relay). `edhaPointInRegion`/`edhaGrowTerrain` handle rects.
   Set Charge hazards stay circles. Pyre spread card whispers GM+owner; the GM click-places.
+- ⚠️ **NEVER mutate `region.shapes` — read it with `edhaRegionShapes(region)` (2026-09-05, bench
+  run 26).** `region.shapes` is an array of shape **DataModel instances**, and
+  `foundry.utils.deepClone` returns any non-plain object **by reference** (helpers.mjs `_deepClone`:
+  "Unsupported advanced objects → return original"). So `deepClone(region.shapes)` → mutate → 
+  `region.update({shapes})` is a **silent no-op**: the update cleans the incoming shapes through
+  `EmbeddedDataField._cast`, which calls `toObject()` (= `deepClone(_source)`), and the edits are
+  thrown away before the diff. No error, no warning, nothing moves. It cost Spreading Roots its
+  whole mechanic — the Region stayed 600×600 while the Drawing (written from explicit numbers read
+  off the mutated live model) grew to 1200×1200, so the table and the engine disagreed.
+  **`edhaRegionShapes(region)`** returns plain `_source` objects that are safe to mutate; all three
+  writers (`edhaGrowTerrain`, `edhaRecenterTerrain`, `edhaGrowTerrainSquareGM`) go through it, and
+  `tests/region-shape-write.test.js` scans the source so a fourth cannot land on the old pattern.
+- **`edhaGrowShapes(shapes, addPx)`** — PURE. Grows a terrain Region's shape array in place: a solid
+  circle gains radius, a solid rectangle grows **symmetrically** (stays centred, stays square);
+  returns `{kind, shape}` for the Drawing sync, or `null` when the Region has neither so the caller
+  writes nothing. Split out of `edhaGrowTerrain` so the geometry is testable without a canvas.
 - **Pyre spread ALIASES (07-20, ruling 98)** — `EDHA_PYRE_SOURCES` (engine const): the spread
   watcher runs any hazard whose `sourceItem` flag is in the list (owner-scoped via
   `sourceOwnerUuid`; the card labels itself by source). A new Pyre-class adaptation = add its
