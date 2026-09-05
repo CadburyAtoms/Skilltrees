@@ -654,3 +654,93 @@ is re-tested at a bench run (🤖 rows, not ⚑), and R-4 moves to §K citing bo
 engine behaviour: it is not settled until the bench confirms it.**
 
 **PM:** lane B · model opus · size L — **split into 28a and 28b before dispatch** · deps R-4 ✓ · verify: pinned regressions + a bench pass. ENGINE-ONLY (F5), no pack rebuild expected.
+
+
+---
+
+## 29. [ ] `kind: line` zones catch every character, allies included (ruling R-5)
+
+**Why:** Ben answered **R-5 on 2026-09-05: "no it does not"** — Fault Line's line does NOT spare
+allies. The card says "each character"; the engine drifts: `edhaFaultLine` (register-skills.js,
+the `edha-zone` kind `"line"` branch) builds its caught set with `edhaEnemyTokensInLine`, so an ally
+standing in the line is neither damaged nor asked for the save. Card-is-spec: the engine changes.
+
+**What to do:** in the `kind: line` path, replace the enemies-only caught set with **every token in
+the line except the caster** (allies, neutrals, foes), and run the whole rider set on that set —
+the damage (with the Construct multiplier), AND the `edhaFoeSkillVsColor` save/`failStatus` rider,
+because the card draws no friend/foe distinction. Do it in the line-zone helper, not per talent, so
+**every** `kind: line` rule inherits it (check whether any rule other than Fault Line uses the kind;
+report the list). Keep the dangerous-terrain Region drop exactly as is — **R-6 (the Region catching
+bystanders scene-wide) is a separate, still-open ruling and must not be decided here.** Pin a
+regression in `tests/` on the caught-set helper: a friendly token inside the line is in the set, the
+caster is not. Add one 🤖 checklist row: an ally in the line takes the damage and rolls the save.
+
+**Done when:** allies in a `kind: line` are hit and saved like foes, the caster is excluded, the
+regression is pinned, the 🤖 row exists, and R-5 moves to `EDHA_RULINGS.md` §K citing the PR.
+**Live engine behaviour: not settled until the bench confirms it.**
+
+**PM:** lane B · model opus · size S · deps R-5 ✓ · verify: pinned regression + a bench pass. ENGINE-ONLY (F5), no pack rebuild.
+
+---
+
+## 30. [ ] Rulings close-out: R-7, R-19, R-34, R-49 confirmed as shipped (docs only)
+
+**Why:** Ben answered four rulings on 2026-09-05 from the mobile board, and each one **confirms the
+behaviour that already ships** — no engine change, no card change. The rulings doc's own rule is
+that a ruling is settled only when its consequence has landed; for these four the consequence is
+docs: retire the rows that framed the behaviour as a defect, and move the rulings to §K.
+
+- **R-7** — Final Decree / Edict's Temp HP rider: "attunement range is correct." The "17 ally(ies)"
+  sweep was the bench fixture's 15 always-armed PCs (that is R-8, still open), not a scoping bug.
+- **R-19** — combat-timing talents grant to adversaries too: "yes." 2bE-9 was already retired on
+  evidence; drop the "say if you would rather it stayed PC-only" hedge wherever the checklist or the
+  handoff repeats it.
+- **R-34** — Walking Ruin's indicator: "needs a region left behind." Read as: no token status icon;
+  the ruin-patch Regions the trail rule already drops ARE the indicator. Consequence: one **🤖** row
+  — arm Walking Ruin, move three squares on a player client, three ruin patches render for the
+  player (not GM-only). A fail there is a Drawing-visibility bug, filed separately, not a new
+  indicator.
+- **R-49** — a creature is an obstacle for push collision damage: "an actor is an obstacle." Matches
+  the recommended default and the shipped behaviour.
+
+**What to do:** in `EDHA_RULINGS.md` move R-7, R-19, R-34, R-49 to §K (Settled) with their answers
+and dates, keeping the inline ANSWERED blocks' substance; in `EDHA_FOUNDRY_TEST_CHECKLIST.md` retire
+or re-word every row that treats these four behaviours as open defects or open questions (grep the
+ruling ids and the talent names; record the ruling id on each retired row), and add the single 🤖
+row for R-34; rebuild the dashboard. **Do not touch R-5, R-6, R-8** — R-5 is item 29, the other two
+are open.
+
+**Done when:** the four rulings are in §K, no checklist row still asks a question these answers
+settle, the R-34 🤖 row exists, `node scripts/build-dashboard.js --check` is clean, and the PR body
+lists every row touched with its ruling id.
+
+**PM:** lane R · model sonnet · size S · deps R-7/R-19/R-34/R-49 ✓ · verify: doc diff listed row by row. DOCS-ONLY. **Cloud-lane eligible** (markdown + generated HTML only).
+
+
+---
+
+## 31. [ ] Mobile board models the operating windows, not a single quiet range (PM-R7)
+
+**Why:** On 2026-09-05 Ben moved the PM to **nights and weekends** (board ruling PM-R7: windows
+Mon–Thu 21:00→07:00 and Fri 21:00→Mon 07:00, America/New_York; weekday daytime is his). The phone
+view cannot show that: `scripts/pm-state.js` `parseCaps` reads ONE daily quiet range from the board
+("between HH:MM and HH:MM") and falls back to `23:00`–`07:00`; `docs/pm-board-mobile.html` computes
+`isQuiet` / `nextQuietEnd` from that pair and prints "quiet hours until …" and "the daily session
+picks up at <quietEnd>". Since the re-cut, every one of those lines is wrong for part of the week.
+
+**What to do:** replace the quiet-range pair with an **operating-window model**: a list of weekly
+windows `{ dow: [...], start: "HH:MM", end: "HH:MM" }` in the board's zone, parsed from a single
+machine-readable line the PM keeps in the board's Budget section (define the line's shape in the
+script's header comment and add that line to `docs/PM_BOARD.md` — the PM's prose must not be the
+parser's input). `inWindow(now)` and `nextWindowOpen(now)` replace `isQuiet` / `nextQuietEnd`; the
+meters say "PM window closed until Mon 21:00" / "window open until 07:00"; the handed-off line names
+the next session's start. Keep `DEFAULT_CAPS` for the dispatch/Opus/hours numbers. Update
+`tests/pm-state.test.js`: the caps assertion, plus cases for a weeknight, a weekday noon, a Saturday
+noon, and the Fri 21:00 → Mon 07:00 continuity. The tracked page keeps its empty snapshot slot.
+
+**Done when:** `node scripts/pm-state.js --out <tmp>` emits the window list and `inWindow` for the
+current time; the page renders the new lines with no reference to "quiet hours"; the test covers the
+four cases above; the PM republishes the page **to the existing artifact URL** after merge (the PM's
+job, not the worker's — note it in the report).
+
+**PM:** lane R · model sonnet · size S · deps PM-R7 · verify: test + `--out` snapshot pasted in the PR. TOOLING-only (the tracked HTML changes, so the PM republishes the artifact).
