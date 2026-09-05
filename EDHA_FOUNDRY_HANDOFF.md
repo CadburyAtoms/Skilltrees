@@ -33,6 +33,58 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-05 DELTA — item 35: the dashboard-on-the-phone branch re-landed over #150/#153 — the mobile board gets its **Snapshot** tiles and **Dashboard** section back. **TOOLING-only** — repo tooling and the phone page; nothing in Foundry changes, no engine edit, no pack rebuild, no ⟳ Sync.
+
+**What was lost, and how.** `claude/in-app-dashboard-snapshot-ecwudz` (3 commits, 2026-09-05
+01:38–01:39, merge-base `ac170d0`, 743 lines / 9 files) put the whole desktop dashboard on Ben's
+phone: Snapshot tiles and a Dashboard section in `docs/pm-board-mobile.html`, `mobileSnapshot()` in
+`scripts/build-dashboard.js`, and `dash/index` + `dash/c<N>` sharding in `scripts/pm-state.js`. It
+was **published to the artifact but never merged**. When the PM republished the page from `main` at
+~14:55 the same day, the phone reverted to a page that had never carried those sections — the work
+existed only in the published artifact, and one routine republish erased it. **The lesson is the
+merge, not the push:** anything the phone shows has to be on `main`, because the publish step reads
+`main`.
+
+**What came from the old branch, unchanged in substance.** The page's `id="snapshot"` and `id="dash"`
+sections plus the `<script id="pm-dashboard">` slot; `build-dashboard.js` becoming a module
+(`buildModel()` / `renderHtml()` / `mobileSnapshot()`, with `itemId()` and `markers()` factored out
+so the HTML and the phone share one row-id recipe — `renderHtml`'s output is byte-identical, which is
+why `--check` says "up to date" with no dashboard diff of its own); `pm-state.js`'s `shardDashboard()`
+/ `buildDashboardShards()` / `writeDashboardDir()`, `injectSlot()` / `injectPage()`, and
+`--dashboard-dir`; the three pinned tests; and the push-procedure paragraphs in the PM skill and
+`scripts/README.md`.
+
+**What was re-based onto `main` rather than taken wholesale.** The branch predated **#150** and
+**#153**, so a plain `git merge` would have quietly reverted both.
+- **#150 (operating windows) survives intact** — `DOW_ORDER`, `DEFAULT_WINDOWS`, `parseWindowEntry`,
+  `parseWindowsSpec`, `inWindow`, `nextWindowOpen`, `caps.windows`, and the page's browser-side copy.
+  The branch still carried `caps.quietStart` / `quietEnd`; those are gone from script and page.
+- **#153 survives** — `item: im ? im[1] : null` in `parseQueue`, the page's guard that omits the
+  `#id` span for a title-only row, and the `.id { max-width: 40% }` wrap.
+- The `--out` stderr line reports **both** the window state and the dashboard stamp; `--help` prints
+  lines 2..38 (the branch's `slice(1, 46)` ran into the middle of `WHAT IT PARSES` once #150's
+  `OPERATING WINDOWS` block landed above it); `module.exports` is the union of both sides.
+- The branch's edits to `docs/PM_BOARD.md`, this handoff, and `EDHA_DASHBOARD.html` were **not**
+  carried over — the board has moved on, this delta is fresh, and the dashboard is regenerated.
+
+**Proven, not asserted.** `node tests/run.js` **570 passed / 0 failed**, all 13 `pm-state` cases
+green together. Mutating `parseQueue` so a title-only row emits its whole cell as `item` fails
+**exactly** the #153 case and nothing else (569/1) — the merge's hardest seam is genuinely held by a
+test, not by luck; reverted. `--dashboard-dir` emits `index` 51 086 B plus `c0` 200 373 / `c1`
+178 148 / `c2` 204 661 / `c3` 325 B — 361 rows, stamp `@c2687c698b`, every document under the store's
+256 KiB cap. The tracked page keeps `{}` in **both** JSON slots. `--inject` turned the 67 611-byte
+tracked page into 736 861 bytes; served locally it rendered 9 Snapshot tiles, 70 Dashboard rows on
+the Bench tab, 34 queue rows, `window open until 07:00` (#150 live) and a title-only queue row with
+no `#id` span (#153 live), with no console errors.
+
+**Owed by the PM after merge, and only by the PM:** republish the page to the **existing** artifact
+URL (`--inject`, `Artifact(file_path: …, url: <URL>)`) and push `dash/index` + `dash/c0..c3` with one
+`write_db` batch from `manifest.json`. Until that runs the phone still shows the pre-merge page.
+Afterwards `claude/in-app-dashboard-snapshot-ecwudz` moves KEEP → SAFE. **Nothing here is 🤖** — no
+Foundry surface is involved, so there are no new checklist rows and no `ENGINE_INDEX.md` entry.
+
+---
+
 ## 2026-09-05 — BENCH RUN 27 (weekend marathon run 4): **fix pass 2 verified GREEN on all three re-tests, and the adversary-ability-wiring section is CLEARED — 14 rows retired, 0 fails, 1 blocker named, 1 new row.** **World restored to the start snapshot EXACTLY (id-diff clean).** DOCS-ONLY — no engine, no data, no pack rebuild owed.
 
 **Served-engine check (the first act of the run, before anything was driven).** Ben's 16:15

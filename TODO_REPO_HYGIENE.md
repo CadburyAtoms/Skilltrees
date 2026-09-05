@@ -840,7 +840,7 @@ Foundry window for the bench · verify: pinned tests + scratch pack build + `val
 
 ---
 
-## 35. [ ] Re-land the dashboard-on-the-phone branch (Snapshot + Dashboard on the mobile board)
+## 35. [x] Re-land the dashboard-on-the-phone branch (Snapshot + Dashboard on the mobile board) (2026-09-05, PR #159)
 
 **Why:** `claude/in-app-dashboard-snapshot-ecwudz` (3 commits, 2026-09-05, 743 lines) added the
 Snapshot tiles and the Dashboard section to `docs/pm-board-mobile.html`, `mobileSnapshot()` to
@@ -859,6 +859,18 @@ pushes `dash/*` + `pm/state` to the artifact. Then the branch moves from KEEP to
 
 **PM:** lane R · model opus (a conflict-heavy merge) · size M · deps none · verify: tests + a `--out`
 snapshot showing the `dash` chunks. **First dispatch of the next session.**
+
+**Done 2026-09-05, PR #159 (TOOLING-only).** Merged as a real merge (both parents), resolved against
+`main` after #150 and #153: `caps.windows` / `inWindow` / `nextWindowOpen` and the `item: null` rule
+both survive, and the branch's `dash/index` + `dash/c<N>` sharding, `mobileSnapshot()`, and the
+page's `id="snapshot"` / `id="dash"` sections land on top of them. The branch's edits to
+`docs/PM_BOARD.md`, `EDHA_FOUNDRY_HANDOFF.md`, and `EDHA_DASHBOARD.html` were **not** carried over.
+`node tests/run.js` 570/0; `--dashboard-dir` emits index 51 086 B + c0..c3 (largest 204 661 B, under
+the store's 256 KiB cap), 361 rows, stamp `@c2687c698b`; the tracked page keeps `{}` in both slots.
+**Still owed by the PM, not by this item:** republish the page to the existing artifact URL
+(`--inject`) and push `dash/index` + the chunks with one `write_db` batch. Until that runs the phone
+still shows the pre-merge page. After it runs, `claude/in-app-dashboard-snapshot-ecwudz` moves
+KEEP → SAFE.
 
 
 ---
