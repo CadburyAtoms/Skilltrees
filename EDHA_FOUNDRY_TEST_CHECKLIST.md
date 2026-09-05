@@ -966,6 +966,22 @@ failed attack fired NOTHING — whenKeys censure,decree respected). Evidence per
 delta. ⚑ carried to the open rows: the tempHp scene-reset residual (see BENCH — Fate) was
 confirmed here on a second tree's sweep.
 
+- [ ] 🤖 **R-69 / #36 — a CANCELLED Final Decree picker must not burn the scene's use.** ENGINE-ONLY
+      (F5 / ⟳ Sync, no pack rebuild). Bench run 25 measured the defect: Cancel refunded the
+      Investiture (4 → 1 → 4, no card, no `decree` flag) but still left `sceneOnce.<itemId> === true`,
+      so the talent was spent for the scene without resolving. The stamp now runs only AFTER a
+      successful pick. Drive **Bench — Sovereignty** and confirm all three legs:
+      **(a) cancel** — use Final Decree, press **Cancel** on the prohibition picker → Investiture
+      returns to its starting value, no card posts, and
+      `actor.getFlag("edha-content", "sceneOnce.<Final Decree's item id>")` is **undefined**
+      (`game.actors.getName("Bench — Sovereignty").flags["edha-content"]?.sceneOnce` in the console);
+      **(b) still usable** — use it again immediately in the same scene: it must NOT be refused,
+      i.e. no *"Edha: Final Decree is once per scene. Nothing spent."*;
+      **(c) pick** — this time choose a prohibition → the Decree card posts, the `decree` flag is
+      written, `sceneOnce.<id> === true`, and a THIRD use in the same scene IS refused pre-cost with
+      the unchanged wording and unchanged Investiture. Regression half: R-61's veto polarity must be
+      untouched — the refusal in (c) still happens BEFORE the system charges.
+
 ---
 
 # BENCH — Death (Morrath, deity)

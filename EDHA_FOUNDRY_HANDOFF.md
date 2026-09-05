@@ -33,6 +33,54 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-05 DELTA — item 36: a **cancelled picker leaves no once-per-scene stamp** (ruling R-69). **ENGINE-ONLY (F5 / ⟳ Sync, no pack rebuild)** — one statement moved in `register-skills.js`; no data, no authored file, no pack content changed.
+
+**The defect, as measured.** Bench run 25 drove Final Decree's prohibition picker and pressed
+**Cancel**: the Investiture refunded correctly (4 → 1 → 4), no card posted and no `decree` flag was
+written — but `sceneOnce.<itemId>` stayed `true`. The scene's only use was spent on a dialog that
+never resolved. Cause: `edhaDecreeUse` stamped on its **first line**, before `edhaPickProhibition`
+opened. That pre-cost placement was deliberate (R-61's "vetoed BEFORE cost" polarity, guarding
+against probing the picker for the enemy list and backing out free), so the two behaviours simply
+disagreed — cost said "nothing happened", the stamp said "your turn is over".
+
+**The ruling.** Ben, 2026-09-05 16:30 (R-69): **"stamp only after a successful pick."** A cancel
+costs nothing and burns nothing. The information leak it guarded against is small — the picker shows
+allies you can already see.
+
+**What changed.** In `edhaDecreeUse` the `if (h.oncePerScene !== false) await edhaStampSceneOnce(...)`
+statement moved from above the picker to **below the `if (!proh)` refund guard**. Nothing else moved:
+the polarity is byte-identical, the refund is untouched, `edhaDialogPick`'s `{edhaPick}` box contract
+is untouched, and **R-61's veto is untouched** — a *repeat* use is still refused BEFORE the system
+charges, in the `edha-decree` `preUseItem` hook. R-69 governs the *cancelled* use only.
+
+**Scope, checked not assumed.** All 9 `edhaStampSceneOnce` call sites and all 5 `edhaDialogPick`
+callers were inspected. Exactly **one** flow stamps before a prompt whose cancel aborts the use:
+`edhaDecreeUse`. The other 7 stamp sites reach no cancellable prompt at all (marker-command
+spring-all, revive, civ transform-summon, self-status arm, detonate-list, die-step) — the only
+prompts downstream of a stamp are `DialogV2.confirm` on the revive ledger (declining consumes
+nothing and the revive resolves) and `edhaPromptDC` in H1's def-test (declining is **fail-open**,
+`dc = null`, and the test resolves either way). Neither aborts, so neither is an R-69 hazard. There
+is no shared seam to fix: `edhaStampSceneOnce` is a two-line flag write and the polarity lives at the
+call site *by design* — so the ordering is a call-site property and is now gated as one.
+
+**Proven.** `tests/picker-cancel-stamp.test.js` (8 cases): `edhaDecreeUse` driven headlessly with a
+stubbed picker — `null` and `undefined` both leave no stamp and refund once; a real pick stamps and
+arms the Decree; `oncePerScene: false` stamps nothing either way; the `preUseItem` veto still refuses
+a stamped Decree and still passes a fresh one; and an end-to-end cancel → re-use → pick → refuse
+sequence. Plus a **generic** source pin: no engine function may reach an `edhaRefundCost(...)` cancel
+guard with an `edhaStampSceneOnce(...)` already behind it, so the next handler that grows a picker
+fails the gate instead of shipping this bug. Mutation-verified — putting the stamp back on the first
+line fails **5** cases, and the generic pin names the offending line number. `tests/pass-5.3-hygiene.js`'s
+existing R-61 source pin used a fixed 400-character window that the moved line fell outside; its
+window is now the whole function body (the claim it pins is unchanged).
+
+**🤖 for the bench** — one row in `# BENCH — Sovereignty (Verdannis, deity)`: Final Decree → Cancel →
+Investiture restored, no `sceneOnce.<id>`, and the talent still usable this scene; then → pick →
+`sceneOnce` stamped, card posted, and a second use refused pre-cost with the unchanged wording. Live
+engine behaviour is **not settled until that row passes**.
+
+---
+
 ## 2026-09-05 DELTA — item 35: the dashboard-on-the-phone branch re-landed over #150/#153 — the mobile board gets its **Snapshot** tiles and **Dashboard** section back. **TOOLING-only** — repo tooling and the phone page; nothing in Foundry changes, no engine edit, no pack rebuild, no ⟳ Sync.
 
 **What was lost, and how.** `claude/in-app-dashboard-snapshot-ecwudz` (3 commits, 2026-09-05

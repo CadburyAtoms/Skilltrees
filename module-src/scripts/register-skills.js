@@ -15290,17 +15290,27 @@ for (const ctx of ["attack", "item"]) Hooks.on(`cosmere-rpg.${ctx}Roll`, (r, s, 
  * (rule-3's ENGINE-OWNED class), but every dial lives on the RULE and the flow reads the ITEM's
  * damage formula, so no talent name remains in code. Pre-cost gates ride the veto (see the
  * edha-decree veto with the other pre-use gates); the system pays the cost and a picker-cancel
- * REFUNDS (the Trade-Routes convention). */
+ * REFUNDS (the Trade-Routes convention).
+ *
+ * R-69 (Ben, 2026-09-05 — "stamp only after a successful pick"): the sceneOnce stamp used to run
+ * on the FIRST line of this function, before the prohibition picker opened. A Cancel then refunded
+ * the Investiture (bench run 25: 4 → 1 → 4, no card, no `decree` flag) but left
+ * `sceneOnce.<itemId> === true` — the scene's only use spent on a dialog that never resolved. The
+ * stamp now sits AFTER the `if (!proh)` refund guard, so cost and use agree: a cancel costs nothing
+ * and burns nothing. The VETO's polarity is untouched (R-61: a repeat is still refused BEFORE the
+ * system charges, in the `edha-decree` preUseItem hook) — R-69 is about a CANCELLED PICK only.
+ * The invariant is pinned generically in tests/picker-cancel-stamp.test.js: no function may reach
+ * an `edhaRefundCost(...)` cancel guard with an `edhaStampSceneOnce(...)` already behind it. */
 async function edhaDecreeUse(item, h) {
   try {
     const owner = item.actor; if (!owner) return;
-    if (h.oncePerScene !== false) await edhaStampSceneOnce(owner, item);   // R-61: now matches this rule's OWN veto polarity — was unconditional (visible change, 🤖 bench row)
     const otok = edhaCasterToken(owner);
     const ft = edhaAttuneFtColor(owner, h.rangeColor || "blue");
     const foes = edhaTokensWithin(otok, ft).filter(t => t.actor && edhaDisposHostile(owner, t.actor)   // R-63 🤖 bench row
       && (Number(t.actor.system?.resources?.hea?.value) || 0) > 0);
     const proh = await edhaPickProhibition(owner, `${item.name} — name ONE prohibited action (binds every enemy in range)`);
     if (!proh) { edhaRefundCost(item); ui.notifications?.info(`${item.name} cancelled — cost refunded.`); return; }
+    if (h.oncePerScene !== false) await edhaStampSceneOnce(owner, item);   // R-69: AFTER the pick (a cancel burns nothing). Polarity matches this rule's OWN veto (R-61).
     const wKey = String(h.witnessList || "").trim();
     const witnesses = wKey ? edhaOwnerList(owner, wKey, String(h.witnessListStatus || wKey).trim()).map(c => ({ uuid: c.uuid, name: c.name })) : [];
     await owner.setFlag("edha-content", "decree", { proh, bound: foes.map(t => t.actor.uuid), witnesses, itemId: item.id });
