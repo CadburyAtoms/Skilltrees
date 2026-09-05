@@ -205,6 +205,21 @@ the filter. One-line engine change (skip the block when the victim carries the `
 flag), **engine-only, no pack rebuild** — left undone deliberately because it would silence a cue
 you may want. *(From bench run 18 / fix pass C.)*
 
+**R-69. Should a CANCELLED picker still burn the talent's once-per-scene use?** Today it does.
+`edhaDecreeUse` calls `edhaStampSceneOnce(owner, item)` **before** it opens the prohibition picker,
+so pressing **Cancel** refunds the Investiture correctly (verified on the live table, bench run 25 —
+4 → 1 → 4, no card, no `decree` flag) but leaves `sceneOnce.<itemId> === true`: **Final Decree is
+spent for the scene without ever having resolved.** The stamp is deliberately pre-cost — that is
+R-61's "vetoed BEFORE cost" polarity, and it is what stops a player probing the picker to see the
+enemy list and then backing out for free. So this is a real trade, not an oversight.
+*Recommended default: **move the stamp to after a successful pick.*** A cancel that refunds the cost
+but eats the scene's only use is the worst of both worlds at the table, and the information leak it
+guards against is small — the picker shows allies you can already see. If you would rather keep the
+anti-probing behaviour, the honest fix is the other direction: **don't refund on cancel either**, so
+the cost and the use agree. Either way the two should not disagree. Engine-only, one line, no pack
+rebuild. Applies to every `edhaDialogPick` caller that stamps before prompting.
+*(From bench run 25, found while re-testing fix pass 1's picker-cancel row.)*
+
 ---
 
 ## D. Talent identity & tree shape

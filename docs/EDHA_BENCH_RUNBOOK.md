@@ -970,6 +970,73 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   on a `character` proves the wrong half. `Bench Target — Undefended` is the only adversary-typed bench
   fixture — take its token off the canvas to get an off-scene adversary.
 
+## Operating lessons from run 25 (2026-09-05 — these OVERRIDE older advice where they conflict)
+
+- ❌ **`git hash-object` NORMALISES CRLF; the served file does not.** The installed
+  `register-skills.js` is CRLF on Ben's machine, so `git hash-object` (which applies the text filter)
+  matches `HEAD:module-src/...` while a git-blob SHA-1 of the **raw served bytes** does not
+  (`25bd55fa…` vs `9575fba…`, 19 658 CR bytes, 1 525 467 → 1 505 809). **Strip the CR that precedes
+  each LF before hashing the fetch**, or a perfectly good deploy reads as NOT-DEPLOYED. Pair it with
+  the run-24 `decodedBodySize` check to prove the page is running that script and not a cache.
+- ❌ **A refused token move looks like nothing at all — `move()` returns `false`, with no error and no
+  console line.** Two different causes bit this run and both are silent:
+  1. **The engine's own `edha-move-veto` (Dread Presence).** A **Weakened** creature cannot willingly
+     move closer to a veto bearer, and the Playtest Map has several (Frostbinder, Wrenchmaster). The
+     only evidence is a `ui.notifications.warn` — so **wrap `ui.notifications.info/warn/error` in a
+     recorder at the start of the run** and read it whenever a move does nothing. This run weakened a
+     target for an R-64 control and then spent four calls wondering why it could not walk it onto a
+     snare. **The engine was right; the harness had armed the veto against itself.**
+  2. **Walls.** `update({x,y})` can land the token at an interpolated **midpoint** against a wall
+     (2700,5100 → 2905,5304) and stop there. `CONFIG.Canvas.polygonBackends.move.testCollision(from,
+     to, {type:"move", mode:"any"})` over the eight neighbours tells you which squares are reachable
+     before you plan a row around one. **Re-read the position after every move.**
+  **Not the cause, and now measured:** `game.paused` is NOT a movement gate — unpausing changed
+  nothing, and the pause was restored. Do not go near it.
+- ✅ **Serve `scripts/bench-setup-console.js` over a throwaway HTTP server and inject it as a classic
+  `<script>` tag** (`python -m http.server 8099 --bind 127.0.0.1` in `scripts/`, then append a
+  `<script src="http://127.0.0.1:8099/bench-setup-console.js?cb=…">`). Classic scripts are not
+  CORS-restricted, so this runs the repo's real file without pasting 17 KB through the console — and
+  re-running is then cheap enough to actually do. Kill the server at the end.
+- ⚠️ **Your dialog probe MUST filter the standing UI apps.** `foundry.applications.instances` holds
+  ~20 permanent AppV2s (Sidebar, ChatLog, every Directory, SceneControls…). An unfiltered dump is
+  thousands of tokens of chrome and buries the one `DialogV2` you care about. Skip by
+  `constructor.name`, and sample **both** shapes (AppV2 instances **and** `div.app.window-app`).
+- ⚠️ **"Cannot consume, not enough uses left" is another silent no-op class.** Limited-use heroic
+  talents (Galvanize) simply do nothing on a second use, with the reason only in a notification. Same
+  family as run 24's consume dialog / Investiture max / rate limiter: **before writing FAIL, read the
+  notification log.**
+- ⚠️ **Resource CLAMPS make a correct roll look wrong.** Galvanize rolled `1d6` → 6 and the target
+  gained 4, because focus max was 4. That reads exactly like a fold bug. **Raise the receiving
+  resource's max before any row whose assertion is "the change matches the rolled total"** — or pick a
+  target with headroom (Field Medicine into a 41-HP ally settled the same row in one call).
+- ✅ **Run 23's `edhaPickPoint` mouse shadow works and is cheap — use it freely.**
+  `Object.defineProperty(canvas, "mousePosition", {get: () => new PIXI.Point(x,y), configurable:true})`
+  then `document.getElementById("board").dispatchEvent(new PointerEvent("pointerdown",{button:0,
+  bubbles:true,cancelable:true}))`. It placed a real Snare and a real Set Charge this run, each with a
+  live template + Region, and both self-consumed correctly. Snap to the square's **centre**
+  (top-left + half a grid) because the picker snaps with `GRID_SNAPPING_MODES.CENTER`.
+- ✅ **One flow can retire three halves of a row.** Order's whole remaining R-65 set (plain-Edict
+  violation damage, the Sealed annotate rider, Verdict's court spread) came off **one** Verdict against
+  a Sealed Edict, because Verdict's `edha-prohibition-resolve` fires all three. Read the payload chain
+  before staging three separate tests.
+- ⚠️ **A combat-end sweep will eat PRE-EXISTING state, and that is not a bug you can avoid.** The
+  Covenant effects run 24 left on `Bench — Order` / `Bench — White` were legitimately swept by the
+  combat ends these rows require. **Snapshot whole effect OBJECTS and recreate them with
+  `{keepId: true}` and their original `_id`** — that is the only way the end-of-run diff comes back
+  clean. Restore flags by deleting the whole `flags.edha-content` namespace and rewriting the snapshot
+  object; never patch a sub-path.
+- ⚠️ **Some R-64 rows are simply not drivable from one client, and saying so beats manufacturing a
+  pass.** Every `target: victim` rule on `edha-test-success` sits behind an H1 def-test that resolves
+  its own target **after** the roll — so the payload's creature and the canvas selection can never be
+  made to differ. The drivable shape is an event that carries its own victim: `edha-on-hit` (via
+  `actor.applyDamage(list, {edhaSource, originatingItem})`) or an `edha-watch` rule whose
+  `payloadTarget` is the watched actor (Coercive Pressure). **Pick the event, not the talent.**
+- **Density, measured: 3 re-tests + 19 hygiene 🤖 in; 11 rows retired, 4 partials, 1 new row, 1 new
+  ruling — about 1 retirement per 5 tool calls.** The re-tests were far denser than the hygiene rows
+  (3 rows off ~8 calls) because they share one subject; the R-65 rows each needed their own tree, its
+  own resources and often its own token. **Budget per family, and prefer the family whose failure mode
+  is "silently contributes 0" — those are where the information is.**
+
 ## Known limits
 
 - ❌ **RESOLVED AS UNFIXABLE (07-26i): there is no "no written Cognitive/Spiritual defense" creature.**
