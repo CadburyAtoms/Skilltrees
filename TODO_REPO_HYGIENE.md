@@ -744,3 +744,35 @@ four cases above; the PM republishes the page **to the existing artifact URL** a
 job, not the worker's — note it in the report).
 
 **PM:** lane R · model sonnet · size S · deps PM-R7 · verify: test + `--out` snapshot pasted in the PR. TOOLING-only (the tracked HTML changes, so the PM republishes the artifact).
+
+---
+
+## 32. [ ] Move the repo off OneDrive onto the local SSD (Ben's move; one worker PR first)
+
+**Why:** OneDrive sets the read-only attribute on every directory under `.git` (308 of 308 on
+2026-09-05), which hung `deploy-to-foundry.bat` twice on git's "Should I try again? (y/n)" prompt
+and fails *silently* in agent shells; and the 74-character OneDrive root pushes Claude Code's
+derived scratchpad path to ~165 characters, so PM worktrees could not be created where the harness
+puts them (MAX_PATH). Both classes disappear when the working tree and `.git` leave the synced
+folder. Full inventory, verdicts, and Ben's steps: **`docs/REPO_MIGRATION_BRIEF.md`**.
+
+**What to do (repo side, a worker — BEFORE Ben moves anything):**
+- `scripts/foundry-build.js:33`: `DATA` defaults to the absolute OneDrive literal — use
+  `require("./lib/paths").DATA` (this is item 11's first consumer; do that item, or at least this
+  file, first).
+- `scripts/run-playtest-build.bat:2`: `cd /d` to the OneDrive path → `cd /d "%~dp0"`.
+- Prose paths in `EDHA_TALENT_HANDBOOK.md` (~483), `TRIAGE_PLAYTEST_PC_MANUALS.md` (~62),
+  `EDHA_FOUNDRY_HANDOFF.md` §"Source (canonical)" (~10384) → repo-relative wording.
+- ⚑ Optional, Ben's yes needed: `.gitattributes` (`* text=auto eol=lf`, `*.bat text eol=crlf`) +
+  `core.autocrlf=false` on the new clone, retiring the CRLF false-red family.
+
+**What to do (Ben, after that PR merges):** the numbered steps in the brief — fresh clone into a
+short path (`C:\dev\Skilltrees`), reinstall the hook, copy the two optional local files, re-point
+the two scheduled tasks and the project memory folder, keep `Thycross.procreate` in OneDrive and
+decide the art-drop handling (default: a OneDrive drop folder, moved by hand before each deploy).
+
+**Done when:** `git rev-parse --show-toplevel` on Ben's machine is outside OneDrive, the deploy
+script builds from the new `data/`, `module-src-sync.js status` reports in sync, and the
+"PM worktrees under `C:/tmp`" rule is deleted from the board.
+
+**PM:** lane H (Ben) after one lane-R worker PR (sonnet, S) · deps #139 #150 #151 merged, item 11 · verify: the worker's PR runs `node scripts/foundry-build.js` with `EDHA_DATA` unset from a scratch clone at a non-OneDrive path and pastes the resolved DATA line.
