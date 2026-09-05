@@ -121,10 +121,13 @@ completion, not on a timer, with a 30-minute fallback; hard stop the moment Ben 
 warning. **The old quiet hours (23:00–07:00) are gone — nights are now PM time.** In their place:
 - **Windows:** dispatch only inside the operating windows above (weeknights 21:00–07:00, the whole
   weekend Fri 21:00 → Mon 07:00). Cloud routines obey the same windows.
-- **Per-shift ceilings (default applied by the PM, awaiting Ben's veto or number — PM-R7):** a
-  weeknight shift (21:00→07:00) dispatches **at most 2**; a weekend day-shift (07:00→07:00)
-  **at most 4, at most 2 Opus**. Weekly maximum therefore 18, against the old regime's theoretical 42
-  — that is the "save compute for the week" half of Ben's instruction made countable.
+- **Per-shift ceilings (PM-R7, amended by Ben 2026-09-05 10:40 — "bump up the threshold for # of
+  agents you can send in a period on the weekend"; numbers are the PM's default, Ben may set
+  others):** a weeknight shift (21:00→07:00) dispatches **at most 2** under the normal 2-per-5h cap.
+  **On the weekend (Fri 21:00 → Mon 07:00) the trailing-5h cap is 4 dispatches, at most 2 Opus,**
+  and a weekend day-shift (07:00→07:00) dispatches **at most 8, at most 4 Opus**. The bench loop is
+  sequential by nature (one Bench slot, one repo), so the weekend cap exists to keep the
+  bench → fix → deploy → re-bench chain moving, not to run workers in parallel. Weekly maximum 24.
 - **Monday 07:00 handoff line reports the week's PM total** from `python scripts/pm-usage.py` so
   Ben can compare it with his weekly meter and re-cut the ceilings.
 - ⚠️ **The mobile board's meters still model the OLD quiet hours** (`scripts/pm-state.js` parses one
@@ -143,7 +146,7 @@ Answered by Ben on 2026-09-04 (all six, as recommended). Kept here so a worker c
 | **PM-R4** | Branch policy | **PR per item; the PM merges after green CI.** Workers never push to `main`. |
 | **PM-R5** | Cloud lane | **Yes, docs-only items**, one nightly Sonnet routine, PR output, PM reviews next wake. |
 | **PM-R6** | Usage tier and caps | **Max 20x; the caps above stand.** |
-| **PM-R7** | Nights-and-weekends schedule (Ben's instruction 2026-09-05) | **Instruction recorded; the exact cut is a PM default awaiting veto:** windows Mon–Thu 21:00→07:00 and Fri 21:00→Mon 07:00; weekday daytime is Ben's; per-shift ceilings 2 (weeknight) / 4 with ≤2 Opus (weekend day). Ben: say a different hour or number and it changes. |
+| **PM-R7** | Nights-and-weekends schedule (Ben's instruction 2026-09-05, amended 10:40: raise the weekend threshold) | **Instruction recorded; the exact cut is a PM default awaiting veto:** windows Mon–Thu 21:00→07:00 and Fri 21:00→Mon 07:00; weekday daytime is Ben's; weeknight ceiling 2 under the 2-per-5h cap; **weekend: 4 per trailing 5h (≤2 Opus), 8 per day-shift (≤4 Opus)**. Ben: say a different hour or number and it changes. |
 
 New rulings go in this table with a `(waiting)` mark; the PM asks Ben in one batch, not one at a time.
 
@@ -166,7 +169,7 @@ Status: `queued` · `briefed` · `running` · `in-review` · `merged` · `blocke
 | 2 | 15 Pre-commit shim + reinstall | R | sonnet | S | — | merged | #133 |
 | 3 | 16 Build fails loudly on a broken overlay | R | sonnet | S | — | merged | #136 |
 | 4 | 17 Heroic ids into `data/` | R | sonnet | S | — | merged | #137 |
-| 5 | **Bench run — the 106 🤖 rows accumulated since 07-28** (hygiene campaign 2026-08-10 first; first dispatch of the 12:05 slot if Foundry is still up) | B | opus | L | Foundry window ✓ (opened 09-05 09:13) | queued | |
+| 5 | **Bench run 1 of the weekend marathon** — hygiene campaign 2026-08-10 (34 🤖) + Engine-wide (4 🤖); the 106-row queue is sized per the bench-marathon skill: run 2 = leyline scatter (11) + Heroic part 1, then Heroic in dedicated runs | B | opus | L | Foundry window ✓ (opened 09-05 09:13) | running | |
 | 6 | 26 Bench PCs get normal vision (R-2) | R | sonnet | S | R-2 ✓ | queued | |
 | 7 | 27 Retire the `GM summon relay` row (R-1) | R | sonnet | S | R-1 ✓ | queued | |
 | 8 | **30** Rulings close-out R-7/R-19/R-34/R-49 (docs only, cloud-eligible) | R | sonnet | S | R-7/19/34/49 ✓ | queued | |
@@ -200,7 +203,12 @@ fact (2026-09-05 09:13):** `module-src-sync.js status` → 6 in sync, 0 stale, 0
 time — its `# BENCH — hygiene campaign 2026-08-10` section (checklist line ~3328) is the first thing
 the bench should run. The checklist carries **106 🤖 rows** in total. The dispatch itself waits for
 the 12:05 slot (two dispatches already in the trailing five hours) and for Foundry still being up
-then. Lane-B items merge to `main` but stay `bench-pending` until a window; the PM then dispatches
+then — **superseded 10:40: Ben raised the weekend cap and asked for bench progress while he is away;
+the first bench run was dispatched at once.** The weekend runs as a **bench marathon** (the
+`bench-marathon` skill's loop, orchestrated by the PM): bench-run → fails to one `test-pass-fixes`
+worker → PM deploys engine-only fixes with `module-src-sync.js push` and verifies by hash → next
+bench run re-tests the restored rows first. Pack-rebuild fixes stay BLOCKED-ON-DEPLOY for Ben.
+Lane-B items merge to `main` but stay `bench-pending` until a window; the PM then dispatches
 one `bench-run` worker (Opus) for the accumulated 🤖 sections, and fails go to one
 `test-pass-fixes` worker.
 
@@ -222,3 +230,4 @@ prompt on the way, which he is fixing in his own session in the `focused-booth-7
 | 2026-09-05 08:35 | Phone inbox: R-1, R-2, R-4 answered (PM bookkeeping, no worker) | fable | ~20 min | — | Ben answered three standing rulings from the mobile board. Recorded inline in `EDHA_RULINGS.md` (NOT moved to §K — the doc's own rule is that a ruling is settled only once the thing it decides has changed); filed the consequences as TODO items **26** (R-2 bench vision), **27** (R-1 retire the summon-relay row), **28a/28b** (R-4 out-of-combat scope, split before dispatch). R-4 is lane B and cannot be called done without a bench pass | #138 |
 | 2026-09-05 07:30 | #17 Heroic ids into `data/` | sonnet | 11.6 min, 174 turns | 3.3M | merged after review, no bounce. **The item's premise did not survive measurement**: the map is fully dormant, so shipping content is unchanged everywhere — see PM-D1 for the deploy-class call. PM re-derived the collision count through `buildTrees()` (79/82 confirmed) and found the worker's 3 "non-colliding" names are punctuation variants (`Erudition*`, U+2019 apostrophe, hyphen) of talents that DO exist → all 82 are dormant; PM corrected that paragraph in the delta itself rather than spending a bounce. Snapshot has punctuation drift vs `data/` — noted for any re-dump | #137 |
 | 2026-09-05 09:13 | New PM session of record (Ben's chat); phone inbox: R-5, R-7, R-19, R-34, R-49 answered; schedule re-cut to nights and weekends (PM bookkeeping, no worker) | fable | ~35 min | — | Ben confirmed both things the board waited on: the engine is deployed (sync status 6/6) and Foundry is open. Five rulings recorded inline in `EDHA_RULINGS.md`; consequences filed as TODO **29** (R-5, lane B: line zones hit allies) and **30** (docs close-out of the four confirmations; R-34 read as "the trail Regions are the indicator" — flagged for Ben's correction). **PM-R7**: operating windows moved to weeknights 21:00–07:00 + weekends, weekday daytime is Ben's; scheduled tasks re-cut (`edha-pm-daily` → Sat/Sun 07:00, new `edha-pm-weeknight` → Mon–Fri 21:00, both with a late-fire clock guard). The 07:02 daily session could not be messaged (unattended); the board's top line tells it to stand down. Trailing-5h cap is full until 12:05 → next dispatch then: the bench run if Foundry is still up, else item 26 | (this PR) |
+| 2026-09-05 10:45 | Bench run 1 (hygiene campaign + engine-wide, 38 🤖 rows) — `bench-run` | opus | (running) | — | dispatched at 10:45 after Ben's 10:40 message ("It's the weekend… bump up the threshold… make progress on the bench tests while I'm away"); weekend cap raised to 4/5h (PM-R7 amendment); trailing-5h count at dispatch 3 of 4 | |
