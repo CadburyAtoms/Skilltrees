@@ -33,6 +33,38 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-05 DELTA — items 32+11: OneDrive path literals off six scripts, `run-playtest-build.bat` repo-relative, `.gitattributes` landed. **TOOLING-only** — no engine change, no pack content change; `DATA`/`MODROOT` resolve to the identical directories on Ben's machine.
+
+**Item 11** (path-literal ratchet, lint-refs.js pass 21's `foundry-path-literal` entry): the six
+consumers still carrying their own OneDrive/MODROOT literal — `scripts/foundry-build.js` (`DATA`
++ `MODROOT`), `inspect-pack.js`, `module-src-sync.js`, `sync-art.js`, `validate-packs.js`,
+`validate-adversaries.js` — now all `require("./lib/paths.js")` instead. Behavior unchanged: both
+constants still honor `EDHA_DATA`/`EDHA_MODROOT`, and `paths.js`'s own `DATA` default already
+resolved to the same directory as the old OneDrive literal on Ben's machine. Pass 21's shrink
+array is now **empty**; `paths.js`'s header comment updated to stop naming these six as
+not-yet-migrated. Mutation-verified: re-adding the literal to `inspect-pack.js` failed pass 21
+naming the file; reverted, lint green again.
+
+**Item 32 (repo-side half only — the OneDrive move itself is Ben's, tracked in
+`docs/REPO_MIGRATION_BRIEF.md`):** `scripts/run-playtest-build.bat:2`'s `cd /d` now uses
+`"%~dp0"` instead of the OneDrive literal (CRLF endings preserved). Prose paths in
+`EDHA_TALENT_HANDBOOK.md`, `TRIAGE_PLAYTEST_PC_MANUALS.md`, and this doc's own §2 "Source
+(canonical)" line now read `…/Skilltrees/…` instead of the absolute OneDrive path.
+
+**`.gitattributes` added** (Ben's yes, PM-R9, 2026-09-05): `* text=auto eol=lf` +
+`*.bat text eol=crlf`. Before: `git ls-files --eol` showed 263 `i/lf`, 39 `i/-text`, 1 `i/crlf`
+(the outlier: `.claude/skills/deity-revision-guide/SKILL.md`, committed with raw CRLF bytes).
+`git add --renormalize .` changed exactly that one file (CRLF → LF, content-identical —
+`git diff --ignore-all-space` is empty); the two `.bat` files were already LF in the index
+(`eol=crlf` only governs checkout, not blob storage) and did not move. `docs/REPO_MIGRATION_BRIEF.md`
+gained one sentence: the fresh clone now needs only `git config core.autocrlf false` alongside its
+existing steps, since `.gitattributes` already landed. **Ben's `core.autocrlf=false` on his own
+clone is still pending** — not done by this PR.
+
+Nothing here is bench-testable (no engine, no pack, no talent behavior touched) — no 🤖 rows added.
+
+---
+
 ## 2026-09-05 DELTA — fix pass 2, defect ② : **Sovereign of Solitude's four rules died at LOAD, not in the build — one enum value outside its schema nukes an item's whole `events` map.** DATA + LINT → **pack REBUILD** (`foundry-build adversaries`) + ⟳ Sync, **Ben only**.
 
 ### Bug root cause — the bench's lead was the right STRING on the wrong FIELD, and the build was innocent

@@ -105,6 +105,10 @@ bash scripts/install-hooks.sh
 The pre-commit hook lives in `.git\hooks` and is never cloned — that last line reinstalls the
 shim (item 15).
 
+`.gitattributes` (`* text=auto eol=lf`, `*.bat text eol=crlf`) has already landed on `main`
+(Ben's yes, PM-R9, 2026-09-05) — the fresh clone needs only `git config core.autocrlf false`
+alongside the commands above; the attributes file handles the LF/CRLF split itself.
+
 **4. Copy the two optional local files** if they exist in the old folder:
 `.claude\settings.local.json` and `CLAUDE.local.md`. Nothing else.
 
