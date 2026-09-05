@@ -270,3 +270,35 @@ test("loadAuthoredIndex: a missing authored/ directory returns an empty index, n
   const dataDir = path.join(__dirname, "fixtures", "authored-directory-does-not-exist");
   assert.deepStrictEqual(loadAuthoredIndex(dataDir), { byId: {}, byName: {}, count: 0 });
 });
+
+/* ---------------------------------------------------------------------------
+ * 5. The heroic-ids snapshot must fail the build loudly when missing
+ *    (TODO_REPO_HYGIENE #17)
+ *
+ * foundry-build.js used to read the cosmere-rpg system's heroic-path talent ids from a
+ * hard-coded temp path (`C:/tmp/heroic_ids.json`) with `catch { return {}; }` — on CI, or any
+ * machine besides Ben's, the map silently came back {} and prose prerequisites naming a system
+ * talent (e.g. "Composed") degraded to plain narrative clauses with no warning. The snapshot is
+ * now tracked at data/system-heroic-ids.json (EDHA_HEROIC_IDS overrides the path) and read
+ * through loadJson (scripts/lib/data.js), which throws, naming the file, instead of returning {}.
+ * ------------------------------------------------------------------------ */
+
+const { loadJson } = require(path.join(__dirname, "..", "scripts", "lib", "data.js"));
+
+test("system-heroic-ids snapshot: a missing file throws, naming the file, instead of degrading silently", () => {
+  const missingPath = path.join(__dirname, "fixtures", "system-heroic-ids-does-not-exist.json");
+  assert.throws(
+    () => loadJson(missingPath),
+    (e) => e.message.includes(missingPath),
+    "a missing heroic-ids snapshot must fail loudly and name the file (TODO_REPO_HYGIENE #17)"
+  );
+});
+
+test("system-heroic-ids snapshot: the tracked file loads and exposes the heroicIds map", () => {
+  const p = path.join(__dirname, "..", "data", "system-heroic-ids.json");
+  const doc = loadJson(p);
+  assert.ok(doc.heroicIds && typeof doc.heroicIds === "object", "must expose a heroicIds map");
+  assert.ok(doc.heroicIds["Composed"], "must resolve the system talents named in the Why (e.g. \"Composed\")");
+  assert.ok(Array.isArray(doc._README) && /Do not hand-edit/.test(doc._README.join(" ")),
+    "must carry the native-vocabulary.json-style _README provenance convention");
+});

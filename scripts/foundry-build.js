@@ -32,6 +32,12 @@ const { ClassicLevel } = require("./edha-pack-io.js").requireClassicLevel();
 
 const DATA = process.env.EDHA_DATA || "C:/Users/benhe/OneDrive/Documentos/Worldbuilding/Claude Design/skilltrees/data";
 const MODROOT = process.env.EDHA_MODROOT || "C:/Users/benhe/AppData/Local/FoundryVTT/Data/modules/edha-content";
+// HEROIC_IDS_PATH: the cosmere-rpg system's heroic-paths compendium ids (system talent name ->
+// docId), tracked as data/system-heroic-ids.json (TODO_REPO_HYGIENE #17 — this used to be a
+// hard-coded "C:/tmp/heroic_ids.json" read with `catch { return {}; }`, which was empty on CI and
+// any machine besides Ben's, so prose prerequisites naming a system talent silently degraded to
+// narrative clauses). EDHA_HEROIC_IDS overrides the path for regeneration/testing.
+const HEROIC_IDS_PATH = process.env.EDHA_HEROIC_IDS || `${DATA}/system-heroic-ids.json`;
 const MODID = "edha-content";
 const SCOPE = (process.argv[2] || "all").toLowerCase();
 const CORE = "13.351", SYSID = "cosmere-rpg", SYSVER = "2.1.0", NOW = Date.now();
@@ -377,7 +383,7 @@ function classifyToken(tok, index, heroicIds, localByName) {
 // trees" implementation, now shared instead of re-implemented per consumer. Behavior-preserving
 // move: buildTrees() there still reads DATA (env EDHA_DATA-aware, via scripts/lib/paths.js) and
 // the same ATLAS_PACK values this file's own DATA/ATLAS_PACK constants resolve to.
-const { buildTrees } = require("./lib/data.js");
+const { buildTrees, loadJson } = require("./lib/data.js");
 
 function talentImg(tree) {
   if (tree.atlas === "leyline") return COLOR_ICON[tree.color] || DEITY_ICON;
@@ -413,7 +419,10 @@ function pathEvents(tree) {
 
 // ---------- main ----------
 (async () => {
-  const heroicIds = (() => { try { return JSON.parse(fs.readFileSync("C:/tmp/heroic_ids.json", "utf-8")); } catch { return {}; } })();
+  // loadJson THROWS, naming HEROIC_IDS_PATH, on a missing or malformed file — no more silent {}
+  // (TODO_REPO_HYGIENE #17). The tracked snapshot nests the map under `heroicIds`, alongside its
+  // `_README`/`system`/`generatedFrom` provenance (data/native-vocabulary.json's convention).
+  const heroicIds = loadJson(HEROIC_IDS_PATH).heroicIds;
   const trees = buildTrees();
 
   // Pass 1: ids/slugs/uuids + specialties + key + global name index
