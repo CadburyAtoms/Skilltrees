@@ -19,7 +19,7 @@ const fs = require("fs");
 const path = require("path");
 
 const REPO = path.resolve(__dirname, "..");
-const { parseBoard, injectState, wallToIso, STATUS_VOCAB } = require(path.join(REPO, "scripts", "pm-state.js"));
+const { parseBoard, injectState, wallToIso, inWindow, nextWindowOpen, parseWindowEntry, STATUS_VOCAB } = require(path.join(REPO, "scripts", "pm-state.js"));
 
 const FIXTURE = `# PM Board — fixture
 
@@ -34,7 +34,9 @@ Foundry is up tonight 8–10.
 ## Budget model
 
 **Caps (CONFIRMED):** at most 3 dispatches per 4-hour window, at most 1 of them Opus; the PM wakes on
-completion; no dispatch between 22:00 and 06:30 America/New_York unless it is a cloud routine.
+completion.
+
+**Windows (machine-readable):** Mon-Thu 22:00-06:30; Fri 22:00-Mon 06:30 America/New_York
 
 ## Rulings
 
@@ -85,7 +87,13 @@ test("pm-state: queue rows parse by header, status splits its parenthetical", ()
 
 test("pm-state: caps, rulings, inbox, foundry come from their own sections", () => {
   const s = parseBoard(FIXTURE, { now: NOW, git: GIT });
-  assert.deepStrictEqual(s.caps, { dispatchesPerWindow: 3, opusPerWindow: 1, windowHours: 4, quietStart: "22:00", quietEnd: "06:30", timeZone: "America/New_York" });
+  assert.deepStrictEqual(s.caps, {
+    dispatchesPerWindow: 3, opusPerWindow: 1, windowHours: 4, timeZone: "America/New_York",
+    windows: [
+      { dow: ["Mon", "Tue", "Wed", "Thu"], start: "22:00", end: "06:30", spanDays: 1 },
+      { dow: ["Fri"], start: "22:00", end: "06:30", spanDays: 3 },
+    ],
+  });
   assert.deepStrictEqual(s.rulings.map((r) => [r.id, r.waiting]), [["PM-R1", false], ["PM-R7", true]]);
   assert.deepStrictEqual(s.inbox, ["Foundry is up tonight 8–10.", "skip 20, do 19a next"], "placeholder ignored, prose + list kept");
   assert.strictEqual(s.foundry.scheduled, false);
@@ -94,6 +102,58 @@ test("pm-state: caps, rulings, inbox, foundry come from their own sections", () 
   assert.strictEqual(s.source.hash.length, 10);
   assert.strictEqual(s.source.commit, "abc1234");
   assert.strictEqual(s.generatedAt, NOW);
+});
+
+test("pm-state: a window entry with an explicit end day computes spanDays as the forward day-distance", () => {
+  assert.deepStrictEqual(parseWindowEntry("Mon-Thu 21:00-07:00"), { dow: ["Mon", "Tue", "Wed", "Thu"], start: "21:00", end: "07:00", spanDays: 1 });
+  assert.deepStrictEqual(parseWindowEntry("Fri 21:00-Mon 07:00"), { dow: ["Fri"], start: "21:00", end: "07:00", spanDays: 3 }, "Fri->Sat->Sun->Mon is 3 calendar days");
+  assert.strictEqual(parseWindowEntry("garbage"), null);
+});
+
+// PM-R7 (2026-09-05): Mon-Thu 21:00->07:00 next day; Fri 21:00->Mon 07:00 continuous. 2026-09-04 is
+// a Friday, 2026-09-05 a Saturday, 2026-09-07 a Monday — dates the run log already uses.
+const PM_R7_WINDOWS = [
+  { dow: ["Mon", "Tue", "Wed", "Thu"], start: "21:00", end: "07:00", spanDays: 1 },
+  { dow: ["Fri"], start: "21:00", end: "07:00", spanDays: 3 },
+];
+const TZ = "America/New_York";
+
+test("pm-state: inWindow/nextWindowOpen model the PM-R7 operating windows, not a single quiet range", () => {
+  // A weeknight (Tue 23:00 EDT) is open, closing at Wed 07:00.
+  let w = inWindow("2026-09-09T03:00:00.000Z", PM_R7_WINDOWS, TZ);
+  assert.deepStrictEqual(w, { open: true, changeAt: "2026-09-09T11:00:00.000Z" });
+
+  // A weekday noon (Tue 12:00 EDT) is closed — weekday daytime is Ben's — and reopens that same
+  // evening at 21:00, not "tomorrow".
+  w = inWindow("2026-09-08T16:00:00.000Z", PM_R7_WINDOWS, TZ);
+  assert.deepStrictEqual(w, { open: false, changeAt: null });
+  assert.strictEqual(nextWindowOpen("2026-09-08T16:00:00.000Z", PM_R7_WINDOWS, TZ), "2026-09-09T01:00:00.000Z");
+
+  // A Saturday noon (EDT) is open — the weekend has no daytime closure, unlike a weeknight.
+  w = inWindow("2026-09-05T16:00:00.000Z", PM_R7_WINDOWS, TZ);
+  assert.strictEqual(w.open, true);
+  assert.strictEqual(w.changeAt, "2026-09-07T11:00:00.000Z", "closes Monday 07:00, not Saturday 07:00");
+});
+
+test("pm-state: the Fri 21:00 -> Mon 07:00 weekend window is one continuous span, not three daily wraps", () => {
+  const MON_0700 = "2026-09-07T11:00:00.000Z"; // Monday 07:00 EDT — the one instant the whole span closes at
+  const checkpoints = [
+    "2026-09-05T02:00:00.000Z", // Fri 22:00 EDT (just after the Friday-night start)
+    "2026-09-06T04:00:00.000Z", // Sat 00:00 EDT (midnight — must NOT have closed at Sat 07:00)
+    "2026-09-06T16:00:00.000Z", // Sat noon EDT
+    "2026-09-07T03:00:00.000Z", // Sun 23:00 EDT
+    "2026-09-07T10:59:00.000Z", // Mon 06:59 EDT — the last minute it is still open
+  ];
+  for (const t of checkpoints) {
+    const w = inWindow(t, PM_R7_WINDOWS, TZ);
+    assert.strictEqual(w.open, true, `${t} should be inside the continuous weekend window`);
+    assert.strictEqual(w.changeAt, MON_0700, `${t} should agree the span closes at Monday 07:00, not a daily wrap`);
+  }
+  // One minute later the window has closed, and the next one is that same evening at 21:00 (the
+  // Monday-night entry), not a second helping of the weekend.
+  const closed = inWindow("2026-09-07T11:01:00.000Z", PM_R7_WINDOWS, TZ);
+  assert.deepStrictEqual(closed, { open: false, changeAt: null });
+  assert.strictEqual(nextWindowOpen("2026-09-07T11:01:00.000Z", PM_R7_WINDOWS, TZ), "2026-09-08T01:00:00.000Z");
 });
 
 test("pm-state: run-log wall-clock times are America/New_York on both sides of DST", () => {

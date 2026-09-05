@@ -28,11 +28,29 @@
  *   Inbox from Ben         → inbox[]      every paragraph / list item except the italic placeholder
  *   Foundry windows        → foundry      prose + a deploy-stale flag
  *   Budget model (prose)   → caps         "at most N dispatches per H-hour window, at most M of them
- *                                         Opus" / "between HH:MM and HH:MM <IANA zone>"
+ *                                         Opus" / the operating-windows line (see below)
+ *
+ * OPERATING WINDOWS (added 2026-09-05, item 31, board ruling PM-R7 — replaces the old single daily
+ * "quiet hours" range, which could not model a nights-and-weekends schedule: a weeknight closes and
+ * reopens the SAME day, but the weekend is one continuous open span from Friday night through Monday
+ * morning, not a repeating 24h wrap). `caps.windows` is DATA parsed from ONE machine-readable line in
+ * the board's Budget section — never a code constant, because Ben may change the hours — of the shape:
+ *
+ *   **Windows (machine-readable[, ...]):** <entry>[; <entry>...] [<IANA zone>]
+ *   entry := <Dow>[-<Dow>] <HH:MM>-<HH:MM>              (no end day named → wraps to the next
+ *                                                         calendar day iff end <= start, else same day)
+ *          | <Dow> <HH:MM>-<Dow> <HH:MM>                (end day named explicitly → spans forward to
+ *                                                         that day, e.g. "Fri 21:00-Mon 07:00")
+ *
+ * parses into `caps.windows: [{ dow: ["Mon","Tue",...], start: "HH:MM", end: "HH:MM", spanDays }]`
+ * (`spanDays` = calendar days from the start day to the day `end` falls on; computed by the parser,
+ * never authored). `inWindow(now, windows, tz)` and `nextWindowOpen(now, windows, tz)` are the pure
+ * helpers (exported for tests/pm-state.test.js and used by the mobile page's own copy) that replace
+ * the old `isQuiet`/`nextQuietEnd`.
  *
  * TIME ZONES. Run-log timestamps are wall-clock America/New_York (the commits they describe carry
- * -0400; the board's quiet hours are stated in that zone). Every timestamp is emitted as an ISO
- * instant so the page can count the trailing window in the viewer's own clock. The conversion is
+ * -0400; the board's operating windows are stated in that zone). Every timestamp is emitted as an
+ * ISO instant so the page can count the trailing window in the viewer's own clock. The conversion is
  * Intl-only (no dependency) and DST-aware via a one-step re-check.
  *
  * LIVE OVERLAY (--live). A JSON object; top-level keys `pm`, `workers`, `usage` replace the
@@ -55,9 +73,17 @@ const { parseMd } = require("./lib/md.js");
 const { REPO_ROOT } = require("./lib/paths.js");
 
 const DEFAULT_TZ = "America/New_York";
-const DEFAULT_CAPS = { dispatchesPerWindow: 2, opusPerWindow: 1, windowHours: 5, quietStart: "23:00", quietEnd: "07:00" };
+const DEFAULT_CAPS = { dispatchesPerWindow: 2, opusPerWindow: 1, windowHours: 5 };
+// Fallback only — used if the board's machine-readable windows line is missing or fails to parse.
+// Matches board ruling PM-R7 (2026-09-05): weeknights wrap to the next day, the weekend is one
+// continuous 3-day span (Fri start -> Mon end).
+const DEFAULT_WINDOWS = [
+  { dow: ["Mon", "Tue", "Wed", "Thu"], start: "21:00", end: "07:00", spanDays: 1 },
+  { dow: ["Fri"], start: "21:00", end: "07:00", spanDays: 3 },
+];
 const STATUS_VOCAB = ["queued", "briefed", "running", "in-review", "merged", "blocked", "bench-pending", "Ben-only"];
 const WORKER_MODELS = new Set(["sonnet", "opus"]);
+const DOW_ORDER = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 // ---- time -------------------------------------------------------------------
 
@@ -206,17 +232,139 @@ function parseFoundry(secBlocks) {
   };
 }
 
+/** "Mon" / "mon" / "MON" -> "Mon" (DOW_ORDER's own casing); "" for anything unrecognised. */
+function normDow(s) {
+  const t = String(s || "");
+  return t.length >= 3 ? t[0].toUpperCase() + t.slice(1, 3).toLowerCase() : "";
+}
+const dowIdx = (name) => DOW_ORDER.indexOf(normDow(name));
+const toMinutes = (hhmm) => { const p = hhmm.split(":"); return (+p[0]) * 60 + (+p[1]); };
+const pad4 = (hhmm) => { const p = hhmm.split(":"); return p[0].padStart(2, "0") + ":" + p[1]; };
+
+/** Inclusive day range, forward from `a` to `b` (wraps past Sat to Sun) — "Mon-Thu" -> the four
+ * weekdays; a single day ("Fri", a===b) -> just that one. */
+function expandDowRange(a, b) {
+  const out = [];
+  let i = a;
+  for (;;) { out.push(DOW_ORDER[i]); if (i === b) break; i = (i + 1) % 7; }
+  return out;
+}
+
+const WINDOW_ENTRY_RE = /^([A-Za-z]{3})(?:-([A-Za-z]{3}))?\s+(\d{1,2}:\d{2})\s*-\s*(?:([A-Za-z]{3})\s+)?(\d{1,2}:\d{2})$/;
+
+/** One "<Dow>[-<Dow>] HH:MM-HH:MM" or "<Dow> HH:MM-<Dow> HH:MM" entry -> `{ dow, start, end,
+ * spanDays }`, or null if it doesn't parse. `spanDays` is derived, never authored: an explicit end
+ * day is the forward day-distance from the start day (1-7); no end day means the standard
+ * midnight-wrap convention (next day iff end <= start, else same day). */
+function parseWindowEntry(spec) {
+  const m = String(spec || "").trim().match(WINDOW_ENTRY_RE);
+  if (!m) return null;
+  const [, d1, d2, start, endDowRaw, end] = m;
+  const startIdx = dowIdx(d1);
+  if (startIdx === -1) return null;
+  let dow;
+  if (d2) {
+    const endIdx = dowIdx(d2);
+    if (endIdx === -1) return null;
+    dow = expandDowRange(startIdx, endIdx);
+  } else {
+    dow = [DOW_ORDER[startIdx]];
+  }
+  let spanDays;
+  if (endDowRaw) {
+    const endDowIdx = dowIdx(endDowRaw);
+    if (endDowIdx === -1) return null;
+    spanDays = ((endDowIdx - startIdx) % 7 + 7) % 7;
+    if (spanDays === 0) spanDays = 7;
+  } else {
+    spanDays = toMinutes(end) <= toMinutes(start) ? 1 : 0;
+  }
+  return { dow, start: pad4(start), end: pad4(end), spanDays };
+}
+
+/** The windows line's value (everything after the label) -> `{ windows, timeZone }`. A trailing
+ * `Area/City` token is the zone; everything before it splits on ";" into entries. */
+function parseWindowsSpec(raw) {
+  let text = String(raw || "").trim();
+  let timeZone = null;
+  const tzm = text.match(/([A-Za-z_]+\/[A-Za-z_]+)\s*$/);
+  if (tzm) { timeZone = tzm[1]; text = text.slice(0, tzm.index).trim(); }
+  const windows = text.split(";").map(parseWindowEntry).filter(Boolean);
+  return { windows, timeZone };
+}
+
 function parseCaps(blocks) {
-  const caps = { ...DEFAULT_CAPS, timeZone: DEFAULT_TZ };
+  const caps = { ...DEFAULT_CAPS, timeZone: DEFAULT_TZ, windows: DEFAULT_WINDOWS };
   for (const b of blocks) {
     if (b.type !== "p") continue;
     const t = b.text;
     const m = t.match(/at most (\d+) dispatches per (\d+)-hour window, at most (\d+) of them Opus/i);
     if (m) { caps.dispatchesPerWindow = +m[1]; caps.windowHours = +m[2]; caps.opusPerWindow = +m[3]; }
-    const q = t.match(/between (\d{1,2}:\d{2}) and (\d{1,2}:\d{2})(?: ([A-Za-z_]+\/[A-Za-z_]+))?/);
-    if (q) { caps.quietStart = q[1].padStart(5, "0"); caps.quietEnd = q[2].padStart(5, "0"); if (q[3]) caps.timeZone = q[3]; }
+    const w = t.match(/Windows\s*\(machine-readable[^)]*\)\s*:\*{0,2}\s*(.+)/i);
+    if (w) {
+      const parsed = parseWindowsSpec(w[1]);
+      if (parsed.windows.length) caps.windows = parsed.windows;
+      if (parsed.timeZone) caps.timeZone = parsed.timeZone;
+    }
   }
   return caps;
+}
+
+// ---- operating windows (inWindow / nextWindowOpen; item 31, replaces isQuiet/nextQuietEnd) ------
+
+const pad2 = (n) => (n < 10 ? "0" + n : String(n));
+const ymdStr = (ymd) => `${ymd.y}-${pad2(ymd.m)}-${pad2(ymd.d)}`;
+function addDaysYmd(ymd, n) {
+  const dt = new Date(Date.UTC(ymd.y, ymd.m - 1, ymd.d) + n * 86400000);
+  return { y: dt.getUTCFullYear(), m: dt.getUTCMonth() + 1, d: dt.getUTCDate() };
+}
+function localYmd(ms, tz) {
+  const f = new Intl.DateTimeFormat("en-US", { timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit" });
+  const o = {}; f.formatToParts(new Date(ms)).forEach((p) => { o[p.type] = p.value; });
+  return { y: +o.year, m: +o.month, d: +o.day };
+}
+function dowOfYmd(ymd, tz) {
+  // Noon, not midnight — clear of any DST transition that lands exactly at 00:00.
+  const noon = wallToIso(ymdStr(ymd), "12:00", tz);
+  const wd = new Intl.DateTimeFormat("en-US", { timeZone: tz, weekday: "short" }).format(new Date(noon));
+  return DOW_ORDER.indexOf(wd);
+}
+
+/** Every window occurrence whose START day falls within `[today-daysBack, today+daysFwd]`
+ * (calendar days, in `tz`), as `{ start, end }` epoch-ms pairs. */
+function windowOccurrences(nowMs, windows, tz, daysBack, daysFwd) {
+  const today = localYmd(nowMs, tz);
+  const out = [];
+  for (let off = -daysBack; off <= daysFwd; off++) {
+    const cand = addDaysYmd(today, off);
+    const wd = DOW_ORDER[dowOfYmd(cand, tz)];
+    for (const entry of windows) {
+      if (entry.dow.indexOf(wd) === -1) continue;
+      const start = Date.parse(wallToIso(ymdStr(cand), entry.start, tz));
+      const end = Date.parse(wallToIso(ymdStr(addDaysYmd(cand, entry.spanDays)), entry.end, tz));
+      out.push({ start, end });
+    }
+  }
+  return out;
+}
+
+/** Pure: is `now` (epoch ms or ISO/parseable string) inside an operating window? `{ open,
+ * changeAt }` — `changeAt` is the ISO instant the open window closes, else null (closed; use
+ * `nextWindowOpen` for when it reopens). Looks back 7 days so a window with a multi-day span
+ * (the Fri->Mon weekend) that started earlier this week is still found. */
+function inWindow(now, windows, tz) {
+  const nowMs = typeof now === "number" ? now : Date.parse(now);
+  const active = windowOccurrences(nowMs, windows, tz, 7, 0).filter((o) => o.start <= nowMs && nowMs < o.end);
+  if (!active.length) return { open: false, changeAt: null };
+  return { open: true, changeAt: new Date(Math.max(...active.map((o) => o.end))).toISOString() };
+}
+
+/** Pure: ISO instant of the next window that opens strictly after `now` (every entry recurs at
+ * least weekly, so 8 days forward always finds one). */
+function nextWindowOpen(now, windows, tz) {
+  const nowMs = typeof now === "number" ? now : Date.parse(now);
+  const future = windowOccurrences(nowMs, windows, tz, 0, 8).map((o) => o.start).filter((s) => s > nowMs);
+  return future.length ? new Date(Math.min(...future)).toISOString() : null;
 }
 
 // ---- assembly -------------------------------------------------------------------
@@ -250,9 +398,13 @@ function parseBoard(md, opts = {}) {
   const pm = live.pm || { status: "unknown", note: null, waitingOn: null, nextWakeAt: null, session: null };
   const usage = live.usage || null;
 
+  const now = opts.now || new Date().toISOString();
+  const win = inWindow(now, caps.windows, tz);
+  const windowStatus = { open: win.open, changeAt: win.changeAt, nextOpenAt: win.open ? null : nextWindowOpen(now, caps.windows, tz) };
+
   return {
     schema: 1,
-    generatedAt: opts.now || new Date().toISOString(),
+    generatedAt: now,
     source: {
       path: "docs/PM_BOARD.md",
       hash: crypto.createHash("sha1").update(md).digest("hex").slice(0, 10),
@@ -262,6 +414,7 @@ function parseBoard(md, opts = {}) {
     },
     timeZone: tz,
     caps,
+    windowStatus,
     pm,
     workers,
     usage,
@@ -324,12 +477,16 @@ function main(argv) {
   } else {
     out = JSON.stringify(state, null, 2) + "\n";
   }
-  if (a.out) { fs.writeFileSync(a.out, out); process.stderr.write(`pm-state: wrote ${a.out} (${state.queue.length} queue rows, ${state.runLog.length} run-log rows, ${state.workers.length} worker(s))\n`); }
+  if (a.out) { fs.writeFileSync(a.out, out); process.stderr.write(`pm-state: wrote ${a.out} (${state.queue.length} queue rows, ${state.runLog.length} run-log rows, ${state.workers.length} worker(s), window ${state.windowStatus.open ? "open" : "closed"})\n`); }
   else process.stdout.write(out);
   return 0;
 }
 
-module.exports = { parseBoard, injectState, wallToIso, tzOffsetMinutes, parseQueue, parseRunLog, parseRulings, parseInbox, parseFoundry, parseCaps, STATUS_VOCAB };
+module.exports = {
+  parseBoard, injectState, wallToIso, tzOffsetMinutes, parseQueue, parseRunLog, parseRulings, parseInbox,
+  parseFoundry, parseCaps, parseWindowEntry, parseWindowsSpec, inWindow, nextWindowOpen, DEFAULT_WINDOWS,
+  STATUS_VOCAB,
+};
 
 if (require.main === module) {
   try { process.exit(main(process.argv.slice(2))); }
