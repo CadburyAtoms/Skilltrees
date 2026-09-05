@@ -59,6 +59,14 @@ above, and marks each note seen). It is a *projection*: `scripts/pm-state.js` re
 the PM pushes the result into the artifact's `pm/state` document on every state change; the page
 source is `docs/pm-board-mobile.html`. If the phone and this file disagree, this file is right.
 
+**Since 2026-09-05 it also carries the whole `EDHA_DASHBOARD.html`** — a Snapshot strip (open/total
+per tab, ⚑ For Ben, 🤖 Bench queue, the DEPLOY STATE banner) and a Dashboard section with every
+tab, section, and row, the two mirrors, search and ⚑/🤖 filters — built from the same tab model as
+the desktop, so the rows and their ids are identical. It is read-only (marks stay in the desktop
+browser); a ⚑ row or an open ruling has a "reply in inbox" button that pre-fills the inbox above.
+The PM pushes it as `dash/index` + `dash/c0…` (`pm-state.js --dashboard-dir`) whenever a source
+doc changed — after every merge — so it is as current as the last push, never fresher.
+
 ## Lanes
 
 | Lane | Meaning | When it can run |

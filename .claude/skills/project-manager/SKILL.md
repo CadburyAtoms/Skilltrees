@@ -158,11 +158,22 @@ the five-hour window rolling, or quiet hours ending. Say in `reason` what you ar
 
 **URL: `https://claude.ai/code/artifact/a24a597c-4516-425b-9eb2-a30f1ece03f0`** (also on the board under "Mobile board").
 It is a published Artifact of `docs/pm-board-mobile.html` that shows: the PM's state and any
-running worker with an elapsed clock; the trailing-window budget meters (dispatches / Opus used,
+running worker with an elapsed clock; a project Snapshot (the desktop dashboard's open/total per
+tab, ⚑ and 🤖 counts, DEPLOY STATE); the trailing-window budget meters (dispatches / Opus used,
 when the next slot opens, quiet hours); weighted usage per run-log row; the queue with status,
 lane, model, size, deps, PR; what waits on Ben (open rulings, blocked items, deploy staleness,
-Foundry window); the run log; and an **inbox** Ben types into from his phone. It renders whatever
+Foundry window); the run log; an **inbox** Ben types into from his phone; and the full Dashboard
+(every EDHA_DASHBOARD.html tab and row, see below). The board part renders whatever
 is in the artifact's `pm/state` document, live, and falls back to the snapshot embedded at publish.
+
+**It also carries the whole desktop dashboard (since 2026-09-05):** a Snapshot strip and a
+Dashboard section with every `EDHA_DASHBOARD.html` tab, section, and row (same tab model, same row
+ids — `build-dashboard.js mobileSnapshot()`), the ⚑ For Ben / 🤖 Bench queue mirrors, the DEPLOY
+STATE banner, search and filters. It lives in the store as `dash/index` (tabs, section counts,
+mirrors, banner) plus `dash/c0`, `dash/c1`, … (whole sections, each under the 256 KiB document
+cap); the page subscribes to the index and fetches the chunks it names. A ⚑ row or open ruling
+has a "reply in inbox" button, so an answer Ben types from a row arrives as an ordinary inbox note
+prefixed with the row's name — read it like any other note.
 
 **Push state — at every one of these moments:** after step 0 (resume), at step 3 (dispatch), when
 a worker reports (before review), at step 5 (close), and at step 6 when you schedule or stop.
@@ -187,11 +198,26 @@ Artifact(action: "write_db", url: <URL>, db_op: "set", collection: "pm", doc_id:
 `workers: []` with `pm.status: "stopped"` is the handoff picture. Omit `--live` and the script
 synthesises a worker from any `running` queue row, so an old snapshot is never blind.
 
+**Push the dashboard — after step 0 (resume) and at step 5 (close), i.e. whenever a source doc
+may have changed** (every merge changes at least the handoff; a bench run changes the checklist).
+It is one batch write of four or five documents; the manifest carries the `writes` array verbatim:
+
+```
+node scripts/pm-state.js --dashboard-dir $SCRATCH/dash        # index.json + c0.json … + manifest.json
+# stderr prints the stamp — skip the write if `read_db dash/index` already carries that stamp
+Artifact(action: "write_db", url: <URL>, db_op: "batch", writes: <manifest.json's "writes">)
+```
+
+The stamp is the hash of the eleven source docs, the same `@stamp` EDHA_DASHBOARD.html shows, so
+"phone and desktop agree" is one string compare. Never hand-edit a chunk; a chunk whose stamp is
+not the index's is ignored by the page.
+
 **Republish the page only when `docs/pm-board-mobile.html` itself changes:** build the injected
 copy with `node scripts/pm-state.js --live … --inject docs/pm-board-mobile.html --out
-$SCRATCH/pm-board.html`, then `Artifact(file_path: $SCRATCH/pm-board.html, url: <URL>)` —
+$SCRATCH/pm-board.html` (this fills BOTH slots — the board state and the whole dashboard, so the
+page is ~700 KB), then `Artifact(file_path: $SCRATCH/pm-board.html, url: <URL>)` —
 **always with `url`**, or a fresh session mints a second artifact and Ben's bookmark goes stale.
-Never commit a page with a filled snapshot slot (the tracked file keeps `{}`).
+Never commit a page with a filled snapshot slot (the tracked file keeps `{}` in both).
 
 **The phone inbox** is read in step 0 (above). A note's `status` is `new` until you mark it
 `seen`; Ben can delete his own notes from the page.

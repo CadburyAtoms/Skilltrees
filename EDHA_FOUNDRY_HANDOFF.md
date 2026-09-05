@@ -33,6 +33,58 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-05 — The whole dashboard on the phone: the mobile board now carries every `EDHA_DASHBOARD.html` tab and row (TOOLING + DOCS-only; no engine or pack change)
+
+Ben: "I want the in-app dashboard to have everything from the skilltrees dashboard as well — a full
+project snapshot on my phone." The mobile board (2026-09-04, below) projected only `docs/PM_BOARD.md`;
+the desktop dashboard's Bench / Art / Worldbuilding / Engine / Repo / ⚖ Rulings tabs, the ⚑ For Ben
+and 🤖 Bench queue mirrors, and the DEPLOY STATE banner were desktop-only. Now they are on the phone,
+built from **the same tab model**:
+
+- **`scripts/build-dashboard.js` is also a module.** `build()` split into `buildModel()` (sources →
+  TABS, mirrors, deploy banner) and `renderHtml(model)`; `main()` runs only under `require.main`, so
+  requiring the file executes nothing. New `mobileSnapshot(model)` emits the model as JSON — every
+  tab, section (with its deploy chips and open/done/⚑/🤖 counts) and block, the mirrors as refs into
+  the rows, the banner — under **the HTML's own row ids** (one `itemId()` helper now serves
+  `renderItem`, the mirror, and the snapshot). The HTML stayed byte-identical through the refactor
+  (`--check` green on the unchanged sources). Not in the snapshot: the Project tab — the phone page
+  *is* the board.
+- **`scripts/pm-state.js` shards it.** The snapshot is ~600 KB and the artifact store rejects any
+  document over 256 KiB, so `shardDashboard()` packs whole sections, in tab order, into `dash/c0`,
+  `dash/c1`, … (≤ 200 KiB each; three today) under a small `dash/index` (everything but the row
+  blocks). `--dashboard-dir dir` writes them plus a `manifest.json` whose `writes` array is the
+  Artifact `write_db` batch verbatim; `--inject` now fills BOTH page slots (`pm-state` and the new
+  `pm-dashboard`). The `stamp` is the same `@hash` the desktop's header shows, so "phone and desktop
+  agree" is one string compare.
+- **`docs/pm-board-mobile.html` gained two sections.** *Project snapshot*: eight tiles (open/total per
+  tab with a done bar, ⚑ For Ben, 🤖 Bench queue — tap one to open that tab) and the DEPLOY STATE
+  banner. *Dashboard*: a tab strip, search, All/Open/Done/⚑/🤖 filters, expand/collapse all, and each
+  section as a collapsible card with its chips and counts; rows carry the marker glyph, the inline
+  markdown (`code`, **bold**, ~~strike~~, ⚑ — the desktop's feature set, rendered after escaping), the
+  update log, and — on ⚑ rows and open rulings — a **"reply in inbox"** button that pre-fills the inbox
+  with the row's name. The mirror tabs group by source tab with a "go to row →" that opens the section
+  and flashes the row. The For Ben section gets a one-line "⚑ N rows · ⚖ M rulings open" card. Live via
+  `dash/index` (subscribe) + chunk `get()`s, with one 3-second retry when a push is mid-flight; the
+  at-rest slot renders the same shape.
+- **Read-only by design.** Marks stay in the desktop browser and the board is the status channel;
+  the phone adds no third source of state — a reply is an ordinary inbox note.
+- **Pinned in `tests/pm-state.test.js`:** the snapshot's row ids equal the committed HTML's `data-id`
+  set (and the mirrors its `data-ref`s, in order; the stamps agree); every shard stays under the cap
+  and every section lands in exactly one chunk; `--inject` fills both slots and the page can assemble
+  the second. Headless-checked at a 390 px viewport: 8 tiles, 8 tabs, 109 bench rows, 22 ⚑ / 85 🤖,
+  search, reply, go-to-row, dark theme, no horizontal scroll.
+
+Gotcha worth keeping: a horizontally scrolling tab strip inside a CSS-grid item widens the whole
+track (a grid item's automatic minimum width is its content's min-content; `overflow-x: auto` on the
+strip does not help because the strip is not the item). The page's `main` is a grid of sections, so
+the new `.dtabs` strip made every section 734 px wide at a 390 px viewport — the fix is
+`section { min-width: 0 }`, and the headless check now asserts `scrollWidth === 390`.
+
+Procedure: `project-manager/SKILL.md` §"The mobile board" (push the dashboard after step 0 and at
+step 5 — whenever a source doc may have changed; skip when `dash/index` already carries the stamp).
+Rows for Ben: none — repo-side and provable; how the phone layout *feels* is chat feedback, not a
+checklist row.
+
 ## 2026-09-04 — Mobile PM board: a phone-sized live projection of `docs/PM_BOARD.md` (TOOLING + DOCS-only; no engine or pack change)
 
 Ben asked the project manager for a mobile-friendly way to see what the workers are doing and
