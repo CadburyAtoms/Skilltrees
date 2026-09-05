@@ -124,8 +124,11 @@ warning. **The old quiet hours (23:00–07:00) are gone — nights are now PM ti
 - **Per-shift ceilings (PM-R7, amended by Ben 2026-09-05 10:40 — "bump up the threshold for # of
   agents you can send in a period on the weekend"; numbers are the PM's default, Ben may set
   others):** a weeknight shift (21:00→07:00) dispatches **at most 2** under the normal 2-per-5h cap.
-  **On the weekend (Fri 21:00 → Mon 07:00) the trailing-5h cap is 4 dispatches, at most 2 Opus,**
-  and a weekend day-shift (07:00→07:00) dispatches **at most 8, at most 4 Opus**. The bench loop is
+  **On the weekend (Fri 21:00 → Mon 07:00) the trailing-5h cap is 4 dispatches of any model,**
+  and a weekend day-shift (07:00→07:00) dispatches **at most 8**. (The ≤2-Opus sub-cap written at
+  10:45 was dropped at 11:55: every bench-loop worker is Opus by the skills' own design, so the
+  sub-cap would have idled the table for four hours after two dispatches — the exact stall Ben
+  objected to. Serialization, not model mix, is what bounds the weekend's spend.) The bench loop is
   sequential by nature (one Bench slot, one repo), so the weekend cap exists to keep the
   bench → fix → deploy → re-bench chain moving, not to run workers in parallel. Weekly maximum 24.
 - **Monday 07:00 handoff line reports the week's PM total** from `python scripts/pm-usage.py` so
@@ -146,7 +149,7 @@ Answered by Ben on 2026-09-04 (all six, as recommended). Kept here so a worker c
 | **PM-R4** | Branch policy | **PR per item; the PM merges after green CI.** Workers never push to `main`. |
 | **PM-R5** | Cloud lane | **Yes, docs-only items**, one nightly Sonnet routine, PR output, PM reviews next wake. |
 | **PM-R6** | Usage tier and caps | **Max 20x; the caps above stand.** |
-| **PM-R7** | Nights-and-weekends schedule (Ben's instruction 2026-09-05, amended 10:40: raise the weekend threshold) | **Instruction recorded; the exact cut is a PM default awaiting veto:** windows Mon–Thu 21:00→07:00 and Fri 21:00→Mon 07:00; weekday daytime is Ben's; weeknight ceiling 2 under the 2-per-5h cap; **weekend: 4 per trailing 5h (≤2 Opus), 8 per day-shift (≤4 Opus)**. Ben: say a different hour or number and it changes. |
+| **PM-R7** | Nights-and-weekends schedule (Ben's instruction 2026-09-05, amended 10:40: raise the weekend threshold) | **Instruction recorded; the exact cut is a PM default awaiting veto:** windows Mon–Thu 21:00→07:00 and Fri 21:00→Mon 07:00; weekday daytime is Ben's; weeknight ceiling 2 under the 2-per-5h cap; **weekend: 4 per trailing 5h of any model, 8 per day-shift** (Opus sub-cap dropped 11:55 — the bench loop is all-Opus and serial). Ben: say a different hour or number and it changes. |
 
 New rulings go in this table with a `(waiting)` mark; the PM asks Ben in one batch, not one at a time.
 
@@ -169,7 +172,7 @@ Status: `queued` · `briefed` · `running` · `in-review` · `merged` · `blocke
 | 2 | 15 Pre-commit shim + reinstall | R | sonnet | S | — | merged | #133 |
 | 3 | 16 Build fails loudly on a broken overlay | R | sonnet | S | — | merged | #136 |
 | 4 | 17 Heroic ids into `data/` | R | sonnet | S | — | merged | #137 |
-| 5 | **Bench run 1 of the weekend marathon** — hygiene campaign 2026-08-10 (34 🤖) + Engine-wide (4 🤖); the 106-row queue is sized per the bench-marathon skill: run 2 = leyline scatter (11) + Heroic part 1, then Heroic in dedicated runs | B | opus | L | Foundry window ✓ (opened 09-05 09:13) | running | |
+| 5 | **Weekend bench marathon** — run 1 (hygiene 34 🤖 + engine-wide 4): 10 retired, 2 FAIL, 1 new defect → merged #142. Fix pass 1 (3 defects, 3 pinned tests) → merged #143, deployed 11:50 by hash. **Run 2 = re-test the 3 fixes, then hygiene part 2 (26 🤖 left there)**; run 3 = leyline scatter (11) + Heroic (1, not 54 — the 10:45 count matched the emoji, not open rows). Open 🤖 queue 85 → 76. **Now running: run 2** | B | opus | L | Foundry window ✓ | running | #142 #143 |
 | 6 | 26 Bench PCs get normal vision (R-2) | R | sonnet | S | R-2 ✓ | queued | |
 | 7 | 27 Retire the `GM summon relay` row (R-1) | R | sonnet | S | R-1 ✓ | queued | |
 | 8 | **30** Rulings close-out R-7/R-19/R-34/R-49 (docs only, cloud-eligible) | R | sonnet | S | R-7/19/34/49 ✓ | queued | |
@@ -198,7 +201,8 @@ Status: `queued` · `briefed` · `running` · `in-review` · `merged` · `blocke
 ## Foundry windows
 
 **OPEN — Saturday 2026-09-05 from 09:13** (Ben: "foundry has been updated and is open"). **Deploy
-fact (2026-09-05 09:13):** `module-src-sync.js status` → 6 in sync, 0 stale, 0 hand-edited. The
+fact (2026-09-05 11:50, PM push after fix pass 1):** `module-src-sync.js push` → 1 copied; live and repo
+`register-skills.js` both hash `9575fba2…`; status 6 in sync. _(09:13 fact: 6 in sync at `9027cd17…`.)_ The
 2026-08-10 hygiene campaign (R-60..R-67, live dice math) is now LIVE at the table for the first
 time — its `# BENCH — hygiene campaign 2026-08-10` section (checklist line ~3328) is the first thing
 the bench should run. The checklist carries **106 🤖 rows** in total. The dispatch itself waits for
@@ -230,4 +234,6 @@ prompt on the way, which he is fixing in his own session in the `focused-booth-7
 | 2026-09-05 08:35 | Phone inbox: R-1, R-2, R-4 answered (PM bookkeeping, no worker) | fable | ~20 min | — | Ben answered three standing rulings from the mobile board. Recorded inline in `EDHA_RULINGS.md` (NOT moved to §K — the doc's own rule is that a ruling is settled only once the thing it decides has changed); filed the consequences as TODO items **26** (R-2 bench vision), **27** (R-1 retire the summon-relay row), **28a/28b** (R-4 out-of-combat scope, split before dispatch). R-4 is lane B and cannot be called done without a bench pass | #138 |
 | 2026-09-05 07:30 | #17 Heroic ids into `data/` | sonnet | 11.6 min, 174 turns | 3.3M | merged after review, no bounce. **The item's premise did not survive measurement**: the map is fully dormant, so shipping content is unchanged everywhere — see PM-D1 for the deploy-class call. PM re-derived the collision count through `buildTrees()` (79/82 confirmed) and found the worker's 3 "non-colliding" names are punctuation variants (`Erudition*`, U+2019 apostrophe, hyphen) of talents that DO exist → all 82 are dormant; PM corrected that paragraph in the delta itself rather than spending a bounce. Snapshot has punctuation drift vs `data/` — noted for any re-dump | #137 |
 | 2026-09-05 09:13 | New PM session of record (Ben's chat); phone inbox: R-5, R-7, R-19, R-34, R-49 answered; schedule re-cut to nights and weekends (PM bookkeeping, no worker) | fable | ~35 min | — | Ben confirmed both things the board waited on: the engine is deployed (sync status 6/6) and Foundry is open. Five rulings recorded inline in `EDHA_RULINGS.md`; consequences filed as TODO **29** (R-5, lane B: line zones hit allies) and **30** (docs close-out of the four confirmations; R-34 read as "the trail Regions are the indicator" — flagged for Ben's correction). **PM-R7**: operating windows moved to weeknights 21:00–07:00 + weekends, weekday daytime is Ben's; scheduled tasks re-cut (`edha-pm-daily` → Sat/Sun 07:00, new `edha-pm-weeknight` → Mon–Fri 21:00, both with a late-fire clock guard). The 07:02 daily session could not be messaged (unattended); the board's top line tells it to stand down. Trailing-5h cap is full until 12:05 → next dispatch then: the bench run if Foundry is still up, else item 26 | (this PR) |
-| 2026-09-05 10:45 | Bench run 1 (hygiene campaign + engine-wide, 38 🤖 rows) — `bench-run` | opus | (running) | — | dispatched at 10:45 after Ben's 10:40 message ("It's the weekend… bump up the threshold… make progress on the bench tests while I'm away"); weekend cap raised to 4/5h (PM-R7 amendment); trailing-5h count at dispatch 3 of 4 | |
+| 2026-09-05 10:52 | Bench run 1 = bench run 24 (hygiene campaign + engine-wide, 37 🤖 in scope) — `bench-run` | opus | 39 min, 275 turns | 7.4M | merged after review; one commit trailer stripped by the PM. Deploy hash-verified by the worker. 14 rows touched: **10 PASS retired, 2 FAIL** (Apex Form double-fire; `edhaDialogPick` Cancel returns its action string), **1 new defect** filed as a 🤖 row (R-60 sweep writes ~40 keys to every actor, tripped the socket limiter), 23 not reached (all left 🤖). World restored to snapshot: 0 diffs, Bench logged out. Worker corrected the PM's sizing (Heroic = 1 🤖, not 54). Dispatched at 10:52 after Ben's 10:40 message; weekend cap raised (PM-R7 amendment) | #142 |
+| 2026-09-05 11:33 | Fix pass 1 — run 24's three defects — `test-pass-fixes` | opus | 18.5 min, 161 turns | 3.4M | merged after review, no bounce, no trailers. All three root causes verified in source; `edhaDialogPick` fixed once at the primitive (a `{edhaPick}` box that survives DialogV2's `?? action`), `edhaSceneReset` gained a per-actor claim across combats and an `edhaFlagKeyPresent` gate; 3 pinned tests (550 total, mutation-verified); 3 🤖 re-test rows; ENGINE_INDEX updated. Worker corrected the bench's blast radius (edhaPromptDC's two buttons were not live defects; the Weave cancel was worse than reported). **ENGINE-ONLY — deployed by the PM at 11:50 via `module-src-sync.js push`, hash-verified equal** | #143 |
+| 2026-09-05 11:55 | PM lesson (no worker) | fable | — | — | #142 was merged before CI had finished on its amended (trailer-stripped) commit: `gh pr checks --watch` returned the OLD run's green. Content was byte-identical and the main run went green, but the rule is now explicit: **after any force-push, wait for the run on the NEW sha** (`gh run list --branch <b>` shows it). Also: PM session cost so far 6.7M / 214 turns — most of it the two long-report reviews | |
