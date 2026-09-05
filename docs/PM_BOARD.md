@@ -84,9 +84,16 @@ turns × context: every turn re-reads its own growing context, so long explorati
 reads are what cost, not the model. The work-item skill now tells workers to read bounded ranges
 only and finish in 40–80 turns; re-measure after the next two dispatches.
 
+**Second calibration (2026-09-05, item 16):** two size-S Sonnet workers now differ by 2.4× — item 15
+cost 1.3M over 73 turns, item 16 cost **3.1M over 171 turns**. The difference is not the edit (item
+16's code change is ~30 lines) but the **proof**: a pack-parity proof means installing
+`classic-level`, extracting the pre-fix script, and running two full five-pack builds. So **size is
+the wrong predictor — the proof is.** When queueing, read the item's `verify:` line: `parity`
+roughly doubles a dispatch. Items 17 and 18 both demand parity-class proofs; budget them as M.
+
 | Dispatch | First guess | Measured / revised |
 |---|---:|---:|
-| Sonnet, size S (edit + gates + report) | 0.3–0.6M | **1.3M measured** (item 15, 73 turns) |
+| Sonnet, size S (edit + gates + report) | 0.3–0.6M | **1.3M** (item 15, 73 turns) / **3.1M** (item 16, 171 turns) |
 | Sonnet, size M | 0.6–1.2M | **4.4M measured** (item 25, 181 turns) |
 | Opus, size S | 0.8–1.5M | ~2–4M (revised) |
 | Opus, size M | 1.5–3M | ~5–8M (revised) |
@@ -122,7 +129,7 @@ Status: `queued` · `briefed` · `running` · `in-review` · `merged` · `blocke
 |---:|---|:-:|:-:|:-:|---|---|---|
 | 1 | 25 PM tooling (script + dashboard tab; skills landed in #131) | R | sonnet | M | — | merged | #132 |
 | 2 | 15 Pre-commit shim + reinstall | R | sonnet | S | — | merged | #133 |
-| 3 | 16 Build fails loudly on a broken overlay | R | sonnet | S | — | queued | |
+| 3 | 16 Build fails loudly on a broken overlay | R | sonnet | S | — | merged | #136 |
 | 4 | 17 Heroic ids into `data/` | R | sonnet | S | — | queued | |
 | 5 | 20 One gate list, Windows-clean gates | R | sonnet | M | — | queued | |
 | 6 | 21 Stale-doc sweep | R | sonnet | S | PM-R2 ✓ | queued | |
@@ -158,4 +165,5 @@ the PM then dispatches one `bench-run` worker (Opus) for the accumulated 🤖 se
 | 2026-09-04 18:41 | #25 PM tooling (script + Project tab) | sonnet | 15.5 min, 181 turns | 4.4M | merged after review; 4 trailers stripped; 2 out-of-scope finds → item 21 | #132 |
 | 2026-09-04 19:02 | #15 Pre-commit shim + reinstall | sonnet | 7 min, 73 turns | 1.3M | merged after review; clean first pass, no trailers | #133 |
 | 2026-09-04 19:45 | PM handoff | fable | — | — | loop stopped: window cap reached (2/2), quiet hours next; `edha-pm-daily` created, first run 2026-09-05 ~07:02; next dispatch is #16 (sonnet, S) | #134 |
-| 2026-09-04 19:30 | Mobile PM board (Ben's request; PM built it, no worker) | fable | ~40 min | — | `scripts/pm-state.js` + `tests/pm-state.test.js` + `docs/pm-board-mobile.html`; artifact published, `pm/state` seeded; skill gained the push/inbox procedure. Resume check: no worker running, open PRs #103/#93 are unrelated July branches, window still 2/2 → no dispatch. **Not merged**: on branch `claude/mobile-project-dashboard-7kkbuk`, needs a PR + Ben's merge | branch |
+| 2026-09-04 19:30 | Mobile PM board (Ben's request; PM built it, no worker) | fable | ~40 min | — | `scripts/pm-state.js` + `tests/pm-state.test.js` + `docs/pm-board-mobile.html`; artifact published, `pm/state` seeded; skill gained the push/inbox procedure. **Merged 2026-09-05** as PR #135 (`main` at `ac170d0`) — the earlier "Not merged / needs Ben" note in this row was corrected by the 09-05 session | #135 |
+| 2026-09-05 07:05 | #16 Build fails loudly on a broken overlay | sonnet | 10.9 min, 171 turns | 3.1M | merged after review; clean first pass, no trailers, no bounce. PM re-verified the mutation itself (reintroducing `catch { continue; }` → "Missing expected exception"), re-ran all 8 gates locally green, CI green in 28s | #136 |
