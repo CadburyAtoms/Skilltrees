@@ -875,7 +875,7 @@ KEEP → SAFE.
 
 ---
 
-## 36. [ ] Picker cancel must not burn the once-per-scene use (ruling R-69)
+## 36. [x] Picker cancel must not burn the once-per-scene use (ruling R-69) (2026-09-05, PR #160 — **live behaviour bench-pending**)
 
 **Why:** Ben answered **R-69 on 2026-09-05: "stamp only after a successful pick."** Today
 `edhaDecreeUse` calls `edhaStampSceneOnce(owner, item)` **before** it opens the prohibition picker,
@@ -895,6 +895,10 @@ pick → `sceneOnce` stamped and a second use refused.
 **Done when:** a cancelled pick leaves `sceneOnce` untouched everywhere, a successful pick still
 stamps it, the regression is pinned, the 🤖 row exists, and R-69 moves to `EDHA_RULINGS.md` §K
 citing the PR. **Live engine behaviour: not settled until the bench confirms it.**
+
+**DONE 2026-09-05, PR #160 (ENGINE-ONLY).** Stamp moved below the picker's refund guard; pinned
+behaviourally + generically in `tests/picker-cancel-stamp.test.js`. Detail: the handoff delta.
+⏳ **Bench-pending** (🤖 row under `# BENCH — Sovereignty`); R-69 → §K after it passes.
 
 **PM:** lane B · model opus · size S · deps R-69 ✓ · verify: pinned regression + a bench pass.
 ENGINE-ONLY (F5), no pack rebuild. Fold into the next `test-pass-fixes` dispatch if bench run 27
