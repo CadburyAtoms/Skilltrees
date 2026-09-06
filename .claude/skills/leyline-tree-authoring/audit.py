@@ -267,7 +267,7 @@ def main():
     print("-" * 72)
     for c in targets:
         if not resolve(c)[0]:
-            print(f"{c}: NO FILE"); any_fail = True; continue
+            print(f"{c}: NO FILE — valid keys: {', '.join(sorted(default))}"); any_fail = True; continue
         fl, n, leak, nlazy, fails, warns = audit(c)
         status = "FAIL" if fails else ("WARN" if warns else "PASS")
         print(f"[{status}] {c}: {fl}/{n} flavor, leak {leak}, unwired opposed-skill cards {nlazy}")
