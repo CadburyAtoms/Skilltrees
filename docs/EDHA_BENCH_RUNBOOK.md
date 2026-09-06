@@ -1150,6 +1150,81 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   ONE driver (`applyDamage` with an explicit dealer) and one budget ledger; once the harness was right, six
   rows came off in four calls. **Prefer a family with a shared chokepoint over a family that shares a theme.**
 
+## Operating lessons from run 28 (2026-09-05 — these OVERRIDE older advice where they conflict)
+
+- ❌ **READ THE RULE'S `event` FIELD, NOT JUST ITS HANDLER CONFIG.** Beacon of Stability's
+  `edha-cleanse` handler carries `trigger: "use"`, so `item.use()` looks like the obvious driver — and
+  it posts nothing, spends the activation cost, and reads exactly like a dead talent. The rule's
+  **event** is **`edha-draw-mana`** (`data/authored/leyline-white.json`), which the handler's own
+  registration description says out loud ("Put it on the Draw Mana event for Beacon of Stability's
+  cadence"). Three calls went into diagnosing an engine that was fine. **Before staging any row, dump
+  the authored rule as `{event, handler.type, handler}` — the `event` decides the driver, the
+  `handler` only decides what happens once it fires.**
+- ❌ **A HAND-BUILT STATUS ActiveEffect CANNOT BE REMOVED BY THE ENGINE'S SWEEPS.** `edhaSceneReset`
+  clears statuses with `actor.toggleStatusEffect(st, {active: false})`, and Foundry matches the
+  **CONFIG status's fixed `_id`** (`condedict0000000`, `condcovenant0000`, …) — not `statuses.has(st)`.
+  A probe effect created with `createEmbeddedDocuments("ActiveEffect", [{_id: randomID(), statuses:["edict"]}])`
+  therefore sits in `a.statuses` the whole time, passes the sweep's `a.statuses.has(st)` guard, and
+  **survives** — which reads precisely like "the combat-end sweep does not clear statuses". It cost run
+  28 four calls and nearly a false FAIL on the two-combats row. **Stage a status with
+  `actor.toggleStatusEffect(id, {active: true})`, never by hand.** (Run 24's "one-status AE with no
+  `_id` THROWS" advice still holds for effects that are *not* statuses; for statuses, don't create them
+  at all.)
+- ❌ **VALIDATE A MOVEMENT LANE WITH THE TOKEN'S FOOTPRINT, NOT A CENTRE RAY.** Run 28 swept the map
+  for a clear 3600 px lane with `polygonBackends.move.testCollision(from, to)` — a **point** ray — and
+  got three. The dealers were **2×2 (600 px)** adversaries, and none of them could move a single square
+  there: `edhaApplyMove`, `token.update({x,y})`, `update(…, {teleport: true})` and
+  `token.move(…, {action: "displace"})` **all returned silently with the token unmoved**, no error and
+  no notification, while the centre ray still said "clear". A wide footprint clips walls the ray misses.
+  **Test the four corners of the footprint along the path, or stage large-token rows with a 1×1 dealer.**
+- ✅ **`edha-deal-damage` needs `item.rollDamage()`; `edha-on-hit` needs `applyDamage`. They are
+  different chokepoints and picking the wrong one manufactures a dead-rule reading.** This is run 27's
+  `edha-damage-rider` lesson generalising: driving Brandram with
+  `victim.applyDamage(list, {edhaSource, originatingItem})` fired Shockwave Slam's `edha-on-hit` push
+  perfectly and produced **absolutely nothing** from Unstoppable's `edha-deal-damage` rule. The same
+  call, re-issued as `item.rollDamage()` with the dealer controlled and the victim targeted, fired it
+  first try. **Grep the rule's `event` (see lesson 1) and pick the driver from that, not from the
+  symptom.**
+- ✅ **Run 27's `game.combat` correction really does unblock the old "needs the ACTIVE combat" rows —
+  go re-read every one of them.** Three bestiary `Unstoppable` rows had been BLOCKED since run 16 on
+  "`edhaIsFastTurn` reads the ACTIVE combat and we may not deactivate Ben's". `Combat.create({scene,
+  active: false})` + a combatant + `ui.combat.initialize({combat})` + `combatant.setFlag("cosmere-rpg",
+  "turnSpeed", "fast")` makes `whenFastTurn` **true**, with Ben's combat untouched — and the rule fired
+  for the first time in the project's history. ⚠️ **`edhaCombatantOf` additionally requires
+  `combat.started`**, which is derived (`round > 0 && turns.length > 0`), so remember the
+  `combat.update({round: 1, turn: 0})`.
+- ⚠️ **`createEmbeddedDocuments("Combatant", …)` crosses `tokenId`s the same way run 27's Token create
+  did.** Building the combatant list from a `.slice(-6)` of a running id array produced four combatants,
+  two of them the same actor, and a `tokenId` pointing at somebody else's token — which made
+  `edhaCombatantOf` miss and looked exactly like the old blocker still being in force. **Build
+  `{actorId, tokenId}` pairs explicitly and read the result back by name before driving anything.**
+- ✅ **ONE heal can retire three rows.** `ally.applyDamage([{type: "heal", amount: 4}], {edhaSource:
+  healer, originatingItem: healItem})` fires `edhaDispatchHealReact`, which walks **every**
+  `edha-heal-react` rule on the healer at once — run 28 got Natural Recovery's cleanse offer, Vital
+  Surge's Temp-HP offer and the system heal card from a single call. Pick the CHOKEPOINT, not the talent
+  (runs 25–27's lesson, still the highest-yield habit on the bench).
+- ✅ **A forced throw is a legitimate way to prove an outer catch — but force it at a REAL line.**
+  Both R-59 and the fix-pass-F "a failed button says so" row need a handler to throw, and **neither
+  row's own suggested recipe actually throws** (a deleted talent is swallowed by
+  `fromUuid(...).catch(() => null)`; an already-resolved burst and an already-sprung snare both hit
+  friendly `ui.notifications.info` guards). The working technique: shadow `globalThis.fromUuid` so it
+  throws **synchronously** for `".Item."` uuids only — the actor ref still resolves, the `.catch()` is
+  bypassed because the throw happens before it is reached, and the exception lands in the handler's own
+  outer catch. Restore `fromUuid` in the same call. **Declare the method when you record the row.**
+- ⚠️ **`javascript_tool` timed out three times in this run, and every time the script had already
+  finished its useful work** — the results were sitting in world state and the notification recorder.
+  Run 26's rule still stands (the tail keeps running), but add this: **after a timeout, READ the state
+  before re-driving.** Two of the three timeouts here would have been re-driven pointlessly. Budget
+  ~6 s per `item.use()` and cap dialog-polling loops by wall clock, not by iteration count.
+- ⚠️ **`sessionStorage` survives the F5 that R-66 requires; your page globals do not.** The world
+  snapshot, the created-document lists and the R-66 fixture ids all had to be serialised
+  (`sessionStorage.setItem`, ~52 KB) before the reload and re-hydrated after it. **Persist the snapshot
+  before any row that reloads the page**, or the run ends with nothing to restore from.
+- **Density, measured: 12 rows out of the checklist + 3 rows materially unblocked, 0 engine defects, in
+  ~55 tool calls and 36 minutes.** The three long-deployed **re-tests** were again the densest family
+  (3 rows in ~10 calls) because they share one subject and one actor; the scattered hygiene rows each
+  needed their own tree, resources, token and driver. **Take the re-test block first, every run.**
+
 ## Known limits
 
 - ❌ **RESOLVED AS UNFIXABLE (07-26i): there is no "no written Cognitive/Spiritual defense" creature.**

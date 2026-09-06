@@ -33,6 +33,174 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-05 — BENCH RUN 28 (weekend marathon run 5): **item 36's R-69 fix verified GREEN on all four legs, the two-`consume` question is SETTLED as a system UI default, all three fix-pass-F re-tests pass, and six hygiene rows close — 12 rows leave the checklist, 0 engine defects found, 3 bestiary rows unblocked from BOTH their old blockers.** **World restored to the start snapshot EXACTLY (id-diff clean over all 74 actors, 33 tokens, and every scene collection).** DOCS-ONLY — no engine, no data, no pack rebuild owed.
+
+**Served-engine check (first act of the run).** The cache-busted
+`/modules/edha-content/scripts/register-skills.js` came back **1 509 549 bytes with ZERO CR bytes**
+(raw length == CRLF-normalised length — the first run since `.gitattributes` landed where the served
+file is already LF), SHA-256 **`6fc09da00c55532bc78dbd9db3d39a89663c77e92ea02d40e34925b7552394eb`**
+and git blob **`a335ab4eb6e3941e6444afc25a25588fe9a0e4ff`**, both **byte-identical to
+`main:module-src/scripts/register-skills.js`** computed locally. `decodedBodySize` on the page's
+ORIGINAL `<script>` entry equals the fetched size, so the page is running that code and not a cache.
+World `edha`, user `Bench` (GM), `edha-content` active, `globalThis.edha` present, system 2.1.0,
+Foundry 13.351. **Ben's `Gamemaster` client was connected throughout** — every row below was measured
+with TWO GM clients live. `bench-setup-console.js` re-ran clean: **74 actors before and after, zero
+new creations** (idempotent), and the ranged-weapon fixture was asserted rather than trusted
+(`Shortbow`, `system.attack.type === "ranged"`).
+
+**(1) R-69 / #36 — a CANCELLED Final Decree picker burns nothing. ALL FOUR LEGS PASS; the row retires.**
+⚠️ **Row-text correction: Final Decree is an ORDER (Tessavain) talent and lives on `Bench — Order`,
+not `Bench — Sovereignty`** — the row named the wrong bench PC, and `Bench — Sovereignty` carries no
+such item. Item id `BHSQLSYPbBSY6W7N`; two hostile tokens in blue Attunement Range satisfied the
+pre-cost enemy-net veto.
+
+- **(a) cancel:** Investiture **4 → 1 → 4**, no Decree card, notification *"Final Decree cancelled —
+  cost refunded."*, and `flags["edha-content"].sceneOnce` is **null** — the stamp is gone. That is the
+  fix: run 25 measured the same refund with `sceneOnce.<itemId> === true` left behind.
+- **(b) still usable:** re-used immediately in the same scene and **not** refused — the ItemConsumeDialog
+  and the prohibition picker both re-opened and the cost charged again (4 → 1).
+- **(c) pick:** *"⚖️ FINAL DECREE — Bench — Order speaks the law: every enemy in Attunement Range
+  (Bench Target — Adjacent A, Bench Target — Adjacent B) must not move from its space"*, the `decree`
+  flag written (`{kind: "move"}`, 2 bound, `itemId` matching) and `sceneOnce.BHSQLSYPbBSY6W7N === true`.
+- **(c2) R-61 regression half:** with Investiture restored to 4, a THIRD use was refused **pre-cost**
+  with the unchanged wording *"Edha: Final Decree is once per scene. Nothing spent."* — **Investiture
+  unchanged at 4**, no card, no dialog. The veto's polarity is untouched.
+
+**(2) The two-`consume` question (run 27's new row) — SETTLED: cause (i), a SYSTEM UI default, NOT a
+dropped consume. No Edha bug. Row retires.** The dialog was read instead of blind-clicked, as the row
+asked. The compendium document carries **both** entries (`inv` min/max 1 **and** `foc` min/max 1) —
+nothing is dropped. The system's `ItemConsumeDialog` renders **both rows**, and only the first is
+ticked: `<input … name="Consume 1 Investiture?-shouldConsume" checked>` beside an **unchecked**
+`Consume 1 Focus?`. The cause is one line in **cosmere-rpg 2.1.0's own `index.js`**, with its own
+comment — `// Only automatically check first option, or anything overridden.` →
+`const shouldConsume = options.shouldConsume ?? i === 0;`. Measured both halves on a fresh
+`BENCH Stitchmother R28`: blind **Continue** → inv 10 → 9, foc 8 → 8 (run 27's reading, reproduced
+exactly); **both boxes ticked** → inv 9 → 8 **and** foc 8 → 7. `options.shouldConsume` is a single
+boolean for ALL entries, so there is no per-item authoring escape hatch either. **Whether Edha wants
+that default changed is a design call → filed as `EDHA_RULINGS.md` R-70, not as a bench row.**
+
+**(3) FIX PASS F — all three long-deployed re-tests PASS. Three rows retire.**
+
+- **Living Image's Pay button.** POSITIVE: Investiture **4 → 3** and the card *"🎭 Living Image: Bench
+  — Blue pays 1 Investiture of upkeep (3 left)."* — the 4→4 / 3→3 no-op run 23 measured is gone.
+  **POSITIVE 2 (the document really drives it):** `costPer` edited **1 → 2** on the rule; the next
+  prompt read *"**2 Investiture** per COMPLEX illusion"*, the button read *"Pay 2 Investiture"*, **and
+  pressing it charged 2** (4 → 2, card *"pays 2 Investiture of upkeep (2 left)"*) — the half run 23
+  proved broken. **NEGATIVE:** with Investiture at **0**, the warn toast *"Edha: Bench — Blue has no
+  Investiture left to pay upkeep."*, **no** charge, **no** card. `costPer` restored to 1.
+- **A failed chat-card button now SAYS so.** POSITIVE: *"Edha: illusion upkeep failed — … Details in
+  the console (F12)."* as a red `ui.notifications.error`, with no charge and no card.
+  ⚠️ **The row's own break recipe does not work and should not be repeated:** deleting the talent the
+  prompt points at does **not** throw — `edhaUpkeepInvClick` does `await fromUuid(ds.item).catch(() => null)`
+  and then falls back to `edhaActorRuleOf`, so the button keeps working. The throw was forced at that
+  exact line instead (a `fromUuid` shadow that throws **synchronously** for `".Item."` uuids only, so the
+  actor ref still resolves and the `.catch` is bypassed), which exercises the real handler and the real
+  `edhaClickFailed` route. **NEGATIVE (load-bearing):** three healthy Pay clicks produced **zero toasts
+  of any kind** — routine operation stays silent, so R-59 does not need a veto.
+- **Two combats at once: ending one must not loot the other.** Combat A (`Bench — Order`) and combat B
+  (a bench actor), both carrying `lists.covenants`, a `trigRound` stamp and the `edict`/`covenant`/`concord`
+  statuses. **POSITIVE:** deleting A cleared A's actor completely — ledger → null, `trigRound` → empty,
+  **all three statuses removed**. **NEGATIVE (the whole point):** B's actor kept **ALL** of it — this is
+  exactly what run 23 watched vanish. **NEGATIVE 2:** with only one combat carrying combatants left in the
+  world, deleting it still cleared a **bystander's** Temp HP (an actor never in any combat) *and* swept B —
+  so the fix did **not** narrow the sweep to combatants, which was the tempting wrong fix. **NEGATIVE 3:**
+  advancing a turn in A produced **zero** chat cards and stamped **no new** `trigRound` key on B's actor.
+  ⚠️ **Harness lesson banked (it cost four calls):** hand-built status ActiveEffects with random `_id`s are
+  NOT removable by the sweep. `edhaSceneReset` clears via `actor.toggleStatusEffect(st, {active:false})`,
+  and Foundry matches the CONFIG status's fixed `_id` (`condedict0000000`, …) — so a random-id effect
+  survives, `a.statuses.has(st)` is true the whole time, and it reads exactly like a broken sweep.
+  **Stage statuses with `toggleStatusEffect(id, {active: true})`, never with `createEmbeddedDocuments`.**
+
+**(4) HYGIENE CAMPAIGN — six more rows close.**
+
+- **R-65 / VISIBLE — Beacon's cleanse cost format.** *"🕊️ **Beacon of Stability**: removed **Slowed**
+  from Bench Ally — One **(1 Investiture)**"* — the majority `N Resource` form, not `(−1 Investiture)`.
+  Investiture 4 → 3 and the status really left. ⚠️ **Beacon fires on the `edha-draw-mana` EVENT, not
+  `use`** (`data/authored/leyline-white.json`) — three calls went into "the talent posts no card" before
+  that was read off the authored file. Its `visibleOnly` half proved itself for free along the way: with
+  White walled off from both nearby allies, White Leyline Attunement's own card read *"healed 2 of 4
+  ally(ies) … — **skipped 2 behind a wall**"*.
+- **Regression — Life Cleanse and Natural Recovery card text.** Both drivable from **one** heal
+  (`ally.applyDamage([{type:"heal", amount:4}], {edhaSource, originatingItem})` fired three cards at once).
+  **Restoration:** *"🍃 **Natural Recovery** — spend an Opportunity to remove a condition from …"* →
+  *"🍃 Natural Recovery (Bench — Green): removed **Weakened** from … **(spend an Opportunity)**."*
+  **Life:** *"🩺 **Surgical Precision** — success: remove one condition from …"* → *"🩺 Surgical Precision
+  (Bench — Life): removed **Slowed** from Bench Ally — One."* — 🩺 with **no parenthetical cost note**,
+  🍃 **with** one, exactly as the row requires. The graze branch came free as a negative control: an
+  earlier roll gave *"10 vs … PHY 14: **graze** — no condition is removed (the graze heal stands)."*
+- **R-66 — one-shot cards stay spent across an F5.** Four of the eleven armed and then a **real page
+  reload**: Beacon/cleanse, Natural Recovery, **Vital Surge's Temp-HP offer** and Life Cleanse all came
+  back **disabled** with their labels intact (`✓ cleansed` ×3, `Temp HP granted`), each carrying its
+  message-level `flags["edha-content"].cardResolved`.
+- **VISIBLE — R-59's eleven previously-uncaught buttons.** The **POSITIVE** half (open since run 25) is
+  now done on a real one of the eleven: the Fate **`edha-fate-thread`** button, forced to throw at its own
+  `fromUuid` line, raised *"Edha: fate thread failed — … Details in the console (F12)."* **NEGATIVE:** the
+  same button, healthy, produced **no toast at all** — only its resolve card. (Run 25 had already settled
+  the negative on `charge-all`; this is a second, independent one.)
+- **R-61 — the two open polarities, so all THREE are now proven, each with its OWN unchanged wording.**
+  **STRICT `=== true`** (`edha-marker-command`, Thread of Inevitability): first use posted the declare card
+  and stamped `sceneOnce`; the second refused with *"Edha: Thread of Inevitability is once per scene —
+  nothing spent."*, Investiture unchanged, no card. **default-OFF** (`h.oncePerScene &&`, `edha-def-test`,
+  The Final Study): the first use resolved fully (20 vs PHY 14 SUCCESS, `2d8` → 9 vital, the Insight
+  consumed) and stamped; the second — **with the `counters.insight` bearer deliberately re-armed so only
+  the scene gate could fire** — refused with *"Edha: The Final Study was already used this scene — nothing
+  spent."*, **Investiture 4 → 4**, no card. (default-ON was re-proven in (1) above.)
+- **Regression — resource spend/gain across the ~18 migrated sites.** **Spends:** Final Decree 3 Inv
+  (4→1) · Reknit Form 1 Inv **+ 1 Foc** (10→9, 8→7) · Beacon cleanse 1 Inv (4→3) · Vital Surge 1 Inv (3→2)
+  · Living Image upkeep 1 Inv (4→3) and 2 Inv (4→2). **Gains:** Draw Mana +2 Inv, and the **falsy-zero
+  case** the row names — `Bench — Green` set to **exactly 0** Investiture drew and went **0 → 2** (tier 2),
+  card *"Draws Mana — recover 2 Investiture"*; plus a cross-actor Temp-HP gain of 6 from Vital Surge. Every
+  amount matched its declared cost.
+
+**(5) THE THREE BESTIARY `Unstoppable` ROWS — BOTH historic blockers are RETIRED and the rule FIRED for the
+first time, but the rows STAY 🤖 for their canvas half.** Recorded on all three (Brandram, Cragdrake Alpha
+§3, The Slagbull). ✅ **The Fast-turn blocker is gone**: `edhaCombatantOf` reads `game.combat`, the client's
+**VIEWED** combat, so `Combat.create({active:false})` + `ui.combat.initialize({combat})` +
+`combatant.setFlag("cosmere-rpg","turnSpeed","fast")` makes `whenFastTurn` true **with Ben's combat never
+touched** (run 27's correction, applied). ✅ **The `edhaSpeedFt` NaN defect is FIXED** — it reads
+`edhaDerivedNum(...)` now, so the block's `walk.rate` override of 40 gives a 20 ft half-Speed allowance.
+✅ **Measured:** *"💨 **Unstoppable** — BENCH Brandram R28 moves **20 ft** toward Bench Target — Isolated,
+ignoring Reactions"*, with `oncePerTurn.Unstoppable` stamped. ⚠️ **The driver is `item.rollDamage()`, NOT
+`applyDamage`** — `edha-deal-damage` and `edha-on-hit` ride different chokepoints (the same split run 27
+found for `edha-damage-rider`); an `applyDamage` call fired Shockwave Slam's push and produced **nothing**
+from Unstoppable, which reads exactly like a dead rule. ⛔ **Open, and the blocker is the HARNESS:** all
+three bearers are **2×2 tokens**, and the staged token would not move by ANY route — `edhaApplyMove`, plain
+`token.update({x,y})`, `update(…, {teleport:true})` and `token.move(…, {action:"displace"})` all returned
+silently with the token unmoved, while a centre-to-centre `testCollision` said the lane was clear. **The
+lane had been validated as a POINT RAY; a 2×2 footprint is 600 px wide and clips walls the ray misses.**
+Next run: stage the dealer where a 600 px footprint has clearance, or give the row a 1×1 dealer.
+
+**(6) A ROW WHOSE SUBJECT WAS WRONG — R-65 "Venom Glands (adversary bespoke ability)".** There is no
+adversary venom ROLL to fold: `data/adversaries.json` declares the Stitchmother / Mutated-Thrall grafts
+**`GM-run — NO NAMEABLE HOOK`** (a toggled marker AE, the Slam bonus applied by hand). The rolled Venom
+Glands is the **Life `Mutation`** adaptation, whose chooser click runs `edhaRollFormula` and bakes
+`flags["edha-content"].mutation.venom`. The row now says so and states the real assertion. **NOT RUN** —
+`Bench — Life` carries no `Mutation` item, a bench-roster gap worth fixing in `bench-setup-console.js`.
+
+**(7) A row RELOCATED, not tested.** *"the SYSTEM's own item-damage card still prints the UNFOLDED
+formula"* asked Ben to **decide** something ("whether R-65's fold should also be applied to the authored
+`system.damage.formula` at build time"). Per the 07-27w split that is a **ruling, not a test row** — moved
+to `EDHA_RULINGS.md` as **R-71** with its measurement intact, and removed from the checklist.
+
+**World restore — id-diff EMPTY, better than runs 26/27.** Everything this run created (7 actors, 10
+tokens, 3 combats) was deleted; **74 actors → 74, 33 tokens → 33 with none moved**, 1 combat (Ben's),
+1 region, 0 drawings, 0 templates, 117 walls, 2 scenes. A field-by-field re-diff of **flags, whole effect
+objects and `_source.system.resources` across all 74 actors returned ZERO differences** — the nine bench
+actors whose resources moved, the three whose flags moved and the two whose effects moved were all restored
+to their snapshot values (flags first, then effects, per run 26's watcher lesson). **No campaign actor and
+neither PC was written to.** Bench chat can be flushed (534 messages). Bench was logged out and is
+selectable again on the join screen; the throwaway `127.0.0.1:8099` server was killed.
+
+**Operating lessons (added to `docs/EDHA_BENCH_RUNBOOK.md` as run 28)** — read the rule's **`event`**
+field, not just its handler config, before staging (Beacon); stage statuses through `toggleStatusEffect`,
+never `createEmbeddedDocuments` (the CONFIG-`_id` match); validate a movement lane with the token's
+**footprint**, not a centre ray; and `edha-deal-damage` needs `rollDamage()` while `edha-on-hit` needs
+`applyDamage` — picking the wrong one manufactures a dead-rule reading.
+
+**Density, measured: 12 rows out of the checklist + 3 rows materially unblocked, across ~55 tool calls, in
+36 minutes of wall clock — 0 engine defects found.** The re-test families were again far denser than the
+scattered hygiene rows, and the single densest move was driving **one heal** that fired three different
+talents' cards at once.
 ## 2026-09-05 DELTA — item 38: the Repo tab was ONE dashboard section (`repo-sec0`, ~65 KB) and the pm-state stress cap failed on any new TODO item. **TOOLING-only** — `build-dashboard.js` and `tests/pm-state.test.js` only; no engine, no data, no pack change.
 
 **The defect, as measured (item 36's worker, 2026-09-05).** `parseRepoHygiene()` in
