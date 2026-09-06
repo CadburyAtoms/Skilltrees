@@ -33,6 +33,90 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-06 — FIX PASS 6 (weekend marathon): **bench run 36's two defects, both root-caused; the max-HP flip was the ENGINE double-applying every ADD-mode ActiveEffect at world load.** R-77's recommended default applied. (**ENGINE-ONLY, F5** — no data change, no pack rebuild owed.)
+
+Two defects in, two out, and the second one is much wider than the row that found it. Both fixes are
+one expression each; both ship a pinned regression; all three mutations were verified.
+
+### Rulings (Ben, 2026-09-06 — one default applied, vetoable)
+
+- **R-77 — the Investiture-max persist's gate.** Applied as recommended: **GMs defer to the primary
+  GM, a non-GM owner still writes.** Not `edhaDefBuffGmGate()` outright — that would silently stop a
+  player-owned PC persisting its own max on a table with no GM online, which is the entire reason the
+  owner gate exists (the 2026-06-11 clamp gotcha). R-77 stays **open** in `EDHA_RULINGS.md` with the
+  applied default noted under it; a veto is a one-line change with a pinned test either side of it.
+
+### Bug root causes (both bench-run-36 defect rows)
+
+- 🔴 **The Investiture-max persist wrote from whichever GM client prepared the actor first** —
+  `edhaDeriveInvestiture`'s persist branch gated on `actor.isOwner` plus a **per-client**
+  `_edhaInvPersisted` Set, and nothing else. Neither term is client-count-aware, so with two GM
+  clients connected both are owners and each has its own Set: run 36 measured the **non-primary**
+  `Gamemaster` writing `override: 6` on `Bench — Red` and the **primary** `Bench` writing `override: 5`
+  on `Bench — Blue`, in one window. This was the ONE world-writing site item 12's consolidation did
+  not reach. Fixed by adding `!game.user?.isGM || edhaNoOtherActiveGM()` to the gate — the primitive,
+  not a hand-derived copy, so pass 20's `primaryGmGate` ratchet stays at its floor of 1.
+  **Today's harm was a redundant write, not a wrong value** (both clients derive the same number);
+  the fix is about the family, which is the one that produced the historic double-write bugs.
+
+- 🟠 **The 64 ↔ 57 max-HP flip was ONE LINE in the `ready` hook, and the report's direction was
+  inverted.** The hook that wires the Edha derivations onto `Actor#prepareDerivedData` then refreshed
+  every already-loaded character with a bare **`a.prepareData()`**. Three facts compose into the bug,
+  and all three are readable in source rather than inferable from the symptom:
+  1. `DataModel#reset()` is what re-initialises a document's fields from `_source`
+     (`reset() { this._initialize(); }`; `ClientDocument#_initialize` ends in `_safePrepareData()`).
+     **`prepareData()` resets nothing** — it re-runs the pipeline over whatever the fields hold.
+  2. **cosmere-rpg moves `applyActiveEffects()` out of `prepareEmbeddedDocuments` and into
+     `prepareDerivedData`** — deliberately, with its own comment saying why (so AE changes can read
+     derived values). Base Foundry applies them in `prepareEmbeddedDocuments`.
+  3. `ActiveEffect#_applyAdd` reads the **current** value and writes `current + delta`.
+
+  So the second bare prepare applies every **ADD-mode** change a second time. `Bench — White`'s
+  `Hardy - Max HP` (ADD `@level`, 7 at level 7) read `hea.max.bonus` = 8 + 7 + 7 = **22** → max **64**,
+  where one application is 8 + 7 = 15 → max **57**. Nothing is persisted, so the next real update
+  re-initialised the actor and it snapped back to 57 — **that is the "flip", and why there was no
+  residue.** The bench's own restore-by-`prepareData()` re-doubled it to 64, which is why 64 looked
+  like the resting state.
+
+  **The report had it backwards** ("one application is dropped on the partial-prepare path"): the
+  partial path was **right** and the full prepare double-counted. The separating fact is arithmetic —
+  14 is 2 × `@level`, and `@level` has no value here that is 14. It also agrees with the checklist's
+  own bench-run-22 measurement of Hardy at **+1 per level** (45 → 52 on a level-7 PC), taken via an
+  *add*, which goes through a real update and therefore a real re-init.
+
+  **Scope is far wider than White.** Every character carrying *any* ADD-mode effect — the
+  `Clear Mind`/`Focused Mind` focus-max pair, `Surefooted`'s speed, every `edha-defense-buff` AE —
+  read a doubled bonus on **every client from world load until that actor's next real update**.
+  `Bench — Green` showing "the same numbers" with no such AE is the one part of the report this does
+  not explain, and it is now the re-test's separating measurement: **an actor with no ADD-mode effect
+  must not flip at all.** Fixed generically, one word: **`a.reset()`**.
+
+### New REUSABLE primitives
+
+None — both fixes are corrections at existing sites, which is the right shape here. What is reusable
+is the **rule**, now gated: *never call a bare `Actor#prepareData()`; `reset()` is the "recompute this
+actor" primitive.* `tests/prepare-refresh-reset.test.js` carries a source assert so it cannot regrow,
+the same ratchet shape pass 7 and pass 20 use.
+
+### Pinned regressions (iron rule 4)
+
+- **`tests/inv-persist-gm-gate.test.js`** — the four client shapes (primary GM / second GM / player
+  with a GM online / player with none), plus the unchanged `isOwner` half and a case proving the gate
+  narrows the **write** and not the **derivation** (a second GM must still SHOW the right max).
+  Mutation-verified in both directions: drop the term → the second GM writes (2 fail); swap in
+  `edhaDefBuffGmGate()` → the GM-less player-owned PC stops persisting (1 fail).
+- **`tests/prepare-refresh-reset.test.js`** — an actor modelling the three real semantics above, so
+  the double-apply is reproduced rather than asserted. Mutation-verified: put `prepareData()` back and
+  3 fail. Also pins the per-actor `try/catch` (one throwing actor must not abort the sweep).
+
+### Known limits / needs the bench (🤖, not ⚑)
+
+Both fixes are re-tested by **bench run 37** — the two checklist rows are reworded in place, so Ben's
+marks reset and the rows read as re-tests. Neither is a judgment call; neither is ⚑. **ENGINE-ONLY**:
+F5 or relaunch on Ben's machine, no pack rebuild, no ⟳ Sync.
+
+---
+
 ## 2026-09-06 — BENCH RUN 36 (weekend marathon, run 13): **item 12's two-GM row PASSES on all three migrated sites** — including a player-relayed apply that lands **once** with both GMs connected; item 13's heal clamp and item 14's `edhaSovTargets` split both close. **3 rows off the checklist, 2 new defects found, 1 new ruling (R-77), world diff EMPTY.** (**DOCS-ONLY** — no engine or data change, no pack rebuild owed.)
 
 **Deploy verified by hash first:** the served `register-skills.js`, normalised CRLF→LF, hashed

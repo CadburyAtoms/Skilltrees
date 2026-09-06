@@ -109,6 +109,17 @@ simpler but silently stops persisting for player-owned PCs whenever the primary 
 the actor. **ENGINE-ONLY either way** (no pack rebuild). *(Bench run 36, from item 12's bench row;
 the re-test row is on the checklist under `# BENCH — Engine-wide & cross-tree`.)*
 
+> **APPLIED as the recommended default 2026-09-06 (fix pass 6, ENGINE-ONLY) — pending Ben's veto.**
+> `edhaDeriveInvestiture`'s persist branch now also requires `!game.user?.isGM ||
+> edhaNoOtherActiveGM()`: a GM defers to the **primary** GM, a **non-GM owner still writes** (so a
+> player-owned PC on a GM-less table keeps persisting its own max, which is the whole reason the owner
+> gate exists). The blunt alternative — `edhaDefBuffGmGate()` outright — is **not** what shipped.
+> Both directions are pinned in `tests/inv-persist-gm-gate.test.js` and mutation-verified: drop the
+> new term and the second GM writes again; swap in the blunt gate and the GM-less player-owned PC
+> stops persisting. **A veto is a one-line change** with a failing test on whichever side you pick,
+> so say the word and it flips. The ruling stays OPEN until then.
+
+
 *(R-5 — does Fault Line's line spare allies — ANSWERED 2026-09-05, moved to §K.)*
 
 **R-6. Fault Line's dangerous-terrain Region catches bystanders scene-wide**, with no friend/foe
