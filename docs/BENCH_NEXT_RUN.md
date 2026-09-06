@@ -6,8 +6,9 @@
 > `burst-apply` landed once** (HP 20 → 17, not 14) with both GMs connected. **Item 13's heal clamp**
 > and **item 14's `edhaSovTargets` ally/enemy split** both closed. **3 rows off the checklist, 2 new
 > defects found, 1 new ruling (R-77), final id / effect / flag diffs all EMPTY.** No `⛔ STOP`, **no
-> pack rebuild owed**. Open queue **27 🤖 → 26 🤖** (three retired, two new defect rows added); ⚑
-> unchanged at **21**.
+> pack rebuild owed**. Open queue **27 🤖 → 26 🤖** (three retired, two new defect rows added); the
+> file now reads **27** because **item 10 batch 1 merged behind this run** and added its own row (see
+> step 0). ⚑ unchanged at **21**.
 
 ## Read this first
 
@@ -50,20 +51,23 @@ with the blocker named. **Design questions go to `EDHA_RULINGS.md`, never to the
 **Ten runs running, this block has been the densest thing available. It is thin now — do not spend
 the whole run looking for more of it.**
 
-1. **Item 10 batch 1's row** (disposition fail-open sites → the fail-closed helpers, ENGINE) —
-   ⚠️ **only if it has been deployed.** Its PR was in a parallel worktree during run 36 and was not
-   in the served engine (`95c98d65…`). **Hash-verify first**; if the served hash still starts
-   `95c98d65`, that work is NOT live and its rows are **NOT-DEPLOYED**, not failing.
+1. **Item 10 batch 1's row — `A SIDELESS creature is caught by NOTHING`** (63 disposition defaults
+   flipped to fail CLOSED; ENGINE-ONLY, F5). It merged as **PR #200** *behind* run 36 and was **not**
+   in the engine run 36 drove (`95c98d65…`), so it is the newest thing on the engine and the first
+   thing to hash-verify. **If the served hash still starts `95c98d65`, item 10 is NOT live** and its
+   row is **NOT-DEPLOYED**, not failing — never fail a fix's row against an engine that predates it.
+   The row carries its own probe recipe (a Secret-disposition token, or an actor with no token on the
+   scene) and names three sites to drive with a matched normal-hostile control.
 2. **The two defect rows run 36 filed**, both under `# BENCH — Engine-wide & cross-tree`. Neither is
    drivable as a *pass* yet — they are open defects waiting on a fix — but **re-read them before
    queueing anything**, because the first has a one-paragraph re-test recipe ready for the moment
    R-77 is answered and the fix lands.
 
-## Where the 26 open 🤖 rows are
+## Where the 27 open 🤖 rows are
 
 | Block | 🤖 | Note |
 |---|---|---|
-| **`BENCH — Engine-wide & cross-tree`** | 2 | The two **new defect rows** from run 36 (Investiture-max persist outside the gate; `Bench — White`'s max HP flipping with the prepare path). Both wait on a fix, not on a table. |
+| **`BENCH — Engine-wide & cross-tree`** | 3 | ⭐ **Item 10 batch 1's row is here — it is your step 0** (`A SIDELESS creature is caught by NOTHING`), plus the two **new defect rows** from run 36 (Investiture-max persist outside the gate; `Bench — White`'s max HP flipping with the prepare path). The two defect rows wait on a fix, not on a table. |
 | **Character-creation wizard v2** | 6 | ⛔ **Still never driven, TWELVE runs running.** Every blocker in front of it is closed and the re-test block is finally thin. **This is the block to take FIRST this run.** Re-read each row against DEPLOY STATE (2026-07-26 — every wizard row predates it) before staging; several likely retire on one read. |
 | **Bestiary sections** (W29 ×3, Goldenport, Vorsk, Adversary ability wiring) | 6 | Untouched all marathon; each needs its own fresh pack import + staging. The import recipe is proven (runs 33–34 imported three between them). |
 | **`BENCH — hygiene campaign 2026-08-10`** | 7 | pass 5.2 / 5.3 rows. Includes the ones needing **zero GM clients** — still blocked on Ben. |
@@ -78,7 +82,7 @@ do not re-queue any of them.**
 ## Run 14 — the plan, in order
 
 ### 1. The wizard block — 6 🤖, never driven in TWELVE runs
-**Take this first; the re-test block is finally too thin to eat a run.** Start with a DEPLOY-STATE
+**Take this after step 0's single row; the rest of the re-test block is finally too thin to eat a run.** Start with a DEPLOY-STATE
 re-read of all six rows — the cheapest possible outcome is several retiring without a single cast.
 The **wizard-as-a-player walkthrough** pairs with a player client (`PlayerBench`) and is large: only
 start it if you can finish it, and **open the player window EARLY** — run 36's JS-driven join recipe

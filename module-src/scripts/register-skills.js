@@ -1153,10 +1153,10 @@ function edhaIsIsolated(actor, tok = null) {
       if (e.statuses?.has?.("isolated") && !e.getFlag?.("edha-content", "isoMarker")) return true;
     tok = tok ?? edhaCasterToken(actor) ?? (actor?.isToken ? actor.token?.object : null);
     if (!tok) return false;
-    const disp = tok.document?.disposition ?? 0;
+    const disp = tok.document?.disposition; if (!Number.isFinite(disp)) return false;   // R-63: own side unresolvable → isolation is not judgeable
     return !(canvas?.tokens?.placeables ?? []).some(t =>
       t.id !== tok.id && t.actor
-      && (t.document?.disposition ?? 0) === disp
+      && !edhaSideHostile(t.document?.disposition, disp)   // R-63: a neighbour whose side will not resolve is not PROVABLY an enemy, so it counts as company — this predicate gates a status APPLICATION, so it fails toward NOT isolated
       && (t.actor.system?.resources?.hea?.value ?? 1) > 0
       && edhaAdjacent(tok, t));
   } catch (e) { return false; }
@@ -1678,7 +1678,7 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
             if (owner !== target) {
               const otok = edhaCasterToken(owner);
               if (!otok) continue;                                                                   // (4b) no token on the scene → no reaction
-              if (!ttok || (otok.document?.disposition ?? 0) !== (ttok.document?.disposition ?? 0)) continue;   // (4a) allies only; unknown fails closed
+              if (!ttok || !edhaSideSame(otok.document?.disposition, ttok.document?.disposition)) continue;   // (4a) allies only; unknown side now really does fail CLOSED (R-63 — the ?? 0 pair read two unknowns as the SAME side)
               if (h.rangeColor && !edhaAllyInAttune(owner, ttok, h.rangeColor)) continue;             // the card's "in Attunement Range"
             }
             const spec = {
@@ -2588,9 +2588,9 @@ async function edhaDispatchWatchers(ev) {
           const otok = edhaCasterToken(ev.owner), wtok = edhaCasterToken(w.actor);
           const disp = String(h.disposition || "any");
           if (disp !== "any") {
-            const od = otok?.document?.disposition ?? 1, wd = wtok?.document?.disposition ?? 1;
-            if (disp === "enemy" && od === wd) continue;
-            if (disp === "ally" && od !== wd) continue;
+            const od = otok?.document?.disposition, wd = wtok?.document?.disposition;
+            if (disp === "enemy" && !edhaSideHostile(od, wd)) continue;   // R-63: an unresolvable side matches NEITHER filter
+            if (disp === "ally" && !edhaSideSame(od, wd)) continue;
           }
           // Both tokens are REQUIRED once a range gate is set (07-24r): "within your Attunement
           // Range" is unanswerable when one side is not on the map, and edhaDeathInRange fails OPEN
@@ -3687,9 +3687,9 @@ function edhaNearestListCandidate(owner, victim, ft, list) {
   try {
     if (!victim) return null;
     const vtok = edhaCasterToken(victim); if (!vtok) return null;
-    const odisp = edhaCasterToken(owner)?.document?.disposition ?? 1;
+    const odisp = edhaActorSide(owner);
     const cands = edhaTokensWithin(vtok, Number(ft) || 10).filter(t => t.actor && t.actor !== victim && t.actor !== owner
-      && (t.document?.disposition ?? 1) !== odisp
+      && edhaSideHostile(t.document?.disposition, odisp)
       && (t.actor.system?.resources?.hea?.value ?? 1) > 0
       && !(list ?? []).some(e => e.uuid === t.actor.uuid));
     cands.sort((a, b) => Math.hypot(a.center.x - vtok.center.x, a.center.y - vtok.center.y) - Math.hypot(b.center.x - vtok.center.x, b.center.y - vtok.center.y));
@@ -3806,6 +3806,18 @@ function edhaActorSide(actor) {
   const proto = actor?.prototypeToken?.disposition;
   return Number.isFinite(proto) ? proto : null;
 }
+/* PURE, and the VALUE-level counterpart of edhaDisposHostile / edhaSameDisposition (which take
+ * actors/tokens and re-resolve them). Most side comparisons in this file already hold both raw
+ * dispositions, so routing them through the actor-level pair would re-derive a token the caller
+ * has in hand — these two are the "equivalent inline Number.isFinite guard" R-63 sanctions,
+ * named once instead of hand-rolled per site (item 10, batch 1, 2026-09-06).
+ * The convention, identical to edhaAllyDropEligible / edhaDisposHostile / edhaSameDisposition:
+ * an unresolvable side on EITHER end matches NEITHER predicate — it is not an ally and it is not
+ * an enemy, so no side-filtered payload (buff OR damage) lands on it. `!edhaSideSame(a,b)` is
+ * therefore NOT `edhaSideHostile(a,b)`; pick the one the filter actually means.
+ * Pinned in tests/disposition-failclosed.test.js. */
+function edhaSideSame(a, b)    { return Number.isFinite(a) && Number.isFinite(b) && a === b; }
+function edhaSideHostile(a, b) { return Number.isFinite(a) && Number.isFinite(b) && a !== b; }
 /* PURE (pinned in tests/ally-drop-side.test.js): may this `ally-drops` cue owner fire for this drop?
  * BOTH filters fail CLOSED on a value we could not determine — the same precedent the
  * `edha-hp-threshold` gate states in words ("unknown positions fail CLOSED, the watch-dispatch
@@ -3870,9 +3882,9 @@ async function edhaTurnCueSweep(combat, prior, current) {
     // and Stonebound). A creature busy in its own encounter does not react to this one's turns.
     const guard = edhaCombatEndGuard(combat);
     if (curTok?.actor) {
-      const disp = curTok.document?.disposition ?? 0;
+      const disp = curTok.document?.disposition;
       for (const t of (canvas?.tokens?.placeables ?? [])) {
-        if (!t.actor || t === curTok || (t.document?.disposition ?? 0) === disp) continue;   // hostiles to the mover only
+        if (!t.actor || t === curTok || !edhaSideHostile(t.document?.disposition, disp)) continue;   // hostiles to the mover only — unknown side fails CLOSED (R-63); this cue STAMPS trigRound, so a spurious match writes to a campaign actor
         if (edhaStillFightingElsewhere(t.actor, guard)) continue;                            // fighting in another combat
         for (const { item, h } of edhaCueRules(t.actor, "enemy-turn-start")) {
           const ft = Number(h.rangeFt) || 0;
@@ -4523,10 +4535,10 @@ Hooks.on("preUpdateToken", (doc, changes, options) => {
     const w = (doc.width ?? 1) * gs / 2, h = (doc.height ?? 1) * gs / 2;
     const oldC = { x: doc.x + w, y: doc.y + h };
     const newC = { x: (changes.x ?? doc.x) + w, y: (changes.y ?? doc.y) + h };
-    const disp = doc.disposition ?? 0;
+    const disp = doc.disposition;
     for (const t of (canvas?.tokens?.placeables ?? [])) {
       if (t.id === doc.id || !t.actor) continue;
-      if ((t.document?.disposition ?? 0) !== disp) continue;
+      if (!edhaSideSame(t.document?.disposition, disp)) continue;   // allies only — unknown side fails CLOSED (R-63): no ally, no move veto
       if ((t.actor.system?.resources?.hea?.value ?? 1) <= 0) continue;
       const dOld = Math.hypot(t.center.x - oldC.x, t.center.y - oldC.y);
       const dNew = Math.hypot(t.center.x - newC.x, t.center.y - newC.y);
@@ -4754,13 +4766,13 @@ for (const ctx of ["skill", "attack", "item"]) {
 function edhaAttuneFtColor(owner, color) { return EDHA_ATTUNE_FT[edhaColorRank(owner, color)] || EDHA_ATTUNE_FT[1]; }
 function edhaAlliesInAttune(owner, color) {
   const ot = edhaCasterToken(owner); if (!ot) return [];
-  const disp = ot.document?.disposition ?? 1, ft = edhaAttuneFtColor(owner, color);
-  return edhaTokensWithin(ot, ft).filter(t => t.actor && (t.document?.disposition ?? 1) === disp);
+  const disp = ot.document?.disposition, ft = edhaAttuneFtColor(owner, color);
+  return edhaTokensWithin(ot, ft).filter(t => t.actor && edhaSideSame(t.document?.disposition, disp));
 }
 function edhaAllyInAttune(owner, tok, color) {
   if (!tok) return false;
   const ot = edhaCasterToken(owner); if (!ot || ot.id === tok.id) return false;
-  if ((tok.document?.disposition ?? 1) !== (ot.document?.disposition ?? 1)) return false;
+  if (!edhaSideSame(tok.document?.disposition, ot.document?.disposition)) return false;   // R-63
   return edhaTokensWithin(ot, edhaAttuneFtColor(owner, color)).some(t => t.id === tok.id);
 }
 
@@ -4982,12 +4994,12 @@ async function edhaDesignateClick(ev) {
 function edhaFindMarkGrant(actor) {
   try {
     const rTok = edhaCasterToken(actor); if (!rTok) return null;
-    const rDisp = rTok.document?.disposition ?? 1;
+    const rDisp = rTok.document?.disposition;
     const targeted = new Set(edhaUserTargetTokens().map(t => t.document?.uuid).filter(Boolean));
     if (!targeted.size) return null;
     for (const t of canvas?.tokens?.placeables ?? []) {
       const a = t.actor; if (!a || a.uuid === actor.uuid || t.id === rTok.id) continue;
-      if ((t.document?.disposition ?? 1) !== rDisp) continue;
+      if (!edhaSideSame(t.document?.disposition, rDisp)) continue;   // a same-side DESIGNATOR only — unknown fails CLOSED (R-63)
       const m = a.getFlag?.("edha-content", "plotDieMark");
       if (!m || !edhaRoundWindowValid(m, edhaInActiveCombat(a))) continue;   // R-4/#28a: the DESIGNATOR's combat
       if (targeted.has(m.target)) return { designator: a, mark: m };
@@ -5495,9 +5507,9 @@ function edhaAdjacent(tokA, tokB) {
   return Math.max(dx, dy) <= 1.05;   // Chebyshev ≤ 1 square (orthogonal + diagonal), small epsilon
 }
 function edhaAdjacentAllies(ownerTok) {
-  const disp = ownerTok?.document?.disposition ?? 1;
+  const disp = ownerTok?.document?.disposition;
   return (canvas?.tokens?.placeables ?? []).filter(t => t.id !== ownerTok.id && t.actor
-    && (t.document?.disposition ?? 1) === disp && (t.actor?.system?.resources?.hea?.value ?? 1) > 0 && edhaAdjacent(ownerTok, t));
+    && edhaSideSame(t.document?.disposition, disp) && (t.actor?.system?.resources?.hea?.value ?? 1) > 0 && edhaAdjacent(ownerTok, t));
 }
 
 /* --- H7 `edha-aura` — the adjacency-managed AE sweep (07-25, iron rule 2b) -------------------------
@@ -5645,7 +5657,7 @@ async function edhaBulwarkReactions(victim, dealer, dealtAmt, prevHp, newHp, red
         if (ft > 0 && !edhaTokensWithin(otok, ft).some(t => t.id === vtok.id)) continue;
         if (h.requireAttackerWithinColor) {                                          // Retributive Guard
           if (!attacker || !atok) continue;
-          if ((atok.document?.disposition ?? 1) === (otok.document?.disposition ?? 1)) continue;
+          if (!edhaSideHostile(atok.document?.disposition, otok.document?.disposition)) continue;   // the attacker must be a resolvable ENEMY of the owner (R-63)
           if (!edhaTokensWithin(otok, edhaAttuneFtColor(owner, h.requireAttackerWithinColor)).some(t => t.id === atok.id)) continue;
         }
         const f = String(h.amountFormula || "0").replace(/@dealt\b/g, String(dealtAmt));
@@ -5703,9 +5715,9 @@ async function edhaBulwarkClick(ev) {
     else if (action === "revive" && victim) { const cur = Number(victim.system?.resources?.hea?.value) || 0; await edhaCrossHeal(victim, Math.max(1, 1 - cur), { bypassHealCut: true }); note = `${victim.name} drops to 1 health instead of 0 (Unbreakable Line — on a successful White test).`; }   // prevention, not a heal — Death Ward parity (ruling queued)
     else if (action === "rally-zone") {
       const founds = edhaFoundationsOn(canvas?.scene, owner.id);
-      const disp = edhaCasterToken(owner)?.document?.disposition ?? 1;
+      const disp = edhaActorSide(owner);
       const allies = (canvas?.tokens?.placeables ?? []).filter(t => t.actor
-        && (t.document?.disposition ?? 1) === disp
+        && edhaSideSame(t.document?.disposition, disp)
         && (t.actor.system?.resources?.hea?.value ?? 0) > 0
         && founds.some(d => edhaCivPointInFoundation(d, t.center.x, t.center.y)));
       if (!allies.length) { note = "no standing allies in your Foundations."; }
@@ -6780,9 +6792,9 @@ async function edhaPhantomBeliefSweep(copyDoc, { initial = false } = {}) {
     const belief = foundry.utils.deepClone(copyActor.getFlag("edha-content", "phantomBelief") || { fooled: [], saw: [] });
     const tested = new Set([...belief.fooled, ...belief.saw].map(r => r.uuid));
     const copyTok = copyDoc.object ?? canvas?.tokens?.get?.(copyDoc.id); if (!copyTok) return;
-    const disp = copyDoc.disposition ?? 1;
+    const disp = copyDoc.disposition;
     const fresh = (canvas?.tokens?.placeables ?? []).filter(t =>
-      t.id !== copyDoc.id && t.actor && (t.document?.disposition ?? 1) !== disp
+      t.id !== copyDoc.id && t.actor && edhaSideHostile(t.document?.disposition, disp)
       && !tested.has(t.document.uuid) && edhaCanSee(t, copyTok));
     const gmIds = edhaGmIds();   // R-62: belief-sweep record card (results + a not-urgent retest button) → all GMs, was active-only (🤖 bench row: audience flip)
     if (!fresh.length && initial) {
@@ -10289,13 +10301,13 @@ function edhaEffectTargets(owner, eff, ctx) {
       // and must hit ENEMIES of the owner, not everyone standing near the body. Default "all" keeps
       // every earlier consumer unchanged. Downed creatures are skipped — a body cannot be splashed twice.
       const want = String(eff.nearAffects || "all");
-      const odisp = edhaCasterToken(owner)?.document?.disposition ?? 1;
+      const odisp = edhaActorSide(owner);
       return edhaTokensWithin(vtok, Number(eff.radius) || 5).filter(t => {
         if (!t.actor || t.actor === owner) return false;
         if (want === "all") return true;
         if ((t.actor.system?.resources?.hea?.value ?? 1) <= 0) return false;
-        const same = (t.document?.disposition ?? 1) === odisp;
-        return want === "allies" ? same : !same;
+        const same = edhaSideSame(t.document?.disposition, odisp);
+        return want === "allies" ? same : edhaSideHostile(t.document?.disposition, odisp);   // R-63: NOT-same is not hostile — an unresolvable side is in neither splash
       }).map(t => t.actor);
     }
     /* EVERY MEMBER OF A LEDGER (07-24u). The payload shape the marker trees had no way to express:
@@ -10806,12 +10818,12 @@ async function edhaPlaceAoe(item, spec) {
     const cx = center.center.x, cy = center.center.y;
     await edhaDrawCircle(cx, cy, ft, EDHA_COLOR_HEX[color] || "#d23b2e");
     const affects = spec.affects || "enemies";
-    const casterDisp = edhaCasterToken(actor)?.document?.disposition ?? 1;
+    const casterDisp = edhaActorSide(actor);
     let caught = edhaTokensInCircle(cx, cy, ft, null);
     if (affects !== "all" && affects !== "none") {
       caught = caught.filter(t => {
-        const same = (t.document?.disposition ?? 1) === casterDisp;
-        return affects === "allies" ? same : !same;
+        const same = edhaSideSame(t.document?.disposition, casterDisp);
+        return affects === "allies" ? same : edhaSideHostile(t.document?.disposition, casterDisp);   // R-63: NOT-same is not hostile — an unresolvable side is in neither burst
       });
     }
     if (affects !== "none") { try { edhaSetUserTargets(caught); } catch (e) {} edhaCheckMultiHit(actor, item, caught.length); }
@@ -11242,10 +11254,10 @@ async function edhaBurstDetonate(pid, messageId = null) {
     if (!actor || !tplDoc) { ui.notifications?.warn("Edha: burst template missing — re-cast the talent."); delete EDHA_BURST_PENDING[pid]; return; }
     const cx = tplDoc.x, cy = tplDoc.y;
     const spec = P.spec; const b = spec.burst || {}; const affects = spec.affects || "enemies"; const sizeFt = P.sizeFt;
-    const casterDisp = edhaCasterToken(actor)?.document?.disposition ?? 1;
+    const casterDisp = edhaActorSide(actor);
     let caught = edhaTokensInCircle(cx, cy, sizeFt, null);
-    if (affects === "enemies") caught = caught.filter(t => (t.document?.disposition ?? 1) !== casterDisp);
-    else if (affects === "allies") caught = caught.filter(t => (t.document?.disposition ?? 1) === casterDisp);
+    if (affects === "enemies") caught = caught.filter(t => edhaSideHostile(t.document?.disposition, casterDisp));
+    else if (affects === "allies") caught = caught.filter(t => edhaSideSame(t.document?.disposition, casterDisp));
     else if (affects === "none") caught = [];
     const rd = actor.getRollData();
     const rolls = []; const lines = []; const hits = [];
@@ -11638,9 +11650,9 @@ function edhaIsConstruct(actor) {
 const edhaGetCharges = (o) => edhaOwnerList(o, "charges");
 // Enemy (different-disposition, alive) tokens within `ft` of a point — the burst capture, reused.
 function edhaEnemyTokensInCircle(owner, cx, cy, ft) {
-  const disp = edhaCasterToken(owner)?.document?.disposition ?? 1;
+  const disp = edhaActorSide(owner);
   return edhaTokensInCircle(cx, cy, ft, null).filter(t =>
-    (t.document?.disposition ?? 1) !== disp && (t.actor?.system?.resources?.hea?.value ?? 1) > 0);
+    edhaSideHostile(t.document?.disposition, disp) && (t.actor?.system?.resources?.hea?.value ?? 1) > 0);
 }
 /* Every LIVE token inside a length×width line that starts at (cx,cy) and runs toward (px,py),
  * EXCEPT the caster's own token — the `edha-zone {kind: line}` caught set, so every rule of that
@@ -13075,9 +13087,9 @@ function edhaFateZonesNear(owner, cx, cy, ft) {
 }
 // Nearest living enemy token (of the owner) within `ft` of a point — for spring-in-place triggers.
 function edhaFateNearestEnemyAt(owner, x, y, ft) {
-  const disp = edhaCasterToken(owner)?.document?.disposition ?? 1;
+  const disp = edhaActorSide(owner);
   const r = edhaFtToPx(ft);
-  const cands = (canvas?.tokens?.placeables ?? []).filter(t => t.actor && (t.document?.disposition ?? 1) !== disp
+  const cands = (canvas?.tokens?.placeables ?? []).filter(t => t.actor && edhaSideHostile(t.document?.disposition, disp)
     && (t.actor?.system?.resources?.hea?.value ?? 1) > 0 && Math.hypot(t.center.x - x, t.center.y - y) <= r);
   cands.sort((a, b) => Math.hypot(a.center.x - x, a.center.y - y) - Math.hypot(b.center.x - x, b.center.y - y));
   return cands[0]?.actor ?? null;
@@ -13441,12 +13453,12 @@ async function edhaFateTurnStart(combat) {
     const ally = tok.actor; if (!ally) return;
     await edhaFateRemoveOrdainedBuff(ally);   // expire last round's buff at the start of this actor's turn
     const c = edhaTokenDocCenter(tok);
-    const adisp = tok.disposition ?? 1;
+    const adisp = tok.disposition;
     let buffed = false;
     for (const owner of (game.actors?.filter(a => a.type === "character") ?? [])) {
       const squares = edhaGetOrdained(owner); if (!squares.length) continue;
       const otok = edhaCasterToken(owner);
-      if (otok && (otok.document?.disposition ?? 1) !== adisp) continue;   // allies only (same disposition as the owner)
+      if (otok && !edhaSideSame(otok.document?.disposition, adisp)) continue;   // allies only — unknown side fails CLOSED (R-63)
       const onSq = squares.find(sq => edhaSameSquare(c.x, c.y, sq)); if (!onSq) continue;
       if (!buffed) { await edhaFateApplyOrdainedBuff(ally, onSq.talent); buffed = true; }
       // The THP upgrade is DATA (2bX): the owner's `edha-zone-guard` rule carries the formula —
@@ -13672,12 +13684,11 @@ function edhaSovStepOverride(item, base) {
 /* --- Targeting -------------------------------------------------------------------------------------- */
 // Split the user's current targets by disposition relative to the owner.
 function edhaSovTargets(owner) {
-  const otok = edhaCasterToken(owner);
-  const disp = otok?.document?.disposition ?? 1;
+  const disp = edhaActorSide(owner);   // R-63: a targeted creature is sorted into NEITHER bucket when a side will not resolve
   const toks = edhaUserTargetTokens();
   return {
-    allies: toks.filter(t => t.actor && t.actor !== owner && (t.document?.disposition ?? 1) === disp),
-    enemies: toks.filter(t => t.actor && (t.document?.disposition ?? 1) !== disp),
+    allies: toks.filter(t => t.actor && t.actor !== owner && edhaSideSame(t.document?.disposition, disp)),
+    enemies: toks.filter(t => t.actor && edhaSideHostile(t.document?.disposition, disp)),
   };
 }
 const edhaSovEnemy = (owner) => edhaSovTargets(owner).enemies[0]?.actor ?? null;
@@ -14320,7 +14331,7 @@ async function edhaZoneFortify(item, h) {
       sceneId: scene.id, ownerUuid: owner.uuid, drawingIds: founds.map(d => d.id),
       baked: edhaFoldDieMath(Roll.replaceFormulaData(item.system?.damage?.formula || EDHA_CIV_RED_DIE, owner.getRollData(), { missing: "0" })),
       type: item.system?.damage?.type || "impact", label: item.name,
-      disposition: edhaCasterToken(owner)?.document?.disposition ?? 1,
+      disposition: edhaActorSide(owner),   // R-63: prototypeToken is a real answer; a guessed 1 is not
     };
     if (game.user?.isGM) await edhaCivFortifyGM(payload);
     else game.socket.emit("module.edha-content", { action: "civ-fortify", payload });
@@ -14332,6 +14343,10 @@ async function edhaCivFortifyGM(p) {
   try {
     const scene = game.scenes?.get(p.sceneId); if (!scene) return;
     const owner = await edhaResolveActorRef(p.ownerUuid); if (!owner) return;
+    // R-63 (item 10, batch 1): the owner's side is baked by edhaActorSide at the cast site and rides the socket as a number.
+    // If it did not resolve, do NOT build the region — a Fortified Foundation that cannot tell sides apart damages everyone who enters.
+    const ownerSide = edhaNumOr(p.disposition, null);
+    if (ownerSide === null) { ui.notifications?.warn("Edha: could not resolve the Foundation owner's side — not fortifying."); return; }
     for (const id of (p.drawingIds || [])) {
       const d = scene.drawings.get(id);
       if (!d?.getFlag?.("edha-content", "foundation")) continue;
@@ -14343,11 +14358,11 @@ async function edhaCivFortifyGM(p) {
           // The enemy-cost EXPERIMENT when it registered (allies pass free); else Ben R3's native
           // disposition-blind cost — allies see ×2 too and the GM compensates by hand.
           _edhaEnemyCostRegistered
-            ? { type: "edha-content.enemy-cost", name: "Difficult Terrain (enemies only)", system: { difficulties: { walk: 2 }, ownerDisposition: Number(p.disposition ?? 1) } }
+            ? { type: "edha-content.enemy-cost", name: "Difficult Terrain (enemies only)", system: { difficulties: { walk: 2 }, ownerDisposition: ownerSide } }
             : { type: "modifyMovementCost", name: "Difficult Terrain (enemies — Ben R3)", system: { difficulties: { walk: 2 } } },
-          { type: "edha-content.fortified", name: "Fortified (enter)", system: { ownerUuid: p.ownerUuid, disposition: Number(p.disposition ?? 1), damageFormula: p.baked, damageType: p.type || "impact", sourceLabel: p.label || "" } },
+          { type: "edha-content.fortified", name: "Fortified (enter)", system: { ownerUuid: p.ownerUuid, disposition: ownerSide, damageFormula: p.baked, damageType: p.type || "impact", sourceLabel: p.label || "" } },
         ],
-        flags: { "edha-content": { scope: "scene", fortified: { ownerUuid: p.ownerUuid, drawingId: id, disposition: Number(p.disposition ?? 1) } } },
+        flags: { "edha-content": { scope: "scene", fortified: { ownerUuid: p.ownerUuid, drawingId: id, disposition: ownerSide } } },
       }]);
       try { await d.update({ text: "⛨ Foundation (fortified)", strokeColor: EDHA_COLOR_HEX.red }); } catch (e) {}
     }
@@ -14408,7 +14423,7 @@ class EdhaCivFortifiedRegionBehavior extends foundry.data.regionBehaviors.Region
       if (!edhaNoOtherActiveGM()) return;   // one applier — the PRIMITIVE half on purpose (no isGM: a GM-less table still springs it)
       const tokDoc = event?.data?.token; const actor = tokDoc?.actor; if (!actor) return;
       if ((actor.system?.resources?.hea?.value ?? 1) <= 0) return;
-      if ((tokDoc.disposition ?? 1) === this.disposition) return;        // allies of the owner pass free
+      if (!edhaSideHostile(tokDoc.disposition, this.disposition)) return;   // ENEMIES of the owner only; an unresolvable side on either end fails CLOSED (R-63) and passes free rather than eating the baked damage
       const key = `${this.parent?.id ?? "r"}:${tokDoc.id}`;
       const now = Date.now();
       if (now - (_edhaCivEnterGuard.get(key) || 0) < 1000) return;       // tokenEnter + tokenMoveIn double-fire
@@ -14536,7 +14551,7 @@ async function edhaCivTeleportClick(ev) {
     const from = pair.find(d => edhaCivPointInFoundation(d, tok.center.x, tok.center.y));
     if (!from) { ui.notifications?.warn("Edha: stand inside one of the linked Foundations first."); return; }
     const disp = from.getFlag("edha-content", "foundation")?.disposition;
-    if (disp !== undefined && (tok.document?.disposition ?? 1) !== disp) { ui.notifications?.warn("Edha: the linked roads carry allies only."); return; }
+    if (disp !== undefined && !edhaSideSame(tok.document?.disposition, disp)) { ui.notifications?.warn("Edha: the linked roads carry allies only."); return; }   // `disp !== undefined` stays: an ABSENT authored field means "no restriction" (ENGINE_INDEX's table). The traveller's own unresolvable side is the failed lookup, and now fails CLOSED.
     const dest = pair.find(d => d.id !== from.id);
     // Ben (pass 3, 07-12): a teleport, not a walk — the traveler CLICKS their arrival point inside the
     // destination Foundation, the token is displaced there (no pathing, no wall snag, no stacking).
@@ -14899,10 +14914,10 @@ async function edhaAnnounceTokenMove(tokenDoc, mover, prev) {
     const p0 = { x: prev.x + w / 2, y: prev.y + h / 2 };
     const p1 = { x: tokenDoc.x + w / 2, y: tokenDoc.y + h / 2 };
     if (p0.x === p1.x && p0.y === p1.y) return;
-    const disp = tokenDoc.disposition ?? 1;
+    const disp = tokenDoc.disposition;
     for (const t of (scene.tokens ?? [])) {
       if (t.id === tokenDoc.id || !t.actor) continue;
-      if ((t.disposition ?? 0) === disp) continue;                     // the OTHER side's spaces (the trample semantics; widen with a field when an ally consumer exists)
+      if (!edhaSideHostile(t.disposition, disp)) continue;             // the OTHER side's spaces (trample semantics; widen with a field when an ally consumer exists). R-63: the two ends defaulted to DIFFERENT values (1 vs 0), so TWO unknowns read as opposite sides and the sweep fired.
       if ((t.actor.system?.resources?.hea?.value ?? 0) <= 0) continue;
       const ew = (t.width ?? 1) * gs;
       const c = { x: t.x + ew / 2, y: t.y + ((t.height ?? 1) * gs) / 2 };
@@ -14964,9 +14979,9 @@ async function edhaRedirectClick(ev) {
     if (!owner.isOwner) { ui.notifications?.warn("Edha: only the wearer (or the GM) redirects."); return; }
     let left = Number(btn.dataset.edhaLeft) || 0;
     if (left <= 0) { btn.disabled = true; return; }
-    const otok = edhaCasterToken(owner); const disp = otok?.document?.disposition ?? 1;
+    const disp = edhaActorSide(owner);
     const at = edhaUserTargetTokens().find(t => t.actor && t.actor !== owner
-      && (t.document?.disposition ?? 1) === disp
+      && edhaSideSame(t.document?.disposition, disp)
       && (t.actor.system?.resources?.hea?.value ?? 0) > 0
       && edhaDeathInRange(owner, t, range));
     if (!at) { ui.notifications?.warn(`Edha: target a willing ally in your Attunement Range (${range}) first.`); return; }
@@ -15956,7 +15971,7 @@ function edhaBoundAdvApply(roll, source, config) {
     for (const w of edhaWatchersOfRule("edha-bound-adv")) {
       const h = w.handler, owner = w.actor;
       const otok = edhaCasterToken(owner); if (!otok) continue;
-      if ((atok.document?.disposition ?? 1) !== (otok.document?.disposition ?? 1)) continue;   // "you and your allies"
+      if (!edhaSideSame(atok.document?.disposition, otok.document?.disposition)) continue;   // "you and your allies" — unknown side fails CLOSED (R-63)
       const key = String(h.list || "").trim(); if (!key) continue;
       const bound = edhaOwnerList(owner, key, String(h.listStatus || key).trim()).some(e => e.uuid === ta.uuid)
         || (h.includeDecree === true && (owner.getFlag?.("edha-content", "decree")?.bound ?? []).includes(ta.uuid));
@@ -16421,11 +16436,11 @@ function edhaTokenInOwnedTerrain(tok, owner) {
   return edhaOwnedTerrainRegions(owner, tok.scene ?? canvas?.scene).some(r => edhaPointInRegion(r, tok.center?.x ?? 0, tok.center?.y ?? 0));
 }
 function edhaEnemiesInOwnedTerrain(owner) {
-  const ot = edhaCasterToken(owner); const disp = ot?.document?.disposition ?? 1;
+  const disp = edhaActorSide(owner);
   const regions = edhaOwnedTerrainRegions(owner);
   if (!regions.length) return [];
   return (canvas?.tokens?.placeables ?? []).filter(t => t.actor
-    && (t.document?.disposition ?? 1) !== disp
+    && edhaSideHostile(t.document?.disposition, disp)
     && (t.actor?.system?.resources?.hea?.value ?? 1) > 0
     && regions.some(r => edhaPointInRegion(r, t.center?.x ?? 0, t.center?.y ?? 0)));
 }
@@ -16934,7 +16949,7 @@ function edhaUnseenWardPreRoll(roll, source, config) {
     for (const { actor: owner, item: tal, handler: h } of edhaWatchersOfRule("edha-unseen-ward")) {
       if (h.excludeSelf !== false && owner === da) continue;  // "an ally" — the owner itself is excluded
       const otok = edhaCasterToken(owner); if (!otok) continue;
-      if ((otok.document?.disposition ?? 1) !== (dtok.document?.disposition ?? 1)) continue;
+      if (!edhaSideSame(otok.document?.disposition, dtok.document?.disposition)) continue;   // "an ally" — unknown side fails CLOSED (R-63)
       if (!edhaTokensWithin(otok, Number(h.rangeFt) || 10).some(x => x.id === dtok.id)) continue;
       const T = foundry.dice?.terms ?? {};
       if (!T.OperatorTerm || !T.NumericTerm) return;
@@ -16975,10 +16990,10 @@ async function edhaRunPulse(item, h) {
   const owner = item?.actor; if (!owner) return;
   const tok = edhaCasterToken(owner); if (!tok) return;
   const ft = edhaAttuneFtColor(owner, h.rangeColor || "white");
-  const disp = tok.document?.disposition ?? 1;
+  const disp = tok.document?.disposition;
   const enemies = String(h.who || "allies") === "enemies";
   const inRange = edhaTokensInCircle(tok.center.x, tok.center.y, ft, tok.id)
-    .filter(t => t.actor && ((t.document?.disposition ?? 1) === disp) !== enemies);
+    .filter(t => t.actor && (enemies ? edhaSideHostile(t.document?.disposition, disp) : edhaSideSame(t.document?.disposition, disp)));   // R-63: an unresolvable side is in NEITHER pulse
   const skips = { hidden: 0, wall: 0, ally: 0 };
   let picked = !h.visibleOnly ? inRange : inRange.filter(t => {
     if (t.document?.hidden) { skips.hidden++; return false; }
@@ -17111,7 +17126,7 @@ async function edhaZoneFoundation(item, h) {
     const payload = {
       sceneId: scene.id, x, y, size: sizePx,
       casterId: actor.id, casterName: actor.name,
-      disposition: tok?.document?.disposition ?? 1,
+      disposition: edhaActorSide(actor),   // R-63: prototypeToken is a real answer; a guessed 1 is not
       maxSustained: edhaListCap(actor, h?.capFormula || "@tier"),
     };
     if (game.user?.isGM) await edhaFoundationPlace(payload);
@@ -18609,7 +18624,7 @@ function edhaRegisterNativeEventSystem() {
         return await edhaOwnerListQueue(owner, key, async () => {   // queued RMW (07-26n) — fresh read inside
           let list = edhaOwnerList(owner, key, status).slice();
           const cands = edhaTokensWithin(otok, ft)
-            .filter(t => t.actor && (t.document?.disposition ?? 1) !== (otok.document?.disposition ?? 1)
+            .filter(t => t.actor && edhaSideHostile(t.document?.disposition, otok.document?.disposition)
               && (t.actor.system?.resources?.hea?.value ?? 1) > 0 && !list.some(e => e.uuid === t.actor.uuid))
             .sort((a, b) => Math.hypot(a.center.x - otok.center.x, a.center.y - otok.center.y) - Math.hypot(b.center.x - otok.center.x, b.center.y - otok.center.y));
           const placed = [];
