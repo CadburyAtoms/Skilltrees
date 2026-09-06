@@ -1231,6 +1231,69 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   (3 rows in ~10 calls) because they share one subject and one actor; the scattered hygiene rows each
   needed their own tree, resources, token and driver. **Take the re-test block first, every run.**
 
+## Operating lessons from run 29 (2026-09-05 — these OVERRIDE older advice where they conflict)
+
+- ❌ **THE HIDDEN PANE SWALLOWS EVERY ANIMATED TOKEN MOVE, SILENTLY — and this is what run 28
+  misdiagnosed as a 2×2 footprint clipping walls.** v13 routes an **animated, non-teleport** token
+  update through its movement/animation pipeline. With the Browser pane hidden, `document.hidden`
+  is `true` and **`requestAnimationFrame` never fires**, so that pipeline never advances and the
+  position write **never commits** — no error, no notification, and `await doc.update(...)` still
+  **resolves**. Measured, holding everything else constant:
+  `doc.update({x,y}, {animate: true, teleport: false, edhaForced: true})` (the engine's exact option
+  set, from `edhaMoveTokenTo`) → **token unmoved**; the identical call with **`animate: false`** →
+  **moved, to the exact pixel**. A **1×1** token fails the same way as a 2×2, which is what rules the
+  footprint out. **This is not an engine defect** — `edhaComputeMove` picks the right destination and
+  `edhaMoveTokenTo`'s `try/catch` has nothing to catch.
+  **Two workarounds, both declared when you use them:**
+  1. **Pump the ticker** — `canvas.app.ticker.update(performance.now())` in a loop. ⚠️ A
+     `setInterval` is **clamped to ~1 Hz in a hidden page**, so the animation crawls and can settle
+     mid-path; use a tight `await new Promise(r => setTimeout(r, 0))` yield loop instead. Shimming
+     `window.requestAnimationFrame` alone is **not** enough: PIXI's ticker is already parked on a
+     real rAF callback that will never fire, so you must kick the ticker as well.
+  2. **`animate: false`** for any move that is pure staging (resetting a fixture, parking a token).
+     Instant and exact — prefer it over diagnosing a refusal.
+  **Corollary: never conclude "the token could not be moved" from an animated update.** Re-issue it
+  with `animate: false` before writing anything down. Run 28 lost three rows to this.
+- ❌ **A whole-object resource restore does NOT round-trip.**
+  `actor.update({"system.resources": snap.res}, {diff: false, recursive: false})` left
+  `inv.max.override` at **2** where the snapshot said **4**, on three separate actors — silently, and
+  it survived a re-diff as real drift. Re-issuing the same values as **dotted paths**
+  (`"system.resources.inv.max.override"`, `".useOverride"`, `".value"`) restored them exactly.
+  **Restore `_source` resources field-by-field with dotted keys**, then re-diff; the whole-object
+  form looks like it worked and does not.
+- ✅ **Confirm the previous run's blocker from the DATA before you re-stage it.** Both open R-64
+  halves had been carried as "structurally hard, re-queue next run" since run 25. A single sweep of
+  `data/authored/*.json` settled them permanently: `edha-reveal {target: victim}` ships **exactly one**
+  rule and `edha-owner-list {target: victim}` **exactly eight**, and **all nine sit on
+  `edha-test-success`** — behind an H1 def-test that resolves its own target after the roll, so the
+  payload creature and the canvas selection can never differ, and there is no alternative rule to try.
+  **That is a finished result, not a queue item.** Write the sweep, the count, and the condition that
+  would reopen it. Cost: one Bash call, versus a staging attempt every run forever.
+- ⚠️ **A row's stated SUBJECT can be wrong in a way that makes it look unstageable — check the name
+  and the handler before believing "the fixture is missing".** Two of this run's rows were mislabelled:
+  - *Venom Glands* was recorded as needing a hand-granted `Mutation` item. The talent is called
+    **`Adaptive Mutation`** and `Bench — Life` already had it — a **name mismatch, not a roster gap**
+    (and the proposed `bench-setup-console.js` fix was therefore unnecessary).
+  - *"Set Charge / Detonate's ally-heal half"* is **not reachable through Set Charge at all**:
+    `edhaResolveCharges` hard-codes `heal: false`, and the `if (b.heal)` fold branch lives in
+    **`edhaBurstDetonate`** (`edha-burst`). Grepping every authored rule found 3 `edha-burst` rules and
+    exactly one heal-configured — **Mending Aura** — which drove the row in one call.
+  **Grep the handler that actually owns the branch, then find who ships it**, rather than trusting the
+  talent name on the row.
+- ✅ **Validate a lane against walls AND tokens.** Run 28's footprint advice was aimed at the wrong
+  cause, but the token half of it is real: the first lane run 29 picked was wall-clear and had a
+  `Trooper` sitting in it, and `edhaComputeMove`'s occupied-destination step-back correctly produced
+  *"moves **10 ft** … (stopped by BENCH Brandram R29)"* instead of the full 20. Sweep both, or read the
+  card's own stop-reason — it names its blocker.
+- ⚠️ **`javascript_tool` still times out on long position polls, and the script still keeps running**
+  (runs 26/28). Three timeouts this run, all three with the useful work already done. **Structure the
+  call so it cannot hang: fire the driver in one call, read the result in the next.** Do not await an
+  animation inside the same call that starts it.
+- **Density, measured: 5 rows off the checklist + 2 halves closed on rows that stay open + 1 retracted
+  root cause, in ~30 tool calls / ~45 minutes, 0 engine defects.** The single highest-value move was
+  **refusing to accept the previous run's stated blocker** and re-deriving it — it converted three
+  "canvas half open" rows into passes and stopped a wrong diagnosis propagating into run 30.
+
 ## Known limits
 
 - ❌ **RESOLVED AS UNFIXABLE (07-26i): there is no "no written Cognitive/Spiritual defense" creature.**

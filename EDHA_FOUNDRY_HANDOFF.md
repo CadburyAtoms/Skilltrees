@@ -33,6 +33,109 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-05 — BENCH RUN 29 (weekend marathon run 6): **the three `Unstoppable` CANVAS halves are PROVEN and run 28's 2×2-footprint diagnosis is RETRACTED — the blocker was never the walls; R-65's last two rows close (both with corrected subjects); both open R-64 halves are settled as "no drivable shape", proven from data.** **5 rows leave the checklist, 2 halves closed on rows that stay open, 0 engine defects found.** **World restored EXACTLY — field-level id-diff empty across all 74 actors, 33 tokens, both scenes.** DOCS-ONLY — no engine, no data, no pack rebuild owed.
+
+**Served-engine check (first act of the run).** Cache-busted
+`/modules/edha-content/scripts/register-skills.js` came back **1 509 549 bytes with ZERO CR bytes**, SHA-256
+**`6fc09da00c55532bc78dbd9db3d39a89663c77e92ea02d40e34925b7552394eb`** — **byte-identical** to
+`HEAD:module-src/scripts/register-skills.js` hashed locally (raw and CRLF-normalised agree on both sides).
+`decodedBodySize` on the page's ORIGINAL `<script>` entry equals the fetched size, so the page is running that
+code and not a cache. World `edha`, user `Bench` (GM), `edha-content` active, `globalThis.edha` present, system
+2.1.0, Foundry 13.351. **Ben's `Gamemaster` client was connected throughout** — every row below was measured
+with TWO GM clients live. Bench roster intact at 74 actors; the ranged fixture was asserted rather than trusted
+(`Shortbow`, `system.attack.type === "ranged"`).
+
+**(1) THE HEADLINE — `Unstoppable`'s canvas half PASSES on all three bearers, and RUN 28's ROOT CAUSE WAS WRONG.**
+Run 28 left these three rows open on "all three bearers are 2×2 tokens and a 600 px footprint clips walls a centre
+ray misses". **That is retracted.** Run 29 first found a lane whose **four footprint corners AND centre** were all
+`testCollision`-clear over the full 1200 px path *and* free of tokens — and the token still did not move. The real
+cause, isolated by holding every other variable constant:
+
+- `doc.update({x, y}, {animate: true, teleport: false, edhaForced: true})` — **the engine's exact option set**, the
+  one `edhaMoveTokenTo` uses — **resolved with the token unmoved**.
+- The **identical call with `animate: false`** moved it, to the exact pixel Unstoppable had aimed at.
+- A **1×1** token failed the same way, which is what rules the footprint out for good.
+- `document.hidden === true`, `document.visibilityState === "hidden"`, and **`requestAnimationFrame` never fired**.
+
+So: v13 routes an **animated, non-teleport** token update through its movement/animation pipeline; with the Browser
+pane hidden that pipeline never advances and the position write never commits. It is **run 22/26's rAF family**
+(`canvas.animatePan` never settling), not a wall, not a footprint, and **not an engine defect** — `edhaMoveTokenTo`
+computes the right destination and its `try/catch` simply has nothing to catch. Workaround, declared: pump
+`canvas.app.ticker.update(performance.now())` on a timer (a `setInterval` is clamped to ~1 Hz in a hidden page — use
+a tight `setTimeout(…, 0)` yield loop), or use `animate: false` for staging moves. With the pump running:
+
+- **Brandram** — *"💨 **Unstoppable** — BENCH Brandram R29 moves **20 ft** toward Bench Target — Isolated, ignoring
+  Reactions"*, token **(4000,7850) → (5200,7850) = 1200 px = exactly 20 ft** at 60 px/ft, `oncePerTurn.Unstoppable`
+  stamped. **Negative control, free:** a second `Ram.rollDamage()` in the SAME turn produced the damage card only —
+  no Unstoppable card, no move, `oncePerTurn` unchanged. **Row stays open for its Reckless Advance distance defect
+  only** (unchanged from run 19).
+- **Cragdrake Alpha** — same card and the same **1200 px = 20 ft**; row **RETIRED WHOLE**. A second free control
+  arrived by accident: with Brandram still in the lane the card correctly read *"moves **10 ft** … **(stopped by
+  BENCH Brandram R29)**"* — `edhaComputeMove`'s occupied-destination step-back works and names its blocker.
+- **The Slagbull** — same card, same **1200 px = 20 ft**; row **RETIRED WHOLE**.
+
+All three were driven as `active: false` bench combats (`ui.combat.initialize` + `combat.update({round, turn})` +
+`turnSpeed: "fast"`), with **Ben's combat never touched**, and with `item.rollDamage()` as the driver — run 28's
+`edha-deal-damage` chokepoint lesson, confirmed again.
+
+**(2) R-65 — Venom Glands. PASS, row retires — and the fixture "gap" did not exist.** ⚠️ **Run 28's note that
+`Bench — Life` carries no `Mutation` item was a NAME MISMATCH, not a roster gap.** The talent is
+**`Adaptive Mutation`**, and `Bench — Life` has carried it all along — **so TODO item 40 does not need to add it.**
+Used (2 Investiture, 2 → 0), the chooser card posted, and the **Venom Glands** button carried the authored formula
+`floor(((@tier)d(2 * @skills.green.rank + 2)) / 2)`. The click wrote
+`flags["edha-content"].mutation = {kind: "venomGlands", keen: 0, venom: 4, deflect: 0, …}` — `venom` is the
+**number 4**, a real rolled integer inside the legal range of `floor(2d8/2)` for this actor (tier 2, green rank 3),
+**not 0 and not a formula string**. Card: *"🧬 Bench — Life gains Venom Glands for the scene."*
+
+**(3) R-65 — the ally-HEAL branch. PASS, row retires — and its subject was wrong too.** ⚠️ **The heal branch is not
+reachable through Set Charge at all.** Set Charge detonates via `edhaResolveCharges`, which hard-codes `heal: false`
+on every hit it builds; the `if (b.heal)` fold branch lives in **`edhaBurstDetonate`**, the `edha-burst` handler — a
+different family. A sweep of every authored rule found **three** `edha-burst` rules shipped (Sudden Growth, Flame
+Surge, Mending Aura) and exactly one heal-configured: **Mending Aura** (White), `heal: true` + `affects: "allies"`
+at the handler's TOP level. Driven there: `Bench — White` placed the burst over an ally at 10/41 HP and pressed
+**Detonate Mending Aura** — the message's own roll came back **`floor(2d8 / 2)` → total 6** with real dice terms
+(two d8s), i.e. the computed die math FOLDED to plain `2d8` and genuinely ROLLED. Card: *"💥 **Mending Aura**
+healed: R29 White: +6 HP (capped at max) R29 Ally: +6 HP (capped at max)"*, ally HP **10 → 16** matching the roll
+exactly. **Free negative control:** the card rendered twice, both Detonate buttons were clicked, the second returned
+*"That burst was already resolved."* and applied **nothing** — `EDHA_BURST_PENDING`'s claim-immediately guard holds.
+
+**(4) R-64's two open halves — SETTLED as "no drivable shape on this harness", and proven from DATA rather than
+repeated on trust.** A sweep of every authored rule on today's `main`:
+
+- **`edha-reveal {target: victim}`: exactly ONE rule ships** — Sharp Eye (`heroic-hunter.json`) — on
+  **`edha-test-success`**.
+- **`edha-owner-list {target: victim}`: exactly EIGHT ship** — Chaos ×7 (Cascade Collapse, Entropy Strike, Isolating
+  Pressure, Isolating Ruin, Spreading Omen, Unravel Everything, Unweaving) and Death ×1 (Reaper's Harvest) — **all
+  eight on `edha-test-success`**.
+
+That is **9 of 9 victim-mode rules behind an H1 def-test that resolves its own target AFTER the roll**, so the
+payload's creature and the canvas selection cannot be made to differ, and there is no alternative rule to stage.
+Recorded on both rows as a RESULT with an explicit "do not re-queue" and the condition that would reopen it (a
+talent shipping either handler on an event that carries its own victim). Run 25's and run 28's reading is confirmed.
+
+**Not reached, still 🤖 (no re-filing as ⚑):** Magnum Opus and Pack Share (R-65 — each needs its own tree and
+resources), pass 5.2's R-63 same-side regression, and the **player-client window** (Job 6b + R-62's audience flips) —
+the ~45-minute driving budget went to the Unstoppable root-cause, which was the right trade: it retracts a wrong
+diagnosis that would have cost every future run. The four July sections were **not** driven cold and remain 🤖.
+
+**World restore — id-diff EMPTY, field-level.** Created this run: 3 actors, 6 tokens, 1 combat, 1 template; all
+deleted. **74 actors → 74, 33 tokens → 33 with none moved**, 1 combat (Ben's), 117 walls, 1 region, 0 drawings,
+0 templates, 2 scenes — every count back to the start snapshot. A field-by-field re-diff of **flags, whole effect
+objects, `_source.system.resources` and `ownership` across all 74 actors returned ZERO differences**. **No campaign
+actor and neither PC was written to; no scene was activated or deactivated.** Bench chat can be flushed (534 → 550
+messages). The rAF shim and ticker pump were removed before leaving, and Bench was logged out and is selectable
+again on the join screen. `PlayerBench` was never joined this run.
+
+**Operating lessons (added to `docs/EDHA_BENCH_RUNBOOK.md` as run 29)** — the hidden-pane rAF stall silently
+swallows every animated token move (and how to pump past it); a whole-object `{recursive: false}` resource restore
+does not round-trip and must be re-issued as dotted paths; and "confirm the previous run's blocker from the DATA
+before re-staging it" is what turned two R-64 halves from a permanent queue item into a finished result.
+
+**Density, measured: 5 rows off the checklist + 2 halves closed on rows that stay open + 1 retracted root cause,
+across ~30 tool calls in ~45 minutes of driving — 0 engine defects found.**
+
+---
+
 ## 2026-09-05 DELTA — item 20: one gate list, and gates that pass on Windows (TOOLING-only).
 
 The ordered gate list existed hand-copied in six places (`package.json`, `README.md`, `CLAUDE.md`

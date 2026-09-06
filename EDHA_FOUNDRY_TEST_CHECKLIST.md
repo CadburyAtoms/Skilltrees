@@ -3033,14 +3033,24 @@ consumer of `whenMovedTowardFt`, working.)*
       `edha-damage-rider`). An `applyDamage(..., {edhaSource, originatingItem})` call fired Shockwave Slam's
       `edha-on-hit` push and produced **absolutely nothing** from Unstoppable — indistinguishable from a dead
       rule. Control the dealer's token, target the victim, call `item.rollDamage()`.
-      ⛔ **Still open — the CANVAS half only, and the blocker is the HARNESS, not the engine.** All three
-      Unstoppable bearers are **2×2 tokens**, and the staged 2×2 token could not be moved by ANY route:
-      `edhaApplyMove`, a plain `token.update({x, y})`, `update(…, {teleport: true})` and
-      `token.move(…, {action: "displace"})` all returned silently with the token unmoved — while a
-      centre-to-centre `testCollision` reported the lane clear. The lane was validated as a **point ray**;
-      a 2×2 footprint is 600 px wide and clips walls the ray misses. **Next run: stage the dealer where a
-      600 px footprint has real clearance (or give the row a 1×1 dealer) and re-drive — the rule itself is
-      now proven live.**
+      ✅ **2026-09-05, bench run 29 — the CANVAS half is PROVEN and the Unstoppable half of this row is
+      CLOSED. Only the Reckless Advance distance defect (above) keeps the row open.** `BENCH Brandram R29`
+      (2×2, `walk.rate` override 40), `active: false` bench combat, `turnSpeed: "fast"`, `Ram.rollDamage()`:
+      *"💨 **Unstoppable** — BENCH Brandram R29 moves **20 ft** toward Bench Target — Isolated, ignoring
+      Reactions"* and the token **really moved (4000,7850) → (5200,7850) = 1200 px = exactly 20 ft**, with
+      `oncePerTurn.Unstoppable` stamped. **Negative control (free, same turn):** a second `Ram.rollDamage()`
+      before the round stepped produced the damage card ONLY — no Unstoppable card, no move, `oncePerTurn`
+      unchanged. Once-per-turn holds.
+      ❌ **RUN 28'S 2×2-FOOTPRINT DIAGNOSIS IS RETRACTED — it was never the walls.** Run 29 staged the same
+      move on a lane whose four footprint corners AND centre were all `testCollision`-clear and token-clear,
+      and the token still did not move. Root cause, isolated by holding everything else constant: v13 routes an
+      **animated, non-teleport** token update through its movement/animation pipeline, and with the Browser pane
+      hidden `document.hidden === true` and **`requestAnimationFrame` never fires**, so the animation never
+      advances and the position write never commits. `doc.update({x,y}, {animate: true, teleport: false,
+      edhaForced: true})` (the engine's exact option set, via `edhaMoveTokenTo`) **resolved with the token
+      unmoved**; the identical call with **`animate: false` moved it**. A **1×1** token failed exactly the same
+      way, which is what rules the footprint out. Not an engine defect — a harness limit with a workaround (pump
+      `canvas.app.ticker.update()`; see the run-29 runbook lessons).
 
 *(**Bloodied withdraw cue** — RETIRED on evidence 2026-07-28e, bench run 19:
 *"⏰ Deny It the Run-Up (Bench Adv — Brandram): Bloodied — it withdraws uphill; it has proved what it
@@ -3141,62 +3151,15 @@ saves, with HP deltas matching exactly. For contrast, the pre-rebuild reading wa
       `edhaResolveKiller` resolves the killer from `canvas.tokens.controlled` — NOT from the damage
       dealer — so the Alpha's token must be CONTROLLED when the victim drops or the row reads as a
       dead talent (it did, once, before staging was corrected).)*
-- [ ] 🤖 **Unstoppable** — damage on a Fast turn → half-Speed engine move, once per turn.
-      *(2026-07-27x bench run 16 — **BLOCKED at the table, but a blocking DEFECT is already proven
-      by measurement.** ⛔ Blocker: `edhaIsFastTurn` → `edhaCombatantOf` reads **`game.combat`**, the
-      ACTIVE combat. A bench combat cannot be made active without deactivating **Ben's live campaign
-      combat** (`BerbNeuXp4iKduef`, round 1), which the bench safety rules forbid. Measured: the
-      Alpha sat in the bench combat with `turnSpeed: "fast"`, yet the `edhaIsFastTurn` expression
-      evaluated against live state returned **false**, so `whenFastTurn` returned before any move —
-      no card, token unmoved. Row stays 🤖 (technical blocker, not a judgment call). ⛔ **Defect
-      that would fail this row anyway, provable without a Fast turn:** `edhaSpeedFt` does
-      `Number(getProperty(actor, "system.movement.walk.rate"))`, but `walk.rate` is an OBJECT
-      `{bonus, derived: 20, override: 40, useOverride: true}` → `NaN || 0` → **0**. So
-      `edhaMoveAllowanceFt {byHalfSpeed}` returns `floor(0/2)` = **0 ft** — Unstoppable can only ever
-      move zero. Effective speed should read **40**. Pack-wide blast radius **3**: Cragdrake Alpha,
-      The Slagbull and Brandram, all on an item named "Unstoppable". Same object-as-scalar family as
-      the ambush-belief Perception mod (Lunavar §Stillback); an engine sweep found these two sites
-      and no others.)* ⚠️ **That last sentence was wrong** — an independent sweep on 07-27y found a
-      **third** site (the Phantom Double belief loop), and lint-refs pass 17 now gates the family.
-      *(2026-07-28 bench run 17 — **the `edhaSpeedFt` half is FIXED and PROVEN; the Fast-turn blocker
-      is UNCHANGED, so this row stays 🤖.** With the bench copy's own `whenFastTurn` temporarily set
-      false (a declared fixture edit on an imported `Bench Adv —` actor, isolating the two failures
-      the way this row's sibling asked for), the Slagbull's Unstoppable posted "💨 **Unstoppable** —
-      … moves **20 ft** toward …, ignoring Reactions" and the token really moved **1200 px = 20 ft**
-      at 60 px/ft. `walk.rate` reads `{derived: 20, override: 40, useOverride: true}` → Speed **40**,
-      half **20**. Negative control: the same rule at `{byHalfSpeed: false, distanceFt: 10}` moved
-      exactly **600 px = 10 ft**. The `oncePerTurn` guard also held — a second trigger in the same
-      turn-seq produced no move until the flag was cleared. ⚠️ The row's console instruction cannot
-      be followed as written: **`edhaSpeedFt` / `edhaMoveAllowanceFt` are module-scoped and are NOT
-      on `globalThis.edha`** (run 15's `edhaWatchersOfRule` lesson again) — drive the behaviour
-      instead.)*
-      **2026-09-05, bench run 28 — BOTH OLD BLOCKERS ARE GONE and Unstoppable FIRED for the first
-      time; the row stays 🤖 for its CANVAS half only.**
-      ✅ **The Fast-turn blocker is retired.** `edhaCombatantOf` reads `game.combat`, which is the
-      client's **VIEWED** combat — so `Combat.create({scene, active: false})` + a combatant +
-      `ui.combat.initialize({combat})` + `combatant.setFlag("cosmere-rpg", "turnSpeed", "fast")` makes
-      `whenFastTurn` TRUE with **Ben's combat never touched** (run 27's correction, applied here).
-      Verified live: `game.combat` was the bench combat, `started: true`, the combatant resolved and
-      carried `turnSpeed: "fast"`.
-      ✅ **The `edhaSpeedFt` NaN defect is FIXED.** It now reads `edhaDerivedNum(actor.system.movement.walk.rate, 0)`,
-      so the imported block's `walk.rate` override of **40** yields a half-Speed allowance of **20 ft** —
-      exactly what the card printed. Run 16's "provable defect that would fail this row anyway" no longer applies.
-      ✅ **Measured** on a freshly imported `BENCH Cragdrake Alpha R28`, `oncePerTurn` stamped
-      (`flags.edha-content.oncePerTurn.Unstoppable`): *"💨 **Unstoppable** — BENCH Cragdrake Alpha R28 moves
-      **20 ft** toward Bench Target — Isolated, ignoring Reactions."*
-      ⚠️ **The driver is `rollDamage()`, NOT `applyDamage` — record this before calling it dead.**
-      `edha-deal-damage` and `edha-on-hit` ride DIFFERENT chokepoints (the same split run 27 found for
-      `edha-damage-rider`). An `applyDamage(..., {edhaSource, originatingItem})` call fired Shockwave Slam's
-      `edha-on-hit` push and produced **absolutely nothing** from Unstoppable — indistinguishable from a dead
-      rule. Control the dealer's token, target the victim, call `item.rollDamage()`.
-      ⛔ **Still open — the CANVAS half only, and the blocker is the HARNESS, not the engine.** All three
-      Unstoppable bearers are **2×2 tokens**, and the staged 2×2 token could not be moved by ANY route:
-      `edhaApplyMove`, a plain `token.update({x, y})`, `update(…, {teleport: true})` and
-      `token.move(…, {action: "displace"})` all returned silently with the token unmoved — while a
-      centre-to-centre `testCollision` reported the lane clear. The lane was validated as a **point ray**;
-      a 2×2 footprint is 600 px wide and clips walls the ray misses. **Next run: stage the dealer where a
-      600 px footprint has real clearance (or give the row a 1×1 dealer) and re-drive — the rule itself is
-      now proven live.**
+*(**Unstoppable** — RETIRED WHOLE on evidence 2026-09-05, bench run 29: the CANVAS half is now proven.
+On a freshly imported `BENCH Cragdrake Alpha R29` (2×2, `walk.rate` override 40) in an `active: false`
+bench combat with `turnSpeed: "fast"`, `Ram.rollDamage()` posted *"💨 **Unstoppable** — BENCH Cragdrake
+Alpha R29 moves **20 ft** toward Bench Target — Isolated, ignoring Reactions"* and the token **really moved
+(4000,7850) → (5200,7850) = 1200 px = exactly 20 ft** at 60 px/ft, with `flags.edha-content.oncePerTurn.Unstoppable`
+stamped. ⚠️ **Run 28's 2×2-footprint diagnosis was WRONG and is retracted** — see the run-29 handoff delta:
+the non-move was the hidden-pane rAF stall, not a wall clip. A free control came from the same staging: with
+Brandram still occupying the lane the card correctly read *"moves **10 ft** … **(stopped by BENCH Brandram
+R29)**"* — `edhaComputeMove`'s occupied-destination step-back works and says so.)*
 
 *(**Bloodied cue** — RETIRED on evidence 2026-07-27x, bench run 16: crossing half (56 → 23) posted
 "⏰ Culls, Never Duels (Bench Adv — Cragdrake Alpha): Bloodied — the pack disengages and circles for
@@ -3326,38 +3289,12 @@ answer all along; only the card was mute. **Blast radius confirmed: 6 `edha-push
 data, and all three that push exactly one square are now proven to move** — this row, Unnerving
 Approach (Dirgehound Pack, W28 §3, a real −300 px), and Shattering Blow (already retired at bench
 run 12 with its own 0-ft/5-ft matched pair, which is the same geometry).)*
-- [ ] 🤖 **Unstoppable** — damage on a Fast turn → half-Speed engine move, once per turn.
-      *(2026-07-28 bench run 17 — **BLOCKED, blocker unchanged, row stays 🤖.** `edhaIsFastTurn`
-      reads `game.combat` (the ACTIVE combat), and making a bench combat active would deactivate
-      Ben's live campaign combat — forbidden. The **half-Speed half is separately PROVEN** on this
-      very actor: see the Cragdrake §3 half-Speed note — 20 ft card and 1200 px of real movement.)*
-      **2026-09-05, bench run 28 — BOTH OLD BLOCKERS ARE GONE and Unstoppable FIRED for the first
-      time; the row stays 🤖 for its CANVAS half only.**
-      ✅ **The Fast-turn blocker is retired.** `edhaCombatantOf` reads `game.combat`, which is the
-      client's **VIEWED** combat — so `Combat.create({scene, active: false})` + a combatant +
-      `ui.combat.initialize({combat})` + `combatant.setFlag("cosmere-rpg", "turnSpeed", "fast")` makes
-      `whenFastTurn` TRUE with **Ben's combat never touched** (run 27's correction, applied here).
-      Verified live: `game.combat` was the bench combat, `started: true`, the combatant resolved and
-      carried `turnSpeed: "fast"`.
-      ✅ **The `edhaSpeedFt` NaN defect is FIXED.** It now reads `edhaDerivedNum(actor.system.movement.walk.rate, 0)`,
-      so the imported block's `walk.rate` override of **40** yields a half-Speed allowance of **20 ft** —
-      exactly what the card printed. Run 16's "provable defect that would fail this row anyway" no longer applies.
-      ✅ **Measured** on a freshly imported `BENCH The Slagbull R28`, `oncePerTurn` stamped
-      (`flags.edha-content.oncePerTurn.Unstoppable`): *"💨 **Unstoppable** — BENCH The Slagbull R28 moves
-      **20 ft** toward Bench Target — Isolated, ignoring Reactions."*
-      ⚠️ **The driver is `rollDamage()`, NOT `applyDamage` — record this before calling it dead.**
-      `edha-deal-damage` and `edha-on-hit` ride DIFFERENT chokepoints (the same split run 27 found for
-      `edha-damage-rider`). An `applyDamage(..., {edhaSource, originatingItem})` call fired Shockwave Slam's
-      `edha-on-hit` push and produced **absolutely nothing** from Unstoppable — indistinguishable from a dead
-      rule. Control the dealer's token, target the victim, call `item.rollDamage()`.
-      ⛔ **Still open — the CANVAS half only, and the blocker is the HARNESS, not the engine.** All three
-      Unstoppable bearers are **2×2 tokens**, and the staged 2×2 token could not be moved by ANY route:
-      `edhaApplyMove`, a plain `token.update({x, y})`, `update(…, {teleport: true})` and
-      `token.move(…, {action: "displace"})` all returned silently with the token unmoved — while a
-      centre-to-centre `testCollision` reported the lane clear. The lane was validated as a **point ray**;
-      a 2×2 footprint is 600 px wide and clips walls the ray misses. **Next run: stage the dealer where a
-      600 px footprint has real clearance (or give the row a 1×1 dealer) and re-drive — the rule itself is
-      now proven live.**
+*(**Unstoppable** — RETIRED WHOLE on evidence 2026-09-05, bench run 29: the CANVAS half is now proven.
+`BENCH Slagbull R29` (2×2, `walk.rate` override 40), same `active: false` bench combat and `turnSpeed: "fast"`
+staging; `Gore.rollDamage()` posted *"💨 **Unstoppable** — BENCH Slagbull R29 moves **20 ft** toward Bench
+Target — Isolated, ignoring Reactions"*, `oncePerTurn.Unstoppable` stamped, and the token moved
+(4000,7850) → (5200,7850) = **1200 px = 20 ft**. ⚠️ Run 28's 2×2-footprint diagnosis is retracted — the
+blocker was the hidden-pane rAF stall (run-29 delta).)*
 
 *(**Reckless Advance use** — RETIRED on evidence 2026-07-28, bench run 17: targeting the Hazewyrm
 Elder 55 ft down a wall-free lane and using it posted "💨 **Reckless Advance** — Bench Adv — The
@@ -3491,43 +3428,43 @@ a token you can remove from the canvas (or simply not place) to test the off-sce
 
 ## R-65 — folded roll formulas (one per affected roll family; representative talent per family)
 
-- [ ] 🤖 **Set Charge / Pinpoint Charge (Destruction) — Detonate's heal AND damage branches now fold
-      identically.** This is the smoking-gun pair: before this pass, a Detonate configured to HEAL
-      (`b.heal`) did not fold computed die math while the DAMAGE branch eight lines below it did.
-      Place a Charge with a [Tier][Die]-shaped formula, Detonate it against both an ally-heal
-      configuration and an enemy-damage configuration, and confirm BOTH roll a real die (not a
-      formula string like "(2)d(2 * 3 + 2)" reaching the chat card unrolled/zeroed). The DC-save
-      branch (Concussive Yield-style saves) rides the same helper — confirm its `1d20 + @skills.…`
-      formula still resolves normally (no dice in its die-count, so folding is a no-op there). *(R-65.)*
-      ✅ **DAMAGE branch and the DC-save branch PROVEN, bench run 25 (2026-09-05)** — a real Set Charge placed
-      on the Playtest Map (formula `(@tier)d(2 * @skills.red.rank + 2)`), detonated with the card's own **Detonate
-      ALL** button: `2d8` → **8**, applied as “8 energy” to both caught enemies — plain dice notation, nothing
-      unrolled or zeroed. The DC-save branch rode the same detonation: **Concussive Yield** rolled `1d20 + 5` → **14**
-      and resolved normally (no dice in its die-count, so the fold is a no-op there, exactly as this row predicts).
-      ⛔ **Still open:** the ALLY-HEAL configuration (`b.heal`) — no heal-configured Detonate was staged this run.
+*(**R-65 — Set Charge / Detonate fold (all three branches)** — RETIRED on evidence. **DAMAGE + DC-save
+branches**, bench run 25 (2026-09-05): a real Set Charge placed on the Playtest Map (formula
+`(@tier)d(2 * @skills.red.rank + 2)`), detonated with the card's own **Detonate ALL** button — `2d8` → **8**,
+applied as "8 energy" to both caught enemies, plain dice notation with nothing unrolled or zeroed; the DC-save
+branch rode the same detonation, **Concussive Yield** rolling `1d20 + 5` → **14** and resolving normally (no
+dice in its die-count, so the fold is a no-op there exactly as predicted).
+**ALLY-HEAL branch**, bench run 29 (2026-09-05) — and ⚠️ **the row's subject was wrong: the heal branch is not
+reachable through Set Charge at all.** Set Charge detonates via `edhaResolveCharges`, which hard-codes
+`heal: false` on every hit it builds; the `if (b.heal)` fold branch lives in **`edhaBurstDetonate`** — the
+`edha-burst` handler, a different family. A sweep of every authored rule found **three** `edha-burst` rules
+shipped (Sudden Growth, Flame Surge, **Mending Aura**) and exactly one heal-configured: **Mending Aura**
+(White), `heal: true` + `affects: "allies"` at the handler's TOP level. Driven there: `Bench — White`
+(tier 2, white rank 3, formula `floor((@tier)d(2 * @skills.white.rank + 2) / 2)`, type `heal`) placed the burst
+over an ally at 10/41 HP and pressed **Detonate Mending Aura** — the message's own roll came back
+**`floor(2d8 / 2)` → total 6** with real dice terms (two d8s), i.e. the computed die math FOLDED to plain `2d8`
+and genuinely ROLLED. Card: *"💥 **Mending Aura** healed: R29 White: +6 HP (capped at max) R29 Ally: +6 HP
+(capped at max)"*, ally HP **10 → 16**, matching the roll exactly (White was at max, so its half correctly
+capped). **Free negative control:** the card rendered twice and both Detonate buttons were clicked — the second
+returned *"That burst was already resolved."* and applied **nothing**, so `EDHA_BURST_PENDING`'s
+claim-immediately guard holds against a double-bound click.)*
+
 - [ ] 🤖 **Magnum Opus (Civilization) — the Construct's transform HP bonus AND splash damage both
       fold.** Trigger Magnum Opus's transform (hpBonusFormula) and its splash-radius damage against
       multiple enemies; confirm both use real dice. *(R-65.)*
 - [ ] 🤖 **Pack Share (Knowledge) — each ally's shared-strike die folds.** Trigger Pack Share (or the
       same burst-click family) so at least one ally clicks their damage button; confirm the rolled
       amount is a real die result, not the formula string. *(R-65.)*
-- [ ] 🤖 **Venom Glands (adversary bespoke ability) — the poison-damage roll folds.** An adversary
-      ability, not a talent — flagged separately per the adversary-wiring standard. Trigger an attack
-      that inflicts venom; confirm the damage amount is a real rolled die. *(R-65.)*
-      ⚠️ **2026-09-05, bench run 28 — the row's SUBJECT is wrong, and that changes what to drive.**
-      Venom Glands is **not** an adversary bespoke ability with a roll. On the adversary side
-      (Stitchmother's *Graft the Flesh* → Mutated Thrall's *Grafted Upgrades*) `data/adversaries.json`
-      declares it **`GM-run — NO NAMEABLE HOOK`**: the grant is a toggled marker AE and the Slam bonus is
-      applied by hand, so there is **no roll there to fold** and nothing to bench. The rolled Venom Glands
-      is the **Life (Anaveth) `Mutation` talent's** adaptation — `data/authored/deity-life.json`, the
-      `edha-mutation` chooser, whose click runs
-      `edhaRollFormula(rd, ds.edhaVenomf)` (register-skills.js, the `venomGlands` branch) and bakes the
-      result into `flags.edha-content.mutation.venom`; the melee rider then calls
-      `edhaAddAffliction(victim, venom, "vital", "Venom Glands")`. **So the R-65 assertion is: use
-      Mutation, click *Venom Glands*, and confirm `mutation.venom` is a real rolled integer (not 0 and not
-      a formula string).** NOT RUN this run — `Bench — Life` does not carry a `Mutation` item, so the
-      fixture has to be granted first (a bench-roster gap worth fixing in `bench-setup-console.js`).
-
+*(**R-65 — Venom Glands** — RETIRED on evidence 2026-09-05, bench run 29. ⚠️ **Run 28's fixture note was
+also wrong: no hand-granted item was needed.** The talent is named **`Adaptive Mutation`**, not `Mutation`,
+and `Bench — Life` has carried it all along — the "bench-roster gap" was a name mismatch, so **TODO item 40
+does not need to add it**. Driven as the corrected row asked: `Adaptive Mutation` used (2 Investiture, 2 → 0),
+the chooser card posted, and the **Venom Glands** button carried the authored formula
+`floor(((@tier)d(2 * @skills.green.rank + 2)) / 2)`. Clicking it wrote
+`flags["edha-content"].mutation = {kind: "venomGlands", keen: 0, venom: 4, deflect: 0, sceneId, ownerUuid}`
+— `venom` is the **number 4**, a real rolled integer inside the legal range of `floor(2d8/2)` for this actor
+(tier 2, green rank 3), **not 0 and not a formula string**. That is exactly R-65's assertion. Card:
+*"🧬 Bench — Life gains Venom Glands for the scene."*)*
 
 ## pass 5.2 (2026-08-10, engine consolidation — target/actor readers, R-63, R-64, GM-relay writer)
 
@@ -3553,9 +3490,14 @@ observable behavior change, not rows below).
       A the same way. `edha-next-test-mod`: **Coercive Pressure**'s focus-change watch stamped
       `nextTestMod {source: "Coercive Pressure", mode: "disadvantage"}` on **A** (the payload's creature) with the
       selection on **B**, which got nothing — card: “Bench Target — Adjacent A's next test — at disadvantage”.
-      ⛔ **Still open: `edha-reveal`.** Sharp Eye is the only `edha-reveal {target: victim}` rule and its H1 def-test
-      resolves its own target AFTER the roll, so on this harness the payload's target and the canvas selection cannot
-      be made to diverge (driven anyway: both read `Adjacent B` consistently, which proves nothing either way).
+      ⛔ **`edha-reveal`: CONFIRMED — NO DRIVABLE SHAPE ON THIS HARNESS. This is a RESULT, not a queue item
+      (2026-09-05, bench run 29).** Run 25's reading was re-derived from today's data rather than repeated: a sweep
+      of every authored rule finds **exactly one** `edha-reveal {target: victim}` rule shipped — **Sharp Eye**
+      (`heroic-hunter.json`) — and its event is **`edha-test-success`**, i.e. behind an H1 def-test that resolves its
+      own target AFTER the roll. There is therefore no way to make the payload's creature differ from the canvas
+      selection for this handler, and no second rule to try. **Do not re-queue this half**; it reopens only if a
+      future talent ships an `edha-reveal {target: victim}` on an event that carries its own victim
+      (`edha-on-hit`, or an `edha-watch` whose `payloadTarget` is the watched actor).
 - [ ] 🤖 **R-64 — the `edha-cae-grant`/`edha-owner-list` (H3 annotate/near-victim) `victim` picks
       agree with the payload, not the clicking user's canvas selection.** Same shape as above, for
       Through the Fray-style CAE grants and any H3 list rule using `target: victim` — including
@@ -3566,9 +3508,14 @@ observable behavior change, not rows below).
       `edha-cae-grant {kind: burn-reaction, target: victim}` fired from the same `edha-on-hit` payload and burned the
       reaction of the **hit** creature: “⚡ Feinting Strike: Bench Target — Adjacent A loses one Reaction”, with the
       canvas selection on Adjacent B throughout.
-      ⛔ **Still open:** an H3 `edha-owner-list {target: victim}` placement. Every such rule shipped today (Chaos ×7,
-      Death ×1) sits on `edha-test-success` behind an H1 def-test, which hits the same harness limit as Sharp Eye
-      above. Note the row's own text rates the `to: targets` sweep regression-only, with no chain to verify.
+      ⛔ **CONFIRMED — NO DRIVABLE SHAPE ON THIS HARNESS. This is a RESULT, not a queue item (2026-09-05, bench
+      run 29).** Re-derived from today's data, not taken on trust: **all 8** shipped `edha-owner-list
+      {target: victim}` rules — Chaos ×7 (Cascade Collapse, Entropy Strike, Isolating Pressure, Isolating Ruin,
+      Spreading Omen, Unravel Everything, Unweaving) and Death ×1 (Reaper's Harvest) — sit on **`edha-test-success`**,
+      every one of them, so each hits the same H1 def-test limit as Sharp Eye above. Together with the `edha-reveal`
+      sweep that is **9 of 9 victim-mode rules unreachable**, with no alternative rule to stage. The row's own text
+      already rates the `to: targets` sweep regression-only, with no chain to verify. **Do not re-queue this half**;
+      it reopens only if a talent ships this handler on an event that carries its own victim.
 - [ ] 🤖 **R-63 — a token with genuinely UNSET disposition is no longer treated as an enemy by
       default.** Create/borrow a token whose `disposition` cannot resolve (a bare unlinked prototype
       with no explicit disposition, if your test scene has one — otherwise this is a repo-side
