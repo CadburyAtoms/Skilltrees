@@ -33,6 +33,44 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-05 — `bench-setup-console.js` detects and repairs ORPHAN tokens (item 37, TOOLING-only)
+
+Bench run 27 found three Playtest-Map tokens whose `actorId` resolved to no actor —
+`Bench — Green`, `Bench — Heroic`, `Bench Target — Floater`. The token pass matched an existing
+token only by `t.actorId === a.id`, so an orphan never matched and the script silently placed a
+SECOND token beside it while reporting "16 PCs / 7 targets, zero ⚠".
+
+**What changed:** a new pure helper `benchOrphanPlan(tokens, resolveActor, rosterByName,
+protectedNames)` (top of `scripts/bench-setup-console.js`, outside the IIFE) plans, for every
+token: ignore (actor resolves — not an orphan), `skipped` (name is on the protected-PC list —
+never touched, orphan or not), `repair` (orphan whose name matches a live roster actor —
+re-point `actorId`), or `replace` (orphan whose roster entry has no live actor — delete + recreate
+from that name at the token's own x/y). Wired into the token section: it runs whenever the
+Playtest Map scene is found, independent of `PLACE_TOKENS` (it only fixes tokens already on the
+scene; it never places new roster members), prints one ⚠ per orphan into the run log, and the
+final `BENCH SETUP DONE` line now reads `... orphans: N repaired, M replaced`. The hard guard on
+"Tem parinaem" / "Soggy Bottom" is unchanged — a protected name is never planned regardless of
+whether its token happens to be orphaned.
+
+The file is now `require()`-able from node (the IIFE is guarded with
+`if (typeof game !== "undefined")`, and `module.exports = { benchOrphanPlan }` closes the file) so
+the pure planner can be pinned without Foundry.
+
+**Proven:** `node --check` and `node -e "require('./scripts/bench-setup-console.js')"` both exit 0.
+`tests/bench-orphans.test.js` pins all five branches (resolves → ignored, repair, replace,
+protected-orphan → skipped, non-roster → ignored) plus the case-insensitive protected match and
+the empty-input case. **Mutation:** temporarily removing the protected-name guard turned 2 of the
+7 new cases red (`Expected [] to deepStrictEqual ["Tem parinaem"]` and the same for the
+case-insensitive row); restoring the guard returned the suite to 585/585.
+
+**Not proven here — 🤖 for the next bench run:** whether the repair actually fixes the three named
+orphans live and whether each then drives. Row added under `# BENCH — Engine-wide & cross-tree`
+("item 37 — orphan-token repair").
+
+TOOLING-only — no engine file touched, no pack rebuild, no talent change.
+
+---
+
 ## 2026-09-05 — BENCH RUN 29 (weekend marathon run 6): **the three `Unstoppable` CANVAS halves are PROVEN and run 28's 2×2-footprint diagnosis is RETRACTED — the blocker was never the walls; R-65's last two rows close (both with corrected subjects); both open R-64 halves are settled as "no drivable shape", proven from data.** **5 rows leave the checklist, 2 halves closed on rows that stay open, 0 engine defects found.** **World restored EXACTLY — field-level id-diff empty across all 74 actors, 33 tokens, both scenes.** DOCS-ONLY — no engine, no data, no pack rebuild owed.
 
 **Served-engine check (first act of the run).** Cache-busted

@@ -42,10 +42,15 @@ then the deities, Heroic, and the non-tree console-runnable sections).
    `game.world.id === "edha"`, `game.modules.get("edha-content")?.active`, `!!globalThis.edha`,
    `game.system.version`. Mismatch → stop, report.
 3. **Setup:** run `scripts/bench-setup-console.js` in the console. Verify the summary log
-   (⚠ lines = talents/paths not found — fix the script, don't improvise). Run it a SECOND time
-   and confirm idempotency (no new creations). Then **view** "Playtest Map", find a clear
-   area, set `ORIGIN` + `PLACE_TOKENS = true`, and run once more to place the bench tokens.
-   Never *activate/deactivate* a scene (it yanks every connected client, including Ben's).
+   (⚠ lines = talents/paths not found — fix the script, don't improvise). Since 2026-09-05 (item
+   37) the setup script also detects and repairs ORPHAN tokens on the Playtest Map — a token whose
+   `actorId` resolves to no actor — printing a ⚠ per orphan and a final `orphans: N repaired, M
+   replaced` count; treat a nonzero count on a first run as expected repair work, not a failure,
+   but a nonzero count on the SECOND run below is a regression. Run it a SECOND time
+   and confirm idempotency (no new creations, `orphans: 0 repaired, 0 replaced`). Then **view**
+   "Playtest Map", find a clear area, set `ORIGIN` + `PLACE_TOKENS = true`, and run once more to
+   place the bench tokens. Never *activate/deactivate* a scene (it yanks every connected client,
+   including Ben's).
 4. **Run order:** `BENCH — Engine-wide` first — if **2bA-7** (the edit-round-trip) fails, stop
    the whole run and report; everything rides on it. Then White → Blue → Black → Red → Green,
    the ten deities, Heroic, then whatever non-tree sections are console-runnable.
