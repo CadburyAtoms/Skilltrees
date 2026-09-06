@@ -764,35 +764,40 @@ already drops a player-visible dangerous-terrain Region into every square the ar
 through, and that trail IS the indicator. One 🤖 confirmation row is added below to prove it renders
 player-visible, not GM-only; a fail there is a Drawing-visibility bug, not a new indicator to build.
 
-- [ ] 🤖 **Walking Ruin trail indicator (R-34)** — arm Walking Ruin, move three squares on a PLAYER
-      client (not GM), and confirm three ruin-patch Region Drawings render for the player as the
-      character passes through — the trail *is* the indicator, no token status icon expected. If no
-      Drawing is visible to the player client, file it as a Drawing-visibility bug, not as R-34
-      reopened.
-      ✅ **INDICATOR HALF PASSES — R-34's answer is confirmed and it is NOT a Drawing-visibility bug**
-      (bench run 30, 2026-09-05). Three trail patches were dropped, and from **`PlayerBench`'s own client**
-      (`isGM: false`) all three hazard-visual **Drawings** render — `visible: true`, `renderable: true`,
-      `hidden: false`, `text: "🏚️"`, `fillAlpha 0.18`, at exactly the three vacated squares. The Regions
-      themselves are `visibility: 0` (Layer) and correctly invisible to the player: **the Drawing is the
-      player-visible indicator**, precisely as R-34 describes.
-      ❌ **BUT THE ROW AS WRITTEN FAILS, ON A REAL ENGINE DEFECT → `test-pass-fixes`. A player-initiated
-      move drops NOTHING.** Measured as a matched pair, same token, same armed flag, same activeGM
-      (`Bench`), same 3 squares, all with `animate: false`:
-      · **PlayerBench moves their own owned token 3 squares → 0 Regions, 0 Drawings, no notification**, and
-        `tokenDoc._edhaPrevCenter` on the activeGM's client stayed **null**.
-      · **The activeGM moves the identical 3 squares → 3 Regions** (`Bench — Destruction — Dangerous
-        Terrain`, circle r=150 at each vacated centre) **+ 3 Drawings**.
-      **Root cause, proven not guessed:** `register-skills.js:11215` stashes the prior centre on
-      **`tokenDoc._edhaPrevCenter`** inside a **`preUpdateToken`** hook, and Foundry `pre*` document hooks
-      run **only on the client that initiates the update**. The drop itself (`updateToken`, :11221) is gated
-      to the single **activeGM** applier. For a player-driven move the two halves therefore land on different
-      clients: the player stamps their own document instance, the activeGM — the only client allowed to
-      drop — reads `prev == null` and returns silently.
-      **It is ONE bug, not a family, and the fix shape already ships 2 800 lines below:** the sibling
-      move-announce pair at :14046/:14052 stashes into **`options.edhaPrevPos`**, and `options` IS broadcast
-      with the update, so that one survives a player move. Moving the trail watcher onto the same
-      `options.edhaPrevPos` (converting top-left → centre with width/height × grid size) fixes it; the
-      sibling hook already stamps it on **every** x/y update.
+> **✅ R-34's INDICATOR HALF — RETIRED on evidence (bench run 30, 2026-09-05); the move half became a
+> real engine defect and is FIXED, re-test row below.** The original row asked for three ruin-patch
+> Drawings to render on a PLAYER client. They do: three trail patches were dropped, and from
+> **`PlayerBench`'s own client** (`isGM: false`) all three hazard-visual **Drawings** read
+> `visible: true`, `renderable: true`, `hidden: false`, `text: "🏚️"`, `fillAlpha 0.18`, at exactly
+> the three vacated squares, while the Regions themselves are `visibility: 0` (Layer) and correctly
+> invisible. **The Drawing IS the player-visible indicator, precisely as R-34 describes — this was
+> never a Drawing-visibility bug and R-34 needs nothing further.**
+>
+> ❌ **What the same row exposed: a player-initiated move dropped NOTHING at all.** Matched pair,
+> same token, same armed flag, same activeGM (`Bench`), same 3 squares, `animate: false` on both —
+> PlayerBench moving their own token gave **0 Regions, 0 Drawings, no notification** (and
+> `tokenDoc._edhaPrevCenter` on the activeGM's client stayed **null**), while the activeGM moving the
+> identical 3 squares gave **3 Regions + 3 Drawings**.
+>
+> **Root cause (fix pass 3, 2026-09-05):** the trail stashed its prior centre on
+> **`tokenDoc._edhaPrevCenter`** inside a **`preUpdateToken`** hook — and `pre*` document hooks run
+> only on the client that INITIATES the update, while the drop was gated to the single **activeGM**
+> applier, so the two halves landed on different clients and the applier read null and returned in
+> silence. Fixed at the primitive: one shared `options.edhaPrevPos` stamp (`options` IS broadcast with
+> the update — derived from Foundry's own `client-backend.mjs`, not inferred) plus
+> `edhaPrevTokenPos` / `edhaPrevTokenCenter`, with the trail, the `token-move` announcer and Order's
+> move-violation watch all reading the one stamp. A sweep of all 15 `pre*` hooks found **no second
+> instance**; pinned headless in `tests/pre-hook-client-split.test.js` (two-client model,
+> mutation-verified). Full detail in the 2026-09-05 FIX PASS 3 handoff delta.
+
+- [ ] 🤖 **Walking Ruin trail — a PLAYER-driven move leaves the trail (fix pass 3 re-test)** — engine-only
+      fix, so **F5 / relaunch is enough; no pack rebuild, no ⟳ Sync**. Arm Walking Ruin on a
+      player-owned character, then from the **PLAYER's own client** (`isGM: false`, not the GM
+      dragging it for them) walk the token three squares. Expect **three ruin patches**: three
+      `Bench — Destruction — Dangerous Terrain` Regions at the three vacated square centres, each
+      with its 🏚️ hazard Drawing visible to that player. Re-run the same three squares as the
+      activeGM afterwards as the matched control — that half already passed, and it must still.
+      Nothing should double-drop with a second GM client connected.
 
 
 ---

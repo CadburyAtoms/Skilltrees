@@ -441,6 +441,40 @@ TokenDocuments across every scene and is NOT an `edhaSceneReset` family) collaps
 `tests/scene-reset.test.js` (dedup, off-scene sweep, cross-combat skip, per-actor error isolation,
 the busy-set).
 
+## ⛑ A `pre*` HOOK RUNS ON THE INITIATOR ONLY — stash on `options`, never on the document (09-05, fix pass 3)
+
+**The trap.** A `preUpdate*` hook stashes something for a later `update*` applier, and that applier
+is gated to the single activeGM (`edhaDefBuffGmGate()`, or the raw `isGM && activeGM.isSelf`). If the
+stash went onto the **document** (`tokenDoc._edhaPrevCentre = …`), the two halves land on **different
+clients** the moment a *player* initiates the update: the player stamps their own copy of the
+document, the GM — the only client permitted to write — reads `undefined` and returns. **No error,
+no card, no console line.** The talent simply never fires for its own owner, which is the one case
+nobody tests from the GM seat. Walking Ruin's trail shipped exactly this from the day it was written
+until bench run 30 caught it with a matched player-vs-GM control (player move → 0 Regions; activeGM
+move → 3).
+
+**Why, from Foundry's own source** (`resources/app/client/data/client-backend.mjs`, v13):
+
+| | fires `preUpdate<Type>` | fires `update<Type>` |
+|---|---|---|
+| the client that called `doc.update()` | ✅ `#preUpdateDocumentArray` | ✅ |
+| every other client (socket response) | ❌ **never** — `#onModifyDocument` → `#handleUpdateDocuments` only | ✅ |
+
+`options` is the one channel that crosses: the pre-hook pass ends with `Object.assign(operation,
+options); // Hooks may have changed options`, `#buildRequest` puts that operation on the socket, and
+each receiving client destructures `options` back out of the response before calling the `update`
+hooks. So a stamped value must also be **JSON-serialisable** — it goes over a wire.
+
+**The rule.** Stash on `options`. A `<document>._edhaSomething = …` write is now gated:
+`tests/pre-hook-client-split.test.js` fails the build if one returns, and the same file pins the
+two-client behaviour of the trail (mutation-verified: restore the document stash and the
+player-move case fails while the GM control still passes).
+
+**Cleared by the same sweep, so you need not redo it:** every other `pre*` hook either stamps
+`options` already (`edhaFoc`, `edhaHea`, `edhaOrderInv`, `edhaPrevPos`) or stashes nothing at all
+because it vetoes/rewrites inline on the initiator, which is where a veto belongs
+(`edha-move-veto`, Dense Tissue, Compelled, `edha-hp-floor`, the talent budget, the create-hooks).
+
 ## ⛑ A CLICK HANDLER'S OUTER CATCH IS NEVER "non-fatal" (07-28, fix pass F)
 
 - **`edhaClickFailed(what, e)`** → `console.error` **and** `ui.notifications.error`. Use it for the
@@ -1617,6 +1651,27 @@ pre-07-24r consumer did. Necrotic Cascade's corpse detonation is the first `enem
 - **Adjacency-AE sweep pattern** — `edhaGuardianStanceSweep` (debounced on token create/move/delete):
   GM-side, derives who should carry a positional AE and applies/removes the diff. Reuse for any
   "while adjacent/within X" passive.
+
+## Where a token WAS — the shared move stamp (09-05, fix pass 3)
+The ONE `preUpdateToken` hook that stamps a token's prior position, and the only shape that survives
+a player-initiated move (see the ⛑ `pre*`-hook-initiator family above for why a document stash does
+not). Declared as its own block right after the `edha-move-veto` hook; **never add a second stamp** —
+the first one lived inside the trample announcer, looked private, and got duplicated onto a document.
+- **`options.edhaPrevPos = {x, y}`** — the stamp itself: the token's prior **top-left**, in the
+  document's own frame. Written on any update carrying `x` or `y`, on the initiating client, and
+  broadcast to every other client with the update.
+- **`edhaPrevTokenPos(options)`** → `{x, y}` (prior top-left) or **`null`** when this update was not a
+  move. This is also the canonical answer to *"was this a move?"* — don't also test `"x" in changes`;
+  one question, one answer.
+- **`edhaPrevTokenCenter(tokenDoc, options)`** → `{x, y}` (prior **centre**) or `null` — the frame
+  hazard Regions, Drawings and MeasuredTemplates are placed in. Converts off the token's **own**
+  scene grid (`tokenDoc.parent`), not `canvas`, so a move on a scene nobody is viewing still resolves
+  (`tokenDoc.object?.center` returns null there — that was the second client-locality bug in the
+  same line).
+- Consumers today: Walking Ruin's trail (`edha-place-hazard` mode `trail`), the H8 `token-move`
+  announcer (Unstoppable's trample), Order's "moved from its space" violation watch. A new
+  movement-reading behaviour joins by calling a helper — it does not stamp anything of its own.
+- Pinned: `tests/pre-hook-client-split.test.js`.
 
 ## Per-actor persistent state
 - Pattern: `actor.getFlag("edha-content", key)` / `setFlag` / `unsetFlag` (examples: `reserve`,
