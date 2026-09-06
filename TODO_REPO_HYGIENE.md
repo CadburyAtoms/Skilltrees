@@ -993,3 +993,26 @@ gate command lists in `CLAUDE.md` and the `work-item` skill.
 
 **PM:** lane R · sonnet · S · deps none · verify: mutation (run the misspelt name before and after,
 show the exit code change from 0 to non-zero). TOOLING-only, no engine, no pack rebuild.
+
+---
+
+## 40. [ ] `bench-setup-console.js` builds `Bench — Life` without a `Mutation` item, so the Venom Glands / R-65 row cannot be driven
+
+**Why:** bench run 28 (2026-09-05) traced the checklist's "Venom Glands (adversary bespoke
+ability) — the poison-damage roll folds" row and found there is no adversary roll to fold at all:
+the rolled formula is the Life tree's `Mutation` adaptation. The row was corrected in place, but
+it still cannot be driven because the bench roster's `Bench — Life` actor carries no `Mutation`
+item. The roster script's per-tree grant list is the gap, not the engine.
+
+**What to do:** in `scripts/bench-setup-console.js`, add `Mutation` (and any adaptation the Life
+tree's authored file names as a roll source) to the `Bench — Life` grant list, keep the roster
+idempotent (a second run reports 0 created), and leave a 🤖 row under the R-65 section asking the
+next bench run to drive Venom Glands from that item. Dispatch together with item 37 — same file,
+same lane, one bench run proves both.
+
+**Done when:** the setup script's summary shows `Bench — Life` holding `Mutation`, a second run is a
+no-op, and the R-65 Venom Glands row retires on a later bench run's evidence. Pure harness — no
+engine, no pack, no talent change.
+
+**PM:** lane B (the live roster proves it) · model sonnet · size S · deps none (pair with 37) ·
+verify: the script's before/after summary from the live table, plus the 🤖 row. TOOLING-only.

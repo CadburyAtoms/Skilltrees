@@ -1,163 +1,188 @@
 # Next bench session
 
-> **Weekend marathon, run 3 (bench run 26, 2026-09-05) is done.** It cleared the **leyline scatter** and the
-> **Engine-wide** section. **11 rows retired, 2 FAILs with root causes proven by mutation, 1 blocker named.**
-> Open queue **69 🤖 → 58 🤖** (⚑ unchanged at **22** — no ⚑ row was touched). No `⛔ STOP`, **no pack rebuild
-> owed**, world restored to its start snapshot exactly (id-diff clean over all 74 actors).
+> **Weekend marathon, run 5 (bench run 28, 2026-09-05) is done.** It verified **item 36's R-69 fix**
+> green on all four legs, **settled** the two-`consume` question run 27 filed, cleared **all three**
+> long-deployed fix-pass-F re-tests, and closed **six** hygiene rows. **12 rows left the checklist
+> (11 retired on evidence + 1 relocated to `EDHA_RULINGS.md`), 0 engine defects were found**, and the
+> three bestiary **`Unstoppable`** rows lost **both** of their historic blockers. Open queue
+> **47 🤖 → 35 🤖** (⚑ unchanged at **22** — no ⚑ row was touched). No `⛔ STOP`, **no pack rebuild
+> owed**, world restored to its start snapshot **exactly** (id-diff clean across 74 actors, 33 tokens
+> and every scene collection — flags, whole effect objects and `_source.system.resources` all re-diffed
+> to zero).
 
 ## Read this first
 
-**→ `EDHA_FOUNDRY_HANDOFF.md`, the `2026-09-05 — BENCH RUN 26` delta at the top** — every retirement with
-its evidence, both FAILs with their proven root causes, the named blocker, and the world-hygiene diff.
+**→ `EDHA_FOUNDRY_HANDOFF.md`, the `2026-09-05 — BENCH RUN 28` delta at the top** — every retirement
+with its evidence, the two row-text corrections, the three unblocked bestiary rows, and the world diff.
 
-**→ `docs/EDHA_BENCH_RUNBOOK.md`, "Operating lessons from run 26"** — the timeout-keeps-running trap (it
-manufactured a fake engine double-fire), `canvas.animatePan` never settling with the pane hidden, and the
-resource-snapshot trap that re-inflates AE-derived maxes on restore. **Read run 25's and run 24's lessons
-too** — the CRLF hash trap, the rate limiter, Investiture max 2, `item.use()` hanging on
-`ItemConsumeDialog`, and the one-status ActiveEffect `_id` crash all still apply.
+**→ `docs/EDHA_BENCH_RUNBOOK.md`, "Operating lessons from run 28"** — read the rule's **`event`** field
+before staging; stage statuses with `toggleStatusEffect`, never `createEmbeddedDocuments`; validate a
+movement lane with the token's **footprint**, not a centre ray; `edha-deal-damage` needs `rollDamage()`
+while `edha-on-hit` needs `applyDamage`. **Read run 27's and run 26's lessons too** — the crossed
+`createEmbeddedDocuments` map, the once-per-round `edha-gm-cue` budget, the timeout-keeps-running trap,
+`canvas.animatePan` never settling, and the `_source`-resources snapshot rule all still apply.
 
-**→ `EDHA_RULINGS.md`** — unchanged by run 26; **no new ruling was raised** (run 26 found no judgment call
-that needed one). R-43 is applied and changes live dice math.
+**→ `EDHA_RULINGS.md`** — **two new rulings this run**, both filed instead of being left as test rows:
+**R-70** (a two-resource activation only charges the first unless the second box is ticked — the cause
+is one line in the *system's* own dialog; recommended default: leave it alone) and **R-71** (the
+system's item-damage card prints the unfolded parenthetical formula; recommended default: fold it at
+build time). **R-69 is now marked VERIFIED GREEN and is ready to move to §K.** R-43 is still applied
+and still changes live dice math.
 
 ## ⚑ vs 🤖 — read this before picking rows
 
 - **`🤖` = needs a live Foundry table, and an agent drives it. THIS IS YOUR QUEUE.**
 - **`⚑` = Ben's judgment only.** Leave it alone.
 
-⚠️ **Never re-file an unrun 🤖 row as ⚑ because you ran out of time.** Leave it 🤖, or record it BLOCKED with
-the blocker named. **Design questions go to `EDHA_RULINGS.md`, never to the checklist as a new ⚑ row.**
+⚠️ **Never re-file an unrun 🤖 row as ⚑ because you ran out of time.** Leave it 🤖, or record it BLOCKED
+with the blocker named. **Design questions go to `EDHA_RULINGS.md`, never to the checklist as a new
+⚑ row** — run 28 moved one row out of the checklist for exactly this reason, and it is worth doing
+again whenever a row asks Ben to *decide* rather than an agent to *test*.
 
-## 🎉 The per-tree `# BENCH —` block is now EXHAUSTED
+## Where the 35 open 🤖 rows are
 
-This is the milestone run 26 reached, and it changes what the next run should be:
-
-| Section | 🤖 left | Note |
+| Block | 🤖 | Note |
 |---|---|---|
-| **Engine-wide & cross-tree** | **0** | Cleared. Its 3 remaining rows are all ⚑ Ben (2bAC-1 label legibility, 2bM-1 and the GM summon relay, both gated on a zero-GM window / ruling R-1). |
-| White · Blue · Black · Red · Green | **3** | And **all three are blocked on a fix or a scene**, not on bench effort — see below. |
-| All ten deity trees | **0** | |
-| Heroic paths | **0** | Its 2 remaining rows are ⚑ Ben. |
+| **Bestiary `Unstoppable` ×3** (Brandram, Cragdrake Alpha, Slagbull) | **3** | **The best block left.** Rule PROVEN live; only the canvas half is open, and the blocker is now the harness, not the engine. |
+| **R-65 folded roll formulas** | **4** | Set Charge ally-heal half · Magnum Opus · Pack Share · Venom Glands (subject corrected — see below). |
+| **pass 5.2** (R-63/R-64, Job 6a/6b) | **6** | 2 structurally hard, 1 needs zero GM clients, 1 needs a non-owner client, 2 drivable. |
+| **Character-creation wizard v2** | 6 | July deploy-state language — re-read against DEPLOY STATE first. |
+| **Bench-results fixes** · **Items-dump** · **Adversary pack sync** | 3 · 3 · 2 | Same: July language, check the live pack before driving. |
+| **pass 5.3** | 2 | R-61's legacy `detonateUsed` (informational only) + R-62's audience flips (zero-GM). |
+| Scattered singles (Green, Cinderbrock, Crownox, manual re-litigation) | 6 | Each needs its own staging. |
 
-The three survivors, and why none of them is worth a bench run right now:
+## Run 6 — the plan, in order
 
-- **White — "the other five restored adversary abilities"**: three of four PASS; the fourth
-  (**Reeve-Owl / Sovereign of Solitude**) is dead because the BUILT PACK ships the item with zero rules
-  while `data/adversaries.json` authors four. **Blocked on a build fix**, then a one-call re-run.
-- **Green — "spot-checks"**: two of three PASS; **Spreading Roots** spends the Investiture and grows the
-  Drawing but not the Region. **Blocked on the `edhaGrowTerrain` fix**, then a one-flow re-run.
-- **Green — 2bS-11 Natural Order**: only the veil half is left and it is **structurally unreachable on the
-  Playtest Map** (`darknessLevel 0` + `globalLight` on ⇒ nothing is ever unlit). Needs a bench-created
-  scene; the fixture is otherwise identified (Stalker, pack id `l924euoyx3pYFk2T`).
+### 1. The three `Unstoppable` rows — **3 🤖, one driver, and they are 90% done**
+Run 28 fired the rule for the first time in the project's history and left only the canvas half open.
+Everything you need is on each row. The recipe:
+`Combat.create({scene, active: false})` → a combatant **built as an explicit `{actorId, tokenId}` pair**
+→ `ui.combat.initialize({combat})` → `combat.update({round: 1, turn: 0})` (`edhaCombatantOf` needs
+`combat.started`, which is derived) → `combatant.setFlag("cosmere-rpg", "turnSpeed", "fast")` → control
+the dealer, target the victim, **`item.rollDamage()`** (NOT `applyDamage` — that fires `edha-on-hit`
+and nothing else). Expect *"💨 Unstoppable — … moves 20 ft toward …, ignoring Reactions"* and
+`flags.edha-content.oncePerTurn.Unstoppable`.
+⚠️ **The one thing to do differently:** all three bearers are **2×2 (600 px) tokens** and run 28's
+staging position would not let them move by *any* route (`edhaApplyMove`, `update({x,y})`,
+`update(…, {teleport:true})`, `move(…, {action:"displace"})` — all silent no-ops) because the lane had
+been validated with a **centre ray**. **Validate the four corners of the footprint along the path, or
+stage the row with a 1×1 dealer.** `oncePerTurn` also means one move per turn — step the round between
+attempts, and use the second attempt in the same turn as a free negative control.
 
-## Hand these two FAILs to `test-pass-fixes` BEFORE the next bench run
+### 2. `# BENCH — hygiene campaign`'s **R-65 remainder — 4 🤖**
+- **Venom Glands — the row's SUBJECT was corrected by run 28, read it before staging.** There is no
+  adversary venom roll: `data/adversaries.json` declares the Stitchmother/Mutated-Thrall grafts
+  `GM-run — NO NAMEABLE HOOK`. The rolled one is the **Life `Mutation`** adaptation; the assertion is
+  that clicking *Venom Glands* on the chooser bakes a real rolled integer into
+  `flags["edha-content"].mutation.venom`. ⚠️ **`Bench — Life` carries no `Mutation` item** — grant the
+  fixture first (and consider fixing it in `bench-setup-console.js`).
+- **Set Charge / Detonate's ally-HEAL half** — the damage and DC-save branches are proven (run 25);
+  only a heal-configured Detonate is left. Run 25's Snare/Set-Charge placement recipe (pin
+  `canvas.mousePosition`, dispatch `pointerdown` on `#board`, snap to the square **centre**) works.
+- **Magnum Opus** (Civilization: transform HP bonus + splash) and **Pack Share** (Knowledge) — each
+  needs its own tree and resources. Budget them separately.
 
-Both have their root cause proven, not guessed, so they should be short fixes — and both unblock a
-checklist row that a later bench run can then close in one call.
+### 3. `pass 5.2` — **6 🤖, but graded, and two of them are traps**
+- **Drivable (2):** R-63's same-side regression check (auras / Reroll Reaction / a Fate snare with a
+  normal-disposition token) and Job 6b **only if** a player client is up (see below).
+- **Structurally hard (2):** both open R-64 halves (`edha-reveal {target: victim}` and an H3
+  `edha-owner-list {target: victim}`) sit behind an H1 def-test that resolves its own target **after**
+  the roll, so the payload's creature and the canvas selection **cannot be made to differ** on this
+  harness. Run 25 established this and run 28 did not find a way around it. The drivable shape would be
+  a rule whose event carries its own victim — if none exists, that is a result to report, not a row to
+  re-queue forever.
+- **Job 6a — BLOCKED (zero GM clients).** Unchanged.
+- ⚠️ **Job 6b cannot be driven from a GM client at all.** Its whole subject is the GM-**relay** path
+  taken when a **non-owner** marks a creature they do not own; a GM's `actor.isOwner` is always true, so
+  the relay branch is unreachable from `Bench`. It needs `PlayerBench` logged in (runbook §6).
 
-1. **`edhaGrowTerrain` mutates DataModel clones, so Spreading Roots never grows the Region.**
-   `foundry.utils.deepClone(region.shapes)` returns `RectangleShapeData` **model instances**; mutating
-   `r0.x/.width` does not touch `_source`, so `region.update({shapes})` diffs to nothing — while the Drawing
-   update on the next line writes explicit numbers off the mutated live model, so the visual and the
-   mechanics disagree. Proven by running both variants in the page: the engine's path left it at 600×600,
-   `region.toObject().shapes` grew it to 1200×1200. **Audit the family** — the circle branch has the same
-   latent bug.
-2. **Reeve-Owl / Sovereign of Solitude builds with `system.events === {}`** while the repo authors four
-   rules. Not a stale pack: 6 of 6 sibling items on the same actor built correctly, and five other
-   adversaries match their authored counts item-for-item. `statusExpire: "target"` on the Immobilized rule is
-   the first suspect for a validation drop that takes the whole `events` object with it — **a lead, not a
-   finding.**
+### 4. The player-client window — open it once and burn everything that needs it
+`# 🎮 Player-client window` is down to **1 row and it is ⚑**, but **Job 6b** and **R-62's audience
+flips** both need a second client, so the window is still worth opening. Run 13's recipe: join `Bench`
+in the `seed` tab first, then `tabs_create` → `/join` → **PlayerBench** with a blank password;
+**resize the new tab and reload**, it opens 0×0. Grant `PlayerBench` OWNER on bench-folder actors only,
+snapshot `ownership` first, restore at the end, and **log BOTH clients out**.
 
-## Run 4 — the plan, in order
-
-### 1. `# Adversary ability wiring` — **12 🤖**, and it is the best block left
-One theme, and run 26 measured this exact flow as the fastest thing on the bench: import fresh from
-`edha-content.edha-adversaries` into the bench folder → raise `foc`/`inv` maxes and values → target a bench
-PC's token → `item.use()` → read the card. Four abilities went from cold to recorded in four calls that way.
-**Assert the compendium document's `system.events` count against `data/adversaries.json` as you go** — run 26
-found one item silently shipping zero rules, and that check costs nothing while you already have the pack open.
-
-### 2. `# 🎮 Player-client window` — **3 🤖**, do them together
-These need `PlayerBench` logged in (runbook §6, and run 13's recipe: join Bench in the seed tab first, then
-`tabs_create` → `/join` → PlayerBench with a blank password; **resize the new tab and reload**, it opens 0×0).
-Burn the whole section in one window rather than one row per run.
-
-### 3. The bestiary tail — **7 🤖** across Goldenport (1), W29 (3), Vorsk (2), Ashkar (1)
-Same import-and-use shape as block 1, so it batches naturally after it.
-
-### 4. `# BENCH — hygiene campaign 2026-08-10` — **19 🤖**, but graded (unchanged from run 25's grading)
-- **Drivable, just not reached (5):** R-65 **Magnum Opus** · **Pack Share** · **Venom Glands** · **Job 6b**
-  (`edhaWriteStatusMark` relay regression) · pass 5.3 **resource spend/gain**.
-- **Partly done, open half named on the row (4):** R-64 `victim` mode · R-64 CAE/owner-list · R-65 Set
-  Charge/Detonate (**ally-heal** only) · R-59's eleven buttons (POSITIVE only).
-- **Blocked or awkward (the rest):** Job 6a and R-62's audience rows need **zero GM clients**; R-63's
-  unset-disposition row needs a token whose disposition cannot resolve; R-61's polarities and R-66's F5
-  persistence are fiddly. ⚠️ **R-66's F5 half is now largely answered incidentally** — run 26 did a real F5
-  and all three stamped cards came back disabled with their labels intact.
-
-### 5. Not worth queuing until something changes
-`# Character-creation wizard v2` (6 🤖), `# Items-dump tranche` (3), `# Adversary pack sync` (2) and
-`# Bench-results fixes` (3) all carry deploy-state language from July. **Check DEPLOY STATE and re-read each
-row against the live pack before driving any of them** — several may already be answered or may be
-blocked-on-deploy.
+### 5. The four July sections — **14 🤖, and none of them should be driven cold**
+`# Character-creation wizard v2` (6), `# Bench-results fixes` (3), `# Items-dump tranche` (3),
+`# Adversary pack sync` (2) all carry deploy-state language from July. **Check DEPLOY STATE and re-read
+each row against the live pack before driving any of them** — several may already be answered, and one
+of them being blocked-on-deploy is a cheaper finding than a staging attempt.
 
 ## Known blockers — do not fight these
 
-- **Job 6a (pass 5.2), 2bM-1 and R-62's audience rows** need **zero GM clients** connected; the bench joins
-  as a GM and Ben's `Gamemaster` client was up all through run 26. Record BLOCKED with the blocker named —
-  never re-file as ⚑.
+- **Job 6a (pass 5.2), 2bM-1 and R-62's audience rows** need **zero GM clients** connected; the bench
+  joins as a GM and Ben's `Gamemaster` client was up all through runs 24–28. Record BLOCKED with the
+  blocker named — never re-file as ⚑.
+- **Job 6b needs a NON-OWNER**, which a GM can never be. `PlayerBench`, or nothing.
 - **Nothing on the Playtest Map can ever be unlit** (`environment.darknessLevel === 0`,
-  `environment.globalLight.enabled === true`), so every `edha-dark-veil` row is unreachable there. A
-  bench-created scene is the drivable shape; changing Ben's scene config is not.
-- **`edhaIsFastTurn` / anything reading `game.combat`** resolves to Ben's live campaign combat. **Never
-  activate a bench combat.** Ben's combat still has **zero combatants**, so `edhaCombatEndGuard` is EMPTY and
-  a bench combat delete sweeps world-wide — run 26 relied on exactly that (it is how 2bS-11's combat-end
-  clear was driven) and restored the three Covenant effects it ate from whole-object snapshots.
-- **Observer/rAF-dependent rows are unverifiable on this bench** (run 22), and **`canvas.animatePan` never
-  settles** with the pane hidden (run 26) — use `canvas.pan()`.
-- **`canvas.mousePosition` is frozen at (0,0)** with the pane hidden — shadow just that getter and declare
-  it. Run 26 used it for four separate pickers with no trouble.
-- **Token movement can be refused SILENTLY** — `move()`/`update({x,y})` returns without error. Causes seen:
-  the engine's `edha-move-veto` (Dread Presence vs a Weakened creature), walls, and interpolated midpoints.
-  **If the token is yours, delete it and re-create it at the destination** — one call, no diagnosis.
+  `environment.globalLight.enabled === true`), so every `edha-dark-veil` row (Green 2bS-11's veil half,
+  the Stalker veil auto-toggle) is unreachable there. **A bench-CREATED scene with darkness — viewed,
+  never activated — is the drivable shape**, and run 28 did not get to it. There is also a second scene
+  in the world, `Playtest Map (Copy)`, with `globalLight.enabled === false`; it is **Ben's**, so create
+  your own rather than reconfiguring it.
+- **`game.combat` is the client's VIEWED combat** — an `active: false` bench combat plus
+  `ui.combat.initialize({combat})` satisfies every "needs the active combat" row, and Ben's combat is
+  never touched. **Never activate a bench combat.** Ben's combat still has **zero combatants**, so
+  `edhaCombatEndGuard` is EMPTY and a bench combat delete sweeps world-wide — run 28 relied on exactly
+  that and restored cleanly from whole-object snapshots.
+- **Observer/rAF-dependent rows are unverifiable on this bench** (run 22), and **`canvas.animatePan`
+  never settles** with the pane hidden (run 26) — use `canvas.pan()`.
+- **`canvas.mousePosition` is frozen at (0,0)** with the pane hidden — shadow just that getter and
+  declare it.
+- **Three tokens on the Playtest Map are ORPHANS** (`Bench — Green`, `Bench — Heroic`,
+  `Bench Target — Floater` — their `actorId` resolves to nothing; TODO item 37). **Create a fresh token
+  from the bench actor instead**; never repair or delete the orphans, they are pre-existing.
+- **Token movement can be refused SILENTLY**, and run 28 added a new cause to the list: a **wide
+  footprint** (2×2 = 600 px) clipping walls a centre-ray collision test does not see. The other known
+  causes are the engine's `edha-move-veto` (Dread Presence vs a Weakened creature), plain walls, and
+  interpolated midpoints. **If the token is yours, delete it and re-create it at the destination.**
 
 ## Harness traps — each has already produced or nearly produced a false result
 
-- **A `javascript_tool` TIMEOUT DOES NOT CANCEL THE SCRIPT.** It keeps running in the page and can fire a
-  second copy of everything after the hang — run 26 read that as an engine double-fire for four calls. After
-  any timeout, re-establish state and re-drive cleanly before recording anything.
-- **Verify the deploy by HASH from BOTH sides, and NORMALISE CRLF.** `git hash-object` normalises; a raw
-  hash of the served bytes does not (`25bd55fa…` vs `9575fba…`). Pair it with `decodedBodySize` on the
-  original `<script>` entry to prove the page runs that code.
-- **Snapshot `_source.system.resources`, not the derived object**, or a restore writes AE-derived values into
-  `_source` and `prepareDerivedData` adds the AE contribution a second time. Also snapshot
-  `flags.edha-content.tempHp` — Bench — White carries a pre-existing `{source:"Final Decree", value:7}`.
-- **Snapshot whole effect OBJECTS, not names**, and recreate with `{keepId: true}` and the original `_id`.
-  **Restore flags BEFORE effects** — a watcher-managed AE (Covenant's proximity effect) is removed again if
-  its ledger is momentarily empty.
-- **Foundry's socket rate limiter fails silently into your rows.** Space bulk writes ~400 ms apart; check
-  `read_console_messages({onlyErrors:true})`; ~30 s clears it.
-- **Bench PCs have Investiture max 2 and the max clamps at 4**; target fixtures start low. Raise the
-  RECEIVING resource's max on any row whose assertion is "the change matches the roll".
+- **Read the rule's `event` field, not just its handler config.** Beacon of Stability's handler says
+  `trigger: "use"` but its rule's **event** is `edha-draw-mana`; `item.use()` spends the cost and posts
+  nothing, which reads exactly like a dead talent.
+- **Never stage a status with `createEmbeddedDocuments`.** The engine's sweeps clear via
+  `toggleStatusEffect`, which matches the CONFIG status's fixed `_id` — a hand-made effect survives
+  every sweep while `a.statuses.has(st)` stays true, and it reads as a broken sweep.
+- **`edha-deal-damage` → `item.rollDamage()`. `edha-on-hit` / `edha-gm-cue` / `edha-thorns` →
+  `applyDamage(list, {edhaSource, originatingItem})`. `edha-damage-rider` → `rollDamage()`.** Wrong
+  driver = a manufactured dead-rule reading.
+- **`createEmbeddedDocuments` does not return documents in input order** — for Tokens (run 27) *and*
+  Combatants (run 28). Build `{actorId, tokenId}` pairs explicitly and read the result back by name.
+- **A `javascript_tool` TIMEOUT DOES NOT CANCEL THE SCRIPT.** Run 28 hit three, and in all three the
+  useful work had already completed — **read the world state before re-driving**, then re-establish
+  cleanly. Cap dialog-polling loops by wall clock, and budget ~6 s per `item.use()`.
+- **Persist your snapshot to `sessionStorage` before any row that reloads the page** (R-66's F5). Page
+  globals do not survive; ~52 KB of snapshot does.
+- **Verify the deploy by HASH from BOTH sides.** As of run 28 the served file is **LF-only** (zero CR
+  bytes) now that `.gitattributes` has landed, so a raw hash and a normalised hash agree — but keep
+  normalising, and keep pairing it with `decodedBodySize` on the original `<script>` entry.
+- **Snapshot `_source.system.resources`, not the derived object**; snapshot whole effect **objects**
+  and recreate with `{keepId: true}`; **restore flags BEFORE effects**. Run 28 followed all three and
+  got the first completely empty id-diff of the marathon.
+- **Foundry's socket rate limiter fails silently into your rows.** Space bulk writes ~400 ms apart.
 - **`item.use()` never settles while `ItemConsumeDialog` is open** — fire it, then poll for
-  `button[data-action="continue"]`. Same for `RollConfigurationDialog` → `button[data-action="submit"]`.
-- **A one-status ActiveEffect with no `_id` THROWS** and aborts the whole create batch.
-- **Read the notification log before writing FAIL** — "not enough uses left", "not enough actions", the
-  consume decline and the rate limiter are all silent no-ops whose only evidence is a notification. Wrap
-  `ui.notifications.info/warn/error` in a recorder at the start of the run.
-- **Filter the standing UI apps out of your dialog probe**, and sample both AppV2 instances and
-  `div.app.window-app`.
-- **Chat log is `ol.chat-log` in v13**; card buttons are reachable as
-  `document.querySelector('[data-message-id="…"] button.<class>')`.
+  `button[data-action="continue"]`. **And read the dialog before clicking it** — that is how run 28
+  settled the two-`consume` question.
+- **Read the notification log before writing FAIL.** "not enough uses left", "not enough actions", the
+  consume decline, a pre-cost veto and the rate limiter are all silent no-ops whose only evidence is a
+  notification. Wrap `ui.notifications.info/warn/error` in a recorder at the start of the run.
 - **Serve `scripts/bench-setup-console.js` over a throwaway `127.0.0.1:8099` and inject it as a classic
-  `<script>`** rather than pasting 17 KB. Kill the server at the end.
+  `<script>`.** Kill the server at the end.
 
 ## Standing lessons
 
-- **Read the row's rule config out of `data/authored/*.json` before staging.** Two rows retired this run had
-  been parked for a year on "needs an Opportunity, which cannot be forced" — in both the Opportunity is
-  honour-system prompt text and the only real cost is a resource. One grep, two rows.
-- **Pick the flow by its EVENT, not by its talent.** One Flame Surge detonation retired three rows.
-- **When a row names adversary behaviour, grep `data/adversaries.json` for who can actually stage it** — and
-  when nobody can, that is a result to report, not a row to re-queue.
-- **Compare the COMPENDIUM document, not your imported copy, before blaming a build.**
+- **Take the re-test block FIRST, every run.** Three runs in a row have now measured re-tests as roughly
+  twice as dense as scattered rows, because they share one subject and one actor.
+- **Pick the flow by its EVENT, not by its talent.** One heal fired three talents' cards in run 28; one
+  Flame Surge detonation retired three rows in run 26.
+- **Read the row's rule config out of `data/authored/*.json` before staging** — and now also its
+  `event`. Half the "blockers" in the checklist are stale cost notes or the wrong driver.
+- **Re-read every row parked on an old blocker.** Run 27's `game.combat` correction and a fixed
+  `edhaSpeedFt` between them unblocked three rows that had been dead since run 16.
+- **A row's own break/staging recipe can be wrong.** Two rows this run described a break that cannot
+  throw and a bench PC that does not own the talent. Verify the recipe against the source before
+  concluding anything from it failing.
 - **Only claim what your own logs support, and label inferences as inferences.**

@@ -226,6 +226,31 @@ rebuild. Applies to every `edhaDialogPick` caller that stamps before prompting.
 > behaviour → lane B**, bench-verified before it counts. Filed as **TODO_REPO_HYGIENE #36**; moves
 > to §K when #36 lands.
 > Shipped in PR #160 (2026-09-05); moves to §K after the bench pass.
+> **VERIFIED GREEN, bench run 28 (2026-09-05).** All four legs on `Bench — Order`: cancel refunds
+> 4 → 1 → 4 and leaves `sceneOnce` **undefined**; the talent is immediately re-usable in the same
+> scene; a real pick posts the Decree card, writes the `decree` flag and stamps `sceneOnce`; and a
+> third use is still refused pre-cost with the unchanged wording and unchanged Investiture (R-61
+> polarity intact). Ready to move to §K.
+
+
+**R-70. A two-resource activation only charges the FIRST resource unless the player ticks the second
+box — should Edha do anything about it?** Not a bug, and not ours: bench run 28 read the dialog
+instead of clicking through it and found the cause in **cosmere-rpg 2.1.0's own `index.js`**, comment
+included — `// Only automatically check first option, or anything overridden.` →
+`const shouldConsume = options.shouldConsume ?? i === 0;`. Both `consume` entries survive the build
+and reach the dialog intact (verified on the compendium document and live: ticking both charges both,
+inv 9 → 8 **and** foc 8 → 7). The consequence at the table is that a card reading **"Cost: 1
+Investiture, 1 Focus"** — the Stitchmother's *Reknit Form*, and any tree talent with two costs —
+is **under-charged by a default click**, silently, every time. `options.shouldConsume` is a single
+boolean for ALL entries, so there is no per-item authoring field that would fix it; the only levers
+are a system-level wrapper that pre-checks every row, or leaving it to the table.
+*Recommended default: **leave it alone and note it in the handbook.*** Wrapping the system's own
+dialog to change a default is exactly the kind of side-engine iron rule 2a exists to prevent, the
+player can see both unticked boxes on screen, and a GM who misses it has under-charged by one
+resource. If you would rather the dialog matched the card, the honest fix is one wrapper on
+`showConsumeDialog` that passes `shouldConsume: true` — which then applies to **every** talent with
+a second cost, including ones where the second cost is meant to be optional.
+*(From bench run 28, settling the row bench run 27 filed.)*
 
 ---
 
@@ -302,6 +327,25 @@ intent vs. state. Which should the card report? *(3A-10.)*
 
 **R-33. 2bI-3's card text stays enemies-only** while the behaviour is wider. Align the text or narrow
 the behaviour. *(3B-C.)*
+
+
+**R-71. The system's own item-damage card prints the UNFOLDED formula — leave it, or fold at build
+time?** R-65 folds every roll that goes through `edhaRollFormula`, and every engine-rolled card
+measured since reads plain dice (`2d8`, `2d8 + 2`, `1d6 + 2`). But a talent whose damage the
+**cosmere system** rolls for itself — `item.system.damage.formula`, rolled by the system's `use()`
+before any Edha rule sees it — never reaches that helper, so its card shows the raw parenthetical.
+Measured on **Verdict**: the system card read `(2)d(2 * 3 + 2) + 5 = 10` while the same talent's
+engine-rolled Edict payoff on the very next card read `2d8 + 2 = 7`. **The maths is right** —
+Foundry's parser evaluates the parenthetical correctly, 10 and 7 are both valid — so this is a
+DISPLAY gap, not a damage bug, and it is the same string bench run 24 saw on Exalt's card.
+*Recommended default: **fold the authored `system.damage.formula` at BUILD time**, so every
+system-rolled card reads `2d8` like every engine-rolled one.* The alternative is to accept the
+parenthetical on those cards, which is defensible — it is honest about the scaling — but it makes
+two cards from the same talent look like they use different maths. A build-time fold would need a
+**pack rebuild**, and it changes what Ben sees on the sheet, so it is a judgment call rather than a
+mechanical fix.
+*(Filed by bench run 28, which moved it out of the checklist: the row asked Ben to DECIDE, not an
+agent to TEST, so it was in the wrong file. Original measurement: bench run 25.)*
 
 ---
 
