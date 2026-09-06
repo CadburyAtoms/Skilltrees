@@ -62,6 +62,56 @@ on six consecutive rolls). PR #223.
   leaves the stack intact for the next completed test).
 
 ---
+## 2026-09-06 — ITEM 49: the next-test modifier slot is a **LIST** (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
+
+Ben's R-15(b), verbatim: *"that needs to be a list not one slot."* `flags.edha-content.nextTestMod`
+was ONE object, so the second writer silently overwrote the first — Coercive Pressure's Cognitive
+disadvantage and the Wrenchmaster's Probability Net `-1d6` could not sit on the same victim, and the
+loser left **no trace anywhere** (no card, no log, an empty tab). R-57 named the other half of the
+same shape (an expired round-scoped mod is *left* on the actor, cleared only by being overwritten)
+and R-20 confirmed a "this round" mod really does die at the round change. One shape fixes all three.
+
+**What the entry is.** The slot became an array; the ENTRY keeps the shape the pipeline has always
+used, which already carries the four parts the ruling names — `source` / the kind (`mode` ∨
+`formula`) / the value (`formula`, `count`) / the expiry (`round`). Renaming those fields would have
+broken the authored `edha-next-test-mod` schema, its pinned tests, and every mod already stored on a
+live actor, for no behavioural gain. **It is the SLOT that became a list.**
+
+| | before | now |
+|---|---|---|
+| **writers** (all through `edhaSetNextTestMod`) — the `edha-next-test-mod` handler executor (Coercive Pressure, Probability Net, Pattern Recognition, Probability Cascade, the four Opportunity adders, the Command die cluster, Pack Hunting, Reactive Analysis, Blood Price…), the armed-hit `onSurviveAdvAttr` survivor rider, and the trigger-card `effect.nextTestMod` path | **overwrote** | **APPEND** via `edhaListPush` (cap 12, evict oldest) |
+| **readers** — `edhaNextTestPreRoll` / `edhaNextTestConsume` (d20) and `edhaNextTestDamageMods` / `edhaNextTestConsumeDamage` (the damage half) | read one mod | read **every live entry** through `edhaNextModsOf` |
+| **(dis)advantage** | the one mod's mode | **boolean-OR per direction** via `edhaNextModFoldMode`; a cancelling advantage+disadvantage pair writes **nothing**, leaving the player's own dialog choice alone |
+| **dice / flat modifiers** | one term | **SUM** — each entry appends its own flavor-labeled term |
+| **expiry** | one `round` stamp, and a dead mod sat there for ever | **per entry, PRUNED ON READ** (`edhaNextModExpired` is deliberately the same comparison `edhaNextTestMatches` makes, so pruning can never drop a mod that would still have matched) |
+| **consumption** | unset the slot | `edhaNextModSpend` — only the entries that applied are decremented/removed; gid is the identity |
+| **legacy value** | n/a | a stored single object reads as a **one-entry list** and normalises to an array on first read — no actor breaks |
+
+Two knock-on fixes fell out of the shape. The cross-path claim (`_edhaNextModClaim`, 07-27j) is now
+keyed per **(actor, gid)** rather than per actor — with one slot `actorId` *was* the grant, and with
+a list one `either` rider's claim would have vetoed its neighbour's. And the clear path routes
+through `edhaSetEdhaFlag` instead of calling `unsetFlag` on the bearer, so a **cross-actor clear now
+relays to the GM** where before it silently did nothing for a victim the roller does not own.
+
+**Proved by mutation** — `tests/next-test-mod-list.test.js` (11 cases), each shown failing under a
+one-line reversion: the writer overwriting again drops `Coercive Pressure` from the list; consuming
+the whole list instead of `edhaNextModSpend` wipes the neighbour; applying only `mods[0]` leaves
+`["0 + 3[Decisive Command]"]` with Probability Net's die missing; skipping the prune-write leaves
+`Pattern Recognition` on the document; deleting the single-object branch of `edhaNextModList` breaks
+every legacy read. Gates: 10/10 PASS, 830 unit cases.
+
+⚠️ `tests/advantage-channel.test.js`'s ledger moved with the code: the `AdvantageMode` narrowing that
+used to be an inline ternary is now `edhaNextModFoldMode`'s return, which is a **stronger** guarantee
+(pure, pinned, and it returns `null` rather than guessing when the entries disagree).
+
+**🤖 for the bench:** checklist **2bI-4** (the two riders stack on one victim), **2bI-4b** (negative
+control — a Physical test spends only the ungated rider and leaves its neighbour), **2bI-4c** (the
+expired "this round" rider is *removed* from the flag; an unstamped one survives the round change).
+
+**Open for Ben (not a blocker):** when a victim carries **both** an advantage and a disadvantage
+entry — impossible before, since there was one slot — they cancel and the roll is left exactly as the
+player configured it. That is the standard table rule and the conservative choice, but it is a new
+situation and Ben may want disadvantage to win instead; one line in `edhaNextModFoldMode` either way.
 
 ## 2026-09-06 — ITEM 34a: the fleet weapon migration lands (re-do of PR #103's weapon half against today's engine) (**REBUILD + ⟳ Sync** — `data/adversaries.json` + engine + build; the adversaries pack rebuilds, then "⟳ Sync Adversaries from Pack")
 
