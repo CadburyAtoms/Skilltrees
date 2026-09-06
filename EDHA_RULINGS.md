@@ -37,8 +37,7 @@ near-false-PASS at run 13. *Recommended: yes, give them normal vision.* Distinct
 10 ft, which is a deliberate design dial and stays a ⚑ checklist row ("Adversary sight range — does
 10 ft feel wrong? Say a number"). *(3A-2.)*
 
-**R-3. `applyButtonsTo` now runs on one GM**, so only that GM sees its notification — but the
-setting is **world-scope**, so the effect is global. Confirm that is intended. *(3A-5.)*
+*(R-3 — applyButtonsTo running on one GM while world-scope — ANSWERED 2026-09-06, moved to §K.)*
 
 ---
 
@@ -61,34 +60,15 @@ alternative is to declare the half untestable-by-construction and close it, whic
 leaves an engine path with no consumer — the same shape as the `senses` field retired in 07-27v.
 ⚠️ This is a **REBUILD** either way (it is `data/adversaries.json`), so it is not a bench decision.
 *(Bench run 34, from the R-4 28b row.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) author one `costs:` line onto a
+> single adversary ability.** Ben did not pick the subject; default to the Stalker's Fade unless a
+> better fit turns up. `data/adversaries.json` (+ baked AEs if any) → adversaries pack **REBUILD**,
+> Ben's deploy → **item 57**; lint pass 5 must stay green; then the 28b "adversary bespoke cost"
+> bench row finally has a subject.
 
-**R-75. The `edha-test-react` (H26) reaction family is NOT combat-gated — is that right?** Observed at
-bench run 34 as a card nobody came for: `Bench — White`'s **Shared Conviction** posted its offer on a
-Deception test by `Bench — Black` while **White was in no combat at all**. That is not a 28a
-regression — the handler carries no `scope` field, so it never reaches `edhaWatchCombatGate`, and
-28a's "deliberately NOT gated" list in the handoff simply does not mention this family. The same is
-true of `Pillar of Order` and `Voice of Authority`, which also fired unprompted during the run.
-*Recommended: **leave it ungated, and say so in the docs.*** An ally about to fail a social or
-exploration test is exactly the out-of-combat case R-4's negative control exists to protect, and
-Shared Conviction's own text is not combat-flavoured. But it does mean a White PC standing anywhere
-on the scene offers a reaction on **every** skill test any creature in Attunement Range rolls, which
-at a busy table is chatty. If you want it quieter the fix is a field on the rule (an `inCombatOnly`
-dial), not an engine gate — iron rule 2b. *(Bench run 34.)*
+*(R-75 — H26 reaction family left ungated — ANSWERED 2026-09-06, moved to §K.)*
 
-**R-76. The engine's ONE spend-stamped resource write has no consumer either — H10's Investiture
-drain does not exist on any talent.** Measured at bench run 35 while driving item 13's row, which
-named "H10's `edha-focus` Investiture DRAIN (`op: drain`, `resource: inv`) — Reaper's Harvest is the
-reference". A sweep of all three packs found **exactly one** `edha-focus` rule with `resource:
-"inv"` in the whole game — Reaper's Harvest — and it is **`op: "gain"`**, which takes
-`edhaBookkeepingTag`. **No shipped talent carries `op: "drain"` + `resource: "inv"`**, so the single
-`edhaSpendTag` site that item 13 preserved (`register-skills.js` ~18139) is dead code on the table
-today. The bench proved the branch works by staging the rule by hand, so this is not a defect —
-it is the exact shape of **R-74** one layer up: an engine path with no consumer. *Recommended:
-**author the drain onto a talent that should have it** — a Death/Morrath or Black drain that takes
-Investiture rather than focus is the obvious home, and it would give both R-74's contrast and this
-branch a real subject in one edit.* The alternative is to say so in the header and leave it: the
-branch is one ternary and costs nothing to keep. ⚠️ This is an **authored-data** change (a `pack
-rebuild + ⟳ Sync`), so it is not a bench decision. *(Bench run 35, from item 13's bench row.)*
+*(R-76 — H10's Investiture-drain branch has no consumer — ANSWERED 2026-09-06, moved to §K.)*
 
 **R-78. The `edha-aoe-template` handler has NO consumer either — retire it, or give it one?**
 Measured at bench run 38 while driving the "AoE burst auto-target" row. That row names **Flame
@@ -107,6 +87,12 @@ instance of the **R-74 / R-76** shape: an engine path with no consumer. *Recomme
 registered invites an author to pick the dead one. The alternative is to keep it as the "capture and
 target, GM applies by hand" variant and say so in the header. ⚠️ **ENGINE-ONLY either way** (no
 authored data references it, so no pack rebuild). *(Bench run 38, from the AoE burst row.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) RETIRE the handler.** Spec: remove
+> `edha-aoe-template`'s registration + `edhaPlaceAoe`'s template branch (keep whatever
+> `edhaCastBurst` / `edha-burst` share), lint-refs vocabulary + native-vocabulary snapshot untouched
+> (it is an edha-* type), `ENGINE_INDEX.md` row struck with the date, name-keyed allowlist
+> unaffected. ENGINE-ONLY, F5 → **item 48**; gates must stay green; retire the "AoE burst
+> auto-target" row's remaining clause.
 
 **R-77. Should the Investiture-max persist be behind the primary-GM gate, or stay owner-gated?**
 Found at bench run 36 while driving item 12's two-GM row. `edhaDeriveInvestiture`'s persist branch
@@ -147,7 +133,11 @@ the re-test row is on the checklist under `# BENCH — Engine-wide & cross-tree`
 > and fix pass 6 is ENGINE-ONLY**, so it is still running the pre-fix engine, which has no gate at
 > all. **This does not change the recommended default and does not reopen the design question** — it
 > only means the applied default is still unverified live. Re-test after Ben F5s his client.
-
+>
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) keep the applied default** (GMs
+> defer to the primary GM, a non-GM owner still writes). No change to the shipped code. Moves to §K
+> once the live re-test passes after Ben reloads his Gamemaster client — the run-37 blocker was the
+> stale client, not the code.
 
 *(R-5 — does Fault Line's line spare allies — ANSWERED 2026-09-05, moved to §K.)*
 
@@ -161,56 +151,86 @@ snapshot state afterwards). Same shape as R-5 but on the Region rather than the 
 > the burst. So R-5's "only the caster is spared" does **not** carry over to the Region: right now
 > **nobody** is spared, the caster included. Recommended default unchanged in shape, but the ruling
 > should now say explicitly whether the caster's own square is dangerous terrain to them.
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (b) spare the CASTER only, everyone
+> else including allies is caught.** Matches R-5 / item 29 for the line, so both halves of the
+> talent follow one rule. Spec: the dangerous-terrain Region (and its tick) exempts the actor that
+> laid it — either lay the rectangle one square out from the caster or exempt the caster's token
+> from the tick; Ben did not choose which. The ally-in-the-line burst + terrain double hit stays.
+> ENGINE-ONLY, F5 → **item 48**; lane R then a 🤖 re-test of the run-33 Fault Line row with the
+> caster unharmed.
 
 *(R-7 — Final Decree / Edict's Temp HP rider scope — ANSWERED 2026-09-05, moved to §K.)*
 
-**R-8. Roster cross-talk between the 15 always-armed bench PCs** — every bench PC watches every
-event, which is not a table condition. Is this only a bench-fixture problem, or does it say something
-about how broadly watches should be scoped? *(3B-B; overlaps R-4.)*
+*(R-8 — bench-roster cross-talk — ANSWERED 2026-09-06, moved to §K.)*
 
 ---
 
 ## C. Mechanics — what a rule should do
 
-**R-9. Does "cannot regain HP" block heal-overflow → Temp HP?** Blocked today: a fully-cut heal
-leaves no overflow to convert, so Bench — Life's `edha-overflow-thp` produced nothing on a
-Withering-Touch-blocked target. Is Temp HP a *heal* (blocked, as now) or a *grant* (should bypass)?
-A **direct** Temp HP grant already bypasses and was measured doing so — 7 THP landed with HP pinned
-and later absorbed 4. **This also decides how checklist row 2bW-1's own example must be re-worded**,
-because as written it asks for something the mechanics cannot produce. *(3A-7 + checklist 2bW-1.)*
+*(R-9 — cannot-regain-HP vs heal-overflow Temp HP — ANSWERED 2026-09-06, moved to §K.)*
 
 **R-10. Does "cannot regain HP" stop drop-to-1 stabilization?** Same family as R-9, different
 consumer. *(3B-C.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (b) NO, stabilizing at 1 is a floor
+> against death, not regaining.** Spec: every drop-to-1 / stabilize consumer must bypass the no-heal
+> condition (audit the family: whatever writes `hea.value = 1` on a 0-HP creature). ENGINE-ONLY,
+> F5 → **item 47**; headless pin (a withered creature at 0 still stabilizes to 1; a plain heal on it
+> still does nothing); 🤖 re-test row.
 
-**R-11. A fully-blocked heal still spends the click's cost.** Refund, or keep the cost? *(3B-C.)*
+*(R-11 — refund on a fully-blocked heal — ANSWERED 2026-09-06, moved to §K.)*
 
 **R-12. Should a raised creature clear its OWN Harvested Remain?** An adversary that had itself been
 harvested was raised by spending a *different* Remain, and came back at 1 HP **still wearing the
 `harvested` marker with its own ledger entry live** — a living creature that is also a Remain. The
 card says nothing either way. *(3B-C + checklist Raise Dead row, Death section.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) YES: raising clears the creature's
+> own `harvested` marker and its ledger entry.** Spec: the raise path (Death tree, Raise Dead / the
+> remains ledger) removes the raised actor's own entry and marker in the same write. ENGINE-ONLY,
+> F5 → **item 47**; headless pin on the ledger; re-test = the Death-section Raise Dead row (a raised
+> adversary comes back at 1 HP with no marker and the ledger one entry shorter).
 
 **R-13. A snare placed UNDER a creature insta-springs**, where the card says "enter or pass through".
 *Recommended: arm, do not spring.* Narrowed by run 7: placement **adjacent** does not insta-spring,
 only placement directly under a creature does. *(3B-C.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) ARM, do not spring; it fires on the
+> creature's next move.** Spec: the Fate snare `RegionBehavior` ignores tokens already inside at
+> placement (arm-only), springs on enter / pass-through per the card. ENGINE-ONLY, F5 → **item 48**;
+> pin; 🤖 re-test = place under a creature (no spring), creature moves (springs).
 
 **R-14. Melee mutation riders fire on a nat-1 graze application.** Intended? *(3B-C.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (c) FOLLOW EACH RIDER'S OWN CARD** —
+> "on a hit" = hit only, "when you deal damage" / "on a hit or graze" = grazes count. Spec: audit
+> every melee mutation rider's card text and set a per-rule `onGraze` (or equivalent) so the rider's
+> trigger matches its wording; iron rule 2b — the dial lives on the rule, the handler reads it.
+> ENGINE + AUTHORED (rebuild + ↻ Sync if any rule changes) → **item 56**; headless pin per rider; 🤖
+> re-test on a nat-1 graze for one hit-only rider and one damage rider.
 
 **R-15. Coercive Pressure no longer stacks with another next-test rider** (e.g. Probability Net) —
 the second write overwrites the first, because the bespoke Cognitive-disadvantage flag that allowed
 both is gone. Confirmed on the live actor: `flags.nextTestMod` is **one object**, so each bearer has
 exactly one slot. Does losing cross-rider stacking matter at the table? *(Checklist 2bI-4.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session, verbatim: "that needs to be a list not
+> one slot"): (b) the next-test slot becomes a LIST, not one object.** Spec: `flags.nextTestMod` →
+> an array of `{source, kind, value, expiry}`; every writer appends, every reader applies all
+> entries (disadvantage is boolean-OR, dice/flat mods sum), expiry per entry (see R-20/R-57:
+> round-scoped entries expire at the round change), consumers clear only their own entry; migrate a
+> legacy single object on read. ENGINE-ONLY, F5 → **item 49**; headless pin: Coercive Pressure +
+> Probability Net on one target both apply and both clear independently; 🤖 re-test = checklist
+> 2bI-4.
 
-**R-16. Wary now reduces Whispered Doubt's extra focus loss, usually to zero.** Observed live: Wary
-+ Discipline 1 → net extra **0**, with a "🛡️ Wary: involuntary focus loss reduced by 1" card. Wary's
-own text says *involuntary focus loss*, so this reads correct — but it did not happen before the
-migration, because the loss now goes through the shared involuntary-focus path. Keep it, or restore
-the old unreduced loss? *(Checklist 2bI-6.)*
+*(R-16 — Wary reducing Whispered Doubt's extra loss — ANSWERED 2026-09-06, moved to §K.)*
 
 **R-17. Puppeteer / Unnerving Approach — the once-per-round budget now spends on CLICK, not on
 card-post.** Declining an offer no longer burns the use (verified: an ignored picker did not block a
 same-round re-use). **But each ignored USE still charges its Investiture** — only the round budget
 waits for the click. Two questions: is the click-not-post budget intended, and should an ignored use
 refund its Investiture? *(Checklist 2bJ-10.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) keep the click budget AND refund
+> the Investiture when the offer is declined/ignored,** consistent with R-69 (cancelled picker
+> refunds, no stamp). Spec: charge on the click that resolves the offer, or charge on post and
+> refund on decline/timeout — reuse whichever the R-69 picker path already does. ENGINE-ONLY, F5 →
+> **item 51**; headless pin; 🤖 re-test = checklist 2bJ-10 (declined offer: Investiture unchanged,
+> round use still available).
 
 **R-18. Should quarry advantage refuse to stomp an active DISADVANTAGE?** Attacking your quarry while
 Weakened rolls at **advantage** today — the quarry site runs after Weakened's and overwrites it. That
@@ -220,18 +240,18 @@ deliberately rather than changed silently. *(Checklist Quarry row, Heroic.)*
 
 *(R-19 — combat-timing talents granting to adversaries too — ANSWERED 2026-09-05, moved to §K.)*
 
-**R-20. Should Pattern Recognition's disadvantage expire at the ROUND change?** It does now: the card
-always said "their next test **this round**", and the old flag waited for ever. Say if you would
-rather it kept waiting. *(Checklist 2bJ-3. The mechanical half stays a 🤖 row.)*
+*(R-20 — Pattern Recognition's disadvantage expiring at round change — ANSWERED 2026-09-06, moved to §K.)*
 
-**R-21. Should Phantom Double's out-of-range refusal become a pre-cost veto?** Identical player
-outcome, and it removes the refund race *by construction* rather than by sequencing — but it drifts
-the rule's own text and needs a leyline rebuild. **Default taken: leave it** (the text promises a
-refund). *(3A-8.)*
+*(R-21 — Phantom Double's out-of-range refusal — ANSWERED 2026-09-06, moved to §K.)*
 
 **R-22. `edhaConsumeList` refunds `value.min`.** If a talent ever ships `min ≠ max`, the system's
 consume dialog lets the player pay more and the refund would under-credit. No talent does today —
 this is a "close the door before it matters" call. *(3A-6.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) close the door with a BUILD
+> GUARD** — lint-refs (or validate.js) fails if any talent or adversary ability ships a consume
+> entry with `min ≠ max`, so the under-refund can never happen silently; no engine change.
+> TOOLING-only → **item 60**; mutation-verified (author a min≠max cost in a scratch copy → gate
+> fails).
 
 **R-50. An ambushing strike never gets its OWN fooled-rider — the strike that marks them fooled is
 the one strike that does not benefit.** Surfaced by bench run 18 and filed here by fix pass C
@@ -247,6 +267,25 @@ buys you the opening, the payoff starts once they have committed to believing it
 alternative costs real machinery (the rider would have to be re-derived after the test, or the
 belief test awaited inside the use hook, which risks the takeover class of bug). Say so if you want
 the ambusher to benefit on the strike that fools them and it becomes an engine task.
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session, after a full walkthrough): (b) the
+> FIRST strike must benefit.** The "marks, not benefits" reading does not match the ten cards:
+> Stillback "Its first attack from unbroken stillness is made from ambush"; Wrongwake "on a failure
+> the attack comes from ambush"; The False Spring "Its first strike against each fooled target is
+> made from the mirage"; Hazewyrm "The first time it strikes each creature per scene, that creature
+> has tested Perception… the strike comes from the shimmer". Affected: every `edha-ambush-belief`
+> carrier — Stillback, Wasting-Eater Stillback, Wrongwake, Wasting-Eater Wrongwake, Keelshadow, The
+> False Spring, Hazewyrm Adult, Hazewyrm Elder, The Doubled, The Doubled Elder (the Mistheron's
+> placed-copy seeming already tests at placement and is NOT affected). SPEC (avoid awaiting inside
+> the useItem hook — the takeover bug class): in the `edha-damage-rider` `whenTargetFooled` check
+> (~L974), when the current target has no ledger entry for this scene, run the belief test right
+> there with the engine's synchronous dice evaluator (`edhaRollDiceSync` family), use the local
+> result for the rider decision, then write the ledger + post the GM/player cards asynchronously
+> exactly as `edhaAmbushBeliefTest` does today (factor the roll/DC/advantage bits into a shared pure
+> helper so the two paths cannot drift); the `useItem` path stays as the fallback for a strike with
+> no rider. ENGINE-ONLY, F5 → **item 53**; headless pins: first strike vs untested target rolls the
+> test and applies the rider on a fail; second strike reads the ledger and rolls no second test;
+> Mistheron path unchanged; 🤖 re-test on Stillback (Ambush Bite 1d10+3 +1d6 on the FIRST bite vs a
+> fooled target).
 
 **R-51. Does an illusory copy breaking count as "an ally dropped"?** Raised by fix pass C while
 fixing the cross-disposition defect below it. The two are separate: the defect was that a tokenless
@@ -259,6 +298,10 @@ never real; the fooled *enemies* are the ones who would react, and they are on t
 the filter. One-line engine change (skip the block when the victim carries the `phantomDouble`
 flag), **engine-only, no pack rebuild** — left undone deliberately because it would silence a cue
 you may want. *(From bench run 18 / fix pass C.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) NO: a phantom's break fires no
+> ally-drops cue.** Spec: skip the ally-drops block when the victim carries the `phantomDouble`
+> flag (the one-line change the ruling names). ENGINE-ONLY, F5 → **item 47**; headless pin (phantom
+> break → no cue; real ally drop → cue); 🤖 re-test in the illusion section.
 
 **R-69. Should a CANCELLED picker still burn the talent's once-per-scene use?** Today it does.
 `edhaDecreeUse` calls `edhaStampSceneOnce(owner, item)` **before** it opens the prohibition picker,
@@ -306,6 +349,23 @@ resource. If you would rather the dialog matched the card, the honest fix is one
 `showConsumeDialog` that passes `shouldConsume: true` — which then applies to **every** talent with
 a second cost, including ones where the second cost is meant to be optional.
 *(From bench run 28, settling the row bench run 27 filed.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (b) wrap the dialog so every cost row
+> starts ticked.** Ben chose the wrapper knowing it applies to every talent with a second cost (rows
+> stay untickable by the player). Spec: ONE wrapper on the system's `showConsumeDialog` passing
+> `shouldConsume: true`; ENGINE-ONLY, F5 → **item 50**; declare it in the header as the one
+> sanctioned system-dialog wrapper (iron rule 2a exception by Ben's ruling); pin a headless test on
+> the option shape; bench re-test = Reknit Form charges inv AND foc on a default click.
+
+**R-72. Is an INVOLUNTARY drain a "spend"?** Raised by item 28b: the Order Edict fires only on the
+creature's own activations, and H10's Investiture-drain write (`register-skills.js` ~L18139, the
+one `edhaSpendTag` site item 13 preserved) currently stamps a drain the same way as a voluntary
+spend. *(Board table; raised by item 28b.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (b) NO, a drain is not a spend.** Spec:
+> H10's write → `edhaBookkeepingTag`; `edhaDrainFocus` likewise carries a bookkeeping tag (28b's "a
+> test fails if one ever appears" pin flips to its opposite). ENGINE-ONLY, F5 → **item 47**; re-pin
+> tests; bench re-test = an Edict-bound creature drained by an enemy gets NO violation prompt, and
+> its own wired spend still does. This also settles R-8's "decide together with R-8" clause — R-72
+> (b) stands on its own.
 
 ---
 
@@ -319,69 +379,73 @@ self-offers; or (b) it is the Special Action you take *after* your weapon hits, 
 on-hit rule is the redundant half and should be `whenDealer: "self"` or removed.
 **Settleable entirely from the Events tab — `whenDealer` is a field on the rule, no code change
 either way.** Never benched. *(3A-3 + checklist Red row — the same question, recorded twice.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) a TRUE RIDER on any melee hit:
+> `whenDealer: "any"`.** Authored rule field change in `data/authored/leyline-red.json`
+> (settleable from the Events tab) → **REBUILD + ↻ Sync**, **item 58**; 🤖 re-test = the Red row (a
+> sword hit offers Volatile Strike; standalone use self-offers harmlessly).
 
-**R-24. Red / Momentum — is Reckless Advance the intended branch root?** The graph half is verified
-live: the compiled Red tree reads Reckless Advance {skill red 1, no talent prereq}, with Burning
-Drive and Volatile Strike hanging off it and Unstoppable at {Reckless Momentum, red 3}. The 07-24 fix
-trusted the **layout + connections** over the card text, which had said "Burning Drive". If you
-intended Burning Drive to come first, say so and the edge flips instead. *(Checklist Red row.)*
+*(R-24 — Red/Momentum branch root — ANSWERED 2026-09-06, moved to §K.)*
 
 **R-25. Rallying Shout's reminder now prints on an ally ABOVE 0 HP.** Deliberate change, re-confirmed
 at run 11 on an ally at 32 HP. The number defect in the same line is fixed and table-verified
 ("recovery die + **3** health" at Leadership 3). Only the gate is yours: keep the always-print, or
 restore the at-0-HP-only gate? *(3A-11 + checklist 2bM-6.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (c) print ONLY for an ally at 0 HP or
+> carrying Unconscious** (the two cases the card names). ENGINE-ONLY, F5 → **item 47**; headless pin
+> (ally at 32 HP: no card; ally at 0: card; ally Unconscious above 0: card); 🤖 re-test = 2bM-6.
 
-**R-57. Pattern Recognition's disadvantage now EXPIRES when the round turns — keep that, or let it
-wait?** The card has always said "their next test **this round**"; the old flag waited for ever, and
-the 2b conversion made the text true via `expireEndOfRound`. **The behaviour is verified working**
-(bench run 23, both directions: with the stamped round current the victim rolled `2d20kl + 2` and the
-card printed "🔮 Pattern Recognition — disadvantage on this test", flag consumed; with the round moved
-on the same victim rolled a plain `1d20 + 2`, no card, flag left unconsumed). So this is purely your
-call on intent: **(a)** keep the expiry, matching the card — *Recommended*, the text is unambiguous;
-**(b)** restore the wait-for-ever behaviour and re-word the card to drop "this round". ⚠️ Note the
-side effect either way: a stale un-expired mod is **left on the actor rather than cleared**, so under
-(a) a victim can accumulate dead `nextTestMod` flags until something overwrites the single slot (the
-same one-slot overwrite characterised in R-15). *(Checklist 2bJ-3, retired run 23.)*
+*(R-57 — Pattern Recognition's round-expiry, kept — ANSWERED 2026-09-06, moved to §K.)*
 
 ---
 
 ## E. Cards, text & naming
 
-**R-26. What should a blank-note `edha-push` card say?** The old talent-specific default is
-definitively gone (nothing says "Shockwave Slam" any more), but a fresh push rule with `note: ""`
-does not read "Push" either — it reads **the owning talent's name** ("💥 Vigilant Stance — … is pushed
-3 ft."). That is arguably better than a literal "Push". Say which is canon and the card, the row and
-the engine get aligned to it. *(Checklist 2bA-6. Its two secondary observations were re-driven at run
-12 and are artifacts of a hand-authored probe, not engine behaviour — `bySize: true` overrides
-`distanceFt`, which is what "3 ft for a 5 ft rule" was really seeing.)*
+*(R-26 — blank-note edha-push card text — ANSWERED 2026-09-06, moved to §K.)*
 
 **R-27. Battle Fever — which side is canon, the card or the engine?** The card says "+1 to your next
 test (max = Rank), **resets at start of your turn**"; the engine's rally bonus rides **every** test
 until turn start (`rally {count, resetOn: turn}` — it never consumes on a test; observed +2[Rally] on
 6+ consecutive rolls). The max=Rank cap works on both readings. *(Checklist Red spot-checks row.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) THE CARD is canon**: the rally
+> bonus is SPENT on the next test (max = Rank), and clears at the start of the owner's turn. Spec:
+> the rally handler's `{count, resetOn: turn}` gains consume-on-test (the bonus applies once, to the
+> next test, then the stack is cleared/decremented). ENGINE-ONLY, F5 → **item 52**; headless pin
+> (three damage events → +3 on the next test, +0 on the one after; cap at Rank); 🤖 re-test = the
+> Red spot-checks row.
 
 **R-28. Withering Touch's duration — "start" or "end" of your next turn?** The engine
 (`expireAfter {round: 2, turn: 0}`), **both** chat cards and the **measured** expiry all say **END**;
 only the prose says *start*. *Recommended: fix the prose* (and the source in `data/domain.json`) —
 do not leave three artifacts agreeing and one disagreeing. *(3A-15 + checklist 2bW-1.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) END; fix the PROSE.** Authored
+> description + `data/domain.json` source prose say "end of your next turn"; engine and cards
+> unchanged. DATA/TEXT → pack **REBUILD + ↻ Sync**, **item 58**; retire checklist 2bW-1's duration
+> clause.
 
 **R-29. Combat Training's garbled source.** The cheatsheet sentence reads "turn one of its own
 **grazes into a graze**". Rule whether that means **miss → graze** or **graze → hit**, and the text
 gets fixed to match. Open since 2026-07-16. *(Checklist adversary-wiring row.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) MISS → GRAZE, once per round,
+> without spending Focus** — the canon Combat Training wording. Spec: fix the cheatsheet sentence
+> and the adversary block's description (its description is currently EMPTY in
+> `data/adversaries.json` — write it); wire per lint pass 5. Adversaries pack **REBUILD** (Ben's
+> deploy) → **item 57**. Retire the adversary-wiring checklist row on evidence.
 
-**R-30. 2bR-17 spec vs rule.** The checklist row says Counterpoint tests "vs the target's **Cognitive
-defense**"; the rule is `vs: "prompt-dc"` (the GM types the influence DC). Arguably correct for a
-counter to an influence test — but the row and the rule disagree and one must move. Run 14 confirmed
-the rule works as authored once a DC is typed. *(3A-12.)*
+*(R-30 — 2bR-17 spec vs rule (Counterpoint) — ANSWERED 2026-09-06, moved to §K.)*
 
 **R-31. Should a PC's own Phantom Double token be labelled "(Illusion)"?** The plain name is
 deliberate for The Seeming's veil, but no veil applies in the PC direction. *(3A-9.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) YES, label the PC's copy
+> "(Illusion)"**; the Mistheron's veiled copy keeps its plain name. ENGINE-ONLY (the copy-token
+> spawner, character owners only), F5 → **item 48**; 🤖 re-test in the Blue block.
 
 **R-32. Black Draw Mana's sweep card says "affected 5"** when all five were already Weakened —
 intent vs. state. Which should the card report? *(3A-10.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) report BOTH: "swept N · newly
+> Weakened M".** ENGINE-ONLY (the pulse runner's card text), F5 → **item 48**; headless pin on the
+> string; 🤖 re-test = Black Draw Mana on five pre-Weakened targets reads swept 5 · newly 0.
 
-**R-33. 2bI-3's card text stays enemies-only** while the behaviour is wider. Align the text or narrow
-the behaviour. *(3B-C.)*
+*(R-33 — 2bI-3 card text vs behaviour (Coercive Pressure) — ANSWERED 2026-09-06, moved to §K.)*
 
 
 **R-71. The system's own item-damage card prints the UNFOLDED formula — leave it, or fold at build
@@ -401,6 +465,12 @@ two cards from the same talent look like they use different maths. A build-time 
 mechanical fix.
 *(Filed by bench run 28, which moved it out of the checklist: the row asked Ben to DECIDE, not an
 agent to TEST, so it was in the wrong file. Original measurement: bench run 25.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) fold `system.damage.formula` at
+> BUILD time.** Spec: `foundry-build.js` folds the authored damage formula into plain dice for
+> every talent the system rolls itself (same fold `edhaRollFormula` does at runtime per R-65).
+> Packs **REBUILD** (Ben's deploy); TOOLING + DATA → **item 59**; pin with a build-report diff
+> showing only formula strings changed; bench visual check = Verdict's system card reads `2d8 + 5`
+> like its engine-rolled card.
 
 ---
 
@@ -412,30 +482,38 @@ agent to TEST, so it was in the wrong file. Original measurement: bench run 25.)
 Today the card lists enabled effects; the Omen marker is not among them. *(3B-D + checklist Chaos
 residuals row — that row's other half, the through-walls rendering, was CLOSED on run 13's
 sense-through evidence with a negative control.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) YES.** Spec: the `edha-pick`
+> `source:'effects'` menu (already being widened under R-73 (b)) also offers the target's Omen
+> ledger entries as a "dispel Omen" button that clears the marker + ledger entry. ENGINE-ONLY, F5 →
+> folded into **item 54** with R-73(b); headless pin; 🤖 re-test = Chaos residuals row.
 
 **R-36. Temp HP source relabelling misattributes a surviving value.** When a smaller Temp HP grant
 loses the keeps-higher comparison, the `source` is still relabelled to the loser — so an ally holding
 6 from Final Decree ends up reading "Bear Witness", and a 99-THP ally ends up reading "Investiture of
 Command". The number is right; the attribution lies. *(3B-D.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) FIX: relabel `source` only when
+> the new grant WINS the keeps-higher comparison.** ENGINE-ONLY, F5 → **item 47**; headless pin (6
+> from Final Decree survives a 4 from Bear Witness → source stays Final Decree).
 
 **R-37. Three small card-text nits, one decision:** Ordained eviction is never verbalized (the place
 card says "(2/2)" but never says the oldest fizzled) · Inevitable Snare's grammar reads "the snares on
 Snare #1 **is** inevitable" · Bulwark's THP attribution. Fix all three, or leave them? *(3B-D.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) FIX ALL THREE**: (1) Ordained
+> eviction posts a line naming the fizzled oldest ground; (2) Inevitable Snare grammar ("the snares
+> on Snare #1 is" → correct number); (3) Bulwark's THP attribution. (1) and (3) are engine card text
+> (ENGINE-ONLY, F5); (2) is authored text if it lives on the card (REBUILD + ↻ Sync) or engine if it
+> is a generated string — check which. → **item 48**.
 
 **R-38. Dread Presence's veto silently makes a Weakened target unmovable.** Three moves resolved with
 no error and did nothing; the only evidence anywhere was `ui.notifications`. Working as designed —
 but it reads identically to a broken range gate, which cost a run real time. Should a refused move
 post something the player can see? *(3A-13.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) a refused move POSTS a whisper to
+> the mover naming the talent that stopped it.** Spec: the `preUpdateToken` veto path posts one
+> whispered card (mover's owners + GM) per refused move, throttled per token per round so a dragged
+> path does not spam. ENGINE-ONLY, F5 → **item 48**; headless pin on the message; 🤖 re-test.
 
-**R-39. Is the roll dialog's die-icon COLOUR cue enough?** The advantage control in the cosmere
-dialog is the rendered **d20 icon itself** — a pre-seeded CSS class, i.e. a colour, with no label,
-no checkbox and no form field (which is why a DOM read reports nothing, and why run 11's "the dialog
-exposes no advantage control" reading was retracted). It **is** pre-selected and it **is** overridable
-by clicking. The one real limitation is that the preview line always reads `1d20 + N` and then rolls
-`2d20kh + N`, because `configureModifiers()` runs after the dialog resolves. **If the colour is not
-readable enough at the table, the answer is more whispered advantage cards like the quarry one — NOT
-an engine change.** The look-at-it half is a ⚑ checklist row; the "so what do we do about it" half is
-this ruling. *(3A-14.)*
+*(R-39 — roll dialog colour cue — ANSWERED 2026-09-06, moved to §K.)*
 
 ---
 
@@ -445,6 +523,9 @@ this ruling. *(3A-14.)*
 cap, so the footprint is set by hand at placement and the biography carries the note. Say which, and
 it goes in the block's text. *(Checklist Lunavar row; its sheet-read half is now RETIRED — bench run
 16 confirmed `creatureType: custom`, `size: large` and the bio note. Only the number is still open.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) 3×3 (Huge).** Put the number in
+> the block's biography note (`data/adversaries.json`) and in the placement guidance; adversaries
+> pack **REBUILD** → **item 57**.
 
 **R-46. How far should a "charge" carry? The Cragdrake Whelp Pack's Reckless Advance moves 3 ft.**
 Raised by bench run 16 (2026-07-27x), which drove it and watched a charging whelp advance **half a
@@ -455,6 +536,10 @@ all" reads like a rush, and 3 ft is not a rush. *Recommended default: give it an
 `distanceFt` (its Speed, 25 ft, or half that) rather than `bySize`, and say so on the card.*
 ⚠️ **Distinct from the Explosive Leap case** in the same section — see **R-48**, which test-pass-fixes
 sent back here on 2026-07-27y: it is the same `bySize` question, not a wiring bug.
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) FULL SPEED, 25 ft, explicit
+> `distanceFt`, stated on the card.** `data/adversaries.json`: `edha-move bySize` → `distanceFt: 25`
+> on Reckless Advance + card text; check R-48 (Explosive Leap, same `bySize` question) for the same
+> treatment if still open. Adversaries pack **REBUILD** → **item 57**; 🤖 re-test.
 
 **R-48. The Cragdrake Adult's Explosive Leap says "up to 20 ft" and moves 5. Which side is canon?**
 Sent here by fix pass A (2026-07-27y) after root-causing it rather than fixing it — the run filed it
@@ -496,6 +581,10 @@ grip." The wiring is correct and the rows passed; the question is presentational
 default: keep the line in the item description (it is the rule-3 ledger and it must stay somewhere
 visible in Foundry), but move it behind a GM-only note field or an HTML comment so the table sees
 only the fiction.* Affects every adversary ability carrying the marker, not just these three.
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) NO: keep it on the item but hide
+> it from the table** (GM-only note field or an HTML comment inside the description). Applies to
+> EVERY adversary ability carrying the marker; lint pass 5 must keep recognising the marker in its
+> new home; build/data change → adversaries pack **REBUILD** → **item 57**.
 
 **R-52. A 5-ft `ally-drops` cue cannot reach an ally standing next to its owner. Slack, or edge-to-edge?**
 Raised by bench run 19 (2026-07-28e), which measured it four ways rather than asserting it.
@@ -521,33 +610,20 @@ Large owner at 7.5 ft, so if "adjacent to the ring" is meant to work, the fuller
 **edge-to-edge** for sized tokens — a bigger change that would touch every `rangeFt` gate in the
 engine, so it should be decided deliberately rather than slipped in. Blast radius today is the two
 5-ft rules (Crownox Ring, The Reckoning); Roek's 20 ft is unaffected. *(Checklist W29 §2.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (c) BOTH** — (i) the +2.5 ft
+> half-square slack in `edhaAllyDropEligible` NOW, one-line ENGINE-ONLY, matches the
+> enemy-turn-start sweep → **item 47**; AND (ii) file edge-to-edge measurement for sized tokens as
+> its own TODO item with a bench sweep of every `rangeFt` gate → **item 62**, because the Crownox
+> Ring's "an adjacent ox" stays false under slack alone. Headless pin on the four measured cases; 🤖
+> re-test = W29 §2 when both ship.
 
-**R-53. Should a creature whose own cue says it "goes still instead of dying" still get the `Dead` status?**
-Raised by bench run 19. The Briar-Gone Grove's 0-HP cue posts *"0 HP — it goes still instead of dying;
-the blight stands."* — and the generic `updateActor` 0-HP branch then stamps the **`Dead`** status and
-its skull overlay anyway, so the table sees a corpse marker under a card that just said it is not a
-corpse. Both behaviours are individually correct; they just contradict each other on the canvas.
-*Recommended default: leave the engine alone and treat the skull as "out of the fight" shorthand —
-the cue is the authority and the GM reads it.* The alternative is a `noDeathStatus` dial on the
-0-HP branch for blocks that explicitly do not die, which is one small generic field (ENGINE-ONLY) and
-would also serve any future construct/blight. Not worth building on one block; worth building on three.
-*(Checklist W29 §4 "Register cues", which PASSED — this is a polish question, not a defect.)*
+*(R-53 — Dead status on a "goes still" cue — ANSWERED 2026-09-06, moved to §K.)*
 
 ---
 
 ## H. Map & character creation
 
-**R-41. Which map should the character-creation picker show — labelled or label-free?**
-`module-src/assets/thyrcross-map.jpg` (1118×1488, byte-identical to the deployed copy) **still
-carries every nation letter (`A Kettavar` … `J Canticle`) and all 13 numbered city labels**: the
-07-19s "label-free map" fix was **silently reverted twice**, by `db79969` and `b114f7e`, each of
-which regenerated the jpg from `thyrcross-labeled.png` because `scripts/build-map-picker-asset.js`'s
-docstring still told them to. *(The docstring is fixed; the asset was deliberately NOT regenerated,
-because that is this ruling.)* **Two checklist rows contradict each other and one must be retired
-either way:** *"Map v3: label-free"* wants no labels, while *"Map picker shows the redrawn map"* names
-**"Goldenport wash running the whole west coast"** as its giveaway — and that wash exists **only** on
-the political/labelled render. Aspect is fine either way (0.7513 == canvas aspect), so this is purely
-a look call. *(3A-16.)*
+*(R-41 — labelled vs label-free character-creation map — ANSWERED 2026-09-06, moved to §K.)*
 
 **R-42. Map polygon dead spots — fix the polygon, or re-tag the dots?** Point-testing all 35 gazetteer
 city dots against the 10 shipped nation polygons: **30 agree, 5 do not.** `city-04 [746,676]`,
@@ -559,6 +635,12 @@ the deployed copy, so this is **map truth, not a deploy gap**. **These are the s
 already WARNs about.** Either Goldenport's polygon is missing its coastal lobe, or those dots are
 tagged to the wrong nation — both are edits to `source-materials/maps/thyrcross.map.json`, and only
 you can say which is true. *(3A-17.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) FIX THE POLYGONS.** Goldenport
+> gains its coastal/island lobes so city-04/11/14/17 fall inside it; Corvaine's edge moves to the
+> river bank so city-31 (ruling 154 river port, "the border IS the river") resolves to corvaine.
+> Edits to `source-materials/maps/thyrcross.map.json` + regenerated `thyrcross-nations.json`;
+> `lint_map.py`'s four WARNs must go to zero. Map-data item, lane R → **item 61**; then the
+> "Redrawn polygons hit the right nations" row re-tests.
 
 **R-54. Is 11 max health at STR 0 correct for a level-1 PC — i.e. does `HP = system + 1` apply at
 level 1?** The checklist's "+1 max health" row demands a fresh actor read **10/10 at STR 0**, and
@@ -585,6 +667,20 @@ re-read after it settles). Only the target number is a decision. *(Bench run 21.
 > construction. The engine now holds the number as a single constant, `EDHA_HP_BONUS`, read by both
 > the sheet derivation and the wizard preview — so answering this is a one-line change that moves
 > the sheet, the preview and the tests together. *(Marathon 3, fix pass E.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session, after reading the derivation map
+> `docs/ACTOR_STAT_DERIVATION.md`): (c) REMOVE the +1.** This supersedes the earlier lean toward
+> (b) and the request for a level gate — **no level gate anywhere**; the math stays a single
+> constant. Spec: `EDHA_HP_BONUS = 1` → `0` (keep the constant and its comment block, but correct
+> the comment "the cosmere system derives all three differently" to name only Movement and Senses —
+> HP is identical to the system: `Character_Building_Rules.md` §HP and
+> `Edha_Character_Builder.xlsx` (Character Builder!H22) both give `HP = 10 + STR` at L1, term-for-
+> term the system's own advancement table); the clamp repair and `edhaCwDerivedPreview` read the
+> constant, so they follow. Re-pin `tests/derived-stats.test.js` + `tests/engine-helpers.test.js`
+> wherever they assert the +1. The June pregens that still store a manual `hea.max.bonus` keep it
+> until `edha.migrateDerivations()` — left alone unless Ben says otherwise. ENGINE-ONLY, F5 →
+> **item 47**; the checklist's "+1 max health" row rewrites as the re-test: a fresh actor at STR 0
+> reads **10/10** after Finish, an existing PC at full health drops 11→10 on reload with nothing
+> stored changing.
 
 **R-55. The sheet's budget chips use two different meanings of "X / Y" — which is right?** On a
 correctly-built L1 PC (12 attribute points spent, 5 skill ranks spent, 2 of 4 talents taken) the
@@ -596,6 +692,10 @@ it is never the old **-1/4** — so the row is retired on that evidence; this is
 numerator convention the three chips should share. *Recommended: make all three spent/total*, since
 "Talents 2 / 4" is the one players read most and 0/12 next to a fully-spent sheet reads like an
 error. *(Bench run 21.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) all three chips read SPENT /
+> total.** Attr pts and Skill rnks flip to spent/total to match Talents. ENGINE-ONLY (sheet
+> decorator), F5 → **item 48**; headless pin on the three strings for a built L1 PC (12/12, 5/5,
+> 2/4).
 
 **R-56. Should adversaries use the Edha Senses Range table too, or keep the cosmere ladder?** Fix
 pass E made PC sheets read the Edha table (`Character_Building_Rules.md` §Senses Range: AWA 0 → 10 ft,
@@ -636,6 +736,14 @@ this — it only decides how far the fix reaches. *(Marathon 3, fix pass E.)*
 > This also blocks a checklist row: `# Bench-results fixes` → "Adversary tokens see like PCs" asserts
 > **AWA 0 → 10 ft**, which no live world adversary can satisfy, and its ⚑ sibling asks whether 10 ft
 > *feels* wrong when 10 ft is not what is playing. Both wait on this ruling.
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) ONE rule — adversary sheets AND
+> token sight use the Edha AWA table.** Spec: drop the `type !== 'character'` guard for senses in
+> `edhaDeriveSheetStats` and both `preCreateActor` token-default hooks (~3 places); the flat 10 ft
+> pack token default goes (build emits sight = table(AWA), so pack sheet and token agree); author
+> ONE adversary block with an explicit `senses` override so the bespoke escape hatch is testable
+> (Ben did not pick which). ENGINE + BUILD/DATA → pack **REBUILD** (Ben's deploy) + a world bulk
+> sync (now authorised) → **item 55**. Unblocks the "Adversary tokens see like PCs" row (AWA 0 → 10
+> ft) and its ⚑ feel sibling.
 
 ---
 
@@ -656,97 +764,42 @@ reach it, and unrecoverable without a re-drag or a ⟳ Sync. **If you want those
 is *not* to widen the read on its own: it is to widen the read AND guard the delete so only
 actor-level effects are removed, offering item-owned ones as a temporary **disable** instead. Say the
 word and it gets built that way. *(Fix pass 5; no checklist row — this is a decision, not a test.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): VETOED — widen the dispel the safe
+> way (b), not the narrow applied default.** Spec exactly as this ruling's own "say the word"
+> clause: `edha-pick` `source:'effects'` lists item-owned transferred effects too (Hardy, Collected,
+> Surefooted, Cinder Coat, Predictive Ward's braced), offered as a temporary DISABLE (`disabled:
+> true` on the effect, never delete); the delete path stays guarded to actor-level effects only.
+> ENGINE-ONLY, F5 → **item 54** (folded with R-35); pin both branches headlessly; bench re-test =
+> Unravel Everything can disable a target's Hardy and the talent copy survives intact. **Stays
+> HERE** — open, pending ship — until item 54 lands and the bench confirms it; then it moves to §K.
 
-**R-43. ⚠️ "A card that says 'tests Speed' means the ATTRIBUTE." — THIS CHANGES LIVE DICE MATH.**
-**Concussive Yield** and **Inevitable Snare** now add the target's Speed where they previously added
-nothing. The *implementation* is proven — run 11's 2bAD-1 rolled "Speed 29" with spd 10, and a bare
-d20 cannot exceed 20 — but **the balance question is untouched and is worth one deliberate look.**
-This is the item to read first if you read only one in this section. *(3B-E.)*
+*(R-43 — "tests Speed" means the ATTRIBUTE, live dice math — ANSWERED-by-acceptance 2026-09-06, moved to §K.)*
 
-**R-44. The Pack's placement no longer requires `amt > 0`.** With the marker hand-cleared and the
-pointer surviving, The Pack posts **no** bonus card but **still places** its Insight. *(3B-E.)*
+*(R-44 — The Pack's placement no longer requires amt > 0 — ANSWERED-by-acceptance 2026-09-06, moved to §K.)*
 
-**R-45. Confident Command's `per` is Persuasion.** The same dead id `per` resolved differently in two
-talents — Sharp Eye's `per` was **Perception** (`prc`) — which is exactly why the two could not be
-swept together. *(3B-E.)*
+*(R-45 — Confident Command's per is Persuasion — ANSWERED-by-acceptance 2026-09-06, moved to §K.)*
 
-**R-58. ⚠️ A scene reset now SKIPS any actor fighting in another combat — and "another combat" means
-any that still EXISTS, started or not.** Fix pass F, after run 23 watched a bench combat's deletion
-take `lists.covenants` off an actor in your live combat. The invariant applied is *"ending combat A
-must not clear state on a combatant of a still-existing combat B"* — deliberately **not** "sweep only
-combat A's own combatants", because the wide sweep is intended (Temp HP is meant to reach summons and
-unlinked adversaries that never rolled initiative). **With one combat in play nothing changed at
-all.** The judgment worth your veto is the *fail-safe direction*: an un-started leftover combat still
-counts, so if a stale empty combat sits in your sidebar containing a PC, that PC stops getting scene
-resets until you delete it. I chose that because a wrong skip leaves stale state you can clear, while
-a wrong clear destroys a live encounter's data. Say the word and it becomes `started`-only.
-*(Related to R-4 / R-7 / R-8 — this is the cross-COMBAT face of the scope family, not the
-out-of-combat one, which is still open.)*
+*(R-58 — scene reset skips actors fighting in another EXISTING combat — ANSWERED-by-acceptance 2026-09-06, moved to §K.)*
 
-**R-59. ⚠️ A chat-card button that fails now raises an error toast**, where all 33 previously wrote
-only to the console. This is what let Living Image's Pay button read as a silent no-op for four bench
-runs. Bounded to the 33 *outer* click-handler catches — the ~270 inner defensive catches stay quiet.
-**The feel question is yours:** if a toast at the table is more disruptive than a button that quietly
-does nothing, say so and it goes back to console-only (or becomes GM-only). *(Fix pass F.)*
+*(R-59 — a failing chat-card button raises an error toast — ANSWERED-by-acceptance 2026-09-06, moved to §K.)*
 
-**R-60. ⚠️ Scene-reset sweeps now cover ONE population: directory actors ∪ canvas tokens,
-deduplicated.** Before, the ten per-tree sweeps answered "who gets reset" five different ways —
-Sovereignty reset canvas tokens ONLY (an off-scene character kept `dieStep` forever), Life swept
-every directory actor including adversaries and summons, and only Chaos deduped an actor with a
-token against its directory entry (the rest swept it twice). All ten now run through one
-`edhaSceneReset` applier using the Chaos-pattern population; each tree's flag/status lists are
-unchanged, and the R-58 cross-combat guard still applies per actor. The veto surface: if some
-tree's narrower sweep was intentional, name it and that tree gets a scoped population.
-*(Hygiene campaign 2026-08-10.)*
+*(R-60 — scene-reset sweeps cover one deduplicated population — ANSWERED-by-acceptance 2026-09-06, moved to §K.)*
 
-**R-61. `oncePerScene` now has ONE gate and ONE stamp — each handler type keeping its CURRENT
-polarity.** The same field name meant four things (default-off, default-on, strict-true, plus a
-rogue `detonateUsed.*` flag namespace with its own scene-clear). No live behavior changes: the
-shared gate takes the polarity as an explicit per-type argument matching what each did before, and
-`detonateUsed.*` merges into `sceneOnce.*` (the gate reads both keys, writes only `sceneOnce`).
-One real fix rides along: `edha-decree` stamped its scene-once flag UNCONDITIONALLY while vetoing
-conditionally — the stamp now matches its own veto. Whether all types should converge on one
-polarity is a separate, untaken ruling. *(Hygiene campaign 2026-08-10.)*
+*(R-61 — oncePerScene has one gate and one stamp per handler polarity — ANSWERED-by-acceptance 2026-09-06, moved to §K.)*
 
-**R-62. "Whisper the GM" now has one helper with an explicit audience.** Two spellings disagreed:
-`getWhisperRecipients("GM")` reaches every GM including offline ones; the `u.active && u.isGM`
-filter reaches online GMs only. Applied mapping: action-prompt cards (someone must click NOW) →
-active GMs; record/audit cards → all GMs, so the log survives to a later login. If a specific card
-lands on the wrong side of that line, name it. *(Hygiene campaign 2026-08-10.)*
+*(R-62 — "whisper the GM" has one helper with an explicit audience — ANSWERED-by-acceptance 2026-09-06, moved to §K.)*
 
-**R-63. ⚠️ Unknown token disposition now fails CLOSED everywhere.** Twelve inline checks still
-defaulted a missing disposition to FRIENDLY (`?? 1`) — the convention the ally-drop fix explicitly
-retired after bench run 18 measured the cross-disposition bug — and one helper failed OPEN to
-"enemy". All now use the Number.isFinite guard: no disposition, no effect. This can change live
-behavior for tokens with genuinely unset disposition; if a talent should treat unknown as friendly,
-that is one veto away. *(Hygiene campaign 2026-08-10.)*
+*(R-63 — unknown token disposition fails CLOSED everywhere — ANSWERED-by-acceptance 2026-09-06, moved to §K.)*
 
-**R-64. ⚠️ Victim resolution now uses the full 3-term chain everywhere:
-`options.victim → options.target → the clicking user's current target`.** Six handler sites skipped
-the middle term, so an event that carried `options.target` (but no `victim`) fell through to
-whatever the CLICKING USER happened to have targeted — a different creature. This changes live
-targeting on those six paths, in the direction of "the creature the event was actually about."
-*(Hygiene campaign 2026-08-10.)*
+*(R-64 — victim resolution uses the full 3-term chain everywhere — ANSWERED-by-acceptance 2026-09-06, moved to §K.)*
 
-**R-65. ⚠️ Every formula roll now passes through `edhaFoldDieMath`, via one `edhaRollFormula`
-helper — THIS CHANGES LIVE DICE MATH on ~25 sites.** Only 4 of 29 roll sites folded computed dice;
-the documented [Tier][Die] convention (`(@tier)d(2 * rank + 2)`) silently failed on the rest —
-including a heal branch whose own damage twin, eight lines below it, folded correctly. Talents
-whose formulas use no computed dice are unaffected. *(Hygiene campaign 2026-08-10.)*
+*(R-65 — every formula roll passes through edhaFoldDieMath — ANSWERED-by-acceptance 2026-09-06, moved to §K.)*
 
-**R-66. One-shot card buttons now persist their used state via `edhaMarkCardResolved`.** Fifteen
-cards disabled their buttons in the DOM only — an F5 or a second client revived them (the exact
-Flame Surge bug the helper was built for). Cleanse, reknit, counter-transfer, mutation, plot-grant,
-designate and friends now stay spent on every client. *(Hygiene campaign 2026-08-10.)*
+*(R-66 — one-shot card buttons persist their used state — ANSWERED-by-acceptance 2026-09-06, moved to §K.)*
 
-**R-67. Chaos and Fate burst cards gained the `whisper` option the other four tree-card helpers
-already had.** Additive — nothing whispers that didn't before; it just becomes possible.
-*(Hygiene campaign 2026-08-10.)*
+*(R-67 — Chaos and Fate burst cards gained the whisper option — ANSWERED-by-acceptance 2026-09-06, moved to §K.)*
 
-**R-68. The map toolchain's "is this pixel painted" alpha threshold is now ONE constant, 128.**
-`trace_regions` used 120 and `trace_nations` used 128 for the same question against the same
-layers. Applied 128 — the explicitly named constant. If a re-trace ever shifts a boundary by a
-pixel, this is why; 120 is one veto away. *(Hygiene campaign 2026-08-10.)*
+*(R-68 — the map toolchain's alpha threshold is now one constant, 128 — ANSWERED-by-acceptance 2026-09-06, moved to §K.)*
 
 ---
 
@@ -949,3 +1002,347 @@ either way — **no pack rebuild**, so this can be flipped whenever you decide.
 `EDHA_FOUNDRY_TEST_CHECKLIST.md` still asked this question (the retired Shockwave Slam evidence rows
 already document the shipped body-counts-as-obstacle behaviour); no engine or card change needed —
 matches the recommended default and shipped behaviour.
+
+---
+
+**R-3. `applyButtonsTo` now runs on one GM**, so only that GM sees its notification — but the
+setting is **world-scope**, so the effect is global. Confirm that is intended. *(3A-5.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) intended, close it.** The
+> world-scope setting with one GM seeing the notification is the intended shape; no change.
+
+---
+
+**R-8. Roster cross-talk between the 15 always-armed bench PCs** — every bench PC watches every
+event, which is not a table condition. Is this only a bench-fixture problem, or does it say something
+about how broadly watches should be scoped? *(3B-B; overlaps R-4.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) bench artifact only, close it.**
+> R-4's combat gate already removed the out-of-combat cross-talk; no further watch scoping. Bench
+> setups keep rosters to the actors under test — recorded as a runbook note. This also settles
+> R-72's "decide together with R-8" clause: R-72 (b) stands on its own.
+
+---
+
+**R-9. Does "cannot regain HP" block heal-overflow → Temp HP?** Blocked today: a fully-cut heal
+leaves no overflow to convert, so Bench — Life's `edha-overflow-thp` produced nothing on a
+Withering-Touch-blocked target. Is Temp HP a *heal* (blocked, as now) or a *grant* (should bypass)?
+A **direct** Temp HP grant already bypasses and was measured doing so — 7 THP landed with HP pinned
+and later absorbed 4. **This also decides how checklist row 2bW-1's own example must be re-worded**,
+because as written it asks for something the mechanics cannot produce. *(3A-7 + checklist 2bW-1.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) BLOCKED, as now.** Overflow exists
+> only if a heal landed; a direct Temp HP grant keeps bypassing. No engine change. Consequence:
+> checklist row 2bW-1's example is re-worded to ask for something the mechanics actually produce.
+
+---
+
+**R-11. A fully-blocked heal still spends the click's cost.** Refund, or keep the cost? *(3B-C.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) KEEP the cost, no refund.** No
+> change.
+
+---
+
+**R-16. Wary now reduces Whispered Doubt's extra focus loss, usually to zero.** Observed live: Wary
++ Discipline 1 → net extra **0**, with a "🛡️ Wary: involuntary focus loss reduced by 1" card. Wary's
+own text says *involuntary focus loss*, so this reads correct — but it did not happen before the
+migration, because the loss now goes through the shared involuntary-focus path. Keep it, or restore
+the old unreduced loss? *(Checklist 2bI-6.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) KEEP it; Wary's card says
+> involuntary focus loss and this is one.** No change. Consequence: retire checklist row 2bI-6 on
+> run-evidence.
+
+---
+
+**R-20. Should Pattern Recognition's disadvantage expire at the ROUND change?** It does now: the card
+always said "their next test **this round**", and the old flag waited for ever. Say if you would
+rather it kept waiting. *(Checklist 2bJ-3. The mechanical half stays a 🤖 row.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) YES, as the card says ("this
+> round").** Current behaviour stands; the mechanical half stays 🤖 row 2bJ-3.
+
+---
+
+**R-21. Should Phantom Double's out-of-range refusal become a pre-cost veto?** Identical player
+outcome, and it removes the refund race *by construction* rather than by sequencing — but it drifts
+the rule's own text and needs a leyline rebuild. **Default taken: leave it** (the text promises a
+refund). *(3A-8.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) LEAVE IT (refund stays, card
+> stays).** No change.
+
+---
+
+**R-24. Red / Momentum — is Reckless Advance the intended branch root?** The graph half is verified
+live: the compiled Red tree reads Reckless Advance {skill red 1, no talent prereq}, with Burning
+Drive and Volatile Strike hanging off it and Unstoppable at {Reckless Momentum, red 3}. The 07-24 fix
+trusted the **layout + connections** over the card text, which had said "Burning Drive". If you
+intended Burning Drive to come first, say so and the edge flips instead. *(Checklist Red row.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) YES, keep Reckless Advance as the
+> root** (Burning Drive and Volatile Strike hang off it). No change; retire the Red checklist row's
+> graph half.
+
+---
+
+**R-26. What should a blank-note `edha-push` card say?** The old talent-specific default is
+definitively gone (nothing says "Shockwave Slam" any more), but a fresh push rule with `note: ""`
+does not read "Push" either — it reads **the owning talent's name** ("💥 Vigilant Stance — … is pushed
+3 ft."). That is arguably better than a literal "Push". Say which is canon and the card, the row and
+the engine get aligned to it. *(Checklist 2bA-6. Its two secondary observations were re-driven at run
+12 and are artifacts of a hand-authored probe, not engine behaviour — `bySize: true` overrides
+`distanceFt`, which is what "3 ft for a 5 ft rule" was really seeing.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) the OWNING TALENT'S NAME is
+> canon** ("💥 Vigilant Stance — X is pushed 3 ft."). Current engine behaviour stands; DOCS-ONLY —
+> align checklist row 2bA-6's wording and the handler's schema hint to it.
+
+---
+
+**R-30. 2bR-17 spec vs rule.** The checklist row says Counterpoint tests "vs the target's **Cognitive
+defense**"; the rule is `vs: "prompt-dc"` (the GM types the influence DC). Arguably correct for a
+counter to an influence test — but the row and the rule disagree and one must move. Run 14 confirmed
+the rule works as authored once a DC is typed. *(3A-12.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) the RULE is right: `vs:
+> "prompt-dc"`, the GM types the influence result; reword the checklist row.** DOCS-ONLY.
+
+---
+
+**R-33. 2bI-3's card text stays enemies-only** while the behaviour is wider. Align the text or narrow
+the behaviour. *(3B-C.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) CLOSE IT: card and rule now
+> agree.** The authored rule is disposition: enemy, and since R-4/28a/28b the watch fires only on
+> declared spends inside an active combat containing the owner; the "wider" behaviour was the
+> pre-R-4 cross-talk. No change.
+
+---
+
+**R-39. Is the roll dialog's die-icon COLOUR cue enough?** The advantage control in the cosmere
+dialog is the rendered **d20 icon itself** — a pre-seeded CSS class, i.e. a colour, with no label,
+no checkbox and no form field (which is why a DOM read reports nothing, and why run 11's "the dialog
+exposes no advantage control" reading was retracted). It **is** pre-selected and it **is** overridable
+by clicking. The one real limitation is that the preview line always reads `1d20 + N` and then rolls
+`2d20kh + N`, because `configureModifiers()` runs after the dialog resolves. **If the colour is not
+readable enough at the table, the answer is more whispered advantage cards like the quarry one — NOT
+an engine change.** The look-at-it half is a ⚑ checklist row; the "so what do we do about it" half is
+this ruling. *(3A-14.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) ACCEPT the colour cue; close
+> this.** No change. The "does it read at the table" half stays a ⚑ row for Ben's next play session.
+
+---
+
+**R-41. Which map should the character-creation picker show — labelled or label-free?**
+`module-src/assets/thyrcross-map.jpg` (1118×1488, byte-identical to the deployed copy) **still
+carries every nation letter (`A Kettavar` … `J Canticle`) and all 13 numbered city labels**: the
+07-19s "label-free map" fix was **silently reverted twice**, by `db79969` and `b114f7e`, each of
+which regenerated the jpg from `thyrcross-labeled.png` because `scripts/build-map-picker-asset.js`'s
+docstring still told them to. *(The docstring is fixed; the asset was deliberately NOT regenerated,
+because that is this ruling.)* **Two checklist rows contradict each other and one must be retired
+either way:** *"Map v3: label-free"* wants no labels, while *"Map picker shows the redrawn map"* names
+**"Goldenport wash running the whole west coast"** as its giveaway — and that wash exists **only** on
+the political/labelled render. Aspect is fine either way (0.7513 == canvas aspect), so this is purely
+a look call. *(3A-16.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (b) keep the LABELLED political
+> map.** Consequence: retire the "Map v3: label-free" checklist row; keep "Map picker shows the
+> redrawn map"; the jpg stays as served.
+
+---
+
+**R-53. Should a creature whose own cue says it "goes still instead of dying" still get the `Dead` status?**
+Raised by bench run 19. The Briar-Gone Grove's 0-HP cue posts *"0 HP — it goes still instead of dying;
+the blight stands."* — and the generic `updateActor` 0-HP branch then stamps the **`Dead`** status and
+its skull overlay anyway, so the table sees a corpse marker under a card that just said it is not a
+corpse. Both behaviours are individually correct; they just contradict each other on the canvas.
+*Recommended default: leave the engine alone and treat the skull as "out of the fight" shorthand —
+the cue is the authority and the GM reads it.* The alternative is a `noDeathStatus` dial on the
+0-HP branch for blocks that explicitly do not die, which is one small generic field (ENGINE-ONLY) and
+would also serve any future construct/blight. Not worth building on one block; worth building on three.
+*(Checklist W29 §4 "Register cues", which PASSED — this is a polish question, not a defect.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) LEAVE IT; the skull means "out of
+> the fight", the cue is the authority.** No change. Revisit the `noDeathStatus` dial when a third
+> such block exists.
+
+---
+
+**R-57. Pattern Recognition's disadvantage now EXPIRES when the round turns — keep that, or let it
+wait?** The card has always said "their next test **this round**"; the old flag waited for ever, and
+the 2b conversion made the text true via `expireEndOfRound`. **The behaviour is verified working**
+(bench run 23, both directions: with the stamped round current the victim rolled `2d20kl + 2` and the
+card printed "🔮 Pattern Recognition — disadvantage on this test", flag consumed; with the round moved
+on the same victim rolled a plain `1d20 + 2`, no card, flag left unconsumed). So this is purely your
+call on intent: **(a)** keep the expiry, matching the card — *Recommended*, the text is unambiguous;
+**(b)** restore the wait-for-ever behaviour and re-word the card to drop "this round". ⚠️ Note the
+side effect either way: a stale un-expired mod is **left on the actor rather than cleared**, so under
+(a) a victim can accumulate dead `nextTestMod` flags until something overwrites the single slot (the
+same one-slot overwrite characterised in R-15). *(Checklist 2bJ-3, retired run 23.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) KEEP, settled by Ben's R-20 answer
+> (same question).** Its stale-flag side effect is absorbed by R-15 (b)'s fix, shipping in **item
+> 49**: the `nextTestMod` LIST prunes expired entries.
+
+---
+
+**R-75. The `edha-test-react` (H26) reaction family is NOT combat-gated — is that right?** Observed at
+bench run 34 as a card nobody came for: `Bench — White`'s **Shared Conviction** posted its offer on a
+Deception test by `Bench — Black` while **White was in no combat at all**. That is not a 28a
+regression — the handler carries no `scope` field, so it never reaches `edhaWatchCombatGate`, and
+28a's "deliberately NOT gated" list in the handoff simply does not mention this family. The same is
+true of `Pillar of Order` and `Voice of Authority`, which also fired unprompted during the run.
+*Recommended: **leave it ungated, and say so in the docs.*** An ally about to fail a social or
+exploration test is exactly the out-of-combat case R-4's negative control exists to protect, and
+Shared Conviction's own text is not combat-flavoured. But it does mean a White PC standing anywhere
+on the scene offers a reaction on **every** skill test any creature in Attunement Range rolls, which
+at a busy table is chatty. If you want it quieter the fix is a field on the rule (an `inCombatOnly`
+dial), not an engine gate — iron rule 2b. *(Bench run 34.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) leave it ungated, and document
+> it.** DOCS-ONLY: the H26 family (Shared Conviction, Pillar of Order, Voice of Authority) is added
+> to 28a's "deliberately NOT gated" list in `EDHA_FOUNDRY_HANDOFF.md` and `ENGINE_INDEX.md`; no
+> engine change.
+
+---
+
+**R-76. The engine's ONE spend-stamped resource write has no consumer either — H10's Investiture
+drain does not exist on any talent.** Measured at bench run 35 while driving item 13's row, which
+named "H10's `edha-focus` Investiture DRAIN (`op: drain`, `resource: inv`) — Reaper's Harvest is the
+reference". A sweep of all three packs found **exactly one** `edha-focus` rule with `resource:
+"inv"` in the whole game — Reaper's Harvest — and it is **`op: "gain"`**, which takes
+`edhaBookkeepingTag`. **No shipped talent carries `op: "drain"` + `resource: "inv"`**, so the single
+`edhaSpendTag` site that item 13 preserved (`register-skills.js` ~18139) is dead code on the table
+today. The bench proved the branch works by staging the rule by hand, so this is not a defect —
+it is the exact shape of **R-74** one layer up: an engine path with no consumer. *Recommended:
+**author the drain onto a talent that should have it** — a Death/Morrath or Black drain that takes
+Investiture rather than focus is the obvious home, and it would give both R-74's contrast and this
+branch a real subject in one edit.* The alternative is to say so in the header and leave it: the
+branch is one ternary and costs nothing to keep. ⚠️ This is an **authored-data** change (a `pack
+rebuild + ⟳ Sync`), so it is not a bench decision. *(Bench run 35, from item 13's bench row.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (b) leave the branch, note it in the
+> header.** With R-72 (b) landing, the branch's stamp becomes bookkeeping, not spend. Ben's design
+> note, verbatim: "make a note this is good juice for a future adversary stat block" — recorded as
+> a design seed (see this item's PR report for where it landed). DOCS-ONLY; the engine header
+> cross-reference itself is `module-src/` work and out of scope for a docs-only item — left for
+> whoever next touches H10.
+
+---
+
+**R-79. Region traps on a GM-less table — do the three `RegionBehavior` bodies (Civ fortified
+foundation, dangerous terrain, Fate snare) still spring when no GM is connected?** Filed from the
+board (item 12 / PR #197): the region-trap behaviours execute on the walking player's own client
+when no GM is online, rather than staying silent for lack of a GM to arbitrate them.
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) KEEP** — the three `RegionBehavior`
+> bodies keep springing on the walking player's own client when no GM is connected. DOCS-ONLY:
+> recorded in `EDHA_FOUNDRY_HANDOFF.md` item 28a's deliberately-ungated list and in
+> `ENGINE_INDEX.md`'s "the gate is TWO helpers" note as Ben's ruling.
+
+---
+
+**R-43. ⚠️ "A card that says 'tests Speed' means the ATTRIBUTE." — THIS CHANGES LIVE DICE MATH.**
+**Concussive Yield** and **Inevitable Snare** now add the target's Speed where they previously added
+nothing. The *implementation* is proven — run 11's 2bAD-1 rolled "Speed 29" with spd 10, and a bare
+d20 cannot exceed 20 — but **the balance question is untouched and is worth one deliberate look.**
+This is the item to read first if you read only one in this section. *(3B-E.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): ACCEPTED — no veto.** "14 defaults
+> let's just keep using." R-43's live-dice-math change is confirmed. No further change; the 🤖
+> re-test rows citing this ruling stay bench work.
+
+**R-44. The Pack's placement no longer requires `amt > 0`.** With the marker hand-cleared and the
+pointer surviving, The Pack posts **no** bonus card but **still places** its Insight. *(3B-E.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): ACCEPTED — no veto.** "14 defaults
+> let's just keep using." No further change.
+
+**R-45. Confident Command's `per` is Persuasion.** The same dead id `per` resolved differently in two
+talents — Sharp Eye's `per` was **Perception** (`prc`) — which is exactly why the two could not be
+swept together. *(3B-E.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): ACCEPTED — no veto.** "14 defaults
+> let's just keep using." No further change.
+
+**R-58. ⚠️ A scene reset now SKIPS any actor fighting in another combat — and "another combat" means
+any that still EXISTS, started or not.** Fix pass F, after run 23 watched a bench combat's deletion
+take `lists.covenants` off an actor in your live combat. The invariant applied is *"ending combat A
+must not clear state on a combatant of a still-existing combat B"* — deliberately **not** "sweep only
+combat A's own combatants", because the wide sweep is intended (Temp HP is meant to reach summons and
+unlinked adversaries that never rolled initiative). **With one combat in play nothing changed at
+all.** The judgment worth your veto is the *fail-safe direction*: an un-started leftover combat still
+counts, so if a stale empty combat sits in your sidebar containing a PC, that PC stops getting scene
+resets until you delete it. I chose that because a wrong skip leaves stale state you can clear, while
+a wrong clear destroys a live encounter's data. Say the word and it becomes `started`-only.
+*(Related to R-4 / R-7 / R-8 — this is the cross-COMBAT face of the scope family, not the
+out-of-combat one, which is still open.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): ACCEPTED — no veto.** "14 defaults
+> let's just keep using." No further change.
+
+**R-59. ⚠️ A chat-card button that fails now raises an error toast**, where all 33 previously wrote
+only to the console. This is what let Living Image's Pay button read as a silent no-op for four bench
+runs. Bounded to the 33 *outer* click-handler catches — the ~270 inner defensive catches stay quiet.
+**The feel question is yours:** if a toast at the table is more disruptive than a button that quietly
+does nothing, say so and it goes back to console-only (or becomes GM-only). *(Fix pass F.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): ACCEPTED — no veto.** "14 defaults
+> let's just keep using." No further change.
+
+**R-60. ⚠️ Scene-reset sweeps now cover ONE population: directory actors ∪ canvas tokens,
+deduplicated.** Before, the ten per-tree sweeps answered "who gets reset" five different ways —
+Sovereignty reset canvas tokens ONLY (an off-scene character kept `dieStep` forever), Life swept
+every directory actor including adversaries and summons, and only Chaos deduped an actor with a
+token against its directory entry (the rest swept it twice). All ten now run through one
+`edhaSceneReset` applier using the Chaos-pattern population; each tree's flag/status lists are
+unchanged, and the R-58 cross-combat guard still applies per actor. The veto surface: if some
+tree's narrower sweep was intentional, name it and that tree gets a scoped population.
+*(Hygiene campaign 2026-08-10.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): ACCEPTED — no veto.** "14 defaults
+> let's just keep using." No further change.
+
+**R-61. `oncePerScene` now has ONE gate and ONE stamp — each handler type keeping its CURRENT
+polarity.** The same field name meant four things (default-off, default-on, strict-true, plus a
+rogue `detonateUsed.*` flag namespace with its own scene-clear). No live behavior changes: the
+shared gate takes the polarity as an explicit per-type argument matching what each did before, and
+`detonateUsed.*` merges into `sceneOnce.*` (the gate reads both keys, writes only `sceneOnce`).
+One real fix rides along: `edha-decree` stamped its scene-once flag UNCONDITIONALLY while vetoing
+conditionally — the stamp now matches its own veto. Whether all types should converge on one
+polarity is a separate, untaken ruling. *(Hygiene campaign 2026-08-10.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): ACCEPTED — no veto.** "14 defaults
+> let's just keep using." No further change.
+
+**R-62. "Whisper the GM" now has one helper with an explicit audience.** Two spellings disagreed:
+`getWhisperRecipients("GM")` reaches every GM including offline ones; the `u.active && u.isGM`
+filter reaches online GMs only. Applied mapping: action-prompt cards (someone must click NOW) →
+active GMs; record/audit cards → all GMs, so the log survives to a later login. If a specific card
+lands on the wrong side of that line, name it. *(Hygiene campaign 2026-08-10.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): ACCEPTED — no veto.** "14 defaults
+> let's just keep using." No further change.
+
+**R-63. ⚠️ Unknown token disposition now fails CLOSED everywhere.** Twelve inline checks still
+defaulted a missing disposition to FRIENDLY (`?? 1`) — the convention the ally-drop fix explicitly
+retired after bench run 18 measured the cross-disposition bug — and one helper failed OPEN to
+"enemy". All now use the Number.isFinite guard: no disposition, no effect. This can change live
+behavior for tokens with genuinely unset disposition; if a talent should treat unknown as friendly,
+that is one veto away. *(Hygiene campaign 2026-08-10.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): ACCEPTED — no veto.** "14 defaults
+> let's just keep using." No further change.
+
+**R-64. ⚠️ Victim resolution now uses the full 3-term chain everywhere:
+`options.victim → options.target → the clicking user's current target`.** Six handler sites skipped
+the middle term, so an event that carried `options.target` (but no `victim`) fell through to
+whatever the CLICKING USER happened to have targeted — a different creature. This changes live
+targeting on those six paths, in the direction of "the creature the event was actually about."
+*(Hygiene campaign 2026-08-10.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): ACCEPTED — no veto.** "14 defaults
+> let's just keep using." No further change.
+
+**R-65. ⚠️ Every formula roll now passes through `edhaFoldDieMath`, via one `edhaRollFormula`
+helper — THIS CHANGES LIVE DICE MATH on ~25 sites.** Only 4 of 29 roll sites folded computed dice;
+the documented [Tier][Die] convention (`(@tier)d(2 * rank + 2)`) silently failed on the rest —
+including a heal branch whose own damage twin, eight lines below it, folded correctly. Talents
+whose formulas use no computed dice are unaffected. *(Hygiene campaign 2026-08-10.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): ACCEPTED — no veto.** "14 defaults
+> let's just keep using." No further change.
+
+**R-66. One-shot card buttons now persist their used state via `edhaMarkCardResolved`.** Fifteen
+cards disabled their buttons in the DOM only — an F5 or a second client revived them (the exact
+Flame Surge bug the helper was built for). Cleanse, reknit, counter-transfer, mutation, plot-grant,
+designate and friends now stay spent on every client. *(Hygiene campaign 2026-08-10.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): ACCEPTED — no veto.** "14 defaults
+> let's just keep using." No further change.
+
+**R-67. Chaos and Fate burst cards gained the `whisper` option the other four tree-card helpers
+already had.** Additive — nothing whispers that didn't before; it just becomes possible.
+*(Hygiene campaign 2026-08-10.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): ACCEPTED — no veto.** "14 defaults
+> let's just keep using." No further change.
+
+**R-68. The map toolchain's "is this pixel painted" alpha threshold is now ONE constant, 128.**
+`trace_regions` used 120 and `trace_nations` used 128 for the same question against the same
+layers. Applied 128 — the explicitly named constant. If a re-trace ever shifts a boundary by a
+pixel, this is why; 120 is one veto away. *(Hygiene campaign 2026-08-10.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): ACCEPTED — no veto.** "14 defaults
+> let's just keep using." No further change.

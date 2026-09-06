@@ -97,14 +97,23 @@ then the deities, Heroic, and the non-tree console-runnable sections).
    - Then: rebuild the dashboard, run the gates, commit (`Bench run N (<tree>): X retired on
      evidence, Y fails -> test-pass-fixes`).
 8. **Safety rules (hard):**
-   - Only create/modify inside the "Edha Bench" folders. Adversaries needed as targets are
-     imported FRESH from the pack into the bench folder — never Ben's placed campaign tokens.
-   - No deletion of any pre-existing document; the only combats deleted are bench-created.
+   - **The WHOLE Playtest Map scene is the bench's** (widened 2026-09-06, Ben, phone, via the relay
+     session, verbatim: "Feel free to remove that combat — the entire scene is for your use at
+     this point" — was "only create/modify inside the 'Edha Bench' folders"). Adversaries needed as
+     targets are still imported FRESH from the pack into the bench folder — never Ben's placed
+     campaign tokens. The zero-combatant combat `BerbNeuXp4iKduef` may be deleted by the next run —
+     record it in the run's world diff as authorised.
+   - No deletion of any OTHER pre-existing document. The two PC actor **documents** (Tem parinaem,
+     Soggy Bottom) keep their hard guard unchanged — only their **tokens on the Playtest Map scene**
+     fall under the scene licence above, never the actor documents themselves.
    - No world-settings changes, no scene activation, DEPLOY STATE untouched (agent findings
      go in the delta; only Ben advances DEPLOY STATE).
    - Chat spam is accepted (Ben's call, 07-26); end the run noting Ben may flush bench chat.
    - Before/after sweep: snapshot document ids (actors/scenes/combats/macros) at run start and
-     end; anything outside the bench folders changed = report it in the delta, prominently.
+     end; anything outside the licensed Playtest Map scene / bench folders changed = report it in
+     the delta, prominently.
+   - **Bench setups keep rosters to the actors under test** (`EDHA_RULINGS.md` R-8, ANSWERED
+     2026-09-06) — do not widen a roster beyond what the run's checklist section needs.
    - **Log out — always the last in-world act:** `game.logOut()` in the console, then confirm
      the join screen lists Bench as selectable again. A session that ends without this HOLDS
      the Bench slot and the next session cannot join (run 1 did exactly that; Ben had to ask).

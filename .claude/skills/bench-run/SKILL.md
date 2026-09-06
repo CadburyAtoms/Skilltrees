@@ -17,10 +17,17 @@ running (if `http://localhost:30000` doesn't answer, stop and ask).
 2. **Never type a password.** The `Bench` user is passwordless by design; if Foundry asks for
    a password anyway, stop and tell Ben — do not enter one.
 3. **Never activate/deactivate a scene** (it yanks every connected client). *View* scenes.
-4. **Only create/modify inside the "Edha Bench" actor folders.** Adversary targets are
-   imported fresh from the pack into the bench folder — never Ben's placed campaign tokens.
-   Delete nothing pre-existing; bench-created combats/walls/measured-templates are yours to
-   clean up and MUST be cleaned up.
+4. **The WHOLE Playtest Map scene is the bench's** (widened 2026-09-06, Ben, phone, via the relay
+   session, verbatim: "Feel free to remove that combat — the entire scene is for your use at this
+   point" — was "only create/modify inside the 'Edha Bench' actor folders"). Adversary targets are
+   still imported fresh from the pack into the bench folder. The zero-combatant combat
+   `BerbNeuXp4iKduef` may be deleted by the next run — record it in the run's world diff as
+   authorised. Bench-created combats/walls/measured-templates are still yours to clean up and MUST
+   be cleaned up when they are NOT part of the licensed scene cleanup above. The two PC actor
+   **documents** (Tem parinaem, Soggy Bottom, hard rule 1) keep their hard guard unchanged — only
+   their **tokens on the Playtest Map scene** fall under this new licence, never the actor
+   documents themselves. (**R-8**, `EDHA_RULINGS.md`) Bench setups keep rosters to the actors
+   under test — do not widen a roster beyond what the run's checklist section needs.
 5. **DEPLOY STATE is Ben's** — your findings go in the handoff delta, never there.
 6. **Snapshot ids, flags AND EFFECTS before creating anything, and delete only what the
    snapshot proves you created.** A run that snapshotted ids and flags but not effects swept
