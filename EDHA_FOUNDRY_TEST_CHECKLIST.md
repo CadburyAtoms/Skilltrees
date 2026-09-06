@@ -832,6 +832,16 @@ nowhere.** The fooled-target riders both found the belief ledger: **Spearing Bea
 `1d8 + 2 + (1d6[Spearing Beak])[Spearing Beak]` = 10 against fooled Bench — Red, and **Raking Grasp** rolled
 `1d10 + 4 + (1d8[Raking Grasp])[Raking Grasp]` = 15.)*
 
+### Fix pass 7a re-tests (item 47, 2026-09-06 — ENGINE-ONLY, F5; no rebuild, no ⟳ Sync)
+
+- [ ] 🤖 **R-51 — a phantom double's break fires no `ally-drops` cue.** Stage a creature whose SIDE
+      owns an `ally-drops` GM cue (the Corvaine "Break" shape, or The Reckoning within 5 ft), cast an
+      illusion copy on that side, then break the copy. Expect **no ally-drops card and no
+      `trigRound` ledger write** on any owner. **POS (the control, run it in the same take):** drop a
+      REAL creature of that same side the same way — the cue fires exactly as before, so the gate
+      keys on the illusion and not on the drop. **NEG 2:** the copy's own `damaged` / `seeming-break`
+      cards still print; R-51 narrows `ally-drops` only.
+
 ---
 
 
@@ -1363,6 +1373,23 @@ PROSE (ruling answered 2026-09-06 → item 58, REBUILD + ↻ Sync) — the durat
 retired, only the prose needs to change. R-12 (a) YES, raising clears the creature's own `harvested`
 marker and ledger entry (ruling answered 2026-09-06 → item 47).
 
+### Fix pass 7a re-tests (item 47, 2026-09-06 — ENGINE-ONLY, F5; no rebuild, no ⟳ Sync)
+
+- [ ] 🤖 **R-12 — a raised creature is no longer a Remain.** Harvest an adversary-typed victim
+      (marker + ledger entry), harvest a SECOND one, then Raise Dead the FIRST body and consume the
+      confirm. Expect: it returns at **1 HP**, its own `harvested` icon is **gone**, and the ledger
+      is **two entries shorter** (one spent by the raise, one cleared as the raised body) — the card
+      says so in words. **NEG 1 (load-bearing):** the OTHER harvested corpse keeps its marker and its
+      entry. **NEG 2:** raising a creature that was never harvested clears nothing and posts no
+      "no longer a Remain" line. **NEG 3 (needs two Reapers):** with the raised body on a SECOND
+      Reaper's `remains` list too, that copy goes as well — a marker is a property of the creature.
+- [ ] 🤖 **R-10 — "cannot regain HP" does not stop stabilization.** Withering-Touch a target
+      (fraction 0), then, in three separate takes, (a) drop it while it bears a **Death Ward**,
+      (b) **Raise Dead** it from 0, (c) save it with **Unbreakable Line**'s reaction. Each must land
+      it on **1 HP**. **NEG (load-bearing, run it every time):** a plain heal on the same withered
+      creature — a Mender click or an `edha-focus` hea rule — still heals **0** and still posts the
+      "cannot regain HP" card. If the negative ever passes, the fix has been over-applied.
+
 ---
 
 # BENCH — Civilization (Kethane, deity)
@@ -1710,6 +1737,23 @@ with "Covenant requires touch … Nothing spent"). The ally then carried the sha
 "Bench — Order II's bond with Bench Ally — Two ends", and **the ally KEPT the `covenant` status**, because
 Order III's pact was still live. That is `multiOwner`. ✅ **NEGATIVE**: Order III then broke its pact and the
 `covenant` status went away. Nothing about a second player's marker was stripped silently.)*
+
+### Fix pass 7a re-tests (item 47, 2026-09-06 — ENGINE-ONLY, F5; no rebuild, no ⟳ Sync)
+
+- [ ] 🤖 **R-72 — an involuntary drain is not a spend, so it does not violate an Edict.** Put an
+      Edict on an enemy, then have a PC DRAIN its Investiture or focus (Whispered Doubt / Shatter
+      Focus / an `edha-focus` `op: drain` rule). Expect **no violation prompt** on the drained
+      creature. **POS 2 (the other direction, load-bearing):** that same Edict-bound creature
+      activating a talent that costs it Investiture **still** raises the prompt — a silent watch is
+      a worse bug than a noisy one. **POS 3:** run the drain once from a client that does NOT own
+      the victim (the `set-resource` relay half) and once from the GM — the two halves must behave
+      identically, which is the whole reason all three sites moved together.
+- [ ] 🤖 **R-36 — Temp HP keeps the higher grant's NAME as well as its number.** Give an ally
+      **6 THP from Final Decree**, then grant **4 from Bear Witness**. Expect the ally to still read
+      **6**, attributed to **Final Decree** (check the flag/AE label, not just the number — the
+      number was already right). **POS 2:** now grant **7** from Bear Witness — it replaces the value
+      AND relabels. **NEG:** an equal grant (6 vs 6) leaves the incumbent's name; a tie is not a win.
+      Worth doing once for a cross-actor grant you do not own, since the relay carries its own copy.
 
 ---
 
@@ -2273,13 +2317,20 @@ the 13/14 is gone. **NEG 1 (load-bearing):** taken to **9/14** and given a real 
 14 — the case a naive fill-to-max fix gets wrong. **NEG 3:** Focus 3/5 and Investiture 1/2 survived the
 same reload unchanged. An in-memory `prepareData()` probe over 9 / 13 / 14 / 1 also round-tripped every
 value untouched. ⚑ Only the player-client half of the positive is unrun — it was proven twice GM-side.)*
-- [ ] 🤖 **+1 max health SOLVED-pending-confirm (07-19z)** — a BRAND-NEW ＋ actor showed 10/11
-      before any picks, and at that moment only the basic-action copies exist: a shipped
-      action carries an auto-applying (transfer) Active Effect touching max health. Action
-      copies now land with transfer-AEs STRIPPED (kits own Edha onboarding; use-time AEs
-      stay), and opening the wizard on an existing PC strips them from its action items
-      (console logs what it removed). Confirm: fresh actor = 10/10 at STR 0, and the repair
-      log names the culprit action — paste its name for the delta.
+- [ ] 🤖 **R-54 — the +1 max health is REMOVED (item 47, 2026-09-06; ENGINE-ONLY, F5)** —
+      `EDHA_HP_BONUS` is now `0`, so Edha max HP is term-for-term the system's advancement table.
+      **Positive 1:** a brand-new ＋ Edha Character at **STR 0** reads **10/10** after Finish (was
+      10/11, then 11/11). **Positive 2:** an EXISTING PC at full health drops **11 → 10** on reload
+      with **nothing stored changing** (`_source…hea.max.bonus` stays 0 and `_source…hea.value`
+      is untouched — check both in the console before and after). **NEG 1 (load-bearing):** a
+      wounded PC is not re-clamped upward or downward beyond the new max — take one to 9/11, F5,
+      expect **9/10**, never 10/10. **NEG 2:** a **June pregen that STORES a manual
+      `hea.max.bonus: 1`** KEEPS its 11 — the derivation skips any actor whose `_source` carries
+      its own bonus, and only `edha.migrateDerivations()` strips it. Do not migrate the pregens as
+      part of this row. **NEG 3:** the creation wizard's live preview Health cell equals the
+      finished sheet's max on the same spread (they read the one constant).
+      *(Superseded history below — the transfer-AE fix this row was originally written for
+      worked; only its target number was wrong.)*
       - ⚠️ **2026-07-28h (bench run 21) — THE FIX WORKED; THIS ROW'S TARGET NUMBER IS WRONG, and
         it is now `EDHA_RULINGS.md` R-54.** The transfer-AE half is decisively fixed: a brand-new
         ＋ Edha Character carries **20 items, 19 of them actions, ZERO transfer AEs**
@@ -3363,6 +3414,17 @@ for the first time". Keep 2bAB-9.)*
       half-square slack "for adjacency reads"** and `ally-drops` has none. Blast radius: the two 5-ft
       rules (Crownox Ring, The Reckoning); Roek's 20 ft is unaffected. **Whether the fix is slack or
       edge-to-edge measurement is a design call — see `EDHA_RULINGS.md`.**
+      - [ ] 🤖 **R-52 (c)(i) SHIPPED (item 47, 2026-09-06 — ENGINE-ONLY, F5): re-drive all four
+        positions.** `edhaAllyDropEligible` now applies the same **+2.5 ft half-square slack** the
+        `enemy-turn-start` sweep always had (`EDHA_ADJACENCY_SLACK_FT`, one constant read by both).
+        Expect **(i) 7.5 ft → ✅ NOW FIRES** (it sits exactly on the new 7.5-ft boundary — note the
+        ruling's own prose predicted this one would still miss, so measure it rather than assuming),
+        **(ii) 0 ft ✅**, **(iii) 5.0 ft ✅**, **(iv) 7.07 ft → ✅ NOW FIRES**. **NEG (load-bearing —
+        the whole risk of slack is a cue that now reaches too far):** put the ally one full square
+        out (10 ft centre-to-centre) and confirm **no card**. **NEG 2:** Roek's 20-ft cue still
+        refuses at 25 ft. ⚠️ **(b) below is NOT fixed by this** — the missing `use` rule is separate,
+        and so is R-52 (c)(ii), edge-to-edge measurement for sized tokens (TODO item 62), which is
+        what "an ADJACENT ox" would still need for a Huge owner.
       ❌ **(b) "the White test resolves through the contest core on use" is UNIMPLEMENTED on both
       blocks.** Behaviour-tested, not merely read: using the item on either block posted an **empty
       chat card** (`content: ""`) with the owner as speaker — no test, no contest core, no roll.

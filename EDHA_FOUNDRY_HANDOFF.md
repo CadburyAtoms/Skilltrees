@@ -33,6 +33,88 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-06 — FIX PASS 7a (item 47): the heal / status / resource family — **seven of the eight rulings ship; R-25 is not engine-only and did not** (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
+
+Eight of the 2026-09-06 rulings landed on the same family of small engine writers. Seven shipped as
+one themed commit each; the eighth turned out not to be an engine change at all.
+
+- **R-54 (c) — the +1 max health is GONE.** `EDHA_HP_BONUS` 1 → 0, **no level gate anywhere**. The
+  comment block it lives in was also wrong and is corrected: the cosmere system derives **two**
+  stats differently from Edha — Movement and Senses — and **HP is not one of them**
+  (`Character_Building_Rules.md` §HP and the character-builder sheet both give `HP = 10 + STR` at L1,
+  term-for-term the system's own advancement table; see `docs/ACTOR_STAT_DERIVATION.md`). The
+  constant and the clamp repair are KEPT: at 0 the repair is inert by construction, and it is what
+  makes a non-zero bonus reachable if the number ever moves. `edhaCwDerivedPreview` reads the same
+  constant, so the wizard preview follows for free. **June pregens that STORE a manual
+  `hea.max.bonus` keep theirs** until `edha.migrateDerivations()` — untouched on purpose.
+- **R-36 (a) — Temp HP keeps the higher grant's NAME, not just its number.** `edhaGrantTempHpCross`
+  wrote the incoming `source` unconditionally, so a grant that LOST the keeps-higher comparison
+  relabelled a value it did not produce (6 from Final Decree read "Bear Witness"). A strict win now
+  takes both; a tie or a loss leaves the incumbent alone; the unowned relay branch carries the same
+  decision.
+- **R-51 (a) — a phantom double's break fires no `ally-drops` cue.** One gate on the block in
+  `edhaGmCueDamageSweep`, keyed on the victim's `phantomDouble` flag. The copy's own
+  `damaged` / `hp-below` / `seeming-break` cards are untouched.
+- **R-52 (c)(i) — the half-square slack.** `edhaAllyDropEligible` now uses
+  `rangeFt + EDHA_ADJACENCY_SLACK_FT` (2.5), the same number the `enemy-turn-start` sweep has always
+  applied — the file disagreed with itself, and now one constant serves both. All four of bench run
+  19's measured gaps (0 / 5.0 / 7.07 / **7.5**) reach a 5-ft cue; note the ruling's prose predicted
+  the 7.5-ft Large-owner case would still miss, and the arithmetic says otherwise because the
+  boundary is inclusive — the bench row says to measure it rather than assume. **(c)(ii),
+  edge-to-edge measurement for sized tokens, is untouched and remains item 62.**
+- **R-72 (b) + R-76 (b) — an involuntary drain is not a spend.** Three sites move from
+  `edhaSpendTag` to `edhaBookkeepingTag` **together** (`edhaDrainFocus`, its `set-resource` relay
+  half, and H10's `edha-focus` Investiture branch, whose `op === "drain" ? spend : bookkeeping`
+  ternary is gone). Split them and the unowned half violates an Edict the owned half does not —
+  the asymmetry #28b stamped those sites to close. `edhaSpendTag` now has exactly two call sites,
+  `edhaSpendResource` and `edhaConsumeCost`, i.e. "a cost its owner paid"; a test counts them.
+  R-76: H10's drain arm has no consumer in any pack and **stays**, with Ben's design seed recorded
+  in the engine header — a future adversary whose signature ability drains a PC's Investiture is
+  its first consumer.
+- **R-12 (a) — raising a creature clears its own Harvested Remain.** New generic primitive
+  `edhaLedgerDropCreature(uuid, key, status)` — the by-uuid counterpart of `edhaLedgerSpend`'s
+  pop-oldest — called from `edha-revive` with the rule's own ledger. It sweeps **every** owner's
+  ledger (a marker is a property of the creature, and the reported case spends one Remain while
+  raising a body that may be on a different Reaper's list), and it **drops entries first, unmarks
+  second**: `edhaOwnerList` reconciles on read against the status, so unmarking first would hide the
+  entry and strand a phantom holding its owner under their cap.
+- **R-10 (b) — "cannot regain HP" does not stop stabilization.** ⚠️ **The audit found the family
+  already correct**: all four drop-to-1 writers bypass the heal cut today, and the engine header
+  said so while still calling the question "queued for Ben". So no behaviour moved. What shipped is
+  the ruling recorded at the site plus the guard that keeps it — nothing structural held those four
+  in step, three of them would look perfectly normal routed through `edhaHealCutGate`, and the day
+  one is, "cannot regain HP" silently becomes "cannot be saved" for that talent alone. The gate's
+  call sites are now counted at 2 and `bypassHealCut: true`'s callers at 1.
+
+**⛔ R-25 (c) DID NOT SHIP — it is not an engine-only change.** The ruling says Rallying Shout's
+reminder should print only for an ally at 0 HP or carrying Unconscious, and files it ENGINE-ONLY.
+It is not: since the 2b migration that reminder is an **authored `edha-note` rule** on Rousing
+Presence (`data/authored/heroic-envoy.json`, rule `RouseRallying000`, `whenOwnsTalent: "Rallying
+Shout"`), and `edha-note` has no target-condition dial. Gating it needs **either** a new generic
+field on `edha-note` **plus** an authored value on that rule (a REBUILD + ⟳ Sync, and out of scope
+for this item), **or** a name-keyed engine branch, which iron rule 2b forbids and the ratchet
+prevents. Building the dial alone would ship an engine path with no consumer — exactly R-74/R-76's
+complaint — so it was left for a rebuild-class item. R-25's ANSWERED block records this.
+
+**Proof.** One headless pin per shipped ruling, each proven by MUTATION (reverted, run, restored):
+`tests/derived-stats.test.js` (re-pinned; 6 fail at bonus 1), `tests/temphp-source-label.test.js`
+(4 fail on an unconditional relabel), `tests/ally-drop-side.test.js` (R-52: 4 fail with no slack;
+R-51: 2 fail with no phantom gate), `tests/resource-writes.test.js` + `tests/spend-tag.test.js`
+(5 fail with the spend stamps restored), `tests/raise-clears-remain.test.js` (2 fail with the sweep
+disabled), `tests/drop-to-one-family.test.js` (2 fail with Death Ward routed through the gate).
+⚠️ **Three pins were deliberately FLIPPED to assert their opposite** — the two R-72 guards in
+`resource-writes.test.js` and the relay guard in `spend-tag.test.js` existed to stop a refactor
+answering an open ruling by the back door, and the ruling is now answered. Do not "restore" them.
+`tests/engine-helpers.test.js` needed no change: it never asserted the +1 (only
+`derived-stats.test.js` did).
+
+**🤖 bench rows added** (six, one per shipped ruling, each with its negative control) under Death
+(R-12, R-10), Order (R-72, R-36), Blue (R-51) and W29 §2 (R-52); the wizard block's
+"+1 max health SOLVED-pending-confirm" row is rewritten as the R-54 re-test. All 🤖 — none of them
+needs Ben's judgment.
+
+---
+
 ## 2026-09-06 — Rulings close-out: Ben answered every open ruling in `EDHA_RULINGS.md` (**DOCS-ONLY**
 — no engine, no data, no pack rebuild)
 

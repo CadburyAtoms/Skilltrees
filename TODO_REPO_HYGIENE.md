@@ -1530,7 +1530,7 @@ when/PM fields; dashboard rebuilt; gates green.
 
 ---
 
-## 47. [ ] Fix pass 7a — heal / status / resource family (R-10, R-12, R-25, R-36, R-51, R-52(c)(i), R-72, R-76, R-54)
+## 47. [x] Fix pass 7a — heal / status / resource family (R-10, R-12, R-36, R-51, R-52(c)(i), R-72, R-76, R-54 — 2026-09-06, PR #215; **R-25 NOT shipped, see below**)
 
 **Why:** Nine 2026-09-06 rulings land on the same family of small engine writers (drop-to-1,
 Harvested Remain, ally-drop cues, Temp HP labelling, Investiture bookkeeping, HP derivation).
@@ -1564,6 +1564,22 @@ ANSWERED/shipped in `EDHA_RULINGS.md` §K.
 
 **PM:** lane B · model opus · size M · deps 45, 46 · verify: 9 headless pins + re-pinned
 derived-stats/engine-helpers tests. ENGINE-ONLY (F5).
+
+**RESULT (2026-09-06, PR #215 — seven of eight shipped):** R-10, R-12, R-36, R-51, R-52(c)(i),
+R-72+R-76 and R-54 all landed, one themed commit each, every one proven by mutation. Three findings
+the PM should carry forward:
+- ⛔ **R-25 (c) is NOT an engine-only change and did not ship.** Rallying Shout's reminder is an
+  AUTHORED `edha-note` rule on Rousing Presence (`data/authored/heroic-envoy.json`, rule
+  `RouseRallying000`), and `edha-note` has no target-condition dial. Gating it needs a new generic
+  field **plus** an authored value (REBUILD + ↻ Sync), or a name-keyed branch that iron rule 2b
+  forbids. Needs its own rebuild-class item; the ruling's answer stands.
+- ⚠️ **R-10 needed no behaviour change.** The audit found all four drop-to-1 writers already
+  bypassing the heal cut; what shipped is the ruling recorded at the site plus the guard (the heal
+  gate's call sites are pinned at 2, `bypassHealCut`'s callers at 1) so the family cannot drift apart.
+- ⚠️ **R-52's own prose was slightly wrong.** With the +2.5 slack the boundary is inclusive, so the
+  7.5-ft Large-owner case the ruling predicted would *still* miss now reaches. Item 62 (edge-to-edge)
+  is still worth doing for larger tokens, but its motivating example is no longer failing.
+- `tests/engine-helpers.test.js` needed no change: only `tests/derived-stats.test.js` asserted the +1.
 
 ---
 

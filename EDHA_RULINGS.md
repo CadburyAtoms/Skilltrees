@@ -176,6 +176,10 @@ consumer. *(3B-C.)*
 > condition (audit the family: whatever writes `hea.value = 1` on a 0-HP creature). ENGINE-ONLY,
 > F5 → **item 47**; headless pin (a withered creature at 0 still stabilizes to 1; a plain heal on it
 > still does nothing); 🤖 re-test row.
+> **SHIPPED** in PR #215 (ENGINE-ONLY, bench-pending) — `tests/drop-to-one-family.test.js`. ⚠️ The
+> audit found the family ALREADY bypassing, so no behaviour moved; what shipped is the ruling
+> recorded at the site plus the guard that keeps it (the heal gate's call sites are pinned at 2,
+> and `bypassHealCut: true`'s callers at 1).
 
 *(R-11 — refund on a fully-blocked heal — ANSWERED 2026-09-06, moved to §K.)*
 
@@ -188,6 +192,9 @@ card says nothing either way. *(3B-C + checklist Raise Dead row, Death section.)
 > remains ledger) removes the raised actor's own entry and marker in the same write. ENGINE-ONLY,
 > F5 → **item 47**; headless pin on the ledger; re-test = the Death-section Raise Dead row (a raised
 > adversary comes back at 1 HP with no marker and the ledger one entry shorter).
+> **SHIPPED** in PR #215 (ENGINE-ONLY, bench-pending) — `tests/raise-clears-remain.test.js`, via
+> the new generic `edhaLedgerDropCreature(uuid, key, status)`; it sweeps EVERY owner's ledger, not
+> only the raiser's, because a marker is a property of the creature.
 
 **R-13. A snare placed UNDER a creature insta-springs**, where the card says "enter or pass through".
 *Recommended: arm, do not spring.* Narrowed by run 7: placement **adjacent** does not insta-spring,
@@ -302,6 +309,7 @@ you may want. *(From bench run 18 / fix pass C.)*
 > ally-drops cue.** Spec: skip the ally-drops block when the victim carries the `phantomDouble`
 > flag (the one-line change the ruling names). ENGINE-ONLY, F5 → **item 47**; headless pin (phantom
 > break → no cue; real ally drop → cue); 🤖 re-test in the illusion section.
+> **SHIPPED** in PR #215 (ENGINE-ONLY, bench-pending) — `tests/ally-drop-side.test.js`.
 
 **R-69. Should a CANCELLED picker still burn the talent's once-per-scene use?** Today it does.
 `edhaDecreeUse` calls `edhaStampSceneOnce(owner, item)` **before** it opens the prohibition picker,
@@ -366,6 +374,11 @@ spend. *(Board table; raised by item 28b.)*
 > tests; bench re-test = an Edict-bound creature drained by an enemy gets NO violation prompt, and
 > its own wired spend still does. This also settles R-8's "decide together with R-8" clause — R-72
 > (b) stands on its own.
+> **SHIPPED** in PR #215 (ENGINE-ONLY, bench-pending) — `tests/resource-writes.test.js` +
+> `tests/spend-tag.test.js`. THREE existing pins were FLIPPED to assert their opposite (they
+> existed to stop a refactor answering this ruling by the back door). The `set-resource` relay
+> half moved with the other two — split, the unowned drain would violate an Edict the owned one
+> does not.
 
 ---
 
@@ -393,6 +406,14 @@ restore the at-0-HP-only gate? *(3A-11 + checklist 2bM-6.)*
 > **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (c) print ONLY for an ally at 0 HP or
 > carrying Unconscious** (the two cases the card names). ENGINE-ONLY, F5 → **item 47**; headless pin
 > (ally at 32 HP: no card; ally at 0: card; ally Unconscious above 0: card); 🤖 re-test = 2bM-6.
+> ⛔ **NOT SHIPPED in PR #215 (item 47) — it is not an engine-only change.** Since the 2b
+> migration that reminder is an AUTHORED `edha-note` rule on Rousing Presence
+> (`data/authored/heroic-envoy.json`, rule `RouseRallying000`, `whenOwnsTalent: "Rallying Shout"`),
+> and `edha-note` carries no target-condition dial. Gating it needs EITHER a new generic field on
+> `edha-note` PLUS an authored value on that rule (**REBUILD + ↻ Sync**), OR a name-keyed engine
+> branch, which iron rule 2b forbids and the ratchet prevents. Shipping the dial alone would add an
+> engine path with no consumer — R-74/R-76's own complaint. **Needs a rebuild-class item; the
+> answer (c) stands unchanged.**
 
 *(R-57 — Pattern Recognition's round-expiry, kept — ANSWERED 2026-09-06, moved to §K.)*
 
@@ -494,6 +515,8 @@ Command". The number is right; the attribution lies. *(3B-D.)*
 > **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) FIX: relabel `source` only when
 > the new grant WINS the keeps-higher comparison.** ENGINE-ONLY, F5 → **item 47**; headless pin (6
 > from Final Decree survives a 4 from Bear Witness → source stays Final Decree).
+> **SHIPPED** in PR #215 (ENGINE-ONLY, bench-pending) — `tests/temphp-source-label.test.js`. A tie
+> is not a win: the incumbent keeps both its value and its label.
 
 **R-37. Three small card-text nits, one decision:** Ordained eviction is never verbalized (the place
 card says "(2/2)" but never says the oldest fizzled) · Inevitable Snare's grammar reads "the snares on
@@ -616,6 +639,10 @@ engine, so it should be decided deliberately rather than slipped in. Blast radiu
 > its own TODO item with a bench sweep of every `rangeFt` gate → **item 62**, because the Crownox
 > Ring's "an adjacent ox" stays false under slack alone. Headless pin on the four measured cases; 🤖
 > re-test = W29 §2 when both ship.
+> **(i) SHIPPED** in PR #215 (ENGINE-ONLY, bench-pending) — `tests/ally-drop-side.test.js`, via
+> `EDHA_ADJACENCY_SLACK_FT` now read by BOTH adjacency gates. ⚠️ All four measured gaps reach,
+> **including the 7.5 ft Large-owner case this ruling's prose predicted would still miss** — the
+> boundary is inclusive, so 7.5 ≤ 5 + 2.5. (ii) edge-to-edge is untouched and remains item 62.
 
 *(R-53 — Dead status on a "goes still" cue — ANSWERED 2026-09-06, moved to §K.)*
 
@@ -681,6 +708,8 @@ re-read after it settles). Only the target number is a decision. *(Bench run 21.
 > **item 47**; the checklist's "+1 max health" row rewrites as the re-test: a fresh actor at STR 0
 > reads **10/10** after Finish, an existing PC at full health drops 11→10 on reload with nothing
 > stored changing.
+> **SHIPPED** in PR #215 (ENGINE-ONLY, bench-pending) — `tests/derived-stats.test.js`. Note
+> `tests/engine-helpers.test.js` needed no change: it never asserted the +1.
 
 **R-55. The sheet's budget chips use two different meanings of "X / Y" — which is right?** On a
 correctly-built L1 PC (12 attribute points spent, 5 skill ranks spent, 2 of 4 talents taken) the
@@ -1213,6 +1242,9 @@ rebuild + ⟳ Sync`), so it is not a bench decision. *(Bench run 35, from item 1
 > a design seed (see this item's PR report for where it landed). DOCS-ONLY; the engine header
 > cross-reference itself is `module-src/` work and out of scope for a docs-only item — left for
 > whoever next touches H10.
+> **SHIPPED** in PR #215 (ENGINE-ONLY, bench-pending) — the H10 header note landed alongside
+> R-72's tag flip; `tests/resource-writes.test.js` pins the branch's classification, and the branch
+> is kept and declared unconsumed on purpose.
 
 ---
 
