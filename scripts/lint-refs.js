@@ -1617,9 +1617,13 @@ engine.split("\n").forEach((lineText, i) => {
       // Hand-rolling the GM-whisper recipient list — canonical: edhaGmIds (upcoming).
       { key: "gmWhisper", re: /getWhisperRecipients\(\s*["']GM["']\)|u\.active\s*&&\s*u\.isGM\b/g,
         helper: "edhaGmIds (upcoming)" },
-      // Re-deriving the primary-GM gate by hand — canonical: edhaDefBuffGmGate.
+      // Re-deriving the primary-GM gate by hand. Item 12 migrated all 19 copies and found the idiom
+      // was carrying TWO polarities, so the gate is now decomposed: edhaNoOtherActiveGM() is the
+      // primitive ("no OTHER GM client has claimed this" — also true when no GM is connected, which
+      // is what the three RegionBehavior traps need), and edhaDefBuffGmGate() is `isGM &&` that.
+      // The count FLOORS AT 1: the primitive's own one-line body, the same shape as userTargets.
       { key: "primaryGmGate", re: /activeGM\s*&&\s*!game\.users\.activeGM\.isSelf/g,
-        helper: "edhaDefBuffGmGate" },
+        helper: "edhaDefBuffGmGate() for a world write, edhaNoOtherActiveGM() where the isGM half must NOT apply" },
       // Writing a system.resources.<id>.value/.max update path by hand. Canonical: a clamped
       // spend/gain (edhaSpendResource / edhaGainResource / edhaConsumeCost), or — for the writes
       // that are none of those three (item 13: heals, restores, a max override, an open-ruling
