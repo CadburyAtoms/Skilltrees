@@ -323,7 +323,7 @@ Hooks.on("preCreateActor", (doc) => {
 });
 Hooks.once("ready", () => {
   try {
-    if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;
+    if (!edhaDefBuffGmGate()) return;
     (async () => {
       let n = 0;
       for (const a of (game.actors?.filter?.(x => x.type === "character") ?? [])) {
@@ -1906,7 +1906,7 @@ async function edhaDispatchOnHit(dealer, target, list) {
  * scope for a rule, but it IS a behaviour change — flagged on the checklist. */
 function edhaDispatchCombatTiming(combat, moment) {
   try {
-    if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;
+    if (!edhaDefBuffGmGate()) return;
     for (const c of combat?.combatants ?? []) {
       const a = c?.actor; if (!a?.items) continue;
       // ENGINE PASS 5.2 (Job 2): edhaRulesForEvent replaces the hand-rolled items double loop.
@@ -6932,7 +6932,7 @@ Hooks.on("updateActor", (actor, changes) => {
  * sweep consults the RULE (edhaActorRuleOf), so it names no talent and a rename cannot unwire it. */
 Hooks.on("combatTurnChange", (combat) => {
   try {
-    if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;   // one client posts
+    if (!edhaDefBuffGmGate()) return;   // one client posts
     const a = combat?.combatant?.actor; if (!a) return;
     const rule = edhaActorRuleOf(a, "edha-illusion-upkeep"); if (!rule) return;
     const h = rule.handler;
@@ -7037,8 +7037,7 @@ function edhaBarrierRelay(action, payload) {
 Hooks.once("ready", () => {
   try {
     game.socket.on("module.edha-content", async (data) => {
-      if (!game.user?.isGM) return;
-      if (game.users?.activeGM && !game.users.activeGM.isSelf) return;   // exactly one GM applies
+      if (!edhaDefBuffGmGate()) return;   // exactly one GM applies
       if (data?.action === "barrier-walls") await edhaBarrierWallsGM(data.payload);
       else if (data?.action === "barrier-clear") await edhaBarrierClearGM(data.payload?.barrierId);
     });
@@ -7573,7 +7572,17 @@ Hooks.once("ready", () => {
   try { if (game.combat?.started && edhaDefBuffGmGate()) void edhaRefreshDefBuffs(game.combat); }   // restore state after a mid-combat reload
   catch (e) { console.warn("Edha Content | def-buff restore failed", e); }
 });
-function edhaDefBuffGmGate() { return !!game.user?.isGM && !(game.users?.activeGM && !game.users.activeGM.isSelf); }   // exactly one GM writes
+/* The one-applier gate, in TWO HALVES — because three RegionBehavior sites need only the second.
+ * `edhaNoOtherActiveGM()` is the primitive: "no OTHER GM client has claimed this" — true on the
+ * primary GM, true when NO GM is connected at all, false on a second GM and on any player while a
+ * GM is online. `edhaDefBuffGmGate()` is that AND being a GM ("am I the single applier?"), and is
+ * what every world-writing hook gates on. The three region behaviours (Civ fortified foundation,
+ * dangerous terrain, Fate snare) call the PRIMITIVE deliberately: their trap still has to fire on a
+ * player's own client in a GM-less session, so bolting the isGM half on there is a live-behaviour
+ * change and a ruling, not hygiene. Item 12 (2026-09-06) moved 19 hand-derived copies onto these
+ * two; pass 20's `primaryGmGate` ratchet therefore FLOORS AT 1 — the primitive's own body. */
+function edhaNoOtherActiveGM() { return !(game.users?.activeGM && !game.users.activeGM.isSelf); }   // no OTHER GM has claimed it
+function edhaDefBuffGmGate() { return !!game.user?.isGM && edhaNoOtherActiveGM(); }   // exactly one GM writes
 function edhaDefBuffFor(actor) {
   if (!actor?.items) return null;
   for (const { item: tal, handler: h } of edhaActorRulesOf(actor, "edha-defense-buff")) {
@@ -10116,7 +10125,7 @@ function edhaVeilSuppressed(tok) {
 }
 async function edhaDarkVeilSweep() {
   try {
-    if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;   // one applier
+    if (!edhaDefBuffGmGate()) return;   // one applier
     for (const tok of (canvas?.tokens?.placeables ?? [])) {
       const a = tok.actor; if (!a) continue;
       for (const { item: tal, handler: h } of edhaActorRulesOf(a, "edha-dark-veil")) {
@@ -11479,8 +11488,7 @@ Hooks.once("ready", () => {
   try {
     game.socket.on("module.edha-content", async (data) => {
       try {
-        if (!game.user?.isGM) return;
-        if (game.users?.activeGM && !game.users.activeGM.isSelf) return;   // exactly one GM applies
+        if (!edhaDefBuffGmGate()) return;   // exactly one GM applies
         const handler = EDHA_SOCKET_ACTIONS[data?.action];
         if (handler) await handler(data.payload || {});
       } catch (e) { console.error("Edha Content | socket relay failed", e); }
@@ -11839,7 +11847,7 @@ async function edhaChargeTrigFire(owner, chargeId, why) {
 Hooks.on("updateToken", (doc, changes) => {
   try {
     if (!("x" in changes) && !("y" in changes)) return;
-    if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;   // one watcher
+    if (!edhaDefBuffGmGate()) return;   // one watcher
     const moverActor = doc.actor; if (!moverActor) return;
     const gs = doc.parent?.grid?.size || 100, gd = doc.parent?.grid?.distance || 5;
     const w = (doc.width ?? 1) * gs / 2, h = (doc.height ?? 1) * gs / 2;
@@ -11860,7 +11868,7 @@ Hooks.on("updateToken", (doc, changes) => {
 async function edhaChargeDamagedCheck(victim) {
   try {
     if (!victim) return;
-    if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;
+    if (!edhaDefBuffGmGate()) return;
     for (const owner of (game.actors ?? [])) {
       for (const ch of edhaGetCharges(owner)) {
         if (ch.trig?.kind === "target-damaged" && !ch.trig.fired && ch.trig.targetUuid === victim.uuid) {
@@ -12049,7 +12057,7 @@ function edhaTrailRuleOf(actor) {
  * answer. */
 Hooks.on("updateToken", (tokenDoc, changes, options) => {
   try {
-    if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;   // ONE applier — avoid a per-client double-drop
+    if (!edhaDefBuffGmGate()) return;   // ONE applier — avoid a per-client double-drop
     const prev = edhaPrevTokenCenter(tokenDoc, options); if (!prev) return;
     const actor = tokenDoc.actor; if (!actor) return;
     if (!actor.getFlag("edha-content", "hazardTrail") && !actor.getFlag("edha-content", "walkingRuin")) return;   // walkingRuin = pre-2bY saves
@@ -12070,7 +12078,7 @@ Hooks.on("updateToken", (tokenDoc, changes, options) => {
 Hooks.on("updateToken", (tokenDoc, changes) => {
   try {
     if (!(("x" in changes) || ("y" in changes))) return;
-    if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;   // ONE applier
+    if (!edhaDefBuffGmGate()) return;   // ONE applier
     const scene = tokenDoc.parent ?? canvas?.scene; if (!scene) return;
     if ((Number(tokenDoc.actor?.system?.resources?.hea?.value) || 0) <= 0) return;
     for (const region of (scene.regions ?? [])) {
@@ -12172,7 +12180,7 @@ Hooks.once("ready", () => {
   try {
     game.socket.on("module.edha-content", async (data) => {
       try {
-        if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;
+        if (!edhaDefBuffGmGate()) return;
         if (data?.action !== "place-hazard-region") return;
         const p = data.payload || {}; const scene = game.scenes?.get(p.sceneId);
         const owner = await edhaResolveActorRef(p.ownerUuid);
@@ -13938,7 +13946,7 @@ Hooks.on("preUpdateActor", (actor, changes, options) => {
 });
 Hooks.on("updateActor", async (victim, changes, options) => {
   try {
-    if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;   // one applier
+    if (!edhaDefBuffGmGate()) return;   // one applier
     const h = options?.edhaHea;
     if (!h || h.new > 0 || h.old <= 0) return;                     // only a live→0 crossing counts
     if (victim.type === "character") return;                       // PC drops don't count (Ben R2)
@@ -14397,7 +14405,7 @@ class EdhaCivFortifiedRegionBehavior extends foundry.data.regionBehaviors.Region
   }
   async _handleRegionEvent(event) {
     try {
-      if (game.users?.activeGM && !game.users.activeGM.isSelf) return;   // one applier (the primary GM)
+      if (!edhaNoOtherActiveGM()) return;   // one applier — the PRIMITIVE half on purpose (no isGM: a GM-less table still springs it)
       const tokDoc = event?.data?.token; const actor = tokDoc?.actor; if (!actor) return;
       if ((actor.system?.resources?.hea?.value ?? 1) <= 0) return;
       if ((tokDoc.disposition ?? 1) === this.disposition) return;        // allies of the owner pass free
@@ -14645,7 +14653,7 @@ Hooks.once("ready", () => {
   try {
     game.socket.on("module.edha-content", async (data) => {
       try {
-        if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;
+        if (!edhaDefBuffGmGate()) return;
         if (data?.action === "civ-fortify") { await edhaCivFortifyGM(data.payload || {}); return; }
         if (data?.action === "civ-link") { await edhaCivLinkGM(data.payload || {}); return; }
         if (data?.action === "civ-dismantle") { await edhaCivDismantleGM(data.payload?.actorId); return; }
@@ -15410,7 +15418,7 @@ async function edhaCounterBurstClick(ev) {
 }
 Hooks.on("updateActor", async (victim, changes, options) => {
   try {
-    if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;   // one applier
+    if (!edhaDefBuffGmGate()) return;   // one applier
     const h = options?.edhaHea;
     if (!h || h.new > 0 || h.old <= 0) return;   // only a live→0 crossing counts
     const vtok = edhaCasterToken(victim);
@@ -17361,7 +17369,7 @@ Hooks.on("updateActor", (actor, changes) => {
   try {
     if (actor.type !== "character") return;
     if (changes?.system?.attributes?.awa === undefined) return;
-    if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return; // ONE applier (§10)
+    if (!edhaDefBuffGmGate()) return; // ONE applier (§10)
     const range = edhaPcSightShape(actor).range;
     void actor.update({ "prototypeToken.sight.range": range });
     for (const sc of game.scenes ?? []) {
@@ -17513,7 +17521,7 @@ async function edhaHazardVisual(scene, cx, cy, radiusPx, hex, regionId, label) {
 }
 Hooks.on("deleteRegion", (region) => {
   try {
-    if (!game.user?.isGM || (game.users?.activeGM && !game.users.activeGM.isSelf)) return;
+    if (!edhaDefBuffGmGate()) return;
     const scene = region.parent; if (!scene) return;
     const paired = (scene.drawings ?? []).filter(d => d.getFlag?.("edha-content", "hazardVisual")?.regionId === region.id);
     if (paired.length) void scene.deleteEmbeddedDocuments("Drawing", paired.map(d => d.id));
@@ -17587,7 +17595,7 @@ class EdhaHazardRegionBehavior extends foundry.data.regionBehaviors.RegionBehavi
   }
   async _handleRegionEvent(event) {
     try {
-      if (game.users?.activeGM && !game.users.activeGM.isSelf) return;   // one applier (the primary GM)
+      if (!edhaNoOtherActiveGM()) return;   // one applier — the PRIMITIVE half on purpose (no isGM: a GM-less table still springs it)
       const actor = event?.data?.token?.actor;
       if (!actor) return;
       const roll = await (new Roll(this.damageFormula || "0")).evaluate();
@@ -17620,7 +17628,7 @@ class EdhaFateSnareRegionBehavior extends foundry.data.regionBehaviors.RegionBeh
   }
   async _handleRegionEvent(event) {
     try {
-      if (game.users?.activeGM && !game.users.activeGM.isSelf) return;   // one applier (the primary GM)
+      if (!edhaNoOtherActiveGM()) return;   // one applier — the PRIMITIVE half on purpose (no isGM: a GM-less table still springs it)
       const actor = event?.data?.token?.actor; if (!actor) return;
       if ((actor.system?.resources?.hea?.value ?? 1) <= 0) return;       // dead tokens don't spring traps
       const owner = await edhaResolveActorRef(this.ownerUuid);
