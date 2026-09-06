@@ -320,7 +320,7 @@ consumers still carry their own hard-coded copy of the `FoundryVTT/Data/modules/
 
 ---
 
-## 12. [ ] Adopt edhaDefBuffGmGate at the 20 primaryGmGate sites (freeze-only today)
+## 12. [x] Adopt edhaDefBuffGmGate at the 20 primaryGmGate sites (2026-09-06, PR #PRNUM)
 
 **Why:** `scripts/engine-idiom-ratchet.json`'s `primaryGmGate` key is frozen at 20 with 20 still
 measured — unlike the other eight idiom keys, NONE of this one has migrated yet; it is a
@@ -333,7 +333,58 @@ freeze-only entry (nothing can regrow past 20, but nothing has shrunk either). T
 related to pass 15's two-GM double-write gate (`EDHA_FOUNDRY_HANDOFF.md`'s "the two-GM family") —
 prioritize any site that also performs a world write.
 
-**Done when:** `counts.primaryGmGate` is below 20 and trending toward 0.
+**Done when:** `counts.primaryGmGate` is below 20 and trending toward 0. ✅ **Done: 20 → 1, which is
+the FLOOR** (the same shape `userTargets` has — the last occurrence is the canonical helper's own
+body, and a helper cannot call itself). All 19 hand-derived copies migrated, and **all 19 write to
+the world**, so the whole set is pass 15's two-GM family.
+
+**The correction (PM-D1): "replace the hand-derived check with `edhaDefBuffGmGate()`" was right for
+16 of the 19 and wrong for 3** — and that is why this key had never shrunk. The idiom was carrying
+**two polarities**:
+
+- **`edhaDefBuffGmGate()` = "am I the single applier?"** — `isGM &&` the primitive below. False on
+  any non-GM client, *including when no GM is connected at all*: nothing happens rather than the
+  wrong client writing. 16 sites wanted exactly this and were byte-equivalent to it (two of them
+  spelled the `isGM` half as its own `if (!game.user?.isGM) return;` line above the check).
+- **`edhaNoOtherActiveGM()` = "has no OTHER GM client claimed this?"** — the primitive. True on the
+  primary GM, **true when no GM is online**, false on a second GM and on any player while a GM is
+  online. Three sites want this, all three `RegionBehavior._handleRegionEvent` bodies, and they want
+  it *deliberately*: a region trap has to keep springing on the walking player's own client in a
+  GM-less session, and bolting the `isGM` half on would silence it. That is a live-behaviour change
+  and a ruling, not hygiene — so it was **not** done here.
+
+The gate is therefore **decomposed, not duplicated**: `edhaDefBuffGmGate()` is now literally
+`!!game.user?.isGM && edhaNoOtherActiveGM()`, which is what takes the count to 1 rather than 2.
+
+| Site (line, pre-migration) | What it writes | Verdict |
+|---|---|---|
+| 326 — `ready` currency-denomination backfill | `actor.update` on every character | → `edhaDefBuffGmGate()` |
+| 1909 — `edhaDispatchCombatTiming` | dispatches every combat-timing rule | → `edhaDefBuffGmGate()` |
+| 6935 — `edha-illusion-upkeep` turn sweep | whispered upkeep card | → `edhaDefBuffGmGate()` |
+| 7041 — barrier socket relay | Wall create/delete | → `edhaDefBuffGmGate()` (split form) |
+| 10119 — `edhaDarkVeilSweep` | effect apply/remove | → `edhaDefBuffGmGate()` |
+| 11483 — the main `EDHA_SOCKET_ACTIONS` relay | every relayed player write | → `edhaDefBuffGmGate()` (split form) |
+| 11842 — charge trigger `updateToken` watcher | owner-list write + card | → `edhaDefBuffGmGate()` |
+| 11863 — `edhaChargeDamagedCheck` | owner-list write + card | → `edhaDefBuffGmGate()` |
+| 12052 — hazard-trail drop on move | Region create | → `edhaDefBuffGmGate()` |
+| 12073 — Pinpoint terrain follow | Region update | → `edhaDefBuffGmGate()` |
+| 12175 — `place-hazard-region` relay | Region create | → `edhaDefBuffGmGate()` |
+| 13941 — the defeat watcher (live→0) | the `defeat` announcement + writes | → `edhaDefBuffGmGate()` |
+| 14648 — Civilization socket relay | fortify / link / dismantle writes | → `edhaDefBuffGmGate()` |
+| 15413 — counter-transfer defeat watcher | prompts + burst apply | → `edhaDefBuffGmGate()` |
+| 17364 — PC sight resync on Awareness | `actor.update` + scene token updates | → `edhaDefBuffGmGate()` |
+| 17516 — `deleteRegion` paired-Drawing cleanup | Drawing delete | → `edhaDefBuffGmGate()` |
+| 14400 — Civ fortified-foundation region event | damage + card | **stays on the primitive** — must still fire on a GM-less table |
+| 17590 — dangerous-terrain region event | damage + card | **stays on the primitive** — same reason |
+| 17623 — Fate-snare region event | springs the snare | **stays on the primitive** — same reason |
+| 7576 — `edhaDefBuffGmGate`'s own body | — | now composes `edhaNoOtherActiveGM()`; the primitive's body is the ratchet's floor |
+
+Pinned in `tests/gm-gate.test.js` (6 cases, 720 → 726) across the four client shapes a two-GM table
+produces. 🤖 row added under `# BENCH — Engine-wide & cross-tree`: two GM clients, one write.
+
+**Left open (not this item's call):** whether the three region behaviours *should* also require
+`isGM`, i.e. whether a GM-less table should still spring a trap from the player's own client. Today
+it does; changing that is a ruling.
 
 ---
 

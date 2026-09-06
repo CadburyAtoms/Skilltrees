@@ -96,7 +96,7 @@ accident of append order, so nothing in this index could point at them. Item 23 
 
 | Banner | Owns |
 |---|---|
-| `DEFENCE BUFFS` | `edha-defense-buff`: `edhaDefBuffGmGate` · `edhaDefBuffFor` · `edhaApplyDefBuff` · `edhaRemoveDefBuff` · `edhaRefreshDefBuffs` + the ready/combatStart/combatTurnChange/deleteCombat watchers. Recomputes every combatant per turn (the system fires no turn hooks); one GM writes. |
+| `DEFENCE BUFFS` | `edha-defense-buff`: `edhaNoOtherActiveGM` · `edhaDefBuffGmGate` · `edhaDefBuffFor` · `edhaApplyDefBuff` · `edhaRemoveDefBuff` · `edhaRefreshDefBuffs` + the ready/combatStart/combatTurnChange/deleteCombat watchers. Recomputes every combatant per turn (the system fires no turn hooks); one GM writes. The two gate helpers live here but are used engine-wide — see "The gate is TWO helpers" below for which one a site wants. |
 | `RESOURCE-CONSUME DIALOG TITLE` | `edhaSetConsumeTitle` + `renderItemConsumeDialog` / `renderDialogV2`. Cosmetic. |
 | `TALENT BUDGET` | `edhaIsKeyTalent` · `edhaAllowedTalents` · `edhaKeyPickAllowed` · `edhaCountTalents` + the `preCreateItem` veto (stops the drag, not after). |
 | `SHEET PATH SLOTS + THE BUDGET READOUT` | `EDHA_PATH_SLOTS` · **`edhaSheetRoot`** (the SHARED `renderCharacterSheet` entry point — five decorators hang off it; never re-derive the root inline) · `edhaGetBudget`. |
@@ -945,6 +945,24 @@ Insight) and §9o called them byte-identical. **They are not, and the difference
   document/embedded create-update-delete, a status toggle, a flag write, a world setting, or an
   `edha*GM(` helper. **`render*` hooks are exempt on purpose** — injecting a sidebar or sheet button
   is per-client work, and gating it would hide the button from every GM but one.
+- **The gate is TWO helpers, and which one you want is a real question** (item 12, 2026-09-06 —
+  the pass that took `primaryGmGate` 20 → 1 by migrating all nineteen hand-derived copies):
+  - `edhaDefBuffGmGate()` — **"am I the single applier?"** = `isGM &&` the primitive below. This is
+    the default and what every world-writing HOOK gates on. It is FALSE on a client that is not a
+    GM, including when no GM is connected at all — nothing happens rather than the wrong client
+    writing.
+  - `edhaNoOtherActiveGM()` — **"has no OTHER GM client claimed this?"** The primitive: true on the
+    primary GM, true when NO GM is connected, false on a second GM and on any player while a GM is
+    online. Exactly three sites want it, and all three are
+    `RegionBehavior._handleRegionEvent` bodies (Civ fortified foundation, dangerous terrain, Fate
+    snare): a region trap has to keep springing on the walking player's OWN client in a GM-less
+    session, so the isGM half would silence it. **Do not reach for it anywhere else** — outside a
+    region behaviour, "no GM online" is a reason to write nothing, not a licence to write from a
+    player client. Changing those three to the full gate is a live-behaviour change and a ruling.
+
+  Pass 20's `primaryGmGate` ratchet therefore **floors at 1** — the primitive's own one-line body,
+  the same shape `userTargets` has. A count of 2 means someone hand-derived the check again.
+  Pinned in `tests/gm-gate.test.js` across all four client shapes a two-GM table produces.
 - **A clear GUARDS EVERY AWAIT INDIVIDUALLY and names its failures** (07-27d — the sweep-isolation
   rule, extending the one-applier rule above). All ~17 scene clears launch concurrently off one
   `deleteCombat`, so an unguarded per-actor `await` lets ONE rejection abort everything after it in
