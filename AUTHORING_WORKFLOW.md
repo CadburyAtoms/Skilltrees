@@ -69,7 +69,9 @@ shared across every build target, which let a session building into a scratch fo
 re-stamp the baselines that described YOUR live packs; the first post-migration deploy then
 flagged 76 phantom "Foundry edits"). The first build after the move warns "no baseline" once per
 pack and proceeds — that is the re-arm. If you ever wipe/move the module, re-arm with
-`node scripts/foundry-extract.js baseline`.
+`node scripts/foundry-extract.js baseline`. If a local `data/authored/.baselines/` directory
+ever reappears (it's gitignored, so an old machine state can recreate it), it's an orphan from
+before the 2026-07-26c move — safe to delete; nothing reads it anymore.
 
 ## Adversaries — the W23 pipeline (script statblock → Actor)
 

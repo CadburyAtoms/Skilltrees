@@ -82,7 +82,7 @@ version control; git history already remembers them.~~ *(Done 2026-07-06 — the
 
 ---
 
-## 4. [ ] Split the 11k-line engine into concatenated sections (keep ONE deployed file)
+## 4. [ ] Split the ~19.7k-line engine (2026-09-05) into concatenated sections (keep ONE deployed file)
 
 **Why:** `module-src/scripts/register-skills.js` is the ceiling on maintainability.
 The single-file property matters for deployment (module-src-sync mirrors one file to
@@ -106,7 +106,7 @@ gates green, docs updated. This is the largest item — do it alone in its own s
 
 ## 5. [ ] Extend tests into the hook layer (fake actor/item → assert the write)
 
-**Why:** `tests/engine-helpers.test.js` covers ~8 pure helpers of an 11k-line engine.
+**Why:** `tests/engine-helpers.test.js` covers ~8 pure helpers of a ~19.7k-line engine (2026-09-05).
 The ~240 registered hooks — the actual game logic — are only smoke-tested ("loads
 without throwing"); real verification is Ben playing in Foundry. The vm harness
 (`tests/harness.js`) already exists; the missing piece is *firing* recorded hooks

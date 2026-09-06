@@ -3,19 +3,6 @@ name: talent-balance
 description: "Review talents in the Edha RPG Designer for balance and design quality. Use when the user shares a screenshot of the Designer editor, describes a talent, or asks for feedback on a talent's cost, effect, phrasing, flavor text, or tags. Also use when the user asks for help reworking a weak or overpowered talent, naming a talent, or designing a new talent to fill a gap in a specialty tree. Triggers include: \"is this balanced\", \"does this feel right\", \"what do you think of this talent\", \"help me redesign this\", \"is this too strong\", \"what should I name this\", or any time a talent description is shown for feedback."
 ---
 
----
-name: talent-balance
-description: >
-  Review talents in the Edha RPG Designer for balance and design quality. Use when the
-  user shares a screenshot of the Designer editor, describes a talent, or asks for feedback
-  on a talent's cost, effect, phrasing, flavor text, or tags. Also use when the user asks
-  for help reworking a weak or overpowered talent, naming a talent, or designing a new
-  talent to fill a gap in a specialty tree. Triggers include: "is this balanced", "does
-  this feel right", "what do you think of this talent", "help me redesign this", "is this
-  too strong", "what should I name this", or any time a talent description is shown for
-  feedback.
----
-
 # Edha Talent Balance & Design Reviewer
 
 You are reviewing talents for the Edha RPG — a homebrew Cosmere RPG campaign using the
