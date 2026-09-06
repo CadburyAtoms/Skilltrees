@@ -1591,9 +1591,11 @@ engine.split("\n").forEach((lineText, i) => {
 
   if (ratchet) {
     const CHECKS = [
-      // game.user.targets read directly — canonical: the target-reader primitive.
+      // game.user.targets read directly — canonical: the target-reader primitive. (Item 14 built
+      // the plural reader and migrated all nine call sites; the count FLOORS AT 1, which is the
+      // reader's own body.)
       { key: "userTargets", re: /game\.user\??\.targets/g,
-        helper: "the target-reader primitive (edhaEffectTargets / upcoming reader)" },
+        helper: "the target-reader primitive (edhaUserTargetTokens() for the whole list, edhaUserTargetToken() for the first)" },
       // Re-deriving the caster's active token by hand — canonical: edhaCasterToken.
       { key: "casterToken", re: /getActiveTokens\??\.?\(\)\s*\[\s*0\s*\]/g,
         helper: "edhaCasterToken" },
@@ -1618,10 +1620,14 @@ engine.split("\n").forEach((lineText, i) => {
       // Re-deriving the primary-GM gate by hand — canonical: edhaDefBuffGmGate.
       { key: "primaryGmGate", re: /activeGM\s*&&\s*!game\.users\.activeGM\.isSelf/g,
         helper: "edhaDefBuffGmGate" },
-      // Writing a system.resources.<id>.value/.max update path by hand — canonical:
-      // edhaSpendResource / edhaConsumeCost.
+      // Writing a system.resources.<id>.value/.max update path by hand. Canonical: a clamped
+      // spend/gain (edhaSpendResource / edhaGainResource / edhaConsumeCost), or — for the writes
+      // that are none of those three (item 13: heals, restores, a max override, an open-ruling
+      // drain) — edhaResourceWrite, which owns the path and takes the spend/bookkeeping
+      // classification as an argument. Reached 0 on 2026-09-06; every canonical writer builds its
+      // path from a variable, so a QUOTED literal key here is always a hand-rolled site.
       { key: "resourceWrite", re: /["']system\.resources\.[a-z]{2,4}\.(value|max)["']\s*(?::|\]\s*[=:])/g,
-        helper: "edhaSpendResource / edhaConsumeCost" },
+        helper: "edhaSpendResource / edhaConsumeCost for a cost, edhaGainResource for a plain gain, edhaResourceWrite for everything else" },
       // Defaulting a resolvable-but-unknown disposition to NEUTRAL/FRIENDLY by hand instead of
       // failing closed — the fail-open idiom pass 5.2 (R-63, ENGINE_INDEX.md "A FAILED LOOKUP IS
       // NOT NO RESTRICTION") fixed in the shared helpers plus 16 named sites, with ~74 more sites

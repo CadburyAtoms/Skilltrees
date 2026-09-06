@@ -442,8 +442,11 @@ a third-party macro), so there is no write to tag and the absence of a tag can n
   ...edhaSpendTag(…) }` when the site already passes options. **Options, not a document property** —
   options ride the update to every client, so the watcher sees the tag wherever it runs, and nothing
   is left behind on the actor. Same reasoning as `options.edhaFoc` / `edhaPrevPos` / `edhaHea`.
-- **`edhaBookkeepingTag(source)`** → the declared opposite. Nothing sets it today; a future engine
-  write that lowers a resource **without** being a spend says so here rather than staying silent.
+- **`edhaBookkeepingTag(source)`** → the declared opposite: an engine write that changes a resource
+  **without** being a spend says so here rather than staying silent. It set nothing on the day #28b
+  landed; **item 13 adopted it the next day** at the eleven non-spend writes `edhaResourceWrite` now
+  owns (heals, gains, restores, the revive-to-1, the Colossus max override). A GM sheet edit still
+  carries nothing at all, and that absence is still what makes it a GM sheet edit.
 - **`edhaExpectSpend(actor, resource, amount, source)`** / **`edhaSpendExpected(actor, resource)`** —
   the second positive signal. The cosmere-rpg system deducts a talent's activation cost **itself**,
   from a `postRoll` action inside `item.use()`, with a plain `actor.update()` and **no options at
@@ -465,10 +468,15 @@ if (!edhaIsSpend(actor, "foc", options, f.old, f.new)) return;   // …that some
 
 Stamped: `edhaSpendResource` (so every `costs:` deduction, an adversary ability's included),
 `edhaConsumeCost`, the `set-resource` socket relay, H10's Investiture drain.
-**Deliberately NOT stamped** — this list is what makes the gate mean anything: scene resets,
+**Deliberately NOT spend-stamped** — this list is what makes the gate mean anything: scene resets,
 restores, the temp-HP unwind, the creation wizard, adversary sync, and every GM sheet edit or bar
-drag. `edhaGainFocus` / `edhaDrainFocus` are untouched: their writes already carry `edhaFocusWatch`
-and the focus watcher has skipped them since 07-05, so they never reach the predicate.
+drag. (Item 13: the engine-issued half of that list now carries the POSITIVE `edhaBookkeepingTag`
+through `edhaResourceWrite`; the predicate reads a declared non-spend the same way it reads no tag,
+so nothing changed at the table.) `edhaGainFocus` / `edhaDrainFocus` never reach the predicate
+either way — their writes carry `edhaFocusWatch` and the focus watcher has skipped them since 07-05.
+⚠️ **`edhaDrainFocus` keeps its pre-item-13 options BYTE-FOR-BYTE**: whether an *involuntary* drain is
+a spend is **R-72, open**, and a bookkeeping tag there would answer it by the back door.
+`tests/resource-writes.test.js` fails if one appears.
 
 ⚠️ **Consulted at exactly TWO sites**, and `tests/spend-tag.test.js` fails if a third appears: the
 `updateActor` focus-change watch and the Order Investiture watch. **The health→0 defeat watchers are
@@ -2225,6 +2233,21 @@ declarations (hoisted) — callable from anywhere in the file regardless of text
   convention (`edhaNumOr`, see the ⛑ family above) is now applied at all 3 dataset-cost-read sites
   that needed it (spread/reknit/vital-surge) — 2 of the 3 were already correct by hand; unified onto
   `edhaNumOr` for consistency, no behavior change.
+- **`edhaResourceWrite(actor, resource, changes, options)`** (item 13, 2026-09-06) — THE resource-path
+  writer for every write that is **not** a plain clamped spend/gain, and the reason
+  `engine-idiom-ratchet.json`'s `resourceWrite` key reads **0**. The last twelve hand-rolled
+  `"system.resources.<id>.value"` update keys could not simply call the two helpers above: each had
+  its own max math, its own failure handling (a socket relay, a bare `return`) or a multi-path
+  `max.override` transform — and **none of them was a spend** (every cost deduction already went
+  through `edhaSpendResource`/`edhaConsumeCost`). So this owns the path and takes the #28b
+  classification as an ARGUMENT: `edhaBookkeepingTag(src)` for a declared non-spend (eleven sites),
+  `edhaSpendTag(src)` for a spend (H10's Investiture drain), or the site's existing options
+  untouched where the ruling is open (`edhaDrainFocus`, R-72). `changes` is keyed **relative** to
+  the resource — `{ value: n }`, or `{ "max.override": n, "max.useOverride": true, value: n }`.
+  It does **not** clamp and does **not** catch: every migrated site kept its own, so the migration
+  is a pure refactor plus the tag. Use it whenever you would otherwise type a resource path as a
+  string literal; use `edhaSpendResource`/`edhaGainResource` when a plain clamped spend/gain is
+  what you actually want.
 - **`edhaSceneOnceUsed(actor, item)` / `edhaStampSceneOnce(actor, item)`** — the ONE oncePerScene
   gate read + stamp write. The read checks BOTH `sceneOnce.<id>` and the legacy `detonateUsed.<id>`
   namespace (a scene mid-flight when this shipped keeps working); the stamp writes ONLY

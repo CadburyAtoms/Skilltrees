@@ -456,6 +456,27 @@ R-8's roster cross-talk is its own open ruling and is not settled by any row her
       activating Investiture must still prompt on a wired Investiture cost, and must **not** prompt
       when the GM edits the Investiture number by hand.
 
+- [ ] 🤖 **A MIGRATED SPEND still taxes the watches (item 13, 2026-09-06).** Item 13 moved the last
+      twelve hand-rolled `system.resources.*` writes onto `edhaResourceWrite`, and exactly one of
+      them carries a spend stamp: **H10's `edha-focus` Investiture DRAIN** (an `edha-focus` rule with
+      `op: drain`, `resource: inv` — Reaper's Harvest is the reference). Same started combat as the
+      28b rows, with an **Order Edict that forbids activating Investiture** on the watching PC. Drain
+      the Edict-holder's Investiture with that talent. Expected: the ✨ card posts, the Investiture
+      drops, **and the Edict's violation prompt still fires** — exactly as it did before item 13. The
+      failure this pins is the writer swallowing or re-classifying the stamp, which would silence the
+      watch without changing a visible number. (Not a hunt for new behaviour: a check that the one
+      stamped site kept its stamp.)
+
+- [ ] 🤖 **A MIGRATED BOOKKEEPING write does NOT tax them (item 13, 2026-09-06).** The other eleven
+      sites now declare themselves non-spends. Drive two of them in the same combat: (a) **Draw Mana**
+      on `Bench — Blue` (recovers Investiture — an `inv` write) with the same Order Edict on the
+      actor, and (b) any **heal** onto a creature whose focus/HP a scene watcher is watching (an
+      `edha-focus {resource: hea}` rider, a burst heal, or a `Bench — White` pulse). Expected: the
+      resource moves, the card posts, and **no** spend-driven watcher fires off either write — no
+      Edict prompt on the Draw Mana recovery, no 👁️/🧠 tax off the heal. Also confirm the numbers are
+      unchanged from before the migration: each site kept its own max clamp, so a heal must still cap
+      at max HP and Draw Mana must still cap at max Investiture rather than overshooting.
+
 ## Migration machinery (cross-tree behaviour)
 
 > **✅ Bench run 9 (2026-07-27i) retired seven Engine-wide rows on evidence** — **2bB-8** (neither

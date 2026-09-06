@@ -33,6 +33,62 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-06 DELTA — item 13: the last twelve hand-rolled resource writes are gone — and **not one of them was a spend**, which is why they were still hand-rolled (**ENGINE-ONLY, F5** — no data change, no pack rebuild; deployed by the PM after bench run 34/35).
+
+`scripts/engine-idiom-ratchet.json`'s `resourceWrite` key went **12 → 0**. The item's title said the
+destination was `edhaSpendResource`/`edhaConsumeCost`. Measurement says otherwise, and correcting it
+(PM-D1) is the useful half of this delta: **every cost deduction in the engine already went through
+those two.** The twelve survivors were a turn-end regen, `edhaGainFocus`, `edhaDrainFocus`, the
+`heal` effect branch, a burst heal, the decay tick's lifesteal, the death ward's drop-to-1, the
+Colossus max-HP override, the Devoted Conduit redirect unwind, `edhaHealActor`, Draw Mana's
+Investiture recovery, and H10's `edha-focus` Investiture branch — gains, heals, restores, a
+transform and one open-ruling drain, each with its own max math, its own failure handling (a socket
+relay, a bare `return`) or a multi-path update. **There was no canonical writer for a resource write
+that is not a plain clamped spend/gain**, which is exactly why a ratchet aimed at the spend helpers
+had stalled at twelve.
+
+**`edhaResourceWrite(actor, resource, changes, options)`** is that writer. It composes the path from
+the resource id — so no quoted `"system.resources.<id>.value"` key survives anywhere in the engine —
+and takes the classification as an ARGUMENT rather than deciding it:
+
+- **`edhaBookkeepingTag(src)`** at eleven sites — a declared non-spend. Which matters *because of
+  #28b, which landed the day before*: an update's `options` are where a write says what KIND of write
+  it is, and a hand-rolled `actor.update({…})` with no options says nothing at all. #28b's tag
+  factory existed with nothing setting it; this pass is its first consumer.
+- **`edhaSpendTag(src)`** at the one stamped site — H10's Investiture **drain**, byte-for-byte the
+  stamp #28b put there, so the Order Investiture watch keeps seeing it.
+- **The site's existing options, untouched**, where the classification is an open ruling.
+  ⚠️ `edhaDrainFocus` still writes `{ edhaFocusWatch: true }` and **nothing else**: whether an
+  *involuntary* drain is a spend is **R-72**, and a bookkeeping tag there would have answered it by
+  the back door. A test case fails if one ever appears.
+
+`changes` is keyed **relative** to the resource — `{ value: n }`, or `{ "max.override": n,
+"max.useOverride": true, value: n }` for the Colossus transform, which is why it is a map and not a
+single value. The writer **does not clamp and does not catch**: every migrated site kept its own max
+math and its own relay/return, so this is a pure refactor plus the tag.
+
+**What was proven.** The rewrites cannot be told apart by behaviour, so the mutation-sensitive pin is
+the ratchet plus the one stamped site: re-inlining the raw
+`who.update({"system.resources.inv.value": next})` at H10 fails `lint-refs.js` pass 20 (`engine idiom
+"resourceWrite" grew from 0 to 1`) **and** two cases of the new `tests/resource-writes.test.js`;
+restoring makes all three green. That file also pins the writer's contract (path composition, options
+passed through unchanged so a spend stamp survives it, no clamp, no catch), the bookkeeping
+declaration on `edhaHealActor` and `edhaGainFocus`, and the R-72 pin above. **720 passed, 0 failed**
+(+8). `node scripts/gates.js` → **RESULT: PASS** (exit 0).
+
+**Ratchet note.** 0 is genuinely reachable here where `userTargets` floors at 1: pass 20's regex
+counts a **quoted literal** key, and every canonical writer composes its path from a variable. A
+count of 1 means someone hand-rolled a literal resource path again — migrate it, do not raise the
+count. (Rode along, item 14's out-of-scope find: pass 20's `helper:` string for `userTargets` still
+named an "upcoming reader"; it names `edhaUserTargetTokens()` now.)
+
+**🤖 for the bench:** two rows under `# BENCH — Engine-wide & cross-tree`, in 28b's R-4 subsection —
+one that a **migrated spend** still taxes the watches (H10's Investiture drain against an Order
+Edict), one that a **migrated bookkeeping write** does not (Draw Mana's recovery, and a heal), with
+the max clamps re-checked because each site kept its own.
+
+---
+
 ## 2026-09-06 DELTA — item 14: `game.user.targets` is now read in **exactly one place in the engine**, and the ratchet's "Done when: 0" was wrong — it floors at **1** (**ENGINE-ONLY, F5** — no data change, no pack rebuild; deployed by the PM after bench run 34).
 
 `scripts/engine-idiom-ratchet.json`'s `userTargets` key went **10 → 1**. ENGINE PASS 5.2 (R-64)
