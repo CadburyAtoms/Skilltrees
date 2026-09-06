@@ -33,6 +33,35 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-05 DELTA — item 26: bench PCs get a normal sight range (ruling R-2, TOOLING-only)
+
+**Root cause:** `scripts/bench-setup-console.js` never sets a sight value, so the bench PCs'
+10 ft came from a timing gap between two register-skills.js hooks, not from a Foundry or
+cosmere-rpg system default. `preCreateActor` stamps `prototypeToken.sight.range` from the
+actor's AWA **at creation**, before the bench script's own `a.update(upd)` raises AWA to 2 —
+so new PCs freeze on the AWA-0 row (**10 ft**) of the Senses Range table instead of the AWA-2
+row their own attributes call for. The `updateActor` watcher that is supposed to re-sync the
+range when AWA changes is not reliable in the bench/console context, so the stale 10 ft stuck.
+
+**What changed:** one line in the PCS loop (`scripts/bench-setup-console.js`, in the same
+`upd` object that already sets `system.level` / attributes / skills): `upd["prototypeToken.sight.range"]
+= 20`. **20 ft** is not a guess — it is `Character_Building_Rules.md` §Senses Range's own AWA
+2-3 row (`source-materials/legacy-uploads/Character_Building_Rules.md:163`), the exact value
+the engine's own `edhaSensesRangeFtFromAwa(2)` (`module-src/scripts/register-skills.js:9383`)
+returns for the AWA the bench script already assigns every PC two lines above. Idempotent:
+re-running writes the same constant, which Foundry's update-diffing no-ops on a second pass.
+**Adversary and bench-target tokens are untouched** — the `TGT` loop and the adversary block
+later in the file are a different code path R-2 explicitly keeps at 10 ft (⚑ design dial).
+
+**Proven:** `node --check` and `node -e "require('./scripts/bench-setup-console.js')"` both
+exit 0 (the IIFE no-ops outside Foundry). `git diff` shows exactly one added value plus its
+citing comment. `node scripts/gates.js` all-PASS.
+
+**Not proven here — 🤖 for the next bench run:** whether a player client actually renders the
+map at 20 ft instead of 10 ft. Row added under `# 🎮 Player-client window` ("Bench PC sight
+range (R-2, item 26)").
+
+TOOLING-only — no engine file touched, no pack rebuild, no talent change.
 ## 2026-09-05 DELTA — item 30: rulings close-out for R-7, R-19, R-34, R-49 (DOCS-ONLY).
 
 Ben answered four rulings from the mobile board on 2026-09-05, each confirming behaviour that

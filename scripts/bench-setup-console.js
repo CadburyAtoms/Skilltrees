@@ -215,6 +215,14 @@ if (typeof game !== "undefined") (async () => {
     const upd = { "system.level": 7 };
     for (const k of ["str", "spd", "int", "wil", "awa", "pre"]) upd[`system.attributes.${k}.value`] = 2;
     for (const [k, v] of Object.entries(C.skills)) upd[`system.skills.${k}.rank`] = v;
+    // R-2 (EDHA_RULINGS.md, Ben 2026-09-05): normal PC vision, not the AWA-0 creation default.
+    // `preCreateActor` stamps prototypeToken.sight.range from AWA at creation time, before this
+    // update sets AWA to 2 above — so new PCs freeze at the AWA-0 row (10 ft) instead of the AWA-2
+    // row their own attributes call for. 20 ft = Character_Building_Rules.md §Senses Range for
+    // AWA 2-3 (source-materials/legacy-uploads/Character_Building_Rules.md:163), the same table
+    // module-src/scripts/register-skills.js's edhaSensesRangeFtFromAwa(2) returns. Adversary
+    // tokens (TGT/adversary blocks below) are untouched — their 10 ft stays R-2's ⚑ design dial.
+    upd["prototypeToken.sight.range"] = 20;
     await a.update(upd);
     if (C.path) {
       if (!a.items.some(i => i.type === "path" && i.name === C.path)) {
