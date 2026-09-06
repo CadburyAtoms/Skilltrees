@@ -455,17 +455,30 @@
       {
         "name": "Fade",
         "cost": "Reaction",
-        "consume": "1 Investiture",
-        "text": "<p>Triggered when an attack against the Stalker grazes or misses: the Stalker gains Concealment until the end of its next turn.</p>",
+        "text": "<p>Triggered when an attack against the Stalker grazes or misses: the Stalker gains Concealment until the end of its next turn.</p><p><strong>Cost:</strong> 1 Investiture — use Fade from the sheet and confirm the card; the Investiture is spent on the click, so a declined Fade costs nothing.</p>",
         "events": [
           {
             "event": "edha-apply-watch",
             "handler": {
               "type": "edha-gm-cue",
               "trigger": "damaged",
-              "note": "Reaction, 1 Investiture — if that was a GRAZE, Fade: Concealment until the end of its next turn (toggle the Fade marker). On a clean MISS nothing fires here — no damage is ever applied, so cue yourself."
+              "note": "Reaction — if that was a GRAZE, use Fade from the sheet and confirm the card (it spends the 1 Investiture): Concealment until the end of its next turn (toggle the Fade marker). On a clean MISS nothing fires here — no damage is ever applied, so cue yourself."
             },
             "description": "GM cue on damage (covers the graze half of the trigger; a true miss applies no damage and has no hook)."
+          },
+          {
+            "event": "use",
+            "handler": {
+              "type": "edha-prompt-pick",
+              "source": "confirm",
+              "icon": "🌫️",
+              "costs": "inv:1",
+              "once": "no",
+              "prompt": "Fade — spend 1 Investiture to gain Concealment until the end of its next turn?",
+              "label": "Fade (1 Investiture)",
+              "note": "Concealed until the end of its next turn — toggle the Fade marker on the sheet."
+            },
+            "description": "R-74 (a), Ben 2026-09-06: the ONE adversary ability whose bespoke cost is engine-driven. The confirm click spends inv:1 through edhaSpendResource (so it counts as a real spend for the R-4 / 28b watches); the native activation consume was removed so the rule's cost is the only deduction. The Concealment itself stays the toggled Fade marker (no concealed status exists to arm)."
           }
         ]
       },
