@@ -1,7 +1,9 @@
 # scripts/
 
 Utilities for the Edha Foundry data pipeline. The per-tool reference (what to run when,
-Foundry open/closed, etc.) is the toolbox table in `AUTHORING_WORKFLOW.md`.
+Foundry open/closed, etc.) is the toolbox table in `AUTHORING_WORKFLOW.md`. To run every gate
+these tools are checked by (schema, lint, tests, docs-in-sync, audits), see `gates.js` below —
+`node scripts/gates.js --list` prints the ordered list.
 
 ## One-time setup
 
@@ -23,6 +25,7 @@ ever need to.
 | `foundry-build.js`         | Compile `data/` → the module's compendium packs (Foundry CLOSED)    |
 | `foundry-extract.js`       | Pull in-Foundry talent edits back into `data/authored/`             |
 | `edha-pack-io.js`          | Shared pack read/write + authored-field projection                  |
+| `gates.js`                 | The ONE gate list (item 20): runs every gate in order, resolves `python3`/`python`/`py -3` itself, never stops on the first failure. `node scripts/gates.js --list` prints the list; `--ci` adds the two gates needing an optional dependency (Pillow, `classic-level`); `--only <id>[,<id>]` runs just those (used by `npm run test` / `npm run audit`). Backs `npm run gates` / `gates:ci` and the CI `validate.yml` job. |
 | `validate.js`              | Schema checks for `data/leyline.json` / `domain.json` / `cosmere.json` |
 | `validate-packs.js`        | Post-build pack check (needs the compiled packs — bench only)       |
 | `validate-adversaries.js`  | Same for the adversary pack incl. baked effect keys                 |

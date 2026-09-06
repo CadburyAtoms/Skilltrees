@@ -136,6 +136,53 @@ across ~30 tool calls in ~45 minutes of driving — 0 engine defects found.**
 
 ---
 
+## 2026-09-05 DELTA — item 20: one gate list, and gates that pass on Windows (TOOLING-only).
+
+The ordered gate list existed hand-copied in six places (`package.json`, `README.md`, `CLAUDE.md`
+iron rule 4, `scripts/README.md`, `.github/workflows/validate.yml`, and
+`.claude/skills/work-item/SKILL.md`'s gate block) and had already drifted — `npm run gates` never
+ran the `scripts/*.js`/`tests/*.js` syntax sweep CI does, and every gate invoked `python3`, which
+is not on Ben's PATH (`python` is), so `npm run gates` always exited non-zero here even when every
+real check passed.
+
+New `scripts/gates.js` is now the ONE list: it runs all ten local gates plus, behind `--ci`, the
+two optional-dependency gates (map lint needs Pillow, pack build + validate needs
+`classic-level`) — commands copied verbatim from `validate.yml`. It resolves the Python
+interpreter itself (`python3` → `python` → `py -3`, first one whose `--version` exits 0), never
+stops at the first failure (runs every gate, reports every result), and prints a PASS/FAIL
+summary table. `node scripts/gates.js --list` prints the ordered list; `--only <id>[,<id>]` runs
+named gates (`npm run test` / `npm run audit` route through this so they inherit the same Python
+resolution). `npm run gates` / `gates:ci` are now thin aliases; `validate.yml`'s `gates` job is
+now one step, `node scripts/gates.js --ci`.
+
+**Proven on this machine:** `node scripts/gates.js` → all 10 PASS, exit 0 (confirms the item's
+"Done when" — `npm run gates` used to always fail here on the `python3` resolution alone).
+`node scripts/gates.js --ci` → all 12 PASS, exit 0 (map-lint + pack-build-validate included; the
+scratch pack build wrote only to `%TEMP%\edha-packs-gates`, never Ben's live module). Negative
+proof: a scratch mutation to `tests/actor-ref-resolve.test.js` (one deliberately-failing `test()`,
+reverted before commit) made `node scripts/gates.js` report `[FAIL] unit-tests` in its summary
+table while every other gate still ran and passed — `RESULT: FAIL`, exit 1 — proving the runner
+never stops at the first failure. CI: see the PR for the `gates` job's green run.
+
+**Found, not fixed (out of scope for item 20):** the workflow's `paths:` filter is still its own
+hand-maintained list (the item's own **Why** calls this out as a sixth copy but scopes the fix to
+the gate list itself, not the trigger filter).
+
+---
+
+## 2026-09-05 DELTA — item 39: `audit.py`'s NO FILE message now names the valid keys (TOOLING-only).
+
+`audit.py verdannis` already exited 1 (measured 2026-09-05 21:20 — the original "exit 0" report was
+a masked exit code, not a live bug); what was missing was that `verdannis: NO FILE` gave no clue the
+deity's key is `sovereignty`. `main()` now prints the valid keys (leyline colors + deity keys) in
+that same message, derived from the same `DATA.glob` calls the `default` target list already uses.
+Pinned in `tests/audit_parser_test.py` via subprocess (mutation-checked: dropping `any_fail = True`
+on that branch makes the new test fail with "expected non-zero exit, got 0"). `CLAUDE.md` iron rule
+4 and `.claude/skills/work-item/SKILL.md`'s gate list now name the actual keys instead of
+`<color|deity-name>`.
+
+---
+
 ## 2026-09-05 DELTA — item 33: re-landed the handout-forge skill + the session-zero one-pager from the orphaned PR #93 (DOCS-ONLY — no engine, no data, no pack rebuild).
 
 `claude/handout-forge-skill` (tip `fbc8e20`, 2026-07-15) had no merge base with the 2026-07-28

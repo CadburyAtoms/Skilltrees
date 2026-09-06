@@ -149,27 +149,23 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
 3. **No silent manual cards; kill soft laziness.** Every talent is accounted for in an event note,
    a tree-section header, or the docs. Opposed-skill tests go through the contest core — never
    "trust the player rolled and won". "Manual" requires there to be NO nameable Foundry hook.
-4. **Gates before every commit** — `npm run gates` runs the whole set; all must pass:
-   ```bash
-   node --check module-src/scripts/register-skills.js   # + every scripts/*.js and tests/*.js in CI
-   node scripts/validate.js         # data/*.json schema + adversary refs (NOT the tree graph — see rule 7)
-   node scripts/lint-refs.js        # data↔engine cross-reference lint (handler types, name literals)
-   node tests/run.js                # engine pure-helper unit tests
-   node scripts/build-dashboard.js --check     # generated docs must match their sources
-   node scripts/build-canon-codex.js --check
-   node scripts/build-player-primer.js --check
-   python3 tests/audit_parser_test.py
-   python3 .claude/skills/leyline-tree-authoring/audit.py <color|deity-name>   # exit 0 required
-   ```
-   **CI (`validate.yml`) runs two more that `npm run gates` does not**, because both need
-   something a clone may lack — match them before assuming a green local run means green CI:
-   - `python3 scripts/map/lint_map.py` — needs Pillow (`python3 -m pip install pillow`); CI
-     installs it just-in-time. Runs on any `source-materials/maps/**` or gazetteer change.
-   - **Pack build + validate** — builds every pack into a scratch `EDHA_MODROOT` and runs
-     `validate-packs.js` + `validate-adversaries.js` against the compiled LevelDB. Needs
-     `classic-level`; CI installs it pinned to Foundry's 2.0.0. This step exists because both
-     validators were deploy-only until 07-16d, which is how two build-breaking bugs reached
-     Ben's `deploy-to-foundry.bat` step 5 — do not treat it as optional.
+4. **Gates before every commit** — `node scripts/gates.js` (= `npm run gates`) runs the whole
+   local set, in order, and prints one PASS/FAIL line per gate plus a summary table; all must
+   pass. It never stops at the first failure — it runs every gate and reports all of them. It
+   also resolves the Python interpreter itself (`python3` → `python` → `py -3`, first one that
+   actually runs), so it works on Ben's machine where `python3` is an App Execution Alias stub.
+   Run `node scripts/gates.js --list` to see the exact ordered list (item 20 — this script is now
+   the ONE copy of it; nowhere else enumerates the gates by hand).
+
+   **CI (`validate.yml`) runs two more, behind `--ci`** (`node scripts/gates.js --ci` =
+   `npm run gates:ci`), because both need something a clone may lack — match them before assuming
+   a green local run means green CI:
+   - the map/gazetteer lint (needs Pillow, installed just-in-time inside the gate);
+   - the pack build + validate — builds every pack into a scratch `EDHA_MODROOT` and runs
+     `validate-packs.js` + `validate-adversaries.js` against the compiled LevelDB (needs
+     `classic-level`, pinned to Foundry's 2.0.0, also installed just-in-time). This step exists
+     because both validators were deploy-only until 07-16d, which is how two build-breaking bugs
+     reached Ben's `deploy-to-foundry.bat` step 5 — do not treat it as optional.
 
    A fix whose root cause is in a pure engine helper ships WITH a pinned regression case in
    `tests/`. **Never chain gates with `;` or pipe them through `tail`** — both mask the exit code

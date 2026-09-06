@@ -70,25 +70,22 @@ it, even when it is a one-liner — the PM files it and it gets its own proof.
     via `scripts/lib/strip-comments.js`.
 - A fix whose root cause is a pure helper ships **with** a pinned regression in `tests/`.
 
-## 4. Gates — all of them, one per line, on this machine
+## 4. Gates — all of them, on this machine
 
 ```
-node --check module-src/scripts/register-skills.js
-node scripts/validate.js
-node scripts/lint-refs.js
-node tests/run.js
-node scripts/build-dashboard.js --check
-node scripts/build-canon-codex.js --check
-node scripts/build-player-primer.js --check
-python tests/audit_parser_test.py
-python .claude/skills/leyline-tree-authoring/audit.py
+node scripts/gates.js
 ```
 
-`python3` is not on Ben's PATH — use `python`. If you touched `source-materials/maps/**`, also
-`python scripts/map/lint_map.py`. If you touched the build or the data, also the scratch pack build
-plus `validate-packs.js` and `validate-adversaries.js` with `EDHA_MODROOT` pointed at the scratch
-root. Paste the last line of each gate into the report. A red gate you cannot explain from your own
-change is a stop-and-report, not a thing to fix.
+This is the ONE gate list (item 20) — it runs every gate CLAUDE.md iron rule 4 requires, in
+order, and resolves the Python interpreter itself (`python3` → `python` → `py -3`; `python3` is
+not on Ben's PATH). It never stops at the first failure — it runs every gate and prints a
+PASS/FAIL summary table at the end. Run `node scripts/gates.js --list` to see the ordered list.
+
+If you touched `source-materials/maps/**` or the build/pack contents, also run
+`node scripts/gates.js --ci` (adds the map lint and the scratch pack build + validators; needs
+Pillow and `classic-level`, both installed just-in-time). Paste the summary table — or the last
+PASS/FAIL line of each gate — into the report. A red gate you cannot explain from your own change
+is a stop-and-report, not a thing to fix.
 
 ## 5. Docs the change obliges (iron rule 5)
 

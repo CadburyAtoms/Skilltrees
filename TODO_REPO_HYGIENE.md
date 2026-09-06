@@ -458,7 +458,7 @@ finds every delta, and CI is green.
 
 ---
 
-## 20. [ ] One gate list, and gates that pass on Windows
+## 20. [x] One gate list, and gates that pass on Windows (2026-09-05, PR #167)
 
 **Why:** the gate list exists in five places (`package.json`, README, CLAUDE.md, `scripts/README.md`,
 `validate.yml`) and they disagree: `npm run gates` omits `lint_map.py` and the pack build, each doc
@@ -971,7 +971,14 @@ changed (expected — each item is now its own section); every other tab's ids a
 
 ---
 
-## 39. [ ] `audit.py <tree>` exits 0 on a tree name that does not exist
+## 39. [x] `audit.py <tree>`'s NO FILE message does not list the valid keys, and the gate docs do not name the deity keys (2026-09-05, PR #166)
+
+> **Premise corrected by the PM, 2026-09-05 21:20 (measured, not read):** on `main` today
+> `python .claude/skills/leyline-tree-authoring/audit.py verdannis` prints `verdannis: NO FILE` and
+> exits **1** — the `NO FILE` branch sets `any_fail` and the script has not changed since 07-25. The
+> "exit 0" in the original report was almost certainly a masked exit code (a `|`-piped or `;`-chained
+> gate — iron rule 4's own warning). What remains is the usability half below, plus a pinned case in
+> `tests/audit_parser_test.py` so the exit code can never regress silently. Size stays S.
 
 **Why:** `python .claude/skills/leyline-tree-authoring/audit.py verdannis` prints `verdannis: NO
 FILE` and exits **0** — the deity's data key is `sovereignty`, not the deity's proper name

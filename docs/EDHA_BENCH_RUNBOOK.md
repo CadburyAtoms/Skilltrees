@@ -30,6 +30,12 @@ then the deities, Heroic, and the non-tree console-runnable sections).
 
 ## Per-run checklist (the agent)
 
+> **Deploy-script rule (2026-09-05, learned twice):** `scripts/deploy-to-foundry.bat` pulls `main`
+> *during* its run, so a fix to the script itself only protects the run AFTER the one that pulls it —
+> and `cmd` resumes a rewritten batch file by byte offset. When the script has changed on `main`,
+> `git pull` FIRST, then run it; if a run hangs on a prompt, close the window rather than answering.
+> Verify any deploy by hash from both sides (CRLF-normalised) before driving a row.
+
 1. **Join:** browser pane → `http://localhost:30000/join` → select **Bench** → Join (no
    password). If Bench shows as already active, STOP and ask Ben to free the session.
 2. **Health check** (console via javascript_tool), screenshot as the run header:
