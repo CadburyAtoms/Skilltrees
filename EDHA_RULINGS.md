@@ -441,6 +441,10 @@ until turn start (`rally {count, resetOn: turn}` — it never consumes on a test
 > next test, then the stack is cleared/decremented). ENGINE-ONLY, F5 → **item 52**; headless pin
 > (three damage events → +3 on the next test, +0 on the one after; cap at Rank); 🤖 re-test = the
 > Red spot-checks row.
+> **SHIPPED** in PR #223 (ENGINE-ONLY, bench-pending) — `tests/rally-spent-on-test.test.js` (three hits
+> → `0 + 3[Rally]` on the next test and +0 on the one after; four hits at Rank 3 spend as +3; an unspent
+> stack still clears at the owner's turn start). The consume is a post-`<ctx>Roll` reader of the actor's
+> own `rally` flag (`edhaRallyConsume`), not a roll option — a cancelled dialog cannot strand the stack.
 
 **R-28. Withering Touch's duration — "start" or "end" of your next turn?** The engine
 (`expireAfter {round: 2, turn: 0}`), **both** chat cards and the **measured** expiry all say **END**;
