@@ -979,6 +979,8 @@ Insight) and §9o called them byte-identical. **They are not, and the difference
     session, so the isGM half would silence it. **Do not reach for it anywhere else** — outside a
     region behaviour, "no GM online" is a reason to write nothing, not a licence to write from a
     player client. Changing those three to the full gate is a live-behaviour change and a ruling.
+    **Ruled on 2026-09-06 (`EDHA_RULINGS.md` R-79, Ben, phone, via the relay session): (a) KEEP** —
+    the three bodies keep springing GM-less, exactly as built. DOCS-ONLY, no engine change.
 
   Pass 20's `primaryGmGate` ratchet therefore **floors at 1** — the primitive's own one-line body,
   the same shape `userTargets` has. A count of 2 means someone hand-derived the check again.
@@ -1352,6 +1354,13 @@ plan says.
 Conviction, Pillar of Order, Concordant Presence, Voice of Authority, Green's Pack Sense). Someone
 rolls; you get a whispered card to spend a resource and react. Config-only: `edhaTestReactWatch`
 sweeps the rules on every skill/attack/item roll (GM-gated).
+
+**Deliberately NOT combat-gated** — the handler carries no `scope` field, so it never reaches
+`edhaWatchCombatGate`; an ally about to fail a social or exploration test is exactly the
+out-of-combat case that gate exists to protect. Bench run 34 observed Shared Conviction, Pillar of
+Order and Voice of Authority all firing outside combat. **Ruled on 2026-09-06 (`EDHA_RULINGS.md`
+R-75, Ben, phone, via the relay session): (a) leave it ungated, and document it.** DOCS-ONLY, no
+engine change; a future `inCombatOnly` dial would be a field on the rule, not an engine gate.
 
 Gates: **`rolls`** (comma-list: which roll hooks) · **`rollerIs`** (`ally`|`enemy`) · **`when`**
 (`any` | `complication` | `plausible-fail` = Complication or kept d20 ≤ 10, owner judges ACTUAL
