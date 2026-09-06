@@ -1812,7 +1812,7 @@ REBUILD (Ben's deploy).
   `data/authored/deity-knowledge.json` to the current seed.
 
 **What to do:** `data/authored/leyline-red.json` — set Volatile Strike's rider field to
-`whenDealer: "any"`. `data/authored/domain.json`'s Withering Touch entry + `data/domain.json`'s
+`whenDealer: "any"`. `data/authored/deity-death.json`'s Withering Touch entry + `data/domain.json`'s
 source prose — both say "end of your next turn"; engine and cards unchanged.
 `data/authored/deity-knowledge.json` — rewrite The Final Study's `docId` to the current seed.
 Rebuild + Sync.
