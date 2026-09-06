@@ -909,44 +909,26 @@ now **`EDHA_RULINGS.md` R-35**.
 
 ---
 
-**FIX PASS 4 (2026-09-05) — the relay read-back race is FIXED, ENGINE-ONLY (F5 / relaunch, no pack
-rebuild, no ⟳ Sync).** Bench run 31's `Unravel Everything` defect root-caused: NOT the rule dispatcher
-(the system's `fireEvent` really does `await` each ordered rule, and `edhaOwnerListQueue` really does
-commit) but the fire-and-forget socket relay one level DOWN — `game.socket.emit` has no acknowledgement,
-so `edhaWriteStatusMark` returned `true` a full round trip before the marker status existed on the
-casting client, and `edhaOwnerList`'s mark-wins reconcile then dropped every just-placed entry. New
-primitive `edhaAwaitLocal` makes a relayed write awaited; `edhaWriteStatusMark` and
-`edhaCounterWriteRemote` adopt it. **Only reachable from a client that owns the CASTER but not the
-TARGET** — a GM caster takes the direct branch and was never affected, so every row below must be driven
-from `PlayerBench`, not from `Bench`. Pinned headless in `tests/relay-readback-race.test.js` (with a
-negative control that still reproduces the old symptom).
-
-- [ ] 🤖 **Unravel Everything (Chaos) — fill and detonate in ONE cast, from the player client.** Drive
-      from `PlayerBench` (owns the caster, not the targets) with `lists.omens` **EMPTY** and 2 enemies in
-      Blue Attunement Range. ONE use must: place 2 Omens *and* sweep them — damage + Disorient on both,
-      ledger emptied — on the same activation. Before the fix this cast placed 2 and printed *"sweeping
-      your omens: no creatures on the ledger"* (no damage, no Disorient, 3 Investiture for half a talent),
-      and only a SECOND cast detonated. Re-run the bench run 31 matched pair: cast 1 on an empty ledger is
-      the test; cast 2 on the now-empty ledger should place nothing new and sweep nothing. Also drive it
-      once as GM (`Bench`) to confirm the unaffected path is unchanged.
-- [ ] 🤖 **Spreading Omen (Chaos) — the second placement must not clobber the first (found by audit, never
-      reported).** Same root cause, unreported, and strictly worse than the reported one: two ordered
-      `edha-test-success` placements (victim, then nearest enemy within 10 ft), and the second used to
-      re-read a reconcile-emptied ledger and commit OVER the first — the victim kept its Omen icon but
-      vanished from `lists.omens`. From `PlayerBench`, succeed against a victim with a second enemy within
-      10 ft: the cards must read **(1/2)** then **(2/2)**, and `lists.omens` must hold BOTH uuids
-      afterwards. A **(1/2)** on the second card, or a one-entry ledger with two Omen icons on the canvas,
-      is the bug.
-- [ ] 🤖 **Vital Diagnosis (Life) — the reveal card must list the condition it just applied.** Cosmetic
-      member of the same family: rule 0 applies `Diagnosed` (relayed), rule 1 reveals
-      `hp,conditions,defenses` off the same creature. From `PlayerBench`, on a target the player does not
-      own, the whispered reveal's *conditions:* clause must include **Diagnosed**. Before the fix it read
-      the pre-write world and omitted it.
-- [ ] 🤖 **Studied Mark (Knowledge) — the reveal card must list the Insight it just placed.** The counter
-      half of the same family (`edhaCounterWriteRemote`, the other relay that adopted `edhaAwaitLocal`):
-      rule 0 places 2 Insight on the targeted creature, rule 1 reveals `hp,conditions,defenses` with `cog`
-      withheld. From `PlayerBench`, the reveal's *conditions:* clause must include **Insight**, and the
-      count on the effect must read 2 rather than 1.
+*(**FIX PASS 4 — the relay read-back race — ✅ ALL FOUR ROWS RETIRED on evidence 2026-09-06, bench
+run 32.** Every one driven from **`PlayerBench`** (non-GM, owning the caster and **not** the targets —
+`isOwner: false` asserted on both targets before each cast), with `Bench` + `Gamemaster` also
+connected, against served engine `06229ecc…`.
+**Unravel Everything** — ONE cast on an **empty** ledger both filled and detonated: *"Bench Target —
+Floater, Bench Target — Adjacent A bear your Omen **(2/2)**"* then *"sweeping your omens: Bench Target
+— Floater: **affected** · Bench Target — Adjacent A: **affected**"*, 18 and 7 spirit (HP 41 → 23 and
+20 → 13), both Disoriented, ledger emptied, 3 Investiture for one whole talent. Run 31's pre-fix pair
+printed *"no creatures on the ledger"* here. **The GM control is unchanged**: the same cast from
+`Bench` gave the identical one-activation shape (17 and 10 spirit, both Disoriented, ledger emptied).
+**Spreading Omen** — the two ordered placements now read **(1/2)** then **(2/2)** and `lists.omens`
+holds **both** entries; the order-2 placement no longer commits over order 1. (First attempt rolled
+7 vs COG 14 — a genuine miss, re-rolled to 25.)
+**Vital Diagnosis** — the whispered reveal reads *conditions: Disoriented, Omen, **Diagnosed***, the
+condition its own order-0 rule had just relayed.
+**Studied Mark** — reveal reads *conditions: Disoriented, Omen, **Insight***, the effect is named
+**`Insight [2]`** (count 2, not 1), and `cog` is correctly withheld from the defenses clause.
+⚠️ **`edhaAwaitLocal` never timed out**: zero `console.warn` relay warnings on **either** client
+across all five casts, so every relayed write landed inside the 3 s budget. No `ui.notifications.warn`
+naming a creature either.)*
 
 # BENCH — Fate (Olvarra, deity)
 
@@ -2196,6 +2178,27 @@ Ostrek, Merin, Veska) and the beached-fisher you-might-be. **Goldenport**: close
 paragraph, "…a signature can baptize anything". All three are flavor-only, so the stale-snapshot caveat
 on existing owned copies stands and costs nothing.)*
 
+- [ ] 🤖 **NEW 2026-09-06 (bench run 32) — all 10 Edha culture items FAIL SYSTEM VALIDATION on every
+      load; re-test after the fix.** Found incidentally while timing `pack.getDocuments()` — loading
+      `edha-content.edha-items` logs **ten** `CosmereItem [<id>] validation errors: system: id: <slug>
+      is not a valid choice`, one per nation: **canticle · kettavar · corvaine · sylvaneth · goldenport
+      · thalendor · malcurr · lunavar · ashkar · vorsk**. Every one is `type: "culture"` in
+      `edha-content.edha-items`.
+      **Root cause is repo-side and proven, not guessed.** `scripts/foundry-build.js` (~L816) writes
+      `system: { id: slug, … }` on each culture doc, where `slug = slugify(c.name)` from
+      `data/cultures.json`. The cosmere-rpg system restricts that field to its own six Roshar cultures
+      — `CONFIG.COSMERE.cultures` reads exactly **`["alethi","azish","herdazian","thaylen","unkalaki","veden"]`**
+      — so every Edha nation slug is rejected. The **ancestry** docs take the same `system.id = slug`
+      treatment and log **no** error, so the restriction is specific to the culture model.
+      ⚠️ **SEVERITY IS OPEN and is the first thing to settle** — the documents still load and
+      `getDocuments()` still returns all ten, so this may be log noise only; but if the invalid value
+      is dropped rather than kept, a culture's `system.id` no longer matches the `cultural:<slug>`
+      expertise its own `grant-expertises` / `remove-expertises` events add and remove, which would
+      break the wizard's culture step silently. **Read `item.system.id` back off a loaded pack culture
+      and compare it to the slug before deciding how to fix.** Not measured this run — the finding
+      landed after the world had been restored and both clients logged out.
+      *(→ `test-pass-fixes`. Bench run 32.)*
+
 ---
 
 # Items-dump tranche (2026-07-18j — engine + data + build: `deploy-to-foundry.bat` → relaunch; ⟳ Sync not needed for these rows)
@@ -2238,18 +2241,19 @@ assumed.)*
 - [ ] 🤖 **CAE burns** — Tactical Ploy success / Feinting Strike hit decrements the target's
       tracked reaction (card says "burned on the tracker"); with no combat running, everything
       falls back to the honor-system chat wording.
-- [ ] 🤖 **Starting kit grant** — `edha.grantStartingKit(actor, "Hunter")` (GM console): the
-      common base + the Hunter pack + 7 rations land on the actor, the purse shows +5 silver,
-      and the card lists anything missing. Try one more path. (07-18l: the as-shipped 07-18j
-      version never created the items — a docs-array double-wrap, fixed pre-bench; the grant is
-      also once-only now. Covered again by the Character-creation section's walkthrough row.)
-      - ✅ **NARROWED 2026-07-28j (bench run 22) — the grant itself is proven on TWO paths, via the
-        wizard rather than the console.** Warrior granted **9 items + 5 silver** and Scholar **10
-        items + 5 silver**, each with the card naming the count and the weapon-slot follow-up, and
-        the purse moving in step (0 → 5). Once-only also holds: re-entering the wizard on a PC that
-        already had its kit added nothing. ⛔ **What remains is only the row's literal ask** — the
-        **console API** `edha.grantStartingKit(actor, "Hunter")` on the **Hunter** path, and its
-        "lists anything missing" clause. Not reached at run 22.
+*(**Starting kit grant — ✅ RETIRED on evidence 2026-09-06, bench run 32**, driven as the row's
+literal ask: the **console API** on the **Hunter** path, `edha.grantStartingKit(game.actors.getName("Bench — Heroic"), "Hunter")`.
+**14 items** landed — the common base (Clothing, Backpack, Bedroll, Flint and Steel, Leather, Rope,
+Knife, Journal) + the Hunter pack (Shortbow, Quiver (20 arrows), Snare Kit, Spyglass, Trophy String) +
+**`Food (ration, 1 day)` at quantity 7** — and the purse moved **silver 0 → 5**. Card: *"🎒 Hunter
+starting kit for Bench — Heroic: **14 items + 5 silver**. Weapon slot: pick any weapon ≤ 2 g that you
+have the skill or expertise to use. a week of rations below."* **Once-only holds on the console path
+too** (run 22 proved it only for the wizard): an immediate second call added **0** items, left silver
+at 5 and posted no card. ⚠️ **The guard flag is `flags["edha-content"].kitPath` (value `"Hunter"`), not
+`startingKit`** — the obvious-looking name is wrong and cost a read.
+⚠️ **The "card lists anything missing" clause has NO INSTANCE TO TEST** — nothing was missing, so the
+card had nothing to list. Settling it needs a deliberately-broken items pack; recorded as untested
+rather than passed, the same standard run 22 used for the vision row's fourth clause.)*
 
 - [ ] 🤖 **Kindle — NARROWED 2026-07-27v to the token-light half only** — ✅ **the label half is
       proven**: the Kindle die/mod is labeled in the damage breakdown, observed live as "+ **3
@@ -2357,6 +2361,15 @@ customized variants: the bulk pass skips them; their own sheet button syncs them
         ⛔ **What remains is the BULK-BUTTON clause only** — a bulk sync was **not authorised** for
         run 22, so "click the button once instead of re-dragging" is unrun. Blocker named, row
         stays 🤖.
+      - ⛔ **2026-09-06, bench run 32 — RE-READ against DEPLOY STATE and the live world; the blocker is
+        NOT a deploy and never was.** Everything these two rows need has been live since the 2026-07-26
+        deploy Ben confirmed. What is left in both is the **bulk button** itself, and a bulk
+        `⟳ Sync Adversaries from Pack` rewrites **every world adversary — Ben's placed campaign actors
+        included**, which is outside a bench run's authority under hard rule 4 (bench folders only).
+        This is **not** an agent-drivable row and it is **not** ⚑ (nothing here is a judgment call):
+        it needs **Ben to click the bulk button once, or to authorise a bench run to click it**. Row
+        stays 🤖 with that blocker named. **Do not re-attempt it un-authorised — six runs have now
+        deferred these two without writing down why.**
 - [ ] 🤖 **Renamed copies skipped** — rename a world copy (e.g. "Roek Alpha") → bulk sync skips it
       and the console lists it under `skipped`; its own sheet button still syncs it.
       - ✅ **NARROWED 2026-07-28j (bench run 22) — the second half is PROVEN.** A renamed,
@@ -2367,6 +2380,15 @@ customized variants: the bulk pass skips them; their own sheet button syncs them
         edha-adversaries)."* — so a copy that is BOTH renamed and unstamped has no sync route at all.
         ⛔ **What remains is the bulk-skip clause** (the console `skipped` list), unrun because a bulk
         sync was not authorised. Blocker named, row stays 🤖.
+      - ⛔ **2026-09-06, bench run 32 — RE-READ against DEPLOY STATE and the live world; the blocker is
+        NOT a deploy and never was.** Everything these two rows need has been live since the 2026-07-26
+        deploy Ben confirmed. What is left in both is the **bulk button** itself, and a bulk
+        `⟳ Sync Adversaries from Pack` rewrites **every world adversary — Ben's placed campaign actors
+        included**, which is outside a bench run's authority under hard rule 4 (bench folders only).
+        This is **not** an agent-drivable row and it is **not** ⚑ (nothing here is a judgment call):
+        it needs **Ben to click the bulk button once, or to authorise a bench run to click it**. Row
+        stays 🤖 with that blocker named. **Do not re-attempt it un-authorised — six runs have now
+        deferred these two without writing down why.**
 
 *(**Sheet button · Placed-token push · State preserved · Hand-added items survive · Stale duplicates
 healed — ALL FIVE RETIRED on evidence 2026-07-28j, bench run 22**, driven as four assertions over a
@@ -2482,6 +2504,13 @@ the Cannon rolled `(2)d(2*3+2)+2+2 = 10` energy and applied exactly **8** throug
         is no such block to test. It needs one authored first.
         **Row stays 🤖** pending a decision on which number is canon — see the ⚑ design row directly
         below, whose premise ("10 ft is intended") is the pack's value, not the live one.
+      - 📌 **2026-09-06, bench run 32 — that decision already EXISTS and is numbered: `EDHA_RULINGS.md`
+        **R-56** ("Should adversaries use the Edha Senses Range table too, or keep the cosmere ladder?"),
+        with option **(a)** — extend the Edha table to adversary sheets AND their token sight —
+        recommended. So this row is **not** waiting on a bench run and not on a deploy; it is waiting
+        on **R-56**, and the two remaining clauses are downstream of that one answer. Re-checked
+        against DEPLOY STATE: nothing here is a deployment gap. Row stays 🤖 **only** for the
+        re-measure after R-56 is answered.
 - [ ] ⚑ **Adversary sight range — does 10 ft feel wrong? Say a number.** — with those tokens on a
       real map: adversary AWA 0 → **10 ft** is intended, but it is a **design dial**, not a bug.
       If it plays badly, give the number you want instead. *(Split 2026-07-27w; the config read is
@@ -3597,26 +3626,21 @@ HP moved **41 → 31**, exactly the 10. Target INCLUDED alongside the bystander 
 save resolved on the same card: *"Agility vs your Red: Adjacent A: Agility 16 vs your Red 19 — **Prone**;
 Adjacent B: Agility 10 vs your Red 19 — **Prone**"* (`1d20 + 5` → 19), and both gained `prone`.)*
 
-- [ ] 🤖 **R-65 — the ALLY-CLICKED burst die folds. ⚠️ SUBJECT CORRECTED at bench run 30: the row's
-      named talent, Pack Share, carries NO computed dice and is out of R-65's scope by R-65's own text.**
-      Pack Share's rider (`edha-damage-bonus`) has `amountFormula: "@tier"` — a flat number — and its
-      sibling `The Pack` has `"@counter"`. A sweep of every authored rule for a computed-die formula
-      (`)d(` with an `@`) returns **51 rules and neither of them.** The talent that actually ships the
-      *ally-clicks-their-damage-button* branch with a die is **Death Mark** (Knowledge) —
-      `edha-counter-transfer`, `allyBurst: true`, `burstFormula: "(@tier)d(2 * @skills.red.rank + 2)"`.
-      **Drive Death Mark**, get an ALLY to click their burst button, and confirm the applied amount is a
-      real die result.
-      ✅ **The `edha-damage-bonus` FOLD ITSELF IS PROVEN** (bench run 30) via **Predatory Strike**
-      (Knowledge — same handler as Pack Share's rider, and the family member that does carry a die):
-      armed (`predprimed`), then a weapon hit driven through `applyDamage` with `edhaSource` +
-      `originatingItem: Sidesword` posted *"🐺 **Predatory Strike** (Bench — Knowledge): **+11** vital
-      strike."* — `((@tier)d(2 * @colorRank + 2)) * max(@counter, 1)` at tier 2 / red rank 3 / counter 0 is
-      `(2d8) * 1`, and **11** is a real integer inside 2–16, not 0 and not the formula string. HP moved
-      **31 → 16** = 4 impact + 11 vital, exactly. `predprimed` was consumed, 1 Insight placed, and
-      Accumulate recovered 1 Investiture off the same hit. ⚠️ **Evidence standard:** this card carries no
-      `rolls` array (the amount is computed and posted as text), so the proof is the integer's range plus
-      the exact HP arithmetic — the same standard run 29 used for Venom Glands. **What is left is only the
-      ALLY-click path (Death Mark), not the fold.** *(R-65.)*
+*(**R-65 — the ALLY-CLICKED burst die folds — ✅ RETIRED WHOLE on evidence 2026-09-06, bench run 32.**
+Run 30 proved the `edha-damage-bonus` **fold** (Predatory Strike, +11 vital) and corrected the row's
+subject from Pack Share to **Death Mark** (Knowledge). Run 32 closed the remaining **ally-click** half
+on the real path: a creature bearing Bench — Knowledge's Insight (placed by Studied Mark) was dropped
+to 0 HP, Death Mark's watch rule fired, and its card offered *"Bench — Green strikes · Bench — Heroic
+strikes · Bench — Chaos strikes · Bench — Life strikes"*. **The click was made from `PlayerBench`** — a
+non-GM client owning the ALLY (Bench — Chaos) but **not** the enemy — with the enemy targeted. Card:
+*"📖 **Death Mark**: Bench — Chaos deals **13** vital to Bench Target — Floater."*
+⚠️ **Stronger evidence than run 30's standard:** this card **does** carry a `rolls` array, total
+**13** — a real `(@tier)d(2 * @skills.red.rank + 2)` = **2d8** result off Bench — Knowledge's stats
+(tier 2, red rank 3), inside 2–16, not 0 and not the formula string. The HP arithmetic is exact:
+**23 → 8 = 15** = the 13 vital burst **+ 2** from Vital Diagnosis's `+2 vital vs the Diagnosed target`
+rider, which posted its own card in the same application. Void Sense and Prognosis both fired off the
+same damage too (1 Investiture each), so one ally click exercised four riders at once.)*
+
 *(**R-65 — Venom Glands** — RETIRED on evidence 2026-09-05, bench run 29. ⚠️ **Run 28's fixture note was
 also wrong: no hand-granted item was needed.** The talent is named **`Adaptive Mutation`**, not `Mutation`,
 and `Bench — Life` has carried it all along — the "bench-roster gap" was a name mismatch, so **TODO item 40

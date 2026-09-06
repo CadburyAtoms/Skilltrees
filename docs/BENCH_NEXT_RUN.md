@@ -1,34 +1,36 @@
 # Next bench session
 
-> **Weekend marathon, run 8 (bench run 31, 2026-09-05) is done.** It **verified fix pass 3 GREEN** — the
-> Walking Ruin trail now drops for a **player-driven** move (**0 → 3 patches** on the identical staging run 30
-> measured), the activeGM control still gives 3, and neither leg double-dropped with **two GM clients**
-> connected. **Job 6b CLOSES** — its last two shapes (the `enemies-range` fill and a plain victim mark) both
-> passed from a genuine non-owner. The **stale `sight.range`** row closes on a one-token fix. **R-63** gets its
-> first proven shape for free. And the staging turned up **one new engine defect**: `Unravel Everything` never
-> detonates the Omens it places in the same activation. **3 rows left the checklist, 1 new row was added, 1
-> half closed on a row that stays open, 1 engine defect found.** Open queue **32 🤖 → 30 🤖** (⚑ unchanged at
-> **22** — no ⚑ row was touched). No `⛔ STOP`, **no pack rebuild owed**, world restored to its start snapshot
-> **exactly** (field-level actor id-diff empty across all 74 actors) apart from the one `sight.range` write,
-> which is the run's product.
+> **Weekend marathon, run 9 (bench run 32, 2026-09-06) is done.** It **verified fix pass 4 GREEN on all four
+> talents**, every one driven from `PlayerBench`: `Unravel Everything` fills 2 Omens **and** detonates both in
+> **ONE** cast on an empty ledger, `Spreading Omen` reads **(1/2)** then **(2/2)** with both ledger entries
+> surviving, and both reveals now list the condition they just relayed. **`edhaAwaitLocal` never timed out** on
+> either client. **R-65 CLOSES** on its last half — the ally-clicked burst rolled a real **2d8 = 13** from a
+> non-GM client with exact HP arithmetic. The **Starting-kit console API** passes on the Hunter path.
+> `bench-setup-console.js` was **re-run** (run 31 had substituted assertions) and is idempotent with **zero ⚠**
+> and `orphans: 0/0`. **6 rows left the checklist, 1 new engine/data defect found, 2 six-run-stalled July rows
+> re-classified to their real blockers.** Open queue **33 🤖 → 28 🤖** (counted as `^- [ ] 🤖` rows; run 31's "30" used a different count — the net is **−5** = 6 retired minus 1 new). ⚑ unchanged at **22**. No `⛔ STOP`,
+> **no pack rebuild owed**, world restored to its start snapshot **exactly** (field-level actor id-diff empty
+> across all 74 actors; tokens/regions/drawings/templates/walls/combats/scenes all zero delta).
 
 ## Read this first
 
-**→ `EDHA_FOUNDRY_HANDOFF.md`, the `2026-09-05 — BENCH RUN 31` delta at the top** — the fix-pass-3 evidence
-table, the `Unravel Everything` matched pair, the two declared deviations (the setup script was asserted rather
-than re-run; an unattributable `Guardian Stance` AE was deliberately left alone), and the world diff.
+**→ `EDHA_FOUNDRY_HANDOFF.md`, the `2026-09-06 — BENCH RUN 32` delta at the top** — the fix-pass-4 evidence
+table, R-65's closing evidence, the new culture-item defect with its repo-side root cause, the July
+re-classification, and the explanation of run 31's unattributable `Guardian Stance` AE.
 
-**→ `docs/EDHA_BENCH_RUNBOOK.md`, "Operating lessons from run 31"** — **three of these will save you a call
-each**: resize the pane **before** the join and the second client needs no reload; deleting a hazard **Region**
-cascades its Drawing, so a follow-up Drawing delete throws and **aborts the rest of your call**; and snapshot
-**ActiveEffects as well as statuses**, because an AE carrying no status is invisible to a statuses-only
-snapshot and then cannot be attributed. **Runs 29 and 30's lessons still apply** — the stale vision polygon,
-whole-object `flags` writes merging instead of deleting, `pre*` hooks being initiator-only, animated moves
-never committing with the pane hidden, and dotted-path resource restores.
+**→ `docs/EDHA_BENCH_RUNBOOK.md`, "Operating lessons from run 32"** — **two of these will save you a row
+each**: `animate: false` is **not** enough to move a token (it can commit a **partial** position — use
+`teleport: true` and read the destination back), and the setup script's IIFE can take **over 30 s** on a
+re-run, so an empty warn buffer is not a failure — judge idempotency from the counts. Also: load a big console
+script over a throwaway CORS server instead of pasting it, and snapshot **whole effect objects**
+(`e.toObject()`), because `{id, name}` detects drift but cannot repair it. **Runs 29–31's lessons still
+apply** — the stale vision polygon + ticker pump, whole-object `flags` writes merging instead of deleting,
+`pre*` hooks being initiator-only, and dotted-path resource restores.
 
-**→ `EDHA_RULINGS.md`** — unchanged this run (no new rulings; nothing in run 31 needed Ben's judgment).
-**R-69 is VERIFIED GREEN and still ready to move to §K.** R-70 and R-71 still carry their recommended
-defaults. R-43 is still applied and still changes live dice math.
+**→ `EDHA_RULINGS.md`** — unchanged this run (no new rulings; nothing in run 32 needed Ben's judgment).
+**R-56 is now load-bearing** — a checklist row is explicitly blocked on it (see below). **R-69 is VERIFIED
+GREEN and still ready to move to §K.** R-70 and R-71 still carry their recommended defaults. R-43 is still
+applied and still changes live dice math.
 
 ## ⚑ vs 🤖 — read this before picking rows
 
@@ -38,178 +40,162 @@ defaults. R-43 is still applied and still changes live dice math.
 ⚠️ **Never re-file an unrun 🤖 row as ⚑ because you ran out of time.** Leave it 🤖, or record it BLOCKED with the
 blocker named. **Design questions go to `EDHA_RULINGS.md`, never to the checklist as a new ⚑ row.**
 
-## ✅ RE-TEST THIS FIRST — run 31's one FAIL is waiting on `test-pass-fixes`, not on you
+## ✅ RE-TEST FIRST — but there is nothing queued yet
 
-**Nothing is queued for re-test yet.** Run 31's defect (below) has **not** been fixed — it goes to
-`test-pass-fixes` first. If a fix pass lands before your run, **that fix's re-test row is your first job**;
-the re-test block has measured roughly twice as dense as scattered rows for **five runs running**, and this is
+**Nothing is waiting on a re-test.** Run 32's one new defect (below) has **not** been fixed — it goes to
+`test-pass-fixes` first. **If a fix pass lands before your run, that fix's re-test row is your first job.**
+The re-test block has measured roughly twice as dense as scattered rows for **six runs running**, and it is
 the one habit every run should keep.
 
-## ❌ The one engine defect run 31 found — for `test-pass-fixes`, with the evidence already gathered
+## ❌ The one defect run 32 found — for `test-pass-fixes`, root cause already proven repo-side
 
-**`Unravel Everything` (Chaos) never detonates the Omens it places in the same activation.** Its card says
-*"Place an Omen on every enemy in Attunement Range up to your cap …, **then remove all your Omens
-simultaneously**"*, and both rules ride **`event: use`** with explicit `order` — `UnravelFill00000`
-(`edha-owner-list`, `target: enemies-range`) at **0**, `UnravelSweep0000` (`edha-def-test`, `vs: none`,
-`targetList: omens`) at **1**.
+**All 10 Edha culture items fail cosmere-system validation on every pack load.** Loading
+`edha-content.edha-items` logs ten `CosmereItem [<id>] validation errors: system: id: <slug> is not a valid
+choice` — canticle · kettavar · corvaine · sylvaneth · goldenport · thalendor · malcurr · lunavar · ashkar ·
+vorsk, every one `type: "culture"`.
 
-**Matched pair, same actor and targets, both casts from `PlayerBench`:**
+**Root cause (proven, not hypothesised):** `scripts/foundry-build.js` ~L816 writes `system: { id: slug, … }`
+from `slugify(c.name)` over `data/cultures.json`, and the system restricts that field to its own six cultures
+— `CONFIG.COSMERE.cultures` is exactly `["alethi","azish","herdazian","thaylen","unkalaki","veden"]`. The
+**ancestry** docs get the same `system.id = slug` treatment and log **no** error, so the restriction is
+specific to the culture model.
 
-| cast | ledger at start | fill | sweep |
-|---|---|---|---|
-| 1 | empty | placed 2 — *"B, A bear your Omen (2/2)"* | *"**no creatures on the ledger**"* — no damage, no Disorient, both Omens left standing |
-| 2 | already holding those 2 | placed 0 | **both "affected"**, *"10 spirit … 2d8 + 2"*, both Disoriented, HP A 20→10 / B 41→31, ledger emptied |
+⚠️ **SEVERITY IS THE OPEN QUESTION AND IT DECIDES THE FIX.** The documents still load and `getDocuments()`
+still returns all ten, so this may be log noise only. But if the invalid value is **dropped** rather than
+kept, a culture's `system.id` no longer matches the `cultural:<slug>` expertise its own
+`grant-expertises` / `remove-expertises` events add and remove — which would break the wizard's culture step
+**silently**. **First move: read `item.system.id` back off a loaded pack culture and compare it to the slug.**
+Run 32 could not — the finding landed after the world was restored and both clients were out. It is a
+one-call read.
 
-So the `order: 1` sweep reads the ledger **as it stood before the `order: 0` fill committed**, and the talent
-costs two casts (6 Investiture, 6 actions) to do what the card says one does.
-⚠️ **Hypothesis, NOT proven — confirm at the dispatcher rather than take it on trust:** the fill commits inside
-`edhaOwnerListQueue`'s queued async RMW (`register-skills.js` ~17790 — `return await
-edhaOwnerListQueue(...)`, so the *handler* does await), which points one level up, at whatever runs the ordered
-rule list for `event: use`. **Sweep the blast radius:** any talent that writes an H3 ledger and reads that same
-ledger in a later-ordered rule of the same activation.
-
-## Where the 30 open 🤖 rows are
+## Where the 28 open 🤖 rows are
 
 | Block | 🤖 | Note |
 |---|---|---|
-| **Character-creation wizard v2** | 6 | July deploy-state language — re-read against DEPLOY STATE and the live pack first. **Still never driven, seven runs running.** |
-| **Bench-results fixes** · **Items-dump** · **Adversary pack sync** | 3 · 3 · 2 | Same July language; check the live pack before driving. |
-| **pass 5.2** (R-63, Job 6a) | 3 | R-63's same-side row now has **1 shape proven** and needs 1–2 more. R-63's unset-disposition row is a repo-side pin. Job 6a needs zero GM clients. **Job 6b and both R-64 halves are CLOSED — do not re-queue any of them.** |
-| **pass 5.3** | 2 | R-61's legacy `detonateUsed` (informational only) + R-62's audience flips (**BLOCKED** — needs zero GMs). |
-| **R-65 ally-click burst** | 1 | Subject corrected to **Death Mark** (Knowledge). The fold itself is already proven. Needs the player client. |
-| **Fix pass 4 re-test (relay read-back)** | 4 | **FIXED 2026-09-05 — this is now run 9's step 1.** The `Unravel Everything` row was re-tested-and-reworded, and the audit added 3 siblings (Spreading Omen, Vital Diagnosis, Studied Mark). **All four must be driven from `PlayerBench`** — a GM caster never took the broken branch. |
-| Scattered singles (Green, Cinderbrock, Crownox, Brandram's Reckless Advance, manual re-litigation, the dark-veil pair) | 9 | Each needs its own staging. |
+| **Character-creation wizard v2** | 6 | July deploy-state language. **Still never driven, eight runs running** — and now the culture defect above may bear on its culture step. Re-read against DEPLOY STATE first. |
+| **Items-dump tranche** | 2 | Starting-kit RETIRED at run 32. Left: **CAE burns** (needs a combat — use the `active: false` + `ui.combat.initialize` pattern) and **Kindle's token-light half**. |
+| **Adversary pack sync** | 2 | ⛔ **Both are now BLOCKED ON BEN, and the blocker is written on the rows.** All that is left in either is the **bulk button**, and a bulk sync rewrites every world adversary including Ben's campaign actors — outside hard rule 4. **Do not re-attempt un-authorised.** |
+| **Bench-results fixes** | 3 | **The vision row is blocked on `EDHA_RULINGS.md` R-56**, not on a bench run — do not re-stage it. The other two — **single-target picker** (Withering Ray with 2+ targets) and **AoE burst auto-target** — are genuinely drivable and cheap. |
+| **Culture items** | 1 | The new defect's re-test row (added by run 32). |
+| **`BENCH — hygiene campaign 2026-08-10`** | 7 | The pass 5.2 / 5.3 rows below are counted here — this is where they live in the file. |
+| **Bestiary sections** (W29 ×3, Goldenport, Vorsk, Adversary ability wiring) | 6 | Untouched all marathon; each needs its own adversary import + staging. |
+| Scattered singles (Green's dark-veil half, and the rest of the bestiary/ability rows above) | 1 | `BENCH — Green` is the only remaining per-tree row. |
 
-## Run 9 — the plan, in order
+**R-65, Job 6b and both R-64 halves are CLOSED — do not re-queue any of them.**
 
-### 1. **RE-TEST FIRST — fix pass 4's four rows (ENGINE-ONLY, so an F5 / relaunch is the whole deploy)**
+## Run 10 — the plan, in order
 
-Fix pass 4 (2026-09-05, in `EDHA_FOUNDRY_HANDOFF.md` at the top) shipped the fix for run 31's
-`Unravel Everything` defect and for **three siblings the audit found in the same family**. Root cause
-was **not** the rule dispatcher the run-31 report suspected — that is clean — but the fire-and-forget
-socket relay one level down, so a relayed status mark was invisible to the very next rule.
+### 1. **The two genuinely-drivable `# Bench-results fixes` rows** (cheapest real wins on the board)
+Both are single-actor, single-cast, no player client needed:
+- **Single-target picker resolves** — target 2+ tokens, use **Withering Ray** (Black): the picker card
+  appears, **nothing is spent**, clicking a name narrows you to that one target, the card marks ✓ and the
+  talent rolls once. (Verdant Mend is the same shape if you want the control.) ⚠️ **The picker renders in the
+  engine's AppV1 window** (`div.app.window-app`, no `<dialog>`) — the known trap that once produced a false
+  "silent no-op" report. Sample **both** DOM shapes.
+- **AoE burst auto-target** — place any burst (e.g. Flame Surge) and assert the caught tokens end up actually
+  **targeted** (`game.user.targets`); this retarget was silently no-opping on v13.
 
-**Two things decide whether this re-test means anything:**
+### 2. **The four July sections' remaining 11 rows — the wizard block is now the whole point**
+Runs 26–32 have all skipped `# Character-creation wizard v2` (6 🤖). Run 32 cleared the *other* three
+sections down to their real blockers, so **the wizard block is what is left and there is no cheaper
+alternative to hide behind.** Re-read each row against DEPLOY STATE (2026-07-26 — every wizard row predates
+it) and the live pack **before** staging; several are likely already answered by a later deploy and retire at
+the cost of one read. The **wizard-as-a-player walkthrough** pairs naturally with a player client if you open
+one — it is large, so only start it if you can finish it.
 
-1. **Hash-verify the engine before you drive anything.** ENGINE-ONLY means F5 / relaunch and nothing
-   else — but it also means a stale engine looks *exactly* like a failed fix. Serve
-   `/modules/edha-content/scripts/register-skills.js`, CRLF-normalise, and match it against
-   `HEAD:module-src/scripts/register-skills.js`, the way run 31 did.
-2. **Drive every one of the four from `PlayerBench`, never from `Bench`.** The defect is only
-   reachable from a client that owns the CASTER but not the TARGET; a GM is `isOwner` on everything
-   and always took the direct, awaited branch. **A GM re-test proves nothing here** — it would pass
-   both before and after the fix. (Driving `Unravel Everything` once as GM as well is worth it, but
-   only as the control that the unaffected path is unchanged.)
+### 3. **R-63's same-side regression — 1–2 more shapes** (drivable today, no player client)
+One shape is proven (the `enemies-range` disposition filter skipped three adjacent friendlies).
+⚠️ **Run 32 gives you a second one nearly free**: `Unravel Everything`'s `enemies-range` fill correctly took
+**only the two hostile bench targets** while four friendly bench PCs sat inside the same 60 ft — worth
+recording formally if you re-cast it. Otherwise pick from **Reroll Reaction** against a marked foe, or a
+**Fate snare** stepped on by an ally vs. an enemy. **Not the aura shape** unless you have budget —
+`Mantle of the Aspirant` is the only `affects`-carrying aura and it sits on `edha-watch-rule`.
 
-The rows carry their own before/after evidence; the headline is `Unravel Everything` on an **empty**
-ledger filling 2 Omens *and* detonating both in ONE cast, and `Spreading Omen` reading **(1/2)** then
-**(2/2)** with both uuids surviving in `lists.omens`.
-
-### 2. **THE FOUR JULY SECTIONS — 14 🤖, and they are now the whole point of the next run**
-`# Character-creation wizard v2` (6), `# Bench-results fixes` (3), `# Items-dump tranche` (3), `# Adversary
-pack sync` (2). **Runs 26–31 have all skipped these — six runs.** They are the largest untouched block by a
-wide margin and every run has had a better-looking option. **Do them next, and do the cheap half first:**
-re-read each row against **DEPLOY STATE** and the **live pack** before staging anything. Several are likely
-already answered by a later deploy — those retire on that evidence at the cost of one read, and finding one
-blocked-on-deploy is cheaper than a staging attempt. Only then drive what survives. **Budget the first half of
-the run for this and do not let a shinier row displace it again.**
-
-### 3. **The player-client window — one setup, three remaining rows** (open it early if you get to step 3)
-The setup is ~5 calls with run 31's shortcut (resize the tab **before** joining — no reload needed), plus the
-ownership snapshot and restore. What is left needs it:
-- **R-65's Death Mark** — get an ALLY to click their burst button; `burstFormula` is
-  `(@tier)d(2 * @skills.red.rank + 2)`, so this one really does carry a die.
-- **2bR-10 Devoted Conduit** (needs a second White PC) and **2bL-7 Covenant's shared icon** (two Order PCs).
-- **The wizard-as-a-player walkthrough** — large; only start it if you can finish it, and it pairs naturally
-  with step 2's wizard rows.
-⚠️ Grant OWNER on **bench-folder actors only**, snapshot `ownership` first, restore at the end, **log BOTH
-clients out**. One PC per client is a staging step, not a detail.
-
-### 4. **R-63's same-side regression — 1–2 more shapes** (drivable today, no player client needed)
-One shape is proven (the `enemies-range` disposition filter correctly skipped three adjacent friendlies).
-Pick 1–2 more from: **Reroll Reaction** against a marked foe, a **Fate snare** stepped on by an ally vs. an
-enemy, or Reveal Facts / Investiture-of-Command's enemies-in-range button. ⚠️ **Not the aura shape** unless you
-have budget — the sweep finds **exactly one** `affects`-carrying aura, `Mantle of the Aspirant` (Power), and it
-sits on `edha-watch-rule`, so it needs a watched test to fire rather than a plain `use`.
-
-### 5. **The `edha-dark-veil` rows — build the scene (still not started, six runs running)**
-Nothing on the Playtest Map can ever be unlit, so Green 2bS-11's veil half and the Stalker veil auto-toggle are
-structurally unreachable there. **A bench-CREATED scene with darkness — viewed, never activated — is the
-drivable shape.** `Playtest Map (Copy)` has `globalLight.enabled === false` but it is **Ben's**; create your own
-and delete it at the end.
+### 4. **The `edha-dark-veil` rows — build the scene (still not started, SEVEN runs running)**
+Nothing on the Playtest Map can ever be unlit, so Green 2bS-11's veil half and the Stalker veil auto-toggle
+are structurally unreachable there. **A bench-CREATED scene with darkness — viewed, never activated — is the
+drivable shape**; delete it at the end. `Playtest Map (Copy)` has `globalLight.enabled === false` but it is
+**Ben's**. The fixture is identified: the `edha-dark-veil` adversary is the **Stalker**
+(`edha-content.edha-adversaries` id `l924euoyx3pYFk2T`, `effectName: "Veil"`) — import fresh, put it on an
+unlit square within 60 ft of an armed Green, and the positive/negative pair is one flow.
 
 ## Known blockers — do not fight these
 
 - **Job 6a (pass 5.2), 2bM-1 and R-62's audience rows** need **zero GM clients**. The bench joins as a GM and
-  Ben's `Gamemaster` has been connected through runs 24–31 (measured again this run:
+  Ben's `Gamemaster` has been connected through runs 24–32 (measured again this run:
   `["Bench","Gamemaster","PlayerBench"]`). Record BLOCKED with the blocker named — never re-file as ⚑. **This
-  needs Ben to disconnect `Gamemaster` for one window**; it is worth asking rather than re-attempting.
-- **Job 6b is CLOSED** (run 31 — all three shapes proven from a genuine non-owner). **Both R-64 halves are
-  SETTLED** (run 29). **Do not re-queue any of them.**
+  needs Ben to disconnect `Gamemaster` for one window**; worth asking rather than re-attempting.
+- **The two `# Adversary pack sync` rows need BEN, not a bench run** (new, run 32) — see the table above.
+- **The "Adversary tokens see like PCs" row is waiting on `EDHA_RULINGS.md` R-56**, not on a table (new,
+  run 32). Do not re-stage it; it re-measures only after R-56 is answered.
+- **Job 6b is CLOSED** (run 31). **Both R-64 halves are SETTLED** (run 29). **R-65 is CLOSED** (run 32).
 - **`game.combat` is the client's VIEWED combat** — an `active: false` bench combat plus
   `ui.combat.initialize({combat})` satisfies every "needs the active combat" row. **Never activate a bench
-  combat.** (Run 31 created none at all.)
+  combat.** (Runs 31 and 32 created none at all.)
 - **Observer/rAF-dependent state is stale on this bench** — observers (run 22), `canvas.animatePan` (run 26),
-  animated token moves (run 29) and the vision polygon (run 30). Use `canvas.pan()`, `animate: false`, and
-  `canvas.perception.update(...)` + a ticker pump before reading `isVisible`. Run 31 used exactly this to read
-  the trail Drawings from the player client and it worked first time.
+  animated token moves (runs 29/32) and the vision polygon (run 30). Use `canvas.pan()`, `teleport: true`,
+  and `canvas.perception.update(...)` + a ticker pump before reading `isVisible`.
 - **`canvas.mousePosition` is frozen at (0,0)** with the pane hidden — shadow just that getter and declare it.
-- **SEVEN tokens on the Playtest Map are ORPHANS, not three.** Item 37's repair fixed the bench's three and
-  correctly left the other four alone — `The Forgemaster`, `The Demolisher`, `PC Tester`,
-  `Cragdrake Whelp Pack (1)`. Re-measured run 31: **zero bench orphans remain.** Do not repair or delete the
-  four.
+- **SEVEN tokens on the Playtest Map are ORPHANS, not three**, and only three were ever the bench's.
+  Re-measured run 32: **zero bench orphans remain**. Do not repair or delete the other four —
+  `The Forgemaster`, `The Demolisher`, `PC Tester`, `Cragdrake Whelp Pack (1)`.
 - **Do NOT run `edha.fixPcTokens()`.** It loops every `character` actor in the world, Ben's two PCs included.
-  Run 31 fixed the stale sight range with a **one-token write** instead; that is the pattern.
+- **Two bench PCs carry a STALE `Guardian Stance (+1 Deflect)` aura** (`Bench — Chaos`, `Bench — Life`).
+  Explained at run 32: an actor with no token is never swept, so it holds the aura from an earlier run, and
+  **giving it a token makes the engine correctly delete the effect**. Expect that, restore it, and do not
+  report it as drift. Deleting them for good is Ben's call.
 
 ## Harness traps — each has already produced or nearly produced a false result
 
-- **Deleting a hazard REGION cascades its Drawing, and a follow-up Drawing delete THROWS and aborts the rest of
-  your call.** Delete Regions only, then re-read. Put irreplaceable world-mutating steps *before* any delete
-  that might throw. (Run 31 — it silently swallowed a whole control-leg move loop.)
-- **A statuses-only snapshot cannot see an AE that carries no status**, so mid-run drift in such an effect is
-  unattributable and (correctly) undeletable. Snapshot `[...actor.statuses]` **and**
-  `actor.effects.map(e => ({id, name}))`. (Run 31.)
-- **The VISION POLYGON is stale with the pane hidden, and it fakes a sight defect.** Force
+- **`animate: false` can commit a PARTIAL token position** — no error, promise resolved, token a few pixels
+  along the path. Use `{animate: false, teleport: true}` and **read the destination back and compare it to
+  what you asked for**. (Run 32 — it cost an Attunement-Range count of 1 where 2 was staged.)
+- **The setup script's IIFE is fire-and-forget and a re-run can exceed 30 s.** An empty warn buffer is not a
+  failure; judge idempotency from `game.actors.size` / `game.items.size` / `scene.tokens.size`. (Run 32 fired
+  it three times for exactly this reason.)
+- **`{id, name}` effect snapshots detect drift but cannot repair it.** Snapshot
+  `actor.effects.map(e => e.toObject())`. (Run 32.)
+- **A dotted flag delete leaves the PARENT object behind as `{}`** — re-diff after restoring and delete any
+  parent the snapshot did not have. (Runs 31 and 32.)
+- **Deleting a hazard REGION cascades its Drawing, and a follow-up Drawing delete THROWS and aborts the rest
+  of your call.** Delete Regions only, then re-read. Put irreplaceable world-mutating steps *before* any
+  delete that might throw. (Run 31.)
+- **The VISION POLYGON is stale with the pane hidden and it fakes a sight defect.** Force
   `canvas.perception.update({initializeVision: true, refreshVision: true, refreshLighting: true})` **and pump
   the ticker** before believing any visibility reading. (Run 30.)
-- **A whole-object `flags` write MERGES — it never deletes.** Use `{"-=key": null}` for a top-level key and a
-  dotted `"flags.edha-content.markedBy.-=quarry"` for a nested one. ⚠️ **A generated dotted restore deletes
-  LEAVES, which leaves the parent object behind as `{}`** — run 31's restore had to follow up with an explicit
-  `markedBy.-=diagnosed`. Re-diff after restoring, always.
-- **An ANIMATED token move is a silent no-op with the pane hidden.** Re-issue with `animate: false`. (Run 29.)
-- **Restore `_source` resources with DOTTED PATHS.** (Run 29.)
-- **Read the rule's `event` field, not just its handler config.** (Run 28.)
+- **A `javascript_tool` TIMEOUT DOES NOT CANCEL THE SCRIPT.** Fire the driver in one call, read the result in
+  the next.
+- **`item.use()` never settles while a dialog is open** — and a `skill_test` talent puts up **two**
+  (consume, then roll), neither of them a `<dialog>`. Run 32's `__cast()` helper handles both in one loop;
+  copy it.
+- **Read the notification log before writing FAIL.** *"does not have enough actions"* is a silent no-op that
+  does **not** stop the talent — every talent driven in runs 31 and 32 warned and every one still fired.
+- **A skill-test talent will simply MISS sometimes.** Spreading Omen rolled 7 vs COG 14 with everything
+  staged right. Top the resource up and re-cast; only call FAIL when the *success* branch misbehaves.
 - **Never stage a status with `createEmbeddedDocuments`** — use `toggleStatusEffect`. (Run 28.)
 - **Pick the driver from the chokepoint:** `edha-deal-damage` / `edha-damage-rider` → `item.rollDamage()`;
   `edha-on-hit` / `edha-gm-cue` / `edha-thorns` / `edha-damage-bonus` / the Colossus splash →
   `applyDamage(list, {edhaSource, originatingItem})`. (Runs 27/28/30.)
-- **A `javascript_tool` TIMEOUT DOES NOT CANCEL THE SCRIPT.** Fire the driver in one call, read the result in
-  the next.
-- **`item.use()` never settles while `ItemConsumeDialog` is open** — fire it, poll for
-  `button[data-action="continue"]`, and **read the dialog before clicking it**. (Run 31 did this three times;
-  the button is reachable via `div.app.window-app button[data-action="continue"]` as well as `dialog button`.)
-- **Read the notification log before writing FAIL.** *"does not have enough actions"* is a silent no-op that
-  does **not** stop the talent — every talent driven in run 31 warned about actions and every one still fired.
-  Wrap `ui.notifications.info/warn/error` in a recorder at the start of the run, on **both** clients.
 - **Verify the deploy by HASH from BOTH sides**, paired with `decodedBodySize` on the original `<script>`
   entry.
 
 ## Standing lessons
 
-- **Take the re-test block FIRST, every run.** Five runs running; re-tests measure roughly twice as dense.
-- **Open the player-client window EARLY.** Runs 30 and 31 both got three results out of its one setup.
-- **Drive the PLAYER half of a row whose GM half already passes.** Run 30's engine defect lived exclusively on
-  the path a real player takes, and run 31 is what proved the fix.
-- **Read the cards you did not come for.** Run 31's only engine defect was two adjacent chat cards contradicting
-  each other while both rows being driven passed.
-- **Prove an ordering question with a PRE-LOADED state, not the end state.** Cast once on an empty ledger and
-  once on a full one; the end state alone cannot tell "broken" from "ran too early".
-- **Refuse to inherit the previous run's blocker — re-derive it.** (Run 29's whole yield.)
-- **Pick the flow by its EVENT, not by its talent.**
-- **Read the row's rule config out of `data/authored/*.json` before staging** — its `event`, and **whether the
-  row's named talent is the one that actually carries the branch**. Three runs in a row found a row's stated
-  subject wrong; run 31 instead used the sweep to *find* the right subject before staging, which cost one Bash
-  call each time.
+- **Take the re-test block FIRST, every run.** Six runs running; re-tests measure roughly twice as dense.
+- **Stage each row off the PREVIOUS row's residue.** Run 32's R-65 cost three calls instead of a full setup
+  because Studied Mark had already placed the Insight that Death Mark's watch rule needed. Look for the chain
+  before building fresh fixtures.
+- **Open the player-client window EARLY.** Runs 30, 31 and 32 each got three or more results out of its one
+  setup.
+- **Drive the PLAYER half of a row whose GM half already passes.** Two engine defects in three runs lived
+  exclusively on the path a real player takes.
+- **Read the cards you did not come for.** Run 31's only engine defect was two adjacent chat cards
+  contradicting each other; run 32's only defect was ten validation errors logged while timing something else.
+- **Prove an ordering question with a PRE-LOADED state, not the end state.**
+- **Refuse to inherit the previous run's blocker — re-derive it.** Run 32 did this to four July sections and
+  three of them turned out not to be bench work at all.
+- **Pick the flow by its EVENT, not by its talent**, and read the row's rule config out of
+  `data/authored/*.json` before staging — its `event`, and whether the row's named talent is the one that
+  actually carries the branch.
 - **A row's own break/staging recipe can be wrong.** Verify it against the source before concluding anything.
-- **Only claim what your own logs support, and label inferences as inferences.** Run 31 could not attribute an
-  ActiveEffect and said so rather than deleting it.
+- **Only claim what your own logs support, and label inferences as inferences.**
