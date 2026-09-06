@@ -254,14 +254,7 @@ deliberately rather than changed silently. *(Checklist Quarry row, Heroic.)*
 
 *(R-21 — Phantom Double's out-of-range refusal — ANSWERED 2026-09-06, moved to §K.)*
 
-**R-22. `edhaConsumeList` refunds `value.min`.** If a talent ever ships `min ≠ max`, the system's
-consume dialog lets the player pay more and the refund would under-credit. No talent does today —
-this is a "close the door before it matters" call. *(3A-6.)*
-> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) close the door with a BUILD
-> GUARD** — lint-refs (or validate.js) fails if any talent or adversary ability ships a consume
-> entry with `min ≠ max`, so the under-refund can never happen silently; no engine change.
-> TOOLING-only → **item 60**; mutation-verified (author a min≠max cost in a scratch copy → gate
-> fails).
+*(R-22 — build guard rejects any `min ≠ max` consume entry — ANSWERED 2026-09-06, moved to §K.)*
 
 **R-50. An ambushing strike never gets its OWN fooled-rider — the strike that marks them fooled is
 the one strike that does not benefit.** Surfaced by bench run 18 and filed here by fix pass C
@@ -1387,3 +1380,22 @@ layers. Applied 128 — the explicitly named constant. If a re-trace ever shifts
 pixel, this is why; 120 is one veto away. *(Hygiene campaign 2026-08-10.)*
 > **ANSWERED 2026-09-06 (Ben, phone, via the relay session): ACCEPTED — no veto.** "14 defaults
 > let's just keep using." No further change.
+
+**R-22. `edhaConsumeList` refunds `value.min`.** If a talent ever ships `min ≠ max`, the system's
+consume dialog lets the player pay more and the refund would under-credit. No talent does today —
+this is a "close the door before it matters" call. *(3A-6.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) close the door with a BUILD
+> GUARD** — lint-refs (or validate.js) fails if any talent or adversary ability ships a consume
+> entry with `min ≠ max`, so the under-refund can never happen silently; no engine change.
+> TOOLING-only → **item 60**; mutation-verified (author a min≠max cost in a scratch copy → gate
+> fails).
+> **SHIPPED in PR #225 (TOOLING-only)** — traced the only two producers of a consume entry
+> (`foundry-build.js`'s `parseCost()`, which always emits `min===max` for both generated-talent
+> and adversary cost text; `data/authored/*.json`'s `activation.consume[].value`, the one place a
+> talent's consume shape can carry an independently-set min/max) and scanned the real risk surface
+> — `scripts/lib/consume-guard.js` (`checkConsumeEntries`) plus `scripts/lint-refs.js` pass 23,
+> which feeds it every authored-overlay talent AND every adversary ability (re-derived from its
+> text grammar rather than assumed safe). Floor pinned at 200+ entries scanned (measured: 235).
+> Mutation-verified against real data (Black's Cruel Step, `min` 1 → `max` 6 → `lint-refs.js`
+> fails naming it, restored → clean) and pinned in `tests/consume-guard.test.js` (5 cases). No
+> engine change, nothing left to bench. **Moved to §K in the same PR (2026-09-06).**

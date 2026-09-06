@@ -1890,7 +1890,7 @@ REBUILD (Ben's deploy).
 
 ---
 
-## 60. [ ] Build guard: reject any `min ≠ max` consume entry (R-22)
+## 60. [x] Build guard: reject any `min ≠ max` consume entry (R-22) — done 2026-09-06, PR #225 (TOOLING-only)
 
 **Why:** `edhaConsumeList` refunds `value.min`, so a talent or adversary ability whose cost entry
 has `min ≠ max` can silently under-refund. Ben (a): close the door with a build guard rather than

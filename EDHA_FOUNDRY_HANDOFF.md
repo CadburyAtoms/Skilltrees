@@ -33,6 +33,35 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-06 — R-22 (item 60): build guard rejects any `min ≠ max` consume entry (**TOOLING-only** — no engine change, no data change, no pack rebuild)
+
+`edhaConsumeList` (register-skills.js) reads `value.min` as both the deduct amount AND the refund
+amount and never looks at `value.max` — so a talent or adversary ability that ever shipped
+`min ≠ max` would let a real spend of `max` refund only `min`, silently, because nothing in
+Foundry errors on it. Ben (R-22, 2026-09-06): close the door with a build guard, not an engine
+change — (a).
+
+- **Traced the only two producers of a `consume` entry before deciding what to scan.**
+  `foundry-build.js`'s `parseCost()` (the sole builder of generated-talent AND adversary-ability
+  consume entries, from "N Investiture"/"N Focus" cost text) unconditionally emits
+  `{min:n, max:n}` — it cannot diverge. The one place a consume entry carries an INDEPENDENTLY
+  settable `min`/`max` is `data/authored/*.json`'s `activation.consume[].value` (Foundry-extracted
+  or hand-edited), which `applyAuthorable()` (edha-pack-io.js) writes into the compiled pack's
+  `system.activation` wholesale. So the authored overlay is the only real risk surface; adversary
+  abilities are re-derived from their text grammar and scanned too, rather than assumed safe.
+- **`scripts/lib/consume-guard.js`** (`checkConsumeEntries`, pure) does the scan/decide; **pass 23**
+  in `scripts/lint-refs.js` feeds it every authored-overlay talent's consume list plus every
+  adversary ability's re-derived one, and fails the build naming the file/talent/resource/min/max
+  on any mismatch. Floor pinned at 200+ entries scanned (measured today: 235 — 181 talent + 54
+  adversary) so a scan that silently finds nothing is itself a failure.
+- **Mutation-verified.** Flipping one real entry's `max` (Black's Cruel Step, 1 Investiture) to
+  6 while leaving `min` at 1 makes `lint-refs.js` fail with `pass 23: data/authored/leyline-black.json
+  (Cruel Step) consume[0] resource "inv" has min 1 ≠ max 6 …`; restoring the file returns it to
+  clean. Pinned permanently in `tests/consume-guard.test.js` (unit cases on the pure function, a
+  fixture-file mutation spawning the real `lint-refs.js` process, and a real-repo-data floor
+  check) — 5 new cases, all passing, 832/832 total.
+- No 🤖 rows: this is a repo-side build-time gate, nothing to bench.
+
 ## 2026-09-06 — R-50 (item 53): an ambush-belief rider benefits its OWN first strike (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
 
 Ben answered R-50 (b) after a card-by-card walkthrough: the ten `edha-ambush-belief` carriers
