@@ -133,13 +133,17 @@ function RollStub({ total, capture } = {}) {
 /* Load the engine into a fresh vm context. Returns the context: engine helpers are its
  * properties (env.edhaFoldDieMath(…)), and env.__hooks records every Hooks.on/once call. */
 function loadEngine() {
-  const hooks = { on: [], once: [] };
+  /* `seq` is a single monotonic counter across BOTH lists, because Foundry keeps `on` and `once`
+   * registrations in ONE ordered array (`Hooks._hooks`) and runs them in that order — `once` is a
+   * flag on the entry, not a second queue. Recording the interleave is what lets fireHook() below
+   * replay a hook the way a browser would; two independent arrays cannot. */
+  const hooks = { on: [], once: [], seq: 0 };
   const sandbox = {
     console: { log() {}, warn() {}, error() {}, info() {}, debug() {} },
     setTimeout, clearTimeout, setInterval, clearInterval,
     Hooks: {
-      on: (name, fn) => hooks.on.push({ name, fn }),
-      once: (name, fn) => hooks.once.push({ name, fn }),
+      on: (name, fn) => { const seq = hooks.seq++; hooks.on.push({ name, fn, seq }); return seq; },
+      once: (name, fn) => { const seq = hooks.seq++; hooks.once.push({ name, fn, seq }); return seq; },
       off() {}, call() {}, callAll() {},
     },
     foundry: {
@@ -192,6 +196,76 @@ function loadEngine() {
   return sandbox;
 }
 
+/* Fire one Foundry hook the way a browser would: every registration the engine made for `name`,
+ * `on` and `once` together, in true registration order (the `seq` interleave loadEngine records),
+ * awaiting anything thenable, returning the array of results.
+ *
+ * This promotes a pattern four test files had each re-invented with DIFFERENT semantics — and the
+ * differences were silent: refund-race.test.js stops at the first `false` AND `continue`s past a
+ * throw (so an exception looked like a pass), picker-cancel-stamp.test.js maps the whole chain but
+ * never awaits, pre-hook-client-split.test.js fires every registration of two phases with a shared
+ * `options` object, temphp-scene-reset / cross-combat-scope loop `deleteCombat` by hand. One driver
+ * with one set of semantics:
+ *
+ *   • EVERY registration runs — no early stop. A chain-cancelling `false` is a RESULT, not control
+ *     flow, so read the verdict as `results.includes(false)`. Foundry's `Hooks.call` does stop at
+ *     the first `false`, and running the rest is a deliberate superset: it also proves no LATER
+ *     handler on the same hook throws or double-writes on the same document.
+ *   • A THROW PROPAGATES. The engine's own hooks are individually try/caught, so a throw reaching
+ *     here is a real defect (or a stub too thin to be honest) and must fail the test, not be
+ *     swallowed into a passing run.
+ *   • `once` registrations are CONSUMED — fired once, then removed from `env.__hooks.once`, which
+ *     is what `once` means. `on` registrations stay and re-fire.
+ *
+ * Async note: the engine fires most work as `void someAsync(...)`, so a handler's returned value is
+ * often `undefined` while its writes are still queued. `await fireHook(...)` settles only what the
+ * handlers RETURN — for a `void`-dispatched write, follow with `await sleep(0)` (temphp-scene-reset's
+ * existing convention). */
+async function fireHook(env, name, ...args) {
+  const regs = [
+    ...env.__hooks.on.filter((h) => h.name === name),
+    ...env.__hooks.once.filter((h) => h.name === name),
+  ].sort((a, b) => a.seq - b.seq);
+  const fired = new Set(regs.filter((r) => env.__hooks.once.includes(r)));
+  const results = [];
+  try {
+    for (const reg of regs) results.push(await reg.fn(...args));
+  } finally {
+    if (fired.size) env.__hooks.once = env.__hooks.once.filter((r) => !fired.has(r));
+  }
+  return results;
+}
+
+/* A minimal talent Item document, authored the way a REAL talent is: its rules live on
+ * `system.events`, and `hasEvents()`/`enabledEvents` derive from there — so `edhaEventRules` /
+ * `edhaRuleOf` read the stub exactly as they read a document out of a pack, and a test cannot
+ * accidentally prove behavior against a shape Foundry never produces (iron rule 2b's whole point:
+ * the rule is ON the document). `opts.events` is the array of `{handler: {type, …}}` rules;
+ * `opts.system` merges anything else the path needs (`activation`, `description`, …).
+ * `update()` records into `.updates` AND applies the change through setProp, so a test can assert
+ * either the write that was requested or the resulting document state. */
+function mockItem(opts = {}) {
+  const {
+    name = "Mock Talent", id = name, uuid = `Item.${id}`, type = "talent",
+    actor = null, events = [], system = {}, flags = {},
+  } = opts;
+  const scopes = { "edha-content": { ...flags } };
+  const item = {
+    name, id, uuid, type, actor,
+    system: { events: [...events], ...system },
+    flags: scopes,
+    updates: [], uses: [],
+    hasEvents() { return (item.system.events || []).length > 0; },
+    get enabledEvents() { return (item.system.events || []).filter((r) => r?.disabled !== true); },
+    getFlag(scope, key) { return getProp(scopes[scope], key); },
+    async setFlag(scope, key, value) { scopes[scope] = scopes[scope] || {}; setProp(scopes[scope], key, value); return value; },
+    async unsetFlag(scope, key) { unsetProp(scopes[scope], key); },
+    async update(change = {}) { item.updates.push(change); for (const [k, v] of Object.entries(change)) setProp(item, k, v); return item; },
+    async use(...args) { item.uses.push(args); return null; },
+  };
+  return item;
+}
+
 /* A minimal actor document: {name, id, uuid, type, statuses, items, effects, flags}, with
  * DOTTED-PATH getFlag/setFlag/unsetFlag built on getProp/setProp/unsetProp above. `opts.flags`
  * is the CONTENT of the "edha-content" scope (the only scope this shell stores), matching the
@@ -205,15 +279,23 @@ function mockActor(opts = {}) {
     statuses = new Set(), items = [], effects = [], flags = {},
   } = opts;
   const scopes = { "edha-content": { ...flags } };
-  return {
+  const actor = {
     name, id, uuid, type,
     statuses: statuses instanceof Set ? statuses : new Set(statuses),
     items, effects,
+    system: opts.system ? JSON.parse(JSON.stringify(opts.system)) : {},
     flags: scopes,
+    /* Every `update()` the engine requests, in order — AND applied, so a test may assert the write
+     * that was asked for (`actor.updates`) or the state it produced (`actor.system.resources…`).
+     * Layer a bespoke `update` with Object.assign where a test needs the async gap a real Foundry
+     * round-trip has (refund-race.test.js's `writeMs` shape). */
+    updates: [],
+    async update(change = {}) { actor.updates.push(change); for (const [k, v] of Object.entries(change)) setProp(actor, k, v); return actor; },
     getFlag(scope, key) { return getProp(scopes[scope], key); },
     async setFlag(scope, key, value) { scopes[scope] = scopes[scope] || {}; setProp(scopes[scope], key, value); return value; },
     async unsetFlag(scope, key) { unsetProp(scopes[scope], key); },
   };
+  return actor;
 }
 
 /* A minimal ActiveEffect document: {id, name, statuses, deleted, flags}, same dotted-path flag
@@ -303,7 +385,7 @@ async function withStubs(env, patchFn, fn) {
 function captureChat(env) {
   const cards = [];
   env.ChatMessage = class ChatMessage {
-    static create(data) { cards.push({ owner: data?.speaker?.alias ?? null, content: String(data?.content ?? ""), data }); }
+    static create(data) { cards.push({ owner: data?.speaker?.alias ?? null, content: String(data?.content ?? ""), whisper: data?.whisper ?? null, data }); }
     static getSpeaker({ actor } = {}) { return { alias: actor?.name }; }
   };
   return cards;
@@ -321,10 +403,10 @@ function sleep(ms) {
 }
 
 module.exports = {
-  loadEngine, ENGINE_PATH, safeEval, replaceFormulaData,
+  loadEngine, ENGINE_PATH, safeEval, replaceFormulaData, fireHook,
   readEngineSource, readSourceLF, codeOnly,
   getProp, setProp,
-  mockActor, mockEffect,
+  mockActor, mockEffect, mockItem,
   stageWorld, withStubs, RollStub, captureChat,
   eq, sleep,
 };
