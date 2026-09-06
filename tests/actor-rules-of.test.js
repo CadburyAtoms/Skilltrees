@@ -13,7 +13,9 @@ function talentWithRule(name, type, extra = {}) {
   const handler = { type, ...extra };
   return { name, type: "talent", hasEvents: () => true, enabledEvents: [{ event: "use", handler }] };
 }
-function nonTalentItem(name) { return { name, type: "weapon", hasEvents: () => false, enabledEvents: [] }; }
+// Item 34a (2026-09-06): weapons are rule bearers now (edhaRuleBearer — the migrated adversary attacks
+// carry their riders on the weapon document), so the non-bearer decoy is plain equipment.
+function nonTalentItem(name) { return { name, type: "equipment", hasEvents: () => false, enabledEvents: [] }; }
 
 test("edhaActorRulesOf: collects EVERY matching rule across every talent, in item order", () => {
   const env = loadEngine();

@@ -1160,6 +1160,9 @@ weapon migration" line checked. Then PR #103 can be closed and its branch moves 
 
 **PM:** lane B · model opus (or `fable-worker` on a weekend) · size L, dispatched as 34a then 34b · deps a
 Foundry window for the bench · verify: pinned tests + scratch pack build + `validate-adversaries.js` 0 issues.
+34a shipped in PR #220 (2026-09-06, REBUILD + ⟳ Sync): 11 items weapon-type, `edhaRuleBearer` on both rule
+loops (mutation-verified), summon attacks as weapons, parity table 336/11/0, 9 🤖 rows. 34b still open.
+Follow-up scope for the PM: the 39 bestiary blocks statted after 07-18 carry 44 attack items still `action`.
 
 ---
 
@@ -1650,7 +1653,7 @@ by design, as the ruling specified.
 
 ---
 
-## 49. [ ] Next-test modifier slot becomes a list (R-15, R-57, R-20)
+## 49. [x] Next-test modifier slot becomes a list (R-15, R-57, R-20) — DONE 2026-09-06, PR #221
 
 **Why:** Ben, verbatim: "that needs to be a list not one slot." Coercive Pressure no longer stacks
 with another next-test rider because `flags.nextTestMod` is a single object the second writer

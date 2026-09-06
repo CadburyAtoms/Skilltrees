@@ -907,6 +907,37 @@ false while a genuine crossing ray reads true). Evidence in the 07-26m delta.
       that does not close on any ally is neither refused nor announced. Watch a multi-waypoint drag
       in particular: that is the case the throttle exists for.
 
+### Item 49 re-tests — the next-test modifier is a LIST (2026-09-06 — ENGINE-ONLY, F5; no rebuild, no ⟳ Sync)
+
+Ben's R-15(b): `flags.edha-content.nextTestMod` is an array now, so riders stack instead of
+overwriting. Console probe for all three rows (bench GM):
+`game.actors.getName("<victim>").getFlag("edha-content","nextTestMod")` — it must be an **array**.
+
+- [ ] 🤖 **2bI-4 — Coercive Pressure and Probability Net STACK on one victim (R-15(b), reopened).**
+      Put a **Wrenchmaster** on the map beside **Bench — Black**, with one enemy dummy inside Black
+      Attunement Range. (1) Make the dummy LOSE a focus → Coercive Pressure arms its Cognitive
+      disadvantage. (2) Wrenchmaster uses **Probability Net** on the SAME dummy. Probe the flag:
+      **two entries**, `Coercive Pressure` and `Probability Net` (before this change the second
+      grant erased the first, which is the whole defect). (3) The dummy makes a **Cognitive** test
+      (Deception / Insight). Expect **`2d20kl`** AND a **`-1d6[Probability Net]`** term on the same
+      roll, plus **two** consume cards — "🔮 Coercive Pressure — disadvantage on this test" and
+      "🔮 Probability Net — -1d6 on this test". Probe again: the flag is gone/empty.
+- [ ] 🤖 **2bI-4b — NEGATIVE CONTROL: a non-matching test spends ONLY the rider that applied.**
+      Same setup, both riders armed, but the dummy makes a **Physical** test first (Athletics /
+      Strength). Expect: **no disadvantage** (`1d20` — Coercive Pressure's Cognitive gate still
+      filters per entry) but the **`-1d6[Probability Net]`** term IS there, with only the
+      Probability Net card. Probe the flag: **exactly one entry left, `Coercive Pressure`** — the
+      neighbour must be untouched. Then the Cognitive test spends it and the flag clears.
+- [ ] 🤖 **2bI-4c — the expired "this round" rider is REMOVED from the flag, not left behind
+      (R-20 + R-57).** Run on **Bench — Blue**. Use **Pattern Recognition** on a victim, then
+      advance the combat one round WITHOUT the victim testing. The behaviour half is R-57's
+      verified result and stands: the victim's next test is a plain `1d20`, no card. **What is new
+      is the flag** — probe it after that roll: the Pattern Recognition entry is **gone**, where it
+      used to sit on the actor for ever. **POS (the other half):** arm an UNSTAMPED rider too (any
+      `edha-next-test-mod` without "this round" — e.g. Probability Net from a Wrenchmaster) and
+      confirm it **survives** the round change and still applies. Pruning must not eat a rider that
+      is simply waiting.
+
 ---
 
 # BENCH — Red (leyline)
@@ -3185,6 +3216,48 @@ after the raise produced **0 cards and 0 state change** with the marker correctl
 actor-level copy was the one that had fired. ⚠️ **Worth knowing:** the enable/disable is written onto
 the **trait item's own AE**, so a Stalker that ends a scene veiled carries that state on its copy of
 the trait until a sweep releases it — the accepted consequence of the widened read.)*
+
+---
+
+# BENCH — Fleet weapon migration, 34a (2026-09-06 — item 34a, re-do of PR #103's weapon half: engine + data → `deploy-to-foundry.bat` (adversaries pack REBUILD) → relaunch → **⟳ Sync Adversaries from Pack**)
+
+Every gear attack and natural weapon across the 13 original statblocks is now a real
+**weapon-type item** (11 items flipped; the Raider's Shortsword already was): native target +
+test-defense flow, lootable, natural weapons `alwaysEquipped`. Rolls keep the same skill_test +
+flat modifierFormula, so every attack number is byte-identical to before (proven in the PR's
+parity table: 336 embedded items compared, 11 docs changed, 0 roll differences). Maneuvers and
+reactions (Devastating Blow, Reactive Strike, Press the Line, Snatch and Wade) and Frost Lance
+(bespoke investiture attack, Ben's 07-18 ruling) stay actions. Summon attacks (Construct Slam,
+Siege Cannon) build as weapons too. The three weapon-borne riders (Bite's Kindle light,
+Scalpel-Strike's +4, Spearing Beak's fooled +1d6) harvest through the new `edhaRuleBearer`
+gate on both actor-wide rule loops — pinned headless; the rows below are the live half.
+The 34b loot half (chest caches, body search) is a separate later PR and has its own rows.
+
+- [ ] 🤖 **Weapon section render** — after ⟳ Sync, open a Corvaine Raider and a Cinderhound:
+      Shortsword / Soldier's Crossbow / Bite sit in the sheet's WEAPONS section; Break and the
+      other bespoke abilities stay under actions/traits. Frost Lance (Frostbinder) is still an action.
+- [ ] 🤖 **Roll parity** — Stonebound Captain's Poleaxe still rolls +7 to hit, 1d10+4 impact;
+      Trooper's Strike +5 / 1d6+2 impact (same numbers as before the migration).
+- [ ] 🤖 **Native defense test** — target a PC token, use a migrated weapon: the roll targets and
+      tests the defender's Physical defense natively (the flow action-typed attacks never had).
+- [ ] 🤖 **Weapon-borne riders survive** (the `edhaRuleBearer` gate): Bite's hit still lights the
+      target (Kindle light), Scalpel-Strike still adds +4 vs a Vital-Diagram-marked target, and
+      Spearing Beak's +1d6 still applies ONLY vs a fooled target — all three riders now live on
+      weapon-type items.
+- [ ] 🤖 **Pack advantage off a weapon attack** — two Cinderhounds on one target: the second Bite
+      still rolls with advantage (the aggro ledger records weapon rolls).
+- [ ] 🤖 **alwaysEquipped** — Bite / Spearing Beak / Slam / Scalpel-Strike show as always equipped
+      (no unequip toggle); gear weapons (Shortsword, Poleaxe, both crossbows, Issued Blade) are
+      ordinary equipment.
+- [ ] 🤖 **Summon weapons** — summon the Forge Construct: Construct Slam and Siege Cannon are
+      weapon-type, Siege Cannon still refuses to fire with Siege Form toggled off
+      (`requiresSummonEffect` is item-type-agnostic), and both target + test defense natively.
+- [ ] 🤖 **melee/ranged discriminator on weapons** — a melee-gated rider fires on a migrated melee
+      weapon hit and stands down on a Crossbow / Soldier's Crossbow shot (`edhaAttackKind` reads
+      the weapon's native `attack.type`; the crossbows carry `attack.range.value 60`).
+- [ ] 🤖 **⟳ Sync carries the weapon items** — a world adversary that pre-dates this deploy loses
+      its action-typed Strike/Bite and gains the weapon-typed one after one Sync click (position,
+      HP, and the actor's other items kept); a renamed copy is skipped as before.
 
 ---
 
