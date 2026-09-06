@@ -1299,6 +1299,71 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   **refusing to accept the previous run's stated blocker** and re-deriving it — it converted three
   "canvas half open" rows into passes and stopped a wrong diagnosis propagating into run 30.
 
+## Operating lessons from run 30 (2026-09-05 — these OVERRIDE older advice where they conflict)
+
+- ❌ **THE HIDDEN PANE ALSO LEAVES THE VISION POLYGON STALE, so `isVisible` reads FALSE for
+  everything — and it looks exactly like a broken sight range.** Run 30's first read from the player
+  client had the observer's vision radius correctly at **1350 px (20 ft)** while three tokens at
+  **10 ft** all reported `isVisible: false` **and** `vision.los.contains(...) === false`, with
+  `testCollision` confirming **no wall between them**. That combination is impossible for a live
+  polygon: it means the perception refresh (an rAF-driven step) never ran. The fix is one call —
+  `canvas.perception.update({initializeVision: true, refreshVision: true, refreshLighting: true})`
+  followed by a **tight ticker pump** (`canvas.app.ticker.update(performance.now() + i*16)` inside an
+  `await new Promise(r => setTimeout(r, 0))` loop, run 29's shape) — after which all three read
+  `isVisible: true`. **This is the third member of the rAF family** (run 22's observers, run 26's
+  `animatePan`, run 29's animated token moves). Add it to run 13's `isVisible` warning: before
+  attributing a single `false` to the mechanic under test, **force the perception refresh**, then
+  sample.
+- ❌ **A whole-object `flags` write MERGES — it never DELETES a key.** This is run 29's resources
+  lesson with a different victim. `actor.update({flags: snapshot.flags})` left `hazardTrail`,
+  `sceneOnce`, `civFoundationBonus`, `counters` and `trigRound` **all still set**, and a re-diff
+  reported them as real drift. Deleting needs the `-=` form, and **nested** keys need a dotted path:
+  `actor.update({"flags.edha-content": {"-=hazardTrail": null}})` for a top-level key, and
+  `actor.update({"flags.edha-content.markedBy.-=quarry": null})` for one inside `markedBy` / `lists`
+  — writing `markedBy: {}` merges and leaves the sub-key sitting there. Restore flags by
+  **diffing key-by-key and issuing deletes explicitly**, then re-diff.
+- ⚠️ **NEVER derive "statuses that were already there" from the snapshot's EFFECTS.** Run 30's
+  cleanup guard did, and consequently fired `toggleStatusEffect(..., false)` at `braced` on four of
+  Ben's campaign **Frostbinders** — hard rule 6 territory. Nothing was lost only by luck: those
+  actors carry `braced` with an **empty `effects` array**, so the same absence that fooled the guard
+  also made the toggle a no-op (verified after the fact — all six still carry their status). **Snapshot
+  `[...actor.statuses]` directly**, compare against that, and **scope every status write to the bench
+  folders** regardless of what the diff says.
+- ❌ **`pre*` DOCUMENT HOOKS RUN ONLY ON THE CLIENT THAT INITIATES THE UPDATE — and that is a whole
+  CLASS of player-vs-GM defect, not a one-off.** Any engine pair shaped
+  *"`preUpdateX` stashes something on the document → `updateX` reads it behind a single-activeGM
+  gate"* is **dead for every player-initiated change**, silently: no error, no notification, and the
+  GM applier simply returns on a null stash. Walking Ruin's trail is exactly this
+  (`tokenDoc._edhaPrevCenter`, register-skills.js:11215/11221) and drops **nothing** when a player
+  moves their own token, while the identical GM-driven move drops all three patches. The safe shape
+  already ships 2 800 lines below (:14046) — stash into **`options`**, which IS broadcast with the
+  update. **When a row only ever gets driven by the GM, you cannot see this bug.** Drive the player
+  half of anything move-triggered or `pre*`-dependent.
+- ✅ **Take the player-client window FIRST, not last.** Runs 24–29 all deferred it and it produced
+  **three** results in about twelve calls here (item 26's sight, R-34's indicator half plus the defect,
+  Job 6b's relay) because they share one setup. The setup itself is ~6 calls including the ownership
+  snapshot and restore. Budget it at the top of the run.
+- ⚠️ **The Foundry join button needs a real click on its LABEL, or a programmatic click.** Clicking
+  the `<button type="submit">` by ref did nothing — twice, on two different tabs, costing four calls.
+  What works: `find` the `label "Join Game Session"` and click that ref, or run
+  `document.getElementById("join-game-form").querySelector('button[name="join"]').click()`. Set the
+  user with `form_input` on the combobox first, and **verify `game.user.name` before assuming you
+  joined** — the join page keeps `typeof game === "object"`, so a "game exists" check passes on the
+  join screen and tells you nothing.
+- ⚠️ **`bench-setup-console.js` is 22 KB and you will want to run it TWICE** (the item-37 idempotency
+  check). Paste it once into `globalThis.__setupSrc` as a template literal and re-run with
+  `(0, eval)(globalThis.__setupSrc)`; the second run then costs one small call instead of another
+  22 KB. Escape the em-dashes as `—` inside the literal.
+- ✅ **`edha.fixPcTokens()` exists and you must NOT run it from the bench.** It loops
+  `game.actors.filter(x => x.type === "character")` — which includes `Tem parinaem` and
+  `Soggy Bottom` — and writes `prototypeToken.sight` plus every placed token. It is the obvious-looking
+  remedy for a stale token sight range and it is a hard-rule-1 violation. Fix the one token instead.
+- **Density, measured: 3 rows off the checklist + 3 halves closed on rows that stay open + 1 engine
+  defect root-caused (with its fix shape identified from a shipped sibling), in ~45 tool calls.** The
+  highest-value move was **driving the player half of a row whose GM half already passed** — the trail
+  patches had been dropping correctly for every GM-driven test in the project's history, and the bug
+  only exists on the path an actual player takes.
+
 ## Known limits
 
 - ❌ **RESOLVED AS UNFIXABLE (07-26i): there is no "no written Cognitive/Spiritual defense" creature.**
