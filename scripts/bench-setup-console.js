@@ -31,7 +31,54 @@
  *   world's Item compendia; if none exist it says so and you drag weapons on manually
  *   (the on-hit rows need real weapon attacks).
  */
-(async () => {
+
+/* benchOrphanPlan — PURE (no Foundry globals). Item 37 (2026-09-05): the token pass below used to
+ * find an existing token only by `t.actorId === a.id`; a token whose actorId resolves to no actor
+ * (bench run 27 found three: "Bench — Green", "Bench — Heroic", "Bench Target — Floater") never
+ * matched, so the script silently placed a SECOND token beside it and reported "zero ⚠".
+ *
+ * Plans what to do with every token on the scene, without touching anything:
+ *   - a token whose actor RESOLVES is not an orphan and never appears in the plan at all.
+ *   - a token whose name is in `protectedNames` (case-insensitive) is NEVER planned, resolved or
+ *     not — Ben's PCs stay hard-guarded. An orphaned protected token is reported in `skipped` so
+ *     the run log still names it; a resolving protected token is silent (the common case).
+ *   - an orphan whose name matches an entry in `rosterByName` repairs by re-pointing at that
+ *     roster actor's id.
+ *   - an orphan whose name matches a roster name but `rosterByName` has no live actor for it
+ *     (falsy value) replaces: delete the broken token, re-place from that name at the token's own
+ *     x/y once the caller resolves a fresh actor for it.
+ *   - an orphan whose name is not a roster name at all is left alone — not ours to touch.
+ *
+ * `tokens`: array of {id, name, actorId, x, y}. `resolveActor(actorId)`: id -> actor-like object
+ * or null/undefined. `rosterByName`: a Map (or plain object) of roster name -> actor-like object
+ * (an object with `.id`, or a bare id string) — MAY hold a name with no live actor (null/undefined
+ * value), which is exactly the "replace" case. `protectedNames`: array of names, matched
+ * case-insensitively.
+ */
+function benchOrphanPlan(tokens, resolveActor, rosterByName, protectedNames) {
+  const protectedSet = new Set((protectedNames || []).map((n) => String(n).toLowerCase()));
+  const hasRosterName = (name) => (rosterByName instanceof Map)
+    ? rosterByName.has(name)
+    : Object.prototype.hasOwnProperty.call(rosterByName || {}, name);
+  const getRosterActor = (name) => (rosterByName instanceof Map) ? rosterByName.get(name) : (rosterByName || {})[name];
+
+  const repair = [], replace = [], skipped = [];
+  for (const t of tokens || []) {
+    const actor = resolveActor(t.actorId);
+    if (actor) continue; // resolves fine — not an orphan, must not appear anywhere
+
+    if (protectedSet.has(String(t.name).toLowerCase())) { skipped.push(t.name); continue; }
+    if (!hasRosterName(t.name)) continue; // not a bench roster name — not ours to touch
+
+    const rosterActor = getRosterActor(t.name);
+    const rosterActorId = rosterActor && typeof rosterActor === "object" ? rosterActor.id : rosterActor;
+    if (rosterActorId) repair.push({ tokenId: t.id, name: t.name, actorId: rosterActorId });
+    else replace.push({ tokenId: t.id, name: t.name, x: t.x, y: t.y });
+  }
+  return { repair, replace, skipped };
+}
+
+if (typeof game !== "undefined") (async () => {
   const PLACE_TOKENS = false;      // view the scene first, then set true with a clear ORIGIN
   const ORIGIN = { x: 200, y: 200 }; // top-left pixel of a clear area on the Playtest Map
   const RESET_TOKENS = false;
@@ -229,6 +276,36 @@
 
   // ---- tokens on the EXISTING playtest scene (never created, never activated) --------------
   const scene = game.scenes.find(s => s.name === SCENE_NAME) ?? game.scenes.find(s => /playtest/i.test(s.name));
+
+  // ---- orphan repair (item 37): runs regardless of PLACE_TOKENS — it only fixes tokens ALREADY
+  // on the scene whose actorId resolves to no actor; it never places a new roster member. -------
+  let orphansRepaired = 0, orphansReplaced = 0;
+  if (scene) {
+    const ROSTER_NAMES = [...PCS.map(c => c.name), ...TGT.map(t => t.name), "Bench Target — Undefended"];
+    const rosterByName = new Map(ROSTER_NAMES.map(nm => [nm, game.actors.find(z => z.name === nm && inBench(z)) || null]));
+    const resolveActor = (id) => game.actors.get(id) || null;
+    const tokenSnapshots = scene.tokens.map(t => ({ id: t.id, name: t.name, actorId: t.actorId, x: t.x, y: t.y }));
+    const plan = benchOrphanPlan(tokenSnapshots, resolveActor, rosterByName, PROTECTED);
+    for (const name of plan.skipped) log.push(`⚠ orphan token "${name}" is a protected player character — left untouched`);
+    for (const r of plan.repair) {
+      log.push(`⚠ orphan token "${r.name}" — repairing (re-pointing actorId at the roster actor)`);
+      const token = scene.tokens.get(r.tokenId);
+      if (token) { await token.update({ actorId: r.actorId }); orphansRepaired++; }
+    }
+    for (const rp of plan.replace) {
+      log.push(`⚠ orphan token "${rp.name}" — no roster actor to re-point to, replacing`);
+      await scene.deleteEmbeddedDocuments("Token", [rp.tokenId]);
+      const actor = rosterByName.get(rp.name);
+      if (actor) {
+        const newTok = await actor.getTokenDocument({ x: rp.x, y: rp.y });
+        await scene.createEmbeddedDocuments("Token", [newTok]);
+        orphansReplaced++;
+      } else {
+        log.push(`⚠ orphan "${rp.name}": could not replace — no roster actor exists for this name`);
+      }
+    }
+  }
+
   if (!scene) {
     console.warn(`BENCH SETUP: scene "${SCENE_NAME}" not found — tokens not placed.`);
   } else if (!PLACE_TOKENS) {
@@ -259,5 +336,7 @@
   }
 
   console.warn("BENCH SETUP:\n" + log.join("\n"));
-  console.warn(`BENCH SETUP DONE — ${PCS.length} PCs, ${TGT.length + 1} targets. Scene: "${scene?.name ?? "NONE"}" (view it, never activate/deactivate).`);
+  console.warn(`BENCH SETUP DONE — ${PCS.length} PCs, ${TGT.length + 1} targets. Scene: "${scene?.name ?? "NONE"}" (view it, never activate/deactivate). orphans: ${orphansRepaired} repaired, ${orphansReplaced} replaced.`);
 })();
+
+if (typeof module !== "undefined") module.exports = { benchOrphanPlan };
