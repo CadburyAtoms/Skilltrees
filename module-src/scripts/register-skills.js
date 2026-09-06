@@ -16701,12 +16701,22 @@ async function edhaResolveRegrowth(combat) {
 Hooks.on("combatTurnChange", (combat) => { if (edhaDefBuffGmGate()) void edhaResolveRegrowth(combat); });
 
 /* --- Temp-HP offer card (`edha-heal-react` {offer-thp} — was name-keyed to Vital Surge) ------------ */
+/* THP doesn't stack — it KEEPS THE HIGHER. R-36 (2026-09-06): the LABEL must keep the higher too.
+ * Until this fix `source` was written unconditionally, so a losing grant relabelled a value it did
+ * not produce: an ally holding 6 from Final Decree read "Bear Witness" after a 4, and a 99-THP ally
+ * read "Investiture of Command". The number was right and the attribution lied — which is worse
+ * than a wrong number, because the card is what a player reads to decide what will expire.
+ * A TIE is not a win: the incumbent grant keeps both its value and its name. */
 async function edhaGrantTempHpCross(target, amount, source) {
-  const final = Math.max(edhaGetTempHp(target)?.value ?? 0, Math.max(0, Math.floor(amount)));   // THP doesn't stack — keep the higher
-  if (target.isOwner) { await edhaWriteTempHp(target, final, source); return; }
+  const held = edhaGetTempHp(target);                                    // null when there is none
+  const inc = Math.max(0, Math.floor(Number(amount) || 0));
+  const wins = inc > (held?.value ?? 0);
+  const final = wins ? inc : (held?.value ?? 0);
+  const label = wins ? (source || "") : (held?.source ?? source ?? "");
+  if (target.isOwner) { await edhaWriteTempHp(target, final, label); return; }
   // Job 6a (found via the setFlagEmit ratchet re-measure, an 8th split beyond the named 7): routed
   // through the canonical helper.
-  await edhaSetEdhaFlag(target, "tempHp", { value: final, source: source || "" });
+  await edhaSetEdhaFlag(target, "tempHp", { value: final, source: label || "" });
 }
 function edhaPostVitalSurgeCard(owner, target, tal, h) {
   try {
