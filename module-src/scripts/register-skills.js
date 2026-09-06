@@ -10846,7 +10846,7 @@ Hooks.on("updateActor", async (actor, changes) => {
  * bespoke geometry.
  * Owns — the model: EDHA_ATTUNE_FT · EDHA_LEY_COLORS · EDHA_COLOR_HEX · EDHA_RANGE_RING_HEX ·
  *   edhaTalentColor · edhaColorRank · edhaCasterToken.
- * Owns — the canvas: edhaDrawCircle · edhaTokensInCircle · edhaShowRange · edhaPlaceAoe, the
+ * Owns — the canvas: edhaDrawCircle · edhaTokensInCircle · edhaShowRange (edhaPlaceAoe retired, R-78), the
  *   sheet's range-preview control, and edhaNextTokenName + its preCreateToken de-duplicator.
  * ============================================================================================ */
 
@@ -10953,37 +10953,19 @@ async function edhaShowRange(item) {
   } catch (e) { console.error("Edha Content | showRange failed", e); }
 }
 
-// AoE: drop a [Size] circle at your target and auto-target captured tokens for the talent's card.
-// (Spec comes from the talent's own edha-aoe-template rule via the native executor.)
-async function edhaPlaceAoe(item, spec) {
-  try {
-    const area = spec?.area; const actor = item?.actor;
-    if (!area || !actor) return;
-    const color = spec.color || edhaTalentColor(item) || "red";
-    const rank = edhaColorRank(actor, color);
-    const ft = area.sizeByRank ? (EDHA_SIZE_FT[rank] || EDHA_SIZE_FT[1]) : (Number(area.sizeFt) || EDHA_SIZE_FT[1]);
-    const center = edhaUserTargetToken() ?? edhaCasterToken(actor);
-    if (!center) { ui.notifications?.warn(`Edha: target the ${item.name} burst center (or select your token).`); return; }
-    const cx = center.center.x, cy = center.center.y;
-    await edhaDrawCircle(cx, cy, ft, EDHA_COLOR_HEX[color] || "#d23b2e");
-    const affects = spec.affects || "enemies";
-    const casterDisp = edhaActorSide(actor);
-    let caught = edhaTokensInCircle(cx, cy, ft, null);
-    if (affects !== "all" && affects !== "none") {
-      caught = caught.filter(t => {
-        const same = edhaSideSame(t.document?.disposition, casterDisp);
-        return affects === "allies" ? same : edhaSideHostile(t.document?.disposition, casterDisp);   // R-63: NOT-same is not hostile — an unresolvable side is in neither burst
-      });
-    }
-    if (affects !== "none") { try { edhaSetUserTargets(caught); } catch (e) {} edhaCheckMultiHit(actor, item, caught.length); }
-    ChatMessage.create({
-      speaker: ChatMessage.getSpeaker({ actor }),
-      content: affects === "none"
-        ? `<p><strong>${item.name}</strong> — ${ft} ft area placed (terrain). Damage triggers on entry (GM-applied).</p>`
-        : `<p><strong>${item.name}</strong> — ${ft} ft burst: <strong>${caught.length}</strong> ${affects} captured &amp; targeted (${caught.map(t => t.name).join(", ") || "none"}). Click <em>Apply</em> on the ${item.name} card to ${affects === "allies" ? "heal" : "damage"} all of them.</p>`,
-    });
-  } catch (e) { console.error("Edha Content | AoE place failed", e); }
-}
+/* `edhaPlaceAoe` + the `edha-aoe-template` handler RETIRED 2026-09-06 (R-78, Ben (a); item 48).
+ * It was a SECOND, parallel AoE model — drop a circle on your current target, auto-target what it
+ * caught, and leave the GM to press Apply — that the click-to-place / Detonate pipeline
+ * (`edha-burst` → edhaCastBurst → edhaBurstDetonate, which resolves damage itself) replaced. A
+ * sweep of `data/` at bench run 38 found ZERO `edha-aoe-template` rules against 12 `edha-burst`
+ * ones, so the only thing the registration still did was offer a dead choice in Ben's Events-tab
+ * dropdown next to the live one. The branch WORKED (the bench staged a rule by hand and proved
+ * it); it simply had no consumer, which is the R-74 / R-76 shape.
+ * Nothing else moved: `edhaSetUserTargets` keeps its other caller (edhaPickTargetClick),
+ * `edhaCheckMultiHit` keeps edhaBurstDetonate's, and `edhaDrawCircle` / `edhaTokensInCircle` /
+ * EDHA_SIZE_FT are shared with the burst path. `data/native-vocabulary.json` and lint-refs'
+ * vocabulary are untouched by design — `edha-aoe-template` was an edha-* type, so the engine's own
+ * registrations (which lint pass 9 parses) are the whole record of it. */
 // Inject a ⊙ range-preview button into each color-scaled talent row in the Actions tab.
 Hooks.on("renderCharacterSheet", (app, element) => {
   try {
@@ -19203,20 +19185,8 @@ function edhaRegisterNativeEventSystem() {
       } catch (e) { console.error("Edha Content | scene defense buff failed", e); }
     },
   });
-  api.registerItemEventHandlerType({
-    source: "edha-content", type: "edha-aoe-template",
-    label: "Edha: AoE Template", description: "Drop a [Size] burst on use and auto-target the captured tokens for this talent's card.",
-    config: { schema: {
-      sizeByRank: new FF.BooleanField({ required: false, initial: true, label: "Size scales with leyline rank" }),
-      sizeFt: new FF.NumberField({ required: false, initial: 0, label: "Fixed size (ft, if not by rank)" }),
-      affects: new FF.StringField({ required: true, initial: "enemies", choices: choices("enemies", "allies", "all", "none"), label: "Affects" }),
-      color: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "white", "blue", "black", "red", "green"), label: "Color (scaling/override)" }),
-    } },
-    executor: async function (event) {
-      const item = event.item; if (!item?.actor) return;
-      await edhaPlaceAoe(item, { area: { shape: "circle", sizeByRank: !!this.sizeByRank, sizeFt: this.sizeFt }, affects: this.affects || "enemies", color: this.color || null });
-    },
-  });
+  // `edha-aoe-template` was registered here until 2026-09-06 — RETIRED per R-78 (item 48); see the
+  // retirement note where edhaPlaceAoe used to live. Use `edha-burst` for every area effect.
   api.registerItemEventHandlerType({
     source: "edha-content", type: "edha-place-hazard",
     label: "Edha: Place Dangerous Terrain", description: "Drop a scene-long dangerous-terrain Region that damages tokens on enter / start of turn. mode trail (2bY) makes it a TOGGLE instead: on use the trail arms/ends, and while armed every space you move through becomes a dangerous-terrain patch with this rule's damage (Walking Ruin's shape; the move watcher reads the rule).",
@@ -20695,7 +20665,7 @@ Hooks.once("ready", () => {
       bakedEffects: pj(h.bakedEffectsJson), extraItems: pj(h.extraItemsJson),
     });
   };
-  const api = { syncNow: edhaSyncNow, syncActorTalents: edhaSyncActorTalents, syncAllCharacters: edhaSyncAllCharacters, syncAdversary: edhaSyncAdversaryActor, syncAllAdversaries: edhaSyncAllAdversaries, setTempHp: edhaSetTempHp, getTempHp: edhaGetTempHp, summon: summonByTalent, showRange: edhaShowRange, aoe: edhaPlaceAoe, drawMana: edhaDrawMana, grantDrawMana: edhaGrantDrawMana, resetTriggers: edhaResetTriggers, fixSettings: edhaFixSettings, clearKindleLights: edhaClearKindleLights, refreshDefBuffs: edhaRefreshDefBuffs, migrateDerivations: edhaMigrateDerivations, fixPcTokens: edhaFixPcTokens, grantStartingKit: edhaGrantStartingKit, creationWizard: edhaCreationWizard, newCharacter: edhaCreatorNewCharacter, isIsolated: edhaIsIsolated, toggleStatus: edhaToggleStatus, darkVeilSweep: edhaDarkVeilSweep, allEffects: edhaAllEffects, raiseStakes: edhaRaiseStakesApi, rally: edhaRallyApi, skipBudget: (v) => { globalThis.edhaSkipBudget = !!v; return globalThis.edhaSkipBudget; }, debug: edhaSetDebug, debugSave: edhaDebugSave, debugsave: edhaDebugSave };   // lowercase alias — Ben typed edha.debugsave() at the 07-12 bench and got a TypeError
+  const api = { syncNow: edhaSyncNow, syncActorTalents: edhaSyncActorTalents, syncAllCharacters: edhaSyncAllCharacters, syncAdversary: edhaSyncAdversaryActor, syncAllAdversaries: edhaSyncAllAdversaries, setTempHp: edhaSetTempHp, getTempHp: edhaGetTempHp, summon: summonByTalent, showRange: edhaShowRange, drawMana: edhaDrawMana, grantDrawMana: edhaGrantDrawMana, resetTriggers: edhaResetTriggers, fixSettings: edhaFixSettings, clearKindleLights: edhaClearKindleLights, refreshDefBuffs: edhaRefreshDefBuffs, migrateDerivations: edhaMigrateDerivations, fixPcTokens: edhaFixPcTokens, grantStartingKit: edhaGrantStartingKit, creationWizard: edhaCreationWizard, newCharacter: edhaCreatorNewCharacter, isIsolated: edhaIsIsolated, toggleStatus: edhaToggleStatus, darkVeilSweep: edhaDarkVeilSweep, allEffects: edhaAllEffects, raiseStakes: edhaRaiseStakesApi, rally: edhaRallyApi, skipBudget: (v) => { globalThis.edhaSkipBudget = !!v; return globalThis.edhaSkipBudget; }, debug: edhaSetDebug, debugSave: edhaDebugSave, debugsave: edhaDebugSave };   // lowercase alias — Ben typed edha.debugsave() at the 07-12 bench and got a TypeError
   const mod = game.modules?.get("edha-content");
   if (mod) mod.api = api;
   globalThis.edha = Object.assign(globalThis.edha || {}, api);
