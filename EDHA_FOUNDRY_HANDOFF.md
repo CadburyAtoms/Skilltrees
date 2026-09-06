@@ -129,7 +129,11 @@ the fix is one line: wrap the post-emit state in `edhaAwaitLocal`.
   status AND the `markedBy.<status>` flag (the reconcile reads the first, the damage post-pass
   reads the second); `edhaCounterWriteRemote` waits for the status to arrive with the right count
   on it, or to go, depending on direction. A failed wait raises a visible `ui.notifications.warn`
-  naming the creature.
+  naming the creature. One further behaviour change on an error path: `edhaWriteStatusMark`'s
+  `catch (e) {}` around the emit became `catch (e) { return false; }` — an emit that THREW
+  definitely did not write, and reporting success there made the H3 fill commit a ledger entry for
+  a creature carrying no mark, which is exactly the phantom the 07-24v mark-first ordering exists
+  to prevent.
 
 ### Pinned
 
