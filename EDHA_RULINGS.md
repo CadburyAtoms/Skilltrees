@@ -65,7 +65,7 @@ leaves an engine path with no consumer — the same shape as the `senses` field 
 > better fit turns up. `data/adversaries.json` (+ baked AEs if any) → adversaries pack **REBUILD**,
 > Ben's deploy → **item 57**; lint pass 5 must stay green; then the 28b "adversary bespoke cost"
 > bench row finally has a subject.
-> **SHIPPED** in PR #TBD57 (REBUILD, bench-pending) — the Stalker's **Fade**: a `use` → `edha-prompt-pick`
+> **SHIPPED** in PR #226 (REBUILD, bench-pending) — the Stalker's **Fade**: a `use` → `edha-prompt-pick`
 > {source: confirm, costs: "inv:1"} card spends the Investiture on the click (through `edhaSpendResource`),
 > native `consume` removed so it is the only deduction; the damaged gm-cue stays as the reminder. Fit:
 > Fade is a Reaction the GM decides to take, and a confirm card that charges on the click is exactly
@@ -460,7 +460,7 @@ gets fixed to match. Open since 2026-07-16. *(Checklist adversary-wiring row.)*
 > and the adversary block's description (its description is currently EMPTY in
 > `data/adversaries.json` — write it); wire per lint pass 5. Adversaries pack **REBUILD** (Ben's
 > deploy) → **item 57**. Retire the adversary-wiring checklist row on evidence.
-> **SHIPPED** in PR #TBD57 (REBUILD, bench-pending) — the Captain's text reads "Once per round, when one of the
+> **SHIPPED** in PR #226 (REBUILD, bench-pending) — the Captain's text reads "Once per round, when one of the
 > Captain's attacks misses, it can turn that miss into a graze without spending Focus." (note: the block's
 > `text` was never actually empty — it carried the 07-16 ruling wording plus a visible marker; both
 > rewritten). The garbled sentence lives only in the source PDF, which is not in the repo; the built
@@ -567,7 +567,7 @@ it goes in the block's text. *(Checklist Lunavar row; its sheet-read half is now
 > **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) 3×3 (Huge).** Put the number in
 > the block's biography note (`data/adversaries.json`) and in the placement guidance; adversaries
 > pack **REBUILD** → **item 57**.
-> **SHIPPED** in PR #TBD57 (REBUILD, bench-pending) — the biography's placement sentence now reads "set the
+> **SHIPPED** in PR #226 (REBUILD, bench-pending) — the biography's placement sentence now reads "set the
 > token to **3×3** on placement" with the reach-15 / 30-ft measurements noted against that footprint.
 > No token field can carry it: `size: "large"` is the schema cap (2×2), so the number is guidance, as ruled.
 
@@ -584,7 +584,7 @@ sent back here on 2026-07-27y: it is the same `bySize` question, not a wiring bu
 > `distanceFt`, stated on the card.** `data/adversaries.json`: `edha-move bySize` → `distanceFt: 25`
 > on Reckless Advance + card text; check R-48 (Explosive Leap, same `bySize` question) for the same
 > treatment if still open. Adversaries pack **REBUILD** → **item 57**; 🤖 re-test.
-> **SHIPPED** in PR #TBD57 (REBUILD, bench-pending) — `{bySize: false, distanceFt: 25}`, card text "charge up to
+> **SHIPPED** in PR #226 (REBUILD, bench-pending) — `{bySize: false, distanceFt: 25}`, card text "charge up to
 > 25 ft (its full Speed)". 🤖 row in the Whelp Pack section. R-48 got the same treatment (below).
 
 **R-48. The Cragdrake Adult's Explosive Leap says "up to 20 ft" and moves 5. Which side is canon?**
@@ -616,7 +616,7 @@ down `EDHA_SIZE_FT` while its card carries the rank-3 figure. Note also that `by
 authored `distanceFt` **dead** — Shockwave Slam ships `distanceFt: 5` *and* `bySize: true`, and the 5
 is coincidence, not the source. **Deciding R-48 once now settles four blocks**, which is a much better
 trade for a pack rebuild than the single-block version was. *(Bench run 19; checklist W29 §7, §8.)*
-> **DEFAULT (a) APPLIED** in PR #TBD57 (REBUILD, bench-pending; the PM's recorded default, item 57) — the
+> **DEFAULT (a) APPLIED** in PR #226 (REBUILD, bench-pending; the PM's recorded default, item 57) — the
 > **Cragdrake Adult's Explosive Leap** only: `{bySize: false, distanceFt: 20}`, the card's own "up to 20 ft".
 > 🤖 row in the Cragdrake Adult section. **Still open for Ben's veto**, and the other three rows of the run-19
 > family (Brandram Shockwave Slam / Reckless Advance, Tussock-Sow terrain square) are untouched — the brief
@@ -636,7 +636,7 @@ only the fiction.* Affects every adversary ability carrying the marker, not just
 > it from the table** (GM-only note field or an HTML comment inside the description). Applies to
 > EVERY adversary ability carrying the marker; lint pass 5 must keep recognising the marker in its
 > new home; build/data change → adversaries pack **REBUILD** → **item 57**.
-> **SHIPPED** in PR #TBD57 (REBUILD, bench-pending) — all **16** markers are now `<!-- NO NAMEABLE HOOK: … -->`
+> **SHIPPED** in PR #226 (REBUILD, bench-pending) — all **16** markers are now `<!-- NO NAMEABLE HOOK: … -->`
 > HTML comments inside the ability's `text`/`rider` (Combat Training, Mutation Upgrade, Seize and Roll,
 > Cannot Stop, Drag Under, Slip the Sound, The Passed Wasting, A Thousand Small Bodies ×2, The Old
 > Agreement, Pay the Ledger, Guardian Stance, Apex Predator ×2, Pack Doctrine, The Tithe Takes the

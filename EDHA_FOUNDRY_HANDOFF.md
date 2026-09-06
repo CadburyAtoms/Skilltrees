@@ -35,7 +35,7 @@ default and the checklist id it came from. The checklist is for tests.
 
 ## 2026-09-06 — ITEM 57: the adversary data batch — R-29 / R-40 / R-46 (+ R-48 default) / R-47 / R-74 (**REBUILD + ⟳ Sync** — `data/adversaries.json` + one lint tightening; the adversaries pack rebuilds, then "⟳ Sync Adversaries from Pack"; NO engine change)
 
-Five of Ben's 2026-09-06 rulings land on one file, one themed commit each (PR #TBD57). Proven by a
+Five of Ben's 2026-09-06 rulings land on one file, one themed commit each (PR #226). Proven by a
 scratch build with `EDHA_DATA` pointed at the branch's own `data/` (not the main checkout — the
 build's default): a LevelDB read-back of every actor + embedded item before vs after differs in
 **exactly 1 actor + 19 items of 388 entries** — the Fen-Heart, the 16 marker-carrying abilities,

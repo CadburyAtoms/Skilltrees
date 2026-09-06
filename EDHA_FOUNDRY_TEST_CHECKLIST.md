@@ -3136,7 +3136,7 @@ since 2026-07-16.
 **ANSWERED 2026-09-06, R-29 (a): MISS → GRAZE, once per round, without spending Focus** — the
 adversary block's description is currently empty in `data/adversaries.json` and needs writing
 (ruling answered 2026-09-06 → item 57, REBUILD).
-**✅ RETIRED on evidence 2026-09-06, item 57 (PR #221)** — the Stonebound Captain's Combat Training
+**✅ RETIRED on evidence 2026-09-06, item 57 (PR #226)** — the Stonebound Captain's Combat Training
 text now reads *"Once per round, when one of the Captain's attacks misses, it can turn that miss into
 a graze without spending Focus."* (the built pack's description, read back off the scratch LevelDB);
 the marker is its declared exit (`<!-- NO NAMEABLE HOOK: the miss/graze/hit adjudication … is never

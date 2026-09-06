@@ -1822,7 +1822,7 @@ itself is F5.
 
 ---
 
-## 57. [x] Adversary data batch: Combat Training, Fen-Heart size, charge distances, hidden hook markers, one bespoke cost (R-29, R-40, R-46, R-47, R-74) — DONE 2026-09-06, PR #TBD57 (REBUILD; R-48 default (a) applied to the Cragdrake Adult, still open for Ben's veto)
+## 57. [x] Adversary data batch: Combat Training, Fen-Heart size, charge distances, hidden hook markers, one bespoke cost (R-29, R-40, R-46, R-47, R-74) — DONE 2026-09-06, PR #226 (REBUILD; R-48 default (a) applied to the Cragdrake Adult, still open for Ben's veto)
 
 **Why:** Five adversary-data rulings land on the same file and rebuild:
 - R-29 (a): Combat Training (Stonebound Captain) is MISS → GRAZE once per round, no Focus cost —
