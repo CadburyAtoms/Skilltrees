@@ -27,6 +27,13 @@ session resumes from this file alone.
 > New 🤖 defect: the weapon picker prints "a Agent" / "a Envoy". **The wizard block's remaining 4 rows are
 > ruling-gated, not run-gated — R-41, R-42, R-54 are what unblock them.**
 >
+> **Relay correction, 2026-09-06 16:40 ET (cloud session, on Ben's word):** #209 was still OPEN at 16:15 and is
+> merged with this note. And **every ruling in "Waiting on Ben" below was ANSWERED by Ben on 09-06 through the
+> phone inbox** — R-70 → R-77, R-6 sharpened, the GM-less traps, TODO 41's OK, R-3, R-8, R-9 → R-17, R-20 →
+> R-33, R-35 → R-42, R-46, R-47, R-50 → R-57, R-78, and all fourteen §I defaults accepted — 40+ notes from
+> `phone-chat-relay`, every one still `new`. **Step 0 of the next PM session is to read them**; the queue and
+> the waiting list in this line are stale until it does.
+>
 > ⚠️ **Debt on `main`:** #207's four commits carry `Co-Authored-By: Claude Opus 5` trailers (iron rule 6).
 > They are merged; stripping them means rewriting `main`, so leave them unless Ben says otherwise.
 > **Budget for the new session:** day-shift 1 of 12 used (bench run 38); trailing-5h 0 of 6 — nothing has

@@ -1,5 +1,11 @@
-{ "pm": { "status": "stopped",
-          "note": "STOPPED at Ben's request (2026-09-06, mid-review). Nothing running, nothing scheduled. PR #207 (bench run 38) is OPEN and NOT merged: CI green, review passed on scope/proof/docs/markers, but its four commits still carry a Co-Authored-By model trailer that iron rule 6 forbids - strip before merging. main is clean at 8619f10.",
-          "waitingOn": "Ben - said stop", "nextWakeAt": null, "session": "2026-09-06 edha-pm-daily (Sunday)" },
+{
+  "pm": {
+    "status": "stopped",
+    "note": "No PM session. The 07:02 Opus task session is dead and stood down (#210); Ben is starting a fresh Fable PM by hand. main = #210 + #209. 40+ phone-inbox notes \u2014 every open ruling, answered by Ben on 09-06 \u2014 are unread: that is the new PM's step 0. Nothing running, nothing scheduled.",
+    "waitingOn": "a fresh Fable PM session at the desktop",
+    "nextWakeAt": null,
+    "session": "2026-09-06 \u2014 between sessions (relay projection at 16:40 ET)"
+  },
   "workers": [],
-  "usage": null }
+  "usage": null
+}

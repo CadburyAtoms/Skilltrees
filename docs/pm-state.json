@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-06T20:09:35.571Z",
+  "generatedAt": "2026-09-06T20:33:32.785Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "6563c68a24",
-    "commit": "8619f10",
-    "branch": "pm/state-file-into-repo",
+    "hash": "580dc53931",
+    "commit": "8fe8ec8",
+    "branch": "claude/sunday-pm-session-sync-d0pzsm",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -43,10 +43,10 @@
   },
   "pm": {
     "status": "stopped",
-    "note": "STOPPED at Ben's request (2026-09-06, mid-review). Nothing running, nothing scheduled. PR #207 (bench run 38) is OPEN and NOT merged: CI green, review passed on scope/proof/docs/markers, but its four commits still carry a Co-Authored-By model trailer that iron rule 6 forbids - strip before merging. main is clean at 8619f10.",
-    "waitingOn": "Ben - said stop",
+    "note": "No PM session. The 07:02 Opus task session is dead and stood down (#210); Ben is starting a fresh Fable PM by hand. main = #210 + #209. 40+ phone-inbox notes — every open ruling, answered by Ben on 09-06 — are unread: that is the new PM's step 0. Nothing running, nothing scheduled.",
+    "waitingOn": "a fresh Fable PM session at the desktop",
     "nextWakeAt": null,
-    "session": "2026-09-06 edha-pm-daily (Sunday)"
+    "session": "2026-09-06 — between sessions (relay projection at 16:40 ET)"
   },
   "workers": [],
   "usage": null,
@@ -1765,6 +1765,20 @@
       "weightedM": null,
       "outcome": "Clock guard passed (Sun = weekend window). Session moved from the retired OneDrive checkout into C:\\dev\\Skilltrees (change_directory; toplevel verified). Resume clean: main #204 4d2eb51, no open PRs, no worktrees, board inbox and phone inbox both empty, module-src-sync.js status 6 in sync (live 57a8c950… = main — nothing owed to the deploy script), Foundry answers 302 on :30000 so lane B is open. Budget read of the shift: new day-shift 0/12; PM-R11's no-cap authorization expired at the 07:00 stop, so the ordinary weekend caps are back. Clock re-verified from three sources at 08:28 EDT (the session's opening read of 07:02 was stale by the time the board was written) → trailing five hours start 03:28, catching only fix pass 6 (03:28) and bench run 37 (03:49) of the night's seven dispatches: 2 of 6, four slots free, dispatch now. The earlier 7-of-6 reading held the shift to 07:30 and was wrong only in the clock, not the method. Also noted: the live repo's copy of the PM skill is one revision ahead of the user-level copy the Skill tool loaded (it carries the \"wait for CI on the NEW sha\" rule from 09-05) — the live copy is the one being followed",
       "pr": null
+    },
+    {
+      "date": "2026-09-06",
+      "time": "07:02",
+      "at": "2026-09-06T11:02:00.000Z",
+      "item": "PM session FAILED — wrong model, then frozen (edha-pm-daily)",
+      "itemNo": null,
+      "model": "opus (should have been fable)",
+      "isDispatch": false,
+      "duration": "159 turns; 07:02 fire, dead 09:01→16:05",
+      "weighted": "4.1M PM + 6.2M subagent = 10.3M",
+      "weightedM": 4.1,
+      "outcome": "Session fired as claude-opus-5 because no scheduled task pins a model (the MCP create/update tools expose only taskId, title, prompt, description, cronExpression, fireAt, enabled, notifyOnCompletion — no model), so it inherits the app default at fire time; the \"must remain Fable\" note was an assumption with no mechanism. Session then froze twice — 82.7 min from 07:02:34 (it only advanced when Ben touched the app at 08:25) and 7h04m from 09:01:18, during which Ben's \"stop\" went undelivered until 16:07. Ben lost the working day, ran a cloud Fable session instead (#208, #209) and merged #207 himself at 12:11. Delivered before the freeze: #206 (board) and bench run 38 → #207 (5 rows retired, R-78, the run-22 harness blocker disproved). Fixes applied 16:20: a MODEL GUARD is now step 0 of BOTH edha-pm-daily and edha-pm-weeknight (exit without spending unless the model id starts with claude-fable, push-notify Ben), plus a rule to re-read date before every dispatch and budget calculation (today's stale 07:02 read caused a wrong trailing-window hold). Board's session-of-record line rewritten to a stand-down so the next PM takes over instead of deferring",
+      "pr": 210
     }
   ],
   "dispatches": [

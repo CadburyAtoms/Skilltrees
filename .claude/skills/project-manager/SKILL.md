@@ -193,6 +193,10 @@ prefixed with the row's name — read it like any other note.
 a worker reports (before review), at step 5 (close), and at step 6 when you schedule or stop.
 
 ```
+# 0. the two state files are TRACKED (docs/pm-*.json, below); everything else the loop scratches
+#    (usage.json, the dashboard chunks, the injected page) goes under gitignored tmp/pm INSIDE the
+#    repo — a write outside the working folder is a permission prompt in a scheduled-task session
+SCRATCH=tmp/pm; mkdir -p $SCRATCH
 # 1. the live overlay — what the board cannot carry while a worker holds the checkout
 cat > docs/pm-live.json <<'EOF'
 { "pm": { "status": "awake|waiting|stopped", "note": "<one sentence Ben should read>",
@@ -286,6 +290,13 @@ history. Therefore:
   prompts now open with a **MODEL GUARD**: state your model, and if it does not begin with `claude-fable`,
   write nothing, dispatch nothing, push-notify Ben, and stop. **If you are a PM session, you have already
   passed that guard or you are running at Ben's explicit say-so — if neither is true, stop now.**
+- **Scheduled-task hygiene (relay, 2026-09-06 — the mechanics behind the guard above).** The Desktop
+  app's task FORM (not the MCP tools) has model and permission-mode pickers: pin **Fable** and the
+  PM permission mode there for both tasks. After creating or editing a task, click **Run now** once
+  while present and choose **Always allow** on every prompt it raises — the app remembers them per
+  task, and the 09-06 session sat seven hours on one such prompt. And every file the loop writes
+  stays INSIDE the repo (`docs/pm-*.json` tracked, all other scratch under gitignored `tmp/pm`), so
+  no write ever leaves the working folder.
 - **Re-read the clock before every dispatch and every budget calculation.** Never reuse an earlier `date`.
   The same 09-06 session froze for 83 minutes after its opening `date`, then did trailing-window arithmetic
   on the stale reading and held a dispatch it did not need to hold.

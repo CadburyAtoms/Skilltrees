@@ -271,6 +271,11 @@ to §3.
       subsystem — devotion tracks/boons (engine work; per iron rule 2 this would be ONE
       generic handler at most, and only post-playtest-1). Recommended default: (b) as table
       practice, revisit after playtest.
+      > **Pre-walked 2026-09-06 (phone relay; Ben: "good places to start for the full lore-forge sessions
+      > later" — NOT ruled):** (a) nothing — the deity trees are the mechanical expression of devotion ·
+      > (b) light touch — rites as downtime/recovery, omens/blessings as GM-granted advantage, the Child's
+      > readings as the live example (GM-truth information, not numbers) · (c) subsystem, post-playtest
+      > only. Recommended (b). Ben deferred the ruling to the session.
 - [ ] **W15 ⚑ — Is godlessness causal?** Canon §5 observes "nations without an established
       religion are suffering most." Ruling needed: does a fed god actually *shield* its
       nation (Kettavar's stability is by design — but that's the Fetch's design), or is it
@@ -292,6 +297,13 @@ to §3.
       > god spending on its flock. Both live cases (Lunavar, Kettavar) now cut AGAINST
       > naive "fed god ⇒ shielded nation" causation — the W15 ruling, when it lands,
       > should account for both.
+      > **Pre-walked 2026-09-06 (phone relay — NOT ruled):** (a) not causal — organized faith ≈ organized
+      > society, reviving a church fixes nothing by itself · (b) fully causal — a fed god shields its
+      > nation; contradicted by BOTH live cases (Lunavar fed-but-stripped and starving; Kettavar stable by
+      > the Fetch's husbandry) · (c) partially causal with TWO conditions: a god spends on its faithful's
+      > lands only if it is both fed AND unstripped, and then only as triage (the Anaveth/Goldenport
+      > model). Recommended (c); the consequence to write is that reviving a church helps only where the
+      > god can still act — a plot lever, not a cheat. Ben deferred the ruling to the session.
 - [ ] **W16 — Faith on the ground in the opening arc.** Apply W11/W13 to the places session
       1–5 actually visits (Thalendor relief-convoy route, Withervale, the Black Altar
       Crossing): what the convoy's faithful do at dusk, what the silent shrine ritual *was*,
@@ -363,6 +375,24 @@ downstream items in the playtest-adversary pack.
       entirely (interacts hard with §1a); the Immortal Triplets' nature; fae outside Sylvaneth
       (solitary fae in deep-leyline places on the mainland?); playable/fightable/neither.
       Output: canon section + resolves how W9 gets written.
+      > **Pre-walked 2026-09-06 (phone relay — six sub-questions, each with a proposal and a default;
+      > NOT ruled, Ben deferred to the session):**
+      > 1. *What is a fae* — (a) weave-native: perceives threads/pattern directly, which is what §5/§6
+      >    already lean on (Ashara-as-hole, the Triplets' knowledge) · (b) Ben's own concept. Default (a).
+      > 2. *Born or made* — (a) born, a lineage · (b) made from mortals who crossed into the weave ·
+      >    (c) both, made fae rare. Default (a).
+      > 3. *Mortality* — (a) outside the circuit: no wasting, no sticking, they only observe · (b) inside
+      >    and stuck, hiding it · (c) inside with their OWN return leg through the weave, not through
+      >    Morrath — untouched by the seal yet knowing exactly what it is; gives exact reciprocity its
+      >    reason (everything returns). Default (c); (a) is the simple fallback.
+      > 4. *The Immortal Triplets* — (a) the first fae, origin of the lineage · (b) a fed triune standing
+      >    where a god would · (c) mortals WOVEN IN — the mirror of Ashara torn out (ruling 17): immortal
+      >    by design where she is immortal by curse, so their exile of her reads as recognition, not
+      >    disgust. Default (c).
+      > 5. *Fae beyond Sylvaneth* — (a) none, fae-touched fauna only · (b) solitary fae at mainland
+      >    deep-leyline places (feeds W23 directly) · (c) hidden fae everywhere. Default (b).
+      > 6. *Playable / fightable* — (a) fightable as adversaries and guardians, not playable yet ·
+      >    (b) playable later with a trait pass · (c) never statted. Default (a) for act 1.
 - [x] **W21 — Blue / White / Black attuned wildlife (fill the palette).** One signature
       creature concept per remaining frequency so all five read on the landscape. Seeds to
       develop or replace: **Black** — carrion-adjacent fauna that sense stuck souls and are
