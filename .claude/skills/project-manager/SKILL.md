@@ -193,6 +193,9 @@ prefixed with the row's name — read it like any other note.
 a worker reports (before review), at step 5 (close), and at step 6 when you schedule or stop.
 
 ```
+# 0. all PM scratch files live INSIDE the repo, gitignored — never the harness scratchpad
+#    (a write outside the working folder is a permission prompt in a scheduled-task session)
+SCRATCH=tmp/pm; mkdir -p $SCRATCH
 # 1. the live overlay — what the board cannot carry while a worker holds the checkout
 cat > $SCRATCH/live.json <<'EOF'
 { "pm": { "status": "awake|waiting|stopped", "note": "<one sentence Ben should read>",
@@ -269,7 +272,20 @@ history. Therefore:
   (unattended), so the way to stand one down is the **"session of record" line at the top of the
   board** — it re-reads the board on every wake. Write that line when Ben moves control to you;
   rewrite it on your own first wake.
-- The tasks use the app's default model, which must remain Fable.
+- **Scheduled-task hygiene (learned 2026-09-06, the Sunday stall).** A Desktop scheduled task
+  carries its OWN model and permission mode in the task form; it inherits neither from the app
+  default nor from the interactive session that created it. The first real `edha-pm-daily` run
+  came up as **Opus** in a prompting permission mode, and sat all day on one permission dialog
+  (a state-file write outside the repo folder) while the phone showed "alive". So, for BOTH
+  `edha-pm-daily` and `edha-pm-weeknight`: (1) pin **model = Fable** in the task form, never
+  "app default"; (2) set the permission mode to the one the interactive PM sessions run under;
+  (3) after creating or editing a task, click **Run now** once while present and choose
+  **Always allow** on every prompt it raises (the Desktop app remembers them per task);
+  (4) every state file the loop writes lives INSIDE the repo under gitignored `tmp/pm/`
+  (see "Push state" below), so no write ever leaves the working folder. And on every wake,
+  **first thing: confirm you are Fable** (`/model` or the session header); if you are not,
+  write one line in the run log and STOP — a non-Fable PM is a misconfigured task, not a
+  session of record.
 
 ## Communicating with Ben (agreed 2026-09-04)
 
