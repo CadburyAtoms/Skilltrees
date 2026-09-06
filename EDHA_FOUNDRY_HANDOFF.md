@@ -75,6 +75,33 @@ items). Item 34 stays open until 34b (loot caches) ships as its own PR.
 
 ---
 
+## 2026-09-06 — R-50 (item 53): an ambush-belief rider benefits its OWN first strike (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
+
+Ben answered R-50 (b) after a card-by-card walkthrough: the ten `edha-ambush-belief` carriers
+(Stillback ×2, Wrongwake ×2, Keelshadow, The False Spring, Hazewyrm Adult/Elder, The Doubled ×2)
+all say the FIRST strike comes from the ambush. Bench run 18 had measured the opposite: the belief
+test was a fire-and-forget `await Roll.evaluate()` off the `useItem` hook, while the
+`whenTargetFooled` rider is picked when the damage formula is ASSEMBLED — synchronously, before that
+promise settles — so the +1d6 / +1d8 first appeared on the SECOND strike.
+
+- **The decision is now synchronous; only the persistence stays async.** `edhaAmbushBeliefRoll`
+  (PURE — the one place the d20 / 2d20kh / DC maths lives, drawn through `edhaRandomFace`) ·
+  `edhaAmbushBeliefParams` (the DC / mod / advantage read) · `edhaAmbushBeliefTest` (SYNC: ledger →
+  pending → roll-and-park) · `edhaAmbushBeliefCommit` (ASYNC: the ledger write + GM / player cards,
+  text unchanged). Both entry points — the `useItem` hook and the rider's new
+  `edhaTargetFooledOrTest` gate — call the same sync test; an `EDHA_AMBUSH_PENDING` map makes them
+  agree when the hook fires first and its write is still in flight. **Nothing is awaited in the
+  hook** (the takeover class). The Mistheron's placed-copy seeming carries no ambush rule and falls
+  straight through to `phantomBelief`, unchanged. Iron rule 2b: no name-keyed branch; the allowlist
+  is untouched.
+- **Proven by mutation** (`tests/ambush-first-strike.test.js`, 8 cases): reverting the rider gate to
+  the old `edhaTargetFooled` fails 4 pins; making the sync test ignore the ledger fails the
+  second-strike-after-a-pass pin; letting the rider path test a phantom caster fails the Mistheron
+  pin; a second copy of the advantage maths fails the source-scan pin.
+- 🤖 for the bench: Stillback's Ambush Bite — `1d10 + 3 + (1d6)[Ambush Bite]` on the FIRST bite vs a
+  fooled target, no second card / no re-test on the second bite (Lunavar Fens Bestiary section).
+  `ENGINE_INDEX.md` `edha-ambush-belief` bullet carries the helper map.
+
 ## 2026-09-06 — FIX PASS 7b (item 48): cards, labels, zones — **all nine ship** (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
 
 Eight rulings and one bench defect, and they turned out to be **three families, not nine bugs**: a
