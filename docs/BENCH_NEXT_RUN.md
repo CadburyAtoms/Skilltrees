@@ -86,7 +86,7 @@ one-call read.
 | **`BENCH — hygiene campaign 2026-08-10`** | 7 | The pass 5.2 / 5.3 rows below are counted here — this is where they live in the file. |
 | **Bestiary sections** (W29 ×3, Goldenport, Vorsk, Adversary ability wiring) | 6 | Untouched all marathon; each needs its own adversary import + staging. |
 | **`BENCH — Destruction`** | 1 | ⭐ **NEW and it is a RE-TEST — take it first.** Item 29 (PR #185, merged after this run) made a `kind: line` zone catch **allies** too, per ruling **R-5**. ENGINE-ONLY: the PM deploys it, so **hash-verify before driving** — the served hash will no longer be `06229ecc…`. |
-| **`BENCH — Green`** | 1 | The dark-veil half — see step 4. |
+| **`BENCH — Green`** | 1 | The dark-veil half — see step 5. |
 
 **R-65, Job 6b and both R-64 halves are CLOSED — do not re-queue any of them.** ⚑ is now **21**, not 22:
 item 27 retired the `GM summon relay` row on ruling R-1 after this run.
