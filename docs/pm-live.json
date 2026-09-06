@@ -1,37 +1,24 @@
 {
   "pm": {
     "status": "awake",
-    "note": "Fable PM (Ben-started, 16:56 ET). Inbox: all 66 of your 09-06 answers read and marked seen; every consequence is on the board (rulings table, queue rows 43-62). Foundry is CLOSED, so tonight is lane R: items 45 (rulings close-out docs) and 46 (TODO filing) run now in parallel worktrees, then the engine passes 47+ one at a time. Nothing is owed to deploy-to-foundry.bat until the REBUILD items 55-59 land. Waiting on you only for: remoteControlAtStartup in your user settings.json (my write was blocked), a Foundry window for the bench, a reload of your Gamemaster client.",
-    "waitingOn": null,
+    "note": "Fable PM (Ben-started, 16:56 ET). Both docs items are merged: 46 (the twenty TODO entries, #212, 17:23) and 45 (every ruling recorded in EDHA_RULINGS.md, #213, 17:44). Fix pass 7a (item 47, Opus) dispatched 17:50 in a worktree; 48+ follow one at a time. Foundry is CLOSED, so no bench tonight unless you open it. Nothing is owed to deploy-to-foundry.bat until the REBUILD items 55-59 land. Two rulings were NOT in the phone batch and are still open: R-18 (quarry advantage vs an active disadvantage — default: keep the house convention) and R-48 (Explosive Leap 20 ft vs 5 ft — default: the R-46 treatment, explicit distanceFt: 20, in item 57). Waiting on you otherwise only for a Foundry window and a Gamemaster-client reload.",
+    "waitingOn": "R-18 and R-48 (defaults apply if silent)",
     "nextWakeAt": null,
     "session": "2026-09-06 16:56 ET — Fable PM (hand-started)"
   },
   "workers": [
     {
-      "item": "45",
-      "title": "Rulings close-out 2026-09-06 — EDHA_RULINGS.md, checklist rows, 28a list, scene licence, design seed, handoff delta",
-      "model": "sonnet",
+      "item": "47",
+      "title": "Fix pass 7a — heal / status / resource family: R-10, R-12, R-25, R-36, R-51, R-52(i), R-72 + R-76, R-54",
+      "model": "opus",
       "size": "M",
-      "lane": "R",
-      "branch": "pm/45-rulings-closeout-2026-09-06",
-      "startedAt": "2026-09-06T21:16:00Z",
-      "agent": "Work item 45",
+      "lane": "B",
+      "branch": "pm/47-fix-pass-7a",
+      "startedAt": "2026-09-06T21:50:00Z",
+      "agent": "Work item 47",
       "phase": "working",
       "pr": null,
-      "note": "worktree; docs-only; never touches TODO_REPO_HYGIENE.md"
-    },
-    {
-      "item": "46",
-      "title": "File TODO items 43-62 from the 09-06 rulings",
-      "model": "sonnet",
-      "size": "S",
-      "lane": "R",
-      "branch": "pm/46-file-todo-43-62",
-      "startedAt": "2026-09-06T21:16:00Z",
-      "agent": "Work item 46",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; TODO_REPO_HYGIENE.md only"
+      "note": "worktree; ENGINE-ONLY; eight mutation-proven pins"
     }
   ],
   "usage": null
