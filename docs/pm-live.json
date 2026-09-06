@@ -1,0 +1,5 @@
+{ "pm": { "status": "stopped",
+          "note": "STOPPED at Ben's request (2026-09-06, mid-review). Nothing running, nothing scheduled. PR #207 (bench run 38) is OPEN and NOT merged: CI green, review passed on scope/proof/docs/markers, but its four commits still carry a Co-Authored-By model trailer that iron rule 6 forbids - strip before merging. main is clean at 8619f10.",
+          "waitingOn": "Ben - said stop", "nextWakeAt": null, "session": "2026-09-06 edha-pm-daily (Sunday)" },
+  "workers": [],
+  "usage": null }

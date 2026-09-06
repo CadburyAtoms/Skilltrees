@@ -194,7 +194,7 @@ a worker reports (before review), at step 5 (close), and at step 6 when you sche
 
 ```
 # 1. the live overlay — what the board cannot carry while a worker holds the checkout
-cat > $SCRATCH/live.json <<'EOF'
+cat > docs/pm-live.json <<'EOF'
 { "pm": { "status": "awake|waiting|stopped", "note": "<one sentence Ben should read>",
           "waitingOn": null, "nextWakeAt": "<ISO or null>", "session": "<date + label>" },
   "workers": [ { "item": "16", "title": "…", "model": "sonnet", "size": "S", "lane": "R",
@@ -203,11 +203,19 @@ cat > $SCRATCH/live.json <<'EOF'
   "usage": null }
 EOF
 # 2. project the board (+ overlay, + pm-usage.py --last --json when on Ben's machine)
-node scripts/pm-state.js --live $SCRATCH/live.json [--usage-json $SCRATCH/usage.json] --out $SCRATCH/pm-state.json
+node scripts/pm-state.js --live docs/pm-live.json [--usage-json $SCRATCH/usage.json] --out docs/pm-state.json
 # 3. write it to the artifact's store (no republish needed)
 Artifact(action: "write_db", url: <URL>, db_op: "set", collection: "pm", doc_id: "state",
-         file_path: "$SCRATCH/pm-state.json")
+         file_path: "docs/pm-state.json")
 ```
+
+**The overlay and the projection are TRACKED FILES — `docs/pm-live.json` (the overlay you write)
+and `docs/pm-state.json` (what `pm-state.js` generates from the board + overlay).** They moved out
+of the scratch directory and into the repo on Ben's instruction (2026-09-06) so the exact state the
+phone is showing is reviewable in git rather than sitting in a temp folder outside the checkout.
+Regenerate them in place, push the result to the artifact store, and let them ride to `main` on the
+same PR as the rest of your bookkeeping. The dashboard chunks stay in `$SCRATCH` — they are large,
+derived entirely from tracked source docs, and carry their own stamp.
 
 `workers: []` with `pm.status: "stopped"` is the handoff picture. Omit `--live` and the script
 synthesises a worker from any `running` queue row, so an old snapshot is never blind.
@@ -269,7 +277,18 @@ history. Therefore:
   (unattended), so the way to stand one down is the **"session of record" line at the top of the
   board** — it re-reads the board on every wake. Write that line when Ben moves control to you;
   rewrite it on your own first wake.
-- The tasks use the app's default model, which must remain Fable.
+- **The tasks inherit the app's default model, and NOTHING pins it** — the scheduled-task MCP tools
+  (`create_scheduled_task` / `update_scheduled_task`) expose only taskId, title, prompt, description,
+  cronExpression, fireAt, enabled and notifyOnCompletion; there is **no `model` field**, and no
+  `settings.json` model key was ever set. This line used to read "which must remain Fable", which was an
+  assumption dressed as a rule: on **2026-09-06** the weekend task fired as `claude-opus-5`, ran a whole
+  shift, and spent ~10.3M weighted units of Ben's Opus budget on a day he needed for paid work. Both task
+  prompts now open with a **MODEL GUARD**: state your model, and if it does not begin with `claude-fable`,
+  write nothing, dispatch nothing, push-notify Ben, and stop. **If you are a PM session, you have already
+  passed that guard or you are running at Ben's explicit say-so — if neither is true, stop now.**
+- **Re-read the clock before every dispatch and every budget calculation.** Never reuse an earlier `date`.
+  The same 09-06 session froze for 83 minutes after its opening `date`, then did trailing-window arithmetic
+  on the stale reading and held a dispatch it did not need to hold.
 
 ## Communicating with Ben (agreed 2026-09-04)
 
