@@ -33,6 +33,152 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-05 — BENCH RUN 31 (weekend marathon run 8): **fix pass 3 is VERIFIED GREEN — the Walking Ruin trail now drops for a player-driven move (0 → 3 patches on the identical staging), with the activeGM control still at 3 and no double-drop across two GM clients. Job 6b CLOSES on its last two shapes, the stale-token sight row closes, R-63 gets its first proven shape — and ONE NEW ENGINE DEFECT: `Unravel Everything` never detonates the Omens it places in the same activation.** **3 rows leave the checklist, 1 new row added, 1 half closed on a row that stays open, 1 engine defect found → `test-pass-fixes`.** Open queue **32 🤖 → 30 🤖**; **⚑ unchanged at 22 — no ⚑ row was touched.** **World restored to the start snapshot EXACTLY — field-level actor id-diff EMPTY across all 74 actors, and the ONLY scene deviation is the one `sight.range` write that IS the run's product.** DOCS-ONLY — no engine, no data, no pack rebuild owed.
+
+### Deploy verified from both sides before anything was driven
+
+Served `/modules/edha-content/scripts/register-skills.js`, fetched cache-busted and CRLF-normalised,
+SHA-256 **`c498d9eb0d222a730847d218810b6200f0450540a5f4c5c068478343eb801d54`** — byte-identical to the
+repo's `HEAD:module-src/scripts/register-skills.js` with CRs stripped, on the run's branch base (the
+#178 merge). Paired with `decodedBodySize` on the ORIGINAL `<script>` resource entry (**1 513 650**,
+equal to the cache-busted fetch's), so the engine actually *loaded* is that file and not a cached
+predecessor — the pre-deploy hash `6fc09da0…` was nowhere in evidence. `game.world.id === "edha"`,
+`Bench` joined as GM, `edha-content` active, `globalThis.edha` present, system **2.1.0**.
+
+### ① Walking Ruin's trail, player-driven — **PASS, and it is the fix pass 3 re-test** (row retired)
+
+Driven as run 30's matched pair so the two runs compare directly. `Bench — Destruction` armed
+(`hazardTrail: true` — note the arm warned *"does not have enough free actions"* and armed anyway, the
+standing no-op-warning lesson), its token granted to `PlayerBench`, then **three squares walked from
+`PlayerBench`'s own client** (`game.user.isGM === false`, `animate: false`):
+
+| leg | initiator | Regions | Drawings |
+|---|---|---|---|
+| player move, 1500→1800→2100→2400 @ y 4500 | `PlayerBench` (`isGM: false`) | **3** | **3** |
+| activeGM control, the same three squares reversed | `Bench` (`activeGM.isSelf`) | **3** | **3** |
+| run 30, same staging, pre-fix | `PlayerBench` | **0** | **0** |
+
+The Regions land at exactly the vacated square **centres** — (1650,4650) / (1950,4650) / (2250,4650)
+for the player leg — radius 150 = half the 300 px grid, each carrying `hazard`/`scope`/`terrain` and
+`ownerUuid: Actor.S0L3QBJZLeOwkaM0`. So `edhaPrevTokenCenter`'s top-left → centre conversion off
+`tokenDoc.parent`'s grid is right to the pixel, and the `options.edhaPrevPos` stamp does survive the
+socket.
+
+**Player-visible, re-confirmed on the player-driven trail** (R-34's own answer): from `PlayerBench`'s
+non-GM client, after forcing `canvas.perception.update({initializeVision, refreshVision,
+refreshLighting})` **and** pumping the ticker, all three Drawings read `visible: true`,
+`renderable: true`, `hidden: false`, `text: "🏚️"`, `fillAlpha 0.18`, while the Regions stay
+`visibility: 0`. Run 30 proved this for a GM-dropped trail; it now holds for the trail a player's own
+movement makes.
+
+**The negative the next-run file asked for — no double-drop with a second GM client.**
+`["Bench","Gamemaster","PlayerBench"]` were all active for both legs, i.e. **two GM clients connected
+throughout**, and each leg produced **exactly 3** Regions and 3 Drawings, never 6. The
+`game.users.activeGM.isSelf` single-applier gate holds under the same conditions that produced Apex
+Form's historic double-injury.
+
+### ② Job 6b — the last two shapes, so the row CLOSES
+
+Both driven from `PlayerBench`: non-GM, owning the caster, **not** owning the target — the shape a GM
+can never reach. Full evidence sits on the retired row; in short:
+
+- **enemies-in-range fill** — a sweep of `data/authored/` finds **exactly one** talent shipping
+  `target: enemies-range`: **`Unravel Everything`** (Chaos). Card authored by **PlayerBench**:
+  *"📋 Unravel Everything: Bench Target — Adjacent B, Bench Target — Adjacent A bear your Omen (2/2)."*
+  Both targets took an `Omen` AE with `statuses: ["omen"]` **and**
+  `markedBy.omen = {actorId: BE4wTBHFsOEXw8ev, talent: "Unravel Everything"}`; the owner's `lists.omens`
+  holds both uuids nearest-first, capped at `@tier` = 2.
+- **plain victim mark** — **`Vital Diagnosis`** (Life) is the `edha-apply-status` with no `expire`, so it
+  takes the `edhaWriteStatusMark` branch rather than the timed one. Card authored by **PlayerBench**:
+  *"🎯 Vital Diagnosis: Bench Target — Adjacent A is Diagnosed (by Bench — Life) …"*, `Diagnosed` AE with
+  `statuses: ["diagnosed"]`, `markedBy.diagnosed = {actorId: BSq92BOuvGIW6kDc, talent: "Vital Diagnosis"}`.
+  Captured **live** by a `createActiveEffect` + `updateActor` recorder on the GM client, so the relay is on
+  the record rather than inferred from an end state.
+
+### ③ ❌ NEW ENGINE DEFECT — `Unravel Everything` never detonates the Omens it just placed
+
+Found while staging Job 6b's fill; **the mark relay passed — this is a separate, pre-existing defect the
+staging happened to expose.** The card says *"Place an Omen on every enemy in Attunement Range up to your
+cap …, **then remove all your Omens simultaneously**"*, and both rules ride **`event: use`** with explicit
+`order` (fill 0, sweep 1). Measured as a matched pair on the same actor and targets:
+
+- **Cast 1** (ledger empty) — fill placed 2 and the sweep printed *"sweeping your omens: **no creatures on
+  the ledger**"*. No damage, no Disorient, both Omens left standing, 3 Investiture spent for half a talent.
+- **Cast 2** (ledger already holding those 2) — fill added nothing, sweep **worked**: both *"affected"*,
+  *"10 spirit … 2d8 + 2"*, both Disoriented, HP **A 20→10 / B 41→31**, ledger emptied.
+
+So the `order: 1` sweep reads the ledger **as it stood before the `order: 0` fill committed**, and the
+talent takes two casts (6 Investiture, 6 actions) to do what the card says one does.
+⚠️ **Hypothesis, explicitly not proven here:** the fill commits inside `edhaOwnerListQueue`'s queued async
+RMW (`register-skills.js` ~17790 — `return await edhaOwnerListQueue(...)`, so the *handler* does await),
+and the suspect is one level up, in whatever runs the ordered rule list for `event: use`.
+**`test-pass-fixes` should confirm at the dispatcher rather than take that on trust, and sweep the blast
+radius: any talent that writes an H3 ledger and reads that same ledger in a later-ordered rule of the same
+activation.**
+
+### ④ Stale `sight.range` (row retired) — fixed the narrow way, on purpose
+
+`Bench — Green`'s Playtest-Map token read `sight.range` **10** in both derived and `_source` while its
+prototype read 20. Fixed with a **one-token write** → 20 in both; **all 11 bench scene tokens now read
+20**; re-confirmed from `PlayerBench`'s own non-GM client (`basicSight` detection mode range 20).
+**`edha.fixPcTokens()` was NOT run** — it loops every `character` actor in the world, Ben's two PCs
+included, and is a hard-rule-1 violation from the bench. The general fix — widening the `updateActor`
+sight watcher at `register-skills.js:16508`, which is gated on `changes.system.attributes.awa !== undefined`
+so a setup re-run writing the same AWA is diffed away — is an ENGINE change and was deliberately left
+undone; it is the row to open if another placed token is ever found stale.
+
+### ⑤ R-63 same-side — one shape proven, row stays open
+
+The enemies-in-range disposition filter is one of the 4 migrated filters, and Job 6b's fill is a real
+consumer of it. The caster sat at (2700,5100) with **three friendly bench PCs inside the same Blue
+Attunement Range** — `Bench — Order` adjacent at (3000,5100), `Bench — Red`, `Bench — White`, all
+`disposition: 1` — and **only** the two `disposition: −1` targets were marked. The cap cannot have masked
+it: `capFormula` is `@tier` = 2 and exactly 2 enemies were in range, so a leaked friendly would have
+displaced an enemy in the ledger. The remaining shapes need their own staging; note the sweep finds
+**exactly one** `affects`-carrying aura, `Mantle of the Aspirant` (Power), and it sits on
+`edha-watch-rule`, not on `use`.
+
+### What was NOT driven, and why
+
+- **The four July sections (14 🤖 — wizard v2, Bench-results fixes, Items-dump, Adversary pack sync)** —
+  **not started.** The player-client window plus the re-test block filled the driving budget. They stay 🤖,
+  untouched, and are still the largest untouched block. Six runs running.
+- **The `edha-dark-veil` scene** — **not started** (six runs running).
+- **Job 6a, 2bM-1, R-62's audience rows** — still **BLOCKED**, blocker unchanged and re-measured: they need
+  **zero GM clients**, and `["Bench","Gamemaster","PlayerBench"]` were active throughout. Ben disconnecting
+  `Gamemaster` for one window is the only thing that unblocks them.
+- **2bR-10 Devoted Conduit, 2bL-7 Covenant, the wizard-as-a-player** — the player client was up but these
+  need a second White PC / two Order PCs / a long uninterrupted walkthrough; not staged.
+
+### Deviations from the standard run, declared
+
+- **`scripts/bench-setup-console.js` was NOT re-run this run.** Instead the fixtures it claims to make were
+  asserted directly (the stronger half of that step): all 16 `Bench — <tree>` PCs resolve, `Bench —
+  Destruction` carries `Walking Ruin`, and — the item-37 check — **the Playtest Map holds zero bench
+  orphans**, the only unresolvable `actorId`s being the four pre-existing non-bench tokens the repair
+  correctly leaves alone (`The Forgemaster`, `The Demolisher`, `PC Tester`, `Cragdrake Whelp Pack (1)`).
+  The trade was made for driving budget; a run that needs a fixture this run did not touch should re-run it.
+- **`Guardian Stance (+1 Deflect)` — an ActiveEffect this run can NOT attribute, and deliberately did not
+  delete.** The run's `createActiveEffect` recorder logged one being created on `Bench — Life` *during* the
+  run, which reads like bench drift — but the identical AE also sits on `Bench — Chaos`, `Bench — Order`,
+  `Bench — Red` and `Bench — White`, three of which this run never drove. **The start snapshot captured
+  statuses but not EFFECTS, so it cannot say whether Life's was already there.** Under hard rule 6 —
+  delete only what the snapshot proves you created — all five were left alone. See the runbook lesson.
+
+### World diff at end of run
+
+**Actor id-diff EMPTY across all 74 actors** — ownership, statuses, `flags["edha-content"]`, item counts and
+`_source.system.resources` all back to their start values (flags restored with `-=` deletes and dotted nested
+paths, resources with dotted leaf paths — runs 29/30's lessons applied). **No new actors, no macro change, no
+combat change** (the one pre-existing empty active combat `BerbNeuXp4iKduef` untouched, and **no bench combat
+was ever created**). Both scenes: **no walls, templates, regions or drawings added or removed**; the three
+tokens this run created (`Bench — Destruction`, `Bench — Chaos`, `Bench — Life`) were deleted, token count
+back to 33. Ben's pre-existing plain `Region` on the Playtest Map was never touched.
+
+**The ONE intentional deviation is the run's product:** `Bench — Green`'s token `sight.range` **10 → 20**.
+
+**19 chat messages** were added — bench chat, Ben may flush it. **Both clients logged out**, and `Bench` and
+`PlayerBench` both read selectable on `/join` afterwards; only Ben's `Gamemaster` remains connected.
 ## 2026-09-05 DELTA — item 23: the engine's 3,700 unbannered lines get section banners, and `ENGINE_INDEX.md` gets a section map (**comment-only; the PM re-pushes the file at the next deploy**).
 
 **Deploy class: ENGINE-ONLY in the trivial sense — the file changes, behaviour does not.** Nothing

@@ -790,14 +790,26 @@ player-visible, not GM-only; a fail there is a Drawing-visibility bug, not a new
 > instance**; pinned headless in `tests/pre-hook-client-split.test.js` (two-client model,
 > mutation-verified). Full detail in the 2026-09-05 FIX PASS 3 handoff delta.
 
-- [ ] 🤖 **Walking Ruin trail — a PLAYER-driven move leaves the trail (fix pass 3 re-test)** — engine-only
-      fix, so **F5 / relaunch is enough; no pack rebuild, no ⟳ Sync**. Arm Walking Ruin on a
-      player-owned character, then from the **PLAYER's own client** (`isGM: false`, not the GM
-      dragging it for them) walk the token three squares. Expect **three ruin patches**: three
-      `Bench — Destruction — Dangerous Terrain` Regions at the three vacated square centres, each
-      with its 🏚️ hazard Drawing visible to that player. Re-run the same three squares as the
-      activeGM afterwards as the matched control — that half already passed, and it must still.
-      Nothing should double-drop with a second GM client connected.
+*(**Walking Ruin trail — a PLAYER-driven move leaves the trail (fix pass 3 re-test)** — ✅ **PASS,
+RETIRED on evidence 2026-09-05, bench run 31**, against a served engine hash-verified
+`c498d9eb…` from both sides. Driven exactly as the matched pair run 30 used, so the two runs are
+directly comparable. **`Bench — Destruction` armed** (`hazardTrail: true`), token owned by
+`PlayerBench`, **moved three squares from `PlayerBench`'s own client** (`game.user.isGM === false`,
+`animate: false`, 1500→1800→2100→2400 at y=4500) — **three** `Bench — Destruction — Dangerous
+Terrain` Regions appeared at exactly the three vacated square **centres** (1650,4650) / (1950,4650) /
+(2250,4650), radius 150 = half the 300 px grid, each carrying the `hazard`/`scope`/`terrain` flags and
+`ownerUuid: Actor.S0L3QBJZLeOwkaM0`, plus **three** 🏚️ Drawings at the matching square top-lefts.
+**Where run 30 measured 0 patches for the identical player move, this run measures 3.**
+**Player-visible:** read back from `PlayerBench`'s own non-GM client after a forced perception
+refresh + ticker pump, all three Drawings are `visible: true`, `renderable: true`, `hidden: false`,
+`text: "🏚️"`, `fillAlpha 0.18`, while the Regions stay `visibility: 0` — R-34's indicator answer
+re-confirmed on the player-driven trail, not just the GM one.
+**activeGM matched control:** patches cleared, then the identical three squares walked in reverse by
+the activeGM (`Bench`, `game.users.activeGM.isSelf === true`) — **three** Regions at (2550,4650) /
+(2250,4650) / (1950,4650) + three Drawings. That half still passes.
+**Negative — no double-drop with a second GM client:** `["Bench","Gamemaster","PlayerBench"]` were all
+active throughout, i.e. **two GM clients connected on both legs**, and each leg produced **exactly 3**
+Regions and 3 Drawings, never 6. The single-activeGM applier gate holds.)*
 
 
 ---
@@ -896,6 +908,36 @@ now **`EDHA_RULINGS.md` R-35**.
 
 
 ---
+
+- [ ] 🤖 **NEW DEFECT (bench run 31, 2026-09-05) — `Unravel Everything` never detonates the Omens it
+      places in the SAME activation; it takes two full casts to do what the card says one does.**
+      Card text (`data/authored/deity-chaos.json`): *"Place an Omen on every enemy in Attunement Range up
+      to your cap …, **then remove all your Omens simultaneously** — each removed Omen deals [Tier][Die] +
+      Awareness spirit damage and Disorients its bearer …"*. Both rules sit on **`event: use`** with
+      explicit `order` — `UnravelFill00000` (`edha-owner-list`, `target: enemies-range`) at **order 0**,
+      `UnravelSweep0000` (`edha-def-test`, `vs: none`, `targetList: omens`) at **order 1** — so one
+      activation should fill then detonate.
+      **Measured as a matched pair, same actor, same two targets, same caster position, both casts driven
+      from `PlayerBench`:**
+      **Cast 1** (ledger empty at start) — the fill placed 2: *"📋 Unravel Everything: Bench Target —
+      Adjacent B, Bench Target — Adjacent A bear your Omen (2/2)"*, then the sweep card read
+      *"Unravel Everything, sweeping your omens: **no creatures on the ledger**"*. **No damage, no
+      Disorient, both Omens left standing, `lists.omens` still held both.** 3 Investiture spent for the
+      placement half only.
+      **Cast 2** (ledger pre-loaded with those same 2 from cast 1) — the fill added nothing new (both
+      already on the ledger), and the sweep **worked**: *"sweeping your omens: Bench Target — Adjacent B:
+      affected; Bench Target — Adjacent A: affected"*, *"⚡ … 10 spirit to Bench Target — Adjacent A
+      (2d8 + 2)"*, both **Disoriented**, HP **A 20→10 / B 41→31**, `lists.omens` emptied.
+      So the `order: 1` sweep reads the ledger **as it stood before the `order: 0` fill committed**.
+      ⚠️ **Hypothesis, NOT proven — for `test-pass-fixes` to confirm at the dispatcher, not to take on
+      trust:** the fill commits inside `edhaOwnerListQueue`'s queued async read-modify-write
+      (`register-skills.js` ~17790, `return await edhaOwnerListQueue(...)`), and the `use`-event rule
+      dispatcher appears not to observe that committed ledger before running the next rule. The handler
+      itself *does* await its queue, so the suspect is one level up, in whatever runs the ordered rule
+      list for `event: use`. **Blast radius to check while there:** any talent that places onto an H3
+      ledger and then reads that same ledger in a later-ordered rule of the SAME activation.
+      *(Found while driving Job 6b's enemies-range shape; the mark relay itself passed — this is a
+      separate, pre-existing defect that the Job 6b staging happened to expose.)*
 
 # BENCH — Fate (Olvarra, deity)
 
@@ -1676,13 +1718,19 @@ character-typed `Bench Target/Ally` prototypes read **20** (the AWA watcher reac
 adversary-typed `Bench Target — Undefended` reads **5**. Neither is item 26's doing (its line is inside the
 PCS loop only); recorded so the next reader does not chase it.)*
 
-- [ ] 🤖 **Stale `sight.range` on already-placed bench tokens (found bench run 30)** — `Bench — Green`'s
-      Playtest-Map token stores `sight.range: 10` while its prototype and every other bench PC read 20.
-      Decide and apply the fix: either `edha.fixPcTokens()` (⚠️ **it loops EVERY `character` actor in the
-      world, which includes `Tem parinaem` and `Soggy Bottom` — do NOT run it from the bench**), or a
-      one-token `sight.range` write, or widen the `updateActor` watcher so a no-op AWA write still
-      re-syncs placed tokens. Then re-confirm from a player client. *(Root cause and evidence in the
-      2026-09-05 BENCH RUN 30 delta.)*
+*(**Stale `sight.range` on already-placed bench tokens (found bench run 30)** — ✅ **PASS, RETIRED on
+evidence 2026-09-05, bench run 31.** Fixed the way the row's middle option asks: a **one-token
+`sight.range` write** on `Bench — Green`'s Playtest-Map token (`c1YDFtOpGsPEyIJU`), **not**
+`edha.fixPcTokens()` — that helper loops every `character` actor in the world including Ben's two PCs
+and is a hard-rule-1 violation from the bench. Before: token `sight.range` **10** in both derived and
+`_source` while its prototype read 20. After: **20** in both. **All 11 bench scene tokens now read 20**
+(the 8 pre-existing plus the 3 this run created and deleted). Re-confirmed from `PlayerBench`'s own
+non-GM client: `sight.range` 20 derived and `_source`, `basicSight` detection mode range **20**.
+⚠️ The third option — **widening the `updateActor` sight watcher** (`register-skills.js:16508`, gated on
+`changes.system.attributes.awa !== undefined`, so a setup re-run that writes the same AWA is diffed away
+and never re-syncs a placed token) — is an ENGINE change and is deliberately NOT done here; it is the
+general fix, and the one-token write is the specific one. If another placed token is ever found stale,
+that is the row to open, not this one.)*
 
 What is genuinely LEFT for a two-client window — all of it needs deliberate staging that run 13
 judged too heavy to rush:
@@ -3635,6 +3683,20 @@ observable behavior change, not rows below).
       (`edha-buff-aura`-family with `affects: allies`/`enemies`), Reroll Reaction against a marked
       foe, a Fate snare stepped on by an ally vs. an enemy, Reveal Facts / Investiture-of-Command's
       enemies-in-range button. Confirm normal-disposition behavior is unchanged.
+      ✅ **ONE of the 2–3 shapes PROVEN — an enemies-in-range filter (bench run 31, 2026-09-05); the row
+      stays open for the others.** Measured as a by-product of Job 6b's fill, which is a real consumer of
+      the migrated filter: `Unravel Everything`'s `target: enemies-range` placement ran from a caster
+      token at (2700,5100) with **three friendly bench PCs inside the same Blue Attunement Range** —
+      `Bench — Order` **adjacent** at (3000,5100), `Bench — Red` at (2700,4500), `Bench — White` at
+      (2700,4800), all `disposition: 1` — and **only** the two `disposition: −1` targets
+      (`Bench Target — Adjacent A` and `B`) were marked. The cap did not mask this: `capFormula` is
+      `@tier` = **2** and exactly 2 enemies were in range, so a filter that had leaked a friendly would
+      have shown up as a friendly displacing an enemy in the ledger, and none did. Normal-disposition
+      behaviour is unchanged for this site.
+      **Still to drive:** an aura talent — note the sweep of `data/authored/` finds **exactly one**
+      `affects`-carrying aura, **`Mantle of the Aspirant`** (Power, `edha-test-aura {affects: allies}` on
+      `edha-watch-rule`), so that shape needs a watched test to fire, not a plain `use` — plus Reroll
+      Reaction against a marked foe and/or the Fate snare's ally-vs-enemy spring.
 - [ ] 🤖 **Job 6a — 4 flag/status writes that used to fail SILENTLY with no GM online now warn the
       player instead.** With no GM connected (or `game.users.activeGM` unset), as a non-owning
       player: (1) unmark a ledger entry via `edhaListUnmark`'s consumer (any H3 list release/evict
@@ -3646,30 +3708,36 @@ observable behavior change, not rows below).
       nothing. Also confirm the OTHER 3 unified sites (`edhaSetNextTestMod`, `edhaSovSetSteps`,
       `edhaGrantAdvAttack`, `edhaGrantTempHpCross`) still warn as before (they already did — this is
       a wording-consolidation regression check, not a behavior flip).
-- [ ] 🤖 **Job 6b — `edhaWriteStatusMark`'s GM-relay consolidation is a regression check, not a new
-      capability.** Place a marker via the list-kind placement path (H3's `target: list-members`
-      shape), the enemies-in-range fill (`target: enemies-range`), and a plain victim mark, each
-      relayed to a GM (non-owner marking a creature they don't own) — confirm the status toggles and
-      `markedBy.<status>` lands identically to before. NOTE: the audit that requested this pass
-      described a `combatExpire` field being dropped from two of these three sites' socket payloads;
-      root-causing found no such field on the `edha-owner-list` handler schema at all (checked
-      `data/*.json` + the schema registration) — there was nothing to drop. If a talent DOES need an
-      H3-placed mark to expire at end of combat, that is a missing FEATURE (no authored field exists
-      yet), not a bug this pass fixed — file it as a new ruling if wanted, don't expect a card that
-      changes.
-      ✅ **ONE OF THE THREE SHAPES PROVEN — the list-kind placement path passes; row stays open for the
-      other two** (bench run 30, 2026-09-05). Driven from **`PlayerBench`**, a genuinely non-GM client
-      (`game.user.isGM === false`) that OWNED the caster and did **not** own the target
-      (`target.actor.isOwner === false`) — the shape a GM can never reach. `Seek Quarry`
-      (`edha-owner-list {op: place, list: quarry, status: quarry}`) against `Bench Target — Floater`:
-      the status **toggled** on the target (`statuses: ["quarry"]`), `markedBy.quarry` landed as
-      `{actorId: pU1Cj35Pb6zMKh48, talent: "Seek Quarry"}` — the documented shape — and the owner's
-      `lists.quarry` holds the target's uuid. Card posted from `PlayerBench`:
-      *"📋 Seek Quarry : Bench Target — Floater bears your Quarry (1/1)."* So `edhaWriteStatusMark`'s
-      GM-relay consolidation does relay a non-owner's mark correctly.
-      **Still to drive:** the **enemies-in-range fill** (`target: enemies-range`) and a **plain victim
-      mark**. Both need the player client up again — batch them with the Death Mark row above and the
-      remaining two-PC stagings.
+*(**Job 6b — `edhaWriteStatusMark`'s GM-relay consolidation** — ✅ **PASS, RETIRED on evidence: ALL
+THREE shapes are now proven** (list-kind placement at bench run 30; the enemies-in-range fill and the
+plain victim mark at bench run 31, 2026-09-05). Every leg was driven from **`PlayerBench`**, a genuinely
+non-GM client (`game.user.isGM === false`) that OWNED the caster and did **not** own the target
+(`target.isOwner === false`) — the shape a GM can never reach — with `Bench` as activeGM and Ben's
+`Gamemaster` also connected.
+**① list-kind placement (run 30)** — `Seek Quarry` (`edha-owner-list {op: place, list: quarry, status:
+quarry}`) against `Bench Target — Floater`: status toggled, `markedBy.quarry =
+{actorId: pU1Cj35Pb6zMKh48, talent: "Seek Quarry"}`, owner's `lists.quarry` holds the uuid.
+**② enemies-in-range fill (run 31)** — the row's `target: enemies-range` shape. Swept `data/authored/`
+for it: **exactly one** talent ships it, **`Unravel Everything`** (Chaos,
+`edha-owner-list {op: place, list: omens, status: omen, target: enemies-range, rangeColor: blue,
+capFormula: "@tier"}`). Used from `PlayerBench` against `Bench Target — Adjacent A` + `B` (both
+disposition −1, both alive, neither owned by `PlayerBench`). Card, authored by **PlayerBench**:
+*"📋 **Unravel Everything**: **Bench Target — Adjacent B, Bench Target — Adjacent A** bear your
+**Omen** (2/2)."* Both targets took an `Omen` ActiveEffect carrying `statuses: ["omen"]` **and**
+`markedBy.omen = {actorId: BE4wTBHFsOEXw8ev, talent: "Unravel Everything"}` — the documented shape — and
+the owner's `lists.omens` holds both uuids **nearest-first** (B at 5 ft before A at ~11 ft), capped at
+`@tier` = 2.
+**③ plain victim mark (run 31)** — swept for an `edha-apply-status` on `event: use` with `mark` not
+false: two ship, and **`Vital Diagnosis`** (Life, `status: diagnosed`, no `expire`, so it takes the
+`edhaWriteStatusMark` branch rather than the timed one) was driven from `PlayerBench` with
+`Bench Target — Adjacent A` targeted and not owned. Card, authored by **PlayerBench**: *"🎯 **Vital
+Diagnosis**: **Bench Target — Adjacent A** is **Diagnosed** (by Bench — Life) — damage against it gains
++2 vital (auto-applied)."* `Diagnosed` ActiveEffect with `statuses: ["diagnosed"]` landed and
+`markedBy.diagnosed = {actorId: BSq92BOuvGIW6kDc, talent: "Vital Diagnosis"}` was written — captured
+live on the GM client by a `createActiveEffect` + `updateActor` recorder, so the relay itself is on the
+record, not just its end state.
+The row's `combatExpire` note stands unchanged: there is still no authored field for it, so there was
+nothing to drop and nothing to re-test.)*
 
 ## pass 5.3 (2026-08-10, engine consolidation — cards, costs, dialogs; R-61, R-62, R-66, R-67)
 
