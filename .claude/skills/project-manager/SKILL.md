@@ -194,7 +194,7 @@ a worker reports (before review), at step 5 (close), and at step 6 when you sche
 
 ```
 # 1. the live overlay — what the board cannot carry while a worker holds the checkout
-cat > $SCRATCH/live.json <<'EOF'
+cat > docs/pm-live.json <<'EOF'
 { "pm": { "status": "awake|waiting|stopped", "note": "<one sentence Ben should read>",
           "waitingOn": null, "nextWakeAt": "<ISO or null>", "session": "<date + label>" },
   "workers": [ { "item": "16", "title": "…", "model": "sonnet", "size": "S", "lane": "R",
@@ -203,11 +203,19 @@ cat > $SCRATCH/live.json <<'EOF'
   "usage": null }
 EOF
 # 2. project the board (+ overlay, + pm-usage.py --last --json when on Ben's machine)
-node scripts/pm-state.js --live $SCRATCH/live.json [--usage-json $SCRATCH/usage.json] --out $SCRATCH/pm-state.json
+node scripts/pm-state.js --live docs/pm-live.json [--usage-json $SCRATCH/usage.json] --out docs/pm-state.json
 # 3. write it to the artifact's store (no republish needed)
 Artifact(action: "write_db", url: <URL>, db_op: "set", collection: "pm", doc_id: "state",
-         file_path: "$SCRATCH/pm-state.json")
+         file_path: "docs/pm-state.json")
 ```
+
+**The overlay and the projection are TRACKED FILES — `docs/pm-live.json` (the overlay you write)
+and `docs/pm-state.json` (what `pm-state.js` generates from the board + overlay).** They moved out
+of the scratch directory and into the repo on Ben's instruction (2026-09-06) so the exact state the
+phone is showing is reviewable in git rather than sitting in a temp folder outside the checkout.
+Regenerate them in place, push the result to the artifact store, and let them ride to `main` on the
+same PR as the rest of your bookkeeping. The dashboard chunks stay in `$SCRATCH` — they are large,
+derived entirely from tracked source docs, and carry their own stamp.
 
 `workers: []` with `pm.status: "stopped"` is the handoff picture. Omit `--live` and the script
 synthesises a worker from any `running` queue row, so an old snapshot is never blind.
