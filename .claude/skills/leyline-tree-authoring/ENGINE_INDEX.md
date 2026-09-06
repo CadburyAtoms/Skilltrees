@@ -1,8 +1,10 @@
 # Engine primitives index (`module-src/scripts/register-skills.js`)
 
-Read this instead of re-scanning the 11,000+-line engine. Find code by **grepping the function name**
+Read this instead of re-scanning the ~20,000-line engine. Find code by **grepping the function name**
 (line numbers drift). Helpers are `function` declarations (hoisted) — callable from anywhere.
 **Destruction's section is the worked example** for a deity "signature subsystem"; mirror it.
+For *where in the file* a thing lives rather than *what it is*, read the **section map** below —
+every `/* ===` banner in the engine, in file order.
 
 ## ⚠️ THIS FILE IS HALF THE VOCABULARY — read `data/native-vocabulary.json` too
 
@@ -65,6 +67,55 @@ natively expressible.
 
 Post-mortem: `docs/archive/EDHA_EDITABILITY_AUDIT.md` §9j (how the vocabulary was missed) and **§9k** (the
 re-derived classification, the verified scoping, and the surviving handler set).
+
+## 🗺 THE SECTION MAP — every `/* ===` banner in the engine, in file order (09-05, item 23)
+
+52 banners. Grep the **banner title**, not a line number. Until 2026-09-05 the ~3,700 lines from
+the defence buffs to Destruction carried no banner at all — they sat under the RED tree's header by
+accident of append order, so nothing in this index could point at them. Item 23 bannered them
+(comment-only; `codeOnly(before) === codeOnly(after)`) and this map is the result.
+
+**Shared, before the trees**
+
+| Banner | Owns |
+|---|---|
+| `SHARED CORE` | the registration bootstrap + every cross-tree primitive: the debug tracer (`edhaSetDebug`/`edhaDebugOut`), `registerContent`, `edhaRegisterStatuses`, `edhaRegisterCurrency`; Weakened + the test-modifier rider (`edhaWeakenedPreRoll`, `edhaTestRiderApply`, `edhaFoldDieMath`, `edhaTidyFormula`); the aggro ledger; timed-status expiry (`edhaTurnSeq`, `edhaExpireTimedStatuses`); the rule readers `edhaEventRules`/`edhaRuleOf`; passive damage riders (`edhaRiderBonus`, `edhaWrapRollDamage`); kindle light; ISOLATED marker sync; and **the applyDamage spine** — `edhaDealerOf`, `edhaAttackKind`, `edhaActorRuleOf`, `edhaDamageBonusPost`, `edhaWrapApplyDamage`. Every on-damage trigger in every tree lands in that last one. |
+
+**The tree + handler sections** (self-describing; listed for completeness, in file order)
+
+`BLACK / RITUAL` · `H8 edha-watch` · `H6 edha-prompt-pick` · `H3 edha-owner-list` ·
+`BLACK / SUBJUGATION` · `SHARED TOKEN-MOVE STAMP` · `OPPORTUNITY-SPEND MENU` ·
+`WHITE / COORDINATION` · `CONTESTED-ROLL RESOLUTION` · `WHITE / BULWARK` · `WHITE / ACCORD` ·
+`BLUE / CALCULATION` · `HEROIC PATHS` · `BLUE / ILLUSION` · `BLUE / FORESIGHT` ·
+`RED / MOMENTUM + FRENZY` — then the cross-tree run below — then `DESTRUCTION` · `LIFE` · `CHAOS` ·
+`FATE` · `SOVEREIGNTY` · `DEATH` · `CIVILIZATION` · `POWER` · `KNOWLEDGE` · `ORDER` ·
+`GREEN / TERRITORY` · `GREEN / RESTORATION` · `GREEN / INSTINCT` · `NATIVE EVENT SYSTEM` ·
+`EDHA_CARD_BUTTONS`.
+
+**The cross-tree run** — between the RED and DESTRUCTION banners; bannered by item 23
+
+| Banner | Owns |
+|---|---|
+| `DEFENCE BUFFS` | `edha-defense-buff`: `edhaDefBuffGmGate` · `edhaDefBuffFor` · `edhaApplyDefBuff` · `edhaRemoveDefBuff` · `edhaRefreshDefBuffs` + the ready/combatStart/combatTurnChange/deleteCombat watchers. Recomputes every combatant per turn (the system fires no turn hooks); one GM writes. |
+| `RESOURCE-CONSUME DIALOG TITLE` | `edhaSetConsumeTitle` + `renderItemConsumeDialog` / `renderDialogV2`. Cosmetic. |
+| `TALENT BUDGET` | `edhaIsKeyTalent` · `edhaAllowedTalents` · `edhaKeyPickAllowed` · `edhaCountTalents` + the `preCreateItem` veto (stops the drag, not after). |
+| `SHEET PATH SLOTS + THE BUDGET READOUT` | `EDHA_PATH_SLOTS` · **`edhaSheetRoot`** (the SHARED `renderCharacterSheet` entry point — five decorators hang off it; never re-derive the root inline) · `edhaGetBudget`. |
+| `THE CHARACTER-CREATION WIZARD` | ENGINE-OWNED by declaration (multi-step dialog). ~1,000 lines: `edhaCreationWizard` · `edhaCreatorNewCharacter` · the steps (`edhaCreatorWelcomeStep`/`PickStep`/`AttrStep`/`SkillStep`/`BudgetStep`/`NameStep`) · picks (`EDHA_CREATOR_PICKS`, `edhaCreatorApplyPick`, `edhaCreatorChangeSlot`, `edhaCreatorWeaponPick`, `edhaGrantBasicActions`, `edhaCreatorPathRank`) · **undo** (`edhaCreationWipeIds`, `edhaCreatorWipeOriginPicks`, `edhaCreatorWipePathRank`, `edhaCreationRestart` — a new step owes a wipe) · the map picker (`edhaCwMapData`, `edhaCwWireMap`) · expertises (`edhaPickExpertisesDialog`) · the steppers (`edhaCwStepperDialog`, `edhaCwAttrBudget`, `edhaCwSkillBudget`, `edhaCwDerivedPreview`) · `edhaCleanPackCopy` (pack docs are COPIED, never linked). |
+| `SHEET QoL` | `edhaBudgetRow` + four `renderCharacterSheet` decorators, the Readable-Dark `init` stylesheet, the `createItem` refresh. Purely presentational — nothing here writes a rule, status, or damage. |
+| `TALENT SYNC` | the ⟳ Sync half of AUTHORING_WORKFLOW: `EDHA_SRC_PACKS` · `edhaSrcKey` · `edhaBuildSourceMap` · `edhaSrcFor` · `edhaSyncActorTalents` · `edhaSyncAllCharacters` · `edhaSyncNow`. Matches on (atlas\|group\|name), so a RENAMED talent is left alone rather than overwritten. |
+| `ADVERSARY PACK SYNC` | `EDHA_ADV_PACK_ID` · **`edhaAdvSyncPlan`** (the pure add/update/remove diff) · `edhaAdvSrcFor` · `edhaSyncAdversaryActor` · `edhaSyncAllAdversaries` + the sheet/directory buttons. |
+| `TEMPORARY HP` | `edhaGetTempHp` · `edhaWriteTempHp` · `edhaSetTempHp` · `edhaThpTarget` + the `preApplyDamage` consumer. A module flag, not a system resource; spent before deflect and before real HP. |
+| `SUMMONS` | `edhaSummon` · `edhaSummonCreateGM` (actor creation is GM-only, over the socket) · identity/census `edhaSummonIsFrom` · `edhaSummonSourceTalent` · `edhaOwnedSummons` (what the H15 `sustainCap` counts) · `edhaSummonFolder` · `edhaDeleteActorWithTokens` · `edhaSweepOrphanedTokens` + the mode-gated summon-item veto. |
+| `INJURIES` | `edhaAddInjury` · `edhaFindInjuryTable` · `EDHA_INJURY_FALLBACK` · `edhaCreateItemDocs` / **`edhaCreateItemCross`** (a player cannot create an item on another actor — the cross path relays to the GM). |
+| `TRIGGER GATING & COST` | `_edhaInTrigger` (the file-wide re-entrancy guard) · `EDHA_TRIG_PENDING` · `EDHA_RES_LABEL` · `edhaIsTalent` · `edhaOwnsTalent` (⚠ an iron-rule-2b smell, on the pass-7 ratchet — do not add a caller) · `edhaResVal` · `edhaTriggerAllowed` · `edhaMarkTriggerUsed` · `edhaResolveCost`. |
+| `SENSES, LIGHT & VISIBILITY` | `edhaTokensWithin` · `edhaPointIlluminated` · `edhaSensesRangeFtFromAwa` · `edhaSensesRangeFt` · `edhaCanSee`; the dark veil (`edhaDarkVeilSweep` + `edhaDarkVeilSoon`, **debounced 300 ms** — the sweep is O(tokens) and movement fires in bursts) · `edhaVeilSuppressed`; reveal-on-damage `edhaSenseRevealShows` · `edhaSenseRevealOnDamage`. |
+| `TRIGGERED-EFFECT RESOLUTION` | the runner: `edhaEffectTargets` → `edhaRunTriggerEffect` → `edhaPostTriggerCard` → `edhaDeductCost`, entered at `edhaFireTrigger`; plus `edhaUserTargetToken`/`edhaUserTargetActor`, **`edhaResolveVictim`** (⚠ "victim" ≠ "target" — the creature the event happened TO), `edhaToggleStatus`, `edhaRollCard`, `edhaTriggerCardClick`, and card-state persistence `edhaMarkCardResolved` · `edhaMessageIdOf`. |
+| `SINGLE-TARGET GATE + DEFEAT TRACKING` | `edhaSetUserTargets` (the one writer of `game.user.targets`) · `edhaPickTargetClick` + the `preUseItem` gate; **`edhaKillerCandidates`** + the `updateActor` defeat sync — what every "when you defeat a creature" talent reads, since the system fires no defeat event. |
+| `TARGETING: ATTUNEMENT RANGE + AoE TEMPLATES` | the reach model: `EDHA_ATTUNE_FT` (feet by colour RANK, not by talent) · `EDHA_LEY_COLORS` · `EDHA_COLOR_HEX` · `EDHA_RANGE_RING_HEX` · `edhaTalentColor` · **`edhaColorRank`** (every range check in the file resolves through it) · `edhaCasterToken`; canvas: `edhaDrawCircle` · `edhaTokensInCircle` · `edhaShowRange` · `edhaPlaceAoe` · `edhaNextTokenName`. |
+| `POINT-TARGETED AoE BURSTS` | `EDHA_BURST_PENDING` (the in-flight burst ledger) · `edhaPickPoint` (capture-phase click on `#board`, so it fires over tokens without the Templates layer). |
+| `SYNCHRONOUS FORMULA & DICE EVALUATION` | the [Tier][Die] evaluator, the most reused block in the run: `edhaRandomFace` (draws from `CONFIG.Dice.randomUniform` so a seeded bench stays faithful) · **`edhaRollDiceSync`** · **`edhaEvalSync`** (PURE — pinned in `tests/`; a fix here ships a regression case) · `edhaRollFormula` · `edhaSubstRankTier` → `edhaTargetFormula` (substitution order matters) · `edhaNormalizeDie` · `edhaRecoveryDie` · `edhaConsumeList` · `edhaConsumeCost` · `edhaPickPlacement`. Synchronous on purpose: these run inside `preUseItem` and applyDamage wrappers, where an `await` lets the system's write land first. |
+| `COST REFUND ON CANCEL` | `EDHA_PRE_COST_RES` (pre-use snapshot) · **`edhaAwaitCostCharged`** · `edhaRefundCost`. A refund is a CREDIT racing the system's ABSOLUTE write — wait for the charge, then credit. Bench run 13 / 2bAA-8, fixed 07-27q. |
+| `BURST EXECUTION + THE GM SOCKET RELAY` | `edhaCastBurst` → `edhaBurstDetonate` (captures tokens at the template's REAL dragged position) → `edhaApplyBurstResults`; `edhaBurstCancel`; `edhaBurstSpecFromCfg` (builds a spec from an authored rule — how a document-driven talent reaches this without the engine knowing its name); and **`EDHA_SOCKET_ACTIONS`**, the file-wide GM relay table. Every player→GM write in the engine is registered there — add an action, never a second channel. |
 
 ## ⛑ THE DEAD-FIELD FAMILY — never guess a `system.<field>` name (three shipped bugs, now GATED)
 
