@@ -757,9 +757,18 @@ evaluates a multi-talent group with `.some()`, so either parent alone suffices; 
 `data/domain.json` matches). Evidence per row in the 07-26m delta. ⚑ the drawn-tree eyeball for
 the prereq row is still Ben's.
 
-**✅ DESTRUCTION HAS NO OPEN BENCH ROWS (2026-07-27w).** Its last survivor — Walking Ruin having no
-token indicator, unlike every other scene-arm in the project — was a consistency call with nothing
-to test, and is now **`EDHA_RULINGS.md` R-34**.
+**✅ DESTRUCTION'S CONSISTENCY QUESTION IS SETTLED (2026-09-05, `EDHA_RULINGS.md` R-34): "needs a
+region left behind."** Walking Ruin having no token status icon, unlike every other scene-arm in the
+project, was a consistency call — Ben's answer reads as: no icon needed, because the trail rule
+already drops a player-visible dangerous-terrain Region into every square the armed character moves
+through, and that trail IS the indicator. One 🤖 confirmation row is added below to prove it renders
+player-visible, not GM-only; a fail there is a Drawing-visibility bug, not a new indicator to build.
+
+- [ ] 🤖 **Walking Ruin trail indicator (R-34)** — arm Walking Ruin, move three squares on a PLAYER
+      client (not GM), and confirm three ruin-patch Region Drawings render for the player as the
+      character passes through — the trail *is* the indicator, no token status icon expected. If no
+      Drawing is visible to the player client, file it as a Drawing-visibility bug, not as R-34
+      reopened.
 
 
 ---
@@ -1337,12 +1346,13 @@ Temp HP + advantage on their next attack test", flags `tempHp` + `advAttackNext`
 Bench Target — Adjacent B, Bench Target — Undefended take **9** spirit", all three HP-verified), then
 "The Decree is spent.").
 
-⚠️ **WORLD-HYGIENE / SCOPE SIGHTING from 2bV-9 — for the rulings batch, not a bug report.** Final
-Decree's "every enemy in Attunement Range" has **no encounter scoping**, so on a shared map it binds
-every hostile token in range — this run it decree-bound five of Ben's placed playtest adversaries
-(Frostbinder, Stitchmother, three Mutated Thralls) alongside the four bench targets, writing the
-`Edict-Bound` status to them. Same family as the standing out-of-combat scope characterization (07-26k).
-The run cleared what it applied.
+✅ **WORLD-HYGIENE / SCOPE SIGHTING from 2bV-9 — SETTLED by `EDHA_RULINGS.md` R-7 (2026-09-05):
+"attunement range is correct."** Final Decree's "every enemy in Attunement Range" has **no encounter
+scoping**, so on a shared map it binds every hostile token in range — this run it decree-bound five of
+Ben's placed playtest adversaries (Frostbinder, Stitchmother, three Mutated Thralls) alongside the four
+bench targets, writing the `Edict-Bound` status to them. Same family as the standing out-of-combat
+scope characterization (07-26k). The run cleared what it applied. **Ben confirmed Attunement Range is
+the intended scope — not a defect.** No engine change.
 *(**2bL-7 — Covenant — the SHARED icon** — RETIRED on evidence 2026-09-05, bench run 26, as a
 **positive/negative pair**, by staging TWO extra Order PCs deliberately (`Bench — Order II` and
 `Bench — Order III`, full duplicates in the bench folder with their `edha-content` flags cleared, both

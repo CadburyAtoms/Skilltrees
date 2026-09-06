@@ -62,6 +62,37 @@ map at 20 ft instead of 10 ft. Row added under `# 🎮 Player-client window` ("B
 range (R-2, item 26)").
 
 TOOLING-only — no engine file touched, no pack rebuild, no talent change.
+## 2026-09-05 DELTA — item 30: rulings close-out for R-7, R-19, R-34, R-49 (DOCS-ONLY).
+
+Ben answered four rulings from the mobile board on 2026-09-05, each confirming behaviour that
+already ships — no engine change, no card change for any of the four. Moved all four to
+`EDHA_RULINGS.md` §K (Settled), keeping each ANSWERED block verbatim, and pushed the consequence
+into `EDHA_FOUNDRY_TEST_CHECKLIST.md`:
+
+- **R-7** (Final Decree / Edict's Temp HP rider scope): "attunement range is correct." Reworded the
+  BENCH — Order section's 2bV-9 "WORLD-HYGIENE / SCOPE SIGHTING … for the rulings batch" note to
+  record the scope as confirmed, not open.
+- **R-19** (combat-timing talents granting to adversaries too): "yes." No live checklist row still
+  carried the "stayed PC-only" hedge — 2bE-9 was already retired to a bare evidence line at bench
+  run 23 (2026-07-28l) — so nothing needed rewording there; the open *question* is closed regardless.
+- **R-34** (Walking Ruin's indicator): "needs a region left behind," read as no token status icon —
+  the trail rule's player-visible dangerous-terrain Region drops ARE the indicator. Reworded the
+  Destruction section's "HAS NO OPEN BENCH ROWS" note and added the one 🤖 row it calls for: arm
+  Walking Ruin, move three squares on a player client, confirm three ruin patches render
+  player-visible. A fail there is a Drawing-visibility bug, not R-34 reopened.
+- **R-49** (is a creature an obstacle for push collision damage): "an actor is an obstacle." Matches
+  the shipped default; no live row asked this as an open question, so nothing to reword.
+
+**Checklist marker counts** (`grep -E '^\s*- \[ \]' EDHA_FOUNDRY_TEST_CHECKLIST.md | grep -c '🤖'` /
+`… | grep -c '⚑'`): before this item's own change (i.e. including item 37's row) **32 🤖 / 22 ⚑**,
+after **33 🤖 / 22 ⚑** — the one new row is R-34's confirmation; ⚑ is unchanged, as none of these
+four rulings creates a judgment call.
+
+**Note on older deltas:** earlier dated deltas below (and any older mention of the R-19 "PC-only"
+hedge) are left exactly as written — they are history, not live checklist state, and are not
+retroactively edited by this close-out.
+
+`node scripts/build-dashboard.js` re-run and `EDHA_DASHBOARD.html` committed with this change.
 
 ---
 
