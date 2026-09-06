@@ -116,7 +116,7 @@ const { applyAuthorable, fingerprint, readPack, slugify } = require("./edha-pack
 // imported: classic-level at load + a top-level async IIFE). Do not re-inline it here — see
 // TODO_REPO_HYGIENE #16 (a malformed authored file used to be dropped silently; the shared loader
 // throws, naming the file, instead).
-const { loadAuthoredIndex } = require("./foundry-build-parts.js");
+const { loadAuthoredIndex, authoredOverlayFor } = require("./foundry-build-parts.js");
 // Foundry-authored overrides (data/authored/*.json, captured by foundry-extract.js). Each maps a
 // talent (by docId, falling back to name) to an authorable projection — description/activation/damage/
 // events/effects/img — that OVERLAYS the generated talent so edits made directly in Foundry win and
@@ -457,7 +457,7 @@ function pathEvents(tree) {
   const out = {}; // pack -> { items:[], folders:[] }
   for (const pack of Object.values(ATLAS_PACK)) out[pack] = { items: [], folders: [] };
 
-  const report = { talents:0, trees:0, paths:0, edges:0, skillPrereqs:0, narrative:0, rollable:0, events:0, effects:0, authored:0, unresolved:[] };
+  const report = { talents:0, trees:0, paths:0, edges:0, skillPrereqs:0, narrative:0, rollable:0, events:0, effects:0, authored:0, authoredByName:[], unresolved:[] };
   const backgrounds = []; // { file, content } SVGs to write after packs
 
   for (const tree of trees) {
@@ -576,8 +576,17 @@ function pathEvents(tree) {
       // Overlay Foundry-authored edits (description/activation/damage/events/effects/img). Authored wins
       // over both the generator and the side-file tables, so in-Foundry edits captured by foundry-extract.js
       // persist. Structural fields (name/ids/prerequisites/folder/node graph) stay generator-owned.
-      const ovr = AUTHORED.byId[t.docId] || AUTHORED.byName[t.name];
-      if (ovr) { applyAuthorable(talentDoc, ovr); report.authored++; }
+      // docId first; the name is a fallback ONLY within this talent's own atlas+group. It used to
+      // be a global last-file-wins map across all 21 overlays, which meant a renamed talent (a
+      // rename changes its docId — `fid("talent:<tree>:<name>")`) could silently pick up ANOTHER
+      // tree's overlay: 12 talent names live in 2–7 files (TODO_REPO_HYGIENE #18).
+      const ovr = authoredOverlayFor(AUTHORED, { docId: t.docId, name: t.name, atlas: tree.atlas, group: tree.group });
+      if (ovr) {
+        applyAuthorable(talentDoc, ovr); report.authored++;
+        // Surfaced because it is the live symptom of a stale docId: the overlay was captured under
+        // a different name and only its (scoped) name still matches. Re-extract to re-key it.
+        if (!AUTHORED.byId[t.docId]) report.authoredByName.push(`${tree.atlas}/${tree.group} "${t.name}"`);
+      }
       P.items.push(talentDoc);
       report.talents++;
 
@@ -844,6 +853,13 @@ function pathEvents(tree) {
   if (itemsReport) console.log(`  ${ITEMS_PACK}: ${itemsReport.items} items, ${itemsReport.folders} folders`);
   if (backgrounds.length) console.log(`  backgrounds: ${backgrounds.length} SVGs written to ${MODROOT}/backgrounds`);
   if (report.unresolved.length) { console.log(`  unresolved edge refs: ${report.unresolved.length}`); report.unresolved.slice(0, 12).forEach(u => console.log("    -", u)); }
+  // A talent whose overlay matched by NAME rather than docId has a stale docId — almost always a
+  // rename since the last `foundry-extract.js`. Harmless now the fallback is tree-scoped, but it
+  // is the exact condition that used to let another tree's overlay through (TODO_REPO_HYGIENE #18).
+  if (report.authoredByName.length) {
+    console.log(`  authored overlays matched by name (stale docId — re-extract to re-key): ${report.authoredByName.length}`);
+    report.authoredByName.slice(0, 12).forEach(u => console.log("    -", u));
+  }
 })().catch(e => { console.error(e); process.exit(1); });
 
 function stats() { return { coreVersion: CORE, systemId: SYSID, systemVersion: SYSVER, createdTime: NOW, modifiedTime: NOW, lastModifiedBy: null, compendiumSource: null, duplicateSource: null, exportSource: null }; }

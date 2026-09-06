@@ -41,7 +41,15 @@ function prereqGroups(s, isName) {
   return out;
 }
 
-// Build the authored-overlay index: <dataDir>/authored/*.json -> { byId, byName, count }.
+// The scope an authored overlay belongs to: ONE tree, keyed "<atlas>/<group>", lowercased so a
+// case drift between `_meta.group` and `tree.group` can never silently miss. This is the unit the
+// name fallback is allowed to search — see loadAuthoredIndex.
+function authoredScopeKey(atlas, group) {
+  return `${String(atlas || "").trim()}/${String(group || "").trim()}`.toLowerCase();
+}
+
+// Build the authored-overlay index: <dataDir>/authored/*.json ->
+//   { byId, byTree, collisions, ambiguous, count }.
 //
 // TODO_REPO_HYGIENE #16: foundry-build.js used to read this directory inline with
 // `try { j = JSON.parse(...) } catch { continue; }` per file — a malformed authored file was
@@ -50,23 +58,82 @@ function prereqGroups(s, isName) {
 // `loadJson` (scripts/lib/data.js), which THROWS, naming the file, on a read or parse failure —
 // the caller (foundry-build.js) is expected to let that propagate and fail the build loudly.
 //
+// TODO_REPO_HYGIENE #18: the index used to carry a GLOBAL `byName` map, built last-file-wins
+// across all 21 overlays, and foundry-build.js consulted it whenever the docId lookup missed.
+// Twelve talent names live in 2–7 different overlay files (Hardy ×7, Mighty ×6, Collected ×5,
+// Composed, Baleful, Surefooted, Shatter Focus, …), so that fallback could hand a talent ANOTHER
+// TREE'S overlay — and the fallback is not dormant: a docId is `fid("talent:<tree>:<name>")`, so
+// it changes on every rename, and deity/Knowledge's "The Final Study" already resolves by name
+// today because its stored docId no longer matches its current name. It landed on the right
+// overlay only by luck of file order. The global map is therefore GONE, replaced by `byTree` —
+// one name map per tree scope — so the fallback cannot leave the talent's own atlas+group.
+// Do not re-add a flat byName; `authoredOverlayFor` below is the only intended lookup.
+//
+// `collisions` = names present in ≥2 DIFFERENT scopes (harmless now that the fallback is scoped,
+// but listed in the build log so the hazard stays visible); `ambiguous` = the same name defined
+// twice WITHIN one scope, which is a genuine last-one-wins coin flip and is warned about loudly.
+//
 // A MISSING `authored/` directory itself is not an error (matches the pre-existing behaviour:
 // some data dirs used in tests/scratch builds omit it entirely) — only a per-file read/parse
 // failure throws.
-function loadAuthoredIndex(dataDir) {
-  const byId = {}, byName = {};
+function loadAuthoredIndex(dataDir, { warn = console.warn } = {}) {
+  const byId = {}, byTree = {};
   let files = [];
-  try { files = fs.readdirSync(`${dataDir}/authored`).filter((f) => f.endsWith(".json")); }
-  catch { return { byId, byName, count: 0 }; }
+  try { files = fs.readdirSync(`${dataDir}/authored`).filter((f) => f.endsWith(".json")).sort(); }
+  catch { return { byId, byTree, collisions: [], ambiguous: [], count: 0 }; }
   let count = 0;
+  const seen = new Map();   // talent name -> Map(scope -> [file, ...])
   for (const f of files) {
     const j = loadJson(`${dataDir}/authored/${f}`);   // throws, naming the file, on a broken read/parse
+    // Convention (scripts/lib/data.js): data/authored/<atlas>-<group>.json, with the same pair
+    // repeated in `_meta`. `_meta` wins; the filename is the fallback so an overlay written
+    // without `_meta` still lands in a real scope instead of a catch-all bucket.
+    const stem = f.replace(/\.json$/i, "");
+    const dash = stem.indexOf("-");
+    const meta = j._meta || {};
+    const scope = authoredScopeKey(
+      meta.atlas || (dash > 0 ? stem.slice(0, dash) : stem),
+      meta.group || (dash > 0 ? stem.slice(dash + 1) : "")
+    );
+    const bucket = (byTree[scope] ||= {});
     for (const [name, entry] of Object.entries(j.talents || {})) {
       if (entry && entry.docId) byId[entry.docId] = entry;
-      byName[name] = entry; count++;
+      bucket[name] = entry; count++;
+      const scopes = seen.get(name) || new Map();
+      scopes.set(scope, [...(scopes.get(scope) || []), f]);
+      seen.set(name, scopes);
     }
   }
-  return { byId, byName, count };
+  const collisions = [], ambiguous = [];
+  for (const [name, scopes] of [...seen.entries()].sort((a, b) => a[0].localeCompare(b[0]))) {
+    for (const [scope, inScope] of scopes) {
+      if (inScope.length > 1) ambiguous.push({ name, scope, files: inScope });
+    }
+    if (scopes.size > 1) collisions.push({ name, scopes: [...scopes.keys()].sort() });
+  }
+  for (const a of ambiguous) {
+    warn(`  [authored] AMBIGUOUS: "${a.name}" is defined twice in scope ${a.scope} (${a.files.join(", ")}) — last file wins`);
+  }
+  const line = formatAuthoredCollisions(collisions);
+  if (line) warn(line);
+  return { byId, byTree, collisions, ambiguous, count };
 }
 
-module.exports = { prereqGroups, loadAuthoredIndex };
+// The ONE build-log line that makes cross-tree name collisions visible; null when there are none.
+// Kept separate from loadAuthoredIndex so a test can pin the exact text the build prints.
+function formatAuthoredCollisions(collisions) {
+  if (!collisions || !collisions.length) return null;
+  return `  [authored] ${collisions.length} talent name(s) appear in more than one overlay — the name ` +
+         `fallback is scoped to each talent's own atlas+group, so these cannot cross trees: ` +
+         collisions.map((c) => `${c.name} ×${c.scopes.length}`).join(", ");
+}
+
+// Resolve the authored overlay for one generated talent. The docId is authoritative; the name is
+// only a fallback, and only WITHIN the talent's own tree (TODO_REPO_HYGIENE #18 — see above).
+function authoredOverlayFor(index, { docId, name, atlas, group }) {
+  if (docId && index.byId[docId]) return index.byId[docId];
+  const bucket = index.byTree[authoredScopeKey(atlas, group)];
+  return bucket ? bucket[name] : undefined;
+}
+
+module.exports = { prereqGroups, loadAuthoredIndex, authoredScopeKey, authoredOverlayFor, formatAuthoredCollisions };

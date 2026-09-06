@@ -1,0 +1,6 @@
+{
+  "_meta": { "atlas": "heroic", "group": "Warrior", "note": "fixture for tests/authored-overlay-scope.test.js — shares the name \"Hardy\" with leyline-black.json" },
+  "talents": {
+    "Hardy": { "docId": "fixHW01", "marker": "heroic-warrior", "description": "The Warrior tree's Hardy." }
+  }
+}

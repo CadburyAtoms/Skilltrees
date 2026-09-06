@@ -33,6 +33,45 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-05 DELTA — item 18: the authored overlay's name fallback can no longer cross trees (TOOLING-only).
+
+`loadAuthoredIndex` (`scripts/foundry-build-parts.js`) built a **global `byName` map**, last file
+wins across all 21 `data/authored/*.json` overlays, and `foundry-build.js` used it whenever the
+docId lookup missed: `AUTHORED.byId[t.docId] || AUTHORED.byName[t.name]`. **Twelve talent names
+live in 2–7 different overlay files** (Hardy ×7, Mighty ×6, Collected ×5, Composed ×3, Baleful ×3,
+Surefooted ×3, Combat Training, Customary Garb, High Society Contacts, Shatter Focus, Swift
+Strikes, Well Dressed), so that fallback could hand a talent **another tree's** authored text,
+events and effects.
+
+**It is not dormant.** A docId is `fid("talent:<tree>:<name>")`, so it changes on every rename —
+and measuring today's data found **one talent already resolving by name**: deity/Knowledge's
+**"The Final Study"**, whose stored docId (`WKWGvUtfrlOZVc0B`) matches no current tree+name seed.
+It is the only orphaned docId in all 365 overlay entries, and it landed on the right overlay only
+because no other tree defines that name. The next rename of a *colliding* name would not be lucky.
+
+The flat map is gone. The index now carries **`byTree`** — one name map per `"<atlas>/<group>"`
+scope, lowercased — and the single lookup `authoredOverlayFor(index, {docId, name, atlas, group})`
+tries the docId first and then the name **only inside the talent's own tree**. Two things are now
+visible in the build log: one line listing every name that appears in more than one overlay, and a
+loud `AMBIGUOUS` warning (naming both files) if a name is ever defined **twice within one scope** —
+the genuine coin flip, which today's data does not have. The build report also prints any overlay
+that matched by name rather than docId, which is how you spot a stale docId: today it prints
+`authored overlays matched by name (stale docId — re-extract to re-key): 1 — deity/Knowledge "The
+Final Study"`.
+
+**Proved by pack parity**: all five packs + the 11 background SVGs are content-identical before
+and after on unmodified `data/` (leyline `1ba93134…`, deity `35cbc6b3…`, heroic `b5675fc3…`,
+adversaries `2f511f17…`, items `f302d215…` — the same five hashes PR #136 published), and
+`authored-overlays:365` is unchanged. So **no overlay changed hands**; this is TOOLING-only, no
+rebuild and no ⟳ Sync owed. Pinned by `tests/authored-overlay-scope.test.js` (7 cases,
+fixtures under `tests/fixtures/authored-collision/`), mutation-checked: restoring the flat
+last-file-wins fallback fails two of them. Nothing here is 🤖 — it never reaches a live table.
+
+**Left alone, deliberately:** "The Final Study"'s stale docId is a `data/authored/` edit and needs
+Ben's re-extract + rebuild; the build now names it every run instead of hiding it.
+
+---
+
 ## 2026-09-05 — BENCH RUN 29 (weekend marathon run 6): **the three `Unstoppable` CANVAS halves are PROVEN and run 28's 2×2-footprint diagnosis is RETRACTED — the blocker was never the walls; R-65's last two rows close (both with corrected subjects); both open R-64 halves are settled as "no drivable shape", proven from data.** **5 rows leave the checklist, 2 halves closed on rows that stay open, 0 engine defects found.** **World restored EXACTLY — field-level id-diff empty across all 74 actors, 33 tokens, both scenes.** DOCS-ONLY — no engine, no data, no pack rebuild owed.
 
 **Served-engine check (first act of the run).** Cache-busted
