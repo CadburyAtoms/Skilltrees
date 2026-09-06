@@ -382,6 +382,54 @@ visual-legibility judgment — still ⚑ Ben.
 
 *(**item 37 — orphan-token repair** — RETIRED on evidence 2026-09-05, bench run 30. Run 1: `BENCH SETUP DONE — 16 PCs, 7 targets … orphans: **3 repaired, 0 replaced**`, one ⚠ line per orphan naming `Bench — Green`, `Bench — Heroic`, `Bench Target — Floater`; zero talent/path ⚠ lines. Run 2: `orphans: **0 repaired, 0 replaced**`, no `CREATED` and no `+N talents` line — idempotent. After the repair each token's `actorId` resolves to its own roster actor and **all three drive**: `Bench — Green` drew mana and its `edha-zone` placement ran to completion (Region `Bench — Green — Difficult Terrain`, `terrain.ownerUuid: Actor.KYTl8CYAycyeNR11`) — exactly the flow that refused with "no token on the scene to place terrain from" at run 27; `Bench — Heroic` drove `Sharp Eye` to a resolved card, "Sharp Eye : 6 vs Bench Target — Floater's COG 14 — FAIL", which is also the proof that the repaired **Floater** token resolves as a def-test TARGET. ⚠️ **Four OTHER orphans exist on the Playtest Map** — `The Forgemaster`, `The Demolisher`, `PC Tester`, `Cragdrake Whelp Pack (1)` — and the planner correctly left all four alone: none is a bench-roster name, so they are not ours to touch.)*
 
+## Out-of-combat scope — R-4's half (a) (2026-09-06, item 28a)
+
+*(Engine sync + **F5**, NO pack rebuild. Four faces of one ruling plus the negative control; run them
+with **no combat in the tracker** unless a row says otherwise. **R-4 is NOT settled by these alone** —
+28b, the bookkeeping-write tagging, is a separate PR and its own rows. Do **not** read a focus-spend
+misclassification here as a 28a failure; that is 28b's, and R-8's roster cross-talk is its own open
+ruling.)*
+
+- [ ] 🤖 **A per-round ledger no longer runs on "round 0 for ever" out of combat (28a).** With
+      **no combat running**, use a `oncePerRound` talent on `Bench — Red` twice in a row (Unstoppable
+      is the reference), then use it a third time after a short pause. Expected: it works **every
+      time** — out of combat there is no round to be "once per" and the talent must stay usable. Then
+      **start a combat**, use it twice in the same round: the second use is refused, and it re-opens
+      when the round advances. The failure this pins is the OLD behaviour in the first half — the
+      first out-of-combat use silently locking the talent for the rest of the session.
+
+- [ ] 🤖 **"Restrained until the end of its next turn" actually expires (28a).** With **no combat**,
+      apply a timed status from a talent (`Bench — Black`'s Restrained rider, or any
+      `edhaApplyTimedStatus` consumer) onto a target. Expected: the status lands and the effect
+      carries a `timedExpire` **intent** (inspect the AE's flags), NOT a coordinate. Now roll
+      initiative with both creatures in the combat and advance turns: the pass stamps it and the
+      status **drops** at the end of the reference creature's next turn. Before the fix it was
+      stamped with nothing and was immortal. Also check the in-combat direction: a status applied
+      **while a combat is already running** stamps a coordinate directly and expires on schedule.
+
+- [ ] 🤖 **An adversary's own ability cost is no longer taxed by enemy watches out of combat (28a).**
+      Give `Bench — Black` `Coercive Pressure` (or `Whispered Doubt` — both are `scope: scene`,
+      `disposition: enemy`, `watch: focus-change`). With **no combat running**, spend focus on an
+      enemy adversary by any means. Expected: **no** 👁️ watcher card fires. Then start a combat with
+      both in it and repeat: the watcher fires exactly as before. The failure this pins is the
+      out-of-combat half — every rule-owner on the scene reacting to every focus change.
+
+- [ ] 🤖 **Two combats at once: a watch reads its OWN combat, not the one you are looking at (28a).**
+      Start **two** combats — combat A with `Bench — Black` and an enemy, combat B with
+      `Bench — Red` and another. **Select combat B in the tracker** and advance it a few rounds, then
+      act in combat A. Expected: combat A's once-per-round guards, timed-status expiries and strike
+      windows all key on **A's** round/turn — B's ticks neither refresh nor consume them — and a
+      scene-scoped watcher in A does **not** fire on an event in B. Before the fix every one of these
+      read whichever combat the tracker had selected.
+
+- [ ] 🤖 **NEGATIVE CONTROL — a legitimately out-of-combat rule STILL fires (28a).** This is the risk
+      the gate was pinned against, so run it even if the four rows above pass. With **no combat**:
+      (a) a `scope: self` watch still fires on its owner's own roll — make a Deception test with
+      `Extract Thought` owned and confirm the watcher card appears; (b) an Order/Shatter **prompt**
+      still offers out of combat (and still debounces on repeat within ~30 s); (c) a movement or
+      designate **window** armed out of combat is still open when it is consumed. Any silence here is
+      a **28a regression**, not expected behaviour — report it as a fail.
+
 ## Migration machinery (cross-tree behaviour)
 
 > **✅ Bench run 9 (2026-07-27i) retired seven Engine-wide rows on evidence** — **2bB-8** (neither
