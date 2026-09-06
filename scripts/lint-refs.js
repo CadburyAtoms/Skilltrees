@@ -1638,8 +1638,12 @@ engine.split("\n").forEach((lineText, i) => {
       // of the SAME idiom left as an explicit backlog. Added 2026-08-10 (hygiene campaign wave 6);
       // its "original" freeze is THIS pass landing, not the 2026-08-10 idiom-ratchet freeze the
       // other eight keys share — see engine-idiom-ratchet.json's _README.
+      // BATCH 1 (item 10, 2026-09-06) took it 74 -> 11 by migrating every site that gates a world
+      // write, a damage/status application, a ledger stamp or live dice math onto the VALUE-level
+      // pair edhaSideSame / edhaSideHostile. The 11 survivors are batch 2: reads whose only
+      // consumer is a card's wording or a picker list a human then confirms.
       { key: "dispoFailOpen", re: /disposition\s*\?\?\s*[01]\b/g,
-        helper: "edhaDisposHostile / edhaSameDisposition (or the equivalent inline Number.isFinite guard, per R-63)" },
+        helper: "edhaSideSame / edhaSideHostile for two raw sides, edhaDisposHostile / edhaSameDisposition for two actors, edhaActorSide for an owner's own side (R-63)" },
     ];
 
     const recorded = ratchet.counts || {};
