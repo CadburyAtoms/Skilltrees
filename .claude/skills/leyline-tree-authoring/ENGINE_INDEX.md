@@ -63,7 +63,7 @@ an object — it lands a string. Caught on Reckless Momentum's plot die (audit �
 injects but the card's source label is lost. Check the consumer's shape before calling something
 natively expressible.
 
-Post-mortem: `EDHA_EDITABILITY_AUDIT.md` §9j (how the vocabulary was missed) and **§9k** (the
+Post-mortem: `docs/archive/EDHA_EDITABILITY_AUDIT.md` §9j (how the vocabulary was missed) and **§9k** (the
 re-derived classification, the verified scoping, and the surviving handler set).
 
 ## ⛑ THE DEAD-FIELD FAMILY — never guess a `system.<field>` name (three shipped bugs, now GATED)

@@ -1,7 +1,7 @@
 # What sixteen passes measured
 
 Every entry cost a pass to learn. They are grouped by the mistake they prevent, not chronologically.
-Full prose lives in `EDHA_EDITABILITY_AUDIT.md` §9n and §9o; this is the distillate.
+Full prose lives in `docs/archive/EDHA_EDITABILITY_AUDIT.md` §9n and §9o; this is the distillate.
 
 ---
 

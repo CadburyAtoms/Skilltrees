@@ -45,7 +45,7 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
 | `EDHA_RULINGS.md` | **THE standing decisions doc** (added 2026-07-27w). Every open question waiting on Ben — 45 numbered rulings grouped by theme, each with its recommended default and the marathon item / checklist row it came from. It exists because rulings were being filed as *test rows*, so a decision that takes Ben ten seconds sat in a bench queue for weeks. **A new judgment call goes HERE, not into the checklist**; a checklist row that asks Ben to *decide* rather than *test* is in the wrong file. `docs/BENCH_MARATHON_REPORT.md` §3 is now a pointer to it. §I is the APPLIED-as-default list that needs a veto, and **R-43 changes live dice math**. |
 | `.claude/skills/test-pass-fixes/` | The test-results → fix workflow, plus `CASE_STUDIES.md` — worked root-cause examples. |
 | `.claude/skills/talent-migration/` | **THE iron-rule-2b migration skill** (added 07-24y, after sixteen passes had spread the knowledge across §9n/§9o and ever-longer session briefs). `SKILL.md` = the pass workflow (atom → scout → build → author → gates → ratchet → docs); `SESSION_PLAN.md` = the remaining 131 partitioned into sessions, with what is next; `LESSONS.md` = what each pass measured, including why the classification's `needs` column over-estimates. Read it INSTEAD of writing a long brief. |
-| `.claude/skills/leyline-tree-authoring/` | The authoring/consistency standard, `audit.py` (the pre-commit gate), and `ENGINE_INDEX.md` (primitives map — read it **instead of** scanning the 11k-line engine). |
+| `.claude/skills/leyline-tree-authoring/` | The authoring/consistency standard, `audit.py` (the pre-commit gate), and `ENGINE_INDEX.md` (primitives map — read it **instead of** scanning the ~19.7k-line engine (2026-09-05)). |
 | `AUTHORING_WORKFLOW.md` | Ben's side of the loop: Foundry-edit → extract → build → ⟳ Sync ("the keys"). |
 | `EDHA_TALENT_HANDBOOK.md` | Game-design source prose for the talents. |
 | `EDHA_CAMPAIGN_CANON.md` | THE campaign-lore source of truth (pantheon, countries, plot, NPCs, open threads) — WorldAnvil is retired. `EDHA_LORE_CANON_DIFF.md` records how it diverged from the old baseline PDF. Ben READS it via `EDHA_CANON_CODEX.html` (generated map+doc browser — after editing canon or the gazetteer run `node scripts/build-canon-codex.js`; CI enforces sync). |
@@ -61,14 +61,15 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
 ## Where behavior lives
 
 - **`module-src/scripts/register-skills.js`** — the ENTIRE runtime engine (single tracked copy,
-  ~15k lines; mirrored to Ben's live module by `scripts/module-src-sync.js`). Every generic
-  handler, one tree-section header per tree. ⚠️ Also, today, **200 talents' worth of name-keyed
-  automation** — that is the iron-rule-2b backlog, not the pattern to copy (this line used to read
-  "all name-based automation lives here", which is how the backlog grew). New behaviour goes on
-  the talent; `lint-refs.js` pass 7 now enforces that the name-keyed list only shrinks.
-- **`data/authored/<atlas>-<tree>.json`** — the per-talent authored overlay (`description`,
-  `activation`, `damage`, `events`, `effects`, `img` ONLY). Wins over the generator AND the
-  side tables.
+  ~19.7k lines (2026-09-05, `wc -l`); mirrored to Ben's live module by `scripts/module-src-sync.js`).
+  Every generic handler, one tree-section header per tree. ⚠️ Also, today, **200 talents' worth of
+  name-keyed automation** — that is the iron-rule-2b backlog, not the pattern to copy (this line
+  used to read "all name-based automation lives here", which is how the backlog grew). New
+  behaviour goes on the talent; `lint-refs.js` pass 7 now enforces that the name-keyed list only
+  shrinks.
+- **`data/authored/<atlas>-<tree>.json`** — the per-talent authored overlay (SEVEN keys: `docId`,
+  `description`, `activation`, `damage`, `events`, `effects`, `img` ONLY — `scripts/lint-refs.js:50`
+  is the authority). Wins over the generator AND the side tables.
 - **`data/leyline.json` / `domain.json` / `cosmere.json`** — structure (names, prereqs, layout)
   and the source prose. Card-text fixes usually need the authored file **and** the source prose
   updated together.
@@ -84,7 +85,7 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
   `scripts/dump-native-vocabulary.js`. ⚠️ **The engine's `edha-*` types are an ADDITION to these,
   not the whole vocabulary** — authored rules may use either. Enumerating only `register-skills.js`
   under-counts by 12 handlers and 17 events, which on 2026-07-24 nearly caused a handler to be built
-  for events the system already fires (`EDHA_EDITABILITY_AUDIT.md` §9j). **Native handlers write
+  for events the system already fires (`docs/archive/EDHA_EDITABILITY_AUDIT.md` §9j). **Native handlers write
   self/owner state; there is no native "current user target"** — targeting is what edha-* handlers
   are for. Regenerate after a system upgrade; not in CI (needs the install).
 
@@ -143,9 +144,10 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
    different surface with their own wiring standard (lint pass 5), and engine name-keyed
    automation against one is legitimate there.
 
-   The migration's FIRST job is to classify all 200 into expressible-now /
-   needs-a-new-generic-handler / genuinely-engine-owned and report the split — that number decides
-   whether this is one session or five. See `EDHA_EDITABILITY_AUDIT.md`.
+   The migration's FIRST job was to classify all 200 into expressible-now /
+   needs-a-new-generic-handler / genuinely-engine-owned and report the split — that number decided
+   whether this was one session or five. See `docs/archive/EDHA_EDITABILITY_AUDIT.md` (the
+   migration closed 2026-07-26; the audit is archived history now, not a live worklist).
 3. **No silent manual cards; kill soft laziness.** Every talent is accounted for in an event note,
    a tree-section header, or the docs. Opposed-skill tests go through the contest core — never
    "trust the player rolled and won". "Manual" requires there to be NO nameable Foundry hook.

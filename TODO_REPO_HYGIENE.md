@@ -82,7 +82,7 @@ version control; git history already remembers them.~~ *(Done 2026-07-06 — the
 
 ---
 
-## 4. [ ] Split the 11k-line engine into concatenated sections (keep ONE deployed file)
+## 4. [ ] Split the ~19.7k-line engine (2026-09-05) into concatenated sections (keep ONE deployed file)
 
 **Why:** `module-src/scripts/register-skills.js` is the ceiling on maintainability.
 The single-file property matters for deployment (module-src-sync mirrors one file to
@@ -106,7 +106,7 @@ gates green, docs updated. This is the largest item — do it alone in its own s
 
 ## 5. [ ] Extend tests into the hook layer (fake actor/item → assert the write)
 
-**Why:** `tests/engine-helpers.test.js` covers ~8 pure helpers of an 11k-line engine.
+**Why:** `tests/engine-helpers.test.js` covers ~8 pure helpers of a ~19.7k-line engine (2026-09-05).
 The ~240 registered hooks — the actual game logic — are only smoke-tested ("loads
 without throwing"); real verification is Ben playing in Foundry. The vm harness
 (`tests/harness.js`) already exists; the missing piece is *firing* recorded hooks
@@ -491,7 +491,7 @@ and no doc carries its own gate list.
 
 ---
 
-## 21. [ ] Stale-doc sweep from the 2026-09-04 review
+## 21. [x] Stale-doc sweep from the 2026-09-04 review (2026-09-05, PR #174)
 
 **Why:** each of these costs a session a wrong assumption.
 
@@ -521,6 +521,30 @@ and no doc carries its own gate list.
 **Done when:** every listed correction is in, and `scripts/README.md`'s table matches `ls scripts`.
 
 **PM:** lane R · model sonnet · size S · deps ruling PM-R2 for the moves · verify: a script that diffs README rows against `git ls-files scripts`.
+
+**Done:** every listed correction is in. `scripts/README.md` documents all 22 previously-missing
+scripts and drops `playtest-setup-console.js`; `scripts/check-scripts-readme.js` (new) diffs it
+against `git ls-files scripts` and passes clean. CLAUDE.md's and these two items' "11k-line engine"
+corrected to the measured **~19.7k lines (2026-09-05, `wc -l`)**; the overlay field list corrected
+to the real seven keys. `talent-balance/SKILL.md`'s duplicated frontmatter removed.
+`EDHA_EDITABILITY_AUDIT.md` and `Actor pages design review/` moved to `docs/archive/` (ruling
+PM-R2) with pointer stubs; every live reference to both old paths re-pointed (CLAUDE.md,
+`ENGINE_INDEX.md`, `talent-migration/{LESSONS,SKILL}.md`, `EDHA_RULE_2B_CLASSIFICATION.json`,
+`lint-refs.js`, `dump-native-vocabulary.js`, `name-keyed-allowlist.json`,
+`EDHA_FOUNDRY_HANDOFF.md`'s two live pointers) — left alone as historical narration, not broken
+pointers: this doc's own line above, `EDHA_FOUNDRY_HANDOFF.md`'s "(8) NEW" delta announcement, and
+`HANDOFF_ARCHIVE.md`'s frozen 2026-07-14h cascade. `pre-commit-body`'s dashboard regex gained
+`EDHA_RULINGS.md` (`docs/PM_BOARD.md` was already there from item 25). `AUTHORING_WORKFLOW.md`
+got the `.baselines/` one-liner.
+**Moot before this session started** (the 2026-09-05 fresh-clone move to `C:\dev\Skilltrees` left
+none of these behind): the four stale worktrees under `.claude/worktrees/` (a fresh clone has
+none — confirmed with `ls`; any `agent-*` dir there today is a different, live worker, untouched),
+and the untracked `screenshots/`, `src/`, and `data/authored/.baselines/` leftovers (confirmed
+absent with `ls`, so nothing to delete).
+**Found out of scope, not fixed:** `data/native-vocabulary.json:8` still names the old
+`EDHA_EDITABILITY_AUDIT.md` path (this worker's scope excluded `data/`); `docs/PM_BOARD.md`'s own
+PM-R2 ruling row names both old paths (that's the ruling text itself, and `docs/PM_BOARD.md` is
+PM-owned).
 
 ---
 
