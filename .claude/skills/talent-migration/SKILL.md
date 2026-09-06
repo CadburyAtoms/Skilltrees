@@ -198,5 +198,5 @@ the session was the wrong shape.** Record a correction in one line and move on.
 `SESSION_PLAN.md` — the paths, in order. `LESSONS.md` — what earlier passes paid for; read it for the
 **traps**, not for estimates. `ENGINE_INDEX.md` — the primitives map, grep this instead of the engine.
 `EDHA_RULE_2B_CLASSIFICATION.json` — the per-talent record; **it records the GATE, not the payload, so
-treat it as a hint and read the engine.** `EDHA_EDITABILITY_AUDIT.md` §9m = rulings (q1–q15 settled,
+treat it as a hint and read the engine.** `docs/archive/EDHA_EDITABILITY_AUDIT.md` §9m = rulings (q1–q15 settled,
 do not re-ask), §9n/§9o/§9p = history.

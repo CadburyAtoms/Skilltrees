@@ -293,7 +293,7 @@ const snapshot = {
     "The cosmere-rpg SYSTEM's own event vocabulary. Authored talent rules (data/authored/*.json)",
     "may use these types alongside the module's edha-* types — the edha vocabulary is an ADDITION",
     "to this one, not the whole of it. Enumerating only register-skills.js under-counts by 12",
-    "handlers and 17 events (that mistake is recorded in EDHA_EDITABILITY_AUDIT.md 9j).",
+    "handlers and 17 events (that mistake is recorded in docs/archive/EDHA_EDITABILITY_AUDIT.md 9j).",
     "",
     "THE DIVIDING LINE: native handlers write SELF/OWNER state (update-actor Target is `parent` or a",
     "fixed `global` UUID). There is no native 'current user target'. Effects that must hit whoever",
