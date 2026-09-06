@@ -33,6 +33,56 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-06 — Rulings close-out: Ben answered every open ruling in `EDHA_RULINGS.md` (**DOCS-ONLY**
+— no engine, no data, no pack rebuild)
+
+Ben answered every open ruling on the morning of 2026-09-06 through the phone inbox; a cloud relay
+session (`skilltrees-f4`) wrote his answers as 66 notes in `tmp/pm/inbox-2026-09-06/inbox/`. This
+delta records the doc-side close-out (TODO_REPO_HYGIENE item 45); the mechanical/data/pack changes
+the answers demand are separate items, named inline in `EDHA_RULINGS.md`.
+
+- **No-change answers moved to §K**: R-3, R-8, R-9, R-11, R-16, R-20, R-21, R-24, R-26, R-30, R-33,
+  R-39, R-41, R-53, R-57, R-75, R-76. R-77 stays open pending a live re-test (Ben's client needs a
+  reload); the GM-less region-trap ruling got a fresh number, **R-79** (KEEP — see the "deliberately
+  NOT gated" list below), and went straight to §K.
+- **§I (APPLIED AS DEFAULT):** Ben accepted all fourteen defaults verbatim ("14 defaults let's just
+  keep using") — R-43 through R-45 and R-58 through R-68 all moved to §K as ANSWERED-by-acceptance.
+  **R-73 is the one exception: VETOED to (b)** — widen the dispel the safe way (item-owned transferred
+  effects offered as a temporary DISABLE, never delete) — it stays open, pending **item 54**.
+- **Change answers stay in their section**, each naming the TODO item that ships it: **item 47**
+  (R-10, R-12, R-25, R-36, R-51, R-52(i), R-72, R-54) · **item 48** (R-6, R-13, R-31, R-32, R-37,
+  R-38, R-55, R-78) · **item 49** (R-15, absorbing R-57's stale-flag note) · **item 50** (R-70) ·
+  **item 51** (R-17) · **item 52** (R-27) · **item 53** (R-50) · **item 54** (R-35 + R-73(b)) ·
+  **item 55** (R-56) · **item 56** (R-14) · **item 57, REBUILD** (R-29, R-40, R-46, R-47, R-74) ·
+  **item 58, REBUILD** (R-23, R-28) · **item 59, REBUILD** (R-71) · **item 60** (R-22) · **item 61**
+  (R-42) · **item 62** (R-52(ii)).
+- **R-54's finding** (the source of item 47's HP fix): the +1 max-health bonus has no canon source —
+  `docs/ACTOR_STAT_DERIVATION.md` (PR #208, `main`) shows both `Character_Building_Rules.md` §HP and
+  `Edha_Character_Builder.xlsx` give `HP = 10 + STR` at L1, matching the system's own advancement
+  table term-for-term. Ben's answer: **(c) remove the +1, no level gate anywhere.**
+- **R-76's design seed**: Ben's verbatim note, "make a note this is good juice for a future adversary
+  stat block" — H10's spend-stamped Investiture-drain branch (`op: drain`, `resource: inv`) has no
+  shipped consumer; a future adversary whose signature ability drains a PC's Investiture would be its
+  first. Recorded here since no bestiary-backlog doc exists yet to hold design seeds.
+- **`EDHA_FOUNDRY_TEST_CHECKLIST.md`** rows updated to match: 2bW-1's example re-worded (R-9), 2bI-6
+  retired on evidence (R-16), the Red row's graph half retired (R-24), 2bA-6 aligned (R-26), 2bR-17
+  reworded (R-30), the Map v3 label-free/redrawn-map pair resolved in favor of the labelled render
+  (R-41), 2bJ-3 stays 🤖 with both R-20 and R-57 now answered — plus item-number annotations on every
+  row whose fix ships later, so the fixing worker finds the ruling without re-deriving it.
+- **`.claude/skills/leyline-tree-authoring/ENGINE_INDEX.md`**'s "the gate is TWO helpers" note now
+  records the region-traps' GM-less springing as Ben's ruling (R-79), and the H26 family's ungated
+  status as R-75.
+- **`.claude/skills/bench-run/SKILL.md` + `docs/EDHA_BENCH_RUNBOOK.md`**: Ben's 2026-09-06 licence —
+  "Feel free to remove that combat — the entire scene is for your use at this point" — widens hard
+  rule 4 from "bench folders only" to the whole Playtest Map scene; the zero-combatant combat
+  `BerbNeuXp4iKduef` may be deleted by the next run. The two PC actor documents (Tem parinaem, Soggy
+  Bottom) keep their hard guard — only their tokens on that scene fall under the new licence. R-8's
+  "bench setups keep rosters to the actors under test" is now a named rule there too.
+- **See item 28a's "deliberately NOT gated" list, immediately below**, for the H26 family and the
+  GM-less region traps in full.
+
+---
+
 ## 2026-09-06 — BENCH RUN 38: **the character-creation wizard block finally moves — 2 of its 6 rows retired, and the other 4 are ruling-gated, not run-gated.** ⭐ **The "structural and permanent" harness blocker on the ResizeObserver row is NOT permanent: front the browser pane and observers run.** The AoE burst row's own reference talent was wrong; the sideless-creature probe is closed as untestable-by-construction, with the measurements that make that decisive. **5 rows off the checklist, 1 new defect, 1 new ruling (R-78), world diff EMPTY.** (**DOCS-ONLY** — no engine or data change, no pack rebuild owed.)
 
 **Deploy state at the top of the run, hash-verified from both sides:** the served
@@ -1237,6 +1287,16 @@ and uncertain lands on today's behaviour.
   *looking at*, which is the correct source for them.
 - **The `deleteCombat` / `combatTurnChange` sweeps** (`combat = combat || game.combat`) — every one
   already receives its combat as the hook argument; the fallback is for manual invocation only.
+- **The `edha-test-react` (H26) reaction family** — Shared Conviction, Pillar of Order, Voice of
+  Authority. The handler carries no `scope` field, so it never reaches `edhaWatchCombatGate`; an
+  ally about to fail a social or exploration test is exactly the out-of-combat case this gate exists
+  to protect. **Ben's ruling (`EDHA_RULINGS.md` R-75, ANSWERED 2026-09-06, phone, via the relay
+  session): (a) leave it ungated, and document it** — DOCS-ONLY, no engine change.
+- **The three GM-less region-trap `RegionBehavior` bodies** — the Civ fortified-foundation trap, the
+  dangerous-terrain trap, and the Fate snare — spring on the walking player's own client when no GM
+  is connected, rather than staying silent for lack of a GM to arbitrate them. **Ben's ruling
+  (`EDHA_RULINGS.md` R-79, ANSWERED 2026-09-06, phone, via the relay session): (a) KEEP** — DOCS-ONLY,
+  no engine change. See `ENGINE_INDEX.md`'s "the gate is TWO helpers" note.
 
 ### Proof
 
