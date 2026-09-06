@@ -124,7 +124,13 @@ completion re-invokes you; use `ScheduleWakeup` only as a long fallback (1800s+)
 
 ### 4. Review — the checklist, every time, even when CI is green
 
-1. `gh pr checks <PR>` — green. If red, read the log before bouncing.
+1. `gh pr checks <PR>` — green **on the PR's current head sha**. After any force-push or any
+   commit you add (a trailer strip, a merge of `main`, a review correction), `gh pr checks --watch`
+   can return the OLD run's green: check `gh run list --branch <b>` shows a run on the NEW sha and
+   wait for that one (#142 was merged on a stale green, 2026-09-05). A CONFLICTING PR has zero check
+   runs — GitHub runs no `pull_request` workflow on it — so merge `main` into the branch (in the
+   worker's worktree if it still exists), regenerate the dashboard, push, and wait for the new run.
+   If red, read the log before bouncing.
 2. `gh pr diff <PR>` — read **all** of it. CI proves the gates, not the intent.
 3. Scope: every changed file is inside the brief. Adjacent fixes get reverted and reported, not
    merged.
@@ -168,7 +174,7 @@ the five-hour window rolling, or the next operating window opening (never a wake
 It is a published Artifact of `docs/pm-board-mobile.html` that shows: the PM's state and any
 running worker with an elapsed clock; a project Snapshot (the desktop dashboard's open/total per
 tab, ⚑ and 🤖 counts, DEPLOY STATE); the trailing-window budget meters (dispatches / Opus used,
-when the next slot opens, quiet hours); weighted usage per run-log row; the queue with status,
+when the next slot opens, the operating windows); weighted usage per run-log row; the queue with status,
 lane, model, size, deps, PR; what waits on Ben (open rulings, blocked items, deploy staleness,
 Foundry window); the run log; an **inbox** Ben types into from his phone; and the full Dashboard
 (every EDHA_DASHBOARD.html tab and row, see below). The board part renders whatever
