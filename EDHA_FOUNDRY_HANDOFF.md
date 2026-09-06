@@ -84,6 +84,75 @@ entry — impossible before, since there was one slot — they cancel and the ro
 player configured it. That is the standard table rule and the conservative choice, but it is a new
 situation and Ben may want disadvantage to win instead; one line in `edhaNextModFoldMode` either way.
 
+## 2026-09-06 — ITEM 34a: the fleet weapon migration lands (re-do of PR #103's weapon half against today's engine) (**REBUILD + ⟳ Sync** — `data/adversaries.json` + engine + build; the adversaries pack rebuilds, then "⟳ Sync Adversaries from Pack")
+
+**What moved.** The 11 gear/natural attack items across the 13 original statblocks are now
+`kind: "weapon"` — Trooper Strike, Stonebound Captain Poleaxe, Cinderhound Bite, Stalker
+Crossbow, Stitchmother Scalpel-Strike, Mutated Thrall Slam, Corvaine Raider Soldier's Crossbow,
+Corvaine Line-Caller Soldier's Crossbow + Shortsword, Roek's Issued Blade, Mistheron Spearing
+Beak (the Raider's Shortsword already was). Natural weapons (Bite, Spearing Beak, Slam,
+Scalpel-Strike) add `alwaysEquipped: true`, which `advItemDoc` now passes through (it was
+hard-coded `false`) and `validate.js` type-checks. Ben's 07-18 rulings hold: maneuvers and
+reactions (Devastating Blow, Reactive Strike, Press the Line, Snatch and Wade) and Frost Lance
+stay actions; the Malcurr blade is a weapon. The `_README.item_fields` doc in the data file
+describes the model. **The 39 bestiary statblocks authored after 07-18 (Reedling → The
+Cull-Alpha, 44 attack items) were NOT touched** — the brief scoped 34a to the 11-of-13 table; they
+are reported to the PM as follow-up scope.
+
+**Attack numbers are byte-identical.** Both packs built into scratch roots (main's data vs this
+branch) and every embedded item compared: 336 items, 11 docs changed, 0 roll differences —
+same `activation.skill`, same `modifierFormula`, same damage formula/type, same event count.
+`validate-adversaries.js` → `✓ 0 issues` on the after-pack; all 12 gates green under `--ci`.
+
+**Engine (item 34a, F5 for the engine half).** `edhaRuleBearer(i)` = `edhaIsTalent(i) ||
+i.type === "weapon"`, and BOTH actor-wide rule loops — `edhaActorRuleOf` (first match) and
+`edhaActorRulesOf` (all matches; `edhaRiderParts` and `edhaLightSpecFor` read through it) — gate
+on it instead of `edhaIsTalent`. Without it, migrating the three rider-bearing attacks would
+have silently killed Bite's Kindle light, Scalpel-Strike's +4 and Spearing Beak's fooled +1d6
+(the 07-16 silent-drop class). Pinned in `tests/engine-helpers.test.js` through the consumers
+(`edhaRiderParts`, `edhaLightSpecFor`, `edhaActorRuleOf`); each loop was mutated back to
+`edhaIsTalent` and the suite failed (3 tests for the plural loop, 1 for the first-match loop),
+then restored. `tests/actor-rules-of.test.js`'s non-bearer decoy is now `equipment` (a weapon
+is a bearer by design). `edhaSummon`'s primary attack and damage-bearing `extraItems` build as
+weapons (`type: "weapon"`, `attack.type`, `alwaysEquipped`) — Construct Slam and Siege Cannon get
+the native target + test-defense flow (Ben's 07-17 "defer to the weapon migration"); the Siege
+Form gate reads a flag and is type-agnostic. `edhaAttackKind` already read `system.attack.type`
+on main (`register-skills.js` line 1236 before this delta) — confirmed, unchanged.
+
+**🤖 for the bench:** the new `# BENCH — Fleet weapon migration, 34a` checklist section (9 rows:
+weapon-section render, roll parity, native defense test, the three riders, pack advantage, the
+alwaysEquipped toggle, summon weapons, the melee/ranged discriminator, ⟳ Sync carrying the
+items). Item 34 stays open until 34b (loot caches) ships as its own PR.
+
+---
+
+## 2026-09-06 — R-50 (item 53): an ambush-belief rider benefits its OWN first strike (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
+
+Ben answered R-50 (b) after a card-by-card walkthrough: the ten `edha-ambush-belief` carriers
+(Stillback ×2, Wrongwake ×2, Keelshadow, The False Spring, Hazewyrm Adult/Elder, The Doubled ×2)
+all say the FIRST strike comes from the ambush. Bench run 18 had measured the opposite: the belief
+test was a fire-and-forget `await Roll.evaluate()` off the `useItem` hook, while the
+`whenTargetFooled` rider is picked when the damage formula is ASSEMBLED — synchronously, before that
+promise settles — so the +1d6 / +1d8 first appeared on the SECOND strike.
+
+- **The decision is now synchronous; only the persistence stays async.** `edhaAmbushBeliefRoll`
+  (PURE — the one place the d20 / 2d20kh / DC maths lives, drawn through `edhaRandomFace`) ·
+  `edhaAmbushBeliefParams` (the DC / mod / advantage read) · `edhaAmbushBeliefTest` (SYNC: ledger →
+  pending → roll-and-park) · `edhaAmbushBeliefCommit` (ASYNC: the ledger write + GM / player cards,
+  text unchanged). Both entry points — the `useItem` hook and the rider's new
+  `edhaTargetFooledOrTest` gate — call the same sync test; an `EDHA_AMBUSH_PENDING` map makes them
+  agree when the hook fires first and its write is still in flight. **Nothing is awaited in the
+  hook** (the takeover class). The Mistheron's placed-copy seeming carries no ambush rule and falls
+  straight through to `phantomBelief`, unchanged. Iron rule 2b: no name-keyed branch; the allowlist
+  is untouched.
+- **Proven by mutation** (`tests/ambush-first-strike.test.js`, 8 cases): reverting the rider gate to
+  the old `edhaTargetFooled` fails 4 pins; making the sync test ignore the ledger fails the
+  second-strike-after-a-pass pin; letting the rider path test a phantom caster fails the Mistheron
+  pin; a second copy of the advantage maths fails the source-scan pin.
+- 🤖 for the bench: Stillback's Ambush Bite — `1d10 + 3 + (1d6)[Ambush Bite]` on the FIRST bite vs a
+  fooled target, no second card / no re-test on the second bite (Lunavar Fens Bestiary section).
+  `ENGINE_INDEX.md` `edha-ambush-belief` bullet carries the helper map.
+
 ## 2026-09-06 — FIX PASS 7b (item 48): cards, labels, zones — **all nine ship** (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
 
 Eight rulings and one bench defect, and they turned out to be **three families, not nine bugs**: a
@@ -14171,7 +14240,11 @@ remains is Foundry-side and gated on TWO unblockers: **(1) the schema dump** —
 `source-materials/system-schemas/` (the system source is unreachable from repo sessions: proxy
 blocks the public GitHub repo, add_repo is same-owner-only) — and **(2) the W25 currency canon**.
 
-- [ ] **Fleet weapon migration** (gate: schema dump). ⚑⚑ pipe-cleaner shipped 07-15: `kind:"weapon"`
+- [ ] **Fleet weapon migration** — **34a SHIPPED 2026-09-06 (item 34a, the weapon half: 11 items
+  across the 13 original statblocks are weapon-type, `edhaRuleBearer` on both rule loops, summon
+  attacks as weapons; see the 2026-09-06 delta). NOT checked until 34b (loot caches) lands as its
+  own PR; the 39 later bestiary blocks (44 attack items) are follow-up scope.** History below.
+  (gate: schema dump). ⚑⚑ pipe-cleaner shipped 07-15: `kind:"weapon"`
   in advItemDoc (action-shaped activation kept byte-identical — same skill_test + modifierFormula
   so PDF numbers hold; best-guess weapon fields strip harmlessly if wrong) + Corvaine Raider's
   Shortsword ONLY. After the dump verifies the DataModel: correct the field set, migrate the

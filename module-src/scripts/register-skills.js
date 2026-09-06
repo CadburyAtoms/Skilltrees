@@ -971,7 +971,7 @@ function edhaRiderParts(item, actor) {
         if (h.whenTargetCondition) { if (!target || !edhaHasCondition(target)) continue; }
         if (h.whenTargetStatus)    { if (!target || !target.statuses?.has?.(h.whenTargetStatus)) continue; }
         if (h.whenMovedTowardFt)   { if (!target || edhaMovedTowardFt(actor, target) < Number(h.whenMovedTowardFt)) continue; }   // Momentum's Edge: charged ≥ N ft toward it
-        if (h.whenTargetFooled)    { if (!target || !edhaTargetFooled(actor, target)) continue; }   // Spearing Beak: only vs a believer in the roller's seeming
+        if (h.whenTargetFooled)    { if (!target || !edhaTargetFooledOrTest(actor, target)) continue; }   // Spearing Beak: only vs a believer in the roller's seeming — R-50: an UNTESTED target is tested right here, so the first strike benefits
         parts.push({ formula: h.bonusFormula, name: tal.name });
     }
     return parts;
@@ -1221,7 +1221,7 @@ function edhaDealerOf(options) {
 // Melee-vs-ranged discriminator (shared primitive): classify the dealing item so "melee only" riders
 // can stand down on a definitive ranged attack. Returns "melee" | "ranged" | null; null = can't tell
 // → consumers keep today's owner-judged behavior (fire + the GM-withhold note). Reads, in order: an
-// explicit flags.edha-content.attackKind stamp (edhaSummon bakes one onto its attack action), then a
+// explicit flags.edha-content.attackKind stamp (edhaSummon bakes one onto its attack weapon), then a
 // weapon's system.attack.type — the cosmere 2.1.0 discriminator ("melee"/"ranged", schema initial
 // "melee"), verified against the system SCHEMA$i AttackingItemMixin AND live at bench run 3
 // (2026-07-26k defect 7: the old read was `system.range`, a field the DataModel strips, so EVERY
@@ -1241,10 +1241,12 @@ function edhaAttackKind(item) {
     return (Number(r?.value) > 0) ? "ranged" : "melee";
   } catch (e) { return null; }
 }
-// First rule of the given handler type across an actor's talents → { item, handler } | null.
+// First rule of the given handler type across an actor's rule-bearing items → { item, handler } | null.
+// Rule bearers = talents + weapons (edhaRuleBearer, item 34a): the migrated adversary attacks carry
+// their riders on the weapon document, and an edhaIsTalent gate here would drop them silently.
 function edhaActorRuleOf(actor, type) {
   for (const tal of (actor?.items ?? [])) {
-    if (!edhaIsTalent(tal)) continue;
+    if (!edhaRuleBearer(tal)) continue;
     const h = edhaRuleOf(tal, type);
     if (h) return { item: tal, handler: h };
   }
@@ -1260,7 +1262,7 @@ function edhaActorRuleOf(actor, type) {
 function edhaActorRulesOf(actor, type) {
   const out = [];
   for (const tal of (actor?.items ?? [])) {
-    if (!edhaIsTalent(tal)) continue;
+    if (!edhaRuleBearer(tal)) continue;   // talents + weapons — see edhaRuleBearer (item 34a)
     for (const rule of edhaEventRules(tal)) {
       if (rule?.handler?.type === type) out.push({ item: tal, handler: rule.handler });
     }
@@ -4036,39 +4038,99 @@ Hooks.on("cosmere-rpg.useItem", (item) => {
         content: `<div class="edha-trigger-card"><p>🌫️ <strong>${amb.item.name}</strong>: target the victim before rolling the attack so the belief test auto-rolls (first attack on each target this scene).</p></div>` });
       return;
     }
-    void edhaAmbushBeliefTest(actor, amb, tTok);
+    edhaAmbushBeliefTest(actor, amb, tTok);   // SYNC decision (R-50); the ledger write + cards are scheduled inside — never awaited here
   } catch (e) { console.error("Edha Content | ambush belief use-hook failed", e); }
 });
-async function edhaAmbushBeliefTest(actor, amb, tTok) {
+/* R-50 (item 53, 2026-09-06): the ambushing strike benefits from its OWN belief test.
+ *
+ * Until now the test was kicked off from the use hook as a fire-and-forget `await Roll.evaluate()`,
+ * while the `whenTargetFooled` damage rider is chosen when the damage formula is ASSEMBLED — which
+ * the system does before that promise resolves — so the ledger write always landed after the
+ * number was fixed and the +1d6 first appeared on the SECOND strike (bench run 18). Ben ruled (b):
+ * the ten cards say the FIRST strike comes from the ambush, so the first strike must roll and use
+ * its own test. Awaiting inside the use hook is the takeover class of bug, so instead the DECISION
+ * is synchronous (the engine's own `edhaRollDiceSync`-family evaluator) and only the persistence +
+ * cards stay async:
+ *   edhaAmbushBeliefRoll   — the ONE pure place the roll / DC / advantage maths lives (pinned).
+ *   edhaAmbushBeliefTest   — SYNC: ledger hit → the stored entry; in-flight → the pending entry;
+ *                            else roll now, park the entry as pending, schedule the commit. Returns
+ *                            the entry, so a caller can act on it in the same tick.
+ *   edhaAmbushBeliefCommit — ASYNC: the ledger write + GM / player cards, exactly as before.
+ * The use hook and the rider path (edhaTargetFooledOrTest) both call the SYNC test, and the pending
+ * map is what makes them agree: whichever runs first rolls, the other reads the same result. */
+// Pure — pinned in tests/. `rollFace` is injected so the node harness can pin it without Foundry.
+function edhaAmbushBeliefRoll({ dc, mod, advantage } = {}, rollFace = edhaRandomFace) {
+  const d1 = rollFace(20);
+  const die = advantage ? Math.max(d1, rollFace(20)) : d1;
+  const total = die + (Number(mod) || 0);
+  const vs = Number(dc) || 10;
+  return { total, dc: vs, fooled: total < vs, formula: `${advantage ? "2d20kh" : "1d20"} + ${Number(mod) || 0}` };
+}
+// The DC / modifier / advantage READ for one owner + rule + target token — kept beside the roll so
+// there is one place to look, but separate so the pure roll stays document-free.
+function edhaAmbushBeliefParams(actor, amb, tTok) {
+  const dcKey = amb.handler.dcFrom || "cog";
+  const dc = Number(actor.system?.defenses?.[dcKey]?.value ?? actor.system?.defenses?.[dcKey]?.override) || 10;
+  const sk = tTok.actor?.system?.skills?.prc;
+  const mod = edhaDerivedNum(sk?.mod, Number(sk?.rank) || 0);   // `.mod` is a DerivedValueField OBJECT — 07-27y
+  return { dc, mod, advantage: !!amb.handler.perceptionAdvantage };
+}
+function edhaAmbushEntry(belief, tokenUuid) {   // pure — the stored entry, or null
+  return (belief?.tested || {})[edhaFlagKey(tokenUuid)] ?? null;
+}
+const EDHA_AMBUSH_PENDING = new Map();   // `${owner uuid}|${target token uuid}` → entry, while its ledger write is in flight
+function edhaAmbushBeliefTest(actor, amb, tTok) {
   try {
+    const tokUuid = tTok?.document?.uuid; if (!tokUuid) return null;
     const sceneId = canvas?.scene?.id ?? null;
     const stored = actor.getFlag?.("edha-content", "ambushBelief");
     const belief = edhaAmbushLedgerFor(stored, sceneId);
+    const prior = edhaAmbushEntry(belief, tokUuid);
+    if (prior) return { ...prior, fresh: false };   // once per scene per target — the ledger decides
+    const pKey = `${actor.uuid ?? actor.id}|${tokUuid}`;
+    const pending = EDHA_AMBUSH_PENDING.get(pKey);
+    if (pending) return { ...pending, fresh: false };   // rolled a tick ago by the other path; write still landing
+    const r = edhaAmbushBeliefRoll(edhaAmbushBeliefParams(actor, amb, tTok));
+    const entry = { fooled: r.fooled, total: r.total, name: tTok.name };
+    EDHA_AMBUSH_PENDING.set(pKey, entry);
     /* edhaAmbushLedgerFor returns `tested: {}` on a scene change, but `setFlag` MERGES, so the
      * stored map was never actually cleared — every scene's entries accumulated forever (bench run
      * 17). Inert (token uuids are scene-scoped, and edhaAmbushFooledIn gates on sceneId anyway) but
-     * unbounded, so delete the whole flag before rewriting it. Only on a real scene change. */
+     * unbounded, so the commit deletes the whole flag before rewriting it. Only on a real scene change. */
     const staleScene = !!stored && stored.sceneId !== sceneId;
-    const tokUuid = tTok.document?.uuid; if (!tokUuid || edhaAmbushTested(belief, tokUuid)) return;   // once per scene per target
-    const dcKey = amb.handler.dcFrom || "cog";
-    const dc = Number(actor.system?.defenses?.[dcKey]?.value ?? actor.system?.defenses?.[dcKey]?.override) || 10;
-    const sk = tTok.actor.system?.skills?.prc;
-    const mod = edhaDerivedNum(sk?.mod, Number(sk?.rank) || 0);   // `.mod` is a DerivedValueField OBJECT — 07-27y
-    const roll = await (new Roll(`${amb.handler.perceptionAdvantage ? "2d20kh" : "1d20"} + ${mod}`)).evaluate();
-    const fooled = roll.total < dc;
-    const led = edhaAmbushMark(belief, tokUuid, { fooled, total: roll.total, name: tTok.name });
+    void edhaAmbushBeliefCommit(actor, amb, tTok, { entry, dc: r.dc, belief, tokUuid, staleScene, pKey });
+    return { ...entry, fresh: true };
+  } catch (e) { console.error("Edha Content | ambush belief test failed", e); return null; }
+}
+async function edhaAmbushBeliefCommit(actor, amb, tTok, { entry, dc, belief, tokUuid, staleScene, pKey }) {
+  try {
+    const { fooled, total } = entry;
+    const led = edhaAmbushMark(belief, tokUuid, entry);
     if (staleScene) { try { await actor.unsetFlag("edha-content", "ambushBelief"); } catch (e) {} }
     await actor.setFlag("edha-content", "ambushBelief", led);
     const gmIds = edhaGmIds();   // R-62: record card (roll result, no button) → all GMs, was active-only (🤖 bench row: audience flip)
     ChatMessage.create({ whisper: gmIds, speaker: ChatMessage.getSpeaker({ actor }),
-      content: `<div class="edha-trigger-card"><p>🌫️ <strong>${amb.item.name}</strong> — ${tTok.name}: Perception <strong>${roll.total}</strong> vs ${dc} → ${fooled ? "<strong>taken in</strong> (whenTargetFooled riders apply)" : "<strong>sees through it</strong>"}.${amb.handler.note ? ` ${amb.handler.note}` : ""}</p></div>` });
+      content: `<div class="edha-trigger-card"><p>🌫️ <strong>${amb.item.name}</strong> — ${tTok.name}: Perception <strong>${total}</strong> vs ${dc} → ${fooled ? "<strong>taken in</strong> (whenTargetFooled riders apply)" : "<strong>sees through it</strong>"}.${amb.handler.note ? ` ${amb.handler.note}` : ""}</p></div>` });
     if (tTok.actor.hasPlayerOwner) {   // the player learns only their own character's truth
       const ids = (game.users?.filter(u => u.active && !u.isGM && tTok.actor.testUserPermission?.(u, "OWNER")) ?? []).map(u => u.id);
       if (ids.length) ChatMessage.create({ whisper: ids, content: fooled
-        ? `<p>🌫️ <strong>${tTok.name}</strong> (Perception ${roll.total}): the attack comes from somewhere you weren't looking.</p>`
-        : `<p>👁️ <strong>${tTok.name}</strong> (Perception ${roll.total}): you read the ambush right — you know exactly where it is.</p>` });
+        ? `<p>🌫️ <strong>${tTok.name}</strong> (Perception ${total}): the attack comes from somewhere you weren't looking.</p>`
+        : `<p>👁️ <strong>${tTok.name}</strong> (Perception ${total}): you read the ambush right — you know exactly where it is.</p>` });
     }
-  } catch (e) { console.error("Edha Content | ambush belief test failed", e); }
+  } catch (e) { console.error("Edha Content | ambush belief commit failed", e); }
+  finally { EDHA_AMBUSH_PENDING.delete(pKey); }
+}
+// The rider-side entry point (R-50): is the target taken in — and if this owner carries an ambush
+// seeming and the target is simply UNTESTED this scene, test them NOW, so the strike that fools
+// them is the strike that benefits. Phantom-copy seemings (the Mistheron's placed copy) test at
+// placement and carry no `edha-ambush-belief` rule, so they fall straight through to the ledgers.
+function edhaTargetFooledOrTest(caster, target) {
+  try {
+    if (edhaTargetFooled(caster, target)) return true;
+    const amb = edhaActorRuleOf(caster, "edha-ambush-belief"); if (!amb) return false;
+    const tTok = edhaUserTargetToken(); if (!tTok?.actor || tTok.actor !== target) return false;
+    return edhaAmbushBeliefTest(caster, amb, tTok)?.fooled === true;
+  } catch (e) { return false; }
 }
 // Thorns (07-16b, Cinder Coat): the victim's edha-thorns rules splash damage straight back at a
 // melee/adjacent attacker — auto-applied (no decision to cue), chain-guarded (a thorns hit never
@@ -9914,24 +9976,35 @@ async function edhaSummon(caster, spec) {
         description: { value: `<p>Summoned by ${caster.name}.</p>` + (skipped.length ? `<p>Also immune to: ${skipped.join(", ")} (tracked manually — not native conditions).</p>` : "") },
       },
       items: [
+        // Summon attacks are WEAPON-type (item 34a, 2026-09-06 — the fleet weapon migration; Ben's
+        // 07-17 ruling "defer to the weapon migration" for Construct Slam / Siege Cannon): weapon
+        // items get the system's native target + test-defense flow that action-typed skill_tests
+        // never had. The same skill_test activation (Athletics + tier rank) is kept so the roll
+        // numbers are unchanged; alwaysEquipped = a summon's attack is built in, not disarm-able gear.
+        // Field set = the adversary weapon shape advItemDoc emits (system.type is the weapon CATEGORY,
+        // attack.type the melee/ranged discriminator edhaAttackKind reads after the flag stamp).
         ...(atkFormula ? [{
           name: atk.name || "Attack",
-          type: "action",
+          type: "weapon",
           img: spec.img,
-          flags: { "edha-content": { attackKind: atk.range === "ranged" ? "ranged" : "melee" } },   // read by edhaAttackKind
+          flags: { "edha-content": { attackKind: atk.range === "ranged" ? "ranged" : "melee" } },   // read by edhaAttackKind (stamp wins; attack.type below agrees)
           system: {
+            id: "summon-attack", type: atk.range === "ranged" ? "light_wpn" : "heavy_wpn",
             description: { value: `<p>${atk.range === "ranged" ? "Ranged" : "Melee"} attack — ${atk.damageType || "keen"} damage. Rolls Athletics vs the target's Physical defense.</p>` },
             // skill_test → use() rolls a d20 Athletics test (+ rank from tier) alongside the damage,
             // instead of bare damage with no to-hit (Construct Slam fix, 2026-06-11 playtest).
             activation: { type: "skill_test", cost: { value: 1, type: "act" }, skill: atk.skill || "ath", attribute: "str" },
-            damage: { formula: atkFormula, type: atk.damageType || "keen" },
+            damage: { formula: atkFormula, type: atk.damageType || "keen", skill: atk.skill || "ath" },
+            equipped: true, alwaysEquipped: true,
+            attack: { type: atk.range === "ranged" ? "ranged" : "melee", range: { value: null, long: null, unit: "ft" } },
+            traits: {}, expertise: false,
           },
         }] : []),
         // Extra baked items (e.g. Siege Form's ranged attack) — damage formulas resolved vs the caster.
-        // A damage-bearing extra item is an ATTACK: build it like the primary (skill_test rolls a d20
-        // Athletics to-hit alongside the damage) so it isn't a no-roll utility (07-17 playtest: Siege
-        // Cannon rolled no to-hit at all, unlike Construct Slam). The native target+auto-test-defense
-        // flow still rides the weapon migration (Ben 07-17); this only brings the die to parity.
+        // A damage-bearing extra item is an ATTACK and builds as a WEAPON like the primary (item 34a —
+        // closes the 07-17 interim: Siege Cannon now targets a token and tests defense natively
+        // instead of rolling a bare skill_test to parity). Non-attack extras keep their authored
+        // type (action/trait utilities). The Siege Form gate (requiresSummonEffect) is item-type-agnostic.
         ...((spec.extraItems || []).map(x => {
           const isAtk = !!x.damageFormula;
           const ranged = x.range === "ranged" || /\branged\b/i.test(x.description || "");
@@ -9942,14 +10015,20 @@ async function edhaSummon(caster, spec) {
             ...(x.requiresEffect ? { requiresSummonEffect: x.requiresEffect } : {}),
           };
           return {
-            name: x.name || "Ability", type: x.type || "action", img: x.img || spec.img,
+            name: x.name || "Ability", type: isAtk ? "weapon" : (x.type || "action"), img: x.img || spec.img,
             ...(Object.keys(xFlags).length ? { flags: { "edha-content": xFlags } } : {}),
             system: {
               description: { value: x.description || "" },
               activation: isAtk
                 ? { type: "skill_test", cost: { value: Number(x.actions) || 1, type: "act" }, skill: x.skill || "ath", attribute: x.attribute || "str" }
                 : { type: "utility", cost: { value: Number(x.actions) || 1, type: "act" } },
-              damage: x.damageFormula ? { formula: edhaFoldDieMath(Roll.replaceFormulaData(x.damageFormula, rollData, { missing: "0" })), type: x.damageType || "keen" } : { formula: null, type: null },
+              damage: x.damageFormula ? { formula: edhaFoldDieMath(Roll.replaceFormulaData(x.damageFormula, rollData, { missing: "0" })), type: x.damageType || "keen", skill: x.skill || "ath" } : { formula: null, type: null },
+              ...(isAtk ? {
+                id: "summon-extra-attack", type: ranged ? "light_wpn" : "heavy_wpn",
+                equipped: true, alwaysEquipped: true,
+                attack: { type: ranged ? "ranged" : "melee", range: { value: null, long: null, unit: "ft" } },
+                traits: {}, expertise: false,
+              } : {}),
             },
           };
         })),
@@ -10249,6 +10328,18 @@ const EDHA_RES_LABEL = { inv: "Investiture", foc: "Focus", opportunity: "an Oppo
 // NOT used by edhaCountTalents: embedded twins never count toward a PC talent budget.
 function edhaIsTalent(i) {
   return i?.type === "talent" || i?.flags?.["edha-content"]?.adversaryTalent === true;   // type-strict: the predicate itself
+}
+// Can this item CARRY edha event rules the passive-rule harvest loops should read? Talents (PC +
+// adversary twins/bespoke) AND weapon-type items — the fleet weapon migration (item 34a, 2026-09-06;
+// design from PR #103) moved the adversaries' gear and natural attacks to weapon-type, and their
+// authored riders (Spearing Beak's whenTargetFooled +1d6, Bite's Kindle light, Scalpel-Strike's
+// whenTargetStatus +4) live ON the weapon. ALL weapons qualify (not just pack-flagged ones) so a
+// rider Ben authors on any weapon's Events tab in Foundry harvests too; system-pack weapons carry
+// no edha-* rules and cost nothing. Weapons stay OUT of edhaIsTalent on purpose (attacks are
+// equipment, not talents — no useItem talent automation, no talent-budget count), so the two
+// actor-wide harvest loops (edhaActorRuleOf / edhaActorRulesOf) gate on THIS predicate instead.
+function edhaRuleBearer(i) {
+  return edhaIsTalent(i) || i?.type === "weapon";
 }
 function edhaOwnsTalent(actor, name) {
   return !!actor?.items?.some(i => edhaIsTalent(i) && i.name === name);

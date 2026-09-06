@@ -2319,6 +2319,19 @@ mod-0 fixture); the ledger key is dot-free and one-per-token; the `whenTargetFoo
 once-per-scene guard holds; and one 60-damage application posted BOTH `hp-below` cards under two
 distinct keys `…hp-below:0_5:0:1` and `…hp-below:0_05:0:1`. See that run's handoff delta.)*
 
+- [ ] 🤖 **R-50 (item 53) — Stillback's Ambush Bite benefits on the FIRST bite.** ENGINE-ONLY (F5).
+      Fresh scene, a Stillback token, a PC target with a real Perception mod. Target the PC, use
+      **Ambush Bite** once. Expect the belief card (`1d20 + <mod>` vs the Stillback's Cognitive
+      defense) **and, if the target is taken in, `1d10 + 3 + (1d6)[Ambush Bite]` on that SAME
+      first damage roll** — not on the second. If the first test happens to pass (sees through),
+      the damage is `1d10 + 3` with no rider and that is correct; re-run on a fresh scene until a
+      fail lands. **NEG (the control, same take):** use Ambush Bite on the same target again —
+      **no second belief card, no second `ambushBelief` ledger write**, and the rider stays exactly
+      as the first bite decided (present after a fail, absent after a pass). **NEG 2:** the
+      Mistheron's Spearing Beak vs a placed-copy target still reads `phantomBelief` and posts no
+      ambush card. Pinned headlessly in `tests/ambush-first-strike.test.js`; this row is the live
+      confirmation that the system's damage-formula assembly really does run after the use hook.
+
 ---
 
 # Malcurr Lakes Bestiary + the Sevenbrand (2026-07-19 — data: pack rebuild + ⟳ Sync; five blocks, ruling 80 + the statblock gate)
@@ -3203,6 +3216,48 @@ after the raise produced **0 cards and 0 state change** with the marker correctl
 actor-level copy was the one that had fired. ⚠️ **Worth knowing:** the enable/disable is written onto
 the **trait item's own AE**, so a Stalker that ends a scene veiled carries that state on its copy of
 the trait until a sweep releases it — the accepted consequence of the widened read.)*
+
+---
+
+# BENCH — Fleet weapon migration, 34a (2026-09-06 — item 34a, re-do of PR #103's weapon half: engine + data → `deploy-to-foundry.bat` (adversaries pack REBUILD) → relaunch → **⟳ Sync Adversaries from Pack**)
+
+Every gear attack and natural weapon across the 13 original statblocks is now a real
+**weapon-type item** (11 items flipped; the Raider's Shortsword already was): native target +
+test-defense flow, lootable, natural weapons `alwaysEquipped`. Rolls keep the same skill_test +
+flat modifierFormula, so every attack number is byte-identical to before (proven in the PR's
+parity table: 336 embedded items compared, 11 docs changed, 0 roll differences). Maneuvers and
+reactions (Devastating Blow, Reactive Strike, Press the Line, Snatch and Wade) and Frost Lance
+(bespoke investiture attack, Ben's 07-18 ruling) stay actions. Summon attacks (Construct Slam,
+Siege Cannon) build as weapons too. The three weapon-borne riders (Bite's Kindle light,
+Scalpel-Strike's +4, Spearing Beak's fooled +1d6) harvest through the new `edhaRuleBearer`
+gate on both actor-wide rule loops — pinned headless; the rows below are the live half.
+The 34b loot half (chest caches, body search) is a separate later PR and has its own rows.
+
+- [ ] 🤖 **Weapon section render** — after ⟳ Sync, open a Corvaine Raider and a Cinderhound:
+      Shortsword / Soldier's Crossbow / Bite sit in the sheet's WEAPONS section; Break and the
+      other bespoke abilities stay under actions/traits. Frost Lance (Frostbinder) is still an action.
+- [ ] 🤖 **Roll parity** — Stonebound Captain's Poleaxe still rolls +7 to hit, 1d10+4 impact;
+      Trooper's Strike +5 / 1d6+2 impact (same numbers as before the migration).
+- [ ] 🤖 **Native defense test** — target a PC token, use a migrated weapon: the roll targets and
+      tests the defender's Physical defense natively (the flow action-typed attacks never had).
+- [ ] 🤖 **Weapon-borne riders survive** (the `edhaRuleBearer` gate): Bite's hit still lights the
+      target (Kindle light), Scalpel-Strike still adds +4 vs a Vital-Diagram-marked target, and
+      Spearing Beak's +1d6 still applies ONLY vs a fooled target — all three riders now live on
+      weapon-type items.
+- [ ] 🤖 **Pack advantage off a weapon attack** — two Cinderhounds on one target: the second Bite
+      still rolls with advantage (the aggro ledger records weapon rolls).
+- [ ] 🤖 **alwaysEquipped** — Bite / Spearing Beak / Slam / Scalpel-Strike show as always equipped
+      (no unequip toggle); gear weapons (Shortsword, Poleaxe, both crossbows, Issued Blade) are
+      ordinary equipment.
+- [ ] 🤖 **Summon weapons** — summon the Forge Construct: Construct Slam and Siege Cannon are
+      weapon-type, Siege Cannon still refuses to fire with Siege Form toggled off
+      (`requiresSummonEffect` is item-type-agnostic), and both target + test defense natively.
+- [ ] 🤖 **melee/ranged discriminator on weapons** — a melee-gated rider fires on a migrated melee
+      weapon hit and stands down on a Crossbow / Soldier's Crossbow shot (`edhaAttackKind` reads
+      the weapon's native `attack.type`; the crossbows carry `attack.range.value 60`).
+- [ ] 🤖 **⟳ Sync carries the weapon items** — a world adversary that pre-dates this deploy loses
+      its action-typed Strike/Bite and gains the weapon-typed one after one Sync click (position,
+      HP, and the actor's other items kept); a renamed copy is skipped as before.
 
 ---
 
