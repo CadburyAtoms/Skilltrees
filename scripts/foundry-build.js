@@ -1065,7 +1065,9 @@ function advItemDoc(advName, raw, sort) {
     ? { id: raw.weaponId || slugify(raw.name), type: weaponType,
         description: { value: descValue, chat: "", short: "" }, activation,
         damage: { ...damage, skill },
-        equipped: true, alwaysEquipped: false,
+        // alwaysEquipped: natural weapons (Bite, Spearing Beak, Slam, Scalpel-Strike) — part of the
+        // creature, cannot be disarmed/dropped; the schema field exists for exactly this (item 34a).
+        equipped: true, alwaysEquipped: !!raw.alwaysEquipped,
         attack: { type: ranged ? "ranged" : "melee", range: ranged && weaponRangeVal ? { value: weaponRangeVal, long: null, unit: "ft" } : { value: null, long: null, unit: "ft" } },
         traits: {}, expertise: false, events }
     : { id: slugify(raw.name), type: "basic", description: { value: descValue, chat: "", short: "" }, activation, damage, modality: null, ancestry: null, events };

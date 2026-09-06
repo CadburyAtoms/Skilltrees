@@ -542,6 +542,17 @@ stands — no change needed; row CLOSED.)*
 
 ## Engine-wide fixes still unbenched (pre-migration survivors)
 
+- [ ] 🤖 **R-70 (b) / item 50 — every cost row of the consume dialog opens TICKED (engine-only, F5
+      first).** Positive: on `BENCH Stitchmother R28` (or any actor owning *Reknit Form* — cost 1
+      Investiture, 1 Focus) note inv/foc, use Reknit Form, **read the dialog** — BOTH rows must
+      render `checked` — then click **Continue** without touching anything: expect **inv −1 AND
+      foc −1** (run 28 measured inv 10 → 9, foc 8 → 8 under the system default; the ticked-both
+      reading was inv −1, foc −1). Negative control: a single-cost talent (any "Spend 1
+      Investiture" talent, e.g. Searing Bolt on `Bench — Red`) opens with its one row ticked and
+      a default Continue charges exactly 1 — unchanged. Console should show *"Edha Content |
+      consume-dialog pre-tick wired via …"* once at ready. Pinned headlessly in
+      `tests/consume-dialog-wrapper.test.js`; the row is the live-table half.
+
 **Bench run 4 (2026-07-26m): the melee-discriminator row is RETIRED** — `edhaAttackKind` now reads
 `system.attack.type`: a weapon set to `"ranged"` skipped Warlord's Advance's rider AND left the arm
 armed; blanking the field (schema re-initialises to `"melee"`) fired "+4 impact strike" and consumed
@@ -907,6 +918,37 @@ false while a genuine crossing ray reads true). Evidence in the 07-26m delta.
       that does not close on any ally is neither refused nor announced. Watch a multi-waypoint drag
       in particular: that is the case the throttle exists for.
 
+### Item 49 re-tests — the next-test modifier is a LIST (2026-09-06 — ENGINE-ONLY, F5; no rebuild, no ⟳ Sync)
+
+Ben's R-15(b): `flags.edha-content.nextTestMod` is an array now, so riders stack instead of
+overwriting. Console probe for all three rows (bench GM):
+`game.actors.getName("<victim>").getFlag("edha-content","nextTestMod")` — it must be an **array**.
+
+- [ ] 🤖 **2bI-4 — Coercive Pressure and Probability Net STACK on one victim (R-15(b), reopened).**
+      Put a **Wrenchmaster** on the map beside **Bench — Black**, with one enemy dummy inside Black
+      Attunement Range. (1) Make the dummy LOSE a focus → Coercive Pressure arms its Cognitive
+      disadvantage. (2) Wrenchmaster uses **Probability Net** on the SAME dummy. Probe the flag:
+      **two entries**, `Coercive Pressure` and `Probability Net` (before this change the second
+      grant erased the first, which is the whole defect). (3) The dummy makes a **Cognitive** test
+      (Deception / Insight). Expect **`2d20kl`** AND a **`-1d6[Probability Net]`** term on the same
+      roll, plus **two** consume cards — "🔮 Coercive Pressure — disadvantage on this test" and
+      "🔮 Probability Net — -1d6 on this test". Probe again: the flag is gone/empty.
+- [ ] 🤖 **2bI-4b — NEGATIVE CONTROL: a non-matching test spends ONLY the rider that applied.**
+      Same setup, both riders armed, but the dummy makes a **Physical** test first (Athletics /
+      Strength). Expect: **no disadvantage** (`1d20` — Coercive Pressure's Cognitive gate still
+      filters per entry) but the **`-1d6[Probability Net]`** term IS there, with only the
+      Probability Net card. Probe the flag: **exactly one entry left, `Coercive Pressure`** — the
+      neighbour must be untouched. Then the Cognitive test spends it and the flag clears.
+- [ ] 🤖 **2bI-4c — the expired "this round" rider is REMOVED from the flag, not left behind
+      (R-20 + R-57).** Run on **Bench — Blue**. Use **Pattern Recognition** on a victim, then
+      advance the combat one round WITHOUT the victim testing. The behaviour half is R-57's
+      verified result and stands: the victim's next test is a plain `1d20`, no card. **What is new
+      is the flag** — probe it after that roll: the Pattern Recognition entry is **gone**, where it
+      used to sit on the actor for ever. **POS (the other half):** arm an UNSTAMPED rider too (any
+      `edha-next-test-mod` without "this round" — e.g. Probability Net from a Wrenchmaster) and
+      confirm it **survives** the round change and still applies. Pruning must not eat a rider that
+      is simply waiting.
+
 ---
 
 # BENCH — Red (leyline)
@@ -930,6 +972,20 @@ is spent on the next test then clears (ruling answered 2026-09-06 → item 52).
       `whenDealer: "any"` now on its rule, a plain sword hit (not a Volatile Strike cast) should
       offer the Investiture prompt to add half [Tier][Die] impact; a standalone cast of Volatile
       Strike itself should still self-offer on its own hit (harmless, expected per the ruling).
+
+- [ ] 🤖 **52-1 — Battle Fever spends the stack on the next test (R-27, PR #223, ENGINE-ONLY F5).**
+  On Bench — Red, deal damage three times in one round (three Strikes that hit, or `edha.rally()`
+  ×3 from the console — the console path bumps the same flag). Confirm the 🔥 card reads "+3" and
+  `flags.edha-content.rally.count === 3`. Roll ANY d20 test (a Skill test is fine): its breakdown
+  shows **`3[Rally]`**, a "🔥 Rally — Bench — Red spent +3 on this test" card posts, and the `rally`
+  flag is GONE. Roll a second test: **no** `[Rally]` term, no card. Then bump four times at Red
+  rank 3 → the stack reads 3, the test shows `3[Rally]` (the cap holds on the spend).
+- [ ] 🤖 **52-2 — negative control: an unspent stack still clears at the owner's turn start, and a
+  cancelled dialog does not spend it.** Bump twice, do NOT roll; advance the tracker to the start of
+  Bench — Red's next turn → `rally` flag gone, the next test shows no `[Rally]`. Then bump once,
+  open a Skill-test dialog and CANCEL it → the flag is still `{count: 1}`; the next completed test
+  shows `1[Rally]` and consumes it. (The consume is post-roll on purpose — a cancel must not
+  strand or spend the stack.)
 
 *(**Flashpoint** — RETIRED on evidence 2026-09-05, bench run 26. One Flame Surge detonation caught
 **2** enemies (Bench Target — Adjacent A and B, 12 energy each after their Athletics saves) and fired the
@@ -1238,6 +1294,23 @@ resister branch is dice luck, not doubt. What was left was one question with not
 should Unweaving's dispel card list the **Omen marker itself** as a dispellable button — and it is
 now **`EDHA_RULINGS.md` R-35**.
 **ANSWERED 2026-09-06, R-35 (a): YES** — folded into **item 54** with R-73(b), ENGINE-ONLY, F5.
+**SHIPPED 2026-09-06, PR #224 (ENGINE-ONLY, F5; bench-pending)** — the Chaos residual is a test row again:
+
+- [ ] 🤖 **R-35 (item 54) — the dispel card offers "Dispel Omen" and it clears marker + ledger row.**
+      ENGINE-ONLY (F5). Spreading Omen a bench target from a Chaos PC (ledger reads "(1/2)"), then
+      target that bearer with Unweaving / Unravel Everything's dispel card. Expect a **Dispel Omen**
+      button beside the effect buttons; the GM click removes the `omen` icon, clears
+      `flags.edha-content.markedBy.omen`, and the Chaos PC's `lists.omens` no longer holds the
+      bearer — the next place reads "(1/2)" again, not "(2/2)". Card: "Omen is dispelled from <name>
+      — 1 ledger entry cleared". **NEG:** an unmarked target's card shows no Dispel Omen button.
+- [ ] 🤖 **R-73 (b) (item 54) — Unravel Everything / Unweaving DISABLES a target's Hardy; the talent
+      copy survives intact.** ENGINE-ONLY (F5). Target a PC that owns **Hardy** (its AE is
+      `transfer: true` on the talent). Expect the dispel card to list **Hardy (Hardy — suppress)**;
+      the GM click posts "Hardy is suppressed on <name> — Hardy's copy is intact", the PC's max-HP
+      bonus drops, and on the Hardy talent's **Effects tab the effect is still present, toggled
+      disabled** — re-enabling it there restores the bonus. **NEG:** no delete-shaped button exists
+      for Hardy (only actor-level effects — e.g. a hand-added AE on the actor — are offered as a
+      plain delete, and only those disappear from the sheet after the click).
 
 
 ---
@@ -3195,6 +3268,48 @@ after the raise produced **0 cards and 0 state change** with the marker correctl
 actor-level copy was the one that had fired. ⚠️ **Worth knowing:** the enable/disable is written onto
 the **trait item's own AE**, so a Stalker that ends a scene veiled carries that state on its copy of
 the trait until a sweep releases it — the accepted consequence of the widened read.)*
+
+---
+
+# BENCH — Fleet weapon migration, 34a (2026-09-06 — item 34a, re-do of PR #103's weapon half: engine + data → `deploy-to-foundry.bat` (adversaries pack REBUILD) → relaunch → **⟳ Sync Adversaries from Pack**)
+
+Every gear attack and natural weapon across the 13 original statblocks is now a real
+**weapon-type item** (11 items flipped; the Raider's Shortsword already was): native target +
+test-defense flow, lootable, natural weapons `alwaysEquipped`. Rolls keep the same skill_test +
+flat modifierFormula, so every attack number is byte-identical to before (proven in the PR's
+parity table: 336 embedded items compared, 11 docs changed, 0 roll differences). Maneuvers and
+reactions (Devastating Blow, Reactive Strike, Press the Line, Snatch and Wade) and Frost Lance
+(bespoke investiture attack, Ben's 07-18 ruling) stay actions. Summon attacks (Construct Slam,
+Siege Cannon) build as weapons too. The three weapon-borne riders (Bite's Kindle light,
+Scalpel-Strike's +4, Spearing Beak's fooled +1d6) harvest through the new `edhaRuleBearer`
+gate on both actor-wide rule loops — pinned headless; the rows below are the live half.
+The 34b loot half (chest caches, body search) is a separate later PR and has its own rows.
+
+- [ ] 🤖 **Weapon section render** — after ⟳ Sync, open a Corvaine Raider and a Cinderhound:
+      Shortsword / Soldier's Crossbow / Bite sit in the sheet's WEAPONS section; Break and the
+      other bespoke abilities stay under actions/traits. Frost Lance (Frostbinder) is still an action.
+- [ ] 🤖 **Roll parity** — Stonebound Captain's Poleaxe still rolls +7 to hit, 1d10+4 impact;
+      Trooper's Strike +5 / 1d6+2 impact (same numbers as before the migration).
+- [ ] 🤖 **Native defense test** — target a PC token, use a migrated weapon: the roll targets and
+      tests the defender's Physical defense natively (the flow action-typed attacks never had).
+- [ ] 🤖 **Weapon-borne riders survive** (the `edhaRuleBearer` gate): Bite's hit still lights the
+      target (Kindle light), Scalpel-Strike still adds +4 vs a Vital-Diagram-marked target, and
+      Spearing Beak's +1d6 still applies ONLY vs a fooled target — all three riders now live on
+      weapon-type items.
+- [ ] 🤖 **Pack advantage off a weapon attack** — two Cinderhounds on one target: the second Bite
+      still rolls with advantage (the aggro ledger records weapon rolls).
+- [ ] 🤖 **alwaysEquipped** — Bite / Spearing Beak / Slam / Scalpel-Strike show as always equipped
+      (no unequip toggle); gear weapons (Shortsword, Poleaxe, both crossbows, Issued Blade) are
+      ordinary equipment.
+- [ ] 🤖 **Summon weapons** — summon the Forge Construct: Construct Slam and Siege Cannon are
+      weapon-type, Siege Cannon still refuses to fire with Siege Form toggled off
+      (`requiresSummonEffect` is item-type-agnostic), and both target + test defense natively.
+- [ ] 🤖 **melee/ranged discriminator on weapons** — a melee-gated rider fires on a migrated melee
+      weapon hit and stands down on a Crossbow / Soldier's Crossbow shot (`edhaAttackKind` reads
+      the weapon's native `attack.type`; the crossbows carry `attack.range.value 60`).
+- [ ] 🤖 **⟳ Sync carries the weapon items** — a world adversary that pre-dates this deploy loses
+      its action-typed Strike/Bite and gains the weapon-typed one after one Sync click (position,
+      HP, and the actor's other items kept); a renamed copy is skipped as before.
 
 ---
 
