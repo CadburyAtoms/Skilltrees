@@ -63,6 +63,26 @@ the whole run looking for more of it.**
    queueing anything**, because the first has a one-paragraph re-test recipe ready for the moment
    R-77 is answered and the fix lands.
 
+### ⭐ 0b. RE-TEST FIRST — fix pass 6 landed BOTH of run 36's defects (ENGINE-ONLY, F5)
+
+**Written 2026-09-06, after the block above. Both rows are now reworded RE-TEST rows with their own
+recipes — take them right after step 0's hash check, they share its client staging and cost minutes.**
+
+- **The Investiture-max persist** now defers to the primary GM (R-77's recommended default applied,
+  **still open for Ben's veto**): a GM writes only when no other GM has claimed it, a **non-GM owner
+  still writes**. Same two-GM staging as item 12's row — reuse the `userId`-recording `updateActor`
+  observer. Watch the trap the row names: `_edhaInvPersisted` is **per client AND per session**, so a
+  character either client already persisted this session will look like a pass for the wrong reason.
+- **The 64 ↔ 57 max-HP flip** was the `ready` hook refreshing actors with a bare `a.prepareData()`,
+  which double-applied **every ADD-mode ActiveEffect**. It is now `a.reset()`. ⚠️ **Two things for
+  the bench specifically:** (1) the report's direction was **inverted** — **57 was correct**, 64 was
+  the inflated one, so read the new row's numbers and not run 36's prose; (2) **stop using
+  `actor.prepareData()` as a console "restore"** — that call is itself the doubler, and it is what
+  made 64 look like the resting state at the end of run 36. Use **`actor.reset()`**.
+- **The separating measurement**, if you take only one thing: an actor with **no** ADD-mode effect
+  (`Bench — Green`) should never have flipped. Read it both ways. If Green flips, the root cause is
+  incomplete and there is a second one — say so rather than passing the row.
+
 ## Where the 27 open 🤖 rows are
 
 | Block | 🤖 | Note |

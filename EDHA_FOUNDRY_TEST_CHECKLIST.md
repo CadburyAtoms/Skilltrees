@@ -568,35 +568,39 @@ IS the negative control, read off world state rather than inferred. ⚠️ The s
 card of its own (the caster-side card is posted by the emitting client, not by the relay), so the
 row's "one card" clause is read here as **one application**.)*
 
-- [ ] 🤖 **The Investiture-max persist is NOT behind the primary-GM gate — found at bench run 36.**
-      `edhaDeriveInvestiture`'s persist branch (`register-skills.js` ~17252) gates on **`actor.isOwner`**
-      plus a **per-client** `_edhaInvPersisted` Set, not on `edhaDefBuffGmGate()` / `edhaNoOtherActiveGM()`
-      — so it is a world-writing site the item-12 consolidation did not reach. **Measured in both
-      directions with two GM clients connected:** Ben's **non-primary** `Gamemaster` client wrote
-      `system.resources.inv.max.override: 6` on `Bench — Red` after an Awareness change, and the
-      **primary** `Bench` client wrote `override: 5` on `Bench — Blue` after the same kind of change
-      — i.e. **the writer is whichever GM client happens to prepare the actor first**, not the primary
-      GM. Both clients derive the same number, so the observed harm is a redundant write rather than a
-      wrong value, and the double-write itself was not caught in one window (each client's Set had
-      already claimed the other actor). **What to re-drive after a fix:** with both GMs connected,
-      change Awareness on a character neither client has persisted this session and confirm **exactly
-      one** `inv.max.override` write, from the primary GM. ⚠️ The gate choice is a design call, not a
-      bug report — `EDHA_RULINGS.md` **R-77** (owner-gated persist is what lets a player-owned PC
-      persist its own max on a GM-less table).
+- [ ] 🤖 **RE-TEST — the Investiture-max persist now defers to the PRIMARY GM (R-77 default applied,
+      fix pass 6).** `edhaDeriveInvestiture`'s persist branch used to gate on `actor.isOwner` plus a
+      per-client `_edhaInvPersisted` Set only, so with two GM clients the writer was whichever
+      prepared the actor first — run 36 measured Ben's **non-primary** `Gamemaster` writing
+      `system.resources.inv.max.override: 6` on `Bench — Red` and the **primary** `Bench` writing 5 on
+      `Bench — Blue`, in one window. The gate now also requires `!game.user?.isGM ||
+      edhaNoOtherActiveGM()`: **GMs defer to the primary GM, a non-GM owner still writes.**
+      **Drive it:** with **both** GMs connected and a `updateActor` observer recording the originating
+      `userId`, change Awareness on a character **neither client has persisted this session** (the Set
+      is per-client and per-session, so pick a fresh actor or reload both clients first) and confirm
+      **exactly one** `inv.max.override` write, **from `Bench`** (the primary — its user id sorts
+      first, which run 36 established is structural). Second half, the one that must NOT regress: the
+      **non-primary** client must still **display** the right max on its own sheet — the gate narrows
+      the write, not the derivation. ⚠️ R-77 is still **open**: this is its recommended default
+      applied pending Ben's veto, not a settled ruling.
 
-- [ ] 🤖 **`Bench — White`'s max HP flips 64 ↔ 57 depending on which prepare path ran — found at
-      bench run 36.** The actor carries a `Hardy - Max HP` ActiveEffect whose change is
-      `system.resources.hea.max.bonus` ADD **`@level`** (= 7 at level 7). After a **full**
-      `prepareData()` the actor reads `hea.max.bonus = 22` (source 8 + **14**) → **max 64**; after the
-      prepare triggered by a resource write during the run it read `bonus = 15` (source 8 + **7**) →
-      **max 57**, with the same single entry in `allApplicableEffects()`. The difference is **exactly
-      one `@level`**. Observed live: White's own Draw Mana pulse healed it 57 → 59 in source while the
-      derived max was 64, and the displayed value then clamped to 57 when the max re-derived. **No
-      residue** — a `prepareData()` put it back to 64 and it stayed there through logout.
-      *Hypothesis, explicitly unproven:* one application of the AE is dropped on the partial-prepare
-      path (or double-counted on the full one). `Bench — Green`, same 57/64 numbers, carries **no**
-      such AE (its bonus is 22 in source), so it is not a shared fixture artifact. Root-cause is a
-      `test-pass-fixes` job, not a bench row's.
+- [ ] 🤖 **RE-TEST — max HP no longer flips 64 ↔ 57; the ready-hook refresh double-applied every
+      ADD-mode ActiveEffect (fix pass 6).** Root cause was one line: the `ready` hook refreshed every
+      loaded character with a bare `a.prepareData()`, which re-runs the prepare pipeline over
+      **already-derived** data — and cosmere-rpg applies ActiveEffects inside `prepareDerivedData`, so
+      every ADD-mode change landed a **second** time. `Bench — White`'s `Hardy - Max HP` (ADD
+      `@level`) read `hea.max.bonus` = 8 + 7 + 7 = 22 → max **64**; the correct single application is
+      8 + 7 = 15 → max **57**. The bench's direction was **inverted** — 57 was right, 64 was inflated.
+      Now `a.reset()`, which re-initialises from `_source` first.
+      **Drive it:** on a fresh client load (F5), read `Bench — White`'s `system.resources.hea.max`
+      **before touching anything** — `bonus` must be **15** and max **57**, not 22 / 64. Then make any
+      resource write and read it again: **the same numbers**, i.e. no flip. **The separating
+      measurement the old row lacked:** the fix predicts that an actor with **no** ADD-mode effect
+      never flipped at all — so read `Bench — Green` (`bonus` 22 in source, no such AE) the same two
+      ways and confirm it is **stable**, whatever its value. If Green *does* flip, this root cause is
+      incomplete and there is a second one. Widen the check while you are there: `Clear Mind` /
+      `Focused Mind` focus max and `Surefooted`'s speed are the other ADD-mode effects that were
+      doubled at world load.
 
 *(**GM summon relay** — RETIRED 2026-09-05, `EDHA_RULINGS.md` R-1: "yes — keep `ACTOR_CREATE`."
 ✅ The PLAYER role keeps the permission at Ben's table, so `edhaSummon`'s `summon-actor` relay

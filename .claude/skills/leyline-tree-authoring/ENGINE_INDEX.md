@@ -983,6 +983,16 @@ Insight) and §9o called them byte-identical. **They are not, and the difference
   Pass 20's `primaryGmGate` ratchet therefore **floors at 1** — the primitive's own one-line body,
   the same shape `userTargets` has. A count of 2 means someone hand-derived the check again.
   Pinned in `tests/gm-gate.test.js` across all four client shapes a two-GM table produces.
+
+  **A FOURTH shape exists, and it is the exception the first three do not cover** (R-77, fix pass 6,
+  2026-09-06): a write whose legitimate author may be a **non-GM owner**. `edhaDeriveInvestiture`'s
+  `inv.max.override` persist is the one such site — a player-owned PC on a table with no GM online
+  must still persist its own max, so `edhaDefBuffGmGate()` would silently break it, and the bare
+  primitive would let a second GM write. The shape is
+  **`!game.user?.isGM || edhaNoOtherActiveGM()`** on top of the site's own owner test: *GMs defer to
+  the primary GM; a non-GM owner still writes.* It calls the primitive, so the ratchet stays at 1.
+  Reach for it ONLY where an owner's own client is a legitimate author; everywhere else the default
+  above still applies. Pinned in `tests/inv-persist-gm-gate.test.js`.
 - **A clear GUARDS EVERY AWAIT INDIVIDUALLY and names its failures** (07-27d — the sweep-isolation
   rule, extending the one-applier rule above). All ~17 scene clears launch concurrently off one
   `deleteCombat`, so an unguarded per-actor `await` lets ONE rejection abort everything after it in
@@ -992,6 +1002,18 @@ Insight) and §9o called them byte-identical. **They are not, and the difference
   Two corollaries: **unset the ledger FIRST** (the half whose survival becomes phantom cap pressure
   must not be starved), and **`console.warn` failures WITH the actor's name** so the next bench run
   names the culprit instead of reporting two dead loops.
+- **⛔ NEVER call a bare `Actor#prepareData()` — `reset()` is the "recompute this actor" primitive**
+  (fix pass 6, 2026-09-06 — bench run 36's 64 ↔ 57 max-HP flip). `DataModel#reset()` re-initialises
+  the document's fields from `_source` and ends in `_safePrepareData()`; `prepareData()` resets
+  NOTHING and re-runs the pipeline over already-derived values. Because cosmere-rpg deliberately moves
+  `applyActiveEffects()` out of `prepareEmbeddedDocuments` and into `prepareDerivedData`, and
+  `ActiveEffect#_applyAdd` reads the CURRENT value, a second bare prepare applies **every ADD-mode
+  change a second time**. The `ready` hook's actor refresh did exactly that: `Bench — White`'s
+  `Hardy - Max HP` (ADD `@level`) read `hea.max.bonus` 8 + 7 + 7 = 22 → max **64** instead of 15 →
+  **57**, on every character with any ADD-mode effect, on every client, from world load until that
+  actor's next real update. Nothing persists, so it reads as a "flip" with no residue rather than as
+  corruption. Gated: `tests/prepare-refresh-reset.test.js` asserts the engine source contains **zero**
+  `.prepareData(` calls, the same regrowth ratchet passes 7 and 20 use.
 - **NOT in scope:** canvas objects (Fate's MeasuredTemplates, Destruction's Regions) stay with the
   placement handlers, and Knowledge's **Insight is a different shape** — a counted SINGLE bearer
   (0–5, transfer clears the old one), not N members. That is the proposed **H3b
