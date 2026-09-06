@@ -474,7 +474,7 @@
               "icon": "🌫️",
               "costs": "inv:1",
               "once": "no",
-              "prompt": "Fade — spend 1 Investiture to gain Concealment until the end of its next turn?",
+              "prompt": "spend 1 Investiture to gain Concealment until the end of its next turn?",
               "label": "Fade (1 Investiture)",
               "note": "Concealed until the end of its next turn — toggle the Fade marker on the sheet."
             },
