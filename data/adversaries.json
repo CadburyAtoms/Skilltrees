@@ -223,7 +223,7 @@
         "name": "Combat Training",
         "kind": "trait",
         "cost": "Passive",
-        "text": "<p>Once per round, the Captain can turn one of its own <strong>misses into a graze</strong> automatically (a free graze).</p><p><em>Ruled miss→graze (Ben 2026-07-16 — the source PDF sentence was garbled). GM-run — NO NAMEABLE HOOK: the miss/graze/hit adjudication happens in the GM's application step and is never module-visible data.</em></p>"
+        "text": "<p>Once per round, when one of the Captain's attacks <strong>misses</strong>, it can turn that miss into a <strong>graze</strong> without spending Focus.</p><!-- R-29 (a), Ben 2026-09-06: MISS → GRAZE, once per round, no Focus — the canon Combat Training wording (the source-PDF sentence \"turn one of its own grazes into a graze\" was garbled). NO NAMEABLE HOOK: the miss/graze/hit adjudication happens in the GM's application step and is never module-visible data. -->"
       }
     ]
   },
