@@ -762,7 +762,7 @@ engine behaviour: it is not settled until the bench confirms it.**
 
 ---
 
-## 29. [x] `kind: line` zones catch every character, allies included (ruling R-5) (2026-09-06, PR #PENDING)
+## 29. [x] `kind: line` zones catch every character, allies included (ruling R-5) (2026-09-06, PR #185)
 
 **Why:** Ben answered **R-5 on 2026-09-05: "no it does not"** — Fault Line's line does NOT spare
 allies. The card says "each character"; the engine drifts: `edhaFaultLine` (register-skills.js,
@@ -785,7 +785,7 @@ regression is pinned, the 🤖 row exists, and R-5 moves to `EDHA_RULINGS.md` §
 
 **PM:** lane B · model opus · size S · deps R-5 ✓ · verify: pinned regression + a bench pass. ENGINE-ONLY (F5), no pack rebuild.
 
-**DONE 2026-09-06 (PR #PENDING) — ENGINE-ONLY (F5), no pack rebuild.** `edhaEnemyTokensInLine` is
+**DONE 2026-09-06 (PR #185) — ENGINE-ONLY (F5), no pack rebuild.** `edhaEnemyTokensInLine` is
 replaced by **`edhaTokensInLine`**: every LIVE token in the length×width line **except the caster**
 (excluded by token id *and* by actor identity, so it fails closed when the caster's token cannot be
 resolved), disposition ignored. Done in the line-zone helper, so every `kind: line` rule inherits

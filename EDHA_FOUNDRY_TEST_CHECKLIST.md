@@ -799,7 +799,7 @@ the activeGM (`Bench`, `game.users.activeGM.isSelf === true`) — **three** Regi
 active throughout, i.e. **two GM clients connected on both legs**, and each leg produced **exactly 3**
 Regions and 3 Drawings, never 6. The single-activeGM applier gate holds.)*
 
-- [ ] 🤖 **Fault Line catches ALLIES too — R-5's engine fix (2026-09-06, PR #PENDING; engine sync +
+- [ ] 🤖 **Fault Line catches ALLIES too — R-5's engine fix (2026-09-06, PR #185; engine sync +
       F5, NO pack rebuild).** Stage three bystanders around `Bench — Destruction`: an **ally** token
       (same disposition as the caster) and a **foe** dummy both inside the 60 ft × 5 ft line, plus a
       second ally clearly **outside** it. Cast Fault Line down that line. Expected: the burst card

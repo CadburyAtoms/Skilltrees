@@ -697,7 +697,7 @@ enemies only. The same question applies to **every `kind: line` zone**. *(3B-B.)
 > #29**. **R-6 (the Region catching bystanders) is NOT decided by this** — same shape, separate
 > ruling, still open. Moves to §K when #29 lands.
 
-**Closed by TODO_REPO_HYGIENE #29 (PR #PENDING), 2026-09-06 — ENGINE-ONLY (F5).** Consequence
+**Closed by TODO_REPO_HYGIENE #29 (PR #185), 2026-09-06 — ENGINE-ONLY (F5).** Consequence
 applied in the line-zone helper, so **every** `kind: line` rule inherits it rather than Fault Line
 alone: `edhaEnemyTokensInLine` is gone and `edhaTokensInLine` returns every LIVE token in the
 length×width line **except the caster** (excluded by token id *and* by actor identity, so it fails
