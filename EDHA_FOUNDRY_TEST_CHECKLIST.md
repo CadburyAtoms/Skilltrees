@@ -389,6 +389,18 @@ for half (b); run the 28a rows with **no combat in the tracker** unless a row sa
 **R-4 settles only when BOTH sets pass** — half (a) is the combat gate, half (b) is the spend stamp.
 R-8's roster cross-talk is its own open ruling and is not settled by any row here.)*
 
+*(**✅ Bench run 35, 2026-09-06 — R-4's LAST THREE ROWS RETIRED on evidence** on the hash-verified
+`4d882ea0…` deploy (items 13 + 14 live). **All eight faces have now passed; R-4 may move to §K.**
+The negative control's window half — Ordered Advance armed by `Bench — White` **in no combat**, flag
+`{combatId: null, round: null}`, and the very next token move posted the card listing both allies, so
+the window was **still open when consumed**. The `costs:`-rule half — an engine-driven `costs:
+"foc:2, inv:1"` deduction on a hostile spender took focus 4 → **1** (2 for the cost + Whispered
+Doubt's extra 1) and Investiture 3 → 2, with Coercive Pressure's disadvantage card and `nextTestMod`,
+**in the same round** in which that same actor's GM hand-edit of Investiture was silent. The
+Investiture/Edict face — a `proh:{kind:"invest"}` Edict on `Bench — Order` **did not** prompt on two
+GM hand-edits and **did** prompt on both wired spends. The adversary-bespoke-ability half is still
+**R-74**, a design call, not a test. Details in the `2026-09-06 — BENCH RUN 35` handoff delta.)*
+
 *(**Bench run 34, 2026-09-06 — FIVE of the eight RETIRED on evidence** on the hash-verified
 `f268e990…` deploy: the per-round ledger, the timed-status expiry, the out-of-combat focus-watch
 gate, the two-combats row, and "a GM focus edit is NOT a spend". Every one was measured in **both**
@@ -397,63 +409,68 @@ the `2026-09-06 — BENCH RUN 34` handoff delta. **Three rows remain and are nar
 negative control's window half, the `costs:`-rule half of the real-spend row, and the adversary
 ability / Edict row. **R-4 therefore does NOT close yet.**)*
 
-- [ ] 🤖 **NEGATIVE CONTROL, part (c) ONLY — a WINDOW armed out of combat is still open when it is
-      consumed (28a).** ✅ Part (a) **PASSED** at bench run 34: with no combat containing it,
-      `Bench — Black`'s `scope: self` `skill-roll` watch (Extract Thought) fired on its own Deception
-      roll (18 vs Spiritual 14) and posted its card. ✅ Part (b) **PASSED**: `Bench — Chaos`'s
-      `Shatter Focus` prompt offered with neither owner nor foe in any combat, and the immediate
-      repeat roll was debounced (0 further prompts). ⚠️ Part (b) exercised the **round-tag** branch of
-      `edhaShatterPromptGate`, not its wall-clock branch, because Ben's world holds an **active,
-      started, 0-combatant combat** (`BerbNeuXp4iKduef`) so `game.combat` is never null — see the
-      delta. **What is left:** arm a movement or designate **window** with no combat running
-      (`edhaRoundWindowValid` — a window armed out of combat carries no `combatId`), then consume it
-      and confirm it is still open. Silence is a **28a regression**, not expected behaviour.
+*(**✅ RETIRED 2026-09-06, bench run 35 — the NEGATIVE CONTROL, part (c).** `Bench — White` (in no
+combat: `game.combats` held only Ben's zero-combatant one, and White was in neither) used **Ordered
+Advance**; the armed flag read `moveWindow {combatId: null, round: null, rangeFt: 10, source:
+"Ordered Advance"}` — the out-of-combat shape `edhaRoundWindowValid` returns `true` for
+unconditionally. The very next token move (`{animate:false, teleport:true}`, destination read back)
+posted **"🚶 Ordered Advance — Bench — White moved; allies within 10 ft may move half their Speed
+without provoking Reactions: Bench — Red — up to 15 ft, Bench — Blue — up to 15 ft"**, and the flag
+was still armed afterwards. Silence would have been the 28a regression; it did not go silent. The
+same window fired a second time on the restore move, which is the same evidence twice.)*
 
-- [ ] 🤖 **A REAL spend still taxes (28b) — the `costs:`-RULE half ONLY.** ✅ The
-      `system.activation.consume` half **PASSED** at bench run 34, twice, with a same-round matched
-      control: an enemy using a focus-costing talent in a started combat took its cost **and**
-      Whispered Doubt's extra 1 focus, and Coercive Pressure wrote its `nextTestMod` disadvantage —
-      immediately after two GM hand-edits in that same round had been correctly silent. **What is
-      left:** the same contrast with an **engine-driven** cost, i.e. a talent whose rule carries
-      `costs:` so the deduction goes through `edhaSpendResource`. The six shipped `costs:` rules are
-      `Beacon of Stability`, `Pillar of Order`, `Shared Conviction`, `Voice of Authority` (White),
-      `Puppeteer` (Black) and `Pack Sense` (Green) — all PC talents, so the enemy must be **granted**
-      one to be the spender. **Silence there is a 28b regression** (a real spend read as
-      bookkeeping), not the fix working.
+*(**✅ RETIRED 2026-09-06, bench run 35 — a REAL spend still taxes, the `costs:`-RULE half.** The six
+shipped `costs:` rules are all PC talents, so one was **granted to the enemy** as the row instructs:
+a copy of Black's `Subtle Suggestion` `edha-prompt-pick` (`source: confirm`) on `Bench Target —
+Adjacent A`, its `costs` set to **`"foc:2, inv:1"`** and its `activation.consume` cleared so the
+rule's cost is the ONLY deduction — declared staging, deleted afterwards. Clicking the offer card
+took focus **4 → 1** (2 for the rule's cost through `edhaSpendResource`, **plus Whispered Doubt's
+extra 1**) and Investiture **3 → 2**, and posted *"🎲 Coercive Pressure: Bench Target — Adjacent A's
+next test — at disadvantage"* with `flags.edha-content.nextTestMod` written, *"🧠 Whispered Doubt:
+… loses 1 focus"*, and the Edict violation card. **Matched control in the same round 1:** a plain
+optionless `actor.update` of that same actor's Investiture, minutes earlier, produced **zero** chat
+messages. So the silence was the classification, not the `once: round-per-target` budget.)*
 
-- [ ] 🤖 **An adversary's own ability cost + the Investiture/Edict face (28b).** ✅ The **contrast
-      itself is PROVEN** at bench run 34 by the two rows above — wire the cost on the ability and it
-      counts, type it into the sheet (or drag the token bar) and it does not. ⚠️ **The literal row
-      has NO SUBJECT in shipped data:** `data/adversaries.json` contains **zero** `"costs"` keys, so
-      no bespoke adversary ability pays an engine-driven cost today; run 34 substituted a granted
-      focus-consuming talent and said so. Either author a `costs:` line onto one adversary ability
-      and re-run, or close this half as untestable-by-construction — **that is a design call, not a
-      test** (see `EDHA_RULINGS.md`). **What is genuinely left to drive:** the Investiture face — a
-      `Law`/`Decree` Edict forbidding "activate Investiture" must still prompt on a wired Investiture
-      cost and must **not** prompt when the GM edits the Investiture number by hand. Stage the edict
-      ledger (`flags.edha-content.lists.edicts`, entries `{id, uuid, name, proh:{kind:"invest",
-      text}}`) on `Bench — Order` and declare the hand-staging.
+*(**✅ RETIRED 2026-09-06, bench run 35 — the Investiture/Edict face.** Ledger hand-staged and
+declared: `flags.edha-content.lists.edicts` on `Bench — Order` = two entries `{id, uuid, name,
+proh:{kind:"invest", text:"activate Investiture"}}`, with the **`edict` marker status applied via
+`toggleStatusEffect`** to both bound creatures (without it `edhaOwnerList`'s mark-wins filter reads
+the ledger EMPTY — worth knowing before staging any H3 ledger). **NEGATIVE, twice:** plain
+`actor.update({"system.resources.inv.value": …})` on each bound creature → **zero** chat messages, no
+prompt. **POSITIVE, twice, in that same round:** *"⚖️ Edict watch: Bench — Blue spent Investiture —
+… it just violated 'activate Investiture'"* off the H10 drain, and the same card for `Bench Target —
+Adjacent A` off the `costs:` rule. Whispered, with the ⚖ resolve button. ⚠️ The
+**adversary-bespoke-ability half still has NO SUBJECT in shipped data** — that is `EDHA_RULINGS.md`
+**R-74**, a design call for Ben, and it is not what this row was left open for.)*
 
-- [ ] 🤖 **A MIGRATED SPEND still taxes the watches (item 13, 2026-09-06).** Item 13 moved the last
-      twelve hand-rolled `system.resources.*` writes onto `edhaResourceWrite`, and exactly one of
-      them carries a spend stamp: **H10's `edha-focus` Investiture DRAIN** (an `edha-focus` rule with
-      `op: drain`, `resource: inv` — Reaper's Harvest is the reference). Same started combat as the
-      28b rows, with an **Order Edict that forbids activating Investiture** on the watching PC. Drain
-      the Edict-holder's Investiture with that talent. Expected: the ✨ card posts, the Investiture
-      drops, **and the Edict's violation prompt still fires** — exactly as it did before item 13. The
-      failure this pins is the writer swallowing or re-classifying the stamp, which would silence the
-      watch without changing a visible number. (Not a hunt for new behaviour: a check that the one
-      stamped site kept its stamp.)
+*(**✅ RETIRED 2026-09-06, bench run 35 — item 13's "a MIGRATED SPEND still taxes the watches".**
+⚠️ **The row's named subject does not exist.** It said "H10's `edha-focus` Investiture DRAIN … —
+Reaper's Harvest is the reference"; a sweep of all three packs found **exactly one** `edha-focus`
+rule with `resource: "inv"` in the whole game — Reaper's Harvest — and it is **`op: "gain"`**, which
+takes `edhaBookkeepingTag`, not the spend stamp. **No shipped talent carries `op: "drain"` +
+`resource: "inv"`**, so the one spend-stamped site in item 13 has no consumer on the table (the
+sibling of R-74 — filed as **R-76**). Driven with a declared staged rule instead: a throwaway talent
+on `Bench — Blue` carrying one `use` rule `{type:"edha-focus", op:"drain", resource:"inv",
+target:"self", formula:"1"}` — the exact branch that takes `edhaSpendTag`. Result: Investiture
+**4 → 3**, *"✨ Bench drain: Bench — Blue loses 1 Investiture"*, **and the Edict violation prompt
+fired** — in the same round in which that actor's GM hand-edit and its Draw Mana recovery were both
+silent. The writer did not swallow or re-classify the stamp.)*
 
-- [ ] 🤖 **A MIGRATED BOOKKEEPING write does NOT tax them (item 13, 2026-09-06).** The other eleven
-      sites now declare themselves non-spends. Drive two of them in the same combat: (a) **Draw Mana**
-      on `Bench — Blue` (recovers Investiture — an `inv` write) with the same Order Edict on the
-      actor, and (b) any **heal** onto a creature whose focus/HP a scene watcher is watching (an
-      `edha-focus {resource: hea}` rider, a burst heal, or a `Bench — White` pulse). Expected: the
-      resource moves, the card posts, and **no** spend-driven watcher fires off either write — no
-      Edict prompt on the Draw Mana recovery, no 👁️/🧠 tax off the heal. Also confirm the numbers are
-      unchanged from before the migration: each site kept its own max clamp, so a heal must still cap
-      at max HP and Draw Mana must still cap at max Investiture rather than overshooting.
+- [ ] 🤖 **A MIGRATED BOOKKEEPING write does NOT tax them — NARROWED 2026-09-06 (bench run 35) to
+      the HEAL half's max clamp.** ✅ **The Draw Mana half PASSED in full**: `edha.drawMana()` on
+      `Bench — Blue`'s Draw Mana talent, with the `proh:{kind:"invest"}` Edict live on that actor,
+      moved Investiture **3 → 4** — *clamped at max 4, not 5* (tier 2 recovery) — posted *"Bench —
+      Blue Draws Mana — recover 2 Investiture"* plus the Blue Attunement Key card, and produced
+      **no Edict prompt**; the positive control is that the H10 drain on the same actor in the same
+      round DID prompt. ⚠️ **The heal half is PARTIAL.** `Bench — White`'s Draw Mana pulse posted
+      *"🕊️ White Leyline Attunement: healed 1 of 5 ally(ies) 2 HP within 60 ft (visible) — skipped 4
+      behind a wall"* and **no watcher fired off it**, but the two allies whose HP was read before
+      and after (`Bench — Order` 60/61, `Bench — Black` 4/50) were both among the four the walls
+      skipped, so **the run cannot say which creature was healed or that the heal capped at max HP**.
+      **What is left:** heal a NAMED, observed target that is at `max - 1` and confirm it lands at
+      max rather than overshooting. Stage it on a wall-free line — the Playtest Map's own walls are
+      what defeated this.
+
 
 ## Migration machinery (cross-tree behaviour)
 
@@ -497,18 +514,22 @@ blank note read "Push", or the owning talent's name?)*
 armed; blanking the field (schema re-initialises to `"melee"`) fired "+4 impact strike" and consumed
 it; Withering Touch's ranged half behaved identically. Evidence in the 07-26m delta.
 
-- [ ] 🤖 **Targeting still reads the same tokens after the target-reader consolidation (item 14).**
-      ENGINE-ONLY (F5) — every site that read `game.user.targets` now calls `edhaUserTargetTokens()`.
-      A pure refactor, so this row is a spot-check that nothing lost its target list, not a hunt for
-      new behaviour. Drive **two** of the nine migrated sites. **(a) The single-target gate:** target
-      **two** tokens with `Bench — Red` and use a single-target talent (Withering Ray is the
-      reference). Expected: the use is cancelled before any cost, and the whispered picker card lists
-      **both** token names as buttons; clicking one retargets to it alone and re-uses the talent.
-      **(b) `edhaSovTargets`' ally/enemy split:** with a Sovereignty actor, target **one ally and one
-      enemy at once** and use a talent that reads a side (an Edict / adv-attack grant). Expected: the
-      ally-side effect lands on the ALLY and the enemy-side read takes the ENEMY — the split is by
-      token disposition, not by click order, and your own token is in neither list. Either row
-      returning an empty/wrong target list is the regression to report.
+- [ ] 🤖 **Targeting after the target-reader consolidation (item 14) — NARROWED 2026-09-06 (bench
+      run 35) to the `edhaSovTargets` half.** ✅ **(a) The single-target gate PASSED in full**, driven
+      on `Bench — Black` (which owns the reference talent) with **two** hostile tokens targeted:
+      **Withering Ray** was cancelled **before any cost** (Investiture 2 → 2) and posted the whispered
+      card *"🎯 Withering Ray is single-target, but 2 tokens are targeted. Pick one:"* with **both**
+      token names as buttons. Clicking one left `game.user.targets` holding **exactly that one
+      token**, stamped the card **"✓ Bench Target — Adjacent A"**, and re-used the talent: the
+      "Withering Ray (Black)" roll window opened (the engine's **AppV1** `div.app.window-app`, no
+      `<dialog>` — both DOM shapes were sampled) and Rolling produced ONE resolution — *"🩸 Withering
+      Ray: Bench — Black pays 3 HP"*, *"🩸 Sanguine Reservoir: banked 3 Reserve (3/3)"*, *"🎲 Blood
+      Price: your next test — at advantage"*. **This retires the `# Bench-results fixes` single-target
+      picker row as well.** ⛔ **What is left: (b) `edhaSovTargets`' ally/enemy split** — with a
+      Sovereignty actor, target **one ally and one enemy at once** and use a talent that reads a side
+      (an Edict / adv-attack grant). Expected: the ally-side effect lands on the ALLY and the
+      enemy-side read takes the ENEMY — the split is by token disposition, not by click order, and
+      your own token is in neither list. An empty/wrong list is the regression to report.
 
 *(**GM summon relay** — RETIRED 2026-09-05, `EDHA_RULINGS.md` R-1: "yes — keep `ACTOR_CREATE`."
 ✅ The PLAYER role keeps the permission at Ben's table, so `edhaSummon`'s `summon-actor` relay
@@ -2556,9 +2577,16 @@ short version: a removed v13 core API, a system-2.1.0 graze-clone crash that kil
 damage-rider, a schema field the DataModel was stripping, orphaned illusion tokens, a missing
 displayName, a missing mode gate, the PC visionMode, and one stale world actor.
 
-- [ ] 🤖 **Single-target picker resolves** — target 2+ tokens, use Withering Ray: the picker card
-      appears, nothing is spent; click a name → that token becomes your ONLY target, the card
-      marks ✓, and the talent rolls once against it. (Verdant Mend same.)
+*(**Single-target picker resolves — ✅ RETIRED on evidence 2026-09-06, bench run 35**, deferred three
+times and driven at last as the same sitting as item 14's spot-check. Two hostile tokens targeted,
+`Bench — Black` used **Withering Ray**: the use was cancelled **before any cost** (Investiture 2 → 2),
+the whispered card read *"🎯 Withering Ray is single-target, but 2 tokens are targeted. Pick one:"*
+with **both** names as buttons, clicking one narrowed `game.user.targets` to **exactly that token**,
+the card stamped **"✓ Bench Target — Adjacent A"**, and the re-use rolled **once** — *"🩸 Withering
+Ray: Bench — Black pays 3 HP"* + Sanguine Reservoir + Blood Price. ⚠️ The follow-up roll window is the
+engine's **AppV1** `div.app.window-app` with **no `<dialog>` element**, so a V2-only DOM sample reads
+the run as a silent no-op; both shapes were sampled. Verdant Mend was not driven — same handler, same
+gate, and the row's own reference talent is Withering Ray.)*
 *(**Spearing Beak rolls from the icon** — RETIRED on evidence 2026-07-28j, bench run 22, **both
 directions on a freshly-imported Mistheron**. **ONE** chat message carried **both** rolls: the test
 `1d20 + 0 + 5 = 17` (Heavy Weaponry at the row's **+5**) and the damage `1d8 + 2 + 0 = 6` — no dead

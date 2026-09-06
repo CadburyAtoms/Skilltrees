@@ -114,6 +114,21 @@ on the scene offers a reaction on **every** skill test any creature in Attunemen
 at a busy table is chatty. If you want it quieter the fix is a field on the rule (an `inCombatOnly`
 dial), not an engine gate — iron rule 2b. *(Bench run 34.)*
 
+**R-76. The engine's ONE spend-stamped resource write has no consumer either — H10's Investiture
+drain does not exist on any talent.** Measured at bench run 35 while driving item 13's row, which
+named "H10's `edha-focus` Investiture DRAIN (`op: drain`, `resource: inv`) — Reaper's Harvest is the
+reference". A sweep of all three packs found **exactly one** `edha-focus` rule with `resource:
+"inv"` in the whole game — Reaper's Harvest — and it is **`op: "gain"`**, which takes
+`edhaBookkeepingTag`. **No shipped talent carries `op: "drain"` + `resource: "inv"`**, so the single
+`edhaSpendTag` site that item 13 preserved (`register-skills.js` ~18139) is dead code on the table
+today. The bench proved the branch works by staging the rule by hand, so this is not a defect —
+it is the exact shape of **R-74** one layer up: an engine path with no consumer. *Recommended:
+**author the drain onto a talent that should have it** — a Death/Morrath or Black drain that takes
+Investiture rather than focus is the obvious home, and it would give both R-74's contrast and this
+branch a real subject in one edit.* The alternative is to say so in the header and leave it: the
+branch is one ternary and costs nothing to keep. ⚠️ This is an **authored-data** change (a `pack
+rebuild + ⟳ Sync`), so it is not a bench decision. *(Bench run 35, from item 13's bench row.)*
+
 *(R-5 — does Fault Line's line spare allies — ANSWERED 2026-09-05, moved to §K.)*
 
 **R-6. Fault Line's dangerous-terrain Region catches bystanders scene-wide**, with no friend/foe
