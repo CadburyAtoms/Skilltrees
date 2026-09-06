@@ -2050,6 +2050,63 @@ engine.split("\n").forEach((lineText, i) => {
   }
 }
 
+/* --- pass 23: every consume entry's min must equal max (the R-22 under-refund guard) -------------
+ *
+ * `edhaConsumeList` (register-skills.js) reads `value.min` as both the amount to deduct AND the
+ * amount `edhaRefundCost` hands back — it never reads `value.max`. Foundry's own consume dialog
+ * lets a player pay anywhere in [min, max], so a talent or adversary ability that ever shipped
+ * `min !== max` would let a real spend of `max` refund only `min`, silently. Ben's ruling (R-22,
+ * EDHA_RULINGS.md, ANSWERED 2026-09-06): close the door with a build guard, no engine change.
+ *
+ * WHERE A `consume` ENTRY CAN ORIGINATE — traced before deciding what to scan, not assumed:
+ *   1. `data/authored/*.json` talent overlays — `activation.consume[].value` is a real object
+ *      with INDEPENDENTLY settable min/max (Foundry-extracted or hand-edited), and
+ *      `applyAuthorable()` (edha-pack-io.js) writes it into the compiled pack's
+ *      `system.activation` WHOLESALE when non-empty. This is the only place a talent's compiled
+ *      consume shape can diverge from min===max.
+ *   2. Every OTHER talent consume entry (no authored `activation` override) is built by
+ *      `foundry-build.js`'s `parseCost()`, which only recognizes "N Investiture" / "N Focus" text
+ *      and unconditionally emits `{min:n, max:n}` (foundry-build.js, the two `value:{ min:+m[1],
+ *      max:+m[1], ... }` literals) — it cannot produce a mismatch.
+ *   3. `data/adversaries.json` ability `consume` fields are documented (see its own `_README`) as
+ *      the SAME "N Focus"/"N Investiture" text grammar, parsed by that same `parseCost()`, with no
+ *      override path to a structured value object — so this surface also cannot diverge on its
+ *      own. It is still re-derived and scanned below rather than assumed safe, so a future change
+ *      to that grammar (or to this file) cannot silently stop being checked.
+ *
+ * The scan and the pass/fail decision live in scripts/lib/consume-guard.js (checkConsumeEntries)
+ * so tests/consume-guard.test.js can pin both against fixtures without shelling out. */
+{
+  const { checkConsumeEntries } = require("./lib/consume-guard.js");
+  const consumeInput = [];
+  for (const { rel, talentName, talent } of AUTHORED_ENTRIES) {
+    consumeInput.push({ source: rel, name: talentName, consume: talent?.activation?.consume });
+  }
+  // Re-derive the adversary shape from its text grammar (see point 3 above) rather than trusting
+  // it can never diverge — the SAME split/match `parseCost()` uses in foundry-build.js.
+  for (const { advName, item } of ADVERSARY_ENTRIES) {
+    if (typeof item?.consume !== "string" || !item.consume.trim()) continue;
+    const consume = [];
+    for (const part of item.consume.split(/\s*[;,+]\s*/).map((s) => s.trim()).filter(Boolean)) {
+      const m = part.match(/^(\d+)\s*(Investiture|Focus)$/i);
+      if (!m) continue;
+      const resource = /^investiture$/i.test(m[2]) ? "inv" : "foc";
+      consume.push({ type: "resource", resource, value: { min: +m[1], max: +m[1] } });
+    }
+    consumeInput.push({ source: ADV_REL, name: `${advName} / ${item?.name}`, consume });
+  }
+  const { scanned, findings } = checkConsumeEntries(consumeInput);
+  for (const f of findings) {
+    err(`pass 23: ${f.source} (${f.name}) consume[${f.index}] resource "${f.resource}" has min ` +
+        `${f.min} ≠ max ${f.max} — edhaConsumeList refunds value.min, so a real spend of ` +
+        `max would under-refund (R-22). Set min === max.`);
+  }
+  if (scanned < 200) {
+    err(`pass 23: only ${scanned} consume entries were scanned (expected 200+) — the scan ` +
+        `rotted; fix it before trusting this pass.`);
+  }
+}
+
 // --- report --------------------------------------------------------------------
 if (errors.length) {
   for (const e of errors) console.error(`✗ ${e}`);
