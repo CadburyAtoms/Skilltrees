@@ -980,6 +980,10 @@ half of the spot-check row, PASSED at run 1 and retired with it.
 answered 2026-09-06 → item 58, REBUILD + ↻ Sync); R-24 (a) YES, keep Reckless Advance as the root —
 no change, moved to §K, graph half of this row retired; R-27 (a) THE CARD is canon, the rally bonus
 is spent on the next test then clears (ruling answered 2026-09-06 → item 52).
+- [ ] 🤖 **R-23 re-test (item 58 shipped) — Volatile Strike rides ANY melee hit.** With
+      `whenDealer: "any"` now on its rule, a plain sword hit (not a Volatile Strike cast) should
+      offer the Investiture prompt to add half [Tier][Die] impact; a standalone cast of Volatile
+      Strike itself should still self-offer on its own hit (harmless, expected per the ruling).
 
 - [ ] 🤖 **52-1 — Battle Fever spends the stack on the next test (R-27, PR #223, ENGINE-ONLY F5).**
   On Bench — Red, deal damage three times in one round (three Strikes that hit, or `edha.rally()`
@@ -1528,6 +1532,12 @@ HP on a blocked target" phrasing asked for something that can never happen. R-28
 PROSE (ruling answered 2026-09-06 → item 58, REBUILD + ↻ Sync) — the duration clause above is
 retired, only the prose needs to change. R-12 (a) YES, raising clears the creature's own `harvested`
 marker and ledger entry (ruling answered 2026-09-06 → item 47).
+**✅ R-28's duration clause RETIRES on item 58 (2026-09-06, REBUILD + ↻ Sync, bench-pending):**
+`description` + the `WitherNote000000` arming card in `data/authored/deity-death.json`, and the
+source prose in `data/domain.json`, all now read "end of your next turn" — matching the engine,
+the auto-applied strike bonus, and the live heal-cut card, which already said END. 2bW-1's own
+mechanical halves stay retired from run 15; this closes the wording half. No further bench row
+needed — it is a prose-only change, provable by reading the built pack.
 
 ### Fix pass 7a re-tests (item 47, 2026-09-06 — ENGINE-ONLY, F5; no rebuild, no ⟳ Sync)
 

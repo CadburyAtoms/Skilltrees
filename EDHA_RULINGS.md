@@ -402,6 +402,8 @@ either way.** Never benched. *(3A-3 + checklist Red row — the same question, r
 > `whenDealer: "any"`.** Authored rule field change in `data/authored/leyline-red.json`
 > (settleable from the Events tab) → **REBUILD + ↻ Sync**, **item 58**; 🤖 re-test = the Red row (a
 > sword hit offers Volatile Strike; standalone use self-offers harmlessly).
+> **SHIPPED** in PR #227 (REBUILD, bench-pending) — `whenDealer: "any"` on rule `TKmyXVyFhGYWryKv`,
+> `data/authored/leyline-red.json`.
 
 *(R-24 — Red/Momentum branch root — ANSWERED 2026-09-06, moved to §K.)*
 
@@ -452,6 +454,9 @@ do not leave three artifacts agreeing and one disagreeing. *(3A-15 + checklist 2
 > description + `data/domain.json` source prose say "end of your next turn"; engine and cards
 > unchanged. DATA/TEXT → pack **REBUILD + ↻ Sync**, **item 58**; retire checklist 2bW-1's duration
 > clause.
+> **SHIPPED** in PR #227 (REBUILD, bench-pending) — `description` (value/chat/short) +
+> `WitherNote000000.text` in `data/authored/deity-death.json`, and the source `description` in
+> `data/domain.json`, all "end of your next turn".
 
 **R-29. Combat Training's garbled source.** The cheatsheet sentence reads "turn one of its own
 **grazes into a graze**". Rule whether that means **miss → graze** or **graze → hit**, and the text

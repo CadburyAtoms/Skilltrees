@@ -1363,7 +1363,7 @@ verify: the script's before/after summary from the live table, plus the 🤖 row
 
 ---
 
-## 41. [ ] "The Final Study" (deity/Knowledge) carries a stale authored docId — the one overlay that resolves by name
+## 41. [x] "The Final Study" (deity/Knowledge) carries a stale authored docId — the one overlay that resolves by name — DONE 2026-09-06, folded into item 58, PR #227
 
 **Why:** item 18's worker (PR #170, 2026-09-05) measured every one of the 365 authored overlay
 entries against `fid("talent:<tree>:<name>")` and found exactly one orphaned docId:
@@ -1384,6 +1384,11 @@ packs hash identical before/after.
 deps Ben's OK · verify: the build's name-match count 1 → 0 + pack parity. DATA-only, no rebuild.
 
 **Ben's OK 2026-09-06 — folded into item 58.**
+
+**Correction (item 58, 2026-09-06):** the seed stated above, `MQvIkCSK7fIHjnZE`, does not
+reproduce — re-derived by hand, from a live scratch build's assigned item `_id`, and by rebuilding
+item 18's own commit (`4500f95`) with its own `data.js`/`domain.json` snapshot, all three agree on
+**`yrIgDwup7iBdPq07`** (`fid("talent:deity/Gnothis:The Final Study")`). That is the value shipped.
 
 ---
 
@@ -1850,7 +1855,7 @@ REBUILD (Ben's deploy).
 
 ---
 
-## 58. [ ] Talent data batch: Volatile Strike rider scope, Withering Touch duration prose, The Final Study re-key (R-23, R-28, TODO 41)
+## 58. [x] Talent data batch: Volatile Strike rider scope, Withering Touch duration prose, The Final Study re-key (R-23, R-28, TODO 41) — DONE 2026-09-06, PR #227
 
 **Why:** Three small authored-data fixes, all Ben-approved on 2026-09-06:
 - R-23 (a): Volatile Strike should be a true rider on ANY melee hit (`whenDealer: "any"`), not
