@@ -1512,7 +1512,7 @@ manual diff of `EDHA_RULINGS.md` sections + dashboard rebuild. DOCS-ONLY.
 
 ---
 
-## 46. [x] File TODO items 43–62 from the 2026-09-06 rulings (2026-09-06, PR #TBD)
+## 46. [x] File TODO items 43–62 from the 2026-09-06 rulings (2026-09-06, PR #212)
 
 **Why:** Ben answered every open ruling on the morning of 2026-09-06 (66 phone-relayed notes); the
 PM triaged them into a numbered backlog (items 43–62) but the entries didn't exist in
