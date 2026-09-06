@@ -67,6 +67,11 @@ symptoms rather than one row. *(3B-A.)*
 > and the wall-clock prompt debounces deliberately ungated. **R-4 stays HERE, not in §K**: it settles
 > only when **28b** (tagging bookkeeping writes) has landed AND the bench has confirmed the live
 > behaviour — see the 🤖 rows under `# BENCH — Engine-wide & cross-tree`.
+> **28b landed in PR #189 (2026-09-06)** — half (b): the engine now stamps the **spend**
+> (`options.edha.spend`, plus a pre-use expectation for the system's own activation deduction) and
+> `edhaIsSpend` reads an unstamped decrease as a GM edit, at the focus-change watch and the Order
+> Investiture watch. **R-4 settles when the bench confirms both halves** — the three 28b rows sit
+> with 28a's under `## Out-of-combat scope — ruling R-4, both halves`; until then it stays HERE.
 
 
 *(R-5 — does Fault Line's line spare allies — ANSWERED 2026-09-05, moved to §K.)*

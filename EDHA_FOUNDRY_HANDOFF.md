@@ -33,6 +33,112 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-06 DELTA — item 28b: a resource DECREASE is no longer a SPEND — the engine stamps the spend (ruling R-4, half b of two) (**ENGINE-ONLY, F5** — no pack rebuild; deployed by the PM after bench run 33).
+
+Half (a) below gated *when* a scene watch may fire. This is the other half of R-4: of the resource
+decreases that DO reach a watcher, which ones were a **spend**? Until today the answer was "all of
+them" — `updateActor` saw focus go down and dispatched `focus-change` regardless of cause. So Ben
+typing an adversary's focus down on the sheet taxed it through **Whispered Doubt**, handed out
+**Coercive Pressure**'s disadvantage, and one hook further down tripped an Order Edict's "activate
+Investiture" violation prompt. **Nothing in the engine ever asked what caused the decrease.**
+
+### The direction was the real decision — and it is the POSITIVE one
+
+The ruling's own phrasing is "tag engine bookkeeping writes". That shape **cannot work**, and saying
+why is the useful part of this delta: the writes R-4 complains about are precisely the ones the
+engine *never issues* — a GM typing in a sheet, dragging a token bar, a third-party macro. There is
+no engine write to put a bookkeeping tag on, so the **absence** of one can never be evidence. So the
+engine stamps the **SPEND**, and an unstamped decrease is not one. "Did something say a spend
+happened?" is answerable; "did nothing say this was bookkeeping?" is not.
+
+The cost of that direction is that **every real spend must carry a signal**, and this half's named
+risk is exactly the miss: **wrongly classifying a real spend as bookkeeping**. Two signals cover the
+whole surface, and the surface was enumerated — every write in the file that can lower `foc`/`inv`:
+
+1. **`options.edha.spend`**, stamped by `edhaSpendTag(source)` at the engine's own spend writers.
+   **In `options`, not on the document, on purpose** — options ride the update to every client, so
+   the watcher sees the tag wherever it runs and nothing is left behind on the actor. Same reasoning
+   as the `options.edhaFoc` / `edhaPrevPos` / `edhaHea` stamps this file already uses.
+2. **A live pre-use expectation.** The cosmere-rpg system deducts a talent's activation cost
+   **itself**, from a `postRoll` action inside `item.use()`, with a plain `actor.update()` and **no
+   options at all** (read out of `systems/cosmere-rpg/index.js` at 2.1.0 — the deduction is pushed
+   to `postRoll` before the `useItem` hook is). The engine cannot stamp a write it does not make, so
+   `cosmere-rpg.preUseItem` records what the use is about to cost — `edhaConsumeList`, the same
+   reader `edhaConsumeCost` uses — and `edhaIsSpend` accepts a matching decrease inside 30 s.
+   **This is the commonest real spend at the table; without it the fix would silence the feature.**
+
+### The predicate
+
+**`edhaIsSpend(actor, resource, options, oldVal, newVal)`** — false unless the value went **down**
+AND something said so. `edhaBookkeepingTag(source)` is the declared opposite (nothing sets it today;
+it exists so a future engine write that lowers a resource without being a spend can say so rather
+than stay silent). Three loosenesses in the expectation, **all leaning the same way**, because a
+wrong YES is today's behaviour while a wrong NO silences a live talent:
+
+- **amount-agnostic** — a scaling cost can exceed the declared `value.min`, and requiring a match
+  would drop exactly those;
+- **not consumed on read** — two watchers may consult one write, and a partial payment can land as
+  two updates;
+- a use **vetoed after** the pre-use hook leaves a stale expectation for the window, which writes
+  nothing and can only over-count.
+
+A throw returns YES too — the same fail-safe direction `edhaInActiveCombat` chose in half (a).
+
+### Sites — stamped, adopted, and deliberately left alone
+
+| Write | Verdict | Why |
+|---|---|---|
+| `edhaSpendResource` | **STAMPED** | THE canonical clamped spend, so one tag here covers every `costs:` deduction in the engine — an adversary bespoke ability's included (`edhaParseCosts` → here). |
+| `edhaConsumeCost` | **STAMPED** | The takeover/burst activation cost — the hand-rolled twin of the above, and just as much a spend. |
+| the `set-resource` socket relay | **STAMPED** | `edhaDrainFocus`'s unowned-target branch relays through it. The direct branch is `edhaFocusWatch`-tagged and skipped; the relay was **not**, so it *did* reach the watcher. Stamping keeps the two halves behaving alike instead of quietly diverging. |
+| H10 `edha-focus` Investiture **drain** | **STAMPED** | An engine-driven Investiture loss that reaches the Order watch today. Stamped so today's behaviour is preserved exactly — see the open question below. The **gain** branch is untouched (an increase never reaches the predicate). |
+| `edhaGainFocus` / `edhaDrainFocus` | untouched | Their writes already carry `edhaFocusWatch` and the focus watcher has skipped them since 07-05 (the drain announces its own zero crossing by hand). They never reach the predicate; adding a tag would be decoration. |
+| scene resets · restores · the temp-HP unwind · the creation wizard · adversary sync | **NOT stamped** | None of them is a spend, and this list is what makes the gate mean something. |
+| **every GM sheet edit and token-bar drag** | **NOT stamped** | The fix. |
+
+| Watch that infers a spend from a decrease | Verdict |
+|---|---|
+| the `updateActor` **focus-change** watch → `edhaRunFocusWatch` | **ADOPTED** — the R-4 site. Coercive Pressure / Predatory Insight / Whispered Doubt all ride this one dispatch. |
+| the `updateActor` **Order Investiture** watch → `edhaOrderInvestWatch` | **ADOPTED** — the Edict says "*activate* Investiture"; a number typed on a sheet activated nothing. |
+| `edhaDrainFocus`'s own zero-crossing dispatch | not adopted — already outside the watcher by design (07-05). |
+| the `edhaHea` **defeat** watchers (the `defeat` announcement, the counter-transfer on-kill sweep, the illusion/barrier drops, the zone-react sweep) | **NOT adopted, deliberately.** HP→0 is a defeat, not a spend: a GM zeroing an adversary is a legitimate kill and must keep announcing. |
+| the turn-start focus **read** (`whenTotal` against current focus) | not adopted — it reads a value, never a delta. |
+| **H1 `edha-def-test`** | not adopted — checked, and it has no spend *detection* at all: its "nothing spent" language is the pre-cost veto (`preUseItem` returning false), which refuses before any cost. |
+
+### Proof
+
+- `tests/spend-tag.test.js` — **18 cases, both directions in every block.** A predicate that
+  answered "no" to everything would pass a one-sided "a GM edit is not a spend" suite while silencing
+  Whispered Doubt at the table, so each edit-that-must-go-quiet is paired with a spend-that-must-fire
+  (through the primitive **and** through the system's own consume).
+- **Mutation-verified both ways.** Dropping `edhaSpendTag` from `edhaSpendResource` (the "real spend
+  read as bookkeeping" direction) fails **3** cases; inverting the predicate back to "any decrease is
+  a spend" fails **6**. Engine restored byte-identical after each.
+- One case pins that `edhaIsSpend` is called at **exactly two** sites, so a later pass cannot spread
+  it onto the defeat watchers without the suite saying so.
+- **688 passed, 0 failed.** `node scripts/gates.js` → **RESULT: PASS** (exit 0). Neither ratchet
+  moved: lint pass 7's allowlist unchanged, pass 20's idiom counts unchanged (no new
+  `system.resources.*` literal — only an options argument on existing writes).
+
+### What this changes at the table, and one open question
+
+**Wire the cost on the ability and it counts; type it into the sheet and it does not.** That is the
+whole of 28b, and it is iron rule 2b's ethos applied to bookkeeping. The consequence worth naming:
+a GM who *hand-records* an adversary's ability cost instead of using the ability no longer trips the
+PCs' enemy focus watchers. An adversary whose ability carries a `costs:` line does, because that path
+runs through `edhaSpendResource`.
+
+⚑ **Open for a ruling, NOT decided here:** is an **involuntary** drain a "spend"? H10's Investiture
+drain is stamped so today's Order-Edict behaviour is preserved byte-for-byte, but an Edict that
+forbids *activating* Investiture arguably should not fire when a talent rips it out of you. That is a
+new question, adjacent to R-8 and deliberately left open — 28b changed no drain semantics.
+
+**Live engine behaviour — this is NOT settled until the bench confirms it.** Three 🤖 rows sit with
+28a's under `## Out-of-combat scope — ruling R-4, both halves`. **R-4 stays open** in
+`EDHA_RULINGS.md` until the bench has confirmed both halves.
+
+---
+
 ## 2026-09-06 DELTA — item 28a: scene/turn-keyed watches are gated on an ACTIVE combat containing the owner (ruling R-4, half a of two) (**ENGINE-ONLY, F5** — no pack rebuild; deployed by the PM after bench run 32/33).
 
 Ben answered **R-4** on 2026-09-05 (mobile board inbox): **"go with your recommendations"** — apply
