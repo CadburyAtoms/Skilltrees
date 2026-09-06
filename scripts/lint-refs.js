@@ -345,6 +345,13 @@ for (const [lit, line] of [...nameLits.entries()].sort((a, b) => a[1] - b[1])) {
   for (const { advName, item: it } of ADVERSARY_ENTRIES) {
     if (!it || it.kind === "weapon") continue;
     const prose = `${it.text || ""} ${it.rider || ""}`;
+    // R-47 (Ben 2026-09-06): the marker is the rule-3 ledger and stays ON the item, but it lives
+    // inside an HTML comment (`<!-- NO NAMEABLE HOOK: … -->`) so the player-facing card shows only
+    // the fiction. The exemption below still reads the RAW prose (comments included) — a visible
+    // marker is a finding, a missing one is the original finding. (Every ability, trigger or not.)
+    if (/NO NAMEABLE HOOK/i.test(prose.replace(/<!--[\s\S]*?-->/g, ""))) {
+      err(`${ADV_REL} (${advName} / ${it.name}): "NO NAMEABLE HOOK" is visible on the player-facing card — wrap the marker in an HTML comment (<!-- NO NAMEABLE HOOK: <reason> -->), R-47`);
+    }
     if (!TRIGGER_RE.test(prose)) continue;                          // no trigger named → conscious-use is fine
     if (Array.isArray(it.events) && it.events.length) continue;     // wired via native rules
     if (inEngineCode(it.name)) continue;                            // name-keyed engine wiring — CODE only (comments satisfied this for months; see stripComments)

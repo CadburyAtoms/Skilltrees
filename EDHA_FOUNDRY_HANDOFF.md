@@ -62,6 +62,40 @@ change — (a).
   check) — 5 new cases, all passing, 832/832 total.
 - No 🤖 rows: this is a repo-side build-time gate, nothing to bench.
 
+## 2026-09-06 — ITEM 57: the adversary data batch — R-29 / R-40 / R-46 (+ R-48 default) / R-47 / R-74 (**REBUILD + ⟳ Sync** — `data/adversaries.json` + one lint tightening; the adversaries pack rebuilds, then "⟳ Sync Adversaries from Pack"; NO engine change)
+
+Five of Ben's 2026-09-06 rulings land on one file, one themed commit each (PR #226). Proven by a
+scratch build with `EDHA_DATA` pointed at the branch's own `data/` (not the main checkout — the
+build's default): a LevelDB read-back of every actor + embedded item before vs after differs in
+**exactly 1 actor + 19 items of 388 entries** — the Fen-Heart, the 16 marker-carrying abilities,
+Fade, Explosive Leap, Reckless Advance — and `validate-adversaries.js` reports 0 issues.
+- **R-29 (a)** — the Stonebound Captain's Combat Training reads *"Once per round, when one of the
+  Captain's attacks misses, it can turn that miss into a graze without spending Focus."* Its exit is
+  still `NO NAMEABLE HOOK` (the GM's application step is not module-visible), now as an HTML comment.
+  The rulings text said the description was "empty" — it was not; it carried the 07-16 wording plus a
+  visible marker. The garbled "grazes into a graze" sentence exists only in the source PDF (not in
+  the repo). Checklist row retired on the built-pack read-back.
+- **R-40 (a)** — the Gone-to-Weir Fen-Heart's biography says **3×3** on placement (was "3x3 or 4x4").
+  No token field can carry it: `size: "large"` is the schema cap (2×2), so it stays guidance.
+- **R-46 (a)** — Cragdrake Whelp Pack's Reckless Advance: `{bySize: false, distanceFt: 25}` (full
+  Speed; `bySize` on a small minion at red rank 1 moved 3 ft), card says "up to 25 ft".
+  **R-48 default (a), APPLIED, still open for Ben's veto** — the Cragdrake Adult's Explosive Leap:
+  `{bySize: false, distanceFt: 20}`, the card's own number. The brief scoped the default to the
+  Adult; the run-19 family's other three (Brandram Shockwave Slam / Reckless Advance, Tussock-Sow
+  terrain square) are untouched and want the same call.
+- **R-47 (a)** — all **16** `NO NAMEABLE HOOK:` markers are now `<!-- … -->` comments inside the
+  ability's `text`/`rider`: kept on the item (`item.system.description.value` still carries them),
+  invisible on the card and the chat post. `lint-refs.js` pass 5 still exempts on the RAW prose and
+  now also fails a VISIBLE marker — both mutations proved: marker deleted → the original "wire it or
+  justify it" finding; comment delimiters stripped → the new R-47 finding. ⚠️ Untested: whether
+  Foundry's ProseMirror editor keeps an HTML comment when Ben SAVES a description — the 🤖 row checks.
+- **R-74 (a)** — the Stalker's **Fade** is the game's one engine-driven adversary cost: a `use` →
+  `edha-prompt-pick {source: confirm, costs: "inv:1"}` card; the click spends the Investiture through
+  `edhaSpendResource` (so it is a real spend for the R-4 / 28b watches), the native `consume` was
+  removed so it is the only deduction, the damaged gm-cue stays as the reminder, Concealment stays
+  the toggled Fade marker (no concealed status exists to arm). The 28b row now has its subject.
+🤖 four rows: R-46 (25 ft), R-48 (20 ft), R-47 (no note on the card + the ProseMirror round-trip),
+R-74 (the confirm click drops Investiture 2 → 1 and the post does not).
 ## 2026-09-06 — Item 54: the DISPEL reaches item-owned passives (disable, never delete) and the Omen ledger (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
 
 Ben VETOED R-73's narrow default and asked for the safe widening (b); R-35 (a) folded in. PR #224.
