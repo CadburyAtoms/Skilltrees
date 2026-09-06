@@ -5467,6 +5467,31 @@ function edhaConditionLabel(id) {
     ?? (CONFIG.statusEffects ?? []).find(s => s.id === key)?.name ?? null;
   return edhaLocalizeLabel(raw, key);   // no configured label at all → the bare id, as before
 }
+/* R-37(2) — the ONE-OF counterpart of edhaConditionLabel. A ledger key is plural by convention
+ * ("snares", "charges", "edicts"), and edhaConditionLabel falls back to the bare key when nothing
+ * configures a label, so card text that names a SINGLE entry read "the snares on Snare #1 **is**
+ * inevitable". Any card speaking about one entry asks for this instead. Deliberately a small
+ * English-plural rule, not a dictionary: -ies → -y, a sibilant -es → drop "es", a bare -s that is
+ * not -ss → drop the "s"; anything else (an already-singular configured label like "Edict") is
+ * returned untouched, which is the case that must never be mangled. */
+/* R-37(2) — the annotate card's sentence, EXTRACTED so the string can be pinned headlessly: the
+ * executor that used to build it inline lives inside a `registerItemEventHandlerType` config
+ * object, which no harness can call (spend-tag.test.js documents that limit). Two shapes, because
+ * the ledgers are two shapes: an entry bound to a CREATURE reads possessively ("the Edict on
+ * Roek…"), and a POINT-bound marker names only itself, because the entry IS the thing being
+ * marked — there is no creature for an "on" clause to point at. */
+function edhaAnnotateSentence(entryName, label, field, prohText = "", creatureBound = false) {
+  return creatureBound
+    ? `the ${edhaSingularLabel(label)} on <strong>${entryName}</strong>${prohText ? ` ("<em>${prohText}</em>")` : ""} is now <strong>${field}</strong>.`
+    : `<strong>${entryName}</strong> is now <strong>${field}</strong>.`;
+}
+function edhaSingularLabel(label) {
+  const s = String(label ?? "").trim();
+  if (s.length < 3 || !/s$/i.test(s) || /ss$/i.test(s)) return s;
+  if (/[^aeiou]ies$/i.test(s)) return s.slice(0, -3) + (s[s.length - 3] === "I" ? "Y" : "y");
+  if (/(ses|xes|zes|ches|shes)$/i.test(s)) return s.slice(0, -2);
+  return s.slice(0, -1);
+}
 /* The skill/attribute counterpart. Falls back to the UPPER-CASED id (the old inline default at
  * every site this replaced) so an unknown id reads as a skill code, not as lowercase noise. */
 function edhaSkillLabel(id) {
@@ -13257,9 +13282,11 @@ async function edhaFatePlaceCore(item, h, kind) {
     const entry = { id: foundry.utils.randomID(), sceneId: scene.id, templateId: tpl?.id, x: pt.x, y: pt.y, talent: item.name };
     if (isSnare) { entry.inevitable = false; entry.formula = item.system?.damage?.formula || EDHA_FATE_SNARE_DMG; entry.type = item.system?.damage?.type || "keen"; }
     // Queued RMW (07-26n) — the pick-point already resolved above; fresh read inside the lock.
+    let evicted = [];   // R-37(1): hoisted out of the lock so the placement card can NAME what fizzled
     const list = await edhaOwnerListQueue(owner, isSnare ? "snares" : "ordained", async () => {
       const cur = isSnare ? edhaGetSnares(owner) : edhaGetOrdained(owner);
       const res = edhaListPush(foundry.utils.deepClone(cur), entry, { cap, evict: h.evict || "oldest" });
+      evicted = res.evicted ?? [];
       for (const drop of res.evicted) {   // canvas cleanup stays here, by hand (§9o trap 3)
         try { void scene.templates?.get(drop.templateId)?.delete()?.catch(() => {}); } catch (e) {}
         if (isSnare && drop) await edhaFateDeleteSnareRegion(scene, drop.id);
@@ -13270,9 +13297,18 @@ async function edhaFatePlaceCore(item, h, kind) {
     if (isSnare) await edhaFateDropSnareRegion(owner, scene, pt.x, pt.y, entry.id);
     const guard = edhaActorRuleOf(owner, "edha-zone-guard");
     const thp = guard?.handler?.thpFormula ? Math.max(0, Math.floor(edhaEvalSync(guard.handler.thpFormula, owner.getRollData()))) : 0;
+    /* R-37(1) (Ben 2026-09-06 (a)): at the cap the oldest marker fizzles — and the ONLY sign of it
+     * was the "(2/2)" count staying put, which reads like nothing happened. Name what was spent.
+     * The eviction is `evict: "oldest"` (the Fate convention, Ben R1), so this is normally one
+     * entry; the join covers a cap that shrank between placements. */
+    const fizzText = evicted.length
+      // "trap" / "Marker square" are the fallbacks the OTHER marker cards already use for an entry
+      // with no `talent` stamp — and they are not talent names, which iron rule 2b's lint enforces.
+      ? ` The oldest — <strong>${evicted.map(d => d.talent || (isSnare ? "trap" : "Marker square")).join("</strong>, <strong>")}</strong> — ${evicted.length === 1 ? "fizzles" : "fizzle"} to make room.`
+      : "";
     edhaTreeCard(owner, null, isSnare
-      ? `<p>🪢 <strong>${item.name}</strong> set (${list.length}/${cap}). The first enemy to enter or pass through it springs it: damage + <strong>Restrained</strong>.</p>`
-      : `<p>✦ <strong>${item.name}</strong> set (${list.length}/${cap}). Allies beginning their turn on it gain +1 all defenses${thp > 0 ? ` and Temp HP = ${thp} (${guard.item.name})` : ""}, and may Aid at up to 30 ft.</p>`);
+      ? `<p>🪢 <strong>${item.name}</strong> set (${list.length}/${cap}).${fizzText} The first enemy to enter or pass through it springs it: damage + <strong>Restrained</strong>.</p>`
+      : `<p>✦ <strong>${item.name}</strong> set (${list.length}/${cap}).${fizzText} Allies beginning their turn on it gain +1 all defenses${thp > 0 ? ` and Temp HP = ${thp} (${guard.item.name})` : ""}, and may Aid at up to 30 ft.</p>`);
   } catch (e) { console.error("Edha Content | Fate place marker failed", e); }
 }
 
@@ -13560,7 +13596,11 @@ async function edhaFateTurnStart(combat) {
       const guard = edhaActorRuleOf(owner, "edha-zone-guard");
       const thp = guard?.handler?.thpFormula ? Math.max(0, Math.floor(edhaEvalSync(guard.handler.thpFormula, owner.getRollData()))) : 0;
       if (thp > 0) await edhaGrantTempHpCross(ally, thp, guard.item.name);
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>✦ <strong>${onSq.talent || "Marker square"}</strong> (${owner.name}): ${ally.name} begins its turn ordained — +1 all defenses${thp > 0 ? `, Temp HP ${thp}` : ""}, and may take the Aid action at up to 30 ft (execute by hand).</p>` });
+      /* R-37(3) (Ben 2026-09-06 (a)): the card's headline is the ORDAINED-placing talent, so an
+       * unattributed ", Temp HP 2" credited the Temp HP to the wrong document — the grant comes
+       * from the owner's `edha-zone-guard` rule, and edhaGrantTempHpCross already stores THAT
+       * talent as the THP source (R-36). Name it here too, exactly as the placement card does. */
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>✦ <strong>${onSq.talent || "Marker square"}</strong> (${owner.name}): ${ally.name} begins its turn ordained — +1 all defenses${thp > 0 ? `, Temp HP ${thp} (${guard.item.name})` : ""}, and may take the Aid action at up to 30 ft (execute by hand).</p>` });
     }
   } catch (e) { console.error("Edha Content | Fate turn-start failed", e); }
 }
@@ -18775,10 +18815,14 @@ function edhaRegisterNativeEventSystem() {
            * formula and contest dials off that item instead of a module constant — editing the
            * talent's damage in Foundry actually changes what the spring rolls. */
           await edhaSetOwnerList(owner, key, list.map(x => x === e ? { ...x, [field]: true, sourceItemUuid: item.uuid } : x));
-          // A POINT-BOUND entry (charges — 2bY) has no creature name; say which marker instead.
+          // A POINT-BOUND entry (charges / snares — 2bY) has no creature name; say which marker instead.
           const eName = e.name || `${e.talent || label} #${list.indexOf(e) + 1}`;
+          /* R-37(2) (Ben 2026-09-06 (a)): this sentence read "the snares on Snare #1 **is**
+           * inevitable" — a plural ledger key agreeing with a singular verb, wrapped around an
+           * "on <creature>" clause a point-bound marker has no creature for. `e.name` is exactly
+           * the creature-bound test: a point-bound entry has none and falls back to eName above. */
           ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
-            content: `<p>📋 <strong>${item.name}</strong>: the ${label} on <strong>${eName}</strong>${e.proh ? ` ("<em>${e.proh.text}</em>")` : ""} is <strong>${field}</strong>.${this.note ? ` <span style="opacity:.8">${this.note}</span>` : ""}</p>` });
+            content: `<p>📋 <strong>${item.name}</strong>: ${edhaAnnotateSentence(eName, label, field, e.proh?.text || "", !!e.name)}${this.note ? ` <span style="opacity:.8">${this.note}</span>` : ""}</p>` });
           if (key === "charges") edhaPostChargesCard(owner);   // refresh the Detonate buttons so the ⊕ shows (2bY — keyed on the LEDGER, not a talent)
         });
       }
