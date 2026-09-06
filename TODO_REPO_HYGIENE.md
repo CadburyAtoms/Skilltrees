@@ -971,7 +971,7 @@ changed (expected — each item is now its own section); every other tab's ids a
 
 ---
 
-## 39. [ ] `audit.py <tree>`'s NO FILE message does not list the valid keys, and the gate docs do not name the deity keys
+## 39. [x] `audit.py <tree>`'s NO FILE message does not list the valid keys, and the gate docs do not name the deity keys (2026-09-05, PR #PENDING)
 
 > **Premise corrected by the PM, 2026-09-05 21:20 (measured, not read):** on `main` today
 > `python .claude/skills/leyline-tree-authoring/audit.py verdannis` prints `verdannis: NO FILE` and

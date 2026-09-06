@@ -33,6 +33,19 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-05 DELTA — item 39: `audit.py`'s NO FILE message now names the valid keys (TOOLING-only).
+
+`audit.py verdannis` already exited 1 (measured 2026-09-05 21:20 — the original "exit 0" report was
+a masked exit code, not a live bug); what was missing was that `verdannis: NO FILE` gave no clue the
+deity's key is `sovereignty`. `main()` now prints the valid keys (leyline colors + deity keys) in
+that same message, derived from the same `DATA.glob` calls the `default` target list already uses.
+Pinned in `tests/audit_parser_test.py` via subprocess (mutation-checked: dropping `any_fail = True`
+on that branch makes the new test fail with "expected non-zero exit, got 0"). `CLAUDE.md` iron rule
+4 and `.claude/skills/work-item/SKILL.md`'s gate list now name the actual keys instead of
+`<color|deity-name>`.
+
+---
+
 ## 2026-09-05 DELTA — item 33: re-landed the handout-forge skill + the session-zero one-pager from the orphaned PR #93 (DOCS-ONLY — no engine, no data, no pack rebuild).
 
 `claude/handout-forge-skill` (tip `fbc8e20`, 2026-07-15) had no merge base with the 2026-07-28
