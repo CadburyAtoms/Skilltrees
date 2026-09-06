@@ -1,0 +1,6 @@
+{
+  "_meta": { "atlas": "leyline", "group": "Black", "note": "fixture for tests/authored-overlay-scope.test.js — a SECOND file claiming the leyline/Black scope, so \"Twice Told\" is ambiguous WITHIN one scope" },
+  "talents": {
+    "Twice Told": { "docId": "fixLBX1", "marker": "leyline-black-extra", "description": "The second definition — last file sorted wins." }
+  }
+}
