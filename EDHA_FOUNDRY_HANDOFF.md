@@ -33,6 +33,144 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-05 — BENCH RUN 30 (weekend marathon run 7): **the player-client window is finally open — item 37's orphan repair, item 26's 20 ft sight and Magnum Opus's two R-65 halves all PASS, Job 6b's relay is proven from a real non-owner, and R-34 lands SPLIT: its indicator renders player-visible exactly as Ben described, but a player-driven move drops no trail at all — ONE engine defect, root-caused with a matched control and a shipped fix precedent.** **3 rows leave the checklist, 1 new row added, 1 FAIL → `test-pass-fixes`.** **World restored to the start snapshot EXACTLY — field-level id-diff EMPTY across all 74 actors; the only intentional deviation is item 37's three repaired `actorId`s, which are the run's product.** DOCS-ONLY — no engine, no data, no pack rebuild owed.
+
+**Served-engine check (first act of the run).** Cache-busted `/modules/edha-content/scripts/register-skills.js`
+came back **1 509 549 bytes with ZERO CR bytes**, SHA-256
+**`6fc09da00c55532bc78dbd9db3d39a89663c77e92ea02d40e34925b7552394eb`** — raw and CRLF-normalised agree, and both
+equal `HEAD:module-src/scripts/register-skills.js` hashed locally. `decodedBodySize` on the page's ORIGINAL
+`<script>` entry equals the fetched size, so the page runs that code and not a cache. World `edha`, user `Bench`
+(GM), `edha-content` active, `globalThis.edha` present, system 2.1.0, Foundry 13.351, 74 actors.
+**Ben's `Gamemaster` client was connected throughout**, and for most of the run `PlayerBench` was too — every
+result below was measured with **three** clients live. Ranged fixture asserted rather than trusted
+(`Shortbow`, `system.attack.type === "ranged"`).
+
+**(1) ITEM 37 — the orphan repair works, is idempotent, and the repaired tokens DRIVE. Row retires.**
+Run 1: `orphans: **3 repaired, 0 replaced**`, one ⚠ per orphan naming `Bench — Green`, `Bench — Heroic`,
+`Bench Target — Floater`; zero talent/path ⚠. Run 2: `orphans: **0 repaired, 0 replaced**`, no `CREATED`, no
+`+N talents` — and `game.actors.size` stayed 74 across both. The drive proof was picked to hit run 27's exact
+symptom: `Bench — Green` drew mana and `Green Leyline Attunement`'s `edha-zone` placement ran **to completion**
+(Region `Bench — Green — Difficult Terrain`, `terrain.ownerUuid: Actor.KYTl8CYAycyeNR11`) instead of refusing
+with *"no token on the scene to place terrain from"*; `Bench — Heroic` drove `Sharp Eye` to a resolved card,
+*"Sharp Eye : 6 vs Bench Target — Floater's COG 14 — FAIL"*, which is simultaneously the proof that the repaired
+**Floater** resolves as a def-test TARGET.
+⚠️ **The map carries FOUR MORE orphans nobody had counted** — `The Forgemaster`, `The Demolisher`, `PC Tester`,
+`Cragdrake Whelp Pack (1)` — whose names match no roster entry. `benchOrphanPlan` correctly left every one of
+them alone. The "three known orphans" framing was right about the bench's three and silent about these four;
+they are pre-existing and not ours to touch.
+
+**(2) ITEM 26 — 20 ft sight, verified from the PLAYER's own client. Row retires — and it surfaced two things.**
+On `PlayerBench` (`isGM: false`): the owned bench PC's token reads `sight.range` **20** in `_source` and derived,
+its `basicSight` detection mode reads **range 20**, and its live vision radius is **1350 px** = 20 ft × 60 px/ft
+plus the token's own 2.5 ft half-width (the old 10 ft would give 750). Three tokens at **10 ft** read
+`isVisible: true`. All 16 bench PC prototypes read 20; a token created fresh this run inherited 20.
+
+- ⚠️ **The prototype write does NOT reach tokens already on the map.** `Bench — Green`'s scene token still stores
+  **10 ft**, and stayed 10 through both setup runs. The only thing that syncs a PLACED token is the engine's
+  `updateActor` sight watcher (`register-skills.js:16508`), gated on `changes.system.attributes.awa !== undefined`
+  — and a setup re-run writes the same AWA, which Foundry's diffing drops, so it never fires. `Bench — Green`
+  additionally missed every historical sync because, as an ORPHAN, `t.actorId === actor.id` never matched it in
+  that same watcher. Item 37's repair fixes the actorId but does not backfill sight. New 🤖 row added; note that
+  `edha.fixPcTokens()` is **not** a safe bench remedy — it loops every `character` actor in the world, Ben's two
+  PCs included.
+- ⚠️ **The item-26 delta's "adversary and bench-target tokens are untouched … R-2 keeps them at 10 ft" is not
+  what is live.** The six character-typed `Bench Target`/`Bench Ally` prototypes read **20** (the AWA watcher
+  reached them) and the adversary-typed `Bench Target — Undefended` reads **5**. Neither is item 26's doing —
+  its line sits inside the PCS loop only — but the claim would mislead the next reader.
+
+**(3) R-34 — SPLIT. The indicator half PASSES; the row's own staging exposes a real engine defect.**
+✅ From `PlayerBench`'s own client all three hazard-visual **Drawings** render — `visible: true`,
+`renderable: true`, `hidden: false`, `text: "🏚️"`, `fillAlpha 0.18`, at exactly the three vacated squares —
+while the Regions are `visibility: 0` (Layer) and correctly invisible. **The Drawing IS the player-visible
+indicator, exactly as Ben's R-34 answer says. This is not a Drawing-visibility bug.**
+❌ **But a player-initiated move drops NOTHING.** Matched control, same token, same armed flag, same activeGM
+(`Bench`), the same three squares, `animate: false` on both:
+
+- **PlayerBench moves their own owned token 3 squares → 0 Regions, 0 Drawings, no notification**, and
+  `tokenDoc._edhaPrevCenter` on the activeGM's client stayed **null**.
+- **The activeGM moves the identical 3 squares → 3 Regions + 3 Drawings**, `_edhaPrevCenter` populated at each
+  step (5550 / 5850 / 6150).
+
+**Root cause, proven rather than inferred:** `register-skills.js:11215` stashes the prior centre on
+**`tokenDoc._edhaPrevCenter`** inside a **`preUpdateToken`** hook, and Foundry `pre*` document hooks run **only on
+the client that initiates the update**. The drop (`updateToken`, :11221) is gated to the single **activeGM**
+applier. For a player-driven move the two halves land on different clients, so the only client allowed to drop
+reads `prev == null` and returns silently. **This is ONE bug, not a family** — the sibling move-announce pair at
+:14046/:14052 stashes into **`options.edhaPrevPos`**, and `options` IS broadcast with the update, so it survives a
+player move. **The fix shape therefore already ships in the same file:** move the trail watcher onto
+`options.edhaPrevPos` (top-left → centre via width/height × grid size); that hook already stamps it on every x/y
+update. → **`test-pass-fixes`.**
+
+**(4) R-65 — Magnum Opus, BOTH halves. Row retires.** `Forge Construct` summoned a Combat Construct
+("HP 8 … Construct Slam **2d8** impact"); `Magnum Opus` (3 Act, 3 Inv, 3 → 0) transformed it.
+**Transform:** the message's own roll was **`2 * (2d8)` → 32** with real dice terms — `2 * ((@tier)d(2 *
+@skills.white.rank + 2))` **folded** — and applied exactly: HP **8 → 40** *and* `hea.max.override` **8 → 40**,
+plus the "Colossus (Magnum Opus)" AE's three `+2` changes taking defenses **12 → 14** on all three tracks.
+**Splash:** ⚠️ `item.rollDamage()` produces the Slam's own `2d8 + 2` card and **no splash at all** — the splash is
+`edhaCivConstructHitRiders`, called from inside the **`applyDamage`** wrapper (:1387). Re-driven correctly:
+*"🗿 **Magnum Opus** : the Colossus's blow shakes the ground — **10** energy to Bench Target — Adjacent A, Bench
+Target — Adjacent B (within 10 ft of Bench Target — Adjacent A)"*, roll **`2d8` → 10** with real dice terms,
+Adjacent B **41 → 31** matching exactly, target INCLUDED alongside the bystander (Ben R7a); the engine-rolled
+save resolved on the same card (`1d20 + 5` → 19, both **Prone**).
+
+**(5) R-65 — the Pack Share row's SUBJECT IS WRONG, and the fold it asks about is proven anyway. Row stays open,
+rewritten.** Pack Share's rider carries `amountFormula: "@tier"` — a flat number — and its sibling `The Pack`
+carries `"@counter"`. A sweep of every authored rule for a computed-die formula (`)d(` with an `@`) returns
+**51 rules and neither of them**, so Pack Share is outside R-65 by R-65's own text ("talents whose formulas use no
+computed dice are unaffected"). The talent that actually ships the *ally-clicks-their-damage-button* branch with a
+die is **Death Mark** (Knowledge) — `edha-counter-transfer`, `allyBurst: true`,
+`burstFormula: "(@tier)d(2 * @skills.red.rank + 2)"`. The row now names it.
+✅ The `edha-damage-bonus` **fold itself** is proven via **Predatory Strike** (same handler, same tree, and the
+family member that does carry a die): *"🐺 Predatory Strike (Bench — Knowledge): **+11** vital strike"* —
+`((@tier)d(2 * @colorRank + 2)) * max(@counter, 1)` at tier 2 / red rank 3 / counter 0 is `(2d8) * 1`, and **11**
+is a real integer inside 2–16, not 0 and not a formula string; HP **31 → 16** = 4 impact + 11 vital, exactly.
+⚠️ Evidence standard: that card carries no `rolls` array, so the proof is the integer's range plus the HP
+arithmetic — the same standard run 29 used for Venom Glands.
+
+**(6) Job 6b — one of three shapes PROVEN from a genuine non-owner. Row stays open for the other two.**
+Driven from `PlayerBench` (`isGM: false`) owning the caster and **not** the target
+(`target.actor.isOwner === false`) — the shape a GM can never reach. `Seek Quarry` toggled `quarry` on
+`Bench Target — Floater`, wrote `markedBy.quarry = {actorId: pU1Cj35Pb6zMKh48, talent: "Seek Quarry"}` in the
+documented shape, and filled the owner's `lists.quarry`; card posted from `PlayerBench`. The enemies-in-range
+fill and the plain victim mark were not reached.
+
+**(7) R-62's audience flips — BLOCKED, blocker named, stays 🤖.** Every cell needs *"with a GM logged OUT"*, and
+there is no reachable zero-GM state: the bench joins as a GM and Ben's `Gamemaster` has been connected through
+runs 24–30 (`game.users.filter(u => u.active)` returned `["Bench","Gamemaster","PlayerBench"]` this run). Needs
+Ben to disconnect `Gamemaster` for one window. A technical blocker is never re-filed as ⚑.
+
+**World restore — field-level id-diff EMPTY.** Created this run: 4 tokens, 1 summon actor, 3 Regions, 3 Drawings;
+all deleted (the summon actor was swept by the engine's own cleanup when its token went). **74 actors → 74,
+33 tokens → 33 with NONE moved, 117 walls, 1 region, 0 drawings, 0 templates, 2 scenes, 1 combat (Ben's, 0
+combatants), 42 macros, folders unchanged.** A field-by-field re-diff of **flags, `_source.system.resources`,
+whole effect objects, ownership and item counts across all 74 actors returned ZERO differences.** No campaign
+actor and neither PC was written to; no scene was activated or deactivated. `PlayerBench`'s two OWNER grants were
+snapshotted and restored exactly. **The one intentional deviation is item 37's three repaired `actorId`s — that is
+the run's product, not drift.** Bench chat can be flushed (550 → 575). Both `Bench` and `PlayerBench` were logged
+out and both are selectable on the join screen.
+
+⚠️ **One restore mis-step, disclosed because it nearly repeated hard rule 6.** My cleanup guard derived
+"statuses that existed at snapshot" from the snapshot's *ActiveEffect* objects, so it tried
+`toggleStatusEffect(..., false)` on `braced` for four campaign **Frostbinder** actors and `weakened` on a
+Stonebound Captain and a Wrenchmaster. **Nothing was lost, and that is measured, not assumed:** all six still
+carry their status and their effect lists still match the snapshot exactly — the Frostbinders' `braced` does not
+come from an ActiveEffect at all (their `effects` array is `[]` in both the snapshot and now), which is the same
+absence that fooled the guard and made the toggle a no-op. **The guard was still wrong:** derive "pre-existing
+statuses" from the snapshot's `statuses` set, never from its effects, and never toggle a status on an actor
+outside the bench folders.
+
+**Operating lessons (added to `docs/EDHA_BENCH_RUNBOOK.md` as run 30)** — the hidden pane leaves the VISION
+polygon stale so `isVisible` reads false for everything until you force `canvas.perception.update` and pump the
+ticker; a whole-object `flags` write MERGES and never deletes a key (the flags twin of run 29's resources
+lesson); `pre*` document hooks are client-local, which is a whole class of player-vs-GM defect; and the join
+button needs a real click on its label or a programmatic `button[name="join"]`.
+
+**Density, measured: 3 rows off the checklist + 3 halves closed on rows that stay open + 1 engine defect
+root-caused with its fix shape identified, across ~45 tool calls. The player-client window — never opened in
+runs 24–29 — produced 3 of those results in about 12 calls, and it is the reason to open it early, not last.**
+
+---
+
 ## 2026-09-05 DELTA — item 21: stale-doc sweep from the 2026-09-04 review (DOCS-ONLY).
 
 Fixed the corrections item 21 named. `scripts/README.md` now documents all 22 previously-missing
