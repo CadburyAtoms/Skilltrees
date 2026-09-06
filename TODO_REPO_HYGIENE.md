@@ -1003,7 +1003,12 @@ show the exit code change from 0 to non-zero). TOOLING-only, no engine, no pack 
 
 ---
 
-## 40. [ ] `bench-setup-console.js` builds `Bench — Life` without a `Mutation` item, so the Venom Glands / R-65 row cannot be driven
+## 40. [x] `bench-setup-console.js` builds `Bench — Life` without a `Mutation` item, so the Venom Glands / R-65 row cannot be driven (CLOSED 2026-09-05 without a change — premise failed measurement, bench run 29 / PR #168)
+
+> **Closed by the PM, 2026-09-05 22:45.** Bench run 29 drove the row: the talent is named
+> **`Adaptive Mutation`**, `Bench — Life` has always carried it, and the click wrote a real rolled
+> `mutation.venom = 4`. Run 28's "no `Mutation` item" was a name mismatch, not a roster gap; the
+> Venom Glands row is retired. Nothing to build. Item 37 (orphan tokens) stands on its own.
 
 **Why:** bench run 28 (2026-09-05) traced the checklist's "Venom Glands (adversary bespoke
 ability) — the poison-damage roll folds" row and found there is no adversary roll to fold at all:
