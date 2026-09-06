@@ -90,6 +90,25 @@ branch a real subject in one edit.* The alternative is to say so in the header a
 branch is one ternary and costs nothing to keep. ⚠️ This is an **authored-data** change (a `pack
 rebuild + ⟳ Sync`), so it is not a bench decision. *(Bench run 35, from item 13's bench row.)*
 
+**R-77. Should the Investiture-max persist be behind the primary-GM gate, or stay owner-gated?**
+Found at bench run 36 while driving item 12's two-GM row. `edhaDeriveInvestiture`'s persist branch
+(`register-skills.js` ~17252) is a world write — `system.resources.inv.max.override` — and it is
+**not** behind `edhaDefBuffGmGate()`. It gates on **`actor.isOwner`** plus a **per-client**
+`_edhaInvPersisted` Set, so with two GM clients connected the writer is *whichever client prepares
+the actor first*: the bench measured Ben's **non-primary** `Gamemaster` writing `override: 6` on
+`Bench — Red` and the **primary** `Bench` writing `override: 5` on `Bench — Blue`, in the same
+window. Both clients derive the same number (`2 + max(Awareness, Presence)`), so the harm today is a
+redundant write, not a wrong value — but it is the one world-writing site item 12's consolidation
+did not reach, and it is the family that produced the historic double-write bugs.
+*Recommended: **keep the owner gate, and add the primary-GM gate only for the GM case*** — i.e.
+persist if `edhaNoOtherActiveGM()` **or** the writer is a non-GM owner. That preserves the reason
+the owner gate exists (a player-owned PC must be able to persist its own max on a table where no GM
+is online, which is what `edhaDeriveInvestiture`'s 2026-06-11 gotcha comment is about) while making
+two GM clients agree on one writer. The blunt alternative — `edhaDefBuffGmGate()` outright — is
+simpler but silently stops persisting for player-owned PCs whenever the primary GM has not looked at
+the actor. **ENGINE-ONLY either way** (no pack rebuild). *(Bench run 36, from item 12's bench row;
+the re-test row is on the checklist under `# BENCH — Engine-wide & cross-tree`.)*
+
 *(R-5 — does Fault Line's line spare allies — ANSWERED 2026-09-05, moved to §K.)*
 
 **R-6. Fault Line's dangerous-terrain Region catches bystanders scene-wide**, with no friend/foe

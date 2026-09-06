@@ -456,20 +456,17 @@ target:"self", formula:"1"}` — the exact branch that takes `edhaSpendTag`. Res
 fired** — in the same round in which that actor's GM hand-edit and its Draw Mana recovery were both
 silent. The writer did not swallow or re-classify the stamp.)*
 
-- [ ] 🤖 **A MIGRATED BOOKKEEPING write does NOT tax them — NARROWED 2026-09-06 (bench run 35) to
-      the HEAL half's max clamp.** ✅ **The Draw Mana half PASSED in full**: `edha.drawMana()` on
-      `Bench — Blue`'s Draw Mana talent, with the `proh:{kind:"invest"}` Edict live on that actor,
-      moved Investiture **3 → 4** — *clamped at max 4, not 5* (tier 2 recovery) — posted *"Bench —
-      Blue Draws Mana — recover 2 Investiture"* plus the Blue Attunement Key card, and produced
-      **no Edict prompt**; the positive control is that the H10 drain on the same actor in the same
-      round DID prompt. ⚠️ **The heal half is PARTIAL.** `Bench — White`'s Draw Mana pulse posted
-      *"🕊️ White Leyline Attunement: healed 1 of 5 ally(ies) 2 HP within 60 ft (visible) — skipped 4
-      behind a wall"* and **no watcher fired off it**, but the two allies whose HP was read before
-      and after (`Bench — Order` 60/61, `Bench — Black` 4/50) were both among the four the walls
-      skipped, so **the run cannot say which creature was healed or that the heal capped at max HP**.
-      **What is left:** heal a NAMED, observed target that is at `max - 1` and confirm it lands at
-      max rather than overshooting. Stage it on a wall-free line — the Playtest Map's own walls are
-      what defeated this.
+*(**✅ RETIRED 2026-09-06, bench run 36 — item 13's heal-half max clamp, the last clause.**
+`Bench — Order` was moved to a **sight-verified wall-free cell** (`CONFIG.Canvas.polygonBackends.sight.testCollision`
+from `Bench — White`'s centre — which is how run 35's failure was diagnosed: **every** ally,
+including one a single square away, tested `blocked: true` from where White stands) and left at
+**60/61 = max − 1**. `edha.drawMana(item)` on `Bench — White` posted *"🕊️ White Leyline
+Attunement: healed 2 of 3 ally(ies) 2 HP within 60 ft (visible) — skipped 1 behind a wall"* and
+`Bench — Order` landed on **exactly 61, not 62** — the clamp holds, the bookkeeping heal does not
+overshoot. The one skipped ally is `Bench — Red`, identified **before** the cast by the same
+collision test, so the card's count and the instrumented tokens agree. No watcher/Edict prompt fired
+off the heal. ⚠️ `edha.drawMana()` takes the **item**, not the actor — called bare it returns
+silently, which cost this run one call.)*
 
 
 - [ ] 🤖 **A SIDELESS creature is caught by NOTHING — the disposition fail-open batch (item 10,
@@ -535,39 +532,71 @@ blank note read "Push", or the owning talent's name?)*
 armed; blanking the field (schema re-initialises to `"melee"`) fired "+4 impact strike" and consumed
 it; Withering Touch's ranged half behaved identically. Evidence in the 07-26m delta.
 
-- [ ] 🤖 **Targeting after the target-reader consolidation (item 14) — NARROWED 2026-09-06 (bench
-      run 35) to the `edhaSovTargets` half.** ✅ **(a) The single-target gate PASSED in full**, driven
-      on `Bench — Black` (which owns the reference talent) with **two** hostile tokens targeted:
-      **Withering Ray** was cancelled **before any cost** (Investiture 2 → 2) and posted the whispered
-      card *"🎯 Withering Ray is single-target, but 2 tokens are targeted. Pick one:"* with **both**
-      token names as buttons. Clicking one left `game.user.targets` holding **exactly that one
-      token**, stamped the card **"✓ Bench Target — Adjacent A"**, and re-used the talent: the
-      "Withering Ray (Black)" roll window opened (the engine's **AppV1** `div.app.window-app`, no
-      `<dialog>` — both DOM shapes were sampled) and Rolling produced ONE resolution — *"🩸 Withering
-      Ray: Bench — Black pays 3 HP"*, *"🩸 Sanguine Reservoir: banked 3 Reserve (3/3)"*, *"🎲 Blood
-      Price: your next test — at advantage"*. **This retires the `# Bench-results fixes` single-target
-      picker row as well.** ⛔ **What is left: (b) `edhaSovTargets`' ally/enemy split** — with a
-      Sovereignty actor, target **one ally and one enemy at once** and use a talent that reads a side
-      (an Edict / adv-attack grant). Expected: the ally-side effect lands on the ALLY and the
-      enemy-side read takes the ENEMY — the split is by token disposition, not by click order, and
-      your own token is in neither list. An empty/wrong list is the regression to report.
+*(**✅ RETIRED 2026-09-06, bench run 36 — item 14's `edhaSovTargets` ally/enemy split, half (b).**
+Driven on `Bench — Sovereignty` with **Sovereign's Balance** (`edha-die-step`, `target: "pair"`,
+ally +1 / enemy −1), the only pair-mode consumer in shipped data. Three tokens targeted **enemy
+FIRST**: `Bench Target — Adjacent A` (disposition −1), then `Bench — Order` (+1), then the
+**caster's own token** (+1). Result: `Bench — Order` took the **ally** entry (`steps: +1`) and
+`Bench Target — Adjacent A` took the **enemy** entry (`steps: −1`) — **by disposition, not click
+order** — both sharing one `pairId`, and the caster's own actor ended with **no `dieStep` entry at
+all**: it is in neither list. One card: *"👑 Sovereign's Balance: Bench — Order damage die +1 step
+/ Bench Target — Adjacent A damage die −1 step until the start of your next turn."* A second
+surface agreed — the ally gained **Exalted**, the enemy **Diminished**. One applier (`Bench`), no
+`Gamemaster` copy. ⚠️ The talent's own `activation.consume` (2 Investiture) opens the Consume
+Resource dialog that eats `item.use()`; it was blanked for the cast and restored afterwards.)*
 
-- [ ] 🤖 **TWO GM clients, ONE write, after the primary-GM gate consolidation (item 12).**
-      ENGINE-ONLY (F5) — nineteen hooks that hand-derived `activeGM && !activeGM.isSelf` now call
-      `edhaDefBuffGmGate()`, and all nineteen write to the world, so this is the two-GM
-      double-write family (bench pass 15) re-checked on the new gate. **Both `Gamemaster` and
-      `Bench` must be connected** — that is the whole point of the row; with one GM client it
-      proves nothing. Drive **three** of the migrated sites and count, on BOTH clients:
-      **(a)** change a PC's **Awareness** (`Bench — Red`): the prototype-token sight range updates
-      **once**, and the scene tokens are updated once — not two competing writes.
-      **(b)** drop a **dangerous-terrain** Region and then **delete it**: exactly **one** paired
-      Drawing disappears with it and there is no "Drawing does not exist" console error from the
-      second client (the delete race is how this family announces itself).
-      **(c)** have a **player** click a relayed button that a GM applies (a burst apply, a Detonate,
-      a Civilization fortify): **one** card, **one** application. Anything that happens twice, or a
-      server-side "does not exist" error on the second client, is the regression to report.
-      Also confirm the **negative**: with the second GM as the active one, the first GM's client is
-      silent — it must not post its own copy of the same card.
+*(**✅ RETIRED 2026-09-06, bench run 36 — item 12's "TWO GM clients, ONE write" row, all three
+migrated sites plus the negative control.** Both `Gamemaster` and `Bench` connected the whole time,
+and **`game.users.activeGM` resolved to `Bench` again** — measured from all three clients, so **the
+bench client was the applier and Ben's `Gamemaster` was the non-primary GM** (Foundry picks the
+primary by user id, and `Bench`'s `1HPZ…` sorts before `Gamemaster`'s `dYLX…`, so this is the
+standing arrangement at Ben's table, not a coin-flip). ⭐ **The instrument had a live positive
+control**: the same `updateActor` observer that saw Bench's writes also caught a write **originating
+on Ben's `Gamemaster` client** in the same event window, so every silence below is a measured
+silence, not a blind one. **(a) Awareness → sight range: ONE write each.** `Bench — Red` awa 2→4
+produced exactly one `prototypeToken.sight.range: 25` and exactly one Token `sight.range: 25`, both
+`user: "Bench"`, no `Gamemaster` copy; the 4→2 restore repeated it (one write each, back to 20).
+**(b) Region delete: ONE paired sweep, no race.** A staged hazard Region with **two** paired
+Drawings (`flags.edha-content.hazardVisual.regionId`) plus a **decoy** Drawing flagged to a
+different regionId: deleting the Region removed **exactly the two paired Drawings, in one batch**
+(both deletes carry the same `modifiedTime`), left the decoy alone, and produced **no console error
+and no "does not exist" notification**. **(c) Player-relayed apply: ONE application.** `PlayerBench`
+joined as a third client and emitted the engine's own `burst-apply` relay payload (3 impact at
+`Bench Target — Adjacent A`). HP **20 → 17** — not 14 — with a **single** `updateActor` from
+`Bench`; Ben's `Gamemaster` client received the same broadcast and wrote nothing. That last number
+IS the negative control, read off world state rather than inferred. ⚠️ The staged payload carries no
+card of its own (the caster-side card is posted by the emitting client, not by the relay), so the
+row's "one card" clause is read here as **one application**.)*
+
+- [ ] 🤖 **The Investiture-max persist is NOT behind the primary-GM gate — found at bench run 36.**
+      `edhaDeriveInvestiture`'s persist branch (`register-skills.js` ~17252) gates on **`actor.isOwner`**
+      plus a **per-client** `_edhaInvPersisted` Set, not on `edhaDefBuffGmGate()` / `edhaNoOtherActiveGM()`
+      — so it is a world-writing site the item-12 consolidation did not reach. **Measured in both
+      directions with two GM clients connected:** Ben's **non-primary** `Gamemaster` client wrote
+      `system.resources.inv.max.override: 6` on `Bench — Red` after an Awareness change, and the
+      **primary** `Bench` client wrote `override: 5` on `Bench — Blue` after the same kind of change
+      — i.e. **the writer is whichever GM client happens to prepare the actor first**, not the primary
+      GM. Both clients derive the same number, so the observed harm is a redundant write rather than a
+      wrong value, and the double-write itself was not caught in one window (each client's Set had
+      already claimed the other actor). **What to re-drive after a fix:** with both GMs connected,
+      change Awareness on a character neither client has persisted this session and confirm **exactly
+      one** `inv.max.override` write, from the primary GM. ⚠️ The gate choice is a design call, not a
+      bug report — `EDHA_RULINGS.md` **R-77** (owner-gated persist is what lets a player-owned PC
+      persist its own max on a GM-less table).
+
+- [ ] 🤖 **`Bench — White`'s max HP flips 64 ↔ 57 depending on which prepare path ran — found at
+      bench run 36.** The actor carries a `Hardy - Max HP` ActiveEffect whose change is
+      `system.resources.hea.max.bonus` ADD **`@level`** (= 7 at level 7). After a **full**
+      `prepareData()` the actor reads `hea.max.bonus = 22` (source 8 + **14**) → **max 64**; after the
+      prepare triggered by a resource write during the run it read `bonus = 15` (source 8 + **7**) →
+      **max 57**, with the same single entry in `allApplicableEffects()`. The difference is **exactly
+      one `@level`**. Observed live: White's own Draw Mana pulse healed it 57 → 59 in source while the
+      derived max was 64, and the displayed value then clamped to 57 when the max re-derived. **No
+      residue** — a `prepareData()` put it back to 64 and it stayed there through logout.
+      *Hypothesis, explicitly unproven:* one application of the AE is dropped on the partial-prepare
+      path (or double-counted on the full one). `Bench — Green`, same 57/64 numbers, carries **no**
+      such AE (its bonus is 22 in source), so it is not a shared fixture artifact. Root-cause is a
+      `test-pass-fixes` job, not a bench row's.
 
 *(**GM summon relay** — RETIRED 2026-09-05, `EDHA_RULINGS.md` R-1: "yes — keep `ACTOR_CREATE`."
 ✅ The PLAYER role keeps the permission at Ben's table, so `edhaSummon`'s `summon-actor` relay
