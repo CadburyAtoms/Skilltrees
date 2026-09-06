@@ -38,7 +38,7 @@
  */
 "use strict";
 const assert = require("assert");
-const { loadEngine, mockActor, withStubs, captureChat } = require("./harness.js");
+const { loadEngine, mockActor, withStubs, captureChat, readEngineSource, codeOnly } = require("./harness.js");
 
 const GS = 100, DIST = 5, PPF = GS / DIST;   // 20 px/ft
 
@@ -139,8 +139,60 @@ test("edhaAllyDropEligible: a ranged cue with an UNKNOWN gap fails CLOSED (was: 
   assert.strictEqual(env.edhaAllyDropEligible(NEUTRAL, NEUTRAL, 20, undefined), false);
   assert.strictEqual(env.edhaAllyDropEligible(NEUTRAL, NEUTRAL, 5, NaN), false);
   // …and the boundary is inclusive, so the fail-closed change did not narrow a real reading.
+  // Since R-52 the boundary sits at rangeFt + 2.5 (see the block below).
   assert.strictEqual(env.edhaAllyDropEligible(NEUTRAL, NEUTRAL, 5, 5), true);
-  assert.strictEqual(env.edhaAllyDropEligible(NEUTRAL, NEUTRAL, 5, 5.01), false);
+  assert.strictEqual(env.edhaAllyDropEligible(NEUTRAL, NEUTRAL, 5, 7.5), true);
+  assert.strictEqual(env.edhaAllyDropEligible(NEUTRAL, NEUTRAL, 5, 7.51), false);
+});
+
+/* -------------------------------------------------------------------------------------------- */
+/* R-52 (c)(i) — the +2.5 ft half-square slack (answered 2026-09-06, item 47)                     */
+/* -------------------------------------------------------------------------------------------- */
+
+/* Bench run 19 (2026-07-28e) measured the defect FOUR ways rather than asserting it, and those four
+ * gaps are the pin. `edhaTokenGapFt` is centre-to-centre, so an "adjacent" ally is 5.0 ft
+ * (Medium orthogonal), 7.07 ft (Medium diagonal) or 7.5 ft (Large 2×2 owner, orthogonal) away, and
+ * a 5-ft cue with NO slack reached only the first — plus the absurd case of an ally standing INSIDE
+ * a Large owner's own footprint (0 ft), which passed. Both cards promise adjacency works:
+ *   "an ADJACENT ox may spend 3 Focus" (Crownox Ring) · "a pack-mate dropped WITHIN 5 ft" (The Reckoning)
+ * The engine's `enemy-turn-start` sweep already added `+ 2.5` for exactly this ("half-square slack
+ * for adjacency reads"); `ally-drops` did not, so the file disagreed with itself.
+ *
+ * ⚠ These are the MEASURED gaps from the run, not geometry re-derived here — re-deriving them is
+ * how a pin quietly starts testing the test's own arithmetic. Item 62 (edge-to-edge measurement for
+ * sized tokens) is the separate, larger answer; slack is not a substitute for it. */
+test("R-52: all four bench-run-19 gaps now reach a 5-ft ally-drops cue", () => {
+  const env = loadEngine();
+  const reach = (gapFt) => env.edhaAllyDropEligible(NEUTRAL, NEUTRAL, 5, gapFt);
+
+  assert.strictEqual(reach(0),    true,  "Crownox Ring (Large 2×2), ally inside the ring's own square — always worked");
+  assert.strictEqual(reach(5.0),  true,  "The Reckoning (Medium), orthogonally adjacent — the only one that worked before");
+  assert.strictEqual(reach(7.07), true,  "The Reckoning (Medium), DIAGONALLY adjacent — was ❌, the reported miss");
+  assert.strictEqual(reach(7.5),  true,  "Crownox Ring (Large 2×2), orthogonally adjacent — was ❌, 'an adjacent ox' was false");
+});
+
+test("R-52: the slack is HALF A SQUARE, not a widening — one square out is still out", () => {
+  const env = loadEngine();
+  // 10 ft is the next square, and the whole risk of this change is a cue that now fires too far.
+  assert.strictEqual(env.edhaAllyDropEligible(NEUTRAL, NEUTRAL, 5, 10), false, "a 5-ft cue does not reach 10 ft");
+  assert.strictEqual(env.edhaAllyDropEligible(NEUTRAL, NEUTRAL, 5, 8), false);
+  // Roek's 20-ft cue: unaffected in substance, and its own boundary moves by the same half square.
+  assert.strictEqual(env.edhaAllyDropEligible(NEUTRAL, NEUTRAL, 20, 22.5), true);
+  assert.strictEqual(env.edhaAllyDropEligible(NEUTRAL, NEUTRAL, 20, 25), false);
+  // The slack never rescues an unknown position or a cross-side owner.
+  assert.strictEqual(env.edhaAllyDropEligible(NEUTRAL, NEUTRAL, 5, null), false);
+  assert.strictEqual(env.edhaAllyDropEligible(NEUTRAL, HOSTILE, 5, 0), false);
+});
+
+test("R-52: `ally-drops` and `enemy-turn-start` now read the SAME slack constant", () => {
+  // The two reads disagreed for the whole tracked history, which is what made this a ruling rather
+  // than a bug report. Source-scoped because the enemy-turn-start gate is an inline expression
+  // inside a combat hook: a future edit that re-inlines `+ 2.5` on one side fails here.
+  const code = codeOnly(readEngineSource());
+  assert.ok(/const EDHA_ADJACENCY_SLACK_FT = 2\.5;/.test(code), "the slack is one named constant");
+  const uses = code.match(/EDHA_ADJACENCY_SLACK_FT/g) || [];
+  assert.strictEqual(uses.length, 3, "the declaration + both adjacency reads, and no fourth consumer without a ruling");
+  assert.ok(!/>\s*ft\s*\+\s*2\.5\b/.test(code), "no hand-inlined 2.5 slack survives beside the constant");
 });
 
 /* -------------------------------------------------------------------------------------------- */

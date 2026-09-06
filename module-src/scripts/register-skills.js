@@ -3830,13 +3830,26 @@ function edhaSideHostile(a, b) { return Number.isFinite(a) && Number.isFinite(b)
  *   · the range test read `ft > 0 && vTok && …`, so the same victim also skipped the RANGE filter
  *     and a 5-ft cue fired from anywhere on the map. 3 of the 5 shipped ally-drops rules carry a
  *     rangeFt (Roek 20, Crownox Ring 5, The Reckoning 5), so that half was live in real data too.
- * `rangeFt` 0/absent still means "whole scene" — that is an authored dial, not a failed lookup. */
+ * `rangeFt` 0/absent still means "whole scene" — that is an authored dial, not a failed lookup.
+ *
+ * R-52 (c)(i), 2026-09-06 — THE HALF-SQUARE SLACK. `edhaTokenGapFt` measures CENTRE-TO-CENTRE, and
+ * this predicate applied no slack, so bench run 19 measured a 5-ft cue that could not reach the
+ * ally standing beside its owner: The Reckoning (Medium) missed every DIAGONAL neighbour (7.07 ft)
+ * and the Crownox Ring (Large 2×2) missed even an ORTHOGONAL one (7.5 ft), while an ally standing
+ * INSIDE the ring's own footprint (0 ft) passed. Both cards promise the opposite ("an ADJACENT ox",
+ * "a pack-mate dropped WITHIN 5 ft"). The engine already answered this question 60 lines below —
+ * the `enemy-turn-start` sweep adds `+ 2.5` "half-square slack for adjacency reads" — and simply
+ * disagreed with itself. It no longer does: EDHA_ADJACENCY_SLACK_FT is the one number, and both
+ * reads apply it. Item 62 is the separate, larger question of measuring EDGE-TO-EDGE for sized
+ * tokens, which is what a Huge owner's "adjacent" would still need; slack is not a substitute for
+ * it, and this is deliberately not a general widening of every rangeFt gate in the engine. */
+const EDHA_ADJACENCY_SLACK_FT = 2.5;
 function edhaAllyDropEligible(victimSide, ownerSide, rangeFt, gapFt) {
   if (!Number.isFinite(victimSide) || !Number.isFinite(ownerSide)) return false;   // unknown side → no eligible ally
   if (ownerSide !== victimSide) return false;                                      // same side only
   const ft = Number(rangeFt) || 0;
   if (ft <= 0) return true;                                                        // 0 / absent = whole scene
-  return Number.isFinite(gapFt) && gapFt <= ft;                                    // unknown position → cannot be "within N ft"
+  return Number.isFinite(gapFt) && gapFt <= ft + EDHA_ADJACENCY_SLACK_FT;          // unknown position → cannot be "within N ft"
 }
 async function edhaGmCueDamageSweep(victim, prevHp, newHp, maxHp) {
   try {
@@ -3888,7 +3901,7 @@ async function edhaTurnCueSweep(combat, prior, current) {
         if (edhaStillFightingElsewhere(t.actor, guard)) continue;                            // fighting in another combat
         for (const { item, h } of edhaCueRules(t.actor, "enemy-turn-start")) {
           const ft = Number(h.rangeFt) || 0;
-          if (ft > 0 && edhaTokenGapFt(t, curTok) > ft + 2.5) continue;   // half-square slack for adjacency reads
+          if (ft > 0 && edhaTokenGapFt(t, curTok) > ft + EDHA_ADJACENCY_SLACK_FT) continue;   // half-square slack for adjacency reads (R-52: the SAME number edhaAllyDropEligible uses — they disagreed until 2026-09-06)
           await edhaPostCueCard(t.actor, item, h, ` <em>(${curTok.name}'s turn starts in range.)</em>`);
         }
       }

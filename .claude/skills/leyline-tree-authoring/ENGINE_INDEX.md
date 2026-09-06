@@ -278,6 +278,15 @@ there is no lint — the swept corpus was 3 sites and only 1 was wrong):
   `ally-drops` decision lives. Unknown side on **either** end → `false`. `rangeFt` 0/absent → whole
   scene (an authored dial). A ranged cue with an unknown gap → `false`, because "within N ft" cannot
   be true of a position you do not have. Pinned in `tests/ally-drop-side.test.js`.
+  ⚠️ **The range boundary is `rangeFt + EDHA_ADJACENCY_SLACK_FT` (2.5 ft), not `rangeFt`** —
+  R-52 (c)(i), 2026-09-06. `edhaTokenGapFt` measures **centre-to-centre**, so an *adjacent* ally sits
+  5.0 ft (Medium orthogonal), 7.07 ft (Medium diagonal) or 7.5 ft (Large 2×2 owner, orthogonal)
+  away, and a 5-ft cue with no slack reached only the first — bench run 19 measured all four. The
+  `enemy-turn-start` sweep had carried the same `+ 2.5` "half-square slack for adjacency reads"
+  since it shipped, so the engine disagreed with itself; `EDHA_ADJACENCY_SLACK_FT` is now the one
+  number and **both** reads use it. Do NOT copy the slack onto other `rangeFt` gates: measuring
+  **edge-to-edge** for sized tokens is the separate, larger answer (TODO item 62) and is what a Huge
+  owner's "adjacent" still needs.
 - **R-63 (ENGINE PASS 5.2, Job 5, 2026-08-10) — `edhaDisposHostile(owner, target)` and
   `edhaSameDisposition(owner, tok)` now fail CLOSED on the Number.isFinite convention**, matching
   `edhaAllyDropEligible` above. Before: `edhaDisposHostile` returned `true` (hostile) when either
@@ -1196,6 +1205,12 @@ shape the marker trees had no way to express (Bear Witness grants Temp HP to eac
   higher — Temp HP does not stack) and it relays through the GM for creatures the client does not
   own; a zero amount is silent. All three differences are load-bearing: the obvious generic path
   would have quietly nerfed stacked Temp HP, failed on other players' PCs, and spammed "gains 0".
+- ⚠️ **`edhaGrantTempHpCross` keeps the higher SOURCE LABEL as well as the higher value** (R-36,
+  2026-09-06). The label follows the value: a **strict win** takes both, a tie or a loss leaves the
+  incumbent's `{value, source}` alone, and the unowned relay branch carries the same decision. It
+  used to write the incoming `source` unconditionally, so a losing grant relabelled a survivor it
+  did not produce (6 from Final Decree read "Bear Witness"). Pinned in
+  `tests/temphp-source-label.test.js`.
 - Same shape, not yet wired: Final Decree's Witness block, Concord's roster.
 
 ## A second moment on `edha-combat-timing` — `round-start` (07-24u)
