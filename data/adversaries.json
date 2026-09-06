@@ -26,8 +26,9 @@
       "talents": "Array of tree-talent refs embedded as ACTION-TYPED TWINS of the built talent docs: 'Talent Name' or the self-documenting 'Group/Talent Name' (e.g. 'White/Guiding Signal'; unknown/ambiguous ref = hard build error). Twins because the adversary sheet only renders trait/weapon/action sections — a talent-type embed is invisible (07-14 pipe-cleaner). The twin keeps name/img/description/activation/damage/events/effects, so name-based engine automation applies unchanged, and ownership gates go through the flag-aware edhaIsTalent (flags.edha-content.adversaryTalent). No prereqs. Ruling 40: HUMANS use talents as written (this field); ANIMALS/MONSTERS get adaptations authored as bespoke items instead. Talent costs are the talent's own — usually Investiture, so give the actor an `inv` pool."
     },
     "item_fields": {
-      "kind": "action | trait | weapon. Default action. Passives = trait. weapon = a REAL weapon-type item (renders in the sheet's weapon section, lootable): same attack/damage/range fields, roll stays the action-shaped skill_test + flat modifierFormula so PDF numbers hold at any skill rank. ⚑⚑ PIPE-CLEANER until the schema dump verifies the weapon DataModel (2026-07-15) — fleet migration of the remaining attack items is backlogged on that.",
-      "weaponId": "Optional, kind=weapon only: the system weapon-registry id (e.g. 'shortsword'). Written to both system.type and system.weaponId (one sticks, the other strips — dump decides which is real).",
+      "kind": "action | trait | weapon. Default action. Passives = trait. weapon = a REAL weapon-type item (renders in the sheet's weapon section, lootable, and gets the system's NATIVE target + test-defense flow): same attack/damage/range fields, roll stays the action-shaped skill_test + flat modifierFormula so PDF numbers hold at any skill rank. THE MODEL (fleet weapon migration, item 34a 2026-09-06, Ben's 07-18 rulings): every gear attack AND natural weapon is kind weapon (natural ones add alwaysEquipped); attack-riding maneuvers/reactions (Devastating Blow, Reactive Strike, Press the Line, Snatch and Wade) and bespoke investiture attacks (Frost Lance) stay actions. Doc fields ground-truthed by the 07-15 schema dump. Riders authored on a weapon keep harvesting — the engine's actor-wide rule loops gate on edhaRuleBearer (talents + weapons), not edhaIsTalent.",
+      "alwaysEquipped": "Optional boolean, kind=weapon only: natural weapons (Bite, Spearing Beak, Slam, Scalpel-Strike) — part of the creature, cannot be disarmed/dropped (system.alwaysEquipped).",
+      "weaponId": "Optional, kind=weapon only: slug written to system.id (defaults to the slugified item name). system.type — the weapon CATEGORY, light_wpn/heavy_wpn — derives from the skill (lwp→light, hwp→heavy) or an explicit weaponType field.",
       "name": "Item name.",
       "cost": "Passive | 1 Action | 2 Actions | 3 Actions | Free Action | Reaction | Special. Default '1 Action' for actions, 'Passive' for traits.",
       "consume": "Resource cost string, parsed like talents: 'N Focus' / 'N Investiture', comma-separated. Omit for none.",
@@ -65,6 +66,7 @@
     "items": [
       {
         "name": "Strike",
+        "kind": "weapon",
         "cost": "1 Action",
         "attack": 5,
         "range": "Reach 5 ft.",
@@ -151,6 +153,7 @@
     "items": [
       {
         "name": "Poleaxe",
+        "kind": "weapon",
         "cost": "1 Action",
         "attack": 7,
         "range": "Reach 10 ft.",
@@ -302,6 +305,8 @@
     "items": [
       {
         "name": "Bite",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 4,
         "range": "Reach 5 ft.",
@@ -440,6 +445,7 @@
     "items": [
       {
         "name": "Crossbow",
+        "kind": "weapon",
         "cost": "1 Action",
         "attack": 5,
         "range": "Range 60 ft.",
@@ -502,6 +508,8 @@
     "items": [
       {
         "name": "Scalpel-Strike",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 7,
         "range": "Reach 5 ft.",
@@ -622,6 +630,8 @@
     "items": [
       {
         "name": "Slam",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 5,
         "range": "Reach 5 ft.",
@@ -658,6 +668,7 @@
     "items": [
       {
         "name": "Soldier's Crossbow",
+        "kind": "weapon",
         "cost": "1 Action",
         "attack": 4,
         "range": "Range 60 ft.",
@@ -731,6 +742,7 @@
     "items": [
       {
         "name": "Soldier's Crossbow",
+        "kind": "weapon",
         "cost": "1 Action",
         "attack": 4,
         "range": "Range 60 ft.",
@@ -739,6 +751,8 @@
       },
       {
         "name": "Shortsword",
+        "kind": "weapon",
+        "weaponId": "shortsword",
         "cost": "1 Action",
         "attack": 4,
         "range": "Reach 5 ft.",
@@ -818,6 +832,7 @@
     "items": [
       {
         "name": "Issued Blade",
+        "kind": "weapon",
         "cost": "1 Action",
         "attack": 5,
         "range": "Reach 5 ft.",
@@ -935,6 +950,8 @@
       },
       {
         "name": "Spearing Beak",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 5,
         "range": "Reach 10 ft.",

@@ -1228,7 +1228,7 @@ function edhaDealerOf(options) {
 // Melee-vs-ranged discriminator (shared primitive): classify the dealing item so "melee only" riders
 // can stand down on a definitive ranged attack. Returns "melee" | "ranged" | null; null = can't tell
 // → consumers keep today's owner-judged behavior (fire + the GM-withhold note). Reads, in order: an
-// explicit flags.edha-content.attackKind stamp (edhaSummon bakes one onto its attack action), then a
+// explicit flags.edha-content.attackKind stamp (edhaSummon bakes one onto its attack weapon), then a
 // weapon's system.attack.type — the cosmere 2.1.0 discriminator ("melee"/"ranged", schema initial
 // "melee"), verified against the system SCHEMA$i AttackingItemMixin AND live at bench run 3
 // (2026-07-26k defect 7: the old read was `system.range`, a field the DataModel strips, so EVERY
@@ -1248,10 +1248,12 @@ function edhaAttackKind(item) {
     return (Number(r?.value) > 0) ? "ranged" : "melee";
   } catch (e) { return null; }
 }
-// First rule of the given handler type across an actor's talents → { item, handler } | null.
+// First rule of the given handler type across an actor's rule-bearing items → { item, handler } | null.
+// Rule bearers = talents + weapons (edhaRuleBearer, item 34a): the migrated adversary attacks carry
+// their riders on the weapon document, and an edhaIsTalent gate here would drop them silently.
 function edhaActorRuleOf(actor, type) {
   for (const tal of (actor?.items ?? [])) {
-    if (!edhaIsTalent(tal)) continue;
+    if (!edhaRuleBearer(tal)) continue;
     const h = edhaRuleOf(tal, type);
     if (h) return { item: tal, handler: h };
   }
@@ -1267,7 +1269,7 @@ function edhaActorRuleOf(actor, type) {
 function edhaActorRulesOf(actor, type) {
   const out = [];
   for (const tal of (actor?.items ?? [])) {
-    if (!edhaIsTalent(tal)) continue;
+    if (!edhaRuleBearer(tal)) continue;   // talents + weapons — see edhaRuleBearer (item 34a)
     for (const rule of edhaEventRules(tal)) {
       if (rule?.handler?.type === type) out.push({ item: tal, handler: rule.handler });
     }
@@ -9905,24 +9907,35 @@ async function edhaSummon(caster, spec) {
         description: { value: `<p>Summoned by ${caster.name}.</p>` + (skipped.length ? `<p>Also immune to: ${skipped.join(", ")} (tracked manually — not native conditions).</p>` : "") },
       },
       items: [
+        // Summon attacks are WEAPON-type (item 34a, 2026-09-06 — the fleet weapon migration; Ben's
+        // 07-17 ruling "defer to the weapon migration" for Construct Slam / Siege Cannon): weapon
+        // items get the system's native target + test-defense flow that action-typed skill_tests
+        // never had. The same skill_test activation (Athletics + tier rank) is kept so the roll
+        // numbers are unchanged; alwaysEquipped = a summon's attack is built in, not disarm-able gear.
+        // Field set = the adversary weapon shape advItemDoc emits (system.type is the weapon CATEGORY,
+        // attack.type the melee/ranged discriminator edhaAttackKind reads after the flag stamp).
         ...(atkFormula ? [{
           name: atk.name || "Attack",
-          type: "action",
+          type: "weapon",
           img: spec.img,
-          flags: { "edha-content": { attackKind: atk.range === "ranged" ? "ranged" : "melee" } },   // read by edhaAttackKind
+          flags: { "edha-content": { attackKind: atk.range === "ranged" ? "ranged" : "melee" } },   // read by edhaAttackKind (stamp wins; attack.type below agrees)
           system: {
+            id: "summon-attack", type: atk.range === "ranged" ? "light_wpn" : "heavy_wpn",
             description: { value: `<p>${atk.range === "ranged" ? "Ranged" : "Melee"} attack — ${atk.damageType || "keen"} damage. Rolls Athletics vs the target's Physical defense.</p>` },
             // skill_test → use() rolls a d20 Athletics test (+ rank from tier) alongside the damage,
             // instead of bare damage with no to-hit (Construct Slam fix, 2026-06-11 playtest).
             activation: { type: "skill_test", cost: { value: 1, type: "act" }, skill: atk.skill || "ath", attribute: "str" },
-            damage: { formula: atkFormula, type: atk.damageType || "keen" },
+            damage: { formula: atkFormula, type: atk.damageType || "keen", skill: atk.skill || "ath" },
+            equipped: true, alwaysEquipped: true,
+            attack: { type: atk.range === "ranged" ? "ranged" : "melee", range: { value: null, long: null, unit: "ft" } },
+            traits: {}, expertise: false,
           },
         }] : []),
         // Extra baked items (e.g. Siege Form's ranged attack) — damage formulas resolved vs the caster.
-        // A damage-bearing extra item is an ATTACK: build it like the primary (skill_test rolls a d20
-        // Athletics to-hit alongside the damage) so it isn't a no-roll utility (07-17 playtest: Siege
-        // Cannon rolled no to-hit at all, unlike Construct Slam). The native target+auto-test-defense
-        // flow still rides the weapon migration (Ben 07-17); this only brings the die to parity.
+        // A damage-bearing extra item is an ATTACK and builds as a WEAPON like the primary (item 34a —
+        // closes the 07-17 interim: Siege Cannon now targets a token and tests defense natively
+        // instead of rolling a bare skill_test to parity). Non-attack extras keep their authored
+        // type (action/trait utilities). The Siege Form gate (requiresSummonEffect) is item-type-agnostic.
         ...((spec.extraItems || []).map(x => {
           const isAtk = !!x.damageFormula;
           const ranged = x.range === "ranged" || /\branged\b/i.test(x.description || "");
@@ -9933,14 +9946,20 @@ async function edhaSummon(caster, spec) {
             ...(x.requiresEffect ? { requiresSummonEffect: x.requiresEffect } : {}),
           };
           return {
-            name: x.name || "Ability", type: x.type || "action", img: x.img || spec.img,
+            name: x.name || "Ability", type: isAtk ? "weapon" : (x.type || "action"), img: x.img || spec.img,
             ...(Object.keys(xFlags).length ? { flags: { "edha-content": xFlags } } : {}),
             system: {
               description: { value: x.description || "" },
               activation: isAtk
                 ? { type: "skill_test", cost: { value: Number(x.actions) || 1, type: "act" }, skill: x.skill || "ath", attribute: x.attribute || "str" }
                 : { type: "utility", cost: { value: Number(x.actions) || 1, type: "act" } },
-              damage: x.damageFormula ? { formula: edhaFoldDieMath(Roll.replaceFormulaData(x.damageFormula, rollData, { missing: "0" })), type: x.damageType || "keen" } : { formula: null, type: null },
+              damage: x.damageFormula ? { formula: edhaFoldDieMath(Roll.replaceFormulaData(x.damageFormula, rollData, { missing: "0" })), type: x.damageType || "keen", skill: x.skill || "ath" } : { formula: null, type: null },
+              ...(isAtk ? {
+                id: "summon-extra-attack", type: ranged ? "light_wpn" : "heavy_wpn",
+                equipped: true, alwaysEquipped: true,
+                attack: { type: ranged ? "ranged" : "melee", range: { value: null, long: null, unit: "ft" } },
+                traits: {}, expertise: false,
+              } : {}),
             },
           };
         })),
@@ -10240,6 +10259,18 @@ const EDHA_RES_LABEL = { inv: "Investiture", foc: "Focus", opportunity: "an Oppo
 // NOT used by edhaCountTalents: embedded twins never count toward a PC talent budget.
 function edhaIsTalent(i) {
   return i?.type === "talent" || i?.flags?.["edha-content"]?.adversaryTalent === true;   // type-strict: the predicate itself
+}
+// Can this item CARRY edha event rules the passive-rule harvest loops should read? Talents (PC +
+// adversary twins/bespoke) AND weapon-type items — the fleet weapon migration (item 34a, 2026-09-06;
+// design from PR #103) moved the adversaries' gear and natural attacks to weapon-type, and their
+// authored riders (Spearing Beak's whenTargetFooled +1d6, Bite's Kindle light, Scalpel-Strike's
+// whenTargetStatus +4) live ON the weapon. ALL weapons qualify (not just pack-flagged ones) so a
+// rider Ben authors on any weapon's Events tab in Foundry harvests too; system-pack weapons carry
+// no edha-* rules and cost nothing. Weapons stay OUT of edhaIsTalent on purpose (attacks are
+// equipment, not talents — no useItem talent automation, no talent-budget count), so the two
+// actor-wide harvest loops (edhaActorRuleOf / edhaActorRulesOf) gate on THIS predicate instead.
+function edhaRuleBearer(i) {
+  return edhaIsTalent(i) || i?.type === "weapon";
 }
 function edhaOwnsTalent(actor, name) {
   return !!actor?.items?.some(i => edhaIsTalent(i) && i.name === name);
