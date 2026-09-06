@@ -6319,6 +6319,10 @@ Hooks.on("preUpdateActor", (actor, changes) => {
  * The GM summon relay (was backlog — wired 2026-07-04): a player without ACTOR_CREATE no longer
  * gets a warn — edhaSummon bakes the spec owner-side and relays `summon-actor` to the primary GM
  * (SHARED with Death/Risen Servant + Civ/Forge Construct; canonical entry in EDHA_FOUNDRY_HANDOFF.md §9).
+ * ⚠️ CONDITIONALLY DEAD at Ben's table (EDHA_RULINGS.md R-1, ANSWERED 2026-09-05: the PLAYER role
+ * keeps ACTOR_CREATE there), so this relay branch never fires locally — `edhaSummon` always takes
+ * the direct `edhaSummonCreateGM` path. Kept on purpose for a world that revokes the permission;
+ * do not delete it as "dead code" (TODO_REPO_HYGIENE #27).
  * ============================================================================================ */
 // (edhaSizeFt is GONE with Holographic Illusion's conversion — [Size] off a colour is the
 //  `tokenSizeColor` field on edha-summon now, resolved in its executor.)
@@ -9308,6 +9312,9 @@ async function edhaSummon(caster, spec) {
     };
     if (game.user?.can("ACTOR_CREATE")) return await edhaSummonCreateGM(payload);
     if (game.users?.activeGM) {
+      // Unreachable at Ben's table (EDHA_RULINGS.md R-1, ANSWERED 2026-09-05): the PLAYER role
+      // keeps ACTOR_CREATE there, so the branch above always returns first. Kept on purpose for a
+      // world that revokes the permission — not dead code to clean up (TODO_REPO_HYGIENE #27).
       game.socket.emit("module.edha-content", { action: "summon-actor", payload });
       ui.notifications?.info(`Edha: ${spec.name} — summon relayed to the GM.`);
       return null;   // the documents materialize on the GM client; callers don't use the return
@@ -11168,7 +11175,12 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
  * Failure / The Unmooring (their own Inv cost + bonuses). Concussive Yield rides EVERY detonation.
  * RULINGS (Ben, 06-16): trigger conditions ("when target moves/takes damage/enters") are DECLARED
  * TEXT fired by the Detonate action (no auto-hook); zone "merge" is a damage-bump + GM-merge note
- * (no polygon union); the Prone test is engine-rolled per foe.
+ * (no polygon union); the Prone test is engine-rolled per caught character.
+ * R-5 (Ben, 2026-09-05, TODO_REPO_HYGIENE #29): Fault Line's line catches EVERY character standing
+ * in it — allies and neutrals as well as foes, caster excluded — and both riders (damage with the
+ * Construct multiplier, and the Speed-vs-Red save that knocks Prone) run on that whole set. The
+ * card says "each character" and the card is spec. R-6 (who the dangerous-terrain REGION catches)
+ * is a separate ruling, still open — that half is deliberately unchanged.
  * Now wired (no longer GM-eyeballed): ignore-deflect (Pinpoint primary + The Unmooring) bumps the hit by
  * the target's deflect so applyDamage nets to ignoring it; Fault Line TRIPLES damage vs Constructs;
  * Combustion Chain AUTO-fires off the defeat HP-sync hook when a foe drops in your terrain; Walking Ruin
@@ -11232,14 +11244,31 @@ function edhaEnemyTokensInCircle(owner, cx, cy, ft) {
   return edhaTokensInCircle(cx, cy, ft, null).filter(t =>
     (t.document?.disposition ?? 1) !== disp && (t.actor?.system?.resources?.hea?.value ?? 1) > 0);
 }
-// Enemy tokens inside a length×width line that starts at (cx,cy) and runs toward (px,py).
-function edhaEnemyTokensInLine(owner, cx, cy, px, py, lengthFt, widthFt) {
+/* Every LIVE token inside a length×width line that starts at (cx,cy) and runs toward (px,py),
+ * EXCEPT the caster's own token — the `edha-zone {kind: line}` caught set, so every rule of that
+ * kind inherits this one definition rather than each talent deciding who it catches.
+ *
+ * R-5 (Ben, 2026-09-05, "no it does not" — TODO_REPO_HYGIENE #29): a line zone catches **each
+ * character** standing in it, allies and neutrals as readily as foes; only the caster is spared.
+ * This was `edhaEnemyTokensInLine`, which dropped every same-disposition token, so an ally in the
+ * line was neither damaged nor asked for the save while the card ("each character") promised both.
+ * Card-is-spec: the engine is the side that drifted. The WHOLE rider set now runs on this set —
+ * the damage with its Construct multiplier AND the save/failStatus rider. `edhaFoeSkillVsColor`
+ * is disposition-BLIND (it rolls whatever tokens it is handed against the owner's colour DC, and
+ * edhaRollOpposedSkill reads only the target's own skill/attribute), so an ally rolls exactly the
+ * same save as a foe with no special case — only the helper's NAME says "foe".
+ * The caster is excluded by token id AND by actor identity: id alone would fail open on an actor
+ * whose token cannot be resolved, and "who cast it" is the one exclusion the card does state.
+ * NOT touched: the dangerous-terrain Region this zone drops afterwards — who that catches is R-6,
+ * a separate ruling still open. */
+function edhaTokensInLine(owner, cx, cy, px, py, lengthFt, widthFt) {
   const scene = canvas?.scene; const gs = scene?.grid?.size || 100, gd = scene?.grid?.distance || 5;
   const lenPx = (lengthFt / gd) * gs, halfW = ((widthFt / gd) * gs) / 2;
   let dx = px - cx, dy = py - cy; const mag = Math.hypot(dx, dy) || 1; dx /= mag; dy /= mag;   // unit direction
-  const disp = edhaCasterToken(owner)?.document?.disposition ?? 1;
+  const selfTok = edhaCasterToken(owner);
   return (canvas?.tokens?.placeables ?? []).filter(t => {
-    if (!t.actor || (t.document?.disposition ?? 1) === disp || (t.actor?.system?.resources?.hea?.value ?? 1) <= 0) return false;
+    if (!t.actor || t === selfTok || (selfTok && t.id === selfTok.id) || t.actor === owner) return false;   // the caster only
+    if ((t.actor?.system?.resources?.hea?.value ?? 1) <= 0) return false;
     const vx = (t.center?.x ?? 0) - cx, vy = (t.center?.y ?? 0) - cy;
     const proj = vx * dx + vy * dy;                       // distance along the line
     const perp = Math.abs(vx * -dy + vy * dx);            // distance off the centreline
@@ -11252,6 +11281,10 @@ function edhaEnemyTokensInLine(owner, cx, cy, px, py, lengthFt, widthFt) {
 // (1d20 + @skills.<color>.mod), then ROLLS each foe's skill (engine rolls the foe — never trust-the-player)
 // and runs onFail(token) per failure. Callers (2bY: all rule-driven — the dials ride the rules):
 // the `edha-detonate-react` sweep, the `edha-zone {kind: line}` save, Bastion, Magnum Opus.
+// "Foe" is the NAME, not the contract: this helper is disposition-BLIND — it rolls whatever token
+// list it is handed, and edhaRollOpposedSkill reads only the target's own skill/attribute. Who is
+// caught is the CALLER's decision, which is why R-5 (2026-09-05) could widen the `kind: line` set
+// to allies without touching a line of this function.
 async function edhaFoeSkillVsColor(owner, tokens, { skill = "spd", label = null, color = "red", sourceName = "", failText = "fails", okText = "resists", icon = "💥", onFail = null } = {}) {
   try {
     const uniq = [...new Map((tokens || []).map(t => [t.id, t])).values()];
@@ -11565,8 +11598,11 @@ async function edhaDetonateAllFree(ownerUuid) {
  *   Cascading Failure · The Unmooring — H12 `edha-detonate-list` since 07-24s. */
 
 // Fault Line (`edha-zone` kind "line", 2bY — was the takeover case): a click-direction line AoE
-// off ITS document's damage, an engine-rolled foe-save (iron rule 3), and a line hazard. The
+// off ITS document's damage, an engine-rolled save (iron rule 3), and a line hazard. The
 // system charges the activation cost; a cancelled direction pick REFUNDS it.
+// R-5 (2026-09-05, #29): the caught set is edhaTokensInLine — EVERY character in the line except
+// the caster — and both riders run on that one set (damage + Construct multiplier, then the
+// save/failStatus). The hazard Region dropped afterwards is untouched (that scope is R-6, open).
 async function edhaFaultLine(item, h) {
   try {
     const owner = item.actor; if (!owner) return;
@@ -11578,7 +11614,7 @@ async function edhaFaultLine(item, h) {
     const lengthFt = Number(h.lengthFt) > 0 ? Number(h.lengthFt) : 60, widthFt = Number(h.widthFt) > 0 ? Number(h.widthFt) : 5;
     const pt = await edhaPickPoint(`Click the direction the ${item.name} runs (${lengthFt} ft from you).`);
     if (!pt) { edhaRefundCost(item); ui.notifications?.info(`${item.name} canceled — cost refunded.`); return; }
-    const caught = edhaEnemyTokensInLine(owner, cx, cy, pt.x, pt.y, lengthFt, widthFt);
+    const caught = edhaTokensInLine(owner, cx, cy, pt.x, pt.y, lengthFt, widthFt);   // R-5: every character in the line but the caster
     const rd = owner.getRollData();
     const dice = await edhaRollFormula(rd, item.system?.damage?.formula || EDHA_CHARGE_DMG);
     const amt = Math.max(0, Math.floor(dice.total));
@@ -19160,7 +19196,7 @@ function edhaRegisterNativeEventSystem() {
       lengthFt: new FF.NumberField({ required: false, initial: 0, label: "Line length (ft, kind = line)", hint: "0 = 60 (Fault Line)." }),
       widthFt: new FF.NumberField({ required: false, initial: 0, label: "Line width (ft, kind = line)", hint: "0 = 5." }),
       constructMult: new FF.NumberField({ required: false, initial: 0, label: "Structures/Constructs damage multiplier (kind = line)", hint: "0 = ×3 (Fault Line). Constructs are wired; structures stay GM-side (no actor for a wall)." }),
-      saveSkill: new FF.StringField({ required: false, blank: true, initial: "", label: "Foe save skill (kind = line)", hint: "Engine-rolled per foe (iron rule 3). Blank = spd." }),
+      saveSkill: new FF.StringField({ required: false, blank: true, initial: "", label: "Save skill (kind = line)", hint: "Engine-rolled for EVERY character caught in the line — allies included, caster excluded (R-5). Blank = spd." }),
       saveLabel: new FF.StringField({ required: false, blank: true, initial: "", label: "…shown on the card as", hint: "Blank = the skill id. Fault Line: Speed." }),
       saveColor: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "white", "blue", "black", "red", "green"), label: "…vs your colour (kind = line)", hint: "Blank = red." }),
       failStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "…status on a failed save (kind = line)", hint: "Blank = prone." }),

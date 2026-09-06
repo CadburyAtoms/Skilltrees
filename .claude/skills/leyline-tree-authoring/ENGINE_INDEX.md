@@ -105,7 +105,7 @@ accident of append order, so nothing in this index could point at them. Item 23 
 | `TALENT SYNC` | the ⟳ Sync half of AUTHORING_WORKFLOW: `EDHA_SRC_PACKS` · `edhaSrcKey` · `edhaBuildSourceMap` · `edhaSrcFor` · `edhaSyncActorTalents` · `edhaSyncAllCharacters` · `edhaSyncNow`. Matches on (atlas\|group\|name), so a RENAMED talent is left alone rather than overwritten. |
 | `ADVERSARY PACK SYNC` | `EDHA_ADV_PACK_ID` · **`edhaAdvSyncPlan`** (the pure add/update/remove diff) · `edhaAdvSrcFor` · `edhaSyncAdversaryActor` · `edhaSyncAllAdversaries` + the sheet/directory buttons. |
 | `TEMPORARY HP` | `edhaGetTempHp` · `edhaWriteTempHp` · `edhaSetTempHp` · `edhaThpTarget` + the `preApplyDamage` consumer. A module flag, not a system resource; spent before deflect and before real HP. |
-| `SUMMONS` | `edhaSummon` · `edhaSummonCreateGM` (actor creation is GM-only, over the socket) · identity/census `edhaSummonIsFrom` · `edhaSummonSourceTalent` · `edhaOwnedSummons` (what the H15 `sustainCap` counts) · `edhaSummonFolder` · `edhaDeleteActorWithTokens` · `edhaSweepOrphanedTokens` + the mode-gated summon-item veto. |
+| `SUMMONS` | `edhaSummon` · `edhaSummonCreateGM` (actor creation is GM-only, over the socket) · identity/census `edhaSummonIsFrom` · `edhaSummonSourceTalent` · `edhaOwnedSummons` (what the H15 `sustainCap` counts) · `edhaSummonFolder` · `edhaDeleteActorWithTokens` · `edhaSweepOrphanedTokens` + the mode-gated summon-item veto. ⚠ the `summon-actor` socket relay is CONDITIONALLY DEAD at Ben's table (`EDHA_RULINGS.md` R-1: PLAYER keeps `ACTOR_CREATE`) — kept for a world that revokes the permission, not dead code (TODO_REPO_HYGIENE #27). |
 | `INJURIES` | `edhaAddInjury` · `edhaFindInjuryTable` · `EDHA_INJURY_FALLBACK` · `edhaCreateItemDocs` / **`edhaCreateItemCross`** (a player cannot create an item on another actor — the cross path relays to the GM). |
 | `TRIGGER GATING & COST` | `_edhaInTrigger` (the file-wide re-entrancy guard) · `EDHA_TRIG_PENDING` · `EDHA_RES_LABEL` · `edhaIsTalent` · `edhaOwnsTalent` (⚠ an iron-rule-2b smell, on the pass-7 ratchet — do not add a caller) · `edhaResVal` · `edhaTriggerAllowed` · `edhaMarkTriggerUsed` · `edhaResolveCost`. |
 | `SENSES, LIGHT & VISIBILITY` | `edhaTokensWithin` · `edhaPointIlluminated` · `edhaSensesRangeFtFromAwa` · `edhaSensesRangeFt` · `edhaCanSee`; the dark veil (`edhaDarkVeilSweep` + `edhaDarkVeilSoon`, **debounced 300 ms** — the sweep is O(tokens) and movement fires in bursts) · `edhaVeilSuppressed`; reveal-on-damage `edhaSenseRevealShows` · `edhaSenseRevealOnDamage`. |
@@ -1392,7 +1392,13 @@ legacy. No talent name in code.
   off ITS document, the arm card + watchers unchanged; Attunement-Range gate on the pick (NEW —
   card-is-spec); cancel/out-of-range/refused-at-cap REFUNDS. `line`: click-direction line AoE
   (`edhaFaultLine`): length/width/constructMult/save dials as fields, damage off ITS document,
-  the foe save engine-rolled via `edhaFoeSkillVsColor`, line hazard dropped; cancel refunds.
+  the save engine-rolled via `edhaFoeSkillVsColor`, line hazard dropped; cancel refunds.
+  **Caught set = `edhaTokensInLine(owner,cx,cy,px,py,lengthFt,widthFt)` — EVERY live character in
+  the line except the caster, allies and neutrals included** (R-5, Ben 2026-09-05; was
+  `edhaEnemyTokensInLine`, which spared same-disposition tokens and so skipped allies on BOTH
+  riders). The whole rider set runs on that one binding: damage + the Construct multiplier, then
+  the save/`failStatus`. `edhaFoeSkillVsColor` needed no change — it is disposition-blind, "foe"
+  is only its name. The hazard REGION's scope is R-6 and is deliberately untouched.
   (`edhaSpeedVsRedProne` retired — both callers carry their dials now.)
 - **`edha-detonate-react`** (config-only) — the detonation counterpart of edha-snare-react: swept
   by `edhaResolveCharges` after every detonation (it rides Set Charge, Cascading Failure and The
@@ -1818,7 +1824,11 @@ the first one lived inside the trample announcer, looked private, and got duplic
 
 ## Targeting / costs / math utils
 - `edhaPickPoint(prompt)` → grid-snapped `{x,y}` or null (click-to-place). `edhaTokensInCircle(cx,cy,ft)`,
-  `edhaEnemyTokensInCircle(owner,cx,cy,ft)` (Destruction). `edhaCasterToken(actor)`, `edhaColorRank(actor,"red")`.
+  `edhaEnemyTokensInCircle(owner,cx,cy,ft)` (Destruction),
+  `edhaTokensInLine(owner,cx,cy,px,py,lengthFt,widthFt)` — the `edha-zone {kind: line}` caught set:
+  every LIVE token in the length×width line **except the caster** (excluded by token id and by actor
+  identity, so it fails closed when the caster token cannot be resolved). Disposition plays no part
+  (R-5, 2026-09-05). `edhaCasterToken(actor)`, `edhaColorRank(actor,"red")`.
   **`edhaCasterToken` adoption (ENGINE PASS 5.2, Job 4, 2026-08-10)**: bare `x.getActiveTokens?.()[0]`
   reads (losing the canvas-controlled fallback the primitive has) and the dead-tail idiom
   `edhaCasterToken(x) ?? x.getActiveTokens?.()[0]` (the `??` half is the primitive's own FIRST

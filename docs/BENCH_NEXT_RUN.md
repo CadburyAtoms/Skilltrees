@@ -40,12 +40,18 @@ applied and still changes live dice math.
 ⚠️ **Never re-file an unrun 🤖 row as ⚑ because you ran out of time.** Leave it 🤖, or record it BLOCKED with the
 blocker named. **Design questions go to `EDHA_RULINGS.md`, never to the checklist as a new ⚑ row.**
 
-## ✅ RE-TEST FIRST — but there is nothing queued yet
+## ✅ RE-TEST FIRST — and this time there IS one queued
 
-**Nothing is waiting on a re-test.** Run 32's one new defect (below) has **not** been fixed — it goes to
-`test-pass-fixes` first. **If a fix pass lands before your run, that fix's re-test row is your first job.**
-The re-test block has measured roughly twice as dense as scattered rows for **six runs running**, and it is
-the one habit every run should keep.
+**Item 29 (PR #185) merged right after this run and ships an engine change with its own 🤖 re-test row**:
+`Fault Line` catches **allies** too now, per ruling **R-5** (Ben: *"no it does not"* spare them). The row is in
+`# BENCH — Destruction` and names its own staging — one ally inside the line, a second clearly outside,
+then cast. **It is ENGINE-ONLY and the PM deploys it, so the served hash will NOT be `06229ecc…` any more:
+hash-verify from both sides before driving, and record the rows NOT-DEPLOYED rather than FAILED if it has
+not landed.**
+
+Run 32's own new defect (below) has **not** been fixed — that one goes to `test-pass-fixes` first. The
+re-test block has measured roughly twice as dense as scattered rows for **six runs running**, and it is the
+one habit every run should keep.
 
 ## ❌ The one defect run 32 found — for `test-pass-fixes`, root cause already proven repo-side
 
@@ -68,7 +74,7 @@ kept, a culture's `system.id` no longer matches the `cultural:<slug>` expertise 
 Run 32 could not — the finding landed after the world was restored and both clients were out. It is a
 one-call read.
 
-## Where the 28 open 🤖 rows are
+## Where the 29 open 🤖 rows are
 
 | Block | 🤖 | Note |
 |---|---|---|
@@ -79,13 +85,17 @@ one-call read.
 | **Culture items** | 1 | The new defect's re-test row (added by run 32). |
 | **`BENCH — hygiene campaign 2026-08-10`** | 7 | The pass 5.2 / 5.3 rows below are counted here — this is where they live in the file. |
 | **Bestiary sections** (W29 ×3, Goldenport, Vorsk, Adversary ability wiring) | 6 | Untouched all marathon; each needs its own adversary import + staging. |
-| Scattered singles (Green's dark-veil half, and the rest of the bestiary/ability rows above) | 1 | `BENCH — Green` is the only remaining per-tree row. |
+| **`BENCH — Destruction`** | 1 | ⭐ **NEW and it is a RE-TEST — take it first.** Item 29 (PR #185, merged after this run) made a `kind: line` zone catch **allies** too, per ruling **R-5**. ENGINE-ONLY: the PM deploys it, so **hash-verify before driving** — the served hash will no longer be `06229ecc…`. |
+| **`BENCH — Green`** | 1 | The dark-veil half — see step 4. |
 
-**R-65, Job 6b and both R-64 halves are CLOSED — do not re-queue any of them.**
+**R-65, Job 6b and both R-64 halves are CLOSED — do not re-queue any of them.** ⚑ is now **21**, not 22:
+item 27 retired the `GM summon relay` row on ruling R-1 after this run.
 
 ## Run 10 — the plan, in order
 
-### 1. **The two genuinely-drivable `# Bench-results fixes` rows** (cheapest real wins on the board)
+### 1. **Item 29's `Fault Line` re-test** (see above — hash-verify first, it is a fresh deploy)
+
+### 2. **The two genuinely-drivable `# Bench-results fixes` rows** (cheapest real wins on the board)
 Both are single-actor, single-cast, no player client needed:
 - **Single-target picker resolves** — target 2+ tokens, use **Withering Ray** (Black): the picker card
   appears, **nothing is spent**, clicking a name narrows you to that one target, the card marks ✓ and the
@@ -95,7 +105,7 @@ Both are single-actor, single-cast, no player client needed:
 - **AoE burst auto-target** — place any burst (e.g. Flame Surge) and assert the caught tokens end up actually
   **targeted** (`game.user.targets`); this retarget was silently no-opping on v13.
 
-### 2. **The four July sections' remaining 11 rows — the wizard block is now the whole point**
+### 3. **The four July sections' remaining 11 rows — the wizard block is now the whole point**
 Runs 26–32 have all skipped `# Character-creation wizard v2` (6 🤖). Run 32 cleared the *other* three
 sections down to their real blockers, so **the wizard block is what is left and there is no cheaper
 alternative to hide behind.** Re-read each row against DEPLOY STATE (2026-07-26 — every wizard row predates
@@ -103,7 +113,7 @@ it) and the live pack **before** staging; several are likely already answered by
 the cost of one read. The **wizard-as-a-player walkthrough** pairs naturally with a player client if you open
 one — it is large, so only start it if you can finish it.
 
-### 3. **R-63's same-side regression — 1–2 more shapes** (drivable today, no player client)
+### 4. **R-63's same-side regression — 1–2 more shapes** (drivable today, no player client)
 One shape is proven (the `enemies-range` disposition filter skipped three adjacent friendlies).
 ⚠️ **Run 32 gives you a second one nearly free**: `Unravel Everything`'s `enemies-range` fill correctly took
 **only the two hostile bench targets** while four friendly bench PCs sat inside the same 60 ft — worth
@@ -111,7 +121,7 @@ recording formally if you re-cast it. Otherwise pick from **Reroll Reaction** ag
 **Fate snare** stepped on by an ally vs. an enemy. **Not the aura shape** unless you have budget —
 `Mantle of the Aspirant` is the only `affects`-carrying aura and it sits on `edha-watch-rule`.
 
-### 4. **The `edha-dark-veil` rows — build the scene (still not started, SEVEN runs running)**
+### 5. **The `edha-dark-veil` rows — build the scene (still not started, SEVEN runs running)**
 Nothing on the Playtest Map can ever be unlit, so Green 2bS-11's veil half and the Stalker veil auto-toggle
 are structurally unreachable there. **A bench-CREATED scene with darkness — viewed, never activated — is the
 drivable shape**; delete it at the end. `Playtest Map (Copy)` has `globalLight.enabled === false` but it is

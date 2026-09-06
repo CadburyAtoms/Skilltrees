@@ -33,6 +33,89 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-06 DELTA — item 29: a `kind: line` zone catches every character in it, allies included (ruling R-5) (**ENGINE-ONLY, F5** — no pack rebuild; deployed by the PM after bench run 32).
+
+Ben answered **R-5** on 2026-09-05 (mobile board inbox): **"no it does not"** — Fault Line's line
+does NOT spare allies. The card says "each character" and the card is spec; the engine was the side
+that drifted. `edhaFaultLine` built its caught set with **`edhaEnemyTokensInLine`**, which dropped
+every same-disposition token, so an ally standing in the line was neither damaged nor asked for the
+save while the card promised both.
+
+**The fix is in the line-zone helper, not on the talent**, so every `kind: line` rule inherits it:
+`edhaEnemyTokensInLine` is gone and **`edhaTokensInLine(owner, cx, cy, px, py, lengthFt, widthFt)`**
+returns every LIVE token in the length×width line **except the caster** — allies, neutrals and foes
+alike, disposition ignored. The caster is excluded by token id **and** by actor identity, so the
+exclusion fails CLOSED when `edhaCasterToken` cannot resolve a token (id alone would have failed
+open). Both riders read that one `caught` binding, which is the half that matters: the damage with
+its Construct ×3 multiplier **and** the `edhaFoeSkillVsColor` save that applies `failStatus`
+(Prone). A widening that touched only the damage would have left allies hurt but never tested.
+
+**`edhaFoeSkillVsColor` needed no change and was not special-cased.** It is disposition-BLIND — it
+rolls whatever token list it is handed against the owner's colour DC, and `edhaRollOpposedSkill`
+reads only the target's own skill/attribute — so "foe" is its name, not its contract. The only
+"foe" that was load-bearing was the **`saveSkill` field's Foundry label** ("Foe save skill",
+"Engine-rolled per foe"), which now says *every character caught in the line — allies included,
+caster excluded*, because Ben edits these dials on the Events tab and the label was asserting the
+opposite of the ruling.
+
+**Consumers of the kind: exactly one.** `"kind": "line"` appears once in the whole data tree —
+Fault Line's `FaultLineZone000` in `data/authored/deity-destruction.json`. No other authored rule
+and no adversary ability uses it, so no other card's shape changes. (`data/authored/*` untouched.)
+
+**Proven:** `tests/line-zone-caught-set.test.js` pins six cases — the ally is caught, the neutral is
+caught, the caster never is, the exact caught set is ally+foe+neutral (downed / off-line /
+behind-the-caster tokens stay out), the caster exclusion fails closed with no resolvable token, and
+a source check that `edhaFaultLine` feeds the SAME `caught` binding to the damage map and to the
+save rider. Mutation-verified: re-introducing the enemies-only filter fails 3 of the 6 (651 passed,
+3 failed); restored, 654 passed, 0 failed. All gates PASS.
+
+**Deliberately NOT decided here: R-6** — who the dangerous-terrain **Region** dropped after the
+line catches (it ticked a bystander Stitchmother during marathon run 11) is the same shape on a
+different surface, is still an open ruling, and that code is byte-for-byte unchanged.
+
+**🤖 for the bench** (Destruction section): stage an ally and a foe inside the 60 ft × 5 ft line and
+a second ally outside it, cast Fault Line, and confirm the burst card counts **both** insiders, both
+lose HP, the Speed-vs-Red card lists a save line for the **ally** too (failure → Prone), and the
+caster appears on neither card. Live behaviour is not settled until that row passes.
+
+---
+
+## 2026-09-06 DELTA — item 27: retire the `GM summon relay` checklist row (ruling R-1) (**DOCS-ONLY + one ENGINE COMMENT** — no behaviour change).
+
+Ben answered R-1 on 2026-09-05 (mobile board inbox): "YES — keep the permission." Consequence,
+per the ruling's own text: the PLAYER role keeps `ACTOR_CREATE` at Ben's table, so `edhaSummon`'s
+`summon-actor` socket relay to the primary GM is unreachable there — `edhaSummon` always takes the
+direct `edhaSummonCreateGM` path — and the checklist's `GM summon relay` row could never pass as
+written.
+
+- **`EDHA_FOUNDRY_TEST_CHECKLIST.md`** — the row (Engine-wide section, formerly line ~427) is
+  retired in place with a ✅ note: the permission is kept by ruling, so the relay branch is dead
+  code at this table, and bench run 13's player-cast Forge Construct (2026-07-27p) is cited as the
+  evidence it never needed the relay (player-owned, moved by the player, a real Athletics test +
+  damage all via the direct create path). The bench-run-13 recap's "Still open" bulk note
+  (line ~1689) got the same one-line correction rather than a silent rewrite. **The relay code
+  itself is NOT deleted** — R-1 decided the permission, not the code's fate.
+- **`module-src/scripts/register-skills.js`** — two COMMENT-ONLY additions saying the relay branch
+  is reachable only in a world that revokes `ACTOR_CREATE`, so no future reader "cleans it up": one
+  at the summon tree-section header (~6320) and one at the `game.socket.emit("summon-actor", …)`
+  call site (~9311, now ~9315 after the header grew). **Stripped-source equality holds**
+  (`scripts/lib/strip-comments.js`'s `stripComments`, blank lines dropped): before/after sha256
+  `be46a528042186209cd59afc92fe920ad1c20994fb335e58ecb20a765430fa75` — identical. `node --check`
+  passes.
+- **`.claude/skills/leyline-tree-authoring/ENGINE_INDEX.md`** — the `SUMMONS` row gets the same
+  one-line note.
+- **`EDHA_RULINGS.md`** — R-1 moved to §K (Settled) in the shape item 30 used for R-7/R-19/R-34/
+  R-49: ANSWERED block kept verbatim, a `Closed by TODO_REPO_HYGIENE #27` consequence paragraph
+  added, and a one-line pointer left at the old §A spot.
+
+**Checklist marker counts** (`grep -E '^\s*- \[ \]' EDHA_FOUNDRY_TEST_CHECKLIST.md | grep -c '⚑'` /
+`… | grep -c '🤖'`): before **22 ⚑ / 30 🤖**, after **21 ⚑ / 30 🤖** — down by exactly one ⚑, no
+new row added, 🤖 untouched.
+
+`node scripts/build-dashboard.js` re-run and `EDHA_DASHBOARD.html` committed with this change.
+
+---
+
 ## 2026-09-06 — BENCH RUN 32 (weekend marathon run 9): **FIX PASS 4 IS VERIFIED GREEN ON ALL FOUR TALENTS, every one driven from `PlayerBench` — `Unravel Everything` now fills 2 Omens *and* detonates both in ONE cast on an empty ledger, `Spreading Omen` reads (1/2) then (2/2) with both entries surviving, and both reveals list the condition they just relayed. R-65 CLOSES on its last half (the ally-clicked burst rolled a real 2d8 from a non-GM client). The Starting-kit console API PASSES. `bench-setup-console.js` was RE-RUN and is idempotent.** **6 rows leave the checklist, 1 new engine/data defect found, 2 long-stalled July rows re-classified to their real blockers.** Open queue **33 🤖 → 28 🤖** (counted as `^- [ ] 🤖` rows — run 31's "30" used a different count; the −**5** net is 6 retired minus 1 new); **⚑ unchanged at 22 — no ⚑ row was touched.** **World restored to the start snapshot EXACTLY — field-level actor id-diff EMPTY across all 74 actors, zero token/region/drawing/template/wall/combat/scene deltas.** DOCS-ONLY — no engine, no data, no pack rebuild owed.
 
 ### Deploy verified from both sides before anything was driven
