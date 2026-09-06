@@ -11855,14 +11855,14 @@ async function edhaFoeSkillVsColor(owner, tokens, { skill = "spd", label = null,
 // (edhaSpeedVsRedProne retired 2bY — both callers now carry their save dials on their own rules.)
 
 /* --- Dangerous-terrain placement (circle OR line), GM-side with a player→GM relay ------------------ */
-async function edhaPlaceHazardRegionGM(scene, owner, shape, bakedFormula, type, color, label, extraFlags = null) {
+async function edhaPlaceHazardRegionGM(scene, owner, shape, bakedFormula, type, color, label, extraFlags = null, exemptActorUuid = "") {
   try {
     if (!scene || !owner || !shape) return null;
     const hex = EDHA_COLOR_HEX[color] || "#d23b2e";
     const [region] = await scene.createEmbeddedDocuments("Region", [{
       name: `${owner.name} — Dangerous Terrain`, color: hex,
       shapes: [{ ...shape, hole: false }],
-      behaviors: [{ type: "edha-content.hazard", name: "Dangerous Terrain", system: { damageFormula: bakedFormula || "1d6", damageType: type || "energy", sourceName: `Dangerous Terrain — ${owner.name}` } }],
+      behaviors: [{ type: "edha-content.hazard", name: "Dangerous Terrain", system: { damageFormula: bakedFormula || "1d6", damageType: type || "energy", sourceName: `Dangerous Terrain — ${owner.name}`, exemptActorUuid: exemptActorUuid || "" } }],
       flags: { "edha-content": { hazard: true, scope: "scene", terrain: { ownerUuid: owner.uuid, color }, ...(extraFlags || {}) } },
     }]);
     if (!region) return null;
@@ -11885,11 +11885,13 @@ async function edhaPlaceHazardRegionGM(scene, owner, shape, bakedFormula, type, 
 }
 // Drop a hazard: bake the formula against the OWNER, then write GM-side (direct or via socket for players).
 // `extraFlags` merges into the Region's edha-content flags (e.g. Pinpoint's followTokenUuid).
-async function edhaDropHazard(owner, scene, shape, formulaRaw, type, color, label, extraFlags = null) {
+// `exemptActorUuid` (R-6) rides the BEHAVIOR, not the flags — the tick reads it. Blank = nobody,
+// which is every caller but Fault Line, so no shipped hazard changes behaviour.
+async function edhaDropHazard(owner, scene, shape, formulaRaw, type, color, label, extraFlags = null, exemptActorUuid = "") {
   const baked = edhaFoldDieMath(Roll.replaceFormulaData(formulaRaw || EDHA_CHARGE_DMG, owner.getRollData(), { missing: "0" }));
-  if (game.user?.isGM) return edhaPlaceHazardRegionGM(scene, owner, shape, baked, type, color, label, extraFlags);
+  if (game.user?.isGM) return edhaPlaceHazardRegionGM(scene, owner, shape, baked, type, color, label, extraFlags, exemptActorUuid);
   if (!game.users?.activeGM) { ui.notifications?.warn("Edha: a GM must be online to place dangerous terrain."); return null; }
-  try { game.socket.emit("module.edha-content", { action: "place-hazard-region", payload: { sceneId: scene.id, ownerUuid: owner.uuid, shape, baked, type, color, label, extraFlags } }); } catch (e) {}
+  try { game.socket.emit("module.edha-content", { action: "place-hazard-region", payload: { sceneId: scene.id, ownerUuid: owner.uuid, shape, baked, type, color, label, extraFlags, exemptActorUuid } }); } catch (e) {}
   return null;
 }
 
@@ -12173,8 +12175,17 @@ async function edhaFaultLine(item, h) {
     const lenPx = Math.round((lengthFt / gd) * gs), wPx = Math.round((widthFt / gd) * gs);
     const ang = Math.atan2(pt.y - cy, pt.x - cx), angleDeg = ang * 180 / Math.PI;
     const ccx = cx + Math.cos(ang) * lenPx / 2, ccy = cy + Math.sin(ang) * lenPx / 2;   // line centre
+    /* R-6 (Ben 2026-09-06 (b)) — the Region spares the CASTER and nobody else, matching R-5 / item
+     * 29 on the line half so both halves of the talent follow one rule. Of the two exits Ben left
+     * open, this takes the SECOND (exempt the caster's token) and keeps the rectangle exactly the
+     * line that was just damaged: laying it a square out would make the terrain's footprint and the
+     * damaged line disagree — a creature at the far end of the line would stand on no terrain, or
+     * terrain would cover ground nothing was damaged on. The footprint on the map stays honest
+     * (that square IS dangerous, to everyone but the one who split it open); only the caster is
+     * immune, which is a property of the caster, not of the ground. Allies inside are still caught,
+     * and the ally-in-the-line burst + terrain double hit stays. */
     await edhaDropHazard(owner, scene, { type: "rectangle", x: ccx - lenPx / 2, y: ccy - wPx / 2, width: lenPx, height: wPx, rotation: angleDeg },
-      item.system?.damage?.formula || EDHA_CHARGE_DMG, dtype, h.color || "red", `🔥 ${item.name}`);
+      item.system?.damage?.formula || EDHA_CHARGE_DMG, dtype, h.color || "red", `🔥 ${item.name}`, null, owner.uuid);
     await ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), rolls: [dice],
       content: `<div class="edha-burst-card"><p>💥 <strong>${item.name}</strong> — ${caught.length} in the line take <strong>${amt}</strong> ${dtype} (Constructs ×${mult}). Structures take ×${mult} too (GM-side, no actor for a wall).</p></div>` });
     const st = String(h.failStatus || "prone").trim() || "prone";
@@ -12330,7 +12341,7 @@ Hooks.once("ready", () => {
         if (data?.action !== "place-hazard-region") return;
         const p = data.payload || {}; const scene = game.scenes?.get(p.sceneId);
         const owner = await edhaResolveActorRef(p.ownerUuid);
-        if (scene && owner) await edhaPlaceHazardRegionGM(scene, owner, p.shape, p.baked, p.type, p.color, p.label, p.extraFlags ?? null);
+        if (scene && owner) await edhaPlaceHazardRegionGM(scene, owner, p.shape, p.baked, p.type, p.color, p.label, p.extraFlags ?? null, p.exemptActorUuid ?? "");   // R-6 rides the relay too
       } catch (e) { console.error("Edha Content | place-hazard-region relay failed", e); }
     });
   } catch (e) {}
@@ -17841,6 +17852,11 @@ class EdhaHazardRegionBehavior extends foundry.data.regionBehaviors.RegionBehavi
       damageFormula: new FF.StringField({ required: true, initial: "1d6", label: "Damage formula (baked dice)" }),
       damageType: new FF.StringField({ required: true, initial: "energy", label: "Damage type" }),
       sourceName: new FF.StringField({ required: false, initial: "", label: "Source" }),
+      /* R-6 (Ben 2026-09-06 (b)) — one actor this terrain never burns. A GENERIC dial, blank by
+       * default, so no existing hazard changes behaviour; Fault Line is the only caller that fills
+       * it in (see edhaFaultLine). Allies and enemies inside are still caught — the ruling spares
+       * the CASTER and nobody else. */
+      exemptActorUuid: new FF.StringField({ required: false, blank: true, initial: "", label: "This actor is immune to it (blank = nobody)" }),
     };
   }
   async _handleRegionEvent(event) {
@@ -17848,6 +17864,7 @@ class EdhaHazardRegionBehavior extends foundry.data.regionBehaviors.RegionBehavi
       if (!edhaNoOtherActiveGM()) return;   // one applier — the PRIMITIVE half on purpose (no isGM: a GM-less table still springs it)
       const actor = event?.data?.token?.actor;
       if (!actor) return;
+      if (this.exemptActorUuid && actor.uuid === this.exemptActorUuid) return;   // R-6
       const roll = await (new Roll(this.damageFormula || "0")).evaluate();
       const amt = Math.max(0, Math.floor(roll.total));
       if (amt <= 0) return;
