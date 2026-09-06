@@ -44,48 +44,9 @@ setting is **world-scope**, so the effect is global. Confirm that is intended. *
 
 ## B. Scope & width — what a rule should reach
 
-**R-4. THE BIG ONE: out-of-combat scope.** Every run of both marathons saw some face of this. Today,
-out of combat: any focus **decrease** counts as a spend (including your own GM bookkeeping edits);
-every rule-owner on the scene watches everything; an adversary's own ability cost is taxed by enemy
-watches; per-round ledgers **never reset**; "Restrained until your next turn" never expires.
-*Recommended: gate scene/turn-keyed watches on an ACTIVE combat containing the owner, and tag engine
-bookkeeping writes so GM edits do not read as spends.* This one decision retires a family of
-symptoms rather than one row. *(3B-A.)*
-> **ANSWERED 2026-09-05 (Ben, via the mobile board inbox): "go with your recommendations"** — i.e.
-> **apply the recommended default above, both halves of it**: (a) gate scene/turn-keyed watches on
-> an ACTIVE combat containing the owner, and (b) tag engine bookkeeping writes so GM edits are not
-> read as spends. Filed as **TODO_REPO_HYGIENE #28** (lane B, Opus — this changes live engine
-> behaviour and must be bench-verified before it counts as settled).
-> **Scope note recorded by the PM at answer time:** this is the widest live-behaviour change in the
-> current backlog. It should land in the two halves above as separate PRs, each with its own
-> regression pinned, because (a) and (b) fail differently — (a) can wrongly silence a legitimate
-> out-of-combat rule, (b) can wrongly classify a real spend as bookkeeping. R-5..R-8 all overlap
-> this; **do not fold them in** — they are separate rulings still open, and R-8 in particular is
-> explicitly flagged as overlapping R-4.
-> **28a landed in PR #188 (2026-09-06)** — half (a) only: scene/turn-keyed watches now gate on
-> `edhaInActiveCombat(actor)` (an ACTIVE combat containing the owner), with `scope: "self"` watches
-> and the wall-clock prompt debounces deliberately ungated. **R-4 stays HERE, not in §K**: it settles
-> only when **28b** (tagging bookkeeping writes) has landed AND the bench has confirmed the live
-> behaviour — see the 🤖 rows under `# BENCH — Engine-wide & cross-tree`.
-> **28b landed in PR #189 (2026-09-06)** — half (b): the engine now stamps the **spend**
-> (`options.edha.spend`, plus a pre-use expectation for the system's own activation deduction) and
-> `edhaIsSpend` reads an unstamped decrease as a GM edit, at the focus-change watch and the Order
-> Investiture watch. **R-4 settles when the bench confirms both halves** — the three 28b rows sit
-> with 28a's under `## Out-of-combat scope — ruling R-4, both halves`; until then it stays HERE.
-> **Bench run 34 (2026-09-06) confirmed FIVE of the eight rows and R-4 STAYS HERE.** Passing in both
-> directions, each against a matched control: the per-round ledger (fires every time out of combat
-> and writes no `trigRound`; once per round in combat, re-opening on the round tick), the timed-status
-> expiry (`timedExpire` intent out of combat → stamped to a coordinate on the first turn change →
-> deleted on schedule; direct coordinate when a combat is already running), the out-of-combat focus
-> watch (silent out of combat, both watchers firing on the identical spend in combat), the two-combats
-> row (with the tracker showing combat B at round 9, combat A's round-3 ledger stayed spent and a
-> scene watcher in A did not fire on a real spend in B), and "a GM focus edit is NOT a spend" (typed
-> **and** committed through the real Token HUD focus bar, both silent, with a real spend firing in the
-> same round immediately afterwards so the silence cannot be the once-per-round budget). **Three rows
-> remain**, narrowed on the checklist: the negative control's window half (c), the `costs:`-rule half
-> of the real-spend row, and the Investiture/Edict face. Note for whoever closes it: the literal
-> "adversary's own bespoke ability cost" has **no subject in shipped data** — `data/adversaries.json`
-> contains zero `"costs"` keys — see **R-74**.
+**R-4. THE BIG ONE: out-of-combat scope.** → **SETTLED, moved to §K on 2026-09-06** (both halves shipped as
+TODO #28a / PR #188 and #28b / PR #189; all eight bench rows PASSED on runs 34 and 35). The full text,
+the answer, and the run-by-run evidence are in §K.
 
 **R-74. No adversary ability in the game pays an engine-driven cost — should one?** Measured at bench
 run 34 while trying to drive R-4's last 28b row: **`data/adversaries.json` contains zero `"costs"`
@@ -743,6 +704,59 @@ re-reading now that attribute contests demonstrably work (R-43).
 ---
 
 ## K. Settled
+
+**R-4. THE BIG ONE: out-of-combat scope.** Every run of both marathons saw some face of this. Today,
+out of combat: any focus **decrease** counts as a spend (including your own GM bookkeeping edits);
+every rule-owner on the scene watches everything; an adversary's own ability cost is taxed by enemy
+watches; per-round ledgers **never reset**; "Restrained until your next turn" never expires.
+*Recommended: gate scene/turn-keyed watches on an ACTIVE combat containing the owner, and tag engine
+bookkeeping writes so GM edits do not read as spends.* This one decision retires a family of
+symptoms rather than one row. *(3B-A.)*
+> **ANSWERED 2026-09-05 (Ben, via the mobile board inbox): "go with your recommendations"** — i.e.
+> **apply the recommended default above, both halves of it**: (a) gate scene/turn-keyed watches on
+> an ACTIVE combat containing the owner, and (b) tag engine bookkeeping writes so GM edits are not
+> read as spends. Filed as **TODO_REPO_HYGIENE #28** (lane B, Opus — this changes live engine
+> behaviour and must be bench-verified before it counts as settled).
+> **Scope note recorded by the PM at answer time:** this is the widest live-behaviour change in the
+> current backlog. It should land in the two halves above as separate PRs, each with its own
+> regression pinned, because (a) and (b) fail differently — (a) can wrongly silence a legitimate
+> out-of-combat rule, (b) can wrongly classify a real spend as bookkeeping. R-5..R-8 all overlap
+> this; **do not fold them in** — they are separate rulings still open, and R-8 in particular is
+> explicitly flagged as overlapping R-4.
+> **28a landed in PR #188 (2026-09-06)** — half (a) only: scene/turn-keyed watches now gate on
+> `edhaInActiveCombat(actor)` (an ACTIVE combat containing the owner), with `scope: "self"` watches
+> and the wall-clock prompt debounces deliberately ungated. **R-4 stays HERE, not in §K**: it settles
+> only when **28b** (tagging bookkeeping writes) has landed AND the bench has confirmed the live
+> behaviour — see the 🤖 rows under `# BENCH — Engine-wide & cross-tree`.
+> **28b landed in PR #189 (2026-09-06)** — half (b): the engine now stamps the **spend**
+> (`options.edha.spend`, plus a pre-use expectation for the system's own activation deduction) and
+> `edhaIsSpend` reads an unstamped decrease as a GM edit, at the focus-change watch and the Order
+> Investiture watch. **R-4 settles when the bench confirms both halves** — the three 28b rows sit
+> with 28a's under `## Out-of-combat scope — ruling R-4, both halves`; until then it stays HERE.
+> **Bench run 34 (2026-09-06) confirmed FIVE of the eight rows and R-4 STAYS HERE.** Passing in both
+> directions, each against a matched control: the per-round ledger (fires every time out of combat
+> and writes no `trigRound`; once per round in combat, re-opening on the round tick), the timed-status
+> expiry (`timedExpire` intent out of combat → stamped to a coordinate on the first turn change →
+> deleted on schedule; direct coordinate when a combat is already running), the out-of-combat focus
+> watch (silent out of combat, both watchers firing on the identical spend in combat), the two-combats
+> row (with the tracker showing combat B at round 9, combat A's round-3 ledger stayed spent and a
+> scene watcher in A did not fire on a real spend in B), and "a GM focus edit is NOT a spend" (typed
+> **and** committed through the real Token HUD focus bar, both silent, with a real spend firing in the
+> same round immediately afterwards so the silence cannot be the once-per-round budget). **Three rows
+> remain**, narrowed on the checklist: the negative control's window half (c), the `costs:`-rule half
+> of the real-spend row, and the Investiture/Edict face. Note for whoever closes it: the literal
+> "adversary's own bespoke ability cost" has **no subject in shipped data** — `data/adversaries.json`
+> contains zero `"costs"` keys — see **R-74**.
+> **Bench run 35 (2026-09-06) confirmed the last THREE rows, so all eight faces of R-4 now pass:** the
+> negative control's window half (c) — a window armed out of combat by the real Ordered Advance was still
+> open when the next move consumed it; the `costs:`-rule half — a `costs: "foc:2, inv:1"` rule spent
+> focus 4 → 1 (cost + Whispered Doubt's extra) and Investiture 3 → 2 with the watch card, while that
+> actor's GM hand-edit in the same round was silent; and the Investiture/Edict face — two hand-edits
+> silent, two wired spends prompted.
+> **Closed by TODO_REPO_HYGIENE #28 (PRs #188 + #189), verified by bench runs 34 and 35. Moved here by the
+> PM on 2026-09-06.** R-5..R-8 remain their own rulings (R-5 settled by #29; R-6 sharpened; R-7 settled;
+> R-8 open), and the two adjacent questions the work raised are **R-72** (involuntary drain) and
+> **R-74** (no adversary pays an engine-driven cost).
 
 **R-1. Should the PLAYER role keep `ACTOR_CREATE`?**
 > **ANSWERED 2026-09-05 (Ben, via the mobile board inbox): YES — keep the permission.**
