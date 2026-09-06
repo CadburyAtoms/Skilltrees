@@ -33,6 +33,42 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-06 DELTA — item 27: retire the `GM summon relay` checklist row (ruling R-1) (**DOCS-ONLY + one ENGINE COMMENT** — no behaviour change).
+
+Ben answered R-1 on 2026-09-05 (mobile board inbox): "YES — keep the permission." Consequence,
+per the ruling's own text: the PLAYER role keeps `ACTOR_CREATE` at Ben's table, so `edhaSummon`'s
+`summon-actor` socket relay to the primary GM is unreachable there — `edhaSummon` always takes the
+direct `edhaSummonCreateGM` path — and the checklist's `GM summon relay` row could never pass as
+written.
+
+- **`EDHA_FOUNDRY_TEST_CHECKLIST.md`** — the row (Engine-wide section, formerly line ~427) is
+  retired in place with a ✅ note: the permission is kept by ruling, so the relay branch is dead
+  code at this table, and bench run 13's player-cast Forge Construct (2026-07-27p) is cited as the
+  evidence it never needed the relay (player-owned, moved by the player, a real Athletics test +
+  damage all via the direct create path). The bench-run-13 recap's "Still open" bulk note
+  (line ~1689) got the same one-line correction rather than a silent rewrite. **The relay code
+  itself is NOT deleted** — R-1 decided the permission, not the code's fate.
+- **`module-src/scripts/register-skills.js`** — two COMMENT-ONLY additions saying the relay branch
+  is reachable only in a world that revokes `ACTOR_CREATE`, so no future reader "cleans it up": one
+  at the summon tree-section header (~6320) and one at the `game.socket.emit("summon-actor", …)`
+  call site (~9311, now ~9315 after the header grew). **Stripped-source equality holds**
+  (`scripts/lib/strip-comments.js`'s `stripComments`, blank lines dropped): before/after sha256
+  `be46a528042186209cd59afc92fe920ad1c20994fb335e58ecb20a765430fa75` — identical. `node --check`
+  passes.
+- **`.claude/skills/leyline-tree-authoring/ENGINE_INDEX.md`** — the `SUMMONS` row gets the same
+  one-line note.
+- **`EDHA_RULINGS.md`** — R-1 moved to §K (Settled) in the shape item 30 used for R-7/R-19/R-34/
+  R-49: ANSWERED block kept verbatim, a `Closed by TODO_REPO_HYGIENE #27` consequence paragraph
+  added, and a one-line pointer left at the old §A spot.
+
+**Checklist marker counts** (`grep -E '^\s*- \[ \]' EDHA_FOUNDRY_TEST_CHECKLIST.md | grep -c '⚑'` /
+`… | grep -c '🤖'`): before **22 ⚑ / 30 🤖**, after **21 ⚑ / 30 🤖** — down by exactly one ⚑, no
+new row added, 🤖 untouched.
+
+`node scripts/build-dashboard.js` re-run and `EDHA_DASHBOARD.html` committed with this change.
+
+---
+
 ## 2026-09-05 — BENCH RUN 31 (weekend marathon run 8): **fix pass 3 is VERIFIED GREEN — the Walking Ruin trail now drops for a player-driven move (0 → 3 patches on the identical staging), with the activeGM control still at 3 and no double-drop across two GM clients. Job 6b CLOSES on its last two shapes, the stale-token sight row closes, R-63 gets its first proven shape — and ONE NEW ENGINE DEFECT: `Unravel Everything` never detonates the Omens it places in the same activation.** **3 rows leave the checklist, 1 new row added, 1 half closed on a row that stays open, 1 engine defect found → `test-pass-fixes`.** Open queue **32 🤖 → 30 🤖**; **⚑ unchanged at 22 — no ⚑ row was touched.** **World restored to the start snapshot EXACTLY — field-level actor id-diff EMPTY across all 74 actors, and the ONLY scene deviation is the one `sight.range` write that IS the run's product.** DOCS-ONLY — no engine, no data, no pack rebuild owed.
 
 ### Deploy verified from both sides before anything was driven

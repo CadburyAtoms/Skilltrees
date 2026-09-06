@@ -716,7 +716,7 @@ row to re-verify a player client renders the map at the next bench run.
 
 ---
 
-## 27. [ ] Retire the `GM summon relay` checklist row (ruling R-1)
+## 27. [x] Retire the `GM summon relay` checklist row (ruling R-1) (2026-09-06, PR #TBD)
 
 **Why:** Ben answered **R-1 on 2026-09-05: yes, the PLAYER role keeps `ACTOR_CREATE`.** By that
 ruling's own terms the `summon-actor` **relay branch is dead code at Ben's table** — run 13's
