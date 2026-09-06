@@ -227,6 +227,7 @@ exactly one slot. Does losing cross-rider stacking matter at the table? *(Checkl
 > legacy single object on read. ENGINE-ONLY, F5 → **item 49**; headless pin: Coercive Pressure +
 > Probability Net on one target both apply and both clear independently; 🤖 re-test = checklist
 > 2bI-4.
+> **SHIPPED** in PR #221 (ENGINE-ONLY, bench-pending) — `tests/next-test-mod-list.test.js`
 
 *(R-16 — Wary reducing Whispered Doubt's extra loss — ANSWERED 2026-09-06, moved to §K.)*
 
@@ -1212,6 +1213,8 @@ same one-slot overwrite characterised in R-15). *(Checklist 2bJ-3, retired run 2
 > **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) KEEP, settled by Ben's R-20 answer
 > (same question).** Its stale-flag side effect is absorbed by R-15 (b)'s fix, shipping in **item
 > 49**: the `nextTestMod` LIST prunes expired entries.
+> **SHIPPED** in PR #221 (ENGINE-ONLY, bench-pending) — `tests/next-test-mod-list.test.js`; the
+> stale-flag half is 🤖 checklist row **2bI-4c**.
 
 ---
 

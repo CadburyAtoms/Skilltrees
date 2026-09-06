@@ -918,6 +918,37 @@ false while a genuine crossing ray reads true). Evidence in the 07-26m delta.
       that does not close on any ally is neither refused nor announced. Watch a multi-waypoint drag
       in particular: that is the case the throttle exists for.
 
+### Item 49 re-tests — the next-test modifier is a LIST (2026-09-06 — ENGINE-ONLY, F5; no rebuild, no ⟳ Sync)
+
+Ben's R-15(b): `flags.edha-content.nextTestMod` is an array now, so riders stack instead of
+overwriting. Console probe for all three rows (bench GM):
+`game.actors.getName("<victim>").getFlag("edha-content","nextTestMod")` — it must be an **array**.
+
+- [ ] 🤖 **2bI-4 — Coercive Pressure and Probability Net STACK on one victim (R-15(b), reopened).**
+      Put a **Wrenchmaster** on the map beside **Bench — Black**, with one enemy dummy inside Black
+      Attunement Range. (1) Make the dummy LOSE a focus → Coercive Pressure arms its Cognitive
+      disadvantage. (2) Wrenchmaster uses **Probability Net** on the SAME dummy. Probe the flag:
+      **two entries**, `Coercive Pressure` and `Probability Net` (before this change the second
+      grant erased the first, which is the whole defect). (3) The dummy makes a **Cognitive** test
+      (Deception / Insight). Expect **`2d20kl`** AND a **`-1d6[Probability Net]`** term on the same
+      roll, plus **two** consume cards — "🔮 Coercive Pressure — disadvantage on this test" and
+      "🔮 Probability Net — -1d6 on this test". Probe again: the flag is gone/empty.
+- [ ] 🤖 **2bI-4b — NEGATIVE CONTROL: a non-matching test spends ONLY the rider that applied.**
+      Same setup, both riders armed, but the dummy makes a **Physical** test first (Athletics /
+      Strength). Expect: **no disadvantage** (`1d20` — Coercive Pressure's Cognitive gate still
+      filters per entry) but the **`-1d6[Probability Net]`** term IS there, with only the
+      Probability Net card. Probe the flag: **exactly one entry left, `Coercive Pressure`** — the
+      neighbour must be untouched. Then the Cognitive test spends it and the flag clears.
+- [ ] 🤖 **2bI-4c — the expired "this round" rider is REMOVED from the flag, not left behind
+      (R-20 + R-57).** Run on **Bench — Blue**. Use **Pattern Recognition** on a victim, then
+      advance the combat one round WITHOUT the victim testing. The behaviour half is R-57's
+      verified result and stands: the victim's next test is a plain `1d20`, no card. **What is new
+      is the flag** — probe it after that roll: the Pattern Recognition entry is **gone**, where it
+      used to sit on the actor for ever. **POS (the other half):** arm an UNSTAMPED rider too (any
+      `edha-next-test-mod` without "this round" — e.g. Probability Net from a Wrenchmaster) and
+      confirm it **survives** the round change and still applies. Pruning must not eat a rider that
+      is simply waiting.
+
 ---
 
 # BENCH — Red (leyline)

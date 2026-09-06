@@ -1010,14 +1010,15 @@ function edhaWrapRollDamage(originalCall, options = {}) {
    * implicitly `test`, so this is inert for all of them. Consumed here rather than in a post-roll
    * hook because the formula has to be in the roll before it is evaluated. */
   try {
-    const dmgMod = edhaNextTestDamageMod(this.actor, this);
-    if (dmgMod?.formula) {
+    const dmgMods = edhaNextTestDamageMods(this.actor, this).filter((m) => m?.formula);
+    if (dmgMods.length) {
       const base = options.overrideFormula ?? this.system?.damage?.formula;
       // The claim is taken only where the bonus is actually APPLIED (07-27j) — claiming on a roll
       // with no damage formula would silently eat the d20 half's turn at it.
-      if (base && edhaNextModClaimOk(this.actor, dmgMod, "damage")) {
-        options = { ...options, overrideFormula: `${base} + ${dmgMod.formula}` };
-        void edhaNextTestConsumeDamage(this.actor, dmgMod);
+      const taken = base ? dmgMods.filter((m) => edhaNextModClaimOk(this.actor, m, "damage")) : [];
+      if (taken.length) {   // item 49: several riders SUM onto the one damage roll
+        options = { ...options, overrideFormula: taken.reduce((f, m) => `${f} + ${m.formula}`, base) };
+        void edhaNextTestConsumeDamage(this.actor, taken);
       }
     }
   } catch (e) { /* never break a damage roll on a rider failure */ }
@@ -4451,8 +4452,8 @@ async function edhaRitualHpCost(item, cfg) {
  * `edha-next-test-mod` {target: self, advantage, skill: black} on the `edha-ritual-paid` event —
  * same advantage write, same consume-and-announce, skill-gated to Black exactly as before. A
  * bloodPriceAdv flag left on a live actor by a pre-deploy build is inert from now on.
- * ⚠ ONE narrowing, the standing 2bI-4 caveat: nextTestMod is a single flag slot, so a second
- * next-test rider OVERWRITES a banked Blood Price advantage instead of stacking beside it. */
+ * ✅ The 2bI-4 narrowing is GONE (item 49, Ben's R-15(b)): nextTestMod is a LIST, so a second
+ * next-test rider stacks beside a banked Blood Price advantage instead of overwriting it. */
 
 /* ============================================================================================
  * BLACK / SUBJUGATION tree engine (2026-06-13c) — focus economy + control flags.
@@ -4578,10 +4579,10 @@ async function edhaRunFocusWatch(target, oldFoc, newFoc) {
  * consume-and-announce — differing only in that it filtered on the test's ATTRIBUTE. nextTestMod
  * has carried an `attr` gate since the Red/Blue Attunement keys (07-03c), so the enforcement is
  * re-provided in full by `edha-next-test-mod` {target: victim, mode: disadvantage, attr: "int, wil"}
- * and nothing is lost. ⚑ ONE narrowing, benched as 2bI-4: nextTestMod is a single flag slot, so a
- * creature already carrying another next-test rider has it OVERWRITTEN rather than stacking a
- * second, independent debuff. Any cogDisadv flag left on a live actor by the pre-deploy build is
- * inert from now on — nothing reads it. */
+ * and nothing is lost. ✅ The narrowing benched as 2bI-4 is GONE (item 49, Ben's R-15(b)):
+ * nextTestMod is a LIST, so a creature already carrying another next-test rider now keeps BOTH as
+ * independent, independently-consumed entries. Any cogDisadv flag left on a live actor by the
+ * pre-deploy build is inert from now on — nothing reads it. */
 // "Advantage on your next <skill> test" flag (Predatory Insight → Deception). Consumed on the matching
 // test. Flag shape: "dec" (legacy) OR { skill, round, source } — a round-stamped grant silently expires
 // once the combat round moves on (the talent text says "this round"; the old flag lived forever).
@@ -6102,9 +6103,11 @@ Hooks.on("cosmere-rpg.skillRoll",  edhaAccordWatchSkill);
  * where they hold their target), so there is NO GM-gating and NO pack rebuild. Each talent's cost is
  * consumed by its own activation (Foundry), so the cards only APPLY the effect — "success" is owner-judged
  * (the standing ruling: Foundry tests have no DC). Generic reusable primitive:
- *   flags.edha-content.nextTestMod = { mode:"advantage"|"disadvantage", count, skill:<id>|null,
- *   attr:<csv>|null, targetUuid:<uuid>|null, source } — a counted, optional-skill mirror of the Black
- * advTest / cogDisadv flags; consumed one test at a time. targetUuid (2026-07-04, the Power backlog
+ *   flags.edha-content.nextTestMod = [ { mode:"advantage"|"disadvantage", count, skill:<id>|null,
+ *   attr:<csv>|null, targetUuid:<uuid>|null, round:<n>|null, source } ] — a LIST since item 49
+ * (Ben's R-15(b)); it was one object until then, which is why a second rider overwrote the first.
+ * A counted, optional-skill mirror of the Black advTest / cogDisadv flags; consumed one test at a
+ * time, per entry. targetUuid (2026-07-04, the Power backlog
  * item) binds the mod to tests whose synced target IS that creature ("advantage vs THAT target") —
  * generalizable to any future target-bound rider.
  *   - Subtle Suggestion   → Disorient the influenced target (reuse the Accord disorient card).
@@ -6142,7 +6145,7 @@ Hooks.on("cosmere-rpg.skillRoll",  edhaAccordWatchSkill);
  * would otherwise leave a claim standing; expiring it costs at most one re-applied bonus, where the
  * opposite failure is an unbounded one. */
 const EDHA_NEXTMOD_CLAIM_TTL = 4000;
-const _edhaNextModClaim = new Map();   // actorId → { gid, path, ts }
+const _edhaNextModClaim = new Map();   // `${actorId}|${gid}` → { gid, path, ts }
 function edhaNextModGid(mod) {
   return String(mod?.gid || `${mod?.source ?? ""}|${mod?.formula ?? ""}|${mod?.mode ?? ""}|${mod?.count ?? 1}`);
 }
@@ -6153,19 +6156,105 @@ function edhaNextModPathOk(claim, mod, path, now = Date.now()) {
   if (claim.gid !== edhaNextModGid(mod)) return true;                    // a DIFFERENT banked use
   return claim.path === path;                                            // the other path already took it
 }
+/* Item 49: the claim map is keyed per (actor, GRANT), not per actor. With one slot an actor could
+ * only ever hold one banked use, so `actorId` WAS the grant; with a list two `either` riders can sit
+ * on the same creature and a per-actor key would let the first one's claim veto the second's. */
+function edhaNextModClaimKey(actor, mod) { return `${actor?.id ?? ""}|${edhaNextModGid(mod)}`; }
+function edhaNextModClaimSweep(now = Date.now()) {   // bounded: TTL'd claims are dead, drop them
+  for (const [k, c] of _edhaNextModClaim) if ((now - (Number(c?.ts) || 0)) > EDHA_NEXTMOD_CLAIM_TTL) _edhaNextModClaim.delete(k);
+}
 function edhaNextModClaimOk(actor, mod, path) {
   if (!actor) return true;
-  if (!edhaNextModPathOk(_edhaNextModClaim.get(actor.id), mod, path)) return false;
-  if (String(mod?.appliesTo || "test") === "either") _edhaNextModClaim.set(actor.id, { gid: edhaNextModGid(mod), path, ts: Date.now() });
+  const key = edhaNextModClaimKey(actor, mod);
+  if (!edhaNextModPathOk(_edhaNextModClaim.get(key), mod, path)) return false;
+  if (String(mod?.appliesTo || "test") === "either") _edhaNextModClaim.set(key, { gid: edhaNextModGid(mod), path, ts: Date.now() });
   return true;
+}
+
+/* ---- THE NEXT-TEST MOD LIST (item 49 — Ben's R-15(b): "that needs to be a list not one slot") ---
+ *
+ * `flags.edha-content.nextTestMod` is an ARRAY of mod entries. It was ONE object, so the second
+ * writer silently overwrote the first: Coercive Pressure's Cognitive disadvantage and Probability
+ * Net's −1d6 on the same victim could not coexist, and neither could the Command die and anything
+ * else. Every writer now APPENDS (edhaSetNextTestMod), every reader applies EVERY live entry, and a
+ * consumer decrements/removes only its own.
+ *
+ * An entry keeps the shape the pipeline has always used, which already carries all four parts the
+ * ruling names: `source` (who granted it), the KIND (`mode` advantage/disadvantage and/or `formula`),
+ * the VALUE (`formula` / `count`), and the EXPIRY (`round`, stamped by `expireEndOfRound`). Renaming
+ * those fields would break the authored `edha-next-test-mod` schema, its pinned tests, and every mod
+ * already stored on a live actor, for no behavioural gain — the SLOT is what became a list.
+ *
+ * Folding (what "all entries apply" means):
+ *   · (dis)advantage — boolean OR per direction. Any live matching entry granting advantage sets it;
+ *     any granting disadvantage sets it. BOTH directions present = the roll is left exactly as the
+ *     player configured it (the system's AdvantageMode is one scalar and the table rule is that they
+ *     cancel); we write nothing rather than picking a winner or stomping a manual choice.
+ *   · `formula` — SUMMED. Every matching entry's term is concatenated onto the roll, each flavored
+ *     with its own source, so the breakdown still names who gave what.
+ *   · `count` — per entry. Each matching entry spends one of its own uses on the test.
+ * Gating is unchanged and stays PER ENTRY: `edhaNextTestMatches` filters skill / attr / round /
+ * targetUuid / quarryUuid / appliesTo for each one independently.
+ *
+ * EXPIRY is per entry and is PRUNED ON READ (R-20 + R-57). A round-stamped entry whose round has
+ * moved on can never match again, so it is dropped from the flag rather than left to accumulate —
+ * that stale-flag side effect is exactly what R-57 flagged and what the single slot could only clear
+ * by being overwritten. An UNSTAMPED entry is not expiry-bound: it waits until it is consumed.
+ *
+ * LEGACY MIGRATION: a stored single object reads as a one-entry list (`edhaNextModList`), so no
+ * actor carrying the old shape breaks, and the first write-back normalises it to an array.
+ */
+const EDHA_NEXTMOD_CAP = 12;   // a bound, not a design limit — an unbounded flag is the R-57 failure again
+/* PURE (pinned in tests/): read whatever is stored as a LIST. Array → itself; a legacy single object
+ * → one entry; anything else (null, a wiped flag, garbage) → empty. */
+function edhaNextModList(value) {
+  if (Array.isArray(value)) return value.filter((m) => m && typeof m === "object");
+  if (value && typeof value === "object") return [value];
+  return [];
+}
+/* PURE: is this entry DEAD — can it never apply again? Today only the round stamp expires, and the
+ * predicate is deliberately the SAME comparison `edhaNextTestMatches` makes, so pruning can never
+ * drop an entry that would still have matched. Out of combat (round null) a stamp stays inert. */
+function edhaNextModExpired(mod, round) {
+  return !!(mod && mod.round != null && round != null && Number(round) !== Number(mod.round));
+}
+/* PURE: split a list into what is still live and how many entries died. */
+function edhaNextModPrune(list, round) {
+  const live = [];
+  let pruned = 0;
+  for (const m of edhaNextModList(list)) { if (edhaNextModExpired(m, round)) pruned++; else live.push(m); }
+  return { live, pruned };
+}
+// Write the list back (null when empty — every reader treats a missing flag and [] alike). Routed
+// through edhaSetEdhaFlag so a cross-actor clear RELAYS; the old consumers called unsetFlag on the
+// bearer directly, which silently did nothing for a victim the roller does not own.
+async function edhaWriteNextMods(actor, list) {
+  return edhaSetEdhaFlag(actor, "nextTestMod", (list && list.length) ? list : null);
+}
+/* THE reader. Returns the live entries, pruning expired ones off the document as a side effect
+ * (R-57) and normalising a legacy single object to an array on first read. `round` is a parameter so
+ * the fold stays testable with no combat object. */
+function edhaNextModsOf(actor, round = undefined) {
+  const stored = actor?.getFlag?.("edha-content", "nextTestMod");
+  const raw = edhaNextModList(stored);
+  if (!raw.length) return [];
+  if (round === undefined) round = edhaCombatRoundOf(actor);
+  const { live, pruned } = edhaNextModPrune(raw, round);
+  if (pruned || !Array.isArray(stored)) void edhaWriteNextMods(actor, live);   // prune-on-read + legacy migration
+  return live;
 }
 async function edhaSetNextTestMod(target, mod) {
   try {
     // Stamp a fresh identity so a NEW grant is never mistaken for the one a stale claim holds.
     // Done before the socket emit so the owner and the relayed write agree on the same gid.
     try { if (mod && !mod.gid) mod.gid = foundry.utils.randomID(); } catch (e) { /* non-fatal */ }
-    try { _edhaNextModClaim.delete(target?.id); } catch (e) { /* non-fatal */ }
-    return await edhaSetEdhaFlag(target, "nextTestMod", mod);   // Job 6a: routed through the canonical helper
+    try { edhaNextModClaimSweep(); } catch (e) { /* non-fatal */ }
+    // APPEND (item 49). Read-modify-write on the bearer's document: flags are replicated to every
+    // client, so this is correct even when the write itself relays to the GM. Expired entries are
+    // dropped in the same pass, so a grant also tidies.
+    const cur = edhaNextModPrune(target?.getFlag?.("edha-content", "nextTestMod"), edhaCombatRoundOf(target)).live;
+    const { list } = edhaListPush(cur, mod, { cap: EDHA_NEXTMOD_CAP, evict: "oldest" });
+    return await edhaSetEdhaFlag(target, "nextTestMod", list);   // Job 6a: routed through the canonical helper
   } catch (e) { console.error("Edha Content | set next-test mod failed", e); return false; }
 }
 function edhaNextTestMatches(mod, roll, actor = null, round = undefined, wantDamage = false) {
@@ -6213,55 +6302,89 @@ function edhaNextTestMatches(mod, roll, actor = null, round = undefined, wantDam
  * d20 pair so the shapes stay comparable: match, then consume. `roll` is faked as an object carrying
  * no skill id, which is correct — a damage roll has no skill, so a `skill`-gated mod must not match it
  * (and `edhaNextTestMatches` rejects a missing id, as its pinned test asserts). */
-function edhaNextTestDamageMod(actor, item) {
-  const mod = actor?.getFlag?.("edha-content", "nextTestMod");
-  if (!mod) return null;
-  return edhaNextTestMatches(mod, { data: {} }, actor, undefined, true) ? mod : null;
+function edhaNextTestDamageMods(actor, item) {
+  return edhaNextModsOf(actor).filter((m) => edhaNextTestMatches(m, { data: {} }, actor, undefined, true));
 }
-async function edhaNextTestConsumeDamage(actor, mod) {
+/* PURE (pinned in tests/): spend one use of each mod in `taken`, leaving every other entry alone.
+ * Returns the list to store — this is what "a consumer clears ONLY its own entry" means. */
+function edhaNextModSpend(list, taken) {
+  const spend = new Set((taken || []).map((m) => edhaNextModGid(m)));
+  const next = [];
+  for (const m of edhaNextModList(list)) {
+    if (!spend.has(edhaNextModGid(m))) { next.push(m); continue; }
+    const left = Math.max(0, (Number(m.count) || 1) - 1);
+    if (left > 0) next.push({ ...m, count: left });
+  }
+  return next;
+}
+async function edhaNextTestConsumeDamage(actor, mods) {
   try {
-    const left = Math.max(0, (Number(mod.count) || 1) - 1);
-    if (left <= 0) await actor.unsetFlag("edha-content", "nextTestMod");
-    else await actor.setFlag("edha-content", "nextTestMod", { ...mod, count: left });
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }),
-      content: `<p>🔮 <strong>${mod.source || "Calculation"}</strong> — <strong>${mod.formula}</strong> added to this damage roll${left > 0 ? ` (${left} more)` : ""}.</p>` });
+    const taken = Array.isArray(mods) ? mods : [mods];
+    await edhaWriteNextMods(actor, edhaNextModSpend(edhaNextModsOf(actor), taken));
+    for (const mod of taken) {
+      const left = Math.max(0, (Number(mod.count) || 1) - 1);
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }),
+        content: `<p>🔮 <strong>${mod.source || "Calculation"}</strong> — <strong>${mod.formula}</strong> added to this damage roll${left > 0 ? ` (${left} more)` : ""}.</p>` });
+    }
   } catch (e) { console.error("Edha Content | next-test damage consume failed", e); }
+}
+/* PURE (pinned in tests/): fold a list of MATCHING entries into the one advantageMode the system can
+ * hold. Boolean-OR per direction; both directions present cancel to null, which the caller reads as
+ * "write nothing" — a mixed pair must not stomp whatever the player set on the dialog themselves. */
+function edhaNextModFoldMode(mods) {
+  let adv = false, dis = false;
+  for (const m of mods || []) {
+    if (m?.mode === "advantage") adv = true;
+    else if (m?.mode === "disadvantage") dis = true;
+  }
+  if (adv && dis) return null;
+  return adv ? "advantage" : (dis ? "disadvantage" : null);
 }
 function edhaNextTestPreRoll(roll, source, config) {
   try {
     const actor = edhaD20RollActor(config);
-    const mod = actor?.getFlag?.("edha-content", "nextTestMod");
-    if (!edhaNextTestMatches(mod, roll, actor)) return;
-    if (!edhaNextModClaimOk(actor, mod, "test")) return;   // the damage half already took this use (07-27j)
-    if (mod.mode) {   // gated (07-16b): a formula-only mod (Probability Net) must not force disadvantage
-      const m = mod.mode === "advantage" ? "advantage" : "disadvantage";
+    // EVERY live entry that matches this roll AND is not already claimed by the damage half (07-27j).
+    // The claim is taken here, so it is filtered rather than checked once for a single slot.
+    const mods = edhaNextModsOf(actor)
+      .filter((m) => edhaNextTestMatches(m, roll, actor))
+      .filter((m) => edhaNextModClaimOk(actor, m, "test"));
+    if (!mods.length) return;
+    const m = edhaNextModFoldMode(mods);   // gated (07-16b): a formula-only mod (Probability Net) must not force disadvantage
+    if (m) {
       roll.options.advantageMode = m; roll.configureModifiers?.();
       const orig = roll.configureDialog?.bind(roll);
       if (orig) roll.configureDialog = async (data) => { try { data ??= {}; data.skillTest ??= {}; data.skillTest.advantageMode = m; } catch (e) {} return orig(data); };
     }
-    // Dice/flat modifier on the next test (Probability Net's −1d6) — same term-concat mechanism as
-    // the test riders, flavor-labeled so the breakdown names the source.
-    if (mod.formula && !roll.options._edhaNextTestFormula) {
-      const resolved = edhaFoldDieMath(Roll.replaceFormulaData(String(mod.formula), actor?.getRollData?.() ?? {}, { missing: "0" })).trim();
-      const label = mod.source || "Next-test mod";
-      // A leading minus becomes an explicit subtraction — "0 + -1d6" is parser-hostile.
-      const expr = resolved.startsWith("-") ? `0 - ${resolved.slice(1)}[${label}]` : `0 + ${resolved}[${label}]`;
-      roll.terms = roll.terms.concat(new Roll(expr).terms.slice(1));
-      roll.resetFormula();
-      roll.options._edhaNextTestFormula = true;
+    // Dice/flat modifiers on the next test (Probability Net's −1d6) — same term-concat mechanism as
+    // the test riders, flavor-labeled so the breakdown names each source. Item 49: they SUM, so every
+    // matching entry appends its own term; the guard flag still stops a re-entrant hook doubling them.
+    if (!roll.options._edhaNextTestFormula) {
+      let added = false;
+      for (const mod of mods) {
+        if (!mod.formula) continue;
+        const resolved = edhaFoldDieMath(Roll.replaceFormulaData(String(mod.formula), actor?.getRollData?.() ?? {}, { missing: "0" })).trim();
+        const label = mod.source || "Next-test mod";
+        // A leading minus becomes an explicit subtraction — "0 + -1d6" is parser-hostile.
+        const expr = resolved.startsWith("-") ? `0 - ${resolved.slice(1)}[${label}]` : `0 + ${resolved}[${label}]`;
+        roll.terms = roll.terms.concat(new Roll(expr).terms.slice(1));
+        added = true;
+      }
+      if (added) { roll.resetFormula(); roll.options._edhaNextTestFormula = true; }
     }
   } catch (e) { console.error("Edha Content | next-test mod pre-roll failed", e); }
 }
 function edhaNextTestConsume(roll, source, config) {
   try {
     const actor = edhaD20RollActor(config);
-    const mod = actor?.getFlag?.("edha-content", "nextTestMod");
-    if (!edhaNextTestMatches(mod, roll, actor)) return;
-    const left = Math.max(0, (Number(mod.count) || 1) - 1);
-    if (left <= 0) void actor.unsetFlag("edha-content", "nextTestMod");
-    else void actor.setFlag("edha-content", "nextTestMod", { ...mod, count: left });
-    const word = mod.mode ? (mod.mode === "advantage" ? "advantage" : "disadvantage") : (mod.formula || "a modifier");
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🔮 <strong>${mod.source || "Calculation"}</strong> — ${word} on this test${left > 0 ? ` (${left} more)` : ""}.</p>` });
+    const list = edhaNextModsOf(actor);
+    const taken = list.filter((m) => edhaNextTestMatches(m, roll, actor));
+    if (!taken.length) return;
+    void edhaWriteNextMods(actor, edhaNextModSpend(list, taken));   // only the entries that applied are spent
+    for (const mod of taken) {
+      const left = Math.max(0, (Number(mod.count) || 1) - 1);
+      const word = mod.mode ? (mod.mode === "advantage" ? "advantage" : "disadvantage") : (mod.formula || "a modifier");
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🔮 <strong>${mod.source || "Calculation"}</strong> — ${word} on this test${left > 0 ? ` (${left} more)` : ""}.</p>` });
+    }
   } catch (e) { console.error("Edha Content | next-test mod consume failed", e); }
 }
 for (const ctx of ["skill", "attack", "item"]) {
