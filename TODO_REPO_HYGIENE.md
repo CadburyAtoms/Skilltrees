@@ -297,7 +297,7 @@ LOOKUP IS NOT NO RESTRICTION".
 **Done when:** `counts.dispoFailOpen` reaches 0 (it stays in the ratchet file as a tombstone
 after that, same as `rollFold`/`gmWhisper` today).
 
-**BATCH 1 DONE (PR #PRNUM, 2026-09-06): 63 occurrences migrated, 11 left for batch 2, 0 stay.**
+**BATCH 1 DONE (PR #200, 2026-09-06): 63 occurrences migrated, 11 left for batch 2, 0 stay.**
 `counts.dispoFailOpen` **74 → 11**. Batch 1 was scoped to every site whose filter decides who
 *receives* something — damage, a heal, a status, an ActiveEffect, a ledger/flag stamp, a movement
 veto, a token displacement, a posted cue that writes `trigRound`, or live dice math (31 sites,
