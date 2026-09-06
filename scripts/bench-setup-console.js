@@ -293,16 +293,15 @@ if (typeof game !== "undefined") (async () => {
       if (token) { await token.update({ actorId: r.actorId }); orphansRepaired++; }
     }
     for (const rp of plan.replace) {
-      log.push(`⚠ orphan token "${rp.name}" — no roster actor to re-point to, replacing`);
+      // Resolve the replacement BEFORE deleting anything: a token is only removed when a fresh one
+      // can take its place (PM review of PR #171 — the first cut deleted first and asked second).
+      const actor = rosterByName.get(rp.name) || game.actors.find(z => z.name === rp.name && inBench(z));
+      if (!actor) { log.push(`⚠ orphan "${rp.name}": left in place — no roster actor exists to replace it with`); continue; }
+      log.push(`⚠ orphan token "${rp.name}" — no live actor behind it, replacing at the same spot`);
+      const newTok = await actor.getTokenDocument({ x: rp.x, y: rp.y });
       await scene.deleteEmbeddedDocuments("Token", [rp.tokenId]);
-      const actor = rosterByName.get(rp.name);
-      if (actor) {
-        const newTok = await actor.getTokenDocument({ x: rp.x, y: rp.y });
-        await scene.createEmbeddedDocuments("Token", [newTok]);
-        orphansReplaced++;
-      } else {
-        log.push(`⚠ orphan "${rp.name}": could not replace — no roster actor exists for this name`);
-      }
+      await scene.createEmbeddedDocuments("Token", [newTok]);
+      orphansReplaced++;
     }
   }
 
