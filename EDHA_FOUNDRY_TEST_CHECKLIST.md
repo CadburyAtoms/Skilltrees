@@ -498,6 +498,19 @@ blank note read "Push", or the owning talent's name?)*
 armed; blanking the field (schema re-initialises to `"melee"`) fired "+4 impact strike" and consumed
 it; Withering Touch's ranged half behaved identically. Evidence in the 07-26m delta.
 
+- [ ] 🤖 **Targeting still reads the same tokens after the target-reader consolidation (item 14).**
+      ENGINE-ONLY (F5) — every site that read `game.user.targets` now calls `edhaUserTargetTokens()`.
+      A pure refactor, so this row is a spot-check that nothing lost its target list, not a hunt for
+      new behaviour. Drive **two** of the nine migrated sites. **(a) The single-target gate:** target
+      **two** tokens with `Bench — Red` and use a single-target talent (Withering Ray is the
+      reference). Expected: the use is cancelled before any cost, and the whispered picker card lists
+      **both** token names as buttons; clicking one retargets to it alone and re-uses the talent.
+      **(b) `edhaSovTargets`' ally/enemy split:** with a Sovereignty actor, target **one ally and one
+      enemy at once** and use a talent that reads a side (an Edict / adv-attack grant). Expected: the
+      ally-side effect lands on the ALLY and the enemy-side read takes the ENEMY — the split is by
+      token disposition, not by click order, and your own token is in neither list. Either row
+      returning an empty/wrong target list is the regression to report.
+
 *(**GM summon relay** — RETIRED 2026-09-05, `EDHA_RULINGS.md` R-1: "yes — keep `ACTOR_CREATE`."
 ✅ The PLAYER role keeps the permission at Ben's table, so `edhaSummon`'s `summon-actor` relay
 branch is unreachable here and this row can never pass as written. Bench run 13's player-cast

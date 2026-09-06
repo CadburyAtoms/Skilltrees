@@ -109,7 +109,7 @@ accident of append order, so nothing in this index could point at them. Item 23 
 | `INJURIES` | `edhaAddInjury` · `edhaFindInjuryTable` · `EDHA_INJURY_FALLBACK` · `edhaCreateItemDocs` / **`edhaCreateItemCross`** (a player cannot create an item on another actor — the cross path relays to the GM). |
 | `TRIGGER GATING & COST` | `_edhaInTrigger` (the file-wide re-entrancy guard) · `EDHA_TRIG_PENDING` · `EDHA_RES_LABEL` · `edhaIsTalent` · `edhaOwnsTalent` (⚠ an iron-rule-2b smell, on the pass-7 ratchet — do not add a caller) · `edhaResVal` · `edhaTriggerAllowed` · `edhaMarkTriggerUsed` · `edhaResolveCost`. |
 | `SENSES, LIGHT & VISIBILITY` | `edhaTokensWithin` · `edhaPointIlluminated` · `edhaSensesRangeFtFromAwa` · `edhaSensesRangeFt` · `edhaCanSee`; the dark veil (`edhaDarkVeilSweep` + `edhaDarkVeilSoon`, **debounced 300 ms** — the sweep is O(tokens) and movement fires in bursts) · `edhaVeilSuppressed`; reveal-on-damage `edhaSenseRevealShows` · `edhaSenseRevealOnDamage`. |
-| `TRIGGERED-EFFECT RESOLUTION` | the runner: `edhaEffectTargets` → `edhaRunTriggerEffect` → `edhaPostTriggerCard` → `edhaDeductCost`, entered at `edhaFireTrigger`; plus `edhaUserTargetToken`/`edhaUserTargetActor`, **`edhaResolveVictim`** (⚠ "victim" ≠ "target" — the creature the event happened TO), `edhaToggleStatus`, `edhaRollCard`, `edhaTriggerCardClick`, and card-state persistence `edhaMarkCardResolved` · `edhaMessageIdOf`. |
+| `TRIGGERED-EFFECT RESOLUTION` | the runner: `edhaEffectTargets` → `edhaRunTriggerEffect` → `edhaPostTriggerCard` → `edhaDeductCost`, entered at `edhaFireTrigger`; plus `edhaUserTargetTokens`/`edhaUserTargetToken`/`edhaUserTargetActor`, **`edhaResolveVictim`** (⚠ "victim" ≠ "target" — the creature the event happened TO), `edhaToggleStatus`, `edhaRollCard`, `edhaTriggerCardClick`, and card-state persistence `edhaMarkCardResolved` · `edhaMessageIdOf`. |
 | `SINGLE-TARGET GATE + DEFEAT TRACKING` | `edhaSetUserTargets` (the one writer of `game.user.targets`) · `edhaPickTargetClick` + the `preUseItem` gate; **`edhaKillerCandidates`** + the `updateActor` defeat sync — what every "when you defeat a creature" talent reads, since the system fires no defeat event. |
 | `TARGETING: ATTUNEMENT RANGE + AoE TEMPLATES` | the reach model: `EDHA_ATTUNE_FT` (feet by colour RANK, not by talent) · `EDHA_LEY_COLORS` · `EDHA_COLOR_HEX` · `EDHA_RANGE_RING_HEX` · `edhaTalentColor` · **`edhaColorRank`** (every range check in the file resolves through it) · `edhaCasterToken`; canvas: `edhaDrawCircle` · `edhaTokensInCircle` · `edhaShowRange` · `edhaPlaceAoe` · `edhaNextTokenName`. |
 | `POINT-TARGETED AoE BURSTS` | `EDHA_BURST_PENDING` (the in-flight burst ledger) · `edhaPickPoint` (capture-phase click on `#board`, so it fires over tokens without the Templates layer). |
@@ -2046,7 +2046,14 @@ the first one lived inside the trample announcer, looked private, and got duplic
 - **Target/victim readers** (ENGINE PASS 5.2, hygiene campaign 2026-08-10, Job 1) — replace every
   hand-rolled `Array.from(game.user?.targets ?? [])[0]` (four spellings existed: `Array.from` vs
   spread, `?? null` vs bare, wanting the TOKEN vs its `.actor`):
-  - **`edhaUserTargetToken()`** → the first targeted token, or `null`.
+  - **`edhaUserTargetTokens()`** (item 14, 2026-09-06) → **every** targeted token, in order, as a
+    fresh plain `Array` — `[]` (never `undefined`) with nothing targeted or no `game.user` at all.
+    The plural sibling, for the sites that want the whole list and then apply their own
+    `.filter`/`.find`/`.some`/`.slice`. **Its one-line body is now the ONLY place in the engine that
+    touches `game.user.targets`**; everything else, including `edhaUserTargetToken`, goes through
+    it. The snapshot is a copy, so a caller may mutate the returned array and a mid-loop retarget
+    (`edhaSetUserTargets` releasing the old set) cannot change it underfoot.
+  - **`edhaUserTargetToken()`** → the first targeted token, or `null`. (Now `edhaUserTargetTokens()[0] ?? null`.)
   - **`edhaUserTargetActor()`** → that token's `.actor`, or `null`.
   - **`edhaResolveVictim(event, { owner = null } = {})`** (R-64) → the full 3-term chain
     `options.victim ?? options.target ?? edhaUserTargetActor() ?? owner ?? null`. Six-plus sites
@@ -2055,11 +2062,19 @@ the first one lived inside the trample announcer, looked private, and got duplic
     the one the event was actually about; that was live on 18 handler bodies before this pass, not
     just the six flagged in the audit. A call site that used to end `?? actor` / `?? owner` passes
     it as `{ owner }` — it is NOT folded into the chain's own default. Pinned in
-    `tests/victim-resolve.test.js`. `scripts/lint-refs.js` pass 20 ratchets `userTargets` (was 63,
-    now single digits — the reader's own body plus the handful of genuine ALL-targets reads that
-    have no first-target shape to migrate to, e.g. `edhaSovTargets`'s ally/enemy split).
-  - Sites inside `edhaEffectTargets` may still read `game.user?.targets` directly — it IS a
-    canonical consumer, not a violation.
+    `tests/victim-resolve.test.js`. `scripts/lint-refs.js` pass 20 ratchets `userTargets` (63 →
+    10 in this pass, **→ 1 in item 14**).
+  - ⚠ **The `userTargets` ratchet floors at 1, not 0, and the two exemptions this entry used to
+    carry are GONE** (corrected 2026-09-06, item 14 — both were predictions that measurement
+    overturned, PM-D1). It used to say the ten survivors were "genuine ALL-targets reads that have
+    no first-target shape to migrate to, e.g. `edhaSovTargets`'s ally/enemy split", and that "sites
+    inside `edhaEffectTargets` may still read `game.user?.targets` directly — it IS a canonical
+    consumer, not a violation". Neither held up: all nine of them wanted the same plural snapshot,
+    which is now `edhaUserTargetTokens()`, and `edhaEffectTargets`' `"prompt"` branch calls it like
+    everyone else. **There is no site that legitimately reads `game.user.targets` directly any
+    more** except `edhaUserTargetTokens`' own body — a reader cannot read through itself, which is
+    the entire reason the floor is 1. A count of 2 is a hand-rolled read, not an exemption; pinned
+    both ways in `tests/user-targets-reader.test.js`.
 - **`edhaActorRulesOf(actor, type)`** (ENGINE PASS 5.2, Job 2) — ALL rules of a handler type across
   an actor's talents, in item order → `[{ item, handler }]`. The plural sibling of the existing
   first-match `edhaActorRuleOf(actor, type)` (unchanged). Retired ~29 open-coded
