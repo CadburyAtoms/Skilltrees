@@ -166,6 +166,40 @@ For each root cause, in this order:
 5. **One commit per fixed item** (the 07-04 rule), each passing the Phase-6 gates. Small themed
    commits; no model identifiers in commit text.
 
+### Ship a pinned regression — and how to fire a hook in a test
+
+Iron rule 4: a fix whose root cause is a pure engine helper ships **with** a pinned case in
+`tests/`. Since TODO item 5 (2026-09-05) that obligation extends to **hook-reachable** root causes
+too, because firing a hook headlessly is now a one-liner instead of a driver you write yourself:
+
+```js
+const { loadEngine, fireHook, mockActor, mockItem, mockEffect, stageWorld, withStubs, captureChat, sleep, eq } = require("./harness.js");
+const env = loadEngine();
+const cards = captureChat(env);                                   // ChatMessage.create recorder
+const world = stageWorld(env, { user: {…}, users: {…}, actors: […], placeables: […] });
+const results = await fireHook(env, "cosmere-rpg.preUseItem", item);   // EVERY registration, in order
+world.undo();
+```
+
+`fireHook(env, name, ...args)` runs every recorded `Hooks.on`/`Hooks.once` registration for that
+hook, in true registration order, awaits each, returns the array of results, and lets a throw
+propagate (`once` is consumed, as it is in Foundry). It fires the **whole chain**, not one handler:
+a veto is `results.includes(false)`, and running the rest is deliberate — it also catches a later
+handler on the same hook throwing or double-writing. **Do not hand-roll the loop** —
+`tests/harness.js`'s header lists the four files that each did, with four different and silent
+semantics. Build the documents with `mockItem` (rules live on `system.events`, so the test proves
+behaviour against the shape Foundry actually produces — iron rule 2b) and `mockActor`/`mockEffect`
+(flag trio + an `update()` recorder that also applies the change).
+
+Two gotchas that will otherwise waste a pass. Most engine work is dispatched as `void someAsync(…)`,
+so `await fireHook(…)` settles only what the handlers *return* — follow with `await sleep(0)` (or a
+few ms if the path awaits a uuid resolve) before asserting the write. And anything the engine built
+inside the vm carries that realm's prototypes, so compare it with the harness's `eq()`, never
+`assert.deepStrictEqual`. Worked examples: `tests/hook-single-target-gate.test.js` (a `preUseItem`
+veto plus the write its card's button performs), `tests/hook-apply-damage-pre.test.js` (a
+by-reference `damage.calculated` mutation), `tests/hook-timed-status-expiry.test.js` (a
+`combatTurnChange` delete + stamp, including the one-applier GM gate).
+
 ## Phase 6 — Gates (every commit)
 
 Run them **individually**, and read each exit code:
