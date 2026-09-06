@@ -412,7 +412,7 @@ that it needs re-dumping after a system upgrade.
 
 ---
 
-## 18. [ ] Guard the authored overlay's name-fallback against cross-tree collisions
+## 18. [x] Guard the authored overlay's name-fallback against cross-tree collisions (2026-09-05, PR #170)
 
 **Why:** `foundry-build.js:122` builds `AUTHORED.byName` last-file-wins across all 21 overlays, and
 `:577` uses it whenever the docId lookup misses. Twelve talent names appear in 2–7 authored files
@@ -430,6 +430,17 @@ collision is reported. Prove pack parity on the current data (no overlay should 
 packs are byte-identical before/after.
 
 **PM:** lane R · model opus · size S · deps #16 (same loader) · verify: pinned test + pack parity.
+
+**Done:** the flat `byName` is gone; `loadAuthoredIndex` returns `byTree` (one name map per
+`"<atlas>/<group>"`) and `authoredOverlayFor()` is the only lookup — docId first, then the name
+**inside the talent's own tree only**. Cross-scope duplicates get one build-log line; a name
+defined twice *within* one scope gets a loud `AMBIGUOUS` warning. Pack parity held exactly (all
+five packs + backgrounds content-identical, `authored-overlays:365` unchanged), so no overlay
+changed hands. **Finding:** the fallback was NOT dormant — deity/Knowledge's "The Final Study" is
+the one entry of 365 whose stored docId (`WKWGvUtfrlOZVc0B`) matches no current tree+name seed, so
+it already resolves by name; it was safe only because no other tree defines that name. The build
+now names any such talent every run (`authored overlays matched by name (stale docId …)`). Fixing
+the docId itself is a `data/authored/` edit and needs Ben's re-extract + rebuild — not done here.
 
 ---
 
