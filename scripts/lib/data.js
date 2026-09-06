@@ -83,25 +83,39 @@ const HEROIC_PATHS = ["Agent", "Envoy", "Hunter", "Leader", "Scholar", "Warrior"
 // requires it from here instead of keeping a local copy. Only the module plumbing changed (fs
 // reads point at DATA imported from ./paths.js instead of a file-local constant; `path` in the
 // heroic loop renamed `path_` to avoid shadowing the `path` module required above).
-const G = (o, ...keys) => { for (const k of keys) if (o[k] != null && o[k] !== "") return o[k]; return ""; };
+//
+// 2026-09-05 (TODO_REPO_HYGIENE #22): there are no longer THREE key dialects to reconcile.
+// data/leyline.json, data/domain.json and data/cosmere.json all speak the one lowercase dialect
+// (`name` / `action` / `cost` / `prerequisites` / `description` / `flavor` / `tags` / `specialty`
+// / `path` / `deity` / `domain` / `colors` / `atlas` / `layout` / `connections`), so the old
+// multi-key getter `G(raw, "flavor", "Flavor Text", "Flavor")` and every alias it carried are
+// gone. `validate.js` now REJECTS the retired capitalized keys by name, so a file cannot drift
+// back to them unnoticed — the aliases are not load-bearing fallbacks any more, they were the
+// reason validate.js could not check real field names.
+//
+// What is left is not alias reconciliation: it is (a) injecting the tree coordinates the caller
+// knows and the row does not (atlas / group / treeId), (b) the ONE deliberate rename
+// `prerequisites` → `prereqs` (the in-memory talent shape foundry-build.js consumes), (c) the
+// `cost` default "—", and (d) sanitising `layout` / `connections` into a fresh, well-typed shape.
+const val = (v) => (v == null || v === "" ? "" : v);
 
-// rowName-equivalent: the "name" projection of G, factored out because it's also the shape
-// validate.js's own (separately maintained) rowName() computes — see validate.js:19-21.
+// The "name" projection, factored out because it is also the shape validate.js's own (separately
+// maintained) rowName() computes — see validate.js:19-21.
 function rowName(row) {
-  return G(row, "name", "Name", "Talent Name");
+  return val(row.name);
 }
 
 function normRow(raw, atlas, group, treeId) {
   return {
     atlas, group, treeId,
     name: rowName(raw),
-    action: G(raw, "action", "Action", "Action Type"),
-    cost: G(raw, "cost", "Cost") || "—",
-    prereqs: G(raw, "prerequisites", "Prerequisites"),
-    description: G(raw, "description", "Description"),
-    flavor: G(raw, "flavor", "Flavor Text", "Flavor"),
-    tags: G(raw, "tags", "Tags"),
-    specialty: G(raw, "specialty", "Specialty", "Tree"),
+    action: val(raw.action),
+    cost: val(raw.cost) || "—",
+    prereqs: val(raw.prerequisites),
+    description: val(raw.description),
+    flavor: val(raw.flavor),
+    tags: val(raw.tags),
+    specialty: val(raw.specialty),
     layout: raw.layout && typeof raw.layout.x === "number" ? { x: raw.layout.x, y: raw.layout.y } : null,
     connections: Array.isArray(raw.connections) ? raw.connections.slice() : null,
   };
@@ -123,19 +137,19 @@ function buildTrees() {
     const ley = JSON.parse(fs.readFileSync(`${DATA}/leyline.json`, "utf-8"));
     for (const color of LEYLINE_COLORS) {
       const id = `leyline/${color}`;
-      const talents = ley.filter(t => (t.path || t.Path) === color).map(r => normRow(r, "leyline", color, id));
+      const talents = ley.filter(t => t.path === color).map(r => normRow(r, "leyline", color, id));
       trees.push({ id, atlas:"leyline", pack:ATLAS_PACK.leyline, group:color, color:color.toLowerCase(), treeName:`${color} Leyline`, talents });
     }
   }
   if (want("deity")) {
     const dom = JSON.parse(fs.readFileSync(`${DATA}/domain.json`, "utf-8"));
     const byDeity = {};
-    for (const r of dom) (byDeity[r.Deity] = byDeity[r.Deity] || []).push(r);
+    for (const r of dom) (byDeity[r.deity] = byDeity[r.deity] || []).push(r);
     for (const deity of Object.keys(byDeity)) {
       // Display by DOMAIN (e.g. "Chaos"), not deity name ("Maelith"). Folder + path Item = domain;
       // tree = "<Domain> Talents" (mirrors heroic "Agent" vs "Agent Talents"). Deity name lives only in the description.
-      const rows = byDeity[deity], id = `deity/${deity}`, domain = rows[0].Domain;
-      const color = slugify(((rows[0].Colors || "white").split(/[\/,]/)[0] || "white").trim());
+      const rows = byDeity[deity], id = `deity/${deity}`, domain = rows[0].domain;
+      const color = slugify(((rows[0].colors || "white").split(/[\/,]/)[0] || "white").trim());
       trees.push({ id, atlas:"deity", pack:ATLAS_PACK.deity, group:domain, deity, domain, color, treeName:`${domain} Talents`, talents: rows.map(r => normRow(r, "deity", domain, id)) });
     }
   }
@@ -143,7 +157,7 @@ function buildTrees() {
     const cos = JSON.parse(fs.readFileSync(`${DATA}/cosmere.json`, "utf-8"));
     for (const path_ of HEROIC_PATHS) {
       const id = `heroic/${path_}`;
-      const talents = cos.filter(t => (t.Path || t.path) === path_).map(r => normRow(r, "heroic", path_, id));
+      const talents = cos.filter(t => t.path === path_).map(r => normRow(r, "heroic", path_, id));
       trees.push({ id, atlas:"heroic", pack:ATLAS_PACK.heroic, group:path_, color:"", treeName:`${path_} Talents`, icon:HEROIC_ICON(path_), talents });
     }
   }
@@ -164,7 +178,6 @@ module.exports = {
   LEYLINE_COLORS,
   HEROIC_PATHS,
   normRow,
-  getField: G,
   rowName,
   buildTrees,
   loadAtlases,

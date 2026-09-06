@@ -144,14 +144,14 @@ function buildTrees() {
     const src = JSON.parse(read('data/domain.json'));
     const trees = [];
     const deities = [];
-    for (const t of src) if (!deities.includes(t.Deity)) deities.push(t.Deity);
+    for (const t of src) if (!deities.includes(t.deity)) deities.push(t.deity);
     for (const deity of deities) {
-      const rows = src.filter((t) => t.Deity === deity);
-      const domain = rows[0].Domain;
-      const colors = rows[0].Colors.split('/');
-      const authored = loadAuthored('deity-' + rows[0].Tree.toLowerCase() + '.json');
+      const rows = src.filter((t) => t.deity === deity);
+      const domain = rows[0].domain;
+      const colors = rows[0].colors.split('/');
+      const authored = loadAuthored('deity-' + rows[0].specialty.toLowerCase() + '.json');
       const tree = {
-        id: 'dei-' + rows[0].Tree.toLowerCase(),
+        id: 'dei-' + rows[0].specialty.toLowerCase(),
         label: deity,
         sub: domain,
         color: LEY_COLORS[colors[0]] || GOLD,
@@ -159,17 +159,17 @@ function buildTrees() {
         colors,
         intro: cardHtml(pathDesc.deity[domain] || ''),
         resources: Object.entries(deityRes)
-          .filter(([, r]) => r.tree === rows[0].Tree)
+          .filter(([, r]) => r.tree === rows[0].specialty)
           .map(([name, r]) => ({ name, source: r.source, summary: r.summary })),
         talents: [],
       };
       tree.talents = rows.map((t) => norm({
         // entry talents: the `entry` tag where present (tagging is uneven across trees),
         // else "no prereq-talent connections" — the two tree roots
-        name: t['Talent Name'],
+        name: t.name,
         key: /(^|;\s*)entry(\s*;|$)/.test(t.tags || '') || !(t.connections || []).length,
-        specialty: t.Domain, action: t['Action Type'], cost: t.Cost,
-        prereq: t.Prerequisites || '—', flavor: t['Flavor Text'], desc: t.Description,
+        specialty: t.domain, action: t.action, cost: t.cost,
+        prereq: t.prerequisites || '—', flavor: t.flavor, desc: t.description,
         layout: t.layout, connections: t.connections,
       }, tree, authored));
       trees.push(tree);
@@ -177,8 +177,9 @@ function buildTrees() {
     atlases.push({ id: 'deity', label: 'Deity Paths', trees });
   }
 
-  // --- heroic (the six Edha heroic paths only — the Radiant rows in cosmere.json
-  //     have no layout and are not part of the Edha atlases) ---
+  // --- heroic (the six Edha heroic paths — which is now ALL of data/cosmere.json: the nine
+  //     Knights Radiant orders this filter used to drop were parked in
+  //     source-materials/radiant-orders.json on 2026-09-05, TODO_REPO_HYGIENE #22) ---
   {
     const src = JSON.parse(read('data/cosmere.json'));
     const trees = [];
@@ -193,10 +194,10 @@ function buildTrees() {
         resources: [],
         talents: [],
       };
-      tree.talents = src.filter((t) => t.Path === p).map((t) => norm({
-        name: t.Name, key: t.Specialty === 'Key', specialty: t.Specialty, action: t.Action,
-        cost: t.Cost || '—', prereq: t.Prerequisites || '—', flavor: t.Flavor || '',
-        desc: t.Description, layout: t.layout, connections: t.connections,
+      tree.talents = src.filter((t) => t.path === p).map((t) => norm({
+        name: t.name, key: t.specialty === 'Key', specialty: t.specialty, action: t.action,
+        cost: t.cost || '—', prereq: t.prerequisites || '—', flavor: t.flavor || '',
+        desc: t.description, layout: t.layout, connections: t.connections,
       }, tree, authored));
       trees.push(tree);
     }

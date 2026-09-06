@@ -279,7 +279,7 @@ for (const rel of ["data/leyline.json", "data/domain.json", "data/cosmere.json"]
   try { rows = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, rel), "utf8")); }
   catch (e) { err(`${rel}: invalid JSON — ${e.message}`); continue; }
   for (const r of rows) {
-    const n = r?.name || r?.["Talent Name"] || r?.Name;
+    const n = r?.name;   // one lowercase dialect since #22 (2026-09-05); validate.js rejects the old keys
     if (typeof n === "string" && n.trim()) talentNames.add(n.trim());
   }
 }

@@ -33,6 +33,49 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-05 DELTA — item 22: one atlas key dialect, and the unbuilt Radiant orders parked (DATA-only — PACKS BYTE-IDENTICAL, so **no pack rebuild and no ⟳ Sync are owed**).
+
+Two things that had grown together. (1) `data/cosmere.json` was 375 rows, but **225 of them were
+the nine Knights Radiant orders and nothing has ever read them** — `buildTrees()`
+(`scripts/lib/data.js`), `scripts/build-player-primer.js` and `scripts/validate.js` each filter
+that file to the six Edha heroic paths, so those rows were never built into a pack, never rendered
+in the primer, and never schema-checked. Grepped every reader of `data/cosmere.json` and of any
+Radiant-order field before deciding (build/primer/codex/dashboard/lint-refs/validate/foundry-build/
+`lib/data.js`/`audit.py`/`tests/`): **no consumer**, and no Radiant talent name is on the
+name-keyed allowlist or referenced by an authored overlay or an adversary. They are now parked in
+`source-materials/radiant-orders.json` with a `_note` / `_unpark` header (every parked row lacks
+`layout` and `connections`, so un-parking would still owe each order a tree layout — iron rule 7).
+Ruling **PM-R3**.
+
+(2) The three structure files spelled the same concept three ways (`name` / `Name` /
+`"Talent Name"`, `flavor` / `"Flavor Text"` / absent, and `domain.json` mixed cases inside one
+row). All three now speak **one lowercase dialect** — `name` `action` `cost` `prerequisites`
+`description` `flavor` `tags` `specialty` `path` (+ `deity` `domain` `colors` for deity rows) —
+renamed line-anchored so every value and the 2-space formatting survived byte-for-byte. `normRow`
+in `scripts/lib/data.js` no longer reconciles anything: the multi-key getter `G` and every alias
+are deleted, `getField` is unexported, and what is left is only the tree-coordinate injection, the
+one deliberate `prerequisites` → `prereqs` rename, the `cost` → `—` default, and layout/connections
+sanitising. `scripts/validate.js` reads **real field names** and **rejects the retired capitalized
+keys by name**, on every row *before* the `isLoadedByApp` filter — the old order is why a row
+wearing the wrong dialect was skipped instead of caught. Same de-aliasing in
+`build-player-primer.js`, `lint-refs.js`, `pipeline.test.js`, `prereq-groups.test.js`; the last of
+those was reading `.Prerequisites`, which after the rename would have gone `undefined` and made a
+cycle regression **pass vacuously**.
+
+**Proven, not asserted.** Pack parity: `foundry-build.js all` from `origin/main`'s tree+data vs.
+this branch's, both into scratch `EDHA_MODROOT`s under `%TEMP%` (Ben's live module untouched),
+content-hashed per pack over **every** LevelDB key with the two `_stats` timestamps stripped — all
+six hashes identical (`edha-adversaries 0daa4734…`, `edha-deity 8b8c9b56…`, `edha-heroic
+961a59b4…`, `edha-items 43a928f5…`, `edha-leyline 9e4c0b1c…`, `backgrounds dda333bb…`), and
+`build-player-primer.js --check` / `build-canon-codex.js --check` both report up to date, which is
+the same fact from the other side. Mutation: re-introducing one retired key (`"Talent Name"` on
+`domain.json` row 0) makes `validate.js` exit 1 with `key "Talent Name" is the retired capitalized
+dialect — use "name"`. New pin `tests/atlas-dialect.test.js` (8 cases) holds the alias removal, the
+per-key rejection, and the live files' dialect; `scripts/validate.js` is now `require()`-able
+(`if (require.main === module) main()`) so a gate can be tested without mutating tracked data.
+
+`node scripts/gates.js --ci` → PASS on all 12. Nothing for the bench: no engine change, no pack
+change, nothing to deploy.
 ## 2026-09-05 — BENCH RUN 30 (weekend marathon run 7): **the player-client window is finally open — item 37's orphan repair, item 26's 20 ft sight and Magnum Opus's two R-65 halves all PASS, Job 6b's relay is proven from a real non-owner, and R-34 lands SPLIT: its indicator renders player-visible exactly as Ben described, but a player-driven move drops no trail at all — ONE engine defect, root-caused with a matched control and a shipped fix precedent.** **3 rows leave the checklist, 1 new row added, 1 FAIL → `test-pass-fixes`.** **World restored to the start snapshot EXACTLY — field-level id-diff EMPTY across all 74 actors; the only intentional deviation is item 37's three repaired `actorId`s, which are the run's product.** DOCS-ONLY — no engine, no data, no pack rebuild owed.
 
 **Served-engine check (first act of the run).** Cache-busted `/modules/edha-content/scripts/register-skills.js`
@@ -11507,7 +11550,7 @@ As of 2026-06-09 talent behaviors are hosted **natively and exclusively** on eac
 - **System:** `cosmere-rpg` v2.0.4 at `…\FoundryVTT\Data\systems\cosmere-rpg\index.js` (minified ~28.7k lines; grep it for facts — hooks/handlers use templated strings, so grep the SUFFIX e.g. `damageRoll`, `registerItemEventHandlerType`). Unminified core Foundry API lives in `C:\Program Files\Foundry Virtual Tabletop\resources\app\{client,common}\**\*.mjs` (grep here for Region/ActiveEffect/document APIs).
 - **Public icons:** `C:\Program Files\Foundry Virtual Tabletop\resources\app\public\icons` — **verify icon existence with a WINDOWS path** (`C:/Program Files/...`); an MSYS `/c/...` path makes node `fs.existsSync` return false for everything. A 404 icon = invisible/unselectable tree node.
 - **Our module:** `…\FoundryVTT\Data\modules\edha-content\` — `module.json` (now declares the `RegionBehavior.hazard` documentType), `scripts/register-skills.js` (the runtime; hand-edited here), `styles/edha.css`, `lang/en.json`, `data/*.json` (runtime tables, copied at build), `packs/{edha-leyline,edha-deity,edha-heroic,edha-adversaries}` (LevelDB).
-- **Source (canonical):** `…/Skilltrees/` — `data/leyline.json` (125), `data/domain.json` (90 deity), `data/cosmere.json` (375; only 6 heroic paths ×25 = 150 in scope), `data/adversaries.json` (9), + the behaviour tables (see §5). `scripts/foundry-build.js` (generator) + `scripts/talent-icons.js`.
+- **Source (canonical):** `…/Skilltrees/` — `data/leyline.json` (125), `data/domain.json` (90 deity), `data/cosmere.json` (150 = 6 heroic paths ×25; the 9 unbuilt Radiant orders were parked in `source-materials/radiant-orders.json` 2026-09-05), `data/adversaries.json` (9), + the behaviour tables (see §5). `scripts/foundry-build.js` (generator) + `scripts/talent-icons.js`.
 - **Validators/inspectors (in `Skilltrees/scripts/` since 2026-06-12; the old `C:\tmp` copies are obsolete):** `validate-packs.js` (talent packs), `validate-adversaries.js` (adversary pack incl. baked effect keys), `inspect-pack.js <pack> "<Name>"` / `--group <Tree>` (print a talent's emitted events/effects). All read via temp-copy → **safe with Foundry open**.
 
 ## 3. Build / validate / when to rebuild vs F5

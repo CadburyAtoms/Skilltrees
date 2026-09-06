@@ -71,7 +71,7 @@ test("applyAuthorable: a POPULATED authored overlay still wins over the generato
 
 const REPO = path.join(__dirname, "..");
 const load = (f) => JSON.parse(fs.readFileSync(path.join(REPO, "data", f), "utf8"));
-const rowName = (r) => r.name || r["Talent Name"] || r.Name || "";
+const rowName = (r) => r.name || "";   // one lowercase dialect since #22 (2026-09-05)
 const groups = (s) => (!s || /^\s*[—-]\s*$/.test(String(s)))
   ? []
   : String(s).split(/\s*[;,]\s*|\s+and\s+/i).map(p => p.trim()).filter(Boolean)
@@ -97,7 +97,7 @@ function analyse(rows) {
     const gs = [];
     const conn = (Array.isArray(r.connections) ? r.connections : []).filter(local).map(n => rowName(local(n)));
     if (conn.length) gs.push(conn);
-    for (const g of groups(r.prerequisites || r.Prerequisites)) {
+    for (const g of groups(r.prerequisites)) {
       const t = g.filter(local).map(x => rowName(local(x)));
       if (t.length) gs.push(t);
     }
@@ -131,9 +131,9 @@ function hasCycle(req) {
 }
 
 const ATLASES = [
-  ["leyline.json", (r) => r.path || r.Color],
-  ["domain.json",  (r) => r.Deity || r.deity],
-  ["cosmere.json", (r) => r.Path || r.path],
+  ["leyline.json", (r) => r.path],
+  ["domain.json",  (r) => r.deity],
+  ["cosmere.json", (r) => r.path],
 ];
 
 test("every talent tree is walkable — no unreachable talents (iron rule 7)", () => {
@@ -185,10 +185,12 @@ test("no shipped prereq uses a malformed rank or a colon separator", () => {
   const bad = [];
   for (const [file, keyFn] of ATLASES) {
     for (const [tree, rows] of Object.entries(treesOf(load(file), keyFn))) {
-      // heroic: only the six real paths ship; Radiant orders in cosmere.json are not built
+      // heroic: only the six real paths ship. Since #22 (2026-09-05) that is ALL of
+      // cosmere.json — the nine Radiant orders live in source-materials/radiant-orders.json —
+      // but the guard stays, so an unbuilt tree pasted back in is skipped here too.
       if (file === "cosmere.json" && !["Agent", "Envoy", "Hunter", "Leader", "Scholar", "Warrior"].includes(tree)) continue;
       for (const r of rows) {
-        const p = String(r.prerequisites || r.Prerequisites || "");
+        const p = String(r.prerequisites || "");
         if (/[A-Za-z]\s*\+\s*\d/.test(p)) bad.push(`${tree}/${rowName(r)}: "${p}" — rank written "+N", must be "N+"`);
         if (/:/.test(p)) bad.push(`${tree}/${rowName(r)}: "${p}" — ":" is not a separator; use ";" for AND`);
       }
@@ -213,7 +215,7 @@ test("the three historic cycles stay fixed (Green / Red / Death)", () => {
     "Red cycle is back: Reckless Advance is the root, it cannot require its own child");
 
   // Death: Speak with the Fallen hangs off Reaper's Harvest; Risen Servant is drawn below it.
-  assert.notStrictEqual(find(dom, "Speak with the Fallen").Prerequisites, "Risen Servant",
+  assert.notStrictEqual(find(dom, "Speak with the Fallen").prerequisites, "Risen Servant",
     "Death cycle is back: Speak with the Fallen cannot require its own child Risen Servant");
 });
 

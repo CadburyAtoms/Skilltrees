@@ -94,15 +94,15 @@ test("INTEGRATION: data/cosmere.json's 'Mind and Body; Deduction 2+' prereq surv
   const rows = JSON.parse(raw);
 
   const atlasNames = new Set(
-    rows.map(r => (r.name || r.Name || r["Talent Name"] || "").trim().toLowerCase()).filter(Boolean)
+    rows.map(r => (r.name || "").trim().toLowerCase()).filter(Boolean)
   );
   const isName = (x) => atlasNames.has(String(x).trim().toLowerCase());
 
-  const row = rows.find(r => (r.Prerequisites || r.prerequisites || "") === "Mind and Body; Deduction 2+");
+  const row = rows.find(r => (r.prerequisites || "") === "Mind and Body; Deduction 2+");
   assert.ok(row, "expected data/cosmere.json to still contain the 'Mind and Body; Deduction 2+' prereq row");
-  assert.strictEqual(row.Name, "Know Your Moment");
+  assert.strictEqual(row.name, "Know Your Moment");
 
-  const groups = prereqGroups(row.Prerequisites, isName);
+  const groups = prereqGroups(row.prerequisites, isName);
   assert.deepStrictEqual(groups, [["Mind and Body"], ["Deduction 2+"]],
     "'Mind and Body' must survive as one group, not be torn into ['Mind'] + ['Body']");
 });

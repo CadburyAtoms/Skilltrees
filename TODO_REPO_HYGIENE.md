@@ -548,7 +548,7 @@ PM-owned).
 
 ---
 
-## 22. [ ] Structure data: park the unbuilt Radiant rows and normalise the three key dialects
+## 22. [x] Structure data: park the unbuilt Radiant rows and normalise the three key dialects
 
 **Why:** 225 of `data/cosmere.json`'s 375 rows are Radiant orders the build never reads (60% of
 the file). The three structure files spell the same concept three ways (`name` / `Talent Name` /
@@ -567,6 +567,36 @@ reconciliation is `normRow` in `scripts/lib/data.js`, so `validate.js` cannot ch
 **Done when:** one dialect, `normRow` is a pass-through or gone, and the packs are byte-identical.
 
 **PM:** lane R · model opus · size M · deps ruling PM-R3 · verify: pack parity + `validate.js` + primer `--check`.
+
+**Done 2026-09-05 — PR #175 (DATA-only; packs byte-identical, so no rebuild and no ⟳ Sync are
+owed).**
+
+*The consumer question (ruling PM-R3): the Radiant rows had **NO consumer**.* Grepped every reader
+of `data/cosmere.json` and of any Radiant-order field before deciding — `scripts/lib/data.js`
+`buildTrees()` (`cos.filter(t => t.path === path_)` over `HEROIC_PATHS`), `scripts/build-player-primer.js`
+(`src.filter(t => t.Path === p)` over the same six — so **the primer does not show the orders**),
+`scripts/validate.js` (`isLoadedByApp()` and `buildTalentGroups()` both gate on `HEROIC_PATHS`, so the
+rows were never schema-checked and never joined the global name universe), `scripts/foundry-build.js`
+(consumes `buildTrees()` only), `scripts/lint-refs.js` (added their names to `talentNames`, nothing
+more), `tests/pipeline.test.js` (explicitly `continue`s on a non-heroic tree), `tests/prereq-groups.test.js`
+(pins one *Scholar* row); `build-canon-codex.js`, `build-dashboard.js` and the `audit.py` files read no
+atlas data at all. Cross-checked: no Radiant-only talent name appears as an engine string literal, on
+`scripts/name-keyed-allowlist.json`, in `data/authored/*`, or in `data/adversaries.json` (the one
+apparent hit, `Overgrowth`, is a **deity** talent and resolves via `domain.json`). Confirmed from the
+other side by `build-player-primer.js --check` and `build-canon-codex.js --check` both reporting
+**up to date** after the change. So: 225 rows → `source-materials/radiant-orders.json` (`_note` /
+`_unpark` header; 0 of 225 carry `layout` or `connections`, so un-parking still owes each order a tree
+layout — iron rule 7), and `data/cosmere.json` is 150 rows.
+
+*The dialect:* one lowercase dialect across all three files (`Tree` → `specialty`), renamed
+line-anchored so every value and the formatting survived byte-for-byte. `normRow`'s getter `G` and
+every alias deleted, `getField` unexported; `validate.js` reads real field names and **rejects each
+retired key by name**, on every row *before* `isLoadedByApp` (the old order is why a wrong-dialect row
+was skipped rather than caught). Pinned in `tests/atlas-dialect.test.js` (8 cases). Proof: all six pack
+content-hashes identical before/after (`origin/main` tree+data vs. this branch, scratch `EDHA_MODROOT`s);
+mutation — re-introducing `"Talent Name"` makes `validate.js` exit 1 naming the key and its replacement;
+`gates.js --ci` 12/12 PASS, `600 passed, 0 failed`. Also found and fixed: `pipeline.test.js`'s Death-cycle
+pin read `.Prerequisites`, which after the rename would have been `undefined` and passed **vacuously**.
 
 ---
 

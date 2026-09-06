@@ -16,8 +16,34 @@ const REPO_ROOT = path.resolve(__dirname, '..');
 const LEYLINE_COLORS = new Set(['White', 'Blue', 'Black', 'Red', 'Green']);
 const HEROIC_PATHS   = new Set(['Agent', 'Envoy', 'Hunter', 'Leader', 'Scholar', 'Warrior']);
 
+// The ONE key dialect (TODO_REPO_HYGIENE #22, 2026-09-05). data/leyline.json, data/domain.json
+// and data/cosmere.json all speak lowercase now, so this file can finally check REAL field names
+// instead of a chain of `row.X || row.Y || row['Z']` alias reads that made every field optional
+// in three spellings. LEGACY_KEYS is the ratchet that keeps it that way: the retired capitalized
+// spellings are rejected BY NAME, so a hand-edit or a stale extract that re-introduces one fails
+// here naming the key and its replacement, instead of silently producing a nameless row.
+const LEGACY_KEYS = {
+  'Talent Name': 'name',
+  'Name': 'name',
+  'Action Type': 'action',
+  'Action': 'action',
+  'Cost': 'cost',
+  'Prerequisites': 'prerequisites',
+  'Description': 'description',
+  'Flavor Text': 'flavor',
+  'Flavor': 'flavor',
+  'Tags': 'tags',
+  'Specialty': 'specialty',
+  'Tree': 'specialty',
+  'Path': 'path',
+  'Color': 'path',
+  'Deity': 'deity',
+  'Domain': 'domain',
+  'Colors': 'colors',
+};
+
 function rowName(row) {
-  return row.name || row['Talent Name'] || row.Name || '';
+  return row.name || '';
 }
 function inUnit(n) { return typeof n === 'number' && isFinite(n) && n >= -0.2 && n <= 1.2; }
 
@@ -106,7 +132,7 @@ function validateTreeGraph(rows, atlas, file, errors, warnings, treeKeyOf, globa
         .filter(local).map(n => rowName(local(n)));
       if (conn.length) groups.push(conn);
       const prose = [];
-      for (const g of prereqGroups(r.prerequisites || r.Prerequisites, isName)) {
+      for (const g of prereqGroups(r.prerequisites, isName)) {
         const talents = g.filter(local).map(t => rowName(local(t)));
         if (talents.length) { groups.push(talents); prose.push(...talents); }
       }
@@ -184,14 +210,11 @@ function buildTreeNameSets(rows, atlas) {
   const sets = {};
   for (const r of rows) {
     let key;
-    if (atlas === 'leyline') {
-      const c = r.path || r.Color;
-      key = c ? c[0].toUpperCase() + c.slice(1).toLowerCase() : null;
-    } else if (atlas === 'heroic') {
-      const p = r.Path || r.path;
+    if (atlas === 'leyline' || atlas === 'heroic') {
+      const p = r.path;
       key = p ? p[0].toUpperCase() + p.slice(1).toLowerCase() : null;
     } else if (atlas === 'deity') {
-      key = r.Deity || r.deity || null;
+      key = r.deity || null;
     }
     if (!key) continue;
     if (!sets[key]) sets[key] = new Set();
@@ -201,19 +224,23 @@ function buildTreeNameSets(rows, atlas) {
   return sets;
 }
 
-// Rows outside the known trees (e.g. Radiant orders in cosmere.json) are not
-// consumed by the build pipeline, so we don't enforce structure on them.
-// (These filters date from the retired browser atlas, which skipped the same rows.)
+// Rows outside the known trees are not consumed by the build pipeline, so we don't enforce
+// structure on them. (These filters date from the retired browser atlas, which skipped the same
+// rows.) As of 2026-09-05 (#22) EVERY row in all three files passes this: the nine Knights
+// Radiant orders that used to fail it — 225 of cosmere.json's 375 rows, never built, never
+// checked — are parked in source-materials/radiant-orders.json. The guard stays because it is
+// what makes "unchecked rows" impossible to add back by accident: a row on an unknown path is
+// skipped here and skipped by buildTrees(), and the two must agree.
 function isLoadedByApp(row, atlas) {
   if (atlas === 'leyline') {
-    const c = row.path || row.Color;
+    const c = row.path;
     return !!(c && LEYLINE_COLORS.has(c[0].toUpperCase() + c.slice(1).toLowerCase()));
   }
   if (atlas === 'heroic') {
-    const p = row.Path || row.path;
+    const p = row.path;
     return !!(p && HEROIC_PATHS.has(p[0].toUpperCase() + p.slice(1).toLowerCase()));
   }
-  if (atlas === 'deity') return !!(row.Deity || row.deity);
+  if (atlas === 'deity') return !!row.deity;
   return false;
 }
 
@@ -224,9 +251,8 @@ function validateOneFile(rows, file, atlas, errors, warnings, globalNames) {
   }
   const treeSets = buildTreeNameSets(rows, atlas);
   const treeKeyOf = (row) => {
-    if (atlas === 'leyline') { const c = row.path || row.Color; return c ? c[0].toUpperCase() + c.slice(1).toLowerCase() : null; }
-    if (atlas === 'heroic')  { const p = row.Path || row.path;  return p ? p[0].toUpperCase() + p.slice(1).toLowerCase() : null; }
-    if (atlas === 'deity')   { return row.Deity || row.deity || null; }
+    if (atlas === 'leyline' || atlas === 'heroic') { const p = row.path; return p ? p[0].toUpperCase() + p.slice(1).toLowerCase() : null; }
+    if (atlas === 'deity')   { return row.deity || null; }
     return null;
   };
   validateTreeGraph(rows, atlas, file, errors, warnings, treeKeyOf, globalNames);
@@ -235,20 +261,27 @@ function validateOneFile(rows, file, atlas, errors, warnings, globalNames) {
       errors.push({ file, idx, msg: 'row is not an object' });
       return;
     }
+    // The dialect ratchet — checked on EVERY row, before isLoadedByApp, because a row wearing
+    // the retired keys is exactly the row isLoadedByApp would silently skip (no lowercase
+    // `path`/`deity` ⇒ not "loaded", ⇒ never checked at all). That silence is the failure mode
+    // this replaces.
+    for (const k of Object.keys(row)) {
+      if (Object.prototype.hasOwnProperty.call(LEGACY_KEYS, k)) {
+        errors.push({ file, idx, name: rowName(row), msg:
+          `key "${k}" is the retired capitalized dialect — use "${LEGACY_KEYS[k]}" (one lowercase dialect since #22, 2026-09-05)` });
+      }
+    }
     if (!isLoadedByApp(row, atlas)) return;
 
     const name = rowName(row);
     if (!name || typeof name !== 'string' || !name.trim()) {
-      errors.push({ file, idx, msg: 'row has no name (expected name / Name / "Talent Name")' });
+      errors.push({ file, idx, msg: 'row has no name (expected a non-empty "name")' });
     }
     if (row.atlas && !['leyline', 'heroic', 'deity'].includes(row.atlas)) {
       errors.push({ file, idx, name, msg: `atlas field is "${row.atlas}", expected one of leyline/heroic/deity` });
     }
     validateLayout(row, idx, file, errors);
-    let treeKey = null;
-    if (atlas === 'leyline') { const c = row.path || row.Color; treeKey = c ? c[0].toUpperCase() + c.slice(1).toLowerCase() : null; }
-    else if (atlas === 'heroic') { const p = row.Path || row.path; treeKey = p ? p[0].toUpperCase() + p.slice(1).toLowerCase() : null; }
-    else if (atlas === 'deity') { treeKey = row.Deity || row.deity || null; }
+    const treeKey = treeKeyOf(row);
     const set = treeKey ? treeSets[treeKey] : null;
     validateConnections(row, idx, file, errors, warnings, set);
   });
@@ -276,9 +309,9 @@ function buildTalentGroups(leyline, domain, cosmere) {
     if (!map.has(k)) map.set(k, new Set());
     map.get(k).add(group);
   };
-  for (const r of leyline) { const c = r.path || r.Color; const g = c ? c[0].toUpperCase() + c.slice(1).toLowerCase() : null; if (g && LEYLINE_COLORS.has(g)) add(r, g); }
-  for (const r of domain) if (r.Deity || r.deity) add(r, r.Domain || r.domain);
-  for (const r of cosmere) { const p = r.Path || r.path; const g = p ? p[0].toUpperCase() + p.slice(1).toLowerCase() : null; if (g && HEROIC_PATHS.has(g)) add(r, g); }
+  for (const r of leyline) { const c = r.path; const g = c ? c[0].toUpperCase() + c.slice(1).toLowerCase() : null; if (g && LEYLINE_COLORS.has(g)) add(r, g); }
+  for (const r of domain) if (r.deity) add(r, r.domain);
+  for (const r of cosmere) { const p = r.path; const g = p ? p[0].toUpperCase() + p.slice(1).toLowerCase() : null; if (g && HEROIC_PATHS.has(g)) add(r, g); }
   return map;
 }
 
@@ -388,4 +421,11 @@ function main() {
   process.exit(1);
 }
 
-main();
+// Run as a CLI (the pre-commit hook and validate.yml both invoke it that way), but stay
+// require()-able so tests can drive a single check against synthetic rows instead of having to
+// mutate the real data/ files. Before 2026-09-05 this line was a bare `main()`, which called
+// process.exit at load time and made the file untestable — tests/prereq-groups.test.js says so
+// in its own comment, and worked around it by re-testing prereqGroups against live data.
+if (require.main === module) main();
+
+module.exports = { LEGACY_KEYS, rowName, isLoadedByApp, buildTalentGroups, validateOneFile };
