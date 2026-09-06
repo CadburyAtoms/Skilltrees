@@ -8547,9 +8547,11 @@ function edhaCwMaxSkillRank(level) { return Math.floor((Math.max(1, Number(level
 // the SHEET, not the rulebook — every number must be what the finished sheet will read, so the
 // three stats Edha derives differently from the system come from the shared helpers
 // (EDHA_HP_BONUS / edhaWalkRateFtFromSpd / edhaSensesRangeFtFromAwa), never re-implemented here.
-// Bench run 21 caught all three drifting at once when they were: Health missed the +1, Move used
-// the SYSTEM's ceil(SPD/2) ladder against the sheet's 20+5×SPD, and Senses was the only one the
-// preview had right. The rest mirror the system: health sums the advancement rules (rule.health +
+// Bench run 21 caught all three drifting at once when they were: Health missed the then-+1, Move
+// used the SYSTEM's ceil(SPD/2) ladder against the sheet's 20+5×SPD, and Senses was the only one the
+// preview had right. (R-54 has since set EDHA_HP_BONUS to 0, so the Health cell now equals the
+// system's advancement sum — read from the constant, never re-inlined, so the two stay agreed.)
+// The rest mirror the system: health sums the advancement rules (rule.health +
 // STR where healthIncludeStrength — read from CONFIG at runtime); Focus 2+WIL; defenses 10+pair;
 // recovery is the system's ceil(WIL/2) die ladder; Investiture 2+max(AWA,PRE) is the Edha rule
 // (attunement-gated, footnoted).
@@ -17285,27 +17287,40 @@ function edhaDeriveInvestiture(actor) {
 }
 
 /* --- THE EDHA DERIVED-STAT RULES — one source of truth ------------------------------------------
- * `source-materials/legacy-uploads/Character_Building_Rules.md` §Derived stats is canon for these
- * three; the cosmere system derives all three differently. Both the SHEET (edhaDeriveSheetStats,
- * below) and the WIZARD PREVIEW (edhaCwDerivedPreview) read these helpers, because when they each
- * carried their own copy of the arithmetic they drifted in BOTH directions at once — bench run 21
- * measured preview Health 13 / Move 30 / Senses 10 against sheet 14 / 35 / 5.
+ * `source-materials/legacy-uploads/Character_Building_Rules.md` §Derived stats is canon for these;
+ * the cosmere system derives TWO of them differently — Movement and Senses. HP is NOT one of them
+ * (the correction R-54 landed, 2026-09-06): `Character_Building_Rules.md` §HP and
+ * `Edha_Character_Builder.xlsx` (Character Builder!H22) both give `HP = 10 + STR` at L1,
+ * term-for-term the system's own advancement table, so the Edha and system numbers are IDENTICAL.
+ * See `docs/ACTOR_STAT_DERIVATION.md` (the per-stat derivation map) before touching any of this.
+ * Both the SHEET (edhaDeriveSheetStats, below) and the WIZARD PREVIEW (edhaCwDerivedPreview) read
+ * these helpers, because when they each carried their own copy of the arithmetic they drifted in
+ * BOTH directions at once — bench run 21 measured preview Health 13 / Move 30 / Senses 10 against
+ * sheet 14 / 35 / 5.
  *  • Movement = 20 + SPD·5 ft   (canon; the system's own ladder is ceil(SPD/2) into [20,25,30,40,60,80])
  *  • Senses Range = the AWA table (canon; the system's is ceil(AWA/2) into [5,10,20,50,100,∞], so
  *    an AWA-0 PC read 5 ft on the sheet while their TOKEN sight was already built off the Edha table)
  *  • HP = the system's per-level accumulation + EDHA_HP_BONUS
- * ⚑ EDHA_HP_BONUS is the open question R-54 ("is 11 max HP at STR 0 intended?"). It is deliberately
- * ONE constant read from ONE place: when R-54 lands, change it here and the sheet, the preview and
- * the tests all move together. Do not re-inline it. */
-const EDHA_HP_BONUS = 1;
+ * EDHA_HP_BONUS was `1` until R-54 answered (c) "remove the +1" — **no level gate anywhere**; the
+ * math stays a single constant read from ONE place, so the sheet derivation, the clamp repair and
+ * the wizard preview all follow it. Do not re-inline it, and do not re-add a level condition.
+ * The June pregens that STORE a manual `hea.max.bonus` keep theirs (the srcHeaBonus guard below
+ * skips them) until `edha.migrateDerivations()` strips it. */
+const EDHA_HP_BONUS = 0;
 function edhaWalkRateFtFromSpd(spd) { return 20 + 5 * (Number(spd) || 0); }
 
-/* --- Edha sheet derivations: HP = system + 1; Speed = 20 + 5 × SPD; Senses = the AWA table -------
- * The Edha reference sheets derive these differently from the cosmere system; the pregens carried
- * per-actor hacks (hea.max.bonus:1 / movement override). Now derived for ALL characters:
+/* --- Edha sheet derivations: HP = system + EDHA_HP_BONUS (0 since R-54); Speed = 20 + 5 × SPD;
+ * Senses = the AWA table ---------------------------------------------------------------------
+ * The Edha reference sheets derive MOVEMENT and SENSES differently from the cosmere system; the
+ * pregens carried per-actor hacks (hea.max.bonus:1 / movement override). Now derived for ALL
+ * characters:
  *  • HP: +EDHA_HP_BONUS to hea.max.bonus IN MEMORY — skipped while the actor's SOURCE still carries
  *    a manual bonus (legacy pregens), so nothing double-applies until edha.migrateDerivations()
  *    strips them. Followed by the clamp repair — see the comment on it, it is load-bearing.
+ *    ⚠ With the constant at 0 (R-54 (c)) this block is a WRITE OF ZERO and the clamp repair below
+ *    is inert by construction (`after > before` can never hold). Both are kept, not deleted: they
+ *    are the one place the number lives, and the repair is what makes a non-zero bonus REACHABLE
+ *    if the constant ever moves again. Do not "simplify" either away.
  *  • Speed: override = 20 + 5×SPD + (current bonus) — keeps AE speed buffs (Walking Ruin) additive.
  *    Skipped while the actor's SOURCE carries its own movement override (legacy pregens).
  *  • Senses: writes .derived (NOT .override), exactly as the system's own prepareSecondaryDerivedData
@@ -17314,7 +17329,7 @@ function edhaWalkRateFtFromSpd(spd) { return 20 + 5 * (Number(spd) || 0); }
 function edhaDeriveSheetStats(actor) {
   try {
     if (actor?.type !== "character") return;
-    // HP = system + 1
+    // HP = system + EDHA_HP_BONUS (0 since R-54 — the Edha and system tables agree)
     const heaMax = actor.system?.resources?.hea?.max;
     const srcHeaBonus = Number(actor._source?.system?.resources?.hea?.max?.bonus) || 0;
     if (heaMax && srcHeaBonus === 0) {

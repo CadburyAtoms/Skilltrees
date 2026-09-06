@@ -8,14 +8,23 @@
  *   • Senses — preview 10 ft, sheet 5 ft. The same doc's §Senses Range table says AWA 0 → 10 ft,
  *              so the PREVIEW was right: the engine had never applied the Edha table to the sheet
  *              at all, and the system's own ceil(AWA/2) ladder stood.
- *   • Health — preview 13, sheet 14. The +1 itself is the open ruling R-54, so these tests pin the
- *              AGREEMENT, never the number: they must keep passing whichever way R-54 lands.
+ *   • Health — preview 13, sheet 14. The +1 itself was the open ruling R-54, so these tests pinned
+ *              the AGREEMENT, never the number.
  *
  * And the separately-reported "Finish leaves the actor at 13/14": the system clamps every resource
  * to its max at the end of prepareSecondaryDerivedData — before the engine's wrapper adds the +1 —
  * so a stored 14 was cut back to 13 on every prepare and the point was unreachable by ANY route.
  * The clamp repair hands back only what _source genuinely holds; the negatives below are the
  * load-bearing half, because a repair that invented health would be worse than the bug.
+ *
+ * ── R-54 ANSWERED 2026-09-06 (item 47): (c) REMOVE the +1, no level gate. `EDHA_HP_BONUS` is `0`,
+ * so Edha max HP is now term-for-term the system's advancement table (10 + STR at L1). The health
+ * cases below are RE-PINNED to that number, and the clamp repair — kept in the engine because it
+ * is what makes a non-zero bonus reachable — is now INERT BY CONSTRUCTION (`after > before` can
+ * never hold at 0). Its negatives are re-pinned as "the repair invents nothing", which is the half
+ * that must keep holding whatever the constant is. The engine constant is a top-level `const`, so
+ * it is in the vm's lexical record and NOT a property of the loaded context: these tests assert the
+ * OBSERVABLE number, not the constant, which is the right level anyway.
  */
 "use strict";
 const assert = require("assert");
@@ -108,49 +117,66 @@ test("NEGATIVE: senses writes .derived only — a hand-configured override still
   assert.strictEqual(a.system.senses.range.value, 65);     // but the override + bonus decide
 });
 
-// --- Health: the +1 and the clamp that made it unreachable -------------------
-test("edhaDeriveSheetStats raises max health by the Edha bonus", () => {
+// --- Health: R-54 (c) — the +1 is GONE, and the clamp repair is inert at 0 ---
+test("R-54: edhaDeriveSheetStats adds NOTHING to max health — Edha HP is the system's number", () => {
   const a = pc({ str: 3 });
   const before = a.system.resources.hea.max.value;
   env.edhaDeriveSheetStats(a);
-  assert.strictEqual(a.system.resources.hea.max.value - before, 1);   // R-54's number, read from ONE constant
+  assert.strictEqual(a.system.resources.hea.max.value - before, 0,
+    "R-54 (c): EDHA_HP_BONUS is 0. Character_Building_Rules.md §HP and the character-builder sheet " +
+    "both give HP = 10 + STR at L1, term-for-term the system's advancement table — Movement and " +
+    "Senses are the two stats Edha derives differently, not HP. A non-zero delta here means the " +
+    "constant crept back (or a level gate was added, which R-54 forbids).");
 });
 
-test("THE 13/14 BUG: a stored max-health value the system clamped away is handed back", () => {
-  const a = pc({ str: 3, srcHea: 14 });                    // Finish wrote 14; the clamp cut it to 13
-  assert.strictEqual(a.system.resources.hea.value, 13);    // what Ben saw
+test("R-54: THE CHECKLIST ROW'S NUMBER — a fresh L1 actor at STR 0 reads 10, not 11", () => {
+  const a = pc({ str: 0 });                                // brand-new + Edha Character, no picks
   env.edhaDeriveSheetStats(a);
-  assert.strictEqual(a.system.resources.hea.value, 14);
-  assert.strictEqual(a.system.resources.hea.max.value, 14);
+  assert.strictEqual(a.system.resources.hea.max.value, 10, "10/10 at STR 0 — the row's target");
+  assert.strictEqual(a.system.resources.hea.value, 10);
+});
+
+test("R-54: the clamp repair is INERT at bonus 0 — a stored over-max value is not handed back", () => {
+  // The historic 13/14: Finish wrote 14, the system clamp cut it to 13, and the repair handed the
+  // point back once the module raised the max. At EDHA_HP_BONUS 0 the max never rises, so there is
+  // no unreachable point to repair and _source's 14 stays out of reach — 13 of 13 is the max now.
+  const a = pc({ str: 3, srcHea: 14 });
+  assert.strictEqual(a.system.resources.hea.value, 13);
+  env.edhaDeriveSheetStats(a);
+  assert.strictEqual(a.system.resources.hea.value, 13, "the repair invents nothing when the max did not move");
+  assert.strictEqual(a.system.resources.hea.max.value, 13);
 });
 
 test("NEGATIVE: a genuinely wounded character is NOT topped up", () => {
   const a = pc({ str: 3, srcHea: 9 });
   env.edhaDeriveSheetStats(a);
   assert.strictEqual(a.system.resources.hea.value, 9);     // health is never invented
-  assert.strictEqual(a.system.resources.hea.max.value, 14);
+  assert.strictEqual(a.system.resources.hea.max.value, 13);
 });
 
 test("NEGATIVE: a character sitting exactly at the system max is NOT bumped past it", () => {
   const a = pc({ str: 3, srcHea: 13 });                    // stores 13, was never clamped
   env.edhaDeriveSheetStats(a);
-  assert.strictEqual(a.system.resources.hea.value, 13);    // 13 of 14 is a real state
+  assert.strictEqual(a.system.resources.hea.value, 13);    // 13 of 13 is full health now
+  assert.strictEqual(a.system.resources.hea.max.value, 13);
 });
 
-test("NEGATIVE: a stale over-max source value is capped at the new max, not restored whole", () => {
+test("NEGATIVE: a stale over-max source value is never restored whole", () => {
   const a = pc({ str: 3, srcHea: 40 });
   env.edhaDeriveSheetStats(a);
-  assert.strictEqual(a.system.resources.hea.value, 14);
+  assert.strictEqual(a.system.resources.hea.value, 13);
 });
 
-test("NEGATIVE: a legacy pregen carrying its own hea bonus skips the block entirely", () => {
+test("R-54: a legacy June pregen storing its own hea bonus KEEPS it (until migrateDerivations)", () => {
+  // Ben's explicit carve-out: the block is skipped while `_source…hea.max.bonus` is non-zero, so a
+  // pregen's hand-stored +1 survives R-54 and is stripped only by edha.migrateDerivations().
   const a = pc({ str: 3, srcHeaBonus: 1, srcHea: 14 });
   env.edhaDeriveSheetStats(a);
   assert.strictEqual(a.system.resources.hea.max.value, 14);   // its own +1, applied once
   assert.strictEqual(a.system.resources.hea.value, 14);
 });
 
-test("NEGATIVE: adversaries are untouched — no +1, no speed override, no senses rewrite", () => {
+test("NEGATIVE: adversaries are untouched — no bonus, no speed override, no senses rewrite", () => {
   const a = pc({ str: 3, spd: 3, awa: 0, type: "adversary" });
   env.edhaDeriveSheetStats(a);
   assert.strictEqual(a.system.resources.hea.max.value, 13);

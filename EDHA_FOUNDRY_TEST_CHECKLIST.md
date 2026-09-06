@@ -2273,13 +2273,20 @@ the 13/14 is gone. **NEG 1 (load-bearing):** taken to **9/14** and given a real 
 14 — the case a naive fill-to-max fix gets wrong. **NEG 3:** Focus 3/5 and Investiture 1/2 survived the
 same reload unchanged. An in-memory `prepareData()` probe over 9 / 13 / 14 / 1 also round-tripped every
 value untouched. ⚑ Only the player-client half of the positive is unrun — it was proven twice GM-side.)*
-- [ ] 🤖 **+1 max health SOLVED-pending-confirm (07-19z)** — a BRAND-NEW ＋ actor showed 10/11
-      before any picks, and at that moment only the basic-action copies exist: a shipped
-      action carries an auto-applying (transfer) Active Effect touching max health. Action
-      copies now land with transfer-AEs STRIPPED (kits own Edha onboarding; use-time AEs
-      stay), and opening the wizard on an existing PC strips them from its action items
-      (console logs what it removed). Confirm: fresh actor = 10/10 at STR 0, and the repair
-      log names the culprit action — paste its name for the delta.
+- [ ] 🤖 **R-54 — the +1 max health is REMOVED (item 47, 2026-09-06; ENGINE-ONLY, F5)** —
+      `EDHA_HP_BONUS` is now `0`, so Edha max HP is term-for-term the system's advancement table.
+      **Positive 1:** a brand-new ＋ Edha Character at **STR 0** reads **10/10** after Finish (was
+      10/11, then 11/11). **Positive 2:** an EXISTING PC at full health drops **11 → 10** on reload
+      with **nothing stored changing** (`_source…hea.max.bonus` stays 0 and `_source…hea.value`
+      is untouched — check both in the console before and after). **NEG 1 (load-bearing):** a
+      wounded PC is not re-clamped upward or downward beyond the new max — take one to 9/11, F5,
+      expect **9/10**, never 10/10. **NEG 2:** a **June pregen that STORES a manual
+      `hea.max.bonus: 1`** KEEPS its 11 — the derivation skips any actor whose `_source` carries
+      its own bonus, and only `edha.migrateDerivations()` strips it. Do not migrate the pregens as
+      part of this row. **NEG 3:** the creation wizard's live preview Health cell equals the
+      finished sheet's max on the same spread (they read the one constant).
+      *(Superseded history below — the transfer-AE fix this row was originally written for
+      worked; only its target number was wrong.)*
       - ⚠️ **2026-07-28h (bench run 21) — THE FIX WORKED; THIS ROW'S TARGET NUMBER IS WRONG, and
         it is now `EDHA_RULINGS.md` R-54.** The transfer-AE half is decisively fixed: a brand-new
         ＋ Edha Character carries **20 items, 19 of them actions, ZERO transfer AEs**
