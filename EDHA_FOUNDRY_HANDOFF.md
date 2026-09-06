@@ -33,6 +33,37 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-06 — R-70 (item 50): every cost row of the system's consume dialog opens TICKED — the one sanctioned system-dialog wrapper (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
+
+**What.** Ben's R-70 (b): a "Cost: 1 Investiture, 1 Focus" card (the Stitchmother's *Reknit Form*,
+and every tree talent with a second cost) was under-charged by a default click, because cosmere-rpg
+2.1.0's `showConsumeDialog` maps each `activation.consume` row to `shouldConsume: options.shouldConsume
+?? i === 0` — row 0 ticked, every later row unticked — and `use()` calls it with NO options. The
+engine now wraps `CosmereItem#showConsumeDialog` ONCE (`edhaInstallConsumeDialogWrapper`, in the
+RESOURCE-CONSUME DIALOG section; libWrapper when active, else a prototype patch, same shape as the
+rollDamage wrapper) and hands it `edhaPreTickConsumeOptions(options)` = `{...options, shouldConsume:
+options.shouldConsume ?? true}`. Every row opens ticked; the player can still untick one. `??` is kept
+on purpose so an explicit caller (`showConsumeDialog({shouldConsume: false})`) still gets what it asked.
+
+**Why this seam.** The option mapping happens INSIDE `showConsumeDialog`; `preUseItem` fires before
+`use()` and cannot reach those options; a DOM tick at `renderItemConsumeDialog` would bind to the
+template's checkbox ids rather than the option shape. Wrapping the one method is the narrowest seam
+that exists. **This is an explicit iron-rule-2a exception granted by Ben's ruling, not a precedent** —
+declared in the engine's file header, and `tests/consume-dialog-wrapper.test.js` pins that exactly ONE
+wrapper of the system dialog exists (a second assignment or libWrapper registration fails the suite).
+No per-talent branch; the name-keyed allowlist is untouched.
+
+**Proven by mutation.** Reverting the one line (`?? true` → no default) fails four pins (the option
+shape, the two-cost row map `[true, true]` → `[true, false]`, and the installed-patch pin); adding a
+second `prototype.showConsumeDialog =` site at `ready` fails the one-wrapper scan with `2 !== 1`.
+A single-cost item's row deep-equals the unwrapped row in every field.
+
+**🤖 for the bench** (Engine-wide → "Engine-wide fixes still unbenched"): Reknit Form on a default
+Continue charges Investiture AND Focus; a single-cost talent's dialog is unchanged (one ticked row,
+one charge) as the negative control.
+
+---
+
 ## 2026-09-06 — R-50 (item 53): an ambush-belief rider benefits its OWN first strike (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
 
 Ben answered R-50 (b) after a card-by-card walkthrough: the ten `edha-ambush-belief` carriers
