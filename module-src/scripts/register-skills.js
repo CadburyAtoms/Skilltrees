@@ -6319,6 +6319,10 @@ Hooks.on("preUpdateActor", (actor, changes) => {
  * The GM summon relay (was backlog — wired 2026-07-04): a player without ACTOR_CREATE no longer
  * gets a warn — edhaSummon bakes the spec owner-side and relays `summon-actor` to the primary GM
  * (SHARED with Death/Risen Servant + Civ/Forge Construct; canonical entry in EDHA_FOUNDRY_HANDOFF.md §9).
+ * ⚠️ CONDITIONALLY DEAD at Ben's table (EDHA_RULINGS.md R-1, ANSWERED 2026-09-05: the PLAYER role
+ * keeps ACTOR_CREATE there), so this relay branch never fires locally — `edhaSummon` always takes
+ * the direct `edhaSummonCreateGM` path. Kept on purpose for a world that revokes the permission;
+ * do not delete it as "dead code" (TODO_REPO_HYGIENE #27).
  * ============================================================================================ */
 // (edhaSizeFt is GONE with Holographic Illusion's conversion — [Size] off a colour is the
 //  `tokenSizeColor` field on edha-summon now, resolved in its executor.)
@@ -9308,6 +9312,9 @@ async function edhaSummon(caster, spec) {
     };
     if (game.user?.can("ACTOR_CREATE")) return await edhaSummonCreateGM(payload);
     if (game.users?.activeGM) {
+      // Unreachable at Ben's table (EDHA_RULINGS.md R-1, ANSWERED 2026-09-05): the PLAYER role
+      // keeps ACTOR_CREATE there, so the branch above always returns first. Kept on purpose for a
+      // world that revokes the permission — not dead code to clean up (TODO_REPO_HYGIENE #27).
       game.socket.emit("module.edha-content", { action: "summon-actor", payload });
       ui.notifications?.info(`Edha: ${spec.name} — summon relayed to the GM.`);
       return null;   // the documents materialize on the GM client; callers don't use the return

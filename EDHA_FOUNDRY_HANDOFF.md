@@ -33,6 +33,42 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-06 DELTA — item 27: retire the `GM summon relay` checklist row (ruling R-1) (**DOCS-ONLY + one ENGINE COMMENT** — no behaviour change).
+
+Ben answered R-1 on 2026-09-05 (mobile board inbox): "YES — keep the permission." Consequence,
+per the ruling's own text: the PLAYER role keeps `ACTOR_CREATE` at Ben's table, so `edhaSummon`'s
+`summon-actor` socket relay to the primary GM is unreachable there — `edhaSummon` always takes the
+direct `edhaSummonCreateGM` path — and the checklist's `GM summon relay` row could never pass as
+written.
+
+- **`EDHA_FOUNDRY_TEST_CHECKLIST.md`** — the row (Engine-wide section, formerly line ~427) is
+  retired in place with a ✅ note: the permission is kept by ruling, so the relay branch is dead
+  code at this table, and bench run 13's player-cast Forge Construct (2026-07-27p) is cited as the
+  evidence it never needed the relay (player-owned, moved by the player, a real Athletics test +
+  damage all via the direct create path). The bench-run-13 recap's "Still open" bulk note
+  (line ~1689) got the same one-line correction rather than a silent rewrite. **The relay code
+  itself is NOT deleted** — R-1 decided the permission, not the code's fate.
+- **`module-src/scripts/register-skills.js`** — two COMMENT-ONLY additions saying the relay branch
+  is reachable only in a world that revokes `ACTOR_CREATE`, so no future reader "cleans it up": one
+  at the summon tree-section header (~6320) and one at the `game.socket.emit("summon-actor", …)`
+  call site (~9311, now ~9315 after the header grew). **Stripped-source equality holds**
+  (`scripts/lib/strip-comments.js`'s `stripComments`, blank lines dropped): before/after sha256
+  `be46a528042186209cd59afc92fe920ad1c20994fb335e58ecb20a765430fa75` — identical. `node --check`
+  passes.
+- **`.claude/skills/leyline-tree-authoring/ENGINE_INDEX.md`** — the `SUMMONS` row gets the same
+  one-line note.
+- **`EDHA_RULINGS.md`** — R-1 moved to §K (Settled) in the shape item 30 used for R-7/R-19/R-34/
+  R-49: ANSWERED block kept verbatim, a `Closed by TODO_REPO_HYGIENE #27` consequence paragraph
+  added, and a one-line pointer left at the old §A spot.
+
+**Checklist marker counts** (`grep -E '^\s*- \[ \]' EDHA_FOUNDRY_TEST_CHECKLIST.md | grep -c '⚑'` /
+`… | grep -c '🤖'`): before **22 ⚑ / 30 🤖**, after **21 ⚑ / 30 🤖** — down by exactly one ⚑, no
+new row added, 🤖 untouched.
+
+`node scripts/build-dashboard.js` re-run and `EDHA_DASHBOARD.html` committed with this change.
+
+---
+
 ## 2026-09-05 — FIX PASS 4 (weekend marathon): **bench run 31's `Unravel Everything` defect is ROOT-CAUSED, and the bench's hypothesis is REFUTED. It is not the rule dispatcher and not the ledger queue — both are clean. It is the fire-and-forget SOCKET RELAY one level down: `game.socket.emit` has no acknowledgement, so `edhaWriteStatusMark` returned `true` a full round trip before the marker status existed on the casting client, and `edhaOwnerList`'s mark-wins reconcile then dropped every entry the same activation had just placed.** New primitive **`edhaAwaitLocal`**; two relays adopt it; **4 talents affected, 3 of them never reported** (the audit found Spreading Omen silently destroying a ledger entry). **ENGINE-ONLY → F5 / relaunch. No pack rebuild, no ⟳ Sync, no authored data touched.**
 
 ### Rulings (none)

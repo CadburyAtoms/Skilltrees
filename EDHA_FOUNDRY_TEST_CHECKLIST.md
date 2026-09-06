@@ -424,27 +424,15 @@ blank note read "Push", or the owning talent's name?)*
 armed; blanking the field (schema re-initialises to `"melee"`) fired "+4 impact strike" and consumed
 it; Withering Touch's ranged half behaved identically. Evidence in the 07-26m delta.
 
-- [ ] ⚑ **GM summon relay** — as a PLAYER without actor-create: Phantom Barricade / Risen Servant /
-      Forge Construct produce a real token via the GM client; you can move it and use its attack;
-      `actsAfterCaster` puts it on the caster's initiative. No GM online → the old warn.
-      *(2026-07-27p bench run 13 — **PARTIAL, and the blocker is a world setting, not the code.**
-      Forge Construct cast by `PlayerBench` produced a real Combat Construct: player-owned, moved by
-      the player (`_source.x` 5400→5700), and **Construct Slam rolled a real Athletics skill test +
-      damage from the player's own client**. It was added to the combat tracker. But the two clauses
-      the row is actually about are BOTH unverifiable here: (a) the `summon-actor` relay branch is
-      **unreachable** — `game.user.can("ACTOR_CREATE")` is **true** for the PLAYER role in this world,
-      so `edhaSummon` took the direct `edhaSummonCreateGM` path on the player's own client; the relay
-      needs the permission revoked, which is a world-settings change a bench run must not make.
-      (b) `actsAfterCaster`'s initiative copy **cannot be read**: with Advanced Encounters active NO
-      combatant stores a raw initiative — `_source.initiative` is `undefined` for every combatant
-      including the caster, and the visible numbers come from AE's derived getter. ⚑ Ben: decide
-      whether PLAYER should keep ACTOR_CREATE at all — if it keeps it, the relay is dead code at
-      your table and this row can never run as written.)*
-      ⛔ **BLOCKER (2026-07-27w): gated on a RULING, not on effort** — `EDHA_RULINGS.md` R-1
-      ("should the PLAYER role keep `ACTOR_CREATE`?"). Answer that and the row either becomes 🤖
-      (permission revoked → the relay branch is reachable and a bench run can drive it) or gets
-      retired outright (permission kept → the relay is dead code at this table). A bench run must
-      not change world settings to force it.
+*(**GM summon relay** — RETIRED 2026-09-05, `EDHA_RULINGS.md` R-1: "yes — keep `ACTOR_CREATE`."
+✅ The PLAYER role keeps the permission at Ben's table, so `edhaSummon`'s `summon-actor` relay
+branch is unreachable here and this row can never pass as written. Bench run 13's player-cast
+Forge Construct (2026-07-27p) is the evidence it never needed the relay: player-owned, moved by
+the player, and **Construct Slam rolled a real Athletics skill test + damage from the player's own
+client** — all via the direct `edhaSummonCreateGM` path. The relay code is NOT removed — R-1
+decided the permission, not the code's fate; a world that revokes `ACTOR_CREATE` would need it,
+and the engine now says so at both its tree-section header and the relay call site. Retired in
+TODO_REPO_HYGIENE #27.)*
 *(**Injury tool** — RETIRED IN FULL on evidence 2026-07-28l, bench run 23. Raise Dead passed at run 4
 (2bW-9), Apex Form at run 6 (2bW-13), and run 23 drove the last clause — the world-RollTable
 precedence — as a positive/negative pair. ⚠️ **One correction worth keeping: the "placeholder list" is
@@ -1695,8 +1683,9 @@ see DEPLOY STATE above).
 > ## ✅ Bench run 13 (2026-07-27p) burned this window down with `PlayerBench` + `Bench` up together.
 > **Retired on evidence:** the whole *Illusion belief loop* (6 rows, incl. both ⚑⚑ client-veil rows),
 > the whole *Playtest-2 fixes* pair, *Sense-through reveals*, *CAE use-grants*, and the *sync-button*
-> bulk row. **Still open:** *GM summon relay* (PARTIAL — blocked by a world PERMISSION, see its row),
-> **2bAA-8**'s refund half (FAIL → test-pass-fixes), and the heavy two-PC stagings below.
+> bulk row. **Still open at the time:** *GM summon relay* (PARTIAL — blocked by a world PERMISSION,
+> see its row; RETIRED 2026-09-05 by ruling R-1 — TODO_REPO_HYGIENE #27), **2bAA-8**'s refund half
+> (FAIL → test-pass-fixes), and the heavy two-PC stagings below.
 > **Pointer 8 (Unnerving Approach push relay) was STALE and is deleted** — its home section
 > *Black — 07-05 test-pass fixes* no longer exists; the surviving Unnerving Approach rows are the ⚑
 > canvas-precision *Engine-move collision* row, **2bJ-10** (already verified 07-26k), and the
