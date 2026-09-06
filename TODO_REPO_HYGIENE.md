@@ -1380,6 +1380,8 @@ packs hash identical before/after.
 **PM:** lane H (Ben's re-extract) or R with Ben's OK (one docId value) · model sonnet · size S ·
 deps Ben's OK · verify: the build's name-match count 1 → 0 + pack parity. DATA-only, no rebuild.
 
+**Ben's OK 2026-09-06 — folded into item 58.**
+
 ---
 
 ## 42. [ ] The `updateActor` AWA → prototype-token sight re-sync may not fire for console-created actors
@@ -1404,3 +1406,491 @@ recorded as working; the stale-token 🤖 row is retired on evidence.
 
 **PM:** lane B · model opus · size S · deps none · verify: the table measurement + a pinned test if
 fixed. ENGINE-ONLY if a fix is needed.
+
+---
+
+## 43. [ ] Phone board "Needs you" view — collapse the dashboard to what Ben must act on
+
+**Why:** Ben, phone chat 2026-09-06 (~09:20 ET, relayed by skilltrees-f4): "I've noticed I'm not
+working on rulings because for each I need to scroll through the phone dashboard, find one I can
+parse, scroll back up to the pm inbox, and write a ruling. If we can clean up the phone dashboard
+to 'only things Ben needs to see or we need from him' that might help." As of 2026-09-06 every
+ruling in `EDHA_RULINGS.md` is answered (item 45), so this view now serves FUTURE rulings and
+Ben-only actions, not a backlog.
+
+**What to do:** Rework `docs/pm-board-mobile.html` to open on a "Needs you" view: one status line
+(PM awake/stopped, what is running, blocked-on-Ben yes/no) plus cards, nothing else above the
+fold.
+- One card per open ruling and per board `(waiting)` ruling: bold heading = the question; the
+  *Recommended…*/APPLIED sentence = the default (regex-extract from `EDHA_RULINGS.md`, else "no
+  default stated"); a "blocks N checklist rows / TODO items" badge (count citations, so blocking
+  rulings sort first); full text behind a details expander. Two controls: **[Go with the
+  default]** writes the inbox note `Re Rulings › <section> › R-n. <question>: default` in one
+  tap; **[Other…]** is an inline text box submitting the same prefix + Ben's text. No scrolling to
+  a composer.
+- Ben-only actions as cards with a **[Done]** button posting an inbox note, sourced from a new
+  `benOnly` list in `pm/state` that the PM fills from the board's "Waiting on Ben" line (keep that
+  line one bullet per ask).
+- ⚑ rows: count + link only. The rows, queue, budget, run log, and full dashboard move under a
+  collapsed "More" toggle (state in `localStorage`).
+- §I APPLIED rulings render as "applied — veto?" cards with **[Keep]** / **[Veto…]** (moot once
+  item 45 moves §I to §K, but keep the affordance for the next batch of defaults).
+- Addendum from the same-day stall post-mortem: show a STALE-HEARTBEAT banner when `pm/state`'s
+  `generatedAt` is older than 60 minutes while the PM claims to be awake — a scheduled-task
+  session sat on one permission dialog for six hours on 2026-09-06 while the phone still read
+  "alive".
+- Files: `docs/pm-board-mobile.html`, `scripts/build-dashboard.js` (`parseRulings` +
+  `mobileSnapshot` index), `scripts/pm-state.js`, `tests/pm-state.test.js` (pin the parser on
+  R-41/R-42/R-54). Worktree-safe: no engine, no data changes.
+
+**Done when:** any open ruling can be answered in two taps from the top of the page; the
+dashboard index carries `{id, section, ask, default, applied, blocks}` per open ruling;
+`tests/pm-state.test.js` pins the parser on R-41/R-42/R-54; dashboard regenerated; page
+republished at its existing URL.
+
+**PM:** lane R · model sonnet · size M · deps none · verify: `tests/pm-state.test.js` +
+`node scripts/gates.js` + dashboard rebuild. DOCS/TOOLING (no engine, no data).
+
+---
+
+## 44. [ ] `Ask:` lines on open rulings whose heading isn't a self-contained question
+
+**Why:** Phase 2 of item 43's same 2026-09-06 note: some ruling headings in `EDHA_RULINGS.md`
+describe a symptom rather than posing a question a "Needs you" card can present standalone.
+
+**What to do:** Audit every open ruling heading; where it isn't already a self-contained
+question, add a one-sentence `Ask:` line beneath it that is one. Coordinate the exact
+heading/`Ask:` fallback with item 43's card template (43 lands first).
+
+**Done when:** every ruling section either has a self-contained question heading or an explicit
+`Ask:` line; item 43's mobile view renders a real question on every card.
+
+**PM:** lane R · model sonnet · size S · deps 43 · verify: read-through of `EDHA_RULINGS.md` open
+sections + dashboard rebuild. DOCS-ONLY.
+
+---
+
+## 45. [ ] Rulings close-out 2026-09-06 — record every phone answer
+
+**Why:** Ben answered every open ruling on the morning of 2026-09-06 through the phone inbox (66
+relayed notes, `tmp/pm/inbox-2026-09-06/inbox/*.json`); those answers need to land in
+`EDHA_RULINGS.md` and the docs each ruling touches before the fix-pass items (47–62) can cite them
+as settled.
+
+**What to do:**
+- `EDHA_RULINGS.md`: every answered ruling that produces no code change moves straight to §K;
+  every ruling that spawns a fix item is marked ANSWERED inline naming its TODO item number, then
+  moves to §K once that item ships. §I's 14 accepted defaults (R-43…R-68 per the note) move to §K
+  as ANSWERED-by-acceptance (R-73 stays in §I — Ben vetoed its default; see item 54). Add an R-72
+  entry (involuntary drain is not a spend, answered (b) — it lived only on the board table).
+  Give the GM-less region-traps ruling (item 12 / PR #197 table) its own new R-number, answered
+  (a) KEEP. Record R-78 (retire `edha-aoe-template`) as ANSWERED (a).
+- Checklist citation housekeeping (no new row content — just reflecting the answers) for rows
+  citing R-9/16/24/26/30/33/39/41.
+- 28a's "deliberately NOT gated" list + `ENGINE_INDEX.md`'s "the gate is TWO helpers" note: add
+  R-75 (the H26 reaction family — Shared Conviction, Pillar of Order, Voice of Authority — is
+  deliberately ungated) and the GM-less traps ruling.
+- `.claude/skills/bench-run/` hard rule 4 + `docs/EDHA_BENCH_RUNBOOK.md`: widen the Playtest Map
+  scene licence to the whole scene (Ben: "the entire scene is for your use at this point"); the
+  two PC actor documents (Tem parinaem, Soggy Bottom) keep their hard guard as actor-directory
+  documents — only their tokens on that scene fall under the new licence.
+- R-76's design seed, verbatim: "make a note this is good juice for a future adversary stat
+  block" (an adversary whose signature ability drains a PC's Investiture) — record it in the
+  bestiary/adversary design notes, cross-referenced from the H10 engine header.
+- A doc-map line for `docs/ACTOR_STAT_DERIVATION.md` (merged from
+  `claude/sunday-pm-session-sync-d0pzsm` commit 79cf9b1) added wherever the handoff's doc map
+  lives.
+- A dated delta at the top of `EDHA_FOUNDRY_HANDOFF.md` covering this close-out AND item 46's
+  filing (the two items share one delta, written by this item's worker).
+
+**Done when:** `EDHA_RULINGS.md` has zero rulings left answered-but-unrecorded from the
+2026-09-06 batch; §I holds only R-73 pending item 54; the new R-number for GM-less traps exists;
+the handoff delta is written; dashboard rebuilt.
+
+**PM:** lane R · model sonnet · size M · deps none (runs in parallel with item 46) · verify:
+manual diff of `EDHA_RULINGS.md` sections + dashboard rebuild. DOCS-ONLY.
+
+---
+
+## 46. [x] File TODO items 43–62 from the 2026-09-06 rulings (2026-09-06, PR #TBD)
+
+**Why:** Ben answered every open ruling on the morning of 2026-09-06 (66 phone-relayed notes); the
+PM triaged them into a numbered backlog (items 43–62) but the entries didn't exist in
+`TODO_REPO_HYGIENE.md` yet.
+
+**What to do:** File items 43–45 and 47–62 in house format (this item's PR does the filing; the
+parallel item-45 worker records the rulings themselves in `EDHA_RULINGS.md` and writes the shared
+handoff delta).
+
+**Done when:** `TODO_REPO_HYGIENE.md` has 62 numbered items, all with Why/What to do/Done
+when/PM fields; dashboard rebuilt; gates green.
+
+**PM:** lane R · model sonnet · size S · deps none · verify:
+`grep -c '^## [0-9]' TODO_REPO_HYGIENE.md` = 62 + `node scripts/gates.js`. DOCS-ONLY.
+
+---
+
+## 47. [ ] Fix pass 7a — heal / status / resource family (R-10, R-12, R-25, R-36, R-51, R-52(c)(i), R-72, R-76, R-54)
+
+**Why:** Nine 2026-09-06 rulings land on the same family of small engine writers (drop-to-1,
+Harvested Remain, ally-drop cues, Temp HP labelling, Investiture bookkeeping, HP derivation).
+Ben's answers:
+- R-10 (b): stabilizing at 1 is a floor against death, not regaining — every drop-to-1 writer
+  must bypass the "cannot regain HP" condition.
+- R-12 (a): raising clears the raised creature's OWN `harvested` marker + ledger entry.
+- R-25 (c): Rallying Shout's reminder prints only for an ally at 0 HP or carrying Unconscious.
+- R-36 (a): Temp HP `source` relabels only when the new grant WINS the keeps-higher comparison.
+- R-51 (a): a phantomDouble's break fires no ally-drops cue.
+- R-52 (c)(i): the +2.5 ft half-square slack in `edhaAllyDropEligible` (edge-to-edge measurement
+  is item 62).
+- R-72 (b): an involuntary drain is not a "spend" — H10's Investiture-drain write (~L18139) and
+  `edhaDrainFocus` carry `edhaBookkeepingTag` instead; item 28b's "a test fails if one ever
+  appears" pin flips to its opposite; plus R-76 (b)'s header comment (leave the unconsumed
+  spend-stamped branch, note it as a future adversary's signature ability).
+- R-54 (c): "go with removing the +1" — `EDHA_HP_BONUS = 1` → `0` (~L17300; keep the constant,
+  fix its comment: the system derives Movement and Senses differently from Edha, not HP — HP is
+  identical; no level gate).
+
+**What to do:** ENGINE-ONLY (F5). For each ruling, make the fix at its named site, add a headless
+pin, and re-pin `tests/derived-stats.test.js` + `tests/engine-helpers.test.js` wherever they
+assert the old +1. Rewrite the checklist row ~L2229 ("+1 max health SOLVED-pending-confirm") as
+the R-54 re-test: fresh PC actor at STR 0 reads 10/10 after Finish; an existing PC at full health
+drops 11→10 on reload with nothing stored changing; mark 🤖. June pregens storing a manual
+`hea.max.bonus` keep it until `edha.migrateDerivations()` runs — leave them.
+
+**Done when:** all nine pins pass; `tests/derived-stats.test.js` / `tests/engine-helpers.test.js`
+assert 0, not +1; the R-54 checklist row is rewritten and marked 🤖; each ruling recorded
+ANSWERED/shipped in `EDHA_RULINGS.md` §K.
+
+**PM:** lane B · model opus · size M · deps 45, 46 · verify: 9 headless pins + re-pinned
+derived-stats/engine-helpers tests. ENGINE-ONLY (F5).
+
+---
+
+## 48. [ ] Fix pass 7b — cards, labels, zones (R-31, R-32, R-37, R-38, R-55, R-78, R-13, R-6, weapon-picker article)
+
+**Why:** Eight more 2026-09-06 rulings plus one bench-run-38 defect (PR #207, merged 0ff8d14) land
+on card text, labels, and zone behavior. Ben's answers:
+- R-31 (a): a PC's own Phantom Double token is labelled "(Illusion)"; the Mistheron's copy keeps
+  its plain name.
+- R-32 (a): Black Draw Mana's sweep card reads "swept N · newly Weakened M".
+- R-37 (a): fix all three nits — Ordained eviction names the fizzled oldest ground; Inevitable
+  Snare's grammar (check whether the string is authored or generated before editing); Bulwark's
+  THP attribution.
+- R-38 (a): a Dread-Presence-refused move posts one whispered card to the mover's owners + GM,
+  throttled per token per round.
+- R-55 (a): the sheet's three budget chips all read SPENT / total (12/12, 5/5, 2/4 for a built L1
+  PC).
+- R-78 (a): retire `edha-aoe-template` — it has zero consumers in shipped data.
+- R-13 (a): a Fate snare placed under a creature ARMS only; it springs on enter/pass-through, not
+  at placement.
+- R-6 (b): Fault Line's dangerous-terrain Region exempts the caster only; lay the rectangle one
+  square out or exempt the caster's token from the tick, whichever keeps the footprint honest.
+- Bench run 38's weapon picker reads "a Agent" / "a Envoy" instead of "an".
+
+**What to do:** ENGINE-ONLY (F5) for all nine. R-37's Inevitable Snare fix is authored text (not
+engine) if the string lives on the card — if so, report it out of scope for this item rather than
+editing `data/authored/*`. R-78: remove `edha-aoe-template`'s registration + `edhaPlaceAoe`'s
+template branch (keep what `edhaCastBurst`/`edha-burst` share); strike its `ENGINE_INDEX.md` row
+with the date; leave lint vocabulary, native-vocabulary snapshot, and the name-keyed allowlist
+untouched; retire the "AoE burst auto-target" checklist row's remaining clause. Pin each behavior
+headlessly; add a 🤖 checklist row per ruling.
+
+**Done when:** all nine pins pass; gates stay green after `edha-aoe-template`'s removal; each
+ruling recorded ANSWERED/shipped in `EDHA_RULINGS.md` §K.
+
+**PM:** lane B · model opus · size M · deps 45, 46 · verify: 9 headless pins + green gates
+post-retirement. ENGINE-ONLY (F5).
+
+---
+
+## 49. [ ] Next-test modifier slot becomes a list (R-15, R-57, R-20)
+
+**Why:** Ben, verbatim: "that needs to be a list not one slot." Coercive Pressure no longer stacks
+with another next-test rider because `flags.nextTestMod` is a single object the second writer
+overwrites. R-20 confirms Pattern Recognition's disadvantage should expire at the round change
+(current behavior stands); R-57's stale-flag side effect is absorbed by the list's per-entry
+expiry.
+
+**What to do:** ENGINE-ONLY (F5). Change `flags.nextTestMod` from one object to an array of
+`{source, kind, value, expiry}`. Every writer appends its own entry instead of overwriting; every
+reader applies all entries (disadvantage is boolean-OR across entries, dice/flat modifiers sum).
+Round-scoped entries expire at the round change (R-20); each consumer clears only its own entry on
+use. Migrate a legacy single-object value on read so old saves don't break.
+
+**Done when:** a headless pin shows Coercive Pressure and Probability Net applied to the same
+target both take effect and each clears independently without disturbing the other; checklist row
+2bI-4 marked 🤖.
+
+**PM:** lane B · model opus · size S · deps none · verify: the two-rider headless pin.
+ENGINE-ONLY (F5).
+
+---
+
+## 50. [ ] One sanctioned wrapper on the system's cost-consume dialog (R-70)
+
+**Why:** A two-resource activation only charges the FIRST resource unless the player manually
+ticks the second box in the system's `showConsumeDialog`. Ben (b): "wrap the dialog so every cost
+row starts ticked," accepting this applies to every talent with a second cost.
+
+**What to do:** ENGINE-ONLY (F5). Add ONE wrapper around the cosmere-rpg system's
+`showConsumeDialog` that passes `shouldConsume: true` for every cost row before the dialog opens.
+Declare it in the engine header as the one sanctioned system-dialog wrapper — an explicit
+iron-rule-2a exception by Ben's ruling, not a precedent to copy elsewhere. Pin the option shape
+headlessly.
+
+**Done when:** the headless pin shows every cost row pre-ticked; 🤖 checklist row = Reknit Form
+charges both Investiture and Focus on a default click.
+
+**PM:** lane B · model opus · size S · deps none · verify: headless pin on the dialog options
+object. ENGINE-ONLY (F5).
+
+---
+
+## 51. [ ] Puppeteer / Unnerving Approach refund Investiture on a declined offer (R-17)
+
+**Why:** The once-per-round click budget is consistent, but a declined/ignored offer still
+charges Investiture. Ben (a): keep the click budget AND refund the Investiture when the offer is
+declined or ignored — consistent with R-69 (a cancelled picker already refunds with no stamp).
+
+**What to do:** ENGINE-ONLY (F5). Reuse whichever path R-69's cancelled-picker refund already
+uses (charge on the resolving click and don't charge until resolution, or charge on post and
+refund on decline/timeout — match R-69's existing mechanism rather than inventing a second one).
+Pin headlessly.
+
+**Done when:** a headless pin shows a declined/ignored offer leaves Investiture unchanged while
+the round's use is still available; checklist row 2bJ-10 marked 🤖.
+
+**PM:** lane B · model opus · size S · deps none · verify: headless pin. ENGINE-ONLY (F5).
+
+---
+
+## 52. [ ] Battle Fever's rally stack is spent on the next test, once (R-27)
+
+**Why:** Ben (a): the card is canon — "gain +1 to your next test" per stack reads as the WHOLE
+stack applied to ONE test, then cleared, capped at Rank, also clearing at the start of the owner's
+turn.
+
+**What to do:** ENGINE-ONLY (F5). The rally handler's `{count, resetOn: turn}` gains
+consume-on-test: the stack (capped at Rank) applies once to the next qualifying test, then is
+cleared/decremented to zero rather than persisting.
+
+**Done when:** a headless pin shows three stacked damage events grant +3 to the next test and +0
+to the one after; the Red spot-checks checklist row marked 🤖.
+
+**PM:** lane B · model opus · size S · deps none · verify: headless pin (three events → +3 then
++0). ENGINE-ONLY (F5).
+
+---
+
+## 53. [ ] Ambush-belief riders must benefit their OWN first strike (R-50)
+
+**Why:** Ben (b), after a full card-by-card walkthrough: the "marks, not benefits" reading
+doesn't match the ten carriers' text (Stillback, Wrongwake, The False Spring, Hazewyrm, etc. all
+say the FIRST strike comes from ambush/the mirage/the shimmer). The first strike must roll and
+apply its own belief test, not just set up the second.
+
+**What to do:** ENGINE-ONLY (F5). In `edha-damage-rider`'s `whenTargetFooled` check (~L974), when
+the current target has no ledger entry for this scene, run the belief test synchronously right
+there using the engine's `edhaRollDiceSync` family; use the local result to decide the rider on
+this strike; then write the ledger and post the GM/player cards asynchronously exactly as
+`edhaAmbushBeliefTest` does today. Factor the roll/DC/advantage logic into one shared pure helper
+so the sync and async paths cannot drift. The existing `useItem` path stays as fallback for a
+strike carrying no rider. Do NOT await inside the `useItem` hook (the known takeover-bug class).
+Affected carriers: Stillback ×2, Wrongwake ×2, Keelshadow, The False Spring, Hazewyrm
+Adult/Elder, The Doubled ×2 — ten total; the Mistheron's placed-copy seeming already tests at
+placement and is unaffected.
+
+**Done when:** headless pins show a first strike against an untested target rolls the test and
+applies the rider on a fail; a second strike reads the existing ledger entry and rolls no second
+test; the Mistheron path is unchanged; 🤖 checklist row = Stillback's Ambush Bite.
+
+**PM:** lane B · model opus · size M · deps none · verify: 3 headless pins (first-strike roll,
+second-strike ledger read, Mistheron unaffected). ENGINE-ONLY (F5).
+
+---
+
+## 54. [ ] Widen dispel to item-owned transferred effects and Omen ledger entries (R-73, R-35)
+
+**Why:** A dispel currently cannot remove a passive living on a talent or trait. Ben vetoed the
+narrow §I default and specified the safe widening (b): the `edha-pick` menu should offer
+item-owned transferred effects as a temporary DISABLE, never a delete. R-35 (a) folds in: the same
+widened menu should also offer the target's Omen ledger entries as a "dispel Omen" button.
+
+**What to do:** ENGINE-ONLY (F5). In the `edha-pick source: "effects"` menu, also list item-owned
+transferred effects (Hardy, Collected, Surefooted, Cinder Coat, Predictive Ward's braced, etc.),
+offered as `disabled: true` on the effect — never delete; the existing delete path stays guarded
+to actor-level effects only. Separately, add the target's Omen ledger entries to the same menu as
+a "dispel Omen" button that clears the marker and its ledger entry. Pin both branches headlessly.
+
+**Done when:** headless pins cover (1) disabling an item-owned effect leaves the source item's
+copy intact, and (2) dispelling an Omen entry clears both the marker and the ledger row; 🤖 rows =
+Unravel Everything disabling a target's Hardy with the talent copy intact, and the Chaos residuals
+row.
+
+**PM:** lane B · model opus · size S · deps none · verify: 2 headless pins. ENGINE-ONLY (F5).
+
+---
+
+## 55. [ ] One senses rule for PCs and adversaries alike (R-56)
+
+**Why:** Ben (a): adversary sheets AND token sight should use the same Edha AWA table as PCs, not
+the flat 10 ft pack-token default or the raw cosmere ladder. This unblocks the "Adversary tokens
+see like PCs" checklist row (AWA 0 → 10 ft) and its ⚑ feel sibling.
+
+**What to do:** ENGINE + BUILD/DATA. Drop the `type !== 'character'` guard for senses in
+`edhaDeriveSheetStats` and both `preCreateActor` token-default hooks (about three call sites); the
+build should emit `sight = table(AWA)` for adversaries too, so the flat 10 ft pack-token default
+goes away and the pack sheet and token agree. Author ONE adversary block with an explicit `senses`
+override so the bespoke escape hatch stays testable — pick the subject and say why in the PR.
+
+**Done when:** the guard is gone at all three sites; the chosen adversary's explicit override
+still reads correctly; packs rebuild clean.
+
+**PM:** lane B · model opus · size M · deps none · verify: pack rebuild (Ben's deploy) + a world
+bulk sync (authorised by this ruling). REBUILD + world bulk sync.
+
+---
+
+## 56. [ ] Melee mutation riders follow their own card's graze wording (R-14)
+
+**Why:** Ben (c): "follow each rider's own card" — "on a hit" riders should fire on a hit only;
+"when you deal damage" / "on a hit or graze" riders should also fire on a graze. Today all riders
+share one trigger regardless of wording.
+
+**What to do:** ENGINE + AUTHORED. Audit every melee mutation rider's card text and set a
+per-rule `onGraze` dial (or equivalent) that the handler reads — iron rule 2b: the dial lives on
+the rule, not a name-keyed branch in the handler. Rebuild + Sync only for rules whose authored
+data actually changes.
+
+**Done when:** a headless pin per rider shows a nat-1 graze applying only to `onGraze: true`
+riders; 🤖 row = a nat-1 graze test against one hit-only rider (no effect) and one damage rider
+(applies).
+
+**PM:** lane B · model opus · size M · deps none · verify: per-rider headless pins (at least one
+hit-only, one damage rider). REBUILD + ⟳ Sync if any authored rule changes; the engine change
+itself is F5.
+
+---
+
+## 57. [ ] Adversary data batch: Combat Training, Fen-Heart size, charge distances, hidden hook markers, one bespoke cost (R-29, R-40, R-46, R-47, R-74)
+
+**Why:** Five adversary-data rulings land on the same file and rebuild:
+- R-29 (a): Combat Training (Stonebound Captain) is MISS → GRAZE once per round, no Focus cost —
+  the canon wording; its ability description is currently empty.
+- R-40 (a): the Gone-to-Weir Fen-Heart is 3×3 (Huge).
+- R-46 (a): Cragdrake Whelp Pack's Reckless Advance carries full-speed `distanceFt: 25`, stated on
+  the card; apply the same fix to R-48 (Explosive Leap) if still open.
+- R-47 (a): every `NO NAMEABLE HOOK:` engineering marker must be hidden from the player-facing
+  card (a GM-only note field or an HTML comment), everywhere it appears.
+- R-74 (a): author one `costs:` line onto a single adversary ability — default to the Stalker's
+  Fade unless a better fit turns up.
+
+**What to do:** Edit `data/adversaries.json` (+ baked AEs if any). Write Combat Training's empty
+description and fix the cheatsheet sentence; wire it per lint pass 5. Add the Fen-Heart's 3×3 note
+to its biography + placement guidance. Set `distanceFt: 25` on Reckless Advance's `edha-move
+bySize` config and its card text (and Explosive Leap's, if open). Move every `NO NAMEABLE HOOK:`
+marker to a GM-only/hidden location while lint pass 5 still recognizes it. Add the `costs:` line
+to the chosen ability. Rebuild the adversaries pack.
+
+**Done when:** lint pass 5 stays green; the adversary-wiring checklist row for Combat Training
+retires on evidence; all five items reflected in the rebuilt pack.
+
+**PM:** lane R · model sonnet · size M · deps none · verify: lint pass 5 green + pack rebuild.
+REBUILD (Ben's deploy).
+
+---
+
+## 58. [ ] Talent data batch: Volatile Strike rider scope, Withering Touch duration prose, The Final Study re-key (R-23, R-28, TODO 41)
+
+**Why:** Three small authored-data fixes, all Ben-approved on 2026-09-06:
+- R-23 (a): Volatile Strike should be a true rider on ANY melee hit (`whenDealer: "any"`), not
+  scoped to a specific dealer.
+- R-28 (a): Withering Touch lasts to the END of your next turn (engine already correct — only the
+  prose is wrong).
+- TODO 41 (Ben's OK 2026-09-06, folded in here): re-key The Final Study's stale docId in
+  `data/authored/deity-knowledge.json` to the current seed.
+
+**What to do:** `data/authored/leyline-red.json` — set Volatile Strike's rider field to
+`whenDealer: "any"`. `data/authored/domain.json`'s Withering Touch entry + `data/domain.json`'s
+source prose — both say "end of your next turn"; engine and cards unchanged.
+`data/authored/deity-knowledge.json` — rewrite The Final Study's `docId` to the current seed.
+Rebuild + Sync.
+
+**Done when:** `node scripts/foundry-build.js all` prints zero "matched by name" lines and packs
+hash identical before/after for the re-key; 🤖 row = the Red row (a sword hit offers Volatile
+Strike; standalone use self-offers harmlessly); checklist row 2bW-1's duration clause retires.
+
+**PM:** lane R · model sonnet · size S · deps none · verify: build's name-match count 1 → 0 + pack
+parity for the re-key. REBUILD + ⟳ Sync.
+
+---
+
+## 59. [ ] Fold `system.damage.formula` into plain dice at build time (R-71)
+
+**Why:** The system's own item-damage card prints the unfolded authored formula string instead of
+resolved dice. Ben (a): fold it at BUILD time, the same fold `edhaRollFormula` already does at
+runtime (R-65).
+
+**What to do:** TOOLING + DATA. In `foundry-build.js`, fold `system.damage.formula` into plain
+dice for every talent the system rolls itself, at build time.
+
+**Done when:** a build-report diff shows only formula strings changed (no other build output
+moved); bench visual check = Verdict's system card reads its resolved dice (e.g. `2d8 + 5`) like
+its engine-rolled card.
+
+**PM:** lane R · model sonnet · size S · deps none · verify: build-report diff (formula-only).
+REBUILD (Ben's deploy).
+
+---
+
+## 60. [ ] Build guard: reject any `min ≠ max` consume entry (R-22)
+
+**Why:** `edhaConsumeList` refunds `value.min`, so a talent or adversary ability whose cost entry
+has `min ≠ max` can silently under-refund. Ben (a): close the door with a build guard rather than
+an engine change.
+
+**What to do:** TOOLING-only. Add a check to `lint-refs.js` (or `validate.js`) that fails the
+build if any talent or adversary ability ships a `consume` entry with `min ≠ max`.
+
+**Done when:** mutation-verified — authoring a `min ≠ max` cost in a scratch copy of the data
+makes the gate fail; no engine change.
+
+**PM:** lane R · model sonnet · size S · deps none · verify: mutation test (scratch min≠max cost
+→ gate fails). TOOLING-only.
+
+---
+
+## 61. [ ] Fix Goldenport / Corvaine map polygons so four cities resolve to the right nation (R-42)
+
+**Why:** `lint_map.py` reports four WARNs: city-04/11/14/17 fall outside Goldenport's polygon, and
+city-31 doesn't resolve to Corvaine even though ruling 154 says the border there IS the river.
+Ben (a): fix the polygons, not the city tags.
+
+**What to do:** Edit `source-materials/maps/thyrcross.map.json` — give Goldenport its
+coastal/island lobes so city-04/11/14/17 fall inside it; move Corvaine's edge to the river bank so
+city-31 resolves to Corvaine. Regenerate `thyrcross-nations.json`.
+
+**Done when:** `lint_map.py`'s four WARNs go to zero; the "Redrawn polygons hit the right nations"
+checklist row re-tests (🤖).
+
+**PM:** lane R · model sonnet or opus · size S · deps none · verify: `lint_map.py` WARN count
+4 → 0. Map-data (part of `gates.js --ci`).
+
+---
+
+## 62. [ ] Edge-to-edge range measurement for sized tokens (R-52 (c)(ii))
+
+**Why:** R-52's slack fix (item 47) only patches the ally-drop cue's 5 ft gate; Ben also asked for
+edge-to-edge measurement as its own item, because the Crownox Ring's "an adjacent ox" stays false
+under slack alone for a Large+ token.
+
+**What to do:** ENGINE-ONLY. Change range measurement to edge-to-edge for sized tokens, and sweep
+every `rangeFt` gate in the engine for the same assumption (not just the ally-drop cue item 47
+touches).
+
+**Done when:** headless pins cover the four measured cases from the ruling (including the Crownox
+Ring's adjacency check); 🤖 row = checklist W29 §2.
+
+**PM:** lane B · model opus · size M · deps 47 · verify: 4 headless pins on the measured cases.
+ENGINE-ONLY (F5).
