@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-06T23:16:48.972Z",
+  "generatedAt": "2026-09-06T23:18:17.519Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "32c361972c",
-    "commit": "bbdbb9a",
+    "hash": "11c4e78ea2",
+    "commit": "ba50b1f",
     "branch": "pm/board-2026-09-06d",
     "repo": "CadburyAtoms/Skilltrees"
   },
@@ -479,12 +479,12 @@
     {
       "pos": 31,
       "item": "34",
-      "title": "Fleet weapon migration (34a, REBUILD) + loot caches: player-clickable chest + body search (34b) — re-do PR #103 on current main. 34a dispatched 19:15 as the first fable-worker (PM-R14), worktree; 34b follows as its own PR",
+      "title": "Fleet weapon migration (34a, REBUILD) + loot caches: player-clickable chest + body search (34b) — re-do PR #103 on current main. 34a dispatched 19:15 as the first fable-worker (PM-R14), worktree (this row's status tracks 34a; 34b follows as its own PR)",
       "lane": "B",
       "model": "fable-worker",
       "size": "L",
       "deps": "Foundry window for the bench",
-      "status": "running (34a)",
+      "status": "running",
       "statusDetail": null,
       "pr": null
     },
