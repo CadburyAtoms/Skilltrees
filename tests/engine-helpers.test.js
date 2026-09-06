@@ -6,7 +6,7 @@
  */
 "use strict";
 const assert = require("assert");
-const { loadEngine, eq, mockActor, stageWorld, withStubs } = require("./harness.js");
+const { loadEngine, eq, mockActor, mockItem, stageWorld, withStubs } = require("./harness.js");
 
 /* This file's ~200 tests deliberately share ONE engine load (a per-test reload would be wasteful
  * runtime for no correctness benefit): nothing here leaves game/canvas state un-restored — every
@@ -1559,4 +1559,53 @@ test("edhaIsConstruct: the legacy dead field stays dead, and missing shapes neve
   assert.strictEqual(env.edhaIsConstruct({ system: { customType: "Construct" } }), false);
   assert.strictEqual(env.edhaIsConstruct({ system: {} }), false);
   assert.strictEqual(env.edhaIsConstruct(null), false);
+});
+
+// --- Item 34a (2026-09-06) — the fleet weapon migration: edhaRuleBearer + the harvest loops ------
+// The 11 adversary gear/natural attacks are weapon-type now, and three of them carry their riders
+// ON the weapon document (Spearing Beak's whenTargetFooled +1d6, Bite's Kindle light, Scalpel-
+// Strike's whenTargetStatus +4). Both actor-wide harvest loops (edhaActorRuleOf / edhaActorRulesOf,
+// which edhaRiderParts and edhaLightSpecFor read through) must admit weapons — an edhaIsTalent gate
+// there drops the riders silently (the 07-16 silent-drop class). Each loop is pinned separately
+// through its consumer, so re-inlining either one behind edhaIsTalent fails here.
+test("edhaRuleBearer admits talents, flagged adversary abilities, and any weapon", () => {
+  assert.strictEqual(env.edhaRuleBearer({ type: "talent" }), true);
+  assert.strictEqual(env.edhaRuleBearer({ type: "action", flags: { "edha-content": { adversaryTalent: true } } }), true);
+  assert.strictEqual(env.edhaRuleBearer({ type: "weapon", flags: { "edha-content": { adversary: "Mistheron" } } }), true);
+  assert.strictEqual(env.edhaRuleBearer({ type: "weapon" }), true);              // hand-made / system weapon: Ben can author riders in Foundry
+  assert.strictEqual(env.edhaRuleBearer({ type: "action" }), false);             // unflagged action (summon utility) stays out
+  assert.strictEqual(env.edhaRuleBearer({ type: "equipment" }), false);
+  assert.strictEqual(env.edhaRuleBearer(null), false);
+});
+
+function weaponWithRider(name, handler, dtype) {
+  return mockItem({ name, type: "weapon", flags: { adversary: "Bench" },
+    system: { damage: { formula: "1d6+2", type: dtype } },
+    events: [{ event: "edha-pre-deal-damage", handler: { type: "edha-damage-rider", ...handler } }] });
+}
+
+test("edhaRiderParts harvests a damage rider that lives on a WEAPON (edhaActorRulesOf loop)", () => {
+  const bite = weaponWithRider("Bite", { appliesTo: "energy", bonusFormula: "1d4", lightRadiusFt: 20 }, "energy");
+  const actor = mockActor({ name: "Cinderhound", type: "adversary", items: [bite] });
+  bite.actor = actor;
+  const parts = env.edhaRiderParts(bite, actor);
+  eq(parts, [{ formula: "1d4", name: "Bite" }]);   // eq = JSON compare (the engine realm has its own Object prototype)
+  assert.strictEqual(env.edhaRiderBonus(bite, actor), "(1d4)[Bite]");
+});
+
+test("edhaLightSpecFor finds the Kindle light rider on a WEAPON (edhaActorRulesOf loop)", () => {
+  const bite = weaponWithRider("Bite", { appliesTo: "energy", bonusFormula: "0", lightRadiusFt: 20 }, "energy");
+  const actor = mockActor({ name: "Cinderhound", type: "adversary", items: [bite] });
+  eq(env.edhaLightSpecFor(actor, "energy"), { radiusFt: 20 });
+  assert.strictEqual(env.edhaLightSpecFor(actor, "keen"), null);
+});
+
+test("edhaActorRuleOf (first-match loop) admits a WEAPON's rule, and a plain equipment item stays out", () => {
+  const sword = weaponWithRider("Scalpel-Strike", { appliesTo: "vital", bonusFormula: "4", whenTargetStatus: "vital-diagram" }, "vital");
+  const decoy = mockItem({ name: "Rope", type: "equipment", events: [{ event: "edha-pre-deal-damage", handler: { type: "edha-damage-rider", bonusFormula: "99" } }] });
+  const actor = mockActor({ name: "Stitchmother", type: "adversary", items: [decoy, sword] });
+  const hit = env.edhaActorRuleOf(actor, "edha-damage-rider");
+  assert.strictEqual(hit?.item, sword);
+  assert.strictEqual(hit?.handler?.bonusFormula, "4");
+  assert.strictEqual(env.edhaActorRulesOf(actor, "edha-damage-rider").length, 1);
 });
