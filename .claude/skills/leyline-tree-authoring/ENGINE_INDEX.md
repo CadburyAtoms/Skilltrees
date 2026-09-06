@@ -97,7 +97,7 @@ accident of append order, so nothing in this index could point at them. Item 23 
 | Banner | Owns |
 |---|---|
 | `DEFENCE BUFFS` | `edha-defense-buff`: `edhaNoOtherActiveGM` · `edhaDefBuffGmGate` · `edhaDefBuffFor` · `edhaApplyDefBuff` · `edhaRemoveDefBuff` · `edhaRefreshDefBuffs` + the ready/combatStart/combatTurnChange/deleteCombat watchers. Recomputes every combatant per turn (the system fires no turn hooks); one GM writes. The two gate helpers live here but are used engine-wide — see "The gate is TWO helpers" below for which one a site wants. |
-| `RESOURCE-CONSUME DIALOG TITLE` | `edhaSetConsumeTitle` + `renderItemConsumeDialog` / `renderDialogV2`. Cosmetic. |
+| `RESOURCE-CONSUME DIALOG` | (1) TITLE — `edhaSetConsumeTitle` + `renderItemConsumeDialog` / `renderDialogV2`. Cosmetic. (2) PRE-TICK (item 50, R-70 (b), 2026-09-06) — **`edhaPreTickConsumeOptions`** (PURE, pinned: `{...options, shouldConsume: options.shouldConsume ?? true}`) + **`edhaInstallConsumeDialogWrapper`** (ready hook; libWrapper else prototype patch) — **THE ONE sanctioned wrapper of a system dialog**, an iron-rule-2a exception by Ben's ruling, declared in the engine's file header. The system's own `showConsumeDialog` ticks only row 0 (`?? i === 0`), so a two-cost card under-charged on a default click. `tests/consume-dialog-wrapper.test.js` pins that exactly one wrapper exists — do NOT add a second system-dialog wrapper anywhere; ask for a ruling. |
 | `TALENT BUDGET` | `edhaIsKeyTalent` · `edhaAllowedTalents` · `edhaKeyPickAllowed` · `edhaCountTalents` + the `preCreateItem` veto (stops the drag, not after). |
 | `SHEET PATH SLOTS + THE BUDGET READOUT` | `EDHA_PATH_SLOTS` · **`edhaSheetRoot`** (the SHARED `renderCharacterSheet` entry point — five decorators hang off it; never re-derive the root inline) · `edhaGetBudget`. |
 | `THE CHARACTER-CREATION WIZARD` | ENGINE-OWNED by declaration (multi-step dialog). ~1,000 lines: `edhaCreationWizard` · `edhaCreatorNewCharacter` · the steps (`edhaCreatorWelcomeStep`/`PickStep`/`AttrStep`/`SkillStep`/`BudgetStep`/`NameStep`) · picks (`EDHA_CREATOR_PICKS`, `edhaCreatorApplyPick`, `edhaCreatorChangeSlot`, `edhaCreatorWeaponPick`, `edhaGrantBasicActions`, `edhaCreatorPathRank`) · **undo** (`edhaCreationWipeIds`, `edhaCreatorWipeOriginPicks`, `edhaCreatorWipePathRank`, `edhaCreationRestart` — a new step owes a wipe) · the map picker (`edhaCwMapData`, `edhaCwWireMap`) · expertises (`edhaPickExpertisesDialog`) · the steppers (`edhaCwStepperDialog`, `edhaCwAttrBudget`, `edhaCwSkillBudget`, `edhaCwDerivedPreview`) · `edhaCleanPackCopy` (pack docs are COPIED, never linked). |
@@ -107,7 +107,7 @@ accident of append order, so nothing in this index could point at them. Item 23 
 | `TEMPORARY HP` | `edhaGetTempHp` · `edhaWriteTempHp` · `edhaSetTempHp` · `edhaThpTarget` + the `preApplyDamage` consumer. A module flag, not a system resource; spent before deflect and before real HP. |
 | `SUMMONS` | `edhaSummon` · `edhaSummonCreateGM` (actor creation is GM-only, over the socket) · identity/census `edhaSummonIsFrom` · `edhaSummonSourceTalent` · `edhaOwnedSummons` (what the H15 `sustainCap` counts) · `edhaSummonFolder` · `edhaDeleteActorWithTokens` · `edhaSweepOrphanedTokens` + the mode-gated summon-item veto. ⚠ the `summon-actor` socket relay is CONDITIONALLY DEAD at Ben's table (`EDHA_RULINGS.md` R-1: PLAYER keeps `ACTOR_CREATE`) — kept for a world that revokes the permission, not dead code (TODO_REPO_HYGIENE #27). |
 | `INJURIES` | `edhaAddInjury` · `edhaFindInjuryTable` · `EDHA_INJURY_FALLBACK` · `edhaCreateItemDocs` / **`edhaCreateItemCross`** (a player cannot create an item on another actor — the cross path relays to the GM). |
-| `TRIGGER GATING & COST` | `_edhaInTrigger` (the file-wide re-entrancy guard) · `EDHA_TRIG_PENDING` · `EDHA_RES_LABEL` · `edhaIsTalent` · `edhaOwnsTalent` (⚠ an iron-rule-2b smell, on the pass-7 ratchet — do not add a caller) · `edhaResVal` · `edhaTriggerAllowed` · `edhaMarkTriggerUsed` · `edhaResolveCost`. |
+| `TRIGGER GATING & COST` | `_edhaInTrigger` (the file-wide re-entrancy guard) · `EDHA_TRIG_PENDING` · `EDHA_RES_LABEL` · `edhaIsTalent` · `edhaRuleBearer` (talents + weapons — the gate on `edhaActorRuleOf`/`edhaActorRulesOf`, item 34a) · `edhaOwnsTalent` (⚠ an iron-rule-2b smell, on the pass-7 ratchet — do not add a caller) · `edhaResVal` · `edhaTriggerAllowed` · `edhaMarkTriggerUsed` · `edhaResolveCost`. |
 | `SENSES, LIGHT & VISIBILITY` | `edhaTokensWithin` · `edhaPointIlluminated` · `edhaSensesRangeFtFromAwa` · `edhaSensesRangeFt` · `edhaCanSee`; the dark veil (`edhaDarkVeilSweep` + `edhaDarkVeilSoon`, **debounced 300 ms** — the sweep is O(tokens) and movement fires in bursts) · `edhaVeilSuppressed`; reveal-on-damage `edhaSenseRevealShows` · `edhaSenseRevealOnDamage`. |
 | `TRIGGERED-EFFECT RESOLUTION` | the runner: `edhaEffectTargets` → `edhaRunTriggerEffect` → `edhaPostTriggerCard` → `edhaDeductCost`, entered at `edhaFireTrigger`; plus `edhaUserTargetTokens`/`edhaUserTargetToken`/`edhaUserTargetActor`, **`edhaResolveVictim`** (⚠ "victim" ≠ "target" — the creature the event happened TO), `edhaToggleStatus`, `edhaRollCard`, `edhaTriggerCardClick`, and card-state persistence `edhaMarkCardResolved` · `edhaMessageIdOf`. |
 | `SINGLE-TARGET GATE + DEFEAT TRACKING` | `edhaSetUserTargets` (the one writer of `game.user.targets`) · `edhaPickTargetClick` + the `preUseItem` gate; **`edhaKillerCandidates`** + the `updateActor` defeat sync — what every "when you defeat a creature" talent reads, since the system fires no defeat event. |
@@ -1914,8 +1914,34 @@ The one pipeline; three fields were added so two private duplicates of it could 
 - **`bindToTarget`** — stamps `targetUuid` from your CURRENT target, so "advantage on your next test
   **against them**" is enforced rather than owner-judged (Reactive Analysis). Nothing targeted → the
   mod stays unbound rather than failing.
-- ⚑ `nextTestMod` is a SINGLE flag slot: writing it overwrites any rider already there. Two
-  independent debuffs do not stack (2bI-4).
+## The next-test mod flag is a LIST (item 49, 2026-09-06 — Ben's R-15(b))
+
+`flags.edha-content.nextTestMod` is an **array of entries**, not one object. It was one slot, so the
+second writer silently overwrote the first — Coercive Pressure's Cognitive disadvantage and
+Probability Net's `-1d6` could not sit on the same victim, and the loser left no trace (R-15,
+checklist 2bI-4). An entry keeps the shape the pipeline always used; the four parts the ruling names
+map onto it as `source` / (`mode` ∨ `formula`) / (`formula`, `count`) / `round`.
+
+| helper | what it does |
+|---|---|
+| **`edhaNextModList(value)`** | PURE. Reads whatever is stored as a list — array → itself, a **legacy single object → one entry**, anything else → `[]`. This is the migration; no stored actor breaks. |
+| **`edhaNextModExpired(mod, round)`** | PURE. Is this entry DEAD? Only a `round` stamp expires, and never out of combat (`round === null` leaves the stamp inert) — deliberately the same comparison `edhaNextTestMatches` makes. |
+| **`edhaNextModPrune(list, round)`** | PURE. `{ live, pruned }`. |
+| **`edhaNextModsOf(actor, round?)`** | THE reader. Returns the live entries and **prunes the dead ones off the document as a side effect** (R-20 + R-57: a "this round" mod that has expired is removed, not left to pile up). |
+| **`edhaNextModSpend(list, taken)`** | PURE. Decrements/removes **only** the entries that applied — "a consumer clears only its own entry". Identity is the `gid`. |
+| **`edhaNextModFoldMode(mods)`** | PURE. Folds N entries into the one `AdvantageMode` scalar: boolean-OR per direction; **a mixed advantage/disadvantage pair returns `null`** and the caller then writes nothing, so a cancelling pair never stomps the player's own dialog choice. |
+| **`edhaWriteNextMods(actor, list)`** | Writes the list back (`null` when empty) **through `edhaSetEdhaFlag`**, so a cross-actor clear relays to the GM — the old consumers called `unsetFlag` on the bearer directly, which silently did nothing for a victim the roller does not own. |
+
+- **Writers APPEND.** `edhaSetNextTestMod` read-modify-writes through `edhaListPush` (cap
+  `EDHA_NEXTMOD_CAP` = 12, evict oldest — a bound, not a design limit). Flags replicate to every
+  client, so the read is correct even when the write itself relays.
+- **Readers apply ALL live entries.** Modes OR (above); `formula` entries **SUM**, each appended as
+  its own flavor-labeled term so the breakdown still names who gave what; `count` is per entry.
+  Gating (`skill` / `attr` / `round` / `targetUuid` / `quarryUuid` / `appliesTo`) stays per entry.
+- The **cross-path claim** (`_edhaNextModClaim`, 07-27j) is keyed per **(actor, gid)** now, not per
+  actor: with one slot `actorId` *was* the grant, and with a list one `either` rider's claim would
+  otherwise veto its neighbour's.
+- Pinned in `tests/next-test-mod-list.test.js` (the four "Done when" cases + the writer half).
 
 ## Splash around a triggering creature — `edha-triggered-effect` `nearAffects` (07-24r)
 `target: "near-victim"` catches everyone inside `radius` except you (the victim itself is already
@@ -2470,6 +2496,13 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   Activatable/Damaging/Modality/Events mixins) flagged `edha-content.adversaryTalent: true`.
   **Bespoke `adv.items` abilities (trait/action kinds) carry the SAME flag since 07-16** —
   weapons stay unflagged (equipment, not talents).
+- **`edhaRuleBearer(item)`** (item 34a, 2026-09-06 — the fleet weapon migration) = `edhaIsTalent(item)
+  || item.type === "weapon"`: can this item CARRY edha event rules the actor-wide harvest loops
+  should read? `edhaActorRuleOf` and `edhaActorRulesOf` gate on THIS, not on `edhaIsTalent` — the
+  migrated adversary attacks (Bite, Scalpel-Strike, Spearing Beak) carry their `edha-damage-rider`
+  rules on the weapon document, and any weapon Ben authors a rider on in Foundry harvests too.
+  Weapons stay OUT of `edhaIsTalent` (no useItem talent automation, no talent-budget count).
+  Pinned through the consumers in `tests/engine-helpers.test.js` (mutation-verified on both loops).
 - **`edhaIsTalent(item)`** is the ownership predicate: `type === "talent"` OR the adversaryTalent
   flag. `edhaOwnsTalent` and every owner/caster item-by-name lookup go through it (pinned in
   `tests/engine-helpers.test.js`). `edhaCountTalents` (PC talent budget) stays type-strict on
@@ -2608,7 +2641,8 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
 - **`edha-next-test-mod`** (event `use`): a next test gains `mode` (advantage/disadvantage) and/or a
   `formula` modifier (Probability Net's `-1d6`), counted. `nextTestMod.formula` injects via the same
   term-concat as test riders, flavor-labeled; a formula-only mod no longer forces disadvantage (the
-  mode block is gated).
+  mode block is gated). **The flag is a LIST since item 49 (2026-09-06)** — riders STACK, modes OR,
+  modifiers sum, each entry expires and clears on its own; see "The next-test mod flag is a LIST".
   **Generalised 07-24k — it is now the whole "modify a next test" family, not just the targeted
   half.** `target: "target" | "self"` (**defaults to `target`**, so every pre-07-24k rule is
   unchanged — that default is the regression risk, not the new fields), plus `plotDie: true`
@@ -3187,3 +3221,17 @@ whisper. Pinned: `tests/pulse-sweep-counts.test.js`.
 - **An eviction that leaves no trace reads as a no-op.** At the marker cap the oldest square fizzles
   and the only sign was the "(N/N)" count staying put (R-37(1)). `edhaListPush`'s `res.evicted` is
   hoisted out of the `edhaOwnerListQueue` callback so the placement card can name what was spent.
+
+## Item 52 2026-09-06 (R-27 — the rally stack is SPENT on the next test)
+
+- **`edhaRallyConsume(roll, source, config)`** — the post-`cosmere-rpg.<ctx>Roll` half of the rally
+  stack (Battle Fever / Feeding Frenzy). `edhaTestRiderApply` (pre-roll) still reads
+  `edhaRallyBonus` and splices `N[Rally]` into the d20; this consumer re-reads the actor's `rally`
+  flag, clears it (`edhaRallyClear`) and posts the "spent +N on this test" card. **Post-roll, and
+  re-read from the ACTOR flag, on purpose**: a cancelled dialog must not strand the stack, and a
+  dialog roll rebuilds `roll.options`, so a pre-roll option marker is not a safe consume token
+  (the same pre-apply / post-consume split `advTest` and `nextTestMod` use). The turn-start /
+  round-flip clear (`combatTurnChange`) is unchanged — it still empties an UNSPENT stack. The cap
+  (= Red rank) is enforced twice, at the bump and at the read. Pinned:
+  `tests/rally-spent-on-test.test.js`. The `edha-rally-stack` schema is unchanged (`trigger`,
+  `resetOn`, `note`) — only its label/hint text now says "spent".

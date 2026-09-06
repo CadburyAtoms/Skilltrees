@@ -84,8 +84,16 @@ test("every VARIABLE fed to the channel is narrowed to a legal string first", ()
   assert.deepStrictEqual(vars.sort(), ["m", "mode"],
     `only 'mode' and 'm' may reach the channel indirectly; found ${vars.join(", ")} — a new indirect ` +
     `writer needs its own narrowing proof here`);
-  assert.ok(/const m = mod\.mode === "advantage" \? "advantage" : "disadvantage";/.test(code),
+  // Item 49 moved that narrowing into `edhaNextModFoldMode`, because the flag became a LIST and the
+  // engine now folds N authored entries into the one scalar the channel can hold. The guarantee is
+  // unchanged and still provable in text: the fold RETURNS only the two enum strings or null, and
+  // the caller writes nothing on null (a cancelling advantage/disadvantage pair, or no mode at all).
+  const fold = code.match(/function edhaNextModFoldMode\([\s\S]*?\n\}/);
+  assert.ok(fold, "edhaNextModFoldMode not found — if it was renamed, repoint this ledger");
+  assert.ok(/return adv \? "advantage" : \(dis \? "disadvantage" : null\);/.test(fold[0]),
     "edha-next-test-mod's `m` must be narrowed to one of the two enum strings (it is authored data)");
+  assert.ok(/const m = edhaNextModFoldMode\(mods\);[\s\S]{0,120}?if \(m\) \{/.test(code),
+    "the next-test pre-roll must write the channel only when the fold produced a legal string");
   assert.ok(/if \(h\.mode && !mode\) mode = h\.mode;/.test(code),
     "edha-test-rider's `mode` comes straight off the authored rule — lint pass 13 validates the " +
     "authored values; if this line changed shape, re-check that the gate still covers it");
