@@ -1364,6 +1364,57 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   patches had been dropping correctly for every GM-driven test in the project's history, and the bug
   only exists on the path an actual player takes.
 
+## Operating lessons from run 31 (2026-09-05 — these OVERRIDE older advice where they conflict)
+
+- ✅ **Set the pane viewport BEFORE joining and the second client needs no reload.** Run 30's rule was
+  "resize AND reload" the new tab, because a tab opened at 0×0 never initialises its canvas. The cheaper
+  order works: `tabs_create` → `navigate` to `/join` → **`resize_window` while the join screen is up** →
+  then join. `canvas.ready` came back **true** on the first read, with no reload and no ticker pump.
+  (The *first* tab still needed a reload — it had already joined at the pane's default size before the
+  resize, and re-viewing a scene did not re-initialise the canvas. So: **resize before the join that
+  matters**, whichever tab it is.)
+- ❌ **Deleting a hazard REGION cascades its 🏚️ DRAWING — so a follow-up Drawing delete throws and
+  ABORTS THE REST OF YOUR CALL.** `deleteEmbeddedDocuments("Region", [...])` then
+  `deleteEmbeddedDocuments("Drawing", [...])` on the visuals you had just seen fails with
+  *`Drawing "…" does not exist!`*, and everything after it in the same `javascript_tool` call — the whole
+  control-leg move loop, in this run — silently never runs. **Delete the Regions only, then re-read the
+  scene to confirm the Drawings went with them.** Corollary for cleanup calls generally: put the
+  world-mutating steps you cannot repeat *before* any delete that might throw.
+- ⚠️ **Snapshot ActiveEFFECTS, not just statuses — run 30's lesson has a second half nobody wrote down.**
+  Run 30 correctly moved from "derive statuses from `effects`" to "snapshot `[...actor.statuses]`
+  directly". This run hit the mirror problem: an AE that carries **no status** (`Guardian Stance
+  (+1 Deflect)`) is invisible to a statuses-only snapshot, so when a `createActiveEffect` recorder logged
+  one appearing mid-run there was **no way to tell drift from a pre-existing effect** — and it turned out
+  four other bench PCs, three never driven, carried the identical AE. Under hard rule 6 nothing could be
+  deleted. **Snapshot BOTH:** `[...actor.statuses]` *and* `actor.effects.map(e => ({id, name}))`.
+- ✅ **A row's staging is a free audit of every OTHER mechanic it touches — read the whole card trail, not
+  just your assertion.** This run's only engine defect (`Unravel Everything`'s fill-then-sweep never
+  detonating in one activation) was not in any row. It was found because the Job 6b evidence read included
+  the *next* chat card, which said *"sweeping your omens: no creatures on the ledger"* immediately after a
+  card saying two creatures bore the Omen. **Two adjacent cards contradicting each other is a defect even
+  when both rows you are driving pass.** Confirming it cost one extra cast.
+- ✅ **When a talent's rules run in a declared `order` on one event, prove the ordering with a PRE-LOADED
+  state, not by reading the end state.** The matched pair that settled the defect was: cast 1 on an empty
+  ledger (fill 2 → sweep sees 0), cast 2 on a ledger already holding those 2 (fill adds 0 → sweep detonates
+  both). End state alone cannot distinguish "the sweep is broken" from "the sweep ran before the fill
+  committed"; the pre-loaded cast can, and it costs one extra activation.
+- ✅ **Asserting the fixtures is a legitimate substitute for re-running `bench-setup-console.js` — but say
+  so.** The script is 22 KB and you pay for it twice (idempotency). What the step actually buys is: the
+  roster resolves, the named fixtures exist, and item 37's orphan repair is still idempotent. All three are
+  directly assertable in **one** call — every `Bench — <tree>` actor resolves, the specific talents the run
+  needs are on their actors, and `scene.tokens.filter(t => !game.actors.get(t.actorId))` returns only the
+  four known pre-existing non-bench orphans. **Declare the substitution in the delta**, and re-run the real
+  script if the run needs a fixture it did not itself assert.
+- ✅ **The two-GM negative comes free with Ben online — take it.** Ben's `Gamemaster` has been connected for
+  every run since 24, so any single-applier assertion ("does this fire once or twice?") is already being
+  tested at no cost. State the connected-client list next to the count; "3 Regions, not 6, with
+  `["Bench","Gamemaster","PlayerBench"]` active" is a stronger result than "3 Regions".
+- **Density, measured: 3 rows off the checklist + 1 half closed on a row that stays open + 1 new engine
+  defect root-caused to a reproducible matched pair, in ~35 tool calls / ~40 minutes of driving.** The
+  highest-value moves were (a) taking the re-test block first — five runs running now — and (b) opening the
+  player-client window early enough that three separate rows shared its one setup, which is run 30's lesson
+  paying out a second time.
+
 ## Known limits
 
 - ❌ **RESOLVED AS UNFIXABLE (07-26i): there is no "no written Cognitive/Spiritual defense" creature.**
