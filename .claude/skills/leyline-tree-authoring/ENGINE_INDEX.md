@@ -278,6 +278,15 @@ there is no lint — the swept corpus was 3 sites and only 1 was wrong):
   `ally-drops` decision lives. Unknown side on **either** end → `false`. `rangeFt` 0/absent → whole
   scene (an authored dial). A ranged cue with an unknown gap → `false`, because "within N ft" cannot
   be true of a position you do not have. Pinned in `tests/ally-drop-side.test.js`.
+  ⚠️ **The range boundary is `rangeFt + EDHA_ADJACENCY_SLACK_FT` (2.5 ft), not `rangeFt`** —
+  R-52 (c)(i), 2026-09-06. `edhaTokenGapFt` measures **centre-to-centre**, so an *adjacent* ally sits
+  5.0 ft (Medium orthogonal), 7.07 ft (Medium diagonal) or 7.5 ft (Large 2×2 owner, orthogonal)
+  away, and a 5-ft cue with no slack reached only the first — bench run 19 measured all four. The
+  `enemy-turn-start` sweep had carried the same `+ 2.5` "half-square slack for adjacency reads"
+  since it shipped, so the engine disagreed with itself; `EDHA_ADJACENCY_SLACK_FT` is now the one
+  number and **both** reads use it. Do NOT copy the slack onto other `rangeFt` gates: measuring
+  **edge-to-edge** for sized tokens is the separate, larger answer (TODO item 62) and is what a Huge
+  owner's "adjacent" still needs.
 - **R-63 (ENGINE PASS 5.2, Job 5, 2026-08-10) — `edhaDisposHostile(owner, target)` and
   `edhaSameDisposition(owner, tok)` now fail CLOSED on the Number.isFinite convention**, matching
   `edhaAllyDropEligible` above. Before: `edhaDisposHostile` returned `true` (hostile) when either
@@ -492,11 +501,24 @@ Stamped: `edhaSpendResource` (so every `costs:` deduction, an adversary ability'
 restores, the temp-HP unwind, the creation wizard, adversary sync, and every GM sheet edit or bar
 drag. (Item 13: the engine-issued half of that list now carries the POSITIVE `edhaBookkeepingTag`
 through `edhaResourceWrite`; the predicate reads a declared non-spend the same way it reads no tag,
-so nothing changed at the table.) `edhaGainFocus` / `edhaDrainFocus` never reach the predicate
-either way — their writes carry `edhaFocusWatch` and the focus watcher has skipped them since 07-05.
-⚠️ **`edhaDrainFocus` keeps its pre-item-13 options BYTE-FOR-BYTE**: whether an *involuntary* drain is
-a spend is **R-72, open**, and a bookkeeping tag there would answer it by the back door.
-`tests/resource-writes.test.js` fails if one appears.
+so nothing changed at the table.) `edhaGainFocus` / `edhaDrainFocus` never reach the FOCUS watcher
+either way — their writes carry `edhaFocusWatch` and it has skipped them since 07-05.
+
+⚠️ **R-72 ANSWERED 2026-09-06 (Ben (b)) — AN INVOLUNTARY DRAIN IS NOT A SPEND.** Three sites moved
+from `edhaSpendTag` to `edhaBookkeepingTag`, and they move **together** or the classification splits:
+`edhaDrainFocus`, its `set-resource` socket-relay half (the unowned-target branch), and H10's
+`edha-focus` Investiture branch (whose `op === "drain" ? spend : bookkeeping` ternary is gone — both
+arms are bookkeeping). At the table: an **Edict-bound creature drained by an enemy gets no violation
+prompt**, while its own wired spend still does. **The only `edhaSpendTag` call sites left are
+`edhaSpendResource` and `edhaConsumeCost`** — i.e. exactly "a cost its owner paid"; a third needs a
+ruling, and `tests/resource-writes.test.js` counts them. ⚠️ Two pins in that file and one in
+`tests/spend-tag.test.js` were **FLIPPED to assert the opposite of what they used to** (they
+previously failed if a bookkeeping tag *appeared*, to stop a refactor answering the open ruling by
+the back door) — do not "restore" them.
+**R-76 (b), same day:** H10's Investiture-drain arm has **no consumer in any pack** (the only
+`resource: "inv"` rule shipped is Reaper's Harvest, `op: "gain"`), and it stays anyway — the branch
+is kept as a seeded hook for a future adversary whose signature ability drains a PC's Investiture.
+Do not delete it as dead code; the engine header at H10 carries the note.
 
 ⚠️ **Consulted at exactly TWO sites**, and `tests/spend-tag.test.js` fails if a third appears: the
 `updateActor` focus-change watch and the Order Investiture watch. **The health→0 defeat watchers are
@@ -1196,6 +1218,12 @@ shape the marker trees had no way to express (Bear Witness grants Temp HP to eac
   higher — Temp HP does not stack) and it relays through the GM for creatures the client does not
   own; a zero amount is silent. All three differences are load-bearing: the obvious generic path
   would have quietly nerfed stacked Temp HP, failed on other players' PCs, and spammed "gains 0".
+- ⚠️ **`edhaGrantTempHpCross` keeps the higher SOURCE LABEL as well as the higher value** (R-36,
+  2026-09-06). The label follows the value: a **strict win** takes both, a tie or a loss leaves the
+  incumbent's `{value, source}` alone, and the unowned relay branch carries the same decision. It
+  used to write the incoming `source` unconditionally, so a losing grant relabelled a survivor it
+  did not produce (6 from Final Decree read "Bear Witness"). Pinned in
+  `tests/temphp-source-label.test.js`.
 - Same shape, not yet wired: Final Decree's Witness block, Concord's roster.
 
 ## A second moment on `edha-combat-timing` — `round-start` (07-24u)
@@ -1708,6 +1736,17 @@ Both trees to zero; the `remains` ledger repointed (the THIRD of six). No talent
 - **`edha-revive`** — Raise Dead's ENGINE-OWNED flow, rule-keyed (the edha-decree exit shape):
   confirm + burst-apply revive + initiative surgery + auto injury; sceneOnce + target-at-0
   vetoed pre-cost; the optional ledger spend is freebie-aware.
+- **`edhaLedgerDropCreature(uuid, key, status)`** (R-12, 2026-09-06) — **a creature that comes back
+  to life cannot also be a Remain.** Drops that uuid's entry from **every** owner's `<key>` ledger
+  and clears the marker + `markedBy` once, returning how many entries went. Called by `edha-revive`
+  with the rule's own `ledger`/`ledgerStatus`, and independent of whether the raise SPENT anything —
+  the reported case raised a harvested body by spending a *different* Remain, and the body's own
+  entry may sit on a second Reaper's list. ⚠️ **Order is load-bearing: drop the entries, THEN
+  unmark.** `edhaOwnerList` reconciles on read against the creature's status ("the mark wins"), so
+  unmarking first hides the entry from the sweep and strands a phantom in stored data holding its
+  owner under their cap. Each owner's read-modify-write goes through the 07-26n queue; never call it
+  from inside a queued task. Reach for it whenever a ledger's SUBJECT stops qualifying — this is the
+  by-uuid counterpart of `edhaLedgerSpend`'s pop-oldest. Pinned in `tests/raise-clears-remain.test.js`.
 - **`edha-zone` grew `costList`/`costListStatus`** (terrain that consumes a ledger entry —
   Bone Garden; empty vetoed pre-cost, cancel/out-of-range REFUNDS) and **`edha-zone-hazard` grew
   `moment: turn-end`** (ANY creature ending its turn inside — `edhaTurnEndHazardSweep`, the
@@ -2309,9 +2348,11 @@ declarations (hoisted) — callable from anywhere in the file regardless of text
   its own max math, its own failure handling (a socket relay, a bare `return`) or a multi-path
   `max.override` transform — and **none of them was a spend** (every cost deduction already went
   through `edhaSpendResource`/`edhaConsumeCost`). So this owns the path and takes the #28b
-  classification as an ARGUMENT: `edhaBookkeepingTag(src)` for a declared non-spend (eleven sites),
-  `edhaSpendTag(src)` for a spend (H10's Investiture drain), or the site's existing options
-  untouched where the ruling is open (`edhaDrainFocus`, R-72). `changes` is keyed **relative** to
+  classification as an ARGUMENT: `edhaBookkeepingTag(src)` for a declared non-spend — since **R-72
+  (2026-09-06)** that is EVERY site the writer owns, including `edhaDrainFocus` and H10's Investiture
+  drain, because an involuntary drain is not a spend — and `edhaSpendTag(src)` for a real spend,
+  which after R-72 means only `edhaSpendResource` / `edhaConsumeCost`, neither of which routes
+  through this writer. `changes` is keyed **relative** to
   the resource — `{ value: n }`, or `{ "max.override": n, "max.useOverride": true, value: n }`.
   It does **not** clamp and does **not** catch: every migrated site kept its own, so the migration
   is a pure refactor plus the tag. Use it whenever you would otherwise type a resource path as a
@@ -2666,13 +2707,20 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   (Surefooted's +10 displayed +20). Set the override to the base derivation only.
 - **THE EDHA DERIVED-STAT RULES — one source of truth** (`EDHA_HP_BONUS`,
   **`edhaWalkRateFtFromSpd(spd)`** = 20 + 5×SPD, `edhaSensesRangeFtFromAwa(awa)`; canon is
-  `source-materials/legacy-uploads/Character_Building_Rules.md` §Derived stats). All three differ
-  from the cosmere system's own derivation, and **both** `edhaDeriveSheetStats` (the sheet) and
-  `edhaCwDerivedPreview` (the wizard's live panel) must read these helpers — never re-implement
-  the arithmetic. 07-28i: when they each carried a copy they drifted in BOTH directions at once
-  (preview 13/30/10 vs sheet 14/35/5), and a fix that only moved one surface would have been
-  right for one cell and wrong for the next. `EDHA_HP_BONUS` is deliberately ONE constant because
-  its value is the open ruling R-56's neighbour, **R-54**.
+  `source-materials/legacy-uploads/Character_Building_Rules.md` §Derived stats). **TWO** of them
+  differ from the cosmere system's own derivation — Movement and Senses — and **both**
+  `edhaDeriveSheetStats` (the sheet) and `edhaCwDerivedPreview` (the wizard's live panel) must read
+  these helpers, never re-implement the arithmetic. 07-28i: when they each carried a copy they
+  drifted in BOTH directions at once (preview 13/30/10 vs sheet 14/35/5), and a fix that only moved
+  one surface would have been right for one cell and wrong for the next.
+  ⚠️ **R-54 ANSWERED 2026-09-06 (Ben (c)): `EDHA_HP_BONUS` is `0`.** HP is NOT one of the stats Edha
+  derives differently — `Character_Building_Rules.md` §HP and `Edha_Character_Builder.xlsx`
+  (Character Builder!H22) both give `HP = 10 + STR` at L1, term-for-term the system's advancement
+  table — so the old "+1" was a drift, not a rule, and there is **no level gate anywhere**. The
+  constant and the clamp repair below are KEPT (the repair is inert by construction at 0, and it is
+  what makes a non-zero bonus reachable if the number ever moves). June pregens that STORE a manual
+  `hea.max.bonus` keep theirs until `edha.migrateDerivations()`. Read `docs/ACTOR_STAT_DERIVATION.md`
+  before touching any derived-stat formula.
 - ⚠ FACT (07-28i): **the system CLAMPS every resource to its max BEFORE the module's derivation
   runs.** `CommonActorDataModel#prepareSecondaryDerivedData` ends with
   `resource.value = clamp(0, max.value, value)`, and that is inside `Actor#prepareDerivedData` —
@@ -2950,9 +2998,21 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   Healing-Halved read + gate (strictest mark wins; the gate announces once, naming the mark's
   `byName`). **Any heal path that writes `hea` outside applyDamage MUST call the gate** — the
   standard door is `edhaCrossHeal(actor, amount, {bypassHealCut})`; bypass is ONLY for drop-to-1
-  preventions (Death Ward / Raise Dead / Unbreakable Line — whether the block stops stabilization
-  is a queued ruling). `edhaHealCutFactor` is now a thin read of the info (applyDamage wrap
+  preventions. `edhaHealCutFactor` is now a thin read of the info (applyDamage wrap
   unchanged). Pure selection/arithmetic pinned in tests/.
+  ⚠️ **R-10 ANSWERED 2026-09-06 (Ben (b)): "cannot regain HP" does NOT stop stabilization** —
+  stabilizing at 1 is a **floor against death, not regaining**. So the bypass is the RULING, not a
+  pending decision, and it is **the whole family or none**; a member that quietly acquired the gate
+  would turn "cannot regain HP" into "cannot be saved" for one talent only. The four writers,
+  audited 2026-09-06 and pinned in `tests/drop-to-one-family.test.js`: (1) `edhaCrossHeal(…,
+  {bypassHealCut: true})` — Unbreakable Line's `revive` button, the flag's ONLY true caller;
+  (2) `edhaDeathWardCheck`'s direct `hea.value = 1` (and its burst relay); (3) `edhaReviveUse` →
+  `edhaApplyBurstResults`'s `{amount: 1, heal: true}`; (4) the `edha-hp-floor` `preUpdateActor`
+  veto, which rewrites the incoming change and never was a heal — in the family because it makes
+  the same promise and a refactor onto a heal helper would gate it by accident.
+  **`edhaHealCutGate` has exactly TWO call sites** (`edhaCrossHeal`'s non-bypass branch + the
+  effect-heal branch); the test counts them, so a third is either a new heal path you declare there
+  or R-10 being reversed by accident. A plain heal on a withered creature is still blocked.
 - **`edha-hp-threshold` grew `rangeColor`** (+ the ally / owner-token-on-scene gates are
   enforced in the sweep): the offer needs the owner ON the scene, the victim's token sharing its
   disposition (unknown fails CLOSED), and — when authored — the ally inside the colour's

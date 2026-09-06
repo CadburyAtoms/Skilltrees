@@ -265,6 +265,34 @@ test("R-4: a GM Investiture edit is not 'activating Investiture' — no Edict vi
   } finally { gm.undo(); }
 });
 
+/* R-72 (ANSWERED 2026-09-06, Ben (b)) — THE TABLE-FACING PAIR. The Order Edict fires on the
+ * creature's OWN activations, so an enemy taking its Investiture must not read as one. Both
+ * directions, because a fix that silenced the watch entirely would pass the first case alone. */
+test("R-72: an Edict-bound creature DRAINED by an enemy gets NO violation prompt", async () => {
+  const env = loadEngine();
+  const gm = asPrimaryGm(env);
+  captureChat(env);
+  const fired = stubInvestWatch(env);
+  try {
+    const bound = spendActor("Bound", { inv: { value: 4 } });
+    /* COUPLE THE TWO HALVES. H10's executor lives inside a registerItemEventHandlerType config
+     * object, so no harness can call it — which means a behavioural case that hand-built its own
+     * options would pass even with the spend stamp back in the engine. So read the branch's own
+     * classification out of the source FIRST, then land that classification on the watch. */
+    const code = codeOnly(readEngineSource());
+    const block = code.slice(code.indexOf('type: "edha-focus"'));
+    const invWrite = /edhaResourceWrite\(who, "inv", \{ value: next \},[^;]*?(edha\w+Tag)\(/.exec(block);
+    assert.ok(invWrite, "H10's Investiture write is still one edhaResourceWrite with a tag argument");
+    assert.strictEqual(invWrite[1], "edhaBookkeepingTag",
+      "R-72 (b): H10's drain is bookkeeping. With edhaSpendTag here the case below is a lie.");
+    const opts = await landInvWrite(env, bound, 1, env[invWrite[1]]("Reaper's Harvest (Investiture drain)"));
+    eq(opts.edhaOrderInv, { old: 4, new: 1 });                   // the stash still happens
+    assert.strictEqual(fired.length, 0,
+      "the creature activated nothing — someone took it. Until R-72 this write carried edhaSpendTag " +
+      "and prompted a violation for being robbed.");
+  } finally { gm.undo(); }
+});
+
 test("R-4: a real Investiture spend still raises the Edict violation prompt", async () => {
   const env = loadEngine();
   const gm = asPrimaryGm(env);
@@ -280,14 +308,28 @@ test("R-4: a real Investiture spend still raises the Edict violation prompt", as
   } finally { gm.undo(); }
 });
 
-test("R-4: the cross-actor set-resource RELAY is stamped, so the relay half behaves like the direct half", () => {
+/* ⚠ FLIPPED 2026-09-06 (R-72). This case used to demand `edhaSpendTag(` here — "unstamped it would
+ * silently stop counting". R-72 (b) answered that an INVOLUNTARY drain is not a spend at all, and
+ * the relay's only emitter is `edhaDrainFocus`'s unowned-target branch, so the two halves move
+ * together in the other direction: both bookkeeping. The invariant the case really guards is
+ * unchanged and is what the assertion now says — the relay half must classify itself EXACTLY as the
+ * direct half does, because a split classification is the asymmetry #28b stamped this site to
+ * close (a drained Edict-bound creature would prompt when the drainer lacks ownership and stay
+ * quiet when it does not). */
+test("R-72: the cross-actor set-resource RELAY classifies like the direct half — bookkeeping, not a spend", () => {
   const env = loadEngine();
   const src = readEngineSource();
   const start = src.indexOf('"set-resource": async (payload)');
   assert.ok(start > 0, "the relay handler is still named that");
   const relay = src.slice(start, src.indexOf('"rewrite-roll": async (payload)', start));
-  assert.ok(/edhaSpendTag\(/.test(relay),
-    "edhaDrainFocus's unowned-target branch relays through here; unstamped it would silently stop counting");
+  assert.ok(/edhaBookkeepingTag\(/.test(relay),
+    "edhaDrainFocus's unowned-target branch relays through here; R-72 (b) makes it bookkeeping");
+  assert.ok(!/edhaSpendTag\(/.test(relay),
+    "…and the spend stamp must not come back, or the unowned drain violates an Edict the owned one does not");
+
+  // The behavioural half: whatever the relay writes, the predicate must read as "not a spend".
+  const a = spendActor("Bound", { foc: { value: 4 } });
+  assert.strictEqual(env.edhaIsSpend(a, "foc", env.edhaBookkeepingTag("set-resource relay (involuntary drain)"), 4, 2), false);
 });
 
 /* ---- 5. the predicate is adopted at the spend sites and NOWHERE else --------------------------- */

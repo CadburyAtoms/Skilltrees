@@ -3199,9 +3199,13 @@ function edhaParseCosts(s) {
  *
  *   1. `options.edha.spend` — stamped by the engine's own spend writers via `edhaSpendTag()`:
  *      `edhaSpendResource` (the canonical clamped spend, and therefore every `costs:` deduction
- *      including an adversary ability's), `edhaConsumeCost` (the takeover/burst activation cost),
- *      the `set-resource` socket relay, and H10's Investiture drain. `options` and not a document
- *      property ON PURPOSE: options are broadcast to every client with the update, so the watcher
+ *      including an adversary ability's) and `edhaConsumeCost` (the takeover/burst activation
+ *      cost). ⚠ Two more sites carried the stamp until **R-72 answered (b) on 2026-09-06** — the
+ *      `set-resource` socket relay and H10's Investiture drain — and both are now BOOKKEEPING,
+ *      because each of them is an INVOLUNTARY drain: the creature losing the resource did not
+ *      activate anything, so the Order Edict must not read it as a violation. What is left on this
+ *      list is exactly "a cost its owner paid". `options` and not a document property ON PURPOSE:
+ *      options are broadcast to every client with the update, so the watcher
  *      sees the tag no matter which client it runs on, and nothing is left behind on the actor.
  *   2. A live **pre-use expectation** — the cosmere-rpg system deducts a talent's activation cost
  *      itself, from a `postRoll` action inside `item.use()`, with a plain `actor.update()` and NO
@@ -3226,10 +3230,11 @@ function edhaParseCosts(s) {
  * predicate reads the same way it reads no tag at all. A GM sheet edit still carries nothing, and
  * that is still what makes it a GM sheet edit.) `edhaGainFocus`/`edhaDrainFocus` never reach the
  * predicate either way: their writes already carry `edhaFocusWatch` and the focus watcher has
- * skipped them since 07-05 (the drain announces its own zero crossing by hand). ⚠ `edhaDrainFocus`
- * keeps its pre-#13 options BYTE-FOR-BYTE — an involuntary drain is **R-72, an open ruling**, and
- * a bookkeeping tag there would answer it by the back door. `edhaGainFocus` is an increase, so its
- * tag decides nothing. */
+ * skipped them since 07-05 (the drain announces its own zero crossing by hand). Since **R-72
+ * answered (b) on 2026-09-06** `edhaDrainFocus` ALSO carries `edhaBookkeepingTag` — an involuntary
+ * drain is not a spend, and the tag says so positively rather than relying on the focus-watch skip
+ * to hide it (the skip is a different statement, and the Investiture watch does not read it).
+ * `edhaGainFocus` is an increase, so its tag decides nothing. */
 const EDHA_SPEND_WINDOW_MS = 30000;   // the file's existing wall-clock prompt-debounce bound
 let _edhaSpendExpect = [];            // [{ actorId, resource, amount, source, at }]
 /* The tag itself. Merge it into an update's `options`: `actor.update(u, edhaSpendTag("…"))`, or
@@ -3326,10 +3331,12 @@ async function edhaGainResource(actor, resource, n) {
  * through `edhaSpendResource`/`edhaConsumeCost`. They are gains, heals, restores, a lifesteal, a
  * revive-to-1, a Colossus max-HP override and one open-ruling drain. So this owns the path and
  * takes the classification as an ARGUMENT, one per site:
- *   · `edhaBookkeepingTag(src)` — a declared non-spend (every gain/heal/restore/override here);
- *   · `edhaSpendTag(src)`      — a spend (H10's Investiture drain, stamped by #28b);
- *   · the site's existing options, untouched, where the classification is an OPEN ruling —
- *     `edhaDrainFocus` is R-72 ("is an involuntary drain a spend?") and must not be answered here.
+ *   · `edhaBookkeepingTag(src)` — a declared non-spend (every gain/heal/restore/override here,
+ *     and — since R-72 answered (b) on 2026-09-06 — every INVOLUNTARY DRAIN: `edhaDrainFocus`,
+ *     its `set-resource` relay half, and H10's Investiture branch. A creature whose resource is
+ *     taken by someone else has not activated anything, so the Order Edict must not see it);
+ *   · `edhaSpendTag(src)`      — a real spend. The only two writers left are `edhaSpendResource`
+ *     and `edhaConsumeCost`, i.e. every cost the OWNER pays. Adding a third needs a ruling.
  * `changes` is keyed RELATIVE to the resource: `{ value: n }`, or
  * `{ "max.override": n, "max.useOverride": true, value: n }` for a transform.
  *
@@ -3680,6 +3687,43 @@ async function edhaLedgerSpend(owner, key, status = null, source = "") {
   });
 }
 
+/* R-12 (ANSWERED 2026-09-06, Ben (a)) — A CREATURE THAT COMES BACK TO LIFE CANNOT ALSO BE A REMAIN.
+ * Bench found an adversary that had itself been harvested, raised by spending a DIFFERENT Remain,
+ * standing at 1 HP still wearing the `harvested` marker with its own ledger entry live — a living
+ * creature that was also somebody's corpse-resource. The card says nothing either way; Ben ruled
+ * the raise clears it.
+ *
+ * Deliberately swept across EVERY owner's ledger, not just the raiser's: a marker is a property of
+ * the CREATURE (the `edhaListSharedHold` precedent), and the whole point of the reported case is
+ * that the Remain being spent belonged to one entry while the raised body was another — possibly on
+ * a different Reaper's list. Generic in `key`/`status`, so any ledger whose subject can be restored
+ * rides it; nothing here names a talent.
+ *
+ * ORDER IS LOAD-BEARING: drop the entries FIRST, unmark SECOND. `edhaOwnerList` reconciles on read
+ * against the creature's status ("the mark wins"), so unmarking first would make the entry
+ * invisible to this sweep and leave a phantom in stored data holding its owner under their cap.
+ * Each owner's read-modify-write goes through the shared queue (07-26n), and this is never called
+ * from inside a queued task, so it cannot deadlock. Returns how many entries were dropped. */
+async function edhaLedgerDropCreature(uuid, key, status = null) {
+  const k = String(key || "").trim();
+  if (!uuid || !k) return 0;
+  const st = String(status || k).trim();
+  let dropped = 0;
+  try {
+    for (const l of edhaOwnerLedgers(k, st)) {
+      dropped += await edhaOwnerListQueue(l.owner, k, async () => {
+        const list = edhaOwnerList(l.owner, k, st);          // re-read INSIDE the queue
+        const kept = list.filter((e) => e?.uuid !== uuid);
+        if (kept.length === list.length) return 0;
+        await edhaSetOwnerList(l.owner, k, kept);
+        return list.length - kept.length;
+      });
+    }
+    if (dropped) await edhaListUnmark({ uuid }, st, { key: k });   // the status + markedBy, once
+  } catch (e) { console.error("Edha Content | ledger drop-creature failed", e); }
+  return dropped;
+}
+
 /* The near-victim auto-pick (07-25, 2bU — Spreading Omen's second placement): the NEAREST living
  * enemy within `ft` of the victim, skipping the victim itself and anyone already on the ledger.
  * Null when nobody qualifies — the caller says so on the card rather than erroring. */
@@ -3830,13 +3874,26 @@ function edhaSideHostile(a, b) { return Number.isFinite(a) && Number.isFinite(b)
  *   · the range test read `ft > 0 && vTok && …`, so the same victim also skipped the RANGE filter
  *     and a 5-ft cue fired from anywhere on the map. 3 of the 5 shipped ally-drops rules carry a
  *     rangeFt (Roek 20, Crownox Ring 5, The Reckoning 5), so that half was live in real data too.
- * `rangeFt` 0/absent still means "whole scene" — that is an authored dial, not a failed lookup. */
+ * `rangeFt` 0/absent still means "whole scene" — that is an authored dial, not a failed lookup.
+ *
+ * R-52 (c)(i), 2026-09-06 — THE HALF-SQUARE SLACK. `edhaTokenGapFt` measures CENTRE-TO-CENTRE, and
+ * this predicate applied no slack, so bench run 19 measured a 5-ft cue that could not reach the
+ * ally standing beside its owner: The Reckoning (Medium) missed every DIAGONAL neighbour (7.07 ft)
+ * and the Crownox Ring (Large 2×2) missed even an ORTHOGONAL one (7.5 ft), while an ally standing
+ * INSIDE the ring's own footprint (0 ft) passed. Both cards promise the opposite ("an ADJACENT ox",
+ * "a pack-mate dropped WITHIN 5 ft"). The engine already answered this question 60 lines below —
+ * the `enemy-turn-start` sweep adds `+ 2.5` "half-square slack for adjacency reads" — and simply
+ * disagreed with itself. It no longer does: EDHA_ADJACENCY_SLACK_FT is the one number, and both
+ * reads apply it. Item 62 is the separate, larger question of measuring EDGE-TO-EDGE for sized
+ * tokens, which is what a Huge owner's "adjacent" would still need; slack is not a substitute for
+ * it, and this is deliberately not a general widening of every rangeFt gate in the engine. */
+const EDHA_ADJACENCY_SLACK_FT = 2.5;
 function edhaAllyDropEligible(victimSide, ownerSide, rangeFt, gapFt) {
   if (!Number.isFinite(victimSide) || !Number.isFinite(ownerSide)) return false;   // unknown side → no eligible ally
   if (ownerSide !== victimSide) return false;                                      // same side only
   const ft = Number(rangeFt) || 0;
   if (ft <= 0) return true;                                                        // 0 / absent = whole scene
-  return Number.isFinite(gapFt) && gapFt <= ft;                                    // unknown position → cannot be "within N ft"
+  return Number.isFinite(gapFt) && gapFt <= ft + EDHA_ADJACENCY_SLACK_FT;          // unknown position → cannot be "within N ft"
 }
 async function edhaGmCueDamageSweep(victim, prevHp, newHp, maxHp) {
   try {
@@ -3844,7 +3901,14 @@ async function edhaGmCueDamageSweep(victim, prevHp, newHp, maxHp) {
     for (const { item, h } of edhaCueRules(victim, "hp-below")) {
       if (edhaCueCrossed(prevHp, newHp, maxHp, h.atFraction)) await edhaPostCueCard(victim, item, h);
     }
-    if (prevHp > 0 && newHp <= 0) {
+    /* R-51 (2026-09-06, Ben (a)): an ILLUSORY COPY breaking is not "an ally dropped". A phantom
+     * never had a life to lose, and its own side are precisely the people who know it was never
+     * real — the fooled ENEMIES are the ones who would react, and they are on the other side of the
+     * same-side filter, so there is nobody left for this cue to be true of. The phantom's break has
+     * its own signal: the `seeming-break` cue kind, dispatched from the restore path.
+     * (The `damaged` / `hp-below` cues above still fire — those are the phantom's OWN rules, and a
+     * copy that carries one is a copy of a creature that carries one.) */
+    if (prevHp > 0 && newHp <= 0 && !victim?.getFlag?.("edha-content", "phantomDouble")) {
       const vTok = edhaCasterToken(victim);
       const vSide = edhaActorSide(victim);
       for (const t of (canvas?.tokens?.placeables ?? [])) {
@@ -3888,7 +3952,7 @@ async function edhaTurnCueSweep(combat, prior, current) {
         if (edhaStillFightingElsewhere(t.actor, guard)) continue;                            // fighting in another combat
         for (const { item, h } of edhaCueRules(t.actor, "enemy-turn-start")) {
           const ft = Number(h.rangeFt) || 0;
-          if (ft > 0 && edhaTokenGapFt(t, curTok) > ft + 2.5) continue;   // half-square slack for adjacency reads
+          if (ft > 0 && edhaTokenGapFt(t, curTok) > ft + EDHA_ADJACENCY_SLACK_FT) continue;   // half-square slack for adjacency reads (R-52: the SAME number edhaAllyDropEligible uses — they disagreed until 2026-09-06)
           await edhaPostCueCard(t.actor, item, h, ` <em>(${curTok.name}'s turn starts in range.)</em>`);
         }
       }
@@ -4134,9 +4198,23 @@ function edhaHealCutFactor(actor) { return edhaHealCutInfo(actor)?.fraction ?? n
  * regrowth, Shared Burden, the pulse heals) write system.resources.hea directly and never pass
  * through applyDamage, so a Mender click healed a Withering-blocked target 10 HP. Every such path
  * now calls this before writing: it scales the amount by the strictest mark and announces once.
- * DELIBERATELY not routed through it: drop-to-1 preventions (Death Ward, Raise Dead's revive,
- * Unbreakable Line via bypassHealCut) — whether "cannot regain HP" stops stabilization is a
- * design ruling, queued for Ben; today all three stay consistent (ungated). */
+ * ⚠️ DELIBERATELY NOT ROUTED THROUGH IT — THE DROP-TO-1 FAMILY. **R-10 ANSWERED 2026-09-06 (Ben
+ * (b)): stabilizing at 1 is a FLOOR AGAINST DEATH, not regaining, so every drop-to-1 / stabilize
+ * writer bypasses the no-heal condition.** It is a ruling, not an oversight, and it is the whole
+ * family or none — a member that quietly acquired the gate would let "cannot regain HP" become
+ * "cannot be saved", which is a different card. Audited 2026-09-06 (item 47); all four bypass, and
+ * `tests/drop-to-one-family.test.js` fails if any one of them starts gating:
+ *   1. `edhaCrossHeal(victim, 1 - cur, { bypassHealCut: true })` — Unbreakable Line's `revive`
+ *      button. `bypassHealCut` exists FOR THIS and for nothing else.
+ *   2. `edhaDeathWardCheck` — Death Ward's applyDamage post-pass writes `hea.value = 1` directly
+ *      (and relays the same 1 as a `burst-apply` heal hit when the client lacks ownership).
+ *   3. `edhaReviveUse` → `edhaApplyBurstResults` — Raise Dead's `{ amount: 1, heal: true }` hit.
+ *   4. The `edha-hp-floor` `preUpdateActor` veto — it rewrites the incoming HP change to the
+ *      talent's floor before it lands, so it never was a heal at all. It is in the family because
+ *      it is the same PROMISE ("instead of dropping, you hold at N"), and a future refactor
+ *      routing it through a heal helper would gate it by accident.
+ * A PLAIN heal on a withered creature is still blocked — that is the other half of the ruling and
+ * the same test file pins it. */
 function edhaHealCutGate(target, amount) {
   const info = edhaHealCutInfo(target);
   if (!info || !(Number(amount) > 0)) return Math.max(0, Math.floor(Number(amount) || 0));
@@ -5589,6 +5667,9 @@ function edhaReduceInstances(list, amount) {
 // Cross-actor heal/damage: do it directly if we own the target, else relay to the GM (burst-apply).
 // Every rule-driven heal riding this path respects the No-Healing/Healing-Halved mark (defect 5);
 // bypassHealCut is for drop-to-1 PREVENTIONS only (Unbreakable Line — the Death Ward parity case).
+// R-10 (b), 2026-09-06: that bypass is the RULING, not a shortcut — stabilizing at 1 is a floor
+// against death, not regaining, so "cannot regain HP" must not stop it. See edhaHealCutGate's
+// header for the whole drop-to-1 family; do not add a caller that passes this for a real heal.
 async function edhaCrossHeal(actor, amount, { bypassHealCut = false } = {}) {
   if (!actor || !(amount > 0)) return;
   if (!bypassHealCut) { amount = edhaHealCutGate(actor, amount); if (!(amount > 0)) return; }
@@ -5712,7 +5793,7 @@ async function edhaBulwarkClick(ev) {
       note = `${owner.name} takes ${amount} in ${victim.name}'s place (Shared Burden).`;
     }
     else if (action === "retaliate" && attacker) { await edhaCrossDamage(attacker, amount, "spirit", { edhaSource: owner }); note = `${owner.name} deals ${amount} spirit to ${attacker.name} (Retributive Guard — on a successful White test).`; }
-    else if (action === "revive" && victim) { const cur = Number(victim.system?.resources?.hea?.value) || 0; await edhaCrossHeal(victim, Math.max(1, 1 - cur), { bypassHealCut: true }); note = `${victim.name} drops to 1 health instead of 0 (Unbreakable Line — on a successful White test).`; }   // prevention, not a heal — Death Ward parity (ruling queued)
+    else if (action === "revive" && victim) { const cur = Number(victim.system?.resources?.hea?.value) || 0; await edhaCrossHeal(victim, Math.max(1, 1 - cur), { bypassHealCut: true }); note = `${victim.name} drops to 1 health instead of 0 (Unbreakable Line — on a successful White test).`; }   // prevention, not a heal — Death Ward parity (R-10 (b), 2026-09-06: a floor against death, not regaining)
     else if (action === "rally-zone") {
       const founds = edhaFoundationsOn(canvas?.scene, owner.id);
       const disp = edhaActorSide(owner);
@@ -6485,9 +6566,11 @@ async function edhaDrainFocus(actor, n, source) {
     if (!game.users?.activeGM) { ui.notifications?.warn(`Edha: a GM must be online for ${source || "the focus drain"}.`); return; }
     try { game.socket.emit("module.edha-content", { action: "set-resource", payload: { actorUuid: actor.uuid, path: "system.resources.foc.value", value: next } }); } catch (e) { return; }
   } else {
-    // #13: the path moves onto edhaResourceWrite; the OPTIONS are byte-for-byte what they were —
-    // whether an involuntary drain is a "spend" is R-72, still open, and is not answered here.
-    try { await edhaResourceWrite(actor, "foc", { value: next }, { edhaFocusWatch: true }); } catch (e) { return; }
+    // #13 moved the path onto edhaResourceWrite and left the options byte-for-byte pending R-72.
+    // R-72 ANSWERED 2026-09-06 (Ben (b)): an involuntary drain is NOT a spend — the victim did not
+    // activate anything — so the write DECLARES ITSELF BOOKKEEPING. `edhaFocusWatch` still rides
+    // alongside it (the 07-05 watcher skip); the two say different things and both are needed.
+    try { await edhaResourceWrite(actor, "foc", { value: next }, { edhaFocusWatch: true, ...edhaBookkeepingTag(`${source || "focus drain"} (involuntary drain)`) }); } catch (e) { return; }
   }
   // ANNOUNCE the loss (2026-07-26l, bench run 3 defect 1): this helper was the ONE silent focus
   // write — edhaGainFocus posts a card, the executor's inv/hea branches post cards, and Wary's
@@ -8547,9 +8630,11 @@ function edhaCwMaxSkillRank(level) { return Math.floor((Math.max(1, Number(level
 // the SHEET, not the rulebook — every number must be what the finished sheet will read, so the
 // three stats Edha derives differently from the system come from the shared helpers
 // (EDHA_HP_BONUS / edhaWalkRateFtFromSpd / edhaSensesRangeFtFromAwa), never re-implemented here.
-// Bench run 21 caught all three drifting at once when they were: Health missed the +1, Move used
-// the SYSTEM's ceil(SPD/2) ladder against the sheet's 20+5×SPD, and Senses was the only one the
-// preview had right. The rest mirror the system: health sums the advancement rules (rule.health +
+// Bench run 21 caught all three drifting at once when they were: Health missed the then-+1, Move
+// used the SYSTEM's ceil(SPD/2) ladder against the sheet's 20+5×SPD, and Senses was the only one the
+// preview had right. (R-54 has since set EDHA_HP_BONUS to 0, so the Health cell now equals the
+// system's advancement sum — read from the constant, never re-inlined, so the two stay agreed.)
+// The rest mirror the system: health sums the advancement rules (rule.health +
 // STR where healthIncludeStrength — read from CONFIG at runtime); Focus 2+WIL; defenses 10+pair;
 // recovery is the system's ceil(WIL/2) die ladder; Investiture 2+max(AWA,PRE) is the Edha rule
 // (attunement-gated, footnoted).
@@ -11440,9 +11525,12 @@ const EDHA_SOCKET_ACTIONS = {
     const p = payload || {};
     const a = await edhaResolveActorRef(p.actorUuid);
     // #28b: a relayed write is ALWAYS an engine write caused by a player-facing action — the only
-    // emitter is edhaDrainFocus's unowned-target branch. Stamped, so the relay half keeps the
-    // behaviour the direct half has: the decrease still reads as a spend GM-side.
-    if (a && p.path) await a.update({ [p.path]: p.value }, edhaSpendTag("set-resource relay"));
+    // emitter is edhaDrainFocus's unowned-target branch, so the relay half must classify itself
+    // exactly as the direct half does. R-72 (2026-09-06) made that classification BOOKKEEPING, not
+    // a spend: leaving the spend stamp here would mean an Edict-bound creature drained by a player
+    // who does not own it STILL gets a violation prompt while the owned case goes quiet — the very
+    // asymmetry #28b stamped this site to close. The two halves move together, always.
+    if (a && p.path) await a.update({ [p.path]: p.value }, edhaBookkeepingTag("set-resource relay (involuntary drain)"));
   },
   "rewrite-roll": async (payload) => {                           // Voice of Authority / Bound by Word — change a rendered roll's total
     const p = payload || {};
@@ -14097,6 +14185,14 @@ async function edhaReviveUse(item, h) {
         } catch (e) { yes = false; }
         if (yes && await edhaLedgerSpend(owner, key, st, item.name)) spendNote = ` A ${edhaConditionLabel(st) || st} is consumed.`;
       }
+      /* R-12 (Ben (a), 2026-09-06): the RAISED creature's OWN entry and marker go too — a living
+       * creature cannot also be a Remain. Separate from the spend above and unconditional on it:
+       * the reported case raised a harvested adversary by spending a DIFFERENT Remain, and the
+       * body's own entry may sit on another Reaper's ledger entirely, so the sweep is by uuid
+       * across every owner (edhaLedgerDropCreature). Runs AFTER the spend so the two writes cannot
+       * race for the same list, and before the card so the note is true when it prints. */
+      if (await edhaLedgerDropCreature(target.uuid, key, String(h.ledgerStatus || key).trim()))
+        spendNote += ` ${target.name} is no longer a ${edhaConditionLabel(String(h.ledgerStatus || key).trim()) || key} — its own marker and ledger entry are cleared.`;
     }
     const payload = { casterActorUuid: owner.uuid, hits: [{ actorUuid: target.uuid, amount: 1, heal: true }] };
     if (game.user?.isGM) await edhaApplyBurstResults(payload);
@@ -16699,12 +16795,22 @@ async function edhaResolveRegrowth(combat) {
 Hooks.on("combatTurnChange", (combat) => { if (edhaDefBuffGmGate()) void edhaResolveRegrowth(combat); });
 
 /* --- Temp-HP offer card (`edha-heal-react` {offer-thp} — was name-keyed to Vital Surge) ------------ */
+/* THP doesn't stack — it KEEPS THE HIGHER. R-36 (2026-09-06): the LABEL must keep the higher too.
+ * Until this fix `source` was written unconditionally, so a losing grant relabelled a value it did
+ * not produce: an ally holding 6 from Final Decree read "Bear Witness" after a 4, and a 99-THP ally
+ * read "Investiture of Command". The number was right and the attribution lied — which is worse
+ * than a wrong number, because the card is what a player reads to decide what will expire.
+ * A TIE is not a win: the incumbent grant keeps both its value and its name. */
 async function edhaGrantTempHpCross(target, amount, source) {
-  const final = Math.max(edhaGetTempHp(target)?.value ?? 0, Math.max(0, Math.floor(amount)));   // THP doesn't stack — keep the higher
-  if (target.isOwner) { await edhaWriteTempHp(target, final, source); return; }
+  const held = edhaGetTempHp(target);                                    // null when there is none
+  const inc = Math.max(0, Math.floor(Number(amount) || 0));
+  const wins = inc > (held?.value ?? 0);
+  const final = wins ? inc : (held?.value ?? 0);
+  const label = wins ? (source || "") : (held?.source ?? source ?? "");
+  if (target.isOwner) { await edhaWriteTempHp(target, final, label); return; }
   // Job 6a (found via the setFlagEmit ratchet re-measure, an 8th split beyond the named 7): routed
   // through the canonical helper.
-  await edhaSetEdhaFlag(target, "tempHp", { value: final, source: source || "" });
+  await edhaSetEdhaFlag(target, "tempHp", { value: final, source: label || "" });
 }
 function edhaPostVitalSurgeCard(owner, target, tal, h) {
   try {
@@ -17285,27 +17391,40 @@ function edhaDeriveInvestiture(actor) {
 }
 
 /* --- THE EDHA DERIVED-STAT RULES — one source of truth ------------------------------------------
- * `source-materials/legacy-uploads/Character_Building_Rules.md` §Derived stats is canon for these
- * three; the cosmere system derives all three differently. Both the SHEET (edhaDeriveSheetStats,
- * below) and the WIZARD PREVIEW (edhaCwDerivedPreview) read these helpers, because when they each
- * carried their own copy of the arithmetic they drifted in BOTH directions at once — bench run 21
- * measured preview Health 13 / Move 30 / Senses 10 against sheet 14 / 35 / 5.
+ * `source-materials/legacy-uploads/Character_Building_Rules.md` §Derived stats is canon for these;
+ * the cosmere system derives TWO of them differently — Movement and Senses. HP is NOT one of them
+ * (the correction R-54 landed, 2026-09-06): `Character_Building_Rules.md` §HP and
+ * `Edha_Character_Builder.xlsx` (Character Builder!H22) both give `HP = 10 + STR` at L1,
+ * term-for-term the system's own advancement table, so the Edha and system numbers are IDENTICAL.
+ * See `docs/ACTOR_STAT_DERIVATION.md` (the per-stat derivation map) before touching any of this.
+ * Both the SHEET (edhaDeriveSheetStats, below) and the WIZARD PREVIEW (edhaCwDerivedPreview) read
+ * these helpers, because when they each carried their own copy of the arithmetic they drifted in
+ * BOTH directions at once — bench run 21 measured preview Health 13 / Move 30 / Senses 10 against
+ * sheet 14 / 35 / 5.
  *  • Movement = 20 + SPD·5 ft   (canon; the system's own ladder is ceil(SPD/2) into [20,25,30,40,60,80])
  *  • Senses Range = the AWA table (canon; the system's is ceil(AWA/2) into [5,10,20,50,100,∞], so
  *    an AWA-0 PC read 5 ft on the sheet while their TOKEN sight was already built off the Edha table)
  *  • HP = the system's per-level accumulation + EDHA_HP_BONUS
- * ⚑ EDHA_HP_BONUS is the open question R-54 ("is 11 max HP at STR 0 intended?"). It is deliberately
- * ONE constant read from ONE place: when R-54 lands, change it here and the sheet, the preview and
- * the tests all move together. Do not re-inline it. */
-const EDHA_HP_BONUS = 1;
+ * EDHA_HP_BONUS was `1` until R-54 answered (c) "remove the +1" — **no level gate anywhere**; the
+ * math stays a single constant read from ONE place, so the sheet derivation, the clamp repair and
+ * the wizard preview all follow it. Do not re-inline it, and do not re-add a level condition.
+ * The June pregens that STORE a manual `hea.max.bonus` keep theirs (the srcHeaBonus guard below
+ * skips them) until `edha.migrateDerivations()` strips it. */
+const EDHA_HP_BONUS = 0;
 function edhaWalkRateFtFromSpd(spd) { return 20 + 5 * (Number(spd) || 0); }
 
-/* --- Edha sheet derivations: HP = system + 1; Speed = 20 + 5 × SPD; Senses = the AWA table -------
- * The Edha reference sheets derive these differently from the cosmere system; the pregens carried
- * per-actor hacks (hea.max.bonus:1 / movement override). Now derived for ALL characters:
+/* --- Edha sheet derivations: HP = system + EDHA_HP_BONUS (0 since R-54); Speed = 20 + 5 × SPD;
+ * Senses = the AWA table ---------------------------------------------------------------------
+ * The Edha reference sheets derive MOVEMENT and SENSES differently from the cosmere system; the
+ * pregens carried per-actor hacks (hea.max.bonus:1 / movement override). Now derived for ALL
+ * characters:
  *  • HP: +EDHA_HP_BONUS to hea.max.bonus IN MEMORY — skipped while the actor's SOURCE still carries
  *    a manual bonus (legacy pregens), so nothing double-applies until edha.migrateDerivations()
  *    strips them. Followed by the clamp repair — see the comment on it, it is load-bearing.
+ *    ⚠ With the constant at 0 (R-54 (c)) this block is a WRITE OF ZERO and the clamp repair below
+ *    is inert by construction (`after > before` can never hold). Both are kept, not deleted: they
+ *    are the one place the number lives, and the repair is what makes a non-zero bonus REACHABLE
+ *    if the constant ever moves again. Do not "simplify" either away.
  *  • Speed: override = 20 + 5×SPD + (current bonus) — keeps AE speed buffs (Walking Ruin) additive.
  *    Skipped while the actor's SOURCE carries its own movement override (legacy pregens).
  *  • Senses: writes .derived (NOT .override), exactly as the system's own prepareSecondaryDerivedData
@@ -17314,7 +17433,7 @@ function edhaWalkRateFtFromSpd(spd) { return 20 + 5 * (Number(spd) || 0); }
 function edhaDeriveSheetStats(actor) {
   try {
     if (actor?.type !== "character") return;
-    // HP = system + 1
+    // HP = system + EDHA_HP_BONUS (0 since R-54 — the Edha and system tables agree)
     const heaMax = actor.system?.resources?.hea?.max;
     const srcHeaBonus = Number(actor._source?.system?.resources?.hea?.max?.bonus) || 0;
     if (heaMax && srcHeaBonus === 0) {
@@ -18179,9 +18298,19 @@ function edhaRegisterNativeEventSystem() {
           const res = who.system?.resources?.inv;
           const cur = Number(res?.value) || 0;
           const next = this.op === "drain" ? Math.max(0, cur - n) : Math.min(edhaResVal(res) ?? (cur + n), cur + n);
-          // #28b: a DRAIN is stamped (a talent took it — the Order Investiture watch must still
-          // see it, exactly as today); a GAIN is an increase and never reaches the predicate.
-          try { await edhaResourceWrite(who, "inv", { value: next }, this.op === "drain" ? edhaSpendTag(`${source} (drain)`) : edhaBookkeepingTag(`${source} (Investiture gain)`)); } catch (e) { /* perms */ }
+          /* R-72 (ANSWERED 2026-09-06, Ben (b)): an INVOLUNTARY DRAIN IS NOT A SPEND. #28b stamped
+           * this branch `edhaSpendTag` because it was the same shape as a cost deduction; it is
+           * not. A creature whose Investiture is taken by an enemy has not *activated* anything, so
+           * the Order Edict must not read it as a violation — the Edict fires on the creature's own
+           * activations, and its own wired spend (edhaSpendResource / edhaConsumeCost) still
+           * carries the spend stamp. Both arms of this branch are therefore BOOKKEEPING.
+           * R-76 (ANSWERED 2026-09-06, Ben (b)): leave the branch; a future adversary whose
+           * signature ability DRAINS a PC's Investiture (edha-focus op: drain, resource: inv) would
+           * be its first consumer — Ben's design seed, 2026-09-06; with R-72 the stamp is
+           * bookkeeping. No shipped talent carries op:"drain" + resource:"inv" today (the only
+           * `inv` rule in all three packs is Reaper's Harvest, op:"gain"), so this arm is currently
+           * unconsumed ON PURPOSE — do not delete it as dead code. */
+          try { await edhaResourceWrite(who, "inv", { value: next }, edhaBookkeepingTag(`${source} (Investiture ${this.op === "drain" ? "drain" : "gain"})`)); } catch (e) { /* perms */ }
           ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: who }),
             content: `<p>✨ <strong>${source}</strong>: ${who.name} ${this.op === "drain" ? "loses" : "recovers"} <strong>${n}</strong> Investiture.</p>` });
           return;

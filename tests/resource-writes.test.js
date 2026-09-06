@@ -18,12 +18,14 @@
  *      (so a spend stamp survives it), and that it neither clamps nor catches;
  *   2. the bookkeeping direction — a migrated heal/gain declares itself, and `edhaIsSpend` reads
  *      that declaration;
- *   3. **the R-72 pin** — `edhaDrainFocus` writes with its pre-#13 options BYTE-FOR-BYTE. Whether
- *      an involuntary drain is a "spend" is an open ruling; a bookkeeping tag there would answer
- *      it by the back door, and this case fails if one appears;
- *   4. **the spend direction** — H10's Investiture DRAIN still stamps `edhaSpendTag` through the
- *      writer, which is what keeps the Order Investiture watch seeing it exactly as it did on the
- *      day #28b shipped;
+ *   3. **the R-72 pin, FLIPPED 2026-09-06** — `edhaDrainFocus` now carries `edhaBookkeepingTag`
+ *      alongside its focus-watch skip. This case used to assert the OPPOSITE ("a bookkeeping tag
+ *      there would answer an open ruling by the back door, and this case fails if one appears").
+ *      **R-72 is answered — Ben (b): an involuntary drain is NOT a spend** — so the absence of the
+ *      tag is now the regression;
+ *   4. **the same flip at H10** — the Investiture branch's `op === "drain" ? edhaSpendTag(…)`
+ *      ternary is gone; both arms are bookkeeping, and the engine's remaining `edhaSpendTag` call
+ *      sites are exactly the two writers that deduct a cost its OWNER paid;
  *   5. the ratchet itself, measured the way `lint-refs.js` pass 20 measures it.
  */
 "use strict";
@@ -126,9 +128,16 @@ test("edhaGainFocus: carries BOTH the focus-watch skip flag and the bookkeeping 
   assert.ok(cards.some((c) => /regains 2 focus/.test(c.content)), "the gain still announces itself");
 });
 
-/* ---- 3. THE R-72 PIN — the drain's options are byte-for-byte what they were ------------------- */
+/* ---- 3. THE R-72 PIN, FLIPPED — an involuntary drain DECLARES ITSELF BOOKKEEPING -------------- */
 
-test("edhaDrainFocus: writes with `{ edhaFocusWatch: true }` and NOTHING else (R-72 stays open)", async () => {
+/* ⚠ THIS CASE USED TO ASSERT ITS OPPOSITE. Until 2026-09-06 it read "writes with
+ * `{ edhaFocusWatch: true }` and NOTHING else (R-72 stays open)" and failed if a bookkeeping tag
+ * ever appeared here, because a tag either way would have answered an open ruling by the back door.
+ * **R-72 is now ANSWERED — Ben (b), 2026-09-06: a drain is NOT a spend** — so the guard inverts:
+ * the tag must be here, and its absence is the regression. The reason the answer matters at the
+ * table: an Edict-bound creature drained by an ENEMY gets no violation prompt, while its own wired
+ * spend still does. Do not "restore" this case to its old shape. */
+test("R-72: edhaDrainFocus declares the involuntary drain BOOKKEEPING, alongside the focus-watch skip", async () => {
   const env = loadEngine();
   captureChat(env);
   const a = writeActor("Victim", { foc: { value: 4 } }, { isOwner: true, items: [] });
@@ -137,21 +146,31 @@ test("edhaDrainFocus: writes with `{ edhaFocusWatch: true }` and NOTHING else (R
     env.edhaDispatchWatchers = async () => {};
     await env.edhaDrainFocus(a, 2, "Whispered Doubt");
     eq(a.writes[0].change, { "system.resources.foc.value": 2 });
-    assert.deepStrictEqual(Object.keys(JSON.parse(JSON.stringify(a.writes[0].options))).sort(), ["edhaFocusWatch"],
-      "an INVOLUNTARY drain is EDHA_RULINGS R-72, still open. #13 moved the path onto the writer and " +
-      "deliberately changed no options: neither a spend tag nor a bookkeeping tag belongs here until " +
-      "Ben rules. If this assertion fails, someone answered R-72 in a refactor.");
-    assert.strictEqual(a.writes[0].options.edhaFocusWatch, true, "…and the 07-05 watcher skip is still on it");
+    const opts = a.writes[0].options;
+    assert.deepStrictEqual(Object.keys(JSON.parse(JSON.stringify(opts))).sort(), ["edha", "edhaFocusWatch"],
+      "both signals ride: the R-72 classification AND the 07-05 watcher skip. They say different " +
+      "things — the skip stops the focus watcher re-announcing, the tag tells every OTHER reader " +
+      "(the Order Investiture watch included) that nobody spent anything.");
+    assert.strictEqual(opts.edha?.bookkeeping, true, "R-72 (b): an involuntary drain is not a spend");
+    assert.strictEqual(opts.edha?.spend, undefined, "…and it is emphatically not stamped as one");
+    assert.strictEqual(opts.edhaFocusWatch, true, "…and the 07-05 watcher skip is still on it");
+    // The declaration is not decoration: it is what the predicate reads.
+    assert.strictEqual(env.edhaIsSpend(a, "foc", opts, 4, 2), false,
+      "read as a decrease by the predicate itself, the drain is not a spend");
   } finally { undo(); }
 });
 
-/* ---- 4. THE SPEND DIRECTION — H10's Investiture drain still stamps through the writer ---------- */
+/* ---- 4. THE SAME FLIP AT H10 — the Investiture drain is bookkeeping too ----------------------- */
 
-test("the edha-focus executor's Investiture branch writes through edhaResourceWrite AND still stamps the spend", () => {
+test("R-72: the edha-focus executor's Investiture branch writes through edhaResourceWrite as BOOKKEEPING", () => {
   // Source-scoped, the way spend-tag.test.js pins the set-resource relay: the executor lives inside
   // a registerItemEventHandlerType config object, so no headless harness can call it. Both halves
   // are asserted, so re-inlining the raw `who.update({"system.resources.inv.value": next})` fails
   // here as well as at the ratchet case below.
+  //
+  // ⚠ ALSO A FLIPPED ASSERTION (2026-09-06). This case used to demand
+  // `this.op === "drain" ? edhaSpendTag(` on the grounds that #28b stamped it; R-72 (b) says an
+  // involuntary drain is not a spend, so the ternary is gone and BOTH arms are bookkeeping.
   const code = codeOnly(readEngineSource());
   const start = code.indexOf('type: "edha-focus"');
   assert.ok(start > 0, "the H10 handler type is still registered under that name");
@@ -160,11 +179,24 @@ test("the edha-focus executor's Investiture branch writes through edhaResourceWr
 
   const write = /edhaResourceWrite\(\s*who\s*,\s*"inv"/.test(block);
   assert.ok(write, "the Investiture branch writes through edhaResourceWrite, not a hand-rolled path");
-  assert.ok(/this\.op === "drain" \? edhaSpendTag\(/.test(block),
-    "a DRAIN is still stamped as a spend — unstamped, the Order Investiture watch silently stops " +
-    "seeing it, which is precisely what #28b stamped it to prevent.");
-  assert.ok(/: edhaBookkeepingTag\(/.test(block),
-    "…and the GAIN branch declares itself bookkeeping rather than passing a bare {}");
+  assert.ok(/edhaResourceWrite\(who, "inv", \{ value: next \}, edhaBookkeepingTag\(/.test(block),
+    "R-72 (b): the Investiture write declares itself bookkeeping on BOTH arms — drain and gain.");
+  assert.ok(!/edhaSpendTag\(/.test(block),
+    "no spend stamp survives in the H10 handler: a drained creature has activated nothing, so the " +
+    "Order Investiture watch must not see a violation.");
+});
+
+test("R-72: the spend stamp now belongs to the OWNER-PAYS writers and nothing else", () => {
+  // The whole point of #28b is that `edha.spend` means "a cost its owner paid". After R-72 the
+  // engine has exactly two such writers left. A third appearing without a ruling is the regression
+  // this case exists to catch — as is the stamp creeping back onto either drain site.
+  const code = codeOnly(readEngineSource());
+  const calls = code.match(/(?<!function )\bedhaSpendTag\(/g) || [];
+  assert.strictEqual(calls.length, 2,
+    `expected edhaSpendResource + edhaConsumeCost, found ${calls.length} edhaSpendTag call sites. ` +
+    "R-72 (b) moved the set-resource relay and H10's Investiture drain onto edhaBookkeepingTag.");
+  assert.ok(/edhaSpendTag\("edhaSpendResource"\)/.test(code), "the canonical clamped spend still stamps");
+  assert.ok(/edhaSpendTag\("edhaConsumeCost"\)/.test(code), "…and so does the takeover/burst activation cost");
 });
 
 /* ---- 5. THE RATCHET PIN — the mutation-sensitive case ----------------------------------------- */
