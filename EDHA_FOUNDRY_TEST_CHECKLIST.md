@@ -948,6 +948,18 @@ overwriting. Console probe for all three rows (bench GM):
       `edha-next-test-mod` without "this round" — e.g. Probability Net from a Wrenchmaster) and
       confirm it **survives** the round change and still applies. Pruning must not eat a rider that
       is simply waiting.
+- [ ] 🤖 **2bI-4d — a NEGATIVE `either` rider on a DAMAGE roll is a subtraction, not `+ -1d6`
+      (item 66).** On any bench PC, arm a next-test rider with a negative formula that may ride
+      damage — console: `edhaSetNextTestMod(actor, { source: "Probability Net", formula: "-1d6",
+      count: 1, appliesTo: "either" })` — then roll DAMAGE with a weapon (no d20 test first, so the
+      `either` claim goes to the damage half). Expect the chat card's formula bar to read
+      **`<base> - 1d6[Probability Net]`** (never `<base> + -1d6`), the roll to evaluate without a
+      parser error, the total to be **lower than the base dice alone**, and the "🔮 Probability Net —
+      -1d6 added to this damage roll" card. Probe the flag afterwards: the entry is spent.
+- [ ] 🤖 **2bI-4e — NEGATIVE CONTROL: a POSITIVE `either` rider on a damage roll is unchanged.**
+      Same setup with `formula: "1d6"` (Pack Hunting's shape). Expect the formula bar to read
+      **`<base> + 1d6`** exactly as before item 66 — no flavor label on the positive term, total
+      higher than the base dice — and the same consume card.
 
 ---
 

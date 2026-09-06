@@ -1996,3 +1996,28 @@ generator.
 
 **PM:** lane R · model sonnet · size S · deps 48 ✓ · verify: build-report parity + the guard's
 mutation. TOOLING-only (no rebuild — the packs do not change). Found by item 48.
+
+---
+
+## 66. [x] A negative next-test rider on the DAMAGE path is joined as `base + -1d6` — 2026-09-06, PR #229
+
+**Why:** item 49 (PR #221) made `edhaWrapRollDamage` fold the taken next-test riders onto
+the damage formula with a raw `${f} + ${m.formula}` reduce, so a rider whose formula starts
+with a minus (Probability Net's `-1d6` as an `either` rider) built `2d6 + -1d6`, which
+Foundry's parser dislikes. The d20 path (`edhaNextTestPreRoll`) already turned a leading
+minus into an explicit subtraction with the source label (`0 - 1d6[label]`). Item 49 found
+this and left it as pre-existing.
+
+**What to do:** ONE pure formula-join helper (leading minus → explicit subtraction, source
+label kept) that BOTH paths call; positive riders must build a byte-identical formula to
+before. Nothing else changes. Iron rule 2b: no name-keyed branch; the allowlist may only shrink.
+
+**Done when:** headless pins — (1) a negative damage rider joins as `base - 1d6[label]`
+(fails under a one-line reversion to the raw concat); (2) a positive rider's built formula
+is byte-identical to the pre-change string; (3) the d20 path still produces its existing
+strings for `-1d6` and `+1d6`; (4) a source scan pins exactly one join helper and that both
+paths call it. One 🤖 checklist row beside 2bI-4 plus a positive-rider negative control.
+
+**PM:** lane B · model fable-worker · size S · deps 49 ✓ · verify: mutation. ENGINE-ONLY (F5).
+Found by item 49. **Landed:** `edhaJoinRiderTerm` (SHARED CORE, beside `edhaTidyFormula`);
+`tests/negative-rider-join.test.js` (7 pins); checklist 2bI-4d / 2bI-4e.
