@@ -368,6 +368,9 @@ a second cost, including ones where the second cost is meant to be optional.
 > `shouldConsume: true`; ENGINE-ONLY, F5 → **item 50**; declare it in the header as the one
 > sanctioned system-dialog wrapper (iron rule 2a exception by Ben's ruling); pin a headless test on
 > the option shape; bench re-test = Reknit Form charges inv AND foc on a default click.
+> **SHIPPED** in PR #222 (ENGINE-ONLY, bench-pending) — `tests/consume-dialog-wrapper.test.js`
+> (the pure option shape, the system's row map `[true, true]`, the installed patch, and a source
+> scan that exactly ONE wrapper of the system dialog exists — a second one fails the suite).
 
 **R-72. Is an INVOLUNTARY drain a "spend"?** Raised by item 28b: the Order Edict fires only on the
 creature's own activations, and H10's Investiture-drain write (`register-skills.js` ~L18139, the

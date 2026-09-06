@@ -542,6 +542,17 @@ stands — no change needed; row CLOSED.)*
 
 ## Engine-wide fixes still unbenched (pre-migration survivors)
 
+- [ ] 🤖 **R-70 (b) / item 50 — every cost row of the consume dialog opens TICKED (engine-only, F5
+      first).** Positive: on `BENCH Stitchmother R28` (or any actor owning *Reknit Form* — cost 1
+      Investiture, 1 Focus) note inv/foc, use Reknit Form, **read the dialog** — BOTH rows must
+      render `checked` — then click **Continue** without touching anything: expect **inv −1 AND
+      foc −1** (run 28 measured inv 10 → 9, foc 8 → 8 under the system default; the ticked-both
+      reading was inv −1, foc −1). Negative control: a single-cost talent (any "Spend 1
+      Investiture" talent, e.g. Searing Bolt on `Bench — Red`) opens with its one row ticked and
+      a default Continue charges exactly 1 — unchanged. Console should show *"Edha Content |
+      consume-dialog pre-tick wired via …"* once at ready. Pinned headlessly in
+      `tests/consume-dialog-wrapper.test.js`; the row is the live-table half.
+
 **Bench run 4 (2026-07-26m): the melee-discriminator row is RETIRED** — `edhaAttackKind` now reads
 `system.attack.type`: a weapon set to `"ranged"` skipped Warlord's Advance's rider AND left the arm
 armed; blanking the field (schema re-initialises to `"melee"`) fired "+4 impact strike" and consumed
