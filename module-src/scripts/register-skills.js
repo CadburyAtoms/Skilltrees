@@ -3408,14 +3408,28 @@ async function edhaRunPromptPick(item, h, event) {
     }
     body = cands.map((t) => `<button type="button" class="edha-pick-btn" ${attrs(t.actor.uuid)}>${h.label || "Choose"} ${t.actor.name}</button>`).join(" ");
   } else if (source === "effects") {
-    /* The DISPEL (2bU). One button per enabled Active Effect on the subject; the click deletes it.
+    /* The DISPEL (2bU; widened 2026-09-06, item 54 — R-73 (b) + R-35 (a)). One button per enabled
+     * effect the subject actually BEARS, read through edhaAllEffects: a passive authored
+     * `transfer: true` on a talent or trait (a PC's Hardy / Collected / Surefooted, a Cinderhound's
+     * Cinder Coat, Predictive Ward's braced) lives on the ITEM and never appears in `actor.effects`,
+     * so the old read could not offer it. Two kinds of button, decided by edhaDispelOptions:
+     *   · an ACTOR-level effect → the click DELETES it (the 2bU shape, unchanged);
+     *   · an ITEM-owned effect  → the click DISABLES it (`disabled: true`) and NEVER deletes — deleting
+     *     a yielded item effect writes to the item and would strip the passive from that creature's
+     *     copy of the talent for good (R-73's whole point). The click re-derives the kind from the
+     *     DOCUMENT (edhaEffectOwnerItem); `data-edha-mode` is a label, not a permission.
+     * Plus (R-35) one "Dispel <Marker>" button per ledger the rule's `ledgers` field names that holds
+     * the subject — the Omen entry — whose click clears the marker AND its ledger row.
      * A different button class on purpose: the generic pick click resolves its uuid to an ACTOR and
-     * dispatches success rules, neither of which an effect can be. */
+     * dispatches success rules, neither of which an effect or a ledger entry can be. */
     const subject = victim;
     if (!subject) { ui.notifications?.warn(`Edha: ${item.name} — no creature to unweave.`); return; }
-    const effs = [...(subject.effects ?? [])].filter((e) => !e.disabled);
-    body = effs.length
-      ? effs.map((e) => `<button type="button" class="edha-dispel-btn" data-edha-item="${item.uuid}" data-edha-eff="${e.uuid}">${String(e.name || e.label || "effect").replace(/</g, "&lt;")}</button>`).join(" ")
+    const opts = edhaDispelOptions(subject, h);
+    const esc = (s) => String(s ?? "").replace(/</g, "&lt;");
+    body = opts.length
+      ? opts.map((o) => o.kind === "ledger"
+        ? `<button type="button" class="edha-dispel-btn" data-edha-item="${item.uuid}" data-edha-ledger="${esc(o.key)}" data-edha-subject="${subject.uuid}">Dispel ${esc(o.label)}</button>`
+        : `<button type="button" class="edha-dispel-btn" data-edha-item="${item.uuid}" data-edha-eff="${o.eff.uuid}" data-edha-mode="${o.mode}">${esc(o.eff.name || o.eff.label || "effect")}${o.item ? ` <span style="opacity:.75">(${esc(o.item.name)} — suppress)</span>` : ""}</button>`).join(" ")
       : `<p><em>${h.emptyNote || `No active effects found on ${subject.name} — narrate the unraveling.`}</em></p>`;
   } else {
     // confirm: the subject is the creature the trigger already resolved against (or you).
@@ -3471,22 +3485,105 @@ async function edhaPromptPickClick(ev) {
       content: `<p>${h.icon ? `${h.icon} ` : ""}<strong>${item.name}</strong> (${owner.name}): ${edhaFillName(h.note, picked.name)}</p>` });
   } catch (e) { edhaClickFailed("prompt pick click", e); }
 }
+/* --- The dispel's three PURE-ish pieces (item 54, 2026-09-06 — pinned in tests/dispel-widening) ---
+ * Which ITEM owns this effect — null for an actor-level one. Fails CLOSED: only a parent that is
+ * provably the actor (documentName "Actor", the subject itself, or a shell carrying `items`) counts
+ * as actor-level; everything else is item-owned and may only ever be DISABLED, never deleted. */
+function edhaEffectOwnerItem(eff, subject = null) {
+  const p = eff?.parent;
+  if (!p) return null;
+  if (p.documentName === "Actor" || (subject && p === subject)) return null;
+  if (p.documentName === "Item") return p;
+  return Array.isArray(p.items) ? null : p;   // a thin shell: actors carry `items`, items do not
+}
+/* The ledgers a dispel may clear, from the rule's `ledgers` field: "omens:omen, edicts:edict" →
+ * [{key, status, label}]. A missing field (every rule authored before item 54) reads as the Omen
+ * ledger — R-35's answer — so no rebuild is needed; blank = none. The status defaults to the key. */
+function edhaDispelLedgers(h) {
+  const raw = h?.ledgers === undefined || h?.ledgers === null ? "omens:omen" : String(h.ledgers);
+  return raw.split(",").map((s) => s.trim()).filter(Boolean).map((s) => {
+    const [key, status] = s.split(":").map((x) => x.trim());
+    const st = status || key;
+    return { key, status: st, label: edhaConditionLabel(st) };
+  });
+}
+function edhaLedgerEntryIs(entry, subject) {
+  if (!entry?.uuid || !subject) return false;
+  if (entry.uuid === subject.uuid) return true;
+  try { const r = typeof fromUuidSync === "function" ? fromUuidSync(entry.uuid) : null; return !!r && (r.actor ?? r) === subject; }
+  catch (e) { return false; }
+}
+/* Everything the card may offer on this subject: every enabled effect it bears (actor-level →
+ * delete, item-owned → disable), then one entry per named ledger that holds it or whose marker it
+ * wears. Ordered actor effects first, then item effects, then ledger marks. */
+function edhaDispelOptions(subject, h) {
+  const out = [];
+  for (const e of edhaAllEffects(subject)) {
+    if (!e || e.disabled) continue;
+    const item = edhaEffectOwnerItem(e, subject);
+    out.push({ kind: "effect", eff: e, item, mode: item ? "disable" : "delete" });
+  }
+  for (const led of edhaDispelLedgers(h)) {
+    let held = false;
+    try { held = edhaOwnerLedgers(led.key, led.status).some((l) => l.list.some((en) => edhaLedgerEntryIs(en, subject))); } catch (e) {}
+    if (held || subject?.statuses?.has?.(led.status)) out.push({ kind: "ledger", ...led });
+  }
+  return out;
+}
+/* Clear a ledger mark from the subject: every owner's matching row goes through the queued
+ * edhaLedgerDropCreature (rows first, so "the mark wins" reconciliation cannot hide them), then the
+ * marker + markedBy are cleared once more by the subject's own uuid — a marker left by the legacy
+ * edhaRemoveMark path has no row to drop, and must still come off. Returns rows dropped. */
+async function edhaDispelLedgerMark(subject, key, status) {
+  const uuids = new Set();
+  try { for (const l of edhaOwnerLedgers(key, status)) for (const en of l.list) if (edhaLedgerEntryIs(en, subject)) uuids.add(en.uuid); } catch (e) {}
+  let dropped = 0;
+  for (const u of uuids) dropped += await edhaLedgerDropCreature(u, key, status);
+  await edhaListUnmark({ uuid: subject.uuid }, status, { key });
+  return dropped;
+}
 /* The dispel click (2bU — the payload the `effects` source shipped with). GM-side: the pick card
  * lists EVERY enabled effect because nothing in the data says which are "magical" — that
- * adjudication stays at the table, the removal is one click. Names no talent. */
+ * adjudication stays at the table, the removal is one click. Names no talent.
+ * Item 54: an ITEM-owned effect is DISABLED, never deleted — decided from the document, never from
+ * the button's data (a forged `data-edha-mode="delete"` still lands on the disable branch); a
+ * ledger button clears the mark + its row through edhaDispelLedgerMark, and only for a ledger the
+ * rule's own `ledgers` field names. */
 async function edhaDispelPickClick(ev) {
   try {
     ev.preventDefault();
     if (!game.user?.isGM) { ui.notifications?.warn("Edha: the dispel pick is GM-side — what counts as magical is the table's call."); return; }
-    const btn = ev.currentTarget;
-    const item = await fromUuid(btn.dataset.edhaItem).catch(() => null);
-    const eff = await fromUuid(btn.dataset.edhaEff).catch(() => null);
-    if (!eff) { ui.notifications?.info("Edha: that effect is already gone."); return; }
-    const name = eff.name || eff.label || "the effect", who = eff.parent?.name || "the target";
-    await eff.delete();
+    const btn = ev.currentTarget, ds = btn.dataset;
+    const item = await fromUuid(ds.edhaItem).catch(() => null);
+    let line, resolved = "Unwoven ✓";
+    if (ds.edhaLedger) {
+      const h = item ? edhaRuleOf(item, "edha-prompt-pick") : null;
+      const led = edhaDispelLedgers(h).find((l) => l.key === ds.edhaLedger);
+      if (!led) { ui.notifications?.warn(`Edha: ${item?.name || "the dispel"} does not reach the ${ds.edhaLedger} ledger.`); return; }
+      const subject = await edhaResolveActorRef(ds.edhaSubject);
+      if (!subject) { ui.notifications?.warn("Edha: that creature is no longer on the canvas."); return; }
+      const rows = await edhaDispelLedgerMark(subject, led.key, led.status);
+      resolved = `${led.label} dispelled ✓`;
+      line = `<strong>${led.label}</strong> is dispelled from ${subject.name}${rows ? ` — ${rows} ledger ${rows === 1 ? "entry" : "entries"} cleared` : " (the marker alone; no ledger entry held it)"}.`;
+    } else {
+      const eff = await fromUuid(ds.edhaEff).catch(() => null);
+      if (!eff) { ui.notifications?.info("Edha: that effect is already gone."); return; }
+      const name = eff.name || eff.label || "the effect";
+      const ownerItem = edhaEffectOwnerItem(eff);
+      if (ownerItem) {
+        const who = ownerItem.actor?.name ?? ownerItem.parent?.name ?? "the target";
+        await eff.update({ disabled: true });
+        resolved = "Suppressed ✓";
+        line = `<strong>${name}</strong> is suppressed on ${who} — ${ownerItem.name}'s copy is intact; re-enable it on that item's Effects tab when the dispel ends.`;
+      } else {
+        const who = eff.parent?.name || "the target";
+        await eff.delete();
+        line = `<strong>${name}</strong> unravels from ${who}.`;
+      }
+    }
     btn.closest(".edha-trigger-card")?.querySelectorAll("button").forEach((b) => (b.disabled = true));
-    void edhaMarkCardResolved(edhaMessageIdOf(btn), "Unwoven ✓");
-    ChatMessage.create({ content: `<p>🧵 <strong>${item?.name || "Dispel"}</strong>: <strong>${name}</strong> unravels from ${who}.</p>` });
+    void edhaMarkCardResolved(edhaMessageIdOf(btn), resolved);
+    ChatMessage.create({ content: `<p>🧵 <strong>${item?.name || "Dispel"}</strong>: ${line}</p>` });
   } catch (e) { edhaClickFailed("dispel pick", e); }
 }
 // Button binding: EDHA_CARD_BUTTONS["edha-pick-btn"], ["edha-dispel-btn"] (Job 1, pass 5.3, end of file).
@@ -18428,7 +18525,8 @@ function edhaRegisterNativeEventSystem() {
     source: "edha-content", type: "edha-prompt-pick",
     label: "Edha: Prompt / Pick One", description: "Whisper yourself a card that asks a question — accept an offer, or choose one creature from a filtered list. What HAPPENS goes on the sibling 'When Your Test SUCCEEDS' rules, exactly as for a gated test; the creature you pick becomes their target.",
     config: { schema: {
-      source: new FF.StringField({ required: true, initial: "confirm", choices: choices("confirm", "creatures", "effects"), label: "What is being chosen", hint: "confirm = one accept button; the payload lands on the creature this rule's trigger already resolved against (Subtle Suggestion, Puppeteer) · creatures = one button per creature matching the filters below (Anticipate, Unnerving Approach) · effects = one button per enabled Active Effect on that creature; the click DELETES the picked effect — the DISPEL, its payload intrinsic (Unweaving: which effect counts as magical is the table's call, so the click is GM-side). Success rules are NOT dispatched for a picked effect: no payload handler takes a THING, which is why this source shipped with its own payload (§9o's rule). 07-25 pass 2bU." }),
+      source: new FF.StringField({ required: true, initial: "confirm", choices: choices("confirm", "creatures", "effects"), label: "What is being chosen", hint: "confirm = one accept button; the payload lands on the creature this rule's trigger already resolved against (Subtle Suggestion, Puppeteer) · creatures = one button per creature matching the filters below (Anticipate, Unnerving Approach) · effects = one button per enabled Active Effect the creature bears (item-transferred passives included since item 54); the click DELETES an actor-level effect and DISABLES an item-owned one (never deleted — that would strip the talent's copy), plus the ledger marks named below — the DISPEL, its payload intrinsic (Unweaving: which effect counts as magical is the table's call, so the click is GM-side). Success rules are NOT dispatched for a picked effect: no payload handler takes a THING, which is why this source shipped with its own payload (§9o's rule). 07-25 pass 2bU." }),
+      ledgers: new FF.StringField({ required: false, blank: true, initial: "omens:omen", label: "Ledger marks the dispel may clear (source = effects)", hint: "Comma-list of ledger:status pairs (status defaults to the ledger key). Each ledger holding the creature — or whose marker it wears — adds a 'Dispel <Marker>' button that clears the marker AND its ledger entry (R-35: Unweaving reaches the Omen). Blank = none. Item 54." }),
       prompt: new FF.StringField({ required: false, blank: true, initial: "", label: "The question", hint: "Shown after the talent's name. Say what accepting means — the card is the only place the table sees it. {name} = the creature this rule's trigger resolved against (Puppeteer: whose turn started at 0 focus); the PICKED creature is only known later, on the accept note." }),
       label: new FF.StringField({ required: false, blank: true, initial: "", label: "Button text", hint: "Blank = 'Use <talent>' for confirm, 'Choose <name>' for a creature. For confirm, {name} = the trigger's creature." }),
       icon: new FF.StringField({ required: false, blank: true, initial: "", label: "Icon", hint: "One emoji shown before the name." }),
