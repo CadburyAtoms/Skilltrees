@@ -1967,3 +1967,29 @@ field; packs rebuild clean; 2bM-6 is 🤖 with the three cases.
 
 **PM:** lane B · model opus · size S · deps 46 · verify: mutation pin + pack build. ENGINE + AUTHORED
 → REBUILD + ⟳ Sync (Ben's deploy). Found by item 47.
+
+---
+
+## 64. [ ] `foundry-build.js` still mints `edha-aoe-template` rules — a type the engine retired (R-78)
+
+**Why:** item 48 (PR #217, 2026-09-06) retired the `edha-aoe-template` handler on Ben's R-78 (a) —
+zero consumers in shipped data. But `scripts/foundry-build.js`'s `aoeRule()` still GENERATES an
+`edha-aoe-template` rule for any talent with `TALENT_TARGETING[…].area` and no `.burst`. Today that is
+only **Lay Foundation**, whose authored overlay supplies an `edha-zone` rule that REPLACES the
+generated events — which is why the `data/` sweeps find zero and the CI pack build stays green.
+Delete that authored `events` block and the next build mints a rule nothing can execute.
+
+**What to do:** retire `aoeRule()` (or route the `.area`-without-`.burst` case to an `edha-burst`
+rule, if any talent should still get one — check `TALENT_TARGETING` for every `.area` entry and
+say which); pin it with a build-report diff showing the six packs byte-identical before/after
+(the only generated rule it could have emitted is masked by the overlay today); a lint or build
+guard that fails if the build ever emits a rule type the engine does not register (the engine's
+own `registerItemEventHandlerType` calls are the record — `lint-refs.js` pass 9 already parses
+them, so this may be one assertion added there).
+
+**Done when:** `grep -c aoeRule scripts/foundry-build.js` = 0 (or the routed form is tested);
+packs byte-identical; the unregistered-type guard fails under a mutation that re-adds the
+generator.
+
+**PM:** lane R · model sonnet · size S · deps 48 ✓ · verify: build-report parity + the guard's
+mutation. TOOLING-only (no rebuild — the packs do not change). Found by item 48.

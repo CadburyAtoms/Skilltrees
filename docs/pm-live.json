@@ -1,24 +1,63 @@
 {
   "pm": {
     "status": "awake",
-    "note": "Fable PM (Ben-started, 16:56 ET). Tonight so far: 46 (#212), 45 (#213) and fix pass 7a (item 47, #215, 18:33 - seven of eight rulings, each mutation-proven; R-25 became item 63, a rebuild-class dial). Fix pass 7b (item 48, Opus) dispatched 18:36 in a worktree. Foundry is CLOSED: #215 is on main but NOT live - the moment Foundry is up I push the engine with module-src-sync (no bat needed) and F5 refreshes it. Nothing is owed to deploy-to-foundry.bat until the REBUILD items 55-59 / 63 land. R-18 and R-48 are still open with defaults recorded. Waiting on you otherwise only for a Foundry window and a Gamemaster-client reload.",
-    "waitingOn": "R-18 and R-48 (defaults apply if silent); a Foundry window for the engine push + bench",
+    "note": "Fable PM (Ben-started, 16:56 ET). Tonight so far: 46 (#212), 45 (#213) and fix pass 7a (item 47, #215 - seven of eight rulings, each mutation-proven; R-25 became item 63). Your 18:59 deploy put fix pass 7a at the table (hash-verified: live = main). PM-R14 (19:08): caps lifted for the shift, Fable workers on the larger items. Fix pass 7b (item 48) merged 19:30 as #217 - all nine rulings, 51 pinned cases; its engine push waits for bench run 39 to finish on the hash it verified. Four workers now: bench run 39 (Opus, since 19:03, the 27 open robot rows, 7a's re-tests first), 34a fleet weapons (Fable, since 19:15, REBUILD class), 53 the ambush first strike (Fable, since 19:15), and 49 the next-test list (Opus, since 19:35). R-18 and R-48 are still open with defaults recorded. Keep Foundry open while the bench runs; nothing else is needed from you.",
+    "waitingOn": "R-18 and R-48 (defaults apply if silent); keep Foundry open for bench run 39",
     "nextWakeAt": null,
     "session": "2026-09-06 16:56 ET — Fable PM (hand-started)"
   },
   "workers": [
     {
-      "item": "48",
-      "title": "Fix pass 7b — cards, labels, zones: R-31, R-32, R-37, R-38, R-55, R-78, R-13, R-6, weapon-picker article",
+      "item": "5",
+      "title": "Bench run 39 — fix pass 7a re-tests, R-77, the bench-pending items' 27 open robot rows",
       "model": "opus",
-      "size": "M",
+      "size": "L",
       "lane": "B",
-      "branch": "pm/48-fix-pass-7b",
-      "startedAt": "2026-09-06T22:36:00Z",
-      "agent": "Work item 48",
+      "branch": "pm/bench-run-39",
+      "startedAt": "2026-09-06T23:03:00Z",
+      "agent": "Bench run 39",
       "phase": "working",
       "pr": null,
-      "note": "worktree; ENGINE-ONLY; nine mutation-proven pins"
+      "note": "worktree; Foundry open since 18:59; live = main (7d8e0226)"
+    },
+    {
+      "item": "34",
+      "title": "34a Fleet weapon migration — 11 adversary attack items → kind: weapon, edhaRuleBearer on both harvest loops (REBUILD)",
+      "model": "fable",
+      "size": "L",
+      "lane": "B",
+      "branch": "pm/34a-fleet-weapons",
+      "startedAt": "2026-09-06T23:15:00Z",
+      "agent": "Work item 34a",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; the first fable-worker (PM-R14); 34b follows"
+    },
+    {
+      "item": "53",
+      "title": "R-50 the FIRST ambush strike benefits — sync belief test inside edha-damage-rider, ten carriers",
+      "model": "fable",
+      "size": "M",
+      "lane": "B",
+      "branch": "pm/53-ambush-first-strike",
+      "startedAt": "2026-09-06T23:15:00Z",
+      "agent": "Work item 53",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; fable-worker (PM-R14); ENGINE-ONLY"
+    },
+    {
+      "item": "49",
+      "title": "R-15 the next-test slot becomes a LIST (+ R-57 absorbed, R-20 round expiry)",
+      "model": "opus",
+      "size": "S",
+      "lane": "B",
+      "branch": "pm/49-next-test-list",
+      "startedAt": "2026-09-06T23:35:00Z",
+      "agent": "Work item 49",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; ENGINE-ONLY; dispatched after fix pass 7b merged (#217, 19:30)"
     }
   ],
   "usage": null
