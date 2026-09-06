@@ -501,11 +501,24 @@ Stamped: `edhaSpendResource` (so every `costs:` deduction, an adversary ability'
 restores, the temp-HP unwind, the creation wizard, adversary sync, and every GM sheet edit or bar
 drag. (Item 13: the engine-issued half of that list now carries the POSITIVE `edhaBookkeepingTag`
 through `edhaResourceWrite`; the predicate reads a declared non-spend the same way it reads no tag,
-so nothing changed at the table.) `edhaGainFocus` / `edhaDrainFocus` never reach the predicate
-either way — their writes carry `edhaFocusWatch` and the focus watcher has skipped them since 07-05.
-⚠️ **`edhaDrainFocus` keeps its pre-item-13 options BYTE-FOR-BYTE**: whether an *involuntary* drain is
-a spend is **R-72, open**, and a bookkeeping tag there would answer it by the back door.
-`tests/resource-writes.test.js` fails if one appears.
+so nothing changed at the table.) `edhaGainFocus` / `edhaDrainFocus` never reach the FOCUS watcher
+either way — their writes carry `edhaFocusWatch` and it has skipped them since 07-05.
+
+⚠️ **R-72 ANSWERED 2026-09-06 (Ben (b)) — AN INVOLUNTARY DRAIN IS NOT A SPEND.** Three sites moved
+from `edhaSpendTag` to `edhaBookkeepingTag`, and they move **together** or the classification splits:
+`edhaDrainFocus`, its `set-resource` socket-relay half (the unowned-target branch), and H10's
+`edha-focus` Investiture branch (whose `op === "drain" ? spend : bookkeeping` ternary is gone — both
+arms are bookkeeping). At the table: an **Edict-bound creature drained by an enemy gets no violation
+prompt**, while its own wired spend still does. **The only `edhaSpendTag` call sites left are
+`edhaSpendResource` and `edhaConsumeCost`** — i.e. exactly "a cost its owner paid"; a third needs a
+ruling, and `tests/resource-writes.test.js` counts them. ⚠️ Two pins in that file and one in
+`tests/spend-tag.test.js` were **FLIPPED to assert the opposite of what they used to** (they
+previously failed if a bookkeeping tag *appeared*, to stop a refactor answering the open ruling by
+the back door) — do not "restore" them.
+**R-76 (b), same day:** H10's Investiture-drain arm has **no consumer in any pack** (the only
+`resource: "inv"` rule shipped is Reaper's Harvest, `op: "gain"`), and it stays anyway — the branch
+is kept as a seeded hook for a future adversary whose signature ability drains a PC's Investiture.
+Do not delete it as dead code; the engine header at H10 carries the note.
 
 ⚠️ **Consulted at exactly TWO sites**, and `tests/spend-tag.test.js` fails if a third appears: the
 `updateActor` focus-change watch and the Order Investiture watch. **The health→0 defeat watchers are
@@ -2324,9 +2337,11 @@ declarations (hoisted) — callable from anywhere in the file regardless of text
   its own max math, its own failure handling (a socket relay, a bare `return`) or a multi-path
   `max.override` transform — and **none of them was a spend** (every cost deduction already went
   through `edhaSpendResource`/`edhaConsumeCost`). So this owns the path and takes the #28b
-  classification as an ARGUMENT: `edhaBookkeepingTag(src)` for a declared non-spend (eleven sites),
-  `edhaSpendTag(src)` for a spend (H10's Investiture drain), or the site's existing options
-  untouched where the ruling is open (`edhaDrainFocus`, R-72). `changes` is keyed **relative** to
+  classification as an ARGUMENT: `edhaBookkeepingTag(src)` for a declared non-spend — since **R-72
+  (2026-09-06)** that is EVERY site the writer owns, including `edhaDrainFocus` and H10's Investiture
+  drain, because an involuntary drain is not a spend — and `edhaSpendTag(src)` for a real spend,
+  which after R-72 means only `edhaSpendResource` / `edhaConsumeCost`, neither of which routes
+  through this writer. `changes` is keyed **relative** to
   the resource — `{ value: n }`, or `{ "max.override": n, "max.useOverride": true, value: n }`.
   It does **not** clamp and does **not** catch: every migrated site kept its own, so the migration
   is a pure refactor plus the tag. Use it whenever you would otherwise type a resource path as a
@@ -2681,13 +2696,20 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   (Surefooted's +10 displayed +20). Set the override to the base derivation only.
 - **THE EDHA DERIVED-STAT RULES — one source of truth** (`EDHA_HP_BONUS`,
   **`edhaWalkRateFtFromSpd(spd)`** = 20 + 5×SPD, `edhaSensesRangeFtFromAwa(awa)`; canon is
-  `source-materials/legacy-uploads/Character_Building_Rules.md` §Derived stats). All three differ
-  from the cosmere system's own derivation, and **both** `edhaDeriveSheetStats` (the sheet) and
-  `edhaCwDerivedPreview` (the wizard's live panel) must read these helpers — never re-implement
-  the arithmetic. 07-28i: when they each carried a copy they drifted in BOTH directions at once
-  (preview 13/30/10 vs sheet 14/35/5), and a fix that only moved one surface would have been
-  right for one cell and wrong for the next. `EDHA_HP_BONUS` is deliberately ONE constant because
-  its value is the open ruling R-56's neighbour, **R-54**.
+  `source-materials/legacy-uploads/Character_Building_Rules.md` §Derived stats). **TWO** of them
+  differ from the cosmere system's own derivation — Movement and Senses — and **both**
+  `edhaDeriveSheetStats` (the sheet) and `edhaCwDerivedPreview` (the wizard's live panel) must read
+  these helpers, never re-implement the arithmetic. 07-28i: when they each carried a copy they
+  drifted in BOTH directions at once (preview 13/30/10 vs sheet 14/35/5), and a fix that only moved
+  one surface would have been right for one cell and wrong for the next.
+  ⚠️ **R-54 ANSWERED 2026-09-06 (Ben (c)): `EDHA_HP_BONUS` is `0`.** HP is NOT one of the stats Edha
+  derives differently — `Character_Building_Rules.md` §HP and `Edha_Character_Builder.xlsx`
+  (Character Builder!H22) both give `HP = 10 + STR` at L1, term-for-term the system's advancement
+  table — so the old "+1" was a drift, not a rule, and there is **no level gate anywhere**. The
+  constant and the clamp repair below are KEPT (the repair is inert by construction at 0, and it is
+  what makes a non-zero bonus reachable if the number ever moves). June pregens that STORE a manual
+  `hea.max.bonus` keep theirs until `edha.migrateDerivations()`. Read `docs/ACTOR_STAT_DERIVATION.md`
+  before touching any derived-stat formula.
 - ⚠ FACT (07-28i): **the system CLAMPS every resource to its max BEFORE the module's derivation
   runs.** `CommonActorDataModel#prepareSecondaryDerivedData` ends with
   `resource.value = clamp(0, max.value, value)`, and that is inside `Actor#prepareDerivedData` —

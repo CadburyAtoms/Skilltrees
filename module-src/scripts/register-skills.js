@@ -3199,9 +3199,13 @@ function edhaParseCosts(s) {
  *
  *   1. `options.edha.spend` — stamped by the engine's own spend writers via `edhaSpendTag()`:
  *      `edhaSpendResource` (the canonical clamped spend, and therefore every `costs:` deduction
- *      including an adversary ability's), `edhaConsumeCost` (the takeover/burst activation cost),
- *      the `set-resource` socket relay, and H10's Investiture drain. `options` and not a document
- *      property ON PURPOSE: options are broadcast to every client with the update, so the watcher
+ *      including an adversary ability's) and `edhaConsumeCost` (the takeover/burst activation
+ *      cost). ⚠ Two more sites carried the stamp until **R-72 answered (b) on 2026-09-06** — the
+ *      `set-resource` socket relay and H10's Investiture drain — and both are now BOOKKEEPING,
+ *      because each of them is an INVOLUNTARY drain: the creature losing the resource did not
+ *      activate anything, so the Order Edict must not read it as a violation. What is left on this
+ *      list is exactly "a cost its owner paid". `options` and not a document property ON PURPOSE:
+ *      options are broadcast to every client with the update, so the watcher
  *      sees the tag no matter which client it runs on, and nothing is left behind on the actor.
  *   2. A live **pre-use expectation** — the cosmere-rpg system deducts a talent's activation cost
  *      itself, from a `postRoll` action inside `item.use()`, with a plain `actor.update()` and NO
@@ -3226,10 +3230,11 @@ function edhaParseCosts(s) {
  * predicate reads the same way it reads no tag at all. A GM sheet edit still carries nothing, and
  * that is still what makes it a GM sheet edit.) `edhaGainFocus`/`edhaDrainFocus` never reach the
  * predicate either way: their writes already carry `edhaFocusWatch` and the focus watcher has
- * skipped them since 07-05 (the drain announces its own zero crossing by hand). ⚠ `edhaDrainFocus`
- * keeps its pre-#13 options BYTE-FOR-BYTE — an involuntary drain is **R-72, an open ruling**, and
- * a bookkeeping tag there would answer it by the back door. `edhaGainFocus` is an increase, so its
- * tag decides nothing. */
+ * skipped them since 07-05 (the drain announces its own zero crossing by hand). Since **R-72
+ * answered (b) on 2026-09-06** `edhaDrainFocus` ALSO carries `edhaBookkeepingTag` — an involuntary
+ * drain is not a spend, and the tag says so positively rather than relying on the focus-watch skip
+ * to hide it (the skip is a different statement, and the Investiture watch does not read it).
+ * `edhaGainFocus` is an increase, so its tag decides nothing. */
 const EDHA_SPEND_WINDOW_MS = 30000;   // the file's existing wall-clock prompt-debounce bound
 let _edhaSpendExpect = [];            // [{ actorId, resource, amount, source, at }]
 /* The tag itself. Merge it into an update's `options`: `actor.update(u, edhaSpendTag("…"))`, or
@@ -3326,10 +3331,12 @@ async function edhaGainResource(actor, resource, n) {
  * through `edhaSpendResource`/`edhaConsumeCost`. They are gains, heals, restores, a lifesteal, a
  * revive-to-1, a Colossus max-HP override and one open-ruling drain. So this owns the path and
  * takes the classification as an ARGUMENT, one per site:
- *   · `edhaBookkeepingTag(src)` — a declared non-spend (every gain/heal/restore/override here);
- *   · `edhaSpendTag(src)`      — a spend (H10's Investiture drain, stamped by #28b);
- *   · the site's existing options, untouched, where the classification is an OPEN ruling —
- *     `edhaDrainFocus` is R-72 ("is an involuntary drain a spend?") and must not be answered here.
+ *   · `edhaBookkeepingTag(src)` — a declared non-spend (every gain/heal/restore/override here,
+ *     and — since R-72 answered (b) on 2026-09-06 — every INVOLUNTARY DRAIN: `edhaDrainFocus`,
+ *     its `set-resource` relay half, and H10's Investiture branch. A creature whose resource is
+ *     taken by someone else has not activated anything, so the Order Edict must not see it);
+ *   · `edhaSpendTag(src)`      — a real spend. The only two writers left are `edhaSpendResource`
+ *     and `edhaConsumeCost`, i.e. every cost the OWNER pays. Adding a third needs a ruling.
  * `changes` is keyed RELATIVE to the resource: `{ value: n }`, or
  * `{ "max.override": n, "max.useOverride": true, value: n }` for a transform.
  *
@@ -6505,9 +6512,11 @@ async function edhaDrainFocus(actor, n, source) {
     if (!game.users?.activeGM) { ui.notifications?.warn(`Edha: a GM must be online for ${source || "the focus drain"}.`); return; }
     try { game.socket.emit("module.edha-content", { action: "set-resource", payload: { actorUuid: actor.uuid, path: "system.resources.foc.value", value: next } }); } catch (e) { return; }
   } else {
-    // #13: the path moves onto edhaResourceWrite; the OPTIONS are byte-for-byte what they were —
-    // whether an involuntary drain is a "spend" is R-72, still open, and is not answered here.
-    try { await edhaResourceWrite(actor, "foc", { value: next }, { edhaFocusWatch: true }); } catch (e) { return; }
+    // #13 moved the path onto edhaResourceWrite and left the options byte-for-byte pending R-72.
+    // R-72 ANSWERED 2026-09-06 (Ben (b)): an involuntary drain is NOT a spend — the victim did not
+    // activate anything — so the write DECLARES ITSELF BOOKKEEPING. `edhaFocusWatch` still rides
+    // alongside it (the 07-05 watcher skip); the two say different things and both are needed.
+    try { await edhaResourceWrite(actor, "foc", { value: next }, { edhaFocusWatch: true, ...edhaBookkeepingTag(`${source || "focus drain"} (involuntary drain)`) }); } catch (e) { return; }
   }
   // ANNOUNCE the loss (2026-07-26l, bench run 3 defect 1): this helper was the ONE silent focus
   // write — edhaGainFocus posts a card, the executor's inv/hea branches post cards, and Wary's
@@ -11462,9 +11471,12 @@ const EDHA_SOCKET_ACTIONS = {
     const p = payload || {};
     const a = await edhaResolveActorRef(p.actorUuid);
     // #28b: a relayed write is ALWAYS an engine write caused by a player-facing action — the only
-    // emitter is edhaDrainFocus's unowned-target branch. Stamped, so the relay half keeps the
-    // behaviour the direct half has: the decrease still reads as a spend GM-side.
-    if (a && p.path) await a.update({ [p.path]: p.value }, edhaSpendTag("set-resource relay"));
+    // emitter is edhaDrainFocus's unowned-target branch, so the relay half must classify itself
+    // exactly as the direct half does. R-72 (2026-09-06) made that classification BOOKKEEPING, not
+    // a spend: leaving the spend stamp here would mean an Edict-bound creature drained by a player
+    // who does not own it STILL gets a violation prompt while the owned case goes quiet — the very
+    // asymmetry #28b stamped this site to close. The two halves move together, always.
+    if (a && p.path) await a.update({ [p.path]: p.value }, edhaBookkeepingTag("set-resource relay (involuntary drain)"));
   },
   "rewrite-roll": async (payload) => {                           // Voice of Authority / Bound by Word — change a rendered roll's total
     const p = payload || {};
@@ -18224,9 +18236,19 @@ function edhaRegisterNativeEventSystem() {
           const res = who.system?.resources?.inv;
           const cur = Number(res?.value) || 0;
           const next = this.op === "drain" ? Math.max(0, cur - n) : Math.min(edhaResVal(res) ?? (cur + n), cur + n);
-          // #28b: a DRAIN is stamped (a talent took it — the Order Investiture watch must still
-          // see it, exactly as today); a GAIN is an increase and never reaches the predicate.
-          try { await edhaResourceWrite(who, "inv", { value: next }, this.op === "drain" ? edhaSpendTag(`${source} (drain)`) : edhaBookkeepingTag(`${source} (Investiture gain)`)); } catch (e) { /* perms */ }
+          /* R-72 (ANSWERED 2026-09-06, Ben (b)): an INVOLUNTARY DRAIN IS NOT A SPEND. #28b stamped
+           * this branch `edhaSpendTag` because it was the same shape as a cost deduction; it is
+           * not. A creature whose Investiture is taken by an enemy has not *activated* anything, so
+           * the Order Edict must not read it as a violation — the Edict fires on the creature's own
+           * activations, and its own wired spend (edhaSpendResource / edhaConsumeCost) still
+           * carries the spend stamp. Both arms of this branch are therefore BOOKKEEPING.
+           * R-76 (ANSWERED 2026-09-06, Ben (b)): leave the branch; a future adversary whose
+           * signature ability DRAINS a PC's Investiture (edha-focus op: drain, resource: inv) would
+           * be its first consumer — Ben's design seed, 2026-09-06; with R-72 the stamp is
+           * bookkeeping. No shipped talent carries op:"drain" + resource:"inv" today (the only
+           * `inv` rule in all three packs is Reaper's Harvest, op:"gain"), so this arm is currently
+           * unconsumed ON PURPOSE — do not delete it as dead code. */
+          try { await edhaResourceWrite(who, "inv", { value: next }, edhaBookkeepingTag(`${source} (Investiture ${this.op === "drain" ? "drain" : "gain"})`)); } catch (e) { /* perms */ }
           ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: who }),
             content: `<p>✨ <strong>${source}</strong>: ${who.name} ${this.op === "drain" ? "loses" : "recovers"} <strong>${n}</strong> Investiture.</p>` });
           return;
