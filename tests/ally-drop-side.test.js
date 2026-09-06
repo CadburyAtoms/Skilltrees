@@ -196,6 +196,54 @@ test("R-52: `ally-drops` and `enemy-turn-start` now read the SAME slack constant
 });
 
 /* -------------------------------------------------------------------------------------------- */
+/* R-51 — a phantom double's break is not "an ally dropped" (answered 2026-09-06, item 47)        */
+/* -------------------------------------------------------------------------------------------- */
+
+/* Fix pass C left this deliberately undone: the CROSS-SIDE defect above was a bug and got fixed,
+ * but once a phantom copy resolved to the side of the creature it duplicates, breaking one started
+ * cueing THAT side's ally-drops owners ("an ally dropped: the Raider may immediately Disengage and
+ * flee") — and whether that should happen at all was a design question the old bug had been hiding.
+ * Ben answered (a): NO. A phantom never had a life to lose, its own side are exactly the people who
+ * know it was never real, and the fooled ENEMIES are on the other side of the same-side filter. The
+ * phantom's break already has its own signal, the `seeming-break` cue kind.
+ *
+ * BOTH DIRECTIONS: the flag must silence the phantom AND leave a real drop alone — a gate that
+ * silenced everything would pass a one-sided suite while deleting a live adversary cue. */
+test("R-51: a phantomDouble's break fires NO ally-drops cue", async () => {
+  const env = loadEngine();
+  const c = cast();
+  const victim = makeActor("Phantom of the Raider", { side: NEUTRAL, x: 0, y: 0 });
+  await victim.actor.setFlag("edha-content", "phantomDouble", true);
+
+  const { fired, ledgered } = await sweepDrop(env, victim.actor, [...c.placeables, victim.tok]);
+  assert.deepStrictEqual(fired, [], "no ally-drops card on any side when the victim is an illusion");
+  assert.deepStrictEqual(ledgered, [], "…and no trigRound ledger write either");
+});
+
+test("R-51 THE CONTROL: the SAME drop by a real creature still cues its side", async () => {
+  const env = loadEngine();
+  const c = cast();
+  const victim = makeActor("Real Raider", { side: NEUTRAL, x: 0, y: 0 });   // identical, minus the flag
+
+  const { fired } = await sweepDrop(env, victim.actor, [...c.placeables, victim.tok]);
+  assert.deepStrictEqual(fired.sort(), ["Ally Anywhere", "Ally Near"],
+    "the gate keys on the flag, not on the drop");
+});
+
+test("R-51: the phantom's OWN damaged cue is untouched — only ally-drops is silenced", async () => {
+  const env = loadEngine();
+  const c = cast();
+  const own = cueItem("Flicker", undefined);
+  own.enabledEvents[0].handler.trigger = "damaged";
+  const victim = makeActor("Phantom with its own cue", { side: NEUTRAL, x: 0, y: 0, items: [own] });
+  await victim.actor.setFlag("edha-content", "phantomDouble", true);
+
+  const { fired } = await sweepDrop(env, victim.actor, [...c.placeables, victim.tok]);
+  assert.deepStrictEqual(fired, ["Phantom with its own cue"],
+    "a copy of a creature that carries a `damaged` cue still carries it; R-51 narrows ally-drops only");
+});
+
+/* -------------------------------------------------------------------------------------------- */
 /* The side resolver                                                                             */
 /* -------------------------------------------------------------------------------------------- */
 

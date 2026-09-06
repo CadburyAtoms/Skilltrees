@@ -3857,7 +3857,14 @@ async function edhaGmCueDamageSweep(victim, prevHp, newHp, maxHp) {
     for (const { item, h } of edhaCueRules(victim, "hp-below")) {
       if (edhaCueCrossed(prevHp, newHp, maxHp, h.atFraction)) await edhaPostCueCard(victim, item, h);
     }
-    if (prevHp > 0 && newHp <= 0) {
+    /* R-51 (2026-09-06, Ben (a)): an ILLUSORY COPY breaking is not "an ally dropped". A phantom
+     * never had a life to lose, and its own side are precisely the people who know it was never
+     * real — the fooled ENEMIES are the ones who would react, and they are on the other side of the
+     * same-side filter, so there is nobody left for this cue to be true of. The phantom's break has
+     * its own signal: the `seeming-break` cue kind, dispatched from the restore path.
+     * (The `damaged` / `hp-below` cues above still fire — those are the phantom's OWN rules, and a
+     * copy that carries one is a copy of a creature that carries one.) */
+    if (prevHp > 0 && newHp <= 0 && !victim?.getFlag?.("edha-content", "phantomDouble")) {
       const vTok = edhaCasterToken(victim);
       const vSide = edhaActorSide(victim);
       for (const t of (canvas?.tokens?.placeables ?? [])) {
