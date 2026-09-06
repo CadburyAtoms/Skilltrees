@@ -33,6 +33,107 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-06 DELTA — item 13: the last twelve hand-rolled resource writes are gone — and **not one of them was a spend**, which is why they were still hand-rolled (**ENGINE-ONLY, F5** — no data change, no pack rebuild; deployed by the PM after bench run 34/35).
+
+`scripts/engine-idiom-ratchet.json`'s `resourceWrite` key went **12 → 0**. The item's title said the
+destination was `edhaSpendResource`/`edhaConsumeCost`. Measurement says otherwise, and correcting it
+(PM-D1) is the useful half of this delta: **every cost deduction in the engine already went through
+those two.** The twelve survivors were a turn-end regen, `edhaGainFocus`, `edhaDrainFocus`, the
+`heal` effect branch, a burst heal, the decay tick's lifesteal, the death ward's drop-to-1, the
+Colossus max-HP override, the Devoted Conduit redirect unwind, `edhaHealActor`, Draw Mana's
+Investiture recovery, and H10's `edha-focus` Investiture branch — gains, heals, restores, a
+transform and one open-ruling drain, each with its own max math, its own failure handling (a socket
+relay, a bare `return`) or a multi-path update. **There was no canonical writer for a resource write
+that is not a plain clamped spend/gain**, which is exactly why a ratchet aimed at the spend helpers
+had stalled at twelve.
+
+**`edhaResourceWrite(actor, resource, changes, options)`** is that writer. It composes the path from
+the resource id — so no quoted `"system.resources.<id>.value"` key survives anywhere in the engine —
+and takes the classification as an ARGUMENT rather than deciding it:
+
+- **`edhaBookkeepingTag(src)`** at eleven sites — a declared non-spend. Which matters *because of
+  #28b, which landed the day before*: an update's `options` are where a write says what KIND of write
+  it is, and a hand-rolled `actor.update({…})` with no options says nothing at all. #28b's tag
+  factory existed with nothing setting it; this pass is its first consumer.
+- **`edhaSpendTag(src)`** at the one stamped site — H10's Investiture **drain**, byte-for-byte the
+  stamp #28b put there, so the Order Investiture watch keeps seeing it.
+- **The site's existing options, untouched**, where the classification is an open ruling.
+  ⚠️ `edhaDrainFocus` still writes `{ edhaFocusWatch: true }` and **nothing else**: whether an
+  *involuntary* drain is a spend is **R-72**, and a bookkeeping tag there would have answered it by
+  the back door. A test case fails if one ever appears.
+
+`changes` is keyed **relative** to the resource — `{ value: n }`, or `{ "max.override": n,
+"max.useOverride": true, value: n }` for the Colossus transform, which is why it is a map and not a
+single value. The writer **does not clamp and does not catch**: every migrated site kept its own max
+math and its own relay/return, so this is a pure refactor plus the tag.
+
+**What was proven.** The rewrites cannot be told apart by behaviour, so the mutation-sensitive pin is
+the ratchet plus the one stamped site: re-inlining the raw
+`who.update({"system.resources.inv.value": next})` at H10 fails `lint-refs.js` pass 20 (`engine idiom
+"resourceWrite" grew from 0 to 1`) **and** two cases of the new `tests/resource-writes.test.js`;
+restoring makes all three green. That file also pins the writer's contract (path composition, options
+passed through unchanged so a spend stamp survives it, no clamp, no catch), the bookkeeping
+declaration on `edhaHealActor` and `edhaGainFocus`, and the R-72 pin above. **720 passed, 0 failed**
+(+8). `node scripts/gates.js` → **RESULT: PASS** (exit 0).
+
+**Ratchet note.** 0 is genuinely reachable here where `userTargets` floors at 1: pass 20's regex
+counts a **quoted literal** key, and every canonical writer composes its path from a variable. A
+count of 1 means someone hand-rolled a literal resource path again — migrate it, do not raise the
+count. (Rode along, item 14's out-of-scope find: pass 20's `helper:` string for `userTargets` still
+named an "upcoming reader"; it names `edhaUserTargetTokens()` now.)
+
+**🤖 for the bench:** two rows under `# BENCH — Engine-wide & cross-tree`, in 28b's R-4 subsection —
+one that a **migrated spend** still taxes the watches (H10's Investiture drain against an Order
+Edict), one that a **migrated bookkeeping write** does not (Draw Mana's recovery, and a heal), with
+the max clamps re-checked because each site kept its own.
+
+---
+
+## 2026-09-06 DELTA — item 14: `game.user.targets` is now read in **exactly one place in the engine**, and the ratchet's "Done when: 0" was wrong — it floors at **1** (**ENGINE-ONLY, F5** — no data change, no pack rebuild; deployed by the PM after bench run 34).
+
+`scripts/engine-idiom-ratchet.json`'s `userTargets` key went **10 → 1**. ENGINE PASS 5.2 (R-64)
+had taken it 63 → 10 by building `edhaUserTargetToken`/`edhaUserTargetActor` for the sites that
+wanted the FIRST target; the ten survivors all wanted the **whole list**, and had no reader to use.
+So this pass built the plural sibling and routed every one of them through it:
+
+- **`edhaUserTargetTokens()`** — every targeted token, in order, as a fresh plain `Array`; `[]`
+  (never `undefined`) with nothing targeted or with no `game.user` at all. `edhaUserTargetToken()`
+  is now `edhaUserTargetTokens()[0] ?? null`, so **the reader's own one-line body is the only place
+  in 20k lines that touches `game.user.targets`**. The snapshot is a copy, which is what the
+  hand-rolled `Array.from(...)` copies also gave: a caller may filter/slice/sort it, and a mid-loop
+  retarget (`edhaSetUserTargets` releasing the old set) cannot mutate it underfoot.
+- Nine call sites migrated: the single-target `preUseItem` gate · `edhaSetUserTargets`' clear-all
+  branch · `edhaEffectTargets`' `"prompt"` branch · `edhaSovTargets` · `edhaFindMarkGrant` ·
+  `edhaRedirectClick` · the pre-use `rangeFt` veto · the adv-attack `to:"targets"` fan-out · the
+  next-test-mod multi-target fan-out.
+
+⚠️ **Two standing exemptions in `ENGINE_INDEX.md` were predictions, and measurement overturned
+both** (PM-D1) — they are deleted there, not softened. It claimed the survivors were "genuine
+ALL-targets reads that have no first-target shape to migrate to, e.g. `edhaSovTargets`'s ally/enemy
+split", and that "sites inside `edhaEffectTargets` may still read `game.user?.targets` directly — it
+IS a canonical consumer, not a violation". Neither was true once each site was read: all nine wanted
+the identical plural snapshot. **There is no legitimate direct read left.** And TODO item 14's
+"Done when: `counts.userTargets` reaches 0" is corrected to **1** — the canonical helper here is a
+*reader*, and a reader cannot read through itself. 1 is the floor; **2 means someone hand-rolled the
+read again**, which is exactly what the ratchet is for.
+
+**What was proven.** The rewrites are a pure refactor — `edhaUserTargetTokens()` is
+character-for-character what each site inlined, so no behavioural test can distinguish the two
+versions, and saying so is more honest than a green test that proves nothing. The
+mutation-sensitive pin is the ratchet: re-inlining the direct read in `edhaSovTargets` fails
+`lint-refs.js` pass 20 (`engine idiom "userTargets" grew from 1 to 2`) **and** the last case of the
+new `tests/user-targets-reader.test.js`; restoring it makes both green. That file also snapshot-pins
+the reader's contract (order, empty-vs-undefined, fresh-copy) and two migrated sites —
+`edhaSovTargets`' disposition split and `edhaSetUserTargets`' clear-all — so a later edit to the
+reader goes red instead of silent. `node scripts/gates.js` → **RESULT: PASS** (exit 0).
+
+**🤖 for the bench:** one new spot-check row under `# BENCH — Engine-wide & cross-tree`, driving two
+of the nine sites (the single-target picker with two tokens targeted, and `edhaSovTargets`' ally/enemy
+split with one of each targeted at once). Not a hunt for new behaviour — a check that no site lost
+its target list.
+
+---
+
 ## 2026-09-06 — BENCH RUN 34 (weekend marathon, run 11): **R-4's live behaviour is confirmed on five of its eight faces and R-4 does NOT close yet**; the **Stalker's veil auto-toggles for the first time ever** and run 33's unexplained second symptom is closed with the ranked hypothesis it predicted; **2bS-11 retires in full**; the **ten cultures register at `init` and a culture prerequisite finally discriminates**. **8 rows off the checklist, 0 engine defects found, 2 new rulings (R-74, R-75), world diff EMPTY.** (**DOCS-ONLY** — no engine or data change, no pack rebuild owed.)
 
 Joined as `Bench` on a **full page reload** (the culture half needs `init` to re-run). Deploy verified

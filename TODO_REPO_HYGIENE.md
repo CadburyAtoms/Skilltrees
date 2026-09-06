@@ -337,7 +337,7 @@ prioritize any site that also performs a world write.
 
 ---
 
-## 13. [ ] Migrate resourceWrite's remaining 12 sites onto edhaSpendResource/edhaConsumeCost
+## 13. [x] Migrate resourceWrite's remaining 12 sites onto the canonical resource writers (2026-09-06, PR #PRNUM)
 
 **Why:** `scripts/engine-idiom-ratchet.json`'s `resourceWrite` key started at 17, is down to 12 —
 12 sites still write a `system.resources.<id>.value`/`.max` update path by hand instead of
@@ -346,11 +346,56 @@ calling `edhaSpendResource`/`edhaConsumeCost`.
 **What to do:** work through the remaining 12 `["']system\.resources\.[a-z]{2,4}\.(value|max)["']`
 sites in `register-skills.js`, lowering `counts.resourceWrite` as they migrate.
 
-**Done when:** `counts.resourceWrite` reaches 0.
+**Done when:** `counts.resourceWrite` reaches 0. ✅ **Done: 12 → 0.** But the *destination* in the
+title was wrong, and correcting it (PM-D1) is the finding: **not one of the twelve was a spend.**
+Every cost deduction in the engine already ran through `edhaSpendResource`/`edhaConsumeCost` — the
+survivors were gains, heals, restores, a lifesteal, a revive-to-1, a Colossus max-HP override and
+one drain whose classification is an open ruling, each with its own max math, its own
+failure handling (a socket relay, a bare `return`) or a multi-path update. That is exactly why they
+were still hand-rolled: **there was no canonical writer for a resource write that is not a plain
+clamped spend/gain.**
+
+**So this pass built one: `edhaResourceWrite(actor, resource, changes, options)`** — it owns the
+path (built from the resource id, so no quoted literal survives anywhere in the engine) and takes
+the **#28b classification as an argument**. That is what makes the item a correctness item and not
+hygiene: since #28b landed the day before, an update's `options` are where a write says what KIND of
+write it is, and a hand-rolled `actor.update({…})` with no options says nothing at all. `changes` is
+keyed relative to the resource (`{ value: n }`, or `{ "max.override": n, "max.useOverride": true,
+value: n }`); the writer deliberately does **not** clamp and does **not** catch, so every site kept
+its own and the migration is a pure refactor plus the tag.
+
+| # | Site | Verdict |
+|---|---|---|
+| 1 | the `edha-regen` turn-end sweep (heal) | **bookkeeping** — declared non-spend |
+| 2 | `edhaGainFocus` | **bookkeeping** — keeps `edhaFocusWatch`; a gain never reaches the predicate |
+| 3 | `edhaDrainFocus` | **path only — options UNTOUCHED.** An involuntary drain is **R-72, open**; a tag here would answer it by the back door |
+| 4 | the `heal` effect branch (relay-on-failure) | **bookkeeping** — its socket relay stays at the site |
+| 5 | `edhaApplyBurstResults`' heal hit | **bookkeeping** |
+| 6 | the decay tick's lifesteal-back | **bookkeeping** |
+| 7 | `edhaDeathWardCheck`'s drop-to-1 | **bookkeeping** — a restore, not a spend |
+| 8 | `edhaCivTransformSummon` (Colossus `max.override` + `max.useOverride` + `value`) | **bookkeeping** — a transform/override; the multi-path shape is why `changes` is a map |
+| 9 | the Devoted Conduit redirect unwind | **bookkeeping** |
+| 10 | `edhaHealActor` | **bookkeeping** |
+| 11 | `edhaDrawMana`'s Investiture recovery | **bookkeeping** |
+| 12 | H10 `edha-focus`'s Investiture branch | **SPEND on the drain** (`edhaSpendTag`, exactly as #28b left it) / bookkeeping on the gain |
+
+**Proof.** Pure refactor plus the tag, so the mutation-sensitive pin is the ratchet plus the one
+stamped site: re-inlining the raw `who.update({"system.resources.inv.value": next})` at site 12
+fails `lint-refs.js` pass 20 (`grew from 0 to 1`) **and** two cases of the new
+`tests/resource-writes.test.js` (the H10 stamp case and the ratchet case); restoring makes all three
+green. That file also pins the writer's contract (path composition, options passed through
+unchanged so a spend stamp survives, no clamp, no catch), the bookkeeping declaration on two
+migrated sites, and — the case worth keeping — that `edhaDrainFocus` still writes with
+`{ edhaFocusWatch: true }` and **nothing else**, so R-72 cannot be answered in a refactor.
+**720 passed, 0 failed** (+8). ENGINE-ONLY (F5) — no pack rebuild.
+
+**Ratchet note.** 0 is genuinely reachable here (where `userTargets` floors at 1) because pass 20's
+regex counts a **quoted literal** key and every canonical writer composes its path from a variable.
+A count of 1 means someone hand-rolled a literal resource path again.
 
 ---
 
-## 14. [ ] Migrate userTargets' remaining 10 sites onto the target-reader primitive
+## 14. [x] Migrate userTargets' remaining 10 sites onto the target-reader primitive (2026-09-06, PR #193)
 
 **Why:** `scripts/engine-idiom-ratchet.json`'s `userTargets` key started at 63, is down to 10 —
 10 sites still read `game.user.targets` directly instead of going through the target-reader
@@ -359,7 +404,41 @@ primitive (`edhaEffectTargets` / the upcoming reader named in the ratchet's comm
 **What to do:** work through the remaining 10 `game\.user\??\.targets` sites in
 `register-skills.js`, lowering `counts.userTargets` as they migrate.
 
-**Done when:** `counts.userTargets` reaches 0.
+**Done when:** ~~`counts.userTargets` reaches 0.~~ **Corrected on measurement (PM-D1):
+`counts.userTargets` reaches 1.** The idiom's canonical helper is a *reader*, and a reader cannot
+read through itself — the last occurrence is the reader's own one-line body, which is the point of
+the migration rather than a violation of it. 1 is the floor; 2 means someone hand-rolled the read
+again. ✅ **Done: 10 → 1, nine of nine call sites migrated, none left direct.**
+
+**What the ten actually were.** All ten (and all 53 retired before them) turned out to be the same
+two shapes — the FIRST target, which R-64 already had a reader for, and the WHOLE list, which had
+none. So this pass built the plural sibling **`edhaUserTargetTokens()`** (a fresh `Array` snapshot;
+`[]`, never `undefined`, with no targets or no `game.user`) next to `edhaUserTargetToken()`, and
+`edhaUserTargetToken` now delegates to it. Two standing exemptions in `ENGINE_INDEX.md` were
+predictions that measurement overturned and are deleted there: that the survivors were
+"genuine ALL-targets reads that have no first-target shape to migrate to", and that sites inside
+`edhaEffectTargets` "may still read `game.user?.targets` directly".
+
+| # | Site | Verdict |
+|---|---|---|
+| 1 | `edhaUserTargetTokens()` — the reader's own body | **stays** — the reader cannot read through itself; this is the ratchet's floor of 1 |
+| 2 | `edhaUserTargetToken()` | migrated (now `edhaUserTargetTokens()[0] ?? null`) |
+| 3 | `edhaEffectTargets` — the `"prompt"` branch | migrated (the "canonical consumer" exemption was unnecessary) |
+| 4 | `edhaSovTargets` — the ally/enemy split | migrated |
+| 5 | `edhaSetUserTargets` — the clear-all branch (releases every current target) | migrated |
+| 6 | The single-target `preUseItem` gate (`edha-single-target`) | migrated |
+| 7 | `edhaFindMarkGrant` — is the marked token among my targets | migrated |
+| 8 | `edhaRedirectClick` — find a willing in-range ally | migrated |
+| 9 | The pre-use range guard (`rangeFt` "nothing spent" veto) | migrated |
+| 10 | The adv-attack `to: "targets"` fan-out + the next-test-mod multi-target fan-out | migrated (both) |
+
+**Proof:** pure refactor — `edhaUserTargetTokens()` is character-for-character what each site
+inlined, so no behavioural test can tell the versions apart. The mutation-sensitive pin is the
+ratchet itself: re-inlining the direct read in `edhaSovTargets` fails `lint-refs.js` pass 20
+(`grew from 1 to 2`) **and** the last case in `tests/user-targets-reader.test.js`; restoring makes
+both green. That file also snapshot-pins the reader's contract and two migrated sites
+(`edhaSovTargets`, `edhaSetUserTargets`) so a future edit to the reader goes red rather than
+silent. ENGINE-ONLY (F5) — no pack rebuild.
 
 ---
 

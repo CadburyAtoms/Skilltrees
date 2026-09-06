@@ -8,7 +8,9 @@
 > unexplained second symptom is **closed** as exactly the hypothesis FIX PASS 5 §2 ranked first — a
 > succeeded sweep is a no-op. **2bS-11 retires in full.** The **culture row retires in full**, including
 > the `init`-ordering claim no headless test can make. **8 rows off the checklist, 0 engine defects,
-> 2 new rulings (R-74, R-75).** Open queue **33 🤖 → 28 🤖**; ⚑ unchanged at **21**. No `⛔ STOP`, **no
+> 2 new rulings (R-74, R-75).** Open queue **33 🤖 → 28 🤖** on the checklist this run started from
+> (counted as `grep -c '^- \[ \] 🤖'`); the file now reads **31** because **items 13 and 14 merged
+> behind this run** and added three re-test rows of their own — see step 0b. ⚑ unchanged at **21**. No `⛔ STOP`, **no
 > pack rebuild owed**, world restored to its start snapshot **exactly** (field-level actor id-diff empty
 > across all 74 actors, whole effect objects included; tokens/regions/drawings/templates/walls/lights/
 > combats/scenes all zero delta).
@@ -69,11 +71,30 @@ halves`; each says exactly what passed and exactly what is left, so none needs r
 
 **If all three pass, SAY SO EXPLICITLY in your delta: R-4 may then move to §K** (the PM does that).
 
-## Where the 28 open 🤖 rows are
+## ✅ 0b. A SECOND re-test block landed behind this run — items 13 and 14, three rows
+
+Both merged to `main` while run 34 was writing its docs, both **ENGINE-ONLY (F5), no pack rebuild** —
+so **hash-verify the served `register-skills.js` before driving anything**, and record the rows
+**NOT-DEPLOYED** rather than FAILED if the PM has not pushed them yet. `f268e990…` is run 34's hash;
+if you still see it, items 13 and 14 are NOT live.
+
+- **Two rows under `## Out-of-combat scope`, from item 13** — "a MIGRATED SPEND still taxes the
+  watches" and "a MIGRATED BOOKKEEPING write does NOT". These sit **directly beside** R-4's three
+  remaining rows and share their fixture (`Bench — Black` + Coercive Pressure / Whispered Doubt + a
+  hostile creature in one bench combat), so drive all five together. ⚠️ Run 34's rule applies with
+  full force here: **the bookkeeping row's silence proves nothing without a spend that fires in the
+  same round.**
+- **One row under `## Engine-wide fixes still unbenched`, from item 14** — targeting still reads the
+  same tokens after the target-reader consolidation (the single-target picker with two tokens
+  targeted, and `edhaSovTargets`' ally/enemy split with one of each). ⚠️ **The single-target picker
+  half is the SAME row as the long-deferred `# Bench-results fixes` picker row below** — drive it once
+  and retire both.
+
+## Where the 31 open 🤖 rows are
 
 | Block | 🤖 | Note |
 |---|---|---|
-| **`BENCH — Engine-wide & cross-tree`** | 3 | ⭐ **THE RE-TEST BLOCK — take it first.** Narrowed by run 34; see above. |
+| **`BENCH — Engine-wide & cross-tree`** | 6 | ⭐ **THE RE-TEST BLOCK — take it first.** R-4's three narrowed rows (above) + item 13's two + item 14's one. |
 | **`BENCH — hygiene campaign 2026-08-10`** | 7 | pass 5.2 / 5.3 rows. Includes the ones that need **zero GM clients** — still blocked on Ben. |
 | **Character-creation wizard v2** | 6 | July deploy-state language. **Still never driven, TEN runs running.** Run 33 removed the culture-defect excuse and run 34 confirmed the cultures are clean, so there is nothing left in front of it. **Re-read against DEPLOY STATE first — several likely retire on one read.** |
 | **Bestiary sections** (W29 ×3, Goldenport, Vorsk, Adversary ability wiring) | 6 | Untouched all marathon; each needs its own adversary import + staging. Cheaper than it looks now that the fresh-pack-import recipe is proven (run 34 imported two). |
@@ -86,16 +107,17 @@ row are all CLOSED — do not re-queue any of them.**
 
 ## Run 12 — the plan, in order
 
-### 0. The three narrowed R-4 rows (above)
-They share one fixture — `Bench — Black` + a granted-talent enemy + one bench combat — which run 34
+### 0. The three narrowed R-4 rows + item 13's two (above)
+All five share one fixture — `Bench — Black` + a granted-talent enemy + one bench combat — which run 34
 built in three calls. Copy it from the delta rather than re-deriving it.
 
-### 1. The two genuinely-drivable `# Bench-results fixes` rows — deferred THREE times now
-Both single-actor, single-cast, no player client:
+### 1. The picker rows — item 14's spot-check AND the `# Bench-results fixes` pair, deferred THREE times
+Both single-actor, single-cast, no player client, and the first one now retires **two** rows at once:
 - **Single-target picker resolves** — target 2+ tokens, use **Withering Ray** (Black): the picker card
   appears, **nothing is spent**, clicking a name narrows to that one target, the card marks ✓ and the
   talent rolls once. ⚠️ The picker renders in the engine's **AppV1** window (`div.app.window-app`, no
-  `<dialog>`) — sample both DOM shapes.
+  `<dialog>`) — sample both DOM shapes. **This is also half of item 14's row** — do the
+  `edhaSovTargets` ally/enemy split in the same sitting and retire both.
 - **AoE burst auto-target** — place any burst (e.g. Flame Surge) and assert the caught tokens end up
   actually **targeted** (`game.user.targets`); this retarget was silently no-opping on v13.
 

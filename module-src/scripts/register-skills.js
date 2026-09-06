@@ -2832,7 +2832,7 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
     if (!rangeFt) return;
     const otok = edhaCasterToken(actor);
     const inRange = otok ? edhaTokensWithin(otok, rangeFt) : [];
-    const ok = Array.from(game.user?.targets ?? []).some(t => t.actor && inRange.some(x => x.id === t.id));
+    const ok = edhaUserTargetTokens().some(t => t.actor && inRange.some(x => x.id === t.id));
     if (!ok) {
       ui.notifications?.warn(`Edha: ${item.name} — target a creature within ${rangeFt} ft (nothing spent).`);
       return false;
@@ -3219,17 +3219,24 @@ function edhaParseCosts(s) {
  *   · a use vetoed AFTER this hook leaves a harmless stale expectation for the window.
  * `edhaIsSpend` also throws toward YES, the same fail-safe direction `edhaInActiveCombat` uses.
  *
- * NOT stamped, deliberately — this is the list that makes the gate mean something: scene resets,
- * restores, the temp-HP unwind, the creation wizard, adversary sync, and every GM sheet edit or
- * token-bar drag. `edhaGainFocus`/`edhaDrainFocus` are untouched: their writes already carry
- * `edhaFocusWatch` and the focus watcher has skipped them since 07-05 (the drain announces its own
- * zero crossing by hand), so they never reach the predicate. */
+ * NOT spend-stamped, deliberately — this is the list that makes the gate mean something: scene
+ * resets, restores, the temp-HP unwind, the creation wizard, adversary sync, and every GM sheet
+ * edit or token-bar drag. (TODO #13, the day after: the engine-issued half of that list now carries
+ * the POSITIVE `edhaBookkeepingTag` through `edhaResourceWrite` — a declared non-spend, which the
+ * predicate reads the same way it reads no tag at all. A GM sheet edit still carries nothing, and
+ * that is still what makes it a GM sheet edit.) `edhaGainFocus`/`edhaDrainFocus` never reach the
+ * predicate either way: their writes already carry `edhaFocusWatch` and the focus watcher has
+ * skipped them since 07-05 (the drain announces its own zero crossing by hand). ⚠ `edhaDrainFocus`
+ * keeps its pre-#13 options BYTE-FOR-BYTE — an involuntary drain is **R-72, an open ruling**, and
+ * a bookkeeping tag there would answer it by the back door. `edhaGainFocus` is an increase, so its
+ * tag decides nothing. */
 const EDHA_SPEND_WINDOW_MS = 30000;   // the file's existing wall-clock prompt-debounce bound
 let _edhaSpendExpect = [];            // [{ actorId, resource, amount, source, at }]
 /* The tag itself. Merge it into an update's `options`: `actor.update(u, edhaSpendTag("…"))`, or
  * `{ ...other, ...edhaSpendTag("…") }` when the call already passes options. `bookkeeping: true`
- * is the declared opposite — nothing sets it today, but a future engine write that lowers a
- * resource WITHOUT being a spend says so here rather than by staying silent. */
+ * is the declared opposite: an engine write that changes a resource WITHOUT being a spend says so
+ * here rather than by staying silent. (It set nothing on the day #28b landed; TODO #13 adopted it
+ * the next day at the ten non-spend sites `edhaResourceWrite` now owns.) */
 function edhaSpendTag(source) { return { edha: { spend: true, source: String(source || "engine") } }; }
 function edhaBookkeepingTag(source) { return { edha: { bookkeeping: true, source: String(source || "engine") } }; }
 /* Register what a use is about to cost, so the system's own postRoll deduction has a signal. */
@@ -3305,6 +3312,34 @@ async function edhaGainResource(actor, resource, n) {
     const max = edhaResVal(res) ?? (cur + Number(n));
     await actor.update({ [`system.resources.${resource}.value`]: Math.min(max, cur + Number(n)) });
   } catch (e) { /* perms */ }
+}
+
+/* --- edhaResourceWrite (TODO #13, 2026-09-06) — THE resource-path writer for every resource write
+ * that is NOT a plain clamped spend/gain. The three canonical writers above and `edhaConsumeCost`
+ * build their update path from a variable; twelve other sites hand-rolled the literal
+ * `"system.resources.<id>.value"` key with their own clamp, their own relay-on-failure, or a
+ * `max.override` transform, which is why they could not simply call one of those three. Since #28b
+ * the untidiness is also a correctness question: an update's `options` are where a write says what
+ * KIND of write it is, and a hand-rolled `actor.update({...})` with no options says nothing.
+ *
+ * NONE of the twelve turned out to be a spend — every cost deduction in the engine already goes
+ * through `edhaSpendResource`/`edhaConsumeCost`. They are gains, heals, restores, a lifesteal, a
+ * revive-to-1, a Colossus max-HP override and one open-ruling drain. So this owns the path and
+ * takes the classification as an ARGUMENT, one per site:
+ *   · `edhaBookkeepingTag(src)` — a declared non-spend (every gain/heal/restore/override here);
+ *   · `edhaSpendTag(src)`      — a spend (H10's Investiture drain, stamped by #28b);
+ *   · the site's existing options, untouched, where the classification is an OPEN ruling —
+ *     `edhaDrainFocus` is R-72 ("is an involuntary drain a spend?") and must not be answered here.
+ * `changes` is keyed RELATIVE to the resource: `{ value: n }`, or
+ * `{ "max.override": n, "max.useOverride": true, value: n }` for a transform.
+ *
+ * It deliberately does NOT catch and does NOT clamp: every migrated site keeps its own try/catch,
+ * socket relay, outer handler and max math exactly as it had them, so the migration is a pure
+ * refactor plus the tag. Returns the `update()` promise. */
+function edhaResourceWrite(actor, resource, changes, options) {
+  const u = {};
+  for (const [k, v] of Object.entries(changes || {})) u[`system.resources.${resource}.${k}`] = v;
+  return actor.update(u, options || {});
 }
 
 /* Build the candidate list. Measured from the ANCHOR — you, or the creature this rule's trigger
@@ -3860,7 +3895,7 @@ async function edhaTurnCueSweep(combat, prior, current) {
           const res = prevTok.actor.system?.resources?.hea;
           const heal = edhaRegenClamp(h.amount, res?.value, edhaResVal(res));
           if (!heal) continue;
-          await prevTok.actor.update({ "system.resources.hea.value": (Number(res?.value) || 0) + heal });
+          await edhaResourceWrite(prevTok.actor, "hea", { value: (Number(res?.value) || 0) + heal }, edhaBookkeepingTag(`${tal.name} (edha-regen)`));
           await edhaPostCueCard(prevTok.actor, tal, { note: h.note || `regains ${heal} HP.`, trigger: "turn-end" }, ` <em>(+${heal} HP applied, end of turn.)</em>`);
       }
     }
@@ -4338,7 +4373,7 @@ async function edhaGainFocus(actor, n, source) {
   const cur = Number(foc.value) || 0, next = Math.min(max, cur + n);
   if (next <= cur) return;
   _edhaInFocusWatch = true;
-  try { await actor.update({ "system.resources.foc.value": next }, { edhaFocusWatch: true }); } finally { _edhaInFocusWatch = false; }
+  try { await edhaResourceWrite(actor, "foc", { value: next }, { edhaFocusWatch: true, ...edhaBookkeepingTag(`${source} (focus gain)`) }); } finally { _edhaInFocusWatch = false; }
   ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🧠 <strong>${source}</strong>: ${actor.name} regains ${next - cur} focus.</p>` });
 }
 let _edhaInFocusWatch = false;
@@ -4948,7 +4983,7 @@ function edhaFindMarkGrant(actor) {
   try {
     const rTok = edhaCasterToken(actor); if (!rTok) return null;
     const rDisp = rTok.document?.disposition ?? 1;
-    const targeted = new Set([...(game.user?.targets ?? [])].map(t => t.document?.uuid).filter(Boolean));
+    const targeted = new Set(edhaUserTargetTokens().map(t => t.document?.uuid).filter(Boolean));
     if (!targeted.size) return null;
     for (const t of canvas?.tokens?.placeables ?? []) {
       const a = t.actor; if (!a || a.uuid === actor.uuid || t.id === rTok.id) continue;
@@ -6438,7 +6473,9 @@ async function edhaDrainFocus(actor, n, source) {
     if (!game.users?.activeGM) { ui.notifications?.warn(`Edha: a GM must be online for ${source || "the focus drain"}.`); return; }
     try { game.socket.emit("module.edha-content", { action: "set-resource", payload: { actorUuid: actor.uuid, path: "system.resources.foc.value", value: next } }); } catch (e) { return; }
   } else {
-    try { await actor.update({ "system.resources.foc.value": next }, { edhaFocusWatch: true }); } catch (e) { return; }
+    // #13: the path moves onto edhaResourceWrite; the OPTIONS are byte-for-byte what they were —
+    // whether an involuntary drain is a "spend" is R-72, still open, and is not answered here.
+    try { await edhaResourceWrite(actor, "foc", { value: next }, { edhaFocusWatch: true }); } catch (e) { return; }
   }
   // ANNOUNCE the loss (2026-07-26l, bench run 3 defect 1): this helper was the ONE silent focus
   // write — edhaGainFocus posts a card, the executor's inv/hea branches post cards, and Wary's
@@ -10188,8 +10225,8 @@ async function edhaSenseRevealOnDamage(victim, list) {
  * Conflating them is a bug this file has shipped more than once.
  * ⚠️ Card state persists: edhaMarkCardResolved / edhaMessageIdOf stamp a clicked button so a
  * reload (or a second player) cannot resolve the same card twice (REUSABLE, Ben pass 3 07-12).
- * Owns — targeting: edhaUserTargetToken · edhaUserTargetActor · edhaResolveVictim ·
- *   edhaEffectTargets.
+ * Owns — targeting: edhaUserTargetTokens · edhaUserTargetToken · edhaUserTargetActor ·
+ *   edhaResolveVictim · edhaEffectTargets.
  * Owns — payload + cards: edhaToggleStatus · edhaRollCard · edhaRunTriggerEffect ·
  *   edhaFireTrigger · edhaPostTriggerCard · edhaDeductCost · edhaTriggerCardClick.
  * Owns — card-state persistence: edhaMarkCardResolved · edhaMessageIdOf.
@@ -10198,9 +10235,23 @@ async function edhaSenseRevealOnDamage(victim, list) {
 /* R-64 (hygiene campaign 2026-08-10, ENGINE PASS 5.2). The single reader every inline
  * `Array.from(game.user?.targets ?? [])[0]` site used to hand-roll (four spellings: Array.from vs
  * spread, `?? null` vs bare, wanting the TOKEN vs its `.actor`) — one place now, so a future
- * Foundry API change (User#targets is already a Set, not an array) breaks one line. */
+ * Foundry API change (User#targets is already a Set, not an array) breaks one line.
+ *
+ * Item 14 (2026-09-06) finished the same job for the PLURAL shape. Nine sites still wanted the
+ * WHOLE target list — `Array.from(game.user?.targets ?? [])` / `[...(game.user?.targets ?? [])]`,
+ * then their own `.filter`/`.find`/`.some`/`.slice` — so they hand-rolled the read instead of the
+ * pick. They all call edhaUserTargetTokens now, which makes this function's body the ONE place in
+ * the engine that touches `game.user.targets` at all (edhaUserTargetToken is a `[0]` of it), so
+ * lint-refs pass 20's `userTargets` ratchet FLOORS AT 1, not 0 — a reader cannot read through
+ * itself. What the reader guarantees, and every hand-rolled copy also happened to: a fresh Array
+ * every call, never the live Set, so a caller may filter/slice/sort it and a mid-loop retarget
+ * (edhaSetUserTargets releasing the old set) cannot mutate it underfoot; and `[]`, never
+ * undefined, when there is no `game.user` at all (pre-ready, or a hook firing on a headless run). */
+function edhaUserTargetTokens() {
+  return Array.from(game.user?.targets ?? []);
+}
 function edhaUserTargetToken() {
-  return Array.from(game.user?.targets ?? [])[0] ?? null;
+  return edhaUserTargetTokens()[0] ?? null;
 }
 function edhaUserTargetActor() {
   return edhaUserTargetToken()?.actor ?? null;
@@ -10263,7 +10314,7 @@ function edhaEffectTargets(owner, eff, ctx) {
       return out;
     }
     default: { // "prompt" → your current targets
-      const toks = Array.from(game.user?.targets ?? []).filter(t => t.actor);
+      const toks = edhaUserTargetTokens().filter(t => t.actor);
       const max = Number(eff.maxTargets) || 0;
       if (max <= 0) return toks.map(t => t.actor);   // the pre-2bU behaviour, untouched
       /* MULTI-TARGET mode (2bU — Investiture of Command): filter the user's targets by side, range
@@ -10331,7 +10382,7 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
     const healAmt = edhaHealCutGate(healee, amt);
     const max = edhaResVal(hea) ?? (hea?.value ?? 0) + healAmt;
     if (healAmt > 0) {
-      try { await healee.update({ "system.resources.hea.value": Math.min(max, (hea?.value ?? 0) + healAmt) }); }
+      try { await edhaResourceWrite(healee, "hea", { value: Math.min(max, (hea?.value ?? 0) + healAmt) }, edhaBookkeepingTag("effect heal")); }
       catch (e) { // no perms on the healee (another player's PC) → relay as a burst-style heal hit
         try { game.socket.emit("module.edha-content", { action: "burst-apply", payload: { hits: [{ actorUuid: healee.uuid, amount: healAmt, type: "heal", heal: true }] } }); } catch (e2) {}
       }
@@ -10539,7 +10590,7 @@ function edhaMessageIdOf(btn) { return btn?.closest?.("[data-message-id]")?.data
 Hooks.on("cosmere-rpg.preUseItem", (item) => {
   try {
     if (!edhaIsTalent(item) || !edhaRuleOf(item, "edha-single-target")) return;
-    const targets = Array.from(game.user?.targets ?? []);
+    const targets = edhaUserTargetTokens();
     if (targets.length <= 1) return;
     const btns = targets.map(t => `<button type="button" class="edha-pick-target-btn" data-edha-item="${item.uuid}" data-edha-token="${t.id}">${t.name}</button>`).join(" ");
     ChatMessage.create({ whisper: [game.user.id], speaker: ChatMessage.getSpeaker({ actor: item.actor }),
@@ -10554,7 +10605,7 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
 // through here so the next core rename breaks ONE line.
 function edhaSetUserTargets(tokens) {
   const list = (tokens || []).filter(t => typeof t?.setTarget === "function");
-  if (!list.length) { for (const t of Array.from(game.user?.targets ?? [])) t.setTarget(false, { releaseOthers: false }); return; }
+  if (!list.length) { for (const t of edhaUserTargetTokens()) t.setTarget(false, { releaseOthers: false }); return; }
   list.forEach((t, i) => t.setTarget(true, { releaseOthers: i === 0 }));
 }
 async function edhaPickTargetClick(ev) {
@@ -11270,7 +11321,7 @@ async function edhaApplyBurstResults(payload) {
       if (h.heal) {
         const cur = Number(target.system?.resources?.hea?.value) || 0;
         const max = Number(target.system?.resources?.hea?.max?.value) || (cur + h.amount);
-        await target.update({ "system.resources.hea.value": Math.min(max, cur + h.amount) });
+        await edhaResourceWrite(target, "hea", { value: Math.min(max, cur + h.amount) }, edhaBookkeepingTag("burst heal"));
       } else {
         try { await target.applyDamage([{ amount: h.amount, type: h.type }], { chatMessage: false, edhaSource: caster }); } catch (e) { console.error("Edha Content | burst applyDamage failed", e); }
       }
@@ -13615,7 +13666,7 @@ function edhaSovStepOverride(item, base) {
 function edhaSovTargets(owner) {
   const otok = edhaCasterToken(owner);
   const disp = otok?.document?.disposition ?? 1;
-  const toks = Array.from(game.user?.targets ?? []);
+  const toks = edhaUserTargetTokens();
   return {
     allies: toks.filter(t => t.actor && t.actor !== owner && (t.document?.disposition ?? 1) === disp),
     enemies: toks.filter(t => t.actor && (t.document?.disposition ?? 1) !== disp),
@@ -13931,7 +13982,7 @@ async function edhaDecayTurnTick(combat) {
       const ohea = owner.system.resources.hea;
       const omax = Number(ohea?.max?.value ?? ohea?.max) || 0;
       const next = Math.min(omax || Infinity, (Number(ohea?.value) || 0) + back);
-      try { await owner.update({ "system.resources.hea.value": next }); healed = ` ${owner.name} regains <strong>${back}</strong> HP.`; } catch (e) {}
+      try { await edhaResourceWrite(owner, "hea", { value: next }, edhaBookkeepingTag(`${d.sourceName || "Decay"} (lifesteal)`)); healed = ` ${owner.name} regains <strong>${back}</strong> HP.`; } catch (e) {}
     }
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), rolls: [dr],
       content: `<p>🦠 <strong>${d.sourceName || "Decay"}</strong> — ${actor.name} takes <strong>${amt}</strong> ${d.type || "vital"} (start of turn).${healed}</p>` });
@@ -13990,7 +14041,7 @@ async function edhaDeathWardCheck(target, prevHp) {
     try { await target.unsetFlag("edha-content", "deathWard"); } catch (e) {}
     const dr = await new Roll(ward.formula || "0").evaluate();
     const thp = Math.max(0, Math.floor(dr.total));
-    if (target.isOwner || game.user?.isGM) await target.update({ "system.resources.hea.value": 1 });
+    if (target.isOwner || game.user?.isGM) await edhaResourceWrite(target, "hea", { value: 1 }, edhaBookkeepingTag(`${ward.sourceName || "Ward"} (drop to 1)`));
     else game.socket.emit("module.edha-content", { action: "burst-apply", payload: { hits: [{ actorUuid: target.uuid, amount: 1, heal: true }] } });
     await edhaGrantTempHpCross(target, thp, ward.sourceName || "Ward");
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: target }), rolls: [dr],
@@ -14540,10 +14591,10 @@ async function edhaCivTransformSummon(item, h, c) {
     }
     const hea = c.system?.resources?.hea;
     const curMax = Number(hea?.max?.value ?? hea?.max?.override) || 0;
-    if (bonusHp > 0) await c.update({
-      "system.resources.hea.max.override": curMax + bonusHp, "system.resources.hea.max.useOverride": true,
-      "system.resources.hea.value": (Number(hea?.value) || 0) + bonusHp,
-    });
+    if (bonusHp > 0) await edhaResourceWrite(c, "hea", {
+      "max.override": curMax + bonusHp, "max.useOverride": true,
+      value: (Number(hea?.value) || 0) + bonusHp,
+    }, edhaBookkeepingTag(`${item.name} (Colossus max-HP override)`));
     await c.setFlag("edha-content", "colossus", true);
     if (Number(h.defBonus) > 0) await c.createEmbeddedDocuments("ActiveEffect", [{
       name: `Colossus (${item.name})`, img: "icons/creatures/magical/construct-golem-stone-blue.webp",
@@ -14906,7 +14957,7 @@ async function edhaRedirectClick(ev) {
     let left = Number(btn.dataset.edhaLeft) || 0;
     if (left <= 0) { btn.disabled = true; return; }
     const otok = edhaCasterToken(owner); const disp = otok?.document?.disposition ?? 1;
-    const at = Array.from(game.user?.targets ?? []).find(t => t.actor && t.actor !== owner
+    const at = edhaUserTargetTokens().find(t => t.actor && t.actor !== owner
       && (t.document?.disposition ?? 1) === disp
       && (t.actor.system?.resources?.hea?.value ?? 0) > 0
       && edhaDeathInRange(owner, t, range));
@@ -14932,7 +14983,7 @@ async function edhaRedirectClick(ev) {
     // The wearer takes that much less — heal the redirected amount back.
     const hea = owner.system?.resources?.hea;
     const omax = Number(hea?.max?.value ?? hea?.max) || 0;
-    try { await owner.update({ "system.resources.hea.value": Math.min(omax || Infinity, (Number(hea?.value) || 0) + amt) }); } catch (e) {}
+    try { await edhaResourceWrite(owner, "hea", { value: Math.min(omax || Infinity, (Number(hea?.value) || 0) + amt) }, edhaBookkeepingTag(`${talName} (redirect unwind)`)); } catch (e) {}
     left -= amt;
     btn.dataset.edhaLeft = String(left);
     if (left <= 0) { btn.disabled = true; btn.textContent = "Redirect spent."; } else { btn.textContent = `Redirect (up to ${left} left)`; }
@@ -16903,7 +16954,7 @@ for (const ctx of ["Attack", "Item"]) Hooks.on(`cosmere-rpg.pre${ctx}Roll`, edha
 async function edhaHealActor(actor, amt) {
   const hea = actor?.system?.resources?.hea; if (!hea) return;
   const max = (hea.max && typeof hea.max === "object") ? hea.max.value : hea.max;
-  await actor.update({ "system.resources.hea.value": Math.min(max ?? ((hea.value || 0) + amt), (hea.value || 0) + amt) });
+  await edhaResourceWrite(actor, "hea", { value: Math.min(max ?? ((hea.value || 0) + amt), (hea.value || 0) + amt) }, edhaBookkeepingTag("edhaHealActor"));
 }
 /* The pulse runner (`edha-pulse`, 07-25; enemy side 2bZ): heal or a status to every ally — or
  * enemy — within the colour's Attunement Range. visibleOnly reproduces the 07-12 through-walls
@@ -16974,7 +17025,7 @@ async function edhaDrawMana(item) {
     const actor = item?.actor; if (!actor) return;
     const tier = Number(actor.system?.tier) || 1;
     const inv = actor.system?.resources?.inv;
-    if (inv) { const max = (inv.max && typeof inv.max === "object") ? inv.max.value : inv.max; await actor.update({ "system.resources.inv.value": Math.min(max ?? ((inv.value || 0) + tier), (inv.value || 0) + tier) }); }
+    if (inv) { const max = (inv.max && typeof inv.max === "object") ? inv.max.value : inv.max; await edhaResourceWrite(actor, "inv", { value: Math.min(max ?? ((inv.value || 0) + tier), (inv.value || 0) + tier) }, edhaBookkeepingTag("Draw Mana (recover Investiture)")); }
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p><strong>${actor.name}</strong> Draws Mana — recover ${tier} Investiture.</p>` });
     // …then the document-driven riders (every Key since 2bZ). AFTER the summary card so the
     // recover-Investiture line still reads first; each rule posts its own card.
@@ -18085,7 +18136,7 @@ function edhaRegisterNativeEventSystem() {
           const next = this.op === "drain" ? Math.max(0, cur - n) : Math.min(edhaResVal(res) ?? (cur + n), cur + n);
           // #28b: a DRAIN is stamped (a talent took it — the Order Investiture watch must still
           // see it, exactly as today); a GAIN is an increase and never reaches the predicate.
-          try { await who.update({ "system.resources.inv.value": next }, this.op === "drain" ? edhaSpendTag(`${source} (drain)`) : {}); } catch (e) { /* perms */ }
+          try { await edhaResourceWrite(who, "inv", { value: next }, this.op === "drain" ? edhaSpendTag(`${source} (drain)`) : edhaBookkeepingTag(`${source} (Investiture gain)`)); } catch (e) { /* perms */ }
           ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: who }),
             content: `<p>✨ <strong>${source}</strong>: ${who.name} ${this.op === "drain" ? "loses" : "recovers"} <strong>${n}</strong> Investiture.</p>` });
           return;
@@ -19784,7 +19835,7 @@ function edhaRegisterNativeEventSystem() {
         const max = Number(this.maxTargets) || 0;
         const ft = this.rangeColor ? edhaAttuneFtColor(actor, this.rangeColor) : 0;
         const inRange = ft > 0 && otok ? edhaTokensWithin(otok, ft) : null;
-        let picked = Array.from(game.user?.targets ?? []).filter(t => t.actor && t.actor !== actor
+        let picked = edhaUserTargetTokens().filter(t => t.actor && t.actor !== actor
           && Number.isFinite(t.document?.disposition) && Number.isFinite(disp) && t.document.disposition === disp
           && (t.actor.system?.resources?.hea?.value ?? 0) > 0
           && (!inRange || inRange.some(x => x.id === t.id)));
@@ -20056,7 +20107,7 @@ function edhaRegisterNativeEventSystem() {
       else if (this.target === "victim") picked = [edhaResolveVictim(event)].filter(Boolean);
       else {
         const otok = edhaCasterToken(owner);
-        picked = Array.from(game.user?.targets ?? [])
+        picked = edhaUserTargetTokens()
           .filter(t => t.actor && (!rangeFt || (otok && edhaTokensWithin(otok, rangeFt).some(x => x.id === t.id))))
           .slice(0, maxT)
           .map(t => t.actor);

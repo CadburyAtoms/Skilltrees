@@ -434,6 +434,27 @@ ability / Edict row. **R-4 therefore does NOT close yet.**)*
       ledger (`flags.edha-content.lists.edicts`, entries `{id, uuid, name, proh:{kind:"invest",
       text}}`) on `Bench — Order` and declare the hand-staging.
 
+- [ ] 🤖 **A MIGRATED SPEND still taxes the watches (item 13, 2026-09-06).** Item 13 moved the last
+      twelve hand-rolled `system.resources.*` writes onto `edhaResourceWrite`, and exactly one of
+      them carries a spend stamp: **H10's `edha-focus` Investiture DRAIN** (an `edha-focus` rule with
+      `op: drain`, `resource: inv` — Reaper's Harvest is the reference). Same started combat as the
+      28b rows, with an **Order Edict that forbids activating Investiture** on the watching PC. Drain
+      the Edict-holder's Investiture with that talent. Expected: the ✨ card posts, the Investiture
+      drops, **and the Edict's violation prompt still fires** — exactly as it did before item 13. The
+      failure this pins is the writer swallowing or re-classifying the stamp, which would silence the
+      watch without changing a visible number. (Not a hunt for new behaviour: a check that the one
+      stamped site kept its stamp.)
+
+- [ ] 🤖 **A MIGRATED BOOKKEEPING write does NOT tax them (item 13, 2026-09-06).** The other eleven
+      sites now declare themselves non-spends. Drive two of them in the same combat: (a) **Draw Mana**
+      on `Bench — Blue` (recovers Investiture — an `inv` write) with the same Order Edict on the
+      actor, and (b) any **heal** onto a creature whose focus/HP a scene watcher is watching (an
+      `edha-focus {resource: hea}` rider, a burst heal, or a `Bench — White` pulse). Expected: the
+      resource moves, the card posts, and **no** spend-driven watcher fires off either write — no
+      Edict prompt on the Draw Mana recovery, no 👁️/🧠 tax off the heal. Also confirm the numbers are
+      unchanged from before the migration: each site kept its own max clamp, so a heal must still cap
+      at max HP and Draw Mana must still cap at max Investiture rather than overshooting.
+
 ## Migration machinery (cross-tree behaviour)
 
 > **✅ Bench run 9 (2026-07-27i) retired seven Engine-wide rows on evidence** — **2bB-8** (neither
@@ -475,6 +496,19 @@ blank note read "Push", or the owning talent's name?)*
 `system.attack.type`: a weapon set to `"ranged"` skipped Warlord's Advance's rider AND left the arm
 armed; blanking the field (schema re-initialises to `"melee"`) fired "+4 impact strike" and consumed
 it; Withering Touch's ranged half behaved identically. Evidence in the 07-26m delta.
+
+- [ ] 🤖 **Targeting still reads the same tokens after the target-reader consolidation (item 14).**
+      ENGINE-ONLY (F5) — every site that read `game.user.targets` now calls `edhaUserTargetTokens()`.
+      A pure refactor, so this row is a spot-check that nothing lost its target list, not a hunt for
+      new behaviour. Drive **two** of the nine migrated sites. **(a) The single-target gate:** target
+      **two** tokens with `Bench — Red` and use a single-target talent (Withering Ray is the
+      reference). Expected: the use is cancelled before any cost, and the whispered picker card lists
+      **both** token names as buttons; clicking one retargets to it alone and re-uses the talent.
+      **(b) `edhaSovTargets`' ally/enemy split:** with a Sovereignty actor, target **one ally and one
+      enemy at once** and use a talent that reads a side (an Edict / adv-attack grant). Expected: the
+      ally-side effect lands on the ALLY and the enemy-side read takes the ENEMY — the split is by
+      token disposition, not by click order, and your own token is in neither list. Either row
+      returning an empty/wrong target list is the regression to report.
 
 *(**GM summon relay** — RETIRED 2026-09-05, `EDHA_RULINGS.md` R-1: "yes — keep `ACTOR_CREATE`."
 ✅ The PLAYER role keeps the permission at Ben's table, so `edhaSummon`'s `summon-actor` relay
