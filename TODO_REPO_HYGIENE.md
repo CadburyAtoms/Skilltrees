@@ -906,7 +906,7 @@ produces one; otherwise a standalone S worker.
 
 ---
 
-## 37. [ ] `bench-setup-console.js` must detect and repair ORPHAN tokens on the Playtest Map
+## 37. [x] `bench-setup-console.js` must detect and repair ORPHAN tokens on the Playtest Map (2026-09-05, PR #171)
 
 **Why:** bench run 27 (2026-09-05) found three Playtest-Map tokens whose `actorId` resolves to no
 actor — `Bench — Green`, `Bench — Heroic`, `Bench Target — Floater`. Driving one fails as "no token on
@@ -928,6 +928,12 @@ confirm the three tokens drive. Pure harness — no engine, no pack, no talent c
 
 **PM:** lane B (needs the live scene to prove) · model sonnet · size S · deps none · verify: the
 script's own before/after output pasted from the live table, and the 🤖 row. TOOLING-only.
+
+**DONE 2026-09-05, PR #171 (TOOLING-only).** `benchOrphanPlan` added and wired; pinned in
+`tests/bench-orphans.test.js` (7 cases + mutation on the protected-name guard). Detail: the
+handoff delta. ⏳ **Bench-pending** (🤖 row under `# BENCH — Engine-wide & cross-tree`) — the
+repo-side worker cannot join Foundry, so the live before/after on the three named orphans is
+bench run 30's job.
 
 ---
 
