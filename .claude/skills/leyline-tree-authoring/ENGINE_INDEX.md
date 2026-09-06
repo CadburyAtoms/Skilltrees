@@ -293,6 +293,26 @@ there is no lint — the swept corpus was 3 sites and only 1 was wrong):
   future pass, not silently fixed here. Pinned in `tests/disposition-failclosed.test.js`.
   Every flip is R-63-sanctioned but IS a live-behavior change for a genuinely tokenless/unset-
   disposition actor; flagged 🤖 on the checklist for bench re-verification.
+- **`edhaSideSame(a, b)` / `edhaSideHostile(a, b)`** → PURE. The **VALUE-level** pair (two raw
+  disposition numbers), added by item 10 batch 1 on 2026-09-06 when 63 of the 74 backlog occurrences
+  migrated. Reach for these when you **already hold both dispositions** — the actor-level
+  `edhaDisposHostile` / `edhaSameDisposition` above re-resolve a token the caller has in hand.
+  Same convention as `edhaAllyDropEligible`: **an unresolvable side matches NEITHER** — not an ally,
+  not an enemy — so no side-filtered payload, buff *or* damage, lands on it. ⛑ **The corollary that
+  bit twice: `!edhaSideSame(a, b)` is NOT `edhaSideHostile(a, b)`.** The splash (`nearAffects`) and
+  burst (`affects`) filters both computed `const same = …` and returned `!same` for "enemies", which
+  silently re-widened to include every unresolvable side; both now name the predicate they mean.
+  Pinned in `tests/disposition-failclosed.test.js`.
+- ⛑ **A BAKED side is a STORED fail-open.** Where a payload carries the owner's disposition across a
+  socket into a Region behavior (civ-fortify, Foundation place), a `?? 1` at the bake site freezes a
+  guess into world state that a later filter cannot distinguish from a real answer. The bake site
+  uses `edhaActorSide`, and `edhaCivFortifyGM` **refuses to build the Region** when the side did not
+  resolve — a Fortified Foundation that cannot tell sides apart damages everyone who enters it.
+- The **11 remaining** `disposition ?? 0|1` occurrences (`dispoFailOpen` batch 2) are reads whose only
+  consumer is a card's wording or a picker list a human then confirms — `edhaPickCandidates`,
+  `edhaSweepEmptyNote`, the movement-window card, `edhaPickProhibition`'s `<select>`, and the
+  `edha-cleanse` beacon list. A human gate stands between each and any effect; that is the line
+  batch 1 was drawn on.
 
 ## ⛑ AN AUTHORED **0** IS FALSY — the `x || <default>` revert (07-28g, 4 shipped bugs, NOT gated)
 

@@ -455,6 +455,27 @@ ability / Edict row. **R-4 therefore does NOT close yet.**)*
       unchanged from before the migration: each site kept its own max clamp, so a heal must still cap
       at max HP and Draw Mana must still cap at max Investiture rather than overshooting.
 
+- [ ] 🤖 **A SIDELESS creature is caught by NOTHING — the disposition fail-open batch (item 10,
+      2026-09-06).** Item 10 flipped 63 disposition defaults to fail CLOSED, so a creature whose side
+      will not resolve is now **neither an ally nor an enemy** and no side-filtered payload reaches
+      it. Build the probe once: drop any bench adversary token on the Playtest Map and set its
+      **Disposition to "Secret"** on the token config (the closest live stand-in for an unresolvable
+      side; if Secret still reads as a number on this build, say so in the result and instead use a
+      creature whose actor has **no token on the scene** — that is the same lookup failure and is what
+      the unit tests pin). Then drive these three, all from `Bench — Red` unless noted, with a normal
+      hostile token beside the probe as the **matched control**:
+      (a) **the burst capture** — any `affects: enemies` burst (Red's is the reference) centred to
+      cover both. Expected: the control takes the damage, **the probe takes none**; before this
+      change the probe was caught by every burst whose caster was not disposition 1.
+      (b) **the `edha-aura` adjacency sweep** — stand the probe adjacent to a `Bench — White` aura
+      owner. Expected: the aura's ActiveEffect lands on a real adjacent ally and **not** on the probe.
+      (c) **the Fortified Foundation** — fortify a Foundation and walk both tokens in. Expected: the
+      control eats the baked enter damage and rolls Agility; **the probe passes free**. Also confirm
+      the *owner* half: an owner whose own side does not resolve now gets a "could not resolve the
+      Foundation owner's side — not fortifying" warning instead of a Region that damages everyone.
+      Report anything that still fires on the probe with the site name — that is a missed site, not a
+      ruling.
+
 ## Migration machinery (cross-tree behaviour)
 
 > **✅ Bench run 9 (2026-07-27i) retired seven Engine-wide rows on evidence** — **2bB-8** (neither

@@ -33,6 +33,60 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-06 DELTA — item 10 (batch 1): the disposition fail-open backlog, everywhere it gated a WRITE — **74 → 11** (**ENGINE-ONLY, F5** — no data change, no pack rebuild; deployed by the PM after bench run 35 or by the next session).
+
+`scripts/engine-idiom-ratchet.json`'s `dispoFailOpen` key went **74 → 11**. Batch 1 is the half that
+matters: every occurrence whose filter decides who *receives* something — damage, a heal, a status,
+an ActiveEffect, a ledger/flag stamp, a movement veto, a token displacement, a posted cue that
+writes `trigRound`, or live dice math. **63 occurrences across 31 sites**, each now failing CLOSED
+per R-63.
+
+**Item 12's lesson repeated exactly: the idiom carried TWO polarities**, which is why one helper had
+never absorbed it. `?? 1` defaults an unresolvable side to **FRIENDLY**; `?? 0` defaults it to
+**NEUTRAL**. They are different fail-opens, and two of them were worse than they looked:
+
+- the **token-move trample sweep** used a *different default on each end of one comparison*
+  (`tokenDoc.disposition ?? 1` vs `t.disposition ?? 0`), so **two unknowns read as OPPOSITE sides**
+  and the sweep dispatched `token-move` watchers across the whole scene;
+- the **`edha-hp-threshold` ally reaction** carried the comment *"allies only; unknown fails closed"*
+  over a `?? 0` pair that read two unknowns as **the SAME side** — the comment described the
+  intent, not the code.
+
+**New primitives — `edhaSideSame(a, b)` / `edhaSideHostile(a, b)`** (PURE, indexed). They are the
+**VALUE-level** counterparts of `edhaDisposHostile` / `edhaSameDisposition`, which take *actors* and
+re-resolve a token the caller already holds; most sites in the engine compare two raw dispositions
+they already have. They carry the identical convention (`edhaAllyDropEligible`'s): **an unresolvable
+side matches NEITHER predicate** — not an ally, not an enemy, so no side-filtered payload lands on
+it. The corollary bit twice: **`!edhaSideSame(a, b)` is NOT `edhaSideHostile(a, b)`**, and the splash
+(`nearAffects`) and burst (`affects`) sites both read `!same` as "enemy". Both now name the predicate
+they mean. An owner's *own* side goes through **`edhaActorSide`**, whose `prototypeToken` fallback is
+a real answer where a guessed `1` was not.
+
+**The civ-fortify chain is closed end to end**, because a baked side is a stored fail-open: the cast
+site bakes `edhaActorSide(owner)`, `edhaCivFortifyGM` now **refuses to build the Region at all** when
+that side did not resolve (a Fortified Foundation that cannot tell sides apart damages *everyone* who
+enters it), and the three `Number(p.disposition ?? 1)` reads downstream take the guarded value.
+
+**The 11 survivors are BATCH 2 and are listed in the ratchet's `_README`** — all of them reads whose
+only consumer is a card's *wording* or a picker list a human then confirms: `edhaPickCandidates` (3),
+`edhaSweepEmptyNote` (2), the movement-window card (2), `edhaPickProhibition`'s dialog `<select>` (2),
+and the `edha-cleanse` beacon list (2). A human gate stands between each of those and any effect,
+which is exactly the line batch 1 was drawn on. **Nothing was left as "legitimately defaulted"** —
+the two payload-bake sites that looked like the "caster's own token" exemption are precisely the
+`edhaCasterToken(a)?.document?.disposition ?? 1` shape `ENGINE_INDEX.md` names, so they migrated.
+
+**Proven by:** `node scripts/gates.js` **PASS** (all ten); `tests/disposition-failclosed.test.js`
+gained 7 cases — the two primitives, three migrated sites driven through the harness with a
+token-less / disposition-unset actor, and the ratchet pinned from inside the suite. **Mutation:**
+restoring `?? 1` at `edhaEnemyTokensInCircle` fails 2 tests *and* lint pass 20
+(`"grew from 11 to 13"`).
+
+**🤖 for the bench:** every flip is live behaviour for a genuinely token-less or unset-disposition
+actor. One batch row is queued under `# BENCH — Engine-wide & cross-tree`, naming the burst capture,
+the `edha-aura` adjacency sweep and the Fortified Foundation as the three to drive.
+
+---
+
 ## 2026-09-06 DELTA — item 12: the primary-GM gate was carrying **two polarities**, which is why nothing had ever migrated off it (**ENGINE-ONLY, F5** — no data change, no pack rebuild; deployed by the PM after bench run 34/35).
 
 `scripts/engine-idiom-ratchet.json`'s `primaryGmGate` key went **20 → 1**, and 1 is the **floor** —

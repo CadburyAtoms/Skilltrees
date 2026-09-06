@@ -297,6 +297,34 @@ LOOKUP IS NOT NO RESTRICTION".
 **Done when:** `counts.dispoFailOpen` reaches 0 (it stays in the ratchet file as a tombstone
 after that, same as `rollFold`/`gmWhisper` today).
 
+**BATCH 1 DONE (PR #PRNUM, 2026-09-06): 63 occurrences migrated, 11 left for batch 2, 0 stay.**
+`counts.dispoFailOpen` **74 → 11**. Batch 1 was scoped to every site whose filter decides who
+*receives* something — damage, a heal, a status, an ActiveEffect, a ledger/flag stamp, a movement
+veto, a token displacement, a posted cue that writes `trigRound`, or live dice math (31 sites,
+63 occurrences). Three findings the entry could not know:
+
+- **The idiom carried TWO polarities** (item 12's lesson again): `?? 1` defaults an unresolvable
+  side to FRIENDLY, `?? 0` to NEUTRAL. The **token-move trample sweep** used a *different default on
+  each end of one comparison*, so two unknowns read as OPPOSITE sides and it fired; the
+  **`edha-hp-threshold` reaction** carried the comment "allies only; unknown fails closed" over a
+  `?? 0` pair that read two unknowns as the SAME side.
+- **The helpers R-63 shipped did not fit most sites.** `edhaDisposHostile`/`edhaSameDisposition` take
+  *actors* and re-resolve a token the caller already holds. The migration added the value-level pair
+  **`edhaSideSame` / `edhaSideHostile`** (PURE, indexed, pinned) carrying the identical convention,
+  and the corollary that had already re-widened two sites: **`!edhaSideSame` is NOT
+  `edhaSideHostile`** — the splash and burst filters both read `!same` as "enemy".
+- **A baked side is a stored fail-open.** The civ-fortify / Foundation payloads froze
+  `edhaCasterToken(o)?.document?.disposition ?? 1` into a Region behavior. They now bake
+  `edhaActorSide`, and `edhaCivFortifyGM` refuses to build a Region whose owner side did not resolve.
+
+**BATCH 2 — the 11 left, all reads whose only consumer is a card's wording or a picker list a human
+then confirms:** `edhaPickCandidates` (3), `edhaSweepEmptyNote` (2), the movement-window card (2),
+`edhaPickProhibition`'s dialog `<select>` (2), the `edha-cleanse` beacon list (2). A human gate
+stands between each of these and any effect, which is the line batch 1 was drawn on. **Nothing was
+classified "legitimately defaulted"** — the two payload-bake sites that looked like the "caster's own
+token" exemption are exactly the shape `ENGINE_INDEX.md` says to replace with `edhaActorSide`, so
+they migrated. Batch 2 can therefore still reach **0**.
+
 ---
 
 ## 11. [x] Migrate the 6 remaining Foundry/repo path-literal scripts onto scripts/lib/paths.js — DONE 2026-09-05, PR #156
