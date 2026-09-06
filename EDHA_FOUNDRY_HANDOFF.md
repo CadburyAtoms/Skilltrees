@@ -33,6 +33,170 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-06 DELTA — FIX PASS 5 (bench run 33's findings): **the Stalker's veil has never auto-toggled on any map — `edhaDarkVeilSweep` reads `actor.effects` and the `Veil` marker is item-transferred, so the lookup was `undefined` every time**; the ten Edha cultures now register at **`init`**, which makes the ALREADY-BUILT pack valid and its dropped slugs stick; and the run's unexplained "PARTIAL" second symptom is **root-caused as a probe artifact from source**, not guess-fixed. (**ENGINE-ONLY, F5** on both fixes — no data change, **no pack rebuild owed on either half**, which corrects the run-32 culture row's assumption; deployed by the PM after merge.)
+
+Two engine commits, one docs commit. `node scripts/gates.js` → **RESULT: PASS** (exit 0) on each.
+Neither ratchet moved: lint pass 7's allowlist unchanged, pass 20's idiom counts unchanged. **703
+tests passed, 0 failed** (+15 new), and each fix is mutation-verified in both directions.
+
+### 1. The veil: `actor.effects` is not "the effects on this creature"
+
+**The root cause, and it is one read.** `edhaDarkVeilSweep` resolved its marker as
+`[...(a.effects ?? [])].find(e => name.startsWith(effName))`. The Stalker's `Veil` AE is authored
+**`transfer: true` on the `Veil` trait** (`data/adversary-effects.json`), so it stays embedded in the
+ITEM. Foundry surfaces it only through **`Actor#allApplicableEffects()`** — read out of the installed
+v13 `client/documents/actor.mjs` rather than assumed: *yield every actor effect, then every item
+effect whose `transfer` is set*, with the item half skipped only when
+`CONFIG.ActiveEffect.legacyTransferral` is true, and cosmere-rpg 2.1.0 sets it **false**. So
+`actor.effects` was empty, `eff` was `undefined`, and the sweep `continue`d — **on every map, on every
+Stalker, since the sweep shipped.** Runs 26/27 blamed the Playtest Map's lighting; run 33 built a dark
+scene, proved `edhaPointIlluminated` false at the sweep's own +300 ms timing, and the real blocker
+surfaced immediately.
+
+**Why nobody could see it.** `Actor#statuses` is rebuilt from `allApplicableEffects()` in
+`applyActiveEffects()`. So the status shows on the creature, the token and the sheet while its effect
+is missing from the collection the engine searched: `actor.statuses.has(x) === true` and
+`actor.effects.find(e => e.statuses.has(x)) === undefined` are **both correct at once**.
+
+**The fix — `edhaAllEffects(actor)` in SHARED CORE, and NOT `appliedEffects`.** The run-33 row offered
+`allApplicableEffects()` *or* `appliedEffects`. `appliedEffects` would have been **just as blind**: it
+filters on `effect.active` = `!disabled && !isSuppressed`, and every marker in this family is stored
+DISABLED — finding it and switching it on is the whole job. Pinned as its own test case.
+
+**One bug or a family? Fifty `.effects` reads, classified.** The discriminator is *could this effect
+have been authored on an ITEM?* — because an effect the engine created on the actor can never be
+item-transferred, and widening those reads would be a **NEW bug**: `update()` / `delete()` on a
+yielded ITEM effect writes to the item and permanently alters that creature's copy of the talent.
+
+| site | what the read seeks | verdict |
+|---|---|---|
+| `edhaDarkVeilSweep` marker lookup (~9982) | the AE **named by the rule** (`effectName`) | **SAME DEFECT — LIVE. FIXED.** The Stalker is the whole blast radius: `data/adversaries.json` holds the only `edha-dark-veil` rule in the repo. |
+| `edhaIsIsolated`'s INFLICTED scan (~1047) | any AE carrying status `isolated` that is not the engine's own marker | **SAME DEFECT — LATENT. FIXED.** Read-only, so widening is free; no shipped data transfers `isolated` *today*, but the authoring pattern is live (see the Frostbinder below). |
+| the isolated marker sync's `inflicted` twin (~1078) | the same question, one line from the same answer | **SAME DEFECT — LATENT. FIXED**, because the two must agree or the sync places a positional marker over an inflicted one. |
+| `edhaExpireTimedStatuses` (~792/797) | AEs carrying `expireAfter` / `timedExpire`, or an allowlisted timed status — then **deletes** them | **SAFE, and load-bearingly narrow.** The stamps are written only by the engine's own actor-level appliers, and the `createActiveEffect` stamp already refuses a non-Actor parent. Widening would make the **Frostbinder's permanent `braced`** (`Predictive Ward`, `transfer: true`, `statuses: ["braced"]`) expirable and would try to DELETE a trait's AE — precisely what `EDHA_TIMED_STATUSES`' own comment forbids. |
+| the DISPEL menu, `edha-pick` `source: "effects"` (~3269) | **every enabled AE** on the subject, one delete button each | **NARROW ON PURPOSE — see the ruling below.** It under-lists item-transferred passives; widening it would let one click permanently strip `Hardy` off a PC's talent or `Cinder Coat` off a Cinderhound. |
+| `flags.edha-content.*` reads — `isoMarker`, `sceneDefBuff`, `summonEffect`, `healCut`, `aura`/`guardianStance`, `stanceOf`, `defBuff`, `overgrowthDeflect`, `fateOrdainedBuff`, `civBastionBuff`/`civArsenal`/`civColossus`/`summonGranted`, `powerMantle`, `covBuff`, `foundationBuff` | an AE the ENGINE created on the actor, usually to update or delete it | **SAFE — 25 sites, all left alone.** A flag the engine stamps at `actor.createEmbeddedDocuments` time can never be on an item-transferred AE, so the read is exact; widening would only add a document the code must never write to. (The summon `bakedEffects` are on the summon ACTOR's own `effects:` array at create time, not on items — checked, not assumed.) |
+| status read-backs — `edhaApplyTimedStatus` (~5618), the `apply-timed-status` relay (~11234), Fortified Foundation's `slowed` (~14271), the counter family `edhaCounterOn` / `edhaCounterApplyGM` / the await predicate (~15039/15066/15075/15093), the insight clear (~15293) | the status the engine **just wrote itself** via `toggleStatusEffect` | **SAFE.** Foundry's `toggleStatusEffect` only ever inspects and writes `this.effects`, so the read-back is looking for its own actor-level document. |
+| `item.effects` reads — stance riders, the kit's action-effect strip, the adversary-sync prune, the covenant/summon buff templates | an ITEM's own effects, deliberately | **ITEM-SCOPED.** Two of them (the kit strip, ~8110/8119) exist *specifically* to remove `transfer !== false` AEs — the same family, seen from the other side. |
+
+Three call sites, and `tests/effect-transfer-lookup.test.js` carries a **source ratchet** that fails
+if a fourth appears without this table recording why.
+
+**Proof.** 9 cases: the item-transferred marker raises **and** the actor-level one (run 33's hand-made
+control) still does, so the fix WIDENED rather than moved; `appliedEffects` is shown to be blind while
+`edhaAllEffects` is not; the release half and the never-fight-a-GM-toggle half both survive; the
+isolated scan sees a trait-transferred status but still never reads back its own display marker. The
+harness gained `allApplicableEffects()` / `appliedEffects` on `mockActor`, `effects` on `mockItem`, and
+`disabled` / `transfer` / `parent` + an update recorder on `mockEffect` — without them no headless test
+could tell an item-transferred marker from an actor-level one. **Mutation-verified:** restoring the
+`actor.effects` lookup fails **4** of the 9.
+
+### 2. The run's unexplained second symptom — root-caused from source, NOT guess-fixed
+
+Run 33 recorded, honestly, that after the single control success the marker read
+`disabled: true, autoVeil: null` and **six** further triggers produced nothing.
+
+**What the source says, in order:**
+
+1. **The sweep leaves NO state.** There is no once-per-scene stamp, no `_edha*` flag on the token or
+   actor, no ledger. The only module-scoped state in the whole family is `_edhaDarkVeilTimer`, a plain
+   `clearTimeout` / `setTimeout` debounce that re-arms on every trigger. The hypothesis the brief
+   ranked first is **eliminated by reading, not by measuring**.
+2. **A succeeded sweep is a NO-OP, and that is correct.** Once the marker is up and the square is
+   still unlit, `unlit && !suppressed && eff.disabled` is false and `(!unlit || suppressed)` is false —
+   both branches decline, nothing is written, no card posts. **"Six further triggers produced nothing"
+   is what SUCCESS looks like.** Pinned: `tests/effect-transfer-lookup.test.js` fires the sweep seven
+   times and asserts exactly one write and exactly one card.
+3. **The engine cannot write the reported end state.** `autoVeil` appears at exactly four places in
+   the file, all inside the sweep; the disable branch writes `"flags.edha-content.autoVeil": false`
+   **explicitly** and nothing anywhere unsets it. So `disabled: true` with the flag **absent** is a
+   state no engine write produces — **the document read after the success was not the document the
+   sweep wrote.**
+
+**Ranked, with the measurement that separates them.** (Run 34 re-stages on the REAL Stalker with no
+hand-made control, so this ambiguity mostly dissolves on its own.)
+
+1. **The post-success reads were of the item-transferred ORIGINAL** (`parent: "Veil"` — which is what
+   the run's own notes say the marker's parent was), while the actor-level control copy stayed
+   ENABLED. Fits every observation, including the absent flag and the silent six. **Measure:** at each
+   trigger log `actor.effects` and `[...actor.allApplicableEffects()]` **side by side, keyed by `_id`,
+   never by name.**
+2. **The control AE was gone** by the retries → `eff` undefined → silent `continue`. Also fits.
+   **Measure:** `actor.effects.length` at each trigger.
+3. **`autoVeil: false` was read and printed as `null`** (a `?? null`, or a JSON round-trip of
+   `undefined`) because the sweep took the disable branch once on a transiently-lit canvas. Survives
+   only combined with (2), since the next unlit trigger would have re-raised it. **Measure:** log the
+   sweep's OWN `unlit` verdict at the moment it runs — **`edha.darkVeilSweep()` is now on the console
+   API** precisely because run 33 could not reach a module-scoped function.
+4. **Eliminated:** an exception (the sweep `console.error`s, and the run saw zero); the suppression
+   branch (it posts its own 🌿 card and needs an armed Green in range); the one-applier GM gate
+   (measured `isSelf`).
+
+`edha.darkVeilSweep()` and `edha.allEffects(actor)` are added to the console API for exactly this.
+
+### 3. Culture items: the ten nations register at `init` — and NO rebuild is owed
+
+**The cause is a closed enum plus an EAGER schema**, read out of the installed system. The culture
+DataModel declares its id as `IdItemMixin({ initial: "none", choices: () => ["none",
+...Object.keys(CONFIG.COSMERE.cultures)] })`, and the mixin's schema factory **calls that function
+once, at `defineSchema()` time**, freezing the array into the StringField. That is exactly why run 33
+measured a successful runtime `registerCulture("canticle")` still yielding `"none"`: the CONFIG
+changed and the frozen `choices` array did not. The registration must land **before the first culture
+document is constructed** — in `init`, where the system registers its own six.
+
+`EDHA_CULTURES` + `edhaRegisterCultures()`, on `Hooks.once("init")` with an idempotent `setup` retry,
+mirroring the existing `edhaRegisterCurrency` shape exactly: the documented
+`game.system.api.registerCulture` first, a direct `CONFIG.COSMERE.cultures` write as fallback, and the
+system's own six never touched.
+
+**⚠️ NO PACK REBUILD IS OWED — this corrects the run-32 row's assumption.** With the ten registered
+the **already-built** pack is valid as it stands: the docs still carry their slugs, the slugs are now
+legal choices, the lenient load stops substituting `"none"`, and the two latently-broken system-side
+readers start working — a **culture-type talent-tree prerequisite can finally name a nation** instead
+of baking `"none"` and matching all ten. The fallback the run-33 row named (stop writing `system.id`
+in `foundry-build.js` ~L816) is **REJECTED**: it needs a rebuild AND it would make the culture-prereq
+surface permanently unusable. `scripts/foundry-build.js` is **untouched by this pass.**
+
+**The list exists twice, and that is now gated.** `init` is far too early to read a compendium and
+`data/cultures.json` is a generator input the module never ships, so the ids have to be a literal in
+the engine. **`scripts/lint-refs.js` pass 22** compares `EDHA_CULTURES` against `data/cultures.json`
+in **both** directions, slug and label — a nation in the data the engine does not register is an
+error, and a row the data no longer has is an error ("the table must not become fiction").
+Mutation-verified both ways.
+
+**Proof:** `tests/culture-registration.test.js`, 6 cases, asserted against the registered CONFIG
+rather than the const (a vm-script `const` stays lexical and never reaches the sandbox). Covers the
+api path, the no-api fallback, idempotence across init + setup, the six Roshar cultures surviving
+untouched, a thin CONFIG being a no-op, and — deliberately — that `foundry-build.js` *still writes*
+`system: { id: slug }`, so if the build ever stops, the test says the fix became optional instead of
+rotting.  **Mutation-verified:** moving the hook from `init` to `ready` fails 4 of the 6.
+
+**🤖 What this pass CANNOT prove headlessly:** that the module's `init` callback runs before the
+culture DataModel's schema is built. That is a Foundry load-order fact. It is a bench row, not a ⚑ —
+the engine already relies on the same ordering for `edhaRegisterStatuses` ("after the system's
+registerStatusEffects") and `edhaRegisterCurrency`, both of which have worked at the table for months.
+
+### Rulings — one default applied, open to Ben's veto
+
+- **The DISPEL menu stays narrow.** `edha-pick` `source: "effects"` (Unravel Everything and any future
+  consumer) lists one delete button per **enabled `actor.effects` entry**, so an item-transferred
+  passive — `Hardy`, `Collected`, `Surefooted` on a PC; `Cinder Coat` on a Cinderhound; the
+  Frostbinder's `Predictive Ward` — never appears. **Default applied: leave it.** Deleting a yielded
+  ITEM effect would permanently strip the passive from that creature's copy of the talent or trait,
+  which is a much worse failure than a dispel that cannot reach it. If Ben wants those dispellable,
+  the fix is not to widen the read — it is to widen the read **and** guard the delete so only
+  actor-level effects are removable, with item-owned ones offered as a *disable* instead. Filed here
+  rather than as a checklist row, per the standing-decisions rule.
+
+### Deploy
+
+**ENGINE-ONLY, F5** — both fixes. No `data/` file was touched (`data/authored/*` and
+`data/adversaries.json` untouched, as required), no pack rebuild, no ⟳ Sync. The PM deploys after
+merge; **live behaviour is not settled until the bench re-tests** — three 🤖 rows, listed in the
+checklist and in `docs/BENCH_NEXT_RUN.md` step 0b.
+
+---
+
 ## 2026-09-06 DELTA — item 28b: a resource DECREASE is no longer a SPEND — the engine stamps the spend (ruling R-4, half b of two) (**ENGINE-ONLY, F5** — no pack rebuild; deployed by the PM after bench run 33).
 
 Half (a) below gated *when* a scene watch may fire. This is the other half of R-4: of the resource

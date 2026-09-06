@@ -569,6 +569,19 @@ this — it only decides how far the fix reaches. *(Marathon 3, fix pass E.)*
 These are **already live in the code**. They were taken as defaults rather than left to stall a fix.
 If you disagree with any, say so and it gets reverted.
 
+**R-72. A DISPEL cannot remove a passive that lives on a talent or a trait — it stays that way.**
+Fix pass 5, 2026-09-06, while sweeping the `actor.effects` family that had hidden the Stalker's veil
+defect. `edha-pick` `source: "effects"` — the Unravel-Everything shape — offers one delete button per
+**enabled `actor.effects` entry**, so an ActiveEffect authored `transfer: true` on a talent or trait
+never appears in the menu: a PC's `Hardy` / `Collected` / `Surefooted`, a Cinderhound's `Cinder Coat`,
+the Frostbinder's permanent `braced` from `Predictive Ward`. **Default applied: leave the menu
+narrow.** Deleting a yielded ITEM effect writes to the item, so one click would permanently strip the
+passive from that creature's copy of the talent — a much worse failure than a dispel that cannot
+reach it, and unrecoverable without a re-drag or a ⟳ Sync. **If you want those dispellable**, the fix
+is *not* to widen the read on its own: it is to widen the read AND guard the delete so only
+actor-level effects are removed, offering item-owned ones as a temporary **disable** instead. Say the
+word and it gets built that way. *(Fix pass 5; no checklist row — this is a decision, not a test.)*
+
 **R-43. ⚠️ "A card that says 'tests Speed' means the ATTRIBUTE." — THIS CHANGES LIVE DICE MATH.**
 **Concussive Yield** and **Inevitable Snare** now add the target's Speed where they previously added
 nothing. The *implementation* is proven — run 11's 2bAD-1 rolled "Speed 29" with spd 10, and a bare
