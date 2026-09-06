@@ -77,12 +77,33 @@ ledger in a later-ordered rule of the same activation.
 | **pass 5.2** (R-63, Job 6a) | 3 | R-63's same-side row now has **1 shape proven** and needs 1–2 more. R-63's unset-disposition row is a repo-side pin. Job 6a needs zero GM clients. **Job 6b and both R-64 halves are CLOSED — do not re-queue any of them.** |
 | **pass 5.3** | 2 | R-61's legacy `detonateUsed` (informational only) + R-62's audience flips (**BLOCKED** — needs zero GMs). |
 | **R-65 ally-click burst** | 1 | Subject corrected to **Death Mark** (Knowledge). The fold itself is already proven. Needs the player client. |
-| **`Unravel Everything` fill-then-sweep** | 1 | New this run — see above. `test-pass-fixes` first. |
+| **Fix pass 4 re-test (relay read-back)** | 4 | **FIXED 2026-09-05 — this is now run 9's step 1.** The `Unravel Everything` row was re-tested-and-reworded, and the audit added 3 siblings (Spreading Omen, Vital Diagnosis, Studied Mark). **All four must be driven from `PlayerBench`** — a GM caster never took the broken branch. |
 | Scattered singles (Green, Cinderbrock, Crownox, Brandram's Reckless Advance, manual re-litigation, the dark-veil pair) | 9 | Each needs its own staging. |
 
 ## Run 9 — the plan, in order
 
-### 1. **Any re-test block first** (see above — nothing queued yet; if a fix pass lands, it becomes step 1)
+### 1. **RE-TEST FIRST — fix pass 4's four rows (ENGINE-ONLY, so an F5 / relaunch is the whole deploy)**
+
+Fix pass 4 (2026-09-05, in `EDHA_FOUNDRY_HANDOFF.md` at the top) shipped the fix for run 31's
+`Unravel Everything` defect and for **three siblings the audit found in the same family**. Root cause
+was **not** the rule dispatcher the run-31 report suspected — that is clean — but the fire-and-forget
+socket relay one level down, so a relayed status mark was invisible to the very next rule.
+
+**Two things decide whether this re-test means anything:**
+
+1. **Hash-verify the engine before you drive anything.** ENGINE-ONLY means F5 / relaunch and nothing
+   else — but it also means a stale engine looks *exactly* like a failed fix. Serve
+   `/modules/edha-content/scripts/register-skills.js`, CRLF-normalise, and match it against
+   `HEAD:module-src/scripts/register-skills.js`, the way run 31 did.
+2. **Drive every one of the four from `PlayerBench`, never from `Bench`.** The defect is only
+   reachable from a client that owns the CASTER but not the TARGET; a GM is `isOwner` on everything
+   and always took the direct, awaited branch. **A GM re-test proves nothing here** — it would pass
+   both before and after the fix. (Driving `Unravel Everything` once as GM as well is worth it, but
+   only as the control that the unaffected path is unchanged.)
+
+The rows carry their own before/after evidence; the headline is `Unravel Everything` on an **empty**
+ledger filling 2 Omens *and* detonating both in ONE cast, and `Spreading Omen` reading **(1/2)** then
+**(2/2)** with both uuids surviving in `lists.omens`.
 
 ### 2. **THE FOUR JULY SECTIONS — 14 🤖, and they are now the whole point of the next run**
 `# Character-creation wizard v2` (6), `# Bench-results fixes` (3), `# Items-dump tranche` (3), `# Adversary
