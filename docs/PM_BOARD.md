@@ -6,26 +6,23 @@ cost, and the decisions the PM is waiting on.** The operating procedure is
 `.claude/skills/project-manager/` (PM) and `.claude/skills/work-item/` (workers). A fresh PM
 session resumes from this file alone.
 
-> **PM session of record: the desktop session Ben opened at 19:07 on 2026-09-05 in the NEW clone
-> `C:\dev\Skilltrees` — STOPPED 04:15 on 2026-09-06, the last wake before Ben's 07:00 hard stop (PM-R11).**
-> **Nothing running, nothing scheduled, no open PRs, no worktrees.** The 07:02 `edha-pm-daily` session resumes
-> from this line. **44 PRs merged this session, #161–#204:** items 38, 33, 39, 20, 18, 37, 30, 26, 21, 22, 23,
-> 5, 27, 29, 28a, 28b, 14, 13, 12, 10 (batch 1); bench runs 28–37; fix passes 3–6; ten board PRs. **Live engine
-> `57a8c950…` = `main` at #204** (PM push 03:47, hash-verified, 6 in sync) — every engine change of the night is
-> deployed; **nothing is owed to Ben's deploy script** (no pack rebuild all night). **Bench 🤖 47 → 26 (with 19
-> re-test rows filed and retired in between); ⚑ 22 → 21; the re-test block is EMPTY for the first time in
-> eleven runs.** Five engine defects found at the table, five fixed and verified there the same night; **R-4
-> SETTLED (§K)**. **Sunday's order:** bench run 38 opens on the wizard-v2 block (six rows, untouched for 13 runs)
-> and the AoE burst auto-target row; item 10 batch 1's sideless probe (re-specified: an actor with NO token, a
-> Secret token is finite = enemy); the Investiture-gate row is BLOCKED until Ben's `Gamemaster` client reloads
-> post-deploy (a pre-fix client has no gate — runbook rule: a two-GM row cannot be verified while either GM
-> client predates the deploy). Lane-R/B queue: 10 batch 2 (11 sites, Opus S), 24, 4, 34 (REBUILD), 19a/19b,
-> 42; 41 needs Ben's OK; 9 blocked on rulings. **Waiting on Ben (not blocking):** R-70 → R-77 (R-77's default
-> applied pending veto), R-6 sharpened, the GM-less-traps candidate — all with recommended defaults; one window
-> with the `Gamemaster` client closed (Job 6a, 2bM-1, R-62 since run 24); a reload of that client; OK on TODO 41;
-> the adversary bulk-sync button; the zero-combatant combat in his world. **Week's PM total (sessions since
-> 2026-09-04, both project dirs): PM 72.5M weighted, workers 216.9M, ≈ 289M** — this session alone PM 32.4M /
-> 695 turns, workers 140.6M / 34 dispatches (20 items, 10 bench runs, 4 fix passes); zero bounces all night.
+> **PM session of record: the `edha-pm-daily` session that started 07:02 on 2026-09-06 (Sunday), in
+> `C:\dev\Skilltrees`.** It took over from the overnight desktop session that STOPPED 04:15 (PM-R11's
+> 07:00 hard stop). **Resume was clean:** `main` at **#204 / `4d2eb51`**, tree clean, no open PRs, no
+> worktrees, both inboxes empty, `module-src-sync.js status` **6 in sync** — live engine `57a8c950…` **=
+> `main`**, so nothing is owed to `deploy-to-foundry.bat` and Foundry answers on :30000 (lane B is open).
+> **New weekend day-shift (Sun 07:00 → Mon 07:00): 0 of 12 dispatched.** But **PM-R11's no-cap night is
+> over**, and seven dispatches landed 02:12–03:49, so the ordinary weekend trailing-5h cap (6) reads **7 of
+> 6 at 07:02** — over. It falls to 5 at **07:30**, which is the earliest this shift may dispatch; the PM
+> counted the overnight spend against the window on purpose (the cap protects Ben's meter, and that spend
+> was real). **Sunday's order, unchanged from the handoff:** bench run 38 on the wizard-v2 block (six rows,
+> untouched for 13 runs) + the AoE burst auto-target row + item 10 batch 1's re-specified sideless probe;
+> the Investiture-gate row stays BLOCKED until Ben's `Gamemaster` client reloads post-deploy. Then the
+> lane-R/B queue: 10 batch 2 (11 sites, Opus S), 24, 4, 34 (REBUILD), 19a/19b, 42; 41 needs Ben's OK; 9
+> blocked on rulings. **Waiting on Ben (not blocking):** R-70 → R-77 (R-77's default applied pending veto),
+> R-6 sharpened, the GM-less-traps candidate — all with recommended defaults; a reload of the `Gamemaster`
+> client; OK on TODO 41; the adversary bulk-sync button; the zero-combatant combat in his world.
+> **Week's PM total through 04:15 (both project dirs): PM 72.5M weighted, workers 216.9M, ≈ 289M.**
 
 ## Operating rules (the short form — the skill carries the long form)
 
@@ -363,3 +360,4 @@ prompt on the way, which he is fixing in his own session in the `focused-booth-7
 | 2026-09-06 03:47 | Engine deploy — PM, no worker | fable | — | — | fix pass 6: `module-src-sync.js push` → 6 in sync; repo = live = `57a8c950…` | — |
 | 2026-09-06 03:49 | Bench run 14 = bench run 37 (item 10's sideless probe, fix pass 6's re-tests, AoE burst, wizard) — `bench-run` | opus | 15 min, 145 turns | 2.4M | **merged 04:03 after review.** Served `57a8c950…` verified on a full reload. **1 row off, 0 defects, 0 rulings**: max HP 57 on a fresh load, the doubler reproduced as a positive control, Green's "same numbers" explained (same effect, different dash). Investiture-gate row BLOCKED on Ben's pre-deploy `Gamemaster` client — a new runbook rule. Item 10's probe recipe corrected (Secret is finite). Three probe actors created and deleted; all diffs empty; logged out; the temp setup-script copy removed. 🤖 27 → 26 | #204 |
 | 2026-09-06 04:15 | **PM handoff — STOPPED before Ben's 07:00 hard stop (PM-R11)** | fable | session 9h08m; PM 32.4M / 695 turns; workers 140.6M (34 dispatches) | — | Loop stopped. **Nothing running, nothing scheduled, no open PRs, no worktrees; main clean at #204; live engine = main.** 44 PRs merged (#161–#204) with zero bounces; 20 items closed (38, 33, 39, 20, 18, 37, 30, 26, 21, 22, 23, 5, 27, 29, 28a, 28b, 14, 13, 12, 10-batch-1), 10 bench runs (🤖 47 → 26, ⚑ 22 → 21, re-test block empty), 4 fix passes for 5 table-found defects (a pre-hook client split, an un-acked relay read-back, a trait-transferred marker invisible to `actor.effects`, a persist outside the two-GM gate, a bare `prepareData()` doubling every ADD-mode effect on load) — every one verified at the table the same night. Four engine ratchets moved (`userTargets` 10 → 1, `resourceWrite` 12 → 0, `primaryGmGate` 20 → 1, `dispoFailOpen` 74 → 11). R-4 settled. **Week's total (since 09-04, both project dirs): PM 72.5M, workers 216.9M, ≈ 289M weighted.** The SSD verdict held all night: zero git or filesystem stalls across 34 workers; the only wrinkle is `git worktree remove` refusing a worktree that holds a `node_modules`, cleared by `rm -rf`. Sunday's order is in the top line | (this PR) |
+| 2026-09-06 07:02 | **New PM session of record — `edha-pm-daily` (Sunday day-shift opens)** — PM, no worker | fable | ~20 min | — | Clock guard passed (Sun = weekend window). Session moved from the retired OneDrive checkout into `C:\dev\Skilltrees` (`change_directory`; toplevel verified). Resume clean: `main` #204 `4d2eb51`, no open PRs, no worktrees, board inbox and phone inbox both empty, `module-src-sync.js status` **6 in sync** (live `57a8c950…` = `main` — nothing owed to the deploy script), Foundry answers 302 on :30000 so **lane B is open**. **Budget read of the shift:** new day-shift 0/12, but PM-R11's no-cap authorization expired at 07:00 and seven overnight dispatches (02:12, 02:30, 02:36, 02:47, 03:03, 03:28, 03:49) sit inside the trailing five hours → **7 of 6, over the ordinary weekend cap**; counted deliberately rather than written off, so the first dispatch waits for **07:30** (count falls to 5). Also noted: the live repo's copy of the PM skill is one revision ahead of the user-level copy the Skill tool loaded (it carries the "wait for CI on the NEW sha" rule from 09-05) — the live copy is the one being followed | (this PR) |
