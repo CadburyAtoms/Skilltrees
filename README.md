@@ -23,36 +23,19 @@ The flow, end to end: **edit** (in Foundry or in the JSON) → **extract/build**
 
 ## Running the checks
 
-Everything is plain Node ≥ 20 and Python 3 — no dependencies to install. CI runs these on
-every pull request; run them locally before committing:
+Everything is plain Node ≥ 20 and Python 3 — no dependencies to install for the local set.
+`scripts/gates.js` is the one authoritative gate list (CI and local runs share it); run
+`node scripts/gates.js` before committing, or `node scripts/gates.js --list` to see the ordered
+list without running anything. It also resolves whichever of `python3` / `python` / `py -3`
+actually works, so it runs the same way regardless of which one is on your PATH.
 
-```bash
-node --check module-src/scripts/register-skills.js    # engine parses
-node scripts/validate.js                              # data/*.json schema
-node scripts/lint-refs.js                             # data <-> engine cross-reference lint
-node tests/run.js                                     # engine unit tests
-node scripts/build-dashboard.js --check               # generated docs match their sources
-node scripts/build-canon-codex.js --check
-node scripts/build-player-primer.js --check
-python3 tests/audit_parser_test.py                    # audit-tool unit tests
-python3 .claude/skills/leyline-tree-authoring/audit.py   # tree consistency audit (all trees)
-```
+`node scripts/gates.js --ci` (what CI runs) additionally runs the two gates that need an
+optional dependency a fresh clone may not have — the map/gazetteer lint (Pillow) and the
+compiled-pack build + validators (`classic-level`) — both installed just-in-time inside the gate.
 
-Or run them all at once with `npm run gates` (see `package.json` for the individual
-aliases). Optional one-time setup: `bash scripts/install-hooks.sh` installs a pre-commit
-hook that runs the relevant checks automatically.
-
-**Two CI gates are not in `npm run gates`**, because each needs a dependency a fresh clone
-may not have. Run them yourself if you touched what they cover, or expect CI to catch it:
-
-```bash
-python3 -m pip install pillow && python3 scripts/map/lint_map.py   # map/gazetteer drift
-
-npm install --no-save classic-level@2.0.0                          # compiled-pack validators
-EDHA_DATA="$PWD/data" EDHA_MODROOT=/tmp/edha-packs node scripts/foundry-build.js all
-EDHA_MODROOT=/tmp/edha-packs node scripts/validate-packs.js
-EDHA_MODROOT=/tmp/edha-packs node scripts/validate-adversaries.js
-```
+Or use the npm aliases: `npm run gates` / `npm run gates:ci` (see `package.json`). Optional
+one-time setup: `bash scripts/install-hooks.sh` installs a pre-commit hook that runs the
+relevant checks automatically.
 
 ## Where to read more
 

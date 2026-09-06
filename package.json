@@ -10,9 +10,10 @@
     "check": "node --check module-src/scripts/register-skills.js",
     "validate": "node scripts/validate.js",
     "lint": "node scripts/lint-refs.js",
-    "test": "node tests/run.js && python3 tests/audit_parser_test.py",
-    "audit": "python3 .claude/skills/leyline-tree-authoring/audit.py",
+    "test": "node scripts/gates.js --only unit-tests,audit-parser-test",
+    "audit": "node scripts/gates.js --only tree-audit",
     "docs": "node scripts/build-dashboard.js --check && node scripts/build-canon-codex.js --check && node scripts/build-player-primer.js --check",
-    "gates": "npm run check && npm run validate && npm run lint && npm run test && npm run docs && npm run audit"
+    "gates": "node scripts/gates.js",
+    "gates:ci": "node scripts/gates.js --ci"
   }
 }

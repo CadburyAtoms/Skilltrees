@@ -458,7 +458,7 @@ finds every delta, and CI is green.
 
 ---
 
-## 20. [ ] One gate list, and gates that pass on Windows
+## 20. [x] One gate list, and gates that pass on Windows (2026-09-05, PR #167)
 
 **Why:** the gate list exists in five places (`package.json`, README, CLAUDE.md, `scripts/README.md`,
 `validate.yml`) and they disagree: `npm run gates` omits `lint_map.py` and the pack build, each doc
