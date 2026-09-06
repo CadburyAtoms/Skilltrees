@@ -642,7 +642,7 @@
         "name": "Mutation Upgrade",
         "kind": "trait",
         "cost": "Passive",
-        "text": "<p>If the Stitchmother grants this thrall <strong>Bone Spurs</strong>, its Slam gains +2 Keen damage. If granted <strong>Venom Glands</strong>, its Slam inflicts Afflicted (2 Vital/turn) on a hit. By round 3 both upgrades can be active at once.</p><p><em>GM-run — NO NAMEABLE HOOK today: the grant lives as a toggled marker AE, and conditional-on-marker damage riders aren't a primitive yet (first consumer wanted: a whenSelfEffect rider condition). Toggle the marker; apply the Slam bonus by hand.</em></p>"
+        "text": "<p>If the Stitchmother grants this thrall <strong>Bone Spurs</strong>, its Slam gains +2 Keen damage. If granted <strong>Venom Glands</strong>, its Slam inflicts Afflicted (2 Vital/turn) on a hit. By round 3 both upgrades can be active at once.</p><p><em>GM-run: toggle the marker; apply the Slam bonus by hand.</em></p><!-- NO NAMEABLE HOOK today: the grant lives as a toggled marker AE, and conditional-on-marker damage riders aren't a primitive yet (first consumer wanted: a whenSelfEffect rider condition). -->"
       }
     ]
   },
@@ -1304,7 +1304,7 @@
         "cost": "2 Actions",
         "attack": 6,
         "range": "Reach 5 ft.",
-        "rider": "On a hit it grips and drags the target 10 ft toward deep water (DC 14 Athletics to break the grip). While gripping, it may roll: the gripped target takes 1d8 impact. NO NAMEABLE HOOK: to-hit-only grab — a hit that deals no damage makes no document write, so there is no engine hook; the GM rolls the attack and adjudicates the grip."
+        "rider": "On a hit it grips and drags the target 10 ft toward deep water (DC 14 Athletics to break the grip). While gripping, it may roll: the gripped target takes 1d8 impact. <!-- NO NAMEABLE HOOK: to-hit-only grab — a hit that deals no damage makes no document write, so there is no engine hook; the GM rolls the attack and adjudicates the grip. -->"
       },
       {
         "name": "Slide Under",
@@ -1408,7 +1408,7 @@
       {
         "name": "Cannot Stop",
         "kind": "trait",
-        "text": "<p>GM-run: it does not retreat and does not release — bloodied changes nothing (the wasting hunts through it). Steel works as it always does (ruling 34: never tougher); this fight ends one way, and it is a mercy. NO NAMEABLE HOOK: morale that never changes has nothing to cue.</p>"
+        "text": "<p>GM-run: it does not retreat and does not release — bloodied changes nothing (the wasting hunts through it). Steel works as it always does (ruling 34: never tougher); this fight ends one way, and it is a mercy.</p><!-- NO NAMEABLE HOOK: morale that never changes has nothing to cue. -->"
       }
     ]
   },
@@ -1562,13 +1562,13 @@
         "cost": "2 Actions",
         "attack": 6,
         "range": "Reach 5 ft.",
-        "rider": "On a hit it grips and pulls the target 10 ft toward deep water (DC 13 Athletics to break). A target pulled under is submerged — no air, no speech. NO NAMEABLE HOOK: to-hit-only grab — a hit that deals no damage makes no document write, so there is no engine hook; the GM rolls the attack and adjudicates the grip."
+        "rider": "On a hit it grips and pulls the target 10 ft toward deep water (DC 13 Athletics to break). A target pulled under is submerged — no air, no speech. <!-- NO NAMEABLE HOOK: to-hit-only grab — a hit that deals no damage makes no document write, so there is no engine hook; the GM rolls the attack and adjudicates the grip. -->"
       },
       {
         "name": "Slip the Sound",
         "cost": "Reaction",
         "consume": "1 Focus",
-        "text": "<p>When an attack misses it: it shifts 10 ft submerged — the next attempt to find it starts from the wrong splash. <em>NO NAMEABLE HOOK: a missed attack leaves no document write — no Foundry hook exists for “an attack missed you”; the GM narrates the reaction (1 Focus).</em></p>"
+        "text": "<p>When an attack misses it: it shifts 10 ft submerged — the next attempt to find it starts from the wrong splash. <em>(GM-narrated, 1 Focus.)</em></p><!-- NO NAMEABLE HOOK: a missed attack leaves no document write — no Foundry hook exists for “an attack missed you”; the GM narrates the reaction. -->"
       },
       {
         "name": "Cold, Not Cruel",
@@ -1642,7 +1642,7 @@
       {
         "name": "The Passed Wasting",
         "kind": "trait",
-        "text": "<p>Ruling 34: its flesh carries the wasting — anything that eats of it buys the slow, GM-paced consequence. Field-dressing this catch is the mistake. NO NAMEABLE HOOK: downtime consequence, GM-run.</p>"
+        "text": "<p>Ruling 34: its flesh carries the wasting — anything that eats of it buys the slow, GM-paced consequence. Field-dressing this catch is the mistake.</p><!-- NO NAMEABLE HOOK: downtime consequence, GM-run. -->"
       },
       {
         "name": "It Cannot Stop",
@@ -1715,7 +1715,7 @@
       {
         "name": "A Thousand Small Bodies",
         "kind": "trait",
-        "text": "<p>Single-target Strikes deal half damage to the shoal; any area effect scatters it — it reforms at the start of its next turn unless the water is left. NO NAMEABLE HOOK: halving/scatter is GM-applied on the fly (swarm bookkeeping, no engine surface).</p>"
+        "text": "<p>Single-target Strikes deal half damage to the shoal; any area effect scatters it — it reforms at the start of its next turn unless the water is left.</p><!-- NO NAMEABLE HOOK: halving/scatter is GM-applied on the fly (swarm bookkeeping, no engine surface). -->"
       },
       {
         "name": "Attendance, Not Appetite",
@@ -2027,7 +2027,7 @@
         "name": "The Old Agreement",
         "kind": "trait",
         "cost": "Passive",
-        "text": "<p>She ignores any creature standing still and bearing no drawn steel inside the charter-stones — and never forgets a creature that broke the agreement. NO NAMEABLE HOOK: NPC intent/targeting isn't data (the Pack Tactics class); the GM plays the agreement.</p>"
+        "text": "<p>She ignores any creature standing still and bearing no drawn steel inside the charter-stones — and never forgets a creature that broke the agreement.</p><!-- NO NAMEABLE HOOK: NPC intent/targeting isn't data (the Pack Tactics class); the GM plays the agreement. -->"
       }
     ]
   },
@@ -2126,7 +2126,7 @@
         "name": "Pay the Ledger",
         "kind": "trait",
         "cost": "Passive",
-        "text": "<p>A boat that gives the first of its catch over the side is not molested that set — it takes the toll and drops back into the dark. NO NAMEABLE HOOK: NPC intent/targeting isn't data; the GM plays the toll.</p>"
+        "text": "<p>A boat that gives the first of its catch over the side is not molested that set — it takes the toll and drops back into the dark.</p><!-- NO NAMEABLE HOOK: NPC intent/targeting isn't data; the GM plays the toll. -->"
       }
     ]
   },
@@ -2978,7 +2978,7 @@
       {
         "name": "Guardian Stance",
         "kind": "trait",
-        "text": "<p><em>White talent. NO NAMEABLE HOOK: a static adjacency read with no trigger — the tree twin's aura rides the PC stance machinery, which this trait does not enter; copying its rule would look live and never fire.</em></p><p>While an ox stands adjacent to a ring-mate, both have +1 Deflect (GM-run static — the listed Deflect 1 becomes 2 while the ring stands).</p>"
+        "text": "<p><em>White talent.</em></p><!-- NO NAMEABLE HOOK: a static adjacency read with no trigger — the tree twin's aura rides the PC stance machinery, which this trait does not enter; copying its rule would look live and never fire. --><p>While an ox stands adjacent to a ring-mate, both have +1 Deflect (GM-run static — the listed Deflect 1 becomes 2 while the ring stands).</p>"
       },
       {
         "name": "Retributive Guard",
@@ -3281,7 +3281,7 @@
       {
         "name": "Apex Predator",
         "kind": "trait",
-        "text": "<p><em>Green talent. NO NAMEABLE HOOK: the tree twin's rider counts enemies in an engine zone, and the briar is scene terrain, not an engine zone — copying the rule would look live and never fire.</em></p><p>While three or more enemies are inside its briar, it has advantage on all Physical tests — you are fighting inside the thing that is fighting you (GM-run state read, no trigger).</p>"
+        "text": "<p><em>Green talent.</em></p><!-- NO NAMEABLE HOOK: the tree twin's rider counts enemies in an engine zone, and the briar is scene terrain, not an engine zone — copying the rule would look live and never fire. --><p>While three or more enemies are inside its briar, it has advantage on all Physical tests — you are fighting inside the thing that is fighting you (GM-run state read, no trigger).</p>"
       },
       {
         "name": "Girdling Bough",
@@ -3429,7 +3429,7 @@
       {
         "name": "A Thousand Small Bodies",
         "kind": "trait",
-        "text": "<p>Single-target Strikes deal half damage to the flock; any area effect scatters it — it reforms at the start of its next turn unless driven off entirely. NO NAMEABLE HOOK: halving/scatter is GM-applied on the fly (swarm bookkeeping, no engine surface; Wake-Eel precedent).</p>"
+        "text": "<p>Single-target Strikes deal half damage to the flock; any area effect scatters it — it reforms at the start of its next turn unless driven off entirely.</p><!-- NO NAMEABLE HOOK: halving/scatter is GM-applied on the fly (swarm bookkeeping, no engine surface; Wake-Eel precedent). -->"
       },
       {
         "name": "It Re-Gathers on the Rooflines",
@@ -3804,7 +3804,7 @@
       {
         "name": "Apex Predator",
         "kind": "trait",
-        "text": "<p><em>Green talent. NO NAMEABLE HOOK: the tree twin's rider counts enemies in an engine zone, and the mire is scene terrain, not an engine zone — copying the rule would look live and never fire.</em></p><p>While three or more enemies are inside her mire, she has advantage on all Physical tests — you are fighting inside her workshop (GM-run state read, no trigger).</p>"
+        "text": "<p><em>Green talent.</em></p><!-- NO NAMEABLE HOOK: the tree twin's rider counts enemies in an engine zone, and the mire is scene terrain, not an engine zone — copying the rule would look live and never fire. --><p>While three or more enemies are inside her mire, she has advantage on all Physical tests — you are fighting inside her workshop (GM-run state read, no trigger).</p>"
       },
       {
         "name": "Drive the Prey",
@@ -4606,7 +4606,7 @@
       {
         "name": "Pack Doctrine",
         "kind": "trait",
-        "text": "<p>NO NAMEABLE HOOK: which prey the pack cuts from the line is NPC intent and targeting, not module data (Pack Tactics class). They do not outrun you — they out-organize you. Counterplay is denying them the cut: stay in the line, and break the lead-beast.</p>"
+        "text": "<!-- NO NAMEABLE HOOK: which prey the pack cuts from the line is NPC intent and targeting, not module data (Pack Tactics class). --><p>They do not outrun you — they out-organize you. Counterplay is denying them the cut: stay in the line, and break the lead-beast.</p>"
       }
     ]
   },
@@ -5068,7 +5068,7 @@
       {
         "name": "The Tithe Takes the Failing",
         "kind": "trait",
-        "text": "<p>They mark the weakest — wolves converge on Weakened or Isolated targets and leave sound prey alone until none remains. NO NAMEABLE HOOK: NPC targeting intent isn't data (the Pack Tactics class); the GM runs the convergence.</p>"
+        "text": "<p>They mark the weakest — wolves converge on Weakened or Isolated targets and leave sound prey alone until none remains.</p><!-- NO NAMEABLE HOOK: NPC targeting intent isn't data (the Pack Tactics class); the GM runs the convergence. -->"
       }
     ]
   },
