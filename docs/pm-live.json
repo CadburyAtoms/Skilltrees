@@ -1,11 +1,38 @@
 {
   "pm": {
-    "status": "stopped",
-    "note": "No PM session. The 07:02 Opus task session is dead and stood down (#210); Ben is starting a fresh Fable PM by hand. main = #210 + #209. 40+ phone-inbox notes \u2014 every open ruling, answered by Ben on 09-06 \u2014 are unread: that is the new PM's step 0. Nothing running, nothing scheduled.",
-    "waitingOn": "a fresh Fable PM session at the desktop",
+    "status": "awake",
+    "note": "Fable PM (Ben-started, 16:56 ET). Inbox: all 66 of your 09-06 answers read and marked seen; every consequence is on the board (rulings table, queue rows 43-62). Foundry is CLOSED, so tonight is lane R: items 45 (rulings close-out docs) and 46 (TODO filing) run now in parallel worktrees, then the engine passes 47+ one at a time. Nothing is owed to deploy-to-foundry.bat until the REBUILD items 55-59 land. Waiting on you only for: remoteControlAtStartup in your user settings.json (my write was blocked), a Foundry window for the bench, a reload of your Gamemaster client.",
+    "waitingOn": null,
     "nextWakeAt": null,
-    "session": "2026-09-06 \u2014 between sessions (relay projection at 16:40 ET)"
+    "session": "2026-09-06 16:56 ET — Fable PM (hand-started)"
   },
-  "workers": [],
+  "workers": [
+    {
+      "item": "45",
+      "title": "Rulings close-out 2026-09-06 — EDHA_RULINGS.md, checklist rows, 28a list, scene licence, design seed, handoff delta",
+      "model": "sonnet",
+      "size": "M",
+      "lane": "R",
+      "branch": "pm/45-rulings-closeout-2026-09-06",
+      "startedAt": "2026-09-06T21:16:00Z",
+      "agent": "Work item 45",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; docs-only; never touches TODO_REPO_HYGIENE.md"
+    },
+    {
+      "item": "46",
+      "title": "File TODO items 43-62 from the 09-06 rulings",
+      "model": "sonnet",
+      "size": "S",
+      "lane": "R",
+      "branch": "pm/46-file-todo-43-62",
+      "startedAt": "2026-09-06T21:16:00Z",
+      "agent": "Work item 46",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; TODO_REPO_HYGIENE.md only"
+    }
+  ],
   "usage": null
 }

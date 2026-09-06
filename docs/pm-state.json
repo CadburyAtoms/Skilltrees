@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-06T20:33:32.785Z",
+  "generatedAt": "2026-09-06T21:11:33.299Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "580dc53931",
-    "commit": "8fe8ec8",
-    "branch": "claude/sunday-pm-session-sync-d0pzsm",
+    "hash": "fd50d3eb86",
+    "commit": "7e34961",
+    "branch": "pm/board-2026-09-06-rulings",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -42,13 +42,40 @@
     "nextOpenAt": null
   },
   "pm": {
-    "status": "stopped",
-    "note": "No PM session. The 07:02 Opus task session is dead and stood down (#210); Ben is starting a fresh Fable PM by hand. main = #210 + #209. 40+ phone-inbox notes — every open ruling, answered by Ben on 09-06 — are unread: that is the new PM's step 0. Nothing running, nothing scheduled.",
-    "waitingOn": "a fresh Fable PM session at the desktop",
+    "status": "awake",
+    "note": "Fable PM (Ben-started, 16:56 ET). Inbox: all 66 of your 09-06 answers read and marked seen; every consequence is on the board (rulings table, queue rows 43-62). Foundry is CLOSED, so tonight is lane R: items 45 (rulings close-out docs) and 46 (TODO filing) run now in parallel worktrees, then the engine passes 47+ one at a time. Nothing is owed to deploy-to-foundry.bat until the REBUILD items 55-59 land. Waiting on you only for: remoteControlAtStartup in your user settings.json (my write was blocked), a Foundry window for the bench, a reload of your Gamemaster client.",
+    "waitingOn": null,
     "nextWakeAt": null,
-    "session": "2026-09-06 — between sessions (relay projection at 16:40 ET)"
+    "session": "2026-09-06 16:56 ET — Fable PM (hand-started)"
   },
-  "workers": [],
+  "workers": [
+    {
+      "item": "45",
+      "title": "Rulings close-out 2026-09-06 — EDHA_RULINGS.md, checklist rows, 28a list, scene licence, design seed, handoff delta",
+      "model": "sonnet",
+      "size": "M",
+      "lane": "R",
+      "branch": "pm/45-rulings-closeout-2026-09-06",
+      "startedAt": "2026-09-06T21:16:00Z",
+      "agent": "Work item 45",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; docs-only; never touches TODO_REPO_HYGIENE.md"
+    },
+    {
+      "item": "46",
+      "title": "File TODO items 43-62 from the 09-06 rulings",
+      "model": "sonnet",
+      "size": "S",
+      "lane": "R",
+      "branch": "pm/46-file-todo-43-62",
+      "startedAt": "2026-09-06T21:16:00Z",
+      "agent": "Work item 46",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; TODO_REPO_HYGIENE.md only"
+    }
+  ],
   "usage": null,
   "queue": [
     {
@@ -102,7 +129,7 @@
     {
       "pos": 5,
       "item": null,
-      "title": "Weekend bench marathon — runs 24/25/26 done (32 rows retired, fix passes 1–2 merged; per-tree bench block exhausted). #151 deployed by Ben 16:15 (hash-verified 16:20: 6 in sync). Run 27 (16:23–17:02): 14 PASS retired, 0 FAIL, 1 BLOCKED (veil needs a dark scene), 1 new 🤖 (two-consume activation charged only Investiture) → merged #157. Run 21's Braced-(b) blocker disproved (game.combat is the VIEWED combat). Next: bench run 5 — the 46 open 🤖 rows (hygiene remainder 19, creation wizard 9, bestiaries 15, player-client 4, pack-sync 4, items 3) after item 36 is deployed. Run 28 (19:38–20:16) merged #163: 12 rows off (R-69/#36 green on all four legs, the two-consume question settled as R-70, all three 07-28m re-tests, six hygiene rows; the unfolded-formula row relocated to R-71; three bestiary Unstoppable rows unblocked to their canvas half). Run 29 (21:36–22:05) merged #168: 5 rows off, 0 engine defects — the three Unstoppable canvas halves proven (run 28's wall-clipping diagnosis RETRACTED: the hidden Browser pane never advances v13's animated token-move pipeline; animate:false moves to the exact pixel — harness, not engine), Set Charge's heal half found unreachable by design (the heal fold lives in edhaBurstDetonate, proven via Mending Aura), Venom Glands driven, R-64's two halves settled from data (no drivable shape; do not re-queue). Run 30 (22:33–23:06) merged #176: 3 rows off, 1 FAIL — the player-client window finally opened (three clients live): item 37's orphan repair and item 26's 20 ft sight both PASSED from the player client, Magnum Opus folded exactly, Job 6b 1 of 3 shapes proven, Pack Share's subject corrected to Death Mark; FAIL: Walking Ruin's trail never drops for a player-initiated move (root cause proven by matched control → fix pass 3, running); R-62 / Job 6a / 2bM-1 still BLOCKED on zero GM clients — ask Ben. Run 31 (23:31–23:52) merged #180: 3 rows off, 1 FAIL — fix pass 3 PASSED from a player client (3 Regions + 3 Drawings; two GM clients did not double-drop), Job 6b closed from a genuine non-owner, the stale token sight fixed by one write, R-63 half-proven; FAIL: Unravel Everything never detonates the Omens it places in the same activation (matched pair; root cause hypothesised at the use-event dispatcher → fix pass 4, running). Not driven: the four July sections (14), the dark-veil scene. Run 32 (00:15–00:47) merged #186: 6 rows off, 0 FAILs — all four fix-pass-4 talents PASS from PlayerBench (Unravel Everything fills 2 and detonates both in one cast; edhaAwaitLocal never timed out), R-65 CLOSED, the starting-kit console API, the roster script re-run clean (orphans: 0); run 31's Guardian Stance mystery explained (a stale adjacency aura on token-less PCs). New finding: all 10 culture items fail system validation at build (severity = run 33's read). Two six-run-stalled July rows re-classified as Ben's (the bulk sync button) and as ruling R-56. Run 33 (00:50–01:21) merged #190: 1 row off, 1 FAIL, 1 answered — item 29's Fault Line row PASSED (both insiders on the burst card, the ally's save line, the caster on neither, the outside ally untouched); the culture-item read: the id IS dropped to \"none\" but the wizard is NOT broken (the cultural:<slug> expertise is literal data) → log noise + a latent trap, fix = an init-hook registration (ENGINE-ONLY); FAIL: the Stalker's veil has never auto-toggled — edhaDarkVeilSweep reads actor.effects, the marker is item-transferred and lives in allApplicableEffects() (proven by matched control) → fix pass 5; a second, unnamed symptom after the one success recorded PARTIAL. R-6 sharpened (the Region catches the caster). Run 34 (02:00–02:31) merged #195: 8 rows off, 0 engine defects — 5 of 8 R-4 rows PASS, each measured in both directions in the same round (per-round ledger, timed expiry, out-of-combat focus watch, two combats, GM focus edit typed AND bar-dragged); three R-4 halves narrowed in place → run 35; fix pass 5's three rows all PASS (the Stalker's veil auto-toggled for the first time ever; 2bS-11 retired in full; the culture registration proven through the consumer); two rulings raised (R-74, R-75). Run 35 (02:36–03:00) merged #198: 5 rows off, 0 engine defects — ALL EIGHT R-4 FACES NOW PASS (the window half of the negative control, the costs:-rule half, the Investiture/Edict face), item 13's migrated spend taxes, the single-target picker driven end to end; two halves narrowed (item 13's heal max-clamp, item 14's edhaSovTargets split); R-76 raised. Run 36 (03:03–03:25) merged #201: 3 rows off, 2 defects — item 12's three two-GM sites + the negative control PASS with a userId-recording observer as the positive control (exactly one write per change, from Bench; Ben's client received the broadcast and wrote nothing); item 13's heal clamp landed on exactly 61 not 62; item 14's split put the caster in neither list. Defects → fix pass 6: the Investiture-max persist writes outside the two-GM gate (proven; R-77) and White's max HP 64 ↔ 57 (hypothesised). Run 37 (03:49–04:02) merged #204: 1 row off, 0 defects — the max-HP row retired with the doubler reproduced as a positive control (bare prepareData() → 64, reset() → 57; Green carries the same Hardy — Max HP effect, em-dash vs hyphen, which discharges fix pass 6's second-root-cause worry — the doubling is per ADD-mode change, not per actor); the Investiture-gate row BLOCKED on Ben's pre-deploy Gamemaster client (inference, recorded as such); item 10's probe re-specified (Secret = −2 is finite). Effect-diff false positives from JSON key order explain the standing Guardian Stance hazard. Run 38 (Sunday) opens on the wizard block; the re-test block is empty",
+      "title": "Weekend bench marathon — runs 24/25/26 done (32 rows retired, fix passes 1–2 merged; per-tree bench block exhausted). #151 deployed by Ben 16:15 (hash-verified 16:20: 6 in sync). Run 27 (16:23–17:02): 14 PASS retired, 0 FAIL, 1 BLOCKED (veil needs a dark scene), 1 new 🤖 (two-consume activation charged only Investiture) → merged #157. Run 21's Braced-(b) blocker disproved (game.combat is the VIEWED combat). Next: bench run 5 — the 46 open 🤖 rows (hygiene remainder 19, creation wizard 9, bestiaries 15, player-client 4, pack-sync 4, items 3) after item 36 is deployed. Run 28 (19:38–20:16) merged #163: 12 rows off (R-69/#36 green on all four legs, the two-consume question settled as R-70, all three 07-28m re-tests, six hygiene rows; the unfolded-formula row relocated to R-71; three bestiary Unstoppable rows unblocked to their canvas half). Run 29 (21:36–22:05) merged #168: 5 rows off, 0 engine defects — the three Unstoppable canvas halves proven (run 28's wall-clipping diagnosis RETRACTED: the hidden Browser pane never advances v13's animated token-move pipeline; animate:false moves to the exact pixel — harness, not engine), Set Charge's heal half found unreachable by design (the heal fold lives in edhaBurstDetonate, proven via Mending Aura), Venom Glands driven, R-64's two halves settled from data (no drivable shape; do not re-queue). Run 30 (22:33–23:06) merged #176: 3 rows off, 1 FAIL — the player-client window finally opened (three clients live): item 37's orphan repair and item 26's 20 ft sight both PASSED from the player client, Magnum Opus folded exactly, Job 6b 1 of 3 shapes proven, Pack Share's subject corrected to Death Mark; FAIL: Walking Ruin's trail never drops for a player-initiated move (root cause proven by matched control → fix pass 3, running); R-62 / Job 6a / 2bM-1 still BLOCKED on zero GM clients — ask Ben. Run 31 (23:31–23:52) merged #180: 3 rows off, 1 FAIL — fix pass 3 PASSED from a player client (3 Regions + 3 Drawings; two GM clients did not double-drop), Job 6b closed from a genuine non-owner, the stale token sight fixed by one write, R-63 half-proven; FAIL: Unravel Everything never detonates the Omens it places in the same activation (matched pair; root cause hypothesised at the use-event dispatcher → fix pass 4, running). Not driven: the four July sections (14), the dark-veil scene. Run 32 (00:15–00:47) merged #186: 6 rows off, 0 FAILs — all four fix-pass-4 talents PASS from PlayerBench (Unravel Everything fills 2 and detonates both in one cast; edhaAwaitLocal never timed out), R-65 CLOSED, the starting-kit console API, the roster script re-run clean (orphans: 0); run 31's Guardian Stance mystery explained (a stale adjacency aura on token-less PCs). New finding: all 10 culture items fail system validation at build (severity = run 33's read). Two six-run-stalled July rows re-classified as Ben's (the bulk sync button) and as ruling R-56. Run 33 (00:50–01:21) merged #190: 1 row off, 1 FAIL, 1 answered — item 29's Fault Line row PASSED (both insiders on the burst card, the ally's save line, the caster on neither, the outside ally untouched); the culture-item read: the id IS dropped to \"none\" but the wizard is NOT broken (the cultural:<slug> expertise is literal data) → log noise + a latent trap, fix = an init-hook registration (ENGINE-ONLY); FAIL: the Stalker's veil has never auto-toggled — edhaDarkVeilSweep reads actor.effects, the marker is item-transferred and lives in allApplicableEffects() (proven by matched control) → fix pass 5; a second, unnamed symptom after the one success recorded PARTIAL. R-6 sharpened (the Region catches the caster). Run 34 (02:00–02:31) merged #195: 8 rows off, 0 engine defects — 5 of 8 R-4 rows PASS, each measured in both directions in the same round (per-round ledger, timed expiry, out-of-combat focus watch, two combats, GM focus edit typed AND bar-dragged); three R-4 halves narrowed in place → run 35; fix pass 5's three rows all PASS (the Stalker's veil auto-toggled for the first time ever; 2bS-11 retired in full; the culture registration proven through the consumer); two rulings raised (R-74, R-75). Run 35 (02:36–03:00) merged #198: 5 rows off, 0 engine defects — ALL EIGHT R-4 FACES NOW PASS (the window half of the negative control, the costs:-rule half, the Investiture/Edict face), item 13's migrated spend taxes, the single-target picker driven end to end; two halves narrowed (item 13's heal max-clamp, item 14's edhaSovTargets split); R-76 raised. Run 36 (03:03–03:25) merged #201: 3 rows off, 2 defects — item 12's three two-GM sites + the negative control PASS with a userId-recording observer as the positive control (exactly one write per change, from Bench; Ben's client received the broadcast and wrote nothing); item 13's heal clamp landed on exactly 61 not 62; item 14's split put the caster in neither list. Defects → fix pass 6: the Investiture-max persist writes outside the two-GM gate (proven; R-77) and White's max HP 64 ↔ 57 (hypothesised). Run 37 (03:49–04:02) merged #204: 1 row off, 0 defects — the max-HP row retired with the doubler reproduced as a positive control (bare prepareData() → 64, reset() → 57; Green carries the same Hardy — Max HP effect, em-dash vs hyphen, which discharges fix pass 6's second-root-cause worry — the doubling is per ADD-mode change, not per actor); the Investiture-gate row BLOCKED on Ben's pre-deploy Gamemaster client (inference, recorded as such); item 10's probe re-specified (Secret = −2 is finite). Effect-diff false positives from JSON key order explain the standing Guardian Stance hazard. Run 38 (Sunday 08:35 → PR 08:59) merged #207 by Ben at 12:11 (the PM session was frozen): 5 rows off, R-78 filed (Ben: retire the handler → item 48), the weapon-picker \"a Agent\" / \"a Envoy\" article defect → item 48, and run 22's \"structural and permanent\" rendering blocker DISPROVED — fronting the browser pane flips document.hidden and observers run, so every BLOCKED-on-rendering row is to be re-read. Next bench run: whenever Foundry is next open — the seven bench-pending items' 🤖 rows + fix pass 7's re-tests; Foundry was CLOSED at 16:56",
       "lane": "B",
       "model": "opus",
       "size": "L",
@@ -484,6 +511,246 @@
       "pr": 156
     },
     {
+      "pos": 36,
+      "item": "45",
+      "title": "Rulings close-out 2026-09-06 — every phone answer recorded inline in EDHA_RULINGS.md (no-change answers → §K; change answers ANSWERED-pending-ship naming their TODO item; §I's fourteen → §K as accepted; R-72 gets an entry; the GM-less traps get an R-number; R-78 recorded), the docs-only consequences (checklist rows retired / reworded per R-9, R-16, R-24, R-26, R-30, R-33, R-39, R-41; 28a's ungated list + the ENGINE_INDEX note for R-75 and the traps; the Playtest Map scene licence in bench-run hard rule 4 + the runbook; R-76's design seed; the ACTOR_STAT_DERIVATION.md doc-map line), handoff delta, dashboard. Source: the inbox dump. Dispatched 17:15 in a worktree",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "M",
+      "deps": "inbox dump",
+      "status": "running",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 37,
+      "item": "46",
+      "title": "File TODO items 43–62 from the 09-06 rulings — entries only (Why / What / Done-when / PM: line each, specs verbatim from the inbox dump; 41 folded into 58; 45's own entry too). Dispatched 17:15 in a worktree",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "S",
+      "deps": "inbox dump",
+      "status": "running",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 38,
+      "item": "47",
+      "title": "Fix pass 7a — heal / status / resource family: R-10 stabilize bypasses no-heal · R-12 raise clears its own Remain · R-25 Rallying Shout prints only at 0 HP / Unconscious · R-36 THP source relabels only on a win · R-51 a phantom's break is no ally drop · R-52 (i) +2.5 ft slack in edhaAllyDropEligible · R-72 drains → edhaBookkeepingTag (+ R-76 header comment) · R-54 EDHA_HP_BONUS 1 → 0 + comment + test re-pins + the checklist row. ENGINE-ONLY (F5); a headless pin + 🤖 row each",
+      "lane": "B",
+      "model": "opus",
+      "size": "M",
+      "deps": "45 ✓ 46 ✓",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 39,
+      "item": "48",
+      "title": "Fix pass 7b — cards, labels, zones: R-31 \"(Illusion)\" label on a PC's copy · R-32 \"swept N · newly Weakened M\" · R-37 three card nits · R-38 Dread Presence refusal whispers the mover (throttled) · R-55 sheet chips SPENT / total · R-78 retire edha-aoe-template · R-13 a snare under a creature ARMS, springs on its move · R-6 Fault Line terrain spares the caster · run 38's weapon-picker article. ENGINE-ONLY (F5)",
+      "lane": "B",
+      "model": "opus",
+      "size": "M",
+      "deps": "45 ✓ 46 ✓",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 40,
+      "item": "49",
+      "title": "R-15 the next-test slot becomes a LIST (+ R-57 absorbed: expired entries pruned)",
+      "lane": "B",
+      "model": "opus",
+      "size": "S",
+      "deps": "46 ✓",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 41,
+      "item": "50",
+      "title": "R-70 consume-dialog wrapper — every cost row starts ticked; the one sanctioned system-dialog wrapper",
+      "lane": "B",
+      "model": "opus",
+      "size": "S",
+      "deps": "46 ✓",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 42,
+      "item": "51",
+      "title": "R-17 a declined / ignored Puppeteer · Unnerving Approach offer refunds the Investiture (R-69's picker path)",
+      "lane": "B",
+      "model": "opus",
+      "size": "S",
+      "deps": "46 ✓",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 43,
+      "item": "52",
+      "title": "R-27 Battle Fever — the stack is SPENT on the next test, cap Rank, clears at the owner's turn",
+      "lane": "B",
+      "model": "opus",
+      "size": "S",
+      "deps": "46 ✓",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 44,
+      "item": "53",
+      "title": "R-50 the FIRST ambush strike benefits — the belief test runs synchronously inside the damage rider; ten carriers",
+      "lane": "B",
+      "model": "opus",
+      "size": "M",
+      "deps": "46 ✓",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 45,
+      "item": "54",
+      "title": "R-73 (b) + R-35 dispel widening — item-owned transferred effects as a temporary DISABLE, Omen ledger entries dispellable",
+      "lane": "B",
+      "model": "opus",
+      "size": "S",
+      "deps": "46 ✓",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 46,
+      "item": "55",
+      "title": "R-56 adversary sheets AND token sight on the Edha AWA table (engine + build → REBUILD + world bulk sync; one block with an explicit senses override)",
+      "lane": "B",
+      "model": "opus",
+      "size": "M",
+      "deps": "46 ✓",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 47,
+      "item": "56",
+      "title": "R-14 melee mutation riders — a per-rule onGraze matching each card's wording (ENGINE + AUTHORED → REBUILD)",
+      "lane": "B",
+      "model": "opus",
+      "size": "M",
+      "deps": "46 ✓",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 48,
+      "item": "57",
+      "title": "Adversary data batch — R-29 Combat Training (Stonebound Captain) · R-40 Fen-Heart 3×3 · R-46 Reckless Advance 25 ft (+ R-48 check) · R-47 hide NO NAMEABLE HOOK from the card · R-74 one costs: line (Stalker's Fade). REBUILD (adversaries)",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "M",
+      "deps": "46 ✓",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 49,
+      "item": "58",
+      "title": "Talent data batch — R-23 Volatile Strike whenDealer: \"any\" · R-28 Withering Touch \"end of your next turn\" (authored + domain.json) · TODO 41 The Final Study docId re-key (parity). REBUILD",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "S",
+      "deps": "46 ✓ · 41's OK ✓",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 50,
+      "item": "59",
+      "title": "R-71 fold system.damage.formula at build time (TOOLING + DATA, REBUILD)",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "S",
+      "deps": "46 ✓",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 51,
+      "item": "60",
+      "title": "R-22 build guard — a consume entry with min ≠ max fails lint (TOOLING, mutation-verified)",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "S",
+      "deps": "46 ✓",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 52,
+      "item": "61",
+      "title": "R-42 map polygons — Goldenport's coastal / island lobes, Corvaine's edge to the river bank; lint_map.py WARNs 4 → 0",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "S",
+      "deps": "46 ✓",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 53,
+      "item": "43",
+      "title": "Phone board \"Needs you\" view (+ the stale-heartbeat banner from the stall post-mortem) — queued behind the engine passes because every ruling is now answered",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "M",
+      "deps": "46 ✓",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 54,
+      "item": "44",
+      "title": "Ask: lines on non-question ruling headings (phase 2 of 43)",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "S",
+      "deps": "43",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 55,
+      "item": "62",
+      "title": "R-52 (ii) edge-to-edge range measurement for sized tokens + a bench sweep of every rangeFt gate",
+      "lane": "B",
+      "model": "opus",
+      "size": "M",
+      "deps": "47 ✓",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
       "pos": null,
       "item": "2",
       "title": "History purge → delete the 61 SAFE branches (docs/BRANCH_CLEANUP.md, Ben's hands only) · 3 LICENSE",
@@ -542,7 +809,7 @@
   ],
   "inbox": [],
   "foundry": {
-    "text": "✅ LIVE = main at #204, hash 57a8c950… (PM push 2026-09-06 03:47, 6 in sync, equal both sides; adds fix pass 6 to 39cc7612… of 03:27; verified by run 37). Nothing owed to deploy-to-foundry.bat — no pack rebuild all weekend. ⚠️ Ben's Gamemaster client has been connected since before 23:28 and runs a pre-fix engine until it reloads. _(Earlier:)_ 1496af37… at 01:24 (28a + 28b). _(Earlier:)_ 0051bde1… at 00:49 (item 29, verified by run 33). _(Earlier:)_ 06229ecc… at 00:14 (fix pass 4, verified by run 32); ffb1f3f5… at 23:53 (fix pass 3 + item 23). _(Earlier tonight:)_ fix pass 3 pushed 23:28 as c498d9eb…, verified by bench run 31. _(19:10 fact:)_ ✅ #160 LIVE (verified 2026-09-05 19:10 from the new clone: served and repo register-skills.js both 6fc09da0… CRLF-normalised, module-src-sync.js status 6 in sync, localhost:30000 answers 302). _(18:35 note, now history:)_ ⏳ DEPLOY OWED (2026-09-05 18:35, PR #160, ENGINE-ONLY): item 36's one moved statement is on main but not live — module-src-sync.js push + hash verify from the NEW clone (C:\\dev\\Skilltrees) is the next session's first act if Foundry is up; the 🤖 row under # BENCH — Sovereignty waits on it. Ben closed Foundry for the OneDrive move (~18:30). _(Previous fact:)_ ✅ DEPLOYED (2026-09-05 ~16:15, Ben, deploy-to-foundry.bat, Foundry closed): #151's engine half and the Reeve-Owl data fix are LIVE. PM verification 16:20: module-src-sync.js status → 6 in sync, 0 stale, 0 hand-edited; repo engine blob a59b0c41… at main = 7b4bcc8; Foundry relaunched, localhost:30000 answers. The run was the live confirmation of #139's step 2 in the sense that it completed, but note how it got there: Ben's checkout was still pre-#139 when he double-clicked, so the OLD 7-step script ran and hung on the same worktree-prune (y/n) prompt (this time a half-removed .git/worktrees/hw record from a ~13:58 worker). The PM removed the record, had Ben close the window rather than answer y (the pull would have rewritten the running script under cmd, which resumes by byte offset), pulled main in the checkout, and Ben re-ran the new 8-step script clean. Lesson for the runbook: a deploy-script fix only protects the run AFTER the one that pulls it — when the script itself changes, pull first, then run. Bench run 4 verifies the served hash before driving anything.\n\nOPEN — Saturday 2026-09-05 from 09:13 (Ben: \"foundry has been updated and is open\"). Deploy fact (2026-09-05 11:50, PM push after fix pass 1): module-src-sync.js push → 1 copied; live and repo register-skills.js both hash 9575fba2…; status 6 in sync. _(09:13 fact: 6 in sync at 9027cd17….)_ The 2026-08-10 hygiene campaign (R-60..R-67, live dice math) is now LIVE at the table for the first time — its # BENCH — hygiene campaign 2026-08-10 section (checklist line ~3328) is the first thing the bench should run. The checklist carries 106 🤖 rows in total. The dispatch itself waits for the 12:05 slot (two dispatches already in the trailing five hours) and for Foundry still being up then — superseded 10:40: Ben raised the weekend cap and asked for bench progress while he is away; the first bench run was dispatched at once. The weekend runs as a bench marathon (the bench-marathon skill's loop, orchestrated by the PM): bench-run → fails to one test-pass-fixes worker → PM deploys engine-only fixes with module-src-sync.js push and verifies by hash → next bench run re-tests the restored rows first. Pack-rebuild fixes stay BLOCKED-ON-DEPLOY for Ben. Lane-B items merge to main but stay bench-pending until a window; the PM then dispatches one bench-run worker (Opus) for the accumulated 🤖 sections, and fails go to one test-pass-fixes worker.\n\n_(Previous fact, for the record: on 2026-09-04 the live engine was the 2026-07-28 version and deploy-to-foundry.bat had not been run; Ben ran it on 09-05 — it hung on git's worktree-prune prompt on the way, which he is fixing in his own session in the focused-booth-7259bf worktree.)_",
+    "text": "❌ CLOSED at 2026-09-06 16:56 ET (localhost:30000 refused; last seen up at 08:30). Live engine still 57a8c950… = main (6 in sync; #205 → #210 were DOCS-ONLY). Nothing owed to deploy-to-foundry.bat until the REBUILD-class items 55–59 merge. Tonight's engine-only passes deploy by module-src-sync.js push when Foundry is next up (F5 on Ben's side); their 🤖 rows wait for that window. _(Earlier:)_ ✅ LIVE = main at #204, hash 57a8c950… (PM push 2026-09-06 03:47, 6 in sync, equal both sides; adds fix pass 6 to 39cc7612… of 03:27; verified by run 37). Nothing owed to deploy-to-foundry.bat — no pack rebuild all weekend. ⚠️ Ben's Gamemaster client has been connected since before 23:28 and runs a pre-fix engine until it reloads. _(Earlier:)_ 1496af37… at 01:24 (28a + 28b). _(Earlier:)_ 0051bde1… at 00:49 (item 29, verified by run 33). _(Earlier:)_ 06229ecc… at 00:14 (fix pass 4, verified by run 32); ffb1f3f5… at 23:53 (fix pass 3 + item 23). _(Earlier tonight:)_ fix pass 3 pushed 23:28 as c498d9eb…, verified by bench run 31. _(19:10 fact:)_ ✅ #160 LIVE (verified 2026-09-05 19:10 from the new clone: served and repo register-skills.js both 6fc09da0… CRLF-normalised, module-src-sync.js status 6 in sync, localhost:30000 answers 302). _(18:35 note, now history:)_ ⏳ DEPLOY OWED (2026-09-05 18:35, PR #160, ENGINE-ONLY): item 36's one moved statement is on main but not live — module-src-sync.js push + hash verify from the NEW clone (C:\\dev\\Skilltrees) is the next session's first act if Foundry is up; the 🤖 row under # BENCH — Sovereignty waits on it. Ben closed Foundry for the OneDrive move (~18:30). _(Previous fact:)_ ✅ DEPLOYED (2026-09-05 ~16:15, Ben, deploy-to-foundry.bat, Foundry closed): #151's engine half and the Reeve-Owl data fix are LIVE. PM verification 16:20: module-src-sync.js status → 6 in sync, 0 stale, 0 hand-edited; repo engine blob a59b0c41… at main = 7b4bcc8; Foundry relaunched, localhost:30000 answers. The run was the live confirmation of #139's step 2 in the sense that it completed, but note how it got there: Ben's checkout was still pre-#139 when he double-clicked, so the OLD 7-step script ran and hung on the same worktree-prune (y/n) prompt (this time a half-removed .git/worktrees/hw record from a ~13:58 worker). The PM removed the record, had Ben close the window rather than answer y (the pull would have rewritten the running script under cmd, which resumes by byte offset), pulled main in the checkout, and Ben re-ran the new 8-step script clean. Lesson for the runbook: a deploy-script fix only protects the run AFTER the one that pulls it — when the script itself changes, pull first, then run. Bench run 4 verifies the served hash before driving anything.\n\nOPEN — Saturday 2026-09-05 from 09:13 (Ben: \"foundry has been updated and is open\"). Deploy fact (2026-09-05 11:50, PM push after fix pass 1): module-src-sync.js push → 1 copied; live and repo register-skills.js both hash 9575fba2…; status 6 in sync. _(09:13 fact: 6 in sync at 9027cd17….)_ The 2026-08-10 hygiene campaign (R-60..R-67, live dice math) is now LIVE at the table for the first time — its # BENCH — hygiene campaign 2026-08-10 section (checklist line ~3328) is the first thing the bench should run. The checklist carries 106 🤖 rows in total. The dispatch itself waits for the 12:05 slot (two dispatches already in the trailing five hours) and for Foundry still being up then — superseded 10:40: Ben raised the weekend cap and asked for bench progress while he is away; the first bench run was dispatched at once. The weekend runs as a bench marathon (the bench-marathon skill's loop, orchestrated by the PM): bench-run → fails to one test-pass-fixes worker → PM deploys engine-only fixes with module-src-sync.js push and verifies by hash → next bench run re-tests the restored rows first. Pack-rebuild fixes stay BLOCKED-ON-DEPLOY for Ben. Lane-B items merge to main but stay bench-pending until a window; the PM then dispatches one bench-run worker (Opus) for the accumulated 🤖 sections, and fails go to one test-pass-fixes worker.\n\n_(Previous fact, for the record: on 2026-09-04 the live engine was the 2026-07-28 version and deploy-to-foundry.bat had not been run; Ben ran it on 09-05 — it hung on git's worktree-prune prompt on the way, which he is fixing in his own session in the focused-booth-7259bf worktree.)_",
     "scheduled": true,
     "deployStale": false,
     "liveEngineVersion": null
@@ -1779,6 +2046,76 @@
       "weightedM": 4.1,
       "outcome": "Session fired as claude-opus-5 because no scheduled task pins a model (the MCP create/update tools expose only taskId, title, prompt, description, cronExpression, fireAt, enabled, notifyOnCompletion — no model), so it inherits the app default at fire time; the \"must remain Fable\" note was an assumption with no mechanism. Session then froze twice — 82.7 min from 07:02:34 (it only advanced when Ben touched the app at 08:25) and 7h04m from 09:01:18, during which Ben's \"stop\" went undelivered until 16:07. Ben lost the working day, ran a cloud Fable session instead (#208, #209) and merged #207 himself at 12:11. Delivered before the freeze: #206 (board) and bench run 38 → #207 (5 rows retired, R-78, the run-22 harness blocker disproved). Fixes applied 16:20: a MODEL GUARD is now step 0 of BOTH edha-pm-daily and edha-pm-weeknight (exit without spending unless the model id starts with claude-fable, push-notify Ben), plus a rule to re-read date before every dispatch and budget calculation (today's stale 07:02 read caused a wrong trailing-window hold). Board's session-of-record line rewritten to a stand-down so the next PM takes over instead of deferring",
       "pr": 210
+    },
+    {
+      "date": "2026-09-06",
+      "time": "08:35",
+      "at": "2026-09-06T12:35:00.000Z",
+      "item": "Bench run 15 = bench run 38 (the wizard block; the re-test block was empty) — bench-run, dispatched by the failed 07:02 session",
+      "itemNo": null,
+      "model": "opus",
+      "isDispatch": true,
+      "duration": "~24 min (PR opened 08:59)",
+      "weighted": "6.2M",
+      "weightedM": 6.2,
+      "outcome": "merged 12:11 by Ben, via the cloud relay session (the PM was frozen). 5 rows off (2 wizard + 3 others); R-78 filed (Ben 09-06: retire → item 48); one 🤖 defect (the weapon picker's \"a Agent\" / \"a Envoy\" → item 48); run 22's rendering blocker DISPROVED. ⚠️ Its four commits carry model trailers (iron rule 6) — merged, left in place",
+      "pr": 207
+    },
+    {
+      "date": "2026-09-06",
+      "time": "15:06",
+      "at": "2026-09-06T19:06:00.000Z",
+      "item": "docs/ACTOR_STAT_DERIVATION.md — the R-54 derivation map (the cloud relay session, not a PM dispatch; DOCS-ONLY)",
+      "itemNo": null,
+      "model": "fable (cloud)",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "merged by Ben 15:06. Finding: the +1 max HP has NO canon source (EDHA_HP_BONUS = 1, generalised from the June pregens on 06-11b); Ben chose (c) remove it → item 47",
+      "pr": 208
+    },
+    {
+      "date": "2026-09-06",
+      "time": "16:21",
+      "at": "2026-09-06T20:21:00.000Z",
+      "item": "Board stand-down line + MODEL GUARD on both scheduled tasks + pm-live.json / pm-state.json into the repo (the dead session's last act, DOCS-ONLY)",
+      "itemNo": null,
+      "model": "opus",
+      "isDispatch": true,
+      "duration": null,
+      "weighted": "(in the 10.3M above)",
+      "weightedM": 10.3,
+      "outcome": "merged by Ben 16:21",
+      "pr": 210
+    },
+    {
+      "date": "2026-09-06",
+      "time": "16:40",
+      "at": "2026-09-06T20:40:00.000Z",
+      "item": "Sunday PM session sync — W14 / W15 / W20 pre-walked menus, SCRATCH=tmp/pm, scheduled-task form hygiene, the board's relay correction (the cloud relay, DOCS-ONLY)",
+      "itemNo": null,
+      "model": "fable (cloud)",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "merged 16:40 by the relay on Ben's word (\"go ahead with any needed PRs and merge to main\")",
+      "pr": 209
+    },
+    {
+      "date": "2026-09-06",
+      "time": "16:56",
+      "at": "2026-09-06T20:56:00.000Z",
+      "item": "New PM session of record — Fable, started by Ben by hand — PM, no worker",
+      "itemNo": null,
+      "model": "fable",
+      "isDispatch": false,
+      "duration": "step 0 ≈ 20 min",
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "Model guard passed (claude-fable-5-1); Sunday = weekend window; clock read live (16:56, re-read 17:02). Resume clean: main 7e34961, no open PRs, no worktrees, engine 6 in sync (57a8c950…), Foundry CLOSED. #209 / #210 verified on disk: docs/pm-*.json tracked, tmp/ gitignored, both task prompts open with the MODEL GUARD. Phone inbox: 66 notes → all seen (dump in tmp/pm/inbox-2026-09-06/); the board's rulings table, queue rows 43–62 and this run log carry the consequences. The remoteControlAtStartup write was blocked by the permission classifier → PM-R12, Ben's hands. Budget read at 17:05: day-shift 1 of 12 (bench run 38 at 08:35); trailing-5h 0 of 6. Dispatch: items 45 + 46 in parallel worktrees (both docs-only, disjoint files — 45 never touches TODO_REPO_HYGIENE.md, 46 touches nothing else)",
+      "pr": null
     }
   ],
   "dispatches": [
@@ -2057,6 +2394,18 @@
       "model": "opus",
       "item": null,
       "pr": 204
+    },
+    {
+      "at": "2026-09-06T12:35:00.000Z",
+      "model": "opus",
+      "item": null,
+      "pr": 207
+    },
+    {
+      "at": "2026-09-06T20:21:00.000Z",
+      "model": "opus",
+      "item": null,
+      "pr": 210
     }
   ],
   "statusVocab": [
