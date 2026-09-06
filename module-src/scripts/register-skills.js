@@ -561,7 +561,7 @@ function edhaAggroRecord(roll, source, config) {
     const actor = edhaD20RollActor(config); if (!actor) return;
     if (!config?.data?.source?.system?.damage?.formula) return;   // damaging items only = attacks
     const target = edhaUserTargetToken(); if (!target?.actor) return;
-    void edhaSetEdhaFlag(actor, "aggro", { targetUuid: target.actor.uuid, targetName: target.name, round: game.combat?.round ?? null });
+    void edhaSetEdhaFlag(actor, "aggro", { targetUuid: target.actor.uuid, targetName: target.name, round: edhaCombatRoundOf(actor) });   // R-4/#28a: the ATTACKER's combat, not the viewed one
   } catch (e) { /* non-fatal */ }
 }
 function edhaPackAdvantageApply(roll, source, config) {
@@ -616,6 +616,110 @@ Hooks.on("deleteCombat", (combat) => {
  */
 const EDHA_TURN_BASE = 10000;   // > any plausible combatant count, so the sequence stays monotonic across rounds
 function edhaTurnSeq(round, turn) { return (Number(round) || 0) * EDHA_TURN_BASE + (Number(turn) || 0); }
+
+/* ============================ THE OUT-OF-COMBAT GATE (R-4, TODO #28a) ============================
+ * ONE question, asked by every scene/turn-keyed site in the file: **is THIS creature in a combat
+ * right now, and which one?**
+ *
+ * It exists because `game.combat` is not that question's answer and never was. `game.combat` is the
+ * CLIENT'S VIEWED combat — whatever encounter this browser has selected in the tracker. It can be
+ * null while the owner is mid-fight (nobody has the tracker open on that encounter), and it can be
+ * some OTHER table's combat while the owner is in a second one. Both directions had shipped
+ * symptoms, and R-4 is the ruling that retires the family (Ben, 2026-09-05, "go with your
+ * recommendations"):
+ *   - `game.combat === null` out of combat, so every `game.combat?.round ?? 0` round key froze at
+ *     **0** — per-round ledgers "reset" only when the scene ends, `once: round` degraded to
+ *     once-per-session, and every rule-owner on the scene kept watching everything;
+ *   - `game.combat?.started` was false out of combat, so `edhaApplyTimedStatus` never stamped an
+ *     `expireAfter` — "Restrained until the end of its next turn" was **immortal**;
+ *   - with two combats live, the round/turn a watch read belonged to whichever one this client
+ *     happened to be looking at (bench run 27), which is the same clobber family as
+ *     `edhaCombatEndGuard` above, seen from the read side instead of the write side.
+ *
+ * `edhaInActiveCombat(actor)` → the combat this creature is actually a combatant of, or null.
+ *
+ * THREE deliberate choices, each with a direction:
+ *  1. **Scan `game.combats`, never `game.combat`.** The viewed combat is a UI fact; combatant
+ *     membership is the game fact. `game.combat` is kept only as a fallback for a world object thin
+ *     enough to lack the collection.
+ *  2. **`started` OR `active`.** `started` is the engine's existing bar everywhere (round > 0), but a
+ *     combat the GM has created and not yet rolled initiative for is, at the table, combat. Accepting
+ *     `active` too is the generous direction. Round/turn READS still require `started` — see
+ *     `edhaCombatRoundOf` — because an unstarted combat has no round to key on.
+ *  3. **Match GENEROUSLY — token id, actor id, or the combatant's resolved actor uuid.** Per the
+ *     twin-actor family, an unlinked token and its directory twin share an `id`, so an actor-id match
+ *     can over-accept a sibling. That is on purpose. **The fail-safe direction here is "in combat":**
+ *     a wrong YES leaves today's behaviour exactly as it is, while a wrong NO SILENCES A LIVE TALENT
+ *     — which is 28a's named risk. Every uncertain answer, a throw included, must land on YES/keep.
+ *
+ * ⚠️ This gate is for scene/turn-keyed watches. A rule that legitimately runs OUT of combat — a
+ * self-scoped watch on your own skill roll, a rest/recovery or exploration payload, an out-of-combat
+ * status expiry — must NOT be routed through it. See `edhaWatchCombatGate` for the one place that
+ * distinction is encoded, and the 2026-09-06 handoff delta for the deliberately-ungated list. */
+function edhaInActiveCombat(actor) {
+  try {
+    if (!actor) return null;
+    const tokenId = actor.isToken ? (actor.token?.id ?? null) : null;
+    const all = game.combats ? [...game.combats] : (game.combat ? [game.combat] : []);
+    for (const c of all) {
+      if (!c || (!c.started && !c.active)) continue;
+      // BOTH collections: `combatants` is the membership, `turns` the ordered view of the same
+      // documents. Foundry populates both; reading either is correct, and reading both is the
+      // generous direction this helper is committed to.
+      for (const cb of [...(c.combatants ?? []), ...(c.turns ?? [])]) {
+        if (!cb) continue;
+        if (tokenId && cb.tokenId && cb.tokenId === tokenId) return c;
+        if (cb.actorId && actor.id && cb.actorId === actor.id) return c;
+        const cu = cb.actor?.uuid;
+        if (cu && actor.uuid && cu === actor.uuid) return c;
+      }
+    }
+    return null;
+  } catch (e) { return null; }
+}
+/* The round of the combat this creature is in, or null when it is in none / in one that has not
+ * started. `null` is what every round-keyed caller already treats as "no round" — the swap changes
+ * WHICH combat answered, not what the answer means. */
+function edhaCombatRoundOf(actor) {
+  const c = edhaInActiveCombat(actor);
+  return c?.started ? (Number(c.round) || 0) : null;
+}
+/* The turn SEQUENCE of the combat this creature is in, or null. Mirrors `edhaCombatRoundOf` for the
+ * once-per-TURN and window helpers, which need the (round, turn) pair rather than the round. */
+function edhaTurnSeqOf(actor) {
+  const c = edhaInActiveCombat(actor);
+  return c?.started ? edhaTurnSeq(c.round, c.turn) : null;
+}
+/* THE SCENE-SCOPE WATCH GATE — the "every rule-owner on the scene watches everything" and "an
+ * adversary's own ability cost is taxed by enemy watches" faces of R-4, in one decision.
+ *
+ * The line is drawn at `scope`, not at the watched kind, because `scope` is exactly the question
+ * "does this rule react to somebody ELSE's event?":
+ *   - **`scope: "self"` → NEVER gated.** The watcher IS the subject; there is no cross-talk to
+ *     silence, and a self-watch on your own skill roll, token move or die step is a legitimate
+ *     out-of-combat rule (the exploration/social half of the tree). Gating these is precisely the
+ *     failure 28a is pinned against.
+ *   - **`scope: "scene"` → gated** on an active combat containing the WATCHER, plus the subject not
+ *     being provably in a DIFFERENT one. All eight scene-scoped rules shipped today are combat
+ *     mechanics (three `defeat`, three `focus-change`, one `damaged`, one `turn-start`); none has an
+ *     out-of-combat reading.
+ *   - **`outOfCombat: true` on the rule → never gated.** The authored opt-out, so a future
+ *     scene-scoped rule that DOES work out of combat is one field on the document (iron rule 2b) and
+ *     not an engine edit. No rule sets it today.
+ *
+ * An unknown subject combat ALLOWS the fire (`!sc`): a defeated non-combatant token, or a subject
+ * whose actor cannot be resolved, is the uncertain case, and uncertain lands on today's behaviour. */
+function edhaWatchCombatGate(h, watcher, subject) {
+  try {
+    if (h?.outOfCombat === true) return true;
+    if (String(h?.scope || "self") !== "scene") return true;
+    const wc = edhaInActiveCombat(watcher);
+    if (!wc) return false;
+    if (!subject) return true;
+    const sc = edhaInActiveCombat(subject);
+    return !sc || sc === wc;
+  } catch (e) { return true; }
+}
 function edhaCombatantTurnIndex(combat, actor) {
   if (!combat?.turns || !actor) return -1;
   const tokenId = actor.isToken ? actor.token?.id : null;
@@ -669,8 +773,10 @@ Hooks.on("createActiveEffect", (effect) => {
     if (!edhaDefBuffGmGate()) return;
     if (!edhaIsTimedStatus(effect)) return;
     if (effect.getFlag?.("edha-content", "expireAfter")) return;
-    const combat = game.combat; if (!combat?.started) return;
     const a = effect.parent; if (a?.documentName !== "Actor") return;
+    // R-4/#28a: the CARRIER's own combat. Reading `game.combat` meant a status applied while this
+    // client viewed a different encounter (or none) was left unstamped — and then immortal.
+    const combat = edhaInActiveCombat(a); if (!combat?.started) return;
     const ti = edhaCombatantTurnIndex(combat, a); if (ti < 0) return;   // creature isn't in this combat
     void effect.setFlag("edha-content", "expireAfter", edhaNextTurnCoord(combat, ti));
   } catch (e) { console.error("Edha Content | timed-status stamp failed", e); }
@@ -2292,7 +2398,10 @@ const _edhaWatchBudget = new Map();
 function edhaWatchBudgetGate(h, item, victim) {
   const per = String(h.once || "no");
   if (per === "no") return true;
-  const round = Number(game.combat?.round) || 0;
+  // R-4/#28a: the round of the RULE OWNER's own combat. Out of combat this is still 0 (the safer
+  // degradation the comment above describes, unchanged); what it no longer does is key a budget on
+  // whichever encounter this client happened to be viewing.
+  const round = edhaCombatRoundOf(item?.actor ?? item?.parent ?? null) ?? 0;
   const key = per === "round" ? `${item?.uuid}|*|${round}` : `${item?.uuid}|${victim?.uuid ?? "?"}|${round}`;
   if (_edhaWatchBudget.has(key)) return false;
   _edhaWatchBudget.set(key, true);
@@ -2354,6 +2463,8 @@ async function edhaDispatchWatchers(ev) {
         const scope = String(h.scope || "self");
         if (scope === "self" && w.actor !== ev.owner) continue;
         if (scope === "scene" && w.actor === ev.owner && h.includeSelf === false) continue;
+        // R-4/#28a — the out-of-combat gate. Scene-scoped only; a self-scoped watch is never gated.
+        if (!edhaWatchCombatGate(h, w.actor, ev.owner)) continue;
         if (!edhaWatchMatches(h, ev)) continue;
         if (h.requireSelfStatus && !w.actor?.statuses?.has?.(h.requireSelfStatus)) continue;
         if (h.requireTargetStatus && !ev.victim?.statuses?.has?.(h.requireTargetStatus)) continue;
@@ -3787,7 +3898,7 @@ async function edhaApplyHealCut(target, owner, fraction, byName) {
   try {
     const ex = target.effects?.filter(e => e.getFlag?.("edha-content", "healCut")) ?? [];   // refresh duration
     if (ex.length) { try { await target.deleteEmbeddedDocuments("ActiveEffect", ex.map(e => e.id)); } catch (e) {} }
-    const combat = game.combat;
+    const combat = edhaInActiveCombat(owner);   // R-4/#28a: the OWNER's combat decides "its next turn"
     const ti = (combat?.started && owner) ? edhaCombatantTurnIndex(combat, owner) : -1;
     const coord = ti >= 0 ? edhaNextTurnCoord(combat, ti) : null;   // end of the OWNER's next turn
     const full = Number(fraction) === 0;
@@ -4078,7 +4189,8 @@ function edhaAdvTestRead(actor) {
   if (!g) return null;
   const sk = typeof g === "string" ? g : g.skill;
   const round = (typeof g === "object" && g.round != null) ? g.round : null;
-  if (round != null && game.combat?.round != null && game.combat.round !== round) {
+  const now = edhaCombatRoundOf(actor);   // R-4/#28a: the BEARER's combat decides whether its round is over
+  if (round != null && now != null && now !== round) {
     void actor.unsetFlag("edha-content", "advTest");   // stale — the granting round is over
     return null;
   }
@@ -4319,7 +4431,7 @@ async function edhaOpportunityClick(ev) {
     if (ran) {
       // the payload posts its own card; nothing to add
     } else if (o.kind === "adv-next-test" && o.skill) {
-      await owner.setFlag("edha-content", "advTest", { skill: o.skill, round: game.combat?.round ?? null, source: o.itemName });
+      await owner.setFlag("edha-content", "advTest", { skill: o.skill, round: edhaCombatRoundOf(owner), source: o.itemName });   // R-4/#28a: the OWNER's combat (edhaAdvTestRead reads the same)
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>👁️ <strong>${o.itemName}</strong>: Opportunity spent — advantage on ${owner.name}'s next ${o.skill.toUpperCase()} test this round.</p>` });
     } else {
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🎲 <strong>${o.itemName}</strong>: Opportunity spent — ${o.note || o.label}</p>` });
@@ -4616,7 +4728,7 @@ async function edhaDesignateClick(ev) {
     const owner = await edhaResolveActorRef(btn.dataset.edhaOwner); if (!owner) return;
     const tDoc = await fromUuid(btn.dataset.edhaTarget).catch(() => null); if (!tDoc) return;
     const src = decodeURIComponent(btn.dataset.edhaSource || "Designate");
-    const c = game.combat ?? null;
+    const c = edhaInActiveCombat(owner);   // R-4/#28a: stamp the DESIGNATOR's combat, so the window reads back in it
     const ok = await edhaSetEdhaFlag(owner, "plotDieMark", { target: btn.dataset.edhaTarget, targetName: tDoc.name, source: src, round: c ? Number(c.round) : null, combatId: c?.id ?? null });
     if (!ok) return;
     btn.closest(".edha-trigger-card")?.querySelectorAll(".edha-designate-btn").forEach(b => b.disabled = true);
@@ -4636,7 +4748,7 @@ function edhaFindMarkGrant(actor) {
       const a = t.actor; if (!a || a.uuid === actor.uuid || t.id === rTok.id) continue;
       if ((t.document?.disposition ?? 1) !== rDisp) continue;
       const m = a.getFlag?.("edha-content", "plotDieMark");
-      if (!m || !edhaRoundWindowValid(m, game.combat ?? null)) continue;
+      if (!m || !edhaRoundWindowValid(m, edhaInActiveCombat(a))) continue;   // R-4/#28a: the DESIGNATOR's combat
       if (targeted.has(m.target)) return { designator: a, mark: m };
     }
     return null;
@@ -4648,11 +4760,11 @@ function edhaFindMarkGrant(actor) {
 /* --- Tool B: the Coordination post-roll watcher (Concordant Presence / Shared Conviction / Pillar) - */
 // Once-per-round gate, parallel to the focus economy's (keyed off a separate "coordRound" store).
 function edhaCoordOPRAllowed(owner, name, key) {
-  const round = game.combat?.round; if (round == null) return true;
+  const round = edhaCombatRoundOf(owner); if (round == null) return true;   // R-4/#28a: the OWNER's combat
   return owner.getFlag?.("edha-content", "coordRound")?.[name]?.[key] !== round;
 }
 async function edhaCoordOPRMark(owner, name, key) {
-  const round = game.combat?.round; if (round == null) return;
+  const round = edhaCombatRoundOf(owner); if (round == null) return;   // R-4/#28a: the OWNER's combat
   const m = foundry.utils.deepClone(owner.getFlag("edha-content", "coordRound") ?? {});
   (m[name] ??= {})[key] = round;
   try { await owner.setFlag("edha-content", "coordRound", m); } catch (e) {}
@@ -5107,7 +5219,7 @@ Hooks.on("updateToken", (doc, change, options, userId) => {
     if (options?.edhaForcedMove) return;
     const actor = doc.actor; if (!actor) return;
     const m = actor.getFlag?.("edha-content", "moveWindow");
-    if (!edhaRoundWindowValid(m, game.combat ?? null)) return;
+    if (!edhaRoundWindowValid(m, edhaInActiveCombat(actor))) return;   // R-4/#28a: the MOVER's combat
     const src = m.source || "Movement Window", ft = Number(m.rangeFt) || 10;
     const what = m.note || "may move half their Speed without provoking Reactions";
     const scene = doc.parent; const gs = scene?.grid?.size || 100, gd = scene?.grid?.distance || 5;
@@ -5404,8 +5516,9 @@ async function edhaApplyTimedStatus(target, statusId, { owner = null, expire = "
       if (expire) {
         const eff = [...(target.effects ?? [])].find(e => e.statuses?.has?.(statusId));
         const who = (expire === "owner" && owner) ? owner : target;
-        const ti = game.combat?.started ? edhaCombatantTurnIndex(game.combat, who) : -1;
-        if (eff && ti >= 0) await eff.setFlag("edha-content", "expireAfter", edhaNextTurnCoord(game.combat, ti));
+        const cbt = edhaInActiveCombat(who);   // R-4/#28a: the reference creature's OWN combat
+        const ti = cbt?.started ? edhaCombatantTurnIndex(cbt, who) : -1;
+        if (eff && ti >= 0) await eff.setFlag("edha-content", "expireAfter", edhaNextTurnCoord(cbt, ti));
         // Can't stamp yet — no combat running, or neither creature is in THIS combat. Record what the
         // rule asked for so the turn-change pass stamps it the moment a combat exists; otherwise the
         // status is IMMORTAL for every id outside EDHA_TIMED_STATUSES (Brace, before initiative).
@@ -5588,7 +5701,7 @@ function edhaNextTestMatches(mod, roll, actor = null, round = undefined, wantDam
   // once the round moves on — the behaviour Predatory Insight's bespoke `advTest` flag had and this
   // pipeline did not, which is the only reason a private second flag existed. Round is a parameter so
   // the helper stays pinnable; out of combat there is no round and the stamp is inert.
-  if (round === undefined) round = game.combat?.round ?? null;
+  if (round === undefined) round = edhaCombatRoundOf(actor);   // R-4/#28a: the ROLLER's combat, not the viewed one
   if (mod.round != null && round != null && round !== mod.round) return false;
   // COMMA-LIST (07-24w, Ben's q12 ruling to ENFORCE the Command skill lists). This was a scalar
   // compare, so an authored "itm, lea, per" could never match any skill id and the gate silently
@@ -5786,7 +5899,10 @@ function edhaStanceRiderChanges(item) {
  */
 const EDHA_CAE_ID = "cosmere-advanced-encounters";
 function edhaCaeCombatant(actor) {
-  try { return game.combat?.combatants?.find?.(c => c.actor === actor || c.actorId === actor?.id) ?? null; }
+  // R-4/#28a: PREFER the actor's own combat, fall back to the viewed one. This is a LOOKUP, not a
+  // gate — its empty answer downgrades the grant to a plain chat note, so it must never be the thing
+  // that silences a live grant. Narrowing it to `edhaInActiveCombat` alone would do exactly that.
+  try { return (edhaInActiveCombat(actor) ?? game.combat)?.combatants?.find?.(c => c.actor === actor || c.actorId === actor?.id) ?? null; }
   catch (e) { return null; }
 }
 /* SERIALISED since 2026-07-27j (bench run 9 defect 2) — this is the H3 owner-list write race in a
@@ -6809,7 +6925,10 @@ Hooks.on("deleteCombat", (combat) => {
 // --- Fast/slow turn (read-only; the cosmere system has no toggle event) --------------------------
 function edhaCombatantOf(actor) {
   try {
-    const combat = game.combat; if (!combat?.started || !actor) return null;
+    // R-4/#28a: the combat this creature is IN, not the one this client is looking at. Reading
+    // `game.combat` here made every fast/slow-turn payoff silently inert whenever the tracker was
+    // showing a different encounter (or none), which is the read side of the cross-combat family.
+    const combat = edhaInActiveCombat(actor); if (!combat?.started || !actor) return null;
     const tokenId = actor.isToken ? actor.token?.id : null;
     return combat.combatants.find(c => tokenId ? c.tokenId === tokenId : c.actorId === actor.id) ?? null;
   } catch (e) { return null; }
@@ -6873,10 +6992,12 @@ function edhaMovedTowardFt(actor, target) {
 }
 
 // --- Once per turn (Unstoppable) -----------------------------------------------------------------
-function edhaTurnSeqNow() { const c = game.combat; return c?.started ? edhaTurnSeq(c.round, c.turn) : null; }
-function edhaOncePerTurnAllowed(actor, key) { const s = edhaTurnSeqNow(); if (s == null) return true; return actor.getFlag?.("edha-content", "oncePerTurn")?.[key] !== s; }
+// R-4/#28a: `edhaTurnSeqOf(actor)` — the turn sequence of the ACTOR's own combat. The old
+// `edhaTurnSeqNow()` read `game.combat`, so a second combat's turn ticks moved this actor's
+// once-per-turn clock (and the viewed-combat-is-null case froze it).
+function edhaOncePerTurnAllowed(actor, key) { const s = edhaTurnSeqOf(actor); if (s == null) return true; return actor.getFlag?.("edha-content", "oncePerTurn")?.[key] !== s; }
 async function edhaOncePerTurnMark(actor, key) {
-  const s = edhaTurnSeqNow(); if (s == null) return;
+  const s = edhaTurnSeqOf(actor); if (s == null) return;
   const m = foundry.utils.deepClone(actor.getFlag("edha-content", "oncePerTurn") ?? {}); m[key] = s;
   try { await actor.setFlag("edha-content", "oncePerTurn", m); } catch (e) {}
 }
@@ -7147,7 +7268,7 @@ async function edhaDamagedWatchAnnounce(victim, damage) {
   try {
     if (!edhaDefBuffGmGate() || _edhaInTrigger) return;
     if (!victim || (Number(damage?.dealt) || 0) <= 0) return;
-    const round = game.combat?.round; if (round == null) return;
+    const round = edhaCombatRoundOf(victim); if (round == null) return;   // R-4/#28a: the VICTIM's combat owns its per-round hit ledger
     const key = `bpHits.${round}`;
     const hits = (Number(victim.getFlag?.("edha-content", key)) || 0) + 1;
     try { await victim.setFlag("edha-content", key, hits); } catch (e) {}
@@ -9339,10 +9460,14 @@ async function edhaSummonCreateGM(p) {
     if (!summon) return null;
     const tdoc = await summon.getTokenDocument({ x: p.x, y: p.y });
     const [newToken] = await scene.createEmbeddedDocuments("Token", [tdoc.toObject()]);
-    if (p.actsAfterCaster && game.combat && newToken) {
-      const cc = game.combat.combatants.find(c => c.actorId === p.casterId);
+    // R-4/#28a: enrol the summon in the CASTER's combat. `game.combat` is this GM client's viewed
+    // encounter — with two combats live it could enrol the summon in the wrong one, and with none
+    // viewed it skipped enrolment while the caster was mid-fight.
+    const casterCombat = edhaInActiveCombat(game.actors?.get?.(p.casterId) ?? null);
+    if (p.actsAfterCaster && casterCombat && newToken) {
+      const cc = casterCombat.combatants.find(c => c.actorId === p.casterId);
       try {
-        await game.combat.createEmbeddedDocuments("Combatant", [{ tokenId: newToken.id, sceneId: scene.id, actorId: summon.id, initiative: cc?.initiative ?? null }]);
+        await casterCombat.createEmbeddedDocuments("Combatant", [{ tokenId: newToken.id, sceneId: scene.id, actorId: summon.id, initiative: cc?.initiative ?? null }]);
       } catch (e) { /* no combat or perms */ }
     }
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: game.actors?.get(p.casterId) ?? null }), content: p.cardHtml });
@@ -9584,13 +9709,13 @@ function edhaResVal(res) { return (res && typeof res.max === "object") ? res.max
 // no-op for every key already persisted, so no migration is needed.
 function edhaTriggerAllowed(owner, name, spec) {
   if (!spec.oncePerRound) return true;
-  const round = game.combat?.round;
+  const round = edhaCombatRoundOf(owner);   // R-4/#28a: the OWNER's combat, not whichever one is viewed
   if (round == null) return true;                                   // no combat → unrestricted
   return owner.getFlag?.("edha-content", "trigRound")?.[edhaFlagKey(name)] !== round;
 }
 async function edhaMarkTriggerUsed(owner, name, spec) {
   if (!spec.oncePerRound) return;
-  const round = game.combat?.round;
+  const round = edhaCombatRoundOf(owner);   // R-4/#28a: the OWNER's combat (must match the reader above)
   if (round == null) return;
   const tr = foundry.utils.deepClone(owner.getFlag("edha-content", "trigRound") ?? {});
   tr[edhaFlagKey(name)] = round;
@@ -11007,8 +11132,9 @@ const EDHA_SOCKET_ACTIONS = {
       const eff = [...(t.effects ?? [])].find(e => e.statuses?.has?.(p.statusId));
       let who = t;
       if (p.expire === "owner" && p.ownerUuid) { who = (await edhaResolveActorRef(p.ownerUuid)) ?? t; }
-      const ti = game.combat?.started ? edhaCombatantTurnIndex(game.combat, who) : -1;
-      if (eff && ti >= 0) await eff.setFlag("edha-content", "expireAfter", edhaNextTurnCoord(game.combat, ti));
+      const cbt = edhaInActiveCombat(who);   // R-4/#28a: the reference creature's OWN combat
+      const ti = cbt?.started ? edhaCombatantTurnIndex(cbt, who) : -1;
+      if (eff && ti >= 0) await eff.setFlag("edha-content", "expireAfter", edhaNextTurnCoord(cbt, ti));
       else if (eff) {   // relay half of the same catch-up intent (see edhaApplyTimedStatus)
         try { await eff.unsetFlag("edha-content", "expireAfter"); } catch (x) {}
         await eff.setFlag("edha-content", "timedExpire", { expire: p.expire, ownerUuid: p.ownerUuid ?? null });
@@ -13222,12 +13348,12 @@ async function edhaSovSyncStatuses(target, list) {
 // turn" lands end-of-owner-next-turn, the engine convention). Out of combat → "owner-next", lazily
 // stamped by the sweep once combat runs.
 function edhaSovTimedExpire(owner) {
-  const c = game.combat; if (!c?.started) return "owner-next";
+  const c = edhaInActiveCombat(owner); if (!c?.started) return "owner-next";   // R-4/#28a: the OWNER's combat
   const ti = edhaCombatantTurnIndex(c, owner);
   return ti >= 0 ? edhaNextTurnCoord(c, ti) : "owner-next";
 }
 async function edhaSovAddStep(owner, target, entry) {
-  const list = [...edhaSovSteps(target), { ...entry, ownerId: owner.id, castRound: game.combat?.round ?? null }];
+  const list = [...edhaSovSteps(target), { ...entry, ownerId: owner.id, castRound: edhaCombatRoundOf(owner) }];   // R-4/#28a
   const ok = await edhaSovSetSteps(target, list);
   if (ok) await edhaSovSyncStatuses(target, list);
   return ok;
@@ -13377,7 +13503,7 @@ async function edhaSovRollWatch(ctx, roll, source, config) {
         continue;
       }
       // extend-once — extend both entries one round, once, cast round only
-      if (pe.extended || (game.combat?.round ?? null) !== pe.castRound) continue;
+      if (pe.extended || edhaCombatRoundOf(owner ?? roller) !== pe.castRound) continue;   // R-4/#28a: the CASTER's combat round, matching edhaSovAddStep's stamp
       if (typeof pe.expire !== "object" || typeof me.expire !== "object") continue;   // out-of-combat cast — nothing to extend
       const bump = (a, entry) => {
         const list = edhaSovSteps(a).map(x => (x.pairId === entry.pairId && x.onPairHit === "extend-once")
@@ -13700,7 +13826,7 @@ async function edhaReviveUse(item, h) {
     let initNote = "";
     if (h.initiative !== false) {
       initNote = " GM: move its combatant onto the caster's initiative.";
-      const c = game.combat;
+      const c = edhaInActiveCombat(owner);   // R-4/#28a: the CASTER's combat holds the initiative to copy
       if (c?.started) {
         const oc = c.combatants.find(x => x.actorId === owner.id);
         const tc = c.combatants.find(x => x.tokenId === tok.id || x.actorId === target.id);
@@ -14035,7 +14161,7 @@ class EdhaCivFortifiedRegionBehavior extends foundry.data.regionBehaviors.Region
           // "until the start of its next turn": stamp the CURRENT coord — the expiry pass clears it when
           // the pointer advances past this turn (right whenever it entered on its own move; a forced-move
           // entry off-turn clears early — card-noted).
-          const combat = game.combat;
+          const combat = edhaInActiveCombat(t.actor);   // R-4/#28a: the SLOWED creature's own combat
           if (combat?.started) {
             const eff = [...(t.actor.effects ?? [])].find(e => e.statuses?.has?.("slowed"));
             if (eff) { try { await eff.setFlag("edha-content", "expireAfter", { round: combat.round, turn: combat.turn }); } catch (e) {} }
@@ -16437,15 +16563,26 @@ for (const ctx of ["attack", "item"]) {
 }
 
 /* --- Coordinated Hunt — focus-fire tracker (who attacked whom this round; GM-side) ----------------- */
-let _edhaFocusFire = { round: -1, byTarget: {} };
+let _edhaFocusFire = { byTarget: {} };   // tokenId -> { round, attackers:Set } — per target, per R-4/#28a
+/* R-4/#28a. Two changes, and the second is the one the ruling is about.
+ * (a) The round is the TARGET's own combat round on BOTH sides, so a second encounter's clock can
+ *     neither roll this ledger over nor answer for it. It is stored PER TARGET for that reason —
+ *     one shared `round` field could only ever describe one combat.
+ * (b) **No round → no ledger.** "Who attacked whom THIS ROUND" is unanswerable out of combat, and
+ *     the old `?? 0` made it answerable-and-permanent: every out-of-combat attack stayed on the
+ *     record for the rest of the session, so Coordinated Hunt's advantage never lapsed. */
 function edhaRecordFocusFire(attackerTok, targetToks) {
-  const round = game.combat?.round ?? 0;
-  if (_edhaFocusFire.round !== round) _edhaFocusFire = { round, byTarget: {} };
-  for (const tt of targetToks) (_edhaFocusFire.byTarget[tt.id] ??= new Set()).add(attackerTok.id);
+  for (const tt of targetToks) {
+    const round = edhaCombatRoundOf(tt?.actor ?? null); if (round == null) continue;
+    const e = _edhaFocusFire.byTarget[tt.id];
+    if (!e || e.round !== round) _edhaFocusFire.byTarget[tt.id] = { round, attackers: new Set([attackerTok.id]) };
+    else e.attackers.add(attackerTok.id);
+  }
 }
 function edhaFocusFireSet(targetTok) {
-  const round = game.combat?.round ?? 0;
-  return (_edhaFocusFire.round === round) ? (_edhaFocusFire.byTarget[targetTok.id] ?? new Set()) : new Set();
+  const round = edhaCombatRoundOf(targetTok?.actor ?? null); if (round == null) return new Set();
+  const e = _edhaFocusFire.byTarget[targetTok?.id];
+  return (e && e.round === round) ? e.attackers : new Set();
 }
 async function edhaFocusFireWatch(roll, source, config) {
   try {
@@ -16462,8 +16599,9 @@ for (const ctx of ["attack", "item"]) Hooks.on(`cosmere-rpg.${ctx}Roll`, edhaFoc
 // generic arm any talent can open, read by `edha-damage-bonus` rules gated `require: window`.
 function edhaStrikeWindowActive(actor) {
   const pp = actor?.getFlag?.("edha-content", "strikeWindow");
-  if (!pp || !game.combat?.started) return false;
-  return edhaTurnSeq(game.combat.round, game.combat.turn) < edhaTurnSeq(pp.round, pp.turn);
+  const now = edhaTurnSeqOf(actor);   // R-4/#28a: the WINDOW OWNER's combat clock
+  if (!pp || now == null) return false;
+  return now < edhaTurnSeq(pp.round, pp.turn);
 }
 
 /* --- Instinct on-use abilities -------------------------------------------------------------------
@@ -17925,7 +18063,7 @@ function edhaRegisterNativeEventSystem() {
     executor: async function (event) {
       try {
         const item = event.item, actor = item?.actor; if (!actor) return;
-        const c = game.combat ?? null;
+        const c = edhaInActiveCombat(actor);   // R-4/#28a: arm against the OWNER's combat
         void edhaSetEdhaFlag(actor, "moveWindow", { round: c ? Number(c.round) : null, combatId: c?.id ?? null,
           rangeFt: Number(this.rangeFt) || 10, source: item.name, note: this.note || "" });
         const what = this.note || "may move half their Speed without provoking Reactions";
@@ -19461,7 +19599,8 @@ function edhaRegisterNativeEventSystem() {
     } },
     executor: async function (event) {
       const item = event.item, actor = item?.actor; if (!actor) return;
-      const coord = game.combat?.started ? edhaNextTurnCoord(game.combat, edhaCombatantTurnIndex(game.combat, actor)) : { round: 0, turn: 0 };
+      const cbt = edhaInActiveCombat(actor);   // R-4/#28a: the OWNER's combat
+      const coord = cbt?.started ? edhaNextTurnCoord(cbt, edhaCombatantTurnIndex(cbt, actor)) : { round: 0, turn: 0 };
       await actor.setFlag("edha-content", "strikeWindow", coord).catch(() => {});
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>${this.icon ? `${this.icon} ` : ""}<strong>${item.name}</strong> (${actor.name}): ${this.note || "the window is open until the start of your next turn."}</p>` });
     },
@@ -19585,7 +19724,7 @@ function edhaRegisterNativeEventSystem() {
           // "replacing any existing X on that target" — drop YOUR matching entries, then add (Investiture).
           const drop = new Set(String(this.replaceKeys).split(",").map(s => s.trim()).filter(Boolean));
           const list = edhaSovSteps(who).filter(e => !(drop.has(e.key) && e.ownerId === owner.id));
-          list.push({ ...entry, ownerId: owner.id, castRound: game.combat?.round ?? null });
+          list.push({ ...entry, ownerId: owner.id, castRound: edhaCombatRoundOf(owner) });   // R-4/#28a (mirrors edhaSovAddStep)
           const ok = await edhaSovSetSteps(who, list);
           if (ok) await edhaSovSyncStatuses(who, list);
         } else {
@@ -19714,7 +19853,7 @@ function edhaRegisterNativeEventSystem() {
         const mod = { source: item.name, count: Math.max(1, Number(this.count) || 1) };
         if (this.skill) mod.skill = this.skill;
         if (this.attr) mod.attr = this.attr;
-        if (this.expireEndOfRound) mod.round = game.combat?.round ?? null;
+        if (this.expireEndOfRound) mod.round = edhaCombatRoundOf(owner);   // R-4/#28a: the GRANTER's combat (edhaNextTestMatches reads the BEARER's — same combat at the table)
         if (this.bindToTarget) {
           const bind = edhaUserTargetActor();
           if (bind && bind !== target) mod.targetUuid = bind.uuid;   // nothing targeted → unbound, not broken

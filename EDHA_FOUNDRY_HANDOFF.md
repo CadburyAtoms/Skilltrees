@@ -33,7 +33,122 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
-## 2026-09-06 — BENCH RUN 33 (weekend marathon run 10): **item 29's `Fault Line` re-test PASSES IN FULL on a hash-verified deploy — the ally is damaged, saves, and is knocked Prone exactly as a foe is, while the caster and the ally outside the line are untouched. The culture-item severity question is SETTLED: the slug is DROPPED, but the wizard is not broken and the fix is engine-only. And the seven-run dark-veil blocker is GONE — a bench-created dark scene works — which immediately exposed the REAL blocker: the Stalker's `Veil` marker is item-transferred and `edhaDarkVeilSweep` only looks in `actor.effects`, so it can never be found.** **1 row leaves the checklist, 1 new engine defect root-caused with a matched control, 1 severity question closed, 1 measured caveat added to ruling R-6.** Open queue **29 🤖 → 28 🤖** (counted as `grep -c '^- \[ \] 🤖'`, i.e. actual OPEN ROWS); **⚑ unchanged at 21 — no ⚑ row was touched.** **World restored to the start snapshot EXACTLY — field-level actor id-diff EMPTY across all 74 actors (resources, flags, statuses, effects, ownership, items), and every scene/token/region/drawing/template/wall/light/combat delta zero.** DOCS-ONLY — no engine, no data, no pack rebuild owed.
+## 2026-09-06 DELTA — item 28a: scene/turn-keyed watches are gated on an ACTIVE combat containing the owner (ruling R-4, half a of two) (**ENGINE-ONLY, F5** — no pack rebuild; deployed by the PM after bench run 32/33).
+
+Ben answered **R-4** on 2026-09-05 (mobile board inbox): **"go with your recommendations"** — apply
+both halves of the recommended default. **This delta is half (a) only.** Half (b) — tagging engine
+bookkeeping writes so a GM focus edit is not read as a spend — is **item 28b, a separate PR**, and
+nothing here touches focus-spend classification.
+
+**Root cause, and it is ONE read repeated across the file: `game.combat` is the CLIENT'S VIEWED
+combat.** It is not the owner's combat and not necessarily an active one — it is whatever encounter
+this browser has selected in the tracker. Two failure directions, both with shipped symptoms:
+
+- **`game.combat === null`** whenever nobody has the tracker open. Every `game.combat?.round ?? 0`
+  round key then froze at **0**, so per-round ledgers never reset (`once: round` degraded to
+  once-per-session, and Coordinated Hunt's focus-fire record became permanent); and
+  `game.combat?.started` being false meant `edhaApplyTimedStatus` never stamped an `expireAfter` —
+  **"Restrained until the end of its next turn" was immortal**.
+- **`game.combat` is the WRONG combat** with two encounters live (bench run 27). The round, turn and
+  window a watch read belonged to whichever one this client was looking at. This is the same
+  cross-combat clobber family as `edhaCombatEndGuard`, seen from the **read** side instead of the
+  write side.
+
+### The primitive
+
+**`edhaInActiveCombat(actor)` → the combat this creature is actually a combatant of, or null.** In
+`SHARED CORE`, beside `edhaTurnSeq`. Three deliberate choices, each with a stated direction:
+
+1. **Scans `game.combats`, never `game.combat`.** The viewed combat is a UI fact; combatant
+   membership is the game fact. `game.combat` survives only as a fallback for a thin world object.
+2. **`started` OR `active`.** `started` is the engine's existing bar, but a combat the GM has created
+   and not yet rolled initiative for is, at the table, combat. Round/turn *reads* still require
+   `started` — an unstarted combat has no round to key on.
+3. **Matches GENEROUSLY** — token id, actor id, **or** the combatant's resolved actor uuid, and it
+   reads both `combatants` and `turns`. Per the twin-actor family an actor-id match can over-accept a
+   sibling, and that is on purpose: **the fail-safe direction here is "in combat"**, because a wrong
+   YES leaves today's behaviour while a wrong NO silences a live talent — 28a's named risk. Every
+   uncertain answer, a throw included, lands on YES.
+
+Two thin readers ride it: **`edhaCombatRoundOf(actor)`** and **`edhaTurnSeqOf(actor)`**, each `null`
+when there is no started combat — **never `0`**, which is the value that made "once per round" mean
+"once per session".
+
+**`edhaWatchCombatGate(h, watcher, subject)`** is the scene-scope watch gate, and it draws the line
+at `scope` rather than at the watched kind, because `scope` *is* the question "does this rule react
+to somebody ELSE's event?":
+
+| `scope` | Gated? | Why |
+|---|---|---|
+| `self` | **NEVER** | The watcher IS the subject — no cross-talk exists to silence, and a self-watch on your own skill roll, token move or die step is a legitimate out-of-combat rule (the exploration/social half of the tree). Gating these is exactly the failure 28a is pinned against. |
+| `scene` | **Yes** | Requires an active combat containing the WATCHER, with the subject not provably in a *different* one. All eight scene-scoped rules shipped today are combat mechanics — `Necrotic Cascade`, `Reaper's Harvest`, `Cold Eyes` (defeat); `Coercive Pressure`, `Predatory Insight`, `Whispered Doubt` (focus-change); `Breaking Point` (damaged); `Puppeteer` (turn-start). None has an out-of-combat reading. |
+| any, with `outOfCombat: true` | **NEVER** | The authored opt-out, so a future scene rule that *does* work out of combat is one field on the document (iron rule 2b), not an engine edit. No rule sets it today. |
+
+An **unknown** subject combat ALLOWS the fire: a defeated non-combatant token is the uncertain case,
+and uncertain lands on today's behaviour.
+
+### Sites adopted — and why each one
+
+| Site | Face | Why it needed the owner's combat |
+|---|---|---|
+| `edhaDispatchWatchers` (scene branch) | scene-scope | THE cross-talk site: "every rule-owner on the scene watches everything", and "an adversary's own ability cost is taxed by enemy watches" (`Coercive Pressure` / `Whispered Doubt` are `disposition: enemy` focus-change watchers). |
+| `edhaWatchBudgetGate` | per-round ledger | The `once: round` / `round-per-target` budget key. Out of combat it still degrades to 0 (unchanged, deliberate) but no longer borrows a foreign encounter's round. |
+| `edhaTriggerAllowed` · `edhaMarkTriggerUsed` | per-round ledger | `oncePerRound` reader and writer — they must agree on WHOSE round, or the guard is keyed to a clock the owner is not on. |
+| `edhaCoordOPRAllowed` · `edhaCoordOPRMark` | per-round ledger | The Coordination once-per-round pair, same reason. |
+| `edhaDamagedWatchAnnounce` | per-round ledger | The victim's `bpHits.<round>` counter — "struck a 2nd time this round" is the victim's round. |
+| `edhaRecordFocusFire` · `edhaFocusFireSet` | per-round ledger | Restructured to store the round **per target** (one shared field can only describe one combat) and to record **nothing** without a round — `?? 0` made every out-of-combat attack permanent, so Coordinated Hunt's advantage never lapsed. |
+| `edhaAdvTestRead` · the Opportunity `advTest` stamp | per-round ledger | "advantage on your next test **this round**" — reader and writer now use the bearer's/owner's own round. |
+| `edhaNextTestMatches` (default round) | per-round ledger | Same "…this round" expiry on the generic next-test rider; the round now comes from the roller. |
+| `edha-next-test-mod`'s `expireEndOfRound` stamp | per-round ledger | The write side of the above. |
+| `edhaOncePerTurnAllowed` · `edhaOncePerTurnMark` | turn-keyed | Replaced `edhaTurnSeqNow()` with `edhaTurnSeqOf(actor)`: another combat's turn ticks were moving this actor's once-per-turn clock. |
+| `edhaApplyTimedStatus` + the socket-relay half | "next turn" expiry | **The immortal-status site.** Stamps from the reference creature's own combat; the catch-up `timedExpire` intent still records when there genuinely is no combat. |
+| the `createActiveEffect` timed stamp | "next turn" expiry | Same, for a status applied by hand or by any other path. |
+| `edhaApplyHealCut` | "next turn" expiry | "until the end of the OWNER's next turn" on the heal-cut AE. |
+| `edhaSovTimedExpire` · `edhaSovAddStep` · the `replaceKeys` branch · the extend-once compare | "next turn" expiry + round | Sovereignty's die-step ledger: the expiry coordinate and the `castRound` stamp must come from the caster, and the compare must read back the same clock. |
+| `edha-strike-window` executor · `edhaStrikeWindowActive` | turn-keyed | Window arm and read, on the window owner's clock. |
+| the designate-click writer · `edhaFindMarkGrant` · the `edha-move-window` executor · the `updateToken` move watcher | round window | `edhaRoundWindowValid` was already combat-id-scoped and correct; all four callers were handing it the *viewed* combat, so a window armed in the owner's encounter read as CLOSED. This is the silencing direction, fixed. |
+| `edhaAggroRecord` | round stamp | The aggro flag's round. |
+| `edhaCombatantOf` | turn-keyed | The fast/slow-turn reader. Every Momentum payoff was silently inert whenever the tracker showed another encounter. |
+| `edhaCaeCombatant` | cross-combat lookup | **Prefers** the actor's combat, **falls back** to the viewed one. A lookup, not a gate — its empty answer downgrades a grant to a plain chat note, so narrowing it would silence live grants. |
+| the summon `actsAfterCaster` enrolment | cross-combat write | Enrols the summon in the **caster's** combat rather than this GM client's viewed one. |
+| the Sovereignty initiative copy | cross-combat read | Reads the caster's combat for the initiative to copy onto the target. |
+| the Fortified Foundation `slowed` stamp | "next turn" expiry | The slowed creature's own combat. |
+
+### Deliberately NOT gated — so the bench can check the negative
+
+- **`edhaOrderPromptGate` and `edhaShatterPromptGate`** — both take a *key*, not an actor, and both
+  carry a **30-second wall-clock fallback written precisely so they work out of combat**. Gating them
+  would delete behaviour they were built to have. Pinned as a negative control.
+- **`edhaRoundWindowValid` itself** — a window armed out of combat carries no `combatId` and stays
+  open until consumed. Unchanged; only *which* combat its callers pass in changed.
+- **Every `scope: "self"` watch** — see the table above. Pinned in both directions.
+- **The GM "current combatant" target/dealer fallbacks** (`edhaKillerCandidates`' set-filler and
+  `edhaResolveVictim`'s dealer fallback) — these are UI conveniences keyed on what the GM is
+  *looking at*, which is the correct source for them.
+- **The `deleteCombat` / `combatTurnChange` sweeps** (`combat = combat || game.combat`) — every one
+  already receives its combat as the hook argument; the fallback is for manual invocation only.
+
+### Proof
+
+- `tests/combat-gate.test.js` — **17 cases, and every one pins BOTH directions.** A gate that
+  silenced everything would pass a one-sided suite, so each case pairs "the turn-keyed thing goes
+  quiet out of combat" with "the out-of-combat thing still fires".
+- **Mutation-verified three ways.** Dropping the self-scope exemption (the over-gating direction)
+  fails 2 cases; reverting the gate to `game.combat` fails 5; reverting the once-per-round read and
+  the timed-status stamp fails 2. Engine restored byte-identical after each.
+- `tests/watch-dispatch.test.js` now stages the combat its scene-scoped fixture always implied — it
+  had been firing scene watchers with **no combat in the world at all**, which is itself a measure of
+  how invisible this was.
+- **670 passed, 0 failed.** `node scripts/gates.js` → **RESULT: PASS** (exit 0). Neither ratchet
+  moved: lint pass 7's name-keyed allowlist is unchanged, and pass 20's idiom counts are unchanged.
+
+**Live engine behaviour — this is NOT settled until the bench confirms it.** Four 🤖 rows are queued
+under `# BENCH — Engine-wide & cross-tree`, one per symptom face plus the negative control. **R-4
+stays open** in `EDHA_RULINGS.md`: it closes only when 28b has landed AND the bench has confirmed.
+
+---
+
+## 2026-09-06 — BENCH RUN 33 (weekend marathon run 10): **item 29's `Fault Line` re-test PASSES IN FULL on a hash-verified deploy — the ally is damaged, saves, and is knocked Prone exactly as a foe is, while the caster and the ally outside the line are untouched. The culture-item severity question is SETTLED: the slug is DROPPED, but the wizard is not broken and the fix is engine-only. And the seven-run dark-veil blocker is GONE — a bench-created dark scene works — which immediately exposed the REAL blocker: the Stalker's `Veil` marker is item-transferred and `edhaDarkVeilSweep` only looks in `actor.effects`, so it can never be found.** **1 row leaves the checklist, 1 new engine defect root-caused with a matched control, 1 severity question closed, 1 measured caveat added to ruling R-6.** Open queue **29 🤖 → 28 🤖** on the checklist this run started from (counted as `grep -c '^- \[ \] 🤖'`, i.e. actual OPEN ROWS). ⚠️ **The file now reads 33**, because **item 28a (PR #188) merged while this run was writing its docs and added its own five re-test rows under `# BENCH — Engine-wide & cross-tree`** — that is the delta directly above, not a regression here. **⚑ unchanged at 21 — no ⚑ row was touched.** **World restored to the start snapshot EXACTLY — field-level actor id-diff EMPTY across all 74 actors (resources, flags, statuses, effects, ownership, items), and every scene/token/region/drawing/template/wall/light/combat delta zero.** DOCS-ONLY — no engine, no data, no pack rebuild owed.
 
 **Deploy, verified from both sides before anything was driven.** The served
 `/modules/edha-content/scripts/register-skills.js` hashes **`0051bde1d18dbc1dfd45d705511eee0b90365470178c1beccfe8a5cca4dadd97`**
@@ -169,7 +284,6 @@ removed; the Playtest Map was re-viewed. Two residual `flags.edha-content.bpHits
 `hea.value` left by the burst ledger were restored with **dotted deletes**, and the re-diff after that
 was **empty**. The throwaway CORS server was killed. `game.logOut()` ran and `Bench` is selectable on
 the join screen again.
-
 ---
 
 ## 2026-09-06 DELTA — item 29: a `kind: line` zone catches every character in it, allies included (ruling R-5) (**ENGINE-ONLY, F5** — no pack rebuild; deployed by the PM after bench run 32).

@@ -9,7 +9,9 @@
 > blocker: **the Stalker's `Veil` marker is item-transferred and `edhaDarkVeilSweep` only reads
 > `actor.effects`**, so it can never be found. **1 row left the checklist, 1 new engine defect was
 > root-caused with a matched control, 1 severity question closed, 1 measured caveat added to R-6.** Open queue
-> **29 🤖 → 28 🤖** (counted as `grep -c '^- \[ \] 🤖'`). ⚑ unchanged at **21**. No `⛔ STOP`, **no pack
+> **29 🤖 → 28 🤖** on the checklist this run started from (counted as `grep -c '^- \[ \] 🤖'`); the file now reads
+> **33** because **item 28a (PR #188) merged behind this run and added five re-test rows** — see step 1.
+> ⚑ unchanged at **21**. No `⛔ STOP`, **no pack
 > rebuild owed**, world restored to its start snapshot **exactly** (field-level actor id-diff empty across all
 > 74 actors; tokens/regions/drawings/templates/walls/lights/combats/scenes all zero delta).
 
@@ -41,13 +43,23 @@ applied and still changes live dice math**; **R-56 still blocks** the "adversary
 ⚠️ **Never re-file an unrun 🤖 row as ⚑ because you ran out of time.** Leave it 🤖, or record it BLOCKED with the
 blocker named. **Design questions go to `EDHA_RULINGS.md`, never to the checklist as a new ⚑ row.**
 
-## ✅ RE-TEST FIRST — but check whether one is actually queued
+## ✅ RE-TEST FIRST — and there IS one queued, five rows of it
 
-Run 33 found **no** fix pass waiting to be verified: its own defect (the veil lookup) has **not** been fixed
-yet, and nothing else merged behind it. **If the PM has landed a fix for the veil lookup by the time you
-start, that re-test is your step 1** and it is cheap, because run 33 wrote the whole fixture recipe down.
-Otherwise start at step 1 below. The re-test block has measured roughly twice as dense as scattered rows for
-**seven runs running** — check for one every time.
+**Item 28a (PR #188) merged behind bench run 33** and ships **ruling R-4's half (a)**: scene/turn-keyed
+watches now gate on `edhaInActiveCombat(actor)` — an ACTIVE combat containing the owner — with `scope:
+"self"` watches and the wall-clock prompt debounces deliberately **ungated**. It brings **five 🤖 rows** under
+`# BENCH — Engine-wide & cross-tree` (`## Out-of-combat scope — R-4's half (a)`): a per-round ledger no
+longer stuck on "round 0 for ever", "Restrained until the end of its next turn" actually expiring, an
+adversary's own ability cost no longer taxed by enemy watches, a two-combats-at-once row, and **a NEGATIVE
+CONTROL — a legitimately out-of-combat rule must still fire**. Run the negative control; it is the half that
+can silently break real behaviour.
+⚠️ **It is ENGINE-ONLY, so the served hash will NOT be `0051bde1…` any more: hash-verify from both sides
+before driving, and record the rows NOT-DEPLOYED rather than FAILED if it has not landed.** Do **not** read a
+focus-spend misclassification as a 28a failure — that is **28b**, a separate item still open, and R-4 stays
+open in `EDHA_RULINGS.md` until both halves are in and benched.
+The re-test block has measured roughly twice as dense as scattered rows for **seven runs running** — take it
+first, every run. (Run 33's own defect, the veil lookup, has **not** been fixed yet; if the PM lands it too,
+that re-test joins this block and is cheap, because run 33 wrote the whole fixture recipe down.)
 
 ## ❌ The defect run 33 found — for `test-pass-fixes`, root cause proven with a matched control
 
@@ -63,10 +75,11 @@ so the blast radius is the Stalker alone.
 **Two fixes: widen the lookup to `allApplicableEffects()` / `appliedEffects` (ENGINE-ONLY), or move the
 marker to an actor-level AE (REBUILD).** ⚠️ A **second, unnamed** symptom rides with it — see step 1.
 
-## Where the 28 open 🤖 rows are
+## Where the 33 open 🤖 rows are
 
 | Block | 🤖 | Note |
 |---|---|---|
+| **`BENCH — Engine-wide & cross-tree`** | 5 | ⭐ **NEW and it is the RE-TEST BLOCK — take it first.** Item 28a / PR #188 / ruling R-4 half (a). ENGINE-ONLY, so **hash-verify before driving**. |
 | **`BENCH — hygiene campaign 2026-08-10`** | 7 | pass 5.2 / 5.3 rows. Includes the ones that need **zero GM clients** — still blocked on Ben. |
 | **Character-creation wizard v2** | 6 | July deploy-state language. **Still never driven, NINE runs running.** Run 33 removed the excuse that the culture defect might bear on it: it does **not** (the expertise is literal data on the events). **Re-read against DEPLOY STATE first — several likely retire on one read.** |
 | **Bestiary sections** (W29 ×3, Goldenport, Vorsk, Adversary ability wiring) | 6 | Untouched all marathon; each needs its own adversary import + staging. |
@@ -79,6 +92,10 @@ marker to an actor-level AE (REBUILD).** ⚠️ A **second, unnamed** symptom ri
 **Item 29's Fault Line row, R-65, Job 6b and both R-64 halves are CLOSED — do not re-queue any of them.**
 
 ## Run 11 — the plan, in order
+
+### 0. **Item 28a's five out-of-combat-scope rows** — the re-test block, first, always
+See above. Hash-verify the deploy, then drive all five together — they share one staging idea (no combat, or
+two combats) and the **negative control is the row that matters most**.
 
 ### 1. **The dark-veil rows, IF the lookup fix has landed** (otherwise skip straight to 2)
 The fixture is a known quantity now and costs ~3 calls: create a scene with `environment: {darknessLevel: 1,

@@ -759,6 +759,29 @@ engine behaviour: it is not settled until the bench confirms it.**
 
 **PM:** lane B · model opus · size L — **split into 28a and 28b before dispatch** · deps R-4 ✓ · verify: pinned regressions + a bench pass. ENGINE-ONLY (F5), no pack rebuild expected.
 
+**28a DONE 2026-09-06 (PR #188) — ENGINE-ONLY (F5), no pack rebuild. The item stays OPEN: 28b is not
+built and the bench has not confirmed.** Root cause was one read repeated across the engine —
+`game.combat` is the **client's VIEWED combat**, not the owner's and not necessarily an active one,
+so every `game.combat?.round ?? 0` froze per-round ledgers at round 0 out of combat and
+`game.combat?.started` being false left `edhaApplyTimedStatus` unable to stamp an expiry (the
+immortal "Restrained until your next turn"). New generic gate **`edhaInActiveCombat(actor)`** → the
+started/active combat this creature is a combatant of, or null — scans `game.combats`, matches
+generously (token id / actor id / combatant actor uuid), and **fails toward "in combat"** because a
+wrong NO silences a live talent, which is this half's named risk. Two thin readers
+(`edhaCombatRoundOf`, `edhaTurnSeqOf`, both `null` and never `0`) and one scene-scope watch gate
+(`edhaWatchCombatGate`) ride it. **Adopted at ~30 sites**; the full adopted-vs-deliberately-ungated
+tables are in the 2026-09-06 handoff delta. The line is drawn at **`scope`**: `scope: "self"` watches
+are **never** gated (a self-watch on your own roll is a legitimate out-of-combat rule), `scope:
+"scene"` needs an active combat containing the watcher, and an authored `outOfCombat: true` opts out.
+Also deliberately ungated: the two wall-clock prompt debounces, `edhaRoundWindowValid`'s
+out-of-combat window, the GM current-combatant fallbacks, and `edhaCaeCombatant` (a lookup whose
+empty answer would silence a grant). Pinned in **`tests/combat-gate.test.js`** — 17 cases, every one
+asserting BOTH directions; mutation-verified three ways (over-gating fails 2, the `game.combat`
+revert fails 5, the round/stamp revert fails 2). 670 passed, `node scripts/gates.js` PASS.
+**28b (tagging bookkeeping writes) is untouched** — no focus-spend classification was changed — and
+**R-4 stays open** until 28b lands and the bench confirms. Five 🤖 rows queued under
+`# BENCH — Engine-wide & cross-tree`, including an explicit negative control.
+
 
 ---
 

@@ -43,6 +43,18 @@ function subject(name) {
 const watchRule = (chain) => ({ event: "edha-watch-rule", handler: {
   type: "edha-watch", watch: "defeat", scope: "scene", payloadTarget: "actor",
   vs: "none", whenOutcome: "any", whenTotal: "any", once: "no", chain } });
+
+/* R-4 / TODO #28a (2026-09-06): a `scope: "scene"` watcher now needs an ACTIVE combat containing
+ * the watcher (`edhaWatchCombatGate`), so the fixture has to say out loud what these cases always
+ * meant — a defeat cascade is a combat event, and before the gate the fixture ran with NO combat at
+ * all and still fired. Every actor in the tick shares one started combat, which is the single-table
+ * case; the gate's own two directions are pinned in tests/combat-gate.test.js. */
+function stageCombat(env, actors) {
+  env.game.combats = [{
+    id: "combat-1", started: true, active: true, round: 1, turn: 0,
+    combatants: actors.map((a) => ({ actor: a, actorId: a.id, tokenId: null })),
+  }];
+}
 const payloadRule = (execute) => ({ event: "edha-test-success", order: 0,
   handler: { type: "edha-triggered-effect", execute } });
 
@@ -94,6 +106,7 @@ test("the bench interleaving: BOTH simultaneous nested kills harvest; the cascad
   ])]);
 
   env.game.actors = [cascade, reaper];
+  stageCombat(env, [cascade, reaper, V0, V1, V2]);
   env.edhaDropRuleIndex();
   await env.edhaDispatchWatchers(evOf(V0));              // the adversary trigger drop
   await Promise.all(nested);
@@ -127,6 +140,7 @@ test("the backstop survives: an UNBOUNDED event in the same window is still drop
   ])]);
 
   env.game.actors = [cascade, reaper];
+  stageCombat(env, [cascade, reaper, V0, V1, V2]);
   env.edhaDropRuleIndex();
   await env.edhaDispatchWatchers(evOf(V0, true));
   await Promise.all(nested);
