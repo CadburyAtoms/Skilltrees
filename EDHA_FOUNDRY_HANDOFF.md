@@ -33,6 +33,121 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-05 — FIX PASS 3 (weekend marathon): **Walking Ruin's trail never dropped for a PLAYER-initiated move — a `pre*` hook stashing on the DOCUMENT while its applier is gated to the single activeGM. Fixed at the primitive: one shared `options.edhaPrevPos` stamp, two named readers, three consumers. ENGINE-ONLY → F5 / relaunch; no pack rebuild and no ⟳ Sync are owed.**
+
+The one FAIL from bench run 30 (R-34's row under `# BENCH — Destruction`). The indicator half of
+R-34 **passed** — the hazard Drawings render `visible: true` on a player client, so R-34's own
+answer stands and this was never a Drawing-visibility bug. What failed is a **cross-client engine
+defect** that has been live since the trail was written.
+
+### Bug root cause (the one FAIL row)
+
+**`preUpdateToken` runs ONLY on the client that initiates the update; the trail's applier runs only
+on the activeGM. The trail put its state where the second client could not see it.**
+
+Re-derived from **Foundry v13's own source** rather than taken on the bench's word
+(`resources/app/client/data/client-backend.mjs`, v13.351):
+
+- `Hooks.call("preUpdate<Type>", doc, changes, options, userId)` is fired from exactly one place —
+  `ClientDatabaseBackend.#preUpdateDocumentArray`, reached from `_updateDocuments`, i.e. the code
+  path of the client that **called `doc.update()`**. Every other client reaches the same update
+  through the socket response (`#onModifyDocument` → `#handleUpdateDocuments`), which fires
+  `Hooks.callAll("update<Type>", …)` and **no `pre*` hook at all**. A `pre*` hook is
+  **initiator-only**, full stop.
+- `options` **is** broadcast. The pre-hook pass ends with `Object.assign(operation, options); //
+  Hooks may have changed options`; `#buildRequest` puts that whole operation on the socket; and each
+  receiving client destructures `options` back out of the response before calling the `update<Type>`
+  hooks. (Corollary: a stamped value must be JSON-serialisable — it crosses a socket.)
+
+So the old code — `tokenDoc._edhaPrevCenter = …` in a `preUpdateToken` hook (was :11215), read by an
+`updateToken` applier gated to `game.users.activeGM.isSelf` (was :11221) — put the two halves on
+**different clients** for every player-driven move. The GM's copy of the TokenDocument never carried
+the property, `prev` was null, and the applier returned in silence: no Region, no Drawing, no
+notification, no console error. Exactly the bench's matched pair (player move → 0 Regions;
+activeGM move → 3 Regions + 3 Drawings, `_edhaPrevCenter` populated at each step).
+
+Two smaller things fell out of the same line. `tokenDoc.object?.center` is *also* client-local in a
+second way — `.object` is null for a token on a scene nobody is currently viewing, so the stamp read
+`{x: null, y: null}` there and the drop bailed the same silent way. And the applier asked "was this a
+move?" twice (`"x" in changes` **and** the stash), which is one question with two answers.
+
+### One bug or a family? — the sweep says ONE, and here is the whole table
+
+Every `pre*` hook in the engine, classified by whether it hands state to a later applier and where
+it puts it. (Sweep: `Hooks.on("pre…")` — 15 sites — crossed with every `._edha*` property write —
+23 sites, of which exactly one was on a document.)
+
+| Hook (pre) | Stashes for a later applier? | Where | Applier gated to one activeGM? | Verdict |
+|---|---|---|---|---|
+| `preUpdateToken` — trail (was :11215) | yes | **`tokenDoc._edhaPrevCenter`** (document) | **yes** (:11221) | ❌ **SAME DEFECT — fixed** |
+| `preUpdateToken` — token-move announce (was :14046) | yes | `options.edhaPrevPos` | yes | ✅ safe — options are broadcast |
+| `preUpdateActor` — focus stamp (:3994) | yes | `options.edhaFoc` | yes | ✅ safe — options |
+| `preUpdateActor` — HP live→0 stamp (:13104) | yes | `options.edhaHea` | yes | ✅ safe — options |
+| `preUpdateActor` — Order Investiture stamp (:15224) | yes | `options.edhaOrderInv` | yes | ✅ safe — options |
+| `preUpdateToken` — `edha-move-veto` (:4113) | no — vetoes inline (`return false`) | — | n/a | ✅ safe — a veto BELONGS on the initiator |
+| `preUpdateToken` — Dense Tissue forced-move immunity (:11553) | no — vetoes inline | — | n/a | ✅ safe |
+| `preUpdateToken` — Compelled movement (:14003) | no — vetoes inline | — | n/a | ✅ safe |
+| `preUpdateActor` — `edha-hp-floor` (:6150) | no — rewrites `changes` inline | — | n/a | ✅ safe |
+| `preCreateItem` — talent budget (:7204) | no — vetoes inline | — | n/a | ✅ safe |
+| `preCreateCombatant` — actorless token (:5813) | no — vetoes inline | — | n/a | ✅ safe |
+| `preCreateActiveEffect` — `edha-focus-guard` (:6052) | no — vetoes inline | — | n/a | ✅ safe |
+| `preCreateActor` ×2 — currency seed (:279), PC sight (:16502) | no — `updateSource` inline | — | n/a | ✅ safe |
+| `preCreateToken` — token renumber (:10008) | no — `updateSource` inline | — | n/a | ✅ safe |
+
+The remaining 22 `._edha*` writes are all on `roll.options` (same-client roll pipeline), on
+`globalThis`, on an `app`, or on a patched prototype — none crosses a client boundary. **So the
+bench's "ONE bug, not a family" holds — but it is now the conclusion of an exhaustive sweep rather
+than of the one sibling somebody happened to notice.** The two same-shape appliers that were already
+correct (`edhaAnnounceTokenMove`, Order's move-violation watch) are the reason the fix pattern was
+already in the file.
+
+Also checked and cleared while in there: **Pinpoint Charge's terrain-follow** (:11239 area) is
+activeGM-gated but stashes nothing — it reads the live document — and `x`/`y` **are** present in the
+change object on receiving clients (`#handleUpdateDocuments` iterates `response.result`, the server's
+echo of the submitted changes), so it is cross-client sound as written.
+
+### New REUSABLE primitives — the "SHARED TOKEN-MOVE STAMP" block
+
+The stamp existed, but it lived inside the trample announcer's section where it read as that
+feature's private stash — which is precisely how a second author came to roll their own. It is now
+one declared, documented block near the move veto, and **nothing reads `options.edhaPrevPos` raw any
+more**:
+
+- **`Hooks.on("preUpdateToken")` → `options.edhaPrevPos = {x, y}`** — the ONE prior-position stamp
+  (top-left, the document's own frame). Its header carries the Foundry-source derivation above, so
+  the next author meets the rule where they would otherwise repeat the bug.
+- **`edhaPrevTokenPos(options)`** → the prior top-left, or `null` when this update was not a move.
+  Reach for it when you need the segment the token travelled.
+- **`edhaPrevTokenCenter(tokenDoc, options)`** → the prior **centre**, or `null` — the frame hazard
+  Regions and Drawings are placed in. Converts off the token's **own scene** grid
+  (`tokenDoc.parent`), not `canvas`, so a move on an unviewed scene still resolves.
+
+Three consumers now share them: Walking Ruin's trail (`edha-place-hazard` mode `trail`), the H8
+`token-move` announcer (Unstoppable's trample), and Order's "moved from its space" violation watch.
+Indexed in `ENGINE_INDEX.md`.
+
+### The pinned test — `tests/pre-hook-client-split.test.js` (8 cases)
+
+Models **two clients honestly**: two separate TokenDocument objects for the same token, with the
+same `options` object handed from one to the other — that object *is* the socket. Every registered
+`preUpdateToken` hook fires on the player client, every registered `updateToken` hook on the
+activeGM client, so nothing depends on knowing which block owns the stamp. Cases: the player-move
+drop (position, scene, radius), the rule-driven formula/type/colour, the GM-moves-it-themselves
+control, unarmed, non-move, second-GM-client, plus two **family gates** — no `<document>._edha* =`
+stash may return, and the stamp stays one write read through one helper.
+
+**Mutation-verified, not read:** restoring the document stash makes the player-move case fail with
+0 drops and trips the family gate, **while the activeGM control still passes** — i.e. the headless
+suite now reproduces the bench's matched pair exactly. Restored, all 8 pass; full suite 600 → 608.
+
+### Deploy class
+
+**ENGINE-ONLY.** `module-src/scripts/register-skills.js` + `tests/` + docs. No authored data, no
+`data/*.json`, no pack rebuild, no ⟳ Sync. The PM pushes it with `module-src-sync.js push`; Ben
+needs an F5 (or a relaunch) and nothing else. One 🤖 re-test row is queued for bench run 31.
+
+---
+
 ## 2026-09-05 DELTA — item 22: one atlas key dialect, and the unbuilt Radiant orders parked (DATA-only — PACKS BYTE-IDENTICAL, so **no pack rebuild and no ⟳ Sync are owed**).
 
 Two things that had grown together. (1) `data/cosmere.json` was 375 rows, but **225 of them were

@@ -39,7 +39,22 @@ defaults. R-43 is still applied and still changes live dice math.
 ⚠️ **Never re-file an unrun 🤖 row as ⚑ because you ran out of time.** Leave it 🤖, or record it BLOCKED with the
 blocker named. **Design questions go to `EDHA_RULINGS.md`, never to the checklist as a new ⚑ row.**
 
-## ⛔ The one thing that is NOT a bench row — send it to `test-pass-fixes` first
+## ✅ RE-TEST THIS FIRST — run 30's one FAIL is fixed (fix pass 3, 2026-09-05)
+
+**Walking Ruin's trail is fixed and is waiting on you.** `test-pass-fixes` took the row below, confirmed the
+diagnosis against Foundry's own `client-backend.mjs`, swept all 15 `pre*` hooks (**no second instance** — every
+other one stamps `options` or vetoes inline), and moved the trail onto the shared **`options.edhaPrevPos`**
+stamp behind two new helpers (`edhaPrevTokenPos` / `edhaPrevTokenCenter`). **ENGINE-ONLY — F5 or relaunch is
+enough, no pack rebuild, no ⟳ Sync.** Confirm the served-engine hash first as usual, then drive the new
+checklist row under `# BENCH — Destruction`: **arm Walking Ruin, move three squares from the PLAYER's own
+client, expect three ruin patches** (three `Bench — Destruction — Dangerous Terrain` Regions + their 🏚️
+Drawings at the vacated centres), then re-run the same three squares as the activeGM as the matched control.
+Watch that a second connected GM client does not double-drop. Detail: the `2026-09-05 — FIX PASS 3` handoff
+delta.
+
+The original diagnosis is kept below as the record.
+
+## ⛔ (RESOLVED by fix pass 3) The one thing that was NOT a bench row
 
 **Walking Ruin's trail never drops for a player-initiated move.** Root cause is proven, not guessed:
 `register-skills.js:11215` stashes the prior centre on **`tokenDoc._edhaPrevCenter`** in a **`preUpdateToken`**
