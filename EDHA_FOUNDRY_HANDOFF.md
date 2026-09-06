@@ -33,6 +33,35 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-06 — R-22 (item 60): build guard rejects any `min ≠ max` consume entry (**TOOLING-only** — no engine change, no data change, no pack rebuild)
+
+`edhaConsumeList` (register-skills.js) reads `value.min` as both the deduct amount AND the refund
+amount and never looks at `value.max` — so a talent or adversary ability that ever shipped
+`min ≠ max` would let a real spend of `max` refund only `min`, silently, because nothing in
+Foundry errors on it. Ben (R-22, 2026-09-06): close the door with a build guard, not an engine
+change — (a).
+
+- **Traced the only two producers of a `consume` entry before deciding what to scan.**
+  `foundry-build.js`'s `parseCost()` (the sole builder of generated-talent AND adversary-ability
+  consume entries, from "N Investiture"/"N Focus" cost text) unconditionally emits
+  `{min:n, max:n}` — it cannot diverge. The one place a consume entry carries an INDEPENDENTLY
+  settable `min`/`max` is `data/authored/*.json`'s `activation.consume[].value` (Foundry-extracted
+  or hand-edited), which `applyAuthorable()` (edha-pack-io.js) writes into the compiled pack's
+  `system.activation` wholesale. So the authored overlay is the only real risk surface; adversary
+  abilities are re-derived from their text grammar and scanned too, rather than assumed safe.
+- **`scripts/lib/consume-guard.js`** (`checkConsumeEntries`, pure) does the scan/decide; **pass 23**
+  in `scripts/lint-refs.js` feeds it every authored-overlay talent's consume list plus every
+  adversary ability's re-derived one, and fails the build naming the file/talent/resource/min/max
+  on any mismatch. Floor pinned at 200+ entries scanned (measured today: 235 — 181 talent + 54
+  adversary) so a scan that silently finds nothing is itself a failure.
+- **Mutation-verified.** Flipping one real entry's `max` (Black's Cruel Step, 1 Investiture) to
+  6 while leaving `min` at 1 makes `lint-refs.js` fail with `pass 23: data/authored/leyline-black.json
+  (Cruel Step) consume[0] resource "inv" has min 1 ≠ max 6 …`; restoring the file returns it to
+  clean. Pinned permanently in `tests/consume-guard.test.js` (unit cases on the pure function, a
+  fixture-file mutation spawning the real `lint-refs.js` process, and a real-repo-data floor
+  check) — 5 new cases, all passing, 832/832 total.
+- No 🤖 rows: this is a repo-side build-time gate, nothing to bench.
+
 ## 2026-09-06 — ITEM 57: the adversary data batch — R-29 / R-40 / R-46 (+ R-48 default) / R-47 / R-74 (**REBUILD + ⟳ Sync** — `data/adversaries.json` + one lint tightening; the adversaries pack rebuilds, then "⟳ Sync Adversaries from Pack"; NO engine change)
 
 Five of Ben's 2026-09-06 rulings land on one file, one themed commit each (PR #226). Proven by a
@@ -95,6 +124,7 @@ Collected / Surefooted, a Cinderhound's Cinder Coat, Predictive Ward's braced �
   offered as "(Hardy — suppress)", the click leaves the talent's effect present-but-disabled, and
   the negative: no delete-shaped button exists for it; the Chaos residuals row (Dispel Omen clears
   marker + ledger row) is annotated. R-73 stays in `EDHA_RULINGS.md` §I until the bench confirms.
+
 ## 2026-09-06 — R-27 (item 52): Battle Fever's rally stack is SPENT on the next test, once (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
 
 Ben ruled (a): **the card is canon** — "gain +1 to your next test (max = Rank), resets at the start
@@ -122,6 +152,7 @@ on six consecutive rolls). PR #223.
 - **🤖 bench:** checklist Red rows **52-1** (three hits → `3[Rally]` once, then nothing; cap at
   rank) and **52-2** (negative control — unspent stack clears at turn start; a cancelled dialog
   leaves the stack intact for the next completed test).
+
 ## 2026-09-06 — R-70 (item 50): every cost row of the system's consume dialog opens TICKED — the one sanctioned system-dialog wrapper (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
 
 **What.** Ben's R-70 (b): a "Cost: 1 Investiture, 1 Focus" card (the Stitchmother's *Reknit Form*,
@@ -152,6 +183,7 @@ Continue charges Investiture AND Focus; a single-cost talent's dialog is unchang
 one charge) as the negative control.
 
 ---
+
 ## 2026-09-06 — ITEM 49: the next-test modifier slot is a **LIST** (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
 
 Ben's R-15(b), verbatim: *"that needs to be a list not one slot."* `flags.edha-content.nextTestMod`
