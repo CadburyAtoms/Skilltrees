@@ -2832,7 +2832,7 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
     if (!rangeFt) return;
     const otok = edhaCasterToken(actor);
     const inRange = otok ? edhaTokensWithin(otok, rangeFt) : [];
-    const ok = Array.from(game.user?.targets ?? []).some(t => t.actor && inRange.some(x => x.id === t.id));
+    const ok = edhaUserTargetTokens().some(t => t.actor && inRange.some(x => x.id === t.id));
     if (!ok) {
       ui.notifications?.warn(`Edha: ${item.name} — target a creature within ${rangeFt} ft (nothing spent).`);
       return false;
@@ -4948,7 +4948,7 @@ function edhaFindMarkGrant(actor) {
   try {
     const rTok = edhaCasterToken(actor); if (!rTok) return null;
     const rDisp = rTok.document?.disposition ?? 1;
-    const targeted = new Set([...(game.user?.targets ?? [])].map(t => t.document?.uuid).filter(Boolean));
+    const targeted = new Set(edhaUserTargetTokens().map(t => t.document?.uuid).filter(Boolean));
     if (!targeted.size) return null;
     for (const t of canvas?.tokens?.placeables ?? []) {
       const a = t.actor; if (!a || a.uuid === actor.uuid || t.id === rTok.id) continue;
@@ -10188,8 +10188,8 @@ async function edhaSenseRevealOnDamage(victim, list) {
  * Conflating them is a bug this file has shipped more than once.
  * ⚠️ Card state persists: edhaMarkCardResolved / edhaMessageIdOf stamp a clicked button so a
  * reload (or a second player) cannot resolve the same card twice (REUSABLE, Ben pass 3 07-12).
- * Owns — targeting: edhaUserTargetToken · edhaUserTargetActor · edhaResolveVictim ·
- *   edhaEffectTargets.
+ * Owns — targeting: edhaUserTargetTokens · edhaUserTargetToken · edhaUserTargetActor ·
+ *   edhaResolveVictim · edhaEffectTargets.
  * Owns — payload + cards: edhaToggleStatus · edhaRollCard · edhaRunTriggerEffect ·
  *   edhaFireTrigger · edhaPostTriggerCard · edhaDeductCost · edhaTriggerCardClick.
  * Owns — card-state persistence: edhaMarkCardResolved · edhaMessageIdOf.
@@ -10198,9 +10198,23 @@ async function edhaSenseRevealOnDamage(victim, list) {
 /* R-64 (hygiene campaign 2026-08-10, ENGINE PASS 5.2). The single reader every inline
  * `Array.from(game.user?.targets ?? [])[0]` site used to hand-roll (four spellings: Array.from vs
  * spread, `?? null` vs bare, wanting the TOKEN vs its `.actor`) — one place now, so a future
- * Foundry API change (User#targets is already a Set, not an array) breaks one line. */
+ * Foundry API change (User#targets is already a Set, not an array) breaks one line.
+ *
+ * Item 14 (2026-09-06) finished the same job for the PLURAL shape. Nine sites still wanted the
+ * WHOLE target list — `Array.from(game.user?.targets ?? [])` / `[...(game.user?.targets ?? [])]`,
+ * then their own `.filter`/`.find`/`.some`/`.slice` — so they hand-rolled the read instead of the
+ * pick. They all call edhaUserTargetTokens now, which makes this function's body the ONE place in
+ * the engine that touches `game.user.targets` at all (edhaUserTargetToken is a `[0]` of it), so
+ * lint-refs pass 20's `userTargets` ratchet FLOORS AT 1, not 0 — a reader cannot read through
+ * itself. What the reader guarantees, and every hand-rolled copy also happened to: a fresh Array
+ * every call, never the live Set, so a caller may filter/slice/sort it and a mid-loop retarget
+ * (edhaSetUserTargets releasing the old set) cannot mutate it underfoot; and `[]`, never
+ * undefined, when there is no `game.user` at all (pre-ready, or a hook firing on a headless run). */
+function edhaUserTargetTokens() {
+  return Array.from(game.user?.targets ?? []);
+}
 function edhaUserTargetToken() {
-  return Array.from(game.user?.targets ?? [])[0] ?? null;
+  return edhaUserTargetTokens()[0] ?? null;
 }
 function edhaUserTargetActor() {
   return edhaUserTargetToken()?.actor ?? null;
@@ -10263,7 +10277,7 @@ function edhaEffectTargets(owner, eff, ctx) {
       return out;
     }
     default: { // "prompt" → your current targets
-      const toks = Array.from(game.user?.targets ?? []).filter(t => t.actor);
+      const toks = edhaUserTargetTokens().filter(t => t.actor);
       const max = Number(eff.maxTargets) || 0;
       if (max <= 0) return toks.map(t => t.actor);   // the pre-2bU behaviour, untouched
       /* MULTI-TARGET mode (2bU — Investiture of Command): filter the user's targets by side, range
@@ -10539,7 +10553,7 @@ function edhaMessageIdOf(btn) { return btn?.closest?.("[data-message-id]")?.data
 Hooks.on("cosmere-rpg.preUseItem", (item) => {
   try {
     if (!edhaIsTalent(item) || !edhaRuleOf(item, "edha-single-target")) return;
-    const targets = Array.from(game.user?.targets ?? []);
+    const targets = edhaUserTargetTokens();
     if (targets.length <= 1) return;
     const btns = targets.map(t => `<button type="button" class="edha-pick-target-btn" data-edha-item="${item.uuid}" data-edha-token="${t.id}">${t.name}</button>`).join(" ");
     ChatMessage.create({ whisper: [game.user.id], speaker: ChatMessage.getSpeaker({ actor: item.actor }),
@@ -10554,7 +10568,7 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
 // through here so the next core rename breaks ONE line.
 function edhaSetUserTargets(tokens) {
   const list = (tokens || []).filter(t => typeof t?.setTarget === "function");
-  if (!list.length) { for (const t of Array.from(game.user?.targets ?? [])) t.setTarget(false, { releaseOthers: false }); return; }
+  if (!list.length) { for (const t of edhaUserTargetTokens()) t.setTarget(false, { releaseOthers: false }); return; }
   list.forEach((t, i) => t.setTarget(true, { releaseOthers: i === 0 }));
 }
 async function edhaPickTargetClick(ev) {
@@ -13615,7 +13629,7 @@ function edhaSovStepOverride(item, base) {
 function edhaSovTargets(owner) {
   const otok = edhaCasterToken(owner);
   const disp = otok?.document?.disposition ?? 1;
-  const toks = Array.from(game.user?.targets ?? []);
+  const toks = edhaUserTargetTokens();
   return {
     allies: toks.filter(t => t.actor && t.actor !== owner && (t.document?.disposition ?? 1) === disp),
     enemies: toks.filter(t => t.actor && (t.document?.disposition ?? 1) !== disp),
@@ -14906,7 +14920,7 @@ async function edhaRedirectClick(ev) {
     let left = Number(btn.dataset.edhaLeft) || 0;
     if (left <= 0) { btn.disabled = true; return; }
     const otok = edhaCasterToken(owner); const disp = otok?.document?.disposition ?? 1;
-    const at = Array.from(game.user?.targets ?? []).find(t => t.actor && t.actor !== owner
+    const at = edhaUserTargetTokens().find(t => t.actor && t.actor !== owner
       && (t.document?.disposition ?? 1) === disp
       && (t.actor.system?.resources?.hea?.value ?? 0) > 0
       && edhaDeathInRange(owner, t, range));
@@ -19784,7 +19798,7 @@ function edhaRegisterNativeEventSystem() {
         const max = Number(this.maxTargets) || 0;
         const ft = this.rangeColor ? edhaAttuneFtColor(actor, this.rangeColor) : 0;
         const inRange = ft > 0 && otok ? edhaTokensWithin(otok, ft) : null;
-        let picked = Array.from(game.user?.targets ?? []).filter(t => t.actor && t.actor !== actor
+        let picked = edhaUserTargetTokens().filter(t => t.actor && t.actor !== actor
           && Number.isFinite(t.document?.disposition) && Number.isFinite(disp) && t.document.disposition === disp
           && (t.actor.system?.resources?.hea?.value ?? 0) > 0
           && (!inRange || inRange.some(x => x.id === t.id)));
@@ -20056,7 +20070,7 @@ function edhaRegisterNativeEventSystem() {
       else if (this.target === "victim") picked = [edhaResolveVictim(event)].filter(Boolean);
       else {
         const otok = edhaCasterToken(owner);
-        picked = Array.from(game.user?.targets ?? [])
+        picked = edhaUserTargetTokens()
           .filter(t => t.actor && (!rangeFt || (otok && edhaTokensWithin(otok, rangeFt).some(x => x.id === t.id))))
           .slice(0, maxT)
           .map(t => t.actor);

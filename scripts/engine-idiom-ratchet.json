@@ -12,6 +12,8 @@
   "",
   "DO NOT bump a count to make the gate pass. A grown count is the violation the gate exists to catch; migrate the site onto its canonical helper instead.",
   "",
+  "userTargets FLOORS AT 1, not 0 (item 14, 2026-09-06). The idiom's canonical helper is a reader — edhaUserTargetTokens() — and a reader cannot read through itself, so its own one-line body is the last remaining occurrence and is the point of the migration rather than a violation of it. All nine call sites (the single-target preUseItem gate, edhaSetUserTargets' clear-all branch, edhaEffectTargets' \"prompt\" branch, edhaSovTargets, edhaFindMarkGrant, edhaRedirectClick, the pre-use range guard, the adv-attack to:\"targets\" fan-out, and the next-test-mod multi-target fan-out) now call it. A count of 2 means someone hand-rolled the read again; migrate it, do not raise the count.",
+  "",
   "dispoFailOpen was ADDED 2026-08-10 (hygiene campaign wave 6), separately from the eight keys above: those eight were all measured on the SAME day this file was first frozen, but dispoFailOpen's originalCount below is wave 6's own landing measurement, not a retroactive part of that first freeze. It tracks the disposition-default fail-open idiom pass 5.2 (R-63) fixed in the shared helpers plus 16 named sites, leaving an explicit ~74-site backlog — this entry ratchets that backlog so it can only shrink from here, the same way the other eight ratchet theirs."
  ],
  "frozen": "2026-08-10",
@@ -28,7 +30,7 @@
   "dispoFailOpen": 76
  },
  "counts": {
-  "userTargets": 10,
+  "userTargets": 1,
   "casterToken": 1,
   "rollFold": 0,
   "renderChatHook": 2,

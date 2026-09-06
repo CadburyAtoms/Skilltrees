@@ -350,7 +350,7 @@ sites in `register-skills.js`, lowering `counts.resourceWrite` as they migrate.
 
 ---
 
-## 14. [ ] Migrate userTargets' remaining 10 sites onto the target-reader primitive
+## 14. [x] Migrate userTargets' remaining 10 sites onto the target-reader primitive (2026-09-06, PR #193)
 
 **Why:** `scripts/engine-idiom-ratchet.json`'s `userTargets` key started at 63, is down to 10 —
 10 sites still read `game.user.targets` directly instead of going through the target-reader
@@ -359,7 +359,41 @@ primitive (`edhaEffectTargets` / the upcoming reader named in the ratchet's comm
 **What to do:** work through the remaining 10 `game\.user\??\.targets` sites in
 `register-skills.js`, lowering `counts.userTargets` as they migrate.
 
-**Done when:** `counts.userTargets` reaches 0.
+**Done when:** ~~`counts.userTargets` reaches 0.~~ **Corrected on measurement (PM-D1):
+`counts.userTargets` reaches 1.** The idiom's canonical helper is a *reader*, and a reader cannot
+read through itself — the last occurrence is the reader's own one-line body, which is the point of
+the migration rather than a violation of it. 1 is the floor; 2 means someone hand-rolled the read
+again. ✅ **Done: 10 → 1, nine of nine call sites migrated, none left direct.**
+
+**What the ten actually were.** All ten (and all 53 retired before them) turned out to be the same
+two shapes — the FIRST target, which R-64 already had a reader for, and the WHOLE list, which had
+none. So this pass built the plural sibling **`edhaUserTargetTokens()`** (a fresh `Array` snapshot;
+`[]`, never `undefined`, with no targets or no `game.user`) next to `edhaUserTargetToken()`, and
+`edhaUserTargetToken` now delegates to it. Two standing exemptions in `ENGINE_INDEX.md` were
+predictions that measurement overturned and are deleted there: that the survivors were
+"genuine ALL-targets reads that have no first-target shape to migrate to", and that sites inside
+`edhaEffectTargets` "may still read `game.user?.targets` directly".
+
+| # | Site | Verdict |
+|---|---|---|
+| 1 | `edhaUserTargetTokens()` — the reader's own body | **stays** — the reader cannot read through itself; this is the ratchet's floor of 1 |
+| 2 | `edhaUserTargetToken()` | migrated (now `edhaUserTargetTokens()[0] ?? null`) |
+| 3 | `edhaEffectTargets` — the `"prompt"` branch | migrated (the "canonical consumer" exemption was unnecessary) |
+| 4 | `edhaSovTargets` — the ally/enemy split | migrated |
+| 5 | `edhaSetUserTargets` — the clear-all branch (releases every current target) | migrated |
+| 6 | The single-target `preUseItem` gate (`edha-single-target`) | migrated |
+| 7 | `edhaFindMarkGrant` — is the marked token among my targets | migrated |
+| 8 | `edhaRedirectClick` — find a willing in-range ally | migrated |
+| 9 | The pre-use range guard (`rangeFt` "nothing spent" veto) | migrated |
+| 10 | The adv-attack `to: "targets"` fan-out + the next-test-mod multi-target fan-out | migrated (both) |
+
+**Proof:** pure refactor — `edhaUserTargetTokens()` is character-for-character what each site
+inlined, so no behavioural test can tell the versions apart. The mutation-sensitive pin is the
+ratchet itself: re-inlining the direct read in `edhaSovTargets` fails `lint-refs.js` pass 20
+(`grew from 1 to 2`) **and** the last case in `tests/user-targets-reader.test.js`; restoring makes
+both green. That file also snapshot-pins the reader's contract and two migrated sites
+(`edhaSovTargets`, `edhaSetUserTargets`) so a future edit to the reader goes red rather than
+silent. ENGINE-ONLY (F5) — no pack rebuild.
 
 ---
 
