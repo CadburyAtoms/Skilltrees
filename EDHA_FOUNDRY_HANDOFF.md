@@ -33,6 +33,142 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-06 — BENCH RUN 34 (weekend marathon, run 11): **R-4's live behaviour is confirmed on five of its eight faces and R-4 does NOT close yet**; the **Stalker's veil auto-toggles for the first time ever** and run 33's unexplained second symptom is closed with the ranked hypothesis it predicted; **2bS-11 retires in full**; the **ten cultures register at `init` and a culture prerequisite finally discriminates**. **8 rows off the checklist, 0 engine defects found, 2 new rulings (R-74, R-75), world diff EMPTY.** (**DOCS-ONLY** — no engine or data change, no pack rebuild owed.)
+
+Joined as `Bench` on a **full page reload** (the culture half needs `init` to re-run). Deploy verified
+by hash from both sides before anything was driven: served `register-skills.js`, CRLF-normalised,
+SHA-256 **`f268e9904f0a07c5f48b5a0c52518501765b4ab5118040f21241be31b0f8c065`**, byte-identical to
+`git rev-parse HEAD:module-src/scripts/register-skills.js`, and the original `<script>` entry's
+`decodedBodySize` (1 576 493) matched the repo file exactly — no cached copy. `edha.darkVeilSweep`
+and `edha.allEffects` present on the console API, confirming fix pass 5 is the live build.
+Clients connected throughout: `["Bench","Gamemaster"]`.
+
+### 1. R-4, both halves — FIVE of eight rows retired, and every one measured in BOTH directions
+
+The re-test-block-first habit paid for the eighth run running. **No row rests on silence alone**: each
+"it must go quiet" measurement is paired with a positive control in the *same round*, because a gate
+that silenced everything would pass a one-sided run exactly as it would pass a one-sided test suite.
+
+| Row | Verdict | Evidence |
+|---|---|---|
+| **Per-round ledger no longer runs on "round 0 for ever" (28a)** | **PASS** | Subject: the shipped `edha-gm-cue` `hp-below` rule on a fresh pack **Reedling** (`Runners, Not Soldiers`, `atFraction 0.5`, `oncePerRound` by default), driven through `actor.applyDamage` — the cue sweep rides the applyDamage post-pass, not a raw HP write. **Out of combat: fired on BOTH crossings and `flags.edha-content.trigRound` stayed ABSENT** — nothing written, so the guard cannot lock the talent for the session, which is precisely the old defect. **In combat round 2:** fired once, wrote `{"cue:Runners, Not Soldiers:hp-below:0_5:0:1": 2}`, and the second crossing in the same round was **refused**. `nextRound()` → fired again, key advanced to 3. |
+| **"Restrained until the end of its next turn" actually expires (28a)** | **PASS** | Consumer: Extract Thought's `noreactions` rider (`statusExpire: "owner"`), landed by a Deception 18 vs Spiritual 14. **Out of combat the AE carried the INTENT** `flags.edha-content.timedExpire = {expire:"owner", ownerUuid:"Actor.2vSISUi8NZ66KM9B"}` (= `Bench — Black`, verified) and **no** `expireAfter`. Putting both in a started combat and taking one turn change **stamped the coordinate** `expireAfter {round:1, turn:1}` — turn index 1 is Black's own slot in `combat.turns`. Advancing past it **deleted the effect and cleared the status**. In-combat direction also proven: a second application while the combat was already running stamped `expireAfter {round:2, turn:1}` **directly**, with no intent flag. |
+| **An adversary's own ability cost is not taxed by enemy watches out of combat (28a)** | **PASS** | `Bench — Black` (Coercive Pressure + Whispered Doubt, both `scope: scene`, `disposition: enemy`, `rangeColor: black`) placed 10 ft from a hostile target. **Out of combat**, the enemy made a REAL spend — a focus-consuming talent through the system's own `activation.consume`, focus 4 → 2 — and produced **exactly one** chat message, its own card: **no 👁️ watcher, no extra focus, no disadvantage**. **In a started combat, the identical spend** gave 4 → **1** (cost 2 + Whispered Doubt's extra 1) plus Coercive Pressure's disadvantage card and its `nextTestMod` flag. Same actors, same talent, same range — only the combat changed. |
+| **Two combats at once: a watch reads its OWN combat (28a)** | **PASS**, three discriminating measurements | Combat A (Black + enemy + Reedling) at round 3; combat B (`Bench — Red` + a second enemy) at **round 9**, and **B selected in the tracker** (`game.combat.round === 9` throughout). **(i)** The Reedling's once-per-round cue in A stayed **refused** — B's round-9 clock did not re-open it, and `trigRound` stayed 3. **(ii)** The enemy **in combat B** made the identical real focus spend, 10 ft from Black, hostile disposition — and **Black, who is in combat A, did not fire**: one card, no extra focus, no `nextTestMod`. The matched control is the row above, where that same spend fired both watchers twice. **(iii)** Advancing **A** to round 4 re-opened the cue and it fired; B's round never moved and never mattered. |
+| **A GM focus edit is NOT a spend (28b)** | **PASS**, both surfaces | In a started combat, at a **fresh round** so the `once: round-per-target` budget could not be the cause of any silence. **Typed:** a plain optionless `actor.update` (what the sheet form submit issues) took focus 4 → 2 — **zero** chat messages, no extra focus. **Bar-dragged:** the real **Token HUD** `bar2` input (`resources.foc`) committed 2 → 1 — **zero** chat messages. Then, **in that same round**, the enemy made a real spend and **both watchers fired** (4 → 1, Coercive Pressure's card + `nextTestMod`, Whispered Doubt's 🧠 card). The silence was 28b's classification, not the budget. |
+
+**The three that remain, and why** — all narrowed in place on the checklist rather than left as they were:
+
+- **NEGATIVE CONTROL, part (c) only.** ✅ **(a) PASSES**: with no combat containing it, Black's
+  `scope: self` `skill-roll` watch fired on its own Deception roll and posted its card — the gate does
+  not silence the exploration/social half, which is 28a's named risk. ✅ **(b) PASSES**:
+  `Bench — Chaos`'s `Shatter Focus` prompt offered with **neither** owner nor foe in any combat, and
+  the immediate repeat was debounced (0 further prompts). ⚠️ **(c) undriven** — a movement/designate
+  window armed out of combat, consumed later. Left 🤖 with its staging written down.
+- **A REAL spend still taxes — the `costs:`-RULE half only.** The `activation.consume` half passed
+  twice (above). The engine-driven half needs a `costs:`-carrying rule on the **spender**, and all six
+  shipped ones (`Beacon of Stability`, `Pillar of Order`, `Shared Conviction`, `Voice of Authority`,
+  `Puppeteer`, `Pack Sense`) are PC talents.
+- **The adversary-ability / Investiture-Edict row.** The *contrast* 28b exists for is proven — wire the
+  cost and it counts, type it and it does not. But the literal row has **no subject**: see §4.
+
+**R-4 therefore STAYS OPEN in `EDHA_RULINGS.md`. It may NOT move to §K on this run.**
+
+### 2. Fix pass 5's veil rows — the Stalker's veil auto-toggles, and run 33's ghost is laid
+
+Fixture: fresh pack import of the Stalker (`l924euoyx3pYFk2T`) into `Edha Bench`; bench-created scene
+`BENCH — Dark Veil` (darkness 1, `globalLight.enabled: false`, `tokenVision: true`), **viewed, never
+activated**, deleted at the end. **No hand-made actor-level control anywhere in this run** — the row
+asked for the shipped trait AE only, and that is what was driven.
+
+The side-by-side measurement run 33 could not make, keyed by `_id`: **`actor.effects` = `[]`** while
+`[...actor.allApplicableEffects()]` = `Fade — Concealed` (`bkmd2l6Jm61EK92e`, parent `Fade`) and
+**`Veil — Concealed (cover/low light)`** (`qBRwocBUmnee3qyC`, parent `Veil`, `transfer: true`,
+`disabled: true`). Then:
+
+1. **RAISE** — on an unlit square, `edha.darkVeilSweep()` took `qBRwocBUmnee3qyC` to `disabled: false`
+   + `flags.edha-content.autoVeil: true` and whispered *"🌒 Veil: BENCH — Stalker stands in darkness —
+   the marker is ON (auto)."* **This mechanic has never worked before, on any map, since it shipped.**
+2. **RELEASE** — with an AmbientLight staged and the token teleported onto it, `disabled: true`,
+   `autoVeil: false`. **Silently, and that is correct**: the release branch (~10097) posts a card only
+   on the *suppressed* path.
+3. **HAND-TOGGLE IN LIGHT IS LEFT ALONE** — a marker enabled by hand while lit survived two further
+   sweeps untouched. The release branch requires a truthy `autoVeil`, so cover stays a table read.
+4. **2bS-11's veil half, staged off (1) as its positive control** — arming `Bench — Green` with
+   `clearsight` at 10 ft stood the veil **down** with the exact 🌿 *"…veil is SUPPRESSED — an armed
+   veil-suppressing enemy holds it within Attunement Range"* whisper; walking the Green out to a
+   measured **85 ft** (rank-3 Green Attunement Range is 60 ft) brought it **back up**. 2bS-11 retires
+   in full. *(Declared shortcut: `clearsight` was armed with `toggleStatusEffect`, not by using
+   Natural Order — the use half already passed at run 26.)*
+
+**Run 33's unexplained second symptom is CLOSED, and it is FIX PASS 5 §2's hypothesis (1).** Three
+further sweeps after the raise produced **0 cards and 0 state change**, with the marker reading
+`disabled: false, autoVeil: true` — a succeeded sweep is a no-op, exactly as the source predicted.
+Run 33's incoherent `disabled: true, autoVeil: null` was it reading the item-transferred **original**
+while its hand-made actor-level copy was the one that had fired. No engine change is owed.
+
+⚠️ **One consequence worth knowing.** The enable/disable is written onto the **trait item's own AE**,
+so a Stalker that ends a scene veiled carries that state on its copy of the trait until a sweep
+releases it. That is the accepted cost of the widened read, not a defect — but it is the first time it
+has been observable, because until fix pass 5 the sweep never wrote anything at all.
+
+### 3. Cultures — the `init` ordering claim no headless test could make is settled
+
+On a full reload: `game.packs.get("edha-content.edha-items").getDocuments()` returned **113 documents
+with ZERO console errors** (the ten `… is not a valid choice` lines are gone); every culture reads its
+own slug in **both** `_source.system.id` and `system.id`; `CONFIG.COSMERE.cultures` holds **16** keys —
+the system's six Roshar cultures untouched plus the ten Edha nations; and the log carries
+`[init] cultures registered: …` followed by `ready — Edha cultures registered: 10/10`.
+
+**The prerequisite half was proven from the console, because the dialog is not a CONFIG-driven picker
+and the row's wording is slightly wrong.** Read out of the installed system:
+`templates/item/talent-tree/dialogs/edit-prerequisite.hbs` renders an `app-document-reference-input`
+(any culture Item, by uuid), and `_onChangeForm` stores `{uuid, id: culture.system.id, label}`. So
+nothing is "offered" from a list — what decides is `system.id`, and the runtime check is
+`actor.cultures.some(c => c.system.id === prereq.culture.id)`. Two throwaway probe actors (deleted
+immediately): one carrying Canticle + Vorsk met both prereqs and did **not** meet an Alethi one; one
+carrying **only** Canticle met Canticle and did **NOT** meet Vorsk or `"none"`. Before the fix every
+culture baked `"none"` and one prereq matched all ten. **That latent trap is closed.**
+
+### 4. Two rulings, and a note about Ben's world
+
+- **R-74 — no adversary ability in the game pays an engine-driven cost.** `data/adversaries.json`
+  contains **zero** `"costs"` keys across all 52 blocks, so 28b's "an adversary's own bespoke ability
+  cost goes through `edhaSpendResource`" is true of the engine and true of nothing at the table. Run 34
+  substituted a granted focus-consuming talent and said so. Recommended default: author one `costs:`
+  line onto a single adversary ability so the contrast has a subject — but that is a **REBUILD** and a
+  design call, so it is filed as a ruling, not as a bench row.
+- **R-75 — the `edha-test-react` (H26) family is not combat-gated.** Read the cards you did not come
+  for: `Bench — White`'s **Shared Conviction** posted its offer on Black's Deception test while White
+  was in **no combat at all**, and `Pillar of Order` did the same on a Complication. **This is not a
+  28a regression** — the handler carries no `scope` field, so it never reaches
+  `edhaWatchCombatGate`; 28a's "deliberately NOT gated" list simply does not mention the family.
+  Recommended default: leave it ungated (an ally about to fail a social test is exactly the
+  out-of-combat case the negative control protects), and record it in the ungated list. If Ben wants
+  it quieter, the fix is a dial on the rule, not an engine gate — iron rule 2b.
+- ⚠️ **Ben's world holds an ACTIVE, STARTED, ZERO-COMBATANT combat** (`BerbNeuXp4iKduef`, round 1). It
+  is not the bench's — it predates this run and was left untouched — but it has a real consequence:
+  **`game.combat` is never null for any client**, so `edhaOrderPromptGate` / `edhaShatterPromptGate`
+  take their **round-tag** branch and their 30-second **wall-clock** branch is unreachable at Ben's
+  table today. The negative control's part (b) therefore proved the round-tag path, not the wall-clock
+  one. Deleting that stray combat would restore the wall-clock branch; that is Ben's call.
+
+### 5. Housekeeping
+
+**World restored EXACTLY.** Field-level id-diff against the start snapshot is **empty across all 74
+actors** — name, type, folder, item count, **whole effect objects including `changes` and flags**,
+statuses, flags and every resource value. Scenes 2, combats 1 (Ben's, untouched), Playtest Map back to
+33 tokens / 1 region / 0 drawings / 117 walls / 19 lights / 0 templates, world items 0. Everything the
+run created was deleted: 2 actors (`BENCH — Reedling`, `BENCH — Stalker`) + 2 culture probes, 3 tokens
+on the Playtest Map, 1 scene with its 2 tokens, 1 AmbientLight, 3 combats, 2 granted items. Two
+restorations were needed and both are documented behaviour, not drift: **`Bench — Chaos` lost its stale
+`Guardian Stance (+1 Deflect)` the moment it got a token** (run 32's aura-sweep lesson — restored from
+the whole-object snapshot with `keepId`), and **`Bench — Black` GAINED one** for the same reason in
+reverse (deleted). One leftover `nextTestMod` flag on a bench target was unset and the parent re-diffed.
+**42 bench chat messages** were added — Ben can flush them. Logged out; `Bench` is selectable again.
+
+---
+
 ## 2026-09-06 DELTA — FIX PASS 5 (bench run 33's findings): **the Stalker's veil has never auto-toggled on any map — `edhaDarkVeilSweep` reads `actor.effects` and the `Veil` marker is item-transferred, so the lookup was `undefined` every time**; the ten Edha cultures now register at **`init`**, which makes the ALREADY-BUILT pack valid and its dropped slugs stick; and the run's unexplained "PARTIAL" second symptom is **root-caused as a probe artifact from source**, not guess-fixed. (**ENGINE-ONLY, F5** on both fixes — no data change, **no pack rebuild owed on either half**, which corrects the run-32 culture row's assumption; deployed by the PM after merge.)
 
 Two engine commits, one docs commit. `node scripts/gates.js` → **RESULT: PASS** (exit 0) on each.
