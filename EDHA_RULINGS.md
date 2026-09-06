@@ -64,17 +64,7 @@ symptoms rather than one row. *(3B-A.)*
 > explicitly flagged as overlapping R-4.
 
 
-**R-5. Does Fault Line's line spare allies?** The card says "each character"; the engine catches
-enemies only. The same question applies to **every `kind: line` zone**. *(3B-B.)*
-> **ANSWERED 2026-09-05 (Ben, via the mobile board inbox): "no it does not"** — the line catches
-> **every character in it, allies included**. The card ("each character") is canon and the engine is
-> the side that drifts: `edhaFaultLine` builds its caught set with `edhaEnemyTokensInLine`, so allies
-> are neither damaged nor asked for the save. Consequence: the `kind: line` caught set becomes every
-> token in the line except the caster (damage, the Construct multiplier AND the save/prone rider,
-> because the card draws no friend/foe line), for every `kind: line` rule, not Fault Line alone. This
-> is live engine behaviour → lane B, bench-verified before it counts. Filed as **TODO_REPO_HYGIENE
-> #29**. **R-6 (the Region catching bystanders) is NOT decided by this** — same shape, separate
-> ruling, still open. Moves to §K when #29 lands.
+*(R-5 — does Fault Line's line spare allies — ANSWERED 2026-09-05, moved to §K.)*
 
 **R-6. Fault Line's dangerous-terrain Region catches bystanders scene-wide**, with no friend/foe
 clause — it incidentally ticked your **Stitchmother** during run 11 (effects verified back to
@@ -692,6 +682,39 @@ header and at the `game.socket.emit("summon-actor", …)` call site (both in
 `module-src/scripts/register-skills.js`) plus a note on the `SUMMONS` row in `ENGINE_INDEX.md`,
 saying the branch is reachable only in a world that revokes `ACTOR_CREATE`, so a future reader does
 not "clean it up". Comment-only: stripped-source equality holds (`scripts/lib/strip-comments.js`).
+
+---
+
+**R-5. Does Fault Line's line spare allies?** The card says "each character"; the engine catches
+enemies only. The same question applies to **every `kind: line` zone**. *(3B-B.)*
+> **ANSWERED 2026-09-05 (Ben, via the mobile board inbox): "no it does not"** — the line catches
+> **every character in it, allies included**. The card ("each character") is canon and the engine is
+> the side that drifts: `edhaFaultLine` builds its caught set with `edhaEnemyTokensInLine`, so allies
+> are neither damaged nor asked for the save. Consequence: the `kind: line` caught set becomes every
+> token in the line except the caster (damage, the Construct multiplier AND the save/prone rider,
+> because the card draws no friend/foe line), for every `kind: line` rule, not Fault Line alone. This
+> is live engine behaviour → lane B, bench-verified before it counts. Filed as **TODO_REPO_HYGIENE
+> #29**. **R-6 (the Region catching bystanders) is NOT decided by this** — same shape, separate
+> ruling, still open. Moves to §K when #29 lands.
+
+**Closed by TODO_REPO_HYGIENE #29 (PR #PENDING), 2026-09-06 — ENGINE-ONLY (F5).** Consequence
+applied in the line-zone helper, so **every** `kind: line` rule inherits it rather than Fault Line
+alone: `edhaEnemyTokensInLine` is gone and `edhaTokensInLine` returns every LIVE token in the
+length×width line **except the caster** (excluded by token id *and* by actor identity, so it fails
+closed when the caster's token cannot be resolved); disposition plays no part. Both riders read that
+one binding — the damage with its Construct multiplier, then the `edhaFoeSkillVsColor`
+save/`failStatus` — so an ally in the line is damaged AND rolls the save. `edhaFoeSkillVsColor`
+needed no change: it is disposition-blind (it rolls whatever token list it is handed, and
+`edhaRollOpposedSkill` reads only the target's own skill/attribute), so "foe" is its name, not its
+contract; the `saveSkill` field's Foundry label lost its "Foe"/"per foe" wording to match.
+**Consumers of the kind: one — Fault Line** (`data/authored/deity-destruction.json`,
+`FaultLineZone000`); no other authored rule or adversary ability uses `"kind": "line"`, so nothing
+else changes shape. Pinned in `tests/line-zone-caught-set.test.js` (ally / neutral / caster /
+exact-set / fails-closed, plus a source check that both riders read the same `caught` binding);
+mutation-verified — restoring the enemies-only filter fails 3 of the 6 cases. **Live behaviour is
+confirmed by the 🤖 row in `EDHA_FOUNDRY_TEST_CHECKLIST.md` (Destruction section), not by this
+entry.** **R-6 is untouched**: the dangerous-terrain Region this zone drops afterwards catches
+whoever it caught before — that ruling is still open.
 
 ---
 

@@ -799,6 +799,17 @@ the activeGM (`Bench`, `game.users.activeGM.isSelf === true`) — **three** Regi
 active throughout, i.e. **two GM clients connected on both legs**, and each leg produced **exactly 3**
 Regions and 3 Drawings, never 6. The single-activeGM applier gate holds.)*
 
+- [ ] 🤖 **Fault Line catches ALLIES too — R-5's engine fix (2026-09-06, PR #PENDING; engine sync +
+      F5, NO pack rebuild).** Stage three bystanders around `Bench — Destruction`: an **ally** token
+      (same disposition as the caster) and a **foe** dummy both inside the 60 ft × 5 ft line, plus a
+      second ally clearly **outside** it. Cast Fault Line down that line. Expected: the burst card
+      counts **both** the ally and the foe ("2 in the line take **N** energy"), both actually lose
+      that HP, and the "💥 Fault Line — **Speed** vs your Red" card prints a save line for the
+      **ally** as well as the foe (a failure knocks the ally **Prone**, same as a foe). The **caster**
+      takes nothing and never appears on either card, and the ally outside the line is untouched.
+      Before the fix the ally was silently skipped by both riders. **Not this row:** who the
+      dangerous-terrain Region left behind catches — that is **R-6**, a separate ruling still open.
+
 
 ---
 
