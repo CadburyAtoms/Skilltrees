@@ -62,7 +62,7 @@ symptoms rather than one row. *(3B-A.)*
 > out-of-combat rule, (b) can wrongly classify a real spend as bookkeeping. R-5..R-8 all overlap
 > this; **do not fold them in** — they are separate rulings still open, and R-8 in particular is
 > explicitly flagged as overlapping R-4.
-> **28a landed in PR #TBD (2026-09-06)** — half (a) only: scene/turn-keyed watches now gate on
+> **28a landed in PR #188 (2026-09-06)** — half (a) only: scene/turn-keyed watches now gate on
 > `edhaInActiveCombat(actor)` (an ACTIVE combat containing the owner), with `scope: "self"` watches
 > and the wall-clock prompt debounces deliberately ungated. **R-4 stays HERE, not in §K**: it settles
 > only when **28b** (tagging bookkeeping writes) has landed AND the bench has confirmed the live

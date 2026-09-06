@@ -759,7 +759,7 @@ engine behaviour: it is not settled until the bench confirms it.**
 
 **PM:** lane B · model opus · size L — **split into 28a and 28b before dispatch** · deps R-4 ✓ · verify: pinned regressions + a bench pass. ENGINE-ONLY (F5), no pack rebuild expected.
 
-**28a DONE 2026-09-06 (PR #TBD) — ENGINE-ONLY (F5), no pack rebuild. The item stays OPEN: 28b is not
+**28a DONE 2026-09-06 (PR #188) — ENGINE-ONLY (F5), no pack rebuild. The item stays OPEN: 28b is not
 built and the bench has not confirmed.** Root cause was one read repeated across the engine —
 `game.combat` is the **client's VIEWED combat**, not the owner's and not necessarily an active one,
 so every `game.combat?.round ?? 0` froze per-round ledgers at round 0 out of combat and
