@@ -1392,7 +1392,13 @@ legacy. No talent name in code.
   off ITS document, the arm card + watchers unchanged; Attunement-Range gate on the pick (NEW —
   card-is-spec); cancel/out-of-range/refused-at-cap REFUNDS. `line`: click-direction line AoE
   (`edhaFaultLine`): length/width/constructMult/save dials as fields, damage off ITS document,
-  the foe save engine-rolled via `edhaFoeSkillVsColor`, line hazard dropped; cancel refunds.
+  the save engine-rolled via `edhaFoeSkillVsColor`, line hazard dropped; cancel refunds.
+  **Caught set = `edhaTokensInLine(owner,cx,cy,px,py,lengthFt,widthFt)` — EVERY live character in
+  the line except the caster, allies and neutrals included** (R-5, Ben 2026-09-05; was
+  `edhaEnemyTokensInLine`, which spared same-disposition tokens and so skipped allies on BOTH
+  riders). The whole rider set runs on that one binding: damage + the Construct multiplier, then
+  the save/`failStatus`. `edhaFoeSkillVsColor` needed no change — it is disposition-blind, "foe"
+  is only its name. The hazard REGION's scope is R-6 and is deliberately untouched.
   (`edhaSpeedVsRedProne` retired — both callers carry their dials now.)
 - **`edha-detonate-react`** (config-only) — the detonation counterpart of edha-snare-react: swept
   by `edhaResolveCharges` after every detonation (it rides Set Charge, Cascading Failure and The
@@ -1818,7 +1824,11 @@ the first one lived inside the trample announcer, looked private, and got duplic
 
 ## Targeting / costs / math utils
 - `edhaPickPoint(prompt)` → grid-snapped `{x,y}` or null (click-to-place). `edhaTokensInCircle(cx,cy,ft)`,
-  `edhaEnemyTokensInCircle(owner,cx,cy,ft)` (Destruction). `edhaCasterToken(actor)`, `edhaColorRank(actor,"red")`.
+  `edhaEnemyTokensInCircle(owner,cx,cy,ft)` (Destruction),
+  `edhaTokensInLine(owner,cx,cy,px,py,lengthFt,widthFt)` — the `edha-zone {kind: line}` caught set:
+  every LIVE token in the length×width line **except the caster** (excluded by token id and by actor
+  identity, so it fails closed when the caster token cannot be resolved). Disposition plays no part
+  (R-5, 2026-09-05). `edhaCasterToken(actor)`, `edhaColorRank(actor,"red")`.
   **`edhaCasterToken` adoption (ENGINE PASS 5.2, Job 4, 2026-08-10)**: bare `x.getActiveTokens?.()[0]`
   reads (losing the canvas-controlled fallback the primitive has) and the dead-tail idiom
   `edhaCasterToken(x) ?? x.getActiveTokens?.()[0]` (the `??` half is the primitive's own FIRST

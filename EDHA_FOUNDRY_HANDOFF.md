@@ -33,6 +33,53 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-06 DELTA — item 29: a `kind: line` zone catches every character in it, allies included (ruling R-5) (**ENGINE-ONLY, F5** — no pack rebuild; deployed by the PM after bench run 32).
+
+Ben answered **R-5** on 2026-09-05 (mobile board inbox): **"no it does not"** — Fault Line's line
+does NOT spare allies. The card says "each character" and the card is spec; the engine was the side
+that drifted. `edhaFaultLine` built its caught set with **`edhaEnemyTokensInLine`**, which dropped
+every same-disposition token, so an ally standing in the line was neither damaged nor asked for the
+save while the card promised both.
+
+**The fix is in the line-zone helper, not on the talent**, so every `kind: line` rule inherits it:
+`edhaEnemyTokensInLine` is gone and **`edhaTokensInLine(owner, cx, cy, px, py, lengthFt, widthFt)`**
+returns every LIVE token in the length×width line **except the caster** — allies, neutrals and foes
+alike, disposition ignored. The caster is excluded by token id **and** by actor identity, so the
+exclusion fails CLOSED when `edhaCasterToken` cannot resolve a token (id alone would have failed
+open). Both riders read that one `caught` binding, which is the half that matters: the damage with
+its Construct ×3 multiplier **and** the `edhaFoeSkillVsColor` save that applies `failStatus`
+(Prone). A widening that touched only the damage would have left allies hurt but never tested.
+
+**`edhaFoeSkillVsColor` needed no change and was not special-cased.** It is disposition-BLIND — it
+rolls whatever token list it is handed against the owner's colour DC, and `edhaRollOpposedSkill`
+reads only the target's own skill/attribute — so "foe" is its name, not its contract. The only
+"foe" that was load-bearing was the **`saveSkill` field's Foundry label** ("Foe save skill",
+"Engine-rolled per foe"), which now says *every character caught in the line — allies included,
+caster excluded*, because Ben edits these dials on the Events tab and the label was asserting the
+opposite of the ruling.
+
+**Consumers of the kind: exactly one.** `"kind": "line"` appears once in the whole data tree —
+Fault Line's `FaultLineZone000` in `data/authored/deity-destruction.json`. No other authored rule
+and no adversary ability uses it, so no other card's shape changes. (`data/authored/*` untouched.)
+
+**Proven:** `tests/line-zone-caught-set.test.js` pins six cases — the ally is caught, the neutral is
+caught, the caster never is, the exact caught set is ally+foe+neutral (downed / off-line /
+behind-the-caster tokens stay out), the caster exclusion fails closed with no resolvable token, and
+a source check that `edhaFaultLine` feeds the SAME `caught` binding to the damage map and to the
+save rider. Mutation-verified: re-introducing the enemies-only filter fails 3 of the 6 (651 passed,
+3 failed); restored, 654 passed, 0 failed. All gates PASS.
+
+**Deliberately NOT decided here: R-6** — who the dangerous-terrain **Region** dropped after the
+line catches (it ticked a bystander Stitchmother during marathon run 11) is the same shape on a
+different surface, is still an open ruling, and that code is byte-for-byte unchanged.
+
+**🤖 for the bench** (Destruction section): stage an ally and a foe inside the 60 ft × 5 ft line and
+a second ally outside it, cast Fault Line, and confirm the burst card counts **both** insiders, both
+lose HP, the Speed-vs-Red card lists a save line for the **ally** too (failure → Prone), and the
+caster appears on neither card. Live behaviour is not settled until that row passes.
+
+---
+
 ## 2026-09-06 DELTA — item 27: retire the `GM summon relay` checklist row (ruling R-1) (**DOCS-ONLY + one ENGINE COMMENT** — no behaviour change).
 
 Ben answered R-1 on 2026-09-05 (mobile board inbox): "YES — keep the permission." Consequence,

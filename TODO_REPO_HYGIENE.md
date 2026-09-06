@@ -762,7 +762,7 @@ engine behaviour: it is not settled until the bench confirms it.**
 
 ---
 
-## 29. [ ] `kind: line` zones catch every character, allies included (ruling R-5)
+## 29. [x] `kind: line` zones catch every character, allies included (ruling R-5) (2026-09-06, PR #185)
 
 **Why:** Ben answered **R-5 on 2026-09-05: "no it does not"** — Fault Line's line does NOT spare
 allies. The card says "each character"; the engine drifts: `edhaFaultLine` (register-skills.js,
@@ -784,6 +784,20 @@ regression is pinned, the 🤖 row exists, and R-5 moves to `EDHA_RULINGS.md` §
 **Live engine behaviour: not settled until the bench confirms it.**
 
 **PM:** lane B · model opus · size S · deps R-5 ✓ · verify: pinned regression + a bench pass. ENGINE-ONLY (F5), no pack rebuild.
+
+**DONE 2026-09-06 (PR #185) — ENGINE-ONLY (F5), no pack rebuild.** `edhaEnemyTokensInLine` is
+replaced by **`edhaTokensInLine`**: every LIVE token in the length×width line **except the caster**
+(excluded by token id *and* by actor identity, so it fails closed when the caster's token cannot be
+resolved), disposition ignored. Done in the line-zone helper, so every `kind: line` rule inherits
+it; both riders read the one `caught` binding, so an ally is damaged (Construct multiplier included)
+**and** rolls the `edhaFoeSkillVsColor` save that applies `failStatus`. That helper needed no change
+— it is disposition-blind, "foe" is only its name; the `saveSkill` field's Foundry label dropped its
+"Foe"/"per foe" wording to stop contradicting the ruling. **Consumers of `"kind": "line"`: exactly
+one — Fault Line (`data/authored/deity-destruction.json`, rule `FaultLineZone000`)**; no other
+authored rule and no adversary ability uses the kind. Pinned in `tests/line-zone-caught-set.test.js`
+(6 cases), mutation-verified: restoring the enemies-only filter fails 3 of them (651 passed, 3
+failed). **R-6 untouched** — the dangerous-terrain Region's scope is a separate open ruling. Live
+behaviour still needs the 🤖 Destruction row in `EDHA_FOUNDRY_TEST_CHECKLIST.md`.
 
 ---
 
