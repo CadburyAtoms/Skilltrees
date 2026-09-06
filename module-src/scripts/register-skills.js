@@ -4198,9 +4198,23 @@ function edhaHealCutFactor(actor) { return edhaHealCutInfo(actor)?.fraction ?? n
  * regrowth, Shared Burden, the pulse heals) write system.resources.hea directly and never pass
  * through applyDamage, so a Mender click healed a Withering-blocked target 10 HP. Every such path
  * now calls this before writing: it scales the amount by the strictest mark and announces once.
- * DELIBERATELY not routed through it: drop-to-1 preventions (Death Ward, Raise Dead's revive,
- * Unbreakable Line via bypassHealCut) — whether "cannot regain HP" stops stabilization is a
- * design ruling, queued for Ben; today all three stay consistent (ungated). */
+ * ⚠️ DELIBERATELY NOT ROUTED THROUGH IT — THE DROP-TO-1 FAMILY. **R-10 ANSWERED 2026-09-06 (Ben
+ * (b)): stabilizing at 1 is a FLOOR AGAINST DEATH, not regaining, so every drop-to-1 / stabilize
+ * writer bypasses the no-heal condition.** It is a ruling, not an oversight, and it is the whole
+ * family or none — a member that quietly acquired the gate would let "cannot regain HP" become
+ * "cannot be saved", which is a different card. Audited 2026-09-06 (item 47); all four bypass, and
+ * `tests/drop-to-one-family.test.js` fails if any one of them starts gating:
+ *   1. `edhaCrossHeal(victim, 1 - cur, { bypassHealCut: true })` — Unbreakable Line's `revive`
+ *      button. `bypassHealCut` exists FOR THIS and for nothing else.
+ *   2. `edhaDeathWardCheck` — Death Ward's applyDamage post-pass writes `hea.value = 1` directly
+ *      (and relays the same 1 as a `burst-apply` heal hit when the client lacks ownership).
+ *   3. `edhaReviveUse` → `edhaApplyBurstResults` — Raise Dead's `{ amount: 1, heal: true }` hit.
+ *   4. The `edha-hp-floor` `preUpdateActor` veto — it rewrites the incoming HP change to the
+ *      talent's floor before it lands, so it never was a heal at all. It is in the family because
+ *      it is the same PROMISE ("instead of dropping, you hold at N"), and a future refactor
+ *      routing it through a heal helper would gate it by accident.
+ * A PLAIN heal on a withered creature is still blocked — that is the other half of the ruling and
+ * the same test file pins it. */
 function edhaHealCutGate(target, amount) {
   const info = edhaHealCutInfo(target);
   if (!info || !(Number(amount) > 0)) return Math.max(0, Math.floor(Number(amount) || 0));
@@ -5653,6 +5667,9 @@ function edhaReduceInstances(list, amount) {
 // Cross-actor heal/damage: do it directly if we own the target, else relay to the GM (burst-apply).
 // Every rule-driven heal riding this path respects the No-Healing/Healing-Halved mark (defect 5);
 // bypassHealCut is for drop-to-1 PREVENTIONS only (Unbreakable Line — the Death Ward parity case).
+// R-10 (b), 2026-09-06: that bypass is the RULING, not a shortcut — stabilizing at 1 is a floor
+// against death, not regaining, so "cannot regain HP" must not stop it. See edhaHealCutGate's
+// header for the whole drop-to-1 family; do not add a caller that passes this for a real heal.
 async function edhaCrossHeal(actor, amount, { bypassHealCut = false } = {}) {
   if (!actor || !(amount > 0)) return;
   if (!bypassHealCut) { amount = edhaHealCutGate(actor, amount); if (!(amount > 0)) return; }
@@ -5776,7 +5793,7 @@ async function edhaBulwarkClick(ev) {
       note = `${owner.name} takes ${amount} in ${victim.name}'s place (Shared Burden).`;
     }
     else if (action === "retaliate" && attacker) { await edhaCrossDamage(attacker, amount, "spirit", { edhaSource: owner }); note = `${owner.name} deals ${amount} spirit to ${attacker.name} (Retributive Guard — on a successful White test).`; }
-    else if (action === "revive" && victim) { const cur = Number(victim.system?.resources?.hea?.value) || 0; await edhaCrossHeal(victim, Math.max(1, 1 - cur), { bypassHealCut: true }); note = `${victim.name} drops to 1 health instead of 0 (Unbreakable Line — on a successful White test).`; }   // prevention, not a heal — Death Ward parity (ruling queued)
+    else if (action === "revive" && victim) { const cur = Number(victim.system?.resources?.hea?.value) || 0; await edhaCrossHeal(victim, Math.max(1, 1 - cur), { bypassHealCut: true }); note = `${victim.name} drops to 1 health instead of 0 (Unbreakable Line — on a successful White test).`; }   // prevention, not a heal — Death Ward parity (R-10 (b), 2026-09-06: a floor against death, not regaining)
     else if (action === "rally-zone") {
       const founds = edhaFoundationsOn(canvas?.scene, owner.id);
       const disp = edhaActorSide(owner);

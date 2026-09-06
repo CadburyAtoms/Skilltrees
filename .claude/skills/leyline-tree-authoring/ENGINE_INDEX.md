@@ -2998,9 +2998,21 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   Healing-Halved read + gate (strictest mark wins; the gate announces once, naming the mark's
   `byName`). **Any heal path that writes `hea` outside applyDamage MUST call the gate** — the
   standard door is `edhaCrossHeal(actor, amount, {bypassHealCut})`; bypass is ONLY for drop-to-1
-  preventions (Death Ward / Raise Dead / Unbreakable Line — whether the block stops stabilization
-  is a queued ruling). `edhaHealCutFactor` is now a thin read of the info (applyDamage wrap
+  preventions. `edhaHealCutFactor` is now a thin read of the info (applyDamage wrap
   unchanged). Pure selection/arithmetic pinned in tests/.
+  ⚠️ **R-10 ANSWERED 2026-09-06 (Ben (b)): "cannot regain HP" does NOT stop stabilization** —
+  stabilizing at 1 is a **floor against death, not regaining**. So the bypass is the RULING, not a
+  pending decision, and it is **the whole family or none**; a member that quietly acquired the gate
+  would turn "cannot regain HP" into "cannot be saved" for one talent only. The four writers,
+  audited 2026-09-06 and pinned in `tests/drop-to-one-family.test.js`: (1) `edhaCrossHeal(…,
+  {bypassHealCut: true})` — Unbreakable Line's `revive` button, the flag's ONLY true caller;
+  (2) `edhaDeathWardCheck`'s direct `hea.value = 1` (and its burst relay); (3) `edhaReviveUse` →
+  `edhaApplyBurstResults`'s `{amount: 1, heal: true}`; (4) the `edha-hp-floor` `preUpdateActor`
+  veto, which rewrites the incoming change and never was a heal — in the family because it makes
+  the same promise and a refactor onto a heal helper would gate it by accident.
+  **`edhaHealCutGate` has exactly TWO call sites** (`edhaCrossHeal`'s non-bypass branch + the
+  effect-heal branch); the test counts them, so a third is either a new heal path you declare there
+  or R-10 being reversed by accident. A plain heal on a withered creature is still blocked.
 - **`edha-hp-threshold` grew `rangeColor`** (+ the ally / owner-token-on-scene gates are
   enforced in the sweep): the offer needs the owner ON the scene, the victim's token sharing its
   disposition (unknown fails CLOSED), and — when authored — the ally inside the colour's
