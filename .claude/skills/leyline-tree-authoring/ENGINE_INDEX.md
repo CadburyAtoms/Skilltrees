@@ -1914,8 +1914,34 @@ The one pipeline; three fields were added so two private duplicates of it could 
 - **`bindToTarget`** — stamps `targetUuid` from your CURRENT target, so "advantage on your next test
   **against them**" is enforced rather than owner-judged (Reactive Analysis). Nothing targeted → the
   mod stays unbound rather than failing.
-- ⚑ `nextTestMod` is a SINGLE flag slot: writing it overwrites any rider already there. Two
-  independent debuffs do not stack (2bI-4).
+## The next-test mod flag is a LIST (item 49, 2026-09-06 — Ben's R-15(b))
+
+`flags.edha-content.nextTestMod` is an **array of entries**, not one object. It was one slot, so the
+second writer silently overwrote the first — Coercive Pressure's Cognitive disadvantage and
+Probability Net's `-1d6` could not sit on the same victim, and the loser left no trace (R-15,
+checklist 2bI-4). An entry keeps the shape the pipeline always used; the four parts the ruling names
+map onto it as `source` / (`mode` ∨ `formula`) / (`formula`, `count`) / `round`.
+
+| helper | what it does |
+|---|---|
+| **`edhaNextModList(value)`** | PURE. Reads whatever is stored as a list — array → itself, a **legacy single object → one entry**, anything else → `[]`. This is the migration; no stored actor breaks. |
+| **`edhaNextModExpired(mod, round)`** | PURE. Is this entry DEAD? Only a `round` stamp expires, and never out of combat (`round === null` leaves the stamp inert) — deliberately the same comparison `edhaNextTestMatches` makes. |
+| **`edhaNextModPrune(list, round)`** | PURE. `{ live, pruned }`. |
+| **`edhaNextModsOf(actor, round?)`** | THE reader. Returns the live entries and **prunes the dead ones off the document as a side effect** (R-20 + R-57: a "this round" mod that has expired is removed, not left to pile up). |
+| **`edhaNextModSpend(list, taken)`** | PURE. Decrements/removes **only** the entries that applied — "a consumer clears only its own entry". Identity is the `gid`. |
+| **`edhaNextModFoldMode(mods)`** | PURE. Folds N entries into the one `AdvantageMode` scalar: boolean-OR per direction; **a mixed advantage/disadvantage pair returns `null`** and the caller then writes nothing, so a cancelling pair never stomps the player's own dialog choice. |
+| **`edhaWriteNextMods(actor, list)`** | Writes the list back (`null` when empty) **through `edhaSetEdhaFlag`**, so a cross-actor clear relays to the GM — the old consumers called `unsetFlag` on the bearer directly, which silently did nothing for a victim the roller does not own. |
+
+- **Writers APPEND.** `edhaSetNextTestMod` read-modify-writes through `edhaListPush` (cap
+  `EDHA_NEXTMOD_CAP` = 12, evict oldest — a bound, not a design limit). Flags replicate to every
+  client, so the read is correct even when the write itself relays.
+- **Readers apply ALL live entries.** Modes OR (above); `formula` entries **SUM**, each appended as
+  its own flavor-labeled term so the breakdown still names who gave what; `count` is per entry.
+  Gating (`skill` / `attr` / `round` / `targetUuid` / `quarryUuid` / `appliesTo`) stays per entry.
+- The **cross-path claim** (`_edhaNextModClaim`, 07-27j) is keyed per **(actor, gid)** now, not per
+  actor: with one slot `actorId` *was* the grant, and with a list one `either` rider's claim would
+  otherwise veto its neighbour's.
+- Pinned in `tests/next-test-mod-list.test.js` (the four "Done when" cases + the writer half).
 
 ## Splash around a triggering creature — `edha-triggered-effect` `nearAffects` (07-24r)
 `target: "near-victim"` catches everyone inside `radius` except you (the victim itself is already
@@ -2590,7 +2616,8 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
 - **`edha-next-test-mod`** (event `use`): a next test gains `mode` (advantage/disadvantage) and/or a
   `formula` modifier (Probability Net's `-1d6`), counted. `nextTestMod.formula` injects via the same
   term-concat as test riders, flavor-labeled; a formula-only mod no longer forces disadvantage (the
-  mode block is gated).
+  mode block is gated). **The flag is a LIST since item 49 (2026-09-06)** — riders STACK, modes OR,
+  modifiers sum, each entry expires and clears on its own; see "The next-test mod flag is a LIST".
   **Generalised 07-24k — it is now the whole "modify a next test" family, not just the targeted
   half.** `target: "target" | "self"` (**defaults to `target`**, so every pre-07-24k rule is
   unchanged — that default is the regression risk, not the new fields), plus `plotDie: true`

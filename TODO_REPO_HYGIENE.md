@@ -1650,7 +1650,7 @@ by design, as the ruling specified.
 
 ---
 
-## 49. [ ] Next-test modifier slot becomes a list (R-15, R-57, R-20)
+## 49. [x] Next-test modifier slot becomes a list (R-15, R-57, R-20) — DONE 2026-09-06, PR #218
 
 **Why:** Ben, verbatim: "that needs to be a list not one slot." Coercive Pressure no longer stacks
 with another next-test rider because `flags.nextTestMod` is a single object the second writer
