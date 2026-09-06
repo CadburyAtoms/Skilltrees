@@ -4585,6 +4585,21 @@ for (const ctx of ["skill", "attack", "item"]) {
  * The borrowed action itself stays GM-run — the talent carries no payload rule at all, which is
  * exactly what makes H6 post its `note` instead. Do NOT re-add a turn-change hook here. */
 
+/* R-38 — the move veto's ANNOUNCE throttle. One whispered card per TOKEN per ROUND: a dragged
+ * path fires preUpdateToken once per waypoint and every one of them is refused, so an unthrottled
+ * card would post a wall of identical whispers for a single failed drag. Keyed on the round when
+ * there is a combat and on the combat-less encounter otherwise (`null` round = one card until a
+ * combat starts, which is the same "once per beat" the player experiences out of initiative).
+ * Pure but for the module-level ledger, which is passed in so a test can drive it. */
+const _edhaMoveVetoSaid = new Map();
+function edhaMoveVetoAnnounceGate(tokenKey, round = game.combat?.round ?? null, ledger = _edhaMoveVetoSaid) {
+  const key = String(tokenKey ?? "");
+  if (!key) return true;                       // no identity to throttle on — never swallow the card
+  const seen = ledger.get(key);
+  if (seen !== undefined && seen === round) return false;
+  ledger.set(key, round);
+  return true;
+}
 // The MOVE VETO (2bZ — was Dread Presence's name-keyed hook, rule-keyed now: the pass-Y shape). A
 // creature bearing the rule's status inside a rule owner's range cannot WILLINGLY move closer to
 // any of its allies — vetoed on the moving client (preUpdateToken runs there) with a warning
@@ -4623,7 +4638,18 @@ Hooks.on("preUpdateToken", (doc, changes, options) => {
       const dOld = Math.hypot(t.center.x - oldC.x, t.center.y - oldC.y);
       const dNew = Math.hypot(t.center.x - newC.x, t.center.y - newC.y);
       if (dNew < dOld - 1) {                                       // measurably closer to this ally
-        ui.notifications?.warn(`${live.item.name}: ${actor.name} is ${edhaConditionLabel(String(live.handler.moverStatus || "weakened")) || "Weakened"} and cannot willingly move closer to ${t.actor.name}. (Engine-forced movement bypasses this.)`);
+        const why = `${actor.name} is ${edhaConditionLabel(String(live.handler.moverStatus || "weakened")) || "Weakened"} and cannot willingly move closer to ${t.actor.name}. (Engine-forced movement bypasses this.)`;
+        ui.notifications?.warn(`${live.item.name}: ${why}`);
+        /* R-38 (Ben 2026-09-06 (a)): a refused move used to leave NOTHING but a transient toast on
+         * the mover's own client — three refused moves at bench run 21 read exactly like a broken
+         * range gate and cost the run real time. The veto now says so in chat, whispered to the
+         * mover's owners + the GMs, naming the talent that stopped it. Throttled per token per
+         * ROUND: a dragged path re-fires preUpdateToken for every waypoint, and one card per
+         * waypoint would be the same silence wearing a different costume. */
+        if (edhaMoveVetoAnnounceGate(doc.id ?? doc.uuid ?? actor.id)) {
+          ChatMessage.create({ whisper: edhaWhisperIds(actor), speaker: ChatMessage.getSpeaker({ actor }),
+            content: `<p>🚫 <strong>${live.item.name}</strong>: ${why}</p>` });
+        }
         return false;
       }
     }
@@ -5468,6 +5494,49 @@ function edhaConditionLabel(id) {
   const raw = EDHA_STATUSES[key]?.label ?? CONFIG.COSMERE?.conditions?.[key]?.label ?? CONFIG.COSMERE?.statuses?.[key]?.label   // label-helper
     ?? (CONFIG.statusEffects ?? []).find(s => s.id === key)?.name ?? null;
   return edhaLocalizeLabel(raw, key);   // no configured label at all → the bare id, as before
+}
+/* R-37(2) — the ONE-OF counterpart of edhaConditionLabel. A ledger key is plural by convention
+ * ("snares", "charges", "edicts"), and edhaConditionLabel falls back to the bare key when nothing
+ * configures a label, so card text that names a SINGLE entry read "the snares on Snare #1 **is**
+ * inevitable". Any card speaking about one entry asks for this instead. Deliberately a small
+ * English-plural rule, not a dictionary: -ies → -y, a sibilant -es → drop "es", a bare -s that is
+ * not -ss → drop the "s"; anything else (an already-singular configured label like "Edict") is
+ * returned untouched, which is the case that must never be mangled. */
+/* R-37(2) — the annotate card's sentence, EXTRACTED so the string can be pinned headlessly: the
+ * executor that used to build it inline lives inside a `registerItemEventHandlerType` config
+ * object, which no harness can call (spend-tag.test.js documents that limit). Two shapes, because
+ * the ledgers are two shapes: an entry bound to a CREATURE reads possessively ("the Edict on
+ * Roek…"), and a POINT-bound marker names only itself, because the entry IS the thing being
+ * marked — there is no creature for an "on" clause to point at. */
+function edhaAnnotateSentence(entryName, label, field, prohText = "", creatureBound = false) {
+  return creatureBound
+    ? `the ${edhaSingularLabel(label)} on <strong>${entryName}</strong>${prohText ? ` ("<em>${prohText}</em>")` : ""} is now <strong>${field}</strong>.`
+    : `<strong>${entryName}</strong> is now <strong>${field}</strong>.`;
+}
+function edhaSingularLabel(label) {
+  const s = String(label ?? "").trim();
+  if (s.length < 3 || !/s$/i.test(s) || /ss$/i.test(s)) return s;
+  if (/[^aeiou]ies$/i.test(s)) return s.slice(0, -3) + (s[s.length - 3] === "I" ? "Y" : "y");
+  if (/(ses|xes|zes|ches|shes)$/i.test(s)) return s.slice(0, -2);
+  return s.slice(0, -1);
+}
+/* Indefinite article for a name we interpolate into prose. The weapon picker read "the arms a
+ * Agent actually carries" / "a Envoy" at bench run 38 — every vowel-initial path name (Agent,
+ * Envoy) came out ungrammatical because the article was a literal. English spells this by SOUND,
+ * not by letter, and the six path names are the whole live vocabulary, so the rule is the plain
+ * vowel-letter test plus the two exception classes that actually bite: a written vowel that is
+ * SOUNDED as a consonant (a "one-handed" grip, a "unicorn", a "university" — u-/eu- glides and
+ * "one"), and a consonant letter with a vowel SOUND (an "hour", an "heir", an "honest" broker).
+ * A single capital letter that is NAMED with a leading vowel takes "an" too (an F, an M, an S). */
+function edhaArticle(word) {
+  const w = String(word ?? "").trim();
+  if (!w) return "a";
+  const lower = w.toLowerCase();
+  if (/^(hour|honest|honou?r|heir|herb)/.test(lower)) return "an";                     // silent h
+  if (/^(uni[a-z]|use[a-z]*|usu|utili|euro|eu[a-z]|ubiqu|once|one[a-z]*|onc)/.test(lower)) return "a";   // consonant glide
+  if (/^[aeiou]/.test(lower)) return "an";
+  if (w.length === 1 && /^[fhlmnrsx]$/i.test(w)) return "an";                          // letter NAMES: ef, aitch, el, em, en, ar, es, ex
+  return "a";
 }
 /* The skill/attribute counterpart. Falls back to the UPPER-CASED id (the old inline default at
  * every site this replaced) so an unknown id reads as a skill code, not as lowercase noise. */
@@ -6857,7 +6926,13 @@ async function edhaCastPhantomDouble(caster, dup, h = {}) {
   const dc = Number(caster.system?.defenses?.[def]?.value ?? caster.system?.defenses?.[def]?.override) || 10;
   await edhaSummon(caster, {
     name: `${dup.name} (Illusion)`, img: edhaTokenArt(dup),
-    tokenName: dupTok?.name ?? dup.name,   // the TOKEN label must not say "(Illusion)" — it's what fooled players read
+    /* R-31 (Ben 2026-09-06 (a)): the TOKEN label is veiled ONLY when an ADVERSARY casts it. The
+     * Seeming's whole point is that the fooled onlooker cannot tell the copy from the original, so
+     * an NPC's copy keeps the plain name they read on the canvas. No veil applies in the PC
+     * direction — a player's own Phantom Double has nobody at the table to fool, and an unlabelled
+     * second token is just a decoy they lose track of — so a CHARACTER's copy is labelled.
+     * The discriminator is the CASTER's document type, never a talent name (iron rule 2b). */
+    tokenName: `${dupTok?.name ?? dup.name}${caster?.type === "character" ? " (Illusion)" : ""}`,
     displayName: dupTok?.document?.displayName,   // hover-name behaves exactly like the real token (bench 07-17)
     hpFormula: String(h.hpFormula || "1"), speed: Number(h.speed) || 0, defensePenalty: pen,
     anchorTok: dupTok ?? undefined,
@@ -8312,7 +8387,7 @@ async function edhaCreatorWeaponPick(actor, DV2, pathName) {
       </label>`).join("");
     const res = await DV2.wait({
       window: { title: "Character Creation — the kit's weapon slot" }, rejectClose: false, position: { width: 520 },
-      content: `<p>Your kit's <strong>weapon slot</strong>: ${allowed ? `the arms a ${escCw(pathName)} actually carries` : "any weapon of <strong>2 gold or less</strong> you can actually use"} — pick <strong>one</strong> (each one's skill is listed). Choose now, or later from the Edha Items compendium.</p><div class="edha-cw-picklist" style="max-height:340px;overflow:auto">${rows}</div>`,
+      content: `<p>Your kit's <strong>weapon slot</strong>: ${allowed ? `the arms ${edhaArticle(pathName)} ${escCw(pathName)} actually carries` : "any weapon of <strong>2 gold or less</strong> you can actually use"} — pick <strong>one</strong> (each one's skill is listed). Choose now, or later from the Edha Items compendium.</p><div class="edha-cw-picklist" style="max-height:340px;overflow:auto">${rows}</div>`,
       buttons: [
         { action: "skip", label: "Choose later" },
         { action: "take", label: "Take it ▶", default: true, callback: (ev, btn) => btn.form?.querySelector?.("input[name=edhaWpn]:checked")?.value ?? null },
@@ -9096,10 +9171,17 @@ Hooks.on("renderCharacterSheet", (app) => {
   } catch (e) { /* cosmetic only — never block the sheet render */ }
 });
 
+/* R-55 (Ben 2026-09-06 (a)): all three chips read SPENT / total. They used to read REMAINING /
+ * total — except that Talents' numerator is the SAME either way on the sheet everyone looked at
+ * (2 of 4 taken → 2 remaining), so the strip silently mixed two conventions: a correctly built L1
+ * PC showed "Talents 2 / 4" beside "Attr pts 0 / 12", and a 0 next to a fully-spent sheet reads
+ * like an error rather than a finished budget. Now 2 / 4, 12 / 12, 5 / 5.
+ * The CLASSES stay keyed on what is LEFT — "full" means nothing remains, "over" means overspent —
+ * because that is what they colour, and it is unaffected by which number is printed. */
 function edhaBudgetRow(label, spent, granted) {
   const rem = granted - spent;
   const cls = rem < 0 ? " edha-budget-over" : rem === 0 ? " edha-budget-full" : "";
-  return `<div class="edha-budget-row${cls}"><span class="edha-budget-label">${label}</span><span class="edha-budget-value">${rem} / ${granted}</span></div>`;
+  return `<div class="edha-budget-row${cls}"><span class="edha-budget-label">${label}</span><span class="edha-budget-value">${spent} / ${granted}</span></div>`;
 }
 
 Hooks.on("renderCharacterSheet", (app, element) => {
@@ -9112,7 +9194,7 @@ Hooks.on("renderCharacterSheet", (app, element) => {
     const reserve = edhaGetReserve(actor), reserveCap = edhaReserveCap(actor);
     const panel = document.createElement("div");
     panel.className = "edha-budget-panel";
-    panel.title = "Remaining budget (remaining / total) — Talents | Attribute points | Skill ranks";
+    panel.title = "Budget spent (spent / total) — Talents | Attribute points | Skill ranks";
     panel.innerHTML =
       (thp ? `<div class="edha-budget-row edha-thp" title="Temporary HP (${thp.source || "—"}) — absorbed before normal HP; cannot be healed, only replaced"><span class="edha-budget-label">Temp HP</span><span class="edha-budget-value">${thp.value}</span></div>` : "") +
       edhaBudgetRow("Talents",    b.talentSpent, b.talentGranted) +
@@ -10813,7 +10895,7 @@ Hooks.on("updateActor", async (actor, changes) => {
  * bespoke geometry.
  * Owns — the model: EDHA_ATTUNE_FT · EDHA_LEY_COLORS · EDHA_COLOR_HEX · EDHA_RANGE_RING_HEX ·
  *   edhaTalentColor · edhaColorRank · edhaCasterToken.
- * Owns — the canvas: edhaDrawCircle · edhaTokensInCircle · edhaShowRange · edhaPlaceAoe, the
+ * Owns — the canvas: edhaDrawCircle · edhaTokensInCircle · edhaShowRange (edhaPlaceAoe retired, R-78), the
  *   sheet's range-preview control, and edhaNextTokenName + its preCreateToken de-duplicator.
  * ============================================================================================ */
 
@@ -10920,37 +11002,19 @@ async function edhaShowRange(item) {
   } catch (e) { console.error("Edha Content | showRange failed", e); }
 }
 
-// AoE: drop a [Size] circle at your target and auto-target captured tokens for the talent's card.
-// (Spec comes from the talent's own edha-aoe-template rule via the native executor.)
-async function edhaPlaceAoe(item, spec) {
-  try {
-    const area = spec?.area; const actor = item?.actor;
-    if (!area || !actor) return;
-    const color = spec.color || edhaTalentColor(item) || "red";
-    const rank = edhaColorRank(actor, color);
-    const ft = area.sizeByRank ? (EDHA_SIZE_FT[rank] || EDHA_SIZE_FT[1]) : (Number(area.sizeFt) || EDHA_SIZE_FT[1]);
-    const center = edhaUserTargetToken() ?? edhaCasterToken(actor);
-    if (!center) { ui.notifications?.warn(`Edha: target the ${item.name} burst center (or select your token).`); return; }
-    const cx = center.center.x, cy = center.center.y;
-    await edhaDrawCircle(cx, cy, ft, EDHA_COLOR_HEX[color] || "#d23b2e");
-    const affects = spec.affects || "enemies";
-    const casterDisp = edhaActorSide(actor);
-    let caught = edhaTokensInCircle(cx, cy, ft, null);
-    if (affects !== "all" && affects !== "none") {
-      caught = caught.filter(t => {
-        const same = edhaSideSame(t.document?.disposition, casterDisp);
-        return affects === "allies" ? same : edhaSideHostile(t.document?.disposition, casterDisp);   // R-63: NOT-same is not hostile — an unresolvable side is in neither burst
-      });
-    }
-    if (affects !== "none") { try { edhaSetUserTargets(caught); } catch (e) {} edhaCheckMultiHit(actor, item, caught.length); }
-    ChatMessage.create({
-      speaker: ChatMessage.getSpeaker({ actor }),
-      content: affects === "none"
-        ? `<p><strong>${item.name}</strong> — ${ft} ft area placed (terrain). Damage triggers on entry (GM-applied).</p>`
-        : `<p><strong>${item.name}</strong> — ${ft} ft burst: <strong>${caught.length}</strong> ${affects} captured &amp; targeted (${caught.map(t => t.name).join(", ") || "none"}). Click <em>Apply</em> on the ${item.name} card to ${affects === "allies" ? "heal" : "damage"} all of them.</p>`,
-    });
-  } catch (e) { console.error("Edha Content | AoE place failed", e); }
-}
+/* `edhaPlaceAoe` + the `edha-aoe-template` handler RETIRED 2026-09-06 (R-78, Ben (a); item 48).
+ * It was a SECOND, parallel AoE model — drop a circle on your current target, auto-target what it
+ * caught, and leave the GM to press Apply — that the click-to-place / Detonate pipeline
+ * (`edha-burst` → edhaCastBurst → edhaBurstDetonate, which resolves damage itself) replaced. A
+ * sweep of `data/` at bench run 38 found ZERO `edha-aoe-template` rules against 12 `edha-burst`
+ * ones, so the only thing the registration still did was offer a dead choice in Ben's Events-tab
+ * dropdown next to the live one. The branch WORKED (the bench staged a rule by hand and proved
+ * it); it simply had no consumer, which is the R-74 / R-76 shape.
+ * Nothing else moved: `edhaSetUserTargets` keeps its other caller (edhaPickTargetClick),
+ * `edhaCheckMultiHit` keeps edhaBurstDetonate's, and `edhaDrawCircle` / `edhaTokensInCircle` /
+ * EDHA_SIZE_FT are shared with the burst path. `data/native-vocabulary.json` and lint-refs'
+ * vocabulary are untouched by design — `edha-aoe-template` was an edha-* type, so the engine's own
+ * registrations (which lint pass 9 parses) are the whole record of it. */
 // Inject a ⊙ range-preview button into each color-scaled talent row in the Actions tab.
 Hooks.on("renderCharacterSheet", (app, element) => {
   try {
@@ -11840,14 +11904,14 @@ async function edhaFoeSkillVsColor(owner, tokens, { skill = "spd", label = null,
 // (edhaSpeedVsRedProne retired 2bY — both callers now carry their save dials on their own rules.)
 
 /* --- Dangerous-terrain placement (circle OR line), GM-side with a player→GM relay ------------------ */
-async function edhaPlaceHazardRegionGM(scene, owner, shape, bakedFormula, type, color, label, extraFlags = null) {
+async function edhaPlaceHazardRegionGM(scene, owner, shape, bakedFormula, type, color, label, extraFlags = null, exemptActorUuid = "") {
   try {
     if (!scene || !owner || !shape) return null;
     const hex = EDHA_COLOR_HEX[color] || "#d23b2e";
     const [region] = await scene.createEmbeddedDocuments("Region", [{
       name: `${owner.name} — Dangerous Terrain`, color: hex,
       shapes: [{ ...shape, hole: false }],
-      behaviors: [{ type: "edha-content.hazard", name: "Dangerous Terrain", system: { damageFormula: bakedFormula || "1d6", damageType: type || "energy", sourceName: `Dangerous Terrain — ${owner.name}` } }],
+      behaviors: [{ type: "edha-content.hazard", name: "Dangerous Terrain", system: { damageFormula: bakedFormula || "1d6", damageType: type || "energy", sourceName: `Dangerous Terrain — ${owner.name}`, exemptActorUuid: exemptActorUuid || "" } }],
       flags: { "edha-content": { hazard: true, scope: "scene", terrain: { ownerUuid: owner.uuid, color }, ...(extraFlags || {}) } },
     }]);
     if (!region) return null;
@@ -11870,11 +11934,13 @@ async function edhaPlaceHazardRegionGM(scene, owner, shape, bakedFormula, type, 
 }
 // Drop a hazard: bake the formula against the OWNER, then write GM-side (direct or via socket for players).
 // `extraFlags` merges into the Region's edha-content flags (e.g. Pinpoint's followTokenUuid).
-async function edhaDropHazard(owner, scene, shape, formulaRaw, type, color, label, extraFlags = null) {
+// `exemptActorUuid` (R-6) rides the BEHAVIOR, not the flags — the tick reads it. Blank = nobody,
+// which is every caller but Fault Line, so no shipped hazard changes behaviour.
+async function edhaDropHazard(owner, scene, shape, formulaRaw, type, color, label, extraFlags = null, exemptActorUuid = "") {
   const baked = edhaFoldDieMath(Roll.replaceFormulaData(formulaRaw || EDHA_CHARGE_DMG, owner.getRollData(), { missing: "0" }));
-  if (game.user?.isGM) return edhaPlaceHazardRegionGM(scene, owner, shape, baked, type, color, label, extraFlags);
+  if (game.user?.isGM) return edhaPlaceHazardRegionGM(scene, owner, shape, baked, type, color, label, extraFlags, exemptActorUuid);
   if (!game.users?.activeGM) { ui.notifications?.warn("Edha: a GM must be online to place dangerous terrain."); return null; }
-  try { game.socket.emit("module.edha-content", { action: "place-hazard-region", payload: { sceneId: scene.id, ownerUuid: owner.uuid, shape, baked, type, color, label, extraFlags } }); } catch (e) {}
+  try { game.socket.emit("module.edha-content", { action: "place-hazard-region", payload: { sceneId: scene.id, ownerUuid: owner.uuid, shape, baked, type, color, label, extraFlags, exemptActorUuid } }); } catch (e) {}
   return null;
 }
 
@@ -12158,8 +12224,17 @@ async function edhaFaultLine(item, h) {
     const lenPx = Math.round((lengthFt / gd) * gs), wPx = Math.round((widthFt / gd) * gs);
     const ang = Math.atan2(pt.y - cy, pt.x - cx), angleDeg = ang * 180 / Math.PI;
     const ccx = cx + Math.cos(ang) * lenPx / 2, ccy = cy + Math.sin(ang) * lenPx / 2;   // line centre
+    /* R-6 (Ben 2026-09-06 (b)) — the Region spares the CASTER and nobody else, matching R-5 / item
+     * 29 on the line half so both halves of the talent follow one rule. Of the two exits Ben left
+     * open, this takes the SECOND (exempt the caster's token) and keeps the rectangle exactly the
+     * line that was just damaged: laying it a square out would make the terrain's footprint and the
+     * damaged line disagree — a creature at the far end of the line would stand on no terrain, or
+     * terrain would cover ground nothing was damaged on. The footprint on the map stays honest
+     * (that square IS dangerous, to everyone but the one who split it open); only the caster is
+     * immune, which is a property of the caster, not of the ground. Allies inside are still caught,
+     * and the ally-in-the-line burst + terrain double hit stays. */
     await edhaDropHazard(owner, scene, { type: "rectangle", x: ccx - lenPx / 2, y: ccy - wPx / 2, width: lenPx, height: wPx, rotation: angleDeg },
-      item.system?.damage?.formula || EDHA_CHARGE_DMG, dtype, h.color || "red", `🔥 ${item.name}`);
+      item.system?.damage?.formula || EDHA_CHARGE_DMG, dtype, h.color || "red", `🔥 ${item.name}`, null, owner.uuid);
     await ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), rolls: [dice],
       content: `<div class="edha-burst-card"><p>💥 <strong>${item.name}</strong> — ${caught.length} in the line take <strong>${amt}</strong> ${dtype} (Constructs ×${mult}). Structures take ×${mult} too (GM-side, no actor for a wall).</p></div>` });
     const st = String(h.failStatus || "prone").trim() || "prone";
@@ -12315,7 +12390,7 @@ Hooks.once("ready", () => {
         if (data?.action !== "place-hazard-region") return;
         const p = data.payload || {}; const scene = game.scenes?.get(p.sceneId);
         const owner = await edhaResolveActorRef(p.ownerUuid);
-        if (scene && owner) await edhaPlaceHazardRegionGM(scene, owner, p.shape, p.baked, p.type, p.color, p.label, p.extraFlags ?? null);
+        if (scene && owner) await edhaPlaceHazardRegionGM(scene, owner, p.shape, p.baked, p.type, p.color, p.label, p.extraFlags ?? null, p.exemptActorUuid ?? "");   // R-6 rides the relay too
       } catch (e) { console.error("Edha Content | place-hazard-region relay failed", e); }
     });
   } catch (e) {}
@@ -13217,14 +13292,35 @@ function edhaFateNearestEnemyAt(owner, x, y, ft) {
 /* --- Snare trigger Region (v13) — a full-cell rectangle whose fate-snare behavior fires on
  * tokenEnter + tokenMoveIn (so a PASS-THROUGH springs it). The green MeasuredTemplate stays the
  * player-visible marker; this invisible Region is purely the trigger. GM creates it; players relay. */
+/* R-13 (Ben 2026-09-06 (a)): a snare placed directly UNDER a creature ARMS — it does not spring.
+ * v13 delivers `tokenEnter` to a Region for every token already inside it the moment the Region is
+ * created, which is indistinguishable at the behavior from a creature walking in, so laying the
+ * trap on an occupied square detonated it instantly against the card's own words ("the first enemy
+ * to ENTER OR PASS THROUGH it"). Standing somewhere is neither. Bench run 7 narrowed it exactly:
+ * placement ADJACENT never insta-sprang, only placement directly under a creature did.
+ * The fix is a grandfathered set computed HERE, before the Region exists — every token whose
+ * centre is already in the square — and stamped on the behavior. Those tokens are ignored on the
+ * enter events; their next MOVE is the pass-through that springs it (`tokenMoveOut` /
+ * `tokenMoveWithin`, subscribed for exactly that). */
+function edhaFateOccupantsOfSquare(scene, x, y) {
+  const gs = scene?.grid?.size || 100;
+  // scene.tokens, NOT canvas.tokens.placeables: the GM applier may be looking at another scene
+  // (players relay placement through them), and the placeables list would then be the wrong scene's.
+  return [...(scene?.tokens ?? [])].filter(td => {
+    if (!td?.actor) return false;
+    const c = edhaTokenDocCenter(td);
+    return Math.abs(c.x - x) < gs / 2 && Math.abs(c.y - y) < gs / 2;
+  }).map(td => td.uuid).filter(Boolean);
+}
 async function edhaFateCreateSnareRegionGM(scene, owner, x, y, snareId) {
   try {
     if (!scene || !owner) return null;
     const gs = scene.grid?.size || 100;
+    const armedOver = edhaFateOccupantsOfSquare(scene, x, y);   // R-13: already standing there = armed, not sprung
     const [region] = await scene.createEmbeddedDocuments("Region", [{
       name: `${owner.name} — Snare`, color: EDHA_COLOR_HEX.green || "#5fb04f",
       shapes: [{ type: "rectangle", x: x - gs / 2, y: y - gs / 2, width: gs, height: gs, hole: false }],
-      behaviors: [{ type: "edha-content.fate-snare", name: "Snare Trigger", system: { ownerUuid: owner.uuid, snareId } }],
+      behaviors: [{ type: "edha-content.fate-snare", name: "Snare Trigger", system: { ownerUuid: owner.uuid, snareId, armedOver } }],
       flags: { "edha-content": { fateSnare: true, snareId, owner: owner.uuid } },
     }]);
     return region ?? null;
@@ -13282,9 +13378,11 @@ async function edhaFatePlaceCore(item, h, kind) {
     const entry = { id: foundry.utils.randomID(), sceneId: scene.id, templateId: tpl?.id, x: pt.x, y: pt.y, talent: item.name };
     if (isSnare) { entry.inevitable = false; entry.formula = item.system?.damage?.formula || EDHA_FATE_SNARE_DMG; entry.type = item.system?.damage?.type || "keen"; }
     // Queued RMW (07-26n) — the pick-point already resolved above; fresh read inside the lock.
+    let evicted = [];   // R-37(1): hoisted out of the lock so the placement card can NAME what fizzled
     const list = await edhaOwnerListQueue(owner, isSnare ? "snares" : "ordained", async () => {
       const cur = isSnare ? edhaGetSnares(owner) : edhaGetOrdained(owner);
       const res = edhaListPush(foundry.utils.deepClone(cur), entry, { cap, evict: h.evict || "oldest" });
+      evicted = res.evicted ?? [];
       for (const drop of res.evicted) {   // canvas cleanup stays here, by hand (§9o trap 3)
         try { void scene.templates?.get(drop.templateId)?.delete()?.catch(() => {}); } catch (e) {}
         if (isSnare && drop) await edhaFateDeleteSnareRegion(scene, drop.id);
@@ -13295,9 +13393,18 @@ async function edhaFatePlaceCore(item, h, kind) {
     if (isSnare) await edhaFateDropSnareRegion(owner, scene, pt.x, pt.y, entry.id);
     const guard = edhaActorRuleOf(owner, "edha-zone-guard");
     const thp = guard?.handler?.thpFormula ? Math.max(0, Math.floor(edhaEvalSync(guard.handler.thpFormula, owner.getRollData()))) : 0;
+    /* R-37(1) (Ben 2026-09-06 (a)): at the cap the oldest marker fizzles — and the ONLY sign of it
+     * was the "(2/2)" count staying put, which reads like nothing happened. Name what was spent.
+     * The eviction is `evict: "oldest"` (the Fate convention, Ben R1), so this is normally one
+     * entry; the join covers a cap that shrank between placements. */
+    const fizzText = evicted.length
+      // "trap" / "Marker square" are the fallbacks the OTHER marker cards already use for an entry
+      // with no `talent` stamp — and they are not talent names, which iron rule 2b's lint enforces.
+      ? ` The oldest — <strong>${evicted.map(d => d.talent || (isSnare ? "trap" : "Marker square")).join("</strong>, <strong>")}</strong> — ${evicted.length === 1 ? "fizzles" : "fizzle"} to make room.`
+      : "";
     edhaTreeCard(owner, null, isSnare
-      ? `<p>🪢 <strong>${item.name}</strong> set (${list.length}/${cap}). The first enemy to enter or pass through it springs it: damage + <strong>Restrained</strong>.</p>`
-      : `<p>✦ <strong>${item.name}</strong> set (${list.length}/${cap}). Allies beginning their turn on it gain +1 all defenses${thp > 0 ? ` and Temp HP = ${thp} (${guard.item.name})` : ""}, and may Aid at up to 30 ft.</p>`);
+      ? `<p>🪢 <strong>${item.name}</strong> set (${list.length}/${cap}).${fizzText} The first enemy to enter or pass through it springs it: damage + <strong>Restrained</strong>.</p>`
+      : `<p>✦ <strong>${item.name}</strong> set (${list.length}/${cap}).${fizzText} Allies beginning their turn on it gain +1 all defenses${thp > 0 ? ` and Temp HP = ${thp} (${guard.item.name})` : ""}, and may Aid at up to 30 ft.</p>`);
   } catch (e) { console.error("Edha Content | Fate place marker failed", e); }
 }
 
@@ -13585,7 +13692,11 @@ async function edhaFateTurnStart(combat) {
       const guard = edhaActorRuleOf(owner, "edha-zone-guard");
       const thp = guard?.handler?.thpFormula ? Math.max(0, Math.floor(edhaEvalSync(guard.handler.thpFormula, owner.getRollData()))) : 0;
       if (thp > 0) await edhaGrantTempHpCross(ally, thp, guard.item.name);
-      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>✦ <strong>${onSq.talent || "Marker square"}</strong> (${owner.name}): ${ally.name} begins its turn ordained — +1 all defenses${thp > 0 ? `, Temp HP ${thp}` : ""}, and may take the Aid action at up to 30 ft (execute by hand).</p>` });
+      /* R-37(3) (Ben 2026-09-06 (a)): the card's headline is the ORDAINED-placing talent, so an
+       * unattributed ", Temp HP 2" credited the Temp HP to the wrong document — the grant comes
+       * from the owner's `edha-zone-guard` rule, and edhaGrantTempHpCross already stores THAT
+       * talent as the THP source (R-36). Name it here too, exactly as the placement card does. */
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>✦ <strong>${onSq.talent || "Marker square"}</strong> (${owner.name}): ${ally.name} begins its turn ordained — +1 all defenses${thp > 0 ? `, Temp HP ${thp} (${guard.item.name})` : ""}, and may take the Aid action at up to 30 ft (execute by hand).</p>` });
     }
   } catch (e) { console.error("Edha Content | Fate turn-start failed", e); }
 }
@@ -17142,26 +17253,38 @@ async function edhaRunPulse(item, h) {
     return true;
   });
   const note = h.note ? ` <span style="opacity:.85;font-size:.9em">${h.note}</span>` : "";
-  const gmAccounting = async (applied) => {
+  /* R-32 (Ben 2026-09-06 (a)): "affected N" was the ambiguous word — it counted the sweep's REACH,
+   * not the board's change, so five already-Weakened enemies read "affected 5". Both cards now say
+   * "swept" for the reach and carry the newly-changed count beside it when there is one. */
+  const gmAccounting = async (applied, newlyNote = "") => {
     if (!enemies || (!skips.hidden && !skips.wall)) return;
     const unseen = [];
     if (skips.hidden) unseen.push(`${skips.hidden} hidden`);
     if (skips.wall) unseen.push(`${skips.wall} behind a wall`);
     // GM-only — MUST be posted by the GM, never authored by the using player (a whisper is
     // visible to its author, so a player would otherwise see these counts on their own screen).
-    await edhaPostGmCard(owner, `<p>🕵️ <strong>${item.name}</strong> full sweep for the GM: ${inRange.length} enem${inRange.length === 1 ? "y" : "ies"} in range, affected ${applied} — also skipped ${unseen.join(", ")} (not shown to the player).</p>`);
+    await edhaPostGmCard(owner, `<p>🕵️ <strong>${item.name}</strong> full sweep for the GM: ${inRange.length} enem${inRange.length === 1 ? "y" : "ies"} in range, swept ${applied}${newlyNote} — also skipped ${unseen.join(", ")} (not shown to the player).</p>`);
   };
   if (String(h.kind || "heal") === "status") {
     const sid = h.statusId; if (!sid) return;
-    let applied = 0;
+    let applied = 0, newly = 0;
+    /* R-32: `applied` is INTENT (every creature the sweep reached and was allowed to write to);
+     * `newly` is STATE (how many of those did not already carry the status). The old card reported
+     * only the first and called it "affected", which is true of the sweep and false of the board —
+     * the difference is invisible exactly when it matters most, a re-pulse that changed nothing.
+     * `has` is read BEFORE the toggle, per creature; the relay branch reports its own intent. */
     // Players don't own enemy actors — edhaToggleStatus relays to the GM client when needed.
-    for (const t of picked) { try { if (await edhaToggleStatus(t.actor, sid, true)) applied++; } catch (e) {} }
+    for (const t of picked) {
+      const had = !!t.actor?.statuses?.has?.(sid);
+      try { if (await edhaToggleStatus(t.actor, sid, true)) { applied++; if (!had) newly++; } } catch (e) {}
+    }
     if (enemies) {
       const visTotal = picked.length + skips.ally;   // what the player can see
       const skipNote = skips.ally ? ` — skipped ${skips.ally} with an ally adjacent` : "";
+      const newlyNote = ` · newly <strong>${edhaConditionLabel(sid)}</strong> ${newly}`;
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
-        content: `<p>☠️ <strong>${item.name}</strong> (${owner.name}): <strong>${edhaConditionLabel(sid)}</strong> on ${applied} of ${visTotal} enem${visTotal === 1 ? "y" : "ies"} you can see within ${ft} ft${h.requireIsolated ? " (Isolated)" : ""}${skipNote}.${note}</p>` });
-      await gmAccounting(applied);
+        content: `<p>☠️ <strong>${item.name}</strong> (${owner.name}): swept ${applied}${newlyNote} — of ${visTotal} enem${visTotal === 1 ? "y" : "ies"} you can see within ${ft} ft${h.requireIsolated ? " (Isolated)" : ""}${skipNote}.${note}</p>` });
+      await gmAccounting(applied, newlyNote);
       return;
     }
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
@@ -17778,6 +17901,11 @@ class EdhaHazardRegionBehavior extends foundry.data.regionBehaviors.RegionBehavi
       damageFormula: new FF.StringField({ required: true, initial: "1d6", label: "Damage formula (baked dice)" }),
       damageType: new FF.StringField({ required: true, initial: "energy", label: "Damage type" }),
       sourceName: new FF.StringField({ required: false, initial: "", label: "Source" }),
+      /* R-6 (Ben 2026-09-06 (b)) — one actor this terrain never burns. A GENERIC dial, blank by
+       * default, so no existing hazard changes behaviour; Fault Line is the only caller that fills
+       * it in (see edhaFaultLine). Allies and enemies inside are still caught — the ruling spares
+       * the CASTER and nobody else. */
+      exemptActorUuid: new FF.StringField({ required: false, blank: true, initial: "", label: "This actor is immune to it (blank = nobody)" }),
     };
   }
   async _handleRegionEvent(event) {
@@ -17785,6 +17913,7 @@ class EdhaHazardRegionBehavior extends foundry.data.regionBehaviors.RegionBehavi
       if (!edhaNoOtherActiveGM()) return;   // one applier — the PRIMITIVE half on purpose (no isGM: a GM-less table still springs it)
       const actor = event?.data?.token?.actor;
       if (!actor) return;
+      if (this.exemptActorUuid && actor.uuid === this.exemptActorUuid) return;   // R-6
       const roll = await (new Roll(this.damageFormula || "0")).evaluate();
       const amt = Math.max(0, Math.floor(roll.total));
       if (amt <= 0) return;
@@ -17804,13 +17933,28 @@ class EdhaHazardRegionBehavior extends foundry.data.regionBehaviors.RegionBehavi
 // stale-check below reads the ledger before the first spring's queued consume lands, so dedupe lives
 // in edhaFateSpringSnare's in-flight guard (bench run 6, 2026-07-27c), NOT here — every spring path
 // shares it. `displace` does NOT bypass these events (run-6 runbook fact).
+/* R-13 — the ARM decision, split out pure so it is pinnable without a Region. `armedOver` is the
+ * set of token uuids that were ALREADY in the square when the snare was laid (stamped by
+ * edhaFateCreateSnareRegionGM). For them the creation-time `tokenEnter` is not an entry and is
+ * ignored; the first time one of them MOVES (out of the square, or within it) that IS the
+ * pass-through the card promises, and the snare springs. Everyone else is unchanged: they spring
+ * on enter / move-in and never on a move event, because by then the snare is consumed anyway. */
+function edhaSnareArmedSpringDecision(eventName, tokenUuid, armedOver = []) {
+  const grandfathered = (armedOver ?? []).includes(tokenUuid);
+  const isMove = eventName === "tokenMoveOut" || eventName === "tokenMoveWithin";
+  return grandfathered ? isMove : !isMove;
+}
 class EdhaFateSnareRegionBehavior extends foundry.data.regionBehaviors.RegionBehaviorType {
   static defineSchema() {
     const FF = foundry.data.fields;
     return {
-      events: this._createEventsField({ events: ["tokenEnter", "tokenMoveIn"], initial: ["tokenEnter", "tokenMoveIn"] }),
+      /* tokenMoveOut / tokenMoveWithin joined for R-13 alone: they are the ONLY events a creature
+       * that was standing on the square at placement can produce, and the decision below ignores
+       * them for everybody else. */
+      events: this._createEventsField({ events: ["tokenEnter", "tokenMoveIn", "tokenMoveOut", "tokenMoveWithin"], initial: ["tokenEnter", "tokenMoveIn", "tokenMoveOut", "tokenMoveWithin"] }),
       ownerUuid: new FF.StringField({ required: true, initial: "", label: "Snare owner UUID" }),
       snareId: new FF.StringField({ required: true, initial: "", label: "Snare id" }),
+      armedOver: new FF.ArrayField(new FF.StringField(), { required: false, initial: [], label: "Tokens standing here when it was laid (armed, not sprung)" }),
     };
   }
   async _handleRegionEvent(event) {
@@ -17818,6 +17962,7 @@ class EdhaFateSnareRegionBehavior extends foundry.data.regionBehaviors.RegionBeh
       if (!edhaNoOtherActiveGM()) return;   // one applier — the PRIMITIVE half on purpose (no isGM: a GM-less table still springs it)
       const actor = event?.data?.token?.actor; if (!actor) return;
       if ((actor.system?.resources?.hea?.value ?? 1) <= 0) return;       // dead tokens don't spring traps
+      if (!edhaSnareArmedSpringDecision(event?.name, event?.data?.token?.uuid, this.armedOver)) return;   // R-13
       const owner = await edhaResolveActorRef(this.ownerUuid);
       if (!owner) return;
       const snare = edhaGetSnares(owner).find(s => s.id === this.snareId); if (!snare) return;   // already sprung / stale
@@ -18788,10 +18933,14 @@ function edhaRegisterNativeEventSystem() {
            * formula and contest dials off that item instead of a module constant — editing the
            * talent's damage in Foundry actually changes what the spring rolls. */
           await edhaSetOwnerList(owner, key, list.map(x => x === e ? { ...x, [field]: true, sourceItemUuid: item.uuid } : x));
-          // A POINT-BOUND entry (charges — 2bY) has no creature name; say which marker instead.
+          // A POINT-BOUND entry (charges / snares — 2bY) has no creature name; say which marker instead.
           const eName = e.name || `${e.talent || label} #${list.indexOf(e) + 1}`;
+          /* R-37(2) (Ben 2026-09-06 (a)): this sentence read "the snares on Snare #1 **is**
+           * inevitable" — a plural ledger key agreeing with a singular verb, wrapped around an
+           * "on <creature>" clause a point-bound marker has no creature for. `e.name` is exactly
+           * the creature-bound test: a point-bound entry has none and falls back to eName above. */
           ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
-            content: `<p>📋 <strong>${item.name}</strong>: the ${label} on <strong>${eName}</strong>${e.proh ? ` ("<em>${e.proh.text}</em>")` : ""} is <strong>${field}</strong>.${this.note ? ` <span style="opacity:.8">${this.note}</span>` : ""}</p>` });
+            content: `<p>📋 <strong>${item.name}</strong>: ${edhaAnnotateSentence(eName, label, field, e.proh?.text || "", !!e.name)}${this.note ? ` <span style="opacity:.8">${this.note}</span>` : ""}</p>` });
           if (key === "charges") edhaPostChargesCard(owner);   // refresh the Detonate buttons so the ⊕ shows (2bY — keyed on the LEDGER, not a talent)
         });
       }
@@ -19139,20 +19288,8 @@ function edhaRegisterNativeEventSystem() {
       } catch (e) { console.error("Edha Content | scene defense buff failed", e); }
     },
   });
-  api.registerItemEventHandlerType({
-    source: "edha-content", type: "edha-aoe-template",
-    label: "Edha: AoE Template", description: "Drop a [Size] burst on use and auto-target the captured tokens for this talent's card.",
-    config: { schema: {
-      sizeByRank: new FF.BooleanField({ required: false, initial: true, label: "Size scales with leyline rank" }),
-      sizeFt: new FF.NumberField({ required: false, initial: 0, label: "Fixed size (ft, if not by rank)" }),
-      affects: new FF.StringField({ required: true, initial: "enemies", choices: choices("enemies", "allies", "all", "none"), label: "Affects" }),
-      color: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "white", "blue", "black", "red", "green"), label: "Color (scaling/override)" }),
-    } },
-    executor: async function (event) {
-      const item = event.item; if (!item?.actor) return;
-      await edhaPlaceAoe(item, { area: { shape: "circle", sizeByRank: !!this.sizeByRank, sizeFt: this.sizeFt }, affects: this.affects || "enemies", color: this.color || null });
-    },
-  });
+  // `edha-aoe-template` was registered here until 2026-09-06 — RETIRED per R-78 (item 48); see the
+  // retirement note where edhaPlaceAoe used to live. Use `edha-burst` for every area effect.
   api.registerItemEventHandlerType({
     source: "edha-content", type: "edha-place-hazard",
     label: "Edha: Place Dangerous Terrain", description: "Drop a scene-long dangerous-terrain Region that damages tokens on enter / start of turn. mode trail (2bY) makes it a TOGGLE instead: on use the trail arms/ends, and while armed every space you move through becomes a dangerous-terrain patch with this rule's damage (Walking Ruin's shape; the move watcher reads the rule).",
@@ -20631,7 +20768,7 @@ Hooks.once("ready", () => {
       bakedEffects: pj(h.bakedEffectsJson), extraItems: pj(h.extraItemsJson),
     });
   };
-  const api = { syncNow: edhaSyncNow, syncActorTalents: edhaSyncActorTalents, syncAllCharacters: edhaSyncAllCharacters, syncAdversary: edhaSyncAdversaryActor, syncAllAdversaries: edhaSyncAllAdversaries, setTempHp: edhaSetTempHp, getTempHp: edhaGetTempHp, summon: summonByTalent, showRange: edhaShowRange, aoe: edhaPlaceAoe, drawMana: edhaDrawMana, grantDrawMana: edhaGrantDrawMana, resetTriggers: edhaResetTriggers, fixSettings: edhaFixSettings, clearKindleLights: edhaClearKindleLights, refreshDefBuffs: edhaRefreshDefBuffs, migrateDerivations: edhaMigrateDerivations, fixPcTokens: edhaFixPcTokens, grantStartingKit: edhaGrantStartingKit, creationWizard: edhaCreationWizard, newCharacter: edhaCreatorNewCharacter, isIsolated: edhaIsIsolated, toggleStatus: edhaToggleStatus, darkVeilSweep: edhaDarkVeilSweep, allEffects: edhaAllEffects, raiseStakes: edhaRaiseStakesApi, rally: edhaRallyApi, skipBudget: (v) => { globalThis.edhaSkipBudget = !!v; return globalThis.edhaSkipBudget; }, debug: edhaSetDebug, debugSave: edhaDebugSave, debugsave: edhaDebugSave };   // lowercase alias — Ben typed edha.debugsave() at the 07-12 bench and got a TypeError
+  const api = { syncNow: edhaSyncNow, syncActorTalents: edhaSyncActorTalents, syncAllCharacters: edhaSyncAllCharacters, syncAdversary: edhaSyncAdversaryActor, syncAllAdversaries: edhaSyncAllAdversaries, setTempHp: edhaSetTempHp, getTempHp: edhaGetTempHp, summon: summonByTalent, showRange: edhaShowRange, drawMana: edhaDrawMana, grantDrawMana: edhaGrantDrawMana, resetTriggers: edhaResetTriggers, fixSettings: edhaFixSettings, clearKindleLights: edhaClearKindleLights, refreshDefBuffs: edhaRefreshDefBuffs, migrateDerivations: edhaMigrateDerivations, fixPcTokens: edhaFixPcTokens, grantStartingKit: edhaGrantStartingKit, creationWizard: edhaCreationWizard, newCharacter: edhaCreatorNewCharacter, isIsolated: edhaIsIsolated, toggleStatus: edhaToggleStatus, darkVeilSweep: edhaDarkVeilSweep, allEffects: edhaAllEffects, raiseStakes: edhaRaiseStakesApi, rally: edhaRallyApi, skipBudget: (v) => { globalThis.edhaSkipBudget = !!v; return globalThis.edhaSkipBudget; }, debug: edhaSetDebug, debugSave: edhaDebugSave, debugsave: edhaDebugSave };   // lowercase alias — Ben typed edha.debugsave() at the 07-12 bench and got a TypeError
   const mod = game.modules?.get("edha-content");
   if (mod) mod.api = api;
   globalThis.edha = Object.assign(globalThis.edha || {}, api);

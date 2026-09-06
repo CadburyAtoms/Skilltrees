@@ -842,6 +842,17 @@ nowhere.** The fooled-target riders both found the belief ledger: **Spearing Bea
       keys on the illusion and not on the drop. **NEG 2:** the copy's own `damaged` / `seeming-break`
       cards still print; R-51 narrows `ally-drops` only.
 
+### Fix pass 7b re-tests (item 48, 2026-09-06 — ENGINE-ONLY, F5; no rebuild, no ⟳ Sync)
+
+- [ ] 🤖 **R-31 — a PC's own Phantom Double TOKEN is labelled "(Illusion)".** Cast Phantom Double
+      from a **character** and read the canvas: the copy's TOKEN name is now `<X> (Illusion)`, not
+      the bare `<X>`; the ACTOR name is unchanged (it always carried the suffix). **NEG (the control
+      that makes this a rule and not a rename):** run the Mistheron's **The Seeming** in the same
+      take — an ADVERSARY's copy keeps its **plain** token name, because the veil is what the
+      mechanic is for. **POS 2:** a PC copying an **ally** labels *that ally's* token, not the
+      caster's. Headless pins cover all three (`tests/illusion-token-label.test.js`); what the bench
+      adds is that the label reaches the real prototype token and reads right at hover distance.
+
 ---
 
 
@@ -877,6 +888,24 @@ Shatter Focus announces off the same helper), 2bJ-8 (Puppeteer's offer names the
 literal braces), and the Cruel Step straddle spot-check (the x=5156 straddle slid the FULL 10 ft,
 and the ⚑ near-parallel residual also completed — `testCollision` from the collinear origin reads
 false while a genuine crossing ray reads true). Evidence in the 07-26m delta.
+
+### Fix pass 7b re-tests (item 48, 2026-09-06 — ENGINE-ONLY, F5; no rebuild, no ⟳ Sync)
+
+- [ ] 🤖 **R-32 — Black Draw Mana's sweep card reports BOTH numbers.** Weaken five enemies in Black
+      Attunement Range **first**, then Draw Mana. The card must read **"swept 5 · newly Weakened
+      0"** — the old "affected 5" is gone. **POS (same take, second half):** clear the statuses and
+      re-pulse — "swept 5 · newly Weakened 5". **MIXED (the one that proves the two counts are
+      independent):** leave 3 of 5 Weakened → "swept 5 · newly Weakened 2". **NEG:** put one enemy
+      behind a wall so the GM accounting whisper opens — it carries the SAME pair and the same word,
+      plus its "1 behind a wall" line.
+- [ ] 🤖 **R-38 — a Dread-Presence-refused move posts one whispered card.** With a Weakened creature
+      inside the presence owner's range, drag it toward one of its allies. Expect: the move is still
+      refused, AND a whispered card **"🚫 Dread Presence: … is Weakened and cannot willingly move
+      closer to …"** reaches the mover's owners + the GM (check on the player client that it is a
+      whisper, not a public post). **THROTTLE (the point of the row):** drag it again in the SAME
+      round — **no second card**; advance a round and drag again — **one new card**. **NEG:** a move
+      that does not close on any ally is neither refused nor announced. Watch a multi-waypoint drag
+      in particular: that is the case the throttle exists for.
 
 ---
 
@@ -1096,6 +1125,20 @@ the ally, on both casts. That is the still-open R-6, not this row.
 **ANSWERED 2026-09-06, R-6 (b): spare the CASTER only, everyone else including allies is caught**
 (ruling answered 2026-09-06 → item 48, ENGINE-ONLY, F5).)*
 
+### Fix pass 7b re-tests (item 48, 2026-09-06 — ENGINE-ONLY, F5; no rebuild, no ⟳ Sync)
+
+- [ ] 🤖 **R-6 — Fault Line's dangerous terrain spares the CASTER, and only the caster.** Re-run the
+      bench-run-33 stage exactly (caster at the line's origin, an ally 15 ft along it, a foe at
+      30 ft, a second ally off the centreline). Expect: the caster takes the burst-only HP loss it
+      already took and **no** "🔥 … takes N energy from dangerous terrain" line naming it — run 33's
+      43 → 35 becomes 43 → 43 minus nothing, since the caster is never in its own line either.
+      **POS (load-bearing — this ruling spares ONE actor, not a side):** the ALLY in the rectangle
+      still takes its terrain tick on top of the burst; so does the foe. **NEG:** the rectangle is
+      still drawn from the caster's own square (the footprint was deliberately NOT moved — see the
+      delta), so the Drawing looks identical to run 33's; only the tick changed. **NEG 2:** any
+      OTHER dangerous terrain — a Set Charge circle, Walking Ruin's trail — still catches its own
+      owner, because the exemption is a per-Region dial and only Fault Line fills it in.
+
 
 ---
 
@@ -1267,12 +1310,40 @@ in the 07-27c delta.
 > square is found by the spring's 5-ft nearest-enemy scan, so the Foreknown click rolled
 > `(2)d(2*3+2)+2 + ((2)d(2*3+2)) = 20` and dealt it; placement adjacent does NOT insta-spring, only
 > placement *under* a creature does — which narrows the rulings question, it does not remove it).
-> ⚑ Still a ruling (unchanged): should placement under a creature ARM instead of spring?
+> ~~⚑ Still a ruling (unchanged): should placement under a creature ARM instead of spring?~~
+> **ANSWERED 2026-09-06, R-13 (a): ARM, do not spring** (ruling answered 2026-09-06 → item 48,
+> ENGINE-ONLY, F5). The 🤖 re-test is the row below; nothing here is a ruling any more.
 >
 > ⚑ **Harness note, not a defect:** the picker's explicit **Cancel button** could not be exercised —
 > a synthetic activation of a DialogV2 submit button falls through to the `default` (`ok`) button.
 > The close/X path proven above takes the identical `!picked` branch in `edhaZoneLinkMarkers`, so the
 > refund branch itself is verified; only the literal Cancel-button click is a Ben row.
+
+### Fix pass 7b re-tests (item 48, 2026-09-06 — ENGINE-ONLY, F5; no rebuild, no ⟳ Sync)
+
+- [ ] 🤖 **R-13 — a snare laid UNDER a creature arms, and springs on that creature's next move.**
+      Place a snare directly under an ENEMY token. Expect **no spring**: no damage card, no
+      Restrained, the ledger entry and the green template both still there. Then **move that
+      creature** — the snare springs then, with its normal card, roll and Restrained. **POS (bench
+      run 7's own control, re-run so the fix is not mistaken for a dead trigger):** a snare on an
+      EMPTY square that an enemy then walks into or through springs on entry exactly as before.
+      **NEG:** placement ADJACENT still does not spring (it never did). Watch for a double-fire on
+      the move leg — the in-flight guard is what must still be carrying that.
+- [ ] 🤖 **R-37(1) — a marker placed AT the cap names what fizzled.** With your Ordained cap full,
+      place another square. The card must read "(N/N)" **and** "The oldest — *&lt;name&gt;* — fizzles
+      to make room", naming the evicted square's own talent. **NEG:** placing BELOW the cap says
+      nothing about fizzling. **POS 2:** the same clause appears on a snare placement at the snare
+      cap.
+- [ ] 🤖 **R-37(2) — Inevitable Snare's card reads as one sentence about one snare.** Set a snare,
+      then use Inevitable Snare. The card must read **"Snare #1 is now inevitable."** — not "the
+      snares on Snare #1 is inevitable". **NEG (the branch that must NOT change):** Sealed Edict on
+      a creature still reads *"the Edict on **&lt;creature&gt;** ("*prohibition*") is now sealed."*
+- [ ] 🤖 **R-37(3) — the ordained turn-start card credits the Temp HP to Bulwark Ground.** With
+      Bulwark Ground owned and an ally starting its turn on your Ordained square, the card must read
+      "… +1 all defenses, **Temp HP N (Bulwark Ground)**, and may take the Aid action …" — the
+      headline stays the ordained-placing talent. **POS:** the ally's Temp HP tooltip on the sheet
+      names the same talent (that half shipped with R-36 in fix pass 7a). **NEG:** without Bulwark
+      Ground the card has no Temp HP clause at all.
 
 ---
 
@@ -2412,11 +2483,16 @@ carry **Shortbow + Knife** (and the packed Shortbow reads `attack.type: "ranged"
       live row: `display: flex`, `padding: 5px 8px`, `border: 1px solid rgba(255,214,107,.25)`,
       `cursor: pointer`, and a custom-appearance radio rendered at 14 px. What is wanted is whether the
       bordered rows / hover glow / selected state read as clickable to you at the table.
-- [ ] 🤖 **DEFECT (bench run 38) — the weapon picker says "a Agent" / "a Envoy"** — the intro line is
-      built as `` `the arms a ${pathName} actually carries` `` (`register-skills.js`, `edhaCreatorWeaponPick`),
-      so every vowel-initial path reads ungrammatically: measured live as *"the arms a Agent actually
-      carries"* and *"the arms a Envoy actually carries"*. Hunter/Leader/Scholar/Warrior are unaffected.
-      **ENGINE-ONLY** (no pack rebuild) — next fix pass; re-read the line on all six paths afterwards.
+- [ ] 🤖 **DEFECT (bench run 38) — the weapon picker said "a Agent" / "a Envoy" — ✅ FIXED, re-read
+      it live.** The intro line was built as `` `the arms a ${pathName} actually carries` `` with the
+      article as a LITERAL (`register-skills.js`, `edhaCreatorWeaponPick`), so every vowel-initial
+      path read ungrammatically: measured live as *"the arms a Agent actually carries"* and *"the
+      arms a Envoy actually carries"*. Hunter/Leader/Scholar/Warrior were unaffected.
+      **SHIPPED 2026-09-06, item 48 (ENGINE-ONLY, F5)** as one `edhaArticle` helper, pinned in
+      `tests/article-agreement.test.js`. **Re-test:** open the weapon step on **all six** paths and
+      read the line — **an** Agent, **an** Envoy, **a** Hunter, **a** Leader, **a** Scholar,
+      **a** Warrior. The four that were already right are the negative control: a fix that merely
+      flipped the literal would break them.
 - [ ] ⚑ **Preview panel centered (07-19y)** — the derived-stat box on the attributes page is
       centered ("90% of the way to clean design" — say what the last 10% needs).
 - [ ] ⚑ **Attributes page — VETO CHECK (Ben)** — are **12 points at L1 / max 3 per attribute at
@@ -2471,6 +2547,17 @@ carry **Shortbow + Knife** (and the packed Shortbow reads `attack.type: "ranged"
       are edits to `source-materials/maps/thyrcross.map.json` (+ regenerated
       `thyrcross-nations.json`); `lint_map.py`'s four WARNs must go to zero. Nothing here needs a
       Foundry table until the map-data item ships.
+
+### Fix pass 7b re-tests (item 48, 2026-09-06 — ENGINE-ONLY, F5; no rebuild, no ⟳ Sync)
+
+- [ ] 🤖 **R-55 — the sheet's three budget chips all read SPENT / total.** Open a correctly built
+      L1 PC and read the header strip: **Talents 2 / 4**, **Attr pts 12 / 12**, **Skill rnks 5 / 5**.
+      The two that used to read `0 / 12` and `0 / 5` are the fix. **POS (the case the old convention
+      hid behind):** a PC with only **1** talent taken must read **1 / 4**, not 3 / 4 — 2-of-4 reads
+      the same under both conventions, which is exactly why the strip carried two of them unnoticed.
+      **NEG 1:** the chip COLOURS are unchanged and still describe what is LEFT — a fully spent chip
+      is still the "full" colour, an overspent one still the "over" colour. **NEG 2:** the skill
+      denominator is still the Edha budget **5**, never the system table's 4 and never `-1/4`.
 
 ---
 
@@ -2817,8 +2904,11 @@ retarget. The retarget (`edhaSetUserTargets(caught)`, engine ~L10829) lives **on
 reachable only from the **`edha-aoe-template`** handler — and a sweep of `data/` finds **zero**
 `edha-aoe-template` rules against **12** `edha-burst` rules. That zero-consumer fact is now
 `EDHA_RULINGS.md` **R-78**. **ANSWERED 2026-09-06, R-78 (a): RETIRE the handler** (ruling answered
-2026-09-06 → item 48, ENGINE-ONLY, F5) — this row's remaining clause retires once `edha-aoe-template`
-is removed. **The retarget itself is PROVEN, on a declared staged rule** (iron rule 2b —
+2026-09-06 → item 48, ENGINE-ONLY, F5) — ✅ **SHIPPED 2026-09-06, item 48, so this row's remaining
+clause is RETIRED**: `edha-aoe-template`'s registration and `edhaPlaceAoe` are gone from the engine
+(with the `edha.aoe()` console alias), `edha-burst` is untouched, and the retirement is pinned in
+`tests/aoe-template-retired.test.js`. The row is now history in full — the one live confirmation
+left is the dropdown row below. **The retarget itself is PROVEN, on a declared staged rule** (iron rule 2b —
 a scratch talent `B38 AoE Probe` on `Bench — Red`, `edha-aoe-template {sizeByRank:false, sizeFt:20,
 affects:"enemies"}` on `use`, deleted afterwards): with `Bench — Order` (an ALLY, disposition 1)
 pre-targeted and doubling as the burst centre, the placement left `game.user.targets` holding **exactly
@@ -2830,6 +2920,17 @@ the geometry:** `Bench — Order`, `Bench — White` and the caster were all ins
 of them ended up targeted — the `affects: enemies` filter holds. ⚠️ Operating note: `createEmbeddedDocuments`
 for a talent on a bench PC returns **`[]`** silently until `edha.skipBudget(true)` — the talent-budget gate,
 not a schema error.)*
+
+### Fix pass 7b re-tests (item 48, 2026-09-06 — ENGINE-ONLY, F5; no rebuild, no ⟳ Sync)
+
+- [ ] 🤖 **R-78 — `edha-aoe-template` is gone from the Events-tab dropdown.** Open any talent's
+      Events tab, add a rule, and read the handler list: **`Edha: AoE Template` is no longer
+      offered**. **POS (the control that matters — retiring the wrong one would look identical from
+      the dropdown alone):** `Edha: Point Burst` / `edha-burst` is still there, and a shipped burst
+      talent (Flame Surge, Sudden Growth, Mending Aura) still places and detonates normally.
+      **NEG:** the console `edha.aoe()` alias is gone too (`typeof edha.aoe === "undefined"`), and
+      the module still loads clean — that alias would have been a load-time ReferenceError if the
+      function had been removed without it.
 *(**Seeming recast replaces the token · Seeming copy hover-name — BOTH RETIRED on evidence
 2026-07-28j, bench run 22.** First cast created **exactly one** copy token (`Mistheron (3)`) and ran the
 belief sweep — *"6 onlooker(s) tested — 3 taken in, 3 see through it"*. Recasting while that copy still

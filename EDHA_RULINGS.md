@@ -93,6 +93,7 @@ authored data references it, so no pack rebuild). *(Bench run 38, from the AoE b
 > (it is an edha-* type), `ENGINE_INDEX.md` row struck with the date, name-keyed allowlist
 > unaffected. ENGINE-ONLY, F5 → **item 48**; gates must stay green; retire the "AoE burst
 > auto-target" row's remaining clause.
+> **SHIPPED** in PR #217 (ENGINE-ONLY, bench-pending) — tests/aoe-template-retired.test.js:"R-78: edha-aoe-template is NOT a registered handler type, and edha-burst still is"
 
 **R-77. Should the Investiture-max persist be behind the primary-GM gate, or stay owner-gated?**
 Found at bench run 36 while driving item 12's two-GM row. `edhaDeriveInvestiture`'s persist branch
@@ -158,6 +159,7 @@ snapshot state afterwards). Same shape as R-5 but on the Region rather than the 
 > from the tick; Ben did not choose which. The ally-in-the-line burst + terrain double hit stays.
 > ENGINE-ONLY, F5 → **item 48**; lane R then a 🤖 re-test of the run-33 Fault Line row with the
 > caster unharmed.
+> **SHIPPED** in PR #217 (ENGINE-ONLY, bench-pending) — tests/fault-line-caster-exempt.test.js:"R-6: the CASTER standing in their own Fault Line takes 0 — no damage, no card". Of the two exits Ben left open, this took EXEMPT-THE-CASTER and kept the rectangle on the damaged line; the delta says why.
 
 *(R-7 — Final Decree / Edict's Temp HP rider scope — ANSWERED 2026-09-05, moved to §K.)*
 
@@ -203,6 +205,7 @@ only placement directly under a creature does. *(3B-C.)*
 > creature's next move.** Spec: the Fate snare `RegionBehavior` ignores tokens already inside at
 > placement (arm-only), springs on enter / pass-through per the card. ENGINE-ONLY, F5 → **item 48**;
 > pin; 🤖 re-test = place under a creature (no spring), creature moves (springs).
+> **SHIPPED** in PR #217 (ENGINE-ONLY, bench-pending) — tests/snare-arm-under.test.js:"R-13 behavior: placed UNDER a creature — the creation-time tokenEnter does NOT spring it"
 
 **R-14. Melee mutation riders fire on a nat-1 graze application.** Intended? *(3B-C.)*
 > **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (c) FOLLOW EACH RIDER'S OWN CARD** —
@@ -459,12 +462,14 @@ deliberate for The Seeming's veil, but no veil applies in the PC direction. *(3A
 > **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) YES, label the PC's copy
 > "(Illusion)"**; the Mistheron's veiled copy keeps its plain name. ENGINE-ONLY (the copy-token
 > spawner, character owners only), F5 → **item 48**; 🤖 re-test in the Blue block.
+> **SHIPPED** in PR #217 (ENGINE-ONLY, bench-pending) — tests/illusion-token-label.test.js:"R-31: a CHARACTER's copy — the token is labelled (Illusion)"
 
 **R-32. Black Draw Mana's sweep card says "affected 5"** when all five were already Weakened —
 intent vs. state. Which should the card report? *(3A-10.)*
 > **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) report BOTH: "swept N · newly
 > Weakened M".** ENGINE-ONLY (the pulse runner's card text), F5 → **item 48**; headless pin on the
 > string; 🤖 re-test = Black Draw Mana on five pre-Weakened targets reads swept 5 · newly 0.
+> **SHIPPED** in PR #217 (ENGINE-ONLY, bench-pending) — tests/pulse-sweep-counts.test.js:"R-32: five ALREADY-Weakened enemies read 'swept 5 · newly Weakened 0'"
 
 *(R-33 — 2bI-3 card text vs behaviour (Coercive Pressure) — ANSWERED 2026-09-06, moved to §K.)*
 
@@ -526,6 +531,7 @@ Snare #1 **is** inevitable" · Bulwark's THP attribution. Fix all three, or leav
 > on Snare #1 is" → correct number); (3) Bulwark's THP attribution. (1) and (3) are engine card text
 > (ENGINE-ONLY, F5); (2) is authored text if it lives on the card (REBUILD + ↻ Sync) or engine if it
 > is a generated string — check which. → **item 48**.
+> **SHIPPED** in PR #217 (ENGINE-ONLY, bench-pending) — tests/card-attribution-nits.test.js:"R-37(1): placing at the cap NAMES the oldest ground that fizzled" / "R-37(2): a POINT-bound entry names only the marker" / "R-37(3): the ordained turn-start card credits the Temp HP to the GUARD talent". (2) was ENGINE-generated after all, not authored — checked before editing, so all three shipped in one ENGINE-ONLY pass.
 
 **R-38. Dread Presence's veto silently makes a Weakened target unmovable.** Three moves resolved with
 no error and did nothing; the only evidence anywhere was `ui.notifications`. Working as designed —
@@ -535,6 +541,7 @@ post something the player can see? *(3A-13.)*
 > the mover naming the talent that stopped it.** Spec: the `preUpdateToken` veto path posts one
 > whispered card (mover's owners + GM) per refused move, throttled per token per round so a dragged
 > path does not spam. ENGINE-ONLY, F5 → **item 48**; headless pin on the message; 🤖 re-test.
+> **SHIPPED** in PR #217 (ENGINE-ONLY, bench-pending) — tests/move-veto-announce.test.js:"R-38: a dragged path — two refusals in one round — posts ONE card; the next round posts another"
 
 *(R-39 — roll dialog colour cue — ANSWERED 2026-09-06, moved to §K.)*
 
@@ -725,6 +732,7 @@ error. *(Bench run 21.)*
 > total.** Attr pts and Skill rnks flip to spent/total to match Talents. ENGINE-ONLY (sheet
 > decorator), F5 → **item 48**; headless pin on the three strings for a built L1 PC (12/12, 5/5,
 > 2/4).
+> **SHIPPED** in PR #217 (ENGINE-ONLY, bench-pending) — tests/budget-chips.test.js:"R-55: a built L1 PC reads 12/12, 5/5 and 2/4 — spent over total, all three"
 
 **R-56. Should adversaries use the Edha Senses Range table too, or keep the cosmere ladder?** Fix
 pass E made PC sheets read the Edha table (`Character_Building_Rules.md` §Senses Range: AWA 0 → 10 ft,

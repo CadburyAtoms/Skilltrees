@@ -75,6 +75,85 @@ items). Item 34 stays open until 34b (loot caches) ships as its own PR.
 
 ---
 
+## 2026-09-06 — FIX PASS 7b (item 48): cards, labels, zones — **all nine ship** (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
+
+Eight rulings and one bench defect, and they turned out to be **three families, not nine bugs**: a
+card that reports a number or a name without saying whose it is (R-32, R-37 ×3, R-55); a string
+with grammar baked in as a literal (R-37(2), the weapon picker); and a zone that catches the wrong
+creature at the wrong moment (R-13, R-6). R-31 and R-78 stand alone. One themed commit each, each
+mutation-proved: revert the one line and the named case fails.
+
+- **R-31 (a) — a PC's Phantom Double token is labelled "(Illusion)"; the Mistheron's is not.** The
+  spawner always made two names — the ACTOR carried the suffix, the TOKEN did not — and the plain
+  token name is deliberate: a fooled onlooker must not read the answer off the canvas. No veil
+  applies in the PC direction, so the discriminator is now `caster.type === "character"`. A document
+  property, not a talent name (2b), so any future adversary Seeming inherits the veil free.
+- **R-32 (a) — "swept N · newly &lt;Status&gt; M".** ⚠️ The transferable lesson: `edhaToggleStatus`
+  returns whether the write was PERMITTED, not whether anything changed, so "affected 5" over five
+  already-Weakened enemies was *true of the sweep and false of the board*. The number was never
+  wrong; the WORD was. Both counts now ride the public card and the GM's behind-the-wall whisper.
+- **R-37 (a) — all three nits.** (1) At the marker cap the oldest fizzles and the only evidence was
+  the "(N/N)" count standing still; `res.evicted` is hoisted out of the `edhaOwnerListQueue`
+  callback so the card names it. (2) *"the snares on Snare #1 **is** inevitable"* — checked first
+  per the ruling: **engine-generated, not authored**, so ENGINE-ONLY. Fixed with `edhaSingularLabel`
+  plus `edhaAnnotateSentence`, the latter **extracted from the executor so the string is pinnable at
+  all** (an executor inside a `registerItemEventHandlerType` config is unreachable from the harness).
+  (3) The ordained turn-start card credited the Temp HP to the ordained-placing talent; the grant
+  itself was already right (R-36, 7a) and the PLACEMENT card had named the guard correctly all
+  along — which is what made it a drift rather than a design choice.
+- **R-38 (a) — a refused move says so.** The `preUpdateToken` veto worked; the evidence did not
+  exist. It now posts one whispered card (mover's owners + GMs) naming the talent, throttled per
+  token per round through `edhaMoveVetoAnnounceGate` — **a dragged path re-fires the hook once per
+  waypoint**, so an unthrottled card is the same silence wearing a louder costume.
+- **R-55 (a) — the three budget chips read SPENT / total.** One helper prints all three and it
+  printed the remainder. Invisible on Talents, because 2-of-4 reads "2 / 4" either way — which is
+  exactly how the strip carried two conventions unnoticed while "Attr pts 0 / 12" sat beside a
+  fully-spent sheet looking like an error. Now 2 / 4, 12 / 12, 5 / 5. The row COLOURS still key on
+  what remains, because that is what they colour.
+- **R-78 (a) — `edha-aoe-template` is retired.** A second, parallel AoE model the click-to-place /
+  Detonate pipeline had replaced, with **zero** rules in `data/` against 12 `edha-burst` ones — all
+  it still did was offer a dead choice in the Events-tab dropdown beside the live one. Gone:
+  the registration, `edhaPlaceAoe`, and the `edha.aoe()` console alias (which would otherwise be a
+  load-time ReferenceError). Kept: everything the burst path shares. **Untouched by design** —
+  `data/native-vocabulary.json` and lint-refs' vocabulary (this was an edha-* type, so the engine's
+  registrations were the whole record) and the name-keyed allowlist, which this could not affect.
+- **R-13 (a) — a snare laid UNDER a creature arms.** ⚠️ **v13 delivers `tokenEnter` to every token
+  already inside a Region the instant the Region is created**, and at the behavior that is
+  indistinguishable from walking in — which is the whole bug, and exactly why bench run 7 saw
+  placement *adjacent* behave and placement *under* detonate. Occupants are computed BEFORE the
+  Region exists (`edhaFateOccupantsOfSquare`, reading `scene.tokens` — the GM applier may be on
+  another scene), stamped as `armedOver`, and gated by `edhaSnareArmedSpringDecision`; their next
+  MOVE springs it, which is why `tokenMoveOut`/`tokenMoveWithin` joined the subscription.
+- **R-6 (b) — Fault Line's terrain spares the CASTER, and only the caster.** Ben left the HOW open;
+  this ships the exemption rather than shifting the rectangle, **because the rectangle IS the line
+  that was just damaged** — moving it a square out would make the terrain and the burst disagree
+  about the same ground (a creature at the far end standing on no terrain, or terrain over ground
+  nothing was damaged on). The dial (`exemptActorUuid`) is generic and visible on the Region sheet
+  but blank everywhere except Fault Line, and it rides the player→GM relay too — miss that half and
+  a player's own cast still burns them.
+- **Weapon picker (bench run 38) — "an Agent", not "a Agent".** One `edhaArticle` helper, because a
+  literal article reproduces itself at every future interpolation site. It chooses by SOUND, so it
+  also handles "a university" and "an hour".
+
+**Proven:** 51 new headless cases across nine files, and **eleven one-line reversions each failing
+their own pin** (the mutation table is in PR #217's body). Gates green: all ten local gates PASS,
+including lint-refs pass 7 — the name-keyed allowlist is still empty and R-78's removal neither
+grew nor shrank it.
+
+**🤖 for the bench (nine rows, each with its negative control):** R-31 in Blue, R-32 + R-38 in
+Black, R-13 + R-37(1)(2)(3) in Fate, R-6 in Destruction, R-55 and the weapon-picker re-read in the
+wizard block, R-78's dropdown check in the bench-results section. **Nothing here is ⚑** — every one
+is drivable from a Foundry client.
+
+**Found out of scope (reported, not fixed):** `scripts/foundry-build.js`'s `aoeRule()` still
+generates `edha-aoe-template` rules for any talent with `TALENT_TARGETING[...].area` and no
+`.burst`. Today that is only **Lay Foundation**, whose authored overlay supplies an `edha-zone`
+rule that REPLACES the generated events — which is why the pack ships zero of them and why gates
+stay green. But it is a live generator for a retired handler: delete Lay Foundation's authored
+`events` and the next build mints a rule nothing can execute. Build-script scope, its own item.
+
+---
+
 ## 2026-09-06 — FIX PASS 7a (item 47): the heal / status / resource family — **seven of the eight rulings ship; R-25 is not engine-only and did not** (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
 
 Eight of the 2026-09-06 rulings landed on the same family of small engine writers. Seven shipped as

@@ -1586,7 +1586,7 @@ the PM should carry forward:
 
 ---
 
-## 48. [ ] Fix pass 7b — cards, labels, zones (R-31, R-32, R-37, R-38, R-55, R-78, R-13, R-6, weapon-picker article)
+## 48. [x] Fix pass 7b — cards, labels, zones (R-31, R-32, R-37, R-38, R-55, R-78, R-13, R-6, weapon-picker article — 2026-09-06, PR #217; all nine shipped)
 
 **Why:** Eight more 2026-09-06 rulings plus one bench-run-38 defect (PR #207, merged 0ff8d14) land
 on card text, labels, and zone behavior. Ben's answers:
@@ -1620,6 +1620,36 @@ ruling recorded ANSWERED/shipped in `EDHA_RULINGS.md` §K.
 
 **PM:** lane B · model opus · size M · deps 45, 46 · verify: 9 headless pins + green gates
 post-retirement. ENGINE-ONLY (F5).
+
+**RESULT (2026-09-06, PR #217 — ENGINE-ONLY, F5; bench-pending):** all nine shipped, one themed
+commit each, 51 headless cases across nine new `tests/` files, and eleven one-line reversions each
+proved to fail its own pin. All ten local gates PASS. Four findings for the PM:
+
+1. **R-37(2) was ENGINE-generated, not authored** — the ruling asked to check before editing, and
+   the answer is that the string is built in the `edha-owner-list` annotate executor
+   (`register-skills.js`), not in `data/authored/deity-fate.json`. So all three nits shipped in one
+   ENGINE-ONLY pass and no rebuild-class item is needed. Fate's own authored `events` were not
+   touched.
+2. **`scripts/foundry-build.js`'s `aoeRule()` is a live generator for the handler R-78 just
+   retired** — out of this item's scope and NOT fixed. It fires for any talent with
+   `TALENT_TARGETING[...].area` and no `.burst`, which today is only **Lay Foundation**, whose
+   authored overlay supplies an `edha-zone` rule that REPLACES the generated events. That is why
+   `data/` sweeps find zero and why the CI pack build stays green. But delete Lay Foundation's
+   authored `events` and the next build mints a rule nothing can execute. Worth a small
+   TOOLING-only item.
+3. **R-6's HOW was a real choice and it is recorded.** Ben left "lay the rectangle one square out"
+   and "exempt the caster's token" open; this took the exemption, because the rectangle IS the line
+   that was just damaged and shifting it would make the terrain and the burst disagree about the
+   same ground. The dial is generic and blank everywhere but Fault Line. If Ben prefers the shifted
+   rectangle at the bench, it is a one-line change to `edhaFaultLine` plus a re-pin.
+4. **R-32's card string.** The ruling's ANSWERED block quotes the spec as `"swept N · newly Weakened
+   M"` and its 🤖 line paraphrases it as "swept 5 · newly 0". The shipped card follows the quoted
+   spec and carries the condition label: **"swept 5 · newly Weakened 0"**. Say the word if the
+   shorter form was meant.
+
+The name-keyed allowlist is unchanged (still empty) — lint-refs pass 7 passes, and R-78's removal
+neither grew nor shrank it. `data/native-vocabulary.json` and lint-refs' vocabulary were left alone
+by design, as the ruling specified.
 
 ---
 
@@ -1940,3 +1970,29 @@ field; packs rebuild clean; 2bM-6 is 🤖 with the three cases.
 
 **PM:** lane B · model opus · size S · deps 46 · verify: mutation pin + pack build. ENGINE + AUTHORED
 → REBUILD + ⟳ Sync (Ben's deploy). Found by item 47.
+
+---
+
+## 64. [ ] `foundry-build.js` still mints `edha-aoe-template` rules — a type the engine retired (R-78)
+
+**Why:** item 48 (PR #217, 2026-09-06) retired the `edha-aoe-template` handler on Ben's R-78 (a) —
+zero consumers in shipped data. But `scripts/foundry-build.js`'s `aoeRule()` still GENERATES an
+`edha-aoe-template` rule for any talent with `TALENT_TARGETING[…].area` and no `.burst`. Today that is
+only **Lay Foundation**, whose authored overlay supplies an `edha-zone` rule that REPLACES the
+generated events — which is why the `data/` sweeps find zero and the CI pack build stays green.
+Delete that authored `events` block and the next build mints a rule nothing can execute.
+
+**What to do:** retire `aoeRule()` (or route the `.area`-without-`.burst` case to an `edha-burst`
+rule, if any talent should still get one — check `TALENT_TARGETING` for every `.area` entry and
+say which); pin it with a build-report diff showing the six packs byte-identical before/after
+(the only generated rule it could have emitted is masked by the overlay today); a lint or build
+guard that fails if the build ever emits a rule type the engine does not register (the engine's
+own `registerItemEventHandlerType` calls are the record — `lint-refs.js` pass 9 already parses
+them, so this may be one assertion added there).
+
+**Done when:** `grep -c aoeRule scripts/foundry-build.js` = 0 (or the routed form is tested);
+packs byte-identical; the unregistered-type guard fails under a mutation that re-adds the
+generator.
+
+**PM:** lane R · model sonnet · size S · deps 48 ✓ · verify: build-report parity + the guard's
+mutation. TOOLING-only (no rebuild — the packs do not change). Found by item 48.
