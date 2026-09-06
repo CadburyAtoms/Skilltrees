@@ -33,6 +33,131 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-05 — FIX PASS 4 (weekend marathon): **bench run 31's `Unravel Everything` defect is ROOT-CAUSED, and the bench's hypothesis is REFUTED. It is not the rule dispatcher and not the ledger queue — both are clean. It is the fire-and-forget SOCKET RELAY one level down: `game.socket.emit` has no acknowledgement, so `edhaWriteStatusMark` returned `true` a full round trip before the marker status existed on the casting client, and `edhaOwnerList`'s mark-wins reconcile then dropped every entry the same activation had just placed.** New primitive **`edhaAwaitLocal`**; two relays adopt it; **4 talents affected, 3 of them never reported** (the audit found Spreading Omen silently destroying a ledger entry). **ENGINE-ONLY → F5 / relaunch. No pack rebuild, no ⟳ Sync, no authored data touched.**
+
+### Rulings (none)
+
+Nothing here needed a judgment call: the card, the engine and the docs already agreed on what
+`Unravel Everything` should do — the mechanism just did not survive a player client. No ruling was
+taken by default either.
+
+### Bug root causes
+
+- **THE ONE BUG (all four talents below): a relayed write is not a write, and the same activation
+  reads it back.** `game.socket.emit` is socket.io without an ack callback — Foundry acknowledges
+  no `module.*` traffic — so `edhaWriteStatusMark`'s non-owner branch emitted `apply-status-mark`
+  and returned `true` *immediately*: before the GM client had the packet, before it created the
+  ActiveEffect, and before that creation was broadcast back. `edhaOwnerList`'s "the mark wins"
+  reconcile filters out any entry whose creature does not carry the marker status **as seen on the
+  reading client**, so the H3 fill committed `lists.omens = [A, B]` and the very next rule read
+  **zero** members. Hence *"sweeping your omens: no creatures on the ledger"*, and hence the
+  matched pair: the second cast worked because the first cast's marks had long since landed.
+- **What the bench suspected, and why it is NOT that (checked in source, not assumed).** The
+  report named the `use`-event dispatcher, "running order-0 and order-1 rules without awaiting the
+  ledger write". Both suspects are clean:
+  - the cosmere system's dispatcher — `fireEvent`, `systems/cosmere-rpg/index.js` ~12110 — filters
+    by event, `.sort((a, b) => a.order - b.order)`, and reduces with `if ((await prev) === false)
+    return false;` … `return await rule.handler.execute(…)`. Ordered rules are genuinely
+    sequenced, and a rule returning `false` genuinely stops the rest.
+  - `edhaOwnerListQueue` genuinely serialises and genuinely commits: the fill's
+    `return await edhaOwnerListQueue(...)` resolves only after `edhaSetOwnerList`'s `setFlag`.
+    The engine flag really does hold both entries when the sweep runs — the bench could have read
+    `lists.omens` at that instant and seen them. It is the RECONCILE, not the ledger, that reads
+    empty.
+
+  The failure is therefore one level *down* from the handler, not one level up: three of the
+  engine's relay helpers return success for a write that has not happened yet.
+- **Why 15 green Chaos bench rows never caught it.** `targetActor.isOwner` is TRUE for a GM on
+  every actor, so a GM caster takes the direct branch and awaits a real `toggleStatusEffect`. The
+  defect needs a client that owns the CASTER but not the TARGET — which only became drivable when
+  the player-client window opened at runs 30/31. Zero impact on GM-driven play, before or after
+  this fix.
+- **Second instance, found by audit and never reported — `Spreading Omen` was silently DESTROYING
+  a ledger entry.** Its two `edha-test-success` placements (victim at order 1, nearest enemy
+  within 10 ft at order 2) are separate queued read-modify-writes. Order 2 re-reads
+  `edhaOwnerList` *inside* its queue, gets a reconcile-emptied list because order 1's mark is
+  still in flight, and commits `[near-victim]` **over** the victim entry. Net effect at the table:
+  the victim keeps its Omen icon but is no longer on the ledger (an orphan mark the owner can
+  never detonate), the cap reads one low, and the second card says "(1/2)" instead of "(2/2)".
+  Strictly worse than the reported symptom, and it would have outlived a fix aimed only at Unravel
+  Everything.
+- **Third and fourth instances, cosmetic — `Vital Diagnosis` and `Studied Mark` reveal a stale
+  condition list.** Both are apply-then-reveal pairs: rule 0 writes a status on a creature the
+  player does not own, rule 1 calls `edhaRevealFacts`, whose `conditions` fact reads
+  `target.statuses`. The freshly-applied `Diagnosed` / `Insight` was missing from the card.
+  Studied Mark's half runs through the *counter* relay (`edhaCounterWriteRemote`), which is the
+  same two lines as `edhaWriteStatusMark` — the family is the relay SHAPE, not one function.
+
+### The family — every authored activation with ≥2 rules on one event, swept and given a verdict
+
+All 50 were read (`data/authored/*.json`, grouped by event, sorted by `order`, each later rule
+checked against what the earlier ones write). Only rules whose write is RELAYED (a target the
+caster does not own) and read back in the same activation can fail; a write to the caster's own
+actor is a direct awaited write and is safe by construction.
+
+| talent (file) | event | shape | verdict |
+|---|---|---|---|
+| **Unravel Everything** (chaos) | `use` | H3 place `enemies-range` → `edha-def-test {vs: none, targetList: omens}` | **AFFECTED** — the reported defect. Fixed. |
+| **Spreading Omen** (chaos) | `edha-test-success` | H3 place `victim` → H3 place `near-victim` | **AFFECTED, unreported** — order 2 committed over order 1. Fixed. |
+| **Vital Diagnosis** (life) | `use` | `edha-apply-status` → `edha-reveal {conditions}` | **AFFECTED, cosmetic** — reveal omitted the new condition. Fixed. |
+| **Studied Mark** (knowledge) | `use` | H3 counter place → `edha-reveal {conditions}` | **AFFECTED, cosmetic** — counter relay, same shape. Fixed. |
+| Cascade Collapse · Isolating Pressure · Isolating Ruin · Unweaving · Unravel Everything (chaos) | `edha-test-success` | status / damage / release chains | safe — nothing later reads what an earlier rule wrote (the `isolated` gates read a PRIOR activation's write; the sweep snapshots its roster before the loop). |
+| Entropy Strike (chaos) · Reaper's Harvest (death) · Cold Eyes (hunter) · Hollow Command (black) | mixed | ledger/status write → damage or resource | safe — the later rule reads neither the ledger nor the status. |
+| The Final Study ×2 · Killing Blow ×2 (knowledge) | `edha-test-success` / `edha-test-fail` | counter READ → counter write | safe — the order is read-then-write, which is protective. |
+| Risen Servant · Speak with the Fallen (death) | `use` | summon / spend → spend / note | safe — no read-back of the relayed write. |
+| Necrotic Cascade · Withering Touch (death) · Predatory Strike · Pack Share · The Pack (knowledge) · Concord (order) · Crown of Thorns · Mantle of the Aspirant · Momentum of Victory · Unstoppable Advance · Warlord's Advance · Warlord's Fury (power) · Natural Order (green) | `use` | `edha-self-status` → note / defense-buff | safe — a write to the CASTER's own actor is direct and awaited; `isOwner` is true. |
+| Rousing Presence · Steadfast Challenge (envoy) · Ghostly Walls (blue) · Reckless Gambit (red) | mixed | status write → focus / mod / note | safe — the status is written but never read back this activation. |
+| Hunter's Discipline (knowledge) · Decisive Command · Tactical Ploy · Valiant Intervention (leader) · Field Medicine (scholar) · Investiture of Command (power) · Reactive Analysis (blue) · Unnerving Approach · Withering Ray (black) · Reckless Momentum · Red Leyline Attunement (red) · Feinting Strike (warrior) · Mantle + Reaper's Harvest on `edha-watch-rule` | mixed | config-only pairs, notes, mods | safe — no relayed write is read back. |
+
+**Relays deliberately left un-adopted, with the reason.** `edhaToggleStatus`, `edhaApplyTimedStatus`
+and `edhaSetEdhaFlag` have the identical fire-and-forget shape and **no measured read-back
+consumer** — no authored activation reads back what they write. Adopting them would put a poll into
+bulk status sweeps (which toggle statuses off across many actors) for no correctness gain today.
+They are named here and in `ENGINE_INDEX.md` so the next pass that finds a read-back consumer knows
+the fix is one line: wrap the post-emit state in `edhaAwaitLocal`.
+
+### New REUSABLE primitives
+
+- **`edhaAwaitLocal(test, { timeoutMs = 3000, stepMs = 25, label = "" }) → boolean`** — poll the
+  LOCAL documents until a relayed write is observable, then return. Reach for it at any relay whose
+  result is read back in the same activation. **Fails OPEN** on timeout (returns `false`, the caller
+  continues — the pre-fix behaviour) with a `console.warn`, because a relay that never lands must
+  not be silent. A throwing predicate resolves `false` rather than wedging. Generalises
+  `edhaAwaitExpertisePicks`' hand-rolled poll-until into something with a predicate.
+- **`edhaWriteStatusMark` and `edhaCounterWriteRemote` now honour their own contracts.** Both
+  returned `true` meaning "the mark landed" when it had not. `edhaWriteStatusMark` waits for the
+  status AND the `markedBy.<status>` flag (the reconcile reads the first, the damage post-pass
+  reads the second); `edhaCounterWriteRemote` waits for the status to arrive with the right count
+  on it, or to go, depending on direction. A failed wait raises a visible `ui.notifications.warn`
+  naming the creature.
+
+### Pinned
+
+`tests/relay-readback-race.test.js` — 6 cases. The load-bearing ones are **THE BENCH CASE** (an
+`order: 0` fill then an `order: 1` sweep in one activation, sequenced the way `fireEvent` does,
+asserting the sweep sees both Omens) and a **NEGATIVE CONTROL** that models the pre-fix relay inline
+(`emit`, `return true`) and asserts it still reproduces the bench's exact symptom — an empty sweep
+over a two-entry ledger — so the file pins the DIAGNOSIS, not just the patch. Plus `edhaAwaitLocal`'s
+resolve / timeout / throw behaviour, the `edhaWriteStatusMark` contract, and Spreading Omen's
+clobber. Mutation-verified: restoring the un-awaited relay in the engine (`if (false)` in place of
+the wait) fails exactly the two cases that pin the fix, and leaves the negative control passing.
+
+### Deploy
+
+**ENGINE-ONLY.** `module-src/scripts/register-skills.js` only — F5 / relaunch on Ben's machine, no
+`foundry-build`, no ⟳ Sync. `data/authored/*` untouched, and deliberately so: the sweep confirmed the
+authored rules are CORRECT as written — "place … then remove all your Omens simultaneously" IS two
+ordered `use` rules, and the engine now honours that instead of the authoring having to work around
+it.
+
+### Known limits / needs the table
+
+Four 🤖 rows in the Chaos / Life / Knowledge checklist sections. **Every one of them must be driven
+from `PlayerBench`** — a GM caster never took the broken branch and never will, so a GM re-test
+proves nothing about this fix. No ⚑: nothing here is Ben's judgment.
+
+---
+
 ## 2026-09-05 — BENCH RUN 31 (weekend marathon run 8): **fix pass 3 is VERIFIED GREEN — the Walking Ruin trail now drops for a player-driven move (0 → 3 patches on the identical staging), with the activeGM control still at 3 and no double-drop across two GM clients. Job 6b CLOSES on its last two shapes, the stale-token sight row closes, R-63 gets its first proven shape — and ONE NEW ENGINE DEFECT: `Unravel Everything` never detonates the Omens it places in the same activation.** **3 rows leave the checklist, 1 new row added, 1 half closed on a row that stays open, 1 engine defect found → `test-pass-fixes`.** Open queue **32 🤖 → 30 🤖**; **⚑ unchanged at 22 — no ⚑ row was touched.** **World restored to the start snapshot EXACTLY — field-level actor id-diff EMPTY across all 74 actors, and the ONLY scene deviation is the one `sight.range` write that IS the run's product.** DOCS-ONLY — no engine, no data, no pack rebuild owed.
 
 ### Deploy verified from both sides before anything was driven
