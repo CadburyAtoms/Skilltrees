@@ -469,42 +469,36 @@ off the heal. ⚠️ `edha.drawMana()` takes the **item**, not the actor — cal
 silently, which cost this run one call.)*
 
 
-- [ ] 🤖 **A SIDELESS creature is caught by NOTHING — the disposition fail-open batch (item 10,
-      2026-09-06).** Item 10 flipped 63 disposition defaults to fail CLOSED, so a creature whose side
-      will not resolve is now **neither an ally nor an enemy** and no side-filtered payload reaches
-      it. Build the probe once: drop any bench adversary token on the Playtest Map and set its
-      **Disposition to "Secret"** on the token config (the closest live stand-in for an unresolvable
-      side; if Secret still reads as a number on this build, say so in the result and instead use a
-      creature whose actor has **no token on the scene** — that is the same lookup failure and is what
-      the unit tests pin). Then drive these three, all from `Bench — Red` unless noted, with a normal
-      hostile token beside the probe as the **matched control**:
-      (a) **the burst capture** — any `affects: enemies` burst (Red's is the reference) centred to
-      cover both. Expected: the control takes the damage, **the probe takes none**; before this
-      change the probe was caught by every burst whose caster was not disposition 1.
-      (b) **the `edha-aura` adjacency sweep** — stand the probe adjacent to a `Bench — White` aura
-      owner. Expected: the aura's ActiveEffect lands on a real adjacent ally and **not** on the probe.
-      (c) **the Fortified Foundation** — fortify a Foundation and walk both tokens in. Expected: the
-      control eats the baked enter damage and rolls Agility; **the probe passes free**. Also confirm
-      the *owner* half: an owner whose own side does not resolve now gets a "could not resolve the
-      Foundation owner's side — not fortifying" warning instead of a Region that damages everyone.
-      Report anything that still fires on the probe with the site name — that is a missed site, not a
-      ruling.
+*(**A SIDELESS creature is caught by NOTHING — the disposition fail-open batch (item 10)** — ✅ CLOSED
+2026-09-06, bench run 38. **The predicate is PROVEN fail-closed live with a matched control; the row's
+three named sites (a)/(b)/(c) have NO live shape on this build.** This is a RESULT, not a queue item —
+the same category as pass 5.2's two `victim`-mode halves. Do not re-queue it.
 
-      ⚠️ **BENCH RUN 37 (2026-09-06) — THE PRIMARY PROBE RECIPE DOES NOT WORK ON THIS BUILD; use the
-      fallback. Row stays open, not driven.** Measured in-world on the hash-verified `57a8c950…`
-      deploy (item 10 batch 1 live): **`CONST.TOKEN_DISPOSITIONS.SECRET === -2`, a FINITE number.**
-      The fail-closed predicate is `edhaDisposHostile` (engine ~L4367), and it fails closed only on
-      `!Number.isFinite(...)` — so a **Secret** token is not sideless at all: re-running the engine's
-      own expression, `hostile(FRIENDLY, SECRET)` returns **`true`**, i.e. a Secret-disposition
-      creature still reads as an **enemy** and every side-filtered payload still reaches it. The row
-      anticipated this ("if Secret still reads as a number on this build, say so") — **it does, so
-      take the fallback**: the probe must be a creature whose **actor has no token on the scene**,
-      which is the lookup failure the unit tests pin (`hostile(FRIENDLY, undefined)` → **`false`**,
-      fail closed). The Playtest Map currently carries **only** dispositions `-1` and `1`, so there is
-      no pre-existing sideless token to reuse — the probe has to be staged, and staging it by setting
-      "Secret" on a token config will silently test nothing.
-      **Not driven through (a) / (b) / (c)** — the run ran out of budget after the fix-pass-6 block;
-      all three sites remain to do, with the corrected probe.
+**① The predicate, measured.** A bench-folder actor with **no token on the scene** (`B38 Sideless Probe`,
+deleted afterwards) re-run through the engine's own expression gives
+`edhaDisposHostile(Bench — Red, probe)` → **false** (fail closed), while the matched control
+`edhaDisposHostile(Bench — Red, Bench Target — Adjacent A)` — a tokened enemy at disposition −1 against
+the caster's +1 — gives **true**. That is the item-10 behaviour, in both directions, in one window.
+
+**② Why (a)/(b)/(c) cannot be driven — two measurements, not an opinion.**
+· **A placed token can never carry a non-finite disposition on this build.** `disposition: null` was
+pushed both at `createEmbeddedDocuments` time and via `update()` on a real bench token: Foundry coerced
+it to the numeric initial **−1** in both cases. So `edhaSideSame` / `edhaSideHostile`, which compare raw
+token dispositions, can never see a non-finite value from a token on the canvas. (Run 37 had already
+shown the primary "Secret" recipe is `−2`, i.e. finite and hostile.)
+· **`edhaActorSide()` always resolves**, because it falls back to `actor.prototypeToken.disposition`,
+which is a required numeric field: `prototypeToken.disposition: null` likewise coerced to **−1** at
+create AND at update. So the (c) OWNER half — `ownerSide === null` → *"could not resolve the Foundation
+owner's side — not fortifying"* (engine ~L14349) — is unreachable with any real actor.
+· And **(a) the burst capture, (b) the `edha-aura` adjacency sweep and (c) the Foundation enter are all
+CANVAS SWEEPS** (`edhaTokensInCircle` / `edhaTokensWithin` / a Region event). A token-less probe is
+never in the sweep in the first place, so driving them with the corrected probe would "pass" vacuously
+— which is worse than not driving them.
+
+**③ What that leaves.** The fail-closed change is live-provable only where a predicate resolves a
+*target actor* to a token and finds none — i.e. the `edhaDisposHostile` / `edhaSameDisposition` sites,
+which is what ① measured — plus `tests/disposition-failclosed.test.js`, which pins the pure form. No
+site fired on the probe.)*
 
 ## Migration machinery (cross-tree behaviour)
 
@@ -630,6 +624,15 @@ row's "one card" clause is read here as **one application**.)*
       Set-gated write: create the actor carrying the **correct** value so no Set is seeded, then make
       it stale in one update and read which `userId` writes. Expected once both clients are current:
       **exactly one write, from `Bench`.**
+      - ⛔ **STILL BLOCKED at bench run 38 (2026-09-06) — deliberately NOT driven, and the blocker is
+        unchanged.** The precondition was re-checked before anything else: on the join screen Ben's
+        **`Gamemaster` was already listed as active (option disabled)**, and it stayed active
+        throughout the run (`game.users.filter(u => u.active)` = `["Bench", "Gamemaster"]`). That is
+        the same session run 37 measured — connected since before last night's engine push — so it is
+        still running a pre-fix engine, and run 37's rule stands: **a two-GM gate row cannot be
+        verified while either GM client predates the deploy.** The deploy itself is not in doubt: the
+        served `register-skills.js` hashes **`57a8c950…`**, equal to `main`. **Waiting on one F5 of
+        Ben's `Gamemaster` client** (or a disconnect/reconnect), nothing else.
 
 *(**✅ RETIRED on evidence 2026-09-06, bench run 37 — the max-HP flip, BOTH halves, on the
 hash-verified `57a8c950…` deploy (fix pass 6 live).** On a **fresh client load, read before anything
@@ -2198,6 +2201,16 @@ so nothing was dropped.)*
       needs a Foundry table.
       ℹ️ **The aspect half is fine either way and needs no test:** 1118/1488 = **0.7513**, identical to
       the canvas aspect 2236/2976, so "not stretched or letterboxed" holds for both renders.
+      ℹ️ **2026-09-06 (bench run 38) — R-41's premise re-confirmed from the LIVE SERVER, not from the
+      repo.** The asset Foundry actually serves at
+      `/modules/edha-content/assets/thyrcross-map.jpg` is **231 802 bytes, SHA-256 `31e9a3b2…`** —
+      byte-identical to `main`'s committed file — and `assets/thyrcross-nations.json` hashes
+      `0c39bf04…`, likewise identical. So the **labelled** render is what the picker shows to a
+      player today, and every polygon/dead-spot number in R-42 was measured against exactly the
+      shipped data. **Nothing further is drivable here until R-41 and R-42 are answered** — four of
+      this block's six rows are ruling-gated, which is why the block sat 13 runs, not because no run
+      reached it. (The other two, *Weapon slot v3* and *Wizard fits the screen v2*, are retired
+      above.)
 *(**Derived-stat preview v2** — RETIRED on evidence 2026-07-28j, bench run 22, positive AND all three
 negative controls. Panel at STR3/SPD3/INT3/WIL3/AWA0/PRE0 read **Health 14 · Move 35 ft · Senses 10 ft**
 and the finished sheet read the same three; the six controls agreed cell for cell (Focus 5 · Phys 16 ·
@@ -2265,76 +2278,56 @@ first, Warrior made it **2**, and ↺ Change returned it to **1**, not 0. **NEG 
 on a PC that already had a starting path added no second rank — ℹ️ it shows a page banner
 "✅ Already chosen: Warrior" rather than the info toast the row predicted; same substance, different
 surface.)*
-- [ ] 🤖 **Wizard fits the screen v2 — the country page is re-clamped after its map lands (fixed
-      2026-07-28i; ⟳ sync + F5)** — run 21 measured **"Where are you from?"** at top **237**,
-      height **788**, bottom **1025** in a 1400×900 viewport: **125 px off the bottom**, while
-      every other page fitted. It read as a CSS gap (`.window-content` at `overflow-y: visible`,
-      `max-height: none`) but **no CSS changed and none needed to** — the scroll container is
-      `.dialog-content`, already capped at 76vh by rule L, and that cap is exactly why the box is
-      788 and not taller. The **stale `top`** was the bug: the map block ships `display:none` and
-      is revealed only after `thyrcross-nations.json` resolves, so Foundry centred a **426** px
-      dialog at (900−426)/2 = **237** and never looked again. A ResizeObserver now re-clamps any
-      wizard dialog that grows after it was positioned.
-      **THE POSITIVE:** open the country page on a short window (**make the browser ~900 px tall**
-      — this does not reproduce on a tall screen) and confirm the whole dialog is on-screen:
-      its bottom edge is at or above the viewport bottom, the **Choose ▶** button is reachable
-      without scrolling the page, and the map is still visible and still clickable through to a
-      nation after the reposition.
-      **NEGATIVE CONTROL 1 — pages that already fitted must NOT jump:** heroic and attributes
-      opened at top 177 and 142 (i.e. centred). They must still open centred, NOT shoved down to
-      a clamp. A fix that repositions everything is the wrong fix.
-      **NEGATIVE CONTROL 2 — the wizard must not fight you:** drag the country page to a legal
-      position and let go; it must STAY there. Re-clamping on drag would make the window
-      un-movable.
-      **NEGATIVE CONTROL 3 — the page still scrolls:** with the map showing, the country page's
-      inner content must still scroll (long nation prose reachable) rather than the dialog simply
-      being made taller.
-      - ⛔ **2026-07-28j (bench run 22) — BLOCKED ON THE HARNESS, and the blocker is structural:
-        the agent bench can NEVER verify a ResizeObserver fix.** The browser pane runs
-        `document.hidden === true` / `visibilityState "hidden"`, and a hidden page runs no
-        rendering steps: a `requestAnimationFrame` loop delivered **0 frames in 2.7 s**, and a
-        `ResizeObserver` **and** an `IntersectionObserver` newly attached to a live element each
-        fired **0 times** — including their spec-mandated initial observation. Measured, not
-        inferred. So the row's symptom reproduces exactly (top **237**, height **788**, bottom
-        **1025** in a 1400×900 viewport, **125 px** over, **Choose ▶** off-screen at bottom 1012)
-        but that is indistinguishable from an un-fired observer and **is not evidence against the
-        fix**. What run 22 CAN prove, and did: (a) the **mechanism is correct** — calling
-        `app.setPosition({})` by hand on that exact dialog moved it **237 → 112**, bottom **exactly
-        900**, i.e. the fix's chosen repair produces precisely the wanted result; (b) `setPosition`
-        re-clamps `top` into `[0, vh−height]` on every call, so `edhaDialogNeedsReposition`'s
-        premise holds; (c) the **render-callback contract the fix depends on is sound** —
-        `DialogV2.wait` passes the **DialogV2 instance** (verified against
-        `client/applications/api/dialog.mjs` L389–392 and by probe: `element` is the
-        `HTMLDialogElement`, `instanceof HTMLElement` true, `setPosition` a function), so
-        `watch(dlg)` does attach; (d) **NEG 1 holds** — heroic opened at top **169** (h 563) and
-        attributes at top **142** (h 617), both centred and fitting, neither shoved to a clamp.
-        **The row stays 🤖 with the blocker named** (a technical blocker is not a judgment call, so
-        it is not re-filed as ⚑) — but note that this blocker is **structural and permanent for the
-        agent bench**, not a this-run shortage, so whether it should become a ⚑ is a marker
-        decision for Ben rather than one a run should take on its own. What settles it is one look
-        at a ~900 px-tall VISIBLE browser.
-- [ ] 🤖 **Weapon slot v3 — path-curated (07-19y, Ben-approved lists) — THE ONE WEAPON-PICKER ROW
-      (absorbed 07-19q + 07-19v, 2026-07-27v)** — ONE weapon, never ×2 (the take-five ×2 reading is
-      reverted), and the list is the path's own arms: Agent = Knife/Sidesword/Staff · Envoy =
-      Sidesword/Knife/Staff · Hunter = Shortspear/Longspear/Axe (its kit already carries Shortbow +
-      Knife) · Leader = Longsword/Longspear/Mace (kit has Sidesword) · Scholar = Knife/Mace (kit has
-      Staff) · Warrior = the full ≤2g list. Confirm each path's picker shows exactly its list. The
-      picker opens after the kit lands (fresh heroic pick OR the 🎒 backfill): **Take it** grants the
-      picked weapon, **Choose later** grants nothing. ⚑ The rows should LOOK pickable (bordered rows,
-      hover glow, visible radio, blue selected state), and the picked weapon is **kitItem-stamped**, so
-      **Start over / ↺ Change heroic remove it with the kit** (the second Knife on Test Agent-Blue was
-      the un-stamped survivor of a pre-fix restart — prune that one by hand).
-      - ✅ **2026-07-28h (bench run 21) — TWO of the six lists verified, and every mechanical
-        clause passes. The row now stays ONLY for the four unverified path lists.**
-        · **Warrior = the full ≤2g list** — exactly 10 options, Staff 3c · Knife 25c · Shield 35c
-        · Shortspear 35c · Longspear 5s · Axe 65c · Mace 65c · Hammer 13s · Sidesword 13s ·
-        Longsword 2g, each with its skill named. · **Scholar = Knife/Mace** — exactly those two,
-        nothing else (driven from the player client).
-        · **ONE weapon, never ×2**: the picked Longsword landed at **`quantity: 1`**.
-        · **kitItem-stamped**: the picked weapon carries `flags.edha-content.kitItem = true`,
-        alongside the 9 other kit items (10 stamped in total), so Start over / ↺ Change will take
-        it with the kit. · **Take it / Choose later** both present and labelled.
-        ⛔ **Still unverified: Agent · Envoy · Hunter · Leader.**
+*(**Wizard fits the screen v2 — the country page is re-clamped after its map lands** — ✅ RETIRED on
+evidence 2026-09-06, bench run 38, POSITIVE + all three negative controls. ⭐ **The blocker run 22 called
+"structural and permanent for the agent bench" is NOT permanent — front the browser pane and it goes
+away.** Measured both sides in one sitting on a 1400×900 emulated viewport:
+· **With the pane HIDDEN** (`document.hidden === true`) the symptom reproduced exactly — country page at
+top **237**, height **788**, bottom **1025**, i.e. **125 px over**, with **Choose ▶** off-screen at bottom
+**1012** — and the instrument agreed it was an un-fired observer, not a broken fix: `requestAnimationFrame`
+delivered **0 frames in 3 s**, a freshly attached `ResizeObserver` fired **0 times** and an
+`IntersectionObserver` **0 times**, initial observations included.
+· **After `tabs_select` + one screenshot**, `document.hidden` flipped to **false** and the same live dialog
+had **already moved to top 112, bottom exactly 900** — which is precisely the position run 22 computed by
+hand with `setPosition({})` (237 → 112, bottom 900). **Choose ▶** now at bottom **887**, fully reachable.
+· **The map survives the reposition:** still visible at 284×378 (top 202, bottom 580) and still clickable
+through to a nation — three polygon clicks drove the dropdown Ashkar → **Thalendor** → **Vorsk**, and
+`pointerenter` still gave the tooltip *"Goldenport / west coast (inlets = Life-nexus trade arteries)"*.
+· **NEG 1 — pages that already fitted did NOT jump:** the heroic page opened at top **382** with height 136
+((900−136)/2 = 382, i.e. centred) and the attributes page at top **142** with height 617 (run 22's number),
+neither shoved to a clamp.
+· **NEG 3 — the page still scrolls:** `.dialog-content` is `overflow-y: auto` at scrollHeight 684 == client
+684, and the inner `.edha-cw-preview` genuinely scrolls (scrollHeight **559** vs client **188**;
+`scrollTop = 120` stuck) — so the long nation prose is reachable and the dialog was NOT simply made taller.
+· ⚠️ **NEG 2 is a PROXY, stated as one:** a real header drag could not be landed at this pane scale (both a
+synthesized pointer sequence and a `left_click_drag` left the window at 370,112 — it never moved, so the
+drag proved nothing either way). Instead `setPosition({top: 40, left: 200})` — a legal, fully-on-screen
+position, bottom 828 — was applied and the window **stayed there for 4 s**, so the observer does not fight
+a legal position. The pointer path itself is unproven.)*
+*(**Weapon slot v3 — path-curated** — ✅ RETIRED on evidence 2026-09-06, bench run 38: **all six path
+lists are now verified**, and every mechanical clause with it. Run 21 had Warrior (the full ≤2g list, 10
+options) and Scholar (Knife/Mace); run 38 drove the remaining four on a scratch bench PC (`B38 Weapon
+Probe`, deleted at the end), reading the live picker's radio rows: **Agent = Staff 3c / Knife 25c /
+Sidesword 13s** — exactly 3 · **Envoy = Staff / Knife / Sidesword** — exactly 3 · **Hunter = Shortspear
+35c / Longspear 5s / Axe 65c** — exactly 3 · **Leader = Longspear 5s / Mace 65c / Longsword 2g** — exactly
+3. Rows are price-sorted, each naming its skill. **Both entry routes drove:** the 🎒 backfill (Agent) and a
+fresh heroic pick (Envoy/Hunter/Leader). **Take it** granted exactly ONE Sidesword at `quantity: 1` with
+`flags.edha-content.kitItem = true` (9 stamped items in total); **Choose later** granted nothing — the
+actor's weapon list was unchanged (`Unarmed Strike` only) before and after. ⭐ **The ↺ Change clause is now
+MEASURED, not inferred from the stamp:** with the picked Sidesword held, ↺ Change heroic returned the
+weapon list to `Unarmed Strike` alone and the kitItem count to **0**. Side-confirmations: Hunter's kit does
+carry **Shortbow + Knife** (and the packed Shortbow reads `attack.type: "ranged"`), Leader's carries
+**Sidesword**. The "do the rows LOOK pickable" half is split out as its own ⚑ row below.)*
+- [ ] ⚑ **Weapon picker — does the list LOOK pickable? (split out of Weapon slot v3, 2026-09-06)** — a
+      verdict on the look, not a test. The CSS **is** applied — bench run 38 read the computed style off a
+      live row: `display: flex`, `padding: 5px 8px`, `border: 1px solid rgba(255,214,107,.25)`,
+      `cursor: pointer`, and a custom-appearance radio rendered at 14 px. What is wanted is whether the
+      bordered rows / hover glow / selected state read as clickable to you at the table.
+- [ ] 🤖 **DEFECT (bench run 38) — the weapon picker says "a Agent" / "a Envoy"** — the intro line is
+      built as `` `the arms a ${pathName} actually carries` `` (`register-skills.js`, `edhaCreatorWeaponPick`),
+      so every vowel-initial path reads ungrammatically: measured live as *"the arms a Agent actually
+      carries"* and *"the arms a Envoy actually carries"*. Hunter/Leader/Scholar/Warrior are unaffected.
+      **ENGINE-ONLY** (no pack rebuild) — next fix pass; re-read the line on all six paths afterwards.
 - [ ] ⚑ **Preview panel centered (07-19y)** — the derived-stat box on the attributes page is
       centered ("90% of the way to clean design" — say what the last 10% needs).
 - [ ] ⚑ **Attributes page — VETO CHECK (Ben)** — are **12 points at L1 / max 3 per attribute at
@@ -2721,8 +2714,25 @@ and three different damage types: **"+5 keen strike"** (Pack Pressure, bench run
 the premise test, its `amountFormula` edited on the document to a flat 5) · **"+2 impact strike"**
 consuming its arm (Momentum of Victory, bench run 7) · **"+8 vital strike"** (Withering Touch off a real
 Sidesword hit in combat, bench run 15). The graze-clone guard covers the family.)*
-- [ ] 🤖 **AoE burst auto-target** — place any burst (e.g. Flame Surge): the caught tokens end up
-      actually TARGETED (this retarget had been silently no-opping on v13).
+*(**AoE burst auto-target** — ✅ RETIRED on evidence 2026-09-06, bench run 38, **with the row's premise
+corrected**. ⚠️ **Flame Surge is the WRONG reference and always was**: it carries an `edha-burst` rule, and
+`edha-burst` runs `edhaCastBurst` → `edhaBurstDetonate`, which **never calls `edhaSetUserTargets` at all** —
+it applies damage straight to the caught actors, so no amount of driving Flame Surge can exercise the
+retarget. The retarget (`edhaSetUserTargets(caught)`, engine ~L10829) lives **only** in `edhaPlaceAoe`,
+reachable only from the **`edha-aoe-template`** handler — and a sweep of `data/` finds **zero**
+`edha-aoe-template` rules against **12** `edha-burst` rules. That zero-consumer fact is now
+`EDHA_RULINGS.md` **R-78**. **The retarget itself is PROVEN, on a declared staged rule** (iron rule 2b —
+a scratch talent `B38 AoE Probe` on `Bench — Red`, `edha-aoe-template {sizeByRank:false, sizeFt:20,
+affects:"enemies"}` on `use`, deleted afterwards): with `Bench — Order` (an ALLY, disposition 1)
+pre-targeted and doubling as the burst centre, the placement left `game.user.targets` holding **exactly
+`Bench Target — Adjacent A` and `Bench Target — Adjacent B`** — so the caught enemies really are targeted
+and the stale ally target really was released (`releaseOthers`). The card agreed: *"B38 AoE Probe — 20 ft
+burst: **2** enemies captured &amp; targeted (Bench Target — Adjacent A, Bench Target — Adjacent B)"*, and
+Flashpoint's 2+-hit prompt fired, so `edhaCheckMultiHit` saw the same count. **Negative control, free from
+the geometry:** `Bench — Order`, `Bench — White` and the caster were all inside the 20 ft circle and none
+of them ended up targeted — the `affects: enemies` filter holds. ⚠️ Operating note: `createEmbeddedDocuments`
+for a talent on a bench PC returns **`[]`** silently until `edha.skipBudget(true)` — the talent-budget gate,
+not a schema error.)*
 *(**Seeming recast replaces the token · Seeming copy hover-name — BOTH RETIRED on evidence
 2026-07-28j, bench run 22.** First cast created **exactly one** copy token (`Mistheron (3)`) and ran the
 belief sweep — *"6 onlooker(s) tested — 3 taken in, 3 see through it"*. Recasting while that copy still
@@ -3977,13 +3987,17 @@ observable behavior change, not rows below).
       sweep that is **9 of 9 victim-mode rules unreachable**, with no alternative rule to stage. The row's own text
       already rates the `to: targets` sweep regression-only, with no chain to verify. **Do not re-queue this half**;
       it reopens only if a talent ships this handler on an event that carries its own victim.
-- [ ] 🤖 **R-63 — a token with genuinely UNSET disposition is no longer treated as an enemy by
-      default.** Create/borrow a token whose `disposition` cannot resolve (a bare unlinked prototype
-      with no explicit disposition, if your test scene has one — otherwise this is a repo-side
-      pin only, see `tests/disposition-failclosed.test.js`) and confirm a hostile-only effect
-      (Consuming Decay's `edhaDisposHostile`-gated enemy check, or any `edha-owner-list
-      {requireDisposition: "enemy"}` prompt-mode placement) now REFUSES against it instead of
-      treating it as hostile.
+*(**R-63 — a token with genuinely UNSET disposition is no longer treated as an enemy by default** —
+✅ CLOSED 2026-09-06, bench run 38, by the same measurements that closed the item-10 sideless row in
+`# BENCH — Engine-wide` above; read that entry for the numbers. Short form: **the row's own escape
+clause is the answer.** A placed token whose `disposition` "cannot resolve" **cannot be created on
+this build** — `disposition: null` coerces to the numeric initial **−1** at create and at update, and
+`prototypeToken.disposition` does the same — so there is no bare-unlinked-prototype shape to borrow,
+and the raw-value predicates (`edhaSideSame` / `edhaSideHostile`) can never see a non-finite token
+disposition. The reachable half **was** driven: `edhaDisposHostile(Bench — Red, <actor with no token
+on the scene>)` returns **false** where the tokened control returns **true**. Everything beyond that
+is the repo-side pin the row itself names — `tests/disposition-failclosed.test.js`. **Do not
+re-queue.**)*
 - [ ] 🤖 **R-63 — same-side checks (auras, Reroll Reaction's "enemies only", the Fate snare's
       "enemies only spring it", the zone-guard's "protects the owner's ally") still fire correctly
       for ordinary tokens with a normal disposition — this is a regression check on the 12 migrated
@@ -4005,6 +4019,15 @@ observable behavior change, not rows below).
       `affects`-carrying aura, **`Mantle of the Aspirant`** (Power, `edha-test-aura {affects: allies}` on
       `edha-watch-rule`), so that shape needs a watched test to fire, not a plain `use` — plus Reroll
       Reaction against a marked foe and/or the Fate snare's ally-vs-enemy spring.
+      - ⚠️ **STAGING NOTE (bench run 38): the Fate snare shape needs a token that does not exist yet.**
+        The Playtest Map currently carries tokens for only **five** bench PCs — `Bench — Red`, `White`,
+        `Green`, `Order`, `Heroic` — plus `Bench Target — Adjacent A/B` and `Floater`. There is **no
+        `Bench — Fate` token**, and none for `Bench Target — Undefended` or `Bench Ally — One/Two`
+        either, so the snare's owner has to be placed first (or the talent staged onto a PC that is
+        already on the map). `bench-setup-console.js` will place them, but only with `PLACE_TOKENS =
+        true` and a hand-picked clear `ORIGIN` — budget a step for it rather than discovering it at
+        the row. The ally-vs-enemy pair is otherwise ready: `Bench — Order` (disposition 1) and
+        `Bench Target — Adjacent A` (−1) stand three squares apart.
 - [ ] 🤖 **Job 6a — 4 flag/status writes that used to fail SILENTLY with no GM online now warn the
       player instead.** With no GM connected (or `game.users.activeGM` unset), as a non-owning
       player: (1) unmark a ledger entry via `edhaListUnmark`'s consumer (any H3 list release/evict
