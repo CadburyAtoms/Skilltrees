@@ -744,7 +744,7 @@ unchanged), and **Green / Instinct is takeable** (compiled tree: Pack Hunter = r
 talent prereq, Predator's Instinct and Scent the Weak hang off it, column walks to Natural
 Order — the session-0 mutual pair is dead). Evidence per row in the 07-26k delta.
 
-- [ ] 🤖 **2bS-11 — Natural Order — RE-NARROWED 2026-09-05, bench run 26: only the VEIL half is left, and it is BLOCKED with the blocker named.** ✅ The use half passed again (2 Inv spent 4 → 2, `clearsight` status + `condclearsight00` effect written to Bench — Green, scene card posted). ✅ **The combat-end clear PASSES**: deleting the bench combat removed `clearsight` from Bench — Green while leaving its unrelated Immobilized/Slowed alone. ⛔ **BLOCKER for the veil half — the Playtest Map can never make a token `unlit`.** `edhaDarkVeilSweep` only raises or suppresses a marker when `edhaPointIlluminated(tok.center)` is FALSE, and the Playtest Map has `environment.darknessLevel === 0` with `environment.globalLight.enabled === true`, so **every square on it is lit**. Driving this needs either a change to Ben's scene config (out of bounds for a bench run) or a bench-created scene. **The fixture is otherwise ready and identified**: the `edha-dark-veil` adversary is the **Stalker** (`effectName: "Veil"`, `edha-content.edha-adversaries` id `l924euoyx3pYFk2T`) — import it fresh, put it on an unlit square within 60 ft of an armed Green, and the positive/negative pair is one flow.
+- [ ] 🤖 **2bS-11 — Natural Order — RE-NARROWED 2026-09-05, bench run 26: only the VEIL half is left, and it is BLOCKED with the blocker named.** ✅ The use half passed again (2 Inv spent 4 → 2, `clearsight` status + `condclearsight00` effect written to Bench — Green, scene card posted). ✅ **The combat-end clear PASSES**: deleting the bench combat removed `clearsight` from Bench — Green while leaving its unrelated Immobilized/Slowed alone. ⛔ **BLOCKER for the veil half — the Playtest Map can never make a token `unlit`.** `edhaDarkVeilSweep` only raises or suppresses a marker when `edhaPointIlluminated(tok.center)` is FALSE, and the Playtest Map has `environment.darknessLevel === 0` with `environment.globalLight.enabled === true`, so **every square on it is lit**. Driving this needs either a change to Ben's scene config (out of bounds for a bench run) or a bench-created scene. **The fixture is otherwise ready and identified**: the `edha-dark-veil` adversary is the **Stalker** (`effectName: "Veil"`, `edha-content.edha-adversaries` id `l924euoyx3pYFk2T`) — import it fresh, put it on an unlit square within 60 ft of an armed Green, and the positive/negative pair is one flow. **RE-BLOCKED 2026-09-06, bench run 33, on a DIFFERENT blocker — read this before re-staging.** The map half is solved (a bench-created scene with `darknessLevel: 1` + `globalLight.enabled: false`, viewed never activated, gives a genuinely unlit square — recipe on the `Veil auto-toggle (Stalker)` row). But `edha-suppress-veil` can only stand a marker down that `edhaDarkVeilSweep` can *see*, and run 33 proved the sweep can never see the Stalker's: it reads `actor.effects` while the `Veil` AE is item-transferred and lives in `allApplicableEffects()`. **This half is blocked on that engine fix, not on a scene** — do not rebuild the fixture until the sweep lookup lands.
 *(**2bS-1 — Green Leyline Attunement** — RETIRED IN FULL on evidence 2026-09-05, bench run 26. ✅ **The
 out-of-range refusal, the half that was never driven**: with rank-3 Green Attunement Range = 60 ft, a pick at
 **67.5 ft** was refused — "Edha: that point is beyond Attunement Range (60 ft) — terrain not placed." plus the
@@ -873,16 +873,28 @@ the activeGM (`Bench`, `game.users.activeGM.isSelf === true`) — **three** Regi
 active throughout, i.e. **two GM clients connected on both legs**, and each leg produced **exactly 3**
 Regions and 3 Drawings, never 6. The single-activeGM applier gate holds.)*
 
-- [ ] 🤖 **Fault Line catches ALLIES too — R-5's engine fix (2026-09-06, PR #185; engine sync +
-      F5, NO pack rebuild).** Stage three bystanders around `Bench — Destruction`: an **ally** token
-      (same disposition as the caster) and a **foe** dummy both inside the 60 ft × 5 ft line, plus a
-      second ally clearly **outside** it. Cast Fault Line down that line. Expected: the burst card
-      counts **both** the ally and the foe ("2 in the line take **N** energy"), both actually lose
-      that HP, and the "💥 Fault Line — **Speed** vs your Red" card prints a save line for the
-      **ally** as well as the foe (a failure knocks the ally **Prone**, same as a foe). The **caster**
-      takes nothing and never appears on either card, and the ally outside the line is untouched.
-      Before the fix the ally was silently skipped by both riders. **Not this row:** who the
-      dangerous-terrain Region left behind catches — that is **R-6**, a separate ruling still open.
+*(**Fault Line catches ALLIES too (R-5 / PR #185)** — RETIRED on evidence 2026-09-06, **bench run 33**,
+on a served engine hash-verified as `0051bde1…` (repo `HEAD:module-src/scripts/register-skills.js`,
+CRLF-normalised; the original `<script>` entry's `decodedBodySize` 1 549 092 matched byte-for-byte).
+Staged on the Playtest Map at a clear row: caster `Bench — Destruction` centre (3150,13350), **ally**
+`Bench Ally — One` at 15 ft along the line, **foe** `Bench Target — Isolated` at 30 ft, and a **second
+ally** `Bench Ally — Two` 30 ft off the centreline. Direction picked by shadowing `canvas.mousePosition`
+(frozen at 0,0 with the pane hidden — declared) to (6750,13350) and dispatching a capture-phase
+`pointerdown` on `#board`.
+**Cast 1 — the count and the HP:** *"💥 **Fault Line** — **2** in the line take **16** energy
+(Constructs ×3)"* off `2d8 + 2 = 16`. Ally **41 → 17**, foe **41 → 16**; the difference is each one's
+own dangerous-terrain tick (8 and 9), so **both took the full 16 burst**. The save card listed
+**both**: *"Bench Ally — One: Speed 15 vs your Red 9 — stays up · Bench Target — Isolated: Speed 20 vs
+your Red 9 — stays up"*.
+**Cast 2 — the ally's FAILURE branch:** *"2 in the line take **9** energy"*, then *"Bench Ally — One:
+**Speed 9 vs your Red 13 — Prone**"* with the foe passing at 21 — and `Bench Ally — One` really carried
+`statuses: ["prone"]` while the foe carried none. An ally fails exactly as a foe does.
+**Negatives, both casts:** the **caster appears on neither card** and took **no burst damage** (43 → 35
+and 43 → 33 = its own terrain tick only), and the **ally outside the line stayed at 41/41 with no
+status** and never appeared on either card.
+⚠️ **R-6 evidence, recorded not decided:** the dangerous-terrain Region the zone drops afterwards
+caught the **caster itself** — *"🔥 Bench — Destruction takes 8 energy from dangerous terrain"* — and
+the ally, on both casts. That is the still-open R-6, not this row.)*
 
 
 ---
@@ -2264,14 +2276,37 @@ on existing owned copies stands and costs nothing.)*
       — `CONFIG.COSMERE.cultures` reads exactly **`["alethi","azish","herdazian","thaylen","unkalaki","veden"]`**
       — so every Edha nation slug is rejected. The **ancestry** docs take the same `system.id = slug`
       treatment and log **no** error, so the restriction is specific to the culture model.
-      ⚠️ **SEVERITY IS OPEN and is the first thing to settle** — the documents still load and
-      `getDocuments()` still returns all ten, so this may be log noise only; but if the invalid value
-      is dropped rather than kept, a culture's `system.id` no longer matches the `cultural:<slug>`
-      expertise its own `grant-expertises` / `remove-expertises` events add and remove, which would
-      break the wizard's culture step silently. **Read `item.system.id` back off a loaded pack culture
-      and compare it to the slug before deciding how to fix.** Not measured this run — the finding
-      landed after the world had been restored and both clients logged out.
-      *(→ `test-pass-fixes`. Bench run 32.)*
+      ✅ **SEVERITY MEASURED 2026-09-06, bench run 33 — the slug is DROPPED, and the feared
+      consequence does NOT follow.** All ten load with `_source.system.id === "none"`, not the slug:
+      the field is `{choices: ["none","alethi","azish","herdazian","thaylen","unkalaki","veden"],
+      initial: "none", required: true, blank: false}`, so Foundry's lenient compendium load replaces
+      the rejected value with the initial. (A *strict* construction — `new Item({type:"culture",
+      system:{id:"canticle"}})` — throws outright; only the lenient pack path survives.) The
+      **ancestry** `Human` keeps `system.id === "human"` because `"human"` **is** a valid ancestry
+      choice — that is why ancestries log nothing.
+      **But the wizard is NOT broken.** The `cultural:<slug>` expertise is carried as LITERAL data on
+      the culture's own events — `grant-expertises` / `remove-expertises` each ship
+      `{"cultural:canticle": {id:"canticle", label:"Canticle", type:"cultural"}}` — and is never
+      derived from `system.id`; `register-skills.js` selects cultures by `type === "culture"` and by
+      name and reads their `system.id` **nowhere**. (Bench run 22 already proved the Corvaine
+      grant/remove round-trip live.)
+      **What IS affected — two system-side readers, neither used by Edha content today:**
+      (1) talent-tree node prerequisites of type `culture`, `actor.cultures.some(c => c.system.id ===
+      prereq.culture.id)` — with all ten collapsed to `"none"` a culture prereq can never name a
+      nation, and one authored against a nation would bake `id: "none"` and then match **all ten**;
+      (2) the system's culture-prereq config dialog, which writes `id: culture.system.id`. **No
+      shipped Edha tree uses a culture prerequisite** (0 hits in `leyline.json` / `domain.json`;
+      `cosmere.json`'s single "culture" is prose in a talent description). **Verdict: log noise plus a
+      latent authoring trap — NOT a wizard breakage.** Downgraded from the run-32 wording.
+      **Fix shape, also measured:** `game.system.api.registerCulture({id, label})` exists and returns
+      `true` and does add the key to `CONFIG.COSMERE.cultures` — but a **runtime** registration is not
+      enough: the culture DataModel's `id` field had already captured its `choices` array, so after a
+      successful `registerCulture("canticle")` a fresh lenient construction still yielded `"none"`.
+      The fix must register the ten nations in the module's **`init`** hook and the fix pass must
+      prove that ordering beats the system's model definition; if it cannot, the fallback is to stop
+      writing `system.id` on culture docs in `scripts/foundry-build.js` (~L816). **The registration
+      route is ENGINE-ONLY; only the fallback needs a pack rebuild.**
+      *(→ `test-pass-fixes`. Found bench run 32, severity settled bench run 33.)*
 
 ---
 
@@ -2751,12 +2786,41 @@ one** — put an explicit `senses` on a block, rebuild, and open its sheet — n
 - [ ] 🤖 **Veil auto-toggle (Stalker)** — Stalker standing in darkness: the Veil marker enables
       itself + a GM whisper; walk it into light: the marker releases. Toggle it ON manually in
       light (cover): the engine leaves it alone.
-      - ⛔ **BLOCKED on the Playtest Map — re-measured at bench run 27 (2026-09-05), confirming run
-        26.** The scene's `environment.darknessLevel` is **0** and `environment.globalLight.enabled`
-        is **true**, so **no square on it is ever unlit** and the Stalker's `edha-dark-veil` rule can
-        never see darkness. This is a fixture problem, not an engine one — the row stays 🤖 and the
-        drivable shape is a **bench-created scene** with darkness, which the standing rules
-        (never activate/deactivate a scene) permit as long as it is only ever *viewed*.
+      - ✅ **THE FIXTURE BLOCKER IS GONE — bench run 33 (2026-09-06) built the dark scene and it
+        works.** `Scene.create({name:"BENCH — Dark Veil (run 33)", environment:{darknessLevel: 1,
+        globalLight:{enabled:false}}, tokenVision:true})`, **viewed and never activated**, deleted at
+        the end. Sampled at the sweep's own +300 ms timing after an `updateScene`, `edhaPointIlluminated`
+        evaluates **false** at the token centre: `canvas.environment.darknessLevel === 1`,
+        `globalLight.enabled === false`, and the single light source (`globalLight`) reports
+        `active: false` so the loop skips it. Copy this recipe — do not re-derive it.
+      - ❌ **FAIL (new, run 33) — the shipped Stalker's `Veil` marker is UNREACHABLE by the sweep.**
+        `edhaDarkVeilSweep` looks the marker up in **`actor.effects`**
+        (`[...(a.effects ?? [])].find(e => e.name.startsWith(effName))`), but the `Veil` AE is
+        **item-transferred** (`transfer: true`, defined on the `Veil` trait in
+        `data/adversary-effects.json`), so it lives in `actor.allApplicableEffects()` with
+        `parent: "Veil"` and **`actor.effects` is empty** — measured on Ben's world `Stalker`
+        (`4OW7zLhJlMRhn1GG`) *and* on a token-fresh import of the pack Stalker
+        (`edha-content.edha-adversaries` `l924euoyx3pYFk2T`). `eff` is therefore always `undefined`
+        and the sweep `continue`s. The rest of the path is fine: the `Veil` trait carries
+        `flags["edha-content"].adversaryTalent === true` so `edhaIsTalent` accepts it, and
+        `enabledEvents` lists `{event: "edha-apply-watch", handler.type: "edha-dark-veil"}`.
+        **Matched control:** with a hand-created **actor-level** copy of the identical AE (disabled),
+        the sweep fired correctly and posted *"🌒 **Veil**: Stalker (1) stands in darkness — the
+        marker is ON (auto)"*, authored by `Bench`, whispered to **both** GMs (an incidental R-62
+        audience confirmation). **`data/adversaries.json` holds the only `edha-dark-veil` rule in the
+        repo**, so the blast radius is the Stalker alone. *(→ `test-pass-fixes`: either widen the
+        lookup to `allApplicableEffects()`/`appliedEffects` — ENGINE-ONLY — or move the marker to an
+        actor-level AE, which needs a REBUILD. Bench run 33.)*
+      - ⚠️ **PARTIAL / unexplained, recorded not diagnosed:** after that one success the marker read
+        `disabled: true, autoVeil: null` again, and **six** further triggers produced no card and no
+        change — three teleport token moves (`"x" in changes` verified **true** in a probe hook), two
+        `updateScene` environment changes, and one fresh `createActiveEffect` — with
+        `game.users.activeGM` = `Bench` (`isSelf: true`) throughout, **zero** console errors, **zero**
+        AE churn in a 4 s window (so the 300 ms debounce was not being starved), and the illumination
+        test evaluating **false** at the sweep's own timing. Whatever re-disabled it is not yet named.
+        The engine's own functions are **module-scoped, not globals**, so the sweep could not be
+        called directly to instrument it. Run 34: re-stage from the recipe above and hook
+        `updateActiveEffect` **before** the first trigger.
 
 ---
 

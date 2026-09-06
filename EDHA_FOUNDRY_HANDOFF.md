@@ -254,6 +254,144 @@ stays open** in `EDHA_RULINGS.md`: it closes only when 28b has landed AND the be
 
 ---
 
+## 2026-09-06 — BENCH RUN 33 (weekend marathon run 10): **item 29's `Fault Line` re-test PASSES IN FULL on a hash-verified deploy — the ally is damaged, saves, and is knocked Prone exactly as a foe is, while the caster and the ally outside the line are untouched. The culture-item severity question is SETTLED: the slug is DROPPED, but the wizard is not broken and the fix is engine-only. And the seven-run dark-veil blocker is GONE — a bench-created dark scene works — which immediately exposed the REAL blocker: the Stalker's `Veil` marker is item-transferred and `edhaDarkVeilSweep` only looks in `actor.effects`, so it can never be found.** **1 row leaves the checklist, 1 new engine defect root-caused with a matched control, 1 severity question closed, 1 measured caveat added to ruling R-6.** Open queue **29 🤖 → 28 🤖** on the checklist this run started from (counted as `grep -c '^- \[ \] 🤖'`, i.e. actual OPEN ROWS). ⚠️ **The file now reads 33**, because **item 28a (PR #188) merged while this run was writing its docs and added its own five re-test rows under `# BENCH — Engine-wide & cross-tree`** — that is the delta directly above, not a regression here. **⚑ unchanged at 21 — no ⚑ row was touched.** **World restored to the start snapshot EXACTLY — field-level actor id-diff EMPTY across all 74 actors (resources, flags, statuses, effects, ownership, items), and every scene/token/region/drawing/template/wall/light/combat delta zero.** DOCS-ONLY — no engine, no data, no pack rebuild owed.
+
+**Deploy, verified from both sides before anything was driven.** The served
+`/modules/edha-content/scripts/register-skills.js` hashes **`0051bde1d18dbc1dfd45d705511eee0b90365470178c1beccfe8a5cca4dadd97`**
+CRLF-normalised, byte-identical to `git rev-parse HEAD:module-src/scripts/register-skills.js`, and the
+original `<script>` entry's `decodedBodySize` reads **1 549 092** = the repo file's CRLF byte count. So
+item 29 (PR #185) and item 27's comments (PR #184) were both live. `game.users.activeGM` was **`Bench`
+(`isSelf: true`)** for the whole run, with `["Bench","Gamemaster"]` connected — Ben's client was up
+throughout, so every single-applier assertion below was made with **two GM clients online**.
+
+**Roster:** `bench-setup-console.js` was **re-run for real** (served over a throwaway CORS static
+server per run 32's lesson, so its 22 KB never entered a tool call). Counts before and after are
+identical — `actors 74 / items 0 / sceneTokens 33` — and the only orphans on the Playtest Map are the
+**four known non-bench** ones (`The Forgemaster`, `The Demolisher`, `PC Tester`,
+`Cragdrake Whelp Pack (1)`). ⚠️ **Run 32's warning holds and cost nothing this time: the IIFE's log
+buffer stayed empty for 35 s and the script had still done its work** — judge idempotency from the
+counts, never from the log.
+
+### 1. ✅ `Fault Line` catches allies — R-5 / item 29 / PR #185 — **RETIRED on evidence**
+
+Staged on the Playtest Map in a clear row 900 px clear of every other token: caster
+`Bench — Destruction` at centre (3150, 13350) — tier 2, red rank 3, str 2, so `2d8 + 2` — an **ally**
+(`Bench Ally — One`) 15 ft along the line, a **foe** (`Bench Target — Isolated`) 30 ft along it, and a
+**second ally** (`Bench Ally — Two`) 30 ft **off** the centreline. The direction pick is
+`edhaPickPoint`, which reads `canvas.mousePosition`; with the pane hidden that getter is frozen at
+(0,0), so it was **shadowed to (6750, 13350) — declared** — and a capture-phase `pointerdown`
+dispatched on `#board`.
+
+| Claim on the row | Measured |
+|---|---|
+| burst card counts **both** | *"💥 **Fault Line** — **2** in the line take **16** energy (Constructs ×3)"*, roll `2d8 + 2 = 16` |
+| both actually lose that HP | ally **41 → 17**, foe **41 → 16** — each is 16 burst **plus** its own dangerous-terrain tick (8 / 9) |
+| save card prints a line for the **ally** | *"Bench Ally — One: Speed 15 vs your Red 9 — stays up · Bench Target — Isolated: Speed 20 vs your Red 9 — stays up"* |
+| an ally's **failure** knocks it **Prone** | cast 2: *"Bench Ally — One: **Speed 9 vs your Red 13 — Prone**"*, foe passed at 21 — and only the ally carried `statuses: ["prone"]` |
+| caster takes nothing, on neither card | absent from both cards on both casts; 43 → 35 and 43 → 33 = **terrain only**, no burst |
+| ally **outside** the line untouched | 41/41, no status, on neither card, both casts |
+
+Both saves succeeded on cast 1, so the failure branch cost a second cast (Investiture topped back up,
+the first Region deleted first so the terrain would not stack). That is the R-5 consequence proven in
+**both** directions with each cast the other's control.
+
+⚠️ **R-6 evidence, recorded not decided (and it is wider than the ruling currently says).** The
+dangerous-terrain Region the zone drops afterwards is laid with one end **at the caster's own square**,
+and it duly caught the caster: *"🔥 **Bench — Destruction** takes 8 energy from dangerous terrain
+(Dangerous Terrain — Bench — Destruction)"* (10 on the second cast), plus the ally in the line. So
+R-5's "only the caster is spared" does **not** carry over to the Region — right now **nobody** is
+spared. Written onto R-6 in `EDHA_RULINGS.md`; still Ben's call.
+
+### 2. ✅ Culture-item validation errors — **SEVERITY SETTLED, and it is milder than feared**
+
+Run 32 found all ten Edha cultures failing system validation on every pack load and named the open
+question: is the invalid slug **dropped** or **kept**? **Measured: dropped.** All ten load with
+`_source.system.id === "none"`. The field is
+`{choices: ["none","alethi","azish","herdazian","thaylen","unkalaki","veden"], initial: "none",
+required: true, blank: false}`, so Foundry's lenient compendium load substitutes the initial; a
+**strict** construction (`new Item({type: "culture", system: {id: "canticle"}})`) **throws outright**.
+The **ancestry** `Human` keeps `system.id === "human"` because that **is** a valid ancestry choice —
+which is the cause of run 32's "ancestries log nothing" observation.
+
+**But the feared consequence does not follow.** The `cultural:<slug>` expertise is carried as **literal
+data** on the culture's own events — `grant-expertises` / `remove-expertises` each ship
+`{"cultural:canticle": {id: "canticle", label: "Canticle", type: "cultural"}}` — and is never derived
+from `system.id`; `register-skills.js` reads a culture's `system.id` **nowhere** (it selects by
+`type === "culture"` and by name). Bench run 22 had already proved the Corvaine grant/remove round-trip
+live. What *is* affected are two **system-side** readers, neither used by Edha content today: culture-type
+talent-tree prerequisites (`actor.cultures.some(c => c.system.id === prereq.culture.id)` — a prereq can
+never name a nation, and one authored against a nation bakes `"none"` and then matches **all ten**), and
+the system's culture-prereq config dialog. No shipped Edha tree uses a culture prerequisite. **Verdict:
+log noise plus a latent authoring trap, not a wizard breakage.**
+
+**Fix shape, also measured rather than guessed.** `game.system.api.registerCulture({id, label})` exists,
+returns `true`, and does add the key to `CONFIG.COSMERE.cultures` — **but a runtime registration is not
+enough**: the culture DataModel's `id` field had already captured its `choices` array, so a fresh
+lenient construction after a successful `registerCulture("canticle")` still yielded `"none"`. The fix
+must register the ten nations in the module's **`init`** hook, and the fix pass must prove that ordering
+beats the system's model definition; the fallback is to stop writing `system.id` on culture docs in
+`scripts/foundry-build.js` (~L816). **The registration route is ENGINE-ONLY — only the fallback needs a
+pack rebuild**, which corrects the run-32 row's assumption that a dropped id automatically means a
+rebuild.
+
+### 3. ❌ The dark veil: the seven-run FIXTURE blocker is gone, and the REAL blocker is an engine defect
+
+**The scene works.** `Scene.create({name: "BENCH — Dark Veil (run 33)", environment: {darknessLevel: 1,
+globalLight: {enabled: false}}, tokenVision: true})`, **viewed and never activated**, deleted at the
+end. Sampled at the sweep's own **+300 ms** debounce timing after an `updateScene`, `edhaPointIlluminated`
+evaluates **false** at the token centre: `canvas.environment.darknessLevel === 1`,
+`globalLight.enabled === false`, and the only light source (`globalLight`) reports `active: false`, so
+the engine's loop skips it. Runs 26/27's "the Playtest Map can never be unlit" blocker is retired — the
+recipe is on the checklist row, and run 34 should copy it rather than re-derive it.
+
+**And that immediately exposed the defect the fixture had been hiding.** `edhaDarkVeilSweep` resolves
+the marker as
+`[...(a.effects ?? [])].find(e => String(e.name || e.label || "").startsWith(effName))` — **actor-level
+effects only**. The Stalker's `Veil` AE is **item-transferred** (`transfer: true`, defined on the `Veil`
+trait in `data/adversary-effects.json`), so it lives in `actor.allApplicableEffects()` with
+`parent: "Veil"` and **`actor.effects` is empty**. Measured on Ben's world `Stalker`
+(`4OW7zLhJlMRhn1GG`) *and* on a fresh import of the pack Stalker (`l924euoyx3pYFk2T`). `eff` is
+therefore always `undefined` and the sweep `continue`s — **the Stalker's veil has never been able to
+auto-toggle, on any map.** Everything else on the path is fine: the `Veil` trait carries
+`flags["edha-content"].adversaryTalent === true` so `edhaIsTalent` accepts it, and `enabledEvents` lists
+`{event: "edha-apply-watch", handler.type: "edha-dark-veil"}`.
+
+**Matched control.** With a hand-created **actor-level** copy of the identical AE (disabled), the sweep
+fired correctly and posted *"🌒 **Veil**: Stalker (1) stands in darkness — the marker is ON (auto)"*,
+authored by `Bench` and whispered to **both** GMs — an incidental confirmation of R-62's
+record-card audience. `data/adversaries.json` holds the **only** `edha-dark-veil` rule in the repo, so
+the blast radius is the Stalker alone. → `test-pass-fixes`: widen the lookup to
+`allApplicableEffects()` / `appliedEffects` (**engine-only**) or move the marker to an actor-level AE
+(**rebuild**).
+
+⚠️ **PARTIAL and honestly unresolved.** After that single success the marker read
+`disabled: true, autoVeil: null` again, and **six** further triggers produced no card and no change —
+three teleport token moves (`"x" in changes` verified **true** by a probe hook), two `updateScene`
+environment changes and one fresh `createActiveEffect` — with `activeGM` = `Bench` (`isSelf`), **zero**
+console errors, **zero** AE churn in a 4 s window (so the debounce was not being starved), and the
+illumination test still evaluating **false** at the sweep's own timing. What re-disabled it is **not
+named**. Instrumenting it further was blocked by the fact that **the engine's functions are
+module-scoped, not globals** (`typeof edhaDarkVeilSweep === "undefined"` in the console) — run 34 should
+hook `updateActiveEffect` **before** the first trigger. Green's **2bS-11 veil half** is re-blocked on the
+same defect: `edha-suppress-veil` can only stand down a marker the sweep can see.
+
+### Not reached, and why
+
+The **wizard-v2 (6 🤖)** and **items-dump (2 🤖)** blocks were the run's steps 4 and 5 and were not
+started — steps 1–3 consumed the driving budget, with step 3 alone costing ~20 calls because the
+diagnosis kept going. The two `# Bench-results fixes` rows (single-target picker, AoE burst
+auto-target) were likewise not reached. All stay **🤖**; none was re-filed as ⚑.
+
+### Cleanup
+
+The four Fault Line staging tokens, both hazard Regions (deleted as **Regions only** — each cascaded
+its 🏚️ Drawing, per run 31), the bench Stalker actor, its two tokens and the whole dark scene were all
+removed; the Playtest Map was re-viewed. Two residual `flags.edha-content.bpHits` keys and one
+`hea.value` left by the burst ledger were restored with **dotted deletes**, and the re-diff after that
+was **empty**. The throwaway CORS server was killed. `game.logOut()` ran and `Bench` is selectable on
+the join screen again.
+---
+
 ## 2026-09-06 DELTA — item 29: a `kind: line` zone catches every character in it, allies included (ruling R-5) (**ENGINE-ONLY, F5** — no pack rebuild; deployed by the PM after bench run 32).
 
 Ben answered **R-5** on 2026-09-05 (mobile board inbox): **"no it does not"** — Fault Line's line

@@ -1490,6 +1490,74 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   made Death Mark's watch rule fireable, so R-65 cost three calls instead of its own full setup. Look
   for that chain before building fresh fixtures.
 
+## Operating lessons from run 33 (2026-09-06 — these OVERRIDE older advice where they conflict)
+
+- ✅ **A bench-CREATED scene is a first-class fixture and it costs about three calls — stop deferring
+  rows that need scene properties the Playtest Map cannot have.** Seven runs carried the dark-veil rows
+  as "structurally unreachable". The whole blocker dissolves with
+  `Scene.create([{name:"BENCH — …", width, height, padding:0, grid:{type:1,size:100,distance:5,units:"ft"},
+  environment:{darknessLevel:1, globalLight:{enabled:false}}, tokenVision:true}])` followed by
+  `await scene.view()` — **viewed, never activated**, so Ben's clients are untouched — and
+  `scene.delete()` at the end, which cascades its tokens. Verify the fixture by evaluating the engine's
+  own predicate rather than trusting the config: `canvas.environment.darknessLevel === 1`,
+  `environment.globalLight.enabled === false`, and every entry of `canvas.effects.lightSources` either
+  `active: false` or not containing the point. The same shape unblocks any row that needs walls,
+  elevation, a different grid size or a scene with no pre-placed tokens.
+- ❌ **`actor.effects` DOES NOT CONTAIN ITEM-TRANSFERRED ACTIVE EFFECTS, and an adversary's marker AEs
+  are all item-transferred.** This is the third member of the "the engine reads the wrong collection"
+  family and it is worth checking on sight. `data/adversary-effects.json` defines markers with
+  `transfer: true` on the ability ITEM, so on a built adversary `actor.effects` is **empty** and the AE
+  appears only in `actor.allApplicableEffects()` with `parent` = the item. Any engine sweep written as
+  `[...(a.effects ?? [])].find(...)` is therefore **dead for every adversary marker** — silently, with
+  no error, looking exactly like a fixture problem. **Before concluding an adversary's marker mechanic
+  is blocked on staging, print `actor.effects` and `[...actor.allApplicableEffects()]` side by side.**
+  Then prove it with a matched control: hand-create an actor-level copy of the same AE
+  (`toObject()`, drop `_id`, `transfer: false`) and re-trigger — if it fires, the collection is the bug.
+- ❌ **The engine's functions are MODULE-SCOPED, not globals — you cannot call or instrument them from
+  the console.** `edha-content` ships as an `esmodule`, so `typeof edhaDarkVeilSweep`,
+  `edhaTokensInLine`, `edhaPointIlluminated`, `edhaActorRulesOf` are all **`"undefined"`** at the
+  console. Only the `globalThis.edha` API surface is reachable. Two consequences: (a) to check what a
+  helper would return, **re-implement it inline from the source** — cheap, and it caught this run's
+  illumination question in one call; (b) to instrument a debounced sweep you must attach the observing
+  hook (`updateActiveEffect`, `createChatMessage`) **before** the first trigger, because there is no
+  way to step into it afterwards.
+- ✅ **Driving `edhaPickPoint` (the click-direction / click-place picker) is three lines.** Shadow the
+  getter — `Object.defineProperty(canvas, "mousePosition", {configurable:true, get(){ return new
+  PIXI.Point(x, y); }})`, **declared in the delta** — then
+  `document.getElementById("board").dispatchEvent(new PointerEvent("pointerdown", {bubbles:true,
+  cancelable:true, button:0, buttons:1}))`. Pick a point that is already a grid **centre**
+  (`150 + k*300` on a 300 px grid) so the engine's `getSnappedPoint` is a no-op and the direction is
+  exactly what you intended. Fold the dispatch into the same polling loop that clicks the consume/roll
+  dialogs, gated on `ui.notifications` having shown the picker's prompt — one call per cast.
+- ⚠️ **A talent that leaves dangerous terrain will damage your own caster and pollute the HP
+  arithmetic. Budget for it and delete the Region between casts.** Fault Line's rectangle starts at the
+  caster's square, so every participant took `burst + its own terrain tick` and the caster took a tick
+  with no burst at all. Read the per-target *difference* against the card's single burst number rather
+  than assuming a target that lost more than the card said is a bug — and clear the Region before
+  re-casting, or the second cast stacks two terrains.
+- ✅ **A DataModel `choices` question is answered by the FIELD, not by the value.** For "is this invalid
+  value dropped or kept?", read `doc.system.schema.fields.<name>` — `{choices, initial, required,
+  blank}` settles it in one call, and `_source.<path>` shows what the lenient load actually stored.
+  Add the strict-construction probe (`new Item({...})` without `{strict:false}`) to distinguish "the
+  pack path tolerates it" from "the value is legal": here strict **threw** while the compendium load
+  silently substituted `"none"`.
+- ⚠️ **A registration API can succeed and still not change anything.** `game.system.api.registerCulture`
+  returned `true` and the key appeared in `CONFIG.COSMERE.cultures` — and a fresh document still got
+  the initial, because the data model had already captured its `choices` array at system init. **Test a
+  proposed fix's EFFECT, not its return value**, and say which hook it would have to run in. (It writes
+  only to an in-memory static registry, so probing it live is safe and needs no restore.)
+- ⚠️ **`javascript_tool` began timing out at 45 s on loops of only ~3 s in the back half of this run** —
+  twice, on scripts that had plainly finished. Run 26's rule (the tail keeps running; read the state in
+  the next call) covers it, but the practical form is stronger: **once a run has been driving for a
+  while, stop writing sampling loops at all.** Fire, return, read.
+- **Density, measured: 1 row off the checklist + 1 severity question closed + 1 new engine defect
+  root-caused with a matched control + 1 measured caveat onto an open ruling, in ~40 tool calls /
+  ~65 minutes, world diff empty.** The re-test-first habit paid again (item 29's row was 4 calls for a
+  full pass in both directions). The expensive part was the veil: **the fixture cost 3 calls and the
+  diagnosis cost ~20**, most of them chasing an intermittency that is still unnamed. Next time, once a
+  matched control has proven the root cause, **write the residual symptom down as PARTIAL and move on**
+  — the second defect can be run 34's first row.
+
 ## Known limits
 
 - ❌ **RESOLVED AS UNFIXABLE (07-26i): there is no "no written Cognitive/Spiritual defense" creature.**

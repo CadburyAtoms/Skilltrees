@@ -79,6 +79,13 @@ symptoms rather than one row. *(3B-A.)*
 **R-6. Fault Line's dangerous-terrain Region catches bystanders scene-wide**, with no friend/foe
 clause — it incidentally ticked your **Stitchmother** during run 11 (effects verified back to
 snapshot state afterwards). Same shape as R-5 but on the Region rather than the line. *(3A-4.)*
+> **Measured again 2026-09-06, bench run 33, and it is wider than "bystanders": the Region catches
+> the CASTER.** The rectangle is laid with one end at the caster's own square, so on both casts the
+> chat read *"🔥 **Bench — Destruction** takes 8 energy from dangerous terrain (Dangerous Terrain —
+> Bench — Destruction)"* (10 on the second) — and the ally in the line took its own tick on top of
+> the burst. So R-5's "only the caster is spared" does **not** carry over to the Region: right now
+> **nobody** is spared, the caster included. Recommended default unchanged in shape, but the ruling
+> should now say explicitly whether the caster's own square is dangerous terrain to them.
 
 *(R-7 — Final Decree / Edict's Temp HP rider scope — ANSWERED 2026-09-05, moved to §K.)*
 
