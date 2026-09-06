@@ -1558,6 +1558,65 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   matched control has proven the root cause, **write the residual symptom down as PARTIAL and move on**
   — the second defect can be run 34's first row.
 
+## Operating lessons from run 34 (2026-09-06 — these OVERRIDE older advice where they conflict)
+
+- ❌ **A "silence" result is worth NOTHING without a positive control in the SAME budget window.**
+  Every R-4 row is of the form "this must go quiet". Three of them ride watchers carrying
+  `once: round-per-target`, so a watcher that had already fired that round would have been silent for
+  a completely different reason and the row would have "passed" while proving nothing. The shape that
+  works, and it costs one extra call: advance to a **fresh round** → do the thing that must be silent →
+  **then, in that same round, do the thing that must fire**. Run 34's GM-focus-edit row is the worked
+  example — two silent hand edits followed immediately by a real spend that fired both watchers.
+  Generalise it: **whenever you are about to write PASS because nothing happened, ask what else could
+  have produced that same nothing, and go rule it out before you write the row.**
+- ✅ **The cheapest `oncePerRound` subject in the game is an adversary `edha-gm-cue` `hp-below` rule,
+  and you drive it with `actor.applyDamage`, NOT an HP write.** Hunting for a once-per-round talent to
+  drive costs more than the row is worth — most are damage- or burst-triggered. Import a **Reedling**
+  (`Runners, Not Soldiers`, `atFraction 0.5`, hp 12): `actor.applyDamage([{amount:7,type:"energy"}])`
+  crosses the line and posts the cue, `actor.update({"system.resources.hea.value":12})` resets it, and
+  the whole loop is three lines. ⚠️ **A raw HP `update()` fires NOTHING** — the cue sweep rides the
+  `CosmereActor#applyDamage` wrapper's post-pass (`register-skills.js` ~1697), so a plain resource
+  write produces a silent false FAIL. Run 34 lost a call to exactly that.
+- ✅ **A bench-created combat is a three-line fixture and `game.combat` is yours to steer.**
+  `Combat.create({scene: sc.id, active: false})` → `createEmbeddedDocuments("Combatant", [{tokenId,
+  actorId, sceneId, initiative}])` → `update({round: 1, turn: 0})` gives a **started, inactive**
+  combat that `edhaInActiveCombat` accepts, with Ben's clients untouched. `ui.combat.initialize({combat})`
+  sets which one *this client is viewing*, which is precisely the variable the two-combats row needs.
+  ⚠️ **`combat.nextTurn()` can leave `turn === null`** in this system — set `turn` explicitly with
+  `update({turn: n})` when a row depends on the turn coordinate, and read `combat.turns` for the real
+  order (cosmere encodes fast/slow turns, so `initiative` is not the ordering you expect: run 34 saw
+  both combatants at initiative 502).
+- ✅ **The Token HUD resource bar is drivable, and it is a genuinely different surface from the sheet.**
+  `canvas.hud.token.bind(token)` then `document.getElementById("token-hud")` — **not**
+  `canvas.hud.token.element`, which returns an INPUT in v13. The bars are `input[name="bar1"]` /
+  `bar2` (read `tokenDoc.bar1.attribute` to know which resource each is); set `.value`, dispatch
+  `change`, blur. That is how "dragging the token's focus bar" is tested for real instead of being
+  waved at with another `actor.update`.
+- ⚠️ **A light's `dim`/`bright` are in FEET, and on a small bench scene one light lights everything.**
+  Run 34 staged `{dim: 60, bright: 40}` on a 2000×2000 scene at 100 px = 5 ft — a 1200 px dim radius,
+  i.e. the whole map — and then read the veil "failing" to re-raise 600 px away. **Delete the light
+  rather than walking away from it**, or size it against the scene: `radius_px = ft / distance * size`.
+- ✅ **Prove a DataModel-choices fix through the CONSUMER, not the picker.** The culture-prereq row said
+  "confirm the nations are offered in the dialog"; the dialog is an `app-document-reference-input`
+  (drag a document, no list), so there is nothing to offer. Read the template and the system's
+  `_onChangeForm` to find what is actually **stored** (`id: culture.system.id`) and what actually
+  **reads** it (`actor.cultures.some(c => c.system.id === prereq.culture.id)`), then build two
+  throwaway actors — one that must match, one that must **not** — and evaluate the real predicate.
+  The discriminating half (Canticle-only actor must FAIL a Vorsk prereq) is the whole test; the
+  matching half alone would have passed before the fix too.
+- ⚠️ **Check `game.combats` at setup, and say what you find.** Ben's world holds an **active, started,
+  zero-combatant** combat. It never appears in a token count or an actor diff, but it means
+  `game.combat` is **never null**, which silently selects the round-tag branch of every
+  `game.combat`-reading debounce. If a row's premise is "with no combat in the tracker", that premise
+  may already be false before you start.
+- ✅ **Stage each row off the previous row's residue — again, and it was worth ~6 rows this run.** One
+  `Bench — Black` token + one granted focus-consuming talent covered four R-4 rows; the Reedling
+  imported for the ledger row became the low-Spiritual target that finally let Extract Thought land,
+  and then the Shatter Focus mark-bearer; the Stalker veil row was 2bS-11's positive control.
+- **Density, measured: 8 rows off the checklist + 2 new rulings + 1 previous run's open symptom closed,
+  in ~45 tool calls / ~70 minutes of driving, world diff empty (field-level, all 74 actors).** The
+  re-test block first, for the eighth run running.
+
 ## Known limits
 
 - ❌ **RESOLVED AS UNFIXABLE (07-26i): there is no "no written Cognitive/Spiritual defense" creature.**

@@ -389,72 +389,50 @@ for half (b); run the 28a rows with **no combat in the tracker** unless a row sa
 **R-4 settles only when BOTH sets pass** — half (a) is the combat gate, half (b) is the spend stamp.
 R-8's roster cross-talk is its own open ruling and is not settled by any row here.)*
 
-- [ ] 🤖 **A per-round ledger no longer runs on "round 0 for ever" out of combat (28a).** With
-      **no combat running**, use a `oncePerRound` talent on `Bench — Red` twice in a row (Unstoppable
-      is the reference), then use it a third time after a short pause. Expected: it works **every
-      time** — out of combat there is no round to be "once per" and the talent must stay usable. Then
-      **start a combat**, use it twice in the same round: the second use is refused, and it re-opens
-      when the round advances. The failure this pins is the OLD behaviour in the first half — the
-      first out-of-combat use silently locking the talent for the rest of the session.
+*(**Bench run 34, 2026-09-06 — FIVE of the eight RETIRED on evidence** on the hash-verified
+`f268e990…` deploy: the per-round ledger, the timed-status expiry, the out-of-combat focus-watch
+gate, the two-combats row, and "a GM focus edit is NOT a spend". Every one was measured in **both**
+directions with a matched control in the same round, so no result rests on silence alone. Details in
+the `2026-09-06 — BENCH RUN 34` handoff delta. **Three rows remain and are narrowed below** — the
+negative control's window half, the `costs:`-rule half of the real-spend row, and the adversary
+ability / Edict row. **R-4 therefore does NOT close yet.**)*
 
-- [ ] 🤖 **"Restrained until the end of its next turn" actually expires (28a).** With **no combat**,
-      apply a timed status from a talent (`Bench — Black`'s Restrained rider, or any
-      `edhaApplyTimedStatus` consumer) onto a target. Expected: the status lands and the effect
-      carries a `timedExpire` **intent** (inspect the AE's flags), NOT a coordinate. Now roll
-      initiative with both creatures in the combat and advance turns: the pass stamps it and the
-      status **drops** at the end of the reference creature's next turn. Before the fix it was
-      stamped with nothing and was immortal. Also check the in-combat direction: a status applied
-      **while a combat is already running** stamps a coordinate directly and expires on schedule.
+- [ ] 🤖 **NEGATIVE CONTROL, part (c) ONLY — a WINDOW armed out of combat is still open when it is
+      consumed (28a).** ✅ Part (a) **PASSED** at bench run 34: with no combat containing it,
+      `Bench — Black`'s `scope: self` `skill-roll` watch (Extract Thought) fired on its own Deception
+      roll (18 vs Spiritual 14) and posted its card. ✅ Part (b) **PASSED**: `Bench — Chaos`'s
+      `Shatter Focus` prompt offered with neither owner nor foe in any combat, and the immediate
+      repeat roll was debounced (0 further prompts). ⚠️ Part (b) exercised the **round-tag** branch of
+      `edhaShatterPromptGate`, not its wall-clock branch, because Ben's world holds an **active,
+      started, 0-combatant combat** (`BerbNeuXp4iKduef`) so `game.combat` is never null — see the
+      delta. **What is left:** arm a movement or designate **window** with no combat running
+      (`edhaRoundWindowValid` — a window armed out of combat carries no `combatId`), then consume it
+      and confirm it is still open. Silence is a **28a regression**, not expected behaviour.
 
-- [ ] 🤖 **An adversary's own ability cost is no longer taxed by enemy watches out of combat (28a).**
-      Give `Bench — Black` `Coercive Pressure` (or `Whispered Doubt` — both are `scope: scene`,
-      `disposition: enemy`, `watch: focus-change`). With **no combat running**, spend focus on an
-      enemy adversary by any means. Expected: **no** 👁️ watcher card fires. Then start a combat with
-      both in it and repeat: the watcher fires exactly as before. The failure this pins is the
-      out-of-combat half — every rule-owner on the scene reacting to every focus change.
+- [ ] 🤖 **A REAL spend still taxes (28b) — the `costs:`-RULE half ONLY.** ✅ The
+      `system.activation.consume` half **PASSED** at bench run 34, twice, with a same-round matched
+      control: an enemy using a focus-costing talent in a started combat took its cost **and**
+      Whispered Doubt's extra 1 focus, and Coercive Pressure wrote its `nextTestMod` disadvantage —
+      immediately after two GM hand-edits in that same round had been correctly silent. **What is
+      left:** the same contrast with an **engine-driven** cost, i.e. a talent whose rule carries
+      `costs:` so the deduction goes through `edhaSpendResource`. The six shipped `costs:` rules are
+      `Beacon of Stability`, `Pillar of Order`, `Shared Conviction`, `Voice of Authority` (White),
+      `Puppeteer` (Black) and `Pack Sense` (Green) — all PC talents, so the enemy must be **granted**
+      one to be the spender. **Silence there is a 28b regression** (a real spend read as
+      bookkeeping), not the fix working.
 
-- [ ] 🤖 **Two combats at once: a watch reads its OWN combat, not the one you are looking at (28a).**
-      Start **two** combats — combat A with `Bench — Black` and an enemy, combat B with
-      `Bench — Red` and another. **Select combat B in the tracker** and advance it a few rounds, then
-      act in combat A. Expected: combat A's once-per-round guards, timed-status expiries and strike
-      windows all key on **A's** round/turn — B's ticks neither refresh nor consume them — and a
-      scene-scoped watcher in A does **not** fire on an event in B. Before the fix every one of these
-      read whichever combat the tracker had selected.
-
-- [ ] 🤖 **NEGATIVE CONTROL — a legitimately out-of-combat rule STILL fires (28a).** This is the risk
-      the gate was pinned against, so run it even if the four rows above pass. With **no combat**:
-      (a) a `scope: self` watch still fires on its owner's own roll — make a Deception test with
-      `Extract Thought` owned and confirm the watcher card appears; (b) an Order/Shatter **prompt**
-      still offers out of combat (and still debounces on repeat within ~30 s); (c) a movement or
-      designate **window** armed out of combat is still open when it is consumed. Any silence here is
-      a **28a regression**, not expected behaviour — report it as a fail.
-
-- [ ] 🤖 **A GM focus edit is NOT a spend (28b).** Put `Bench — Black` and an enemy adversary in a
-      **started combat together** (28a's gate must be open, or nothing fires either way) and give
-      `Bench — Black` `Whispered Doubt` and `Coercive Pressure` (both `scope: scene`,
-      `disposition: enemy`, `watch: focus-change`). Now open the adversary's **sheet** and type its
-      focus down by hand — 5 → 2, no talent, no roll. Expected: **no** 👁️ / 🧠 watcher card, **no**
-      extra focus taken, **no** disadvantage applied. Repeat by dragging the token's focus **bar**
-      instead of typing: same silence. Before the fix each of those hand edits taxed the creature.
-
-- [ ] 🤖 **A REAL spend still taxes (28b) — the direction that matters more.** Same pair, same started
-      combat. Have the adversary **use a talent that costs focus** (the system deducts the cost
-      itself, from `system.activation.consume`). Expected: Whispered Doubt takes its **1 additional
-      focus** and Coercive Pressure's disadvantage lands, exactly as before 28b — once per round per
-      enemy. Then do the same with an engine-driven cost (any talent whose rule carries `costs:`, so
-      the deduction goes through `edhaSpendResource`). Both must fire. **Silence here is a 28b
-      regression — a real spend read as bookkeeping — and is the failure this half was pinned
-      against.** Report it as a fail, not as "the fix working".
-
-- [ ] 🤖 **An adversary's own ability cost, in combat (28b).** With the same started combat, have the
-      adversary pay the cost of one of its **own** bespoke abilities (an `adversaries.json` ability
-      whose rule carries a `costs:` line — that path runs through `edhaSpendResource`). Expected: it
-      still reads as a spend and still trips the PC's enemy focus watchers. Then have the **GM
-      hand-record** the same cost on the sheet instead of using the ability: it must NOT trip them.
-      That contrast is the whole of 28b — wire the cost on the ability and it counts, type it into
-      the sheet and it does not. Also check the Investiture face: a `Law`/`Decree` Edict that forbids
-      activating Investiture must still prompt on a wired Investiture cost, and must **not** prompt
-      when the GM edits the Investiture number by hand.
+- [ ] 🤖 **An adversary's own ability cost + the Investiture/Edict face (28b).** ✅ The **contrast
+      itself is PROVEN** at bench run 34 by the two rows above — wire the cost on the ability and it
+      counts, type it into the sheet (or drag the token bar) and it does not. ⚠️ **The literal row
+      has NO SUBJECT in shipped data:** `data/adversaries.json` contains **zero** `"costs"` keys, so
+      no bespoke adversary ability pays an engine-driven cost today; run 34 substituted a granted
+      focus-consuming talent and said so. Either author a `costs:` line onto one adversary ability
+      and re-run, or close this half as untestable-by-construction — **that is a design call, not a
+      test** (see `EDHA_RULINGS.md`). **What is genuinely left to drive:** the Investiture face — a
+      `Law`/`Decree` Edict forbidding "activate Investiture" must still prompt on a wired Investiture
+      cost and must **not** prompt when the GM edits the Investiture number by hand. Stage the edict
+      ledger (`flags.edha-content.lists.edicts`, entries `{id, uuid, name, proh:{kind:"invest",
+      text}}`) on `Bench — Order` and declare the hand-staging.
 
 - [ ] 🤖 **A MIGRATED SPEND still taxes the watches (item 13, 2026-09-06).** Item 13 moved the last
       twelve hand-rolled `system.resources.*` writes onto `edhaResourceWrite`, and exactly one of
@@ -795,7 +773,20 @@ unchanged), and **Green / Instinct is takeable** (compiled tree: Pack Hunter = r
 talent prereq, Predator's Instinct and Scent the Weak hang off it, column walks to Natural
 Order — the session-0 mutual pair is dead). Evidence per row in the 07-26k delta.
 
-- [ ] 🤖 **2bS-11 — Natural Order — UNBLOCKED 2026-09-06 by fix pass 5; only the VEIL half is left and it is now RUNNABLE (engine-only, F5 — no pack rebuild, no ⟳ Sync).** ✅ The use half passed at bench run 26 (2 Inv spent 4 → 2, `clearsight` status + `condclearsight00` effect written to Bench — Green, scene card posted). ✅ **The combat-end clear PASSES**: deleting the bench combat removed `clearsight` from Bench — Green while leaving its unrelated Immobilized/Slowed alone. **Both historic blockers are gone.** The MAP blocker died at bench run 33 (a bench-created scene with `darknessLevel: 1` + `globalLight.enabled: false`, viewed never activated, gives a genuinely unlit square — the three-call recipe is on the `Veil auto-toggle (Stalker)` row; copy it). The ENGINE blocker died at fix pass 5: `edha-suppress-veil` can only stand down a marker `edhaDarkVeilSweep` can *see*, and the sweep read `actor.effects` while the Stalker's `Veil` AE is item-transferred — that lookup now goes through `edhaAllEffects(actor)`. **What to drive:** stage the `Veil auto-toggle (Stalker)` row FIRST (it is the positive control), then put an **armed** Green (carrying `clearsight`) within Attunement Range of the veiled Stalker and confirm the sweep **refuses to raise** the marker, or stands down one it had raised, with the 🌿 *"… veil is SUPPRESSED — an armed veil-suppressing enemy holds it within Attunement Range"* GM whisper; then walk the Green out of range and confirm the veil comes back up. ⚠️ A marker the GM toggled ON **by hand** must still never be fought — only `autoVeil`-flagged ones stand down.
+*(**2bS-11 — Natural Order** — **RETIRED IN FULL on evidence 2026-09-06, bench run 34** — the veil half
+was the last one open and it PASSES in both directions. Staged off the `Veil auto-toggle (Stalker)`
+row as its positive control, on the bench-created `BENCH — Dark Veil` scene: with the shipped
+Stalker's `Veil` marker auto-raised (`disabled: false`, `autoVeil: true`), arming `Bench — Green`
+with `clearsight` at 10 ft stood it **down** — `disabled: true`, `autoVeil: false`, with the exact
+🌿 GM whisper *"Veil: BENCH — Stalker's veil is SUPPRESSED — an armed veil-suppressing enemy holds it
+within Attunement Range."* Walking the Green out to a measured **85 ft** (rank-3 Green Attunement
+Range is 60 ft, `EDHA_ATTUNE_FT[3]`) brought the veil **back up** (`disabled: false`,
+`autoVeil: true`). The rule read live off the item is `{type: "edha-suppress-veil", requireSelfStatus:
+"clearsight", rangeColor: "green"}`. ⚠️ Declared shortcut: `clearsight` was armed with
+`toggleStatusEffect` rather than by using Natural Order — the use half already passed at bench run 26
+(2 Inv 4 → 2, status + `condclearsight00` written, scene card posted) and the combat-end clear had
+already passed, so this run drove only what was open. ⚠️ Also measured: a marker enabled **by hand**
+is still never fought — see the Stalker row.)*
 *(**2bS-1 — Green Leyline Attunement** — RETIRED IN FULL on evidence 2026-09-05, bench run 26. ✅ **The
 out-of-range refusal, the half that was never driven**: with rank-3 Green Attunement Range = 60 ft, a pick at
 **67.5 ft** was refused — "Edha: that point is beyond Attunement Range (60 ft) — terrain not placed." plus the
@@ -2315,34 +2306,27 @@ Ostrek, Merin, Veska) and the beached-fisher you-might-be. **Goldenport**: close
 paragraph, "…a signature can baptize anything". All three are flavor-only, so the stale-snapshot caveat
 on existing owned copies stands and costs nothing.)*
 
-- [ ] 🤖 **Culture items load CLEAN and a culture prerequisite can name a nation — RE-TEST
-      2026-09-06 after fix pass 5 (engine-only, F5 — relaunch is enough; NO pack rebuild, which
-      corrects the run-32 row this replaces).** Three checks, all from the console after a
-      relaunch:
-      (1) **no validation errors on load** — `await game.packs.get("edha-content.edha-items")
-      .getDocuments()` and confirm the ten `CosmereItem [<id>] validation errors: system: id: <slug>
-      is not a valid choice` lines are **gone**;
-      (2) **the slug STICKS** — every `type === "culture"` doc reads `_source.system.id === <its
-      slug>` (canticle · kettavar · corvaine · sylvaneth · goldenport · thalendor · malcurr ·
-      lunavar · ashkar · vorsk), **not** `"none"`;
-      (3) **a culture-type talent-tree prerequisite can name a nation** — the latent trap the dropped
-      slug created. In the talent-tree prereq config dialog, add a `culture` prerequisite and confirm
-      the Edha nations are offered and the one you pick is stored as its own id rather than baking
-      `"none"` (which used to match all ten).
-      Also worth a glance in the log: `Edha Content | [init] cultures registered: …` and
-      `Edha Content | ready — Edha cultures registered: 10/10`.
-      **What changed and why this needs a table.** `scripts/foundry-build.js` writes
-      `system.id = slugify(name)`; the system's culture DataModel declares that field with a CLOSED
-      choice list that its schema factory freezes at `defineSchema()` time, so every Edha slug was
-      rejected and replaced with the `"none"` initial. Run 33 measured that a **runtime**
-      `registerCulture()` is too late for exactly that reason. The engine now registers the ten in
-      its **`init`** hook (`EDHA_CULTURES` / `edhaRegisterCultures`, mirroring the existing currency
-      registration), which makes the **already-built pack valid as it stands** — no rebuild. **The
-      one thing no headless test can prove is the ORDERING** (that the module's `init` callback runs
-      before the culture schema is built), which is exactly what check (2) settles. Pinned headless
-      as far as it goes in `tests/culture-registration.test.js`; gated against `data/cultures.json`
-      by `lint-refs.js` pass 22.
-      *(→ Found bench run 32, severity settled bench run 33, fixed fix pass 5.)*
+*(**Culture items load CLEAN and a culture prerequisite can name a nation** — **RETIRED on evidence
+2026-09-06, bench run 34**, on a full client reload of the hash-verified `f268e990…` deploy. All
+three checks pass. (1) `await game.packs.get("edha-content.edha-items").getDocuments()` returned
+**113 documents with ZERO console errors** — the ten `… is not a valid choice` lines are gone. (2)
+Every one of the ten reads its **own slug** in both `_source.system.id` and `system.id` — canticle ·
+kettavar · corvaine · sylvaneth · goldenport · thalendor · malcurr · lunavar · ashkar · vorsk — and
+`CONFIG.COSMERE.cultures` holds **16** keys (the system's six Roshar cultures untouched plus the ten
+Edha nations). The log carries `Edha Content | [init] cultures registered: kettavar, malcurr,
+corvaine, thalendor, goldenport, vorsk, lunavar, canticle, sylvaneth, ashkar` and `ready — Edha
+cultures registered: 10/10`, so the **ORDERING claim no headless test can make is settled**: the
+module's `init` callback does run before the culture DataModel's schema is built. (3) The
+prerequisite half was proven **from the console rather than the dialog, because the dialog is not a
+CONFIG-driven picker** — `templates/item/talent-tree/dialogs/edit-prerequisite.hbs` renders an
+`app-document-reference-input` (any culture Item, by uuid), and `_onChangeForm` stores
+`{uuid, id: culture.system.id, label}`. So what decides is `system.id`, and the runtime check is
+`actor.cultures.some(c => c.system.id === prereq.culture.id)`. Two throwaway probe actors in
+`Edha Bench` (deleted immediately): one carrying Canticle + Vorsk met both prereqs and did **not**
+meet an Alethi one; one carrying **only** Canticle met Canticle and did **NOT** meet Vorsk or
+`"none"`. Before the fix every culture baked `"none"` and a single prereq matched all ten — that
+trap is closed. *(→ Found bench run 32, severity settled bench run 33, fixed fix pass 5, confirmed
+live bench run 34.)*)*
 
 ---
 
@@ -2819,38 +2803,29 @@ builder supports the field; nothing uses it. The row asks to observe "an adversa
 explicit `senses` value", and no such block exists. **If this question matters, the action is to AUTHOR
 one** — put an explicit `senses` on a block, rebuild, and open its sheet — not to re-open this row.)*
 
-- [ ] 🤖 **Veil auto-toggle (Stalker) — RE-TEST 2026-09-06 after fix pass 5; the engine defect is
-      FIXED and the fixture recipe is ready, so this is now one clean flow (engine-only, F5 —
-      relaunch/F5 is enough, no pack rebuild, no ⟳ Sync).** Import a fresh pack Stalker
-      (`edha-content.edha-adversaries` `l924euoyx3pYFk2T`), put its token on an unlit square, and
-      confirm: the `Veil` marker **enables itself** with a GM whisper (*"🌒 Veil: … stands in
-      darkness — the marker is ON (auto)"*); walking it into light **releases** it; and a marker you
-      toggle ON **by hand in light** is left alone (cover stays a table read). ⚠️ **Do NOT
-      hand-create an actor-level copy of the AE this time** — that was run 33's diagnostic control,
-      and reading it back is the leading explanation of the run's unexplained second symptom. Drive
-      the SHIPPED trait AE only.
-      - ✅ **The scene fixture is a three-call recipe — copy it, do not re-derive it (bench run 33).**
-        `Scene.create({name:"BENCH — Dark Veil", environment:{darknessLevel: 1,
-        globalLight:{enabled:false}}, tokenVision:true})`, **viewed and never activated**, deleted at
-        the end. Sampled at the sweep's own +300 ms timing after an `updateScene`,
-        `edhaPointIlluminated` evaluates **false** at the token centre: `darknessLevel === 1`,
-        `globalLight.enabled === false`, and the single light source reports `active: false` so the
-        loop skips it.
-      - ✅ **FIXED 2026-09-06, fix pass 5 — the marker is reachable now.** Run 33 proved the sweep
-        looked the marker up in **`actor.effects`** while the `Veil` AE is **item-transferred**
-        (`transfer: true` on the `Veil` trait), so it lives on the ITEM and `actor.effects` is empty
-        — `eff` was always `undefined` and the veil had **never** auto-toggled on any map. The lookup
-        now goes through **`edhaAllEffects(actor)`** (`Actor#allApplicableEffects()`, NOT
-        `appliedEffects`, which filters out disabled markers). Pinned headless in
-        `tests/effect-transfer-lookup.test.js`; live behaviour is not settled until this row passes.
-      - 🔎 **Instrument it this time, and here is how.** `edha.darkVeilSweep()` and
-        `edha.allEffects(actor)` are now on the console API — run 33 could not call the sweep because
-        the engine's functions are module-scoped. Before the first trigger, log **`actor.effects` and
-        `[...actor.allApplicableEffects()]` side by side, keyed by `_id`** (never by name), plus
-        `actor.effects.length`, at every trigger. That is the measurement that separates the three
-        ranked hypotheses for run 33's second symptom in the `FIX PASS 5` handoff delta §2 — and note
-        that **a succeeded sweep is a NO-OP**: once the marker is up and the square is still unlit,
-        no card and no write is the CORRECT result, not a failure.
+*(**Veil auto-toggle (Stalker)** — **RETIRED on evidence 2026-09-06, bench run 34.** All three halves
+pass on the **SHIPPED item-transferred trait AE**, with no hand-made actor-level control anywhere in
+the run. Fresh pack import (`l924euoyx3pYFk2T`) into `Edha Bench`; bench-created scene
+`BENCH — Dark Veil` (darkness 1, `globalLight.enabled: false`, `tokenVision: true`), **viewed never
+activated**, deleted at the end. The measurement run 33 could not make, keyed by `_id`:
+`actor.effects` = **`[]`** while `[...actor.allApplicableEffects()]` = `Fade — Concealed`
+(`bkmd2l6Jm61EK92e`, parent `Fade`) and **`Veil — Concealed (cover/low light)`**
+(`qBRwocBUmnee3qyC`, parent `Veil`, `transfer: true`, `disabled: true`). **(1) RAISE:** on an unlit
+square `edha.darkVeilSweep()` took `qBRwocBUmnee3qyC` to `disabled: false` +
+`flags.edha-content.autoVeil: true` and whispered *"🌒 Veil: BENCH — Stalker stands in darkness — the
+marker is ON (auto)."* **(2) RELEASE:** with an AmbientLight staged and the token teleported onto it
+(`{animate:false, teleport:true}`, destination read back), the marker went `disabled: true`,
+`autoVeil: false` — **silently, and that is correct**: the engine's release branch only posts a card
+on the *suppressed* path (`register-skills.js` ~10097). **(3) HAND-TOGGLE IN LIGHT LEFT ALONE:** a
+marker enabled by hand while lit survived two further sweeps untouched (`disabled: false`,
+`autoVeil: false`, 0 cards) — the release branch requires a truthy `autoVeil`. **Run 33's unexplained
+second symptom is CLOSED and hypothesis (1) of FIX PASS 5 §2 is confirmed:** three further sweeps
+after the raise produced **0 cards and 0 state change** with the marker correctly reading
+`disabled: false, autoVeil: true` — a succeeded sweep is a no-op, and run 33's incoherent
+`disabled: true, autoVeil: null` was it reading the item-transferred ORIGINAL while its hand-made
+actor-level copy was the one that had fired. ⚠️ **Worth knowing:** the enable/disable is written onto
+the **trait item's own AE**, so a Stalker that ends a scene veiled carries that state on its copy of
+the trait until a sweep releases it — the accepted consequence of the widened read.)*
 
 ---
 
