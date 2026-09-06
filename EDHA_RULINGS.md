@@ -24,19 +24,7 @@ that was waiting on it. A ruling is not done until the thing it decides has actu
 
 ## A. Permissions & world settings
 
-**R-1. Should the PLAYER role keep `ACTOR_CREATE`?**
-> **ANSWERED 2026-09-05 (Ben, via the mobile board inbox): YES — keep the permission.**
-> Consequence, per this ruling's own text: the `summon-actor` **relay branch is dead code at Ben's
-> table**, and the checklist's `GM summon relay` row can never pass as written → **retire that row**.
-> The relay code itself is NOT being deleted on this answer (the ruling decided the permission, not
-> the code's fate; another world could revoke it). Filed as **TODO_REPO_HYGIENE #27**. Moves to §K
-> when that lands — a ruling is not settled until the thing it decides has changed.
-
-It has it in your world, which makes the `summon-actor` **relay branch dead code at your table** —
-run 13's player-cast Construct worked perfectly but never used the relay. This is the only thing
-blocking the checklist's `GM summon relay` row, and that row can never pass as written until you
-answer: revoke the permission and the relay becomes reachable (the row becomes 🤖), keep it and the
-relay is dead code and the row should be retired. *(From marathon 3A-1; blocks a checklist row.)*
+*(R-1 — should the PLAYER role keep ACTOR_CREATE — ANSWERED 2026-09-05, moved to §K.)*
 
 **R-2. Should `scripts/bench-setup-console.js` give bench PCs a normal sight range?**
 > **ANSWERED 2026-09-05 (Ben, via the mobile board inbox): YES — give them normal vision.**
@@ -680,6 +668,32 @@ re-reading now that attribute contests demonstrably work (R-43).
 ---
 
 ## K. Settled
+
+**R-1. Should the PLAYER role keep `ACTOR_CREATE`?**
+> **ANSWERED 2026-09-05 (Ben, via the mobile board inbox): YES — keep the permission.**
+> Consequence, per this ruling's own text: the `summon-actor` **relay branch is dead code at Ben's
+> table**, and the checklist's `GM summon relay` row can never pass as written → **retire that row**.
+> The relay code itself is NOT being deleted on this answer (the ruling decided the permission, not
+> the code's fate; another world could revoke it). Filed as **TODO_REPO_HYGIENE #27**. Moves to §K
+> when that lands — a ruling is not settled until the thing it decides has changed.
+
+It has it in your world, which makes the `summon-actor` **relay branch dead code at your table** —
+run 13's player-cast Construct worked perfectly but never used the relay. This is the only thing
+blocking the checklist's `GM summon relay` row, and that row can never pass as written until you
+answer: revoke the permission and the relay becomes reachable (the row becomes 🤖), keep it and the
+relay is dead code and the row should be retired. *(From marathon 3A-1; blocks a checklist row.)*
+**Closed by TODO_REPO_HYGIENE #27 (PR #TBD).** Consequence applied: the checklist's `GM summon relay`
+row (`EDHA_FOUNDRY_TEST_CHECKLIST.md`, Engine-wide section) is retired with a ✅ note recording why —
+the PLAYER role keeps `ACTOR_CREATE` at Ben's table, so `edhaSummon`'s `summon-actor` relay branch is
+unreachable and the row could never pass as written; bench run 13's player-cast Forge Construct is
+the evidence it never needed the relay. The ~1689 "Still open" bulk-note mention of the row was
+updated the same way. The relay code itself is untouched — a comment was added at its tree-section
+header and at the `game.socket.emit("summon-actor", …)` call site (both in
+`module-src/scripts/register-skills.js`) plus a note on the `SUMMONS` row in `ENGINE_INDEX.md`,
+saying the branch is reachable only in a world that revokes `ACTOR_CREATE`, so a future reader does
+not "clean it up". Comment-only: stripped-source equality holds (`scripts/lib/strip-comments.js`).
+
+---
 
 **R-7. Final Decree / Edict's Temp HP rider swept "17 ally(ies)"** — and Final Decree's "every enemy
 in Attunement Range" has no encounter scoping at all, so on a shared map it decree-bound five of your
