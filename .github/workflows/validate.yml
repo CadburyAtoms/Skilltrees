@@ -44,44 +44,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      # The same gates CLAUDE.md requires before every commit, plus the repo test suite.
-      # The pack validators (validate-packs.js / validate-adversaries.js) DO run here now —
-      # against packs built into a scratch dir in the final step (see "Pack build + validate").
-      - name: Engine syntax (node --check)
-        run: |
-          node --check module-src/scripts/register-skills.js
-          for f in scripts/*.js scripts/lib/*.js tests/*.js; do node --check "$f"; done
-      - name: Validate data/*.json (schema)
-        run: node scripts/validate.js
-      - name: Cross-reference lint (data↔engine)
-        run: node scripts/lint-refs.js
-      - name: Unit tests (engine helpers)
-        run: node tests/run.js
-      - name: Dashboard in sync (build-dashboard.js --check)
-        run: node scripts/build-dashboard.js --check
-      - name: Canon codex in sync (build-canon-codex.js --check)
-        run: node scripts/build-canon-codex.js --check
-      - name: Player primer in sync (build-player-primer.js --check)
-        run: node scripts/build-player-primer.js --check
-      - name: Unit tests (audit.py parsers)
-        run: python3 tests/audit_parser_test.py
-      - name: Tree consistency audit (audit.py, all trees)
-        run: python3 .claude/skills/leyline-tree-authoring/audit.py
-      - name: Map gazetteer lint (docs vs thyrcross.map.json)
-        run: |
-          python3 -m pip install --quiet pillow
-          python3 scripts/map/lint_map.py
-      # The one gate class that needs COMPILED LevelDB packs, previously deploy-only — which is how
-      # the 2026-07-16d TDZ build crash AND the stale validator guard both reached Ben's step 5.
-      # Build every pack into a scratch dir, then run the pack validators against it. classic-level
-      # is installed just-in-time (Ben's local runs resolve it from the Foundry install); pinned to
-      # Foundry's 2.0.0 for pack-format parity.
-      - name: Pack build + validate (compiled LevelDB, scratch)
+      # scripts/gates.js is the ONE gate list (item 20) — the same ordered set CLAUDE.md iron
+      # rule 4 requires before every commit, run here with --ci for the two gates that need an
+      # optional local dependency (Pillow for the map lint, classic-level for the compiled-pack
+      # validators — both still installed just-in-time, inside gates.js, exactly as before).
+      # `node scripts/gates.js --list` prints the ordered list without running anything.
+      - name: Run gates (node scripts/gates.js --ci)
         env:
           EDHA_DATA: ${{ github.workspace }}/data       # foundry-build.js DATA defaults to Ben's Windows path
           EDHA_MODROOT: ${{ runner.temp }}/edha-packs   # write the scratch packs off the repo tree
-        run: |
-          npm install --no-save classic-level@2.0.0
-          node scripts/foundry-build.js all
-          node scripts/validate-packs.js
-          node scripts/validate-adversaries.js
+        run: node scripts/gates.js --ci
