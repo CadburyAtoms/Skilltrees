@@ -107,7 +107,7 @@ accident of append order, so nothing in this index could point at them. Item 23 
 | `TEMPORARY HP` | `edhaGetTempHp` · `edhaWriteTempHp` · `edhaSetTempHp` · `edhaThpTarget` + the `preApplyDamage` consumer. A module flag, not a system resource; spent before deflect and before real HP. |
 | `SUMMONS` | `edhaSummon` · `edhaSummonCreateGM` (actor creation is GM-only, over the socket) · identity/census `edhaSummonIsFrom` · `edhaSummonSourceTalent` · `edhaOwnedSummons` (what the H15 `sustainCap` counts) · `edhaSummonFolder` · `edhaDeleteActorWithTokens` · `edhaSweepOrphanedTokens` + the mode-gated summon-item veto. ⚠ the `summon-actor` socket relay is CONDITIONALLY DEAD at Ben's table (`EDHA_RULINGS.md` R-1: PLAYER keeps `ACTOR_CREATE`) — kept for a world that revokes the permission, not dead code (TODO_REPO_HYGIENE #27). |
 | `INJURIES` | `edhaAddInjury` · `edhaFindInjuryTable` · `EDHA_INJURY_FALLBACK` · `edhaCreateItemDocs` / **`edhaCreateItemCross`** (a player cannot create an item on another actor — the cross path relays to the GM). |
-| `TRIGGER GATING & COST` | `_edhaInTrigger` (the file-wide re-entrancy guard) · `EDHA_TRIG_PENDING` · `EDHA_RES_LABEL` · `edhaIsTalent` · `edhaOwnsTalent` (⚠ an iron-rule-2b smell, on the pass-7 ratchet — do not add a caller) · `edhaResVal` · `edhaTriggerAllowed` · `edhaMarkTriggerUsed` · `edhaResolveCost`. |
+| `TRIGGER GATING & COST` | `_edhaInTrigger` (the file-wide re-entrancy guard) · `EDHA_TRIG_PENDING` · `EDHA_RES_LABEL` · `edhaIsTalent` · `edhaRuleBearer` (talents + weapons — the gate on `edhaActorRuleOf`/`edhaActorRulesOf`, item 34a) · `edhaOwnsTalent` (⚠ an iron-rule-2b smell, on the pass-7 ratchet — do not add a caller) · `edhaResVal` · `edhaTriggerAllowed` · `edhaMarkTriggerUsed` · `edhaResolveCost`. |
 | `SENSES, LIGHT & VISIBILITY` | `edhaTokensWithin` · `edhaPointIlluminated` · `edhaSensesRangeFtFromAwa` · `edhaSensesRangeFt` · `edhaCanSee`; the dark veil (`edhaDarkVeilSweep` + `edhaDarkVeilSoon`, **debounced 300 ms** — the sweep is O(tokens) and movement fires in bursts) · `edhaVeilSuppressed`; reveal-on-damage `edhaSenseRevealShows` · `edhaSenseRevealOnDamage`. |
 | `TRIGGERED-EFFECT RESOLUTION` | the runner: `edhaEffectTargets` → `edhaRunTriggerEffect` → `edhaPostTriggerCard` → `edhaDeductCost`, entered at `edhaFireTrigger`; plus `edhaUserTargetTokens`/`edhaUserTargetToken`/`edhaUserTargetActor`, **`edhaResolveVictim`** (⚠ "victim" ≠ "target" — the creature the event happened TO), `edhaToggleStatus`, `edhaRollCard`, `edhaTriggerCardClick`, and card-state persistence `edhaMarkCardResolved` · `edhaMessageIdOf`. |
 | `SINGLE-TARGET GATE + DEFEAT TRACKING` | `edhaSetUserTargets` (the one writer of `game.user.targets`) · `edhaPickTargetClick` + the `preUseItem` gate; **`edhaKillerCandidates`** + the `updateActor` defeat sync — what every "when you defeat a creature" talent reads, since the system fires no defeat event. |
@@ -2451,6 +2451,13 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   Activatable/Damaging/Modality/Events mixins) flagged `edha-content.adversaryTalent: true`.
   **Bespoke `adv.items` abilities (trait/action kinds) carry the SAME flag since 07-16** —
   weapons stay unflagged (equipment, not talents).
+- **`edhaRuleBearer(item)`** (item 34a, 2026-09-06 — the fleet weapon migration) = `edhaIsTalent(item)
+  || item.type === "weapon"`: can this item CARRY edha event rules the actor-wide harvest loops
+  should read? `edhaActorRuleOf` and `edhaActorRulesOf` gate on THIS, not on `edhaIsTalent` — the
+  migrated adversary attacks (Bite, Scalpel-Strike, Spearing Beak) carry their `edha-damage-rider`
+  rules on the weapon document, and any weapon Ben authors a rider on in Foundry harvests too.
+  Weapons stay OUT of `edhaIsTalent` (no useItem talent automation, no talent-budget count).
+  Pinned through the consumers in `tests/engine-helpers.test.js` (mutation-verified on both loops).
 - **`edhaIsTalent(item)`** is the ownership predicate: `type === "talent"` OR the adversaryTalent
   flag. `edhaOwnsTalent` and every owner/caster item-by-name lookup go through it (pinned in
   `tests/engine-helpers.test.js`). `edhaCountTalents` (PC talent budget) stays type-strict on
