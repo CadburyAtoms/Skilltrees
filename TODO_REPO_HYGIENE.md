@@ -696,7 +696,7 @@ regression is pinned, the 🤖 row exists, and R-5 moves to `EDHA_RULINGS.md` §
 
 ---
 
-## 30. [ ] Rulings close-out: R-7, R-19, R-34, R-49 confirmed as shipped (docs only)
+## 30. [x] Rulings close-out: R-7, R-19, R-34, R-49 confirmed as shipped (docs only) (2026-09-05, PR #172)
 
 **Why:** Ben answered four rulings on 2026-09-05 from the mobile board, and each one **confirms the
 behaviour that already ships** — no engine change, no card change. The rulings doc's own rule is
