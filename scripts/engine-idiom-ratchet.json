@@ -14,6 +14,8 @@
   "",
   "resourceWrite REACHED 0 (item 13, 2026-09-06) — and NONE of the last twelve was a spend. Every cost deduction in the engine already went through edhaSpendResource/edhaConsumeCost; the survivors were gains, heals, restores, a lifesteal, a revive-to-1, a Colossus max-HP override and one open-ruling drain, each with its own clamp, relay-on-failure or multi-path update, which is why none of them could simply call a clamped spend/gain. They now go through edhaResourceWrite(actor, resource, changes, options) — the writer that OWNS the path and takes the classification (edhaBookkeepingTag / edhaSpendTag / the site's existing options where the ruling is open) as an argument. Note the measurement's shape: this regex counts a QUOTED literal key, and every canonical writer builds its path from a variable, so 0 is genuinely reachable here where userTargets floors at 1. A count of 1 means someone hand-rolled a literal resource path again; migrate it onto edhaResourceWrite, do not raise the count.",
   "",
+  "primaryGmGate FLOORS AT 1, and reached it (item 12, 2026-09-06): 20 -> 1. Nineteen hand-derived copies migrated; the ONE survivor is the canonical helper's own body, the same shape userTargets has. The migration found the idiom was serving TWO polarities, which is why a single helper had never absorbed it: sixteen sites wanted the whole gate (isGM AND no other GM has claimed it) and were byte-equivalent to edhaDefBuffGmGate(); three RegionBehavior._handleRegionEvent sites (Civ fortified foundation, dangerous terrain, Fate snare) checked only the second half, deliberately - a region trap must still fire on a player's OWN client in a GM-less session, and adding the isGM half there would silence it (a live-behaviour change and a ruling, not hygiene). So the gate is now DECOMPOSED: edhaNoOtherActiveGM() is the primitive that carries the one remaining occurrence, and edhaDefBuffGmGate() is defined as isGM && edhaNoOtherActiveGM(). A count of 2 means someone hand-rolled the check again; call one of the two helpers, do not raise the count.",
+  "",
   "userTargets FLOORS AT 1, not 0 (item 14, 2026-09-06). The idiom's canonical helper is a reader — edhaUserTargetTokens() — and a reader cannot read through itself, so its own one-line body is the last remaining occurrence and is the point of the migration rather than a violation of it. All nine call sites (the single-target preUseItem gate, edhaSetUserTargets' clear-all branch, edhaEffectTargets' \"prompt\" branch, edhaSovTargets, edhaFindMarkGrant, edhaRedirectClick, the pre-use range guard, the adv-attack to:\"targets\" fan-out, and the next-test-mod multi-target fan-out) now call it. A count of 2 means someone hand-rolled the read again; migrate it, do not raise the count.",
   "",
   "dispoFailOpen was ADDED 2026-08-10 (hygiene campaign wave 6), separately from the eight keys above: those eight were all measured on the SAME day this file was first frozen, but dispoFailOpen's originalCount below is wave 6's own landing measurement, not a retroactive part of that first freeze. It tracks the disposition-default fail-open idiom pass 5.2 (R-63) fixed in the shared helpers plus 16 named sites, leaving an explicit ~74-site backlog — this entry ratchets that backlog so it can only shrink from here, the same way the other eight ratchet theirs."
@@ -39,7 +41,7 @@
   "setFlagEmit": 2,
   "sceneOnceRaw": 3,
   "gmWhisper": 0,
-  "primaryGmGate": 20,
+  "primaryGmGate": 1,
   "resourceWrite": 0,
   "dispoFailOpen": 74
  }

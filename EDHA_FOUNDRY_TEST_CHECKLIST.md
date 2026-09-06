@@ -531,6 +531,23 @@ it; Withering Touch's ranged half behaved identically. Evidence in the 07-26m de
       enemy-side read takes the ENEMY — the split is by token disposition, not by click order, and
       your own token is in neither list. An empty/wrong list is the regression to report.
 
+- [ ] 🤖 **TWO GM clients, ONE write, after the primary-GM gate consolidation (item 12).**
+      ENGINE-ONLY (F5) — nineteen hooks that hand-derived `activeGM && !activeGM.isSelf` now call
+      `edhaDefBuffGmGate()`, and all nineteen write to the world, so this is the two-GM
+      double-write family (bench pass 15) re-checked on the new gate. **Both `Gamemaster` and
+      `Bench` must be connected** — that is the whole point of the row; with one GM client it
+      proves nothing. Drive **three** of the migrated sites and count, on BOTH clients:
+      **(a)** change a PC's **Awareness** (`Bench — Red`): the prototype-token sight range updates
+      **once**, and the scene tokens are updated once — not two competing writes.
+      **(b)** drop a **dangerous-terrain** Region and then **delete it**: exactly **one** paired
+      Drawing disappears with it and there is no "Drawing does not exist" console error from the
+      second client (the delete race is how this family announces itself).
+      **(c)** have a **player** click a relayed button that a GM applies (a burst apply, a Detonate,
+      a Civilization fortify): **one** card, **one** application. Anything that happens twice, or a
+      server-side "does not exist" error on the second client, is the regression to report.
+      Also confirm the **negative**: with the second GM as the active one, the first GM's client is
+      silent — it must not post its own copy of the same card.
+
 *(**GM summon relay** — RETIRED 2026-09-05, `EDHA_RULINGS.md` R-1: "yes — keep `ACTOR_CREATE`."
 ✅ The PLAYER role keeps the permission at Ben's table, so `edhaSummon`'s `summon-actor` relay
 branch is unreachable here and this row can never pass as written. Bench run 13's player-cast

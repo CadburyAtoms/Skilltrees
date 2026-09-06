@@ -9,12 +9,12 @@
 > (Draw Mana's recovery clamped at max and taxed nothing). **The single-target picker was driven end
 > to end and retired TWO rows at once** — item 14's half (a) and the `# Bench-results fixes` row
 > deferred three times. **5 rows off the checklist, 2 more narrowed, 0 engine defects, 1 new ruling
-> (R-76).** Open queue **31 🤖 → 26 🤖**; ⚑ unchanged at **21**. No `⛔ STOP`, **no pack rebuild
+> (R-76).** Open queue **31 🤖 → 26 🤖** on the checklist this run started from; the file now reads **27** because **item 12 merged behind this run** and added its own re-test row (see step 0). ⚑ unchanged at **21**. No `⛔ STOP`, **no pack rebuild
 > owed**, world restored to its start snapshot with **one stated artifact** (see below).
 
 ## Read this first
 
-**→ `EDHA_FOUNDRY_HANDOFF.md`, the `2026-09-06 — BENCH RUN 35` delta at the top** — the three-row
+**→ `EDHA_FOUNDRY_HANDOFF.md`, the `2026-09-06 — BENCH RUN 35` delta** (second from the top — item 12's own delta merged above it) — the three-row
 R-4 evidence table, the two corrections it makes to bench rows whose named subject does not exist,
 and §5's exact statement of the one restore artifact.
 
@@ -51,7 +51,7 @@ with the blocker named. **Design questions go to `EDHA_RULINGS.md`, never to the
 
 1. **Item 12's row — the hand-derived primary-GM gates → `edhaDefBuffGmGate` (ENGINE).** Its PR was
    in flight in a parallel worktree while run 35 drove, so it is the newest thing on the engine and
-   the first thing to hash-verify. **⚠️ Read run 35's measurement before staging it:**
+   the first thing to hash-verify — its row is `**TWO GM clients, ONE write, after the primary-GM gate consolidation (item 12)**`. **⚠️ Read run 35's measurement before staging it:**
    `game.users.activeGM` resolved to **`Bench`**, not to Ben's `Gamemaster`, with both connected — so
    the gate passed on the bench client and every watch ran locally. Whichever way it resolves for
    you, **record which client was the primary GM in the row**, because a one-sided reading of this
@@ -68,11 +68,11 @@ with the blocker named. **Design questions go to `EDHA_RULINGS.md`, never to the
    the ENEMY — by token disposition, not click order, and the caster in neither list. Half (a) (the
    single-target picker) is **done and retired**; do not re-drive it.
 
-## Where the 26 open 🤖 rows are
+## Where the 27 open 🤖 rows are
 
 | Block | 🤖 | Note |
 |---|---|---|
-| **`BENCH — Engine-wide & cross-tree`** | 2 | ⭐ **THE RE-TEST BLOCK** — item 13's heal clause + item 14's `edhaSovTargets` half (plus item 12's row once its PR lands). |
+| **`BENCH — Engine-wide & cross-tree`** | 3 | ⭐ **THE RE-TEST BLOCK — take it first.** Item 12's two-GM row (merged behind this run) + item 13's heal clause + item 14's `edhaSovTargets` half. |
 | **Character-creation wizard v2** | 6 | ⛔ **Still never driven, ELEVEN runs running, and there is no excuse left.** Every blocker in front of it is closed. **Re-read each row against DEPLOY STATE (2026-07-26 — every wizard row predates it) before staging; several likely retire on one read.** This is the block to take after the re-test rows. |
 | **Bestiary sections** (W29 ×3, Goldenport, Vorsk, Adversary ability wiring) | 6 | Untouched all marathon; each needs its own fresh pack import + staging. The import recipe is proven (runs 33–34 imported three between them). |
 | **`BENCH — hygiene campaign 2026-08-10`** | 7 | pass 5.2 / 5.3 rows. Includes the ones needing **zero GM clients** — still blocked on Ben. |

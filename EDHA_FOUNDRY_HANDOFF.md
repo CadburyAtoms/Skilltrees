@@ -33,6 +33,59 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-06 DELTA — item 12: the primary-GM gate was carrying **two polarities**, which is why nothing had ever migrated off it (**ENGINE-ONLY, F5** — no data change, no pack rebuild; deployed by the PM after bench run 34/35).
+
+`scripts/engine-idiom-ratchet.json`'s `primaryGmGate` key went **20 → 1**, and 1 is the **floor** —
+the same shape `userTargets` has, since the last occurrence is the canonical helper's own body. This
+was the one freeze-only key in the ratchet: nineteen hand-derived copies of
+`activeGM && !game.users.activeGM.isSelf`, none of them ever migrated. **All nineteen perform a world
+write** — actor updates, Region/Drawing/Wall writes, socket-relay applies, chat cards — so the entire
+set is "the two-GM family" (pass 15): a gate hand-derived inconsistently double-writes with Ben's
+`Gamemaster` and the agent bench's `Bench` both connected.
+
+**Why it had stalled.** The item said "replace the hand-derived check with `edhaDefBuffGmGate()`".
+That is right for **16** of the 19 and wrong for **3**, and the three are not an oversight:
+
+- **`edhaDefBuffGmGate()` — "am I the single applier?"** = `isGM &&` the primitive below. FALSE on
+  any non-GM client, *including when no GM is connected at all*: nothing happens rather than the
+  wrong client writing. The 16 sites were byte-equivalent to it (two spelled the `isGM` half as its
+  own `if (!game.user?.isGM) return;` line directly above the check, which is why a naive grep only
+  ever saw "half a gate" there).
+- **`edhaNoOtherActiveGM()` — "has no OTHER GM client claimed this?"** = the primitive. True on the
+  primary GM, **true when no GM is online**, false on a second GM and on any player while a GM is
+  online. Exactly three sites want it, and all three are `RegionBehavior._handleRegionEvent` bodies —
+  the Civ fortified foundation, dangerous terrain, and the Fate snare. A region trap has to keep
+  springing on the walking player's OWN client in a GM-less session; adding the `isGM` half there
+  would silence it, which is a live-behaviour change and a ruling, not hygiene. **Left as it was.**
+
+So the gate is **decomposed rather than duplicated**: `edhaDefBuffGmGate()` is now literally
+`!!game.user?.isGM && edhaNoOtherActiveGM()`. That is what takes the count to 1 instead of 2 — one
+helper carries the idiom, the other composes it. Both are in `ENGINE_INDEX.md` under "The gate is TWO
+helpers, and which one you want is a real question", with the standing warning that outside a region
+behaviour, "no GM online" is a reason to write **nothing**, never a licence to write from a player
+client.
+
+**What was proven.** `tests/gm-gate.test.js` (6 cases, **726 passed, 0 failed**, +6) drives the four
+client shapes a two-GM table produces — primary GM / second GM / player with a GM online / player
+with none — against the decomposition itself, two migrated world-writing hooks end-to-end
+(`deleteRegion`'s paired-Drawing cleanup and the PC sight resync on an Awareness change), the
+dangerous-terrain RegionBehavior including the GM-less case that is the whole reason those three
+sites keep the primitive, a source pin that nothing hand-derives the gate any more, and the ratchet
+count read from inside the suite. **Mutation-verified:** re-inlining the flipped-polarity check at
+`deleteRegion` makes the GM-less case delete (`1 !== 0`), fails the source pin and the ratchet pin,
+and errors `lint-refs` pass 20 (`engine idiom "primaryGmGate" grew from 1 to 2`); restoring makes all
+four green. `node scripts/gates.js` → **RESULT: PASS** (exit 0).
+
+**🤖 for the bench:** one row under `# BENCH — Engine-wide & cross-tree` — with **both** GM clients
+connected, three migrated sites counted on both screens (an Awareness change writes sight range once;
+deleting a dangerous-terrain Region removes exactly one paired Drawing with no "does not exist" race;
+a player-relayed apply posts one card and applies once), plus the negative control that the
+non-primary GM's client stays silent.
+
+**Open, deliberately:** whether those three region behaviours *should* require `isGM` too — i.e.
+whether a GM-less table should still spring a trap from the player's own client. Today it does.
+
+
 ## 2026-09-06 — BENCH RUN 35 (weekend marathon, run 12): **R-4's last three faces PASS — R-4 may move to §K**; item 13's spend and bookkeeping stamps survive the `edhaResourceWrite` migration; the single-target picker retires **two** rows at once. **7 rows off the checklist, 0 engine defects, 1 new ruling (R-76), world restored to its start snapshot.** (**DOCS-ONLY** — no engine or data change, no pack rebuild owed.)
 
 Joined as `Bench`; the tab opened at 0×0 so the canvas never initialised — `resize_window` **and then
