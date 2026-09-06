@@ -1558,6 +1558,58 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   matched control has proven the root cause, **write the residual symptom down as PARTIAL and move on**
   — the second defect can be run 34's first row.
 
+## Operating lessons from run 35 (2026-09-06 — these OVERRIDE older advice where they conflict)
+
+- ⚠️ **The 0×0 canvas bites the FIRST tab too, and `resize_window` alone does not fix it.** Run 10's
+  lesson is filed under "the second tab", so this run spent three calls on `canvas.ready === false`
+  with `window.innerWidth === 0` on the only tab it had. `scene.view()` does nothing in that state.
+  The fix is `resize_window` **and then a full page reload** — and since a reload re-runs `init`
+  anyway, just do it as the first act of every run rather than discovering it at the first
+  canvas-dependent row.
+- ✅ **`game.users.activeGM` is NOT reliably Ben — check it at setup and say what you found.**
+  `edhaDefBuffGmGate()` is `!!game.user?.isGM && !(game.users?.activeGM && !game.users.activeGM.isSelf)`
+  — *exactly one GM writes* — and this run drew `activeGM: "Bench"` with Ben's `Gamemaster` also
+  connected. That is why every watch ran locally and every card was readable here. Draw the other
+  straw and the same cards post from Ben's client instead. **A silence you read as a FAIL may be a
+  gate you lost**, so this is a one-line health-check addition, not trivia.
+- ❌ **Staging an H3 ledger by hand does nothing without the MARKER STATUS.** `edhaOwnerList`
+  reconciles every entry whose `uuid` resolves against the ledger's status (`edicts` → `edict`,
+  `covenants` → `covenant`) and silently drops the ones that fail. Writing
+  `flags.edha-content.lists.edicts` and stopping there gives you an **empty** ledger, a watch that
+  never fires, and a row that "passed" for the wrong reason. Always pair the flag write with
+  `await actor.toggleStatusEffect("<singular>", {active: true})` on each bound creature — and note
+  that removing it later can throw *"ActiveEffect … does not exist"* if the toggle already cleared
+  it, which is harmless.
+- ✅ **When a row names a subject, VERIFY THE SUBJECT EXISTS before staging anything.** Item 13's row
+  named "H10's `edha-focus` Investiture DRAIN — Reaper's Harvest is the reference"; a three-line
+  sweep of the packs (`Object.values(d.system.events)` over all three, regex the stringified rule)
+  showed the game's only `resource:"inv"` H10 rule is a **`gain`**. Two runs in a row have now found
+  a bench row whose subject does not exist in shipped data (R-74, R-76). **Sweep first — it costs one
+  call and it changes what you build.** Then drive the branch with a *declared staged rule* on a
+  bench actor: that is what iron rule 2b is for, and it is honest as long as the delta says so.
+- ✅ **One `costs:` rule can prove three rows at once if you pick one that costs TWO resources.**
+  The staged spender carried `costs: "foc:2, inv:1"`, so a single click exercised the focus watchers
+  (Coercive Pressure + Whispered Doubt) **and** the Order Investiture Edict **and** the
+  `edhaSpendResource` path — with the same-round hand-edit as the shared negative control. Look for
+  the multi-resource cost before building two fixtures.
+- ⚠️ **A staged talent's own `activation.consume` will eat your row.** The first attempt at the
+  `costs:` half hung on an unclicked *"— Consume Resource"* dialog and reported "nothing happened":
+  `item.use()` never settles while it is open, and the resources never moved. Clear
+  `system.activation.consume` on a staged copy so the **rule's** `costs:` is the only deduction —
+  otherwise you cannot tell which one paid. The dialog's button is `button[data-action="continue"]`
+  inside `div.app.window-app` (labelled *Continue*), and a `.dialog-buttons button.default` selector
+  does **not** match it in v13.
+- ⚠️ **The Playtest Map's own walls silently shrink an area-heal to one target.** White's Draw Mana
+  pulse reported *"healed 1 of 5 ally(ies) … skipped 4 behind a wall"*, and both allies whose HP had
+  been snapshotted were among the skipped four — so the max-clamp half of the row could not be read
+  at all. **Before any "affects everyone in range" row, check the visibility count in the card
+  against the tokens you actually instrumented**, and stage on a wall-free line.
+- **Density, measured: 7 rows off the checklist (R-4's last three, item 13's spend row, item 14's
+  picker half, the deferred `# Bench-results fixes` picker row, and the Draw Mana half) + 1 new
+  ruling + 1 stale row-premise corrected, in ~35 driving calls. World diff empty except one restore
+  artifact, stated.** The re-test block first, for the ninth run running — and it was again the whole
+  run, because it was again the densest thing available.
+
 ## Operating lessons from run 34 (2026-09-06 — these OVERRIDE older advice where they conflict)
 
 - ❌ **A "silence" result is worth NOTHING without a positive control in the SAME budget window.**

@@ -139,6 +139,116 @@ non-primary GM's client stays silent.
 **Open, deliberately:** whether those three region behaviours *should* require `isGM` too — i.e.
 whether a GM-less table should still spring a trap from the player's own client. Today it does.
 
+
+## 2026-09-06 — BENCH RUN 35 (weekend marathon, run 12): **R-4's last three faces PASS — R-4 may move to §K**; item 13's spend and bookkeeping stamps survive the `edhaResourceWrite` migration; the single-target picker retires **two** rows at once. **7 rows off the checklist, 0 engine defects, 1 new ruling (R-76), world restored to its start snapshot.** (**DOCS-ONLY** — no engine or data change, no pack rebuild owed.)
+
+Joined as `Bench`; the tab opened at 0×0 so the canvas never initialised — `resize_window` **and then
+a full page reload** (run 10's lesson, and it applies to the FIRST tab too, not only a second one).
+Deploy verified by hash from both sides **before anything was driven**: served
+`register-skills.js`, CRLF-normalised, SHA-256
+**`4d882ea03a03d1e84f3f038ab1fea3a9f112f29070f9bad3c43dfc6e55ba27ac`**, byte-identical to
+`git rev-parse HEAD:module-src/scripts/register-skills.js` on `main` at the #195 merge; the original
+`<script>` entry's `decodedBodySize` (1 580 797) matched the repo file's raw byte count exactly.
+**Items 13 and 14 are live.** `bench-setup-console.js` ran clean and idempotent on the first pass —
+`BENCH SETUP DONE — 16 PCs, 7 targets … orphans: 0 repaired, 0 replaced`, zero ⚠ lines, no `CREATED`,
+no `+N talents`. Clients connected throughout: `["Bench","Gamemaster"]`. Ben's **active, started,
+zero-combatant** combat `BerbNeuXp4iKduef` was present as always and left alone.
+
+⚠️ **One measurement that matters to item 12 (the hand-derived primary-GM gate, in flight in a
+parallel worktree): `game.users.activeGM` resolved to `Bench`, not to Ben's `Gamemaster`.** So
+`edhaDefBuffGmGate()` — `!!game.user?.isGM && !(game.users?.activeGM && !game.users.activeGM.isSelf)`
+— returned **true on the bench client**, which is why every watch in this run ran locally and its
+cards were readable here. A run that draws the other straw sees the same cards posted from Ben's
+client instead, and a run that assumes it is always the primary GM will mis-read a silence. Check it
+at setup and say what you found.
+
+### 1. R-4 — the last three faces, all PASS, each with a matched control in the SAME round
+
+One fixture carried all of them, built off the previous row's residue as usual: tokens created for
+`Bench — Black` (Coercive Pressure + Whispered Doubt, both `scope: scene` / `disposition: enemy` /
+`rangeColor: black` / `once: round-per-target`, verified on the documents) and `Bench — Blue`;
+`Bench Target — Adjacent A` one diagonal square away; an inactive, started four-combatant combat
+(`Combat.create({active:false})` → combatants → `{round:1, turn:0}` → `ui.combat.initialize`), which
+`game.combat` then reported as the viewed combat. **Everything below happened in round 1**, silent
+tests first, so no PASS rests on a budget that had already been consumed.
+
+| Row | Verdict | Evidence |
+|---|---|---|
+| **NEGATIVE CONTROL part (c) — a window armed OUT of combat is still open when consumed (28a)** | **PASS** | `Bench — White` was in **no** combat (my four-combatant one did not contain it; Ben's holds zero combatants). It used the real **Ordered Advance** — the game's only `edha-move-window` rule — through its Consume Resource dialog, and the armed flag read `moveWindow {combatId: **null**, round: **null**, rangeFt: 10, source: "Ordered Advance"}`: exactly the shape `edhaRoundWindowValid` returns `true` for unconditionally. The **next token move** (`{animate:false, teleport:true}`, destination read back) posted *"🚶 Ordered Advance — Bench — White moved; allies within 10 ft may move half their Speed without provoking Reactions: **Bench — Red — up to 15 ft**, **Bench — Blue — up to 15 ft**"*, and the flag was still armed after. Silence here would have been the 28a regression. The restore move fired it a second time. |
+| **A REAL spend still taxes — the `costs:`-RULE half (28b)** | **PASS** | All six shipped `costs:` rules are PC talents, so one was **granted to the enemy** as the row instructs: a copy of `Subtle Suggestion`'s `edha-prompt-pick` (`source: confirm`, `event: use`) on `Bench Target — Adjacent A`, `costs` set to **`"foc:2, inv:1"`**, `activation.consume` cleared so the rule's cost is the ONLY deduction. Clicking the offer card took focus **4 → 1** — 2 for the cost through `edhaSpendResource`, **plus Whispered Doubt's extra 1** — and Investiture **3 → 2**, with *"🎲 Coercive Pressure: Bench Target — Adjacent A's next test — at disadvantage"* and `flags.edha-content.nextTestMod {source:"Coercive Pressure", mode:"disadvantage", count:1}` written. **Matched control, same round:** a plain optionless `actor.update` of that same actor's Investiture minutes earlier produced **zero** chat messages. |
+| **The Investiture / Edict face (28b)** | **PASS**, both directions, twice each | Ledger hand-staged and declared: `flags.edha-content.lists.edicts` on `Bench — Order` = two entries `{id, uuid, name, proh:{kind:"invest", text:"activate Investiture"}}`. ⚠️ **The `edict` marker STATUS is load-bearing** — `edhaOwnerList` reconciles every resolvable entry against it, so without `toggleStatusEffect("edict")` on each bound creature the ledger reads **empty** and the whole row silently proves nothing. **Negative:** two GM hand-edits of `system.resources.inv.value` → **zero** chat messages. **Positive, in that same round:** *"⚖️ **Edict watch**: Bench — Blue spent Investiture — … it just violated 'activate Investiture'"* (whispered, with the ⚖ resolve button) off the drain, and the identical card for `Bench Target — Adjacent A` off the `costs:` rule. |
+
+**→ All eight R-4 faces have now passed. R-4 may move to §K** (the PM does that). The one thing R-4
+does **not** close is the adversary-bespoke-ability half — that is **R-74**, a REBUILD decision for
+Ben, and it never was a test.
+
+### 2. Item 13 — the stamps survive `edhaResourceWrite`, and the row's named subject does not exist
+
+⚠️ **Correcting the row (and the delta above it): there is no Investiture DRAIN in the game.** The
+bench row and item 13's own delta both name "H10's `edha-focus` Investiture DRAIN … Reaper's Harvest
+is the reference". A sweep of all three packs found **exactly one** `edha-focus` rule with
+`resource: "inv"` anywhere — Reaper's Harvest — and it is **`op: "gain"`**, which takes
+`edhaBookkeepingTag`. **No shipped talent carries `op: "drain"` + `resource: "inv"`**, so the single
+`edhaSpendTag` site item 13 preserved (`register-skills.js` ~18139's ternary) has **no consumer on
+the table** — precisely R-74's shape one layer up. Filed as **R-76**; it is an authored-data call,
+not a bench one.
+
+Driven with a **declared staged rule** instead, which is what iron rule 2b makes possible: a
+throwaway talent on `Bench — Blue` carrying one `use` rule `{type:"edha-focus", op:"drain",
+resource:"inv", target:"self", formula:"1"}` — the exact branch that takes the spend stamp.
+
+- **A MIGRATED SPEND still taxes — PASS.** Investiture **4 → 3**, *"✨ Bench drain: Bench — Blue loses
+  1 Investiture"*, **and the Edict violation prompt fired** — in the same round in which that actor's
+  GM hand-edit *and* its Draw Mana recovery had both been silent. The writer neither swallowed nor
+  re-classified the stamp.
+- **A MIGRATED BOOKKEEPING write does NOT tax — PASS on the Draw Mana half, PARTIAL on the heal.**
+  `edha.drawMana()` on Blue's Draw Mana talent, with the Edict live on that actor, moved Investiture
+  **3 → 4** — **clamped at max 4, not 5** (tier 2 recovery), the site's own `Math.min` intact through
+  the migration — posted the summary card plus the Blue Attunement Key, and produced **no** Edict
+  prompt. The heal half posted *"🕊️ White Leyline Attunement: healed 1 of 5 ally(ies) 2 HP within
+  60 ft (visible) — **skipped 4 behind a wall**"* with **no watcher tax**, but the two allies whose
+  HP was read before and after were both among the four the walls skipped, **so this run cannot say
+  which creature was healed or that the heal capped at max HP.** Recorded as the narrowed remainder
+  rather than inferred — the row stays 🤖 for exactly that clause.
+
+### 3. Item 14 — the single-target picker, end to end, retiring TWO rows
+
+Two hostile tokens targeted; `Bench — Black` (which owns the reference talent) used **Withering Ray**.
+The use was **cancelled before any cost** — Investiture 2 → 2 — and the whispered card read *"🎯
+Withering Ray is single-target, but 2 tokens are targeted. Pick one:"* with **both** token names as
+buttons. Clicking one left `game.user.targets` holding **exactly that token**, stamped the card
+**"✓ Bench Target — Adjacent A"**, and re-used the talent: the roll window opened and Rolling
+produced ONE resolution — *"🩸 Withering Ray: Bench — Black pays 3 HP"*, *"🩸 Sanguine Reservoir:
+banked 3 Reserve (3/3)"*, *"🎲 Blood Price: your next test — at advantage"*. ⚠️ That roll window is
+the engine's **AppV1** `div.app.window-app` with **no `<dialog>` element** — the known trap, sampled
+for both shapes. **This is simultaneously item 14's half (a) and the long-deferred
+`# Bench-results fixes` "Single-target picker resolves" row, so both retire.** Item 14's row stays
+🤖, narrowed to **`edhaSovTargets`' ally/enemy split**, which was not reached.
+
+### 4. Rows read but not driven, and why
+
+The wizard-v2 block (6 🤖), the items-dump pair, and the R-63 shapes were **not reached** — the R-4
+and item-13/14 re-test block took the whole window, and the run stopped on the PM's clock rather than
+mid-row. They stay 🤖 with no re-filing; the next run's plan puts the wizard block first behind item
+12's row. The rows blocked on **zero GM clients** (Job 6a, 2bM-1, R-62's audience rows) were again
+unrunnable: `["Bench","Gamemaster"]` throughout, and that still needs Ben to disconnect for a window.
+
+### 5. Restore and world diff
+
+Deleted: the bench combat, both staged talents, the two tokens created for `Bench — Black` and
+`Bench — Blue`, the `edict` statuses, and `Bench — Order`'s edict ledger. Field-level diff over
+**all 74 actors** (system, flags, whole effect objects, item ids + item content, statuses) plus both
+scenes' tokens/regions/drawings/templates/walls/lights, and world combats/macros/items/folders/
+journals/tables: **everything matches the start snapshot except one thing, stated exactly.** The
+`Guardian Stance (+1 Deflect)` effect on `Bench — Order` and on `Bench — White` moved during the run
+(a neighbour's aura re-evaluating as tokens were created and deleted — the known both-directions
+behaviour) and was restored by delete-and-recreate **with `keepId`**, so `_id`, `name`, `changes`
+and every functional field are byte-identical while the `_stats` block carries fresh
+created/modified timestamps. That metadata delta is an artifact of the restore method, not drift in
+the effect. Ben's `Gamemaster` client stayed connected the whole time and nothing outside the
+`Edha Bench` folders was written. `game.logOut()` was the last in-world act; `Bench` is selectable on
+`/join` again. **Bench chat can be flushed.**
+
 ---
 
 ## 2026-09-06 DELTA — item 13: the last twelve hand-rolled resource writes are gone — and **not one of them was a spend**, which is why they were still hand-rolled (**ENGINE-ONLY, F5** — no data change, no pack rebuild; deployed by the PM after bench run 34/35).
