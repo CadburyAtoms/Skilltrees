@@ -490,6 +490,22 @@ silently, which cost this run one call.)*
       Report anything that still fires on the probe with the site name — that is a missed site, not a
       ruling.
 
+      ⚠️ **BENCH RUN 37 (2026-09-06) — THE PRIMARY PROBE RECIPE DOES NOT WORK ON THIS BUILD; use the
+      fallback. Row stays open, not driven.** Measured in-world on the hash-verified `57a8c950…`
+      deploy (item 10 batch 1 live): **`CONST.TOKEN_DISPOSITIONS.SECRET === -2`, a FINITE number.**
+      The fail-closed predicate is `edhaDisposHostile` (engine ~L4367), and it fails closed only on
+      `!Number.isFinite(...)` — so a **Secret** token is not sideless at all: re-running the engine's
+      own expression, `hostile(FRIENDLY, SECRET)` returns **`true`**, i.e. a Secret-disposition
+      creature still reads as an **enemy** and every side-filtered payload still reaches it. The row
+      anticipated this ("if Secret still reads as a number on this build, say so") — **it does, so
+      take the fallback**: the probe must be a creature whose **actor has no token on the scene**,
+      which is the lookup failure the unit tests pin (`hostile(FRIENDLY, undefined)` → **`false`**,
+      fail closed). The Playtest Map currently carries **only** dispositions `-1` and `1`, so there is
+      no pre-existing sideless token to reuse — the probe has to be staged, and staging it by setting
+      "Secret" on a token config will silently test nothing.
+      **Not driven through (a) / (b) / (c)** — the run ran out of budget after the fix-pass-6 block;
+      all three sites remain to do, with the corrected probe.
+
 ## Migration machinery (cross-tree behaviour)
 
 > **✅ Bench run 9 (2026-07-27i) retired seven Engine-wide rows on evidence** — **2bB-8** (neither
@@ -584,23 +600,57 @@ row's "one card" clause is read here as **one application**.)*
       the write, not the derivation. ⚠️ R-77 is still **open**: this is its recommended default
       applied pending Ben's veto, not a settled ruling.
 
-- [ ] 🤖 **RE-TEST — max HP no longer flips 64 ↔ 57; the ready-hook refresh double-applied every
-      ADD-mode ActiveEffect (fix pass 6).** Root cause was one line: the `ready` hook refreshed every
-      loaded character with a bare `a.prepareData()`, which re-runs the prepare pipeline over
-      **already-derived** data — and cosmere-rpg applies ActiveEffects inside `prepareDerivedData`, so
-      every ADD-mode change landed a **second** time. `Bench — White`'s `Hardy - Max HP` (ADD
-      `@level`) read `hea.max.bonus` = 8 + 7 + 7 = 22 → max **64**; the correct single application is
-      8 + 7 = 15 → max **57**. The bench's direction was **inverted** — 57 was right, 64 was inflated.
-      Now `a.reset()`, which re-initialises from `_source` first.
-      **Drive it:** on a fresh client load (F5), read `Bench — White`'s `system.resources.hea.max`
-      **before touching anything** — `bonus` must be **15** and max **57**, not 22 / 64. Then make any
-      resource write and read it again: **the same numbers**, i.e. no flip. **The separating
-      measurement the old row lacked:** the fix predicts that an actor with **no** ADD-mode effect
-      never flipped at all — so read `Bench — Green` (`bonus` 22 in source, no such AE) the same two
-      ways and confirm it is **stable**, whatever its value. If Green *does* flip, this root cause is
-      incomplete and there is a second one. Widen the check while you are there: `Clear Mind` /
-      `Focused Mind` focus max and `Surefooted`'s speed are the other ADD-mode effects that were
-      doubled at world load.
+      ⚠️ **BENCH RUN 37 (2026-09-06) — NOT PROVABLE THIS RUN; the second GM client predates the
+      fix. Row stays open, and the blocker is named.** Driven on the hash-verified `57a8c950…`
+      deploy with both GMs connected (`Bench` + Ben's `Gamemaster`) and a `userId`-recording
+      `updateActor` observer. **The gate's code is right** — read from `Bench`: `activeGM` = `Bench`,
+      `activeGM.isSelf` = `true`, so `edhaNoOtherActiveGM()` = `true` and `mayPersist` = `true` here,
+      while the same expression evaluated for a **non-primary** GM is `false`. **The measured
+      behaviour is nonetheless wrong, and in the OPPOSITE direction to the bug it fixes.**
+      Three probes, each a fresh character created in `Bench PCs` and deleted afterwards:
+      (1) probe created with a stale override → **exactly one** `inv.max.override` write, value 5,
+      **from `Bench`** (correct), with a `_stats`-only update from `Gamemaster` 7 ms later carrying
+      `_stats.lastModifiedBy` — i.e. Ben's client **did issue an update**, diffed to empty by losing
+      the race. (2) the same probe made stale again → **no** `inv` write at all, which is consistent
+      with both clients' per-session Sets already holding it. (3) ⭐ **the airtight probe** — created
+      **with the correct override**, so the persist condition was false on both clients and
+      **neither** client's `_edhaInvPersisted` Set was seeded; then made stale in one update
+      (awa 2 → 6, derived 4 → 8). Result: **exactly one `inv.max.override` write, value 8, and it came
+      from `Gamemaster` — the NON-primary GM.** `Bench`'s own attempt arrived afterwards and diffed to
+      a `_stats`-only update. The window was not blind: seven updates were captured in it.
+      **Most probable cause, stated as an INFERENCE rather than a measurement:** Ben's `Gamemaster`
+      client has been connected since **before** the 03:47 deploy, and fix pass 6 is **ENGINE-ONLY**
+      — it takes an **F5 on every client**. A `Gamemaster` still running the pre-fix engine has **no
+      gate at all**, which explains all three probes including probe 1's Set-seeding. It cannot be
+      confirmed from here because a client's loaded engine is not readable from another client.
+      ⭐ **Precondition for the next attempt, and it is general: a two-GM gate row cannot be verified
+      while EITHER GM client predates the deploy.** Ben must F5 his `Gamemaster` client first (or
+      disconnect it and let the bench reconnect it), and the run must say so before driving.
+      **Re-drive with probe 3's recipe** — it is the general shape for any per-client, per-session
+      Set-gated write: create the actor carrying the **correct** value so no Set is seeded, then make
+      it stale in one update and read which `userId` writes. Expected once both clients are current:
+      **exactly one write, from `Bench`.**
+
+*(**✅ RETIRED on evidence 2026-09-06, bench run 37 — the max-HP flip, BOTH halves, on the
+hash-verified `57a8c950…` deploy (fix pass 6 live).** On a **fresh client load, read before anything
+else was touched**, `Bench — White` gave `hea.max.bonus` **15** and max **57** — not 22 / 64. A real
+resource write and an `a.reset()` both returned **15 / 57**: no flip in either direction.
+⭐ **The doubler was reproduced as a positive control in the same window**, so the pass does not rest
+on a silence: a bare `prepareData()` moved White to `bonus` **22** / max **64** and `reset()` put it
+back to 15 / 57 — exactly the mechanism the delta names, and confirmation that `reset()` is the
+correct console restore.
+
+⚠️ **The row's separating measurement was mis-specified and is corrected here.** `Bench — Green` is
+**not** AE-free — it carries the *same* `Hardy — Max HP` ADD `@level` effect as White (Green spells it
+with an em-dash, White with a hyphen, which is why a name scan missed it), and it doubled
+**identically** (15 / 57 → 22 / 64). Green therefore cannot serve as the negative control, and run
+36's "Green showed the same numbers" is explained rather than anomalous. **The true negative control
+is `Bench — Red`**, which has no HP ADD-mode effect: its max held at **43** under the doubler while
+its `deflect` went **1 → 2** (`Guardian Stance`). `Bench — Blue` held HP **43** while `foc.max` went
+**8 → 10** (`Composed — Focus`, ADD `@tier`) and `defenses.cog` **16 → 18** (`Collected — Defenses`,
+ADD 2). So the doubling is strictly **per ADD-mode change, not per actor** — which is the fix's own
+prediction, and it discharges the row's "widen the check to the focus-max pair" clause on measured
+values. Root cause complete; no second cause.)*
 
 *(**GM summon relay** — RETIRED 2026-09-05, `EDHA_RULINGS.md` R-1: "yes — keep `ACTOR_CREATE`."
 ✅ The PLAYER role keeps the permission at Ben's table, so `edhaSummon`'s `summon-actor` relay

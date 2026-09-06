@@ -1558,6 +1558,69 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   matched control has proven the root cause, **write the residual symptom down as PARTIAL and move on**
   — the second defect can be run 34's first row.
 
+## Operating lessons from run 37 (2026-09-06 — these OVERRIDE older advice where they conflict)
+
+- ⭐ **A two-GM gate row cannot be verified while EITHER GM client predates the deploy — check this
+  BEFORE staging one.** Run 37 measured the Investiture persist landing from Ben's **non-primary**
+  `Gamemaster` even though the gate's code is provably correct, because Ben's client has been
+  connected since before the engine push and **ENGINE-ONLY fixes need an F5 on every client**. A
+  client's loaded engine is **not readable from another client**, so this shows up as a fix that
+  "does not work" rather than as a deploy error. Hash-verifying the *served* file proves only what a
+  **newly joining** client will run. Every "one applier" row inherits this precondition: say in the
+  result which clients were current, and if Ben's is stale, record the row **BLOCKED with the blocker
+  named** rather than FAIL.
+- ⭐ **The general recipe for any per-client, per-session Set-gated write — the "probe 3" pattern.**
+  A gate of the shape *"write once per session per client, if the stored value is stale"* cannot be
+  tested on an actor either client has already touched: the per-client Set masks the gate and every
+  result is a silence. **Create the probe actor carrying the CORRECT value**, so the staleness
+  condition is false on both clients and **neither Set is seeded**; then make it stale in a single
+  update. Both clients now attempt in the same window, and the `userId`-recording observer tells you
+  which one actually wrote. This gives a guaranteed positive (someone writes) so it can never be a
+  blind silence. Run 37's first two probes were both uninformative for exactly the reason this
+  pattern removes.
+- ⚠️ **A `_stats`-only update in the observer is NOT noise — it is a write that got diffed to
+  empty.** Foundry's update operation diffs by default, so a client that loses a race still emits
+  `_stats.modifiedTime` (+ `_stats.lastModifiedBy` when the modifying user changes). **Read
+  `lastModifiedBy`**: its presence means that user genuinely issued an update. Run 37 nearly filed
+  "exactly one write from Bench" as a pass before noticing Ben's client had issued one too.
+- ⚠️ **Compare ActiveEffects by a KEY-SORTED canonical form, or you get false positives.** A snapshot
+  taken with `e.toObject()` serialises a change as `{key,mode,value,priority}` while the live
+  `e.changes` serialises `{key,value,mode,priority}` — identical content, different `JSON.stringify`.
+  Run 37's final sweep reported **five** actors as changed on `Guardian Stance (+1 Deflect)` with
+  nothing actually moved. This is very likely what the standing "creating or deleting a bench token
+  moves Guardian Stance in BOTH directions" hazard (runs 34/35) has been seeing. Normalise before
+  diffing: sort each change object's keys, or compare field-by-field.
+- ⭐ **`prepareData()` is the DOUBLER; `reset()` is the restore.** Confirmed live and in both
+  directions: a bare `a.prepareData()` re-applies every **ADD-mode** ActiveEffect on top of already
+  derived data, and `a.reset()` puts it back. This is per **ADD-mode change**, not per actor — an
+  actor with no ADD effect on a stat does not move on that stat, but *does* move on any stat it has
+  one for (`Bench — Red` held HP 43 while its deflect went 1 → 2). **Never use `prepareData()` as a
+  console restore.**
+- ⚠️ **`Bench — Green` is NOT an AE-free control.** It carries the same `Hardy — Max HP` ADD `@level`
+  effect as `Bench — White` — Green spells it with an **em-dash**, White with a **hyphen**, so a name
+  scan misses it. The HP negative control is **`Bench — Red`**; `Bench — Blue` is the control for
+  focus (`Composed — Focus`, ADD `@tier`) and defenses (`Collected — Defenses`, ADD 2).
+- ⚠️ **`CONST.TOKEN_DISPOSITIONS.SECRET === -2` — a FINITE number, so "Secret" does not make a token
+  sideless.** The fail-closed predicates (`edhaDisposHostile`, engine ~L4367) branch on
+  `!Number.isFinite(...)`, and −2 passes that. A Secret token still compares unequal to a friendly
+  caster and still reads as an **enemy**. To stage a genuinely sideless creature use **an actor with
+  no token on the scene**, which is the lookup failure the unit tests pin. The Playtest Map carries
+  only dispositions `-1` and `1`, so nothing pre-existing can be reused.
+- ✅ **Stage the setup script by SERVING it, not by pasting 22 KB through the tool.** Copy
+  `scripts/bench-setup-console.js` into the installed module folder as a temp file and
+  `fetch("/modules/edha-content/<temp>.js").then(r=>r.text())` → `eval`. One small call instead of a
+  huge one; **delete the temp file afterwards**. Judge idempotency from `game.actors.size` /
+  `scene.tokens.size` as usual — the IIFE still logs after any capture window you set up.
+- ⚠️ **The Chrome-extension browser tools may be unavailable; the BROWSER PANE tools are the fallback
+  and work fine.** Run 37 opened with `claude-in-chrome` reporting "not connected" and drove the whole
+  run on the pane tools (`mcp__Claude_Browser__navigate` / `javascript_tool` / `resize_window`). Same
+  recipes, same JS-driven join. Don't treat an extension failure as a blocked run.
+- **Density, measured: 1 row retired on evidence (with the doubler reproduced as a positive control),
+  2 rows materially sharpened — one with its blocker identified, one with its probe recipe corrected
+  before it could waste a run — in ~14 driving calls. Final id and flag diffs EMPTY; the effect diff's
+  five entries were all serialisation artifacts.** The re-test block was again the densest thing
+  available, for the eleventh run running.
+
 ## Operating lessons from run 36 (2026-09-06 — these OVERRIDE older advice where they conflict)
 
 - ⭐ **The way to test a two-GM row is a `userId`-recording hook observer, not a card count.**

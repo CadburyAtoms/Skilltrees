@@ -118,6 +118,17 @@ the re-test row is on the checklist under `# BENCH — Engine-wide & cross-tree`
 > new term and the second GM writes again; swap in the blunt gate and the GM-less player-owned PC
 > stops persisting. **A veto is a one-line change** with a failing test on whichever side you pick,
 > so say the word and it flips. The ruling stays OPEN until then.
+>
+> ⚠️ **Bench run 37 (2026-09-06) could NOT confirm the applied default at the table, and the
+> reason is not the code.** The gate reads correctly from the primary client (`activeGM` = `Bench`,
+> `isSelf` = true, so `mayPersist` = true there and false when the same expression is evaluated for a
+> non-primary GM), but an airtight probe — a fresh character created carrying the CORRECT override so
+> neither client's per-session Set was seeded, then made stale in one update — measured the single
+> `inv.max.override` write originating on **Ben's non-primary `Gamemaster`**. The most probable
+> cause, stated as an inference: **Ben's client has been connected since before the 03:47 engine push
+> and fix pass 6 is ENGINE-ONLY**, so it is still running the pre-fix engine, which has no gate at
+> all. **This does not change the recommended default and does not reopen the design question** — it
+> only means the applied default is still unverified live. Re-test after Ben F5s his client.
 
 
 *(R-5 — does Fault Line's line spare allies — ANSWERED 2026-09-05, moved to §K.)*

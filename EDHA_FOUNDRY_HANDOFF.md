@@ -33,6 +33,113 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-06 — BENCH RUN 37 (weekend marathon, run 14): **fix pass 6's max-HP fix VERIFIED with the doubler reproduced as a positive control — and the row's own negative control was wrong.** The Investiture gate is **correct in code but not provable live**: Ben's second GM client predates the deploy. Item 10's Secret-disposition probe **does not produce a sideless creature on this build**. **1 row retired, 2 rows sharpened, world diff EMPTY.** (**DOCS-ONLY** — no engine or data change, no pack rebuild owed.)
+
+**Deploy verified by hash first, from both sides:** the served `register-skills.js`, normalised
+CRLF→LF, hashed **`57a8c9502a424a56…`** (1,586,069 bytes), byte-identical to
+`HEAD:module-src/scripts/register-skills.js` at the #203 merge — so **fix pass 6 and item 10 batch 1
+were both live** for the whole run. Clients: **`Bench` + Ben's `Gamemaster`** throughout;
+`game.users.activeGM` resolved to **`Bench`** again (structural, per run 36). Joined on a **full page
+load**, as fix pass 6's `ready`-hook change requires.
+
+### 1. ✅ The max-HP re-test — RETIRED, and the fix is exactly as scoped
+
+Read **before anything else was touched** on the fresh load: `Bench — White` `hea.max.bonus` = **15**,
+max = **57**. Not 22 / 64. A real resource write and an `a.reset()` both returned **15 / 57** — no
+flip in either direction.
+
+⭐ **The doubler was reproduced in the same window as a positive control**, so this pass rests on a
+measurement and not a silence: a bare `prepareData()` moved White to `bonus` **22** / max **64**, and
+`reset()` restored 15 / 57. That is the delta's mechanism, demonstrated, plus live confirmation that
+**`reset()` is the correct console restore and `prepareData()` is itself the doubler**.
+
+⚠️ **The row's separating measurement was mis-specified, and the correction matters.** `Bench — Green`
+is **not** an AE-free actor: it carries the *same* `Hardy — Max HP` ADD `@level` effect as White —
+Green with an em-dash, White with a hyphen, which is how a name-based scan missed it — and it doubled
+**identically** (15 / 57 → 22 / 64). So Green could never have been the control, and run 36's "Green
+showed the same numbers" is **explained rather than anomalous**; fix pass 6's stated worry that "there
+is a second root cause" is discharged.
+
+**The real controls, measured:**
+
+| Actor | ADD-mode effect present | Under a bare `prepareData()` |
+|---|---|---|
+| `Bench — White` | `Hardy - Max HP` (ADD `@level`) | HP max **57 → 64** (bonus 15 → 22) |
+| `Bench — Green` | `Hardy — Max HP` (ADD `@level`) | HP max **57 → 64** (bonus 15 → 22) |
+| `Bench — Red` | none on HP; `Guardian Stance` on deflect | HP max **43 → 43** (held); deflect **1 → 2** |
+| `Bench — Blue` | none on HP; `Composed — Focus`, `Collected — Defenses` | HP max **43 → 43** (held); `foc.max` **8 → 10**; `cog` **16 → 18** |
+
+The doubling is therefore **per ADD-mode change, not per actor** — the fix's own prediction — and the
+bottom two rows discharge the row's "widen it to the `Clear Mind` / `Focused Mind` focus max" clause
+on measured values rather than by assertion.
+
+### 2. 🔴 The Investiture-max persist — the code is RIGHT, the behaviour is WRONG, and the blocker is a STALE CLIENT
+
+Driven with a `userId`-recording `updateActor` observer and three fresh probe characters (created in
+`Bench PCs`, all deleted afterwards; final actor diff empty).
+
+- **The gate's semantics are correct.** Read from `Bench`: `activeGM` = `Bench`, `isSelf` = `true`,
+  `edhaNoOtherActiveGM()` = **`true`**, `mayPersist` = **`true`**; the same expression evaluated for a
+  **non-primary** GM is **`false`**. Source and arithmetic agree with fix pass 6.
+- **Probe 1** (created with a stale override): **exactly one** `inv.max.override` write, value **5**,
+  **from `Bench`** — the correct result. But `Gamemaster` issued a `_stats`-only update 7 ms later
+  carrying `_stats.lastModifiedBy`, i.e. **Ben's client did issue an update**, diffed to empty by
+  losing the race.
+- **Probe 2** (same actor made stale again): **no** `inv` write at all — consistent with both clients'
+  per-session Sets already holding it, so uninformative by construction.
+- ⭐ **Probe 3, the airtight one.** Created **carrying the correct override**, so the persist condition
+  was false on both clients and **neither** client's `_edhaInvPersisted` Set was seeded; then made
+  stale in a single update (awa 2 → 6, derived 4 → 8). **Exactly one `inv.max.override` write, value
+  8 — and it originated on `Gamemaster`, the NON-primary GM.** `Bench`'s own attempt arrived after it
+  and diffed to a `_stats`-only update. Seven updates were captured in the window, so it was not
+  blind.
+
+**Most probable cause, and it is an INFERENCE, not a measurement:** Ben's `Gamemaster` client has been
+connected since **before** the 03:47 deploy, and fix pass 6 is **ENGINE-ONLY** — it takes an **F5 on
+every client**. A `Gamemaster` still running the pre-fix engine has **no gate at all**, and that model
+explains all three probes, including why probe 1 seeded Ben's Set. It cannot be confirmed from here:
+**a client's loaded engine is not readable from another client.**
+
+⭐ **The general rule this produces, which is worth more than the row:** **a two-GM gate row cannot be
+verified while EITHER GM client predates the deploy.** Every "one applier" row inherits this
+precondition. Ben must F5 his `Gamemaster` (or disconnect it) before the re-test, and the run must
+state that it did so. **R-77 is unaffected** — the recommended default is still applied and still
+vetoable; what run 37 could not do is confirm it live.
+
+### 3. 🟠 Item 10 batch 1's sideless probe — the row's PRIMARY RECIPE IS INERT ON THIS BUILD
+
+**`CONST.TOKEN_DISPOSITIONS.SECRET === -2` — a finite number.** `edhaDisposHostile` (engine ~L4367)
+fails closed only on `!Number.isFinite(...)`, so re-running the engine's own expression:
+`hostile(FRIENDLY, SECRET)` → **`true`**. **A Secret-disposition token is not sideless; it still reads
+as an enemy**, and every side-filtered payload still reaches it. The row anticipated exactly this and
+named its fallback — so the probe must be **a creature whose actor has no token on the scene**
+(`hostile(FRIENDLY, undefined)` → **`false`**, fail closed), which is also what the unit tests pin.
+The Playtest Map carries **only** dispositions `-1` and `1`, so nothing pre-existing can be reused and
+the probe has to be staged. **The three sites (burst capture / `edha-aura` sweep / Fortified
+Foundation) were NOT driven** — the run's budget went to the fix-pass-6 block. The row stays 🤖 with
+the corrected recipe written onto it.
+
+### 4. Not reached
+
+The **AoE burst auto-target** row (now deferred six times) and the six **wizard v2** rows were not
+reached. Both stay **🤖** — neither has been re-filed as ⚑ and neither is blocked.
+
+### 5. World state
+
+**Final id diffs EMPTY on every collection** — actors, scenes, combats, tokens, walls, regions,
+drawings, templates — and the **flag diff EMPTY**. Three probe actors were created and all three
+deleted (`game.actors.size` back to **74**; tokens **33**). The bench roster script re-ran and created
+nothing (counts unchanged, which is the runbook's own idempotency criterion). Ben's **active, started,
+zero-combatant combat `BerbNeuXp4iKduef`** is present and untouched, as in every run since 24.
+
+⚠️ **The effect diff reported five FALSE POSITIVES and they are worth knowing about**: `Bench —
+Chaos`, `Life`, `Order`, `Red`, `White` all "differed" on `Guardian Stance (+1 Deflect)` — the
+difference was **JSON key ORDER inside the serialized change** (`{key,mode,value,priority}` from the
+snapshot's `toObject()` versus `{key,value,mode,priority}` from the live `e.changes`), with identical
+content. **Compare effects by a key-sorted canonical form** or the long-standing "Guardian Stance
+moves in both directions" hazard will keep being reported when nothing has moved. Bench logged out;
+`Bench` is selectable again.
+
 ## 2026-09-06 — FIX PASS 6 (weekend marathon): **bench run 36's two defects, both root-caused; the max-HP flip was the ENGINE double-applying every ADD-mode ActiveEffect at world load.** R-77's recommended default applied. (**ENGINE-ONLY, F5** — no data change, no pack rebuild owed.)
 
 Two defects in, two out, and the second one is much wider than the row that found it. Both fixes are
