@@ -2961,9 +2961,14 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   living unmarked enemy within N ft of the victim, auto-picked (`edhaNearestListCandidate`), and
   the nearest-first fill-to-cap over enemies in your Attunement Range. A fill never evicts.
 - **H6 `edha-prompt-pick` `source: "effects"`** — the DISPEL: one button per enabled Active Effect
-  on the subject; the GM's click DELETES it (`edhaDispelPickClick`, `.edha-dispel-btn`). Built WITH
-  its intrinsic payload; success rules are NOT dispatched for a picked effect (no handler takes a
-  THING).
+  the subject BEARS (`edhaAllEffects` — item-transferred passives included since item 54,
+  2026-09-06, R-73 (b)); the GM's click DELETES an actor-level effect and DISABLES an item-owned one
+  (`edhaDispelPickClick`, `.edha-dispel-btn`; the kind is re-derived from the document by
+  `edhaEffectOwnerItem`, fail-closed — never a delete on an item's copy). `edhaDispelOptions` builds
+  the menu; the rule's `ledgers` field ("omens:omen, …", default Omen — R-35 (a)) adds one "Dispel
+  <Marker>" button per ledger holding the subject, cleared by `edhaDispelLedgerMark` (queued row
+  drop + unmark by the subject's uuid). Built WITH its intrinsic payload; success rules are NOT
+  dispatched for a picked effect (no handler takes a THING). Pinned: `tests/dispel-widening.test.js`.
 - **`edha-triggered-effect` `unlessTargetStatus`** (silent skip, never a stop) and the
   **`maxTargets` multi-target prompt mode** (+`requireDisposition`; rangeColor now filters prompt
   targets too): filters + caps your targets, ONE shared roll, `kind: thp` fans out through
