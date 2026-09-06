@@ -425,6 +425,57 @@ back** to the viewed one because it is a lookup whose empty answer would silence
 Pinned in `tests/combat-gate.test.js` — 17 cases, **every one asserting BOTH directions**, because a
 gate that silenced everything would pass a one-sided suite. Mutation-verified three ways.
 
+## ⛑ THE SPEND STAMP — a resource DECREASE is not a SPEND (2026-09-06, ruling R-4 half b, item 28b)
+
+Half (a) above asks *when* a scene watch may fire. This asks the other half of R-4: of the resource
+decreases that DO reach a watcher, which ones were a **spend**? Until 28b the answer was "all of
+them", so Ben correcting an adversary's focus on the sheet taxed it through Whispered Doubt, handed
+out Coercive Pressure's disadvantage, and tripped an Order Edict's "activate Investiture" prompt.
+
+**The direction is POSITIVE, and that was the real decision.** The engine stamps the SPEND; an
+unstamped decrease is not one. Tagging the *bookkeeping* instead cannot work — the writes R-4
+complains about are the ones the engine never issues (a GM typing in a sheet, dragging a token bar,
+a third-party macro), so there is no write to tag and the absence of a tag can never be evidence.
+
+- **`edhaSpendTag(source)`** → `{ edha: { spend: true, source } }`, merged into an update's
+  **`options`**: `actor.update(u, edhaSpendTag("edhaSpendResource"))`, or `{ ...other,
+  ...edhaSpendTag(…) }` when the site already passes options. **Options, not a document property** —
+  options ride the update to every client, so the watcher sees the tag wherever it runs, and nothing
+  is left behind on the actor. Same reasoning as `options.edhaFoc` / `edhaPrevPos` / `edhaHea`.
+- **`edhaBookkeepingTag(source)`** → the declared opposite. Nothing sets it today; a future engine
+  write that lowers a resource **without** being a spend says so here rather than staying silent.
+- **`edhaExpectSpend(actor, resource, amount, source)`** / **`edhaSpendExpected(actor, resource)`** —
+  the second positive signal. The cosmere-rpg system deducts a talent's activation cost **itself**,
+  from a `postRoll` action inside `item.use()`, with a plain `actor.update()` and **no options at
+  all** (verified against `systems/cosmere-rpg/index.js` at 2.1.0), so the engine cannot stamp it.
+  A `cosmere-rpg.preUseItem` hook registers what the use is about to cost (`edhaConsumeList`) and
+  the predicate accepts any decrease of that resource on that actor inside a 30 s window.
+- **`edhaIsSpend(actor, resource, options, oldVal, newVal)`** → THE predicate. False unless the write
+  went **down** AND something said so: the stamp, or a live expectation. Three loosenesses in the
+  expectation all lean the same way — amount-agnostic (a scaling cost can exceed the declared
+  `value.min`), not consumed on read, and a use vetoed *after* the hook leaves a harmless stale
+  entry — because **the fail-safe direction here is "yes, a spend"**: a wrong YES is today's
+  behaviour, a wrong NO silences a live talent. A throw returns YES too.
+
+```js
+const f = options?.edhaFoc;
+if (!f || f.new >= f.old) return;                            // a decrease…
+if (!edhaIsSpend(actor, "foc", options, f.old, f.new)) return;   // …that something SAID was a spend
+```
+
+Stamped: `edhaSpendResource` (so every `costs:` deduction, an adversary ability's included),
+`edhaConsumeCost`, the `set-resource` socket relay, H10's Investiture drain.
+**Deliberately NOT stamped** — this list is what makes the gate mean anything: scene resets,
+restores, the temp-HP unwind, the creation wizard, adversary sync, and every GM sheet edit or bar
+drag. `edhaGainFocus` / `edhaDrainFocus` are untouched: their writes already carry `edhaFocusWatch`
+and the focus watcher has skipped them since 07-05, so they never reach the predicate.
+
+⚠️ **Consulted at exactly TWO sites**, and `tests/spend-tag.test.js` fails if a third appears: the
+`updateActor` focus-change watch and the Order Investiture watch. **The health→0 defeat watchers are
+NOT spend sites** — a GM zeroing an adversary's HP is a legitimate kill and must keep announcing
+`defeat`. 18 cases, both directions each; mutation-verified both ways (dropping the tag fails 3,
+inverting the predicate fails 6).
+
 ## ⛑ THE CROSS-COMBAT CLOBBER FAMILY — a per-combat hook doing a world-wide write (07-28, fix pass F)
 
 `deleteCombat` and `combatTurnChange` hand you **the combat**. 20 of the 24 `deleteCombat` sweeps

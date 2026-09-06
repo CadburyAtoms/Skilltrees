@@ -736,7 +736,7 @@ dead rather than removed, and R-1 moves to `EDHA_RULINGS.md` §K citing the PR.
 
 ---
 
-## 28. [ ] Out-of-combat scope: gate scene/turn watches, tag bookkeeping writes (ruling R-4 — THE BIG ONE)
+## 28. [x] Out-of-combat scope: gate scene/turn watches, tag bookkeeping writes (ruling R-4 — THE BIG ONE) (2026-09-06, PRs #188 + #189 — **bench-pending**)
 
 **Why:** Ben answered **R-4 on 2026-09-05: "go with your recommendations"** — apply the recommended
 default. Today, out of combat: any focus **decrease** counts as a spend (including Ben's own GM
@@ -781,6 +781,32 @@ revert fails 5, the round/stamp revert fails 2). 670 passed, `node scripts/gates
 **28b (tagging bookkeeping writes) is untouched** — no focus-spend classification was changed — and
 **R-4 stays open** until 28b lands and the bench confirms. Five 🤖 rows queued under
 `# BENCH — Engine-wide & cross-tree`, including an explicit negative control.
+
+**28b DONE 2026-09-06 (PR #189) — ENGINE-ONLY (F5), no pack rebuild. The item is checked, but
+`bench-pending`: R-4 stays open in `EDHA_RULINGS.md` until a bench run confirms BOTH halves live.**
+Root cause was one missing distinction: **a resource DECREASE is not a SPEND.** `updateActor` saw
+focus go down and dispatched `focus-change` regardless of cause, so Ben typing an adversary's focus
+down on the sheet taxed it through Whispered Doubt, handed out Coercive Pressure's disadvantage, and
+tripped an Order Edict's "activate Investiture" prompt. **The direction was the real decision, and
+it is the POSITIVE one: the engine stamps the SPEND, and an unstamped decrease is not one.** Tagging
+the *bookkeeping* instead — the ruling's own phrasing — cannot work, because the writes R-4 complains
+about are exactly the ones the engine never issues (a GM sheet edit, a token-bar drag, a third-party
+macro): there is no write to tag, so the absence of a tag can never be evidence. Two positive
+signals cover the whole surface: **`options.edha.spend`** (via `edhaSpendTag()`, in `options` so it
+is broadcast to every client — `edhaSpendResource`, `edhaConsumeCost`, the `set-resource` socket
+relay, H10's Investiture drain), and a **pre-use expectation** for the cosmere-rpg system's OWN
+activation deduction, which runs from a `postRoll` action with a plain `actor.update()` and no
+options at all (verified against `systems/cosmere-rpg/index.js` at 2.1.0) — `cosmere-rpg.preUseItem`
+records what the use will cost via `edhaConsumeList`, and any matching decrease inside 30 s counts.
+Every uncertainty leans toward **"yes, a spend"** (amount-agnostic, non-consuming, throws → YES),
+because this half's named risk is the mirror of 28a's: **wrongly classifying a real spend as
+bookkeeping**. **`edhaIsSpend(actor, resource, options, old, new)` is adopted at exactly two sites** —
+the `updateActor` focus-change watch and the Order Investiture watch — and a test fails if a third
+appears; the health→0 defeat watchers are deliberately NOT spend sites (a GM zeroing HP is a
+legitimate kill). Pinned in **`tests/spend-tag.test.js`** — 18 cases, both directions each;
+mutation-verified both ways (dropping the tag fails 3, inverting the predicate fails 6). 688 passed,
+`node scripts/gates.js` PASS; neither ratchet moved. Three 🤖 rows added beside 28a's, including the
+"a real spend still taxes" row that is this half's negative control.
 
 
 ---

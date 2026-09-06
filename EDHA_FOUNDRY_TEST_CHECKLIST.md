@@ -382,13 +382,12 @@ visual-legibility judgment — still ⚑ Ben.
 
 *(**item 37 — orphan-token repair** — RETIRED on evidence 2026-09-05, bench run 30. Run 1: `BENCH SETUP DONE — 16 PCs, 7 targets … orphans: **3 repaired, 0 replaced**`, one ⚠ line per orphan naming `Bench — Green`, `Bench — Heroic`, `Bench Target — Floater`; zero talent/path ⚠ lines. Run 2: `orphans: **0 repaired, 0 replaced**`, no `CREATED` and no `+N talents` line — idempotent. After the repair each token's `actorId` resolves to its own roster actor and **all three drive**: `Bench — Green` drew mana and its `edha-zone` placement ran to completion (Region `Bench — Green — Difficult Terrain`, `terrain.ownerUuid: Actor.KYTl8CYAycyeNR11`) — exactly the flow that refused with "no token on the scene to place terrain from" at run 27; `Bench — Heroic` drove `Sharp Eye` to a resolved card, "Sharp Eye : 6 vs Bench Target — Floater's COG 14 — FAIL", which is also the proof that the repaired **Floater** token resolves as a def-test TARGET. ⚠️ **Four OTHER orphans exist on the Playtest Map** — `The Forgemaster`, `The Demolisher`, `PC Tester`, `Cragdrake Whelp Pack (1)` — and the planner correctly left all four alone: none is a bench-roster name, so they are not ours to touch.)*
 
-## Out-of-combat scope — R-4's half (a) (2026-09-06, item 28a)
+## Out-of-combat scope — ruling R-4, both halves (2026-09-06, items 28a + 28b)
 
-*(Engine sync + **F5**, NO pack rebuild. Four faces of one ruling plus the negative control; run them
-with **no combat in the tracker** unless a row says otherwise. **R-4 is NOT settled by these alone** —
-28b, the bookkeeping-write tagging, is a separate PR and its own rows. Do **not** read a focus-spend
-misclassification here as a 28a failure; that is 28b's, and R-8's roster cross-talk is its own open
-ruling.)*
+*(Engine sync + **F5**, NO pack rebuild. Four faces of half (a) plus its negative control, then three
+for half (b); run the 28a rows with **no combat in the tracker** unless a row says otherwise.
+**R-4 settles only when BOTH sets pass** — half (a) is the combat gate, half (b) is the spend stamp.
+R-8's roster cross-talk is its own open ruling and is not settled by any row here.)*
 
 - [ ] 🤖 **A per-round ledger no longer runs on "round 0 for ever" out of combat (28a).** With
       **no combat running**, use a `oncePerRound` talent on `Bench — Red` twice in a row (Unstoppable
@@ -429,6 +428,33 @@ ruling.)*
       still offers out of combat (and still debounces on repeat within ~30 s); (c) a movement or
       designate **window** armed out of combat is still open when it is consumed. Any silence here is
       a **28a regression**, not expected behaviour — report it as a fail.
+
+- [ ] 🤖 **A GM focus edit is NOT a spend (28b).** Put `Bench — Black` and an enemy adversary in a
+      **started combat together** (28a's gate must be open, or nothing fires either way) and give
+      `Bench — Black` `Whispered Doubt` and `Coercive Pressure` (both `scope: scene`,
+      `disposition: enemy`, `watch: focus-change`). Now open the adversary's **sheet** and type its
+      focus down by hand — 5 → 2, no talent, no roll. Expected: **no** 👁️ / 🧠 watcher card, **no**
+      extra focus taken, **no** disadvantage applied. Repeat by dragging the token's focus **bar**
+      instead of typing: same silence. Before the fix each of those hand edits taxed the creature.
+
+- [ ] 🤖 **A REAL spend still taxes (28b) — the direction that matters more.** Same pair, same started
+      combat. Have the adversary **use a talent that costs focus** (the system deducts the cost
+      itself, from `system.activation.consume`). Expected: Whispered Doubt takes its **1 additional
+      focus** and Coercive Pressure's disadvantage lands, exactly as before 28b — once per round per
+      enemy. Then do the same with an engine-driven cost (any talent whose rule carries `costs:`, so
+      the deduction goes through `edhaSpendResource`). Both must fire. **Silence here is a 28b
+      regression — a real spend read as bookkeeping — and is the failure this half was pinned
+      against.** Report it as a fail, not as "the fix working".
+
+- [ ] 🤖 **An adversary's own ability cost, in combat (28b).** With the same started combat, have the
+      adversary pay the cost of one of its **own** bespoke abilities (an `adversaries.json` ability
+      whose rule carries a `costs:` line — that path runs through `edhaSpendResource`). Expected: it
+      still reads as a spend and still trips the PC's enemy focus watchers. Then have the **GM
+      hand-record** the same cost on the sheet instead of using the ability: it must NOT trip them.
+      That contrast is the whole of 28b — wire the cost on the ability and it counts, type it into
+      the sheet and it does not. Also check the Investiture face: a `Law`/`Decree` Edict that forbids
+      activating Investiture must still prompt on a wired Investiture cost, and must **not** prompt
+      when the GM edits the Investiture number by hand.
 
 ## Migration machinery (cross-tree behaviour)
 
