@@ -92,15 +92,7 @@ enemies only. The same question applies to **every `kind: line` zone**. *(3B-B.)
 clause — it incidentally ticked your **Stitchmother** during run 11 (effects verified back to
 snapshot state afterwards). Same shape as R-5 but on the Region rather than the line. *(3A-4.)*
 
-**R-7. Final Decree / Edict's Temp HP rider swept "17 ally(ies)"** — and Final Decree's "every enemy
-in Attunement Range" has no encounter scoping at all, so on a shared map it decree-bound five of your
-placed playtest adversaries alongside the bench targets. Is Attunement Range the intended scope, or
-should it be the encounter? *(3B-B, corroborated by run 8's 2bV-9 sighting.)*
-> **ANSWERED 2026-09-05 (Ben, via the mobile board inbox): "attunement range is correct."** The
-> shipped scope stands; the "17 ally(ies)" count was the bench fixture's 15 always-armed PCs (that is
-> **R-8**, still open), not a scoping defect. **No engine change.** Consequence is docs-only: retire
-> or re-word any checklist row that frames the wide sweep as a defect, and move this ruling to §K.
-> Filed with R-19 / R-34 / R-49 as **TODO_REPO_HYGIENE #30**.
+*(R-7 — Final Decree / Edict's Temp HP rider scope — ANSWERED 2026-09-05, moved to §K.)*
 
 **R-8. Roster cross-talk between the 15 always-armed bench PCs** — every bench PC watches every
 event, which is not a table condition. Is this only a bench-fixture problem, or does it say something
@@ -156,14 +148,7 @@ is the house convention (pack advantage, the Opportunity adv-test and `edha-next
 only `edha-test-rider` has the opt-in `unlessDisadvantage` that Apex Predator uses). Left alone
 deliberately rather than changed silently. *(Checklist Quarry row, Heroic.)*
 
-**R-19. Should combat-timing talents grant to ADVERSARIES as well as PCs?** They do now — the
-retired hooks were gated `type === "character"` and rule-driven dispatch does not need that gate, so
-an adversary carrying a combat-timing talent gets its combat-start grant. Deliberate change; say if
-you would rather it stayed PC-only. *(Checklist 2bE-9. The mechanical half stays a 🤖 row.)*
-> **ANSWERED 2026-09-05 (Ben, via the mobile board inbox): "yes"** — adversaries get the grant too.
-> Confirms the shipped behaviour; **no engine change**. Consequence is docs-only: drop the
-> "say if you would rather it stayed PC-only" hedge wherever the checklist repeats it (2bE-9 was
-> already retired on evidence) and move this ruling to §K. Filed in **TODO_REPO_HYGIENE #30**.
+*(R-19 — combat-timing talents granting to adversaries too — ANSWERED 2026-09-05, moved to §K.)*
 
 **R-20. Should Pattern Recognition's disadvantage expire at the ROUND change?** It does now: the card
 always said "their next test **this round**", and the old flag waited for ever. Say if you would
@@ -351,20 +336,7 @@ agent to TEST, so it was in the wrong file. Original measurement: bench run 25.)
 
 ## F. Cosmetic & feel
 
-**R-34. Walking Ruin has no token indicator.** The toggle is tracked internally and nothing on the
-token says the character is leaving ruin behind — unlike **every** other scene-arm in the project
-(Cascade Armed, Crowned, `withernext`, `warlord`). Consistency call. *(3B-D + checklist Destruction
-row.)*
-> **ANSWERED 2026-09-05 (Ben, via the mobile board inbox): "needs a region left behind."** Read by
-> the PM as: **no token status icon — the ruin the character leaves behind is the indicator.** The
-> engine already does this: the trail rule (`edha-place-hazard {mode: trail}`) drops a dangerous-
-> terrain **Region** with a player-visible Drawing into every square the armed character moves
-> through (bench run 14 fired Combustion Chain off exactly such a patch). So the consequence is a
-> bench **confirmation**, not a build: one 🤖 row — arm Walking Ruin, move three squares on a player
-> client, and see three ruin patches render for the player, not GM-only. If that row fails, it is a
-> visibility bug in the hazard Drawing, not a new indicator. Filed in **TODO_REPO_HYGIENE #30**.
-> *(Ben: if you meant something else by "left behind" — e.g. a lasting Region at the spot where the
-> toggle ENDS — say so and #30 gets a build half.)*
+*(R-34 — Walking Ruin's indicator — ANSWERED 2026-09-05, moved to §K.)*
 
 **R-35. Should Unweaving's dispel card list the OMEN MARKER itself as a dispellable effect button?**
 Today the card lists enabled effects; the Omen marker is not among them. *(3B-D + checklist Chaos
@@ -444,23 +416,7 @@ authored `distanceFt` **dead** — Shockwave Slam ships `distanceFt: 5` *and* `b
 is coincidence, not the source. **Deciding R-48 once now settles four blocks**, which is a much better
 trade for a pack rebuild than the single-block version was. *(Bench run 19; checklist W29 §7, §8.)*
 
-**R-49. Is a CREATURE an "obstacle" for a push's collision damage, or only a wall?**
-Sent here by fix pass B (2026-07-28b) rather than decided silently. `edha-push` stops the victim when
-the destination is occupied by a body exactly as it stops them at a wall, and both set the same
-`collided` flag — so a victim shoved into another creature and stopped short currently takes the
-wall-collision die ("… and slams into an obstacle for N impact"). Shockwave Slam's own text says "a
-collision with an obstacle", which does not say whether a body counts.
-Fix pass B changed only the incoherent half — **a push that travelled 0 ft now deals no collision
-damage at all**, because nothing can slam into anything without moving. That much is not a judgment
-call. Whether a push that moves 2.5 ft and *then* hits a body should roll the die is.
-*Recommended default: YES, a creature counts — being slammed into someone is a collision, it keeps
-one rule for both cases, and it is the behaviour that has shipped all along.* The alternative (walls
-only) is a one-word engine change: gate the collision roll on `blockedBy === "wall"`. Engine-only
-either way — **no pack rebuild**, so this can be flipped whenever you decide.
-> **ANSWERED 2026-09-05 (Ben, via the mobile board inbox): "an actor is an obstacle."** Matches the
-> recommended default and the behaviour that has shipped all along — **no engine change**, no card
-> change (Shockwave Slam's "collision with an obstacle" now reads as including a body). Consequence is
-> docs-only: move to §K. Filed in **TODO_REPO_HYGIENE #30**.
+*(R-49 — is a creature an obstacle for push collision damage — ANSWERED 2026-09-05, moved to §K.)*
 
 **R-47. Should the `NO NAMEABLE HOOK:` engineering note be visible on the player-facing card?**
 Bench run 16 drove Seize and Roll, Drag Under and Slip the Sound and all three posted their authoring
@@ -725,5 +681,76 @@ re-reading now that attribute contests demonstrably work (R-43).
 
 ## K. Settled
 
-*(Empty. As rulings are answered, move them here with the answer and the commit that applied it —
-so the next session can see what was decided and what it changed, not just that it was decided.)*
+**R-7. Final Decree / Edict's Temp HP rider swept "17 ally(ies)"** — and Final Decree's "every enemy
+in Attunement Range" has no encounter scoping at all, so on a shared map it decree-bound five of your
+placed playtest adversaries alongside the bench targets. Is Attunement Range the intended scope, or
+should it be the encounter? *(3B-B, corroborated by run 8's 2bV-9 sighting.)*
+> **ANSWERED 2026-09-05 (Ben, via the mobile board inbox): "attunement range is correct."** The
+> shipped scope stands; the "17 ally(ies)" count was the bench fixture's 15 always-armed PCs (that is
+> **R-8**, still open), not a scoping defect. **No engine change.** Consequence is docs-only: retire
+> or re-word any checklist row that frames the wide sweep as a defect, and move this ruling to §K.
+> Filed with R-19 / R-34 / R-49 as **TODO_REPO_HYGIENE #30**.
+**Closed by TODO_REPO_HYGIENE #30.** Consequence applied: `EDHA_FOUNDRY_TEST_CHECKLIST.md`'s
+BENCH — Order section carried the only row that framed this as open (the 2bV-9 "WORLD-HYGIENE /
+SCOPE SIGHTING … for the rulings batch" note) — reworded to record the scope as confirmed correct.
+No other row referenced the scope as a defect.
+
+---
+
+**R-19. Should combat-timing talents grant to ADVERSARIES as well as PCs?** They do now — the
+retired hooks were gated `type === "character"` and rule-driven dispatch does not need that gate, so
+an adversary carrying a combat-timing talent gets its combat-start grant. Deliberate change; say if
+you would rather it stayed PC-only. *(Checklist 2bE-9. The mechanical half stays a 🤖 row.)*
+> **ANSWERED 2026-09-05 (Ben, via the mobile board inbox): "yes"** — adversaries get the grant too.
+> Confirms the shipped behaviour; **no engine change**. Consequence is docs-only: drop the
+> "say if you would rather it stayed PC-only" hedge wherever the checklist repeats it (2bE-9 was
+> already retired on evidence) and move this ruling to §K. Filed in **TODO_REPO_HYGIENE #30**.
+**Closed by TODO_REPO_HYGIENE #30.** Consequence applied: no live row in
+`EDHA_FOUNDRY_TEST_CHECKLIST.md` still carried the "PC-only" hedge — 2bE-9's own row was already
+retired to a one-line evidence note at bench run 23 (2026-07-28l) with no hedge text left to drop.
+Nothing to touch there; this closes the open question only.
+
+---
+
+**R-34. Walking Ruin has no token indicator.** The toggle is tracked internally and nothing on the
+token says the character is leaving ruin behind — unlike **every** other scene-arm in the project
+(Cascade Armed, Crowned, `withernext`, `warlord`). Consistency call. *(3B-D + checklist Destruction
+row.)*
+> **ANSWERED 2026-09-05 (Ben, via the mobile board inbox): "needs a region left behind."** Read by
+> the PM as: **no token status icon — the ruin the character leaves behind is the indicator.** The
+> engine already does this: the trail rule (`edha-place-hazard {mode: trail}`) drops a dangerous-
+> terrain **Region** with a player-visible Drawing into every square the armed character moves
+> through (bench run 14 fired Combustion Chain off exactly such a patch). So the consequence is a
+> bench **confirmation**, not a build: one 🤖 row — arm Walking Ruin, move three squares on a player
+> client, and see three ruin patches render for the player, not GM-only. If that row fails, it is a
+> visibility bug in the hazard Drawing, not a new indicator. Filed in **TODO_REPO_HYGIENE #30**.
+> *(Ben: if you meant something else by "left behind" — e.g. a lasting Region at the spot where the
+> toggle ENDS — say so and #30 gets a build half.)*
+**Closed by TODO_REPO_HYGIENE #30.** Consequence applied: reworded the Destruction section's
+"HAS NO OPEN BENCH ROWS" note in `EDHA_FOUNDRY_TEST_CHECKLIST.md` to record the ruling, and added
+the single new 🤖 confirmation row it calls for (arm Walking Ruin, move three squares on a player
+client, confirm three ruin-patch Drawings render player-visible, not GM-only).
+
+---
+
+**R-49. Is a CREATURE an "obstacle" for a push's collision damage, or only a wall?**
+Sent here by fix pass B (2026-07-28b) rather than decided silently. `edha-push` stops the victim when
+the destination is occupied by a body exactly as it stops them at a wall, and both set the same
+`collided` flag — so a victim shoved into another creature and stopped short currently takes the
+wall-collision die ("… and slams into an obstacle for N impact"). Shockwave Slam's own text says "a
+collision with an obstacle", which does not say whether a body counts.
+Fix pass B changed only the incoherent half — **a push that travelled 0 ft now deals no collision
+damage at all**, because nothing can slam into anything without moving. That much is not a judgment
+call. Whether a push that moves 2.5 ft and *then* hits a body should roll the die is.
+*Recommended default: YES, a creature counts — being slammed into someone is a collision, it keeps
+one rule for both cases, and it is the behaviour that has shipped all along.* The alternative (walls
+only) is a one-word engine change: gate the collision roll on `blockedBy === "wall"`. Engine-only
+either way — **no pack rebuild**, so this can be flipped whenever you decide.
+> **ANSWERED 2026-09-05 (Ben, via the mobile board inbox): "an actor is an obstacle."** Matches the
+> recommended default and the behaviour that has shipped all along — **no engine change**, no card
+> change (Shockwave Slam's "collision with an obstacle" now reads as including a body). Consequence is
+> docs-only: move to §K. Filed in **TODO_REPO_HYGIENE #30**.
+**Closed by TODO_REPO_HYGIENE #30.** Consequence applied: no live row in
+`EDHA_FOUNDRY_TEST_CHECKLIST.md` still asked this question (the retired Shockwave Slam evidence rows
+already document the shipped body-counts-as-obstacle behaviour); no engine or card change needed —
+matches the recommended default and shipped behaviour.
