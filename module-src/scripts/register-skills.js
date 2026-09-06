@@ -13232,14 +13232,35 @@ function edhaFateNearestEnemyAt(owner, x, y, ft) {
 /* --- Snare trigger Region (v13) — a full-cell rectangle whose fate-snare behavior fires on
  * tokenEnter + tokenMoveIn (so a PASS-THROUGH springs it). The green MeasuredTemplate stays the
  * player-visible marker; this invisible Region is purely the trigger. GM creates it; players relay. */
+/* R-13 (Ben 2026-09-06 (a)): a snare placed directly UNDER a creature ARMS — it does not spring.
+ * v13 delivers `tokenEnter` to a Region for every token already inside it the moment the Region is
+ * created, which is indistinguishable at the behavior from a creature walking in, so laying the
+ * trap on an occupied square detonated it instantly against the card's own words ("the first enemy
+ * to ENTER OR PASS THROUGH it"). Standing somewhere is neither. Bench run 7 narrowed it exactly:
+ * placement ADJACENT never insta-sprang, only placement directly under a creature did.
+ * The fix is a grandfathered set computed HERE, before the Region exists — every token whose
+ * centre is already in the square — and stamped on the behavior. Those tokens are ignored on the
+ * enter events; their next MOVE is the pass-through that springs it (`tokenMoveOut` /
+ * `tokenMoveWithin`, subscribed for exactly that). */
+function edhaFateOccupantsOfSquare(scene, x, y) {
+  const gs = scene?.grid?.size || 100;
+  // scene.tokens, NOT canvas.tokens.placeables: the GM applier may be looking at another scene
+  // (players relay placement through them), and the placeables list would then be the wrong scene's.
+  return [...(scene?.tokens ?? [])].filter(td => {
+    if (!td?.actor) return false;
+    const c = edhaTokenDocCenter(td);
+    return Math.abs(c.x - x) < gs / 2 && Math.abs(c.y - y) < gs / 2;
+  }).map(td => td.uuid).filter(Boolean);
+}
 async function edhaFateCreateSnareRegionGM(scene, owner, x, y, snareId) {
   try {
     if (!scene || !owner) return null;
     const gs = scene.grid?.size || 100;
+    const armedOver = edhaFateOccupantsOfSquare(scene, x, y);   // R-13: already standing there = armed, not sprung
     const [region] = await scene.createEmbeddedDocuments("Region", [{
       name: `${owner.name} — Snare`, color: EDHA_COLOR_HEX.green || "#5fb04f",
       shapes: [{ type: "rectangle", x: x - gs / 2, y: y - gs / 2, width: gs, height: gs, hole: false }],
-      behaviors: [{ type: "edha-content.fate-snare", name: "Snare Trigger", system: { ownerUuid: owner.uuid, snareId } }],
+      behaviors: [{ type: "edha-content.fate-snare", name: "Snare Trigger", system: { ownerUuid: owner.uuid, snareId, armedOver } }],
       flags: { "edha-content": { fateSnare: true, snareId, owner: owner.uuid } },
     }]);
     return region ?? null;
@@ -17846,13 +17867,28 @@ class EdhaHazardRegionBehavior extends foundry.data.regionBehaviors.RegionBehavi
 // stale-check below reads the ledger before the first spring's queued consume lands, so dedupe lives
 // in edhaFateSpringSnare's in-flight guard (bench run 6, 2026-07-27c), NOT here — every spring path
 // shares it. `displace` does NOT bypass these events (run-6 runbook fact).
+/* R-13 — the ARM decision, split out pure so it is pinnable without a Region. `armedOver` is the
+ * set of token uuids that were ALREADY in the square when the snare was laid (stamped by
+ * edhaFateCreateSnareRegionGM). For them the creation-time `tokenEnter` is not an entry and is
+ * ignored; the first time one of them MOVES (out of the square, or within it) that IS the
+ * pass-through the card promises, and the snare springs. Everyone else is unchanged: they spring
+ * on enter / move-in and never on a move event, because by then the snare is consumed anyway. */
+function edhaSnareArmedSpringDecision(eventName, tokenUuid, armedOver = []) {
+  const grandfathered = (armedOver ?? []).includes(tokenUuid);
+  const isMove = eventName === "tokenMoveOut" || eventName === "tokenMoveWithin";
+  return grandfathered ? isMove : !isMove;
+}
 class EdhaFateSnareRegionBehavior extends foundry.data.regionBehaviors.RegionBehaviorType {
   static defineSchema() {
     const FF = foundry.data.fields;
     return {
-      events: this._createEventsField({ events: ["tokenEnter", "tokenMoveIn"], initial: ["tokenEnter", "tokenMoveIn"] }),
+      /* tokenMoveOut / tokenMoveWithin joined for R-13 alone: they are the ONLY events a creature
+       * that was standing on the square at placement can produce, and the decision below ignores
+       * them for everybody else. */
+      events: this._createEventsField({ events: ["tokenEnter", "tokenMoveIn", "tokenMoveOut", "tokenMoveWithin"], initial: ["tokenEnter", "tokenMoveIn", "tokenMoveOut", "tokenMoveWithin"] }),
       ownerUuid: new FF.StringField({ required: true, initial: "", label: "Snare owner UUID" }),
       snareId: new FF.StringField({ required: true, initial: "", label: "Snare id" }),
+      armedOver: new FF.ArrayField(new FF.StringField(), { required: false, initial: [], label: "Tokens standing here when it was laid (armed, not sprung)" }),
     };
   }
   async _handleRegionEvent(event) {
@@ -17860,6 +17896,7 @@ class EdhaFateSnareRegionBehavior extends foundry.data.regionBehaviors.RegionBeh
       if (!edhaNoOtherActiveGM()) return;   // one applier — the PRIMITIVE half on purpose (no isGM: a GM-less table still springs it)
       const actor = event?.data?.token?.actor; if (!actor) return;
       if ((actor.system?.resources?.hea?.value ?? 1) <= 0) return;       // dead tokens don't spring traps
+      if (!edhaSnareArmedSpringDecision(event?.name, event?.data?.token?.uuid, this.armedOver)) return;   // R-13
       const owner = await edhaResolveActorRef(this.ownerUuid);
       if (!owner) return;
       const snare = edhaGetSnares(owner).find(s => s.id === this.snareId); if (!snare) return;   // already sprung / stale
