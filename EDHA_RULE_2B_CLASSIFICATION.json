@@ -1,6 +1,6 @@
 {
  "_README": [
-  "IRON-RULE-2b CLASSIFICATION \u2014 the per-talent record behind EDHA_EDITABILITY_AUDIT.md \u00a79.",
+  "IRON-RULE-2b CLASSIFICATION \u2014 the per-talent record behind docs/archive/EDHA_EDITABILITY_AUDIT.md \u00a79.",
   "",
   "Re-derived 2026-07-24i against the FULL vocabulary: 43 handler types (31 edha + 12 native)",
   "and 27 event types (10 edha + 17 native). SUPERSEDES the 07-24f pass, which enumerated only",
@@ -31,7 +31,7 @@
   "  => native = things that happen to ME; edha = targeting, and watching anyone else."
  ],
  "generatedOn": "2026-07-24r",
- "supersedes": "EDHA_EDITABILITY_AUDIT.md \u00a79a (07-24f) \u2014 treat 61/16/118/26 as void",
+ "supersedes": "docs/archive/EDHA_EDITABILITY_AUDIT.md \u00a79a (07-24f) \u2014 treat 61/16/118/26 as void",
  "source": "scripts/name-keyed-allowlist.json \u2229 register-skills.js call sites (218 names at the 07-24i derivation; 212 now \u2014 the six Warrior stances converted 07-24j)",
  "vocabulary": {
   "handlers": {

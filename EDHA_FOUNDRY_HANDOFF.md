@@ -33,6 +33,45 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-05 DELTA — item 21: stale-doc sweep from the 2026-09-04 review (DOCS-ONLY).
+
+Fixed the corrections item 21 named. `scripts/README.md` now documents all 22 previously-missing
+tracked scripts (`lib/*` individually, `map/` as one folder pointer, `bench-setup-console.js`,
+`dump-native-vocabulary.js`, `check-2b-classification.js`, `author-rules.js`, `handler-schemas.js`,
+the three doc builders, `sync-art.js`, `deploy-to-foundry.bat`, both ratchet JSONs, …) and drops the
+`playtest-setup-console.js` row (file deleted 2026-08-10); a new **`scripts/check-scripts-readme.js`**
+diffs the table against `git ls-files scripts` and exits 1 on drift (not wired into `gates.js` — a
+candidate for the PM to decide). CLAUDE.md's and TODO items 4/5's "11k-line engine" (and one stray
+"~15k") corrected to the measured **~19.7k lines (2026-09-05, `wc -l`)**; the authored-overlay field
+list corrected to the real SEVEN keys (`docId` plus the six named). `.claude/skills/talent-balance/
+SKILL.md`'s duplicated YAML frontmatter block removed (kept the first). `AUTHORING_WORKFLOW.md`
+gained the one-liner that an orphan `data/authored/.baselines/` dir (gitignored, pre-2026-07-26c) is
+safe to delete. `scripts/pre-commit-body`'s dashboard-source regex gained `EDHA_RULINGS.md` (already
+had `docs/PM_BOARD.md` from item 25 — checked, no change needed there).
+
+**Ruling PM-R2 (archive moves, already answered yes) applied:** `EDHA_EDITABILITY_AUDIT.md` and
+`Actor pages design review/` moved to `docs/archive/` with `git mv`, each leaving a 3-line pointer
+stub at its old path. Grepped the repo for both old paths and re-pointed every live "go read this"
+reference found: `.claude/skills/leyline-tree-authoring/ENGINE_INDEX.md`, `.claude/skills/
+talent-migration/{LESSONS,SKILL}.md`, this doc's own two §9-pointer lines, `EDHA_RULE_2B_CLASSIFICATION.json`,
+`scripts/lint-refs.js`, `scripts/dump-native-vocabulary.js`, `scripts/name-keyed-allowlist.json`.
+Left untouched (historical narration, not a live pointer, or explicitly out of scope): this doc's
+own "(8) NEW `EDHA_EDITABILITY_AUDIT.md`" delta announcement, `HANDOFF_ARCHIVE.md`'s frozen
+2026-07-14h cascade, `TODO_REPO_HYGIENE.md` item 21's own spec text (both name the OLD path on
+purpose — that's what needed moving), and `data/native-vocabulary.json` (out of `data/` scope for
+this worker). No builder script (`build-dashboard.js`/`build-canon-codex.js`/`build-player-primer.js`)
+reads either old path as a source, so nothing to rebuild beyond the normal dashboard refresh.
+
+The repo's 2026-09-05 fresh-clone move to `C:\dev\Skilltrees` (parent `C:\dev\CLAUDE.md`) made three
+more item-21 bullets moot before this session started: the four stale worktrees under `.claude/worktrees/` don't exist
+(a fresh clone has none; any `agent-*` dir there today is a live worker, left alone), and the
+untracked `screenshots/`, `src/`, and `data/authored/.baselines/` leftovers never existed here either
+— confirmed by `ls`, recorded in the TODO done-note instead of acted on.
+
+DOCS-ONLY. No engine, data, or pack changes. Nothing for the bench.
+
+---
+
 ## 2026-09-05 DELTA — item 26: bench PCs get a normal sight range (ruling R-2, TOOLING-only)
 
 **Root cause:** `scripts/bench-setup-console.js` never sets a sight value, so the bench PCs'
@@ -8194,8 +8233,8 @@ Previous: **2026-07-24f** (THE RULE-2b
 CLASSIFICATION — **analysis only: one doc section. NO engine change, NO data change, NO pack
 rebuild, nothing to deploy, nothing for Ben to re-test.**
 All **221** names on the ratchet list classified against the engine's 31 registered handler types
-and 10 event types — the number §6 of `EDHA_EDITABILITY_AUDIT.md` asked for before committing to
-the migration. Full result, per-tree table and handler proposals: **`EDHA_EDITABILITY_AUDIT.md` §9**.
+and 10 event types — the number §6 of `docs/archive/EDHA_EDITABILITY_AUDIT.md` asked for before committing to
+the migration. Full result, per-tree table and handler proposals: **`docs/archive/EDHA_EDITABILITY_AUDIT.md` §9**.
 **The split: 61 expressible now · 16 need one schema field · 118 need a new generic handler · 26
 genuinely ENGINE-OWNED.**
 **(1) 118 is not 118 designs — it is 8.** The same eight shapes repeat across fifteen trees; 46 of
@@ -10083,7 +10122,7 @@ Single-target gate (`EDHA_SINGLE_TARGET` + picker card) · `edhaMarkCardResolved
 
 ## 2026-07-12c DELTA — READABLE DARK actor-sheet pass (design handoff option 1b; ENGINE + css → sync + F5, NO pack rebuild)
 
-Implemented Ben's actor-sheet readability handoff (`Actor pages design review/design_handoff_actor_sheet_readability/README.md` — committed with this delta; values there are FINAL, don't re-derive).
+Implemented Ben's actor-sheet readability handoff (`docs/archive/Actor pages design review/design_handoff_actor_sheet_readability/README.md` — committed with this delta; values there are FINAL, don't re-derive).
 The cosmere dark sheet's palette comes from `--cosmere-color-*` variables on
 `.cosmere-theme-default.theme-dark` (system `output.css` ~L5620) — the whole palette change is a
 variable-override block in `styles/edha.css`, scoped to `.sheet.actor` (character + adversary),
