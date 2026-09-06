@@ -84,6 +84,10 @@ python tests/audit_parser_test.py
 python .claude/skills/leyline-tree-authoring/audit.py
 ```
 
+`audit.py` with no args checks every tree; to check one, pass its data-file stem — not the deity's
+proper name — leyline colors `black|blue|green|red|white`, or deity keys
+`chaos|civilization|death|destruction|fate|knowledge|life|order|power|sovereignty`.
+
 `python3` is not on Ben's PATH — use `python`. If you touched `source-materials/maps/**`, also
 `python scripts/map/lint_map.py`. If you touched the build or the data, also the scratch pack build
 plus `validate-packs.js` and `validate-adversaries.js` with `EDHA_MODROOT` pointed at the scratch

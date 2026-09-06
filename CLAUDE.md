@@ -159,7 +159,8 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
    node scripts/build-canon-codex.js --check
    node scripts/build-player-primer.js --check
    python3 tests/audit_parser_test.py
-   python3 .claude/skills/leyline-tree-authoring/audit.py <color|deity-name>   # exit 0 required
+   python3 .claude/skills/leyline-tree-authoring/audit.py <key>   # exit 0 required; key = data-file stem
+   # (not the deity's proper name): black|blue|green|red|white, or chaos|civilization|death|destruction|fate|knowledge|life|order|power|sovereignty
    ```
    **CI (`validate.yml`) runs two more that `npm run gates` does not**, because both need
    something a clone may lack — match them before assuming a green local run means green CI:
