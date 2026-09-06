@@ -1099,3 +1099,50 @@ engine, no pack, no talent change.
 
 **PM:** lane B (the live roster proves it) · model sonnet · size S · deps none (pair with 37) ·
 verify: the script's before/after summary from the live table, plus the 🤖 row. TOOLING-only.
+
+---
+
+## 41. [ ] "The Final Study" (deity/Knowledge) carries a stale authored docId — the one overlay that resolves by name
+
+**Why:** item 18's worker (PR #170, 2026-09-05) measured every one of the 365 authored overlay
+entries against `fid("talent:<tree>:<name>")` and found exactly one orphaned docId:
+`data/authored/deity-knowledge.json`'s **The Final Study** stores `WKWGvUtfrlOZVc0B` while the
+current seed hashes to `MQvIkCSK7fIHjnZE` — the talent was renamed after its last extract. It
+lands on the right overlay today only because no other tree defines that name; the build now
+prints it every run under "authored overlays matched by name (stale docId — re-extract to re-key)".
+
+**What to do:** re-key it. Either Ben re-extracts `deity-knowledge.json` from Foundry (the
+AUTHORING_WORKFLOW loop, which re-keys every entry), or a worker rewrites the ONE `docId` value to
+the current seed with a pack-parity proof (the overlay content does not change, so the packs are
+byte-identical either way). It is an authored-file edit, so it needs Ben's OK either way.
+
+**Done when:** `node scripts/foundry-build.js all` prints zero "matched by name" lines and the
+packs hash identical before/after.
+
+**PM:** lane H (Ben's re-extract) or R with Ben's OK (one docId value) · model sonnet · size S ·
+deps Ben's OK · verify: the build's name-match count 1 → 0 + pack parity. DATA-only, no rebuild.
+
+---
+
+## 42. [ ] The `updateActor` AWA → prototype-token sight re-sync may not fire for console-created actors
+
+**Why:** item 26's worker (PR #173, 2026-09-05) traced the bench PCs' 10 ft sight to
+`register-skills.js` ~16502–16521: `preCreateActor` stamps `prototypeToken.sight.range` from AWA
+at creation (AWA 0 → 10 ft), and the `updateActor` watcher that should re-stamp it when AWA
+changes did not take effect for actors the bench script creates and then updates from the GM
+console — the roster script now sets the value directly. This is a code-reading inference, not a
+table measurement, and bench run 30 added a related finding: **already-placed scene tokens keep
+their own stale `sight.range`** (a 🤖 row under `# 🎮 Player-client window`). If the watcher is
+really guarded out, Ben's own PCs would also keep a stale prototype sight after an AWA change.
+
+**What to do:** on the bench, create an actor from the console, raise AWA, and read
+`prototypeToken.sight.range` before and after; then do the same from the sheet as a player. If the
+watcher does not fire in either path, root-cause it (the `activeGM` guard is the first suspect) and
+fix it at the watcher, with a pinned test; if it does fire, record that the bench script's direct
+set is the whole fix and close this item.
+
+**Done when:** the watcher's behaviour is measured on the table and either fixed with a test or
+recorded as working; the stale-token 🤖 row is retired on evidence.
+
+**PM:** lane B · model opus · size S · deps none · verify: the table measurement + a pinned test if
+fixed. ENGINE-ONLY if a fix is needed.
