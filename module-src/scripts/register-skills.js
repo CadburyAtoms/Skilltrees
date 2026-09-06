@@ -5518,6 +5518,24 @@ function edhaSingularLabel(label) {
   if (/(ses|xes|zes|ches|shes)$/i.test(s)) return s.slice(0, -2);
   return s.slice(0, -1);
 }
+/* Indefinite article for a name we interpolate into prose. The weapon picker read "the arms a
+ * Agent actually carries" / "a Envoy" at bench run 38 — every vowel-initial path name (Agent,
+ * Envoy) came out ungrammatical because the article was a literal. English spells this by SOUND,
+ * not by letter, and the six path names are the whole live vocabulary, so the rule is the plain
+ * vowel-letter test plus the two exception classes that actually bite: a written vowel that is
+ * SOUNDED as a consonant (a "one-handed" grip, a "unicorn", a "university" — u-/eu- glides and
+ * "one"), and a consonant letter with a vowel SOUND (an "hour", an "heir", an "honest" broker).
+ * A single capital letter that is NAMED with a leading vowel takes "an" too (an F, an M, an S). */
+function edhaArticle(word) {
+  const w = String(word ?? "").trim();
+  if (!w) return "a";
+  const lower = w.toLowerCase();
+  if (/^(hour|honest|honou?r|heir|herb)/.test(lower)) return "an";                     // silent h
+  if (/^(uni[a-z]|use[a-z]*|usu|utili|euro|eu[a-z]|ubiqu|once|one[a-z]*|onc)/.test(lower)) return "a";   // consonant glide
+  if (/^[aeiou]/.test(lower)) return "an";
+  if (w.length === 1 && /^[fhlmnrsx]$/i.test(w)) return "an";                          // letter NAMES: ef, aitch, el, em, en, ar, es, ex
+  return "a";
+}
 /* The skill/attribute counterpart. Falls back to the UPPER-CASED id (the old inline default at
  * every site this replaced) so an unknown id reads as a skill code, not as lowercase noise. */
 function edhaSkillLabel(id) {
@@ -8367,7 +8385,7 @@ async function edhaCreatorWeaponPick(actor, DV2, pathName) {
       </label>`).join("");
     const res = await DV2.wait({
       window: { title: "Character Creation — the kit's weapon slot" }, rejectClose: false, position: { width: 520 },
-      content: `<p>Your kit's <strong>weapon slot</strong>: ${allowed ? `the arms a ${escCw(pathName)} actually carries` : "any weapon of <strong>2 gold or less</strong> you can actually use"} — pick <strong>one</strong> (each one's skill is listed). Choose now, or later from the Edha Items compendium.</p><div class="edha-cw-picklist" style="max-height:340px;overflow:auto">${rows}</div>`,
+      content: `<p>Your kit's <strong>weapon slot</strong>: ${allowed ? `the arms ${edhaArticle(pathName)} ${escCw(pathName)} actually carries` : "any weapon of <strong>2 gold or less</strong> you can actually use"} — pick <strong>one</strong> (each one's skill is listed). Choose now, or later from the Edha Items compendium.</p><div class="edha-cw-picklist" style="max-height:340px;overflow:auto">${rows}</div>`,
       buttons: [
         { action: "skip", label: "Choose later" },
         { action: "take", label: "Take it ▶", default: true, callback: (ev, btn) => btn.form?.querySelector?.("input[name=edhaWpn]:checked")?.value ?? null },
