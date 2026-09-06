@@ -258,17 +258,21 @@ test("loadAuthoredIndex: a malformed authored file throws, naming the file, inst
   );
 });
 
+// The flat `byName` this used to assert on is gone — TODO_REPO_HYGIENE #18 replaced it with
+// `byTree`, one name map per "<atlas>/<group>" scope, so the name fallback cannot cross trees.
+// See tests/authored-overlay-scope.test.js. The fixture has no `_meta`, so its scope comes from
+// the filename convention (talent-good.json -> "talent/good").
 test("loadAuthoredIndex: a well-formed authored directory still loads normally", () => {
   const dataDir = path.join(__dirname, "fixtures", "authored-good");
   const idx = loadAuthoredIndex(dataDir);
   assert.strictEqual(idx.count, 1);
-  assert.ok(idx.byName["Test Talent"], "byName must carry the fixture talent");
-  assert.strictEqual(idx.byId["fixture001"], idx.byName["Test Talent"], "byId must map docId to the same entry");
+  assert.ok(idx.byTree["talent/good"]["Test Talent"], "byTree must carry the fixture talent under its own scope");
+  assert.strictEqual(idx.byId["fixture001"], idx.byTree["talent/good"]["Test Talent"], "byId must map docId to the same entry");
 });
 
 test("loadAuthoredIndex: a missing authored/ directory returns an empty index, not an error", () => {
   const dataDir = path.join(__dirname, "fixtures", "authored-directory-does-not-exist");
-  assert.deepStrictEqual(loadAuthoredIndex(dataDir), { byId: {}, byName: {}, count: 0 });
+  assert.deepStrictEqual(loadAuthoredIndex(dataDir), { byId: {}, byTree: {}, collisions: [], ambiguous: [], count: 0 });
 });
 
 /* ---------------------------------------------------------------------------

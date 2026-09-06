@@ -1,0 +1,7 @@
+{
+  "_meta": { "atlas": "leyline", "group": "Black", "note": "fixture for tests/authored-overlay-scope.test.js — shares the name \"Hardy\" with heroic-warrior.json, and \"Twice Told\" with leyline-black-extra.json" },
+  "talents": {
+    "Hardy": { "docId": "fixLB01", "marker": "leyline-black", "description": "The Black tree's Hardy." },
+    "Twice Told": { "docId": "fixLB02", "marker": "leyline-black", "description": "Defined again in leyline-black-extra.json." }
+  }
+}
