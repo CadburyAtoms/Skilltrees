@@ -594,64 +594,29 @@ IS the negative control, read off world state rather than inferred. ⚠️ The s
 card of its own (the caster-side card is posted by the emitting client, not by the relay), so the
 row's "one card" clause is read here as **one application**.)*
 
-- [ ] 🤖 **RE-TEST — the Investiture-max persist now defers to the PRIMARY GM (R-77 default applied,
-      fix pass 6).** `edhaDeriveInvestiture`'s persist branch used to gate on `actor.isOwner` plus a
-      per-client `_edhaInvPersisted` Set only, so with two GM clients the writer was whichever
-      prepared the actor first — run 36 measured Ben's **non-primary** `Gamemaster` writing
-      `system.resources.inv.max.override: 6` on `Bench — Red` and the **primary** `Bench` writing 5 on
-      `Bench — Blue`, in one window. The gate now also requires `!game.user?.isGM ||
-      edhaNoOtherActiveGM()`: **GMs defer to the primary GM, a non-GM owner still writes.**
-      **Drive it:** with **both** GMs connected and a `updateActor` observer recording the originating
-      `userId`, change Awareness on a character **neither client has persisted this session** (the Set
-      is per-client and per-session, so pick a fresh actor or reload both clients first) and confirm
-      **exactly one** `inv.max.override` write, **from `Bench`** (the primary — its user id sorts
-      first, which run 36 established is structural). Second half, the one that must NOT regress: the
-      **non-primary** client must still **display** the right max on its own sheet — the gate narrows
-      the write, not the derivation.
-      **ANSWERED 2026-09-06, R-77 (a): keep the applied default** (GMs defer to the primary GM, a
-      non-GM owner still writes) — no change to the shipped code. Moves to §K once this row's
-      live re-test passes after Ben reloads his Gamemaster client; the run-37 blocker below was the
-      stale client, not the code.
-
-      ⚠️ **BENCH RUN 37 (2026-09-06) — NOT PROVABLE THIS RUN; the second GM client predates the
-      fix. Row stays open, and the blocker is named.** Driven on the hash-verified `57a8c950…`
-      deploy with both GMs connected (`Bench` + Ben's `Gamemaster`) and a `userId`-recording
-      `updateActor` observer. **The gate's code is right** — read from `Bench`: `activeGM` = `Bench`,
-      `activeGM.isSelf` = `true`, so `edhaNoOtherActiveGM()` = `true` and `mayPersist` = `true` here,
-      while the same expression evaluated for a **non-primary** GM is `false`. **The measured
-      behaviour is nonetheless wrong, and in the OPPOSITE direction to the bug it fixes.**
-      Three probes, each a fresh character created in `Bench PCs` and deleted afterwards:
-      (1) probe created with a stale override → **exactly one** `inv.max.override` write, value 5,
-      **from `Bench`** (correct), with a `_stats`-only update from `Gamemaster` 7 ms later carrying
-      `_stats.lastModifiedBy` — i.e. Ben's client **did issue an update**, diffed to empty by losing
-      the race. (2) the same probe made stale again → **no** `inv` write at all, which is consistent
-      with both clients' per-session Sets already holding it. (3) ⭐ **the airtight probe** — created
-      **with the correct override**, so the persist condition was false on both clients and
-      **neither** client's `_edhaInvPersisted` Set was seeded; then made stale in one update
-      (awa 2 → 6, derived 4 → 8). Result: **exactly one `inv.max.override` write, value 8, and it came
-      from `Gamemaster` — the NON-primary GM.** `Bench`'s own attempt arrived afterwards and diffed to
-      a `_stats`-only update. The window was not blind: seven updates were captured in it.
-      **Most probable cause, stated as an INFERENCE rather than a measurement:** Ben's `Gamemaster`
-      client has been connected since **before** the 03:47 deploy, and fix pass 6 is **ENGINE-ONLY**
-      — it takes an **F5 on every client**. A `Gamemaster` still running the pre-fix engine has **no
-      gate at all**, which explains all three probes including probe 1's Set-seeding. It cannot be
-      confirmed from here because a client's loaded engine is not readable from another client.
-      ⭐ **Precondition for the next attempt, and it is general: a two-GM gate row cannot be verified
-      while EITHER GM client predates the deploy.** Ben must F5 his `Gamemaster` client first (or
-      disconnect it and let the bench reconnect it), and the run must say so before driving.
-      **Re-drive with probe 3's recipe** — it is the general shape for any per-client, per-session
-      Set-gated write: create the actor carrying the **correct** value so no Set is seeded, then make
-      it stale in one update and read which `userId` writes. Expected once both clients are current:
-      **exactly one write, from `Bench`.**
-      - ⛔ **STILL BLOCKED at bench run 38 (2026-09-06) — deliberately NOT driven, and the blocker is
-        unchanged.** The precondition was re-checked before anything else: on the join screen Ben's
-        **`Gamemaster` was already listed as active (option disabled)**, and it stayed active
-        throughout the run (`game.users.filter(u => u.active)` = `["Bench", "Gamemaster"]`). That is
-        the same session run 37 measured — connected since before last night's engine push — so it is
-        still running a pre-fix engine, and run 37's rule stands: **a two-GM gate row cannot be
-        verified while either GM client predates the deploy.** The deploy itself is not in doubt: the
-        served `register-skills.js` hashes **`57a8c950…`**, equal to `main`. **Waiting on one F5 of
-        Ben's `Gamemaster` client** (or a disconnect/reconnect), nothing else.
+*(**✅ RETIRED on evidence 2026-09-06, bench run 39 — the Investiture-max persist defers to the
+PRIMARY GM (R-77), on the hash-verified `7d8e0226…` deploy** (= `main` at `dd1e1c3`, fix pass 7a live),
+with **both** GM clients connected (`Bench` + Ben's `Gamemaster`) and a `userId`-recording `updateActor`
+observer. ⭐ **The runs-37/38 blocker was settled by MEASUREMENT rather than waited out:** every
+`Foundry Virtual Tabletop` process on Ben's machine had **StartTime 18:59:24–18:59:38 on 2026-09-06**
+(`Get-Process`), i.e. after the 18:33 merge and the 18:59 deploy — so his `Gamemaster` client was
+provably running the current engine. That is the general fix for "a client's loaded engine is not
+readable from another client": read the PROCESS START TIME against the deploy time.
+**Probe 3, exactly as run 37 specified:** a fresh `R77 Probe 39` created in `Bench PCs` carrying the
+**correct** override (awa 2 → derived 4, `override: 4`), so the persist condition was false on both
+clients and **neither** `_edhaInvPersisted` Set was seeded — confirmed by zero updates in the 4 s after
+creation. Made stale in one update (awa 2 → 6, derived 4 → 8): **exactly one `inv.max.override` write,
+value 8, from `Bench`** (the primary). **Ben's `Gamemaster` issued nothing at all** — not even the
+`_stats`-only, `lastModifiedBy`-carrying update that run 37 caught it losing the race with.
+⭐ **NEG (load-bearing, the control run 37's probe 2 could not be):** made stale a SECOND time
+(awa 6 → 3, derived 5) with `Bench`'s Set now seeded, so `Bench` must abstain. **Nobody wrote** —
+`_source` override stayed **8** while the derived override correctly read **5**. A pre-fix
+`Gamemaster` (which has no gate at all) would have written 5 here; it did not, which is the positive
+proof that the OTHER client is gated rather than merely losing a race. That same reading is also the
+row's second half in the only direction measurable from here: the derived value is **correct while
+nobody persisted**, i.e. the gate narrows the WRITE and not the derivation — and the in-memory
+assignment does sit above the `mayPersist` branch in `edhaDeriveInvestiture` (code read, stated as
+such, not a measurement of Ben's screen). Probe deleted; actor count back to 74.)*
 
 *(**✅ RETIRED on evidence 2026-09-06, bench run 37 — the max-HP flip, BOTH halves, on the
 hash-verified `57a8c950…` deploy (fix pass 6 live).** On a **fresh client load, read before anything
@@ -845,13 +810,24 @@ nowhere.** The fooled-target riders both found the belief ledger: **Spearing Bea
 
 ### Fix pass 7a re-tests (item 47, 2026-09-06 — ENGINE-ONLY, F5; no rebuild, no ⟳ Sync)
 
-- [ ] 🤖 **R-51 — a phantom double's break fires no `ally-drops` cue.** Stage a creature whose SIDE
-      owns an `ally-drops` GM cue (the Corvaine "Break" shape, or The Reckoning within 5 ft), cast an
-      illusion copy on that side, then break the copy. Expect **no ally-drops card and no
-      `trigRound` ledger write** on any owner. **POS (the control, run it in the same take):** drop a
-      REAL creature of that same side the same way — the cue fires exactly as before, so the gate
-      keys on the illusion and not on the drop. **NEG 2:** the copy's own `damaged` / `seeming-break`
-      cards still print; R-51 narrows `ally-drops` only.
+*(**✅ RETIRED on evidence 2026-09-06, bench run 39 — R-51: a phantom double's break fires no
+`ally-drops` cue**, on the hash-verified `7d8e0226…` deploy. `B39 Mistheron` (the shipped carrier of
+**The Seeming**, `edha-illusion-copy` `copyOf: self`) was imported fresh from the pack beside a
+`B39 The Reckoning` whose `Unbreakable Line` owns a 5-ft `ally-drops` cue, both disposition **-1** —
+so the copy inherits the cue owner's own side. ⭐ **The silence is NOT vacuous, and that is the whole
+point:** the phantom spawned at a measured **7.071 ft** centre-to-centre from The Reckoning, which is
+the exact gap case (iv) of the R-52 row directly below proves DOES fire for a real drop. Breaking the
+copy (`applyDamage` onto its 1 HP) produced **no ally-drops card from any of the three cue owners on
+the scene** and **no flag write on any of them** (`edha-content` flags byte-identical before and
+after). **POS control, same take, same coordinates:** a REAL same-side creature dropped at the
+phantom's exact spot fired *"⏰ Unbreakable Line (B39 The Reckoning): A pack-mate dropped within 5
+ft…"* immediately. **NEG 2 — the copy's OWN signals still print:** *"🌫️ The Seeming: the illusion of
+… is struck and dissipates"*, the belief-restore card *"the illusion breaks — the real one stands
+plainly seen"*, and the `seeming-break` cue *"⏰ Fade (B39 Mistheron): … its seeming broke…"*. R-51
+narrows `ally-drops` and nothing else. ⚠️ One clause is uninformative on this fixture and is recorded
+rather than claimed: **neither** direction wrote a `trigRound` ledger entry, so the card's presence /
+absence is the only discriminator here — the "no `trigRound` write" expectation is satisfied but
+cannot separate pass from fail on these two blocks.)*
 
 ### Fix pass 7b re-tests (item 48, 2026-09-06 — ENGINE-ONLY, F5; no rebuild, no ⟳ Sync)
 
@@ -1502,20 +1478,64 @@ marker and ledger entry (ruling answered 2026-09-06 → item 47).
 
 ### Fix pass 7a re-tests (item 47, 2026-09-06 — ENGINE-ONLY, F5; no rebuild, no ⟳ Sync)
 
-- [ ] 🤖 **R-12 — a raised creature is no longer a Remain.** Harvest an adversary-typed victim
-      (marker + ledger entry), harvest a SECOND one, then Raise Dead the FIRST body and consume the
-      confirm. Expect: it returns at **1 HP**, its own `harvested` icon is **gone**, and the ledger
-      is **two entries shorter** (one spent by the raise, one cleared as the raised body) — the card
-      says so in words. **NEG 1 (load-bearing):** the OTHER harvested corpse keeps its marker and its
-      entry. **NEG 2:** raising a creature that was never harvested clears nothing and posts no
-      "no longer a Remain" line. **NEG 3 (needs two Reapers):** with the raised body on a SECOND
-      Reaper's `remains` list too, that copy goes as well — a marker is a property of the creature.
-- [ ] 🤖 **R-10 — "cannot regain HP" does not stop stabilization.** Withering-Touch a target
-      (fraction 0), then, in three separate takes, (a) drop it while it bears a **Death Ward**,
-      (b) **Raise Dead** it from 0, (c) save it with **Unbreakable Line**'s reaction. Each must land
-      it on **1 HP**. **NEG (load-bearing, run it every time):** a plain heal on the same withered
-      creature — a Mender click or an `edha-focus` hea rule — still heals **0** and still posts the
-      "cannot regain HP" card. If the negative ever passes, the fix has been over-applied.
+*(**✅ RETIRED on evidence 2026-09-06, bench run 39 — R-12: a raised creature is no longer a
+Remain**, on the hash-verified `7d8e0226…` deploy. Harvests were produced by the REAL rule (an
+in-combat defeat inside green Attunement Range — see the gate note below), never staged.
+**POSITIVE:** ledger `[B39 Victim, B39 Victim 2]` (2/2, both wearing `harvested`); Raise Dead on the
+**second** entry so the spend takes a DIFFERENT Remain. Result: it **returns at 1 HP**, its own
+`harvested` marker is **gone** (statuses `["disoriented"]`), the ledger is **two entries shorter**
+(2 → 0 — one spent by the raise, one cleared as the raised body), and the card says so in words:
+*"B39 Victim 2 is no longer a Harvested Remain — its own marker and ledger entry are cleared."*
+**NEG 2:** raising `B39 Victim 4`, killed at a measured **133.4 ft** (outside green range, so never
+harvested — marker-free and absent from the ledger), returned it at 1 HP, consumed one Remain, and
+printed **no "no longer a Remain" line at all**. **NEG 1 + NEG 3, one take, cross-owner:** a second
+Reaper (`B39 Reaper II`) held `[B39 Victim 5 (unrelated), B39 Victim 3 (the body about to be
+raised)]`; raising `B39 Victim 3` from Reaper I removed it from **BOTH** ledgers and unmarked it
+(NEG 3 — "a marker is a property of the creature"), while **`B39 Victim 5` kept its entry on Reaper
+II's list AND its `harvested` marker** (NEG 1 — the sweep is by uuid, not a ledger wipe).
+⚠️ **Two staging facts worth keeping.** (1) NEG 3's two-owner state **cannot arise through the shipped
+rule**: `Reaper's Harvest` carries `multiOwner: false`, and a second Reaper standing at the same two
+defeats harvested **nothing** (measured) — so Reaper II's ledger was written directly, in the shape
+H3 writes, and that is declared staging. (2) NEG 1 as the row words it is unsatisfiable on ONE
+tier-2 Reaper: `edhaLedgerSpend` shifts the **oldest** entry and unmarks it, so with a cap of
+`@tier` = 2 the "other harvested corpse" IS the one the raise consumes — which is why the
+cross-owner form above is the test that actually bites. ℹ️ **Incidental corroboration of R-4's
+out-of-combat gate (item 28a, already retired at run 35):** three defeats with **no combat in the
+tracker** harvested nothing at all; starting a combat and re-killing two of the same creatures
+harvested both, cards and ledger — `edhaWatchCombatGate` gating the scene-scoped watch, in both
+directions, in one sitting.)*
+
+*(**✅ RETIRED on evidence 2026-09-06, bench run 39 — R-10: "cannot regain HP" does not stop
+stabilization**, on the same deploy. The mark was produced FOR REAL, not staged: `Bench — Death`
+armed **Withering Touch** and landed a melee **Sidesword** hit, posting *"🐺 Withering Touch: +11
+vital strike"* and *"🥀 Withering Touch: … cannot regain HP until the end of Bench — Death's next
+turn"*, leaving an ActiveEffect `healCut {fraction: 0, byName: "Withering Touch"}`.
+**All three takes landed the creature on exactly 1 HP with the mark live and still attached
+afterwards:** (a) **Death Ward** — warded at 8 HP, hit for 40 → *"drops to 1 HP instead of 0 and
+gains 8 Temp HP. The ward ends."*, HP **1**; (b) **Raise Dead** from 0 → *"returns to life at 1 HP"*,
+HP **1**, with the `healCut` effect verified still present immediately after; (c) **Unbreakable
+Line** — a withered `Bench Ally — One` dropped to 0 adjacent to `Bench — White`, the reaction card
+posted (*"Spend 3 Inv → test White DC 10"*), the button was clicked, and *"🛡️ Unbreakable Line:
+Bench Ally — One drops to 1 health instead of 0"* landed it on HP **1**.
+**NEG (load-bearing), on the same withered creature in the same window:** a plain no-test heal
+(an `edha-focus` `resource: hea` rule, formula 5, targeted) left HP at **4 → 4** and printed
+*"🩸 B39 Victim cannot regain HP (Withering Touch)"*. The fix is not over-applied.
+❌ **But that same take exposed a NEW defect — see the 🤖 row below: the card announces the UNGATED
+amount.**)*
+
+- [ ] 🤖 **DEFECT (bench run 39) — an `edha-focus` `resource: hea` rule announces the UNGATED heal
+      amount.** H10's health branch posts its card from the ROLLED number, while `edhaCrossHeal` →
+      `edhaHealCutGate` scales the actual write. Measured: a withered creature (`healCut
+      {fraction: 0}`) took a formula-5 heal, HP stayed **4 → 4** (correct), the gate card
+      *"🩸 … cannot regain HP (Withering Touch)"* printed (correct) — and then the engine printed
+      *"⚕️ Field Medicine: B39 Victim heals **5**."* (wrong; it healed 0). The HP is right and the
+      card lies, which is the drift direction §10 warns about: the card is what a player reads.
+      Blast radius is every `edha-focus` `hea` rule — **Field Medicine** is the shipped one — and the
+      HALVED case will misreport too (it will name the full amount where half landed). **Drive it**
+      by re-running the same pair and reading BOTH cards; the fix wants the executor to announce the
+      gated amount, or to say nothing when the gate zeroed it. *(Found while driving R-10's
+      load-bearing negative; the probe changed only the rule's formula and trigger event, never this
+      code path.)*
 
 ---
 
@@ -1867,20 +1887,44 @@ Order III's pact was still live. That is `multiOwner`. ✅ **NEGATIVE**: Order I
 
 ### Fix pass 7a re-tests (item 47, 2026-09-06 — ENGINE-ONLY, F5; no rebuild, no ⟳ Sync)
 
-- [ ] 🤖 **R-72 — an involuntary drain is not a spend, so it does not violate an Edict.** Put an
-      Edict on an enemy, then have a PC DRAIN its Investiture or focus (Whispered Doubt / Shatter
-      Focus / an `edha-focus` `op: drain` rule). Expect **no violation prompt** on the drained
-      creature. **POS 2 (the other direction, load-bearing):** that same Edict-bound creature
-      activating a talent that costs it Investiture **still** raises the prompt — a silent watch is
-      a worse bug than a noisy one. **POS 3:** run the drain once from a client that does NOT own
-      the victim (the `set-resource` relay half) and once from the GM — the two halves must behave
-      identically, which is the whole reason all three sites moved together.
-- [ ] 🤖 **R-36 — Temp HP keeps the higher grant's NAME as well as its number.** Give an ally
-      **6 THP from Final Decree**, then grant **4 from Bear Witness**. Expect the ally to still read
-      **6**, attributed to **Final Decree** (check the flag/AE label, not just the number — the
-      number was already right). **POS 2:** now grant **7** from Bear Witness — it replaces the value
-      AND relabels. **NEG:** an equal grant (6 vs 6) leaves the incumbent's name; a tie is not a win.
-      Worth doing once for a cross-actor grant you do not own, since the relay carries its own copy.
+*(**✅ RETIRED on evidence 2026-09-06, bench run 39 — R-72's two owner-side halves**, on the
+hash-verified `7d8e0226…` deploy. An **Edict** was placed for real through the prohibition picker
+(`kind: "invest"`, *"It must not activate Investiture"*) on `Bench — White`, which took the `edict`
+status and the `Edict-Bound` effect. **POS 1 — the fix:** an **involuntary Investiture drain** (H10's
+`edha-focus` `op: drain, resource: inv` branch — staged as a probe because no shipped talent carries
+that combination, which the engine's own comment predicts and this run confirms) took the bound
+creature **4 → 3** and printed its card, and raised **no violation prompt at all**. **POS 2 —
+load-bearing, same actor, same Edict, same resource, minutes later:** the bound creature activating
+**Guiding Signal** (1 Investiture, its own cost) took it **3 → 2** and DID raise *"⚖️ Edict watch:
+Bench — White spent Investiture — if that was VOLUNTARY … it just violated ‘activate
+Investiture’"*. The watcher is alive and the fix narrowed it precisely rather than silencing it.
+**The row is NARROWED to POS 3 below**, which needs a second client.)*
+
+- [ ] 🤖 **R-72 POS 3 (narrowed 2026-09-06, bench run 39) — the `set-resource` relay half, from a
+      client that does NOT own the victim.** The two owner-side halves are retired above; this one is
+      **unrunnable from a single GM client, and the blocker is named**: `game.socket.emit` does not
+      echo to its sender, and the relay receiver is `edhaDefBuffGmGate()`-gated to the **primary** GM
+      — which is `Bench` itself — so a Bench-side emit reaches only Ben's non-primary `Gamemaster`,
+      which returns immediately. It needs **`PlayerBench`** (a non-GM) to fire a focus drain at a
+      creature it does not own, with a `userId`-recording `updateActor` observer on Bench reading the
+      relayed write's **`options`**: it must carry `edhaBookkeepingTag`, never `edhaSpendTag`, so the
+      direct and relayed halves classify identically. Row stays 🤖.
+*(**✅ RETIRED on evidence 2026-09-06, bench run 39 — R-36: Temp HP keeps the higher grant's NAME as
+well as its number**, on the same deploy, driven through the REAL keeps-higher writer
+(`edhaGrantTempHpCross`, reached by **Bear Witness**'s `target: list-members` round-start grant — a
+Covenant was placed on `Bench Ally — One` for real, then rounds were advanced in a bench combat;
+White rank 3 → a 3 THP grant per round). The incumbent was seeded with `edha.setTempHp` so the
+comparison was controlled. All three cases, each read off the FLAG and not just the number:
+**POS 1** — incumbent **6 / "Final Decree"** vs a 3 from Bear Witness → stays **6 / "Final Decree"**
+(pre-fix this relabelled to "Bear Witness"). **NEG (load-bearing)** — a **TIE**, 3 vs 3 → keeps
+**"Final Decree"**: a tie is not a win. **POS 2** — incumbent **2 / "Final Decree"** vs 3 → becomes
+**3 / "Bear Witness"**, value AND label. ⚠️ The row's optional "cross-actor grant you do not own"
+clause was **not exercised** — `Bench` is a GM and owns every bench actor, so the relay branch is
+unreachable from here; `edhaGrantTempHpCross` decides `final`/`label` ABOVE the ownership branch, so
+both arms carry the same already-decided label (code read, stated as such, not a measurement).
+ℹ️ Two Bear Witness cards appeared on the first advance and were checked rather than assumed: both
+were authored by `Bench`, **8.6 s apart** (round 1's start plus round 2's), and a tight-window
+re-measure on the next advance produced **exactly one**. Not a two-GM double-apply.)*
 
 ---
 
@@ -2457,45 +2501,33 @@ the 13/14 is gone. **NEG 1 (load-bearing):** taken to **9/14** and given a real 
 14 — the case a naive fill-to-max fix gets wrong. **NEG 3:** Focus 3/5 and Investiture 1/2 survived the
 same reload unchanged. An in-memory `prepareData()` probe over 9 / 13 / 14 / 1 also round-tripped every
 value untouched. ⚑ Only the player-client half of the positive is unrun — it was proven twice GM-side.)*
-- [ ] 🤖 **R-54 — the +1 max health is REMOVED (item 47, 2026-09-06; ENGINE-ONLY, F5)** —
-      `EDHA_HP_BONUS` is now `0`, so Edha max HP is term-for-term the system's advancement table.
-      **Positive 1:** a brand-new ＋ Edha Character at **STR 0** reads **10/10** after Finish (was
-      10/11, then 11/11). **Positive 2:** an EXISTING PC at full health drops **11 → 10** on reload
-      with **nothing stored changing** (`_source…hea.max.bonus` stays 0 and `_source…hea.value`
-      is untouched — check both in the console before and after). **NEG 1 (load-bearing):** a
-      wounded PC is not re-clamped upward or downward beyond the new max — take one to 9/11, F5,
-      expect **9/10**, never 10/10. **NEG 2:** a **June pregen that STORES a manual
-      `hea.max.bonus: 1`** KEEPS its 11 — the derivation skips any actor whose `_source` carries
-      its own bonus, and only `edha.migrateDerivations()` strips it. Do not migrate the pregens as
-      part of this row. **NEG 3:** the creation wizard's live preview Health cell equals the
-      finished sheet's max on the same spread (they read the one constant).
-      *(Superseded history below — the transfer-AE fix this row was originally written for
-      worked; only its target number was wrong.)*
-      - ⚠️ **2026-07-28h (bench run 21) — THE FIX WORKED; THIS ROW'S TARGET NUMBER IS WRONG, and
-        it is now `EDHA_RULINGS.md` R-54.** The transfer-AE half is decisively fixed: a brand-new
-        ＋ Edha Character carries **20 items, 19 of them actions, ZERO transfer AEs**
-        (`itemsWithAnyEffect: []`), no duplicate names, and a **clean console**. There is therefore
-        **no repair log and no culprit action to name** — nothing is left to repair.
-        But the actor still reads **max 11 at STR 0**, and the culprit is not an AE:
-        `_source…hea.max.bonus` is **0**, while derived reads
-        `{derived:10, override:null, useOverride:false, bonus:1}`. **A plain system character
-        created with zero items and zero effects reads exactly the same 11** — because
-        `edhaDeriveSheetStats` (engine ~L16178) deliberately adds **+1 max HP to every character**
-        ("The Edha reference sheets derive these differently… HP = system + 1"). So "10/10 at
-        STR 0" asks the engine to undo its own documented design rule and **can never pass as
-        written**. R-54 decides whether 11 is intended (retire this row's number) or the +1 should
-        not apply at level 1.
-      - ℹ️ **2026-07-28i — the +1 is now REACHABLE, which is a separate bug fixed, not an answer to
-        R-54.** Until this deploy the system's resource clamp ran before the module raised the max,
-        so **11/11 could never be displayed at all** — the actor sat at 10/11 forever no matter
-        what healed it. That is fixed (see "Finish tops up to a REACHABLE max"). The NUMBER is
-        still R-54's call and `EDHA_HP_BONUS` in the engine is deliberately one constant in one
-        place, so answering R-54 is a one-line change that moves the sheet, the wizard preview and
-        the tests together.
-      - ✅ **ANSWERED 2026-09-06 (Ben, after reading `docs/ACTOR_STAT_DERIVATION.md`), R-54 (c):
-        REMOVE the +1** (ruling answered 2026-09-06 → item 47, no level gate anywhere). This row's
-        target number rewrites as the re-test: a fresh actor at STR 0 reads **10/10** after Finish,
-        and an existing PC at full health drops 11→10 on reload with nothing stored changing.
+*(**✅ RETIRED on evidence 2026-09-06, bench run 39 — R-54: `EDHA_HP_BONUS` is 0 and Edha max HP is
+term-for-term the system's advancement table**, on the hash-verified `7d8e0226…` deploy. All five
+faces measured, three of them across a **real client reload**.
+**POSITIVE 1 — a brand-new ＋ Edha Character at STR 0 reads 10/10 after Finish.** `edha.newCharacter()`
+was walked end to end (nation → diaspora culture → expertises → path → weapon slot → leyline → deity →
+attributes → skills → talents → name → Finish). Mid-wizard, at STR 0 / level 1, the actor already read
+`hea.max {derived: 10, bonus: 0, override: null}`; after **Finish** it read **value 10 / max 10**,
+`_source…hea.max.bonus` **0**, and **no rest dialog**. (Was 10/11, then 11/11.)
+**POSITIVE 2 — an existing PC at full health reads one lower, with nothing stored changing.** Read on
+the three level-1 PCs in `Edha PCs`, which are the cleanest witnesses because their stored values
+predate the fix and were **never written to** by this run: `Soggy Bottom` (STR 1) stores
+`hea.value` **12** and reads **11/11**; `Tem parinaem` (STR 3) stores **14** and reads **13/13**;
+`Temp Name Hannah character` (STR 1) stores **12** and reads **11/11**. In every case
+`_source…hea.max.bonus` is **0** and `_source…hea.value` is **untouched** — the drop is derivation,
+not a write. Re-read after a full `location.reload()`: **byte-identical**, nothing persisted.
+**NEG 1 (load-bearing) — a wounded PC is not re-clamped in either direction.** `Bench — Destruction`
+taken to **41/42**, real client reload, came back **41/42** — not healed to 42, not lowered.
+**NEG 2 — an actor that STORES its own `hea.max.bonus: 1` keeps it.** Seven actors do
+(`Bench — Blue`, `Bench — Order`, `Bench — Red`, `Bench Ally — One/Two`, `Bench Target —
+Adjacent A/B`); all read derived `bonus: 1`. `Bench — Red` reads **43/43** (42 derived + its stored
+1) and survived the reload unchanged. The `srcHeaBonus` guard skips them and nothing was migrated.
+**NEG 3 — the wizard's live preview equals the finished sheet.** On the attributes page at the
+STR-0 spread (`Spent: 0 of 12`) the preview cell reads **Health 10**, the same number the finished
+sheet gave. Preview and sheet read the one constant.
+ℹ️ Passing in the same walk: run 38's **"a Agent"** article defect is still live — the weapon-slot
+page reads *"the arms a Agent actually carries"* — which is its own 🤖 row and stays open.
+Probe actor deleted; actor count back to 74.)*
 *(**Path training v2** — RETIRED on evidence 2026-07-28j, bench run 22, positive AND both positive
 controls AND all three negative controls. **Positive:** picking Warrior opened **no dialog**, posted
 "🎓 B22 Warrior's Warrior training: **+1 Athletics** (rank 1)", left `ath` as the only non-zero rank,
@@ -3626,15 +3658,21 @@ for the first time". Keep 2bAB-9.)*
       half-square slack "for adjacency reads"** and `ally-drops` has none. Blast radius: the two 5-ft
       rules (Crownox Ring, The Reckoning); Roek's 20 ft is unaffected. **Whether the fix is slack or
       edge-to-edge measurement is a design call — see `EDHA_RULINGS.md`.**
-      - [ ] 🤖 **R-52 (c)(i) SHIPPED (item 47, 2026-09-06 — ENGINE-ONLY, F5): re-drive all four
-        positions.** `edhaAllyDropEligible` now applies the same **+2.5 ft half-square slack** the
-        `enemy-turn-start` sweep always had (`EDHA_ADJACENCY_SLACK_FT`, one constant read by both).
-        Expect **(i) 7.5 ft → ✅ NOW FIRES** (it sits exactly on the new 7.5-ft boundary — note the
-        ruling's own prose predicted this one would still miss, so measure it rather than assuming),
-        **(ii) 0 ft ✅**, **(iii) 5.0 ft ✅**, **(iv) 7.07 ft → ✅ NOW FIRES**. **NEG (load-bearing —
-        the whole risk of slack is a cue that now reaches too far):** put the ally one full square
-        out (10 ft centre-to-centre) and confirm **no card**. **NEG 2:** Roek's 20-ft cue still
-        refuses at 25 ft. ⚠️ **(b) below is NOT fixed by this** — the missing `use` rule is separate,
+      - ✅ **R-52 (c)(i) RETIRED on evidence 2026-09-06, bench run 39 — the half-square slack works,
+        and the boundary case the ruling doubted DOES fire.** Driven on the hash-verified
+        `7d8e0226…` deploy with `B39 Crownox Ring` (Large 2×2), `B39 The Reckoning` (Medium) and
+        `B39 Sergeant Halden Roek` imported FRESH from the pack, one same-side victim token moved
+        between takes, and the centre-to-centre gap **computed and printed for all three owners on
+        every take** so no result rests on an assumed distance. All six positions:
+        **(i) 7.5 ft → ✅ NOW FIRES** (Crownox Ring — exactly on the new 7.5-ft boundary; the ruling's
+        prose predicted a miss, the measurement says otherwise), **(ii) 0.0 ft → ✅** (Ring),
+        **(iii) 5.0 ft → ✅** (Reckoning), **(iv) 7.071 ft → ✅ NOW FIRES** (Reckoning, the diagonal
+        that used to miss). **NEG (load-bearing):** the victim one full square out, **10.0 ft** from
+        the Reckoning — **no card from anyone**. **NEG 2:** at **25.0 ft** from Roek his 20-ft
+        `Cover Their Retreat` cue **refused**. ⭐ **And the NEG 2 silence is not blind:** a positive
+        control at exactly **20.0 ft** from Roek fired his cue in the very next take. On every take
+        the two non-firing owners were silent at their measured gaps, so each result carries its own
+        cross-check. ⚠️ **(b) below is still NOT fixed by this** — the missing `use` rule is separate,
         and so is R-52 (c)(ii), edge-to-edge measurement for sized tokens (TODO item 62), which is
         what "an ADJACENT ox" would still need for a Huge owner.
       ❌ **(b) "the White test resolves through the contest core on use" is UNIMPLEMENTED on both
