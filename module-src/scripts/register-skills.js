@@ -17117,26 +17117,38 @@ async function edhaRunPulse(item, h) {
     return true;
   });
   const note = h.note ? ` <span style="opacity:.85;font-size:.9em">${h.note}</span>` : "";
-  const gmAccounting = async (applied) => {
+  /* R-32 (Ben 2026-09-06 (a)): "affected N" was the ambiguous word — it counted the sweep's REACH,
+   * not the board's change, so five already-Weakened enemies read "affected 5". Both cards now say
+   * "swept" for the reach and carry the newly-changed count beside it when there is one. */
+  const gmAccounting = async (applied, newlyNote = "") => {
     if (!enemies || (!skips.hidden && !skips.wall)) return;
     const unseen = [];
     if (skips.hidden) unseen.push(`${skips.hidden} hidden`);
     if (skips.wall) unseen.push(`${skips.wall} behind a wall`);
     // GM-only — MUST be posted by the GM, never authored by the using player (a whisper is
     // visible to its author, so a player would otherwise see these counts on their own screen).
-    await edhaPostGmCard(owner, `<p>🕵️ <strong>${item.name}</strong> full sweep for the GM: ${inRange.length} enem${inRange.length === 1 ? "y" : "ies"} in range, affected ${applied} — also skipped ${unseen.join(", ")} (not shown to the player).</p>`);
+    await edhaPostGmCard(owner, `<p>🕵️ <strong>${item.name}</strong> full sweep for the GM: ${inRange.length} enem${inRange.length === 1 ? "y" : "ies"} in range, swept ${applied}${newlyNote} — also skipped ${unseen.join(", ")} (not shown to the player).</p>`);
   };
   if (String(h.kind || "heal") === "status") {
     const sid = h.statusId; if (!sid) return;
-    let applied = 0;
+    let applied = 0, newly = 0;
+    /* R-32: `applied` is INTENT (every creature the sweep reached and was allowed to write to);
+     * `newly` is STATE (how many of those did not already carry the status). The old card reported
+     * only the first and called it "affected", which is true of the sweep and false of the board —
+     * the difference is invisible exactly when it matters most, a re-pulse that changed nothing.
+     * `has` is read BEFORE the toggle, per creature; the relay branch reports its own intent. */
     // Players don't own enemy actors — edhaToggleStatus relays to the GM client when needed.
-    for (const t of picked) { try { if (await edhaToggleStatus(t.actor, sid, true)) applied++; } catch (e) {} }
+    for (const t of picked) {
+      const had = !!t.actor?.statuses?.has?.(sid);
+      try { if (await edhaToggleStatus(t.actor, sid, true)) { applied++; if (!had) newly++; } } catch (e) {}
+    }
     if (enemies) {
       const visTotal = picked.length + skips.ally;   // what the player can see
       const skipNote = skips.ally ? ` — skipped ${skips.ally} with an ally adjacent` : "";
+      const newlyNote = ` · newly <strong>${edhaConditionLabel(sid)}</strong> ${newly}`;
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
-        content: `<p>☠️ <strong>${item.name}</strong> (${owner.name}): <strong>${edhaConditionLabel(sid)}</strong> on ${applied} of ${visTotal} enem${visTotal === 1 ? "y" : "ies"} you can see within ${ft} ft${h.requireIsolated ? " (Isolated)" : ""}${skipNote}.${note}</p>` });
-      await gmAccounting(applied);
+        content: `<p>☠️ <strong>${item.name}</strong> (${owner.name}): swept ${applied}${newlyNote} — of ${visTotal} enem${visTotal === 1 ? "y" : "ies"} you can see within ${ft} ft${h.requireIsolated ? " (Isolated)" : ""}${skipNote}.${note}</p>` });
+      await gmAccounting(applied, newlyNote);
       return;
     }
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
