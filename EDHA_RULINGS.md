@@ -682,7 +682,7 @@ run 13's player-cast Construct worked perfectly but never used the relay. This i
 blocking the checklist's `GM summon relay` row, and that row can never pass as written until you
 answer: revoke the permission and the relay becomes reachable (the row becomes 🤖), keep it and the
 relay is dead code and the row should be retired. *(From marathon 3A-1; blocks a checklist row.)*
-**Closed by TODO_REPO_HYGIENE #27 (PR #TBD).** Consequence applied: the checklist's `GM summon relay`
+**Closed by TODO_REPO_HYGIENE #27 (PR #184).** Consequence applied: the checklist's `GM summon relay`
 row (`EDHA_FOUNDRY_TEST_CHECKLIST.md`, Engine-wide section) is retired with a ✅ note recording why —
 the PLAYER role keeps `ACTOR_CREATE` at Ben's table, so `edhaSummon`'s `summon-actor` relay branch is
 unreachable and the row could never pass as written; bench run 13's player-cast Forge Construct is
