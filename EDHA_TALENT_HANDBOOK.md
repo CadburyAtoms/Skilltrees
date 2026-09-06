@@ -443,19 +443,23 @@ Each recipe = add the keyed entry to the named source file, then [rebuild + sync
 
 ## 10. Creating a brand-new talent from scratch
 
-1. **Add the talent to its atlas file** (`leyline.json` / `domain.json` / `cosmere.json`). The generator normalizes these key shapes:
+1. **Add the talent to its atlas file** (`leyline.json` / `domain.json` / `cosmere.json`). All three
+   speak ONE lowercase key dialect (normalised 2026-09-05, TODO_REPO_HYGIENE #22 — the three
+   per-file spellings `Talent Name` / `Name`, `Action Type` / `Action`, `Flavor Text` are RETIRED
+   and `scripts/validate.js` now rejects them by name):
 
-   | Concept | leyline.json | domain.json | cosmere.json (heroic) |
-   |---|---|---|---|
-   | Name | `name` | `Talent Name` | `Name` |
-   | Action | `action` | `Action Type` | `Action` |
-   | Cost | `cost` | `Cost` | *(none)* |
-   | Prereqs | `prerequisites` | `Prerequisites` | *(none)* |
-   | Description | `description` | `Description` | `Description` |
-   | Flavor | `flavor` | `Flavor Text` | *(none)* |
-   | Tags | `tags` | `Tags` | `Tags` |
-   | Layout | `layout {x,y}` (0–1) | `layout {x,y}` | `layout {x,y}` |
-   | Edges | *(prereqs)* | `connections[]` | *(prereqs)* |
+   | Concept | key | notes |
+   |---|---|---|
+   | Name | `name` | |
+   | Action | `action` | |
+   | Cost | `cost` | omit or `""` → the generator prints `—` |
+   | Prereqs | `prerequisites` | |
+   | Description | `description` | |
+   | Flavor | `flavor` | |
+   | Tags | `tags` | |
+   | Layout | `layout {x,y}` (0–1) | |
+   | Edges | `connections[]` (deity) / *(prereqs)* (leyline, heroic) | |
+   | Tree key | `path` (leyline colour, heroic path) / `deity` + `domain` + `colors` (deity) | `specialty` is the sub-column in all three |
 
    - **Action** accepts glyphs or words: `Passive`/`∞`, `Free Action`/`◇`, `Reaction`/`⟲`, `Special`/`★`, `1/2/3 Action(s)`. → sets the activation cost/icon.
    - **Cost** like `1 Investiture`, `2 Focus`, `Opportunity` → parsed into resource consumption; other text shows as cost text.

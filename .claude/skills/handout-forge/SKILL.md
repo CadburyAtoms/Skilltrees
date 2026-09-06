@@ -79,9 +79,11 @@ that worked (python one-liners via the PowerShell tool):
   bare specialty names — Ben's explicit fallback. NEVER free-invent (that's how "entropy,
   isolation, dominion" shipped for a color whose real specialties are Isolation ·
   Subjugation · Ritual).
-- Field-name gotchas: leyline.json is lowercase (`path`, `specialty`, `description`);
-  cosmere.json is capitalized (`Path`, `Specialty`); domain.json uses `Deity`, `Colors`,
-  `Prerequisites`, `Talent Name`.
+- Field names: ONE lowercase dialect across all three atlas files since 2026-09-05
+  (`path`, `specialty`, `name`, `action`, `cost`, `prerequisites`, `description`, `flavor`,
+  `tags`; domain.json adds `deity` / `domain` / `colors`). The old per-file capitalized
+  spellings (`Path`, `Talent Name`, `Action Type`, `Flavor Text`, …) are retired —
+  `scripts/validate.js` rejects them.
 
 Anything the data can't answer (level math, table rulings) gets stated with a hedge ("~level
 4") or asked — never asserted.
