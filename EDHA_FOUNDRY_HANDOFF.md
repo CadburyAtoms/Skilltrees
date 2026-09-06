@@ -67,6 +67,141 @@ Fade, Explosive Leap, Reckless Advance — and `validate-adversaries.js` reports
   the toggled Fade marker (no concealed status exists to arm). The 28b row now has its subject.
 🤖 four rows: R-46 (25 ft), R-48 (20 ft), R-47 (no note on the card + the ProseMirror round-trip),
 R-74 (the confirm click drops Investiture 2 → 1 and the post does not).
+## 2026-09-06 — Item 54: the DISPEL reaches item-owned passives (disable, never delete) and the Omen ledger (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
+
+Ben VETOED R-73's narrow default and asked for the safe widening (b); R-35 (a) folded in. PR #224.
+`edha-prompt-pick` `source: "effects"` (Unravel Everything / Unweaving) listed only enabled
+`actor.effects`, so a passive authored `transfer: true` on a talent or trait — a PC's Hardy /
+Collected / Surefooted, a Cinderhound's Cinder Coat, Predictive Ward's braced — was never offered.
+
+- **The read is `edhaAllEffects(subject)`** (the fix-pass-5 primitive; the ratchet in
+  `tests/effect-transfer-lookup.test.js` rises 4 → 5 with the dispel menu recorded as the fourth
+  call site — the effects it seeks ARE authored on items). `edhaDispelOptions` labels each button
+  `disable` (item-owned) or `delete` (actor-level); the click **re-derives the kind from the
+  DOCUMENT** via `edhaEffectOwnerItem`, which fails CLOSED (anything not provably the actor is
+  item-owned), so a forged `data-edha-mode="delete"` still lands on `eff.update({ disabled: true })`.
+  An item-owned effect is never deleted through this menu; the card says "suppressed … the copy is
+  intact; re-enable it on that item's Effects tab".
+- **R-35: one "Dispel <Marker>" button per ledger the rule's new `ledgers` field names** (default
+  `omens:omen`, so every rule authored before today reads as the Omen ledger with no rebuild; blank =
+  none). The click runs `edhaDispelLedgerMark`: every owner's matching row through the queued
+  `edhaLedgerDropCreature`, then `edhaListUnmark` by the subject's own uuid — a marker left by the
+  legacy `edhaRemoveMark` path has no row and still comes off. A ledger the rule does not name is
+  refused (the HTML is a label, not a permission).
+- **Proven by mutation** (`tests/dispel-widening.test.js`, 9 cases): narrowing the read back to
+  `subject.effects` fails 2 pins; making the item branch delete fails 2; dropping the unmark half
+  fails 1; dropping the ledger-row half fails 1. Iron rule 2b: nothing name-keyed; allowlist untouched.
+- 🤖 for the bench (Chaos section): Unravel Everything / Unweaving on a PC bearing Hardy — Hardy is
+  offered as "(Hardy — suppress)", the click leaves the talent's effect present-but-disabled, and
+  the negative: no delete-shaped button exists for it; the Chaos residuals row (Dispel Omen clears
+  marker + ledger row) is annotated. R-73 stays in `EDHA_RULINGS.md` §I until the bench confirms.
+## 2026-09-06 — R-27 (item 52): Battle Fever's rally stack is SPENT on the next test, once (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
+
+Ben ruled (a): **the card is canon** — "gain +1 to your next test (max = Rank), resets at the start
+of your turn" means the WHOLE stack rides ONE test and is then gone. The engine had read "next
+test" as "every test until turn start": `edhaRallyBonus` was consulted by the pre-roll rider on
+every d20 and nothing ever cleared the flag except `combatTurnChange` (the bench saw `+2[Rally]`
+on six consecutive rolls). PR #223.
+
+- **What changed (all inside the rally section, ~L7620):** a new post-`cosmere-rpg.<ctx>Roll`
+  consumer, `edhaRallyConsume`, re-reads the actor's `rally` flag, clears it and posts a
+  "🔥 Rally — <name> spent +N on this test" card. The pre-roll rider (`edhaTestRiderApply`, which
+  already splices `N[Rally]`) is untouched, and so is the turn-start / round-flip clear — an
+  UNSPENT stack still empties when the owner's turn begins. The `edha-rally-stack` schema is
+  unchanged; its description and the `resetOn` label now say "spent" so the Events tab tells the
+  truth. No name-keyed branch; the allowlist did not move.
+- **Why post-roll, and why the actor flag rather than a roll option:** a cancelled roll dialog
+  must neither strand nor spend the stack, and a dialog roll rebuilds `roll.options` — the same
+  pre-apply / post-consume split `advTest` and `nextTestMod` already use. It does NOT ride
+  `flags.nextTestMod` (item 49's list), so the two merge cleanly.
+- **Proven headless** — `tests/rally-spent-on-test.test.js`: three hits → `0 + 3[Rally]` on the
+  next test and `[]` on the one after; four hits at Rank 3 → `3[Rally]`; two unspent stacks +
+  the real `combatTurnChange` chain → 0. Mutations: delete the consumer's clear line → 3 cases
+  fail; delete the turn-start clear line → 1 fails; the cap needs BOTH its enforcement lines
+  dropped (bump guard + reader `Math.min`) to fail, and then it does.
+- **🤖 bench:** checklist Red rows **52-1** (three hits → `3[Rally]` once, then nothing; cap at
+  rank) and **52-2** (negative control — unspent stack clears at turn start; a cancelled dialog
+  leaves the stack intact for the next completed test).
+## 2026-09-06 — R-70 (item 50): every cost row of the system's consume dialog opens TICKED — the one sanctioned system-dialog wrapper (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
+
+**What.** Ben's R-70 (b): a "Cost: 1 Investiture, 1 Focus" card (the Stitchmother's *Reknit Form*,
+and every tree talent with a second cost) was under-charged by a default click, because cosmere-rpg
+2.1.0's `showConsumeDialog` maps each `activation.consume` row to `shouldConsume: options.shouldConsume
+?? i === 0` — row 0 ticked, every later row unticked — and `use()` calls it with NO options. The
+engine now wraps `CosmereItem#showConsumeDialog` ONCE (`edhaInstallConsumeDialogWrapper`, in the
+RESOURCE-CONSUME DIALOG section; libWrapper when active, else a prototype patch, same shape as the
+rollDamage wrapper) and hands it `edhaPreTickConsumeOptions(options)` = `{...options, shouldConsume:
+options.shouldConsume ?? true}`. Every row opens ticked; the player can still untick one. `??` is kept
+on purpose so an explicit caller (`showConsumeDialog({shouldConsume: false})`) still gets what it asked.
+
+**Why this seam.** The option mapping happens INSIDE `showConsumeDialog`; `preUseItem` fires before
+`use()` and cannot reach those options; a DOM tick at `renderItemConsumeDialog` would bind to the
+template's checkbox ids rather than the option shape. Wrapping the one method is the narrowest seam
+that exists. **This is an explicit iron-rule-2a exception granted by Ben's ruling, not a precedent** —
+declared in the engine's file header, and `tests/consume-dialog-wrapper.test.js` pins that exactly ONE
+wrapper of the system dialog exists (a second assignment or libWrapper registration fails the suite).
+No per-talent branch; the name-keyed allowlist is untouched.
+
+**Proven by mutation.** Reverting the one line (`?? true` → no default) fails four pins (the option
+shape, the two-cost row map `[true, true]` → `[true, false]`, and the installed-patch pin); adding a
+second `prototype.showConsumeDialog =` site at `ready` fails the one-wrapper scan with `2 !== 1`.
+A single-cost item's row deep-equals the unwrapped row in every field.
+
+**🤖 for the bench** (Engine-wide → "Engine-wide fixes still unbenched"): Reknit Form on a default
+Continue charges Investiture AND Focus; a single-cost talent's dialog is unchanged (one ticked row,
+one charge) as the negative control.
+
+---
+## 2026-09-06 — ITEM 49: the next-test modifier slot is a **LIST** (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
+
+Ben's R-15(b), verbatim: *"that needs to be a list not one slot."* `flags.edha-content.nextTestMod`
+was ONE object, so the second writer silently overwrote the first — Coercive Pressure's Cognitive
+disadvantage and the Wrenchmaster's Probability Net `-1d6` could not sit on the same victim, and the
+loser left **no trace anywhere** (no card, no log, an empty tab). R-57 named the other half of the
+same shape (an expired round-scoped mod is *left* on the actor, cleared only by being overwritten)
+and R-20 confirmed a "this round" mod really does die at the round change. One shape fixes all three.
+
+**What the entry is.** The slot became an array; the ENTRY keeps the shape the pipeline has always
+used, which already carries the four parts the ruling names — `source` / the kind (`mode` ∨
+`formula`) / the value (`formula`, `count`) / the expiry (`round`). Renaming those fields would have
+broken the authored `edha-next-test-mod` schema, its pinned tests, and every mod already stored on a
+live actor, for no behavioural gain. **It is the SLOT that became a list.**
+
+| | before | now |
+|---|---|---|
+| **writers** (all through `edhaSetNextTestMod`) — the `edha-next-test-mod` handler executor (Coercive Pressure, Probability Net, Pattern Recognition, Probability Cascade, the four Opportunity adders, the Command die cluster, Pack Hunting, Reactive Analysis, Blood Price…), the armed-hit `onSurviveAdvAttr` survivor rider, and the trigger-card `effect.nextTestMod` path | **overwrote** | **APPEND** via `edhaListPush` (cap 12, evict oldest) |
+| **readers** — `edhaNextTestPreRoll` / `edhaNextTestConsume` (d20) and `edhaNextTestDamageMods` / `edhaNextTestConsumeDamage` (the damage half) | read one mod | read **every live entry** through `edhaNextModsOf` |
+| **(dis)advantage** | the one mod's mode | **boolean-OR per direction** via `edhaNextModFoldMode`; a cancelling advantage+disadvantage pair writes **nothing**, leaving the player's own dialog choice alone |
+| **dice / flat modifiers** | one term | **SUM** — each entry appends its own flavor-labeled term |
+| **expiry** | one `round` stamp, and a dead mod sat there for ever | **per entry, PRUNED ON READ** (`edhaNextModExpired` is deliberately the same comparison `edhaNextTestMatches` makes, so pruning can never drop a mod that would still have matched) |
+| **consumption** | unset the slot | `edhaNextModSpend` — only the entries that applied are decremented/removed; gid is the identity |
+| **legacy value** | n/a | a stored single object reads as a **one-entry list** and normalises to an array on first read — no actor breaks |
+
+Two knock-on fixes fell out of the shape. The cross-path claim (`_edhaNextModClaim`, 07-27j) is now
+keyed per **(actor, gid)** rather than per actor — with one slot `actorId` *was* the grant, and with
+a list one `either` rider's claim would have vetoed its neighbour's. And the clear path routes
+through `edhaSetEdhaFlag` instead of calling `unsetFlag` on the bearer, so a **cross-actor clear now
+relays to the GM** where before it silently did nothing for a victim the roller does not own.
+
+**Proved by mutation** — `tests/next-test-mod-list.test.js` (11 cases), each shown failing under a
+one-line reversion: the writer overwriting again drops `Coercive Pressure` from the list; consuming
+the whole list instead of `edhaNextModSpend` wipes the neighbour; applying only `mods[0]` leaves
+`["0 + 3[Decisive Command]"]` with Probability Net's die missing; skipping the prune-write leaves
+`Pattern Recognition` on the document; deleting the single-object branch of `edhaNextModList` breaks
+every legacy read. Gates: 10/10 PASS, 830 unit cases.
+
+⚠️ `tests/advantage-channel.test.js`'s ledger moved with the code: the `AdvantageMode` narrowing that
+used to be an inline ternary is now `edhaNextModFoldMode`'s return, which is a **stronger** guarantee
+(pure, pinned, and it returns `null` rather than guessing when the entries disagree).
+
+**🤖 for the bench:** checklist **2bI-4** (the two riders stack on one victim), **2bI-4b** (negative
+control — a Physical test spends only the ungated rider and leaves its neighbour), **2bI-4c** (the
+expired "this round" rider is *removed* from the flag; an unstamped one survives the round change).
+
+**Open for Ben (not a blocker):** when a victim carries **both** an advantage and a disadvantage
+entry — impossible before, since there was one slot — they cancel and the roll is left exactly as the
+player configured it. That is the standard table rule and the conservative choice, but it is a new
+situation and Ben may want disadvantage to win instead; one line in `edhaNextModFoldMode` either way.
 
 ## 2026-09-06 — ITEM 34a: the fleet weapon migration lands (re-do of PR #103's weapon half against today's engine) (**REBUILD + ⟳ Sync** — `data/adversaries.json` + engine + build; the adversaries pack rebuilds, then "⟳ Sync Adversaries from Pack")
 

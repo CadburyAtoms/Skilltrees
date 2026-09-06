@@ -14,6 +14,14 @@
  *    `core: true` to behave like the 18 standard skills (always available, rankable).
  *  - We register as early as possible (module load + init + setup) so the registration
  *    lands before the Actor data model schema is first built.
+ *
+ * THE ONE SANCTIONED SYSTEM-DIALOG WRAPPER (2026-09-06, item 50 — Ben's ruling R-70 (b)):
+ *  - `CosmereItem#showConsumeDialog` is wrapped ONCE (`edhaInstallConsumeDialogWrapper`, in the
+ *    RESOURCE-CONSUME DIALOG section) so every cost row of a multi-cost activation opens TICKED —
+ *    the system's own default (`options.shouldConsume ?? i === 0`) ticks only the first, so a
+ *    "Cost: 1 Investiture, 1 Focus" card was under-charged by a default click. This is an explicit
+ *    iron-rule-2a EXCEPTION granted by Ben's ruling, not a precedent: no other system dialog gets a
+ *    wrapper, and `tests/consume-dialog-wrapper.test.js` pins that exactly one exists.
  */
 
 /* ============================================================================================
@@ -1002,14 +1010,15 @@ function edhaWrapRollDamage(originalCall, options = {}) {
    * implicitly `test`, so this is inert for all of them. Consumed here rather than in a post-roll
    * hook because the formula has to be in the roll before it is evaluated. */
   try {
-    const dmgMod = edhaNextTestDamageMod(this.actor, this);
-    if (dmgMod?.formula) {
+    const dmgMods = edhaNextTestDamageMods(this.actor, this).filter((m) => m?.formula);
+    if (dmgMods.length) {
       const base = options.overrideFormula ?? this.system?.damage?.formula;
       // The claim is taken only where the bonus is actually APPLIED (07-27j) — claiming on a roll
       // with no damage formula would silently eat the d20 half's turn at it.
-      if (base && edhaNextModClaimOk(this.actor, dmgMod, "damage")) {
-        options = { ...options, overrideFormula: `${base} + ${dmgMod.formula}` };
-        void edhaNextTestConsumeDamage(this.actor, dmgMod);
+      const taken = base ? dmgMods.filter((m) => edhaNextModClaimOk(this.actor, m, "damage")) : [];
+      if (taken.length) {   // item 49: several riders SUM onto the one damage roll
+        options = { ...options, overrideFormula: taken.reduce((f, m) => `${f} + ${m.formula}`, base) };
+        void edhaNextTestConsumeDamage(this.actor, taken);
       }
     }
   } catch (e) { /* never break a damage roll on a rider failure */ }
@@ -3410,14 +3419,28 @@ async function edhaRunPromptPick(item, h, event) {
     }
     body = cands.map((t) => `<button type="button" class="edha-pick-btn" ${attrs(t.actor.uuid)}>${h.label || "Choose"} ${t.actor.name}</button>`).join(" ");
   } else if (source === "effects") {
-    /* The DISPEL (2bU). One button per enabled Active Effect on the subject; the click deletes it.
+    /* The DISPEL (2bU; widened 2026-09-06, item 54 — R-73 (b) + R-35 (a)). One button per enabled
+     * effect the subject actually BEARS, read through edhaAllEffects: a passive authored
+     * `transfer: true` on a talent or trait (a PC's Hardy / Collected / Surefooted, a Cinderhound's
+     * Cinder Coat, Predictive Ward's braced) lives on the ITEM and never appears in `actor.effects`,
+     * so the old read could not offer it. Two kinds of button, decided by edhaDispelOptions:
+     *   · an ACTOR-level effect → the click DELETES it (the 2bU shape, unchanged);
+     *   · an ITEM-owned effect  → the click DISABLES it (`disabled: true`) and NEVER deletes — deleting
+     *     a yielded item effect writes to the item and would strip the passive from that creature's
+     *     copy of the talent for good (R-73's whole point). The click re-derives the kind from the
+     *     DOCUMENT (edhaEffectOwnerItem); `data-edha-mode` is a label, not a permission.
+     * Plus (R-35) one "Dispel <Marker>" button per ledger the rule's `ledgers` field names that holds
+     * the subject — the Omen entry — whose click clears the marker AND its ledger row.
      * A different button class on purpose: the generic pick click resolves its uuid to an ACTOR and
-     * dispatches success rules, neither of which an effect can be. */
+     * dispatches success rules, neither of which an effect or a ledger entry can be. */
     const subject = victim;
     if (!subject) { ui.notifications?.warn(`Edha: ${item.name} — no creature to unweave.`); return; }
-    const effs = [...(subject.effects ?? [])].filter((e) => !e.disabled);
-    body = effs.length
-      ? effs.map((e) => `<button type="button" class="edha-dispel-btn" data-edha-item="${item.uuid}" data-edha-eff="${e.uuid}">${String(e.name || e.label || "effect").replace(/</g, "&lt;")}</button>`).join(" ")
+    const opts = edhaDispelOptions(subject, h);
+    const esc = (s) => String(s ?? "").replace(/</g, "&lt;");
+    body = opts.length
+      ? opts.map((o) => o.kind === "ledger"
+        ? `<button type="button" class="edha-dispel-btn" data-edha-item="${item.uuid}" data-edha-ledger="${esc(o.key)}" data-edha-subject="${subject.uuid}">Dispel ${esc(o.label)}</button>`
+        : `<button type="button" class="edha-dispel-btn" data-edha-item="${item.uuid}" data-edha-eff="${o.eff.uuid}" data-edha-mode="${o.mode}">${esc(o.eff.name || o.eff.label || "effect")}${o.item ? ` <span style="opacity:.75">(${esc(o.item.name)} — suppress)</span>` : ""}</button>`).join(" ")
       : `<p><em>${h.emptyNote || `No active effects found on ${subject.name} — narrate the unraveling.`}</em></p>`;
   } else {
     // confirm: the subject is the creature the trigger already resolved against (or you).
@@ -3473,22 +3496,105 @@ async function edhaPromptPickClick(ev) {
       content: `<p>${h.icon ? `${h.icon} ` : ""}<strong>${item.name}</strong> (${owner.name}): ${edhaFillName(h.note, picked.name)}</p>` });
   } catch (e) { edhaClickFailed("prompt pick click", e); }
 }
+/* --- The dispel's three PURE-ish pieces (item 54, 2026-09-06 — pinned in tests/dispel-widening) ---
+ * Which ITEM owns this effect — null for an actor-level one. Fails CLOSED: only a parent that is
+ * provably the actor (documentName "Actor", the subject itself, or a shell carrying `items`) counts
+ * as actor-level; everything else is item-owned and may only ever be DISABLED, never deleted. */
+function edhaEffectOwnerItem(eff, subject = null) {
+  const p = eff?.parent;
+  if (!p) return null;
+  if (p.documentName === "Actor" || (subject && p === subject)) return null;
+  if (p.documentName === "Item") return p;
+  return Array.isArray(p.items) ? null : p;   // a thin shell: actors carry `items`, items do not
+}
+/* The ledgers a dispel may clear, from the rule's `ledgers` field: "omens:omen, edicts:edict" →
+ * [{key, status, label}]. A missing field (every rule authored before item 54) reads as the Omen
+ * ledger — R-35's answer — so no rebuild is needed; blank = none. The status defaults to the key. */
+function edhaDispelLedgers(h) {
+  const raw = h?.ledgers === undefined || h?.ledgers === null ? "omens:omen" : String(h.ledgers);
+  return raw.split(",").map((s) => s.trim()).filter(Boolean).map((s) => {
+    const [key, status] = s.split(":").map((x) => x.trim());
+    const st = status || key;
+    return { key, status: st, label: edhaConditionLabel(st) };
+  });
+}
+function edhaLedgerEntryIs(entry, subject) {
+  if (!entry?.uuid || !subject) return false;
+  if (entry.uuid === subject.uuid) return true;
+  try { const r = typeof fromUuidSync === "function" ? fromUuidSync(entry.uuid) : null; return !!r && (r.actor ?? r) === subject; }
+  catch (e) { return false; }
+}
+/* Everything the card may offer on this subject: every enabled effect it bears (actor-level →
+ * delete, item-owned → disable), then one entry per named ledger that holds it or whose marker it
+ * wears. Ordered actor effects first, then item effects, then ledger marks. */
+function edhaDispelOptions(subject, h) {
+  const out = [];
+  for (const e of edhaAllEffects(subject)) {
+    if (!e || e.disabled) continue;
+    const item = edhaEffectOwnerItem(e, subject);
+    out.push({ kind: "effect", eff: e, item, mode: item ? "disable" : "delete" });
+  }
+  for (const led of edhaDispelLedgers(h)) {
+    let held = false;
+    try { held = edhaOwnerLedgers(led.key, led.status).some((l) => l.list.some((en) => edhaLedgerEntryIs(en, subject))); } catch (e) {}
+    if (held || subject?.statuses?.has?.(led.status)) out.push({ kind: "ledger", ...led });
+  }
+  return out;
+}
+/* Clear a ledger mark from the subject: every owner's matching row goes through the queued
+ * edhaLedgerDropCreature (rows first, so "the mark wins" reconciliation cannot hide them), then the
+ * marker + markedBy are cleared once more by the subject's own uuid — a marker left by the legacy
+ * edhaRemoveMark path has no row to drop, and must still come off. Returns rows dropped. */
+async function edhaDispelLedgerMark(subject, key, status) {
+  const uuids = new Set();
+  try { for (const l of edhaOwnerLedgers(key, status)) for (const en of l.list) if (edhaLedgerEntryIs(en, subject)) uuids.add(en.uuid); } catch (e) {}
+  let dropped = 0;
+  for (const u of uuids) dropped += await edhaLedgerDropCreature(u, key, status);
+  await edhaListUnmark({ uuid: subject.uuid }, status, { key });
+  return dropped;
+}
 /* The dispel click (2bU — the payload the `effects` source shipped with). GM-side: the pick card
  * lists EVERY enabled effect because nothing in the data says which are "magical" — that
- * adjudication stays at the table, the removal is one click. Names no talent. */
+ * adjudication stays at the table, the removal is one click. Names no talent.
+ * Item 54: an ITEM-owned effect is DISABLED, never deleted — decided from the document, never from
+ * the button's data (a forged `data-edha-mode="delete"` still lands on the disable branch); a
+ * ledger button clears the mark + its row through edhaDispelLedgerMark, and only for a ledger the
+ * rule's own `ledgers` field names. */
 async function edhaDispelPickClick(ev) {
   try {
     ev.preventDefault();
     if (!game.user?.isGM) { ui.notifications?.warn("Edha: the dispel pick is GM-side — what counts as magical is the table's call."); return; }
-    const btn = ev.currentTarget;
-    const item = await fromUuid(btn.dataset.edhaItem).catch(() => null);
-    const eff = await fromUuid(btn.dataset.edhaEff).catch(() => null);
-    if (!eff) { ui.notifications?.info("Edha: that effect is already gone."); return; }
-    const name = eff.name || eff.label || "the effect", who = eff.parent?.name || "the target";
-    await eff.delete();
+    const btn = ev.currentTarget, ds = btn.dataset;
+    const item = await fromUuid(ds.edhaItem).catch(() => null);
+    let line, resolved = "Unwoven ✓";
+    if (ds.edhaLedger) {
+      const h = item ? edhaRuleOf(item, "edha-prompt-pick") : null;
+      const led = edhaDispelLedgers(h).find((l) => l.key === ds.edhaLedger);
+      if (!led) { ui.notifications?.warn(`Edha: ${item?.name || "the dispel"} does not reach the ${ds.edhaLedger} ledger.`); return; }
+      const subject = await edhaResolveActorRef(ds.edhaSubject);
+      if (!subject) { ui.notifications?.warn("Edha: that creature is no longer on the canvas."); return; }
+      const rows = await edhaDispelLedgerMark(subject, led.key, led.status);
+      resolved = `${led.label} dispelled ✓`;
+      line = `<strong>${led.label}</strong> is dispelled from ${subject.name}${rows ? ` — ${rows} ledger ${rows === 1 ? "entry" : "entries"} cleared` : " (the marker alone; no ledger entry held it)"}.`;
+    } else {
+      const eff = await fromUuid(ds.edhaEff).catch(() => null);
+      if (!eff) { ui.notifications?.info("Edha: that effect is already gone."); return; }
+      const name = eff.name || eff.label || "the effect";
+      const ownerItem = edhaEffectOwnerItem(eff);
+      if (ownerItem) {
+        const who = ownerItem.actor?.name ?? ownerItem.parent?.name ?? "the target";
+        await eff.update({ disabled: true });
+        resolved = "Suppressed ✓";
+        line = `<strong>${name}</strong> is suppressed on ${who} — ${ownerItem.name}'s copy is intact; re-enable it on that item's Effects tab when the dispel ends.`;
+      } else {
+        const who = eff.parent?.name || "the target";
+        await eff.delete();
+        line = `<strong>${name}</strong> unravels from ${who}.`;
+      }
+    }
     btn.closest(".edha-trigger-card")?.querySelectorAll("button").forEach((b) => (b.disabled = true));
-    void edhaMarkCardResolved(edhaMessageIdOf(btn), "Unwoven ✓");
-    ChatMessage.create({ content: `<p>🧵 <strong>${item?.name || "Dispel"}</strong>: <strong>${name}</strong> unravels from ${who}.</p>` });
+    void edhaMarkCardResolved(edhaMessageIdOf(btn), resolved);
+    ChatMessage.create({ content: `<p>🧵 <strong>${item?.name || "Dispel"}</strong>: ${line}</p>` });
   } catch (e) { edhaClickFailed("dispel pick", e); }
 }
 // Button binding: EDHA_CARD_BUTTONS["edha-pick-btn"], ["edha-dispel-btn"] (Job 1, pass 5.3, end of file).
@@ -4443,8 +4549,8 @@ async function edhaRitualHpCost(item, cfg) {
  * `edha-next-test-mod` {target: self, advantage, skill: black} on the `edha-ritual-paid` event —
  * same advantage write, same consume-and-announce, skill-gated to Black exactly as before. A
  * bloodPriceAdv flag left on a live actor by a pre-deploy build is inert from now on.
- * ⚠ ONE narrowing, the standing 2bI-4 caveat: nextTestMod is a single flag slot, so a second
- * next-test rider OVERWRITES a banked Blood Price advantage instead of stacking beside it. */
+ * ✅ The 2bI-4 narrowing is GONE (item 49, Ben's R-15(b)): nextTestMod is a LIST, so a second
+ * next-test rider stacks beside a banked Blood Price advantage instead of overwriting it. */
 
 /* ============================================================================================
  * BLACK / SUBJUGATION tree engine (2026-06-13c) — focus economy + control flags.
@@ -4570,10 +4676,10 @@ async function edhaRunFocusWatch(target, oldFoc, newFoc) {
  * consume-and-announce — differing only in that it filtered on the test's ATTRIBUTE. nextTestMod
  * has carried an `attr` gate since the Red/Blue Attunement keys (07-03c), so the enforcement is
  * re-provided in full by `edha-next-test-mod` {target: victim, mode: disadvantage, attr: "int, wil"}
- * and nothing is lost. ⚑ ONE narrowing, benched as 2bI-4: nextTestMod is a single flag slot, so a
- * creature already carrying another next-test rider has it OVERWRITTEN rather than stacking a
- * second, independent debuff. Any cogDisadv flag left on a live actor by the pre-deploy build is
- * inert from now on — nothing reads it. */
+ * and nothing is lost. ✅ The narrowing benched as 2bI-4 is GONE (item 49, Ben's R-15(b)):
+ * nextTestMod is a LIST, so a creature already carrying another next-test rider now keeps BOTH as
+ * independent, independently-consumed entries. Any cogDisadv flag left on a live actor by the
+ * pre-deploy build is inert from now on — nothing reads it. */
 // "Advantage on your next <skill> test" flag (Predatory Insight → Deception). Consumed on the matching
 // test. Flag shape: "dec" (legacy) OR { skill, round, source } — a round-stamped grant silently expires
 // once the combat round moves on (the talent text says "this round"; the old flag lived forever).
@@ -6094,9 +6200,11 @@ Hooks.on("cosmere-rpg.skillRoll",  edhaAccordWatchSkill);
  * where they hold their target), so there is NO GM-gating and NO pack rebuild. Each talent's cost is
  * consumed by its own activation (Foundry), so the cards only APPLY the effect — "success" is owner-judged
  * (the standing ruling: Foundry tests have no DC). Generic reusable primitive:
- *   flags.edha-content.nextTestMod = { mode:"advantage"|"disadvantage", count, skill:<id>|null,
- *   attr:<csv>|null, targetUuid:<uuid>|null, source } — a counted, optional-skill mirror of the Black
- * advTest / cogDisadv flags; consumed one test at a time. targetUuid (2026-07-04, the Power backlog
+ *   flags.edha-content.nextTestMod = [ { mode:"advantage"|"disadvantage", count, skill:<id>|null,
+ *   attr:<csv>|null, targetUuid:<uuid>|null, round:<n>|null, source } ] — a LIST since item 49
+ * (Ben's R-15(b)); it was one object until then, which is why a second rider overwrote the first.
+ * A counted, optional-skill mirror of the Black advTest / cogDisadv flags; consumed one test at a
+ * time, per entry. targetUuid (2026-07-04, the Power backlog
  * item) binds the mod to tests whose synced target IS that creature ("advantage vs THAT target") —
  * generalizable to any future target-bound rider.
  *   - Subtle Suggestion   → Disorient the influenced target (reuse the Accord disorient card).
@@ -6134,7 +6242,7 @@ Hooks.on("cosmere-rpg.skillRoll",  edhaAccordWatchSkill);
  * would otherwise leave a claim standing; expiring it costs at most one re-applied bonus, where the
  * opposite failure is an unbounded one. */
 const EDHA_NEXTMOD_CLAIM_TTL = 4000;
-const _edhaNextModClaim = new Map();   // actorId → { gid, path, ts }
+const _edhaNextModClaim = new Map();   // `${actorId}|${gid}` → { gid, path, ts }
 function edhaNextModGid(mod) {
   return String(mod?.gid || `${mod?.source ?? ""}|${mod?.formula ?? ""}|${mod?.mode ?? ""}|${mod?.count ?? 1}`);
 }
@@ -6145,19 +6253,105 @@ function edhaNextModPathOk(claim, mod, path, now = Date.now()) {
   if (claim.gid !== edhaNextModGid(mod)) return true;                    // a DIFFERENT banked use
   return claim.path === path;                                            // the other path already took it
 }
+/* Item 49: the claim map is keyed per (actor, GRANT), not per actor. With one slot an actor could
+ * only ever hold one banked use, so `actorId` WAS the grant; with a list two `either` riders can sit
+ * on the same creature and a per-actor key would let the first one's claim veto the second's. */
+function edhaNextModClaimKey(actor, mod) { return `${actor?.id ?? ""}|${edhaNextModGid(mod)}`; }
+function edhaNextModClaimSweep(now = Date.now()) {   // bounded: TTL'd claims are dead, drop them
+  for (const [k, c] of _edhaNextModClaim) if ((now - (Number(c?.ts) || 0)) > EDHA_NEXTMOD_CLAIM_TTL) _edhaNextModClaim.delete(k);
+}
 function edhaNextModClaimOk(actor, mod, path) {
   if (!actor) return true;
-  if (!edhaNextModPathOk(_edhaNextModClaim.get(actor.id), mod, path)) return false;
-  if (String(mod?.appliesTo || "test") === "either") _edhaNextModClaim.set(actor.id, { gid: edhaNextModGid(mod), path, ts: Date.now() });
+  const key = edhaNextModClaimKey(actor, mod);
+  if (!edhaNextModPathOk(_edhaNextModClaim.get(key), mod, path)) return false;
+  if (String(mod?.appliesTo || "test") === "either") _edhaNextModClaim.set(key, { gid: edhaNextModGid(mod), path, ts: Date.now() });
   return true;
+}
+
+/* ---- THE NEXT-TEST MOD LIST (item 49 — Ben's R-15(b): "that needs to be a list not one slot") ---
+ *
+ * `flags.edha-content.nextTestMod` is an ARRAY of mod entries. It was ONE object, so the second
+ * writer silently overwrote the first: Coercive Pressure's Cognitive disadvantage and Probability
+ * Net's −1d6 on the same victim could not coexist, and neither could the Command die and anything
+ * else. Every writer now APPENDS (edhaSetNextTestMod), every reader applies EVERY live entry, and a
+ * consumer decrements/removes only its own.
+ *
+ * An entry keeps the shape the pipeline has always used, which already carries all four parts the
+ * ruling names: `source` (who granted it), the KIND (`mode` advantage/disadvantage and/or `formula`),
+ * the VALUE (`formula` / `count`), and the EXPIRY (`round`, stamped by `expireEndOfRound`). Renaming
+ * those fields would break the authored `edha-next-test-mod` schema, its pinned tests, and every mod
+ * already stored on a live actor, for no behavioural gain — the SLOT is what became a list.
+ *
+ * Folding (what "all entries apply" means):
+ *   · (dis)advantage — boolean OR per direction. Any live matching entry granting advantage sets it;
+ *     any granting disadvantage sets it. BOTH directions present = the roll is left exactly as the
+ *     player configured it (the system's AdvantageMode is one scalar and the table rule is that they
+ *     cancel); we write nothing rather than picking a winner or stomping a manual choice.
+ *   · `formula` — SUMMED. Every matching entry's term is concatenated onto the roll, each flavored
+ *     with its own source, so the breakdown still names who gave what.
+ *   · `count` — per entry. Each matching entry spends one of its own uses on the test.
+ * Gating is unchanged and stays PER ENTRY: `edhaNextTestMatches` filters skill / attr / round /
+ * targetUuid / quarryUuid / appliesTo for each one independently.
+ *
+ * EXPIRY is per entry and is PRUNED ON READ (R-20 + R-57). A round-stamped entry whose round has
+ * moved on can never match again, so it is dropped from the flag rather than left to accumulate —
+ * that stale-flag side effect is exactly what R-57 flagged and what the single slot could only clear
+ * by being overwritten. An UNSTAMPED entry is not expiry-bound: it waits until it is consumed.
+ *
+ * LEGACY MIGRATION: a stored single object reads as a one-entry list (`edhaNextModList`), so no
+ * actor carrying the old shape breaks, and the first write-back normalises it to an array.
+ */
+const EDHA_NEXTMOD_CAP = 12;   // a bound, not a design limit — an unbounded flag is the R-57 failure again
+/* PURE (pinned in tests/): read whatever is stored as a LIST. Array → itself; a legacy single object
+ * → one entry; anything else (null, a wiped flag, garbage) → empty. */
+function edhaNextModList(value) {
+  if (Array.isArray(value)) return value.filter((m) => m && typeof m === "object");
+  if (value && typeof value === "object") return [value];
+  return [];
+}
+/* PURE: is this entry DEAD — can it never apply again? Today only the round stamp expires, and the
+ * predicate is deliberately the SAME comparison `edhaNextTestMatches` makes, so pruning can never
+ * drop an entry that would still have matched. Out of combat (round null) a stamp stays inert. */
+function edhaNextModExpired(mod, round) {
+  return !!(mod && mod.round != null && round != null && Number(round) !== Number(mod.round));
+}
+/* PURE: split a list into what is still live and how many entries died. */
+function edhaNextModPrune(list, round) {
+  const live = [];
+  let pruned = 0;
+  for (const m of edhaNextModList(list)) { if (edhaNextModExpired(m, round)) pruned++; else live.push(m); }
+  return { live, pruned };
+}
+// Write the list back (null when empty — every reader treats a missing flag and [] alike). Routed
+// through edhaSetEdhaFlag so a cross-actor clear RELAYS; the old consumers called unsetFlag on the
+// bearer directly, which silently did nothing for a victim the roller does not own.
+async function edhaWriteNextMods(actor, list) {
+  return edhaSetEdhaFlag(actor, "nextTestMod", (list && list.length) ? list : null);
+}
+/* THE reader. Returns the live entries, pruning expired ones off the document as a side effect
+ * (R-57) and normalising a legacy single object to an array on first read. `round` is a parameter so
+ * the fold stays testable with no combat object. */
+function edhaNextModsOf(actor, round = undefined) {
+  const stored = actor?.getFlag?.("edha-content", "nextTestMod");
+  const raw = edhaNextModList(stored);
+  if (!raw.length) return [];
+  if (round === undefined) round = edhaCombatRoundOf(actor);
+  const { live, pruned } = edhaNextModPrune(raw, round);
+  if (pruned || !Array.isArray(stored)) void edhaWriteNextMods(actor, live);   // prune-on-read + legacy migration
+  return live;
 }
 async function edhaSetNextTestMod(target, mod) {
   try {
     // Stamp a fresh identity so a NEW grant is never mistaken for the one a stale claim holds.
     // Done before the socket emit so the owner and the relayed write agree on the same gid.
     try { if (mod && !mod.gid) mod.gid = foundry.utils.randomID(); } catch (e) { /* non-fatal */ }
-    try { _edhaNextModClaim.delete(target?.id); } catch (e) { /* non-fatal */ }
-    return await edhaSetEdhaFlag(target, "nextTestMod", mod);   // Job 6a: routed through the canonical helper
+    try { edhaNextModClaimSweep(); } catch (e) { /* non-fatal */ }
+    // APPEND (item 49). Read-modify-write on the bearer's document: flags are replicated to every
+    // client, so this is correct even when the write itself relays to the GM. Expired entries are
+    // dropped in the same pass, so a grant also tidies.
+    const cur = edhaNextModPrune(target?.getFlag?.("edha-content", "nextTestMod"), edhaCombatRoundOf(target)).live;
+    const { list } = edhaListPush(cur, mod, { cap: EDHA_NEXTMOD_CAP, evict: "oldest" });
+    return await edhaSetEdhaFlag(target, "nextTestMod", list);   // Job 6a: routed through the canonical helper
   } catch (e) { console.error("Edha Content | set next-test mod failed", e); return false; }
 }
 function edhaNextTestMatches(mod, roll, actor = null, round = undefined, wantDamage = false) {
@@ -6205,55 +6399,89 @@ function edhaNextTestMatches(mod, roll, actor = null, round = undefined, wantDam
  * d20 pair so the shapes stay comparable: match, then consume. `roll` is faked as an object carrying
  * no skill id, which is correct — a damage roll has no skill, so a `skill`-gated mod must not match it
  * (and `edhaNextTestMatches` rejects a missing id, as its pinned test asserts). */
-function edhaNextTestDamageMod(actor, item) {
-  const mod = actor?.getFlag?.("edha-content", "nextTestMod");
-  if (!mod) return null;
-  return edhaNextTestMatches(mod, { data: {} }, actor, undefined, true) ? mod : null;
+function edhaNextTestDamageMods(actor, item) {
+  return edhaNextModsOf(actor).filter((m) => edhaNextTestMatches(m, { data: {} }, actor, undefined, true));
 }
-async function edhaNextTestConsumeDamage(actor, mod) {
+/* PURE (pinned in tests/): spend one use of each mod in `taken`, leaving every other entry alone.
+ * Returns the list to store — this is what "a consumer clears ONLY its own entry" means. */
+function edhaNextModSpend(list, taken) {
+  const spend = new Set((taken || []).map((m) => edhaNextModGid(m)));
+  const next = [];
+  for (const m of edhaNextModList(list)) {
+    if (!spend.has(edhaNextModGid(m))) { next.push(m); continue; }
+    const left = Math.max(0, (Number(m.count) || 1) - 1);
+    if (left > 0) next.push({ ...m, count: left });
+  }
+  return next;
+}
+async function edhaNextTestConsumeDamage(actor, mods) {
   try {
-    const left = Math.max(0, (Number(mod.count) || 1) - 1);
-    if (left <= 0) await actor.unsetFlag("edha-content", "nextTestMod");
-    else await actor.setFlag("edha-content", "nextTestMod", { ...mod, count: left });
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }),
-      content: `<p>🔮 <strong>${mod.source || "Calculation"}</strong> — <strong>${mod.formula}</strong> added to this damage roll${left > 0 ? ` (${left} more)` : ""}.</p>` });
+    const taken = Array.isArray(mods) ? mods : [mods];
+    await edhaWriteNextMods(actor, edhaNextModSpend(edhaNextModsOf(actor), taken));
+    for (const mod of taken) {
+      const left = Math.max(0, (Number(mod.count) || 1) - 1);
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }),
+        content: `<p>🔮 <strong>${mod.source || "Calculation"}</strong> — <strong>${mod.formula}</strong> added to this damage roll${left > 0 ? ` (${left} more)` : ""}.</p>` });
+    }
   } catch (e) { console.error("Edha Content | next-test damage consume failed", e); }
+}
+/* PURE (pinned in tests/): fold a list of MATCHING entries into the one advantageMode the system can
+ * hold. Boolean-OR per direction; both directions present cancel to null, which the caller reads as
+ * "write nothing" — a mixed pair must not stomp whatever the player set on the dialog themselves. */
+function edhaNextModFoldMode(mods) {
+  let adv = false, dis = false;
+  for (const m of mods || []) {
+    if (m?.mode === "advantage") adv = true;
+    else if (m?.mode === "disadvantage") dis = true;
+  }
+  if (adv && dis) return null;
+  return adv ? "advantage" : (dis ? "disadvantage" : null);
 }
 function edhaNextTestPreRoll(roll, source, config) {
   try {
     const actor = edhaD20RollActor(config);
-    const mod = actor?.getFlag?.("edha-content", "nextTestMod");
-    if (!edhaNextTestMatches(mod, roll, actor)) return;
-    if (!edhaNextModClaimOk(actor, mod, "test")) return;   // the damage half already took this use (07-27j)
-    if (mod.mode) {   // gated (07-16b): a formula-only mod (Probability Net) must not force disadvantage
-      const m = mod.mode === "advantage" ? "advantage" : "disadvantage";
+    // EVERY live entry that matches this roll AND is not already claimed by the damage half (07-27j).
+    // The claim is taken here, so it is filtered rather than checked once for a single slot.
+    const mods = edhaNextModsOf(actor)
+      .filter((m) => edhaNextTestMatches(m, roll, actor))
+      .filter((m) => edhaNextModClaimOk(actor, m, "test"));
+    if (!mods.length) return;
+    const m = edhaNextModFoldMode(mods);   // gated (07-16b): a formula-only mod (Probability Net) must not force disadvantage
+    if (m) {
       roll.options.advantageMode = m; roll.configureModifiers?.();
       const orig = roll.configureDialog?.bind(roll);
       if (orig) roll.configureDialog = async (data) => { try { data ??= {}; data.skillTest ??= {}; data.skillTest.advantageMode = m; } catch (e) {} return orig(data); };
     }
-    // Dice/flat modifier on the next test (Probability Net's −1d6) — same term-concat mechanism as
-    // the test riders, flavor-labeled so the breakdown names the source.
-    if (mod.formula && !roll.options._edhaNextTestFormula) {
-      const resolved = edhaFoldDieMath(Roll.replaceFormulaData(String(mod.formula), actor?.getRollData?.() ?? {}, { missing: "0" })).trim();
-      const label = mod.source || "Next-test mod";
-      // A leading minus becomes an explicit subtraction — "0 + -1d6" is parser-hostile.
-      const expr = resolved.startsWith("-") ? `0 - ${resolved.slice(1)}[${label}]` : `0 + ${resolved}[${label}]`;
-      roll.terms = roll.terms.concat(new Roll(expr).terms.slice(1));
-      roll.resetFormula();
-      roll.options._edhaNextTestFormula = true;
+    // Dice/flat modifiers on the next test (Probability Net's −1d6) — same term-concat mechanism as
+    // the test riders, flavor-labeled so the breakdown names each source. Item 49: they SUM, so every
+    // matching entry appends its own term; the guard flag still stops a re-entrant hook doubling them.
+    if (!roll.options._edhaNextTestFormula) {
+      let added = false;
+      for (const mod of mods) {
+        if (!mod.formula) continue;
+        const resolved = edhaFoldDieMath(Roll.replaceFormulaData(String(mod.formula), actor?.getRollData?.() ?? {}, { missing: "0" })).trim();
+        const label = mod.source || "Next-test mod";
+        // A leading minus becomes an explicit subtraction — "0 + -1d6" is parser-hostile.
+        const expr = resolved.startsWith("-") ? `0 - ${resolved.slice(1)}[${label}]` : `0 + ${resolved}[${label}]`;
+        roll.terms = roll.terms.concat(new Roll(expr).terms.slice(1));
+        added = true;
+      }
+      if (added) { roll.resetFormula(); roll.options._edhaNextTestFormula = true; }
     }
   } catch (e) { console.error("Edha Content | next-test mod pre-roll failed", e); }
 }
 function edhaNextTestConsume(roll, source, config) {
   try {
     const actor = edhaD20RollActor(config);
-    const mod = actor?.getFlag?.("edha-content", "nextTestMod");
-    if (!edhaNextTestMatches(mod, roll, actor)) return;
-    const left = Math.max(0, (Number(mod.count) || 1) - 1);
-    if (left <= 0) void actor.unsetFlag("edha-content", "nextTestMod");
-    else void actor.setFlag("edha-content", "nextTestMod", { ...mod, count: left });
-    const word = mod.mode ? (mod.mode === "advantage" ? "advantage" : "disadvantage") : (mod.formula || "a modifier");
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🔮 <strong>${mod.source || "Calculation"}</strong> — ${word} on this test${left > 0 ? ` (${left} more)` : ""}.</p>` });
+    const list = edhaNextModsOf(actor);
+    const taken = list.filter((m) => edhaNextTestMatches(m, roll, actor));
+    if (!taken.length) return;
+    void edhaWriteNextMods(actor, edhaNextModSpend(list, taken));   // only the entries that applied are spent
+    for (const mod of taken) {
+      const left = Math.max(0, (Number(mod.count) || 1) - 1);
+      const word = mod.mode ? (mod.mode === "advantage" ? "advantage" : "disadvantage") : (mod.formula || "a modifier");
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🔮 <strong>${mod.source || "Calculation"}</strong> — ${word} on this test${left > 0 ? ` (${left} more)` : ""}.</p>` });
+    }
   } catch (e) { console.error("Edha Content | next-test mod consume failed", e); }
 }
 for (const ctx of ["skill", "attack", "item"]) {
@@ -7682,7 +7910,11 @@ async function edhaRunPush(owner, victim, cfg) {
   } catch (e) { console.error("Edha Content | edha-push failed", e); }
 }
 
-// --- Rally stack (Battle Fever / Feeding Frenzy): +1 to your tests, capped at Red rank, time-boxed --
+// --- Rally stack (Battle Fever / Feeding Frenzy): +1 per stack, SPENT on your next test, capped at Red rank, time-boxed --
+// R-27 (item 52, 2026-09-06 — Ben: THE CARD is canon). "Gain +1 to your next test" per stack = the
+// WHOLE stack rides ONE test, then it is gone; an unspent stack still clears at the start of the
+// owner's turn (resetOn turn) or the round flip (resetOn round). Before this the bonus rode every
+// test until turn start (+2[Rally] on 6+ consecutive rolls at the bench).
 function edhaRallyBonus(actor) {
   try { const r = actor?.getFlag?.("edha-content", "rally"); return r ? Math.min(Number(r.count) || 0, edhaColorRank(actor, "red")) : 0; }
   catch (e) { return 0; }
@@ -7716,6 +7948,20 @@ async function edhaRallyApi(actorArg) {
   if (n > 0) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: a }), content: `<p>🔥 <strong>${tal?.name || "Frenzy"}</strong> — ${a.name} gains <strong>+${n}</strong> to its next test.</p>` });
   return n;
 }
+// Consume-on-test (R-27): the pre-roll rider (`edhaTestRiderApply`) reads `edhaRallyBonus` and adds
+// the whole capped stack as `N[Rally]`; THIS post-roll consumer clears the stack so the next test
+// rolls at +0. Post-roll rather than pre-roll on purpose — a cancelled roll dialog must not strand
+// the stack (the same pre-apply / post-consume split `advTest` and `nextTestMod` use). It re-reads
+// the actor flag, not a roll option, because a dialog roll rebuilds `roll.options` (§ pre-roll note).
+function edhaRallyConsume(roll, source, config) {
+  try {
+    const actor = edhaD20RollActor(config);
+    const n = edhaRallyBonus(actor); if (n <= 0) return;
+    void edhaRallyClear(actor);
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🔥 <strong>Rally</strong> — ${actor.name} spent <strong>+${n}</strong> on this test.</p>` });
+  } catch (e) { console.error("Edha Content | rally consume failed", e); }
+}
+for (const ctx of ["skill", "attack", "item"]) Hooks.on(`cosmere-rpg.${ctx}Roll`, edhaRallyConsume);
 // Reset: "start of your turn" (resetOn turn) at each turn change; "start of round" (resetOn round) at the round flip.
 Hooks.on("combatTurnChange", (combat) => {
   try {
@@ -7860,12 +8106,23 @@ Hooks.on("combatTurnChange", (combat) => { if (edhaDefBuffGmGate()) void edhaRef
 Hooks.on("deleteCombat", (combat) => { if (!edhaDefBuffGmGate()) return; for (const c of (combat?.combatants ?? [])) if (c.actor) void edhaRemoveDefBuff(c.actor); });
 
 /* ============================================================================================
- * RESOURCE-CONSUME DIALOG TITLE (backlog J) — cosmetic, and the smallest section in the file.
- * The system's own consume prompt opens titled "Consume Resource" with no clue WHICH item asked,
- * which on a talent-dense sheet is a coin flip. One helper rewrites the header from the item on
- * the app; two hooks reach it, because the dialog renders under `renderItemConsumeDialog` on some
- * paths and as a bare `renderDialogV2` (carrying an `item` key) on others.
- * Owns: edhaSetConsumeTitle + the renderItemConsumeDialog / renderDialogV2 registrations.
+ * RESOURCE-CONSUME DIALOG (backlog J + item 50) — two things, both about the system's own
+ * consume prompt.
+ * (1) TITLE — cosmetic. The prompt opens titled "Consume Resource" with no clue WHICH item asked,
+ *     which on a talent-dense sheet is a coin flip. One helper rewrites the header from the item
+ *     on the app; two hooks reach it, because the dialog renders under `renderItemConsumeDialog`
+ *     on some paths and as a bare `renderDialogV2` (carrying an `item` key) on others.
+ * (2) PRE-TICK EVERY COST ROW — R-70 (b), the ONE sanctioned system-dialog wrapper (see the file
+ *     header). `CosmereItem#use()` calls `this.showConsumeDialog()` with NO options, and the
+ *     system maps each `activation.consume` entry to `shouldConsume: options.shouldConsume ?? i === 0`
+ *     (2.1.0 `index.js`, comment: "Only automatically check first option"), so a second cost row
+ *     opens unticked and a default click under-charges. Wrapping `showConsumeDialog` itself is the
+ *     narrowest seam that exists: the option mapping happens INSIDE it, `preUseItem` fires before
+ *     `use()` and cannot reach those options, and a DOM tick at `renderItemConsumeDialog` would
+ *     bind to the template's checkbox ids instead of the option shape. `??` is kept, so an
+ *     explicit caller (`showConsumeDialog({shouldConsume: false})`) still gets what it asked for.
+ * Owns: edhaSetConsumeTitle + the renderItemConsumeDialog / renderDialogV2 registrations;
+ *       edhaPreTickConsumeOptions (PURE — pinned) · edhaInstallConsumeDialogWrapper + its ready hook.
  * ============================================================================================ */
 
 /* --- J: name the resource-consume popup --------------------------------------------------------
@@ -7893,6 +8150,41 @@ function edhaSetConsumeTitle(app, element) {
 // renames the subclass. Both are idempotent (they just set text).
 Hooks.on("renderItemConsumeDialog", edhaSetConsumeTitle);
 Hooks.on("renderDialogV2", (app, element) => { if ("item" in (app ?? {})) edhaSetConsumeTitle(app, element); });
+
+/* --- item 50 / R-70 (b): every cost row opens ticked -------------------------------------------
+ * PURE: the options object the wrapper hands the system's showConsumeDialog. Every other field
+ * passes through untouched; only an ABSENT `shouldConsume` becomes `true` (the system's `??`
+ * then ticks every row instead of row 0 only). A single-cost item is unchanged in effect — its
+ * only row was already row 0. */
+function edhaPreTickConsumeOptions(options) {
+  const o = (options && typeof options === "object") ? options : {};
+  return { ...o, shouldConsume: o.shouldConsume ?? true };
+}
+
+/* Install the one wrapper. Same shape as the rollDamage wrapper: libWrapper when present
+ * (update-resilient), else a prototype patch. Idempotent per class (a `ready` re-fire on a
+ * hot-reloaded client must not stack two wrappers). Returns what it did, for the headless pin. */
+function edhaInstallConsumeDialogWrapper() {
+  const ItemCls = CONFIG.Item?.documentClass;
+  if (!ItemCls?.prototype?.showConsumeDialog) {
+    console.warn("Edha Content | CosmereItem#showConsumeDialog not found — consume rows keep the system default.");
+    return "missing";
+  }
+  if (ItemCls.prototype.showConsumeDialog._edhaPreTick) return "already";
+  if (game.modules.get("lib-wrapper")?.active && globalThis.libWrapper) {
+    libWrapper.register("edha-content", "CONFIG.Item.documentClass.prototype.showConsumeDialog",
+      function (wrapped, options) { return wrapped(edhaPreTickConsumeOptions(options)); }, "WRAPPER");
+    console.log("Edha Content | consume-dialog pre-tick wired via libWrapper (R-70).");
+    return "libWrapper";
+  }
+  const orig = ItemCls.prototype.showConsumeDialog;
+  const patched = function (options) { return orig.call(this, edhaPreTickConsumeOptions(options)); };
+  patched._edhaPreTick = true;
+  ItemCls.prototype.showConsumeDialog = patched;
+  console.log("Edha Content | consume-dialog pre-tick wired via prototype patch (R-70).");
+  return "patched";
+}
+Hooks.once("ready", () => { try { edhaInstallConsumeDialogWrapper(); } catch (e) { console.error("Edha Content | consume-dialog wrapper failed", e); } });
 
 /* ============================================================================================
  * TALENT BUDGET (Edha house rules) — the level-up restriction: how many talents a character of
@@ -18459,7 +18751,8 @@ function edhaRegisterNativeEventSystem() {
     source: "edha-content", type: "edha-prompt-pick",
     label: "Edha: Prompt / Pick One", description: "Whisper yourself a card that asks a question — accept an offer, or choose one creature from a filtered list. What HAPPENS goes on the sibling 'When Your Test SUCCEEDS' rules, exactly as for a gated test; the creature you pick becomes their target.",
     config: { schema: {
-      source: new FF.StringField({ required: true, initial: "confirm", choices: choices("confirm", "creatures", "effects"), label: "What is being chosen", hint: "confirm = one accept button; the payload lands on the creature this rule's trigger already resolved against (Subtle Suggestion, Puppeteer) · creatures = one button per creature matching the filters below (Anticipate, Unnerving Approach) · effects = one button per enabled Active Effect on that creature; the click DELETES the picked effect — the DISPEL, its payload intrinsic (Unweaving: which effect counts as magical is the table's call, so the click is GM-side). Success rules are NOT dispatched for a picked effect: no payload handler takes a THING, which is why this source shipped with its own payload (§9o's rule). 07-25 pass 2bU." }),
+      source: new FF.StringField({ required: true, initial: "confirm", choices: choices("confirm", "creatures", "effects"), label: "What is being chosen", hint: "confirm = one accept button; the payload lands on the creature this rule's trigger already resolved against (Subtle Suggestion, Puppeteer) · creatures = one button per creature matching the filters below (Anticipate, Unnerving Approach) · effects = one button per enabled Active Effect the creature bears (item-transferred passives included since item 54); the click DELETES an actor-level effect and DISABLES an item-owned one (never deleted — that would strip the talent's copy), plus the ledger marks named below — the DISPEL, its payload intrinsic (Unweaving: which effect counts as magical is the table's call, so the click is GM-side). Success rules are NOT dispatched for a picked effect: no payload handler takes a THING, which is why this source shipped with its own payload (§9o's rule). 07-25 pass 2bU." }),
+      ledgers: new FF.StringField({ required: false, blank: true, initial: "omens:omen", label: "Ledger marks the dispel may clear (source = effects)", hint: "Comma-list of ledger:status pairs (status defaults to the ledger key). Each ledger holding the creature — or whose marker it wears — adds a 'Dispel <Marker>' button that clears the marker AND its ledger entry (R-35: Unweaving reaches the Omen). Blank = none. Item 54." }),
       prompt: new FF.StringField({ required: false, blank: true, initial: "", label: "The question", hint: "Shown after the talent's name. Say what accepting means — the card is the only place the table sees it. {name} = the creature this rule's trigger resolved against (Puppeteer: whose turn started at 0 focus); the PICKED creature is only known later, on the accept note." }),
       label: new FF.StringField({ required: false, blank: true, initial: "", label: "Button text", hint: "Blank = 'Use <talent>' for confirm, 'Choose <name>' for a creature. For confirm, {name} = the trigger's creature." }),
       icon: new FF.StringField({ required: false, blank: true, initial: "", label: "Icon", hint: "One emoji shown before the name." }),
@@ -19294,10 +19587,10 @@ function edhaRegisterNativeEventSystem() {
   });
   api.registerItemEventHandlerType({
     source: "edha-content", type: "edha-rally-stack",
-    label: "Edha: Rally Stack", description: "A stacking +1-to-your-tests counter (max = Red rank) that resets each turn or round. Battle Fever / Feeding Frenzy. Allies-in-range sharing is narrated.",
+    label: "Edha: Rally Stack", description: "A stacking +1 counter (max = Red rank) SPENT in full on your next test (R-27 — the card is canon); an unspent stack still resets at the start of your turn or the round. Battle Fever / Feeding Frenzy. Allies-in-range sharing is narrated.",
     config: { schema: {
       trigger: new FF.StringField({ required: true, initial: "deal-damage", choices: choices("deal-damage", "manual"), label: "Bump on", hint: "deal-damage = your damage feeds it (Battle Fever); manual = bumped by edha.rally() (Feeding Frenzy: enemy-attacks-enemy has no hook)." }),
-      resetOn: new FF.StringField({ required: true, initial: "turn", choices: choices("turn", "round"), label: "Resets at start of", hint: "Battle Fever: turn. Feeding Frenzy: round." }),
+      resetOn: new FF.StringField({ required: true, initial: "turn", choices: choices("turn", "round"), label: "Unspent stack resets at start of", hint: "Battle Fever: turn. Feeding Frenzy: round. (Any test spends the whole stack first.)" }),
       note: new FF.StringField({ required: false, initial: "", label: "Note" }),
     } },
     executor: async function (event) { try { if ((this.trigger || "deal-damage") === "deal-damage") edhaRallyOnDeal(event.item?.actor); } catch (e) { console.error("Edha Content | edha-rally-stack executor failed", e); } },

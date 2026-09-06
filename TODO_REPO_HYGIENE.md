@@ -1653,7 +1653,7 @@ by design, as the ruling specified.
 
 ---
 
-## 49. [ ] Next-test modifier slot becomes a list (R-15, R-57, R-20)
+## 49. [x] Next-test modifier slot becomes a list (R-15, R-57, R-20) — DONE 2026-09-06, PR #221
 
 **Why:** Ben, verbatim: "that needs to be a list not one slot." Coercive Pressure no longer stacks
 with another next-test rider because `flags.nextTestMod` is a single object the second writer
@@ -1676,7 +1676,7 @@ ENGINE-ONLY (F5).
 
 ---
 
-## 50. [ ] One sanctioned wrapper on the system's cost-consume dialog (R-70)
+## 50. [x] One sanctioned wrapper on the system's cost-consume dialog (R-70) — done 2026-09-06, PR #222 (ENGINE-ONLY, F5; bench-pending)
 
 **Why:** A two-resource activation only charges the FIRST resource unless the player manually
 ticks the second box in the system's `showConsumeDialog`. Ben (b): "wrap the dialog so every cost
@@ -1714,7 +1714,7 @@ the round's use is still available; checklist row 2bJ-10 marked 🤖.
 
 ---
 
-## 52. [ ] Battle Fever's rally stack is spent on the next test, once (R-27)
+## 52. [x] Battle Fever's rally stack is spent on the next test, once (R-27) — DONE 2026-09-06, PR #223
 
 **Why:** Ben (a): the card is canon — "gain +1 to your next test" per stack reads as the WHOLE
 stack applied to ONE test, then cleared, capped at Rank, also clearing at the start of the owner's
@@ -1759,7 +1759,7 @@ second-strike ledger read, Mistheron unaffected). ENGINE-ONLY (F5).
 
 ---
 
-## 54. [ ] Widen dispel to item-owned transferred effects and Omen ledger entries (R-73, R-35)
+## 54. [x] Widen dispel to item-owned transferred effects and Omen ledger entries (R-73, R-35) — done 2026-09-06, PR #224 (ENGINE-ONLY, F5; bench-pending)
 
 **Why:** A dispel currently cannot remove a passive living on a talent or trait. Ben vetoed the
 narrow §I default and specified the safe widening (b): the `edha-pick` menu should offer

@@ -232,6 +232,7 @@ exactly one slot. Does losing cross-rider stacking matter at the table? *(Checkl
 > legacy single object on read. ENGINE-ONLY, F5 → **item 49**; headless pin: Coercive Pressure +
 > Probability Net on one target both apply and both clear independently; 🤖 re-test = checklist
 > 2bI-4.
+> **SHIPPED** in PR #221 (ENGINE-ONLY, bench-pending) — `tests/next-test-mod-list.test.js`
 
 *(R-16 — Wary reducing Whispered Doubt's extra loss — ANSWERED 2026-09-06, moved to §K.)*
 
@@ -372,6 +373,9 @@ a second cost, including ones where the second cost is meant to be optional.
 > `shouldConsume: true`; ENGINE-ONLY, F5 → **item 50**; declare it in the header as the one
 > sanctioned system-dialog wrapper (iron rule 2a exception by Ben's ruling); pin a headless test on
 > the option shape; bench re-test = Reknit Form charges inv AND foc on a default click.
+> **SHIPPED** in PR #222 (ENGINE-ONLY, bench-pending) — `tests/consume-dialog-wrapper.test.js`
+> (the pure option shape, the system's row map `[true, true]`, the installed patch, and a source
+> scan that exactly ONE wrapper of the system dialog exists — a second one fails the suite).
 
 **R-72. Is an INVOLUNTARY drain a "spend"?** Raised by item 28b: the Order Edict fires only on the
 creature's own activations, and H10's Investiture-drain write (`register-skills.js` ~L18139, the
@@ -442,6 +446,10 @@ until turn start (`rally {count, resetOn: turn}` — it never consumes on a test
 > next test, then the stack is cleared/decremented). ENGINE-ONLY, F5 → **item 52**; headless pin
 > (three damage events → +3 on the next test, +0 on the one after; cap at Rank); 🤖 re-test = the
 > Red spot-checks row.
+> **SHIPPED** in PR #223 (ENGINE-ONLY, bench-pending) — `tests/rally-spent-on-test.test.js` (three hits
+> → `0 + 3[Rally]` on the next test and +0 on the one after; four hits at Rank 3 spend as +3; an unspent
+> stack still clears at the owner's turn start). The consume is a post-`<ctx>Roll` reader of the actor's
+> own `rally` flag (`edhaRallyConsume`), not a roll option — a cancelled dialog cannot strand the stack.
 
 **R-28. Withering Touch's duration — "start" or "end" of your next turn?** The engine
 (`expireAfter {round: 2, turn: 0}`), **both** chat cards and the **measured** expiry all say **END**;
@@ -523,6 +531,9 @@ sense-through evidence with a negative control.)*
 > `source:'effects'` menu (already being widened under R-73 (b)) also offers the target's Omen
 > ledger entries as a "dispel Omen" button that clears the marker + ledger entry. ENGINE-ONLY, F5 →
 > folded into **item 54** with R-73(b); headless pin; 🤖 re-test = Chaos residuals row.
+> **SHIPPED** in PR #224 (ENGINE-ONLY, bench-pending) — `tests/dispel-widening.test.js`. The rule's new
+> `ledgers` field defaults to `omens:omen`, so Unweaving needs no rebuild; the click clears the marker
+> AND the ledger row, and a marker with no row still comes off.
 
 **R-36. Temp HP source relabelling misattributes a surviving value.** When a smaller Temp HP grant
 loses the keeps-higher comparison, the `source` is still relabelled to the loser — so an ally holding
@@ -837,6 +848,9 @@ word and it gets built that way. *(Fix pass 5; no checklist row — this is a de
 > ENGINE-ONLY, F5 → **item 54** (folded with R-35); pin both branches headlessly; bench re-test =
 > Unravel Everything can disable a target's Hardy and the talent copy survives intact. **Stays
 > HERE** — open, pending ship — until item 54 lands and the bench confirms it; then it moves to §K.
+> **SHIPPED** in PR #224 (ENGINE-ONLY, bench-pending) — `tests/dispel-widening.test.js`. Item-owned
+> effects are offered as a DISABLE; the delete guard is on the DOCUMENT (`edhaEffectOwnerItem`,
+> fail-closed), so a forged delete button cannot strip a talent's copy.
 
 *(R-43 — "tests Speed" means the ATTRIBUTE, live dice math — ANSWERED-by-acceptance 2026-09-06, moved to §K.)*
 
@@ -1236,6 +1250,8 @@ same one-slot overwrite characterised in R-15). *(Checklist 2bJ-3, retired run 2
 > **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) KEEP, settled by Ben's R-20 answer
 > (same question).** Its stale-flag side effect is absorbed by R-15 (b)'s fix, shipping in **item
 > 49**: the `nextTestMod` LIST prunes expired entries.
+> **SHIPPED** in PR #221 (ENGINE-ONLY, bench-pending) — `tests/next-test-mod-list.test.js`; the
+> stale-flag half is 🤖 checklist row **2bI-4c**.
 
 ---
 
