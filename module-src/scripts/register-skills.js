@@ -17430,7 +17430,19 @@ Hooks.once("ready", () => {
     console.log("Edha Content | Edha derivations (Investiture, HP+1, Speed) wired via prototype patch.");
   }
   // Refresh already-loaded actors so the new max shows immediately.
-  for (const a of (game.actors ?? [])) { if (a.type === "character") { try { a.prepareData(); a.sheet?.rendered && a.sheet.render(false); } catch (e) {} } }
+  // ⚠️ reset(), NOT prepareData() — this line was the 64 ↔ 57 max-HP flip (bench run 36).
+  // A bare `prepareData()` re-runs the prepare pipeline over ALREADY-DERIVED data: DataModel#reset
+  // is what re-initialises fields from `_source` (`reset() { this._initialize(); }`, and
+  // ClientDocument#_initialize ends in `_safePrepareData()`); prepareData does not reset anything.
+  // cosmere-rpg moves `applyActiveEffects()` OUT of prepareEmbeddedDocuments and INTO
+  // prepareDerivedData on purpose (so AE changes can read derived values), and ActiveEffect#_applyAdd
+  // reads the CURRENT value — so a second bare prepare applies every ADD-mode change a SECOND time.
+  // `Bench — White`'s `Hardy - Max HP` (ADD `@level`, 7 at level 7) read `hea.max.bonus` = 8 + 7 + 7
+  // = 22 → max **64**, where the correct single application is 8 + 7 = 15 → max **57**. Nothing is
+  // persisted, so the actor snapped back to 57 the next time a real update re-initialised it — the
+  // "flip", and why there was no residue. It hit EVERY character carrying ANY ADD-mode effect, on
+  // EVERY client, at world load; Hardy was only how the bench noticed.
+  for (const a of (game.actors ?? [])) { if (a.type === "character") { try { a.reset(); a.sheet?.rendered && a.sheet.render(false); } catch (e) {} } }
 });
 
 /* --- Apply-damage targeting: make the chat Apply buttons follow TARGETS ONLY -------------------
