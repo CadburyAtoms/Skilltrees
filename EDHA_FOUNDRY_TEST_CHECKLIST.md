@@ -927,6 +927,20 @@ answered 2026-09-06 → item 58, REBUILD + ↻ Sync); R-24 (a) YES, keep Reckles
 no change, moved to §K, graph half of this row retired; R-27 (a) THE CARD is canon, the rally bonus
 is spent on the next test then clears (ruling answered 2026-09-06 → item 52).
 
+- [ ] 🤖 **52-1 — Battle Fever spends the stack on the next test (R-27, PR #223, ENGINE-ONLY F5).**
+  On Bench — Red, deal damage three times in one round (three Strikes that hit, or `edha.rally()`
+  ×3 from the console — the console path bumps the same flag). Confirm the 🔥 card reads "+3" and
+  `flags.edha-content.rally.count === 3`. Roll ANY d20 test (a Skill test is fine): its breakdown
+  shows **`3[Rally]`**, a "🔥 Rally — Bench — Red spent +3 on this test" card posts, and the `rally`
+  flag is GONE. Roll a second test: **no** `[Rally]` term, no card. Then bump four times at Red
+  rank 3 → the stack reads 3, the test shows `3[Rally]` (the cap holds on the spend).
+- [ ] 🤖 **52-2 — negative control: an unspent stack still clears at the owner's turn start, and a
+  cancelled dialog does not spend it.** Bump twice, do NOT roll; advance the tracker to the start of
+  Bench — Red's next turn → `rally` flag gone, the next test shows no `[Rally]`. Then bump once,
+  open a Skill-test dialog and CANCEL it → the flag is still `{count: 1}`; the next completed test
+  shows `1[Rally]` and consumes it. (The consume is post-roll on purpose — a cancel must not
+  strand or spend the stack.)
+
 *(**Flashpoint** — RETIRED on evidence 2026-09-05, bench run 26. One Flame Surge detonation caught
 **2** enemies (Bench Target — Adjacent A and B, 12 energy each after their Athletics saves) and fired the
 `edha-multi-hit` prompt. Clicking "Fire Flashpoint": Investiture **2 → 3** ("⚡ Flashpoint — Bench — Red

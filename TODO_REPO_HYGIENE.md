@@ -1714,7 +1714,7 @@ the round's use is still available; checklist row 2bJ-10 marked 🤖.
 
 ---
 
-## 52. [ ] Battle Fever's rally stack is spent on the next test, once (R-27)
+## 52. [x] Battle Fever's rally stack is spent on the next test, once (R-27) — DONE 2026-09-06, PR #223
 
 **Why:** Ben (a): the card is canon — "gain +1 to your next test" per stack reads as the WHOLE
 stack applied to ONE test, then cleared, capped at Rank, also clearing at the start of the owner's

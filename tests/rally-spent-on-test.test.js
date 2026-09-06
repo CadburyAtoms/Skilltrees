@@ -11,8 +11,10 @@
  * too, because "spent on test" must not have quietly replaced "resets at turn start".
  *
  * Mutation-proved (2026-09-06): deleting the `void edhaRallyClear(actor)` line in edhaRallyConsume
- * fails cases 1, 2 and 3; dropping the `if (cur >= cap) return cur` line fails case 3; deleting the
- * `else if (a === cur) void edhaRallyClear(a)` line fails case 4.
+ * fails cases 1, 2 and 3; deleting the `else if (a === cur) void edhaRallyClear(a)` line fails
+ * case 4. The cap is enforced TWICE (the bump's `if (cur >= cap) return cur` AND the reader's
+ * `Math.min(count, rank)`), so case 3 only fails when both lines are dropped together — dropping
+ * either alone stays green, which is the point of a belt-and-braces cap.
  */
 "use strict";
 const assert = require("assert");

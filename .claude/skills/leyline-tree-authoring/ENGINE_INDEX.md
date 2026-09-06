@@ -3189,3 +3189,17 @@ whisper. Pinned: `tests/pulse-sweep-counts.test.js`.
 - **An eviction that leaves no trace reads as a no-op.** At the marker cap the oldest square fizzles
   and the only sign was the "(N/N)" count staying put (R-37(1)). `edhaListPush`'s `res.evicted` is
   hoisted out of the `edhaOwnerListQueue` callback so the placement card can name what was spent.
+
+## Item 52 2026-09-06 (R-27 — the rally stack is SPENT on the next test)
+
+- **`edhaRallyConsume(roll, source, config)`** — the post-`cosmere-rpg.<ctx>Roll` half of the rally
+  stack (Battle Fever / Feeding Frenzy). `edhaTestRiderApply` (pre-roll) still reads
+  `edhaRallyBonus` and splices `N[Rally]` into the d20; this consumer re-reads the actor's `rally`
+  flag, clears it (`edhaRallyClear`) and posts the "spent +N on this test" card. **Post-roll, and
+  re-read from the ACTOR flag, on purpose**: a cancelled dialog must not strand the stack, and a
+  dialog roll rebuilds `roll.options`, so a pre-roll option marker is not a safe consume token
+  (the same pre-apply / post-consume split `advTest` and `nextTestMod` use). The turn-start /
+  round-flip clear (`combatTurnChange`) is unchanged — it still empties an UNSPENT stack. The cap
+  (= Red rank) is enforced twice, at the bump and at the read. Pinned:
+  `tests/rally-spent-on-test.test.js`. The `edha-rally-stack` schema is unchanged (`trigger`,
+  `resetOn`, `note`) — only its label/hint text now says "spent".
