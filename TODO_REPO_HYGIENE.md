@@ -1939,4 +1939,31 @@ touches).
 Ring's adjacency check); 🤖 row = checklist W29 §2.
 
 **PM:** lane B · model opus · size M · deps 47 · verify: 4 headless pins on the measured cases.
-ENGINE-ONLY (F5).
+ENGINE-ONLY (F5). **Reframe before dispatch (item 47, 2026-09-06):** the ruling's own example — the
+Crownox Ring's adjacent ox at 7.5 ft — already passes under the inclusive half-square slack, so the
+motivating failure is gone; what is left is a Huge owner's "adjacent" and the `rangeFt` sweep. Let
+item 47's W29 §2 bench row measure first.
+
+---
+
+## 63. [ ] Rallying Shout's reminder prints only for a downed ally — a target-condition dial on `edha-note` (R-25)
+
+**Why:** Ben answered R-25 (c) on 2026-09-06: print ONLY for an ally at 0 HP or carrying
+Unconscious, the two cases the card names. Item 47 (PR #215) stopped this one instead of shipping
+it: since the iron-rule-2b migration the reminder is an authored `edha-note` rule on **Rousing
+Presence** (`data/authored/heroic-envoy.json`, rule `RouseRallying000`), and `edha-note` has no
+target-condition field. Gating it needs a generic dial on the handler PLUS the authored value on
+that rule — a name-keyed branch is what rule 2b forbids, and a dial with no consumer is exactly the
+R-74 / R-76 complaint. So it is a REBUILD-class item, not engine-only.
+
+**What to do:** add ONE generic field to `edha-note` (e.g. `whenTarget: "downed"` — target at 0 HP
+or carrying Unconscious; absent = today's unconditional behaviour) read by the handler; set it on
+`RouseRallying000` in `data/authored/heroic-envoy.json`; `ENGINE_INDEX.md` gains the field; a
+headless pin (ally at 32 HP → no card; at 0 → card; Unconscious above 0 → card; a rule WITHOUT the
+field → card as before); the checklist's 2bM-6 row becomes the 🤖 re-test.
+
+**Done when:** the pin passes and fails under a one-line reversion; the authored rule carries the
+field; packs rebuild clean; 2bM-6 is 🤖 with the three cases.
+
+**PM:** lane B · model opus · size S · deps 46 · verify: mutation pin + pack build. ENGINE + AUTHORED
+→ REBUILD + ⟳ Sync (Ben's deploy). Found by item 47.
