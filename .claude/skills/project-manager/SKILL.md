@@ -193,11 +193,12 @@ prefixed with the row's name — read it like any other note.
 a worker reports (before review), at step 5 (close), and at step 6 when you schedule or stop.
 
 ```
-# 0. all PM scratch files live INSIDE the repo, gitignored — never the harness scratchpad
-#    (a write outside the working folder is a permission prompt in a scheduled-task session)
+# 0. the two state files are TRACKED (docs/pm-*.json, below); everything else the loop scratches
+#    (usage.json, the dashboard chunks, the injected page) goes under gitignored tmp/pm INSIDE the
+#    repo — a write outside the working folder is a permission prompt in a scheduled-task session
 SCRATCH=tmp/pm; mkdir -p $SCRATCH
 # 1. the live overlay — what the board cannot carry while a worker holds the checkout
-cat > $SCRATCH/live.json <<'EOF'
+cat > docs/pm-live.json <<'EOF'
 { "pm": { "status": "awake|waiting|stopped", "note": "<one sentence Ben should read>",
           "waitingOn": null, "nextWakeAt": "<ISO or null>", "session": "<date + label>" },
   "workers": [ { "item": "16", "title": "…", "model": "sonnet", "size": "S", "lane": "R",
@@ -206,11 +207,19 @@ cat > $SCRATCH/live.json <<'EOF'
   "usage": null }
 EOF
 # 2. project the board (+ overlay, + pm-usage.py --last --json when on Ben's machine)
-node scripts/pm-state.js --live $SCRATCH/live.json [--usage-json $SCRATCH/usage.json] --out $SCRATCH/pm-state.json
+node scripts/pm-state.js --live docs/pm-live.json [--usage-json $SCRATCH/usage.json] --out docs/pm-state.json
 # 3. write it to the artifact's store (no republish needed)
 Artifact(action: "write_db", url: <URL>, db_op: "set", collection: "pm", doc_id: "state",
-         file_path: "$SCRATCH/pm-state.json")
+         file_path: "docs/pm-state.json")
 ```
+
+**The overlay and the projection are TRACKED FILES — `docs/pm-live.json` (the overlay you write)
+and `docs/pm-state.json` (what `pm-state.js` generates from the board + overlay).** They moved out
+of the scratch directory and into the repo on Ben's instruction (2026-09-06) so the exact state the
+phone is showing is reviewable in git rather than sitting in a temp folder outside the checkout.
+Regenerate them in place, push the result to the artifact store, and let them ride to `main` on the
+same PR as the rest of your bookkeeping. The dashboard chunks stay in `$SCRATCH` — they are large,
+derived entirely from tracked source docs, and carry their own stamp.
 
 `workers: []` with `pm.status: "stopped"` is the handoff picture. Omit `--live` and the script
 synthesises a worker from any `running` queue row, so an old snapshot is never blind.
@@ -272,20 +281,25 @@ history. Therefore:
   (unattended), so the way to stand one down is the **"session of record" line at the top of the
   board** — it re-reads the board on every wake. Write that line when Ben moves control to you;
   rewrite it on your own first wake.
-- **Scheduled-task hygiene (learned 2026-09-06, the Sunday stall).** A Desktop scheduled task
-  carries its OWN model and permission mode in the task form; it inherits neither from the app
-  default nor from the interactive session that created it. The first real `edha-pm-daily` run
-  came up as **Opus** in a prompting permission mode, and sat all day on one permission dialog
-  (a state-file write outside the repo folder) while the phone showed "alive". So, for BOTH
-  `edha-pm-daily` and `edha-pm-weeknight`: (1) pin **model = Fable** in the task form, never
-  "app default"; (2) set the permission mode to the one the interactive PM sessions run under;
-  (3) after creating or editing a task, click **Run now** once while present and choose
-  **Always allow** on every prompt it raises (the Desktop app remembers them per task);
-  (4) every state file the loop writes lives INSIDE the repo under gitignored `tmp/pm/`
-  (see "Push state" below), so no write ever leaves the working folder. And on every wake,
-  **first thing: confirm you are Fable** (`/model` or the session header); if you are not,
-  write one line in the run log and STOP — a non-Fable PM is a misconfigured task, not a
-  session of record.
+- **The tasks inherit the app's default model, and NOTHING pins it** — the scheduled-task MCP tools
+  (`create_scheduled_task` / `update_scheduled_task`) expose only taskId, title, prompt, description,
+  cronExpression, fireAt, enabled and notifyOnCompletion; there is **no `model` field**, and no
+  `settings.json` model key was ever set. This line used to read "which must remain Fable", which was an
+  assumption dressed as a rule: on **2026-09-06** the weekend task fired as `claude-opus-5`, ran a whole
+  shift, and spent ~10.3M weighted units of Ben's Opus budget on a day he needed for paid work. Both task
+  prompts now open with a **MODEL GUARD**: state your model, and if it does not begin with `claude-fable`,
+  write nothing, dispatch nothing, push-notify Ben, and stop. **If you are a PM session, you have already
+  passed that guard or you are running at Ben's explicit say-so — if neither is true, stop now.**
+- **Scheduled-task hygiene (relay, 2026-09-06 — the mechanics behind the guard above).** The Desktop
+  app's task FORM (not the MCP tools) has model and permission-mode pickers: pin **Fable** and the
+  PM permission mode there for both tasks. After creating or editing a task, click **Run now** once
+  while present and choose **Always allow** on every prompt it raises — the app remembers them per
+  task, and the 09-06 session sat seven hours on one such prompt. And every file the loop writes
+  stays INSIDE the repo (`docs/pm-*.json` tracked, all other scratch under gitignored `tmp/pm`), so
+  no write ever leaves the working folder.
+- **Re-read the clock before every dispatch and every budget calculation.** Never reuse an earlier `date`.
+  The same 09-06 session froze for 83 minutes after its opening `date`, then did trailing-window arithmetic
+  on the stale reading and held a dispatch it did not need to hold.
 
 ## Communicating with Ben (agreed 2026-09-04)
 
