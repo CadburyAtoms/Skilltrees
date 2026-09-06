@@ -2575,6 +2575,24 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   GM whisper + per-player truth cards, phantom-sweep style. Consumers: Wrongwake ×2 Thrown Voice,
   Stillback Causeway Seeming, Wasting-Eater Frayed Seeming (advantage). Full phantom loop stays
   the right tool when a copy TOKEN must exist (Mistheron's The Seeming).
+  **R-50 (item 53, 2026-09-06): the FIRST strike benefits from its own test.** The decision is
+  now SYNCHRONOUS and shared by both entry points — **`edhaAmbushBeliefRoll({dc, mod, advantage},
+  rollFace?)`** (PURE, pinned: the ONE place the d20 / 2d20kh / DC maths lives; draws through
+  `edhaRandomFace`, never Foundry's Roll) · **`edhaAmbushBeliefParams`** (the DC / Perception-mod /
+  advantage READ off the owner, rule, and target token) · **`edhaAmbushEntry`** (pure ledger read)
+  · **`edhaAmbushBeliefTest(actor, amb, tTok)`** — SYNC: ledger hit → stored entry; in flight →
+  the `EDHA_AMBUSH_PENDING` entry; else roll now, park it pending, `void` the commit; returns the
+  entry so the caller acts on it in the same tick · **`edhaAmbushBeliefCommit`** — ASYNC: the
+  ledger write + GM / player cards, unchanged. **`edhaTargetFooledOrTest(caster, target)`** is the
+  damage-rider's `whenTargetFooled` gate: both ledgers first (`edhaTargetFooled`), then — only if
+  the caster carries an ambush-belief rule and the user target is UNTESTED this scene — the sync
+  test. The `useItem` hook calls the same sync test (its result is what the rider reads via the
+  pending map when the hook fires first); nothing is awaited in the hook. Phantom-copy seemings
+  carry no ambush rule and fall straight through, unchanged. Pinned in
+  `tests/ambush-first-strike.test.js` (first strike rolls + rider on a fail · second strike reads
+  the ledger, no re-roll, both after a fail and after a pass · Mistheron never rolls · source scan:
+  one `edhaAmbushBeliefRoll(` caller, `2d20kh` spelled once, no `await`/`new Roll` in the sync test
+  or the hook).
 - **Renamed-adaptation aliases (07-19)**: ruling-40 beast adaptations of engine talents keep the
   engine automation via aliases, never prose copies — **`edhaOwnsThorn`** (Thorn Field ∨ Thorn
   Hedge; hazard baking + Draw Mana line), the Drive-the-Prey case also matches **Herding

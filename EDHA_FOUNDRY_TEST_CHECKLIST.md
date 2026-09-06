@@ -2288,6 +2288,19 @@ mod-0 fixture); the ledger key is dot-free and one-per-token; the `whenTargetFoo
 once-per-scene guard holds; and one 60-damage application posted BOTH `hp-below` cards under two
 distinct keys `…hp-below:0_5:0:1` and `…hp-below:0_05:0:1`. See that run's handoff delta.)*
 
+- [ ] 🤖 **R-50 (item 53) — Stillback's Ambush Bite benefits on the FIRST bite.** ENGINE-ONLY (F5).
+      Fresh scene, a Stillback token, a PC target with a real Perception mod. Target the PC, use
+      **Ambush Bite** once. Expect the belief card (`1d20 + <mod>` vs the Stillback's Cognitive
+      defense) **and, if the target is taken in, `1d10 + 3 + (1d6)[Ambush Bite]` on that SAME
+      first damage roll** — not on the second. If the first test happens to pass (sees through),
+      the damage is `1d10 + 3` with no rider and that is correct; re-run on a fresh scene until a
+      fail lands. **NEG (the control, same take):** use Ambush Bite on the same target again —
+      **no second belief card, no second `ambushBelief` ledger write**, and the rider stays exactly
+      as the first bite decided (present after a fail, absent after a pass). **NEG 2:** the
+      Mistheron's Spearing Beak vs a placed-copy target still reads `phantomBelief` and posts no
+      ambush card. Pinned headlessly in `tests/ambush-first-strike.test.js`; this row is the live
+      confirmation that the system's damage-formula assembly really does run after the use hook.
+
 ---
 
 # Malcurr Lakes Bestiary + the Sevenbrand (2026-07-19 — data: pack rebuild + ⟳ Sync; five blocks, ruling 80 + the statblock gate)
