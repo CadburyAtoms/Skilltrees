@@ -90,6 +90,24 @@ branch a real subject in one edit.* The alternative is to say so in the header a
 branch is one ternary and costs nothing to keep. ⚠️ This is an **authored-data** change (a `pack
 rebuild + ⟳ Sync`), so it is not a bench decision. *(Bench run 35, from item 13's bench row.)*
 
+**R-78. The `edha-aoe-template` handler has NO consumer either — retire it, or give it one?**
+Measured at bench run 38 while driving the "AoE burst auto-target" row. That row names **Flame
+Surge** as its example, but Flame Surge carries an **`edha-burst`** rule, and `edha-burst` goes
+through `edhaCastBurst` → `edhaBurstDetonate`, which **never targets anything** — it resolves damage
+straight to the caught actors. The retarget the row is actually about (`edhaSetUserTargets(caught)`,
+`register-skills.js` ~L10829) lives only in **`edhaPlaceAoe`**, which is reachable only from the
+**`edha-aoe-template`** handler — and a sweep of `data/` finds **zero** `edha-aoe-template` rules
+against **12** `edha-burst` rules (3 talents: Flame Surge, Sudden Growth, Mending Aura; the rest
+adversary abilities). So a registered handler type is offered in Ben's Events-tab dropdown that
+nothing in the game uses. The bench proved the branch works by staging the rule by hand (2 enemies
+captured **and** targeted, an ally target released), so this is not a defect — it is the third
+instance of the **R-74 / R-76** shape: an engine path with no consumer. *Recommended: **retire
+`edha-aoe-template`*** — unlike R-74's and R-76's, this one is not a small missing dial but a
+**second, parallel AoE model** that the click-to-place/Detonate pipeline replaced, and leaving both
+registered invites an author to pick the dead one. The alternative is to keep it as the "capture and
+target, GM applies by hand" variant and say so in the header. ⚠️ **ENGINE-ONLY either way** (no
+authored data references it, so no pack rebuild). *(Bench run 38, from the AoE burst row.)*
+
 **R-77. Should the Investiture-max persist be behind the primary-GM gate, or stay owner-gated?**
 Found at bench run 36 while driving item 12's two-GM row. `edhaDeriveInvestiture`'s persist branch
 (`register-skills.js` ~17252) is a world write — `system.resources.inv.max.override` — and it is
