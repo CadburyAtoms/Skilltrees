@@ -69,9 +69,9 @@ the whole run looking for more of it.**
 |---|---|---|
 | **`BENCH — Engine-wide & cross-tree`** | 3 | ⭐ **Item 10 batch 1's row is here — it is your step 0** (`A SIDELESS creature is caught by NOTHING`), plus the two **new defect rows** from run 36 (Investiture-max persist outside the gate; `Bench — White`'s max HP flipping with the prepare path). The two defect rows wait on a fix, not on a table. |
 | **Character-creation wizard v2** | 6 | ⛔ **Still never driven, TWELVE runs running.** Every blocker in front of it is closed and the re-test block is finally thin. **This is the block to take FIRST this run.** Re-read each row against DEPLOY STATE (2026-07-26 — every wizard row predates it) before staging; several likely retire on one read. |
-| **Bestiary sections** (W29 ×3, Goldenport, Vorsk, Adversary ability wiring) | 6 | Untouched all marathon; each needs its own fresh pack import + staging. The import recipe is proven (runs 33–34 imported three between them). |
+| **Bestiary sections** (W29 ×3, Goldenport ×1, Vorsk ×1) | 5 | Untouched all marathon; each needs its own fresh pack import + staging. The import recipe is proven (runs 33–34 imported three between them). |
 | **`BENCH — hygiene campaign 2026-08-10`** | 7 | pass 5.2 / 5.3 rows. Includes the ones needing **zero GM clients** — still blocked on Ben. |
-| **Bench-results fixes** | 1 | The vision row, blocked on **R-56**, not on a table. |
+| **Bench-results fixes** | 2 | The vision row is blocked on **R-56**, not on a table. **AoE burst auto-target** is genuinely drivable and cheap and has now been deferred FIVE times. |
 | **Adversary pack sync** | 2 | ⛔ **BLOCKED ON BEN** — a bulk sync rewrites Ben's campaign actors (outside hard rule 4). Do not re-attempt un-authorised. |
 | **Items-dump tranche** | 2 | **CAE burns** (needs a combat — the three-line `active:false` recipe) and **Kindle's token-light half**. ℹ️ A bestiary Kindle row was retired at run 18 with a live `dim 20, bright 10, animation flame` reading; check whether that already answers this one before staging. |
 
@@ -98,7 +98,7 @@ Both console-runnable. CAE burns needs a combat — run 34's three-line `active:
 `ui.combat.initialize({combat})` recipe. **Never activate a bench combat.**
 
 ### 4. A bestiary section, if the budget survives
-Six rows sitting untouched across the whole marathon, and the fresh-import recipe is now routine.
+Five rows sitting untouched across the whole marathon, and the fresh-import recipe is now routine.
 
 ## Known blockers — do not fight these
 
