@@ -6855,7 +6855,13 @@ async function edhaCastPhantomDouble(caster, dup, h = {}) {
   const dc = Number(caster.system?.defenses?.[def]?.value ?? caster.system?.defenses?.[def]?.override) || 10;
   await edhaSummon(caster, {
     name: `${dup.name} (Illusion)`, img: edhaTokenArt(dup),
-    tokenName: dupTok?.name ?? dup.name,   // the TOKEN label must not say "(Illusion)" — it's what fooled players read
+    /* R-31 (Ben 2026-09-06 (a)): the TOKEN label is veiled ONLY when an ADVERSARY casts it. The
+     * Seeming's whole point is that the fooled onlooker cannot tell the copy from the original, so
+     * an NPC's copy keeps the plain name they read on the canvas. No veil applies in the PC
+     * direction — a player's own Phantom Double has nobody at the table to fool, and an unlabelled
+     * second token is just a decoy they lose track of — so a CHARACTER's copy is labelled.
+     * The discriminator is the CASTER's document type, never a talent name (iron rule 2b). */
+    tokenName: `${dupTok?.name ?? dup.name}${caster?.type === "character" ? " (Illusion)" : ""}`,
     displayName: dupTok?.document?.displayName,   // hover-name behaves exactly like the real token (bench 07-17)
     hpFormula: String(h.hpFormula || "1"), speed: Number(h.speed) || 0, defensePenalty: pen,
     anchorTok: dupTok ?? undefined,
