@@ -62,6 +62,34 @@ change — (a).
   check) — 5 new cases, all passing, 832/832 total.
 - No 🤖 rows: this is a repo-side build-time gate, nothing to bench.
 
+## 2026-09-06 — R-27 (item 52): Battle Fever's rally stack is SPENT on the next test, once (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
+
+Ben ruled (a): **the card is canon** — "gain +1 to your next test (max = Rank), resets at the start
+of your turn" means the WHOLE stack rides ONE test and is then gone. The engine had read "next
+test" as "every test until turn start": `edhaRallyBonus` was consulted by the pre-roll rider on
+every d20 and nothing ever cleared the flag except `combatTurnChange` (the bench saw `+2[Rally]`
+on six consecutive rolls). PR #223.
+
+- **What changed (all inside the rally section, ~L7620):** a new post-`cosmere-rpg.<ctx>Roll`
+  consumer, `edhaRallyConsume`, re-reads the actor's `rally` flag, clears it and posts a
+  "🔥 Rally — <name> spent +N on this test" card. The pre-roll rider (`edhaTestRiderApply`, which
+  already splices `N[Rally]`) is untouched, and so is the turn-start / round-flip clear — an
+  UNSPENT stack still empties when the owner's turn begins. The `edha-rally-stack` schema is
+  unchanged; its description and the `resetOn` label now say "spent" so the Events tab tells the
+  truth. No name-keyed branch; the allowlist did not move.
+- **Why post-roll, and why the actor flag rather than a roll option:** a cancelled roll dialog
+  must neither strand nor spend the stack, and a dialog roll rebuilds `roll.options` — the same
+  pre-apply / post-consume split `advTest` and `nextTestMod` already use. It does NOT ride
+  `flags.nextTestMod` (item 49's list), so the two merge cleanly.
+- **Proven headless** — `tests/rally-spent-on-test.test.js`: three hits → `0 + 3[Rally]` on the
+  next test and `[]` on the one after; four hits at Rank 3 → `3[Rally]`; two unspent stacks +
+  the real `combatTurnChange` chain → 0. Mutations: delete the consumer's clear line → 3 cases
+  fail; delete the turn-start clear line → 1 fails; the cap needs BOTH its enforcement lines
+  dropped (bump guard + reader `Math.min`) to fail, and then it does.
+- **🤖 bench:** checklist Red rows **52-1** (three hits → `3[Rally]` once, then nothing; cap at
+  rank) and **52-2** (negative control — unspent stack clears at turn start; a cancelled dialog
+  leaves the stack intact for the next completed test).
+
 ## 2026-09-06 — R-70 (item 50): every cost row of the system's consume dialog opens TICKED — the one sanctioned system-dialog wrapper (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
 
 **What.** Ben's R-70 (b): a "Cost: 1 Investiture, 1 Focus" card (the Stitchmother's *Reknit Form*,

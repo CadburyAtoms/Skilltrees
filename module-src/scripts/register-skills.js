@@ -7813,7 +7813,11 @@ async function edhaRunPush(owner, victim, cfg) {
   } catch (e) { console.error("Edha Content | edha-push failed", e); }
 }
 
-// --- Rally stack (Battle Fever / Feeding Frenzy): +1 to your tests, capped at Red rank, time-boxed --
+// --- Rally stack (Battle Fever / Feeding Frenzy): +1 per stack, SPENT on your next test, capped at Red rank, time-boxed --
+// R-27 (item 52, 2026-09-06 — Ben: THE CARD is canon). "Gain +1 to your next test" per stack = the
+// WHOLE stack rides ONE test, then it is gone; an unspent stack still clears at the start of the
+// owner's turn (resetOn turn) or the round flip (resetOn round). Before this the bonus rode every
+// test until turn start (+2[Rally] on 6+ consecutive rolls at the bench).
 function edhaRallyBonus(actor) {
   try { const r = actor?.getFlag?.("edha-content", "rally"); return r ? Math.min(Number(r.count) || 0, edhaColorRank(actor, "red")) : 0; }
   catch (e) { return 0; }
@@ -7847,6 +7851,20 @@ async function edhaRallyApi(actorArg) {
   if (n > 0) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: a }), content: `<p>🔥 <strong>${tal?.name || "Frenzy"}</strong> — ${a.name} gains <strong>+${n}</strong> to its next test.</p>` });
   return n;
 }
+// Consume-on-test (R-27): the pre-roll rider (`edhaTestRiderApply`) reads `edhaRallyBonus` and adds
+// the whole capped stack as `N[Rally]`; THIS post-roll consumer clears the stack so the next test
+// rolls at +0. Post-roll rather than pre-roll on purpose — a cancelled roll dialog must not strand
+// the stack (the same pre-apply / post-consume split `advTest` and `nextTestMod` use). It re-reads
+// the actor flag, not a roll option, because a dialog roll rebuilds `roll.options` (§ pre-roll note).
+function edhaRallyConsume(roll, source, config) {
+  try {
+    const actor = edhaD20RollActor(config);
+    const n = edhaRallyBonus(actor); if (n <= 0) return;
+    void edhaRallyClear(actor);
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🔥 <strong>Rally</strong> — ${actor.name} spent <strong>+${n}</strong> on this test.</p>` });
+  } catch (e) { console.error("Edha Content | rally consume failed", e); }
+}
+for (const ctx of ["skill", "attack", "item"]) Hooks.on(`cosmere-rpg.${ctx}Roll`, edhaRallyConsume);
 // Reset: "start of your turn" (resetOn turn) at each turn change; "start of round" (resetOn round) at the round flip.
 Hooks.on("combatTurnChange", (combat) => {
   try {
@@ -19471,10 +19489,10 @@ function edhaRegisterNativeEventSystem() {
   });
   api.registerItemEventHandlerType({
     source: "edha-content", type: "edha-rally-stack",
-    label: "Edha: Rally Stack", description: "A stacking +1-to-your-tests counter (max = Red rank) that resets each turn or round. Battle Fever / Feeding Frenzy. Allies-in-range sharing is narrated.",
+    label: "Edha: Rally Stack", description: "A stacking +1 counter (max = Red rank) SPENT in full on your next test (R-27 — the card is canon); an unspent stack still resets at the start of your turn or the round. Battle Fever / Feeding Frenzy. Allies-in-range sharing is narrated.",
     config: { schema: {
       trigger: new FF.StringField({ required: true, initial: "deal-damage", choices: choices("deal-damage", "manual"), label: "Bump on", hint: "deal-damage = your damage feeds it (Battle Fever); manual = bumped by edha.rally() (Feeding Frenzy: enemy-attacks-enemy has no hook)." }),
-      resetOn: new FF.StringField({ required: true, initial: "turn", choices: choices("turn", "round"), label: "Resets at start of", hint: "Battle Fever: turn. Feeding Frenzy: round." }),
+      resetOn: new FF.StringField({ required: true, initial: "turn", choices: choices("turn", "round"), label: "Unspent stack resets at start of", hint: "Battle Fever: turn. Feeding Frenzy: round. (Any test spends the whole stack first.)" }),
       note: new FF.StringField({ required: false, initial: "", label: "Note" }),
     } },
     executor: async function (event) { try { if ((this.trigger || "deal-damage") === "deal-damage") edhaRallyOnDeal(event.item?.actor); } catch (e) { console.error("Edha Content | edha-rally-stack executor failed", e); } },
