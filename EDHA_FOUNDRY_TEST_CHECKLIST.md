@@ -1616,6 +1616,11 @@ see DEPLOY STATE above).
 > `bench-run` skill both name `PlayerBench` and carry the two-tab recipe. **The Bench cookie session
 > was NOT displaced** by the player joining (all three users active simultaneously).
 
+- [ ] 🤖 **Bench PC sight range (R-2, item 26)** — join as `PlayerBench`, view the Playtest Map: the
+      bench PCs' vision renders the map at a normal range (R-2, item 26 — value **20 ft**, from
+      `Character_Building_Rules.md` §Senses Range for AWA 2-3, the AWA these bench PCs carry);
+      adversary tokens still carry their 10 ft (untouched, ⚑ design dial).
+
 What is genuinely LEFT for a two-client window — all of it needs deliberate staging that run 13
 judged too heavy to rush:
 
