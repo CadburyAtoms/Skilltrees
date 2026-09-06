@@ -17265,8 +17265,18 @@ function edhaDeriveInvestiture(actor) {
     // inv.value against the SOURCE max BEFORE our runtime override applies, so an actor without a
     // persisted source override gets its current Inv clamped to 0 on every prepare (2026-06-11 gotcha).
     try {
+      // R-77 (bench run 36, 2026-09-06): this persist is a WORLD WRITE and it was the ONE such site
+      // item 12's one-applier consolidation did not reach — it gated on `actor.isOwner` plus a
+      // PER-CLIENT Set, so with two GM clients the writer was whichever prepared the actor first
+      // (Ben's non-primary `Gamemaster` wrote override 6 on `Bench — Red` while the primary `Bench`
+      // wrote 5 on `Bench — Blue`, in one window). NOT edhaDefBuffGmGate() outright: the owner gate
+      // exists so a player-owned PC can persist its own max on a table with no GM online (that is
+      // what the 2026-06-11 gotcha above is about), and the blunt gate would silently stop doing it.
+      // So GMs defer to the primary GM; a non-GM owner still writes. R-77's recommended default,
+      // applied pending Ben's veto.
       const src = actor._source?.system?.resources?.inv?.max;
-      if (game?.ready && actor.id && src && (!src.useOverride || Number(src.override) !== derived) && !_edhaInvPersisted.has(actor.id) && actor.isOwner) {
+      const mayPersist = !game.user?.isGM || edhaNoOtherActiveGM();
+      if (game?.ready && mayPersist && actor.id && src && (!src.useOverride || Number(src.override) !== derived) && !_edhaInvPersisted.has(actor.id) && actor.isOwner) {
         _edhaInvPersisted.add(actor.id);
         setTimeout(() => { actor.update({ "system.resources.inv.max.override": derived, "system.resources.inv.max.useOverride": true }).catch(() => {}); }, 0);
       }
