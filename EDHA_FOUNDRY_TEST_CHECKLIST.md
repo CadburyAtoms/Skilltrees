@@ -441,7 +441,9 @@ prompt. **POSITIVE, twice, in that same round:** *"⚖️ Edict watch: Bench —
 … it just violated 'activate Investiture'"* off the H10 drain, and the same card for `Bench Target —
 Adjacent A` off the `costs:` rule. Whispered, with the ⚖ resolve button. ⚠️ The
 **adversary-bespoke-ability half still has NO SUBJECT in shipped data** — that is `EDHA_RULINGS.md`
-**R-74**, a design call for Ben, and it is not what this row was left open for.)*
+**R-74**, a design call for Ben, and it is not what this row was left open for.
+**ANSWERED 2026-09-06, R-74 (a): author one `costs:` line onto a single adversary ability**
+(default: the Stalker's Fade) — ruling answered 2026-09-06 → item 57, REBUILD.)*
 
 *(**✅ RETIRED 2026-09-06, bench run 35 — item 13's "a MIGRATED SPEND still taxes the watches".**
 ⚠️ **The row's named subject does not exist.** It said "H10's `edha-focus` Investiture DRAIN … —
@@ -449,7 +451,9 @@ Reaper's Harvest is the reference"; a sweep of all three packs found **exactly o
 rule with `resource: "inv"` in the whole game — Reaper's Harvest — and it is **`op: "gain"`**, which
 takes `edhaBookkeepingTag`, not the spend stamp. **No shipped talent carries `op: "drain"` +
 `resource: "inv"`**, so the one spend-stamped site in item 13 has no consumer on the table (the
-sibling of R-74 — filed as **R-76**). Driven with a declared staged rule instead: a throwaway talent
+sibling of R-74 — filed as **R-76**, **ANSWERED 2026-09-06 (b): leave the branch, note it in the
+header** — Ben's design note "good juice for a future adversary stat block" is recorded as a seed;
+DOCS-ONLY, no item — see `EDHA_RULINGS.md` §K). Driven with a declared staged rule instead: a throwaway talent
 on `Bench — Blue` carrying one `use` rule `{type:"edha-focus", op:"drain", resource:"inv",
 target:"self", formula:"1"}` — the exact branch that takes `edhaSpendTag`. Result: Investiture
 **4 → 3**, *"✨ Bench drain: Bench — Blue loses 1 Investiture"*, **and the Edict violation prompt
@@ -527,8 +531,9 @@ site fired on the probe.)*
 Every mechanical half is settled: the old talent-specific default is definitively gone, and run 12
 re-drove the two secondary observations from an authored talent and proved both were artifacts of the
 hand-authored probe (`bySize: true` overrides `distanceFt`, which is what "3 ft for a 5 ft rule" was
-really seeing; the push direction was correct on both axes). What is left is one choice — should a
-blank note read "Push", or the owning talent's name?)*
+really seeing; the push direction was correct on both axes). **ANSWERED 2026-09-06 (R-26, §K): the
+owning talent's name is canon** ("💥 Vigilant Stance — X is pushed 3 ft."). Current engine behaviour
+stands — no change needed; row CLOSED.)*
 
 - [ ] ⚑ **2bM-1 — ⚠️⚠️ H3 ordering (any ledger)** — as a PLAYER, with **no GM connected**, use **Covenant** on an ally you don't own → It refuses with "a GM must be online… nothing placed" and **no half-formed pact is left behind**. Before the fix the entry was written anyway and then hidden for ever. If a GM is always online at your table, skip — this cannot bite you.
       ⛔ **BLOCKER (2026-07-27w): needs ZERO GM clients connected, and the bench joins as a GM.** So it is not simply a Ben row — it is **conditionally agent-drivable**: in a window where your own Gamemaster client is CLOSED and the agent joins only as `PlayerBench`, a bench run can drive it. Until such a window is arranged it stays ⚑.
@@ -591,8 +596,11 @@ row's "one card" clause is read here as **one application**.)*
       **exactly one** `inv.max.override` write, **from `Bench`** (the primary — its user id sorts
       first, which run 36 established is structural). Second half, the one that must NOT regress: the
       **non-primary** client must still **display** the right max on its own sheet — the gate narrows
-      the write, not the derivation. ⚠️ R-77 is still **open**: this is its recommended default
-      applied pending Ben's veto, not a settled ruling.
+      the write, not the derivation.
+      **ANSWERED 2026-09-06, R-77 (a): keep the applied default** (GMs defer to the primary GM, a
+      non-GM owner still writes) — no change to the shipped code. Moves to §K once this row's
+      live re-test passes after Ben reloads his Gamemaster client; the run-37 blocker below was the
+      stale client, not the code.
 
       ⚠️ **BENCH RUN 37 (2026-09-06) — NOT PROVABLE THIS RUN; the second GM client predates the
       fix. Row stays open, and the blocker is named.** Driven on the hash-verified `57a8c950…`
@@ -806,8 +814,11 @@ COMPLEX illusion", relabelled the button "**Pay 2 Investiture**", and the click 
 ("pays 2 Investiture of upkeep"). `costPer` restored to 1.)*
 
 *(**2bJ-3 — Pattern Recognition** — RETIRED on evidence 2026-07-28l, bench run 23, as a paired
-positive/negative. ⚠️ **The behaviour-change question the row asks is Ben's and is now in
-`EDHA_RULINGS.md` R-57** — should it keep waiting instead of expiring? Evidence in the delta.)*
+positive/negative. ⚠️ **The behaviour-change question the row asks is Ben's and was in
+`EDHA_RULINGS.md` R-57 / R-20** — should it keep waiting instead of expiring? **ANSWERED 2026-09-06
+(R-20 and R-57, §K): (a) YES, keep the round-expiry, matching the card.** No engine change; row
+stays 🤖 — its mechanical half is already retired above, the ruling side is now settled too.
+Evidence in the delta.)*
 *(**2bAA-9 — The Seeming (Mistheron AND The Doubled Elder)** — RETIRED IN FULL on evidence 2026-09-05,
 bench run 26, on FRESH pack imports of both adversaries. **Mistheron**: use raised a real copy
 ("Mistheron summons Mistheron (Illusion) — HP 1"), the belief sweep ran over three onlookers
@@ -846,6 +857,9 @@ Insight), 2bI-7, 2bI-8 + 2bH-11 (retired as PROVEN-UNREACHABLE fail-open, runboo
 surviving rows were pure rulings with nothing left to test — 2bI-4 (cross-rider stacking),
 2bI-6 (Whispered Doubt vs Wary) and 2bJ-10 (the click-not-post budget). They are now
 **`EDHA_RULINGS.md` R-15, R-16 and R-17**. Nothing was closed; the questions moved.
+**ANSWERED 2026-09-06:** R-15 (b) the next-test slot becomes a list, not one object (ruling
+answered 2026-09-06 → item 49); R-16 (a) KEEP Wary's reduction, no change — moved to §K; R-17 (a)
+keep the click budget AND refund on decline (ruling answered 2026-09-06 → item 51).
 
 **Bench run 4 (2026-07-26m): the three 07-26l re-tests all PASSED and are retired** — 2bI-1
 (Whispered Doubt's loss card: "🧠 Whispered Doubt: Bench Target — Adjacent A loses 1 focus"; Red's
@@ -869,6 +883,10 @@ Strike: whose hit should it ride), **R-24** (is Reckless Advance the intended Mo
 graph half is verified live) and **R-27** (Battle Fever: the card says "resets at start of your
 turn", the engine rides every test until turn start — which side is canon). Arc Flash, the other
 half of the spot-check row, PASSED at run 1 and retired with it.
+**ANSWERED 2026-09-06:** R-23 (a) `whenDealer: "any"` — a true rider on any melee hit (ruling
+answered 2026-09-06 → item 58, REBUILD + ↻ Sync); R-24 (a) YES, keep Reckless Advance as the root —
+no change, moved to §K, graph half of this row retired; R-27 (a) THE CARD is canon, the rally bonus
+is spent on the next test then clears (ruling answered 2026-09-06 → item 52).
 
 *(**Flashpoint** — RETIRED on evidence 2026-09-05, bench run 26. One Flame Surge detonation caught
 **2** enemies (Bench Target — Adjacent A and B, 12 energy each after their Athletics saves) and fired the
@@ -1064,7 +1082,9 @@ and 43 → 33 = its own terrain tick only), and the **ally outside the line stay
 status** and never appeared on either card.
 ⚠️ **R-6 evidence, recorded not decided:** the dangerous-terrain Region the zone drops afterwards
 caught the **caster itself** — *"🔥 Bench — Destruction takes 8 energy from dangerous terrain"* — and
-the ally, on both casts. That is the still-open R-6, not this row.)*
+the ally, on both casts. That is the still-open R-6, not this row.
+**ANSWERED 2026-09-06, R-6 (b): spare the CASTER only, everyone else including allies is caught**
+(ruling answered 2026-09-06 → item 48, ENGINE-ONLY, F5).)*
 
 
 ---
@@ -1160,6 +1180,7 @@ invisible on the same client); residual (b)'s per-bearer gate has been exercised
 resister branch is dice luck, not doubt. What was left was one question with nothing to test —
 should Unweaving's dispel card list the **Omen marker itself** as a dispellable button — and it is
 now **`EDHA_RULINGS.md` R-35**.
+**ANSWERED 2026-09-06, R-35 (a): YES** — folded into **item 54** with R-73(b), ENGINE-ONLY, F5.
 
 
 ---
@@ -1333,6 +1354,14 @@ grant; this also decides how the row's own example must be re-worded) and **R-28
 of your next turn; engine, both cards and measured behaviour all say *end*, only the prose says
 *start*). **Raise Dead / Remain** — should raising a creature clear its own `harvested` marker and
 ledger entry — is **R-12**.
+**ANSWERED 2026-09-06:** R-9 (a) BLOCKED, as now — overflow only exists if a heal landed, a direct
+Temp HP grant keeps bypassing, no engine change. Row 2bW-1's own example is re-worded: it should ask
+to confirm a **direct** Temp HP grant (not routed through overflow) still lands on a No-Healing
+target, since that is what the mechanics actually produce — the old "heal-overflow converts to Temp
+HP on a blocked target" phrasing asked for something that can never happen. R-28 (a) END; fix the
+PROSE (ruling answered 2026-09-06 → item 58, REBUILD + ↻ Sync) — the duration clause above is
+retired, only the prose needs to change. R-12 (a) YES, raising clears the creature's own `harvested`
+marker and ledger entry (ruling answered 2026-09-06 → item 47).
 
 ---
 
@@ -1715,6 +1744,10 @@ paths).
 > always-print or restore the old gate? its number defect is fixed and table-verified). The roll-dialog
 > row stays here as ⚑, because its remaining half is a *look* — is the die icon's colour readable — and
 > the "so what do we do" half is **R-39**.
+> **ANSWERED 2026-09-06:** R-18 left alone — see the ruling for context, not touched by today's
+> batch. R-25 (c): print ONLY for an ally at 0 HP or carrying Unconscious (ruling answered
+> 2026-09-06 → item 47, ENGINE-ONLY, F5). R-39 (a): accept the colour cue, close it — see the roll
+> dialog row above.
 >
 > *(**2bC-1 · 2bF-14 · 2bF-16 — all three RETIRED on evidence 2026-07-27v.** Each had passed both of its
 > factual halves and was being held open by an **empty-Events-tab design question that Ben already
@@ -1847,6 +1880,10 @@ paths).
       **What to check at the table (feel, not pass/fail):** open the attack dialog against a marked
       quarry and look at the die icon's **colour** — is that cue readable enough for you? If not, the
       answer is more whispered advantage cards like the quarry one, **not** an engine change.
+      **ANSWERED 2026-09-06 (`EDHA_RULINGS.md` R-39, §K): (a) ACCEPT the colour cue; the "so what do
+      we do about it" ruling is closed, no engine change.** The feel-check above ("is that cue
+      readable enough for you?") is the part that stays ⚑ — only Ben's next play session can settle
+      it.
 *(**2bD-7 — regression: the untouched rows** — RETIRED on evidence 2026-07-28l, bench run 23. It had hung on **Sharp Eye alone** since 07-27k, the other three (Tactical Ploy, Valiant Intervention, Steadfast Challenge) having cleared at runs 9 and 10. Sharp Eye now works — see 2bQ-4 — so all four of the untouched rows behave. Evidence in the delta.)*
       ⛔ **RESIDUE, stated exactly — narrowed 2026-07-27v: 3 OF 4 ARE CLOSED AND ONLY SHARP EYE IS
       LEFT.** ✅ Tactical Ploy (2bE-7, both branches, bench run 9) · ✅ Valiant Intervention (2bF-15,
@@ -2175,12 +2212,10 @@ the delta + git.
 ("every edha-items weapon of 2 gold or less") is now true only for the Warrior. **Superseded by
 Weapon slot v3 — path-curated**, below, which absorbed its still-live "Take it / Choose later" clause
 so nothing was dropped.)*
-- [ ] 🤖 **Map v3: label-free (07-19s)** — the picker map no longer shows city labels or the
-      lettered nation ids (the asset is now a downscale of the raw base painting; the render
-      toolchain's label overlay is what carried the letters). Hover tooltips still name each
-      nation. The bespoke **Character Creator World Map** piece is filed on the Art tab —
-      swapping it in later touches nothing but the image.
-      ⛔ **THIS ROW CANNOT PASS TODAY — see the defect row below; it needs a RULING first.**
+*(**Map v3: label-free (07-19s)** — RETIRED 2026-09-06 on `EDHA_RULINGS.md` **R-41**: Ben answered
+(b) keep the LABELLED political map, so the label-free render is not what ships and this row is
+retired as the losing half of the pair below. Was: the picker map no longer shows city labels or the
+lettered nation ids — superseded, no further action.)*
 - [ ] ❌ **DEFECT (found by the 2026-07-27v checklist audit, never benched): the label-free map asset
       was SILENTLY REVERTED, twice** — `module-src/assets/thyrcross-map.jpg` (1118×1488, byte-identical
       to the deployed copy) still carries **every nation letter** (`A Kettavar` … `J Canticle`) and
@@ -2193,12 +2228,11 @@ so nothing was dropped.)*
       copy of thyrcross-labeled.png" — never updated by the 07-19s fix — so two later re-registration
       passes followed the docs straight back into the bug. *(The docstring was corrected 2026-07-27v;
       the ASSET was deliberately NOT regenerated, because which render is wanted is the ruling below.)*
-      ⏸️ **GATED ON `EDHA_RULINGS.md` R-41 — two rows in this file contradict each other and one must
-      be retired:** **"Map v3: label-free"** (above) wants no labels, while **"Map picker shows the
-      redrawn map"** (further down) names *"Goldenport wash running the whole west coast"* as its
-      giveaway — and that wash exists **only on the political/labeled render**, which is what is
-      shipped. Once R-41 is answered: regenerate (or don't) and retire the losing row. Nothing here
-      needs a Foundry table.
+      ✅ **ANSWERED 2026-09-06, `EDHA_RULINGS.md` R-41 (b): keep the LABELLED political map.** Not a
+      defect after all — the two `db79969`/`b114f7e` "reverts" restored the render Ben actually
+      wants. The jpg stays as served; **"Map v3: label-free" is retired above** as the losing row,
+      and **"Map picker shows the redrawn map"** (further down) is the one that stands. No asset
+      regeneration needed. Nothing here needs a Foundry table.
       ℹ️ **The aspect half is fine either way and needs no test:** 1118/1488 = **0.7513**, identical to
       the canvas aspect 2236/2976, so "not stretched or letterboxed" holds for both renders.
       ℹ️ **2026-09-06 (bench run 38) — R-41's premise re-confirmed from the LIVE SERVER, not from the
@@ -2267,6 +2301,10 @@ value untouched. ⚑ Only the player-client half of the positive is unrun — it
         still R-54's call and `EDHA_HP_BONUS` in the engine is deliberately one constant in one
         place, so answering R-54 is a one-line change that moves the sheet, the wizard preview and
         the tests together.
+      - ✅ **ANSWERED 2026-09-06 (Ben, after reading `docs/ACTOR_STAT_DERIVATION.md`), R-54 (c):
+        REMOVE the +1** (ruling answered 2026-09-06 → item 47, no level gate anywhere). This row's
+        target number rewrites as the re-test: a fresh actor at STR 0 reads **10/10** after Finish,
+        and an existing PC at full health drops 11→10 on reload with nothing stored changing.
 *(**Path training v2** — RETIRED on evidence 2026-07-28j, bench run 22, positive AND both positive
 controls AND all three negative controls. **Positive:** picking Warrior opened **no dialog**, posted
 "🎓 B22 Warrior's Warrior training: **+1 Athletics** (rank 1)", left `ath` as the only non-zero rank,
@@ -2341,8 +2379,9 @@ carry **Shortbow + Knife** (and the packed Shortbow reads `attack.type: "ranged"
 - [ ] 🤖 **Map picker shows the redrawn map** — after deploy: the Where-are-you-from step shows
       the new map art (Goldenport wash running the whole west coast is the giveaway) and the
       map is not stretched or letterboxed (the asset aspect changed with the new canvas).
-      ⛔ **CONTRADICTS "Map v3: label-free" — one of the two must be retired; see the defect row
-      in the wizard section above. The aspect clause is already answered (0.7513 == canvas aspect).**
+      ✅ **ANSWERED 2026-09-06, `EDHA_RULINGS.md` R-41 (b): this is the row that stands** — the
+      labelled political map is what Ben wants; "Map v3: label-free" is retired in the wizard
+      section above. The aspect clause is already answered (0.7513 == canvas aspect).
 - [ ] 🤖 **Redrawn polygons hit the right nations** — click near the touchy borders: the
       Goldenport coastal strip (formerly Kettavar/Lunavar), the Vorsk/Lunavar mountain line,
       Malcurr's lake country, the Thalendor/Corvaine river line. Hover names must match the
@@ -2359,7 +2398,11 @@ carry **Shortbow + Knife** (and the packed Shortbow reads `attack.type: "ranged"
       ⏸️ **The row STAYS only for the border/dead-spot half, which is `EDHA_RULINGS.md` R-42** —
         the four Goldenport-tagged dots inside no polygon and the Corvaine dot resolving to
         Thalendor are the defect row below, not a new finding. Centroid hit-testing cannot settle
-        a border question; that needs R-42 answered first.
+        a border question; that needed R-42 answered first.
+        **ANSWERED 2026-09-06, R-42 (a): FIX THE POLYGONS** (ruling answered 2026-09-06 → item 61,
+        map-data, lane R) — Goldenport gains its coastal/island lobes, Corvaine's edge moves to the
+        river bank; row re-tests once `source-materials/maps/thyrcross.map.json` is edited and
+        `lint_map.py`'s four WARNs go to zero.
 - [ ] ❌ **DEFECT (measured by the 2026-07-27v checklist audit, never benched): five map-picker DEAD
       SPOTS / mis-hits, and four of them are holes in the partition** — `module-src/assets/
       thyrcross-nations.json` is byte-identical to `thyrcross.map.json`'s polygons and to the deployed
@@ -2371,11 +2414,12 @@ carry **Shortbow + Knife** (and the packed Shortbow reads `attack.type: "ranged"
       · **city-31 `[1244,1552]`** — tagged `corvaine`, resolves to **`thalendor`** (wrong nation).
       **Controls pass:** Aldercourt → corvaine, Heartholt → thalendor. **These are the same four
       `lint_map.py` already WARNs about**, so the gate saw them and nobody acted.
-      ⏸️ **GATED ON `EDHA_RULINGS.md` R-42 — is this a polygon fix or a gazetteer fix?** Either the
-      Goldenport polygon is missing its coastal lobe (redraw/extend it), or those four dots are tagged
-      to the wrong nation (retag them). Both are edits to `source-materials/maps/thyrcross.map.json`
-      and both re-run `build-map-picker-asset.js`; the choice is map truth, not a mechanical one.
-      Nothing here needs a Foundry table.
+      ✅ **ANSWERED 2026-09-06, `EDHA_RULINGS.md` R-42 (a): FIX THE POLYGONS** (ruling answered
+      2026-09-06 → item 61) — Goldenport gains its coastal/island lobes so city-04/11/14/17 fall
+      inside it, and Corvaine's edge moves to the river bank so city-31 resolves to corvaine. Both
+      are edits to `source-materials/maps/thyrcross.map.json` (+ regenerated
+      `thyrcross-nations.json`); `lint_map.py`'s four WARNs must go to zero. Nothing here needs a
+      Foundry table until the map-data item ships.
 
 ---
 
@@ -2721,7 +2765,9 @@ it applies damage straight to the caught actors, so no amount of driving Flame S
 retarget. The retarget (`edhaSetUserTargets(caught)`, engine ~L10829) lives **only** in `edhaPlaceAoe`,
 reachable only from the **`edha-aoe-template`** handler — and a sweep of `data/` finds **zero**
 `edha-aoe-template` rules against **12** `edha-burst` rules. That zero-consumer fact is now
-`EDHA_RULINGS.md` **R-78**. **The retarget itself is PROVEN, on a declared staged rule** (iron rule 2b —
+`EDHA_RULINGS.md` **R-78**. **ANSWERED 2026-09-06, R-78 (a): RETIRE the handler** (ruling answered
+2026-09-06 → item 48, ENGINE-ONLY, F5) — this row's remaining clause retires once `edha-aoe-template`
+is removed. **The retarget itself is PROVEN, on a declared staged rule** (iron rule 2b —
 a scratch talent `B38 AoE Probe` on `Bench — Red`, `edha-aoe-template {sizeByRank:false, sizeFt:20,
 affects:"enemies"}` on `use`, deleted afterwards): with `Bench — Order` (an ALLY, disposition 1)
 pre-targeted and doubling as the burst centre, the placement left `game.user.targets` holding **exactly
@@ -2782,6 +2828,9 @@ the Cannon rolled `(2)d(2*3+2)+2+2 = 10` energy and applied exactly **8** throug
         on **R-56**, and the two remaining clauses are downstream of that one answer. Re-checked
         against DEPLOY STATE: nothing here is a deployment gap. Row stays 🤖 **only** for the
         re-measure after R-56 is answered.
+      - ✅ **ANSWERED 2026-09-06, R-56 (a): ONE rule — adversary sheets AND token sight use the Edha
+        AWA table** (ruling answered 2026-09-06 → item 55, ENGINE + BUILD/DATA, REBUILD + world bulk
+        sync). Row stays 🤖 for the re-measure once item 55 ships.
 - [ ] ⚑ **Adversary sight range — does 10 ft feel wrong? Say a number.** — with those tokens on a
       real map: adversary AWA 0 → **10 ft** is intended, but it is a **design dial**, not a bug.
       If it plays badly, give the number you want instead. *(Split 2026-07-27w; the config read is
@@ -2906,7 +2955,10 @@ before each control, so a silent budget could not be mistaken for a silent rule)
 *(**Ruling wanted: Combat Training's garbled source** — moved to `EDHA_RULINGS.md` **R-29** on
 2026-07-27w. The cheatsheet sentence reads "turn one of its own **grazes into a graze**"; whether
 that means miss → graze or graze → hit is a decision, not a test, and it has sat in a test list
-since 2026-07-16.)*
+since 2026-07-16.
+**ANSWERED 2026-09-06, R-29 (a): MISS → GRAZE, once per round, without spending Focus** — the
+adversary block's description is currently empty in `data/adversaries.json` and needs writing
+(ruling answered 2026-09-06 → item 57, REBUILD). Row retires once written and wired.)*
 
 ## The 2bAB pre-deploy audit rewires (2026-07-26 — 15 dead adversary copies of tree talents, wired)
 
@@ -3123,8 +3175,9 @@ Bench Target — Undefended's DC 25 — SUCCESS**", negated the influence and le
 **Disoriented**, asserted on the document as both effect and status. ⚠️ Recorded with the run's own
 correction: a **first** drive printed "DC ?" and still returned SUCCESS — that was the **harness**
 clicking through the `vs: "prompt-dc"` dialog with an empty field, not the engine. Typing a DC gave the
-correct card. Note also that the rule is `prompt-dc`, not "vs Cognitive defense" — which is rulings
-item 3A-12, still open.)*
+correct card. Note also that the rule is `prompt-dc`, not "vs Cognitive defense" — this row (2bR-17)
+had it backwards; **ANSWERED 2026-09-06 (R-30, §K): the RULE is right, the GM types the influence
+result.** Reworded above; the ruling's "vs Cognitive defense" framing is retired.)*
 
 *(**Guiding Signal** — retired 2026-07-27v as STALE: **superseded by 2bAB-4**, which drives the same
 ability across **The Reckoning, Bellwether AND Callthief** on the current wiring. Keep 2bAB-4; this row
