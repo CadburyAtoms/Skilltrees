@@ -14822,6 +14822,16 @@ async function edhaCounterWriteRemote(target, status, count, mark) {
   if (target.isOwner) { await edhaCounterApplyGM(target, status, count, mark); return true; }
   if (!game.users?.activeGM) { ui.notifications?.warn(`Edha: a GM must be online to mark ${target.name}.`); return false; }
   game.socket.emit("module.edha-content", { action: "counter-set", payload: { targetUuid: target.uuid, status, count, mark } });
+  /* The same fire-and-forget relay gap edhaWriteStatusMark closes (2026-09-05, fix pass 4): a
+   * counter written here and read back in the same activation — Studied Mark places Insight then
+   * reveals the target's conditions — otherwise reads the pre-write world. Clearing waits for the
+   * status to GO; setting waits for it to arrive with the count actually on it. */
+  const n = Math.floor(Number(count) || 0);
+  await edhaAwaitLocal(
+    () => n <= 0
+      ? !target.statuses?.has?.(status)
+      : (!!target.statuses?.has?.(status) && edhaEffectStacks(target.effects?.find(e => e.statuses?.has?.(status))) === n),
+    { label: `${status} ×${n} on ${target.name}` });
   return true;
 }
 // The one state-changing primitive: transfers the bearer (clears the OLD bearer to 0 first if `target`
@@ -19765,6 +19775,40 @@ function edhaRegisterNativeEventSystem() {
   return true;
 }
 
+/* ═══ THE RELAY IS NOT A WRITE (2026-09-05, fix pass 4 — bench run 31 defect ③) ═══════════════
+ *
+ * `game.socket.emit` is FIRE-AND-FORGET. Foundry's socket carries no acknowledgement for
+ * `module.*` traffic, so a relayed write returns before the GM has received the packet, let alone
+ * applied it, let alone broadcast the result back to this client. Every relay in this file
+ * therefore `return true` a full round trip EARLY, and any caller that reads the write back in the
+ * same activation reads the PRE-write world.
+ *
+ * That is the whole of bench run 31's `Unravel Everything` defect. Its two `use` rules are ordered
+ * (fill 0, sweep 1) and both the system's dispatcher and `edhaOwnerListQueue` sequence correctly —
+ * BOTH of the bench's suspects are clean. What is not clean is one level DOWN: the fill relays two
+ * `omen` marks, `edhaWriteStatusMark` says "done", the ledger commits, and then `edhaOwnerList`'s
+ * mark-wins reconcile drops both entries because neither creature carries the status ON THIS
+ * CLIENT yet — "no creatures on the ledger". It is invisible to a GM caster (`isOwner` is true for
+ * a GM, so the direct branch runs and awaits a real write) and only reachable from a client that
+ * owns the caster but not the target, which is why the player-client window found it.
+ *
+ * `edhaAwaitLocal` closes the gap without a protocol: poll the LOCAL documents until the relayed
+ * write is observable, then return. Fails OPEN on timeout — the pre-fix behaviour — but says so,
+ * because a relay that never lands must not be silent (case study §9). Reach for this at any relay
+ * whose result is read back in the same activation; a relay nobody reads back does not need it.
+ * Generalises `edhaAwaitExpertisePicks`' poll-until idiom into something with a predicate. */
+async function edhaAwaitLocal(test, { timeoutMs = 3000, stepMs = 25, label = "" } = {}) {
+  const seen = () => { try { return !!test(); } catch (e) { return false; } };
+  if (seen()) return true;
+  const t0 = Date.now();
+  while (Date.now() - t0 < Math.max(0, Number(timeoutMs) || 0)) {
+    await new Promise(r => setTimeout(r, Math.max(1, Number(stepMs) || 25)));
+    if (seen()) return true;
+  }
+  console.warn(`Edha Content | relayed write never came back to this client${label ? ` (${label})` : ""} — continuing without it`);
+  return false;
+}
+
 /* ENGINE PASS 5.2 (Job 6b): the shared body behind every "toggle a status ON + record
  * markedBy.<status>" site — isOwner writes directly; else an online GM relays via the
  * apply-status-mark socket action; else warn + false. Four near-duplicate copies of this existed
@@ -19785,7 +19829,14 @@ async function edhaWriteStatusMark(targetActor, statusId, mark, { combatExpire =
   if (!game.users?.activeGM) { ui.notifications?.warn(`Edha: a GM must be online to mark ${targetActor.name}.`); return false; }
   try {
     game.socket.emit("module.edha-content", { action: "apply-status-mark", payload: { actorUuid: targetActor.uuid, statusId, ...(mark ? { mark } : {}), ...(combatExpire ? { combatExpire: true } : {}) } });
-  } catch (e) {}
+  } catch (e) { return false; }
+  /* Wait for the relay to become visible HERE before telling the caller the mark landed — see the
+   * edhaAwaitLocal block above. The H3 reconcile reads `statuses`, the damage post-pass reads
+   * `markedBy`, so both have to be back or a later-ordered rule still reads the pre-write world. */
+  if (!(await edhaAwaitLocal(
+    () => !!targetActor.statuses?.has?.(statusId) && (!mark || !!targetActor.getFlag?.("edha-content", `markedBy.${statusId}`)),
+    { label: `${statusId} on ${targetActor.name}` })))
+    ui.notifications?.warn(`Edha: ${targetActor.name}'s ${statusId} has not come back from the GM — a rule reading it this activation may see nothing.`);
   return true;
 }
 /* --- v3 executors: status marks + status sweeps ------------------------------------------------ */

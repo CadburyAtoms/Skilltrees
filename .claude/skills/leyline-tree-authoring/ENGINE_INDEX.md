@@ -1748,6 +1748,29 @@ the first one lived inside the trample announcer, looked private, and got duplic
   off `edhaUserTargetActor()`/`options.victim`, posts the result card) that this lower-level
   primitive now backs; a second same-named function would have silently SHADOWED it. Pinned in
   `tests/flag-relay.test.js`.
+- ⚠️ **`async edhaAwaitLocal(test, { timeoutMs = 3000, stepMs = 25, label = "" }) → boolean`**
+  (fix pass 4, 2026-09-05) — **A RELAYED WRITE IS NOT A WRITE.** `game.socket.emit` is socket.io
+  with no acknowledgement (Foundry acks no `module.*` traffic), so every GM-relay branch in this
+  engine used to `return true` a full round trip before the GM had applied anything. Poll the LOCAL
+  documents with `test()` until the relayed write is observable, then return. **Reach for it at any
+  relay whose result is read back in the same activation** — otherwise the reader gets the
+  pre-write world. Fails OPEN on timeout (`false`, caller continues) with a `console.warn`; a
+  throwing predicate resolves `false` rather than wedging.
+  - **This was bench run 31's `Unravel Everything` defect**, and the dispatcher was NOT to blame:
+    the system's `fireEvent` really does `await` each ordered rule and `edhaOwnerListQueue` really
+    does commit. The fill relayed its Omen marks, said "done", committed `lists.omens` — and then
+    `edhaOwnerList`'s mark-wins reconcile dropped both entries because neither creature carried the
+    status *on the casting client* yet. **Only reachable from a client that owns the caster but not
+    the target**: a GM is `isOwner` on everything and always took the direct, awaited branch.
+  - **Adopted by `edhaWriteStatusMark`** (waits for the status AND `markedBy.<status>` — the
+    reconcile reads the first, the damage post-pass the second) **and `edhaCounterWriteRemote`**
+    (waits for the status to arrive with the right `system.stacks`, or to go).
+  - **NOT adopted by `edhaToggleStatus`, `edhaApplyTimedStatus`, `edhaSetEdhaFlag`** — identical
+    shape, but no authored activation reads back what they write, and a poll inside a bulk status
+    sweep costs for nothing. If you find a read-back consumer, the fix is one line: wrap the
+    post-emit state in `edhaAwaitLocal`. Do not re-derive the diagnosis.
+  - Pinned in `tests/relay-readback-race.test.js`, which carries a NEGATIVE CONTROL that models the
+    pre-fix relay and still reproduces the original symptom.
 - **`edhaRoundWindowValid(mark, combat)`** — is a `{round, combatId}` window still open? Armed
   out of combat = open until consumed; in combat = that combat's same round only. Pinned in tests/.
 

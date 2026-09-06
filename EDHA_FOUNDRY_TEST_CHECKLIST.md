@@ -897,35 +897,44 @@ now **`EDHA_RULINGS.md` R-35**.
 
 ---
 
-- [ ] 🤖 **NEW DEFECT (bench run 31, 2026-09-05) — `Unravel Everything` never detonates the Omens it
-      places in the SAME activation; it takes two full casts to do what the card says one does.**
-      Card text (`data/authored/deity-chaos.json`): *"Place an Omen on every enemy in Attunement Range up
-      to your cap …, **then remove all your Omens simultaneously** — each removed Omen deals [Tier][Die] +
-      Awareness spirit damage and Disorients its bearer …"*. Both rules sit on **`event: use`** with
-      explicit `order` — `UnravelFill00000` (`edha-owner-list`, `target: enemies-range`) at **order 0**,
-      `UnravelSweep0000` (`edha-def-test`, `vs: none`, `targetList: omens`) at **order 1** — so one
-      activation should fill then detonate.
-      **Measured as a matched pair, same actor, same two targets, same caster position, both casts driven
-      from `PlayerBench`:**
-      **Cast 1** (ledger empty at start) — the fill placed 2: *"📋 Unravel Everything: Bench Target —
-      Adjacent B, Bench Target — Adjacent A bear your Omen (2/2)"*, then the sweep card read
-      *"Unravel Everything, sweeping your omens: **no creatures on the ledger**"*. **No damage, no
-      Disorient, both Omens left standing, `lists.omens` still held both.** 3 Investiture spent for the
-      placement half only.
-      **Cast 2** (ledger pre-loaded with those same 2 from cast 1) — the fill added nothing new (both
-      already on the ledger), and the sweep **worked**: *"sweeping your omens: Bench Target — Adjacent B:
-      affected; Bench Target — Adjacent A: affected"*, *"⚡ … 10 spirit to Bench Target — Adjacent A
-      (2d8 + 2)"*, both **Disoriented**, HP **A 20→10 / B 41→31**, `lists.omens` emptied.
-      So the `order: 1` sweep reads the ledger **as it stood before the `order: 0` fill committed**.
-      ⚠️ **Hypothesis, NOT proven — for `test-pass-fixes` to confirm at the dispatcher, not to take on
-      trust:** the fill commits inside `edhaOwnerListQueue`'s queued async read-modify-write
-      (`register-skills.js` ~17790, `return await edhaOwnerListQueue(...)`), and the `use`-event rule
-      dispatcher appears not to observe that committed ledger before running the next rule. The handler
-      itself *does* await its queue, so the suspect is one level up, in whatever runs the ordered rule
-      list for `event: use`. **Blast radius to check while there:** any talent that places onto an H3
-      ledger and then reads that same ledger in a later-ordered rule of the SAME activation.
-      *(Found while driving Job 6b's enemies-range shape; the mark relay itself passed — this is a
-      separate, pre-existing defect that the Job 6b staging happened to expose.)*
+**FIX PASS 4 (2026-09-05) — the relay read-back race is FIXED, ENGINE-ONLY (F5 / relaunch, no pack
+rebuild, no ⟳ Sync).** Bench run 31's `Unravel Everything` defect root-caused: NOT the rule dispatcher
+(the system's `fireEvent` really does `await` each ordered rule, and `edhaOwnerListQueue` really does
+commit) but the fire-and-forget socket relay one level DOWN — `game.socket.emit` has no acknowledgement,
+so `edhaWriteStatusMark` returned `true` a full round trip before the marker status existed on the
+casting client, and `edhaOwnerList`'s mark-wins reconcile then dropped every just-placed entry. New
+primitive `edhaAwaitLocal` makes a relayed write awaited; `edhaWriteStatusMark` and
+`edhaCounterWriteRemote` adopt it. **Only reachable from a client that owns the CASTER but not the
+TARGET** — a GM caster takes the direct branch and was never affected, so every row below must be driven
+from `PlayerBench`, not from `Bench`. Pinned headless in `tests/relay-readback-race.test.js` (with a
+negative control that still reproduces the old symptom).
+
+- [ ] 🤖 **Unravel Everything (Chaos) — fill and detonate in ONE cast, from the player client.** Drive
+      from `PlayerBench` (owns the caster, not the targets) with `lists.omens` **EMPTY** and 2 enemies in
+      Blue Attunement Range. ONE use must: place 2 Omens *and* sweep them — damage + Disorient on both,
+      ledger emptied — on the same activation. Before the fix this cast placed 2 and printed *"sweeping
+      your omens: no creatures on the ledger"* (no damage, no Disorient, 3 Investiture for half a talent),
+      and only a SECOND cast detonated. Re-run the bench run 31 matched pair: cast 1 on an empty ledger is
+      the test; cast 2 on the now-empty ledger should place nothing new and sweep nothing. Also drive it
+      once as GM (`Bench`) to confirm the unaffected path is unchanged.
+- [ ] 🤖 **Spreading Omen (Chaos) — the second placement must not clobber the first (found by audit, never
+      reported).** Same root cause, unreported, and strictly worse than the reported one: two ordered
+      `edha-test-success` placements (victim, then nearest enemy within 10 ft), and the second used to
+      re-read a reconcile-emptied ledger and commit OVER the first — the victim kept its Omen icon but
+      vanished from `lists.omens`. From `PlayerBench`, succeed against a victim with a second enemy within
+      10 ft: the cards must read **(1/2)** then **(2/2)**, and `lists.omens` must hold BOTH uuids
+      afterwards. A **(1/2)** on the second card, or a one-entry ledger with two Omen icons on the canvas,
+      is the bug.
+- [ ] 🤖 **Vital Diagnosis (Life) — the reveal card must list the condition it just applied.** Cosmetic
+      member of the same family: rule 0 applies `Diagnosed` (relayed), rule 1 reveals
+      `hp,conditions,defenses` off the same creature. From `PlayerBench`, on a target the player does not
+      own, the whispered reveal's *conditions:* clause must include **Diagnosed**. Before the fix it read
+      the pre-write world and omitted it.
+- [ ] 🤖 **Studied Mark (Knowledge) — the reveal card must list the Insight it just placed.** The counter
+      half of the same family (`edhaCounterWriteRemote`, the other relay that adopted `edhaAwaitLocal`):
+      rule 0 places 2 Insight on the targeted creature, rule 1 reveals `hp,conditions,defenses` with `cog`
+      withheld. From `PlayerBench`, the reveal's *conditions:* clause must include **Insight**, and the
+      count on the effect must read 2 rather than 1.
 
 # BENCH — Fate (Olvarra, deity)
 
