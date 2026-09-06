@@ -784,7 +784,7 @@ remain.
 
 ---
 
-## 33. [x] Re-land the handout-forge skill and the session-zero one-pager from PR #93 (2026-09-05, PR #PENDING)
+## 33. [x] Re-land the handout-forge skill and the session-zero one-pager from PR #93 (2026-09-05, PR #164)
 
 **Why:** PR #93 (2026-07-16) never merged and is orphaned by the 2026-07-28 history restart (no merge
 base with `main`); nothing of it exists on main — no `.claude/skills/handout-forge/`, no
