@@ -33,6 +33,34 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-06 — Item 54: the DISPEL reaches item-owned passives (disable, never delete) and the Omen ledger (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
+
+Ben VETOED R-73's narrow default and asked for the safe widening (b); R-35 (a) folded in. PR #224.
+`edha-prompt-pick` `source: "effects"` (Unravel Everything / Unweaving) listed only enabled
+`actor.effects`, so a passive authored `transfer: true` on a talent or trait — a PC's Hardy /
+Collected / Surefooted, a Cinderhound's Cinder Coat, Predictive Ward's braced — was never offered.
+
+- **The read is `edhaAllEffects(subject)`** (the fix-pass-5 primitive; the ratchet in
+  `tests/effect-transfer-lookup.test.js` rises 4 → 5 with the dispel menu recorded as the fourth
+  call site — the effects it seeks ARE authored on items). `edhaDispelOptions` labels each button
+  `disable` (item-owned) or `delete` (actor-level); the click **re-derives the kind from the
+  DOCUMENT** via `edhaEffectOwnerItem`, which fails CLOSED (anything not provably the actor is
+  item-owned), so a forged `data-edha-mode="delete"` still lands on `eff.update({ disabled: true })`.
+  An item-owned effect is never deleted through this menu; the card says "suppressed … the copy is
+  intact; re-enable it on that item's Effects tab".
+- **R-35: one "Dispel <Marker>" button per ledger the rule's new `ledgers` field names** (default
+  `omens:omen`, so every rule authored before today reads as the Omen ledger with no rebuild; blank =
+  none). The click runs `edhaDispelLedgerMark`: every owner's matching row through the queued
+  `edhaLedgerDropCreature`, then `edhaListUnmark` by the subject's own uuid — a marker left by the
+  legacy `edhaRemoveMark` path has no row and still comes off. A ledger the rule does not name is
+  refused (the HTML is a label, not a permission).
+- **Proven by mutation** (`tests/dispel-widening.test.js`, 9 cases): narrowing the read back to
+  `subject.effects` fails 2 pins; making the item branch delete fails 2; dropping the unmark half
+  fails 1; dropping the ledger-row half fails 1. Iron rule 2b: nothing name-keyed; allowlist untouched.
+- 🤖 for the bench (Chaos section): Unravel Everything / Unweaving on a PC bearing Hardy — Hardy is
+  offered as "(Hardy — suppress)", the click leaves the talent's effect present-but-disabled, and
+  the negative: no delete-shaped button exists for it; the Chaos residuals row (Dispel Omen clears
+  marker + ledger row) is annotated. R-73 stays in `EDHA_RULINGS.md` §I until the bench confirms.
 ## 2026-09-06 — R-27 (item 52): Battle Fever's rally stack is SPENT on the next test, once (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
 
 Ben ruled (a): **the card is canon** — "gain +1 to your next test (max = Rank), resets at the start

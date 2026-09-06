@@ -521,6 +521,9 @@ sense-through evidence with a negative control.)*
 > `source:'effects'` menu (already being widened under R-73 (b)) also offers the target's Omen
 > ledger entries as a "dispel Omen" button that clears the marker + ledger entry. ENGINE-ONLY, F5 →
 > folded into **item 54** with R-73(b); headless pin; 🤖 re-test = Chaos residuals row.
+> **SHIPPED** in PR #224 (ENGINE-ONLY, bench-pending) — `tests/dispel-widening.test.js`. The rule's new
+> `ledgers` field defaults to `omens:omen`, so Unweaving needs no rebuild; the click clears the marker
+> AND the ledger row, and a marker with no row still comes off.
 
 **R-36. Temp HP source relabelling misattributes a surviving value.** When a smaller Temp HP grant
 loses the keeps-higher comparison, the `source` is still relabelled to the loser — so an ally holding
@@ -818,6 +821,9 @@ word and it gets built that way. *(Fix pass 5; no checklist row — this is a de
 > ENGINE-ONLY, F5 → **item 54** (folded with R-35); pin both branches headlessly; bench re-test =
 > Unravel Everything can disable a target's Hardy and the talent copy survives intact. **Stays
 > HERE** — open, pending ship — until item 54 lands and the bench confirms it; then it moves to §K.
+> **SHIPPED** in PR #224 (ENGINE-ONLY, bench-pending) — `tests/dispel-widening.test.js`. Item-owned
+> effects are offered as a DISABLE; the delete guard is on the DOCUMENT (`edhaEffectOwnerItem`,
+> fail-closed), so a forged delete button cannot strip a talent's copy.
 
 *(R-43 — "tests Speed" means the ATTRIBUTE, live dice math — ANSWERED-by-acceptance 2026-09-06, moved to §K.)*
 
