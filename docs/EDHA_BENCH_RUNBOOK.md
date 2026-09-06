@@ -1558,6 +1558,77 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   matched control has proven the root cause, **write the residual symptom down as PARTIAL and move on**
   — the second defect can be run 34's first row.
 
+## Operating lessons from run 38 (2026-09-06 — these OVERRIDE older advice where they conflict)
+
+- ⭐⭐ **`document.hidden` is NOT a fixed property of this harness — `tabs_select` + one screenshot
+  turns rendering ON, and that retires the whole "we can never test a ResizeObserver" class.** Run 22
+  filed the wizard-fits-the-screen row as "BLOCKED on the harness, and the blocker is structural and
+  permanent for the agent bench". Run 38 reproduced its measurement exactly (hidden pane:
+  `requestAnimationFrame` **0 frames in 3 s**, a fresh `ResizeObserver` **0 fires**, an
+  `IntersectionObserver` **0 fires**, and the dialog 125 px over the viewport bottom), then called
+  `mcp__Claude_Browser__tabs_select` on the tab and took one `computer{action:"screenshot"}`.
+  `document.hidden` flipped to **false** and the dialog had **already** repositioned to the exact
+  coordinates run 22 had computed by hand. **Before recording ANY row blocked on rendering — rAF,
+  observers, CSS transitions, lazy images, IntersectionObserver-driven UI — front the tab and
+  screenshot, then re-measure.** And re-read the older BLOCKED rows against this.
+- ⭐ **A checklist row can name the wrong reference talent, and the sweep that catches it costs one
+  call.** "AoE burst auto-target — place any burst (e.g. Flame Surge)" was unrunnable as written:
+  Flame Surge is an `edha-burst` talent and that pipeline never targets anything; the retarget under
+  test lives in a *different* handler (`edha-aoe-template`) with **zero** shipped consumers. Run 35's
+  lesson generalises: **sweep `data/` for the HANDLER the row is really about before staging the
+  TALENT the row names.** Grepping the repo (`grep -ro "<handler>" data/ | wc -l`) is faster than
+  asking Foundry and covers adversaries too.
+- ⚠️ **`createEmbeddedDocuments("Item", …)` on a bench PC returns `[]` SILENTLY until
+  `edha.skipBudget(true)`.** Two attempts to stage a probe talent looked like schema-validation
+  failures (no throw, no notification, `resLen: 0`); the talent-budget gate was refusing them. Set
+  `edha.skipBudget(true)` before staging any talent, and `edha.skipBudget(false)` after.
+- ⚠️ **A staged talent inherits its donor's `activation.type`, so blanking `consume` is not enough.**
+  Copying Flame Surge to make an `edha-aoe-template` probe carried `type: "skill_test"` across, so
+  `item.use()` opened a Roll window and the whole `javascript_tool` call **timed out at 45 s** waiting
+  on a promise that could not settle. Clear `system.activation.consume` *and* expect a roll dialog:
+  it is a `<dialog>` whose only real button is `button[data-action="submit"]` ("Roll"). Better still,
+  never `await item.use()` inside the same call that must return — fire it, return, and read the
+  outcome in the next call.
+- ✅ **The character-creation wizard is fully drivable from JS, and the cheap route into a mid-wizard
+  page is to pre-seed the actor.** `edha.creationWizard(actor)` then click through by
+  `dialog button[data-action="…"]`; the page titles (`Character Creation — <title>`) tell you where
+  you are. An actor that **already** holds a culture and a path lands you on the "✅ Already chosen"
+  variants, whose **Next ▶** walks forward without triggering picks. To reach the **weapon picker**
+  without a full build: give the actor a path item by hand and leave `flags.edha-content.kitPath`
+  unset — the heroic page then offers **🎒 Grant the kit**, which lands the kit and opens the picker.
+  `↺ Change…` + **Yes** un-picks a slot and re-opens that page for a fresh pick, so one scratch actor
+  cycles through every path in a single wizard session.
+- ⚠️ **Adding a culture item fires the culture's own "Choose 2 expertises" dialog on top of the
+  wizard.** Close it (`button[data-action="close"]`) before clicking anything in the wizard, or your
+  next selector matches the wrong window.
+- ⚠️ **A "sideless" creature cannot be staged on this build AT ALL, and now there is a measurement
+  saying so.** Beyond run 37's `SECRET === -2` finding: `disposition: null` is coerced to the numeric
+  initial (**−1**) both at `createEmbeddedDocuments` time and at `update()`, and
+  `prototypeToken.disposition: null` behaves identically — so `edhaActorSide()` always resolves.
+  The only live shape is **an actor with no token on the scene**, and that only reaches the
+  actor-taking predicates (`edhaDisposHostile` / `edhaSameDisposition`); every canvas-SWEEP site
+  (bursts, auras, Region enters) never sees a token-less actor at all, so driving those would "pass"
+  vacuously. **Do not spend a run staging a sideless probe for a sweep site.**
+- ⚠️ **A synthesized pointer drag does NOT move a Foundry window, and neither does `left_click_drag`
+  at this pane scale.** Both left the dialog at its exact starting coordinates, which is an
+  inconclusive result, not a pass. If a row needs "drag it and it stays", say so and record the
+  `setPosition()` proxy explicitly rather than implying the pointer path was exercised.
+- ℹ️ **Only five bench PCs have tokens on the Playtest Map** (`Red`, `White`, `Green`, `Order`,
+  `Heroic`) plus `Bench Target — Adjacent A/B` and `Floater`. `Bench — Fate`, `Bench Target —
+  Undefended` and `Bench Ally — One/Two` are **actors without tokens**, so any row naming them needs
+  a `PLACE_TOKENS = true` setup pass (with a hand-picked clear `ORIGIN`) budgeted as its own step.
+- ✅ **Serving the setup script still beats pasting it, but capture its log correctly.** Copy
+  `scripts/bench-setup-console.js` into the module folder, `fetch` + `(0,eval)`, then **wait inside
+  the same call** (~12 s) with `console.warn`/`console.error` wrapped — the script is an async IIFE
+  and logs only at the end, so a capture window that closes in a *different* tool call reads empty
+  and looks like a silent failure. Delete the temp file afterwards.
+- **Density, measured: 5 rows off the checklist (weapon slot v3, wizard-fits-the-screen v2, AoE burst
+  auto-target, item 10's sideless probe, pass 5.2's R-63 unset-disposition) + 1 new defect + 1 new
+  ruling (R-78) + one permanent harness blocker removed, in ~40 driving calls. Final id / effect /
+  HP / flag diffs all EMPTY.** The wizard block was the assignment and it was worth it — but note
+  that four of its six rows turned out to be **ruling-gated**, which is the real reason it had sat
+  thirteen runs.
+
 ## Operating lessons from run 37 (2026-09-06 — these OVERRIDE older advice where they conflict)
 
 - ⭐ **A two-GM gate row cannot be verified while EITHER GM client predates the deploy — check this
