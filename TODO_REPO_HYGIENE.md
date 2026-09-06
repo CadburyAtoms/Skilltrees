@@ -320,7 +320,7 @@ consumers still carry their own hard-coded copy of the `FoundryVTT/Data/modules/
 
 ---
 
-## 12. [x] Adopt edhaDefBuffGmGate at the 20 primaryGmGate sites (2026-09-06, PR #PRNUM)
+## 12. [x] Adopt edhaDefBuffGmGate at the 20 primaryGmGate sites (2026-09-06, PR #197)
 
 **Why:** `scripts/engine-idiom-ratchet.json`'s `primaryGmGate` key is frozen at 20 with 20 still
 measured — unlike the other eight idiom keys, NONE of this one has migrated yet; it is a
