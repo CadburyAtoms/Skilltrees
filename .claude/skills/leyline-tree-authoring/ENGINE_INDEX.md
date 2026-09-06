@@ -111,7 +111,7 @@ accident of append order, so nothing in this index could point at them. Item 23 
 | `SENSES, LIGHT & VISIBILITY` | `edhaTokensWithin` · `edhaPointIlluminated` · `edhaSensesRangeFtFromAwa` · `edhaSensesRangeFt` · `edhaCanSee`; the dark veil (`edhaDarkVeilSweep` + `edhaDarkVeilSoon`, **debounced 300 ms** — the sweep is O(tokens) and movement fires in bursts) · `edhaVeilSuppressed`; reveal-on-damage `edhaSenseRevealShows` · `edhaSenseRevealOnDamage`. |
 | `TRIGGERED-EFFECT RESOLUTION` | the runner: `edhaEffectTargets` → `edhaRunTriggerEffect` → `edhaPostTriggerCard` → `edhaDeductCost`, entered at `edhaFireTrigger`; plus `edhaUserTargetTokens`/`edhaUserTargetToken`/`edhaUserTargetActor`, **`edhaResolveVictim`** (⚠ "victim" ≠ "target" — the creature the event happened TO), `edhaToggleStatus`, `edhaRollCard`, `edhaTriggerCardClick`, and card-state persistence `edhaMarkCardResolved` · `edhaMessageIdOf`. |
 | `SINGLE-TARGET GATE + DEFEAT TRACKING` | `edhaSetUserTargets` (the one writer of `game.user.targets`) · `edhaPickTargetClick` + the `preUseItem` gate; **`edhaKillerCandidates`** + the `updateActor` defeat sync — what every "when you defeat a creature" talent reads, since the system fires no defeat event. |
-| `TARGETING: ATTUNEMENT RANGE + AoE TEMPLATES` | the reach model: `EDHA_ATTUNE_FT` (feet by colour RANK, not by talent) · `EDHA_LEY_COLORS` · `EDHA_COLOR_HEX` · `EDHA_RANGE_RING_HEX` · `edhaTalentColor` · **`edhaColorRank`** (every range check in the file resolves through it) · `edhaCasterToken`; canvas: `edhaDrawCircle` · `edhaTokensInCircle` · `edhaShowRange` · `edhaPlaceAoe` · `edhaNextTokenName`. |
+| `TARGETING: ATTUNEMENT RANGE + AoE TEMPLATES` | the reach model: `EDHA_ATTUNE_FT` (feet by colour RANK, not by talent) · `EDHA_LEY_COLORS` · `EDHA_COLOR_HEX` · `EDHA_RANGE_RING_HEX` · `edhaTalentColor` · **`edhaColorRank`** (every range check in the file resolves through it) · `edhaCasterToken`; canvas: `edhaDrawCircle` · `edhaTokensInCircle` · `edhaShowRange` · `edhaNextTokenName`. *(`edhaPlaceAoe` retired 2026-09-06, R-78.)* |
 | `POINT-TARGETED AoE BURSTS` | `EDHA_BURST_PENDING` (the in-flight burst ledger) · `edhaPickPoint` (capture-phase click on `#board`, so it fires over tokens without the Templates layer). |
 | `SYNCHRONOUS FORMULA & DICE EVALUATION` | the [Tier][Die] evaluator, the most reused block in the run: `edhaRandomFace` (draws from `CONFIG.Dice.randomUniform` so a seeded bench stays faithful) · **`edhaRollDiceSync`** · **`edhaEvalSync`** (PURE — pinned in `tests/`; a fix here ships a regression case) · `edhaRollFormula` · `edhaSubstRankTier` → `edhaTargetFormula` (substitution order matters) · `edhaNormalizeDie` · `edhaRecoveryDie` · `edhaConsumeList` · `edhaConsumeCost` · `edhaPickPlacement`. Synchronous on purpose: these run inside `preUseItem` and applyDamage wrappers, where an `await` lets the system's write land first. |
 | `COST REFUND ON CANCEL` | `EDHA_PRE_COST_RES` (pre-use snapshot) · **`edhaAwaitCostCharged`** · `edhaRefundCost`. A refund is a CREDIT racing the system's ABSOLUTE write — wait for the charge, then credit. Bench run 13 / 2bAA-8, fixed 07-27q. |
@@ -810,15 +810,34 @@ untimed life (the Frostbinder's Predictive Ward is a *permanent* `braced`).
 - **`edhaCastBurst(item, spec)` / `edhaBurstDetonate(pid)`** — click-to-place AoE template + Detonate card
   (capture-under-template, roll once, apply, optional Athletics-vs-color save, optional terrain).
   `edhaBurstSpecFromCfg(h)` maps a flat `edha-burst` rule → spec.
+- ~~**`edhaPlaceAoe(item, spec)` / the `edha-aoe-template` handler**~~ — **RETIRED 2026-09-06**
+  (R-78, item 48, ENGINE-ONLY). It was a SECOND, parallel AoE model — drop a circle on your current
+  target, `edhaSetUserTargets` the caught tokens, leave the GM to press Apply — that the
+  click-to-place/Detonate pipeline above replaced. Bench run 38 measured **zero** `edha-aoe-template`
+  rules in `data/` against **12** `edha-burst` ones, so all the registration still did was offer a
+  dead choice in the Events-tab dropdown beside the live one. **`edha-burst` is the AoE model; there
+  is no other.** `edhaSetUserTargets` survives (its other caller is `edhaPickTargetClick`) and so
+  does `edhaCheckMultiHit`. The `edha.aoe()` console alias went with it. Pinned:
+  `tests/aoe-template-retired.test.js`.
 
 ## Dangerous terrain (Foundry v13 Region + hazard behavior)
-- **`edhaDropHazard(owner, scene, shape, formulaRaw, type, color, label)`** (Destruction) — bakes the
-  formula vs the owner, then GM-writes or relays (`action:"place-hazard-region"`). `shape` is a Region
-  shape: `{type:"circle",x,y,radius}` or `{type:"rectangle",x,y,width,height,rotation}`.
+- **`edhaDropHazard(owner, scene, shape, formulaRaw, type, color, label, extraFlags, exemptActorUuid)`**
+  (Destruction) — bakes the formula vs the owner, then GM-writes or relays
+  (`action:"place-hazard-region"`). `shape` is a Region shape: `{type:"circle",x,y,radius}` or
+  `{type:"rectangle",x,y,width,height,rotation}`.
 - **`edhaPlaceHazardRegionGM(...)`** — the GM-side Region create + visual. **`edhaPlaceHazard(item,cfg)`**
   is the `edha-place-hazard` handler (circle only).
 - **`EdhaHazardRegionBehavior`** (`edha-content.hazard`) — applies `damageFormula`/`damageType` on
   `tokenEnter`/`tokenTurnStart`. **`edhaHazardVisual(...)`** draws the player-visible overlay.
+- ⚠️ **`exemptActorUuid` — ONE actor this terrain never burns** (2026-09-06, R-6, item 48). A field
+  on the behavior (so it is visible on the Region sheet), blank by default, threaded through
+  `edhaDropHazard` → `edhaPlaceHazardRegionGM` **and the player→GM socket relay** — miss the relay
+  half and a player's own cast still burns them. **Fault Line is the only caller that fills it in**,
+  passing the caster's uuid, so every other hazard is byte-identical. Why an exemption and not a
+  shifted rectangle (Ben left both open): the rectangle IS the line that was just damaged, and
+  moving it a square out would make the terrain and the burst disagree about the same ground.
+  Allies and enemies inside are still caught — the ruling spares the caster ALONE. Pinned:
+  `tests/fault-line-caster-exempt.test.js`.
 - **Ownership/membership — ONE VOCABULARY, and it is GATED (07-27s).** Every hazard/terrain Region
   carries `flags.edha-content.terrain = {ownerUuid, color}`, and **`edhaTerrainOwnerUuid(region)` is
   the only function allowed to know that**; ask it, or ask the spine built on it:
@@ -3082,3 +3101,66 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   OVERRIDE for different prose, not a requirement. Callers should pass `skill` and nothing else;
   passing a computed `*.label` is the pass-10 violation. Fixing the shared helper also fixed the
   two Fault Line siblings that pass `null` when unauthored and were printing a bare `spd`.
+
+## Fix pass 7b 2026-09-06 (item 48 — the card / label / zone primitives)
+
+**Prose helpers.** Card text is read by a human, and three separate rulings this pass were the same
+mistake: a string assembled with grammar baked in as a literal. These are the shared answers, and
+the rule is *never write the article or the plural into the template* — call the helper, so the
+next interpolation site inherits the fix instead of repeating the bug.
+
+- **`edhaArticle(word)`** → `"a"` / `"an"`. Chooses by SOUND, not spelling: a written vowel with a
+  consonant glide keeps "a" (**a** university, **a** one-handed grip), a written consonant with a
+  vowel sound takes "an" (**an** hour, **an** honest broker), and a lone capital letter named with a
+  leading vowel takes "an" (**an** F). First consumer: the wizard's weapon step, which shipped
+  *"the arms a Agent actually carries"* for two of the six heroic paths (bench run 38).
+  Pinned: `tests/article-agreement.test.js`.
+- **`edhaSingularLabel(label)`** → the ONE-OF form of a ledger label. Ledger keys are plural by
+  convention (`snares`, `charges`, `edicts`) and `edhaConditionLabel` falls back to the bare key
+  when nothing configures a label, so any card speaking about a SINGLE entry needs this or it
+  produces *"the snares on Snare #1 **is** inevitable"*. Deliberately a small English rule, and its
+  load-bearing case is the one it must NOT touch: an already-singular configured label (`Edict`,
+  `Harvested Remain`) comes back unchanged.
+- **`edhaAnnotateSentence(entryName, label, field, prohText, creatureBound)`** — the `edha-owner-list`
+  annotate card's sentence, extracted from the executor **so it can be pinned at all** (an executor
+  inside a `registerItemEventHandlerType` config is unreachable from the harness — see
+  `tests/spend-tag.test.js`'s note). Two shapes, because the ledgers are: a CREATURE-bound entry
+  reads possessively (*"the Edict on Roek"*), a POINT-bound marker names only itself, because the
+  entry IS the thing being marked and there is no creature for an "on" clause to point at.
+
+**Announce throttles.** `edhaMoveVetoAnnounceGate(tokenKey, round?, ledger?)` → post this card, or
+stay quiet. One per token per round; `round` defaults to `game.combat?.round` (null out of combat,
+which still throttles) and `ledger` is a module-level Map, injectable so the round semantics are
+testable without a combat. Built for R-38 — the `preUpdateToken` move veto now posts a whispered
+card naming the talent that refused the move, and **a dragged path re-fires the hook once per
+waypoint**, so an unthrottled card is a wall of identical whispers. Any future "the engine silently
+refused something" card wants this shape. An id-less token always speaks: a missing id must not
+become a missing reason. Pinned: `tests/move-veto-announce.test.js`.
+
+**Region creation delivers `tokenEnter` to tokens already inside.** ⚠️ The v13 trap behind R-13: a
+Region created UNDER a token fires `tokenEnter` for it immediately, and at the behavior that is
+indistinguishable from a creature walking in — so a trap laid on an occupied square detonated at
+placement, against its own card ("enter or pass through"). The fix pattern, reusable by any future
+trap Region: compute the occupants BEFORE creating the Region
+(**`edhaFateOccupantsOfSquare(scene, x, y)`** — reads `scene.tokens`, **not** `canvas.tokens.placeables`,
+because the GM applier may be viewing another scene), stamp them on the behavior as `armedOver`, and
+gate the handler on **`edhaSnareArmedSpringDecision(eventName, tokenUuid, armedOver)`**: a
+grandfathered token is ignored on the enter events and springs on its next MOVE (`tokenMoveOut` /
+`tokenMoveWithin`, which is why those joined the subscription); everyone else is unchanged. Pinned:
+`tests/snare-arm-under.test.js`.
+
+**Counting: intent vs state.** `edhaToggleStatus` returns whether the write was PERMITTED, not
+whether anything changed — so a sweep over five already-Weakened enemies honestly counted five and
+printed "affected 5" while the board had not moved (R-32). Any card reporting a sweep should read
+the status BEFORE the toggle and report both: `edhaRunPulse` now says
+**"swept N · newly &lt;Status&gt; M"** on the public card and on the GM's behind-the-wall accounting
+whisper. Pinned: `tests/pulse-sweep-counts.test.js`.
+
+**Two smaller conventions from the same pass.**
+- **A card that reports a number must say whose it is.** The ordained turn-start card appended a
+  bare ", Temp HP 2" under a headline naming the ordained-placing talent, crediting the grant to the
+  wrong document; the placement card had named `guard.item.name` correctly all along (R-37(3)). When
+  one card's number comes from a DIFFERENT rule than its headline, name that rule.
+- **An eviction that leaves no trace reads as a no-op.** At the marker cap the oldest square fizzles
+  and the only sign was the "(N/N)" count staying put (R-37(1)). `edhaListPush`'s `res.evicted` is
+  hoisted out of the `edhaOwnerListQueue` callback so the placement card can name what was spent.

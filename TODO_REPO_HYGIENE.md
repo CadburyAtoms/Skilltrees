@@ -1583,7 +1583,7 @@ the PM should carry forward:
 
 ---
 
-## 48. [ ] Fix pass 7b — cards, labels, zones (R-31, R-32, R-37, R-38, R-55, R-78, R-13, R-6, weapon-picker article)
+## 48. [x] Fix pass 7b — cards, labels, zones (R-31, R-32, R-37, R-38, R-55, R-78, R-13, R-6, weapon-picker article — 2026-09-06, PR #217; all nine shipped)
 
 **Why:** Eight more 2026-09-06 rulings plus one bench-run-38 defect (PR #207, merged 0ff8d14) land
 on card text, labels, and zone behavior. Ben's answers:
@@ -1617,6 +1617,36 @@ ruling recorded ANSWERED/shipped in `EDHA_RULINGS.md` §K.
 
 **PM:** lane B · model opus · size M · deps 45, 46 · verify: 9 headless pins + green gates
 post-retirement. ENGINE-ONLY (F5).
+
+**RESULT (2026-09-06, PR #217 — ENGINE-ONLY, F5; bench-pending):** all nine shipped, one themed
+commit each, 51 headless cases across nine new `tests/` files, and eleven one-line reversions each
+proved to fail its own pin. All ten local gates PASS. Four findings for the PM:
+
+1. **R-37(2) was ENGINE-generated, not authored** — the ruling asked to check before editing, and
+   the answer is that the string is built in the `edha-owner-list` annotate executor
+   (`register-skills.js`), not in `data/authored/deity-fate.json`. So all three nits shipped in one
+   ENGINE-ONLY pass and no rebuild-class item is needed. Fate's own authored `events` were not
+   touched.
+2. **`scripts/foundry-build.js`'s `aoeRule()` is a live generator for the handler R-78 just
+   retired** — out of this item's scope and NOT fixed. It fires for any talent with
+   `TALENT_TARGETING[...].area` and no `.burst`, which today is only **Lay Foundation**, whose
+   authored overlay supplies an `edha-zone` rule that REPLACES the generated events. That is why
+   `data/` sweeps find zero and why the CI pack build stays green. But delete Lay Foundation's
+   authored `events` and the next build mints a rule nothing can execute. Worth a small
+   TOOLING-only item.
+3. **R-6's HOW was a real choice and it is recorded.** Ben left "lay the rectangle one square out"
+   and "exempt the caster's token" open; this took the exemption, because the rectangle IS the line
+   that was just damaged and shifting it would make the terrain and the burst disagree about the
+   same ground. The dial is generic and blank everywhere but Fault Line. If Ben prefers the shifted
+   rectangle at the bench, it is a one-line change to `edhaFaultLine` plus a re-pin.
+4. **R-32's card string.** The ruling's ANSWERED block quotes the spec as `"swept N · newly Weakened
+   M"` and its 🤖 line paraphrases it as "swept 5 · newly 0". The shipped card follows the quoted
+   spec and carries the condition label: **"swept 5 · newly Weakened 0"**. Say the word if the
+   shorter form was meant.
+
+The name-keyed allowlist is unchanged (still empty) — lint-refs pass 7 passes, and R-78's removal
+neither grew nor shrank it. `data/native-vocabulary.json` and lint-refs' vocabulary were left alone
+by design, as the ruling specified.
 
 ---
 
