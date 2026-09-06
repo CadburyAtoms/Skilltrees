@@ -631,7 +631,7 @@ measure what each worker dispatch cost, and a repeatable procedure for the PM an
 
 ---
 
-## 26. [ ] Bench PCs get a normal sight range (ruling R-2)
+## 26. [x] Bench PCs get a normal sight range (ruling R-2) (2026-09-05, PR #173)
 
 **Why:** `scripts/bench-setup-console.js` builds the bench PCs with a **10 ft** sight range, so a
 player client renders almost nothing — it already caused a near-false-PASS at bench run 13. Ben
