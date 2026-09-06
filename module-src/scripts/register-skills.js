@@ -9151,10 +9151,17 @@ Hooks.on("renderCharacterSheet", (app) => {
   } catch (e) { /* cosmetic only — never block the sheet render */ }
 });
 
+/* R-55 (Ben 2026-09-06 (a)): all three chips read SPENT / total. They used to read REMAINING /
+ * total — except that Talents' numerator is the SAME either way on the sheet everyone looked at
+ * (2 of 4 taken → 2 remaining), so the strip silently mixed two conventions: a correctly built L1
+ * PC showed "Talents 2 / 4" beside "Attr pts 0 / 12", and a 0 next to a fully-spent sheet reads
+ * like an error rather than a finished budget. Now 2 / 4, 12 / 12, 5 / 5.
+ * The CLASSES stay keyed on what is LEFT — "full" means nothing remains, "over" means overspent —
+ * because that is what they colour, and it is unaffected by which number is printed. */
 function edhaBudgetRow(label, spent, granted) {
   const rem = granted - spent;
   const cls = rem < 0 ? " edha-budget-over" : rem === 0 ? " edha-budget-full" : "";
-  return `<div class="edha-budget-row${cls}"><span class="edha-budget-label">${label}</span><span class="edha-budget-value">${rem} / ${granted}</span></div>`;
+  return `<div class="edha-budget-row${cls}"><span class="edha-budget-label">${label}</span><span class="edha-budget-value">${spent} / ${granted}</span></div>`;
 }
 
 Hooks.on("renderCharacterSheet", (app, element) => {
@@ -9167,7 +9174,7 @@ Hooks.on("renderCharacterSheet", (app, element) => {
     const reserve = edhaGetReserve(actor), reserveCap = edhaReserveCap(actor);
     const panel = document.createElement("div");
     panel.className = "edha-budget-panel";
-    panel.title = "Remaining budget (remaining / total) — Talents | Attribute points | Skill ranks";
+    panel.title = "Budget spent (spent / total) — Talents | Attribute points | Skill ranks";
     panel.innerHTML =
       (thp ? `<div class="edha-budget-row edha-thp" title="Temporary HP (${thp.source || "—"}) — absorbed before normal HP; cannot be healed, only replaced"><span class="edha-budget-label">Temp HP</span><span class="edha-budget-value">${thp.value}</span></div>` : "") +
       edhaBudgetRow("Talents",    b.talentSpent, b.talentGranted) +
