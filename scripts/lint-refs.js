@@ -38,6 +38,7 @@ const fs = require("fs");
 const path = require("path");
 const { parseHandlerSchemas, parseHandlerChoices, matchBrace, topLevelKeys } = require("./handler-schemas.js");
 const { loadJson } = require("./lib/data.js");
+const { slugify } = require("./edha-pack-io.js");   // the ONE slugifier (pass 21's canonical home) — pass 22 slugs culture names exactly as foundry-build.js does
 const { stripComments } = require("./lib/strip-comments.js");
 
 const REPO_ROOT = path.resolve(__dirname, "..");
@@ -1968,6 +1969,68 @@ engine.split("\n").forEach((lineText, i) => {
         err(`pass 21 (${entry.id}): remove ${s} from the shrink list — it must not become fiction. ` +
             `It has 0 matches; either it was already migrated onto ${homes.join(" / ")}, or it never ` +
             `carried this pattern and was added to the list in error.`);
+      }
+    }
+  }
+}
+
+/* --- pass 22: the CULTURE REGISTRY parity gate (fix pass 5, 2026-09-06) -------------------------
+ *
+ * `scripts/foundry-build.js` stamps `system.id = slugify(c.name)` on every culture doc it builds
+ * out of `data/cultures.json`. The cosmere-rpg culture DataModel declares that field with a CLOSED
+ * choice list frozen at `defineSchema()` time, so a slug that is not registered in
+ * `CONFIG.COSMERE.cultures` BEFORE the schema is built is rejected and silently replaced with
+ * `"none"` — which is exactly what bench runs 32/33 measured on all ten Edha nations.
+ *
+ * The engine registers them in its `init` hook from `EDHA_CULTURES` in register-skills.js. That
+ * table has to be a literal: `init` is far too early to read a compendium, and `data/cultures.json`
+ * is a GENERATOR INPUT that is never copied into the module. So the list exists twice, which is a
+ * drift risk of exactly the kind the rest of this file exists to kill — hence this gate.
+ *
+ * TWO-WAY, like passes 7/20/21: a nation in `data/cultures.json` that the engine does not register
+ * is an error (the item ships and loses its id), and a nation the engine registers that the data no
+ * longer has is an error (the table must not become fiction). Labels are compared too, because the
+ * label is what the culture-prereq dialog shows. */
+{
+  const CULTURES_REL = "data/cultures.json";
+  let cultSrc = null;
+  try { cultSrc = loadJson(CULTURES_REL); }
+  catch (e) { err(`pass 22: ${e.message}`); }
+
+  const m = /const\s+EDHA_CULTURES\s*=\s*\[/.exec(engineCode);
+  if (!m) {
+    err(`pass 22: register-skills.js has no \`const EDHA_CULTURES = [\` table — the ten Edha nations ` +
+        `are then never registered at init and every culture item loads with system.id "none". ` +
+        `Restore the table (or update this pass if it was deliberately renamed).`);
+  } else if (cultSrc) {
+    // The table is a flat array of one-line object literals, so the first `];` after it closes it.
+    const open = engineCode.indexOf("[", m.index);
+    const close = engineCode.indexOf("];", open);
+    const body = close > open ? engineCode.slice(open + 1, close) : "";
+    const engineMap = new Map();
+    for (const e of body.matchAll(/\{\s*id:\s*"([^"]+)"\s*,\s*label:\s*"([^"]+)"\s*\}/g)) engineMap.set(e[1], e[2]);
+    if (!engineMap.size) {
+      err(`pass 22: EDHA_CULTURES parsed to ZERO entries — the table's shape changed and this gate ` +
+          `stopped checking anything. Expected \`{ id: "<slug>", label: "<Name>" }\` rows.`);
+    } else {
+      const dataMap = new Map();
+      for (const c of (cultSrc.cultures || [])) dataMap.set(slugify(c.name), c.name);
+      for (const [slug, name] of dataMap) {
+        if (!engineMap.has(slug)) {
+          err(`pass 22: ${CULTURES_REL} has culture "${name}" (slug "${slug}") but register-skills.js's ` +
+              `EDHA_CULTURES does not register it — its culture item will fail system validation on ` +
+              `every pack load and come back with system.id "none". Add ` +
+              `{ id: "${slug}", label: "${name}" } to the table.`);
+        } else if (engineMap.get(slug) !== name) {
+          err(`pass 22: culture "${slug}" is labelled "${engineMap.get(slug)}" in EDHA_CULTURES but ` +
+              `"${name}" in ${CULTURES_REL} — the label is what the culture-prereq dialog shows; make them agree.`);
+        }
+      }
+      for (const slug of engineMap.keys()) {
+        if (!dataMap.has(slug)) {
+          err(`pass 22: EDHA_CULTURES registers "${slug}", which ${CULTURES_REL} no longer has — delete ` +
+              `the row (the table must not become fiction).`);
+        }
       }
     }
   }

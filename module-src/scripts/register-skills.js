@@ -339,6 +339,73 @@ Hooks.once("ready", () => {
   console.log(`Edha Content | ready — currency 'edha' ${ok ? "registered" : "MISSING (registration failed)"}`);
 });
 
+/* --- Edha CULTURES: the ten nations, registered at `init` (fix pass 5, 2026-09-06) ---------------
+ * Bench runs 32/33: every one of the ten Edha culture items logs
+ * `CosmereItem [<id>] validation errors: system: id: <slug> is not a valid choice` on every pack
+ * load, and the slug is DROPPED — all ten come back with `_source.system.id === "none"`.
+ *
+ * The cause is a CLOSED enum plus an EAGER schema. `scripts/foundry-build.js` writes
+ * `system.id = slugify(name)` on each culture doc; the system's culture DataModel declares that
+ * field as `IdItemMixin({ initial: "none", choices: () => ["none", ...Object.keys(
+ * CONFIG.COSMERE.cultures)] })`, and its schema factory CALLS that function once, at
+ * `defineSchema()` time, freezing whatever `CONFIG.COSMERE.cultures` held at that instant into the
+ * StringField. `game.system.api.registerCulture()` afterwards updates `CONFIG.COSMERE.cultures` —
+ * bench run 33 measured that it does — but the frozen `choices` array never sees it, so a runtime
+ * registration is provably too late. The registration has to land BEFORE the first culture document
+ * is constructed, i.e. in `init`, which is also where the system registers its own six.
+ *
+ * With the ten registered the ALREADY-BUILT pack becomes valid as-is: the docs still carry their
+ * slugs, the slugs are now legal choices, the lenient load stops substituting `"none"`, and the two
+ * system-side readers that were latently broken start working — a talent-tree node prerequisite of
+ * type `culture` can finally name a nation instead of baking `"none"` and matching all ten. So this
+ * is **ENGINE-ONLY (F5)** and there is NO pack rebuild owed. The alternative the run-33 row named as
+ * a fallback — stop writing `system.id` in `foundry-build.js` — is REJECTED here: it needs a rebuild
+ * AND it would make the culture-prereq surface permanently unusable.
+ *
+ * The ids are `slugify(name)` over the ten entries of `data/cultures.json`, which is the same
+ * derivation the pack build uses. `data/cultures.json` is a GENERATOR INPUT and is not shipped into
+ * the module, and `init` is far too early to read a compendium, so the list is carried here — and
+ * `scripts/lint-refs.js` pass 22 fails the build if this table and `data/cultures.json` ever
+ * disagree, in either direction. Add a nation there and the gate tells you to add it here.
+ * 🤖 The ORDERING claim (this `init` callback runs before the culture schema is built) is the one
+ * half no headless test can prove — it is a bench row for the next run. */
+const EDHA_CULTURES = [
+  { id: "kettavar", label: "Kettavar" },
+  { id: "malcurr", label: "Malcurr" },
+  { id: "corvaine", label: "Corvaine" },
+  { id: "thalendor", label: "Thalendor" },
+  { id: "goldenport", label: "Goldenport" },
+  { id: "vorsk", label: "Vorsk" },
+  { id: "lunavar", label: "Lunavar" },
+  { id: "canticle", label: "Canticle" },
+  { id: "sylvaneth", label: "Sylvaneth" },
+  { id: "ashkar", label: "Ashkar" },
+];
+function edhaRegisterCultures(phase) {
+  const COSMERE = globalThis.CONFIG?.COSMERE;
+  if (!COSMERE || !COSMERE.cultures) return false;
+  const api = globalThis.game?.system?.api;
+  const added = [];
+  for (const c of EDHA_CULTURES) {
+    if (COSMERE.cultures[c.id]) continue;   // idempotent across init/setup, and never fights the system's own six
+    try {
+      // The documented surface first (it is what the system calls for its own cultures), so any
+      // registry wiring beyond the CONFIG entry happens; the direct write is the fallback.
+      if (api?.registerCulture) api.registerCulture({ id: c.id, label: c.label, source: "edha-content", priority: -1 });
+    } catch (e) { console.warn(`Edha Content | registerCulture api failed for '${c.id}'; using the CONFIG write`, e); }
+    if (!COSMERE.cultures[c.id]) COSMERE.cultures[c.id] = { label: c.label };
+    if (COSMERE.cultures[c.id]) added.push(c.id);
+  }
+  if (added.length) console.log(`Edha Content | [${phase}] cultures registered: ${added.join(", ")}`);
+  return true;
+}
+Hooks.once("init",  () => edhaRegisterCultures("init"));    // MUST be init — the culture DataModel freezes its `choices` at defineSchema()
+Hooks.once("setup", () => edhaRegisterCultures("setup"));   // belt-and-braces (idempotent); still fixes CONFIG for the prereq dialog if init was somehow missed
+Hooks.once("ready", () => {
+  const have = EDHA_CULTURES.filter(c => globalThis.CONFIG?.COSMERE?.cultures?.[c.id]).length;
+  console.log(`Edha Content | ready — Edha cultures registered: ${have}/${EDHA_CULTURES.length}${have === EDHA_CULTURES.length ? "" : " (culture items will log validation errors and load with system.id 'none')"}`);
+});
+
 /* --- WEAKENED mechanic (2026-06-11c; reworked 2026-06-13) ---------------------------------------
  * Ruling (Ben): a Weakened creature has DISADVANTAGE on EVERY physical test (str/spd attribute) while
  * the condition lasts, and Weakened ALWAYS falls off at the END of the creature's next turn. It is no
