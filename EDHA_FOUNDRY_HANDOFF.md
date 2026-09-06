@@ -116,6 +116,144 @@ new row added, 🤖 untouched.
 
 ---
 
+## 2026-09-06 — BENCH RUN 32 (weekend marathon run 9): **FIX PASS 4 IS VERIFIED GREEN ON ALL FOUR TALENTS, every one driven from `PlayerBench` — `Unravel Everything` now fills 2 Omens *and* detonates both in ONE cast on an empty ledger, `Spreading Omen` reads (1/2) then (2/2) with both entries surviving, and both reveals list the condition they just relayed. R-65 CLOSES on its last half (the ally-clicked burst rolled a real 2d8 from a non-GM client). The Starting-kit console API PASSES. `bench-setup-console.js` was RE-RUN and is idempotent.** **6 rows leave the checklist, 1 new engine/data defect found, 2 long-stalled July rows re-classified to their real blockers.** Open queue **33 🤖 → 28 🤖** — the net is **−5** (6 retired minus 1 new). ⚠️ **Counted as `grep -c '^- \[ \] 🤖'`, i.e. actual OPEN ROWS.** The item-27 delta directly above reports "30" for the same moment because it counts `grep -c '🤖'` — every LINE containing the emoji, prose and retired-row notes included. Both are right about their own measure; the row count is the smaller one; **⚑ unchanged at 22 — no ⚑ row was touched.** **World restored to the start snapshot EXACTLY — field-level actor id-diff EMPTY across all 74 actors, zero token/region/drawing/template/wall/combat/scene deltas.** DOCS-ONLY — no engine, no data, no pack rebuild owed.
+
+### Deploy verified from both sides before anything was driven
+
+Served `/modules/edha-content/scripts/register-skills.js`, fetched cache-busted and CRLF-normalised,
+SHA-256 **`06229eccee7f3670defc993945fea47acb0f972376664fee4d5960b111718749`** — byte-identical to
+`HEAD:module-src/scripts/register-skills.js` with CRs stripped, i.e. the #183 merge (fix pass 4).
+Paired with `decodedBodySize` on the ORIGINAL `<script>` resource entry (**1 545 767**, equal to the
+cache-busted fetch's), so the engine actually *loaded* is that file. Neither stale hash (`ffb1f3f5…`,
+`c498d9eb…`) was in evidence. `game.world.id === "edha"`, `Bench` GM, `edha-content` active,
+`globalThis.edha` present, system **2.1.0**. Three clients live throughout:
+`["Bench","Gamemaster","PlayerBench"]`.
+
+### ① FIX PASS 4 — all four rows PASS, all four from the player client (4 rows retired)
+
+The defect is only reachable from a client that owns the CASTER but not the TARGET, so every cast was
+driven from **`PlayerBench`** (non-GM), with `isOwner: false` asserted on the targets first.
+
+| talent | evidence | verdict |
+|---|---|---|
+| **Unravel Everything** | ONE cast, ledger **empty**: *"Floater, Adjacent A bear your Omen **(2/2)**"* → *"sweeping your omens: Floater: **affected** · Adjacent A: **affected**"*; 18 + 7 spirit (HP 41→23, 20→13), both Disoriented, ledger emptied, 3 Inv | **PASS** |
+| **Unravel Everything (GM control)** | the same cast from `Bench`: identical one-activation shape, 17 + 10 spirit, ledger emptied | **unchanged** |
+| **Spreading Omen** | cards **(1/2)** then **(2/2)**; `lists.omens` holds **both** entries — order 2 no longer commits over order 1 | **PASS** |
+| **Vital Diagnosis** | whispered reveal: *conditions: Disoriented, Omen, **Diagnosed*** | **PASS** |
+| **Studied Mark** | reveal: *conditions: Disoriented, Omen, **Insight***; effect named **`Insight [2]`**; `cog` correctly withheld | **PASS** |
+
+**`edhaAwaitLocal` never timed out** — zero relay `console.warn`s on **either** client across all five
+casts, and no `ui.notifications.warn` naming a creature. Every relayed write landed inside the 3 s
+budget, so the fix is winning on its fast path rather than on its fail-open.
+
+Run 31's pre-fix matched pair is the control: the identical staging then printed *"no creatures on the
+ledger"*, dealt nothing, and needed a second cast.
+
+### ② R-65 CLOSES — the ally-clicked burst die folds (1 row retired)
+
+Staged off the run's own residue rather than fresh fixtures: Studied Mark had just placed Insight on
+`Bench Target — Adjacent A`, so dropping it to 0 HP fired **Death Mark**'s watch rule and posted the
+ally-burst card. **The click was made from `PlayerBench`** — owning the ALLY (`Bench — Chaos`), not the
+enemy. Card: *"📖 **Death Mark**: Bench — Chaos deals **13** vital to Bench Target — Floater."*
+
+⚠️ **Stronger evidence than run 30's standard:** this card **does** carry a `rolls` array (total
+**13**), a real `(@tier)d(2 * @skills.red.rank + 2)` = **2d8** off Bench — Knowledge's stats, inside
+2–16. HP arithmetic exact: **23 → 8 = 15 = 13 burst + 2** from Vital Diagnosis's Diagnosed rider, which
+posted its own card. Void Sense and Prognosis also fired off the same application. One ally click
+exercised four riders.
+
+### ③ `bench-setup-console.js` RE-RUN (run 31 substituted assertions; this run did the real thing)
+
+Loaded over a throwaway CORS-enabled static server on `127.0.0.1:8137` (killed at the end) rather than
+pasted, so the 22 KB never entered a tool call. **Zero ⚠ lines.** 16 PCs / 7 targets, every roster line
+`synced N | talents N`, and **`orphans: 0 repaired, 0 replaced`** on the first run — run 31's
+measurement holds. Re-run: **actors 74 → 74, tokens 33 → 33, zero ⚠**, and the four known non-bench
+orphans (`The Forgemaster`, `The Demolisher`, `PC Tester`, `Cragdrake Whelp Pack (1)`) correctly left
+alone. The ranged-weapon fixture was asserted directly, not trusted: `Bench — Chaos` carries
+**`Shortbow` with `system.attack.type === "ranged"`**.
+
+### ④ Starting-kit grant PASSES on the console path (1 row retired)
+
+`edha.grantStartingKit(actor, "Hunter")` — the row's literal ask, unrun since July — granted **14
+items** (common base + Hunter pack + `Food (ration, 1 day)` **quantity 7**) and moved the purse
+**silver 0 → 5**, the card naming *"14 items + 5 silver"*. **Once-only holds on the console path too**
+(run 22 proved it only for the wizard): an immediate second call added 0 items and posted no card.
+⚠️ The guard flag is **`flags["edha-content"].kitPath`**, not `startingKit`.
+⚠️ The *"card lists anything missing"* clause has **no instance to test** — nothing was missing;
+recorded as untested, not passed.
+
+### ⑤ NEW DEFECT → `test-pass-fixes`: all 10 Edha culture items fail system validation
+
+Found incidentally while timing `pack.getDocuments()`. Loading `edha-content.edha-items` logs **ten**
+`CosmereItem [<id>] validation errors: system: id: <slug> is not a valid choice` — **canticle ·
+kettavar · corvaine · sylvaneth · goldenport · thalendor · malcurr · lunavar · ashkar · vorsk**, every
+one `type: "culture"`.
+
+**Root cause proven repo-side, not guessed:** `scripts/foundry-build.js` (~L816) writes
+`system: { id: slug, … }` from `slugify(c.name)` over `data/cultures.json`, and the cosmere-rpg system
+restricts that field to its own six cultures — `CONFIG.COSMERE.cultures` reads exactly
+`["alethi","azish","herdazian","thaylen","unkalaki","veden"]`. The **ancestry** docs take the same
+`system.id = slug` treatment and log **no** error, so the restriction is specific to the culture model.
+
+⚠️ **Severity is OPEN and is the first thing the fix pass should settle.** The documents still load and
+`getDocuments()` still returns all ten, so this may be log noise — but if the invalid value is dropped
+rather than kept, a culture's `system.id` stops matching the `cultural:<slug>` expertise its own
+`grant-expertises` / `remove-expertises` events add and remove, which would break the wizard's culture
+step silently. **Not measured** — the finding landed after the world was restored and both clients were
+out. Read `item.system.id` back off a loaded pack culture and compare it to the slug.
+
+### ⑥ Two long-stalled July rows RE-CLASSIFIED to their real blockers (not driven, and correctly so)
+
+Six runs deferred the four July sections without writing down why. Re-read against DEPLOY STATE (dated
+2026-07-26 — and every one of these rows predates it) and against the live world:
+
+- **`# Adversary pack sync` — both remaining 🤖 rows** are down to the **bulk button** clause only.
+  A bulk `⟳ Sync Adversaries from Pack` rewrites **every world adversary, Ben's placed campaign actors
+  included** — outside a bench run's authority under hard rule 4. It is **not** a deploy gap and **not**
+  ⚑ (no judgment call): it needs **Ben to click it once, or to authorise a bench run to**. The blocker
+  is now written on the rows.
+- **`# Bench-results fixes` — "Adversary tokens see like PCs"**: the decision it waits on already exists
+  and is numbered — **`EDHA_RULINGS.md` R-56**, recommending option (a). It is not a bench row until
+  R-56 is answered; the row now says so instead of reading as undriven work.
+
+### ⑦ Run 31's unattributable `Guardian Stance` AE is EXPLAINED — and it was the engine being right
+
+Run 31 logged a `Guardian Stance (+1 Deflect)` effect it could not attribute and correctly refused to
+delete. This run reproduced the mechanism by accident: the effect carries
+`flags["edha-content"].aura = "Guardian Stance"` and its own description says *"auto-managed — move
+apart to remove"*. `Bench — Chaos` and `Bench — Life` had **no tokens on the map**, so the adjacency
+sweep had never run on them and both were holding a **stale** aura from an earlier run. Giving them
+tokens made the sweep run for the first time, and it correctly removed both. `Bench — Order`, `Red` and
+`White` kept theirs — their tokens never moved.
+
+Both were **restored exactly** (same `_id`, cloned whole from `Bench — Order`'s live copy) so the
+end-state diff is empty. ⚠️ **They are stale and will vanish again the moment either actor gets a
+token** — safe to delete, but that is Ben's call, not a bench deletion.
+
+### World diff — EMPTY
+
+Field-level actor id-diff (`flags`, `statuses`, `effects`, `ownership`, `_source.system.resources`)
+across **all 74 actors**: **zero differences**. Tokens added / removed / moved: **0 / 0 / 0**. Regions,
+Drawings, Templates, Walls, Combats, Scenes: **0 delta each**. **No combat was created**, and no scene
+was created or activated. Three bench tokens were created and deleted; one bench target was moved and
+moved back; `PlayerBench` OWNER grants on three bench PCs were snapshotted and restored. Both clients
+logged out and both are selectable on `/join`. **Bench chat can be flushed.**
+
+⚠️ **Two restores needed a second pass, and both are runbook lessons below**: the dotted flag deletes
+left empty parent objects (`trigRound: {}`, `counters: {}`) exactly as run 31 warned, and this run's
+snapshot captured effects as `{id, name}` rather than whole objects — recovering `Guardian Stance` was
+only possible because three other actors still carried an identical copy. **Snapshot whole effect
+objects.**
+
+### Deviations, declared
+
+- **`item.system.id` on a pack culture was not read back** (⑤) — the finding arrived post-restore.
+- **The dark-veil scene (§5 of run 31's plan) was NOT started** — the driving budget went to the
+  re-test block, the player-client window and the setup script. Both veil rows stay 🤖, plan intact.
+- **The 6 wizard-v2 rows and the 3 items-dump rows were not driven** — re-read only. Still 🤖.
+
+---
+
 ## 2026-09-05 — FIX PASS 4 (weekend marathon): **bench run 31's `Unravel Everything` defect is ROOT-CAUSED, and the bench's hypothesis is REFUTED. It is not the rule dispatcher and not the ledger queue — both are clean. It is the fire-and-forget SOCKET RELAY one level down: `game.socket.emit` has no acknowledgement, so `edhaWriteStatusMark` returned `true` a full round trip before the marker status existed on the casting client, and `edhaOwnerList`'s mark-wins reconcile then dropped every entry the same activation had just placed.** New primitive **`edhaAwaitLocal`**; two relays adopt it; **4 talents affected, 3 of them never reported** (the audit found Spreading Omen silently destroying a ledger entry). **ENGINE-ONLY → F5 / relaunch. No pack rebuild, no ⟳ Sync, no authored data touched.**
 
 ### Rulings (none)

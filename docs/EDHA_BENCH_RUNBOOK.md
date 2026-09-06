@@ -1415,6 +1415,81 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   player-client window early enough that three separate rows shared its one setup, which is run 30's lesson
   paying out a second time.
 
+## Operating lessons from run 32 (2026-09-06 — these OVERRIDE older advice where they conflict)
+
+- ❌ **`animate: false` IS NOT ENOUGH TO MOVE A TOKEN IN v13 — it can commit a PARTIAL position, which
+  is worse than not moving at all.** Run 29's rule was "re-issue an animated move with `animate: false`
+  and it lands exactly". Measured here, it did not: `tokenDoc.update({x: 4200, y: 14400}, {animate:
+  false})` on a 1×1 bench target left `_source` at **(3021, 4669)** — not the origin (3000, 4500) and
+  not the destination, but a point a few pixels along the path, with **no error and the promise
+  resolved**. The same call re-issued as `update({x, y}, {animate: false, teleport: true})` landed on
+  **(4200, 14400)** exactly, first try. A partial commit is the dangerous failure mode because the
+  token *did* move, so a "did it move?" check passes while every range measurement built on it is
+  wrong — this run only caught it because the enemy count in Attunement Range came back **1 instead of
+  2**. **Always pass `teleport: true` for staging moves, and always read the destination back and
+  compare it to what you asked for**, not merely to where it started.
+- ✅ **Load a big console script over a throwaway CORS server; never paste it.** `bench-setup-console.js`
+  is 22 KB and the runbook wants it run twice, which run 30 solved by pasting it once into a template
+  literal (and paying the escaping tax). Cheaper and safer: serve `scripts/` from a one-file Python
+  `SimpleHTTPRequestHandler` subclass that adds `Access-Control-Allow-Origin: *`, on a spare port, then
+  from the console `globalThis.__setupSrc = await (await fetch("http://127.0.0.1:8137/bench-setup-console.js?cb=" + Date.now())).text(); (0, eval)(globalThis.__setupSrc);`.
+  The script's bytes never enter a tool call, em-dashes and backticks need no escaping, and re-running
+  costs one short call. **Kill the server in the run's cleanup** (find the PID with
+  `Get-NetTCPConnection -LocalPort <port> -State Listen`).
+- ⚠️ **The setup script's IIFE is fire-and-forget and a re-run can take well over 30 s — an empty warn
+  buffer is NOT a failure.** The first run reported in ~10 s; the second and third produced nothing
+  after 20 s of polling each and then completed later, with output identical to the first. Do not
+  re-fire it because the recorder looks empty (this run fired it three times for that reason). **Judge
+  idempotency from the COUNTS, not the log**: `game.actors.size`, `game.items.size` and
+  `scene.tokens.size` before and after (74 / 0 / 33, unchanged) settle it directly, and the `DONE`
+  line's `orphans: N repaired, M replaced` arrives whenever it arrives.
+- ❌ **Snapshot whole EFFECT OBJECTS, not `{id, name}` — run 31's lesson has a third half.** Run 31 said
+  to snapshot effects as well as statuses, and this run did — as `{id, name, statuses}`, which is enough
+  to *detect* drift and **not** enough to *repair* it. When two bench PCs lost an ActiveEffect mid-run,
+  restoring it was only possible because three other actors still carried a byte-identical copy to clone
+  (`toObject()`, swap `_id`, `createEmbeddedDocuments(..., {keepId: true})`). Had the effect been unique
+  to those actors, the run would have ended with unrestorable drift. **Snapshot
+  `actor.effects.map(e => e.toObject())`.**
+- ✅ **A stale AUTO-MANAGED AURA is invisible until the actor gets a token — and giving it one is
+  itself a mutating act.** This is the answer to run 31's unattributable `Guardian Stance (+1 Deflect)`.
+  The effect carries `flags["edha-content"].aura = "<name>"` and is reconciled by an adjacency sweep;
+  an actor with **no token on the scene** is never swept, so it can hold the aura indefinitely from an
+  earlier run. Creating a token for it makes the sweep run for the first time and **correctly removes
+  the effect** — which looks exactly like the bench deleting something. **Before creating a token for a
+  bench PC, check `actor.effects` for `flags["edha-content"].aura`**, and expect any such effect to
+  disappear; that is the engine being right, not drift. Record it, restore it, and say which it was.
+- ⚠️ **Confirmed again, and it needs an explicit second pass: a dotted flag delete leaves the PARENT
+  object behind as `{}`.** Run 31 said this; the cost here was a second restore round because
+  `flags.edha-content.trigRound.-=<key>` and `...counters.-=<key>` left `trigRound: {}` and
+  `counters: {}` where the snapshot had no such key at all. **After deleting leaves, re-diff and delete
+  any parent the snapshot did not have** (`{"flags.edha-content.-=trigRound": null}`). Budget the
+  re-diff as a step, not an afterthought — the first diff will look like real drift.
+- ✅ **Resize the pane BEFORE the join on EVERY tab, the first one included.** Run 31 carved out an
+  exception ("the *first* tab still needed a reload"). It does not, if you resize before it joins:
+  `preview_start` at `/join` → `resize_window` while the join screen is up → join gave
+  `canvas.ready === true` on the first read for **both** tabs this run, no reload and no ticker pump.
+- ✅ **Drive `item.use()` with ONE polling loop that handles both dialogs.** A `skill_test` talent puts
+  up the ItemConsumeDialog *and then* the roll dialog, and neither is a `<dialog>`. A loop that, per
+  tick, clicks `div.app.window-app button[data-action="continue"], dialog button[data-action="continue"]`
+  if present, else any button whose trimmed text matches `/^roll$/i`, else sleeps — with a wall-clock cap
+  and an early exit on `game.messages.size` growing — drove consume-only talents and skill-test talents
+  identically. Package it as a `globalThis.__cast(actorName, itemName)` helper in one call and every
+  later cast costs one short call.
+- ✅ **A cancelled ItemConsumeDialog really does cost nothing** (R-69's shape, re-confirmed on a
+  different surface): closing the window via its header close control left Investiture at 4, the ledger
+  empty and **zero** chat messages. So abandoning a mis-staged cast is free — fix the staging and re-cast
+  rather than pushing a bad setup through.
+- ⚠️ **A talent gated on a skill test will simply miss sometimes, and that is not a FAIL.** Spreading
+  Omen rolled **7 vs COG 14** on its first attempt with everything staged correctly. Top the resource
+  back up and re-cast; only call FAIL when the *success* branch misbehaves. Read the card for the
+  explicit `— FAIL.` verdict line before diagnosing anything.
+- **Density, measured: 6 rows off the checklist + 1 new engine/data defect root-caused repo-side + 2
+  six-run-stalled rows re-classified to their real blockers, in ~45 tool calls / ~45 minutes of driving,
+  world diff empty.** The two highest-value moves were (a) **the re-test block first — six runs running
+  now**, and (b) **staging each row off the previous row's residue**: Studied Mark's Insight was what
+  made Death Mark's watch rule fireable, so R-65 cost three calls instead of its own full setup. Look
+  for that chain before building fresh fixtures.
+
 ## Known limits
 
 - ❌ **RESOLVED AS UNFIXABLE (07-26i): there is no "no written Cognitive/Spiritual defense" creature.**
