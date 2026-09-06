@@ -1160,7 +1160,7 @@ weapon migration" line checked. Then PR #103 can be closed and its branch moves 
 
 **PM:** lane B · model opus (or `fable-worker` on a weekend) · size L, dispatched as 34a then 34b · deps a
 Foundry window for the bench · verify: pinned tests + scratch pack build + `validate-adversaries.js` 0 issues.
-34a shipped in PR #PRNUM (2026-09-06, REBUILD + ⟳ Sync): 11 items weapon-type, `edhaRuleBearer` on both rule
+34a shipped in PR #220 (2026-09-06, REBUILD + ⟳ Sync): 11 items weapon-type, `edhaRuleBearer` on both rule
 loops (mutation-verified), summon attacks as weapons, parity table 336/11/0, 9 🤖 rows. 34b still open.
 Follow-up scope for the PM: the 39 bestiary blocks statted after 07-18 carry 44 attack items still `action`.
 
