@@ -1,36 +1,37 @@
 # Next bench session
 
-> **Weekend marathon, run 9 (bench run 32, 2026-09-06) is done.** It **verified fix pass 4 GREEN on all four
-> talents**, every one driven from `PlayerBench`: `Unravel Everything` fills 2 Omens **and** detonates both in
-> **ONE** cast on an empty ledger, `Spreading Omen` reads **(1/2)** then **(2/2)** with both ledger entries
-> surviving, and both reveals now list the condition they just relayed. **`edhaAwaitLocal` never timed out** on
-> either client. **R-65 CLOSES** on its last half — the ally-clicked burst rolled a real **2d8 = 13** from a
-> non-GM client with exact HP arithmetic. The **Starting-kit console API** passes on the Hunter path.
-> `bench-setup-console.js` was **re-run** (run 31 had substituted assertions) and is idempotent with **zero ⚠**
-> and `orphans: 0/0`. **6 rows left the checklist, 1 new engine/data defect found, 2 six-run-stalled July rows
-> re-classified to their real blockers.** Open queue **33 🤖 → 28 🤖** (counted as `^- [ ] 🤖` rows; run 31's "30" used a different count — the net is **−5** = 6 retired minus 1 new). ⚑ unchanged at **22**. No `⛔ STOP`,
-> **no pack rebuild owed**, world restored to its start snapshot **exactly** (field-level actor id-diff empty
-> across all 74 actors; tokens/regions/drawings/templates/walls/combats/scenes all zero delta).
+> **Weekend marathon, run 10 (bench run 33, 2026-09-06) is done.** Item 29's **`Fault Line` re-test PASSES IN
+> FULL** on a hash-verified deploy — the ally in the line is counted on the burst card, loses the HP, gets its
+> own save line, and a **failed** save knocks it **Prone** exactly as a foe's does, while the caster and the
+> ally outside the line stay untouched on both cards. The **culture-item severity question is SETTLED**: the
+> slug is **dropped**, but the wizard is **not** broken and the fix is **engine-only**. And the **seven-run
+> dark-veil blocker is GONE** — a bench-created dark scene works — which immediately exposed the real
+> blocker: **the Stalker's `Veil` marker is item-transferred and `edhaDarkVeilSweep` only reads
+> `actor.effects`**, so it can never be found. **1 row left the checklist, 1 new engine defect was
+> root-caused with a matched control, 1 severity question closed, 1 measured caveat added to R-6.** Open queue
+> **29 🤖 → 28 🤖** (counted as `grep -c '^- \[ \] 🤖'`). ⚑ unchanged at **21**. No `⛔ STOP`, **no pack
+> rebuild owed**, world restored to its start snapshot **exactly** (field-level actor id-diff empty across all
+> 74 actors; tokens/regions/drawings/templates/walls/lights/combats/scenes all zero delta).
 
 ## Read this first
 
-**→ `EDHA_FOUNDRY_HANDOFF.md`, the `2026-09-06 — BENCH RUN 32` delta at the top** — the fix-pass-4 evidence
-table, R-65's closing evidence, the new culture-item defect with its repo-side root cause, the July
-re-classification, and the explanation of run 31's unattributable `Guardian Stance` AE.
+**→ `EDHA_FOUNDRY_HANDOFF.md`, the `2026-09-06 — BENCH RUN 33` delta at the top** — the Fault Line evidence
+table, the culture-item measurement with its fix shape, and the dark-veil defect with its matched control.
 
-**→ `docs/EDHA_BENCH_RUNBOOK.md`, "Operating lessons from run 32"** — **two of these will save you a row
-each**: `animate: false` is **not** enough to move a token (it can commit a **partial** position — use
-`teleport: true` and read the destination back), and the setup script's IIFE can take **over 30 s** on a
-re-run, so an empty warn buffer is not a failure — judge idempotency from the counts. Also: load a big console
-script over a throwaway CORS server instead of pasting it, and snapshot **whole effect objects**
-(`e.toObject()`), because `{id, name}` detects drift but cannot repair it. **Runs 29–31's lessons still
-apply** — the stale vision polygon + ticker pump, whole-object `flags` writes merging instead of deleting,
-`pre*` hooks being initiator-only, and dotted-path resource restores.
+**→ `docs/EDHA_BENCH_RUNBOOK.md`, "Operating lessons from run 33"** — **three of these will save you a row
+each**: a **bench-created scene is a three-call fixture** (copy the recipe, do not re-derive it);
+**`actor.effects` does not contain item-transferred AEs**, which is what killed the veil; and **the engine's
+functions are module-scoped, not globals**, so you cannot call or step into them from the console — attach
+observing hooks *before* the first trigger. Also: driving `edhaPickPoint` is three lines, and
+`javascript_tool` started timing out on 3-second loops late in the run (fire, return, read). **Runs 29–32's
+lessons still apply** — `teleport: true` for staging moves, whole-object effect snapshots, dotted flag
+deletes leaving `{}` parents behind, and the setup script's slow fire-and-forget IIFE.
 
-**→ `EDHA_RULINGS.md`** — unchanged this run (no new rulings; nothing in run 32 needed Ben's judgment).
-**R-56 is now load-bearing** — a checklist row is explicitly blocked on it (see below). **R-69 is VERIFIED
-GREEN and still ready to move to §K.** R-70 and R-71 still carry their recommended defaults. R-43 is still
-applied and still changes live dice math.
+**→ `EDHA_RULINGS.md`** — no new rulings, but **R-6 gained measured evidence and got WIDER**: Fault Line's
+dangerous-terrain Region catches the **caster themselves** (and the ally), because the rectangle is laid with
+one end on the caster's own square. R-5's "only the caster is spared" does not carry over to the Region.
+**R-69 is still ready to move to §K**; R-70, R-71 still carry their recommended defaults; **R-43 is still
+applied and still changes live dice math**; **R-56 still blocks** the "adversary tokens see like PCs" row.
 
 ## ⚑ vs 🤖 — read this before picking rows
 
@@ -40,172 +41,156 @@ applied and still changes live dice math.
 ⚠️ **Never re-file an unrun 🤖 row as ⚑ because you ran out of time.** Leave it 🤖, or record it BLOCKED with the
 blocker named. **Design questions go to `EDHA_RULINGS.md`, never to the checklist as a new ⚑ row.**
 
-## ✅ RE-TEST FIRST — and this time there IS one queued
+## ✅ RE-TEST FIRST — but check whether one is actually queued
 
-**Item 29 (PR #185) merged right after this run and ships an engine change with its own 🤖 re-test row**:
-`Fault Line` catches **allies** too now, per ruling **R-5** (Ben: *"no it does not"* spare them). The row is in
-`# BENCH — Destruction` and names its own staging — one ally inside the line, a second clearly outside,
-then cast. **It is ENGINE-ONLY and the PM deploys it, so the served hash will NOT be `06229ecc…` any more:
-hash-verify from both sides before driving, and record the rows NOT-DEPLOYED rather than FAILED if it has
-not landed.**
+Run 33 found **no** fix pass waiting to be verified: its own defect (the veil lookup) has **not** been fixed
+yet, and nothing else merged behind it. **If the PM has landed a fix for the veil lookup by the time you
+start, that re-test is your step 1** and it is cheap, because run 33 wrote the whole fixture recipe down.
+Otherwise start at step 1 below. The re-test block has measured roughly twice as dense as scattered rows for
+**seven runs running** — check for one every time.
 
-Run 32's own new defect (below) has **not** been fixed — that one goes to `test-pass-fixes` first. The
-re-test block has measured roughly twice as dense as scattered rows for **six runs running**, and it is the
-one habit every run should keep.
+## ❌ The defect run 33 found — for `test-pass-fixes`, root cause proven with a matched control
 
-## ❌ The one defect run 32 found — for `test-pass-fixes`, root cause already proven repo-side
+**`edhaDarkVeilSweep` can never find the Stalker's `Veil` marker.** The sweep resolves it as
+`[...(a.effects ?? [])].find(e => e.name.startsWith(effName))` — **actor-level effects only**. The `Veil` AE
+is defined on the `Veil` **trait item** with `transfer: true` (`data/adversary-effects.json`), so it lives in
+`actor.allApplicableEffects()` with `parent: "Veil"` and **`actor.effects` is empty**. Measured on Ben's
+world `Stalker` (`4OW7zLhJlMRhn1GG`) *and* on a fresh pack import (`l924euoyx3pYFk2T`). Everything else on
+the path is fine — the trait carries `adversaryTalent: true` and `enabledEvents` lists the `edha-dark-veil`
+handler — and with a hand-made **actor-level** copy of the identical AE the sweep fired correctly and posted
+the "marker is ON (auto)" card. `data/adversaries.json` holds the **only** `edha-dark-veil` rule in the repo,
+so the blast radius is the Stalker alone.
+**Two fixes: widen the lookup to `allApplicableEffects()` / `appliedEffects` (ENGINE-ONLY), or move the
+marker to an actor-level AE (REBUILD).** ⚠️ A **second, unnamed** symptom rides with it — see step 1.
 
-**All 10 Edha culture items fail cosmere-system validation on every pack load.** Loading
-`edha-content.edha-items` logs ten `CosmereItem [<id>] validation errors: system: id: <slug> is not a valid
-choice` — canticle · kettavar · corvaine · sylvaneth · goldenport · thalendor · malcurr · lunavar · ashkar ·
-vorsk, every one `type: "culture"`.
-
-**Root cause (proven, not hypothesised):** `scripts/foundry-build.js` ~L816 writes `system: { id: slug, … }`
-from `slugify(c.name)` over `data/cultures.json`, and the system restricts that field to its own six cultures
-— `CONFIG.COSMERE.cultures` is exactly `["alethi","azish","herdazian","thaylen","unkalaki","veden"]`. The
-**ancestry** docs get the same `system.id = slug` treatment and log **no** error, so the restriction is
-specific to the culture model.
-
-⚠️ **SEVERITY IS THE OPEN QUESTION AND IT DECIDES THE FIX.** The documents still load and `getDocuments()`
-still returns all ten, so this may be log noise only. But if the invalid value is **dropped** rather than
-kept, a culture's `system.id` no longer matches the `cultural:<slug>` expertise its own
-`grant-expertises` / `remove-expertises` events add and remove — which would break the wizard's culture step
-**silently**. **First move: read `item.system.id` back off a loaded pack culture and compare it to the slug.**
-Run 32 could not — the finding landed after the world was restored and both clients were out. It is a
-one-call read.
-
-## Where the 29 open 🤖 rows are
+## Where the 28 open 🤖 rows are
 
 | Block | 🤖 | Note |
 |---|---|---|
-| **Character-creation wizard v2** | 6 | July deploy-state language. **Still never driven, eight runs running** — and now the culture defect above may bear on its culture step. Re-read against DEPLOY STATE first. |
-| **Items-dump tranche** | 2 | Starting-kit RETIRED at run 32. Left: **CAE burns** (needs a combat — use the `active: false` + `ui.combat.initialize` pattern) and **Kindle's token-light half**. |
-| **Adversary pack sync** | 2 | ⛔ **Both are now BLOCKED ON BEN, and the blocker is written on the rows.** All that is left in either is the **bulk button**, and a bulk sync rewrites every world adversary including Ben's campaign actors — outside hard rule 4. **Do not re-attempt un-authorised.** |
-| **Bench-results fixes** | 3 | **The vision row is blocked on `EDHA_RULINGS.md` R-56**, not on a bench run — do not re-stage it. The other two — **single-target picker** (Withering Ray with 2+ targets) and **AoE burst auto-target** — are genuinely drivable and cheap. |
-| **Culture items** | 1 | The new defect's re-test row (added by run 32). |
-| **`BENCH — hygiene campaign 2026-08-10`** | 7 | The pass 5.2 / 5.3 rows below are counted here — this is where they live in the file. |
+| **`BENCH — hygiene campaign 2026-08-10`** | 7 | pass 5.2 / 5.3 rows. Includes the ones that need **zero GM clients** — still blocked on Ben. |
+| **Character-creation wizard v2** | 6 | July deploy-state language. **Still never driven, NINE runs running.** Run 33 removed the excuse that the culture defect might bear on it: it does **not** (the expertise is literal data on the events). **Re-read against DEPLOY STATE first — several likely retire on one read.** |
 | **Bestiary sections** (W29 ×3, Goldenport, Vorsk, Adversary ability wiring) | 6 | Untouched all marathon; each needs its own adversary import + staging. |
-| **`BENCH — Destruction`** | 1 | ⭐ **NEW and it is a RE-TEST — take it first.** Item 29 (PR #185, merged after this run) made a `kind: line` zone catch **allies** too, per ruling **R-5**. ENGINE-ONLY: the PM deploys it, so **hash-verify before driving** — the served hash will no longer be `06229ecc…`. |
-| **`BENCH — Green`** | 1 | The dark-veil half — see step 5. |
+| **Bench-results fixes** | 3 | The vision row is blocked on **R-56**, not on a table. The other two — **single-target picker** (Withering Ray with 2+ targets) and **AoE burst auto-target** — are genuinely drivable and cheap, and have now been deferred twice. |
+| **Adversary pack sync** | 2 | ⛔ **BLOCKED ON BEN** — all that is left is the bulk button, and a bulk sync rewrites Ben's campaign actors (outside hard rule 4). Do not re-attempt un-authorised. |
+| **Items-dump tranche** | 2 | **CAE burns** (needs a combat — `active: false` + `ui.combat.initialize`) and **Kindle's token-light half**. |
+| **Culture items** | 1 | Severity now settled (run 33). The row stays only as the **re-test after the fix**. |
+| **`BENCH — Green`** | 1 | 2bS-11's veil half — **re-blocked on the veil-lookup defect**, not on a scene. Do not rebuild the fixture until the fix lands. |
 
-**R-65, Job 6b and both R-64 halves are CLOSED — do not re-queue any of them.** ⚑ is now **21**, not 22:
-item 27 retired the `GM summon relay` row on ruling R-1 after this run.
+**Item 29's Fault Line row, R-65, Job 6b and both R-64 halves are CLOSED — do not re-queue any of them.**
 
-## Run 10 — the plan, in order
+## Run 11 — the plan, in order
 
-### 1. **Item 29's `Fault Line` re-test** (see above — hash-verify first, it is a fresh deploy)
+### 1. **The dark-veil rows, IF the lookup fix has landed** (otherwise skip straight to 2)
+The fixture is a known quantity now and costs ~3 calls: create a scene with `environment: {darknessLevel: 1,
+globalLight: {enabled: false}}`, **`view()` it, never activate**, import the Stalker fresh into `Edha Bench`,
+place it and an armed `Bench — Green` within 60 ft, delete the scene at the end. Then drive the pair
+(unlit → marker ON; walk into light → marker releases; manual toggle in light → left alone) and 2bS-11's
+suppression half.
+⚠️ **Run 33 left a SECOND, unnamed symptom here and it is your first job even if the lookup is fixed.** With
+an actor-level marker the sweep fired **once** and then went quiet: six further triggers — three teleport
+moves (`"x" in changes` verified true), two `updateScene` environment changes, one fresh `createActiveEffect`
+— produced no card and no change, with `activeGM = Bench (isSelf)`, zero console errors, zero AE churn, and
+the illumination predicate still evaluating **false** at the sweep's own +300 ms timing. **Hook
+`updateActiveEffect` BEFORE the first trigger** — the engine's functions are module-scoped, so that is the
+only way to see what re-disables it.
 
-### 2. **The two genuinely-drivable `# Bench-results fixes` rows** (cheapest real wins on the board)
-Both are single-actor, single-cast, no player client needed:
+### 2. **The two genuinely-drivable `# Bench-results fixes` rows** (cheapest real wins, deferred twice now)
+Both single-actor, single-cast, no player client:
 - **Single-target picker resolves** — target 2+ tokens, use **Withering Ray** (Black): the picker card
   appears, **nothing is spent**, clicking a name narrows you to that one target, the card marks ✓ and the
-  talent rolls once. (Verdant Mend is the same shape if you want the control.) ⚠️ **The picker renders in the
-  engine's AppV1 window** (`div.app.window-app`, no `<dialog>`) — the known trap that once produced a false
-  "silent no-op" report. Sample **both** DOM shapes.
+  talent rolls once. ⚠️ The picker renders in the engine's **AppV1** window (`div.app.window-app`, no
+  `<dialog>`) — sample both DOM shapes.
 - **AoE burst auto-target** — place any burst (e.g. Flame Surge) and assert the caught tokens end up actually
   **targeted** (`game.user.targets`); this retarget was silently no-opping on v13.
 
-### 3. **The four July sections' remaining 11 rows — the wizard block is now the whole point**
-Runs 26–32 have all skipped `# Character-creation wizard v2` (6 🤖). Run 32 cleared the *other* three
-sections down to their real blockers, so **the wizard block is what is left and there is no cheaper
-alternative to hide behind.** Re-read each row against DEPLOY STATE (2026-07-26 — every wizard row predates
-it) and the live pack **before** staging; several are likely already answered by a later deploy and retire at
-the cost of one read. The **wizard-as-a-player walkthrough** pairs naturally with a player client if you open
-one — it is large, so only start it if you can finish it.
+### 3. **The wizard block — 6 🤖, never driven in nine runs, and there is nothing left to hide behind**
+Run 32 cleared the other July sections to their real blockers and run 33 removed the culture-defect
+uncertainty. Re-read each row against **DEPLOY STATE** (2026-07-26 — every wizard row predates it) and the
+live pack **before** staging; several are likely already answered by a later deploy and retire at the cost of
+one read. The **wizard-as-a-player walkthrough** pairs with a player client — it is large, so only start it if
+you can finish it.
 
-### 4. **R-63's same-side regression — 1–2 more shapes** (drivable today, no player client)
-One shape is proven (the `enemies-range` disposition filter skipped three adjacent friendlies).
-⚠️ **Run 32 gives you a second one nearly free**: `Unravel Everything`'s `enemies-range` fill correctly took
-**only the two hostile bench targets** while four friendly bench PCs sat inside the same 60 ft — worth
-recording formally if you re-cast it. Otherwise pick from **Reroll Reaction** against a marked foe, or a
-**Fate snare** stepped on by an ally vs. an enemy. **Not the aura shape** unless you have budget —
-`Mantle of the Aspirant` is the only `affects`-carrying aura and it sits on `edha-watch-rule`.
+### 4. **The items-dump pair** (CAE burns + Kindle's token-light half)
+Both console-runnable. CAE burns needs the `active: false` combat + `ui.combat.initialize({combat})` pattern —
+**never activate a bench combat**.
 
-### 5. **The `edha-dark-veil` rows — build the scene (still not started, SEVEN runs running)**
-Nothing on the Playtest Map can ever be unlit, so Green 2bS-11's veil half and the Stalker veil auto-toggle
-are structurally unreachable there. **A bench-CREATED scene with darkness — viewed, never activated — is the
-drivable shape**; delete it at the end. `Playtest Map (Copy)` has `globalLight.enabled === false` but it is
-**Ben's**. The fixture is identified: the `edha-dark-veil` adversary is the **Stalker**
-(`edha-content.edha-adversaries` id `l924euoyx3pYFk2T`, `effectName: "Veil"`) — import fresh, put it on an
-unlit square within 60 ft of an armed Green, and the positive/negative pair is one flow.
+### 5. **R-63's same-side regression — 1–2 more shapes**
+One shape is proven (the `enemies-range` disposition filter skipped three adjacent friendlies) and run 32
+handed over a second nearly free (`Unravel Everything`'s fill took only the two hostiles with four friendlies
+inside the same 60 ft). Pick from **Reroll Reaction** against a marked foe, or a **Fate snare** stepped on by
+an ally vs. an enemy. **Not the aura shape** unless you have budget.
 
 ## Known blockers — do not fight these
 
-- **Job 6a (pass 5.2), 2bM-1 and R-62's audience rows** need **zero GM clients**. The bench joins as a GM and
-  Ben's `Gamemaster` has been connected through runs 24–32 (measured again this run:
-  `["Bench","Gamemaster","PlayerBench"]`). Record BLOCKED with the blocker named — never re-file as ⚑. **This
-  needs Ben to disconnect `Gamemaster` for one window**; worth asking rather than re-attempting.
-- **The two `# Adversary pack sync` rows need BEN, not a bench run** (new, run 32) — see the table above.
-- **The "Adversary tokens see like PCs" row is waiting on `EDHA_RULINGS.md` R-56**, not on a table (new,
-  run 32). Do not re-stage it; it re-measures only after R-56 is answered.
-- **Job 6b is CLOSED** (run 31). **Both R-64 halves are SETTLED** (run 29). **R-65 is CLOSED** (run 32).
+- **Job 6a (pass 5.2), 2bM-1 and R-62's audience rows** need **zero GM clients**. Ben's `Gamemaster` has been
+  connected through runs 24–33 (measured again this run: `["Bench","Gamemaster"]`). Record BLOCKED with the
+  blocker named — never re-file as ⚑. **This needs Ben to disconnect `Gamemaster` for one window.**
+- **The two `# Adversary pack sync` rows need BEN, not a bench run.**
+- **The "Adversary tokens see like PCs" row is waiting on `EDHA_RULINGS.md` R-56**, not on a table.
+- **2bS-11's veil half and the Stalker veil row are blocked on the veil-LOOKUP defect**, not on the map. The
+  map problem is solved.
 - **`game.combat` is the client's VIEWED combat** — an `active: false` bench combat plus
   `ui.combat.initialize({combat})` satisfies every "needs the active combat" row. **Never activate a bench
-  combat.** (Runs 31 and 32 created none at all.)
+  combat.** (Runs 31–33 created none at all.)
 - **Observer/rAF-dependent state is stale on this bench** — observers (run 22), `canvas.animatePan` (run 26),
   animated token moves (runs 29/32) and the vision polygon (run 30). Use `canvas.pan()`, `teleport: true`,
   and `canvas.perception.update(...)` + a ticker pump before reading `isVisible`.
 - **`canvas.mousePosition` is frozen at (0,0)** with the pane hidden — shadow just that getter and declare it.
+  Run 33's recipe drives `edhaPickPoint` in three lines.
 - **SEVEN tokens on the Playtest Map are ORPHANS, not three**, and only three were ever the bench's.
-  Re-measured run 32: **zero bench orphans remain**. Do not repair or delete the other four —
+  Re-measured run 33: **zero bench orphans remain**. Do not repair or delete the other four —
   `The Forgemaster`, `The Demolisher`, `PC Tester`, `Cragdrake Whelp Pack (1)`.
 - **Do NOT run `edha.fixPcTokens()`.** It loops every `character` actor in the world, Ben's two PCs included.
-- **Two bench PCs carry a STALE `Guardian Stance (+1 Deflect)` aura** (`Bench — Chaos`, `Bench — Life`).
-  Explained at run 32: an actor with no token is never swept, so it holds the aura from an earlier run, and
-  **giving it a token makes the engine correctly delete the effect**. Expect that, restore it, and do not
-  report it as drift. Deleting them for good is Ben's call.
+- **Two bench PCs carry a STALE `Guardian Stance (+1 Deflect)` aura** (`Bench — Chaos`, `Bench — Life`) — an
+  actor with no token is never swept, so giving it a token makes the engine correctly delete the effect.
+  Expect it, restore it, do not report it as drift. Deleting them for good is Ben's call.
 
 ## Harness traps — each has already produced or nearly produced a false result
 
-- **`animate: false` can commit a PARTIAL token position** — no error, promise resolved, token a few pixels
-  along the path. Use `{animate: false, teleport: true}` and **read the destination back and compare it to
-  what you asked for**. (Run 32 — it cost an Attunement-Range count of 1 where 2 was staged.)
-- **The setup script's IIFE is fire-and-forget and a re-run can exceed 30 s.** An empty warn buffer is not a
-  failure; judge idempotency from `game.actors.size` / `game.items.size` / `scene.tokens.size`. (Run 32 fired
-  it three times for exactly this reason.)
+- **`actor.effects` omits item-transferred AEs** — every adversary marker in `data/adversary-effects.json` is
+  `transfer: true`. Print `actor.effects` and `[...actor.allApplicableEffects()]` side by side before calling
+  an adversary marker mechanic unstageable. (Run 33.)
+- **The engine's functions are MODULE-SCOPED** — `edhaDarkVeilSweep`, `edhaTokensInLine`,
+  `edhaPointIlluminated`, `edhaActorRulesOf` are all `undefined` at the console. Re-implement a helper inline
+  to check what it would return, and attach observing hooks before the trigger. (Run 33.)
+- **A talent that drops dangerous terrain damages your own caster** and pollutes the HP arithmetic — read the
+  per-target *difference* against the card's single burst number, and delete the Region between casts. (Run 33.)
+- **`animate: false` can commit a PARTIAL token position** — use `{animate:false, teleport:true}` and **read
+  the destination back**. (Run 32.)
+- **The setup script's IIFE is fire-and-forget and can exceed 30 s** — judge idempotency from
+  `game.actors.size` / `game.items.size` / `scene.tokens.size`, not from the log. (Runs 32, 33.)
 - **`{id, name}` effect snapshots detect drift but cannot repair it.** Snapshot
   `actor.effects.map(e => e.toObject())`. (Run 32.)
 - **A dotted flag delete leaves the PARENT object behind as `{}`** — re-diff after restoring and delete any
-  parent the snapshot did not have. (Runs 31 and 32.)
+  parent the snapshot did not have. (Runs 31–33; run 33's `bpHits` restore is the worked example.)
 - **Deleting a hazard REGION cascades its Drawing, and a follow-up Drawing delete THROWS and aborts the rest
-  of your call.** Delete Regions only, then re-read. Put irreplaceable world-mutating steps *before* any
-  delete that might throw. (Run 31.)
-- **The VISION POLYGON is stale with the pane hidden and it fakes a sight defect.** Force
-  `canvas.perception.update({initializeVision: true, refreshVision: true, refreshLighting: true})` **and pump
-  the ticker** before believing any visibility reading. (Run 30.)
+  of your call.** Delete Regions only, then re-read. (Runs 31, 33.)
 - **A `javascript_tool` TIMEOUT DOES NOT CANCEL THE SCRIPT.** Fire the driver in one call, read the result in
-  the next.
-- **`item.use()` never settles while a dialog is open** — and a `skill_test` talent puts up **two**
-  (consume, then roll), neither of them a `<dialog>`. Run 32's `__cast()` helper handles both in one loop;
-  copy it.
+  the next — and late in a run, stop writing sampling loops at all. (Runs 26, 28–30, 33.)
+- **`item.use()` never settles while a dialog is open** — a `skill_test` talent puts up **two**, neither a
+  `<dialog>`. Run 32's `__cast()` polling loop handles both; run 33 folded the `#board` pointerdown into the
+  same loop.
 - **Read the notification log before writing FAIL.** *"does not have enough actions"* is a silent no-op that
-  does **not** stop the talent — every talent driven in runs 31 and 32 warned and every one still fired.
-- **A skill-test talent will simply MISS sometimes.** Spreading Omen rolled 7 vs COG 14 with everything
-  staged right. Top the resource up and re-cast; only call FAIL when the *success* branch misbehaves.
+  does **not** stop the talent — every talent driven in runs 31–33 warned and every one still fired.
+- **A skill-test talent will simply MISS sometimes.** Top the resource up and re-cast; only call FAIL when the
+  *success* branch misbehaves. (Run 33's Prone half needed a second cast for exactly this reason.)
 - **Never stage a status with `createEmbeddedDocuments`** — use `toggleStatusEffect`. (Run 28.)
-- **Pick the driver from the chokepoint:** `edha-deal-damage` / `edha-damage-rider` → `item.rollDamage()`;
-  `edha-on-hit` / `edha-gm-cue` / `edha-thorns` / `edha-damage-bonus` / the Colossus splash →
-  `applyDamage(list, {edhaSource, originatingItem})`. (Runs 27/28/30.)
-- **Verify the deploy by HASH from BOTH sides**, paired with `decodedBodySize` on the original `<script>`
-  entry.
+- **Verify the deploy by HASH from BOTH sides**, paired with `decodedBodySize` on the original `<script>` entry.
 
 ## Standing lessons
 
-- **Take the re-test block FIRST, every run.** Six runs running; re-tests measure roughly twice as dense.
-- **Stage each row off the PREVIOUS row's residue.** Run 32's R-65 cost three calls instead of a full setup
-  because Studied Mark had already placed the Insight that Death Mark's watch rule needed. Look for the chain
-  before building fresh fixtures.
-- **Open the player-client window EARLY.** Runs 30, 31 and 32 each got three or more results out of its one
-  setup.
-- **Drive the PLAYER half of a row whose GM half already passes.** Two engine defects in three runs lived
-  exclusively on the path a real player takes.
-- **Read the cards you did not come for.** Run 31's only engine defect was two adjacent chat cards
-  contradicting each other; run 32's only defect was ten validation errors logged while timing something else.
-- **Prove an ordering question with a PRE-LOADED state, not the end state.**
-- **Refuse to inherit the previous run's blocker — re-derive it.** Run 32 did this to four July sections and
-  three of them turned out not to be bench work at all.
+- **Take the re-test block FIRST, every run.** Seven runs running.
+- **Stage each row off the PREVIOUS row's residue.** Look for the chain before building fresh fixtures.
+- **Once a matched control has proven a root cause, WRITE THE RESIDUAL SYMPTOM DOWN AND MOVE ON.** Run 33 spent
+  ~20 calls past the point of proof chasing an intermittency it never named, and two whole plan steps went
+  undriven for it. The unnamed half is a fine first row for the next run.
+- **Refuse to inherit the previous run's blocker — re-derive it.** Runs 32 and 33 both did, and both times the
+  stated blocker was wrong: three July sections were not bench work at all, and the dark-veil rows were not
+  blocked on the map.
+- **Open the player-client window EARLY** if the run needs one — runs 30–32 each got three or more results out
+  of its one setup.
+- **Read the cards you did not come for.** Runs 31, 32 and 33 each found their only engine defect that way.
 - **Pick the flow by its EVENT, not by its talent**, and read the row's rule config out of
-  `data/authored/*.json` before staging — its `event`, and whether the row's named talent is the one that
-  actually carries the branch.
+  `data/authored/*.json` before staging.
 - **A row's own break/staging recipe can be wrong.** Verify it against the source before concluding anything.
 - **Only claim what your own logs support, and label inferences as inferences.**
