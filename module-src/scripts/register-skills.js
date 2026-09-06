@@ -4583,6 +4583,21 @@ for (const ctx of ["skill", "attack", "item"]) {
  * The borrowed action itself stays GM-run — the talent carries no payload rule at all, which is
  * exactly what makes H6 post its `note` instead. Do NOT re-add a turn-change hook here. */
 
+/* R-38 — the move veto's ANNOUNCE throttle. One whispered card per TOKEN per ROUND: a dragged
+ * path fires preUpdateToken once per waypoint and every one of them is refused, so an unthrottled
+ * card would post a wall of identical whispers for a single failed drag. Keyed on the round when
+ * there is a combat and on the combat-less encounter otherwise (`null` round = one card until a
+ * combat starts, which is the same "once per beat" the player experiences out of initiative).
+ * Pure but for the module-level ledger, which is passed in so a test can drive it. */
+const _edhaMoveVetoSaid = new Map();
+function edhaMoveVetoAnnounceGate(tokenKey, round = game.combat?.round ?? null, ledger = _edhaMoveVetoSaid) {
+  const key = String(tokenKey ?? "");
+  if (!key) return true;                       // no identity to throttle on — never swallow the card
+  const seen = ledger.get(key);
+  if (seen !== undefined && seen === round) return false;
+  ledger.set(key, round);
+  return true;
+}
 // The MOVE VETO (2bZ — was Dread Presence's name-keyed hook, rule-keyed now: the pass-Y shape). A
 // creature bearing the rule's status inside a rule owner's range cannot WILLINGLY move closer to
 // any of its allies — vetoed on the moving client (preUpdateToken runs there) with a warning
@@ -4621,7 +4636,18 @@ Hooks.on("preUpdateToken", (doc, changes, options) => {
       const dOld = Math.hypot(t.center.x - oldC.x, t.center.y - oldC.y);
       const dNew = Math.hypot(t.center.x - newC.x, t.center.y - newC.y);
       if (dNew < dOld - 1) {                                       // measurably closer to this ally
-        ui.notifications?.warn(`${live.item.name}: ${actor.name} is ${edhaConditionLabel(String(live.handler.moverStatus || "weakened")) || "Weakened"} and cannot willingly move closer to ${t.actor.name}. (Engine-forced movement bypasses this.)`);
+        const why = `${actor.name} is ${edhaConditionLabel(String(live.handler.moverStatus || "weakened")) || "Weakened"} and cannot willingly move closer to ${t.actor.name}. (Engine-forced movement bypasses this.)`;
+        ui.notifications?.warn(`${live.item.name}: ${why}`);
+        /* R-38 (Ben 2026-09-06 (a)): a refused move used to leave NOTHING but a transient toast on
+         * the mover's own client — three refused moves at bench run 21 read exactly like a broken
+         * range gate and cost the run real time. The veto now says so in chat, whispered to the
+         * mover's owners + the GMs, naming the talent that stopped it. Throttled per token per
+         * ROUND: a dragged path re-fires preUpdateToken for every waypoint, and one card per
+         * waypoint would be the same silence wearing a different costume. */
+        if (edhaMoveVetoAnnounceGate(doc.id ?? doc.uuid ?? actor.id)) {
+          ChatMessage.create({ whisper: edhaWhisperIds(actor), speaker: ChatMessage.getSpeaker({ actor }),
+            content: `<p>🚫 <strong>${live.item.name}</strong>: ${why}</p>` });
+        }
         return false;
       }
     }
