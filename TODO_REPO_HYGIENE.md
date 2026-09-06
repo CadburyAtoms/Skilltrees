@@ -104,7 +104,7 @@ gates green, docs updated. This is the largest item — do it alone in its own s
 
 ---
 
-## 5. [ ] Extend tests into the hook layer (fake actor/item → assert the write)
+## 5. [x] Extend tests into the hook layer (fake actor/item → assert the write) — DONE 2026-09-05, PR #TBD
 
 **Why:** `tests/engine-helpers.test.js` covers ~8 pure helpers of a ~19.7k-line engine (2026-09-05).
 The ~240 registered hooks — the actual game logic — are only smoke-tested ("loads
@@ -124,6 +124,28 @@ against stub documents.
 
 **Done when:** at least 3 hook-driven behaviors have write-asserting tests running
 in `node tests/run.js` and CI.
+
+**Shipped 2026-09-05.** `tests/harness.js` gained `fireHook(env, name, ...args)` — every recorded
+`Hooks.on`/`Hooks.once` registration for that hook, in true registration order (a single monotonic
+`seq` now spans both lists, because Foundry keeps them in ONE ordered array), awaited, results
+returned, throws propagated, `once` consumed — plus `mockItem` (rules on `system.events`, so the
+stub is the shape Foundry produces), an `update()` recorder on `mockActor`/`mockItem` that records
+AND applies, and `whisper` on `captureChat`. It replaces four hand-rolled loops with four different
+and silent semantics (`tests/harness.js`'s header names them); `pre-hook-client-split.test.js` is
+refactored onto it. The three behaviours, +34 cases, suite 608 → 642:
+
+1. **`cosmere-rpg.preUseItem`** — the document-driven single-target gate (`tests/hook-single-target-gate.test.js`):
+   the pre-cost veto, the whispered picker card, and the retarget write the click performs.
+2. **`cosmere-rpg.preApplyDamage`** — Temp HP absorption (`tests/hook-apply-damage-pre.test.js`):
+   the by-reference `damage.calculated` reduction, the `tempHp` flag (unset, not zeroed), the card.
+3. **`combatTurnChange`** — the timed-status expiry pass (`tests/hook-timed-status-expiry.test.js`):
+   the delete write, the target-/owner-relative catch-up stamp, and the one-applier GM gate.
+
+Each proven by a one-line engine mutation that fails the assertion and passes on revert. **Not
+done: the other ~237 hooks** — the next-highest-traffic uncovered paths are the `cosmere-rpg.useItem`
+arms and the applyDamage POST pass (`edhaWrapApplyDamage` is a method wrap, not a hook, so it needs
+a wrapper harness rather than `fireHook`). The house rule now lives in
+`.claude/skills/test-pass-fixes/SKILL.md` §"Ship a pinned regression — and how to fire a hook in a test".
 
 ---
 

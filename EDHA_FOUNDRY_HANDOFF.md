@@ -33,6 +33,60 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-05 DELTA — item 5: the test suite reaches the HOOK layer — `fireHook` + three write-asserting behaviours (**TOOLING-only — tests and one skill paragraph; NO engine change, no rebuild, no ⟳ Sync**).
+
+**Deploy class: TOOLING-only.** `module-src/` is untouched; nothing on Ben's machine changes.
+
+The suite covered ~8 *pure* helpers of a ~19.7k-line engine. The ~240 registered hooks — where the
+game logic actually lives — were only smoke-tested ("the engine loads and registers >100 hooks").
+Real verification was Ben, in Foundry. Four test files had each grown their own ad-hoc "fire the
+recorded hooks" loop, **with four different and silent semantics**: `refund-race` stops at the first
+`false` *and* `continue`s past a throw (an exception read as a pass), `picker-cancel-stamp` maps the
+whole chain but never awaits, `pre-hook-client-split` fires both phases of two clients with a shared
+`options` object, `temphp-scene-reset`/`cross-combat-scope` hand-loop `deleteCombat`.
+
+- **`tests/harness.js` now owns the driver.** `loadEngine` records a single monotonic `seq` across
+  `Hooks.on` and `Hooks.once` (Foundry keeps both in ONE ordered array, so the interleave is real
+  and now replayable). **`fireHook(env, name, ...args)`** runs every registration for that hook in
+  registration order, awaits each, returns the array of results, propagates throws, and consumes
+  `once`. It fires the WHOLE chain on purpose: a veto is `results.includes(false)`, and the rest
+  running is what catches a *later* handler on the same hook throwing or double-writing.
+  New stubs: **`mockItem`** (rules on `system.events`, so `hasEvents`/`enabledEvents` derive the way
+  a real talent does — iron rule 2b), an `update()` recorder on `mockActor`/`mockItem` that records
+  *and* applies, and `whisper` on `captureChat`'s records.
+- **Three hook-driven behaviours, write-asserted** (`tests/hook-*.test.js`, +34 cases → 642 total):
+  1. `cosmere-rpg.preUseItem` — the document-driven **single-target gate** (R1): the pre-cost veto,
+     the whispered picker card (one button per target, addressed by *token* id + item uuid), and the
+     retarget the click performs (`Token#setTarget` with `releaseOthers` on the first) plus the
+     re-use. Rename-still-fires and rule-deleted-stops-firing pin 2b in both directions.
+  2. `cosmere-rpg.preApplyDamage` — **Temp HP absorption**'s three writes: the *by-reference*
+     `damage.calculated` reduction the system reads back, the `flags.edha-content.tempHp` pool
+     (UNSET, never zeroed, when spent out), and the card. Healing/no-pool/stale-zero controls, plus
+     "this hook must not return `false`".
+  3. `combatTurnChange` — the **timed-status expiry pass**: the delete write, and the catch-up
+     stamp (target- vs owner-relative, intent consumed), the permanent-effect control (Predictive
+     Ward), and the **one-applier gate** — a second GM client and a player client write nothing.
+- `pre-hook-client-split.test.js` is refactored onto `fireHook` (the one file, to prove the API
+  fits); the other three keep their own loops for now.
+
+**Proven by mutation**, not by reading. Each behaviour's assertion was made to fail under a one-line
+engine mutation, then pass on revert: the gate's `return false` → `return` (2 fail), the
+`damage.calculated = incoming - absorbed` by-reference write → a local `const` (5 fail), and the
+expiry `await e.delete()` gated off (2 fail). `node scripts/gates.js` green.
+
+**No 🤖 rows and no ⚑.** Nothing here changes runtime behaviour, so there is nothing for the bench
+to re-verify. The house rule in `.claude/skills/test-pass-fixes/SKILL.md` now reads: a fix with a
+pure **or hook-reachable** root cause ships WITH a pinned case, and that section shows how (the two
+gotchas that will otherwise cost a pass: `void`-dispatched writes need an `await sleep(0)` before
+you assert, and vm-realm objects need the harness's `eq()`, never `deepStrictEqual`).
+
+**Still open** (item 5 deliberately shipped three, not the hook layer): ~237 registered hooks have
+no write-asserting coverage. The next-highest-traffic uncovered paths are the `cosmere-rpg.useItem`
+arms and the applyDamage POST pass (`edhaWrapApplyDamage` — a method wrap, not a hook, so it needs a
+wrapper harness rather than `fireHook`).
+
+---
+
 ## 2026-09-05 DELTA — item 23: the engine's 3,700 unbannered lines get section banners, and `ENGINE_INDEX.md` gets a section map (**comment-only; the PM re-pushes the file at the next deploy**).
 
 **Deploy class: ENGINE-ONLY in the trivial sense — the file changes, behaviour does not.** Nothing

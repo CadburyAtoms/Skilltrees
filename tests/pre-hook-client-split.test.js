@@ -34,7 +34,7 @@
  */
 "use strict";
 const assert = require("assert");
-const { loadEngine, mockActor, stageWorld, withStubs, readEngineSource, codeOnly } = require("./harness.js");
+const { loadEngine, fireHook, mockActor, stageWorld, withStubs, readEngineSource, codeOnly } = require("./harness.js");
 
 const env = loadEngine();
 
@@ -76,10 +76,10 @@ function tokenDocFor(actor, pos = FROM) {
 const PLAYER = { user: { isGM: false, id: "player-1" }, users: { activeGM: { isSelf: false } } };
 const GM = { user: { isGM: true, id: "gm-1" }, users: { activeGM: { isSelf: true } } };
 
-const hooksNamed = (name) => env.__hooks.on.filter((h) => h.name === name).map((h) => h.fn);
-
 /* Run one token move across two clients and report every edhaDropHazard call the applying client
- * made. EVERY registered hook of each phase fires, exactly as it would in a browser.
+ * made. EVERY registered hook of each phase fires (harness `fireHook`, TODO item 5 — this file's
+ * own hand-rolled `hooksNamed` loop is what that helper was generalized from), exactly as it
+ * would in a browser.
  * `sameClient: true` collapses both onto ONE document object — the GM-moves-it-themselves control
  * the bench measured as passing. */
 async function moveAcrossClients({ initiator, applier, actor, sameClient = false, changes } = {}) {
@@ -91,7 +91,7 @@ async function moveAcrossClients({ initiator, applier, actor, sameClient = false
   const initDoc = tokenDocFor(actor, FROM);
   let world = stageWorld(env, { ...initiator, actors: [], placeables: [] });
   try {
-    for (const fn of hooksNamed("preUpdateToken")) fn(initDoc, change, options, initiator.user.id);
+    await fireHook(env, "preUpdateToken", initDoc, change, options, initiator.user.id);
   } finally { world.undo(); }
 
   // --- applying client: a different object for the same token (unless sameClient), post-move.
@@ -101,7 +101,7 @@ async function moveAcrossClients({ initiator, applier, actor, sameClient = false
   world = stageWorld(env, { ...applier, actors: [], placeables: [] });
   try {
     await withStubs(env, { edhaDropHazard: (...args) => { dropped.push(args); } }, async () => {
-      for (const fn of hooksNamed("updateToken")) fn(applyDoc, change, options, initiator.user.id);
+      await fireHook(env, "updateToken", applyDoc, change, options, initiator.user.id);
     });
   } finally { world.undo(); }
 
