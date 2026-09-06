@@ -139,6 +139,48 @@ Four `Frostbinder` `braced` statuses and two `weakened` sit on Ben's campaign ad
 never controlled or targeted those tokens, and — per the snapshot gap above — that is an account of
 what the run did, not a snapshot diff. Bench chat can be flushed (the run added ~103 messages).
 `Bench` was logged out as the last in-world act and is selectable on `/join` again.
+## 2026-09-06 — Item 58: Volatile Strike rider scope, Withering Touch duration prose, The Final Study re-key (R-23, R-28, TODO 41) (**DATA → pack REBUILD + ⟳ Sync, Ben only**)
+
+Three small authored-data fixes, all Ben-approved 2026-09-06, bundled per the PM's batch:
+
+- **R-23 (a) — Volatile Strike is now a true rider on ANY melee hit.** Its `edha-on-hit` rule
+  (`TKmyXVyFhGYWryKv` in `data/authored/leyline-red.json`) previously carried no `whenDealer` field,
+  so `edhaOnHitIsItemSpecific` fell to the derived default (item-specific, since it is `skill_test`
+  with its own damage formula) and only ever fired on its OWN roll. `whenDealer: "any"` is now set
+  explicitly — a settleable-from-the-Events-tab field change, no engine code touched. A standalone
+  use still self-offers (accepted in the ruling).
+- **R-28 (a) — Withering Touch's "start of your next turn" prose was wrong; the engine, the
+  auto-applied strike bonus, and the live heal-cut chat card (`register-skills.js:1536`, which
+  already prints "until the end of … next turn") all say END.** Fixed the authored `description`
+  (value/chat/short) and the `WitherNote000000` arming-card text in
+  `data/authored/deity-death.json`, plus the source prose in `data/domain.json`. Nothing else on
+  the entry changed.
+- **TODO 41 — The Final Study's stale docId re-keyed.** ⚠️ **Item 18's stated "current seed"
+  (`MQvIkCSK7fIHjnZE`) does not reproduce.** Re-deriving `fid("talent:deity/Gnothis:The Final
+  Study")` by hand, from a live scratch build's assigned item `_id`, AND by rebuilding item 18's
+  own commit (`4500f95`) with its own `data.js`/`domain.json` snapshot all agree on
+  **`yrIgDwup7iBdPq07`** — used that value instead. `docId` in `data/authored/deity-knowledge.json`
+  rewritten to it; the overlay's own content is untouched, so the built pack does not move (see
+  proof below).
+
+**Proof method note:** the raw LevelDB pack directories are NOT byte-stable build-to-build even
+with zero source changes — `_stats.createdTime`/`modifiedTime` are stamped with the wall clock at
+build time (confirmed by building the same data twice). Parity was instead proven on
+**document CONTENT** via `edha-pack-io.readPack` + `stableStringify`, with only those two `_stats`
+fields stripped: (a) building with the STALE docId restored (R-23/R-28 still applied) reproduces
+the "matched by name: 1 / The Final Study" report line, and its content hash is IDENTICAL to the
+build with the corrected docId — the re-key moves nothing in the pack; (b) `edha-leyline` and
+`edha-deity` are the only two pack hashes that move at all across the full before/after build, and
+a field-level diff shows exactly Volatile Strike's `system.events` (`whenDealer` added) and
+Withering Touch's `system.description` + `WitherNote000000.text` — nothing else, in any pack.
+`node scripts/foundry-build.js all` prints **zero** "authored overlays matched by name" lines
+(one today, on `main`).
+
+**🤖 re-test (bench queue) — checklist Red row:** confirm a real sword hit offers Volatile Strike's
+Investiture prompt, and a standalone cast of Volatile Strike itself still self-offers harmlessly
+(expected, per the ruling). Checklist row **2bW-1**'s duration clause is retired — its own
+mechanical halves already passed at bench run 15; only the wording disagreed.
+
 ## 2026-09-06 — R-22 (item 60): build guard rejects any `min ≠ max` consume entry (**TOOLING-only** — no engine change, no data change, no pack rebuild)
 
 `edhaConsumeList` (register-skills.js) reads `value.min` as both the deduct amount AND the refund
