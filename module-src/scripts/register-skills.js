@@ -729,6 +729,40 @@ function edhaNextTurnCoord(combat, ti) {
   const R = combat.round ?? 1, T = combat.turn ?? 0;
   return ti > T ? { round: R, turn: ti } : { round: R + 1, turn: ti };   // strictly after now → the creature's next turn
 }
+/* ====================== WHERE AN EFFECT LIVES (fix pass 5, 2026-09-06) ==========================
+ * `actor.effects` is NOT "the effects on this creature" — it is only the ones EMBEDDED IN THE ACTOR.
+ * An ActiveEffect authored on a talent or on an adversary TRAIT with `transfer: true` stays embedded
+ * in that ITEM; Foundry surfaces it through `Actor#allApplicableEffects()` (v13 `client/documents/
+ * actor.mjs`: yield every actor effect, then every item effect whose `transfer` is set — and
+ * cosmere-rpg 2.1.0 sets `CONFIG.ActiveEffect.legacyTransferral = false`, so the item half really is
+ * yielded). `Actor#statuses` is rebuilt from `allApplicableEffects()` in `applyActiveEffects()`, and
+ * THAT is what makes the mismatch invisible: the status shows on the creature, the token and the
+ * sheet while its effect is absent from the collection the engine searched.
+ *
+ * Shipped consequence (bench run 33): the Stalker's `Veil` marker is `transfer: true` on the `Veil`
+ * trait, so `edhaDarkVeilSweep`'s `actor.effects` lookup resolved `undefined` every time and the
+ * veil has never auto-toggled — on any map, on any Stalker, since the sweep shipped. A hand-made
+ * ACTOR-level copy of the identical AE made the sweep fire, which is the matched control proving the
+ * LOOKUP was the defect and the illumination test was innocent.
+ *
+ * `edhaAllEffects(actor)` is the widened read. Deliberately NOT Foundry's `appliedEffects` getter,
+ * which filters on `effect.active` (`!disabled && !isSuppressed`): every marker in this family is
+ * stored DISABLED and the engine's whole job is to find it and switch it on, so `appliedEffects`
+ * would have been exactly as blind as `actor.effects`.
+ *
+ * ⚠️ REACH FOR THIS ONLY WHEN THE EFFECT COULD HAVE BEEN AUTHORED ON AN ITEM. An effect the engine
+ * itself created on the actor — every `flags.edha-content.*` buff, marker, stance, counter and
+ * timed status — can never be item-transferred, and widening those reads would be a NEW bug:
+ * `update()` / `delete()` on a yielded ITEM effect writes to the item, permanently altering that
+ * creature's copy of the talent or trait. The site-by-site verdict table is in the 2026-09-06
+ * FIX PASS 5 handoff delta. */
+function edhaAllEffects(actor) {
+  try {
+    if (typeof actor?.allApplicableEffects === "function") return [...actor.allApplicableEffects()];
+  } catch (e) { /* fall through to the actor-level read */ }
+  try { return [...(actor?.effects ?? [])]; } catch (e) { return []; }
+}
+
 /* Statuses that auto-expire at the END of the affected creature's next turn NO MATTER HOW THEY WERE
  * APPLIED — including a GM hand-toggling the icon on the token HUD. Weakened (Black disadvantage)
  * and Immobilized (Sovereign of Solitude's movement-stop) both ride this.
@@ -1044,7 +1078,11 @@ function edhaIsIsolated(actor, tok = null) {
   try {
     // Chaos (Maelith) — INFLICTED Isolation counts the same as positional. Positional marker icons
     // (flags.edha-content.isoMarker, placed by the sync below) are display-only and must NOT feed back.
-    for (const e of (actor?.effects ?? []))
+    // edhaAllEffects (fix pass 5): `actor.statuses` is built from allApplicableEffects(), so a
+    // trait-transferred `isolated` reads as ON the creature while being absent from actor.effects.
+    // Read-only scan — the marker find/delete below stays actor-level on purpose (it owns what it
+    // created, and deleting a yielded ITEM effect would strip the trait).
+    for (const e of edhaAllEffects(actor))
       if (e.statuses?.has?.("isolated") && !e.getFlag?.("edha-content", "isoMarker")) return true;
     tok = tok ?? edhaCasterToken(actor) ?? (actor?.isToken ? actor.token?.object : null);
     if (!tok) return false;
@@ -1075,7 +1113,7 @@ async function edhaSyncIsolatedMarkers() {
       const marker = a.effects?.find?.(e => e.getFlag?.("edha-content", "isoMarker"));
       const inCombat = live.some(c => (c.turns ?? []).some(x => (x.tokenId && x.tokenId === t.id) || x.actorId === a.id));
       const dead = (a.system?.resources?.hea?.value ?? 1) <= 0;
-      const inflicted = (a.effects ?? []).some?.(e => e.statuses?.has?.("isolated") && !e.getFlag?.("edha-content", "isoMarker"));
+      const inflicted = edhaAllEffects(a).some(e => e.statuses?.has?.("isolated") && !e.getFlag?.("edha-content", "isoMarker"));   // must agree with edhaIsIsolated's scan (fix pass 5)
       const want = inCombat && !dead && !inflicted && edhaIsIsolated(a, t);
       if (want && !marker) {
         try {
@@ -9979,7 +10017,10 @@ async function edhaDarkVeilSweep() {
       const a = tok.actor; if (!a) continue;
       for (const { item: tal, handler: h } of edhaActorRulesOf(a, "edha-dark-veil")) {
           const effName = h.effectName || tal.name;
-          const eff = [...(a.effects ?? [])].find(e => String(e.name || e.label || "").startsWith(effName));
+          // edhaAllEffects, NOT a.effects (fix pass 5, bench run 33): the marker is a MARKER — it is
+          // authored on the talent/trait that carries the rule, so `transfer: true` puts it on the
+          // ITEM and out of `actor.effects` entirely. See the "WHERE AN EFFECT LIVES" banner.
+          const eff = edhaAllEffects(a).find(e => String(e.name || e.label || "").startsWith(effName));
           if (!eff) continue;
           const unlit = !edhaPointIlluminated(tok.center.x, tok.center.y);
           const suppressed = unlit && edhaVeilSuppressed(tok);   // only worth computing when the veil would be up
@@ -20267,7 +20308,7 @@ Hooks.once("ready", () => {
       bakedEffects: pj(h.bakedEffectsJson), extraItems: pj(h.extraItemsJson),
     });
   };
-  const api = { syncNow: edhaSyncNow, syncActorTalents: edhaSyncActorTalents, syncAllCharacters: edhaSyncAllCharacters, syncAdversary: edhaSyncAdversaryActor, syncAllAdversaries: edhaSyncAllAdversaries, setTempHp: edhaSetTempHp, getTempHp: edhaGetTempHp, summon: summonByTalent, showRange: edhaShowRange, aoe: edhaPlaceAoe, drawMana: edhaDrawMana, grantDrawMana: edhaGrantDrawMana, resetTriggers: edhaResetTriggers, fixSettings: edhaFixSettings, clearKindleLights: edhaClearKindleLights, refreshDefBuffs: edhaRefreshDefBuffs, migrateDerivations: edhaMigrateDerivations, fixPcTokens: edhaFixPcTokens, grantStartingKit: edhaGrantStartingKit, creationWizard: edhaCreationWizard, newCharacter: edhaCreatorNewCharacter, isIsolated: edhaIsIsolated, toggleStatus: edhaToggleStatus, raiseStakes: edhaRaiseStakesApi, rally: edhaRallyApi, skipBudget: (v) => { globalThis.edhaSkipBudget = !!v; return globalThis.edhaSkipBudget; }, debug: edhaSetDebug, debugSave: edhaDebugSave, debugsave: edhaDebugSave };   // lowercase alias — Ben typed edha.debugsave() at the 07-12 bench and got a TypeError
+  const api = { syncNow: edhaSyncNow, syncActorTalents: edhaSyncActorTalents, syncAllCharacters: edhaSyncAllCharacters, syncAdversary: edhaSyncAdversaryActor, syncAllAdversaries: edhaSyncAllAdversaries, setTempHp: edhaSetTempHp, getTempHp: edhaGetTempHp, summon: summonByTalent, showRange: edhaShowRange, aoe: edhaPlaceAoe, drawMana: edhaDrawMana, grantDrawMana: edhaGrantDrawMana, resetTriggers: edhaResetTriggers, fixSettings: edhaFixSettings, clearKindleLights: edhaClearKindleLights, refreshDefBuffs: edhaRefreshDefBuffs, migrateDerivations: edhaMigrateDerivations, fixPcTokens: edhaFixPcTokens, grantStartingKit: edhaGrantStartingKit, creationWizard: edhaCreationWizard, newCharacter: edhaCreatorNewCharacter, isIsolated: edhaIsIsolated, toggleStatus: edhaToggleStatus, darkVeilSweep: edhaDarkVeilSweep, allEffects: edhaAllEffects, raiseStakes: edhaRaiseStakesApi, rally: edhaRallyApi, skipBudget: (v) => { globalThis.edhaSkipBudget = !!v; return globalThis.edhaSkipBudget; }, debug: edhaSetDebug, debugSave: edhaDebugSave, debugsave: edhaDebugSave };   // lowercase alias — Ben typed edha.debugsave() at the 07-12 bench and got a TypeError
   const mod = game.modules?.get("edha-content");
   if (mod) mod.api = api;
   globalThis.edha = Object.assign(globalThis.edha || {}, api);
