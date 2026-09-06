@@ -58,12 +58,12 @@ before driving, and record the rows NOT-DEPLOYED rather than FAILED if it has no
 focus-spend misclassification as a 28a failure — that is **28b**, a separate item still open, and R-4 stays
 open in `EDHA_RULINGS.md` until both halves are in and benched.
 The re-test block has measured roughly twice as dense as scattered rows for **seven runs running** — take it
-first, every run. (Run 33's own defect, the veil lookup, has **not** been fixed yet; if the PM lands it too,
-that re-test joins this block and is cheap, because run 33 wrote the whole fixture recipe down.)
+first, every run. **And there is now a SECOND re-test block behind it: fix pass 5 landed the veil-lookup fix
+and the culture registration, both ENGINE-ONLY — see step 0b.**
 
-## ❌ The defect run 33 found — for `test-pass-fixes`, root cause proven with a matched control
+## ✅ The defect run 33 found — **FIXED 2026-09-06 by fix pass 5** (diagnosis kept; re-test is step 0b)
 
-**`edhaDarkVeilSweep` can never find the Stalker's `Veil` marker.** The sweep resolves it as
+**`edhaDarkVeilSweep` could never find the Stalker's `Veil` marker.** The sweep resolves it as
 `[...(a.effects ?? [])].find(e => e.name.startsWith(effName))` — **actor-level effects only**. The `Veil` AE
 is defined on the `Veil` **trait item** with `transfer: true` (`data/adversary-effects.json`), so it lives in
 `actor.allApplicableEffects()` with `parent: "Veil"` and **`actor.effects` is empty**. Measured on Ben's
@@ -72,8 +72,11 @@ the path is fine — the trait carries `adversaryTalent: true` and `enabledEvent
 handler — and with a hand-made **actor-level** copy of the identical AE the sweep fired correctly and posted
 the "marker is ON (auto)" card. `data/adversaries.json` holds the **only** `edha-dark-veil` rule in the repo,
 so the blast radius is the Stalker alone.
-**Two fixes: widen the lookup to `allApplicableEffects()` / `appliedEffects` (ENGINE-ONLY), or move the
-marker to an actor-level AE (REBUILD).** ⚠️ A **second, unnamed** symptom rides with it — see step 1.
+**FIXED (ENGINE-ONLY, F5):** the lookup now goes through `edhaAllEffects(actor)` →
+`allApplicableEffects()`. NOT `appliedEffects` — that getter filters on `effect.active`, and the
+marker is stored DISABLED, so it would have been just as blind. The marker was NOT moved to an
+actor-level AE (that would have been a REBUILD; `data/adversary-effects.json` is untouched). ⚠️ A **second, unnamed** symptom rode with it; the FIX PASS 5 delta §2 root-causes it from source as a
+probe artifact and ranks three hypotheses with the measurement that separates them — see step 0b.
 
 ## Where the 33 open 🤖 rows are
 
@@ -86,8 +89,8 @@ marker to an actor-level AE (REBUILD).** ⚠️ A **second, unnamed** symptom ri
 | **Bench-results fixes** | 3 | The vision row is blocked on **R-56**, not on a table. The other two — **single-target picker** (Withering Ray with 2+ targets) and **AoE burst auto-target** — are genuinely drivable and cheap, and have now been deferred twice. |
 | **Adversary pack sync** | 2 | ⛔ **BLOCKED ON BEN** — all that is left is the bulk button, and a bulk sync rewrites Ben's campaign actors (outside hard rule 4). Do not re-attempt un-authorised. |
 | **Items-dump tranche** | 2 | **CAE burns** (needs a combat — `active: false` + `ui.combat.initialize`) and **Kindle's token-light half**. |
-| **Culture items** | 1 | Severity now settled (run 33). The row stays only as the **re-test after the fix**. |
-| **`BENCH — Green`** | 1 | 2bS-11's veil half — **re-blocked on the veil-lookup defect**, not on a scene. Do not rebuild the fixture until the fix lands. |
+| **Culture items** | 1 | ⭐ **Fixed (fix pass 5) — this is now a RE-TEST row, in step 0b.** The ten nations register at `init`; no rebuild. |
+| **`BENCH — Green`** | 1 | ⭐ **UNBLOCKED (fix pass 5) — 2bS-11's veil half is runnable, in step 0b.** Stage it off the Stalker row as its positive control. |
 
 **Item 29's Fault Line row, R-65, Job 6b and both R-64 halves are CLOSED — do not re-queue any of them.**
 
@@ -96,6 +99,33 @@ marker to an actor-level AE (REBUILD).** ⚠️ A **second, unnamed** symptom ri
 ### 0. **Item 28a's five out-of-combat-scope rows** — the re-test block, first, always
 See above. Hash-verify the deploy, then drive all five together — they share one staging idea (no combat, or
 two combats) and the **negative control is the row that matters most**.
+
+### 0b. **Fix pass 5's three rows** — the second re-test block, straight after step 0's five
+
+**Landed 2026-09-06, ENGINE-ONLY (F5), no pack rebuild on either half** — so hash-verify the served
+`register-skills.js` from both sides before driving, and record NOT-DEPLOYED rather than FAILED if it has not
+landed. Read the `2026-09-06 DELTA — FIX PASS 5` block at the top of `EDHA_FOUNDRY_HANDOFF.md` first; it
+carries the `actor.effects` verdict table and the ranked hypotheses for run 33's second symptom.
+
+- **`Veil auto-toggle (Stalker)`** — the run-33 defect is fixed: the sweep now resolves its marker through
+  `edhaAllEffects(actor)` (`Actor#allApplicableEffects()`), so an item-transferred `Veil` is reachable at
+  last. Drive the **SHIPPED trait AE only** — ⚠️ do **not** hand-create an actor-level copy this time; that
+  control is the leading explanation of the unexplained second symptom.
+- **`2bS-11 — Natural Order`, veil half** — unblocked by the same fix; stage it off the row above as its
+  positive control, then bring an armed Green into range.
+- **`Culture items load CLEAN`** — the ten nations register at `init`, which makes the already-built pack
+  valid with **no rebuild**. Three console checks: no validation errors on `getDocuments()`, every culture's
+  `_source.system.id` is its own slug rather than `"none"`, and a culture-type talent-tree prerequisite can
+  actually name a nation. **This is the one claim no headless test can make** — the fix turns on our `init`
+  callback running before the culture DataModel's schema is built.
+
+⚠️ **Two things that will otherwise cost you the row.** (1) `edha.darkVeilSweep()` and
+`edha.allEffects(actor)` are now on the console API — run 33 could not instrument a module-scoped function,
+and this is the answer. Log `actor.effects` and `[...actor.allApplicableEffects()]` **side by side, keyed by
+`_id`, never by name**, at every trigger. (2) **A succeeded sweep is a NO-OP.** Once the marker is up and the
+square is still unlit, both branches decline: no card and no write is the CORRECT result. Run 33's "six
+further triggers produced nothing" is very probably exactly that, so do not read silence as a failure —
+read the ids.
 
 ### 1. **The dark-veil rows, IF the lookup fix has landed** (otherwise skip straight to 2)
 The fixture is a known quantity now and costs ~3 calls: create a scene with `environment: {darknessLevel: 1,

@@ -744,7 +744,7 @@ unchanged), and **Green / Instinct is takeable** (compiled tree: Pack Hunter = r
 talent prereq, Predator's Instinct and Scent the Weak hang off it, column walks to Natural
 Order — the session-0 mutual pair is dead). Evidence per row in the 07-26k delta.
 
-- [ ] 🤖 **2bS-11 — Natural Order — RE-NARROWED 2026-09-05, bench run 26: only the VEIL half is left, and it is BLOCKED with the blocker named.** ✅ The use half passed again (2 Inv spent 4 → 2, `clearsight` status + `condclearsight00` effect written to Bench — Green, scene card posted). ✅ **The combat-end clear PASSES**: deleting the bench combat removed `clearsight` from Bench — Green while leaving its unrelated Immobilized/Slowed alone. ⛔ **BLOCKER for the veil half — the Playtest Map can never make a token `unlit`.** `edhaDarkVeilSweep` only raises or suppresses a marker when `edhaPointIlluminated(tok.center)` is FALSE, and the Playtest Map has `environment.darknessLevel === 0` with `environment.globalLight.enabled === true`, so **every square on it is lit**. Driving this needs either a change to Ben's scene config (out of bounds for a bench run) or a bench-created scene. **The fixture is otherwise ready and identified**: the `edha-dark-veil` adversary is the **Stalker** (`effectName: "Veil"`, `edha-content.edha-adversaries` id `l924euoyx3pYFk2T`) — import it fresh, put it on an unlit square within 60 ft of an armed Green, and the positive/negative pair is one flow. **RE-BLOCKED 2026-09-06, bench run 33, on a DIFFERENT blocker — read this before re-staging.** The map half is solved (a bench-created scene with `darknessLevel: 1` + `globalLight.enabled: false`, viewed never activated, gives a genuinely unlit square — recipe on the `Veil auto-toggle (Stalker)` row). But `edha-suppress-veil` can only stand a marker down that `edhaDarkVeilSweep` can *see*, and run 33 proved the sweep can never see the Stalker's: it reads `actor.effects` while the `Veil` AE is item-transferred and lives in `allApplicableEffects()`. **This half is blocked on that engine fix, not on a scene** — do not rebuild the fixture until the sweep lookup lands.
+- [ ] 🤖 **2bS-11 — Natural Order — UNBLOCKED 2026-09-06 by fix pass 5; only the VEIL half is left and it is now RUNNABLE (engine-only, F5 — no pack rebuild, no ⟳ Sync).** ✅ The use half passed at bench run 26 (2 Inv spent 4 → 2, `clearsight` status + `condclearsight00` effect written to Bench — Green, scene card posted). ✅ **The combat-end clear PASSES**: deleting the bench combat removed `clearsight` from Bench — Green while leaving its unrelated Immobilized/Slowed alone. **Both historic blockers are gone.** The MAP blocker died at bench run 33 (a bench-created scene with `darknessLevel: 1` + `globalLight.enabled: false`, viewed never activated, gives a genuinely unlit square — the three-call recipe is on the `Veil auto-toggle (Stalker)` row; copy it). The ENGINE blocker died at fix pass 5: `edha-suppress-veil` can only stand down a marker `edhaDarkVeilSweep` can *see*, and the sweep read `actor.effects` while the Stalker's `Veil` AE is item-transferred — that lookup now goes through `edhaAllEffects(actor)`. **What to drive:** stage the `Veil auto-toggle (Stalker)` row FIRST (it is the positive control), then put an **armed** Green (carrying `clearsight`) within Attunement Range of the veiled Stalker and confirm the sweep **refuses to raise** the marker, or stands down one it had raised, with the 🌿 *"… veil is SUPPRESSED — an armed veil-suppressing enemy holds it within Attunement Range"* GM whisper; then walk the Green out of range and confirm the veil comes back up. ⚠️ A marker the GM toggled ON **by hand** must still never be fought — only `autoVeil`-flagged ones stand down.
 *(**2bS-1 — Green Leyline Attunement** — RETIRED IN FULL on evidence 2026-09-05, bench run 26. ✅ **The
 out-of-range refusal, the half that was never driven**: with rank-3 Green Attunement Range = 60 ft, a pick at
 **67.5 ft** was refused — "Edha: that point is beyond Attunement Range (60 ft) — terrain not placed." plus the
@@ -2264,49 +2264,34 @@ Ostrek, Merin, Veska) and the beached-fisher you-might-be. **Goldenport**: close
 paragraph, "…a signature can baptize anything". All three are flavor-only, so the stale-snapshot caveat
 on existing owned copies stands and costs nothing.)*
 
-- [ ] 🤖 **NEW 2026-09-06 (bench run 32) — all 10 Edha culture items FAIL SYSTEM VALIDATION on every
-      load; re-test after the fix.** Found incidentally while timing `pack.getDocuments()` — loading
-      `edha-content.edha-items` logs **ten** `CosmereItem [<id>] validation errors: system: id: <slug>
-      is not a valid choice`, one per nation: **canticle · kettavar · corvaine · sylvaneth · goldenport
-      · thalendor · malcurr · lunavar · ashkar · vorsk**. Every one is `type: "culture"` in
-      `edha-content.edha-items`.
-      **Root cause is repo-side and proven, not guessed.** `scripts/foundry-build.js` (~L816) writes
-      `system: { id: slug, … }` on each culture doc, where `slug = slugify(c.name)` from
-      `data/cultures.json`. The cosmere-rpg system restricts that field to its own six Roshar cultures
-      — `CONFIG.COSMERE.cultures` reads exactly **`["alethi","azish","herdazian","thaylen","unkalaki","veden"]`**
-      — so every Edha nation slug is rejected. The **ancestry** docs take the same `system.id = slug`
-      treatment and log **no** error, so the restriction is specific to the culture model.
-      ✅ **SEVERITY MEASURED 2026-09-06, bench run 33 — the slug is DROPPED, and the feared
-      consequence does NOT follow.** All ten load with `_source.system.id === "none"`, not the slug:
-      the field is `{choices: ["none","alethi","azish","herdazian","thaylen","unkalaki","veden"],
-      initial: "none", required: true, blank: false}`, so Foundry's lenient compendium load replaces
-      the rejected value with the initial. (A *strict* construction — `new Item({type:"culture",
-      system:{id:"canticle"}})` — throws outright; only the lenient pack path survives.) The
-      **ancestry** `Human` keeps `system.id === "human"` because `"human"` **is** a valid ancestry
-      choice — that is why ancestries log nothing.
-      **But the wizard is NOT broken.** The `cultural:<slug>` expertise is carried as LITERAL data on
-      the culture's own events — `grant-expertises` / `remove-expertises` each ship
-      `{"cultural:canticle": {id:"canticle", label:"Canticle", type:"cultural"}}` — and is never
-      derived from `system.id`; `register-skills.js` selects cultures by `type === "culture"` and by
-      name and reads their `system.id` **nowhere**. (Bench run 22 already proved the Corvaine
-      grant/remove round-trip live.)
-      **What IS affected — two system-side readers, neither used by Edha content today:**
-      (1) talent-tree node prerequisites of type `culture`, `actor.cultures.some(c => c.system.id ===
-      prereq.culture.id)` — with all ten collapsed to `"none"` a culture prereq can never name a
-      nation, and one authored against a nation would bake `id: "none"` and then match **all ten**;
-      (2) the system's culture-prereq config dialog, which writes `id: culture.system.id`. **No
-      shipped Edha tree uses a culture prerequisite** (0 hits in `leyline.json` / `domain.json`;
-      `cosmere.json`'s single "culture" is prose in a talent description). **Verdict: log noise plus a
-      latent authoring trap — NOT a wizard breakage.** Downgraded from the run-32 wording.
-      **Fix shape, also measured:** `game.system.api.registerCulture({id, label})` exists and returns
-      `true` and does add the key to `CONFIG.COSMERE.cultures` — but a **runtime** registration is not
-      enough: the culture DataModel's `id` field had already captured its `choices` array, so after a
-      successful `registerCulture("canticle")` a fresh lenient construction still yielded `"none"`.
-      The fix must register the ten nations in the module's **`init`** hook and the fix pass must
-      prove that ordering beats the system's model definition; if it cannot, the fallback is to stop
-      writing `system.id` on culture docs in `scripts/foundry-build.js` (~L816). **The registration
-      route is ENGINE-ONLY; only the fallback needs a pack rebuild.**
-      *(→ `test-pass-fixes`. Found bench run 32, severity settled bench run 33.)*
+- [ ] 🤖 **Culture items load CLEAN and a culture prerequisite can name a nation — RE-TEST
+      2026-09-06 after fix pass 5 (engine-only, F5 — relaunch is enough; NO pack rebuild, which
+      corrects the run-32 row this replaces).** Three checks, all from the console after a
+      relaunch:
+      (1) **no validation errors on load** — `await game.packs.get("edha-content.edha-items")
+      .getDocuments()` and confirm the ten `CosmereItem [<id>] validation errors: system: id: <slug>
+      is not a valid choice` lines are **gone**;
+      (2) **the slug STICKS** — every `type === "culture"` doc reads `_source.system.id === <its
+      slug>` (canticle · kettavar · corvaine · sylvaneth · goldenport · thalendor · malcurr ·
+      lunavar · ashkar · vorsk), **not** `"none"`;
+      (3) **a culture-type talent-tree prerequisite can name a nation** — the latent trap the dropped
+      slug created. In the talent-tree prereq config dialog, add a `culture` prerequisite and confirm
+      the Edha nations are offered and the one you pick is stored as its own id rather than baking
+      `"none"` (which used to match all ten).
+      Also worth a glance in the log: `Edha Content | [init] cultures registered: …` and
+      `Edha Content | ready — Edha cultures registered: 10/10`.
+      **What changed and why this needs a table.** `scripts/foundry-build.js` writes
+      `system.id = slugify(name)`; the system's culture DataModel declares that field with a CLOSED
+      choice list that its schema factory freezes at `defineSchema()` time, so every Edha slug was
+      rejected and replaced with the `"none"` initial. Run 33 measured that a **runtime**
+      `registerCulture()` is too late for exactly that reason. The engine now registers the ten in
+      its **`init`** hook (`EDHA_CULTURES` / `edhaRegisterCultures`, mirroring the existing currency
+      registration), which makes the **already-built pack valid as it stands** — no rebuild. **The
+      one thing no headless test can prove is the ORDERING** (that the module's `init` callback runs
+      before the culture schema is built), which is exactly what check (2) settles. Pinned headless
+      as far as it goes in `tests/culture-registration.test.js`; gated against `data/cultures.json`
+      by `lint-refs.js` pass 22.
+      *(→ Found bench run 32, severity settled bench run 33, fixed fix pass 5.)*
 
 ---
 
@@ -2783,44 +2768,38 @@ builder supports the field; nothing uses it. The row asks to observe "an adversa
 explicit `senses` value", and no such block exists. **If this question matters, the action is to AUTHOR
 one** — put an explicit `senses` on a block, rebuild, and open its sheet — not to re-open this row.)*
 
-- [ ] 🤖 **Veil auto-toggle (Stalker)** — Stalker standing in darkness: the Veil marker enables
-      itself + a GM whisper; walk it into light: the marker releases. Toggle it ON manually in
-      light (cover): the engine leaves it alone.
-      - ✅ **THE FIXTURE BLOCKER IS GONE — bench run 33 (2026-09-06) built the dark scene and it
-        works.** `Scene.create({name:"BENCH — Dark Veil (run 33)", environment:{darknessLevel: 1,
+- [ ] 🤖 **Veil auto-toggle (Stalker) — RE-TEST 2026-09-06 after fix pass 5; the engine defect is
+      FIXED and the fixture recipe is ready, so this is now one clean flow (engine-only, F5 —
+      relaunch/F5 is enough, no pack rebuild, no ⟳ Sync).** Import a fresh pack Stalker
+      (`edha-content.edha-adversaries` `l924euoyx3pYFk2T`), put its token on an unlit square, and
+      confirm: the `Veil` marker **enables itself** with a GM whisper (*"🌒 Veil: … stands in
+      darkness — the marker is ON (auto)"*); walking it into light **releases** it; and a marker you
+      toggle ON **by hand in light** is left alone (cover stays a table read). ⚠️ **Do NOT
+      hand-create an actor-level copy of the AE this time** — that was run 33's diagnostic control,
+      and reading it back is the leading explanation of the run's unexplained second symptom. Drive
+      the SHIPPED trait AE only.
+      - ✅ **The scene fixture is a three-call recipe — copy it, do not re-derive it (bench run 33).**
+        `Scene.create({name:"BENCH — Dark Veil", environment:{darknessLevel: 1,
         globalLight:{enabled:false}}, tokenVision:true})`, **viewed and never activated**, deleted at
-        the end. Sampled at the sweep's own +300 ms timing after an `updateScene`, `edhaPointIlluminated`
-        evaluates **false** at the token centre: `canvas.environment.darknessLevel === 1`,
-        `globalLight.enabled === false`, and the single light source (`globalLight`) reports
-        `active: false` so the loop skips it. Copy this recipe — do not re-derive it.
-      - ❌ **FAIL (new, run 33) — the shipped Stalker's `Veil` marker is UNREACHABLE by the sweep.**
-        `edhaDarkVeilSweep` looks the marker up in **`actor.effects`**
-        (`[...(a.effects ?? [])].find(e => e.name.startsWith(effName))`), but the `Veil` AE is
-        **item-transferred** (`transfer: true`, defined on the `Veil` trait in
-        `data/adversary-effects.json`), so it lives in `actor.allApplicableEffects()` with
-        `parent: "Veil"` and **`actor.effects` is empty** — measured on Ben's world `Stalker`
-        (`4OW7zLhJlMRhn1GG`) *and* on a token-fresh import of the pack Stalker
-        (`edha-content.edha-adversaries` `l924euoyx3pYFk2T`). `eff` is therefore always `undefined`
-        and the sweep `continue`s. The rest of the path is fine: the `Veil` trait carries
-        `flags["edha-content"].adversaryTalent === true` so `edhaIsTalent` accepts it, and
-        `enabledEvents` lists `{event: "edha-apply-watch", handler.type: "edha-dark-veil"}`.
-        **Matched control:** with a hand-created **actor-level** copy of the identical AE (disabled),
-        the sweep fired correctly and posted *"🌒 **Veil**: Stalker (1) stands in darkness — the
-        marker is ON (auto)"*, authored by `Bench`, whispered to **both** GMs (an incidental R-62
-        audience confirmation). **`data/adversaries.json` holds the only `edha-dark-veil` rule in the
-        repo**, so the blast radius is the Stalker alone. *(→ `test-pass-fixes`: either widen the
-        lookup to `allApplicableEffects()`/`appliedEffects` — ENGINE-ONLY — or move the marker to an
-        actor-level AE, which needs a REBUILD. Bench run 33.)*
-      - ⚠️ **PARTIAL / unexplained, recorded not diagnosed:** after that one success the marker read
-        `disabled: true, autoVeil: null` again, and **six** further triggers produced no card and no
-        change — three teleport token moves (`"x" in changes` verified **true** in a probe hook), two
-        `updateScene` environment changes, and one fresh `createActiveEffect` — with
-        `game.users.activeGM` = `Bench` (`isSelf: true`) throughout, **zero** console errors, **zero**
-        AE churn in a 4 s window (so the 300 ms debounce was not being starved), and the illumination
-        test evaluating **false** at the sweep's own timing. Whatever re-disabled it is not yet named.
-        The engine's own functions are **module-scoped, not globals**, so the sweep could not be
-        called directly to instrument it. Run 34: re-stage from the recipe above and hook
-        `updateActiveEffect` **before** the first trigger.
+        the end. Sampled at the sweep's own +300 ms timing after an `updateScene`,
+        `edhaPointIlluminated` evaluates **false** at the token centre: `darknessLevel === 1`,
+        `globalLight.enabled === false`, and the single light source reports `active: false` so the
+        loop skips it.
+      - ✅ **FIXED 2026-09-06, fix pass 5 — the marker is reachable now.** Run 33 proved the sweep
+        looked the marker up in **`actor.effects`** while the `Veil` AE is **item-transferred**
+        (`transfer: true` on the `Veil` trait), so it lives on the ITEM and `actor.effects` is empty
+        — `eff` was always `undefined` and the veil had **never** auto-toggled on any map. The lookup
+        now goes through **`edhaAllEffects(actor)`** (`Actor#allApplicableEffects()`, NOT
+        `appliedEffects`, which filters out disabled markers). Pinned headless in
+        `tests/effect-transfer-lookup.test.js`; live behaviour is not settled until this row passes.
+      - 🔎 **Instrument it this time, and here is how.** `edha.darkVeilSweep()` and
+        `edha.allEffects(actor)` are now on the console API — run 33 could not call the sweep because
+        the engine's functions are module-scoped. Before the first trigger, log **`actor.effects` and
+        `[...actor.allApplicableEffects()]` side by side, keyed by `_id`** (never by name), plus
+        `actor.effects.length`, at every trigger. That is the measurement that separates the three
+        ranked hypotheses for run 33's second symptom in the `FIX PASS 5` handoff delta §2 — and note
+        that **a succeeded sweep is a NO-OP**: once the marker is up and the square is still unlit,
+        no card and no write is the CORRECT result, not a failure.
 
 ---
 

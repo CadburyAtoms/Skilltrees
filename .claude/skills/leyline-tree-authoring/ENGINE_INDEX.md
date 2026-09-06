@@ -79,7 +79,7 @@ accident of append order, so nothing in this index could point at them. Item 23 
 
 | Banner | Owns |
 |---|---|
-| `SHARED CORE` | the registration bootstrap + every cross-tree primitive: the debug tracer (`edhaSetDebug`/`edhaDebugOut`), `registerContent`, `edhaRegisterStatuses`, `edhaRegisterCurrency`; Weakened + the test-modifier rider (`edhaWeakenedPreRoll`, `edhaTestRiderApply`, `edhaFoldDieMath`, `edhaTidyFormula`); the aggro ledger; timed-status expiry (`edhaTurnSeq`, `edhaExpireTimedStatuses`); the rule readers `edhaEventRules`/`edhaRuleOf`; passive damage riders (`edhaRiderBonus`, `edhaWrapRollDamage`); kindle light; ISOLATED marker sync; and **the applyDamage spine** — `edhaDealerOf`, `edhaAttackKind`, `edhaActorRuleOf`, `edhaDamageBonusPost`, `edhaWrapApplyDamage`. Every on-damage trigger in every tree lands in that last one. |
+| `SHARED CORE` | the registration bootstrap + every cross-tree primitive: the debug tracer (`edhaSetDebug`/`edhaDebugOut`), `registerContent`, `edhaRegisterStatuses`, `edhaRegisterCurrency`; Weakened + the test-modifier rider (`edhaWeakenedPreRoll`, `edhaTestRiderApply`, `edhaFoldDieMath`, `edhaTidyFormula`); the aggro ledger; timed-status expiry (`edhaTurnSeq`, `edhaExpireTimedStatuses`); **`edhaAllEffects`** (actor-level AND item-transferred AEs — see the item-transferred family below); the rule readers `edhaEventRules`/`edhaRuleOf`; passive damage riders (`edhaRiderBonus`, `edhaWrapRollDamage`); kindle light; ISOLATED marker sync; and **the applyDamage spine** — `edhaDealerOf`, `edhaAttackKind`, `edhaActorRuleOf`, `edhaDamageBonusPost`, `edhaWrapApplyDamage`. Every on-damage trigger in every tree lands in that last one. |
 
 **The tree + handler sections** (self-describing; listed for completeness, in file order)
 
@@ -475,6 +475,50 @@ and the focus watcher has skipped them since 07-05, so they never reach the pred
 NOT spend sites** — a GM zeroing an adversary's HP is a legitimate kill and must keep announcing
 `defeat`. 18 cases, both directions each; mutation-verified both ways (dropping the tag fails 3,
 inverting the predicate fails 6).
+
+## ⛑ `actor.effects` IS NOT "THE EFFECTS ON THIS CREATURE" — the item-transferred family (09-06, fix pass 5)
+
+**`actor.effects` holds only the ActiveEffects EMBEDDED IN THE ACTOR.** An AE authored on a talent or
+an adversary **trait** with `transfer: true` stays embedded in that ITEM; Foundry surfaces it only
+through **`Actor#allApplicableEffects()`** (v13 `client/documents/actor.mjs` — actor effects first,
+then every item effect whose `transfer` is set; cosmere-rpg 2.1.0 sets
+`CONFIG.ActiveEffect.legacyTransferral = false`, so the item half really is yielded).
+
+**`Actor#statuses` is rebuilt from `allApplicableEffects()`** in `applyActiveEffects()`. That is what
+makes the mismatch invisible: the status is ON the creature, on the token and on the sheet, while its
+effect is absent from the collection the engine searched. `actor.statuses.has(x) === true` and
+`actor.effects.find(e => e.statuses.has(x)) === undefined` are both correct at the same time.
+
+Shipped consequence (bench run 33): the Stalker's `Veil` marker is `transfer: true` on the `Veil`
+trait, so `edhaDarkVeilSweep`'s `actor.effects` lookup was `undefined` **every time** — the veil has
+never auto-toggled, on any map, on any Stalker, since the sweep shipped. Everything else on the path
+was fine, which is why seven bench runs blamed the scene.
+
+- **`edhaAllEffects(actor)`** → every AE that applies to this creature, actor-level and
+  item-transferred, enabled or not. Falls back to `actor.effects` for a thin document; `[]` for a
+  missing one; never throws.
+
+⚠️ **NOT `appliedEffects`.** Foundry's getter filters on `effect.active` (`!disabled &&
+!isSuppressed`), and every marker in this family is stored **DISABLED** — the engine's job is to find
+it and switch it on. `appliedEffects` would have been exactly as blind as `actor.effects`.
+
+⚠️ **REACH FOR IT ONLY WHEN THE EFFECT COULD HAVE BEEN AUTHORED ON AN ITEM.** The decision rule:
+
+| the read seeks… | use |
+|---|---|
+| an AE named by a RULE (`effectName`), or any status a trait could carry | **`edhaAllEffects`** |
+| an AE the engine itself created on the actor — any `flags.edha-content.*` buff, counter, stance, aura, marker, timed status | **`actor.effects`**, unchanged |
+| an item's own effects (templates, the kit strip, the adversary-sync prune) | `item.effects`, unchanged |
+
+Widening a flag-keyed read would be a **new bug**: `update()` / `delete()` on a yielded ITEM effect
+writes to the item and permanently alters that creature's copy of the talent or trait. Three call
+sites today — the veil sweep, `edhaIsIsolated`'s inflicted scan, and the isolated marker sync's twin
+— and `tests/effect-transfer-lookup.test.js` carries a **source ratchet** that fails if a fourth
+appears without the delta recording why. 9 cases; mutation-verified (restoring `actor.effects` in the
+sweep fails 4). The full site-by-site verdict table is in the `2026-09-06 — FIX PASS 5` delta.
+
+Also on the console API for bench work: **`edha.darkVeilSweep()`** and **`edha.allEffects(actor)`** —
+run 33 could not instrument the sweep because the engine's functions are module-scoped, not globals.
 
 ## ⛑ THE CROSS-COMBAT CLOBBER FAMILY — a per-combat hook doing a world-wide write (07-28, fix pass F)
 

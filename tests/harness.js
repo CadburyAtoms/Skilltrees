@@ -247,11 +247,15 @@ async function fireHook(env, name, ...args) {
 function mockItem(opts = {}) {
   const {
     name = "Mock Talent", id = name, uuid = `Item.${id}`, type = "talent",
-    actor = null, events = [], system = {}, flags = {},
+    actor = null, events = [], system = {}, flags = {}, effects = [],
   } = opts;
   const scopes = { "edha-content": { ...flags } };
   const item = {
     name, id, uuid, type, actor,
+    /* An item's OWN embedded ActiveEffects. A `transfer: true` entry here is what Foundry hands to
+     * Actor#allApplicableEffects() while leaving actor.effects empty — the shape the Stalker's
+     * `Veil` marker actually ships in, and the one fix pass 5 (2026-09-06) exists for. */
+    effects,
     system: { events: [...events], ...system },
     flags: scopes,
     updates: [], uses: [],
@@ -294,6 +298,19 @@ function mockActor(opts = {}) {
     getFlag(scope, key) { return getProp(scopes[scope], key); },
     async setFlag(scope, key, value) { scopes[scope] = scopes[scope] || {}; setProp(scopes[scope], key, value); return value; },
     async unsetFlag(scope, key) { unsetProp(scopes[scope], key); },
+    /* Foundry v13 `Actor#allApplicableEffects` (client/documents/actor.mjs), modelled exactly:
+     * every ACTOR effect, then every ITEM effect whose `transfer` is set. cosmere-rpg 2.1.0 sets
+     * `CONFIG.ActiveEffect.legacyTransferral = false`, so the item half really is yielded there and
+     * the `legacyTransferral` early-return is not modelled. Added 2026-09-06 (fix pass 5) — without
+     * it no headless test could tell an item-transferred marker from an actor-level one, which is
+     * precisely the distinction the dark-veil defect turned on. */
+    *allApplicableEffects() {
+      for (const e of actor.effects) yield e;
+      for (const it of actor.items) for (const e of (it.effects ?? [])) if (e.transfer) yield e;
+    },
+    /* The v13 getter's real semantics — `active` = `!disabled && !isSuppressed`. Modelled so a test
+     * can PROVE why the fix does not use it: a disabled marker never appears here. */
+    get appliedEffects() { return [...actor.allApplicableEffects()].filter((e) => !e.disabled); },
   };
   return actor;
 }
@@ -305,14 +322,22 @@ function mockActor(opts = {}) {
 function mockEffect(opts = {}) {
   const {
     name = "Mock Effect", id = `eff-${name}`, statusId, statuses,
-    flags = {},
+    flags = {}, disabled = false, transfer = false, parent = null,
   } = opts;
   const scopes = { "edha-content": { ...flags } };
   const eff = {
     id, name,
     statuses: statuses ? (statuses instanceof Set ? statuses : new Set(statuses)) : new Set(statusId ? [statusId] : []),
+    /* `disabled` + `transfer` + `parent` (2026-09-06, fix pass 5): a marker AE is stored DISABLED
+     * and switched on by the engine, and `transfer` decides whether it lives on the item or the
+     * actor — both are load-bearing for the dark-veil family, neither was modelled before. */
+    disabled, transfer, parent,
     deleted: false,
     flags: scopes,
+    /* Records the requested change AND applies it (dotted paths included), matching mockActor's and
+     * mockItem's update recorders — so a test can assert either the write or the resulting state. */
+    updates: [],
+    async update(change = {}) { eff.updates.push(change); for (const [k, v] of Object.entries(change)) setProp(eff, k, v); return eff; },
     getFlag(scope, key) { return getProp(scopes[scope], key); },
     async setFlag(scope, key, value) { scopes[scope] = scopes[scope] || {}; setProp(scopes[scope], key, value); return value; },
     async unsetFlag(scope, key) { unsetProp(scopes[scope], key); },

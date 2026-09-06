@@ -339,6 +339,73 @@ Hooks.once("ready", () => {
   console.log(`Edha Content | ready — currency 'edha' ${ok ? "registered" : "MISSING (registration failed)"}`);
 });
 
+/* --- Edha CULTURES: the ten nations, registered at `init` (fix pass 5, 2026-09-06) ---------------
+ * Bench runs 32/33: every one of the ten Edha culture items logs
+ * `CosmereItem [<id>] validation errors: system: id: <slug> is not a valid choice` on every pack
+ * load, and the slug is DROPPED — all ten come back with `_source.system.id === "none"`.
+ *
+ * The cause is a CLOSED enum plus an EAGER schema. `scripts/foundry-build.js` writes
+ * `system.id = slugify(name)` on each culture doc; the system's culture DataModel declares that
+ * field as `IdItemMixin({ initial: "none", choices: () => ["none", ...Object.keys(
+ * CONFIG.COSMERE.cultures)] })`, and its schema factory CALLS that function once, at
+ * `defineSchema()` time, freezing whatever `CONFIG.COSMERE.cultures` held at that instant into the
+ * StringField. `game.system.api.registerCulture()` afterwards updates `CONFIG.COSMERE.cultures` —
+ * bench run 33 measured that it does — but the frozen `choices` array never sees it, so a runtime
+ * registration is provably too late. The registration has to land BEFORE the first culture document
+ * is constructed, i.e. in `init`, which is also where the system registers its own six.
+ *
+ * With the ten registered the ALREADY-BUILT pack becomes valid as-is: the docs still carry their
+ * slugs, the slugs are now legal choices, the lenient load stops substituting `"none"`, and the two
+ * system-side readers that were latently broken start working — a talent-tree node prerequisite of
+ * type `culture` can finally name a nation instead of baking `"none"` and matching all ten. So this
+ * is **ENGINE-ONLY (F5)** and there is NO pack rebuild owed. The alternative the run-33 row named as
+ * a fallback — stop writing `system.id` in `foundry-build.js` — is REJECTED here: it needs a rebuild
+ * AND it would make the culture-prereq surface permanently unusable.
+ *
+ * The ids are `slugify(name)` over the ten entries of `data/cultures.json`, which is the same
+ * derivation the pack build uses. `data/cultures.json` is a GENERATOR INPUT and is not shipped into
+ * the module, and `init` is far too early to read a compendium, so the list is carried here — and
+ * `scripts/lint-refs.js` pass 22 fails the build if this table and `data/cultures.json` ever
+ * disagree, in either direction. Add a nation there and the gate tells you to add it here.
+ * 🤖 The ORDERING claim (this `init` callback runs before the culture schema is built) is the one
+ * half no headless test can prove — it is a bench row for the next run. */
+const EDHA_CULTURES = [
+  { id: "kettavar", label: "Kettavar" },
+  { id: "malcurr", label: "Malcurr" },
+  { id: "corvaine", label: "Corvaine" },
+  { id: "thalendor", label: "Thalendor" },
+  { id: "goldenport", label: "Goldenport" },
+  { id: "vorsk", label: "Vorsk" },
+  { id: "lunavar", label: "Lunavar" },
+  { id: "canticle", label: "Canticle" },
+  { id: "sylvaneth", label: "Sylvaneth" },
+  { id: "ashkar", label: "Ashkar" },
+];
+function edhaRegisterCultures(phase) {
+  const COSMERE = globalThis.CONFIG?.COSMERE;
+  if (!COSMERE || !COSMERE.cultures) return false;
+  const api = globalThis.game?.system?.api;
+  const added = [];
+  for (const c of EDHA_CULTURES) {
+    if (COSMERE.cultures[c.id]) continue;   // idempotent across init/setup, and never fights the system's own six
+    try {
+      // The documented surface first (it is what the system calls for its own cultures), so any
+      // registry wiring beyond the CONFIG entry happens; the direct write is the fallback.
+      if (api?.registerCulture) api.registerCulture({ id: c.id, label: c.label, source: "edha-content", priority: -1 });
+    } catch (e) { console.warn(`Edha Content | registerCulture api failed for '${c.id}'; using the CONFIG write`, e); }
+    if (!COSMERE.cultures[c.id]) COSMERE.cultures[c.id] = { label: c.label };
+    if (COSMERE.cultures[c.id]) added.push(c.id);
+  }
+  if (added.length) console.log(`Edha Content | [${phase}] cultures registered: ${added.join(", ")}`);
+  return true;
+}
+Hooks.once("init",  () => edhaRegisterCultures("init"));    // MUST be init — the culture DataModel freezes its `choices` at defineSchema()
+Hooks.once("setup", () => edhaRegisterCultures("setup"));   // belt-and-braces (idempotent); still fixes CONFIG for the prereq dialog if init was somehow missed
+Hooks.once("ready", () => {
+  const have = EDHA_CULTURES.filter(c => globalThis.CONFIG?.COSMERE?.cultures?.[c.id]).length;
+  console.log(`Edha Content | ready — Edha cultures registered: ${have}/${EDHA_CULTURES.length}${have === EDHA_CULTURES.length ? "" : " (culture items will log validation errors and load with system.id 'none')"}`);
+});
+
 /* --- WEAKENED mechanic (2026-06-11c; reworked 2026-06-13) ---------------------------------------
  * Ruling (Ben): a Weakened creature has DISADVANTAGE on EVERY physical test (str/spd attribute) while
  * the condition lasts, and Weakened ALWAYS falls off at the END of the creature's next turn. It is no
@@ -729,6 +796,40 @@ function edhaNextTurnCoord(combat, ti) {
   const R = combat.round ?? 1, T = combat.turn ?? 0;
   return ti > T ? { round: R, turn: ti } : { round: R + 1, turn: ti };   // strictly after now → the creature's next turn
 }
+/* ====================== WHERE AN EFFECT LIVES (fix pass 5, 2026-09-06) ==========================
+ * `actor.effects` is NOT "the effects on this creature" — it is only the ones EMBEDDED IN THE ACTOR.
+ * An ActiveEffect authored on a talent or on an adversary TRAIT with `transfer: true` stays embedded
+ * in that ITEM; Foundry surfaces it through `Actor#allApplicableEffects()` (v13 `client/documents/
+ * actor.mjs`: yield every actor effect, then every item effect whose `transfer` is set — and
+ * cosmere-rpg 2.1.0 sets `CONFIG.ActiveEffect.legacyTransferral = false`, so the item half really is
+ * yielded). `Actor#statuses` is rebuilt from `allApplicableEffects()` in `applyActiveEffects()`, and
+ * THAT is what makes the mismatch invisible: the status shows on the creature, the token and the
+ * sheet while its effect is absent from the collection the engine searched.
+ *
+ * Shipped consequence (bench run 33): the Stalker's `Veil` marker is `transfer: true` on the `Veil`
+ * trait, so `edhaDarkVeilSweep`'s `actor.effects` lookup resolved `undefined` every time and the
+ * veil has never auto-toggled — on any map, on any Stalker, since the sweep shipped. A hand-made
+ * ACTOR-level copy of the identical AE made the sweep fire, which is the matched control proving the
+ * LOOKUP was the defect and the illumination test was innocent.
+ *
+ * `edhaAllEffects(actor)` is the widened read. Deliberately NOT Foundry's `appliedEffects` getter,
+ * which filters on `effect.active` (`!disabled && !isSuppressed`): every marker in this family is
+ * stored DISABLED and the engine's whole job is to find it and switch it on, so `appliedEffects`
+ * would have been exactly as blind as `actor.effects`.
+ *
+ * ⚠️ REACH FOR THIS ONLY WHEN THE EFFECT COULD HAVE BEEN AUTHORED ON AN ITEM. An effect the engine
+ * itself created on the actor — every `flags.edha-content.*` buff, marker, stance, counter and
+ * timed status — can never be item-transferred, and widening those reads would be a NEW bug:
+ * `update()` / `delete()` on a yielded ITEM effect writes to the item, permanently altering that
+ * creature's copy of the talent or trait. The site-by-site verdict table is in the 2026-09-06
+ * FIX PASS 5 handoff delta. */
+function edhaAllEffects(actor) {
+  try {
+    if (typeof actor?.allApplicableEffects === "function") return [...actor.allApplicableEffects()];
+  } catch (e) { /* fall through to the actor-level read */ }
+  try { return [...(actor?.effects ?? [])]; } catch (e) { return []; }
+}
+
 /* Statuses that auto-expire at the END of the affected creature's next turn NO MATTER HOW THEY WERE
  * APPLIED — including a GM hand-toggling the icon on the token HUD. Weakened (Black disadvantage)
  * and Immobilized (Sovereign of Solitude's movement-stop) both ride this.
@@ -1044,7 +1145,11 @@ function edhaIsIsolated(actor, tok = null) {
   try {
     // Chaos (Maelith) — INFLICTED Isolation counts the same as positional. Positional marker icons
     // (flags.edha-content.isoMarker, placed by the sync below) are display-only and must NOT feed back.
-    for (const e of (actor?.effects ?? []))
+    // edhaAllEffects (fix pass 5): `actor.statuses` is built from allApplicableEffects(), so a
+    // trait-transferred `isolated` reads as ON the creature while being absent from actor.effects.
+    // Read-only scan — the marker find/delete below stays actor-level on purpose (it owns what it
+    // created, and deleting a yielded ITEM effect would strip the trait).
+    for (const e of edhaAllEffects(actor))
       if (e.statuses?.has?.("isolated") && !e.getFlag?.("edha-content", "isoMarker")) return true;
     tok = tok ?? edhaCasterToken(actor) ?? (actor?.isToken ? actor.token?.object : null);
     if (!tok) return false;
@@ -1075,7 +1180,7 @@ async function edhaSyncIsolatedMarkers() {
       const marker = a.effects?.find?.(e => e.getFlag?.("edha-content", "isoMarker"));
       const inCombat = live.some(c => (c.turns ?? []).some(x => (x.tokenId && x.tokenId === t.id) || x.actorId === a.id));
       const dead = (a.system?.resources?.hea?.value ?? 1) <= 0;
-      const inflicted = (a.effects ?? []).some?.(e => e.statuses?.has?.("isolated") && !e.getFlag?.("edha-content", "isoMarker"));
+      const inflicted = edhaAllEffects(a).some(e => e.statuses?.has?.("isolated") && !e.getFlag?.("edha-content", "isoMarker"));   // must agree with edhaIsIsolated's scan (fix pass 5)
       const want = inCombat && !dead && !inflicted && edhaIsIsolated(a, t);
       if (want && !marker) {
         try {
@@ -9979,7 +10084,10 @@ async function edhaDarkVeilSweep() {
       const a = tok.actor; if (!a) continue;
       for (const { item: tal, handler: h } of edhaActorRulesOf(a, "edha-dark-veil")) {
           const effName = h.effectName || tal.name;
-          const eff = [...(a.effects ?? [])].find(e => String(e.name || e.label || "").startsWith(effName));
+          // edhaAllEffects, NOT a.effects (fix pass 5, bench run 33): the marker is a MARKER — it is
+          // authored on the talent/trait that carries the rule, so `transfer: true` puts it on the
+          // ITEM and out of `actor.effects` entirely. See the "WHERE AN EFFECT LIVES" banner.
+          const eff = edhaAllEffects(a).find(e => String(e.name || e.label || "").startsWith(effName));
           if (!eff) continue;
           const unlit = !edhaPointIlluminated(tok.center.x, tok.center.y);
           const suppressed = unlit && edhaVeilSuppressed(tok);   // only worth computing when the veil would be up
@@ -20267,7 +20375,7 @@ Hooks.once("ready", () => {
       bakedEffects: pj(h.bakedEffectsJson), extraItems: pj(h.extraItemsJson),
     });
   };
-  const api = { syncNow: edhaSyncNow, syncActorTalents: edhaSyncActorTalents, syncAllCharacters: edhaSyncAllCharacters, syncAdversary: edhaSyncAdversaryActor, syncAllAdversaries: edhaSyncAllAdversaries, setTempHp: edhaSetTempHp, getTempHp: edhaGetTempHp, summon: summonByTalent, showRange: edhaShowRange, aoe: edhaPlaceAoe, drawMana: edhaDrawMana, grantDrawMana: edhaGrantDrawMana, resetTriggers: edhaResetTriggers, fixSettings: edhaFixSettings, clearKindleLights: edhaClearKindleLights, refreshDefBuffs: edhaRefreshDefBuffs, migrateDerivations: edhaMigrateDerivations, fixPcTokens: edhaFixPcTokens, grantStartingKit: edhaGrantStartingKit, creationWizard: edhaCreationWizard, newCharacter: edhaCreatorNewCharacter, isIsolated: edhaIsIsolated, toggleStatus: edhaToggleStatus, raiseStakes: edhaRaiseStakesApi, rally: edhaRallyApi, skipBudget: (v) => { globalThis.edhaSkipBudget = !!v; return globalThis.edhaSkipBudget; }, debug: edhaSetDebug, debugSave: edhaDebugSave, debugsave: edhaDebugSave };   // lowercase alias — Ben typed edha.debugsave() at the 07-12 bench and got a TypeError
+  const api = { syncNow: edhaSyncNow, syncActorTalents: edhaSyncActorTalents, syncAllCharacters: edhaSyncAllCharacters, syncAdversary: edhaSyncAdversaryActor, syncAllAdversaries: edhaSyncAllAdversaries, setTempHp: edhaSetTempHp, getTempHp: edhaGetTempHp, summon: summonByTalent, showRange: edhaShowRange, aoe: edhaPlaceAoe, drawMana: edhaDrawMana, grantDrawMana: edhaGrantDrawMana, resetTriggers: edhaResetTriggers, fixSettings: edhaFixSettings, clearKindleLights: edhaClearKindleLights, refreshDefBuffs: edhaRefreshDefBuffs, migrateDerivations: edhaMigrateDerivations, fixPcTokens: edhaFixPcTokens, grantStartingKit: edhaGrantStartingKit, creationWizard: edhaCreationWizard, newCharacter: edhaCreatorNewCharacter, isIsolated: edhaIsIsolated, toggleStatus: edhaToggleStatus, darkVeilSweep: edhaDarkVeilSweep, allEffects: edhaAllEffects, raiseStakes: edhaRaiseStakesApi, rally: edhaRallyApi, skipBudget: (v) => { globalThis.edhaSkipBudget = !!v; return globalThis.edhaSkipBudget; }, debug: edhaSetDebug, debugSave: edhaDebugSave, debugsave: edhaDebugSave };   // lowercase alias — Ben typed edha.debugsave() at the 07-12 bench and got a TypeError
   const mod = game.modules?.get("edha-content");
   if (mod) mod.api = api;
   globalThis.edha = Object.assign(globalThis.edha || {}, api);
