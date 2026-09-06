@@ -1699,7 +1699,7 @@ to the one after; the Red spot-checks checklist row marked 🤖.
 
 ---
 
-## 53. [ ] Ambush-belief riders must benefit their OWN first strike (R-50)
+## 53. [x] Ambush-belief riders must benefit their OWN first strike (R-50) — done 2026-09-06, PR #219 (ENGINE-ONLY, F5; bench-pending)
 
 **Why:** Ben (b), after a full card-by-card walkthrough: the "marks, not benefits" reading
 doesn't match the ten carriers' text (Stillback, Wrongwake, The False Spring, Hazewyrm, etc. all

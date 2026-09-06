@@ -293,6 +293,7 @@ the ambusher to benefit on the strike that fools them and it becomes an engine t
 > test and applies the rider on a fail; second strike reads the ledger and rolls no second test;
 > Mistheron path unchanged; 🤖 re-test on Stillback (Ambush Bite 1d10+3 +1d6 on the FIRST bite vs a
 > fooled target).
+> **SHIPPED** in PR #219 (ENGINE-ONLY, bench-pending) — `tests/ambush-first-strike.test.js`
 
 **R-51. Does an illusory copy breaking count as "an ally dropped"?** Raised by fix pass C while
 fixing the cross-disposition defect below it. The two are separate: the defect was that a tokenless
