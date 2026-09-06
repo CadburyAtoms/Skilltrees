@@ -1,24 +1,24 @@
 {
   "pm": {
     "status": "awake",
-    "note": "Fable PM (Ben-started, 16:56 ET). Both docs items are merged: 46 (the twenty TODO entries, #212, 17:23) and 45 (every ruling recorded in EDHA_RULINGS.md, #213, 17:44). Fix pass 7a (item 47, Opus) dispatched 17:50 in a worktree; 48+ follow one at a time. Foundry is CLOSED, so no bench tonight unless you open it. Nothing is owed to deploy-to-foundry.bat until the REBUILD items 55-59 land. Two rulings were NOT in the phone batch and are still open: R-18 (quarry advantage vs an active disadvantage — default: keep the house convention) and R-48 (Explosive Leap 20 ft vs 5 ft — default: the R-46 treatment, explicit distanceFt: 20, in item 57). Waiting on you otherwise only for a Foundry window and a Gamemaster-client reload.",
-    "waitingOn": "R-18 and R-48 (defaults apply if silent)",
+    "note": "Fable PM (Ben-started, 16:56 ET). Tonight so far: 46 (#212), 45 (#213) and fix pass 7a (item 47, #215, 18:33 - seven of eight rulings, each mutation-proven; R-25 became item 63, a rebuild-class dial). Fix pass 7b (item 48, Opus) dispatched 18:36 in a worktree. Foundry is CLOSED: #215 is on main but NOT live - the moment Foundry is up I push the engine with module-src-sync (no bat needed) and F5 refreshes it. Nothing is owed to deploy-to-foundry.bat until the REBUILD items 55-59 / 63 land. R-18 and R-48 are still open with defaults recorded. Waiting on you otherwise only for a Foundry window and a Gamemaster-client reload.",
+    "waitingOn": "R-18 and R-48 (defaults apply if silent); a Foundry window for the engine push + bench",
     "nextWakeAt": null,
     "session": "2026-09-06 16:56 ET — Fable PM (hand-started)"
   },
   "workers": [
     {
-      "item": "47",
-      "title": "Fix pass 7a — heal / status / resource family: R-10, R-12, R-25, R-36, R-51, R-52(i), R-72 + R-76, R-54",
+      "item": "48",
+      "title": "Fix pass 7b — cards, labels, zones: R-31, R-32, R-37, R-38, R-55, R-78, R-13, R-6, weapon-picker article",
       "model": "opus",
       "size": "M",
       "lane": "B",
-      "branch": "pm/47-fix-pass-7a",
-      "startedAt": "2026-09-06T21:50:00Z",
-      "agent": "Work item 47",
+      "branch": "pm/48-fix-pass-7b",
+      "startedAt": "2026-09-06T22:36:00Z",
+      "agent": "Work item 48",
       "phase": "working",
       "pr": null,
-      "note": "worktree; ENGINE-ONLY; eight mutation-proven pins"
+      "note": "worktree; ENGINE-ONLY; nine mutation-proven pins"
     }
   ],
   "usage": null
