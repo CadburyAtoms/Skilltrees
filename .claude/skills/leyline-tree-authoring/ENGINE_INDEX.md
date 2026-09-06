@@ -384,6 +384,47 @@ damage, either of which could end the cradle.
   only**. All of them DID need the cross-combat guard in the next section — a redundant write is
   harmless, a write to the wrong combat's actor is not.
 
+## ⛑ `game.combat` IS THE CLIENT'S VIEWED COMBAT — the out-of-combat gate (R-4 / #28a, 09-06)
+
+**Never ask `game.combat` whether a creature is in combat.** It is a UI fact — whatever encounter
+*this browser* has selected in the tracker. It is `null` when nobody has the tracker open on a live
+fight, and it is the WRONG combat whenever two are running (bench run 27). Both directions shipped:
+every `game.combat?.round ?? 0` round key froze at **0** out of combat (per-round ledgers never
+reset, `once: round` became once-per-session), and `game.combat?.started` being false meant
+`edhaApplyTimedStatus` never stamped an expiry — **"Restrained until your next turn" was immortal.**
+This is the READ side of the cross-combat family in the next section.
+
+- **`edhaInActiveCombat(actor)`** → the combat this creature is actually a combatant of, or null.
+  Scans `game.combats`; accepts `started` **or** `active` (a combat with initiative unrolled is still
+  combat); matches on token id, actor id, **or** the combatant's resolved actor uuid, across both
+  `combatants` and `turns`. **Fail-safe direction is "in combat"** — a wrong YES keeps today's
+  behaviour, a wrong NO silences a live talent — so every uncertain answer, a throw included, is YES.
+- **`edhaCombatRoundOf(actor)`** / **`edhaTurnSeqOf(actor)`** → that combat's round / turn sequence,
+  or **`null`**. Never `0`: `0` is the value that turned "once per round" into "once per session".
+- **`edhaWatchCombatGate(h, watcher, subject)`** → the scene-scope watch gate. The line is drawn at
+  **`scope`**, not at the watched kind, because `scope` *is* "does this rule react to somebody ELSE's
+  event?": `scope: "self"` is **NEVER** gated (no cross-talk exists, and a self-watch on your own
+  roll/move is a legitimate out-of-combat rule); `scope: "scene"` needs an active combat containing
+  the WATCHER with the subject not provably in another; **`outOfCombat: true` on the rule** opts out
+  entirely — the authored escape hatch, so an out-of-combat scene rule is a document field, not an
+  engine edit. An unknown subject combat ALLOWS the fire.
+
+```js
+const round = edhaCombatRoundOf(owner);   // NOT game.combat?.round
+if (round == null) return true;           // no combat → unrestricted, never "round 0 for ever"
+```
+
+⚠️ **Do NOT route a rule that legitimately runs out of combat through this.** Deliberately ungated,
+and pinned as negative controls in `tests/combat-gate.test.js`: `edhaOrderPromptGate` /
+`edhaShatterPromptGate` (they take a key, not an actor, and carry a 30-second wall-clock fallback
+written to work out of combat), `edhaRoundWindowValid` itself (a window armed with no `combatId`
+stays open until consumed), the GM current-combatant target/dealer fallbacks (correctly keyed on what
+the GM is *looking at*), and `edhaCaeCombatant`, which **prefers** the actor's combat but **falls
+back** to the viewed one because it is a lookup whose empty answer would silence a grant.
+
+Pinned in `tests/combat-gate.test.js` — 17 cases, **every one asserting BOTH directions**, because a
+gate that silenced everything would pass a one-sided suite. Mutation-verified three ways.
+
 ## ⛑ THE CROSS-COMBAT CLOBBER FAMILY — a per-combat hook doing a world-wide write (07-28, fix pass F)
 
 `deleteCombat` and `combatTurnChange` hand you **the combat**. 20 of the 24 `deleteCombat` sweeps
