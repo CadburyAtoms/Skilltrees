@@ -16,6 +16,44 @@
  *    lands before the Actor data model schema is first built.
  */
 
+/* ============================================================================================
+ * SHARED CORE (bannered 2026-09-05, item 23 — comment-only) — everything above the first tree
+ * section: the registration bootstrap plus the cross-tree primitives that every one of the 15
+ * tree sections below calls. Nothing here belongs to a colour or a deity. If a helper has two
+ * consumers it lives here and the tree sections REUSE it rather than reinvent it (iron rule 2a),
+ * so this is the first place to grep before writing a new one.
+ *
+ * The `--- ` sub-headers below are the real map; this banner exists so a cold reader — and the
+ * #4 split — can see the seam between "shared" and "per-tree", which the file's own docblock
+ * (about skill registration only) does not name.
+ *
+ * Owns, in file order:
+ *   • debug tracer — edhaSetDebug · edhaDebugArg · edhaDebugOut · edhaDebugSave, plus the
+ *     Hooks.on wrapper installed for THIS file's top-level execution only (restored at the
+ *     bottom of the file), so only edha-content handlers carry the tracer.
+ *   • registration bootstrap — registerContent · edhaRegisterStatuses · edhaRegisterCurrency ·
+ *     EDHA_CURRENCY_SEED, run from module load + init + setup + ready (see the docblock above:
+ *     the leyline skills must land before the Actor data model schema is first built).
+ *   • Weakened + the TEST-MODIFIER RIDER — edhaNumOr · edhaD20RollActor · edhaWeakenedPreRoll ·
+ *     edhaFoldDieMath · edhaTestCtxMatch · edhaTidyFormula · edhaStatusCsvMatch ·
+ *     edhaTestRiderApply. The pre-roll injector every (dis)advantage talent ends up in.
+ *   • the aggro ledger / pack advantage — edhaAggroRecord · edhaPackAdvantageApply.
+ *   • generic timed-status EXPIRY — edhaTurnSeq · edhaCombatantTurnIndex · edhaNextTurnCoord ·
+ *     edhaIsTimedStatus · edhaTimedStampPlan · edhaExpireTimedStatuses. One expiry pass for
+ *     every "until the end of its next turn" status in the whole atlas.
+ *   • the events-rule readers every handler starts from — edhaEventRules · edhaRuleOf.
+ *   • passive damage riders — edhaRiderMatches · edhaHasCondition · edhaRiderParts ·
+ *     edhaRiderBonus · edhaWrapRollDamage.
+ *   • kindle light — edhaLightSpecFor · edhaLightSource · edhaLightTokensOf ·
+ *     edhaApplyKindleLight · edhaClearKindleLights.
+ *   • ISOLATED marker sync — edhaIsIsolated · edhaSyncIsolatedMarkers(+Soon) and its seven
+ *     watchers (token move/create/delete, combat start/turn/end, an ally's HP crossing zero).
+ *   • the applyDamage spine — edhaMarkOwner · edhaDealerOf · edhaAttackKind · edhaActorRuleOf ·
+ *     edhaActorRulesOf · edhaDamageBonusPost · edhaWrapApplyDamage. THE hot path: every
+ *     on-damage trigger in every tree lands in edhaWrapApplyDamage, so read it before adding
+ *     another one — a new consumer almost always belongs inside it, not beside it.
+ * ============================================================================================ */
+
 /* --- EDHA test-debug tracer (2026-07-12) --------------------------------------------------------
  * edha.debug(true) → every edha-content hook handler logs a "[EDHA-TEST]" line as it fires
  * (hook name, handler, key args, thrown errors, false-returns), and incoming GM-relay socket
@@ -7130,6 +7168,30 @@ Hooks.on("cosmere-rpg.applyDamage", (target, damage) => { try { void edhaDamaged
  * carries its own rules, which is exactly what rule 2b's name-keying made impossible. The
  * cross-actor focus write lives in edhaDrainFocus (the set-resource relay, folded in 2bY). */
 
+/* ============================================================================================
+ * ══ END OF THE RED TREE SECTION ══  Everything from here down to the DESTRUCTION banner is
+ * CROSS-TREE MACHINERY, not Red. It sat under Red's banner purely by accident of append order —
+ * ~3,700 lines with no `=== ` banner header of its own, which meant the section index could not
+ * find any of it and a cold reader had to scroll. Bannered 2026-09-05 (item 23, comment-only;
+ * prep for the #4 split, which needs named seams to cut on).
+ *
+ * Twenty subsystems follow, each with its own banner below and a row in ENGINE_INDEX.md:
+ *   defence buffs · consume-dialog title · talent budget · sheet path slots · the
+ *   character-creation wizard · sheet QoL · talent sync · adversary sync · temporary HP ·
+ *   summons · injuries · trigger gating & cost · senses/light/visibility · triggered-effect
+ *   resolution · the single-target gate · targeting & AoE templates · point-targeted bursts ·
+ *   synchronous formula evaluation · the refund race · burst execution + the GM socket relay.
+ * ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ──
+ * DEFENCE BUFFS (`edha-defense-buff`) — +N to chosen defences for a combat-timing window.
+ * Document-driven (iron rule 2b): amount / defenses / window are all editable on the talent's
+ * Events tab. GM-side, and exactly ONE GM writes (edhaDefBuffGmGate) so a two-GM table does not
+ * double-apply. The note below explains why "round-until-turn" RECOMPUTES every combatant on
+ * each turn/round change instead of incrementing — the cosmere system fires no turn hooks.
+ * Owns: edhaDefBuffGmGate · edhaDefBuffFor · edhaApplyDefBuff · edhaRemoveDefBuff ·
+ *   edhaRefreshDefBuffs, plus the ready (mid-combat reload restore) / combatStart /
+ *   combatTurnChange / deleteCombat watchers.
+ * ============================================================================================ */
+
 /* --- Defense-buff talents (e.g. Know Your Moment): +N defenses for a combat-timing window ----------
  * Driven by the talent's own `edha-defense-buff` rule (Events tab — amount/defenses/window editable
  * there). "round-until-turn" = a toggled ActiveEffect (+amount to each defense's .bonus, which the
@@ -7188,6 +7250,15 @@ Hooks.on("combatStart", (combat) => { if (edhaDefBuffGmGate()) void edhaRefreshD
 Hooks.on("combatTurnChange", (combat) => { if (edhaDefBuffGmGate()) void edhaRefreshDefBuffs(combat); });
 Hooks.on("deleteCombat", (combat) => { if (!edhaDefBuffGmGate()) return; for (const c of (combat?.combatants ?? [])) if (c.actor) void edhaRemoveDefBuff(c.actor); });
 
+/* ============================================================================================
+ * RESOURCE-CONSUME DIALOG TITLE (backlog J) — cosmetic, and the smallest section in the file.
+ * The system's own consume prompt opens titled "Consume Resource" with no clue WHICH item asked,
+ * which on a talent-dense sheet is a coin flip. One helper rewrites the header from the item on
+ * the app; two hooks reach it, because the dialog renders under `renderItemConsumeDialog` on some
+ * paths and as a bare `renderDialogV2` (carrying an `item` key) on others.
+ * Owns: edhaSetConsumeTitle + the renderItemConsumeDialog / renderDialogV2 registrations.
+ * ============================================================================================ */
+
 /* --- J: name the resource-consume popup --------------------------------------------------------
  * When you use a talent that has a cost (e.g. Searing Bolt → "Spend 1 Investiture"), the system
  * shows ItemConsumeDialog. The cost lives on the talent ITSELF (system.activation.consume), so the
@@ -7213,6 +7284,16 @@ function edhaSetConsumeTitle(app, element) {
 // renames the subclass. Both are idempotent (they just set text).
 Hooks.on("renderItemConsumeDialog", edhaSetConsumeTitle);
 Hooks.on("renderDialogV2", (app, element) => { if ("item" in (app ?? {})) edhaSetConsumeTitle(app, element); });
+
+/* ============================================================================================
+ * TALENT BUDGET (Edha house rules) — the level-up restriction: how many talents a character of
+ * level N may own, and when a KEY talent (a path's second entry) may be picked. Enforced as a
+ * VETO on `preCreateItem`, so it stops the drag at the sheet rather than reporting it after the
+ * fact; the readout panel that shows the player their remaining points lives in the sheet-slots
+ * section below (edhaGetBudget / edhaBudgetRow), which reads the same helpers.
+ * Owns: edhaIsKeyTalent · edhaAllowedTalents · edhaKeyPickAllowed · edhaCountTalents + the
+ *   preCreateItem veto.
+ * ============================================================================================ */
 
 /* --- Talent budget (level-up restriction) — Edha house rules ---------------------------------
  * The cosmere system does NOT enforce a talent limit: clicking an available tree node adds the
@@ -7275,6 +7356,18 @@ Hooks.on("preCreateItem", (item) => {
   }
   return true;
 });
+
+/* ============================================================================================
+ * SHEET PATH SLOTS + THE BUDGET READOUT (backlog E6 / J2) — the character sheet's Edha header:
+ * the "Heroic Path" / "Leyline Path" / "Deity Path" pick slots and the "remaining points" panel
+ * that makes the budget rules above legible while the player spends them.
+ * ⚠️ edhaSheetRoot is the SHARED renderCharacterSheet entry point (ENGINE PASS 5.3, Job 8) —
+ * five sheet decorators in this file hang off it (here, the creation-wizard launcher, culture +
+ * coins, Readable-Dark, and the budget rows). Never re-derive the root element inline; a second
+ * spelling is how the decorators drifted apart before Job 8 collapsed them.
+ * Owns: EDHA_PATH_SLOTS · edhaSheetRoot · edhaGetBudget + this section's renderCharacterSheet
+ *   decorator. (edhaBudgetRow and its own decorator sit in the sheet-QoL section below.)
+ * ============================================================================================ */
 
 /* --- E6: "Heroic Path" / "Leyline Path" pick slots on the character sheet --------------------
  * Inject two labeled empty slots into the lineage area for whichever path type the character is
@@ -7356,6 +7449,42 @@ function edhaGetBudget(actor) {
   return { attrGranted, attrSpent, skillGranted, skillSpent,
            talentGranted: edhaAllowedTalents(actor), talentSpent: edhaCountTalents(actor) };
 }
+
+/* ============================================================================================
+ * THE CHARACTER-CREATION WIZARD (2026-07-18l, §9j #5; UI answered by Ben's 07-19 bench ruling)
+ * — the biggest single subsystem between the Red and Destruction banners (~1,000 lines): a
+ * step-through DialogV2 chain that builds a playable Edha character from an empty actor.
+ * Steps, in order: welcome → culture (with the Thyrcross MAP PICKER) → heroic path → leyline
+ * path → deity path → weapon → attributes → skills → talent budget → name.
+ *
+ * ENGINE-OWNED by declaration (iron rule 2b): a multi-step dialog with cross-document writes is
+ * one of the rule's two named exits — it cannot be expressed as rules on a talent document.
+ *
+ * Two things a cold reader needs before editing:
+ *   • Every pick is REVERSIBLE. Re-running a step must first undo the previous pick, or the
+ *     actor silently accumulates duplicates — that is what edhaCreationWipeIds,
+ *     edhaCreatorWipeOriginPicks, edhaCreatorWipePathRank and edhaCreationRestart exist for.
+ *     Add a new step and you owe it a wipe.
+ *   • Pack documents are COPIED, never linked — edhaCleanPackCopy strips the source ids so the
+ *     owned item is a real snapshot the player can edit (and that ⟳ Sync can later refresh).
+ *
+ * Owns — packs/utility: EDHA_CREATOR_PACKS · escCw · edhaCwEnrich · edhaCleanPackCopy ·
+ *   edhaCreatorPackDocs · edhaCreatorDialogs · edhaDialogNeedsReposition.
+ * Owns — map picker: edhaCwMapData · edhaCwWireMap.
+ * Owns — origin expertises: edhaPickExpertisesDialog · edhaAwaitExpertisePicks.
+ * Owns — state + undo: edhaCreationState · edhaCreationWipeIds · edhaCreatorWipeOriginPicks ·
+ *   edhaCreationRestart · edhaCreatorWipePathRank.
+ * Owns — picks: EDHA_CREATOR_PICKS · edhaCreatorApplyPick · edhaCreatorChangeSlot ·
+ *   edhaCreatorWeaponPick · edhaGrantBasicActions · edhaParseStartingSkill · edhaSkillIdFromLabel ·
+ *   edhaCreatorPathRank.
+ * Owns — attribute/skill steppers: EDHA_CW_ATTRS · EDHA_CW_ATTR_STAT · edhaCwAttrBudget ·
+ *   edhaCwSkillBudget · edhaCwMaxSkillRank · edhaCwAttrInfo · edhaCwDerivedPreview ·
+ *   edhaCwStepperDialog.
+ * Owns — the steps and the entry points: edhaCreatorWelcomeStep · edhaCreatorPickStep ·
+ *   edhaCreatorAttrStep · edhaCreatorSkillStep · edhaCreatorBudgetStep · edhaCreatorNameStep ·
+ *   edhaCreationWizard · edhaCreatorNewCharacter, plus the renderActorDirectory button and the
+ *   renderCharacterSheet launcher.
+ * ============================================================================================ */
 
 /* --- Character-creation wizard (2026-07-18l — §9j #5; design menu answered by Ben 07-18) --------
  * The guided FIRST-CHARACTER walkthrough: welcome → country → heroic path (Key + kit auto) →
@@ -8360,6 +8489,19 @@ Hooks.on("renderCharacterSheet", (app, element) => {
   } catch (e) { console.error("Edha Content | creation-wizard button failed", e); }
 });
 
+/* ============================================================================================
+ * SHEET QoL — three independent character-sheet decorators plus the budget rows, grouped here
+ * because they all hang off renderCharacterSheet (via edhaSheetRoot) and none of them is a game
+ * mechanic. Purely presentational: nothing in this section writes a rule, a status, or damage.
+ *   • Culture in the ancestry slot + the g/s/c coin editor (2026-07-19s) — the Ledger Standard
+ *     currency from the SHARED CORE, made editable where a player expects to find it.
+ *   • Readable-Dark (2026-07-12c design handoff, engine side) — the CSS injected at `init`.
+ *   • The budget rows — the spent/granted readout for the talent budget enforced far above.
+ *   • A createItem watcher that refreshes the readout when a talent lands on the sheet.
+ * Owns: edhaBudgetRow + four renderCharacterSheet decorators, one `init` (stylesheet) and the
+ *   createItem refresh.
+ * ============================================================================================ */
+
 /* --- Sheet QoL: culture in the ancestry slot + the g/s/c coin editor (2026-07-19s) --------------
  * 1. The header's ancestry line renders `ancestryItem?.name ?? "Ancestry"` — an Edha PC usually
  *    has a CULTURE and no ancestry, so the header read as a bare placeholder (bench 07-19).
@@ -8603,6 +8745,18 @@ Hooks.on("createItem", (item, options, userId) => {
   }
 });
 
+/* ============================================================================================
+ * TALENT SYNC — the "⟳ Sync" half of AUTHORING_WORKFLOW.md, engine side (backlog G).
+ * An owned talent is a COPY taken when the player dragged it, so every pack rebuild leaves every
+ * character holding a stale snapshot: old description, old events, old img. This section walks
+ * the three source packs, matches each owned talent back to its source, and refreshes it in
+ * place — which is why a card-text fix needs "REBUILD + ⟳ Sync" and not just a rebuild.
+ * Matching is by (atlas | group | name) — edhaSrcKey — with a name-only fallback, so a RENAMED
+ * talent does not match and is left alone rather than silently overwritten with the wrong card.
+ * Owns: EDHA_SRC_PACKS · edhaSrcKey · edhaBuildSourceMap · edhaSrcFor · edhaSyncActorTalents ·
+ *   edhaSyncAllCharacters · edhaSyncNow.
+ * ============================================================================================ */
+
 /* --- G: "Sync Edha Talents" utility -----------------------------------------------------------
  * Talents already on an actor are SNAPSHOTS frozen at add-time; a pack rebuild does NOT update
  * them, so after editing roll data (talent-rolls.json) the owned copies keep stale activation/
@@ -8705,6 +8859,16 @@ async function edhaSyncNow(actor) {
   if (r.missing.length) console.warn("Edha Content | talents not found in any Edha pack:", r.missing);
   return r;
 }
+
+/* ============================================================================================
+ * ADVERSARY PACK SYNC (2026-07-18b) — the same problem as talent sync one document up: a placed
+ * adversary is a copy, so a rebuilt bestiary never reaches the actors already on a scene. This
+ * replaces the per-deploy "delete and re-drag every adversary", which lost tokens and their
+ * placement every time. Runs from a button on the adversary sheet or in bulk from the actor
+ * directory; edhaAdvSyncPlan is the pure add/update/remove diff, kept separate so it is testable.
+ * Owns: EDHA_ADV_PACK_ID · edhaAdvSyncPlan · edhaAdvSrcFor · edhaSyncAdversaryActor ·
+ *   edhaSyncAllAdversaries + the renderAdversarySheet and renderActorDirectory buttons.
+ * ============================================================================================ */
 
 /* --- Adversary pack sync (2026-07-18b) — replaces the per-deploy "re-drag every adversary" -----
  * World adversary actors are snapshots frozen at drag-time; a pack rebuild updates only the
@@ -8855,6 +9019,17 @@ Hooks.on("renderActorDirectory", (app, element) => {
   } catch (e) { console.error("Edha Content | adversary sync-all button failed", e); }
 });
 
+/* ============================================================================================
+ * TEMPORARY HP (backlog K) — Edha's own temp-HP pool, because the cosmere system has none.
+ * Stored as a module flag, not a system resource, and spent in `cosmere-rpg.preApplyDamage` by
+ * reducing the incoming instances before the system's own write lands — so it works with every
+ * damage source in the file (riders, bursts, triggers) without any of them knowing about it.
+ * Consumed BEFORE deflect and before real HP; the pool does not stack, a larger grant replaces
+ * a smaller one, and edhaThpTarget resolves who a granting talent's pool belongs to.
+ * Owns: edhaGetTempHp · edhaWriteTempHp · edhaSetTempHp · edhaThpTarget + the preApplyDamage
+ *   consumer.
+ * ============================================================================================ */
+
 /* --- K: Edha-custom Temporary HP ---------------------------------------------------------------
  * House rules: only ONE source of Temp HP at a time (a new grant OVERWRITES the old, even if
  * smaller); incoming damage is removed from Temp HP BEFORE normal HP; Temp HP cannot be healed,
@@ -8920,6 +9095,26 @@ function edhaThpTarget(item, mode) {
   if (sel && sel !== item.actor) return { actor: sel, via: "selected token" };
   return { actor: item.actor ?? null, via: "caster (no target)" };
 }
+/* ============================================================================================
+ * SUMMONS (backlog L) — create a real Actor + Token for a summoned creature, keep it identified
+ * as THIS owner's summon from THIS talent, and clean it up when it dies or the scene ends.
+ * Every summoning talent in the atlas (Civilization's Construct, Life's spirits, Death's risen,
+ * the Green companions) ends up here rather than rolling its own.
+ *
+ * ⚠️ Three things that have each caused a bug:
+ *   • Actor creation is GM-ONLY. A player's summon goes over the socket relay to
+ *     edhaSummonCreateGM; the player half never touches the Actors collection directly.
+ *   • Identity is (talentName, summonName) on a flag — edhaSummonIsFrom / edhaSummonSourceTalent
+ *     / edhaOwnedSummons are the census the H15 sustained-summon cap counts with (07-24y). Do not
+ *     re-derive "is this mine" from the token name; duplicates are renamed (edhaNextTokenName).
+ *   • Deleting the token must delete the ACTOR too, or the world fills with orphans — hence the
+ *     deleteToken / deleteActor pair and edhaSweepOrphanedTokens.
+ * Owns: edhaSummonFolder · edhaSummonIsFrom · edhaSummonSourceTalent · edhaOwnedSummons ·
+ *   edhaSummon · edhaSummonCreateGM · edhaDeleteActorWithTokens · edhaSweepOrphanedTokens,
+ *   the deleteToken / deleteActor watchers, and the mode-gated summon-item preUseItem veto
+ *   (the REUSABLE "this item only works in mode X" primitive, bench 07-17).
+ * ============================================================================================ */
+
 /* --- L: Summon tokens -------------------------------------------------------------------------
  * A talent's own `edha-summon` rule (Events tab) spawns an `adversary` token on the scene, scaled
  * to the caster: HP = a rolled formula, defenses = caster − penalty, a baked melee attack, speed,
@@ -9251,6 +9446,17 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
   } catch (e) { console.error("Edha Content | summon mode gate failed", e); }
 });
 
+/* ============================================================================================
+ * INJURIES (shared primitive, backlog 9a) — mint an injury Item on a target, either rolled off
+ * the world's injury RollTable or typed in directly. One implementation for every talent that
+ * inflicts a lasting wound, and for the GM applying one by hand.
+ * The cross-actor path matters: a player cannot create an item on someone else's actor, so
+ * edhaCreateItemCross relays to the GM while edhaCreateItemDocs is the direct write. The
+ * EDHA_INJURY_FALLBACK list keeps the tool working in a world that has no table yet.
+ * Owns: EDHA_INJURY_FALLBACK · edhaFindInjuryTable · edhaCreateItemDocs · edhaCreateItemCross ·
+ *   edhaAddInjury.
+ * ============================================================================================ */
+
 /* --- Injury tool (shared primitive, backlog 9a): create an injury Item, rolled or typed -------------
  * Creation is the inverse of the Reknit delete-item relay: owner-side create when we own the target,
  * else the `create-item` GM relay. Type picking: a RollTable named like "Injuries" wins when one
@@ -9318,6 +9524,22 @@ async function edhaAddInjury(target, { source = "Injury", damageType = null } = 
     return (await edhaCreateItemCross(target, itemData)) ? name : null;
   } catch (e) { console.error("Edha Content | add injury failed", e); return null; }
 }
+
+/* ============================================================================================
+ * TRIGGER GATING & COST (the first half of the triggered-effect machinery; the resolver itself
+ * is two banners below, after the senses block that its targeting depends on). This is the part
+ * that decides whether a trigger is ALLOWED to fire and what it costs — the frequency ledger
+ * (once per turn / round / scene), the re-entrancy guard, and the resource spend.
+ *
+ * ⚠️ `_edhaInTrigger` is the file-wide re-entrancy guard: it is true while ANY trigger effect is
+ * resolving, and a trigger that deals damage would otherwise re-enter its own on-damage watcher.
+ * Anything new that can fire from inside a payload must respect it.
+ * ⚠️ edhaOwnsTalent lives here and is one of the two iron-rule-2b smells (with `item.name ===`).
+ * It is on the pass-7 ratchet in `scripts/name-keyed-allowlist.json`, which may only SHRINK — do
+ * not add a caller.
+ * Owns: _edhaInTrigger · EDHA_TRIG_PENDING · EDHA_RES_LABEL · edhaIsTalent · edhaOwnsTalent ·
+ *   edhaResVal · edhaTriggerAllowed · edhaMarkTriggerUsed · edhaResolveCost.
+ * ============================================================================================ */
 
 /* --- TRIGGERED talent effects ------------------------------------------------------------------
  * A talent's own `edha-triggered-effect` rule (Events tab) fires a secondary effect on a combat
@@ -9393,6 +9615,25 @@ async function edhaResolveCost(owner, name, spec) {
   }
   return true;
 }
+
+/* ============================================================================================
+ * SENSES, LIGHT & VISIBILITY — the geometry every range- or sight-gated talent asks: who is
+ * within N feet, is this square lit, can this creature see that one. Sits between the two halves
+ * of the trigger machinery because the effect resolver above it needs these answers to pick
+ * targets, and the stealth talents below need them to decide whether they are hidden.
+ * Ranges derive from Awareness (edhaSensesRangeFtFromAwa), so a sheet edit moves them for free.
+ *
+ * The DARK-VEIL sweep (07-16c, Ben's A1 ruling) is the one stateful piece: while a Veil owner's
+ * token stands on an UNLIT square it gains the hidden marker, and it loses it on light. It is
+ * DEBOUNCED (edhaDarkVeilSoon, 300 ms) because token movement and scene-darkness changes both
+ * fire in bursts — the sweep is O(tokens) and must not run per pixel.
+ * Owns — geometry/sight: edhaTokensWithin · edhaPointIlluminated · edhaSensesRangeFtFromAwa ·
+ *   edhaSensesRangeFt · edhaCanSee.
+ * Owns — dark veil: _edhaDarkVeilTimer · edhaDarkVeilSoon · edhaVeilSuppressed ·
+ *   edhaDarkVeilSweep + the updateToken / updateScene / deleteCombat watchers.
+ * Owns — reveal on damage: edhaSenseRevealShows · edhaSenseRevealOnDamage (a hidden creature
+ *   that takes damage stops being hidden).
+ * ============================================================================================ */
 
 // Tokens within `ft` of a center token (Euclidean on centers → grid distance).
 function edhaTokensWithin(centerTok, ft) {
@@ -9590,6 +9831,28 @@ async function edhaSenseRevealOnDamage(victim, list) {
     }
   } catch (e) { console.error("Edha Content | sense-reveal recovery failed", e); }
 }
+
+/* ============================================================================================
+ * TRIGGERED-EFFECT RESOLUTION — the second half of the trigger machinery (gating and cost are
+ * two banners above; the senses block between them is what target resolution reads). This is the
+ * runner: resolve WHO the effect lands on, apply the payload, post the card, charge the cost.
+ *
+ * The pipeline, in order: edhaEffectTargets (an `eff.target` of self / victim / target /
+ * allies / enemies / list-member → concrete actors) → edhaRunTriggerEffect (the payload switch:
+ * damage, heal, status, resource, move, card) → edhaPostTriggerCard → edhaDeductCost.
+ * edhaFireTrigger is the entry point the tree sections and the native-event handlers call.
+ *
+ * ⚠️ "victim" and "target" are NOT synonyms — edhaResolveVictim resolves the creature the
+ * observed event happened TO, which for a reaction is usually not the user's current target.
+ * Conflating them is a bug this file has shipped more than once.
+ * ⚠️ Card state persists: edhaMarkCardResolved / edhaMessageIdOf stamp a clicked button so a
+ * reload (or a second player) cannot resolve the same card twice (REUSABLE, Ben pass 3 07-12).
+ * Owns — targeting: edhaUserTargetToken · edhaUserTargetActor · edhaResolveVictim ·
+ *   edhaEffectTargets.
+ * Owns — payload + cards: edhaToggleStatus · edhaRollCard · edhaRunTriggerEffect ·
+ *   edhaFireTrigger · edhaPostTriggerCard · edhaDeductCost · edhaTriggerCardClick.
+ * Owns — card-state persistence: edhaMarkCardResolved · edhaMessageIdOf.
+ * ============================================================================================ */
 
 /* R-64 (hygiene campaign 2026-08-10, ENGINE PASS 5.2). The single reader every inline
  * `Array.from(game.user?.targets ?? [])[0]` site used to hand-roll (four spellings: Array.from vs
@@ -9911,6 +10174,19 @@ function edhaMessageIdOf(btn) { return btn?.closest?.("[data-message-id]")?.data
 // The card-resolved disable-all binding moved into the ONE renderChatMessageHTML decorations hook
 // (Job 1, pass 5.3, end of file, alongside the dice-formula tidy — same "not a button dispatch" bucket).
 
+/* ============================================================================================
+ * SINGLE-TARGET GATE + DEFEAT TRACKING — two small guards that stop the most common table
+ * mistakes, and the bookkeeping that answers "who killed that".
+ *   • The gate (REUSABLE primitive, Ben ruling R1 07-12): a talent declared single-target is
+ *     VETOED at preUseItem when the user has zero or several targets, with a pick-target card
+ *     instead of a silent misfire. edhaSetUserTargets is the one writer of game.user.targets.
+ *   • Defeat tracking: an updateActor watcher notices HP crossing zero and records the plausible
+ *     killer(s) — edhaKillerCandidates — which is what every "when you defeat a creature" talent
+ *     in the atlas reads. The cosmere system fires no defeat event of its own.
+ * Owns: edhaSetUserTargets · edhaPickTargetClick · edhaKillerCandidates + the preUseItem gate
+ *   and the updateActor defeat sync.
+ * ============================================================================================ */
+
 /* --- Single-target gate (REUSABLE primitive — Ben ruling R1, 07-12) --------------------------------
  * Talents in this set affect ONE creature; with several tokens targeted the system rolls/applies for
  * all of them (Withering Ray rolled twice; Verdant Mend healed a stale target). With >1 target the
@@ -9997,6 +10273,20 @@ Hooks.on("updateActor", async (actor, changes) => {
     else if (hp > 0 && has) await actor.toggleStatusEffect(dead, { active: false, overlay: true });
   } catch (e) { console.error("Edha Content | defeated HP-sync failed", e); }
 });
+
+/* ============================================================================================
+ * TARGETING: ATTUNEMENT RANGE + AoE TEMPLATES — the leyline reach model and its on-canvas
+ * preview. ATTUNEMENT RANGE is the Edha house rule that a caster's reach comes from their COLOUR
+ * RANK, not from the talent: EDHA_ATTUNE_FT indexes feet by rank (0/15/30/60/90/120), so every
+ * range check and every ring drawn anywhere in the file resolves through edhaColorRank here.
+ * A talent's own colour is read from its atlas/group (edhaTalentColor) rather than stored twice.
+ * The rendering is Foundry core MeasuredTemplates plus a transient circle; nothing here is
+ * bespoke geometry.
+ * Owns — the model: EDHA_ATTUNE_FT · EDHA_LEY_COLORS · EDHA_COLOR_HEX · EDHA_RANGE_RING_HEX ·
+ *   edhaTalentColor · edhaColorRank · edhaCasterToken.
+ * Owns — the canvas: edhaDrawCircle · edhaTokensInCircle · edhaShowRange · edhaPlaceAoe, the
+ *   sheet's range-preview control, and edhaNextTokenName + its preCreateToken de-duplicator.
+ * ============================================================================================ */
 
 /* --- Targeting: Attunement Range preview + AoE templates (Foundry core MeasuredTemplates) ----
  * The cosmere system has NO range/area support, so this is built on Foundry core. Range scales off
@@ -10152,6 +10442,19 @@ Hooks.on("renderCharacterSheet", (app, element) => {
   } catch (e) { console.error("Edha Content | range-button injection failed", e); }
 });
 
+/* ============================================================================================
+ * POINT-TARGETED AoE BURSTS — placement. The last four banners in this cross-tree run are all
+ * one feature, split by concern: this (pick a point), the synchronous formula evaluator below
+ * it, the refund race, and burst execution + the GM socket relay.
+ * The note that follows is the design rationale — why a burst is intercepted at `preUseItem`
+ * instead of riding the system's own single-target flow. Read it before changing the interception
+ * point; the "you had to target an actor and only that actor took damage" complaint traces
+ * directly to the model it replaced.
+ * Owns: EDHA_BURST_PENDING (the in-flight burst ledger, keyed by pending id) · edhaPickPoint
+ *   (drag-free click-to-place on the #board canvas, capture phase, so it fires over tokens
+ *   without the Templates layer being active).
+ * ============================================================================================ */
+
 /* --- Point-targeted AoE bursts ----------------------------------------------------------------
  * The old AoE centred the circle on a TARGETED TOKEN (game.user.targets[0]) and fired on the `use`
  * event, which the system queues in postRoll — i.e. AFTER the single-target card was already posted.
@@ -10202,6 +10505,25 @@ function edhaPickPoint(promptText) {
     window.addEventListener("keydown", onKey, true);
   });
 }
+
+/* ============================================================================================
+ * SYNCHRONOUS FORMULA & DICE EVALUATION — the [Tier][Die] evaluator, and the most REUSED block
+ * in this cross-tree run: bursts, hazards, summons, injuries and every triggered damage/heal
+ * payload fold their formula through it.
+ *
+ * ⚠️ Why SYNCHRONOUS at all, when Foundry's Roll is async: these run inside `preUseItem` and
+ * inside applyDamage wrappers, where an `await` yields and the system's own write lands first.
+ * edhaRollDiceSync / edhaEvalSync are therefore hand-rolled — and PURE, which is why they are
+ * pinned in `tests/`. A fix in here ships with a regression case (iron rule 4).
+ * ⚠️ edhaRandomFace draws from CONFIG.Dice.randomUniform (the same source Die#randomFace uses)
+ * so a seeded bench session stays faithful; the Math.random fallback exists only for the node
+ * test harness, which has no CONFIG.
+ * Substitution order matters: edhaSubstRankTier folds @tier/@skills.<colour>.rank FIRST, then
+ * edhaTargetFormula folds target-relative terms and the recovery die, then the dice are rolled.
+ * Owns: edhaRandomFace · edhaRollDiceSync · edhaEvalSync · edhaRollFormula · edhaSubstRankTier ·
+ *   edhaTargetFormula · edhaNormalizeDie · edhaRecoveryDie · edhaConsumeList · edhaConsumeCost ·
+ *   edhaPickPlacement.
+ * ============================================================================================ */
 
 /* One synchronous die roll, drawn from FOUNDRY's RNG rather than bare Math.random so bench/seeded
  * sessions stay faithful (CONFIG.Dice.randomUniform is the same source Die#randomFace uses). The
@@ -10356,6 +10678,18 @@ async function edhaPickPlacement(item, { color = "", rangeFt = 0 } = {}) {
   }
   return pt;
 }
+/* ============================================================================================
+ * COST REFUND ON CANCEL (the refund race) — a burst charges its cost at `preUseItem` and must
+ * give it back if the player cancels the placement. That refund is a CREDIT against a resource
+ * the cosmere system also writes ABSOLUTELY, and the two writes were racing: the refund landed
+ * first and the system's absolute write then overwrote it, so a cancelled burst silently kept
+ * the cost. Found by bench run 13 (2bAA-8), fixed 07-27q. The note below re-derives the ordering
+ * from system 2.1.0's `Item#use()` rather than from the report — keep it that way.
+ * The fix is to WAIT for the system's charge to land (edhaAwaitCostCharged polls the resource
+ * against a pre-use snapshot) and only then credit. EDHA_PRE_COST_RES is that snapshot.
+ * Owns: EDHA_PRE_COST_RES · edhaAwaitCostCharged · edhaRefundCost + the preUseItem snapshot.
+ * ============================================================================================ */
+
 /* --- The refund race (bench run 13 / 2bAA-8, fixed 07-27q) ---------------------------------------
  * A refund is a CREDIT against a resource the cosmere system also writes ABSOLUTELY, and the two
  * writes were racing. Re-derived from system 2.1.0's `Item#use()`, not from the report:
@@ -10427,6 +10761,25 @@ async function edhaRefundCost(item) {
     if (Object.keys(updates).length) await actor.update(updates);
   } catch (e) { /* non-fatal */ }
 }
+
+/* ============================================================================================
+ * BURST EXECUTION + THE GM SOCKET RELAY — the last section before the DESTRUCTION banner, and
+ * the end of the cross-tree run that began at the defence buffs.
+ * The burst lifecycle: edhaCastBurst drops a draggable template and posts the Detonate card →
+ * edhaBurstDetonate captures every token under the template at its REAL dragged position and
+ * rolls the payload → edhaApplyBurstResults writes it. edhaBurstCancel refunds through the
+ * section above. edhaBurstSpecFromCfg builds a spec from an authored `events` rule, which is how
+ * a document-driven talent reaches this machinery without the engine knowing its name.
+ *
+ * ⚠️ EDHA_SOCKET_ACTIONS is the file-wide GM RELAY TABLE — the single dispatch every
+ * player→GM operation in the engine goes through (damage/heal writes, summon creation, region
+ * placement, cross-actor item creation). A player cannot write another actor, so anything that
+ * must is registered here and invoked over the module socket, applied by exactly one GM. Adding
+ * a cross-actor write means adding an action to THIS table, not opening a second channel.
+ * Owns: edhaCastBurst · edhaBurstDetonate · edhaBurstCancel · edhaApplyBurstResults ·
+ *   EDHA_SOCKET_ACTIONS + its `ready` socket registration · edhaBurstSpecFromCfg, and the two
+ *   preUseItem interceptors that route a burst-flagged talent into this flow.
+ * ============================================================================================ */
 
 // Drop a draggable [Size] template + a range ring, then post the Detonate card.
 async function edhaCastBurst(item, spec) {

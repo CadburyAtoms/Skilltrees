@@ -179,6 +179,50 @@ back to 33. Ben's pre-existing plain `Region` on the Playtest Map was never touc
 
 **19 chat messages** were added — bench chat, Ben may flush it. **Both clients logged out**, and `Bench` and
 `PlayerBench` both read selectable on `/join` afterwards; only Ben's `Gamemaster` remains connected.
+## 2026-09-05 DELTA — item 23: the engine's 3,700 unbannered lines get section banners, and `ENGINE_INDEX.md` gets a section map (**comment-only; the PM re-pushes the file at the next deploy**).
+
+**Deploy class: ENGINE-ONLY in the trivial sense — the file changes, behaviour does not.** Nothing
+here needs an F5 of its own: the served engine is unchanged as *code*, so this rides along with the
+next engine push rather than owing a deploy. No pack rebuild, no ⟳ Sync.
+
+**What was wrong.** `register-skills.js` had 31 `/* ===` banners, and the ~3,700 lines between the
+RED and DESTRUCTION banners had none of them. Fourteen unrelated subsystems — defence buffs, the
+talent budget, the sheet slots, the whole character-creation wizard, sheet QoL, talent sync,
+adversary sync, temp HP, summons, injuries, the trigger machinery, targeting/AoE, bursts — sat
+under the RED tree's header purely by accident of append order, so the section index could not
+point at any of them and a cold reader had to scroll to find them. Item 4 (the split) has no seam
+names to cut on until they exist. A second unbannered stretch turned up on the sweep: **lines
+1–1487, the SHARED CORE**, which the file's head docblock describes as *skill registration* and
+never names as shared — including `edhaWrapApplyDamage`, the hot path every on-damage trigger in
+every tree lands in.
+
+**What changed.** 21 banners in the house style (banner count **31 → 52**): 20 across the
+cross-tree run and 1 for the shared core. Each lists the primitives it owns and the gotcha a cold
+reader needs — that `edhaSheetRoot` is the shared sheet entry point five decorators hang off; that
+a new wizard step owes a matching wipe or the actor accumulates duplicates; that `edhaEvalSync` is
+synchronous *on purpose* because these run inside `preUseItem` where an `await` lets the system's
+write land first; that `EDHA_SOCKET_ACTIONS` is the one GM relay table and a cross-actor write adds
+an action there rather than opening a second channel; that "victim" and "target" are not synonyms.
+The run opens with a seam marker saying the Red section ends there. `ENGINE_INDEX.md` gains a
+**🗺 section map**: all 52 banners in file order, with an owns-column for each of the 20 new ones.
+
+**Proven, not asserted.** Stripped-source equality using the repo's own comment stripper
+(`scripts/lib/strip-comments.js` → `stripComments`, the same definition of "comment" that lint
+passes 7 and 20 scan against; re-exported by `tests/harness.js` as `codeOnly`):
+`codeOnly(before) === codeOnly(after)` **byte-identical**, sha256
+`3ae1ed7194ac03d1ee592c7e71500e48c950b1bf128719edbfc640d359e02d27` on both sides — 13,373 code
+lines before and after, +353 comment lines, 0 code lines touched. `node --check` clean before and
+after. `lint-refs.js` prints the identical summary (`477 talent names, 11 engine name-literals
+resolved`), i.e. passes 20/21 report the same numbers, which follows by construction from the
+byte-identical stripped source. `gates.js` 10/10 PASS.
+
+**Nothing for the bench.** No 🤖 rows: a comment carries no behaviour to test, and the equality
+proof is stronger evidence than a table could give.
+
+**One near-miss worth recording** (§10 material): a banner drafted with the literal text
+`` `/* === */` `` in it **closes the block comment at that `*/`** and turns the rest of the banner
+into code. `node --check` caught it immediately. When a comment needs to talk about comment syntax,
+write `` `=== ` `` (or split the token) — never the closing pair.
 
 ---
 

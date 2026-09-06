@@ -600,7 +600,7 @@ pin read `.Prerequisites`, which after the rename would have been `undefined` an
 
 ---
 
-## 23. [ ] Banner the 3,700 unbannered engine lines (prep for #4)
+## 23. [x] Banner the 3,700 unbannered engine lines (prep for #4) (2026-09-05, #179)
 
 **Why:** between the Red tree section (~6,599) and Destruction (~10,660), `register-skills.js`
 carries defence buffs, the talent budget, sheet slots, the character-creation wizard, sheet QoL,
@@ -616,6 +616,21 @@ comment lines (verify with the comment stripper: `codeOnly(before) === codeOnly(
 **Done when:** every top-level function sits under a banner and the index names every section.
 
 **PM:** lane R · model opus · size M · deps none · verify: stripped-source equality + gates.
+
+**DONE (2026-09-05, #179).** 21 banners added — 20 across the cross-tree run (defence buffs ·
+consume-dialog title · talent budget · sheet path slots · the creation wizard · sheet QoL · talent
+sync · adversary sync · temp HP · summons · injuries · trigger gating & cost · senses/light/
+visibility · triggered-effect resolution · the single-target gate · targeting & AoE · point-targeted
+bursts · synchronous formula evaluation · the refund race · burst execution + the GM socket relay)
+plus one for the SHARED CORE, the file's *other* unbannered stretch (lines 1–1487, which the head
+docblock describes as skill registration only and never names as shared). Banner count 31 → 52.
+The run also carries a seam marker at its head saying the Red tree section ends there — the ~3,700
+lines had been sitting under Red's banner by accident of append order. `ENGINE_INDEX.md` gains a
+**section map** listing all 52 banners in file order, with the primitives each of the 20 new ones
+owns. Proof: `codeOnly(before) === codeOnly(after)` byte-identical via the repo's own
+`scripts/lib/strip-comments.js` (sha256 `3ae1ed71…`, 13,373 code lines both sides, +353 comment
+lines); `lint-refs.js` output identical (`477 talent names, 11 engine name-literals`), which is
+passes 20/21 unchanged; `gates.js` 10/10 PASS. Comment-only — the file changes, behaviour does not.
 
 ---
 
