@@ -1756,7 +1756,7 @@ second-strike ledger read, Mistheron unaffected). ENGINE-ONLY (F5).
 
 ---
 
-## 54. [ ] Widen dispel to item-owned transferred effects and Omen ledger entries (R-73, R-35)
+## 54. [x] Widen dispel to item-owned transferred effects and Omen ledger entries (R-73, R-35) — done 2026-09-06, PR #224 (ENGINE-ONLY, F5; bench-pending)
 
 **Why:** A dispel currently cannot remove a passive living on a talent or trait. Ben vetoed the
 narrow §I default and specified the safe widening (b): the `edha-pick` menu should offer

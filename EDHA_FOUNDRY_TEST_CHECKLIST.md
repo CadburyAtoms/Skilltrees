@@ -1234,6 +1234,23 @@ resister branch is dice luck, not doubt. What was left was one question with not
 should Unweaving's dispel card list the **Omen marker itself** as a dispellable button — and it is
 now **`EDHA_RULINGS.md` R-35**.
 **ANSWERED 2026-09-06, R-35 (a): YES** — folded into **item 54** with R-73(b), ENGINE-ONLY, F5.
+**SHIPPED 2026-09-06, PR #224 (ENGINE-ONLY, F5; bench-pending)** — the Chaos residual is a test row again:
+
+- [ ] 🤖 **R-35 (item 54) — the dispel card offers "Dispel Omen" and it clears marker + ledger row.**
+      ENGINE-ONLY (F5). Spreading Omen a bench target from a Chaos PC (ledger reads "(1/2)"), then
+      target that bearer with Unweaving / Unravel Everything's dispel card. Expect a **Dispel Omen**
+      button beside the effect buttons; the GM click removes the `omen` icon, clears
+      `flags.edha-content.markedBy.omen`, and the Chaos PC's `lists.omens` no longer holds the
+      bearer — the next place reads "(1/2)" again, not "(2/2)". Card: "Omen is dispelled from <name>
+      — 1 ledger entry cleared". **NEG:** an unmarked target's card shows no Dispel Omen button.
+- [ ] 🤖 **R-73 (b) (item 54) — Unravel Everything / Unweaving DISABLES a target's Hardy; the talent
+      copy survives intact.** ENGINE-ONLY (F5). Target a PC that owns **Hardy** (its AE is
+      `transfer: true` on the talent). Expect the dispel card to list **Hardy (Hardy — suppress)**;
+      the GM click posts "Hardy is suppressed on <name> — Hardy's copy is intact", the PC's max-HP
+      bonus drops, and on the Hardy talent's **Effects tab the effect is still present, toggled
+      disabled** — re-enabling it there restores the bonus. **NEG:** no delete-shaped button exists
+      for Hardy (only actor-level effects — e.g. a hand-added AE on the actor — are offered as a
+      plain delete, and only those disappear from the sheet after the click).
 
 
 ---
