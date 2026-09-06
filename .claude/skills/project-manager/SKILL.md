@@ -277,7 +277,18 @@ history. Therefore:
   (unattended), so the way to stand one down is the **"session of record" line at the top of the
   board** — it re-reads the board on every wake. Write that line when Ben moves control to you;
   rewrite it on your own first wake.
-- The tasks use the app's default model, which must remain Fable.
+- **The tasks inherit the app's default model, and NOTHING pins it** — the scheduled-task MCP tools
+  (`create_scheduled_task` / `update_scheduled_task`) expose only taskId, title, prompt, description,
+  cronExpression, fireAt, enabled and notifyOnCompletion; there is **no `model` field**, and no
+  `settings.json` model key was ever set. This line used to read "which must remain Fable", which was an
+  assumption dressed as a rule: on **2026-09-06** the weekend task fired as `claude-opus-5`, ran a whole
+  shift, and spent ~10.3M weighted units of Ben's Opus budget on a day he needed for paid work. Both task
+  prompts now open with a **MODEL GUARD**: state your model, and if it does not begin with `claude-fable`,
+  write nothing, dispatch nothing, push-notify Ben, and stop. **If you are a PM session, you have already
+  passed that guard or you are running at Ben's explicit say-so — if neither is true, stop now.**
+- **Re-read the clock before every dispatch and every budget calculation.** Never reuse an earlier `date`.
+  The same 09-06 session froze for 83 minutes after its opening `date`, then did trailing-window arithmetic
+  on the stale reading and held a dispatch it did not need to hold.
 
 ## Communicating with Ben (agreed 2026-09-04)
 
