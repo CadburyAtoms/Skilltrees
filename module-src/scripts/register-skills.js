@@ -3073,6 +3073,102 @@ function edhaParseCosts(s) {
   return out;
 }
 
+/* --- THE SPEND STAMP (ruling R-4 half b, TODO_REPO_HYGIENE #28b, 2026-09-06) --------------------
+ * A resource DECREASE is not the same thing as a SPEND. Until today the engine treated them as
+ * identical: `updateActor` saw focus go down and dispatched `focus-change`, so Ben correcting an
+ * adversary's focus on the sheet taxed it through Whispered Doubt and handed out Coercive
+ * Pressure's disadvantage. Same shape one hook further down for Investiture and the Order edicts.
+ *
+ * THE DIRECTION WAS A REAL CHOICE, and it is the positive one: **the SPEND is stamped, and an
+ * unstamped decrease is not a spend.** The alternative — tag the engine's bookkeeping writes and
+ * count everything else — cannot work, because the writes R-4 complains about are the ones the
+ * engine does NOT make: a GM typing in the sheet, dragging a token bar, or running a third-party
+ * macro. There is no bookkeeping tag to put on a write we never issue, so the absence of one can
+ * never be evidence. Asking "did something say a spend happened?" is answerable; asking "did
+ * nothing say this was bookkeeping?" is not.
+ *
+ * The cost of the positive direction is that EVERY real spend has to carry a signal, and this
+ * half's named risk is exactly the miss: **wrongly classifying a real spend as bookkeeping.** Two
+ * signals cover the whole surface, and the whole surface was enumerated (every write in the file
+ * that can lower `foc`/`inv`; the table is in the 2026-09-06 handoff delta):
+ *
+ *   1. `options.edha.spend` — stamped by the engine's own spend writers via `edhaSpendTag()`:
+ *      `edhaSpendResource` (the canonical clamped spend, and therefore every `costs:` deduction
+ *      including an adversary ability's), `edhaConsumeCost` (the takeover/burst activation cost),
+ *      the `set-resource` socket relay, and H10's Investiture drain. `options` and not a document
+ *      property ON PURPOSE: options are broadcast to every client with the update, so the watcher
+ *      sees the tag no matter which client it runs on, and nothing is left behind on the actor.
+ *   2. A live **pre-use expectation** — the cosmere-rpg system deducts a talent's activation cost
+ *      itself, from a `postRoll` action inside `item.use()`, with a plain `actor.update()` and NO
+ *      options at all (verified against systems/cosmere-rpg/index.js at 2.1.0), so the engine
+ *      cannot stamp it. Instead `cosmere-rpg.preUseItem` registers what that use is about to cost
+ *      (`edhaConsumeList`, the same reader `edhaConsumeCost` uses) and `edhaIsSpend` accepts any
+ *      decrease of that resource on that actor inside the window.
+ *
+ * Three deliberate looseness choices in the expectation, all leaning the SAME way — toward "yes,
+ * a spend", because a wrong YES is today's behaviour while a wrong NO silences a live talent:
+ *   · amount-agnostic (a scaling cost can exceed the declared `value.min`, and requiring a match
+ *     would drop exactly those);
+ *   · not consumed on read (two watchers may consult the same write, and a partial payment lands
+ *     as two updates);
+ *   · a use vetoed AFTER this hook leaves a harmless stale expectation for the window.
+ * `edhaIsSpend` also throws toward YES, the same fail-safe direction `edhaInActiveCombat` uses.
+ *
+ * NOT stamped, deliberately — this is the list that makes the gate mean something: scene resets,
+ * restores, the temp-HP unwind, the creation wizard, adversary sync, and every GM sheet edit or
+ * token-bar drag. `edhaGainFocus`/`edhaDrainFocus` are untouched: their writes already carry
+ * `edhaFocusWatch` and the focus watcher has skipped them since 07-05 (the drain announces its own
+ * zero crossing by hand), so they never reach the predicate. */
+const EDHA_SPEND_WINDOW_MS = 30000;   // the file's existing wall-clock prompt-debounce bound
+let _edhaSpendExpect = [];            // [{ actorId, resource, amount, source, at }]
+/* The tag itself. Merge it into an update's `options`: `actor.update(u, edhaSpendTag("…"))`, or
+ * `{ ...other, ...edhaSpendTag("…") }` when the call already passes options. `bookkeeping: true`
+ * is the declared opposite — nothing sets it today, but a future engine write that lowers a
+ * resource WITHOUT being a spend says so here rather than by staying silent. */
+function edhaSpendTag(source) { return { edha: { spend: true, source: String(source || "engine") } }; }
+function edhaBookkeepingTag(source) { return { edha: { bookkeeping: true, source: String(source || "engine") } }; }
+/* Register what a use is about to cost, so the system's own postRoll deduction has a signal. */
+function edhaExpectSpend(actor, resource, amount, source) {
+  try {
+    if (!actor?.id || !resource) return;
+    const now = Date.now();
+    _edhaSpendExpect = _edhaSpendExpect.filter((e) => now - e.at < EDHA_SPEND_WINDOW_MS);
+    _edhaSpendExpect.push({ actorId: actor.id, resource: String(resource), amount: Number(amount) || 0, source: String(source || "use"), at: now });
+  } catch (e) { /* never block a use on the bookkeeping stamp */ }
+}
+function edhaSpendExpected(actor, resource) {
+  try {
+    if (!actor?.id || !resource) return false;
+    const now = Date.now();
+    _edhaSpendExpect = _edhaSpendExpect.filter((e) => now - e.at < EDHA_SPEND_WINDOW_MS);
+    return _edhaSpendExpect.some((e) => e.actorId === actor.id && e.resource === String(resource));
+  } catch (e) { return true; }
+}
+/* THE PREDICATE. Every site that infers a spend from a resource decrease consults this one
+ * function — `oldVal`/`newVal` are the stashed before/after the preUpdateActor hook already
+ * captures. Returns false for a decrease with no positive signal: a GM sheet edit. */
+function edhaIsSpend(actor, resource, options, oldVal, newVal) {
+  try {
+    if (!(Number(newVal) < Number(oldVal))) return false;      // not a decrease at all
+    const tag = options?.edha;
+    if (tag?.bookkeeping === true) return false;               // an engine write that declares itself
+    if (tag?.spend === true) return true;                      // an engine spend writer
+    return edhaSpendExpected(actor, resource);                 // the system's own activation cost
+  } catch (e) { return true; }                                 // uncertain lands on today's behaviour
+}
+/* Registered after the fourteen pre-cost vetoes above it (the H1 `edha-def-test` veto and the
+ * deity target/range/ledger gates), so Foundry's stop-at-first-`false` means a use THEY refuse
+ * never reaches here. The eight vetoes registered further down the file can still refuse a use
+ * this hook has already recorded — that leaves an expectation for nothing, which is harmless: a
+ * refused use writes no resource, so the only effect is that an unrelated hand edit of the same
+ * resource on the same actor inside the window reads as a spend, i.e. today's behaviour. */
+Hooks.on("cosmere-rpg.preUseItem", (item) => {
+  try {
+    const actor = item?.actor; if (!actor) return;
+    for (const c of edhaConsumeList(item)) edhaExpectSpend(actor, c.resource, c.amount, item.name);
+  } catch (e) { /* never block a use */ }
+});
+
 /* --- edhaSpendResource / edhaGainResource (ENGINE PASS 5.3, Job 6) — the canonical clamped resource
  * write. ~13 spend sites and ~5 gain sites hand-rolled the same two shapes:
  *   spend: `const cur = res?.value ?? 0; update({...: Math.max(0, cur - n)})`
@@ -3091,7 +3187,9 @@ async function edhaSpendResource(actor, resource, n) {
     if (!actor || !resource || !(Number(n) > 0)) return;
     const res = actor.system?.resources?.[resource];
     const cur = res?.value ?? 0;
-    await actor.update({ [`system.resources.${resource}.value`]: Math.max(0, cur - Number(n)) });
+    // #28b: THE spend stamp. Every `costs:` deduction in the engine lands here, so one tag on this
+    // one write is what tells the focus/Investiture watches a real spend happened.
+    await actor.update({ [`system.resources.${resource}.value`]: Math.max(0, cur - Number(n)) }, edhaSpendTag("edhaSpendResource"));
   } catch (e) { /* perms */ }
 }
 async function edhaGainResource(actor, resource, n) {
@@ -4153,6 +4251,9 @@ Hooks.on("updateActor", async (actor, changes, options) => {
     if (!edhaDefBuffGmGate()) return;
     const f = options?.edhaFoc;
     if (!f || f.new >= f.old) return;                            // only on a DECREASE
+    // R-4 / #28b: …and only a decrease something SAID was a spend. A GM correcting the sheet is
+    // not one, and used to tax the creature through every enemy focus-change watcher.
+    if (!edhaIsSpend(actor, "foc", options, f.old, f.new)) return;
     await edhaRunFocusWatch(actor, f.old, f.new);
   } catch (e) { console.error("Edha Content | focus watch failed", e); }
 });
@@ -10783,7 +10884,8 @@ function edhaConsumeCost(item) {
       const cur = Number(foundry.utils.getProperty(actor, `system.resources.${c.resource}.value`)) || 0;
       updates[`system.resources.${c.resource}.value`] = Math.max(0, cur - c.amount);
     }
-    if (Object.keys(updates).length) actor.update(updates);
+    // #28b: the takeover path's activation cost is a spend as much as edhaSpendResource's is.
+    if (Object.keys(updates).length) actor.update(updates, edhaSpendTag("edhaConsumeCost"));
     return true;
   } catch (e) { console.error("Edha Content | burst consume failed", e); return true; }
 }
@@ -11157,7 +11259,10 @@ const EDHA_SOCKET_ACTIONS = {
   "set-resource": async (payload) => {                           // cross-actor resource write (Shatter Focus)
     const p = payload || {};
     const a = await edhaResolveActorRef(p.actorUuid);
-    if (a && p.path) await a.update({ [p.path]: p.value });
+    // #28b: a relayed write is ALWAYS an engine write caused by a player-facing action — the only
+    // emitter is edhaDrainFocus's unowned-target branch. Stamped, so the relay half keeps the
+    // behaviour the direct half has: the decrease still reads as a spend GM-side.
+    if (a && p.path) await a.update({ [p.path]: p.value }, edhaSpendTag("set-resource relay"));
   },
   "rewrite-roll": async (payload) => {                           // Voice of Authority / Bound by Word — change a rendered roll's total
     const p = payload || {};
@@ -15810,6 +15915,10 @@ Hooks.on("updateActor", (actor, changes, options) => {
     if (!edhaDefBuffGmGate()) return;
     const iv = options?.edhaOrderInv;
     if (!iv || iv.new >= iv.old) return;
+    // R-4 / #28b: the Edict says "activate Investiture" — a GM writing a number on the sheet did
+    // not activate anything, so the violation prompt needs the same positive signal as the focus
+    // watch. A wired ability's cost goes through edhaSpendResource and still counts.
+    if (!edhaIsSpend(actor, "inv", options, iv.old, iv.new)) return;
     void edhaOrderInvestWatch(actor);
   } catch (e) {}
 });
@@ -17866,7 +17975,9 @@ function edhaRegisterNativeEventSystem() {
           const res = who.system?.resources?.inv;
           const cur = Number(res?.value) || 0;
           const next = this.op === "drain" ? Math.max(0, cur - n) : Math.min(edhaResVal(res) ?? (cur + n), cur + n);
-          try { await who.update({ "system.resources.inv.value": next }); } catch (e) { /* perms */ }
+          // #28b: a DRAIN is stamped (a talent took it — the Order Investiture watch must still
+          // see it, exactly as today); a GAIN is an increase and never reaches the predicate.
+          try { await who.update({ "system.resources.inv.value": next }, this.op === "drain" ? edhaSpendTag(`${source} (drain)`) : {}); } catch (e) { /* perms */ }
           ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: who }),
             content: `<p>✨ <strong>${source}</strong>: ${who.name} ${this.op === "drain" ? "loses" : "recovers"} <strong>${n}</strong> Investiture.</p>` });
           return;
