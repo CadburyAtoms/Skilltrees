@@ -1673,7 +1673,7 @@ ENGINE-ONLY (F5).
 
 ---
 
-## 50. [ ] One sanctioned wrapper on the system's cost-consume dialog (R-70)
+## 50. [x] One sanctioned wrapper on the system's cost-consume dialog (R-70) — done 2026-09-06, PR #222 (ENGINE-ONLY, F5; bench-pending)
 
 **Why:** A two-resource activation only charges the FIRST resource unless the player manually
 ticks the second box in the system's `showConsumeDialog`. Ben (b): "wrap the dialog so every cost
