@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-06T21:11:33.299Z",
+  "generatedAt": "2026-09-06T21:47:03.345Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "fd50d3eb86",
-    "commit": "7e34961",
-    "branch": "pm/board-2026-09-06-rulings",
+    "hash": "faff0a0cc3",
+    "commit": "28e65b0",
+    "branch": "main",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -43,37 +43,24 @@
   },
   "pm": {
     "status": "awake",
-    "note": "Fable PM (Ben-started, 16:56 ET). Inbox: all 66 of your 09-06 answers read and marked seen; every consequence is on the board (rulings table, queue rows 43-62). Foundry is CLOSED, so tonight is lane R: items 45 (rulings close-out docs) and 46 (TODO filing) run now in parallel worktrees, then the engine passes 47+ one at a time. Nothing is owed to deploy-to-foundry.bat until the REBUILD items 55-59 land. Waiting on you only for: remoteControlAtStartup in your user settings.json (my write was blocked), a Foundry window for the bench, a reload of your Gamemaster client.",
-    "waitingOn": null,
+    "note": "Fable PM (Ben-started, 16:56 ET). Both docs items are merged: 46 (the twenty TODO entries, #212, 17:23) and 45 (every ruling recorded in EDHA_RULINGS.md, #213, 17:44). Fix pass 7a (item 47, Opus) dispatched 17:50 in a worktree; 48+ follow one at a time. Foundry is CLOSED, so no bench tonight unless you open it. Nothing is owed to deploy-to-foundry.bat until the REBUILD items 55-59 land. Two rulings were NOT in the phone batch and are still open: R-18 (quarry advantage vs an active disadvantage — default: keep the house convention) and R-48 (Explosive Leap 20 ft vs 5 ft — default: the R-46 treatment, explicit distanceFt: 20, in item 57). Waiting on you otherwise only for a Foundry window and a Gamemaster-client reload.",
+    "waitingOn": "R-18 and R-48 (defaults apply if silent)",
     "nextWakeAt": null,
     "session": "2026-09-06 16:56 ET — Fable PM (hand-started)"
   },
   "workers": [
     {
-      "item": "45",
-      "title": "Rulings close-out 2026-09-06 — EDHA_RULINGS.md, checklist rows, 28a list, scene licence, design seed, handoff delta",
-      "model": "sonnet",
+      "item": "47",
+      "title": "Fix pass 7a — heal / status / resource family: R-10, R-12, R-25, R-36, R-51, R-52(i), R-72 + R-76, R-54",
+      "model": "opus",
       "size": "M",
-      "lane": "R",
-      "branch": "pm/45-rulings-closeout-2026-09-06",
-      "startedAt": "2026-09-06T21:16:00Z",
-      "agent": "Work item 45",
+      "lane": "B",
+      "branch": "pm/47-fix-pass-7a",
+      "startedAt": "2026-09-06T21:50:00Z",
+      "agent": "Work item 47",
       "phase": "working",
       "pr": null,
-      "note": "worktree; docs-only; never touches TODO_REPO_HYGIENE.md"
-    },
-    {
-      "item": "46",
-      "title": "File TODO items 43-62 from the 09-06 rulings",
-      "model": "sonnet",
-      "size": "S",
-      "lane": "R",
-      "branch": "pm/46-file-todo-43-62",
-      "startedAt": "2026-09-06T21:16:00Z",
-      "agent": "Work item 46",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; TODO_REPO_HYGIENE.md only"
+      "note": "worktree; ENGINE-ONLY; eight mutation-proven pins"
     }
   ],
   "usage": null,
@@ -513,36 +500,36 @@
     {
       "pos": 36,
       "item": "45",
-      "title": "Rulings close-out 2026-09-06 — every phone answer recorded inline in EDHA_RULINGS.md (no-change answers → §K; change answers ANSWERED-pending-ship naming their TODO item; §I's fourteen → §K as accepted; R-72 gets an entry; the GM-less traps get an R-number; R-78 recorded), the docs-only consequences (checklist rows retired / reworded per R-9, R-16, R-24, R-26, R-30, R-33, R-39, R-41; 28a's ungated list + the ENGINE_INDEX note for R-75 and the traps; the Playtest Map scene licence in bench-run hard rule 4 + the runbook; R-76's design seed; the ACTOR_STAT_DERIVATION.md doc-map line), handoff delta, dashboard. Source: the inbox dump. Dispatched 17:15 in a worktree",
+      "title": "Rulings close-out 2026-09-06 — every phone answer recorded inline in EDHA_RULINGS.md (no-change answers → §K; change answers ANSWERED-pending-ship naming their TODO item; §I's fourteen → §K as accepted; R-72 gets an entry; the GM-less traps get an R-number; R-78 recorded), the docs-only consequences (checklist rows retired / reworded per R-9, R-16, R-24, R-26, R-30, R-33, R-39, R-41; 28a's ungated list + the ENGINE_INDEX note for R-75 and the traps; the Playtest Map scene licence in bench-run hard rule 4 + the runbook; R-76's design seed; the ACTOR_STAT_DERIVATION.md doc-map line), handoff delta, dashboard. Source: the inbox dump. Dispatched 17:15 in a worktree; merged 17:44 after review (CONFLICTING on the dashboard after #212 — merged main, regenerated, waited for the run on the new sha; one review correction: R-36 → item 47, not 48). 85 ANSWERED blocks; new R-79 (the GM-less traps, KEEP); R-73 stays in §I vetoed-pending-item-54; R-18 and R-48 were NOT in the dump — still open",
       "lane": "R",
       "model": "sonnet",
       "size": "M",
       "deps": "inbox dump",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 213
     },
     {
       "pos": 37,
       "item": "46",
-      "title": "File TODO items 43–62 from the 09-06 rulings — entries only (Why / What / Done-when / PM: line each, specs verbatim from the inbox dump; 41 folded into 58; 45's own entry too). Dispatched 17:15 in a worktree",
+      "title": "File TODO items 43–62 from the 09-06 rulings — entries only (Why / What / Done-when / PM: line each, specs verbatim from the inbox dump; 41 folded into 58; 45's own entry too). Dispatched 17:15 in a worktree; merged 17:23 after review (arrived CONFLICTING on the dashboard after #211 — PM merged main, regenerated, waited for the run on the new sha; one review correction: 58's Withering Touch overlay is deity-death.json)",
       "lane": "R",
       "model": "sonnet",
       "size": "S",
       "deps": "inbox dump",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 212
     },
     {
       "pos": 38,
       "item": "47",
-      "title": "Fix pass 7a — heal / status / resource family: R-10 stabilize bypasses no-heal · R-12 raise clears its own Remain · R-25 Rallying Shout prints only at 0 HP / Unconscious · R-36 THP source relabels only on a win · R-51 a phantom's break is no ally drop · R-52 (i) +2.5 ft slack in edhaAllyDropEligible · R-72 drains → edhaBookkeepingTag (+ R-76 header comment) · R-54 EDHA_HP_BONUS 1 → 0 + comment + test re-pins + the checklist row. ENGINE-ONLY (F5); a headless pin + 🤖 row each",
+      "title": "Fix pass 7a — heal / status / resource family: R-10 stabilize bypasses no-heal · R-12 raise clears its own Remain · R-25 Rallying Shout prints only at 0 HP / Unconscious · R-36 THP source relabels only on a win · R-51 a phantom's break is no ally drop · R-52 (i) +2.5 ft slack in edhaAllyDropEligible · R-72 drains → edhaBookkeepingTag (+ R-76 header comment) · R-54 EDHA_HP_BONUS 1 → 0 + comment + test re-pins + the checklist row. ENGINE-ONLY (F5); a headless pin + 🤖 row each. Dispatched 17:50 in a worktree (mutation proof per ruling)",
       "lane": "B",
       "model": "opus",
       "size": "M",
       "deps": "45 ✓ 46 ✓",
-      "status": "queued",
+      "status": "running",
       "statusDetail": null,
       "pr": null
     },
@@ -2115,6 +2102,48 @@
       "weighted": null,
       "weightedM": null,
       "outcome": "Model guard passed (claude-fable-5-1); Sunday = weekend window; clock read live (16:56, re-read 17:02). Resume clean: main 7e34961, no open PRs, no worktrees, engine 6 in sync (57a8c950…), Foundry CLOSED. #209 / #210 verified on disk: docs/pm-*.json tracked, tmp/ gitignored, both task prompts open with the MODEL GUARD. Phone inbox: 66 notes → all seen (dump in tmp/pm/inbox-2026-09-06/); the board's rulings table, queue rows 43–62 and this run log carry the consequences. The remoteControlAtStartup write was blocked by the permission classifier → PM-R12, Ben's hands. Budget read at 17:05: day-shift 1 of 12 (bench run 38 at 08:35); trailing-5h 0 of 6. Dispatch: items 45 + 46 in parallel worktrees (both docs-only, disjoint files — 45 never touches TODO_REPO_HYGIENE.md, 46 touches nothing else)",
+      "pr": 211
+    },
+    {
+      "date": "2026-09-06",
+      "time": "17:15",
+      "at": "2026-09-06T21:15:00.000Z",
+      "item": "Item 46 (file TODO items 43–62 from the 09-06 rulings) — work-item, worktree",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "10 min, 117 turns",
+      "weighted": "2.3M",
+      "weightedM": 2.3,
+      "outcome": "merged 17:23 after review, no trailers. Twenty entries in house format, specs faithful to the inbox dump; grep -c '^## [0-9]' → 62. Arrived CONFLICTING (dashboard vs #211): PM merged main in the worktree, regenerated, pushed, and waited for the run on the NEW sha (gh pr checks --watch returned the old run's green first — the 09-05 trap, caught). One review correction committed by the PM (58's overlay path). Local gates 10/10 in the worktree",
+      "pr": 212
+    },
+    {
+      "date": "2026-09-06",
+      "time": "17:15",
+      "at": "2026-09-06T21:15:00.000Z",
+      "item": "Item 45 (rulings close-out 2026-09-06 — EDHA_RULINGS.md, checklist, handoff delta, ENGINE_INDEX, bench-run scene licence) — work-item, worktree",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "34 min, 359 turns",
+      "weighted": "13.7M",
+      "weightedM": 13.7,
+      "outcome": "merged 17:44 after review, no trailers. 85 ANSWERED blocks, 17 no-change rulings + the 14 §I defaults → §K with stubs, new R-79, R-72 written, every change ruling names its item 47–62; checklist rows retired/reworded per R-9/16/24/26/30/33/39/41 and annotated where the fix ships later; doc-map line for ACTOR_STAT_DERIVATION.md (in CLAUDE.md, where the map actually lives). Arrived CONFLICTING (dashboard vs #212) — same resolution as #212; one review correction (R-36 → item 47). Local gates 10/10 in the worktree, CI green on the corrected sha. Cost note: 13.7M for a docs item — the section surgery on a 1,100-line rulings doc is turn-heavy (359 turns; the worker caught and fixed two of its own mid-edit mistakes); budget the next rulings-doc pass as M-plus, and prefer append-only formats for it. Left open by the dump: R-18, R-48 (not answered; in the rulings table as waiting)",
+      "pr": 213
+    },
+    {
+      "date": "2026-09-06",
+      "time": "17:50",
+      "at": "2026-09-06T21:50:00.000Z",
+      "item": "Item 47 (fix pass 7a — R-10, R-12, R-25, R-36, R-51, R-52(i), R-72 + R-76, R-54) — work-item, worktree",
+      "itemNo": null,
+      "model": "opus",
+      "isDispatch": true,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "dispatched. Clock re-read 17:44 before the budget: day-shift 4 of 12 (bench 38, 45, 46, 47), trailing-5h 3 of 6. The PM's board bookkeeping rides as its own small PR (pm/board-2026-09-06b) so the engine worker starts from a clean main and the main checkout stays the PM's",
       "pr": null
     }
   ],
@@ -2406,6 +2435,24 @@
       "model": "opus",
       "item": null,
       "pr": 210
+    },
+    {
+      "at": "2026-09-06T21:15:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 212
+    },
+    {
+      "at": "2026-09-06T21:15:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 213
+    },
+    {
+      "at": "2026-09-06T21:50:00.000Z",
+      "model": "opus",
+      "item": null,
+      "pr": null
     }
   ],
   "statusVocab": [

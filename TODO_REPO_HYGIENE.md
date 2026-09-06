@@ -1470,7 +1470,7 @@ sections + dashboard rebuild. DOCS-ONLY.
 
 ---
 
-## 45. [ ] Rulings close-out 2026-09-06 — record every phone answer
+## 45. [x] Rulings close-out 2026-09-06 — record every phone answer (2026-09-06, PR #213)
 
 **Why:** Ben answered every open ruling on the morning of 2026-09-06 through the phone inbox (66
 relayed notes, `tmp/pm/inbox-2026-09-06/inbox/*.json`); those answers need to land in
