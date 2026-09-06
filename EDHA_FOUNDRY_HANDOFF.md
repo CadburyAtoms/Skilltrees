@@ -186,7 +186,8 @@ registerStatusEffects") and `edhaRegisterCurrency`, both of which have worked at
   which is a much worse failure than a dispel that cannot reach it. If Ben wants those dispellable,
   the fix is not to widen the read — it is to widen the read **and** guard the delete so only
   actor-level effects are removable, with item-owned ones offered as a *disable* instead. Filed here
-  rather than as a checklist row, per the standing-decisions rule.
+  rather than as a checklist row, per the standing-decisions rule. Filed as **R-73** in
+  `EDHA_RULINGS.md` §I — R-72 was already claimed by item 28b for the involuntary-drain question.
 
 ### Deploy
 

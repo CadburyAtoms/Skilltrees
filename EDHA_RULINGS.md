@@ -569,7 +569,7 @@ this — it only decides how far the fix reaches. *(Marathon 3, fix pass E.)*
 These are **already live in the code**. They were taken as defaults rather than left to stall a fix.
 If you disagree with any, say so and it gets reverted.
 
-**R-72. A DISPEL cannot remove a passive that lives on a talent or a trait — it stays that way.**
+**R-73. A DISPEL cannot remove a passive that lives on a talent or a trait — it stays that way.**
 Fix pass 5, 2026-09-06, while sweeping the `actor.effects` family that had hidden the Stalker's veil
 defect. `edha-pick` `source: "effects"` — the Unravel-Everything shape — offers one delete button per
 **enabled `actor.effects` entry**, so an ActiveEffect authored `transfer: true` on a talent or trait
