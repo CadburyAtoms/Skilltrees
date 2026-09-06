@@ -1558,6 +1558,68 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   matched control has proven the root cause, **write the residual symptom down as PARTIAL and move on**
   — the second defect can be run 34's first row.
 
+## Operating lessons from run 36 (2026-09-06 — these OVERRIDE older advice where they conflict)
+
+- ⭐ **The way to test a two-GM row is a `userId`-recording hook observer, not a card count.**
+  `Hooks.on("updateActor", (doc, changes, options, userId) => …)` fires on *every* client for a world
+  change and hands you **which user originated it**. That turns "did the other GM also write?" from an
+  inference into a measurement — and it does it without touching Ben's client. Item 12's three sites
+  were settled with one such observer. ⚠️ **The delete hooks have a THREE-argument signature**
+  (`document, options, userId`), so reusing the update-shaped callback silently records `undefined`
+  for the user on `deleteDrawing` / `deleteRegion` — write the delete observers separately, or fall
+  back to reading whether the deletes share one `modifiedTime` (one batch = one operation).
+- ⭐ **The positive control for a two-GM silence can arrive for free — watch for it.** While driving
+  (a), the same observer caught a write **originating on Ben's `Gamemaster` client**. That single
+  line is what makes every "no second copy" statement in the run a measured silence instead of a blind
+  one, and it cost nothing. If your instrument never sees the other client at all during a run, say so
+  and treat the silences as weaker.
+- ✅ **`game.users.activeGM` = `Bench` is STRUCTURAL, not luck.** Foundry picks the primary GM by user
+  id, and `Bench`'s `1HPZKEq5DXAJ8v1v` sorts before `Gamemaster`'s `dYLXgJcrdx5IL0eX`. Two runs in a
+  row have drawn `Bench`; expect it to keep drawing `Bench` while those ids stand. Still read it and
+  still record it — but stop treating it as a coin flip that might invalidate the run.
+- ⭐ **A player-relayed apply is testable in ONE emit, and the negative control is an HP number.**
+  Join `PlayerBench`, then `game.socket.emit("module.edha-content", {action:"burst-apply", payload:
+  {hits:[{actorUuid, amount, type}]}})` — the exact payload the engine sends from a non-GM client
+  (`register-skills.js` ~5589). Both GM clients receive it; if the gate holds, HP moves by `amount`
+  **once**, not twice. Declare that the payload was staged, and note that it carries no card of its
+  own (the caster-side card comes from the emitting client, not the relay).
+- ⚠️ **Joining `PlayerBench` by clicking the join button does not work at this pane scale** — the
+  emulated viewport is scaled to fit, so `computer:left_click` at the reported coordinates missed and
+  the tab sat on `/join` with `game.ready === false` looking like a slow load. **Set the `select` and
+  click the button from JS instead**: `sel.value = "<userId>"; sel.dispatchEvent(new Event("change",
+  {bubbles:true})); document.querySelector('button[name="join"]').click()`. Expect the follow-up
+  `javascript_tool` call to fail with *"Inspected target navigated or closed"* — that is the join
+  succeeding, so just re-read the page.
+- ⚠️ **`tabs_create` gives a BLANK tab, and `resize_window` refuses to act on one.** Navigate first,
+  *then* resize, then navigate again. Batching resize-before-navigate loses the whole batch.
+- ✅ **Stop guessing which tokens a pulse can see — ask the sight backend.**
+  `CONFIG.Canvas.polygonBackends.sight.testCollision(originCentre, targetCentre, {type:"sight",
+  mode:"any"})` answers run 35's wall problem in one call, and it also finds you a **free cell**: sweep
+  the grid around the caster, filter on `!occupied && !blocked`, move the instrumented ally there. On
+  the Playtest Map, `Bench — White` sees **none** of its neighbours from where it stands, including one
+  a single square away — so "they are adjacent, they must be visible" is wrong there.
+- ⚠️ **`edha.drawMana()` takes the ITEM, not the actor.** Called bare it returns silently with no
+  notification and no card — indistinguishable from a dead talent. `edha.drawMana(actor.items.getName(
+  "Draw Mana"))`. (Several `edha.*` API entries are item- or actor-taking; check the signature in
+  `register-skills.js` before spending a call on a silence.)
+- ✅ **A `target: "pair"` die-step proves the whole ally/enemy split in one cast** — and to prove the
+  split is by *disposition* rather than click order, **target the enemy first**. Add the caster's own
+  token to the target set in the same click: a correct implementation leaves it in neither list, and
+  that is the third assertion for free. Check the applied **statuses** too (Exalted / Diminished) —
+  they are a second, independent surface for the same answer.
+- ⚠️ **A die-step leaves BOTH a flag and a status behind.** Restoring `flags.edha-content.dieStep`
+  alone leaves `Exalted` / `Diminished` on the actors and your effect diff will catch you. Clear them
+  with `toggleStatusEffect(id, {active:false})`, never by deleting the effect document.
+- ⚠️ **A derived stat can be different depending on WHICH prepare ran.** `Bench — White`'s max HP read
+  64 at run start, 57 after a resource write, and 64 again after `prepareData()` — the `Hardy - Max HP`
+  AE contributing 7 instead of 14. If a number you snapshotted moves and you did not write it, force a
+  `prepareData()` and re-read **before** recording a world-diff residue; and if it still differs, that
+  is a finding, not a restore failure.
+- **Density, measured: 3 rows off the checklist (item 12's three-site two-GM row, item 13's heal
+  clamp, item 14's `edhaSovTargets` split) + 2 new defects + 1 new ruling (R-77), in ~26 driving
+  calls. Final id / effect / flag diffs all EMPTY.** The re-test block first, for the tenth run
+  running — and for the tenth time it was the densest thing available.
+
 ## Operating lessons from run 35 (2026-09-06 — these OVERRIDE older advice where they conflict)
 
 - ⚠️ **The 0×0 canvas bites the FIRST tab too, and `resize_window` alone does not fix it.** Run 10's

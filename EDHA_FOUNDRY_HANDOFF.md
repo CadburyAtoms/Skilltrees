@@ -33,6 +33,101 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-06 — BENCH RUN 36 (weekend marathon, run 13): **item 12's two-GM row PASSES on all three migrated sites** — including a player-relayed apply that lands **once** with both GMs connected; item 13's heal clamp and item 14's `edhaSovTargets` split both close. **3 rows off the checklist, 2 new defects found, 1 new ruling (R-77), world diff EMPTY.** (**DOCS-ONLY** — no engine or data change, no pack rebuild owed.)
+
+**Deploy verified by hash first:** the served `register-skills.js`, normalised CRLF→LF, hashed
+`95c98d65…`, matching `main`'s `HEAD:module-src/scripts/register-skills.js` at the #198 merge —
+i.e. item 12's `edhaNoOtherActiveGM` / `edhaDefBuffGmGate` consolidation was live for the whole run.
+Clients: **`Bench` + Ben's `Gamemaster` throughout**, `PlayerBench` added for the relay half.
+
+### 1. The re-test block — item 12, all three sites and the negative control (RETIRED)
+
+**`game.users.activeGM` resolved to `Bench` again**, read independently from all three clients. This
+is not a coin flip: Foundry picks the primary GM by user id, and `Bench`'s `1HPZKEq5DXAJ8v1v` sorts
+before `Gamemaster`'s `dYLXgJcrdx5IL0eX`, so **the bench client will be the applier at Ben's table
+for as long as those two ids stand** — worth knowing before reading any silence as a pass.
+
+⭐ **The instrument carried its own positive control.** An `updateActor` / `updateToken` /
+`deleteRegion` observer recording the originating `userId` caught a write **from Ben's `Gamemaster`
+client** inside the same event window as Bench's writes (see §3), so the absence of a second copy on
+the gated sites is a *measured* silence, not a blind one — run 34's rule applied to a two-client row.
+
+| Site | Driven | Result |
+|---|---|---|
+| **(a) Awareness → sight range** | `Bench — Red` awa **2 → 4**, then **4 → 2** | **ONE** `prototypeToken.sight.range` write and **ONE** Token `sight.range` write per change (25, then back to 20), both `user: "Bench"`, **no `Gamemaster` copy** |
+| **(b) Region delete / paired Drawing** | staged hazard Region + **two** paired Drawings (`flags.edha-content.hazardVisual.regionId`) + a **decoy** Drawing flagged to a different regionId | Region delete swept **exactly the two paired Drawings, in one batch** (identical `modifiedTime`), left the decoy, **no console error, no "does not exist" notification** |
+| **(c) Player-relayed apply** | `PlayerBench` joined as a third client and emitted the engine's own `burst-apply` payload (3 impact at `Bench Target — Adjacent A`) | HP **20 → 17**, **not 14** — a **single** `updateActor` from `Bench`; Ben's `Gamemaster` received the same broadcast and wrote nothing |
+
+(c) is the negative control in its strongest form: a double-apply would have shown up as an HP
+number, not as an inference. ⚠️ Stated limit: the staged relay payload carries **no card of its own**
+(the caster-side card is posted by the emitting client, not by the relay), so the row's "one card"
+clause is recorded as **one application**. The delete-race half is one-sided by construction — a
+second client's server-side "does not exist" error prints on *that* client's console, which the
+bench cannot read; what the bench can and did prove is that only one sweep ran and nothing was left
+behind.
+
+### 2. Item 13's heal clamp and item 14's ally/enemy split (both RETIRED)
+
+- **Item 13, heal half.** Run 35 lost this to the Playtest Map's walls. The fix was to stop guessing:
+  `CONFIG.Canvas.polygonBackends.sight.testCollision` from `Bench — White`'s centre showed **every**
+  ally `blocked: true` — including `Bench — Red`, one square away — so `Bench — Order` was moved to a
+  sight-verified free cell and left at **60/61 = max − 1**. `edha.drawMana(item)` posted *"🕊️ White
+  Leyline Attunement: healed 2 of 3 ally(ies) 2 HP within 60 ft (visible) — skipped 1 behind a
+  wall"* and Order landed on **exactly 61, not 62**. The card's skipped-one is `Bench — Red`,
+  identified *before* the cast by the same test, so the count and the instrumented tokens agree. No
+  watcher/Edict prompt fired off the bookkeeping heal.
+- **Item 14, `edhaSovTargets`.** `Sovereign's Balance` (`edha-die-step`, `target: "pair"`) is the
+  only pair-mode consumer in shipped data. Three tokens targeted **enemy first**, then ally, then the
+  **caster's own token**: `Bench — Order` (disp 1) took the **ally** entry `steps: +1`, `Bench Target
+  — Adjacent A` (disp −1) took the **enemy** entry `steps: −1`, sharing one `pairId` — **by
+  disposition, not click order** — and the caster's actor ended with **no `dieStep` entry at all**.
+  One card, one applier, and a second surface agreed: ally **Exalted**, enemy **Diminished**.
+
+### 3. Two defects found, neither of them item 12's
+
+- 🔴 **The Investiture-max persist is a world write OUTSIDE the item-12 gate.**
+  `edhaDeriveInvestiture`'s persist branch (`register-skills.js` ~17252) gates on **`actor.isOwner`**
+  plus a **per-client** `_edhaInvPersisted` Set. Measured **in both directions**: Ben's
+  **non-primary** `Gamemaster` wrote `system.resources.inv.max.override: 6` on `Bench — Red`, and the
+  **primary** `Bench` wrote `override: 5` on `Bench — Blue` — the writer is whichever client prepares
+  the actor first. Both derive the same number, so today's harm is a redundant write, not a wrong
+  value. The gate choice is a design call → **`EDHA_RULINGS.md` R-77** (recommended: keep the owner
+  gate for non-GM owners, add the primary-GM gate for the GM case); the re-test is a 🤖 row.
+- 🟠 **`Bench — White`'s max HP flips 64 ↔ 57 with the prepare path.** Its `Hardy - Max HP` AE adds
+  `@level` (7) to `system.resources.hea.max.bonus`. A full `prepareData()` → `bonus 22` (source 8 +
+  **14**) → **max 64**; the prepare triggered by a resource write mid-run → `bonus 15` (source 8 +
+  **7**) → **max 57**, with the same single entry in `allApplicableEffects()`. The gap is exactly one
+  `@level`. Seen live: White's own pulse healed it 57 → 59 in source while max read 64, and the
+  displayed value then clamped to 57. *Hypothesis, unproven:* one application of the AE is dropped on
+  the partial-prepare path. `Bench — Green` shows the same 57/64 numbers with **no** such AE, so it
+  is not a fixture artifact. Filed 🤖; root-causing it is a `test-pass-fixes` job.
+
+### 4. Harness notes
+
+- **`edha.drawMana()` takes the ITEM, not the actor** — called bare it returns silently and looks
+  exactly like a dead talent. Cost this run one call.
+- **A talent's own `activation.consume` still eats `item.use()`** (run 35's lesson, hit again on
+  Sovereign's Balance's 2 Investiture). Blanked for the cast, restored after.
+- **The setup script was not re-pasted this run** — declared. Its fixtures were asserted directly
+  instead (23 bench actors, 8 bench tokens, `Bench — Red` level 7 with a `ranged` Shortbow, orphan
+  sweep = the four known non-bench orphans and **zero** bench orphans), which is what the skill's own
+  trap note asks for.
+
+### 5. World state
+
+Start/end id snapshots (actors, items, scene tokens, drawings, regions, walls, templates, combats)
+**diff EMPTY**; the Bench-actor effect diff and flag diff are **both empty**. Everything staged was
+restored: Red's Awareness and sight range, Blue's Awareness **and its `inv.max.override` (5 → 4,
+which the run's own probe had persisted)**, Order's token position and HP, White's HP, `Bench Target
+— Adjacent A`'s HP, Sovereign's Balance's `activation.consume`, the Sovereignty actor's Investiture,
+the Sovereignty token (created and deleted), the `dieStep` flags and the **Exalted / Diminished**
+statuses the die-step applied. White's derived max HP is back at **64** and stayed there through
+logout. Ben's active zero-combatant combat `BerbNeuXp4iKduef` was left alone; the four known orphan
+tokens were left alone. **Both `Bench` and `PlayerBench` were logged out** and both show selectable
+on the join screen. Bench chat can be flushed at Ben's convenience.
+
+---
+
 ## 2026-09-06 DELTA — item 12: the primary-GM gate was carrying **two polarities**, which is why nothing had ever migrated off it (**ENGINE-ONLY, F5** — no data change, no pack rebuild; deployed by the PM after bench run 34/35).
 
 `scripts/engine-idiom-ratchet.json`'s `primaryGmGate` key went **20 → 1**, and 1 is the **floor** —
