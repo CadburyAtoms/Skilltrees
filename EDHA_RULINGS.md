@@ -72,7 +72,47 @@ symptoms rather than one row. *(3B-A.)*
 > `edhaIsSpend` reads an unstamped decrease as a GM edit, at the focus-change watch and the Order
 > Investiture watch. **R-4 settles when the bench confirms both halves** — the three 28b rows sit
 > with 28a's under `## Out-of-combat scope — ruling R-4, both halves`; until then it stays HERE.
+> **Bench run 34 (2026-09-06) confirmed FIVE of the eight rows and R-4 STAYS HERE.** Passing in both
+> directions, each against a matched control: the per-round ledger (fires every time out of combat
+> and writes no `trigRound`; once per round in combat, re-opening on the round tick), the timed-status
+> expiry (`timedExpire` intent out of combat → stamped to a coordinate on the first turn change →
+> deleted on schedule; direct coordinate when a combat is already running), the out-of-combat focus
+> watch (silent out of combat, both watchers firing on the identical spend in combat), the two-combats
+> row (with the tracker showing combat B at round 9, combat A's round-3 ledger stayed spent and a
+> scene watcher in A did not fire on a real spend in B), and "a GM focus edit is NOT a spend" (typed
+> **and** committed through the real Token HUD focus bar, both silent, with a real spend firing in the
+> same round immediately afterwards so the silence cannot be the once-per-round budget). **Three rows
+> remain**, narrowed on the checklist: the negative control's window half (c), the `costs:`-rule half
+> of the real-spend row, and the Investiture/Edict face. Note for whoever closes it: the literal
+> "adversary's own bespoke ability cost" has **no subject in shipped data** — `data/adversaries.json`
+> contains zero `"costs"` keys — see **R-74**.
 
+**R-74. No adversary ability in the game pays an engine-driven cost — should one?** Measured at bench
+run 34 while trying to drive R-4's last 28b row: **`data/adversaries.json` contains zero `"costs"`
+keys** across all 52 blocks, so the sentence "an adversary's own bespoke ability cost goes through
+`edhaSpendResource` and therefore counts as a spend" is true of the engine and true of nothing on the
+table. Every adversary resource change today is either a GM hand-edit (now correctly *not* a spend,
+per 28b) or nothing at all. Two consequences worth your call, and they point opposite ways.
+*Recommended: **author one `costs:` line onto a single adversary ability** — the Stalker's `Fade` or
+the Stonebound Captain's signature is the obvious candidate — so the wired-vs-typed contrast that 28b
+is built on exists somewhere in the shipped bestiary, and the bench row has a subject.* The
+alternative is to declare the half untestable-by-construction and close it, which is honest but
+leaves an engine path with no consumer — the same shape as the `senses` field retired in 07-27v.
+⚠️ This is a **REBUILD** either way (it is `data/adversaries.json`), so it is not a bench decision.
+*(Bench run 34, from the R-4 28b row.)*
+
+**R-75. The `edha-test-react` (H26) reaction family is NOT combat-gated — is that right?** Observed at
+bench run 34 as a card nobody came for: `Bench — White`'s **Shared Conviction** posted its offer on a
+Deception test by `Bench — Black` while **White was in no combat at all**. That is not a 28a
+regression — the handler carries no `scope` field, so it never reaches `edhaWatchCombatGate`, and
+28a's "deliberately NOT gated" list in the handoff simply does not mention this family. The same is
+true of `Pillar of Order` and `Voice of Authority`, which also fired unprompted during the run.
+*Recommended: **leave it ungated, and say so in the docs.*** An ally about to fail a social or
+exploration test is exactly the out-of-combat case R-4's negative control exists to protect, and
+Shared Conviction's own text is not combat-flavoured. But it does mean a White PC standing anywhere
+on the scene offers a reaction on **every** skill test any creature in Attunement Range rolls, which
+at a busy table is chatty. If you want it quieter the fix is a field on the rule (an `inCombatOnly`
+dial), not an engine gate — iron rule 2b. *(Bench run 34.)*
 
 *(R-5 — does Fault Line's line spare allies — ANSWERED 2026-09-05, moved to §K.)*
 
