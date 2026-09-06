@@ -73,7 +73,7 @@
       "effects": []
     },
     "The Final Study": {
-      "docId": "WKWGvUtfrlOZVc0B",
+      "docId": "yrIgDwup7iBdPq07",
       "img": "icons/creatures/abilities/fangs-teeth-bite.webp",
       "description": {
         "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Three Actions\" aria-label=\"Three Actions\">3</span></p><p><strong>Cost:</strong> 3 Investiture</p><p><em>The hunt ends here. The knowledge remains.</em></p><p>Spend 3 Investiture and test Red vs. Physical against the creature bearing your Insight. On success, deal [Tier][Die] Vital damage per Insight and remove all Insight; each ally in Attunement Range may immediately make a free Strike against any enemy within their reach. On failure, deal [Tier][Die] Vital damage and remove 1 Insight. Once per scene.</p>",

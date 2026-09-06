@@ -65,6 +65,11 @@ leaves an engine path with no consumer — the same shape as the `senses` field 
 > better fit turns up. `data/adversaries.json` (+ baked AEs if any) → adversaries pack **REBUILD**,
 > Ben's deploy → **item 57**; lint pass 5 must stay green; then the 28b "adversary bespoke cost"
 > bench row finally has a subject.
+> **SHIPPED** in PR #226 (REBUILD, bench-pending) — the Stalker's **Fade**: a `use` → `edha-prompt-pick`
+> {source: confirm, costs: "inv:1"} card spends the Investiture on the click (through `edhaSpendResource`),
+> native `consume` removed so it is the only deduction; the damaged gm-cue stays as the reminder. Fit:
+> Fade is a Reaction the GM decides to take, and a confirm card that charges on the click is exactly
+> "spend only if you take it". 🤖 row under the R-4 28b section.
 
 *(R-75 — H26 reaction family left ungated — ANSWERED 2026-09-06, moved to §K.)*
 
@@ -255,14 +260,7 @@ deliberately rather than changed silently. *(Checklist Quarry row, Heroic.)*
 
 *(R-21 — Phantom Double's out-of-range refusal — ANSWERED 2026-09-06, moved to §K.)*
 
-**R-22. `edhaConsumeList` refunds `value.min`.** If a talent ever ships `min ≠ max`, the system's
-consume dialog lets the player pay more and the refund would under-credit. No talent does today —
-this is a "close the door before it matters" call. *(3A-6.)*
-> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) close the door with a BUILD
-> GUARD** — lint-refs (or validate.js) fails if any talent or adversary ability ships a consume
-> entry with `min ≠ max`, so the under-refund can never happen silently; no engine change.
-> TOOLING-only → **item 60**; mutation-verified (author a min≠max cost in a scratch copy → gate
-> fails).
+*(R-22 — build guard rejects any `min ≠ max` consume entry — ANSWERED 2026-09-06, moved to §K.)*
 
 **R-50. An ambushing strike never gets its OWN fooled-rider — the strike that marks them fooled is
 the one strike that does not benefit.** Surfaced by bench run 18 and filed here by fix pass C
@@ -404,6 +402,8 @@ either way.** Never benched. *(3A-3 + checklist Red row — the same question, r
 > `whenDealer: "any"`.** Authored rule field change in `data/authored/leyline-red.json`
 > (settleable from the Events tab) → **REBUILD + ↻ Sync**, **item 58**; 🤖 re-test = the Red row (a
 > sword hit offers Volatile Strike; standalone use self-offers harmlessly).
+> **SHIPPED** in PR #227 (REBUILD, bench-pending) — `whenDealer: "any"` on rule `TKmyXVyFhGYWryKv`,
+> `data/authored/leyline-red.json`.
 
 *(R-24 — Red/Momentum branch root — ANSWERED 2026-09-06, moved to §K.)*
 
@@ -454,6 +454,9 @@ do not leave three artifacts agreeing and one disagreeing. *(3A-15 + checklist 2
 > description + `data/domain.json` source prose say "end of your next turn"; engine and cards
 > unchanged. DATA/TEXT → pack **REBUILD + ↻ Sync**, **item 58**; retire checklist 2bW-1's duration
 > clause.
+> **SHIPPED** in PR #227 (REBUILD, bench-pending) — `description` (value/chat/short) +
+> `WitherNote000000.text` in `data/authored/deity-death.json`, and the source `description` in
+> `data/domain.json`, all "end of your next turn".
 
 **R-29. Combat Training's garbled source.** The cheatsheet sentence reads "turn one of its own
 **grazes into a graze**". Rule whether that means **miss → graze** or **graze → hit**, and the text
@@ -463,6 +466,11 @@ gets fixed to match. Open since 2026-07-16. *(Checklist adversary-wiring row.)*
 > and the adversary block's description (its description is currently EMPTY in
 > `data/adversaries.json` — write it); wire per lint pass 5. Adversaries pack **REBUILD** (Ben's
 > deploy) → **item 57**. Retire the adversary-wiring checklist row on evidence.
+> **SHIPPED** in PR #226 (REBUILD, bench-pending) — the Captain's text reads "Once per round, when one of the
+> Captain's attacks misses, it can turn that miss into a graze without spending Focus." (note: the block's
+> `text` was never actually empty — it carried the 07-16 ruling wording plus a visible marker; both
+> rewritten). The garbled sentence lives only in the source PDF, which is not in the repo; the built
+> description is now the canonical wording. Checklist row retired on the built-pack read-back.
 
 *(R-30 — 2bR-17 spec vs rule (Counterpoint) — ANSWERED 2026-09-06, moved to §K.)*
 
@@ -568,6 +576,9 @@ it goes in the block's text. *(Checklist Lunavar row; its sheet-read half is now
 > **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) 3×3 (Huge).** Put the number in
 > the block's biography note (`data/adversaries.json`) and in the placement guidance; adversaries
 > pack **REBUILD** → **item 57**.
+> **SHIPPED** in PR #226 (REBUILD, bench-pending) — the biography's placement sentence now reads "set the
+> token to **3×3** on placement" with the reach-15 / 30-ft measurements noted against that footprint.
+> No token field can carry it: `size: "large"` is the schema cap (2×2), so the number is guidance, as ruled.
 
 **R-46. How far should a "charge" carry? The Cragdrake Whelp Pack's Reckless Advance moves 3 ft.**
 Raised by bench run 16 (2026-07-27x), which drove it and watched a charging whelp advance **half a
@@ -582,6 +593,8 @@ sent back here on 2026-07-27y: it is the same `bySize` question, not a wiring bu
 > `distanceFt`, stated on the card.** `data/adversaries.json`: `edha-move bySize` → `distanceFt: 25`
 > on Reckless Advance + card text; check R-48 (Explosive Leap, same `bySize` question) for the same
 > treatment if still open. Adversaries pack **REBUILD** → **item 57**; 🤖 re-test.
+> **SHIPPED** in PR #226 (REBUILD, bench-pending) — `{bySize: false, distanceFt: 25}`, card text "charge up to
+> 25 ft (its full Speed)". 🤖 row in the Whelp Pack section. R-48 got the same treatment (below).
 
 **R-48. The Cragdrake Adult's Explosive Leap says "up to 20 ft" and moves 5. Which side is canon?**
 Sent here by fix pass A (2026-07-27y) after root-causing it rather than fixing it — the run filed it
@@ -612,6 +625,11 @@ down `EDHA_SIZE_FT` while its card carries the rank-3 figure. Note also that `by
 authored `distanceFt` **dead** — Shockwave Slam ships `distanceFt: 5` *and* `bySize: true`, and the 5
 is coincidence, not the source. **Deciding R-48 once now settles four blocks**, which is a much better
 trade for a pack rebuild than the single-block version was. *(Bench run 19; checklist W29 §7, §8.)*
+> **DEFAULT (a) APPLIED** in PR #226 (REBUILD, bench-pending; the PM's recorded default, item 57) — the
+> **Cragdrake Adult's Explosive Leap** only: `{bySize: false, distanceFt: 20}`, the card's own "up to 20 ft".
+> 🤖 row in the Cragdrake Adult section. **Still open for Ben's veto**, and the other three rows of the run-19
+> family (Brandram Shockwave Slam / Reckless Advance, Tussock-Sow terrain square) are untouched — the brief
+> scoped the default to the Adult; they want the same call in one pass.
 
 *(R-49 — is a creature an obstacle for push collision damage — ANSWERED 2026-09-05, moved to §K.)*
 
@@ -627,6 +645,13 @@ only the fiction.* Affects every adversary ability carrying the marker, not just
 > it from the table** (GM-only note field or an HTML comment inside the description). Applies to
 > EVERY adversary ability carrying the marker; lint pass 5 must keep recognising the marker in its
 > new home; build/data change → adversaries pack **REBUILD** → **item 57**.
+> **SHIPPED** in PR #226 (REBUILD, bench-pending) — all **16** markers are now `<!-- NO NAMEABLE HOOK: … -->`
+> HTML comments inside the ability's `text`/`rider` (Combat Training, Mutation Upgrade, Seize and Roll,
+> Cannot Stop, Drag Under, Slip the Sound, The Passed Wasting, A Thousand Small Bodies ×2, The Old
+> Agreement, Pay the Ledger, Guardian Stance, Apex Predator ×2, Pack Doctrine, The Tithe Takes the
+> Failing). `lint-refs.js` pass 5 still reads the raw prose for the exemption AND now fails a VISIBLE
+> marker — mutation-proved both ways. 🤖 row in the adversary-wiring section (includes a ProseMirror
+> round-trip check: if the editor strips comments on save, the marker needs a GM-note field instead).
 
 **R-52. A 5-ft `ally-drops` cue cannot reach an ally standing next to its owner. Slack, or edge-to-edge?**
 Raised by bench run 19 (2026-07-28e), which measured it four ways rather than asserting it.
@@ -1403,3 +1428,22 @@ layers. Applied 128 — the explicitly named constant. If a re-trace ever shifts
 pixel, this is why; 120 is one veto away. *(Hygiene campaign 2026-08-10.)*
 > **ANSWERED 2026-09-06 (Ben, phone, via the relay session): ACCEPTED — no veto.** "14 defaults
 > let's just keep using." No further change.
+
+**R-22. `edhaConsumeList` refunds `value.min`.** If a talent ever ships `min ≠ max`, the system's
+consume dialog lets the player pay more and the refund would under-credit. No talent does today —
+this is a "close the door before it matters" call. *(3A-6.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) close the door with a BUILD
+> GUARD** — lint-refs (or validate.js) fails if any talent or adversary ability ships a consume
+> entry with `min ≠ max`, so the under-refund can never happen silently; no engine change.
+> TOOLING-only → **item 60**; mutation-verified (author a min≠max cost in a scratch copy → gate
+> fails).
+> **SHIPPED in PR #225 (TOOLING-only)** — traced the only two producers of a consume entry
+> (`foundry-build.js`'s `parseCost()`, which always emits `min===max` for both generated-talent
+> and adversary cost text; `data/authored/*.json`'s `activation.consume[].value`, the one place a
+> talent's consume shape can carry an independently-set min/max) and scanned the real risk surface
+> — `scripts/lib/consume-guard.js` (`checkConsumeEntries`) plus `scripts/lint-refs.js` pass 23,
+> which feeds it every authored-overlay talent AND every adversary ability (re-derived from its
+> text grammar rather than assumed safe). Floor pinned at 200+ entries scanned (measured: 235).
+> Mutation-verified against real data (Black's Cruel Step, `min` 1 → `max` 6 → `lint-refs.js`
+> fails naming it, restored → clean) and pinned in `tests/consume-guard.test.js` (5 cases). No
+> engine change, nothing left to bench. **Moved to §K in the same PR (2026-09-06).**
