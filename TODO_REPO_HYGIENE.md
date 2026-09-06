@@ -104,7 +104,7 @@ gates green, docs updated. This is the largest item — do it alone in its own s
 
 ---
 
-## 5. [x] Extend tests into the hook layer (fake actor/item → assert the write) — DONE 2026-09-05, PR #TBD
+## 5. [x] Extend tests into the hook layer (fake actor/item → assert the write) — DONE 2026-09-05, PR #182
 
 **Why:** `tests/engine-helpers.test.js` covers ~8 pure helpers of a ~19.7k-line engine (2026-09-05).
 The ~240 registered hooks — the actual game logic — are only smoke-tested ("loads
