@@ -492,7 +492,7 @@ loses the keeps-higher comparison, the `source` is still relabelled to the loser
 6 from Final Decree ends up reading "Bear Witness", and a 99-THP ally ends up reading "Investiture of
 Command". The number is right; the attribution lies. *(3B-D.)*
 > **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) FIX: relabel `source` only when
-> the new grant WINS the keeps-higher comparison.** ENGINE-ONLY, F5 → **item 48**; headless pin (6
+> the new grant WINS the keeps-higher comparison.** ENGINE-ONLY, F5 → **item 47**; headless pin (6
 > from Final Decree survives a 4 from Bear Witness → source stays Final Decree).
 
 **R-37. Three small card-text nits, one decision:** Ordained eviction is never verbalized (the place
