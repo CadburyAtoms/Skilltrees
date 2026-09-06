@@ -33,6 +33,103 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-06 — BENCH RUN 38: **the character-creation wizard block finally moves — 2 of its 6 rows retired, and the other 4 are ruling-gated, not run-gated.** ⭐ **The "structural and permanent" harness blocker on the ResizeObserver row is NOT permanent: front the browser pane and observers run.** The AoE burst row's own reference talent was wrong; the sideless-creature probe is closed as untestable-by-construction, with the measurements that make that decisive. **5 rows off the checklist, 1 new defect, 1 new ruling (R-78), world diff EMPTY.** (**DOCS-ONLY** — no engine or data change, no pack rebuild owed.)
+
+**Deploy state at the top of the run, hash-verified from both sides:** the served
+`/modules/edha-content/scripts/register-skills.js` (CRLF-normalised) hashes
+**`57a8c9502a424a5640ce03aa3adf954e0dd70fd38a4922d6f86b4e0bb47ff4b3`**, equal to
+`git show HEAD:module-src/scripts/register-skills.js`; `assets/thyrcross-nations.json` hashes
+`0c39bf04…` and `assets/thyrcross-map.jpg` **`31e9a3b2…` / 231 802 bytes**, both equal to `main`.
+`module-src-sync status` = 6 in sync, 0 stale, 0 hand-edited. Roster: **zero ⚠ lines**, 16 PCs +
+7 targets, `orphans: 0 repaired, 0 replaced`, idempotent across two runs (74 actors / 33 tokens
+before and after). Both GM clients connected all run (`Bench` + Ben's `Gamemaster`), with
+`game.users.activeGM` = **`Bench`**, as run 36 established is structural.
+
+**Retired on evidence**
+
+- **Weapon slot v3 — path-curated.** All six path lists are now verified: run 21 had Warrior and
+  Scholar, run 38 drove the remaining four off a scratch bench PC and read the live picker's radio
+  rows — **Agent = Staff/Knife/Sidesword**, **Envoy = Staff/Knife/Sidesword**, **Hunter =
+  Shortspear/Longspear/Axe**, **Leader = Longspear/Mace/Longsword**, three options each,
+  price-sorted, each naming its skill. Both entry routes drove (the 🎒 kit backfill and a fresh
+  heroic pick). **Take it** granted exactly ONE weapon at `quantity: 1`, `kitItem: true`;
+  **Choose later** granted nothing. ⭐ The ↺ Change clause is now **measured** rather than inferred
+  from the stamp: with a picked Sidesword held, ↺ Change heroic took it away with the kit (weapon
+  list back to `Unarmed Strike`, kitItem count **0**).
+- **Wizard fits the screen v2.** Positive plus all three negative controls — see below.
+- **AoE burst auto-target**, with its premise corrected — see below.
+- **A SIDELESS creature is caught by NOTHING (item 10)** — closed as a RESULT, see below.
+- **pass 5.2's "R-63 — a token with genuinely UNSET disposition"** — closed by the same
+  measurements.
+
+**⭐ The lesson that matters most: the browser pane's `document.hidden` is not a fixed property of
+the harness.** Run 22 recorded that the agent bench "can NEVER verify a ResizeObserver fix", because
+the pane runs `document.hidden === true` and a hidden page runs no rendering steps. Run 38 reproduced
+that exactly — country page at top **237** / height 788 / bottom **1025** in a 1400×900 viewport,
+**125 px over**, Choose ▶ off-screen at 1012; `requestAnimationFrame` **0 frames in 3 s**, a fresh
+`ResizeObserver` **0 fires**, an `IntersectionObserver` **0 fires** — and then called `tabs_select`
+on the tab and took one screenshot. `document.hidden` flipped to **false**, and the same live dialog
+had **already repositioned to top 112, bottom exactly 900**, Choose ▶ at 887. That is precisely the
+position run 22 computed by hand with `setPosition({})`, so it is the fix firing, not a coincidence.
+The map survived the reposition (visible at 284×378, three polygon clicks drove the dropdown
+Ashkar → Thalendor → Vorsk, hover tooltips intact); NEG 1 held (heroic opened centred at top 382,
+attributes centred at top 142 — run 22's number); NEG 3 held (the inner `.edha-cw-preview` still
+scrolls, 559 vs 188). NEG 2 is a stated **proxy**: a real header drag could not be landed at this
+pane scale, so instead `setPosition({top: 40, left: 200})` — a legal position — was applied and
+stayed put for 4 s. **Every rendering-dependent row that has been recorded BLOCKED on this harness
+should be re-read against this.**
+
+**The wizard block is ruling-gated, not run-gated — which is why it sat 13 runs.** Of its six 🤖 rows,
+two are now retired and the remaining four cannot pass until Ben answers a ruling: *Map v3:
+label-free* and *Map picker shows the redrawn map* contradict each other and wait on **R-41**;
+*Redrawn polygons hit the right nations* waits on **R-42**; *+1 max health* waits on **R-54** (run 21
+proved its target number can never be met). Run 38 re-confirmed R-41's premise **from the live
+server** rather than from the repo: the jpg Foundry actually serves is byte-identical to `main`'s
+labelled render.
+
+**AoE burst auto-target — the row named the wrong talent.** Flame Surge carries an **`edha-burst`**
+rule, and `edha-burst` runs `edhaCastBurst` → `edhaBurstDetonate`, which **never calls
+`edhaSetUserTargets`** — it applies damage straight to the caught actors. The retarget the row is
+about lives only in `edhaPlaceAoe` (~L10829), reachable only from the **`edha-aoe-template`** handler,
+and a sweep of `data/` finds **zero** `edha-aoe-template` rules against **12** `edha-burst` rules.
+That zero-consumer fact is new ruling **R-78** (the third instance of the R-74 / R-76 shape). The
+retarget itself was proven on a **declared staged rule**: with an ALLY pre-targeted and doubling as
+the burst centre, the placement left `game.user.targets` holding **exactly the two hostile tokens** —
+enemies targeted, stale ally target released — and the card agreed ("2 enemies captured & targeted").
+The ally, the second ally and the caster were all inside the circle and none of them was targeted:
+the negative control came free from the geometry.
+
+**The sideless-creature probe is CLOSED as untestable-by-construction, and that is a measurement.**
+① The predicate works: an actor with **no token on the scene** gives `edhaDisposHostile(Bench — Red,
+probe)` → **false**, against a matched tokened control → **true**. ② But the row's three named sites
+cannot be driven, for two measured reasons: a placed token **cannot carry a non-finite disposition on
+this build** (`disposition: null` coerces to −1 at create *and* at update), and `edhaActorSide()`
+always resolves because `prototypeToken.disposition` coerces the same way — so the (c) owner half's
+`ownerSide === null` branch is unreachable with any real actor. And (a) the burst capture, (b) the
+aura adjacency sweep and (c) the Foundation enter are all **canvas sweeps**, which a token-less probe
+is never in — driving them would "pass" vacuously. The change is live-provable only at the
+`edhaDisposHostile` / `edhaSameDisposition` sites, plus the existing pure pin in
+`tests/disposition-failclosed.test.js`.
+
+**New defect (ENGINE-ONLY, for the next fix pass): the weapon picker says "a Agent" / "a Envoy".** The
+intro line is built as "the arms a ${pathName} actually carries" in `edhaCreatorWeaponPick`, so every
+vowel-initial path reads ungrammatically. Filed as a 🤖 row beside the retired weapon-slot entry.
+
+**Deliberately NOT driven: the R-77 Investiture-persist re-test.** Ben's `Gamemaster` showed as
+already-active on the join screen and stayed connected all run — the same session run 37 measured,
+predating the engine push — so run 37's rule applies unchanged: a two-GM gate row cannot be verified
+while either GM client predates the deploy. **It is waiting on one F5 of Ben's client**, nothing else.
+
+**World sweep — CLEAN.** Start/end diffs on actors, tokens, combats, walls, templates, drawings and
+regions are all **EMPTY**; the ActiveEffect diff (key-sorted canonical form, per run 37) is **EMPTY**;
+the HP diff is **EMPTY**. Two flags picked up on `Bench — Red` as by-products of the staged burst
+(`rally`, `aggro`) were unset, and the flag diff is empty afterwards. Everything created was deleted:
+the scratch PC `B38 Weapon Probe`, the scratch adversary `B38 Sideless Probe`, the staged talent
+`B38 AoE Probe`, one probe token, and the temp copy of the setup script in the module folder. Logged
+out; `Bench` is selectable again on the join screen. Bench chat can be flushed.
+
+---
+
 ## 2026-09-06 — BENCH RUN 37 (weekend marathon, run 14): **fix pass 6's max-HP fix VERIFIED with the doubler reproduced as a positive control — and the row's own negative control was wrong.** The Investiture gate is **correct in code but not provable live**: Ben's second GM client predates the deploy. Item 10's Secret-disposition probe **does not produce a sideless creature on this build**. **1 row retired, 2 rows sharpened, world diff EMPTY.** (**DOCS-ONLY** — no engine or data change, no pack rebuild owed.)
 
 **Deploy verified by hash first, from both sides:** the served `register-skills.js`, normalised
