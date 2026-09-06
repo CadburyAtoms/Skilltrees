@@ -1736,6 +1736,17 @@ Both trees to zero; the `remains` ledger repointed (the THIRD of six). No talent
 - **`edha-revive`** — Raise Dead's ENGINE-OWNED flow, rule-keyed (the edha-decree exit shape):
   confirm + burst-apply revive + initiative surgery + auto injury; sceneOnce + target-at-0
   vetoed pre-cost; the optional ledger spend is freebie-aware.
+- **`edhaLedgerDropCreature(uuid, key, status)`** (R-12, 2026-09-06) — **a creature that comes back
+  to life cannot also be a Remain.** Drops that uuid's entry from **every** owner's `<key>` ledger
+  and clears the marker + `markedBy` once, returning how many entries went. Called by `edha-revive`
+  with the rule's own `ledger`/`ledgerStatus`, and independent of whether the raise SPENT anything —
+  the reported case raised a harvested body by spending a *different* Remain, and the body's own
+  entry may sit on a second Reaper's list. ⚠️ **Order is load-bearing: drop the entries, THEN
+  unmark.** `edhaOwnerList` reconciles on read against the creature's status ("the mark wins"), so
+  unmarking first hides the entry from the sweep and strands a phantom in stored data holding its
+  owner under their cap. Each owner's read-modify-write goes through the 07-26n queue; never call it
+  from inside a queued task. Reach for it whenever a ledger's SUBJECT stops qualifying — this is the
+  by-uuid counterpart of `edhaLedgerSpend`'s pop-oldest. Pinned in `tests/raise-clears-remain.test.js`.
 - **`edha-zone` grew `costList`/`costListStatus`** (terrain that consumes a ledger entry —
   Bone Garden; empty vetoed pre-cost, cancel/out-of-range REFUNDS) and **`edha-zone-hazard` grew
   `moment: turn-end`** (ANY creature ending its turn inside — `edhaTurnEndHazardSweep`, the

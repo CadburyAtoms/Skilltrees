@@ -3687,6 +3687,43 @@ async function edhaLedgerSpend(owner, key, status = null, source = "") {
   });
 }
 
+/* R-12 (ANSWERED 2026-09-06, Ben (a)) — A CREATURE THAT COMES BACK TO LIFE CANNOT ALSO BE A REMAIN.
+ * Bench found an adversary that had itself been harvested, raised by spending a DIFFERENT Remain,
+ * standing at 1 HP still wearing the `harvested` marker with its own ledger entry live — a living
+ * creature that was also somebody's corpse-resource. The card says nothing either way; Ben ruled
+ * the raise clears it.
+ *
+ * Deliberately swept across EVERY owner's ledger, not just the raiser's: a marker is a property of
+ * the CREATURE (the `edhaListSharedHold` precedent), and the whole point of the reported case is
+ * that the Remain being spent belonged to one entry while the raised body was another — possibly on
+ * a different Reaper's list. Generic in `key`/`status`, so any ledger whose subject can be restored
+ * rides it; nothing here names a talent.
+ *
+ * ORDER IS LOAD-BEARING: drop the entries FIRST, unmark SECOND. `edhaOwnerList` reconciles on read
+ * against the creature's status ("the mark wins"), so unmarking first would make the entry
+ * invisible to this sweep and leave a phantom in stored data holding its owner under their cap.
+ * Each owner's read-modify-write goes through the shared queue (07-26n), and this is never called
+ * from inside a queued task, so it cannot deadlock. Returns how many entries were dropped. */
+async function edhaLedgerDropCreature(uuid, key, status = null) {
+  const k = String(key || "").trim();
+  if (!uuid || !k) return 0;
+  const st = String(status || k).trim();
+  let dropped = 0;
+  try {
+    for (const l of edhaOwnerLedgers(k, st)) {
+      dropped += await edhaOwnerListQueue(l.owner, k, async () => {
+        const list = edhaOwnerList(l.owner, k, st);          // re-read INSIDE the queue
+        const kept = list.filter((e) => e?.uuid !== uuid);
+        if (kept.length === list.length) return 0;
+        await edhaSetOwnerList(l.owner, k, kept);
+        return list.length - kept.length;
+      });
+    }
+    if (dropped) await edhaListUnmark({ uuid }, st, { key: k });   // the status + markedBy, once
+  } catch (e) { console.error("Edha Content | ledger drop-creature failed", e); }
+  return dropped;
+}
+
 /* The near-victim auto-pick (07-25, 2bU — Spreading Omen's second placement): the NEAREST living
  * enemy within `ft` of the victim, skipping the victim itself and anyone already on the ledger.
  * Null when nobody qualifies — the caller says so on the card rather than erroring. */
@@ -14131,6 +14168,14 @@ async function edhaReviveUse(item, h) {
         } catch (e) { yes = false; }
         if (yes && await edhaLedgerSpend(owner, key, st, item.name)) spendNote = ` A ${edhaConditionLabel(st) || st} is consumed.`;
       }
+      /* R-12 (Ben (a), 2026-09-06): the RAISED creature's OWN entry and marker go too — a living
+       * creature cannot also be a Remain. Separate from the spend above and unconditional on it:
+       * the reported case raised a harvested adversary by spending a DIFFERENT Remain, and the
+       * body's own entry may sit on another Reaper's ledger entirely, so the sweep is by uuid
+       * across every owner (edhaLedgerDropCreature). Runs AFTER the spend so the two writes cannot
+       * race for the same list, and before the card so the note is true when it prints. */
+      if (await edhaLedgerDropCreature(target.uuid, key, String(h.ledgerStatus || key).trim()))
+        spendNote += ` ${target.name} is no longer a ${edhaConditionLabel(String(h.ledgerStatus || key).trim()) || key} — its own marker and ledger entry are cleared.`;
     }
     const payload = { casterActorUuid: owner.uuid, hits: [{ actorUuid: target.uuid, amount: 1, heal: true }] };
     if (game.user?.isGM) await edhaApplyBurstResults(payload);
