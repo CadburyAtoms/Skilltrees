@@ -380,6 +380,8 @@ visual-legibility judgment — still ⚑ Ben.
 
 - [ ] ⚑ **2bAC-1 (judgment half) — do the labels read as PHRASES?** — with that same dialog open: does every label read as a phrase in 2 lines or fewer, or are some still jargon that needs re-wording? A measurement cannot answer this; you have to read them. *(Split 2026-07-27w — the geometry half is the bench row above.)*
 
+- [ ] 🤖 **item 37 — orphan-token repair (2026-09-05)** — run `bench-setup-console.js` against the current Playtest Map: it prints the three orphans (`Bench — Green`, `Bench — Heroic`, `Bench Target — Floater`) and repairs them; a second run prints `orphans: 0 repaired, 0 replaced`; each of the three tokens then drives.
+
 ## Migration machinery (cross-tree behaviour)
 
 > **✅ Bench run 9 (2026-07-27i) retired seven Engine-wide rows on evidence** — **2bB-8** (neither
