@@ -11,6 +11,7 @@ repo files that must exist anyway.
 """
 import importlib.util
 import pathlib
+import subprocess
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -93,6 +94,20 @@ def t_test_gated():
     assert audit.is_test_gated("gain 2 focus") is False
 
 
+# --- main(): an unknown target name must fail loudly and name the valid keys ----
+def t_unknown_target_fails_and_lists_keys():
+    # Item 39: `verdannis: NO FILE` used to give no clue that the key is `sovereignty`, and the
+    # non-zero exit code was easy to lose behind a piped/chained gate invocation (iron rule 4's
+    # own warning). Pin both halves of the CLI contract via subprocess — main() calls sys.exit().
+    result = subprocess.run([sys.executable, str(AUDIT), "verdannis"],
+                             capture_output=True, text=True, cwd=str(ROOT))
+    assert result.returncode != 0, f"expected non-zero exit, got {result.returncode}"
+    assert "NO FILE" in result.stdout
+    assert "sovereignty" in result.stdout, "deity KEY missing from the NO FILE message"
+    for key in ("black", "blue", "green", "red", "white"):
+        assert key in result.stdout, f"leyline key {key!r} missing from the NO FILE message"
+
+
 check("opposed_skill: bare skill after vs. / opposed keyword", t_opposed_basic)
 check("opposed_skill: static defenses are NOT contests", t_defense_is_not_opposed)
 check("opposed_skill: leyline colors are NOT contests", t_color_is_not_opposed)
@@ -103,6 +118,7 @@ check("mentioned: longer talent names are masked first", t_mentioned_masks_longe
 check("strip_html flattens tags and whitespace", t_strip_html)
 check("body drops the <em> flavor line", t_body_removes_flavor)
 check("is_test_gated: vs./DC/on-a-success shapes", t_test_gated)
+check("main(): unknown target name fails and lists the valid keys", t_unknown_target_fails_and_lists_keys)
 
-print(f"\n{10 - len(failures)} passed, {len(failures)} failed.")
+print(f"\n{11 - len(failures)} passed, {len(failures)} failed.")
 sys.exit(1 if failures else 0)
