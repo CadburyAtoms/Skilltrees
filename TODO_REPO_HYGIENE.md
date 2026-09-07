@@ -1834,7 +1834,7 @@ placed tokens that agree with their actor for the first time.
 
 ---
 
-## 56. [ ] Melee mutation riders follow their own card's graze wording (R-14)
+## 56. [x] Melee mutation riders follow their own card's graze wording (R-14) — DONE 2026-09-06, PR #242 (ENGINE F5 + deity pack REBUILD + ⟳ Sync; Venom Glands is the one behaviour change — hit only; Bone Spurs and Apex vital stay on for grazes, now explicitly)
 
 **Why:** Ben (c): "follow each rider's own card" — "on a hit" riders should fire on a hit only;
 "when you deal damage" / "on a hit or graze" riders should also fire on a graze. Today all riders

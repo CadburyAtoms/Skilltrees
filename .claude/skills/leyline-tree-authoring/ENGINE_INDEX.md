@@ -3254,6 +3254,24 @@ whisper. Pinned: `tests/pulse-sweep-counts.test.js`.
   and the only sign was the "(N/N)" count staying put (R-37(1)). `edhaListPush`'s `res.evicted` is
   hoisted out of the `edhaOwnerListQueue` callback so the placement card can name what was spent.
 
+## Item 56 2026-09-06 (R-14 — melee mutation riders follow their own card's graze wording)
+
+- **`edhaApplyIsGraze(options)`** — was THIS applyDamage the graze half of a damage card? Reads an
+  explicit `options.edhaGraze` (engine callers), else the breadcrumb **`edhaWrapApplyClick`** stamps
+  around `CosmereChatMessage#onClickApplyButton` (wrapped at ready, libWrapper MIXED / prototype
+  patch) from the message's own `useGraze` toggle. ⚠ FACT: the system passes applyDamage NO
+  hit/graze marker — the graze total arrives as a plain number — so this breadcrumb is the ONLY
+  discriminator, and it lives exactly as long as the click. `edhaWrapApplyDamage` reads it
+  SYNCHRONOUSLY at the top and hands `graze` to the readers; never read it from the post-pass.
+- **The per-rule graze dial** — `edha-mutation` `keenOnGraze` / `venomOnGraze` and
+  `edha-regen-grant` `vitalOnGraze` (BooleanField, initial true). Baked onto the flag
+  (`mutation.onGraze` via the chooser's `data-edha-ongraze`; `apexForm.vitalOnGraze` at use).
+  `edhaLifeOutgoingBonus(dealer, list, item, graze)` / `edhaLifeVenomOnHit(dealer, victim, item,
+  graze)` stand down on a graze ONLY for an explicit `false` — a flag without the field keeps
+  today's behaviour. Wording rule (R-14): "on a hit" → off; "deal damage" / "hit or graze" → on.
+  `edha-damage-rider` bonuses need no dial (roll-formula terms the graze-clone guard already keeps
+  out of the graze roll). Pinned + mutation-checked: `tests/rider-graze-dial.test.js`.
+
 ## Item 52 2026-09-06 (R-27 — the rally stack is SPENT on the next test)
 
 - **`edhaRallyConsume(roll, source, config)`** — the post-`cosmere-rpg.<ctx>Roll` half of the rally
