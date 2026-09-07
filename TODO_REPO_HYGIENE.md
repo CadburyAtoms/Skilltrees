@@ -2299,7 +2299,7 @@ test still fails under its own mutation. Found by item 24.
 
 ---
 
-## 72. [ ] Fix pass 9 — bench run 40's defects: the prompt-pick `once` budget never bites, Ambush Bite's double flavor, R-85 and R-84 as defaults
+## 72. [x] Fix pass 9 — bench run 40's defects: the prompt-pick `once` budget never bites, Ambush Bite's double flavor, R-85 and R-84 as defaults *(done 2026-09-06, PR #253 — ENGINE-ONLY, F5)*
 
 **Why:** bench run 40 (2026-09-06, PR #245) drove every engine-only merge of the evening on the
 hash-verified `0ea0741a…` deploy and retired 27 rows, but root-caused one real defect and one
@@ -2328,6 +2328,21 @@ bench 🤖 rows say "fixed in fix pass 9, re-test"; R-84 / R-85 rows re-test at 
 pins + bench run 41. Dispatched 2026-09-06 21:35. ⚠️ The bench filed its rulings as R-82 / R-83;
 those numbers were already taken (item 56's graze dial; the heal-cut gate) — renumbered R-84 / R-85
 in #245 before merge.
+
+**DONE 2026-09-06, PR #253 (ENGINE-ONLY → F5).** All four, 87 lines of engine source across four
+split sources; **no new primitive** — each fix reuses one the engine already had. (1) `coordRound`
+was the **third** dotted-flag-key ledger and the one `ENGINE_INDEX`'s own section had not swept, so
+both sides now escape through the existing `edhaFlagKey`, plus a one-time `getProperty` fallback for
+documents stamped in the expanded shape; blast radius was exactly three `once: "round"` rules
+(Unnerving Approach, its twin, Puppeteer). (2) The double flavor is **Foundry's**, not ours —
+`ParentheticalTerm` propagates its flavor inward on evaluation and re-derives `term = roll.formula`
+on the chat round-trip — and the parentheses must STAY (the graze clone keeps only dice/operator/pool
+terms, so a bare rider die would ride grazes), so `edhaTidyFormula` collapses the duplicate in the
+display layer; family-wide across every `edha-damage-rider`. (3) R-85 and (4) R-84 applied as their
+recommended defaults, with R-84's non-refundable card line reading "no cost was spent" rather than
+the ruling's "the cost was spent" (with R-17's gate, not-refundable means nothing was charged).
+12 pins, each shown failing under its own one-line reversion; 11 gates PASS; four 🤖 re-test rows
+for bench run 41; two vetoes outstanding in `EDHA_RULINGS.md`.
 
 ---
 

@@ -436,6 +436,19 @@ happened. *Recommended: **(a) refund it** — reuse `edhaOfferDecline`'s `edhaRe
 should SAY the cost was spent. Either way the card needs to stop being silent about the money.
 *(Bench run 40; from item 51 / R-17.)*
 
+> **DEFAULT (a) APPLIED 2026-09-06 (fix pass 9, TODO 72, ENGINE-ONLY → F5) — pending Ben's veto.**
+> The `emptyNote` branch now computes `edhaOfferRefundable(item, event)` — R-17's own gate,
+> unchanged — and refunds through `edhaOfferDecline(null, item, …, {refund: true})`, so
+> `edhaRefundCost` still has **exactly one caller** in the offer family (the pin that guards that
+> invariant is unmoved). The card names the money either way. One deviation from the ruling's own
+> wording, stated: the non-refundable line reads **"no cost was spent"**, not (b)'s *"the cost was
+> spent"* — with R-17's gate, `refundable === false` on this branch means the offer came from a
+> watch / success rule where the system charged **nothing** (that rule's `costs` land on the click,
+> which never happens here), so "spent" would be false. Fixed for all three `source: "creatures"`
+> rules carrying an `emptyNote`: Unnerving Approach (Black + its adversary twin), Anticipate (Blue),
+> Terms of Accord (White). Four cases pinned in `tests/offer-decline-refund.test.js`; dropping the
+> refund call fails the first. **A veto is a one-line revert.** 🤖 re-test row on the checklist.
+
 ---
 
 **R-85. `expireEndOfRound` stamps the GRANTER's combat — should it fall back to the BEARER's?**
@@ -452,6 +465,14 @@ the granter has none** — `edhaCombatRoundOf(owner) ?? edhaCombatRoundOf(target
 rider then always means the round the victim is living in.* (b) leave it — out of combat there is no
 round and an inert stamp is honest; the cost is that a mid-combat grant from a non-combatant NPC
 never expires. *(Bench run 40; from item 49 / 2bI-4c.)*
+
+> **DEFAULT (a) APPLIED 2026-09-06 (fix pass 9, TODO 72, ENGINE-ONLY → F5) — pending Ben's veto.**
+> `mod.round = edhaCombatRoundOf(owner) ?? edhaCombatRoundOf(target)`, exactly as recommended. The
+> in-combat case is untouched (the granter's round still wins, even when the bearer is in a
+> different one — the fallback is a fallback); with BOTH sides out of combat the stamp is still
+> `null`, which is (b)'s honest answer for the only case where it is actually honest. Five cases
+> pinned in `tests/next-mod-round-fallback.test.js`, driving the shipped executor; removing the `??`
+> fails the fallback case. **A veto is a one-word revert.** 🤖 re-test row on the checklist.
 
 ---
 
@@ -985,6 +1006,10 @@ word and it gets built that way. *(Fix pass 5; no checklist row — this is a de
 *(R-67 — Chaos and Fate burst cards gained the whisper option — ANSWERED-by-acceptance 2026-09-06, moved to §K.)*
 
 *(R-68 — the map toolchain's alpha threshold is now one constant, 128 — ANSWERED-by-acceptance 2026-09-06, moved to §K.)*
+
+*(R-84 — an offer that cannot be made refunds its Investiture, and the card names the money — DEFAULT (a) APPLIED 2026-09-06, fix pass 9; the ruling and its applied note stay in §C.)*
+
+*(R-85 — `expireEndOfRound` falls back to the BEARER's combat when the granter is not a combatant — DEFAULT (a) APPLIED 2026-09-06, fix pass 9; the ruling and its applied note stay in §C.)*
 
 ---
 

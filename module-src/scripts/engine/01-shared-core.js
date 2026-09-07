@@ -518,6 +518,35 @@ function edhaTidyFormula(s) {
     else if (ch === ")") { if (depth === 0) continue; depth--; }   // unmatched closer → drop
     out += ch;
   }
+  /* Third uglyness (fix pass 9, TODO 72; bench run 40): a FLAVOR-LABELLED PARENTHETICAL prints its
+   * label twice — Ambush Bite's rider read `1d10 + 3 + (1d6[Ambush Bite])[Ambush Bite] + 0`. The
+   * math is right and neither the rider assembly nor item 66's `edhaJoinRiderTerm` labels twice;
+   * FOUNDRY does it, on the chat round-trip, and it is a two-step:
+   *   1. `ParentheticalTerm#_evaluateAsync` calls `this.roll.propagateFlavor(this.flavor)`, which
+   *      stamps the parenthetical's own flavor onto EVERY inner term that has none
+   *      (client/dice/terms/parenthetical.mjs:105 → client/dice/roll.mjs:496);
+   *   2. `SERIALIZE_ATTRIBUTES = ["term", "roll"]`, and the constructor re-derives
+   *      `this.term = roll.formula` whenever a roll is supplied — so the message's rebuilt term
+   *      string now CONTAINS the inner label, and `expression` re-appends the outer one.
+   * That is why `edhaRiderBonus`'s `(f)[name]` doubles while `edhaJoinRiderTerm`'s unparenthesised
+   * `base + 1d6[label]` never has (bench run 40 measured both in the same session). The parentheses
+   * are load-bearing and must stay in the FORMULA — the system's graze clone keeps only DiceTerm /
+   * OperatorTerm / PoolTerm (`filterTermsSafely`, the `@damage.dice` path), so a bare rider die
+   * would start riding grazes. So the repair belongs here, in the display layer: drop the inner
+   * copies of the label the parenthetical already carries, and drop the now-redundant parentheses
+   * only when what is left is a single atomic term. Pure; family-wide (every `edha-damage-rider`
+   * with a bonusFormula — Ambush Bite, Spearing Beak, Prognosis, Kindle, Momentum's Edge, …). */
+  for (let i = 0; i < 4; i++) {
+    const next = out.replace(/\(([^()]*)\)\[([^[\]]+)\]/g, (m, inner, label) => {
+      const tag = `[${label}]`;
+      if (!inner.includes(tag)) return m;                       // no duplication → leave it exactly as it was
+      const cleaned = inner.split(tag).join("").trim();
+      if (!cleaned) return m;
+      return /^[^+\-*/()[\],\s]+$/.test(cleaned) ? `${cleaned}${tag}` : `(${cleaned})${tag}`;
+    });
+    if (next === out) break;
+    out = next;
+  }
   let res = "", inFlavor = 0;
   for (const ch of out) {
     if (ch === "[") inFlavor++;
