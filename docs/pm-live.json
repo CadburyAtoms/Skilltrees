@@ -1,11 +1,18 @@
 {
   "pm": {
-    "status": "stopped",
-    "note": "Fable PM session of 2026-09-06 16:56 ET STOPPED its loop at 05:58 ET Monday (Ben's hours). Fifty PRs merged over the shift; every engine-only merge is live (last push 23:50, main 9f3f529); nothing is running, no PR is open, the live module is in sync. Waiting on you: ONE deploy-to-foundry.bat run (Foundry closed) for the pack REBUILDS - 34a, 57, 58, 65+67, 59, 63, 55, 56 - then the next PM session dispatches bench run 42 over those rows plus the night's new engine rows (10 batch 2, 77, fix pass 10, the map picker, R-52 (c)(ii)); R-83 (item 70 waits on it); vetoes on R-18, R-80, R-81, R-82, R-84, R-85, PM-R15 if you disagree. The hygiene backlog is otherwise empty (62 needs a reframe after its bench row measures; 9 is blocked on the map rulings). Next PM: the scheduled weeknight task, Monday 21:00 ET, or a hand-start.",
-    "waitingOn": "ONE deploy-to-foundry.bat run (Foundry closed) for the pack rebuilds; R-83 (needs your answer - it moves HP); R-18, R-80, R-81, R-82, R-84, R-85, PM-R15 (defaults apply if silent)",
+    "status": "awake",
+    "note": "Hand-started Fable PM (Ben, 09:52 ET Mon). Your deploy is live (engine 609c7e45 = main 14f2aa9, 6 in sync) and your dashboard marks are being recorded: bench run 42 (opus) is retiring your 13 marked rows and driving the 58 open bench rows; item 79 (sonnet) is writing the rulings in (R-86 GM-less rows dropped, R-87 wizard numbers stand, R-56 reopened, items 80-83 filed). PM-R8 revoked, PM-R16 = 3 Opus/day + unlimited Sonnet/Haiku. Still waiting on you: R-83 (examples given in chat), and a go/no-go on R-56 (cosmere ladder for everyone - engine + adversaries rebuild, size M).",
+    "waitingOn": "R-83 (a)/(b) after the chat examples; go/no-go on R-56's reversal (item 83); the 10 unmarked bench ⚑ rows + 5 world ⚑ rows (say 'fine' or 'move them')",
     "nextWakeAt": null,
-    "session": "2026-09-06 16:56 ET — Fable PM (hand-started) — STOPPED 2026-09-07 05:58 ET"
+    "session": "2026-09-07 09:52 ET — Fable PM (hand-started, Ben's hours by his word)"
   },
-  "workers": [],
+  "workers": [
+    { "item": "bench-42", "title": "Bench run 42 — the REBUILD stack live + the night's engine rows; retires Ben's 13 marked rows", "model": "opus", "size": "L", "lane": "B",
+      "branch": "pm/bench-42", "startedAt": "2026-09-07T14:45:00Z", "agent": "Bench run 42",
+      "phase": "working", "pr": null, "note": "Opus 1 of 3 today" },
+    { "item": "79", "title": "Rulings close-out 2026-09-07 — Ben's dashboard marks recorded, items 80–83 filed", "model": "sonnet", "size": "S", "lane": "R",
+      "branch": "pm/79-rulings-closeout-0907", "startedAt": "2026-09-07T14:45:00Z", "agent": "Work item 79",
+      "phase": "working", "pr": null, "note": null }
+  ],
   "usage": null
 }
