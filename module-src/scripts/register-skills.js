@@ -18856,7 +18856,11 @@ function edhaRegisterNativeEventSystem() {
   for (const def of EDHA_EVENT_TYPES) api.registerItemEventType(def);
   for (const def of EDHA_HANDLER_TYPES) api.registerItemEventHandlerType(def);
 
-  console.log("Edha Content | native event system registered (events: edha-deal-damage, edha-on-defeat, edha-take-damage [+sentinels: apply-watch, pre-deal-damage, pre-test, on-hit, pre-use, combat-timing]; handlers: triggered-effect, damage-rider, test-rider, burst, defense-buff, aoe-template, place-hazard, temp-hp, ritual-hp-cost, heal-cut, summon, apply-status, status-sweep, overflow-thp, damage-convert, marked-damage-trigger, hp-threshold, multi-hit; region: edha-content.hazard, edha-content.fate-snare).");
+  // Derived from the tables so the line can never list a retired type again (it named
+  // `aoe-template` for a day after R-78 / item 48 retired it — item 71).
+  const edhaTypeList = (defs) => defs.map((d) => String(d.type).replace(/^edha-/, "")).join(", ");
+  const edhaRegionList = Object.keys(globalThis.CONFIG?.RegionBehavior?.dataModels ?? {}).filter((k) => k.startsWith("edha-content.")).join(", ");
+  console.log(`Edha Content | native event system registered (${EDHA_EVENT_TYPES.length} events: ${edhaTypeList(EDHA_EVENT_TYPES)}; ${EDHA_HANDLER_TYPES.length} handlers: ${edhaTypeList(EDHA_HANDLER_TYPES)}; region: ${edhaRegionList || "none"}).`);
   return true;
 }
 
@@ -20493,6 +20497,11 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
       qualifier: new FF.StringField({ required: false, blank: true, initial: "COMPLEX", label: "Which illusions cost upkeep", hint: "Printed in the prompt. Living Image charges for COMPLEX images only; simple ones are free and the table calls which is which." }),
       note: new FF.StringField({ required: false, blank: true, initial: "", label: "Note appended to the prompt" }),
     } },
+    // config-only — read by the `combatTurnChange` sweep in the Illusion section (edhaActorRuleOf)
+    // and by edhaUpkeepInvClick (edhaRuleOf off the pay button's document). This no-op exists so a
+    // rule placed on an event the system DOES dispatch (`use`, `add-to-actor`, …) executes to
+    // nothing instead of throwing in `Handler.execute` (item 71). It must never do anything.
+    executor: async function () {},
   },
 
   /* ---- v3 HANDLER TYPES (state marks, sweeps, apply-engine watchers) ---- */
