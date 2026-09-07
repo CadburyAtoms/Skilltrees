@@ -10501,6 +10501,61 @@ function edhaLootTryOpen(tok) {
   });
   return true;
 }
+// Who receives the item: the user's selected owned token's actor, else their assigned character.
+function edhaLootTakerActor() {
+  const ctl = (canvas?.tokens?.controlled ?? []).find(t => t.actor?.isOwner);
+  return ctl?.actor ?? game.user?.character ?? null;
+}
+// Button binding: EDHA_CARD_BUTTONS["edha-loot-btn"] (end of file).
+async function edhaLootTakeClick(ev) {
+  try {
+    ev.preventDefault();
+    const btn = ev.currentTarget;
+    if (btn.disabled) return;
+    const taker = edhaLootTakerActor();
+    if (!taker) { ui.notifications?.warn("Edha: select your token (or assign your character) so I know who takes it."); return; }
+    const payload = { srcTokenUuid: btn.dataset.edhaSrc, itemId: btn.dataset.edhaItem, takerUuid: taker.uuid };
+    btn.disabled = true;   // local courtesy only — the GM-side claim ledger is the real guard
+    if (game.user?.isGM) { await edhaLootTakeGM(payload); return; }
+    if (!game.users?.activeGM) { btn.disabled = false; ui.notifications?.warn("Edha: a GM must be online to take items."); return; }
+    game.socket.emit("module.edha-content", { action: "loot-take", payload });
+  } catch (e) { edhaClickFailed("loot take", e); }
+}
+// GM-side apply — the single writer. Claim first (synchronous), then move the item for real.
+async function edhaLootTakeGM(p) {
+  const src = p?.srcTokenUuid, id = p?.itemId;
+  if (!src || !id) return;
+  if (!edhaLootClaim(EDHA_LOOT_CLAIMS, src, id)) {
+    ChatMessage.create({ whisper: edhaGmIds(), content: `<p>🎒 Loot: that item was already claimed from its source (two takes raced). Nothing moved.</p>` });
+    return;
+  }
+  try {
+    const source = await edhaResolveActorRef(src);            // token uuid → its actor (unlinked bodies resolve to the delta actor)
+    const item = source?.items?.get(id) ?? null;
+    const taker = await edhaResolveActorRef(p.takerUuid);
+    if (!item || !taker) {
+      edhaLootRelease(EDHA_LOOT_CLAIMS, src, id);
+      ChatMessage.create({ whisper: edhaGmIds(), content: `<p>🎒 Loot: ${item ? "the taker could not be resolved" : `that item is no longer on ${source?.name ?? "the source"} (already taken?)`}. Nothing moved.</p>` });
+      return;
+    }
+    const data = item.toObject();
+    delete data._id;
+    // The taken copy is the taker's ordinary gear now: shed the adversary-pack provenance (the
+    // adversary sync deletes edha-content-flagged items) and land it unequipped/strippable.
+    if (data.flags?.["edha-content"]) delete data.flags["edha-content"];
+    if (data.system) {
+      if ("equipped" in data.system) data.system.equipped = false;
+      if ("alwaysEquipped" in data.system) data.system.alwaysEquipped = false;
+    }
+    const name = item.name, srcName = source?.name ?? "the cache";
+    await taker.createEmbeddedDocuments("Item", [data]);
+    await item.delete();
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: taker }), content: `<p>🎒 <strong>${taker.name}</strong> takes <strong>${name}</strong> from <strong>${srcName}</strong>.</p>` });
+  } catch (e) {
+    edhaLootRelease(EDHA_LOOT_CLAIMS, src, id);
+    console.error("Edha Content | loot-take GM apply failed", e);
+  }
+}
 // GM console utility (`edha.createLootCache(name)`): mint a stockable cache actor — Loot Caches
 // folder, linked chest token, the lootCache flag, players keep NO ownership.
 async function edhaCreateLootCache(name = "Loot Cache") {
@@ -12182,6 +12237,7 @@ const EDHA_SOCKET_ACTIONS = {
     const a = await edhaResolveActorRef(p.targetUuid);
     if (a) await edhaCounterApplyGM(a, String(p.status || "insight"), Number(p.count) || 0, p.mark || null);
   },
+  "loot-take": async (payload) => { await edhaLootTakeGM(payload); },            // loot Take button (item 34b) — the GM is the single writer; edhaLootClaim is the double-loot guard
 };
 // Socket relay: a player's Detonate emits the resolved writes; only the primary active GM applies them.
 Hooks.once("ready", () => {
@@ -21301,6 +21357,7 @@ Hooks.once("ready", () => {
  * ============================================================================================== */
 const EDHA_CARD_BUTTONS = {
   "edha-list-release": edhaListReleaseClick,
+  "edha-loot-btn": edhaLootTakeClick,
   "edha-watch-manual": (ev, msg) => edhaWatchManualClick(ev, msg),
   "edha-pick-btn": edhaPromptPickClick,
   "edha-dispel-btn": edhaDispelPickClick,
