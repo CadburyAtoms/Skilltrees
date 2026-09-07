@@ -1,4 +1,7 @@
-{ "pm": { "status": "awake", "note": "New PM session 17:10 ET (Ben hand-started; the 09:52 session is retired). Ben deployed 17:03 (item 89 live), F5'd and synced: nothing owed. Dashboard paste: R-83/R-88/R-89 answered (a) -> items 70 (Opus, after midnight), 92, 93; four wizard rows PASS -> item 91. Board PR in CI; Sonnet workers 91/92/93 dispatch on merge. Still waiting on Ben: R-56 go/no-go (item 83), R-90, R-91.",
-          "waitingOn": "R-56 go/no-go (item 83), R-90 (item 88), R-91", "nextWakeAt": null, "session": "2026-09-07 17:10 ET hand-started (evening + weeknight shift)" },
-  "workers": [],
+{ "pm": { "status": "awake", "note": "17:40 ET: item 92 merged (#288, 1.7M) -> a leyline REBUILD + Sync Talents is owed. Workers 91 (close-out) and 93 (noHook, adversaries REBUILD) still running. Phone inbox: 7 notes acted on (R-90 a -> item 88, R-91 a -> item 95). R-56: your phone tap says KEEP the Edha table, your morning note said cosmere ladder -> asked in chat, item 83 waits. Item 94 filed for the phone-board re-render bug (Sent marks wiped every 30 s). Opus after 00:00: 70 -> 80 (or 88), push live, bench 44.",
+          "waitingOn": "R-56: which do you mean (keep Edha table = close 83, or cosmere ladder = run 83)?", "nextWakeAt": null, "session": "2026-09-07 17:10 ET hand-started (evening + weeknight shift)" },
+  "workers": [
+    { "item": "91", "title": "Rulings close-out 2026-09-07 evening (R-83/R-88/R-89, four wizard rows)", "model": "sonnet", "size": "S", "lane": "R", "branch": "pm/91-rulings-closeout-0907-evening", "startedAt": "2026-09-07T21:20:30Z", "agent": "Work item 91", "phase": "working", "pr": null, "note": "worktree; DOCS-ONLY" },
+    { "item": "93", "title": "R-89 (a): NO NAMEABLE HOOK -> noHook data flag", "model": "sonnet", "size": "M", "lane": "B", "branch": "pm/93-nohook-flag", "startedAt": "2026-09-07T21:20:30Z", "agent": "Work item 93", "phase": "working", "pr": null, "note": "worktree; adversaries REBUILD + Sync Adversaries" }
+  ],
   "usage": null }

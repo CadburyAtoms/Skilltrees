@@ -3112,3 +3112,99 @@ the rendered card does not), dashboard rebuilt, `node scripts/gates.js` green. D
 **PM:** lane B · model sonnet · size M · deps R-89 ✓ (Ben "a") · verify: pack parity (17 docs,
 only the comment + flag) + the two lint mutations + `node scripts/gates.js`. REBUILD + ⟳ Sync
 Adversaries.
+
+---
+
+## 94. [ ] The mobile board re-renders the whole page on every store snapshot — Ben's "Sent ✓" marks vanish, the page jumps to the top, and rows he answered elsewhere still show as open
+
+**Why:** Ben, chat 2026-09-07 17:3x, verbatim: *"It doesn't seem to save my inputs in the artifact —
+that is, every few seconds the page refreshes, jumps to the top of the page, and all of my 'marked
+sent' items are how they were before. I know you still get my notes because I see you work on them —
+but the dashboard is painful to use. Additionally, it shows on my phone the items that I answered
+from the PC browser dashboard around 1700 — might be the same issue, might not be."* The notes DO
+land (seven arrived 17:23–17:25 and the PM acted on every one); the failure is the page's own
+rendering. Read `docs/pm-board-mobile.html` ~L1036–1100 (`connect()`) and the render functions it
+calls before touching anything — the mechanism as the PM read it, to be VERIFIED not assumed:
+
+- `db.doc("pm/state").onSnapshot` → `render()` rebuilds EVERY panel by `innerHTML` (now-panel,
+  meters, rows, asks, loglist, **nycards**, …). The PM pushes `pm/state` at every state change
+  (three pushes between 17:19 and 17:22 alone), so while Ben was answering, the whole page was
+  rebuilt under his thumb.
+- `markSent()` (~L923) writes the "Sent ✓" pill INTO THE DOM ONLY (`acts.innerHTML = pill`). It
+  lives in no store and no variable, so the next `renderNeedsYou()` erases it and the card shows
+  its buttons again — and **`tick()` (~L1012, `setInterval(tick, 30000)`) calls `renderNeedsYou`
+  every 30 seconds unconditionally** (verified by the PM 17:35). That alone is Ben's "every few
+  seconds"; the `pm/state` and `dash/index` snapshots add to it.
+- `db.collection("inbox")…onSnapshot` fires on every note Ben sends and on every `seen` update
+  the PM writes (seven at once at 17:30) → `renderNotes()`; check whether anything else re-renders
+  on that path.
+- `dash/index` snapshot → `renderNeedsYou` + `loadDash` → `renderDash()` replaces `dsections`
+  (hundreds of KB of rows) → on a phone that is the scroll jump.
+- The PC-dashboard marks are a DIFFERENT thing: `EDHA_DASHBOARD.html`'s marks live in the PC
+  browser's `localStorage` and reach the repo only through the Copy-for-Claude paste → a worker
+  retiring the rows → the PM's next dash push. Until that lands, the phone correctly shows the
+  repo's state (still open). Say so in the page's "Needs you" hint rather than pretending otherwise.
+
+**What to do (the fix, in order of value):**
+1. **"Sent" derives from the store, never from the DOM.** Keep the inbox's last 30 docs in memory
+   (the subscription already delivers them); in `renderNeedsYou()` a card whose reply prefix
+   (`rulingReplyPrefix(r)` / the "Re Waiting on Ben › …" prefix) matches an inbox note's text
+   renders as `Sent ✓` (status `new`) or `Recorded by PM ✓` (status `seen`, showing the PM's
+   `action` line) instead of its buttons — so a re-render, a reload, or another device all agree.
+   `markSent()` then just triggers that render.
+2. **Targeted re-renders.** `pm/state` re-renders the board panels only; `dash/index` re-renders
+   the dashboard panels only; the inbox re-renders notes + the needs-you marks. No path rebuilds a
+   panel whose data did not change. Where a big panel must be rebuilt, preserve `window.scrollY`
+   (or the focused card's `getBoundingClientRect().top`) across the swap.
+3. **The 30-second `tick`** updates clocks and elapsed times by `textContent` on the elements that
+   carry them — never a full `render()`. Verify what it does today first.
+4. The "Needs you" hint gains one sentence: rows marked on the desktop dashboard reach this page
+   only after the PM's next push (paste the Copy-for-Claude block into chat to get them retired).
+
+**Proof:** a headless check in `tests/` that loads the page's script with a fake `window.claude.use("db")`
+(the shape the page already tolerates — see the `!db` branch), drives (i) a `pm/state` snapshot after
+a `markSent` and asserts the pill survives, (ii) an inbox snapshot carrying a note with a card's prefix
+and asserts that card renders as sent without any click, (iii) a `tick` and asserts no panel's
+`innerHTML` was reassigned. If the page's script cannot be loaded headlessly without a refactor,
+extract the pure decision (`sentStateFor(card, inboxDocs)`) into a function the test can call and
+say so. Then the PM republishes the page (`Artifact` with `url`) — the worker cannot; the PR body
+must say "needs republish".
+
+**Done when:** the three proofs pass; `docs/pm-board-mobile.html` keeps `{}` in both snapshot slots
+(never commit a filled page); `node scripts/pm-state.js --live … --inject docs/pm-board-mobile.html
+--out tmp/pm/pm-board.html` still produces a page that renders offline (open it in the in-app
+browser and screenshot the Needs-you section); `node scripts/gates.js` green. TOOLING-only —
+nothing owed to Foundry; the PM republishes the artifact after merge.
+
+**PM:** lane R · model sonnet · size M · deps none · verify: the three headless proofs + the injected
+page rendering + `node scripts/gates.js`. TOOLING-only (+ PM republish).
+
+---
+
+## 95. [ ] Rulings close-out 2026-09-07 evening, part 2 — R-90 (a) and R-91 (a) from the phone inbox; retire the R-62 audience row
+
+**Why:** Ben answered two more rulings from the phone at 17:25 ET, after item 91 had already been
+dispatched (and this repo's PM cannot message a running worker), so they get their own small
+close-out of the same shape. Verbatim (mobile-board inbox, the row's own (a) text tapped):
+- **R-90 → (a)** *"whisper to `edhaWhisperIds(owner)` when the owner has no player OWNER — i.e. an
+  adversary — and leave a player-owned actor's card public."* → applied by **item 88** (Opus,
+  engine-only; the PM dispatches it after midnight under PM-R16).
+- **R-91 → (a)** *"retire the row under R-86 — the flips are repo-side facts pinned by the code
+  (`activeOnly` present or absent at each of the seven sites) and the behaviour they change only
+  matters in a state you have said will never occur."* → the checklist row **"VISIBLE — R-62
+  audience flips, seven sites"** (`EDHA_FOUNDRY_TEST_CHECKLIST.md` ~L4948, 🤖) is retired under
+  R-86 with that reason and the date; its ⛔ evidence trail stays.
+
+**What to do:** the two ANSWERED lines in `EDHA_RULINGS.md` (R-90 ~L502, R-91 ~L522 — each with
+Ben's verbatim text, the date/channel "2026-09-07 17:25, phone inbox", and the item or row it
+applies to), the one row retirement, `node scripts/build-dashboard.js`, any open-count pin re-pinned
+with the reason. **Wait for item 91 (PR from `pm/91-rulings-closeout-0907-evening`) to be on `main`
+first** — same files; branch from the `main` that has it. Do NOT touch `data/`, the engine, or the
+board.
+
+**Done when:** R-90 and R-91 read ANSWERED (a); the R-62 row is retired with the R-86 reason; the
+dashboard's Bench open-🤖 count drops by one and the Rulings WAITING count by two; `node
+scripts/gates.js` green. DOCS-ONLY.
+
+**PM:** lane R · model sonnet · size S · deps item 91 merged · verify: `grep -c WAITING
+EDHA_RULINGS.md` before/after + the dashboard counts + `node scripts/gates.js`. DOCS-ONLY.
