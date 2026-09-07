@@ -79,23 +79,34 @@ function snareBehavior(env, armedOver) {
   return b;
 }
 
-async function run(env, behavior, eventName, tokenUuid) {
+async function run(env, behavior, eventName, tokenUuid, { walkerSide = "enemy" } = {}) {
   /* The snare lives on the owner's REAL ledger flag: edhaGetSnares is a const arrow the sandbox
    * does not expose, so seeding the document is both the only way in and the honest one. */
   const owner = mockActor({ name: "Bench — Fate", id: "fate", flags: { lists: { snares: [{ id: "snare1", talent: "Snare", x: 500, y: 500 }] } } });
   const foe = mockActor({ name: "Foe", id: "foe", type: "npc", system: { resources: { hea: { value: 10 } } } });
   const sprung = [];
   const world = stageWorld(env, { actors: [owner, foe], placeables: [], users: Object.assign([], { activeGM: { isSelf: true } }), user: { isGM: true, id: "gm1" } });
-  const prior = { resolve: env.edhaResolveActorRef, same: env.edhaSameDisposition, spring: env.edhaFateSpringSnare, tok: env.edhaCasterToken };
+  const prior = { resolve: env.edhaResolveActorRef, same: env.edhaSameDisposition, hostile: env.edhaDisposHostile, spring: env.edhaFateSpringSnare, tok: env.edhaCasterToken };
   env.edhaResolveActorRef = async () => owner;
-  env.edhaSameDisposition = () => false;              // the walker is an ENEMY of the owner
+  /* Item 77: the spring gate names the predicate it means — `edhaDisposHostile` — because
+   * `!edhaSameDisposition` is not "enemy" (R-63: an unresolvable side matches NEITHER helper).
+   * `walkerSide` "enemy" = hostile true; "unresolved" = BOTH helpers false, which is exactly what
+   * a walker with no readable disposition returns from the real pair. */
+  env.edhaDisposHostile = () => walkerSide === "enemy";
+  env.edhaSameDisposition = () => false;
   env.edhaCasterToken = () => null;
   env.edhaFateSpringSnare = async (_o, s) => { sprung.push(s.id); };
   try {
     await behavior._handleRegionEvent({ name: eventName, data: { token: { actor: foe, uuid: tokenUuid } } });
     return sprung;
-  } finally { Object.assign(env, { edhaResolveActorRef: prior.resolve, edhaSameDisposition: prior.same, edhaFateSpringSnare: prior.spring, edhaCasterToken: prior.tok }); world.undo(); }
+  } finally { Object.assign(env, { edhaResolveActorRef: prior.resolve, edhaSameDisposition: prior.same, edhaDisposHostile: prior.hostile, edhaFateSpringSnare: prior.spring, edhaCasterToken: prior.tok }); world.undo(); }
 }
+
+test("item 77: a walker whose side did NOT resolve does NOT spring the snare (was `if (same) return` — neither-same read as enemy)", async () => {
+  const env = loadEngine();
+  const b = snareBehavior(env, [UNDER]);
+  eq(await run(env, b, "tokenMoveOut", UNDER, { walkerSide: "unresolved" }), []);
+});
 
 test("R-13 behavior: placed UNDER a creature — the creation-time tokenEnter does NOT spring it", async () => {
   const env = loadEngine();

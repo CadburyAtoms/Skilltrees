@@ -115,7 +115,7 @@ function edhaVeilSuppressed(tok) {
     for (const { actor: owner, handler: h } of edhaWatchersOfRule("edha-suppress-veil")) {
       if (h.requireSelfStatus && !owner.statuses?.has?.(h.requireSelfStatus)) continue;
       const otok = edhaCasterToken(owner); if (!otok || otok.id === tok.id) continue;
-      if (edhaSameDisposition(owner, tok)) continue;   // enemies of the owner only — R-63 🤖 bench row
+      if (!edhaSideHostile(otok.document?.disposition, tok.document?.disposition)) continue;   // enemies of the owner only — item 77: was `if (same) continue`, which let an UNRESOLVED side through as an enemy; both tokens are in hand, so the value-level predicate (R-63, fail CLOSED) 🤖 bench row
       if (edhaTokensWithin(otok, edhaAttuneFtColor(owner, h.rangeColor || "green")).some(t => t.id === tok.id)) return true;
     }
   } catch (e) {}
