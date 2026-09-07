@@ -139,6 +139,31 @@ Four `Frostbinder` `braced` statuses and two `weakened` sit on Ben's campaign ad
 never controlled or targeted those tokens, and — per the snapshot gap above — that is an account of
 what the run did, not a snapshot diff. Bench chat can be flushed (the run added ~103 messages).
 `Bench` was logged out as the last in-world act and is selectable on `/join` again.
+## 2026-09-06 — Item 66: a NEGATIVE next-test rider on the DAMAGE path joins as a subtraction, not `base + -1d6` (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
+
+Item 49 turned the damage-path consumption in `edhaWrapRollDamage` into a reduce over the taken
+entries — `${f} + ${m.formula}` — so a rider whose formula starts with a minus (Probability Net's
+`-1d6` granted as an `either` rider, or any authored `edha-next-test-mod` with a negative formula
+and `appliesTo: damage|either`) built `2d6 + -1d6`, which Foundry's parser dislikes. Item 49 saw it
+and left it as pre-existing. The d20 path (`edhaNextTestPreRoll`) already handled the sign inline:
+`0 - 1d6[Probability Net]`.
+
+- **One pure helper, `edhaJoinRiderTerm(base, formula, label?)`**, beside `edhaTidyFormula` in the
+  SHARED CORE: a leading minus → `base - term`, anything else → `base + term`, `[label]` appended
+  when given. **Both paths call it** — the d20 path with base `"0"` and its label (its output is
+  byte-for-byte what the inline branch produced), the damage path with the source label on the
+  subtraction only, so a **positive damage rider still builds exactly item 49's `2d6 + 1d6`**.
+- No name-keyed branch; the allowlist is untouched. Nothing else in either path changed.
+- **Proven headless** in `tests/negative-rider-join.test.js`: (1) `2d6 - 1d6[Probability Net]`
+  for the negative rider — under a one-line reversion to the raw concat it fails with the actual
+  `'2d6 + -1d6'`; (2) the positive rider's string equals the pre-change reduce, verbatim; (3) the
+  d20 strings for `-1d6`, `1d6` and `+1d6` are unchanged; (4) a source scan pins exactly one
+  `function edhaJoinRiderTerm(` and that both `edhaWrapRollDamage` and `edhaNextTestPreRoll` call it.
+- **🤖 for the bench:** checklist **2bI-4d** (a negative `either` rider on a damage roll shows a
+  subtraction and the total drops) + **2bI-4e** (positive-rider negative control: `2d6 + 1d6`).
+
+---
+
 ## 2026-09-06 — Item 58: Volatile Strike rider scope, Withering Touch duration prose, The Final Study re-key (R-23, R-28, TODO 41) (**DATA → pack REBUILD + ⟳ Sync, Ben only**)
 
 Three small authored-data fixes, all Ben-approved 2026-09-06, bundled per the PM's batch:
