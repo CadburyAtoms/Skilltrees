@@ -33,6 +33,49 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-06 — Item 24: the native event/handler registry is TABLE-DRIVEN — `EDHA_EVENT_TYPES` / `EDHA_HANDLER_TYPES`, one registration loop, schemas EVALUATED instead of regex-parsed (**ENGINE-ONLY → F5 / relaunch**; PR #244)
+
+**What changed.** `edhaRegisterNativeEventSystem()` was ~2,500 lines of **102 sequential**
+`api.registerItemEventType` / `api.registerItemEventHandlerType` calls (15 events + 87 handlers).
+The definitions are now DATA: two top-level arrays in the one engine file (iron rule 2a), built
+inside an IIFE so `FF`, `choices` and the deal-damage debounce map stay private, and registered by
+**one loop** — `for (const def of EDHA_EVENT_TYPES) api.registerItemEventType(def)` and the handler
+twin. Registration sites **102 → 1 loop**. Same order, same labels, descriptions, hooks and schema
+fields, and the SAME objects: the system binds an executor's `this` via
+`executor.call(this, event)` on the handler DataModel, so each array element is the former call's
+argument untouched and every closure / `this` binding is preserved. Both tables sit on the `edha`
+API (`edha.EDHA_HANDLER_TYPES`, beside `createLootCache`). The region-behaviour registration and the
+API guard in the function are untouched.
+
+**The tooling half.** `scripts/handler-schemas.js` used to regex-parse the engine SOURCE to
+recover each handler's field schema (lint pass 9/9b, the item-64 build guard). It now EVALUATES the
+tables: `tests/harness.js` gained a `foundry.data.fields` stub and `loadHandlerRegistry()`, which
+runs the registration against a recording API and hands back the very `config.schema` objects
+Foundry receives. `parseHandlerSchemas(src)` / `parseHandlerChoices(src)` keep their signatures
+(`src` ignored; memoized). lint-refs **pass 18** had its own source regex for `(type, hook)` — it
+reads the registry now too. `matchBrace` / `topLevelKeys` stay for `dump-native-vocabulary.js`,
+which parses the SYSTEM bundle we cannot evaluate. Parity on the pre-refactor engine: old parser
+vs evaluated registry produce identical schema and choices maps.
+
+**Proven, not asserted.** (1) `tests/fixtures/handler-registry.snapshot.json` — per event
+`{type, label, description, hook}`, per handler `{type, label, description, fields[]}` in
+declaration order — was generated from the OLD engine and **committed before the refactor**
+(`cf15416`); `tests/handler-registry.test.js` holds the engine to it byte-for-byte and the fixture is
+untouched by the refactor commits. (2) Mutation: dropping the `edha-multi-hit` row fails with
+`handlers: registered no more — edha-multi-hit (a dropped table row?)` (and lint pass 9 flags
+Flashpoint's rule as unregistered); restored → 966/966. (3) Pins: exactly one
+`registerItemEventHandlerType(` and one `registerItemEventType(` in stripped code; the table
+elements are `===` the recorded registrations; the API literal names both tables. `gates.js` 10/10.
+
+**🤖 for the bench** — `# BENCH — Handler registry smoke (item 24)`: the Events-tab picker still
+offers all 87 `edha-*` handler types (and 15 events), and one talent per handler family still fires.
+Nothing here is Ben's judgment.
+
+**Adding a handler now = adding a row** to `EDHA_HANDLER_TYPES` (`ENGINE_INDEX.md` has the
+recipe) and regenerating the snapshot deliberately (the test header carries the one-liner).
+
+---
+
 ## 2026-09-06 DELTA — Item 68 / fix pass 8: a heal card states what was DELIVERED, not what was rolled (**ENGINE-only → F5**)
 
 Bench run 39, driving R-10's load-bearing negative through a real Withering Touch mark, measured
