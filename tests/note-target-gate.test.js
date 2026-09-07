@@ -51,8 +51,12 @@ test("the edha-note executor consults edhaNoteTargetGate on the R-64 victim chai
   const code = codeOnly(readEngineSource());
   const start = code.indexOf('type: "edha-note"');
   assert.ok(start > 0, "the edha-note handler type is still registered under that name");
-  const end = code.indexOf("api.registerItemEventHandlerType(", start + 10);
-  const block = code.slice(start, end > start ? end : start + 8000);
+  // The registry is a TABLE since item 24: the row ends where the next row's `source:, type:` line
+  // starts (item 71 — the old `api.registerItemEventHandlerType(` marker sits ABOVE every row
+  // now, so slicing to it fell through to the 8000-char window).
+  const end = code.indexOf('source: "edha-content", type:', start + 10);
+  assert.ok(end > start, "a following table row exists to bound the edha-note row");
+  const block = code.slice(start, end);
   assert.ok(/whenTarget: new FF\.StringField\(/.test(block), "the schema declares the whenTarget field (so it is editable on the Events tab)");
   const owns = block.indexOf("edhaRuleOwnsGate(owner, this.whenOwnsTalent)");
   const gate = block.indexOf("edhaNoteTargetGate(this.whenTarget, edhaResolveVictim(event))");
