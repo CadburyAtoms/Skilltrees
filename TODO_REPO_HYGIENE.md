@@ -2371,3 +2371,42 @@ contradicts; the three counts match their commands; `node scripts/gates.js` gree
 
 **PM:** lane R · model sonnet · size S · deps #19 (both halves) · verify: the commands beside the
 numbers + a grep for "200 talents" / "45 numbered" / "19.7k" returning nothing. Found by items 19a and 4.
+
+---
+
+## 76. [x] The phone card's DEFAULT is empty for bold-inline defaults, and R-80 / R-81 say "(§I)" but live in §C (2026-09-06, PR #PRNUM)
+
+> **DONE 2026-09-06.** Root cause of the empty default: `RULING_DEFAULT_RE`'s `[^*]+` capture
+> stopped at the first `*` of the inner `**(a) …**`, and because that WAS a match the "no default
+> stated" fallback never fired — every bold-inline default rendered as `""`. The capture now reads
+> through inner `**…**` pairs and strips the markers. `applied` was decided by SECTION alone, so an
+> entry marked **APPLIED** in §C (R-48, R-80, R-81, R-84, R-85 — §I holds only a stub for each,
+> which `RULING_STUB_RE` skips) rendered as a plain default-ask card; a bold upper-case `APPLIED`
+> span in the body now marks the entry applied wherever it lives (`RULING_APPLIED_MARK_RE`; the
+> rulings doc's own intro already says "anything marked **APPLIED** is already live … needs a
+> veto"). R-80 / R-81 got the bold mark, "(stub in §I)" wording, and one-line §I stubs in the R-84 /
+> R-85 shape. Proof: all 8 open rulings carry a non-empty default; R-48 / R-80 / R-81 / R-84 / R-85
+> `applied: true`, R-18 / R-82 / R-83 `false`; `tests/pm-state.test.js` pins both forms on a
+> fixture and the real file — the old regex fails with `R-80: default is empty … ""`, dropping the
+> mark check fails `R-80 carries a bold APPLIED note in §C`. `docs/pm-state.json` untouched
+> (openRulings rides in the dashboard index, not the board state).
+
+**Why:** item 44's worker (2026-09-06, PR #258) found `RULING_DEFAULT_RE` in
+`scripts/build-dashboard.js` yields an EMPTY default whenever the ruling writes its default as
+`*Recommended default: **(a) …**` (the bold-inline form R-80 … R-85 all use), so their "Needs
+you" cards show no default and the "no default stated" fallback never fires. Separately, the
+R-80 and R-81 entries (added by the PM 2026-09-06) say "(§I)" in their text but sit in §C, so the
+page renders them as ordinary default-ask cards (`applied: false`) rather than "applied — veto?"
+cards; §I itself lists them only as stubs.
+
+**What to do:** one regex fix (read through the inner `**…**`), pinned on the bold-inline form
+and the plain form; then either move R-80 / R-81's applied notes into §I proper (the way R-84 /
+R-85 carry both a §C entry and a §I stub) or drop the "(§I)" from their text — read how
+`parseOpenRulings` decides `applied` before choosing.
+
+**Done when:** every open ruling's card carries a non-empty default (state the eight); R-80 /
+R-81 render as applied-veto cards; `node scripts/build-dashboard.js --check` green. TOOLING +
+DOCS-ONLY.
+
+**PM:** lane R · model fable-worker · size S · deps #44 · verify: the pins + the eight defaults
+quoted from `pm-state.js --dashboard-dir`. Found by item 44.
