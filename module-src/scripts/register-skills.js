@@ -3462,17 +3462,89 @@ async function edhaRunPromptPick(item, h, event) {
   }
   const costs = edhaParseCosts(h.costs);
   const costLabel = costs.length ? ` <span style="opacity:.8">(spends ${costs.map((c) => `${c.value} ${EDHA_RES_LABEL[c.resource] || c.resource}`).join(" + ")})</span>` : "";
+  /* R-17 (item 51, 2026-09-06). An offer posted from the talent's OWN `use` event has already been
+   * charged its activation cost by the SYSTEM (Unnerving Approach: 1 Investiture, consumed before
+   * this rule ever ran), so declining or ignoring the card used to keep the cost while the round's
+   * use — spent on the click — stayed available. Ben: keep the click budget AND refund. The card
+   * therefore carries a Decline button and a message flag naming what a decline (or the
+   * round-change sweep for an IGNORED card) refunds; both go through edhaOfferDecline, the ONE
+   * refund path, which is R-69's `edhaRefundCost` idiom (charge on post, refund on back-out).
+   * An offer posted from a watch / success rule (Puppeteer) was never system-charged — its `costs`
+   * land on the click — so `refund` is false there and a decline credits nothing (no minting). */
+  const refund = edhaOfferRefundable(item, event);
+  const declineBtn = refund ? ` <button type="button" class="edha-pick-decline-btn" data-edha-item="${item.uuid}">Decline${edhaConsumeList(item).length ? " (refund)" : ""}</button>` : "";
   ChatMessage.create({
     whisper: edhaWhisperIds(owner),
     speaker: ChatMessage.getSpeaker({ actor: owner }),
-    content: `<div class="edha-trigger-card"><p>${icon}<strong>${item.name}</strong> — ${edhaFillName(h.prompt, subjName) || "choose one:"}${costLabel}</p>${body}</div>`,
+    content: `<div class="edha-trigger-card"><p>${icon}<strong>${item.name}</strong> — ${edhaFillName(h.prompt, subjName) || "choose one:"}${costLabel}</p>${body}${declineBtn}</div>`,
+    flags: { "edha-content": { offer: { itemUuid: item.uuid, round: edhaCombatRoundOf(owner), refund } } },
   });
 }
-
-async function edhaPromptPickClick(ev) {
+/* Pure: does this offer carry a system-charged activation cost that a decline must give back?
+ * True only when the rule fired on the talent's own `use` event (the system's event object carries
+ * `type`; the engine's internal dispatch passes `{item, rule, options}` with `rule.event` instead,
+ * so a success-rule / watch-posted offer reads as NOT refundable) AND the item actually consumes
+ * something. Pinned in tests/offer-decline-refund. */
+function edhaOfferRefundable(item, event) {
+  const trigger = event?.type ?? event?.rule?.event ?? null;
+  return trigger === "use" && edhaConsumeList(item).length > 0;
+}
+/* THE one decline path (R-17). Resolves the card once — a second decline, a late accept after the
+ * sweep, or the sweep after a click all read the `cardResolved` flag and stop — then refunds the
+ * system-charged activation cost through edhaRefundCost (the R-69 idiom; nothing else in the offer
+ * family may credit a resource). Returns true when it refunded, false when nothing was owed or the
+ * card was already resolved. `msg` may be null (a card whose message is gone): then it only refunds
+ * when the caller says the offer was refundable. */
+async function edhaOfferDecline(msg, item, label, { refund = null } = {}) {
+  if (msg?.getFlag?.("edha-content", "cardResolved")) return false;
+  const owed = refund ?? !!msg?.getFlag?.("edha-content", "offer")?.refund;
+  if (msg?.id) await edhaMarkCardResolved(msg.id, label);
+  if (!owed || !item) return false;
+  await edhaRefundCost(item);
+  return true;
+}
+async function edhaPromptPickDeclineClick(ev, msg) {
   try {
     ev.preventDefault();
     const btn = ev.currentTarget, ds = btn.dataset;
+    const item = await fromUuid(ds.edhaItem).catch(() => null);
+    const owner = item?.actor;
+    if (!item || !owner) { ui.notifications?.warn("Edha: that talent is no longer available."); return; }
+    if (!owner.isOwner) { ui.notifications?.warn("Edha: only the talent's owner (or the GM) can resolve this."); return; }
+    btn.closest(".edha-trigger-card")?.querySelectorAll("button").forEach((b) => (b.disabled = true));
+    const refunded = await edhaOfferDecline(msg, item, "Declined — cost refunded");
+    ui.notifications?.info(refunded ? `${item.name} declined — cost refunded.` : `${item.name} declined.`);
+  } catch (e) { edhaClickFailed("prompt pick decline click", e); }
+}
+/* IGNORED offers (R-17's "or ignored"): when the combat round advances, every unresolved offer card
+ * posted in an EARLIER round of it is declined by the one active GM — same path as the button, so
+ * the refund is the same refund. Keyed on the round because that is the budget the click spends
+ * (`once: round`); outside combat there is no round to advance and the Decline button is the way
+ * out. Reads the last 200 messages — an offer older than that is not one anybody is still deciding. */
+async function edhaSweepIgnoredOffers(combat) {
+  try {
+    if (!edhaDefBuffGmGate()) return;
+    const round = Number(combat?.round);
+    if (!combat?.started || !Number.isFinite(round)) return;
+    const msgs = (game.messages?.contents ?? []).slice(-200);
+    for (const msg of msgs) {
+      const offer = msg?.getFlag?.("edha-content", "offer");
+      if (!offer?.refund || offer.round == null || !(Number(offer.round) < round)) continue;
+      if (msg.getFlag("edha-content", "cardResolved")) continue;
+      const item = await fromUuid(offer.itemUuid).catch(() => null);
+      await edhaOfferDecline(msg, item, "Ignored — cost refunded");
+    }
+  } catch (e) { console.error("Edha Content | ignored-offer sweep failed", e); }
+}
+Hooks.on("combatTurnChange", (combat) => void edhaSweepIgnoredOffers(combat));
+
+async function edhaPromptPickClick(ev, msg = null) {
+  try {
+    ev.preventDefault();
+    const btn = ev.currentTarget, ds = btn.dataset;
+    // R-17: a card the sweep (or a Decline) already resolved has had its cost refunded — accepting
+    // it now would be a free use. The flag is the same one the render hook disables buttons on.
+    if (msg?.getFlag?.("edha-content", "cardResolved")) { ui.notifications?.info("Edha: that offer was already resolved."); return; }
     const item = await fromUuid(ds.edhaItem).catch(() => null);
     const owner = item?.actor;
     if (!item || !owner) { ui.notifications?.warn("Edha: that talent is no longer available."); return; }
@@ -3498,7 +3570,9 @@ async function edhaPromptPickClick(ev) {
     if (String(h.once || "no") !== "no") await edhaCoordOPRMark(owner, item.uuid, "_pick");
     for (const c of edhaParseCosts(h.costs)) await edhaSpendResource(owner, c.resource, c.value);
     btn.textContent = `✓ ${picked.name}`;
-    void edhaMarkCardResolved(edhaMessageIdOf(btn), `✓ ${picked.name}`);
+    // Resolved BEFORE the payload runs, and awaited: R-17's sweep reads this flag to decide what
+    // an "ignored" card is, so an accepted card must be marked before a round change can see it.
+    await edhaMarkCardResolved(msg?.id ?? edhaMessageIdOf(btn), `✓ ${picked.name}`);
     // The payload is the talent's OWN success rules, with the PICKED creature as the subject.
     // `announce: false` — a pick is not a test, and letting it fan out as one would let an unfiltered
     // scene watcher fire on every choice anyone makes.
@@ -3610,7 +3684,7 @@ async function edhaDispelPickClick(ev) {
     ChatMessage.create({ content: `<p>🧵 <strong>${item?.name || "Dispel"}</strong>: ${line}</p>` });
   } catch (e) { edhaClickFailed("dispel pick", e); }
 }
-// Button binding: EDHA_CARD_BUTTONS["edha-pick-btn"], ["edha-dispel-btn"] (Job 1, pass 5.3, end of file).
+// Button binding: EDHA_CARD_BUTTONS["edha-pick-btn"], ["edha-pick-decline-btn"], ["edha-dispel-btn"] (Job 1, pass 5.3, end of file).
 
 /* The TURN-START announcement — built ALONGSIDE its payload, which is the whole rule §9o states for
  * the remaining watch kinds. `turn-start` was queued with four consumers (Apex Form, Primal
@@ -21162,6 +21236,7 @@ const EDHA_CARD_BUTTONS = {
   "edha-list-release": edhaListReleaseClick,
   "edha-watch-manual": (ev, msg) => edhaWatchManualClick(ev, msg),
   "edha-pick-btn": edhaPromptPickClick,
+  "edha-pick-decline-btn": edhaPromptPickDeclineClick,
   "edha-dispel-btn": edhaDispelPickClick,
   "edha-opp-btn": edhaOpportunityClick,
   "edha-plotgrant-btn": edhaPlotGrantClick,

@@ -1362,6 +1362,15 @@ an effect; it cannot ASK, which is why 31 talents that offer a choice were engin
   **CLICK**, not when the card posts — so a declined offer costs nothing. A cost that does not parse
   to a positive whole number is DROPPED, never defaulted to 0 (a silent 0 is a free reaction that
   looks like a working card).
+- **A system-charged offer refunds on decline / ignore (R-17, item 51, 2026-09-06).** When the rule
+  fired on the talent's own `use` event AND the item consumes something (`edhaOfferRefundable(item, event)`,
+  pure), the card carries a **Decline** button and an `edha-content.offer {itemUuid, round, refund}`
+  message flag. **`edhaOfferDecline(msg, item, label)`** is the ONE path: resolve the card once
+  (`cardResolved`), then `edhaRefundCost` — R-69's charge-on-post / refund-on-back-out idiom. The
+  Decline click and **`edhaSweepIgnoredOffers`** (on `combatTurnChange`, one GM: every unresolved
+  refundable offer from an EARLIER round) both go through it; the accept click refuses a resolved
+  card. A watch/success-posted offer (Puppeteer) is never refundable — its `costs` land on the click.
+  Pinned in `tests/offer-decline-refund.test.js`.
 - **`note`** posts only when the talent carries NO success rules — the table-run case. `{name}` is
   substituted with the creature picked (Puppeteer: "chooses one of {name}'s actions this turn").
 - **A pick's payload never re-asks.** `edhaDispatchTestResult` filters `edha-prompt-pick` rules out

@@ -973,6 +973,32 @@ overwriting. Console probe for all three rows (bench GM):
       **`<base> + 1d6`** exactly as before item 66 — no flavor label on the positive term, total
       higher than the base dice — and the same consume card.
 
+### Item 51 re-tests — a declined / ignored offer refunds its Investiture (R-17, 2026-09-06 — ENGINE-ONLY, F5; no rebuild, no ⟳ Sync)
+
+Ben's R-17(a): the once-per-round budget still spends on the CLICK, and a system-charged offer
+(one posted from the talent's own `use`) now refunds when declined or ignored. Run on **Bench —
+Black** in a STARTED combat, with a target that has one living ally within 10 ft. Note the
+Investiture before each use.
+
+- [ ] 🤖 **2bJ-10 (reopened) — Unnerving Approach DECLINED: Investiture unchanged, round use still
+      available.** Target the enemy, use **Unnerving Approach** (1 Investiture is consumed on use —
+      watch it drop). The whispered card now carries a **Decline (refund)** button beside the Push
+      buttons. Click Decline: Investiture is **back to its pre-use value**, the card is marked
+      "Declined — cost refunded", every button on it is disabled. **Same round**, use the talent
+      again and this time click a Push button: it fires (the round's use was NOT spent by the
+      decline). Then a THIRD use in the same round → "was already used this round" on the click.
+- [ ] 🤖 **2bJ-10b — IGNORED: leave the card, advance the round.** Use Unnerving Approach, do not
+      click anything, advance the combat to the **next round**. On the round change the card is
+      marked "Ignored — cost refunded" and the Investiture is back. Clicking a Push button on that
+      card afterwards is refused ("that offer was already resolved") and spends nothing.
+      **NEG:** advancing only the TURN within the same round refunds nothing — the card stays live.
+- [ ] 🤖 **2bJ-10c — NEGATIVE CONTROL: an ACCEPTED offer is charged exactly once, and Puppeteer's
+      card has no Decline.** Use Unnerving Approach and click Push: Investiture down by exactly 1
+      and it STAYS down through the next round change (no sweep refund of a resolved card).
+      Then, with an enemy at 0 focus starting its turn in Black range, Puppeteer's offer card posts
+      with **no Decline button** (its 2 focus + 1 Investiture land on the click, nothing to
+      refund); ignore it across a round change → Investiture unchanged (nothing minted).
+
 ---
 
 # BENCH — Red (leyline)
