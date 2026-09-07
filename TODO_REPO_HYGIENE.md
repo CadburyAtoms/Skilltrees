@@ -2396,7 +2396,7 @@ builds + the pin. Found by item 71.
 
 ---
 
-## 75. [x] Nine registered handler rows still ship NO executor — give each the same no-op — DONE 2026-09-06 (ENGINE-ONLY, F5; PR #TBD)
+## 75. [x] Nine registered handler rows still ship NO executor — give each the same no-op — DONE 2026-09-06 (ENGINE-ONLY, F5; PR #261)
 
 **Why:** item 71 (PR #257) gave `edha-illusion-upkeep` an explicit no-op executor and changed the
 registry pin from "a function or absent" to a NAMED set, `EXECUTOR_LESS_CONFIG_ONLY` in
