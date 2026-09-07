@@ -2984,7 +2984,7 @@ DOCS-ONLY.
 
 ---
 
-## 91. [ ] Rulings close-out 2026-09-07 evening — R-83 / R-88 / R-89 answered, four ⚑ wizard-v2 rows PASS (Ben's second dashboard paste)
+## 91. [x] Rulings close-out 2026-09-07 evening — R-83 / R-88 / R-89 answered, four ⚑ wizard-v2 rows PASS (Ben's second dashboard paste) (2026-09-07, PR #289)
 
 **Why:** Ben went through `EDHA_DASHBOARD.html` again on the afternoon of 2026-09-07 (after the
 17:03 deploy) and pasted the Copy-for-Claude block into the PM chat at 17:11 (stamp `@0acf0a482c`).
@@ -3064,7 +3064,7 @@ records the answer.
 
 ---
 
-## 93. [ ] R-89 (a) — the `NO NAMEABLE HOOK` declaration moves off the description into data (`noHook` → `flags.edha-content.noHook`), read by lint pass 5
+## 93. [x] R-89 (a) — the `NO NAMEABLE HOOK` declaration moves off the description into data (`noHook` → `flags.edha-content.noHook`), read by lint pass 5 (2026-09-07, PR #291)
 
 **Why:** bench run 42 (2026-09-07, PR #274) measured that Foundry's editor drops the
 `<!-- NO NAMEABLE HOOK: … -->` HTML comment on save (`ProseMirror.dom.parseString` →
@@ -3181,7 +3181,7 @@ page rendering + `node scripts/gates.js`. TOOLING-only (+ PM republish).
 
 ---
 
-## 95. [ ] Rulings close-out 2026-09-07 evening, part 2 — R-90 (a) and R-91 (a) from the phone inbox; retire the R-62 audience row
+## 95. [x] Rulings close-out 2026-09-07 evening, part 2 — R-90 (a) and R-91 (a) from the phone inbox; retire the R-62 audience row (2026-09-07, PR #292)
 
 **Why:** Ben answered two more rulings from the phone at 17:25 ET, after item 91 had already been
 dispatched (and this repo's PM cannot message a running worker), so they get their own small

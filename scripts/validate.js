@@ -361,6 +361,10 @@ function validateAdversaries(adv, talentGroups, errors, warnings) {
       if (it.kind === 'weapon' && it.attack === undefined) W(`item "${it.name}": kind weapon without an attack bonus — renders in the weapon section but has no roll`);
       if (it.weaponId !== undefined && it.kind !== 'weapon') E(`item "${it.name}": weaponId only applies to kind "weapon"`);
       if (it.alwaysEquipped !== undefined && (it.kind !== 'weapon' || typeof it.alwaysEquipped !== 'boolean')) E(`item "${it.name}": alwaysEquipped is a boolean for kind "weapon" only (natural weapons — item 34a)`);
+      // Item 93 / R-89 (a): the NO NAMEABLE HOOK declaration is this key now, not prose — a
+      // non-empty string, read by lint-refs.js pass 5 as the exemption and written by
+      // foundry-build.js to flags['edha-content'].noHook (renders nowhere).
+      if (it.noHook !== undefined && (typeof it.noHook !== 'string' || !it.noHook.trim())) E(`item "${it.name}": noHook must be a non-empty string`);
       // Native event rules on bespoke abilities (07-16): simplified array form — the BUILD mints
       // the 16-char rule ids, so authored entries carry event + handler only.
       if (it.events !== undefined) {

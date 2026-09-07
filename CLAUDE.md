@@ -84,9 +84,10 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
   updated together.
 - **`data/adversaries.json`** (+ `adversary-effects.json` baked AEs) — adversary blocks AND their
   bespoke ability `events` rules (same edha-* vocabulary as talents; build mints rule ids). The
-  wiring standard: trigger-naming text carries events (cue at minimum) or an explicit
-  `NO NAMEABLE HOOK: <reason>` — `lint-refs.js` pass 5 enforces; see leyline-tree-authoring
-  SKILL.md §"Adversary abilities".
+  wiring standard: trigger-naming text carries events (cue at minimum) or a `noHook` key giving
+  the reason (item 93 / R-89 (a), 2026-09-07: data, not a prose `NO NAMEABLE HOOK: <reason>`
+  line — Foundry's editor drops HTML comments on save) — `lint-refs.js` pass 5 enforces; see
+  leyline-tree-authoring SKILL.md §"Adversary abilities".
 - **`data/talent-*.json`** side tables — MASKED bootstrap history. Never add an entry for an
   existing talent (it does nothing); never invent a new sidecar table.
 - **`data/native-vocabulary.json`** — the **cosmere-rpg system's OWN** event/handler types (12

@@ -2725,13 +2725,14 @@ Move is written into `override` with `useOverride:true` and the getter adds `.bo
 **explicitly reverted** (the engine grants one weapon, never ×2). Its two still-live halves — the rows
 LOOK pickable, and the picked weapon is kitItem-stamped so Start over / ↺ Change remove it with the kit
 — were **moved into Weapon slot v3**, below, rather than dropped.)*
-- [ ] ⚑ **Coin row v3 (07-19x — v2's numbers were invisible until clicked)** — v2 injected the
+- [x] ⚑ **Coin row v3 (07-19x — v2's numbers were invisible until clicked)** — v2 injected the
       editors INSIDE the system's currency-list, whose CSS collapses inputs until hover (it's a
       compact header widget) — hence letters-only at rest, numbers-only when clicked, and the
       oversized total box. Now: the equipment tab hides the native widget entirely and renders
       OUR row after it — 🪙 total pill (copper-weighted, tooltip) + three tinted g/s/c pills
       with always-visible numbers. The header strip keeps the compact native chip with the
       corrected total. Verdict on the look still wanted.
+      ✅ **retired 2026-09-07 on Ben's dashboard mark — PASS, verbatim: "looks good to me!"**
 *(**Finish tops up to a REACHABLE max** — RETIRED on evidence 2026-07-28j, bench run 22, positive AND
 all three negative controls including the load-bearing one. Finish on a fresh PC left **14/14 · 5/5 ·
 2/2** with **no rest dialog**, and a second Finish later in the same run left **14/14 · 5/5 · 6/6** —
@@ -2818,13 +2819,15 @@ MEASURED, not inferred from the stamp:** with the picked Sidesword held, ↺ Cha
 weapon list to `Unarmed Strike` alone and the kitItem count to **0**. Side-confirmations: Hunter's kit does
 carry **Shortbow + Knife** (and the packed Shortbow reads `attack.type: "ranged"`), Leader's carries
 **Sidesword**. The "do the rows LOOK pickable" half is split out as its own ⚑ row below.)*
-- [ ] ⚑ **Weapon picker — does the list LOOK pickable? (split out of Weapon slot v3, 2026-09-06)** — a
+- [x] ⚑ **Weapon picker — does the list LOOK pickable? (split out of Weapon slot v3, 2026-09-06)** — a
       verdict on the look, not a test. The CSS **is** applied — bench run 38 read the computed style off a
       live row: `display: flex`, `padding: 5px 8px`, `border: 1px solid rgba(255,214,107,.25)`,
       `cursor: pointer`, and a custom-appearance radio rendered at 14 px. What is wanted is whether the
       bordered rows / hover glow / selected state read as clickable to you at the table.
-- [ ] ⚑ **Preview panel centered (07-19y)** — the derived-stat box on the attributes page is
+      ✅ **retired 2026-09-07 on Ben's dashboard mark — PASS: no note**
+- [x] ⚑ **Preview panel centered (07-19y)** — the derived-stat box on the attributes page is
       centered ("90% of the way to clean design" — say what the last 10% needs).
+      ✅ **retired 2026-09-07 on Ben's dashboard mark — PASS: no note**
 - [x] ⚑ **Attributes page — VETO CHECK (Ben)** — are **12 points at L1 / max 3 per attribute at
       L1 / +1 at levels 3, 6, 9, 12, 15, 18** still canon? They come from the legacy
       `Character_Building_Rules.md`. Confirm, or say the real numbers — the wizard enforces
@@ -2835,7 +2838,7 @@ carry **Shortbow + Knife** (and the packed Shortbow reads `attack.type: "ranged"
       the real ones. *(Split 2026-07-27w; the enforcement half is the 🤖 row above.)*
       ✅ **retired 2026-09-07 on Ben's dashboard mark — SKIP: no note**
 
-- [ ] ❌ **DEFECT (measured by the 2026-07-27v checklist audit, never benched): five map-picker DEAD
+- [x] ❌ **DEFECT (measured by the 2026-07-27v checklist audit, never benched): five map-picker DEAD
       SPOTS / mis-hits, and four of them are holes in the partition** — `module-src/assets/
       thyrcross-nations.json` is byte-identical to `thyrcross.map.json`'s polygons and to the deployed
       copy, so this is a data defect, not a deploy gap. **Point-testing all 35 gazetteer city dots
@@ -2855,6 +2858,8 @@ carry **Shortbow + Knife** (and the packed Shortbow reads `attack.type: "ranged"
       ✅ **SHIPPED 2026-09-06, item 61, PR #256** — all five dots resolve to their tagged nation
       (city-04/11/14/17 → goldenport, city-31 → corvaine; the 30 controls unchanged), lint WARNs
       4 → 0. Live verification is the 🤖 row above (bench run 41).
+      ✅ **retired 2026-09-07 on Ben's dashboard mark — PASS: table confirmation that item 61's
+      polygon fix (PR #256) holds at the table; nothing further to change.**
 
 ### Fix pass 7b re-tests (item 48, 2026-09-06 — ENGINE-ONLY, F5; no rebuild, no ⟳ Sync)
 
@@ -3422,6 +3427,12 @@ the marker is its declared exit (`<!-- NO NAMEABLE HOOK: the miss/graze/hit adju
 module-visible data -->`), so lint pass 5 is satisfied by the reasoned exemption, not by silence.
 Nothing to bench: the mechanic is the GM's application step by construction.)*
 
+- [ ] 🤖 **Item 93 / R-89 (a) — the `noHook` flag survives a Foundry edit.** Open a marked
+  ability's description in the Foundry editor (e.g. the Stonebound Captain's Combat Training, or
+  Wrongwake's Drag Under — the ability R-89 caught losing its old HTML-comment marker on save),
+  save, re-extract: the `noHook` flag must survive (it lives in `flags['edha-content'].noHook`,
+  renders nowhere, and the editor never touches it) and `lint-refs.js` pass 5 must stay green.
+  This is the whole point of moving the declaration off prose (R-89) — confirm it live, once.
 
 ## The 2bAB pre-deploy audit rewires (2026-07-26 — 15 dead adversary copies of tree talents, wired)
 
@@ -4945,7 +4956,7 @@ and `edhaSheetRoot`/`edhaPostCleanseCard` (sheet injectors + Life/Restoration cl
 rows below are regression checks (repo-side unified, no live behavior change); the ones flagged
 VISIBLE are the actual behavior flips this pass made on purpose.
 
-- [ ] 🤖 **VISIBLE — R-62 audience flips, seven sites.** Read carefully — FOUR flip toward wider
+- [x] 🤖 **VISIBLE — R-62 audience flips, seven sites.** Read carefully — FOUR flip toward wider
       (active-only → all GMs, so a GM who was offline when it fired can still find it after logging
       back in): the scene-cue trigger note (`edhaPostCueCard`, any `edha-note`/trigger-card
       talent), the ambush-belief Perception result note (Phantom Double/illusion family), the
@@ -4977,6 +4988,10 @@ VISIBLE are the actual behavior flips this pass made on purpose.
       is retired under **R-86** (*"There will never be no GM connected. This isn't needed, and any
       similar items aren't needed."*) — the same ruling that retired **Job 6a** directly below, whose
       premise is the same one. **Filed as R-90's sibling question, R-91**; row stays 🤖 until Ben says.
+      ✅ **retired 2026-09-07 under R-86 per R-91 (a), Ben, phone inbox 17:25, verbatim (the row's
+      own (a) text tapped): "retire the row under R-86 — the flips are repo-side facts pinned by
+      the code (`activeOnly` present or absent at each of the seven sites) and the behaviour they
+      change only matters in a state you have said will never occur."**
 *(**R-61 — a scene mid-flight when this shipped keeps working (the legacy `detonateUsed` read
 fallback)** — ✅ **PASS, RETIRED on evidence 2026-09-07, bench run 43** (engine `0a677dade62f…`).
 **The row said it was "not independently testable without a stale flag already on an actor from before
