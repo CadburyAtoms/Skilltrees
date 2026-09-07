@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-07T02:33:34.561Z",
+  "generatedAt": "2026-09-07T02:33:47.732Z",
   "source": {
     "path": "docs/PM_BOARD.md",
     "hash": "56a6bf8913",
-    "commit": "733f175",
-    "branch": "main",
+    "commit": "5eb7a11",
+    "branch": "pm/board-2026-09-06m",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
