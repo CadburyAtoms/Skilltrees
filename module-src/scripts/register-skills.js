@@ -3521,8 +3521,29 @@ async function edhaRunPromptPick(item, h, event) {
   if (source === "creatures") {
     const cands = edhaPickCandidates(owner, h, anchor);
     if (!cands.length) {
-      if (h.emptyNote) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
-        content: `<p>${icon}<strong>${item.name}</strong>: ${edhaFillName(h.emptyNote, subjName)}</p>` });
+      /* R-84 (bench run 40, applied as the recommended default — vetoable): THE OFFER THAT CANNOT BE
+       * MADE. A rule fired from the talent's own `use` has already been charged its activation cost
+       * by the system, and this branch used to post its note and return — no refund, and no Decline
+       * button to ask for one, because there is no offer to decline. From the player's side that is
+       * indistinguishable from a declined offer, which R-17 DOES refund (measured on Unnerving
+       * Approach: Investiture 2 → 1, gone). Same gate, same one refund path.
+       *
+       * The card also stops being silent about the money. Note which line the non-refundable arm
+       * prints: R-84(b) proposed "the cost was spent", but with R-17's gate `refundable === false`
+       * means the offer was posted from a watch / success rule, where the system charged NOTHING
+       * (the rule's own `costs` land on the click, which never happens here) — so "spent" would be
+       * false. What is true, and what the player needs, is that their resources did not move.
+       *
+       * The refund goes through `edhaOfferDecline` with no message — R-17's ONE refund path, kept
+       * one (`edhaRefundCost` still has exactly one caller in this family); with `msg` null it
+       * resolves no card and only credits. */
+      const refundable = edhaOfferRefundable(item, event);
+      const money = refundable ? " <em>— cost refunded</em>"
+        : (edhaConsumeList(item).length ? " <em>— no cost was spent</em>" : "");
+      const note = edhaFillName(h.emptyNote, subjName) || "no valid creature in range — nothing to offer";
+      if (h.emptyNote || money) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+        content: `<p>${icon}<strong>${item.name}</strong>: ${note}${money}</p>` });
+      if (refundable) await edhaOfferDecline(null, item, null, { refund: true });
       return;
     }
     body = cands.map((t) => `<button type="button" class="edha-pick-btn" ${attrs(t.actor.uuid)}>${h.label || "Choose"} ${t.actor.name}</button>`).join(" ");

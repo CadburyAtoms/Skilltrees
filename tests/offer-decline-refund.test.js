@@ -203,3 +203,88 @@ test("offer-decline-refund: ONE refund path — Decline and the sweep both go th
   }
   assert.ok(src.includes('"edha-pick-decline-btn": edhaPromptPickDeclineClick'), "the Decline button is bound in EDHA_CARD_BUTTONS");
 });
+
+/* =============================================================================================
+ * R-84 (fix pass 9 / TODO 72, applied as the recommended default — vetoable): THE OFFER THAT
+ * CANNOT BE MADE.
+ *
+ * Bench run 40, driving the rows above: Unnerving Approach used against a target with no living
+ * ally within 10 ft posts its `emptyNote` card and returns — and the SYSTEM has already taken the
+ * Investiture (measured 2 → 1, no refund, and no Decline button, because there is no offer to
+ * decline). R-17 refunds a DECLINED or IGNORED offer; it said nothing about one that never
+ * existed, and from the player's side the three cases are indistinguishable.
+ *
+ * Fix: the same gate (`edhaOfferRefundable`) through the same one path (`edhaOfferDecline` with a
+ * null msg → credit only, resolve nothing, so pin 4's "exactly one edhaRefundCost" still holds),
+ * and the card stops being silent about the money. Note which line the NON-refundable arm prints:
+ * R-84(b) proposed "the cost was spent", but `refundable === false` on this branch means the offer
+ * came from a watch / success rule, where the system charged nothing — so the true statement is
+ * that no cost was spent.
+ *
+ * Blast radius fixed: the three `source: "creatures"` rules carrying an `emptyNote` — Unnerving
+ * Approach (Black, plus its adversary twin), Anticipate (Blue), Terms of Accord (White).
+ *
+ * Reversion: drop the `edhaOfferDecline` call and case 1 fails (Investiture stays at 3).
+ * ============================================================================================= */
+
+const EMPTY_PICK = { type: "edha-prompt-pick", source: "creatures", once: "round", label: "Push",
+  emptyNote: "no living ally of {name} within 10 ft to push (it may already be Isolated)" };
+
+/* Unnerving Approach's exact take: the rule fires on the talent's own `use`, the system has taken
+ * the Investiture (4 → 3), and the candidate list comes back empty. */
+async function postEmpty(env, w, { via = "use", handler = EMPTY_PICK } = {}) {
+  const cards = captureChat(env);
+  await withStubs(env, {
+    fromUuid: async (u) => w.docs[u] ?? null,
+    edhaCombatRoundOf: () => 2,
+    edhaWhisperIds: () => [],
+    edhaPickCandidates: () => [],            // "no living ally within 10 ft"
+  }, async () => {
+    const event = via === "use"
+      ? { type: "use", item: w.item, rule: { event: "use", handler }, options: { victim: w.foe } }
+      : { item: w.item, rule: { event: "edha-test-success", handler }, options: { victim: w.foe } };
+    await env.edhaRunPromptPick(w.item, handler, event);
+  });
+  return cards;
+}
+
+test("R-84: the offer that cannot be made refunds its system-charged cost, and the card says so", async () => {
+  const env = loadEngine();
+  const w = world();
+  w.owner.system.resources.inv.value = 3;                       // the SYSTEM charged the use: 4 → 3
+  const cards = await postEmpty(env, w);
+  assert.strictEqual(inv(w.owner), 4, "THE FIX: bench run 40 measured 2 → 1 with no refund");
+  assert.strictEqual(cards.length, 1, "one card");
+  assert.ok(cards[0].content.includes("no living ally of Bench Target within 10 ft"),
+    "the authored note still prints, with {name} filled");
+  assert.ok(cards[0].content.includes("cost refunded"), "…and it names the money");
+  assert.ok(!cards[0].content.includes("edha-pick-decline-btn"), "no offer, so still no Decline button");
+});
+
+test("R-84: a watch-posted empty offer refunds NOTHING and says no cost was spent", async () => {
+  const env = loadEngine();
+  const w = world();
+  const cards = await postEmpty(env, w, { via: "success" });
+  assert.strictEqual(inv(w.owner), 4, "nothing was charged, so nothing is minted");
+  assert.ok(cards[0].content.includes("no cost was spent"), "the card is honest about that too");
+  assert.ok(!cards[0].content.includes("refunded"));
+});
+
+test("R-84: a talent that consumes nothing gets no money clause at all", async () => {
+  const env = loadEngine();
+  const w = world({ consume: false });
+  const cards = await postEmpty(env, w);
+  assert.strictEqual(inv(w.owner), 4);
+  assert.ok(!/cost/.test(cards[0].content), "no money line when there is no money");
+});
+
+test("R-84: the empty branch does NOT spend the round's pick budget", async () => {
+  const env = loadEngine();
+  const w = world();
+  w.owner.system.resources.inv.value = 3;
+  await postEmpty(env, w);
+  await withStubs(env, { edhaCombatRoundOf: () => 2 }, () => {
+    assert.strictEqual(env.edhaCoordOPRAllowed(w.owner, w.item.uuid, "_pick"), true,
+      "the budget is spent on the CLICK, and there was none");
+  });
+});
