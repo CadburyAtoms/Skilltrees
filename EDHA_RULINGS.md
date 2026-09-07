@@ -394,7 +394,7 @@ spend. *(Board table; raised by item 28b.)*
 
 ---
 
-**R-82. An offer that CANNOT be made still charges its Investiture — refund that too?** Measured at
+**R-84. An offer that CANNOT be made still charges its Investiture — refund that too?** Measured at
 bench run 40 (2026-09-06) while driving item 51's R-17 rows. **Unnerving Approach** used against a
 target with no living ally within 10 ft posts its `emptyNote` card — *"no living ally of your target
 within 10 ft to push (it may already be Isolated)"* — and the SYSTEM has already taken the
@@ -409,7 +409,7 @@ should SAY the cost was spent. Either way the card needs to stop being silent ab
 
 ---
 
-**R-83. `expireEndOfRound` stamps the GRANTER's combat — should it fall back to the BEARER's?**
+**R-85. `expireEndOfRound` stamps the GRANTER's combat — should it fall back to the BEARER's?**
 Measured at bench run 40 while driving **2bI-4c**. `edha-next-test-mod` writes
 `mod.round = edhaCombatRoundOf(owner)` (`register-skills.js` ~L21116), and the comment says "the
 GRANTER's combat (edhaNextTestMatches reads the BEARER's — same combat at the table)". When the

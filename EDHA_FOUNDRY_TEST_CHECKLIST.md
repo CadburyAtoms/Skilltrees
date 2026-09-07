@@ -926,7 +926,7 @@ waypoint.)*
   `round: 8`; the round advanced with no test; the victim's next test rolled a plain `1d20 + 3` with
   no Pattern Recognition card, and the flag afterwards was **`null`** — the entry is gone. **POS:** an
   UNSTAMPED Probability Net rider armed in the same round **survived** the round change and still
-  applied (`- 1d6[Probability Net]` + its card). ⚠️ Staging note now filed as **R-83**: the round
+  applied (`- 1d6[Probability Net]` + its card). ⚠️ Staging note now filed as **R-85**: the round
   stamp comes from the **GRANTER's** combat, so a caster who is not a combatant writes `round: null`
   and the rider never expires — put the granter in the tracker before running this row.*
 - ***2bI-4d — a NEGATIVE `either` rider on DAMAGE is a subtraction.** Formula bar read

@@ -109,9 +109,9 @@ ranged weapon (`Sidesword` + `Shortbow`, the latter `attack.type === "ranged"`).
   never exercised; likewise the Corvaine Raider's Soldier's Crossbow is an action, which is why the
   body card offered only the Shortsword. Both clear when Ben rebuilds for item 34a.
 
-**Two new rulings** (`EDHA_RULINGS.md`): **R-82** — Unnerving Approach's `emptyNote` branch (no valid
+**Two new rulings** (`EDHA_RULINGS.md`): **R-84** — Unnerving Approach's `emptyNote` branch (no valid
 ally in range) still charges its Investiture with no refund and no Decline button; *recommended:
-refund it, reusing R-17's own gate*. **R-83** — `expireEndOfRound` stamps `edhaCombatRoundOf(owner)`,
+refund it, reusing R-17's own gate*. **R-85** — `expireEndOfRound` stamps `edhaCombatRoundOf(owner)`,
 so a granter who is not a combatant writes `round: null` and the "this round" rider never expires;
 *recommended: fall back to the bearer's combat*. Reproduced both ways and it is the reason 2bI-4c
 needs its granter in the tracker.
