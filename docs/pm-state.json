@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-07T21:51:54.790Z",
+  "generatedAt": "2026-09-07T22:00:46.824Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "0f87545a2d",
-    "commit": "31340f2",
-    "branch": "pm/board-2026-09-07j",
+    "hash": "619f444c73",
+    "commit": "31e3677",
+    "branch": "pm/board-2026-09-07k",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -43,39 +43,12 @@
   },
   "pm": {
     "status": "awake",
-    "note": "17:50 ET: items 92 (#288), 91 (#289) and 93 (#291) merged. Owed to Ben's machine: ONE deploy-to-foundry.bat run (leyline + adversaries packs) + Sync Talents + Sync Adversaries, tomorrow is fine. Running: 94 (this page's re-render fix) and 95 (R-90/R-91 close-out). R-56: your phone tap says KEEP the Edha table, your morning note said cosmere ladder -> asked in chat, item 83 waits. Opus after 00:00: 70 -> 80 or 88, push live, bench 44.",
-    "waitingOn": "R-56: which do you mean (keep the Edha table = close 83 at zero cost, or cosmere ladder = run 83, Opus M + REBUILD)?",
-    "nextWakeAt": null,
+    "note": "18:00 ET: all five evening items merged (92 #288, 91 #289, 93 #291, 95 #292, 94 #294) and this page republished with the item-94 fix (Sent marks now come from your inbox notes, no more 30-second wipe). Owed to your machine: ONE deploy-to-foundry.bat (leyline + adversaries packs) + Sync Talents + Sync Adversaries, tomorrow is fine. Nothing Sonnet-sized is left; Opus resumes at 00:00 ET: items 70 and 80 (or 88), push live, then bench run 44. Only open ruling: R-56 -> your phone tap said KEEP the Edha table, your morning note said cosmere ladder. Which?",
+    "waitingOn": "R-56: keep the Edha table (close item 83 at zero cost) or cosmere ladder for everyone (run item 83: Opus M + one adversaries REBUILD)?",
+    "nextWakeAt": "2026-09-08T04:00:00Z",
     "session": "2026-09-07 17:10 ET hand-started (evening + weeknight shift)"
   },
-  "workers": [
-    {
-      "item": "94",
-      "title": "Mobile board re-render bug (Sent marks wiped every 30 s, scroll jumps)",
-      "model": "sonnet",
-      "size": "M",
-      "lane": "R",
-      "branch": "pm/94-mobile-board-rerender",
-      "startedAt": "2026-09-07T21:38:00Z",
-      "agent": "Work item 94",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; TOOLING-only + PM republish"
-    },
-    {
-      "item": "95",
-      "title": "Rulings close-out part 2: R-90 (a), R-91 (a), retire the R-62 audience row",
-      "model": "sonnet",
-      "size": "S",
-      "lane": "R",
-      "branch": "pm/95-rulings-closeout-part2",
-      "startedAt": "2026-09-07T21:41:30Z",
-      "agent": "Work item 95",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; DOCS-ONLY"
-    }
-  ],
+  "workers": [],
   "usage": null,
   "queue": [
     {
@@ -1166,9 +1139,9 @@
       "model": "sonnet",
       "size": "M",
       "deps": null,
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 294
     },
     {
       "pos": 90,
@@ -1178,9 +1151,9 @@
       "model": "sonnet",
       "size": "S",
       "deps": "91 ✓",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 292
     }
   ],
   "rulings": [
@@ -3967,6 +3940,48 @@
       "weightedM": 7.7,
       "outcome": "merged 17:50 after review, no trailers, no bounce; the PR was CONFLICTING (base b4164c5, three merges behind) so no CI ran — the PM merged origin/main into the branch in the worker's worktree (changelog top: 93 / 91 / 92 newest-first; dashboard regenerated), gates 11/11, CI green on the merge head d42d17c. 16 abilities (not 17 — the item's count included the schema doc line), parity 16 docs / 0 other diffs / 0 roll diffs, two lint mutations pinned (tests/adversary-nohook-flag.test.js mutates the real file and restores bytes), validators type-check the key, docs sweep of 7 files. Found: no extract path round-trips adversary descriptions (source-JSON → build → ⟳ Sync, one-way) — a fact, recorded in the delta. Adversaries REBUILD + ⟳ Sync Adversaries owed",
       "pr": 291
+    },
+    {
+      "date": "2026-09-07",
+      "time": "17:41",
+      "at": "2026-09-07T21:41:00.000Z",
+      "item": "Item 95 (R-90 / R-91 close-out, the R-62 audience row retired under R-86) — work-item, worktree",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "10 min, 167 turns",
+      "weighted": "2.8M",
+      "weightedM": 2.8,
+      "outcome": "merged 17:56 after review, no trailers, no bounce; CONFLICTING (base 56a44fa, two merges behind) so the PM merged origin/main into the branch (changelog top 95 / 93 / 91 / 92; dashboard regenerated), gates 11/11, CI green on the merge head da5d335. parseOpenRulings 3 → 1 (R-56 alone), open 🤖 6 → 5, the real-doc pin re-pointed to R-56. DOCS-ONLY",
+      "pr": 292
+    },
+    {
+      "date": "2026-09-07",
+      "time": "17:38",
+      "at": "2026-09-07T21:38:00.000Z",
+      "item": "Item 94 (the phone board re-renders itself out from under Ben) — work-item, worktree",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "19 min, 197 turns",
+      "weighted": "4.7M",
+      "weightedM": 4.7,
+      "outcome": "merged 17:59 after review, no trailers, no bounce; CONFLICTING (base c4306fc, five merges behind) so the PM merged origin/main (changelog top 94 / 95 / 93 / 91 / 92; dashboard regenerated), gates 11/11, CI green on the merge head 1ab1a2e. All three of the PM's mechanism claims verified against the code (DOM-only pill, tick() → renderNeedsYou every 30 s, pm/state → full render()); fix: sent/recorded state derives from the last 30 inbox docs (sentStateFor, executed for real under vm in the tests), pm/state → renderBoardPanels only, tick() → clocks by textContent only, dashboard rebuild preserves scrollY, a hint about desktop-dashboard marks; 15 pins incl. two mutations shown failing. TOOLING-only — the PM republished the artifact 18:0x",
+      "pr": 294
+    },
+    {
+      "date": "2026-09-07",
+      "time": "18:00",
+      "at": "2026-09-07T22:00:00.000Z",
+      "item": "Evening tally (17:10 → 18:00, Ben's hours by his word): 5 items merged (92, 91, 93, 95, 94) + 3 board PRs (#287, #290, #293) = 8 PRs; workers 23.4M weighted (all Sonnet: 1.7 + 6.5 + 7.7 + 2.8 + 4.7); four of five PRs needed a main merge by the PM (the three bookkeeping files every parallel worker edits — changelog top, dashboard, TODO), which is the price of running Sonnet items in parallel and is cheaper than serializing them. Queue: nothing Sonnet-sized left; Opus resumes 00:00 ET (70 → 80 or 88, push live, bench 44); R-56 is the only open ruling and waits on Ben's clarification. Owed to Ben: ONE bat run (leyline + adversaries) + both ⟳ Syncs",
+      "itemNo": "287",
+      "model": "fable",
+      "isDispatch": false,
+      "duration": "50 min",
+      "weighted": "≈ 4M (PM)",
+      "weightedM": 4,
+      "outcome": "loop idles until 00:00 unless Ben writes",
+      "pr": null
     }
   ],
   "dispatches": [
@@ -4467,6 +4482,18 @@
       "model": "sonnet",
       "item": null,
       "pr": 291
+    },
+    {
+      "at": "2026-09-07T21:41:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 292
+    },
+    {
+      "at": "2026-09-07T21:38:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 294
     }
   ],
   "statusVocab": [
