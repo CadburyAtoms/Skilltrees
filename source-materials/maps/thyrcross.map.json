@@ -1602,11 +1602,11 @@
      1516
     ],
     [
-     1268,
+     1240,
      1544
     ],
     [
-     1268,
+     1240,
      1560
     ],
     [
@@ -1894,24 +1894,108 @@
    "region": "west coast (inlets = Life-nexus trade arteries)",
    "polygon": [
     [
-     304,
-     1324
+     736,
+     648
     ],
     [
-     356,
-     1340
+     776,
+     668
     ],
     [
-     356,
-     1372
+     764,
+     704
     ],
     [
-     384,
-     1380
+     800,
+     752
     ],
     [
-     388,
-     1412
+     836,
+     752
+    ],
+    [
+     864,
+     704
+    ],
+    [
+     876,
+     752
+    ],
+    [
+     832,
+     780
+    ],
+    [
+     828,
+     816
+    ],
+    [
+     788,
+     844
+    ],
+    [
+     784,
+     880
+    ],
+    [
+     696,
+     944
+    ],
+    [
+     704,
+     976
+    ],
+    [
+     656,
+     1008
+    ],
+    [
+     668,
+     1040
+    ],
+    [
+     560,
+     1092
+    ],
+    [
+     564,
+     1116
+    ],
+    [
+     600,
+     1144
+    ],
+    [
+     580,
+     1172
+    ],
+    [
+     592,
+     1224
+    ],
+    [
+     552,
+     1304
+    ],
+    [
+     560,
+     1352
+    ],
+    [
+     488,
+     1408
+    ],
+    [
+     468,
+     1404
+    ],
+    [
+     488,
+     1452
+    ],
+    [
+     464,
+     1480
     ],
     [
      428,
@@ -1922,8 +2006,8 @@
      1456
     ],
     [
-     364,
-     1492
+     372,
+     1480
     ],
     [
      320,
@@ -2212,6 +2296,126 @@
     [
      292,
      1348
+    ],
+    [
+     304,
+     1324
+    ],
+    [
+     352,
+     1336
+    ],
+    [
+     356,
+     1372
+    ],
+    [
+     380,
+     1376
+    ],
+    [
+     388,
+     1412
+    ],
+    [
+     432,
+     1448
+    ],
+    [
+     392,
+     1352
+    ],
+    [
+     408,
+     1308
+    ],
+    [
+     396,
+     1284
+    ],
+    [
+     404,
+     1232
+    ],
+    [
+     432,
+     1196
+    ],
+    [
+     472,
+     1068
+    ],
+    [
+     512,
+     1020
+    ],
+    [
+     532,
+     1024
+    ],
+    [
+     552,
+     1004
+    ],
+    [
+     548,
+     964
+    ],
+    [
+     584,
+     940
+    ],
+    [
+     592,
+     896
+    ],
+    [
+     624,
+     892
+    ],
+    [
+     584,
+     952
+    ],
+    [
+     604,
+     968
+    ],
+    [
+     668,
+     924
+    ],
+    [
+     676,
+     896
+    ],
+    [
+     664,
+     872
+    ],
+    [
+     688,
+     840
+    ],
+    [
+     744,
+     832
+    ],
+    [
+     788,
+     752
+    ],
+    [
+     760,
+     708
+    ],
+    [
+     740,
+     708
+    ],
+    [
+     720,
+     684
     ]
    ],
    "area_km2_approx": 775500,
@@ -3240,11 +3444,11 @@
      1584
     ],
     [
-     1272,
+     1240,
      1560
     ],
     [
-     1272,
+     1240,
      1544
     ],
     [
@@ -3624,7 +3828,7 @@
     1552
    ],
    "nation": "corvaine",
-   "role_note": "NEW mint (ruling 154, Fork A): Corvaine's river port, ~15k, EAST bank at ~km 550 - the ferry twin of city-30. Nation follows the BANK: the border IS the river; the coarse Corvaine polygon runs ~20 px east of the traced channel on this stretch, so polygon containment misleads here. Unnamed. px synced 2026-07-22 to the drawn region canvas (ruling 156; was [1258, 1556]).",
+   "role_note": "NEW mint (ruling 154, Fork A): Corvaine's river port, ~15k, EAST bank at ~km 550 - the ferry twin of city-30. Nation follows the BANK: the border IS the river; the Thalendor/Corvaine seam was moved onto the west bank at the ferry (item 61, R-42), so polygon containment now agrees. Unnamed. px synced 2026-07-22 to the drawn region canvas (ruling 156; was [1258, 1556]).",
    "painted": false,
    "_px_note": "ruling 158 west-bank snap (region draft-4)"
   },
