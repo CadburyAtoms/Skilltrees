@@ -33,6 +33,39 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-06 — Item 64: the build's `edha-aoe-template` generator is retired, and the pack writers now refuse any `edha-*` handler type the engine does not register (**TOOLING-only** — the packs do not change, proven by content hash)
+
+Fix-pass 7b (item 48, R-78) retired the `edha-aoe-template` handler, and its delta reported that
+`scripts/foundry-build.js`'s `aoeRule()` still minted that type for any `TALENT_TARGETING` entry
+with `.area` and no `.burst`. **Every `.area` entry checked:** Flame Surge, Set Charge, Mending
+Aura, Thorn Field all carry `.burst` (they already emit `edha-burst`); **Lay Foundation** is the
+only `.area`-alone entry, and it should NOT get an `edha-burst` — its mechanic is the persistent
+Foundation zone, which its authored overlay already supplies as an `edha-zone` rule (the overlay
+replacing the generated events is exactly why zero such rules ever reached a pack). So the
+generator is gone, not routed: `grep -c aoeRule scripts/foundry-build.js` = 0; the `.area`-alone
+case now emits nothing; `data/talent-targeting.json` is untouched.
+
+**The guard** lives at the pack WRITERS, not in lint-refs pass 9: pass 9 holds AUTHORED rules in
+`data/` to the engine's `registerItemEventHandlerType` calls, but a GENERATED rule never appears
+in `data/`, which is why it could not see this one. `scripts/lib/handler-type-guard.js`
+(`checkHandlerTypes`, pure) + `assertRegisteredHandlerTypes()` in both `writePack` and
+`writeActorPack` — every document that reaches a pack passes through one of the two, whatever
+generator or overlay produced it, and the build throws BEFORE the pack exists, naming the
+document, rule id, and type. Registered set = the same `parseHandlerSchemas` parse pass 9 uses.
+
+**Proven:** (a) parity — scratch builds before/after with `EDHA_DATA` pinned, content-hashed via
+`readPack` + `stableStringify` with `_stats.createdTime/modifiedTime` stripped (item 58's method):
+all five packs identical (`edha-leyline d69083a3…`, `edha-deity bb175843…`, `edha-heroic
+b5675fc3…`, `edha-items f302d215…`, `edha-adversaries 2f511f17…`); the build report's `events`
+count moves 37 → 36, which is Lay Foundation's masked rule no longer being generated. (b) mutation
+— re-adding a generator for `edha-aoe-template` in `talentEvents` makes the build exit 1 with
+`"Unity of Purpose" rule … has handler type "edha-aoe-template", which the engine never registers`;
+restored → PASS. `tests/handler-type-guard.test.js` pins the guard on fixtures, against the real
+engine (retired type rejected, `edha-burst` accepted), and that the generator stays gone. Nothing
+🤖 — no table behaviour changed.
+
+---
+
 ## 2026-09-06 — Item 69: `system.damage.formula` folds to plain dice at ROLL time, R-71's runtime half (**ENGINE-ONLY, F5**)
 
 Item 59 built R-71 (a) — fold `system.damage.formula` at BUILD time — and proved it a no-op on every
@@ -59,6 +92,8 @@ engine-rolled twin — needs the fold with the roller in hand. This is that half
 - **🤖 for the bench:** the item-59 Verdict row under `# BENCH — Order` is now THIS item's re-test —
   after an F5 (no rebuild), the system's own "Roll Damage" card must read `2d8 + 5`, not the
   parenthetical.
+
+---
 
 ## 2026-09-06 — Item 59: `system.damage.formula` folds to plain dice at BUILD time, R-71 (**TOOLING + DATA → pack REBUILD, Ben only**)
 
