@@ -2917,7 +2917,7 @@ the next bench run (its heal half is already proven; only the audience is open).
 
 ---
 
-## 89. [ ] `Unbreakable Line` ships no `use` rule on either block — the White DC test its own card promises does nothing
+## 89. [x] `Unbreakable Line` ships no `use` rule on either block — the White DC test its own card promises does nothing (2026-09-07, PR #285)
 
 **Why:** behaviour-tested at **bench run 19**, root-confirmed against the DEPLOYED pack at **bench run
 43 (2026-09-07)**. Both blocks' `Unbreakable Line` — **Crownox Ring** and **The Reckoning** — carry
