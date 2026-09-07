@@ -2481,7 +2481,17 @@ quoted from `pm-state.js --dashboard-dir`. Found by item 44.
 
 ---
 
-## 77. [ ] Power's ally/enemy filter reads `!edhaSameDisposition` as "enemy" — the batch-1 corollary at a site outside the ratchet
+## 77. [x] Power's ally/enemy filter reads `!edhaSameDisposition` as "enemy" — the batch-1 corollary at a site outside the ratchet — DONE 2026-09-06, PR #267
+
+**DONE (2026-09-06, PR #267):** the Power site plus FIVE more the sweep found — every actor-level
+side read whose result was negated or used as `if (same) skip` for an enemies-only branch:
+`edhaTestAuraApply` (47-power), `edhaVeilSuppressed` (32-senses), `edhaTestReactWatch`'s
+`rollerIs: "enemy"` (12-contest), `edhaChaosShatterPrompt` (42-chaos), the fate-snare region
+spring (53-native), and the MIRROR image — `edha-def-test`'s `skipIfAlly` willing bypass read
+`!edhaDisposHostile` as "ally" and skipped the test for an unresolved target. Each branch now names
+the predicate it means; `tests/side-read-polarity.test.js` drives all five functions with the real
+helpers and fails under reversion (the snare site is pinned in `tests/snare-arm-under.test.js`).
+The seven positive-form call sites are correct as is (table in the PR). ENGINE-ONLY (F5).
 
 **Why:** item 10 batch 2 (2026-09-06, PR #263) closed the `dispoFailOpen` ratchet at 0 and, on
 the audit, found one more site the ratchet never counted because it goes through the ACTOR-level
@@ -2502,3 +2512,29 @@ under reversion; gates green. ENGINE-ONLY (F5).
 
 **PM:** lane B · model fable-worker · size S · deps #10 ✓ · verify: the pin + the grep table.
 Found by item 10 batch 2.
+
+---
+
+## 78. [ ] Fix pass 10 — Ambush Bite's doubled rider label survives fix pass 9 because the tidy runs before the card re-renders
+
+**Why:** bench run 41 (2026-09-06, PR #265) drove fix pass 9's four rows on the hash-verified
+`f2fb3e2d…` engine: three passed, and the Ambush Bite formula bar STILL read
+`1d10 + 3 + (1d6[Ambush Bite])[Ambush Bite] + 0`. Root cause named by the bench: fix pass 9's
+repair in `edhaTidyFormula` is correct on the string, but it runs in the engine's
+`renderChatMessageHTML` handler, which fires (twice) on a DETACHED element at a moment when the
+string is not yet doubled; the cosmere damage card re-renders its damage section asynchronously
+~1.5 s later on the connected element, with no further pass. The discriminator: an engine-rolled
+bare-roll message where the tidy DID land in the DOM. Another `renderChatMessageHTML`
+registration will not fix it.
+
+**What to do:** root-cause against the installed system (the damage card's second render) and
+fix at the right layer — tidy the stored roll at message creation, or hook the system's own
+re-render — never a second render registration; keep the parentheses in the ROLL (the graze clone
+keeps only dice/operator/pool terms). Pin on the path fixed; keep fix pass 9's pins green. Audit
+the whole `edha-damage-rider` family (Prognosis printed an unfolded parenthetical too).
+
+**Done when:** the pin fails under reversion; bench run 42 reads `1d10 + 3 + 1d6[Ambush Bite]` off
+the card's own `.dice-formula` node 2 s after the card lands. ENGINE-ONLY (F5).
+
+**PM:** lane B · model opus (`test-pass-fixes`) · size S · deps #265 (the report) · verify: the
+pin + bench run 42. Dispatched 2026-09-06 23:21. Found by bench run 41.

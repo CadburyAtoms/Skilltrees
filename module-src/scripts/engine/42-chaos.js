@@ -207,8 +207,7 @@ function edhaChaosShatterPrompt(roll, source, config) {
       }
       if (!rule || rule.handler.autoPrompt === false) continue;
       if (owner.getFlag?.("edha-content", `promptOff.${rule.item.id}`) || owner.getFlag?.("edha-content", "shatterPromptOff")) continue;
-      const ftok = edhaCasterToken(foe);
-      if (edhaSameDisposition(owner, ftok)) continue;   // enemies only — R-63 🤖 bench row
+      if (!edhaDisposHostile(owner, foe)) continue;   // enemies only — item 77: was `if (edhaSameDisposition(...)) continue`, which prompted for a bearer whose side did not resolve; the predicate the branch means fails CLOSED (R-63) 🤖 bench row
       if (!edhaShatterPromptGate(`${owner.id}:${foe.id}`)) continue;
       const statusLabel = edhaConditionLabel(status) || status;
       ChatMessage.create({

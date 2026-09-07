@@ -414,10 +414,12 @@ function edhaTestAuraApply(roll, source, config) {
       if (owner === actor) { if (h.includeSelf !== true) continue; }
       else {
         const otok = edhaCasterToken(owner); if (!otok) continue;
-        const same = edhaSameDisposition(owner, tok);   // R-63 🤖 bench row
+        // Item 77: each branch names the predicate it MEANS — `!edhaSameDisposition` is NOT
+        // `edhaDisposHostile` (R-63's corollary), so a roller whose side did not resolve matches
+        // NEITHER filter instead of slipping through `enemies`. 🤖 bench row.
         const want = String(h.affects || "allies");
-        if (want === "allies" && !same) continue;
-        if (want === "enemies" && same) continue;
+        if (want === "allies" && !edhaSameDisposition(owner, tok)) continue;
+        if (want === "enemies" && !edhaDisposHostile(owner, actor)) continue;
         const ft = h.rangeColor ? edhaAttuneFtColor(owner, h.rangeColor) : (Number(h.rangeFt) || 0);
         if (!ft || !edhaTokensWithin(otok, ft).some(x => x.id === tok.id)) continue;
       }
