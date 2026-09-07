@@ -434,7 +434,7 @@ it does; changing that is a ruling.
 
 ---
 
-## 13. [x] Migrate resourceWrite's remaining 12 sites onto the canonical resource writers (2026-09-06, PR #247)
+## 13. [x] Migrate resourceWrite's remaining 12 sites onto the canonical resource writers (2026-09-06, PR #PRNUM)
 
 **Why:** `scripts/engine-idiom-ratchet.json`'s `resourceWrite` key started at 17, is down to 12 —
 12 sites still write a `system.resources.<id>.value`/`.max` update path by hand instead of
