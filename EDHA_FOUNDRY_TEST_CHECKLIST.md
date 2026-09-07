@@ -3413,6 +3413,12 @@ the marker is its declared exit (`<!-- NO NAMEABLE HOOK: the miss/graze/hit adju
 module-visible data -->`), so lint pass 5 is satisfied by the reasoned exemption, not by silence.
 Nothing to bench: the mechanic is the GM's application step by construction.)*
 
+- [ ] 🤖 **Item 93 / R-89 (a) — the `noHook` flag survives a Foundry edit.** Open a marked
+  ability's description in the Foundry editor (e.g. the Stonebound Captain's Combat Training, or
+  Wrongwake's Drag Under — the ability R-89 caught losing its old HTML-comment marker on save),
+  save, re-extract: the `noHook` flag must survive (it lives in `flags['edha-content'].noHook`,
+  renders nowhere, and the editor never touches it) and `lint-refs.js` pass 5 must stay green.
+  This is the whole point of moving the declaration off prose (R-89) — confirm it live, once.
 
 ## The 2bAB pre-deploy audit rewires (2026-07-26 — 15 dead adversary copies of tree talents, wired)
 
