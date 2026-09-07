@@ -33,6 +33,35 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-06 — Item 56: the melee mutation riders follow their OWN card's graze wording, R-14 (**ENGINE + AUTHORED → deity pack REBUILD + ⟳ Sync**, Ben only; the engine half alone is F5)
+
+R-14 (Ben, (c) "follow each rider's own card"): "on a hit" = hit only; "when you deal damage" /
+"on a hit or graze" = grazes count. Root cause of the old behaviour: the system decides hit-vs-graze
+on the CHAT MESSAGE (`CosmereChatMessage#useGraze`, the card's subtotal toggle) and calls
+`actor.applyDamage(instances, { originatingItem })` with no marker, so the three riders that ride a
+buffed creature's own application — Bone Spurs (+keen, pre-pass), Venom Glands (Afflicted,
+post-pass) and Apex Form's +vital — could not tell a graze from a hit and fired on both. Now:
+- **`edhaApplyIsGraze(options)`** — `options.edhaGraze` if an engine caller says so, else the
+  breadcrumb the new `onClickApplyButton` wrap (`edhaWrapApplyClick`, at ready, libWrapper MIXED
+  or prototype patch) stamps for the lifetime of a card's Apply click. `edhaWrapApplyDamage` reads
+  it SYNCHRONOUSLY at the top (the post-pass runs after awaits, when the click is over) and hands
+  `graze` to both Life readers.
+- **The dial lives on the RULE (iron rule 2b):** `edha-mutation` grew `keenOnGraze` /
+  `venomOnGraze`, `edha-regen-grant` grew `vitalOnGraze` (BooleanFields, initial true). The chooser
+  carries each into the card (`data-edha-ongraze`) and the click bakes `mutation.onGraze`; the
+  regen-grant use bakes `apexForm.vitalOnGraze`. Readers stand down on a graze ONLY for an explicit
+  `false` — a flag baked before this deploy has no field and behaves exactly as before.
+- **Audit (all melee mutation riders):** Bone Spurs "melee attacks DEAL additional Keen" → on;
+  Venom Glands "melee HITS inflict Afflicted" → **off** (the one behaviour change); Apex Form
+  "DEALS additional Vital on all attacks" → on. `edha-damage-rider` bonuses (Spearing Beak,
+  Prognosis, Momentum's Edge, Kindle…) need no dial: they are roll-formula terms and the graze-clone
+  guard already keeps them out of the graze roll, so they were hit-only all along.
+- Proven: `tests/rider-graze-dial.test.js` (9 cases, each shown failing under a one-line
+  reversion — gate dropped, `=== false` loosened, breadcrumb unstamped, dial dropped from the
+  card); scratch `--ci` pack build green; BEFORE/AFTER compiled-pack diff = exactly 2 documents /
+  2 rules changed (Adaptive Mutation `MutatePick000000`, Apex Form `ApexGrant0000000`).
+- 🤖 checklist 2bW-18 (Venom on a graze: nothing) and 2bW-19 (Bone Spurs on a graze: applies).
+
 ## 2026-09-06 — Item 59: `system.damage.formula` folds to plain dice at BUILD time, R-71 (**TOOLING + DATA → pack REBUILD, Ben only**)
 
 R-71: the cosmere-rpg system rolls a talent's own `system.damage.formula` with no Edha engine

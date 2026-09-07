@@ -219,6 +219,10 @@ only placement directly under a creature does. *(3B-C.)*
 > trigger matches its wording; iron rule 2b — the dial lives on the rule, the handler reads it.
 > ENGINE + AUTHORED (rebuild + ↻ Sync if any rule changes) → **item 56**; headless pin per rider; 🤖
 > re-test on a nat-1 graze for one hit-only rider and one damage rider.
+> **SHIPPED** in PR #242 (REBUILD, bench-pending) — `edha-mutation.keenOnGraze` / `venomOnGraze`,
+> `edha-regen-grant.vitalOnGraze`, read through the new Apply-click graze discriminator
+> (`edhaApplyIsGraze`); Bone Spurs "melee attacks DEAL" → on, Venom Glands "melee HITS" → OFF (the one
+> change), Apex Form "DEALS … on all attacks" → on. `tests/rider-graze-dial.test.js`; 🤖 2bW-18 / 2bW-19.
 
 **R-15. Coercive Pressure no longer stacks with another next-test rider** (e.g. Probability Net) —
 the second write overwrites the first, because the bespoke Cognitive-disadvantage flag that allowed
