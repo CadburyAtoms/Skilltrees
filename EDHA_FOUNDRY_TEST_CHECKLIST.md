@@ -1072,6 +1072,15 @@ answered 2026-09-06 → item 58, REBUILD + ↻ Sync); R-24 (a) YES, keep Reckles
 no change, moved to §K, graph half of this row retired; R-27 (a) THE CARD is canon, the rally bonus
 is spent on the next test then clears (ruling answered 2026-09-06 → item 52).
 
+- [ ] 🤖 **92-1 — Volatile Strike fires on ANY melee hit, not just impact (R-88 (a), item 92,
+      REBUILD + ↻ Sync Talents)**: bench run 42 (2026-09-07, PR #274) measured a plain weapon hit
+      that dealt impact posting the "⚡ Volatile Strike — 1 Investiture …" offer, and the same PC's
+      ordinary keen sidesword hit posting nothing — the `edha-on-hit` rule carried a
+      `whenDamageType: "impact"` gate the card never mentions. Item 92 removed that key from
+      `data/authored/leyline-red.json`'s Volatile Strike rule. Re-test on the rebuilt pack: an
+      ordinary keen melee hit by a Volatile Strike owner should now post the offer (bench 42's
+      negative case, flipped). Needs the leyline pack REBUILD + ⟳ Sync Talents to be live.
+
 *(**✅ RETIRED on evidence 2026-09-06, bench run 40 — 52-1 and 52-2** (item 52 / R-27), on the
 hash-verified `0ea0741a…` deploy. ⚠️ **The rally-stack talent on `Bench — Red` is `Feeding Frenzy`,
 not "Battle Fever"** — Red owns both, and only Feeding Frenzy carries the `edha-rally-stack` rule;
