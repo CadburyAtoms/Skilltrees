@@ -394,6 +394,22 @@ spend. *(Board table; raised by item 28b.)*
 
 ---
 
+**R-80. Both an advantage AND a disadvantage next-test entry on one victim — do they cancel, or does disadvantage win?** With the next-test slot a LIST since item 49 (PR #221, 2026-09-06), a victim can carry both an advantage entry and a disadvantage entry for the same test — impossible under the old single slot. Item 49 folds them by boolean-OR per direction and, when both are present, writes NOTHING: the roll stays exactly as the player configured it (the standard table rule that they cancel; it never stomps a manual dialog choice). *Recommended default: **(a) they cancel** — APPLIED in #221 (§I).* (b) disadvantage wins — one line in `edhaNextModFoldMode`, pinned, so a veto is a one-line diff. *(Board table 2026-09-06; raised by item 49.)*
+
+---
+
+**R-81. Three more `bySize` charge distances whose cards print the rank-3 number — the R-46 treatment on all of them?** R-46 / R-48 fixed two charge distances by replacing `bySize` with an explicit `distanceFt`. Item 57's worker found the same shape on three more run-19 blocks — the Brandram's Shockwave Slam (`bySize: true` beside a dead `distanceFt: 5`) and Reckless Advance, and the Tussock-Sow's terrain square — all `bySize` at rank 2 while their cards print rank-3 numbers. *Recommended default: **(a) yes, the R-46 treatment on all three** (explicit `distanceFt` = the card's own number, stated on the card) — APPLIED by item 67 (PR #232; REBUILD owed to the next deploy; §I).* (b) fix the three cards to the rank-2 numbers instead. Ben's R-48 answer of 2026-09-06 ("a statted block should not scale") rests on the same principle. *(Board table 2026-09-06; raised by item 57.)*
+
+---
+
+**R-82. Should R-14's "follow the card" graze rule reach the generic `edha-damage-bonus` rules too?** R-14 (c) now governs the Life mutation riders (Bone Spurs, Venom Glands, Apex Form) through per-rule graze dials (item 56, PR #242). Item 56's worker found that the generic `edha-damage-bonus` rules with `meleeOnly` (Warlord's Advance and kin — the armed-strike bonuses) ALSO fire on a graze application today. *Recommended default: **(a) yes** — the same per-rule `onGraze` dial on `edha-damage-bonus`, each card audited (the `graze` value is already available at that call site); a small S item once Ben nods. NOT applied yet.* (b) leave them — a bonus "on your attacks" reads as any application. *(Board table 2026-09-06; raised by item 56.)*
+
+---
+
+**R-83. Three `hea` writers bypass the heal-cut gate — gate them at their emitters?** `ENGINE_INDEX.md` says every `hea` write outside `applyDamage` must pass `edhaHealCutGate`, and three do NOT: `edha-regen`'s turn-end write, the decay lifesteal heal-back, and `edhaBurstDetonate`'s heal hits. Their cards are honest (fix pass 8 / item 68, PR #241, fixed the announcing), but the HP still lands on a withered creature — Mending Aura keeps healing a target that "cannot regain HP". Gating them changes live HP at the table; `edhaApplyBurstResults` must STAY ungated (Raise Dead's stabilising 1 HP rides it, R-10), so the gate belongs in each emitter. *Recommended default: **(a) gate all three at the emitter** (the mark's card is the promise), the family test's gate-call count raised from 2 with a declaration, one 🤖 row per writer → TODO item 70. **WAITING for Ben — not applied, because it moves HP.*** (b) leave them ungated and say so in `ENGINE_INDEX.md`. *(Board table 2026-09-06; raised by fix pass 8.)*
+
+---
+
 **R-84. An offer that CANNOT be made still charges its Investiture — refund that too?** Measured at
 bench run 40 (2026-09-06) while driving item 51's R-17 rows. **Unnerving Approach** used against a
 target with no living ally within 10 ft posts its `emptyNote` card — *"no living ally of your target
@@ -406,6 +422,19 @@ happened. *Recommended: **(a) refund it** — reuse `edhaOfferDecline`'s `edhaRe
 (b) keep charging — "you spent the Investiture looking" is a defensible table rule, but then the card
 should SAY the cost was spent. Either way the card needs to stop being silent about the money.
 *(Bench run 40; from item 51 / R-17.)*
+
+> **DEFAULT (a) APPLIED 2026-09-06 (fix pass 9, TODO 72, ENGINE-ONLY → F5) — pending Ben's veto.**
+> The `emptyNote` branch now computes `edhaOfferRefundable(item, event)` — R-17's own gate,
+> unchanged — and refunds through `edhaOfferDecline(null, item, …, {refund: true})`, so
+> `edhaRefundCost` still has **exactly one caller** in the offer family (the pin that guards that
+> invariant is unmoved). The card names the money either way. One deviation from the ruling's own
+> wording, stated: the non-refundable line reads **"no cost was spent"**, not (b)'s *"the cost was
+> spent"* — with R-17's gate, `refundable === false` on this branch means the offer came from a
+> watch / success rule where the system charged **nothing** (that rule's `costs` land on the click,
+> which never happens here), so "spent" would be false. Fixed for all three `source: "creatures"`
+> rules carrying an `emptyNote`: Unnerving Approach (Black + its adversary twin), Anticipate (Blue),
+> Terms of Accord (White). Four cases pinned in `tests/offer-decline-refund.test.js`; dropping the
+> refund call fails the first. **A veto is a one-line revert.** 🤖 re-test row on the checklist.
 
 ---
 
@@ -423,6 +452,14 @@ the granter has none** — `edhaCombatRoundOf(owner) ?? edhaCombatRoundOf(target
 rider then always means the round the victim is living in.* (b) leave it — out of combat there is no
 round and an inert stamp is honest; the cost is that a mid-combat grant from a non-combatant NPC
 never expires. *(Bench run 40; from item 49 / 2bI-4c.)*
+
+> **DEFAULT (a) APPLIED 2026-09-06 (fix pass 9, TODO 72, ENGINE-ONLY → F5) — pending Ben's veto.**
+> `mod.round = edhaCombatRoundOf(owner) ?? edhaCombatRoundOf(target)`, exactly as recommended. The
+> in-combat case is untouched (the granter's round still wins, even when the bearer is in a
+> different one — the fallback is a fallback); with BOTH sides out of combat the stamp is still
+> `null`, which is (b)'s honest answer for the only case where it is actually honest. Five cases
+> pinned in `tests/next-mod-round-fallback.test.js`, driving the shipped executor; removing the `??`
+> fails the fallback case. **A veto is a one-word revert.** 🤖 re-test row on the checklist.
 
 ---
 
@@ -954,6 +991,10 @@ word and it gets built that way. *(Fix pass 5; no checklist row — this is a de
 *(R-67 — Chaos and Fate burst cards gained the whisper option — ANSWERED-by-acceptance 2026-09-06, moved to §K.)*
 
 *(R-68 — the map toolchain's alpha threshold is now one constant, 128 — ANSWERED-by-acceptance 2026-09-06, moved to §K.)*
+
+*(R-84 — an offer that cannot be made refunds its Investiture, and the card names the money — DEFAULT (a) APPLIED 2026-09-06, fix pass 9; the ruling and its applied note stay in §C.)*
+
+*(R-85 — `expireEndOfRound` falls back to the BEARER's combat when the granter is not a combatant — DEFAULT (a) APPLIED 2026-09-06, fix pass 9; the ruling and its applied note stay in §C.)*
 
 ---
 

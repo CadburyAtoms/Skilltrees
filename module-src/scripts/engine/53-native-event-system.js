@@ -2764,7 +2764,15 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
         const mod = { source: item.name, count: Math.max(1, Number(this.count) || 1) };
         if (this.skill) mod.skill = this.skill;
         if (this.attr) mod.attr = this.attr;
-        if (this.expireEndOfRound) mod.round = edhaCombatRoundOf(owner);   // R-4/#28a: the GRANTER's combat (edhaNextTestMatches reads the BEARER's — same combat at the table)
+        /* R-85 (bench run 40, applied as the recommended default — vetoable). The stamp is the
+         * GRANTER's combat, because `edhaNextTestMatches` reads the BEARER's and at the table they
+         * are the same combat. But a granter who is NOT a combatant has no round, and a `null` stamp
+         * can NEVER expire (`edhaNextModExpired` requires `mod.round != null`) — so a "this round"
+         * rider granted from outside the tracker sat on the victim for ever. Reproduced both ways at
+         * bench run 40 with Pattern Recognition. Fall back to the BEARER's combat, so a "this round"
+         * rider always means the round the victim is living in; with both out of combat it is still
+         * null, which is the honest answer (there is no round to expire against). */
+        if (this.expireEndOfRound) mod.round = edhaCombatRoundOf(owner) ?? edhaCombatRoundOf(target);
         if (this.bindToTarget) {
           const bind = edhaUserTargetActor();
           if (bind && bind !== target) mod.targetUuid = bind.uuid;   // nothing targeted → unbound, not broken

@@ -544,6 +544,35 @@ function edhaTidyFormula(s) {
     else if (ch === ")") { if (depth === 0) continue; depth--; }   // unmatched closer → drop
     out += ch;
   }
+  /* Third uglyness (fix pass 9, TODO 72; bench run 40): a FLAVOR-LABELLED PARENTHETICAL prints its
+   * label twice — Ambush Bite's rider read `1d10 + 3 + (1d6[Ambush Bite])[Ambush Bite] + 0`. The
+   * math is right and neither the rider assembly nor item 66's `edhaJoinRiderTerm` labels twice;
+   * FOUNDRY does it, on the chat round-trip, and it is a two-step:
+   *   1. `ParentheticalTerm#_evaluateAsync` calls `this.roll.propagateFlavor(this.flavor)`, which
+   *      stamps the parenthetical's own flavor onto EVERY inner term that has none
+   *      (client/dice/terms/parenthetical.mjs:105 → client/dice/roll.mjs:496);
+   *   2. `SERIALIZE_ATTRIBUTES = ["term", "roll"]`, and the constructor re-derives
+   *      `this.term = roll.formula` whenever a roll is supplied — so the message's rebuilt term
+   *      string now CONTAINS the inner label, and `expression` re-appends the outer one.
+   * That is why `edhaRiderBonus`'s `(f)[name]` doubles while `edhaJoinRiderTerm`'s unparenthesised
+   * `base + 1d6[label]` never has (bench run 40 measured both in the same session). The parentheses
+   * are load-bearing and must stay in the FORMULA — the system's graze clone keeps only DiceTerm /
+   * OperatorTerm / PoolTerm (`filterTermsSafely`, the `@damage.dice` path), so a bare rider die
+   * would start riding grazes. So the repair belongs here, in the display layer: drop the inner
+   * copies of the label the parenthetical already carries, and drop the now-redundant parentheses
+   * only when what is left is a single atomic term. Pure; family-wide (every `edha-damage-rider`
+   * with a bonusFormula — Ambush Bite, Spearing Beak, Prognosis, Kindle, Momentum's Edge, …). */
+  for (let i = 0; i < 4; i++) {
+    const next = out.replace(/\(([^()]*)\)\[([^[\]]+)\]/g, (m, inner, label) => {
+      const tag = `[${label}]`;
+      if (!inner.includes(tag)) return m;                       // no duplication → leave it exactly as it was
+      const cleaned = inner.split(tag).join("").trim();
+      if (!cleaned) return m;
+      return /^[^+\-*/()[\],\s]+$/.test(cleaned) ? `${cleaned}${tag}` : `(${cleaned})${tag}`;
+    });
+    if (next === out) break;
+    out = next;
+  }
   let res = "", inFlavor = 0;
   for (const ch of out) {
     if (ch === "[") inFlavor++;
@@ -3492,8 +3521,29 @@ async function edhaRunPromptPick(item, h, event) {
   if (source === "creatures") {
     const cands = edhaPickCandidates(owner, h, anchor);
     if (!cands.length) {
-      if (h.emptyNote) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
-        content: `<p>${icon}<strong>${item.name}</strong>: ${edhaFillName(h.emptyNote, subjName)}</p>` });
+      /* R-84 (bench run 40, applied as the recommended default — vetoable): THE OFFER THAT CANNOT BE
+       * MADE. A rule fired from the talent's own `use` has already been charged its activation cost
+       * by the system, and this branch used to post its note and return — no refund, and no Decline
+       * button to ask for one, because there is no offer to decline. From the player's side that is
+       * indistinguishable from a declined offer, which R-17 DOES refund (measured on Unnerving
+       * Approach: Investiture 2 → 1, gone). Same gate, same one refund path.
+       *
+       * The card also stops being silent about the money. Note which line the non-refundable arm
+       * prints: R-84(b) proposed "the cost was spent", but with R-17's gate `refundable === false`
+       * means the offer was posted from a watch / success rule, where the system charged NOTHING
+       * (the rule's own `costs` land on the click, which never happens here) — so "spent" would be
+       * false. What is true, and what the player needs, is that their resources did not move.
+       *
+       * The refund goes through `edhaOfferDecline` with no message — R-17's ONE refund path, kept
+       * one (`edhaRefundCost` still has exactly one caller in this family); with `msg` null it
+       * resolves no card and only credits. */
+      const refundable = edhaOfferRefundable(item, event);
+      const money = refundable ? " <em>— cost refunded</em>"
+        : (edhaConsumeList(item).length ? " <em>— no cost was spent</em>" : "");
+      const note = edhaFillName(h.emptyNote, subjName) || "no valid creature in range — nothing to offer";
+      if (h.emptyNote || money) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+        content: `<p>${icon}<strong>${item.name}</strong>: ${note}${money}</p>` });
+      if (refundable) await edhaOfferDecline(null, item, null, { refund: true });
       return;
     }
     body = cands.map((t) => `<button type="button" class="edha-pick-btn" ${attrs(t.actor.uuid)}>${h.label || "Choose"} ${t.actor.name}</button>`).join(" ");
@@ -5462,14 +5512,38 @@ function edhaFindMarkGrant(actor) {
 
 /* --- Tool B: the Coordination post-roll watcher (Concordant Presence / Shared Conviction / Pillar) - */
 // Once-per-round gate, parallel to the focus economy's (keyed off a separate "coordRound" store).
+/* ⛑ THE DOTTED-FLAG-KEY CLASS, third instance — `coordRound` joins the ambush-belief and `trigRound`
+ * ledgers behind `edhaFlagKey` (fix pass 9, TODO 72; bench run 40's root-caused defect).
+ *
+ * `edhaPromptPickClick` marks its `once: "round"` budget with the TALENT'S UUID —
+ * `edhaCoordOPRMark(owner, item.uuid, "_pick")` — and Foundry expands dotted keys at every depth of
+ * an update payload (`ClientDatabaseBackend#_updateDocuments` runs `foundry.utils.expandObject` on
+ * every update, client/data/client-backend.mjs:208; that helper recurses into every plain object,
+ * common/utils/helpers.mjs:495). So the document stored `coordRound.Actor.<id>.Item.<id>._pick`
+ * while the reader looked up the FLAT key and got `undefined` — for ever. Measured live: three
+ * Unnerving Approach picks in round 4 with the round-4 mark present. Blast radius: every
+ * `edha-prompt-pick` rule carrying `once: "round"` (Black's Unnerving Approach and Puppeteer, plus
+ * Unnerving Approach's adversary twin). It hid because every other caller here passes a talent name
+ * or an item id, and nothing in `data/` carries a dot in a name or an id.
+ *
+ * Escaped at the LEDGER BOUNDARY, not the call site (the standing rule — ENGINE_INDEX "⛑ A DOTTED
+ * KEY IN A FLAG VALUE"), so any caller may pass any string. A no-op on every dot-free key already
+ * persisted, so no migration is needed for the eight other call sites. */
 function edhaCoordOPRAllowed(owner, name, key) {
   const round = edhaCombatRoundOf(owner); if (round == null) return true;   // R-4/#28a: the OWNER's combat
-  return owner.getFlag?.("edha-content", "coordRound")?.[name]?.[key] !== round;
+  const store = owner.getFlag?.("edha-content", "coordRound") ?? null;
+  if (!store) return true;
+  /* The escaped key is the only one written from here on. The `getProperty` fallback is a ONE-TIME
+   * tolerance for a document stamped BEFORE this fix: those marks are really stored at the expanded
+   * PATH, and reading them keeps a budget already spent this round spent across the F5. */
+  const bucket = store[edhaFlagKey(name)]
+    ?? (String(name ?? "").includes(".") ? foundry.utils.getProperty(store, String(name)) : null);
+  return bucket?.[edhaFlagKey(key)] !== round && bucket?.[key] !== round;
 }
 async function edhaCoordOPRMark(owner, name, key) {
   const round = edhaCombatRoundOf(owner); if (round == null) return;   // R-4/#28a: the OWNER's combat
   const m = foundry.utils.deepClone(owner.getFlag("edha-content", "coordRound") ?? {});
-  (m[name] ??= {})[key] = round;
+  (m[edhaFlagKey(name)] ??= {})[edhaFlagKey(key)] = round;
   try { await owner.setFlag("edha-content", "coordRound", m); } catch (e) {}
 }
 // The kept (active) d20 natural result — for Shared Conviction's "plausible failure" heuristic.
@@ -21317,7 +21391,15 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
         const mod = { source: item.name, count: Math.max(1, Number(this.count) || 1) };
         if (this.skill) mod.skill = this.skill;
         if (this.attr) mod.attr = this.attr;
-        if (this.expireEndOfRound) mod.round = edhaCombatRoundOf(owner);   // R-4/#28a: the GRANTER's combat (edhaNextTestMatches reads the BEARER's — same combat at the table)
+        /* R-85 (bench run 40, applied as the recommended default — vetoable). The stamp is the
+         * GRANTER's combat, because `edhaNextTestMatches` reads the BEARER's and at the table they
+         * are the same combat. But a granter who is NOT a combatant has no round, and a `null` stamp
+         * can NEVER expire (`edhaNextModExpired` requires `mod.round != null`) — so a "this round"
+         * rider granted from outside the tracker sat on the victim for ever. Reproduced both ways at
+         * bench run 40 with Pattern Recognition. Fall back to the BEARER's combat, so a "this round"
+         * rider always means the round the victim is living in; with both out of combat it is still
+         * null, which is the honest answer (there is no round to expire against). */
+        if (this.expireEndOfRound) mod.round = edhaCombatRoundOf(owner) ?? edhaCombatRoundOf(target);
         if (this.bindToTarget) {
           const bind = edhaUserTargetActor();
           if (bind && bind !== target) mod.targetUuid = bind.uuid;   // nothing targeted → unbound, not broken
