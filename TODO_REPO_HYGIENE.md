@@ -1487,7 +1487,20 @@ republished at its existing URL.
 
 ---
 
-## 44. [ ] `Ask:` lines on open rulings whose heading isn't a self-contained question
+## 44. [x] `Ask:` lines on open rulings whose heading isn't a self-contained question (2026-09-06, PR #PENDING)
+
+> **DONE 2026-09-06.** Item 43's parser had no `Ask:` fallback at all — the card's question was
+> the heading, full stop — so the format was settled HERE: an `Ask:` paragraph (one line, its own
+> paragraph directly under the heading paragraph, `(a)/(b)` named when the entry has them) now
+> wins over the heading in `parseOpenRulings()` (`scripts/build-dashboard.js`, `RULING_ASK_RE`);
+> the convention is written into the rulings doc's intro. Audit of the 8 open rulings (R-18, R-48,
+> R-80 … R-85): 4 got an `Ask:` line (R-48 — the heading names one block, the ask now covers the
+> run-19 family; R-81 — leaned on R-46; R-82 — leaned on R-14; R-83 — "three `hea` writers"
+> unnamed), 4 already had a self-contained question heading (R-18, R-80, R-84, R-85). Proof: the
+> regenerated dashboard index yields a `?`-terminated question on all 8; `tests/pm-state.test.js`
+> pins the fixture (`Ask:` wins, no `Ask:` → heading) and the real file (R-81's ask names (a)/(b),
+> every open ask ends in `?`); reverting the parser fails both. The tracked `docs/pm-state.json`
+> was NOT regenerated (openRulings rides in the dashboard index, not the board state).
 
 **Why:** Phase 2 of item 43's same 2026-09-06 note: some ruling headings in `EDHA_RULINGS.md`
 describe a symptom rather than posing a question a "Needs you" card can present standalone.
