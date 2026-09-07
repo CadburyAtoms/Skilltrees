@@ -434,7 +434,7 @@ it does; changing that is a ruling.
 
 ---
 
-## 13. [x] Migrate resourceWrite's remaining 12 sites onto the canonical resource writers (2026-09-06, PR #PRNUM)
+## 13. [x] Migrate resourceWrite's remaining 12 sites onto the canonical resource writers (2026-09-06, PR #194)
 
 **Why:** `scripts/engine-idiom-ratchet.json`'s `resourceWrite` key started at 17, is down to 12 —
 12 sites still write a `system.resources.<id>.value`/`.max` update path by hand instead of
@@ -2333,7 +2333,7 @@ for bench run 41; two vetoes outstanding in `EDHA_RULINGS.md`.
 
 ---
 
-## 73. [ ] Docs sweep — CLAUDE.md and ENGINE_INDEX still describe the pre-migration engine
+## 73. [x] Docs sweep — CLAUDE.md and ENGINE_INDEX still describe the pre-migration engine — DONE 2026-09-06, PR #252
 
 **Why:** the item-19a cold reader (2026-09-06, PR #249) answered every question from the new
 reference and then flagged that the repo's front door contradicts it, and item 4's worker found one
