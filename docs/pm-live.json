@@ -1,8 +1,8 @@
 {
   "pm": {
     "status": "awake",
-    "note": "Fable PM (Ben-started, 16:56 ET). PM-R14: caps lifted, Fable workers on the larger items. Twenty-five PRs merged tonight, the last being 63 (the edha-note downed dial), 64 (the build guard against retired rule types), 43 (the phone Needs-you view - this page), 69 (the runtime formula fold) and 55 (one senses rule for adversaries). 56 (the graze dial) merged 20:46 - twenty-six PRs tonight. 20:16: nine engine-only merges went LIVE by module-src-sync (F5 your Gamemaster client); the later engine merges (69, 55's engine half, 56's) go live with the next push after bench run 40 reports. Then ONE deploy-to-foundry.bat run (Foundry closed) for the REBUILD stack - 34a, 57, 58, 65+67, 59, 63, 55, 56 - and bench 41 drives their rows. Open rulings with defaults applied: R-18, R-48, R-80, R-81.",
-    "waitingOn": "R-18, R-48, R-80, R-81 (defaults apply if silent); keep Foundry open for bench run 40; one deploy-to-foundry.bat run when I push-notify",
+    "note": "Fable PM (Ben-started, 16:56 ET). PM-R14: caps lifted, Fable workers on the larger items. Twenty-nine PRs merged tonight; the latest is item 24 (the engine's handler registry is now two tables and one loop, snapshot-pinned; merged 21:24, 3.5M). Now running: bench run 40 (since 20:17), item 4 (the engine split into per-section sources, assembled byte-for-byte - PM-R15 keeps the deployed file tracked) and item 19a (the handoff reference rewrite; its first worker ended its turn waiting on its own subagents, so a fresh one started 21:26 from the mined reports). 20:16: nine engine-only merges went LIVE (F5 your Gamemaster client); 69, 55, 56, 68 and 24 ride the deploy. When bench 40 reports I will push-notify you ONCE for deploy-to-foundry.bat (Foundry closed) - it rebuilds the packs for 34a, 57, 58, 65+67, 59, 63, 55, 56 AND copies the engine - then bench 41 drives all of it. New ruling R-83 for you (three heal writers still bypass the No-Healing gate; default: gate them). Open rulings with defaults applied: R-18, R-48, R-80, R-81, R-82, PM-R15.",
+    "waitingOn": "R-83 (needs your answer - it moves HP); R-18, R-48, R-80, R-81, R-82, PM-R15 (defaults apply if silent); keep Foundry open for bench run 40; one deploy-to-foundry.bat run when I push-notify",
     "nextWakeAt": null,
     "session": "2026-09-06 16:56 ET — Fable PM (hand-started)"
   },
@@ -21,17 +21,30 @@
       "note": "worktree; engine pushed 20:16 (live = main #233); REBUILD rows stay blocked-on-deploy"
     },
     {
-      "item": "68",
-      "title": "Fix pass 8 — an edha-focus hea rule announces the UNGATED heal amount (bench 39's defect)",
-      "model": "opus",
-      "size": "S",
-      "lane": "B",
-      "branch": "pm/68-fix-pass-8",
-      "startedAt": "2026-09-07T00:15:00Z",
-      "agent": "Fix pass 8 (item 68)",
+      "item": "4",
+      "title": "Engine split — per-section sources under module-src/scripts/engine/, assembled byte-for-byte into the tracked register-skills.js (PM-R15), a --check gate",
+      "model": "fable",
+      "size": "L",
+      "lane": "R",
+      "branch": "pm/4-engine-split",
+      "startedAt": "2026-09-07T01:26:00Z",
+      "agent": "Work item 4",
       "phase": "working",
       "pr": null,
-      "note": "worktree; test-pass-fixes; ENGINE-ONLY"
+      "note": "worktree; fable-worker; TOOLING-only (deployed file unchanged)"
+    },
+    {
+      "item": "19a",
+      "title": "Handoff reference rewrite — §1–§10 true to today, ≤ 800 lines with a TOC (19b moves the deltas); second dispatch from the three mined delta reports",
+      "model": "fable",
+      "size": "L",
+      "lane": "R",
+      "branch": "pm/19a-handoff-reference",
+      "startedAt": "2026-09-07T01:26:00Z",
+      "agent": "Work item 19a (second dispatch)",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; fable-worker; DOCS-ONLY; first attempt 20:54–20:55 ended its turn waiting on its subagents (1.1M sunk)"
     }
   ],
   "usage": null
