@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-07T23:56:13.375Z",
+  "generatedAt": "2026-09-07T23:57:03.109Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "384787d077",
-    "commit": "4392ae0",
+    "hash": "8529f9c373",
+    "commit": "01ab379",
     "branch": "pm/board-2026-09-07l",
     "repo": "CadburyAtoms/Skilltrees"
   },
@@ -43,10 +43,10 @@
   },
   "pm": {
     "status": "stopped",
-    "note": "19:15 ET: PM loop STOPPED on Ben's word (hand off) so a fresh context takes the overnight shift. Nothing running, no PRs open, engine in sync, Foundry up. Next PM: the 21:00 ET scheduled task (MODEL GUARD) or one Ben starts by hand. At 00:00 ET Opus resets: items 70 and 80 (or 88), push live, bench 44. Waiting on Ben: R-56 (keep the Edha table = close 83, or cosmere ladder = run 83), and ONE deploy-to-foundry.bat tomorrow (leyline + adversaries) + both Syncs.",
+    "note": "19:56 ET: PM loop STOPPED on Ben's word (hand off) so a fresh context takes the overnight shift. Nothing running, no PRs open, engine in sync, Foundry up. Next PM: the 21:00 ET scheduled task (MODEL GUARD) or one Ben starts by hand. At 00:00 ET Opus resets: items 70 and 80 (or 88), push live, bench 44. Waiting on Ben: R-56 (keep the Edha table = close 83, or cosmere ladder = run 83), and ONE deploy-to-foundry.bat tomorrow (leyline + adversaries) + both Syncs.",
     "waitingOn": "R-56 clarification; one bat run tomorrow (leyline + adversaries packs) + Sync Talents + Sync Adversaries",
     "nextWakeAt": "2026-09-08T01:00:00Z",
-    "session": "2026-09-07 17:10 ET hand-started — STOPPED 19:15 (hand off)"
+    "session": "2026-09-07 17:10 ET hand-started — STOPPED 19:56 (hand off)"
   },
   "workers": [],
   "usage": null,
@@ -3986,13 +3986,13 @@
     },
     {
       "date": "2026-09-07",
-      "time": "19:15",
-      "at": "2026-09-07T23:15:00.000Z",
-      "item": "PM handoff — loop STOPPED on Ben's word (\"hand off\") so a fresh context takes the overnight shift. Two idle wakes (18:03, 19:05) found nothing: clean tree, no PRs, inbox empty, Foundry up, engine in sync. Nothing running, nothing queued that a session can take before 00:00 ET (Opus reset): then 70 → 80 (or 88), push live, bench 44; 81 / 62 the night after; 83 on R-56's go. Waiting on Ben: R-56 (phone tap = keep the Edha table vs. morning note = cosmere ladder), ONE bat run tomorrow (leyline + adversaries) + both ⟳ Syncs. Session total (17:10 → 19:15): 8 PRs merged (#287 → #295 less #289's number gap: items 92 / 91 / 93 / 95 / 94 + boards h / i / j / k), workers 23.4M weighted (all Sonnet), PM ≈ 5M; the artifact republished once. Next PM: edha-pm-weeknight at 21:00 ET (MODEL GUARD) or Ben by hand",
+      "time": "19:56",
+      "at": "2026-09-07T23:56:00.000Z",
+      "item": "PM handoff — loop STOPPED on Ben's word (\"hand off\") so a fresh context takes the overnight shift. Two idle wakes (18:03, 19:05) found nothing: clean tree, no PRs, inbox empty, Foundry up, engine in sync. Nothing running, nothing queued that a session can take before 00:00 ET (Opus reset): then 70 → 80 (or 88), push live, bench 44; 81 / 62 the night after; 83 on R-56's go. Waiting on Ben: R-56 (phone tap = keep the Edha table vs. morning note = cosmere ladder), ONE bat run tomorrow (leyline + adversaries) + both ⟳ Syncs. Session total (17:10 → 19:56): 8 PRs merged (#287 → #295 less #289's number gap: items 92 / 91 / 93 / 95 / 94 + boards h / i / j / k), workers 23.4M weighted (all Sonnet), PM ≈ 5M; the artifact republished once. Next PM: edha-pm-weeknight at 21:00 ET (MODEL GUARD) or Ben by hand",
       "itemNo": "287",
       "model": "fable",
       "isDispatch": false,
-      "duration": "2 h 05",
+      "duration": "2 h 46",
       "weighted": "≈ 5M (PM) + 23.4M workers",
       "weightedM": 5,
       "outcome": "the board, pm-live.json (status stopped) and the phone are the handoff; chat wins at any time",
