@@ -3543,6 +3543,18 @@ rows below test what shipped.
       Keelshadow/Breach and Drag. The 13 `edha-pre-deal-damage → edha-damage-rider` weapon rules are
       unaffected (four of them measured firing today). **Fix = one predicate swap** (`edhaRuleBearer`
       in `edhaRulesForEvent`); re-test this row's cue half after it ships. → test-pass-fixes.
+      ✅ **2026-09-07, item 84 — FIX SHIPPED (ENGINE-ONLY, F5 — no rebuild, no ⟳ Sync).**
+      `edhaRulesForEvent` now gates on `edhaRuleBearer`, so weapon-borne rules reach all four of its
+      dispatchers (on-hit, combat-timing, draw-mana, ritual-paid). Mutation-pinned in
+      `tests/engine-helpers.test.js` (reverting the predicate to `edhaIsTalent` fails two cases).
+      **BENCH RUN 43 — run the CUE HALF ONLY; the rider half above is retired on run 42's evidence.**
+      The take: F5 first (engine-only, so no rebuild is needed and a stale client is the only way this
+      can still fail), then have `B42 Surecat` hit `Bench Target — Adjacent A` with **The Pounce Already
+      Taken** and apply the damage — expect the whisper *"⏰ The Pounce Already Taken (B42 Surecat): If
+      the target took the Forewarned-declared action this round: add +1d4 keen … (hit Bench Target —
+      Adjacent A.)"* to Bench + Gamemaster, with NO `adversaryTalent` flag set on the weapon this time.
+      A second take on any one of the other five inert cues (Fellstag/Antler Sweep is the easiest solo)
+      confirms it is the predicate and not that one weapon. Retire the row when both post.
 
 ---
 
