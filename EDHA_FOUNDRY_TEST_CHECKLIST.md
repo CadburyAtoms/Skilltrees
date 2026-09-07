@@ -2833,6 +2833,15 @@ carry **Shortbow + Knife** (and the packed Shortbow reads `attack.type: "ranged"
         map-data, lane R) — Goldenport gains its coastal/island lobes, Corvaine's edge moves to the
         river bank; row re-tests once `source-materials/maps/thyrcross.map.json` is edited and
         `lint_map.py`'s four WARNs go to zero.
+        **✅ POLYGONS REDRAWN 2026-09-06, item 61, PR #256** (`thyrcross.map.json` + regenerated
+        `thyrcross-nations.json`; `lint_map.py` city WARNs 4 → 0; every other ring byte-identical).
+        Goldenport's ring now carries the west-coast strip and the two city islands (joined by
+        narrow land corridors); the Thalendor/Corvaine seam sits on the Palewater's west bank at the
+        ferry. **Bench run 41 reads, on the creation wizard's map picker (needs the asset live —
+        `module-src-sync.js status` first):** hover ~[480,1120] and ~[407,1324] (the strip north of
+        the old edge) and the islands ~[746,676] / ~[595,916] → tooltip **Goldenport**; hover
+        ~[1244,1552] (east bank at the ferry) → **Corvaine**, ~[1236,1554] (west bank) →
+        **Thalendor**; a click on each drives the dropdown to that nation; Sylvaneth still clickable.
 - [ ] ❌ **DEFECT (measured by the 2026-07-27v checklist audit, never benched): five map-picker DEAD
       SPOTS / mis-hits, and four of them are holes in the partition** — `module-src/assets/
       thyrcross-nations.json` is byte-identical to `thyrcross.map.json`'s polygons and to the deployed
@@ -2850,6 +2859,9 @@ carry **Shortbow + Knife** (and the packed Shortbow reads `attack.type: "ranged"
       are edits to `source-materials/maps/thyrcross.map.json` (+ regenerated
       `thyrcross-nations.json`); `lint_map.py`'s four WARNs must go to zero. Nothing here needs a
       Foundry table until the map-data item ships.
+      ✅ **SHIPPED 2026-09-06, item 61, PR #256** — all five dots resolve to their tagged nation
+      (city-04/11/14/17 → goldenport, city-31 → corvaine; the 30 controls unchanged), lint WARNs
+      4 → 0. Live verification is the 🤖 row above (bench run 41).
 
 ### Fix pass 7b re-tests (item 48, 2026-09-06 — ENGINE-ONLY, F5; no rebuild, no ⟳ Sync)
 
