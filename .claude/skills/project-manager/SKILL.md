@@ -136,8 +136,9 @@ completion re-invokes you; use `ScheduleWakeup` only as a long fallback (1800s+)
    merged.
 4. Proof: the item's demanded proof is in the PR body with numbers (parity hash before/after,
    the mutation that failed, the snapshot diff). "Should be identical" is not a proof.
-5. Docs: TODO item checked `[x]` with the PR; a dated delta at the top of the handoff (the
-   changelog, once item 19 lands) stating the deploy class; `ENGINE_INDEX.md` for any new
+5. Docs: TODO item checked `[x]` with the PR; a dated delta at the top of the current month's
+   changelog file, `docs/handoff-changelog/2026-MM.md` (item 19b; never in the handoff reference)
+   stating the deploy class; `ENGINE_INDEX.md` for any new
    primitive; checklist rows for lane B carry **🤖**, never **⚑**; dashboard rebuilt if any of its
    sources changed.
 6. Commit hygiene: themed commits, deploy class in the message, **no model identifiers** in commit

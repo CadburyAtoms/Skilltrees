@@ -28,7 +28,7 @@ running (if `http://localhost:30000` doesn't answer, stop and ask).
    their **tokens on the Playtest Map scene** fall under this new licence, never the actor
    documents themselves. (**R-8**, `EDHA_RULINGS.md`) Bench setups keep rosters to the actors
    under test — do not widen a roster beyond what the run's checklist section needs.
-5. **DEPLOY STATE is Ben's** — your findings go in the handoff delta, never there.
+5. **DEPLOY STATE is Ben's** — your findings go in the handoff delta (top of the current month's `docs/handoff-changelog/2026-MM.md`), never there.
 6. **Snapshot ids, flags AND EFFECTS before creating anything, and delete only what the
    snapshot proves you created.** A run that snapshotted ids and flags but not effects swept
    four pre-existing statuses off Ben's campaign adversaries and could only restore two — the

@@ -233,7 +233,7 @@ into this section — it's the one part of the sheet Ben can show the table.
    guide (`paint_overlay.py`). If canon or gazetteer changed, regenerate the codex
    (`node scripts/build-canon-codex.js`) — CI fails on a stale one.
 2. `EDHA_CAMPAIGN_STATE.md`: session marked *planned*, with its ⚑ list.
-3. Dated delta at the top of `EDHA_FOUNDRY_HANDOFF.md` (check the id — 07-13 minted three).
+3. Dated delta at the top of the current month's `docs/handoff-changelog/2026-MM.md` (check the id — 07-13 minted three).
 4. Gates (CLAUDE.md rule 4) **including `python scripts/map/lint_map.py`** — it exists to catch
    exactly the doc-vs-gazetteer drift this workflow produces.
 5. The ⚑ batch to Ben: names, tone calls, anything you couldn't verify — one menu, recommended

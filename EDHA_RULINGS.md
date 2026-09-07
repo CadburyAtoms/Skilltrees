@@ -1342,7 +1342,7 @@ at a busy table is chatty. If you want it quieter the fix is a field on the rule
 dial), not an engine gate — iron rule 2b. *(Bench run 34.)*
 > **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) leave it ungated, and document
 > it.** DOCS-ONLY: the H26 family (Shared Conviction, Pillar of Order, Voice of Authority) is added
-> to 28a's "deliberately NOT gated" list in `EDHA_FOUNDRY_HANDOFF.md` and `ENGINE_INDEX.md`; no
+> to 28a's "deliberately NOT gated" list in `docs/handoff-changelog/2026-09.md` (item 28a's delta) and `ENGINE_INDEX.md`; no
 > engine change.
 
 ---
@@ -1379,7 +1379,7 @@ board (item 12 / PR #197): the region-trap behaviours execute on the walking pla
 when no GM is online, rather than staying silent for lack of a GM to arbitrate them.
 > **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) KEEP** — the three `RegionBehavior`
 > bodies keep springing on the walking player's own client when no GM is connected. DOCS-ONLY:
-> recorded in `EDHA_FOUNDRY_HANDOFF.md` item 28a's deliberately-ungated list and in
+> recorded in `docs/handoff-changelog/2026-09.md` (item 28a's delta) deliberately-ungated list and in
 > `ENGINE_INDEX.md`'s "the gate is TWO helpers" note as Ben's ruling.
 
 ---

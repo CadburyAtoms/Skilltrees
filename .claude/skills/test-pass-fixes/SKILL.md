@@ -243,7 +243,9 @@ compresses, and a positive control returns zero hits too; read the pack back wit
 
 The pass isn't done when the code is: the docs ARE the knowledge transfer to the next session.
 
-1. **Dated delta at the TOP of `EDHA_FOUNDRY_HANDOFF.md`**, matching the established format:
+1. **Dated delta at the TOP of the current month's changelog file, `docs/handoff-changelog/2026-MM.md`**
+   (under its marker line — never in `EDHA_FOUNDRY_HANDOFF.md`, the reference alone since item 19b),
+   matching the established format:
    ```
    ## <YYYY-MM-DD> DELTA — <TREE> test-pass fixes (<headline items>; ENGINE-only → F5 | ENGINE + data → pack rebuild deferred (`foundry-build <atlas>`) + ⟳ Sync)
    ### Rulings (Ben, <date> — [batched decisions taken / defaults applied])

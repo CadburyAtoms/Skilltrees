@@ -91,8 +91,9 @@ is a stop-and-report, not a thing to fix.
 
 - Check your item `[x]` in `TODO_REPO_HYGIENE.md` with the date and the PR number (you know the
   number after `gh pr create`; amend the commit).
-- A dated delta at the **top** of `EDHA_FOUNDRY_HANDOFF.md` (or `docs/handoff-changelog/` once
-  item 19 has landed): `## 2026-MM-DD — <what changed> (<DOCS-ONLY | TOOLING-only | ENGINE-ONLY, F5 | REBUILD + ⟳ Sync>)`,
+- A dated delta at the **top** of the current month's changelog file,
+  `docs/handoff-changelog/2026-MM.md`, under its marker line (never in `EDHA_FOUNDRY_HANDOFF.md`,
+  the reference alone since item 19b): `## 2026-MM-DD — <what changed> (<DOCS-ONLY | TOOLING-only | ENGINE-ONLY, F5 | REBUILD + ⟳ Sync>)`,
   five to fifteen lines, what and why, what was proven, what is 🤖 for the bench.
 - New engine primitive → a row in `ENGINE_INDEX.md`.
 - Lane B → rows in `EDHA_FOUNDRY_TEST_CHECKLIST.md` marked **🤖** (an agent can drive them).

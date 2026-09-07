@@ -3,7 +3,8 @@
 Seven real diagnoses from this repo's history, each written as: the report → the tempting narrow
 fix → what was actually wrong → the transferable lesson. The tempting fix column is the point:
 every one of them would have "worked" in the moment and been wrong. Sources: the 07-05 Black
-test-pass delta, the 06-13b retrofit, and the 07-04 backlog pass in `EDHA_FOUNDRY_HANDOFF.md`.
+test-pass delta, the 06-13b retrofit, and the 07-04 backlog pass in `docs/handoff-changelog/2026-07.md`
+and `2026-06.md` (the deltas moved out of the handoff in item 19b).
 
 ---
 

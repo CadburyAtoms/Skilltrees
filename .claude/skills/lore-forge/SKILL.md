@@ -369,7 +369,7 @@ the ripple is the norm, not the exception. `grep -rn` the key terms and read eac
    merged main; supersession stated explicitly).
 2. **Mark the W-item done** in `TODO_WORLDBUILDING.md` (`[x]`), or leave it `[ ]` with a note if
    it's still gated on a ruling.
-3. Dated delta at the **top** of `EDHA_FOUNDRY_HANDOFF.md` (check the id — 07-13 minted several);
+3. Dated delta at the **top** of the current month's `docs/handoff-changelog/2026-MM.md` (check the id — 07-13 minted several);
    say **docs-only, no rebuild** (lore work never touches the engine or packs).
 4. If any place/geography was named or moved: gazetteer entry FIRST (with `painted: false` —
    Ben's Procreate map doesn't have it yet), then docs, then `python3 scripts/map/lint_map.py`
