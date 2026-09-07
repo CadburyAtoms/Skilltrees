@@ -182,9 +182,34 @@ function edhaRiderParts(item, actor) {
     return [];
   }
 }
+/* R-71's runtime die-math fold, extended to the RIDER half (fix pass 10, TODO 78). Item 69 folds the
+ * BASE formula in `edhaWrapRollDamage` below, so a scaled talent's own damage prints `2d8` and not
+ * `(2)d(2 * 3 + 2)`; the rider joined onto it was still handed over raw, so bench run 41 read
+ * Prognosis as `2d8 + 2 + ((2)d(2 * 3 + 2))[Prognosis]` — the base folded, the rider not, on the
+ * same bar. Same defect, same fix, one function apart.
+ * SAFETY, and why this substitutes twice: the rider is resolved here against the ROLLER's data,
+ * whereas the system resolves it a moment later against `getDamageRollData` — which is
+ * `{...actor.getRollData(), mod, skill, attribute, source}`. Those four extra keys are the only
+ * divergence, so the substitution is only safe when nothing needs them. `Roll.replaceFormulaData`
+ * with NO `missing` leaves an unresolved `@ref` in the string (client/dice/roll.mjs), so an
+ * `@mod`/`@skill`/`@attribute` rider is DETECTED and handed on raw, exactly as before — the fold
+ * only ever touches a formula that fully resolved here. Every current `edha-damage-rider`
+ * bonusFormula references `@tier` / `@skills.*` / a literal only. PURE, pinned in tests/. */
+function edhaFoldRiderFormula(formula, rollData) {
+  try {
+    if (!rollData) return String(formula);
+    const sub = Roll.replaceFormulaData(String(formula), rollData);
+    return sub.includes("@") ? String(formula) : edhaFoldDieMath(sub);
+  } catch (e) { return String(formula); }
+}
 function edhaRiderBonus(item, actor) {
   const parts = edhaRiderParts(item, actor);
-  return parts.length ? parts.map(p => `(${p.formula})[${p.name}]`).join(" + ") : null;   // flavor-labeled terms
+  if (!parts.length) return null;
+  // NOTE the fold is HERE and not in edhaRiderParts: the OTHER consumer of the parts (the burst
+  // executor in the GM relay) evaluates each one NUMERICALLY against its own roll data, so it wants
+  // the raw formula. Only the string that reaches a chat formula bar is folded.
+  const rollData = actor?.getRollData?.();
+  return parts.map(p => `(${edhaFoldRiderFormula(p.formula, rollData)})[${p.name}]`).join(" + ");   // flavor-labeled terms
 }
 
 // The wrapper logic, shared by the libWrapper and manual-patch paths. (Deal-damage TRIGGERS are
