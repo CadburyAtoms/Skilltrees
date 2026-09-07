@@ -952,9 +952,9 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
         const item = event.item, owner = item?.actor; if (!owner) return;
         const otok = edhaCasterToken(owner); if (!otok) return;
         const ft = edhaAttuneFtColor(owner, this.rangeColor || "white");
-        const disp = otok.document?.disposition ?? 1;
+        const disp = otok.document?.disposition;   // item 10 batch 2 (R-63): an unresolvable side is omitted from the beacon list
         let allies = edhaTokensInCircle(otok.center.x, otok.center.y, ft, otok.id)
-          .filter(t => (t.document?.disposition ?? 1) === disp && t.actor);
+          .filter(t => t.actor && edhaSideSame(t.document?.disposition, disp));
         if (this.visibleOnly) allies = allies.filter(t => !t.document?.hidden && edhaCanSee(otok, t));
         edhaPostBeaconCard(owner, item.name, allies, edhaParseCosts(this.costs), this.prompt || "");
       } catch (e) { console.error("Edha Content | edha-cleanse executor failed", e); }
