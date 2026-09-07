@@ -227,7 +227,7 @@ function edhaListPlaceNotes(owner, key) {
   const out = [];
   try {
     for (const item of (owner?.items ?? [])) {
-      if (!edhaIsTalent(item)) continue;
+      if (!edhaRuleBearer(item)) continue;   // talents + weapons — item 86, matching item 84/34a's loops
       for (const r of edhaEventRules(item)) {
         const h = r?.handler;
         if (!h?.placeNote || String(h.list || "").trim() !== key) continue;
