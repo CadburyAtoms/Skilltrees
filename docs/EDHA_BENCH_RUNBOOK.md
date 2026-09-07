@@ -1567,6 +1567,81 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   matched control has proven the root cause, **write the residual symptom down as PARTIAL and move on**
   — the second defect can be run 34's first row.
 
+## Operating lessons from run 41 (2026-09-06 — these OVERRIDE older advice where they conflict)
+
+- ⭐⭐ **Two `use()`-driving lines and one `benchClickScene` cover almost every talent — write them
+  ONCE at the top of the run and you get 3 calls per row instead of 9.** Run 41 drove 30+ distinct
+  talents across 11 actors on the same three helpers: `void item.use()` → wait ~2.3 s →
+  `document.querySelector('dialog.application.dialog button[data-action="continue"]')?.click()` →
+  wait ~2 s → `benchDlg().find(x => /roll-configuration/.test(x.className))?.querySelector('button[data-action="submit"]')?.click()`.
+  The **roll-configuration dialog's Roll button is `[data-action="submit"]`** in a
+  `dialog.application.dialog.roll-configuration` (v13); the consume dialog's is
+  `[data-action="continue"]`. A `utility` talent with a cost shows only the first; a `skill_test`
+  shows both, in that order. Add a `benchCard(n)` that maps the last N messages to
+  `{id, whisper names, message flags, stripped text, button labels+disabled}` — nearly every row's
+  evidence is one call of that.
+- ⭐⭐ **Read the card's own `.dice-formula` NODE, never `msg.rolls[0].formula`, whenever a row is
+  about what the formula BAR says.** The two disagree by design: the engine's display tidy runs in
+  `renderChatMessageHTML` and rewrites the DOM, while the Roll object keeps whatever Foundry
+  serialised. Run 41's Ambush Bite FAIL is exactly this gap — and its *inverse* (an engine-rolled
+  bare-roll message where the DOM is tidied and the Roll object is not) was the discriminator that
+  root-caused it. **And when a card's DOM looks wrong, sample the same `root` again 1.5 s later**:
+  the cosmere damage card re-renders its damage section ASYNCHRONOUSLY, after the hook, on a root
+  that was `isConnected === false` at hook time. A probe hook that logs at fire time *and* on a
+  `setTimeout` is six lines and it turns "the fix didn't work" into "the fix runs before the string
+  it repairs exists".
+- ⭐ **`item.rollDamage({})` is the SYSTEM's own damage path and needs no dialog** — one call, one
+  message, no clicking. It is the right verb for every "what does the system's own card print" row
+  (item 69 / R-71), and it goes through `edhaWrapRollDamage`, so riders and folds all apply.
+- ⚠️ **A watch that "does nothing" may be refusing your VICTIM's actor type.** The `defeat` watch is
+  gated on `victim.type !== "character"` (Ben R2), and the bench TARGET dummies —
+  Adjacent A/B, Floater, Isolated — are **`character`**-typed. Killing one harvests nothing and reads
+  exactly like a dead watch. Only `Bench Target — Undefended` is `adversary`-typed; otherwise import
+  one fresh from the pack. Check `actor.type` before blaming the rule. (Same family as R-4's
+  out-of-combat gate: check the *preconditions on the payload*, not just the rule.)
+- ⚠️ **An UNLINKED token's actor is not the base actor.** A pack-imported adversary's placed token is
+  unlinked, so `baseActor.system.resources.hea.value` still read 1 while the token's actor was at 0.
+  Stage and assert through `scene.tokens.get(id).actor`, always — reading the base actor made one
+  take look like the damage had not landed.
+- ⚠️ **`combat.nextRound()` leaves `turn` at `null` in this system, and `nextTurn()` from there does
+  not fix it.** Set the turn explicitly with `combat.update({ turn: <index> })` — that fires
+  `updateCombat` and the turn-start watchers just as well. Also: `Combat.create` + `startCombat()`
+  gives every combatant the same initiative here, so read `combat.turns` for the real order rather
+  than assuming your insertion order.
+- ⚠️ **A deleted embedded document can leave a GHOST that survives a reload and whose `delete()`
+  throws `"… does not exist!"`.** Bastion's drawing did exactly that (present in `scene.toObject()`,
+  refused by the server). The escape hatch is to replace the whole collection:
+  `scene.update({ drawings: [] }, { recursive: false })` — instant, and it is what finally made run
+  41's world diff empty.
+- ⚠️ **`refreshDefBuffs()` will TIDY a pre-existing aura effect you did not create.** Four bench PCs
+  carried `Guardian Stance (+1 Deflect)` at run start; moving the aura's owner away and refreshing
+  removed the one on a **token-less** actor for good (an aura cannot reach an actor with no token).
+  Restore it by cloning the identical effect off an actor that still has it — the snapshot's effect
+  NAMES are enough to notice the loss but not to rebuild it (run 40's limit, hit again).
+- ✅ **A "wrong reference name" in a row is common enough to check FIRST, and it is cheap.** Run 41
+  found three: the `edha-pulse` group-heal row named *Mending Aura* (which is an `edha-burst`; the
+  only shipped `edha-pulse` heal is **White Leyline Attunement**), the gated-test row asked for
+  Cascade Collapse's "FAIL rule" (it has none — two `edha-test-success` payloads and nothing else),
+  and R-84's NEG named Puppeteer for a branch only `source: "creatures"` can reach. One
+  `Object.values(item.system.events).map(r => ({ev: r.event, h: r.handler.type}))` per named talent,
+  before staging anything, catches all three in one call.
+- ✅ **When a row's NEG is unrunnable with shipped data, CLONE the shipped talent and edit the
+  handler's fields** (run 39's lesson, used twice here and both times decisive): a Puppeteer clone
+  with `source` flipped to `creatures` and `rangeFt: 5` reached R-84's non-refundable arm, and a
+  Field Medicine clone with its gating `edha-def-test` dropped and the heal moved onto `use` with a
+  flat `formula: "5"` drove all of item 68. Label the take as staged, and delete the clone.
+- ✅ **Lower a dummy's DEFENSE instead of re-rolling a gate you need to pass.** Three failed
+  Spreading Omen casts became one success by writing `system.defenses.cog.override = 5` on the
+  bench dummy (snapshot the whole `defenses.<key>` block first — it is four fields, and
+  `useOverride` is the one that matters). Restore it in the same pass.
+- **Density, measured: 25 checklist rows retired on evidence — open 🤖 rows 77 → 52, total open
+  101 → 76 — 16 of them the whole item-24 registry section; 1 root-caused FAIL filed with its
+  mechanism, 1 row narrowed to its blocked half, 3
+  wrong reference names corrected, 0 new rulings — in ~95 driving calls. The end-of-run per-actor
+  diff was EMPTY across all 74 actors, and every count (tokens / scenes / combats / regions / walls
+  / drawings / templates / macros / journals) matched the start snapshot.** The fix-pass re-test
+  block was again the densest thing available, for the fourteenth run running.
+
 ## Operating lessons from run 40 (2026-09-06 — these OVERRIDE older advice where they conflict)
 
 - ⭐⭐ **You can synthesise a canvas click, and it is worth ten minutes of setup.** Every
