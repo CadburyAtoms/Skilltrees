@@ -516,6 +516,30 @@ never in the sweep in the first place, so driving them with the corrected probe 
 which is what ① measured — plus `tests/disposition-failclosed.test.js`, which pins the pure form. No
 site fired on the probe.)*
 
+## Item 10 batch 2 — the last five disposition reads fail closed (2026-09-06, ENGINE-ONLY, F5; PR #263)
+
+> Every row below is the R-63 convention on a READ: an unresolvable side is OMITTED from a list or
+> card. ⚠️ Bench run 38 measured that a placed token cannot carry a non-finite disposition on this
+> build (Foundry coerces `null` to −1 at create AND update) and that `edhaActorSide` always resolves a
+> real actor through its prototype — so expect these to land BLOCKED-with-blocker or retire on that
+> reasoning, exactly as run 38's (a)/(b)/(c) did. The headless pins in
+> `tests/disposition-failclosed.test.js` are the proof that holds without a table.
+
+- [ ] 🤖 **I10b2-1 — H6 offer card (`edhaPickCandidates`)**: with an `edha-prompt-pick` rule at
+  `disposition: ally` (Anticipate) and a probe token whose disposition will not resolve inside the
+  range, the offer card lists the real allies and NOT the probe; the same rule at `any` still offers
+  the probe. (Was: the probe read FRIENDLY and was offered as an ally.)
+- [ ] 🤖 **I10b2-2 — sweep empty-note (`edhaSweepEmptyNote`)**: PlotGrant with no ally in range and
+  the probe as the NEAREST token — the note names the nearest REAL same-side token and its count,
+  never the probe. If the OWNER's own token side does not resolve, the note reads *"…'s token has no
+  disposition set — allies and targets cannot be told apart, so nothing is in range."*
+- [ ] 🤖 **I10b2-3 — movement-window card (Ordered Advance)**: arm the window, move next to a real
+  ally and the probe — the card lists the ally only. A sideless mover's card ends *"…of where it
+  stopped (its token has no disposition set, so allies could not be told apart)."*
+- [ ] 🤖 **I10b2-4 — Edict `<select>` + Beacon card**: `edhaPickProhibition`'s "Attack a chosen
+  ally" list omits the probe (a sideless owner sees `(no allied tokens)`); Beacon of Purity's cleanse
+  card lists conditions on real allies only, never the probe's.
+
 ## Migration machinery (cross-tree behaviour)
 
 > **✅ Bench run 9 (2026-07-27i) retired seven Engine-wide rows on evidence** — **2bB-8** (neither
@@ -2841,6 +2865,15 @@ carry **Shortbow + Knife** (and the packed Shortbow reads `attack.type: "ranged"
         map-data, lane R) — Goldenport gains its coastal/island lobes, Corvaine's edge moves to the
         river bank; row re-tests once `source-materials/maps/thyrcross.map.json` is edited and
         `lint_map.py`'s four WARNs go to zero.
+        **✅ POLYGONS REDRAWN 2026-09-06, item 61, PR #256** (`thyrcross.map.json` + regenerated
+        `thyrcross-nations.json`; `lint_map.py` city WARNs 4 → 0; every other ring byte-identical).
+        Goldenport's ring now carries the west-coast strip and the two city islands (joined by
+        narrow land corridors); the Thalendor/Corvaine seam sits on the Palewater's west bank at the
+        ferry. **Bench run 41 reads, on the creation wizard's map picker (needs the asset live —
+        `module-src-sync.js status` first):** hover ~[480,1120] and ~[407,1324] (the strip north of
+        the old edge) and the islands ~[746,676] / ~[595,916] → tooltip **Goldenport**; hover
+        ~[1244,1552] (east bank at the ferry) → **Corvaine**, ~[1236,1554] (west bank) →
+        **Thalendor**; a click on each drives the dropdown to that nation; Sylvaneth still clickable.
 - [ ] ❌ **DEFECT (measured by the 2026-07-27v checklist audit, never benched): five map-picker DEAD
       SPOTS / mis-hits, and four of them are holes in the partition** — `module-src/assets/
       thyrcross-nations.json` is byte-identical to `thyrcross.map.json`'s polygons and to the deployed
@@ -2858,6 +2891,9 @@ carry **Shortbow + Knife** (and the packed Shortbow reads `attack.type: "ranged"
       are edits to `source-materials/maps/thyrcross.map.json` (+ regenerated
       `thyrcross-nations.json`); `lint_map.py`'s four WARNs must go to zero. Nothing here needs a
       Foundry table until the map-data item ships.
+      ✅ **SHIPPED 2026-09-06, item 61, PR #256** — all five dots resolve to their tagged nation
+      (city-04/11/14/17 → goldenport, city-31 → corvaine; the 30 controls unchanged), lint WARNs
+      4 → 0. Live verification is the 🤖 row above (bench run 41).
 
 ### Fix pass 7b re-tests (item 48, 2026-09-06 — ENGINE-ONLY, F5; no rebuild, no ⟳ Sync)
 

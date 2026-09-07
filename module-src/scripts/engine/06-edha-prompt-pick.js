@@ -51,12 +51,15 @@ function edhaPickAccepts(h, c) {
     if (Number.isFinite(hp) && hp <= 0) return false;
   }
   const disp = String(h.disposition || "any");
-  if (disp === "enemy" && c.disposition === c.ownerDisposition) return false;
-  if (disp === "ally" && c.disposition !== c.ownerDisposition) return false;
+  // R-63 / item 10 batch 2: a side that did not resolve matches NEITHER ally nor enemy, so it is
+  // OMITTED from a filtered offer (it still qualifies under "any"). `!edhaSideSame` is NOT
+  // `edhaSideHostile` — each branch names the predicate it means.
+  if (disp === "enemy" && !edhaSideHostile(c.disposition, c.ownerDisposition)) return false;
+  if (disp === "ally" && !edhaSideSame(c.disposition, c.ownerDisposition)) return false;
   // Measured against the ANCHOR instead of you: Unnerving Approach pushes an ally OF YOUR TARGET,
   // which "ally" (relative to you) gets exactly backwards.
-  if (disp === "anchor-ally" && c.disposition !== c.anchorDisposition) return false;
-  if (disp === "anchor-enemy" && c.disposition === c.anchorDisposition) return false;
+  if (disp === "anchor-ally" && !edhaSideSame(c.disposition, c.anchorDisposition)) return false;
+  if (disp === "anchor-enemy" && !edhaSideHostile(c.disposition, c.anchorDisposition)) return false;
   const want = String(h.requireStatus || "").split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
   if (want.length && !want.some((s) => (c.statuses || []).includes(s))) return false;
   return true;
@@ -258,7 +261,10 @@ function edhaPickCandidates(owner, h, anchor) {
   const ft = h.rangeColor ? edhaAttuneFtColor(owner, h.rangeColor) : (Number(h.rangeFt) || 0);
   if (!ft) return [];
   const otok = edhaCasterToken(owner);
-  const ownerDisp = otok?.document?.disposition ?? 1, anchorDisp = atok.document?.disposition ?? 1;
+  // Raw sides, no default (item 10 batch 2): edhaPickAccepts fails CLOSED on an unresolvable one.
+  // The owner's side comes from edhaActorSide (live token, else the prototype) because the owner
+  // may have no token on the scene; the anchor's token is in hand, so its document is read directly.
+  const ownerDisp = edhaActorSide(owner), anchorDisp = atok.document?.disposition;
   const list = edhaTokensWithin(atok, ft).filter((t) => t.actor);   // edhaTokensWithin already drops the anchor
   // The owner is a candidate for its own network (Anticipate grants advantage to "you or an ally"),
   // and edhaTokensWithin cannot supply it when the owner IS the anchor — so add it back explicitly.
@@ -267,7 +273,7 @@ function edhaPickCandidates(owner, h, anchor) {
   for (const t of list) {
     if (h.includeSelf === false && t.actor === owner) continue;
     if (!edhaPickAccepts(h, {
-      disposition: t.document?.disposition ?? 1, anchorDisposition: anchorDisp, ownerDisposition: ownerDisp,
+      disposition: t.document?.disposition, anchorDisposition: anchorDisp, ownerDisposition: ownerDisp,
       hp: t.actor.system?.resources?.hea?.value, statuses: [...(t.actor.statuses ?? [])],
     })) continue;
     out.push(t);

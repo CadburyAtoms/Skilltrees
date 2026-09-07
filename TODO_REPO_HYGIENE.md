@@ -293,7 +293,7 @@ why one file legitimately keeps a copy).
 
 ---
 
-## 10. [ ] Migrate the disposition-default fail-open backlog onto the failed-closed helpers
+## 10. [x] Migrate the disposition-default fail-open backlog onto the failed-closed helpers — DONE 2026-09-06, batch 1 PR #200, batch 2 PR #263
 
 **Why:** pass 5.2 (R-63, `fcb6865`) fixed the disposition-default fail-open idiom
 (`disposition ?? 1` / `?? 0` — an unresolvable side silently reading as "everyone matches") in
@@ -342,6 +342,21 @@ stands between each of these and any effect, which is the line batch 1 was drawn
 classified "legitimately defaulted"** — the two payload-bake sites that looked like the "caster's own
 token" exemption are exactly the shape `ENGINE_INDEX.md` says to replace with `edhaActorSide`, so
 they migrated. Batch 2 can therefore still reach **0**.
+
+**BATCH 2 DONE (PR #263, 2026-09-06): the 11 migrated, `counts.dispoFailOpen` 11 → 0 — a TOMBSTONE
+now, like `rollFold` / `gmWhisper`.** Per site: `edhaPickCandidates` hands RAW sides to
+`edhaPickAccepts` (`edhaActorSide` for the owner, the anchor's token document read directly), and the
+four side branches of `edhaPickAccepts` now call `edhaSideSame` / `edhaSideHostile` — an unresolvable
+side is offered under neither `ally` nor `enemy` (nor the anchor pair) but still under `any`;
+`edhaSweepEmptyNote` counts candidates with the same pair, never names an unresolvable token as the
+nearest, and tells an owner whose own side did not resolve so; the movement-window card lists allies by
+`edhaSideSame` and says why when the mover has no side; `edhaPickProhibition`'s `<select>` uses
+`edhaActorSide` + `edhaSideSame`; the `edha-cleanse` beacon list uses `edhaSideSame`. Six headless pins
+(one per family plus the hostile-owner polarity) in `tests/disposition-failclosed.test.js`; reverting
+three families to `?? 1` fails the pins AND lint pass 20. Corollary re-checked across the engine: no
+migrated site reads `!edhaSideSame` as "enemy" — but **`47-power.js` (`edha-aura`-style `affects`
+sweep, ~L419) still does** (`want === "enemies" && same` → continue, so an unresolvable side passes the
+enemies filter); it goes through `edhaSameDisposition`, was outside the 11, and is reported, not fixed.
 
 ---
 
@@ -1487,7 +1502,20 @@ republished at its existing URL.
 
 ---
 
-## 44. [ ] `Ask:` lines on open rulings whose heading isn't a self-contained question
+## 44. [x] `Ask:` lines on open rulings whose heading isn't a self-contained question (2026-09-06, PR #258)
+
+> **DONE 2026-09-06.** Item 43's parser had no `Ask:` fallback at all — the card's question was
+> the heading, full stop — so the format was settled HERE: an `Ask:` paragraph (one line, its own
+> paragraph directly under the heading paragraph, `(a)/(b)` named when the entry has them) now
+> wins over the heading in `parseOpenRulings()` (`scripts/build-dashboard.js`, `RULING_ASK_RE`);
+> the convention is written into the rulings doc's intro. Audit of the 8 open rulings (R-18, R-48,
+> R-80 … R-85): 4 got an `Ask:` line (R-48 — the heading names one block, the ask now covers the
+> run-19 family; R-81 — leaned on R-46; R-82 — leaned on R-14; R-83 — "three `hea` writers"
+> unnamed), 4 already had a self-contained question heading (R-18, R-80, R-84, R-85). Proof: the
+> regenerated dashboard index yields a `?`-terminated question on all 8; `tests/pm-state.test.js`
+> pins the fixture (`Ask:` wins, no `Ask:` → heading) and the real file (R-81's ask names (a)/(b),
+> every open ask ends in `?`); reverting the parser fails both. The tracked `docs/pm-state.json`
+> was NOT regenerated (openRulings rides in the dashboard index, not the board state).
 
 **Why:** Phase 2 of item 43's same 2026-09-06 note: some ruling headings in `EDHA_RULINGS.md`
 describe a symptom rather than posing a question a "Needs you" card can present standalone.
@@ -1963,7 +1991,7 @@ makes the gate fail; no engine change.
 
 ---
 
-## 61. [ ] Fix Goldenport / Corvaine map polygons so four cities resolve to the right nation (R-42)
+## 61. [x] Fix Goldenport / Corvaine map polygons so four cities resolve to the right nation (R-42) — done 2026-09-06, PR #256 (DATA + MODULE ASSET: sync push / deploy .bat, no pack rebuild; bench run 41 re-tests the picker row)
 
 **Why:** `lint_map.py` reports four WARNs: city-04/11/14/17 fall outside Goldenport's polygon, and
 city-31 doesn't resolve to Corvaine even though ruling 154 says the border there IS the river.
@@ -2254,7 +2282,7 @@ the family count. ENGINE-ONLY (F5). Found by fix pass 8.
 
 ---
 
-## 71. [ ] Registry leftovers from item 24 — a README row, an executor-less handler, six unused types, a stale console line, a loosened test slice
+## 71. [x] Registry leftovers from item 24 — a README row, an executor-less handler, six unused types, a stale console line, a loosened test slice (2026-09-06, PR #257)
 
 **Why:** item 24 (PR #244, 2026-09-06) turned the 102 `api.register*Type` calls into two tables
 and, in passing, found five small things it was told not to fix:
@@ -2358,3 +2386,119 @@ contradicts; the three counts match their commands; `node scripts/gates.js` gree
 
 **PM:** lane R · model sonnet · size S · deps #19 (both halves) · verify: the commands beside the
 numbers + a grep for "200 talents" / "45 numbered" / "19.7k" returning nothing. Found by items 19a and 4.
+
+---
+
+## 74. [x] `foundry-build.js items` (single scope) crashes on a temporal-dead-zone `let` — DONE 2026-09-06, PR #260 (TOOLING-only; `adversaries` alone was broken the same way and is fixed by the same hoist)
+
+**Why:** item 71's worker (2026-09-06, PR #257) ran a scratch build one scope at a time and found
+`node scripts/foundry-build.js items` dies with `ReferenceError: Cannot access 'REGISTERED_HANDLER_TYPES'
+before initialization` at `scripts/foundry-build.js:950` — the `let` at ~948 sits BELOW the items
+writer's call at ~848, so the single-scope path reads it before it exists. `all` (the deploy `.bat`
+and the `--ci` gate) runs the scopes in an order that initialises it first, so CI never sees it;
+a single-scope rebuild (the documented way to rebuild one pack) is broken. Pre-existing since item
+64 introduced the guard.
+
+**What to do:** hoist the declaration above every writer (or compute it once at module load);
+pin a headless case that runs the items writer alone (or `--dry-run items`) and shows the crash
+under reversion; check every other scope alone (`leyline`, `deity`, `heroic`, `adversaries`).
+
+**Done when:** every single scope builds into a scratch `EDHA_MODROOT`; the pin fails under
+reversion; `node scripts/gates.js` green. TOOLING-only.
+
+**PM:** lane R · model fable-worker · size S · deps none · verify: five single-scope scratch
+builds + the pin. Found by item 71.
+
+---
+
+## 75. [x] Nine registered handler rows still ship NO executor — give each the same no-op — DONE 2026-09-06 (ENGINE-ONLY, F5; PR #261)
+
+**Why:** item 71 (PR #257) gave `edha-illusion-upkeep` an explicit no-op executor and changed the
+registry pin from "a function or absent" to a NAMED set, `EXECUTOR_LESS_CONFIG_ONLY` in
+`tests/handler-registry.test.js` — which is how it found eight more: `edha-zone-hazard`,
+`edha-zone-guard`, `edha-snare-react`, `edha-damage-bonus`, `edha-counter-transfer`,
+`edha-die-step-react`, `edha-unseen-ward`, `edha-suppress-veil`, `edha-heal-react`. All are
+config-only riders read by engine sweeps (`edhaActorRuleOf` / `edhaWatchersOfRule`), never
+dispatched — but a rule a user places on an event the system DOES dispatch (`use`,
+`add-to-actor`, …) would throw in `Handler.execute`.
+
+**What to do:** the same no-op executor with the same comment shape ("config-only — read by
+<sweep>") on each of the nine, in `module-src/scripts/engine/53-native-event-system.js` (edit the
+source, `node scripts/engine-assemble.js`, commit both); shrink `EXECUTOR_LESS_CONFIG_ONLY` to
+empty (the pin then forbids any new executor-less row); the registry snapshot must not move
+(it records no executors); state the reader for each in `ENGINE_INDEX.md`.
+
+**Done when:** `EXECUTOR_LESS_CONFIG_ONLY` is empty and the pin is "every handler has a function";
+snapshot unchanged; gates green. ENGINE-ONLY (F5).
+
+**PM:** lane R · model fable-worker · size S · deps #71 ✓ · verify: the pin + an unchanged
+snapshot. Found by item 71.
+
+**DONE 2026-09-06:** all nine rows carry `executor: async function () {}` with a comment naming
+their reader(s) (every row has one — none was dead; the list is in `ENGINE_INDEX.md` →
+"Executor-less rows"); `EXECUTOR_LESS_CONFIG_ONLY` is `new Set([])` and the pin reads "every
+handler has a function executor"; mutation (drop edha-heal-react's no-op) → 983 passed, 1 failed
+naming the row; `handler-registry.snapshot.json` unchanged (empty diff); 984 → 984 tests.
+
+---
+
+## 76. [x] The phone card's DEFAULT is empty for bold-inline defaults, and R-80 / R-81 say "(§I)" but live in §C (2026-09-06, PR #262)
+
+> **DONE 2026-09-06.** Root cause of the empty default: `RULING_DEFAULT_RE`'s `[^*]+` capture
+> stopped at the first `*` of the inner `**(a) …**`, and because that WAS a match the "no default
+> stated" fallback never fired — every bold-inline default rendered as `""`. The capture now reads
+> through inner `**…**` pairs and strips the markers. `applied` was decided by SECTION alone, so an
+> entry marked **APPLIED** in §C (R-48, R-80, R-81, R-84, R-85 — §I holds only a stub for each,
+> which `RULING_STUB_RE` skips) rendered as a plain default-ask card; a bold upper-case `APPLIED`
+> span in the body now marks the entry applied wherever it lives (`RULING_APPLIED_MARK_RE`; the
+> rulings doc's own intro already says "anything marked **APPLIED** is already live … needs a
+> veto"). R-80 / R-81 got the bold mark, "(stub in §I)" wording, and one-line §I stubs in the R-84 /
+> R-85 shape. Proof: all 8 open rulings carry a non-empty default; R-48 / R-80 / R-81 / R-84 / R-85
+> `applied: true`, R-18 / R-82 / R-83 `false`; `tests/pm-state.test.js` pins both forms on a
+> fixture and the real file — the old regex fails with `R-80: default is empty … ""`, dropping the
+> mark check fails `R-80 carries a bold APPLIED note in §C`. `docs/pm-state.json` untouched
+> (openRulings rides in the dashboard index, not the board state).
+
+**Why:** item 44's worker (2026-09-06, PR #258) found `RULING_DEFAULT_RE` in
+`scripts/build-dashboard.js` yields an EMPTY default whenever the ruling writes its default as
+`*Recommended default: **(a) …**` (the bold-inline form R-80 … R-85 all use), so their "Needs
+you" cards show no default and the "no default stated" fallback never fires. Separately, the
+R-80 and R-81 entries (added by the PM 2026-09-06) say "(§I)" in their text but sit in §C, so the
+page renders them as ordinary default-ask cards (`applied: false`) rather than "applied — veto?"
+cards; §I itself lists them only as stubs.
+
+**What to do:** one regex fix (read through the inner `**…**`), pinned on the bold-inline form
+and the plain form; then either move R-80 / R-81's applied notes into §I proper (the way R-84 /
+R-85 carry both a §C entry and a §I stub) or drop the "(§I)" from their text — read how
+`parseOpenRulings` decides `applied` before choosing.
+
+**Done when:** every open ruling's card carries a non-empty default (state the eight); R-80 /
+R-81 render as applied-veto cards; `node scripts/build-dashboard.js --check` green. TOOLING +
+DOCS-ONLY.
+
+**PM:** lane R · model fable-worker · size S · deps #44 · verify: the pins + the eight defaults
+quoted from `pm-state.js --dashboard-dir`. Found by item 44.
+
+---
+
+## 77. [ ] Power's ally/enemy filter reads `!edhaSameDisposition` as "enemy" — the batch-1 corollary at a site outside the ratchet
+
+**Why:** item 10 batch 2 (2026-09-06, PR #263) closed the `dispoFailOpen` ratchet at 0 and, on
+the audit, found one more site the ratchet never counted because it goes through the ACTOR-level
+helper: `module-src/scripts/engine/47-power.js` ~L419–420 —
+`const same = edhaSameDisposition(owner, tok); … if (want === "enemies" && same) continue;` —
+reads `!same` as "enemy", so a token whose side did not resolve passes the `enemies` filter.
+That is exactly the corollary batch 1 named (`!edhaSideSame` is NOT `edhaSideHostile`), at a site
+that gates who a Power talent reaches.
+
+**What to do:** name the predicate the branch means (`edhaDisposHostile` for `enemies`,
+`edhaSameDisposition` for `allies`); grep every `edhaSameDisposition(` / `edhaDisposHostile(`
+call whose result is negated and check each the same way; pin the Power site headless (an
+unset-disposition token is omitted from `enemies`, shown included under reversion); 🤖 row.
+Edit the source, `node scripts/engine-assemble.js`, commit both.
+
+**Done when:** no negated actor-level side read stands for the opposite predicate; the pin fails
+under reversion; gates green. ENGINE-ONLY (F5).
+
+**PM:** lane B · model fable-worker · size S · deps #10 ✓ · verify: the pin + the grep table.
+Found by item 10 batch 2.

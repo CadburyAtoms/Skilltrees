@@ -56,12 +56,21 @@ test("registry snapshot: byte-for-byte equal to the fixture", () => {
   assert.strictEqual(JSON.stringify(shape, null, 2) + "\n", fs.readFileSync(SNAPSHOT, "utf8"));
 });
 
-test("registry: every handler's executor is a function (or absent — a config-only rule) and every event has a hook string", () => {
+// Config-only rows that ship no executor. EMPTY since item 75 (2026-09-06): edha-illusion-upkeep
+// left on item 71, and the eight riders it exposed (edha-zone-hazard, edha-zone-guard,
+// edha-snare-react, edha-damage-bonus, edha-counter-transfer, edha-die-step-react,
+// edha-unseen-ward, edha-suppress-veil, edha-heal-react) each carry the same explicit no-op now,
+// so a rule the system DOES dispatch executes to nothing instead of throwing in Handler.execute.
+// The set stays here so the failure message can name it: nothing may join — a config-only row
+// gets the no-op executor (read by an engine sweep, doing nothing itself), never an absent one.
+const EXECUTOR_LESS_CONFIG_ONLY = new Set([]);
+
+test("registry: every handler has a function executor (no executor-less rows since item 75) and every event has a hook string", () => {
   assert.ok(registry, "the registry did not load");
-  // edha-illusion-upkeep ships no executor at all (a config-only rule the engine reads elsewhere);
-  // that is pre-existing and out of item 24's scope — the pin is "a function or nothing", never a
-  // non-function value.
-  for (const d of registry.handlers) assert.ok(d.executor === undefined || typeof d.executor === "function", `${d.type}: executor is ${typeof d.executor}`);
+  for (const d of registry.handlers) {
+    if (EXECUTOR_LESS_CONFIG_ONLY.has(d.type)) { assert.strictEqual(d.executor, undefined, `${d.type}: now has an executor — drop it from EXECUTOR_LESS_CONFIG_ONLY`); continue; }
+    assert.strictEqual(typeof d.executor, "function", `${d.type}: executor is ${typeof d.executor} (a row the system can throw on — give it a no-op, or name it in EXECUTOR_LESS_CONFIG_ONLY with the reason)`);
+  }
   for (const d of registry.events) assert.strictEqual(typeof d.hook, "string", `${d.type} has no hook`);
   for (const d of [...registry.events, ...registry.handlers]) assert.strictEqual(d.source, "edha-content", `${d.type} source is ${d.source}`);
 });

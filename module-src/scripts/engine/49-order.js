@@ -254,8 +254,10 @@ async function edhaOrderRefreshBoundIcon(target) {
  * the V1 body stays as the fallback. ------------------------------------------------------------- */
 const EDHA_ORDER_PROH_LABEL = { move: "move from its space", invest: "activate Investiture" };
 function edhaPickProhibition(owner, title) {
-  const otok = edhaCasterToken(owner); const disp = otok?.document?.disposition ?? 1;
-  const allies = (canvas?.tokens?.placeables ?? []).filter(t => t.actor && t.actor !== owner && (t.document?.disposition ?? 1) === disp);
+  // Item 10 batch 2 (R-63): the owner's side via edhaActorSide (the owner may have no token on the
+  // scene); a token whose side did not resolve is left out of the <select> rather than offered as an ally.
+  const disp = edhaActorSide(owner);
+  const allies = (canvas?.tokens?.placeables ?? []).filter(t => t.actor && t.actor !== owner && edhaSideSame(t.document?.disposition, disp));
   const opts = allies.map(t => `<option value="${t.actor.uuid}">${t.name}</option>`).join("");
   const content = `
         <p><label><input type="radio" name="edhaProhKind" value="move" checked> Move from its space</label></p>
