@@ -516,7 +516,7 @@ agent to TEST, so it was in the wrong file. Original measurement: bench run 25.)
 > Packs **REBUILD** (Ben's deploy); TOOLING + DATA → **item 59**; pin with a build-report diff
 > showing only formula strings changed; bench visual check = Verdict's system card reads `2d8 + 5`
 > like its engine-rolled card.
-> **SHIPPED** in PR #<ITEM-59-PR> (REBUILD, bench-pending) — `scripts/lib/fold-die-math.js`
+> **SHIPPED** in PR #234 (REBUILD, bench-pending) — `scripts/lib/fold-die-math.js`
 > (`foldDieMath`) wired into `foundry-build.js`, pinned against the engine's own `edhaFoldDieMath` in
 > `tests/fold-die-math.test.js`. ⚠️ **Load-bearing limit found while shipping it, worth reading before
 > the bench row above surprises anyone:** the fold can only resolve a `damage.formula` whose computed
