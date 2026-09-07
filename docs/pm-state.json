@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-07T01:49:53.435Z",
+  "generatedAt": "2026-09-07T02:12:49.492Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "13af401a91",
-    "commit": "7c05609",
-    "branch": "pm/board-2026-09-06j",
+    "hash": "0e2c3e86b8",
+    "commit": "4b5a861",
+    "branch": "pm/board-2026-09-06k",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -43,7 +43,7 @@
   },
   "pm": {
     "status": "awake",
-    "note": "Fable PM (Ben-started, 16:56 ET). PM-R14: caps lifted, Fable workers on the larger items. Thirty-two PRs merged tonight - the latest: item 24 (handler registry as tables, 21:24), item 4 (the engine split into 55 sources, 21:38), bench run 40 (29 rows retired, one root-caused defect, 21:41) and item 19a (the handoff reference rewritten true-to-today, 679 lines, 21:47). Running: fix pass 9 (bench 40's defects) and item 19b (moving the ~110 dated deltas into docs/handoff-changelog/, lifting the reference to the top). 21:33: you were push-notified ONCE for deploy-to-foundry.bat (Foundry closed) - it rebuilds the packs for 34a, 57, 58, 65+67, 59, 63, 55, 56 AND copies the engine (69, 68, 24, and fix pass 9 once merged); bench 41 drives all of it afterwards. R-48 answered from your phone at 21:14 (the card is canon; item 57 had already shipped it). R-83 still needs your answer (item 70). Defaults applied, vetoable: R-18, R-80, R-81, R-82, R-84, R-85, PM-R15.",
+    "note": "Fable PM (Ben-started, 16:56 ET). PM-R14: caps lifted, Fable workers on the larger items. Thirty-three PRs merged tonight - the latest: item 24 (handler registry as tables, 21:24), item 4 (the engine split into 55 sources, 21:38), bench run 40 (29 rows retired, one root-caused defect, 21:41), item 19a (the handoff reference rewritten, 21:47) and item 19b (all 142 dated deltas moved verbatim into docs/handoff-changelog/, the handoff is now the 691-line reference alone, 22:00). Running: fix pass 9 (bench 40's defects) and item 73 (a docs sweep of CLAUDE.md / ENGINE_INDEX lines the cold reader found stale). 21:33: you were push-notified ONCE for deploy-to-foundry.bat (Foundry closed) - it rebuilds the packs for 34a, 57, 58, 65+67, 59, 63, 55, 56 AND copies the engine (69, 68, 24, and fix pass 9 once merged); bench 41 drives all of it afterwards. R-48 answered from your phone at 21:14 (the card is canon; item 57 had already shipped it). R-83 still needs your answer (item 70). Defaults applied, vetoable: R-18, R-80, R-81, R-82, R-84, R-85, PM-R15.",
     "waitingOn": "ONE deploy-to-foundry.bat run (Foundry closed), then relaunch and tell me; R-83 (needs your answer - it moves HP); R-18, R-80, R-81, R-82, R-84, R-85, PM-R15 (defaults apply if silent)",
     "nextWakeAt": null,
     "session": "2026-09-06 16:56 ET — Fable PM (hand-started)"
@@ -63,17 +63,17 @@
       "note": "worktree; test-pass-fixes; ENGINE-ONLY (F5); ports into the split sources (item 4 landed 21:38)"
     },
     {
-      "item": "19b",
-      "title": "Handoff changelog — move the ~110 dated deltas verbatim into docs/handoff-changelog/2026-MM.md by a re-runnable split script, fold HANDOFF_ARCHIVE.md in, lift the reference to the top, re-point iron rule 5 and every skill",
+      "item": "73",
+      "title": "Docs sweep — CLAUDE.md and ENGINE_INDEX lines that still describe the pre-migration engine (the name-keyed backlog as live, 45 rulings, 19.7k lines, 52 banners)",
       "model": "fable",
-      "size": "L",
+      "size": "S",
       "lane": "R",
-      "branch": "pm/19b-handoff-changelog",
-      "startedAt": "2026-09-07T01:48:00Z",
-      "agent": "Work item 19b",
+      "branch": "pm/73-docs-sweep",
+      "startedAt": "2026-09-07T02:01:00Z",
+      "agent": "Work item 73",
       "phase": "working",
       "pr": null,
-      "note": "worktree; fable-worker; DOCS-ONLY; re-runs its split when fix pass 9's delta lands"
+      "note": "worktree; fable-worker; DOCS-ONLY; first delta under the new changelog rule"
     }
   ],
   "usage": null,
@@ -297,14 +297,14 @@
     {
       "pos": 18,
       "item": "19b",
-      "title": "Handoff changelog move — the ~110 dated deltas verbatim into docs/handoff-changelog/2026-MM.md (newest first inside each month) by a re-runnable scripts/handoff-split.js, HANDOFF_ARCHIVE.md folded into the folder, the reference lifted to be the whole of EDHA_FOUNDRY_HANDOFF.md, iron rule 5 + CLAUDE.md map + every skill that says \"delta at the TOP of the handoff\" re-pointed, build-dashboard.js checked (Engine tab 40 → 40). Proof: hash of the removed delta text = hash of the month files' bodies; heading counts; git log -S for three titles. Dispatched 21:48 as a fable-worker (PM-R14), worktree, the minute #249 merged",
+      "title": "Handoff changelog move — the ~110 dated deltas verbatim into docs/handoff-changelog/2026-MM.md (newest first inside each month) by a re-runnable scripts/handoff-split.js, HANDOFF_ARCHIVE.md folded into the folder, the reference lifted to be the whole of EDHA_FOUNDRY_HANDOFF.md, iron rule 5 + CLAUDE.md map + every skill that says \"delta at the TOP of the handoff\" re-pointed, build-dashboard.js checked (Engine tab 40 → 40). Proof: hash of the removed delta text = hash of the month files' bodies; heading counts; git log -S for three titles. Dispatched 21:48 as a fable-worker (PM-R14), worktree, the minute #249 merged. Merged 22:00 after review — all 142 deltas moved verbatim (18 / 42 / 1 / 81 by month; sha256 of the removed text = sha256 of the month bodies, 8ae508b8…, re-counted by the PM: 142 on main, 143 in the month files with the 19b delta), HANDOFF_ARCHIVE.md → docs/handoff-changelog/ARCHIVE-header-wall.md, the handoff is the 691-line reference alone, iron rule 5 + the CLAUDE.md map + nine skills + the runbook + audit.py re-pointed, Engine tab 40 → 40. \"Done when\" caveat recorded: git log --follow cannot reach a delta's original commit; git log -S\"<title>\" -- EDHA_FOUNDRY_HANDOFF.md does (proven for three months). 1.5M / 86 turns / 12 min. PM duty: run node scripts/handoff-split.js + build-dashboard.js once fix pass 9 merges (its delta lands on the old rule)",
       "lane": "R",
       "model": "fable-worker",
       "size": "L",
       "deps": "19a ✓",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 251
     },
     {
       "pos": 19,
@@ -813,12 +813,12 @@
     {
       "pos": 64,
       "item": "71",
-      "title": "Registry leftovers from item 24 — a scripts/README.md row for fold-die-math.js, the executor-less edha-illusion-upkeep, six handler types with no authored user, the registration console line that still lists aoe-template, the loosened note-target-gate test slice; one-line dispositions into ENGINE_INDEX.md, no deletion without a ruling",
+      "title": "Registry leftovers from item 24 — a scripts/README.md row for fold-die-math.js, the executor-less edha-illusion-upkeep, six handler types with no authored user, the registration console line that still lists aoe-template, the loosened note-target-gate test slice; one-line dispositions into ENGINE_INDEX.md, no deletion without a ruling. Dispatched 22:11 as a fable-worker, worktree (edits the sources + re-assembles; told to resolve any conflict with fix pass 9 in the sources and re-run the assembler)",
       "lane": "R",
-      "model": "sonnet",
+      "model": "fable-worker",
       "size": "S",
       "deps": "#24 ✓",
-      "status": "queued",
+      "status": "running",
       "statusDetail": null,
       "pr": null
     },
@@ -837,14 +837,14 @@
     {
       "pos": 66,
       "item": "73",
-      "title": "Docs sweep — CLAUDE.md still calls the name-keyed backlog live (\"200 talents' worth\", the 07-24 ratchet counts), its map rows say \"45 numbered rulings\" (85) and \"~19.7k-line engine\" (21,792 / 55 sources); ENGINE_INDEX lists a pre-migration dispatch idiom and \"52 banners\" (54). One DOCS-ONLY PR, every number with the command that produced it",
+      "title": "Docs sweep — CLAUDE.md still calls the name-keyed backlog live (\"200 talents' worth\", the 07-24 ratchet counts), its map rows say \"45 numbered rulings\" (85) and \"~19.7k-line engine\" (21,792 / 55 sources); ENGINE_INDEX lists a pre-migration dispatch idiom and \"52 banners\" (54). One DOCS-ONLY PR, every number with the command that produced it. Dispatched 22:01 as a fable-worker (cheaper than Sonnet by measurement), worktree. Merged 22:10 after review — seven sentences retired or rewritten, every number beside its command (rulings 82 → the PM then gave R-80–R-83 their entries, so 86; engine 21,792 lines / 55 sources / 54 banners; talent-migration marked HISTORICAL); one review correction: its [x] fill had globally replaced item 13's #PRNUM placeholder with #252 — set to the real #194. 0.7M / 48 turns / 6 min. Found: CLAUDE.md \"Current phase\" and talent-migration/SKILL.md still read as a live migration; work-item §0.4 says \"19k-line\"",
       "lane": "R",
-      "model": "sonnet",
+      "model": "fable-worker",
       "size": "S",
-      "deps": "19a ✓, 19b",
-      "status": "queued",
+      "deps": "19a ✓, 19b ✓",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 252
     },
     {
       "pos": 61,
@@ -2996,6 +2996,76 @@
       "weighted": null,
       "weightedM": null,
       "outcome": "dispatched the minute 19a merged; proof = hash of the removed delta text vs the month files' bodies, heading counts, git log -S for three titles; told to re-run its split when fix pass 9's delta lands",
+      "pr": null
+    },
+    {
+      "date": "2026-09-06",
+      "time": "21:48",
+      "at": "2026-09-07T01:48:00.000Z",
+      "item": "Item 19b (handoff changelog move) — work-item via fable-worker, worktree",
+      "itemNo": null,
+      "model": "fable (medium)",
+      "isDispatch": false,
+      "duration": "12 min, 86 turns",
+      "weighted": "1.5M",
+      "weightedM": 1.5,
+      "outcome": "merged 22:00 after review (gh mergedAt 02:00:38Z), no trailers, no bounce; hash-verified verbatim move by a kept idempotent script, counts re-checked by the PM, reference text byte-identical but for its pointer paragraph, local gates re-run green. Item 19 is closed (both halves). The handoff is 691 lines; docs/handoff-changelog/ holds the deltas",
+      "pr": 251
+    },
+    {
+      "date": "2026-09-06",
+      "time": "22:01",
+      "at": "2026-09-07T02:01:00.000Z",
+      "item": "Item 73 (docs sweep — CLAUDE.md + ENGINE_INDEX still describe the pre-migration engine) — work-item via fable-worker, worktree",
+      "itemNo": null,
+      "model": "fable (medium)",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "dispatched the minute 19b merged; the board said sonnet, but a measured Fable S costs 1–2M against Sonnet's 5–14M for the same size (run log, this evening), so PM-R14's \"Fable on the larger items\" is read as \"Fable where it is cheaper\" — noted here, not a new ruling. The first delta written under the new rule (top of docs/handoff-changelog/2026-09.md)",
+      "pr": null
+    },
+    {
+      "date": "2026-09-06",
+      "time": "22:01",
+      "at": "2026-09-07T02:01:00.000Z",
+      "item": "Item 73 (docs sweep) — work-item via fable-worker, worktree",
+      "itemNo": null,
+      "model": "fable (medium)",
+      "isDispatch": false,
+      "duration": "6 min, 48 turns",
+      "weighted": "0.7M",
+      "weightedM": 0.7,
+      "outcome": "merged 22:10 after review (gh mergedAt 02:10:27Z), no trailers; one PM correction on the branch (item 13's placeholder → its real PR #194 — the worker's [x] fill had replaced every #PRNUM, the same trap item 4's worker hit and undid); CI re-run on the corrected head. The cheapest item of the night",
+      "pr": 252
+    },
+    {
+      "date": "2026-09-06",
+      "time": "22:11",
+      "at": "2026-09-07T02:11:00.000Z",
+      "item": "PM bookkeeping: R-80, R-81, R-82, R-83 get their numbered entries in EDHA_RULINGS.md (they lived only in this board's table since the workers raised them; item 73's count found the gap) — inserted before R-84 so the numbering has no holes (86 entries, R-1 … R-85); CLAUDE.md's rulings row bumped to match",
+      "itemNo": null,
+      "model": "fable",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "rides on the next board PR",
+      "pr": null
+    },
+    {
+      "date": "2026-09-06",
+      "time": "22:11",
+      "at": "2026-09-07T02:11:00.000Z",
+      "item": "Item 71 (registry leftovers from item 24: README row, the executor-less edha-illusion-upkeep, six handler types with no authored user, the stale console line, the loosened test slice) — work-item via fable-worker, worktree",
+      "itemNo": null,
+      "model": "fable (medium)",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "dispatched while fix pass 9 is still on the engine sources; told to resolve in the sources and re-assemble. Deleting a type needs a ruling — the worker files candidates, never deletes",
       "pr": null
     },
     {

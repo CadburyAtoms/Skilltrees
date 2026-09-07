@@ -394,6 +394,22 @@ spend. *(Board table; raised by item 28b.)*
 
 ---
 
+**R-80. Both an advantage AND a disadvantage next-test entry on one victim — do they cancel, or does disadvantage win?** With the next-test slot a LIST since item 49 (PR #221, 2026-09-06), a victim can carry both an advantage entry and a disadvantage entry for the same test — impossible under the old single slot. Item 49 folds them by boolean-OR per direction and, when both are present, writes NOTHING: the roll stays exactly as the player configured it (the standard table rule that they cancel; it never stomps a manual dialog choice). *Recommended default: **(a) they cancel** — APPLIED in #221 (§I).* (b) disadvantage wins — one line in `edhaNextModFoldMode`, pinned, so a veto is a one-line diff. *(Board table 2026-09-06; raised by item 49.)*
+
+---
+
+**R-81. Three more `bySize` charge distances whose cards print the rank-3 number — the R-46 treatment on all of them?** R-46 / R-48 fixed two charge distances by replacing `bySize` with an explicit `distanceFt`. Item 57's worker found the same shape on three more run-19 blocks — the Brandram's Shockwave Slam (`bySize: true` beside a dead `distanceFt: 5`) and Reckless Advance, and the Tussock-Sow's terrain square — all `bySize` at rank 2 while their cards print rank-3 numbers. *Recommended default: **(a) yes, the R-46 treatment on all three** (explicit `distanceFt` = the card's own number, stated on the card) — APPLIED by item 67 (PR #232; REBUILD owed to the next deploy; §I).* (b) fix the three cards to the rank-2 numbers instead. Ben's R-48 answer of 2026-09-06 ("a statted block should not scale") rests on the same principle. *(Board table 2026-09-06; raised by item 57.)*
+
+---
+
+**R-82. Should R-14's "follow the card" graze rule reach the generic `edha-damage-bonus` rules too?** R-14 (c) now governs the Life mutation riders (Bone Spurs, Venom Glands, Apex Form) through per-rule graze dials (item 56, PR #242). Item 56's worker found that the generic `edha-damage-bonus` rules with `meleeOnly` (Warlord's Advance and kin — the armed-strike bonuses) ALSO fire on a graze application today. *Recommended default: **(a) yes** — the same per-rule `onGraze` dial on `edha-damage-bonus`, each card audited (the `graze` value is already available at that call site); a small S item once Ben nods. NOT applied yet.* (b) leave them — a bonus "on your attacks" reads as any application. *(Board table 2026-09-06; raised by item 56.)*
+
+---
+
+**R-83. Three `hea` writers bypass the heal-cut gate — gate them at their emitters?** `ENGINE_INDEX.md` says every `hea` write outside `applyDamage` must pass `edhaHealCutGate`, and three do NOT: `edha-regen`'s turn-end write, the decay lifesteal heal-back, and `edhaBurstDetonate`'s heal hits. Their cards are honest (fix pass 8 / item 68, PR #241, fixed the announcing), but the HP still lands on a withered creature — Mending Aura keeps healing a target that "cannot regain HP". Gating them changes live HP at the table; `edhaApplyBurstResults` must STAY ungated (Raise Dead's stabilising 1 HP rides it, R-10), so the gate belongs in each emitter. *Recommended default: **(a) gate all three at the emitter** (the mark's card is the promise), the family test's gate-call count raised from 2 with a declaration, one 🤖 row per writer → TODO item 70. **WAITING for Ben — not applied, because it moves HP.*** (b) leave them ungated and say so in `ENGINE_INDEX.md`. *(Board table 2026-09-06; raised by fix pass 8.)*
+
+---
+
 **R-84. An offer that CANNOT be made still charges its Investiture — refund that too?** Measured at
 bench run 40 (2026-09-06) while driving item 51's R-17 rows. **Unnerving Approach** used against a
 target with no living ally within 10 ft posts its `emptyNote` card — *"no living ally of your target
