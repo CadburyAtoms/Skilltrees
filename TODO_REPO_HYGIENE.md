@@ -1991,7 +1991,7 @@ field; packs rebuild clean; 2bM-6 is 🤖 with the three cases.
 
 ---
 
-## 64. [ ] `foundry-build.js` still mints `edha-aoe-template` rules — a type the engine retired (R-78)
+## 64. [x] `foundry-build.js` still mints `edha-aoe-template` rules — a type the engine retired (R-78) — DONE 2026-09-06, PR #238 (TOOLING-only; packs content-hash identical)
 
 **Why:** item 48 (PR #217, 2026-09-06) retired the `edha-aoe-template` handler on Ben's R-78 (a) —
 zero consumers in shipped data. But `scripts/foundry-build.js`'s `aoeRule()` still GENERATES an
