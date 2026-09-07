@@ -57,6 +57,7 @@ const NAME_ALLOWLIST = new Set([
   "Edha Summons",  // the engine's own summon folder name (edhaEnsureSummonFolder)
   "Food (ration, 1 day)",  // edha-items GEAR name (the kit grant's rations lookup) — not a talent
   "Edha PCs",      // the creation wizard's actor-sidebar FOLDER name (edhaCreatorNewCharacter)
+  "Loot Caches",   // the loot-cache actor FOLDER name (edhaCreateLootCache, item 34b) — not a talent
 ]);
 
 const engine = fs.readFileSync(ENGINE_PATH, "utf8");

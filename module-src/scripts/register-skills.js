@@ -10391,6 +10391,107 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
  *   edhaAddInjury.
  * ============================================================================================ */
 
+/* --- Loot: cache tokens + defeated-adversary search (item 34b, 2026-09-06; design from PR #103,
+ * Ben-approved 2026-07-18 / 2026-09-05) --------------------------------------------------------
+ * Ben: "I can paint a chest on the battlemap — how do we make it accessible by the players?"
+ * A loot CACHE is a world adversary-type actor flagged `edha-content.lootCache` — the GM mints one
+ * with `edha.createLootCache("name")`, stocks it by dragging items onto its sheet (fully
+ * Foundry-editable), and places its LINKED chest token over the painted chest. A player
+ * DOUBLE-CLICKS the cache token — or a DEFEATED adversary's token (HP ≤ 0 or the Dead status =
+ * searching the body) — with one of their own tokens within EDHA_LOOT_REACH_FT and gets a whispered
+ * contents card. Each Take button relays through the `loot-take` socket action (EDHA_SOCKET_ACTIONS):
+ * the primary GM client is the SINGLE WRITER, and `edhaLootClaim` (a synchronous test-and-set,
+ * taken BEFORE the first await) is the double-loot guard — two players clicking the same blade
+ * yield exactly one winner even when the two relays interleave on the GM's event loop. The winner's
+ * take deletes the item from the source and creates it on the taker, then posts a public card.
+ * Adversary ownership NEVER opens up (the cache is `ownership.default: 0`, bodies keep theirs; the
+ * intercept returns before Foundry's sheet render). Natural weapons (`alwaysEquipped`, item 34a)
+ * are not lootable from a body; traits/actions/talents are never loot. Generic: no talent or
+ * adversary name anywhere in this block (iron rule 2b). */
+const EDHA_LOOT_REACH_FT = 5;                        // max edge-to-edge gap looter-token → source-token
+const EDHA_LOOT_CACHE_IMG = "icons/svg/chest.svg";   // verified present on Foundry v13.351 (resources/app/public/icons/svg/chest.svg)
+const EDHA_LOOT_GEAR_TYPES = ["weapon", "equipment", "loot"];
+
+// PURE (pinned): which of a source's items can be taken? Gear only; a BODY keeps its alwaysEquipped
+// natural weapons (the hound keeps its Bite), a CACHE gives up everything gear-typed on it.
+function edhaLootableItems(items, { cache = false } = {}) {
+  return (items || []).filter(i => {
+    if (!EDHA_LOOT_GEAR_TYPES.includes(i?.type)) return false;
+    if (!cache && i.type === "weapon" && i.system?.alwaysEquipped === true) return false;
+    return true;
+  });
+}
+// PURE (pinned): is this actor defeated? HP ≤ 0, or the system's DEFEATED status (the Dead marker).
+function edhaLootDefeated(actor) {
+  if (!actor) return false;
+  const hp = Number(actor.system?.resources?.hea?.value);
+  if (Number.isFinite(hp) && hp <= 0) return true;
+  const dead = CONFIG.specialStatusEffects?.DEFEATED || "dead";
+  return !!actor.statuses?.has?.(dead);
+}
+// PURE (pinned): is this actor a loot source, and which kind? The cache flag wins; a defeated
+// adversary is a searchable "body"; a downed PC (or a live adversary) is never lootable.
+function edhaLootSourceKind(actor) {
+  if (!actor) return null;
+  if (actor.getFlag?.("edha-content", "lootCache") || actor.flags?.["edha-content"]?.lootCache) return "cache";
+  if (actor.type === "adversary" && edhaLootDefeated(actor)) return "body";
+  return null;
+}
+// PURE (pinned): edge-to-edge gap in ft between two token rects {x, y, w, h} (center px, size in
+// grid squares) on a grid of `pxPerFt` px per foot and `gd` ft per square.
+function edhaLootGapFt(a, b, { pxPerFt = 20, gd = 5 } = {}) {
+  const ft = Math.hypot(a.x - b.x, a.y - b.y) / pxPerFt;
+  const half = t => Math.max(t.w || 1, t.h || 1) * gd / 2;
+  return Math.max(0, ft - half(a) - half(b));
+}
+// PURE (pinned): may this looter reach the source? `gapFt` from edhaLootGapFt.
+function edhaLootInReach(gapFt, reachFt = EDHA_LOOT_REACH_FT) { return Number.isFinite(gapFt) && gapFt <= reachFt; }
+// PURE (pinned): the take-guard's decision. `ledger` is a Set of claimed "<srcUuid>|<itemId>" keys;
+// the FIRST claim of a key wins (true), every later claim loses (false). Synchronous on purpose —
+// it runs before the GM handler's first await, so two interleaved relays cannot both pass.
+function edhaLootClaim(ledger, srcUuid, itemId) {
+  const key = `${srcUuid}|${itemId}`;
+  if (ledger.has(key)) return false;
+  ledger.add(key);
+  return true;
+}
+function edhaLootRelease(ledger, srcUuid, itemId) { ledger.delete(`${srcUuid}|${itemId}`); }
+const EDHA_LOOT_CLAIMS = new Set();   // the GM client's claim ledger (per session; a taken item's id never comes back)
+// PURE (pinned): the takeable list for the contents card — one row per lootable item, in item order.
+function edhaLootRows(items, { cache = false } = {}) {
+  return edhaLootableItems(items, { cache }).map(i => {
+    const qty = Number(i.system?.quantity) || 1;
+    return { id: i.id, name: i.name, qty, label: `${i.name}${qty > 1 ? ` ×${qty}` : ""}` };
+  });
+}
+// Live geometry: the token rect edhaLootGapFt wants.
+function edhaLootRect(tok) { return { x: tok.center.x, y: tok.center.y, w: tok.document?.width || 1, h: tok.document?.height || 1 }; }
+// GM console utility (`edha.createLootCache(name)`): mint a stockable cache actor — Loot Caches
+// folder, linked chest token, the lootCache flag, players keep NO ownership.
+async function edhaCreateLootCache(name = "Loot Cache") {
+  try {
+    if (!game.user?.isGM) { ui.notifications?.warn("Edha: only the GM creates loot caches."); return null; }
+    let folder = game.folders?.find(f => f.type === "Actor" && f.name === "Loot Caches");
+    if (!folder) { try { folder = await Folder.create({ name: "Loot Caches", type: "Actor" }); } catch (e) { /* perms */ } }
+    const actor = await Actor.create({
+      name, type: "adversary", img: EDHA_LOOT_CACHE_IMG, folder: folder?.id ?? null,
+      prototypeToken: {
+        name, actorLink: true,                                   // linked: the placed chest always mirrors the stocked actor
+        displayName: CONST.TOKEN_DISPLAY_MODES?.HOVER ?? 30,     // anyone can hover-read the chest's name
+        disposition: CONST.TOKEN_DISPOSITIONS?.NEUTRAL ?? 0,
+        texture: { src: EDHA_LOOT_CACHE_IMG },
+      },
+      ownership: { default: 0 },
+      flags: { "edha-content": { lootCache: true } },
+    });
+    ui.notifications?.info(`Edha: "${name}" created (Loot Caches folder) — drag items onto its sheet, then place its token over the chest.`);
+    return actor;
+  } catch (e) {
+    console.error("Edha Content | createLootCache failed", e);
+    ui.notifications?.error(`Edha: cache creation failed — ${e.message}`);
+    return null;
+  }
+}
 /* --- Injury tool (shared primitive, backlog 9a): create an injury Item, rolled or typed -------------
  * Creation is the inverse of the Reknit delete-item relay: owner-side create when we own the target,
  * else the `create-item` GM relay. Type picking: a RollTable named like "Injuries" wins when one
@@ -21121,7 +21222,7 @@ Hooks.once("ready", () => {
       bakedEffects: pj(h.bakedEffectsJson), extraItems: pj(h.extraItemsJson),
     });
   };
-  const api = { syncNow: edhaSyncNow, syncActorTalents: edhaSyncActorTalents, syncAllCharacters: edhaSyncAllCharacters, syncAdversary: edhaSyncAdversaryActor, syncAllAdversaries: edhaSyncAllAdversaries, setTempHp: edhaSetTempHp, getTempHp: edhaGetTempHp, summon: summonByTalent, showRange: edhaShowRange, drawMana: edhaDrawMana, grantDrawMana: edhaGrantDrawMana, resetTriggers: edhaResetTriggers, fixSettings: edhaFixSettings, clearKindleLights: edhaClearKindleLights, refreshDefBuffs: edhaRefreshDefBuffs, migrateDerivations: edhaMigrateDerivations, fixPcTokens: edhaFixPcTokens, grantStartingKit: edhaGrantStartingKit, creationWizard: edhaCreationWizard, newCharacter: edhaCreatorNewCharacter, isIsolated: edhaIsIsolated, toggleStatus: edhaToggleStatus, darkVeilSweep: edhaDarkVeilSweep, allEffects: edhaAllEffects, raiseStakes: edhaRaiseStakesApi, rally: edhaRallyApi, skipBudget: (v) => { globalThis.edhaSkipBudget = !!v; return globalThis.edhaSkipBudget; }, debug: edhaSetDebug, debugSave: edhaDebugSave, debugsave: edhaDebugSave };   // lowercase alias — Ben typed edha.debugsave() at the 07-12 bench and got a TypeError
+  const api = { syncNow: edhaSyncNow, syncActorTalents: edhaSyncActorTalents, syncAllCharacters: edhaSyncAllCharacters, syncAdversary: edhaSyncAdversaryActor, syncAllAdversaries: edhaSyncAllAdversaries, createLootCache: edhaCreateLootCache, setTempHp: edhaSetTempHp, getTempHp: edhaGetTempHp, summon: summonByTalent, showRange: edhaShowRange, drawMana: edhaDrawMana, grantDrawMana: edhaGrantDrawMana, resetTriggers: edhaResetTriggers, fixSettings: edhaFixSettings, clearKindleLights: edhaClearKindleLights, refreshDefBuffs: edhaRefreshDefBuffs, migrateDerivations: edhaMigrateDerivations, fixPcTokens: edhaFixPcTokens, grantStartingKit: edhaGrantStartingKit, creationWizard: edhaCreationWizard, newCharacter: edhaCreatorNewCharacter, isIsolated: edhaIsIsolated, toggleStatus: edhaToggleStatus, darkVeilSweep: edhaDarkVeilSweep, allEffects: edhaAllEffects, raiseStakes: edhaRaiseStakesApi, rally: edhaRallyApi, skipBudget: (v) => { globalThis.edhaSkipBudget = !!v; return globalThis.edhaSkipBudget; }, debug: edhaSetDebug, debugSave: edhaDebugSave, debugsave: edhaDebugSave };   // lowercase alias — Ben typed edha.debugsave() at the 07-12 bench and got a TypeError
   const mod = game.modules?.get("edha-content");
   if (mod) mod.api = api;
   globalThis.edha = Object.assign(globalThis.edha || {}, api);
