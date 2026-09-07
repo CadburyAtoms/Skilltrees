@@ -1567,6 +1567,69 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   matched control has proven the root cause, **write the residual symptom down as PARTIAL and move on**
   — the second defect can be run 34's first row.
 
+## Operating lessons from run 42 (2026-09-07 — these OVERRIDE older advice where they conflict)
+
+- ⭐⭐ **A hidden Browser pane freezes PIXI's ticker, so v13 ANIMATED token movement never commits —
+  every engine slide reads as "the card says N ft and nothing moved".** This is the third explanation
+  for a token that will not move, and it is the one that bit run 42 for eight calls: `edha-push`,
+  `edha-move`, charges and leaps all go through `edhaMoveTokenTo` → `doc.update({x,y},{animate:true,
+  teleport:false})`, whose animation never finishes while the pane is hidden, so `doc.x/doc.y` still
+  read the OLD position at +3 s, +8 s, for ever. A `{animate:false, teleport:true}` update is
+  unaffected — which is why staging works and measuring doesn't. **Pump the ticker after any take that
+  moves a token:**
+  ```js
+  B.pump = async (ms = 4000, step = 50) => { const t0 = performance.now();
+    while (performance.now() - t0 < ms) { try { canvas.app.ticker.update(performance.now()); } catch (e) {}
+      await new Promise(r => setTimeout(r, step)); } };
+  ```
+  With the pump the same Shockwave Slam landed **599.7 px = 10.0 ft**. Do NOT reach for run 40's
+  "a silent no-op is usually a VETO" until the pump has been tried — run 42 chased a veto, then a
+  wall, then grid-snapping, before measuring the ticker.
+- ⭐ **Never leave two tokens of the same actor on the scene — it makes engine results unreadable, not
+  just ambiguous.** A second `Bench — Order` token (created for staging, while the roster token still
+  stood 8,400 px away) sent Shockwave Slam's push to the OTHER copy, and the card named a blocker —
+  *"stopped by Bench Target — Adjacent B"* — that was nowhere near the fight. It reads exactly like a
+  broken blocker lookup. Hard rule 7 one level earlier: don't just resolve by id, don't create the
+  ambiguity. Move the roster token instead of placing a second one, and restore it at the end.
+- ⭐ **Per-actor sync is the licensed way to close a "REBUILD + ⟳ Sync" gap.** `edha.syncActorTalents(actor)`
+  and `edha.syncAdversary(actor)` do exactly what Ben's ⟳ Sync buttons do, one actor at a time — so a
+  bench run can refresh the 16 **Bench PCs** (a bench-folder write) without ever calling
+  `syncAllCharacters` / `syncAllAdversaries`, which would rewrite Ben's own PCs and campaign
+  adversaries. Run 42 found every bench PC's owned talent copy stale (items 56/58/63 invisible) while
+  the *adversary* sync had already run; three rows would have failed against the pack that shipped
+  them. **Check the owned copy's rule fields before believing a "the fix isn't live" result.**
+- ⭐ **`edhaIsTalent` excludes weapons on purpose — so any harvest loop that gates on it drops
+  weapon-borne rules.** That is how run 42's defect was found and it is a general shape: when a rule
+  that lives on a **weapon** document does nothing, check whether its dispatcher uses `edhaIsTalent`
+  or `edhaRuleBearer`. The cheap proof is a mutation: set `flags.edha-content.adversaryTalent = true`
+  on the item (the only other thing `edhaIsTalent` accepts) and re-run the identical take.
+- ⚠️ **Adversary dummies are hostile, so they are not "enemies" of an adversary under test.** The
+  Mistheron's Seeming reported *"no enemy can see the copy yet"* against a disposition −1 dummy; it
+  needed a friendly PC token. Pick the victim by DISPOSITION, not by convenience.
+- ⚠️ **The damage card's graze subtotal is a real toggle: `div.dice-subtotal.right` (Full is
+  `.left.active`).** Click it before `button[data-action="apply-damage"][data-multiplier="1"]` and the
+  application really is a graze — that is how both item-56 rows were driven.
+- ⚠️ **`item.use()` timings are not uniform: leave ≥ 3 s between the consume click and the
+  roll-configuration submit.** A 900 ms gap silently skipped the Roll button on two takes and the
+  "missing" card was the PREVIOUS talent's. Capture the message-id set BEFORE the take and diff it —
+  `game.messages.contents.slice(-1)` lies whenever a cue or belief card lands after the roll.
+- ⚠️ **A `javascript_tool` timeout does not cancel the script (again) — three takes completed after
+  their call returned.** Push results onto a `globalThis` array and read them in the next call; batch
+  at most **two** `use()`-driven takes per call (~11 s each with the waits).
+- ✅ **The creation wizard's step count is not fixed** — an Ashkar default adds a *diaspora culture*
+  step before the expertise step, so a hard-coded walk breaks. Drive it as a loop that reads the
+  heading, and run it on a **scratch actor you created**: `edha.creationWizard()` with no argument
+  targets the controlled token's actor, and merely opening it on a bench PC grants the system's
+  Common/Basic Actions packs (+20 items) that you then have to remove.
+- ✅ **Point-in-polygon against the DEPLOYED asset answers a map row before any clicking.** Fetch
+  `/modules/edha-content/assets/thyrcross-nations.json`, hash it against the repo copy, and run the
+  ray test yourself; then one synthetic click per point proves the plumbing. `canvas_px` in that file
+  is the coordinate space (`[2236, 2976]`) — the gazetteer dots are in it, the image is half of it.
+- **Density, measured: 38 checklist rows retired on evidence (open 🤖 58 → 20, open ⚑ 21 → 10), 8 rows
+  annotated and left open with their blocker named, 1 root-caused defect with its blast radius counted
+  (6 shipped rules), 2 new rulings, 1 row-text correction, and Ben's own 13 dashboard marks recorded —
+  in ~95 driving calls. End-of-run per-actor diff EMPTY across all 74 actors.**
+
 ## Operating lessons from run 41 (2026-09-06 — these OVERRIDE older advice where they conflict)
 
 - ⭐⭐ **Two `use()`-driving lines and one `benchClickScene` cover almost every talent — write them
