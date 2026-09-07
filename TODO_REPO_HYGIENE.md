@@ -1893,7 +1893,7 @@ parity for the re-key. REBUILD + ⟳ Sync.
 
 ---
 
-## 59. [ ] Fold `system.damage.formula` into plain dice at build time (R-71)
+## 59. [x] Fold `system.damage.formula` into plain dice at build time (R-71) — DONE 2026-09-06, PR #234
 
 **Why:** The system's own item-damage card prints the unfolded authored formula string instead of
 resolved dice. Ben (a): fold it at BUILD time, the same fold `edhaRollFormula` already does at

@@ -2003,6 +2003,23 @@ both arms carry the same already-decided label (code read, stated as such, not a
 were authored by `Bench`, **8.6 s apart** (round 1's start plus round 2's), and a tight-window
 re-measure on the next advance produced **exactly one**. Not a two-GM double-apply.)*
 
+### Fix pass re-test (item 59, 2026-09-06 — TOOLING + DATA, REBUILD + ⟳ Sync)
+
+- [ ] 🤖 **R-71 — the system's own item-damage card reads folded plain dice, like its engine-rolled
+      twin.** Own Verdict, roll its damage straight off the item sheet (the SYSTEM's own "Roll
+      Damage", not an engine-triggered card), and read the formula line the chat card prints.
+      **Expect:** plain dice (`NdM [+ mod]`, e.g. `2d8 + 5`), never the raw parenthetical
+      `(N)d(2 * X + 2)`. **Read this before filing a FAIL:** the build-time fold
+      (`scripts/lib/fold-die-math.js`) only rewrites a `damage.formula` whose computed dice math is
+      ALREADY fully numeric in the pack — it cannot resolve `@tier`/`@skills.<color>.rank` (there is
+      no actor at build time), so Verdict's own formula is still `(@tier)d(2 * @skills.blue.rank +
+      2)` after this fix and is expected to keep printing the parenthetical until an actor's numbers
+      are substituted, exactly as before. If the card still shows the parenthetical, that is the
+      **known, provable limit of a build-time-only fold** (see PR #<item-59-PR> and R-71's SHIPPED
+      note), not a regression — record it as such rather than a FAIL, and route any objection to that
+      limit back through `EDHA_RULINGS.md` R-71 for Ben, not this row. What this row DOES prove: the
+      total is still correct (maths unchanged) and no other field on the card moved.
+
 ---
 
 # BENCH — Heroic paths

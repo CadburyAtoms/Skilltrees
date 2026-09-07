@@ -384,6 +384,12 @@ function classifyToken(tok, index, heroicIds, localByName) {
 // move: buildTrees() there still reads DATA (env EDHA_DATA-aware, via scripts/lib/paths.js) and
 // the same ATLAS_PACK values this file's own DATA/ATLAS_PACK constants resolve to.
 const { buildTrees, loadJson } = require("./lib/data.js");
+// R-71/item 59 (2026-09-06): fold a talent's `system.damage.formula` into plain dice at build
+// time, wherever the computed die math is ALREADY fully numeric (no unresolved @-refs) — the
+// build-side twin of the engine's `edhaFoldDieMath` (module-src/scripts/register-skills.js). See
+// scripts/lib/fold-die-math.js's header for why a twin instead of an import, and why this is a
+// safe no-op for the rank/tier-scaled `[Tier][Die]` formulas that still carry @-refs at build time.
+const { foldDieMath } = require("./lib/fold-die-math.js");
 
 function talentImg(tree) {
   if (tree.atlas === "leyline") return COLOR_ICON[tree.color] || DEITY_ICON;
@@ -457,7 +463,7 @@ function pathEvents(tree) {
   const out = {}; // pack -> { items:[], folders:[] }
   for (const pack of Object.values(ATLAS_PACK)) out[pack] = { items: [], folders: [] };
 
-  const report = { talents:0, trees:0, paths:0, edges:0, skillPrereqs:0, narrative:0, rollable:0, events:0, effects:0, authored:0, authoredByName:[], unresolved:[] };
+  const report = { talents:0, trees:0, paths:0, edges:0, skillPrereqs:0, narrative:0, rollable:0, events:0, effects:0, authored:0, authoredByName:[], unresolved:[], foldedFormulas:[] };
   const backgrounds = []; // { file, content } SVGs to write after packs
 
   for (const tree of trees) {
@@ -586,6 +592,22 @@ function pathEvents(tree) {
         // Surfaced because it is the live symptom of a stale docId: the overlay was captured under
         // a different name and only its (scoped) name still matches. Re-extract to re-key it.
         if (!AUTHORED.byId[t.docId]) report.authoredByName.push(`${tree.atlas}/${tree.group} "${t.name}"`);
+      }
+      // R-71/item 59: fold the FINAL damage.formula (generator or authored-overlay, whichever won
+      // above) into plain dice — the cosmere-rpg system rolls a talent's own damage straight off
+      // this field with no engine involvement, so unlike an engine-rolled card (folded at runtime
+      // by edhaRollFormula/edhaFoldDieMath per R-65) its chat card would otherwise print the raw
+      // parenthetical. Only the formula STRING changes, and only when it is already fully numeric —
+      // a rank/tier-scaled `[Tier][Die]` formula still carries @-refs at build time and folds to
+      // itself unchanged (proven in tests/fold-die-math.test.js), same as the engine's own copy
+      // before runtime substitution.
+      const rawFormula = talentDoc.system.damage?.formula;
+      if (rawFormula) {
+        const folded = foldDieMath(rawFormula);
+        if (folded !== rawFormula) {
+          talentDoc.system.damage.formula = folded;
+          report.foldedFormulas.push(`${t.name}: "${rawFormula}" -> "${folded}"`);
+        }
       }
       P.items.push(talentDoc);
       report.talents++;
@@ -847,7 +869,8 @@ function pathEvents(tree) {
   } catch (e) { console.warn(`  (module data cleanup: ${e.message})`); }
 
   console.log(`Edha build v2 (scope=${SCOPE}):`);
-  console.log(`  talents:${report.talents} trees:${report.trees} paths:${report.paths} edges:${report.edges} skillPrereqs:${report.skillPrereqs} narrative:${report.narrative} rollable:${report.rollable} events:${report.events} effects:${report.effects} authored-overlays:${report.authored}`);
+  console.log(`  talents:${report.talents} trees:${report.trees} paths:${report.paths} edges:${report.edges} skillPrereqs:${report.skillPrereqs} narrative:${report.narrative} rollable:${report.rollable} events:${report.events} effects:${report.effects} authored-overlays:${report.authored} folded-damage-formulas:${report.foldedFormulas.length}`);
+  if (report.foldedFormulas.length) report.foldedFormulas.forEach(f => console.log(`    - ${f}`));
   for (const [pack, d] of toWrite) console.log(`  ${pack}: ${d.items.length} items, ${d.folders.length} folders`);
   if (advReport) console.log(`  ${ADV_PACK}: ${advReport.actors} adversaries, ${advReport.items} embedded items (${advReport.talents || 0} tree-talent embeds)`);
   if (itemsReport) console.log(`  ${ITEMS_PACK}: ${itemsReport.items} items, ${itemsReport.folders} folders`);
