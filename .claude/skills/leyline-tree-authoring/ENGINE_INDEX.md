@@ -6,6 +6,18 @@ Read this instead of re-scanning the ~20,000-line engine. Find code by **greppin
 For *where in the file* a thing lives rather than *what it is*, read the **section map** below —
 every `/* ===` banner in the engine, in file order.
 
+> **✂️ THE ENGINE IS EDITED AS SECTIONS (item 4, 2026-09-06 — PM-R15).** The sources are
+> `module-src/scripts/engine/NN-<slug>.js`, one file per `/* ===` banner (55 files; lexical order
+> = assembly order). **Edit the source under `module-src/scripts/engine/`, run
+> `node scripts/engine-assemble.js`, commit BOTH** the source and the regenerated
+> `module-src/scripts/register-skills.js` — which stays the tracked AND deployed file (Ben's F5,
+> `module-src-sync.js`, `tests/harness.js`, `lint-refs.js`, and "grep the engine" all still read
+> it). Gate `engine-assembly` (`engine-assemble.js --check`, in `gates.js` and the pre-commit body)
+> fails the commit when the two drift, naming the first differing line and its source file. An
+> edit made directly to `register-skills.js` is caught the same way — re-run
+> `node scripts/engine-split.js` to push it down into the sources. The section → file map is in
+> the section map below.
+
 ## ⚠️ THIS FILE IS HALF THE VOCABULARY — read `data/native-vocabulary.json` too
 
 Everything below is what the **edha-content module** adds. The **cosmere-rpg system registers its
@@ -98,6 +110,26 @@ re-derived classification, the verified scoping, and the surviving handler set).
 the defence buffs to Destruction carried no banner at all — they sat under the RED tree's header by
 accident of append order, so nothing in this index could point at them. Item 23 bannered them
 (comment-only; `codeOnly(before) === codeOnly(after)`) and this map is the result.
+
+**Section → source file** (item 4; `node scripts/engine-split.js --dry-run` prints the live version
+of this list with line counts — a banner keeps its file name across re-runs as long as its title
+line is unchanged). The two 09-06 banners inside the shared core (`THE OUT-OF-COMBAT GATE`,
+`WHERE AN EFFECT LIVES`) are files of their own, so "SHARED CORE" below spans files 01–03; the
+`END OF THE RED TREE SECTION` seam marker is file 20.
+
+| Files | Sections |
+|---|---|
+| `00-file-header` | the head docblock (before the first banner) |
+| `01-shared-core` · `02-the-out-of-combat-gate` · `03-where-an-effect-lives` | SHARED CORE (the three banners inside it) |
+| `04-black-ritual` · `05-edha-watch` · `06-edha-prompt-pick` · `07-edha-owner-list` · `08-black-subjugation` | Black + the H8/H6/H3 handler sections that sit between its two trees |
+| `09-shared-token-move-stamp` · `10-opportunity-spend-menu` | the two shared primitives before White |
+| `11-white-coordination` · `12-contested-roll-resolution` · `13-white-bulwark` · `14-white-accord` | White + the contest core |
+| `15-blue-calculation` · `16-heroic-paths` · `17-blue-illusion` · `18-blue-foresight` | Blue + Heroic paths |
+| `19-red-momentum-frenzy` · `20-end-of-the-red-tree-section` | Red + the seam marker |
+| `21-resource-consume-dialog` … `39-burst-execution-the-gm-socket-relay` | the cross-tree run (19 files, one per item-23 banner: `22-talent-budget`, `23-sheet-path-slots-the-budget-readout`, `24-the-character-creation-wizard`, `25-sheet-qol`, `26-talent-sync`, `27-adversary-pack-sync`, `28-temporary-hp`, `29-summons`, `30-injuries`, `31-trigger-gating-cost`, `32-senses-light-visibility`, `33-triggered-effect-resolution`, `34-single-target-gate-defeat-tracking`, `35-targeting-attunement-range-aoe-templates`, `36-point-targeted-aoe-bursts`, `37-synchronous-formula-dice-evaluation`, `38-cost-refund-on-cancel`) |
+| `40-destruction` · `41-life` · `42-chaos` · `43-fate` · `44-sovereignty` · `45-death` · `46-civilization` · `47-power` · `48-knowledge` · `49-order` | the ten deity trees |
+| `50-green-territory` · `51-green-restoration` · `52-green-instinct` | Green |
+| `53-native-event-system` (3,067 lines — one banner, one file) · `54-edha-card-buttons` | the registry tables + the ONE registration loop (item 24); the card-button binder |
 
 **Shared, before the trees**
 

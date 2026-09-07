@@ -144,6 +144,36 @@ and the four `Frostbinder` / `Stonebound Captain` statuses noted in run 39 are i
 snapshot unchanged. Bench chat can be flushed (the run added ~220 messages). **`Bench` and
 `PlayerBench` were both logged out as the last in-world acts and both are selectable on `/join`
 again.**
+## 2026-09-06 — Item 4: the engine is EDITED AS SECTIONS — `module-src/scripts/engine/NN-<slug>.js`, assembled into the ONE deployed file (**TOOLING-only — the deployed `register-skills.js` did not change by one byte**; PR #247)
+
+**What changed.** `module-src/scripts/register-skills.js` (21,792 lines) is now the *assembly* of
+55 per-section sources under `module-src/scripts/engine/`, one file per column-0 `/* ===` banner
+(item 23 bannered every region for exactly this). `scripts/engine-split.js` is the re-runnable cut
+(each source an exact byte range of the engine; `00-file-header` is the head docblock; lexical order
+= assembly order; largest file `53-native-event-system.js`, 3,067 lines — one banner, one file, no
+invented seam). `scripts/engine-assemble.js` concatenates them back (no headers, no separators;
+CRLF→LF only, because the engine is tracked and deployed LF) and `--check` fails naming the first
+differing engine line and its source file. New gate **`engine-assembly`**, right after
+`engine-check` in `scripts/gates.js` (11 local gates now); the pre-commit body runs the same check
+whenever the engine or `engine/` is staged.
+
+**The rule (PM-R15, applied as the default — Ben can veto).** The assembled file STAYS the tracked
+and deployed artifact — nothing about Ben's F5 workflow, `module-src-sync.js` (its `FILES` list
+still names only `scripts/register-skills.js`, checked), `tests/harness.js` `ENGINE_PATH`,
+`lint-refs.js`, the ratchet tests, or "grep the engine" changed. **Edit the source under
+`module-src/scripts/engine/`, run `node scripts/engine-assemble.js`, commit BOTH.** An edit made
+straight into `register-skills.js` trips the gate; `node scripts/engine-split.js` pushes it down
+into the sources. If the engine changes on `main` under an open branch, re-run the split on the
+new engine rather than hand-merging sources. The section → file map lives in `ENGINE_INDEX.md`.
+
+**Proven.** sha256 `acac2589da7b…` three ways — the tracked engine before the split, the
+re-assembled engine, `origin/main:module-src/scripts/register-skills.js`. Mutation: one word added
+to `41-life.js` line 5 → `--check` exit 1 at engine line 13186 (`source 41-life.js:5`);
+re-assembled → green. Full local gates green; test count unchanged. Nothing for the bench —
+lane R, no behaviour change.
+
+---
+
 ## 2026-09-06 — Item 24: the native event/handler registry is TABLE-DRIVEN — `EDHA_EVENT_TYPES` / `EDHA_HANDLER_TYPES`, one registration loop, schemas EVALUATED instead of regex-parsed (**ENGINE-ONLY → F5 / relaunch**; PR #244)
 
 **What changed.** `edhaRegisterNativeEventSystem()` was ~2,500 lines of **102 sequential**

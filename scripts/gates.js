@@ -92,6 +92,12 @@ function buildGates(py) {
   });
 
   gates.push({
+    id: "engine-assembly",
+    desc: "node scripts/engine-assemble.js --check (the tracked engine equals module-src/scripts/engine/*.js concatenated — item 4)",
+    run: () => run("node", ["scripts/engine-assemble.js", "--check"]),
+  });
+
+  gates.push({
     id: "scripts-check",
     desc: "node --check over scripts/*.js, scripts/lib/*.js, tests/*.js",
     run: () => {

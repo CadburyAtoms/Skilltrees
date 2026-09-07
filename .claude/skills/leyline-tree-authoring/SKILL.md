@@ -28,7 +28,10 @@ specialties**. A **deity** tree is shaped differently and its authored file is a
   them here.
 - **`module-src/scripts/register-skills.js`** — the entire runtime engine (single tracked copy;
   the live module dir is mirrored on the Foundry machine via `scripts/module-src-sync.js`). Every
-  generic handler lives here.
+  generic handler lives here. **Edit it through its sources** (item 4, 2026-09-06):
+  `module-src/scripts/engine/NN-<slug>.js`, one per `/* ===` banner — change the source, run
+  `node scripts/engine-assemble.js`, commit both (gate `engine-assembly` enforces; the section →
+  file map is in `ENGINE_INDEX.md`).
 
   > **⚠️ CHANGED 2026-07-24 — this file used to say "all *name-based* automation lives here", and
   > that sentence is why 210 of 365 talents ship with empty Events/Effects tabs.** Name-keyed
@@ -305,6 +308,7 @@ python3 .claude/skills/leyline-tree-authoring/audit.py <color|deity-name>       
 python3 .claude/skills/leyline-tree-authoring/audit.py <color|deity-name> --checklist  # the in-Foundry test worklist
 node scripts/validate.js                                                                # data validator (CI parity)
 node --check module-src/scripts/register-skills.js                                      # engine parses
+node scripts/engine-assemble.js --check                                                 # engine = its engine/ sources (item 4)
 ```
 
 `<color>` resolves `leyline-<color>.json`; `<name>` resolves `deity-<name>.json` (e.g. `audit.py
