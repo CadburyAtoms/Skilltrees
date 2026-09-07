@@ -2374,6 +2374,53 @@ numbers + a grep for "200 talents" / "45 numbered" / "19.7k" returning nothing. 
 
 ---
 
+## 74. [ ] `foundry-build.js items` (single scope) crashes on a temporal-dead-zone `let`
+
+**Why:** item 71's worker (2026-09-06, PR #257) ran a scratch build one scope at a time and found
+`node scripts/foundry-build.js items` dies with `ReferenceError: Cannot access 'REGISTERED_HANDLER_TYPES'
+before initialization` at `scripts/foundry-build.js:950` — the `let` at ~948 sits BELOW the items
+writer's call at ~848, so the single-scope path reads it before it exists. `all` (the deploy `.bat`
+and the `--ci` gate) runs the scopes in an order that initialises it first, so CI never sees it;
+a single-scope rebuild (the documented way to rebuild one pack) is broken. Pre-existing since item
+64 introduced the guard.
+
+**What to do:** hoist the declaration above every writer (or compute it once at module load);
+pin a headless case that runs the items writer alone (or `--dry-run items`) and shows the crash
+under reversion; check every other scope alone (`leyline`, `deity`, `heroic`, `adversaries`).
+
+**Done when:** every single scope builds into a scratch `EDHA_MODROOT`; the pin fails under
+reversion; `node scripts/gates.js` green. TOOLING-only.
+
+**PM:** lane R · model fable-worker · size S · deps none · verify: five single-scope scratch
+builds + the pin. Found by item 71.
+
+---
+
+## 75. [ ] Nine registered handler rows still ship NO executor — give each the same no-op
+
+**Why:** item 71 (PR #257) gave `edha-illusion-upkeep` an explicit no-op executor and changed the
+registry pin from "a function or absent" to a NAMED set, `EXECUTOR_LESS_CONFIG_ONLY` in
+`tests/handler-registry.test.js` — which is how it found eight more: `edha-zone-hazard`,
+`edha-zone-guard`, `edha-snare-react`, `edha-damage-bonus`, `edha-counter-transfer`,
+`edha-die-step-react`, `edha-unseen-ward`, `edha-suppress-veil`, `edha-heal-react`. All are
+config-only riders read by engine sweeps (`edhaActorRuleOf` / `edhaWatchersOfRule`), never
+dispatched — but a rule a user places on an event the system DOES dispatch (`use`,
+`add-to-actor`, …) would throw in `Handler.execute`.
+
+**What to do:** the same no-op executor with the same comment shape ("config-only — read by
+<sweep>") on each of the nine, in `module-src/scripts/engine/53-native-event-system.js` (edit the
+source, `node scripts/engine-assemble.js`, commit both); shrink `EXECUTOR_LESS_CONFIG_ONLY` to
+empty (the pin then forbids any new executor-less row); the registry snapshot must not move
+(it records no executors); state the reader for each in `ENGINE_INDEX.md`.
+
+**Done when:** `EXECUTOR_LESS_CONFIG_ONLY` is empty and the pin is "every handler has a function";
+snapshot unchanged; gates green. ENGINE-ONLY (F5).
+
+**PM:** lane R · model fable-worker · size S · deps #71 ✓ · verify: the pin + an unchanged
+snapshot. Found by item 71.
+
+---
+
 ## 76. [x] The phone card's DEFAULT is empty for bold-inline defaults, and R-80 / R-81 say "(§I)" but live in §C (2026-09-06, PR #PRNUM)
 
 > **DONE 2026-09-06.** Root cause of the empty default: `RULING_DEFAULT_RE`'s `[^*]+` capture
