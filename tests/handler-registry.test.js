@@ -65,3 +65,36 @@ test("registry: every handler's executor is a function (or absent — a config-o
   for (const d of registry.events) assert.strictEqual(typeof d.hook, "string", `${d.type} has no hook`);
   for (const d of [...registry.events, ...registry.handlers]) assert.strictEqual(d.source, "edha-content", `${d.type} source is ${d.source}`);
 });
+
+/* --- the registry is TABLE-DRIVEN: one loop, two exposed arrays (item 24) ---------------------- */
+
+const vm = require("vm");
+const { readEngineSource, codeOnly } = require("./harness.js");
+
+test("exactly ONE registration loop: no direct registerItemEventType / registerItemEventHandlerType call outside it", () => {
+  const code = codeOnly(readEngineSource());
+  const handlerCalls = code.match(/registerItemEventHandlerType\(/g) || [];
+  const eventCalls = code.match(/registerItemEventType\(/g) || [];
+  assert.strictEqual(handlerCalls.length, 1, `expected the loop to be the only registerItemEventHandlerType( site, found ${handlerCalls.length}`);
+  assert.strictEqual(eventCalls.length, 1, `expected the loop to be the only registerItemEventType( site, found ${eventCalls.length}`);
+  assert.ok(code.includes("for (const def of EDHA_EVENT_TYPES) api.registerItemEventType(def);"), "the event loop reads EDHA_EVENT_TYPES");
+  assert.ok(code.includes("for (const def of EDHA_HANDLER_TYPES) api.registerItemEventHandlerType(def);"), "the handler loop reads EDHA_HANDLER_TYPES");
+});
+
+test("the tables ARE what gets registered: EDHA_EVENT_TYPES / EDHA_HANDLER_TYPES elements are the recorded defs, same order", () => {
+  assert.ok(registry, "the registry did not load");
+  const events = vm.runInContext("EDHA_EVENT_TYPES", registry.env);
+  const handlers = vm.runInContext("EDHA_HANDLER_TYPES", registry.env);
+  assert.ok(Array.isArray(events) && Array.isArray(handlers), "the tables are arrays");
+  assert.strictEqual(events.length, registry.events.length);
+  assert.strictEqual(handlers.length, registry.handlers.length);
+  events.forEach((d, i) => assert.strictEqual(d, registry.events[i], `event row ${i} (${d.type}) is not the registered object`));
+  handlers.forEach((d, i) => assert.strictEqual(d, registry.handlers[i], `handler row ${i} (${d.type}) is not the registered object`));
+});
+
+test("both tables are exposed on the edha API (game.modules.get('edha-content').api / globalThis.edha)", () => {
+  const code = codeOnly(readEngineSource());
+  const apiLine = code.split("\n").find((l) => l.includes("const api = {") && l.includes("createLootCache: edhaCreateLootCache"));
+  assert.ok(apiLine, "the ready-hook api object literal is where it was");
+  assert.ok(/\bEDHA_EVENT_TYPES\b/.test(apiLine) && /\bEDHA_HANDLER_TYPES\b/.test(apiLine), "the api object carries EDHA_EVENT_TYPES and EDHA_HANDLER_TYPES");
+});
