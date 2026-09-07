@@ -160,8 +160,12 @@ function edhaSweepEmptyNote(owner, ft, sameSide) {
     const ot = edhaCasterToken(owner);
     if (!ot) return `${owner.name} has no token on the current scene — use the talent from a PLACED token's sheet (a compendium or sidebar sheet has no position to measure from).`;
     const scene = ot.scene ?? canvas?.scene; const gs = scene?.grid?.size || 100, gd = scene?.grid?.distance || 5;
-    const disp = ot.document?.disposition ?? 1;
-    const cands = (canvas?.tokens?.placeables ?? []).filter(t => t.id !== ot.id && t.actor && (((t.document?.disposition ?? 1) === disp) === sameSide));
+    // Item 10 batch 2 (R-63): the note counts the SAME candidates the sweep it explains would have
+    // matched, so a token whose side did not resolve is neither "same-side" nor "opposing" here and
+    // is never named as the nearest; an owner whose own side did not resolve gets told exactly that.
+    const disp = ot.document?.disposition;
+    if (!Number.isFinite(disp)) return `${owner.name}'s token has no disposition set — allies and targets cannot be told apart, so nothing is in range.`;
+    const cands = (canvas?.tokens?.placeables ?? []).filter(t => t.id !== ot.id && t.actor && (sameSide ? edhaSideSame(t.document?.disposition, disp) : edhaSideHostile(t.document?.disposition, disp)));
     if (!cands.length) return `No ${sameSide ? "same-side" : "opposing"} tokens on the scene at all.`;
     const dists = cands.map(t => ({ t, d: Math.hypot((t.center?.x ?? 0) - ot.center.x, (t.center?.y ?? 0) - ot.center.y) / gs * gd })).sort((a, b) => a.d - b.d);
     return `No ${sameSide ? "allies" : "targets"} within ${ft} ft — nearest (${dists[0].t.actor.name}) is ${Math.round(dists[0].d)} ft away; ${cands.length} candidate${cands.length === 1 ? "" : "s"} on the scene.`;

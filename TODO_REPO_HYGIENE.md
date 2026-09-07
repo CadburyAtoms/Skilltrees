@@ -293,7 +293,7 @@ why one file legitimately keeps a copy).
 
 ---
 
-## 10. [ ] Migrate the disposition-default fail-open backlog onto the failed-closed helpers
+## 10. [x] Migrate the disposition-default fail-open backlog onto the failed-closed helpers — DONE 2026-09-06, batch 1 PR #200, batch 2 PR #263
 
 **Why:** pass 5.2 (R-63, `fcb6865`) fixed the disposition-default fail-open idiom
 (`disposition ?? 1` / `?? 0` — an unresolvable side silently reading as "everyone matches") in
@@ -342,6 +342,21 @@ stands between each of these and any effect, which is the line batch 1 was drawn
 classified "legitimately defaulted"** — the two payload-bake sites that looked like the "caster's own
 token" exemption are exactly the shape `ENGINE_INDEX.md` says to replace with `edhaActorSide`, so
 they migrated. Batch 2 can therefore still reach **0**.
+
+**BATCH 2 DONE (PR #263, 2026-09-06): the 11 migrated, `counts.dispoFailOpen` 11 → 0 — a TOMBSTONE
+now, like `rollFold` / `gmWhisper`.** Per site: `edhaPickCandidates` hands RAW sides to
+`edhaPickAccepts` (`edhaActorSide` for the owner, the anchor's token document read directly), and the
+four side branches of `edhaPickAccepts` now call `edhaSideSame` / `edhaSideHostile` — an unresolvable
+side is offered under neither `ally` nor `enemy` (nor the anchor pair) but still under `any`;
+`edhaSweepEmptyNote` counts candidates with the same pair, never names an unresolvable token as the
+nearest, and tells an owner whose own side did not resolve so; the movement-window card lists allies by
+`edhaSideSame` and says why when the mover has no side; `edhaPickProhibition`'s `<select>` uses
+`edhaActorSide` + `edhaSideSame`; the `edha-cleanse` beacon list uses `edhaSideSame`. Six headless pins
+(one per family plus the hostile-owner polarity) in `tests/disposition-failclosed.test.js`; reverting
+three families to `?? 1` fails the pins AND lint pass 20. Corollary re-checked across the engine: no
+migrated site reads `!edhaSideSame` as "enemy" — but **`47-power.js` (`edha-aura`-style `affects`
+sweep, ~L419) still does** (`want === "enemies" && same` → continue, so an unresolvable side passes the
+enemies filter); it goes through `edhaSameDisposition`, was outside the 11, and is reported, not fixed.
 
 ---
 
@@ -2427,7 +2442,22 @@ naming the row; `handler-registry.snapshot.json` unchanged (empty diff); 984 →
 
 ---
 
-## 76. [ ] The phone card's DEFAULT is empty for bold-inline defaults, and R-80 / R-81 say "(§I)" but live in §C
+## 76. [x] The phone card's DEFAULT is empty for bold-inline defaults, and R-80 / R-81 say "(§I)" but live in §C (2026-09-06, PR #262)
+
+> **DONE 2026-09-06.** Root cause of the empty default: `RULING_DEFAULT_RE`'s `[^*]+` capture
+> stopped at the first `*` of the inner `**(a) …**`, and because that WAS a match the "no default
+> stated" fallback never fired — every bold-inline default rendered as `""`. The capture now reads
+> through inner `**…**` pairs and strips the markers. `applied` was decided by SECTION alone, so an
+> entry marked **APPLIED** in §C (R-48, R-80, R-81, R-84, R-85 — §I holds only a stub for each,
+> which `RULING_STUB_RE` skips) rendered as a plain default-ask card; a bold upper-case `APPLIED`
+> span in the body now marks the entry applied wherever it lives (`RULING_APPLIED_MARK_RE`; the
+> rulings doc's own intro already says "anything marked **APPLIED** is already live … needs a
+> veto"). R-80 / R-81 got the bold mark, "(stub in §I)" wording, and one-line §I stubs in the R-84 /
+> R-85 shape. Proof: all 8 open rulings carry a non-empty default; R-48 / R-80 / R-81 / R-84 / R-85
+> `applied: true`, R-18 / R-82 / R-83 `false`; `tests/pm-state.test.js` pins both forms on a
+> fixture and the real file — the old regex fails with `R-80: default is empty … ""`, dropping the
+> mark check fails `R-80 carries a bold APPLIED note in §C`. `docs/pm-state.json` untouched
+> (openRulings rides in the dashboard index, not the board state).
 
 **Why:** item 44's worker (2026-09-06, PR #258) found `RULING_DEFAULT_RE` in
 `scripts/build-dashboard.js` yields an EMPTY default whenever the ruling writes its default as

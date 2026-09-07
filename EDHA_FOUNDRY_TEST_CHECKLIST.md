@@ -516,6 +516,30 @@ never in the sweep in the first place, so driving them with the corrected probe 
 which is what ① measured — plus `tests/disposition-failclosed.test.js`, which pins the pure form. No
 site fired on the probe.)*
 
+## Item 10 batch 2 — the last five disposition reads fail closed (2026-09-06, ENGINE-ONLY, F5; PR #263)
+
+> Every row below is the R-63 convention on a READ: an unresolvable side is OMITTED from a list or
+> card. ⚠️ Bench run 38 measured that a placed token cannot carry a non-finite disposition on this
+> build (Foundry coerces `null` to −1 at create AND update) and that `edhaActorSide` always resolves a
+> real actor through its prototype — so expect these to land BLOCKED-with-blocker or retire on that
+> reasoning, exactly as run 38's (a)/(b)/(c) did. The headless pins in
+> `tests/disposition-failclosed.test.js` are the proof that holds without a table.
+
+- [ ] 🤖 **I10b2-1 — H6 offer card (`edhaPickCandidates`)**: with an `edha-prompt-pick` rule at
+  `disposition: ally` (Anticipate) and a probe token whose disposition will not resolve inside the
+  range, the offer card lists the real allies and NOT the probe; the same rule at `any` still offers
+  the probe. (Was: the probe read FRIENDLY and was offered as an ally.)
+- [ ] 🤖 **I10b2-2 — sweep empty-note (`edhaSweepEmptyNote`)**: PlotGrant with no ally in range and
+  the probe as the NEAREST token — the note names the nearest REAL same-side token and its count,
+  never the probe. If the OWNER's own token side does not resolve, the note reads *"…'s token has no
+  disposition set — allies and targets cannot be told apart, so nothing is in range."*
+- [ ] 🤖 **I10b2-3 — movement-window card (Ordered Advance)**: arm the window, move next to a real
+  ally and the probe — the card lists the ally only. A sideless mover's card ends *"…of where it
+  stopped (its token has no disposition set, so allies could not be told apart)."*
+- [ ] 🤖 **I10b2-4 — Edict `<select>` + Beacon card**: `edhaPickProhibition`'s "Attack a chosen
+  ally" list omits the probe (a sideless owner sees `(no allied tokens)`); Beacon of Purity's cleanse
+  card lists conditions on real allies only, never the probe's.
+
 ## Migration machinery (cross-tree behaviour)
 
 > **✅ Bench run 9 (2026-07-27i) retired seven Engine-wide rows on evidence** — **2bB-8** (neither
