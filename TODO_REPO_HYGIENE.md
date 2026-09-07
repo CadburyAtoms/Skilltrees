@@ -1129,7 +1129,7 @@ green. Then PR #93 can be closed and its branch moves from KEEP to SAFE in `docs
 
 ---
 
-## 34. [ ] Fleet weapon migration + loot caches (player-clickable chest and body search) — re-do PR #103 on current main
+## 34. [x] Fleet weapon migration + loot caches (player-clickable chest and body search) — re-do PR #103 on current main (2026-09-06, PRs #220 + #233)
 
 **Why:** PR #103 (2026-07-18) built both and Ben approved the design (2026-09-05: *"Foundry didn't have
 a way to 'click on a treasure chest as a player and open it' — I liked our fixes"*), but the branch is
@@ -1161,7 +1161,13 @@ weapon migration" line checked. Then PR #103 can be closed and its branch moves 
 **PM:** lane B · model opus (or `fable-worker` on a weekend) · size L, dispatched as 34a then 34b · deps a
 Foundry window for the bench · verify: pinned tests + scratch pack build + `validate-adversaries.js` 0 issues.
 34a shipped in PR #220 (2026-09-06, REBUILD + ⟳ Sync): 11 items weapon-type, `edhaRuleBearer` on both rule
-loops (mutation-verified), summon attacks as weapons, parity table 336/11/0, 9 🤖 rows. 34b still open.
+loops (mutation-verified), summon attacks as weapons, parity table 336/11/0, 9 🤖 rows.
+**34b shipped in PR #233 (2026-09-06, ENGINE-ONLY, F5):** `edha.createLootCache` (chest icon verified on
+v13.351), the `Token#_onClickLeft2` reader (cache token / defeated adversary within 5 ft; sheets never open
+to players), the `loot-take` socket action with the `edhaLootClaim` double-loot guard (the two-relay race
+pinned on the real handler), bodies keep `alwaysEquipped` weapons; 11 headless cases, 8 mutations, 7 🤖 rows.
+Both halves merged → **item checked**; the bench rows retire at a table (lane B); then PR #103 closes and
+its branch moves to SAFE.
 Follow-up scope for the PM: the 39 bestiary blocks statted after 07-18 carry 44 attack items still `action`.
 
 ---

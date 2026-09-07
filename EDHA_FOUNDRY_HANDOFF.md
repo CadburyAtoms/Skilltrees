@@ -33,6 +33,52 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-06 — ITEM 34b: loot caches + defeated-adversary search — the player-clickable chest lands (re-do of PR #103's loot half against today's engine; PR #233) (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
+
+**What it is.** Ben's painted-chest ask, approved 2026-07-18 and again 2026-09-05 ("Foundry didn't
+have a way to 'click on a treasure chest as a player and open it' — I liked our fixes"). One
+Take-card mechanism, two entry points. `edha.createLootCache("name")` (GM console; on
+`game.modules.get("edha-content").api` and `globalThis.edha`) mints a world adversary-type actor
+flagged `edha-content.lootCache` in a **Loot Caches** folder, `ownership.default 0`, with a LINKED
+prototype token on `icons/svg/chest.svg` — **verified present on Foundry v13.351** at
+`resources/app/public/icons/svg/chest.svg` (the ⚑ from #103 is settled). The GM stocks it by dragging
+items onto its sheet and places the token over the painted chest. A player **double-clicks** the
+chest token — or a **defeated** adversary's token (HP ≤ 0 or the system's DEFEATED status) — with one
+of their own tokens within **5 ft edge-to-edge** and gets a whispered contents card (player + GMs);
+out of reach → a "move within 5 ft" warning; nothing lootable → an info toast. **Adversary sheets
+never open to players**: the `Token#_onClickLeft2` intercept (init-time prototype patch, the
+phantom-veil idiom; v13 binds `clickLeft2` per token at draw time) returns before Foundry's sheet
+render for every loot source, and GM / non-loot clicks fall straight through.
+
+**Take** buttons bind through `EDHA_CARD_BUTTONS["edha-loot-btn"]` and relay through
+`EDHA_SOCKET_ACTIONS["loot-take"]` — the existing registries, no second channel. The GM is the
+single writer: `edhaLootTakeGM` claims `<srcTokenUuid>|<itemId>` through **`edhaLootClaim`** (a
+synchronous test-and-set) BEFORE its first `await`, then deletes the item from the source, creates it
+on the taker (provenance flags shed so the adversary sync will not delete it; lands unequipped,
+`alwaysEquipped` cleared) and posts the public "X takes Y from Z" card; the loser's relay gets a GM
+whisper; a failed take releases the claim. **Bodies keep their `alwaysEquipped` natural weapons**
+(item 34a's flag) — `edhaLootableItems` admits gear types only (weapon / equipment / loot) and, for
+a body, refuses an `alwaysEquipped` weapon; a cache gives up everything gear-typed. A downed PC or a
+live adversary is never a source. Generic throughout — no talent or adversary name (iron rule 2b),
+the allowlist unchanged; the "Loot Caches" folder literal joins lint-refs' NAME_ALLOWLIST.
+
+**Proven headless** (`tests/loot-caches.test.js`, 11 cases, suite 871/0): every pure helper
+(`edhaLootableItems`, `edhaLootRows`, `edhaLootDefeated`, `edhaLootSourceKind`, `edhaLootGapFt`,
+`edhaLootInReach`, `edhaLootClaim`/`edhaLootRelease`), **the two-relay race on the real
+`edhaLootTakeGM`** (two takes of one item interleaved on one event loop → exactly one create, one
+delete, one public card, one GM whisper), the release-on-failure retry, and a source scan that
+`loot-take` is registered exactly once with no private card walker. Eight one-line reversions each
+failed the suite (the alwaysEquipped exclusion, the Dead status, the cache flag, the half-size
+subtraction, `<` for `<=`, the claim ledger — **the existence check alone lets both relays through**
+— the ×qty label, a doubled socket registration), then restored.
+
+**🤖 for the bench:** the `34b` sub-block under `# BENCH — Fleet weapon migration, 34a` (7 rows:
+chest token, contents card, Take moves the item, the double-loot guard from two clients, body search
+within / out of 5 ft, sheet never opens, natural weapon not listed). With 34a (PR #220) and this PR
+both merged, item 34 is checked and the §9 "Fleet weapon migration" line is closed.
+
+---
+
 ## 2026-09-06 — Item 54: the DISPEL reaches item-owned passives (disable, never delete) and the Omen ledger (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
 
 Ben VETOED R-73's narrow default and asked for the safe widening (b); R-35 (a) folded in. PR #224.
@@ -14325,10 +14371,12 @@ remains is Foundry-side and gated on TWO unblockers: **(1) the schema dump** —
 `source-materials/system-schemas/` (the system source is unreachable from repo sessions: proxy
 blocks the public GitHub repo, add_repo is same-owner-only) — and **(2) the W25 currency canon**.
 
-- [ ] **Fleet weapon migration** — **34a SHIPPED 2026-09-06 (item 34a, the weapon half: 11 items
+- [x] **Fleet weapon migration** — **DONE 2026-09-06: 34a (PR #220, the weapon half: 11 items
   across the 13 original statblocks are weapon-type, `edhaRuleBearer` on both rule loops, summon
-  attacks as weapons; see the 2026-09-06 delta). NOT checked until 34b (loot caches) lands as its
-  own PR; the 39 later bestiary blocks (44 attack items) are follow-up scope.** History below.
+  attacks as weapons) + 34b (PR #233, the loot half: `edha.createLootCache`, the double-click
+  reader, the `loot-take` GM relay); see the two 2026-09-06 deltas. Bench rows 🤖 in the
+  `# BENCH — Fleet weapon migration, 34a` section (+ its 34b sub-block); the 39 later bestiary
+  blocks (44 attack items) are follow-up scope (TODO_REPO_HYGIENE #34's PM line).** History below.
   (gate: schema dump). ⚑⚑ pipe-cleaner shipped 07-15: `kind:"weapon"`
   in advItemDoc (action-shaped activation kept byte-identical — same skill_test + modifierFormula
   so PDF numbers hold; best-guess weapon fields strip harmlessly if wrong) + Corvaine Raider's
