@@ -3115,7 +3115,7 @@ Adversaries.
 
 ---
 
-## 94. [ ] The mobile board re-renders the whole page on every store snapshot — Ben's "Sent ✓" marks vanish, the page jumps to the top, and rows he answered elsewhere still show as open
+## 94. [x] The mobile board re-renders the whole page on every store snapshot — Ben's "Sent ✓" marks vanish, the page jumps to the top, and rows he answered elsewhere still show as open (2026-09-07, PR #294)
 
 **Why:** Ben, chat 2026-09-07 17:3x, verbatim: *"It doesn't seem to save my inputs in the artifact —
 that is, every few seconds the page refreshes, jumps to the top of the page, and all of my 'marked
