@@ -630,6 +630,15 @@ trade for a pack rebuild than the single-block version was. *(Bench run 19; chec
 > 🤖 row in the Cragdrake Adult section. **Still open for Ben's veto**, and the other three rows of the run-19
 > family (Brandram Shockwave Slam / Reckless Advance, Tussock-Sow terrain square) are untouched — the brief
 > scoped the default to the Adult; they want the same call in one pass.
+> **R-81 default (a) APPLIED** in PR #230 (the three run-19 blocks, riding item 65's rebuild; item 67) —
+> the **Brandram's Shockwave Slam** `{bySize: false, distanceFt: 10}` (the dead `distanceFt: 5` beside
+> `bySize: true` replaced), the **Brandram's Reckless Advance** `{bySize: false, distanceFt: 10}`, the
+> **Tussock-Sow's Sudden Growth** `{sizeByRank: false, sizeFt: 10}` (the terrain square's analogue of
+> `bySize`) — each the card's own number, now bold on the card. The run-19 family is now closed on
+> default (a) end to end; **still open for Ben's veto** ((b) = fix the cards to the rank-2 numbers
+> instead). 🤖 three rows in the `34c` sub-block of the fleet-weapon bench section. Left alone: both
+> Sudden Growths (Sow, Grove) still place within Attunement Range by rank (30 / 60 ft) while their cards
+> say "within 10 ft" — the same family one field over, reported to the PM.
 
 *(R-49 — is a creature an obstacle for push collision damage — ANSWERED 2026-09-05, moved to §K.)*
 

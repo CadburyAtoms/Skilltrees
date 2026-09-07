@@ -2004,6 +2004,41 @@ mutation. TOOLING-only (no rebuild — the packs do not change). Found by item 4
 
 ---
 
+## 65. [x] 34c — the 44 later-bestiary attack items still `kind: action` (the rest of the fleet weapon migration) — DONE 2026-09-06, PR #230 (REBUILD; bench-pending)
+
+**Why:** item 34a (PR #220, 2026-09-06) migrated the 11 attack items across the 13 ORIGINAL
+statblocks to `kind: "weapon"` and put `edhaRuleBearer` on both actor-wide rule loops. Its worker
+measured the rest: the **39 bestiary statblocks statted after 07-18** (Reedling → The Cull-Alpha)
+carry **44 attack items still `kind: action`** — same model, same proof shape, not touched because
+34a's brief scoped it to the 11-of-13 table. Until they migrate, those blocks' attacks skip the
+system's native target + test-defense flow that 34a gave the originals, and any rider authored on
+them is harvested only because it sits on an action-typed item the loops still read.
+
+**What to do:** the 34a recipe over the 44: `kind: "weapon"` (natural weapons `alwaysEquipped:
+true`; maneuvers, reactions and any Frost-Lance-shaped ability stay actions — apply Ben's 07-18
+rulings by analogy and list every judgment call in the PR body), attack numbers preserved (same
+skill test + modifier), parity over the embedded docs with `_stats` stripped (N changed, 0 missing,
+0 roll differences — the 34a comparison script is the shape: `tmp/parity-34a.js` was gitignored,
+so re-derive it), lint pass 5 green, `validate-adversaries.js` 0 issues on a scratch build with
+`EDHA_DATA` pinned to the worktree. Extend 34a's `# BENCH — Fleet weapon migration` section with
+🤖 rows for the new blocks' weapon-borne riders (if any) and one render/roll-parity row.
+
+**Done when:** `grep -c '"kind": "action"' data/adversaries.json` counts no attack items (every
+remaining `action` is a maneuver / reaction / utility, listed by name in the PR); parity table in
+the PR; packs rebuild + validate clean; the bench rows exist.
+
+**PM:** lane B · model `fable-worker` (medium) · size M · deps 34a ✓ (#220) · verify: parity table +
+scratch build + validator. REBUILD + ⟳ Sync (Ben's deploy). Found by item 34a. **Landed:** 36 of
+the 44 flipped (35 natural weapons `alwaysEquipped`, the Construct-Smith's Forge-Hammer as registry
+`hammer`); the 8 that stay actions by 34a's analogy are the to-hit-only grabs (Seize and Roll, Drag
+Under), the 2-action maneuvers (The Stoop, Trampling Charge), the burst attack (Wingstorm) and the
+three Focus-costed Searing Bolts (Frost Lance's shape). Note: `kind` is never written as `"action"`
+in the data (it is the default), so the grep in "Done when" is 0 both before and after — the real
+count is items with `attack` and no `kind: weapon`, 44 → 8. Parity: 336 embedded docs, 39 changed
+(36 + item 67's 3), 0 missing, 0 roll differences; validator 0 issues; 11 🤖 rows.
+
+---
+
 ## 66. [x] A negative next-test rider on the DAMAGE path is joined as `base + -1d6` — 2026-09-06, PR #229
 
 **Why:** item 49 (PR #221) made `edhaWrapRollDamage` fold the taken next-test riders onto
@@ -2026,3 +2061,33 @@ paths call it. One 🤖 checklist row beside 2bI-4 plus a positive-rider negativ
 **PM:** lane B · model fable-worker · size S · deps 49 ✓ · verify: mutation. ENGINE-ONLY (F5).
 Found by item 49. **Landed:** `edhaJoinRiderTerm` (SHARED CORE, beside `edhaTidyFormula`);
 `tests/negative-rider-join.test.js` (7 pins); checklist 2bI-4d / 2bI-4e.
+
+---
+
+## 67. [x] The R-48 family: three more run-19 charge distances still `bySize` at rank 2 against rank-3 cards (R-81) — DONE 2026-09-06, PR #230 (rode item 65's rebuild; default (a) applied, open for Ben's veto)
+
+**Why:** R-46 (a) and R-48's applied default replaced `bySize` with an explicit `distanceFt` on the
+Cragdrake Whelp Pack's Reckless Advance (25 ft) and the Cragdrake Adult's Explosive Leap (20 ft)
+in item 57 (PR #226, 2026-09-06). Its worker found the same shape, untouched per its brief, on
+three more blocks from the run-19 table: the **Brandram's Shockwave Slam** (`bySize: true` beside
+a dead `distanceFt: 5`), the **Brandram's Reckless Advance**, and the **Tussock-Sow's terrain
+square** — all `bySize` at role rank 2 while their cards print the rank-3 numbers, so the engine
+moves less than the card promises. Board ruling **R-81** holds the choice; the PM's default is (a).
+
+**What to do (default (a)):** for each of the three, `bySize: false` + `distanceFt` = the card's
+own number, the card text stating it (the R-46 shape, `data/adversaries.json`); (b) would instead
+fix the three cards to the rank-2 numbers — do (b) only if Ben says so on the board before
+dispatch. Scratch build with `EDHA_DATA` pinned to the worktree, `validate-adversaries.js` 0
+issues, a LevelDB read-back diff naming exactly the three abilities; three 🤖 rows (each charge
+carries its card's distance). May ride item 65's adversaries rebuild if that dispatches first.
+
+**Done when:** the three rules carry an explicit distance matching their cards, the build diff
+names only them, the rows exist. REBUILD + ⟳ Sync (Ben's deploy).
+
+**PM:** lane R · model `fable-worker` (medium) · size S · deps 57 ✓ (#226), R-81 default · verify:
+build read-back diff + validator. REBUILD. Found by item 57. **Landed (a):** Shockwave Slam
+`{bySize: false, distanceFt: 10}` (edha-push), Reckless Advance `{bySize: false, distanceFt: 10}`
+(edha-move), Sudden Growth `{sizeByRank: false, sizeFt: 10}` (edha-burst — the terrain square's
+analogue of `bySize`); each card now bolds its number. The read-back diff names exactly these three
+docs beyond item 65's 36. Left alone, reported: the Sow's and the Grove's Sudden Growth still place
+within Attunement Range by rank (30 / 60 ft) while both cards say "within 10 ft".

@@ -3352,6 +3352,54 @@ The 34b loot half (chest caches, body search) is a separate later PR and has its
       its action-typed Strike/Bite and gains the weapon-typed one after one Sync click (position,
       HP, and the actor's other items kept); a renamed copy is skipped as before.
 
+## 34c — the later bestiary (item 65, 2026-09-06, REBUILD + ⟳ Sync) + the R-81 charge family (item 67)
+
+The 39 statblocks statted after 07-18 (Reedling → The Cull-Alpha) carried 44 attack-rolling items
+with no `kind`. **36 are weapon-type now** — 35 natural weapons `alwaysEquipped`, plus the
+Construct-Smith's Forge-Hammer as the registry `hammer`; the 8 that stay actions by the 07-18
+analogies are Seize and Roll, Drag Under (to-hit-only grabs), The Stoop, Trampling Charge (2-action
+maneuvers), Wingstorm (burst) and the three Searing Bolts (Focus-costed, Frost Lance's shape).
+Parity in the PR: 336 embedded docs, 39 changed (36 + item 67's 3), 0 roll differences. Item 67
+applies R-81 default (a) to the three run-19 blocks — open for Ben's veto on the ruling, but the
+rows below test what shipped.
+
+- [ ] 🤖 **34c render/roll parity — Lunavar Fens** — fresh Reedling + Stillback: Whip-Lash and
+      Ambush Bite sit in the WEAPONS section (always equipped); Whip-Lash rolls +4 / 1d6+1 impact,
+      Ambush Bite +6 / 1d10+3 keen. Seize and Roll stays an action.
+- [ ] 🤖 **34c render/roll parity — Malcurr Lakes + the Sevenbrand** — Wrongwake Breach Strike
+      +6 / 1d10+2 keen (weapon, always equipped); the Construct-Smith's Forge-Hammer is an ORDINARY
+      weapon (`hammer`, unequip toggle present), +5 / 1d8+2 impact. Drag Under stays an action.
+- [ ] 🤖 **34c render/roll parity — Goldenport Coast** — Garden Sow Tusk Rake +7 / 1d10+4 impact
+      (weapon); Trampling Charge stays a 2-action action. Keelshadow Breach and Drag +6 / 1d8+4 keen.
+- [ ] 🤖 **34c render/roll parity — Canticle Plains** — Callthief Take the Answerer +6 / 1d8+2 keen;
+      False Spring Glare-Strike +7 / 1d10+3 energy; Reeve-Owl Stoop of Office +6 / 1d8+2 keen.
+- [ ] 🤖 **34c render/roll parity — W29 balance-pass blocks** — Brandram Ram +7 / 1d10+3 impact,
+      Tussock-Sow Tusk Rake +6 / 1d10+2 keen, Surecat The Pounce Already Taken +7 / 1d8+2 keen; the
+      Noonwing's Wingstorm and The Stoop stay actions.
+- [ ] 🤖 **34c render/roll parity — Vorsk Ranges** — Cragdrake Alpha Rend +9 / 1d10+4 keen
+      (weapon); Cragdrake Adult Bite +7 / 1d8+2 keen (weapon) while its Searing Bolt is still an
+      ACTION that consumes 1 Focus (+6 / 1d6 energy).
+- [ ] 🤖 **34c render/roll parity — Ashkar Mesas** — Hazewyrm Elder Rend +9 / 1d10+4 keen (weapon);
+      Slagbull Gore +8 / 1d10+3 impact; both Hazewyrm Searing Bolts stay Focus-costed actions.
+- [ ] 🤖 **34c render/roll parity — Kettavar Tundra** — The Doubled Elder Raking Grasp +8 / 1d10+4
+      keen; Cull-Alpha Culling Bite +6 / 1d6+2 keen; both weapons, always equipped.
+- [ ] 🤖 **34c weapon-borne riders survive** (the `edhaRuleBearer` gate, second consumer set): a
+      fooled `edha-damage-rider` on a weapon-type item still fires — The Doubled's Raking Grasp adds
+      +1d6 ONLY against a target taken in by The Doubling (CONTROL: an un-fooled target gets the
+      bare 1d8+2); an on-hit `edha-gm-cue` on a weapon still whispers — Surecat's The Pounce Already
+      Taken posts its cue when its damage lands.
+- [ ] 🤖 **R-81 (item 67) — Shockwave Slam pushes 10 ft.** Brandram hits a PC token with Ram on a
+      clear lane: the victim is pushed **10 ft** (600 px at 300 px/5 ft), not 5; collision half 1d6
+      impact unchanged. The rule is `{bySize: false, distanceFt: 10}`; the card bolds "up to 10 ft".
+- [ ] 🤖 **R-81 (item 67) — the Brandram's Reckless Advance charges 10 ft.** Park a target ≥ 15 ft
+      away, target it, use Reckless Advance: the token travels **600 px** and the card reads "charge
+      up to 10 ft". CONTROL: from 5 ft away it stops adjacent (clipped by the target).
+- [ ] 🤖 **R-81 (item 67) — the Tussock-Sow's Sudden Growth places a 10-ft square.** Use it
+      (1 Focus, edha-burst terrain): the placed difficult-terrain square measures **10 ft** (600 px a
+      side), matching the Briar-Gone Grove's at rank 3; the card reads "A 10-ft square of mire".
+      Placement range is still by rank (30 ft at green 2) — the card's "within 10 ft" is a known,
+      reported drift, not this row's subject.
+
 ---
 
 # Goldenport Coast Bestiary (W27, rulings 97–98 — statted 2026-07-20)
