@@ -2515,7 +2515,7 @@ Found by item 10 batch 2.
 
 ---
 
-## 78. [ ] Fix pass 10 — Ambush Bite's doubled rider label survives fix pass 9 because the tidy runs before the card re-renders
+## 78. [x] Fix pass 10 — Ambush Bite's doubled rider label survives fix pass 9 because the tidy runs before the card re-renders — DONE 2026-09-06, PR #269
 
 **Why:** bench run 41 (2026-09-06, PR #265) drove fix pass 9's four rows on the hash-verified
 `f2fb3e2d…` engine: three passed, and the Ambush Bite formula bar STILL read
@@ -2533,8 +2533,16 @@ re-render — never a second render registration; keep the parentheses in the RO
 keeps only dice/operator/pool terms). Pin on the path fixed; keep fix pass 9's pins green. Audit
 the whole `edha-damage-rider` family (Prognosis printed an unfolded parenthetical too).
 
-**Done when:** the pin fails under reversion; bench run 42 reads `1d10 + 3 + 1d6[Ambush Bite]` off
-the card's own `.dice-formula` node 2 s after the card lands. ENGINE-ONLY (F5).
+**Done when:** the pin fails under reversion; bench run 42 reads
+~~`1d10 + 3 + 1d6[Ambush Bite]`~~ **`1d10 + 3 + (1d6)[Ambush Bite] + 0`** off the card's own
+`.dice-formula` node 2 s after the card lands. ENGINE-ONLY (F5).
+⚠️ **The expected string above was CORRECTED by the fix pass (PR #269), and the checklist row
+carries the corrected one.** The unparenthesised form is unreachable while the parentheses stay in
+the ROLL — which this item requires, and rightly: the system's graze clone keeps only
+DiceTerm/OperatorTerm/PoolTerm, so a bare rider die would ride grazes. Fix pass 9 wrote that
+expectation believing its display-layer tidy would drop the parentheses; the tidy never reaches this
+card (see the delta). The trailing `+ 0` is the system's own `+ ${rollData.mod}`. **Bench 42 must
+not fail the row for the parentheses.**
 
 **PM:** lane B · model opus (`test-pass-fixes`) · size S · deps #265 (the report) · verify: the
 pin + bench run 42. Dispatched 2026-09-06 23:21. Found by bench run 41.
