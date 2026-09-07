@@ -13,12 +13,36 @@ own event system underneath**, and authored rules may use both. As of system 2.1
 
 | | edha-* | native | total |
 |---|--:|--:|--:|
-| handler types | 68 | **12** | **80** |
+| handler types | 87 | **12** | **99** |
 | event types | 15 | **17** | **32** |
 
-*(Recounted 07-25 pass 2bU — the migration's handler builds had left the old 31/11 numbers far
-behind; `grep -c registerItemEventHandlerType` is the live count. `data/native-vocabulary.json` is a
-snapshot of the SYSTEM's half and does not change when the module adds one.)*
+*(Recounted 2026-09-06, item 24 — the 07-25 "68" had drifted to 87. The live count is now
+`EDHA_HANDLER_TYPES.length` / `EDHA_EVENT_TYPES.length` (or `edha.EDHA_HANDLER_TYPES.length` in the
+console) — `grep -c registerItemEventHandlerType` is **1** since the registry became a table. Headless:
+`node -e "const h=require('./tests/harness.js');const r=h.loadHandlerRegistry();console.log(r.events.length,r.handlers.length)"`.
+`data/native-vocabulary.json` is a snapshot of the SYSTEM's half and does not change when the module
+adds one.)*
+
+### The registry is a TABLE (item 24, 2026-09-06) — how to add a handler or event type
+
+`EDHA_EVENT_TYPES` and `EDHA_HANDLER_TYPES` are two top-level arrays in the `NATIVE EVENT SYSTEM`
+section (built in an IIFE that owns `FF`, `choices` and the deal-damage debounce), registered by
+ONE loop in `edhaRegisterNativeEventSystem()` — `for (const def of EDHA_HANDLER_TYPES)
+api.registerItemEventHandlerType(def)`. Each row is the exact object the system receives:
+`{ source, type, label, description, config: { schema: { <field>: new FF.XField({…}) } }, executor }`
+(the system calls `executor.call(this, event)` with `this` = the handler DataModel, so `this.<field>`
+reads the rule's config). Both arrays are on the `edha` API.
+
+**To add a handler type:** add a row to `EDHA_HANDLER_TYPES` (order = Events-tab picker order, so
+append unless the family it belongs to sits together), then regenerate the snapshot
+`tests/fixtures/handler-registry.snapshot.json` deliberately (one-liner in the header of
+`tests/handler-registry.test.js`) and say so in the delta. The pins that guard the table:
+`tests/handler-registry.test.js` (snapshot: type → ordered field names, label, description, hook;
+exactly one registration loop; the table elements ARE the registered objects; both on the API).
+Never add a second `api.register*Type(` call site — the loop pin fails. **Schemas are evaluated,
+not parsed:** `scripts/handler-schemas.js` (lint pass 9/9b, the item-64 build guard) and lint pass
+18 read the tables through `tests/harness.js` `loadHandlerRegistry()`, so a field or `choices`
+value you add is visible to the gates the moment the row exists.
 
 Native handlers: `grant-items` · `remove-items` · `modify-attribute` · `set-attribute` ·
 `modify-skill-rank` · `set-skill-rank` · `grant-expertises` · `remove-expertises` · `use-item` ·
@@ -89,8 +113,9 @@ accident of append order, so nothing in this index could point at them. Item 23 
 `BLUE / CALCULATION` · `HEROIC PATHS` · `BLUE / ILLUSION` · `BLUE / FORESIGHT` ·
 `RED / MOMENTUM + FRENZY` — then the cross-tree run below — then `DESTRUCTION` · `LIFE` · `CHAOS` ·
 `FATE` · `SOVEREIGNTY` · `DEATH` · `CIVILIZATION` · `POWER` · `KNOWLEDGE` · `ORDER` ·
-`GREEN / TERRITORY` · `GREEN / RESTORATION` · `GREEN / INSTINCT` · `NATIVE EVENT SYSTEM` ·
-`EDHA_CARD_BUTTONS`.
+`GREEN / TERRITORY` · `GREEN / RESTORATION` · `GREEN / INSTINCT` · `NATIVE EVENT SYSTEM` (the
+region-behaviour registration, the ONE registration loop, then the `EDHA_EVENT_TYPES` /
+`EDHA_HANDLER_TYPES` tables — item 24) · `EDHA_CARD_BUTTONS`.
 
 **The cross-tree run** — between the RED and DESTRUCTION banners; bannered by item 23
 
@@ -939,6 +964,12 @@ edhaQueueContest(owner, "<color>", async ({ total }) => {   // captures the owne
   in this field is authored data, not engine dispatch — same reasoning as `edha-enter-stance`'s
   `stance`. Consumers: Absolute Stillness, Calm Appeal, Resolute Stand. **The upgrade's document is
   then empty — declare it in the tree-section header** (rule 2b), as Vigilant Stance did.
+- **`whenTarget` (2026-09-06, item 63 / R-25)** on `edha-note`, via the pure gate
+  **`edhaNoteTargetGate(whenTarget, target)`** (pinned in `tests/note-target-gate.test.js`). The
+  TARGET-CONDITION dial: blank = always (every pre-existing note unchanged); `downed` = the note's subject
+  (R-64 victim chain) is at 0 health or carries `unconscious`; no target = no note; an unknown mode fails
+  OPEN. Consumer: Rousing Presence's `RouseRallying000` (Rallying Shout's revive reminder). Add a new
+  mode here, never a name-keyed branch, when another note needs a target condition.
 - vs a static **defense**: `edhaReadDefense(actor, "phy"|"cog"|"spi")` (no foe roll needed).
 - `edhaPromptDC(title,hint)`, `edhaRewriteOrRelay(...)` for GM-DC / roll-rewrite cases.
 - **No owner roll to capture** (a passive that fires on an event)? Roll the DC yourself and roll each
@@ -1942,6 +1973,7 @@ map onto it as `source` / (`mode` ∨ `formula`) / (`formula`, `count`) / `round
 | **`edhaNextModFoldMode(mods)`** | PURE. Folds N entries into the one `AdvantageMode` scalar: boolean-OR per direction; **a mixed advantage/disadvantage pair returns `null`** and the caller then writes nothing, so a cancelling pair never stomps the player's own dialog choice. |
 | **`edhaWriteNextMods(actor, list)`** | Writes the list back (`null` when empty) **through `edhaSetEdhaFlag`**, so a cross-actor clear relays to the GM — the old consumers called `unsetFlag` on the bearer directly, which silently did nothing for a victim the roller does not own. |
 | **`edhaJoinRiderTerm(base, formula, label?)`** (item 66) | PURE. THE one place a rider's sign is read when it is joined onto a formula: a leading minus becomes an explicit subtraction (`base - 1d6[label]`), anything else `base + term`; `[label]` is appended when given. BOTH paths call it — `edhaNextTestPreRoll` (base `"0"`, always labelled) and `edhaWrapRollDamage` (labelled on the subtraction only, so a positive damage rider is byte-identical to item 49's `base + 1d6`). Before this the damage reduce was a raw `${f} + ${m.formula}` and a `-1d6` `either` rider produced the parser-hostile `2d6 + -1d6`. Pinned in `tests/negative-rider-join.test.js`. |
+| **`edhaWrapRollDamage` — the runtime formula fold** (item 69, R-71's runtime half) | THE one wrapper over `CosmereItem#rollDamage` now folds the base damage formula BEFORE anything else: `options.overrideFormula ?? system.damage.formula` → `Roll.replaceFormulaData(…, actor.getRollData(), { missing: "0" })` → `edhaFoldDieMath` → written to `options.overrideFormula` ONLY when it changed (a plain formula leaves `options` byte-identical; no roll data → untouched). Then the passive riders (`edhaRiderBonus`), the next-test riders (`edhaJoinRiderTerm`, onto the FOLDED base), then `edhaSovStepOverride`. Exists because the cosmere system rolls a talent's own field verbatim and item 59's build-time fold cannot see `@tier`/`@skills.<color>.rank`. Contract: exactly one `edhaFoldDieMath` call in the wrapper, one wrapper in the engine — both pinned by source scan in `tests/runtime-formula-fold.test.js`. Never a second wrapper (rule 2a); never a talent name (rule 2b). |
 
 - **Writers APPEND.** `edhaSetNextTestMod` read-modify-writes through `edhaListPush` (cap
   `EDHA_NEXTMOD_CAP` = 12, evict oldest — a bound, not a design limit). Flags replicate to every
@@ -2288,12 +2320,14 @@ the first one lived inside the trample announcer, looked private, and got duplic
   derived value when present, else the AWA table (0→10 · 1→15 · 2–3→20 · 4→25 · 5+→30; pinned).
   The build writes adversary token `sight.range` from it (per-block `senses` field wins) — Foundry
   natively renders lit areas beyond sight.range, so token vision IS the rule with no module code.
-  ⚠️ **CHARACTERS ONLY, since 07-28i.** `edhaDeriveSheetStats` now writes the AWA table into
-  `system.senses.range.derived` for PCs, so `edhaSensesRangeFt` returns the Edha number for them;
-  ADVERSARIES still derive the cosmere ladder `[5,10,20,50,100,∞]` at ceil(AWA/2) on their sheets
-  while their tokens carry the build's flat 10 ft default. Three surfaces, two-and-a-bit rules —
-  **`EDHA_RULINGS.md` R-56** decides how far to extend it. Until then, do not assume a creature's
-  Senses Range and a PC's mean the same thing.
+  ✅ **ONE RULE FOR EVERY ACTOR TYPE since item 55 (R-56 (a), 2026-09-06).** `edhaDeriveSheetStats`
+  writes the AWA table into `system.senses.range.derived` for characters AND adversaries (it was
+  character-only from 07-28i, which left adversary sheets on the cosmere ladder's 5 while their
+  tokens carried a flat 10). The build's `advSensesRangeFt(adv)` (`scripts/foundry-build-parts.js`)
+  stamps the same table on the pack's prototype token — a block's explicit `senses` (ft) is the
+  bespoke override on both surfaces (Briar-Gone Grove, 30 ft, is the one instance) — and
+  `tests/adversary-senses.test.js` pins the build-time and runtime tables equal. A creature's
+  Senses Range and a PC's now mean the same thing.
 - **The aggro ledger** — every damaging item roll records the attacker TOKEN's last target
   (`aggro` flag, post-roll so an attack never counts itself; cleared at combat end). Solves the
   "GM owns every adversary, targeting is per-user" problem. **`edha-pack-advantage`** (sentinel):
@@ -2788,11 +2822,14 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
     `2d20kh + N` — correct behaviour, invisible preview.
   **Do not "fix" the engine for this.** If the die's colour cue is too subtle at the table, the
   answer is the whispered advantage card (the quarry site's, 07-27l), not a change to the channel.
-- **PC token defaults** (`edhaPcSightShape(actor)` + preCreateActor hook + AWA updateActor
-  watcher + `edha.fixPcTokens()`) — new character actors get displayName HOVER(30) and cosmere
-  "sense" sight (attenuation 0.1) with range = Senses Range (`edhaSensesRangeFtFromAwa`); the
-  watcher (single GM applier) pushes range onto prototype + placed tokens when AWA changes;
-  fixPcTokens retrofits existing PCs and their placed tokens.
+- **Token sight defaults** (`edhaPcSightShape(actor)` + preCreateActor hook + AWA updateActor
+  watcher + `edha.fixPcTokens()`) — new actors of EVERY type (item 55, R-56 (a); was character-only)
+  get cosmere "sense" sight (attenuation 0.1) with range = Senses Range (`edhaSensesRangeFtFromAwa`);
+  new CHARACTERS additionally get displayName HOVER(30) (adversaries keep Foundry's default so a
+  blank-created one does not leak its name on hover); pack-built/imported actors that already carry
+  a sight range are left alone. The watcher (single GM applier) pushes range onto prototype + placed
+  tokens when AWA changes, any type; fixPcTokens retrofits existing PCs and their placed tokens —
+  existing adversaries are re-stamped by "⟳ Sync Adversaries from Pack".
 - ⚠ FACT (07-18g): **never fold a DerivedValueField's `.bonus` into its `.override`** — the
   value getter adds `.bonus` on top of the override, so folding double-counts every AE
   (Surefooted's +10 displayed +20). Set the override to the base derivation only.
@@ -3109,6 +3146,30 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   **`edhaHealCutGate` has exactly TWO call sites** (`edhaCrossHeal`'s non-bypass branch + the
   effect-heal branch); the test counts them, so a third is either a new heal path you declare there
   or R-10 being reversed by accident. A plain heal on a withered creature is still blocked.
+  ⚠️ **Three heal paths still write `hea` WITHOUT the gate** (found by item 68, 2026-09-06, filed
+  not fixed — closing the gap changes live HP and needs a ruling): `edha-regen`'s turn-end write,
+  the decay lifesteal heal-back, and `edhaBurstDetonate`'s heal hits. `edhaApplyBurstResults`
+  itself must STAY ungated — Raise Dead's stabilizing 1 HP rides it (R-10 (3)); a burst gate
+  belongs in the emitter, the way `edhaCrossHeal`'s relay leg already gates before it emits.
+- **`edhaCrossHeal(actor, amount, {bypassHealCut})` RETURNS the amount DELIVERED** (item 68,
+  2026-09-06) — the gated number on the owned leg and the relayed leg alike, `0` when the mark
+  blocked it; the drop-to-1 bypass reports its full amount. Build every heal card from this, never
+  from the roll.
+- **`edhaHealLine(who, requested, delivered, phrase)`** — **THE heal announcement** (item 68, fix
+  pass 8; bench run 39). The one place that decides whether a heal number may be printed at all.
+  `phrase(delivered)` writes the normal clause and is only ever called with a number that landed,
+  so a HALVED mark simply reaches it with the halved value; when the gate zeroed the heal the
+  amount is **never** printed — the clause names the mark instead, in `edhaHealCutGate`'s own
+  words. Returns `""` when there is nothing to say (a genuine 0-amount heal with no mark — the
+  07-05 blank-card convention). Clauses come back **unpunctuated** so a caller can compose them
+  (`"…in X's place; Y heals 3."`). It READS the mark (`edhaHealCutInfo`), it does not apply it —
+  no new gate call site. Why it exists: `edhaCrossHeal` returned nothing, so all seven announcers
+  built their sentence from the roll and a blocked Field Medicine printed *"heals 5"* one line
+  under *"cannot regain HP"*. Consumers: H10's `hea` arm, Interposing Shield, Shared Burden, the
+  triggered-effect heal, the Life regen tick, the regrowth tick, Lifeline's intercept card — the
+  pulse sweep is the group case and counts deliveries instead.
+  **`tests/heal-announce-delivered.test.js` counts the call sites**, so a new heal card that skips
+  it fails the build.
 - **`edha-hp-threshold` grew `rangeColor`** (+ the ally / owner-token-on-scene gates are
   enforced in the sweep): the offer needs the owner ON the scene, the victim's token sharing its
   disposition (unknown fails CLOSED), and — when authored — the ally inside the colour's
@@ -3199,9 +3260,10 @@ next interpolation site inherits the fix instead of repeating the bug.
   load-bearing case is the one it must NOT touch: an already-singular configured label (`Edict`,
   `Harvested Remain`) comes back unchanged.
 - **`edhaAnnotateSentence(entryName, label, field, prohText, creatureBound)`** — the `edha-owner-list`
-  annotate card's sentence, extracted from the executor **so it can be pinned at all** (an executor
-  inside a `registerItemEventHandlerType` config is unreachable from the harness — see
-  `tests/spend-tag.test.js`'s note). Two shapes, because the ledgers are: a CREATURE-bound entry
+  annotate card's sentence, extracted from the executor **so it can be pinned at all** (until item
+  24 an executor inside a `registerItemEventHandlerType` config was unreachable from the harness —
+  see `tests/spend-tag.test.js`'s note; since 2026-09-06 `loadHandlerRegistry().handlers` hands back
+  every row's `executor`, the way `tests/heal-announce-delivered.test.js` already drives H10's). Two shapes, because the ledgers are: a CREATURE-bound entry
   reads possessively (*"the Edict on Roek"*), a POINT-bound marker names only itself, because the
   entry IS the thing being marked and there is no creature for an "on" clause to point at.
 
@@ -3241,6 +3303,24 @@ whisper. Pinned: `tests/pulse-sweep-counts.test.js`.
 - **An eviction that leaves no trace reads as a no-op.** At the marker cap the oldest square fizzles
   and the only sign was the "(N/N)" count staying put (R-37(1)). `edhaListPush`'s `res.evicted` is
   hoisted out of the `edhaOwnerListQueue` callback so the placement card can name what was spent.
+
+## Item 56 2026-09-06 (R-14 — melee mutation riders follow their own card's graze wording)
+
+- **`edhaApplyIsGraze(options)`** — was THIS applyDamage the graze half of a damage card? Reads an
+  explicit `options.edhaGraze` (engine callers), else the breadcrumb **`edhaWrapApplyClick`** stamps
+  around `CosmereChatMessage#onClickApplyButton` (wrapped at ready, libWrapper MIXED / prototype
+  patch) from the message's own `useGraze` toggle. ⚠ FACT: the system passes applyDamage NO
+  hit/graze marker — the graze total arrives as a plain number — so this breadcrumb is the ONLY
+  discriminator, and it lives exactly as long as the click. `edhaWrapApplyDamage` reads it
+  SYNCHRONOUSLY at the top and hands `graze` to the readers; never read it from the post-pass.
+- **The per-rule graze dial** — `edha-mutation` `keenOnGraze` / `venomOnGraze` and
+  `edha-regen-grant` `vitalOnGraze` (BooleanField, initial true). Baked onto the flag
+  (`mutation.onGraze` via the chooser's `data-edha-ongraze`; `apexForm.vitalOnGraze` at use).
+  `edhaLifeOutgoingBonus(dealer, list, item, graze)` / `edhaLifeVenomOnHit(dealer, victim, item,
+  graze)` stand down on a graze ONLY for an explicit `false` — a flag without the field keeps
+  today's behaviour. Wording rule (R-14): "on a hit" → off; "deal damage" / "hit or graze" → on.
+  `edha-damage-rider` bonuses need no dial (roll-formula terms the graze-clone guard already keeps
+  out of the graze roll). Pinned + mutation-checked: `tests/rider-graze-dial.test.js`.
 
 ## Item 52 2026-09-06 (R-27 — the rally stack is SPENT on the next test)
 

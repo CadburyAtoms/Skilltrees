@@ -1,7 +1,8 @@
 /* THE READY-HOOK ACTOR REFRESH, PINNED — fix pass 6 (2026-09-06), bench run 36's 64 ↔ 57 max-HP flip.
  *
  * The engine's `ready` hook wires the Edha derivations onto `Actor#prepareDerivedData`, then
- * refreshes every already-loaded character so the new max shows immediately. That refresh used to
+ * refreshes every already-loaded actor (characters for the max; since item 55 adversaries too, for
+ * their Senses Range) so the new numbers show immediately. That refresh used to
  * call `a.prepareData()` — and THAT was the defect, not any ActiveEffect and not any talent.
  *
  * The mechanism, from source rather than from the report:
@@ -57,7 +58,7 @@ function hardyActor(id = "Bench — White") {
 function readyRefreshReg(env) {
   const reg = [...env.__hooks.once, ...env.__hooks.on]
     .filter((h) => h.name === "ready")
-    .find((h) => /a\.type\s*===\s*"character"/.test(String(h.fn)));
+    .find((h) => /a\.reset\(\)/.test(String(h.fn)));   // the ONE engine site that calls reset() (pinned below)
   assert.ok(reg, "the ready-hook actor refresh registration must still be findable");
   return reg;
 }
@@ -80,10 +81,11 @@ test("the ready-hook refresh re-initialises from source — an ADD-mode AE lands
   } finally { env.CONFIG.Actor = priorConfigActor; world.undo(); }
 });
 
-test("the refresh skips non-characters and survives an actor that throws", async () => {
+test("the refresh reaches adversaries too (item 55: their Senses Range is derived here) and survives an actor that throws", async () => {
   const env = loadEngine();
   const npc = mockActor({ id: "adv", type: "adversary" });
-  npc.reset = () => { throw new Error("adversaries are not refreshed"); };
+  let npcReset = 0;
+  npc.reset = () => { npcReset++; throw new Error("an adversary that throws must not abort the sweep either"); };
   const angry = mockActor({ id: "angry", type: "character" });
   angry.reset = () => { throw new Error("boom"); };
   const ok = hardyActor("Bench — Blue");
@@ -94,6 +96,8 @@ test("the refresh skips non-characters and survives an actor that throws", async
     await readyRefreshReg(env).fn();
     assert.strictEqual(ok.system.resources.hea.max.bonus, 15,
       "one actor throwing must not abort the sweep — the per-actor try/catch is load-bearing");
+    assert.strictEqual(npcReset, 1,
+      "the sweep must reset() adversaries as well — since item 55 (R-56) edhaDeriveSheetStats writes their Senses Range, and a world adversary prepared before `ready` would otherwise show the cosmere ladder's 5 ft until its next update");
   } finally { env.CONFIG.Actor = priorConfigActor; world.undo(); }
 });
 

@@ -1,23 +1,33 @@
-/* scripts/handler-schemas.js — parse the engine's registered handler-config schemas.
+/* scripts/handler-schemas.js — the engine's registered handler-config schemas, EVALUATED.
  *
  * Foundry's DataModel SILENTLY DROPS any handler field that isn't in the handler type's
  * registered schema: the rule loads, the Events tab renders, and the mechanic just never
  * fires — the exact failure mode lint-refs pass 2 kills for TYPE names, one level down.
- * This module extracts, per handler type, the set of field names the engine actually
- * registers (`config: { schema: { … } }` in each registerItemEventHandlerType call), so
- * lint pass 9 can hold every authored `handler` object's keys to them.
+ * This module reports, per handler type, the set of field names the engine actually
+ * registers (and, per choices-field, the closed value set + initial), so lint pass 9/9b can
+ * hold every authored `handler` object to them and the item-64 build guard can refuse a
+ * generated rule whose type was never registered.
  *
- * Textual, not evaluated: the registration only runs inside Foundry (it needs the live
- * cosmereRPG API and foundry.data.fields), so the source is the only headless truth.
- * The scanner is string- and comment-aware because schema hints are full prose with
- * parentheses; it hard-fails if any call site fails to parse, so a style change in the
- * engine rots LOUDLY, not silently.
+ * EVALUATED, not parsed (item 24, 2026-09-06). Until item 24 this file regex-parsed the engine
+ * SOURCE for each `registerItemEventHandlerType({ … config: { schema: { … } } })` call, because
+ * the registration only ran inside Foundry. The engine now keeps its definitions as data
+ * (`EDHA_EVENT_TYPES` / `EDHA_HANDLER_TYPES`, registered by one loop), and tests/harness.js
+ * `loadHandlerRegistry()` runs that registration headlessly against a recording API with a
+ * `foundry.data.fields` stub — so the schemas here are the SAME objects Foundry receives, read
+ * from `config.schema` in declaration order, never recovered from text. A style change in the
+ * engine cannot rot a parser that no longer exists; a broken table fails at load, loudly.
  *
- * Zero dependencies. Used by scripts/lint-refs.js (pass 9) and tests/handler-schemas.test.js.
+ * Exported signatures are unchanged for the callers (lint-refs.js pass 9/9b, foundry-build.js
+ * `assertRegisteredHandlerTypes`, and their tests): `parseHandlerSchemas(src)` /
+ * `parseHandlerChoices(src)` still take the engine source but no longer read it — the registry is
+ * loaded once and memoized. `schemasFromRegistry` / `choicesFromRegistry` are the pure halves, for
+ * a caller (a test) that wants to feed a synthetic registry. `matchBrace` / `topLevelKeys` stay:
+ * scripts/dump-native-vocabulary.js still parses the SYSTEM bundle's registrations with them,
+ * and that bundle is not ours to evaluate.
+ *
+ * Zero dependencies beyond tests/harness.js (node:vm, node:fs, node:assert).
  */
 "use strict";
-
-const CALL = "registerItemEventHandlerType(";
 
 /* Index of the '}' matching the '{' at `start`, skipping strings and comments. */
 function matchBrace(src, start) {
@@ -77,38 +87,35 @@ function topLevelKeys(body) {
   return keys;
 }
 
-/* Map<handlerType, Set<fieldName>> for every registerItemEventHandlerType call in the
- * engine source. Throws if a call site yields no type or no parsable schema shape —
- * a rotted parser must fail the gate, never under-report. */
-function parseHandlerSchemas(src) {
-  const schemas = new Map();
-  let sites = 0;
-  // The search string ends in "(", so feature-check mentions of the API name (the engine's
-  // `!api?.registerItemEventHandlerType)` guard) never match — every hit is a real call.
-  for (let idx = src.indexOf(CALL); idx !== -1; idx = src.indexOf(CALL, idx + CALL.length)) {
-    sites++;
-    const next = src.indexOf(CALL, idx + CALL.length);
-    const slice = src.slice(idx, next === -1 ? src.length : next);
-    const tm = slice.match(/type:\s*"([^"]+)"/);
-    if (!tm) throw new Error(`parseHandlerSchemas: call at index ${idx} has no type: "…" literal`);
-    const type = tm[1];
-    const cm = slice.match(/config:\s*\{\s*schema:\s*\{/);
-    let fields = [];
-    if (cm) {
-      const schemaOpen = idx + cm.index + cm[0].length - 1;
-      const close = matchBrace(src, schemaOpen);
-      fields = topLevelKeys(src.slice(schemaOpen + 1, close));
-    }
-    if (schemas.has(type)) throw new Error(`parseHandlerSchemas: handler type "${type}" registered twice`);
-    schemas.set(type, new Set(fields));
+/* The engine's registry, loaded once per process through the test harness (a headless engine
+ * load is ~100 ms; lint-refs asks twice and foundry-build once per pack). */
+let _registry = null;
+function loadRegistry() {
+  if (!_registry) {
+    const { loadHandlerRegistry } = require("../tests/harness.js");
+    _registry = loadHandlerRegistry();
   }
-  if (!sites) throw new Error("parseHandlerSchemas: no registerItemEventHandlerType call sites found — engine renamed the API?");
-  if (schemas.size !== sites) throw new Error(`parseHandlerSchemas: ${sites} call sites but ${schemas.size} parsed types`);
+  return _registry;
+}
+
+/* Map<handlerType, Set<fieldName>> from a registry `{ handlers: [def…] }`. Throws if a handler
+ * has no type, a type registers twice, or the registry is empty — a broken table must fail the
+ * gate, never under-report. */
+function schemasFromRegistry(registry) {
+  const handlers = registry?.handlers;
+  if (!Array.isArray(handlers) || !handlers.length) throw new Error("schemasFromRegistry: no registerItemEventHandlerType registrations — engine renamed the API or emptied EDHA_HANDLER_TYPES?");
+  const schemas = new Map();
+  handlers.forEach((def, i) => {
+    const type = def?.type;
+    if (typeof type !== "string" || !type) throw new Error(`schemasFromRegistry: handler at index ${i} has no type`);
+    if (schemas.has(type)) throw new Error(`schemasFromRegistry: handler type "${type}" registered twice`);
+    schemas.set(type, new Set(Object.keys(def.config?.schema || {})));
+  });
   return schemas;
 }
 
 /* Map<handlerType, Map<fieldName, {choices:Set<string>, initial:string|null}>> — the CLOSED value
- * sets, for every schema field declared `choices: choices(…)`.
+ * sets, for every schema field constructed with a `choices` option.
  *
  * Pass 9 (field NAMES) exists because Foundry silently DROPS an unknown key. This is the harsher
  * twin: a value outside a StringField's `choices` is not dropped, it THROWS
@@ -124,43 +131,46 @@ function parseHandlerSchemas(src) {
  * `_validateSpecial`'s "may not be a blank string" and returns the initial, so `""` on a
  * choices-field with a legal initial is silently healed rather than fatal. Callers gate on that.
  *
- * Textual for the same reason parseHandlerSchemas is: the registrations only run inside Foundry. */
-function parseHandlerChoices(src) {
+ * The engine builds every closed set with its `choices("a", "b", …)` helper, which yields an
+ * object keyed by value (a blank value is labelled "(none)"); Foundry also accepts an array or a
+ * function. Object and array forms are read here; a function-valued `choices` cannot be enumerated
+ * headlessly and throws, so it can never pass silently. */
+function choicesFromRegistry(registry) {
+  const handlers = registry?.handlers;
+  if (!Array.isArray(handlers) || !handlers.length) throw new Error("choicesFromRegistry: no registerItemEventHandlerType registrations — engine renamed the API or emptied EDHA_HANDLER_TYPES?");
   const out = new Map();
-  let sites = 0;
-  for (let idx = src.indexOf(CALL); idx !== -1; idx = src.indexOf(CALL, idx + CALL.length)) {
-    sites++;
-    const next = src.indexOf(CALL, idx + CALL.length);
-    const slice = src.slice(idx, next === -1 ? src.length : next);
-    const tm = slice.match(/type:\s*"([^"]+)"/);
-    if (!tm) throw new Error(`parseHandlerChoices: call at index ${idx} has no type: "…" literal`);
+  for (const def of handlers) {
+    const type = def?.type;
+    if (typeof type !== "string" || !type) throw new Error("choicesFromRegistry: a handler has no type");
     const fields = new Map();
-    const cm = slice.match(/config:\s*\{\s*schema:\s*\{/);
-    if (cm) {
-      const schemaOpen = idx + cm.index + cm[0].length - 1;
-      const body = src.slice(schemaOpen + 1, matchBrace(src, schemaOpen));
-      // `<field>: new FF.<Kind>Field({ … })` — walk to the matching brace so a hint containing
-      // braces or parens cannot end the definition early.
-      const decl = /([A-Za-z_$][\w$]*)\s*:\s*new\s+FF\.(\w+)\(\{/g;
-      let m;
-      while ((m = decl.exec(body))) {
-        const braceAt = m.index + m[0].length - 1;
-        const end = matchBrace(body, braceAt);
-        const def = body.slice(m.index, end + 1);
-        decl.lastIndex = end;
-        const ch = def.match(/choices:\s*choices\(([^)]*)\)/);
-        if (!ch) continue;
-        const values = [...ch[1].matchAll(/"([^"]*)"/g)].map(x => x[1]);
-        if (!values.length) throw new Error(`parseHandlerChoices: ${tm[1]}.${m[1]} declares choices() with no string literals`);
-        const init = def.match(/initial:\s*"([^"]*)"/);
-        fields.set(m[1], { choices: new Set(values), initial: init ? init[1] : null });
-      }
+    for (const [name, field] of Object.entries(def.config?.schema || {})) {
+      const opts = field?.options ?? field ?? {};
+      const ch = opts.choices;
+      if (ch === undefined || ch === null) continue;
+      let values;
+      if (Array.isArray(ch)) values = ch.map(String);
+      else if (typeof ch === "object") values = Object.keys(ch);
+      else throw new Error(`choicesFromRegistry: ${type}.${name} declares choices as a ${typeof ch} — not enumerable headlessly`);
+      if (!values.length) throw new Error(`choicesFromRegistry: ${type}.${name} declares an EMPTY choices set`);
+      const init = typeof opts.initial === "string" ? opts.initial : null;
+      fields.set(name, { choices: new Set(values), initial: init });
     }
-    out.set(tm[1], fields);
+    out.set(type, fields);
   }
-  if (!sites) throw new Error("parseHandlerChoices: no registerItemEventHandlerType call sites found — engine renamed the API?");
-  if (out.size !== sites) throw new Error(`parseHandlerChoices: ${sites} call sites but ${out.size} parsed types`);
   return out;
 }
 
-module.exports = { parseHandlerSchemas, parseHandlerChoices, matchBrace, topLevelKeys };
+/* Map<handlerType, Set<fieldName>> for every handler type the engine registers. `src` is accepted
+ * for signature compatibility (callers used to hand over the engine source) and ignored: the
+ * registry is evaluated, not parsed. */
+function parseHandlerSchemas(src) { // eslint-disable-line no-unused-vars
+  return schemasFromRegistry(loadRegistry());
+}
+
+/* Map<handlerType, Map<fieldName, {choices, initial}>> for every handler type the engine
+ * registers. `src` accepted and ignored, as above. */
+function parseHandlerChoices(src) { // eslint-disable-line no-unused-vars
+  return choicesFromRegistry(loadRegistry());
+}
+
+module.exports = { parseHandlerSchemas, parseHandlerChoices, schemasFromRegistry, choicesFromRegistry, loadRegistry, matchBrace, topLevelKeys };

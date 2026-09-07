@@ -219,6 +219,10 @@ only placement directly under a creature does. *(3B-C.)*
 > trigger matches its wording; iron rule 2b — the dial lives on the rule, the handler reads it.
 > ENGINE + AUTHORED (rebuild + ↻ Sync if any rule changes) → **item 56**; headless pin per rider; 🤖
 > re-test on a nat-1 graze for one hit-only rider and one damage rider.
+> **SHIPPED** in PR #242 (REBUILD, bench-pending) — `edha-mutation.keenOnGraze` / `venomOnGraze`,
+> `edha-regen-grant.vitalOnGraze`, read through the new Apply-click graze discriminator
+> (`edhaApplyIsGraze`); Bone Spurs "melee attacks DEAL" → on, Venom Glands "melee HITS" → OFF (the one
+> change), Apex Form "DEALS … on all attacks" → on. `tests/rider-graze-dial.test.js`; 🤖 2bW-18 / 2bW-19.
 
 **R-15. Coercive Pressure no longer stacks with another next-test rider** (e.g. Probability Net) —
 the second write overwrites the first, because the bespoke Cognitive-disadvantage flag that allowed
@@ -456,6 +460,10 @@ restore the at-0-HP-only gate? *(3A-11 + checklist 2bM-6.)*
 > branch, which iron rule 2b forbids and the ratchet prevents. Shipping the dial alone would add an
 > engine path with no consumer — R-74/R-76's own complaint. **Needs a rebuild-class item; the
 > answer (c) stands unchanged.**
+> **SHIPPED** in PR #239 (REBUILD, bench-pending) — item 63: `edha-note` gained the generic `whenTarget`
+> field (blank | `downed` = target at 0 HP or Unconscious, pure gate `edhaNoteTargetGate`), and
+> `RouseRallying000` carries `whenTarget: "downed"`. tests/note-target-gate.test.js pins the three cases
+> plus the no-field case; heroic pack parity = 204 documents, 1 differs. 🤖 re-test = checklist 2bM-6b.
 
 *(R-57 — Pattern Recognition's round-expiry, kept — ANSWERED 2026-09-06, moved to §K.)*
 
@@ -548,6 +556,23 @@ agent to TEST, so it was in the wrong file. Original measurement: bench run 25.)
 > Packs **REBUILD** (Ben's deploy); TOOLING + DATA → **item 59**; pin with a build-report diff
 > showing only formula strings changed; bench visual check = Verdict's system card reads `2d8 + 5`
 > like its engine-rolled card.
+> **SHIPPED** in PR #234 (REBUILD, bench-pending) — `scripts/lib/fold-die-math.js`
+> (`foldDieMath`) wired into `foundry-build.js`, pinned against the engine's own `edhaFoldDieMath` in
+> `tests/fold-die-math.test.js`. ⚠️ **Load-bearing limit found while shipping it, worth reading before
+> the bench row above surprises anyone:** the fold can only resolve a `damage.formula` whose computed
+> dice math is ALREADY fully numeric — it has no actor to substitute `@tier`/`@skills.<color>.rank`
+> from at build time, so a genuinely rank/tier-scaled `[Tier][Die]` formula (Verdict's own
+> `(@tier)d(2 * @skills.blue.rank + 2)` included) folds to ITSELF, unchanged, exactly like the
+> engine's own copy before runtime substitution. Measured against every current `damageFormula` (51
+> in `data/talent-rolls.json`) and every authored `damage.formula` overlay: **none are fully numeric
+> today**, so a real build's folded-formula count is currently 0 — proven correct by mutation (a
+> scratch-only synthetic flat formula DOES fold end-to-end; see the item-59 PR body / handoff delta
+> for the isolated one-field diff). If Verdict's card still shows the parenthetical on the bench run,
+> that is this limit, not a regression — the deeper fix (folding the SUBSTITUTED, actor-specific
+> formula at roll time, mirroring what R-65 already does for engine-rolled cards) would need to hook
+> the system's own damage-roll pipeline, which is a different, ENGINE-side change outside item 59's
+> TOOLING + DATA scope. Left open here for Ben to decide whether that is worth a follow-up item.
+> **SHIPPED (runtime half)** in PR #237 (ENGINE-ONLY, bench-pending) — `tests/runtime-formula-fold.test.js`. Item 69 folds the same field inside `edhaWrapRollDamage` at ROLL time, with the roller's data substituted first, so the tier/rank-scaled formulas the build-time fold could not touch now print plain dice on the system's own card (`2d8 + 5` at tier 2 / rank 3); riders join onto the folded base. The item-59 Verdict 🤖 row under `# BENCH — Order` is this item's re-test.
 
 ---
 
@@ -861,6 +886,13 @@ this — it only decides how far the fix reaches. *(Marathon 3, fix pass E.)*
 > (Ben did not pick which). ENGINE + BUILD/DATA → pack **REBUILD** (Ben's deploy) + a world bulk
 > sync (now authorised) → **item 55**. Unblocks the "Adversary tokens see like PCs" row (AWA 0 → 10
 > ft) and its ⚑ feel sibling.
+> **SHIPPED** in PR #240 (REBUILD + world bulk sync, bench-pending) — guard gone at all three engine
+> sites (+ the `ready` refresh sweep now resets adversaries too); the build's `advSensesRangeFt`
+> replaces the flat 10; the override block is **Briar-Gone Grove, `senses: 30`** (a rooted
+> grove-heart has no eyes and perceives through its own soil). Pins:
+> tests/adversary-senses.test.js:"R-56: an adversary at AWA 0 derives 10 ft on the sheet (was the
+> cosmere ladder's 5)" and siblings; scratch read-back: 52 pack adversaries, 1 changed (the Grove),
+> 51 unchanged at 10. Ben: rebuild + deploy + press ⟳ Sync Adversaries from Pack.
 
 ---
 

@@ -1288,6 +1288,27 @@ on a nat-1 graze application.
 > deciding on its own fresh d20 (8). The Surgical data half stays COSMETIC-only on the owed deity
 > rebuild.
 
+**Item 56 (R-14, 2026-09-06) — the melee mutation riders follow their OWN card's graze wording.**
+Needs the deity pack REBUILT + ⟳ Sync on Bench — Life (the authored `edha-mutation` /
+`edha-regen-grant` rules carry the new dials) AND the F5 engine (the Apply-click graze
+discriminator). Drive: Adaptive Mutation on Bench — Life (or an ally), pick the adaptation, attack
+a dummy with a melee weapon, roll damage, click the card's **graze** subtotal so it is active,
+then **Apply**.
+
+- [ ] 🤖 **2bW-18 — a hit-only rider on a graze does NOTHING: Venom Glands ("melee HITS inflict
+      Afflicted", `venomOnGraze: false`).** Graze application → NO Afflicted, no affliction entry,
+      and the whispered note "🐍 Venom Glands (Life): graze — the venom needs a melee hit." Then a
+      HIT application (toggle back to the normal subtotal, Apply) → Afflicted + the ongoing-vital
+      entry as before (2bW-12's evidence). Also confirm the Events tab of Adaptive Mutation shows
+      the two new toggles (Bone Spurs: also fires on a graze = ON; Venom Glands = OFF).
+- [ ] 🤖 **2bW-19 — a damage rider on a graze APPLIES: Bone Spurs ("melee attacks DEAL additional
+      Keen", `keenOnGraze: true`).** Graze application → the "+N keen on the strike" card and the
+      extra keen instance land on the graze total exactly as on a hit. Optional third check: Apex
+      Form's +Tier vital ("DEALS additional Vital on all attacks", `vitalOnGraze: true`) also rides
+      the graze. A scene whose mutation flag was baked BEFORE this deploy carries no dial and keeps
+      firing on a graze — that is the designed fallback, not a bug (re-use the talent after the
+      scene reset to bake the new flag).
+
 ---
 
 # BENCH — Chaos (Maelith, deity)
@@ -1636,19 +1657,31 @@ Bench Ally — One drops to 1 health instead of 0"* landed it on HP **1**.
 ❌ **But that same take exposed a NEW defect — see the 🤖 row below: the card announces the UNGATED
 amount.**)*
 
-- [ ] 🤖 **DEFECT (bench run 39) — an `edha-focus` `resource: hea` rule announces the UNGATED heal
-      amount.** H10's health branch posts its card from the ROLLED number, while `edhaCrossHeal` →
-      `edhaHealCutGate` scales the actual write. Measured: a withered creature (`healCut
-      {fraction: 0}`) took a formula-5 heal, HP stayed **4 → 4** (correct), the gate card
-      *"🩸 … cannot regain HP (Withering Touch)"* printed (correct) — and then the engine printed
-      *"⚕️ Field Medicine: B39 Victim heals **5**."* (wrong; it healed 0). The HP is right and the
-      card lies, which is the drift direction §10 warns about: the card is what a player reads.
-      Blast radius is every `edha-focus` `hea` rule — **Field Medicine** is the shipped one — and the
-      HALVED case will misreport too (it will name the full amount where half landed). **Drive it**
-      by re-running the same pair and reading BOTH cards; the fix wants the executor to announce the
-      gated amount, or to say nothing when the gate zeroed it. *(Found while driving R-10's
-      load-bearing negative; the probe changed only the rule's formula and trigger event, never this
-      code path.)*
+- [ ] 🤖 **Field Medicine through a Withering mark — the card reads the DELIVERED number** (item 68,
+      fix pass 8; the bench run 39 defect, FIXED — engine-only, F5 is enough). Re-run run 39's exact
+      pair on a withered creature (`healCut {fraction: 0}`, Withering Touch) with an `edha-focus`
+      {gain, `resource: hea`, victim, formula 5} rule, and read BOTH cards: HP must stay **4 → 4**,
+      the gate card *"🩸 … cannot regain HP (Withering Touch)"* must still print, and the talent's
+      own card must now read *"⚕️ Field Medicine: … cannot regain HP (Withering Touch) — no healing
+      lands."* — **no number anywhere in it**. It used to say *"heals 5"* one line below the gate
+      card. *(Headless pins in `tests/heal-announce-delivered.test.js` drive the shipped executor and
+      cover this exact take; the bench half is the live-Foundry confirmation.)*
+
+- [ ] 🤖 **…and the HALVED mark reads HALF, not the full amount** (item 68). The same pair against a
+      `fraction: 0.5` mark (Necrotic Grasp): HP **4 → 6**, the gate card says *"has their healing
+      halved"*, and the talent's card must read *"heals **2**"*. This case was predicted by the run
+      39 row and never driven — it misreported the same way.
+
+- [ ] 🤖 **A group heal names who the mark stopped** (item 68). Run a `edha-pulse` heal (Mending Aura
+      shape) over three allies where one is withered and one is halved. The sweep card must read
+      *"healed 2 of 3 ally(ies) for **N** HP … — no healing landed on \<the withered ally\>"* — the
+      count is who was HEALED, not who was reached, and the HP is the total that landed. It used to
+      quote the per-target roll for everyone.
+
+- [ ] 🤖 **An Investiture gain onto a nearly-full pool announces the clamped delta** (item 68). An
+      `edha-focus` {gain, `resource: inv`} rule (Reaper's Harvest) on a creature 1 short of its
+      maximum: the card must say *"recovers **1** Investiture"*, and at a FULL pool it must post no
+      card at all — matching what `edhaGainFocus` has always done for focus.
 
 ---
 
@@ -2042,6 +2075,29 @@ both arms carry the same already-decided label (code read, stated as such, not a
 were authored by `Bench`, **8.6 s apart** (round 1's start plus round 2's), and a tight-window
 re-measure on the next advance produced **exactly one**. Not a two-GM double-apply.)*
 
+### Fix pass re-test (item 59, 2026-09-06 — TOOLING + DATA, REBUILD + ⟳ Sync)
+
+- [ ] 🤖 **R-71 — the system's own item-damage card reads folded plain dice, like its engine-rolled
+      twin.** Own Verdict, roll its damage straight off the item sheet (the SYSTEM's own "Roll
+      Damage", not an engine-triggered card), and read the formula line the chat card prints.
+      **Expect:** plain dice (`NdM [+ mod]`, e.g. `2d8 + 5`), never the raw parenthetical
+      `(N)d(2 * X + 2)`. **Read this before filing a FAIL:** the build-time fold
+      (`scripts/lib/fold-die-math.js`) only rewrites a `damage.formula` whose computed dice math is
+      ALREADY fully numeric in the pack — it cannot resolve `@tier`/`@skills.<color>.rank` (there is
+      no actor at build time), so Verdict's own formula is still `(@tier)d(2 * @skills.blue.rank +
+      2)` after this fix and is expected to keep printing the parenthetical until an actor's numbers
+      are substituted, exactly as before. If the card still shows the parenthetical, that is the
+      **known, provable limit of a build-time-only fold** (see PR #<item-59-PR> and R-71's SHIPPED
+      note), not a regression — record it as such rather than a FAIL, and route any objection to that
+      limit back through `EDHA_RULINGS.md` R-71 for Ben, not this row. What this row DOES prove: the
+      total is still correct (maths unchanged) and no other field on the card moved.
+      **↻ Re-test for item 69 (2026-09-06, ENGINE-ONLY, F5 — no rebuild needed):** the limit above
+      is now CLOSED at runtime — `edhaWrapRollDamage` substitutes the roller's data and folds the
+      formula before the system builds its roll, so with the item-69 engine live the expectation is
+      the FULL one: Verdict's system card reads `2d8 + 5` (tier 2 / rank 3), never the parenthetical.
+      A parenthetical after an F5 on the item-69 engine IS a FAIL for item 69. Also read the rider
+      case if one is queued: it must join onto the folded base (`2d8 + 5 + 1d6`).
+
 ---
 
 # BENCH — Heroic paths
@@ -2077,7 +2133,8 @@ paths).
 > the "so what do we do" half is **R-39**.
 > **ANSWERED 2026-09-06:** R-18 left alone — see the ruling for context, not touched by today's
 > batch. R-25 (c): print ONLY for an ally at 0 HP or carrying Unconscious (ruling answered
-> 2026-09-06 → item 47, ENGINE-ONLY, F5). R-39 (a): accept the colour cue, close it — see the roll
+> 2026-09-06 → item 47 could not ship it engine-only; **SHIPPED by item 63, PR #239, REBUILD heroic +
+> ⟳ Sync — re-test is 2bM-6b below**). R-39 (a): accept the colour cue, close it — see the roll
 > dialog row above.
 >
 > *(**2bC-1 · 2bF-14 · 2bF-16 — all three RETIRED on evidence 2026-07-27v.** Each had passed both of its
@@ -2374,6 +2431,17 @@ should land on the player's screen, not just the GM whisper.
 Cross-actor relay watch-items scattered through the tree sections (White Coordination §3, Life
 §5, Chaos §3…) need no dedicated tests — they self-verify while running the rows above; note
 anything that errors in the row's note box.
+
+## Re-test after item 63 (2026-09-06 — R-25 (c): `whenTarget: downed` on Rousing Presence's Rallying Shout note; **REBUILD heroic + ⟳ Sync Talents first**, then F5)
+
+- [ ] 🤖 **2bM-6b — Rallying Shout's reminder prints ONLY for a downed ally (R-25 (c), item 63, PR #239)** — on
+  **Bench — Heroic** with Rousing Presence + Rallying Shout owned, use Rousing Presence three times, targeting an
+  ally each time: **(1) ally at full HP, no status → NO "📣 Rousing Presence" Rallying Shout line** (the other
+  reminder lines, 2bM-5, still print); **(2) ally at 0 HP → the line prints** ("You may revive an Unconscious
+  ally. If the target is at 0 health it recovers its recovery die + N health"); **(3) ally Unconscious with HP
+  above 0 → the line prints**. Also confirm the field shows on the rule's **Events tab** as "Only when the
+  target is…" = downed (editability is the point of rule 2b). Before this fix run 11 saw the line on an ally at
+  **32 HP**; if it still prints at full HP the pack is stale — check DEPLOY STATE, not the engine.
 
 ## Re-test after the fix pass F fixes (2026-07-28m — three fixed; ⟳ sync the module + F5 first, NO rebuild, NO ⟳ Sync Talents)
 
@@ -3204,6 +3272,19 @@ the Cannon rolled `(2)d(2*3+2)+2+2 = 10` energy and applied exactly **8** throug
       - ✅ **ANSWERED 2026-09-06, R-56 (a): ONE rule — adversary sheets AND token sight use the Edha
         AWA table** (ruling answered 2026-09-06 → item 55, ENGINE + BUILD/DATA, REBUILD + world bulk
         sync). Row stays 🤖 for the re-measure once item 55 ships.
+      - 🚚 **SHIPPED 2026-09-06, item 55 (PR #240, REBUILD + world bulk sync — needs Ben's deploy AND
+        "⟳ Sync Adversaries from Pack" before the re-measure means anything).** The re-test, whole
+        population: on a freshly synced (or re-dragged) adversary, `system.senses.range.value` reads
+        **10** (AWA 0 → the Edha table; was 5) and `prototypeToken.sight.range` / the placed token's
+        `sight.range` read the SAME **10**, `visionMode "sense"` — zero sheet/token mismatches across
+        every adversary. Headless already holds it (tests/adversary-senses.test.js); this row is the
+        live confirmation.
+- [ ] 🤖 **Briar-Gone Grove — the bespoke `senses` override wins on both surfaces** — after the item-55
+      rebuild + sync, the Grove (Thalendor Heartwood Bestiary) reads Senses Range **30 ft** on its sheet
+      (`senses.range.override` 30, `useOverride` true — the engine's table write to `.derived` stays 10
+      underneath) and its prototype token AND a freshly dragged token carry `sight.range` **30**,
+      `visionMode "sense"`. Every other adversary stays at 10. This is the instance the 07-28j note said
+      did not exist ("0 of 52 carry any override"); a document read, not a look. *(Item 55, PR #240.)*
 - [ ] ⚑ **Adversary sight range — does 10 ft feel wrong? Say a number.** — with those tokens on a
       real map: adversary AWA 0 → **10 ft** is intended, but it is a **design dial**, not a bug.
       If it plays badly, give the number you want instead. *(Split 2026-07-27w; the config read is
@@ -4721,3 +4802,69 @@ VISIBLE are the actual behavior flips this pass made on purpose.
       correctly instead of getting a free extra use. If you have a save/actor from before 2026-08-10
       with a Cascading Failure / The Unmooring already detonated this scene, confirm it still refuses
       a second detonate.
+
+---
+
+# BENCH — Handler registry smoke (item 24)
+
+Engine-only, F5 / relaunch — no pack rebuild, no ⟳ Sync. Item 24 (PR #244) turned the ~2,500-line
+run of 102 sequential `registerItemEventType` / `registerItemEventHandlerType` calls into two tables
+(`EDHA_EVENT_TYPES` = 15 rows, `EDHA_HANDLER_TYPES` = 87 rows) registered by ONE loop, in the same
+order with the same objects. The repo-side proof is the byte-identical registry snapshot
+(`tests/fixtures/handler-registry.snapshot.json`) plus the full suite; these rows are the live
+smoke: the picker still lists everything, and one talent per handler FAMILY still fires end to end.
+Any bench actor works; put the named talent on it (drag from the atlas pack) if it is not there.
+Adversary rows are not needed — the table is the same object for both.
+
+## The picker (one row)
+
+- [ ] 🤖 **Every handler type still appears in the Events-tab picker.** Open any talent → Events tab →
+      add a rule → the Handler dropdown. Expected: **87** `Edha:`-labelled handler entries (every row
+      of `EDHA_HANDLER_TYPES`; the system's own 12 native handlers are extra) and, in the Event
+      dropdown, **15** `Edha:` event entries. Cross-check from the console:
+      `edha.EDHA_HANDLER_TYPES.length` → 87, `edha.EDHA_EVENT_TYPES.length` → 15, and
+      `Object.keys(CONFIG.COSMERE.items.events.handlers).filter(k => k.startsWith("edha-")).length` → 87.
+      Also confirm the boot log line `Edha Content | native event system registered` appears once
+      and no `registration failed` error precedes it.
+
+## One talent per handler family (the executors are unchanged objects; this proves the loop bound them)
+
+- [ ] 🤖 **Use-time grant family (`edha-cae-grant`) — Fast Talker** (heroic-agent). Use it → the
+      CAE tracker (or the honour-system fallback card) shows the granted Reaction group.
+- [ ] 🤖 **Gated test + success/fail dispatch (`edha-def-test` → `edha-test-success` /
+      `edha-test-fail`) — Cascade Collapse** (Chaos). Use it, roll the test on the card → the
+      success payload (owner-list + triggered effect) fires on a beat, the FAIL rule on a miss.
+- [ ] 🤖 **Watch family (`edha-watch` + the `edha-watch-rule` readers) — Guardian Stance**
+      (White, `edha-aura`) and **Resilient Hero** (heroic-leader, `edha-hp-floor`). Stance on, an
+      ally in range takes damage → the aura applies; Resilient Hero's floor holds HP at the formula.
+- [ ] 🤖 **Damage rider (`edha-damage-rider` on `edha-pre-deal-damage`) — Prognosis** (Life). Roll
+      damage with the rider's condition met → the bonus is folded into the damage roll.
+- [ ] 🤖 **Test rider (`edha-test-rider` on `edha-pre-test`) — Kneel** (Power). Make the matching
+      test → the rider's modifier shows on the roll dialog / result.
+- [ ] 🤖 **Burst / AoE (`edha-burst` on `edha-pre-use`) — Sudden Growth** (Green). Use → the
+      template places, detonates, and the captured tokens are reported on the card.
+- [ ] 🤖 **Movement (`edha-move` / `edha-push`) — Cruel Step** (Black). Use → the forced-move
+      prompt and the token move resolve as before.
+- [ ] 🤖 **Status family (`edha-apply-status` / `edha-self-status` / `edha-status-sweep`) — Vital
+      Diagnosis** (Life). Use on a target → the status lands and the card names it.
+- [ ] 🤖 **Draw-Mana pulse (`edha-pulse` on `edha-draw-mana`) — Black Leyline Attunement**
+      (Black). Draw Mana in Black → the sweep card reports both numbers (R-32 wording unchanged).
+- [ ] 🤖 **Apply-damage watchers (`edha-hp-threshold` / `edha-multi-hit` / `edha-overflow-thp` /
+      `edha-damage-convert` on `edha-apply-watch`) — Mender's Instinct** (Green, hp-threshold) and
+      **Flashpoint** (Red, multi-hit — the row the mutation proof dropped). An ally drops to half →
+      Mender's prompt; a Red burst hits 2+ → Flashpoint's choice prompt.
+- [ ] 🤖 **Zones + hazards (`edha-zone` / `edha-place-hazard`) — Bastion** (Civilization) and
+      **Pyre** (Destruction). Use → the region/drawing is placed and its behaviour type is the
+      registered `edha-content.*` one (region behaviours are registered by the same function, before
+      the loop).
+- [ ] 🤖 **Summons (`edha-summon` / `edha-summon-effect`) — Forge Construct** (Civilization). Use →
+      the construct actor + token appear in the Summons folder with the baked attack.
+- [ ] 🤖 **Prompt-pick + owner-list ledgers (`edha-prompt-pick` / `edha-owner-list` /
+      `edha-marker-command`) — Unweaving** (Chaos) and **Foreknown Strike** (Fate). The pick dialog
+      opens with its options; the ledger entry is written and the marker command consumes it.
+- [ ] 🤖 **Focus / temp-HP economy (`edha-focus` / `edha-temp-hp`) — Sovereign's Favor**
+      (Sovereignty) and **Reaper's Harvest** (Death). The temp HP writes to the module flag and shows
+      on the sheet; the focus gain lands on the test-success beat.
+- [ ] 🤖 **Reactions on a watched roll (`edha-test-react` / `edha-damage-react` /
+      `edha-reroll-react`) — Pack Sense** (Green) and **Shatter Focus** (Chaos). The reaction card
+      posts on the watched trigger and its button resolves.

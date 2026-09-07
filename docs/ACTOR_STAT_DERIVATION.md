@@ -76,7 +76,7 @@ on purpose (system comment: "Should only be the value, not include the bonus").
 | **Max Investiture** | 2 + max(AWA, PRE), only if attuned | **not derived for characters** — a manual field | `edhaDeriveInvestiture`: override = 2 + max(AWA, PRE); current clamped; override persisted to the sheet once per session, non-primary GMs defer (R-77) | none |
 | **Defenses** PHY / COG / SPI | 10 + STR+SPD / 10 + INT+WIL / 10 + AWA+PRE | **identical** (attribute values) + `bonus` | read-only (`edhaReadDefense`); `edha-defense-buff` applies scene/turn buffs as effects | `defenses.*.bonus`: phy 6, cog 10, spi 12 (Customary Garb, Collected, …) |
 | **Movement** (walk) | 20 + 5·SPD ft | ladder `[20,25,30,40,60,80][ceil((SPD+bonus)/2)]` | **override = 20 + 5·SPD** (SPD value), unless the sheet already carries its own override; effect bonuses add on top via the getter | `walk.rate.bonus` 5 (Surefooted +10, Walking Ruin, …), `walk.rate.override` 1 (Siege Form 0) |
-| **Senses range** | AWA 0→10, 1→15, 2–3→20, 4→25, 5–6→30 ft | ladder `[5,10,20,50,100,∞][ceil((AWA+bonus)/2)]` | **`.derived` overwritten with the Edha table** (AWA value); a hand-set override still wins; bonus still adds; the token's sight range is set from the same table | none |
+| **Senses range** | AWA 0→10, 1→15, 2–3→20, 4→25, 5–6→30 ft | ladder `[5,10,20,50,100,∞][ceil((AWA+bonus)/2)]` | **`.derived` overwritten with the Edha table** (AWA value) **for EVERY actor type — adversaries too since item 55 / R-56 (a)**; a hand-set override still wins (an adversary block's `senses` is written as exactly that); bonus still adds; the token's sight range is set from the same table (engine for new/edited actors, `advSensesRangeFt` in the build for the pack) | none |
 | **Recovery die** | WIL 0–1 d4, 2–3 d6, 4–5 d8, 6–7 d10 | `[d4,d6,d8,d10,d12,d20][ceil((WIL+bonus)/2)]` — same to WIL 6; **WIL 7+ gives d12 where canon says d10** | none (wizard preview mirrors the system ladder) | none |
 | **Lift / Carry** | not in canon | `[100,200,500,1000,5000,10000]` / `[50,100,250,500,2500,5000]` by ceil((STR+bonus)/2) lb | none | none |
 | **Deflect** | — | max(natural, best equipped armour) | none | Guardian Stance +1 Deflect (toggled effect) |
@@ -87,6 +87,21 @@ on purpose (system comment: "Should only be the value, not include the bonus").
 Net for a fresh level-1 character with every attribute 0: **Health 11 (engine) vs 10 (canon and
 system)**, Focus 2, Investiture 2, defenses 10/10/10, Move 20 ft, Senses 10 ft (system alone would
 say 5 ft), Recovery d4.
+
+### 3a. Adversaries (item 55, R-56 (a), 2026-09-06)
+
+Adversary actors run the same `prepareDerivedData` wrapper. Of the Edha layer above, **only the
+Senses row applies to them**: `edhaDeriveSheetStats` writes the AWA table into
+`senses.range.derived` first, for every actor type, and returns before the HP bonus and the walk
+override, which stay PC-only (adversary blocks carry explicit `hp` / `movement` overrides from the
+build instead). Adversary blocks have no attributes (all 0), so the table gives **10 ft** — the
+same number the build stamps on the pack's prototype token via `advSensesRangeFt(adv)`, so sheet
+and token agree; a block's `senses` field is the bespoke override on both (Briar-Gone Grove, 30
+ft). Before item 55 the sheet derivation was character-only, so every world adversary read the
+cosmere ladder's **5** against a token carrying a **flat 10** (bench run 22, 47/47 and 52/52).
+Because the wrapper installs at `ready`, the ready-time refresh sweep resets adversaries as well
+as characters — a world adversary prepared before that would otherwise show 5 until its next
+update.
 
 ## 4. Where the +1 came from — the history, dated
 

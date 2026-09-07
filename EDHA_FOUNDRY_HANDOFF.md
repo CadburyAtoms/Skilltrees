@@ -144,6 +144,365 @@ and the four `Frostbinder` / `Stonebound Captain` statuses noted in run 39 are i
 snapshot unchanged. Bench chat can be flushed (the run added ~220 messages). **`Bench` and
 `PlayerBench` were both logged out as the last in-world acts and both are selectable on `/join`
 again.**
+## 2026-09-06 — Item 24: the native event/handler registry is TABLE-DRIVEN — `EDHA_EVENT_TYPES` / `EDHA_HANDLER_TYPES`, one registration loop, schemas EVALUATED instead of regex-parsed (**ENGINE-ONLY → F5 / relaunch**; PR #244)
+
+**What changed.** `edhaRegisterNativeEventSystem()` was ~2,500 lines of **102 sequential**
+`api.registerItemEventType` / `api.registerItemEventHandlerType` calls (15 events + 87 handlers).
+The definitions are now DATA: two top-level arrays in the one engine file (iron rule 2a), built
+inside an IIFE so `FF`, `choices` and the deal-damage debounce map stay private, and registered by
+**one loop** — `for (const def of EDHA_EVENT_TYPES) api.registerItemEventType(def)` and the handler
+twin. Registration sites **102 → 1 loop**. Same order, same labels, descriptions, hooks and schema
+fields, and the SAME objects: the system binds an executor's `this` via
+`executor.call(this, event)` on the handler DataModel, so each array element is the former call's
+argument untouched and every closure / `this` binding is preserved. Both tables sit on the `edha`
+API (`edha.EDHA_HANDLER_TYPES`, beside `createLootCache`). The region-behaviour registration and the
+API guard in the function are untouched.
+
+**The tooling half.** `scripts/handler-schemas.js` used to regex-parse the engine SOURCE to
+recover each handler's field schema (lint pass 9/9b, the item-64 build guard). It now EVALUATES the
+tables: `tests/harness.js` gained a `foundry.data.fields` stub and `loadHandlerRegistry()`, which
+runs the registration against a recording API and hands back the very `config.schema` objects
+Foundry receives. `parseHandlerSchemas(src)` / `parseHandlerChoices(src)` keep their signatures
+(`src` ignored; memoized). lint-refs **pass 18** had its own source regex for `(type, hook)` — it
+reads the registry now too. `matchBrace` / `topLevelKeys` stay for `dump-native-vocabulary.js`,
+which parses the SYSTEM bundle we cannot evaluate. Parity on the pre-refactor engine: old parser
+vs evaluated registry produce identical schema and choices maps.
+
+**Proven, not asserted.** (1) `tests/fixtures/handler-registry.snapshot.json` — per event
+`{type, label, description, hook}`, per handler `{type, label, description, fields[]}` in
+declaration order — was generated from the OLD engine and **committed before the refactor**
+(`cf15416`); `tests/handler-registry.test.js` holds the engine to it byte-for-byte and the fixture is
+untouched by the refactor commits. (2) Mutation: dropping the `edha-multi-hit` row fails with
+`handlers: registered no more — edha-multi-hit (a dropped table row?)` (and lint pass 9 flags
+Flashpoint's rule as unregistered); restored → 966/966. (3) Pins: exactly one
+`registerItemEventHandlerType(` and one `registerItemEventType(` in stripped code; the table
+elements are `===` the recorded registrations; the API literal names both tables. `gates.js` 10/10.
+
+**🤖 for the bench** — `# BENCH — Handler registry smoke (item 24)`: the Events-tab picker still
+offers all 87 `edha-*` handler types (and 15 events), and one talent per handler family still fires.
+Nothing here is Ben's judgment.
+
+**Adding a handler now = adding a row** to `EDHA_HANDLER_TYPES` (`ENGINE_INDEX.md` has the
+recipe) and regenerating the snapshot deliberately (the test header carries the one-liner).
+
+---
+
+## 2026-09-06 DELTA — Item 68 / fix pass 8: a heal card states what was DELIVERED, not what was rolled (**ENGINE-only → F5**)
+
+Bench run 39, driving R-10's load-bearing negative through a real Withering Touch mark, measured
+this pair on one creature in one window: HP **4 → 4** (correct — the mark blocks it), the gate's own
+card *"🩸 B39 Victim cannot regain HP (Withering Touch)"* (correct), and then
+*"⚕️ Field Medicine: B39 Victim heals **5**."* The write was right and the card lied, one line under
+the card that said why. That is the §10 drift direction that costs a table the most: **the card is
+the only thing the players read.**
+
+### Bug root cause — ONE contract, seven announcers
+
+`edhaCrossHeal` scales its write through `edhaHealCutGate` and **returned nothing**. So every caller
+that announced a heal had exactly one number available — the roll — and used it. That is not a
+Field Medicine bug; it is every rule-driven heal card in the engine, and each one misreports a
+BLOCKED heal *and* a HALVED one (naming the full amount where half landed). The reported row is
+simply the arm the bench happened to drive.
+
+Fixed at the contract, in one shape:
+
+- **`edhaCrossHeal` now RETURNS the delivered amount** — the gated number on the owned leg and the
+  relayed leg alike, `0` when the mark blocked it. The drop-to-1 bypass still reports its full
+  amount. **No new `edhaHealCutGate` call site**: this reads the mark through `edhaHealCutInfo`, so
+  R-10's family count of exactly two gate calls is untouched (`tests/drop-to-one-family.test.js`
+  turns on that count and still passes).
+- **`edhaHealLine(who, requested, delivered, phrase)`** is the one place that decides whether a
+  number may be printed at all. `phrase(delivered)` is only ever called with a number that landed —
+  so a halved mark simply reaches it with the halved value — and when the gate zeroed it the amount
+  is **never** printed: the clause names the mark, in the gate's own words. Clauses come back
+  unpunctuated so a caller can compose them.
+- **All seven announcers wired**: H10's `hea` arm (Field Medicine — the reported row), Interposing
+  Shield's `heal-ally` button, Shared Burden's `redirect` button (the owner's damage number is
+  measured and unchanged; the note now says when less of it came back off the victim), the
+  triggered-effect heal (which already gated but still printed a bare `0`), the Life regen tick, the
+  regrowth tick, and Lifeline's intercept card.
+- **The pulse sweep** is the one GROUP card, and a group is where a single number cannot be true for
+  everyone — each creature carries its own mark. It counted reach and quoted the per-target roll
+  (*"healed 3 of 3 ally(ies) 4 HP"* when two of the three got nothing). It now counts who was
+  **healed**, totals what **landed**, and names whoever the mark stopped.
+- **The same drift one arm over.** TODO 68 asked for the `inv` / `foc` arms to be audited beside
+  `hea`. `foc` was already honest — `edhaGainFocus`/`edhaDrainFocus` announce `next - cur` and go
+  silent when nothing moved, which is the precedent this pass generalizes. `inv` announced the
+  rolled `n` against a **clamped** write, so a gain onto a nearly-full pool overstated by whatever
+  the clamp ate; it now reports the delta and stays silent at 0.
+
+### Proof
+
+`tests/heal-announce-delivered.test.js` drives the **shipped** executor: H10's `hea` arm lives
+inside a `registerItemEventHandlerType` config object, so the file registers the native event system
+against a recording api stub and calls the real executor with the real config — the same two cards
+Ben would read, in the same order. Bench 39's take is reproduced exactly (HP 4 → 4, gate card, then
+the talent's card), plus the halved case (`heals 2`, HP 4 → 6), the untouched no-mark case
+(`heals 5`), the regrowth / Life-regen / pulse announcers, the Investiture clamp, and the
+`edhaCrossHeal` return contract on both legs. **Mutations:** build the card from `n` again → the
+blocked and halved cases fail; give `edhaCrossHeal` back its bare `return` → seven cases fail across
+every announcer.
+
+### Found in passing — NOT fixed here (needs a ruling, not a commit)
+
+`ENGINE_INDEX.md` says *"any heal path that writes `hea` outside applyDamage MUST call the gate."*
+Three do not: **`edha-regen`**'s turn-end write, the **decay lifesteal** heal-back, and
+**`edhaBurstDetonate`**'s heal hits (which reach `edhaApplyBurstResults`, and that helper must stay
+ungated — Raise Dead's stabilizing 1 HP rides it, R-10). Their cards are honest about what they
+deliver, so item 68 does not touch them; but closing the gap changes **live HP at the table** (a
+withered creature would stop being healed by Mending Aura), which is an R-10-adjacent decision. It
+also needs the family test's gate-call count raised from 2 with a declaration. **Filed for the
+board, not decided here.** The decay lifesteal separately announces its pre-clamp `back` where the
+write is `min(max, cur + back)` — the same over-announcement the `inv` arm just lost.
+
+### New REUSABLE primitive
+
+- **`edhaHealLine(who, requested, delivered, phrase)`** — see `ENGINE_INDEX.md`. Any future heal
+  card joins the contract by calling it; the pinned family test counts the call sites, so a new
+  announcer that skips it is caught.
+
+---
+
+## 2026-09-06 — Item 56: the melee mutation riders follow their OWN card's graze wording, R-14 (**ENGINE + AUTHORED → deity pack REBUILD + ⟳ Sync**, Ben only; the engine half alone is F5)
+
+R-14 (Ben, (c) "follow each rider's own card"): "on a hit" = hit only; "when you deal damage" /
+"on a hit or graze" = grazes count. Root cause of the old behaviour: the system decides hit-vs-graze
+on the CHAT MESSAGE (`CosmereChatMessage#useGraze`, the card's subtotal toggle) and calls
+`actor.applyDamage(instances, { originatingItem })` with no marker, so the three riders that ride a
+buffed creature's own application — Bone Spurs (+keen, pre-pass), Venom Glands (Afflicted,
+post-pass) and Apex Form's +vital — could not tell a graze from a hit and fired on both. Now:
+- **`edhaApplyIsGraze(options)`** — `options.edhaGraze` if an engine caller says so, else the
+  breadcrumb the new `onClickApplyButton` wrap (`edhaWrapApplyClick`, at ready, libWrapper MIXED
+  or prototype patch) stamps for the lifetime of a card's Apply click. `edhaWrapApplyDamage` reads
+  it SYNCHRONOUSLY at the top (the post-pass runs after awaits, when the click is over) and hands
+  `graze` to both Life readers.
+- **The dial lives on the RULE (iron rule 2b):** `edha-mutation` grew `keenOnGraze` /
+  `venomOnGraze`, `edha-regen-grant` grew `vitalOnGraze` (BooleanFields, initial true). The chooser
+  carries each into the card (`data-edha-ongraze`) and the click bakes `mutation.onGraze`; the
+  regen-grant use bakes `apexForm.vitalOnGraze`. Readers stand down on a graze ONLY for an explicit
+  `false` — a flag baked before this deploy has no field and behaves exactly as before.
+- **Audit (all melee mutation riders):** Bone Spurs "melee attacks DEAL additional Keen" → on;
+  Venom Glands "melee HITS inflict Afflicted" → **off** (the one behaviour change); Apex Form
+  "DEALS additional Vital on all attacks" → on. `edha-damage-rider` bonuses (Spearing Beak,
+  Prognosis, Momentum's Edge, Kindle…) need no dial: they are roll-formula terms and the graze-clone
+  guard already keeps them out of the graze roll, so they were hit-only all along.
+- Proven: `tests/rider-graze-dial.test.js` (9 cases, each shown failing under a one-line
+  reversion — gate dropped, `=== false` loosened, breadcrumb unstamped, dial dropped from the
+  card); scratch `--ci` pack build green; BEFORE/AFTER compiled-pack diff = exactly 2 documents /
+  2 rules changed (Adaptive Mutation `MutatePick000000`, Apex Form `ApexGrant0000000`).
+- 🤖 checklist 2bW-18 (Venom on a graze: nothing) and 2bW-19 (Bone Spurs on a graze: applies).
+## 2026-09-06 — Item 55: ONE senses rule for PCs and adversaries, R-56 (a) (**ENGINE + BUILD/DATA → pack REBUILD + a world bulk "⟳ Sync Adversaries from Pack", Ben's deploy; PR #240**)
+
+R-56 (a), Ben: adversary SHEETS and TOKEN SIGHT use the Edha AWA table (0→10, 1→15, 2–3→20, 4→25,
+5+→30), exactly as PCs do. Bench run 22 had measured three surfaces disagreeing about the SAME
+creature: every world adversary's sheet read the cosmere ladder's **5** at AWA 0
+(`edhaDeriveSheetStats` was character-only), every pack token carried a **flat 10** the build
+hard-coded, and the sync pushed that 10 onto placed tokens whose actor still said 5.
+
+- **Engine (F5 half):** the `type !== "character"` guard is gone at the three sites — senses in
+  `edhaDeriveSheetStats` (now first, for every actor type; HP/Speed stay PC-only behind a later
+  guard), the `preCreateActor` token-default hook (a blank-created adversary gets cosmere "sense"
+  sight at table(AWA), but NOT the PC's HOVER(30) displayName — its name must not leak on hover),
+  and the AWA `updateActor` watcher (prototype + placed tokens, single GM applier). The `ready`
+  refresh sweep now resets EVERY actor, because a world adversary is prepared before the wrapper
+  installs and would otherwise show 5 until its next update.
+- **Build (REBUILD half):** `advSensesRangeFt(adv)` in `scripts/foundry-build-parts.js` — the
+  block's explicit `senses` wins, else the table at AWA 0 (adversary blocks carry no attributes) —
+  replaces the flat 10 in `advPrototypeToken`. `sensesRangeFtFromAwa` there is pinned equal to the
+  engine's `edhaSensesRangeFtFromAwa` for AWA 0..7 so the two copies cannot drift.
+- **Data:** `data/adversaries.json` — **Briar-Gone Grove gets `senses: 30`**, the one authored
+  override (a rooted grove-heart has no eyes and perceives through its own soil; its reach is the
+  arena, not an AWA-0 stare). The README's `senses` line now documents it as THE bespoke override.
+- **Proven:** seven one-line reversions (each guard, the flat 10, a drifted table, the Grove's
+  field, the sweep) each fail a named pin; scratch read-back before→after of the adversary pack:
+  52 actors, **1 changed** (the Grove: token 10→30 + sheet override 30), 51 unchanged at 10 —
+  the pack's number was already 10, so the rebuild moves the Grove and the ENGINE moves every world
+  sheet (5→10). `node scripts/gates.js --ci` green (packs build + both validators).
+- **Ben's deploy:** rebuild + deploy, then press **⟳ Sync Adversaries from Pack** (the world bulk
+  sync this ruling authorises) so placed tokens re-stamp from the pack. 🤖 rows: the "Adversary
+  tokens see like PCs" re-measure (AWA 0 → 10 on sheet AND token, whole population) and the new
+  Briar-Gone Grove override row (sheet 30, token 30).
+
+---
+
+## 2026-09-06 — Item 63: Rallying Shout's reminder prints only for a DOWNED ally — `whenTarget` on `edha-note`, R-25 (c) (**ENGINE + AUTHORED → REBUILD heroic + ⟳ Sync Talents** — Ben's deploy; PR #239)
+
+Fix pass 7a (item 47) stopped R-25 because the reminder is an **authored** `edha-note` rule
+(`RouseRallying000` on Rousing Presence, `whenOwnsTalent: "Rallying Shout"`) and `edha-note` had no
+target-condition field — the only engine-only route was a name-keyed branch, which rule 2b forbids.
+This item ships the rebuild-class shape the ANSWERED block asked for:
+
+- **Engine (F5 alone is inert here):** `edha-note` gains ONE generic schema field, **`whenTarget`**
+  (choices blank | `downed`), read by the new pure gate **`edhaNoteTargetGate(whenTarget, target)`**
+  next to `edhaRuleOwnsGate`. Blank = today's unconditional behaviour, so every other `edha-note` rule
+  is untouched; `downed` = the note's subject creature (R-64 victim chain: `options.victim` →
+  `options.target` → the clicking user's target) is at **0 health OR carries `unconscious`** — the two
+  cases the card names. No target with the dial set = no card; an unknown mode fails OPEN (a typo
+  never silences a note). The executor checks it right after the owns gate. No talent name enters the
+  engine — the allowlist is unchanged (empty).
+- **Authored (the consumer):** `data/authored/heroic-envoy.json` → `RouseRallying000.handler.whenTarget
+  = "downed"`; its description no longer claims always-print. **Heroic pack REBUILD + ⟳ Sync Talents**
+  before the bench can see it.
+- **Proven:** `tests/note-target-gate.test.js` — ally at 32 HP → no card; at 0 (and below) → card;
+  Unconscious above 0 → card; a rule without the field → card as before; each case shown failing under
+  its own one-line reversion (M1–M5 in the PR body). Scratch `gates.js --ci` green with `EDHA_DATA`
+  pinned to the branch's data; heroic pack parity against a main-data build: **204 documents, exactly 1
+  differs** (Rousing Presence — that rule's `whenTarget` + description, nothing else).
+- **🤖 bench:** checklist **2bM-6b** — three drives on Bench — Heroic after the rebuild (ally at full HP:
+  no 📣 line; ally at 0 HP: line; ally Unconscious above 0: line). Rulings: R-25 marked SHIPPED
+  (bench-pending, stays in its section).
+
+---
+
+## 2026-09-06 — Item 64: the build's `edha-aoe-template` generator is retired, and the pack writers now refuse any `edha-*` handler type the engine does not register (**TOOLING-only** — the packs do not change, proven by content hash)
+
+Fix-pass 7b (item 48, R-78) retired the `edha-aoe-template` handler, and its delta reported that
+`scripts/foundry-build.js`'s `aoeRule()` still minted that type for any `TALENT_TARGETING` entry
+with `.area` and no `.burst`. **Every `.area` entry checked:** Flame Surge, Set Charge, Mending
+Aura, Thorn Field all carry `.burst` (they already emit `edha-burst`); **Lay Foundation** is the
+only `.area`-alone entry, and it should NOT get an `edha-burst` — its mechanic is the persistent
+Foundation zone, which its authored overlay already supplies as an `edha-zone` rule (the overlay
+replacing the generated events is exactly why zero such rules ever reached a pack). So the
+generator is gone, not routed: `grep -c aoeRule scripts/foundry-build.js` = 0; the `.area`-alone
+case now emits nothing; `data/talent-targeting.json` is untouched.
+
+**The guard** lives at the pack WRITERS, not in lint-refs pass 9: pass 9 holds AUTHORED rules in
+`data/` to the engine's `registerItemEventHandlerType` calls, but a GENERATED rule never appears
+in `data/`, which is why it could not see this one. `scripts/lib/handler-type-guard.js`
+(`checkHandlerTypes`, pure) + `assertRegisteredHandlerTypes()` in both `writePack` and
+`writeActorPack` — every document that reaches a pack passes through one of the two, whatever
+generator or overlay produced it, and the build throws BEFORE the pack exists, naming the
+document, rule id, and type. Registered set = the same `parseHandlerSchemas` parse pass 9 uses.
+
+**Proven:** (a) parity — scratch builds before/after with `EDHA_DATA` pinned, content-hashed via
+`readPack` + `stableStringify` with `_stats.createdTime/modifiedTime` stripped (item 58's method):
+all five packs identical (`edha-leyline d69083a3…`, `edha-deity bb175843…`, `edha-heroic
+b5675fc3…`, `edha-items f302d215…`, `edha-adversaries 2f511f17…`); the build report's `events`
+count moves 37 → 36, which is Lay Foundation's masked rule no longer being generated. (b) mutation
+— re-adding a generator for `edha-aoe-template` in `talentEvents` makes the build exit 1 with
+`"Unity of Purpose" rule … has handler type "edha-aoe-template", which the engine never registers`;
+restored → PASS. `tests/handler-type-guard.test.js` pins the guard on fixtures, against the real
+engine (retired type rejected, `edha-burst` accepted), and that the generator stays gone. Nothing
+🤖 — no table behaviour changed.
+
+---
+
+## 2026-09-06 — Item 43: the phone board opens on "Needs you" — open-ruling and Ben-only cards, a stale-heartbeat banner (**DOCS/TOOLING** — no engine, no data)
+
+Ben, phone chat: scrolling the whole dashboard to find one answerable ruling was why rulings sat
+unanswered. `docs/pm-board-mobile.html` now opens on a **Needs you** view: one status line (PM
+awake/stopped, what is running, blocked-on-you yes/no), a stale-heartbeat banner (PM says awake but
+`pm/state.generatedAt` is over 60 minutes old — the 09-06 stall), a card per OPEN ruling, a card per
+`benOnly` ask, and a ⚑ count-and-link. Everything else (Now detail, Snapshot, Budget, Queue, the old
+For Ben list, the Inbox composer, Run log, the full Dashboard) moved under a collapsed `#more`
+`<details>`, state in `localStorage`, every access try/catch'd.
+
+- **`scripts/build-dashboard.js`**: new `parseOpenRulings(md)` walks `parseRulings()`'s own
+  sections/blocks (no new markdown parser) — a ruling is open when its own text carries none of
+  `**ANSWERED` / `**VETOED` / `**SETTLED` (the last catches the one §B stub that restates a §K
+  ruling without repeating its resolution, R-4); §J/§K are skipped outright; §I entries carry
+  `applied: true`. `mobileSnapshot()` fills each entry's `blocks` count via new `countCitations()`
+  (checklist + repo tabs; a migration code like `2bR-18` never counts as a citation of ruling
+  `R-18`) and ships `openRulings: [{id, section, ask, default, applied, blocks}]` in the dash
+  **index**, not a chunk — the cards render with no chunk fetch.
+- **`scripts/pm-state.js`**: new `parseBenOnly(md)` reads the board's "Waiting on Ben" line into
+  `state.benOnly` — one bullet per ask once the PM writes it that way, else a paren-depth-aware `;`
+  split on today's inline numbered prose (a semicolon inside an aside, e.g. "(seven items
+  bench-pending)", never counts — only a `(<digit>)` marker does).
+- **Card controls write the same inbox note the composer would**, via a new shared `sendNote()`:
+  **[Go with the default]** → `Re Rulings › <section> › R-n. <question>: <default>`; **[Other…]** →
+  an inline textarea, same prefix; §I "applied — veto?" cards get **[Keep]** / **[Veto…]**;
+  Ben-only cards get **[Done]** → `Re Waiting on Ben › <ask>: done.`. No control scrolls to the
+  composer.
+- **Proven:** `tests/pm-state.test.js` pins R-18/R-48 open and R-41/R-42/R-54 ANSWERED-closed
+  against the real `EDHA_RULINGS.md`, plus a synthetic fixture for the §B-stub / §I-applied /
+  §K-skip shape and the citation counter's migration-code guard. Verified in a local static
+  preview (`pm-state.js --inject`): both real open rulings render with correct default/no-default
+  text, the full-text expander pulls the real ruling body off the already-loaded Rulings tab, `#more`
+  toggles and persists, and the page still renders with `dbRef` absent (buttons toast instead of
+  throwing). The tracked page keeps `{}` in both snapshot slots; `EDHA_DASHBOARD.html` is byte-for-
+  byte unchanged (`openRulings` is mobile-only) and its `--check` gate still passes.
+- **Found, not R-80:** the item's own brief names "today R-18, R-48, R-80" as the open set; R-80
+  does not exist anywhere in the repo (`EDHA_RULINGS.md`, `docs/PM_BOARD.md`, a full-repo grep) —
+  only R-18 and R-48 are actually open today. Flagged for the PM rather than invented.
+
+---
+
+## 2026-09-06 — Item 69: `system.damage.formula` folds to plain dice at ROLL time, R-71's runtime half (**ENGINE-ONLY, F5**)
+
+Item 59 built R-71 (a) — fold `system.damage.formula` at BUILD time — and proved it a no-op on every
+current formula: all 51 are rank/tier-scaled (`(@tier)d(2 * @skills.blue.rank + 2)`) and cannot
+resolve without an actor. Ben's actual ask — Verdict's SYSTEM-rolled card reads `2d8 + 5` like its
+engine-rolled twin — needs the fold with the roller in hand. This is that half.
+
+- **Where:** inside `edhaWrapRollDamage` (the engine's ONE wrapper over `CosmereItem#rollDamage`,
+  iron rule 2a — no second wrapper). First thing it does now: take the base
+  (`options.overrideFormula ?? system.damage.formula`), `Roll.replaceFormulaData(…, actor.getRollData(),
+  { missing: "0" })`, `edhaFoldDieMath` it, and write the result to `options.overrideFormula` **only
+  if it changed** — so a formula that is already plain leaves `options` byte-identical. The next-test
+  riders (items 49/66) then join onto the FOLDED base exactly as before: `2d8 + 5 + 1d6`,
+  `2d8 + 5 - 1d6[Probability Net]`. Generic — reads the document field, never a name; the
+  name-keyed allowlist is untouched.
+- **Proven (mutation, `tests/runtime-formula-fold.test.js`, 9 pins):** tier 2 / rank 3 → `2d8 + 5`;
+  a different actor → `3d4 + 2`; plain `2d6 + 1` → identical, `options` still `{}`; no roll data →
+  raw formula untouched; riders join onto the folded base; item 66's plain-base strings unchanged;
+  source scan — the wrapper calls `edhaFoldDieMath` exactly once and there is one wrapper. Reverting
+  the `options =` line fails 4 pins; dropping the fold call fails 5 (the scan included).
+- **Not changed:** the build-time fold (item 59) stays as the guard for any future flat formula;
+  `edhaSovStepOverride` still runs after the fold, so a die-stepped roller now steps FOLDED dice
+  (same ladder, plainer input). Graze-clone behaviour is item 56's neighbourhood and was not touched.
+- **🤖 for the bench:** the item-59 Verdict row under `# BENCH — Order` is now THIS item's re-test —
+  after an F5 (no rebuild), the system's own "Roll Damage" card must read `2d8 + 5`, not the
+  parenthetical.
+---
+
+---
+
+## 2026-09-06 — Item 59: `system.damage.formula` folds to plain dice at BUILD time, R-71 (**TOOLING + DATA → pack REBUILD, Ben only**)
+
+R-71: the cosmere-rpg system rolls a talent's own `system.damage.formula` with no Edha engine
+involvement, so unlike an engine-rolled card (folded at RUNTIME by `edhaRollFormula`/
+`edhaFoldDieMath` per R-65) its chat card printed the raw parenthetical — measured on Verdict,
+`(2)d(2 * 3 + 2) + 5 = 10` next to the same talent's engine-rolled card reading `2d8 + 2 = 7`. Ben
+(a): fold at BUILD time.
+
+- **`scripts/lib/fold-die-math.js`** is the build-side twin of the engine's `edhaFoldDieMath` — same
+  two-regex fold loop, against a pure Node arithmetic evaluator standing in for `Roll.safeEval`
+  (there is no Foundry `Roll` global under plain Node, and `foundry-build.js` must not import the
+  engine). `foundry-build.js` now runs it over each talent's FINAL `system.damage.formula` (generator
+  or authored-overlay, whichever won) right before the doc is pushed to its pack; the engine's own
+  copy is untouched.
+- ⚠️ **This is a load-bearing limit, not a shortcut: it can only fold a formula whose computed dice
+  math is ALREADY fully numeric in the pack.** A `[Tier][Die]` formula such as Verdict's
+  `(@tier)d(2 * @skills.blue.rank + 2)` still carries unresolved `@`-refs at build time — there is no
+  actor to substitute `@tier`/`@skills.blue.rank` from until someone rolls it — so the fold is a
+  proven, deliberate no-op there (same as the engine's own copy before runtime substitution;
+  `tests/engine-helpers.test.js`'s "leaves unresolved @refs alone" pins the identical behaviour).
+  Measured against ALL 51 `damageFormula` entries in `data/talent-rolls.json` plus every authored
+  overlay's `damage.formula`: **zero are fully numeric today**, so a real build's
+  `folded-damage-formulas` count is currently **0** — this is correct, not a bug. The mechanism
+  activates the moment any talent's damage formula is flat/non-rank-scaled (no `@`-ref in its dice
+  math).
+- **Proof (parity, isolated by mutation):** built `edha-leyline`/`edha-deity`/`edha-heroic`/
+  `edha-adversaries`/`edha-items` twice into scratch modroots off IDENTICAL data — once with this
+  change, once without. Diffing every embedded document: **1044 field diffs, all `_stats.createdTime`/
+  `modifiedTime` wall-clock noise** (the same noise item 58's delta already documented for a
+  same-data double-build) — zero formula diffs, as expected. To prove the fold mechanism itself
+  fires end-to-end, a SCRATCH copy of `data/` (never the tracked files) had `Searing Bolt`'s
+  authored `damage.formula` mutated to a fully-numeric `"(1)d(2 * 3 + 2) + 5"`; building that scratch
+  data with the pre-fix code vs. this fix isolates to **exactly one field diff**:
+  `Searing Bolt: "(1)d(2 * 3 + 2) + 5" -> "1d8 + 5"`, nothing else moved. `tests/fold-die-math.test.js`
+  pins the three shapes item 59 names (rank-scaled → unchanged, plain → unchanged, flat-modifier →
+  folds) plus a formula-by-formula equivalence check against the engine's own `edhaFoldDieMath`
+  (loaded headlessly via `tests/harness.js`).
+- **🤖 for the bench, with the caveat above already written into the row:** checklist "Fix pass
+  re-test (item 59)" under `# BENCH — Order (Tessavain, deity)` — Verdict's system-rolled damage
+  card. Because Verdict's own formula is rank-scaled, the row does not expect the parenthetical to
+  disappear from ITS card; it re-confirms the total is still correct and nothing else moved, and
+  flags anyone who wants the deeper (actor-aware, runtime) fix back to `EDHA_RULINGS.md` R-71.
+
+---
+
 ## 2026-09-06 — ITEM 34b: loot caches + defeated-adversary search — the player-clickable chest lands (re-do of PR #103's loot half against today's engine; PR #233) (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
 
 **What it is.** Ben's painted-chest ask, approved 2026-07-18 and again 2026-09-05 ("Foundry didn't

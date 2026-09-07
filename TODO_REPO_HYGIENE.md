@@ -814,7 +814,7 @@ passes 20/21 unchanged; `gates.js` 10/10 PASS. Comment-only — the file changes
 
 ---
 
-## 24. [ ] Table-driven handler registry (the first real cut of #4)
+## 24. [x] Table-driven handler registry (the first real cut of #4) (2026-09-06, PR #244)
 
 **Why:** `edhaRegisterNativeEventSystem` is 2,537 lines of 103 sequential
 `registerItemEventType` / `registerItemEventHandlerType` calls. Because it is code, not data,
@@ -1423,7 +1423,7 @@ fixed. ENGINE-ONLY if a fix is needed.
 
 ---
 
-## 43. [ ] Phone board "Needs you" view — collapse the dashboard to what Ben must act on
+## 43. [x] Phone board "Needs you" view — collapse the dashboard to what Ben must act on (2026-09-06, PR #236)
 
 **Why:** Ben, phone chat 2026-09-06 (~09:20 ET, relayed by skilltrees-f4): "I've noticed I'm not
 working on rulings because for each I need to scroll through the phone dashboard, find one I can
@@ -1799,7 +1799,7 @@ row.
 
 ---
 
-## 55. [ ] One senses rule for PCs and adversaries alike (R-56)
+## 55. [x] One senses rule for PCs and adversaries alike (R-56) — DONE 2026-09-06, PR #240 (REBUILD + world bulk sync, bench-pending)
 
 **Why:** Ben (a): adversary sheets AND token sight should use the same Edha AWA table as PCs, not
 the flat 10 ft pack-token default or the raw cosmere ladder. This unblocks the "Adversary tokens
@@ -1817,9 +1817,24 @@ still reads correctly; packs rebuild clean.
 **PM:** lane B · model opus · size M · deps none · verify: pack rebuild (Ben's deploy) + a world
 bulk sync (authorised by this ruling). REBUILD + world bulk sync.
 
+**Shipped 2026-09-06 (PR #240):** the guard is gone at `edhaDeriveSheetStats` (senses now run
+for every actor type; HP/Speed stay PC-only below a later guard), the `preCreateActor` token-default
+hook (adversaries get sight = table(AWA) too, without the PC's HOVER displayName), and the AWA
+`updateActor` watcher; the `ready` refresh sweep resets every actor, not just characters, so a world
+adversary prepared before the wrapper installs shows the new number at load. The build reads
+`advSensesRangeFt(adv)` (`scripts/foundry-build-parts.js`, table pinned equal to the engine's
+`edhaSensesRangeFtFromAwa` for AWA 0..7) instead of a flat 10. The override block is **Briar-Gone
+Grove, `senses: 30`** — a rooted grove-heart has no eyes and perceives through its own soil, so its
+reach is the arena. Proof: seven one-line reversions each fail a pin in
+`tests/adversary-senses.test.js` / `derived-stats` / `prepare-refresh-reset`; scratch pack read-back
+before→after: 52 adversaries, **1 changed (the Grove: token 10→30, sheet override 30), 51 unchanged
+at 10** — the pack number was already 10 at AWA 0, so what the rebuild changes is the Grove and what
+the ENGINE changes is every world adversary's SHEET (5→10); the bulk sync then pushes token 10 onto
+placed tokens that agree with their actor for the first time.
+
 ---
 
-## 56. [ ] Melee mutation riders follow their own card's graze wording (R-14)
+## 56. [x] Melee mutation riders follow their own card's graze wording (R-14) — DONE 2026-09-06, PR #242 (ENGINE F5 + deity pack REBUILD + ⟳ Sync; Venom Glands is the one behaviour change — hit only; Bone Spurs and Apex vital stay on for grazes, now explicitly)
 
 **Why:** Ben (c): "follow each rider's own card" — "on a hit" riders should fire on a hit only;
 "when you deal damage" / "on a hit or graze" riders should also fire on a graze. Today all riders
@@ -1893,7 +1908,7 @@ parity for the re-key. REBUILD + ⟳ Sync.
 
 ---
 
-## 59. [ ] Fold `system.damage.formula` into plain dice at build time (R-71)
+## 59. [x] Fold `system.damage.formula` into plain dice at build time (R-71) — DONE 2026-09-06, PR #234
 
 **Why:** The system's own item-damage card prints the unfolded authored formula string instead of
 resolved dice. Ben (a): fold it at BUILD time, the same fold `edhaRollFormula` already does at
@@ -1967,7 +1982,14 @@ item 47's W29 §2 bench row measure first.
 
 ---
 
-## 63. [ ] Rallying Shout's reminder prints only for a downed ally — a target-condition dial on `edha-note` (R-25)
+## 63. [x] Rallying Shout's reminder prints only for a downed ally — a target-condition dial on `edha-note` (R-25 — 2026-09-06, PR #239; REBUILD heroic + ⟳ Sync, bench-pending)
+
+**Done 2026-09-06:** `edha-note` gained ONE generic field, `whenTarget` (blank | `downed`), read by the
+pure gate `edhaNoteTargetGate(whenTarget, target)` on the R-64 victim chain; `RouseRallying000` carries
+`whenTarget: "downed"`. Pinned in `tests/note-target-gate.test.js` (32 HP → no card; 0 HP → card;
+Unconscious above 0 → card; no field → card as before; each failing under a one-line reversion). Pack
+parity: 204 heroic documents, exactly 1 differs (Rousing Presence, that rule's `whenTarget` + description).
+Bench re-test = checklist **2bM-6b** (🤖).
 
 **Why:** Ben answered R-25 (c) on 2026-09-06: print ONLY for an ally at 0 HP or carrying
 Unconscious, the two cases the card names. Item 47 (PR #215) stopped this one instead of shipping
@@ -1991,7 +2013,7 @@ field; packs rebuild clean; 2bM-6 is 🤖 with the three cases.
 
 ---
 
-## 64. [ ] `foundry-build.js` still mints `edha-aoe-template` rules — a type the engine retired (R-78)
+## 64. [x] `foundry-build.js` still mints `edha-aoe-template` rules — a type the engine retired (R-78) — DONE 2026-09-06, PR #238 (TOOLING-only; packs content-hash identical)
 
 **Why:** item 48 (PR #217, 2026-09-06) retired the `edha-aoe-template` handler on Ben's R-78 (a) —
 zero consumers in shipped data. But `scripts/foundry-build.js`'s `aoeRule()` still GENERATES an
@@ -2104,3 +2126,81 @@ build read-back diff + validator. REBUILD. Found by item 57. **Landed (a):** Sho
 analogue of `bySize`); each card now bolds its number. The read-back diff names exactly these three
 docs beyond item 65's 36. Left alone, reported: the Sow's and the Grove's Sudden Growth still place
 within Attunement Range by rank (30 / 60 ft) while both cards say "within 10 ft".
+
+---
+
+## 68. [x] Fix pass 8 — an `edha-focus` `resource: hea` rule announces the UNGATED heal amount — DONE 2026-09-06 (ENGINE-ONLY, F5)
+
+**Why:** bench run 39 (PR #228, 2026-09-06), driving R-10's family through a real Withering Touch
+mark, found that an `edha-focus` rule with `resource: hea` writes the GATED amount correctly (HP
+4 → 4, the No-Healing gate card printed) and then announces the UNGATED one: *"⚕️ Field
+Medicine: B39 Victim heals **5**."* when it healed 0. The HP is right; the card lies. Blast radius
+is every `edha-focus` `hea` rule — **Field Medicine** is the shipped one — and the Healing-Halved
+case misreports the same way (announces the full amount, delivers half). A card is what the table
+reads to decide what happened, so this is the same class as R-36's mislabelled Temp HP.
+
+**What to do:** in the `edha-focus` executor's `hea` branch (grep `type: "edha-focus"` and its
+`resource === "hea"` arm in `module-src/scripts/register-skills.js`), announce what
+`edhaHealCutGate` actually delivered — the returned amount, not `n`; when the gate delivered 0,
+say so ("healing blocked — <mark>") rather than printing a number. Audit the neighbouring
+announcers (the `inv` / `foc` arms, `edhaCrossHeal`'s card) for the same shape. Headless pins:
+gated to 0 → the card names 0 / blocked; halved → the halved number; ungated → unchanged text;
+each shown failing under a one-line reversion. 🤖 re-test = bench 39's defect row (Field Medicine
+through a Withering mark reads the delivered number).
+
+**Done when:** the pins pass and fail under reversion; the 🤖 row exists; the delta names the
+card text change. ENGINE-ONLY (F5).
+
+**Done 2026-09-06 (ENGINE-ONLY, F5):** the root cause was the CONTRACT, not the talent —
+`edhaCrossHeal` gates its write and **returned nothing**, so all **seven** heal announcers built
+their sentence from the only number they had (the roll) and every one of them misreports a blocked
+heal *and* a halved one. `edhaCrossHeal` now returns the delivered amount (owned and relayed legs
+alike; the drop-to-1 bypass still reports its full amount, and **no new `edhaHealCutGate` call
+site** — R-10's family count of 2 stands), and **`edhaHealLine(who, requested, delivered, phrase)`**
+is the one place that decides whether a number may be printed: `phrase()` only ever sees a number
+that landed, and a zeroed heal names the mark instead. Wired at H10's `hea` arm, Interposing Shield,
+Shared Burden, the triggered-effect heal, the Life regen tick, the regrowth tick and Lifeline; the
+pulse sweep now counts who was **healed** and totals what **landed**. The audit the item asked for
+found the same drift one arm over — `inv` announced the rolled `n` against a clamped write, now the
+delta (`foc` was already honest, and is the precedent). Pins in
+`tests/heal-announce-delivered.test.js` drive the **shipped** executor (native event system
+registered against a recording api stub) and reproduce bench 39's take exactly; both mutations fail
+(card from `n` → 3 cases; bare `return` → 7 cases). Four 🤖 re-test rows filed.
+**Found in passing, NOT fixed:** three heal paths still write `hea` without the gate
+(`edha-regen`, the decay lifesteal, `edhaBurstDetonate`'s hits) — their cards are honest, but
+closing the gap changes live HP and needs an R-10-adjacent ruling plus a declared third gate call.
+See the handoff delta.
+
+**PM:** lane B · model opus (`test-pass-fixes`) · size S · deps bench 39 ✓ · verify: mutation pins.
+ENGINE-ONLY (F5). Found by bench run 39. Dispatched 20:15 in a worktree.
+
+---
+
+## 69. [x] R-71's real fix — fold a talent's damage formula at ROLL time when the system rolls it (the build cannot) (2026-09-06, PR #237)
+
+**Why:** item 59 (PR #234, 2026-09-06) built R-71 (a) exactly as ruled — fold `system.damage.formula`
+into plain dice at build time — and proved it is a **no-op on every current formula**: all 51
+`data/talent-rolls.json` entries and every authored overlay are rank / tier-scaled
+(`(@tier)d(2 * @skills.blue.rank + 2)` and kin), which cannot fold without an actor to substitute
+`@tier` / `@skills.<color>.rank`. Real-data parity showed 0 formula diffs; only a synthetic flat
+formula folds. So the thing Ben actually asked for — *Verdict's system card reads `2d8 + 5` like
+its engine-rolled card* — still does not happen: the cosmere-rpg system rolls a talent's own
+damage straight off the field and prints the raw parenthetical. The fold has to happen at ROLL
+time, with the actor in hand.
+
+**What to do:** in the engine's existing wrap of the system's damage roll (`edhaWrapRollDamage` —
+it already rewrites `overrideFormula` for next-test riders, item 49 / 66), substitute the actor's
+roll data into `system.damage.formula` (`Roll.replaceFormulaData(formula, actor.getRollData(),
+{ missing: "0" })`) and fold it with `edhaFoldDieMath` before the system builds its roll, so the
+chat card prints plain dice; keep item 49's rider join on top of the folded base. Iron rule 2a:
+no second wrapper — extend the one that exists. Headless pins: a rank-scaled formula on a rank-2
+actor folds to plain dice on the wrapped roll; a plain formula is byte-identical; a rider still
+joins onto the folded base; each shown failing under a one-line reversion. 🤖 = the item-59
+Verdict row (its system card reads `2d8 + 5`).
+
+**Done when:** the pins pass and fail under reversion; the Verdict row is the re-test; R-71's
+SHIPPED note says which half lives where (build guard = item 59, runtime fold = this item).
+ENGINE-ONLY (F5).
+
+**PM:** lane B · model `fable-worker` (medium) · size S · deps 59 ✓ (#234) · verify: mutation
+pins. ENGINE-ONLY (F5). Found by item 59.
