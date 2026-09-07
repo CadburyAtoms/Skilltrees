@@ -3181,7 +3181,7 @@ page rendering + `node scripts/gates.js`. TOOLING-only (+ PM republish).
 
 ---
 
-## 95. [ ] Rulings close-out 2026-09-07 evening, part 2 — R-90 (a) and R-91 (a) from the phone inbox; retire the R-62 audience row
+## 95. [x] Rulings close-out 2026-09-07 evening, part 2 — R-90 (a) and R-91 (a) from the phone inbox; retire the R-62 audience row (2026-09-07, PR #292)
 
 **Why:** Ben answered two more rulings from the phone at 17:25 ET, after item 91 had already been
 dispatched (and this repo's PM cannot message a running worker), so they get their own small

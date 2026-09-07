@@ -531,6 +531,12 @@ only when the rule's own note contains a GM instruction — more surgical, but i
 property of prose. (c) leave everything public and delete the GM instruction from the three card texts
 instead — cheapest, but it also shows the players the boss's healing roll. *(Bench run 43, 2026-09-07;
 implementation is `TODO_REPO_HYGIENE` item 88, which is blocked on this answer.)*
+> **ANSWERED 2026-09-07 17:25 (Ben, phone inbox), verbatim (the row's own (a) text tapped): "(a)
+> whisper to `edhaWhisperIds(owner)` when the owner has no player OWNER — i.e. an adversary — and
+> leave a player-owned actor's card public. One helper call per poster, and it is exactly what
+> `edhaPostCueCard` already does for adversary cues."** **Item 88** (opus, engine-only) applies it.
+> **Not shipped yet** — stays open here until item 88 lands and the bench confirms it, then moves
+> to §K.
 
 ---
 
@@ -549,6 +555,13 @@ disconnect `Gamemaster` for one deliberate window so a bench run can drive all s
 about ten minutes of your time, once. (c) keep it open indefinitely. *(Bench run 43, 2026-09-07 — the
 row is annotated with this derivation and stays 🤖 until you answer; a technical blocker never becomes
 ⚑.)*
+> **ANSWERED 2026-09-07 17:25 (Ben, phone inbox), verbatim (the row's own (a) text tapped): "(a)
+> retire the row under R-86 — the flips are repo-side facts pinned by the code (`activeOnly`
+> present or absent at each of the seven sites) and the behaviour they change only matters in a
+> state you have said will never occur."** **This item** (`TODO_REPO_HYGIENE` item 95) applies it:
+> the checklist row **"VISIBLE — R-62 audience flips, seven sites"**
+> (`EDHA_FOUNDRY_TEST_CHECKLIST.md`) is retired under R-86 with that reason; its ⛔ evidence trail
+> stays intact.
 
 ---
 

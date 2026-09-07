@@ -309,33 +309,31 @@ test("pm-state: the mobile snapshot's rows are exactly the committed dashboard's
 
 // ---- item 43: the "Needs you" view's open-ruling cards (2026-09-06) ----
 
-test("build-dashboard: parseOpenRulings marks R-56/R-90/R-91 open and R-18/R-41/R-42/R-48/R-54/R-80/R-81/R-82/R-83/R-84/R-85/R-88/R-89 ANSWERED-closed, against the real EDHA_RULINGS.md", () => {
-  // item 91 (2026-09-07 evening close-out): Ben's second dashboard paste answered R-83/R-88/R-89
-  // with a plain "a" (recorded → items 70/92/93) — none has shipped yet, so each reads ANSWERED but
-  // NOT applied, exactly like R-82 before it. That retires R-83 as this test's real-data
-  // illustration (item 79 had used it while it was still WAITING); R-90 and R-91 — filed WAITING by
-  // bench run 43, untouched by this item — take over as the illustration, alongside R-56.
+test("build-dashboard: parseOpenRulings marks R-56 open and R-18/R-41/R-42/R-48/R-54/R-80/R-81/R-82/R-83/R-84/R-85/R-88/R-89/R-90/R-91 ANSWERED-closed, against the real EDHA_RULINGS.md", () => {
+  // item 95 (2026-09-07 evening close-out, part 2): Ben's phone-inbox tap (17:25 ET) answered R-90
+  // and R-91 with their own (a) text. R-90 -> item 88 (opus, engine-only) applies it, but nothing
+  // has shipped yet, so it reads ANSWERED-but-not-applied and gets a closing marker in place —
+  // same shape item 91 used for R-83/R-88/R-89. R-91 -> retired the R-62 checklist row under R-86,
+  // applied directly by this same item (no engine change to wait on). Both now carry a closing
+  // ANSWERED marker and drop out of parseOpenRulings, moving from the OPEN illustrations to the
+  // closed list. R-56 was the third WAITING ruling item 91 had used alongside them; with R-90/R-91
+  // closed it becomes the SOLE open illustration: it has no `Ask:` line, so its heading is the
+  // fallback question (item 44) and its bare *Recommended* default (item 87) are what the
+  // assertions below read. R-56 itself is untouched by this item and stays WAITING on purpose
+  // (Ben's phone tap conflicts with his morning note, so the PM has asked him in chat).
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);
-  assert.ok(ids.includes("R-90"), "R-90 (bench run 43, whisper-to-GMs) is still open — no ANSWERED/VETOED/SETTLED marker");
-  assert.ok(ids.includes("R-91"), "R-91 (bench run 43, R-62 audience row) is still open — no ANSWERED/VETOED/SETTLED marker");
   // item 85: R-56 was ANSWERED 2026-09-06 and shipped, then Ben REOPENED it 2026-09-07 against its
   // own answer (item 79's close-out). The REOPENED marker comes AFTER the ANSWERED one in document
   // order, so it must win and the ruling must read as open again — this is the item's whole point.
-  // item 91 confirms R-56 is UNCHANGED by the evening paste (Ben's text is the same "let me know
-  // before changing") — it must stay open, not get marked answered.
-  assert.ok(ids.includes("R-56"), "R-56 was REOPENED 2026-09-07 after its own 2026-09-06 ANSWERED marker and must show as open again (last-marker-wins); item 91 leaves it WAITING on purpose");
-  for (const closed of ["R-18", "R-41", "R-42", "R-48", "R-54", "R-80", "R-81", "R-82", "R-83", "R-84", "R-85", "R-88", "R-89"]) {
+  // item 91 confirmed R-56 is UNCHANGED by the evening paste (Ben's text is the same "let me know
+  // before changing"); item 95 confirms it again — it must stay open, not get marked answered.
+  assert.ok(ids.includes("R-56"), "R-56 was REOPENED 2026-09-07 after its own 2026-09-06 ANSWERED marker and must show as open again (last-marker-wins); item 95 leaves it WAITING on purpose");
+  for (const closed of ["R-18", "R-41", "R-42", "R-48", "R-54", "R-80", "R-81", "R-82", "R-83", "R-84", "R-85", "R-88", "R-89", "R-90", "R-91"]) {
     assert.ok(!ids.includes(closed), `${closed} is ANSWERED/moved-to-§K and must not show up as an open ruling`);
   }
-  // item 44: R-90's heading is a symptom description, so its bare heading (no Ask: line) stays the
-  // card's question via item 44's fallback — same shape R-83 used to illustrate.
-  const r90 = open.find((r) => r.id === "R-90");
-  assert.strictEqual(r90.section, "C. Mechanics — what a rule should do");
-  assert.strictEqual(r90.applied, false, `R-90 is not applied ("not applied" in lower case must not count)`);
-  assert.ok(r90.ask.length > 5 && !/^\*\*/.test(r90.ask), "the ask is the bare question, not the raw markdown");
-  assert.strictEqual(r90.ask, "An adversary's `edha-triggered-effect` card is public. Should it whisper to the GMs?", "R-90 has no Ask: line, so the self-contained heading question is the ask (item 44's fallback)");
+  assert.strictEqual(open.length, 1, "R-56 is now the sole open ruling in the real doc (item 95 closed R-90 and R-91)");
   // R-56 has no `Ask:` line — its heading is already a self-contained question, so item 44's
   // fallback (heading stays the ask) applies, exactly like R-18/R-80/R-84/R-85 before it closed.
   const r56 = open.find((r) => r.id === "R-56");
@@ -350,7 +348,6 @@ test("build-dashboard: parseOpenRulings marks R-56/R-90/R-91 open and R-18/R-41/
   // item 76: every open ruling's card carries a real default (the bold-inline form used to capture ""),
   // read through the inner **…** pairs and stripped of the markers.
   for (const r of open) assert.ok(r.default.length > 0 && !/\*\*/.test(r.default), `${r.id}: default is empty or still carries bold markers — "${r.default}"`);
-  assert.ok(/^\(a\) whisper to `edhaWhisperIds\(owner\)`/.test(r90.default), "R-90's bold-inline default is read through the inner **…**");
   // Every open ruling yields a real question: either a heading ending in "?" or an Ask: line (which must too).
   for (const r of open) assert.ok(/\?$/.test(r.ask), `${r.id}: ask is not a question — "${r.ask}"`);
 });
@@ -468,7 +465,7 @@ test("build-dashboard: countCitations counts citing rows (not raw text occurrenc
 
 test("pm-state: the mobile snapshot's openRulings carries {id, section, ask, default, applied, blocks} and rides in the dash index (no chunk fetch needed)", () => {
   const snap = snapshot();
-  assert.ok(Array.isArray(snap.openRulings) && snap.openRulings.length >= 1, "R-56/R-90/R-91 at least, after item 91's 2026-09-07 evening close-out");
+  assert.ok(Array.isArray(snap.openRulings) && snap.openRulings.length >= 1, "R-56 at least, after item 95's 2026-09-07 evening close-out, part 2 (R-90/R-91 answered and closed)");
   for (const r of snap.openRulings) {
     assert.deepStrictEqual(Object.keys(r).sort(), ["applied", "ask", "blocks", "default", "id", "section"]);
     assert.strictEqual(typeof r.blocks, "number");
