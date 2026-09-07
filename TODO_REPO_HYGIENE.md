@@ -2107,7 +2107,7 @@ within Attunement Range by rank (30 / 60 ft) while both cards say "within 10 ft"
 
 ---
 
-## 68. [ ] Fix pass 8 — an `edha-focus` `resource: hea` rule announces the UNGATED heal amount
+## 68. [x] Fix pass 8 — an `edha-focus` `resource: hea` rule announces the UNGATED heal amount — DONE 2026-09-06 (ENGINE-ONLY, F5)
 
 **Why:** bench run 39 (PR #228, 2026-09-06), driving R-10's family through a real Withering Touch
 mark, found that an `edha-focus` rule with `resource: hea` writes the GATED amount correctly (HP
@@ -2128,6 +2128,26 @@ through a Withering mark reads the delivered number).
 
 **Done when:** the pins pass and fail under reversion; the 🤖 row exists; the delta names the
 card text change. ENGINE-ONLY (F5).
+
+**Done 2026-09-06 (ENGINE-ONLY, F5):** the root cause was the CONTRACT, not the talent —
+`edhaCrossHeal` gates its write and **returned nothing**, so all **seven** heal announcers built
+their sentence from the only number they had (the roll) and every one of them misreports a blocked
+heal *and* a halved one. `edhaCrossHeal` now returns the delivered amount (owned and relayed legs
+alike; the drop-to-1 bypass still reports its full amount, and **no new `edhaHealCutGate` call
+site** — R-10's family count of 2 stands), and **`edhaHealLine(who, requested, delivered, phrase)`**
+is the one place that decides whether a number may be printed: `phrase()` only ever sees a number
+that landed, and a zeroed heal names the mark instead. Wired at H10's `hea` arm, Interposing Shield,
+Shared Burden, the triggered-effect heal, the Life regen tick, the regrowth tick and Lifeline; the
+pulse sweep now counts who was **healed** and totals what **landed**. The audit the item asked for
+found the same drift one arm over — `inv` announced the rolled `n` against a clamped write, now the
+delta (`foc` was already honest, and is the precedent). Pins in
+`tests/heal-announce-delivered.test.js` drive the **shipped** executor (native event system
+registered against a recording api stub) and reproduce bench 39's take exactly; both mutations fail
+(card from `n` → 3 cases; bare `return` → 7 cases). Four 🤖 re-test rows filed.
+**Found in passing, NOT fixed:** three heal paths still write `hea` without the gate
+(`edha-regen`, the decay lifesteal, `edhaBurstDetonate`'s hits) — their cards are honest, but
+closing the gap changes live HP and needs an R-10-adjacent ruling plus a declared third gate call.
+See the handoff delta.
 
 **PM:** lane B · model opus (`test-pass-fixes`) · size S · deps bench 39 ✓ · verify: mutation pins.
 ENGINE-ONLY (F5). Found by bench run 39. Dispatched 20:15 in a worktree.

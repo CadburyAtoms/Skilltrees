@@ -33,6 +33,82 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-06 DELTA — Item 68 / fix pass 8: a heal card states what was DELIVERED, not what was rolled (**ENGINE-only → F5**)
+
+Bench run 39, driving R-10's load-bearing negative through a real Withering Touch mark, measured
+this pair on one creature in one window: HP **4 → 4** (correct — the mark blocks it), the gate's own
+card *"🩸 B39 Victim cannot regain HP (Withering Touch)"* (correct), and then
+*"⚕️ Field Medicine: B39 Victim heals **5**."* The write was right and the card lied, one line under
+the card that said why. That is the §10 drift direction that costs a table the most: **the card is
+the only thing the players read.**
+
+### Bug root cause — ONE contract, seven announcers
+
+`edhaCrossHeal` scales its write through `edhaHealCutGate` and **returned nothing**. So every caller
+that announced a heal had exactly one number available — the roll — and used it. That is not a
+Field Medicine bug; it is every rule-driven heal card in the engine, and each one misreports a
+BLOCKED heal *and* a HALVED one (naming the full amount where half landed). The reported row is
+simply the arm the bench happened to drive.
+
+Fixed at the contract, in one shape:
+
+- **`edhaCrossHeal` now RETURNS the delivered amount** — the gated number on the owned leg and the
+  relayed leg alike, `0` when the mark blocked it. The drop-to-1 bypass still reports its full
+  amount. **No new `edhaHealCutGate` call site**: this reads the mark through `edhaHealCutInfo`, so
+  R-10's family count of exactly two gate calls is untouched (`tests/drop-to-one-family.test.js`
+  turns on that count and still passes).
+- **`edhaHealLine(who, requested, delivered, phrase)`** is the one place that decides whether a
+  number may be printed at all. `phrase(delivered)` is only ever called with a number that landed —
+  so a halved mark simply reaches it with the halved value — and when the gate zeroed it the amount
+  is **never** printed: the clause names the mark, in the gate's own words. Clauses come back
+  unpunctuated so a caller can compose them.
+- **All seven announcers wired**: H10's `hea` arm (Field Medicine — the reported row), Interposing
+  Shield's `heal-ally` button, Shared Burden's `redirect` button (the owner's damage number is
+  measured and unchanged; the note now says when less of it came back off the victim), the
+  triggered-effect heal (which already gated but still printed a bare `0`), the Life regen tick, the
+  regrowth tick, and Lifeline's intercept card.
+- **The pulse sweep** is the one GROUP card, and a group is where a single number cannot be true for
+  everyone — each creature carries its own mark. It counted reach and quoted the per-target roll
+  (*"healed 3 of 3 ally(ies) 4 HP"* when two of the three got nothing). It now counts who was
+  **healed**, totals what **landed**, and names whoever the mark stopped.
+- **The same drift one arm over.** TODO 68 asked for the `inv` / `foc` arms to be audited beside
+  `hea`. `foc` was already honest — `edhaGainFocus`/`edhaDrainFocus` announce `next - cur` and go
+  silent when nothing moved, which is the precedent this pass generalizes. `inv` announced the
+  rolled `n` against a **clamped** write, so a gain onto a nearly-full pool overstated by whatever
+  the clamp ate; it now reports the delta and stays silent at 0.
+
+### Proof
+
+`tests/heal-announce-delivered.test.js` drives the **shipped** executor: H10's `hea` arm lives
+inside a `registerItemEventHandlerType` config object, so the file registers the native event system
+against a recording api stub and calls the real executor with the real config — the same two cards
+Ben would read, in the same order. Bench 39's take is reproduced exactly (HP 4 → 4, gate card, then
+the talent's card), plus the halved case (`heals 2`, HP 4 → 6), the untouched no-mark case
+(`heals 5`), the regrowth / Life-regen / pulse announcers, the Investiture clamp, and the
+`edhaCrossHeal` return contract on both legs. **Mutations:** build the card from `n` again → the
+blocked and halved cases fail; give `edhaCrossHeal` back its bare `return` → seven cases fail across
+every announcer.
+
+### Found in passing — NOT fixed here (needs a ruling, not a commit)
+
+`ENGINE_INDEX.md` says *"any heal path that writes `hea` outside applyDamage MUST call the gate."*
+Three do not: **`edha-regen`**'s turn-end write, the **decay lifesteal** heal-back, and
+**`edhaBurstDetonate`**'s heal hits (which reach `edhaApplyBurstResults`, and that helper must stay
+ungated — Raise Dead's stabilizing 1 HP rides it, R-10). Their cards are honest about what they
+deliver, so item 68 does not touch them; but closing the gap changes **live HP at the table** (a
+withered creature would stop being healed by Mending Aura), which is an R-10-adjacent decision. It
+also needs the family test's gate-call count raised from 2 with a declaration. **Filed for the
+board, not decided here.** The decay lifesteal separately announces its pre-clamp `back` where the
+write is `min(max, cur + back)` — the same over-announcement the `inv` arm just lost.
+
+### New REUSABLE primitive
+
+- **`edhaHealLine(who, requested, delivered, phrase)`** — see `ENGINE_INDEX.md`. Any future heal
+  card joins the contract by calling it; the pinned family test counts the call sites, so a new
+  announcer that skips it is caught.
+
+---
+
 ## 2026-09-06 — Item 59: `system.damage.formula` folds to plain dice at BUILD time, R-71 (**TOOLING + DATA → pack REBUILD, Ben only**)
 
 R-71: the cosmere-rpg system rolls a talent's own `system.damage.formula` with no Edha engine
