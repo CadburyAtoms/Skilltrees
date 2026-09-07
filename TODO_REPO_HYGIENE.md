@@ -2282,3 +2282,35 @@ in `ENGINE_INDEX.md`. ENGINE-ONLY (F5) for the console line; the rest is TOOLING
 
 **PM:** lane R · model sonnet · size S · deps #24 ✓ · verify: `check-scripts-readme.js` clean + the
 test still fails under its own mutation. Found by item 24.
+
+---
+
+## 72. [ ] Fix pass 9 — bench run 40's defects: the prompt-pick `once` budget never bites, Ambush Bite's double flavor, R-85 and R-84 as defaults
+
+**Why:** bench run 40 (2026-09-06, PR #245) drove every engine-only merge of the evening on the
+hash-verified `0ea0741a…` deploy and retired 27 rows, but root-caused one real defect and one
+cosmetic, and measured two behaviours that needed a ruling:
+- ❌ **An `edha-prompt-pick` `once` budget NEVER bites.** `edhaPromptPickClick` marks with
+  `edhaCoordOPRMark(owner, item.uuid, "_pick")`, which writes `setFlag("edha-content", "coordRound",
+  {[item.uuid]: {_pick: round}})` — Foundry EXPANDS dotted keys, so the document stores
+  `coordRound.Actor.<id>.Item.<id>._pick` while `edhaCoordOPRAllowed` reads the flat key and always
+  gets `undefined`. Measured: three Unnerving Approach picks in one round with the round's mark
+  present. Blast radius: every `edha-prompt-pick` rule carrying `once`; the other `edhaCoordOPR*`
+  callers pass dot-free names / ids, which is why it hid. Fix in the primitive (key-safe both sides).
+- ❌ **Cosmetic:** Ambush Bite's damage rider prints its flavor twice —
+  `1d10 + 3 + (1d6[Ambush Bite])[Ambush Bite] + 0`. Math right, formula bar wrong.
+- **R-85 (applied default, vetoable):** `expireEndOfRound` stamps `edhaCombatRoundOf(owner)`; a
+  granter who is not a combatant writes `round: null`, which never expires. Fall back to the
+  BEARER's combat.
+- **R-84 (applied default, vetoable):** Unnerving Approach's `emptyNote` branch (no valid ally in
+  range) still charges its Investiture with no refund and no Decline. Refund through the gate R-17
+  already computes (`edhaOfferRefundable`), and say so on the card.
+
+**Done when:** each fix carries a headless pin shown failing under a one-line reversion; the two
+bench 🤖 rows say "fixed in fix pass 9, re-test"; R-84 / R-85 rows re-test at bench 41; every
+`edhaCoordOPR*` caller and every `once` prompt-pick rule audited. ENGINE-ONLY (F5).
+
+**PM:** lane B · model opus (`test-pass-fixes`) · size M · deps #245 (the report) · verify: the
+pins + bench run 41. Dispatched 2026-09-06 21:35. ⚠️ The bench filed its rulings as R-82 / R-83;
+those numbers were already taken (item 56's graze dial; the heal-cut gate) — renumbered R-84 / R-85
+in #245 before merge.
