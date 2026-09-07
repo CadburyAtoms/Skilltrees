@@ -214,6 +214,63 @@ function parseRulings(md) {
   return doc;
 }
 
+// ---------------------------------------------------------------------------
+// The mobile "Needs you" view's open-ruling cards (item 43, 2026-09-06). Built on top of
+// parseRulings()'s already-split sections/blocks rather than re-walking the markdown, so the two
+// views can never disagree about what text belongs to which ruling.
+//
+// A ruling is OPEN when its own body — the heading paragraph plus every `prose` block that
+// follows it, up to the next ruling/stub/heading — carries none of the doc's own closing markers:
+// `**ANSWERED`, `**VETOED`, or `**SETTLED` (the last is the one exception, R-4's single-line stub
+// under §B that points at §K instead of repeating the resolution — `*(R-n — … )*` one-line stubs
+// elsewhere never use `**`, only a plain "ANSWERED", so they can never falsely close an open
+// ruling merely by trailing along after it as unattached prose). §K ("Settled") and §J ("Flagged,
+// but not questions") hold no open asks by definition and are skipped outright. §I entries are
+// tagged `applied: true` — "already live, veto if you disagree" — so the page can render them as
+// "applied — veto?" cards instead of an ordinary default-ask card.
+const RULING_CLOSED_RE = /\*\*(?:ANSWERED|VETOED|SETTLED)\b/;
+const RULING_DEFAULT_RE = /\*Recommended(?:\s+default)?:\s*([^*]+)\*/i;
+const RULING_APPLIED_RE = /\*\*Default applied:\s*([^*]+)\*\*/i;
+const RULING_STUB_RE = /^\*\([RF]-\d+/;
+
+function parseOpenRulings(md) {
+  const doc = parseRulings(md);
+  const out = [];
+  for (const sec of doc.sections) {
+    if (/^[JK]\./.test(sec.title)) continue; // Settled / Flagged-not-questions: no open asks.
+    const applied = /^I\./.test(sec.title);
+    let cur = null;
+    const flush = () => {
+      if (!cur) return;
+      const body = cur.parts.join('\n');
+      if (!RULING_CLOSED_RE.test(body)) {
+        const dm = body.match(RULING_DEFAULT_RE) || body.match(RULING_APPLIED_RE);
+        out.push({
+          id: cur.id,
+          section: sec.title,
+          ask: cur.ask,
+          default: dm ? dm[1].trim().replace(/\s+/g, ' ') : 'no default stated',
+          applied,
+          blocks: 0, // filled by mobileSnapshot(), which has the other tabs to count citations in
+        });
+      }
+      cur = null;
+    };
+    for (const b of sec.blocks) {
+      if (b.type === 'item' && b.kind === 'ruling') {
+        flush();
+        const m = b.text.match(/^\*\*([RF]-\d+)\.\s*(.+?)\*\*/);
+        cur = { id: m ? m[1] : b.text.slice(0, 40), ask: m ? m[2].trim() : plain(b.text), parts: [b.text] };
+      } else if (b.type === 'prose') {
+        if (RULING_STUB_RE.test(b.text)) { flush(); continue; } // an already-closed one-liner
+        if (cur) cur.parts.push(b.text);
+      }
+    }
+    flush();
+  }
+  return out;
+}
+
 // Repo hygiene: `## N. [x|~| ] Title` headings ARE the items; body → log. One section PER item
 // (plus a leading intro-prose section) — not one giant section for the whole doc — because a
 // single ~66 KB "everything" section can outgrow a dashboard chunk cap the moment one more item
@@ -639,7 +696,7 @@ function buildModel() {
   const forBen = collect((t) => /⚑/.test(t));
   const benchQueue = collect((t) => /🤖/.test(t));
 
-  return { sources, TABS, forBen, benchQueue, deployBanner, pmBoardMd, stampAll: hash10(Object.values(sources).join('|')) };
+  return { sources, TABS, forBen, benchQueue, deployBanner, pmBoardMd, rulingsMd, stampAll: hash10(Object.values(sources).join('|')) };
 }
 
 // ---------------------------------------------------------------------------
@@ -1144,6 +1201,8 @@ function build() {
 //     chips: [[text, kind]], counts: {total, open, done, flags, bots}, blocks: [block] }] }],
 //     deploy: { hot: [prose], prose: [prose] } | null,
 //     forBen / benchQueue: [{ tab, secId, sub, id }]   (refs into the rows — the text is on the row),
+//     openRulings: [{ id, section, ask, default, applied, blocks }]   (item 43 — the "Needs you"
+//       view's ruling cards; see parseOpenRulings() above for what "open" and "default" mean),
 //     counts: { rows, byTab: {key: counts}, forBen, benchQueue, rulingsOpen } }
 //   block = { type: 'prose', text } | { type: 'sub', title, blocks } |
 //           { type: 'item', id, kind, text, label, done, partial?, flags, bots, log? }
@@ -1151,8 +1210,35 @@ function build() {
 // skips done rows — the desktop's per-tab count recipe. The Project tab is NOT here: the mobile
 // page IS the PM board (scripts/pm-state.js projects it separately).
 // ---------------------------------------------------------------------------
+
+// How many checklist rows / TODO items cite a ruling id (item 43's "blocks N …" badge, so the
+// rulings actually holding something up sort first). Counts BLOCKS, not raw text occurrences — an
+// id quoted three times in one row's log is one block, not three. `parseChecklist` (the 'bench'
+// tab) has no `log` field: a row's own commentary lands in `>` blockquote lines right after it,
+// which come out as separate `prose` blocks in the same section — so both `item` and `prose`
+// blocks count, not just items, or every bench-row citation would be invisible. The
+// lookbehind/lookahead pair keeps a migration code like "2bR-18" from counting as a citation of
+// ruling "R-18": both share the digits, but only the ruling id is never preceded by a letter or
+// followed by another digit.
+function countCitations(id, tabs, tabKeys) {
+  const re = new RegExp('(?<![A-Za-z0-9_])' + id.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&') + '(?![0-9])');
+  let n = 0;
+  const walk = (blocks) => {
+    for (const b of blocks) {
+      if (b.type === 'item') { if (re.test(b.text) || (b.log && b.log.some((l) => re.test(l)))) n++; }
+      else if (b.type === 'prose') { if (re.test(b.text)) n++; }
+      else if (b.type === 'sub') walk(b.blocks);
+    }
+  };
+  for (const tab of tabs) {
+    if (!tabKeys.includes(tab.key)) continue;
+    for (const sec of tab.sections) walk(sec.blocks);
+  }
+  return n;
+}
+
 function mobileSnapshot(model) {
-  const { sources, TABS, forBen, benchQueue, deployBanner, stampAll } = model;
+  const { sources, TABS, forBen, benchQueue, deployBanner, rulingsMd, stampAll } = model;
   const zero = () => ({ total: 0, open: 0, done: 0, flags: 0, bots: 0 });
   const add = (into, c) => { for (const k of Object.keys(c)) into[k] += c[k]; };
   let rows = 0;
@@ -1201,6 +1287,11 @@ function mobileSnapshot(model) {
     deploy = { title: deployBanner.title, hot: prose.filter((t) => /MERGED BUT NOT YET DEPLOYED/i.test(t)), prose };
   }
 
+  // "blocks" is counted here, not in parseOpenRulings(), because only mobileSnapshot has the
+  // other tabs (checklist rows live on 'bench', TODO items on 'repo') to search.
+  const openRulings = parseOpenRulings(rulingsMd).map((r) => ({ ...r, blocks: countCitations(r.id, tabs, ['bench', 'repo']) }))
+    .sort((a, b) => b.blocks - a.blocks);
+
   return {
     schema: 1,
     stamp: stampAll,
@@ -1209,6 +1300,7 @@ function mobileSnapshot(model) {
     deploy,
     forBen: refs(forBen),
     benchQueue: refs(benchQueue),
+    openRulings,
     counts: { rows, byTab, forBen: forBen.length, benchQueue: benchQueue.length, rulingsOpen },
   };
 }
@@ -1238,6 +1330,6 @@ function main() {
   });
 }
 
-module.exports = { buildModel, renderHtml, build, mobileSnapshot, itemId, rowId, markers, rowLabel, parseChecklist };
+module.exports = { buildModel, renderHtml, build, mobileSnapshot, itemId, rowId, markers, rowLabel, parseChecklist, parseRulings, parseOpenRulings, countCitations };
 
 if (require.main === module) main();

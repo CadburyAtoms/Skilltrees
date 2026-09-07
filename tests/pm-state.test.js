@@ -26,7 +26,7 @@ const path = require("path");
 
 const REPO = path.resolve(__dirname, "..");
 const { parseBoard, injectState, injectPage, shardDashboard, wallToIso, inWindow, nextWindowOpen,
-  parseWindowEntry, STATUS_VOCAB, DASH_CHUNK_BYTES } = require(path.join(REPO, "scripts", "pm-state.js"));
+  parseWindowEntry, parseBenOnly, STATUS_VOCAB, DASH_CHUNK_BYTES } = require(path.join(REPO, "scripts", "pm-state.js"));
 const dashboard = require(path.join(REPO, "scripts", "build-dashboard.js"));
 
 const FIXTURE = `# PM Board — fixture
@@ -62,6 +62,12 @@ completion.
 | 3 | 19a Handoff reference rewrite | R | opus | L | PM-R1 ✓ | queued | |
 | 4 | 9 Map fork consolidation | H | opus | M | bridge rulings | blocked(rulings) | |
 | — | 2 History purge · 3 LICENSE | H | Ben | — | — | Ben-only | |
+
+## Waiting on Ben
+
+**Waiting on Ben:**
+- a Foundry window for the bench
+- a reload of the Gamemaster client
 
 ## Foundry windows
 
@@ -113,6 +119,7 @@ test("pm-state: caps, rulings, inbox, foundry come from their own sections", () 
     ],
   });
   assert.deepStrictEqual(s.rulings.map((r) => [r.id, r.waiting]), [["PM-R1", false], ["PM-R7", true]]);
+  assert.deepStrictEqual(s.benOnly, ["a Foundry window for the bench", "a reload of the Gamemaster client"], "one bullet per ask, under the 'Waiting on Ben' label");
   assert.deepStrictEqual(s.inbox, ["Foundry is up tonight 8–10.", "skip 20, do 19a next"], "placeholder ignored, prose + list kept");
   assert.strictEqual(s.foundry.scheduled, false);
   assert.strictEqual(s.foundry.deployStale, true);
@@ -120,6 +127,39 @@ test("pm-state: caps, rulings, inbox, foundry come from their own sections", () 
   assert.strictEqual(s.source.hash.length, 10);
   assert.strictEqual(s.source.commit, "abc1234");
   assert.strictEqual(s.generatedAt, NOW);
+});
+
+// Item 43: today's board still writes "Waiting on Ben" as inline numbered prose inside the top
+// status blockquote, not yet as one bullet per ask. parseBenOnly falls back to a top-level `;`
+// split so the "Needs you" view is not blind until the PM adopts the bulleted convention — a
+// semicolon inside a parenthetical aside (nested parens, never opening on a digit) must not count.
+const BEN_ONLY_PROSE = `# Board
+
+> True state: everything is fine. **Waiting on Ben now:** (1) do the thing (with a nested aside);
+> (2) another ask; (3) final ask, still going.
+>
+> Unrelated next paragraph, not part of the ask list.
+
+## Queue (in order)
+
+| # | Item | Lane | Model | Size | Deps | Status | PR |
+|---:|---|:-:|:-:|:-:|---|---|---|
+| 1 | 1 filler | R | sonnet | S | — | queued | |
+`;
+
+test("pm-state: parseBenOnly falls back to a top-level ';' split on today's inline numbered prose", () => {
+  assert.deepStrictEqual(parseBenOnly(BEN_ONLY_PROSE), [
+    "do the thing (with a nested aside)",
+    "another ask",
+    "final ask, still going.",
+  ]);
+  assert.deepStrictEqual(parseBenOnly("# Board\n\nNo such line here.\n"), [], "no label, no asks");
+});
+
+test("pm-state: the real board's 'Waiting on Ben' line parses without throwing", () => {
+  const md = fs.readFileSync(path.join(REPO, "docs", "PM_BOARD.md"), "utf8");
+  const asks = parseBenOnly(md);
+  assert.ok(Array.isArray(asks));
 });
 
 test("pm-state: a window entry with an explicit end day computes spanDays as the forward day-distance", () => {
@@ -265,6 +305,82 @@ test("pm-state: the mobile snapshot's rows are exactly the committed dashboard's
   for (const r of snap.benchQueue) { const it = byId.get(r.id); assert.ok(it && !it.done && it.bots > 0, `benchQueue ref ${r.id} is an open 🤖 row`); }
   assert.deepStrictEqual(snap.tabs.map((t) => t.key), ["bench", "art", "world", "engine", "repo", "rulings"], "desktop tab order, Project excluded (the page is the board)");
   assert.ok(snap.deploy && snap.deploy.prose.length > 0, "the DEPLOY STATE banner rides along");
+});
+
+// ---- item 43: the "Needs you" view's open-ruling cards (2026-09-06) ----
+
+test("build-dashboard: parseOpenRulings marks R-18/R-48 open and R-41/R-42/R-54 ANSWERED-closed, against the real EDHA_RULINGS.md", () => {
+  const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
+  const open = dashboard.parseOpenRulings(md);
+  const ids = open.map((r) => r.id);
+  assert.ok(ids.includes("R-18"), "R-18 has no ANSWERED/VETOED block yet");
+  assert.ok(ids.includes("R-48"), "R-48 has no ANSWERED/VETOED block yet");
+  for (const closed of ["R-41", "R-42", "R-54"]) {
+    assert.ok(!ids.includes(closed), `${closed} is ANSWERED and must not show up as an open ruling`);
+  }
+  const r18 = open.find((r) => r.id === "R-18");
+  assert.strictEqual(r18.section, "C. Mechanics — what a rule should do");
+  assert.strictEqual(r18.applied, false);
+  assert.ok(r18.ask.length > 5 && !/^\*\*/.test(r18.ask), "the ask is the bare question, not the raw markdown");
+  for (const r of open) assert.strictEqual(typeof r.blocks, "number", `${r.id}.blocks is not a number in the raw parse (mobileSnapshot fills it in)`);
+});
+
+const RULINGS_FIXTURE = `## B. Scope
+
+**R-100. Stub-duplicate check: does the retired stub avoid re-opening?** -> **SETTLED, moved to §K.**
+
+**R-101. Should the widget spin?** Some prose about the widget.
+*Recommended default: yes, make it spin.* More trailing prose.
+
+*(R-102 — already answered elsewhere — ANSWERED 2026-09-06, moved to §K.)*
+
+## I. Applied defaults
+
+These are already live in the code.
+
+**R-103. Should the gizmo glow?** Shipped as the default.
+**Default applied: make it glow green.** Veto if you disagree.
+
+**R-104. Something already answered.** Explanation here.
+> **ANSWERED 2026-09-06: yes.**
+
+## K. Settled
+
+**R-100. Stub-duplicate check: does the retired stub avoid re-opening?** Full text and an actual
+answer.
+> **ANSWERED 2026-09-06: yes, it does.**
+`;
+
+test("build-dashboard: parseOpenRulings — a §B stub pointing at §K does not re-open, §I gets applied:true with its own default sentence, §K is skipped outright", () => {
+  const open = dashboard.parseOpenRulings(RULINGS_FIXTURE);
+  assert.deepStrictEqual(open.map((r) => r.id).sort(), ["R-101", "R-103"]);
+  const r101 = open.find((r) => r.id === "R-101");
+  assert.strictEqual(r101.default, "yes, make it spin.");
+  assert.strictEqual(r101.applied, false);
+  const r103 = open.find((r) => r.id === "R-103");
+  assert.strictEqual(r103.applied, true);
+  assert.strictEqual(r103.default, "make it glow green.");
+});
+
+test("build-dashboard: countCitations counts citing rows (not raw text occurrences) and never confuses a migration code like 2bR-18 with ruling R-18", () => {
+  const tabs = [{ key: "bench", sections: [{ blocks: [
+    { type: "item", text: "2bR-18 migration pass note", log: [] },
+    { type: "item", text: "the roll", log: ["**R-18** left alone", "same row, second mention of R-18"] },
+    { type: "prose", text: "unrelated commentary about R-18 elsewhere in the section" },
+  ] }] }];
+  assert.strictEqual(dashboard.countCitations("R-18", tabs, ["bench"]), 2, "one item row (its log counts once, however many times it mentions R-18) + one prose block");
+  assert.strictEqual(dashboard.countCitations("R-18", tabs, ["repo"]), 0, "a tab outside tabKeys is not searched");
+});
+
+test("pm-state: the mobile snapshot's openRulings carries {id, section, ask, default, applied, blocks} and rides in the dash index (no chunk fetch needed)", () => {
+  const snap = snapshot();
+  assert.ok(Array.isArray(snap.openRulings) && snap.openRulings.length >= 2, "R-18 and R-48 at least");
+  for (const r of snap.openRulings) {
+    assert.deepStrictEqual(Object.keys(r).sort(), ["applied", "ask", "blocks", "default", "id", "section"]);
+    assert.strictEqual(typeof r.blocks, "number");
+  }
+  const shards = shardDashboard(snap, { now: NOW });
+  assert.deepStrictEqual(shards.index.openRulings, snap.openRulings, "openRulings rides in the index, not a chunk");
 });
 
 test("pm-state: the shards stay under the chunk cap and cover every section exactly once", () => {
