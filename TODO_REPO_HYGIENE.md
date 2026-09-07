@@ -2004,7 +2004,7 @@ mutation. TOOLING-only (no rebuild — the packs do not change). Found by item 4
 
 ---
 
-## 65. [x] 34c — the 44 later-bestiary attack items still `kind: action` (the rest of the fleet weapon migration) — DONE 2026-09-06, PR #230 (REBUILD; bench-pending)
+## 65. [x] 34c — the 44 later-bestiary attack items still `kind: action` (the rest of the fleet weapon migration) — DONE 2026-09-06, PR #232 (REBUILD; bench-pending)
 
 **Why:** item 34a (PR #220, 2026-09-06) migrated the 11 attack items across the 13 ORIGINAL
 statblocks to `kind: "weapon"` and put `edhaRuleBearer` on both actor-wide rule loops. Its worker
@@ -2064,7 +2064,7 @@ Found by item 49. **Landed:** `edhaJoinRiderTerm` (SHARED CORE, beside `edhaTidy
 
 ---
 
-## 67. [x] The R-48 family: three more run-19 charge distances still `bySize` at rank 2 against rank-3 cards (R-81) — DONE 2026-09-06, PR #230 (rode item 65's rebuild; default (a) applied, open for Ben's veto)
+## 67. [x] The R-48 family: three more run-19 charge distances still `bySize` at rank 2 against rank-3 cards (R-81) — DONE 2026-09-06, PR #232 (rode item 65's rebuild; default (a) applied, open for Ben's veto)
 
 **Why:** R-46 (a) and R-48's applied default replaced `bySize` with an explicit `distanceFt` on the
 Cragdrake Whelp Pack's Reckless Advance (25 ft) and the Cragdrake Adult's Explosive Leap (20 ft)
