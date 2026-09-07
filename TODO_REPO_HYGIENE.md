@@ -2315,3 +2315,31 @@ bench 🤖 rows say "fixed in fix pass 9, re-test"; R-84 / R-85 rows re-test at 
 pins + bench run 41. Dispatched 2026-09-06 21:35. ⚠️ The bench filed its rulings as R-82 / R-83;
 those numbers were already taken (item 56's graze dial; the heal-cut gate) — renumbered R-84 / R-85
 in #245 before merge.
+
+---
+
+## 73. [ ] Docs sweep — CLAUDE.md and ENGINE_INDEX still describe the pre-migration engine
+
+**Why:** the item-19a cold reader (2026-09-06, PR #249) answered every question from the new
+reference and then flagged that the repo's front door contradicts it, and item 4's worker found one
+more stale count:
+- `CLAUDE.md` "Where behavior lives" still says the engine carries **"200 talents' worth of
+  name-keyed automation — that is the iron-rule-2b backlog"**, and iron rule 2b's ratchet clause
+  presents the 2026-07-24 counts (90 / 200 / 75, the 221-name allowlist) as a live backlog. The
+  migration closed 2026-07-26; `scripts/name-keyed-allowlist.json` is `talents: []`; lint pass 7 now
+  forbids any talent name in engine code. One paragraph to retire, one clause to reword as history.
+- `CLAUDE.md` map rows: `EDHA_RULINGS.md` "45 numbered rulings" (85 today); `ENGINE_INDEX.md`
+  "the ~19.7k-line engine (2026-09-05)" (21,792 lines, and edited as 55 sources since item 4).
+- `ENGINE_INDEX.md` "Dispatch" still lists a pre-migration "`useItem` name-based" idiom (Green
+  Grasping Vines / Territorial Instinct); its section map says "52 banners" (54 since the two 09-06
+  shared-core banners).
+
+**What to do:** one small DOCS-ONLY PR; every replaced number stated with the command that produced
+it (`wc -l`, `grep -c '^\*\*R-' EDHA_RULINGS.md`, `grep -c '^/\* ===' …`); the reference (§1/§7 of the
+handoff) is the source of truth for the prose. Do not touch the reference itself.
+
+**Done when:** a cold reader finds no sentence in CLAUDE.md or ENGINE_INDEX that the reference
+contradicts; the three counts match their commands; `node scripts/gates.js` green.
+
+**PM:** lane R · model sonnet · size S · deps #19 (both halves) · verify: the commands beside the
+numbers + a grep for "200 talents" / "45 numbered" / "19.7k" returning nothing. Found by items 19a and 4.
