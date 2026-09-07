@@ -2019,6 +2019,12 @@ re-measure on the next advance produced **exactly one**. Not a two-GM double-app
       note), not a regression — record it as such rather than a FAIL, and route any objection to that
       limit back through `EDHA_RULINGS.md` R-71 for Ben, not this row. What this row DOES prove: the
       total is still correct (maths unchanged) and no other field on the card moved.
+      **↻ Re-test for item 69 (2026-09-06, ENGINE-ONLY, F5 — no rebuild needed):** the limit above
+      is now CLOSED at runtime — `edhaWrapRollDamage` substitutes the roller's data and folds the
+      formula before the system builds its roll, so with the item-69 engine live the expectation is
+      the FULL one: Verdict's system card reads `2d8 + 5` (tier 2 / rank 3), never the parenthetical.
+      A parenthetical after an F5 on the item-69 engine IS a FAIL for item 69. Also read the rider
+      case if one is queued: it must join onto the folded base (`2d8 + 5 + 1d6`).
 
 ---
 
