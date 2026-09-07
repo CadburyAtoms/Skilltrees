@@ -1967,7 +1967,14 @@ item 47's W29 §2 bench row measure first.
 
 ---
 
-## 63. [ ] Rallying Shout's reminder prints only for a downed ally — a target-condition dial on `edha-note` (R-25)
+## 63. [x] Rallying Shout's reminder prints only for a downed ally — a target-condition dial on `edha-note` (R-25 — 2026-09-06, PR #239; REBUILD heroic + ⟳ Sync, bench-pending)
+
+**Done 2026-09-06:** `edha-note` gained ONE generic field, `whenTarget` (blank | `downed`), read by the
+pure gate `edhaNoteTargetGate(whenTarget, target)` on the R-64 victim chain; `RouseRallying000` carries
+`whenTarget: "downed"`. Pinned in `tests/note-target-gate.test.js` (32 HP → no card; 0 HP → card;
+Unconscious above 0 → card; no field → card as before; each failing under a one-line reversion). Pack
+parity: 204 heroic documents, exactly 1 differs (Rousing Presence, that rule's `whenTarget` + description).
+Bench re-test = checklist **2bM-6b** (🤖).
 
 **Why:** Ben answered R-25 (c) on 2026-09-06: print ONLY for an ally at 0 HP or carrying
 Unconscious, the two cases the card names. Item 47 (PR #215) stopped this one instead of shipping
