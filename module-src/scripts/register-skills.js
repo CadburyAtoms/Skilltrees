@@ -4477,6 +4477,31 @@ function edhaHealCutGate(target, amount) {
   ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: target }), content: `<p>🩸 <strong>${target.name}</strong> ${info.fraction === 0 ? "cannot regain HP" : "has their healing halved"}${info.byName ? ` (${info.byName})` : ""}.</p>` });
   return cutAmt;
 }
+/* THE HEAL ANNOUNCEMENT (item 68, fix pass 8 — bench run 39). The gate above scales what LANDS,
+ * but every rule-driven heal card was written from the number the rule ROLLED, so the two
+ * disagreed on exactly the creatures the mark exists for: Field Medicine through a Withering Touch
+ * mark left HP at 4 → 4, printed "cannot regain HP", and then printed "⚕️ Field Medicine: B39
+ * Victim heals 5". The HP was right and the card lied, which is the §10 drift direction that costs
+ * a table the most — the card is the only thing the players read.
+ *
+ * So the contract is now: **a heal card is built from what edhaCrossHeal RETURNED, never from the
+ * roll.** Pass what you asked for and what you got; `phrase(delivered)` writes the normal clause
+ * and is only ever called with a number that actually landed, so a HALVED mark simply reaches it
+ * with the halved number. When the mark zeroed it the amount is NEVER printed — the clause names
+ * the mark instead, in the gate's own words. Returns "" when there is nothing to say (a genuine
+ * 0-amount heal with no mark: the 07-05 "blank card" convention).
+ *
+ * Clauses come back UNPUNCTUATED so a caller can compose them ("…in X's place; Y heals 3.") — add
+ * your own terminator. This reads the mark, it does not apply it: no new edhaHealCutGate call site
+ * (tests/drop-to-one-family.test.js counts them, and R-10 turns on that count). */
+function edhaHealLine(who, requested, delivered, phrase) {
+  const got = Math.max(0, Math.floor(Number(delivered) || 0));
+  if (got > 0) return phrase(got);
+  if (!(Number(requested) > 0)) return "";
+  const info = edhaHealCutInfo(who);
+  if (!info) return "";
+  return `${who?.name ?? "the target"} ${info.fraction === 0 ? "cannot regain HP" : "has their healing halved"}${info.byName ? ` (${info.byName})` : ""} — no healing lands`;
+}
 async function edhaApplyHealCut(target, owner, fraction, byName) {
   try {
     const ex = target.effects?.filter(e => e.getFlag?.("edha-content", "healCut")) ?? [];   // refresh duration
@@ -5994,11 +6019,14 @@ function edhaReduceInstances(list, amount) {
 // R-10 (b), 2026-09-06: that bypass is the RULING, not a shortcut — stabilizing at 1 is a floor
 // against death, not regaining, so "cannot regain HP" must not stop it. See edhaHealCutGate's
 // header for the whole drop-to-1 family; do not add a caller that passes this for a real heal.
+// RETURNS THE AMOUNT DELIVERED (item 68, fix pass 8) — the gated number on both the owned and the
+// relayed leg, 0 when the mark blocked it or there was nothing to heal. Every caller that ANNOUNCES
+// a heal builds its card from this return value through edhaHealLine, never from the roll.
 async function edhaCrossHeal(actor, amount, { bypassHealCut = false } = {}) {
-  if (!actor || !(amount > 0)) return;
-  if (!bypassHealCut) { amount = edhaHealCutGate(actor, amount); if (!(amount > 0)) return; }
-  if (actor.isOwner) { await edhaHealActor(actor, amount); return; }
-  try { game.socket.emit("module.edha-content", { action: "burst-apply", payload: { hits: [{ actorUuid: actor.uuid, amount, heal: true }] } }); } catch (e) {}
+  if (!actor || !(amount > 0)) return 0;
+  if (!bypassHealCut) { amount = edhaHealCutGate(actor, amount); if (!(amount > 0)) return 0; }
+  if (actor.isOwner) { await edhaHealActor(actor, amount); return amount; }
+  try { game.socket.emit("module.edha-content", { action: "burst-apply", payload: { hits: [{ actorUuid: actor.uuid, amount, heal: true }] } }); return amount; } catch (e) { return 0; }
 }
 async function edhaCrossDamage(actor, amount, type, opts = {}) {
   if (!actor || !(amount > 0)) return;
@@ -6110,11 +6138,21 @@ async function edhaBulwarkClick(ev) {
     if (once) await edhaCoordOPRMark(owner, name, "_react");
     for (const c of costs) await edhaSpendResource(owner, c.resource, c.value);
     let note = "";
-    if (action === "heal-ally" && victim) { await edhaCrossHeal(victim, amount); note = `${owner.name} reduces ${victim.name}'s damage by ${amount} and moves up to 10 ft toward them (Interposing Shield).`; }
+    if (action === "heal-ally" && victim) {
+      /* item 68: the reduction IS a heal, so it is what the gate scales — the note reports the
+       * delivered number (or names the mark), and the move happens either way. */
+      const got = await edhaCrossHeal(victim, amount);
+      const line = edhaHealLine(victim, amount, got, d => `${owner.name} reduces ${victim.name}'s damage by ${d}`);
+      note = `${line ? `${line}; ` : ""}${owner.name} moves up to 10 ft toward ${victim.name} (Interposing Shield).`;
+    }
     else if (action === "redirect" && victim) {
-      await edhaCrossHeal(victim, amount);
+      const got = await edhaCrossHeal(victim, amount);
       try { await owner.applyDamage([{ amount, type: "vital" }], { chatMessage: false, edhaRedirected: true }); } catch (e) {}
-      note = `${owner.name} takes ${amount} in ${victim.name}'s place (Shared Burden).`;
+      /* item 68: the owner ALWAYS takes the full amount — that number is measured and stays. What
+       * a mark can change is how much of it comes back off the victim, so say so when it differs
+       * (blocked, or halved); silent in the ordinary case, which is what the note always meant. */
+      const short = edhaHealLine(victim, amount, got, d => (d < amount ? `only <strong>${d}</strong> of it is undone on ${victim.name}` : ""));
+      note = `${owner.name} takes ${amount} in ${victim.name}'s place (Shared Burden).${short ? ` — ${short}.` : ""}`;
     }
     else if (action === "retaliate" && attacker) { await edhaCrossDamage(attacker, amount, "spirit", { edhaSource: owner }); note = `${owner.name} deals ${amount} spirit to ${attacker.name} (Retributive Guard — on a successful White test).`; }
     else if (action === "revive" && victim) { const cur = Number(victim.system?.resources?.hea?.value) || 0; await edhaCrossHeal(victim, Math.max(1, 1 - cur), { bypassHealCut: true }); note = `${victim.name} drops to 1 health instead of 0 (Unbreakable Line — on a successful White test).`; }   // prevention, not a heal — Death Ward parity (R-10 (b), 2026-09-06: a floor against death, not regaining)
@@ -11264,7 +11302,13 @@ async function edhaRunTriggerEffect(owner, name, spec, ctx) {
     }
     // The card says WHY it fired (Ben 07-12: "we should know why it's happening") — the rule's note.
     const why = spec.note ? ` <span style="opacity:.8">(${spec.note})</span>` : "";
-    const what = [healAmt > 0 || !gainNote ? `${healee.name} regains <strong>${healAmt}</strong> health` : "", gainNote ? `${owner.name} regains <strong>${gainNote}</strong>` : ""].filter(Boolean).join("; ") + "." + why;
+    /* item 68: this branch already GATED before announcing (it is where the contract came from),
+     * but a blocked heal still read "regains 0 health" — a number where the family now names the
+     * mark. The bare-0 fallback stays for a genuine 0-amount roll with no mark: without it a
+     * gain-less card would come out empty (the 07-05 "blank card" case). */
+    const healLine = edhaHealLine(healee, amt, healAmt, d => `${healee.name} regains <strong>${d}</strong> health`)
+      || (!gainNote ? `${healee.name} regains <strong>0</strong> health` : "");
+    const what = [healLine, gainNote ? `${owner.name} regains <strong>${gainNote}</strong>` : ""].filter(Boolean).join("; ") + "." + why;
     if (rolled && healAmt > 0) await edhaRollCard(owner, name, roll, what);
     else ChatMessage.create({ speaker, content: `<p>⚡ <strong>${name}</strong> — ${what}</p>` });
     // On-heal reactions (`edha-heal-react`, 07-25 pass 2bS) — e.g. Mender's Instinct feeding the
@@ -13273,7 +13317,11 @@ async function edhaResolveLifeRegen(combat) {
         if (mf && cur.getFlag?.("edha-content", "mutation")) formula = mf;
         const roll = await edhaRollFormula(owner, formula);
         const amt = Math.max(0, Math.floor(roll.total));
-        if (amt > 0) { await edhaCrossHeal(cur, amt); ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🌿 <strong>${e.sourceName}</strong> (${owner.name}): ${cur.name} regenerates <strong>${amt}</strong> HP.</p>` }); }
+        if (amt > 0) {
+          const got = await edhaCrossHeal(cur, amt);   // item 68: announce the delivered HP
+          const line = edhaHealLine(cur, amt, got, d => `${cur.name} regenerates <strong>${d}</strong> HP`);
+          if (line) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🌿 <strong>${e.sourceName}</strong> (${owner.name}): ${line}.</p>` });
+        }
       }
     }
   } catch (e) { console.error("Edha Content | Life regen resolve failed", e); }
@@ -15978,9 +16026,12 @@ async function edhaInterceptClick(ev) {
     const thp = Math.max(0, Math.floor(Number(ds.edhaThp) || 0));
     const type = ds.edhaType || "vital";
     if (half > 0) await edhaCrossDamage(owner, half, type, { edhaRedirected: true });
-    if (heal > 0) await edhaCrossHeal(victim, heal);
+    const got = heal > 0 ? await edhaCrossHeal(victim, heal) : 0;
     if (thp > 0) { await edhaGrantTempHpCross(owner, thp, name); await edhaGrantTempHpCross(victim, thp, name); }
-    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🤝 <strong>${name}</strong>: ${owner.name} takes <strong>${half}</strong> ${type} in ${victim.name}'s place${heal > 0 ? `; ${victim.name} heals <strong>${heal}</strong>` : ""}${thp > 0 ? `; both gain <strong>${thp}</strong> Temp HP` : ""}.</p>` });
+    // item 68: the heal-back clause reports what the gate let through (or names the mark). The
+    // damage the owner takes is measured and unchanged — Lifeline's price is paid either way.
+    const healLine = edhaHealLine(victim, heal, got, d => `${victim.name} heals <strong>${d}</strong>`);
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🤝 <strong>${name}</strong>: ${owner.name} takes <strong>${half}</strong> ${type} in ${victim.name}'s place${healLine ? `; ${healLine}` : ""}${thp > 0 ? `; both gain <strong>${thp}</strong> Temp HP` : ""}.</p>` });
   } catch (e) { edhaClickFailed("intercept resolve", e); }
 }
 // Button binding: EDHA_CARD_BUTTONS["edha-redirect-btn"], ["edha-intercept-btn"] (Job 1, pass 5.3, end of file).
@@ -17576,7 +17627,11 @@ async function edhaResolveRegrowth(combat) {
       const t = await edhaResolveActorRef(e.targetUuid); if (!t) continue;
       const ttok = edhaCasterToken(t);
       if (ft > 0 && otok && ttok && !edhaTokensWithin(otok, ft).some(x => x.id === ttok.id)) continue;   // left range → skip
-      if (amount > 0) { await edhaCrossHeal(t, amount); ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: curActor }), content: `<p>🌿 <strong>${spec.item.name}</strong> (${curActor.name}): ${t.name} regains <strong>${amount}</strong> health.</p>` }); }
+      if (amount > 0) {
+        const got = await edhaCrossHeal(t, amount);   // item 68: announce the delivered HP
+        const line = edhaHealLine(t, amount, got, d => `${t.name} regains <strong>${d}</strong> health`);
+        if (line) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: curActor }), content: `<p>🌿 <strong>${spec.item.name}</strong> (${curActor.name}): ${line}.</p>` });
+      }
     }
     try { await curActor.unsetFlag("edha-content", "regrowth"); } catch (e) {}
   } catch (e) { console.error("Edha Content | resolve regrowth failed", e); }
@@ -17940,14 +17995,22 @@ async function edhaRunPulse(item, h) {
   }
   const amt = Math.max(0, Math.floor(edhaEvalSync(String(h.formula || "@tier"), owner.getRollData())) || 0);
   if (!(amt > 0)) return;
-  for (const a of picked) await edhaCrossHeal(a.actor, amt);
+  /* item 68 (fix pass 8): a sweep is the one place where the rolled amount can be right for some
+   * targets and wrong for others — each creature carries its OWN mark, so one number for the group
+   * cannot be true. Count who actually regained HP, total what landed, and name whoever the mark
+   * stopped. "healed N" now means healed, not reached. */
   const self = (h.includeSelf && !enemies) ? 1 : 0;
-  if (self) await edhaCrossHeal(owner, amt);   // self is always owned; the cross path adds the heal-cut gate (defect 5)
+  const subjects = [...picked.map(a => a.actor), ...(self ? [owner] : [])];   // self is always owned; the cross path adds the heal-cut gate (defect 5)
+  let healedCount = 0, delivered = 0; const cutNames = [];
+  for (const a of subjects) {
+    const got = await edhaCrossHeal(a, amt);
+    if (got > 0) { healedCount++; delivered += got; } else cutNames.push(a.name);
+  }
   const skipBits = [];
   if (skips.hidden) skipBits.push(`${skips.hidden} hidden`);
   if (skips.wall) skipBits.push(`${skips.wall} behind a wall`);
   ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
-    content: `<p>🕊️ <strong>${item.name}</strong>: healed ${picked.length + self} of ${inRange.length + self} ${enemies ? "creature" : "ally(ies)"} ${amt} HP within ${ft} ft${h.visibleOnly ? " (visible)" : ""}${skipBits.length && !enemies ? ` — skipped ${skipBits.join(", ")}` : ""}.${note}</p>` });
+    content: `<p>🕊️ <strong>${item.name}</strong>: healed ${healedCount} of ${inRange.length + self} ${enemies ? "creature" : "ally(ies)"} for <strong>${delivered}</strong> HP within ${ft} ft${h.visibleOnly ? " (visible)" : ""}${skipBits.length && !enemies ? ` — skipped ${skipBits.join(", ")}` : ""}${cutNames.length ? ` — no healing landed on ${cutNames.join(", ")}` : ""}.${note}</p>` });
   await gmAccounting(picked.length);
 }
 async function edhaDrawMana(item) {
@@ -19111,9 +19174,10 @@ function edhaRegisterNativeEventSystem() {
         // HEALTH (2bZ): a heal, relay-safe (edhaCrossHeal — a player rarely owns the patient).
         if (this.resource === "hea") {
           if (this.op === "drain") { console.warn(`Edha Content | ${item.name}: resource 'hea' is gain-only (damage has its own handlers)`); return; }
-          await edhaCrossHeal(who, n);
-          ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
-            content: `<p>⚕️ <strong>${source}</strong>: ${who.name} heals <strong>${n}</strong>.</p>` });
+          const got = await edhaCrossHeal(who, n);   // item 68: the card states what LANDED, not what rolled
+          const line = edhaHealLine(who, n, got, d => `${who.name} heals <strong>${d}</strong>`);
+          if (line) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
+            content: `<p>⚕️ <strong>${source}</strong>: ${line}.</p>` });
           return;
         }
         // Investiture (2bW): a plain clamped write — no Wary, no zero announcement (those are
@@ -19135,8 +19199,13 @@ function edhaRegisterNativeEventSystem() {
            * `inv` rule in all three packs is Reaper's Harvest, op:"gain"), so this arm is currently
            * unconsumed ON PURPOSE — do not delete it as dead code. */
           try { await edhaResourceWrite(who, "inv", { value: next }, edhaBookkeepingTag(`${source} (Investiture ${this.op === "drain" ? "drain" : "gain"})`)); } catch (e) { /* perms */ }
-          ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: who }),
-            content: `<p>✨ <strong>${source}</strong>: ${who.name} ${this.op === "drain" ? "loses" : "recovers"} <strong>${n}</strong> Investiture.</p>` });
+          /* item 68 (fix pass 8): the SAME drift, one arm over. `next` is clamped — at the maximum
+           * going up, at 0 going down — so announcing `n` overstates a gain on a nearly-full pool
+           * and a drain on a nearly-empty one. Report the delta the write produced, and stay quiet
+           * when it produced none: exactly what edhaGainFocus/edhaDrainFocus have always done. */
+          const moved = Math.abs(next - cur);
+          if (moved > 0) ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: who }),
+            content: `<p>✨ <strong>${source}</strong>: ${who.name} ${this.op === "drain" ? "loses" : "recovers"} <strong>${moved}</strong> Investiture.</p>` });
           return;
         }
         if (this.op === "drain") await edhaDrainFocus(who, n, source);
