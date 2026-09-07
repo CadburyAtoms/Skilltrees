@@ -123,6 +123,7 @@
   .nycard details.ny-full { font-size: 12.5px; color: var(--dim); }
   .nycard details.ny-full summary { cursor: pointer; text-decoration: underline dotted; }
   .nycard details.ny-full .body { margin-top: 6px; background: var(--panel2); border-radius: 8px; padding: 8px 10px; overflow-wrap: anywhere; }
+  .nycard .ny-pmaction { font-size: 13.5px; color: var(--dim); overflow-wrap: anywhere; margin-top: 2px; }
   .nyacts { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
   .nyacts .btn2 { padding: 7px 12px; border-radius: 8px; border: 1px solid var(--line-strong); background: var(--panel2); color: var(--txt); font-weight: 600; font-size: 13px; cursor: pointer; }
   .nyacts .btn2.primary { background: var(--accent); border-color: var(--accent); color: #141a2b; }
@@ -348,7 +349,7 @@
 
 <main>
   <section id="needsyou" aria-labelledby="h-needsyou">
-    <div class="eyebrow"><h2 id="h-needsyou">Needs you</h2><span class="right" id="clock"></span></div>
+    <div class="eyebrow"><h2 id="h-needsyou">Needs you</h2><span class="sub">desktop-dashboard marks land here only after the PM's next push</span><span class="right" id="clock"></span></div>
     <div id="stale-banner"></div>
     <div class="status-line" id="status-line"></div>
     <div class="nycards" id="nycards"></div>
@@ -434,6 +435,9 @@
   var liveDoc = false;   // pm/state arrived from the store
   var dbRef = null;
   var filter = "all";
+  // item 94: the inbox subscription's last 30 docs, kept in memory — "sent"/"recorded" state on a
+  // needs-you card derives from THIS, never from the DOM, so a re-render always agrees with it.
+  var inboxDocs = [];
 
   // ---- the dashboard (EDHA_DASHBOARD.html's content: dash/index + the chunk docs it names) ----
   var dash = null;        // assembled: { index, sections: {secId: blocks[]}, rows: {id: {row, tab, secId, secTitle, sub}} }
@@ -627,7 +631,7 @@
       h.push('<div class="worker">' +
         '<div class="title"><span class="id mono">#' + esc(w.item) + '</span><span>' + esc(w.title || lookupTitle(w.item)) + '</span></div>' +
         '<div class="chips">' + modelChip(w.model) + (w.size ? '<span class="chip">size ' + esc(w.size) + '</span>' : "") + (w.lane ? '<span class="chip">lane ' + esc(w.lane) + '</span>' : "") + (w.phase ? pill(w.phase === "in-review" ? "in-review" : "running", w.phase) : pill("running", "working")) + '</div>' +
-        '<div class="meta">' + (isNaN(started) ? '<span>start time unknown</span>' : '<span>started ' + esc(fmtWhen(started, now)) + '</span><span class="elapsed num">' + esc(ago(w.startedAt, now)) + ' elapsed</span>') +
+        '<div class="meta">' + (isNaN(started) ? '<span>start time unknown</span>' : '<span>started ' + esc(fmtWhen(started, now)) + '</span><span class="elapsed num" data-since="' + esc(w.startedAt) + '">' + esc(ago(w.startedAt, now)) + ' elapsed</span>') +
           (w.branch ? '<span class="mono">' + esc(w.branch) + '</span>' : "") + (w.agent ? '<span>agent ' + esc(w.agent) + '</span>' : "") + prLink(w.pr) + '</div>' +
         (w.note ? '<div class="meta"><span>' + esc(w.note) + '</span></div>' : "") +
         '</div>');
@@ -878,15 +882,22 @@
    * disabled/toast dance. */
   function sendNote(text) {
     if (!dbRef) { toast("Open this page in claude.ai to send inbox notes"); return Promise.resolve(false); }
-    return dbRef.collection("inbox").add({ text: text, createdAt: new Date().toISOString(), status: "new", from: "mobile-board" })
-      .then(function () { toast("Sent to the PM"); return true; })
+    var createdAt = new Date().toISOString();
+    return dbRef.collection("inbox").add({ text: text, createdAt: createdAt, status: "new", from: "mobile-board" })
+      .then(function () {
+        // item 94: reflect the note in memory right away so the caller's re-render (markSent)
+        // sees it immediately — the inbox onSnapshot corrects/dedupes this a moment later.
+        inboxDocs = [{ id: "_pending_" + createdAt, text: text, status: "new", createdAt: createdAt }].concat(inboxDocs);
+        toast("Sent to the PM");
+        return true;
+      })
       .catch(function (e) { toast(e && e.code === "quota_exceeded" ? "Inbox is full — delete old notes first" : "Could not send: " + (e && e.message || "unknown error")); return false; });
   }
 
   function renderStatusLine(now) {
     var pm = state.pm || { status: "unknown" }, wf = windowFacts(now), ws = state.workers || [];
     var stLabel = { awake: "PM awake", waiting: "PM waiting", stopped: "PM stopped", unknown: "PM state unknown" }[pm.status] || pm.status;
-    var running = ws.length ? ws.map(function (w) { return "#" + esc(w.item) + " (" + esc(w.model || "?") + ", " + esc(ago(w.startedAt, now)) + ")"; }).join(", ") : "nothing running";
+    var running = ws.length ? ws.map(function (w) { return '<span class="wrun" data-since="' + esc(w.startedAt || "") + '">#' + esc(w.item) + " (" + esc(w.model || "?") + ', <span class="wago">' + esc(ago(w.startedAt, now)) + "</span>)</span>"; }).join(", ") : "nothing running";
     var openR = openRulingsList(), benOnly = state.benOnly || [];
     var reasons = [];
     if (pm.waitingOn) reasons.push(esc(pm.waitingOn));
@@ -901,7 +912,7 @@
     var gen = Date.parse(state.generatedAt);
     var stale = !isNaN(gen) && (now - gen) > 60 * 60 * 1000 && state.pm && state.pm.status === "awake";
     $("stale-banner").innerHTML = stale
-      ? '<div class="stale-banner">⚠ Stale heartbeat — the PM says it is awake, but its last snapshot is ' + esc(ago(state.generatedAt, now)) + ' old. It may be frozen on a permission dialog.</div>'
+      ? '<div class="stale-banner">⚠ Stale heartbeat — the PM says it is awake, but its last snapshot is <span class="sbage" data-since="' + esc(state.generatedAt) + '">' + esc(ago(state.generatedAt, now)) + '</span> old. It may be frozen on a permission dialog.</div>'
       : "";
   }
 
@@ -920,24 +931,46 @@
     return null;
   }
   function rulingReplyPrefix(r) { return "Re Rulings › " + plainText(r.section) + " › " + r.id + ". " + r.ask + ": "; }
-  function markSent(btn, label) {
-    var acts = btn.closest(".nyacts"); if (acts) acts.innerHTML = '<span class="pill merged">' + esc(label || "Sent ✓") + "</span>";
-    var card = btn.closest(".nycard"); var box = card && card.querySelector(".nyother"); if (box) box.classList.remove("show");
+  function benOnlyPrefix(ask) { return "Re Waiting on Ben › " + ask + ": "; }
+  /** item 94: the pure decision, callable headlessly with no DOM at all — given a card's reply
+   * prefix and the inbox docs in memory, has Ben already sent a reply for this card? A card whose
+   * prefix opens an inbox note's text is "sent" (status "new") or "recorded" (status "seen", with
+   * the PM's one-line `action`) instead of showing its buttons — a re-render, a reload, or another
+   * device all land on the same answer because none of it lives in the DOM. */
+  function sentStateFor(prefix, inboxDocs) {
+    var docs = inboxDocs || [];
+    for (var i = 0; i < docs.length; i++) {
+      var d = docs[i];
+      if (d && typeof d.text === "string" && d.text.indexOf(prefix) === 0) {
+        return d.status === "seen" ? { state: "recorded", action: d.action || "" } : { state: "sent" };
+      }
+    }
+    return { state: "buttons" };
   }
+  /** null when the card should render its own buttons; otherwise the markup that replaces them. */
+  function sentActsHtml(sent) {
+    if (sent.state === "sent") return '<div class="nyacts"><span class="pill merged">Sent ✓</span></div>';
+    if (sent.state === "recorded") return '<div class="nyacts"><span class="pill merged">Recorded by PM ✓</span></div>' + (sent.action ? '<div class="ny-pmaction">' + esc(sent.action) + "</div>" : "");
+    return null;
+  }
+  // "sent" is derived (sentStateFor, above) from the inbox docs already in memory — a click just
+  // needs to re-render off that store, never write the pill into the DOM itself.
+  function markSent() { renderNeedsYou(Date.now()); }
 
   function rulingCardHtml(r) {
     var hasDefault = r.default && r.default !== "no default stated";
     var full = findRulingFullText(r.id);
     var fullHtml = full ? '<details class="ny-full"><summary>full text</summary><div class="body">' + inl(full) + "</div></details>" : '<div class="ny-full">full text: see the ⚖ Rulings tab under More.</div>';
     var badge = r.blocks ? '<span class="ny-badge">blocks ' + r.blocks + " checklist row" + (r.blocks === 1 ? "" : "s") + " / TODO item" + (r.blocks === 1 ? "" : "s") + "</span>" : "";
+    var settled = sentActsHtml(sentStateFor(rulingReplyPrefix(r), inboxDocs));
     if (r.applied) {
       return '<div class="nycard applied" data-ruling="' + esc(r.id) + '">' +
         '<div class="ny-k">' + esc(r.id) + " · applied as default" + badge + "</div>" +
         '<div class="ny-ask">' + esc(r.ask) + "</div>" +
         '<div class="ny-default">Live now: <b>' + esc(r.default) + "</b></div>" +
         fullHtml +
-        '<div class="nyacts"><button type="button" class="btn2 primary" data-keep="' + esc(r.id) + '">Keep</button><button type="button" class="btn2" data-veto-open="' + esc(r.id) + '">Veto…</button></div>' +
-        '<div class="nyother" id="ny-other-' + esc(r.id) + '"><textarea placeholder="Why veto it — what should happen instead"></textarea><button type="button" class="btn2 primary" data-veto-send="' + esc(r.id) + '">Send veto</button></div>' +
+        (settled || ('<div class="nyacts"><button type="button" class="btn2 primary" data-keep="' + esc(r.id) + '">Keep</button><button type="button" class="btn2" data-veto-open="' + esc(r.id) + '">Veto…</button></div>' +
+        '<div class="nyother" id="ny-other-' + esc(r.id) + '"><textarea placeholder="Why veto it — what should happen instead"></textarea><button type="button" class="btn2 primary" data-veto-send="' + esc(r.id) + '">Send veto</button></div>')) +
         "</div>";
     }
     return '<div class="nycard" data-ruling="' + esc(r.id) + '">' +
@@ -945,14 +978,15 @@
       '<div class="ny-ask">' + esc(r.ask) + "</div>" +
       '<div class="ny-default">' + (hasDefault ? "Recommended: <b>" + esc(r.default) + "</b>" : "No default stated.") + "</div>" +
       fullHtml +
-      '<div class="nyacts">' + (hasDefault ? '<button type="button" class="btn2 primary" data-default="' + esc(r.id) + '">Go with the default</button>' : "") +
+      (settled || ('<div class="nyacts">' + (hasDefault ? '<button type="button" class="btn2 primary" data-default="' + esc(r.id) + '">Go with the default</button>' : "") +
       '<button type="button" class="btn2" data-other-open="' + esc(r.id) + '">Other…</button></div>' +
-      '<div class="nyother" id="ny-other-' + esc(r.id) + '"><textarea placeholder="Your answer"></textarea><button type="button" class="btn2 primary" data-other-send="' + esc(r.id) + '">Send</button></div>' +
+      '<div class="nyother" id="ny-other-' + esc(r.id) + '"><textarea placeholder="Your answer"></textarea><button type="button" class="btn2 primary" data-other-send="' + esc(r.id) + '">Send</button></div>')) +
       "</div>";
   }
   function benOnlyCardHtml(ask, i) {
+    var settled = sentActsHtml(sentStateFor(benOnlyPrefix(ask), inboxDocs));
     return '<div class="nycard benonly" data-benonly="' + i + '"><div class="ny-k">Yours to do</div><div class="ny-ask">' + esc(ask) + '</div>' +
-      '<div class="nyacts"><button type="button" class="btn2 primary" data-done="' + i + '">Done</button></div></div>';
+      (settled || '<div class="nyacts"><button type="button" class="btn2 primary" data-done="' + i + '">Done</button></div>') + '</div>';
   }
   function renderNeedsYou(now) {
     renderStaleBanner(now);
@@ -999,17 +1033,38 @@
     }
     if ((btn = t.closest("button[data-done]"))) {
       var i = +btn.getAttribute("data-done"), ask = (state.benOnly || [])[i];
-      if (ask != null) { btn.disabled = true; sendNote("Re Waiting on Ben › " + ask + ": done.").then(function (ok) { btn.disabled = false; if (ok) markSent(btn); }); }
+      if (ask != null) { btn.disabled = true; sendNote(benOnlyPrefix(ask) + "done.").then(function (ok) { btn.disabled = false; if (ok) markSent(btn); }); }
       return;
     }
   });
 
+  // item 94: render() (first paint only) rebuilds everything; renderBoardPanels() is what a
+  // pm/state push triggers — the board panels, never the needs-you cards or the dashboard, so a
+  // "Sent ✓" mark (now derived from inboxDocs, not written into the DOM) is never touched by it
+  // and the big dashboard panel never gets rebuilt out from under a mid-scroll read. tick() goes
+  // further still: it touches no panel's innerHTML at all, only textContent on the elements that
+  // carry a clock or an elapsed/ago time (the data-since spans rendered above).
+  function renderBoardPanels(now) {
+    try { renderHeader(now); renderNow(now); renderBudget(now); renderQueue(); renderAsks(); renderLog(now); renderFoot(); }
+    catch (e) { console.error(e); }
+  }
   function render() {
     var now = Date.now();
     try { renderHeader(now); renderNeedsYou(now); renderNow(now); renderBudget(now); renderQueue(); renderAsks(); renderLog(now); renderFoot(); renderSnapshot(now); renderDash(); }
     catch (e) { console.error(e); }
   }
-  function tick() { var now = Date.now(); try { renderHeader(now); renderNeedsYou(now); renderNow(now); renderBudget(now); } catch (e) { console.error(e); } }
+  function updateElapsed(now) {
+    var els = document.querySelectorAll(".elapsed[data-since]");
+    for (var i = 0; i < els.length; i++) { var since = els[i].getAttribute("data-since"); if (since) els[i].textContent = ago(since, now) + " elapsed"; }
+    var wruns = document.querySelectorAll(".wrun[data-since]");
+    for (var j = 0; j < wruns.length; j++) {
+      var w = wruns[j], since2 = w.getAttribute("data-since"), ag = w.querySelector(".wago");
+      if (ag && since2) ag.textContent = ago(since2, now);
+    }
+    var sb = document.querySelector(".sbage[data-since]");
+    if (sb) { var since3 = sb.getAttribute("data-since"); if (since3) sb.textContent = ago(since3, now); }
+  }
+  function tick() { var now = Date.now(); try { renderHeader(now); updateElapsed(now); } catch (e) { console.error(e); } }
 
   $("filters").addEventListener("click", function (ev) { var b = ev.target.closest("button[data-f]"); if (!b) return; filter = b.getAttribute("data-f"); renderQueue(); });
   // dashboard: tabs, filters, search, section toggles, go/reply, tiles
@@ -1049,8 +1104,12 @@
     try { if (window.claude && typeof window.claude.use === "function") db = await window.claude.use("db"); } catch (e) { db = null; }
     if (!db) { setInbox(false, "Live store unavailable here — this is the last published snapshot."); $("notes").innerHTML = '<div class="offline">Open this page in claude.ai to send notes and see live updates.</div>'; return; }
     dbRef = db;
+    // item 94: a pm/state push used to call the full render(), which rebuilt the needs-you cards
+    // (erasing any "Sent ✓" mark, since it used to live only in the DOM) and the dashboard (the
+    // scroll jump) on every push — three pushes in three minutes while Ben was answering from his
+    // phone. renderBoardPanels() touches neither.
     db.doc("pm/state").onSnapshot(function (snap) {
-      if (snap.exists) { state = snap.data(); liveDoc = true; render(); }
+      if (snap.exists) { state = snap.data(); liveDoc = true; renderBoardPanels(Date.now()); }
       else { liveDoc = false; renderHeader(Date.now()); }
     }, function (err) { console.warn("pm/state subscription ended", err); liveDoc = false; renderHeader(Date.now()); });
     // The dashboard: subscribe to the small index, fetch the chunks it names. A chunk whose stamp
@@ -1060,7 +1119,12 @@
       Promise.all(ids.map(function (id) { return db.doc("dash/" + id).get(); })).then(function (docs) {
         var chunks = {}; docs.forEach(function (d, i) { if (d.exists) chunks[ids[i]] = d.data(); });
         var a = assembleDash(idx, chunks);
-        if (a) { dash = a; dashLive = true; renderSnapshot(Date.now()); renderDash(); renderAsks(); renderNeedsYou(Date.now()); }
+        if (a) {
+          dash = a; dashLive = true;
+          var sy = window.scrollY; // dsections can run hundreds of KB — hold the scroll position
+          renderSnapshot(Date.now()); renderDash(); renderAsks(); renderNeedsYou(Date.now());
+          window.scrollTo(0, sy);
+        }
         else if (!retried) setTimeout(function () { loadDash(idx, true); }, 3000);
         else console.warn("dash: chunks incomplete for stamp", idx.stamp);
       }).catch(function (e) { console.warn("dash: chunk load failed", e); });
@@ -1075,8 +1139,12 @@
       if (dashLive && dash && dash.index.stamp === idx.stamp && dash.index.generatedAt === idx.generatedAt) return;
       loadDash(idx, false);
     }, function (err) { console.warn("dash/index subscription ended", err); });
+    // item 94: the inbox is also the "sent"/"recorded" source of truth now — keep the docs in
+    // memory and re-render only the notes list + the needs-you marks, never the board panels.
     db.collection("inbox").orderBy("createdAt", "desc").limit(30).onSnapshot(function (snap) {
-      renderNotes(snap.docs.map(function (d) { var b = d.data() || {}; return { id: d.id, text: b.text, status: b.status, createdAt: b.createdAt }; }), Date.now());
+      inboxDocs = snap.docs.map(function (d) { var b = d.data() || {}; return { id: d.id, text: b.text, status: b.status, createdAt: b.createdAt, action: b.action }; });
+      renderNotes(inboxDocs, Date.now());
+      renderNeedsYou(Date.now());
     }, function (err) { console.warn("inbox subscription ended", err); });
     setInbox(true, "Lands in the PM's inbox; it acts on its next wake and marks the note seen.");
   }
