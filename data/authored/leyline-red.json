@@ -1213,10 +1213,11 @@
       "events": {
         "TKmyXVyFhGYWryKv": {
           "id": "TKmyXVyFhGYWryKv",
-          "description": "Red/Momentum. On a melee (impact) hit, optionally spend 1 Investiture to add half [Tier][Die] impact. Test Red vs Physical is owner-judged.",
+          "description": "Red/Momentum. On a melee (impact) hit, optionally spend 1 Investiture to add half [Tier][Die] impact. Test Red vs Physical is owner-judged. R-23 (a) 2026-09-06: whenDealer any — a true rider on ANY melee impact hit, accepting a standalone use also self-offers.",
           "event": "edha-on-hit",
           "handler": {
             "type": "edha-triggered-effect",
+            "whenDealer": "any",
             "whenDamageType": "impact",
             "whenTargetIsolated": false,
             "whenTargetStatus": "",

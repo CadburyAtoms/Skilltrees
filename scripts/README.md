@@ -68,6 +68,7 @@ ever need to.
 | `lib/md.js`                | Shared markdown engine for the three HTML doc builders (`build-dashboard.js` / `build-canon-codex.js` / `build-player-primer.js`) |
 | `lib/build-doc.js`         | Shared `--check`/write/exit skeleton for the generated-doc builders (the same four as above plus `dump-native-vocabulary.js`) |
 | `lib/strip-comments.js`    | The comment-stripped-engine-text primitive (`stripComments`/`codeOnly`), used by `lint-refs.js` and stripped-source-equality proofs |
+| `lib/consume-guard.js`     | `checkConsumeEntries` — the R-22 build guard (item 60): fails on any `consume` entry with `value.min !== value.max`, since `edhaConsumeList` only ever refunds `min`. Called by `lint-refs.js` pass 23; pinned in `tests/consume-guard.test.js` |
 | `map/`                     | World-map toolchain (extract layers from Ben's `.procreate`, measure distances/travel days, render labeled maps, trace nations/rivers/hydrology, settle the gazetteer, `lint_map.py` the CI docs-vs-gazetteer drift gate) against `source-materials/maps/thyrcross.map.json` — see CLAUDE.md's map row for the full picture; one row here rather than one per file |
 
 > The old GitHub Pages atlas publish flow (`publish.sh` / `publish.bat`) was removed

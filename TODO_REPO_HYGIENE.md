@@ -1363,7 +1363,7 @@ verify: the script's before/after summary from the live table, plus the 🤖 row
 
 ---
 
-## 41. [ ] "The Final Study" (deity/Knowledge) carries a stale authored docId — the one overlay that resolves by name
+## 41. [x] "The Final Study" (deity/Knowledge) carries a stale authored docId — the one overlay that resolves by name — DONE 2026-09-06, folded into item 58, PR #227
 
 **Why:** item 18's worker (PR #170, 2026-09-05) measured every one of the 365 authored overlay
 entries against `fid("talent:<tree>:<name>")` and found exactly one orphaned docId:
@@ -1384,6 +1384,11 @@ packs hash identical before/after.
 deps Ben's OK · verify: the build's name-match count 1 → 0 + pack parity. DATA-only, no rebuild.
 
 **Ben's OK 2026-09-06 — folded into item 58.**
+
+**Correction (item 58, 2026-09-06):** the seed stated above, `MQvIkCSK7fIHjnZE`, does not
+reproduce — re-derived by hand, from a live scratch build's assigned item `_id`, and by rebuilding
+item 18's own commit (`4500f95`) with its own `data.js`/`domain.json` snapshot, all three agree on
+**`yrIgDwup7iBdPq07`** (`fid("talent:deity/Gnothis:The Final Study")`). That is the value shipped.
 
 ---
 
@@ -1850,7 +1855,7 @@ REBUILD (Ben's deploy).
 
 ---
 
-## 58. [ ] Talent data batch: Volatile Strike rider scope, Withering Touch duration prose, The Final Study re-key (R-23, R-28, TODO 41)
+## 58. [x] Talent data batch: Volatile Strike rider scope, Withering Touch duration prose, The Final Study re-key (R-23, R-28, TODO 41) — DONE 2026-09-06, PR #227
 
 **Why:** Three small authored-data fixes, all Ben-approved on 2026-09-06:
 - R-23 (a): Volatile Strike should be a true rider on ANY melee hit (`whenDealer: "any"`), not
@@ -1893,7 +1898,7 @@ REBUILD (Ben's deploy).
 
 ---
 
-## 60. [ ] Build guard: reject any `min ≠ max` consume entry (R-22)
+## 60. [x] Build guard: reject any `min ≠ max` consume entry (R-22) — done 2026-09-06, PR #225 (TOOLING-only)
 
 **Why:** `edhaConsumeList` refunds `value.min`, so a talent or adversary ability whose cost entry
 has `min ≠ max` can silently under-refund. Ben (a): close the door with a build guard rather than
@@ -1996,3 +2001,28 @@ generator.
 
 **PM:** lane R · model sonnet · size S · deps 48 ✓ · verify: build-report parity + the guard's
 mutation. TOOLING-only (no rebuild — the packs do not change). Found by item 48.
+
+---
+
+## 66. [x] A negative next-test rider on the DAMAGE path is joined as `base + -1d6` — 2026-09-06, PR #229
+
+**Why:** item 49 (PR #221) made `edhaWrapRollDamage` fold the taken next-test riders onto
+the damage formula with a raw `${f} + ${m.formula}` reduce, so a rider whose formula starts
+with a minus (Probability Net's `-1d6` as an `either` rider) built `2d6 + -1d6`, which
+Foundry's parser dislikes. The d20 path (`edhaNextTestPreRoll`) already turned a leading
+minus into an explicit subtraction with the source label (`0 - 1d6[label]`). Item 49 found
+this and left it as pre-existing.
+
+**What to do:** ONE pure formula-join helper (leading minus → explicit subtraction, source
+label kept) that BOTH paths call; positive riders must build a byte-identical formula to
+before. Nothing else changes. Iron rule 2b: no name-keyed branch; the allowlist may only shrink.
+
+**Done when:** headless pins — (1) a negative damage rider joins as `base - 1d6[label]`
+(fails under a one-line reversion to the raw concat); (2) a positive rider's built formula
+is byte-identical to the pre-change string; (3) the d20 path still produces its existing
+strings for `-1d6` and `+1d6`; (4) a source scan pins exactly one join helper and that both
+paths call it. One 🤖 checklist row beside 2bI-4 plus a positive-rider negative control.
+
+**PM:** lane B · model fable-worker · size S · deps 49 ✓ · verify: mutation. ENGINE-ONLY (F5).
+Found by item 49. **Landed:** `edhaJoinRiderTerm` (SHARED CORE, beside `edhaTidyFormula`);
+`tests/negative-rider-join.test.js` (7 pins); checklist 2bI-4d / 2bI-4e.
