@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-07T09:58:08.291Z",
+  "generatedAt": "2026-09-07T14:52:05.114Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "563f8ac64c",
-    "commit": "c12339b",
+    "hash": "5ba7672c1b",
+    "commit": "14f2aa9",
     "branch": "main",
     "repo": "CadburyAtoms/Skilltrees"
   },
@@ -37,18 +37,45 @@
     ]
   },
   "windowStatus": {
-    "open": true,
-    "changeAt": "2026-09-07T11:00:00.000Z",
-    "nextOpenAt": null
+    "open": false,
+    "changeAt": null,
+    "nextOpenAt": "2026-09-08T01:00:00.000Z"
   },
   "pm": {
-    "status": "stopped",
-    "note": "Fable PM session of 2026-09-06 16:56 ET STOPPED its loop at 05:58 ET Monday (Ben's hours). Fifty PRs merged over the shift; every engine-only merge is live (last push 23:50, main 9f3f529); nothing is running, no PR is open, the live module is in sync. Waiting on you: ONE deploy-to-foundry.bat run (Foundry closed) for the pack REBUILDS - 34a, 57, 58, 65+67, 59, 63, 55, 56 - then the next PM session dispatches bench run 42 over those rows plus the night's new engine rows (10 batch 2, 77, fix pass 10, the map picker, R-52 (c)(ii)); R-83 (item 70 waits on it); vetoes on R-18, R-80, R-81, R-82, R-84, R-85, PM-R15 if you disagree. The hygiene backlog is otherwise empty (62 needs a reframe after its bench row measures; 9 is blocked on the map rulings). Next PM: the scheduled weeknight task, Monday 21:00 ET, or a hand-start.",
-    "waitingOn": "ONE deploy-to-foundry.bat run (Foundry closed) for the pack rebuilds; R-83 (needs your answer - it moves HP); R-18, R-80, R-81, R-82, R-84, R-85, PM-R15 (defaults apply if silent)",
+    "status": "awake",
+    "note": "Hand-started Fable PM (Ben, 09:52 ET Mon). Your deploy is live (engine 609c7e45 = main 14f2aa9, 6 in sync) and your dashboard marks are being recorded: bench run 42 (opus) is retiring your 13 marked rows and driving the 58 open bench rows; item 79 (sonnet) is writing the rulings in (R-86 GM-less rows dropped, R-87 wizard numbers stand, R-56 reopened, items 80-83 filed). PM-R8 revoked, PM-R16 = 3 Opus/day + unlimited Sonnet/Haiku. Still waiting on you: R-83 (examples given in chat), and a go/no-go on R-56 (cosmere ladder for everyone - engine + adversaries rebuild, size M).",
+    "waitingOn": "R-83 (a)/(b) after the chat examples; go/no-go on R-56's reversal (item 83); the 10 unmarked bench ⚑ rows + 5 world ⚑ rows (say 'fine' or 'move them')",
     "nextWakeAt": null,
-    "session": "2026-09-06 16:56 ET — Fable PM (hand-started) — STOPPED 2026-09-07 05:58 ET"
+    "session": "2026-09-07 09:52 ET — Fable PM (hand-started, Ben's hours by his word)"
   },
-  "workers": [],
+  "workers": [
+    {
+      "item": "bench-42",
+      "title": "Bench run 42 — the REBUILD stack live + the night's engine rows; retires Ben's 13 marked rows",
+      "model": "opus",
+      "size": "L",
+      "lane": "B",
+      "branch": "pm/bench-42",
+      "startedAt": "2026-09-07T14:45:00Z",
+      "agent": "Bench run 42",
+      "phase": "working",
+      "pr": null,
+      "note": "Opus 1 of 3 today"
+    },
+    {
+      "item": "79",
+      "title": "Rulings close-out 2026-09-07 — Ben's dashboard marks recorded, items 80–83 filed",
+      "model": "sonnet",
+      "size": "S",
+      "lane": "R",
+      "branch": "pm/79-rulings-closeout-0907",
+      "startedAt": "2026-09-07T14:45:00Z",
+      "agent": "Work item 79",
+      "phase": "working",
+      "pr": null,
+      "note": null
+    }
+  ],
   "usage": null,
   "queue": [
     {
@@ -714,11 +741,11 @@
     {
       "pos": 55,
       "item": "62",
-      "title": "R-52 (ii) edge-to-edge range measurement for sized tokens + a bench sweep of every rangeFt gate — reframe before dispatch: item 47 found the ruling's own example (the Crownox Ring's adjacent ox at 7.5 ft) already passes under the inclusive slack, so the motivating failure is gone; keep the item for a Huge owner's \"adjacent\" and the sweep, but let the bench row measure first",
+      "title": "R-52 (ii) edge-to-edge range measurement for sized tokens + a bench sweep of every rangeFt gate — reframe before dispatch: item 47 found the ruling's own example (the Crownox Ring's adjacent ox at 7.5 ft) already passes under the inclusive slack, so the motivating failure is gone; keep the item for a Huge owner's \"adjacent\" and the sweep, but let the bench row measure first. R-52, Ben 09-07: \"I'm fine with whatever fix you can find for this. I think increasing slack would work, or editing the cue.\" — the applied slack IS the fix; (ii) only if bench 42's measurement row fails",
       "lane": "B",
       "model": "opus",
       "size": "M",
-      "deps": "47 ✓ · its bench row",
+      "deps": "47 ✓ · its bench row (bench 42)",
       "status": "queued",
       "statusDetail": null,
       "pr": null
@@ -774,9 +801,9 @@
     {
       "pos": 63,
       "item": "70",
-      "title": "R-83's fix — gate the three ungated hea writers at their emitters (edha-regen turn-end, the decay lifesteal heal-back, edhaBurstDetonate's heal hits); edhaApplyBurstResults stays ungated (R-10); the drop-to-one family pin's gate-call count raised with a declaration; three 🤖 rows. ENGINE-ONLY; found by fix pass 8",
+      "title": "R-83's fix — gate the three ungated hea writers at their emitters (edha-regen turn-end, the decay lifesteal heal-back, edhaBurstDetonate's heal hits); edhaApplyBurstResults stays ungated (R-10); the drop-to-one family pin's gate-call count raised with a declaration; three 🤖 rows. ENGINE-ONLY; found by fix pass 8. Ben 09-07: \"I'm not sure what this means and will want the pm to give me good examples when we get here in chat\" — examples given in chat 10:1x and recorded in the ruling (item 79); still waiting for (a)/(b)",
       "lane": "B",
-      "model": "fable-worker",
+      "model": "opus",
       "size": "S",
       "deps": "R-83 (Ben)",
       "status": "blocked",
@@ -926,6 +953,78 @@
       "status": "Ben-only",
       "statusDetail": null,
       "pr": null
+    },
+    {
+      "pos": 72,
+      "item": null,
+      "title": "Bench run 42 — the REBUILD stack live for the first time (Ben's deploy this morning; served 609c7e45… = main 14f2aa9) plus the night's engine rows (10 batch 2, 77-1, fix pass 10's corrected string, the map picker, the rider-family rows, R-52 (c)(ii)'s measurement); also retires the 13 rows Ben marked on the 09-07 dashboard and the three GM-less / two-GM rows under R-86. Dispatched 10:45 (bench-run, opus, worktree pm/bench-42)",
+      "lane": "B",
+      "model": "opus",
+      "size": "L",
+      "deps": "deploy ✓",
+      "status": "running",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 73,
+      "item": "79",
+      "title": "Rulings close-out 2026-09-07 — Ben's dashboard marks recorded inline in EDHA_RULINGS.md (R-18, R-52, R-56 reopened + scoped, R-82, R-80 / R-81 / R-84 / R-85 accepted, R-83's gloss, R-77 / R-48 confirmations, F-1 settled, new R-86 / R-87), items 80–83 filed, Mistheron art DONE, delta. Dispatched 10:45 (sonnet, worktree pm/79-rulings-closeout-0907)",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "S",
+      "deps": null,
+      "status": "running",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 74,
+      "item": "80",
+      "title": "R-18 — the Heroic quarry advantage joins the next-test LIST (item 49's writer) instead of stomping the slot, so it cancels against a Weakened disadvantage per SR p.18 / R-80; pin both orders; one 🤖 row. ENGINE-ONLY (F5)",
+      "lane": "B",
+      "model": "opus",
+      "size": "S",
+      "deps": "R-18 ✓ · 79",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 75,
+      "item": "81",
+      "title": "R-82 (a) — the per-rule onGraze dial on edha-damage-bonus (item 56's shape), every authored card audited; an authored value change is a REBUILD — the PM sets the deploy class from the card list in the PR",
+      "lane": "B",
+      "model": "opus",
+      "size": "S",
+      "deps": "R-82 ✓ · 56 ✓ · 79",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 76,
+      "item": "82",
+      "title": "Adversary statting standard writes senses + speed per block (Ben 09-07: the bestiary skill should stat them so tokens inherit sight and speed); a lint; the values for the 52 existing blocks are invented content → ONE approval batch to Ben, then an adversaries REBUILD",
+      "lane": "H",
+      "model": "sonnet",
+      "size": "M",
+      "deps": "83 · Ben's batch",
+      "status": "blocked",
+      "statusDetail": "83",
+      "pr": null
+    },
+    {
+      "pos": 77,
+      "item": "83",
+      "title": "R-56 REVERSAL — the cosmere senses ladder for everyone (drop the Edha AWA table from edhaDeriveSheetStats, advSensesRangeFt in the build → adversaries REBUILD, the wizard preview, bench-setup PC sight, Character_Building_Rules.md §Senses Range, ACTOR_STAT_DERIVATION.md, the edhaSensesRangeFtFromAwa pins). Scoped in chat 09-07; Ben asked to be told before changing — WAITING on his go",
+      "lane": "H",
+      "model": "opus",
+      "size": "M",
+      "deps": "R-56 (Ben)",
+      "status": "blocked",
+      "statusDetail": "R-56",
+      "pr": null
     }
   ],
   "rulings": [
@@ -980,7 +1079,7 @@
   ],
   "inbox": [],
   "foundry": {
-    "text": "✅ OPEN from 2026-09-06 19:00 ET — LIVE = main at dd1e1c3 (#216), engine hash 7d8e0226… equal both sides, 6 in sync; fix pass 7a (#215) is at the table. Ben ran deploy-to-foundry.bat at 18:59 (chat: \"deploy ran @18:59 and foundry is open, adversaries synced\") and relaunched Foundry, so his Gamemaster client is fresh (the R-77 blocker is gone) and the adversaries pack is rebuilt + synced. Bench run 39 dispatched 19:03 (worktree) for the 27 open 🤖 rows — fix pass 7a's re-tests first. ✅ ENGINE PUSHED 20:16 — LIVE = main at 2d9631d (#233), hash 0ea0741a… equal both sides, 6 in sync (module-src-sync.js push, 1 copied; safety copy under %TEMP%\\edha-engine-backups). Every engine-only merge of the evening is at the table: fix pass 7b, 53, 49, 50, 52, 54, 66, 51, 34b. Ben's Gamemaster client runs the old engine until he presses F5. Bench run 40 dispatched 20:17 for their 🤖 rows. ✅ ENGINE PUSHED 22:17 — LIVE = main at 53dd0bc (#253), hash f2fb3e2d… equal both sides, 6 in sync (module-src-sync.js push, 1 copied; safety copy under %TEMP%\\edha-engine-backups; Foundry was up and Ben had not yet run the bat, so the engine-only merges went live on their own class): 69, 68 (fix pass 8), 24, the 55 / 56 engine halves, fix pass 9. Bench run 41 dispatched 22:18 for their 🤖 rows (registry smoke, fix pass 9's four, 2bJ-10, the Verdict fold, the heal cards); the REBUILD rows stay BLOCKED-ON-DEPLOY. Bench 41 reported 23:1x — 25 rows retired, 1 FAIL (fix pass 10). ✅ ENGINE + ASSET PUSHED 23:21 — LIVE = main at 6e657c3, engine hash ee29b118… and thyrcross-nations.json c81a388b… equal both sides, 6 in sync (items 71, 75, 10 batch 2 and 61's map asset went live once bench 41 was done). ✅ ENGINE PUSHED 23:35 — LIVE = main at 1cf0fc7 (#267), hash 78520e49… equal both sides, 6 in sync (item 77). ✅ ENGINE PUSHED 23:50 — LIVE = main at 9f3f529 (#269), hash 609c7e45… equal both sides, 6 in sync (fix pass 10). Every engine-only merge of the night is at the table; nothing engine-side is owed. ⏳ OWED: deploy-to-foundry.bat (packs REBUILD + ⟳ Sync — and the bat copies the engine) for 34a #220, 57 #226, 58 #227, 65 + 67 #232, 59 #234, 63 #239, 55 #240, 56 #242, plus the engine-only merges since the 20:16 push: 69 #237, 68 #241, 24 #244 — one run covers them all; Ben was push-notified ONCE at 21:33 (bench 40 had reported); until he confirms, their 🤖 rows are BLOCKED-ON-DEPLOY, not defects, and bench run 41 waits. _(Earlier:)_ ❌ CLOSED at 16:56 (refused; last seen up at 08:30); #215 sat on main un-deployed from 18:33 to 18:59. Tonight's engine-only passes deploy by module-src-sync.js push when Foundry is next up (F5 on Ben's side); their 🤖 rows wait for that window. _(Earlier:)_ ✅ LIVE = main at #204, hash 57a8c950… (PM push 2026-09-06 03:47, 6 in sync, equal both sides; adds fix pass 6 to 39cc7612… of 03:27; verified by run 37). Nothing owed to deploy-to-foundry.bat — no pack rebuild all weekend. ⚠️ Ben's Gamemaster client has been connected since before 23:28 and runs a pre-fix engine until it reloads. _(Earlier:)_ 1496af37… at 01:24 (28a + 28b). _(Earlier:)_ 0051bde1… at 00:49 (item 29, verified by run 33). _(Earlier:)_ 06229ecc… at 00:14 (fix pass 4, verified by run 32); ffb1f3f5… at 23:53 (fix pass 3 + item 23). _(Earlier tonight:)_ fix pass 3 pushed 23:28 as c498d9eb…, verified by bench run 31. _(19:10 fact:)_ ✅ #160 LIVE (verified 2026-09-05 19:10 from the new clone: served and repo register-skills.js both 6fc09da0… CRLF-normalised, module-src-sync.js status 6 in sync, localhost:30000 answers 302). _(18:35 note, now history:)_ ⏳ DEPLOY OWED (2026-09-05 18:35, PR #160, ENGINE-ONLY): item 36's one moved statement is on main but not live — module-src-sync.js push + hash verify from the NEW clone (C:\\dev\\Skilltrees) is the next session's first act if Foundry is up; the 🤖 row under # BENCH — Sovereignty waits on it. Ben closed Foundry for the OneDrive move (~18:30). _(Previous fact:)_ ✅ DEPLOYED (2026-09-05 ~16:15, Ben, deploy-to-foundry.bat, Foundry closed): #151's engine half and the Reeve-Owl data fix are LIVE. PM verification 16:20: module-src-sync.js status → 6 in sync, 0 stale, 0 hand-edited; repo engine blob a59b0c41… at main = 7b4bcc8; Foundry relaunched, localhost:30000 answers. The run was the live confirmation of #139's step 2 in the sense that it completed, but note how it got there: Ben's checkout was still pre-#139 when he double-clicked, so the OLD 7-step script ran and hung on the same worktree-prune (y/n) prompt (this time a half-removed .git/worktrees/hw record from a ~13:58 worker). The PM removed the record, had Ben close the window rather than answer y (the pull would have rewritten the running script under cmd, which resumes by byte offset), pulled main in the checkout, and Ben re-ran the new 8-step script clean. Lesson for the runbook: a deploy-script fix only protects the run AFTER the one that pulls it — when the script itself changes, pull first, then run. Bench run 4 verifies the served hash before driving anything.\n\nOPEN — Saturday 2026-09-05 from 09:13 (Ben: \"foundry has been updated and is open\"). Deploy fact (2026-09-05 11:50, PM push after fix pass 1): module-src-sync.js push → 1 copied; live and repo register-skills.js both hash 9575fba2…; status 6 in sync. _(09:13 fact: 6 in sync at 9027cd17….)_ The 2026-08-10 hygiene campaign (R-60..R-67, live dice math) is now LIVE at the table for the first time — its # BENCH — hygiene campaign 2026-08-10 section (checklist line ~3328) is the first thing the bench should run. The checklist carries 106 🤖 rows in total. The dispatch itself waits for the 12:05 slot (two dispatches already in the trailing five hours) and for Foundry still being up then — superseded 10:40: Ben raised the weekend cap and asked for bench progress while he is away; the first bench run was dispatched at once. The weekend runs as a bench marathon (the bench-marathon skill's loop, orchestrated by the PM): bench-run → fails to one test-pass-fixes worker → PM deploys engine-only fixes with module-src-sync.js push and verifies by hash → next bench run re-tests the restored rows first. Pack-rebuild fixes stay BLOCKED-ON-DEPLOY for Ben. Lane-B items merge to main but stay bench-pending until a window; the PM then dispatches one bench-run worker (Opus) for the accumulated 🤖 sections, and fails go to one test-pass-fixes worker.\n\n_(Previous fact, for the record: on 2026-09-04 the live engine was the 2026-07-28 version and deploy-to-foundry.bat had not been run; Ben ran it on 09-05 — it hung on git's worktree-prune prompt on the way, which he is fixing in his own session in the focused-booth-7259bf worktree.)_",
+    "text": "✅ OPEN 2026-09-07 from the morning — Ben ran deploy-to-foundry.bat and relaunched: LIVE = main at 14f2aa9, served engine 609c7e45… = repo, 6 in sync, 0 stale (verified 09:55 ET by hash and module-src-sync.js status). The whole REBUILD stack is at the table for the first time. Bench run 42 dispatched 10:45 (worktree); Ben's Gamemaster client is connected, so the bench is the second GM client (R-86: that is a bench condition, never a play defect).\n\n✅ OPEN from 2026-09-06 19:00 ET — LIVE = main at dd1e1c3 (#216), engine hash 7d8e0226… equal both sides, 6 in sync; fix pass 7a (#215) is at the table. Ben ran deploy-to-foundry.bat at 18:59 (chat: \"deploy ran @18:59 and foundry is open, adversaries synced\") and relaunched Foundry, so his Gamemaster client is fresh (the R-77 blocker is gone) and the adversaries pack is rebuilt + synced. Bench run 39 dispatched 19:03 (worktree) for the 27 open 🤖 rows — fix pass 7a's re-tests first. ✅ ENGINE PUSHED 20:16 — LIVE = main at 2d9631d (#233), hash 0ea0741a… equal both sides, 6 in sync (module-src-sync.js push, 1 copied; safety copy under %TEMP%\\edha-engine-backups). Every engine-only merge of the evening is at the table: fix pass 7b, 53, 49, 50, 52, 54, 66, 51, 34b. Ben's Gamemaster client runs the old engine until he presses F5. Bench run 40 dispatched 20:17 for their 🤖 rows. ✅ ENGINE PUSHED 22:17 — LIVE = main at 53dd0bc (#253), hash f2fb3e2d… equal both sides, 6 in sync (module-src-sync.js push, 1 copied; safety copy under %TEMP%\\edha-engine-backups; Foundry was up and Ben had not yet run the bat, so the engine-only merges went live on their own class): 69, 68 (fix pass 8), 24, the 55 / 56 engine halves, fix pass 9. Bench run 41 dispatched 22:18 for their 🤖 rows (registry smoke, fix pass 9's four, 2bJ-10, the Verdict fold, the heal cards); the REBUILD rows stay BLOCKED-ON-DEPLOY. Bench 41 reported 23:1x — 25 rows retired, 1 FAIL (fix pass 10). ✅ ENGINE + ASSET PUSHED 23:21 — LIVE = main at 6e657c3, engine hash ee29b118… and thyrcross-nations.json c81a388b… equal both sides, 6 in sync (items 71, 75, 10 batch 2 and 61's map asset went live once bench 41 was done). ✅ ENGINE PUSHED 23:35 — LIVE = main at 1cf0fc7 (#267), hash 78520e49… equal both sides, 6 in sync (item 77). ✅ ENGINE PUSHED 23:50 — LIVE = main at 9f3f529 (#269), hash 609c7e45… equal both sides, 6 in sync (fix pass 10). Every engine-only merge of the night is at the table; nothing engine-side is owed. ⏳ OWED: deploy-to-foundry.bat (packs REBUILD + ⟳ Sync — and the bat copies the engine) for 34a #220, 57 #226, 58 #227, 65 + 67 #232, 59 #234, 63 #239, 55 #240, 56 #242, plus the engine-only merges since the 20:16 push: 69 #237, 68 #241, 24 #244 — one run covers them all; Ben was push-notified ONCE at 21:33 (bench 40 had reported); until he confirms, their 🤖 rows are BLOCKED-ON-DEPLOY, not defects, and bench run 41 waits. _(Earlier:)_ ❌ CLOSED at 16:56 (refused; last seen up at 08:30); #215 sat on main un-deployed from 18:33 to 18:59. Tonight's engine-only passes deploy by module-src-sync.js push when Foundry is next up (F5 on Ben's side); their 🤖 rows wait for that window. _(Earlier:)_ ✅ LIVE = main at #204, hash 57a8c950… (PM push 2026-09-06 03:47, 6 in sync, equal both sides; adds fix pass 6 to 39cc7612… of 03:27; verified by run 37). Nothing owed to deploy-to-foundry.bat — no pack rebuild all weekend. ⚠️ Ben's Gamemaster client has been connected since before 23:28 and runs a pre-fix engine until it reloads. _(Earlier:)_ 1496af37… at 01:24 (28a + 28b). _(Earlier:)_ 0051bde1… at 00:49 (item 29, verified by run 33). _(Earlier:)_ 06229ecc… at 00:14 (fix pass 4, verified by run 32); ffb1f3f5… at 23:53 (fix pass 3 + item 23). _(Earlier tonight:)_ fix pass 3 pushed 23:28 as c498d9eb…, verified by bench run 31. _(19:10 fact:)_ ✅ #160 LIVE (verified 2026-09-05 19:10 from the new clone: served and repo register-skills.js both 6fc09da0… CRLF-normalised, module-src-sync.js status 6 in sync, localhost:30000 answers 302). _(18:35 note, now history:)_ ⏳ DEPLOY OWED (2026-09-05 18:35, PR #160, ENGINE-ONLY): item 36's one moved statement is on main but not live — module-src-sync.js push + hash verify from the NEW clone (C:\\dev\\Skilltrees) is the next session's first act if Foundry is up; the 🤖 row under # BENCH — Sovereignty waits on it. Ben closed Foundry for the OneDrive move (~18:30). _(Previous fact:)_ ✅ DEPLOYED (2026-09-05 ~16:15, Ben, deploy-to-foundry.bat, Foundry closed): #151's engine half and the Reeve-Owl data fix are LIVE. PM verification 16:20: module-src-sync.js status → 6 in sync, 0 stale, 0 hand-edited; repo engine blob a59b0c41… at main = 7b4bcc8; Foundry relaunched, localhost:30000 answers. The run was the live confirmation of #139's step 2 in the sense that it completed, but note how it got there: Ben's checkout was still pre-#139 when he double-clicked, so the OLD 7-step script ran and hung on the same worktree-prune (y/n) prompt (this time a half-removed .git/worktrees/hw record from a ~13:58 worker). The PM removed the record, had Ben close the window rather than answer y (the pull would have rewritten the running script under cmd, which resumes by byte offset), pulled main in the checkout, and Ben re-ran the new 8-step script clean. Lesson for the runbook: a deploy-script fix only protects the run AFTER the one that pulls it — when the script itself changes, pull first, then run. Bench run 4 verifies the served hash before driving anything.\n\nOPEN — Saturday 2026-09-05 from 09:13 (Ben: \"foundry has been updated and is open\"). Deploy fact (2026-09-05 11:50, PM push after fix pass 1): module-src-sync.js push → 1 copied; live and repo register-skills.js both hash 9575fba2…; status 6 in sync. _(09:13 fact: 6 in sync at 9027cd17….)_ The 2026-08-10 hygiene campaign (R-60..R-67, live dice math) is now LIVE at the table for the first time — its # BENCH — hygiene campaign 2026-08-10 section (checklist line ~3328) is the first thing the bench should run. The checklist carries 106 🤖 rows in total. The dispatch itself waits for the 12:05 slot (two dispatches already in the trailing five hours) and for Foundry still being up then — superseded 10:40: Ben raised the weekend cap and asked for bench progress while he is away; the first bench run was dispatched at once. The weekend runs as a bench marathon (the bench-marathon skill's loop, orchestrated by the PM): bench-run → fails to one test-pass-fixes worker → PM deploys engine-only fixes with module-src-sync.js push and verifies by hash → next bench run re-tests the restored rows first. Pack-rebuild fixes stay BLOCKED-ON-DEPLOY for Ben. Lane-B items merge to main but stay bench-pending until a window; the PM then dispatches one bench-run worker (Opus) for the accumulated 🤖 sections, and fails go to one test-pass-fixes worker.\n\n_(Previous fact, for the record: on 2026-09-04 the live engine was the 2026-07-28 version and deploy-to-foundry.bat had not been run; Ben ran it on 09-05 — it hung on git's worktree-prune prompt on the way, which he is fixing in his own session in the focused-booth-7259bf worktree.)_",
     "scheduled": true,
     "deployStale": false,
     "liveEngineVersion": null
@@ -3393,6 +3492,20 @@
       "weightedM": 1,
       "outcome": "reported 19:57, in review (PR #229): one pure edhaJoinRiderTerm beside edhaTidyFormula, both paths call it, positive damage riders byte-identical by design; 7 pins incl. a source scan; gates 10/10. The worker wrote its own TODO 66 entry (the PM's was still uncommitted in the main checkout) — the PM keeps the worker's on merge. Open question logged: label positive damage riders too? (a ruling if wanted — default no, keep byte-identity). Merged 20:00 (gh mergedAt 23:59:48Z), 1.0M / 57 turns / 8 min",
       "pr": 229
+    },
+    {
+      "date": "2026-09-07",
+      "time": "09:52",
+      "at": "2026-09-07T13:52:00.000Z",
+      "item": "Hand-started Fable PM session (Ben, chat, in his own hours — chat wins). Step 0: main 14f2aa9 clean, no PRs, no worktrees; served engine 609c7e45… = repo, 6 in sync (Ben's deploy this morning); Foundry up. Inbox: 2 notes = R-83's row forwarded twice from the phone with no answer text → R-83 still WAITING (the 10:05 seen note that called it an answer is corrected by this row). Ben's dashboard paste (48 rulings rows, 12 bench ⚑ rows, 1 art row) → items 79–83, R-86 / R-87, 13 checklist retirements. Rulings: PM-R8 REVOKED; PM-R16 = 3 Opus per day, Sonnet / Haiku unlimited. Report given in chat before any change (Ben's ask); the 10 unmarked bench ⚑ rows (coin row, weapon picker, preview panel, Cinderbrock, Heat of the Flats, Dirgehounds, Crownox, Tollbird, two art-backlog rows) and the 5 world ⚑ rows are untouched pending his word",
+      "itemNo": null,
+      "model": "fable",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": "0.9M at step 0",
+      "weightedM": 0.9,
+      "outcome": "Dispatched 10:45: bench run 42 (opus, worktree) + item 79 (sonnet, worktree). Opus today 1 of 3",
+      "pr": null
     }
   ],
   "dispatches": [
