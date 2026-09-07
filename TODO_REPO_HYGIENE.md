@@ -2358,3 +2358,74 @@ contradicts; the three counts match their commands; `node scripts/gates.js` gree
 
 **PM:** lane R · model sonnet · size S · deps #19 (both halves) · verify: the commands beside the
 numbers + a grep for "200 talents" / "45 numbered" / "19.7k" returning nothing. Found by items 19a and 4.
+
+---
+
+## 74. [ ] `foundry-build.js items` (single scope) crashes on a temporal-dead-zone `let`
+
+**Why:** item 71's worker (2026-09-06, PR #257) ran a scratch build one scope at a time and found
+`node scripts/foundry-build.js items` dies with `ReferenceError: Cannot access 'REGISTERED_HANDLER_TYPES'
+before initialization` at `scripts/foundry-build.js:950` — the `let` at ~948 sits BELOW the items
+writer's call at ~848, so the single-scope path reads it before it exists. `all` (the deploy `.bat`
+and the `--ci` gate) runs the scopes in an order that initialises it first, so CI never sees it;
+a single-scope rebuild (the documented way to rebuild one pack) is broken. Pre-existing since item
+64 introduced the guard.
+
+**What to do:** hoist the declaration above every writer (or compute it once at module load);
+pin a headless case that runs the items writer alone (or `--dry-run items`) and shows the crash
+under reversion; check every other scope alone (`leyline`, `deity`, `heroic`, `adversaries`).
+
+**Done when:** every single scope builds into a scratch `EDHA_MODROOT`; the pin fails under
+reversion; `node scripts/gates.js` green. TOOLING-only.
+
+**PM:** lane R · model fable-worker · size S · deps none · verify: five single-scope scratch
+builds + the pin. Found by item 71.
+
+---
+
+## 75. [ ] Nine registered handler rows still ship NO executor — give each the same no-op
+
+**Why:** item 71 (PR #257) gave `edha-illusion-upkeep` an explicit no-op executor and changed the
+registry pin from "a function or absent" to a NAMED set, `EXECUTOR_LESS_CONFIG_ONLY` in
+`tests/handler-registry.test.js` — which is how it found eight more: `edha-zone-hazard`,
+`edha-zone-guard`, `edha-snare-react`, `edha-damage-bonus`, `edha-counter-transfer`,
+`edha-die-step-react`, `edha-unseen-ward`, `edha-suppress-veil`, `edha-heal-react`. All are
+config-only riders read by engine sweeps (`edhaActorRuleOf` / `edhaWatchersOfRule`), never
+dispatched — but a rule a user places on an event the system DOES dispatch (`use`,
+`add-to-actor`, …) would throw in `Handler.execute`.
+
+**What to do:** the same no-op executor with the same comment shape ("config-only — read by
+<sweep>") on each of the nine, in `module-src/scripts/engine/53-native-event-system.js` (edit the
+source, `node scripts/engine-assemble.js`, commit both); shrink `EXECUTOR_LESS_CONFIG_ONLY` to
+empty (the pin then forbids any new executor-less row); the registry snapshot must not move
+(it records no executors); state the reader for each in `ENGINE_INDEX.md`.
+
+**Done when:** `EXECUTOR_LESS_CONFIG_ONLY` is empty and the pin is "every handler has a function";
+snapshot unchanged; gates green. ENGINE-ONLY (F5).
+
+**PM:** lane R · model fable-worker · size S · deps #71 ✓ · verify: the pin + an unchanged
+snapshot. Found by item 71.
+
+---
+
+## 76. [ ] The phone card's DEFAULT is empty for bold-inline defaults, and R-80 / R-81 say "(§I)" but live in §C
+
+**Why:** item 44's worker (2026-09-06, PR #258) found `RULING_DEFAULT_RE` in
+`scripts/build-dashboard.js` yields an EMPTY default whenever the ruling writes its default as
+`*Recommended default: **(a) …**` (the bold-inline form R-80 … R-85 all use), so their "Needs
+you" cards show no default and the "no default stated" fallback never fires. Separately, the
+R-80 and R-81 entries (added by the PM 2026-09-06) say "(§I)" in their text but sit in §C, so the
+page renders them as ordinary default-ask cards (`applied: false`) rather than "applied — veto?"
+cards; §I itself lists them only as stubs.
+
+**What to do:** one regex fix (read through the inner `**…**`), pinned on the bold-inline form
+and the plain form; then either move R-80 / R-81's applied notes into §I proper (the way R-84 /
+R-85 carry both a §C entry and a §I stub) or drop the "(§I)" from their text — read how
+`parseOpenRulings` decides `applied` before choosing.
+
+**Done when:** every open ruling's card carries a non-empty default (state the eight); R-80 /
+R-81 render as applied-veto cards; `node scripts/build-dashboard.js --check` green. TOOLING +
+DOCS-ONLY.
+
+**PM:** lane R · model fable-worker · size S · deps #44 · verify: the pins + the eight defaults
+quoted from `pm-state.js --dashboard-dir`. Found by item 44.
