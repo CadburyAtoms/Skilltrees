@@ -2560,7 +2560,7 @@ pin + bench run 42. Dispatched 2026-09-06 23:21. Found by bench run 41.
 
 ---
 
-## 79. [ ] Rulings close-out 2026-09-07: Ben's dashboard marks recorded, four items filed
+## 79. [x] Rulings close-out 2026-09-07: Ben's dashboard marks recorded, four items filed (2026-09-07, PR #273)
 
 **Why:** Ben marked a batch of open rulings and one art entry done through the dashboard's note
 boxes and DONE marks on the morning of 2026-09-07 (pasted into the PM chat at ~10:10 ET, source of
