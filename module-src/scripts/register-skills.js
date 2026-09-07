@@ -5855,8 +5855,10 @@ async function edhaTestReactWatch(rollCtx, roll, source, config) {
         if (owner === roller) continue;
         if (!String(h.rolls || "skill,attack,item").split(/[,\s]+/).filter(Boolean).includes(rollCtx)) continue;
         const otok = edhaCasterToken(owner); if (!otok || otok.id === rtok.id) continue;
-        const sameSide = edhaSameDisposition(owner, rtok);   // R-63 — 🤖 bench row
-        if (String(h.rollerIs || "ally") === "enemy" ? sameSide : !sameSide) continue;
+        // Item 77: each `rollerIs` value names its own predicate — the `enemy` branch used to skip
+        // on `sameSide` and so let a roller whose side did not resolve through as an enemy. R-63
+        // fail CLOSED: an unresolvable side matches NEITHER value. 🤖 bench row.
+        if (String(h.rollerIs || "ally") === "enemy" ? !edhaDisposHostile(owner, roller) : !edhaSameDisposition(owner, rtok)) continue;
         if (h.requireSkillTest && !skillId) continue;
         const when = String(h.when || "any");
         if (when === "complication" && !(comps > 0)) continue;
@@ -11164,7 +11166,7 @@ function edhaVeilSuppressed(tok) {
     for (const { actor: owner, handler: h } of edhaWatchersOfRule("edha-suppress-veil")) {
       if (h.requireSelfStatus && !owner.statuses?.has?.(h.requireSelfStatus)) continue;
       const otok = edhaCasterToken(owner); if (!otok || otok.id === tok.id) continue;
-      if (edhaSameDisposition(owner, tok)) continue;   // enemies of the owner only — R-63 🤖 bench row
+      if (!edhaSideHostile(otok.document?.disposition, tok.document?.disposition)) continue;   // enemies of the owner only — item 77: was `if (same) continue`, which let an UNRESOLVED side through as an enemy; both tokens are in hand, so the value-level predicate (R-63, fail CLOSED) 🤖 bench row
       if (edhaTokensWithin(otok, edhaAttuneFtColor(owner, h.rangeColor || "green")).some(t => t.id === tok.id)) return true;
     }
   } catch (e) {}
@@ -13961,8 +13963,7 @@ function edhaChaosShatterPrompt(roll, source, config) {
       }
       if (!rule || rule.handler.autoPrompt === false) continue;
       if (owner.getFlag?.("edha-content", `promptOff.${rule.item.id}`) || owner.getFlag?.("edha-content", "shatterPromptOff")) continue;
-      const ftok = edhaCasterToken(foe);
-      if (edhaSameDisposition(owner, ftok)) continue;   // enemies only — R-63 🤖 bench row
+      if (!edhaDisposHostile(owner, foe)) continue;   // enemies only — item 77: was `if (edhaSameDisposition(...)) continue`, which prompted for a bearer whose side did not resolve; the predicate the branch means fails CLOSED (R-63) 🤖 bench row
       if (!edhaShatterPromptGate(`${owner.id}:${foe.id}`)) continue;
       const statusLabel = edhaConditionLabel(status) || status;
       ChatMessage.create({
@@ -16217,10 +16218,12 @@ function edhaTestAuraApply(roll, source, config) {
       if (owner === actor) { if (h.includeSelf !== true) continue; }
       else {
         const otok = edhaCasterToken(owner); if (!otok) continue;
-        const same = edhaSameDisposition(owner, tok);   // R-63 🤖 bench row
+        // Item 77: each branch names the predicate it MEANS — `!edhaSameDisposition` is NOT
+        // `edhaDisposHostile` (R-63's corollary), so a roller whose side did not resolve matches
+        // NEITHER filter instead of slipping through `enemies`. 🤖 bench row.
         const want = String(h.affects || "allies");
-        if (want === "allies" && !same) continue;
-        if (want === "enemies" && same) continue;
+        if (want === "allies" && !edhaSameDisposition(owner, tok)) continue;
+        if (want === "enemies" && !edhaDisposHostile(owner, actor)) continue;
         const ft = h.rangeColor ? edhaAttuneFtColor(owner, h.rangeColor) : (Number(h.rangeFt) || 0);
         if (!ft || !edhaTokensWithin(otok, ft).some(x => x.id === tok.id)) continue;
       }
@@ -18857,7 +18860,7 @@ class EdhaFateSnareRegionBehavior extends foundry.data.regionBehaviors.RegionBeh
       const owner = await edhaResolveActorRef(this.ownerUuid);
       if (!owner) return;
       const snare = edhaGetSnares(owner).find(s => s.id === this.snareId); if (!snare) return;   // already sprung / stale
-      if (edhaSameDisposition(owner, edhaCasterToken(actor))) return;   // only ENEMIES of the owner spring it — R-63 🤖 bench row
+      if (!edhaDisposHostile(owner, actor)) return;   // only ENEMIES of the owner spring it — item 77: was `if (same) return`, so a walker whose side did not resolve sprang it; the predicate the branch means fails CLOSED (R-63) 🤖 bench row
       await edhaFateSpringSnare(owner, snare, actor);   // label = the entry's own `talent` stamp (2bX)
     } catch (e) { console.error("Edha Content | fate-snare region event failed", e); }
   }
@@ -19187,7 +19190,10 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
       }
       // WILLING BYPASS (2bW — Death Ward): a same-side target consents, so there is no test to
       // compare; the payload fires as an immediate success. The system's own use card still posts.
-      if (this.skipIfAlly && target && !edhaDisposHostile(owner, target)) {
+      // Item 77: the bypass names the predicate it means — SAME side — because `!edhaDisposHostile`
+      // is not `edhaSameDisposition`: a target whose side did not resolve used to be "willing" and
+      // skipped the test; now it tests like any unresolved creature (R-63, fail CLOSED). 🤖 bench row.
+      if (this.skipIfAlly && target && edhaSameDisposition(owner, edhaCasterToken(target))) {
         const fired = await edhaDispatchTestResult(owner, item, target, true, { total: null, dc: null, skill: this.skill || null, def: null });
         ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
           content: `<p><strong>${item.name}</strong>: ${target.name} is willing — no test needed${!fired ? " (no payload rule on this talent — resolve at the table)" : ""}.${this.note ? ` <span style="opacity:.85;font-size:.9em">${this.note}</span>` : ""}</p>` });

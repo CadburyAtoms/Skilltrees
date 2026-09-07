@@ -216,7 +216,7 @@ class EdhaFateSnareRegionBehavior extends foundry.data.regionBehaviors.RegionBeh
       const owner = await edhaResolveActorRef(this.ownerUuid);
       if (!owner) return;
       const snare = edhaGetSnares(owner).find(s => s.id === this.snareId); if (!snare) return;   // already sprung / stale
-      if (edhaSameDisposition(owner, edhaCasterToken(actor))) return;   // only ENEMIES of the owner spring it — R-63 🤖 bench row
+      if (!edhaDisposHostile(owner, actor)) return;   // only ENEMIES of the owner spring it — item 77: was `if (same) return`, so a walker whose side did not resolve sprang it; the predicate the branch means fails CLOSED (R-63) 🤖 bench row
       await edhaFateSpringSnare(owner, snare, actor);   // label = the entry's own `talent` stamp (2bX)
     } catch (e) { console.error("Edha Content | fate-snare region event failed", e); }
   }
@@ -546,7 +546,10 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
       }
       // WILLING BYPASS (2bW — Death Ward): a same-side target consents, so there is no test to
       // compare; the payload fires as an immediate success. The system's own use card still posts.
-      if (this.skipIfAlly && target && !edhaDisposHostile(owner, target)) {
+      // Item 77: the bypass names the predicate it means — SAME side — because `!edhaDisposHostile`
+      // is not `edhaSameDisposition`: a target whose side did not resolve used to be "willing" and
+      // skipped the test; now it tests like any unresolved creature (R-63, fail CLOSED). 🤖 bench row.
+      if (this.skipIfAlly && target && edhaSameDisposition(owner, edhaCasterToken(target))) {
         const fired = await edhaDispatchTestResult(owner, item, target, true, { total: null, dc: null, skill: this.skill || null, def: null });
         ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }),
           content: `<p><strong>${item.name}</strong>: ${target.name} is willing — no test needed${!fired ? " (no payload rule on this talent — resolve at the table)" : ""}.${this.note ? ` <span style="opacity:.85;font-size:.9em">${this.note}</span>` : ""}</p>` });

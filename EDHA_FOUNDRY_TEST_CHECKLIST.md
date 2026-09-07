@@ -1928,6 +1928,18 @@ Nothing in Power failed. Row by row:
 ITS next turn" does not expire out of combat. Same family as the existing note — recorded, not
 re-derived, and not a new bug.
 
+- **77-1** 🤖 **Mantle of the Aspirant's test aura and an UNSET-side token (item 77, ENGINE-ONLY F5).**
+  Arm Mantle on Bench — Power, then set one nearby token's disposition to NONE/secret (or drop a
+  fresh token whose prototype carries no disposition) and roll a Skill test with it while a real
+  ally and a real enemy also stand in Black range. Expect: the ally's roll shows
+  `+1[Mantle of the Aspirant]`, the enemy's does NOT (the rule is `affects: allies`), and the
+  unset-side token's roll does NOT either. Then flip the rule to `affects: enemies` on the Events
+  tab and re-roll all three: only the enemy carries the +1 — the unset-side token is omitted from
+  BOTH filters (before item 77 it took the enemies aura). Same shape on the five sibling sites the
+  sweep fixed — Natural Order's veil suppression, Voice of Authority (`rollerIs: enemy`), Shatter
+  Focus's auto-prompt, a Fate snare spring, and Death Ward's willing bypass (an unset-side target
+  now TESTS instead of being read as willing) — one unset-side token each is enough.
+
 ---
 
 # BENCH — Knowledge (Gnothis, deity)

@@ -290,8 +290,10 @@ async function edhaTestReactWatch(rollCtx, roll, source, config) {
         if (owner === roller) continue;
         if (!String(h.rolls || "skill,attack,item").split(/[,\s]+/).filter(Boolean).includes(rollCtx)) continue;
         const otok = edhaCasterToken(owner); if (!otok || otok.id === rtok.id) continue;
-        const sameSide = edhaSameDisposition(owner, rtok);   // R-63 — 🤖 bench row
-        if (String(h.rollerIs || "ally") === "enemy" ? sameSide : !sameSide) continue;
+        // Item 77: each `rollerIs` value names its own predicate — the `enemy` branch used to skip
+        // on `sameSide` and so let a roller whose side did not resolve through as an enemy. R-63
+        // fail CLOSED: an unresolvable side matches NEITHER value. 🤖 bench row.
+        if (String(h.rollerIs || "ally") === "enemy" ? !edhaDisposHostile(owner, roller) : !edhaSameDisposition(owner, rtok)) continue;
         if (h.requireSkillTest && !skillId) continue;
         const when = String(h.when || "any");
         if (when === "complication" && !(comps > 0)) continue;

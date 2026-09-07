@@ -429,7 +429,15 @@ there is no lint — the swept corpus was 3 sites and only 1 was wrong):
   bit twice: `!edhaSideSame(a, b)` is NOT `edhaSideHostile(a, b)`.** The splash (`nearAffects`) and
   burst (`affects`) filters both computed `const same = …` and returned `!same` for "enemies", which
   silently re-widened to include every unresolvable side; both now name the predicate they mean.
-  Pinned in `tests/disposition-failclosed.test.js`.
+  Pinned in `tests/disposition-failclosed.test.js`. **The same corollary holds for the ACTOR-level
+  pair — `!edhaSameDisposition(owner, tok)` is NOT `edhaDisposHostile(owner, actor)`, and
+  `!edhaDisposHostile` is NOT `edhaSameDisposition`** (item 77, 2026-09-06): six sites read one
+  helper and negated it for the other branch — `if (same) continue` on an enemies-only path lets an
+  unresolvable side THROUGH as an enemy, and `skipIfAlly && !hostile` treated one as a willing ally.
+  The `dispoFailOpen` ratchet never counted these because they carry no `?? 1` literal, so the
+  grep to run when touching a side filter is `edhaSameDisposition\(|edhaDisposHostile\(` and the
+  question is "is this call NEGATED, or used as `if (X) skip` for the OPPOSITE predicate?". Every
+  branch names the predicate it means; pinned in `tests/side-read-polarity.test.js`.
 - ⛑ **A BAKED side is a STORED fail-open.** Where a payload carries the owner's disposition across a
   socket into a Region behavior (civ-fortify, Foundation place), a `?? 1` at the bake site freezes a
   guess into world state that a later filter cannot distinguish from a real answer. The bake site
