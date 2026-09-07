@@ -2288,12 +2288,14 @@ the first one lived inside the trample announcer, looked private, and got duplic
   derived value when present, else the AWA table (0→10 · 1→15 · 2–3→20 · 4→25 · 5+→30; pinned).
   The build writes adversary token `sight.range` from it (per-block `senses` field wins) — Foundry
   natively renders lit areas beyond sight.range, so token vision IS the rule with no module code.
-  ⚠️ **CHARACTERS ONLY, since 07-28i.** `edhaDeriveSheetStats` now writes the AWA table into
-  `system.senses.range.derived` for PCs, so `edhaSensesRangeFt` returns the Edha number for them;
-  ADVERSARIES still derive the cosmere ladder `[5,10,20,50,100,∞]` at ceil(AWA/2) on their sheets
-  while their tokens carry the build's flat 10 ft default. Three surfaces, two-and-a-bit rules —
-  **`EDHA_RULINGS.md` R-56** decides how far to extend it. Until then, do not assume a creature's
-  Senses Range and a PC's mean the same thing.
+  ✅ **ONE RULE FOR EVERY ACTOR TYPE since item 55 (R-56 (a), 2026-09-06).** `edhaDeriveSheetStats`
+  writes the AWA table into `system.senses.range.derived` for characters AND adversaries (it was
+  character-only from 07-28i, which left adversary sheets on the cosmere ladder's 5 while their
+  tokens carried a flat 10). The build's `advSensesRangeFt(adv)` (`scripts/foundry-build-parts.js`)
+  stamps the same table on the pack's prototype token — a block's explicit `senses` (ft) is the
+  bespoke override on both surfaces (Briar-Gone Grove, 30 ft, is the one instance) — and
+  `tests/adversary-senses.test.js` pins the build-time and runtime tables equal. A creature's
+  Senses Range and a PC's now mean the same thing.
 - **The aggro ledger** — every damaging item roll records the attacker TOKEN's last target
   (`aggro` flag, post-roll so an attack never counts itself; cleared at combat end). Solves the
   "GM owns every adversary, targeting is per-user" problem. **`edha-pack-advantage`** (sentinel):
@@ -2788,11 +2790,14 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
     `2d20kh + N` — correct behaviour, invisible preview.
   **Do not "fix" the engine for this.** If the die's colour cue is too subtle at the table, the
   answer is the whispered advantage card (the quarry site's, 07-27l), not a change to the channel.
-- **PC token defaults** (`edhaPcSightShape(actor)` + preCreateActor hook + AWA updateActor
-  watcher + `edha.fixPcTokens()`) — new character actors get displayName HOVER(30) and cosmere
-  "sense" sight (attenuation 0.1) with range = Senses Range (`edhaSensesRangeFtFromAwa`); the
-  watcher (single GM applier) pushes range onto prototype + placed tokens when AWA changes;
-  fixPcTokens retrofits existing PCs and their placed tokens.
+- **Token sight defaults** (`edhaPcSightShape(actor)` + preCreateActor hook + AWA updateActor
+  watcher + `edha.fixPcTokens()`) — new actors of EVERY type (item 55, R-56 (a); was character-only)
+  get cosmere "sense" sight (attenuation 0.1) with range = Senses Range (`edhaSensesRangeFtFromAwa`);
+  new CHARACTERS additionally get displayName HOVER(30) (adversaries keep Foundry's default so a
+  blank-created one does not leak its name on hover); pack-built/imported actors that already carry
+  a sight range are left alone. The watcher (single GM applier) pushes range onto prototype + placed
+  tokens when AWA changes, any type; fixPcTokens retrofits existing PCs and their placed tokens —
+  existing adversaries are re-stamped by "⟳ Sync Adversaries from Pack".
 - ⚠ FACT (07-18g): **never fold a DerivedValueField's `.bonus` into its `.override`** — the
   value getter adds `.bonus` on top of the override, so folding double-counts every AE
   (Surefooted's +10 displayed +20). Set the override to the base derivation only.

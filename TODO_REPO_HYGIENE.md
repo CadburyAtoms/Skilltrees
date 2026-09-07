@@ -1799,7 +1799,7 @@ row.
 
 ---
 
-## 55. [ ] One senses rule for PCs and adversaries alike (R-56)
+## 55. [x] One senses rule for PCs and adversaries alike (R-56) — DONE 2026-09-06, PR #__PR__ (REBUILD + world bulk sync, bench-pending)
 
 **Why:** Ben (a): adversary sheets AND token sight should use the same Edha AWA table as PCs, not
 the flat 10 ft pack-token default or the raw cosmere ladder. This unblocks the "Adversary tokens
@@ -1816,6 +1816,21 @@ still reads correctly; packs rebuild clean.
 
 **PM:** lane B · model opus · size M · deps none · verify: pack rebuild (Ben's deploy) + a world
 bulk sync (authorised by this ruling). REBUILD + world bulk sync.
+
+**Shipped 2026-09-06 (PR #__PR__):** the guard is gone at `edhaDeriveSheetStats` (senses now run
+for every actor type; HP/Speed stay PC-only below a later guard), the `preCreateActor` token-default
+hook (adversaries get sight = table(AWA) too, without the PC's HOVER displayName), and the AWA
+`updateActor` watcher; the `ready` refresh sweep resets every actor, not just characters, so a world
+adversary prepared before the wrapper installs shows the new number at load. The build reads
+`advSensesRangeFt(adv)` (`scripts/foundry-build-parts.js`, table pinned equal to the engine's
+`edhaSensesRangeFtFromAwa` for AWA 0..7) instead of a flat 10. The override block is **Briar-Gone
+Grove, `senses: 30`** — a rooted grove-heart has no eyes and perceives through its own soil, so its
+reach is the arena. Proof: seven one-line reversions each fail a pin in
+`tests/adversary-senses.test.js` / `derived-stats` / `prepare-refresh-reset`; scratch pack read-back
+before→after: 52 adversaries, **1 changed (the Grove: token 10→30, sheet override 30), 51 unchanged
+at 10** — the pack number was already 10 at AWA 0, so what the rebuild changes is the Grove and what
+the ENGINE changes is every world adversary's SHEET (5→10); the bulk sync then pushes token 10 onto
+placed tokens that agree with their actor for the first time.
 
 ---
 

@@ -845,6 +845,13 @@ this — it only decides how far the fix reaches. *(Marathon 3, fix pass E.)*
 > (Ben did not pick which). ENGINE + BUILD/DATA → pack **REBUILD** (Ben's deploy) + a world bulk
 > sync (now authorised) → **item 55**. Unblocks the "Adversary tokens see like PCs" row (AWA 0 → 10
 > ft) and its ⚑ feel sibling.
+> **SHIPPED** in PR #__PR__ (REBUILD + world bulk sync, bench-pending) — guard gone at all three engine
+> sites (+ the `ready` refresh sweep now resets adversaries too); the build's `advSensesRangeFt`
+> replaces the flat 10; the override block is **Briar-Gone Grove, `senses: 30`** (a rooted
+> grove-heart has no eyes and perceives through its own soil). Pins:
+> tests/adversary-senses.test.js:"R-56: an adversary at AWA 0 derives 10 ft on the sheet (was the
+> cosmere ladder's 5)" and siblings; scratch read-back: 52 pack adversaries, 1 changed (the Grove),
+> 51 unchanged at 10. Ben: rebuild + deploy + press ⟳ Sync Adversaries from Pack.
 
 ---
 
