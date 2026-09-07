@@ -1,7 +1,7 @@
 {
   "pm": {
     "status": "awake",
-    "note": "Fable PM (Ben-started, 16:56 ET). PM-R14: caps lifted, Fable workers on the larger items. Nineteen PRs merged tonight (45, 46, 47 fix pass 7a, 48 fix pass 7b, 53, 34a, 49, 50, 52, 54, 57, 60, 58, 66, 51, bench run 39, 65+67, 34b, 59). 20:16: the nine engine-only merges went LIVE by module-src-sync (served hash = main #233) - press F5 on your Gamemaster client when convenient. Bench run 40 (20:17) is re-testing them. The REBUILD stack is complete - 34a #220, 57 #226, 58 #227, 65+67 #232, 59 #234 - I will push-notify you ONCE for deploy-to-foundry.bat after bench 40 reports and the three rebuild-class engine items now running (55, 56, 63) land, so one run (Foundry closed) covers everything; then bench 41 drives their rows. Item 59 found that the build-time fold is a no-op on every current formula, so R-71's real fix is item 69 (runtime fold), dispatched. Open rulings with defaults applied: R-18, R-48, R-80, R-81.",
+    "note": "Fable PM (Ben-started, 16:56 ET). PM-R14: caps lifted, Fable workers on the larger items. Twenty-five PRs merged tonight, the last being 63 (the edha-note downed dial), 64 (the build guard against retired rule types), 43 (the phone Needs-you view - this page), 69 (the runtime formula fold) and 55 (one senses rule for adversaries). 56 (the graze dial) merged 20:46 - twenty-six PRs tonight. 20:16: nine engine-only merges went LIVE by module-src-sync (F5 your Gamemaster client); the later engine merges (69, 55's engine half, 56's) go live with the next push after bench run 40 reports. Then ONE deploy-to-foundry.bat run (Foundry closed) for the REBUILD stack - 34a, 57, 58, 65+67, 59, 63, 55, 56 - and bench 41 drives their rows. Open rulings with defaults applied: R-18, R-48, R-80, R-81.",
     "waitingOn": "R-18, R-48, R-80, R-81 (defaults apply if silent); keep Foundry open for bench run 40; one deploy-to-foundry.bat run when I push-notify",
     "nextWakeAt": null,
     "session": "2026-09-06 16:56 ET — Fable PM (hand-started)"
@@ -32,84 +32,6 @@
       "phase": "working",
       "pr": null,
       "note": "worktree; test-pass-fixes; ENGINE-ONLY"
-    },
-    {
-      "item": "43",
-      "title": "Phone board 'Needs you' view + stale-heartbeat banner",
-      "model": "sonnet",
-      "size": "M",
-      "lane": "R",
-      "branch": "pm/43-needs-you-view",
-      "startedAt": "2026-09-06T23:48:00Z",
-      "agent": "Work item 43",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; DOCS/TOOLING; the PM republishes the page after merge"
-    },
-    {
-      "item": "55",
-      "title": "R-56 one senses rule — adversary sheets AND token sight on the Edha AWA table (REBUILD + bulk sync)",
-      "model": "fable",
-      "size": "M",
-      "lane": "B",
-      "branch": "pm/55-adversary-senses-table",
-      "startedAt": "2026-09-07T00:21:00Z",
-      "agent": "Work item 55",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; fable-worker; ENGINE + BUILD/DATA"
-    },
-    {
-      "item": "56",
-      "title": "R-14 melee mutation riders — a per-rule onGraze dial matching each card (REBUILD + Sync)",
-      "model": "fable",
-      "size": "M",
-      "lane": "B",
-      "branch": "pm/56-rider-graze-dial",
-      "startedAt": "2026-09-07T00:21:00Z",
-      "agent": "Work item 56",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; fable-worker; ENGINE + AUTHORED"
-    },
-    {
-      "item": "63",
-      "title": "R-25 Rallying Shout's reminder only for a downed ally — a whenTarget dial on edha-note (REBUILD + Sync)",
-      "model": "fable",
-      "size": "S",
-      "lane": "B",
-      "branch": "pm/63-edha-note-target-dial",
-      "startedAt": "2026-09-07T00:21:00Z",
-      "agent": "Work item 63",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; fable-worker; ENGINE + AUTHORED"
-    },
-    {
-      "item": "64",
-      "title": "Retire aoeRule() in foundry-build.js + a guard against emitting an unregistered rule type (TOOLING)",
-      "model": "fable",
-      "size": "S",
-      "lane": "R",
-      "branch": "pm/64-retire-aoe-rule",
-      "startedAt": "2026-09-07T00:21:00Z",
-      "agent": "Work item 64",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; fable-worker; TOOLING-only"
-    },
-    {
-      "item": "69",
-      "title": "R-71's real fix — fold a talent's damage formula at ROLL time in edhaWrapRollDamage (ENGINE-ONLY)",
-      "model": "fable",
-      "size": "S",
-      "lane": "B",
-      "branch": "pm/69-runtime-formula-fold",
-      "startedAt": "2026-09-07T00:21:00Z",
-      "agent": "Work item 69",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; fable-worker; ENGINE-ONLY"
     }
   ],
   "usage": null
