@@ -190,6 +190,6 @@ and fix the mechanism; don't just nudge the named element. Standing rulings from
 - Commit the HTML source + PDF together; small themed commits; state "docs/handout only —
   NO engine change, NO pack rebuild, nothing for the bench" where true.
 - Run the repo gates before committing (they're cheap and CI runs them anyway).
-- Dated delta at the top of `EDHA_FOUNDRY_HANDOFF.md`; new-content approval follows the
+- Dated delta at the top of the current month's `docs/handoff-changelog/2026-MM.md`; new-content approval follows the
   lore gate — handout text drawn from the player primer and talent data is pre-approved
   ground; NEW invented world-content still waits for Ben's yes before it ships.

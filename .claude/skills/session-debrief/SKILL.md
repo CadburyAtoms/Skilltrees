@@ -90,7 +90,7 @@ Two forward passes:
 - Write 2–3 candidate hooks for session N+1 into the state doc's *Next session* block — each
   one line, tied to a live thread, honoring where the party physically is (check travel times
   via `measure.py` before proposing "they arrive at X").
-- Dated delta at the top of `EDHA_FOUNDRY_HANDOFF.md`; gates per CLAUDE.md rule 4 including
+- Dated delta at the top of the current month's `docs/handoff-changelog/2026-MM.md`; gates per CLAUDE.md rule 4 including
   `lint_map.py`; ⚑ anything Foundry-facing for the bench (rare from a debrief, but a dead
   adversary or new recurring NPC may want pack work).
 - If rulings landed in canon or the gazetteer changed, regenerate the codex

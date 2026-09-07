@@ -13,7 +13,7 @@
 
 ## Read this first
 
-**→ `EDHA_FOUNDRY_HANDOFF.md`, the `2026-09-06 — BENCH RUN 37` delta** (top of the file) — the
+**→ `docs/handoff-changelog/2026-09.md`, the `2026-09-06 — BENCH RUN 37` delta** — the
 four-actor ADD-mode control table, the three-probe Investiture sequence, and §5's statement of the
 world state including the false-positive effect diff.
 

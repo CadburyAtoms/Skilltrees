@@ -88,7 +88,7 @@ then the deities, Heroic, and the non-tree console-runnable sections).
    a **single** PC per direction and re-read — that is how run 13 proved both directions.
 7. **Recording (per run, one commit):**
    - **PASS (mechanical):** the row is retired — deleted from `EDHA_FOUNDRY_TEST_CHECKLIST.md`
-     and named (with its 2b id) in that run's single dated handoff delta, one line of evidence
+     and named (with its 2b id) in that run's single dated handoff delta (in `docs/handoff-changelog/2026-MM.md`), one line of evidence
      each ("card text quoted / status applied and expired / screenshot in session transcript").
    - **FAIL / PARTIAL:** the row stays open with a dated inline observation appended; the
      batch becomes the next `test-pass-fixes` input. Do NOT symptom-patch mid-run.

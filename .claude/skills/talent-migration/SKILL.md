@@ -156,7 +156,7 @@ python .claude/skills/leyline-tree-authoring/audit.py <tree>
 pipeline. After pushing: `gh run list --branch <branch>` and read the **Pack build + validate** step.
 
 ### 7. Close out — SHORT
-A dated delta at the top of `EDHA_FOUNDRY_HANDOFF.md` (update the ratchet count), checklist rows under
+A dated delta at the top of the current month's `docs/handoff-changelog/2026-MM.md` (update the ratchet count), checklist rows under
 the next `2b<LETTER>` prefix plus the DEPLOY STATE count, new primitives into `ENGINE_INDEX.md`, ⚑ on
 anything you could not self-verify, `node scripts/build-dashboard.js`, small themed commits, and the
 PR body.
