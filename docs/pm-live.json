@@ -1,15 +1,18 @@
 {
   "pm": {
     "status": "awake",
-    "note": "Hand-started Fable PM (Ben, 09:52 ET Mon). Merged today: board #272, item 79 #273, bench 42 #274, board #275, item 84 #276 (LIVE, you F5'd 12:25), item 85 #277 (R-56 now shows on this card). Bench run 43 (opus, 3 of 3 today) is at the table for the 20 remaining bench rows incl. item 84's live re-test. Opus resets at midnight for the overnight shift; two Sonnet seeds (86, 87) are queued. YOU OWE: one Sync Talents click for your PCs. Rulings for you: R-83, R-56 go/no-go, R-88, R-89.",
-    "waitingOn": "Sync Talents click for your own PCs; R-83 (a)/(b); R-56 go/no-go (item 83); R-88 and R-89 (defaults (a) if silent); the 10 unmarked bench flag rows + 5 world rows",
+    "note": "Hand-started Fable PM (Ben, 09:52 ET Mon). Bench run 43 MERGED 13:23 (#280, 11.1M): 10 more rows retired, open bench rows 20 -> 10, and every remaining row is gated on a fix, a ruling, or you - the bench queue is drained. Two defects filed: item 88 (adversary triggered-effect cards post PUBLICLY - Predator's Due shows the boss's heal and a GM instruction to the table; waits on R-90) and item 89 (Unbreakable Line has no use rule - REBUILD). Running now: item 86 (sonnet, engine-only) and item 90 (sonnet, retire the five harness-only rows). Opus 3 of 3 used today. YOU OWE: Sync Talents click. Rulings for you: R-83, R-56 go/no-go, R-88, R-89, R-90, R-91.",
+    "waitingOn": "Sync Talents click for your own PCs; R-83 (a)/(b); R-56 go/no-go (item 83); R-88, R-89, R-90, R-91 (defaults (a) if silent); the 10 unmarked bench flag rows + 5 world rows",
     "nextWakeAt": null,
     "session": "2026-09-07 09:52 ET - Fable PM (hand-started, Ben's hours by his word)"
   },
   "workers": [
-    { "item": "bench-43", "title": "Bench run 43 - the 20 remaining bench rows (player block, hygiene block, combat pair, bestiary singles, item 84's cue re-test)", "model": "opus", "size": "L", "lane": "B",
-      "branch": "pm/bench-43", "startedAt": "2026-09-07T16:30:00Z", "agent": "Bench run 43",
-      "phase": "working", "pr": null, "note": "Opus 3 of 3 today" }
+    { "item": "86", "title": "edhaListPlaceNotes gates on edhaIsTalent - swap to edhaRuleBearer, pin, sweep the remaining edhaIsTalent calls", "model": "sonnet", "size": "S", "lane": "B",
+      "branch": "pm/86-place-notes-rule-bearer", "startedAt": "2026-09-07T17:22:00Z", "agent": "Work item 86",
+      "phase": "working", "pr": null, "note": "ENGINE-ONLY (F5) when it lands" },
+    { "item": "90", "title": "Retire the five harness-only rows (I10b2-1..4, 77-1 unset-side) - no sideless token can exist", "model": "sonnet", "size": "S", "lane": "R",
+      "branch": "pm/90-harness-only-retirements", "startedAt": "2026-09-07T17:28:00Z", "agent": "Work item 90",
+      "phase": "working", "pr": null, "note": null }
   ],
   "usage": null
 }
