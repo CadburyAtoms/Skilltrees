@@ -339,24 +339,27 @@ for (const [lit, line] of [...nameLits.entries()].sort((a, b) => a[1] - b[1])) {
 
 // --- pass 5: no silent manual adversary cards (Ben's 07-16 wiring standard) ----
 // An adversary ability whose text names a trigger must carry native automation, an events rule,
-// name-keyed engine wiring, or an explicit "NO NAMEABLE HOOK: <reason>" line. A bare 'GM-run'
-// label is exactly the soft laziness that left The Seeming dead — lint refuses it.
+// name-keyed engine wiring, or a `noHook` flag giving the reason. A bare 'GM-run' label is
+// exactly the soft laziness that left The Seeming dead — lint refuses it.
 {
   const TRIGGER_RE = /\bwhen(ever)?\b|\btriggered\b|\beach time\b|\bevery \d|\bfirst time\b|\bon a hit\b|\breduced below\b|\bdrops? to\b|\ban ally drops\b/i;
   for (const { advName, item: it } of ADVERSARY_ENTRIES) {
     if (!it || it.kind === "weapon") continue;
     const prose = `${it.text || ""} ${it.rider || ""}`;
-    // R-47 (Ben 2026-09-06): the marker is the rule-3 ledger and stays ON the item, but it lives
-    // inside an HTML comment (`<!-- NO NAMEABLE HOOK: … -->`) so the player-facing card shows only
-    // the fiction. The exemption below still reads the RAW prose (comments included) — a visible
-    // marker is a finding, a missing one is the original finding. (Every ability, trigger or not.)
-    if (/NO NAMEABLE HOOK/i.test(prose.replace(/<!--[\s\S]*?-->/g, ""))) {
-      err(`${ADV_REL} (${advName} / ${it.name}): "NO NAMEABLE HOOK" is visible on the player-facing card — wrap the marker in an HTML comment (<!-- NO NAMEABLE HOOK: <reason> -->), R-47`);
+    // Item 93 / R-89 (a) (2026-09-07): the declaration is DATA now (`noHook`), never prose. It used
+    // to live inside an HTML comment (`<!-- NO NAMEABLE HOOK: … -->`, R-47) so the player-facing
+    // card showed only the fiction — but Foundry's editor drops HTML comments on save
+    // (ProseMirror parse/serialize round-trip; bench run 42 caught Wrongwake's Drag Under losing
+    // its marker exactly this way). So the old "visible vs. commented" distinction is gone: ANY
+    // "NO NAMEABLE HOOK" string surviving in text/rider — comment or visible — is an error now,
+    // whether or not the ability names a trigger.
+    if (/NO NAMEABLE HOOK/i.test(prose)) {
+      err(`${ADV_REL} (${advName} / ${it.name}): "NO NAMEABLE HOOK" found in text/rider prose — move it to the item's \`noHook\` flag (item 93 / R-89 (a)); the declaration is data, not prose, and Foundry's editor drops HTML comments on save`);
     }
     if (!TRIGGER_RE.test(prose)) continue;                          // no trigger named → conscious-use is fine
     if (Array.isArray(it.events) && it.events.length) continue;     // wired via native rules
     if (inEngineCode(it.name)) continue;                            // name-keyed engine wiring — CODE only (comments satisfied this for months; see stripComments)
-    if (/NO NAMEABLE HOOK/i.test(prose)) continue;                  // explicit, reasoned exemption
+    if (typeof it.noHook === "string" && it.noHook.trim()) continue; // explicit, reasoned exemption (item 93 / R-89 (a))
     // The automation lives on ANOTHER item of the same actor (07-19: the Fellstag's Waking
     // Ground rides the auto-embedded Draw Mana's terrain-on-draw). The named carrier must be
     // real: an engine literal (Draw Mana, an aliased talent) — a typo'd carrier is the same
@@ -368,7 +371,7 @@ for (const [lit, line] of [...nameLits.entries()].sort((a, b) => a[1] - b[1])) {
       continue;
     }
     err(`${ADV_REL} (${advName} / ${it.name}): text names a trigger but the ability has no events, ` +
-        `no engine name-wiring, and no "NO NAMEABLE HOOK: <reason>" line — wire it or justify it (Ben 07-16)`);
+        `no engine name-wiring, and no \`noHook\` flag — wire it or justify it (Ben 07-16)`);
   }
 }
 

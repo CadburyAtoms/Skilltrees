@@ -1142,6 +1142,11 @@ function advItemDoc(advName, raw, sort) {
   const abilityFlags = kind === "weapon"
     ? { adversary: advName }
     : { adversary: advName, adversaryTalent: true };
+  // Item 93 / R-89 (a): the NO NAMEABLE HOOK declaration is data, not prose — write it to a flag
+  // (renders nowhere, survives the Foundry editor's ProseMirror round-trip) instead of an HTML
+  // comment in text/rider (which the editor drops on save). lint-refs.js pass 5 reads it back
+  // from the AUTHORED json (raw.noHook), same as this build step.
+  if (raw.noHook) abilityFlags.noHook = raw.noHook;
   return {
     __parent: fid(`adv:${advName}`),
     _id: itemId,

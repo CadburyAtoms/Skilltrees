@@ -92,7 +92,8 @@ The path an adversary takes to your table, end to end:
    - `events` on bespoke items (**the 07-16 wiring standard**): any ability whose text names
      a trigger ("when…", "first time below…", "on a hit…") ships with event rules — full
      automation where there's no decision to make, a whispered **GM cue card** at minimum
-     where the call stays yours — or an explicit `NO NAMEABLE HOOK: <reason>` line. A bare
+     where the call stays yours — or a `noHook` key giving the reason (item 93 / R-89 (a),
+     2026-09-07: data, not a prose line — Foundry's editor drops HTML comments on save). A bare
      "GM-run" label fails CI (`lint-refs.js`). The agents write these; what you'll SEE at
      the table is ⏰ cue whispers at thresholds/reactions and auto-applied riders/statuses.
 3. **Build:** `node foundry-build.js adversaries` (Foundry closed). A talent ref that

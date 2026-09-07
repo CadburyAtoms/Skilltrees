@@ -340,7 +340,7 @@ mechanics-shape together with the animal.
 A nation or ecology pass that invents creatures does not end at the prose. **When building
 adversaries, after Ben approves a bestiary the next turn is the same bestiary as adversary
 blocks for Foundry** (`data/adversaries.json` schema; wired per `leyline-tree-authoring`
-SKILL.md §"Adversary abilities" — events/cues or an explicit `NO NAMEABLE HOOK`). **Events
+SKILL.md §"Adversary abilities" — events/cues or a `noHook` key). **Events
 wiring is authored against that section's dispatch-vocabulary table, NEVER by imitating
 neighboring entries in `data/adversaries.json`** — the 07-19 Malcurr audit shipped six dead
 cue rules by copying a pattern that was itself broken ("attack-hit" is not a trigger; a
