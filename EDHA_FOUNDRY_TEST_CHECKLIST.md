@@ -515,7 +515,7 @@ site fired on the probe.)*
 > reasoning, exactly as run 38's (a)/(b)/(c) did. The headless pins in
 > `tests/disposition-failclosed.test.js` are the proof that holds without a table.
 
-- [ ] 🤖 **I10b2-1 — H6 offer card (`edhaPickCandidates`)**: with an `edha-prompt-pick` rule at
+- [x] 🤖 **I10b2-1 — H6 offer card (`edhaPickCandidates`)**: with an `edha-prompt-pick` rule at
   `disposition: ally` (Anticipate) and a probe token whose disposition will not resolve inside the
   range, the offer card lists the real allies and NOT the probe; the same rule at `any` still offers
   the probe. (Was: the probe read FRIENDLY and was offered as an ally.)
@@ -525,17 +525,29 @@ site fired on the probe.)*
       So the row's probe cannot be staged at all, and its fallback (an actor with no token) is not a
       discriminator either — a creature with no token is never in any range sweep. The headless pins in
       `tests/disposition-failclosed.test.js` remain the proof that holds without a table. Row stays 🤖.
-- [ ] 🤖 **I10b2-2 — sweep empty-note (`edhaSweepEmptyNote`)**: PlotGrant with no ally in range and
+      ✅ **retired 2026-09-07 as HARNESS-ONLY (item 90, PR #282)** — no sideless token can exist on
+      this build (runs 38 / 42 / 43 re-derived it: null / undefined / NaN dispositions coerce to −1
+      at create and update); the fail-closed behaviour is pinned in `tests/disposition-failclosed.test.js`
+      (23 cases), which is the standing record.
+- [x] 🤖 **I10b2-2 — sweep empty-note (`edhaSweepEmptyNote`)**: PlotGrant with no ally in range and
   the probe as the NEAREST token — the note names the nearest REAL same-side token and its count,
   never the probe. If the OWNER's own token side does not resolve, the note reads *"…'s token has no
   disposition set — allies and targets cannot be told apart, so nothing is in range."*
       ⛔ **2026-09-07, bench run 42 — BLOCKED, same re-derived blocker as I10b2-1** (non-finite
       dispositions coerce to −1 at create AND update on this build).
-- [ ] 🤖 **I10b2-3 — movement-window card (Ordered Advance)**: arm the window, move next to a real
+      ✅ **retired 2026-09-07 as HARNESS-ONLY (item 90, PR #282)** — no sideless token can exist on
+      this build (runs 38 / 42 / 43 re-derived it: null / undefined / NaN dispositions coerce to −1
+      at create and update); the fail-closed behaviour is pinned in `tests/disposition-failclosed.test.js`
+      (23 cases), which is the standing record.
+- [x] 🤖 **I10b2-3 — movement-window card (Ordered Advance)**: arm the window, move next to a real
   ally and the probe — the card lists the ally only. A sideless mover's card ends *"…of where it
   stopped (its token has no disposition set, so allies could not be told apart)."*
       ⛔ **2026-09-07, bench run 42 — BLOCKED, same re-derived blocker as I10b2-1.**
-- [ ] 🤖 **I10b2-4 — Edict `<select>` + Beacon card**: `edhaPickProhibition`'s "Attack a chosen
+      ✅ **retired 2026-09-07 as HARNESS-ONLY (item 90, PR #282)** — no sideless token can exist on
+      this build (runs 38 / 42 / 43 re-derived it: null / undefined / NaN dispositions coerce to −1
+      at create and update); the fail-closed behaviour is pinned in `tests/disposition-failclosed.test.js`
+      (23 cases), which is the standing record.
+- [x] 🤖 **I10b2-4 — Edict `<select>` + Beacon card**: `edhaPickProhibition`'s "Attack a chosen
   ally" list omits the probe (a sideless owner sees `(no allied tokens)`); Beacon of Purity's cleanse
   card lists conditions on real allies only, never the probe's.
       ⛔ **2026-09-07, bench run 42 — BLOCKED for the probe half; the picker itself was driven.**
@@ -543,6 +555,10 @@ site fired on the probe.)*
       space* / *Attack a chosen ally:* / *Activate Investiture* / *Other:* (`edhaProhKind` =
       `move|attack|invest|other`), with the ally `<select>` listing exactly the six real allied tokens on
       the scene. The omits-the-probe clause is unstageable for the I10b2-1 reason.
+      ✅ **retired 2026-09-07 as HARNESS-ONLY (item 90, PR #282)** — no sideless token can exist on
+      this build (runs 38 / 42 / 43 re-derived it: null / undefined / NaN dispositions coerce to −1
+      at create and update); the fail-closed behaviour is pinned in `tests/disposition-failclosed.test.js`
+      (23 cases), which is the standing record.
 
 ## Migration machinery (cross-tree behaviour)
 
@@ -1906,6 +1922,12 @@ re-derived, and not a new bug.
   enemy **`1d20 + 0 + 1[Mantle of the Aspirant]`**, ally **`1d20 + 4`**. Rule restored to `allies`.
   ⛔ The unset-side token cannot be staged (see I10b2-1: non-finite dispositions coerce to −1), so the
   five sibling sites are unstageable by the same measurement. Row stays 🤖 for that half only.
+  ✅ **retired 2026-09-07 as HARNESS-ONLY (item 90, PR #282)** — the aura-halves clause already
+  PASSED live at bench run 42 (above); the unset-side clause was the row's only open part, and no
+  sideless token can exist on this build (runs 38 / 42 / 43 re-derived it: null / undefined / NaN
+  dispositions coerce to −1 at create and update), so the whole row retires. The fail-closed
+  behaviour is pinned in `tests/disposition-failclosed.test.js` (23 cases), which is the standing
+  record.
 
 ---
 
