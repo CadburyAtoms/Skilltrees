@@ -2673,12 +2673,12 @@ abilities" — and add an explicit senses + movement line to the standard: every
 its Senses Range and Speed on the card, sourced from whichever default table is current at time of
 authoring (see item 83) or from a stated bespoke reason. Add a lint pass: a block with neither an
 explicit `senses`/movement field nor an AWA-derivable default fails the build. Then, SEPARATELY,
-the values for the existing 52 pack + 47 world blocks are invented content (a value has to be
+the values for the existing 52 pack blocks are invented content (the world's placed copies follow on ⟳ Sync) (a value has to be
 chosen per block) — batch them for Ben as ONE approval per the lore-approval gate before any data
 edit, and ship as an adversaries REBUILD once approved.
 
 **Done when:** the statting standard names the senses/movement line explicitly; the lint pass
-exists and is mutation-verified (a block missing both fails the build); the 52+47-block value batch
+exists and is mutation-verified (a block missing both fails the build); the 52-block value batch
 is written and sent to Ben as one approval menu (not applied before he says yes).
 
 **PM:** lane H (Ben's approval batch is the gate) · model sonnet · size M · deps item 83 (which

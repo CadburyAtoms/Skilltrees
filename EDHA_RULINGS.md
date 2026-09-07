@@ -153,10 +153,10 @@ the re-test row is on the checklist under `# BENCH — Engine-wide & cross-tree`
 > stale client, not the code.
 > **CONFIRMED 2026-09-07 (Ben, dashboard), verbatim: "that works. default."** No change to the
 > shipped code or the ruling's status — same veto window, still moves to §K once the live re-test
-> passes. Also on this dashboard card, Ben separately noted two-GM tables will never happen at his
-> table in play (*"In-play there will never be 2 GM clients"*) — recorded as new **R-86** (§K); it
-> does not change this ruling's applied default, only confirms the scenario it defends against is
-> rare enough that a bench re-test, not a design reversal, is what is still owed.
+> passes. Separately, on the bench's one-applier-dissipates re-test row (not this card), Ben noted
+> two GM clients will never happen at his table in play — recorded as new **R-86** (§K); it does
+> not change this ruling's applied default: the bench itself is a second GM client, so the gate
+> stays an engineering necessity and the live re-test is still what is owed.
 
 *(R-5 — does Fault Line's line spare allies — ANSWERED 2026-09-05, moved to §K.)*
 
@@ -944,9 +944,8 @@ this — it only decides how far the fix reaches. *(Marathon 3, fix pass E.)*
 > cosmere ladder's 5)" and siblings; scratch read-back: 52 pack adversaries, 1 changed (the Grove),
 > 51 unchanged at 10. Ben: rebuild + deploy + press ⟳ Sync Adversaries from Pack.
 > **REOPENED 2026-09-07 (Ben, dashboard), verbatim: "Honestly we should be using the cosmere
-> ladder for everyone. If that's a huge issue or rebuild let me know before changing."** — and,
-> on the same card, *"In-play there will never be 2 GM clients. I'm marking this 'skip'"* (that
-> second remark belongs to R-77, not this ruling; recorded there). This reverses the direction R-56
+> ladder for everyone. If that's a huge issue or rebuild let me know before changing."** This
+> reverses the direction R-56
 > shipped 2026-09-06 (the Edha AWA table for everyone) back toward the SYSTEM's own ladder for
 > everyone. **WAITING — nothing changed yet.** PM's scope, so Ben can decide before dispatch: the
 > Edha AWA table (0→10, 1→15, 2–3→20, 4→25, 5+→30 ft) is written into `senses.range.derived` for
