@@ -3410,6 +3410,38 @@ The 34b loot half (chest caches, body search) is a separate later PR and has its
       its action-typed Strike/Bite and gains the weapon-typed one after one Sync click (position,
       HP, and the actor's other items kept); a renamed copy is skipped as before.
 
+**34b — loot caches + body search** (2026-09-06, PR #233, ENGINE-ONLY → F5 / relaunch, no pack
+rebuild). `edha.createLootCache(name)` mints a flagged cache actor with a linked chest token; a
+player double-clicks the chest, or a defeated adversary within 5 ft, for a whispered contents
+card; Take relays through the `loot-take` GM socket action (the double-loot guard) and moves the
+item for real. Pure helpers and the two-relay race are pinned headless (`tests/loot-caches.test.js`);
+these rows are the live half. Bench as the `Bench` GM plus a player client (a second browser tab
+logged in as a player user owning a PC token) — rows 3–5 need the player side.
+
+- [ ] 🤖 **Chest token** — as GM run `edha.createLootCache("Bench Chest")` in the console: a "Bench
+      Chest" actor appears in a **Loot Caches** folder with the chest icon; drag it to the Playtest Map —
+      the token is LINKED, neutral, name on hover, and renders the chest (no broken-image square).
+      Drag two gear items (e.g. a Shortsword and Rations ×3) onto its sheet to stock it.
+- [ ] 🤖 **Contents card** — as the player, move an owned token adjacent to the chest and
+      double-click the chest: a whispered card (player + GM) lists the two items as Take buttons,
+      "Rations ×3" carrying its quantity; the cache's sheet does NOT open.
+- [ ] 🤖 **Take moves the item** — click Take on the Shortsword: it leaves the cache's sheet, appears
+      on the player's actor unequipped (provenance flags gone — a later ⟳ Sync Adversaries must not
+      delete it), and a public "X takes Shortsword from Bench Chest" card posts.
+- [ ] 🤖 **Double-loot guard, two clients** — with the same contents card open on two player clients
+      (or player + GM), click Take on the same item from both within a second: exactly ONE actor
+      receives it, the other side gets nothing and the GM sees a "already claimed" whisper; the
+      item exists once in the world.
+- [ ] 🤖 **Body search within / out of 5 ft** — reduce a placed Corvaine Raider to 0 HP. Player token
+      10 ft away, double-click the body: a "move within 5 ft" warning and no card. Move adjacent,
+      double-click: the "Searching Corvaine Raider" card lists the Shortsword / Soldier's Crossbow;
+      Take moves one onto the player and the body loses it.
+- [ ] 🤖 **Sheet never opens** — as the player, double-click a LIVE adversary (not a source) and the
+      dead one: neither sheet opens (Foundry's own permission gate for the live one, the intercept
+      for the body); as GM, double-clicking the chest still opens its sheet (that is how it is stocked).
+- [ ] 🤖 **Natural weapon not listed** — reduce a Cinderhound to 0 HP and search it adjacent: Bite
+      (`alwaysEquipped`) is NOT on the card (an info toast "nothing worth taking" if it carried no gear);
+      stocking Bite-like alwaysEquipped weapons on a CACHE does list them.
 ## 34c — the later bestiary (item 65, 2026-09-06, REBUILD + ⟳ Sync) + the R-81 charge family (item 67)
 
 The 39 statblocks statted after 07-18 (Reedling → The Cull-Alpha) carried 44 attack-rolling items
