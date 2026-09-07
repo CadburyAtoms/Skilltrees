@@ -499,6 +499,44 @@ retired; this is the residue.)*
 
 ---
 
+**R-90. An adversary's `edha-triggered-effect` card is public. Should it whisper to the GMs?**
+Bench run 43 re-drove Predator's Due on the current build: the heal is right (a fresh Cragdrake Alpha
+went **30 → 33** on taking a character to 0), but the card posts with `whisper: []` — so the table sees
+the boss's remaining-HP arithmetic *and* the GM instruction printed inside the same card
+(*"…and 1 Focus on the kill (focus is a GM add)"*). Run 16 blamed `edhaWhisperIds()` returning empty;
+that is wrong — the poster, `edhaRollCard`
+(`module-src/scripts/engine/33-triggered-effect-resolution.js:143`), simply passes **no `whisper` key**,
+and neither do its six sibling call sites. Public is correct for a PC healing themselves; it is the
+adversary case that leaks. **17** adversary `edha-triggered-effect` rules ship, of which the three
+`Predator's Due` blocks carry a literal GM instruction and the three `Afterburn` afflictions post
+through the same poster. *Recommended default: **(a) whisper to `edhaWhisperIds(owner)` when the owner
+has no player OWNER** — i.e. an adversary — and leave a player-owned actor's card public. One helper
+call per poster, and it is exactly what `edhaPostCueCard` already does for adversary cues.* (b) whisper
+only when the rule's own note contains a GM instruction — more surgical, but it makes the audience a
+property of prose. (c) leave everything public and delete the GM instruction from the three card texts
+instead — cheapest, but it also shows the players the boss's healing roll. *(Bench run 43, 2026-09-07;
+implementation is `TODO_REPO_HYGIENE` item 88, which is blocked on this answer.)*
+
+---
+
+**R-91. Does R-86 retire the R-62 audience row, or do you want to disconnect for one window?**
+The checklist row **"VISIBLE — R-62 audience flips, seven sites"** asks, for each of seven card sites,
+that a GM be **logged out** when the card fires and then log back in. Bench run 43 re-derived why that
+cannot be staged: the world holds **exactly two GM users** — `Bench` (which by definition is connected
+during a bench run) and `Gamemaster` (Ben, connected through runs 24–43) — and the other four users are
+all role 1. So `edhaGmIds({activeOnly: true})` and `edhaGmIds()` return the same list no matter what the
+bench does; there is no offline GM to act as a discriminator. **R-86** already says *"There will never
+be no GM connected. This isn't needed, and any similar items aren't needed"*, and it retired **Job 6a**,
+whose premise is the same. *Recommended default: **(a) retire the row under R-86** — the flips are
+repo-side facts pinned by the code (`activeOnly` present or absent at each of the seven sites) and the
+behaviour they change only matters in a state you have said will never occur.* (b) keep it and
+disconnect `Gamemaster` for one deliberate window so a bench run can drive all seven sites in one pass —
+about ten minutes of your time, once. (c) keep it open indefinitely. *(Bench run 43, 2026-09-07 — the
+row is annotated with this derivation and stays 🤖 until you answer; a technical blocker never becomes
+⚑.)*
+
+---
+
 ## D. Talent identity & tree shape
 
 **R-23. Volatile Strike — whose hit should it ride?** Card and rule description both say "when you

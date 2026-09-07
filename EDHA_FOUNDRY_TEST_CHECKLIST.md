@@ -2945,9 +2945,23 @@ Foresight AND Sidestep owned wrote **all three** groups on the combatant (`base`
 control inside the same combat start, which is what makes the deflect gate provable rather than
 assumed.)*
 
-- [ ] 🤖 **CAE burns** — Tactical Ploy success / Feinting Strike hit decrements the target's
-      tracked reaction (card says "burned on the tracker"); with no combat running, everything
-      falls back to the honor-system chat wording.
+*(**CAE burns** — ✅ **PASS, RETIRED on evidence 2026-09-07, bench run 43** (engine
+`0a677dade62f…`), **both named talents and both card wordings, with a before/after on the tracker
+itself.** The Cosmere Advanced Encounters module is live (`cosmere-advanced-encounters` 1.3.1) and a
+bench combat (`active: false`, viewed via `ui.combat.initialize`) gave `Bench Target — Adjacent A`'s
+combatant `reactionsAvailable = [{max: 1, remaining: 1, used: 0, name: "base"}]`.
+· **Feinting Strike hit** (`edha-cae-grant {kind: burn-reaction, target: victim}` fired from an
+`edha-on-hit` payload): *"⚡ **Feinting Strike**: Bench Target — Adjacent A loses one Reaction **(on
+the tracker)**."* and the flag went to `{remaining: 0, used: 1}`.
+· **Tactical Ploy success** (the same handler with `target: target`, behind its own `edha-def-test` —
+*"Tactical Ploy: 18 vs Bench Target — Adjacent A's COG 14 — SUCCESS"*), after resetting the group to
+`remaining: 1`: *"⚡ **Tactical Ploy**: … loses one Reaction **(on the tracker)**."*, flag again
+`{remaining: 0, used: 1}`.
+· **The no-combat fallback was measured in the same session, before the combat existed:** the
+identical Feinting Strike hit posted *"⚡ Feinting Strike: … loses one Reaction **(no tracker in this
+scene — honour-system)**."* ⚠️ The row's quoted wording *"burned on the tracker"* is not what the
+engine prints — it is **"(on the tracker)"** (`engine/53-native-event-system.js:467`); the row's text
+was written from the design note, not the string.)*
 *(**Starting kit grant — ✅ RETIRED on evidence 2026-09-06, bench run 32**, driven as the row's
 literal ask: the **console API** on the **Hunter** path, `edha.grantStartingKit(game.actors.getName("Bench — Heroic"), "Hunter")`.
 **14 items** landed — the common base (Clothing, Backpack, Bedroll, Flint and Steel, Leather, Rope,
@@ -2962,13 +2976,23 @@ at 5 and posted no card. ⚠️ **The guard flag is `flags["edha-content"].kitPa
 card had nothing to list. Settling it needs a deliberately-broken items pack; recorded as untested
 rather than passed, the same standard run 22 used for the vision row's fourth clause.)*
 
-- [ ] 🤖 **Kindle — NARROWED 2026-07-27v to the token-light half only** — ✅ **the label half is
-      proven**: the Kindle die/mod is labeled in the damage breakdown, observed live as "+ **3
-      (Kindle)**" inside Hazewyrm Elder's Flame Surge total at bench run 11. ⛔ **Unrun:** deal energy
-      damage, wait ~30s reading the card, then Apply → the target token now **sheds the flame light**.
-      *(Related but NOT the same claim: `lightRadiusFt: 5` is present on the shipped Kindle rules —
-      that settles the FIELD, not "a bitten creature's token starts glowing", which is what this row
-      and the bestiary's "Bite sheds light" row actually ask.)*
+*(**Kindle — ✅ PASS, RETIRED WHOLE on evidence 2026-09-07, bench run 43** (engine
+`0a677dade62f…`). The label half was already proven (bench run 11) and was **re-confirmed live today**
+on the card's own formula bar: `Bench — Red`'s Searing Bolt rolled **`2d8 + (5)[Kindle] + 5`**.
+**The token-light half, driven exactly as the row asks:** `Bench Target — Adjacent A`'s token before —
+`light {dim: 0, bright: 0, color: null, animation.type: null}`, no `edha-content` flags. `Bench — Red`
+rolled Searing Bolt damage (energy; Kindle's rider is `appliesTo: "energy"`, `lightRadiusFt: 5`), then
+**37 seconds** passed — the row's *"wait ~30s reading the card"* — and the damage was applied with **no
+explicit source**, i.e. through the `_edhaLastDealer` breadcrumb the GM's Apply click uses (the window
+is 120 s, `engine/03-where-an-effect-lives.js:339`). After: the token reads
+**`light {dim: 5, bright: 2.5, color: "#ff7a1a", alpha: 0.5, animation {type: "flame", speed: 2,
+intensity: 2}}`** with `flags.edha-content.kindleLit = true` and `kindleLightPrev` holding the original
+block for restore. The bitten creature's token really does start glowing, and the 30-second read does
+not expire the breadcrumb. Restored from `kindleLightPrev` afterwards.
+⚠️ **Harness note for whoever drives an Apply-button row next:** `item.rollDamage({})` posts a **plain
+dice-roll message with NO `apply-damage` buttons** in this system — the buttons live on the cosmere
+*damage card* an attack test produces. Two takes were burned looking for
+`button[data-action="apply-damage"]` on a `rollDamage` message; there is none.)*
 
 ---
 
@@ -3454,7 +3478,26 @@ item for real. Pure helpers and the two-relay race are pinned headless (`tests/l
 these rows are the live half. Bench as the `Bench` GM plus a player client (a second browser tab
 logged in as a player user owning a PC token) — rows 3–5 need the player side.
 
-- [ ] 🤖 **Natural weapon not listed — BODY half BLOCKED-ON-DEPLOY, cache half retired.**
+*(**Natural weapon not listed — ✅ PASS, RETIRED WHOLE on evidence 2026-09-07, bench run 43**, driven
+from **`PlayerBench`**'s own client (`game.user.isGM === false`) with `Bench` and Ben's `Gamemaster`
+also connected, on engine `0a677dade62f…`. `PlayerBench` was granted OWNER on `Bench — Order` only
+(ownership snapshotted and restored; the end-of-run diff is empty), and its token stood at a measured
+**5.0 ft** from a defeated `B43 Cinderhound` (HP 0, imported fresh from the pack — items: `Bite`
+weapon `alwaysEquipped: true`, plus two traits).
+**NEGATIVE (the row's actual claim):** the player's double-click on the body produced the info toast
+*"Edha: Cinderhound — nothing worth taking."* and **no card** — the natural weapon is not offered.
+**POSITIVE CONTROL, same body, same player, same click, one minute later:** a plain `Sidesword`
+(`alwaysEquipped: false`) was added to that same body from the GM client, and the identical
+double-click posted a card **authored by PlayerBench**, whispered to PlayerBench + Bench + Gamemaster:
+*"🎒 Searching Cinderhound — take: **Sidesword**"* — listing the Sidesword and **not** the Bite. So
+the plumbing works from a player client, and the exclusion really is the `alwaysEquipped` branch
+rather than "the body has nothing on it". Run 42's `edhaLootTryOpen` GM refusal is confirmed as the
+only reason this needed a second client.
+⚠️ **Harness note:** an actor renamed on import keeps its **prototypeToken** name, so the body token
+was called `Cinderhound`, not `B43 Cinderhound` — resolve by id (hard rule 7), never by name.
+The historical record for this row follows.)*
+
+*(**Superseded detail (2026-09-06 / 2026-09-07, runs 40 and 42):**
       ⛔ **The load-bearing half cannot run until Ben rebuilds the adversaries pack** (item 34a,
       PR #220): in the DEPLOYED pack the Cinderhound's **Bite is still `type: "action"`**, so
       `edhaLootableItems` excludes it for not being gear at all, not for being `alwaysEquipped` —
@@ -3474,6 +3517,7 @@ logged in as a player user owning a PC token) — rows 3–5 need the player sid
       a direct before/after that the rebuild landed. ⛔ **Row stays 🤖 for the live card only:**
       `edhaLootTryOpen` returns early for a GM by design (`if (!kind || game.user?.isGM) return false`),
       so the search card cannot be raised from the `Bench` GM client — it needs `PlayerBench` logged in.
+      *(That last blocker was cleared at bench run 43 — see the retirement note above.)*)*
 
 *(**✅ RETIRED on evidence 2026-09-06, bench run 40 — the other SIX 34b rows**, driven on the
 hash-verified `0ea0741a…` deploy with `PlayerBench` logged in as a real second client.
@@ -3516,7 +3560,27 @@ Parity in the PR: 336 embedded docs, 39 changed (36 + item 67's 3), 0 roll diffe
 applies R-81 default (a) to the three run-19 blocks — open for Ben's veto on the ruling, but the
 rows below test what shipped.
 
-- [ ] 🤖 **34c weapon-borne riders survive** (the `edhaRuleBearer` gate, second consumer set): a
+*(**34c weapon-borne riders survive** (the `edhaRuleBearer` gate, second consumer set) — ✅ **PASS,
+RETIRED WHOLE on evidence 2026-09-07, bench run 43.** The rider half passed at run 42; **item 84's
+one-predicate fix (PR #276, ENGINE-ONLY) closes the cue half**, verified on the hash-matched deploy
+`0a677dade62f76ce…` (repo `module-src/scripts/register-skills.js` = the served
+`/modules/edha-content/scripts/register-skills.js`, CRLF-normalised SHA-256, computed from BOTH sides).
+**Two different weapons on two different adversaries, neither carrying the `adversaryTalent` flag that
+run 42's mutation had to add:**
+· `B43 Surecat` / **The Pounce Already Taken** (`type: "weapon"`, `alwaysEquipped: true`, flags
+`{"edha-content":{"adversary":"Surecat"}}` — `adversaryTalent` **null**), 5 impact applied to
+`Bench Target — Adjacent A` → *"⏰ **The Pounce Already Taken** (B43 Surecat): If the target took the
+Forewarned-declared action this round: add +1d4 keen — it was already there when they arrived. **(hit
+Bench Target — Adjacent A.)**"*, whispered to Bench + Gamemaster.
+· `B43 Fellstag` / **Antler Sweep** (same shape, `adversaryTalent` **null**), 4 impact applied to
+`Bench Target — Adjacent B` → *"⏰ **Antler Sweep** (B43 Fellstag): Antler Sweep hit — if the target
+stands in thicket, it is knocked Prone. **(hit Bench Target — Adjacent B.)**"*
+Two weapons rules out "that one weapon" and leaves only the shared predicate, which is what changed.
+The other four of item 84's six inert rules (Wake-Eel Shoal, Dirgehound Pack, Callthief, Keelshadow)
+ride the identical `edhaRulesForEvent` gate and are not separately driven.
+The run-42 detail follows.)*
+
+*(**Superseded detail (2026-09-07, bench run 42):**
       fooled `edha-damage-rider` on a weapon-type item still fires — The Doubled's Raking Grasp adds
       +1d6 ONLY against a target taken in by The Doubling (CONTROL: an un-fooled target gets the
       bare 1d8+2); an on-hit `edha-gm-cue` on a weapon still whispers — Surecat's The Pounce Already
@@ -3543,6 +3607,7 @@ rows below test what shipped.
       Keelshadow/Breach and Drag. The 13 `edha-pre-deal-damage → edha-damage-rider` weapon rules are
       unaffected (four of them measured firing today). **Fix = one predicate swap** (`edhaRuleBearer`
       in `edhaRulesForEvent`); re-test this row's cue half after it ships. → test-pass-fixes.
+      *(Shipped as item 84 / PR #276 and re-tested at bench run 43 — see the retirement note above.)*)*
       ✅ **2026-09-07, item 84 — FIX SHIPPED (ENGINE-ONLY, F5 — no rebuild, no ⟳ Sync).**
       `edhaRulesForEvent` now gates on `edhaRuleBearer`, so weapon-borne rules reach all four of its
       dispatchers (on-hit, combat-timing, draw-mana, ritual-paid). Mutation-pinned in
@@ -3639,10 +3704,29 @@ the one burst produced **one** template pair.
 which waits for a `pointerdown` on `#board`. With the pane hidden that reads exactly like "the talent
 silently ate my Investiture and did nothing". Drive it by pinning `canvas.mousePosition` and dispatching
 the event; **Escape cancels and refunds**.)*
-- [ ] 🤖 **Pyre spread card BY ALIAS** — at the end of the CINDERBROCK's turn with a patch on the
-      scene: the whispered spread card fires, labeled **Fire the Wrack** (not "Pyre"), with
-      working Spread + Extinguish buttons. A PC Destruction player's own Pyre zones must still
-      spread separately (alias must not cross owners — sourceOwnerUuid check).
+*(**Pyre spread card BY ALIAS** — ✅ **PASS, RETIRED WHOLE on evidence 2026-09-07, bench run 43**
+(engine `0a677dade62f…`), **with the cross-owner control inside the same combat.** A fresh
+`B43 Cinderbrock` used **Fire the Wrack** (`edha-pre-use → edha-place-hazard {spreads: true}`),
+minting a Region flagged `{hazard: true, scope: "scene", sourceItem: "Fire the Wrack", spreads: true,
+terrain: {ownerUuid: "Actor.<Cinderbrock>", color: "red"}}`; `Bench — Destruction` used its own
+**Pyre** (`use → edha-place-hazard {spreads: true}`), minting a second Region with
+`sourceItem: "Pyre"` and its OWN `terrain.ownerUuid`. Both were in one `active: false` bench combat.
+· **End of the Cinderbrock's turn** (`combat.update({turn})` off its index): exactly **one** card,
+whispered to Bench + Gamemaster — *"🔥 **Fire the Wrack** — end of B43 Cinderbrock's turn: the blaze
+spreads to one adjacent flammable square (GM judges flammability; non-flammable directions stay
+unburned)."* — labelled by the **alias**, not "Pyre", with both buttons present. The PC's Pyre zone
+did **not** prompt.
+· **End of `Bench — Destruction`'s turn:** exactly **one** card — *"🔥 **Pyre** — end of Bench —
+Destruction's turn: …"*. The Cinderbrock's zone did **not** prompt. That is the `sourceOwnerUuid`
+cross-owner check, measured in both directions.
+· **Both buttons work.** *Spread* → the GM click-prompt → a synthetic canvas click at scene
+(3150, 7350) → the Region gained a second shape, a 300×300 square at exactly **(3000, 7200)** (the
+square clicked), and posted *"🔥 Fire the Wrack spreads one square."* *Extinguish* on each card posted
+*"💨 Fire the Wrack is put out."* / *"💨 Pyre is put out."* and **both Regions were deleted** — the
+scene ended with only its one pre-existing Region.
+The run-17/18 blocker notes follow.)*
+
+*(**Superseded detail (runs 17 and 18):**
       *(2026-07-28 bench run 17 — **BLOCKED downstream of the row above, row stays 🤖.** The spread
       watcher keys on a Region stamped `spreads` by the placer, and the Cinderbrock cannot place one
       at all while `edha-pre-use` has no dispatcher. Re-drive this the moment that fix lands.)*
@@ -3654,6 +3738,7 @@ the event; **Escape cancels and refunds**.)*
       card, nor stage the PC-Pyre-alongside control — so no claim is made about the spread card or its
       buttons. Cheapest next drive: add the Cinderbrock to a bench combat, step forward to end its
       turn, and check the card is labelled **Fire the Wrack**, not "Pyre".)*
+      *(Driven exactly that way at bench run 43 — see the retirement note above.)*)*
 
 ## 4. Cold-Fire Cinderbrock (the wasting variant)
 
@@ -3930,6 +4015,16 @@ for the first time". Keep 2bAB-9.)*
       chat card** (`content: ""`) with the owner as speaker — no test, no contest core, no roll.
       Both blocks' `Unbreakable Line` carries **only** the `edha-apply-watch` → `edha-gm-cue` rule;
       there is no `use` rule at all.
+      ⛔ **2026-09-07, bench run 43 — RE-CONFIRMED against the DEPLOYED pack, and now FILED.** Read
+      straight out of `edha-content.edha-adversaries`: `Crownox Ring / Unbreakable Line` and
+      `The Reckoning / Unbreakable Line` each carry exactly one rule,
+      `edha-apply-watch → edha-gm-cue {rangeFt: 5}` — no `use` rule on either. **(a) is fully retired**
+      (the cue fires on both blocks, and R-52 (c)(i)'s half-square slack was measured at run 39), so
+      **the only thing left on this row is (b)**, which is an authored-data gap, not a test:
+      → **TODO_REPO_HYGIENE item 89**. ⚠️ Same read surfaced a second inconsistency for that item:
+      `The Reckoning`'s `activation.type` is **`"none"`** while the Crownox Ring's is **`utility`**,
+      for the same ability — so even a hand-click cannot start the test on one of the two blocks.
+      Row stays 🤖, blocked on item 89; re-drive (b) when it ships.
 
 *(**Retributive Guard** — RETIRED on evidence 2026-07-27v, bench run 3, on a **FRESH pack import** with
 three unlinked ring tokens (this is **2bAB-3**): the retaliate **prompt posted by itself from the
@@ -4032,8 +4127,27 @@ the Ram damage formula came out **`1d10 + 3 + (2d4)[Momentum's Edge] + 0`** — 
 labelled. Control: re-stamped at rest, 0 px moved → **`1d10 + 3 + 0`**, no rider. First ADVERSARY
 consumer of `whenMovedTowardFt`, working.)*
 
-- [ ] 🤖 **Reckless Advance / Unstoppable executors** — use → 10-ft no-Reaction charge;
-      Fast-turn damage → free half-Speed move (once/turn).
+*(**Reckless Advance / Unstoppable executors** — ✅ **PASS, RETIRED WHOLE on evidence 2026-09-07,
+bench run 43** (engine `0a677dade62f…`). The **distance** half was fixed and measured at run 42
+(item 67: a fresh `B42 Brandram` charged **600 px = 10.0 ft** exactly). **The fast-turn half was driven
+today, on a fresh `B43 Brandram`** imported from the pack (2×2, `movement.walk.rate` override **40**),
+placed on a lane whose centre line `testCollision` returned clear, with `Bench Target — Isolated`
+37.5 ft away, inside an `active: false` bench combat made the client's viewed combat via
+`ui.combat.initialize` and its combatant flagged `turnSpeed: "fast"`:
+**`Ram.rollDamage()` → *"💨 **Unstoppable** — B43 Brandram moves **20 ft** toward Bench Target —
+Isolated, ignoring Reactions."* and the token really moved (3600, 4800) → (4800, 4800) = **1200 px =
+exactly 20.0 ft** at 60 px/ft** — half of the 40-ft Speed, as the card says — with
+`flags.edha-content.oncePerTurn.Unstoppable` stamped.
+**NEGATIVE CONTROL (once/turn), same turn, no round step:** a second `Ram.rollDamage()` produced the
+damage card **only** — no Unstoppable card, **0 px moved**, `oncePerTurn` unchanged.
+⚠️ **Harness lesson this cost two calls:** `await item.rollDamage()` **never resolves** while the
+Browser pane is hidden if the roll triggers an engine move — the awaited chain runs into
+`edhaMoveTokenTo`'s animated `doc.update({animate: true, teleport: false})`, which is the promise
+run 42 found never settles. **Fire the roll with `void`, then `await B.pump(...)` CONCURRENTLY**;
+pumping after the await is too late because the await never returns.
+The run-19/28/29/42 history follows.)*
+
+*(**Superseded detail (runs 19, 28, 29, 42):**
       **2026-07-28e, bench run 19 — PARTIAL + BLOCKED, row stays 🤖.**
       ✅❌ **Reckless Advance runs, at the same wrong distance as Shockwave Slam above — ONE root
       cause, two rows.** Driven from 32.5 ft away (so there was ample room and it was not clipped):
@@ -4094,6 +4208,9 @@ consumer of `whenMovedTowardFt`, working.)*
       CONTROL: from a 17.3-ft start the same use clipped — *"moves 5 ft … (stopped by Bench — Order)"* —
       the Large charger's own footprint, not the allowance. **Row stays 🤖 only for Unstoppable's
       fast-turn → free half-Speed move (once/turn), which was not driven.**
+      *(Driven at bench run 43 — see the retirement note above. ⚠️ Note for the record that run 29's
+      evidence four paragraphs up had already measured this half on `BENCH Brandram R29`; run 42's
+      closing line overlooked it. Run 43 re-drove it from scratch rather than arguing from the file.)*)*
 
 *(**Bloodied withdraw cue** — RETIRED on evidence 2026-07-28e, bench run 19:
 *"⏰ Deny It the Run-Up (Bench Adv — Brandram): Bloodied — it withdraws uphill; it has proved what it
@@ -4185,6 +4302,29 @@ saves, with HP deltas matching exactly. For contrast, the pre-rebuild reading wa
 
 - [ ] 🤖 **Predator's Due on-defeat** — reducing a character to 0: +2d8 health
       engine-applied + whispered Focus card.
+      ❌ **2026-09-07, bench run 43 — RE-DRIVEN on the current build (engine `0a677dade62f…`):
+      the heal half still PASSES, the whisper half still FAILS, and the root cause is now in code.**
+      A fresh `B43 Cragdrake Alpha` (HP set to 30 of 56) was **CONTROLLED** on the canvas — run 16's
+      staging note, `edhaResolveKiller` reads `canvas.tokens.controlled` — and took the
+      `character`-typed `Bench Target — Floater` from 40 to 0 via
+      `applyDamage([{amount: 200, type: "impact"}], {edhaSource: alpha, originatingItem: Rend})`.
+      ✅ Heal: Alpha **30 → 33**, card *"⚡ **Predator's Due** (B43 Cragdrake Alpha) — B43 Cragdrake
+      Alpha regains **3** health. (Predator's Due: +2d8 health ([Tier][Die]: count = tier 2, die = boss
+      rank 3, ruling 122) and 1 Focus on the kill (focus is a GM add).) 2d8 2 1 3 3"*.
+      ❌ Audience: `whisper: []` — **public**, unchanged since run 16. **Run 16's guess is wrong and is
+      corrected here:** it is NOT `edhaWhisperIds()` returning empty (that helper returns active GMs +
+      active owners and would have returned `[Bench, Gamemaster]`). The card is posted by
+      **`edhaRollCard`** (`module-src/scripts/engine/33-triggered-effect-resolution.js:143`), which
+      calls `ChatMessage.create({speaker, rolls, sound, content})` with **no `whisper` key at all** —
+      as do all **seven** of its call sites and the non-rolled `ChatMessage.create` fallbacks beside
+      them. So every `edha-triggered-effect` card is public by construction, which is right for a PC's
+      own heal and wrong for an adversary's kill-heal plus its GM-only Focus instruction.
+      **Blast radius, counted in the deployed adversaries pack: 17 adversary `edha-triggered-effect`
+      rules**, of which the three `Predator's Due` blocks (Cragdrake Alpha, The Cull-Alpha, Dirgehound
+      Pack) carry a literal GM instruction in the card text and the three `Afterburn` afflictions
+      (The False Spring, Hazewyrm Elder, Hazewyrm Adult) post through the same public `edhaRollCard`.
+      → filed as **TODO_REPO_HYGIENE item 88**; the design call is **R-90**. Row stays 🤖 for the
+      whisper half; re-drive it after the fix.
       *(2026-07-27x bench run 16 — **PARTIAL: the heal is right, the card is PUBLIC not whispered.**
       ✅ Engine-applied heal confirmed: Alpha 30 → **38** on reducing a character to 0, card
       "⚡ Predator's Due (Bench Adv — Cragdrake Alpha) — … regains **8** health … **2d8 4 4 8**",
@@ -4553,8 +4693,32 @@ warning) with no GM online; `edhaCasterToken`/`edhaActorRulesOf`/`edhaResolveAct
 remaining hand-rolled target-token, rule-sweep, and uuid-resolve duplication (repo-side only — no
 observable behavior change, not rows below).
 
-- [ ] 🤖 **R-64 — Edha: Gain/Drain Focus, Edha: Reveal, and Edha: Next-Test-Mod's `victim` mode all
-      resolve against the event's actual target, not a stale selection.** Pick a representative
+*(**R-64 — Edha: Gain/Drain Focus, Edha: Reveal, and Edha: Next-Test-Mod's `victim` mode all resolve
+against the event's actual target, not a stale selection** — ✅ **PASS, RETIRED WHOLE on evidence
+2026-09-07, bench run 43** (engine `0a677dade62f…`). Two of the three handlers were proven at run 25;
+**`edha-reveal` — which runs 25 and 29 both recorded as having NO DRIVABLE SHAPE — was driven today**,
+by the documented staged-clone escape (runs 39/41/42) rather than by waiting for data to ship.
+**The stage:** Sharp Eye's `edha-reveal {target: victim, facts: …}` rule was copied onto a scratch
+talent on `Bench — Heroic` with its event moved from `edha-test-success` to **`edha-on-hit`** — the
+one shipped event that carries its own victim — and with no damage formula, so
+`edhaOnHitIsItemSpecific` rates it "rides any hit".
+**The take:** `Bench — Heroic` hit **Bench Target — Adjacent A** while `game.user.targets` held
+**Bench Target — Adjacent B** for the whole window. Card: *"👁️ B43 STAGED victim-chain probe on
+**Bench Target — Adjacent A** — lowest attribute str · lowest defense phy · below half …"* — the
+payload's creature, not the canvas selection. **Adjacent B received nothing**, which is the negative
+half of the same take.
+**A first attempt WITHOUT the clone is recorded because it is the trap:** using the real Sharp Eye and
+switching the canvas target while its roll-configuration dialog was open moved the **def-test itself**
+onto the new target (*"Sharp Eye: 22 vs Bench Target — Adjacent B's COG 14 — SUCCESS"*), so the reveal
+landed on B too. Consistent, but it discriminates nothing — an H1 def-test resolves its target at ROLL
+time, so payload and selection can never differ that way. That is what "no drivable shape" actually
+meant, and it is a statement about the shipped **data**, not about the harness.
+⭐ **Seven shipped talents corroborated the chain for free in the same take**, all resolving against
+the hit creature while the selection pointed elsewhere: Feinting Strike (focus drain **and** the CAE
+reaction burn), Startling Blow, Shattering Blow, Subtle Takedown, Meteoric Leap, Anatomical Insight.
+The run-25/29 detail follows.)*
+
+*(**Superseded detail (runs 25 and 29):** Pick a representative
       talent per handler (Siphoned Will / Galvanize-style `edha-focus {target: victim}`; Sharp
       Eye-style `edha-reveal {target: victim}`; Coercive Pressure-style `edha-next-test-mod
       {target: victim}`); fire each from a payload that carries `options.target` while your canvas
@@ -4573,8 +4737,30 @@ observable behavior change, not rows below).
       selection for this handler, and no second rule to try. **Do not re-queue this half**; it reopens only if a
       future talent ships an `edha-reveal {target: victim}` on an event that carries its own victim
       (`edha-on-hit`, or an `edha-watch` whose `payloadTarget` is the watched actor).
-- [ ] 🤖 **R-64 — the `edha-cae-grant`/`edha-owner-list` (H3 annotate/near-victim) `victim` picks
-      agree with the payload, not the clicking user's canvas selection.** Same shape as above, for
+      *(Bench run 43 did exactly that by cloning the rule onto `edha-on-hit` — see the retirement
+      note above. The prediction in this paragraph was right about the mechanism.)*)*
+
+*(**R-64 — the `edha-cae-grant`/`edha-owner-list` (H3 annotate/near-victim) `victim` picks agree with
+the payload, not the clicking user's canvas selection** — ✅ **PASS, RETIRED WHOLE on evidence
+2026-09-07, bench run 43** (engine `0a677dade62f…`). The `edha-cae-grant` half was proven at run 25;
+**`edha-owner-list` — recorded by run 29 as having NO DRIVABLE SHAPE — was driven today** on the same
+staged probe as the row above: Cold Eyes' `edha-owner-list {list: "quarry", target: "victim"}` rule was
+copied onto a scratch talent with its event moved to **`edha-on-hit`** and its `op` set to `place`
+(`status: "quarry"`), then fired by a hit on **Bench Target — Adjacent A** while `game.user.targets`
+held **Bench Target — Adjacent B**.
+Card: *"📋 B43 STAGED victim-chain probe: **Bench Target — Adjacent A** bears your **Quarry** (1/2)."*
+Adjacent A gained the `quarry` status and `markedBy.quarry {actorId: <Bench — Heroic>, talent: …}`;
+the owner's `lists.quarry` holds **`Actor.8A0f88mKYTfmLzDb`** = Adjacent A. **Adjacent B — the canvas
+selection — received nothing at all**, which is the built-in negative control.
+⚠️ **A correction to run 29's sweep, re-derived from the DEPLOYED packs rather than `data/authored/`:**
+there are **19** shipped `edha-owner-list {target: victim}` rules, not 8 — 12 on `edha-test-success`,
+**5 on `use`** (Speak with the Fallen, Inevitable Snare, Pinpoint Charge, Risen Servant, Sealed Edict)
+and 2 on `edha-test-fail` (Killing Blow, The Final Study). The larger count does not change run 29's
+conclusion — none of those events carries a victim independent of the caster's own target — but the
+number in the old note was low, and the sweep that produced it read the overlay, not the pack.
+The run-25/29 detail follows.)*
+
+*(**Superseded detail (runs 25 and 29):** Same shape as above, for
       Through the Fray-style CAE grants and any H3 list rule using `target: victim` — including
       Order's covenant/edict-annotate placements and the multi-target Investiture-of-Command-style
       `to: targets` sweep, which reads the SAME fixed `edhaUserTargetActor()` reader as everywhere
@@ -4591,6 +4777,9 @@ observable behavior change, not rows below).
       sweep that is **9 of 9 victim-mode rules unreachable**, with no alternative rule to stage. The row's own text
       already rates the `to: targets` sweep regression-only, with no chain to verify. **Do not re-queue this half**;
       it reopens only if a talent ships this handler on an event that carries its own victim.
+      *(Bench run 43 staged exactly that by cloning the rule onto `edha-on-hit` — see the retirement
+      note above. "No alternative rule to stage" was true of SHIPPED data and false of the harness.)*)*
+
 *(**R-63 — a token with genuinely UNSET disposition is no longer treated as an enemy by default** —
 ✅ CLOSED 2026-09-06, bench run 38, by the same measurements that closed the item-10 sideless row in
 `# BENCH — Engine-wide` above; read that entry for the numbers. Short form: **the row's own escape
@@ -4602,10 +4791,35 @@ disposition. The reachable half **was** driven: `edhaDisposHostile(Bench — Red
 on the scene>)` returns **false** where the tokened control returns **true**. Everything beyond that
 is the repo-side pin the row itself names — `tests/disposition-failclosed.test.js`. **Do not
 re-queue.**)*
-- [ ] 🤖 **R-63 — same-side checks (auras, Reroll Reaction's "enemies only", the Fate snare's
-      "enemies only spring it", the zone-guard's "protects the owner's ally") still fire correctly
-      for ordinary tokens with a normal disposition — this is a regression check on the 12 migrated
-      same-side sites and the 4 enemies-in-range filters.** Pick 2–3 of: an aura talent
+*(**R-63 — same-side checks still fire correctly for ordinary tokens with a normal disposition** (the
+regression check on the 12 migrated same-side sites and the 4 enemies-in-range filters) — ✅ **PASS,
+RETIRED on evidence 2026-09-07, bench run 43. The row asked for 2–3 of its listed shapes; three are
+now measured, each on a different one of the migrated sites:**
+**① an enemies-in-range filter** (bench run 31) — `Unravel Everything`'s `target: enemies-range`
+marked only the two `disposition: −1` targets with three `disposition: 1` bench PCs inside the same
+Attunement Range, and the `@tier` = 2 cap could not have masked a leak.
+**② an aura talent** (bench run 42, recorded on row **77-1**) — `Mantle of the Aspirant`
+(`edha-test-aura {affects: allies}`, the only `affects`-carrying aura in `data/authored/`): the ally
+rolled **`1d20 + 4 + 1[Mantle of the Aspirant]`** and the enemy **`1d20 + 0`**; flipping the field to
+`affects: enemies` on the Events tab inverted it exactly. Both directions, normal dispositions.
+**③ Reroll Reaction's "enemies only"** (bench run 43, driven today as a **matched control**) —
+`Bench — Chaos` (tokened, `disposition: 1`) owns `Shatter Focus`
+(`edha-reroll-react {markStatus: "omen", autoPrompt: true}`), whose prompt is gated on
+`edhaDisposHostile(owner, foe)` (`engine/42-chaos.js:210`). Two creatures were staged **identically** —
+`omen` status via `toggleStatusEffect` plus
+`flags.edha-content.markedBy.omen = {actorId: <Bench — Chaos>, talent: "Shatter Focus"}` — differing
+only in disposition, and each rolled the same ATH test:
+· **enemy** `Bench Target — Adjacent A` (**−1**) → the prompt FIRED: *"🩸 **Shatter Focus** — Bench
+Target — Adjacent A (your Omen-bearer) just rolled a test (kept total 14). React? …"* whispered to
+Bench + Gamemaster, with its Mute button.
+· **ally** `Bench — Order` (**+1**) → **no Shatter Focus prompt at all** (the only card was an
+unrelated White `Shared Conviction` cue, which is a different talent and a different rule).
+Disposition is the only variable between the two takes, so the "enemies only" gate is doing the work.
+Staging removed afterwards; the end-of-run diff is empty.
+The Fate-snare and zone-guard shapes were not driven — the row asked for 2–3 and three are proven.
+The run-31/38 detail follows.)*
+
+*(**Superseded detail (runs 31 and 38):** Pick 2–3 of: an aura talent
       (`edha-buff-aura`-family with `affects: allies`/`enemies`), Reroll Reaction against a marked
       foe, a Fate snare stepped on by an ally vs. an enemy, Reveal Facts / Investiture-of-Command's
       enemies-in-range button. Confirm normal-disposition behavior is unchanged.
@@ -4632,6 +4846,9 @@ re-queue.**)*
         true` and a hand-picked clear `ORIGIN` — budget a step for it rather than discovering it at
         the row. The ally-vs-enemy pair is otherwise ready: `Bench — Order` (disposition 1) and
         `Bench Target — Adjacent A` (−1) stand three squares apart.
+      *(Bench run 43 used exactly that pair — for the Reroll Reaction shape, which needs neither the
+      snare nor an extra token — and retired the row on it. See the retirement note above.)*)*
+
 - [x] 🤖 **Job 6a — 4 flag/status writes that used to fail SILENTLY with no GM online now warn the
       player instead.** With no GM connected (or `game.users.activeGM` unset), as a non-owning
       player: (1) unmark a ledger entry via `edhaListUnmark`'s consumer (any H3 list release/evict
@@ -4705,13 +4922,33 @@ VISIBLE are the actual behavior flips this pass made on purpose.
       zero-GM state would also end the run. **This needs Ben to disconnect `Gamemaster` for one window**, or
       a second passwordless GM-free arrangement — it is a technical blocker, not a judgment call, so it is
       never re-filed as ⚑.
-- [ ] 🤖 **R-61 — a scene mid-flight when this shipped keeps working (the legacy `detonateUsed` read
-      fallback).** Not independently testable without a stale flag already on an actor from before
-      this deploy — informational only; the gate now reads `sceneOnce.<id>` OR `detonateUsed.<id>`,
-      so an actor that already has ONLY the legacy flag set (from before this pass) still gates
-      correctly instead of getting a free extra use. If you have a save/actor from before 2026-08-10
-      with a Cascading Failure / The Unmooring already detonated this scene, confirm it still refuses
-      a second detonate.
+      ⛔ **2026-09-07, bench run 43 — RE-DERIVED rather than inherited, and the blocker is now exact.**
+      The world holds **exactly two GM users**, `Bench` (role 4) and `Gamemaster` (role 4); the other
+      four — `Amertron`, `Laustarr`, `PlayerBench`, `Spidercam` — are all **role 1 (PLAYER)**. So the
+      whisper arrays `edhaGmIds({activeOnly: true})` and `edhaGmIds()` **cannot differ during a bench
+      run**: `Bench` is a GM and is by definition connected, and `Gamemaster` is Ben, whose client has
+      been connected through runs 24–43. There is **no third, offline GM user** to act as the
+      discriminator, so the seven audience flips are unobservable from inside a bench session no matter
+      how the card is triggered — this is not a staging failure, it is an absent degree of freedom.
+      Two exits, both outside a bench run: Ben disconnects `Gamemaster` for one window, **or** the row
+      is retired under **R-86** (*"There will never be no GM connected. This isn't needed, and any
+      similar items aren't needed."*) — the same ruling that retired **Job 6a** directly below, whose
+      premise is the same one. **Filed as R-90's sibling question, R-91**; row stays 🤖 until Ben says.
+*(**R-61 — a scene mid-flight when this shipped keeps working (the legacy `detonateUsed` read
+fallback)** — ✅ **PASS, RETIRED on evidence 2026-09-07, bench run 43** (engine `0a677dade62f…`).
+**The row said it was "not independently testable without a stale flag already on an actor from before
+this deploy". It is: a staged legacy flag is byte-identical to a real one**, and the guard order makes
+the result unambiguous — `edhaSceneOnceUsed` is checked BEFORE `requireNonEmpty`
+(`engine/05-edha-watch.js:504-514`), so the same use produces two different warnings depending only on
+the flag. Driven on `Bench — Destruction`'s **The Unmooring** (`edha-detonate-list`,
+`oncePerScene: true`, item id `EMEcV5NQAiSB2Cqr`), with `sceneOnce` unset throughout:
+· **CONTROL** (no flags at all): *"Edha: The Unmooring — **no active markers to detonate** (nothing
+spent)."* — the once-per-scene guard did not trip.
+· **TEST** (ONLY `flags.edha-content.detonateUsed.EMEcV5NQAiSB2Cqr = true`, the pre-2026-08-10 shape;
+`sceneOnce` still `null`): the identical use → *"Edha: The Unmooring **is once per scene** — nothing
+spent."*
+So an actor carrying only the legacy flag still gates, and gets no free extra use. `edhaStampSceneOnce`
+writes only `sceneOnce.<id>` going forward, as designed. Flag removed afterwards.)*
 
 ---
 

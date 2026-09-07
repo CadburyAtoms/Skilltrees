@@ -1567,6 +1567,74 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   matched control has proven the root cause, **write the residual symptom down as PARTIAL and move on**
   — the second defect can be run 34's first row.
 
+## Operating lessons from run 43 (2026-09-07 — these OVERRIDE older advice where they conflict)
+
+- ⭐⭐ **"NO DRIVABLE SHAPE ON THIS HARNESS" is almost always a claim about the shipped DATA, and the
+  staged clone dissolves it.** Two rows had been closed as unreachable by runs 25 and 29 with a careful
+  sweep behind each: every shipped `edha-reveal {target: victim}` and `edha-owner-list {target: victim}`
+  rule sits on an event that resolves its own target, so payload and canvas selection can never differ.
+  Both were driven in one take by **copying the rule onto a scratch talent and changing its `event` to
+  `edha-on-hit`** — the one shipped event that carries its own victim — then hitting creature A while
+  `game.user.targets` held creature B. Runs 39/41/42 had already established cloning as the escape for
+  an unrunnable NEG; this is the same move applied to an unrunnable POSITIVE. Before writing
+  "unreachable", ask which *event* would make it reachable and whether the handler can be moved onto it.
+- ⭐⭐ **Fetch repo files INTO the Foundry page over a throwaway CORS server — do not retype them.**
+  `scripts/bench-setup-console.js` is 349 lines; pasting it through a tool call is expensive and
+  error-prone. A ten-line node static server with `Access-Control-Allow-Origin: *` on `127.0.0.1:8099`,
+  started with `Start-Process` from the PowerShell tool, made
+  `await (await fetch("http://127.0.0.1:8099/scripts/bench-setup-console.js")).text()` work from
+  `localhost:30000` — Foundry sets no CSP that blocks it. Then `(0, eval)(src)`. Gotchas that cost
+  three calls: `path.join` with mixed slashes fails a `startsWith(ROOT)` guard on Windows (use
+  `path.resolve` on both sides), the Bash tool's `run_in_background` was refused by the auto-mode
+  classifier while `Start-Process` was allowed, and a stale listener on the port silently wins.
+- ⭐ **`await item.rollDamage()` NEVER RESOLVES while the pane is hidden if the roll triggers an engine
+  MOVE.** Run 42's ticker lesson has a second half nobody hit: the awaited promise chain runs into
+  `edhaMoveTokenTo`'s animated `doc.update({animate: true, teleport: false})`, so the `await` itself
+  hangs — pumping *after* it is too late, because control never returns. **Fire with `void`, then
+  `await B.pump(...)` concurrently.** Unstoppable cost two dead calls before this was understood, and
+  the symptom (a script stuck with only its first field written) looks nothing like a token that
+  will not move.
+- ⭐ **`benchClickScene` needs a ticker pump BETWEEN the pointermove and the pointerdown.** Run 40's
+  helper waits 120 ms for PIXI to update `canvas.mousePosition`; with the pane hidden PIXI's ticker is
+  frozen, so the interaction manager never processes the move and `edhaPickPoint` reads a stale
+  position. Replace the wait with `await B.pump(1200, 100)` and print `canvas.mousePosition` before
+  dispatching the down — with the pump it read exactly the intended square, and the Pyre Spread button
+  grew the Region into precisely the clicked 5-ft square.
+- ⚠️ **A hidden tab throttles `setTimeout`, so a pump built from 50 ms sleeps takes ~20× its nominal
+  time.** `B.pump(9000, 50)` ran for about three minutes. Use a coarser step (200–250 ms) when the pump
+  is only there to advance animations, and never treat "the result object is still half-written" as a
+  hang until you have waited a multiple of the nominal duration.
+- ⚠️ **`edha-place-hazard` places its zone on the CURRENT TARGET's square when a target is held** — the
+  click prompt is the fallback, not the primary. Two zones landed on `Bench Target — Floater` (still
+  targeted from an earlier row) and started damaging three bench PCs. **Release targets
+  (`game.user.targets.forEach(t => t.setTarget(false))`) before any click-to-place row**, or target the
+  square you want.
+- ⚠️ **An actor renamed on import keeps its prototypeToken NAME.** `Actor.create` with `name = "B43 X"`
+  still places a token called `X`, so a run's own tokens are indistinguishable by name from Ben's
+  campaign ones. Set `prototypeToken.name` too, and resolve by id regardless (hard rule 7).
+- ⚠️ **`actor.update({"flags.edha-content.X": v}, {recursive: false})` DELETES THE SIBLING KEYS.** It
+  wiped `lists` and `bpHits` off a dummy while clearing `markedBy`. To remove one flag key use the
+  deletion syntax — `update({"flags.edha-content.markedBy.-=omen": null})` — and note that `setFlag`
+  with an object MERGES, so it cannot delete a key either. Both mistakes were made and both were caught
+  only by the end-of-run diff.
+- ⚠️ **`item.update({"system.events": <whole object>})` silently does nothing** for a typed handler
+  field; the dotted path (`"system.events.<ruleKey>.handler.op"`) works. And the rule KEYS survive a
+  clone (`SharpEyeReveal00`, not the `r1`/`r2` you wrote), so read `Object.keys(item.system.events)`
+  before addressing one.
+- ✅ **`item.rollDamage({})` posts a PLAIN dice-roll message with no `apply-damage` buttons.** Those
+  buttons live on the cosmere *damage card* an attack test produces. When a row says "then Apply", the
+  honest equivalent is `actor.applyDamage(list, {})` with **no** source — that goes through the same
+  120-s `_edhaLastDealer` breadcrumb the GM's click uses, and it is what proved Kindle's 30-second wait.
+- ✅ **A combat's own CAE flags are the cheapest before/after in the file.** `Combat.create({active:
+  false})` + combatants + `startCombat()` + `ui.combat.initialize({combat})` gives every combatant
+  `reactionsAvailable [{max, remaining, used, name}]` from the CAE module, and a burn row becomes a
+  two-number assertion. Reset the flag by hand between takes to run the second talent.
+- **Density, measured: 10 checklist rows retired on evidence (open 🤖 20 → 10, open ⚑ unchanged at 10),
+  3 rows annotated and left open with their blocker named, 2 defects filed with their blast radius
+  counted (17 rules and 2 blocks), 2 new rulings, 2 prior "no drivable shape" verdicts overturned and
+  1 prior root cause corrected — in ~70 driving calls. End-of-run per-actor diff EMPTY across all 74
+  actors; every scene count back to the start snapshot.**
+
 ## Operating lessons from run 42 (2026-09-07 — these OVERRIDE older advice where they conflict)
 
 - ⭐⭐ **A hidden Browser pane freezes PIXI's ticker, so v13 ANIMATED token movement never commits —

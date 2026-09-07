@@ -2832,3 +2832,76 @@ dashboard rebuilt and committed.
 `EDHA_RULINGS.md` + `node scripts/pm-state.js --dashboard-dir` showing R-56's default +
 `node scripts/gates.js`. TOOLING-only (dashboard build tooling only; no engine or pack change,
 nothing owed to Foundry). Found by item 85's worker.
+
+---
+
+## 88. [ ] Every `edha-triggered-effect` card is PUBLIC by construction — an adversary's kill-heal and its GM-only instruction leak to the table
+
+**Why:** measured at **bench run 43 (2026-09-07)** on the hash-verified `0a677dade62f…` engine, and
+re-measured against run 16's guess, which was wrong. A fresh `B43 Cragdrake Alpha` (controlled, so
+`edhaResolveKiller` could resolve it) took the `character`-typed `Bench Target — Floater` from 40 HP to
+0. The heal is correct — Alpha **30 → 33** — but the card posted with **`whisper: []`**, i.e. publicly:
+
+> ⚡ **Predator's Due** (B43 Cragdrake Alpha) — B43 Cragdrake Alpha regains **3** health. *(Predator's
+> Due: +2d8 health ([Tier][Die]: count = tier 2, die = boss rank 3, ruling 122) and 1 Focus on the kill
+> (focus is a GM add).)* 2d8 2 1 3 3
+
+So the players see the boss's remaining-HP arithmetic **and** a GM bookkeeping instruction addressed to
+Ben. Run 16 filed this as *"likely `edhaWhisperIds()` returning empty for an ownerless adversary"*.
+**That is not the cause:** `edhaWhisperIds` (`engine/11-white-coordination.js:150`) returns active GMs
+plus active owners and would have returned `[Bench, Gamemaster]`. The real cause is one line up the
+stack — **`edhaRollCard` (`engine/33-triggered-effect-resolution.js:143`) calls
+`ChatMessage.create({speaker, rolls, sound, content})` with no `whisper` key at all**, and so do all
+**seven** of its call sites in that file plus the non-rolled `ChatMessage.create` fallbacks beside them.
+Public is right for a PC's own heal or Temp HP; it is wrong for an adversary.
+
+**Blast radius, counted in the deployed adversaries pack: 17 adversary `edha-triggered-effect` rules.**
+The three that carry a literal GM instruction in the card text are the `Predator's Due` blocks —
+**Cragdrake Alpha**, **The Cull-Alpha**, **Dirgehound Pack**; the three `Afterburn` afflictions
+(**The False Spring**, **Hazewyrm Elder**, **Hazewyrm Adult**) post through the same public
+`edhaRollCard`. Player-owned actors are unaffected either way.
+
+**What to do:** this needs **R-90** answered first — it is a design call about audience, not a bug with
+one obvious fix. The recommended default there is *whisper `edhaRollCard`'s message (and its
+non-rolled siblings) to `edhaWhisperIds(owner)` whenever the owner has no player OWNER — i.e. an
+adversary — and leave a player-owned actor's card public*, which is one helper call at each poster and
+matches what `edhaPostCueCard` already does for adversary cues. ENGINE-ONLY (F5, no rebuild). Ship a
+pinned regression case in `tests/` that asserts the whisper list is non-empty for an ownerless
+adversary owner and empty for a player-owned one.
+
+**Done when:** R-90 is answered and implemented that way; the pin fails on the current code and passes
+after; `node scripts/gates.js` green; and the checklist's **Predator's Due on-defeat** row is queued for
+the next bench run (its heal half is already proven; only the audience is open).
+
+**PM:** lane E · model sonnet · size S · deps R-90.
+
+---
+
+## 89. [ ] `Unbreakable Line` ships no `use` rule on either block — the White DC test its own card promises does nothing
+
+**Why:** behaviour-tested at **bench run 19**, root-confirmed against the DEPLOYED pack at **bench run
+43 (2026-09-07)**. Both blocks' `Unbreakable Line` — **Crownox Ring** and **The Reckoning** — carry
+exactly **one** rule, `edha-apply-watch → edha-gm-cue {rangeFt: 5}`. There is no `use` rule at all, so
+using the item posts an **empty chat card** (`content: ""`) with the owner as speaker: no test, no
+contest core, no roll. The cue half works and is retired (run 19; R-52 (c)(i)'s half-square slack
+measured at run 39) — the ability's *own* clause, *"the lead may test White (DC = half the damage) via
+the contest core"*, has never existed.
+
+**A second inconsistency in the same read, for the same fix:** `The Reckoning`'s
+`system.activation.type` is **`"none"`** while `Crownox Ring`'s is **`utility`**, for the same named
+ability — so on one of the two blocks the item cannot even be clicked to start the test by hand. The
+descriptions differ too (`Activation: * (3 Focus)` vs `Activation: 8`), which is where the drift
+started.
+
+**What to do:** author the missing rule on both blocks — the shape is the existing contest-core
+`edha-def-test` used by every other "test X vs DC" adversary ability, with the DC coming from the drop
+amount the cue already reports — and align the two `activation` blocks. This is **authored data**
+(`data/adversaries.json` + the authored overlay), so it is **REBUILD + ⟳ Sync Adversaries**, not
+engine-only. Cross-check the wording against `EDHA_RULINGS.md` R-52 before writing the DC.
+
+**Done when:** both blocks carry the `use` rule; using the item on either posts a real contest-core
+test instead of an empty card; the two `activation.type` values agree; `node scripts/gates.js` green
+(including `lint-refs.js` pass 5); and the checklist's **Unbreakable Line ally-drops cue** row's (b)
+half is queued for the next bench run with a REBUILD note.
+
+**PM:** lane D · model sonnet · size S · deps none.
