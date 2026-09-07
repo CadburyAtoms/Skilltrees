@@ -2905,3 +2905,39 @@ test instead of an empty card; the two `activation.type` values agree; `node scr
 half is queued for the next bench run with a REBUILD note.
 
 **PM:** lane D · model sonnet · size S · deps none.
+
+---
+
+## 90. [ ] Retire the five harness-only checklist rows (I10b2-1..4 and 77-1's unset-side clause): no sideless token can exist on this build
+
+**Why:** bench runs 38, 42 and 43 each independently re-derived the same fact on Ben's build
+(Foundry core 13.351, cosmere-rpg 2.1.0): creating a token with `disposition: null`, or updating
+one to `null` / `undefined` / `NaN`, reads back **−1 (HOSTILE)** — so a "sideless" token cannot be
+staged, and an actor with no token is in no range sweep either (it discriminates nothing, so it is
+not a usable fallback probe). The five checklist rows that ask a bench run to *observe* the
+fail-closed handling of a sideless creature therefore describe an observable that cannot occur
+live, on this build, ever. The behaviour they were meant to protect is not unverified — it is
+**pinned in the harness**: `tests/disposition-failclosed.test.js` holds 23 cases covering
+`edhaDisposHostile`, `edhaSameDisposition`, `edhaSideSame`/`edhaSideHostile`, `edhaAdjacentAllies`,
+`edhaEnemyTokensInCircle`, `edhaSovTargets`, `edhaPickCandidates`, `edhaSweepEmptyNote`, the
+movement-window card, `edhaPickProhibition`, and the cleanse beacon list — i.e. every one of the
+five rows' underlying sites, at the pure-function level a bench run cannot get under. The PM
+(2026-09-07) accepted bench run 43's recommendation, offered in `docs/BENCH_NEXT_RUN.md` §3, to
+retire the five as harness-only rather than have a fourth bench run re-derive the same blocker.
+
+**What to do:** in `EDHA_FOUNDRY_TEST_CHECKLIST.md`, retire **I10b2-1**, **I10b2-2**, **I10b2-3**,
+**I10b2-4** (flip each `- [ ]` to `- [x]`) and **77-1** (a single bare-bullet row whose aura-halves
+already PASSED live at bench run 42 — the unset-side clause was its only open part, so the whole
+row retires). Each gets one appended line naming the harness proof and the case count, keeping the
+row's existing ⛔ evidence trail intact. In `docs/BENCH_NEXT_RUN.md`, mark done the one paragraph
+in §3 that recommends this retirement (one line, do not rewrite the file). Rebuild the dashboard.
+
+**Done when:** all five rows carry the retirement note; the dashboard's Bench open 🤖 count drops
+by exactly the number of *checkbox* rows retired (77-1 is a bare bullet with no `- [ ]`, so the
+parser was never counting it — `scripts/build-dashboard.js`'s bench parser only turns `- [ ]` lines
+into rows, per its own 2026-07-26d gate comment; retiring it is a documentation fix, not a count
+change); `node scripts/gates.js` green.
+
+**PM:** lane R · model sonnet · size S · deps none · verify: `grep` the five rows for the
+retirement note + `node scripts/build-dashboard.js` (Bench tab count) + `node scripts/gates.js`.
+DOCS-ONLY.
