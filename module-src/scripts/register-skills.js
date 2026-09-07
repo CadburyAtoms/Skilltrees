@@ -43,15 +43,16 @@
  *     EDHA_CURRENCY_SEED, run from module load + init + setup + ready (see the docblock above:
  *     the leyline skills must land before the Actor data model schema is first built).
  *   • Weakened + the TEST-MODIFIER RIDER — edhaNumOr · edhaD20RollActor · edhaWeakenedPreRoll ·
- *     edhaFoldDieMath · edhaTestCtxMatch · edhaTidyFormula · edhaStatusCsvMatch ·
- *     edhaTestRiderApply. The pre-roll injector every (dis)advantage talent ends up in.
+ *     edhaFoldDieMath · edhaTestCtxMatch · edhaTidyFormula · edhaUndoFlavorPropagation ·
+ *     edhaStatusCsvMatch · edhaTestRiderApply. The pre-roll injector every (dis)advantage talent
+ *     ends up in.
  *   • the aggro ledger / pack advantage — edhaAggroRecord · edhaPackAdvantageApply.
  *   • generic timed-status EXPIRY — edhaTurnSeq · edhaCombatantTurnIndex · edhaNextTurnCoord ·
  *     edhaIsTimedStatus · edhaTimedStampPlan · edhaExpireTimedStatuses. One expiry pass for
  *     every "until the end of its next turn" status in the whole atlas.
  *   • the events-rule readers every handler starts from — edhaEventRules · edhaRuleOf.
  *   • passive damage riders — edhaRiderMatches · edhaHasCondition · edhaRiderParts ·
- *     edhaRiderBonus · edhaWrapRollDamage.
+ *     edhaFoldRiderFormula · edhaRiderBonus · edhaWrapRollDamage.
  *   • kindle light — edhaLightSpecFor · edhaLightSource · edhaLightTokensOf ·
  *     edhaApplyKindleLight · edhaClearKindleLights.
  *   • ISOLATED marker sync — edhaIsIsolated · edhaSyncIsolatedMarkers(+Soon) and its seven
@@ -582,6 +583,78 @@ function edhaTidyFormula(s) {
   }
   return res.replace(/\s{2,}/g, " ").trim();
 }
+/* PURE (pinned in tests/): undo the flavor copies core PROPAGATED into a parenthetical's own inner
+ * roll — fix pass 10 (TODO 78), the repair fix pass 9 could not reach from the display layer.
+ *
+ * WHY THE DISPLAY TIDY ABOVE IS NOT ENOUGH (bench run 41 measured both halves in one session).
+ * A Roll carries TWO formula strings and they diverge here:
+ *   • `roll._formula` — the string the roll was BUILT from, stored in `toJSON()` and rebuilt by
+ *     `Roll.fromData`'s `new this(data.formula, …)` (client/dice/roll.mjs:40, :1055). Core's own
+ *     chat template prints THIS one (roll.mjs:892), so a core-rendered card reads single-labelled.
+ *   • `roll.formula` — the GETTER, recompiled from the terms on every read
+ *     (`Roll.getFormula`, roll.mjs:173 → :563). The cosmere damage card prints THIS one
+ *     (`enrichDamage`, `partsNormal.push(rollNormal.formula)`).
+ * Between them sits `ParentheticalTerm`: `_evaluateAsync` calls `roll.propagateFlavor(this.flavor)`,
+ * which stamps the parenthetical's flavor onto every inner term that has none
+ * (parenthetical.mjs:105 → roll.mjs:496); the constructor then re-derives `this.term = roll.formula`
+ * whenever a roll is supplied (parenthetical.mjs:19), which is exactly what `_fromData` does on the
+ * chat round-trip. So the stored data is clean, the REHYDRATED term is not, and `(1d6)[Ambush Bite]`
+ * comes back as `(1d6[Ambush Bite])[Ambush Bite]`.
+ * The damage card is also rendered AFTER the `renderChatMessageHTML` hook — the system's `getHTML`
+ * calls `super.getHTML()` (which fires the hook) and only then `enrichCardContent` REPLACES
+ * `.message-content` — so the display tidy above runs on a node the system is about to throw away.
+ * A second render registration cannot fix that; the repair has to land before the message is stored.
+ *
+ * So: strip the propagated copies from the SERIALIZED roll in `preCreateChatMessage`, and the
+ * rehydrated `term` re-derives as the engine wrote it. `propagateFlavor` uses `??=`, so a term that
+ * carried its OWN flavor is never a propagated copy — only an exact match on the parenthetical's
+ * flavor is removed, and a differently-labelled inner term is left alone. Display-only: flavor is
+ * not read by any total. The PARENTHESES stay in the roll (the system's graze clone keeps only
+ * DiceTerm/OperatorTerm/PoolTerm, so a bare rider die would start riding grazes), so a rider still
+ * reads `(1d6)[Ambush Bite]` — one label, outside, exactly the string the engine assembled.
+ * Family-wide: every `edha-damage-rider` with a bonusFormula (Ambush Bite, Spearing Beak, Prognosis,
+ * Kindle, Momentum's Edge, Scalpel-Strike) goes through `edhaRiderBonus`'s `(f)[name]`.
+ * Takes PARSED roll data (one entry of a ChatMessage's `rolls`), mutates it in place, returns
+ * whether anything changed. Reversion: delete the strip and the round-trip pin doubles again. */
+function edhaUndoFlavorPropagation(node) {
+  let changed = false;
+  const visit = (n) => {
+    if (Array.isArray(n)) { for (const v of n) visit(v); return; }
+    if (!n || typeof n !== "object") return;
+    for (const v of Object.values(n)) if (v && typeof v === "object") visit(v);   // post-order: a nested parenthetical is cleaned before its parent re-derives
+    if (n.class !== "ParentheticalTerm") return;
+    const flavor = n.options?.flavor;
+    if (!flavor || !n.roll || typeof n.roll !== "object") return;
+    const tag = `[${flavor}]`;
+    for (const t of (Array.isArray(n.roll.terms) ? n.roll.terms : [])) {
+      if (t && typeof t === "object" && t.options && t.options.flavor === flavor) { delete t.options.flavor; changed = true; }
+    }
+    // The two cached strings, for a roll that was already round-tripped once before being re-saved.
+    if (typeof n.roll.formula === "string" && n.roll.formula.includes(tag)) { n.roll.formula = n.roll.formula.split(tag).join(""); changed = true; }
+    if (typeof n.term === "string" && n.term.includes(tag)) { n.term = n.term.split(tag).join(""); changed = true; }
+  };
+  visit(node);
+  return changed;
+}
+// THE binding. Fires on the creating client only, which is the one that persists the message, so
+// every later render on every client recomputes a single-labelled formula. Messages already in the
+// log keep their doubled data — the display tidy above is what still repairs those.
+Hooks.on("preCreateChatMessage", (doc) => {
+  try {
+    const src = doc?._source?.rolls;
+    if (!Array.isArray(src) || !src.length) return;
+    let changed = false;
+    const fixed = src.map((entry) => {
+      try {
+        const obj = typeof entry === "string" ? JSON.parse(entry) : JSON.parse(JSON.stringify(entry));
+        if (!edhaUndoFlavorPropagation(obj)) return entry;
+        changed = true;
+        return JSON.stringify(obj);
+      } catch (e) { return entry; }   // an unparsable roll entry is left exactly as it came in
+    });
+    if (changed) doc.updateSource({ rolls: fixed });
+  } catch (e) { /* never block a chat message on a formula tidy */ }
+});
 /* PURE (pinned in tests/): join ONE rider term onto a formula (item 66). A rider whose formula starts
  * with a minus is written as an EXPLICIT subtraction — `base - 1d6` — because `base + -1d6` is
  * parser-hostile; anything else joins as `base + term`. `label` (the rider's source) is appended as
