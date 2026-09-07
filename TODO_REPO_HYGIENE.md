@@ -2716,7 +2716,12 @@ depends on this item's outcome (which default the explicit per-block override si
 
 ---
 
-## 84. [ ] Weapon-borne `edha-on-hit` rules never dispatch — `edhaRulesForEvent` still gates on `edhaIsTalent`
+## 84. [x] Weapon-borne `edha-on-hit` rules never dispatch — `edhaRulesForEvent` still gates on `edhaIsTalent`
+<!-- DONE 2026-09-07 (PR #PRNUM) — predicate swapped to `edhaRuleBearer`; mutation-pinned in
+     tests/engine-helpers.test.js (1019/2 fail → 1021/0 pass). ENGINE-ONLY, F5. The other three
+     callers (combat-timing, draw-mana, ritual-paid) are widened by the same swap and pinned; the
+     `preUseItem` veto keeps `edhaIsTalent` on purpose. 🤖 34c cue half queued for bench run 43. -->
+
 
 **Why:** measured at **bench run 42 (2026-09-07)**, on the hash-verified `609c7e45…` engine with the
 34a/34c pack rebuild live. `edhaRulesForEvent` (`module-src/scripts/engine/04-black-ritual.js:206`)
