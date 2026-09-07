@@ -1,25 +1,11 @@
 {
   "pm": {
-    "status": "awake",
-    "note": "Fable PM (Ben-started, 16:56 ET). PM-R14: caps lifted. Forty-eight PRs merged tonight. Latest: bench run 41 (25 rows retired, 23:21), item 77 (six enemy/ally filters that read a negated helper as the opposite predicate now name what they mean; 23:35). The engine was pushed live at 23:35 (main 1cf0fc7) - F5 your Gamemaster client. Running: fix pass 10 (bench 41's one FAIL: Ambush Bite's doubled label - the tidy runs before the system re-renders the card). The queue after it: 70 (blocked on your R-83), 62 (needs a reframe), 9 (blocked on map rulings) - the repo hygiene backlog is otherwise EMPTY. STILL OWED: one deploy-to-foundry.bat run (Foundry closed) for the pack REBUILDS - 34a, 57, 58, 65+67, 59, 63, 55, 56; bench run 42 drives those rows plus 10 batch 2's, 77's and fix pass 10's afterwards. R-83 still needs your answer. Defaults applied, vetoable: R-18, R-80, R-81, R-82, R-84, R-85, PM-R15.",
-    "waitingOn": "ONE deploy-to-foundry.bat run (Foundry closed) for the pack rebuilds; R-83 (needs your answer - it moves HP); R-18, R-80, R-81, R-82, R-84, R-85, PM-R15 (defaults apply if silent)",
-    "nextWakeAt": null,
+    "status": "waiting",
+    "note": "Fable PM (Ben-started, 16:56 ET). PM-R14: caps lifted. Fifty PRs merged tonight; the last was fix pass 10 (bench 41's one FAIL: the doubled rider label lived in the roll's serialized data, so the repair moved to message creation; Prognosis's rider is folded too; 23:50). The engine was pushed live at 23:50 (main 9f3f529) - every engine-only merge of the night is at the table; F5 your Gamemaster client. NOTHING is running and nothing is dispatchable: the hygiene backlog is down to 70 (blocked on your R-83), 62 (its bench row measures first), 9 (blocked on map rulings). The loop wakes hourly for your deploy note. STILL OWED: one deploy-to-foundry.bat run (Foundry closed) for the pack REBUILDS - 34a, 57, 58, 65+67, 59, 63, 55, 56; bench run 42 then drives those rows plus tonight's new engine rows (10 batch 2, 77, fix pass 10, the map picker). R-83 still needs your answer. Defaults applied, vetoable: R-18, R-80, R-81, R-82, R-84, R-85, PM-R15.",
+    "waitingOn": "ONE deploy-to-foundry.bat run (Foundry closed) for the pack rebuilds - tell me in chat or here when it ran; R-83 (needs your answer - it moves HP); R-18, R-80, R-81, R-82, R-84, R-85, PM-R15 (defaults apply if silent)",
+    "nextWakeAt": "2026-09-07T04:51:00Z",
     "session": "2026-09-06 16:56 ET — Fable PM (hand-started)"
   },
-  "workers": [
-    {
-      "item": "78",
-      "title": "Fix pass 10 — Ambush Bite's doubled rider label survives fix pass 9: the tidy runs on a detached element before the system re-renders the damage section; fix at creation or the system's own re-render, never a second render hook",
-      "model": "opus",
-      "size": "S",
-      "lane": "B",
-      "branch": "pm/fix-pass-10",
-      "startedAt": "2026-09-07T03:21:00Z",
-      "agent": "Fix pass 10",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; test-pass-fixes; ENGINE-ONLY (F5)"
-    }
-  ],
+  "workers": [],
   "usage": null
 }
