@@ -1487,7 +1487,7 @@ republished at its existing URL.
 
 ---
 
-## 44. [x] `Ask:` lines on open rulings whose heading isn't a self-contained question (2026-09-06, PR #PENDING)
+## 44. [x] `Ask:` lines on open rulings whose heading isn't a self-contained question (2026-09-06, PR #258)
 
 > **DONE 2026-09-06.** Item 43's parser had no `Ask:` fallback at all — the card's question was
 > the heading, full stop — so the format was settled HERE: an `Ask:` paragraph (one line, its own
