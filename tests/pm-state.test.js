@@ -309,7 +309,7 @@ test("pm-state: the mobile snapshot's rows are exactly the committed dashboard's
 
 // ---- item 43: the "Needs you" view's open-ruling cards (2026-09-06) ----
 
-test("build-dashboard: parseOpenRulings marks R-83 open and R-18/R-41/R-42/R-48/R-54/R-80/R-81/R-82/R-84/R-85 ANSWERED-closed, against the real EDHA_RULINGS.md", () => {
+test("build-dashboard: parseOpenRulings marks R-56/R-83 open and R-18/R-41/R-42/R-48/R-54/R-80/R-81/R-82/R-84/R-85 ANSWERED-closed, against the real EDHA_RULINGS.md", () => {
   // item 79 (2026-09-07): Ben's dashboard close-out ANSWERED R-18/R-82 and accepted the applied
   // defaults on R-80/R-81/R-84/R-85 (moved to §K) — R-83 is now the sole ruling in the real doc
   // still genuinely open (WAITING for Ben's examples-then-decide, no ANSWERED/VETOED/SETTLED marker
@@ -318,6 +318,10 @@ test("build-dashboard: parseOpenRulings marks R-83 open and R-18/R-41/R-42/R-48/
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);
   assert.ok(ids.includes("R-83"), "R-83 is still open in the real doc after item 79's close-out (WAITING — no ANSWERED/VETOED/SETTLED marker)");
+  // item 85: R-56 was ANSWERED 2026-09-06 and shipped, then Ben REOPENED it 2026-09-07 against its
+  // own answer (item 79's close-out). The REOPENED marker comes AFTER the ANSWERED one in document
+  // order, so it must win and the ruling must read as open again — this is the item's whole point.
+  assert.ok(ids.includes("R-56"), "R-56 was REOPENED 2026-09-07 after its own 2026-09-06 ANSWERED marker and must show as open again (last-marker-wins)");
   for (const closed of ["R-18", "R-41", "R-42", "R-48", "R-54", "R-80", "R-81", "R-82", "R-84", "R-85"]) {
     assert.ok(!ids.includes(closed), `${closed} is ANSWERED/moved-to-§K and must not show up as an open ruling`);
   }
@@ -327,6 +331,12 @@ test("build-dashboard: parseOpenRulings marks R-83 open and R-18/R-41/R-42/R-48/
   assert.strictEqual(r83.applied, false, `R-83 is not applied ("not applied" in lower case must not count)`);
   assert.ok(r83.ask.length > 5 && !/^\*\*/.test(r83.ask), "the ask is the bare question, not the raw markdown");
   assert.ok(/^Should `edha-regen`'s turn-end heal/.test(r83.ask) && /\(a\)/.test(r83.ask) && /\(b\)/.test(r83.ask), `R-83's ask comes from its Ask: line and names (a)/(b): ${r83.ask}`);
+  // R-56 has no `Ask:` line — its heading is already a self-contained question, so item 44's
+  // fallback (heading stays the ask) applies, exactly like R-18/R-80/R-84/R-85 before it closed.
+  const r56 = open.find((r) => r.id === "R-56");
+  assert.strictEqual(r56.section, "H. Map & character creation");
+  assert.strictEqual(r56.applied, false);
+  assert.strictEqual(r56.ask, "Should adversaries use the Edha Senses Range table too, or keep the cosmere ladder?", "R-56 has no Ask: line, so the self-contained heading question is the ask (item 44's fallback)");
   for (const r of open) assert.strictEqual(typeof r.blocks, "number", `${r.id}.blocks is not a number in the raw parse (mobileSnapshot fills it in)`);
   // item 76: every open ruling's card carries a real default (the bold-inline form used to capture ""),
   // read through the inner **…** pairs and stripped of the markers.
@@ -392,6 +402,32 @@ test("build-dashboard: parseOpenRulings — a §B stub pointing at §K does not 
   const r106 = open.find((r) => r.id === "R-106");
   assert.strictEqual(r106.default, "(a) yes — APPLIED in #999 (stub in §I).");
   assert.strictEqual(r106.applied, true, "a bold **APPLIED** note in §B marks the entry applied");
+});
+
+// item 85: a ruling's OPEN/CLOSED status is decided by its LAST status marker in document order,
+// not by "does the body carry any closing marker at all" — R-56 was ANSWERED then REOPENED
+// against its own answer, and the old "any marker anywhere" rule read the older ANSWERED and
+// reported it closed. R-200/R-201 below pin both directions of the reversal; R-202 pins the
+// unrelated no-marker case stays open exactly as before.
+const REOPEN_FIXTURE = `## C. Mechanics — what a rule should do
+
+**R-200. Should the answered-then-reopened case count as open again?** Context prose about the rule.
+> **ANSWERED 2026-09-06: yes, shipped as described.**
+> **REOPENED 2026-09-07 (Ben): actually, revisit this — I want the opposite.**
+
+**R-201. Should the reopened-then-reanswered case count as closed again?** Context prose about the rule.
+> **REOPENED 2026-09-06 (Ben): revisit this one.**
+> **ANSWERED 2026-09-07: settled again, for real this time.**
+
+**R-202. Should a ruling with no status marker at all stay open?** Context prose, no ANSWERED, VETOED, SETTLED, or REOPENED marker anywhere in this body.
+`;
+
+test("build-dashboard: parseOpenRulings — REOPENED is last-marker-wins: ANSWERED-then-REOPENED opens, REOPENED-then-ANSWERED re-closes, no marker stays open", () => {
+  const open = dashboard.parseOpenRulings(REOPEN_FIXTURE);
+  const ids = open.map((r) => r.id);
+  assert.ok(ids.includes("R-200"), "R-200: the REOPENED marker comes after ANSWERED, so it must win and the ruling must read open");
+  assert.ok(!ids.includes("R-201"), "R-201: the ANSWERED marker comes after REOPENED, so it must win and the ruling must read closed again");
+  assert.ok(ids.includes("R-202"), "R-202: no status marker at all is the pre-existing open case and must be unaffected");
 });
 
 test("build-dashboard: countCitations counts citing rows (not raw text occurrences) and never confuses a migration code like 2bR-18 with ruling R-18", () => {

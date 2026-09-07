@@ -136,6 +136,25 @@ test("recreated bundle: inline matches directly across every opt flag", () => {
   }
 });
 
+// item 85, 2026-09-07: a code span holding a literal `*` (an art-wishlist heading's
+// `` `name-portrait.*` ``) used to survive the backtick->`<code>` swap as a bare, unescaped `*`
+// sitting in the string, so the very next `**bold**` regex pass paired it with an unrelated `*`
+// elsewhere instead of leaving it alone — on the real Corvaine Raider / Mistheron art entries this
+// bolded the wrong span and left a stray `**`/`*` visible in the rendered HTML. Reduced to the
+// smallest shape that reproduces it: a bold-wrapped heading whose two code spans each carry one
+// `*`, followed by prose that itself uses `**bold**`.
+test("inline: a `*` inside a code span does not pair across the span with an unrelated **bold** later in the string", () => {
+  const s = "**Creature — `name-portrait.*` / `name-token.*`** Some prose with a **real bold** span after it.";
+  const out = md.inline(s, { strike: true, flag: true });
+  assert.strictEqual(
+    out,
+    '<strong>Creature — <code>name-portrait.*</code> / <code>name-token.*</code></strong> Some prose with a <strong>real bold</strong> span after it.',
+  );
+  // Would fail before the fix: the heading's closing `**` paired with "real bold"'s OPENING `**`,
+  // wrongly bolding the prose between them and leaving "real bold**" with a stray trailing `**`.
+  assert.ok(!/\*\*/.test(out.replace(/<[^>]*>/g, "")), "no literal ** should survive outside a tag");
+});
+
 test("recreated bundle: makeLinkifier's returned closure resolves its esc() sibling", () => {
   const places = [{ name: "Goldenport", px: [1, 2] }, { name: "Thalendor", px: [3, 4] }];
   const html = '<p>Traders from Goldenport & Thalendor met.</p>';

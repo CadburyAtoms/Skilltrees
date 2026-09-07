@@ -2757,3 +2757,45 @@ checklist's **34c weapon-borne riders survive** row's cue half is queued for the
 rider half is already retired, and the row's note names Surecat's cue as the take).
 
 **PM:** lane E · model sonnet · size S · deps none (engine-only — the authored data is already right).
+
+---
+
+## 85. [x] The phone board's "Needs you" card cannot resurface a REOPENED ruling; plus the Art tab's stray-`*` bold garble (2026-09-07, PR #277)
+
+**Why:** `parseOpenRulings` in `scripts/build-dashboard.js` decided a ruling was CLOSED by scanning
+its whole body for any `**ANSWERED …**` / `**VETOED …**` / `**SETTLED …**` bold marker, anywhere in
+the text. R-56 was ANSWERED 2026-09-06 and shipped, then **REOPENED 2026-09-07** (a later `>
+**REOPENED 2026-09-07 (Ben, dashboard), verbatim: …**` block, WAITING on Ben) — and because the
+older ANSWERED marker was still present earlier in the body, the ruling kept reading as closed, so
+it never reached the phone's "Needs you" cards or the `openRulings` list in the dash index. Ben is
+waiting to be asked about it and the phone cannot ask him. Separately, the Art tab's
+`### Creature — \`name-portrait.*\` / \`name-token.*\`` headings carry a literal `*` inside backtick
+code spans; when the entry's prose later uses `**bold**`, the shared markdown renderer's bold pass
+mis-paired that stray asterisk with the real bold markers, garbling the Corvaine Raider and
+Mistheron entries.
+
+**What to do:**
+- `parseOpenRulings()` (`scripts/build-dashboard.js`): make the LAST status marker in a ruling's
+  body win, in document order — a `**REOPENED …**` marker after an ANSWERED/VETOED/SETTLED marker
+  reopens the ruling, and a later ANSWERED/VETOED/SETTLED after THAT closes it again. Every other
+  ruling's open/closed status is unaffected (measured against the real `EDHA_RULINGS.md`: the
+  open-ruling id list goes from `["R-83","R-88","R-89"]` before the fix to
+  `["R-56","R-83","R-88","R-89"]` after — R-56 is the only addition). R-56 carries no `Ask:` line,
+  so its self-contained heading question stays the ask per item 44's fallback convention
+  (`EDHA_RULINGS.md` is out of scope for this item — reported, not edited).
+- `scripts/lib/md.js`'s shared `inline()`: protect backtick code-span content from the
+  `**bold**`/`*italic*`/`~~strike~~` passes (extract to a placeholder before those regexes run,
+  restore after), so a literal `*` inside a code span can never pair across the span with an
+  unrelated bold/italic marker elsewhere in the same string.
+- Pin both fixes with tests (real-doc + synthetic-fixture for the rulings fix; one synthetic case
+  for the code-span fix) and confirm the Art tab renders the two affected entries clean in the
+  rebuilt `EDHA_DASHBOARD.html`.
+
+**Done when:** the pinned tests pass and fail under reversion (mutation-verified); the before/after
+open-ruling id lists differ only by R-56; the Corvaine Raider and Mistheron Art tab entries render
+without a stray `**`/`*`; `node scripts/gates.js` green; dashboard rebuilt and committed.
+
+**PM:** lane R · model sonnet · size S · deps none · verify: `node -e` before/after against the real
+`EDHA_RULINGS.md` + the rebuilt `EDHA_DASHBOARD.html`'s Art tab + `node scripts/gates.js`.
+TOOLING-only (both fixes live in the dashboard build tooling; no engine or pack change, nothing owed
+to Foundry).

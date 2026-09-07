@@ -246,7 +246,7 @@
 <a class="t3" href="#answers-are-bens-own-canon-go-with-defaults-authorized-gate-b">answers are Ben's own canon; &quot;go with defaults&quot; authorized gate B)</a>
 <a class="t2" href="#10-provisional-items-awaiting-ben">10. Provisional items awaiting Ben (⚑)</a></nav>
   <main id="doc"><h1 id="edha-campaign-canon-single-source-of-truth" data-l="0:1">Edha Campaign Canon — Single Source of Truth<a class="hlink" href="#edha-campaign-canon-single-source-of-truth">#</a></h1>
-<p data-l="2:8"><strong>Established 2026-07-12 from Ben's rulings, extended 2026-07-13 with the broken-cycle / Fetch-timeline batch</strong> (all recorded in §9). This document <strong>supersedes</strong> the Campaign Baseline Canon PDF (<code>source-materials/legacy-uploads/Campaign_Baseline_Canon.txt</code>) and the ten WorldAnvil article exports (<code>source-materials/legacy-uploads/<em>.txt</code>) — <strong>WorldAnvil is retired</strong>; this repo is now the only home for campaign lore. The full old-vs-new reasoning lives in <code>EDHA_LORE_CANON_DIFF.md</code>; read that for </em>why<em>, read this for </em>what is true now*.</p>
+<p data-l="2:8"><strong>Established 2026-07-12 from Ben's rulings, extended 2026-07-13 with the broken-cycle / Fetch-timeline batch</strong> (all recorded in §9). This document <strong>supersedes</strong> the Campaign Baseline Canon PDF (<code>source-materials/legacy-uploads/Campaign_Baseline_Canon.txt</code>) and the ten WorldAnvil article exports (<code>source-materials/legacy-uploads/*.txt</code>) — <strong>WorldAnvil is retired</strong>; this repo is now the only home for campaign lore. The full old-vs-new reasoning lives in <code>EDHA_LORE_CANON_DIFF.md</code>; read that for <em>why</em>, read this for <em>what is true now</em>.</p>
 <p data-l="9:11">Contains GM truth throughout — this is Ben's private reference, not a player handout. ⚑ marks provisional defaults awaiting Ben's confirmation.</p>
 <hr data-l="12:13">
 <h2 id="1-cosmology" data-l="14:15">1. Cosmology<a class="hlink" href="#1-cosmology">#</a></h2>
@@ -885,11 +885,17 @@ function makeLinkifier(places) {
 function inline(text, opts) {
   opts = opts || {};
   let h = esc(text);
-  h = h.replace(/`([^`]+)`/g, '<code>$1</code>');
+  const NUL = String.fromCharCode(0);
+  const codeSpans = [];
+  h = h.replace(/`([^`]+)`/g, (m, code) => {
+    codeSpans.push('<code>' + code + '</code>');
+    return NUL + (codeSpans.length - 1) + NUL;
+  });
   h = h.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
   if (opts.italic) h = h.replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
   if (opts.strike) h = h.replace(/~~([^~]+)~~/g, '<s>$1</s>');
   if (opts.flag) h = h.replace(/⚑/g, '<span class="flag">⚑</span>');
+  h = h.replace(new RegExp(NUL + '(\\d+)' + NUL, 'g'), (m, i) => codeSpans[Number(i)]);
   if (opts.linkify) h = opts.linkify(h);
   return h;
 }

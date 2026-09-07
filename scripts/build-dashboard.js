@@ -220,22 +220,40 @@ function parseRulings(md) {
 // views can never disagree about what text belongs to which ruling.
 //
 // A ruling is OPEN when its own body — the heading paragraph plus every `prose` block that
-// follows it, up to the next ruling/stub/heading — carries none of the doc's own closing markers:
-// `**ANSWERED`, `**VETOED`, or `**SETTLED` (the last is the one exception, R-4's single-line stub
-// under §B that points at §K instead of repeating the resolution — `*(R-n — … )*` one-line stubs
-// elsewhere never use `**`, only a plain "ANSWERED", so they can never falsely close an open
-// ruling merely by trailing along after it as unattached prose). §K ("Settled") and §J ("Flagged,
-// but not questions") hold no open asks by definition and are skipped outright. §I entries are
-// tagged `applied: true` — "already live, veto if you disagree" — so the page can render them as
-// "applied — veto?" cards instead of an ordinary default-ask card.
+// follows it, up to the next ruling/stub/heading — ends with none of the doc's own closing
+// markers: `**ANSWERED`, `**VETOED`, or `**SETTLED` (the last is the one exception, R-4's
+// single-line stub under §B that points at §K instead of repeating the resolution — `*(R-n — … )*`
+// one-line stubs elsewhere never use `**`, only a plain "ANSWERED", so they can never falsely
+// close an open ruling merely by trailing along after it as unattached prose). "Ends with" is
+// LAST-MARKER-WINS, not "carries any" (item 85, 2026-09-07): a `**REOPENED …**` marker that comes
+// after an ANSWERED/VETOED/SETTLED marker re-opens the ruling, and a later ANSWERED/VETOED/SETTLED
+// after THAT closes it again — R-56 was ANSWERED 2026-09-06, shipped, then `**REOPENED
+// 2026-09-07 (Ben, dashboard)…**` against its own answer; scanning for "any closing marker
+// anywhere in the body" (the pre-item-85 behavior) found the older ANSWERED and reported it
+// closed, so it never reached the phone's "Needs you" cards even though Ben was waiting to be
+// asked. §K ("Settled") and §J ("Flagged, but not questions") hold no open asks by definition and
+// are skipped outright. §I entries are tagged `applied: true` — "already live, veto if you
+// disagree" — so the page can render them as "applied — veto?" cards instead of an ordinary
+// default-ask card.
 //
 // The card's question is the ruling's heading — UNLESS the entry carries an `Ask:` paragraph
 // (item 44, 2026-09-06): one line, its own paragraph directly under the heading paragraph,
 // `Ask: <the one-sentence question Ben answers, (a)/(b) named when the entry has them>`. It exists
 // for headings that describe a symptom or lean on another ruling ("the R-46 treatment on all of
 // them?") and so cannot stand alone on a phone card. ONE line, because parseRulings() pushes each
-// prose line as its own block — a wrapped `Ask:` would lose everything after its first line.
-const RULING_CLOSED_RE = /\*\*(?:ANSWERED|VETOED|SETTLED)\b/;
+// prose line as its own block — a wrapped `Ask:` would lose everything after its first line. R-56
+// has no `Ask:` line — its heading ("Should adversaries use the Edha Senses Range table too, or
+// keep the cosmere ladder?") is already a self-contained question, so it stays the ask untouched.
+const RULING_STATUS_RE = /\*\*(ANSWERED|VETOED|SETTLED|REOPENED)\b/g;
+// True when the LAST status marker in document order is a closing one (i.e. not REOPENED, and not
+// "no marker at all"). Reused as the single source of truth for "is this ruling open" below.
+function rulingBodyIsClosed(body) {
+  let lastKind = null;
+  let m;
+  RULING_STATUS_RE.lastIndex = 0;
+  while ((m = RULING_STATUS_RE.exec(body))) lastKind = m[1];
+  return lastKind !== null && lastKind !== 'REOPENED';
+}
 const RULING_ASK_RE = /^Ask:\s*(.+?)\s*$/;
 // The default sentence is the italic `*Recommended[ default]: …*` run. Its body may carry bold
 // spans — `*Recommended default: **(a) they cancel** — …*` is the form R-80 … R-85 use — so the
@@ -267,7 +285,7 @@ function parseOpenRulings(md) {
     const flush = () => {
       if (!cur) return;
       const body = cur.parts.join('\n');
-      if (!RULING_CLOSED_RE.test(body)) {
+      if (!rulingBodyIsClosed(body)) {
         const dm = body.match(RULING_DEFAULT_RE) || body.match(RULING_APPLIED_RE);
         const applied = inAppliedSection || RULING_APPLIED_MARK_RE.test(body);
         let ask = cur.ask;
