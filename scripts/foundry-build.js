@@ -940,8 +940,8 @@ async function guardUnextracted(pack, packDir, baselineDir) {
   return { dirty, hadBaseline: true };
 }
 // Item 64 guard: no document reaches a pack carrying an `edha-*` handler type the engine does not
-// register (`registerItemEventHandlerType` calls are the record — the same parse lint-refs pass 9
-// uses). Both writers call this, so it covers every generator AND every authored overlay; a
+// register (the engine's EDHA_HANDLER_TYPES table, evaluated through scripts/handler-schemas.js —
+// the same record lint-refs pass 9 uses; item 24). Both writers call this, so it covers every generator AND every authored overlay; a
 // generated rule never appears in data/, which is why pass 9 alone could not catch the retired
 // `edha-aoe-template` generator (item 64).
 const { checkHandlerTypes, formatFindings } = require("./lib/handler-type-guard.js");
