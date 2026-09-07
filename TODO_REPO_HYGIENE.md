@@ -2981,3 +2981,134 @@ change); `node scripts/gates.js` green.
 **PM:** lane R · model sonnet · size S · deps none · verify: `grep` the five rows for the
 retirement note + `node scripts/build-dashboard.js` (Bench tab count) + `node scripts/gates.js`.
 DOCS-ONLY.
+
+---
+
+## 91. [ ] Rulings close-out 2026-09-07 evening — R-83 / R-88 / R-89 answered, four ⚑ wizard-v2 rows PASS (Ben's second dashboard paste)
+
+**Why:** Ben went through `EDHA_DASHBOARD.html` again on the afternoon of 2026-09-07 (after the
+17:03 deploy) and pasted the Copy-for-Claude block into the PM chat at 17:11 (stamp `@0acf0a482c`).
+Three rulings that were WAITING got a one-letter answer, four ⚑ rows on the Bench tab got a PASS
+mark, and forty-odd rulings rows got a "done" tick on answers already recorded by item 79. Item 79
+is the worked example of this shape — same files, same evidence standard.
+
+**The new answers, verbatim (record each ANSWERED line with Ben's text and the item that applies it):**
+- **R-83 → "a"** — gate the three ungated `hea` writers at their emitters → applied by **item 70**
+  (Opus, engine-only; the PM dispatches it after midnight under PM-R16).
+- **R-88 → "a"** — drop Volatile Strike's `whenDamageType: "impact"` gate → applied by **item 92**.
+- **R-89 → "a"** — the `NO NAMEABLE HOOK` declaration moves off the description into data
+  (`flags.edha-content.noHook`) → applied by **item 93**.
+- **R-56** — Ben's text is unchanged from item 79's record (*"Honestly we should be using the cosmere
+  ladder for everyone. If that's a huge issue or rebuild let me know before changing."*): still
+  **WAITING on his go** for item 83; do not mark it answered.
+- R-77 (*"that works. default."*), R-48 and R-52 carry Ben's notes already (item 79) — verify each
+  is present, add nothing that duplicates.
+
+**The four Bench-tab PASS marks (⚑ rows in the "Character-creation wizard v2 (2026-07-19p …)"
+section, checklist ~L2719–2830):** Coin row v3 (Ben: *"looks good to me!"*), Weapon picker — does
+the list LOOK pickable?, Preview panel centered (07-19y), and the map-picker DEAD SPOTS defect row
+(the 2026-07-27v audit's five dead spots — R-42's polygons were fixed by item 61, PR #262, so this
+PASS is Ben's confirmation at the table). Retire each row on Ben's evidence (`[x]`, dated, quoting
+him where he wrote something), exactly as item 79 retired its 13 rows.
+
+**What to do:** `EDHA_RULINGS.md` (the three ANSWERED lines, each pointing at its item; the WAITING
+count in the doc header and CLAUDE.md's rulings row if either states a number), the four checklist
+rows, then `node scripts/build-dashboard.js`. If a test pins the number of open (WAITING) rulings or
+open ⚑ rows (item 79's worker hit an over-tight pin), re-pin it to the new count with the reason in
+the commit. Do NOT touch `data/`, the engine, or the board — the PM keeps the board; items 92 / 93
+apply the data answers on their own branches.
+
+**Done when:** R-83, R-88, R-89 read ANSWERED (a) with Ben's verbatim text and their item numbers;
+the four rows are retired with evidence; the dashboard's Rulings tab shows three fewer WAITING and
+the Bench tab four fewer open ⚑; `node scripts/gates.js` green. DOCS-ONLY — nothing owed to Foundry.
+
+**PM:** lane R · model sonnet · size S · deps none · verify: `grep -c WAITING EDHA_RULINGS.md` before
+/ after + `node scripts/build-dashboard.js` counts + `node scripts/gates.js`. DOCS-ONLY.
+
+---
+
+## 92. [ ] R-88 (a) — Volatile Strike drops its `whenDamageType: "impact"` gate so the rider fires on ANY melee hit, as its card says
+
+**Why:** bench run 42 (2026-09-07, PR #274) measured both directions on the deployed pack: a plain
+weapon hit that dealt **impact** posted the *"⚡ Volatile Strike — 1 Investiture …"* offer, and the
+same PC's ordinary **keen** sidesword hit posted nothing. The rule on the talent
+(`data/authored/leyline-red.json`, the `"Volatile Strike"` block ~L1173, its `edha-on-hit` rule with
+`type: "edha-triggered-effect"`) carries R-23 (a)'s `whenDealer: "any"` (item 58) **and** a
+`whenDamageType: "impact"` that R-23 never touched and the card never mentions — the card's prose is
+the bare *"When you hit with a melee attack, spend 1 Investiture …"*. For a Red PC with a keen weapon
+the rider almost never fires. **Ben answered R-88 with "a" (dashboard, 2026-09-07 17:11):** drop the
+gate; the card is canon.
+
+**What to do:** remove the `whenDamageType` key from that one rule and fix the rule's own
+`description` string in the same block (it reads *"On a melee (impact) hit …"* — make it *"On a
+melee hit …"*). Check `data/leyline.json`'s Volatile Strike prose already says "melee attack" with
+no damage-type clause (it should; change nothing there unless it contradicts the card). Authored
+`events` changed → **REBUILD (leyline pack) + ⟳ Sync Talents** for Ben's Red PCs. This is the ONE
+authored-data change the ruling licenses — touch no other talent.
+
+**Proof (parity):** build the leyline pack before and after into scratch (`EDHA_MODROOT`), diff the
+embedded docs: exactly ONE document differs (Volatile Strike), and the diff is that key plus the
+description string — state the count in the PR. Check `tests/on-hit-dealer.test.js` — its `VOLATILE`
+fixture carries `whenDamageType: "impact"` to exercise `edhaOnHitIsItemSpecific`, which is a test
+fixture, not the authored data; leave it unless it asserts against the authored file.
+
+**Done when:** the key is gone, the description string matches, parity shows one doc changed, a
+🤖 row in the checklist's Red section says *"on the rebuilt pack, an ordinary keen melee hit by a
+Volatile Strike owner posts the offer (bench 42's negative case, flipped)"* with a REBUILD note,
+a dated delta at the top of `docs/handoff-changelog/2026-09.md` stating **REBUILD + ⟳ Sync
+Talents**, dashboard rebuilt, `node scripts/gates.js` green. Do not edit `EDHA_RULINGS.md` — item 91
+records the answer.
+
+**PM:** lane B · model sonnet · size S · deps R-88 ✓ (Ben "a") · verify: pack parity (one doc) +
+`node scripts/gates.js`. REBUILD + ⟳ Sync Talents.
+
+---
+
+## 93. [ ] R-89 (a) — the `NO NAMEABLE HOOK` declaration moves off the description into data (`noHook` → `flags.edha-content.noHook`), read by lint pass 5
+
+**Why:** bench run 42 (2026-09-07, PR #274) measured that Foundry's editor drops the
+`<!-- NO NAMEABLE HOOK: … -->` HTML comment on save (`ProseMirror.dom.parseString` →
+`serializeString`, the exact pair the sheet uses — Wrongwake's Drag Under lost its marker on the
+round-trip). Nothing is broken today because the marker lives in `data/adversaries.json`, but the
+first time an edited description comes back from Foundry the marker is silently gone and
+`scripts/lint-refs.js` pass 5 (~L340–372) fails on an ability that never changed. **Ben answered
+R-89 with "a" (dashboard, 2026-09-07 17:11):** the declaration stops being prose and becomes data.
+
+**What to do:**
+1. `data/adversaries.json` — 17 abilities carry the comment in `text` (or `rider`). Each gets a
+   sibling key **`noHook: "<the reason, verbatim from the comment>"`** and the comment is removed
+   from the prose. Document the key in the file's header schema comment (~L45, beside `events`).
+2. `scripts/foundry-build.js` — the adversary embedded-item doc writes
+   `flags["edha-content"].noHook` when the key is present (the flag is data the editor never
+   rewrites; it renders nowhere).
+3. `scripts/lint-refs.js` pass 5 — `it.noHook` (non-empty string) is the exemption; a
+   `NO NAMEABLE HOOK` string anywhere in the prose (comment or visible) is now an ERROR that names
+   the fix ("move it to `noHook`"), so the old form cannot creep back. Keep the `ENGINE-NATIVE VIA`
+   branch as is. `scripts/validate.js` / `validate-adversaries.js` type-check the key (string,
+   non-empty) and the L66 note in `validate-adversaries.js` names the key.
+4. Extract: check whether any extract path (`scripts/foundry-extract.js`, `AUTHORING_WORKFLOW.md`'s
+   adversary loop) round-trips adversary descriptions; if one does, it must carry the flag back to
+   `noHook`; if none does, say so in the PR (one sentence) — that is a finding, not a task.
+5. Docs sweep: every place that tells an author to write the comment — CLAUDE.md "Where behavior
+   lives" (`data/adversaries.json` line), `.claude/skills/leyline-tree-authoring/SKILL.md`
+   §"Adversary abilities", `EDHA_RULINGS.md` R-47's ⚠️ clause (a one-line "moved by R-89 (a) → item
+   93" — do not rewrite R-47), and anything `grep -rl "NO NAMEABLE HOOK" --include=*.md` finds that
+   instructs rather than records history.
+
+**Proof (parity + mutation):** build the adversaries pack before and after into scratch; diff the
+embedded docs: exactly the 17 marked abilities differ, each by the comment leaving the description
+and the flag arriving — 0 other diffs, 0 roll differences; state the count. Mutation, pinned in
+`tests/` the way pass 7's allowlist is pinned: (i) a prose marker fails pass 5 with the new
+message; (ii) removing `noHook` from a trigger-naming ability fails with the original message;
+(iii) the shipped data passes.
+
+**Done when:** 0 comments left in `data/adversaries.json`, 17 `noHook` keys, the flag on the
+built docs, both mutations pinned, the docs sweep done, a 🤖 row (*"open a marked ability's
+description in the Foundry editor, save, re-extract: the flag survives and lint stays green"*),
+a dated delta stating **adversaries REBUILD + ⟳ Sync Adversaries** (descriptions change even though
+the rendered card does not), dashboard rebuilt, `node scripts/gates.js` green. Do not edit
+`EDHA_RULINGS.md`'s R-89 entry — item 91 records the answer.
+
+**PM:** lane B · model sonnet · size M · deps R-89 ✓ (Ben "a") · verify: pack parity (17 docs,
+only the comment + flag) + the two lint mutations + `node scripts/gates.js`. REBUILD + ⟳ Sync
+Adversaries.
