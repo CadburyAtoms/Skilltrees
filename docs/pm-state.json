@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-07T03:51:53.344Z",
+  "generatedAt": "2026-09-07T09:58:08.291Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "a888706dcf",
-    "commit": "9f3f529",
+    "hash": "563f8ac64c",
+    "commit": "c12339b",
     "branch": "main",
     "repo": "CadburyAtoms/Skilltrees"
   },
@@ -42,11 +42,11 @@
     "nextOpenAt": null
   },
   "pm": {
-    "status": "waiting",
-    "note": "Fable PM (Ben-started, 16:56 ET). PM-R14: caps lifted. Fifty PRs merged tonight; the last was fix pass 10 (bench 41's one FAIL: the doubled rider label lived in the roll's serialized data, so the repair moved to message creation; Prognosis's rider is folded too; 23:50). The engine was pushed live at 23:50 (main 9f3f529) - every engine-only merge of the night is at the table; F5 your Gamemaster client. NOTHING is running and nothing is dispatchable: the hygiene backlog is down to 70 (blocked on your R-83), 62 (its bench row measures first), 9 (blocked on map rulings). The loop wakes hourly for your deploy note. STILL OWED: one deploy-to-foundry.bat run (Foundry closed) for the pack REBUILDS - 34a, 57, 58, 65+67, 59, 63, 55, 56; bench run 42 then drives those rows plus tonight's new engine rows (10 batch 2, 77, fix pass 10, the map picker). R-83 still needs your answer. Defaults applied, vetoable: R-18, R-80, R-81, R-82, R-84, R-85, PM-R15.",
-    "waitingOn": "ONE deploy-to-foundry.bat run (Foundry closed) for the pack rebuilds - tell me in chat or here when it ran; R-83 (needs your answer - it moves HP); R-18, R-80, R-81, R-82, R-84, R-85, PM-R15 (defaults apply if silent)",
-    "nextWakeAt": "2026-09-07T04:51:00Z",
-    "session": "2026-09-06 16:56 ET — Fable PM (hand-started)"
+    "status": "stopped",
+    "note": "Fable PM session of 2026-09-06 16:56 ET STOPPED its loop at 05:58 ET Monday (Ben's hours). Fifty PRs merged over the shift; every engine-only merge is live (last push 23:50, main 9f3f529); nothing is running, no PR is open, the live module is in sync. Waiting on you: ONE deploy-to-foundry.bat run (Foundry closed) for the pack REBUILDS - 34a, 57, 58, 65+67, 59, 63, 55, 56 - then the next PM session dispatches bench run 42 over those rows plus the night's new engine rows (10 batch 2, 77, fix pass 10, the map picker, R-52 (c)(ii)); R-83 (item 70 waits on it); vetoes on R-18, R-80, R-81, R-82, R-84, R-85, PM-R15 if you disagree. The hygiene backlog is otherwise empty (62 needs a reframe after its bench row measures; 9 is blocked on the map rulings). Next PM: the scheduled weeknight task, Monday 21:00 ET, or a hand-start.",
+    "waitingOn": "ONE deploy-to-foundry.bat run (Foundry closed) for the pack rebuilds; R-83 (needs your answer - it moves HP); R-18, R-80, R-81, R-82, R-84, R-85, PM-R15 (defaults apply if silent)",
+    "nextWakeAt": null,
+    "session": "2026-09-06 16:56 ET — Fable PM (hand-started) — STOPPED 2026-09-07 05:58 ET"
   },
   "workers": [],
   "usage": null,
@@ -3364,6 +3364,20 @@
       "weighted": null,
       "weightedM": null,
       "outcome": "50 PRs merged since 16:56; the evening's weighted usage is in pm-usage.py (≈97M at 23:50, workers included — Fable S/M 0.7–3.9M, Opus benches 14M, Opus fix passes 4.5–6.7M)",
+      "pr": null
+    },
+    {
+      "date": "2026-09-07",
+      "time": "05:58",
+      "at": "2026-09-07T09:58:00.000Z",
+      "item": "PM handoff — loop STOPPED at the last wake before Ben's hours. Six hourly wakes (00:52 → 05:57) found nothing: clean tree, no PRs, module 6 in sync, served engine = main, inbox empty, no deploy note. Nothing running, nothing queued that a session can take: 70 waits on R-83, 62 reframes after its 🤖 row measures (bench 42), 9 is blocked on the bridge / MST map rulings. First act of the next session: if Ben has run deploy-to-foundry.bat, verify module-src-sync.js status + the served hash, then dispatch bench run 42 (REBUILD rows 34a / 34c / 57 / 58 / 59 / 63 / 55-pack / 56's 2bW-18 + 19 / 67, the map picker, I10b2-1..4, 77-1, fix pass 10's row with the corrected string, the two rider-family rows, R-52 (c)(ii)). Week's PM usage (pm-usage.py, 09-05 evening → now): this session 122.4M PM + 191.4M workers; the three earlier weekend sessions 54.2M PM + 165.0M workers — ≈ 533M weighted in all, the price of ~95 merged PRs across the weekend. Next PM: the edha-pm-weeknight task at 21:00 ET Monday (MODEL GUARD) or Ben's hand-start",
+      "itemNo": null,
+      "model": "fable",
+      "isDispatch": false,
+      "duration": "shift 13 h",
+      "weighted": "122.4M (+191.4M workers)",
+      "weightedM": 122.4,
+      "outcome": "the board, pm-live.json (status stopped) and the phone are the handoff; chat wins at any time",
       "pr": null
     },
     {
