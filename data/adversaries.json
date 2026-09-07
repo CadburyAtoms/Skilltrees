@@ -1135,6 +1135,8 @@
     "items": [
       {
         "name": "Whip-Lash",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 4,
         "range": "Reach 5 ft.",
@@ -1193,6 +1195,8 @@
     "items": [
       {
         "name": "Dragging Roots",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 6,
         "range": "Reach 15 ft.",
@@ -1293,6 +1297,8 @@
       },
       {
         "name": "Ambush Bite",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 6,
         "range": "Reach 5 ft.",
@@ -1399,6 +1405,8 @@
       },
       {
         "name": "Sick Bite",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 5,
         "range": "Reach 5 ft.",
@@ -1551,6 +1559,8 @@
       },
       {
         "name": "Breach Strike",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 6,
         "range": "Reach 5 ft.",
@@ -1633,6 +1643,8 @@
       },
       {
         "name": "Sick Breach",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 5,
         "range": "Reach 5 ft.",
@@ -1707,6 +1719,8 @@
       },
       {
         "name": "Worry the Failing",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 4,
         "range": "Reach 5 ft. (targets in the water only)",
@@ -1857,6 +1871,8 @@
       },
       {
         "name": "Antler Sweep",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 6,
         "range": "Reach 10 ft.",
@@ -1916,6 +1932,8 @@
     "items": [
       {
         "name": "Forge-Hammer",
+        "kind": "weapon",
+        "weaponId": "hammer",
         "cost": "1 Action",
         "attack": 5,
         "range": "Reach 5 ft.",
@@ -1975,6 +1993,8 @@
     "items": [
       {
         "name": "Tusk Rake",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 7,
         "range": "Reach 5 ft.",
@@ -2090,6 +2110,8 @@
       },
       {
         "name": "Breach and Drag",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 6,
         "range": "Reach 5 ft.",
@@ -2171,6 +2193,8 @@
     "items": [
       {
         "name": "Ember Bite",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 5,
         "range": "Reach 5 ft.",
@@ -2263,6 +2287,8 @@
     "items": [
       {
         "name": "Ember Bite",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 4,
         "range": "Reach 5 ft.",
@@ -2409,6 +2435,8 @@
       },
       {
         "name": "Take the Answerer",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 6,
         "range": "Reach 5 ft.",
@@ -2479,6 +2507,8 @@
       },
       {
         "name": "Glare-Strike",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 7,
         "range": "Reach 10 ft.",
@@ -2718,6 +2748,8 @@
       },
       {
         "name": "Worry the Straggler",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 5,
         "range": "Reach 5 ft.",
@@ -2914,6 +2946,8 @@
       },
       {
         "name": "Stoop of Office",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 6,
         "range": "Reach 5 ft (flying strike).",
@@ -3036,6 +3070,8 @@
       },
       {
         "name": "Horn Toss",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 6,
         "range": "Reach 5 ft.",
@@ -3165,6 +3201,8 @@
       },
       {
         "name": "Whip and Root",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 4,
         "range": "Reach 5 ft.",
@@ -3298,6 +3336,8 @@
       },
       {
         "name": "Girdling Bough",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 6,
         "range": "Reach 15 ft.",
@@ -3433,6 +3473,8 @@
       },
       {
         "name": "Mob the Straggler",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 4,
         "range": "Reach 5 ft (enveloping).",
@@ -3572,6 +3614,8 @@
       },
       {
         "name": "The Pounce Already Taken",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 7,
         "range": "Reach 5 ft.",
@@ -3637,20 +3681,20 @@
         "name": "Reckless Advance",
         "cost": "1 Action",
         "consume": "1 Focus",
-        "text": "<p><em>Red talent, name verbatim — the authored `use` rule rides (edha-move executor).</em></p><p>Spend 1 Focus: target a creature or objective and charge 10 ft toward it, ignoring Reactions. Halts at walls. The charge begins.</p>",
+        "text": "<p><em>Red talent, name verbatim — the authored `use` rule rides (edha-move executor).</em></p><p>Spend 1 Focus: target a creature or objective and charge <strong>up to 10 ft</strong> toward it, ignoring Reactions. Halts at walls. The charge begins.</p>",
         "events": [
           {
             "event": "use",
             "handler": {
               "type": "edha-move",
-              "bySize": true,
+              "bySize": false,
               "byHalfSpeed": false,
-              "distanceFt": 0,
+              "distanceFt": 10,
               "whenFastTurn": false,
               "oncePerTurn": false,
-              "note": "Reckless Advance — target a creature/objective, then use: it charges toward it, ignoring Reactions."
+              "note": "Reckless Advance — target a creature/objective, then use: it charges up to 10 ft toward it, ignoring Reactions."
             },
-            "description": "Red/Momentum. Reckless Advance verbatim on the edha-move executor (size by rank ≡ tier)."
+            "description": "Red/Momentum. Reckless Advance on the edha-move executor at an explicit 10 ft — the card's own number (R-81 default (a), applied 2026-09-06; was bySize, which on a rival at red rank 2 moved 5 ft)."
           }
         ]
       },
@@ -3676,20 +3720,20 @@
       {
         "name": "Shockwave Slam",
         "kind": "trait",
-        "text": "<p><em>Red talent, name verbatim — carries the PC talent's authored `edha-push` rule.</em></p><p>When it hits with a melee attack, the target is pushed up to 10 ft; collision with an obstacle deals half 1d6 impact (half [Tier][Die]: count = tier 1, die = rival rank 2, ruling 122). On an ice-road, the push is the catastrophe.</p>",
+        "text": "<p><em>Red talent, name verbatim — carries the PC talent's authored `edha-push` rule.</em></p><p>When it hits with a melee attack, the target is pushed <strong>up to 10 ft</strong>; collision with an obstacle deals half 1d6 impact (half [Tier][Die]: count = tier 1, die = rival rank 2, ruling 122). On an ice-road, the push is the catastrophe.</p>",
         "events": [
           {
             "event": "edha-on-hit",
             "handler": {
               "type": "edha-push",
               "whenDamageType": "impact",
-              "bySize": true,
-              "distanceFt": 5,
+              "bySize": false,
+              "distanceFt": 10,
               "collisionFormula": "floor(1d6 / 2)",
               "collisionType": "impact",
               "note": "Shockwave Slam"
             },
-            "description": "Red/Momentum. Shockwave Slam verbatim: push by size (role rank, ruling 122), collision half 1d6 impact."
+            "description": "Red/Momentum. Shockwave Slam on an explicit 10-ft push — the card's own number (R-81 default (a), applied 2026-09-06; was bySize, which on a rival at red rank 2 pushed 5 ft, with the authored distanceFt: 5 dead beside it); collision half 1d6 impact."
           }
         ]
       },
@@ -3715,6 +3759,8 @@
       },
       {
         "name": "Ram",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 7,
         "range": "Reach 5 ft.",
@@ -3775,14 +3821,14 @@
         "name": "Sudden Growth",
         "cost": "Special",
         "consume": "1 Focus",
-        "text": "<p><em>Green talent, name verbatim — carries the PC talent's authored `edha-burst` rule (Sudden Wall precedent).</em></p><p>Mire boils up within 10 ft of a character she can sense — a lane un-made mid-stride.</p>",
+        "text": "<p><em>Green talent, name verbatim — carries the PC talent's authored `edha-burst` rule (Sudden Wall precedent).</em></p><p>A <strong>10-ft square</strong> of mire boils up within 10 ft of a character she can sense — a lane un-made mid-stride.</p>",
         "events": [
           {
             "event": "edha-pre-use",
             "handler": {
               "type": "edha-burst",
-              "sizeByRank": true,
-              "sizeFt": 0,
+              "sizeByRank": false,
+              "sizeFt": 10,
               "affects": "none",
               "color": "green",
               "rangeByRank": true,
@@ -3793,7 +3839,7 @@
               "heal": false,
               "terrain": true
             },
-            "description": "Green/Overgrowth. Sudden Growth verbatim: click-place difficult terrain (size/range by rank ≡ tier)."
+            "description": "Green/Overgrowth. Sudden Growth: click-place a 10-ft square of difficult terrain — the card's own number (R-81 default (a), applied 2026-09-06; was sizeByRank, which on a rival at green rank 2 placed a 5-ft square; the Briar-Gone Grove at rank 3 already landed 10 ft). Placement range still by rank."
           }
         ]
       },
@@ -3854,6 +3900,8 @@
       },
       {
         "name": "Tusk Rake",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 6,
         "range": "Reach 5 ft.",
@@ -3907,6 +3955,8 @@
     "items": [
       {
         "name": "Bite",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 5,
         "range": "Reach 5 ft.",
@@ -3965,6 +4015,8 @@
     "items": [
       {
         "name": "Bite",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 7,
         "range": "Reach 5 ft.",
@@ -4059,6 +4111,8 @@
     "items": [
       {
         "name": "Rend",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 9,
         "range": "Reach 10 ft.",
@@ -4252,6 +4306,8 @@
     "items": [
       {
         "name": "Scalding Bite",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 5,
         "range": "Reach 5 ft.",
@@ -4306,6 +4362,8 @@
     "items": [
       {
         "name": "Bite",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 7,
         "range": "Reach 5 ft.",
@@ -4411,6 +4469,8 @@
     "items": [
       {
         "name": "Rend",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 9,
         "range": "Reach 10 ft.",
@@ -4560,6 +4620,8 @@
     "items": [
       {
         "name": "Bite",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 5,
         "range": "Reach 5 ft.",
@@ -4650,6 +4712,8 @@
     "items": [
       {
         "name": "Gore",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 8,
         "range": "Reach 5 ft.",
@@ -4748,6 +4812,8 @@
     "items": [
       {
         "name": "Raking Grasp",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 6,
         "range": "Reach 5 ft.",
@@ -4858,6 +4924,8 @@
     "items": [
       {
         "name": "Raking Grasp",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 8,
         "range": "Reach 5 ft.",
@@ -5029,6 +5097,8 @@
     "items": [
       {
         "name": "Culling Bite",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 5,
         "range": "Reach 5 ft.",
@@ -5112,6 +5182,8 @@
     "items": [
       {
         "name": "Culling Bite",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 6,
         "range": "Reach 5 ft.",
