@@ -16,6 +16,13 @@
 enough. Anything marked *Recommended* has a default the sessions would take if you say nothing;
 anything marked **APPLIED** is already live in the code and needs a **veto** if you disagree.
 
+**The phone card's question** (item 44, 2026-09-06): the "Needs you" view on the mobile board shows
+each open ruling as one card whose question is the ruling's **heading** — unless the entry carries
+an `Ask:` paragraph, which then wins. Use one when the heading describes a symptom or leans on
+another ruling and so cannot stand alone: **one line, its own paragraph directly under the heading
+paragraph**, `Ask: <the one-sentence question Ben answers, with (a)/(b) named when the entry has
+them>`. Keep it to a single line — the parser reads paragraphs line by line.
+
 **When a ruling is answered:** record the answer inline under its number, move it to §K (Settled),
 and push the consequence — card text, `data/domain.json` prose, the engine, and any checklist row
 that was waiting on it. A ruling is not done until the thing it decides has actually changed.
@@ -400,13 +407,19 @@ spend. *(Board table; raised by item 28b.)*
 
 **R-81. Three more `bySize` charge distances whose cards print the rank-3 number — the R-46 treatment on all of them?** R-46 / R-48 fixed two charge distances by replacing `bySize` with an explicit `distanceFt`. Item 57's worker found the same shape on three more run-19 blocks — the Brandram's Shockwave Slam (`bySize: true` beside a dead `distanceFt: 5`) and Reckless Advance, and the Tussock-Sow's terrain square — all `bySize` at rank 2 while their cards print rank-3 numbers. *Recommended default: **(a) yes, the R-46 treatment on all three** (explicit `distanceFt` = the card's own number, stated on the card) — APPLIED by item 67 (PR #232; REBUILD owed to the next deploy; §I).* (b) fix the three cards to the rank-2 numbers instead. Ben's R-48 answer of 2026-09-06 ("a statted block should not scale") rests on the same principle. *(Board table 2026-09-06; raised by item 57.)*
 
+Ask: Should the Brandram's Shockwave Slam and Reckless Advance and the Tussock-Sow's terrain square each keep an explicit `distanceFt` equal to the number their card prints, as already applied (a), or should the three cards be rewritten to the rank-2 `[Size]` numbers the engine was rolling (b)?
+
 ---
 
 **R-82. Should R-14's "follow the card" graze rule reach the generic `edha-damage-bonus` rules too?** R-14 (c) now governs the Life mutation riders (Bone Spurs, Venom Glands, Apex Form) through per-rule graze dials (item 56, PR #242). Item 56's worker found that the generic `edha-damage-bonus` rules with `meleeOnly` (Warlord's Advance and kin — the armed-strike bonuses) ALSO fire on a graze application today. *Recommended default: **(a) yes** — the same per-rule `onGraze` dial on `edha-damage-bonus`, each card audited (the `graze` value is already available at that call site); a small S item once Ben nods. NOT applied yet.* (b) leave them — a bonus "on your attacks" reads as any application. *(Board table 2026-09-06; raised by item 56.)*
 
+Ask: Should the melee-only `edha-damage-bonus` rules (Warlord's Advance and kin) get the same per-rule `onGraze` dial the Life mutation riders have, so a bonus stops firing on a graze unless its card says otherwise (a), or keep firing on any application including a graze (b)?
+
 ---
 
 **R-83. Three `hea` writers bypass the heal-cut gate — gate them at their emitters?** `ENGINE_INDEX.md` says every `hea` write outside `applyDamage` must pass `edhaHealCutGate`, and three do NOT: `edha-regen`'s turn-end write, the decay lifesteal heal-back, and `edhaBurstDetonate`'s heal hits. Their cards are honest (fix pass 8 / item 68, PR #241, fixed the announcing), but the HP still lands on a withered creature — Mending Aura keeps healing a target that "cannot regain HP". Gating them changes live HP at the table; `edhaApplyBurstResults` must STAY ungated (Raise Dead's stabilising 1 HP rides it, R-10), so the gate belongs in each emitter. *Recommended default: **(a) gate all three at the emitter** (the mark's card is the promise), the family test's gate-call count raised from 2 with a declaration, one 🤖 row per writer → TODO item 70. **WAITING for Ben — not applied, because it moves HP.*** (b) leave them ungated and say so in `ENGINE_INDEX.md`. *(Board table 2026-09-06; raised by fix pass 8.)*
+
+Ask: Should `edha-regen`'s turn-end heal, the decay lifesteal heal-back, and `edhaBurstDetonate`'s heal hits each pass `edhaHealCutGate` so a creature that "cannot regain HP" stops gaining HP from them (a), or stay ungated with that exception written into `ENGINE_INDEX.md` (b)?
 
 ---
 
@@ -705,6 +718,8 @@ it `distanceFt: 20` and drop `bySize`.* The alternative (keep `bySize`, reword t
 `[Size]` ft") is defensible but makes an adversary card read like a PC talent. Whichever way it goes,
 authored data changes → **pack rebuild + ⟳ Sync**, which is why fix pass A left it alone: the
 rebuild list is currently empty and this is not worth re-opening it on its own.
+
+Ask: Is the CARD canon for a statted adversary block — keep the applied explicit `distanceFt` (the card's own number) on the Cragdrake Adult's Explosive Leap and the three run-19 blocks it turned out to share the shape with (a), or reword those cards to the rank-2 `[Size]` distances the engine was rolling (b)?
 
 ⚠️ **UPDATED 2026-07-28e by bench run 19 — this is no longer one block, it is a FAMILY of at least
 four across two colours, and three of them state a wrong number on the card.** Measured live:
