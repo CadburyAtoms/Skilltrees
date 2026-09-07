@@ -2204,3 +2204,62 @@ ENGINE-ONLY (F5).
 
 **PM:** lane B · model `fable-worker` (medium) · size S · deps 59 ✓ (#234) · verify: mutation
 pins. ENGINE-ONLY (F5). Found by item 59.
+
+---
+
+## 70. [ ] Three `hea` writers still bypass the heal-cut gate — a withered creature is healed by Mending Aura (R-83)
+
+**Why:** fix pass 8 (item 68, PR #241, 2026-09-06) audited every heal announcer and found the
+same drift one layer down: `ENGINE_INDEX.md` says every `hea` write outside `applyDamage` must pass
+`edhaHealCutGate`, and **three do not** — `edha-regen`'s turn-end write, the decay lifesteal
+heal-back, and `edhaBurstDetonate`'s heal hits. Item 68 left them (their CARDS are honest, and the
+item was about announcing), but the HP still lands: a creature carrying a No-Healing mark is
+healed by Mending Aura and by regen, against the card's promise. Closing the gap **changes live HP
+at the table**, so it is board ruling **R-83** (waiting) before any dispatch.
+
+**What to do (on R-83 (a)):** gate each of the three at its EMITTER, never in
+`edhaApplyBurstResults` (Raise Dead's stabilising 1 HP rides that path — R-10's family, which
+must stay ungated); `tests/drop-to-one-family.test.js` counts the gate's call sites (2 today) —
+raise the count with a one-line declaration per new site; headless pins per writer (withered
+target → 0 lands and the card names the mark; halved → half; unmarked unchanged), each shown
+failing under a one-line reversion; three 🤖 rows (Mending Aura, regen tick, lifesteal heal-back
+on a withered target). On R-83 (b): no engine change — `ENGINE_INDEX`'s rule is reworded to list
+the three as deliberately ungated, and this item closes as docs.
+
+**Done when:** the ruling is answered; on (a) the pins pass and fail under reversion, the family
+count is declared, the rows exist; on (b) the index says so. ENGINE-ONLY (F5).
+
+**PM:** lane B · model `fable-worker` (medium) · size S · deps **R-83** · verify: mutation pins +
+the family count. ENGINE-ONLY (F5). Found by fix pass 8.
+
+---
+
+## 71. [ ] Registry leftovers from item 24 — a README row, an executor-less handler, six unused types, a stale console line, a loosened test slice
+
+**Why:** item 24 (PR #244, 2026-09-06) turned the 102 `api.register*Type` calls into two tables
+and, in passing, found five small things it was told not to fix:
+- `scripts/lib/fold-die-math.js` (item 59) has no `scripts/README.md` row — `check-scripts-readme.js`
+  reports it on `main` (it is not a gate).
+- `edha-illusion-upkeep` registers with NO executor (config-only). If the system ever executed it,
+  `Handler.execute` would throw; the registry test tolerates "absent". Either give it a no-op
+  executor that says so, or document why it is only ever read elsewhere.
+- Six registered handler types have no authored talent user: `edha-pick-expertises`, `edha-regen`,
+  `edha-ambush-belief`, `edha-pack-advantage`, `edha-dark-veil`, `edha-thorns`. Iron rule 2b's
+  corollary applies (an engine path with no consumer is a named complaint — R-74 / R-76 / R-78):
+  each is a generator-emitted type (say which generator), a rule-in-waiting, or dead.
+- The registration `console.log` still lists the retired `aoe-template` (item 48 / R-78).
+- `tests/note-target-gate.test.js` slices to the next `api.registerItemEventHandlerType(` marker;
+  that marker no longer follows a row, so it falls back to its 8000-char window (still passes,
+  less precise) — slice on the next table row instead.
+
+**What to do:** one small PR: the README row; the console line; the test slice; a one-line
+disposition per unused type (generator / waiting / dead, with the grep that proves it) and for the
+executor question, written into `ENGINE_INDEX.md`. Deleting a type is a behaviour change and needs
+a ruling — file it, do not delete.
+
+**Done when:** `node scripts/check-scripts-readme.js` is clean, the console line matches the table,
+the test slices on a table row, and the six types + the executor each carry a one-line disposition
+in `ENGINE_INDEX.md`. ENGINE-ONLY (F5) for the console line; the rest is TOOLING / DOCS.
+
+**PM:** lane R · model sonnet · size S · deps #24 ✓ · verify: `check-scripts-readme.js` clean + the
+test still fails under its own mutation. Found by item 24.
