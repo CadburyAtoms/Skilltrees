@@ -33,6 +33,40 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-06 — ITEM 65 (34c) + ITEM 67 (R-81): the rest of the fleet weapon migration, and the run-19 charge family (**REBUILD + ⟳ Sync** — `data/adversaries.json` only; the adversaries pack rebuilds, then "⟳ Sync Adversaries from Pack"; NO engine change)
+
+**34c — the later bestiary is weapon-typed.** The 39 statblocks statted after 07-18 (Reedling →
+The Cull-Alpha) carried 44 attack-rolling items with no `kind` (= action). **36 are now
+`kind: "weapon"`** by 34a's recipe: 35 natural weapons `alwaysEquipped: true` (every Bite, Rend,
+Tusk Rake, Gore, Ram, Whip-Lash, Dragging Roots, Antler Sweep, Horn Toss, Girdling Bough, the
+Raking Grasps, the Culling Bites, the fooled-rider strikes …) and one gear weapon, the Sevenbrand
+Construct-Smith's Forge-Hammer, keyed to the system registry's `hammer` (heavy_wpn). **Eight stay
+actions by analogy to Ben's 07-18 rulings**: the two to-hit-only grabs (Stillback Seize and Roll,
+Wrongwake Drag Under — Snatch and Wade's shape), the two 2-action maneuvers (Noonwing The Stoop,
+Garden Sow Trampling Charge — Devastating Blow's shape), the burst attack (Noonwing Wingstorm —
+a 10-ft burst is not a single-target weapon), and the three Focus-costed Searing Bolts (Cragdrake
+Adult, Hazewyrm Adult, Hazewyrm Elder — Frost Lance's shape: a named talent attack with a resource
+cost). Note for the next sweep: `kind` is never written as `"action"` in the data, so
+`grep -c '"kind": "action"'` is 0 before and after; count items with `attack` and no `kind: weapon`.
+
+**Parity (the 34a method, re-derived under `tmp/`):** both packs built into scratch roots with
+`EDHA_DATA` pinned to the branch's own `data/`, every embedded doc read back from LevelDB with
+`_stats` stripped — **336 items compared, 39 changed (36 + item 67's 3), 0 missing, 0 added, 0 roll
+differences** (same `activation.skill`, `modifierFormula`, damage formula/type, event count), 0
+actors changed; `validate-adversaries.js` → `✓ 0 issues`. Fifteen of the flipped items carry
+rules — eleven fooled `edha-damage-rider`s (+1d6 / +1d8) and six on-hit `edha-gm-cue`s — which now
+ride weapon-type items through 34a's `edhaRuleBearer` gate; the bench proves that live.
+
+**Item 67 — R-81 default (a), APPLIED, open for Ben's veto.** The Brandram's Shockwave Slam
+`{bySize: false, distanceFt: 10}` (the dead `distanceFt: 5` beside `bySize: true` is gone), the
+Brandram's Reckless Advance `{bySize: false, distanceFt: 10}`, the Tussock-Sow's Sudden Growth
+`{sizeByRank: false, sizeFt: 10}` — each the card's own number, now bold on the card. Not touched
+(reported): both Sudden Growths (Sow, Grove) still place within Attunement Range by rank (30 / 60
+ft) while their cards say "within 10 ft" — the same family, one field over.
+
+**🤖 for the bench:** the `34c` sub-block under `# BENCH — Fleet weapon migration, 34a` — eight
+render/roll-parity rows (one per bestiary group), one weapon-borne-rider row, and three item-67
+rows (10-ft push, 10-ft charge, 10-ft square). Item 34 stays open until 34b (loot caches) ships.
 ## 2026-09-06 — BENCH RUN 39: fix pass 7a's re-tests all pass, and the two-GM blocker that stopped runs 37 and 38 is settled by measurement (**DOCS-ONLY** — no engine change, no data change, no pack rebuild, no ⟳ Sync)
 
 **Deploy, hash-verified from both sides before anything was driven.** The served
@@ -14597,7 +14631,8 @@ blocks the public GitHub repo, add_repo is same-owner-only) — and **(2) the W2
 - [ ] **Fleet weapon migration** — **34a SHIPPED 2026-09-06 (item 34a, the weapon half: 11 items
   across the 13 original statblocks are weapon-type, `edhaRuleBearer` on both rule loops, summon
   attacks as weapons; see the 2026-09-06 delta). NOT checked until 34b (loot caches) lands as its
-  own PR; the 39 later bestiary blocks (44 attack items) are follow-up scope.** History below.
+  own PR; the 39 later bestiary blocks (44 attack items) were follow-up scope → 34c SHIPPED
+  2026-09-06 (item 65: 36 flipped, 8 stay actions by the 07-18 analogies).** History below.
   (gate: schema dump). ⚑⚑ pipe-cleaner shipped 07-15: `kind:"weapon"`
   in advItemDoc (action-shaped activation kept byte-identical — same skill_test + modifierFormula
   so PDF numbers hold; best-guess weapon fields strip harmlessly if wrong) + Corvaine Raider's
