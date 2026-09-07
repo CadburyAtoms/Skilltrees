@@ -2713,3 +2713,42 @@ bench-confirmed.
 
 **PM:** lane H · model opus · size M · deps Ben's go on R-56 (item 79's REOPENED note). Item 82
 depends on this item's outcome (which default the explicit per-block override sits against).
+
+---
+
+## 84. [ ] Weapon-borne `edha-on-hit` rules never dispatch — `edhaRulesForEvent` still gates on `edhaIsTalent`
+
+**Why:** measured at **bench run 42 (2026-09-07)**, on the hash-verified `609c7e45…` engine with the
+34a/34c pack rebuild live. `edhaRulesForEvent` (`module-src/scripts/engine/04-black-ritual.js:206`)
+filters an actor's items with `if (!edhaIsTalent(item)) continue;`, and `edhaIsTalent`
+(`engine/31-trigger-gating-cost.js:37`) accepts only `type === "talent"` or the
+`flags.edha-content.adversaryTalent` flag — **weapons are excluded on purpose**; `edhaRuleBearer`
+exists precisely to say "talents + weapons". Item 34a widened the two actor-wide harvest loops
+(`edhaActorRuleOf` / `edhaActorRulesOf`) to `edhaRuleBearer` and left this one behind, so **every
+`edha-on-hit` rule the weapon migration moved onto a weapon document is silently inert.**
+Bench evidence: Surecat's `The Pounce Already Taken` posted no cue on four applied hits (out of
+combat, and on its own turn inside a started combat). **Proven by mutation:** setting
+`adversaryTalent = true` on that same weapon — the only field that changes `edhaIsTalent`'s verdict —
+made the identical take post *"⏰ The Pounce Already Taken (B42 Surecat): … (hit Bench Target —
+Adjacent A.)"*. **Positive control in the same session:** Brandram's Shockwave Slam
+(`edha-on-hit → edha-push`, on a **trait**) fired every time.
+
+**Blast radius, counted across all five packs: 6 shipped rules**, all `edha-on-hit → edha-gm-cue` on
+weapon-type items — Wake-Eel Shoal / *Worry the Failing*, Dirgehound Pack / *Worry the Straggler*,
+Callthief / *Take the Answerer*, Surecat / *The Pounce Already Taken*, Fellstag / *Antler Sweep*,
+Keelshadow / *Breach and Drag*. The 13 `edha-pre-deal-damage → edha-damage-rider` weapon rules are
+**unaffected** (four measured firing at run 42) because riders go through the already-widened loops.
+
+**What to do:** swap the predicate in `edhaRulesForEvent` to `edhaRuleBearer` — the same widening
+item 34a applied next door — and audit its other three callers while you are there (`edha-draw-mana`,
+the combat-timing sweep, the rider dispatch): a weapon can now carry any of those, and dropping them
+silently is the identical bug. ENGINE-ONLY (F5, no rebuild). Ship with a pinned regression case in
+`tests/` that fails on `edhaIsTalent` and passes on `edhaRuleBearer` — assert that a weapon-borne
+`edha-on-hit` rule reaches the dispatcher.
+
+**Done when:** the predicate is swapped and mutation-verified (reverting it fails the new test); the
+other callers carry a one-line verdict each in the delta; `node scripts/gates.js` green; and the
+checklist's **34c weapon-borne riders survive** row's cue half is queued for the next bench run (its
+rider half is already retired, and the row's note names Surecat's cue as the take).
+
+**PM:** lane E · model sonnet · size S · deps none (engine-only — the authored data is already right).

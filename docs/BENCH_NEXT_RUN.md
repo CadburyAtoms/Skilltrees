@@ -1,37 +1,36 @@
 # Next bench session
 
-> **Weekend marathon, run 14 (bench run 37, 2026-09-06) is done — and it was the LAST run of that PM
-> session.** **Fix pass 6's max-HP fix is VERIFIED and its row is retired**, with the doubler
-> reproduced as a positive control in the same window, so it is a measurement and not a silence. The
-> other two rows did not fail — they were **sharpened**, each in a way that would otherwise have
-> burned a future run: the **Investiture gate is correct in code but unverifiable while Ben's
-> `Gamemaster` client predates the deploy**, and **item 10's "set the token to Secret" probe does not
-> produce a sideless creature on this build at all**. **1 row retired, 2 rows re-specified, 0 new
-> defects, 0 new rulings.** Final id and flag diffs **EMPTY**; the effect diff's five entries were
-> serialisation artifacts, not residue. No `⛔ STOP`, **no pack rebuild owed.** Open queue **27 🤖 →
-> 26 🤖**. ⚑ unchanged at **21**.
+> **Bench run 42 (2026-09-07) drove the whole REBUILD stack the Saturday backlog had been waiting
+> for** — items 34a / 34c / 55 / 56 / 57 / 58 / 63 / 67, live in the packs for the first time after
+> Ben's morning `deploy-to-foundry.bat`. **38 rows retired on evidence, 8 annotated and left open with
+> their blocker named, 1 root-caused defect (with its blast radius counted), 2 new rulings, 1 row-text
+> correction**, plus Ben's own 13 dashboard marks recorded. Open 🤖 **58 → 20**; open ⚑ **21 → 10**.
+> End-of-run per-actor diff **EMPTY** across all 74 actors; every count back to the start snapshot; no
+> `⛔ STOP`; **no deploy owed by this run.**
 
 ## Read this first
 
-**→ `docs/handoff-changelog/2026-09.md`, the `2026-09-06 — BENCH RUN 37` delta** — the
-four-actor ADD-mode control table, the three-probe Investiture sequence, and §5's statement of the
-world state including the false-positive effect diff.
+**→ `docs/handoff-changelog/2026-09.md`, the `2026-09-07 — BENCH RUN 42` delta** — every retirement
+with its quoted evidence, the defect's proof-by-mutation, and the deploy-state finding below.
 
-**→ `docs/EDHA_BENCH_RUNBOOK.md`, "Operating lessons from run 37"** — **three of these change what you
-do before you drive anything**: a **two-GM gate row cannot be verified while EITHER GM client predates
-the deploy** (hash-verifying the *served* file proves only what a newly-joining client runs); the
-**"probe 3" pattern** is the general recipe for testing any per-client-per-session Set-gated write;
-and **effects must be compared key-sorted** or you get false positives — which is probably what the
-standing "Guardian Stance moves in both directions" hazard has been. Also: **`prepareData()` is the
-doubler, `reset()` is the restore**; **`Bench — Green` is NOT an AE-free control** (it carries the same
-`Hardy — Max HP` effect as White, spelled with a different dash); **`SECRET` is `-2`, a finite number**;
-and **the Chrome-extension tools may be down — the browser-pane tools drive the whole run fine.**
-**Runs 36, 35 and 34's lessons still apply in full.**
+**→ `docs/EDHA_BENCH_RUNBOOK.md`, "Operating lessons from run 42"** — **two of these change what you
+do before you drive anything.** (1) **A hidden pane freezes PIXI's ticker, so v13 animated token
+movement never commits** — every engine slide reads as "the card says N ft and nothing moved" until you
+pump `canvas.app.ticker.update()` after the take; run 42 chased a veto, a wall and grid-snapping before
+measuring it. (2) **Never leave two tokens of the same actor on the scene** — a duplicate made a push
+name a blocker 8,400 px away, which reads exactly like an engine bug. Also: **per-actor sync
+(`edha.syncActorTalents` / `edha.syncAdversary`) is the licensed way to close a "REBUILD + ⟳ Sync"
+gap**; **`edhaIsTalent` excludes weapons**, so a rule on a weapon document that does nothing is
+probably a dispatcher gating on it; the **graze subtotal is `div.dice-subtotal.right`**; and the
+**creation wizard's step count is not fixed** (an Ashkar default inserts a diaspora-culture step).
+**Runs 41, 40 and 39's lessons still apply in full.**
 
-**→ `EDHA_RULINGS.md`** — **no new rulings this run.** R-77 carries a new note: run 37 could not
-confirm its applied default live, for the stale-client reason above; **this does not reopen the design
-question**. **R-43 is still applied and still changes live dice math**; **R-56 still blocks** the
-"adversary tokens see like PCs" row.
+**→ `EDHA_RULINGS.md`** — **two new, both from run 42's measurements: R-88** (Volatile Strike's
+untouched `whenDamageType: "impact"` means a keen sword hit offers nothing while its card promises
+"any melee attack") and **R-89** (the `NO NAMEABLE HOOK` comment does **not** survive a ProseMirror
+save, so a Foundry edit + extract would silently drop it and fail lint pass 5). **R-86 retires every
+row premised on a GM-less table or two GM clients** — do not re-open one. R-56 and R-41/R-42 are
+closed by this run's measurements.
 
 ## ⚑ vs 🤖 — read this before picking rows
 
@@ -41,159 +40,128 @@ question**. **R-43 is still applied and still changes live dice math**; **R-56 s
 ⚠️ **Never re-file an unrun 🤖 row as ⚑ because you ran out of time.** Leave it 🤖, or record it BLOCKED
 with the blocker named. **Design questions go to `EDHA_RULINGS.md`, never to the checklist as a new ⚑ row.**
 
-## ⛔ 0. STEP ZERO — ASK WHETHER BEN'S CLIENT IS CURRENT, BEFORE ANY TWO-GM ROW
+## ⛔ 0. STEP ZERO — CHECK THE OWNED COPIES, NOT JUST THE PACK
 
-**This is new, it is cheap, and run 37 lost a row to not knowing it.** Hash-verifying the served
-`register-skills.js` proves what a **newly joining** client will run — it says **nothing** about a
-client that has been connected since before the push. Ben's `Gamemaster` has been connected
-continuously through runs 24–37, and **every engine fix since is ENGINE-ONLY, i.e. F5-on-every-client**.
+Run 42's deploy-state finding, and it nearly cost three rows: **Ben's adversary ⟳ Sync had run, his
+TALENT ⟳ Sync had not.** All 46 world adversaries carried the new weapon items and senses 10/10, while
+every bench PC's *owned* talent copy was still pre-item-58/63/56. Before benching any talent row:
 
-- If the run contains **no** two-GM row, this costs you nothing — note it and move on.
-- If it does: **the Investiture re-test is BLOCKED until Ben F5s his client**, and so is any other
-  "one applier" row. Record it BLOCKED with that blocker named — **not FAIL, and not ⚑**. Do not
-  re-derive run 37's three probes to rediscover the same thing.
+```js
+Object.values(actor.items.getName("<talent>").system.events).map(r => r.handler)   // read the FIELD, not the pack
+```
 
-## ✅ 0b. THE RE-TEST BLOCK IS NOW GENUINELY EMPTY
+If it is stale, call **`edha.syncActorTalents(actor)` on the bench PCs only** (16 actors, ~10 s) — and
+say so in the delta. **Never `edha.syncAllCharacters()` / `syncAllAdversaries()`**: those rewrite Ben's
+own PCs and campaign adversaries. Ben still owes his own ⟳ Sync Talents click for his two PCs.
 
-Fix pass 6's two rows were run 37's whole budget. One retired; the other is the blocked one above.
-**There is nothing left in this block — for the first time in eleven runs, do NOT open on it.**
+## ⭐ 1. OPEN A PLAYER CLIENT AND BURN THE PLAYER BLOCK — it is the densest thing left
 
-## ⭐ 1. THE WIZARD BLOCK — 6 🤖, never driven in THIRTEEN runs. **Open here.**
+`PlayerBench` (id `yF9LHvfhB7otsHYY`) unlocks rows that a GM client provably cannot drive:
 
-Every blocker in front of it is closed, the re-test block is empty, and it has now been deferred
-thirteen times — including twice with "take this first" written at the top of this file. **Start with
-a DEPLOY-STATE re-read of all six rows**: every wizard row predates the 2026-07-26 deploy line, so the
-cheapest possible outcome is several retiring without a single cast. The
-**wizard-as-a-player walkthrough** pairs with a player client (`PlayerBench`) and is large: only start
-it if you can finish it, and **open the player window EARLY** — run 36's JS-driven join recipe makes
-that cheap (`sel.value = "yF9LHvfhB7otsHYY"`, dispatch `change`, `.click()` the join button; expect the
-next call to fail with *"Inspected target navigated or closed"*, which is the join succeeding).
+- **34b's body half** (`# BENCH — Fleet weapon migration` section). The deploy blocker is GONE and run
+  42 proved the refusal is now genuinely exercised — `edhaLootableItems` returns **`[]`** for the
+  Cinderhound's body and **`["Bite"]`** for a cache, and a defeated Raider's body now offers **both**
+  gear weapons (run 40 saw only the Shortsword). What is left is one card: `edhaLootTryOpen` returns
+  early for a GM **by design** (`if (!kind || game.user?.isGM) return false`), so double-click the body
+  as the player.
+- The whole **`🎮 Player-client window`** section — do those rows in the same window rather than one
+  per run. Recipe (runs 36/40, unchanged): `tabs_create` → `navigate` to `/join` → `resize_window`
+  1400×900 → `location.reload()` → select `PlayerBench` → Join with a blank password → drive each tab
+  by its own `tabId`. **Log BOTH clients out at the end.**
 
-## 2. Item 10's sideless probe — **the recipe is FIXED now; do not use "Secret"**
+## 2. The hygiene block — 5 console-driven rows, no staging to speak of
 
-Measured at run 37: **`CONST.TOKEN_DISPOSITIONS.SECRET === -2`**, a finite number, and
-`edhaDisposHostile` (engine ~L4367) fails closed only on `!Number.isFinite(...)`. So a Secret token
-**still reads as an enemy** — setting a token's disposition to Secret tests nothing. **Use the row's
-own fallback: a creature whose actor has NO token on the scene.** The Playtest Map carries only
-dispositions `-1` and `1`, so the probe must be staged. Three sites still to drive, each with a normal
-hostile token beside it as the matched control: **(a)** the burst capture, **(b)** the `edha-aura`
-adjacency sweep, **(c)** the Fortified Foundation (plus its owner half — an owner whose own side does
-not resolve should get a "could not resolve the Foundation owner's side" warning instead of a Region
-that damages everyone). Anything that still fires on the probe is a **missed site**, reported by name.
+`# BENCH — hygiene campaign 2026-08-10`, passes 5.2/5.3: **R-64 ×2** (the `victim` mode on
+Gain/Drain Focus, Reveal, Next-Test-Mod; and the H3 annotate/near-victim pick), **R-63** (same-side
+checks — auras, Reroll Reaction's "enemies only", the Fate snare), **R-62** (seven audience flips —
+read carefully, four widen), **R-61** (a scene mid-flight keeps working on the legacy `detonateUsed`
+read). Job 6a is **retired under R-86** — do not re-queue it.
 
-## 3. AoE burst auto-target — deferred SIX times, one cast
+## 3. The combat pair, then the three bestiary singles
 
-Place any burst (Flame Surge): assert the caught tokens end up actually in `game.user.targets`. This
-retarget was silently no-opping on v13. Console-runnable, no player client, no combat. **It is still
-the single cheapest unclaimed row in the file.**
+**CAE burns** and **Kindle's token-light half** need a combat — run 34's three-line `active:false` +
+`ui.combat.initialize({combat})` recipe, and **never activate a bench combat**. ℹ️ A bestiary Kindle
+row was retired at run 18 with a live `dim 20, bright 10, animation flame` reading (run 42 saw the same
+values off a Cinderhound Bite) — check whether that already answers the row before staging.
+Then **Pyre spread by alias**, **Unbreakable Line's ally-drops cue** (its (b) half — the missing `use`
+rule — is still unimplemented on both blocks) and **Predator's Due's card audience**.
 
-## 4. The items-dump pair, then a bestiary section
+## 4. After the weapon-cue fix ships: one re-test
 
-CAE burns needs a combat — run 34's three-line `active:false` + `ui.combat.initialize({combat})`
-recipe. **Never activate a bench combat.** Kindle's token-light half: ℹ️ a bestiary Kindle row was
-retired at run 18 with a live `dim 20, bright 10, animation flame` reading — check whether that
-already answers it before staging. Then a bestiary section if the budget survives (five rows untouched
-all marathon; the fresh-import recipe is routine).
+The **34c weapon-borne riders** row's cue half is waiting on a one-predicate fix (see the defect
+below). When it lands, re-drive Surecat's `The Pounce Already Taken` — apply its damage and read for
+*"⏰ The Pounce Already Taken …"*. The rider half of that row is already proven.
 
-## Where the 26 open 🤖 rows are
+## Where the 20 open 🤖 rows are
 
 | Block | 🤖 | Note |
 |---|---|---|
-| **`BENCH — Engine-wide & cross-tree`** | 2 | The **Investiture re-test** (BLOCKED on Ben's client being current — see step 0) and **item 10's sideless probe** (recipe corrected at run 37; genuinely drivable). |
-| **Character-creation wizard v2** | 6 | ⛔ **Never driven, THIRTEEN runs running. This is the block to take FIRST.** Re-read each row against DEPLOY STATE before staging. |
-| **Bestiary sections** (W29 ×3, Goldenport ×1, Vorsk ×1) | 5 | Untouched all marathon; each needs its own fresh pack import + staging. |
-| **`BENCH — hygiene campaign 2026-08-10`** | 7 | pass 5.2 / 5.3 rows. Includes the ones needing **zero GM clients** — still blocked on Ben. |
-| **Bench-results fixes** | 2 | The vision row is blocked on **R-56**, not on a table. **AoE burst auto-target** is drivable and cheap. |
-| **Adversary pack sync** | 2 | ⛔ **BLOCKED ON BEN** — a bulk sync rewrites Ben's campaign actors (outside hard rule 4). Do not re-attempt un-authorised. |
-| **Items-dump tranche** | 2 | **CAE burns** (needs a combat) and **Kindle's token-light half**. |
-
-**Item 12's three sites, item 13's spend AND heal halves, item 14's picker AND `edhaSovTargets`
-halves, R-4's eight faces, the `# Bench-results fixes` single-target picker row, and fix pass 6's
-max-HP row are all CLOSED — do not re-queue any of them.**
+| **Item 10 batch 2** (I10b2-1…4) | 4 | ⛔ **BLOCKED and re-derived at run 42** — see below. Do not re-attempt. |
+| **77-1** (Mantle's unset-side token) | 1 | Aura halves both PASS live; only the unset-side clause is blocked, same cause. |
+| **hygiene campaign** (R-61…R-64) | 5 | **The densest console-only block left. Take it.** |
+| **Items-dump tranche** | 2 | CAE burns (needs a combat) + Kindle's token-light half. |
+| **Adversary pack sync** | 2 | ⛔ **BLOCKED ON BEN** — a *bulk* sync rewrites his campaign actors. ℹ️ Run 42 proved the renamed-copy skip through the **per-actor** path (`{synced:false, reason:"no pack source"}`); the bulk row still wants Ben's click. |
+| **Fleet weapon migration (34b/34c)** | 2 | The body half (player client) + the cue half (waiting on the fix). |
+| **Bestiary singles** | 4 | Pyre by alias · Unbreakable Line · Reckless Advance/**Unstoppable** (only the fast-turn half is left) · Predator's Due. |
 
 ## Known blockers — do not fight these
 
-- ⭐ **NEW: any two-GM row is blocked while Ben's `Gamemaster` client predates the current engine.**
-  See step 0. This is not a code problem and not a ruling.
-- **Job 6a (pass 5.2), 2bM-1 and R-62's audience rows** need **zero GM clients**. Ben's `Gamemaster`
-  was connected again this run (`["Bench","Gamemaster"]`). Record BLOCKED with the blocker named —
-  never re-file as ⚑. **This needs Ben to disconnect for one window.**
-- **The two `# Adversary pack sync` rows need BEN, not a bench run.**
-- **The "Adversary tokens see like PCs" row is waiting on `EDHA_RULINGS.md` R-56**, not on a table.
-- ⚠️ **Ben's world holds an ACTIVE, STARTED, ZERO-COMBATANT combat** (`BerbNeuXp4iKduef`, round 1) —
-  confirmed again this run. Not the bench's; leave it alone. It means **`game.combat` is never
-  null**, which silently selects the round-tag branch of `edhaOrderPromptGate` /
-  `edhaShatterPromptGate`. If a row's premise is "with no combat in the tracker", that premise is
-  already false. ℹ️ Zero combatants, so `edhaInActiveCombat(actor)` is still null for everyone.
-- **`game.combat` is the client's VIEWED combat** — an `active:false` bench combat plus
-  `ui.combat.initialize({combat})` satisfies every "needs the active combat" row. **Never activate a
-  bench combat.**
-- **Observer/rAF-dependent state is stale on this bench** — use `canvas.pan()`, `teleport: true`, and
-  `canvas.perception.update(...)` + a ticker pump before reading `isVisible`.
-- **`canvas.mousePosition` is frozen at (0,0)** with the pane hidden — shadow just that getter.
-- **Four ORPHAN tokens on the Playtest Map are NOT the bench's** — `The Forgemaster`, `The
-  Demolisher`, `PC Tester`, `Cragdrake Whelp Pack (1)`. Zero bench orphans (checked again run 37).
+- ⭐ **No sideless token can exist on this build** — run 42 re-derived it: `disposition: null` at
+  create, and `null` / `undefined` / `NaN` at update, all read back **−1 (HOSTILE)**. The fallback
+  ("an actor with no token") discriminates nothing either, because such an actor is in no range sweep.
+  That blocks **I10b2-1…4** and **77-1's** unset-side clause. `tests/disposition-failclosed.test.js`
+  is the proof that holds without a table.
+- **The two `# Adversary pack sync` bulk rows need BEN**, not a bench run.
+- **`edhaLootTryOpen` refuses a GM by design** — the body-search card is a player-client row, not a bug.
+- **Four ORPHAN tokens on the Playtest Map are NOT the bench's** — `The Forgemaster`, `The Demolisher`,
+  `PC Tester`, `Cragdrake Whelp Pack (1)`. Zero bench orphans at run 42.
+- ℹ️ **The zero-combatant combat `BerbNeuXp4iKduef` is GONE** (the world held **no** combats at run
+  42's start, and none at its end). `game.combat` is null again, so "with no combat in the tracker"
+  premises are honest once more.
+- ℹ️ **A second scene `Playtest Map (Copy)` exists** (30 tokens, 2 drawings, id `lHKcasWQgVezqdzf`).
+  Not the bench's; it holds no Bench-PC tokens. Leave it alone — but remember `getActiveTokens()` can
+  reach across scenes when you are resolving a token.
 - **Do NOT run `edha.fixPcTokens()`.** It loops every `character` actor in the world, Ben's two PCs
   included.
-- ℹ️ **The "creating/deleting a bench token moves `Guardian Stance (+1 Deflect)`" hazard is probably a
-  MEASUREMENT artifact.** Run 37 reported five such "changes" and every one was JSON key order
-  (`{key,mode,value}` vs `{key,value,mode}`). Snapshot as before, but **compare key-sorted** before
-  believing it.
+- **Observer/rAF-dependent state is stale on this bench** — `canvas.perception.update(...)` plus a
+  ticker pump before reading `isVisible`; the Seeming's "no enemy can see the copy yet" is this.
 
 ## Harness traps — each has already produced or nearly produced a false result
 
-- ⭐ **A `_stats`-only update in a userId observer is a write that got DIFFED TO EMPTY**, not noise —
-  `_stats.lastModifiedBy` tells you that user really did issue one. (Run 37.)
-- ⭐ **A per-client, per-session Set masks the gate it guards.** Test it with the probe-3 pattern:
-  create the actor carrying the CORRECT value so no client's Set is seeded, then make it stale in one
-  update. (Run 37.)
-- **A SILENCE result proves nothing without a positive control in the same budget window.** (34, 36, 37.)
-- **A two-GM row needs a `userId`-recording hook observer** — and the **delete** hooks take three
-  arguments. (Run 36.)
-- **`resize_window` refuses a blank tab; a scaled pane makes coordinate clicks miss the join button.**
-  Navigate → resize → navigate; join from JS. (Run 36.)
-- **`edha.drawMana()` takes the ITEM.** Bare = silent no-op. (Run 36.)
-- **A die-step leaves a flag AND a status** (`Exalted` / `Diminished`) — clear both. (Run 36.)
-- **`prepareData()` DOUBLES every ADD-mode effect; `reset()` is the restore.** (Runs 36, 37.)
-- **The 0×0 canvas needs `resize_window` AND A FULL RELOAD, on the first tab too.** (Run 35.)
-- **An H3 ledger staged by hand needs its MARKER STATUS** or `edhaOwnerList` reads it empty. (35.)
-- **A staged talent's own `activation.consume` opens a Consume Resource dialog that never settles.**
-  Clear it, or click `button[data-action="continue"]` inside `div.app.window-app`. (Runs 35, 36.)
-- **Walls silently shrink an area heal/pulse** — use `testCollision` to pick the cell. (Runs 35, 36.)
-- **A raw HP `update()` fires no damage-cadence rule** — use `actor.applyDamage([{amount, type}])`. (34.)
-- **`combat.nextTurn()` can leave `turn === null`.** (Run 34.)
-- **A light's `dim`/`bright` are in FEET.** (Run 34.)
-- **`actor.effects` omits item-transferred AEs** — print it beside `allApplicableEffects()`. (33, 34.)
-- **The engine's functions are MODULE-SCOPED** — re-implement a helper inline. Run 37 did exactly this
-  to read `edhaDisposHostile` and `edhaNoOtherActiveGM`, and it is how both findings were reached.
-- **A talent that drops dangerous terrain damages your own caster.** (Run 33.)
-- **`animate: false` can commit a PARTIAL token position** — use `{animate:false, teleport:true}`. (32.)
-- **The setup script's IIFE is fire-and-forget** — judge idempotency from `game.actors.size` /
-  `scene.tokens.size`, not the log. ✅ **Run 37's cheap way to load it: copy it into the installed
-  module folder and `fetch` + `eval` it from `/modules/edha-content/…`, then delete the temp file** —
-  one small call instead of pasting 22 KB.
-- **A dotted flag delete leaves the PARENT object behind as `{}`.** (31–34.)
-- **Deleting a hazard REGION cascades its Drawing, and a follow-up Drawing delete THROWS.** (31, 33.)
-- **A `javascript_tool` TIMEOUT DOES NOT CANCEL THE SCRIPT.** Fire in one call, read in the next. (26, 28–30, 33, 35.)
-- **`item.use()` never settles while a dialog is open** — run 32's `__cast()` loop handles both shapes.
-- **Read the notification log before writing FAIL.** *"does not have enough actions"* is a silent no-op.
-- **A skill-test talent will simply MISS sometimes** — check the target's defense first. (Run 34.)
+- ⭐ **A hidden pane means animated token moves never commit.** Pump the ticker. (Run 42.)
+- ⭐ **Two tokens of one actor make an engine result unreadable, not merely ambiguous.** (Run 42.)
+- ⭐ **A stale OWNED talent copy fails a row the pack already fixed** — read the rule field, then
+  `edha.syncActorTalents(actor)` on bench PCs. (Run 42.)
+- **An adversary dummy is not an "enemy" of an adversary** — pick the victim by disposition. (42.)
+- **A `javascript_tool` TIMEOUT DOES NOT CANCEL THE SCRIPT.** Fire, then read next call. (26–42.)
+- **Read the card's own `.dice-formula` NODE, never `msg.rolls[0].formula`**, and sample again ~2 s
+  later — the cosmere damage card re-renders asynchronously. (Runs 41, 42.)
+- **`game.messages.contents.slice(-1)` lies** whenever a cue or belief card lands after the roll —
+  snapshot the id set before the take and diff it. (Run 42.)
+- **A watch that "does nothing" may be refusing your victim's actor TYPE** (`defeat` is
+  `character`-gated). (Run 41.)
+- **An UNLINKED token's actor is not the base actor** — stage and assert through
+  `scene.tokens.get(id).actor`. (Run 41.)
+- **`refreshDefBuffs()` will TIDY a pre-existing aura effect you did not create** — run 42 lost
+  `Guardian Stance (+1 Deflect)` off `Bench — Life` and restored it by cloning the identical effect
+  from an actor that still had it. Snapshot effect NAMES, and know that a name alone cannot rebuild.
 - **Never stage a status with `createEmbeddedDocuments`** — use `toggleStatusEffect`. (Run 28.)
-- **Verify the deploy by HASH from BOTH sides.** Run 37's was `57a8c950…` at `main`'s #203 merge —
-  but see step 0 for what a hash does **not** prove.
+- **A raw HP `update()` fires no damage-cadence rule** — use `actor.applyDamage(...)`, or the card's
+  own `button[data-action="apply-damage"][data-multiplier="1"]`. (Runs 34, 42.)
+- **`combat.nextRound()` leaves `turn: null`** — set it with `combat.update({turn: n})`. (Run 41.)
+- **Verify the deploy by HASH from BOTH sides.** Run 42's was `609c7e457e2132b4…`.
 
 ## Standing lessons
 
-- **The re-test block is EMPTY for the first time in eleven runs — so open on the WIZARD block**,
-  which has now been skipped thirteen times and is the largest untouched thing in the file.
-- **Stage each row off the PREVIOUS row's residue.** Run 37 got its whole ADD-mode control table out
-  of one `prepareData()` / `reset()` pair.
-- **Verify a row's named SUBJECT exists before staging anything** — and **verify the row's own PROBE
-  actually produces the condition it claims**. Run 37's Secret-disposition finding is the case in
-  point: the row would have "passed" on a probe that was never sideless.
-- **Once a matched control has proven a root cause, WRITE THE RESIDUAL SYMPTOM DOWN AND MOVE ON.**
-- **Refuse to inherit the previous run's blocker — re-derive it.**
-- **Read the cards you did not come for.** Runs 31–37 each found something that way.
-- **Only claim what your own logs support, and label inferences as inferences.** Run 37's stale-client
-  conclusion is explicitly an inference — three observations fit it, and none of them reads Ben's
-  client directly.
+- **Stage each row off the previous row's residue.** Run 42 got item 63's three-way Rallying Shout
+  result out of the corpse Withering Touch had just made.
+- **Verify a row's named SUBJECT and its own PROBE before staging anything.** Run 42's Volatile Strike
+  row needed an *impact* weapon that no bench PC carries; cloning one turned a "doesn't work" into a
+  ruling.
+- **When a row's NEG is unrunnable with shipped data, CLONE the shipped item and edit the field.**
+  (Runs 39, 41, 42 — the staged impact sidesword, the flagged Surecat weapon.)
+- **Once a matched control has proven a root cause, write the residual symptom down and move on.**
+- **Refuse to inherit the previous run's blocker — re-derive it.** (Run 42 re-derived the disposition
+  coercion rather than citing run 38, and that is why the four I10b2 rows can be trusted as blocked.)
+- **Read the cards you did not come for.** Runs 31–42 each found something that way.
+- **Only claim what your own logs support, and label inferences as inferences.**

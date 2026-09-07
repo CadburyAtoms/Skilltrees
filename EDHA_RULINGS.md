@@ -464,6 +464,41 @@ Ask: Should `edha-regen`'s turn-end heal, the decay lifesteal heal-back, and `ed
 
 ---
 
+**R-88. Volatile Strike rides any melee hit — but only one that deals IMPACT. Is that the rule you want?**
+R-23 (a) shipped as `whenDealer: "any"` (item 58), and bench run 42 confirms it works: on the deployed
+pack a **plain weapon hit that dealt impact** — a staged impact-damage sidesword on `Bench — Red`, not
+a Volatile Strike cast — posted the offer *"⚡ Volatile Strike — 1 Investiture … spend 1 Investiture
+(test Red vs Physical) to add half [Tier][Die] impact to the creature you hit."* But the same PC's
+**ordinary keen sidesword hit offered nothing**, because the rule also carries
+`whenDamageType: "impact"` — untouched by R-23, and not mentioned on the card, whose prose is the bare
+*"When you hit with a melee attack, spend 1 Investiture …"*. So today the talent reads as a rider on
+every melee hit and behaves as a rider on impact hits only, which for a Red PC with a keen weapon is
+almost never. *Recommended default: **(a) drop the `whenDamageType` gate** — one field on the Events
+tab, no engine change, and the card then tells the truth.* (b) keep the gate and say so on the card
+("when you hit with a melee attack **for impact damage**") — also a data-only fix, but it makes the
+talent weapon-dependent in a way nothing else in Red is. *(Bench run 42, 2026-09-07 — measured both
+directions in one window; nothing is broken, the two halves just disagree.)*
+
+---
+
+**R-89. The `NO NAMEABLE HOOK` marker does not survive a ProseMirror save. Where should it live?**
+R-47's own ⚠️ clause asked this and bench run 42 answered the mechanism: feeding a marked description
+through `ProseMirror.dom.parseString` → `serializeString` — the exact pair Foundry's editor uses when
+you save — **drops the `<!-- NO NAMEABLE HOOK: … -->` comment entirely** (measured on Wrongwake's Drag
+Under: the source ends with the marker, the round-trip ends at "no air, no speech."). Nothing is broken
+today, because the marker lives in `data/adversaries.json` and only the world copy would lose it — but
+the authoring loop is Foundry-edit → extract → build, so **the first time Ben edits one of these
+descriptions in Foundry and it is extracted, the marker is silently gone and `lint-refs.js` pass 5
+starts failing** on an ability that never changed. *Recommended default: **(a) move the declaration off
+the description** into a dedicated field the editor cannot rewrite (a `flags.edha-content.noHook`
+string, read by lint pass 5, rendered nowhere) — the marker stops being prose and starts being data.*
+(b) leave it and add a note to `AUTHORING_WORKFLOW.md` telling Ben not to save those descriptions from
+the editor. (c) teach the extract step to re-attach the marker from the repo copy when the incoming
+text has lost it. *(Bench run 42, 2026-09-07 — R-47's other four clauses all passed and its row is
+retired; this is the residue.)*
+
+---
+
 ## D. Talent identity & tree shape
 
 **R-23. Volatile Strike — whose hit should it ride?** Card and rule description both say "when you
