@@ -18264,10 +18264,24 @@ function edhaWalkRateFtFromSpd(spd) { return 20 + 5 * (Number(spd) || 0); }
  *    Skipped while the actor's SOURCE carries its own movement override (legacy pregens).
  *  • Senses: writes .derived (NOT .override), exactly as the system's own prepareSecondaryDerivedData
  *    does, so a player's Configure Senses Range override still wins and the .bonus still adds.
+ *    Applies to EVERY actor type — adversaries included (R-56 (a), item 55); HP and Speed stay PC-only.
  */
 function edhaDeriveSheetStats(actor) {
   try {
-    if (actor?.type !== "character") return;
+    if (!actor) return;
+    // Senses Range = the Edha AWA table, for EVERY actor type (R-56 (a), item 55: ONE rule for PCs
+    // and adversaries — the sheet, the prototype token the build stamps, and edhaCanSee all read
+    // the same table). The system wrote its own ladder into .derived a moment ago; overwrite it,
+    // leaving override/useOverride/bonus alone so a hand-configured range — or an adversary
+    // block's explicit `senses` override, which the build writes as exactly that — still wins.
+    // Was character-only from 07-28i to item 55: every world adversary read the cosmere ladder's
+    // 5 ft on the sheet while its token carried 10 (bench run 22, 47/47).
+    const senses = actor.system?.senses?.range;
+    if (senses) {
+      const awa = Number(actor.system?.attributes?.awa?.value) || 0;
+      try { senses.derived = edhaSensesRangeFtFromAwa(awa); } catch (e) { /* non-fatal */ }
+    }
+    if (actor.type !== "character") return;   // HP and Speed below are PC-only rules (adversary blocks carry overrides)
     // HP = system + EDHA_HP_BONUS (0 since R-54 — the Edha and system tables agree)
     const heaMax = actor.system?.resources?.hea?.max;
     const srcHeaBonus = Number(actor._source?.system?.resources?.hea?.max?.bonus) || 0;
@@ -18300,13 +18314,6 @@ function edhaDeriveSheetStats(actor) {
       const spd = Number(actor.system?.attributes?.spd?.value) || 0;
       try { rate.override = edhaWalkRateFtFromSpd(spd); rate.useOverride = true; } catch (e) { /* non-fatal */ }
     }
-    // Senses Range = the Edha AWA table. The system wrote its own .derived a moment ago; overwrite
-    // it, leaving override/useOverride/bonus alone so a hand-configured range still wins.
-    const senses = actor.system?.senses?.range;
-    if (senses) {
-      const awa = Number(actor.system?.attributes?.awa?.value) || 0;
-      try { senses.derived = edhaSensesRangeFtFromAwa(awa); } catch (e) { /* non-fatal */ }
-    }
   } catch (e) { console.error("Edha Content | sheet-stat derivation failed", e); }
 }
 // One-time migration: strip the pregens' per-actor HP bonus / movement override so the derivations
@@ -18324,14 +18331,18 @@ async function edhaMigrateDerivations() {
   return n;
 }
 
-/* --- PC token defaults (07-18 bench: new "Test Warrior" had a hidden name + short sight) --------
- * Foundry's blank prototype token (displayName NONE, sight range 0) is wrong for Edha PCs: the
+/* --- Token sight defaults (07-18 bench: new "Test Warrior" had a hidden name + short sight) ------
+ * Foundry's blank prototype token (displayName NONE, sight range 0) is wrong for Edha actors: the
  * sight model (07-16c) gives every creature its Senses Range, and a PC's name should read on
- * hover. NEW character actors get displayName HOVER(30) + sight enabled in the cosmere "sense"
- * vision mode (attenuation 0.1 — the exact shape the world PCs and the 07-17c adversary builds
- * carry), range = Senses Range from AWA. An updateActor watcher keeps the range in step when AWA
- * changes (prototype + placed tokens, single GM applier). `edha.fixPcTokens()` retrofits
- * EXISTING characters and their placed tokens (run once for Test / Test Warrior).
+ * hover. NEW actors of ANY type get sight enabled in the cosmere "sense" vision mode (attenuation
+ * 0.1 — the exact shape the world PCs and the adversary pack builds carry), range = Senses Range
+ * from the Edha AWA table (R-56 (a), item 55: one rule for PCs and adversaries; was character-only
+ * before). New CHARACTERS additionally get displayName HOVER(30); adversaries keep Foundry's
+ * default (the pack's OWNER_HOVER(20) is set by the build, and a blank-created adversary should not
+ * leak its name to players on hover). Pack-built and imported actors already carry a sight range
+ * and are left alone. An updateActor watcher keeps the range in step when AWA changes (prototype +
+ * placed tokens, single GM applier, every actor type). `edha.fixPcTokens()` retrofits EXISTING
+ * characters and their placed tokens; existing adversaries are re-stamped by the pack sync.
  */
 function edhaPcSightShape(actor) {
   const awa = Number(actor?.system?.attributes?.awa?.value) || 0;
@@ -18339,14 +18350,14 @@ function edhaPcSightShape(actor) {
 }
 Hooks.on("preCreateActor", (doc, data) => {
   try {
-    if (doc.type !== "character") return;
-    if (data?.prototypeToken?.sight?.range) return; // imported/duplicated actors keep their own config
-    doc.updateSource({ prototypeToken: { displayName: 30, sight: edhaPcSightShape(doc) } });
-  } catch (e) { console.error("Edha Content | PC token defaults failed", e); }
+    if (data?.prototypeToken?.sight?.range) return; // imported/duplicated/pack-built actors keep their own config
+    const proto = { sight: edhaPcSightShape(doc) };
+    if (doc.type === "character") proto.displayName = 30;
+    doc.updateSource({ prototypeToken: proto });
+  } catch (e) { console.error("Edha Content | token sight defaults failed", e); }
 });
 Hooks.on("updateActor", (actor, changes) => {
   try {
-    if (actor.type !== "character") return;
     if (changes?.system?.attributes?.awa === undefined) return;
     if (!edhaDefBuffGmGate()) return; // ONE applier (§10)
     const range = edhaPcSightShape(actor).range;
@@ -18355,7 +18366,7 @@ Hooks.on("updateActor", (actor, changes) => {
       const toks = sc.tokens?.filter?.(t => t.actorId === actor.id) ?? [];
       if (toks.length) void sc.updateEmbeddedDocuments("Token", toks.map(t => ({ _id: t.id, "sight.range": range })));
     }
-  } catch (e) { console.error("Edha Content | PC sight-range sync failed", e); }
+  } catch (e) { console.error("Edha Content | sight-range sync failed", e); }
 });
 async function edhaFixPcTokens() {
   if (!game.user?.isGM) { ui.notifications?.warn("Edha: PC token fix is GM-only."); return; }
@@ -18396,7 +18407,8 @@ Hooks.once("ready", () => {
   // persisted, so the actor snapped back to 57 the next time a real update re-initialised it — the
   // "flip", and why there was no residue. It hit EVERY character carrying ANY ADD-mode effect, on
   // EVERY client, at world load; Hardy was only how the bench noticed.
-  for (const a of (game.actors ?? [])) { if (a.type === "character") { try { a.reset(); a.sheet?.rendered && a.sheet.render(false); } catch (e) {} } }
+  // Every actor, not just characters, since item 55: adversaries' Senses Range is derived here too.
+  for (const a of (game.actors ?? [])) { try { a.reset(); a.sheet?.rendered && a.sheet.render(false); } catch (e) {} }
 });
 
 /* --- Apply-damage targeting: make the chat Apply buttons follow TARGETS ONLY -------------------

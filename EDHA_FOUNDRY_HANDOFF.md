@@ -33,6 +33,37 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-06 — Item 55: ONE senses rule for PCs and adversaries, R-56 (a) (**ENGINE + BUILD/DATA → pack REBUILD + a world bulk "⟳ Sync Adversaries from Pack", Ben's deploy; PR #240**)
+
+R-56 (a), Ben: adversary SHEETS and TOKEN SIGHT use the Edha AWA table (0→10, 1→15, 2–3→20, 4→25,
+5+→30), exactly as PCs do. Bench run 22 had measured three surfaces disagreeing about the SAME
+creature: every world adversary's sheet read the cosmere ladder's **5** at AWA 0
+(`edhaDeriveSheetStats` was character-only), every pack token carried a **flat 10** the build
+hard-coded, and the sync pushed that 10 onto placed tokens whose actor still said 5.
+
+- **Engine (F5 half):** the `type !== "character"` guard is gone at the three sites — senses in
+  `edhaDeriveSheetStats` (now first, for every actor type; HP/Speed stay PC-only behind a later
+  guard), the `preCreateActor` token-default hook (a blank-created adversary gets cosmere "sense"
+  sight at table(AWA), but NOT the PC's HOVER(30) displayName — its name must not leak on hover),
+  and the AWA `updateActor` watcher (prototype + placed tokens, single GM applier). The `ready`
+  refresh sweep now resets EVERY actor, because a world adversary is prepared before the wrapper
+  installs and would otherwise show 5 until its next update.
+- **Build (REBUILD half):** `advSensesRangeFt(adv)` in `scripts/foundry-build-parts.js` — the
+  block's explicit `senses` wins, else the table at AWA 0 (adversary blocks carry no attributes) —
+  replaces the flat 10 in `advPrototypeToken`. `sensesRangeFtFromAwa` there is pinned equal to the
+  engine's `edhaSensesRangeFtFromAwa` for AWA 0..7 so the two copies cannot drift.
+- **Data:** `data/adversaries.json` — **Briar-Gone Grove gets `senses: 30`**, the one authored
+  override (a rooted grove-heart has no eyes and perceives through its own soil; its reach is the
+  arena, not an AWA-0 stare). The README's `senses` line now documents it as THE bespoke override.
+- **Proven:** seven one-line reversions (each guard, the flat 10, a drifted table, the Grove's
+  field, the sweep) each fail a named pin; scratch read-back before→after of the adversary pack:
+  52 actors, **1 changed** (the Grove: token 10→30 + sheet override 30), 51 unchanged at 10 —
+  the pack's number was already 10, so the rebuild moves the Grove and the ENGINE moves every world
+  sheet (5→10). `node scripts/gates.js --ci` green (packs build + both validators).
+- **Ben's deploy:** rebuild + deploy, then press **⟳ Sync Adversaries from Pack** (the world bulk
+  sync this ruling authorises) so placed tokens re-stamp from the pack. 🤖 rows: the "Adversary
+  tokens see like PCs" re-measure (AWA 0 → 10 on sheet AND token, whole population) and the new
+  Briar-Gone Grove override row (sheet 30, token 30).
 ## 2026-09-06 — Item 63: Rallying Shout's reminder prints only for a DOWNED ally — `whenTarget` on `edha-note`, R-25 (c) (**ENGINE + AUTHORED → REBUILD heroic + ⟳ Sync Talents** — Ben's deploy; PR #239)
 
 Fix pass 7a (item 47) stopped R-25 because the reminder is an **authored** `edha-note` rule
