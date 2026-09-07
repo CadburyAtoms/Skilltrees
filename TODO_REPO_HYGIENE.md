@@ -3064,7 +3064,7 @@ records the answer.
 
 ---
 
-## 93. [ ] R-89 (a) — the `NO NAMEABLE HOOK` declaration moves off the description into data (`noHook` → `flags.edha-content.noHook`), read by lint pass 5
+## 93. [x] R-89 (a) — the `NO NAMEABLE HOOK` declaration moves off the description into data (`noHook` → `flags.edha-content.noHook`), read by lint pass 5 (2026-09-07, PR #291)
 
 **Why:** bench run 42 (2026-09-07, PR #274) measured that Foundry's editor drops the
 `<!-- NO NAMEABLE HOOK: … -->` HTML comment on save (`ProseMirror.dom.parseString` →

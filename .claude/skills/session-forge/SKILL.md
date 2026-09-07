@@ -153,7 +153,8 @@ Write scenes on the template's shape. The standards, each earned in session 1:
   items with attack/damage/riders) so they can become droppable Foundry actors later. **Stats
   ship WIRED, not as prose (Ben 2026-07-16):** every ability whose text names a trigger carries
   an `events` rule — full automation where the effect is decision-free, `edha-gm-cue` at minimum
-  where the call stays with the GM — or an explicit `NO NAMEABLE HOOK: <reason>` line;
+  where the call stays with the GM — or a `noHook` key giving the reason (item 93 / R-89 (a):
+  data, not a prose line — Foundry's editor drops HTML comments on save);
   `lint-refs.js` pass 5 fails the commit otherwise. The standard, the vocabulary, and the traps
   live in `leyline-tree-authoring` SKILL.md §"Adversary abilities" + ENGINE_INDEX §"Talents on
   adversaries" / §"GM cue cards" — read those BEFORE statting, so the session-1 pattern (talents

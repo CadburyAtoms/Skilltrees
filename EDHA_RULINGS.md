@@ -866,6 +866,8 @@ only the fiction.* Affects every adversary ability carrying the marker, not just
 > Failing). `lint-refs.js` pass 5 still reads the raw prose for the exemption AND now fails a VISIBLE
 > marker — mutation-proved both ways. 🤖 row in the adversary-wiring section (includes a ProseMirror
 > round-trip check: if the editor strips comments on save, the marker needs a GM-note field instead).
+> **Moved by R-89 (a) → item 93** (2026-09-07): the HTML comment described above is gone — the
+> declaration now lives in the `noHook` key (`flags.edha-content.noHook` on the built docs).
 
 **R-52. A 5-ft `ally-drops` cue cannot reach an ally standing next to its owner. Slack, or edge-to-edge?**
 Raised by bench run 19 (2026-07-28e), which measured it four ways rather than asserting it.

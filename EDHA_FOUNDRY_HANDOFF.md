@@ -262,8 +262,10 @@ literal in the engine's `ready` hook is the authority). Keys today:
   weapons carry `alwaysEquipped: true`; the rest stay actions by design — grabs, 2-action
   manoeuvres, bursts, Focus-costed bolts; `kind` is never written as `"action"`, so count items
   with `attack` and no `kind: weapon`), and the wiring standard: trigger-naming text carries events
-  (a cue at minimum) or an HTML comment `<!-- NO NAMEABLE HOOK: <reason> -->` (lint pass 5 fails a
-  VISIBLE marker). Senses derive from AWA for every actor (item 55); the one authored override is
+  (a cue at minimum) or a `noHook` key giving the reason (item 93 / R-89 (a), 2026-09-07: data —
+  `flags.edha-content.noHook` on the built docs — not a prose HTML comment, which Foundry's editor
+  drops on save; lint pass 5 fails a `NO NAMEABLE HOOK` string left in text/rider). Senses derive
+  from AWA for every actor (item 55); the one authored override is
   Briar-Gone Grove `senses: 30`. `adversary-effects.json` = the baked item ActiveEffects.
 - **`items.json`** (102 items: 12 Edha-authored + 89 shipped-gear mirror re-priced in c/s/g + the
   Malcurr-Stamped Blade; the 30 `isMoney` sphere/gem entries are excluded) + **`cultures.json`**
@@ -424,7 +426,8 @@ Iron-rule-2a exception granted by ruling (R-70, not a precedent): ONE wrapper on
 **7.8 `scripts/lint-refs.js` — the 23 passes** (fails the build; comments stripped before scanning):
 1–2 authored files (the seven-key whitelist, every rule's handler type registered); 3 engine
 name-literals resolve; 4 no raw talent-type gates (the unreachable-case family); 5 adversary
-abilities carry events or an HTML-comment `NO NAMEABLE HOOK`; 6 cue triggers are dispatchable; **7
+abilities carry events or a `noHook` key (item 93 / R-89 (a); a `NO NAMEABLE HOOK` string left in
+text/rider is an error); 6 cue triggers are dispatchable; **7
 the name-keyed ratchet**; 8 `execute-macro` budget; 9 handler FIELD names vs schema, 9b enum values
 in `choices`; 10 no raw `CONFIG.COSMERE.*[id].label`; 11 `system.<field>` paths vs the real schemas;
 12 dead skill/attribute/status/damage/defense ids (`inm`/`prc`/`prs`/`lea`, never `itm`/`per`/`ldr`);

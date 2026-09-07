@@ -194,10 +194,14 @@ bespoke ability whose text names a trigger ("when…", "triggered…", "first ti
    (`edha-triggered-effect`, riders, `edha-self-status`, `edha-thorns`, `edha-next-test-mod`)
    when the effect is decision-free; **`edha-gm-cue` at minimum** when the decision stays at the
    table — the GM gets a whispered card at the named hook, which is the floor, or
-3. **An explicit `NO NAMEABLE HOOK: <reason>` line in its text** — the reason must survive the
-   Dread Presence test (the hook inventory GROWS; re-litigate every pass). The known forever-manual
-   classes: NPC intent/targeting isn't data (Pack Tactics), the GM's miss/graze/hit adjudication
-   isn't module-visible (Combat Training), cover/meaningful light is a table read (Veil).
+3. **A `noHook` key on the item, giving the reason** (item 93 / R-89 (a), 2026-09-07 — moved off
+   prose into data: `"noHook": "<reason>"`, sibling to `text`/`events`; the build writes it to
+   `flags['edha-content'].noHook`, which renders nowhere on the card and survives the Foundry
+   editor's save round-trip, unlike the old `<!-- NO NAMEABLE HOOK: <reason> -->` HTML comment,
+   which Foundry's ProseMirror editor drops on save). The reason must survive the Dread Presence
+   test (the hook inventory GROWS; re-litigate every pass). The known forever-manual classes:
+   NPC intent/targeting isn't data (Pack Tactics), the GM's miss/graze/hit adjudication isn't
+   module-visible (Combat Training), cover/meaningful light is a table read (Veil).
 
 A bare "GM-run" label satisfies nothing — lint fails it.
 
@@ -218,8 +222,8 @@ fails any cue outside them; the shapes are:
 | the owner's own turn ends (every N rounds) | `edha-apply-watch` + trigger `turn-end` (+ `everyNRounds`) |
 | the owner's phantom copy breaks | `edha-apply-watch` + trigger `seeming-break` |
 | the owner's DAMAGING item lands | **event `edha-on-hit`** + trigger `on-hit` — the event carries it, and it only fires when damage is actually dealt |
-| a to-hit-only attack (grab) hits | **no hook exists** — no damage write happens; `NO NAMEABLE HOOK` line |
-| an attack MISSES the owner | **no hook exists** — a miss writes nothing; `NO NAMEABLE HOOK` line |
+| a to-hit-only attack (grab) hits | **no hook exists** — no damage write happens; set `noHook` |
+| an attack MISSES the owner | **no hook exists** — a miss writes nothing; set `noHook` |
 | the owner Draws Mana (attuned block) | usually already ENGINE-NATIVE via the auto-embedded Key (green = click-place terrain); mark the trait `ENGINE-NATIVE VIA Draw Mana: <what rides it>` — lint verifies the named carrier exists |
 
 **Seemings and `whenTargetFooled` (2026-07-19).** A `whenTargetFooled` damage rider reads a belief
