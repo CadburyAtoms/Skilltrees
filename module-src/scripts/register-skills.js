@@ -1007,6 +1007,22 @@ function edhaRiderBonus(item, actor) {
 // The wrapper logic, shared by the libWrapper and manual-patch paths. (Deal-damage TRIGGERS are
 // dispatched natively by the system's event engine off cosmere-rpg.damageRoll — not from here.)
 function edhaWrapRollDamage(originalCall, options = {}) {
+  /* R-71, RUNTIME half (item 69). The system rolls a talent's own `system.damage.formula` straight
+   * off the field and prints it verbatim, so a rank/tier-scaled `(@tier)d(2 * @skills.blue.rank + 2)`
+   * reached the chat card as `(2)d(2 * 3 + 2)` while the same talent's engine-rolled card (R-65,
+   * `edhaRollFormula`) read `2d8`. Item 59's BUILD-time fold is a proven no-op on every current
+   * formula — there is no actor at build time — so the fold happens HERE, with the roller's data in
+   * hand, before the system builds its roll and before any rider joins onto the base. A formula that
+   * is already plain resolves to itself and `options` is left untouched (byte-identical by design).
+   * Generic: reads the document's field, never a talent's name. Pinned in tests/runtime-formula-fold. */
+  try {
+    const raw = options.overrideFormula ?? this.system?.damage?.formula;
+    const rollData = this.actor?.getRollData?.();
+    if (raw && rollData) {
+      const folded = edhaFoldDieMath(Roll.replaceFormulaData(String(raw), rollData, { missing: "0" }));
+      if (folded !== String(raw)) options = { ...options, overrideFormula: folded };
+    }
+  } catch (e) { /* never break a damage roll on a fold failure — the raw formula still rolls correctly */ }
   const bonus = edhaRiderBonus(this, this.actor);
   if (bonus) {
     const base = options.overrideFormula ?? this.system?.damage?.formula;
