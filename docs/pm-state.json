@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-07T02:19:20.145Z",
+  "generatedAt": "2026-09-07T02:33:47.732Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "05d2770b41",
-    "commit": "53dd0bc",
-    "branch": "pm/board-2026-09-06l",
+    "hash": "56a6bf8913",
+    "commit": "5eb7a11",
+    "branch": "pm/board-2026-09-06m",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -43,8 +43,8 @@
   },
   "pm": {
     "status": "awake",
-    "note": "Fable PM (Ben-started, 16:56 ET). PM-R14: caps lifted, Fable workers on the larger items. Thirty-six PRs merged tonight - the latest: item 19a + 19b (the handoff is now a 691-line reference; all dated deltas live in docs/handoff-changelog/), item 73 (docs sweep) and fix pass 9 (bench 40's defects: the prompt-pick once budget, Ambush Bite's double flavor, R-84 / R-85 as defaults; 22:16). 22:17: the engine was PUSHED live again (Foundry was up, you had not run the bat yet) - 24, 69, 68, fix pass 9 and the 55 / 56 engine halves are at the table; F5 your Gamemaster client. Bench run 41 is driving their rows now. Also running: items 71 (registry leftovers), 61 (R-42 map polygons) and 44 (Ask: lines on open rulings). STILL OWED: one deploy-to-foundry.bat run (Foundry closed) for the pack REBUILDS - 34a, 57, 58, 65+67, 59, 63, 55, 56 - their bench rows stay blocked until then. R-48 answered from your phone at 21:14. R-83 still needs your answer (item 70). Defaults applied, vetoable: R-18, R-80, R-81, R-82, R-84, R-85, PM-R15.",
-    "waitingOn": "ONE deploy-to-foundry.bat run (Foundry closed) for the pack rebuilds - after bench 41 finishes, ideally; R-83 (needs your answer - it moves HP); R-18, R-80, R-81, R-82, R-84, R-85, PM-R15 (defaults apply if silent)",
+    "note": "Fable PM (Ben-started, 16:56 ET). PM-R14: caps lifted, Fable workers on the larger items. Thirty-nine PRs merged tonight - since 22:16: fix pass 9, item 71 (registry leftovers), item 44 (a plain question line on every open ruling for this page), item 61 (the Goldenport / Corvaine map polygons, R-42 - four cities now resolve to the right nation). 22:17: the engine was PUSHED live (Foundry was up; you had not run the bat) - 24, 69, 68, fix pass 9 and the 55 / 56 engine halves are at the table; F5 your Gamemaster client. Bench run 41 is driving their rows now; item 71's engine half and 61's map asset go live with the next push once bench 41 reports. STILL OWED: one deploy-to-foundry.bat run (Foundry closed) for the pack REBUILDS - 34a, 57, 58, 65+67, 59, 63, 55, 56 - their bench rows stay blocked until then. R-48 answered from your phone at 21:14. R-83 still needs your answer (item 70). Defaults applied, vetoable: R-18, R-80, R-81, R-82, R-84, R-85, PM-R15. Also running since 22:31: items 74 (a single-scope build crash), 75 (nine no-op executors), 76 (phone-card defaults) and 10 batch 2 (the last eleven fail-open disposition reads).",
+    "waitingOn": "ONE deploy-to-foundry.bat run (Foundry closed) for the pack rebuilds - after bench 41 finishes; R-83 (needs your answer - it moves HP); R-18, R-80, R-81, R-82, R-84, R-85, PM-R15 (defaults apply if silent)",
     "nextWakeAt": null,
     "session": "2026-09-06 16:56 ET — Fable PM (hand-started)"
   },
@@ -63,43 +63,56 @@
       "note": "worktree; engine pushed 22:17 (live = main #253)"
     },
     {
-      "item": "71",
-      "title": "Registry leftovers from item 24 — a README row, the executor-less edha-illusion-upkeep, six handler types with no authored user (dispositions, no deletions), the console line that still lists aoe-template, the loosened note-target-gate test slice",
+      "item": "74",
+      "title": "foundry-build.js items (single scope) crashes on a temporal-dead-zone let — hoist + a pin per single scope",
       "model": "fable",
       "size": "S",
       "lane": "R",
-      "branch": "pm/71-registry-leftovers",
-      "startedAt": "2026-09-07T02:11:00Z",
-      "agent": "Work item 71",
+      "branch": "pm/74-build-single-scope",
+      "startedAt": "2026-09-07T02:31:00Z",
+      "agent": "Work item 74",
       "phase": "working",
       "pr": null,
-      "note": "worktree; fable-worker; ENGINE-ONLY for the console line, TOOLING/DOCS otherwise"
+      "note": "worktree; fable-worker; TOOLING-only"
     },
     {
-      "item": "61",
-      "title": "R-42 map polygons — Goldenport's coastal / island lobes, Corvaine's edge to the river bank; lint_map.py WARNs 4 → 0; thyrcross-nations.json regenerated (a module asset)",
+      "item": "75",
+      "title": "Nine executor-less handler rows get the same no-op executor item 71 gave edha-illusion-upkeep; the named set shrinks to empty; snapshot unchanged",
       "model": "fable",
       "size": "S",
       "lane": "R",
-      "branch": "pm/61-map-polygons",
-      "startedAt": "2026-09-07T02:12:00Z",
-      "agent": "Work item 61",
+      "branch": "pm/75-executor-noops",
+      "startedAt": "2026-09-07T02:31:00Z",
+      "agent": "Work item 75",
       "phase": "working",
       "pr": null,
-      "note": "worktree; fable-worker; DATA + module asset (sync push / the bat)"
+      "note": "worktree; fable-worker; ENGINE-ONLY (F5)"
     },
     {
-      "item": "44",
-      "title": "Ask: lines on every open ruling whose heading is not a self-contained question (phase 2 of the phone Needs-you view)",
+      "item": "76",
+      "title": "Phone cards: RULING_DEFAULT_RE yields an empty default for bold-inline defaults; R-80 / R-81 get their §I stubs so they render as applied-veto cards",
       "model": "fable",
       "size": "S",
       "lane": "R",
-      "branch": "pm/44-ask-lines",
-      "startedAt": "2026-09-07T02:12:00Z",
-      "agent": "Work item 44",
+      "branch": "pm/76-ruling-defaults",
+      "startedAt": "2026-09-07T02:31:00Z",
+      "agent": "Work item 76",
       "phase": "working",
       "pr": null,
-      "note": "worktree; fable-worker; DOCS-ONLY"
+      "note": "worktree; fable-worker; TOOLING + DOCS-ONLY"
+    },
+    {
+      "item": "10",
+      "title": "Disposition fail-open backlog, batch 2 — the last 11 reads (picker candidates, empty-note sweep, movement-window card, prohibition dialog, cleanse beacon list) onto edhaSideSame / edhaSideHostile; ratchet 11 → 0",
+      "model": "fable",
+      "size": "M",
+      "lane": "B",
+      "branch": "pm/10-dispo-batch-2",
+      "startedAt": "2026-09-07T02:33:00Z",
+      "agent": "Work item 10 batch 2",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; fable-worker; ENGINE-ONLY (F5); 🤖 rows per family"
     }
   ],
   "usage": null,
@@ -419,12 +432,12 @@
     {
       "pos": 26,
       "item": "10",
-      "title": "Disposition fail-open backlog — batch 1 merged #200: 63 of 74 occurrences (31 sites) fail CLOSED via two pure primitives edhaSideSame / edhaSideHostile; ratchet 74 → 11; two sites had read two unknowns as OPPOSITE sides; a baked side is a stored fail-open (cast sites now bake edhaActorSide); deployed 03:27, bench run 37 drives its sideless-probe row first. Batch 2 = the 11 card-wording / picker-list sites (next session, Opus S)",
+      "title": "Disposition fail-open backlog — batch 1 merged #200: 63 of 74 occurrences (31 sites) fail CLOSED via two pure primitives edhaSideSame / edhaSideHostile; ratchet 74 → 11; two sites had read two unknowns as OPPOSITE sides; a baked side is a stored fail-open (cast sites now bake edhaActorSide); deployed 03:27, bench run 37 drives its sideless-probe row first. Batch 2 = the 11 card-wording / picker-list sites — dispatched 22:33 as a fable-worker, worktree (ratchet 11 → 0; 🤖 rows per family)",
       "lane": "B",
-      "model": "opus",
+      "model": "fable-worker",
       "size": "L",
       "deps": null,
-      "status": "bench-pending",
+      "status": "running",
       "statusDetail": null,
       "pr": 200
     },
@@ -731,14 +744,14 @@
     {
       "pos": 52,
       "item": "61",
-      "title": "R-42 map polygons — Goldenport's coastal / island lobes, Corvaine's edge to the river bank; lint_map.py WARNs 4 → 0",
+      "title": "R-42 map polygons — Goldenport's coastal / island lobes, Corvaine's edge to the river bank; lint_map.py WARNs 4 → 0. Dispatched 22:12 as a fable-worker, worktree. Merged 22:30 after review — Goldenport re-traced with the toolchain's own tracer plus its coastal strip and two city islands (80 → 131 vertices, 77 old ones verbatim); the Thalendor / Corvaine seam moved to the Palewater's west bank at the ferry (both rings, because nation_at is first-match — the PM accepted the Thalendor edit the brief had not named); city WARNs 4 → 0, every other ring byte-identical, gates --ci green. The regenerated thyrcross-nations.json is a module ASSET — goes live with the next sync push, held for bench 41's hash. 1.7M / 90 turns / 12 min. Found: seven cityless Goldenport islets outside any polygon; lint_map.py never checks a city that resolves to the WRONG nation",
       "lane": "R",
-      "model": "sonnet",
+      "model": "fable-worker",
       "size": "S",
       "deps": "46 ✓",
-      "status": "queued",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 256
     },
     {
       "pos": 53,
@@ -755,14 +768,14 @@
     {
       "pos": 54,
       "item": "44",
-      "title": "Ask: lines on non-question ruling headings (phase 2 of 43)",
+      "title": "Ask: lines on non-question ruling headings (phase 2 of 43). Dispatched 22:12 as a fable-worker, worktree. Merged 22:28 after review — 8 open rulings audited, 4 got an Ask: line (R-48, R-81, R-82, R-83), 4 already asked; item 43's parser had no Ask: fallback at all, so a two-line fallback + pins landed with it (the \"Done when\" required it); convention written into the rulings intro. 1.5M / 88 turns / 10 min. Found → TODO 76",
       "lane": "R",
-      "model": "sonnet",
+      "model": "fable-worker",
       "size": "S",
-      "deps": "43",
-      "status": "queued",
+      "deps": "43 ✓",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 258
     },
     {
       "pos": 55,
@@ -839,14 +852,14 @@
     {
       "pos": 64,
       "item": "71",
-      "title": "Registry leftovers from item 24 — a scripts/README.md row for fold-die-math.js, the executor-less edha-illusion-upkeep, six handler types with no authored user, the registration console line that still lists aoe-template, the loosened note-target-gate test slice; one-line dispositions into ENGINE_INDEX.md, no deletion without a ruling. Dispatched 22:11 as a fable-worker, worktree (edits the sources + re-assembles; told to resolve any conflict with fix pass 9 in the sources and re-run the assembler)",
+      "title": "Registry leftovers from item 24 — a scripts/README.md row for fold-die-math.js, the executor-less edha-illusion-upkeep, six handler types with no authored user, the registration console line that still lists aoe-template, the loosened note-target-gate test slice; one-line dispositions into ENGINE_INDEX.md, no deletion without a ruling. Dispatched 22:11 as a fable-worker, worktree. Merged 22:27 after review — README row (check-scripts-readme.js clean, 67 paths / 48 rows), a no-op executor on edha-illusion-upkeep (its readers named), the registration console line DERIVED from the tables (no retired type can reappear), the note-target-gate slice on the next table row, six dispositions in ENGINE_INDEX (one generator-emitted by the cultures writer, five adversary-carried — none dead, no deletion candidate; proven by a scratch build read back through classic-level); the registry pin now NAMES the nine still-executor-less rows so the set can only shrink. Two mutations shown failing; snapshot untouched. 1.8M / 106 turns / 16 min. ENGINE-ONLY half not yet live — held until bench 41 reports (hash stability), then pushed. Found: foundry-build.js items single-scope TDZ crash → TODO 74; the nine rows → TODO 75",
       "lane": "R",
       "model": "fable-worker",
       "size": "S",
       "deps": "#24 ✓",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 257
     },
     {
       "pos": 65,
@@ -871,6 +884,42 @@
       "status": "merged",
       "statusDetail": null,
       "pr": 252
+    },
+    {
+      "pos": 67,
+      "item": "74",
+      "title": "foundry-build.js items (single scope) crashes on a TDZ let — REGISTERED_HANDLER_TYPES declared below the items writer's call; all hides it. Hoist + a pin per single scope. Dispatched 22:31 as a fable-worker, worktree",
+      "lane": "R",
+      "model": "fable-worker",
+      "size": "S",
+      "deps": null,
+      "status": "running",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 68,
+      "item": "75",
+      "title": "Nine executor-less handler rows (named in EXECUTOR_LESS_CONFIG_ONLY) get the no-op executor item 71 gave edha-illusion-upkeep; the set shrinks to empty; snapshot unchanged. Dispatched 22:31 as a fable-worker, worktree",
+      "lane": "R",
+      "model": "fable-worker",
+      "size": "S",
+      "deps": "#71 ✓",
+      "status": "running",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 69,
+      "item": "76",
+      "title": "Phone cards: RULING_DEFAULT_RE yields an empty default for bold-inline defaults (R-80 … R-85); R-80 / R-81 say \"(§I)\" but live in §C so they render as plain default-ask cards. Dispatched 22:31 as a fable-worker, worktree",
+      "lane": "R",
+      "model": "fable-worker",
+      "size": "S",
+      "deps": "#44 ✓",
+      "status": "running",
+      "statusDetail": null,
+      "pr": null
     },
     {
       "pos": 61,
@@ -3148,6 +3197,76 @@
       "weighted": null,
       "weightedM": null,
       "outcome": "dispatched on f2fb3e2d…; told the next free ruling number is R-86 and that deltas go to the changelog now. Four workers in flight: bench 41, 71, 61, 44",
+      "pr": null
+    },
+    {
+      "date": "2026-09-06",
+      "time": "22:11",
+      "at": "2026-09-07T02:11:00.000Z",
+      "item": "Item 71 (registry leftovers) — work-item via fable-worker, worktree",
+      "itemNo": null,
+      "model": "fable (medium)",
+      "isDispatch": false,
+      "duration": "16 min, 106 turns",
+      "weighted": "1.8M",
+      "weightedM": 1.8,
+      "outcome": "merged 22:27 after review (gh mergedAt 02:27:00Z), no trailers, no bounce; the worker merged main (fix pass 9) into the sources and re-assembled itself. Its ENGINE-ONLY half (the derived console line + one no-op executor) is not yet live — held for bench 41's hash. Found: the foundry-build.js items single-scope TDZ crash → TODO 74; nine executor-less rows → TODO 75",
+      "pr": 257
+    },
+    {
+      "date": "2026-09-06",
+      "time": "22:12",
+      "at": "2026-09-07T02:12:00.000Z",
+      "item": "Item 44 (Ask: lines on open rulings) — work-item via fable-worker, worktree",
+      "itemNo": null,
+      "model": "fable (medium)",
+      "isDispatch": false,
+      "duration": "10 min, 88 turns",
+      "weighted": "1.5M",
+      "weightedM": 1.5,
+      "outcome": "merged 22:28 after review (gh mergedAt 02:28:41Z), no trailers; the PM merged main once more (two changelog deltas kept, split re-run). Item 43's parser had NO Ask: fallback, so the worker added the two-line fallback + pins (in scope by the \"Done when\"); 8 open rulings audited — 4 got an Ask: (R-48, R-81, R-82, R-83), 4 already asked. Found: RULING_DEFAULT_RE yields an EMPTY default for the bold-inline form (R-80 … R-85), and R-80 / R-81 say \"(§I)\" but live in §C → TODO 76",
+      "pr": 258
+    },
+    {
+      "date": "2026-09-06",
+      "time": "22:12",
+      "at": "2026-09-07T02:12:00.000Z",
+      "item": "Item 61 (R-42 map polygons) — work-item via fable-worker, worktree",
+      "itemNo": null,
+      "model": "fable (medium)",
+      "isDispatch": false,
+      "duration": "12 min, 90 turns",
+      "weighted": "1.7M",
+      "weightedM": 1.7,
+      "outcome": "merged 22:30 after review (gh mergedAt 02:30:43Z), no trailers; the PM merged main once more (changelog + its README + dashboard + codex regenerated), re-ran lint_map.py on the branch (1 WARN left, the pre-existing audit-S3 one). The asset is not yet live — next sync push after bench 41. Found: seven cityless islets, a lint blind spot for wrong-nation resolution, the tree-audit footer on a passing run",
+      "pr": 256
+    },
+    {
+      "date": "2026-09-06",
+      "time": "22:31",
+      "at": "2026-09-07T02:31:00.000Z",
+      "item": "Wave 8: items 74 (build single-scope TDZ), 75 (nine executor no-ops), 76 (ruling-card defaults + R-80 / R-81 §I stubs) — work-item via fable-worker, worktrees",
+      "itemNo": null,
+      "model": "fable ×3",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "the three follow-ups filed tonight; all S, disjoint files (build script / engine source 53 / dashboard parser + rulings). Bench 41 still driving",
+      "pr": null
+    },
+    {
+      "date": "2026-09-06",
+      "time": "22:33",
+      "at": "2026-09-07T02:33:00.000Z",
+      "item": "Item 10 batch 2 (the last 11 dispoFailOpen reads — picker candidates, the empty-note sweep, the movement-window card, the prohibition dialog, the cleanse beacon list — onto edhaSideSame / edhaSideHostile, ratchet 11 → 0) — work-item via fable-worker, worktree",
+      "itemNo": null,
+      "model": "fable (medium)",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "the queue's last engine item; lane B (each flip changes what a human sees for an unset-disposition token → 🤖 rows). Five workers in flight: bench 41, 74, 75, 76, 10",
       "pr": null
     },
     {
