@@ -2481,9 +2481,9 @@ quoted from `pm-state.js --dashboard-dir`. Found by item 44.
 
 ---
 
-## 77. [x] Power's ally/enemy filter reads `!edhaSameDisposition` as "enemy" — the batch-1 corollary at a site outside the ratchet — DONE 2026-09-06, PR #TBD
+## 77. [x] Power's ally/enemy filter reads `!edhaSameDisposition` as "enemy" — the batch-1 corollary at a site outside the ratchet — DONE 2026-09-06, PR #267
 
-**DONE (2026-09-06, PR #TBD):** the Power site plus FIVE more the sweep found — every actor-level
+**DONE (2026-09-06, PR #267):** the Power site plus FIVE more the sweep found — every actor-level
 side read whose result was negated or used as `if (same) skip` for an enemies-only branch:
 `edhaTestAuraApply` (47-power), `edhaVeilSuppressed` (32-senses), `edhaTestReactWatch`'s
 `rollerIs: "enemy"` (12-contest), `edhaChaosShatterPrompt` (42-chaos), the fate-snare region
