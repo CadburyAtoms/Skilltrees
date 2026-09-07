@@ -1,7 +1,7 @@
 {
   "pm": {
     "status": "awake",
-    "note": "Fable PM (Ben-started, 16:56 ET). PM-R14: caps lifted, Fable workers on the larger items. Thirty-nine PRs merged tonight - since 22:16: fix pass 9, item 71 (registry leftovers), item 44 (a plain question line on every open ruling for this page), item 61 (the Goldenport / Corvaine map polygons, R-42 - four cities now resolve to the right nation). 22:17: the engine was PUSHED live (Foundry was up; you had not run the bat) - 24, 69, 68, fix pass 9 and the 55 / 56 engine halves are at the table; F5 your Gamemaster client. Bench run 41 is driving their rows now; item 71's engine half and 61's map asset go live with the next push once bench 41 reports. STILL OWED: one deploy-to-foundry.bat run (Foundry closed) for the pack REBUILDS - 34a, 57, 58, 65+67, 59, 63, 55, 56 - their bench rows stay blocked until then. R-48 answered from your phone at 21:14. R-83 still needs your answer (item 70). Defaults applied, vetoable: R-18, R-80, R-81, R-82, R-84, R-85, PM-R15. Also running since 22:31: items 74 (a single-scope build crash), 75 (nine no-op executors), 76 (phone-card defaults) and 10 batch 2 (the last eleven fail-open disposition reads).",
+    "note": "Fable PM (Ben-started, 16:56 ET). PM-R14: caps lifted, Fable workers on the larger items. Forty-four PRs merged tonight. Since 22:40: item 74 (a single-scope pack-build crash), 75 (nine no-op executors), 10 batch 2 (the disposition fail-open backlog is CLOSED - ratchet at 0) and 76 (every phone ruling card now shows its default; R-80 / R-81 render as applied-veto cards; R-48 is correctly closed). Only bench run 41 is still running - it drives the engine pushed at 22:17. Once it reports I push the engine again (items 71, 75, 10 batch 2 and the map asset from 61 are merged but not yet live) and merge its PR. STILL OWED: one deploy-to-foundry.bat run (Foundry closed) for the pack REBUILDS - 34a, 57, 58, 65+67, 59, 63, 55, 56; those bench rows stay blocked until then. The queue is nearly empty: 77 (a Power-side disposition read, S), 70 (blocked on your R-83), 62 (needs a reframe), 9 (blocked on map rulings). R-83 still needs your answer. Defaults applied, vetoable: R-18, R-80, R-81, R-82, R-84, R-85, PM-R15.",
     "waitingOn": "ONE deploy-to-foundry.bat run (Foundry closed) for the pack rebuilds - after bench 41 finishes; R-83 (needs your answer - it moves HP); R-18, R-80, R-81, R-82, R-84, R-85, PM-R15 (defaults apply if silent)",
     "nextWakeAt": null,
     "session": "2026-09-06 16:56 ET — Fable PM (hand-started)"
@@ -18,59 +18,7 @@
       "agent": "Bench run 41",
       "phase": "working",
       "pr": null,
-      "note": "worktree; engine pushed 22:17 (live = main #253)"
-    },
-    {
-      "item": "74",
-      "title": "foundry-build.js items (single scope) crashes on a temporal-dead-zone let — hoist + a pin per single scope",
-      "model": "fable",
-      "size": "S",
-      "lane": "R",
-      "branch": "pm/74-build-single-scope",
-      "startedAt": "2026-09-07T02:31:00Z",
-      "agent": "Work item 74",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; fable-worker; TOOLING-only"
-    },
-    {
-      "item": "75",
-      "title": "Nine executor-less handler rows get the same no-op executor item 71 gave edha-illusion-upkeep; the named set shrinks to empty; snapshot unchanged",
-      "model": "fable",
-      "size": "S",
-      "lane": "R",
-      "branch": "pm/75-executor-noops",
-      "startedAt": "2026-09-07T02:31:00Z",
-      "agent": "Work item 75",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; fable-worker; ENGINE-ONLY (F5)"
-    },
-    {
-      "item": "76",
-      "title": "Phone cards: RULING_DEFAULT_RE yields an empty default for bold-inline defaults; R-80 / R-81 get their §I stubs so they render as applied-veto cards",
-      "model": "fable",
-      "size": "S",
-      "lane": "R",
-      "branch": "pm/76-ruling-defaults",
-      "startedAt": "2026-09-07T02:31:00Z",
-      "agent": "Work item 76",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; fable-worker; TOOLING + DOCS-ONLY"
-    },
-    {
-      "item": "10",
-      "title": "Disposition fail-open backlog, batch 2 — the last 11 reads (picker candidates, empty-note sweep, movement-window card, prohibition dialog, cleanse beacon list) onto edhaSideSame / edhaSideHostile; ratchet 11 → 0",
-      "model": "fable",
-      "size": "M",
-      "lane": "B",
-      "branch": "pm/10-dispo-batch-2",
-      "startedAt": "2026-09-07T02:33:00Z",
-      "agent": "Work item 10 batch 2",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; fable-worker; ENGINE-ONLY (F5); 🤖 rows per family"
+      "note": "worktree; engine pushed 22:17 (live = main #253); 7.0M so far"
     }
   ],
   "usage": null

@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-07T02:33:47.732Z",
+  "generatedAt": "2026-09-07T02:52:11.858Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "56a6bf8913",
-    "commit": "5eb7a11",
-    "branch": "pm/board-2026-09-06m",
+    "hash": "df33718728",
+    "commit": "b6ec73f",
+    "branch": "pm/board-2026-09-06n",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -43,7 +43,7 @@
   },
   "pm": {
     "status": "awake",
-    "note": "Fable PM (Ben-started, 16:56 ET). PM-R14: caps lifted, Fable workers on the larger items. Thirty-nine PRs merged tonight - since 22:16: fix pass 9, item 71 (registry leftovers), item 44 (a plain question line on every open ruling for this page), item 61 (the Goldenport / Corvaine map polygons, R-42 - four cities now resolve to the right nation). 22:17: the engine was PUSHED live (Foundry was up; you had not run the bat) - 24, 69, 68, fix pass 9 and the 55 / 56 engine halves are at the table; F5 your Gamemaster client. Bench run 41 is driving their rows now; item 71's engine half and 61's map asset go live with the next push once bench 41 reports. STILL OWED: one deploy-to-foundry.bat run (Foundry closed) for the pack REBUILDS - 34a, 57, 58, 65+67, 59, 63, 55, 56 - their bench rows stay blocked until then. R-48 answered from your phone at 21:14. R-83 still needs your answer (item 70). Defaults applied, vetoable: R-18, R-80, R-81, R-82, R-84, R-85, PM-R15. Also running since 22:31: items 74 (a single-scope build crash), 75 (nine no-op executors), 76 (phone-card defaults) and 10 batch 2 (the last eleven fail-open disposition reads).",
+    "note": "Fable PM (Ben-started, 16:56 ET). PM-R14: caps lifted, Fable workers on the larger items. Forty-four PRs merged tonight. Since 22:40: item 74 (a single-scope pack-build crash), 75 (nine no-op executors), 10 batch 2 (the disposition fail-open backlog is CLOSED - ratchet at 0) and 76 (every phone ruling card now shows its default; R-80 / R-81 render as applied-veto cards; R-48 is correctly closed). Only bench run 41 is still running - it drives the engine pushed at 22:17. Once it reports I push the engine again (items 71, 75, 10 batch 2 and the map asset from 61 are merged but not yet live) and merge its PR. STILL OWED: one deploy-to-foundry.bat run (Foundry closed) for the pack REBUILDS - 34a, 57, 58, 65+67, 59, 63, 55, 56; those bench rows stay blocked until then. The queue is nearly empty: 77 (a Power-side disposition read, S), 70 (blocked on your R-83), 62 (needs a reframe), 9 (blocked on map rulings). R-83 still needs your answer. Defaults applied, vetoable: R-18, R-80, R-81, R-82, R-84, R-85, PM-R15.",
     "waitingOn": "ONE deploy-to-foundry.bat run (Foundry closed) for the pack rebuilds - after bench 41 finishes; R-83 (needs your answer - it moves HP); R-18, R-80, R-81, R-82, R-84, R-85, PM-R15 (defaults apply if silent)",
     "nextWakeAt": null,
     "session": "2026-09-06 16:56 ET — Fable PM (hand-started)"
@@ -60,59 +60,7 @@
       "agent": "Bench run 41",
       "phase": "working",
       "pr": null,
-      "note": "worktree; engine pushed 22:17 (live = main #253)"
-    },
-    {
-      "item": "74",
-      "title": "foundry-build.js items (single scope) crashes on a temporal-dead-zone let — hoist + a pin per single scope",
-      "model": "fable",
-      "size": "S",
-      "lane": "R",
-      "branch": "pm/74-build-single-scope",
-      "startedAt": "2026-09-07T02:31:00Z",
-      "agent": "Work item 74",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; fable-worker; TOOLING-only"
-    },
-    {
-      "item": "75",
-      "title": "Nine executor-less handler rows get the same no-op executor item 71 gave edha-illusion-upkeep; the named set shrinks to empty; snapshot unchanged",
-      "model": "fable",
-      "size": "S",
-      "lane": "R",
-      "branch": "pm/75-executor-noops",
-      "startedAt": "2026-09-07T02:31:00Z",
-      "agent": "Work item 75",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; fable-worker; ENGINE-ONLY (F5)"
-    },
-    {
-      "item": "76",
-      "title": "Phone cards: RULING_DEFAULT_RE yields an empty default for bold-inline defaults; R-80 / R-81 get their §I stubs so they render as applied-veto cards",
-      "model": "fable",
-      "size": "S",
-      "lane": "R",
-      "branch": "pm/76-ruling-defaults",
-      "startedAt": "2026-09-07T02:31:00Z",
-      "agent": "Work item 76",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; fable-worker; TOOLING + DOCS-ONLY"
-    },
-    {
-      "item": "10",
-      "title": "Disposition fail-open backlog, batch 2 — the last 11 reads (picker candidates, empty-note sweep, movement-window card, prohibition dialog, cleanse beacon list) onto edhaSideSame / edhaSideHostile; ratchet 11 → 0",
-      "model": "fable",
-      "size": "M",
-      "lane": "B",
-      "branch": "pm/10-dispo-batch-2",
-      "startedAt": "2026-09-07T02:33:00Z",
-      "agent": "Work item 10 batch 2",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; fable-worker; ENGINE-ONLY (F5); 🤖 rows per family"
+      "note": "worktree; engine pushed 22:17 (live = main #253); 7.0M so far"
     }
   ],
   "usage": null,
@@ -432,12 +380,12 @@
     {
       "pos": 26,
       "item": "10",
-      "title": "Disposition fail-open backlog — batch 1 merged #200: 63 of 74 occurrences (31 sites) fail CLOSED via two pure primitives edhaSideSame / edhaSideHostile; ratchet 74 → 11; two sites had read two unknowns as OPPOSITE sides; a baked side is a stored fail-open (cast sites now bake edhaActorSide); deployed 03:27, bench run 37 drives its sideless-probe row first. Batch 2 = the 11 card-wording / picker-list sites — dispatched 22:33 as a fable-worker, worktree (ratchet 11 → 0; 🤖 rows per family)",
+      "title": "Disposition fail-open backlog — batch 1 merged #200: 63 of 74 occurrences (31 sites) fail CLOSED via two pure primitives edhaSideSame / edhaSideHostile; ratchet 74 → 11; two sites had read two unknowns as OPPOSITE sides; a baked side is a stored fail-open (cast sites now bake edhaActorSide); deployed 03:27, bench run 37 drives its sideless-probe row first. Batch 2 = the 11 card-wording / picker-list sites — dispatched 22:33 as a fable-worker, worktree; merged 22:49 after review (#263) — ITEM 10 CLOSED, dispoFailOpen 11 → 0 (tombstone): edhaPickAccepts names its predicate per branch (ally / anchor-ally → edhaSideSame, enemy / anchor-enemy → edhaSideHostile), the empty-note sweep and the movement-window card say when the OWNER's own side did not resolve, the Edict <select> and the Beacon list omit an unresolvable token; six family pins (a reversion of three families fails 7); four 🤖 rows (I10b2-1..4, expected vacuous per run 38 — a placed token cannot carry a non-finite disposition). 1.2M / 66 turns / 13 min. Found: Power's !edhaSameDisposition-as-enemy site → TODO 77. ENGINE-ONLY — not yet live, held for bench 41",
       "lane": "B",
       "model": "fable-worker",
       "size": "L",
       "deps": null,
-      "status": "running",
+      "status": "bench-pending",
       "statusDetail": null,
       "pr": 200
     },
@@ -888,36 +836,48 @@
     {
       "pos": 67,
       "item": "74",
-      "title": "foundry-build.js items (single scope) crashes on a TDZ let — REGISTERED_HANDLER_TYPES declared below the items writer's call; all hides it. Hoist + a pin per single scope. Dispatched 22:31 as a fable-worker, worktree",
+      "title": "foundry-build.js items (single scope) crashes on a TDZ let — REGISTERED_HANDLER_TYPES declared below the items writer's call; all hides it. Hoist + a pin per single scope. Dispatched 22:31 as a fable-worker, worktree. Merged 22:40 after review — the item-64 guard block hoisted above main (the IIFE runs synchronously to its first await; items AND adversaries alone hit the TDZ, all never did); five single-scope builds green, five-pack content parity vs all (hashes in the PR), a subprocess pin with a stub classic-level on NODE_PATH shown failing under the reversion; 984 → 986 tests. 1.1M / 74 turns / 9 min",
       "lane": "R",
       "model": "fable-worker",
       "size": "S",
       "deps": null,
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 260
     },
     {
       "pos": 68,
       "item": "75",
-      "title": "Nine executor-less handler rows (named in EXECUTOR_LESS_CONFIG_ONLY) get the no-op executor item 71 gave edha-illusion-upkeep; the set shrinks to empty; snapshot unchanged. Dispatched 22:31 as a fable-worker, worktree",
+      "title": "Nine executor-less handler rows (named in EXECUTOR_LESS_CONFIG_ONLY) get the no-op executor item 71 gave edha-illusion-upkeep; the set shrinks to empty; snapshot unchanged. Dispatched 22:31 as a fable-worker, worktree. Merged 22:43 after review — nine no-ops with their reader named per row (none dead), EXECUTOR_LESS_CONFIG_ONLY empty, the pin now \"every handler has a function executor\"; snapshot diff 0 lines; the PM merged main once more and re-assembled. ENGINE-ONLY — not yet live, held for bench 41. 1.1M-class",
       "lane": "R",
       "model": "fable-worker",
       "size": "S",
       "deps": "#71 ✓",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 261
     },
     {
       "pos": 69,
       "item": "76",
-      "title": "Phone cards: RULING_DEFAULT_RE yields an empty default for bold-inline defaults (R-80 … R-85); R-80 / R-81 say \"(§I)\" but live in §C so they render as plain default-ask cards. Dispatched 22:31 as a fable-worker, worktree",
+      "title": "Phone cards: RULING_DEFAULT_RE yields an empty default for bold-inline defaults (R-80 … R-85); R-80 / R-81 say \"(§I)\" but live in §C so they render as plain default-ask cards. Dispatched 22:31 as a fable-worker, worktree. Merged 22:51 after review — the default regex reads through inner bold, a bold upper-case APPLIED marks an entry applied in any section (the worker found R-84 / R-85 had NOT rendered as applied either — the §I stub is skipped by design), R-80 / R-81 got their §I stubs; one PM correction on the branch: R-48's ANSWERED line had been inserted after the R-53 stub instead of inside R-48's block, so the parser still listed it open — moved, and the real-file pin now holds R-48 CLOSED. Open cards after: R-18, R-80*, R-81*, R-82, R-83, R-84*, R-85* (* = applied-veto), every default non-empty. 1.1M / 64 turns / 10 min",
       "lane": "R",
       "model": "fable-worker",
       "size": "S",
       "deps": "#44 ✓",
-      "status": "running",
+      "status": "merged",
+      "statusDetail": null,
+      "pr": 262
+    },
+    {
+      "pos": 70,
+      "item": "77",
+      "title": "Power's want === \"enemies\" filter reads !edhaSameDisposition as \"enemy\" (47-power.js ~L419) — the batch-1 corollary at an actor-level site the ratchet never counted; name the predicate, sweep every negated actor-level side read, pin",
+      "lane": "B",
+      "model": "fable-worker",
+      "size": "S",
+      "deps": "#10 ✓",
+      "status": "queued",
       "statusDetail": null,
       "pr": null
     },
@@ -3268,6 +3228,62 @@
       "weightedM": null,
       "outcome": "the queue's last engine item; lane B (each flip changes what a human sees for an unset-disposition token → 🤖 rows). Five workers in flight: bench 41, 74, 75, 76, 10",
       "pr": null
+    },
+    {
+      "date": "2026-09-06",
+      "time": "22:31",
+      "at": "2026-09-07T02:31:00.000Z",
+      "item": "Item 74 (single-scope build TDZ crash) — work-item via fable-worker, worktree",
+      "itemNo": null,
+      "model": "fable (medium)",
+      "isDispatch": false,
+      "duration": "9 min, 74 turns",
+      "weighted": "1.1M",
+      "weightedM": 1.1,
+      "outcome": "merged 22:40 after review (gh mergedAt below), no trailers, no bounce; the worker found adversaries alone was broken the same way (the item named only items) and pinned both; content parity of all five packs vs all proven; TOOLING-only, nothing owed to Foundry",
+      "pr": 260
+    },
+    {
+      "date": "2026-09-06",
+      "time": "22:31",
+      "at": "2026-09-07T02:31:00.000Z",
+      "item": "Item 75 (nine executor no-ops) — work-item via fable-worker, worktree",
+      "itemNo": null,
+      "model": "fable (medium)",
+      "isDispatch": false,
+      "duration": "9 min, 78 turns",
+      "weighted": "1.1M",
+      "weightedM": 1.1,
+      "outcome": "merged 22:43 after review (gh mergedAt 02:43:53Z), no trailers; the PM merged main (item 74) and re-assembled. ENGINE-ONLY, held for bench 41's hash",
+      "pr": 261
+    },
+    {
+      "date": "2026-09-06",
+      "time": "22:33",
+      "at": "2026-09-07T02:33:00.000Z",
+      "item": "Item 10 batch 2 (the last 11 fail-open disposition reads) — work-item via fable-worker, worktree",
+      "itemNo": null,
+      "model": "fable (medium)",
+      "isDispatch": false,
+      "duration": "13 min, 66 turns",
+      "weighted": "1.2M",
+      "weightedM": 1.2,
+      "outcome": "merged 22:49 after review (gh mergedAt 02:49:14Z), no trailers; the worker merged main twice itself (items 74, 75) and re-assembled. Item 10 closed; the ratchet is a tombstone at 0. Found: the Power-side corollary → TODO 77. ENGINE-ONLY, held for bench 41's hash",
+      "pr": 263
+    },
+    {
+      "date": "2026-09-06",
+      "time": "22:31",
+      "at": "2026-09-07T02:31:00.000Z",
+      "item": "Item 76 (ruling-card defaults + R-80 / R-81 §I stubs) — work-item via fable-worker, worktree",
+      "itemNo": null,
+      "model": "fable (medium)",
+      "isDispatch": false,
+      "duration": "10 min, 64 turns",
+      "weighted": "1.1M",
+      "weightedM": 1.1,
+      "outcome": "merged 22:51 after review (gh mergedAt 02:51:13Z), no trailers; one PM correction (R-48's misplaced ANSWERED line — the PM's own 21:46 insert — moved into its block, pin flipped to closed); CI on the corrected head was slow to appear and ran green after the final main merge. The phone's Needs-you cards now show 7 open rulings with real questions, real defaults, and applied-veto styling on R-80 / R-81 / R-84 / R-85",
+      "pr": 262
     },
     {
       "date": "2026-09-06",

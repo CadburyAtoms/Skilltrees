@@ -2478,3 +2478,27 @@ DOCS-ONLY.
 
 **PM:** lane R · model fable-worker · size S · deps #44 · verify: the pins + the eight defaults
 quoted from `pm-state.js --dashboard-dir`. Found by item 44.
+
+---
+
+## 77. [ ] Power's ally/enemy filter reads `!edhaSameDisposition` as "enemy" — the batch-1 corollary at a site outside the ratchet
+
+**Why:** item 10 batch 2 (2026-09-06, PR #263) closed the `dispoFailOpen` ratchet at 0 and, on
+the audit, found one more site the ratchet never counted because it goes through the ACTOR-level
+helper: `module-src/scripts/engine/47-power.js` ~L419–420 —
+`const same = edhaSameDisposition(owner, tok); … if (want === "enemies" && same) continue;` —
+reads `!same` as "enemy", so a token whose side did not resolve passes the `enemies` filter.
+That is exactly the corollary batch 1 named (`!edhaSideSame` is NOT `edhaSideHostile`), at a site
+that gates who a Power talent reaches.
+
+**What to do:** name the predicate the branch means (`edhaDisposHostile` for `enemies`,
+`edhaSameDisposition` for `allies`); grep every `edhaSameDisposition(` / `edhaDisposHostile(`
+call whose result is negated and check each the same way; pin the Power site headless (an
+unset-disposition token is omitted from `enemies`, shown included under reversion); 🤖 row.
+Edit the source, `node scripts/engine-assemble.js`, commit both.
+
+**Done when:** no negated actor-level side read stands for the opposite predicate; the pin fails
+under reversion; gates green. ENGINE-ONLY (F5).
+
+**PM:** lane B · model fable-worker · size S · deps #10 ✓ · verify: the pin + the grep table.
+Found by item 10 batch 2.
