@@ -69,15 +69,34 @@ function slugifyAnchor(text) {
 // ⚑ flag span, each gated behind an opts flag so a builder that never rendered a feature keeps not
 // rendering it. `linkify`, if given, runs LAST — matches the canon codex's old call shape, where
 // linkify wrapped the already-inline-rendered HTML.
+//
+// Code spans are pulled out to a placeholder BEFORE the bold/italic/strike passes run, then
+// restored last (item 85, 2026-09-07). A literal `*` inside a code span — e.g. an art-wishlist
+// heading's `` `name-portrait.*` `` — used to survive the backtick->`<code>` swap as a bare,
+// unescaped `*` character sitting right there in the string, so the very next `**…**` regex pass
+// could pair it with an unrelated `*`/`**` elsewhere in the same string instead of the code span's
+// own (nonexistent) partner. On an art entry whose heading is code-spans-then-bold-wrapped and
+// whose body also uses `**bold**`, that cross-pairing bolded the wrong span and left a stray
+// `**`/`*` visible in the rendered HTML (the Corvaine Raider and Mistheron entries). The
+// placeholder is delimited by `String.fromCharCode(0)` (a control character esc() already
+// guarantees cannot occur in ordinary authored markdown, since it strips none of the four HTML
+// metacharacters but plain text never contains a raw NUL either) so restoring it afterward can
+// never mis-fire on real digits or spaces the way a plain-character marker could.
 // ---------------------------------------------------------------------------
 function inline(text, opts) {
   opts = opts || {};
   let h = esc(text);
-  h = h.replace(/`([^`]+)`/g, '<code>$1</code>');
+  const NUL = String.fromCharCode(0);
+  const codeSpans = [];
+  h = h.replace(/`([^`]+)`/g, (m, code) => {
+    codeSpans.push('<code>' + code + '</code>');
+    return NUL + (codeSpans.length - 1) + NUL;
+  });
   h = h.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
   if (opts.italic) h = h.replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
   if (opts.strike) h = h.replace(/~~([^~]+)~~/g, '<s>$1</s>');
   if (opts.flag) h = h.replace(/⚑/g, '<span class="flag">⚑</span>');
+  h = h.replace(new RegExp(NUL + '(\\d+)' + NUL, 'g'), (m, i) => codeSpans[Number(i)]);
   if (opts.linkify) h = opts.linkify(h);
   return h;
 }
