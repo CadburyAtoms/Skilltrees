@@ -2318,7 +2318,7 @@ in #245 before merge.
 
 ---
 
-## 73. [ ] Docs sweep — CLAUDE.md and ENGINE_INDEX still describe the pre-migration engine
+## 73. [x] Docs sweep — CLAUDE.md and ENGINE_INDEX still describe the pre-migration engine — DONE 2026-09-06, PR #PRNUM
 
 **Why:** the item-19a cold reader (2026-09-06, PR #249) answered every question from the new
 reference and then flagged that the repo's front door contradicts it, and item 4's worker found one

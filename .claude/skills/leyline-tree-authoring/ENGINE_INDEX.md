@@ -106,7 +106,7 @@ re-derived classification, the verified scoping, and the surviving handler set).
 
 ## 🗺 THE SECTION MAP — every `/* ===` banner in the engine, in file order (09-05, item 23)
 
-52 banners. Grep the **banner title**, not a line number. Until 2026-09-05 the ~3,700 lines from
+54 banners (`grep -c '^/\* ===' module-src/scripts/register-skills.js`, 2026-09-06 — 52 at item 23 plus the two 09-06 shared-core banners named below). Grep the **banner title**, not a line number. Until 2026-09-05 the ~3,700 lines from
 the defence buffs to Destruction carried no banner at all — they sat under the RED tree's header by
 accident of append order, so nothing in this index could point at them. Item 23 bannered them
 (comment-only; `codeOnly(before) === codeOnly(after)`) and this map is the result.
@@ -837,8 +837,12 @@ untimed life (the Frostbinder's Predictive Ward is a *permanent* `braced`).
   system's default use (no card, no auto-roll). Use it for click-to-place / fully-custom talents; you
   then pay the cost yourself (`edhaConsumeCost`, refund on cancel). Burst talents + the whole
   Destruction tree do this.
-- **`useItem` name-based** — `Hooks.on("cosmere-rpg.useItem", ...)` runs AFTER the default card +
-  cost deduction; add riders here (Green Grasping Vines/Territorial Instinct). Don't double-deduct.
+- **`useItem` rule-keyed riders** — `Hooks.on("cosmere-rpg.useItem", ...)` runs AFTER the default
+  card + cost deduction; riders hang here, but the hook consults the used item's **authored rules**
+  (`edhaRuleOf` / `edhaEventRules`), never its name. The pre-migration form of this idiom
+  (`item.name === "Grasping Vines"` and friends) is gone — those two moved onto their documents
+  07-24p and the ratchet closed 07-26; `lint-refs.js` pass 7 fails the build on any talent name in
+  engine code (`scripts/name-keyed-allowlist.json` is `talents: []`). Don't double-deduct.
 - **Native authored-event handlers** — a talent's `events` rule runs its handler (`edha-burst`,
   `edha-place-hazard`, `edha-triggered-effect`, …). `edhaRuleOf(item, type)` reads the first rule of a
   type; `edhaEventRules(item)` lists them.

@@ -43,10 +43,10 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
 | `docs/handoff-changelog/` | **The dated deltas** — one file per month (`2026-MM.md`), newest month first, newest delta first inside each; `README.md` is the index (delta count + date range per file); `ARCHIVE-header-wall.md` is the former `HANDOFF_ARCHIVE.md`. Moved verbatim out of the handoff by `scripts/handoff-split.js` (item 19b). **A new delta goes at the TOP of the current month's file**, under its marker line. A cold session reads the reference, then only the deltas newer than the reference's date. A delta's original commit: `git log -S"<delta title>" -- EDHA_FOUNDRY_HANDOFF.md` (`--follow` cannot track a block that left a file that still exists). |
 | `EDHA_FOUNDRY_TEST_CHECKLIST.md` | Per-tree in-Foundry test worklists + the **DEPLOY STATE** section (renamed from "DEPLOY FIRST" on 2026-07-16d — what's merged but not yet live on Ben's machine; read it before believing any "wrong text/old behavior" bug, and check its date against `git log` because only Ben can advance it). Agents edit THIS file; Ben tests from the generated `EDHA_DASHBOARD.html` (Bench tab) — after editing the checklist OR any dashboard source doc (TODO_*, art wishlist, campaign canon/state, handoff, triage, pilot, map JSON) run `node scripts/build-dashboard.js` and commit the dashboard (CI + pre-commit enforce sync). |
 | `.claude/skills/bench-run/` + `docs/EDHA_BENCH_RUNBOOK.md` | **The agent-driven bench** (2026-07-26): a session joins Ben's running Foundry at `localhost:30000` as the passwordless GM user `Bench`, builds the bench roster with `scripts/bench-setup-console.js` (tokens on the EXISTING "Playtest Map"; PCs "Tem parinaem"/"Soggy Bottom" hard-guarded), runs the `# BENCH —` checklist sections itself, and records results (PASS rows retire on evidence; fails feed test-pass-fixes; **🤖 rows are the bench's queue, ⚑ rows are Ben's judgment and are left alone**). The SKILL is the operating loop; the runbook is the full procedure. |
-| `EDHA_RULINGS.md` | **THE standing decisions doc** (added 2026-07-27w). Every open question waiting on Ben — 45 numbered rulings grouped by theme, each with its recommended default and the marathon item / checklist row it came from. It exists because rulings were being filed as *test rows*, so a decision that takes Ben ten seconds sat in a bench queue for weeks. **A new judgment call goes HERE, not into the checklist**; a checklist row that asks Ben to *decide* rather than *test* is in the wrong file. `docs/BENCH_MARATHON_REPORT.md` §3 is now a pointer to it. §I is the APPLIED-as-default list that needs a veto, and **R-43 changes live dice math**. |
+| `EDHA_RULINGS.md` | **THE standing decisions doc** (added 2026-07-27w). Every open question waiting on Ben — 82 numbered rulings (R-1 … R-85; `grep -c '^\*\*R-[0-9]' EDHA_RULINGS.md`, 2026-09-06) grouped by theme, plus the PM rulings PM-R1 … PM-R15 on `docs/PM_BOARD.md`, each with its recommended default and the marathon item / checklist row it came from. It exists because rulings were being filed as *test rows*, so a decision that takes Ben ten seconds sat in a bench queue for weeks. **A new judgment call goes HERE, not into the checklist**; a checklist row that asks Ben to *decide* rather than *test* is in the wrong file. `docs/BENCH_MARATHON_REPORT.md` §3 is now a pointer to it. §I is the APPLIED-as-default list that needs a veto, and **R-43 changes live dice math**. |
 | `.claude/skills/test-pass-fixes/` | The test-results → fix workflow, plus `CASE_STUDIES.md` — worked root-cause examples. |
-| `.claude/skills/talent-migration/` | **THE iron-rule-2b migration skill** (added 07-24y, after sixteen passes had spread the knowledge across §9n/§9o and ever-longer session briefs). `SKILL.md` = the pass workflow (atom → scout → build → author → gates → ratchet → docs); `SESSION_PLAN.md` = the remaining 131 partitioned into sessions, with what is next; `LESSONS.md` = what each pass measured, including why the classification's `needs` column over-estimates. Read it INSTEAD of writing a long brief. |
-| `.claude/skills/leyline-tree-authoring/` | The authoring/consistency standard, `audit.py` (the pre-commit gate), and `ENGINE_INDEX.md` (primitives map — read it **instead of** scanning the ~19.7k-line engine (2026-09-05)). |
+| `.claude/skills/talent-migration/` | **The iron-rule-2b migration skill — HISTORICAL** (added 07-24y, after sixteen passes had spread the knowledge across ever-longer session briefs). The migration it ran is **DONE** (07-24 → 07-26 pass AA: ratchet 221 → 0, all six marker ledgers migrated, H1–H27 built; handoff §7). `SKILL.md` still reads as the live pass workflow ("convert a whole PATH per session"), but there is nothing left to convert; `SESSION_PLAN.md` is headed ✅ COMPLETE and keeps the partition the passes worked through; `LESSONS.md` = what each pass measured, including why the classification's `needs` column over-estimates. Read it for how a name-keyed talent was moved onto its document — not as a worklist. |
+| `.claude/skills/leyline-tree-authoring/` | The authoring/consistency standard, `audit.py` (the pre-commit gate), and `ENGINE_INDEX.md` (primitives map — read it **instead of** scanning the 21,792-line engine (`wc -l module-src/scripts/register-skills.js`, 2026-09-06), which since item 4 is edited as 55 sources under `module-src/scripts/engine/` (`ls module-src/scripts/engine | wc -l`) and assembled). |
 | `AUTHORING_WORKFLOW.md` | Ben's side of the loop: Foundry-edit → extract → build → ⟳ Sync ("the keys"). |
 | `docs/ACTOR_STAT_DERIVATION.md` | How every stat on an Edha character is derived — system formula → Edha derive → ActiveEffects → sheet, per stat, plus the git history of the Health +1. Built for **R-54** (`EDHA_RULINGS.md`), landed on `main` via PR #208 (2026-09-06, commit 79cf9b1, DOCS-ONLY). Read it before touching any derived-stat formula instead of re-deriving from the engine. |
 | `EDHA_TALENT_HANDBOOK.md` | Game-design source prose for the talents. |
@@ -70,11 +70,12 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
   `engine-assembly` fails when the tracked file is not their byte-exact concatenation, and the
   assembled file is still what deploys, what `tests/harness.js` loads, and what `lint-refs.js`
   reads. The section → file map is in `ENGINE_INDEX.md`.
-  Every generic handler, one tree-section header per tree. ⚠️ Also, today, **200 talents' worth of
-  name-keyed automation** — that is the iron-rule-2b backlog, not the pattern to copy (this line
-  used to read "all name-based automation lives here", which is how the backlog grew). New
-  behaviour goes on the talent; `lint-refs.js` pass 7 now enforces that the name-keyed list only
-  shrinks.
+  Every generic handler, one tree-section header per tree — and **no name-keyed talent automation**:
+  the engine does not branch on a talent's name (the iron-rule-2b migration finished 2026-07-26,
+  ratchet 221 → 0; `scripts/name-keyed-allowlist.json` is `talents: []` on purpose, and
+  `lint-refs.js` pass 7 fails the build if any talent name appears in engine code). New behaviour
+  goes on the talent's own `events` / `effects`; the engine only reads them. (This line once read
+  "all name-based automation lives here", which is how two hundred talents drifted off their documents.)
 - **`data/authored/<atlas>-<tree>.json`** — the per-talent authored overlay (SEVEN keys: `docId`,
   `description`, `activation`, `damage`, `events`, `effects`, `img` ONLY — `scripts/lint-refs.js:50`
   is the authority). Wins over the generator AND the side tables.
@@ -136,27 +137,24 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
 
    A talent that ships an empty document with **no** declaration is a bug, not a style choice.
 
-   **Ratchet clause — read this before calling anything a violation.** 2b binds every talent
-   that is **new or touched** from 2026-07-24. Measured that day: 90 of 365 talents carry
-   behaviour on the document, 200 are name-keyed, 75 have neither. Those are a tracked backlog,
-   not an instant violation — but **the count may only go down**, and that is now ENFORCED:
-   `scripts/lint-refs.js` **pass 7** freezes the **221 talent names the engine mentioned in code**
-   on 2026-07-24 into `scripts/name-keyed-allowlist.json` and fails the build if
-   - a talent name appears in engine code and is **not** on the list (the list may not grow), or
-   - a listed name is **no longer** in the engine (delete the line — the list must not become
-     fiction).
+   **The ratchet — HISTORY, and what enforces 2b today.** When 2b was written (2026-07-24) it
+   bound only talents **new or touched** from that day, because the measurement that produced it
+   found 90 of 365 talents carrying behaviour on the document, 200 name-keyed, 75 with neither —
+   a tracked backlog, not an instant violation. `scripts/lint-refs.js` **pass 7** froze the 221
+   talent names the engine mentioned in code into `scripts/name-keyed-allowlist.json` as a
+   ratchet: the list could shrink, never grow, and a listed name no longer in the engine was an
+   error too (the list must not become fiction). The migration ran 07-24 → 07-26 (passes A → AA,
+   `talent-migration` skill) and took the ratchet **221 → 0**; Ben confirmed it live 07-26.
 
-   (221 names vs 200 talents: a few talents carry document behaviour *and* a name-keyed branch,
-   and the list counts names in code, which is what rule 2b actually forbids. Comments are
-   stripped before scanning — the engine's tree-section headers list talents by name on purpose,
-   and that IS the rule-3 ledger.) Adversary bespoke abilities are **out of scope**: they are a
-   different surface with their own wiring standard (lint pass 5), and engine name-keyed
-   automation against one is legitimate there.
-
-   The migration's FIRST job was to classify all 200 into expressible-now /
-   needs-a-new-generic-handler / genuinely-engine-owned and report the split — that number decided
-   whether this was one session or five. See `docs/archive/EDHA_EDITABILITY_AUDIT.md` (the
-   migration closed 2026-07-26; the audit is archived history now, not a live worklist).
+   **So today 2b binds every talent, and pass 7 is the gate:** the allowlist is `talents: []`
+   ON PURPOSE (do not delete the file — pass 7 can only forbid regrowth while it exists), and
+   **any talent name in engine code fails the build** with nowhere legitimate to put it — the
+   only ways out are the two declared exits above. Comments are stripped before scanning — the
+   engine's tree-section headers list talents by name on purpose, and that IS the rule-3
+   ledger. Adversary bespoke abilities are **out of scope**: they are a different surface with
+   their own wiring standard (lint pass 5), and engine name-keyed automation against one is
+   legitimate there. The classification and the pass-by-pass record are archived history in
+   `docs/archive/EDHA_EDITABILITY_AUDIT.md` and the skill's `LESSONS.md`, not a live worklist.
 3. **No silent manual cards; kill soft laziness.** Every talent is accounted for in an event note,
    a tree-section header, or the docs. Opposed-skill tests go through the contest core — never
    "trust the player rolled and won". "Manual" requires there to be NO nameable Foundry hook.
