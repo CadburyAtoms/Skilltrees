@@ -251,6 +251,11 @@ const RULING_APPLIED_RE = /\*\*Default applied:\s*([^*]+)\*\*/i;
 // R-82 / R-83 are deliberately lower-case) marks the entry applied wherever it lives (item 76).
 const RULING_APPLIED_MARK_RE = /\*\*[^*\n]*\bAPPLIED\b[^*\n]*\*\*/;
 const RULING_STUB_RE = /^\*\([RF]-\d+/;
+// Same convention, one field over: an art-wishlist `### Creature` entry is done when Ben says so
+// on the dashboard, and the record of that lives IN the doc as a bold `**DONE …**` span at the
+// top of the entry (item 79, 2026-09-07) — parseArtWishlist had no done-detection at all before
+// this, so every entry rendered perpetually open regardless of what the prose said.
+const ART_DONE_MARK_RE = /\*\*DONE\b[^*\n]*\*\*/;
 
 function parseOpenRulings(md) {
   const doc = parseRulings(md);
@@ -357,6 +362,11 @@ function parseArtWishlist(md) {
     if (item) { item.text += ' ' + line.trim(); prevBlank = false; continue; }
     pushProse(line.trim());
     prevBlank = false;
+  }
+  for (const s of sections) {
+    for (const b of s.blocks) {
+      if (b.type === 'item' && ART_DONE_MARK_RE.test(b.text)) b.done = true;
+    }
   }
   return sections;
 }

@@ -53,6 +53,10 @@ attunement runs through him as drilled-in coordination, not spectacle; no visibl
 officer's detail — a sash, a crest, the better helm.
 
 ### Mistheron — `mistheron-portrait.*` / `mistheron-token.*`
+**DONE 2026-09-07 (Ben, dashboard).** `mistheron-portrait.jpg` is in
+`source-materials/art/adversaries/`; no separate token file, so it falls back to the portrait per
+this doc's own convention above.
+
 Man-tall wading bird in pre-dawn river fog — heron proportions stretched just past comfortable,
 fog-gray plumage that eats light (deflect 1 = dense plumage). **Starving**: ribs ghosting under
 feathers, new to boldness, afraid of lanterns. The signature is the **Seeming** — its Blue-woven
