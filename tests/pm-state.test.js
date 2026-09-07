@@ -322,15 +322,24 @@ test("build-dashboard: parseOpenRulings marks R-18/R-48 open and R-41/R-42/R-54 
   assert.strictEqual(r18.section, "C. Mechanics — what a rule should do");
   assert.strictEqual(r18.applied, false);
   assert.ok(r18.ask.length > 5 && !/^\*\*/.test(r18.ask), "the ask is the bare question, not the raw markdown");
+  assert.strictEqual(r18.ask, "Should quarry advantage refuse to stomp an active DISADVANTAGE?", "a self-contained question heading IS the ask (no Ask: line needed)");
+  // item 44: R-81's heading leans on R-46, so its `Ask:` paragraph replaces it on the card.
+  const r81 = open.find((r) => r.id === "R-81");
+  assert.ok(r81, "R-81 is open (applied default, awaiting Ben's veto)");
+  assert.ok(/^Should the Brandram's Shockwave Slam/.test(r81.ask) && /\(a\)/.test(r81.ask) && /\(b\)/.test(r81.ask), `R-81's ask comes from its Ask: line and names (a)/(b): ${r81.ask}`);
   for (const r of open) assert.strictEqual(typeof r.blocks, "number", `${r.id}.blocks is not a number in the raw parse (mobileSnapshot fills it in)`);
+  // Every open ruling yields a real question: either a heading ending in "?" or an Ask: line (which must too).
+  for (const r of open) assert.ok(/\?$/.test(r.ask), `${r.id}: ask is not a question — "${r.ask}"`);
 });
 
 const RULINGS_FIXTURE = `## B. Scope
 
 **R-100. Stub-duplicate check: does the retired stub avoid re-opening?** -> **SETTLED, moved to §K.**
 
-**R-101. Should the widget spin?** Some prose about the widget.
+**R-101. The widget wobbles.** Some prose about the widget.
 *Recommended default: yes, make it spin.* More trailing prose.
+
+Ask: Should the widget spin (a), or stay still (b)?
 
 *(R-102 — already answered elsewhere — ANSWERED 2026-09-06, moved to §K.)*
 
@@ -356,6 +365,8 @@ test("build-dashboard: parseOpenRulings — a §B stub pointing at §K does not 
   assert.deepStrictEqual(open.map((r) => r.id).sort(), ["R-101", "R-103"]);
   const r101 = open.find((r) => r.id === "R-101");
   assert.strictEqual(r101.default, "yes, make it spin.");
+  assert.strictEqual(r101.ask, "Should the widget spin (a), or stay still (b)?", "an Ask: paragraph replaces a symptom heading (item 44)");
+  assert.strictEqual(open.find((r) => r.id === "R-103").ask, "Should the gizmo glow?", "no Ask: line → the heading stays the ask");
   assert.strictEqual(r101.applied, false);
   const r103 = open.find((r) => r.id === "R-103");
   assert.strictEqual(r103.applied, true);

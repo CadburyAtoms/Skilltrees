@@ -228,7 +228,15 @@ function parseRulings(md) {
 // but not questions") hold no open asks by definition and are skipped outright. §I entries are
 // tagged `applied: true` — "already live, veto if you disagree" — so the page can render them as
 // "applied — veto?" cards instead of an ordinary default-ask card.
+//
+// The card's question is the ruling's heading — UNLESS the entry carries an `Ask:` paragraph
+// (item 44, 2026-09-06): one line, its own paragraph directly under the heading paragraph,
+// `Ask: <the one-sentence question Ben answers, (a)/(b) named when the entry has them>`. It exists
+// for headings that describe a symptom or lean on another ruling ("the R-46 treatment on all of
+// them?") and so cannot stand alone on a phone card. ONE line, because parseRulings() pushes each
+// prose line as its own block — a wrapped `Ask:` would lose everything after its first line.
 const RULING_CLOSED_RE = /\*\*(?:ANSWERED|VETOED|SETTLED)\b/;
+const RULING_ASK_RE = /^Ask:\s*(.+?)\s*$/;
 const RULING_DEFAULT_RE = /\*Recommended(?:\s+default)?:\s*([^*]+)\*/i;
 const RULING_APPLIED_RE = /\*\*Default applied:\s*([^*]+)\*\*/i;
 const RULING_STUB_RE = /^\*\([RF]-\d+/;
@@ -245,10 +253,12 @@ function parseOpenRulings(md) {
       const body = cur.parts.join('\n');
       if (!RULING_CLOSED_RE.test(body)) {
         const dm = body.match(RULING_DEFAULT_RE) || body.match(RULING_APPLIED_RE);
+        let ask = cur.ask;
+        for (const p of cur.parts.slice(1)) { const am = p.match(RULING_ASK_RE); if (am) { ask = am[1]; break; } }
         out.push({
           id: cur.id,
           section: sec.title,
-          ask: cur.ask,
+          ask,
           default: dm ? dm[1].trim().replace(/\s+/g, ' ') : 'no default stated',
           applied,
           blocks: 0, // filled by mobileSnapshot(), which has the other tabs to count citations in
