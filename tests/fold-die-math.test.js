@@ -82,3 +82,41 @@ test("fold-die-math: build-side twin matches the engine's edhaFoldDieMath exactl
     assert.strictEqual(foldDieMath(f), env.edhaFoldDieMath(f), `mismatch on: ${f}`);
   }
 });
+
+/* --- the RIDER half of the same fold — edhaFoldRiderFormula (fix pass 10, TODO 78) -------------
+ * Item 69 folds the BASE damage formula at roll time, so a scaled talent prints `2d8`. The rider
+ * joined onto it was still handed over raw, so bench run 41 read Prognosis as
+ * `2d8 + 2 + ((2)d(2 * 3 + 2))[Prognosis]` — folded base, unfolded rider, on one bar.
+ * The safety property is the load-bearing one: the rider resolves here against the ROLLER's data,
+ * while the system resolves it a moment later against `getDamageRollData`
+ * (= `{...actor.getRollData(), mod, skill, attribute, source}`). Substituting with no `missing`
+ * leaves an unresolved `@ref` in place, so a rider needing one of those four extra keys is detected
+ * and handed on RAW. REVERSION: drop the `sub.includes("@")` bail and case 3 fails; drop the call
+ * in `edhaRiderBonus` and the live bar goes back to printing `(2)d(2 * 3 + 2)`. */
+const RIDER_DATA = { tier: 2, skills: { green: { rank: 3 }, black: { rank: 2 }, red: { rank: 1 } } };
+
+test("edhaFoldRiderFormula folds the three scaled rider formulas the atlas actually ships", () => {
+  // Prognosis (deity-life), Black's [Tier][Die] rider, and Red's halved-die rider.
+  assert.strictEqual(env.edhaFoldRiderFormula("(@tier)d(2 * @skills.green.rank + 2)", RIDER_DATA), "2d8");
+  assert.strictEqual(env.edhaFoldRiderFormula("1d(2 * @skills.black.rank + 2)", RIDER_DATA), "1d6");
+  assert.strictEqual(env.edhaFoldRiderFormula("floor((1d(2 * @skills.red.rank + 2)) / 2)", RIDER_DATA), "floor((1d4) / 2)");
+});
+
+test("edhaFoldRiderFormula leaves a flat rider alone and resolves a plain @-ref as the system would", () => {
+  assert.strictEqual(env.edhaFoldRiderFormula("1d6", RIDER_DATA), "1d6");
+  assert.strictEqual(env.edhaFoldRiderFormula("3", RIDER_DATA), "3");
+  assert.strictEqual(env.edhaFoldRiderFormula("(1 + @tier)", RIDER_DATA), "(1 + 2)");
+});
+
+test("edhaFoldRiderFormula hands on a rider that needs the SYSTEM's damage roll data, raw", () => {
+  // @mod / @skill / @attribute exist only in getDamageRollData, never in actor.getRollData().
+  for (const f of ["1d6 + @mod", "@skill.rank", "(@attribute)d6"]) {
+    assert.strictEqual(env.edhaFoldRiderFormula(f, RIDER_DATA), f, `must not pre-resolve ${f}`);
+  }
+});
+
+test("edhaFoldRiderFormula is inert without roll data (and never throws)", () => {
+  assert.strictEqual(env.edhaFoldRiderFormula("(@tier)d(2 * @skills.green.rank + 2)", null),
+    "(@tier)d(2 * @skills.green.rank + 2)");
+  assert.strictEqual(env.edhaFoldRiderFormula("1d6", undefined), "1d6");
+});
