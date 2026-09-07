@@ -939,6 +939,12 @@ edhaQueueContest(owner, "<color>", async ({ total }) => {   // captures the owne
   in this field is authored data, not engine dispatch — same reasoning as `edha-enter-stance`'s
   `stance`. Consumers: Absolute Stillness, Calm Appeal, Resolute Stand. **The upgrade's document is
   then empty — declare it in the tree-section header** (rule 2b), as Vigilant Stance did.
+- **`whenTarget` (2026-09-06, item 63 / R-25)** on `edha-note`, via the pure gate
+  **`edhaNoteTargetGate(whenTarget, target)`** (pinned in `tests/note-target-gate.test.js`). The
+  TARGET-CONDITION dial: blank = always (every pre-existing note unchanged); `downed` = the note's subject
+  (R-64 victim chain) is at 0 health or carries `unconscious`; no target = no note; an unknown mode fails
+  OPEN. Consumer: Rousing Presence's `RouseRallying000` (Rallying Shout's revive reminder). Add a new
+  mode here, never a name-keyed branch, when another note needs a target condition.
 - vs a static **defense**: `edhaReadDefense(actor, "phy"|"cog"|"spi")` (no foe roll needed).
 - `edhaPromptDC(title,hint)`, `edhaRewriteOrRelay(...)` for GM-DC / roll-rewrite cases.
 - **No owner roll to capture** (a passive that fires on an event)? Roll the DC yourself and roll each

@@ -33,6 +33,35 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-06 — Item 63: Rallying Shout's reminder prints only for a DOWNED ally — `whenTarget` on `edha-note`, R-25 (c) (**ENGINE + AUTHORED → REBUILD heroic + ⟳ Sync Talents** — Ben's deploy; PR #239)
+
+Fix pass 7a (item 47) stopped R-25 because the reminder is an **authored** `edha-note` rule
+(`RouseRallying000` on Rousing Presence, `whenOwnsTalent: "Rallying Shout"`) and `edha-note` had no
+target-condition field — the only engine-only route was a name-keyed branch, which rule 2b forbids.
+This item ships the rebuild-class shape the ANSWERED block asked for:
+
+- **Engine (F5 alone is inert here):** `edha-note` gains ONE generic schema field, **`whenTarget`**
+  (choices blank | `downed`), read by the new pure gate **`edhaNoteTargetGate(whenTarget, target)`**
+  next to `edhaRuleOwnsGate`. Blank = today's unconditional behaviour, so every other `edha-note` rule
+  is untouched; `downed` = the note's subject creature (R-64 victim chain: `options.victim` →
+  `options.target` → the clicking user's target) is at **0 health OR carries `unconscious`** — the two
+  cases the card names. No target with the dial set = no card; an unknown mode fails OPEN (a typo
+  never silences a note). The executor checks it right after the owns gate. No talent name enters the
+  engine — the allowlist is unchanged (empty).
+- **Authored (the consumer):** `data/authored/heroic-envoy.json` → `RouseRallying000.handler.whenTarget
+  = "downed"`; its description no longer claims always-print. **Heroic pack REBUILD + ⟳ Sync Talents**
+  before the bench can see it.
+- **Proven:** `tests/note-target-gate.test.js` — ally at 32 HP → no card; at 0 (and below) → card;
+  Unconscious above 0 → card; a rule without the field → card as before; each case shown failing under
+  its own one-line reversion (M1–M5 in the PR body). Scratch `gates.js --ci` green with `EDHA_DATA`
+  pinned to the branch's data; heroic pack parity against a main-data build: **204 documents, exactly 1
+  differs** (Rousing Presence — that rule's `whenTarget` + description, nothing else).
+- **🤖 bench:** checklist **2bM-6b** — three drives on Bench — Heroic after the rebuild (ally at full HP:
+  no 📣 line; ally at 0 HP: line; ally Unconscious above 0: line). Rulings: R-25 marked SHIPPED
+  (bench-pending, stays in its section).
+
+---
+
 ## 2026-09-06 — Item 59: `system.damage.formula` folds to plain dice at BUILD time, R-71 (**TOOLING + DATA → pack REBUILD, Ben only**)
 
 R-71: the cosmere-rpg system rolls a talent's own `system.damage.formula` with no Edha engine

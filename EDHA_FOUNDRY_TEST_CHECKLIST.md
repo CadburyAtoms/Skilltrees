@@ -2055,7 +2055,8 @@ paths).
 > the "so what do we do" half is **R-39**.
 > **ANSWERED 2026-09-06:** R-18 left alone — see the ruling for context, not touched by today's
 > batch. R-25 (c): print ONLY for an ally at 0 HP or carrying Unconscious (ruling answered
-> 2026-09-06 → item 47, ENGINE-ONLY, F5). R-39 (a): accept the colour cue, close it — see the roll
+> 2026-09-06 → item 47 could not ship it engine-only; **SHIPPED by item 63, PR #239, REBUILD heroic +
+> ⟳ Sync — re-test is 2bM-6b below**). R-39 (a): accept the colour cue, close it — see the roll
 > dialog row above.
 >
 > *(**2bC-1 · 2bF-14 · 2bF-16 — all three RETIRED on evidence 2026-07-27v.** Each had passed both of its
@@ -2352,6 +2353,17 @@ should land on the player's screen, not just the GM whisper.
 Cross-actor relay watch-items scattered through the tree sections (White Coordination §3, Life
 §5, Chaos §3…) need no dedicated tests — they self-verify while running the rows above; note
 anything that errors in the row's note box.
+
+## Re-test after item 63 (2026-09-06 — R-25 (c): `whenTarget: downed` on Rousing Presence's Rallying Shout note; **REBUILD heroic + ⟳ Sync Talents first**, then F5)
+
+- [ ] 🤖 **2bM-6b — Rallying Shout's reminder prints ONLY for a downed ally (R-25 (c), item 63, PR #239)** — on
+  **Bench — Heroic** with Rousing Presence + Rallying Shout owned, use Rousing Presence three times, targeting an
+  ally each time: **(1) ally at full HP, no status → NO "📣 Rousing Presence" Rallying Shout line** (the other
+  reminder lines, 2bM-5, still print); **(2) ally at 0 HP → the line prints** ("You may revive an Unconscious
+  ally. If the target is at 0 health it recovers its recovery die + N health"); **(3) ally Unconscious with HP
+  above 0 → the line prints**. Also confirm the field shows on the rule's **Events tab** as "Only when the
+  target is…" = downed (editability is the point of rule 2b). Before this fix run 11 saw the line on an ally at
+  **32 HP**; if it still prints at full HP the pack is stale — check DEPLOY STATE, not the engine.
 
 ## Re-test after the fix pass F fixes (2026-07-28m — three fixed; ⟳ sync the module + F5 first, NO rebuild, NO ⟳ Sync Talents)
 

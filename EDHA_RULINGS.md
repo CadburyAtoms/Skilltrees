@@ -424,6 +424,10 @@ restore the at-0-HP-only gate? *(3A-11 + checklist 2bM-6.)*
 > branch, which iron rule 2b forbids and the ratchet prevents. Shipping the dial alone would add an
 > engine path with no consumer — R-74/R-76's own complaint. **Needs a rebuild-class item; the
 > answer (c) stands unchanged.**
+> **SHIPPED** in PR #239 (REBUILD, bench-pending) — item 63: `edha-note` gained the generic `whenTarget`
+> field (blank | `downed` = target at 0 HP or Unconscious, pure gate `edhaNoteTargetGate`), and
+> `RouseRallying000` carries `whenTarget: "downed"`. tests/note-target-gate.test.js pins the three cases
+> plus the no-field case; heroic pack parity = 204 documents, 1 differs. 🤖 re-test = checklist 2bM-6b.
 
 *(R-57 — Pattern Recognition's round-expiry, kept — ANSWERED 2026-09-06, moved to §K.)*
 
