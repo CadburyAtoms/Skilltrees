@@ -76,18 +76,35 @@ read back through `classic-level` (the counts below are the rules in the BUILT p
 None is a deletion candidate; a type whose only consumer is an adversary is a legitimate row (the
 ratchet's adversary carve-out). Re-run the grep before believing any future "unused type" claim.
 
-**Executor-less rows.** `edha-illusion-upkeep` carries an explicit **no-op executor** since item 71
-(the same shape eight other config-only rows already used — `edha-watch`, `edha-test-react`,
+**Executor-less rows — the set is EMPTY (item 75, 2026-09-06).** Every registered handler row now
+carries a function executor. `edha-illusion-upkeep` got an explicit **no-op executor** on item 71
+(the same shape eight config-only rows already used — `edha-watch`, `edha-test-react`,
 `edha-damage-reduce`, `edha-focus-guard`, `edha-move-veto`, `edha-hp-floor`, `edha-aura`,
-`edha-damage-react`): its readers are the `combatTurnChange` sweep and `edhaUpkeepInvClick` in the
-Illusion section, so a rule a user places on an event the system DOES dispatch (`use`,
-`add-to-actor`) executes to nothing instead of throwing in `Handler.execute`. Behaviour unchanged;
-the registry snapshot does not record executors, so it did not move. **Nine rows still register
-with NO executor** — `edha-zone-hazard`, `edha-zone-guard`, `edha-snare-react`, `edha-damage-bonus`,
-`edha-counter-transfer`, `edha-die-step-react`, `edha-unseen-ward`, `edha-suppress-veil`,
-`edha-heal-react` — all config-only riders read by sweeps; `tests/handler-registry.test.js`
-names each in `EXECUTOR_LESS_CONFIG_ONLY` so the set can only shrink (filed as a follow-up, not
-fixed under item 71).
+`edha-damage-react`; its readers are the `combatTurnChange` sweep and `edhaUpkeepInvClick` in the
+Illusion section), and item 75 gave the nine rows it exposed the same no-op, each with a comment
+naming its reader, so a rule a user places on an event the system DOES dispatch (`use`,
+`add-to-actor`) executes to nothing instead of throwing in `Handler.execute`. The readers:
+- `edha-zone-hazard` — `edhaCreateGreenTerrain` (`edhaRuleOf` off the placing item) and
+  `edhaZoneHazardRule` (`edhaActorRuleOf`) in Green Territory, plus the `edha-zone` executor's
+  hazard lookup;
+- `edha-zone-guard` — `edhaFatePlaceCore` / `edhaFateTurnStart` (`edhaActorRuleOf`) and
+  `edhaZoneGuardOf` (`edhaWatchersOfRule`), Fate section;
+- `edha-snare-react` — `edhaFateSpringReacts` / `edhaMarkedNearZonesBonus` / `edhaClearFateState`
+  (`edhaActorRulesOf`), Fate section, and the `edha-mark-offer` card button (`edhaEventRules`);
+- `edha-damage-bonus` — `edhaDamageBonusPost` and `edhaWrapApplyDamage` (`edhaActorRulesOf` /
+  `edhaWatchersOfRule`), the apply-damage core;
+- `edha-counter-transfer` — the `updateActor` counter-transfer watcher (`edhaWatchersOfRule`),
+  Knowledge section;
+- `edha-die-step-react` — `edhaSovRollWatch` (`edhaWatchersOfRule`), Sovereignty section;
+- `edha-unseen-ward` — `edhaUnseenWardPreRoll` (`edhaWatchersOfRule`), Green Instinct section;
+- `edha-suppress-veil` — `edhaVeilSuppressed` (`edhaWatchersOfRule`), senses/light/visibility;
+- `edha-heal-react` — `edhaDispatchHealReact` and `edhaRegrowthRuleOf` (`edhaActorRulesOf`),
+  Green Restoration section.
+
+Behaviour unchanged; the registry snapshot does not record executors, so it did not move.
+`tests/handler-registry.test.js` keeps `EXECUTOR_LESS_CONFIG_ONLY` as an EMPTY set and pins
+"every handler has a function executor" — a new config-only row gets the no-op (and a comment
+naming its reader), never an absent executor.
 
 Native handlers: `grant-items` · `remove-items` · `modify-attribute` · `set-attribute` ·
 `modify-skill-rank` · `set-skill-rank` · `grant-expertises` · `remove-expertises` · `use-item` ·

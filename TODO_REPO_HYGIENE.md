@@ -2371,3 +2371,34 @@ contradicts; the three counts match their commands; `node scripts/gates.js` gree
 
 **PM:** lane R · model sonnet · size S · deps #19 (both halves) · verify: the commands beside the
 numbers + a grep for "200 talents" / "45 numbered" / "19.7k" returning nothing. Found by items 19a and 4.
+
+---
+
+## 75. [x] Nine registered handler rows still ship NO executor — give each the same no-op — DONE 2026-09-06 (ENGINE-ONLY, F5; PR #TBD)
+
+**Why:** item 71 (PR #257) gave `edha-illusion-upkeep` an explicit no-op executor and changed the
+registry pin from "a function or absent" to a NAMED set, `EXECUTOR_LESS_CONFIG_ONLY` in
+`tests/handler-registry.test.js` — which is how it found eight more: `edha-zone-hazard`,
+`edha-zone-guard`, `edha-snare-react`, `edha-damage-bonus`, `edha-counter-transfer`,
+`edha-die-step-react`, `edha-unseen-ward`, `edha-suppress-veil`, `edha-heal-react`. All are
+config-only riders read by engine sweeps (`edhaActorRuleOf` / `edhaWatchersOfRule`), never
+dispatched — but a rule a user places on an event the system DOES dispatch (`use`,
+`add-to-actor`, …) would throw in `Handler.execute`.
+
+**What to do:** the same no-op executor with the same comment shape ("config-only — read by
+<sweep>") on each of the nine, in `module-src/scripts/engine/53-native-event-system.js` (edit the
+source, `node scripts/engine-assemble.js`, commit both); shrink `EXECUTOR_LESS_CONFIG_ONLY` to
+empty (the pin then forbids any new executor-less row); the registry snapshot must not move
+(it records no executors); state the reader for each in `ENGINE_INDEX.md`.
+
+**Done when:** `EXECUTOR_LESS_CONFIG_ONLY` is empty and the pin is "every handler has a function";
+snapshot unchanged; gates green. ENGINE-ONLY (F5).
+
+**PM:** lane R · model fable-worker · size S · deps #71 ✓ · verify: the pin + an unchanged
+snapshot. Found by item 71.
+
+**DONE 2026-09-06:** all nine rows carry `executor: async function () {}` with a comment naming
+their reader(s) (every row has one — none was dead; the list is in `ENGINE_INDEX.md` →
+"Executor-less rows"); `EXECUTOR_LESS_CONFIG_ONLY` is `new Set([])` and the pin reads "every
+handler has a function executor"; mutation (drop edha-heal-react's no-op) → 983 passed, 1 failed
+naming the row; `handler-registry.snapshot.json` unchanged (empty diff); 984 → 984 tests.
