@@ -1621,19 +1621,31 @@ Bench Ally — One drops to 1 health instead of 0"* landed it on HP **1**.
 ❌ **But that same take exposed a NEW defect — see the 🤖 row below: the card announces the UNGATED
 amount.**)*
 
-- [ ] 🤖 **DEFECT (bench run 39) — an `edha-focus` `resource: hea` rule announces the UNGATED heal
-      amount.** H10's health branch posts its card from the ROLLED number, while `edhaCrossHeal` →
-      `edhaHealCutGate` scales the actual write. Measured: a withered creature (`healCut
-      {fraction: 0}`) took a formula-5 heal, HP stayed **4 → 4** (correct), the gate card
-      *"🩸 … cannot regain HP (Withering Touch)"* printed (correct) — and then the engine printed
-      *"⚕️ Field Medicine: B39 Victim heals **5**."* (wrong; it healed 0). The HP is right and the
-      card lies, which is the drift direction §10 warns about: the card is what a player reads.
-      Blast radius is every `edha-focus` `hea` rule — **Field Medicine** is the shipped one — and the
-      HALVED case will misreport too (it will name the full amount where half landed). **Drive it**
-      by re-running the same pair and reading BOTH cards; the fix wants the executor to announce the
-      gated amount, or to say nothing when the gate zeroed it. *(Found while driving R-10's
-      load-bearing negative; the probe changed only the rule's formula and trigger event, never this
-      code path.)*
+- [ ] 🤖 **Field Medicine through a Withering mark — the card reads the DELIVERED number** (item 68,
+      fix pass 8; the bench run 39 defect, FIXED — engine-only, F5 is enough). Re-run run 39's exact
+      pair on a withered creature (`healCut {fraction: 0}`, Withering Touch) with an `edha-focus`
+      {gain, `resource: hea`, victim, formula 5} rule, and read BOTH cards: HP must stay **4 → 4**,
+      the gate card *"🩸 … cannot regain HP (Withering Touch)"* must still print, and the talent's
+      own card must now read *"⚕️ Field Medicine: … cannot regain HP (Withering Touch) — no healing
+      lands."* — **no number anywhere in it**. It used to say *"heals 5"* one line below the gate
+      card. *(Headless pins in `tests/heal-announce-delivered.test.js` drive the shipped executor and
+      cover this exact take; the bench half is the live-Foundry confirmation.)*
+
+- [ ] 🤖 **…and the HALVED mark reads HALF, not the full amount** (item 68). The same pair against a
+      `fraction: 0.5` mark (Necrotic Grasp): HP **4 → 6**, the gate card says *"has their healing
+      halved"*, and the talent's card must read *"heals **2**"*. This case was predicted by the run
+      39 row and never driven — it misreported the same way.
+
+- [ ] 🤖 **A group heal names who the mark stopped** (item 68). Run a `edha-pulse` heal (Mending Aura
+      shape) over three allies where one is withered and one is halved. The sweep card must read
+      *"healed 2 of 3 ally(ies) for **N** HP … — no healing landed on \<the withered ally\>"* — the
+      count is who was HEALED, not who was reached, and the HP is the total that landed. It used to
+      quote the per-target roll for everyone.
+
+- [ ] 🤖 **An Investiture gain onto a nearly-full pool announces the clamped delta** (item 68). An
+      `edha-focus` {gain, `resource: inv`} rule (Reaper's Harvest) on a creature 1 short of its
+      maximum: the card must say *"recovers **1** Investiture"*, and at a FULL pool it must post no
+      card at all — matching what `edhaGainFocus` has always done for focus.
 
 ---
 

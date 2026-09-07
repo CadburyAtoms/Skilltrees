@@ -3121,6 +3121,30 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   **`edhaHealCutGate` has exactly TWO call sites** (`edhaCrossHeal`'s non-bypass branch + the
   effect-heal branch); the test counts them, so a third is either a new heal path you declare there
   or R-10 being reversed by accident. A plain heal on a withered creature is still blocked.
+  ⚠️ **Three heal paths still write `hea` WITHOUT the gate** (found by item 68, 2026-09-06, filed
+  not fixed — closing the gap changes live HP and needs a ruling): `edha-regen`'s turn-end write,
+  the decay lifesteal heal-back, and `edhaBurstDetonate`'s heal hits. `edhaApplyBurstResults`
+  itself must STAY ungated — Raise Dead's stabilizing 1 HP rides it (R-10 (3)); a burst gate
+  belongs in the emitter, the way `edhaCrossHeal`'s relay leg already gates before it emits.
+- **`edhaCrossHeal(actor, amount, {bypassHealCut})` RETURNS the amount DELIVERED** (item 68,
+  2026-09-06) — the gated number on the owned leg and the relayed leg alike, `0` when the mark
+  blocked it; the drop-to-1 bypass reports its full amount. Build every heal card from this, never
+  from the roll.
+- **`edhaHealLine(who, requested, delivered, phrase)`** — **THE heal announcement** (item 68, fix
+  pass 8; bench run 39). The one place that decides whether a heal number may be printed at all.
+  `phrase(delivered)` writes the normal clause and is only ever called with a number that landed,
+  so a HALVED mark simply reaches it with the halved value; when the gate zeroed the heal the
+  amount is **never** printed — the clause names the mark instead, in `edhaHealCutGate`'s own
+  words. Returns `""` when there is nothing to say (a genuine 0-amount heal with no mark — the
+  07-05 blank-card convention). Clauses come back **unpunctuated** so a caller can compose them
+  (`"…in X's place; Y heals 3."`). It READS the mark (`edhaHealCutInfo`), it does not apply it —
+  no new gate call site. Why it exists: `edhaCrossHeal` returned nothing, so all seven announcers
+  built their sentence from the roll and a blocked Field Medicine printed *"heals 5"* one line
+  under *"cannot regain HP"*. Consumers: H10's `hea` arm, Interposing Shield, Shared Burden, the
+  triggered-effect heal, the Life regen tick, the regrowth tick, Lifeline's intercept card — the
+  pulse sweep is the group case and counts deliveries instead.
+  **`tests/heal-announce-delivered.test.js` counts the call sites**, so a new heal card that skips
+  it fails the build.
 - **`edha-hp-threshold` grew `rangeColor`** (+ the ally / owner-token-on-scene gates are
   enforced in the sweep): the offer needs the owner ON the scene, the victim's token sharing its
   disposition (unknown fails CLOSED), and — when authored — the ally inside the colour's
