@@ -56,19 +56,16 @@ test("registry snapshot: byte-for-byte equal to the fixture", () => {
   assert.strictEqual(JSON.stringify(shape, null, 2) + "\n", fs.readFileSync(SNAPSHOT, "utf8"));
 });
 
-// Config-only rows that STILL ship no executor — named one by one, so a new executor-less row
-// fails instead of hiding behind a blanket "or absent" (which is what item 24's pin was, and it
-// hid EIGHT rows behind the one it named). edha-illusion-upkeep left this list on item 71
-// (2026-09-06: it carries an explicit no-op now, so a rule the system DOES dispatch executes to
-// nothing instead of throwing in Handler.execute). The eight below are the same shape — riders
-// and marks read by engine sweeps (edhaActorRuleOf / edhaWatchersOfRule), never dispatched — and
-// are filed for the same no-op treatment; each leaves this set when it lands, and nothing may join.
-const EXECUTOR_LESS_CONFIG_ONLY = new Set([
-  "edha-zone-hazard", "edha-zone-guard", "edha-snare-react", "edha-damage-bonus", "edha-counter-transfer",
-  "edha-die-step-react", "edha-unseen-ward", "edha-suppress-veil", "edha-heal-react",
-]);
+// Config-only rows that ship no executor. EMPTY since item 75 (2026-09-06): edha-illusion-upkeep
+// left on item 71, and the eight riders it exposed (edha-zone-hazard, edha-zone-guard,
+// edha-snare-react, edha-damage-bonus, edha-counter-transfer, edha-die-step-react,
+// edha-unseen-ward, edha-suppress-veil, edha-heal-react) each carry the same explicit no-op now,
+// so a rule the system DOES dispatch executes to nothing instead of throwing in Handler.execute.
+// The set stays here so the failure message can name it: nothing may join — a config-only row
+// gets the no-op executor (read by an engine sweep, doing nothing itself), never an absent one.
+const EXECUTOR_LESS_CONFIG_ONLY = new Set([]);
 
-test("registry: every handler's executor is a function (absent ONLY for the named config-only rows) and every event has a hook string", () => {
+test("registry: every handler has a function executor (no executor-less rows since item 75) and every event has a hook string", () => {
   assert.ok(registry, "the registry did not load");
   for (const d of registry.handlers) {
     if (EXECUTOR_LESS_CONFIG_ONLY.has(d.type)) { assert.strictEqual(d.executor, undefined, `${d.type}: now has an executor — drop it from EXECUTOR_LESS_CONFIG_ONLY`); continue; }
