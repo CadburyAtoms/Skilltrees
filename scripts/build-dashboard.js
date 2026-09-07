@@ -237,8 +237,19 @@ function parseRulings(md) {
 // prose line as its own block — a wrapped `Ask:` would lose everything after its first line.
 const RULING_CLOSED_RE = /\*\*(?:ANSWERED|VETOED|SETTLED)\b/;
 const RULING_ASK_RE = /^Ask:\s*(.+?)\s*$/;
-const RULING_DEFAULT_RE = /\*Recommended(?:\s+default)?:\s*([^*]+)\*/i;
+// The default sentence is the italic `*Recommended[ default]: …*` run. Its body may carry bold
+// spans — `*Recommended default: **(a) they cancel** — …*` is the form R-80 … R-85 use — so the
+// capture reads THROUGH inner `**…**` pairs and the caller strips the markers (item 76, 2026-09-06:
+// the old `[^*]+` stopped at the first `*`, captured nothing, and — being a match — also kept the
+// "no default stated" fallback from firing, so every bold-inline default rendered as an EMPTY card).
+const RULING_DEFAULT_RE = /\*Recommended(?:\s+default)?:\s*((?:\*\*[^*]*\*\*|[^*])+)\*/i;
 const RULING_APPLIED_RE = /\*\*Default applied:\s*([^*]+)\*\*/i;
+// "Applied — veto?" is a property of the ENTRY, not only of §I: the doc's own intro says anything
+// marked **APPLIED** is already live and needs a veto, and R-48 / R-80 / R-81 / R-84 / R-85 all sit
+// in §C with a bold APPLIED note while §I carries only a one-line stub (which RULING_STUB_RE skips).
+// So: a bold span containing the word APPLIED (upper-case — "not applied" / "NOT applied yet" in
+// R-82 / R-83 are deliberately lower-case) marks the entry applied wherever it lives (item 76).
+const RULING_APPLIED_MARK_RE = /\*\*[^*\n]*\bAPPLIED\b[^*\n]*\*\*/;
 const RULING_STUB_RE = /^\*\([RF]-\d+/;
 
 function parseOpenRulings(md) {
@@ -246,20 +257,21 @@ function parseOpenRulings(md) {
   const out = [];
   for (const sec of doc.sections) {
     if (/^[JK]\./.test(sec.title)) continue; // Settled / Flagged-not-questions: no open asks.
-    const applied = /^I\./.test(sec.title);
+    const inAppliedSection = /^I\./.test(sec.title);
     let cur = null;
     const flush = () => {
       if (!cur) return;
       const body = cur.parts.join('\n');
       if (!RULING_CLOSED_RE.test(body)) {
         const dm = body.match(RULING_DEFAULT_RE) || body.match(RULING_APPLIED_RE);
+        const applied = inAppliedSection || RULING_APPLIED_MARK_RE.test(body);
         let ask = cur.ask;
         for (const p of cur.parts.slice(1)) { const am = p.match(RULING_ASK_RE); if (am) { ask = am[1]; break; } }
         out.push({
           id: cur.id,
           section: sec.title,
           ask,
-          default: dm ? dm[1].trim().replace(/\s+/g, ' ') : 'no default stated',
+          default: dm ? dm[1].replace(/\*\*/g, '').trim().replace(/\s+/g, ' ') : 'no default stated',
           applied,
           blocks: 0, // filled by mobileSnapshot(), which has the other tabs to count citations in
         });

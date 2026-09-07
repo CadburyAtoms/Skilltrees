@@ -309,12 +309,12 @@ test("pm-state: the mobile snapshot's rows are exactly the committed dashboard's
 
 // ---- item 43: the "Needs you" view's open-ruling cards (2026-09-06) ----
 
-test("build-dashboard: parseOpenRulings marks R-18/R-48 open and R-41/R-42/R-54 ANSWERED-closed, against the real EDHA_RULINGS.md", () => {
+test("build-dashboard: parseOpenRulings marks R-18 open and R-41/R-42/R-48/R-54 ANSWERED-closed, against the real EDHA_RULINGS.md", () => {
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);
   assert.ok(ids.includes("R-18"), "R-18 has no ANSWERED/VETOED block yet");
-  assert.ok(ids.includes("R-48"), "R-48 has no ANSWERED/VETOED block yet");
+  assert.ok(!ids.includes("R-48"), "R-48 was ANSWERED by Ben on 2026-09-06 (phone) — its block carries the **ANSWERED** line, so it is closed");
   for (const closed of ["R-41", "R-42", "R-54"]) {
     assert.ok(!ids.includes(closed), `${closed} is ANSWERED and must not show up as an open ruling`);
   }
@@ -328,6 +328,12 @@ test("build-dashboard: parseOpenRulings marks R-18/R-48 open and R-41/R-42/R-54 
   assert.ok(r81, "R-81 is open (applied default, awaiting Ben's veto)");
   assert.ok(/^Should the Brandram's Shockwave Slam/.test(r81.ask) && /\(a\)/.test(r81.ask) && /\(b\)/.test(r81.ask), `R-81's ask comes from its Ask: line and names (a)/(b): ${r81.ask}`);
   for (const r of open) assert.strictEqual(typeof r.blocks, "number", `${r.id}.blocks is not a number in the raw parse (mobileSnapshot fills it in)`);
+  // item 76: every open ruling's card carries a real default (the bold-inline form used to capture ""),
+  // and a bold **APPLIED** note marks the entry applied even though it lives in §C, not §I.
+  for (const r of open) assert.ok(r.default.length > 0 && !/\*\*/.test(r.default), `${r.id}: default is empty or still carries bold markers — "${r.default}"`);
+  assert.ok(/^\(a\) they cancel — APPLIED in #221/.test(open.find((r) => r.id === "R-80").default), "R-80's bold-inline default is read through the inner **…**");
+  for (const id of ["R-80", "R-81", "R-84", "R-85"]) assert.strictEqual(open.find((r) => r.id === id).applied, true, `${id} carries a bold APPLIED note in §C → applied-veto card`);
+  for (const id of ["R-18", "R-82", "R-83"]) assert.strictEqual(open.find((r) => r.id === id).applied, false, `${id} is not applied ("not applied" in lower case must not count)`);
   // Every open ruling yields a real question: either a heading ending in "?" or an Ask: line (which must too).
   for (const r of open) assert.ok(/\?$/.test(r.ask), `${r.id}: ask is not a question — "${r.ask}"`);
 });
@@ -342,6 +348,14 @@ const RULINGS_FIXTURE = `## B. Scope
 Ask: Should the widget spin (a), or stay still (b)?
 
 *(R-102 — already answered elsewhere — ANSWERED 2026-09-06, moved to §K.)*
+
+**R-105. Should the lever lock?** Context prose. *Recommended default: **(a) yes, lock it** — cheap
+to undo; NOT applied yet.* (b) leave it loose. *(Board table.)*
+
+**R-106. Should the dial click?** Context prose. *Recommended default: **(a) yes** — **APPLIED** in
+#999 (stub in §I).* (b) silent.
+
+*(R-107 — a stub for a ruling whose entry is elsewhere — DEFAULT (a) APPLIED 2026-09-06.)*
 
 ## I. Applied defaults
 
@@ -362,7 +376,7 @@ answer.
 
 test("build-dashboard: parseOpenRulings — a §B stub pointing at §K does not re-open, §I gets applied:true with its own default sentence, §K is skipped outright", () => {
   const open = dashboard.parseOpenRulings(RULINGS_FIXTURE);
-  assert.deepStrictEqual(open.map((r) => r.id).sort(), ["R-101", "R-103"]);
+  assert.deepStrictEqual(open.map((r) => r.id).sort(), ["R-101", "R-103", "R-105", "R-106"]);
   const r101 = open.find((r) => r.id === "R-101");
   assert.strictEqual(r101.default, "yes, make it spin.");
   assert.strictEqual(r101.ask, "Should the widget spin (a), or stay still (b)?", "an Ask: paragraph replaces a symptom heading (item 44)");
@@ -371,6 +385,15 @@ test("build-dashboard: parseOpenRulings — a §B stub pointing at §K does not 
   const r103 = open.find((r) => r.id === "R-103");
   assert.strictEqual(r103.applied, true);
   assert.strictEqual(r103.default, "make it glow green.");
+  // item 76: the bold-inline form `*Recommended default: **(a) …** …*` — the capture reads through the
+  // inner bold (the old `[^*]+` stopped at its first `*` and yielded ""), the markers are stripped, and
+  // only an UPPER-CASE bold APPLIED marks the entry applied outside §I ("NOT applied yet" does not).
+  const r105 = open.find((r) => r.id === "R-105");
+  assert.strictEqual(r105.default, "(a) yes, lock it — cheap to undo; NOT applied yet.");
+  assert.strictEqual(r105.applied, false);
+  const r106 = open.find((r) => r.id === "R-106");
+  assert.strictEqual(r106.default, "(a) yes — APPLIED in #999 (stub in §I).");
+  assert.strictEqual(r106.applied, true, "a bold **APPLIED** note in §B marks the entry applied");
 });
 
 test("build-dashboard: countCitations counts citing rows (not raw text occurrences) and never confuses a migration code like 2bR-18 with ruling R-18", () => {
@@ -385,7 +408,7 @@ test("build-dashboard: countCitations counts citing rows (not raw text occurrenc
 
 test("pm-state: the mobile snapshot's openRulings carries {id, section, ask, default, applied, blocks} and rides in the dash index (no chunk fetch needed)", () => {
   const snap = snapshot();
-  assert.ok(Array.isArray(snap.openRulings) && snap.openRulings.length >= 2, "R-18 and R-48 at least");
+  assert.ok(Array.isArray(snap.openRulings) && snap.openRulings.length >= 2, "R-18 and the applied-default rulings at least");
   for (const r of snap.openRulings) {
     assert.deepStrictEqual(Object.keys(r).sort(), ["applied", "ask", "blocks", "default", "id", "section"]);
     assert.strictEqual(typeof r.blocks, "number");
