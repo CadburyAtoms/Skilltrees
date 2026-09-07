@@ -2374,7 +2374,7 @@ numbers + a grep for "200 talents" / "45 numbered" / "19.7k" returning nothing. 
 
 ---
 
-## 74. [ ] `foundry-build.js items` (single scope) crashes on a temporal-dead-zone `let`
+## 74. [x] `foundry-build.js items` (single scope) crashes on a temporal-dead-zone `let` — DONE 2026-09-06, PR #260 (TOOLING-only; `adversaries` alone was broken the same way and is fixed by the same hoist)
 
 **Why:** item 71's worker (2026-09-06, PR #257) ran a scratch build one scope at a time and found
 `node scripts/foundry-build.js items` dies with `ReferenceError: Cannot access 'REGISTERED_HANDLER_TYPES'
