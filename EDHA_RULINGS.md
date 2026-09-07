@@ -451,6 +451,11 @@ Ask: Should the melee-only `edha-damage-bonus` rules (Warlord's Advance and kin)
 > as the deliberate exceptions and write that down in `ENGINE_INDEX.md`, so the mark's promise
 > reads "no ordinary healing, but regen/lifesteal/burst-heal still reach you." Item 70 stays
 > blocked on this call.
+> **ANSWERED 2026-09-07 17:11 (Ben, dashboard), verbatim: "a"** — (a) gate all three writers at
+> their emitters, so a creature that "cannot regain HP" stops gaining HP from `edha-regen`'s
+> turn-end heal, the decay lifesteal heal-back, and `edhaBurstDetonate`'s heal hits too.
+> **Item 70** (opus, engine-only) is now unblocked and applies it. **Not shipped yet** — stays open
+> here until item 70 lands and the bench confirms it, then moves to §K.
 
 Ask: Should `edha-regen`'s turn-end heal, the decay lifesteal heal-back, and `edhaBurstDetonate`'s heal hits each pass `edhaHealCutGate` so a creature that "cannot regain HP" stops gaining HP from them (a), or stay ungated with that exception written into `ENGINE_INDEX.md` (b)?
 
@@ -478,6 +483,12 @@ tab, no engine change, and the card then tells the truth.* (b) keep the gate and
 ("when you hit with a melee attack **for impact damage**") — also a data-only fix, but it makes the
 talent weapon-dependent in a way nothing else in Red is. *(Bench run 42, 2026-09-07 — measured both
 directions in one window; nothing is broken, the two halves just disagree.)*
+> **ANSWERED 2026-09-07 17:11 (Ben, dashboard), verbatim: "a"** — (a) drop the `whenDamageType:
+> "impact"` gate; the card is canon. **SHIPPED in item 92, PR #288** (`data/authored/leyline-red.json`,
+> the one authored field plus the rule's own `description` string; parity-proved, exactly one
+> document differed) — **REBUILD (leyline pack) + ⟳ Sync Talents still owed** to Ben's next deploy.
+> 🤖 re-test is checklist row **92-1** (Red section): stays open here until the pack is rebuilt and
+> the bench confirms the keen-hit case now offers, then moves to §K.
 
 ---
 
@@ -496,6 +507,10 @@ string, read by lint pass 5, rendered nowhere) — the marker stops being prose 
 the editor. (c) teach the extract step to re-attach the marker from the repo copy when the incoming
 text has lost it. *(Bench run 42, 2026-09-07 — R-47's other four clauses all passed and its row is
 retired; this is the residue.)*
+> **ANSWERED 2026-09-07 17:11 (Ben, dashboard), verbatim: "a"** — (a) move the declaration off the
+> description into `flags.edha-content.noHook` (data, not prose), read by lint pass 5, rendered
+> nowhere. **Item 93** (sonnet, adversaries REBUILD + ⟳ Sync Adversaries) applies it. **Not shipped
+> yet** — stays open here until item 93 lands and the bench confirms it, then moves to §K.
 
 ---
 

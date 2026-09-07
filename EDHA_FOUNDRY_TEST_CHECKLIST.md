@@ -1072,6 +1072,15 @@ answered 2026-09-06 → item 58, REBUILD + ↻ Sync); R-24 (a) YES, keep Reckles
 no change, moved to §K, graph half of this row retired; R-27 (a) THE CARD is canon, the rally bonus
 is spent on the next test then clears (ruling answered 2026-09-06 → item 52).
 
+- [ ] 🤖 **92-1 — Volatile Strike fires on ANY melee hit, not just impact (R-88 (a), item 92,
+      REBUILD + ↻ Sync Talents)**: bench run 42 (2026-09-07, PR #274) measured a plain weapon hit
+      that dealt impact posting the "⚡ Volatile Strike — 1 Investiture …" offer, and the same PC's
+      ordinary keen sidesword hit posting nothing — the `edha-on-hit` rule carried a
+      `whenDamageType: "impact"` gate the card never mentions. Item 92 removed that key from
+      `data/authored/leyline-red.json`'s Volatile Strike rule. Re-test on the rebuilt pack: an
+      ordinary keen melee hit by a Volatile Strike owner should now post the offer (bench 42's
+      negative case, flipped). Needs the leyline pack REBUILD + ⟳ Sync Talents to be live.
+
 *(**✅ RETIRED on evidence 2026-09-06, bench run 40 — 52-1 and 52-2** (item 52 / R-27), on the
 hash-verified `0ea0741a…` deploy. ⚠️ **The rally-stack talent on `Bench — Red` is `Feeding Frenzy`,
 not "Battle Fever"** — Red owns both, and only Feeding Frenzy carries the `edha-rally-stack` rule;
@@ -2716,13 +2725,14 @@ Move is written into `override` with `useOverride:true` and the getter adds `.bo
 **explicitly reverted** (the engine grants one weapon, never ×2). Its two still-live halves — the rows
 LOOK pickable, and the picked weapon is kitItem-stamped so Start over / ↺ Change remove it with the kit
 — were **moved into Weapon slot v3**, below, rather than dropped.)*
-- [ ] ⚑ **Coin row v3 (07-19x — v2's numbers were invisible until clicked)** — v2 injected the
+- [x] ⚑ **Coin row v3 (07-19x — v2's numbers were invisible until clicked)** — v2 injected the
       editors INSIDE the system's currency-list, whose CSS collapses inputs until hover (it's a
       compact header widget) — hence letters-only at rest, numbers-only when clicked, and the
       oversized total box. Now: the equipment tab hides the native widget entirely and renders
       OUR row after it — 🪙 total pill (copper-weighted, tooltip) + three tinted g/s/c pills
       with always-visible numbers. The header strip keeps the compact native chip with the
       corrected total. Verdict on the look still wanted.
+      ✅ **retired 2026-09-07 on Ben's dashboard mark — PASS, verbatim: "looks good to me!"**
 *(**Finish tops up to a REACHABLE max** — RETIRED on evidence 2026-07-28j, bench run 22, positive AND
 all three negative controls including the load-bearing one. Finish on a fresh PC left **14/14 · 5/5 ·
 2/2** with **no rest dialog**, and a second Finish later in the same run left **14/14 · 5/5 · 6/6** —
@@ -2809,13 +2819,15 @@ MEASURED, not inferred from the stamp:** with the picked Sidesword held, ↺ Cha
 weapon list to `Unarmed Strike` alone and the kitItem count to **0**. Side-confirmations: Hunter's kit does
 carry **Shortbow + Knife** (and the packed Shortbow reads `attack.type: "ranged"`), Leader's carries
 **Sidesword**. The "do the rows LOOK pickable" half is split out as its own ⚑ row below.)*
-- [ ] ⚑ **Weapon picker — does the list LOOK pickable? (split out of Weapon slot v3, 2026-09-06)** — a
+- [x] ⚑ **Weapon picker — does the list LOOK pickable? (split out of Weapon slot v3, 2026-09-06)** — a
       verdict on the look, not a test. The CSS **is** applied — bench run 38 read the computed style off a
       live row: `display: flex`, `padding: 5px 8px`, `border: 1px solid rgba(255,214,107,.25)`,
       `cursor: pointer`, and a custom-appearance radio rendered at 14 px. What is wanted is whether the
       bordered rows / hover glow / selected state read as clickable to you at the table.
-- [ ] ⚑ **Preview panel centered (07-19y)** — the derived-stat box on the attributes page is
+      ✅ **retired 2026-09-07 on Ben's dashboard mark — PASS: no note**
+- [x] ⚑ **Preview panel centered (07-19y)** — the derived-stat box on the attributes page is
       centered ("90% of the way to clean design" — say what the last 10% needs).
+      ✅ **retired 2026-09-07 on Ben's dashboard mark — PASS: no note**
 - [x] ⚑ **Attributes page — VETO CHECK (Ben)** — are **12 points at L1 / max 3 per attribute at
       L1 / +1 at levels 3, 6, 9, 12, 15, 18** still canon? They come from the legacy
       `Character_Building_Rules.md`. Confirm, or say the real numbers — the wizard enforces
@@ -2826,7 +2838,7 @@ carry **Shortbow + Knife** (and the packed Shortbow reads `attack.type: "ranged"
       the real ones. *(Split 2026-07-27w; the enforcement half is the 🤖 row above.)*
       ✅ **retired 2026-09-07 on Ben's dashboard mark — SKIP: no note**
 
-- [ ] ❌ **DEFECT (measured by the 2026-07-27v checklist audit, never benched): five map-picker DEAD
+- [x] ❌ **DEFECT (measured by the 2026-07-27v checklist audit, never benched): five map-picker DEAD
       SPOTS / mis-hits, and four of them are holes in the partition** — `module-src/assets/
       thyrcross-nations.json` is byte-identical to `thyrcross.map.json`'s polygons and to the deployed
       copy, so this is a data defect, not a deploy gap. **Point-testing all 35 gazetteer city dots
@@ -2846,6 +2858,8 @@ carry **Shortbow + Knife** (and the packed Shortbow reads `attack.type: "ranged"
       ✅ **SHIPPED 2026-09-06, item 61, PR #256** — all five dots resolve to their tagged nation
       (city-04/11/14/17 → goldenport, city-31 → corvaine; the 30 controls unchanged), lint WARNs
       4 → 0. Live verification is the 🤖 row above (bench run 41).
+      ✅ **retired 2026-09-07 on Ben's dashboard mark — PASS: table confirmation that item 61's
+      polygon fix (PR #256) holds at the table; nothing further to change.**
 
 ### Fix pass 7b re-tests (item 48, 2026-09-06 — ENGINE-ONLY, F5; no rebuild, no ⟳ Sync)
 
