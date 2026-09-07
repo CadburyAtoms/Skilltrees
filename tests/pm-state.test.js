@@ -309,12 +309,12 @@ test("pm-state: the mobile snapshot's rows are exactly the committed dashboard's
 
 // ---- item 43: the "Needs you" view's open-ruling cards (2026-09-06) ----
 
-test("build-dashboard: parseOpenRulings marks R-18/R-48 open and R-41/R-42/R-54 ANSWERED-closed, against the real EDHA_RULINGS.md", () => {
+test("build-dashboard: parseOpenRulings marks R-18 open and R-41/R-42/R-48/R-54 ANSWERED-closed, against the real EDHA_RULINGS.md", () => {
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);
   assert.ok(ids.includes("R-18"), "R-18 has no ANSWERED/VETOED block yet");
-  assert.ok(ids.includes("R-48"), "R-48 has no ANSWERED/VETOED block yet");
+  assert.ok(!ids.includes("R-48"), "R-48 was ANSWERED by Ben on 2026-09-06 (phone) — its block carries the **ANSWERED** line, so it is closed");
   for (const closed of ["R-41", "R-42", "R-54"]) {
     assert.ok(!ids.includes(closed), `${closed} is ANSWERED and must not show up as an open ruling`);
   }
@@ -408,7 +408,7 @@ test("build-dashboard: countCitations counts citing rows (not raw text occurrenc
 
 test("pm-state: the mobile snapshot's openRulings carries {id, section, ask, default, applied, blocks} and rides in the dash index (no chunk fetch needed)", () => {
   const snap = snapshot();
-  assert.ok(Array.isArray(snap.openRulings) && snap.openRulings.length >= 2, "R-18 and R-48 at least");
+  assert.ok(Array.isArray(snap.openRulings) && snap.openRulings.length >= 2, "R-18 and the applied-default rulings at least");
   for (const r of snap.openRulings) {
     assert.deepStrictEqual(Object.keys(r).sort(), ["applied", "ask", "blocks", "default", "id", "section"]);
     assert.strictEqual(typeof r.blocks, "number");

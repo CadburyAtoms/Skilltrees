@@ -751,6 +751,8 @@ trade for a pack rebuild than the single-block version was. *(Bench run 19; chec
 > Sudden Growths (Sow, Grove) still place within Attunement Range by rank (30 / 60 ft) while their cards
 > say "within 10 ft" — the same family one field over, reported to the PM.
 
+> **ANSWERED 2026-09-06 (a) — Ben, from the phone board at 21:14 ET, verbatim: *"the CARD is canon for an adversary — a statted block should not scale, so give it `distanceFt: 20` and drop `bySize`."*** Item 57 (PR #226) had already applied exactly that (`bySize: false`, `distanceFt: 20`, card text unchanged; REBUILD owed to the next deploy) — nothing further to change. The principle also underwrites R-81 (item 67) and R-46.
+
 *(R-49 — is a creature an obstacle for push collision damage — ANSWERED 2026-09-05, moved to §K.)*
 
 **R-47. Should the `NO NAMEABLE HOOK:` engineering note be visible on the player-facing card?**
@@ -809,8 +811,6 @@ engine, so it should be decided deliberately rather than slipped in. Blast radiu
 > boundary is inclusive, so 7.5 ≤ 5 + 2.5. (ii) edge-to-edge is untouched and remains item 62.
 
 *(R-53 — Dead status on a "goes still" cue — ANSWERED 2026-09-06, moved to §K.)*
-
-> **ANSWERED 2026-09-06 (a) — Ben, from the phone board at 21:14 ET, verbatim: *"the CARD is canon for an adversary — a statted block should not scale, so give it `distanceFt: 20` and drop `bySize`."*** Item 57 (PR #226) had already applied exactly that (`bySize: false`, `distanceFt: 20`, card text unchanged; REBUILD owed to the next deploy) — nothing further to change. The principle also underwrites R-81 (item 67) and R-46.
 
 ---
 
