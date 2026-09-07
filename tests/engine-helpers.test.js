@@ -1385,6 +1385,40 @@ test("edhaRulesForEvent: gathers across several talents, so two Keys both fire",
   eq(got.map((g) => g.item.name), ["Blue Leyline Attunement", "Red Leyline Attunement"]);
 });
 
+// --- edhaListPlaceNotes — the ledger PLACE card's sibling-advertised hints (2bV) -----
+test("edhaListPlaceNotes: collects placeNote text for the matching list key", () => {
+  const t = evTalent("Sealed Edict", [
+    { event: "use", handler: { type: "edha-note", list: "covenants", placeNote: "you may notarize it" } },
+  ]);
+  const got = env.edhaListPlaceNotes({ items: [t] }, "covenants");
+  assert.ok(got.includes("you may notarize it"), "placeNote text missing from the card");
+});
+
+test("edhaListPlaceNotes: skips a rule whose list key does not match", () => {
+  const t = evTalent("Sealed Edict", [
+    { event: "use", handler: { type: "edha-note", list: "other-list", placeNote: "should not appear" } },
+  ]);
+  eq(env.edhaListPlaceNotes({ items: [t] }, "covenants"), "");
+});
+
+/* ITEM 86 REGRESSION (2026-09-07) — edhaListPlaceNotes gated on edhaIsTalent, the same bug shape
+ * item 84 found and fixed in edhaRulesForEvent one loop over: a weapon-borne placeNote rule (e.g.
+ * a future weapon rider advertising on a shared ledger's PLACE card) would be silently dropped.
+ * 0 shipped weapon-borne placeNotes today (data/) — this pin is the whole proof. Revert the
+ * predicate to edhaIsTalent and this test fails. */
+test("edhaListPlaceNotes: a weapon-borne placeNote reaches the harvest (item 86)", () => {
+  const weapon = { type: "weapon", name: "Notary's Edge", hasEvents: () => true,
+    enabledEvents: [{ event: "use", handler: { type: "edha-note", list: "covenants", placeNote: "weapon-borne hint" } }] };
+  const got = env.edhaListPlaceNotes({ items: [weapon] }, "covenants");
+  assert.ok(got.includes("weapon-borne hint"), "weapon-borne placeNote rule was dropped by the harvest");
+});
+
+test("edhaListPlaceNotes: an owner with no items, or a broken one, yields the empty string rather than throwing", () => {
+  assert.strictEqual(env.edhaListPlaceNotes(null, "covenants"), "");
+  assert.strictEqual(env.edhaListPlaceNotes({}, "covenants"), "");
+  assert.strictEqual(env.edhaListPlaceNotes({ items: [{ type: "weapon", hasEvents: () => { throw new Error("boom"); } }] }, "covenants"), "");
+});
+
 test("edhaIsSlowTurn: a token actor matches its combatant by tokenId, not actorId", () => {
   const tokActor = { id: "world-actor", isToken: true, token: { id: "tok9" } };
   const byToken = { tokenId: "tok9", actorId: "someone-else", getFlag: () => "slow" };

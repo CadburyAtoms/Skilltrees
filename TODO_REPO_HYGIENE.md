@@ -2802,6 +2802,46 @@ to Foundry).
 
 ---
 
+## 86. [x] `edhaListPlaceNotes` harvests `placeNote` behind `edhaIsTalent` and would drop a weapon-borne placeNote (item 84's bug, one loop over) (2026-09-07, PR #283)
+
+**Why:** item 84's report (PR #276, 2026-09-07) swapped `edhaRulesForEvent`'s gate from
+`edhaIsTalent` (talents only, weapons excluded on purpose) to `edhaRuleBearer` (talents + weapons),
+because the item-34a weapon migration moved adversary attacks onto weapon documents and every
+rule-harvest loop must see them. Item 84's own caller audit found one more harvest loop still on
+the old gate: `edhaListPlaceNotes` (`module-src/scripts/engine/07-edha-owner-list.js:230`) loops
+every item on a ledger owner, skips anything `!edhaIsTalent`, then reads `h.placeNote` off each
+remaining item's event rules to build the ⚖ Violated/PLACE card's sibling-advertised hint text
+(Sealed Edict's "you may notarize it", Lawkeeper's GM-reveal line). It is the identical shape to
+the bug item 84 fixed — a full harvest-and-collect loop over `owner.items`, not a single-item
+hook gate — so a weapon carrying a `placeNote` rider would be silently dropped from the card the
+same way Surecat's `edha-on-hit` cue was. It also noted `edhaCovBuffTemplate`
+(`engine/49-order.js:374`) gates on `edhaIsTalent` while scanning ActiveEffects, not event rules —
+a different surface, not this bug.
+
+**What to do:** swap the predicate in `edhaListPlaceNotes` to `edhaRuleBearer` — the same widening
+item 84 applied next door. Then sweep every remaining `edhaIsTalent(` call across
+`module-src/scripts/engine/*.js` and give each a one-line verdict in the delta: **rule harvest
+(fixed)** for any other full loop-and-collect shape found; **talent-use automation (correct as
+is — the `preUseItem`/`useItem` veto family and its kin exclude weapons on purpose)** for the
+single-item hook gates (item 84 already widened the four rule-harvest dispatchers reading
+`edhaRulesForEvent`, `edhaActorRuleOf`, and `edhaActorRulesOf` — those are not the target here);
+or **other surface (left alone, why)** for name-resolution lookups, the creation wizard's
+talent-only picks, and `edhaCovBuffTemplate`'s ActiveEffect scan. Fix only the rule-harvest ones.
+ENGINE-ONLY (F5, no rebuild). Ship with a pinned regression case in `tests/` that fails on
+`edhaIsTalent` and passes on `edhaRuleBearer` — assert that a weapon-borne `placeNote` rule
+reaches the harvest.
+
+**Done when:** the predicate is swapped and mutation-verified (reverting it fails the new test);
+the sweep's verdicts are recorded in the delta; `node scripts/gates.js` green. There are 0 shipped
+weapon-borne `placeNote` rules, so the pin is the whole proof — no checklist row (nothing to
+re-test at the bench).
+
+**PM:** lane B · model sonnet · size S · deps item 84 (same predicate, same widening) · verify:
+mutation-revert the predicate and show the pin fail, then restore and show it pass; both runner
+output lines in the PR. ENGINE-ONLY (F5) — the authored data is already right.
+
+---
+
 ## 87. [x] The phone card's DEFAULT is empty for rulings written in the bare `*Recommended*, …` style (`RULING_DEFAULT_RE` captures only the colon form) (2026-09-07, PR #279)
 
 **Why:** item 85's report (2026-09-07) found `RULING_DEFAULT_RE` in `scripts/build-dashboard.js`

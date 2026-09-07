@@ -3219,7 +3219,10 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   contest off the annotating talent's own damage formula.
 - **H3 `prohibition: true`** (place) — the entry carries a picked prohibition (`edhaPickProhibition`
   stays ENGINE-OWNED); the place card gains the ⚖ Violated button + the **`placeNote` sibling
-  sweep** (`edhaListPlaceNotes` — any rule on the owner whose `list` matches advertises a line).
+  sweep** (`edhaListPlaceNotes` — any rule-bearing item on the owner whose `list` matches advertises
+  a line; ⚠ gates on **`edhaRuleBearer`** since **item 86** (2026-09-07), not `edhaIsTalent` — the
+  same shape item 84 fixed in `edhaRulesForEvent` one loop over, so a weapon-borne `placeNote`
+  rider now reaches the harvest too; 0 shipped today, mutation-pinned in `tests/`).
   **Picker-cancel REFUNDS the system-paid cost (`edhaRefundCost`) — the Trade-Routes convention,
   the standard exit from the picker-before-cost trap. NO takeover needed.**
 - **The violation subsystem is ledger/rule/flag-keyed** (ENGINE-OWNED, names nothing):
