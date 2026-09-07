@@ -102,7 +102,9 @@ poster, with only the selection and the spec hard-coded.
 values are schema fields and the handler is mostly deletion.
 
 **When you build one:**
-- One generic handler in `register-skills.js`; never a second script (iron rule 2a).
+- One generic handler in `register-skills.js`; never a second script (iron rule 2a). Write it in
+  the owning source under `module-src/scripts/engine/` (handler types go in
+  `53-native-event-system.js`), then `node scripts/engine-assemble.js` and commit both (item 4).
 - **Make the dispatcher ANNOUNCE, not hand-list.** Sweep rules (`edhaWatchersOfRule(type)`), never
   names. A dispatcher that hand-lists reproduces the bug one level up.
 - **A field that can REFUSE a use cannot live in the executor** — executors run after the cost is
@@ -139,6 +141,7 @@ individually. **Never chain with `;` or pipe through `tail`** — both mask the 
 
 ```bash
 node --check module-src/scripts/register-skills.js
+node scripts/engine-assemble.js --check    # engine = its engine/ sources (item 4)
 node scripts/validate.js
 node scripts/lint-refs.js
 node tests/run.js

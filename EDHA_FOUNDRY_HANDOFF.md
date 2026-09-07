@@ -33,6 +33,147 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-06 — BENCH RUN 40: the whole engine-only backlog of tonight, driven live — 29 rows retired, one root-caused defect (**DOCS-ONLY** — no engine change, no data change, no pack rebuild, no ⟳ Sync)
+
+**Deploy, hash-verified from both sides before anything was driven.** The served
+`/modules/edha-content/scripts/register-skills.js`, fetched cache-busted and CRLF-normalised, hashes
+**`0ea0741ad1ac30c127f58687f6697393d1333f138948e5f54eb0048d6e26c7e2`** over **1 655 974** bytes —
+byte-identical to `2d9631d`'s (PR #233) `module-src/scripts/register-skills.js` with CRs stripped. So
+**every engine-only merge of tonight was live** for the rows below: fix pass 7b (#217), items 53
+(#219), 49 (#221), 50 (#222), 52 (#223), 54 (#224), 66 (#229), 51 (#230), 34b (#233). World `edha`,
+system 2.1.0, Foundry 13.351, `edha-content` active, `globalThis.edha` present with 31 API keys,
+primary GM `Bench`. ⚠️ **Ben's own `Gamemaster` client was connected but is running the PREVIOUS
+engine** — run 39's process-start recipe says so: every `Foundry Virtual Tabletop` process still
+reports **StartTime 18:59**, before the 20:16 deploy, so that client holds `7d8e0226` until he
+presses F5. Nothing below depended on it. **NOT driven, and not failures:** the REBUILD-class merges
+(34a #220, 57 #226, 58 #227, 65 + 67 #232) — their packs are not built, so those rows stay
+BLOCKED-ON-DEPLOY.
+Roster: `bench-setup-console.js` served from the module folder and run twice — **zero ⚠ lines**,
+`orphans: 0 repaired, 0 replaced`, and `game.actors.size` / `scene.tokens.size` identical across the
+re-run. The run-38 fixture worry is settled: every bench PC really does carry a melee **and** a
+ranged weapon (`Sidesword` + `Shortbow`, the latter `attack.type === "ranged"`).
+
+**Rows retired on evidence — 29 (31 rows deleted, 2 of them rewritten as narrowed rows), each with its own control** (full evidence inline in
+`EDHA_FOUNDRY_TEST_CHECKLIST.md`; one line each here):
+- **Fix pass 7b (item 48) — all six:** **R-31** (a PC's Phantom Double token reads `<X> (Illusion)`,
+  an ally's copy labels *the ally*, and the Mistheron's adversary copy stays plain `Mistheron (3)`);
+  **R-32** (`swept 5 · newly Weakened 0 / 5 / 2` across three states + the wall whisper carrying the
+  same pair); **R-38** (one whispered refusal card, throttled per round, silent on a retreat, and
+  **one** card for a three-waypoint drag); **R-6** (Fault Line spares the caster — 42 → 42 with no
+  terrain line — while the ally and the foe both take theirs, and **Walking Ruin's** trail, whose
+  Region carries `exemptActorUuid: ""`, still catches its own owner); **R-13** + **R-37(1)** +
+  **R-37(3)** (snare arms under a creature and springs on its next move, the cap card names what
+  fizzled at both caps, the ordained turn-start card credits `Temp HP 2 (Bulwark Ground)` and loses
+  the clause entirely without the talent); **R-55** (3/4 · 12/12 · 5/5, and 1/4 on a one-talent PC);
+  **R-78** (`edha-aoe-template` absent from a real Add-rule dropdown of 100 options, `edha.aoe`
+  undefined, and Flame Surge still places by canvas click and detonates for 17 energy).
+- **Item 49 + item 66 — all five** (`2bI-4`, `4b`, `4c`, `4d`, `4e`): the rider list stacks, filters
+  per entry, prunes the expired stamp while sparing an unstamped neighbour, and renders a negative
+  `either` rider on damage as **`1d6 - 1d6[Probability Net] + 4`**, never `+ -1d6`.
+- **Item 51 — `2bJ-10b` / `2bJ-10c`:** ignored → *"Ignored — cost refunded"* on the round change and
+  a later click refused; accepted → charged exactly once and stays charged; Puppeteer's card has
+  **no** Decline and mints nothing.
+- **Item 50 (R-70 b):** Reknit Form's two-cost dialog opens with **both** rows ticked and a default
+  Continue charges **inv −1 AND foc −1**; the single-cost control still charges exactly 1; the
+  ready-time console line is `consume-dialog pre-tick wired via prototype patch (R-70)`.
+- **Item 52 (R-27) — both rows:** the stack spends as `3[Rally]`, clears, caps at 3, clears at the
+  owner's turn start, and survives a cancelled dialog.
+- **Item 54 — both rows:** Dispel Omen clears icon + flag + ledger row with the exact card text, an
+  unmarked target offers no such button; Hardy is **suppressed** (49 → 42, effect disabled on the
+  talent, restored on re-enable) while a hand-added actor AE is the only thing offered as a delete.
+- **Item 53 (R-50):** the belief card and the `+1d6` rider land on the **first** bite, the second
+  bite re-tests nothing, and Spearing Beak writes `phantomBelief` and no ambush card.
+- **R-72 POS 3:** driven from `PlayerBench` — the relayed drain lands from the primary GM carrying
+  `options.edha = {bookkeeping: true, source: "set-resource relay (involuntary drain)"}` and no spend
+  tag. **Item 34b — six of seven rows**, including the **two-client race measured 7 ms apart**: one
+  taker, one "already claimed" GM whisper, world item count unchanged.
+
+# FAILS for the next fix pass
+
+- ❌ **NEW DEFECT, root-caused — an `edha-prompt-pick` `once` budget NEVER bites, because the stamp
+  is written under a DOTTED key.** `edhaPromptPickClick` (`register-skills.js` ~L3563/3582) marks with
+  `edhaCoordOPRMark(owner, item.uuid, "_pick")`, which does
+  `setFlag("edha-content", "coordRound", {[item.uuid]: {_pick: round}})` — and Foundry **expands
+  dotted keys**, so the document stores `coordRound.Actor.<actorId>.Item.<itemId>._pick` while
+  `edhaCoordOPRAllowed` reads the **flat** key and always gets `undefined`. Measured: after two
+  accepted Unnerving Approach picks in round 4 the flag read
+  `{"Actor":{"2vSISUi8NZ66KM9B":{"Item":{"Lt4bBgGwLZx7TyiZ":{"_pick":4}}}}}` while the gate's own
+  expression evaluated **allowed**, and a third pick in the same round fired. Blast radius: every
+  `edha-prompt-pick` rule carrying `once`. The other `edhaCoordOPR*` callers pass dot-free talent
+  names or item **ids**, which is why this hid. Filed as a 🤖 row in the Black block; `2bJ-10` stays
+  open waiting on it.
+- ❌ **COSMETIC — Ambush Bite's damage rider prints its flavor twice:**
+  `1d10 + 3 + (1d6[Ambush Bite])[Ambush Bite] + 0`. Math is right; the formula bar is not. Own 🤖 row.
+- ⛔ **BLOCKED-ON-DEPLOY (not a defect): 34b's "natural weapon not listed" body half.** In the
+  deployed pack the Cinderhound's Bite is still `type: "action"`, so the `alwaysEquipped` refusal is
+  never exercised; likewise the Corvaine Raider's Soldier's Crossbow is an action, which is why the
+  body card offered only the Shortsword. Both clear when Ben rebuilds for item 34a.
+
+**Two new rulings** (`EDHA_RULINGS.md`): **R-84** — Unnerving Approach's `emptyNote` branch (no valid
+ally in range) still charges its Investiture with no refund and no Decline button; *recommended:
+refund it, reusing R-17's own gate*. **R-85** — `expireEndOfRound` stamps `edhaCombatRoundOf(owner)`,
+so a granter who is not a combatant writes `round: null` and the "this round" rider never expires;
+*recommended: fall back to the bearer's combat*. Reproduced both ways and it is the reason 2bI-4c
+needs its granter in the tracker.
+
+**Three checklist rows named the wrong thing and each cost a take** — corrected in place:
+2bI-4's "Cognitive test (Deception / Insight)" is wrong for Coercive Pressure's `attr: "int, wil"`
+gate (Deception is `pre`, Insight is `awa` at system 2.1.0 — use **Discipline**); 52-1/52-2's "Battle
+Fever" is really **Feeding Frenzy** (Red owns both, only one carries `edha-rally-stack`); and R-13's
+"an ENEMY token" must be **1×1** (a 2×2 Stillback's centre falls outside the 5 ft square, so
+`armedOver` comes back empty and the Region never contains it).
+
+**World diff — end state matches the start snapshot exactly, and this time the snapshot survived.**
+Written to `sessionStorage` at the moment it was taken (run 39's lesson), so it outlived a mid-run
+`location.reload()` and backs a real per-actor diff rather than a hand count. Final: **74 actors, 33
+tokens** on the Playtest Map (name list identical), **0 combats**, 0 world items, 42 macros, 1
+journal, 2 scenes, 1 Region, 117 walls, 0 templates, 8 folders. Everything the run created was
+deleted — `B40 Wrenchmaster` / `Mistheron` / `Stitchmother` / `Stillback` / `Corvaine Raider` /
+`Cinderhound` (all imported FRESH from the pack), the `Bench Chest` cache and its **Loot Caches**
+folder, three illusion copies, three bench combats, two snare Regions, two dangerous-terrain Regions,
+every measured template, and every token placed for them. Staged items were removed (Meteoric Leap
+off a dummy, a cloned Shatter Focus and both looted weapons off their takers), token positions,
+statuses, HP, `edha-content` flags and `Bench — Order`'s ownership were all restored from the
+snapshot, and the end-of-run per-actor diff is **empty but for one line**. ⚠️ **The one gap, stated
+as a gap:** `Bench — Chaos` lost a pre-existing `Guardian Stance (+1 Deflect)` effect. It is a
+bench-folder PC, and the likeliest cause is a stance clearing when one of the run's combats ended —
+but the snapshot only recorded the effect's NAME, so it could not be faithfully rebuilt, and that is
+an account of what the run knows, not a measurement. Ben's campaign actors are otherwise untouched:
+the run's Draw Mana geometry put the nearest campaign hostile at **66.4 ft** against a 60 ft sweep,
+and the four `Frostbinder` / `Stonebound Captain` statuses noted in run 39 are in this run's START
+snapshot unchanged. Bench chat can be flushed (the run added ~220 messages). **`Bench` and
+`PlayerBench` were both logged out as the last in-world acts and both are selectable on `/join`
+again.**
+## 2026-09-06 — Item 4: the engine is EDITED AS SECTIONS — `module-src/scripts/engine/NN-<slug>.js`, assembled into the ONE deployed file (**TOOLING-only — the deployed `register-skills.js` did not change by one byte**; PR #247)
+
+**What changed.** `module-src/scripts/register-skills.js` (21,792 lines) is now the *assembly* of
+55 per-section sources under `module-src/scripts/engine/`, one file per column-0 `/* ===` banner
+(item 23 bannered every region for exactly this). `scripts/engine-split.js` is the re-runnable cut
+(each source an exact byte range of the engine; `00-file-header` is the head docblock; lexical order
+= assembly order; largest file `53-native-event-system.js`, 3,067 lines — one banner, one file, no
+invented seam). `scripts/engine-assemble.js` concatenates them back (no headers, no separators;
+CRLF→LF only, because the engine is tracked and deployed LF) and `--check` fails naming the first
+differing engine line and its source file. New gate **`engine-assembly`**, right after
+`engine-check` in `scripts/gates.js` (11 local gates now); the pre-commit body runs the same check
+whenever the engine or `engine/` is staged.
+
+**The rule (PM-R15, applied as the default — Ben can veto).** The assembled file STAYS the tracked
+and deployed artifact — nothing about Ben's F5 workflow, `module-src-sync.js` (its `FILES` list
+still names only `scripts/register-skills.js`, checked), `tests/harness.js` `ENGINE_PATH`,
+`lint-refs.js`, the ratchet tests, or "grep the engine" changed. **Edit the source under
+`module-src/scripts/engine/`, run `node scripts/engine-assemble.js`, commit BOTH.** An edit made
+straight into `register-skills.js` trips the gate; `node scripts/engine-split.js` pushes it down
+into the sources. If the engine changes on `main` under an open branch, re-run the split on the
+new engine rather than hand-merging sources. The section → file map lives in `ENGINE_INDEX.md`.
+
+**Proven.** sha256 `acac2589da7b…` three ways — the tracked engine before the split, the
+re-assembled engine, `origin/main:module-src/scripts/register-skills.js`. Mutation: one word added
+to `41-life.js` line 5 → `--check` exit 1 at engine line 13186 (`source 41-life.js:5`);
+re-assembled → green. Full local gates green; test count unchanged. Nothing for the bench —
+lane R, no behaviour change.
+
+---
+
 ## 2026-09-06 — Item 24: the native event/handler registry is TABLE-DRIVEN — `EDHA_EVENT_TYPES` / `EDHA_HANDLER_TYPES`, one registration loop, schemas EVALUATED instead of regex-parsed (**ENGINE-ONLY → F5 / relaunch**; PR #244)
 
 **What changed.** `edhaRegisterNativeEventSystem()` was ~2,500 lines of **102 sequential**

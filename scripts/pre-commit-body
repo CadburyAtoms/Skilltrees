@@ -35,6 +35,17 @@ if git diff --cached --name-only | grep -qE '^(EDHA_FOUNDRY_TEST_CHECKLIST\.md|E
   fi
 fi
 
+# Engine or its per-section sources staged: the tracked engine must be their concatenation (item 4).
+if git diff --cached --name-only | grep -qE '^module-src/scripts/(register-skills\.js|engine/)'; then
+  if command -v node >/dev/null 2>&1; then
+    echo "[pre-commit] checking register-skills.js is the assembly of module-src/scripts/engine/…"
+    if ! node "$REPO_ROOT/scripts/engine-assemble.js" --check; then
+      echo "[pre-commit] commit blocked — run 'node scripts/engine-assemble.js' and stage the regenerated engine with its sources." >&2
+      exit 1
+    fi
+  fi
+fi
+
 # Engine or authored-overlay changes: cross-reference lint + engine helper tests.
 if git diff --cached --name-only | grep -qE '^(module-src/scripts/register-skills\.js|data/authored/.*\.json|scripts/lint-refs\.js|tests/)'; then
   if command -v node >/dev/null 2>&1; then
