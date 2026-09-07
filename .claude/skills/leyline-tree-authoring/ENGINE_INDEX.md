@@ -76,18 +76,35 @@ read back through `classic-level` (the counts below are the rules in the BUILT p
 None is a deletion candidate; a type whose only consumer is an adversary is a legitimate row (the
 ratchet's adversary carve-out). Re-run the grep before believing any future "unused type" claim.
 
-**Executor-less rows.** `edha-illusion-upkeep` carries an explicit **no-op executor** since item 71
-(the same shape eight other config-only rows already used — `edha-watch`, `edha-test-react`,
+**Executor-less rows — the set is EMPTY (item 75, 2026-09-06).** Every registered handler row now
+carries a function executor. `edha-illusion-upkeep` got an explicit **no-op executor** on item 71
+(the same shape eight config-only rows already used — `edha-watch`, `edha-test-react`,
 `edha-damage-reduce`, `edha-focus-guard`, `edha-move-veto`, `edha-hp-floor`, `edha-aura`,
-`edha-damage-react`): its readers are the `combatTurnChange` sweep and `edhaUpkeepInvClick` in the
-Illusion section, so a rule a user places on an event the system DOES dispatch (`use`,
-`add-to-actor`) executes to nothing instead of throwing in `Handler.execute`. Behaviour unchanged;
-the registry snapshot does not record executors, so it did not move. **Nine rows still register
-with NO executor** — `edha-zone-hazard`, `edha-zone-guard`, `edha-snare-react`, `edha-damage-bonus`,
-`edha-counter-transfer`, `edha-die-step-react`, `edha-unseen-ward`, `edha-suppress-veil`,
-`edha-heal-react` — all config-only riders read by sweeps; `tests/handler-registry.test.js`
-names each in `EXECUTOR_LESS_CONFIG_ONLY` so the set can only shrink (filed as a follow-up, not
-fixed under item 71).
+`edha-damage-react`; its readers are the `combatTurnChange` sweep and `edhaUpkeepInvClick` in the
+Illusion section), and item 75 gave the nine rows it exposed the same no-op, each with a comment
+naming its reader, so a rule a user places on an event the system DOES dispatch (`use`,
+`add-to-actor`) executes to nothing instead of throwing in `Handler.execute`. The readers:
+- `edha-zone-hazard` — `edhaCreateGreenTerrain` (`edhaRuleOf` off the placing item) and
+  `edhaZoneHazardRule` (`edhaActorRuleOf`) in Green Territory, plus the `edha-zone` executor's
+  hazard lookup;
+- `edha-zone-guard` — `edhaFatePlaceCore` / `edhaFateTurnStart` (`edhaActorRuleOf`) and
+  `edhaZoneGuardOf` (`edhaWatchersOfRule`), Fate section;
+- `edha-snare-react` — `edhaFateSpringReacts` / `edhaMarkedNearZonesBonus` / `edhaClearFateState`
+  (`edhaActorRulesOf`), Fate section, and the `edha-mark-offer` card button (`edhaEventRules`);
+- `edha-damage-bonus` — `edhaDamageBonusPost` and `edhaWrapApplyDamage` (`edhaActorRulesOf` /
+  `edhaWatchersOfRule`), the apply-damage core;
+- `edha-counter-transfer` — the `updateActor` counter-transfer watcher (`edhaWatchersOfRule`),
+  Knowledge section;
+- `edha-die-step-react` — `edhaSovRollWatch` (`edhaWatchersOfRule`), Sovereignty section;
+- `edha-unseen-ward` — `edhaUnseenWardPreRoll` (`edhaWatchersOfRule`), Green Instinct section;
+- `edha-suppress-veil` — `edhaVeilSuppressed` (`edhaWatchersOfRule`), senses/light/visibility;
+- `edha-heal-react` — `edhaDispatchHealReact` and `edhaRegrowthRuleOf` (`edhaActorRulesOf`),
+  Green Restoration section.
+
+Behaviour unchanged; the registry snapshot does not record executors, so it did not move.
+`tests/handler-registry.test.js` keeps `EXECUTOR_LESS_CONFIG_ONLY` as an EMPTY set and pins
+"every handler has a function executor" — a new config-only row gets the no-op (and a comment
+naming its reader), never an absent executor.
 
 Native handlers: `grant-items` · `remove-items` · `modify-attribute` · `set-attribute` ·
 `modify-skill-rank` · `set-skill-rank` · `grant-expertises` · `remove-expertises` · `use-item` ·
@@ -418,11 +435,17 @@ there is no lint — the swept corpus was 3 sites and only 1 was wrong):
   guess into world state that a later filter cannot distinguish from a real answer. The bake site
   uses `edhaActorSide`, and `edhaCivFortifyGM` **refuses to build the Region** when the side did not
   resolve — a Fortified Foundation that cannot tell sides apart damages everyone who enters it.
-- The **11 remaining** `disposition ?? 0|1` occurrences (`dispoFailOpen` batch 2) are reads whose only
+- **`dispoFailOpen` is 0 (item 10 batch 2, 2026-09-06) — a tombstone; a count of 1 is a regression.** The
+  last 11 occurrences were reads whose only
   consumer is a card's wording or a picker list a human then confirms — `edhaPickCandidates`,
   `edhaSweepEmptyNote`, the movement-window card, `edhaPickProhibition`'s `<select>`, and the
   `edha-cleanse` beacon list. A human gate stands between each and any effect; that is the line
-  batch 1 was drawn on.
+  batch 1 was drawn on. They now hand RAW sides to `edhaSideSame` / `edhaSideHostile` (the owner's own
+  via `edhaActorSide`), so an unresolvable side is OMITTED from every filtered list or card — and where
+  the OWNER's side did not resolve, the empty-note and the movement-window card say so instead of
+  guessing. `edhaPickAccepts`'s `ally` / `enemy` / `anchor-ally` / `anchor-enemy` branches carry the
+  pair; `any` is not a side filter and still offers the unset token. Pinned per family in
+  `tests/disposition-failclosed.test.js`.
 
 ## ⛑ AN AUTHORED **0** IS FALSY — the `x || <default>` revert (07-28g, 4 shipped bugs, NOT gated)
 

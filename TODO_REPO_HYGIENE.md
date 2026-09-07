@@ -293,7 +293,7 @@ why one file legitimately keeps a copy).
 
 ---
 
-## 10. [ ] Migrate the disposition-default fail-open backlog onto the failed-closed helpers
+## 10. [x] Migrate the disposition-default fail-open backlog onto the failed-closed helpers — DONE 2026-09-06, batch 1 PR #200, batch 2 PR #263
 
 **Why:** pass 5.2 (R-63, `fcb6865`) fixed the disposition-default fail-open idiom
 (`disposition ?? 1` / `?? 0` — an unresolvable side silently reading as "everyone matches") in
@@ -342,6 +342,21 @@ stands between each of these and any effect, which is the line batch 1 was drawn
 classified "legitimately defaulted"** — the two payload-bake sites that looked like the "caster's own
 token" exemption are exactly the shape `ENGINE_INDEX.md` says to replace with `edhaActorSide`, so
 they migrated. Batch 2 can therefore still reach **0**.
+
+**BATCH 2 DONE (PR #263, 2026-09-06): the 11 migrated, `counts.dispoFailOpen` 11 → 0 — a TOMBSTONE
+now, like `rollFold` / `gmWhisper`.** Per site: `edhaPickCandidates` hands RAW sides to
+`edhaPickAccepts` (`edhaActorSide` for the owner, the anchor's token document read directly), and the
+four side branches of `edhaPickAccepts` now call `edhaSideSame` / `edhaSideHostile` — an unresolvable
+side is offered under neither `ally` nor `enemy` (nor the anchor pair) but still under `any`;
+`edhaSweepEmptyNote` counts candidates with the same pair, never names an unresolvable token as the
+nearest, and tells an owner whose own side did not resolve so; the movement-window card lists allies by
+`edhaSideSame` and says why when the mover has no side; `edhaPickProhibition`'s `<select>` uses
+`edhaActorSide` + `edhaSideSame`; the `edha-cleanse` beacon list uses `edhaSideSame`. Six headless pins
+(one per family plus the hostile-owner polarity) in `tests/disposition-failclosed.test.js`; reverting
+three families to `?? 1` fails the pins AND lint pass 20. Corollary re-checked across the engine: no
+migrated site reads `!edhaSideSame` as "enemy" — but **`47-power.js` (`edha-aura`-style `affects`
+sweep, ~L419) still does** (`want === "enemies" && same` → continue, so an unresolvable side passes the
+enemies filter); it goes through `edhaSameDisposition`, was outside the 11, and is reported, not fixed.
 
 ---
 
@@ -2374,7 +2389,7 @@ numbers + a grep for "200 talents" / "45 numbered" / "19.7k" returning nothing. 
 
 ---
 
-## 74. [ ] `foundry-build.js items` (single scope) crashes on a temporal-dead-zone `let`
+## 74. [x] `foundry-build.js items` (single scope) crashes on a temporal-dead-zone `let` — DONE 2026-09-06, PR #260 (TOOLING-only; `adversaries` alone was broken the same way and is fixed by the same hoist)
 
 **Why:** item 71's worker (2026-09-06, PR #257) ran a scratch build one scope at a time and found
 `node scripts/foundry-build.js items` dies with `ReferenceError: Cannot access 'REGISTERED_HANDLER_TYPES'
@@ -2396,7 +2411,7 @@ builds + the pin. Found by item 71.
 
 ---
 
-## 75. [ ] Nine registered handler rows still ship NO executor — give each the same no-op
+## 75. [x] Nine registered handler rows still ship NO executor — give each the same no-op — DONE 2026-09-06 (ENGINE-ONLY, F5; PR #261)
 
 **Why:** item 71 (PR #257) gave `edha-illusion-upkeep` an explicit no-op executor and changed the
 registry pin from "a function or absent" to a NAMED set, `EXECUTOR_LESS_CONFIG_ONLY` in
@@ -2418,6 +2433,12 @@ snapshot unchanged; gates green. ENGINE-ONLY (F5).
 
 **PM:** lane R · model fable-worker · size S · deps #71 ✓ · verify: the pin + an unchanged
 snapshot. Found by item 71.
+
+**DONE 2026-09-06:** all nine rows carry `executor: async function () {}` with a comment naming
+their reader(s) (every row has one — none was dead; the list is in `ENGINE_INDEX.md` →
+"Executor-less rows"); `EXECUTOR_LESS_CONFIG_ONLY` is `new Set([])` and the pin reads "every
+handler has a function executor"; mutation (drop edha-heal-react's no-op) → 983 passed, 1 failed
+naming the row; `handler-registry.snapshot.json` unchanged (empty diff); 984 → 984 tests.
 
 ---
 
