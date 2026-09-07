@@ -664,7 +664,7 @@ follows "read top to bottom" pays for this first.
 finds every delta, and CI is green.
 
 **PM:** lane R · model opus · size L (two PRs) · deps ruling PM-R1 · verify: dashboard `--check`, a cold-read by a Sonnet worker that answers ten questions from the reference alone.
-**19a shipped in PR #PENDING** (2026-09-06, DOCS-ONLY): the reference rewrite — 671 lines at the bottom of the handoff under `## Reference — table of contents`, §9 anchor and its 40 Engine-tab rows byte-preserved, the header wall replaced by a pointer. **19b (the delta move + `HANDOFF_ARCHIVE.md` fold + `build-dashboard.js` re-point) remains** — the box stays open until it lands.
+**19a shipped in PR #249** (2026-09-06, DOCS-ONLY): the reference rewrite — 671 lines at the bottom of the handoff under `## Reference — table of contents`, §9 anchor and its 40 Engine-tab rows byte-preserved, the header wall replaced by a pointer. **19b (the delta move + `HANDOFF_ARCHIVE.md` fold + `build-dashboard.js` re-point) remains** — the box stays open until it lands.
 
 ---
 

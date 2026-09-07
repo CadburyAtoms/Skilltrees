@@ -9,7 +9,7 @@ this paragraph (iron rule 5); item 19b moves the deltas to `docs/handoff-changel
 
 ---
 
-## 2026-09-06 — Item 19a: the handoff REFERENCE rewritten to be true today — TOC, §1–§10, §H history, ≤ 800 lines (**DOCS-ONLY**; TODO_REPO_HYGIENE #19, half a; PR pending)
+## 2026-09-06 — Item 19a: the handoff REFERENCE rewritten to be true today — TOC, §1–§10, §H history, ≤ 800 lines (**DOCS-ONLY**; TODO_REPO_HYGIENE #19, half a; PR #249)
 
 **What changed.** The cold-start reference at the bottom of this file (the ⚑/🤖 markers section
 plus §1–§10) was rewritten from the ~110 dated deltas so that every line is TRUE TODAY — verified
