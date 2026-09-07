@@ -2799,3 +2799,36 @@ without a stray `**`/`*`; `node scripts/gates.js` green; dashboard rebuilt and c
 `EDHA_RULINGS.md` + the rebuilt `EDHA_DASHBOARD.html`'s Art tab + `node scripts/gates.js`.
 TOOLING-only (both fixes live in the dashboard build tooling; no engine or pack change, nothing owed
 to Foundry).
+
+---
+
+## 87. [x] The phone card's DEFAULT is empty for rulings written in the bare `*Recommended*, …` style (`RULING_DEFAULT_RE` captures only the colon form) (2026-09-07, PR #279)
+
+**Why:** item 85's report (2026-09-07) found `RULING_DEFAULT_RE` in `scripts/build-dashboard.js`
+captures only the italic `*Recommended default: …*` / `*Recommended: …*` colon form, so a ruling
+whose recommendation is written in the bare style — `*Recommended*, and it matches …` or
+`(a) … — *Recommended*, …` (R-56 is the live example: "**(a)** extend the Edha table to adversary
+sheets AND their token sight, so one rule governs everything — *Recommended*, and it matches the
+07-17c ruling …") — renders `default: "no default stated"` on the phone's Needs-you card, even
+though a recommendation exists. Three rulings use the bare style in `EDHA_RULINGS.md` (around lines
+879, 936 and 1432); of those, only R-56 (line 936) is currently open — R-54 and R-57 are both
+ANSWERED/SHIPPED and so never reach the "Needs you" card, meaning R-56 is the only default that
+actually changes.
+
+**What to do:** widen the default extraction so the bare style yields a real default — the natural
+reading is "the option sentence that carries the `*Recommended*` marker", i.e. the `(x) …` clause
+the marker is attached to, trimmed to one sentence, bold/italic markers stripped like the existing
+path does. Keep every currently-captured default byte-identical (measure all open rulings' `default`
+before and after with `node -e` against the real `EDHA_RULINGS.md` and state both lists in the PR;
+the only changes allowed are rulings that read "no default stated" before). `EDHA_RULINGS.md` itself
+is out of scope for this item — if a doc normalisation of the bare style to the colon form would be
+the cleaner long-term fix, say so in the PR's open questions instead of editing the doc.
+
+**Done when:** the pins pass and fail under reversion (mutation-verified); the before/after default
+lists differ only where "no default stated" became a real sentence; `node scripts/gates.js` green;
+dashboard rebuilt and committed.
+
+**PM:** lane R · model sonnet · size S · deps none · verify: `node -e` before/after against the real
+`EDHA_RULINGS.md` + `node scripts/pm-state.js --dashboard-dir` showing R-56's default +
+`node scripts/gates.js`. TOOLING-only (dashboard build tooling only; no engine or pack change,
+nothing owed to Foundry). Found by item 85's worker.
