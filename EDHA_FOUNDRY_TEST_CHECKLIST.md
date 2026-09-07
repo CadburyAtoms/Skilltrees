@@ -2040,6 +2040,12 @@ re-measure on the next advance produced **exactly one**. Not a two-GM double-app
       note), not a regression — record it as such rather than a FAIL, and route any objection to that
       limit back through `EDHA_RULINGS.md` R-71 for Ben, not this row. What this row DOES prove: the
       total is still correct (maths unchanged) and no other field on the card moved.
+      **↻ Re-test for item 69 (2026-09-06, ENGINE-ONLY, F5 — no rebuild needed):** the limit above
+      is now CLOSED at runtime — `edhaWrapRollDamage` substitutes the roller's data and folds the
+      formula before the system builds its roll, so with the item-69 engine live the expectation is
+      the FULL one: Verdict's system card reads `2d8 + 5` (tier 2 / rank 3), never the parenthetical.
+      A parenthetical after an F5 on the item-69 engine IS a FAIL for item 69. Also read the rider
+      case if one is queued: it must join onto the folded base (`2d8 + 5 + 1d6`).
 
 ---
 
@@ -2076,7 +2082,8 @@ paths).
 > the "so what do we do" half is **R-39**.
 > **ANSWERED 2026-09-06:** R-18 left alone — see the ruling for context, not touched by today's
 > batch. R-25 (c): print ONLY for an ally at 0 HP or carrying Unconscious (ruling answered
-> 2026-09-06 → item 47, ENGINE-ONLY, F5). R-39 (a): accept the colour cue, close it — see the roll
+> 2026-09-06 → item 47 could not ship it engine-only; **SHIPPED by item 63, PR #239, REBUILD heroic +
+> ⟳ Sync — re-test is 2bM-6b below**). R-39 (a): accept the colour cue, close it — see the roll
 > dialog row above.
 >
 > *(**2bC-1 · 2bF-14 · 2bF-16 — all three RETIRED on evidence 2026-07-27v.** Each had passed both of its
@@ -2373,6 +2380,17 @@ should land on the player's screen, not just the GM whisper.
 Cross-actor relay watch-items scattered through the tree sections (White Coordination §3, Life
 §5, Chaos §3…) need no dedicated tests — they self-verify while running the rows above; note
 anything that errors in the row's note box.
+
+## Re-test after item 63 (2026-09-06 — R-25 (c): `whenTarget: downed` on Rousing Presence's Rallying Shout note; **REBUILD heroic + ⟳ Sync Talents first**, then F5)
+
+- [ ] 🤖 **2bM-6b — Rallying Shout's reminder prints ONLY for a downed ally (R-25 (c), item 63, PR #239)** — on
+  **Bench — Heroic** with Rousing Presence + Rallying Shout owned, use Rousing Presence three times, targeting an
+  ally each time: **(1) ally at full HP, no status → NO "📣 Rousing Presence" Rallying Shout line** (the other
+  reminder lines, 2bM-5, still print); **(2) ally at 0 HP → the line prints** ("You may revive an Unconscious
+  ally. If the target is at 0 health it recovers its recovery die + N health"); **(3) ally Unconscious with HP
+  above 0 → the line prints**. Also confirm the field shows on the rule's **Events tab** as "Only when the
+  target is…" = downed (editability is the point of rule 2b). Before this fix run 11 saw the line on an ally at
+  **32 HP**; if it still prints at full HP the pack is stale — check DEPLOY STATE, not the engine.
 
 ## Re-test after the fix pass F fixes (2026-07-28m — three fixed; ⟳ sync the module + F5 first, NO rebuild, NO ⟳ Sync Talents)
 
@@ -3199,6 +3217,19 @@ the Cannon rolled `(2)d(2*3+2)+2+2 = 10` energy and applied exactly **8** throug
       - ✅ **ANSWERED 2026-09-06, R-56 (a): ONE rule — adversary sheets AND token sight use the Edha
         AWA table** (ruling answered 2026-09-06 → item 55, ENGINE + BUILD/DATA, REBUILD + world bulk
         sync). Row stays 🤖 for the re-measure once item 55 ships.
+      - 🚚 **SHIPPED 2026-09-06, item 55 (PR #240, REBUILD + world bulk sync — needs Ben's deploy AND
+        "⟳ Sync Adversaries from Pack" before the re-measure means anything).** The re-test, whole
+        population: on a freshly synced (or re-dragged) adversary, `system.senses.range.value` reads
+        **10** (AWA 0 → the Edha table; was 5) and `prototypeToken.sight.range` / the placed token's
+        `sight.range` read the SAME **10**, `visionMode "sense"` — zero sheet/token mismatches across
+        every adversary. Headless already holds it (tests/adversary-senses.test.js); this row is the
+        live confirmation.
+- [ ] 🤖 **Briar-Gone Grove — the bespoke `senses` override wins on both surfaces** — after the item-55
+      rebuild + sync, the Grove (Thalendor Heartwood Bestiary) reads Senses Range **30 ft** on its sheet
+      (`senses.range.override` 30, `useOverride` true — the engine's table write to `.derived` stays 10
+      underneath) and its prototype token AND a freshly dragged token carry `sight.range` **30**,
+      `visionMode "sense"`. Every other adversary stays at 10. This is the instance the 07-28j note said
+      did not exist ("0 of 52 carry any override"); a document read, not a look. *(Item 55, PR #240.)*
 - [ ] ⚑ **Adversary sight range — does 10 ft feel wrong? Say a number.** — with those tokens on a
       real map: adversary AWA 0 → **10 ft** is intended, but it is a **design dial**, not a bug.
       If it plays badly, give the number you want instead. *(Split 2026-07-27w; the config read is

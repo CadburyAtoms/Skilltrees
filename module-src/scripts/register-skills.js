@@ -1007,6 +1007,22 @@ function edhaRiderBonus(item, actor) {
 // The wrapper logic, shared by the libWrapper and manual-patch paths. (Deal-damage TRIGGERS are
 // dispatched natively by the system's event engine off cosmere-rpg.damageRoll — not from here.)
 function edhaWrapRollDamage(originalCall, options = {}) {
+  /* R-71, RUNTIME half (item 69). The system rolls a talent's own `system.damage.formula` straight
+   * off the field and prints it verbatim, so a rank/tier-scaled `(@tier)d(2 * @skills.blue.rank + 2)`
+   * reached the chat card as `(2)d(2 * 3 + 2)` while the same talent's engine-rolled card (R-65,
+   * `edhaRollFormula`) read `2d8`. Item 59's BUILD-time fold is a proven no-op on every current
+   * formula — there is no actor at build time — so the fold happens HERE, with the roller's data in
+   * hand, before the system builds its roll and before any rider joins onto the base. A formula that
+   * is already plain resolves to itself and `options` is left untouched (byte-identical by design).
+   * Generic: reads the document's field, never a talent's name. Pinned in tests/runtime-formula-fold. */
+  try {
+    const raw = options.overrideFormula ?? this.system?.damage?.formula;
+    const rollData = this.actor?.getRollData?.();
+    if (raw && rollData) {
+      const folded = edhaFoldDieMath(Roll.replaceFormulaData(String(raw), rollData, { missing: "0" }));
+      if (folded !== String(raw)) options = { ...options, overrideFormula: folded };
+    }
+  } catch (e) { /* never break a damage roll on a fold failure — the raw formula still rolls correctly */ }
   const bonus = edhaRiderBonus(this, this.actor);
   if (bonus) {
     const base = options.overrideFormula ?? this.system?.damage?.formula;
@@ -2215,6 +2231,23 @@ async function edhaDispatchTestResult(owner, item, target, ok, ctx = {}) {
 function edhaRuleOwnsGate(owner, name) {
   if (!name) return true;
   return edhaOwnsTalent(owner, String(name));
+}
+
+/* edhaNoteTargetGate — the TARGET-CONDITION dial on edha-note (item 63, R-25 (c), 2026-09-06).
+ * `whenTarget` is authored data on the rule, read here and nowhere else: blank = no gate (every
+ * pre-existing edha-note keeps printing unconditionally); "downed" = the note prints only when the
+ * subject creature (R-64 victim chain: options.victim → options.target → the clicking user's target)
+ * is at 0 health OR carries the system's Unconscious status — the two cases Rallying Shout's card
+ * names. No target at all with a dial set = closed, never thrown. Pinned in tests/note-target-gate. */
+function edhaNoteTargetGate(whenTarget, target) {
+  const mode = String(whenTarget || "").trim();
+  if (!mode) return true;
+  if (!target) return false;
+  if (mode === "downed") {
+    const hp = Number(target.system?.resources?.hea?.value);
+    return (Number.isFinite(hp) && hp <= 0) || !!target.statuses?.has?.("unconscious");
+  }
+  return true;   // an unknown mode never silences a note — fail open, like a blank field
 }
 
 /* ================================================================================================
@@ -7108,10 +7141,11 @@ Hooks.on("preCreateActiveEffect", (eff) => {
  *   Rallying Shout's real mechanic (the ally's recovery die) is EXPRESSIBLE since 2bZ built H17
  *     (`@target.recoveryDie` on edha-focus) — its reminder note stands until a pass upgrades it.
  *
- * ⚑ Two behaviour notes carried over deliberately: the printed "until the end of the scene" on
- * Determined was ALREADY fiction (nothing clears it, then or now), and Rallying Shout's reminder now
- * prints whenever the talent is used rather than only when the ally is at 0 HP — the old gate hid the
- * card's FIRST clause ("revive an Unconscious ally"), so always-print is the more faithful reading. */
+ * ⚑ One behaviour note carried over deliberately: the printed "until the end of the scene" on
+ * Determined was ALREADY fiction (nothing clears it, then or now). Rallying Shout's reminder printed
+ * on every use from the 2b migration until R-25 (c) (2026-09-06, item 63): the authored rule now
+ * carries `whenTarget: "downed"` (edha-note's generic dial — target at 0 HP or Unconscious), which
+ * covers BOTH clauses the card names and no longer prints on a healthy ally. */
 /* Galvanize — ON ITS DOCUMENT since 2bZ (iron rule 2b, H17): `edha-focus` {gain, victim,
  * @target.recoveryDie}. The bespoke useItem hook is gone; the rolled die now POSTS (it used to be
  * evaluated and discarded — the player only saw the focus total). Do not re-add a name here. */
@@ -18277,10 +18311,24 @@ function edhaWalkRateFtFromSpd(spd) { return 20 + 5 * (Number(spd) || 0); }
  *    Skipped while the actor's SOURCE carries its own movement override (legacy pregens).
  *  • Senses: writes .derived (NOT .override), exactly as the system's own prepareSecondaryDerivedData
  *    does, so a player's Configure Senses Range override still wins and the .bonus still adds.
+ *    Applies to EVERY actor type — adversaries included (R-56 (a), item 55); HP and Speed stay PC-only.
  */
 function edhaDeriveSheetStats(actor) {
   try {
-    if (actor?.type !== "character") return;
+    if (!actor) return;
+    // Senses Range = the Edha AWA table, for EVERY actor type (R-56 (a), item 55: ONE rule for PCs
+    // and adversaries — the sheet, the prototype token the build stamps, and edhaCanSee all read
+    // the same table). The system wrote its own ladder into .derived a moment ago; overwrite it,
+    // leaving override/useOverride/bonus alone so a hand-configured range — or an adversary
+    // block's explicit `senses` override, which the build writes as exactly that — still wins.
+    // Was character-only from 07-28i to item 55: every world adversary read the cosmere ladder's
+    // 5 ft on the sheet while its token carried 10 (bench run 22, 47/47).
+    const senses = actor.system?.senses?.range;
+    if (senses) {
+      const awa = Number(actor.system?.attributes?.awa?.value) || 0;
+      try { senses.derived = edhaSensesRangeFtFromAwa(awa); } catch (e) { /* non-fatal */ }
+    }
+    if (actor.type !== "character") return;   // HP and Speed below are PC-only rules (adversary blocks carry overrides)
     // HP = system + EDHA_HP_BONUS (0 since R-54 — the Edha and system tables agree)
     const heaMax = actor.system?.resources?.hea?.max;
     const srcHeaBonus = Number(actor._source?.system?.resources?.hea?.max?.bonus) || 0;
@@ -18313,13 +18361,6 @@ function edhaDeriveSheetStats(actor) {
       const spd = Number(actor.system?.attributes?.spd?.value) || 0;
       try { rate.override = edhaWalkRateFtFromSpd(spd); rate.useOverride = true; } catch (e) { /* non-fatal */ }
     }
-    // Senses Range = the Edha AWA table. The system wrote its own .derived a moment ago; overwrite
-    // it, leaving override/useOverride/bonus alone so a hand-configured range still wins.
-    const senses = actor.system?.senses?.range;
-    if (senses) {
-      const awa = Number(actor.system?.attributes?.awa?.value) || 0;
-      try { senses.derived = edhaSensesRangeFtFromAwa(awa); } catch (e) { /* non-fatal */ }
-    }
   } catch (e) { console.error("Edha Content | sheet-stat derivation failed", e); }
 }
 // One-time migration: strip the pregens' per-actor HP bonus / movement override so the derivations
@@ -18337,14 +18378,18 @@ async function edhaMigrateDerivations() {
   return n;
 }
 
-/* --- PC token defaults (07-18 bench: new "Test Warrior" had a hidden name + short sight) --------
- * Foundry's blank prototype token (displayName NONE, sight range 0) is wrong for Edha PCs: the
+/* --- Token sight defaults (07-18 bench: new "Test Warrior" had a hidden name + short sight) ------
+ * Foundry's blank prototype token (displayName NONE, sight range 0) is wrong for Edha actors: the
  * sight model (07-16c) gives every creature its Senses Range, and a PC's name should read on
- * hover. NEW character actors get displayName HOVER(30) + sight enabled in the cosmere "sense"
- * vision mode (attenuation 0.1 — the exact shape the world PCs and the 07-17c adversary builds
- * carry), range = Senses Range from AWA. An updateActor watcher keeps the range in step when AWA
- * changes (prototype + placed tokens, single GM applier). `edha.fixPcTokens()` retrofits
- * EXISTING characters and their placed tokens (run once for Test / Test Warrior).
+ * hover. NEW actors of ANY type get sight enabled in the cosmere "sense" vision mode (attenuation
+ * 0.1 — the exact shape the world PCs and the adversary pack builds carry), range = Senses Range
+ * from the Edha AWA table (R-56 (a), item 55: one rule for PCs and adversaries; was character-only
+ * before). New CHARACTERS additionally get displayName HOVER(30); adversaries keep Foundry's
+ * default (the pack's OWNER_HOVER(20) is set by the build, and a blank-created adversary should not
+ * leak its name to players on hover). Pack-built and imported actors already carry a sight range
+ * and are left alone. An updateActor watcher keeps the range in step when AWA changes (prototype +
+ * placed tokens, single GM applier, every actor type). `edha.fixPcTokens()` retrofits EXISTING
+ * characters and their placed tokens; existing adversaries are re-stamped by the pack sync.
  */
 function edhaPcSightShape(actor) {
   const awa = Number(actor?.system?.attributes?.awa?.value) || 0;
@@ -18352,14 +18397,14 @@ function edhaPcSightShape(actor) {
 }
 Hooks.on("preCreateActor", (doc, data) => {
   try {
-    if (doc.type !== "character") return;
-    if (data?.prototypeToken?.sight?.range) return; // imported/duplicated actors keep their own config
-    doc.updateSource({ prototypeToken: { displayName: 30, sight: edhaPcSightShape(doc) } });
-  } catch (e) { console.error("Edha Content | PC token defaults failed", e); }
+    if (data?.prototypeToken?.sight?.range) return; // imported/duplicated/pack-built actors keep their own config
+    const proto = { sight: edhaPcSightShape(doc) };
+    if (doc.type === "character") proto.displayName = 30;
+    doc.updateSource({ prototypeToken: proto });
+  } catch (e) { console.error("Edha Content | token sight defaults failed", e); }
 });
 Hooks.on("updateActor", (actor, changes) => {
   try {
-    if (actor.type !== "character") return;
     if (changes?.system?.attributes?.awa === undefined) return;
     if (!edhaDefBuffGmGate()) return; // ONE applier (§10)
     const range = edhaPcSightShape(actor).range;
@@ -18368,7 +18413,7 @@ Hooks.on("updateActor", (actor, changes) => {
       const toks = sc.tokens?.filter?.(t => t.actorId === actor.id) ?? [];
       if (toks.length) void sc.updateEmbeddedDocuments("Token", toks.map(t => ({ _id: t.id, "sight.range": range })));
     }
-  } catch (e) { console.error("Edha Content | PC sight-range sync failed", e); }
+  } catch (e) { console.error("Edha Content | sight-range sync failed", e); }
 });
 async function edhaFixPcTokens() {
   if (!game.user?.isGM) { ui.notifications?.warn("Edha: PC token fix is GM-only."); return; }
@@ -18409,7 +18454,8 @@ Hooks.once("ready", () => {
   // persisted, so the actor snapped back to 57 the next time a real update re-initialised it — the
   // "flip", and why there was no residue. It hit EVERY character carrying ANY ADD-mode effect, on
   // EVERY client, at world load; Hardy was only how the bench noticed.
-  for (const a of (game.actors ?? [])) { if (a.type === "character") { try { a.reset(); a.sheet?.rendered && a.sheet.render(false); } catch (e) {} } }
+  // Every actor, not just characters, since item 55: adversaries' Senses Range is derived here too.
+  for (const a of (game.actors ?? [])) { try { a.reset(); a.sheet?.rendered && a.sheet.render(false); } catch (e) {} }
 });
 
 /* --- Apply-damage targeting: make the chat Apply buttons follow TARGETS ONLY -------------------
@@ -19468,6 +19514,7 @@ function edhaRegisterNativeEventSystem() {
       icon: new FF.StringField({ required: false, blank: true, initial: "", label: "Icon", hint: "One emoji shown before the name. Blank = no icon." }),
       whisper: new FF.StringField({ required: false, initial: "public", choices: choices("public", "owner", "gm"), label: "Who sees it", hint: "public = everyone · owner = you + the GM · gm = the GM only (secrets, or a reminder only the GM acts on)." }),
       whenOwnsTalent: new FF.StringField({ required: false, blank: true, initial: "", label: "Only when you also have this talent", hint: "The UPGRADE-TALENT gate: blank = always. Calm Appeal's line only prints if you own Calm Appeal. A name here is authored data you can edit — declare the upgrade talent's empty document in the tree-section header." }),
+      whenTarget: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "downed"), label: "Only when the target is…", hint: "Blank = always. downed = the creature this use is about (your current target) is at 0 health or Unconscious — Rallying Shout's revive reminder (R-25). No target = no note." }),
       rosterColor: new FF.StringField({ required: false, blank: true, initial: "", label: "Append allies in this Attunement Range", hint: "Colour, blank = off. The note ends with the names of your allies currently within that range — The Final Study's free-Strike roster (player-executed). 07-25." }),
       rosterList: new FF.StringField({ required: false, blank: true, initial: "", label: "…or append the members of this sustained ledger", hint: "An Edha: Sustained List name (e.g. covenants) — the note ends with their names. Concord names the pact allies it binds. 2bV." }),
       rosterListStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "…that ledger's marker status", hint: "Blank = the ledger name." }),
@@ -19476,6 +19523,7 @@ function edhaRegisterNativeEventSystem() {
     executor: async function (event) {
       const item = event.item, owner = item?.actor; if (!owner || !this.text) return;
       if (!edhaRuleOwnsGate(owner, this.whenOwnsTalent)) return;
+      if (!edhaNoteTargetGate(this.whenTarget, edhaResolveVictim(event))) return;   // target-condition dial (item 63 / R-25)
       // Resolve @-refs so a note can quote a live number (Calm Appeal: "+@skills.dis.rank focus").
       let body = String(this.text);
       try { body = String(Roll.replaceFormulaData(body, owner.getRollData(), { missing: "0" })); } catch (e) {}

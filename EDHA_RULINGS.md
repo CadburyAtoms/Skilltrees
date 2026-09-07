@@ -428,6 +428,10 @@ restore the at-0-HP-only gate? *(3A-11 + checklist 2bM-6.)*
 > branch, which iron rule 2b forbids and the ratchet prevents. Shipping the dial alone would add an
 > engine path with no consumer — R-74/R-76's own complaint. **Needs a rebuild-class item; the
 > answer (c) stands unchanged.**
+> **SHIPPED** in PR #239 (REBUILD, bench-pending) — item 63: `edha-note` gained the generic `whenTarget`
+> field (blank | `downed` = target at 0 HP or Unconscious, pure gate `edhaNoteTargetGate`), and
+> `RouseRallying000` carries `whenTarget: "downed"`. tests/note-target-gate.test.js pins the three cases
+> plus the no-field case; heroic pack parity = 204 documents, 1 differs. 🤖 re-test = checklist 2bM-6b.
 
 *(R-57 — Pattern Recognition's round-expiry, kept — ANSWERED 2026-09-06, moved to §K.)*
 
@@ -536,6 +540,7 @@ agent to TEST, so it was in the wrong file. Original measurement: bench run 25.)
 > formula at roll time, mirroring what R-65 already does for engine-rolled cards) would need to hook
 > the system's own damage-roll pipeline, which is a different, ENGINE-side change outside item 59's
 > TOOLING + DATA scope. Left open here for Ben to decide whether that is worth a follow-up item.
+> **SHIPPED (runtime half)** in PR #237 (ENGINE-ONLY, bench-pending) — `tests/runtime-formula-fold.test.js`. Item 69 folds the same field inside `edhaWrapRollDamage` at ROLL time, with the roller's data substituted first, so the tier/rank-scaled formulas the build-time fold could not touch now print plain dice on the system's own card (`2d8 + 5` at tier 2 / rank 3); riders join onto the folded base. The item-59 Verdict 🤖 row under `# BENCH — Order` is this item's re-test.
 
 ---
 
@@ -849,6 +854,13 @@ this — it only decides how far the fix reaches. *(Marathon 3, fix pass E.)*
 > (Ben did not pick which). ENGINE + BUILD/DATA → pack **REBUILD** (Ben's deploy) + a world bulk
 > sync (now authorised) → **item 55**. Unblocks the "Adversary tokens see like PCs" row (AWA 0 → 10
 > ft) and its ⚑ feel sibling.
+> **SHIPPED** in PR #240 (REBUILD + world bulk sync, bench-pending) — guard gone at all three engine
+> sites (+ the `ready` refresh sweep now resets adversaries too); the build's `advSensesRangeFt`
+> replaces the flat 10; the override block is **Briar-Gone Grove, `senses: 30`** (a rooted
+> grove-heart has no eyes and perceives through its own soil). Pins:
+> tests/adversary-senses.test.js:"R-56: an adversary at AWA 0 derives 10 ft on the sheet (was the
+> cosmere ladder's 5)" and siblings; scratch read-back: 52 pack adversaries, 1 changed (the Grove),
+> 51 unchanged at 10. Ben: rebuild + deploy + press ⟳ Sync Adversaries from Pack.
 
 ---
 

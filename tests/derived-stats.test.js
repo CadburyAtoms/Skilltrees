@@ -176,12 +176,12 @@ test("R-54: a legacy June pregen storing its own hea bonus KEEPS it (until migra
   assert.strictEqual(a.system.resources.hea.value, 14);
 });
 
-test("NEGATIVE: adversaries are untouched — no bonus, no speed override, no senses rewrite", () => {
+test("NEGATIVE: adversaries get no bonus and no speed override — but senses DO follow the Edha table (R-56, item 55)", () => {
   const a = pc({ str: 3, spd: 3, awa: 0, type: "adversary" });
   env.edhaDeriveSheetStats(a);
   assert.strictEqual(a.system.resources.hea.max.value, 13);
   assert.strictEqual(a.system.movement.walk.rate.useOverride, false);
-  assert.strictEqual(a.system.senses.range.derived, 5);
+  assert.strictEqual(a.system.senses.range.derived, 10);   // was 5 (cosmere ladder) until item 55 — see tests/adversary-senses.test.js
 });
 
 // --- THE ROW THAT FAILED: preview and sheet must agree ----------------------

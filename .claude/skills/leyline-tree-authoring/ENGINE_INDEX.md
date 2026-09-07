@@ -939,6 +939,12 @@ edhaQueueContest(owner, "<color>", async ({ total }) => {   // captures the owne
   in this field is authored data, not engine dispatch — same reasoning as `edha-enter-stance`'s
   `stance`. Consumers: Absolute Stillness, Calm Appeal, Resolute Stand. **The upgrade's document is
   then empty — declare it in the tree-section header** (rule 2b), as Vigilant Stance did.
+- **`whenTarget` (2026-09-06, item 63 / R-25)** on `edha-note`, via the pure gate
+  **`edhaNoteTargetGate(whenTarget, target)`** (pinned in `tests/note-target-gate.test.js`). The
+  TARGET-CONDITION dial: blank = always (every pre-existing note unchanged); `downed` = the note's subject
+  (R-64 victim chain) is at 0 health or carries `unconscious`; no target = no note; an unknown mode fails
+  OPEN. Consumer: Rousing Presence's `RouseRallying000` (Rallying Shout's revive reminder). Add a new
+  mode here, never a name-keyed branch, when another note needs a target condition.
 - vs a static **defense**: `edhaReadDefense(actor, "phy"|"cog"|"spi")` (no foe roll needed).
 - `edhaPromptDC(title,hint)`, `edhaRewriteOrRelay(...)` for GM-DC / roll-rewrite cases.
 - **No owner roll to capture** (a passive that fires on an event)? Roll the DC yourself and roll each
@@ -1942,6 +1948,7 @@ map onto it as `source` / (`mode` ∨ `formula`) / (`formula`, `count`) / `round
 | **`edhaNextModFoldMode(mods)`** | PURE. Folds N entries into the one `AdvantageMode` scalar: boolean-OR per direction; **a mixed advantage/disadvantage pair returns `null`** and the caller then writes nothing, so a cancelling pair never stomps the player's own dialog choice. |
 | **`edhaWriteNextMods(actor, list)`** | Writes the list back (`null` when empty) **through `edhaSetEdhaFlag`**, so a cross-actor clear relays to the GM — the old consumers called `unsetFlag` on the bearer directly, which silently did nothing for a victim the roller does not own. |
 | **`edhaJoinRiderTerm(base, formula, label?)`** (item 66) | PURE. THE one place a rider's sign is read when it is joined onto a formula: a leading minus becomes an explicit subtraction (`base - 1d6[label]`), anything else `base + term`; `[label]` is appended when given. BOTH paths call it — `edhaNextTestPreRoll` (base `"0"`, always labelled) and `edhaWrapRollDamage` (labelled on the subtraction only, so a positive damage rider is byte-identical to item 49's `base + 1d6`). Before this the damage reduce was a raw `${f} + ${m.formula}` and a `-1d6` `either` rider produced the parser-hostile `2d6 + -1d6`. Pinned in `tests/negative-rider-join.test.js`. |
+| **`edhaWrapRollDamage` — the runtime formula fold** (item 69, R-71's runtime half) | THE one wrapper over `CosmereItem#rollDamage` now folds the base damage formula BEFORE anything else: `options.overrideFormula ?? system.damage.formula` → `Roll.replaceFormulaData(…, actor.getRollData(), { missing: "0" })` → `edhaFoldDieMath` → written to `options.overrideFormula` ONLY when it changed (a plain formula leaves `options` byte-identical; no roll data → untouched). Then the passive riders (`edhaRiderBonus`), the next-test riders (`edhaJoinRiderTerm`, onto the FOLDED base), then `edhaSovStepOverride`. Exists because the cosmere system rolls a talent's own field verbatim and item 59's build-time fold cannot see `@tier`/`@skills.<color>.rank`. Contract: exactly one `edhaFoldDieMath` call in the wrapper, one wrapper in the engine — both pinned by source scan in `tests/runtime-formula-fold.test.js`. Never a second wrapper (rule 2a); never a talent name (rule 2b). |
 
 - **Writers APPEND.** `edhaSetNextTestMod` read-modify-writes through `edhaListPush` (cap
   `EDHA_NEXTMOD_CAP` = 12, evict oldest — a bound, not a design limit). Flags replicate to every
@@ -2288,12 +2295,14 @@ the first one lived inside the trample announcer, looked private, and got duplic
   derived value when present, else the AWA table (0→10 · 1→15 · 2–3→20 · 4→25 · 5+→30; pinned).
   The build writes adversary token `sight.range` from it (per-block `senses` field wins) — Foundry
   natively renders lit areas beyond sight.range, so token vision IS the rule with no module code.
-  ⚠️ **CHARACTERS ONLY, since 07-28i.** `edhaDeriveSheetStats` now writes the AWA table into
-  `system.senses.range.derived` for PCs, so `edhaSensesRangeFt` returns the Edha number for them;
-  ADVERSARIES still derive the cosmere ladder `[5,10,20,50,100,∞]` at ceil(AWA/2) on their sheets
-  while their tokens carry the build's flat 10 ft default. Three surfaces, two-and-a-bit rules —
-  **`EDHA_RULINGS.md` R-56** decides how far to extend it. Until then, do not assume a creature's
-  Senses Range and a PC's mean the same thing.
+  ✅ **ONE RULE FOR EVERY ACTOR TYPE since item 55 (R-56 (a), 2026-09-06).** `edhaDeriveSheetStats`
+  writes the AWA table into `system.senses.range.derived` for characters AND adversaries (it was
+  character-only from 07-28i, which left adversary sheets on the cosmere ladder's 5 while their
+  tokens carried a flat 10). The build's `advSensesRangeFt(adv)` (`scripts/foundry-build-parts.js`)
+  stamps the same table on the pack's prototype token — a block's explicit `senses` (ft) is the
+  bespoke override on both surfaces (Briar-Gone Grove, 30 ft, is the one instance) — and
+  `tests/adversary-senses.test.js` pins the build-time and runtime tables equal. A creature's
+  Senses Range and a PC's now mean the same thing.
 - **The aggro ledger** — every damaging item roll records the attacker TOKEN's last target
   (`aggro` flag, post-roll so an attack never counts itself; cleared at combat end). Solves the
   "GM owns every adversary, targeting is per-user" problem. **`edha-pack-advantage`** (sentinel):
@@ -2788,11 +2797,14 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
     `2d20kh + N` — correct behaviour, invisible preview.
   **Do not "fix" the engine for this.** If the die's colour cue is too subtle at the table, the
   answer is the whispered advantage card (the quarry site's, 07-27l), not a change to the channel.
-- **PC token defaults** (`edhaPcSightShape(actor)` + preCreateActor hook + AWA updateActor
-  watcher + `edha.fixPcTokens()`) — new character actors get displayName HOVER(30) and cosmere
-  "sense" sight (attenuation 0.1) with range = Senses Range (`edhaSensesRangeFtFromAwa`); the
-  watcher (single GM applier) pushes range onto prototype + placed tokens when AWA changes;
-  fixPcTokens retrofits existing PCs and their placed tokens.
+- **Token sight defaults** (`edhaPcSightShape(actor)` + preCreateActor hook + AWA updateActor
+  watcher + `edha.fixPcTokens()`) — new actors of EVERY type (item 55, R-56 (a); was character-only)
+  get cosmere "sense" sight (attenuation 0.1) with range = Senses Range (`edhaSensesRangeFtFromAwa`);
+  new CHARACTERS additionally get displayName HOVER(30) (adversaries keep Foundry's default so a
+  blank-created one does not leak its name on hover); pack-built/imported actors that already carry
+  a sight range are left alone. The watcher (single GM applier) pushes range onto prototype + placed
+  tokens when AWA changes, any type; fixPcTokens retrofits existing PCs and their placed tokens —
+  existing adversaries are re-stamped by "⟳ Sync Adversaries from Pack".
 - ⚠ FACT (07-18g): **never fold a DerivedValueField's `.bonus` into its `.override`** — the
   value getter adds `.bonus` on top of the override, so folding double-counts every AE
   (Surefooted's +10 displayed +20). Set the override to the base derivation only.
