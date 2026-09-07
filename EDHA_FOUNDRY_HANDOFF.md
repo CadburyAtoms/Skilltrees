@@ -139,6 +139,36 @@ Four `Frostbinder` `braced` statuses and two `weakened` sit on Ben's campaign ad
 never controlled or targeted those tokens, and — per the snapshot gap above — that is an account of
 what the run did, not a snapshot diff. Bench chat can be flushed (the run added ~103 messages).
 `Bench` was logged out as the last in-world act and is selectable on `/join` again.
+## 2026-09-06 — R-17 (item 51): a DECLINED or IGNORED offer refunds its Investiture; the round's use still spends on the click (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
+
+**What.** An H6 `edha-prompt-pick` offer posted from the talent's OWN `use` event (Unnerving
+Approach's shape) has already been charged its activation cost by the SYSTEM before the rule runs,
+so declining or ignoring the card kept the Investiture while the round's use — spent on the click
+since 07-24s — stayed available (R-17). Ben chose (a): keep the click budget AND refund. Reused
+**R-69's mechanism** (charge on post, `edhaRefundCost` on back-out — what `edhaDecreeUse`'s cancel
+does) rather than a charge-on-click takeover, through ONE path: **`edhaOfferDecline(msg, item,
+label)`** — resolves the card once (the `cardResolved` flag), then refunds via `edhaRefundCost`.
+- The card carries a **Decline (refund)** button (`edha-pick-decline-btn`) and a message flag
+  `edha-content.offer {itemUuid, round, refund}`; `refund` is true ONLY when the rule fired on a
+  system `use` event (`event.type === "use"`) AND the item consumes something (`edhaOfferRefundable`,
+  pure). Puppeteer's offer is posted from a watch → success rule and its `costs` land on the click,
+  so it is NOT refundable — a decline there credits nothing (a refund would mint Investiture).
+- **Ignored** = the combat round advanced past the round the card was posted in: `edhaSweepIgnoredOffers`
+  on `combatTurnChange` (one GM, `edhaDefBuffGmGate`, last 200 messages) declines every unresolved
+  refundable offer from an earlier round through the same path. Outside combat the button is the exit.
+- The accept click now REFUSES a card already resolved (a sweep-refunded card is not a free use)
+  and marks the card resolved BEFORE the payload runs, off the dispatcher's `msg` (the DOM fallback
+  stays), so a round change cannot sweep an accepted card.
+
+**Proven** — `tests/offer-decline-refund.test.js`, four pins, each failing under a one-line reversion:
+declined → 4 → 3 → **4** and `_pick` still allowed; ignored → same round untouched, next round
+refunded, the watch-posted offer left alone; accepted → stays 3 through the sweep and a late Decline,
+and accept-after-refund is refused with no `_pick` mark; source scan → exactly one `edhaRefundCost(`
+in the offer family, inside `edhaOfferDecline`, both callers through it. 🤖 bench: checklist
+**2bJ-10 (reopened) + 2bJ-10b/c** under `# BENCH — Black`. Item 51 → PR #230.
+
+---
+
 ## 2026-09-06 — Item 66: a NEGATIVE next-test rider on the DAMAGE path joins as a subtraction, not `base + -1d6` (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
 
 Item 49 turned the damage-path consumption in `edhaWrapRollDamage` into a reduce over the taken
