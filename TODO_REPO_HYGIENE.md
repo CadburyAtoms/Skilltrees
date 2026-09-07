@@ -293,7 +293,7 @@ why one file legitimately keeps a copy).
 
 ---
 
-## 10. [x] Migrate the disposition-default fail-open backlog onto the failed-closed helpers — DONE 2026-09-06, batch 1 PR #200, batch 2 PR #PRNUM
+## 10. [x] Migrate the disposition-default fail-open backlog onto the failed-closed helpers — DONE 2026-09-06, batch 1 PR #200, batch 2 PR #263
 
 **Why:** pass 5.2 (R-63, `fcb6865`) fixed the disposition-default fail-open idiom
 (`disposition ?? 1` / `?? 0` — an unresolvable side silently reading as "everyone matches") in
@@ -343,7 +343,7 @@ classified "legitimately defaulted"** — the two payload-bake sites that looked
 token" exemption are exactly the shape `ENGINE_INDEX.md` says to replace with `edhaActorSide`, so
 they migrated. Batch 2 can therefore still reach **0**.
 
-**BATCH 2 DONE (PR #PRNUM, 2026-09-06): the 11 migrated, `counts.dispoFailOpen` 11 → 0 — a TOMBSTONE
+**BATCH 2 DONE (PR #263, 2026-09-06): the 11 migrated, `counts.dispoFailOpen` 11 → 0 — a TOMBSTONE
 now, like `rollFold` / `gmWhisper`.** Per site: `edhaPickCandidates` hands RAW sides to
 `edhaPickAccepts` (`edhaActorSide` for the owner, the anchor's token document read directly), and the
 four side branches of `edhaPickAccepts` now call `edhaSideSame` / `edhaSideHostile` — an unresolvable

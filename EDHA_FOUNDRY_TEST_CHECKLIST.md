@@ -516,7 +516,7 @@ never in the sweep in the first place, so driving them with the corrected probe 
 which is what ① measured — plus `tests/disposition-failclosed.test.js`, which pins the pure form. No
 site fired on the probe.)*
 
-## Item 10 batch 2 — the last five disposition reads fail closed (2026-09-06, ENGINE-ONLY, F5; PR #PRNUM)
+## Item 10 batch 2 — the last five disposition reads fail closed (2026-09-06, ENGINE-ONLY, F5; PR #263)
 
 > Every row below is the R-63 convention on a READ: an unresolvable side is OMITTED from a list or
 > card. ⚠️ Bench run 38 measured that a placed token cannot carry a non-finite disposition on this
