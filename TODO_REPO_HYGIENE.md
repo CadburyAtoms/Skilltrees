@@ -2134,7 +2134,7 @@ ENGINE-ONLY (F5). Found by bench run 39. Dispatched 20:15 in a worktree.
 
 ---
 
-## 69. [ ] R-71's real fix — fold a talent's damage formula at ROLL time when the system rolls it (the build cannot)
+## 69. [x] R-71's real fix — fold a talent's damage formula at ROLL time when the system rolls it (the build cannot) (2026-09-06, PR #237)
 
 **Why:** item 59 (PR #234, 2026-09-06) built R-71 (a) exactly as ruled — fold `system.damage.formula`
 into plain dice at build time — and proved it is a **no-op on every current formula**: all 51
