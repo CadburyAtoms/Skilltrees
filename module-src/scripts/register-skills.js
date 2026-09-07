@@ -2184,6 +2184,23 @@ function edhaRuleOwnsGate(owner, name) {
   return edhaOwnsTalent(owner, String(name));
 }
 
+/* edhaNoteTargetGate — the TARGET-CONDITION dial on edha-note (item 63, R-25 (c), 2026-09-06).
+ * `whenTarget` is authored data on the rule, read here and nowhere else: blank = no gate (every
+ * pre-existing edha-note keeps printing unconditionally); "downed" = the note prints only when the
+ * subject creature (R-64 victim chain: options.victim → options.target → the clicking user's target)
+ * is at 0 health OR carries the system's Unconscious status — the two cases Rallying Shout's card
+ * names. No target at all with a dial set = closed, never thrown. Pinned in tests/note-target-gate. */
+function edhaNoteTargetGate(whenTarget, target) {
+  const mode = String(whenTarget || "").trim();
+  if (!mode) return true;
+  if (!target) return false;
+  if (mode === "downed") {
+    const hp = Number(target.system?.resources?.hea?.value);
+    return (Number.isFinite(hp) && hp <= 0) || !!target.statuses?.has?.("unconscious");
+  }
+  return true;   // an unknown mode never silences a note — fail open, like a blank field
+}
+
 /* ================================================================================================
  * H8 `edha-watch` (07-24q) — THE OBSERVER: react to something ANOTHER document did.
  *
@@ -7075,10 +7092,11 @@ Hooks.on("preCreateActiveEffect", (eff) => {
  *   Rallying Shout's real mechanic (the ally's recovery die) is EXPRESSIBLE since 2bZ built H17
  *     (`@target.recoveryDie` on edha-focus) — its reminder note stands until a pass upgrades it.
  *
- * ⚑ Two behaviour notes carried over deliberately: the printed "until the end of the scene" on
- * Determined was ALREADY fiction (nothing clears it, then or now), and Rallying Shout's reminder now
- * prints whenever the talent is used rather than only when the ally is at 0 HP — the old gate hid the
- * card's FIRST clause ("revive an Unconscious ally"), so always-print is the more faithful reading. */
+ * ⚑ One behaviour note carried over deliberately: the printed "until the end of the scene" on
+ * Determined was ALREADY fiction (nothing clears it, then or now). Rallying Shout's reminder printed
+ * on every use from the 2b migration until R-25 (c) (2026-09-06, item 63): the authored rule now
+ * carries `whenTarget: "downed"` (edha-note's generic dial — target at 0 HP or Unconscious), which
+ * covers BOTH clauses the card names and no longer prints on a healthy ally. */
 /* Galvanize — ON ITS DOCUMENT since 2bZ (iron rule 2b, H17): `edha-focus` {gain, victim,
  * @target.recoveryDie}. The bespoke useItem hook is gone; the rolled die now POSTS (it used to be
  * evaluated and discarded — the player only saw the focus total). Do not re-add a name here. */
@@ -19421,6 +19439,7 @@ function edhaRegisterNativeEventSystem() {
       icon: new FF.StringField({ required: false, blank: true, initial: "", label: "Icon", hint: "One emoji shown before the name. Blank = no icon." }),
       whisper: new FF.StringField({ required: false, initial: "public", choices: choices("public", "owner", "gm"), label: "Who sees it", hint: "public = everyone · owner = you + the GM · gm = the GM only (secrets, or a reminder only the GM acts on)." }),
       whenOwnsTalent: new FF.StringField({ required: false, blank: true, initial: "", label: "Only when you also have this talent", hint: "The UPGRADE-TALENT gate: blank = always. Calm Appeal's line only prints if you own Calm Appeal. A name here is authored data you can edit — declare the upgrade talent's empty document in the tree-section header." }),
+      whenTarget: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "downed"), label: "Only when the target is…", hint: "Blank = always. downed = the creature this use is about (your current target) is at 0 health or Unconscious — Rallying Shout's revive reminder (R-25). No target = no note." }),
       rosterColor: new FF.StringField({ required: false, blank: true, initial: "", label: "Append allies in this Attunement Range", hint: "Colour, blank = off. The note ends with the names of your allies currently within that range — The Final Study's free-Strike roster (player-executed). 07-25." }),
       rosterList: new FF.StringField({ required: false, blank: true, initial: "", label: "…or append the members of this sustained ledger", hint: "An Edha: Sustained List name (e.g. covenants) — the note ends with their names. Concord names the pact allies it binds. 2bV." }),
       rosterListStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "…that ledger's marker status", hint: "Blank = the ledger name." }),
@@ -19429,6 +19448,7 @@ function edhaRegisterNativeEventSystem() {
     executor: async function (event) {
       const item = event.item, owner = item?.actor; if (!owner || !this.text) return;
       if (!edhaRuleOwnsGate(owner, this.whenOwnsTalent)) return;
+      if (!edhaNoteTargetGate(this.whenTarget, edhaResolveVictim(event))) return;   // target-condition dial (item 63 / R-25)
       // Resolve @-refs so a note can quote a live number (Calm Appeal: "+@skills.dis.rank focus").
       let body = String(this.text);
       try { body = String(Roll.replaceFormulaData(body, owner.getRollData(), { missing: "0" })); } catch (e) {}
