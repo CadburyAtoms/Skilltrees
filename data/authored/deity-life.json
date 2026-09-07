@@ -45,11 +45,13 @@
       "events": {
         "MutatePick000000": {
           "event": "use",
-          "description": "Life (Anaveth). 2bW — the chooser as a rule (was the name-keyed useItem case): a whispered card offers the three adaptations for your willing target (default you); the click bakes the pick onto the creature's `mutation` flag for the scene, one per creature. The flag readers were always name-free: Bone Spurs rides the outgoing damage pre-pass (melee-gated), Venom Glands the on-hit post-pass (edhaAddAffliction), Dense Tissue the incoming deflect reduce + the forced-movement veto (Ben E16). An apex grant doubles all of them (Ben E19).",
+          "description": "Life (Anaveth). 2bW — the chooser as a rule (was the name-keyed useItem case): a whispered card offers the three adaptations for your willing target (default you); the click bakes the pick onto the creature's `mutation` flag for the scene, one per creature. The flag readers were always name-free: Bone Spurs rides the outgoing damage pre-pass (melee-gated), Venom Glands the on-hit post-pass (edhaAddAffliction), Dense Tissue the incoming deflect reduce + the forced-movement veto (Ben E16). An apex grant doubles all of them (Ben E19). R-14 (item 56, 2026-09-06): each rider follows its OWN card wording on a graze — Bone Spurs 'melee attacks DEAL additional Keen' = grazes count (keenOnGraze on); Venom Glands 'melee HITS inflict Afflicted' = hit only (venomOnGraze off).",
           "handler": {
             "type": "edha-mutation",
             "keenFormula": "@tier",
             "venomFormula": "floor(((@tier)d(2 * @skills.green.rank + 2)) / 2)",
+            "keenOnGraze": true,
+            "venomOnGraze": false,
             "deflectAmount": 2
           },
           "order": 0,
@@ -99,7 +101,7 @@
       "events": {
         "ApexGrant0000000": {
           "event": "use",
-          "description": "Life (Anaveth). 2bW — the capstone's FIVE mechanics on one rule (was the name-keyed useItem case; LESSONS §2's count-the-mechanics check done): (1) start-of-ITS-turn [Tier][Die on Green] regeneration via the lifeRegen queue; (2) +2 Deflect and (3) +tier vital on its attacks via the `apexForm` flag; (4) active adaptations DOUBLED — every mutation reader checks the same flag (Ben E19); (5) the Injury when it ends — the scene reset's apex branch reads the flag's sourceName (auto at scene end). Willing target, default you.",
+          "description": "Life (Anaveth). 2bW — the capstone's FIVE mechanics on one rule (was the name-keyed useItem case; LESSONS §2's count-the-mechanics check done): (1) start-of-ITS-turn [Tier][Die on Green] regeneration via the lifeRegen queue; (2) +2 Deflect and (3) +tier vital on its attacks via the `apexForm` flag; (4) active adaptations DOUBLED — every mutation reader checks the same flag (Ben E19); (5) the Injury when it ends — the scene reset's apex branch reads the flag's sourceName (auto at scene end). Willing target, default you. R-14 (item 56, 2026-09-06): 'DEALS additional Vital damage on all attacks' = grazes count (vitalOnGraze on).",
           "handler": {
             "type": "edha-regen-grant",
             "formula": "(@tier)d(2 * @skills.green.rank + 2)",
@@ -107,6 +109,7 @@
             "mutationFormula": "",
             "deflect": 2,
             "vitalFormula": "@tier",
+            "vitalOnGraze": true,
             "note": "{name} regenerates [Tier][Die] at the start of its turns, gains +2 Deflect, and adds +Tier vital to its attacks (scene). Active adaptations are doubled; {name} takes an Injury when it ends (auto at scene end)."
           },
           "order": 0,
