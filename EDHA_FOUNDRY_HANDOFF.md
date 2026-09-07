@@ -67,6 +67,141 @@ ft) while their cards say "within 10 ft" — the same family, one field over.
 **🤖 for the bench:** the `34c` sub-block under `# BENCH — Fleet weapon migration, 34a` — eight
 render/roll-parity rows (one per bestiary group), one weapon-borne-rider row, and three item-67
 rows (10-ft push, 10-ft charge, 10-ft square). Item 34 stays open until 34b (loot caches) ships.
+## 2026-09-06 — BENCH RUN 39: fix pass 7a's re-tests all pass, and the two-GM blocker that stopped runs 37 and 38 is settled by measurement (**DOCS-ONLY** — no engine change, no data change, no pack rebuild, no ⟳ Sync)
+
+**Deploy, hash-verified from both sides before anything was driven.** The served
+`/modules/edha-content/scripts/register-skills.js`, fetched cache-busted and CRLF-normalised,
+hashes **`7d8e022630059738c5b721aba4f77621b689992c180ff8c2461b2506915cca61`** over **1 596 964**
+bytes — byte-identical to `dd1e1c3`'s `module-src/scripts/register-skills.js` with CRs stripped.
+So **fix pass 7a (PR #215) was live** for every row below. (`main` has since advanced through
+PRs #217–#223; none of that was deployed and none of it was driven — read every result here against
+`dd1e1c3`.) World `edha`, system 2.1.0, Foundry 13.351, `edha-content` active, `globalThis.edha`
+present, primary GM `Bench`, Ben's `Gamemaster` connected throughout. Roster:
+`bench-setup-console.js` was served from the module folder and run twice — **zero ⚠ lines**,
+`orphans: 0 repaired, 0 replaced`, `game.actors.size` and `scene.tokens.size` unchanged across the
+re-run, and a third run at the end of the session left both counts and both edited actors' item
+counts identical.
+
+⭐ **The generalisable finding: a client's loaded engine IS readable — from the OUTSIDE.** Runs 37
+and 38 both refused to drive the R-77 row because "a client's loaded engine is not readable from
+another client", and run 38 left it waiting on Ben pressing F5. It never needed F5, and it never
+needed Ben: `Get-Process` on the host showed **every `Foundry Virtual Tabletop` process with
+StartTime 18:59:24–18:59:38 on 2026-09-06** — after the 18:33 merge and the 18:59 deploy — which
+proves Ben's `Gamemaster` client (the Electron app itself) had loaded the current engine. **Any
+future two-client gate row should check process start time against deploy time before recording a
+blocker.** The measurement then agreed with the inference: the gate behaved.
+
+**Rows retired on evidence (7 rows + 1 sub-row), each with its own control:**
+- **R-77 — the Investiture-max persist defers to the primary GM.** Run 37's probe-3 recipe, re-run
+  with both clients current: **exactly one `inv.max.override` write, value 8, from `Bench`**, and
+  **nothing at all** from `Gamemaster` (not even the `_stats`-only, `lastModifiedBy`-carrying update
+  run 37 caught it losing the race with). ⭐ The control run 37 could not build: made stale a SECOND
+  time with `Bench`'s Set already seeded — **nobody wrote**, `_source` override stayed 8 while the
+  derived value correctly read 5. A pre-fix `Gamemaster` has no gate and would have written; it did
+  not. That same reading covers the row's second half in the only direction measurable from here —
+  the derivation is right while nobody persisted.
+- **R-51 — a phantom double's break fires no `ally-drops` cue.** The copy broke at a measured
+  **7.071 ft** from a 5-ft cue owner of its own side — the exact gap a REAL drop fires at, proven in
+  the same session — and produced no cue card and no flag write on any of three owners. A same-take
+  positive control at the same coordinates fired. The copy's own `damaged` / `seeming-break` signals
+  still printed.
+- **R-52 (c)(i) — the +2.5 ft half-square slack.** All four positions plus both negatives, with the
+  gap computed and printed for all three owners on every take: **7.5 ✅, 0.0 ✅, 5.0 ✅, 7.071 ✅**,
+  10.0 → no card, Roek at 25.0 → refused, **Roek at 20.0 → fired** (so NEG 2 is not a blind
+  silence). The 7.5-ft boundary case is the one the ruling's own prose predicted would still miss.
+- **R-12 — a raised creature is no longer a Remain.** Positive + all three negatives, including the
+  cross-owner form that actually bites: the raised body left BOTH Reapers' ledgers while an
+  unrelated corpse kept its entry and its marker.
+- **R-10 — "cannot regain HP" does not stop stabilization.** A REAL Withering Touch melee hit
+  produced the mark; **Death Ward, Raise Dead and Unbreakable Line each landed the creature on
+  1 HP** with the mark live and still attached afterwards; the load-bearing negative (a plain heal)
+  delivered 0.
+- **R-36 — Temp HP keeps the higher grant's NAME.** Driven through Bear Witness's real round-start
+  list-members grant: 6-beats-3 keeps both, a 3-v-3 **tie** keeps the incumbent's name, 3-beats-2
+  replaces value and label.
+- **R-72 — an involuntary drain is not a spend.** The Edict-bound creature was drained of
+  Investiture with **no violation prompt**, then spent its own Investiture on Guiding Signal minutes
+  later and **did** raise the prompt. Narrowed to POS 3 (below).
+- **R-54 — the +1 max health is removed.** All five faces, three of them across a real client
+  reload; the three level-1 PCs in `Edha PCs` are the cleanest witnesses (stored 12/14/12, read
+  11/13/11, nothing written, unchanged after the reload).
+
+# FAILS for the next fix pass
+
+- ❌ **NEW DEFECT — an `edha-focus` `resource: hea` rule announces the UNGATED heal amount.** H10's
+  health branch posts its card from the rolled number while `edhaCrossHeal` → `edhaHealCutGate`
+  scales the actual write. Measured against a `healCut {fraction: 0}` creature: HP **4 → 4**
+  (correct), the gate card *"cannot regain HP"* printed (correct), and then the engine printed
+  *"⚕️ Field Medicine: B39 Victim heals **5**."* — it healed 0. The halved case will misreport the
+  same way. Blast radius: every `edha-focus` `hea` rule; **Field Medicine** is the shipped consumer.
+  Filed as a 🤖 row in the Death section. **No other row failed this run.**
+
+**Still open, with its blocker named (stays 🤖, never ⚑):** **R-72 POS 3**, the `set-resource` relay
+half. It is unrunnable from one GM client for a structural reason worth writing down:
+`game.socket.emit` does not echo to its sender, and the relay receiver is
+`edhaDefBuffGmGate()`-gated to the **primary** GM — which is `Bench` — so a Bench-side emit reaches
+only Ben's non-primary `Gamemaster`, which returns immediately. It needs `PlayerBench`.
+
+**Two staging facts that will save the next run time.**
+1. `Reaper's Harvest` carries **`multiOwner: false`**, measured: a second Reaper standing at the
+   same two defeats harvested **nothing**. R-12's NEG 3 two-owner state therefore cannot arise
+   through play, and was written directly in the shape H3 writes — declared staging.
+2. `edhaLedgerSpend` shifts the **oldest** entry and unmarks it, so on a tier-2 Reaper (cap `@tier`
+   = 2) R-12's NEG 1 as worded is unsatisfiable: the "other harvested corpse" IS the one the raise
+   consumes. The cross-owner form is the real test.
+
+**World diff — end state matches start.** 74 actors, 33 tokens on the Playtest Map (name list
+identical), **0 combats**, 0 world items, 42 macros, 1 journal, 2 scenes, 1 Region, 117 walls,
+0 templates. **Authorised deletion (PM-R13, Ben 2026-09-06):** the zero-combatant combat
+**`BerbNeuXp4iKduef`** was deleted, as the licence permits. Everything else this run created — five
+`B39 Victim*` actors, `B39 Crownox Ring` / `B39 The Reckoning` / `B39 Sergeant Halden Roek` /
+`B39 Mistheron` (all imported FRESH from the pack), `B39 Reaper II`, the phantom copy, the
+`R77 Probe 39` and `B39 R54 Probe` actors, four probe items on `Bench — Death` / `Bench — Order`,
+three bench combats, and every token placed for them — was deleted; both edited bench PCs are back
+to **12 items**. `Bench — White` and `Bench — Heroic` tokens were returned to their recorded start
+coordinates, and the `Bench Ally — One` token this run created was removed.
+
+⚠️ **Two honest gaps, stated as gaps.** (1) The start snapshot lived in a page global and a mid-run
+`location.reload()` (needed for R-54's reload half) **wiped it**, so per-actor effect/HP restoration
+could not be diffed automatically; counts, the token name list and the two edited actors' item
+counts were re-verified by hand instead, and `Bench — Destruction` (42/42) and `Bench Ally — One`
+(41, matching its twin) were restored from surveyed values. **Next run: persist the snapshot to
+`sessionStorage` at the moment it is taken.** (2) Several bench PCs' **focus and Investiture pools
+are left at test values** — bench-folder drift, inside the licence; re-running
+`bench-setup-console.js` does not reset resources, so Ben can top them up on the sheets if he cares.
+Four `Frostbinder` `braced` statuses and two `weakened` sit on Ben's campaign adversaries; this run
+never controlled or targeted those tokens, and — per the snapshot gap above — that is an account of
+what the run did, not a snapshot diff. Bench chat can be flushed (the run added ~103 messages).
+`Bench` was logged out as the last in-world act and is selectable on `/join` again.
+## 2026-09-06 — R-17 (item 51): a DECLINED or IGNORED offer refunds its Investiture; the round's use still spends on the click (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
+
+**What.** An H6 `edha-prompt-pick` offer posted from the talent's OWN `use` event (Unnerving
+Approach's shape) has already been charged its activation cost by the SYSTEM before the rule runs,
+so declining or ignoring the card kept the Investiture while the round's use — spent on the click
+since 07-24s — stayed available (R-17). Ben chose (a): keep the click budget AND refund. Reused
+**R-69's mechanism** (charge on post, `edhaRefundCost` on back-out — what `edhaDecreeUse`'s cancel
+does) rather than a charge-on-click takeover, through ONE path: **`edhaOfferDecline(msg, item,
+label)`** — resolves the card once (the `cardResolved` flag), then refunds via `edhaRefundCost`.
+- The card carries a **Decline (refund)** button (`edha-pick-decline-btn`) and a message flag
+  `edha-content.offer {itemUuid, round, refund}`; `refund` is true ONLY when the rule fired on a
+  system `use` event (`event.type === "use"`) AND the item consumes something (`edhaOfferRefundable`,
+  pure). Puppeteer's offer is posted from a watch → success rule and its `costs` land on the click,
+  so it is NOT refundable — a decline there credits nothing (a refund would mint Investiture).
+- **Ignored** = the combat round advanced past the round the card was posted in: `edhaSweepIgnoredOffers`
+  on `combatTurnChange` (one GM, `edhaDefBuffGmGate`, last 200 messages) declines every unresolved
+  refundable offer from an earlier round through the same path. Outside combat the button is the exit.
+- The accept click now REFUSES a card already resolved (a sweep-refunded card is not a free use)
+  and marks the card resolved BEFORE the payload runs, off the dispatcher's `msg` (the DOM fallback
+  stays), so a round change cannot sweep an accepted card.
+
+**Proven** — `tests/offer-decline-refund.test.js`, four pins, each failing under a one-line reversion:
+declined → 4 → 3 → **4** and `_pick` still allowed; ignored → same round untouched, next round
+refunded, the watch-posted offer left alone; accepted → stays 3 through the sweep and a late Decline,
+and accept-after-refund is refused with no `_pick` mark; source scan → exactly one `edhaRefundCost(`
+in the offer family, inside `edhaOfferDecline`, both callers through it. 🤖 bench: checklist
+**2bJ-10 (reopened) + 2bJ-10b/c** under `# BENCH — Black`. Item 51 → PR #230.
+
+---
 
 ## 2026-09-06 — Item 66: a NEGATIVE next-test rider on the DAMAGE path joins as a subtraction, not `base + -1d6` (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
 
