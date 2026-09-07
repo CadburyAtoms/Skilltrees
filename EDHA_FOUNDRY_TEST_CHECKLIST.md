@@ -4950,7 +4950,7 @@ and `edhaSheetRoot`/`edhaPostCleanseCard` (sheet injectors + Life/Restoration cl
 rows below are regression checks (repo-side unified, no live behavior change); the ones flagged
 VISIBLE are the actual behavior flips this pass made on purpose.
 
-- [ ] 🤖 **VISIBLE — R-62 audience flips, seven sites.** Read carefully — FOUR flip toward wider
+- [x] 🤖 **VISIBLE — R-62 audience flips, seven sites.** Read carefully — FOUR flip toward wider
       (active-only → all GMs, so a GM who was offline when it fired can still find it after logging
       back in): the scene-cue trigger note (`edhaPostCueCard`, any `edha-note`/trigger-card
       talent), the ambush-belief Perception result note (Phantom Double/illusion family), the
@@ -4982,6 +4982,10 @@ VISIBLE are the actual behavior flips this pass made on purpose.
       is retired under **R-86** (*"There will never be no GM connected. This isn't needed, and any
       similar items aren't needed."*) — the same ruling that retired **Job 6a** directly below, whose
       premise is the same one. **Filed as R-90's sibling question, R-91**; row stays 🤖 until Ben says.
+      ✅ **retired 2026-09-07 under R-86 per R-91 (a), Ben, phone inbox 17:25, verbatim (the row's
+      own (a) text tapped): "retire the row under R-86 — the flips are repo-side facts pinned by
+      the code (`activeOnly` present or absent at each of the seven sites) and the behaviour they
+      change only matters in a state you have said will never occur."**
 *(**R-61 — a scene mid-flight when this shipped keeps working (the legacy `detonateUsed` read
 fallback)** — ✅ **PASS, RETIRED on evidence 2026-09-07, bench run 43** (engine `0a677dade62f…`).
 **The row said it was "not independently testable without a stale flag already on an actor from before
