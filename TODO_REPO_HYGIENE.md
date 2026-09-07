@@ -2984,7 +2984,7 @@ DOCS-ONLY.
 
 ---
 
-## 91. [ ] Rulings close-out 2026-09-07 evening — R-83 / R-88 / R-89 answered, four ⚑ wizard-v2 rows PASS (Ben's second dashboard paste)
+## 91. [x] Rulings close-out 2026-09-07 evening — R-83 / R-88 / R-89 answered, four ⚑ wizard-v2 rows PASS (Ben's second dashboard paste) (2026-09-07, PR #289)
 
 **Why:** Ben went through `EDHA_DASHBOARD.html` again on the afternoon of 2026-09-07 (after the
 17:03 deploy) and pasted the Copy-for-Claude block into the PM chat at 17:11 (stamp `@0acf0a482c`).
