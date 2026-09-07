@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-07T00:02:43.264Z",
+  "generatedAt": "2026-09-07T00:23:14.806Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "40618dc34b",
-    "commit": "2ec7185",
-    "branch": "pm/board-2026-09-06e",
+    "hash": "47c8d3a721",
+    "commit": "2d9631d",
+    "branch": "main",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -43,89 +43,37 @@
   },
   "pm": {
     "status": "awake",
-    "note": "Fable PM (Ben-started, 16:56 ET). PM-R14 (19:08): caps lifted for the shift, Fable workers on the larger items. Merged tonight so far: 46, 45, 47 (fix pass 7a, LIVE via your 18:59 deploy), 48 (fix pass 7b), 53, 34a, 49, 50, 52, 54, 57, 60, 58 - fourteen PRs. Engine-only merges since 19:00 (#217, #219, #221-#224) are NOT live yet: one module-src-sync push after bench run 39 reports, then bench run 40 re-tests them. REBUILD-class merges (34a #220, 57 #226, 58 #227) need ONE deploy-to-foundry.bat run - I will ask once 59 and 65 land too. Open rulings with defaults applied: R-18, R-48, R-80, R-81. Seven workers now: bench run 39 (Opus, since 19:03), 34b loot caches (Fable, 19:51), 65 = 34c the 44 later attack items + 67 (Fable, 19:52), 51 the offer refund (Fable, 19:48), 66 the negative-rider join (Fable, in review), 59 the build-time formula fold and 43 the phone 'Needs you' view (Sonnet, 19:48).",
-    "waitingOn": "R-18, R-48, R-80, R-81 (defaults apply if silent); keep Foundry open for bench run 39; one deploy-to-foundry.bat run once 59 + 65 have merged",
+    "note": "Fable PM (Ben-started, 16:56 ET). PM-R14: caps lifted, Fable workers on the larger items. Nineteen PRs merged tonight (45, 46, 47 fix pass 7a, 48 fix pass 7b, 53, 34a, 49, 50, 52, 54, 57, 60, 58, 66, 51, bench run 39, 65+67, 34b, 59). 20:16: the nine engine-only merges went LIVE by module-src-sync (served hash = main #233) - press F5 on your Gamemaster client when convenient. Bench run 40 (20:17) is re-testing them. The REBUILD stack is complete - 34a #220, 57 #226, 58 #227, 65+67 #232, 59 #234 - I will push-notify you ONCE for deploy-to-foundry.bat after bench 40 reports and the three rebuild-class engine items now running (55, 56, 63) land, so one run (Foundry closed) covers everything; then bench 41 drives their rows. Item 59 found that the build-time fold is a no-op on every current formula, so R-71's real fix is item 69 (runtime fold), dispatched. Open rulings with defaults applied: R-18, R-48, R-80, R-81.",
+    "waitingOn": "R-18, R-48, R-80, R-81 (defaults apply if silent); keep Foundry open for bench run 40; one deploy-to-foundry.bat run when I push-notify",
     "nextWakeAt": null,
     "session": "2026-09-06 16:56 ET — Fable PM (hand-started)"
   },
   "workers": [
     {
       "item": "5",
-      "title": "Bench run 39 — fix pass 7a re-tests, R-77, the bench-pending items' 27 open robot rows",
+      "title": "Bench run 40 — fix pass 7b + the evening's engine-only merges on the pushed engine 0ea0741a",
       "model": "opus",
       "size": "L",
       "lane": "B",
-      "branch": "pm/bench-run-39",
-      "startedAt": "2026-09-06T23:03:00Z",
-      "agent": "Bench run 39",
+      "branch": "pm/bench-run-40",
+      "startedAt": "2026-09-07T00:17:00Z",
+      "agent": "Bench run 40",
       "phase": "working",
       "pr": null,
-      "note": "worktree; Foundry open since 18:59; live = main at #216 (7d8e0226)"
+      "note": "worktree; engine pushed 20:16 (live = main #233); REBUILD rows stay blocked-on-deploy"
     },
     {
-      "item": "34",
-      "title": "34b Loot caches — player-clickable chest token + body search within 5 ft, loot-take GM-single-writer socket action",
-      "model": "fable",
-      "size": "L",
-      "lane": "B",
-      "branch": "pm/34b-loot-caches",
-      "startedAt": "2026-09-06T23:51:00Z",
-      "agent": "Work item 34b",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; fable-worker; ENGINE-ONLY"
-    },
-    {
-      "item": "65",
-      "title": "34c — the 44 later-bestiary attack items become weapons (+ item 67: three run-19 charge distances) (REBUILD)",
-      "model": "fable",
-      "size": "M",
-      "lane": "B",
-      "branch": "pm/65-fleet-weapons-34c",
-      "startedAt": "2026-09-06T23:52:00Z",
-      "agent": "Work item 65",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; fable-worker; DATA → REBUILD (Ben's deploy after merge)"
-    },
-    {
-      "item": "51",
-      "title": "R-17 a declined / ignored Puppeteer · Unnerving Approach offer refunds the Investiture",
-      "model": "fable",
+      "item": "68",
+      "title": "Fix pass 8 — an edha-focus hea rule announces the UNGATED heal amount (bench 39's defect)",
+      "model": "opus",
       "size": "S",
       "lane": "B",
-      "branch": "pm/51-offer-decline-refund",
-      "startedAt": "2026-09-06T23:48:00Z",
-      "agent": "Work item 51",
+      "branch": "pm/68-fix-pass-8",
+      "startedAt": "2026-09-07T00:15:00Z",
+      "agent": "Fix pass 8 (item 68)",
       "phase": "working",
       "pr": null,
-      "note": "worktree; fable-worker; ENGINE-ONLY"
-    },
-    {
-      "item": "66",
-      "title": "A negative next-test rider on the damage path joins as base - 1d6, one shared helper for both paths",
-      "model": "fable",
-      "size": "S",
-      "lane": "B",
-      "branch": "pm/66-negative-rider-join",
-      "startedAt": "2026-09-06T23:48:00Z",
-      "agent": "Work item 66",
-      "phase": "in-review",
-      "pr": 229,
-      "note": "reported 19:57; gates 10/10; PM merging main into it"
-    },
-    {
-      "item": "59",
-      "title": "R-71 fold system.damage.formula at build time (TOOLING + DATA, REBUILD)",
-      "model": "sonnet",
-      "size": "S",
-      "lane": "R",
-      "branch": "pm/59-build-time-formula-fold",
-      "startedAt": "2026-09-06T23:48:00Z",
-      "agent": "Work item 59",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; REBUILD (Ben's deploy after merge)"
+      "note": "worktree; test-pass-fixes; ENGINE-ONLY"
     },
     {
       "item": "43",
@@ -139,6 +87,71 @@
       "phase": "working",
       "pr": null,
       "note": "worktree; DOCS/TOOLING; the PM republishes the page after merge"
+    },
+    {
+      "item": "55",
+      "title": "R-56 one senses rule — adversary sheets AND token sight on the Edha AWA table (REBUILD + bulk sync)",
+      "model": "fable",
+      "size": "M",
+      "lane": "B",
+      "branch": "pm/55-adversary-senses-table",
+      "startedAt": "2026-09-07T00:21:00Z",
+      "agent": "Work item 55",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; fable-worker; ENGINE + BUILD/DATA"
+    },
+    {
+      "item": "56",
+      "title": "R-14 melee mutation riders — a per-rule onGraze dial matching each card (REBUILD + Sync)",
+      "model": "fable",
+      "size": "M",
+      "lane": "B",
+      "branch": "pm/56-rider-graze-dial",
+      "startedAt": "2026-09-07T00:21:00Z",
+      "agent": "Work item 56",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; fable-worker; ENGINE + AUTHORED"
+    },
+    {
+      "item": "63",
+      "title": "R-25 Rallying Shout's reminder only for a downed ally — a whenTarget dial on edha-note (REBUILD + Sync)",
+      "model": "fable",
+      "size": "S",
+      "lane": "B",
+      "branch": "pm/63-edha-note-target-dial",
+      "startedAt": "2026-09-07T00:21:00Z",
+      "agent": "Work item 63",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; fable-worker; ENGINE + AUTHORED"
+    },
+    {
+      "item": "64",
+      "title": "Retire aoeRule() in foundry-build.js + a guard against emitting an unregistered rule type (TOOLING)",
+      "model": "fable",
+      "size": "S",
+      "lane": "R",
+      "branch": "pm/64-retire-aoe-rule",
+      "startedAt": "2026-09-07T00:21:00Z",
+      "agent": "Work item 64",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; fable-worker; TOOLING-only"
+    },
+    {
+      "item": "69",
+      "title": "R-71's real fix — fold a talent's damage formula at ROLL time in edhaWrapRollDamage (ENGINE-ONLY)",
+      "model": "fable",
+      "size": "S",
+      "lane": "B",
+      "branch": "pm/69-runtime-formula-fold",
+      "startedAt": "2026-09-07T00:21:00Z",
+      "agent": "Work item 69",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; fable-worker; ENGINE-ONLY"
     }
   ],
   "usage": null,
@@ -194,7 +207,7 @@
     {
       "pos": 5,
       "item": null,
-      "title": "Weekend bench marathon — runs 24/25/26 done (32 rows retired, fix passes 1–2 merged; per-tree bench block exhausted). #151 deployed by Ben 16:15 (hash-verified 16:20: 6 in sync). Run 27 (16:23–17:02): 14 PASS retired, 0 FAIL, 1 BLOCKED (veil needs a dark scene), 1 new 🤖 (two-consume activation charged only Investiture) → merged #157. Run 21's Braced-(b) blocker disproved (game.combat is the VIEWED combat). Next: bench run 5 — the 46 open 🤖 rows (hygiene remainder 19, creation wizard 9, bestiaries 15, player-client 4, pack-sync 4, items 3) after item 36 is deployed. Run 28 (19:38–20:16) merged #163: 12 rows off (R-69/#36 green on all four legs, the two-consume question settled as R-70, all three 07-28m re-tests, six hygiene rows; the unfolded-formula row relocated to R-71; three bestiary Unstoppable rows unblocked to their canvas half). Run 29 (21:36–22:05) merged #168: 5 rows off, 0 engine defects — the three Unstoppable canvas halves proven (run 28's wall-clipping diagnosis RETRACTED: the hidden Browser pane never advances v13's animated token-move pipeline; animate:false moves to the exact pixel — harness, not engine), Set Charge's heal half found unreachable by design (the heal fold lives in edhaBurstDetonate, proven via Mending Aura), Venom Glands driven, R-64's two halves settled from data (no drivable shape; do not re-queue). Run 30 (22:33–23:06) merged #176: 3 rows off, 1 FAIL — the player-client window finally opened (three clients live): item 37's orphan repair and item 26's 20 ft sight both PASSED from the player client, Magnum Opus folded exactly, Job 6b 1 of 3 shapes proven, Pack Share's subject corrected to Death Mark; FAIL: Walking Ruin's trail never drops for a player-initiated move (root cause proven by matched control → fix pass 3, running); R-62 / Job 6a / 2bM-1 still BLOCKED on zero GM clients — ask Ben. Run 31 (23:31–23:52) merged #180: 3 rows off, 1 FAIL — fix pass 3 PASSED from a player client (3 Regions + 3 Drawings; two GM clients did not double-drop), Job 6b closed from a genuine non-owner, the stale token sight fixed by one write, R-63 half-proven; FAIL: Unravel Everything never detonates the Omens it places in the same activation (matched pair; root cause hypothesised at the use-event dispatcher → fix pass 4, running). Not driven: the four July sections (14), the dark-veil scene. Run 32 (00:15–00:47) merged #186: 6 rows off, 0 FAILs — all four fix-pass-4 talents PASS from PlayerBench (Unravel Everything fills 2 and detonates both in one cast; edhaAwaitLocal never timed out), R-65 CLOSED, the starting-kit console API, the roster script re-run clean (orphans: 0); run 31's Guardian Stance mystery explained (a stale adjacency aura on token-less PCs). New finding: all 10 culture items fail system validation at build (severity = run 33's read). Two six-run-stalled July rows re-classified as Ben's (the bulk sync button) and as ruling R-56. Run 33 (00:50–01:21) merged #190: 1 row off, 1 FAIL, 1 answered — item 29's Fault Line row PASSED (both insiders on the burst card, the ally's save line, the caster on neither, the outside ally untouched); the culture-item read: the id IS dropped to \"none\" but the wizard is NOT broken (the cultural:<slug> expertise is literal data) → log noise + a latent trap, fix = an init-hook registration (ENGINE-ONLY); FAIL: the Stalker's veil has never auto-toggled — edhaDarkVeilSweep reads actor.effects, the marker is item-transferred and lives in allApplicableEffects() (proven by matched control) → fix pass 5; a second, unnamed symptom after the one success recorded PARTIAL. R-6 sharpened (the Region catches the caster). Run 34 (02:00–02:31) merged #195: 8 rows off, 0 engine defects — 5 of 8 R-4 rows PASS, each measured in both directions in the same round (per-round ledger, timed expiry, out-of-combat focus watch, two combats, GM focus edit typed AND bar-dragged); three R-4 halves narrowed in place → run 35; fix pass 5's three rows all PASS (the Stalker's veil auto-toggled for the first time ever; 2bS-11 retired in full; the culture registration proven through the consumer); two rulings raised (R-74, R-75). Run 35 (02:36–03:00) merged #198: 5 rows off, 0 engine defects — ALL EIGHT R-4 FACES NOW PASS (the window half of the negative control, the costs:-rule half, the Investiture/Edict face), item 13's migrated spend taxes, the single-target picker driven end to end; two halves narrowed (item 13's heal max-clamp, item 14's edhaSovTargets split); R-76 raised. Run 36 (03:03–03:25) merged #201: 3 rows off, 2 defects — item 12's three two-GM sites + the negative control PASS with a userId-recording observer as the positive control (exactly one write per change, from Bench; Ben's client received the broadcast and wrote nothing); item 13's heal clamp landed on exactly 61 not 62; item 14's split put the caster in neither list. Defects → fix pass 6: the Investiture-max persist writes outside the two-GM gate (proven; R-77) and White's max HP 64 ↔ 57 (hypothesised). Run 37 (03:49–04:02) merged #204: 1 row off, 0 defects — the max-HP row retired with the doubler reproduced as a positive control (bare prepareData() → 64, reset() → 57; Green carries the same Hardy — Max HP effect, em-dash vs hyphen, which discharges fix pass 6's second-root-cause worry — the doubling is per ADD-mode change, not per actor); the Investiture-gate row BLOCKED on Ben's pre-deploy Gamemaster client (inference, recorded as such); item 10's probe re-specified (Secret = −2 is finite). Effect-diff false positives from JSON key order explain the standing Guardian Stance hazard. Run 38 (Sunday 08:35 → PR 08:59) merged #207 by Ben at 12:11 (the PM session was frozen): 5 rows off, R-78 filed (Ben: retire the handler → item 48), the weapon-picker \"a Agent\" / \"a Envoy\" article defect → item 48, and run 22's \"structural and permanent\" rendering blocker DISPROVED — fronting the browser pane flips document.hidden and observers run, so every BLOCKED-on-rendering row is to be re-read. Run 39 dispatched 19:03 (Foundry reopened 18:59 on Ben's deploy, live = main incl. fix pass 7a): fix pass 7a's 7 re-tests + R-52 + the R-54 wizard row first, then R-77 (client reloaded), then the seven bench-pending items' remaining 🤖 rows (27 open at 19:00)",
+      "title": "Weekend bench marathon — runs 24/25/26 done (32 rows retired, fix passes 1–2 merged; per-tree bench block exhausted). #151 deployed by Ben 16:15 (hash-verified 16:20: 6 in sync). Run 27 (16:23–17:02): 14 PASS retired, 0 FAIL, 1 BLOCKED (veil needs a dark scene), 1 new 🤖 (two-consume activation charged only Investiture) → merged #157. Run 21's Braced-(b) blocker disproved (game.combat is the VIEWED combat). Next: bench run 5 — the 46 open 🤖 rows (hygiene remainder 19, creation wizard 9, bestiaries 15, player-client 4, pack-sync 4, items 3) after item 36 is deployed. Run 28 (19:38–20:16) merged #163: 12 rows off (R-69/#36 green on all four legs, the two-consume question settled as R-70, all three 07-28m re-tests, six hygiene rows; the unfolded-formula row relocated to R-71; three bestiary Unstoppable rows unblocked to their canvas half). Run 29 (21:36–22:05) merged #168: 5 rows off, 0 engine defects — the three Unstoppable canvas halves proven (run 28's wall-clipping diagnosis RETRACTED: the hidden Browser pane never advances v13's animated token-move pipeline; animate:false moves to the exact pixel — harness, not engine), Set Charge's heal half found unreachable by design (the heal fold lives in edhaBurstDetonate, proven via Mending Aura), Venom Glands driven, R-64's two halves settled from data (no drivable shape; do not re-queue). Run 30 (22:33–23:06) merged #176: 3 rows off, 1 FAIL — the player-client window finally opened (three clients live): item 37's orphan repair and item 26's 20 ft sight both PASSED from the player client, Magnum Opus folded exactly, Job 6b 1 of 3 shapes proven, Pack Share's subject corrected to Death Mark; FAIL: Walking Ruin's trail never drops for a player-initiated move (root cause proven by matched control → fix pass 3, running); R-62 / Job 6a / 2bM-1 still BLOCKED on zero GM clients — ask Ben. Run 31 (23:31–23:52) merged #180: 3 rows off, 1 FAIL — fix pass 3 PASSED from a player client (3 Regions + 3 Drawings; two GM clients did not double-drop), Job 6b closed from a genuine non-owner, the stale token sight fixed by one write, R-63 half-proven; FAIL: Unravel Everything never detonates the Omens it places in the same activation (matched pair; root cause hypothesised at the use-event dispatcher → fix pass 4, running). Not driven: the four July sections (14), the dark-veil scene. Run 32 (00:15–00:47) merged #186: 6 rows off, 0 FAILs — all four fix-pass-4 talents PASS from PlayerBench (Unravel Everything fills 2 and detonates both in one cast; edhaAwaitLocal never timed out), R-65 CLOSED, the starting-kit console API, the roster script re-run clean (orphans: 0); run 31's Guardian Stance mystery explained (a stale adjacency aura on token-less PCs). New finding: all 10 culture items fail system validation at build (severity = run 33's read). Two six-run-stalled July rows re-classified as Ben's (the bulk sync button) and as ruling R-56. Run 33 (00:50–01:21) merged #190: 1 row off, 1 FAIL, 1 answered — item 29's Fault Line row PASSED (both insiders on the burst card, the ally's save line, the caster on neither, the outside ally untouched); the culture-item read: the id IS dropped to \"none\" but the wizard is NOT broken (the cultural:<slug> expertise is literal data) → log noise + a latent trap, fix = an init-hook registration (ENGINE-ONLY); FAIL: the Stalker's veil has never auto-toggled — edhaDarkVeilSweep reads actor.effects, the marker is item-transferred and lives in allApplicableEffects() (proven by matched control) → fix pass 5; a second, unnamed symptom after the one success recorded PARTIAL. R-6 sharpened (the Region catches the caster). Run 34 (02:00–02:31) merged #195: 8 rows off, 0 engine defects — 5 of 8 R-4 rows PASS, each measured in both directions in the same round (per-round ledger, timed expiry, out-of-combat focus watch, two combats, GM focus edit typed AND bar-dragged); three R-4 halves narrowed in place → run 35; fix pass 5's three rows all PASS (the Stalker's veil auto-toggled for the first time ever; 2bS-11 retired in full; the culture registration proven through the consumer); two rulings raised (R-74, R-75). Run 35 (02:36–03:00) merged #198: 5 rows off, 0 engine defects — ALL EIGHT R-4 FACES NOW PASS (the window half of the negative control, the costs:-rule half, the Investiture/Edict face), item 13's migrated spend taxes, the single-target picker driven end to end; two halves narrowed (item 13's heal max-clamp, item 14's edhaSovTargets split); R-76 raised. Run 36 (03:03–03:25) merged #201: 3 rows off, 2 defects — item 12's three two-GM sites + the negative control PASS with a userId-recording observer as the positive control (exactly one write per change, from Bench; Ben's client received the broadcast and wrote nothing); item 13's heal clamp landed on exactly 61 not 62; item 14's split put the caster in neither list. Defects → fix pass 6: the Investiture-max persist writes outside the two-GM gate (proven; R-77) and White's max HP 64 ↔ 57 (hypothesised). Run 37 (03:49–04:02) merged #204: 1 row off, 0 defects — the max-HP row retired with the doubler reproduced as a positive control (bare prepareData() → 64, reset() → 57; Green carries the same Hardy — Max HP effect, em-dash vs hyphen, which discharges fix pass 6's second-root-cause worry — the doubling is per ADD-mode change, not per actor); the Investiture-gate row BLOCKED on Ben's pre-deploy Gamemaster client (inference, recorded as such); item 10's probe re-specified (Secret = −2 is finite). Effect-diff false positives from JSON key order explain the standing Guardian Stance hazard. Run 38 (Sunday 08:35 → PR 08:59) merged #207 by Ben at 12:11 (the PM session was frozen): 5 rows off, R-78 filed (Ben: retire the handler → item 48), the weapon-picker \"a Agent\" / \"a Envoy\" article defect → item 48, and run 22's \"structural and permanent\" rendering blocker DISPROVED — fronting the browser pane flips document.hidden and observers run, so every BLOCKED-on-rendering row is to be re-read. Run 39 (19:03 → PR 20:05, #228): 9 rows driven, 8 PASS (7 rows + 1 sub-row retired), 0 FAIL, 1 BLOCKED narrowed — served hash 7d8e0226… re-verified; R-77 PASSED and runs 37/38's \"a client's engine is unreadable\" blocker was WRONG: Get-Process shows every Foundry process started 18:59:24–38, after the deploy — compare process start time to deploy time before recording any two-client blocker (now a runbook recipe); R-51 (phantom break at 7.071 ft, no cue), R-52 (7.5 / 0 / 5 / 7.071 fire, 10 does not, Roek 20 fires / 25 refused), R-12 (all four faces), R-10 (Death Ward / Raise Dead / Unbreakable Line each land 1 HP through a real Withering mark; plain heal 0), R-36 (incl. the tie), R-54 (five faces, three across a real reload), R-72 (both owner-side halves; POS 3 needs PlayerBench). New defect → item 68 (fix pass 8): an edha-focus resource: hea rule ANNOUNCES the ungated heal amount (\"heals 5\" when it healed 0; blast radius = every edha-focus hea rule, Field Medicine shipped). World diff clean; the zero-combatant combat deleted under PM-R13. Two harness notes: a real reload wipes the page-global start snapshot (write it to sessionStorage next run); bench PCs' pools left at test values (inside the licence). Run 40 dispatched 20:17 on the pushed engine (0ea0741a… = #233): fix pass 7b's 12 rows, then 51 / 49 / 66 / 50 / 52 / 54 / 53's rows, then 34b's seven loot rows and R-72 POS 3 (both want PlayerBench); the REBUILD-class rows stay BLOCKED-ON-DEPLOY",
       "lane": "B",
       "model": "opus",
       "size": "L",
@@ -518,14 +531,14 @@
     {
       "pos": 31,
       "item": "34",
-      "title": "Fleet weapon migration (34a, REBUILD) + loot caches: player-clickable chest + body search (34b) — re-do PR #103 on current main. 34a dispatched 19:15 as the first fable-worker (PM-R14), worktree; merged 19:31 after review — 11 attack items → kind: \"weapon\" (4 natural ones alwaysEquipped), edhaRuleBearer on both actor-wide rule loops (mutation: re-gating either loop fails its pins), summon attacks build as weapons, advItemDoc passes the flag and validate.js type-checks it; parity over all 336 embedded docs: 11 changed, 0 roll differences; gates.js --ci 12/12 in the worktree with EDHA_DATA pinned. 9 🤖 rows in a new # BENCH — Fleet weapon migration, 34a section. REBUILD + ⟳ Sync owed to Ben. Found: the 39 later bestiary blocks carry 44 attack items still kind: action → item 65 (34c). 34b (loot caches) dispatched 19:51 (fable-worker, worktree, ENGINE-ONLY) as its own PR — this row's status tracks 34b; 34a is bench-pending",
+      "title": "Fleet weapon migration (34a, REBUILD) + loot caches: player-clickable chest + body search (34b) — re-do PR #103 on current main. 34a dispatched 19:15 as the first fable-worker (PM-R14), worktree; merged 19:31 after review — 11 attack items → kind: \"weapon\" (4 natural ones alwaysEquipped), edhaRuleBearer on both actor-wide rule loops (mutation: re-gating either loop fails its pins), summon attacks build as weapons, advItemDoc passes the flag and validate.js type-checks it; parity over all 336 embedded docs: 11 changed, 0 roll differences; gates.js --ci 12/12 in the worktree with EDHA_DATA pinned. 9 🤖 rows in a new # BENCH — Fleet weapon migration, 34a section. REBUILD + ⟳ Sync owed to Ben. Found: the 39 later bestiary blocks carry 44 attack items still kind: action → item 65 (34c). 34b (loot caches) dispatched 19:51 (fable-worker, worktree, ENGINE-ONLY); reported 20:10, in review (PR #233): edha.createLootCache(name) mints a flagged adversary-type actor with a linked chest token (icons/svg/chest.svg verified on v13.351 — #103's ⚑ settled); a Token#_onClickLeft2 init-time prototype patch (the phantom-veil idiom) gives a non-GM double-click on a cache or a defeated adversary within 5 ft edge-to-edge a whispered contents card and returns before the sheet render; Take → loot-take socket → edhaLootTakeGM with a SYNCHRONOUS claim before the first await (the two-relay pin proves exactly one winner — #103's existence-check guard let both through); bodies keep alwaysEquipped weapons; 11 cases, eight reversions shown failing; 1.8M / 89 turns / 19 min; 7 🤖 rows; the Loot Caches folder literal added to lint's name allowlist (a folder, not a talent). Merged 20:15 after review — the PM merged main once (three-file conflict: handoff top ×2 blocks, the 34a bench section where 34b's and 34c's sub-blocks both appended, the dashboard; every delta and both sub-blocks kept, §9 line intact). Item 34 is CLOSED: 34a #220 + 34b #233; 34c = item 65 #232. Both halves bench-pending",
       "lane": "B",
       "model": "fable-worker",
       "size": "L",
       "deps": "Foundry window for the bench",
-      "status": "running",
+      "status": "bench-pending",
       "statusDetail": null,
-      "pr": 220
+      "pr": 233
     },
     {
       "pos": 32,
@@ -650,14 +663,14 @@
     {
       "pos": 42,
       "item": "51",
-      "title": "R-17 a declined / ignored Puppeteer · Unnerving Approach offer refunds the Investiture (R-69's picker path). Dispatched 19:48 (fable-worker, worktree) once 54 had landed",
+      "title": "R-17 a declined / ignored Puppeteer · Unnerving Approach offer refunds the Investiture (R-69's picker path). Dispatched 19:48 (fable-worker, worktree) once 54 had landed; merged 20:08 after review — ONE decline path edhaOfferDecline (resolve the card once, then edhaRefundCost, the R-69 idiom); a Decline button + an offer message flag on system-charged offers; edhaSweepIgnoredOffers on the round change declines unresolved refundable offers from an earlier round; accept refuses a resolved card; Puppeteer's watch-posted offer non-refundable by construction; 4 pins, M1–M4 shown failing; 15 min. Rows 2bJ-10 / 10b / 10c 🤖",
       "lane": "B",
       "model": "fable-worker",
       "size": "S",
       "deps": "46 ✓ · 54 ✓",
-      "status": "running",
+      "status": "bench-pending",
       "statusDetail": null,
-      "pr": null
+      "pr": 230
     },
     {
       "pos": 43,
@@ -698,24 +711,24 @@
     {
       "pos": 46,
       "item": "55",
-      "title": "R-56 adversary sheets AND token sight on the Edha AWA table (engine + build → REBUILD + world bulk sync; one block with an explicit senses override)",
+      "title": "R-56 adversary sheets AND token sight on the Edha AWA table (engine + build → REBUILD + world bulk sync; one block with an explicit senses override). Dispatched 20:21 (fable-worker, worktree)",
       "lane": "B",
-      "model": "opus",
+      "model": "fable-worker",
       "size": "M",
       "deps": "46 ✓",
-      "status": "queued",
+      "status": "running",
       "statusDetail": null,
       "pr": null
     },
     {
       "pos": 47,
       "item": "56",
-      "title": "R-14 melee mutation riders — a per-rule onGraze matching each card's wording (ENGINE + AUTHORED → REBUILD)",
+      "title": "R-14 melee mutation riders — a per-rule onGraze matching each card's wording (ENGINE + AUTHORED → REBUILD). Dispatched 20:21 (fable-worker, worktree)",
       "lane": "B",
-      "model": "opus",
+      "model": "fable-worker",
       "size": "M",
       "deps": "46 ✓",
-      "status": "queued",
+      "status": "running",
       "statusDetail": null,
       "pr": null
     },
@@ -746,14 +759,14 @@
     {
       "pos": 50,
       "item": "59",
-      "title": "R-71 fold system.damage.formula at build time (TOOLING + DATA, REBUILD). Dispatched 19:48 (worktree; EDHA_DATA pinned for the parity build); 64 waits behind it",
+      "title": "R-71 fold system.damage.formula at build time (TOOLING + DATA, REBUILD). Dispatched 19:48 (worktree); reported 20:17, in review (PR #234): a pure Node twin of edhaFoldDieMath (scripts/lib/fold-die-math.js, pinned formula-by-formula against the engine's copy) wired into the build — and a load-bearing finding: it is a NO-OP on every current formula. All 51 rolls and every authored overlay are rank / tier-scaled ((@tier)d(2 * @skills.blue.rank + 2)), which cannot fold without an actor; parity 0 formula diffs on real data, the fold proven on a synthetic numeric formula only. So R-71 (a)'s premise was wrong: \"Verdict's system card reads 2d8 + 5\" needs an ENGINE-side runtime fold in the system's rollDamage pipeline → item 69. Shipped as a harmless guard for any future flat formula; merged 20:20 after review (the PM merged main once); 64 now unblocked. REBUILD owed (the stack is complete: 34a, 57, 58, 65 + 67, 59 → one deploy-to-foundry.bat run after bench 40 reports)",
       "lane": "R",
       "model": "sonnet",
       "size": "S",
       "deps": "46 ✓",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 234
     },
     {
       "pos": 51,
@@ -818,14 +831,14 @@
     {
       "pos": 58,
       "item": "65",
-      "title": "(= 34c) The 39 bestiary statblocks statted after 07-18 (Reedling → The Cull-Alpha) carry 44 attack items still kind: action — same migration as 34a, same proof shape (parity over the embedded docs, 0 roll differences; riders on the weapon harvested by edhaRuleBearer); adversaries pack REBUILD; found by item 34a. Dispatched 19:52 (fable-worker, worktree) carrying item 67 (R-81 default a) in the same PR, once 57 had landed",
+      "title": "(= 34c) The 39 bestiary statblocks statted after 07-18 (Reedling → The Cull-Alpha) carry 44 attack items still kind: action — same migration as 34a, same proof shape (parity over the embedded docs, 0 roll differences; riders on the weapon harvested by edhaRuleBearer); adversaries pack REBUILD; found by item 34a. Dispatched 19:52 (fable-worker, worktree) carrying item 67 (R-81 default a) in the same PR, once 57 had landed; reported 20:08, in review (PR #232): 36 of the 44 become weapons (35 natural alwaysEquipped, the Forge-Hammer as registry hammer); 8 stay actions by the 07-18 analogies, each argued in one line (grabs, 2-action maneuvers, a burst, three Focus-costed bolts); parity over 336 embedded docs: 39 changed (36 + 67's 3), 0 roll differences; gates.js --ci 12/12. Corrected the entry's own measure: kind is never written as \"action\" (it is the default) — the real count is attack-bearing items without kind: weapon, 44 → 8. Found: both Sudden Growths place by rangeByRank (30 / 60 ft) while the cards say 10 ft → the R-81 family one field over (a note, not yet an item). Merged 20:13 after review (2.5M / 124 turns / 15 min); 12 🤖 rows. REBUILD owed (34a, 57, 58, 65 stacked; 59 still in flight)",
       "lane": "B",
       "model": "fable-worker",
       "size": "M",
       "deps": "34a ✓ (#220) · 57 ✓",
-      "status": "running",
+      "status": "bench-pending",
       "statusDetail": null,
-      "pr": null
+      "pr": 232
     },
     {
       "pos": 59,
@@ -842,36 +855,60 @@
     {
       "pos": 60,
       "item": "67",
-      "title": "R-81's sweep — the Brandram's Shockwave Slam + Reckless Advance and the Tussock-Sow's terrain square: bySize → explicit distanceFt = the card's number (default (a); one rebuild; can ride item 65's adversaries batch); found by item 57. Riding item 65's PR (dispatched 19:52; this row's status follows 65's)",
+      "title": "R-81's sweep — the Brandram's Shockwave Slam + Reckless Advance and the Tussock-Sow's terrain square: bySize → explicit distanceFt = the card's number (default (a); one rebuild; can ride item 65's adversaries batch); found by item 57. Rode item 65's PR (dispatched 19:52) — Shockwave Slam 10 ft, Brandram Reckless Advance 10 ft, Sudden Growth sizeFt: 10; default (a) applied, open for Ben's veto; merged 20:13 with 65",
       "lane": "R",
       "model": "fable-worker",
       "size": "S",
       "deps": "57 ✓ · R-81 default",
+      "status": "merged",
+      "statusDetail": null,
+      "pr": 232
+    },
+    {
+      "pos": 62,
+      "item": "69",
+      "title": "R-71's real fix — an ENGINE-side fold of a talent's system.damage.formula when the cosmere-rpg system rolls it itself (the rollDamage pipeline the engine already wraps for riders — edhaWrapRollDamage): substitute the actor's roll data and fold with edhaFoldDieMath before the system's card prints, so Verdict's system card reads 2d8 + 5 like its engine card; pin: a rank-scaled formula folds to plain dice on the wrapped roll, a plain one is byte-identical; 🤖 = the item-59 Verdict row. ENGINE-ONLY (F5); found by item 59. Dispatched 20:21 (fable-worker, worktree)",
+      "lane": "B",
+      "model": "fable-worker",
+      "size": "S",
+      "deps": "59 ✓",
       "status": "running",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 61,
+      "item": "68",
+      "title": "Fix pass 8 — bench run 39's defect: an edha-focus resource: hea rule announces the UNGATED heal amount (Field Medicine: \"heals 5\" when the No-Healing gate delivered 0; the halved case misreports too); the card must print what edhaHealCutGate actually delivered. Root-cause in the edha-focus executor's hea branch, pin (gated 0 → card says 0; halved → the halved number; ungated unchanged), 🤖 re-test; test-pass-fixes",
+      "lane": "B",
+      "model": "opus",
+      "size": "S",
+      "deps": "bench 39 ✓",
+      "status": "queued",
       "statusDetail": null,
       "pr": null
     },
     {
       "pos": 57,
       "item": "64",
-      "title": "foundry-build.js's aoeRule() still mints edha-aoe-template rules for any talent with TALENT_TARGETING[…].area and no .burst — today only Lay Foundation, whose authored edha-zone rule replaces the generated events, which is why the sweeps find zero and the pack build stays green; delete that authored events and the next build mints a rule nothing can execute since R-78. Retire aoeRule() (or route it to edha-burst) with a build-report parity proof. TOOLING-only; found by item 48",
+      "title": "foundry-build.js's aoeRule() still mints edha-aoe-template rules for any talent with TALENT_TARGETING[…].area and no .burst — today only Lay Foundation, whose authored edha-zone rule replaces the generated events, which is why the sweeps find zero and the pack build stays green; delete that authored events and the next build mints a rule nothing can execute since R-78. Retire aoeRule() (or route it to edha-burst) with a build-report parity proof. TOOLING-only; found by item 48. Dispatched 20:21 (fable-worker, worktree) after 59 landed",
       "lane": "R",
-      "model": "sonnet",
+      "model": "fable-worker",
       "size": "S",
-      "deps": "48 ✓",
-      "status": "queued",
+      "deps": "48 ✓ · 59 ✓",
+      "status": "running",
       "statusDetail": null,
       "pr": null
     },
     {
       "pos": 56,
       "item": "63",
-      "title": "R-25 (c) Rallying Shout's reminder prints only for an ally at 0 HP / Unconscious — needs a generic target-condition dial on edha-note (e.g. whenTarget: \"downed\") PLUS the authored value on Rousing Presence's RouseRallying000 rule (data/authored/heroic-envoy.json); iron rule 2b forbids the name-keyed shortcut and a dial with no consumer is R-74/R-76's complaint. ENGINE + AUTHORED → REBUILD + ↻ Sync; found by item 47",
+      "title": "R-25 (c) Rallying Shout's reminder prints only for an ally at 0 HP / Unconscious — needs a generic target-condition dial on edha-note (e.g. whenTarget: \"downed\") PLUS the authored value on Rousing Presence's RouseRallying000 rule (data/authored/heroic-envoy.json); iron rule 2b forbids the name-keyed shortcut and a dial with no consumer is R-74/R-76's complaint. ENGINE + AUTHORED → REBUILD + ↻ Sync; found by item 47. Dispatched 20:21 (fable-worker, worktree)",
       "lane": "B",
-      "model": "opus",
+      "model": "fable-worker",
       "size": "S",
       "deps": "46 ✓",
-      "status": "queued",
+      "status": "running",
       "statusDetail": null,
       "pr": null
     },
@@ -934,7 +971,7 @@
   ],
   "inbox": [],
   "foundry": {
-    "text": "✅ OPEN from 2026-09-06 19:00 ET — LIVE = main at dd1e1c3 (#216), engine hash 7d8e0226… equal both sides, 6 in sync; fix pass 7a (#215) is at the table. Ben ran deploy-to-foundry.bat at 18:59 (chat: \"deploy ran @18:59 and foundry is open, adversaries synced\") and relaunched Foundry, so his Gamemaster client is fresh (the R-77 blocker is gone) and the adversaries pack is rebuilt + synced. Bench run 39 dispatched 19:03 (worktree) for the 27 open 🤖 rows — fix pass 7a's re-tests first. ⏳ OWED since 19:31: deploy-to-foundry.bat (adversaries pack REBUILD + ⟳ Sync Adversaries) for item 34a (#220) — the PM asks Ben once the rest of tonight's REBUILD items (57, 58) have merged, so one run covers them all; until then 34a's 9 🤖 rows are BLOCKED-ON-DEPLOY, not defects. Engine-only merges since 19:00 (#217 fix pass 7b, #219 item 53) are also not yet live — module-src-sync.js push after bench run 39 reports. _(Earlier:)_ ❌ CLOSED at 16:56 (refused; last seen up at 08:30); #215 sat on main un-deployed from 18:33 to 18:59. Tonight's engine-only passes deploy by module-src-sync.js push when Foundry is next up (F5 on Ben's side); their 🤖 rows wait for that window. _(Earlier:)_ ✅ LIVE = main at #204, hash 57a8c950… (PM push 2026-09-06 03:47, 6 in sync, equal both sides; adds fix pass 6 to 39cc7612… of 03:27; verified by run 37). Nothing owed to deploy-to-foundry.bat — no pack rebuild all weekend. ⚠️ Ben's Gamemaster client has been connected since before 23:28 and runs a pre-fix engine until it reloads. _(Earlier:)_ 1496af37… at 01:24 (28a + 28b). _(Earlier:)_ 0051bde1… at 00:49 (item 29, verified by run 33). _(Earlier:)_ 06229ecc… at 00:14 (fix pass 4, verified by run 32); ffb1f3f5… at 23:53 (fix pass 3 + item 23). _(Earlier tonight:)_ fix pass 3 pushed 23:28 as c498d9eb…, verified by bench run 31. _(19:10 fact:)_ ✅ #160 LIVE (verified 2026-09-05 19:10 from the new clone: served and repo register-skills.js both 6fc09da0… CRLF-normalised, module-src-sync.js status 6 in sync, localhost:30000 answers 302). _(18:35 note, now history:)_ ⏳ DEPLOY OWED (2026-09-05 18:35, PR #160, ENGINE-ONLY): item 36's one moved statement is on main but not live — module-src-sync.js push + hash verify from the NEW clone (C:\\dev\\Skilltrees) is the next session's first act if Foundry is up; the 🤖 row under # BENCH — Sovereignty waits on it. Ben closed Foundry for the OneDrive move (~18:30). _(Previous fact:)_ ✅ DEPLOYED (2026-09-05 ~16:15, Ben, deploy-to-foundry.bat, Foundry closed): #151's engine half and the Reeve-Owl data fix are LIVE. PM verification 16:20: module-src-sync.js status → 6 in sync, 0 stale, 0 hand-edited; repo engine blob a59b0c41… at main = 7b4bcc8; Foundry relaunched, localhost:30000 answers. The run was the live confirmation of #139's step 2 in the sense that it completed, but note how it got there: Ben's checkout was still pre-#139 when he double-clicked, so the OLD 7-step script ran and hung on the same worktree-prune (y/n) prompt (this time a half-removed .git/worktrees/hw record from a ~13:58 worker). The PM removed the record, had Ben close the window rather than answer y (the pull would have rewritten the running script under cmd, which resumes by byte offset), pulled main in the checkout, and Ben re-ran the new 8-step script clean. Lesson for the runbook: a deploy-script fix only protects the run AFTER the one that pulls it — when the script itself changes, pull first, then run. Bench run 4 verifies the served hash before driving anything.\n\nOPEN — Saturday 2026-09-05 from 09:13 (Ben: \"foundry has been updated and is open\"). Deploy fact (2026-09-05 11:50, PM push after fix pass 1): module-src-sync.js push → 1 copied; live and repo register-skills.js both hash 9575fba2…; status 6 in sync. _(09:13 fact: 6 in sync at 9027cd17….)_ The 2026-08-10 hygiene campaign (R-60..R-67, live dice math) is now LIVE at the table for the first time — its # BENCH — hygiene campaign 2026-08-10 section (checklist line ~3328) is the first thing the bench should run. The checklist carries 106 🤖 rows in total. The dispatch itself waits for the 12:05 slot (two dispatches already in the trailing five hours) and for Foundry still being up then — superseded 10:40: Ben raised the weekend cap and asked for bench progress while he is away; the first bench run was dispatched at once. The weekend runs as a bench marathon (the bench-marathon skill's loop, orchestrated by the PM): bench-run → fails to one test-pass-fixes worker → PM deploys engine-only fixes with module-src-sync.js push and verifies by hash → next bench run re-tests the restored rows first. Pack-rebuild fixes stay BLOCKED-ON-DEPLOY for Ben. Lane-B items merge to main but stay bench-pending until a window; the PM then dispatches one bench-run worker (Opus) for the accumulated 🤖 sections, and fails go to one test-pass-fixes worker.\n\n_(Previous fact, for the record: on 2026-09-04 the live engine was the 2026-07-28 version and deploy-to-foundry.bat had not been run; Ben ran it on 09-05 — it hung on git's worktree-prune prompt on the way, which he is fixing in his own session in the focused-booth-7259bf worktree.)_",
+    "text": "✅ OPEN from 2026-09-06 19:00 ET — LIVE = main at dd1e1c3 (#216), engine hash 7d8e0226… equal both sides, 6 in sync; fix pass 7a (#215) is at the table. Ben ran deploy-to-foundry.bat at 18:59 (chat: \"deploy ran @18:59 and foundry is open, adversaries synced\") and relaunched Foundry, so his Gamemaster client is fresh (the R-77 blocker is gone) and the adversaries pack is rebuilt + synced. Bench run 39 dispatched 19:03 (worktree) for the 27 open 🤖 rows — fix pass 7a's re-tests first. ✅ ENGINE PUSHED 20:16 — LIVE = main at 2d9631d (#233), hash 0ea0741a… equal both sides, 6 in sync (module-src-sync.js push, 1 copied; safety copy under %TEMP%\\edha-engine-backups). Every engine-only merge of the evening is at the table: fix pass 7b, 53, 49, 50, 52, 54, 66, 51, 34b. Ben's Gamemaster client runs the old engine until he presses F5. Bench run 40 dispatched 20:17 for their 🤖 rows. ⏳ OWED: deploy-to-foundry.bat (packs REBUILD + ⟳ Sync) for 34a #220, 57 #226, 58 #227, 65 + 67 #232 — one run covers them all; the PM asks Ben once 59 (the build-time fold, in flight) lands too; until then their 🤖 rows are BLOCKED-ON-DEPLOY, not defects. _(Earlier:)_ ❌ CLOSED at 16:56 (refused; last seen up at 08:30); #215 sat on main un-deployed from 18:33 to 18:59. Tonight's engine-only passes deploy by module-src-sync.js push when Foundry is next up (F5 on Ben's side); their 🤖 rows wait for that window. _(Earlier:)_ ✅ LIVE = main at #204, hash 57a8c950… (PM push 2026-09-06 03:47, 6 in sync, equal both sides; adds fix pass 6 to 39cc7612… of 03:27; verified by run 37). Nothing owed to deploy-to-foundry.bat — no pack rebuild all weekend. ⚠️ Ben's Gamemaster client has been connected since before 23:28 and runs a pre-fix engine until it reloads. _(Earlier:)_ 1496af37… at 01:24 (28a + 28b). _(Earlier:)_ 0051bde1… at 00:49 (item 29, verified by run 33). _(Earlier:)_ 06229ecc… at 00:14 (fix pass 4, verified by run 32); ffb1f3f5… at 23:53 (fix pass 3 + item 23). _(Earlier tonight:)_ fix pass 3 pushed 23:28 as c498d9eb…, verified by bench run 31. _(19:10 fact:)_ ✅ #160 LIVE (verified 2026-09-05 19:10 from the new clone: served and repo register-skills.js both 6fc09da0… CRLF-normalised, module-src-sync.js status 6 in sync, localhost:30000 answers 302). _(18:35 note, now history:)_ ⏳ DEPLOY OWED (2026-09-05 18:35, PR #160, ENGINE-ONLY): item 36's one moved statement is on main but not live — module-src-sync.js push + hash verify from the NEW clone (C:\\dev\\Skilltrees) is the next session's first act if Foundry is up; the 🤖 row under # BENCH — Sovereignty waits on it. Ben closed Foundry for the OneDrive move (~18:30). _(Previous fact:)_ ✅ DEPLOYED (2026-09-05 ~16:15, Ben, deploy-to-foundry.bat, Foundry closed): #151's engine half and the Reeve-Owl data fix are LIVE. PM verification 16:20: module-src-sync.js status → 6 in sync, 0 stale, 0 hand-edited; repo engine blob a59b0c41… at main = 7b4bcc8; Foundry relaunched, localhost:30000 answers. The run was the live confirmation of #139's step 2 in the sense that it completed, but note how it got there: Ben's checkout was still pre-#139 when he double-clicked, so the OLD 7-step script ran and hung on the same worktree-prune (y/n) prompt (this time a half-removed .git/worktrees/hw record from a ~13:58 worker). The PM removed the record, had Ben close the window rather than answer y (the pull would have rewritten the running script under cmd, which resumes by byte offset), pulled main in the checkout, and Ben re-ran the new 8-step script clean. Lesson for the runbook: a deploy-script fix only protects the run AFTER the one that pulls it — when the script itself changes, pull first, then run. Bench run 4 verifies the served hash before driving anything.\n\nOPEN — Saturday 2026-09-05 from 09:13 (Ben: \"foundry has been updated and is open\"). Deploy fact (2026-09-05 11:50, PM push after fix pass 1): module-src-sync.js push → 1 copied; live and repo register-skills.js both hash 9575fba2…; status 6 in sync. _(09:13 fact: 6 in sync at 9027cd17….)_ The 2026-08-10 hygiene campaign (R-60..R-67, live dice math) is now LIVE at the table for the first time — its # BENCH — hygiene campaign 2026-08-10 section (checklist line ~3328) is the first thing the bench should run. The checklist carries 106 🤖 rows in total. The dispatch itself waits for the 12:05 slot (two dispatches already in the trailing five hours) and for Foundry still being up then — superseded 10:40: Ben raised the weekend cap and asked for bench progress while he is away; the first bench run was dispatched at once. The weekend runs as a bench marathon (the bench-marathon skill's loop, orchestrated by the PM): bench-run → fails to one test-pass-fixes worker → PM deploys engine-only fixes with module-src-sync.js push and verifies by hash → next bench run re-tests the restored rows first. Pack-rebuild fixes stay BLOCKED-ON-DEPLOY for Ben. Lane-B items merge to main but stay bench-pending until a window; the PM then dispatches one bench-run worker (Opus) for the accumulated 🤖 sections, and fails go to one test-pass-fixes worker.\n\n_(Previous fact, for the record: on 2026-09-04 the live engine was the 2026-07-28 version and deploy-to-foundry.bat had not been run; Ben ran it on 09-05 — it hung on git's worktree-prune prompt on the way, which he is fixing in his own session in the focused-booth-7259bf worktree.)_",
     "scheduled": true,
     "deployStale": false,
     "liveEngineVersion": null
@@ -2622,15 +2659,141 @@
     },
     {
       "date": "2026-09-06",
+      "time": "19:03",
+      "at": "2026-09-06T23:03:00.000Z",
+      "item": "Bench run 16 = bench run 39 — bench-run, worktree",
+      "itemNo": null,
+      "model": "opus",
+      "isDispatch": true,
+      "duration": "63 min, 460 turns",
+      "weighted": "12.0M",
+      "weightedM": 12,
+      "outcome": "merged 20:10 (squash, to drop an attribution trailer the branch's commit carried — iron rule 6) after review: gates 10/10 in the worktree, CI green on the merged head, 0 ⚑ added, headers clean. 9 rows driven, 8 PASS, 0 FAIL, 1 BLOCKED narrowed (R-72 POS 3 → PlayerBench); R-77 PASSED and the two-client \"unreadable engine\" blocker of runs 37/38 is disproved by process start times (runbook recipe); new defect → item 68 (fix pass 8); world diff clean, the zero-combatant combat gone (PM-R13). Harness notes: a real reload wipes the page-global start snapshot → sessionStorage next run; bench PCs' pools left at test values",
+      "pr": 228
+    },
+    {
+      "date": "2026-09-06",
+      "time": "19:48",
+      "at": "2026-09-06T23:48:00.000Z",
+      "item": "Item 51 (R-17 offer decline refund) — work-item via fable-worker, worktree",
+      "itemNo": null,
+      "model": "fable (medium)",
+      "isDispatch": false,
+      "duration": "15 min, 93 turns",
+      "weighted": "2.0M",
+      "weightedM": 2,
+      "outcome": "merged 20:08 after review (gh mergedAt 00:07:42Z), no trailers; one decline path, the round-change sweep for ignored offers, four mutations shown failing; the PM merged main once (#231). Worker's out-of-scope note: edhaRefundCost credits without waiting once a card is >5 s old (the existing late-cancel rule) — a ruling only if the bench ever sees it",
+      "pr": 230
+    },
+    {
+      "date": "2026-09-06",
+      "time": "19:52",
+      "at": "2026-09-06T23:52:00.000Z",
+      "item": "Item 65 + 67 (34c + the R-81 sweep) — work-item via fable-worker, worktree",
+      "itemNo": null,
+      "model": "fable (medium)",
+      "isDispatch": false,
+      "duration": "15 min, 124 turns",
+      "weighted": "2.5M",
+      "weightedM": 2.5,
+      "outcome": "merged 20:13 after review, no trailers; 36 of 44 migrated, 8 argued as actions; parity 39 changed / 0 roll differences; gates.js --ci 12/12; the PM merged main once. The entry's own \"done when\" grep was a no-op (kind is never written as action) — corrected on the board; item 65's TODO measure should be attack-bearing items without kind: weapon, 44 → 8. REBUILD owed",
+      "pr": 232
+    },
+    {
+      "date": "2026-09-06",
+      "time": "19:51",
+      "at": "2026-09-06T23:51:00.000Z",
+      "item": "Item 34b (loot caches) — work-item via fable-worker, worktree",
+      "itemNo": null,
+      "model": "fable (medium)",
+      "isDispatch": false,
+      "duration": "19 min, 89 turns",
+      "weighted": "1.8M",
+      "weightedM": 1.8,
+      "outcome": "merged 20:15 after review (gh mergedAt 00:15:27Z), no trailers, four themed commits; the claim-before-await guard proven by a two-relay pin (#103's existence check let both through); the PM merged main once (three-file conflict, both bench sub-blocks kept). Item 34 closed. Risk stated honestly as medium: the double-click intercept and the cross-client take are live-table behaviour → 7 🤖 rows",
+      "pr": 233
+    },
+    {
+      "date": "2026-09-06",
+      "time": "20:16",
+      "at": "2026-09-07T00:16:00.000Z",
+      "item": "Engine deploy — PM, no worker",
+      "itemNo": null,
+      "model": "fable",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "module-src-sync.js push → 1 copied, 6 in sync; served 0ea0741a… = main 2d9631d (verified both sides, Foundry 302). Nine engine-only PRs go live at once. Ben's Gamemaster client needs F5",
+      "pr": null
+    },
+    {
+      "date": "2026-09-06",
+      "time": "20:15",
+      "at": "2026-09-07T00:15:00.000Z",
+      "item": "Fix pass 8 (item 68 — the edha-focus heal card announces the ungated amount) — test-pass-fixes, worktree",
+      "itemNo": null,
+      "model": "opus",
+      "isDispatch": true,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "dispatched",
+      "pr": null
+    },
+    {
+      "date": "2026-09-06",
+      "time": "20:17",
+      "at": "2026-09-07T00:17:00.000Z",
+      "item": "Bench run 17 = bench run 40 (fix pass 7b's 12 rows, 51 / 49 / 66 / 50 / 52 / 54 / 53's rows, 34b's loot rows, R-72 POS 3) — bench-run, worktree",
+      "itemNo": null,
+      "model": "opus",
+      "isDispatch": true,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "dispatched on 0ea0741a…. In flight: bench 40, 68, 59, 43",
+      "pr": null
+    },
+    {
+      "date": "2026-09-06",
+      "time": "19:48",
+      "at": "2026-09-06T23:48:00.000Z",
+      "item": "Item 59 (R-71 build-time formula fold) — work-item, worktree",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "29 min, 297 turns",
+      "weighted": "7.6M",
+      "weightedM": 7.6,
+      "outcome": "merged 20:20 after review; the PM merged main once. Honest, load-bearing finding: the build-time fold is a NO-OP on every current formula (all rank / tier-scaled); shipped as a guard, R-71's real fix filed as item 69 (runtime fold). Third Sonnet S item of the night above 5M — the model choice for anything with a proof is settled: Fable",
+      "pr": 234
+    },
+    {
+      "date": "2026-09-06",
+      "time": "20:21",
+      "at": "2026-09-07T00:21:00.000Z",
+      "item": "Wave 4 under PM-R14 — 55 (R-56 senses, REBUILD), 56 (R-14 graze dial, REBUILD), 63 (R-25 edha-note dial, REBUILD), 64 (retire aoeRule(), TOOLING), 69 (R-71 runtime fold, ENGINE) — all fable-worker, worktrees",
+      "itemNo": null,
+      "model": "fable ×5",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "dispatched 20:21. In flight: bench 40, 68, 43, 55, 56, 63, 64, 69 (eight). Deploy plan: ONE deploy-to-foundry.bat ask after bench 40 reports and 55 / 56 / 63 land (Foundry must be closed for it), then bench 41 on every REBUILD row. Still held: 62 (its bench row first), 44 (behind 43), 24 / 4 / 19a (quiet checkout)",
+      "pr": null
+    },
+    {
+      "date": "2026-09-06",
       "time": "19:48",
       "at": "2026-09-06T23:48:00.000Z",
       "item": "Item 66 (negative rider join) — work-item via fable-worker, worktree",
       "itemNo": null,
       "model": "fable (medium)",
       "isDispatch": false,
-      "duration": "8 min, 38 tool uses",
-      "weighted": "(pm-usage at close)",
-      "weightedM": null,
+      "duration": "8 min, 57 turns",
+      "weighted": "1.0M",
+      "weightedM": 1,
       "outcome": "reported 19:57, in review (PR #229): one pure edhaJoinRiderTerm beside edhaTidyFormula, both paths call it, positive damage riders byte-identical by design; 7 pins incl. a source scan; gates 10/10. The worker wrote its own TODO 66 entry (the PM's was still uncommitted in the main checkout) — the PM keeps the worker's on merge. Open question logged: label positive damage riders too? (a ruling if wanted — default no, keep byte-identity). Merged 20:00 (gh mergedAt 23:59:48Z), 1.0M / 57 turns / 8 min",
       "pr": 229
     }
@@ -2989,6 +3152,30 @@
       "model": "sonnet",
       "item": null,
       "pr": 227
+    },
+    {
+      "at": "2026-09-06T23:03:00.000Z",
+      "model": "opus",
+      "item": null,
+      "pr": 228
+    },
+    {
+      "at": "2026-09-07T00:15:00.000Z",
+      "model": "opus",
+      "item": null,
+      "pr": null
+    },
+    {
+      "at": "2026-09-07T00:17:00.000Z",
+      "model": "opus",
+      "item": null,
+      "pr": null
+    },
+    {
+      "at": "2026-09-06T23:48:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 234
     }
   ],
   "statusVocab": [
