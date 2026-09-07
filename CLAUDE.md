@@ -39,7 +39,8 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
 
 | Doc | What it is |
 |---|---|
-| `EDHA_FOUNDRY_HANDOFF.md` | THE knowledge base. Dated deltas newest-first at the top; core reference §1–§10 below them. §9 = canonical backlog; §10 = gotchas that each bit us at least once. |
+| `EDHA_FOUNDRY_HANDOFF.md` | THE knowledge base — **the cold-start REFERENCE alone** since item 19b (2026-09-06; ~690 lines, true today: a table of contents, the ⚑/🤖 marker vocabulary, §1 what this is → §10 gotchas, §H history of the reversals). Read it in one sitting. §9 = the canonical engine backlog (machine-read into the dashboard's Engine tab); §10 = gotchas that each bit us at least once. **No dated deltas live here any more** — they are in `docs/handoff-changelog/` (next row). |
+| `docs/handoff-changelog/` | **The dated deltas** — one file per month (`2026-MM.md`), newest month first, newest delta first inside each; `README.md` is the index (delta count + date range per file); `ARCHIVE-header-wall.md` is the former `HANDOFF_ARCHIVE.md`. Moved verbatim out of the handoff by `scripts/handoff-split.js` (item 19b). **A new delta goes at the TOP of the current month's file**, under its marker line. A cold session reads the reference, then only the deltas newer than the reference's date. A delta's original commit: `git log -S"<delta title>" -- EDHA_FOUNDRY_HANDOFF.md` (`--follow` cannot track a block that left a file that still exists). |
 | `EDHA_FOUNDRY_TEST_CHECKLIST.md` | Per-tree in-Foundry test worklists + the **DEPLOY STATE** section (renamed from "DEPLOY FIRST" on 2026-07-16d — what's merged but not yet live on Ben's machine; read it before believing any "wrong text/old behavior" bug, and check its date against `git log` because only Ben can advance it). Agents edit THIS file; Ben tests from the generated `EDHA_DASHBOARD.html` (Bench tab) — after editing the checklist OR any dashboard source doc (TODO_*, art wishlist, campaign canon/state, handoff, triage, pilot, map JSON) run `node scripts/build-dashboard.js` and commit the dashboard (CI + pre-commit enforce sync). |
 | `.claude/skills/bench-run/` + `docs/EDHA_BENCH_RUNBOOK.md` | **The agent-driven bench** (2026-07-26): a session joins Ben's running Foundry at `localhost:30000` as the passwordless GM user `Bench`, builds the bench roster with `scripts/bench-setup-console.js` (tokens on the EXISTING "Playtest Map"; PCs "Tem parinaem"/"Soggy Bottom" hard-guarded), runs the `# BENCH —` checklist sections itself, and records results (PASS rows retire on evidence; fails feed test-pass-fixes; **🤖 rows are the bench's queue, ⚑ rows are Ben's judgment and are left alone**). The SKILL is the operating loop; the runbook is the full procedure. |
 | `EDHA_RULINGS.md` | **THE standing decisions doc** (added 2026-07-27w). Every open question waiting on Ben — 45 numbered rulings grouped by theme, each with its recommended default and the marathon item / checklist row it came from. It exists because rulings were being filed as *test rows*, so a decision that takes Ben ten seconds sat in a bench queue for weeks. **A new judgment call goes HERE, not into the checklist**; a checklist row that asks Ben to *decide* rather than *test* is in the wrong file. `docs/BENCH_MARATHON_REPORT.md` §3 is now a pointer to it. §I is the APPLIED-as-default list that needs a veto, and **R-43 changes live dice math**. |
@@ -62,7 +63,13 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
 ## Where behavior lives
 
 - **`module-src/scripts/register-skills.js`** — the ENTIRE runtime engine (single tracked copy,
-  ~19.7k lines (2026-09-05, `wc -l`); mirrored to Ben's live module by `scripts/module-src-sync.js`).
+  ~21.8k lines (2026-09-06, `wc -l`); mirrored to Ben's live module by `scripts/module-src-sync.js`).
+  **Since item 4 (2026-09-06, PM-R15) it is ASSEMBLED, not hand-edited: the edit surface is
+  `module-src/scripts/engine/NN-<slug>.js`** — one source per `/* ===` banner (55 files, lexical
+  order = file order). Edit the source, run `node scripts/engine-assemble.js`, commit BOTH; gate
+  `engine-assembly` fails when the tracked file is not their byte-exact concatenation, and the
+  assembled file is still what deploys, what `tests/harness.js` loads, and what `lint-refs.js`
+  reads. The section → file map is in `ENGINE_INDEX.md`.
   Every generic handler, one tree-section header per tree. ⚠️ Also, today, **200 talents' worth of
   name-keyed automation** — that is the iron-rule-2b backlog, not the pattern to copy (this line
   used to read "all name-based automation lives here", which is how the backlog grew). New
@@ -102,7 +109,8 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
    mean **2a**.)
 
    **2a. One engine, no side-engines.** All runtime code lives in
-   `module-src/scripts/register-skills.js`. New automation composes existing primitives — grep
+   `module-src/scripts/register-skills.js` (assembled from the per-section sources under
+   `module-src/scripts/engine/` since item 4 — one deployed file, still). New automation composes existing primitives — grep
    `ENGINE_INDEX.md` FIRST. A genuinely new mechanic adds ONE small generic handler/flag/event
    type, never a bespoke per-tree subsystem and never a second script.
 
@@ -174,7 +182,8 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
    `tests/`. **Never chain gates with `;` or pipe them through `tail`** — both mask the exit code
    that decides, and both have already let a failing lint into a commit (07-18g, 07-18j).
 5. **Docs are part of the change.** Every working session ends with: a dated delta at the TOP of
-   `EDHA_FOUNDRY_HANDOFF.md`, checklist rows for everything that must be re-tested, **the right
+   the current month's changelog file, `docs/handoff-changelog/2026-MM.md` (under its marker
+   line — NOT in `EDHA_FOUNDRY_HANDOFF.md`, which is the reference alone since item 19b), checklist rows for everything that must be re-tested, **the right
    marker on every new row**, and new primitives added to `ENGINE_INDEX.md`.
 
    **There are TWO markers and they are not interchangeable** (split 2026-07-27w; the old wording

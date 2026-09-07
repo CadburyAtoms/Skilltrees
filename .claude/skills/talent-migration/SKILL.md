@@ -102,7 +102,9 @@ poster, with only the selection and the spec hard-coded.
 values are schema fields and the handler is mostly deletion.
 
 **When you build one:**
-- One generic handler in `register-skills.js`; never a second script (iron rule 2a).
+- One generic handler in `register-skills.js`; never a second script (iron rule 2a). Write it in
+  the owning source under `module-src/scripts/engine/` (handler types go in
+  `53-native-event-system.js`), then `node scripts/engine-assemble.js` and commit both (item 4).
 - **Make the dispatcher ANNOUNCE, not hand-list.** Sweep rules (`edhaWatchersOfRule(type)`), never
   names. A dispatcher that hand-lists reproduces the bug one level up.
 - **A field that can REFUSE a use cannot live in the executor** — executors run after the cost is
@@ -139,6 +141,7 @@ individually. **Never chain with `;` or pipe through `tail`** — both mask the 
 
 ```bash
 node --check module-src/scripts/register-skills.js
+node scripts/engine-assemble.js --check    # engine = its engine/ sources (item 4)
 node scripts/validate.js
 node scripts/lint-refs.js
 node tests/run.js
@@ -153,7 +156,7 @@ python .claude/skills/leyline-tree-authoring/audit.py <tree>
 pipeline. After pushing: `gh run list --branch <branch>` and read the **Pack build + validate** step.
 
 ### 7. Close out — SHORT
-A dated delta at the top of `EDHA_FOUNDRY_HANDOFF.md` (update the ratchet count), checklist rows under
+A dated delta at the top of the current month's `docs/handoff-changelog/2026-MM.md` (update the ratchet count), checklist rows under
 the next `2b<LETTER>` prefix plus the DEPLOY STATE count, new primitives into `ENGINE_INDEX.md`, ⚑ on
 anything you could not self-verify, `node scripts/build-dashboard.js`, small themed commits, and the
 PR body.

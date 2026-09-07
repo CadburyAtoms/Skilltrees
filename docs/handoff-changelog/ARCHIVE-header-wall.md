@@ -1,9 +1,10 @@
 # EDHA_FOUNDRY_HANDOFF — header delta archive
 
 Verbatim 'Prior:' entries moved out of the handoff's header paragraph on 2026-07-06
-(TODO_REPO_HYGIENE item 7). Nothing here is edited or summarized — each section below is
-the exact text that used to sit in the header wall. Most dates ALSO have a full
-`## <date> DELTA` section in `EDHA_FOUNDRY_HANDOFF.md`; that doc stays canonical.
+(TODO_REPO_HYGIENE item 7); this file was `HANDOFF_ARCHIVE.md` at the repo root until item 19b
+(2026-09-06) moved it here beside the month files. Nothing here is edited or summarized — each
+section below is the exact text that used to sit in the header wall. Most dates ALSO have a full
+`## <date> …` delta in `2026-06.md` / `2026-07.md` in this folder; those deltas stay canonical.
 Newest first.
 
 ## 2026-07-15

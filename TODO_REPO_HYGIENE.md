@@ -82,7 +82,7 @@ version control; git history already remembers them.~~ *(Done 2026-07-06 — the
 
 ---
 
-## 4. [ ] Split the ~19.7k-line engine (2026-09-05) into concatenated sections (keep ONE deployed file)
+## 4. [x] Split the ~19.7k-line engine (2026-09-05) into concatenated sections (keep ONE deployed file) — DONE 2026-09-06, PR #247
 
 **Why:** `module-src/scripts/register-skills.js` is the ceiling on maintainability.
 The single-file property matters for deployment (module-src-sync mirrors one file to
@@ -101,6 +101,24 @@ Ben's live module) — but the *source* doesn't have to be one file.
 
 **Done when:** sources are per-section, the assembled engine is byte-stable, all
 gates green, docs updated. This is the largest item — do it alone in its own session.
+
+**PM:** lane R · model fable-worker · size L · deps #23 (banners, #179) + #24 (table registry, #244) · verify: three equal SHA-256s + a mutation of one source failing `--check`.
+
+**DONE (2026-09-06, #247 — TOOLING-only; the deployed file did not change by one byte).** Ruling
+**PM-R15** applied as the default: the assembled `module-src/scripts/register-skills.js` STAYS the
+tracked and deployed artifact; the per-section sources are the EDIT surface. `scripts/engine-split.js`
+(re-runnable) cuts the engine at every column-0 `/* ===` banner into `module-src/scripts/engine/NN-<slug>.js`
+— **55 files**, each an exact byte range, lexical order = assembly order; the head docblock is file 00,
+the largest is `53-native-event-system.js` at **3,067 lines** (one banner, one file — no invented
+seam). `scripts/engine-assemble.js` concatenates them (CRLF→LF only, the engine is tracked LF) and
+`--check` names the first differing line + its source file. Gate **`engine-assembly`** sits right after
+`engine-check` in `gates.js`; the pre-commit body runs it when the engine or `engine/` is staged.
+Proof: sha256 `acac2589…` for the tracked engine before the split, the re-assembled engine, and
+`origin/main:module-src/scripts/register-skills.js`; a one-line mutation of `41-life.js` failed the
+gate at engine line 13186 (`source 41-life.js:5`), re-assembly green. `module-src-sync.js` still
+mirrors only the assembled file (its `FILES` list; checked). Docs: `ENGINE_INDEX.md` header rule +
+section → file map, CLAUDE.md "Where behavior lives" + rule 2a, the three engine-editing skills,
+`scripts/README.md`.
 
 ---
 
@@ -624,7 +642,7 @@ the docId itself is a `data/authored/` edit and needs Ben's re-extract + rebuild
 
 ---
 
-## 19. [ ] Split `EDHA_FOUNDRY_HANDOFF.md` into a current reference and a dated changelog
+## 19. [x] Split `EDHA_FOUNDRY_HANDOFF.md` into a current reference and a dated changelog (2026-09-06, PRs #249 + #251)
 
 **Why:** 10,157 lines / 1 MB; 88 dated delta headers; the §1–§10 reference a cold session needs
 begins at line 9,696 and is ~460 lines. ~95% of the file is log, with no table of contents, and
@@ -646,6 +664,8 @@ follows "read top to bottom" pays for this first.
 finds every delta, and CI is green.
 
 **PM:** lane R · model opus · size L (two PRs) · deps ruling PM-R1 · verify: dashboard `--check`, a cold-read by a Sonnet worker that answers ten questions from the reference alone.
+**19a shipped in PR #249** (2026-09-06, DOCS-ONLY): the reference rewrite — 671 lines at the bottom of the handoff under `## Reference — table of contents`, §9 anchor and its 40 Engine-tab rows byte-preserved, the header wall replaced by a pointer. **19b (the delta move + `HANDOFF_ARCHIVE.md` fold + `build-dashboard.js` re-point) remains** — the box stays open until it lands.
+**19b shipped in PR #251** (2026-09-06, DOCS-ONLY + TOOLING): the mechanical move — `scripts/handoff-split.js` moved all 142 dated deltas VERBATIM into `docs/handoff-changelog/2026-{06,07,08,09}.md` (18 / 42 / 1 / 81, newest first; SHA-256 of the removed text = SHA-256 of the month bodies, `8ae508b8…`), `HANDOFF_ARCHIVE.md` became `docs/handoff-changelog/ARCHIVE-header-wall.md` (its entries are header-wall summaries, not deltas, so it was moved whole), the handoff is the reference alone (691 lines, TOC first), every writer instruction re-pointed (CLAUDE.md iron rule 5 + map rows, work-item / project-manager / test-pass-fixes / talent-migration / lore-forge / session-forge / session-debrief / handout-forge / bench-run + runbook, `audit.py`'s docs read), the dashboard's Engine tab unchanged at 40 rows. "Done when" caveat: `git log --follow` on a month file cannot reach a delta's original commit (the block left a file that still exists); `git log -S"<delta title>" -- EDHA_FOUNDRY_HANDOFF.md` does, and every header says so.
 
 ---
 
@@ -2263,3 +2283,63 @@ in `ENGINE_INDEX.md`. ENGINE-ONLY (F5) for the console line; the rest is TOOLING
 
 **PM:** lane R · model sonnet · size S · deps #24 ✓ · verify: `check-scripts-readme.js` clean + the
 test still fails under its own mutation. Found by item 24.
+
+---
+
+## 72. [ ] Fix pass 9 — bench run 40's defects: the prompt-pick `once` budget never bites, Ambush Bite's double flavor, R-85 and R-84 as defaults
+
+**Why:** bench run 40 (2026-09-06, PR #245) drove every engine-only merge of the evening on the
+hash-verified `0ea0741a…` deploy and retired 27 rows, but root-caused one real defect and one
+cosmetic, and measured two behaviours that needed a ruling:
+- ❌ **An `edha-prompt-pick` `once` budget NEVER bites.** `edhaPromptPickClick` marks with
+  `edhaCoordOPRMark(owner, item.uuid, "_pick")`, which writes `setFlag("edha-content", "coordRound",
+  {[item.uuid]: {_pick: round}})` — Foundry EXPANDS dotted keys, so the document stores
+  `coordRound.Actor.<id>.Item.<id>._pick` while `edhaCoordOPRAllowed` reads the flat key and always
+  gets `undefined`. Measured: three Unnerving Approach picks in one round with the round's mark
+  present. Blast radius: every `edha-prompt-pick` rule carrying `once`; the other `edhaCoordOPR*`
+  callers pass dot-free names / ids, which is why it hid. Fix in the primitive (key-safe both sides).
+- ❌ **Cosmetic:** Ambush Bite's damage rider prints its flavor twice —
+  `1d10 + 3 + (1d6[Ambush Bite])[Ambush Bite] + 0`. Math right, formula bar wrong.
+- **R-85 (applied default, vetoable):** `expireEndOfRound` stamps `edhaCombatRoundOf(owner)`; a
+  granter who is not a combatant writes `round: null`, which never expires. Fall back to the
+  BEARER's combat.
+- **R-84 (applied default, vetoable):** Unnerving Approach's `emptyNote` branch (no valid ally in
+  range) still charges its Investiture with no refund and no Decline. Refund through the gate R-17
+  already computes (`edhaOfferRefundable`), and say so on the card.
+
+**Done when:** each fix carries a headless pin shown failing under a one-line reversion; the two
+bench 🤖 rows say "fixed in fix pass 9, re-test"; R-84 / R-85 rows re-test at bench 41; every
+`edhaCoordOPR*` caller and every `once` prompt-pick rule audited. ENGINE-ONLY (F5).
+
+**PM:** lane B · model opus (`test-pass-fixes`) · size M · deps #245 (the report) · verify: the
+pins + bench run 41. Dispatched 2026-09-06 21:35. ⚠️ The bench filed its rulings as R-82 / R-83;
+those numbers were already taken (item 56's graze dial; the heal-cut gate) — renumbered R-84 / R-85
+in #245 before merge.
+
+---
+
+## 73. [ ] Docs sweep — CLAUDE.md and ENGINE_INDEX still describe the pre-migration engine
+
+**Why:** the item-19a cold reader (2026-09-06, PR #249) answered every question from the new
+reference and then flagged that the repo's front door contradicts it, and item 4's worker found one
+more stale count:
+- `CLAUDE.md` "Where behavior lives" still says the engine carries **"200 talents' worth of
+  name-keyed automation — that is the iron-rule-2b backlog"**, and iron rule 2b's ratchet clause
+  presents the 2026-07-24 counts (90 / 200 / 75, the 221-name allowlist) as a live backlog. The
+  migration closed 2026-07-26; `scripts/name-keyed-allowlist.json` is `talents: []`; lint pass 7 now
+  forbids any talent name in engine code. One paragraph to retire, one clause to reword as history.
+- `CLAUDE.md` map rows: `EDHA_RULINGS.md` "45 numbered rulings" (85 today); `ENGINE_INDEX.md`
+  "the ~19.7k-line engine (2026-09-05)" (21,792 lines, and edited as 55 sources since item 4).
+- `ENGINE_INDEX.md` "Dispatch" still lists a pre-migration "`useItem` name-based" idiom (Green
+  Grasping Vines / Territorial Instinct); its section map says "52 banners" (54 since the two 09-06
+  shared-core banners).
+
+**What to do:** one small DOCS-ONLY PR; every replaced number stated with the command that produced
+it (`wc -l`, `grep -c '^\*\*R-' EDHA_RULINGS.md`, `grep -c '^/\* ===' …`); the reference (§1/§7 of the
+handoff) is the source of truth for the prose. Do not touch the reference itself.
+
+**Done when:** a cold reader finds no sentence in CLAUDE.md or ENGINE_INDEX that the reference
+contradicts; the three counts match their commands; `node scripts/gates.js` green.
+
+**PM:** lane R · model sonnet · size S · deps #19 (both halves) · verify: the commands beside the
+numbers + a grep for "200 talents" / "45 numbered" / "19.7k" returning nothing. Found by items 19a and 4.

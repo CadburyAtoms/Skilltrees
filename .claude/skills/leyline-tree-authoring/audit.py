@@ -20,8 +20,10 @@ ROOT = pathlib.Path(__file__).resolve().parents[3]
 DATA = ROOT / "data" / "authored"
 ENGINE = (ROOT / "module-src" / "scripts" / "register-skills.js").read_text(encoding="utf-8")
 DOCS = ""
-for d in ("EDHA_FOUNDRY_HANDOFF.md", "EDHA_FOUNDRY_TEST_CHECKLIST.md"):
-    p = ROOT / d
+# The handoff reference + the checklist + the dated deltas (moved to docs/handoff-changelog/ by
+# item 19b — a talent named only in a delta must stay "accounted for", so the changelog is read too).
+for p in [ROOT / "EDHA_FOUNDRY_HANDOFF.md", ROOT / "EDHA_FOUNDRY_TEST_CHECKLIST.md",
+          *sorted((ROOT / "docs" / "handoff-changelog").glob("*.md"))]:
     if p.exists():
         DOCS += p.read_text(encoding="utf-8")
 

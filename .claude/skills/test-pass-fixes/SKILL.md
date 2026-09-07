@@ -158,7 +158,8 @@ For each root cause, in this order:
    (CASE_STUDIES §5: the Opportunity menu began as a one-talent report).
 3. **Fix in the right layer.** text-drift → `data/authored/<file>` AND the source prose
    (`data/leyline.json` / `domain.json`) together; engine-bug / wrong-trigger-semantics →
-   `register-skills.js`; design-gap → primitive + rule/wiring. Prefer engine-only (no pack
+   `register-skills.js` — via its source under `module-src/scripts/engine/`, then
+   `node scripts/engine-assemble.js`, commit both (item 4); design-gap → primitive + rule/wiring. Prefer engine-only (no pack
    rebuild) when both routes work; if authored data changed, the pass needs a rebuild — track it.
 4. **Retrofit sibling consumers.** If the root cause is a shared path (a trigger's semantics, a
    formula helper), fix every consumer, not just the reported one — grep the engine for the
@@ -206,6 +207,7 @@ Run them **individually**, and read each exit code:
 
 ```bash
 node --check module-src/scripts/register-skills.js
+node scripts/engine-assemble.js --check    # engine = its engine/ sources (item 4)
 node scripts/validate.js
 node scripts/lint-refs.js
 node tests/run.js
@@ -241,7 +243,9 @@ compresses, and a positive control returns zero hits too; read the pack back wit
 
 The pass isn't done when the code is: the docs ARE the knowledge transfer to the next session.
 
-1. **Dated delta at the TOP of `EDHA_FOUNDRY_HANDOFF.md`**, matching the established format:
+1. **Dated delta at the TOP of the current month's changelog file, `docs/handoff-changelog/2026-MM.md`**
+   (under its marker line — never in `EDHA_FOUNDRY_HANDOFF.md`, the reference alone since item 19b),
+   matching the established format:
    ```
    ## <YYYY-MM-DD> DELTA — <TREE> test-pass fixes (<headline items>; ENGINE-only → F5 | ENGINE + data → pack rebuild deferred (`foundry-build <atlas>`) + ⟳ Sync)
    ### Rulings (Ben, <date> — [batched decisions taken / defaults applied])

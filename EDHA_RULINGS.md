@@ -394,6 +394,38 @@ spend. *(Board table; raised by item 28b.)*
 
 ---
 
+**R-84. An offer that CANNOT be made still charges its Investiture — refund that too?** Measured at
+bench run 40 (2026-09-06) while driving item 51's R-17 rows. **Unnerving Approach** used against a
+target with no living ally within 10 ft posts its `emptyNote` card — *"no living ally of your target
+within 10 ft to push (it may already be Isolated)"* — and the SYSTEM has already taken the
+Investiture (measured **2 → 1**, with no refund and no Decline button, because there is no offer to
+decline). R-17 refunds a **declined** or **ignored** offer; it says nothing about an offer that never
+existed. From the player's side the three cases are indistinguishable: the cost left, nothing
+happened. *Recommended: **(a) refund it** — reuse `edhaOfferDecline`'s `edhaRefundCost` path on the
+`emptyNote` branch whenever `edhaOfferRefundable` is true, i.e. the same gate R-17 already computes.*
+(b) keep charging — "you spent the Investiture looking" is a defensible table rule, but then the card
+should SAY the cost was spent. Either way the card needs to stop being silent about the money.
+*(Bench run 40; from item 51 / R-17.)*
+
+---
+
+**R-85. `expireEndOfRound` stamps the GRANTER's combat — should it fall back to the BEARER's?**
+Measured at bench run 40 while driving **2bI-4c**. `edha-next-test-mod` writes
+`mod.round = edhaCombatRoundOf(owner)` (`register-skills.js` ~L21116), and the comment says "the
+GRANTER's combat (edhaNextTestMatches reads the BEARER's — same combat at the table)". When the
+granter is **not a combatant** the stamp is `round: null`, and a `null` stamp can never expire — so a
+"this round" rider granted from outside the tracker sits on the victim for ever. Reproduced exactly:
+Pattern Recognition cast by a `Bench — Blue` that was not in the combat wrote
+`{source:"Pattern Recognition", round:null, …}`; adding Blue as a combatant and re-casting wrote
+`round: 8` and the rider then expired on schedule. The row itself PASSES once both are in the
+tracker, so this is a ruling, not a defect. *Recommended: **(a) fall back to the BEARER's combat when
+the granter has none** — `edhaCombatRoundOf(owner) ?? edhaCombatRoundOf(target)`; a "this round"
+rider then always means the round the victim is living in.* (b) leave it — out of combat there is no
+round and an inert stamp is honest; the cost is that a mid-combat grant from a non-combatant NPC
+never expires. *(Bench run 40; from item 49 / 2bI-4c.)*
+
+---
+
 ## D. Talent identity & tree shape
 
 **R-23. Volatile Strike — whose hit should it ride?** Card and rule description both say "when you
@@ -725,6 +757,8 @@ engine, so it should be decided deliberately rather than slipped in. Blast radiu
 > boundary is inclusive, so 7.5 ≤ 5 + 2.5. (ii) edge-to-edge is untouched and remains item 62.
 
 *(R-53 — Dead status on a "goes still" cue — ANSWERED 2026-09-06, moved to §K.)*
+
+> **ANSWERED 2026-09-06 (a) — Ben, from the phone board at 21:14 ET, verbatim: *"the CARD is canon for an adversary — a statted block should not scale, so give it `distanceFt: 20` and drop `bySize`."*** Item 57 (PR #226) had already applied exactly that (`bySize: false`, `distanceFt: 20`, card text unchanged; REBUILD owed to the next deploy) — nothing further to change. The principle also underwrites R-81 (item 67) and R-46.
 
 ---
 
@@ -1310,7 +1344,7 @@ at a busy table is chatty. If you want it quieter the fix is a field on the rule
 dial), not an engine gate — iron rule 2b. *(Bench run 34.)*
 > **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) leave it ungated, and document
 > it.** DOCS-ONLY: the H26 family (Shared Conviction, Pillar of Order, Voice of Authority) is added
-> to 28a's "deliberately NOT gated" list in `EDHA_FOUNDRY_HANDOFF.md` and `ENGINE_INDEX.md`; no
+> to 28a's "deliberately NOT gated" list in `docs/handoff-changelog/2026-09.md` (item 28a's delta) and `ENGINE_INDEX.md`; no
 > engine change.
 
 ---
@@ -1347,7 +1381,7 @@ board (item 12 / PR #197): the region-trap behaviours execute on the walking pla
 when no GM is online, rather than staying silent for lack of a GM to arbitrate them.
 > **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) KEEP** — the three `RegionBehavior`
 > bodies keep springing on the walking player's own client when no GM is connected. DOCS-ONLY:
-> recorded in `EDHA_FOUNDRY_HANDOFF.md` item 28a's deliberately-ungated list and in
+> recorded in `docs/handoff-changelog/2026-09.md` (item 28a's delta) deliberately-ungated list and in
 > `ENGINE_INDEX.md`'s "the gate is TWO helpers" note as Ben's ruling.
 
 ---
