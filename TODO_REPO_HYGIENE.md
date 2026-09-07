@@ -2396,7 +2396,7 @@ builds + the pin. Found by item 71.
 
 ---
 
-## 75. [ ] Nine registered handler rows still ship NO executor — give each the same no-op
+## 75. [x] Nine registered handler rows still ship NO executor — give each the same no-op — DONE 2026-09-06 (ENGINE-ONLY, F5; PR #261)
 
 **Why:** item 71 (PR #257) gave `edha-illusion-upkeep` an explicit no-op executor and changed the
 registry pin from "a function or absent" to a NAMED set, `EXECUTOR_LESS_CONFIG_ONLY` in
@@ -2418,6 +2418,12 @@ snapshot unchanged; gates green. ENGINE-ONLY (F5).
 
 **PM:** lane R · model fable-worker · size S · deps #71 ✓ · verify: the pin + an unchanged
 snapshot. Found by item 71.
+
+**DONE 2026-09-06:** all nine rows carry `executor: async function () {}` with a comment naming
+their reader(s) (every row has one — none was dead; the list is in `ENGINE_INDEX.md` →
+"Executor-less rows"); `EXECUTOR_LESS_CONFIG_ONLY` is `new Set([])` and the pin reads "every
+handler has a function executor"; mutation (drop edha-heal-react's no-op) → 983 passed, 1 failed
+naming the row; `handler-registry.snapshot.json` unchanged (empty diff); 984 → 984 tests.
 
 ---
 

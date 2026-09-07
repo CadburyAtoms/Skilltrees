@@ -2298,6 +2298,12 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
       color: new FF.StringField({ required: false, initial: "green", label: "Colour for @colorRank" }),
       label: new FF.StringField({ required: false, blank: true, initial: "", label: "Hazard label", hint: "Shown on the terrain visual and the damage cards. Blank = this talent's name." }),
     } },
+    // config-only — read by the zone creator — edhaCreateGreenTerrain (edhaRuleOf off the placing item) and
+    // edhaZoneHazardRule (edhaActorRuleOf) in the Green Territory section, plus the `edha-zone` executor's
+    // hazard lookup. This no-op exists so a rule placed on an event the
+    // system DOES dispatch (`use`, `add-to-actor`, …) executes to nothing instead of throwing in
+    // `Handler.execute` (item 75, the item-71 shape). It must never do anything.
+    executor: async function () {},
   },
   {
     source: "edha-content", type: "edha-zone-react",
@@ -2339,6 +2345,11 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
       noAdvantage: new FF.BooleanField({ required: false, initial: true, label: "Attacks against an ally on your squares can't benefit from advantage", hint: "Neutralizes advantage to none; never touches disadvantage. The GM can re-toggle in the roll dialog." }),
       note: new FF.StringField({ required: false, blank: true, initial: "", label: "Card note" }),
     } },
+    // config-only — read by edhaFatePlaceCore / edhaFateTurnStart (edhaActorRuleOf) and edhaZoneGuardOf
+    // (edhaWatchersOfRule) in the Fate section. This no-op exists so a rule placed on an event the
+    // system DOES dispatch (`use`, `add-to-actor`, …) executes to nothing instead of throwing in
+    // `Handler.execute` (item 75, the item-71 shape). It must never do anything.
+    executor: async function () {},
   },
   {
     source: "edha-content", type: "edha-snare-react",
@@ -2353,6 +2364,11 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
       requireLinked: new FF.BooleanField({ required: false, initial: false, label: "Only near a LINKED square (prompt)", hint: "The `linked` annotation the link-markers zone verb writes." }),
       note: new FF.StringField({ required: false, blank: true, initial: "", label: "Prompt text (prompt)", hint: "The granted action, verbatim — GM/players execute it (the declared manual half)." }),
     } },
+    // config-only — read by edhaFateSpringReacts / edhaMarkedNearZonesBonus / edhaClearFateState
+    // (edhaActorRulesOf) in the Fate section, and the `edha-mark-offer` card button (edhaEventRules). This no-op exists so a rule placed on an event the
+    // system DOES dispatch (`use`, `add-to-actor`, …) executes to nothing instead of throwing in
+    // `Handler.execute` (item 75, the item-71 shape). It must never do anything.
+    executor: async function () {},
   },
   /* 2bY — the detonation counterpart of edha-snare-react: what this talent does when the OWNER's
    * Charges detonate. Config-only: the detonate resolver (edhaResolveCharges) sweeps the owner's
@@ -2549,6 +2565,11 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
       placeListStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "…its marker status", hint: "Blank = the ledger name (`quarry`)." }),
       placeListCapFormula: new FF.StringField({ required: false, blank: true, initial: "", label: "…its cap (formula)", hint: "Blank = 1 (Quarry is a single mark)." }),
     } },
+    // config-only — read by edhaDamageBonusPost and edhaWrapApplyDamage (edhaActorRulesOf /
+    // edhaWatchersOfRule) in the apply-damage core. This no-op exists so a rule placed on an event the
+    // system DOES dispatch (`use`, `add-to-actor`, …) executes to nothing instead of throwing in
+    // `Handler.execute` (item 75, the item-71 shape). It must never do anything.
+    executor: async function () {},
   },
   /* `edha-counter-transfer` (07-25, 2bT) — the on-kill half of a counter talent: when the creature
    * bearing your counter drops to 0 HP, offer the transfer prompt (and optionally the ally burst).
@@ -2566,6 +2587,11 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
       allyBurst: new FF.BooleanField({ required: false, initial: false, label: "Allies burst on the kill", hint: "Each ally in range may click to deal the burst formula (YOUR dice — Ben R4) to any enemy of their choice. Death Mark." }),
       burstFormula: new FF.StringField({ required: false, blank: true, initial: "", label: "Burst formula", hint: "Rolled against YOUR roll data per click. Blank = (@tier)d(2 * @skills.red.rank + 2)." }),
     } },
+    // config-only — read by the `updateActor` counter-transfer watcher (edhaWatchersOfRule) in the
+    // Knowledge section. This no-op exists so a rule placed on an event the
+    // system DOES dispatch (`use`, `add-to-actor`, …) executes to nothing instead of throwing in
+    // `Handler.execute` (item 75, the item-71 shape). It must never do anything.
+    executor: async function () {},
   },
   /* H9 `edha-die-step` (07-25, 2bT — §9m q1, ruled BUILD IT): write a damage-die-step ledger entry.
    * The ledger, the rollDamage rewrite, the timed sweep and the GM roll watch are the Sovereignty
@@ -2659,6 +2685,10 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
       reactiveStrike: new FF.BooleanField({ required: false, initial: true, label: "Offer the Reactive Strike", hint: "When the failed test was an attack on your ally in the range below, the card names the Strike (player-executed — no hook can force another creature's action)." }),
       allyRange: new FF.StringField({ required: false, initial: "white", label: "Ally Attunement Range colour" }),
     } },
+    // config-only — read by edhaSovRollWatch (edhaWatchersOfRule) in the Sovereignty section. This no-op exists so a rule placed on an event the
+    // system DOES dispatch (`use`, `add-to-actor`, …) executes to nothing instead of throwing in
+    // `Handler.execute` (item 75, the item-71 shape). It must never do anything.
+    executor: async function () {},
   },
   {
     source: "edha-content", type: "edha-unseen-ward",
@@ -2669,6 +2699,10 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
       amount: new FF.NumberField({ required: false, initial: 2, label: "Defense bonus" }),
       excludeSelf: new FF.BooleanField({ required: false, initial: true, label: "'An ally' — never the owner itself" }),
     } },
+    // config-only — read by edhaUnseenWardPreRoll (edhaWatchersOfRule) in the Green Instinct section. This no-op exists so a rule placed on an event the
+    // system DOES dispatch (`use`, `add-to-actor`, …) executes to nothing instead of throwing in
+    // `Handler.execute` (item 75, the item-71 shape). It must never do anything.
+    executor: async function () {},
   },
   {
     source: "edha-content", type: "edha-suppress-veil",
@@ -2678,6 +2712,10 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
       rangeColor: new FF.StringField({ required: false, initial: "green", label: "Attunement Range colour" }),
       requireSelfStatus: new FF.StringField({ required: false, initial: "clearsight", label: "Armed while you carry this status" }),
     } },
+    // config-only — read by edhaVeilSuppressed (edhaWatchersOfRule) in the senses/light/visibility section. This no-op exists so a rule placed on an event the
+    // system DOES dispatch (`use`, `add-to-actor`, …) executes to nothing instead of throwing in
+    // `Handler.execute` (item 75, the item-71 shape). It must never do anything.
+    executor: async function () {},
   },
   /* ---- The Green Restoration family (07-25, pass 2bS — the on-heal riders + the injury menu) ---- */
   {
@@ -2697,6 +2735,11 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
       conditions: new FF.StringField({ required: false, blank: true, initial: "afflicted, disoriented, stunned, weakened", label: "Cleansable conditions (offer-cleanse)", hint: "Comma-list of status ids; only conditions the target actually has get a button." }),
       costNote: new FF.StringField({ required: false, blank: true, initial: "spend an Opportunity", label: "Cost wording (offer-cleanse)", hint: "Honour-system, exactly as retired — printed on the card and the result." }),
     } },
+    // config-only — read by edhaDispatchHealReact and edhaRegrowthRuleOf (edhaActorRulesOf) in the Green
+    // Restoration section. This no-op exists so a rule placed on an event the
+    // system DOES dispatch (`use`, `add-to-actor`, …) executes to nothing instead of throwing in
+    // `Handler.execute` (item 75, the item-71 shape). It must never do anything.
+    executor: async function () {},
   },
   {
     source: "edha-content", type: "edha-remove-injury",
