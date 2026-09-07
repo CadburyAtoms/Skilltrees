@@ -64,6 +64,64 @@ hard-coded, and the sync pushed that 10 onto placed tokens whose actor still sai
   sync this ruling authorises) so placed tokens re-stamp from the pack. 🤖 rows: the "Adversary
   tokens see like PCs" re-measure (AWA 0 → 10 on sheet AND token, whole population) and the new
   Briar-Gone Grove override row (sheet 30, token 30).
+## 2026-09-06 — Item 63: Rallying Shout's reminder prints only for a DOWNED ally — `whenTarget` on `edha-note`, R-25 (c) (**ENGINE + AUTHORED → REBUILD heroic + ⟳ Sync Talents** — Ben's deploy; PR #239)
+
+Fix pass 7a (item 47) stopped R-25 because the reminder is an **authored** `edha-note` rule
+(`RouseRallying000` on Rousing Presence, `whenOwnsTalent: "Rallying Shout"`) and `edha-note` had no
+target-condition field — the only engine-only route was a name-keyed branch, which rule 2b forbids.
+This item ships the rebuild-class shape the ANSWERED block asked for:
+
+- **Engine (F5 alone is inert here):** `edha-note` gains ONE generic schema field, **`whenTarget`**
+  (choices blank | `downed`), read by the new pure gate **`edhaNoteTargetGate(whenTarget, target)`**
+  next to `edhaRuleOwnsGate`. Blank = today's unconditional behaviour, so every other `edha-note` rule
+  is untouched; `downed` = the note's subject creature (R-64 victim chain: `options.victim` →
+  `options.target` → the clicking user's target) is at **0 health OR carries `unconscious`** — the two
+  cases the card names. No target with the dial set = no card; an unknown mode fails OPEN (a typo
+  never silences a note). The executor checks it right after the owns gate. No talent name enters the
+  engine — the allowlist is unchanged (empty).
+- **Authored (the consumer):** `data/authored/heroic-envoy.json` → `RouseRallying000.handler.whenTarget
+  = "downed"`; its description no longer claims always-print. **Heroic pack REBUILD + ⟳ Sync Talents**
+  before the bench can see it.
+- **Proven:** `tests/note-target-gate.test.js` — ally at 32 HP → no card; at 0 (and below) → card;
+  Unconscious above 0 → card; a rule without the field → card as before; each case shown failing under
+  its own one-line reversion (M1–M5 in the PR body). Scratch `gates.js --ci` green with `EDHA_DATA`
+  pinned to the branch's data; heroic pack parity against a main-data build: **204 documents, exactly 1
+  differs** (Rousing Presence — that rule's `whenTarget` + description, nothing else).
+- **🤖 bench:** checklist **2bM-6b** — three drives on Bench — Heroic after the rebuild (ally at full HP:
+  no 📣 line; ally at 0 HP: line; ally Unconscious above 0: line). Rulings: R-25 marked SHIPPED
+  (bench-pending, stays in its section).
+## 2026-09-06 — Item 64: the build's `edha-aoe-template` generator is retired, and the pack writers now refuse any `edha-*` handler type the engine does not register (**TOOLING-only** — the packs do not change, proven by content hash)
+
+Fix-pass 7b (item 48, R-78) retired the `edha-aoe-template` handler, and its delta reported that
+`scripts/foundry-build.js`'s `aoeRule()` still minted that type for any `TALENT_TARGETING` entry
+with `.area` and no `.burst`. **Every `.area` entry checked:** Flame Surge, Set Charge, Mending
+Aura, Thorn Field all carry `.burst` (they already emit `edha-burst`); **Lay Foundation** is the
+only `.area`-alone entry, and it should NOT get an `edha-burst` — its mechanic is the persistent
+Foundation zone, which its authored overlay already supplies as an `edha-zone` rule (the overlay
+replacing the generated events is exactly why zero such rules ever reached a pack). So the
+generator is gone, not routed: `grep -c aoeRule scripts/foundry-build.js` = 0; the `.area`-alone
+case now emits nothing; `data/talent-targeting.json` is untouched.
+
+**The guard** lives at the pack WRITERS, not in lint-refs pass 9: pass 9 holds AUTHORED rules in
+`data/` to the engine's `registerItemEventHandlerType` calls, but a GENERATED rule never appears
+in `data/`, which is why it could not see this one. `scripts/lib/handler-type-guard.js`
+(`checkHandlerTypes`, pure) + `assertRegisteredHandlerTypes()` in both `writePack` and
+`writeActorPack` — every document that reaches a pack passes through one of the two, whatever
+generator or overlay produced it, and the build throws BEFORE the pack exists, naming the
+document, rule id, and type. Registered set = the same `parseHandlerSchemas` parse pass 9 uses.
+
+**Proven:** (a) parity — scratch builds before/after with `EDHA_DATA` pinned, content-hashed via
+`readPack` + `stableStringify` with `_stats.createdTime/modifiedTime` stripped (item 58's method):
+all five packs identical (`edha-leyline d69083a3…`, `edha-deity bb175843…`, `edha-heroic
+b5675fc3…`, `edha-items f302d215…`, `edha-adversaries 2f511f17…`); the build report's `events`
+count moves 37 → 36, which is Lay Foundation's masked rule no longer being generated. (b) mutation
+— re-adding a generator for `edha-aoe-template` in `talentEvents` makes the build exit 1 with
+`"Unity of Purpose" rule … has handler type "edha-aoe-template", which the engine never registers`;
+restored → PASS. `tests/handler-type-guard.test.js` pins the guard on fixtures, against the real
+engine (retired type rejected, `edha-burst` accepted), and that the generator stays gone. Nothing
+🤖 — no table behaviour changed.
+
+---
 
 ## 2026-09-06 — Item 43: the phone board opens on "Needs you" — open-ruling and Ben-only cards, a stale-heartbeat banner (**DOCS/TOOLING** — no engine, no data)
 
@@ -104,6 +162,8 @@ For Ben list, the Inbox composer, Run log, the full Dashboard) moved under a col
   does not exist anywhere in the repo (`EDHA_RULINGS.md`, `docs/PM_BOARD.md`, a full-repo grep) —
   only R-18 and R-48 are actually open today. Flagged for the PM rather than invented.
 
+---
+
 ## 2026-09-06 — Item 69: `system.damage.formula` folds to plain dice at ROLL time, R-71's runtime half (**ENGINE-ONLY, F5**)
 
 Item 59 built R-71 (a) — fold `system.damage.formula` at BUILD time — and proved it a no-op on every
@@ -130,6 +190,9 @@ engine-rolled twin — needs the fold with the roller in hand. This is that half
 - **🤖 for the bench:** the item-59 Verdict row under `# BENCH — Order` is now THIS item's re-test —
   after an F5 (no rebuild), the system's own "Roll Damage" card must read `2d8 + 5`, not the
   parenthetical.
+---
+
+---
 
 ## 2026-09-06 — Item 59: `system.damage.formula` folds to plain dice at BUILD time, R-71 (**TOOLING + DATA → pack REBUILD, Ben only**)
 
