@@ -1,15 +1,11 @@
 {
   "pm": {
-    "status": "awake",
-    "note": "Hand-started Fable PM (Ben, 09:52 ET Mon). Item 86 MERGED (#283) and PUSHED LIVE 13:40 (served engine a23e70d1 = main ca8d3c2): PRESS F5 on your Gamemaster client (engine-only, no rebuild). Twelve PRs merged today (#272-#283). Running now: item 89 (sonnet, Unbreakable Line's missing use rule, a REBUILD when it lands). Everything else queued needs Opus (resets at midnight: items 80, 81, 62) or a ruling from you. YOU OWE: F5 + one Sync Talents click. Rulings for you: R-83, R-56 go/no-go, R-88, R-89, R-90, R-91.",
-    "waitingOn": "F5 on the Gamemaster client (item 86 live); Sync Talents click for your own PCs; R-83 (a)/(b); R-56 go/no-go (item 83); R-88, R-89, R-90, R-91 (defaults (a) if silent); the 10 unmarked bench flag rows + 5 world rows",
+    "status": "stopped",
+    "note": "Fable PM session of 2026-09-07 09:52 ET (hand-started) STOPPED its loop at 13:55 ET: the queue is dry. 13 PRs merged today (#272-#285): your dashboard marks recorded, bench runs 42 + 43 (48 rows retired, open bench rows 58 -> 5), engine fixes 84 + 86 live (served a23e70d1 = main), phone-card fixes 85 + 87, harness-only retirements 90, item 89's Unbreakable Line rule (REBUILD owed). Waiting on you: an F5 (item 86), your Sync Talents click, ONE deploy-to-foundry.bat run for item 89 (+ Sync Adversaries), and rulings R-83, R-56 go/no-go, R-88, R-89, R-90, R-91. Next PM: the 21:00 weeknight task; nothing Opus until midnight (3 of 3 used), then items 80, 81, 62.",
+    "waitingOn": "F5 (item 86 live); Sync Talents click; deploy-to-foundry.bat for item 89 (REBUILD + Sync Adversaries); R-83 (a)/(b); R-56 go/no-go; R-88, R-89, R-90, R-91 (defaults (a) if silent); the 10 unmarked bench flag rows + 5 world rows",
     "nextWakeAt": null,
-    "session": "2026-09-07 09:52 ET - Fable PM (hand-started, Ben's hours by his word)"
+    "session": "2026-09-07 09:52 ET - Fable PM (hand-started) - STOPPED 13:55 ET"
   },
-  "workers": [
-    { "item": "89", "title": "Unbreakable Line ships no use rule on either block - author the contest-core test, align activation (DATA -> REBUILD)", "model": "sonnet", "size": "S", "lane": "B",
-      "branch": "pm/89-unbreakable-line-use-rule", "startedAt": "2026-09-07T17:35:00Z", "agent": "Work item 89",
-      "phase": "working", "pr": null, "note": "REBUILD + Sync Adversaries when it lands" }
-  ],
+  "workers": [],
   "usage": null
 }
