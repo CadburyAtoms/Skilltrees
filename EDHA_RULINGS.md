@@ -514,6 +514,22 @@ agent to TEST, so it was in the wrong file. Original measurement: bench run 25.)
 > Packs **REBUILD** (Ben's deploy); TOOLING + DATA → **item 59**; pin with a build-report diff
 > showing only formula strings changed; bench visual check = Verdict's system card reads `2d8 + 5`
 > like its engine-rolled card.
+> **SHIPPED** in PR #<ITEM-59-PR> (REBUILD, bench-pending) — `scripts/lib/fold-die-math.js`
+> (`foldDieMath`) wired into `foundry-build.js`, pinned against the engine's own `edhaFoldDieMath` in
+> `tests/fold-die-math.test.js`. ⚠️ **Load-bearing limit found while shipping it, worth reading before
+> the bench row above surprises anyone:** the fold can only resolve a `damage.formula` whose computed
+> dice math is ALREADY fully numeric — it has no actor to substitute `@tier`/`@skills.<color>.rank`
+> from at build time, so a genuinely rank/tier-scaled `[Tier][Die]` formula (Verdict's own
+> `(@tier)d(2 * @skills.blue.rank + 2)` included) folds to ITSELF, unchanged, exactly like the
+> engine's own copy before runtime substitution. Measured against every current `damageFormula` (51
+> in `data/talent-rolls.json`) and every authored `damage.formula` overlay: **none are fully numeric
+> today**, so a real build's folded-formula count is currently 0 — proven correct by mutation (a
+> scratch-only synthetic flat formula DOES fold end-to-end; see the item-59 PR body / handoff delta
+> for the isolated one-field diff). If Verdict's card still shows the parenthetical on the bench run,
+> that is this limit, not a regression — the deeper fix (folding the SUBSTITUTED, actor-specific
+> formula at roll time, mirroring what R-65 already does for engine-rolled cards) would need to hook
+> the system's own damage-roll pipeline, which is a different, ENGINE-side change outside item 59's
+> TOOLING + DATA scope. Left open here for Ben to decide whether that is worth a follow-up item.
 
 ---
 

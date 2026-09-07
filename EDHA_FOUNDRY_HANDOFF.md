@@ -33,6 +33,51 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-06 — Item 59: `system.damage.formula` folds to plain dice at BUILD time, R-71 (**TOOLING + DATA → pack REBUILD, Ben only**)
+
+R-71: the cosmere-rpg system rolls a talent's own `system.damage.formula` with no Edha engine
+involvement, so unlike an engine-rolled card (folded at RUNTIME by `edhaRollFormula`/
+`edhaFoldDieMath` per R-65) its chat card printed the raw parenthetical — measured on Verdict,
+`(2)d(2 * 3 + 2) + 5 = 10` next to the same talent's engine-rolled card reading `2d8 + 2 = 7`. Ben
+(a): fold at BUILD time.
+
+- **`scripts/lib/fold-die-math.js`** is the build-side twin of the engine's `edhaFoldDieMath` — same
+  two-regex fold loop, against a pure Node arithmetic evaluator standing in for `Roll.safeEval`
+  (there is no Foundry `Roll` global under plain Node, and `foundry-build.js` must not import the
+  engine). `foundry-build.js` now runs it over each talent's FINAL `system.damage.formula` (generator
+  or authored-overlay, whichever won) right before the doc is pushed to its pack; the engine's own
+  copy is untouched.
+- ⚠️ **This is a load-bearing limit, not a shortcut: it can only fold a formula whose computed dice
+  math is ALREADY fully numeric in the pack.** A `[Tier][Die]` formula such as Verdict's
+  `(@tier)d(2 * @skills.blue.rank + 2)` still carries unresolved `@`-refs at build time — there is no
+  actor to substitute `@tier`/`@skills.blue.rank` from until someone rolls it — so the fold is a
+  proven, deliberate no-op there (same as the engine's own copy before runtime substitution;
+  `tests/engine-helpers.test.js`'s "leaves unresolved @refs alone" pins the identical behaviour).
+  Measured against ALL 51 `damageFormula` entries in `data/talent-rolls.json` plus every authored
+  overlay's `damage.formula`: **zero are fully numeric today**, so a real build's
+  `folded-damage-formulas` count is currently **0** — this is correct, not a bug. The mechanism
+  activates the moment any talent's damage formula is flat/non-rank-scaled (no `@`-ref in its dice
+  math).
+- **Proof (parity, isolated by mutation):** built `edha-leyline`/`edha-deity`/`edha-heroic`/
+  `edha-adversaries`/`edha-items` twice into scratch modroots off IDENTICAL data — once with this
+  change, once without. Diffing every embedded document: **1044 field diffs, all `_stats.createdTime`/
+  `modifiedTime` wall-clock noise** (the same noise item 58's delta already documented for a
+  same-data double-build) — zero formula diffs, as expected. To prove the fold mechanism itself
+  fires end-to-end, a SCRATCH copy of `data/` (never the tracked files) had `Searing Bolt`'s
+  authored `damage.formula` mutated to a fully-numeric `"(1)d(2 * 3 + 2) + 5"`; building that scratch
+  data with the pre-fix code vs. this fix isolates to **exactly one field diff**:
+  `Searing Bolt: "(1)d(2 * 3 + 2) + 5" -> "1d8 + 5"`, nothing else moved. `tests/fold-die-math.test.js`
+  pins the three shapes item 59 names (rank-scaled → unchanged, plain → unchanged, flat-modifier →
+  folds) plus a formula-by-formula equivalence check against the engine's own `edhaFoldDieMath`
+  (loaded headlessly via `tests/harness.js`).
+- **🤖 for the bench, with the caveat above already written into the row:** checklist "Fix pass
+  re-test (item 59)" under `# BENCH — Order (Tessavain, deity)` — Verdict's system-rolled damage
+  card. Because Verdict's own formula is rank-scaled, the row does not expect the parenthetical to
+  disappear from ITS card; it re-confirms the total is still correct and nothing else moved, and
+  flags anyone who wants the deeper (actor-aware, runtime) fix back to `EDHA_RULINGS.md` R-71.
+
+---
+
 ## 2026-09-06 — Item 66: a NEGATIVE next-test rider on the DAMAGE path joins as a subtraction, not `base + -1d6` (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
 
 Item 49 turned the damage-path consumption in `edhaWrapRollDamage` into a reduce over the taken
