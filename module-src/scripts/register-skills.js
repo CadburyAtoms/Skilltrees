@@ -553,6 +553,17 @@ function edhaTidyFormula(s) {
   }
   return res.replace(/\s{2,}/g, " ").trim();
 }
+/* PURE (pinned in tests/): join ONE rider term onto a formula (item 66). A rider whose formula starts
+ * with a minus is written as an EXPLICIT subtraction — `base - 1d6` — because `base + -1d6` is
+ * parser-hostile; anything else joins as `base + term`. `label` (the rider's source) is appended as
+ * the flavor `[label]` when given, so the breakdown still names who gave what. BOTH next-test paths
+ * (`edhaNextTestPreRoll` on the d20 side, `edhaWrapRollDamage` on the damage side) call this — it is
+ * the one place the sign of a rider is read. */
+function edhaJoinRiderTerm(base, formula, label) {
+  const f = String(formula ?? "").trim();
+  const tag = label ? `[${label}]` : "";
+  return f.startsWith("-") ? `${base} - ${f.slice(1).trim()}${tag}` : `${base} + ${f}${tag}`;
+}
 // Formula-bar tidy binding: moved into the ONE renderChatMessageHTML decorations hook (Job 1, pass
 // 5.3, end of file, right before the debug-tracer Hooks.on restore).
 /* PURE (pinned in tests/): "any of the comma-list" status gate (H13, 2bU). A single value behaves
@@ -1017,7 +1028,9 @@ function edhaWrapRollDamage(originalCall, options = {}) {
       // with no damage formula would silently eat the d20 half's turn at it.
       const taken = base ? dmgMods.filter((m) => edhaNextModClaimOk(this.actor, m, "damage")) : [];
       if (taken.length) {   // item 49: several riders SUM onto the one damage roll
-        options = { ...options, overrideFormula: taken.reduce((f, m) => `${f} + ${m.formula}`, base) };
+        // item 66: a NEGATIVE rider (`-1d6`) joins as an explicit, source-labelled subtraction; a
+        // positive one joins exactly as before (`base + 1d6`, unlabelled — byte-identical by design).
+        options = { ...options, overrideFormula: taken.reduce((f, m) => edhaJoinRiderTerm(f, m.formula, String(m.formula).trim().startsWith("-") ? (m.source || "Next-test mod") : null), base) };
         void edhaNextTestConsumeDamage(this.actor, taken);
       }
     }
@@ -6535,8 +6548,7 @@ function edhaNextTestPreRoll(roll, source, config) {
         if (!mod.formula) continue;
         const resolved = edhaFoldDieMath(Roll.replaceFormulaData(String(mod.formula), actor?.getRollData?.() ?? {}, { missing: "0" })).trim();
         const label = mod.source || "Next-test mod";
-        // A leading minus becomes an explicit subtraction — "0 + -1d6" is parser-hostile.
-        const expr = resolved.startsWith("-") ? `0 - ${resolved.slice(1)}[${label}]` : `0 + ${resolved}[${label}]`;
+        const expr = edhaJoinRiderTerm("0", resolved, label);   // a leading minus → explicit subtraction (item 66: the one shared join)
         roll.terms = roll.terms.concat(new Roll(expr).terms.slice(1));
         added = true;
       }
