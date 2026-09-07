@@ -445,6 +445,18 @@ Adjacent A` off the `costs:` rule. Whispered, with the ⚖ resolve button. ⚠�
 **ANSWERED 2026-09-06, R-74 (a): author one `costs:` line onto a single adversary ability**
 (default: the Stalker's Fade) — ruling answered 2026-09-06 → item 57, REBUILD.)*
 
+- [ ] 🤖 **R-74 (item 57) — the 28b adversary-bespoke-cost half finally has a subject: the Stalker's
+      Fade.** REBUILD (adversaries pack + ⟳ Sync Adversaries). Fresh Stalker import (Inv 2). Use
+      **Fade** from its sheet: a whispered confirm card posts — *"🌫️ Fade — spend 1
+      Investiture to gain Concealment …? (spends 1 Investiture)"* — and Investiture is **still 2**
+      (the cost is spent on the CLICK, not the post). Click **Fade (1 Investiture)**: Investiture
+      **2 → 1** through `edhaSpendResource`, and the table-run note *"Concealed until the end of its
+      next turn — toggle the Fade marker on the sheet."* posts. **The 28b half:** with an
+      Investiture-watching consumer live (a `proh:{kind:"invest"}` Edict bound to the Stalker, as
+      run 35 staged it), that click prompts and a GM hand-edit of the same pool in the same round
+      does not. **CONTROL:** its `activation.consume` is empty (read the item), so the click is the
+      ONLY deduction — a second Investiture drop would be a double charge.
+
 *(**✅ RETIRED 2026-09-06, bench run 35 — item 13's "a MIGRATED SPEND still taxes the watches".**
 ⚠️ **The row's named subject does not exist.** It said "H10's `edha-focus` Investiture DRAIN … —
 Reaper's Harvest is the reference"; a sweep of all three packs found **exactly one** `edha-focus`
@@ -948,6 +960,18 @@ overwriting. Console probe for all three rows (bench GM):
       `edha-next-test-mod` without "this round" — e.g. Probability Net from a Wrenchmaster) and
       confirm it **survives** the round change and still applies. Pruning must not eat a rider that
       is simply waiting.
+- [ ] 🤖 **2bI-4d — a NEGATIVE `either` rider on a DAMAGE roll is a subtraction, not `+ -1d6`
+      (item 66).** On any bench PC, arm a next-test rider with a negative formula that may ride
+      damage — console: `edhaSetNextTestMod(actor, { source: "Probability Net", formula: "-1d6",
+      count: 1, appliesTo: "either" })` — then roll DAMAGE with a weapon (no d20 test first, so the
+      `either` claim goes to the damage half). Expect the chat card's formula bar to read
+      **`<base> - 1d6[Probability Net]`** (never `<base> + -1d6`), the roll to evaluate without a
+      parser error, the total to be **lower than the base dice alone**, and the "🔮 Probability Net —
+      -1d6 added to this damage roll" card. Probe the flag afterwards: the entry is spent.
+- [ ] 🤖 **2bI-4e — NEGATIVE CONTROL: a POSITIVE `either` rider on a damage roll is unchanged.**
+      Same setup with `formula: "1d6"` (Pack Hunting's shape). Expect the formula bar to read
+      **`<base> + 1d6`** exactly as before item 66 — no flavor label on the positive term, total
+      higher than the base dice — and the same consume card.
 
 ---
 
@@ -968,6 +992,10 @@ half of the spot-check row, PASSED at run 1 and retired with it.
 answered 2026-09-06 → item 58, REBUILD + ↻ Sync); R-24 (a) YES, keep Reckless Advance as the root —
 no change, moved to §K, graph half of this row retired; R-27 (a) THE CARD is canon, the rally bonus
 is spent on the next test then clears (ruling answered 2026-09-06 → item 52).
+- [ ] 🤖 **R-23 re-test (item 58 shipped) — Volatile Strike rides ANY melee hit.** With
+      `whenDealer: "any"` now on its rule, a plain sword hit (not a Volatile Strike cast) should
+      offer the Investiture prompt to add half [Tier][Die] impact; a standalone cast of Volatile
+      Strike itself should still self-offer on its own hit (harmless, expected per the ruling).
 
 - [ ] 🤖 **52-1 — Battle Fever spends the stack on the next test (R-27, PR #223, ENGINE-ONLY F5).**
   On Bench — Red, deal damage three times in one round (three Strikes that hit, or `edha.rally()`
@@ -1516,6 +1544,12 @@ HP on a blocked target" phrasing asked for something that can never happen. R-28
 PROSE (ruling answered 2026-09-06 → item 58, REBUILD + ↻ Sync) — the duration clause above is
 retired, only the prose needs to change. R-12 (a) YES, raising clears the creature's own `harvested`
 marker and ledger entry (ruling answered 2026-09-06 → item 47).
+**✅ R-28's duration clause RETIRES on item 58 (2026-09-06, REBUILD + ↻ Sync, bench-pending):**
+`description` + the `WitherNote000000` arming card in `data/authored/deity-death.json`, and the
+source prose in `data/domain.json`, all now read "end of your next turn" — matching the engine,
+the auto-applied strike bonus, and the live heal-cut card, which already said END. 2bW-1's own
+mechanical halves stay retired from run 15; this closes the wording half. No further bench row
+needed — it is a prose-only change, provable by reading the built pack.
 
 ### Fix pass 7a re-tests (item 47, 2026-09-06 — ENGINE-ONLY, F5; no rebuild, no ⟳ Sync)
 
@@ -3196,7 +3230,24 @@ that means miss → graze or graze → hit is a decision, not a test, and it has
 since 2026-07-16.
 **ANSWERED 2026-09-06, R-29 (a): MISS → GRAZE, once per round, without spending Focus** — the
 adversary block's description is currently empty in `data/adversaries.json` and needs writing
-(ruling answered 2026-09-06 → item 57, REBUILD). Row retires once written and wired.)*
+(ruling answered 2026-09-06 → item 57, REBUILD).
+**✅ RETIRED on evidence 2026-09-06, item 57 (PR #226)** — the Stonebound Captain's Combat Training
+text now reads *"Once per round, when one of the Captain's attacks misses, it can turn that miss into
+a graze without spending Focus."* (the built pack's description, read back off the scratch LevelDB);
+the marker is its declared exit (`<!-- NO NAMEABLE HOOK: the miss/graze/hit adjudication … is never
+module-visible data -->`), so lint pass 5 is satisfied by the reasoned exemption, not by silence.
+Nothing to bench: the mechanic is the GM's application step by construction.)*
+
+- [ ] 🤖 **R-47 (item 57) — no engineering note on the player-facing card.** REBUILD (adversaries
+      pack + ⟳ Sync Adversaries). Fresh imports of **Wrongwake** and **Stillback**: use **Seize and
+      Roll**, **Drag Under** and **Slip the Sound** (the three bench run 16 saw post their rationale
+      verbatim) and read the chat card and the item sheet's description — the words `NO NAMEABLE HOOK`
+      appear in **neither**. **Then** open the item's description source (the `</>` toggle in the
+      ProseMirror editor, or `item.system.description.value` from the console) — the marker is still
+      there as an HTML comment. **CONTROL:** the Stonebound Captain's Combat Training reads the R-29
+      text and nothing after it. ⚠️ If Ben SAVES one of these descriptions from the ProseMirror
+      editor, note whether the comment survives the round-trip — if the editor strips it, R-47 needs
+      a GM-note field instead and lint pass 5 would start failing on the next extract.
 
 ## The 2bAB pre-deploy audit rewires (2026-07-26 — 15 dead adversary copies of tree talents, wired)
 
@@ -3925,6 +3976,13 @@ together, neither alone.)*
 (5400,9000 → 5400,9150) and the card read "💨 Reckless Advance — … moves 3 ft toward Bench Target —
 Isolated, **ignoring Reactions**".)*
 
+- [ ] 🤖 **R-46 (item 57) — Reckless Advance charges 25 ft.** REBUILD (adversaries pack + ⟳ Sync
+      Adversaries). Fresh Whelp Pack import; park a target **≥ 30 ft** away on a clear lane, target
+      it, use Reckless Advance: the card reads *"moves **25 ft** toward …, ignoring Reactions"* and the
+      token has travelled 1500 px (5-ft grid at 300 px). **CONTROL:** the same use from **10 ft**
+      away stops adjacent (clipped by the target, not by the allowance). The rule is
+      `{bySize: false, distanceFt: 25}`; the card text states "up to 25 ft (its full Speed)".
+
 ## 2. Cragdrake Adult (rival ×2, wolf-sized)
 
 *(**Searing Bolt** · **Predatory Patience rider + cue** · **Explosive Leap use** — all three RETIRED
@@ -3939,6 +3997,14 @@ Weakened. See that run's handoff delta.)*
 > engine and the card disagree by 15 ft; `distanceFt: 20` is the dial that matches the prose. Feeds
 > test-pass-fixes. *(Reckless Advance's prose states no distance, so it is not the same drift —
 > though a "charge" that moves 3 ft is a design question, logged to `EDHA_RULINGS.md`.)*
+
+- [ ] 🤖 **R-48 default (a), applied by item 57 — Explosive Leap moves 20 ft.** REBUILD (adversaries
+      pack + ⟳ Sync Adversaries). Fresh Cragdrake Adult import; target a token **≥ 25 ft** away on a
+      clear lane, use Explosive Leap: the card reads *"moves **20 ft** toward …"* and the token has
+      travelled 1200 px. The rule is now `{bySize: false, distanceFt: 20}` — the card's own number.
+      ⚠️ Ben may still veto R-48 (it is applied as the PM's recorded default, not answered); the
+      Brandram's Shockwave Slam / Reckless Advance and the Tussock-Sow's terrain square from the
+      run-19 table are NOT touched by item 57 — they are the same family and want the same decision.
 
 ## 3. Cragdrake Alpha (boss, tier 2)
 
