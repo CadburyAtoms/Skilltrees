@@ -734,6 +734,32 @@ talents were read live off the OWNED items — Withering Ray carries its two `us
 effect, matching the authored files; Withering Ray also RAN end-to-end that run. A live document read
 is the stronger form of "tabs unchanged".)*
 
+## Damage-rider formula bars — fix pass 10 (TODO 78, 2026-09-06 — ENGINE-ONLY, F5; no rebuild, no ⟳ Sync)
+
+*(Two engine changes on one path, both affecting **every** `edha-damage-rider` with a `bonusFormula`
+in every tree — Ambush Bite, Spearing Beak, Prognosis, Kindle, Momentum's Edge, Scalpel-Strike. The
+tree-specific re-test is Ambush Bite's row in the Black block; these two are the family checks.
+**Method, from bench run 41's lesson:** read the card's own `.dice-formula` node, never
+`msg.rolls[0].formula`, and sample the same root again ~2 s after the card lands — the cosmere damage
+card rebuilds its damage section AFTER `renderChatMessageHTML` fires.)*
+
+- [ ] 🤖 **Prognosis's rider arithmetic is FOLDED — the R-71 fold reaches the rider half.** Run 41
+      read `2d8 + 2 + ((2)d(2 * 3 + 2))[Prognosis]`: the base folded (item 69), the rider not, on the
+      same bar. `edhaRiderBonus` now folds each rider's own `bonusFormula` against the roller's data
+      (`edhaFoldRiderFormula`) before wrapping it. **Re-test:** `Bench — Life` casts Life Surge at a
+      target carrying a condition. `.dice-formula`, sampled 2 s after the card lands, must read
+      **`2d8 + 2 + (2d8)[Prognosis]`** — folded on BOTH sides, one `[Prognosis]` outside the
+      parentheses — and the healing/damage total must be the same size it was at run 41 (2d8 rider,
+      not 0). **NEG:** at a condition-free target the bar is `2d8 + 2` with no rider term at all.
+- [ ] 🤖 **One more rider, one more tree — the fix is family-wide, not Ambush-Bite-shaped.** Drive any
+      SECOND `edha-damage-rider` that produces a labelled term (Kindle on a Red damage talent, or
+      Spearing Beak / Momentum's Edge / Scalpel-Strike — whichever the roster can reach fastest).
+      **Re-test:** its bar must carry **exactly one** copy of the rider's label, OUTSIDE the
+      parentheses, at both sample times, and no `@`-ref may survive into the printed formula. Say
+      which talent was driven and paste the exact string. *(The parentheses are correct and stay:
+      the system's graze clone keeps only dice/operator/pool terms, so an unparenthesised rider die
+      would start riding grazes — do not fail a row for them.)*
+
 ---
 
 # BENCH — White (leyline)
@@ -1008,17 +1034,21 @@ against a target with two living allies within 10 ft.*
   granter's own round. **NEG (b):** NEITHER side in a combat → stamp `null`, it **survived** a round
   change and the next test rolled **`2d20kl + 4`** with its consume card before clearing.)*
 
-- [ ] 🤖 **Ambush Bite's doubled rider flavor — FIXED IN FIX PASS 9 (TODO 72), re-test.** ENGINE-ONLY
-      (F5). Root cause: not ours. A flavored ParentheticalTerm propagates its flavor onto every inner
-      term when it evaluates (`parenthetical.mjs:105` → `roll.mjs:496`) and then re-derives
-      `term = roll.formula` when the chat message rebuilds the roll, so the label comes back inside
-      the parentheses as well as after them. The parentheses must stay in the FORMULA — the system's
-      graze clone keeps only dice/operator/pool terms, so a bare rider die would start riding grazes —
-      so `edhaTidyFormula` (the display-only formula-bar repair) now drops the duplicated inner label,
-      and the parentheses too when one atomic term is left. **Re-test:** one fooled Ambush Bite from
-      the Stillback — the formula bar must read **`1d10 + 3 + 1d6[Ambush Bite]`** and the damage total
-      must be unchanged. **NEG:** the graze half of that same card still rolls the BASE dice only
-      (no `1d6` in the graze breakdown).
+- [ ] 🤖 **Ambush Bite's doubled rider flavor — FIXED IN FIX PASS 10 (TODO 78), re-test.** ENGINE-ONLY
+      (F5). Run 41 proved fix pass 9's repair correct on the string and unreachable on this card, so
+      the repair moved OFF the render and onto message creation: a `preCreateChatMessage` pass
+      (`edhaUndoFlavorPropagation`) strips, from the serialized roll, the flavor copies core's
+      `propagateFlavor` stamped into the parenthetical's own inner roll. The rehydrated
+      `term = roll.formula` then re-derives without the inner label, so the recompiled `formula`
+      getter (what the damage card prints) agrees with the stored `_formula` (what core prints).
+      **The parentheses STAY** — the graze clone keeps only dice/operator/pool terms, so a bare rider
+      die would start riding grazes — and fix pass 9's expected string was wrong to drop them.
+      **Re-test:** one fooled Ambush Bite from the Stillback. Read the card's own `.dice-formula`
+      node **2 s after the card lands** (never `msg.rolls[0].formula`, and never at hook time — run
+      41's lesson): it must read **exactly `1d10 + 3 + (1d6)[Ambush Bite] + 0`** — ONE `[Ambush Bite]`,
+      outside the parentheses — and the damage total must be unchanged (base dice + 3). Sample the
+      same root at hook time too: both samples must now agree. **NEG:** the graze half of that same
+      card still rolls the BASE dice only (no `1d6` in the graze breakdown).
       ❌ **2026-09-06, bench run 41 — FAIL, on the hash-verified `f2fb3e2da75057ce…` engine. The
       repair is correct and it runs in the wrong place.** One fooled Ambush Bite from a fresh
       `Stillback` import (Perception 7 vs DC 12 → *"taken in"*, belief rolled for real): the card's

@@ -2076,7 +2076,7 @@ map onto it as `source` / (`mode` ∨ `formula`) / (`formula`, `count`) / `round
 | **`edhaNextModFoldMode(mods)`** | PURE. Folds N entries into the one `AdvantageMode` scalar: boolean-OR per direction; **a mixed advantage/disadvantage pair returns `null`** and the caller then writes nothing, so a cancelling pair never stomps the player's own dialog choice. |
 | **`edhaWriteNextMods(actor, list)`** | Writes the list back (`null` when empty) **through `edhaSetEdhaFlag`**, so a cross-actor clear relays to the GM — the old consumers called `unsetFlag` on the bearer directly, which silently did nothing for a victim the roller does not own. |
 | **`edhaJoinRiderTerm(base, formula, label?)`** (item 66) | PURE. THE one place a rider's sign is read when it is joined onto a formula: a leading minus becomes an explicit subtraction (`base - 1d6[label]`), anything else `base + term`; `[label]` is appended when given. BOTH paths call it — `edhaNextTestPreRoll` (base `"0"`, always labelled) and `edhaWrapRollDamage` (labelled on the subtraction only, so a positive damage rider is byte-identical to item 49's `base + 1d6`). Before this the damage reduce was a raw `${f} + ${m.formula}` and a `-1d6` `either` rider produced the parser-hostile `2d6 + -1d6`. Pinned in `tests/negative-rider-join.test.js`. |
-| **`edhaWrapRollDamage` — the runtime formula fold** (item 69, R-71's runtime half) | THE one wrapper over `CosmereItem#rollDamage` now folds the base damage formula BEFORE anything else: `options.overrideFormula ?? system.damage.formula` → `Roll.replaceFormulaData(…, actor.getRollData(), { missing: "0" })` → `edhaFoldDieMath` → written to `options.overrideFormula` ONLY when it changed (a plain formula leaves `options` byte-identical; no roll data → untouched). Then the passive riders (`edhaRiderBonus`), the next-test riders (`edhaJoinRiderTerm`, onto the FOLDED base), then `edhaSovStepOverride`. Exists because the cosmere system rolls a talent's own field verbatim and item 59's build-time fold cannot see `@tier`/`@skills.<color>.rank`. Contract: exactly one `edhaFoldDieMath` call in the wrapper, one wrapper in the engine — both pinned by source scan in `tests/runtime-formula-fold.test.js`. Never a second wrapper (rule 2a); never a talent name (rule 2b). |
+| **`edhaWrapRollDamage` — the runtime formula fold** (item 69, R-71's runtime half) | THE one wrapper over `CosmereItem#rollDamage` now folds the base damage formula BEFORE anything else: `options.overrideFormula ?? system.damage.formula` → `Roll.replaceFormulaData(…, actor.getRollData(), { missing: "0" })` → `edhaFoldDieMath` → written to `options.overrideFormula` ONLY when it changed (a plain formula leaves `options` byte-identical; no roll data → untouched). Then the passive riders (`edhaRiderBonus` — which since fix pass 10 folds each rider's own `bonusFormula` the same way, via `edhaFoldRiderFormula`), the next-test riders (`edhaJoinRiderTerm`, onto the FOLDED base), then `edhaSovStepOverride`. Exists because the cosmere system rolls a talent's own field verbatim and item 59's build-time fold cannot see `@tier`/`@skills.<color>.rank`. Contract: exactly one `edhaFoldDieMath` call in the wrapper, one wrapper in the engine — both pinned by source scan in `tests/runtime-formula-fold.test.js`. Never a second wrapper (rule 2a); never a talent name (rule 2b). |
 
 - **Writers APPEND.** `edhaSetNextTestMod` read-modify-writes through `edhaListPush` (cap
   `EDHA_NEXTMOD_CAP` = 12, evict oldest — a bound, not a design limit). Flags replicate to every
@@ -2626,8 +2626,30 @@ declarations (hoisted) — callable from anywhere in the file regardless of text
   shows the raw data). Cost Cruel Step + Sudden Growth multiple passes. `lint-refs.js` now gates id
   format + key↔id mismatch.
 - **`edhaTidyFormula(str)`** — display normalizer on every `.dice-formula` chat bar: spaces operators,
-  drops unmatched `)`, ignores flavor `[labels]`. Fixes the `2d20kh+6)` garble (`Roll.getFormula`
-  joins terms with no separators; a stray `)` rides in via the roll dialog's Temporary Bonus).
+  drops unmatched `)`, ignores flavor `[labels]`, collapses a doubled parenthetical label. Fixes the
+  `2d20kh+6)` garble (`Roll.getFormula` joins terms with no separators; a stray `)` rides in via the
+  roll dialog's Temporary Bonus). **It repairs the DOM, so it only reaches surfaces whose final
+  markup exists when `renderChatMessageHTML` fires** — the cosmere DAMAGE card's is not one of them
+  (next entry). Today its live job is legacy messages and any doubled string authored elsewhere.
+- **`edhaUndoFlavorPropagation(rollData)` + its `preCreateChatMessage` binding** (fix pass 10) —
+  PURE. Strips, from a SERIALIZED roll, the flavor copies core propagated into a flavored
+  `ParentheticalTerm`'s own inner roll, so the rehydrated term does not carry the label twice.
+  **Read this before touching any formula-bar display code**: a Roll keeps TWO formula strings —
+  `_formula` (built-from, stored in `toJSON`, printed by CORE's chat template) and the `formula`
+  GETTER (recompiled from terms on every read, printed by the cosmere damage card's `enrichDamage`).
+  `ParentheticalTerm#_evaluate` calls `propagateFlavor`, and its constructor re-derives
+  `term = roll.formula` on the chat round-trip, so the two DIVERGE the first time a message is read
+  back — `(1d6)[Ambush Bite]` becomes `(1d6[Ambush Bite])[Ambush Bite]`. The system's `getHTML` also
+  rebuilds `.message-content` AFTER `renderChatMessageHTML` fires, so no render registration can
+  repair that card; the fix belongs at message creation. The parentheses stay in the roll (the graze
+  clone keeps only DiceTerm/OperatorTerm/PoolTerm). Pinned in `tests/roll-flavor-propagation.test.js`.
+- **`edhaFoldRiderFormula(formula, rollData)`** (fix pass 10) — PURE. R-71's runtime die-math fold
+  for the RIDER half: `edhaRiderBonus` folds each `edha-damage-rider` `bonusFormula` against the
+  roller's data before wrapping it as `(f)[name]`, so a `[Tier][Die]` rider prints `2d8` and not
+  `(2)d(2 * 3 + 2)`. Substitutes with **no `missing`**, so an unresolved `@ref` survives and the
+  formula is handed on RAW — that is the guard that keeps a rider needing the system's own
+  `getDamageRollData` keys (`@mod`/`@skill`/`@attribute`) out of the fold. Not applied in
+  `edhaRiderParts`: the burst executor evaluates the parts numerically and wants them raw.
 
 ## Test-debug tracer (edha.debug)
 - **`edha.debug(true)`** — every edha handler logs `[EDHA-TEST]` as it fires (hook, handler@regLine,
