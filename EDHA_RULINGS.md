@@ -242,6 +242,8 @@ refund its Investiture? *(Checklist 2bJ-10.)*
 > refund on decline/timeout — reuse whichever the R-69 picker path already does. ENGINE-ONLY, F5 →
 > **item 51**; headless pin; 🤖 re-test = checklist 2bJ-10 (declined offer: Investiture unchanged,
 > round use still available).
+> **SHIPPED** in PR #230 (ENGINE-ONLY, bench-pending) — `tests/offer-decline-refund.test.js`. R-69's mechanism
+> (charge on post, `edhaRefundCost` on back-out) reused through one path, `edhaOfferDecline`.
 
 **R-18. Should quarry advantage refuse to stomp an active DISADVANTAGE?** Attacking your quarry while
 Weakened rolls at **advantage** today — the quarry site runs after Weakened's and overwrites it. That
