@@ -1567,6 +1567,85 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   matched control has proven the root cause, **write the residual symptom down as PARTIAL and move on**
   — the second defect can be run 34's first row.
 
+## Operating lessons from run 40 (2026-09-06 — these OVERRIDE older advice where they conflict)
+
+- ⭐⭐ **You can synthesise a canvas click, and it is worth ten minutes of setup.** Every
+  click-to-place mechanic — bursts, snares, ordained squares, Fault Line's direction — goes through
+  `edhaPickPoint`, which reads **`canvas.mousePosition`** on a `pointerdown` captured on `#board`.
+  So dispatch your own: a `pointermove` at the target's client coords, wait ~120 ms for PIXI to
+  update `canvas.mousePosition`, then `pointerdown` + `pointerup`. The whole helper is six lines and
+  it lands **exactly** on the intended square:
+  ```js
+  globalThis.benchClickScene = async function (sx, sy) {          // sx,sy = SCENE coords (square centre)
+    const board = document.getElementById("board"), r = board.getBoundingClientRect();
+    const p = canvas.stage.worldTransform.apply({ x: sx, y: sy });
+    const mk = (t, b) => new PointerEvent(t, { bubbles: true, cancelable: true, composed: true,
+      clientX: r.left + p.x, clientY: r.top + p.y, button: 0, buttons: b, pointerId: 1,
+      pointerType: "mouse", isPrimary: true });
+    board.dispatchEvent(mk("pointermove", 0)); await new Promise(z => setTimeout(z, 120));
+    board.dispatchEvent(mk("pointerdown", 1)); await new Promise(z => setTimeout(z, 80));
+    board.dispatchEvent(mk("pointerup", 0));
+  };
+  ```
+  **Do NOT try to aim with `computer{action:"left_click"}`** — the pane's screenshot frame and the
+  emulated viewport are two different coordinate spaces and the mapping is not a simple scale; run 40
+  burned four calls placing a Flame Surge burst 30 squares off target that way before writing the
+  helper. (One real pointer click IS still worth doing once per run, to prove the mechanic is
+  reachable by a human; then switch to the helper.)
+- ⭐ **A "silent no-op" from `updateEmbeddedDocuments("Token", …)` is usually a VETO, not the movement
+  budget.** Run 10's budget lesson sent this run looking in the wrong place: `{teleport: true}` moves
+  a combatant fine, and the token that "wouldn't move" was being refused by Dread Presence — whose
+  card was suppressed by its own per-round throttle, so the second attempt looked like nothing at all.
+  Before blaming the harness, check whether an `edha-move-veto` owner is in range and the mover
+  carries the rule's `moverStatus`. Note the veto reads **every live allied token on the canvas**,
+  Ben's campaign adversaries included (HP ≤ 0 ones are skipped), so "away from all allies" is much
+  harder to stage than it looks — compute the destination by testing all hostile distances, don't eyeball it.
+- ⭐ **`TokenDocument#move(waypoints)` is the real drag path and it DOES fire the pre-hooks.** It is
+  how to test anything that says "a dragged path" — the R-38 multi-waypoint throttle was proven with
+  a three-waypoint `move()` producing exactly one card. It also respects Region enter/exit events,
+  which a `{teleport: true}` update does not, so **snares and other Region traps need `move()`**.
+- ⚠️ **A status you set at the start of a sequence may be gone two rounds later.** `weakened` set by
+  hand vanished across a round advance (it expires on the bearer's turn), and the "multi-waypoint drag
+  was not vetoed!" result that looked like a serious defect was just that. Re-read the status
+  immediately before the take that depends on it, and print it in the same result object.
+- ⚠️ **The `edha-zone` snare (and every Region trap) needs BOTH parties in the combat** — R-4's
+  out-of-combat gate again — **and a 1×1 token.** Region containment and `edhaFateOccupantsOfSquare`
+  both use the token's CENTRE, so a 2×2 creature standing with one quadrant on a 5 ft square is not in
+  it: `armedOver` comes back `[]` and nothing ever springs. Check `td.width` before staging.
+- ⚠️ **A resource decrease you type yourself is NOT a spend (item 28b), so it arms nothing.** Coercive
+  Pressure's `focus-change` watch ignored `actor.update({"system.resources.foc.value": n})` — correctly.
+  To arm a focus-loss watch, give the victim a real focus-costing talent (clone one, e.g. Heroic's
+  **Meteoric Leap**, with `edha.skipBudget(true)`) and `use()` it.
+- ⚠️ **`item.use()` opens a consume dialog for anything with a cost.** Every driving helper this run
+  ended with the same two lines — fire with `void item.use()`, wait ~2.3 s, then
+  `document.querySelector("dialog.application.dialog")?.querySelector('button[data-action="continue"]')?.click()`,
+  and for a `skill_test` activation a second wait plus `button[data-action="submit"]` (the Roll
+  button). Wrap that in a local `place()` / `cast()` helper on your first talent and reuse it; it is
+  the difference between 3 calls and 9 for every subsequent row.
+- ⚠️ **The join tab can wander.** `navigate` may open a NEW tab while the pane already holds a
+  `seed` tab on `localhost:30000`; check `tabs_context` first and join in the tab you intend to drive.
+  A `location.reload()` on `/game` can also drop you back to `/join` — which is a free way to end the
+  session, but re-join if you still need the world.
+- ✅ **`sessionStorage` for the start snapshot works exactly as run 39 predicted** — it survived a
+  mid-run reload and made the end-of-run diff a real per-actor comparison (items / HP / effects /
+  statuses / `edha-content` flags) instead of a hand count. Capture **effect NAMES and the flag JSON**,
+  and note the limit run 40 hit: a name is not enough to REBUILD an effect you did not create, so a
+  pre-existing effect that disappears can only be reported, not restored.
+- ✅ **Second-client rows are cheap once the recipe is followed exactly** (`tabs_create` → `navigate`
+  to `/join` → `resize_window` 1400×900 → `location.reload()` → select `PlayerBench` → Join). Bench
+  stayed primary GM with all three clients live, again. For a two-client RACE, do not try to click
+  twice by hand: compute a shared `Date.now() + N` in one tab, arm a `setTimeout` there, then have the
+  other tab `await` to the same instant — run 40's two Take clicks landed **7 ms apart**.
+- ℹ️ **Drive `_onClickLeft2(event)` directly for double-click mechanics**, but pass a stub with
+  `stopPropagation` / `preventDefault` / `stopImmediatePropagation` — the loot intercept returns
+  before Foundry's own handler when it handles the click, and only throws on a bare `{}` when it
+  **doesn't**, which is a useful signal but a confusing one to read as a failure.
+- **Density, measured: 27 checklist rows retired on evidence, 1 row narrowed to a named blocker,
+  1 root-caused defect + 1 cosmetic defect filed, 2 new rulings, and 3 wrong reference names in the
+  checklist corrected — in ~120 driving calls. The end-of-run per-actor diff was empty but for one
+  pre-existing effect.** The fix-pass re-test block was again the densest thing available, for the
+  thirteenth run running.
+
 ## Operating lessons from run 39 (2026-09-06 — these OVERRIDE older advice where they conflict)
 
 - ⭐⭐ **A client's loaded engine IS readable — from OUTSIDE Foundry. Check the PROCESS START TIME

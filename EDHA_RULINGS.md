@@ -390,6 +390,38 @@ spend. *(Board table; raised by item 28b.)*
 
 ---
 
+**R-82. An offer that CANNOT be made still charges its Investiture — refund that too?** Measured at
+bench run 40 (2026-09-06) while driving item 51's R-17 rows. **Unnerving Approach** used against a
+target with no living ally within 10 ft posts its `emptyNote` card — *"no living ally of your target
+within 10 ft to push (it may already be Isolated)"* — and the SYSTEM has already taken the
+Investiture (measured **2 → 1**, with no refund and no Decline button, because there is no offer to
+decline). R-17 refunds a **declined** or **ignored** offer; it says nothing about an offer that never
+existed. From the player's side the three cases are indistinguishable: the cost left, nothing
+happened. *Recommended: **(a) refund it** — reuse `edhaOfferDecline`'s `edhaRefundCost` path on the
+`emptyNote` branch whenever `edhaOfferRefundable` is true, i.e. the same gate R-17 already computes.*
+(b) keep charging — "you spent the Investiture looking" is a defensible table rule, but then the card
+should SAY the cost was spent. Either way the card needs to stop being silent about the money.
+*(Bench run 40; from item 51 / R-17.)*
+
+---
+
+**R-83. `expireEndOfRound` stamps the GRANTER's combat — should it fall back to the BEARER's?**
+Measured at bench run 40 while driving **2bI-4c**. `edha-next-test-mod` writes
+`mod.round = edhaCombatRoundOf(owner)` (`register-skills.js` ~L21116), and the comment says "the
+GRANTER's combat (edhaNextTestMatches reads the BEARER's — same combat at the table)". When the
+granter is **not a combatant** the stamp is `round: null`, and a `null` stamp can never expire — so a
+"this round" rider granted from outside the tracker sits on the victim for ever. Reproduced exactly:
+Pattern Recognition cast by a `Bench — Blue` that was not in the combat wrote
+`{source:"Pattern Recognition", round:null, …}`; adding Blue as a combatant and re-casting wrote
+`round: 8` and the rider then expired on schedule. The row itself PASSES once both are in the
+tracker, so this is a ruling, not a defect. *Recommended: **(a) fall back to the BEARER's combat when
+the granter has none** — `edhaCombatRoundOf(owner) ?? edhaCombatRoundOf(target)`; a "this round"
+rider then always means the round the victim is living in.* (b) leave it — out of combat there is no
+round and an inert stamp is honest; the cost is that a mid-combat grant from a non-combatant NPC
+never expires. *(Bench run 40; from item 49 / 2bI-4c.)*
+
+---
+
 ## D. Talent identity & tree shape
 
 **R-23. Volatile Strike — whose hit should it ride?** Card and rule description both say "when you

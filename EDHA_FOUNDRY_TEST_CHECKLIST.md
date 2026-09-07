@@ -554,16 +554,14 @@ stands — no change needed; row CLOSED.)*
 
 ## Engine-wide fixes still unbenched (pre-migration survivors)
 
-- [ ] 🤖 **R-70 (b) / item 50 — every cost row of the consume dialog opens TICKED (engine-only, F5
-      first).** Positive: on `BENCH Stitchmother R28` (or any actor owning *Reknit Form* — cost 1
-      Investiture, 1 Focus) note inv/foc, use Reknit Form, **read the dialog** — BOTH rows must
-      render `checked` — then click **Continue** without touching anything: expect **inv −1 AND
-      foc −1** (run 28 measured inv 10 → 9, foc 8 → 8 under the system default; the ticked-both
-      reading was inv −1, foc −1). Negative control: a single-cost talent (any "Spend 1
-      Investiture" talent, e.g. Searing Bolt on `Bench — Red`) opens with its one row ticked and
-      a default Continue charges exactly 1 — unchanged. Console should show *"Edha Content |
-      consume-dialog pre-tick wired via …"* once at ready. Pinned headlessly in
-      `tests/consume-dialog-wrapper.test.js`; the row is the live-table half.
+*(**✅ RETIRED on evidence 2026-09-06, bench run 40 — R-70 (b) / item 50, the consume-dialog
+pre-tick.** **POS:** a fresh `B40 Stitchmother` imported from the pack used **Reknit Form** — the
+"Reknit Form — Consume Resource" dialog opened with BOTH rows `checked: true`
+(`Consume 1 Investiture?-shouldConsume`, `Consume 1 Focus?-shouldConsume`), and a default
+**Continue** with nothing touched charged **inv 10 → 9 AND foc 8 → 7** (run 28's system default was
+foc −0). **NEG:** the single-cost **Unnerving Approach** (1 Investiture) opened with its one row
+ticked and a default Continue charged exactly 1 (inv 4 → 3) — unchanged. **Console, read on a fresh
+client load:** `Edha Content | consume-dialog pre-tick wired via prototype patch (R-70).`)*
 
 **Bench run 4 (2026-07-26m): the melee-discriminator row is RETIRED** — `edhaAttackKind` now reads
 `system.attack.type`: a weapon set to `"ranged"` skipped Warlord's Advance's rider AND left the arm
@@ -841,16 +839,13 @@ rather than claimed: **neither** direction wrote a `trigRound` ledger entry, so 
 absence is the only discriminator here — the "no `trigRound` write" expectation is satisfied but
 cannot separate pass from fail on these two blocks.)*
 
-### Fix pass 7b re-tests (item 48, 2026-09-06 — ENGINE-ONLY, F5; no rebuild, no ⟳ Sync)
-
-- [ ] 🤖 **R-31 — a PC's own Phantom Double TOKEN is labelled "(Illusion)".** Cast Phantom Double
-      from a **character** and read the canvas: the copy's TOKEN name is now `<X> (Illusion)`, not
-      the bare `<X>`; the ACTOR name is unchanged (it always carried the suffix). **NEG (the control
-      that makes this a rule and not a rename):** run the Mistheron's **The Seeming** in the same
-      take — an ADVERSARY's copy keeps its **plain** token name, because the veil is what the
-      mechanic is for. **POS 2:** a PC copying an **ally** labels *that ally's* token, not the
-      caster's. Headless pins cover all three (`tests/illusion-token-label.test.js`); what the bench
-      adds is that the label reaches the real prototype token and reads right at hover distance.
+*(**✅ RETIRED on evidence 2026-09-06, bench run 40 — R-31, the Phantom Double token label**, on the
+hash-verified `0ea0741a…` deploy. All three legs in one take. **POS:** `Bench — Blue` cast Phantom
+Double on itself → token **`Bench — Blue (Illusion)`** (actor `Bench — Blue (Illusion) (Bench — Blue)`,
+suffix as always). **POS 2:** the same PC copying an **ally** (targeting `Bench — Black`) labelled
+*that ally's* token — **`Bench — Black (Illusion)`**, not the caster's. **NEG (load-bearing):** a
+fresh `B40 Mistheron` cast **The Seeming** in the same session and its copy's token read
+**`Mistheron (3)`** — plain, no suffix, the veil intact.)*
 
 ---
 
@@ -890,64 +885,57 @@ false while a genuine crossing ray reads true). Evidence in the 07-26m delta.
 
 ### Fix pass 7b re-tests (item 48, 2026-09-06 — ENGINE-ONLY, F5; no rebuild, no ⟳ Sync)
 
-- [ ] 🤖 **R-32 — Black Draw Mana's sweep card reports BOTH numbers.** Weaken five enemies in Black
-      Attunement Range **first**, then Draw Mana. The card must read **"swept 5 · newly Weakened
-      0"** — the old "affected 5" is gone. **POS (same take, second half):** clear the statuses and
-      re-pulse — "swept 5 · newly Weakened 5". **MIXED (the one that proves the two counts are
-      independent):** leave 3 of 5 Weakened → "swept 5 · newly Weakened 2". **NEG:** put one enemy
-      behind a wall so the GM accounting whisper opens — it carries the SAME pair and the same word,
-      plus its "1 behind a wall" line.
-- [ ] 🤖 **R-38 — a Dread-Presence-refused move posts one whispered card.** With a Weakened creature
-      inside the presence owner's range, drag it toward one of its allies. Expect: the move is still
-      refused, AND a whispered card **"🚫 Dread Presence: … is Weakened and cannot willingly move
-      closer to …"** reaches the mover's owners + the GM (check on the player client that it is a
-      whisper, not a public post). **THROTTLE (the point of the row):** drag it again in the SAME
-      round — **no second card**; advance a round and drag again — **one new card**. **NEG:** a move
-      that does not close on any ally is neither refused nor announced. Watch a multi-waypoint drag
-      in particular: that is the case the throttle exists for.
+*(**✅ RETIRED on evidence 2026-09-06, bench run 40 — R-32 and R-38**, on the hash-verified
+`0ea0741a…` deploy. Staged with exactly five hostile BENCH dummies inside `Bench — Black`'s 60 ft
+(rank 3) and the nearest campaign hostile measured at 66.4 ft, so no adversary of Ben's was swept.
+**R-32, all four legs:** all five Weakened first → *"swept 5 · newly Weakened 0"*; statuses cleared →
+*"swept 5 · newly Weakened 5"*; MIXED with exactly 3 already Weakened → *"swept 5 · newly Weakened
+2"*; and the **NEG** GM whisper (from an earlier geometry where one dummy stood behind a wall) read
+*"5 enemies in range, swept 3 · newly Weakened 0 — also skipped 1 behind a wall"* — the same pair,
+the same word. No card anywhere said "affected". **R-38, all four legs:** a Weakened dummy's move
+toward an ally was refused (coordinates unchanged) and posted **exactly one** card, *"🚫 Dread
+Presence : … is Weakened and cannot willingly move closer to …"*, whispered to `Bench` + `Gamemaster`
+(a non-empty whisper list = not a public post; the movers are unowned dummies so GMs are the whole
+audience). THROTTLE: a second refused move in the same round posted **no** card; `nextRound()` then
+one more move posted **one** new card. **NEG:** a retreat that closed on no living ally succeeded and
+announced nothing — and the same round's advance toward an ally was still refused with a card, so the
+silence was not the throttle. **MULTI-WAYPOINT (the case the throttle exists for):** a real
+three-waypoint `TokenDocument#move()` was refused and produced **exactly one** card, not one per
+waypoint.)*
 
-### Item 49 re-tests — the next-test modifier is a LIST (2026-09-06 — ENGINE-ONLY, F5; no rebuild, no ⟳ Sync)
+### Item 49 / item 66 re-tests — ✅ ALL FIVE RETIRED on evidence 2026-09-06, bench run 40
 
-Ben's R-15(b): `flags.edha-content.nextTestMod` is an array now, so riders stack instead of
-overwriting. Console probe for all three rows (bench GM):
-`game.actors.getName("<victim>").getFlag("edha-content","nextTestMod")` — it must be an **array**.
+*(Driven on the hash-verified `0ea0741a…` deploy, on `Bench — Black` + a freshly imported
+`B40 Wrenchmaster`, with the flag read off the document after every leg.*
 
-- [ ] 🤖 **2bI-4 — Coercive Pressure and Probability Net STACK on one victim (R-15(b), reopened).**
-      Put a **Wrenchmaster** on the map beside **Bench — Black**, with one enemy dummy inside Black
-      Attunement Range. (1) Make the dummy LOSE a focus → Coercive Pressure arms its Cognitive
-      disadvantage. (2) Wrenchmaster uses **Probability Net** on the SAME dummy. Probe the flag:
-      **two entries**, `Coercive Pressure` and `Probability Net` (before this change the second
-      grant erased the first, which is the whole defect). (3) The dummy makes a **Cognitive** test
-      (Deception / Insight). Expect **`2d20kl`** AND a **`-1d6[Probability Net]`** term on the same
-      roll, plus **two** consume cards — "🔮 Coercive Pressure — disadvantage on this test" and
-      "🔮 Probability Net — -1d6 on this test". Probe again: the flag is gone/empty.
-- [ ] 🤖 **2bI-4b — NEGATIVE CONTROL: a non-matching test spends ONLY the rider that applied.**
-      Same setup, both riders armed, but the dummy makes a **Physical** test first (Athletics /
-      Strength). Expect: **no disadvantage** (`1d20` — Coercive Pressure's Cognitive gate still
-      filters per entry) but the **`-1d6[Probability Net]`** term IS there, with only the
-      Probability Net card. Probe the flag: **exactly one entry left, `Coercive Pressure`** — the
-      neighbour must be untouched. Then the Cognitive test spends it and the flag clears.
-- [ ] 🤖 **2bI-4c — the expired "this round" rider is REMOVED from the flag, not left behind
-      (R-20 + R-57).** Run on **Bench — Blue**. Use **Pattern Recognition** on a victim, then
-      advance the combat one round WITHOUT the victim testing. The behaviour half is R-57's
-      verified result and stands: the victim's next test is a plain `1d20`, no card. **What is new
-      is the flag** — probe it after that roll: the Pattern Recognition entry is **gone**, where it
-      used to sit on the actor for ever. **POS (the other half):** arm an UNSTAMPED rider too (any
-      `edha-next-test-mod` without "this round" — e.g. Probability Net from a Wrenchmaster) and
-      confirm it **survives** the round change and still applies. Pruning must not eat a rider that
-      is simply waiting.
-- [ ] 🤖 **2bI-4d — a NEGATIVE `either` rider on a DAMAGE roll is a subtraction, not `+ -1d6`
-      (item 66).** On any bench PC, arm a next-test rider with a negative formula that may ride
-      damage — console: `edhaSetNextTestMod(actor, { source: "Probability Net", formula: "-1d6",
-      count: 1, appliesTo: "either" })` — then roll DAMAGE with a weapon (no d20 test first, so the
-      `either` claim goes to the damage half). Expect the chat card's formula bar to read
-      **`<base> - 1d6[Probability Net]`** (never `<base> + -1d6`), the roll to evaluate without a
-      parser error, the total to be **lower than the base dice alone**, and the "🔮 Probability Net —
-      -1d6 added to this damage roll" card. Probe the flag afterwards: the entry is spent.
-- [ ] 🤖 **2bI-4e — NEGATIVE CONTROL: a POSITIVE `either` rider on a damage roll is unchanged.**
-      Same setup with `formula: "1d6"` (Pack Hunting's shape). Expect the formula bar to read
-      **`<base> + 1d6`** exactly as before item 66 — no flavor label on the positive term, total
-      higher than the base dice — and the same consume card.
+- ***2bI-4 — the riders STACK.** A REAL focus **spend** on the victim armed Coercive Pressure (a bare
+  `actor.update()` correctly did **not** — item 28b's spend stamp), then the Wrenchmaster's
+  Probability Net landed on the same dummy: the flag held **two** entries,
+  `{source:"Coercive Pressure", attr:"int, wil", mode:"disadvantage"}` **and**
+  `{source:"Probability Net", formula:"-1d6"}`. A Cognitive test then rolled
+  **`2d20kl + 3 - 1d6[Probability Net]`** with **two** consume cards, and the flag cleared to `null`.
+  ⚠️ **The row's example skills were wrong and cost this run two takes:** Coercive Pressure gates on
+  `attr: "int, wil"`, and in cosmere-rpg 2.1.0 **Deception is `pre` and Insight is `awa`** — neither
+  is a Cognitive test by that gate. Use **Discipline (`dis`, wil)** or a `int` skill.*
+- ***2bI-4b — the NEG.** With both armed, a **Physical** test (Athletics, `str`) rolled
+  **`1d20 + 4 - 1d6[Probability Net]`** — plain `1d20`, so Coercive Pressure's gate filtered per
+  entry — with only the Probability Net card, and left **exactly one** entry, `Coercive Pressure`,
+  untouched. The following Cognitive test then spent it (`2d20kl + 3`, its own card) and cleared the
+  flag.*
+- ***2bI-4c — the expired rider is REMOVED.** Pattern Recognition (`expireEndOfRound`) stamped
+  `round: 8`; the round advanced with no test; the victim's next test rolled a plain `1d20 + 3` with
+  no Pattern Recognition card, and the flag afterwards was **`null`** — the entry is gone. **POS:** an
+  UNSTAMPED Probability Net rider armed in the same round **survived** the round change and still
+  applied (`- 1d6[Probability Net]` + its card). ⚠️ Staging note now filed as **R-83**: the round
+  stamp comes from the **GRANTER's** combat, so a caster who is not a combatant writes `round: null`
+  and the rider never expires — put the granter in the tracker before running this row.*
+- ***2bI-4d — a NEGATIVE `either` rider on DAMAGE is a subtraction.** Formula bar read
+  **`1d6 - 1d6[Probability Net] + 4`** — never `+ -1d6` — evaluated with no parser error, total **1**
+  against a base minimum of 5, with the *"🔮 Probability Net — -1d6 added to this damage roll"* card;
+  the entry was spent.*
+- ***2bI-4e — the NEG.** A POSITIVE `1d6 either` rider read **`1d6 + 1d6 + 4`** — no flavor label on
+  the positive term, dice `3` and `4` for a total of 11 against a base of 7 — same consume card,
+  entry spent.)*
 
 ### Item 51 re-tests — a declined / ignored offer refunds its Investiture (R-17, 2026-09-06 — ENGINE-ONLY, F5; no rebuild, no ⟳ Sync)
 
@@ -963,17 +951,50 @@ Investiture before each use.
       "Declined — cost refunded", every button on it is disabled. **Same round**, use the talent
       again and this time click a Push button: it fires (the round's use was NOT spent by the
       decline). Then a THIRD use in the same round → "was already used this round" on the click.
-- [ ] 🤖 **2bJ-10b — IGNORED: leave the card, advance the round.** Use Unnerving Approach, do not
-      click anything, advance the combat to the **next round**. On the round change the card is
-      marked "Ignored — cost refunded" and the Investiture is back. Clicking a Push button on that
-      card afterwards is refused ("that offer was already resolved") and spends nothing.
-      **NEG:** advancing only the TURN within the same round refunds nothing — the card stays live.
-- [ ] 🤖 **2bJ-10c — NEGATIVE CONTROL: an ACCEPTED offer is charged exactly once, and Puppeteer's
-      card has no Decline.** Use Unnerving Approach and click Push: Investiture down by exactly 1
-      and it STAYS down through the next round change (no sweep refund of a resolved card).
-      Then, with an enemy at 0 focus starting its turn in Black range, Puppeteer's offer card posts
-      with **no Decline button** (its 2 focus + 1 Investiture land on the click, nothing to
-      refund); ignore it across a round change → Investiture unchanged (nothing minted).
+      ⚠️ **2026-09-06, bench run 40 — PARTIAL. The R-17 half PASSES; the last clause FAILS.** Driven
+      on `Bench — Black` in a started combat against a target with two living allies within 10 ft,
+      Investiture 4. The use charged **4 → 3**; the whispered card carried **Decline (refund)**
+      beside both Push buttons; the click restored **3 → 4**, relabelled the card **"Declined — cost
+      refunded"**, disabled **every** button, and left the message flag
+      `offer {itemUuid, round: 4, refund: true}` + `cardResolved`. The same round's SECOND use then
+      fired a Push for real (the decline had not spent the round's use). **But the THIRD use in the
+      same round ALSO fired** instead of refusing — see the new `once`-gate row below, which is the
+      root cause and which this row now waits on.
+- [ ] 🤖 **NEW DEFECT (bench run 40) — an `edha-prompt-pick` `once` budget NEVER bites, because the
+      stamp is written under a DOTTED key.** Root-caused, not inferred. `edhaPromptPickClick`
+      (`register-skills.js` ~L3563/3582) gates on `edhaCoordOPRAllowed(owner, item.uuid, "_pick")`
+      and marks with `edhaCoordOPRMark(owner, item.uuid, "_pick")`. The mark goes through
+      `owner.setFlag("edha-content", "coordRound", m)` with `m[item.uuid] = {_pick: round}` — and
+      Foundry **expands dotted keys**, so the document stores
+      `coordRound.Actor.<actorId>.Item.<itemId>._pick = <round>` while the reader asks for the FLAT
+      key `coordRound["Actor.<actorId>.Item.<itemId>"]`, which is always `undefined` ≠ round.
+      Measured live: after two accepted picks in round 4 the flag read
+      `{"Actor":{"2vSISUi8NZ66KM9B":{"Item":{"Lt4bBgGwLZx7TyiZ":{"_pick":4}}}}}` while
+      `f[item.uuid]?._pick !== round` evaluated **true** (i.e. "allowed"), and a third pick in the
+      same round duly fired. **Blast radius:** every `edha-prompt-pick` rule carrying `once` —
+      Unnerving Approach is the shipped consumer the bench caught it on. The other `edhaCoordOPR*`
+      callers pass dot-free talent names or item **ids** and are unaffected, which is why this hid.
+      **Re-test after the fix:** three Unnerving Approach uses in one round — the third click says
+      *"was already used this round"* and spends nothing; a round change restores one use; and the
+      flag's stored shape is a FLAT key. (Ideas: key on `item.id`, or route the mark/read through a
+      helper that escapes `.`.)
+- [ ] 🤖 **COSMETIC (bench run 40) — Ambush Bite's damage rider prints its flavor label twice.** The
+      fooled-first-bite roll rendered **`1d10 + 3 + (1d6[Ambush Bite])[Ambush Bite] + 0`** — the
+      `edha-damage-rider` bonus formula is wrapped in a flavored term and then flavored again. The
+      math is right (R-50 passed on this very roll); only the formula bar reads wrong. Fix and
+      re-read one fooled Ambush Bite: it should be `1d10 + 3 + 1d6[Ambush Bite]`.
+
+*(**✅ RETIRED on evidence 2026-09-06, bench run 40 — 2bJ-10b and 2bJ-10c**, same deploy, same
+combat. **2bJ-10b (IGNORED):** the use charged 4 → 3; advancing only the TURN (the tracker moved off
+turn 0, round unchanged at 5) refunded **nothing** and left the card live with no `cardResolved`;
+`nextRound()` then marked the card **"Ignored — cost refunded"**, disabled every button and restored
+Investiture to **4**; re-enabling a Push button in the DOM and clicking it was refused with *"Edha:
+that offer was already resolved."* and spent nothing (4 → 4, no push card). **2bJ-10c (the NEG):** an
+ACCEPTED Unnerving Approach charged exactly once (4 → 3) and STAYED at 3 through the next round
+change — no sweep refund of a resolved card. Puppeteer's turn-start offer (fired by driving the
+tracker onto a 0-focus combatant in Black range) posted with **exactly one button, "Take control",
+and no Decline** — its message flag carries `refund: false`, the documented discriminator — and
+ignoring it across a round change left Investiture **3 → 3** and focus **5 → 5**, nothing minted.)*
 
 ---
 
@@ -999,19 +1020,18 @@ is spent on the next test then clears (ruling answered 2026-09-06 → item 52).
       offer the Investiture prompt to add half [Tier][Die] impact; a standalone cast of Volatile
       Strike itself should still self-offer on its own hit (harmless, expected per the ruling).
 
-- [ ] 🤖 **52-1 — Battle Fever spends the stack on the next test (R-27, PR #223, ENGINE-ONLY F5).**
-  On Bench — Red, deal damage three times in one round (three Strikes that hit, or `edha.rally()`
-  ×3 from the console — the console path bumps the same flag). Confirm the 🔥 card reads "+3" and
-  `flags.edha-content.rally.count === 3`. Roll ANY d20 test (a Skill test is fine): its breakdown
-  shows **`3[Rally]`**, a "🔥 Rally — Bench — Red spent +3 on this test" card posts, and the `rally`
-  flag is GONE. Roll a second test: **no** `[Rally]` term, no card. Then bump four times at Red
-  rank 3 → the stack reads 3, the test shows `3[Rally]` (the cap holds on the spend).
-- [ ] 🤖 **52-2 — negative control: an unspent stack still clears at the owner's turn start, and a
-  cancelled dialog does not spend it.** Bump twice, do NOT roll; advance the tracker to the start of
-  Bench — Red's next turn → `rally` flag gone, the next test shows no `[Rally]`. Then bump once,
-  open a Skill-test dialog and CANCEL it → the flag is still `{count: 1}`; the next completed test
-  shows `1[Rally]` and consumes it. (The consume is post-roll on purpose — a cancel must not
-  strand or spend the stack.)
+*(**✅ RETIRED on evidence 2026-09-06, bench run 40 — 52-1 and 52-2** (item 52 / R-27), on the
+hash-verified `0ea0741a…` deploy. ⚠️ **The rally-stack talent on `Bench — Red` is `Feeding Frenzy`,
+not "Battle Fever"** — Red owns both, and only Feeding Frenzy carries the `edha-rally-stack` rule;
+the row's name cost a take. **52-1:** three `edha.rally()` bumps printed *"+1"*, *"+2"*, *"+3"* and
+left `flags.edha-content.rally = {count: 3, resetOn: "round"}`; the next Skill test rolled
+**`1d20 + 4 + 3[Rally]`** with *"🔥 Rally — Bench — Red spent +3 on this test."* and the flag went to
+`null`; the SECOND test rolled a plain `1d20 + 4` with no `[Rally]` and no card; four bumps at Red
+rank 3 capped the stack at **3** and the next test again showed `3[Rally]` — the cap holds on the
+spend. **52-2:** two bumps left unspent, then the tracker was driven onto the start of Bench — Red's
+own turn → flag **gone**, next test plain. Then one bump, a Skill-test dialog **cancelled** via its
+close button → flag still **`{count: 1}`** (neither stranded nor spent), and the next completed test
+rolled **`1d20 + 4 + 1[Rally]`** and consumed it.)*
 
 *(**Flashpoint** — RETIRED on evidence 2026-09-05, bench run 26. One Flame Surge detonation caught
 **2** enemies (Bench Target — Adjacent A and B, 12 energy each after their Athletics saves) and fired the
@@ -1213,17 +1233,21 @@ the ally, on both casts. That is the still-open R-6, not this row.
 
 ### Fix pass 7b re-tests (item 48, 2026-09-06 — ENGINE-ONLY, F5; no rebuild, no ⟳ Sync)
 
-- [ ] 🤖 **R-6 — Fault Line's dangerous terrain spares the CASTER, and only the caster.** Re-run the
-      bench-run-33 stage exactly (caster at the line's origin, an ally 15 ft along it, a foe at
-      30 ft, a second ally off the centreline). Expect: the caster takes the burst-only HP loss it
-      already took and **no** "🔥 … takes N energy from dangerous terrain" line naming it — run 33's
-      43 → 35 becomes 43 → 43 minus nothing, since the caster is never in its own line either.
-      **POS (load-bearing — this ruling spares ONE actor, not a side):** the ALLY in the rectangle
-      still takes its terrain tick on top of the burst; so does the foe. **NEG:** the rectangle is
-      still drawn from the caster's own square (the footprint was deliberately NOT moved — see the
-      delta), so the Drawing looks identical to run 33's; only the tick changed. **NEG 2:** any
-      OTHER dangerous terrain — a Set Charge circle, Walking Ruin's trail — still catches its own
-      owner, because the exemption is a per-Region dial and only Fault Line fills it in.
+*(**✅ RETIRED on evidence 2026-09-06, bench run 40 — R-6, Fault Line spares the caster and only the
+caster.** Run-33's stage rebuilt in a corner of the Playtest Map with **no** campaign token within
+reach: caster `Bench — Destruction` at the line's origin, `Bench Ally — One` 15 ft along it,
+`Bench Target — Undefended` at 30 ft, `Bench Ally — Two` off the centreline. **The caster took
+nothing at all: HP 42 → 42, and no "🔥 Bench — Destruction takes N energy from dangerous terrain"
+line exists in the log** (run 33's 43 → 35). **POS (load-bearing):** the ally IN the rectangle took
+its terrain tick **on top of** the burst — 41 → 19 (8 burst + *"🔥 Bench Ally — One takes 14 energy
+from dangerous terrain"*) — and so did the foe, 30 → 12 (8 burst + 10 terrain). The off-centreline
+ally took **nothing** (41 → 41). **NEG:** the rectangle is still drawn from the caster's own square —
+the burst card read *"2 in the line take 8 energy"* and the `Bench — Destruction — Dangerous Terrain`
+Region was created as before. **NEG 2, measured rather than reasoned:** the exemption is a per-Region
+dial — Fault Line's hazard behavior carries `exemptActorUuid: Actor.S0L3QBJZLeOwkaM0` (the caster),
+while **Walking Ruin**'s trail Region, created minutes later by the same actor, carries
+`exemptActorUuid: ""` and **did** catch its owner: *"🔥 Bench — Destruction takes 4 energy from
+dangerous terrain"*, HP 42 → 38.)*
 
 
 ---
@@ -1322,21 +1346,23 @@ now **`EDHA_RULINGS.md` R-35**.
 **ANSWERED 2026-09-06, R-35 (a): YES** — folded into **item 54** with R-73(b), ENGINE-ONLY, F5.
 **SHIPPED 2026-09-06, PR #224 (ENGINE-ONLY, F5; bench-pending)** — the Chaos residual is a test row again:
 
-- [ ] 🤖 **R-35 (item 54) — the dispel card offers "Dispel Omen" and it clears marker + ledger row.**
-      ENGINE-ONLY (F5). Spreading Omen a bench target from a Chaos PC (ledger reads "(1/2)"), then
-      target that bearer with Unweaving / Unravel Everything's dispel card. Expect a **Dispel Omen**
-      button beside the effect buttons; the GM click removes the `omen` icon, clears
-      `flags.edha-content.markedBy.omen`, and the Chaos PC's `lists.omens` no longer holds the
-      bearer — the next place reads "(1/2)" again, not "(2/2)". Card: "Omen is dispelled from <name>
-      — 1 ledger entry cleared". **NEG:** an unmarked target's card shows no Dispel Omen button.
-- [ ] 🤖 **R-73 (b) (item 54) — Unravel Everything / Unweaving DISABLES a target's Hardy; the talent
-      copy survives intact.** ENGINE-ONLY (F5). Target a PC that owns **Hardy** (its AE is
-      `transfer: true` on the talent). Expect the dispel card to list **Hardy (Hardy — suppress)**;
-      the GM click posts "Hardy is suppressed on <name> — Hardy's copy is intact", the PC's max-HP
-      bonus drops, and on the Hardy talent's **Effects tab the effect is still present, toggled
-      disabled** — re-enabling it there restores the bonus. **NEG:** no delete-shaped button exists
-      for Hardy (only actor-level effects — e.g. a hand-added AE on the actor — are offered as a
-      plain delete, and only those disappear from the sheet after the click).
+*(**✅ RETIRED on evidence 2026-09-06, bench run 40 — R-35 and R-73 (b)** (item 54), on the
+hash-verified `0ea0741a…` deploy, driven on `Bench — Chaos`. **R-35:** Spreading Omen marked
+`Bench Target — Floater` (its near-victim rule also took `Bench Target — Isolated`, filling the
+`@tier` = 2 ledger); **Unweaving** then landed on the bearer and its dispel card carried a
+**`Dispel Omen`** button (class `edha-dispel-btn`) beside the effect buttons. The GM click posted
+*"🧵 Unweaving : Omen is dispelled from Bench Target — Floater — 1 ledger entry cleared."*, removed the
+`omen` status, set `flags.edha-content.markedBy.omen` to **null**, and dropped the bearer out of the
+Chaos PC's `lists.omens` (2 entries → 1). **NEG:** Unweaving on an unmarked `Bench Target — Adjacent
+A` printed *"No active effects found … — narrate the unraveling."* with **zero** buttons.
+**R-73 (b):** against `Bench — Black` (which owns **Hardy**, a `transfer: true` talent AE) the card
+listed **`Hardy — Max HP (Hardy — suppress)`** with `data-edha-mode="disable"`; the GM click posted
+*"Hardy — Max HP is suppressed on Bench — Black — Hardy's copy is intact; re-enable it on that item's
+Effects tab when the dispel ends."*, dropped max HP **49 → 42**, and left the effect **on the Hardy
+talent, `disabled: true`** — re-enabling it there restored **42 → 49**. **NEG, measured both ways:**
+no delete-shaped button exists for Hardy or for Composed (both `edhaMode: "disable"`), while a
+hand-added **actor-level** AE staged on the same PC appeared on the next card as a plain
+`edhaMode: "delete"` entry.)*
 
 
 ---
@@ -1424,29 +1450,39 @@ in the 07-27c delta.
 
 ### Fix pass 7b re-tests (item 48, 2026-09-06 — ENGINE-ONLY, F5; no rebuild, no ⟳ Sync)
 
-- [ ] 🤖 **R-13 — a snare laid UNDER a creature arms, and springs on that creature's next move.**
-      Place a snare directly under an ENEMY token. Expect **no spring**: no damage card, no
-      Restrained, the ledger entry and the green template both still there. Then **move that
-      creature** — the snare springs then, with its normal card, roll and Restrained. **POS (bench
-      run 7's own control, re-run so the fix is not mistaken for a dead trigger):** a snare on an
-      EMPTY square that an enemy then walks into or through springs on entry exactly as before.
-      **NEG:** placement ADJACENT still does not spring (it never did). Watch for a double-fire on
-      the move leg — the in-flight guard is what must still be carrying that.
-- [ ] 🤖 **R-37(1) — a marker placed AT the cap names what fizzled.** With your Ordained cap full,
-      place another square. The card must read "(N/N)" **and** "The oldest — *&lt;name&gt;* — fizzles
-      to make room", naming the evicted square's own talent. **NEG:** placing BELOW the cap says
-      nothing about fizzling. **POS 2:** the same clause appears on a snare placement at the snare
-      cap.
-- [ ] 🤖 **R-37(2) — Inevitable Snare's card reads as one sentence about one snare.** Set a snare,
-      then use Inevitable Snare. The card must read **"Snare #1 is now inevitable."** — not "the
-      snares on Snare #1 is inevitable". **NEG (the branch that must NOT change):** Sealed Edict on
-      a creature still reads *"the Edict on **&lt;creature&gt;** ("*prohibition*") is now sealed."*
-- [ ] 🤖 **R-37(3) — the ordained turn-start card credits the Temp HP to Bulwark Ground.** With
-      Bulwark Ground owned and an ally starting its turn on your Ordained square, the card must read
-      "… +1 all defenses, **Temp HP N (Bulwark Ground)**, and may take the Aid action …" — the
-      headline stays the ordained-placing talent. **POS:** the ally's Temp HP tooltip on the sheet
-      names the same talent (that half shipped with R-36 in fix pass 7a). **NEG:** without Bulwark
-      Ground the card has no Temp HP clause at all.
+- [ ] 🤖 **R-37(2) — Inevitable Snare's card reads as one sentence about one snare — NEG half only.**
+      ✅ **Main clause RETIRED 2026-09-06, bench run 40:** with snares on the ledger, Inevitable Snare
+      posted *"📋 Inevitable Snare : Snare #2 is now inevitable."* — one sentence about one snare, not
+      "the snares on Snare #1 is inevitable". (#2 rather than #1 because the run was at the `@tier`
+      cap and the oldest entry had been evicted; the number is the ledger index.) **What is left is
+      the NEG (the branch that must NOT change):** Sealed Edict on a creature still reads *"the Edict
+      on **&lt;creature&gt;** ("*prohibition*") is now sealed."* — not driven this run (it needs an
+      Order Edict placed through the prohibition picker first).
+
+*(**✅ RETIRED on evidence 2026-09-06, bench run 40 — R-13, R-37(1) and R-37(3)**, on the
+hash-verified `0ea0741a…` deploy, driven on `Bench — Fate` (tier 2, so both caps are 2).
+**R-13:** a snare laid directly UNDER a 1×1 enemy did **not** spring — HP 20 → 20, no Restrained,
+the ledger entry and the green template both still there — and the trigger Region was created with
+`armedOver: ["…Token.QKjRbqHoOzuvjoPD"]`, the grandfathered occupant. That creature's next **move**
+(a real `TokenDocument#move()` path, not a teleport) sprang it: *"🪢 Snare springs on … : 17 keen +
+**Restrained**"*, `2d8 + 2`, HP 20 → 3, exactly **one** card, and the Region + template cleaned
+themselves up. **POS:** a snare on an EMPTY square that the same enemy then walked into sprang on
+entry, again exactly once. **NEG:** placing that snare ADJACENT to the creature sprang nothing.
+⚠️ **Two setup traps this row hides:** the enemy must be **1×1** (a 2×2 Stillback's centre is not in
+the 5 ft square, so `armedOver` comes back empty and the Region never contains it), and both the
+snare owner and the victim must be **in the combat** — the snare's watch is behind R-4's
+out-of-combat gate.
+**R-37(1):** at the Ordained cap the third placement read *"✦ Ordained Ground set (2/2). **The
+oldest — Ordained Ground — fizzles to make room.**"* and the ledger evicted the oldest; **NEG:** the
+(1/2) and (2/2) fills said nothing about fizzling. **POS 2:** the same clause appeared at the snare
+cap — *"🪢 Snare set (2/2). The oldest — Snare — fizzles to make room."*
+**R-37(3):** with Bulwark Ground owned, an ally starting its turn on the Ordained square got *"✦
+Ordained Ground (Bench — Fate): Bench — Order begins its turn ordained — +1 all defenses, **Temp HP 2
+(Bulwark Ground)**, and may take the Aid action at up to 30 ft"* — headline still the
+ordained-placing talent — and the ally's `flags.edha-content.tempHp` read
+`{value: 2, source: "Bulwark Ground"}`, the same talent the sheet tooltip shows. **NEG:** with
+Bulwark Ground deleted off the Fate PC and the turn re-started, the card had **no Temp HP clause at
+all**; the talent was restored afterwards.)*
 
 ---
 
@@ -1977,15 +2013,18 @@ Bench — White spent Investiture — if that was VOLUNTARY … it just violated
 Investiture’"*. The watcher is alive and the fix narrowed it precisely rather than silencing it.
 **The row is NARROWED to POS 3 below**, which needs a second client.)*
 
-- [ ] 🤖 **R-72 POS 3 (narrowed 2026-09-06, bench run 39) — the `set-resource` relay half, from a
-      client that does NOT own the victim.** The two owner-side halves are retired above; this one is
-      **unrunnable from a single GM client, and the blocker is named**: `game.socket.emit` does not
-      echo to its sender, and the relay receiver is `edhaDefBuffGmGate()`-gated to the **primary** GM
-      — which is `Bench` itself — so a Bench-side emit reaches only Ben's non-primary `Gamemaster`,
-      which returns immediately. It needs **`PlayerBench`** (a non-GM) to fire a focus drain at a
-      creature it does not own, with a `userId`-recording `updateActor` observer on Bench reading the
-      relayed write's **`options`**: it must carry `edhaBookkeepingTag`, never `edhaSpendTag`, so the
-      direct and relayed halves classify identically. Row stays 🤖.
+*(**✅ RETIRED on evidence 2026-09-06, bench run 40 — R-72 POS 3, the `set-resource` relay half**,
+driven exactly as run 39 specified, with `PlayerBench` logged in as a second client.
+`Bench — Order` (owned by PlayerBench) was given a cloned **Shatter Focus**
+(`edha-focus`, `op: drain`, `resource: foc`, `target: victim`) and used it on
+`Bench Target — Adjacent A`, an actor PlayerBench does **not** own (`game.user.isGM === false`,
+`actor.isOwner === false`). The victim's focus went **4 → 3** for real, and a `userId`-recording
+`updateActor` observer on the Bench client caught the write applied by the primary GM **`Bench`**
+with `options.edha = {bookkeeping: true, source: "set-resource relay (involuntary drain)"}` — the
+**bookkeeping** tag, with **no** spend tag anywhere on the options. Control from the same observer:
+a plain GM-side `actor.update()` moments earlier carried **no `edha` options at all**, so the tag is
+the relay's, not the pipeline's. The direct and relayed halves therefore classify identically, which
+is what the row existed to prove.)*
 *(**✅ RETIRED on evidence 2026-09-06, bench run 39 — R-36: Temp HP keeps the higher grant's NAME as
 well as its number**, on the same deploy, driven through the REAL keeps-higher writer
 (`edhaGrantTempHpCross`, reached by **Bear Witness**'s `target: list-members` round-start grant — a
@@ -2465,18 +2504,18 @@ mod-0 fixture); the ledger key is dot-free and one-per-token; the `whenTargetFoo
 once-per-scene guard holds; and one 60-damage application posted BOTH `hp-below` cards under two
 distinct keys `…hp-below:0_5:0:1` and `…hp-below:0_05:0:1`. See that run's handoff delta.)*
 
-- [ ] 🤖 **R-50 (item 53) — Stillback's Ambush Bite benefits on the FIRST bite.** ENGINE-ONLY (F5).
-      Fresh scene, a Stillback token, a PC target with a real Perception mod. Target the PC, use
-      **Ambush Bite** once. Expect the belief card (`1d20 + <mod>` vs the Stillback's Cognitive
-      defense) **and, if the target is taken in, `1d10 + 3 + (1d6)[Ambush Bite]` on that SAME
-      first damage roll** — not on the second. If the first test happens to pass (sees through),
-      the damage is `1d10 + 3` with no rider and that is correct; re-run on a fresh scene until a
-      fail lands. **NEG (the control, same take):** use Ambush Bite on the same target again —
-      **no second belief card, no second `ambushBelief` ledger write**, and the rider stays exactly
-      as the first bite decided (present after a fail, absent after a pass). **NEG 2:** the
-      Mistheron's Spearing Beak vs a placed-copy target still reads `phantomBelief` and posts no
-      ambush card. Pinned headlessly in `tests/ambush-first-strike.test.js`; this row is the live
-      confirmation that the system's damage-formula assembly really does run after the use hook.
+*(**✅ RETIRED on evidence 2026-09-06, bench run 40 — R-50 (item 53), Ambush Bite benefits on the
+FIRST bite.** A fresh `B40 Stillback` imported from the deployed pack. **POS:** against
+`Bench — Order` the belief card fired on the very first bite — *"🌫️ The Causeway Seeming —
+Bench — Order: Perception 6 vs 12 → taken in"* — and that SAME first damage roll carried the rider:
+**`1d10 + 3 + (1d6[Ambush Bite])[Ambush Bite] + 0`**. The pass case was measured too and is correct:
+`Bench — Black` (Perception 19 vs 12 → sees through) took `1d10 + 3 + 0`, no rider.
+**NEG (same take):** a second Ambush Bite on `Bench — Black` posted **no second belief card**, left
+the `ambushBelief` ledger **byte-identical**, and rolled `1d10 + 3 + 0` again — the rider stayed
+exactly as the first bite decided. **NEG 2:** a fresh `B40 Mistheron`'s **Spearing Beak** posted no
+ambush card and wrote **no `ambushBelief`** at all, while its placed copy carried the separate
+`phantomBelief` ledger (`{fooled: […], saw: […]}`). ⚠️ Cosmetic defect found in passing — the rider's
+flavor label prints twice — filed as its own 🤖 row in the Black block.)*
 
 ---
 
@@ -2728,14 +2767,15 @@ carry **Shortbow + Knife** (and the packed Shortbow reads `attack.type: "ranged"
 
 ### Fix pass 7b re-tests (item 48, 2026-09-06 — ENGINE-ONLY, F5; no rebuild, no ⟳ Sync)
 
-- [ ] 🤖 **R-55 — the sheet's three budget chips all read SPENT / total.** Open a correctly built
-      L1 PC and read the header strip: **Talents 2 / 4**, **Attr pts 12 / 12**, **Skill rnks 5 / 5**.
-      The two that used to read `0 / 12` and `0 / 5` are the fix. **POS (the case the old convention
-      hid behind):** a PC with only **1** talent taken must read **1 / 4**, not 3 / 4 — 2-of-4 reads
-      the same under both conventions, which is exactly why the strip carried two of them unnoticed.
-      **NEG 1:** the chip COLOURS are unchanged and still describe what is LEFT — a fully spent chip
-      is still the "full" colour, an overspent one still the "over" colour. **NEG 2:** the skill
-      denominator is still the Edha budget **5**, never the system table's 4 and never `-1/4`.
+*(**✅ RETIRED on evidence 2026-09-06, bench run 40 — R-55, the three budget chips read SPENT /
+total.** The built L1 PC `New Character` (3 talents taken) read **Talents 3 / 4**, **Attr pts
+12 / 12**, **Skill rnks 5 / 5** — the two that used to read `0 / 12` and `0 / 5` now read their full
+spend. **POS:** a scratch L1 PC carrying exactly **one** talent read **Talents 1 / 4** — not 3 / 4 —
+and, being unbuilt, **Attr pts 0 / 12** and **Skill rnks 0 / 5**, which is the same convention seen
+from the other end: the number moves with what is SPENT. **NEG 1:** the colours still describe what
+is LEFT — the two fully-spent rows on `New Character` carry `edha-budget-full`, the Talents row (one
+left) does not, and the scratch PC's untouched rows carry no state class. **NEG 2:** the skill
+denominator is the Edha budget **5** on both actors, never the system table's 4 and never `-1/4`.)*
 
 ---
 
@@ -3101,14 +3141,17 @@ not a schema error.)*
 
 ### Fix pass 7b re-tests (item 48, 2026-09-06 — ENGINE-ONLY, F5; no rebuild, no ⟳ Sync)
 
-- [ ] 🤖 **R-78 — `edha-aoe-template` is gone from the Events-tab dropdown.** Open any talent's
-      Events tab, add a rule, and read the handler list: **`Edha: AoE Template` is no longer
-      offered**. **POS (the control that matters — retiring the wrong one would look identical from
-      the dropdown alone):** `Edha: Point Burst` / `edha-burst` is still there, and a shipped burst
-      talent (Flame Surge, Sudden Growth, Mending Aura) still places and detonates normally.
-      **NEG:** the console `edha.aoe()` alias is gone too (`typeof edha.aoe === "undefined"`), and
-      the module still loads clean — that alias would have been a load-time ReferenceError if the
-      function had been removed without it.
+*(**✅ RETIRED on evidence 2026-09-06, bench run 40 — R-78, `edha-aoe-template` is gone from the
+Events-tab dropdown.** Flame Surge's Events tab, **Add rule** clicked for real: the handler `<select>`
+offered **100** options and `edha-aoe-template` was **not** among them; no option's label or value
+matched `/aoe|template/` at all. The scratch rule was deleted again and the talent's own rule
+restored. **POS:** `edha-burst` **is** offered, labelled *"Edha: Point-Targeted Burst"*, and
+`CONFIG.COSMERE.items.events.handlers` holds 99 types with `edha-burst` present and
+`edha-aoe-template` absent — and the shipped burst talent still works end to end: a real canvas click
+placed **Flame Surge**'s 10 ft template, the Detonate button caught the target, rolled
+`2d8` + red + Kindle → **17 energy**, auto-rolled its Athletics save (12 vs 19 → full) and cleaned the
+template up. **NEG:** `typeof edha.aoe === "undefined"`, and the module loaded clean —
+`globalThis.edha` present with 31 API keys, no load-time error.)*
 *(**Seeming recast replaces the token · Seeming copy hover-name — BOTH RETIRED on evidence
 2026-07-28j, bench run 22.** First cast created **exactly one** copy token (`Mistheron (3)`) and ran the
 belief sweep — *"6 onlooker(s) tested — 3 taken in, 3 see through it"*. Recasting while that copy still
@@ -3418,30 +3461,47 @@ item for real. Pure helpers and the two-relay race are pinned headless (`tests/l
 these rows are the live half. Bench as the `Bench` GM plus a player client (a second browser tab
 logged in as a player user owning a PC token) — rows 3–5 need the player side.
 
-- [ ] 🤖 **Chest token** — as GM run `edha.createLootCache("Bench Chest")` in the console: a "Bench
-      Chest" actor appears in a **Loot Caches** folder with the chest icon; drag it to the Playtest Map —
-      the token is LINKED, neutral, name on hover, and renders the chest (no broken-image square).
-      Drag two gear items (e.g. a Shortsword and Rations ×3) onto its sheet to stock it.
-- [ ] 🤖 **Contents card** — as the player, move an owned token adjacent to the chest and
-      double-click the chest: a whispered card (player + GM) lists the two items as Take buttons,
-      "Rations ×3" carrying its quantity; the cache's sheet does NOT open.
-- [ ] 🤖 **Take moves the item** — click Take on the Shortsword: it leaves the cache's sheet, appears
-      on the player's actor unequipped (provenance flags gone — a later ⟳ Sync Adversaries must not
-      delete it), and a public "X takes Shortsword from Bench Chest" card posts.
-- [ ] 🤖 **Double-loot guard, two clients** — with the same contents card open on two player clients
-      (or player + GM), click Take on the same item from both within a second: exactly ONE actor
-      receives it, the other side gets nothing and the GM sees a "already claimed" whisper; the
-      item exists once in the world.
-- [ ] 🤖 **Body search within / out of 5 ft** — reduce a placed Corvaine Raider to 0 HP. Player token
-      10 ft away, double-click the body: a "move within 5 ft" warning and no card. Move adjacent,
-      double-click: the "Searching Corvaine Raider" card lists the Shortsword / Soldier's Crossbow;
-      Take moves one onto the player and the body loses it.
-- [ ] 🤖 **Sheet never opens** — as the player, double-click a LIVE adversary (not a source) and the
-      dead one: neither sheet opens (Foundry's own permission gate for the live one, the intercept
-      for the body); as GM, double-clicking the chest still opens its sheet (that is how it is stocked).
-- [ ] 🤖 **Natural weapon not listed** — reduce a Cinderhound to 0 HP and search it adjacent: Bite
-      (`alwaysEquipped`) is NOT on the card (an info toast "nothing worth taking" if it carried no gear);
-      stocking Bite-like alwaysEquipped weapons on a CACHE does list them.
+- [ ] 🤖 **Natural weapon not listed — BODY half BLOCKED-ON-DEPLOY, cache half retired.**
+      ⛔ **The load-bearing half cannot run until Ben rebuilds the adversaries pack** (item 34a,
+      PR #220): in the DEPLOYED pack the Cinderhound's **Bite is still `type: "action"`**, so
+      `edhaLootableItems` excludes it for not being gear at all, not for being `alwaysEquipped` —
+      the refusal under test never gets exercised. Re-run this half after the ⟳ Sync.
+      ✅ **What DID run, 2026-09-06 bench run 40:** a defeated `B40 Cinderhound` searched from
+      adjacent produced the info toast *"Edha: Cinderhound (4) — nothing worth taking."* and no card;
+      and stocking an **`alwaysEquipped: true`** weapon on the **cache** listed it normally
+      (*"🧰 Bench Chest — take: Food (ration, 1 day) ×3  ·  B40 Natural Fang"*), so the exclusion is
+      body-only exactly as designed.
+
+*(**✅ RETIRED on evidence 2026-09-06, bench run 40 — the other SIX 34b rows**, driven on the
+hash-verified `0ea0741a…` deploy with `PlayerBench` logged in as a real second client.
+**Chest token:** `edha.createLootCache("Bench Chest")` minted an `adversary`-type actor in a
+**Loot Caches** folder, flagged `edha-content.lootCache = true`, `ownership.default = 0`, prototype
+token `actorLink: true`, `disposition: 0` (neutral), `displayName: 30` (hover) on
+`icons/svg/chest.svg` — and that asset really resolves on this install (`GET /icons/svg/chest.svg`
+→ **200 `image/svg+xml`**, so no broken-image square). Stocked with Rations ×3 and a Sidesword.
+**Contents card:** with an owned token adjacent, the player's double-click posted a card whispered to
+**PlayerBench + Bench + Gamemaster** listing both items as `edha-loot-btn` Take buttons, *"Food
+(ration, 1 day) ×3"* carrying its quantity — and **no sheet opened**. Out of reach (10 ft) the same
+double-click gave *"Edha: move within 5 ft to open Bench Chest."* and no card.
+**Take moves the item:** the Sidesword left the cache, landed on `Bench — Order` **unequipped** with
+`flags` **`{}`** (provenance shed, so a later ⟳ Sync will not delete it), and a **public** card posted
+*"🎒 Bench — Order takes Sidesword from Bench Chest."*
+**Double-loot guard, two clients:** both clients were armed to click Take on the SAME item at a shared
+wall-clock instant and fired **7 ms apart** (GM at T, player at T+7). Exactly **one** actor received
+it (`Bench — Black`, the GM's controlled token; `Bench — Order` gained nothing), the loser's relay got
+the GM whisper *"🎒 Loot: that item was already claimed from its source (two takes raced). Nothing
+moved."*, one public take card posted, and the world's Sidesword count was **17 before and 17 after**.
+**Body search within / out of 5 ft:** a defeated `B40 Corvaine Raider` at 10 ft → *"Edha: move within
+5 ft to search Corvaine Raider (1)."*, no card; adjacent → *"🎒 Searching Corvaine Raider (1) — take:
+Shortsword"* whispered to player + GMs; Take moved it onto `Bench — Order` and the body **(the
+unlinked token's own actor, which is the real source — the world prototype keeps its copy, as it
+should)** lost it. Only the Shortsword was offered because the Soldier's Crossbow is still `action`-
+typed in the deployed pack — the same 34a gap as the row above, not a defect.
+**Sheet never opens:** as the player, double-clicking the **live** Wrenchmaster opened nothing and
+raised Foundry's own gate (*"You do not have sufficient permission to view the sheet for this
+Actor."*), and double-clicking the **dead** Raider opened nothing either (the intercept returned
+first); as **GM**, double-clicking the chest still opened *"Adversary: Bench Chest"*, which is how it
+is stocked.)*
 ## 34c — the later bestiary (item 65, 2026-09-06, REBUILD + ⟳ Sync) + the R-81 charge family (item 67)
 
 The 39 statblocks statted after 07-18 (Reedling → The Cull-Alpha) carried 44 attack-rolling items
