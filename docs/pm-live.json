@@ -1,50 +1,37 @@
 {
   "pm": {
     "status": "awake",
-    "note": "Fable PM (Ben-started, 16:56 ET). PM-R14: caps lifted, Fable workers on the larger items. Twenty-nine PRs merged tonight; the latest is item 24 (the engine's handler registry is now two tables and one loop, snapshot-pinned; merged 21:24, 3.5M). Now running: bench run 40 (since 20:17), item 4 (the engine split into per-section sources, assembled byte-for-byte - PM-R15 keeps the deployed file tracked) and item 19a (the handoff reference rewrite; its first worker ended its turn waiting on its own subagents, so a fresh one started 21:26 from the mined reports). 20:16: nine engine-only merges went LIVE (F5 your Gamemaster client); 69, 55, 56, 68 and 24 ride the deploy. When bench 40 reports I will push-notify you ONCE for deploy-to-foundry.bat (Foundry closed) - it rebuilds the packs for 34a, 57, 58, 65+67, 59, 63, 55, 56 AND copies the engine - then bench 41 drives all of it. New ruling R-83 for you (three heal writers still bypass the No-Healing gate; default: gate them). Open rulings with defaults applied: R-18, R-48, R-80, R-81, R-82, PM-R15.",
-    "waitingOn": "R-83 (needs your answer - it moves HP); R-18, R-48, R-80, R-81, R-82, PM-R15 (defaults apply if silent); keep Foundry open for bench run 40; one deploy-to-foundry.bat run when I push-notify",
+    "note": "Fable PM (Ben-started, 16:56 ET). PM-R14: caps lifted, Fable workers on the larger items. Thirty-one PRs merged tonight - the latest: item 24 (the handler registry as two tables, 21:24), item 4 (the engine split into 55 per-section sources, assembled byte-for-byte; PM-R15 keeps the deployed file tracked; 21:38) and bench run 40 (29 rows retired on evidence, one root-caused defect, two rulings renumbered R-84 / R-85). Running: fix pass 9 (bench 40's defects - the prompt-pick once budget, Ambush Bite's double flavor, R-85 and R-84 as defaults) and item 19a (the handoff reference rewrite, second dispatch). 21:33: you were push-notified ONCE for deploy-to-foundry.bat (Foundry closed) - it rebuilds the packs for 34a, 57, 58, 65+67, 59, 63, 55, 56 AND copies the engine (69, 68, 24, and fix pass 9 once merged); bench 41 drives all of it afterwards. R-83 still needs your answer (item 70). Defaults applied, vetoable: R-18, R-48, R-80, R-81, R-82, R-84, R-85, PM-R15.",
+    "waitingOn": "ONE deploy-to-foundry.bat run (Foundry closed), then relaunch and tell me; R-83 (needs your answer - it moves HP); R-18, R-48, R-80, R-81, R-82, R-84, R-85, PM-R15 (defaults apply if silent)",
     "nextWakeAt": null,
     "session": "2026-09-06 16:56 ET — Fable PM (hand-started)"
   },
   "workers": [
-    {
-      "item": "5",
-      "title": "Bench run 40 — fix pass 7b + the evening's engine-only merges on the pushed engine 0ea0741a",
-      "model": "opus",
-      "size": "L",
-      "lane": "B",
-      "branch": "pm/bench-run-40",
-      "startedAt": "2026-09-07T00:17:00Z",
-      "agent": "Bench run 40",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; engine pushed 20:16 (live = main #233); REBUILD rows stay blocked-on-deploy"
-    },
-    {
-      "item": "4",
-      "title": "Engine split — per-section sources under module-src/scripts/engine/, assembled byte-for-byte into the tracked register-skills.js (PM-R15), a --check gate",
-      "model": "fable",
-      "size": "L",
-      "lane": "R",
-      "branch": "pm/4-engine-split",
-      "startedAt": "2026-09-07T01:26:00Z",
-      "agent": "Work item 4",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; fable-worker; TOOLING-only (deployed file unchanged)"
-    },
     {
       "item": "19a",
       "title": "Handoff reference rewrite — §1–§10 true to today, ≤ 800 lines with a TOC (19b moves the deltas); second dispatch from the three mined delta reports",
       "model": "fable",
       "size": "L",
       "lane": "R",
-      "branch": "pm/19a-handoff-reference",
+      "branch": "pm/19a-handoff-reference-2",
       "startedAt": "2026-09-07T01:26:00Z",
       "agent": "Work item 19a (second dispatch)",
       "phase": "working",
       "pr": null,
       "note": "worktree; fable-worker; DOCS-ONLY; first attempt 20:54–20:55 ended its turn waiting on its subagents (1.1M sunk)"
+    },
+    {
+      "item": "72",
+      "title": "Fix pass 9 — bench run 40's defects: the prompt-pick once budget (dotted flag key), Ambush Bite's double flavor, R-85 (expiry falls back to the bearer's combat) and R-84 (refund an offer that cannot be made) as defaults",
+      "model": "opus",
+      "size": "M",
+      "lane": "B",
+      "branch": "pm/fix-pass-9",
+      "startedAt": "2026-09-07T01:35:00Z",
+      "agent": "Fix pass 9",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; test-pass-fixes; ENGINE-ONLY (F5); ports into the split sources (item 4 landed 21:38)"
     }
   ],
   "usage": null
