@@ -71,6 +71,32 @@ For Ben list, the Inbox composer, Run log, the full Dashboard) moved under a col
 - **Found, not R-80:** the item's own brief names "today R-18, R-48, R-80" as the open set; R-80
   does not exist anywhere in the repo (`EDHA_RULINGS.md`, `docs/PM_BOARD.md`, a full-repo grep) —
   only R-18 and R-48 are actually open today. Flagged for the PM rather than invented.
+## 2026-09-06 — Item 69: `system.damage.formula` folds to plain dice at ROLL time, R-71's runtime half (**ENGINE-ONLY, F5**)
+
+Item 59 built R-71 (a) — fold `system.damage.formula` at BUILD time — and proved it a no-op on every
+current formula: all 51 are rank/tier-scaled (`(@tier)d(2 * @skills.blue.rank + 2)`) and cannot
+resolve without an actor. Ben's actual ask — Verdict's SYSTEM-rolled card reads `2d8 + 5` like its
+engine-rolled twin — needs the fold with the roller in hand. This is that half.
+
+- **Where:** inside `edhaWrapRollDamage` (the engine's ONE wrapper over `CosmereItem#rollDamage`,
+  iron rule 2a — no second wrapper). First thing it does now: take the base
+  (`options.overrideFormula ?? system.damage.formula`), `Roll.replaceFormulaData(…, actor.getRollData(),
+  { missing: "0" })`, `edhaFoldDieMath` it, and write the result to `options.overrideFormula` **only
+  if it changed** — so a formula that is already plain leaves `options` byte-identical. The next-test
+  riders (items 49/66) then join onto the FOLDED base exactly as before: `2d8 + 5 + 1d6`,
+  `2d8 + 5 - 1d6[Probability Net]`. Generic — reads the document field, never a name; the
+  name-keyed allowlist is untouched.
+- **Proven (mutation, `tests/runtime-formula-fold.test.js`, 9 pins):** tier 2 / rank 3 → `2d8 + 5`;
+  a different actor → `3d4 + 2`; plain `2d6 + 1` → identical, `options` still `{}`; no roll data →
+  raw formula untouched; riders join onto the folded base; item 66's plain-base strings unchanged;
+  source scan — the wrapper calls `edhaFoldDieMath` exactly once and there is one wrapper. Reverting
+  the `options =` line fails 4 pins; dropping the fold call fails 5 (the scan included).
+- **Not changed:** the build-time fold (item 59) stays as the guard for any future flat formula;
+  `edhaSovStepOverride` still runs after the fold, so a die-stepped roller now steps FOLDED dice
+  (same ladder, plainer input). Graze-clone behaviour is item 56's neighbourhood and was not touched.
+- **🤖 for the bench:** the item-59 Verdict row under `# BENCH — Order` is now THIS item's re-test —
+  after an F5 (no rebuild), the system's own "Roll Damage" card must read `2d8 + 5`, not the
+  parenthetical.
 
 ## 2026-09-06 — Item 59: `system.damage.formula` folds to plain dice at BUILD time, R-71 (**TOOLING + DATA → pack REBUILD, Ben only**)
 
