@@ -32,7 +32,7 @@
       "phase": "working",
       "pr": null,
       "note": "worktree; test-pass-fixes; ENGINE-ONLY"
-    },
+    }
   ],
   "usage": null
 }
