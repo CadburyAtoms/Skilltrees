@@ -420,6 +420,28 @@ function pathEvents(tree) {
   return ev;
 }
 
+// Item 64 guard: no document reaches a pack carrying an `edha-*` handler type the engine does not
+// register (the engine's EDHA_HANDLER_TYPES table, evaluated through scripts/handler-schemas.js —
+// the same record lint-refs pass 9 uses; item 24). Both writers call this, so it covers every generator AND every authored overlay; a
+// generated rule never appears in data/, which is why pass 9 alone could not catch the retired
+// `edha-aoe-template` generator (item 64).
+const { checkHandlerTypes, formatFindings } = require("./lib/handler-type-guard.js");
+let REGISTERED_HANDLER_TYPES = null;
+function assertRegisteredHandlerTypes(where, docs) {
+  if (!REGISTERED_HANDLER_TYPES) {
+    const { parseHandlerSchemas } = require("./handler-schemas.js");
+    const enginePath = require("path").join(__dirname, "..", "module-src", "scripts", "register-skills.js");
+    REGISTERED_HANDLER_TYPES = parseHandlerSchemas(fs.readFileSync(enginePath, "utf8"));
+  }
+  const { findings } = checkHandlerTypes(docs, REGISTERED_HANDLER_TYPES);
+  if (findings.length) throw new Error(formatFindings(where, findings).join("\n"));
+}
+// Hoisted ABOVE main (TODO_REPO_HYGIENE #74): the IIFE below runs synchronously until its first
+// `await`, and a single-scope build (`items`, `adversaries`) reaches its writer before any await,
+// so with the `let` declared below main it was read inside its temporal dead zone
+// (`ReferenceError: Cannot access 'REGISTERED_HANDLER_TYPES' before initialization`). `all` and
+// the talent scopes await guardUnextracted() first, which is why CI never saw it.
+
 // ---------- main ----------
 (async () => {
   // loadJson THROWS, naming HEROIC_IDS_PATH, on a missing or malformed file — no more silent {}
@@ -938,22 +960,6 @@ async function guardUnextracted(pack, packDir, baselineDir) {
     if (fingerprint(d) !== base) dirty.push(d.name);
   }
   return { dirty, hadBaseline: true };
-}
-// Item 64 guard: no document reaches a pack carrying an `edha-*` handler type the engine does not
-// register (the engine's EDHA_HANDLER_TYPES table, evaluated through scripts/handler-schemas.js —
-// the same record lint-refs pass 9 uses; item 24). Both writers call this, so it covers every generator AND every authored overlay; a
-// generated rule never appears in data/, which is why pass 9 alone could not catch the retired
-// `edha-aoe-template` generator (item 64).
-const { checkHandlerTypes, formatFindings } = require("./lib/handler-type-guard.js");
-let REGISTERED_HANDLER_TYPES = null;
-function assertRegisteredHandlerTypes(where, docs) {
-  if (!REGISTERED_HANDLER_TYPES) {
-    const { parseHandlerSchemas } = require("./handler-schemas.js");
-    const enginePath = require("path").join(__dirname, "..", "module-src", "scripts", "register-skills.js");
-    REGISTERED_HANDLER_TYPES = parseHandlerSchemas(fs.readFileSync(enginePath, "utf8"));
-  }
-  const { findings } = checkHandlerTypes(docs, REGISTERED_HANDLER_TYPES);
-  if (findings.length) throw new Error(formatFindings(where, findings).join("\n"));
 }
 async function writePack(dir, docs, folders) {
   assertRegisteredHandlerTypes(dir, docs);
