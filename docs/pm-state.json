@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-07T00:23:16.049Z",
+  "generatedAt": "2026-09-07T00:48:00.061Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "47c8d3a721",
-    "commit": "713ddbb",
-    "branch": "pm/board-2026-09-06f",
+    "hash": "5ca06b93fa",
+    "commit": "6aaf26f",
+    "branch": "pm/board-2026-09-06g",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -43,7 +43,7 @@
   },
   "pm": {
     "status": "awake",
-    "note": "Fable PM (Ben-started, 16:56 ET). PM-R14: caps lifted, Fable workers on the larger items. Nineteen PRs merged tonight (45, 46, 47 fix pass 7a, 48 fix pass 7b, 53, 34a, 49, 50, 52, 54, 57, 60, 58, 66, 51, bench run 39, 65+67, 34b, 59). 20:16: the nine engine-only merges went LIVE by module-src-sync (served hash = main #233) - press F5 on your Gamemaster client when convenient. Bench run 40 (20:17) is re-testing them. The REBUILD stack is complete - 34a #220, 57 #226, 58 #227, 65+67 #232, 59 #234 - I will push-notify you ONCE for deploy-to-foundry.bat after bench 40 reports and the three rebuild-class engine items now running (55, 56, 63) land, so one run (Foundry closed) covers everything; then bench 41 drives their rows. Item 59 found that the build-time fold is a no-op on every current formula, so R-71's real fix is item 69 (runtime fold), dispatched. Open rulings with defaults applied: R-18, R-48, R-80, R-81.",
+    "note": "Fable PM (Ben-started, 16:56 ET). PM-R14: caps lifted, Fable workers on the larger items. Twenty-five PRs merged tonight, the last being 63 (the edha-note downed dial), 64 (the build guard against retired rule types), 43 (the phone Needs-you view - this page), 69 (the runtime formula fold) and 55 (one senses rule for adversaries). 56 (the graze dial) merged 20:46 - twenty-six PRs tonight. 20:16: nine engine-only merges went LIVE by module-src-sync (F5 your Gamemaster client); the later engine merges (69, 55's engine half, 56's) go live with the next push after bench run 40 reports. Then ONE deploy-to-foundry.bat run (Foundry closed) for the REBUILD stack - 34a, 57, 58, 65+67, 59, 63, 55, 56 - and bench 41 drives their rows. Open rulings with defaults applied: R-18, R-48, R-80, R-81.",
     "waitingOn": "R-18, R-48, R-80, R-81 (defaults apply if silent); keep Foundry open for bench run 40; one deploy-to-foundry.bat run when I push-notify",
     "nextWakeAt": null,
     "session": "2026-09-06 16:56 ET — Fable PM (hand-started)"
@@ -74,84 +74,6 @@
       "phase": "working",
       "pr": null,
       "note": "worktree; test-pass-fixes; ENGINE-ONLY"
-    },
-    {
-      "item": "43",
-      "title": "Phone board 'Needs you' view + stale-heartbeat banner",
-      "model": "sonnet",
-      "size": "M",
-      "lane": "R",
-      "branch": "pm/43-needs-you-view",
-      "startedAt": "2026-09-06T23:48:00Z",
-      "agent": "Work item 43",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; DOCS/TOOLING; the PM republishes the page after merge"
-    },
-    {
-      "item": "55",
-      "title": "R-56 one senses rule — adversary sheets AND token sight on the Edha AWA table (REBUILD + bulk sync)",
-      "model": "fable",
-      "size": "M",
-      "lane": "B",
-      "branch": "pm/55-adversary-senses-table",
-      "startedAt": "2026-09-07T00:21:00Z",
-      "agent": "Work item 55",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; fable-worker; ENGINE + BUILD/DATA"
-    },
-    {
-      "item": "56",
-      "title": "R-14 melee mutation riders — a per-rule onGraze dial matching each card (REBUILD + Sync)",
-      "model": "fable",
-      "size": "M",
-      "lane": "B",
-      "branch": "pm/56-rider-graze-dial",
-      "startedAt": "2026-09-07T00:21:00Z",
-      "agent": "Work item 56",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; fable-worker; ENGINE + AUTHORED"
-    },
-    {
-      "item": "63",
-      "title": "R-25 Rallying Shout's reminder only for a downed ally — a whenTarget dial on edha-note (REBUILD + Sync)",
-      "model": "fable",
-      "size": "S",
-      "lane": "B",
-      "branch": "pm/63-edha-note-target-dial",
-      "startedAt": "2026-09-07T00:21:00Z",
-      "agent": "Work item 63",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; fable-worker; ENGINE + AUTHORED"
-    },
-    {
-      "item": "64",
-      "title": "Retire aoeRule() in foundry-build.js + a guard against emitting an unregistered rule type (TOOLING)",
-      "model": "fable",
-      "size": "S",
-      "lane": "R",
-      "branch": "pm/64-retire-aoe-rule",
-      "startedAt": "2026-09-07T00:21:00Z",
-      "agent": "Work item 64",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; fable-worker; TOOLING-only"
-    },
-    {
-      "item": "69",
-      "title": "R-71's real fix — fold a talent's damage formula at ROLL time in edhaWrapRollDamage (ENGINE-ONLY)",
-      "model": "fable",
-      "size": "S",
-      "lane": "B",
-      "branch": "pm/69-runtime-formula-fold",
-      "startedAt": "2026-09-07T00:21:00Z",
-      "agent": "Work item 69",
-      "phase": "working",
-      "pr": null,
-      "note": "worktree; fable-worker; ENGINE-ONLY"
     }
   ],
   "usage": null,
@@ -711,26 +633,26 @@
     {
       "pos": 46,
       "item": "55",
-      "title": "R-56 adversary sheets AND token sight on the Edha AWA table (engine + build → REBUILD + world bulk sync; one block with an explicit senses override). Dispatched 20:21 (fable-worker, worktree)",
+      "title": "R-56 adversary sheets AND token sight on the Edha AWA table (engine + build → REBUILD + world bulk sync; one block with an explicit senses override). Dispatched 20:21 (fable-worker, worktree); reported 20:39, in review (PR #240): the type !== \"character\" guard gone from edhaDeriveSheetStats (senses only — HP / Speed stay PC-only), the preCreateActor token default and the AWA watcher; the ready sweep resets every actor; advSensesRangeFt in the build (the flat 10 gone); Briar-Gone Grove senses: 30 as the bespoke override (a rooted grove-heart perceives through its soil); seven mutations shown failing; read-back: 51 unchanged, the Grove 10 → 30. Corrected the brief's premise: the pack token sight was already 10 at AWA 0 — the ENGINE half is what moves every world adversary's SHEET 5 → 10; the sync then makes tokens and sheets agree. Risk stated as medium (live effect only after rebuild + sync). Found: edha.fixPcTokens() still retrofits characters only. Merged 20:44 after review (2.9M / 124 turns / 17 min; the PM merged main once — a doubled --- separator is the only scar of the two-block handoff conflict). REBUILD + bulk sync owed",
       "lane": "B",
       "model": "fable-worker",
       "size": "M",
       "deps": "46 ✓",
-      "status": "running",
+      "status": "bench-pending",
       "statusDetail": null,
-      "pr": null
+      "pr": 240
     },
     {
       "pos": 47,
       "item": "56",
-      "title": "R-14 melee mutation riders — a per-rule onGraze matching each card's wording (ENGINE + AUTHORED → REBUILD). Dispatched 20:21 (fable-worker, worktree)",
+      "title": "R-14 melee mutation riders — a per-rule onGraze matching each card's wording (ENGINE + AUTHORED → REBUILD). Dispatched 20:21 (fable-worker, worktree); reported 20:40, in review (PR #242): the brief's premise was off — the riders are not edha-damage-rider rules (those were hit-only all along, the graze clone strips them) but the mutation / apexForm flag readers, and the system's onClickApplyButton passes applyDamage no hit-vs-graze marker at all. So: a click-lifetime breadcrumb from a wrap of CosmereChatMessage#onClickApplyButton (libWrapper or prototype, the rollDamage idiom) read synchronously by edhaWrapApplyDamage; dials keenOnGraze / venomOnGraze (edha-mutation) and vitalOnGraze (edha-regen-grant), baked onto the flags, readers stand down ONLY on an explicit false; authored: Bone Spurs on, Venom Glands OFF (the one behaviour change: \"melee HITS inflict\"), Apex Form on; six mutations shown failing; parity: 2 documents / 2 rules. Rows 2bW-18 / 19 🤖. Found: edha-damage-bonus meleeOnly rules (Warlord's Advance) also fire on a graze today — a separate item if R-14's rule should reach them (→ ruling candidate for Ben: R-82, filed on the board). Merged 20:46 after review (2.4M / 117 turns / 17 min; the PM merged main once). REBUILD (deity) + ⟳ Sync owed",
       "lane": "B",
       "model": "fable-worker",
       "size": "M",
       "deps": "46 ✓",
-      "status": "running",
+      "status": "bench-pending",
       "statusDetail": null,
-      "pr": null
+      "pr": 242
     },
     {
       "pos": 48,
@@ -795,14 +717,14 @@
     {
       "pos": 53,
       "item": "43",
-      "title": "Phone board \"Needs you\" view (+ the stale-heartbeat banner from the stall post-mortem). Dispatched 19:48 (worktree; page republish is the PM's after merge). Open rulings to pin: R-18, R-48, R-80",
+      "title": "Phone board \"Needs you\" view (+ the stale-heartbeat banner from the stall post-mortem). Dispatched 19:48 (worktree); reported 20:31, in review (PR #236): the page opens on a status line + the stale-heartbeat banner + one card per open ruling (Go with the default / Other… / Keep / Veto…) + one card per Ben-only ask (Done) + a ⚑ count; everything else under a persisted #more toggle; parseOpenRulings / countCitations feed openRulings into the dash index, parseBenOnly reads the board's \"Waiting on Ben\" line (numbered asks or bullets); pins R-18 / R-48 open and R-41 / R-42 / R-54 closed; verified in a local static preview. 43 min, 237 tool uses (Sonnet M). Note: the worker found no R-80 in the repo — it branched before the board PR that added R-80 / R-81 to the rulings table; the board parser picks them up now. Merged 20:34 after review (the PM merged main once); 14.4M / 412 turns — the most expensive item of the night, a Sonnet M with a browser-preview loop; the PM republished the artifact page after merge",
       "lane": "R",
       "model": "sonnet",
       "size": "M",
       "deps": "46 ✓",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 236
     },
     {
       "pos": 54,
@@ -867,14 +789,14 @@
     {
       "pos": 62,
       "item": "69",
-      "title": "R-71's real fix — an ENGINE-side fold of a talent's system.damage.formula when the cosmere-rpg system rolls it itself (the rollDamage pipeline the engine already wraps for riders — edhaWrapRollDamage): substitute the actor's roll data and fold with edhaFoldDieMath before the system's card prints, so Verdict's system card reads 2d8 + 5 like its engine card; pin: a rank-scaled formula folds to plain dice on the wrapped roll, a plain one is byte-identical; 🤖 = the item-59 Verdict row. ENGINE-ONLY (F5); found by item 59. Dispatched 20:21 (fable-worker, worktree)",
+      "title": "R-71's real fix — an ENGINE-side fold of a talent's system.damage.formula when the cosmere-rpg system rolls it itself (the rollDamage pipeline the engine already wraps for riders — edhaWrapRollDamage): substitute the actor's roll data and fold with edhaFoldDieMath before the system's card prints, so Verdict's system card reads 2d8 + 5 like its engine card; pin: a rank-scaled formula folds to plain dice on the wrapped roll, a plain one is byte-identical; 🤖 = the item-59 Verdict row. ENGINE-ONLY (F5); found by item 59. Dispatched 20:21 (fable-worker, worktree); reported 20:28, in review (PR #237): 16 lines at the top of edhaWrapRollDamage — substitute getRollData(), edhaFoldDieMath, write overrideFormula only if changed; riders join onto the folded base; 9 pins, two reversions shown failing (4 and 5 cases); 7 min. Worker's note for item 56: the graze clone's @damage.dice strip now sees 2d8, not the parenthetical. Merged 20:31 after review (0.9M / 51 turns); TODO 69 checked by the PM at merge (the entry landed with #235 after the branch was cut). Not yet live — pushed with the next module-src-sync push after bench 40 reports",
       "lane": "B",
       "model": "fable-worker",
       "size": "S",
       "deps": "59 ✓",
-      "status": "running",
+      "status": "bench-pending",
       "statusDetail": null,
-      "pr": null
+      "pr": 237
     },
     {
       "pos": 61,
@@ -891,26 +813,26 @@
     {
       "pos": 57,
       "item": "64",
-      "title": "foundry-build.js's aoeRule() still mints edha-aoe-template rules for any talent with TALENT_TARGETING[…].area and no .burst — today only Lay Foundation, whose authored edha-zone rule replaces the generated events, which is why the sweeps find zero and the pack build stays green; delete that authored events and the next build mints a rule nothing can execute since R-78. Retire aoeRule() (or route it to edha-burst) with a build-report parity proof. TOOLING-only; found by item 48. Dispatched 20:21 (fable-worker, worktree) after 59 landed",
+      "title": "foundry-build.js's aoeRule() still mints edha-aoe-template rules for any talent with TALENT_TARGETING[…].area and no .burst — today only Lay Foundation, whose authored edha-zone rule replaces the generated events, which is why the sweeps find zero and the pack build stays green; delete that authored events and the next build mints a rule nothing can execute since R-78. Retire aoeRule() (or route it to edha-burst) with a build-report parity proof. TOOLING-only; found by item 48. Dispatched 20:21 (fable-worker, worktree) after 59 landed; reported 20:34, in review (PR #238): aoeRule() gone; every .area entry checked (four carry .burst; Lay Foundation is the persistent Foundation zone — correctly NOT a burst); the guard sits in both pack WRITERS (assertRegisteredHandlerTypes, the registered set from the same parse lint pass 9 uses) because a generated rule never appears in data/, so pass 9 by construction could not see it; five packs content-identical before / after (the build emits five, not six — the brief was wrong); mutation: re-adding the generator fails the build naming the talent; 13 min. Found: the build report's events: count is taken BEFORE the overlay replaces system.events, so it counts rules the packs never carry → a small tooling note for the next build-script pass. Merged 20:38 after review (the PM merged main once)",
       "lane": "R",
       "model": "fable-worker",
       "size": "S",
       "deps": "48 ✓ · 59 ✓",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 238
     },
     {
       "pos": 56,
       "item": "63",
-      "title": "R-25 (c) Rallying Shout's reminder prints only for an ally at 0 HP / Unconscious — needs a generic target-condition dial on edha-note (e.g. whenTarget: \"downed\") PLUS the authored value on Rousing Presence's RouseRallying000 rule (data/authored/heroic-envoy.json); iron rule 2b forbids the name-keyed shortcut and a dial with no consumer is R-74/R-76's complaint. ENGINE + AUTHORED → REBUILD + ↻ Sync; found by item 47. Dispatched 20:21 (fable-worker, worktree)",
+      "title": "R-25 (c) Rallying Shout's reminder prints only for an ally at 0 HP / Unconscious — needs a generic target-condition dial on edha-note (e.g. whenTarget: \"downed\") PLUS the authored value on Rousing Presence's RouseRallying000 rule (data/authored/heroic-envoy.json); iron rule 2b forbids the name-keyed shortcut and a dial with no consumer is R-74/R-76's complaint. ENGINE + AUTHORED → REBUILD + ↻ Sync; found by item 47. Dispatched 20:21 (fable-worker, worktree); merged 20:41 after review — one generic field whenTarget (blank / downed) on edha-note read by the pure edhaNoteTargetGate on the R-64 victim chain (blank = unchanged; unknown mode fails open); RouseRallying000 set to downed; 8 cases, five mutations shown failing; parity: exactly one pack document changed; 15 min. Row 2bM-6b 🤖 (the retired 2bM-6 stays retired). REBUILD (heroic) owed",
       "lane": "B",
       "model": "fable-worker",
       "size": "S",
       "deps": "46 ✓",
-      "status": "running",
+      "status": "bench-pending",
       "statusDetail": null,
-      "pr": null
+      "pr": 239
     },
     {
       "pos": null,
@@ -968,6 +890,11 @@
       "ruling": "Instruction recorded; the exact cut is a PM default awaiting veto: windows Mon–Thu 21:00→07:00 and Fri 21:00→Mon 07:00; weekday daytime is Ben's; weeknight ceiling 2 under the 2-per-5h cap; weekend: 4 per trailing 5h of any model, 8 per day-shift (Opus sub-cap dropped 11:55 — the bench loop is all-Opus and serial). Ben: say a different hour or number and it changes.",
       "waiting": false
     }
+  ],
+  "benOnly": [
+    "keep Foundry open while bench run 40 drives the nine engine-only merges pushed live at 20:16",
+    "press F5 on the Gamemaster client (it still runs the 18:59 engine until reloaded)",
+    "ONE deploy-to-foundry.bat run (Foundry closed) for the REBUILD stack — 34a #220, 57 #226, 58 #227, 65 + 67 #232, 59 #234, plus 55 / 56 / 63 once they land — the PM push-notifies when bench 40 has reported, not before"
   ],
   "inbox": [],
   "foundry": {
@@ -2785,6 +2712,90 @@
     },
     {
       "date": "2026-09-06",
+      "time": "20:21",
+      "at": "2026-09-07T00:21:00.000Z",
+      "item": "Item 69 (R-71 runtime fold) — work-item via fable-worker, worktree",
+      "itemNo": null,
+      "model": "fable (medium)",
+      "isDispatch": false,
+      "duration": "7 min, 51 turns",
+      "weighted": "0.9M",
+      "weightedM": 0.9,
+      "outcome": "merged 20:31 after review (gh mergedAt 00:31:23Z), no trailers; the PM merged main once and checked TODO 69 in the same commit. The cheapest engine item of the night; R-71 now has both halves (build guard #234, runtime fold #237). Engine push held for bench 40",
+      "pr": 237
+    },
+    {
+      "date": "2026-09-06",
+      "time": "19:48",
+      "at": "2026-09-06T23:48:00.000Z",
+      "item": "Item 43 (phone \"Needs you\" view + stale-heartbeat banner) — work-item, worktree",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "43 min, 412 turns",
+      "weighted": "14.4M",
+      "weightedM": 14.4,
+      "outcome": "merged 20:34 after review (gh mergedAt 00:34:06Z), no trailers; the PM merged main once and republished docs/pm-board-mobile.html to the artifact with --inject. Cost note: a Sonnet M that drove a browser preview loop — the night's most expensive dispatch, above every Opus engine pass but bench 39; UI items go to fable-worker too from here",
+      "pr": 236
+    },
+    {
+      "date": "2026-09-06",
+      "time": "20:21",
+      "at": "2026-09-07T00:21:00.000Z",
+      "item": "Item 64 (retire aoeRule() + the unregistered-type guard in the pack writers) — work-item via fable-worker, worktree",
+      "itemNo": null,
+      "model": "fable (medium)",
+      "isDispatch": false,
+      "duration": "13 min, 143 turns",
+      "weighted": "2.3M",
+      "weightedM": 2.3,
+      "outcome": "merged 20:38 after review (gh mergedAt 00:38:21Z), no trailers; five packs content-identical, the guard's mutation names the talent; corrected the brief (five packs, not six). Found: the build report's events: count is pre-overlay",
+      "pr": 238
+    },
+    {
+      "date": "2026-09-06",
+      "time": "20:21",
+      "at": "2026-09-07T00:21:00.000Z",
+      "item": "Item 63 (R-25 edha-note whenTarget dial) — work-item via fable-worker, worktree",
+      "itemNo": null,
+      "model": "fable (medium)",
+      "isDispatch": false,
+      "duration": "15 min, 103 turns",
+      "weighted": "1.7M",
+      "weightedM": 1.7,
+      "outcome": "merged 20:41 after review (gh mergedAt 00:41:35Z), no trailers, two main merges by the worker + one by the PM; one pack document changed. REBUILD (heroic) owed",
+      "pr": 239
+    },
+    {
+      "date": "2026-09-06",
+      "time": "20:21",
+      "at": "2026-09-07T00:21:00.000Z",
+      "item": "Item 55 (R-56 one senses rule) — work-item via fable-worker, worktree",
+      "itemNo": null,
+      "model": "fable (medium)",
+      "isDispatch": false,
+      "duration": "17 min, 124 turns",
+      "weighted": "2.9M",
+      "weightedM": 2.9,
+      "outcome": "merged 20:44 after review (gh mergedAt 00:43:58Z), no trailers; seven mutations; the brief's premise corrected (pack tokens were already 10 — the engine half moves the sheets). REBUILD + world bulk sync owed",
+      "pr": 240
+    },
+    {
+      "date": "2026-09-06",
+      "time": "20:21",
+      "at": "2026-09-07T00:21:00.000Z",
+      "item": "Item 56 (R-14 graze dials) — work-item via fable-worker, worktree",
+      "itemNo": null,
+      "model": "fable (medium)",
+      "isDispatch": false,
+      "duration": "17 min, 117 turns",
+      "weighted": "2.4M",
+      "weightedM": 2.4,
+      "outcome": "merged 20:46 after review, no trailers; the brief's premise corrected by the worker (the riders are the mutation / apexForm flag readers, and the system passes no hit-vs-graze marker — a click-lifetime breadcrumb from a wrap of onClickApplyButton now carries it); Venom Glands is the one behaviour change; R-82 raised. REBUILD (deity) owed. The REBUILD stack is now complete for one deploy: 34a, 57, 58, 65 + 67, 59, 63, 55, 56",
+      "pr": 242
+    },
+    {
+      "date": "2026-09-06",
       "time": "19:48",
       "at": "2026-09-06T23:48:00.000Z",
       "item": "Item 66 (negative rider join) — work-item via fable-worker, worktree",
@@ -3176,6 +3187,12 @@
       "model": "sonnet",
       "item": null,
       "pr": 234
+    },
+    {
+      "at": "2026-09-06T23:48:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 236
     }
   ],
   "statusVocab": [
