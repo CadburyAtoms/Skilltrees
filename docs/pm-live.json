@@ -1,18 +1,15 @@
 {
   "pm": {
     "status": "awake",
-    "note": "Hand-started Fable PM (Ben, 09:52 ET Mon). Bench run 42 MERGED 12:05 (#274, 16.9M): 38 rows retired, open bench rows 58 -> 20, your 13 marks recorded, world diff empty. It found ONE real defect: every on-hit cue rule that the weapon migration moved onto a weapon document is silently inert (6 shipped rules, e.g. Surecat's Pounce, Keelshadow's Breach and Drag) - item 84 is fixing it now (opus, 2 of 3 today). Item 85 (sonnet) is making REOPENED rulings show on this phone card. YOU OWE: one Sync Talents click for your PCs (the adversary sync ran, the talent sync did not). New rulings for you: R-88 (Volatile Strike only rides IMPACT hits - drop the gate?), R-89 (the NO NAMEABLE HOOK marker is lost on a Foundry save - move it to a flag?). Still open: R-83, R-56 go/no-go.",
-    "waitingOn": "Sync Talents click for your own PCs; R-83 (a)/(b); R-56 go/no-go (item 83); R-88 and R-89 (defaults (a) if silent, both data-only); the 10 unmarked bench flag rows + 5 world rows",
+    "note": "Hand-started Fable PM (Ben, 09:52 ET Mon). Merged today: board #272, item 79 #273, bench 42 #274, board #275, item 84 #276 (LIVE, you F5'd 12:25), item 85 #277 (R-56 now shows on this card). Bench run 43 (opus, 3 of 3 today) is at the table for the 20 remaining bench rows incl. item 84's live re-test. Opus resets at midnight for the overnight shift; two Sonnet seeds (86, 87) are queued. YOU OWE: one Sync Talents click for your PCs. Rulings for you: R-83, R-56 go/no-go, R-88, R-89.",
+    "waitingOn": "Sync Talents click for your own PCs; R-83 (a)/(b); R-56 go/no-go (item 83); R-88 and R-89 (defaults (a) if silent); the 10 unmarked bench flag rows + 5 world rows",
     "nextWakeAt": null,
     "session": "2026-09-07 09:52 ET - Fable PM (hand-started, Ben's hours by his word)"
   },
   "workers": [
-    { "item": "84", "title": "Weapon-borne edha-on-hit rules never dispatch - swap edhaIsTalent for edhaRuleBearer in edhaRulesForEvent, pin, audit callers", "model": "opus", "size": "S", "lane": "B",
-      "branch": "pm/84-weapon-on-hit", "startedAt": "2026-09-07T16:15:00Z", "agent": "Work item 84",
-      "phase": "working", "pr": null, "note": "Opus 2 of 3 today; ENGINE-ONLY (F5) when it lands" },
-    { "item": "85", "title": "REOPENED rulings resurface on the phone card; Art tab bold garble", "model": "sonnet", "size": "S", "lane": "R",
-      "branch": "pm/85-reopened-rulings", "startedAt": "2026-09-07T16:15:00Z", "agent": "Work item 85",
-      "phase": "working", "pr": null, "note": null }
+    { "item": "bench-43", "title": "Bench run 43 - the 20 remaining bench rows (player block, hygiene block, combat pair, bestiary singles, item 84's cue re-test)", "model": "opus", "size": "L", "lane": "B",
+      "branch": "pm/bench-43", "startedAt": "2026-09-07T16:30:00Z", "agent": "Bench run 43",
+      "phase": "working", "pr": null, "note": "Opus 3 of 3 today" }
   ],
   "usage": null
 }
