@@ -642,7 +642,7 @@ the docId itself is a `data/authored/` edit and needs Ben's re-extract + rebuild
 
 ---
 
-## 19. [x] Split `EDHA_FOUNDRY_HANDOFF.md` into a current reference and a dated changelog (2026-09-06, PRs #249 + #TBD)
+## 19. [x] Split `EDHA_FOUNDRY_HANDOFF.md` into a current reference and a dated changelog (2026-09-06, PRs #249 + #251)
 
 **Why:** 10,157 lines / 1 MB; 88 dated delta headers; the §1–§10 reference a cold session needs
 begins at line 9,696 and is ~460 lines. ~95% of the file is log, with no table of contents, and
@@ -665,7 +665,7 @@ finds every delta, and CI is green.
 
 **PM:** lane R · model opus · size L (two PRs) · deps ruling PM-R1 · verify: dashboard `--check`, a cold-read by a Sonnet worker that answers ten questions from the reference alone.
 **19a shipped in PR #249** (2026-09-06, DOCS-ONLY): the reference rewrite — 671 lines at the bottom of the handoff under `## Reference — table of contents`, §9 anchor and its 40 Engine-tab rows byte-preserved, the header wall replaced by a pointer. **19b (the delta move + `HANDOFF_ARCHIVE.md` fold + `build-dashboard.js` re-point) remains** — the box stays open until it lands.
-**19b shipped in PR #TBD** (2026-09-06, DOCS-ONLY + TOOLING): the mechanical move — `scripts/handoff-split.js` moved all 142 dated deltas VERBATIM into `docs/handoff-changelog/2026-{06,07,08,09}.md` (18 / 42 / 1 / 81, newest first; SHA-256 of the removed text = SHA-256 of the month bodies, `8ae508b8…`), `HANDOFF_ARCHIVE.md` became `docs/handoff-changelog/ARCHIVE-header-wall.md` (its entries are header-wall summaries, not deltas, so it was moved whole), the handoff is the reference alone (691 lines, TOC first), every writer instruction re-pointed (CLAUDE.md iron rule 5 + map rows, work-item / project-manager / test-pass-fixes / talent-migration / lore-forge / session-forge / session-debrief / handout-forge / bench-run + runbook, `audit.py`'s docs read), the dashboard's Engine tab unchanged at 40 rows. "Done when" caveat: `git log --follow` on a month file cannot reach a delta's original commit (the block left a file that still exists); `git log -S"<delta title>" -- EDHA_FOUNDRY_HANDOFF.md` does, and every header says so.
+**19b shipped in PR #251** (2026-09-06, DOCS-ONLY + TOOLING): the mechanical move — `scripts/handoff-split.js` moved all 142 dated deltas VERBATIM into `docs/handoff-changelog/2026-{06,07,08,09}.md` (18 / 42 / 1 / 81, newest first; SHA-256 of the removed text = SHA-256 of the month bodies, `8ae508b8…`), `HANDOFF_ARCHIVE.md` became `docs/handoff-changelog/ARCHIVE-header-wall.md` (its entries are header-wall summaries, not deltas, so it was moved whole), the handoff is the reference alone (691 lines, TOC first), every writer instruction re-pointed (CLAUDE.md iron rule 5 + map rows, work-item / project-manager / test-pass-fixes / talent-migration / lore-forge / session-forge / session-debrief / handout-forge / bench-run + runbook, `audit.py`'s docs read), the dashboard's Engine tab unchanged at 40 rows. "Done when" caveat: `git log --follow` on a month file cannot reach a delta's original commit (the block left a file that still exists); `git log -S"<delta title>" -- EDHA_FOUNDRY_HANDOFF.md` does, and every header says so.
 
 ---
 
