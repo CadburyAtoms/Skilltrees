@@ -1,37 +1,63 @@
 {
   "pm": {
     "status": "awake",
-    "note": "Fable PM (Ben-started, 16:56 ET). PM-R14: caps lifted, Fable workers on the larger items. Thirty-three PRs merged tonight - the latest: item 24 (handler registry as tables, 21:24), item 4 (the engine split into 55 sources, 21:38), bench run 40 (29 rows retired, one root-caused defect, 21:41), item 19a (the handoff reference rewritten, 21:47) and item 19b (all 142 dated deltas moved verbatim into docs/handoff-changelog/, the handoff is now the 691-line reference alone, 22:00). Running: fix pass 9 (bench 40's defects) and item 73 (a docs sweep of CLAUDE.md / ENGINE_INDEX lines the cold reader found stale). 21:33: you were push-notified ONCE for deploy-to-foundry.bat (Foundry closed) - it rebuilds the packs for 34a, 57, 58, 65+67, 59, 63, 55, 56 AND copies the engine (69, 68, 24, and fix pass 9 once merged); bench 41 drives all of it afterwards. R-48 answered from your phone at 21:14 (the card is canon; item 57 had already shipped it). R-83 still needs your answer (item 70). Defaults applied, vetoable: R-18, R-80, R-81, R-82, R-84, R-85, PM-R15.",
-    "waitingOn": "ONE deploy-to-foundry.bat run (Foundry closed), then relaunch and tell me; R-83 (needs your answer - it moves HP); R-18, R-80, R-81, R-82, R-84, R-85, PM-R15 (defaults apply if silent)",
+    "note": "Fable PM (Ben-started, 16:56 ET). PM-R14: caps lifted, Fable workers on the larger items. Thirty-six PRs merged tonight - the latest: item 19a + 19b (the handoff is now a 691-line reference; all dated deltas live in docs/handoff-changelog/), item 73 (docs sweep) and fix pass 9 (bench 40's defects: the prompt-pick once budget, Ambush Bite's double flavor, R-84 / R-85 as defaults; 22:16). 22:17: the engine was PUSHED live again (Foundry was up, you had not run the bat yet) - 24, 69, 68, fix pass 9 and the 55 / 56 engine halves are at the table; F5 your Gamemaster client. Bench run 41 is driving their rows now. Also running: items 71 (registry leftovers), 61 (R-42 map polygons) and 44 (Ask: lines on open rulings). STILL OWED: one deploy-to-foundry.bat run (Foundry closed) for the pack REBUILDS - 34a, 57, 58, 65+67, 59, 63, 55, 56 - their bench rows stay blocked until then. R-48 answered from your phone at 21:14. R-83 still needs your answer (item 70). Defaults applied, vetoable: R-18, R-80, R-81, R-82, R-84, R-85, PM-R15.",
+    "waitingOn": "ONE deploy-to-foundry.bat run (Foundry closed) for the pack rebuilds - after bench 41 finishes, ideally; R-83 (needs your answer - it moves HP); R-18, R-80, R-81, R-82, R-84, R-85, PM-R15 (defaults apply if silent)",
     "nextWakeAt": null,
     "session": "2026-09-06 16:56 ET — Fable PM (hand-started)"
   },
   "workers": [
     {
-      "item": "72",
-      "title": "Fix pass 9 — bench run 40's defects: the prompt-pick once budget (dotted flag key), Ambush Bite's double flavor, R-85 (expiry falls back to the bearer's combat) and R-84 (refund an offer that cannot be made) as defaults",
+      "item": "5",
+      "title": "Bench run 41 — the engine-only merges since bench 40 on the 22:17 push (f2fb3e2d…): item 24's registry smoke ×16, fix pass 9's four rows + 2bJ-10, the Verdict fold, the heal cards, the 55 / 56 engine halves; REBUILD rows stay blocked",
       "model": "opus",
-      "size": "M",
+      "size": "L",
       "lane": "B",
-      "branch": "pm/fix-pass-9",
-      "startedAt": "2026-09-07T01:35:00Z",
-      "agent": "Fix pass 9",
+      "branch": "pm/bench-run-41",
+      "startedAt": "2026-09-07T02:18:00Z",
+      "agent": "Bench run 41",
       "phase": "working",
       "pr": null,
-      "note": "worktree; test-pass-fixes; ENGINE-ONLY (F5); ports into the split sources (item 4 landed 21:38)"
+      "note": "worktree; engine pushed 22:17 (live = main #253)"
     },
     {
-      "item": "73",
-      "title": "Docs sweep — CLAUDE.md and ENGINE_INDEX lines that still describe the pre-migration engine (the name-keyed backlog as live, 45 rulings, 19.7k lines, 52 banners)",
+      "item": "71",
+      "title": "Registry leftovers from item 24 — a README row, the executor-less edha-illusion-upkeep, six handler types with no authored user (dispositions, no deletions), the console line that still lists aoe-template, the loosened note-target-gate test slice",
       "model": "fable",
       "size": "S",
       "lane": "R",
-      "branch": "pm/73-docs-sweep",
-      "startedAt": "2026-09-07T02:01:00Z",
-      "agent": "Work item 73",
+      "branch": "pm/71-registry-leftovers",
+      "startedAt": "2026-09-07T02:11:00Z",
+      "agent": "Work item 71",
       "phase": "working",
       "pr": null,
-      "note": "worktree; fable-worker; DOCS-ONLY; first delta under the new changelog rule"
+      "note": "worktree; fable-worker; ENGINE-ONLY for the console line, TOOLING/DOCS otherwise"
+    },
+    {
+      "item": "61",
+      "title": "R-42 map polygons — Goldenport's coastal / island lobes, Corvaine's edge to the river bank; lint_map.py WARNs 4 → 0; thyrcross-nations.json regenerated (a module asset)",
+      "model": "fable",
+      "size": "S",
+      "lane": "R",
+      "branch": "pm/61-map-polygons",
+      "startedAt": "2026-09-07T02:12:00Z",
+      "agent": "Work item 61",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; fable-worker; DATA + module asset (sync push / the bat)"
+    },
+    {
+      "item": "44",
+      "title": "Ask: lines on every open ruling whose heading is not a self-contained question (phase 2 of the phone Needs-you view)",
+      "model": "fable",
+      "size": "S",
+      "lane": "R",
+      "branch": "pm/44-ask-lines",
+      "startedAt": "2026-09-07T02:12:00Z",
+      "agent": "Work item 44",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; fable-worker; DOCS-ONLY"
     }
   ],
   "usage": null

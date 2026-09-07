@@ -958,31 +958,49 @@ Investiture before each use.
       refunded"**, disabled **every** button, and left the message flag
       `offer {itemUuid, round: 4, refund: true}` + `cardResolved`. The same round's SECOND use then
       fired a Push for real (the decline had not spent the round's use). **But the THIRD use in the
-      same round ALSO fired** instead of refusing — see the new `once`-gate row below, which is the
-      root cause and which this row now waits on.
-- [ ] 🤖 **NEW DEFECT (bench run 40) — an `edha-prompt-pick` `once` budget NEVER bites, because the
-      stamp is written under a DOTTED key.** Root-caused, not inferred. `edhaPromptPickClick`
-      (`register-skills.js` ~L3563/3582) gates on `edhaCoordOPRAllowed(owner, item.uuid, "_pick")`
-      and marks with `edhaCoordOPRMark(owner, item.uuid, "_pick")`. The mark goes through
-      `owner.setFlag("edha-content", "coordRound", m)` with `m[item.uuid] = {_pick: round}` — and
-      Foundry **expands dotted keys**, so the document stores
-      `coordRound.Actor.<actorId>.Item.<itemId>._pick = <round>` while the reader asks for the FLAT
-      key `coordRound["Actor.<actorId>.Item.<itemId>"]`, which is always `undefined` ≠ round.
-      Measured live: after two accepted picks in round 4 the flag read
-      `{"Actor":{"2vSISUi8NZ66KM9B":{"Item":{"Lt4bBgGwLZx7TyiZ":{"_pick":4}}}}}` while
-      `f[item.uuid]?._pick !== round` evaluated **true** (i.e. "allowed"), and a third pick in the
-      same round duly fired. **Blast radius:** every `edha-prompt-pick` rule carrying `once` —
-      Unnerving Approach is the shipped consumer the bench caught it on. The other `edhaCoordOPR*`
-      callers pass dot-free talent names or item **ids** and are unaffected, which is why this hid.
-      **Re-test after the fix:** three Unnerving Approach uses in one round — the third click says
-      *"was already used this round"* and spends nothing; a round change restores one use; and the
-      flag's stored shape is a FLAT key. (Ideas: key on `item.id`, or route the mark/read through a
-      helper that escapes `.`.)
-- [ ] 🤖 **COSMETIC (bench run 40) — Ambush Bite's damage rider prints its flavor label twice.** The
-      fooled-first-bite roll rendered **`1d10 + 3 + (1d6[Ambush Bite])[Ambush Bite] + 0`** — the
-      `edha-damage-rider` bonus formula is wrapped in a flavored term and then flavored again. The
-      math is right (R-50 passed on this very roll); only the formula bar reads wrong. Fix and
-      re-read one fooled Ambush Bite: it should be `1d10 + 3 + 1d6[Ambush Bite]`.
+      same round ALSO fired** instead of refusing — the root cause is the dotted-key defect in the
+      row below, **fixed in fix pass 9 (TODO 72)**, so this row is unblocked: re-run the whole
+      sequence and the third click must now refuse.
+- [ ] 🤖 **`once` budget (bench run 40's dotted-key defect) — FIXED IN FIX PASS 9 (TODO 72), re-test.**
+      ENGINE-ONLY (F5). Root cause, confirmed against the Foundry source: `edhaPromptPickClick` marks
+      with the talent's **UUID**, and `ClientDatabaseBackend#_updateDocuments` runs
+      `foundry.utils.expandObject` on every update, recursing into every plain object — so the
+      document stored `coordRound.Actor.<id>.Item.<id>._pick` while the reader asked for the FLAT key
+      and got `undefined` for ever. The fix escapes BOTH sides of the store through the existing
+      ledger-boundary helper `edhaFlagKey` (`.` → `_`), the same one the ambush-belief and `trigRound`
+      ledgers already run; the eight dot-free callers are unchanged, and a document stamped in the old
+      expanded shape still reads as spent for the rest of that round. **Re-test:** use Unnerving
+      Approach three times in one round on `Bench — Black` against a target with two living allies
+      within 10 ft — clicks 1 and 2 push, the **third** click says *"was already used this round"*,
+      disables the buttons and spends nothing; `nextRound()` restores one use. **Read the flag:** the
+      stored shape must be one FLAT key, `coordRound["Actor_<id>_Item_<id>"] = {_pick: <round>}`, with
+      no `Actor` branch. **NEG (same take):** Puppeteer's turn-start offer, whose `once: "round"` has
+      the same shape, is likewise once per round.
+- [ ] 🤖 **Ambush Bite's doubled rider flavor — FIXED IN FIX PASS 9 (TODO 72), re-test.** ENGINE-ONLY
+      (F5). Root cause: not ours. A flavored ParentheticalTerm propagates its flavor onto every inner
+      term when it evaluates (`parenthetical.mjs:105` → `roll.mjs:496`) and then re-derives
+      `term = roll.formula` when the chat message rebuilds the roll, so the label comes back inside
+      the parentheses as well as after them. The parentheses must stay in the FORMULA — the system's
+      graze clone keeps only dice/operator/pool terms, so a bare rider die would start riding grazes —
+      so `edhaTidyFormula` (the display-only formula-bar repair) now drops the duplicated inner label,
+      and the parentheses too when one atomic term is left. **Re-test:** one fooled Ambush Bite from
+      the Stillback — the formula bar must read **`1d10 + 3 + 1d6[Ambush Bite]`** and the damage total
+      must be unchanged. **NEG:** the graze half of that same card still rolls the BASE dice only
+      (no `1d6` in the graze breakdown).
+- [ ] 🤖 **R-84 (fix pass 9, applied as the recommended default) — the offer that CANNOT be made
+      refunds its Investiture.** ENGINE-ONLY (F5). Use **Unnerving Approach** on a target with **no**
+      living ally within 10 ft: the `emptyNote` card posts as before, now ending **"— cost refunded"**,
+      and Investiture returns to its pre-use value (bench run 40 measured 2 → 1 and no refund). The
+      card still carries **no** Decline button, and the round's pick budget is **not** spent (a later
+      valid use in the same round still offers). **NEG:** Puppeteer's watch-posted offer with an empty
+      list credits **nothing** and its card reads **"— no cost was spent"**.
+- [ ] 🤖 **R-85 (fix pass 9, applied as the recommended default) — a "this round" rider granted by a
+      NON-combatant expires.** ENGINE-ONLY (F5). Cast **Pattern Recognition** from a `Bench — Blue`
+      that is **not** in the tracker onto a combatant in a started combat: the bearer's
+      `nextTestMod` entry must carry the **BEARER's** round (not `round: null`), and it must be gone
+      after `nextRound()`. **NEG (same take):** with the granter IN the tracker the stamp is still the
+      granter's own round, exactly as before; with **neither** side in a combat the stamp is `null`
+      and the rider stays live (there is no round to expire against).
 
 *(**✅ RETIRED on evidence 2026-09-06, bench run 40 — 2bJ-10b and 2bJ-10c**, same deploy, same
 combat. **2bJ-10b (IGNORED):** the use charged 4 → 3; advancing only the TURN (the tracker moved off
