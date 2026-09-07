@@ -593,9 +593,9 @@
       "docId": "d2IDgKhRwYyxZy6n",
       "img": "icons/magic/death/hand-withered-gray.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>Where his hand passes, leaves curl black on the vine.</em></p><p>Spend 1 Investiture and make a melee weapon attack. On a hit, deal [Tier][Die] + Willpower vital damage. The target cannot regain HP until the start of your next turn.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and make a melee weapon attack. On a hit, deal [Tier][Die] + Willpower vital damage. The target cannot regain HP until the start of your next turn.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and make a melee weapon attack. On a hit, deal [Tier][Die] + Willpower vital damage. The target cannot regain HP until the start of your next turn.</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p><strong>Cost:</strong> 1 Investiture</p><p><em>Where his hand passes, leaves curl black on the vine.</em></p><p>Spend 1 Investiture and make a melee weapon attack. On a hit, deal [Tier][Die] + Willpower vital damage. The target cannot regain HP until the end of your next turn.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and make a melee weapon attack. On a hit, deal [Tier][Die] + Willpower vital damage. The target cannot regain HP until the end of your next turn.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"One Action\" aria-label=\"One Action\">1</span></p><p>Spend 1 Investiture and make a melee weapon attack. On a hit, deal [Tier][Die] + Willpower vital damage. The target cannot regain HP until the end of your next turn.</p>"
       },
       "activation": {
         "type": "utility",
@@ -646,7 +646,7 @@
             "type": "edha-note",
             "icon": "🥀",
             "whisper": "public",
-            "text": "next melee weapon hit withers — the talent's [Tier][Die]+Willpower vital is added automatically, and the target cannot regain HP until the start of your next turn (a ranged hit is skipped and the touch stays armed; Temp HP still lands). Don't also roll the card's damage by hand."
+            "text": "next melee weapon hit withers — the talent's [Tier][Die]+Willpower vital is added automatically, and the target cannot regain HP until the end of your next turn (a ranged hit is skipped and the touch stays armed; Temp HP still lands). Don't also roll the card's damage by hand."
           },
           "order": 1,
           "id": "WitherNote000000"

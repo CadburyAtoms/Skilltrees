@@ -214,10 +214,15 @@ function onlyTheAuthorableReadsWereWidened() {
       `would let the engine write to an ITEM. See the 2026-09-06 FIX PASS 5 delta's verdict table.`);
   }
 
+  // Item 54 (2026-09-06): the DISPEL menu (edhaDispelOptions) is the 4th call site — the effects it
+  // seeks ARE authored on items (Hardy, Cinder Coat, Predictive Ward's braced), and its click never
+  // deletes an item-owned one (tests/dispel-widening.test.js pins the guard).
+  assert.ok(/edhaAllEffects\(subject\)/.test(body("edhaDispelOptions")),
+    "the dispel menu must read through edhaAllEffects — R-73's defect");
   const sites = (src.match(/edhaAllEffects\(/g) || []).length;
-  assert.strictEqual(sites, 4,
-    `edhaAllEffects has ${sites} occurrence(s) (1 definition + 3 call sites: the veil sweep, edhaIsIsolated, ` +
-    `the isolated marker sync). If you added a site, first prove the effect it seeks could be AUTHORED ON AN ` +
+  assert.strictEqual(sites, 5,
+    `edhaAllEffects has ${sites} occurrence(s) (1 definition + 4 call sites: the veil sweep, edhaIsIsolated, ` +
+    `the isolated marker sync, the dispel menu). If you added a site, first prove the effect it seeks could be AUTHORED ON AN ` +
     `ITEM — if the engine created it on the actor, widening is a new bug — then raise this number and record ` +
     `the site in the handoff delta's verdict table.`);
 }

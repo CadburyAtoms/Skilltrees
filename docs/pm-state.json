@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-07T00:00:45.103Z",
+  "generatedAt": "2026-09-07T00:02:43.264Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "49807b8d63",
-    "commit": "e9946a3",
-    "branch": "main",
+    "hash": "40618dc34b",
+    "commit": "2ec7185",
+    "branch": "pm/board-2026-09-06e",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -518,12 +518,12 @@
     {
       "pos": 31,
       "item": "34",
-      "title": "Fleet weapon migration (34a, REBUILD) + loot caches: player-clickable chest + body search (34b) — re-do PR #103 on current main. 34a dispatched 19:15 as the first fable-worker (PM-R14), worktree; merged 19:31 after review — 11 attack items → kind: \"weapon\" (4 natural ones alwaysEquipped), edhaRuleBearer on both actor-wide rule loops (mutation: re-gating either loop fails its pins), summon attacks build as weapons, advItemDoc passes the flag and validate.js type-checks it; parity over all 336 embedded docs: 11 changed, 0 roll differences; gates.js --ci 12/12 in the worktree with EDHA_DATA pinned. 9 🤖 rows in a new # BENCH — Fleet weapon migration, 34a section. REBUILD + ⟳ Sync owed to Ben. Found: the 39 later bestiary blocks carry 44 attack items still kind: action → item 65 (34c). 34b (loot caches) dispatched 19:51 (fable-worker, worktree, ENGINE-ONLY) as its own PR",
+      "title": "Fleet weapon migration (34a, REBUILD) + loot caches: player-clickable chest + body search (34b) — re-do PR #103 on current main. 34a dispatched 19:15 as the first fable-worker (PM-R14), worktree; merged 19:31 after review — 11 attack items → kind: \"weapon\" (4 natural ones alwaysEquipped), edhaRuleBearer on both actor-wide rule loops (mutation: re-gating either loop fails its pins), summon attacks build as weapons, advItemDoc passes the flag and validate.js type-checks it; parity over all 336 embedded docs: 11 changed, 0 roll differences; gates.js --ci 12/12 in the worktree with EDHA_DATA pinned. 9 🤖 rows in a new # BENCH — Fleet weapon migration, 34a section. REBUILD + ⟳ Sync owed to Ben. Found: the 39 later bestiary blocks carry 44 attack items still kind: action → item 65 (34c). 34b (loot caches) dispatched 19:51 (fable-worker, worktree, ENGINE-ONLY) as its own PR — this row's status tracks 34b; 34a is bench-pending",
       "lane": "B",
       "model": "fable-worker",
       "size": "L",
       "deps": "Foundry window for the bench",
-      "status": "running (34b)",
+      "status": "running",
       "statusDetail": null,
       "pr": 220
     },
@@ -842,12 +842,12 @@
     {
       "pos": 60,
       "item": "67",
-      "title": "R-81's sweep — the Brandram's Shockwave Slam + Reckless Advance and the Tussock-Sow's terrain square: bySize → explicit distanceFt = the card's number (default (a); one rebuild; can ride item 65's adversaries batch); found by item 57. Riding item 65's PR (dispatched 19:52)",
+      "title": "R-81's sweep — the Brandram's Shockwave Slam + Reckless Advance and the Tussock-Sow's terrain square: bySize → explicit distanceFt = the card's number (default (a); one rebuild; can ride item 65's adversaries batch); found by item 57. Riding item 65's PR (dispatched 19:52; this row's status follows 65's)",
       "lane": "R",
       "model": "fable-worker",
       "size": "S",
       "deps": "57 ✓ · R-81 default",
-      "status": "running (with 65)",
+      "status": "running",
       "statusDetail": null,
       "pr": null
     },
