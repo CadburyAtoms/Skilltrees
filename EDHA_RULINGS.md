@@ -758,6 +758,8 @@ engine, so it should be decided deliberately rather than slipped in. Blast radiu
 
 *(R-53 — Dead status on a "goes still" cue — ANSWERED 2026-09-06, moved to §K.)*
 
+> **ANSWERED 2026-09-06 (a) — Ben, from the phone board at 21:14 ET, verbatim: *"the CARD is canon for an adversary — a statted block should not scale, so give it `distanceFt: 20` and drop `bySize`."*** Item 57 (PR #226) had already applied exactly that (`bySize: false`, `distanceFt: 20`, card text unchanged; REBUILD owed to the next deploy) — nothing further to change. The principle also underwrites R-81 (item 67) and R-46.
+
 ---
 
 ## H. Map & character creation
