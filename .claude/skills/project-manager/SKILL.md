@@ -188,7 +188,10 @@ STATE banner, search and filters. It lives in the store as `dash/index` (tabs, s
 mirrors, banner) plus `dash/c0`, `dash/c1`, … (whole sections, each under the 256 KiB document
 cap); the page subscribes to the index and fetches the chunks it names. A ⚑ row or open ruling
 has a "reply in inbox" button, so an answer Ben types from a row arrives as an ordinary inbox note
-prefixed with the row's name — read it like any other note.
+prefixed with the row's name — read it like any other note. **Since item 94 (2026-09-07), the card
+Ben sent that reply from shows the result, not its buttons, on every later visit:** "Sent ✓" while
+the note is still `new`, or "Recorded by PM ✓" plus your exact `action` line once you mark it
+`seen` — so write that `action` for Ben to read on his phone, not as an internal shorthand.
 
 **Push state — at every one of these moments:** after step 0 (resume), at step 3 (dispatch), when
 a worker reports (before review), at step 5 (close), and at step 6 when you schedule or stop.
