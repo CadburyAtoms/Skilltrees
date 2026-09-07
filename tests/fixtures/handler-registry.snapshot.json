@@ -1,0 +1,1347 @@
+{
+  "events": [
+    {
+      "type": "edha-deal-damage",
+      "label": "Edha: After You Deal Damage",
+      "description": "Fires after any of your items rolls damage.",
+      "hook": "cosmere-rpg.damageRoll"
+    },
+    {
+      "type": "edha-on-defeat",
+      "label": "Edha: When You Defeat a Creature",
+      "description": "Fires for you when a creature you damage drops to 0 HP.",
+      "hook": "cosmere-rpg.applyDamage"
+    },
+    {
+      "type": "edha-take-damage",
+      "label": "Edha: After You Take Damage",
+      "description": "Fires for the victim after damage is applied to them.",
+      "hook": "cosmere-rpg.applyDamage"
+    },
+    {
+      "type": "edha-apply-watch",
+      "label": "Edha: Damage/Heal-Application Watcher",
+      "description": "Config-only rule read by the apply-damage engine (overflow Temp HP, damage conversion, marked-target triggers, HP-threshold prompts).",
+      "hook": "edha-content.noop-apply-watch"
+    },
+    {
+      "type": "edha-pre-deal-damage",
+      "label": "Edha: Passive Damage Rider",
+      "description": "Adds bonus damage to your matching damage rolls (applied automatically by the system).",
+      "hook": "edha-content.noop-rider"
+    },
+    {
+      "type": "edha-pre-test",
+      "label": "Edha: Test Modifier Rider",
+      "description": "Adds a bonus to your matching skill/attack TEST (applied automatically via the system's temporary modifier).",
+      "hook": "edha-content.noop-test-rider"
+    },
+    {
+      "type": "edha-on-hit",
+      "label": "Edha: When You Hit (Apply Damage)",
+      "description": "Fires when YOUR attack actually deals damage to a creature (a real hit — not just a roll). Pair with an Edha: Triggered Effect.",
+      "hook": "edha-content.noop-on-hit"
+    },
+    {
+      "type": "edha-watch-rule",
+      "label": "Edha: Watch Rule (config only)",
+      "description": "Holds an Edha: Watch handler. Never fires by itself — the watch sweep reads these rules when another document resolves a test or rolls a skill. Put the payload on the sibling 'When Your Test SUCCEEDS' / 'FAILS' rules.",
+      "hook": "edha-content.noop-watch-rule"
+    },
+    {
+      "type": "edha-pre-use",
+      "label": "Edha: Before This Is Used",
+      "description": "Fires on the acting client when this item is used, BEFORE its cost is paid and before it rolls — any handler works. An Edha: Point Burst rule here additionally TAKES OVER the use (the engine resolves the burst itself and cancels the default single-target flow). Anything else runs as a rider and lets the normal use proceed.",
+      "hook": "edha-content.noop-pre-use"
+    },
+    {
+      "type": "edha-combat-timing",
+      "label": "Edha: Combat-Timed Passive",
+      "description": "Active during a combat-timing window (e.g. round start until your turn). The engine's combat hooks read this rule's config.",
+      "hook": "edha-content.noop-combat-timing"
+    },
+    {
+      "type": "edha-draw-mana",
+      "label": "Edha: When You Draw Mana",
+      "description": "Fires on the owner's client each time they use the Draw Mana action — this is how a Leyline Attunement Key carries its own rider. Any handler works. The Keys are Always Active, so they can never fire a plain 'use' event; this is the event they get instead.",
+      "hook": "edha-content.noop-draw-mana"
+    },
+    {
+      "type": "edha-ritual-paid",
+      "label": "Edha: When You Pay Ritual HP",
+      "description": "Fires for the caster after one of their talents' Edha: Ritual HP Cost rules deducts health — this is how an Always-Active ritual passive carries its own rider (the advantage on your next Black test, the Reserve banking). Paying the price from Reserve instead of health does NOT fire it. Any handler works.",
+      "hook": "edha-content.noop-ritual-paid"
+    },
+    {
+      "type": "edha-opportunity",
+      "label": "Edha: When You Roll an Opportunity",
+      "description": "The PAYLOAD of an Opportunity spend. Put an Edha: Opportunity Option on this talent to add its button to the Opportunity-spend menu, then put what actually happens here — any handler works, exactly as on a gated test's success. Rules here run when the player clicks that button, after its resource cost is deducted (07-25).",
+      "hook": "edha-content.noop-opportunity"
+    },
+    {
+      "type": "edha-test-success",
+      "label": "Edha: When Your Test SUCCEEDS",
+      "description": "Fires when this talent's own Edha: Gated Test rule beats its target. Put the talent's payload rules on this event — any handler works.",
+      "hook": "edha-content.noop-test-success"
+    },
+    {
+      "type": "edha-test-fail",
+      "label": "Edha: When Your Test FAILS",
+      "description": "Fires when this talent's own Edha: Gated Test rule does NOT beat its target (Synchronized Assault's reduced effect, Absolute Authority's consolation Weakened). Leave it empty if a failure should do nothing.",
+      "hook": "edha-content.noop-test-fail"
+    }
+  ],
+  "handlers": [
+    {
+      "type": "edha-cae-grant",
+      "label": "Edha: Grant / Burn Action Economy",
+      "description": "Add a named Action or Reaction group to the Cosmere Advanced Encounters tracker, or burn one of the target's Reactions. Falls back to a plain chat note when CAE is off or there is no combat, so the talent still reads correctly at the table.",
+      "fields": [
+        "kind",
+        "n",
+        "target",
+        "label",
+        "whenDeflectBelow"
+      ]
+    },
+    {
+      "type": "edha-enter-stance",
+      "label": "Edha: Enter a Stance",
+      "description": "Put the user into one of their own stance talents. Pair with Edha: Combat-Timed Passive to start every combat in a stance (Practiced Kata).",
+      "fields": [
+        "stance",
+        "unlessStatus"
+      ]
+    },
+    {
+      "type": "edha-def-test",
+      "label": "Edha: Gated Test (On Use)",
+      "description": "Roll this talent's own test and gate its payload on the result. YOU roll it on the talent's card; the engine captures that roll and compares it. Put what happens on the sibling 'When Your Test SUCCEEDS' / 'FAILS' rules — this handler only decides.",
+      "fields": [
+        "skill",
+        "vs",
+        "def",
+        "targetSkill",
+        "dc",
+        "requireTarget",
+        "rangeColor",
+        "requireTargetStatus",
+        "requireDisposition",
+        "skipIfAlly",
+        "requireTargetOnList",
+        "requireTargetOnListStatus",
+        "targetCounter",
+        "targetList",
+        "targetListStatus",
+        "targetListRange",
+        "oncePerScene",
+        "note"
+      ]
+    },
+    {
+      "type": "edha-watch",
+      "label": "Edha: Watch (react to another talent's test or roll)",
+      "description": "This talent reacts to something ANOTHER document did — a test another of your talents resolved, or any skill roll you made. Put what happens on the sibling 'When Your Test SUCCEEDS' / 'FAILS' rules, exactly as for a gated test; this handler only decides whether the observation counts.",
+      "fields": [
+        "watch",
+        "scope",
+        "payloadTarget",
+        "whenSkill",
+        "whenVs",
+        "whenOutcome",
+        "whenTotal",
+        "whenTotalValue",
+        "vs",
+        "def",
+        "targetSkill",
+        "dc",
+        "requireSelfStatus",
+        "requireTargetStatus",
+        "whenOnMyList",
+        "whenOnMyListStatus",
+        "disposition",
+        "rangeColor",
+        "rangeFt",
+        "includeSelf",
+        "once",
+        "chain",
+        "note"
+      ]
+    },
+    {
+      "type": "edha-detonate-list",
+      "label": "Edha: Detonate Placed Markers",
+      "description": "Set off the markers you have placed (Charges), all at once or one at a time: each catches the creatures inside it, rolls its own damage, and leaves its dangerous terrain. Put the extra effects of THIS talent's detonation in the fields below.",
+      "fields": [
+        "source",
+        "radiusFt",
+        "bonusFormula",
+        "ignoreDeflect",
+        "doubleCaughtFormula",
+        "doubleCaughtType",
+        "mergeTerrain",
+        "mergeWhenAtLeast",
+        "mergeFormula",
+        "requireNonEmpty",
+        "oncePerScene",
+        "label"
+      ]
+    },
+    {
+      "type": "edha-prompt-pick",
+      "label": "Edha: Prompt / Pick One",
+      "description": "Whisper yourself a card that asks a question — accept an offer, or choose one creature from a filtered list. What HAPPENS goes on the sibling 'When Your Test SUCCEEDS' rules, exactly as for a gated test; the creature you pick becomes their target.",
+      "fields": [
+        "source",
+        "ledgers",
+        "prompt",
+        "label",
+        "icon",
+        "costs",
+        "once",
+        "relativeTo",
+        "rangeColor",
+        "rangeFt",
+        "disposition",
+        "includeSelf",
+        "requireStatus",
+        "aliveOnly",
+        "emptyNote",
+        "note"
+      ]
+    },
+    {
+      "type": "edha-focus",
+      "label": "Edha: Gain / Drain Focus (or Investiture)",
+      "description": "Move a creature's focus (or Investiture) involuntarily: you regain it, or the creature you affected loses it. Not for a talent's own resource cost — that lives on the activation.",
+      "fields": [
+        "op",
+        "resource",
+        "target",
+        "formula",
+        "whenOwnsTalent",
+        "label"
+      ]
+    },
+    {
+      "type": "edha-damage-react",
+      "label": "Edha: Offer a Reaction When Someone Takes Damage",
+      "description": "The Bulwark shape: an ally near you is damaged (or drops to 0) and you are offered a whispered card to spend a resource and intervene — reduce the hit, take it for them, hit back, or keep them standing. Config-only: the applyDamage watcher reads these rules and posts the card; the button already knows how to resolve each action.",
+      "fields": [
+        "when",
+        "action",
+        "requireVictimInMyZone",
+        "requireAdjacent",
+        "rangeFt",
+        "requireAttackerWithinColor",
+        "amountFormula",
+        "capAtDealt",
+        "dcFormula",
+        "costResource",
+        "costValue",
+        "oncePerRound",
+        "prompt"
+      ]
+    },
+    {
+      "type": "edha-test-react",
+      "label": "Edha: Offer a Reaction When Someone Rolls",
+      "description": "The Coordination shape: a creature near you makes a test (or attack) and you are offered a whispered card to spend a resource and react — negate a Complication, boost the result, grant a Plot Die, or impose disadvantage. Config-only: the roll watcher reads these rules and posts the card; the buttons already know how to resolve each action.",
+      "fields": [
+        "rolls",
+        "rollerIs",
+        "when",
+        "requireSkillTest",
+        "rangeColor",
+        "requireTargetInMyTerrain",
+        "requireSeen",
+        "action",
+        "contest",
+        "modFormula",
+        "costs",
+        "prompt",
+        "result",
+        "note"
+      ]
+    },
+    {
+      "type": "edha-damage-reduce",
+      "label": "Edha: Passive Damage Reduction For Allies",
+      "description": "An ally near you is about to take damage and it is passively reduced before it lands (Shield Wall, Devoted Conduit). Config-only: the applyDamage wrapper reads these rules; first qualifying owner per talent applies.",
+      "fields": [
+        "when",
+        "requireVictimAdjacent",
+        "requireAdjacentAllies",
+        "rangeColor",
+        "color",
+        "amountFormula"
+      ]
+    },
+    {
+      "type": "edha-focus-guard",
+      "label": "Edha: Focus Guard (passive)",
+      "description": "Wary's shape: involuntary focus loss against YOU is reduced, and a status cannot be applied to you while you hold focus. Config-only — the focus-drain path and the status-creation veto read this rule off its owner.",
+      "fields": [
+        "reduceFormula",
+        "vetoStatus",
+        "whileFocusAbove"
+      ]
+    },
+    {
+      "type": "edha-move-veto",
+      "label": "Edha: Forbid Approaching Allies (movement veto)",
+      "description": "Dread Presence's shape: a creature bearing the status, inside your range, cannot willingly move closer to any of its allies. Engine-forced movement bypasses it. Config-only: the token-movement veto reads this rule off its owner — character or adversary alike.",
+      "fields": [
+        "moverStatus",
+        "rangeColor",
+        "rangeFt"
+      ]
+    },
+    {
+      "type": "edha-hp-floor",
+      "label": "Edha: Hold At An HP Floor (once per long rest)",
+      "description": "The first time health would hit 0, it becomes the floor formula instead. Spent until the flag below clears — pair a native 'Actor Long Rested' + 'Update Actor' rule on the same talent to clear it automatically. Config-only: the pre-update veto reads this rule.",
+      "fields": [
+        "floorFormula",
+        "spentFlag"
+      ]
+    },
+    {
+      "type": "edha-aura",
+      "label": "Edha: Adjacency Aura (managed Active Effect)",
+      "description": "While at least one living ally is adjacent to you, you (and them) carry a managed Active Effect — applied and removed automatically as tokens move. Config-only: the aura sweep reads these rules.",
+      "fields": [
+        "key",
+        "amount",
+        "alsoAllies",
+        "label",
+        "img"
+      ]
+    },
+    {
+      "type": "edha-pulse",
+      "label": "Edha: Pulse To Creatures In Range",
+      "description": "When this rule fires, every ally — or every enemy — within your Attunement Range is healed or gains a status. Put it on `use`, or on the Draw Mana event for an Attunement Key rider. An enemy pulse keeps GM information off the player card: hidden/wall skips whisper to the GM instead (07-12b).",
+      "fields": [
+        "rangeColor",
+        "kind",
+        "who",
+        "formula",
+        "statusId",
+        "requireIsolated",
+        "visibleOnly",
+        "includeSelf",
+        "note"
+      ]
+    },
+    {
+      "type": "edha-cleanse",
+      "label": "Edha: Offer To Cleanse A Condition",
+      "description": "When this rule fires, you are offered a whispered card: one button per condition on each ally in range; clicking spends the costs and removes it. Put it on the Draw Mana event for Beacon of Stability's cadence — or set the trigger to 'success-damage-roll' for a heal-test talent whose cleanse fires only on the non-graze branch (Surgical Precision; that mode reads YOUR CURRENT TARGET and the conditions list, and the rule rides an 'Edha: Watch Rule' event).",
+      "fields": [
+        "trigger",
+        "conditions",
+        "def",
+        "rangeColor",
+        "visibleOnly",
+        "costs",
+        "prompt"
+      ]
+    },
+    {
+      "type": "edha-move-window",
+      "label": "Edha: Arm A Movement Window (this round)",
+      "description": "On use, arms a round-scoped window: whenever you then move, a card lists the allies within range of where you stopped, with each one's half Speed. Out of combat the window stays open until re-armed.",
+      "fields": [
+        "rangeFt",
+        "note"
+      ]
+    },
+    {
+      "type": "edha-designate",
+      "label": "Edha: Designate An Opposing Character",
+      "description": "On use, posts the designate card: pick an opposing token within your Attunement Range; the next ally to test against it this round raises the stakes (they target the token when rolling).",
+      "fields": [
+        "color",
+        "note"
+      ]
+    },
+    {
+      "type": "edha-accord-forge",
+      "label": "Edha: Forge An Accord With The Picked Creature",
+      "description": "Put this on 'When Your Test SUCCEEDS' under a Prompt / Pick One rule: the creature you picked becomes your accord partner (the accord stores your modifier so the partner watcher can offer it on their tests).",
+      "fields": [
+        "modFormula",
+        "shareModIfOwns",
+        "note"
+      ]
+    },
+    {
+      "type": "edha-reveal",
+      "label": "Edha: Reveal Facts About a Creature",
+      "description": "Post a card stating facts about a creature — its HP, conditions, defenses, or which of its numbers are lowest / below half. The scouting payload: pair it with Edha: Gated Test (put it on the SUCCESS event) or fire it straight off `use`. Whispered to you and the GM by default, so learning something is not the same as telling the table.",
+      "fields": [
+        "target",
+        "counterStatus",
+        "facts",
+        "hideDefenses",
+        "separator",
+        "whisper",
+        "icon",
+        "note"
+      ]
+    },
+    {
+      "type": "edha-note",
+      "label": "Edha: Post a Note",
+      "description": "Posts a chat note when this rule fires. The table-run half of a talent: say what the players must resolve by hand. Works on any event — put it on 'When Your Test SUCCEEDS' for the payload of a gated test.",
+      "fields": [
+        "text",
+        "icon",
+        "whisper",
+        "whenOwnsTalent",
+        "whenTarget",
+        "rosterColor",
+        "rosterList",
+        "rosterListStatus",
+        "rosterEmpty"
+      ]
+    },
+    {
+      "type": "edha-owner-list",
+      "label": "Edha: Sustained List (place / release)",
+      "description": "The capped ledger every marker tree hand-rolled: place a mark on a creature, keep at most <cap> of them, and clear one when it is spent. Put a 'release' rule BEFORE a damage rule to make the damage conditional on the creature actually bearing your mark — release stops the remaining rules when there was nothing to release. Mode 'counter' (H3b, §9m q6) is the COUNTED SINGLE BEARER instead: one creature carries 0..cap points of your counter; placing on a new creature clears the old bearer.",
+      "fields": [
+        "list",
+        "mode",
+        "op",
+        "requireNonEmpty",
+        "confirm",
+        "sceneFreebie",
+        "freebieLabel",
+        "annotateField",
+        "prohibition",
+        "riderSkill",
+        "riderColor",
+        "riderFailStatus",
+        "placeNote",
+        "count",
+        "requireBearerRange",
+        "rangeColor",
+        "capFormula",
+        "evict",
+        "status",
+        "target",
+        "nearFt",
+        "allowDuplicates",
+        "multiOwner",
+        "sceneScoped",
+        "requireDisposition",
+        "requireAdjacent",
+        "releaseButton",
+        "note"
+      ]
+    },
+    {
+      "type": "edha-triggered-effect",
+      "label": "Edha: Triggered Effect",
+      "description": "Deal damage / AoE / heal / Temp HP / affliction when this rule fires.",
+      "fields": [
+        "whenDamageType",
+        "whenDealer",
+        "whenTargetIsolated",
+        "whenTargetStatus",
+        "unlessTargetStatus",
+        "whenOwnsTalent",
+        "kind",
+        "perCounterStatus",
+        "statusId",
+        "statusExpire",
+        "formula",
+        "damageType",
+        "target",
+        "listName",
+        "listStatus",
+        "rangeColor",
+        "maxTargets",
+        "requireDisposition",
+        "whenMoment",
+        "radius",
+        "nearAffects",
+        "resourceGainResource",
+        "resourceGainValue",
+        "costResource",
+        "costValue",
+        "costOptional",
+        "oncePerRound",
+        "note"
+      ]
+    },
+    {
+      "type": "edha-damage-rider",
+      "label": "Edha: Damage Rider",
+      "description": "Passively adds bonus damage to your matching damage rolls.",
+      "fields": [
+        "appliesTo",
+        "bonusFormula",
+        "whenTargetCondition",
+        "whenTargetStatus",
+        "whenMovedTowardFt",
+        "whenTargetFooled",
+        "lightRadiusFt"
+      ]
+    },
+    {
+      "type": "edha-pick-expertises",
+      "label": "Edha: Pick Expertises (authored list)",
+      "description": "Prompts a pick of N expertises from THIS rule's own entries list. (The native grant-expertises pick mode offers the system's Rosharan registries instead — bench 07-19.)",
+      "fields": [
+        "pickAmount",
+        "entries",
+        "title"
+      ]
+    },
+    {
+      "type": "edha-test-rider",
+      "label": "Edha: Test Modifier Rider",
+      "description": "Passively adds a bonus to your matching skill/attack TEST (injected as the system's temporary modifier).",
+      "fields": [
+        "appliesTo",
+        "bonusFormula",
+        "mode",
+        "whenSkill",
+        "unlessSkills",
+        "whileStanceActive",
+        "whenTargetStatus",
+        "rangeColor",
+        "whenTargetIsolated",
+        "whenAttribute",
+        "whenFastTurn",
+        "whenSlowTurn",
+        "firstTestThisTurn",
+        "whenEnemiesInMyZone",
+        "unlessDisadvantage"
+      ]
+    },
+    {
+      "type": "edha-move",
+      "label": "Edha: Forced Movement (caster)",
+      "description": "Relocate the caster toward their current target, ignoring Reactions, halting at walls. PILOT (Red): enforced, not GM-narrated.",
+      "fields": [
+        "bySize",
+        "byHalfSpeed",
+        "distanceFt",
+        "whenFastTurn",
+        "oncePerTurn",
+        "requireTargetIsolated",
+        "note"
+      ]
+    },
+    {
+      "type": "edha-push",
+      "label": "Edha: Push Target + Collision",
+      "description": "Shove the creature you hit away from you (wall-aware); on a wall collision, deal the collision damage. PILOT (Red). Pair with event edha-on-hit.",
+      "fields": [
+        "whenDamageType",
+        "whenDealer",
+        "bySize",
+        "sizeColor",
+        "awayFrom",
+        "distanceFt",
+        "collisionFormula",
+        "collisionType",
+        "note"
+      ]
+    },
+    {
+      "type": "edha-rally-stack",
+      "label": "Edha: Rally Stack",
+      "description": "A stacking +1 counter (max = Red rank) SPENT in full on your next test (R-27 — the card is canon); an unspent stack still resets at the start of your turn or the round. Battle Fever / Feeding Frenzy. Allies-in-range sharing is narrated.",
+      "fields": [
+        "trigger",
+        "resetOn",
+        "note"
+      ]
+    },
+    {
+      "type": "edha-burst",
+      "label": "Edha: Point-Targeted Burst",
+      "description": "Click-to-place a burst template, then Detonate: capture everyone inside, roll once, auto-save for half, apply, optionally drop terrain.",
+      "fields": [
+        "sizeByRank",
+        "sizeFt",
+        "affects",
+        "color",
+        "rangeByRank",
+        "rangeFt",
+        "saveSkill",
+        "saveVs",
+        "addSkillMod",
+        "heal",
+        "terrain"
+      ]
+    },
+    {
+      "type": "edha-defense-buff",
+      "label": "Edha: Combat-Timed Defense Buff",
+      "description": "Grants +N to the listed defenses during a combat-timing window (managed automatically by the combat tracker), or — window 'scene' — as an Active Effect created on use and cleared when the encounter ends.",
+      "fields": [
+        "amount",
+        "defenses",
+        "window",
+        "label",
+        "img"
+      ]
+    },
+    {
+      "type": "edha-place-hazard",
+      "label": "Edha: Place Dangerous Terrain",
+      "description": "Drop a scene-long dangerous-terrain Region that damages tokens on enter / start of turn. mode trail (2bY) makes it a TOGGLE instead: on use the trail arms/ends, and while armed every space you move through becomes a dangerous-terrain patch with this rule's damage (Walking Ruin's shape; the move watcher reads the rule).",
+      "fields": [
+        "mode",
+        "sizeByRank",
+        "sizeFt",
+        "damageFormula",
+        "damageType",
+        "color",
+        "spreads"
+      ]
+    },
+    {
+      "type": "edha-temp-hp",
+      "label": "Edha: Grant Temp HP",
+      "description": "Roll a formula on use and set it as the target's Edha Temp HP. 'victim' (07-25) grants the creature this rule's trigger resolved against — as a watch payload it KEEPS THE HIGHER value ('does not stack', Sovereign's Favor) and relays through the GM.",
+      "fields": [
+        "formula",
+        "target"
+      ]
+    },
+    {
+      "type": "edha-ritual-hp-cost",
+      "label": "Edha: Ritual HP Cost",
+      "description": "On use, the caster loses health = formula, then the payment is ANNOUNCED (Edha: When You Pay Ritual HP) so ritual riders on other talents fire off their own documents.",
+      "fields": [
+        "formula",
+        "note"
+      ]
+    },
+    {
+      "type": "edha-reserve-bank",
+      "label": "Edha: Bank Ritual HP As Reserve",
+      "description": "Pair with event Edha: When You Pay Ritual HP — the health just paid is banked as Reserve, up to the cap. Carrying this rule is what makes its owner a Reserve user: it turns on the sheet's Reserve bar, the Spend-Investiture 'Pay from Reserve' checkbox and the Double-Dip pay-from-Reserve offer.",
+      "fields": [
+        "capFormula"
+      ]
+    },
+    {
+      "type": "edha-opportunity-option",
+      "label": "Edha: Opportunity Option",
+      "description": "An entry on the Opportunity-spend menu card (posts when one of your tests rolls an Opportunity). Pair with event Edha: When You Roll an Opportunity. The Opportunity itself is trusted (never auto-deducted); the listed resource cost IS deducted on click.",
+      "fields": [
+        "label",
+        "costResource",
+        "costValue",
+        "kind",
+        "skill",
+        "whenAttribute",
+        "note"
+      ]
+    },
+    {
+      "type": "edha-heal-cut",
+      "label": "Edha: Halve Healing On Hit (Necrotic Grasp)",
+      "description": "When you hit a creature with a matching-color attack, its healing received is halved until the end of your next turn. Applied automatically at damage application.",
+      "fields": [
+        "color",
+        "fraction",
+        "note"
+      ]
+    },
+    {
+      "type": "edha-ward",
+      "label": "Edha: Ward the First Lethal Drop",
+      "description": "The subject creature is warded: the FIRST time it would drop to 0 HP this scene it drops to 1 HP instead and gains the Temp HP formula, then the ward ends. Enforced by the damage post-pass; the defeat watcher never counts a warded drop. An already-warded target (and a missing GM for another's creature) refuses BEFORE cost.",
+      "fields": [
+        "thpFormula",
+        "note"
+      ]
+    },
+    {
+      "type": "edha-turn-dot",
+      "label": "Edha: Recurring Decay (start-of-turn drain)",
+      "description": "On use, your targeted creature starts decaying: at the start of each of its turns it takes the formula (re-rolled each turn) and you heal a fraction of the damage. Removing the marker icon ends it; the whole state clears at scene end. The target gate (marker status or below half HP, range, one instance per creature, a GM online for another's creature) refuses BEFORE cost.",
+      "fields": [
+        "statusId",
+        "formula",
+        "damageType",
+        "healOwnerFraction",
+        "requireTargetStatus",
+        "orBelowHalfHp",
+        "rangeColor",
+        "note"
+      ]
+    },
+    {
+      "type": "edha-revive",
+      "label": "Edha: Revive a Downed Creature",
+      "description": "On use: the targeted 0-HP creature returns to 1 HP (GM relay), gains the status until the end of ITS next turn, moves onto your initiative (GM-side), and takes one auto-created injury. If your ledger holds an entry you are asked whether to consume one. Once per scene + the target-at-0 gate refuse BEFORE cost (the generic sceneOnce stamp).",
+      "fields": [
+        "statusId",
+        "ledger",
+        "ledgerStatus",
+        "confirm",
+        "injury",
+        "initiative",
+        "oncePerScene",
+        "note"
+      ]
+    },
+    {
+      "type": "edha-mutation",
+      "label": "Edha: Grant an Adaptation (pick one)",
+      "description": "On use, a whispered card offers the enabled adaptations for your willing target (default you): Bone Spurs (+keen on melee hits), Venom Glands (melee hits afflict ongoing vital), Dense Tissue (+Deflect and immunity to forced movement). Clicking bakes the choice onto the creature for the scene — one adaptation per creature; a talent granting apex doubling reads the same flag.",
+      "fields": [
+        "keenFormula",
+        "venomFormula",
+        "keenOnGraze",
+        "venomOnGraze",
+        "deflectAmount",
+        "note"
+      ]
+    },
+    {
+      "type": "edha-regen-grant",
+      "label": "Edha: Grant Start-of-Turn Regeneration",
+      "description": "On use, your willing target (default you) regenerates the formula at the START OF ITS TURNS for the scene. Optional: end when it takes Vital/Spirit damage (Primal Regeneration), a better formula while it carries an adaptation, and the apex package — +Deflect, +vital on its attacks, adaptations doubled, and an auto-created Injury when the effect ends at scene end (Apex Form).",
+      "fields": [
+        "formula",
+        "endOnVitalSpirit",
+        "mutationFormula",
+        "deflect",
+        "vitalFormula",
+        "vitalOnGraze",
+        "note"
+      ]
+    },
+    {
+      "type": "edha-summon",
+      "label": "Edha: Summon",
+      "description": "Spawn a token scaled to the caster when this talent is used.",
+      "fields": [
+        "summonName",
+        "img",
+        "creatureType",
+        "hpFormula",
+        "speed",
+        "defensePenalty",
+        "deflect",
+        "conditionImmunities",
+        "attackName",
+        "attackFormula",
+        "attackType",
+        "attackRange",
+        "actsAfterCaster",
+        "sustainCap",
+        "replaceOldest",
+        "tokenSizeFt",
+        "tokenSizeColor",
+        "placeAt",
+        "rangeColor",
+        "rangeFt",
+        "bakedEffectsJson",
+        "extraItemsJson"
+      ]
+    },
+    {
+      "type": "edha-barrier",
+      "label": "Edha: Barrier (blocks movement)",
+      "description": "Click-place an obstruction with health: a token that can be attacked and destroyed, inside a box of Foundry walls that nothing moves through. It comes down when it is destroyed, when its token is deleted, or at the end of the encounter. Put it on 'use'.",
+      "fields": [
+        "barrierName",
+        "img",
+        "hpFormula",
+        "sizeFt",
+        "defensePenalty",
+        "blocksMovement",
+        "blocksSight",
+        "rangeColor",
+        "rangeFt",
+        "note"
+      ]
+    },
+    {
+      "type": "edha-illusion-copy",
+      "label": "Edha: Illusory Copy (belief loop)",
+      "description": "Place an illusory duplicate that every enemy who can see it tests against. Losers lose track of the original — their client stops rendering it; winners see only empty air where the copy stands. Any hit breaks it. Put it on 'use'.",
+      "fields": [
+        "copyOf",
+        "sourceLabel",
+        "hpFormula",
+        "speed",
+        "defensePenalty",
+        "beliefDefense",
+        "beliefSkill",
+        "rangeColor",
+        "note"
+      ]
+    },
+    {
+      "type": "edha-illusion-upkeep",
+      "label": "Edha: Illusion Upkeep Prompt",
+      "description": "While you have living summoned illusions, your turn start whispers an upkeep prompt with a one-click payment. Config-only: the turn-start sweep reads this rule, so it needs no event of its own — put it on any event.",
+      "fields": [
+        "resource",
+        "costPer",
+        "qualifier",
+        "note"
+      ]
+    },
+    {
+      "type": "edha-apply-status",
+      "label": "Edha: Mark / Apply Status to Target",
+      "description": "On use, applies a status to your targeted creature and records you as the mark's owner. Optional: allies' damage vs the marked creature gains bonus damage.",
+      "fields": [
+        "status",
+        "expire",
+        "mark",
+        "whenOwnsTalent",
+        "bonusDamageFormula",
+        "bonusDamageType",
+        "note"
+      ]
+    },
+    {
+      "type": "edha-status-sweep",
+      "label": "Edha: Damage All [Status] Creatures In Range",
+      "description": "On use, every creature in range with the status takes the damage; optionally gain Temp HP equal to the total dealt (Spoils of Isolation).",
+      "fields": [
+        "status",
+        "rangeByRank",
+        "rangeFt",
+        "color",
+        "damageFormula",
+        "damageType",
+        "thpFromTotal"
+      ]
+    },
+    {
+      "type": "edha-overflow-thp",
+      "label": "Edha: Heal Overflow Becomes Temp HP",
+      "description": "When this talent's healing would exceed the target's max HP, the excess becomes Edha Temp HP (applied automatically).",
+      "fields": [
+        "note",
+        "deflectStackMax"
+      ]
+    },
+    {
+      "type": "edha-damage-convert",
+      "label": "Edha: Convert Damage Type vs State",
+      "description": "Your damage changes type when the victim matches a state (Severance: vs Isolated → vital). Applied automatically at damage application.",
+      "fields": [
+        "toType",
+        "whenTargetIsolated"
+      ]
+    },
+    {
+      "type": "edha-marked-damage-trigger",
+      "label": "Edha: When Your Marked Creature Takes Damage",
+      "description": "When the creature bearing your mark/status takes damage from any source, you recover a resource (once per round). Applied automatically.",
+      "fields": [
+        "status",
+        "resource",
+        "value",
+        "oncePerRound"
+      ]
+    },
+    {
+      "type": "edha-gm-cue",
+      "label": "Edha: GM Cue Card",
+      "description": "Whispers the GM a reminder card when the trigger crosses (damaged / hp-below / ally-drops / seeming-break / on-hit / enemy-turn-start / turn-end). Config-only: the engine's watchers read this rule. REGISTRATION IS LOAD-BEARING — an unregistered handler type is silently dropped by the DataModel, exactly like a bad rule id.",
+      "fields": [
+        "trigger",
+        "atFraction",
+        "rangeFt",
+        "everyNRounds",
+        "oncePerRound",
+        "note"
+      ]
+    },
+    {
+      "type": "edha-regen",
+      "label": "Edha: Turn-End Regen",
+      "description": "At the end of the owner's turn, the owner regains a flat amount of health, engine-applied (clamped: never while down, never past max) with a whispered GM card. Config-only: the turn cue sweep reads this rule. First consumer: the Garden Sow's Nexus-Fed.",
+      "fields": [
+        "amount",
+        "note"
+      ]
+    },
+    {
+      "type": "edha-ambush-belief",
+      "label": "Edha: Ambush Seeming Belief Test",
+      "description": "On the owner's first attack against each target per scene, the target tests Perception vs the owner's chosen defense (engine-rolled); failure marks them fooled in the owner's ambushBelief ledger, which whenTargetFooled damage riders read. The lightweight seeming — no phantom copy, no client veil. Config-only: the engine's use-hook watcher reads this rule off the seeming trait.",
+      "fields": [
+        "dcFrom",
+        "perceptionAdvantage",
+        "note"
+      ]
+    },
+    {
+      "type": "edha-pack-advantage",
+      "label": "Edha: Pack Advantage (Aggro Ledger)",
+      "description": "Attacking a creature that a living packmate (another token carrying this same item) last attacked → this attack rolls with advantage. Config-only: the pre-roll pipeline reads this rule via the aggro ledger.",
+      "fields": [
+        "note"
+      ]
+    },
+    {
+      "type": "edha-dark-veil",
+      "label": "Edha: Marker Auto-On In Darkness",
+      "description": "While the owner's token stands unlit, the named marker AE auto-enables (re-lit auto-disables only engine-enabled markers — a GM's manual cover toggle is never fought). Config-only: the dark-veil sweep reads this rule.",
+      "fields": [
+        "effectName"
+      ]
+    },
+    {
+      "type": "edha-sense-reveal",
+      "label": "Edha: Sense Marked Creatures (config only)",
+      "description": "You sense creatures bearing this marker status through walls and fog — their tokens render to YOUR client through any obstruction (GM-hidden stays hidden). Optionally, when a creature bearing YOUR marker takes damage, you recover a resource. Config-only: the veil wrap and the damage post-pass read this rule — put it on an 'Edha: Watch Rule' event.",
+      "fields": [
+        "status",
+        "recoverResource",
+        "recoverAmount",
+        "oncePerRound",
+        "rangeColor"
+      ]
+    },
+    {
+      "type": "edha-redirect",
+      "label": "Edha: Redirect Damage (config only)",
+      "description": "to-allies: when you take damage while armed, a whispered offer lets you pass up to the budget of it to one or more willing allies in range (Mantle of the Aspirant). intercept: a creature on your sustained ledger takes damage and you are offered a Reaction — take the fraction yourself (same type), they heal back fraction + the heal bonus (never more than they lost), and BOTH of you gain the Temp HP formula (Shoulder the Oath). Config-only: the applyDamage post-pass reads this rule — put it on an 'Edha: Watch Rule' event.",
+      "fields": [
+        "direction",
+        "budgetFormula",
+        "rangeColor",
+        "requireSelfStatus",
+        "watchList",
+        "watchListStatus",
+        "watchFlag",
+        "linkOnUse",
+        "linkNote",
+        "takeFraction",
+        "chooseAmount",
+        "takeType",
+        "healBonusFormula",
+        "healFormula",
+        "thpFormula",
+        "oncePerRound"
+      ]
+    },
+    {
+      "type": "edha-bound-adv",
+      "label": "Edha: Advantage vs Your Ledger-Bound Targets (config only)",
+      "description": "Any attack or item test you or an ally rolls against a creature on your sustained ledger gains advantage while YOU can see the target (hidden/wall line of sight — darkness stays GM-judged). Config-only: the pre-roll injector reads this rule — put it on an 'Edha: Watch Rule' event.",
+      "fields": [
+        "list",
+        "listStatus",
+        "includeDecree",
+        "requireLos",
+        "placeNote"
+      ]
+    },
+    {
+      "type": "edha-prohibition-resolve",
+      "label": "Edha: Resolve a Prohibition (On Success)",
+      "description": "Put it on 'When Your Test SUCCEEDS' after an Edha: Gated Test. The victim's entry on your ledger resolves as a violation (the shared resolver: damage off the PLACING talent's formula, Disoriented, any annotate rider, entry consumed). The court then turns on the accomplices: each OTHER enemy within the radius rolls the skill vs your colour (engine-rolled, never trusted); failures share ONE roll of THIS talent's damage formula + Disoriented.",
+      "fields": [
+        "list",
+        "listStatus",
+        "courtRadiusFt",
+        "courtSkill",
+        "courtColor"
+      ]
+    },
+    {
+      "type": "edha-decree",
+      "label": "Edha: Scene-Wide Prohibition (Decree)",
+      "description": "On use: every living enemy in your Attunement Range is bound under ONE declared prohibition (picker; cancel refunds) and your ledger allies stand Witness. The violation watchers prompt; resolution fires every active Edict, grants the Witness Temp-HP die + advantage, and courts every enemy near the violator with this talent's damage formula. The flow is engine-owned; this rule carries the dials.",
+      "fields": [
+        "rangeColor",
+        "witnessList",
+        "witnessListStatus",
+        "witnessThpFormula",
+        "courtRadiusFt",
+        "oncePerScene"
+      ]
+    },
+    {
+      "type": "edha-test-aura",
+      "label": "Edha: Flat Test Aura (config only)",
+      "description": "While you are armed, qualifying creatures near you add a flat bonus to every d20 test they roll (injected pre-roll; ⚑ dialog-roll rebuilds are the standing bench caveat). Config-only: the pre-roll injector reads this rule — put it on an 'Edha: Watch Rule' event.",
+      "fields": [
+        "amountFormula",
+        "affects",
+        "includeSelf",
+        "rangeColor",
+        "rangeFt",
+        "requireSelfStatus"
+      ]
+    },
+    {
+      "type": "edha-self-status",
+      "label": "Edha: Apply Status To Yourself (On Use)",
+      "description": "On use, the user gains the status — timed (expires end of your next turn) or until removed. Brace-class defensive stances, and the arming statuses the armed damage-bonus / watch rules read.",
+      "fields": [
+        "statusId",
+        "timed",
+        "refuseWhileActive",
+        "oncePerScene",
+        "immuneStatuses",
+        "requireListNonEmpty",
+        "requireListStatus"
+      ]
+    },
+    {
+      "type": "edha-zone",
+      "label": "Edha: Place a Zone (terrain / Foundation / fortify / link)",
+      "description": "The zone family. terrain = click-to-place a [Size] difficult-terrain square Region within Attunement Range (the Green Draw-Mana rider's shape). foundation = the begin-turn defense-buff square (Civilization's Foundation: gold Drawing, tier sustain cap, +1 all defenses to allies beginning their turn inside). fortify = your existing Foundations grow teeth for the scene (enter damage off THIS talent's formula + Agility-vs-Red save, enemies-only difficult terrain, Construct +2 inside). link = pick two of your Foundations; allies teleport between them (once/turn, trusted). The pickers, Drawings, Regions and GM relays stay engine-owned; this rule carries the dials. A cancelled picker REFUNDS the cost.",
+      "fields": [
+        "kind",
+        "color",
+        "sizeFt",
+        "rangeFt",
+        "capFormula",
+        "costList",
+        "costListStatus",
+        "evict",
+        "note",
+        "lengthFt",
+        "widthFt",
+        "constructMult",
+        "saveSkill",
+        "saveLabel",
+        "saveColor",
+        "failStatus"
+      ]
+    },
+    {
+      "type": "edha-zone-hazard",
+      "label": "Edha: Zone Hazard Rider (config only)",
+      "description": "Difficult terrain YOU create also damages creatures that enter or start their turn in it (Thorn Field's shape). Config-only: the zone creator reads this rule off the creator's items and bakes the hazard into the Region — put it on an 'Edha: Watch Rule' event. @colorRank = your rank in the colour (ROLE rank for an adversary), @tier = your tier.",
+      "fields": [
+        "moment",
+        "damageFormula",
+        "damageType",
+        "color",
+        "label"
+      ]
+    },
+    {
+      "type": "edha-zone-react",
+      "label": "Edha: Zone Reaction",
+      "description": "What this talent does around dangerous/difficult terrain you own. turn-end-in-zone + offer-expand = a creature ends its turn in your terrain → a whispered offer to expand it (Spreading Roots' shape; config-only, read by the combat-turn sweep — put it on an 'Edha: Watch Rule' event; one offer per round). defeat-in-zone + ignite-spread = a character drops to 0 HP in your terrain → a zone ignites on the body and your zones spread (Combustion Chain's shape; the defeat sweep reads it, and using the talent posts the armed reminder card; 2bY).",
+      "fields": [
+        "when",
+        "action",
+        "color",
+        "sizeFt",
+        "costInv",
+        "igniteRadiusFt",
+        "spreadFt",
+        "damageFormula",
+        "damageType"
+      ]
+    },
+    {
+      "type": "edha-zone-guard",
+      "label": "Edha: Marker-Square Guard (config only)",
+      "description": "Defender-keyed protections for allies standing on YOUR marker squares (Bulwark Ground's shape). Config-only — put it on an 'Edha: Watch Rule' event: the legacy-marker turn-start pass reads thpFormula, and the pre-roll injector reads noAdvantage (attacks against an ally on your square can't benefit from advantage — the inverse of edha-unseen-ward).",
+      "fields": [
+        "thpFormula",
+        "noAdvantage",
+        "note"
+      ]
+    },
+    {
+      "type": "edha-snare-react",
+      "label": "Edha: Snare-Spring Reaction (config only)",
+      "description": "What this talent does when one of the OWNER's snares springs (swept by the spring resolver — put it on an 'Edha: Watch Rule' event). offer-mark = a Reaction card offering to mark the triggering foe (markedBy.<markKey>); the SAME rule then feeds the applyDamage pre-pass: the marked foe takes the bonus whenever it takes damage within nearFt of your marker squares (Hexmark). prompt = post the note when the spring lies within nearFt of a LINKED marker square (Weave the Thread's Reactive-Strike grant).",
+      "fields": [
+        "mode",
+        "markKey",
+        "bonusFormula",
+        "bonusType",
+        "nearFt",
+        "requireLinked",
+        "note"
+      ]
+    },
+    {
+      "type": "edha-detonate-react",
+      "label": "Edha: Detonation Rider (config only)",
+      "description": "When any of YOUR Charges detonate, each caught character tests a skill vs. your colour; failures gain a status (Concussive Yield's shape). Config-only — the detonate resolver sweeps this rule; put it on an 'Edha: Watch Rule' event.",
+      "fields": [
+        "skill",
+        "skillLabel",
+        "color",
+        "failStatus",
+        "note"
+      ]
+    },
+    {
+      "type": "edha-reroll-react",
+      "label": "Edha: Remove Your Mark, Reroll-Take-Lower (Reaction)",
+      "description": "Spend the Reaction when an enemy bearing your mark makes a test: the mark is removed and the test rerolls, keeping the lower d20. Refused before cost with no marked target selected. The auto-prompt whispers you when a mark-bearer rolls (mutable per card; a real use re-arms).",
+      "fields": [
+        "markStatus",
+        "autoPrompt",
+        "note"
+      ]
+    },
+    {
+      "type": "edha-marker-command",
+      "label": "Edha: Marker Command (move / spring)",
+      "description": "Post a card commanding YOUR placed marker squares. move = slide one marker up to maxFt (Read the Threads — put the foresight GM-reveal line in the note). spring-pick = a button per unsprung snare; the clicked spring adds this talent's own damage formula as bonus damage (Foreknown Strike). spring-all = a declare card whose resolve button springs every unsprung snare and posts the rally note (Thread of Inevitability; once/scene refuses before any cost is paid).",
+      "fields": [
+        "mode",
+        "maxFt",
+        "oncePerScene",
+        "note"
+      ]
+    },
+    {
+      "type": "edha-summon-effect",
+      "label": "Edha: Summon Mode (toggle / arm / transform)",
+      "description": "Acts on YOUR live summon. toggle-baked = enable a named baked effect the summon ships with, with an end button (Siege Form). grant = copy this talent's own Effects-tab template effect onto the summon and arm its on-kill prompt (Arsenal). transform = the engine-owned colossus rewrite: bonus HP, defense effect, splashing hits, zone-buff upgrade (Magnum Opus). Refused BEFORE cost with no live summon (and per-mode gates).",
+      "fields": [
+        "mode",
+        "summonName",
+        "summonTalent",
+        "effectName",
+        "endButtonLabel",
+        "onKillNote",
+        "hpBonusFormula",
+        "defBonus",
+        "zoneBuffUpgrade",
+        "splashRadiusFt",
+        "splashSaveSkill",
+        "splashSaveColor",
+        "splashStatus",
+        "oncePerScene",
+        "note"
+      ]
+    },
+    {
+      "type": "edha-adv-attack",
+      "label": "Edha: Advantage On the Next Attack (On Use)",
+      "description": "Grants 'advantage on your next attack' (the existing advAttackNext pipeline consumes it on your next attack/item roll). 'pack' also grants it to each ally adjacent to the enemy you have targeted (Pack Hunter); Scent mode instead names the lowest-HP living enemy in Attunement Range and arms you against it (Scent the Weak).",
+      "fields": [
+        "to",
+        "maxTargets",
+        "vsLowestHp",
+        "rangeColor",
+        "once"
+      ]
+    },
+    {
+      "type": "edha-strike-window",
+      "label": "Edha: Open a Strike Window (On Use)",
+      "description": "Arms a window lasting until the start of your next turn. Your Edha: Bonus Damage rules gated 'window' apply while it is open (Pack Pressure). Put the card text — including any GM-narrated half — in the note, where it is editable.",
+      "fields": [
+        "note",
+        "icon"
+      ]
+    },
+    {
+      "type": "edha-damage-bonus",
+      "label": "Edha: Bonus Damage On Your Hits (config only)",
+      "description": "Adds a bonus damage instance to qualifying hits — read by the applyDamage pre-pass, so put it on an 'Edha: Watch Rule' event. 'window' = while your Edha: Strike Window is open (Pack Pressure); 'pack-on-target' = you + at least one ally attacked this victim this round, with @hunters (Coordinated Hunt); 'armed-self-status' = while you carry the arming status, consumed on the hit if set (Predatory Strike); 'self-hits-counter-bearer' = your own hit on your counter's bearer (Hunter's Discipline); 'ally-hits-counter-bearer' = an ALLY's hit on your bearer within your range while you are armed (Pack Share, The Pack).",
+      "fields": [
+        "require",
+        "listName",
+        "listStatus",
+        "oncePerRoundPerDealer",
+        "whenDealerItem",
+        "addTargetDeflect",
+        "amountFormula",
+        "color",
+        "damageType",
+        "counterStatus",
+        "requireSelfStatus",
+        "consumeSelfStatus",
+        "weaponOnly",
+        "meleeOnly",
+        "healCutFraction",
+        "tallyKills",
+        "onKillThpFormula",
+        "onKillNote",
+        "onSurviveAdvAttr",
+        "onSurviveNote",
+        "placeCounter",
+        "placeOnce",
+        "capFormula",
+        "rangedOnly",
+        "placeList",
+        "placeListStatus",
+        "placeListCapFormula"
+      ]
+    },
+    {
+      "type": "edha-counter-transfer",
+      "label": "Edha: Counter Transfer On Kill (config only)",
+      "description": "When the creature bearing your counter drops to 0 HP: a whispered Free-Action prompt to place (fraction × its count) on a new creature in range — and, if enabled, a public card letting each ally in range deal the burst formula to an enemy of their choice. Put it on an 'Edha: Watch Rule' event.",
+      "fields": [
+        "counter",
+        "fraction",
+        "rangeColor",
+        "capFormula",
+        "allyBurst",
+        "burstFormula"
+      ]
+    },
+    {
+      "type": "edha-die-step",
+      "label": "Edha: Step a Damage Die (On Use / On Success)",
+      "description": "Move a creature's damage die size along the d4–d12 ladder (entries stack; the clamp is the only rail). Put it on 'use' for an untested buff (Exalt), or on the 'When Your Test SUCCEEDS' / 'FAILS' events after an Edha: Gated Test (Censure, Decree of Ruin). 'pair' writes a linked ally/enemy pair whose on-hit coupling the engine watches (Sovereign's Balance, Sovereignty).",
+      "fields": [
+        "key",
+        "steps",
+        "scope",
+        "expire",
+        "target",
+        "allySteps",
+        "enemySteps",
+        "onPairHit",
+        "replaceKeys",
+        "failThpFormula",
+        "failThpRange",
+        "oncePerTarget",
+        "oncePerScene",
+        "note"
+      ]
+    },
+    {
+      "type": "edha-die-step-react",
+      "label": "Edha: Die-Step Reaction (config only)",
+      "description": "Reacts when a creature carrying YOUR matching die-step debuff fails a test: you recover Investiture (auto on readable failed attacks; owner-click card otherwise), and a targeted ally in range may be offered a Reactive Strike. Put it on an 'Edha: Watch Rule' event (Expose).",
+      "fields": [
+        "whenKeys",
+        "recoverInv",
+        "reactiveStrike",
+        "allyRange"
+      ]
+    },
+    {
+      "type": "edha-unseen-ward",
+      "label": "Edha: Ward Allies vs Unseen Attacks (config only)",
+      "description": "An ally near you targeted by an attack they can't see (hidden attacker, or wall LOS; darkness GM-judged) gets +N defense against it — injected as −N on the attack roll (Packmate's Warning). Config-only: the pre-roll injector reads this rule — put it on an 'Edha: Watch Rule' event.",
+      "fields": [
+        "rangeFt",
+        "amount",
+        "excludeSelf"
+      ]
+    },
+    {
+      "type": "edha-suppress-veil",
+      "label": "Edha: Suppress Enemy Veils (config only)",
+      "description": "While you are ARMED (the self-status below — write it with an Edha: Apply Status To Yourself rule on this talent's use), hostile dark-veil markers within Attunement Range stay DOWN: the veil sweep refuses to raise them and stands down ones it raised (Natural Order). A GM's manual marker toggle is never fought. Config-only — put it on an 'Edha: Watch Rule' event.",
+      "fields": [
+        "rangeColor",
+        "requireSelfStatus"
+      ]
+    },
+    {
+      "type": "edha-heal-react",
+      "label": "Edha: When You Restore Health (config only)",
+      "description": "Reacts when YOU restore health to a creature — read at the heal chokepoints, so put it on an 'Edha: Watch Rule' event. queue-regrowth = the healed ally regains the formula at the start of your next turn while still in range (auto — Resurgent Growth). offer-thp = whispered card to grant Temp HP when the target was below half; cost and roll land on the CLICK (Vital Surge). offer-cleanse = whispered card, one button per present condition (Natural Recovery).",
+      "fields": [
+        "action",
+        "whenColor",
+        "allyOnly",
+        "requireBelowHalf",
+        "amountFormula",
+        "amountLabel",
+        "color",
+        "rangeColor",
+        "costInv",
+        "conditions",
+        "costNote"
+      ]
+    },
+    {
+      "type": "edha-remove-injury",
+      "label": "Edha: Remove an Injury (On Use)",
+      "description": "Posts the injury menu for your targeted creature (default: yourself) — one button per removable injury; the click spends the temporary/permanent Investiture cost and deletes the injury Item (Reknit Form). Death injuries never appear.",
+      "fields": [
+        "costTemporary",
+        "costPermanent"
+      ]
+    },
+    {
+      "type": "edha-next-test-mod",
+      "label": "Edha: Modify a Next Test (On Use)",
+      "description": "On use, a next test gains (dis)advantage, a dice/flat modifier (Probability Net's −1d6), a Plot Die, and/or a banked Opportunity. Target YOURSELF or the creature you have targeted. Rides the nextTestMod / plotDieNext / oppCredit pipelines; counted, consumed on the next test.",
+      "fields": [
+        "target",
+        "mode",
+        "formula",
+        "count",
+        "skill",
+        "rangeFt",
+        "maxTargets",
+        "doubleIfOwns",
+        "requireQuarry",
+        "appliesTo",
+        "ownedFrom",
+        "attr",
+        "expireEndOfRound",
+        "bindToTarget",
+        "plotDie",
+        "opportunity"
+      ]
+    },
+    {
+      "type": "edha-single-target",
+      "label": "Edha: Single Target Only",
+      "description": "This talent affects ONE creature. With several tokens targeted the use is cancelled BEFORE any cost and you get a whispered picker card listing them; clicking one retargets and re-uses the talent. Config-only: the pre-use gate reads this rule.",
+      "fields": [
+        "note"
+      ]
+    },
+    {
+      "type": "edha-thorns",
+      "label": "Edha: Melee Splash-Back (Thorns)",
+      "description": "When a melee attacker damages the owner, the attacker takes the splash automatically (Cinder Coat). Config-only: the applyDamage wrapper reads this rule.",
+      "fields": [
+        "formula",
+        "damageType",
+        "meleeOnly"
+      ]
+    },
+    {
+      "type": "edha-hp-threshold",
+      "label": "Edha: When An Ally Drops To Half HP",
+      "description": "Posts a reaction prompt (chat-card button) when an ally character drops to half HP or below: optionally pay the cost to heal them. Applied automatically.",
+      "fields": [
+        "healFormula",
+        "costResource",
+        "costValue",
+        "oncePerRound",
+        "includeSelf",
+        "rangeColor",
+        "note"
+      ]
+    },
+    {
+      "type": "edha-multi-hit",
+      "label": "Edha: When You Hit Two Or More Creatures",
+      "description": "When a matching talent of yours captures 2+ creatures (burst/AoE), posts the talent's choice prompt (Flashpoint). Applied automatically.",
+      "fields": [
+        "color",
+        "resourceGainResource",
+        "resourceGainValue",
+        "oncePerRound",
+        "note"
+      ]
+    }
+  ]
+}
