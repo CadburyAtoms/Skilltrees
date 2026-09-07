@@ -764,13 +764,14 @@
           "id": "RouseStalwart000"
         },
         "RouseRallying000": {
-          "description": "Envoy UPGRADE RIDER — Rallying Shout. A REMINDER; the recovery-die half needs a TARGET-scoped formula, which no handler has (every @ formula resolves against the owner). BEHAVIOUR NOTE: this now prints on every use, where the old code gated it on the ally being at 0 HP — that gate hid the card's FIRST clause ('revive an Unconscious ally'), so always-print is the more faithful reading of the card. The Leadership half IS owner data and is shown resolved.",
+          "description": "Envoy UPGRADE RIDER — Rallying Shout. A REMINDER; the recovery-die half needs a TARGET-scoped formula, which no handler has (every @ formula resolves against the owner). R-25 (c), 2026-09-06 (item 63): prints ONLY when the targeted ally is at 0 health or Unconscious (whenTarget: downed) — the two cases the card names; a healthy ally gets no card. The Leadership half IS owner data and is shown resolved.",
           "event": "use",
           "handler": {
             "type": "edha-note",
             "icon": "📣",
             "whisper": "public",
             "whenOwnsTalent": "Rallying Shout",
+            "whenTarget": "downed",
             "text": "You may revive an Unconscious ally. If the target is at 0 health it recovers its <strong>recovery die + @skills.lea.rank</strong> health (roll the target's own die)."
           },
           "order": 5,
