@@ -572,7 +572,7 @@
     "action": "1 Action",
     "cost": "1 Investiture",
     "prerequisites": "Black 2+; Green 2+",
-    "description": "Spend 1 Investiture and make a melee weapon attack. On a hit, deal [Tier][Die] + Willpower vital damage. The target cannot regain HP until the start of your next turn.",
+    "description": "Spend 1 Investiture and make a melee weapon attack. On a hit, deal [Tier][Die] + Willpower vital damage. The target cannot regain HP until the end of your next turn.",
     "flavor": "Where his hand passes, leaves curl black on the vine.",
     "atlas": "deity",
     "layout": {

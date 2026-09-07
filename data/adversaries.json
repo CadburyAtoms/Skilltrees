@@ -223,7 +223,7 @@
         "name": "Combat Training",
         "kind": "trait",
         "cost": "Passive",
-        "text": "<p>Once per round, the Captain can turn one of its own <strong>misses into a graze</strong> automatically (a free graze).</p><p><em>Ruled miss→graze (Ben 2026-07-16 — the source PDF sentence was garbled). GM-run — NO NAMEABLE HOOK: the miss/graze/hit adjudication happens in the GM's application step and is never module-visible data.</em></p>"
+        "text": "<p>Once per round, when one of the Captain's attacks <strong>misses</strong>, it can turn that miss into a <strong>graze</strong> without spending Focus.</p><!-- R-29 (a), Ben 2026-09-06: MISS → GRAZE, once per round, no Focus — the canon Combat Training wording (the source-PDF sentence \"turn one of its own grazes into a graze\" was garbled). NO NAMEABLE HOOK: the miss/graze/hit adjudication happens in the GM's application step and is never module-visible data. -->"
       }
     ]
   },
@@ -455,17 +455,30 @@
       {
         "name": "Fade",
         "cost": "Reaction",
-        "consume": "1 Investiture",
-        "text": "<p>Triggered when an attack against the Stalker grazes or misses: the Stalker gains Concealment until the end of its next turn.</p>",
+        "text": "<p>Triggered when an attack against the Stalker grazes or misses: the Stalker gains Concealment until the end of its next turn.</p><p><strong>Cost:</strong> 1 Investiture — use Fade from the sheet and confirm the card; the Investiture is spent on the click, so a declined Fade costs nothing.</p>",
         "events": [
           {
             "event": "edha-apply-watch",
             "handler": {
               "type": "edha-gm-cue",
               "trigger": "damaged",
-              "note": "Reaction, 1 Investiture — if that was a GRAZE, Fade: Concealment until the end of its next turn (toggle the Fade marker). On a clean MISS nothing fires here — no damage is ever applied, so cue yourself."
+              "note": "Reaction — if that was a GRAZE, use Fade from the sheet and confirm the card (it spends the 1 Investiture): Concealment until the end of its next turn (toggle the Fade marker). On a clean MISS nothing fires here — no damage is ever applied, so cue yourself."
             },
             "description": "GM cue on damage (covers the graze half of the trigger; a true miss applies no damage and has no hook)."
+          },
+          {
+            "event": "use",
+            "handler": {
+              "type": "edha-prompt-pick",
+              "source": "confirm",
+              "icon": "🌫️",
+              "costs": "inv:1",
+              "once": "no",
+              "prompt": "spend 1 Investiture to gain Concealment until the end of its next turn?",
+              "label": "Fade (1 Investiture)",
+              "note": "Concealed until the end of its next turn — toggle the Fade marker on the sheet."
+            },
+            "description": "R-74 (a), Ben 2026-09-06: the ONE adversary ability whose bespoke cost is engine-driven. The confirm click spends inv:1 through edhaSpendResource (so it counts as a real spend for the R-4 / 28b watches); the native activation consume was removed so the rule's cost is the only deduction. The Concealment itself stays the toggled Fade marker (no concealed status exists to arm)."
           }
         ]
       },
@@ -642,7 +655,7 @@
         "name": "Mutation Upgrade",
         "kind": "trait",
         "cost": "Passive",
-        "text": "<p>If the Stitchmother grants this thrall <strong>Bone Spurs</strong>, its Slam gains +2 Keen damage. If granted <strong>Venom Glands</strong>, its Slam inflicts Afflicted (2 Vital/turn) on a hit. By round 3 both upgrades can be active at once.</p><p><em>GM-run — NO NAMEABLE HOOK today: the grant lives as a toggled marker AE, and conditional-on-marker damage riders aren't a primitive yet (first consumer wanted: a whenSelfEffect rider condition). Toggle the marker; apply the Slam bonus by hand.</em></p>"
+        "text": "<p>If the Stitchmother grants this thrall <strong>Bone Spurs</strong>, its Slam gains +2 Keen damage. If granted <strong>Venom Glands</strong>, its Slam inflicts Afflicted (2 Vital/turn) on a hit. By round 3 both upgrades can be active at once.</p><p><em>GM-run: toggle the marker; apply the Slam bonus by hand.</em></p><!-- NO NAMEABLE HOOK today: the grant lives as a toggled marker AE, and conditional-on-marker damage riders aren't a primitive yet (first consumer wanted: a whenSelfEffect rider condition). -->"
       }
     ]
   },
@@ -1122,6 +1135,8 @@
     "items": [
       {
         "name": "Whip-Lash",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 4,
         "range": "Reach 5 ft.",
@@ -1176,10 +1191,12 @@
     "foc": 3,
     "movement": 5,
     "count": 1,
-    "biography": "<p>A blight-mad fen-heart (canon §5c, ruling 69) — 'gone to weir': locked in un-clearing disease, instincts misfiring, damming and drowning everything in its water. Deflect 2 = sodden wood. Wrong, not evil — and never tougher for being sick (ruling 34): steel and fire work. <strong>The out:</strong> it attacks what MOVES in its water — root-warden-style craft (stillness, offerings, cut-signs, patience — ruling 32) can end this without a kill. <strong>At 0 HP it does not die</strong> — too blighted to finish (§1a): it goes still, the weirs stand, and clearing them is labor. The victory is sad on purpose.</p><p><em>Schema: size 'large' + creatureType 'custom' (the repo enum has no huge/plant) — it PLAYS huge: set the token to 3x3 or 4x4 on placement. Scaling: cap Call the Runners at 1 swarm for 3 PCs.</em></p>",
+    "biography": "<p>A blight-mad fen-heart (canon §5c, ruling 69) — 'gone to weir': locked in un-clearing disease, instincts misfiring, damming and drowning everything in its water. Deflect 2 = sodden wood. Wrong, not evil — and never tougher for being sick (ruling 34): steel and fire work. <strong>The out:</strong> it attacks what MOVES in its water — root-warden-style craft (stillness, offerings, cut-signs, patience — ruling 32) can end this without a kill. <strong>At 0 HP it does not die</strong> — too blighted to finish (§1a): it goes still, the weirs stand, and clearing them is labor. The victory is sad on purpose.</p><p><em>Schema: size 'large' + creatureType 'custom' (the repo enum has no huge/plant) — it PLAYS Huge: set the token to <strong>3×3</strong> on placement (R-40, Ben 2026-09-06 — three squares a side, not four; the reach-15 Dragging Roots and the 30-ft Drown the Field are measured from that footprint). Scaling: cap Call the Runners at 1 swarm for 3 PCs.</em></p>",
     "items": [
       {
         "name": "Dragging Roots",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 6,
         "range": "Reach 15 ft.",
@@ -1280,6 +1297,8 @@
       },
       {
         "name": "Ambush Bite",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 6,
         "range": "Reach 5 ft.",
@@ -1304,7 +1323,7 @@
         "cost": "2 Actions",
         "attack": 6,
         "range": "Reach 5 ft.",
-        "rider": "On a hit it grips and drags the target 10 ft toward deep water (DC 14 Athletics to break the grip). While gripping, it may roll: the gripped target takes 1d8 impact. NO NAMEABLE HOOK: to-hit-only grab — a hit that deals no damage makes no document write, so there is no engine hook; the GM rolls the attack and adjudicates the grip."
+        "rider": "On a hit it grips and drags the target 10 ft toward deep water (DC 14 Athletics to break the grip). While gripping, it may roll: the gripped target takes 1d8 impact. <!-- NO NAMEABLE HOOK: to-hit-only grab — a hit that deals no damage makes no document write, so there is no engine hook; the GM rolls the attack and adjudicates the grip. -->"
       },
       {
         "name": "Slide Under",
@@ -1386,6 +1405,8 @@
       },
       {
         "name": "Sick Bite",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 5,
         "range": "Reach 5 ft.",
@@ -1408,7 +1429,7 @@
       {
         "name": "Cannot Stop",
         "kind": "trait",
-        "text": "<p>GM-run: it does not retreat and does not release — bloodied changes nothing (the wasting hunts through it). Steel works as it always does (ruling 34: never tougher); this fight ends one way, and it is a mercy. NO NAMEABLE HOOK: morale that never changes has nothing to cue.</p>"
+        "text": "<p>GM-run: it does not retreat and does not release — bloodied changes nothing (the wasting hunts through it). Steel works as it always does (ruling 34: never tougher); this fight ends one way, and it is a mercy.</p><!-- NO NAMEABLE HOOK: morale that never changes has nothing to cue. -->"
       }
     ]
   },
@@ -1538,6 +1559,8 @@
       },
       {
         "name": "Breach Strike",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 6,
         "range": "Reach 5 ft.",
@@ -1562,13 +1585,13 @@
         "cost": "2 Actions",
         "attack": 6,
         "range": "Reach 5 ft.",
-        "rider": "On a hit it grips and pulls the target 10 ft toward deep water (DC 13 Athletics to break). A target pulled under is submerged — no air, no speech. NO NAMEABLE HOOK: to-hit-only grab — a hit that deals no damage makes no document write, so there is no engine hook; the GM rolls the attack and adjudicates the grip."
+        "rider": "On a hit it grips and pulls the target 10 ft toward deep water (DC 13 Athletics to break). A target pulled under is submerged — no air, no speech. <!-- NO NAMEABLE HOOK: to-hit-only grab — a hit that deals no damage makes no document write, so there is no engine hook; the GM rolls the attack and adjudicates the grip. -->"
       },
       {
         "name": "Slip the Sound",
         "cost": "Reaction",
         "consume": "1 Focus",
-        "text": "<p>When an attack misses it: it shifts 10 ft submerged — the next attempt to find it starts from the wrong splash. <em>NO NAMEABLE HOOK: a missed attack leaves no document write — no Foundry hook exists for “an attack missed you”; the GM narrates the reaction (1 Focus).</em></p>"
+        "text": "<p>When an attack misses it: it shifts 10 ft submerged — the next attempt to find it starts from the wrong splash. <em>(GM-narrated, 1 Focus.)</em></p><!-- NO NAMEABLE HOOK: a missed attack leaves no document write — no Foundry hook exists for “an attack missed you”; the GM narrates the reaction. -->"
       },
       {
         "name": "Cold, Not Cruel",
@@ -1620,6 +1643,8 @@
       },
       {
         "name": "Sick Breach",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 5,
         "range": "Reach 5 ft.",
@@ -1642,7 +1667,7 @@
       {
         "name": "The Passed Wasting",
         "kind": "trait",
-        "text": "<p>Ruling 34: its flesh carries the wasting — anything that eats of it buys the slow, GM-paced consequence. Field-dressing this catch is the mistake. NO NAMEABLE HOOK: downtime consequence, GM-run.</p>"
+        "text": "<p>Ruling 34: its flesh carries the wasting — anything that eats of it buys the slow, GM-paced consequence. Field-dressing this catch is the mistake.</p><!-- NO NAMEABLE HOOK: downtime consequence, GM-run. -->"
       },
       {
         "name": "It Cannot Stop",
@@ -1694,6 +1719,8 @@
       },
       {
         "name": "Worry the Failing",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 4,
         "range": "Reach 5 ft. (targets in the water only)",
@@ -1715,7 +1742,7 @@
       {
         "name": "A Thousand Small Bodies",
         "kind": "trait",
-        "text": "<p>Single-target Strikes deal half damage to the shoal; any area effect scatters it — it reforms at the start of its next turn unless the water is left. NO NAMEABLE HOOK: halving/scatter is GM-applied on the fly (swarm bookkeeping, no engine surface).</p>"
+        "text": "<p>Single-target Strikes deal half damage to the shoal; any area effect scatters it — it reforms at the start of its next turn unless the water is left.</p><!-- NO NAMEABLE HOOK: halving/scatter is GM-applied on the fly (swarm bookkeeping, no engine surface). -->"
       },
       {
         "name": "Attendance, Not Appetite",
@@ -1844,6 +1871,8 @@
       },
       {
         "name": "Antler Sweep",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 6,
         "range": "Reach 10 ft.",
@@ -1903,6 +1932,8 @@
     "items": [
       {
         "name": "Forge-Hammer",
+        "kind": "weapon",
+        "weaponId": "hammer",
         "cost": "1 Action",
         "attack": 5,
         "range": "Reach 5 ft.",
@@ -1962,6 +1993,8 @@
     "items": [
       {
         "name": "Tusk Rake",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 7,
         "range": "Reach 5 ft.",
@@ -2027,7 +2060,7 @@
         "name": "The Old Agreement",
         "kind": "trait",
         "cost": "Passive",
-        "text": "<p>She ignores any creature standing still and bearing no drawn steel inside the charter-stones — and never forgets a creature that broke the agreement. NO NAMEABLE HOOK: NPC intent/targeting isn't data (the Pack Tactics class); the GM plays the agreement.</p>"
+        "text": "<p>She ignores any creature standing still and bearing no drawn steel inside the charter-stones — and never forgets a creature that broke the agreement.</p><!-- NO NAMEABLE HOOK: NPC intent/targeting isn't data (the Pack Tactics class); the GM plays the agreement. -->"
       }
     ]
   },
@@ -2077,6 +2110,8 @@
       },
       {
         "name": "Breach and Drag",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 6,
         "range": "Reach 5 ft.",
@@ -2126,7 +2161,7 @@
         "name": "Pay the Ledger",
         "kind": "trait",
         "cost": "Passive",
-        "text": "<p>A boat that gives the first of its catch over the side is not molested that set — it takes the toll and drops back into the dark. NO NAMEABLE HOOK: NPC intent/targeting isn't data; the GM plays the toll.</p>"
+        "text": "<p>A boat that gives the first of its catch over the side is not molested that set — it takes the toll and drops back into the dark.</p><!-- NO NAMEABLE HOOK: NPC intent/targeting isn't data; the GM plays the toll. -->"
       }
     ]
   },
@@ -2158,6 +2193,8 @@
     "items": [
       {
         "name": "Ember Bite",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 5,
         "range": "Reach 5 ft.",
@@ -2250,6 +2287,8 @@
     "items": [
       {
         "name": "Ember Bite",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 4,
         "range": "Reach 5 ft.",
@@ -2396,6 +2435,8 @@
       },
       {
         "name": "Take the Answerer",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 6,
         "range": "Reach 5 ft.",
@@ -2466,6 +2507,8 @@
       },
       {
         "name": "Glare-Strike",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 7,
         "range": "Reach 10 ft.",
@@ -2705,6 +2748,8 @@
       },
       {
         "name": "Worry the Straggler",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 5,
         "range": "Reach 5 ft.",
@@ -2901,6 +2946,8 @@
       },
       {
         "name": "Stoop of Office",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 6,
         "range": "Reach 5 ft (flying strike).",
@@ -2978,7 +3025,7 @@
       {
         "name": "Guardian Stance",
         "kind": "trait",
-        "text": "<p><em>White talent. NO NAMEABLE HOOK: a static adjacency read with no trigger — the tree twin's aura rides the PC stance machinery, which this trait does not enter; copying its rule would look live and never fire.</em></p><p>While an ox stands adjacent to a ring-mate, both have +1 Deflect (GM-run static — the listed Deflect 1 becomes 2 while the ring stands).</p>"
+        "text": "<p><em>White talent.</em></p><!-- NO NAMEABLE HOOK: a static adjacency read with no trigger — the tree twin's aura rides the PC stance machinery, which this trait does not enter; copying its rule would look live and never fire. --><p>While an ox stands adjacent to a ring-mate, both have +1 Deflect (GM-run static — the listed Deflect 1 becomes 2 while the ring stands).</p>"
       },
       {
         "name": "Retributive Guard",
@@ -3023,6 +3070,8 @@
       },
       {
         "name": "Horn Toss",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 6,
         "range": "Reach 5 ft.",
@@ -3152,6 +3201,8 @@
       },
       {
         "name": "Whip and Root",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 4,
         "range": "Reach 5 ft.",
@@ -3281,10 +3332,12 @@
       {
         "name": "Apex Predator",
         "kind": "trait",
-        "text": "<p><em>Green talent. NO NAMEABLE HOOK: the tree twin's rider counts enemies in an engine zone, and the briar is scene terrain, not an engine zone — copying the rule would look live and never fire.</em></p><p>While three or more enemies are inside its briar, it has advantage on all Physical tests — you are fighting inside the thing that is fighting you (GM-run state read, no trigger).</p>"
+        "text": "<p><em>Green talent.</em></p><!-- NO NAMEABLE HOOK: the tree twin's rider counts enemies in an engine zone, and the briar is scene terrain, not an engine zone — copying the rule would look live and never fire. --><p>While three or more enemies are inside its briar, it has advantage on all Physical tests — you are fighting inside the thing that is fighting you (GM-run state read, no trigger).</p>"
       },
       {
         "name": "Girdling Bough",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 6,
         "range": "Reach 15 ft.",
@@ -3420,6 +3473,8 @@
       },
       {
         "name": "Mob the Straggler",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 4,
         "range": "Reach 5 ft (enveloping).",
@@ -3429,7 +3484,7 @@
       {
         "name": "A Thousand Small Bodies",
         "kind": "trait",
-        "text": "<p>Single-target Strikes deal half damage to the flock; any area effect scatters it — it reforms at the start of its next turn unless driven off entirely. NO NAMEABLE HOOK: halving/scatter is GM-applied on the fly (swarm bookkeeping, no engine surface; Wake-Eel precedent).</p>"
+        "text": "<p>Single-target Strikes deal half damage to the flock; any area effect scatters it — it reforms at the start of its next turn unless driven off entirely.</p><!-- NO NAMEABLE HOOK: halving/scatter is GM-applied on the fly (swarm bookkeeping, no engine surface; Wake-Eel precedent). -->"
       },
       {
         "name": "It Re-Gathers on the Rooflines",
@@ -3559,6 +3614,8 @@
       },
       {
         "name": "The Pounce Already Taken",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 7,
         "range": "Reach 5 ft.",
@@ -3624,20 +3681,20 @@
         "name": "Reckless Advance",
         "cost": "1 Action",
         "consume": "1 Focus",
-        "text": "<p><em>Red talent, name verbatim — the authored `use` rule rides (edha-move executor).</em></p><p>Spend 1 Focus: target a creature or objective and charge 10 ft toward it, ignoring Reactions. Halts at walls. The charge begins.</p>",
+        "text": "<p><em>Red talent, name verbatim — the authored `use` rule rides (edha-move executor).</em></p><p>Spend 1 Focus: target a creature or objective and charge <strong>up to 10 ft</strong> toward it, ignoring Reactions. Halts at walls. The charge begins.</p>",
         "events": [
           {
             "event": "use",
             "handler": {
               "type": "edha-move",
-              "bySize": true,
+              "bySize": false,
               "byHalfSpeed": false,
-              "distanceFt": 0,
+              "distanceFt": 10,
               "whenFastTurn": false,
               "oncePerTurn": false,
-              "note": "Reckless Advance — target a creature/objective, then use: it charges toward it, ignoring Reactions."
+              "note": "Reckless Advance — target a creature/objective, then use: it charges up to 10 ft toward it, ignoring Reactions."
             },
-            "description": "Red/Momentum. Reckless Advance verbatim on the edha-move executor (size by rank ≡ tier)."
+            "description": "Red/Momentum. Reckless Advance on the edha-move executor at an explicit 10 ft — the card's own number (R-81 default (a), applied 2026-09-06; was bySize, which on a rival at red rank 2 moved 5 ft)."
           }
         ]
       },
@@ -3663,20 +3720,20 @@
       {
         "name": "Shockwave Slam",
         "kind": "trait",
-        "text": "<p><em>Red talent, name verbatim — carries the PC talent's authored `edha-push` rule.</em></p><p>When it hits with a melee attack, the target is pushed up to 10 ft; collision with an obstacle deals half 1d6 impact (half [Tier][Die]: count = tier 1, die = rival rank 2, ruling 122). On an ice-road, the push is the catastrophe.</p>",
+        "text": "<p><em>Red talent, name verbatim — carries the PC talent's authored `edha-push` rule.</em></p><p>When it hits with a melee attack, the target is pushed <strong>up to 10 ft</strong>; collision with an obstacle deals half 1d6 impact (half [Tier][Die]: count = tier 1, die = rival rank 2, ruling 122). On an ice-road, the push is the catastrophe.</p>",
         "events": [
           {
             "event": "edha-on-hit",
             "handler": {
               "type": "edha-push",
               "whenDamageType": "impact",
-              "bySize": true,
-              "distanceFt": 5,
+              "bySize": false,
+              "distanceFt": 10,
               "collisionFormula": "floor(1d6 / 2)",
               "collisionType": "impact",
               "note": "Shockwave Slam"
             },
-            "description": "Red/Momentum. Shockwave Slam verbatim: push by size (role rank, ruling 122), collision half 1d6 impact."
+            "description": "Red/Momentum. Shockwave Slam on an explicit 10-ft push — the card's own number (R-81 default (a), applied 2026-09-06; was bySize, which on a rival at red rank 2 pushed 5 ft, with the authored distanceFt: 5 dead beside it); collision half 1d6 impact."
           }
         ]
       },
@@ -3702,6 +3759,8 @@
       },
       {
         "name": "Ram",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 7,
         "range": "Reach 5 ft.",
@@ -3762,14 +3821,14 @@
         "name": "Sudden Growth",
         "cost": "Special",
         "consume": "1 Focus",
-        "text": "<p><em>Green talent, name verbatim — carries the PC talent's authored `edha-burst` rule (Sudden Wall precedent).</em></p><p>Mire boils up within 10 ft of a character she can sense — a lane un-made mid-stride.</p>",
+        "text": "<p><em>Green talent, name verbatim — carries the PC talent's authored `edha-burst` rule (Sudden Wall precedent).</em></p><p>A <strong>10-ft square</strong> of mire boils up within 10 ft of a character she can sense — a lane un-made mid-stride.</p>",
         "events": [
           {
             "event": "edha-pre-use",
             "handler": {
               "type": "edha-burst",
-              "sizeByRank": true,
-              "sizeFt": 0,
+              "sizeByRank": false,
+              "sizeFt": 10,
               "affects": "none",
               "color": "green",
               "rangeByRank": true,
@@ -3780,7 +3839,7 @@
               "heal": false,
               "terrain": true
             },
-            "description": "Green/Overgrowth. Sudden Growth verbatim: click-place difficult terrain (size/range by rank ≡ tier)."
+            "description": "Green/Overgrowth. Sudden Growth: click-place a 10-ft square of difficult terrain — the card's own number (R-81 default (a), applied 2026-09-06; was sizeByRank, which on a rival at green rank 2 placed a 5-ft square; the Briar-Gone Grove at rank 3 already landed 10 ft). Placement range still by rank."
           }
         ]
       },
@@ -3804,7 +3863,7 @@
       {
         "name": "Apex Predator",
         "kind": "trait",
-        "text": "<p><em>Green talent. NO NAMEABLE HOOK: the tree twin's rider counts enemies in an engine zone, and the mire is scene terrain, not an engine zone — copying the rule would look live and never fire.</em></p><p>While three or more enemies are inside her mire, she has advantage on all Physical tests — you are fighting inside her workshop (GM-run state read, no trigger).</p>"
+        "text": "<p><em>Green talent.</em></p><!-- NO NAMEABLE HOOK: the tree twin's rider counts enemies in an engine zone, and the mire is scene terrain, not an engine zone — copying the rule would look live and never fire. --><p>While three or more enemies are inside her mire, she has advantage on all Physical tests — you are fighting inside her workshop (GM-run state read, no trigger).</p>"
       },
       {
         "name": "Drive the Prey",
@@ -3841,6 +3900,8 @@
       },
       {
         "name": "Tusk Rake",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 6,
         "range": "Reach 5 ft.",
@@ -3894,6 +3955,8 @@
     "items": [
       {
         "name": "Bite",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 5,
         "range": "Reach 5 ft.",
@@ -3904,20 +3967,20 @@
         "name": "Reckless Advance",
         "cost": "1 Action",
         "consume": "1 Focus",
-        "text": "<p><em>Red talent, name verbatim — the authored `use` rule rides (edha-move executor).</em></p><p>Spend 1 Focus: target a creature or objective and charge toward it, ignoring Reactions — whelps arrive all at once or not at all.</p>",
+        "text": "<p><em>Red talent, name verbatim — the authored `use` rule rides (edha-move executor).</em></p><p>Spend 1 Focus: target a creature or objective and charge <strong>up to 25 ft</strong> (its full Speed) toward it, ignoring Reactions — whelps arrive all at once or not at all.</p>",
         "events": [
           {
             "event": "use",
             "handler": {
               "type": "edha-move",
-              "bySize": true,
+              "bySize": false,
               "byHalfSpeed": false,
-              "distanceFt": 0,
+              "distanceFt": 25,
               "whenFastTurn": false,
               "oncePerTurn": false,
-              "note": "Reckless Advance — target a creature/objective, then use: the whelp charges toward it, ignoring Reactions."
+              "note": "Reckless Advance — target a creature/objective, then use: the whelp charges up to 25 ft toward it, ignoring Reactions."
             },
-            "description": "Red/Momentum. Reckless Advance verbatim on the edha-move executor (size by leyline rank = role rank, ruling 122)."
+            "description": "Red/Momentum. Reckless Advance on the edha-move executor at an explicit 25 ft — full Speed (R-46 (a), Ben 2026-09-06; was bySize, which on a small minion at red rank 1 moved 3 ft)."
           }
         ]
       }
@@ -3952,6 +4015,8 @@
     "items": [
       {
         "name": "Bite",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 7,
         "range": "Reach 5 ft.",
@@ -3998,20 +4063,20 @@
       {
         "name": "Explosive Leap",
         "cost": "Special",
-        "text": "<p><em>Red talent, name verbatim — free maneuver (PC cost ◇); the `use` rule rides the edha-move executor; the landing test is table-adjudicated on the card.</em></p><p>Leap up to 20 ft without provoking Reactions. Creatures within 5 ft of where it lands test Physical or fall Prone — scree jumps down onto the path.</p>",
+        "text": "<p><em>Red talent, name verbatim — free maneuver (PC cost ◇); the `use` rule rides the edha-move executor; the landing test is table-adjudicated on the card.</em></p><p>Leap <strong>up to 20 ft</strong> without provoking Reactions. Creatures within 5 ft of where it lands test Physical or fall Prone — scree jumps down onto the path.</p>",
         "events": [
           {
             "event": "use",
             "handler": {
               "type": "edha-move",
-              "bySize": true,
+              "bySize": false,
               "byHalfSpeed": false,
-              "distanceFt": 0,
+              "distanceFt": 20,
               "whenFastTurn": false,
               "oncePerTurn": false,
               "note": "Explosive Leap — move without provoking; on landing, creatures within 5 ft test Physical or fall Prone (GM adjudicates the test)."
             },
-            "description": "Red/Momentum. Explosive Leap on the edha-move executor; landing prone-test stays on the card (activated, not a silent trigger)."
+            "description": "Red/Momentum. Explosive Leap on the edha-move executor at an explicit 20 ft — the card's own number (R-48 default (a), applied 2026-09-06; was bySize, which on a rival at red rank 2 moved 5 ft). Landing prone-test stays on the card (activated, not a silent trigger)."
           }
         ]
       }
@@ -4046,6 +4111,8 @@
     "items": [
       {
         "name": "Rend",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 9,
         "range": "Reach 10 ft.",
@@ -4239,6 +4306,8 @@
     "items": [
       {
         "name": "Scalding Bite",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 5,
         "range": "Reach 5 ft.",
@@ -4293,6 +4362,8 @@
     "items": [
       {
         "name": "Bite",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 7,
         "range": "Reach 5 ft.",
@@ -4398,6 +4469,8 @@
     "items": [
       {
         "name": "Rend",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 9,
         "range": "Reach 10 ft.",
@@ -4547,6 +4620,8 @@
     "items": [
       {
         "name": "Bite",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 5,
         "range": "Reach 5 ft.",
@@ -4606,7 +4681,7 @@
       {
         "name": "Pack Doctrine",
         "kind": "trait",
-        "text": "<p>NO NAMEABLE HOOK: which prey the pack cuts from the line is NPC intent and targeting, not module data (Pack Tactics class). They do not outrun you — they out-organize you. Counterplay is denying them the cut: stay in the line, and break the lead-beast.</p>"
+        "text": "<!-- NO NAMEABLE HOOK: which prey the pack cuts from the line is NPC intent and targeting, not module data (Pack Tactics class). --><p>They do not outrun you — they out-organize you. Counterplay is denying them the cut: stay in the line, and break the lead-beast.</p>"
       }
     ]
   },
@@ -4637,6 +4712,8 @@
     "items": [
       {
         "name": "Gore",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 8,
         "range": "Reach 5 ft.",
@@ -4735,6 +4812,8 @@
     "items": [
       {
         "name": "Raking Grasp",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 6,
         "range": "Reach 5 ft.",
@@ -4845,6 +4924,8 @@
     "items": [
       {
         "name": "Raking Grasp",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 8,
         "range": "Reach 5 ft.",
@@ -5016,6 +5097,8 @@
     "items": [
       {
         "name": "Culling Bite",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 5,
         "range": "Reach 5 ft.",
@@ -5068,7 +5151,7 @@
       {
         "name": "The Tithe Takes the Failing",
         "kind": "trait",
-        "text": "<p>They mark the weakest — wolves converge on Weakened or Isolated targets and leave sound prey alone until none remains. NO NAMEABLE HOOK: NPC targeting intent isn't data (the Pack Tactics class); the GM runs the convergence.</p>"
+        "text": "<p>They mark the weakest — wolves converge on Weakened or Isolated targets and leave sound prey alone until none remains.</p><!-- NO NAMEABLE HOOK: NPC targeting intent isn't data (the Pack Tactics class); the GM runs the convergence. -->"
       }
     ]
   },
@@ -5099,6 +5182,8 @@
     "items": [
       {
         "name": "Culling Bite",
+        "kind": "weapon",
+        "alwaysEquipped": true,
         "cost": "1 Action",
         "attack": 6,
         "range": "Reach 5 ft.",

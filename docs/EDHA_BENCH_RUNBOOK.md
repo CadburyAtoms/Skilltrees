@@ -1567,6 +1567,76 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   matched control has proven the root cause, **write the residual symptom down as PARTIAL and move on**
   — the second defect can be run 34's first row.
 
+## Operating lessons from run 39 (2026-09-06 — these OVERRIDE older advice where they conflict)
+
+- ⭐⭐ **A client's loaded engine IS readable — from OUTSIDE Foundry. Check the PROCESS START TIME
+  before recording a two-client blocker.** Runs 37 and 38 both declined the R-77 row on the rule "a
+  client's loaded engine is not readable from another client", and run 38 parked it waiting on Ben
+  pressing F5. One `Get-Process` settles it: every `Foundry Virtual Tabletop` process (the Electron
+  app IS Ben's Gamemaster client, and it hosts the server) reported **StartTime 18:59** — after the
+  deploy — so his client was provably current. Compare process start against deploy time, then
+  drive. Run 37's precondition stands; what changes is that it is now **measurable**, not a wait.
+- ⭐ **A Set-gated per-client write has a SECOND control, and it is the one that proves the other
+  client is gated.** Run 37's probe 3 (create the actor carrying the CORRECT value, then make it
+  stale) gives you "exactly one write, from X". That alone cannot separate "the other client is
+  gated" from "the other client lost the race". Make it stale a **second** time, once your own Set
+  is seeded so you must abstain: if nobody writes, the other client is genuinely gated — a pre-fix
+  client with no gate would write into your silence. Cheap, and it converts an inference into a
+  measurement.
+- ⭐ **Before recording "no card fired", place the probe at a distance you have PROVEN fires.** R-51's
+  whole value is a silence, and a silence at an untested range proves nothing. The phantom happened
+  to spawn 7.071 ft from the cue owner, so the run first drove the R-52 positions (which established
+  that a real drop at exactly 7.071 ft fires), then broke the copy at that same gap, then re-ran a
+  real drop at the phantom's exact coordinates as a same-take control. Compute and print the gap for
+  **every** candidate owner on **every** take — the non-firing owners' measured distances are free
+  cross-checks.
+- ⚠️ **`createEmbeddedDocuments("Item", …)` returns `[]` silently for a hand-built `system.events`
+  payload — and `edha.skipBudget(true)` does NOT fix that one.** Run 38 blamed the budget; that is
+  only half of it. A **bare** talent (`{name, type:"talent"}`) creates fine with skipBudget on, but a
+  create carrying a hand-written `events` object is dropped, and so is a later
+  `item.update({"system.events": …})` — the field comes back `{}` with no throw and no notification.
+  **The reliable way to stage a rule is to CLONE a shipped talent that already carries that handler
+  type and edit the handler's fields**, e.g. Red's `Shatter Focus` (`edha-focus`) → change
+  `resource` to `inv` for an H10 Investiture-drain probe, or Scholar's `Field Medicine` → drop its
+  gating `edha-def-test` rule and move the `edha-focus` `hea` rule onto `event: "use"`. The DataModel
+  accepts the clone because the shape is already valid.
+- ⚠️ **`actor.setFlag(key, {})` MERGES; it does not clear.** A once-per-scene stamp survived
+  `setFlag("edha-content","sceneOnce",{})`, and the next `use()` consumed its cost and then bailed
+  silently on the stamp — which reads exactly like "the talent did nothing". Use
+  **`actor.unsetFlag(...)`**, and re-read the flag before firing.
+- ⚠️ **Scene-scoped `edha-watch` rules are behind R-4's out-of-combat gate (`edhaWatchCombatGate`),
+  so a defeat OUT of combat harvests nothing.** Three kills produced zero Reaper's Harvest output and
+  looked like a broken watch; starting a combat and re-killing the same creatures harvested both,
+  cards and ledger. Budget a combat for any `scope: "scene"` watch before calling it dead. (This is
+  also a free re-measurement of item 28a in both directions.)
+- ✅ **The wizard is a cheap way to read a derived-stat constant in TWO places at once.** The
+  attributes page prints a live preview block (`Health / Focus / Investiture / defs / Move / Recovery
+  / Senses`) at the current spread, and `◀ Back` walks to it from anywhere, so you can read the
+  preview number and the finished-sheet number on the same actor in one wizard session. Ashkar (the
+  first nation) additionally opens a **Pick Diaspora Culture** dialog and then a **Choose N
+  expertise** dialog on top of the wizard — answer both by ticking the first input and clicking
+  `[data-action="ok"]`, or your next wizard selector matches the wrong window.
+- ⚠️ **Persist the start snapshot to `sessionStorage` the moment you take it.** R-54's reload half
+  needs a real `location.reload()`, and that wipes every page global — including the run's
+  id/flag/effect snapshot, which then cannot back the end-of-run diff. `sessionStorage.setItem(...)`
+  survives a reload; a `globalThis` does not.
+- ⚠️ **`tokDoc.update({x,y})` silently no-ops for a COMBATANT with no movement left** (run 10's
+  lesson, re-confirmed the hard way: two tokens reported their old coordinates twice with no error).
+  Once a token is in a combat, stage its position with
+  `scene.updateEmbeddedDocuments("Token", [{_id, x, y}], {teleport: true, animate: false})`.
+- ⚠️ **`toggleStatusEffect(dead, {active:false})` THROWS `ActiveEffect "conddead00000000" does not
+  exist`** when the engine's HP-sync hook has already removed it — which it does the instant you
+  write `hea.value > 0`. Set HP first and let the sync clear `dead`; never "clean up" the status
+  afterwards.
+- ℹ️ **The `edha-focus` `hea` branch's card is not the amount that landed** — see the run-39 delta's
+  FAILS section. When you drive any heal through a gate (heal-cut, Wary, a clamp), assert the
+  **actor's HP**, never the card's number.
+- **Density, measured: 7 checklist rows + 1 sub-row retired on evidence, 1 row narrowed with its
+  blocker named, 1 new defect filed, and a permanent-looking two-client blocker removed for every
+  future row — in ~90 driving calls. Final actor / token / combat / macro / journal / scene / region
+  / wall / template counts and the full token name list all match the start snapshot.** The fix-pass
+  re-test block was again the densest thing available, for the twelfth run running.
+
 ## Operating lessons from run 38 (2026-09-06 — these OVERRIDE older advice where they conflict)
 
 - ⭐⭐ **`document.hidden` is NOT a fixed property of this harness — `tabs_select` + one screenshot

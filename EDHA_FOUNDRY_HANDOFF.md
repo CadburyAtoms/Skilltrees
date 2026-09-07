@@ -72,6 +72,394 @@ For Ben list, the Inbox composer, Run log, the full Dashboard) moved under a col
   does not exist anywhere in the repo (`EDHA_RULINGS.md`, `docs/PM_BOARD.md`, a full-repo grep) —
   only R-18 and R-48 are actually open today. Flagged for the PM rather than invented.
 
+## 2026-09-06 — Item 59: `system.damage.formula` folds to plain dice at BUILD time, R-71 (**TOOLING + DATA → pack REBUILD, Ben only**)
+
+R-71: the cosmere-rpg system rolls a talent's own `system.damage.formula` with no Edha engine
+involvement, so unlike an engine-rolled card (folded at RUNTIME by `edhaRollFormula`/
+`edhaFoldDieMath` per R-65) its chat card printed the raw parenthetical — measured on Verdict,
+`(2)d(2 * 3 + 2) + 5 = 10` next to the same talent's engine-rolled card reading `2d8 + 2 = 7`. Ben
+(a): fold at BUILD time.
+
+- **`scripts/lib/fold-die-math.js`** is the build-side twin of the engine's `edhaFoldDieMath` — same
+  two-regex fold loop, against a pure Node arithmetic evaluator standing in for `Roll.safeEval`
+  (there is no Foundry `Roll` global under plain Node, and `foundry-build.js` must not import the
+  engine). `foundry-build.js` now runs it over each talent's FINAL `system.damage.formula` (generator
+  or authored-overlay, whichever won) right before the doc is pushed to its pack; the engine's own
+  copy is untouched.
+- ⚠️ **This is a load-bearing limit, not a shortcut: it can only fold a formula whose computed dice
+  math is ALREADY fully numeric in the pack.** A `[Tier][Die]` formula such as Verdict's
+  `(@tier)d(2 * @skills.blue.rank + 2)` still carries unresolved `@`-refs at build time — there is no
+  actor to substitute `@tier`/`@skills.blue.rank` from until someone rolls it — so the fold is a
+  proven, deliberate no-op there (same as the engine's own copy before runtime substitution;
+  `tests/engine-helpers.test.js`'s "leaves unresolved @refs alone" pins the identical behaviour).
+  Measured against ALL 51 `damageFormula` entries in `data/talent-rolls.json` plus every authored
+  overlay's `damage.formula`: **zero are fully numeric today**, so a real build's
+  `folded-damage-formulas` count is currently **0** — this is correct, not a bug. The mechanism
+  activates the moment any talent's damage formula is flat/non-rank-scaled (no `@`-ref in its dice
+  math).
+- **Proof (parity, isolated by mutation):** built `edha-leyline`/`edha-deity`/`edha-heroic`/
+  `edha-adversaries`/`edha-items` twice into scratch modroots off IDENTICAL data — once with this
+  change, once without. Diffing every embedded document: **1044 field diffs, all `_stats.createdTime`/
+  `modifiedTime` wall-clock noise** (the same noise item 58's delta already documented for a
+  same-data double-build) — zero formula diffs, as expected. To prove the fold mechanism itself
+  fires end-to-end, a SCRATCH copy of `data/` (never the tracked files) had `Searing Bolt`'s
+  authored `damage.formula` mutated to a fully-numeric `"(1)d(2 * 3 + 2) + 5"`; building that scratch
+  data with the pre-fix code vs. this fix isolates to **exactly one field diff**:
+  `Searing Bolt: "(1)d(2 * 3 + 2) + 5" -> "1d8 + 5"`, nothing else moved. `tests/fold-die-math.test.js`
+  pins the three shapes item 59 names (rank-scaled → unchanged, plain → unchanged, flat-modifier →
+  folds) plus a formula-by-formula equivalence check against the engine's own `edhaFoldDieMath`
+  (loaded headlessly via `tests/harness.js`).
+- **🤖 for the bench, with the caveat above already written into the row:** checklist "Fix pass
+  re-test (item 59)" under `# BENCH — Order (Tessavain, deity)` — Verdict's system-rolled damage
+  card. Because Verdict's own formula is rank-scaled, the row does not expect the parenthetical to
+  disappear from ITS card; it re-confirms the total is still correct and nothing else moved, and
+  flags anyone who wants the deeper (actor-aware, runtime) fix back to `EDHA_RULINGS.md` R-71.
+
+---
+
+## 2026-09-06 — ITEM 34b: loot caches + defeated-adversary search — the player-clickable chest lands (re-do of PR #103's loot half against today's engine; PR #233) (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
+
+**What it is.** Ben's painted-chest ask, approved 2026-07-18 and again 2026-09-05 ("Foundry didn't
+have a way to 'click on a treasure chest as a player and open it' — I liked our fixes"). One
+Take-card mechanism, two entry points. `edha.createLootCache("name")` (GM console; on
+`game.modules.get("edha-content").api` and `globalThis.edha`) mints a world adversary-type actor
+flagged `edha-content.lootCache` in a **Loot Caches** folder, `ownership.default 0`, with a LINKED
+prototype token on `icons/svg/chest.svg` — **verified present on Foundry v13.351** at
+`resources/app/public/icons/svg/chest.svg` (the ⚑ from #103 is settled). The GM stocks it by dragging
+items onto its sheet and places the token over the painted chest. A player **double-clicks** the
+chest token — or a **defeated** adversary's token (HP ≤ 0 or the system's DEFEATED status) — with one
+of their own tokens within **5 ft edge-to-edge** and gets a whispered contents card (player + GMs);
+out of reach → a "move within 5 ft" warning; nothing lootable → an info toast. **Adversary sheets
+never open to players**: the `Token#_onClickLeft2` intercept (init-time prototype patch, the
+phantom-veil idiom; v13 binds `clickLeft2` per token at draw time) returns before Foundry's sheet
+render for every loot source, and GM / non-loot clicks fall straight through.
+
+**Take** buttons bind through `EDHA_CARD_BUTTONS["edha-loot-btn"]` and relay through
+`EDHA_SOCKET_ACTIONS["loot-take"]` — the existing registries, no second channel. The GM is the
+single writer: `edhaLootTakeGM` claims `<srcTokenUuid>|<itemId>` through **`edhaLootClaim`** (a
+synchronous test-and-set) BEFORE its first `await`, then deletes the item from the source, creates it
+on the taker (provenance flags shed so the adversary sync will not delete it; lands unequipped,
+`alwaysEquipped` cleared) and posts the public "X takes Y from Z" card; the loser's relay gets a GM
+whisper; a failed take releases the claim. **Bodies keep their `alwaysEquipped` natural weapons**
+(item 34a's flag) — `edhaLootableItems` admits gear types only (weapon / equipment / loot) and, for
+a body, refuses an `alwaysEquipped` weapon; a cache gives up everything gear-typed. A downed PC or a
+live adversary is never a source. Generic throughout — no talent or adversary name (iron rule 2b),
+the allowlist unchanged; the "Loot Caches" folder literal joins lint-refs' NAME_ALLOWLIST.
+
+**Proven headless** (`tests/loot-caches.test.js`, 11 cases, suite 871/0): every pure helper
+(`edhaLootableItems`, `edhaLootRows`, `edhaLootDefeated`, `edhaLootSourceKind`, `edhaLootGapFt`,
+`edhaLootInReach`, `edhaLootClaim`/`edhaLootRelease`), **the two-relay race on the real
+`edhaLootTakeGM`** (two takes of one item interleaved on one event loop → exactly one create, one
+delete, one public card, one GM whisper), the release-on-failure retry, and a source scan that
+`loot-take` is registered exactly once with no private card walker. Eight one-line reversions each
+failed the suite (the alwaysEquipped exclusion, the Dead status, the cache flag, the half-size
+subtraction, `<` for `<=`, the claim ledger — **the existence check alone lets both relays through**
+— the ×qty label, a doubled socket registration), then restored.
+
+**🤖 for the bench:** the `34b` sub-block under `# BENCH — Fleet weapon migration, 34a` (7 rows:
+chest token, contents card, Take moves the item, the double-loot guard from two clients, body search
+within / out of 5 ft, sheet never opens, natural weapon not listed). With 34a (PR #220) and this PR
+both merged, item 34 is checked and the §9 "Fleet weapon migration" line is closed.
+## 2026-09-06 — ITEM 65 (34c) + ITEM 67 (R-81): the rest of the fleet weapon migration, and the run-19 charge family (**REBUILD + ⟳ Sync** — `data/adversaries.json` only; the adversaries pack rebuilds, then "⟳ Sync Adversaries from Pack"; NO engine change)
+
+**34c — the later bestiary is weapon-typed.** The 39 statblocks statted after 07-18 (Reedling →
+The Cull-Alpha) carried 44 attack-rolling items with no `kind` (= action). **36 are now
+`kind: "weapon"`** by 34a's recipe: 35 natural weapons `alwaysEquipped: true` (every Bite, Rend,
+Tusk Rake, Gore, Ram, Whip-Lash, Dragging Roots, Antler Sweep, Horn Toss, Girdling Bough, the
+Raking Grasps, the Culling Bites, the fooled-rider strikes …) and one gear weapon, the Sevenbrand
+Construct-Smith's Forge-Hammer, keyed to the system registry's `hammer` (heavy_wpn). **Eight stay
+actions by analogy to Ben's 07-18 rulings**: the two to-hit-only grabs (Stillback Seize and Roll,
+Wrongwake Drag Under — Snatch and Wade's shape), the two 2-action maneuvers (Noonwing The Stoop,
+Garden Sow Trampling Charge — Devastating Blow's shape), the burst attack (Noonwing Wingstorm —
+a 10-ft burst is not a single-target weapon), and the three Focus-costed Searing Bolts (Cragdrake
+Adult, Hazewyrm Adult, Hazewyrm Elder — Frost Lance's shape: a named talent attack with a resource
+cost). Note for the next sweep: `kind` is never written as `"action"` in the data, so
+`grep -c '"kind": "action"'` is 0 before and after; count items with `attack` and no `kind: weapon`.
+
+**Parity (the 34a method, re-derived under `tmp/`):** both packs built into scratch roots with
+`EDHA_DATA` pinned to the branch's own `data/`, every embedded doc read back from LevelDB with
+`_stats` stripped — **336 items compared, 39 changed (36 + item 67's 3), 0 missing, 0 added, 0 roll
+differences** (same `activation.skill`, `modifierFormula`, damage formula/type, event count), 0
+actors changed; `validate-adversaries.js` → `✓ 0 issues`. Fifteen of the flipped items carry
+rules — eleven fooled `edha-damage-rider`s (+1d6 / +1d8) and six on-hit `edha-gm-cue`s — which now
+ride weapon-type items through 34a's `edhaRuleBearer` gate; the bench proves that live.
+
+**Item 67 — R-81 default (a), APPLIED, open for Ben's veto.** The Brandram's Shockwave Slam
+`{bySize: false, distanceFt: 10}` (the dead `distanceFt: 5` beside `bySize: true` is gone), the
+Brandram's Reckless Advance `{bySize: false, distanceFt: 10}`, the Tussock-Sow's Sudden Growth
+`{sizeByRank: false, sizeFt: 10}` — each the card's own number, now bold on the card. Not touched
+(reported): both Sudden Growths (Sow, Grove) still place within Attunement Range by rank (30 / 60
+ft) while their cards say "within 10 ft" — the same family, one field over.
+
+**🤖 for the bench:** the `34c` sub-block under `# BENCH — Fleet weapon migration, 34a` — eight
+render/roll-parity rows (one per bestiary group), one weapon-borne-rider row, and three item-67
+rows (10-ft push, 10-ft charge, 10-ft square). Item 34 stays open until 34b (loot caches) ships.
+## 2026-09-06 — BENCH RUN 39: fix pass 7a's re-tests all pass, and the two-GM blocker that stopped runs 37 and 38 is settled by measurement (**DOCS-ONLY** — no engine change, no data change, no pack rebuild, no ⟳ Sync)
+
+**Deploy, hash-verified from both sides before anything was driven.** The served
+`/modules/edha-content/scripts/register-skills.js`, fetched cache-busted and CRLF-normalised,
+hashes **`7d8e022630059738c5b721aba4f77621b689992c180ff8c2461b2506915cca61`** over **1 596 964**
+bytes — byte-identical to `dd1e1c3`'s `module-src/scripts/register-skills.js` with CRs stripped.
+So **fix pass 7a (PR #215) was live** for every row below. (`main` has since advanced through
+PRs #217–#223; none of that was deployed and none of it was driven — read every result here against
+`dd1e1c3`.) World `edha`, system 2.1.0, Foundry 13.351, `edha-content` active, `globalThis.edha`
+present, primary GM `Bench`, Ben's `Gamemaster` connected throughout. Roster:
+`bench-setup-console.js` was served from the module folder and run twice — **zero ⚠ lines**,
+`orphans: 0 repaired, 0 replaced`, `game.actors.size` and `scene.tokens.size` unchanged across the
+re-run, and a third run at the end of the session left both counts and both edited actors' item
+counts identical.
+
+⭐ **The generalisable finding: a client's loaded engine IS readable — from the OUTSIDE.** Runs 37
+and 38 both refused to drive the R-77 row because "a client's loaded engine is not readable from
+another client", and run 38 left it waiting on Ben pressing F5. It never needed F5, and it never
+needed Ben: `Get-Process` on the host showed **every `Foundry Virtual Tabletop` process with
+StartTime 18:59:24–18:59:38 on 2026-09-06** — after the 18:33 merge and the 18:59 deploy — which
+proves Ben's `Gamemaster` client (the Electron app itself) had loaded the current engine. **Any
+future two-client gate row should check process start time against deploy time before recording a
+blocker.** The measurement then agreed with the inference: the gate behaved.
+
+**Rows retired on evidence (7 rows + 1 sub-row), each with its own control:**
+- **R-77 — the Investiture-max persist defers to the primary GM.** Run 37's probe-3 recipe, re-run
+  with both clients current: **exactly one `inv.max.override` write, value 8, from `Bench`**, and
+  **nothing at all** from `Gamemaster` (not even the `_stats`-only, `lastModifiedBy`-carrying update
+  run 37 caught it losing the race with). ⭐ The control run 37 could not build: made stale a SECOND
+  time with `Bench`'s Set already seeded — **nobody wrote**, `_source` override stayed 8 while the
+  derived value correctly read 5. A pre-fix `Gamemaster` has no gate and would have written; it did
+  not. That same reading covers the row's second half in the only direction measurable from here —
+  the derivation is right while nobody persisted.
+- **R-51 — a phantom double's break fires no `ally-drops` cue.** The copy broke at a measured
+  **7.071 ft** from a 5-ft cue owner of its own side — the exact gap a REAL drop fires at, proven in
+  the same session — and produced no cue card and no flag write on any of three owners. A same-take
+  positive control at the same coordinates fired. The copy's own `damaged` / `seeming-break` signals
+  still printed.
+- **R-52 (c)(i) — the +2.5 ft half-square slack.** All four positions plus both negatives, with the
+  gap computed and printed for all three owners on every take: **7.5 ✅, 0.0 ✅, 5.0 ✅, 7.071 ✅**,
+  10.0 → no card, Roek at 25.0 → refused, **Roek at 20.0 → fired** (so NEG 2 is not a blind
+  silence). The 7.5-ft boundary case is the one the ruling's own prose predicted would still miss.
+- **R-12 — a raised creature is no longer a Remain.** Positive + all three negatives, including the
+  cross-owner form that actually bites: the raised body left BOTH Reapers' ledgers while an
+  unrelated corpse kept its entry and its marker.
+- **R-10 — "cannot regain HP" does not stop stabilization.** A REAL Withering Touch melee hit
+  produced the mark; **Death Ward, Raise Dead and Unbreakable Line each landed the creature on
+  1 HP** with the mark live and still attached afterwards; the load-bearing negative (a plain heal)
+  delivered 0.
+- **R-36 — Temp HP keeps the higher grant's NAME.** Driven through Bear Witness's real round-start
+  list-members grant: 6-beats-3 keeps both, a 3-v-3 **tie** keeps the incumbent's name, 3-beats-2
+  replaces value and label.
+- **R-72 — an involuntary drain is not a spend.** The Edict-bound creature was drained of
+  Investiture with **no violation prompt**, then spent its own Investiture on Guiding Signal minutes
+  later and **did** raise the prompt. Narrowed to POS 3 (below).
+- **R-54 — the +1 max health is removed.** All five faces, three of them across a real client
+  reload; the three level-1 PCs in `Edha PCs` are the cleanest witnesses (stored 12/14/12, read
+  11/13/11, nothing written, unchanged after the reload).
+
+# FAILS for the next fix pass
+
+- ❌ **NEW DEFECT — an `edha-focus` `resource: hea` rule announces the UNGATED heal amount.** H10's
+  health branch posts its card from the rolled number while `edhaCrossHeal` → `edhaHealCutGate`
+  scales the actual write. Measured against a `healCut {fraction: 0}` creature: HP **4 → 4**
+  (correct), the gate card *"cannot regain HP"* printed (correct), and then the engine printed
+  *"⚕️ Field Medicine: B39 Victim heals **5**."* — it healed 0. The halved case will misreport the
+  same way. Blast radius: every `edha-focus` `hea` rule; **Field Medicine** is the shipped consumer.
+  Filed as a 🤖 row in the Death section. **No other row failed this run.**
+
+**Still open, with its blocker named (stays 🤖, never ⚑):** **R-72 POS 3**, the `set-resource` relay
+half. It is unrunnable from one GM client for a structural reason worth writing down:
+`game.socket.emit` does not echo to its sender, and the relay receiver is
+`edhaDefBuffGmGate()`-gated to the **primary** GM — which is `Bench` — so a Bench-side emit reaches
+only Ben's non-primary `Gamemaster`, which returns immediately. It needs `PlayerBench`.
+
+**Two staging facts that will save the next run time.**
+1. `Reaper's Harvest` carries **`multiOwner: false`**, measured: a second Reaper standing at the
+   same two defeats harvested **nothing**. R-12's NEG 3 two-owner state therefore cannot arise
+   through play, and was written directly in the shape H3 writes — declared staging.
+2. `edhaLedgerSpend` shifts the **oldest** entry and unmarks it, so on a tier-2 Reaper (cap `@tier`
+   = 2) R-12's NEG 1 as worded is unsatisfiable: the "other harvested corpse" IS the one the raise
+   consumes. The cross-owner form is the real test.
+
+**World diff — end state matches start.** 74 actors, 33 tokens on the Playtest Map (name list
+identical), **0 combats**, 0 world items, 42 macros, 1 journal, 2 scenes, 1 Region, 117 walls,
+0 templates. **Authorised deletion (PM-R13, Ben 2026-09-06):** the zero-combatant combat
+**`BerbNeuXp4iKduef`** was deleted, as the licence permits. Everything else this run created — five
+`B39 Victim*` actors, `B39 Crownox Ring` / `B39 The Reckoning` / `B39 Sergeant Halden Roek` /
+`B39 Mistheron` (all imported FRESH from the pack), `B39 Reaper II`, the phantom copy, the
+`R77 Probe 39` and `B39 R54 Probe` actors, four probe items on `Bench — Death` / `Bench — Order`,
+three bench combats, and every token placed for them — was deleted; both edited bench PCs are back
+to **12 items**. `Bench — White` and `Bench — Heroic` tokens were returned to their recorded start
+coordinates, and the `Bench Ally — One` token this run created was removed.
+
+⚠️ **Two honest gaps, stated as gaps.** (1) The start snapshot lived in a page global and a mid-run
+`location.reload()` (needed for R-54's reload half) **wiped it**, so per-actor effect/HP restoration
+could not be diffed automatically; counts, the token name list and the two edited actors' item
+counts were re-verified by hand instead, and `Bench — Destruction` (42/42) and `Bench Ally — One`
+(41, matching its twin) were restored from surveyed values. **Next run: persist the snapshot to
+`sessionStorage` at the moment it is taken.** (2) Several bench PCs' **focus and Investiture pools
+are left at test values** — bench-folder drift, inside the licence; re-running
+`bench-setup-console.js` does not reset resources, so Ben can top them up on the sheets if he cares.
+Four `Frostbinder` `braced` statuses and two `weakened` sit on Ben's campaign adversaries; this run
+never controlled or targeted those tokens, and — per the snapshot gap above — that is an account of
+what the run did, not a snapshot diff. Bench chat can be flushed (the run added ~103 messages).
+`Bench` was logged out as the last in-world act and is selectable on `/join` again.
+## 2026-09-06 — R-17 (item 51): a DECLINED or IGNORED offer refunds its Investiture; the round's use still spends on the click (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
+
+**What.** An H6 `edha-prompt-pick` offer posted from the talent's OWN `use` event (Unnerving
+Approach's shape) has already been charged its activation cost by the SYSTEM before the rule runs,
+so declining or ignoring the card kept the Investiture while the round's use — spent on the click
+since 07-24s — stayed available (R-17). Ben chose (a): keep the click budget AND refund. Reused
+**R-69's mechanism** (charge on post, `edhaRefundCost` on back-out — what `edhaDecreeUse`'s cancel
+does) rather than a charge-on-click takeover, through ONE path: **`edhaOfferDecline(msg, item,
+label)`** — resolves the card once (the `cardResolved` flag), then refunds via `edhaRefundCost`.
+- The card carries a **Decline (refund)** button (`edha-pick-decline-btn`) and a message flag
+  `edha-content.offer {itemUuid, round, refund}`; `refund` is true ONLY when the rule fired on a
+  system `use` event (`event.type === "use"`) AND the item consumes something (`edhaOfferRefundable`,
+  pure). Puppeteer's offer is posted from a watch → success rule and its `costs` land on the click,
+  so it is NOT refundable — a decline there credits nothing (a refund would mint Investiture).
+- **Ignored** = the combat round advanced past the round the card was posted in: `edhaSweepIgnoredOffers`
+  on `combatTurnChange` (one GM, `edhaDefBuffGmGate`, last 200 messages) declines every unresolved
+  refundable offer from an earlier round through the same path. Outside combat the button is the exit.
+- The accept click now REFUSES a card already resolved (a sweep-refunded card is not a free use)
+  and marks the card resolved BEFORE the payload runs, off the dispatcher's `msg` (the DOM fallback
+  stays), so a round change cannot sweep an accepted card.
+
+**Proven** — `tests/offer-decline-refund.test.js`, four pins, each failing under a one-line reversion:
+declined → 4 → 3 → **4** and `_pick` still allowed; ignored → same round untouched, next round
+refunded, the watch-posted offer left alone; accepted → stays 3 through the sweep and a late Decline,
+and accept-after-refund is refused with no `_pick` mark; source scan → exactly one `edhaRefundCost(`
+in the offer family, inside `edhaOfferDecline`, both callers through it. 🤖 bench: checklist
+**2bJ-10 (reopened) + 2bJ-10b/c** under `# BENCH — Black`. Item 51 → PR #230.
+
+---
+
+## 2026-09-06 — Item 66: a NEGATIVE next-test rider on the DAMAGE path joins as a subtraction, not `base + -1d6` (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
+
+Item 49 turned the damage-path consumption in `edhaWrapRollDamage` into a reduce over the taken
+entries — `${f} + ${m.formula}` — so a rider whose formula starts with a minus (Probability Net's
+`-1d6` granted as an `either` rider, or any authored `edha-next-test-mod` with a negative formula
+and `appliesTo: damage|either`) built `2d6 + -1d6`, which Foundry's parser dislikes. Item 49 saw it
+and left it as pre-existing. The d20 path (`edhaNextTestPreRoll`) already handled the sign inline:
+`0 - 1d6[Probability Net]`.
+
+- **One pure helper, `edhaJoinRiderTerm(base, formula, label?)`**, beside `edhaTidyFormula` in the
+  SHARED CORE: a leading minus → `base - term`, anything else → `base + term`, `[label]` appended
+  when given. **Both paths call it** — the d20 path with base `"0"` and its label (its output is
+  byte-for-byte what the inline branch produced), the damage path with the source label on the
+  subtraction only, so a **positive damage rider still builds exactly item 49's `2d6 + 1d6`**.
+- No name-keyed branch; the allowlist is untouched. Nothing else in either path changed.
+- **Proven headless** in `tests/negative-rider-join.test.js`: (1) `2d6 - 1d6[Probability Net]`
+  for the negative rider — under a one-line reversion to the raw concat it fails with the actual
+  `'2d6 + -1d6'`; (2) the positive rider's string equals the pre-change reduce, verbatim; (3) the
+  d20 strings for `-1d6`, `1d6` and `+1d6` are unchanged; (4) a source scan pins exactly one
+  `function edhaJoinRiderTerm(` and that both `edhaWrapRollDamage` and `edhaNextTestPreRoll` call it.
+- **🤖 for the bench:** checklist **2bI-4d** (a negative `either` rider on a damage roll shows a
+  subtraction and the total drops) + **2bI-4e** (positive-rider negative control: `2d6 + 1d6`).
+
+---
+
+## 2026-09-06 — Item 58: Volatile Strike rider scope, Withering Touch duration prose, The Final Study re-key (R-23, R-28, TODO 41) (**DATA → pack REBUILD + ⟳ Sync, Ben only**)
+
+Three small authored-data fixes, all Ben-approved 2026-09-06, bundled per the PM's batch:
+
+- **R-23 (a) — Volatile Strike is now a true rider on ANY melee hit.** Its `edha-on-hit` rule
+  (`TKmyXVyFhGYWryKv` in `data/authored/leyline-red.json`) previously carried no `whenDealer` field,
+  so `edhaOnHitIsItemSpecific` fell to the derived default (item-specific, since it is `skill_test`
+  with its own damage formula) and only ever fired on its OWN roll. `whenDealer: "any"` is now set
+  explicitly — a settleable-from-the-Events-tab field change, no engine code touched. A standalone
+  use still self-offers (accepted in the ruling).
+- **R-28 (a) — Withering Touch's "start of your next turn" prose was wrong; the engine, the
+  auto-applied strike bonus, and the live heal-cut chat card (`register-skills.js:1536`, which
+  already prints "until the end of … next turn") all say END.** Fixed the authored `description`
+  (value/chat/short) and the `WitherNote000000` arming-card text in
+  `data/authored/deity-death.json`, plus the source prose in `data/domain.json`. Nothing else on
+  the entry changed.
+- **TODO 41 — The Final Study's stale docId re-keyed.** ⚠️ **Item 18's stated "current seed"
+  (`MQvIkCSK7fIHjnZE`) does not reproduce.** Re-deriving `fid("talent:deity/Gnothis:The Final
+  Study")` by hand, from a live scratch build's assigned item `_id`, AND by rebuilding item 18's
+  own commit (`4500f95`) with its own `data.js`/`domain.json` snapshot all agree on
+  **`yrIgDwup7iBdPq07`** — used that value instead. `docId` in `data/authored/deity-knowledge.json`
+  rewritten to it; the overlay's own content is untouched, so the built pack does not move (see
+  proof below).
+
+**Proof method note:** the raw LevelDB pack directories are NOT byte-stable build-to-build even
+with zero source changes — `_stats.createdTime`/`modifiedTime` are stamped with the wall clock at
+build time (confirmed by building the same data twice). Parity was instead proven on
+**document CONTENT** via `edha-pack-io.readPack` + `stableStringify`, with only those two `_stats`
+fields stripped: (a) building with the STALE docId restored (R-23/R-28 still applied) reproduces
+the "matched by name: 1 / The Final Study" report line, and its content hash is IDENTICAL to the
+build with the corrected docId — the re-key moves nothing in the pack; (b) `edha-leyline` and
+`edha-deity` are the only two pack hashes that move at all across the full before/after build, and
+a field-level diff shows exactly Volatile Strike's `system.events` (`whenDealer` added) and
+Withering Touch's `system.description` + `WitherNote000000.text` — nothing else, in any pack.
+`node scripts/foundry-build.js all` prints **zero** "authored overlays matched by name" lines
+(one today, on `main`).
+
+**🤖 re-test (bench queue) — checklist Red row:** confirm a real sword hit offers Volatile Strike's
+Investiture prompt, and a standalone cast of Volatile Strike itself still self-offers harmlessly
+(expected, per the ruling). Checklist row **2bW-1**'s duration clause is retired — its own
+mechanical halves already passed at bench run 15; only the wording disagreed.
+
+## 2026-09-06 — R-22 (item 60): build guard rejects any `min ≠ max` consume entry (**TOOLING-only** — no engine change, no data change, no pack rebuild)
+
+`edhaConsumeList` (register-skills.js) reads `value.min` as both the deduct amount AND the refund
+amount and never looks at `value.max` — so a talent or adversary ability that ever shipped
+`min ≠ max` would let a real spend of `max` refund only `min`, silently, because nothing in
+Foundry errors on it. Ben (R-22, 2026-09-06): close the door with a build guard, not an engine
+change — (a).
+
+- **Traced the only two producers of a `consume` entry before deciding what to scan.**
+  `foundry-build.js`'s `parseCost()` (the sole builder of generated-talent AND adversary-ability
+  consume entries, from "N Investiture"/"N Focus" cost text) unconditionally emits
+  `{min:n, max:n}` — it cannot diverge. The one place a consume entry carries an INDEPENDENTLY
+  settable `min`/`max` is `data/authored/*.json`'s `activation.consume[].value` (Foundry-extracted
+  or hand-edited), which `applyAuthorable()` (edha-pack-io.js) writes into the compiled pack's
+  `system.activation` wholesale. So the authored overlay is the only real risk surface; adversary
+  abilities are re-derived from their text grammar and scanned too, rather than assumed safe.
+- **`scripts/lib/consume-guard.js`** (`checkConsumeEntries`, pure) does the scan/decide; **pass 23**
+  in `scripts/lint-refs.js` feeds it every authored-overlay talent's consume list plus every
+  adversary ability's re-derived one, and fails the build naming the file/talent/resource/min/max
+  on any mismatch. Floor pinned at 200+ entries scanned (measured today: 235 — 181 talent + 54
+  adversary) so a scan that silently finds nothing is itself a failure.
+- **Mutation-verified.** Flipping one real entry's `max` (Black's Cruel Step, 1 Investiture) to
+  6 while leaving `min` at 1 makes `lint-refs.js` fail with `pass 23: data/authored/leyline-black.json
+  (Cruel Step) consume[0] resource "inv" has min 1 ≠ max 6 …`; restoring the file returns it to
+  clean. Pinned permanently in `tests/consume-guard.test.js` (unit cases on the pure function, a
+  fixture-file mutation spawning the real `lint-refs.js` process, and a real-repo-data floor
+  check) — 5 new cases, all passing, 832/832 total.
+- No 🤖 rows: this is a repo-side build-time gate, nothing to bench.
+
+## 2026-09-06 — ITEM 57: the adversary data batch — R-29 / R-40 / R-46 (+ R-48 default) / R-47 / R-74 (**REBUILD + ⟳ Sync** — `data/adversaries.json` + one lint tightening; the adversaries pack rebuilds, then "⟳ Sync Adversaries from Pack"; NO engine change)
+
+Five of Ben's 2026-09-06 rulings land on one file, one themed commit each (PR #226). Proven by a
+scratch build with `EDHA_DATA` pointed at the branch's own `data/` (not the main checkout — the
+build's default): a LevelDB read-back of every actor + embedded item before vs after differs in
+**exactly 1 actor + 19 items of 388 entries** — the Fen-Heart, the 16 marker-carrying abilities,
+Fade, Explosive Leap, Reckless Advance — and `validate-adversaries.js` reports 0 issues.
+- **R-29 (a)** — the Stonebound Captain's Combat Training reads *"Once per round, when one of the
+  Captain's attacks misses, it can turn that miss into a graze without spending Focus."* Its exit is
+  still `NO NAMEABLE HOOK` (the GM's application step is not module-visible), now as an HTML comment.
+  The rulings text said the description was "empty" — it was not; it carried the 07-16 wording plus a
+  visible marker. The garbled "grazes into a graze" sentence exists only in the source PDF (not in
+  the repo). Checklist row retired on the built-pack read-back.
+- **R-40 (a)** — the Gone-to-Weir Fen-Heart's biography says **3×3** on placement (was "3x3 or 4x4").
+  No token field can carry it: `size: "large"` is the schema cap (2×2), so it stays guidance.
+- **R-46 (a)** — Cragdrake Whelp Pack's Reckless Advance: `{bySize: false, distanceFt: 25}` (full
+  Speed; `bySize` on a small minion at red rank 1 moved 3 ft), card says "up to 25 ft".
+  **R-48 default (a), APPLIED, still open for Ben's veto** — the Cragdrake Adult's Explosive Leap:
+  `{bySize: false, distanceFt: 20}`, the card's own number. The brief scoped the default to the
+  Adult; the run-19 family's other three (Brandram Shockwave Slam / Reckless Advance, Tussock-Sow
+  terrain square) are untouched and want the same call.
+- **R-47 (a)** — all **16** `NO NAMEABLE HOOK:` markers are now `<!-- … -->` comments inside the
+  ability's `text`/`rider`: kept on the item (`item.system.description.value` still carries them),
+  invisible on the card and the chat post. `lint-refs.js` pass 5 still exempts on the RAW prose and
+  now also fails a VISIBLE marker — both mutations proved: marker deleted → the original "wire it or
+  justify it" finding; comment delimiters stripped → the new R-47 finding. ⚠️ Untested: whether
+  Foundry's ProseMirror editor keeps an HTML comment when Ben SAVES a description — the 🤖 row checks.
+- **R-74 (a)** — the Stalker's **Fade** is the game's one engine-driven adversary cost: a `use` →
+  `edha-prompt-pick {source: confirm, costs: "inv:1"}` card; the click spends the Investiture through
+  `edhaSpendResource` (so it is a real spend for the R-4 / 28b watches), the native `consume` was
+  removed so it is the only deduction, the damaged gm-cue stays as the reminder, Concealment stays
+  the toggled Fade marker (no concealed status exists to arm). The 28b row now has its subject.
+🤖 four rows: R-46 (25 ft), R-48 (20 ft), R-47 (no note on the card + the ProseMirror round-trip),
+R-74 (the confirm click drops Investiture 2 → 1 and the post does not).
 ## 2026-09-06 — Item 54: the DISPEL reaches item-owned passives (disable, never delete) and the Omen ledger (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
 
 Ben VETOED R-73's narrow default and asked for the safe widening (b); R-35 (a) folded in. PR #224.
@@ -100,6 +488,7 @@ Collected / Surefooted, a Cinderhound's Cinder Coat, Predictive Ward's braced �
   offered as "(Hardy — suppress)", the click leaves the talent's effect present-but-disabled, and
   the negative: no delete-shaped button exists for it; the Chaos residuals row (Dispel Omen clears
   marker + ledger row) is annotated. R-73 stays in `EDHA_RULINGS.md` §I until the bench confirms.
+
 ## 2026-09-06 — R-27 (item 52): Battle Fever's rally stack is SPENT on the next test, once (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
 
 Ben ruled (a): **the card is canon** — "gain +1 to your next test (max = Rank), resets at the start
@@ -127,6 +516,7 @@ on six consecutive rolls). PR #223.
 - **🤖 bench:** checklist Red rows **52-1** (three hits → `3[Rally]` once, then nothing; cap at
   rank) and **52-2** (negative control — unspent stack clears at turn start; a cancelled dialog
   leaves the stack intact for the next completed test).
+
 ## 2026-09-06 — R-70 (item 50): every cost row of the system's consume dialog opens TICKED — the one sanctioned system-dialog wrapper (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
 
 **What.** Ben's R-70 (b): a "Cost: 1 Investiture, 1 Focus" card (the Stitchmother's *Reknit Form*,
@@ -157,6 +547,7 @@ Continue charges Investiture AND Focus; a single-cost talent's dialog is unchang
 one charge) as the negative control.
 
 ---
+
 ## 2026-09-06 — ITEM 49: the next-test modifier slot is a **LIST** (**ENGINE-ONLY, F5** — no data change, no pack rebuild, no ⟳ Sync)
 
 Ben's R-15(b), verbatim: *"that needs to be a list not one slot."* `flags.edha-content.nextTestMod`
@@ -14364,10 +14755,15 @@ remains is Foundry-side and gated on TWO unblockers: **(1) the schema dump** —
 `source-materials/system-schemas/` (the system source is unreachable from repo sessions: proxy
 blocks the public GitHub repo, add_repo is same-owner-only) — and **(2) the W25 currency canon**.
 
-- [ ] **Fleet weapon migration** — **34a SHIPPED 2026-09-06 (item 34a, the weapon half: 11 items
+- [x] **Fleet weapon migration** — **DONE 2026-09-06: 34a (PR #220, the weapon half: 11 items
   across the 13 original statblocks are weapon-type, `edhaRuleBearer` on both rule loops, summon
+  attacks as weapons) + 34b (PR #233, the loot half: `edha.createLootCache`, the double-click
+  reader, the `loot-take` GM relay); see the two 2026-09-06 deltas. Bench rows 🤖 in the
+  `# BENCH — Fleet weapon migration, 34a` section (+ its 34b sub-block); the 39 later bestiary
+  blocks (44 attack items) are follow-up scope (TODO_REPO_HYGIENE #34's PM line).** History below.
   attacks as weapons; see the 2026-09-06 delta). NOT checked until 34b (loot caches) lands as its
-  own PR; the 39 later bestiary blocks (44 attack items) are follow-up scope.** History below.
+  own PR; the 39 later bestiary blocks (44 attack items) were follow-up scope → 34c SHIPPED
+  2026-09-06 (item 65: 36 flipped, 8 stay actions by the 07-18 analogies).** History below.
   (gate: schema dump). ⚑⚑ pipe-cleaner shipped 07-15: `kind:"weapon"`
   in advItemDoc (action-shaped activation kept byte-identical — same skill_test + modifierFormula
   so PDF numbers hold; best-guess weapon fields strip harmlessly if wrong) + Corvaine Raider's

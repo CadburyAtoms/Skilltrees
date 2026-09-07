@@ -1129,7 +1129,7 @@ green. Then PR #93 can be closed and its branch moves from KEEP to SAFE in `docs
 
 ---
 
-## 34. [ ] Fleet weapon migration + loot caches (player-clickable chest and body search) — re-do PR #103 on current main
+## 34. [x] Fleet weapon migration + loot caches (player-clickable chest and body search) — re-do PR #103 on current main (2026-09-06, PRs #220 + #233)
 
 **Why:** PR #103 (2026-07-18) built both and Ben approved the design (2026-09-05: *"Foundry didn't have
 a way to 'click on a treasure chest as a player and open it' — I liked our fixes"*), but the branch is
@@ -1161,7 +1161,13 @@ weapon migration" line checked. Then PR #103 can be closed and its branch moves 
 **PM:** lane B · model opus (or `fable-worker` on a weekend) · size L, dispatched as 34a then 34b · deps a
 Foundry window for the bench · verify: pinned tests + scratch pack build + `validate-adversaries.js` 0 issues.
 34a shipped in PR #220 (2026-09-06, REBUILD + ⟳ Sync): 11 items weapon-type, `edhaRuleBearer` on both rule
-loops (mutation-verified), summon attacks as weapons, parity table 336/11/0, 9 🤖 rows. 34b still open.
+loops (mutation-verified), summon attacks as weapons, parity table 336/11/0, 9 🤖 rows.
+**34b shipped in PR #233 (2026-09-06, ENGINE-ONLY, F5):** `edha.createLootCache` (chest icon verified on
+v13.351), the `Token#_onClickLeft2` reader (cache token / defeated adversary within 5 ft; sheets never open
+to players), the `loot-take` socket action with the `edhaLootClaim` double-loot guard (the two-relay race
+pinned on the real handler), bodies keep `alwaysEquipped` weapons; 11 headless cases, 8 mutations, 7 🤖 rows.
+Both halves merged → **item checked**; the bench rows retire at a table (lane B); then PR #103 closes and
+its branch moves to SAFE.
 Follow-up scope for the PM: the 39 bestiary blocks statted after 07-18 carry 44 attack items still `action`.
 
 ---
@@ -1363,7 +1369,7 @@ verify: the script's before/after summary from the live table, plus the 🤖 row
 
 ---
 
-## 41. [ ] "The Final Study" (deity/Knowledge) carries a stale authored docId — the one overlay that resolves by name
+## 41. [x] "The Final Study" (deity/Knowledge) carries a stale authored docId — the one overlay that resolves by name — DONE 2026-09-06, folded into item 58, PR #227
 
 **Why:** item 18's worker (PR #170, 2026-09-05) measured every one of the 365 authored overlay
 entries against `fid("talent:<tree>:<name>")` and found exactly one orphaned docId:
@@ -1384,6 +1390,11 @@ packs hash identical before/after.
 deps Ben's OK · verify: the build's name-match count 1 → 0 + pack parity. DATA-only, no rebuild.
 
 **Ben's OK 2026-09-06 — folded into item 58.**
+
+**Correction (item 58, 2026-09-06):** the seed stated above, `MQvIkCSK7fIHjnZE`, does not
+reproduce — re-derived by hand, from a live scratch build's assigned item `_id`, and by rebuilding
+item 18's own commit (`4500f95`) with its own `data.js`/`domain.json` snapshot, all three agree on
+**`yrIgDwup7iBdPq07`** (`fid("talent:deity/Gnothis:The Final Study")`). That is the value shipped.
 
 ---
 
@@ -1696,7 +1707,7 @@ object. ENGINE-ONLY (F5).
 
 ---
 
-## 51. [ ] Puppeteer / Unnerving Approach refund Investiture on a declined offer (R-17)
+## 51. [x] Puppeteer / Unnerving Approach refund Investiture on a declined offer (R-17) (2026-09-06, PR #230 — **live behaviour bench-pending**)
 
 **Why:** The once-per-round click budget is consistent, but a declined/ignored offer still
 charges Investiture. Ben (a): keep the click budget AND refund the Investiture when the offer is
@@ -1709,6 +1720,13 @@ Pin headlessly.
 
 **Done when:** a headless pin shows a declined/ignored offer leaves Investiture unchanged while
 the round's use is still available; checklist row 2bJ-10 marked 🤖.
+
+**DONE 2026-09-06, PR #230 (ENGINE-ONLY, F5).** R-69's mechanism reused (charge on post, `edhaRefundCost`
+on back-out) through ONE path, `edhaOfferDecline`: a Decline button on system-charged offers, a
+round-change sweep for ignored ones, the accept click refusing a resolved card. Puppeteer's offer
+(watch-posted, costs on the click) is not refundable by construction. Pinned in
+`tests/offer-decline-refund.test.js` (four pins, four mutations). ⏳ **Bench-pending** — 🤖 2bJ-10 /
+2bJ-10b / 2bJ-10c under `# BENCH — Black`. Detail: the handoff delta.
 
 **PM:** lane B · model opus · size S · deps none · verify: headless pin. ENGINE-ONLY (F5).
 
@@ -1822,7 +1840,7 @@ itself is F5.
 
 ---
 
-## 57. [ ] Adversary data batch: Combat Training, Fen-Heart size, charge distances, hidden hook markers, one bespoke cost (R-29, R-40, R-46, R-47, R-74)
+## 57. [x] Adversary data batch: Combat Training, Fen-Heart size, charge distances, hidden hook markers, one bespoke cost (R-29, R-40, R-46, R-47, R-74) — DONE 2026-09-06, PR #226 (REBUILD; R-48 default (a) applied to the Cragdrake Adult, still open for Ben's veto)
 
 **Why:** Five adversary-data rulings land on the same file and rebuild:
 - R-29 (a): Combat Training (Stonebound Captain) is MISS → GRAZE once per round, no Focus cost —
@@ -1850,7 +1868,7 @@ REBUILD (Ben's deploy).
 
 ---
 
-## 58. [ ] Talent data batch: Volatile Strike rider scope, Withering Touch duration prose, The Final Study re-key (R-23, R-28, TODO 41)
+## 58. [x] Talent data batch: Volatile Strike rider scope, Withering Touch duration prose, The Final Study re-key (R-23, R-28, TODO 41) — DONE 2026-09-06, PR #227
 
 **Why:** Three small authored-data fixes, all Ben-approved on 2026-09-06:
 - R-23 (a): Volatile Strike should be a true rider on ANY melee hit (`whenDealer: "any"`), not
@@ -1875,7 +1893,7 @@ parity for the re-key. REBUILD + ⟳ Sync.
 
 ---
 
-## 59. [ ] Fold `system.damage.formula` into plain dice at build time (R-71)
+## 59. [x] Fold `system.damage.formula` into plain dice at build time (R-71) — DONE 2026-09-06, PR #234
 
 **Why:** The system's own item-damage card prints the unfolded authored formula string instead of
 resolved dice. Ben (a): fold it at BUILD time, the same fold `edhaRollFormula` already does at
@@ -1893,7 +1911,7 @@ REBUILD (Ben's deploy).
 
 ---
 
-## 60. [ ] Build guard: reject any `min ≠ max` consume entry (R-22)
+## 60. [x] Build guard: reject any `min ≠ max` consume entry (R-22) — done 2026-09-06, PR #225 (TOOLING-only)
 
 **Why:** `edhaConsumeList` refunds `value.min`, so a talent or adversary ability whose cost entry
 has `min ≠ max` can silently under-refund. Ben (a): close the door with a build guard rather than
@@ -1996,3 +2014,93 @@ generator.
 
 **PM:** lane R · model sonnet · size S · deps 48 ✓ · verify: build-report parity + the guard's
 mutation. TOOLING-only (no rebuild — the packs do not change). Found by item 48.
+
+---
+
+## 65. [x] 34c — the 44 later-bestiary attack items still `kind: action` (the rest of the fleet weapon migration) — DONE 2026-09-06, PR #232 (REBUILD; bench-pending)
+
+**Why:** item 34a (PR #220, 2026-09-06) migrated the 11 attack items across the 13 ORIGINAL
+statblocks to `kind: "weapon"` and put `edhaRuleBearer` on both actor-wide rule loops. Its worker
+measured the rest: the **39 bestiary statblocks statted after 07-18** (Reedling → The Cull-Alpha)
+carry **44 attack items still `kind: action`** — same model, same proof shape, not touched because
+34a's brief scoped it to the 11-of-13 table. Until they migrate, those blocks' attacks skip the
+system's native target + test-defense flow that 34a gave the originals, and any rider authored on
+them is harvested only because it sits on an action-typed item the loops still read.
+
+**What to do:** the 34a recipe over the 44: `kind: "weapon"` (natural weapons `alwaysEquipped:
+true`; maneuvers, reactions and any Frost-Lance-shaped ability stay actions — apply Ben's 07-18
+rulings by analogy and list every judgment call in the PR body), attack numbers preserved (same
+skill test + modifier), parity over the embedded docs with `_stats` stripped (N changed, 0 missing,
+0 roll differences — the 34a comparison script is the shape: `tmp/parity-34a.js` was gitignored,
+so re-derive it), lint pass 5 green, `validate-adversaries.js` 0 issues on a scratch build with
+`EDHA_DATA` pinned to the worktree. Extend 34a's `# BENCH — Fleet weapon migration` section with
+🤖 rows for the new blocks' weapon-borne riders (if any) and one render/roll-parity row.
+
+**Done when:** `grep -c '"kind": "action"' data/adversaries.json` counts no attack items (every
+remaining `action` is a maneuver / reaction / utility, listed by name in the PR); parity table in
+the PR; packs rebuild + validate clean; the bench rows exist.
+
+**PM:** lane B · model `fable-worker` (medium) · size M · deps 34a ✓ (#220) · verify: parity table +
+scratch build + validator. REBUILD + ⟳ Sync (Ben's deploy). Found by item 34a. **Landed:** 36 of
+the 44 flipped (35 natural weapons `alwaysEquipped`, the Construct-Smith's Forge-Hammer as registry
+`hammer`); the 8 that stay actions by 34a's analogy are the to-hit-only grabs (Seize and Roll, Drag
+Under), the 2-action maneuvers (The Stoop, Trampling Charge), the burst attack (Wingstorm) and the
+three Focus-costed Searing Bolts (Frost Lance's shape). Note: `kind` is never written as `"action"`
+in the data (it is the default), so the grep in "Done when" is 0 both before and after — the real
+count is items with `attack` and no `kind: weapon`, 44 → 8. Parity: 336 embedded docs, 39 changed
+(36 + item 67's 3), 0 missing, 0 roll differences; validator 0 issues; 11 🤖 rows.
+
+---
+
+## 66. [x] A negative next-test rider on the DAMAGE path is joined as `base + -1d6` — 2026-09-06, PR #229
+
+**Why:** item 49 (PR #221) made `edhaWrapRollDamage` fold the taken next-test riders onto
+the damage formula with a raw `${f} + ${m.formula}` reduce, so a rider whose formula starts
+with a minus (Probability Net's `-1d6` as an `either` rider) built `2d6 + -1d6`, which
+Foundry's parser dislikes. The d20 path (`edhaNextTestPreRoll`) already turned a leading
+minus into an explicit subtraction with the source label (`0 - 1d6[label]`). Item 49 found
+this and left it as pre-existing.
+
+**What to do:** ONE pure formula-join helper (leading minus → explicit subtraction, source
+label kept) that BOTH paths call; positive riders must build a byte-identical formula to
+before. Nothing else changes. Iron rule 2b: no name-keyed branch; the allowlist may only shrink.
+
+**Done when:** headless pins — (1) a negative damage rider joins as `base - 1d6[label]`
+(fails under a one-line reversion to the raw concat); (2) a positive rider's built formula
+is byte-identical to the pre-change string; (3) the d20 path still produces its existing
+strings for `-1d6` and `+1d6`; (4) a source scan pins exactly one join helper and that both
+paths call it. One 🤖 checklist row beside 2bI-4 plus a positive-rider negative control.
+
+**PM:** lane B · model fable-worker · size S · deps 49 ✓ · verify: mutation. ENGINE-ONLY (F5).
+Found by item 49. **Landed:** `edhaJoinRiderTerm` (SHARED CORE, beside `edhaTidyFormula`);
+`tests/negative-rider-join.test.js` (7 pins); checklist 2bI-4d / 2bI-4e.
+
+---
+
+## 67. [x] The R-48 family: three more run-19 charge distances still `bySize` at rank 2 against rank-3 cards (R-81) — DONE 2026-09-06, PR #232 (rode item 65's rebuild; default (a) applied, open for Ben's veto)
+
+**Why:** R-46 (a) and R-48's applied default replaced `bySize` with an explicit `distanceFt` on the
+Cragdrake Whelp Pack's Reckless Advance (25 ft) and the Cragdrake Adult's Explosive Leap (20 ft)
+in item 57 (PR #226, 2026-09-06). Its worker found the same shape, untouched per its brief, on
+three more blocks from the run-19 table: the **Brandram's Shockwave Slam** (`bySize: true` beside
+a dead `distanceFt: 5`), the **Brandram's Reckless Advance**, and the **Tussock-Sow's terrain
+square** — all `bySize` at role rank 2 while their cards print the rank-3 numbers, so the engine
+moves less than the card promises. Board ruling **R-81** holds the choice; the PM's default is (a).
+
+**What to do (default (a)):** for each of the three, `bySize: false` + `distanceFt` = the card's
+own number, the card text stating it (the R-46 shape, `data/adversaries.json`); (b) would instead
+fix the three cards to the rank-2 numbers — do (b) only if Ben says so on the board before
+dispatch. Scratch build with `EDHA_DATA` pinned to the worktree, `validate-adversaries.js` 0
+issues, a LevelDB read-back diff naming exactly the three abilities; three 🤖 rows (each charge
+carries its card's distance). May ride item 65's adversaries rebuild if that dispatches first.
+
+**Done when:** the three rules carry an explicit distance matching their cards, the build diff
+names only them, the rows exist. REBUILD + ⟳ Sync (Ben's deploy).
+
+**PM:** lane R · model `fable-worker` (medium) · size S · deps 57 ✓ (#226), R-81 default · verify:
+build read-back diff + validator. REBUILD. Found by item 57. **Landed (a):** Shockwave Slam
+`{bySize: false, distanceFt: 10}` (edha-push), Reckless Advance `{bySize: false, distanceFt: 10}`
+(edha-move), Sudden Growth `{sizeByRank: false, sizeFt: 10}` (edha-burst — the terrain square's
+analogue of `bySize`); each card now bolds its number. The read-back diff names exactly these three
+docs beyond item 65's 36. Left alone, reported: the Sow's and the Grove's Sudden Growth still place
+within Attunement Range by rank (30 / 60 ft) while both cards say "within 10 ft".

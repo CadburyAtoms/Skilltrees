@@ -106,6 +106,7 @@ accident of append order, so nothing in this index could point at them. Item 23 
 | `ADVERSARY PACK SYNC` | `EDHA_ADV_PACK_ID` · **`edhaAdvSyncPlan`** (the pure add/update/remove diff) · `edhaAdvSrcFor` · `edhaSyncAdversaryActor` · `edhaSyncAllAdversaries` + the sheet/directory buttons. |
 | `TEMPORARY HP` | `edhaGetTempHp` · `edhaWriteTempHp` · `edhaSetTempHp` · `edhaThpTarget` + the `preApplyDamage` consumer. A module flag, not a system resource; spent before deflect and before real HP. |
 | `SUMMONS` | `edhaSummon` · `edhaSummonCreateGM` (actor creation is GM-only, over the socket) · identity/census `edhaSummonIsFrom` · `edhaSummonSourceTalent` · `edhaOwnedSummons` (what the H15 `sustainCap` counts) · `edhaSummonFolder` · `edhaDeleteActorWithTokens` · `edhaSweepOrphanedTokens` + the mode-gated summon-item veto. ⚠ the `summon-actor` socket relay is CONDITIONALLY DEAD at Ben's table (`EDHA_RULINGS.md` R-1: PLAYER keeps `ACTOR_CREATE`) — kept for a world that revokes the permission, not dead code (TODO_REPO_HYGIENE #27). |
+| `LOOT CACHES + BODY SEARCH` (item 34b, 2026-09-06) | `edhaCreateLootCache` (console `edha.createLootCache(name)` — a flagged `edha-content.lootCache` adversary-type actor, Loot Caches folder, linked chest token) · the PURE, pinned helpers `edhaLootableItems` / `edhaLootRows` (gear only; a body keeps `alwaysEquipped` weapons) · `edhaLootDefeated` (HP ≤ 0 or DEFEATED) · `edhaLootSourceKind` (cache flag wins → "cache"; defeated adversary → "body"; else null) · `edhaLootGapFt` / `edhaLootInReach` (`EDHA_LOOT_REACH_FT` 5, edge-to-edge) · **`edhaLootClaim`** / `edhaLootRelease` on `EDHA_LOOT_CLAIMS` (the synchronous double-loot guard) · live: `edhaLootMyTokenNear` → `edhaLootTryOpen` (the `Token#_onClickLeft2` init patch `edhaPatchLootDblClick` — returns BEFORE the sheet render for a loot source, so adversary sheets never open to players) → `EDHA_CARD_BUTTONS["edha-loot-btn"]` → `EDHA_SOCKET_ACTIONS["loot-take"]` → `edhaLootTakeGM` (claim → delete on source → create on taker → public card). `tests/loot-caches.test.js`. |
 | `INJURIES` | `edhaAddInjury` · `edhaFindInjuryTable` · `EDHA_INJURY_FALLBACK` · `edhaCreateItemDocs` / **`edhaCreateItemCross`** (a player cannot create an item on another actor — the cross path relays to the GM). |
 | `TRIGGER GATING & COST` | `_edhaInTrigger` (the file-wide re-entrancy guard) · `EDHA_TRIG_PENDING` · `EDHA_RES_LABEL` · `edhaIsTalent` · `edhaRuleBearer` (talents + weapons — the gate on `edhaActorRuleOf`/`edhaActorRulesOf`, item 34a) · `edhaOwnsTalent` (⚠ an iron-rule-2b smell, on the pass-7 ratchet — do not add a caller) · `edhaResVal` · `edhaTriggerAllowed` · `edhaMarkTriggerUsed` · `edhaResolveCost`. |
 | `SENSES, LIGHT & VISIBILITY` | `edhaTokensWithin` · `edhaPointIlluminated` · `edhaSensesRangeFtFromAwa` · `edhaSensesRangeFt` · `edhaCanSee`; the dark veil (`edhaDarkVeilSweep` + `edhaDarkVeilSoon`, **debounced 300 ms** — the sweep is O(tokens) and movement fires in bursts) · `edhaVeilSuppressed`; reveal-on-damage `edhaSenseRevealShows` · `edhaSenseRevealOnDamage`. |
@@ -1362,6 +1363,15 @@ an effect; it cannot ASK, which is why 31 talents that offer a choice were engin
   **CLICK**, not when the card posts — so a declined offer costs nothing. A cost that does not parse
   to a positive whole number is DROPPED, never defaulted to 0 (a silent 0 is a free reaction that
   looks like a working card).
+- **A system-charged offer refunds on decline / ignore (R-17, item 51, 2026-09-06).** When the rule
+  fired on the talent's own `use` event AND the item consumes something (`edhaOfferRefundable(item, event)`,
+  pure), the card carries a **Decline** button and an `edha-content.offer {itemUuid, round, refund}`
+  message flag. **`edhaOfferDecline(msg, item, label)`** is the ONE path: resolve the card once
+  (`cardResolved`), then `edhaRefundCost` — R-69's charge-on-post / refund-on-back-out idiom. The
+  Decline click and **`edhaSweepIgnoredOffers`** (on `combatTurnChange`, one GM: every unresolved
+  refundable offer from an EARLIER round) both go through it; the accept click refuses a resolved
+  card. A watch/success-posted offer (Puppeteer) is never refundable — its `costs` land on the click.
+  Pinned in `tests/offer-decline-refund.test.js`.
 - **`note`** posts only when the talent carries NO success rules — the table-run case. `{name}` is
   substituted with the creature picked (Puppeteer: "chooses one of {name}'s actions this turn").
 - **A pick's payload never re-asks.** `edhaDispatchTestResult` filters `edha-prompt-pick` rules out
@@ -1931,6 +1941,7 @@ map onto it as `source` / (`mode` ∨ `formula`) / (`formula`, `count`) / `round
 | **`edhaNextModSpend(list, taken)`** | PURE. Decrements/removes **only** the entries that applied — "a consumer clears only its own entry". Identity is the `gid`. |
 | **`edhaNextModFoldMode(mods)`** | PURE. Folds N entries into the one `AdvantageMode` scalar: boolean-OR per direction; **a mixed advantage/disadvantage pair returns `null`** and the caller then writes nothing, so a cancelling pair never stomps the player's own dialog choice. |
 | **`edhaWriteNextMods(actor, list)`** | Writes the list back (`null` when empty) **through `edhaSetEdhaFlag`**, so a cross-actor clear relays to the GM — the old consumers called `unsetFlag` on the bearer directly, which silently did nothing for a victim the roller does not own. |
+| **`edhaJoinRiderTerm(base, formula, label?)`** (item 66) | PURE. THE one place a rider's sign is read when it is joined onto a formula: a leading minus becomes an explicit subtraction (`base - 1d6[label]`), anything else `base + term`; `[label]` is appended when given. BOTH paths call it — `edhaNextTestPreRoll` (base `"0"`, always labelled) and `edhaWrapRollDamage` (labelled on the subtraction only, so a positive damage rider is byte-identical to item 49's `base + 1d6`). Before this the damage reduce was a raw `${f} + ${m.formula}` and a `-1d6` `either` rider produced the parser-hostile `2d6 + -1d6`. Pinned in `tests/negative-rider-join.test.js`. |
 
 - **Writers APPEND.** `edhaSetNextTestMod` read-modify-writes through `edhaListPush` (cap
   `EDHA_NEXTMOD_CAP` = 12, evict oldest — a bound, not a design limit). Flags replicate to every
@@ -2365,6 +2376,15 @@ declarations (hoisted) — callable from anywhere in the file regardless of text
   `edhaTreeCard` directly) and a 7th locally-scoped `say()` closure (the H3 counter-mode card, still
   named `say` at its call sites, now a one-line delegate). R-67: Chaos/Fate gain the `whisper` option
   Death/Civ/Power/Order already had — additive, no call site passes `whisper: true` for them today.
+- **`edhaLootClaim(ledger, srcUuid, itemId)` / `edhaLootRelease`** (item 34b, 2026-09-06) — the
+  double-loot guard behind the `loot-take` socket action. A synchronous test-and-set on a Set of
+  `"<srcUuid>|<itemId>"` keys: the first claim wins, every later one loses. `edhaLootTakeGM` calls
+  it BEFORE its first `await` — that ordering is the whole guard. Two relays for one item can both
+  arrive on the GM's event loop and both resolve `fromUuid` before either `item.delete()` lands, so
+  "does the item still exist?" alone lets BOTH through (proven by mutation in
+  `tests/loot-caches.test.js`). A failed take (item gone, taker unresolvable, create threw)
+  releases the claim so a retry can succeed. Reach for the same shape whenever a GM-relayed write
+  must be exactly-once across racing clients — do not re-derive it with an existence check.
 - **`edhaGmIds({ activeOnly = false } = {})`** — the ONE "the GM(s)" whisper-recipient reader.
   Computed directly off `game.users.filter(u => u.isGM && (!activeOnly || u.active))` (this is what
   Foundry core's `ChatMessage.getWhisperRecipients("GM")` does internally for "GM" — implemented this

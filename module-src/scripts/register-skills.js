@@ -553,6 +553,17 @@ function edhaTidyFormula(s) {
   }
   return res.replace(/\s{2,}/g, " ").trim();
 }
+/* PURE (pinned in tests/): join ONE rider term onto a formula (item 66). A rider whose formula starts
+ * with a minus is written as an EXPLICIT subtraction — `base - 1d6` — because `base + -1d6` is
+ * parser-hostile; anything else joins as `base + term`. `label` (the rider's source) is appended as
+ * the flavor `[label]` when given, so the breakdown still names who gave what. BOTH next-test paths
+ * (`edhaNextTestPreRoll` on the d20 side, `edhaWrapRollDamage` on the damage side) call this — it is
+ * the one place the sign of a rider is read. */
+function edhaJoinRiderTerm(base, formula, label) {
+  const f = String(formula ?? "").trim();
+  const tag = label ? `[${label}]` : "";
+  return f.startsWith("-") ? `${base} - ${f.slice(1).trim()}${tag}` : `${base} + ${f}${tag}`;
+}
 // Formula-bar tidy binding: moved into the ONE renderChatMessageHTML decorations hook (Job 1, pass
 // 5.3, end of file, right before the debug-tracer Hooks.on restore).
 /* PURE (pinned in tests/): "any of the comma-list" status gate (H13, 2bU). A single value behaves
@@ -1017,7 +1028,9 @@ function edhaWrapRollDamage(originalCall, options = {}) {
       // with no damage formula would silently eat the d20 half's turn at it.
       const taken = base ? dmgMods.filter((m) => edhaNextModClaimOk(this.actor, m, "damage")) : [];
       if (taken.length) {   // item 49: several riders SUM onto the one damage roll
-        options = { ...options, overrideFormula: taken.reduce((f, m) => `${f} + ${m.formula}`, base) };
+        // item 66: a NEGATIVE rider (`-1d6`) joins as an explicit, source-labelled subtraction; a
+        // positive one joins exactly as before (`base + 1d6`, unlabelled — byte-identical by design).
+        options = { ...options, overrideFormula: taken.reduce((f, m) => edhaJoinRiderTerm(f, m.formula, String(m.formula).trim().startsWith("-") ? (m.source || "Next-test mod") : null), base) };
         void edhaNextTestConsumeDamage(this.actor, taken);
       }
     }
@@ -3449,17 +3462,89 @@ async function edhaRunPromptPick(item, h, event) {
   }
   const costs = edhaParseCosts(h.costs);
   const costLabel = costs.length ? ` <span style="opacity:.8">(spends ${costs.map((c) => `${c.value} ${EDHA_RES_LABEL[c.resource] || c.resource}`).join(" + ")})</span>` : "";
+  /* R-17 (item 51, 2026-09-06). An offer posted from the talent's OWN `use` event has already been
+   * charged its activation cost by the SYSTEM (Unnerving Approach: 1 Investiture, consumed before
+   * this rule ever ran), so declining or ignoring the card used to keep the cost while the round's
+   * use — spent on the click — stayed available. Ben: keep the click budget AND refund. The card
+   * therefore carries a Decline button and a message flag naming what a decline (or the
+   * round-change sweep for an IGNORED card) refunds; both go through edhaOfferDecline, the ONE
+   * refund path, which is R-69's `edhaRefundCost` idiom (charge on post, refund on back-out).
+   * An offer posted from a watch / success rule (Puppeteer) was never system-charged — its `costs`
+   * land on the click — so `refund` is false there and a decline credits nothing (no minting). */
+  const refund = edhaOfferRefundable(item, event);
+  const declineBtn = refund ? ` <button type="button" class="edha-pick-decline-btn" data-edha-item="${item.uuid}">Decline${edhaConsumeList(item).length ? " (refund)" : ""}</button>` : "";
   ChatMessage.create({
     whisper: edhaWhisperIds(owner),
     speaker: ChatMessage.getSpeaker({ actor: owner }),
-    content: `<div class="edha-trigger-card"><p>${icon}<strong>${item.name}</strong> — ${edhaFillName(h.prompt, subjName) || "choose one:"}${costLabel}</p>${body}</div>`,
+    content: `<div class="edha-trigger-card"><p>${icon}<strong>${item.name}</strong> — ${edhaFillName(h.prompt, subjName) || "choose one:"}${costLabel}</p>${body}${declineBtn}</div>`,
+    flags: { "edha-content": { offer: { itemUuid: item.uuid, round: edhaCombatRoundOf(owner), refund } } },
   });
 }
-
-async function edhaPromptPickClick(ev) {
+/* Pure: does this offer carry a system-charged activation cost that a decline must give back?
+ * True only when the rule fired on the talent's own `use` event (the system's event object carries
+ * `type`; the engine's internal dispatch passes `{item, rule, options}` with `rule.event` instead,
+ * so a success-rule / watch-posted offer reads as NOT refundable) AND the item actually consumes
+ * something. Pinned in tests/offer-decline-refund. */
+function edhaOfferRefundable(item, event) {
+  const trigger = event?.type ?? event?.rule?.event ?? null;
+  return trigger === "use" && edhaConsumeList(item).length > 0;
+}
+/* THE one decline path (R-17). Resolves the card once — a second decline, a late accept after the
+ * sweep, or the sweep after a click all read the `cardResolved` flag and stop — then refunds the
+ * system-charged activation cost through edhaRefundCost (the R-69 idiom; nothing else in the offer
+ * family may credit a resource). Returns true when it refunded, false when nothing was owed or the
+ * card was already resolved. `msg` may be null (a card whose message is gone): then it only refunds
+ * when the caller says the offer was refundable. */
+async function edhaOfferDecline(msg, item, label, { refund = null } = {}) {
+  if (msg?.getFlag?.("edha-content", "cardResolved")) return false;
+  const owed = refund ?? !!msg?.getFlag?.("edha-content", "offer")?.refund;
+  if (msg?.id) await edhaMarkCardResolved(msg.id, label);
+  if (!owed || !item) return false;
+  await edhaRefundCost(item);
+  return true;
+}
+async function edhaPromptPickDeclineClick(ev, msg) {
   try {
     ev.preventDefault();
     const btn = ev.currentTarget, ds = btn.dataset;
+    const item = await fromUuid(ds.edhaItem).catch(() => null);
+    const owner = item?.actor;
+    if (!item || !owner) { ui.notifications?.warn("Edha: that talent is no longer available."); return; }
+    if (!owner.isOwner) { ui.notifications?.warn("Edha: only the talent's owner (or the GM) can resolve this."); return; }
+    btn.closest(".edha-trigger-card")?.querySelectorAll("button").forEach((b) => (b.disabled = true));
+    const refunded = await edhaOfferDecline(msg, item, "Declined — cost refunded");
+    ui.notifications?.info(refunded ? `${item.name} declined — cost refunded.` : `${item.name} declined.`);
+  } catch (e) { edhaClickFailed("prompt pick decline click", e); }
+}
+/* IGNORED offers (R-17's "or ignored"): when the combat round advances, every unresolved offer card
+ * posted in an EARLIER round of it is declined by the one active GM — same path as the button, so
+ * the refund is the same refund. Keyed on the round because that is the budget the click spends
+ * (`once: round`); outside combat there is no round to advance and the Decline button is the way
+ * out. Reads the last 200 messages — an offer older than that is not one anybody is still deciding. */
+async function edhaSweepIgnoredOffers(combat) {
+  try {
+    if (!edhaDefBuffGmGate()) return;
+    const round = Number(combat?.round);
+    if (!combat?.started || !Number.isFinite(round)) return;
+    const msgs = (game.messages?.contents ?? []).slice(-200);
+    for (const msg of msgs) {
+      const offer = msg?.getFlag?.("edha-content", "offer");
+      if (!offer?.refund || offer.round == null || !(Number(offer.round) < round)) continue;
+      if (msg.getFlag("edha-content", "cardResolved")) continue;
+      const item = await fromUuid(offer.itemUuid).catch(() => null);
+      await edhaOfferDecline(msg, item, "Ignored — cost refunded");
+    }
+  } catch (e) { console.error("Edha Content | ignored-offer sweep failed", e); }
+}
+Hooks.on("combatTurnChange", (combat) => void edhaSweepIgnoredOffers(combat));
+
+async function edhaPromptPickClick(ev, msg = null) {
+  try {
+    ev.preventDefault();
+    const btn = ev.currentTarget, ds = btn.dataset;
+    // R-17: a card the sweep (or a Decline) already resolved has had its cost refunded — accepting
+    // it now would be a free use. The flag is the same one the render hook disables buttons on.
+    if (msg?.getFlag?.("edha-content", "cardResolved")) { ui.notifications?.info("Edha: that offer was already resolved."); return; }
     const item = await fromUuid(ds.edhaItem).catch(() => null);
     const owner = item?.actor;
     if (!item || !owner) { ui.notifications?.warn("Edha: that talent is no longer available."); return; }
@@ -3485,7 +3570,9 @@ async function edhaPromptPickClick(ev) {
     if (String(h.once || "no") !== "no") await edhaCoordOPRMark(owner, item.uuid, "_pick");
     for (const c of edhaParseCosts(h.costs)) await edhaSpendResource(owner, c.resource, c.value);
     btn.textContent = `✓ ${picked.name}`;
-    void edhaMarkCardResolved(edhaMessageIdOf(btn), `✓ ${picked.name}`);
+    // Resolved BEFORE the payload runs, and awaited: R-17's sweep reads this flag to decide what
+    // an "ignored" card is, so an accepted card must be marked before a round change can see it.
+    await edhaMarkCardResolved(msg?.id ?? edhaMessageIdOf(btn), `✓ ${picked.name}`);
     // The payload is the talent's OWN success rules, with the PICKED creature as the subject.
     // `announce: false` — a pick is not a test, and letting it fan out as one would let an unfiltered
     // scene watcher fire on every choice anyone makes.
@@ -3597,7 +3684,7 @@ async function edhaDispelPickClick(ev) {
     ChatMessage.create({ content: `<p>🧵 <strong>${item?.name || "Dispel"}</strong>: ${line}</p>` });
   } catch (e) { edhaClickFailed("dispel pick", e); }
 }
-// Button binding: EDHA_CARD_BUTTONS["edha-pick-btn"], ["edha-dispel-btn"] (Job 1, pass 5.3, end of file).
+// Button binding: EDHA_CARD_BUTTONS["edha-pick-btn"], ["edha-pick-decline-btn"], ["edha-dispel-btn"] (Job 1, pass 5.3, end of file).
 
 /* The TURN-START announcement — built ALONGSIDE its payload, which is the whole rule §9o states for
  * the remaining watch kinds. `turn-start` was queued with four consumers (Apex Form, Primal
@@ -6461,8 +6548,7 @@ function edhaNextTestPreRoll(roll, source, config) {
         if (!mod.formula) continue;
         const resolved = edhaFoldDieMath(Roll.replaceFormulaData(String(mod.formula), actor?.getRollData?.() ?? {}, { missing: "0" })).trim();
         const label = mod.source || "Next-test mod";
-        // A leading minus becomes an explicit subtraction — "0 + -1d6" is parser-hostile.
-        const expr = resolved.startsWith("-") ? `0 - ${resolved.slice(1)}[${label}]` : `0 + ${resolved}[${label}]`;
+        const expr = edhaJoinRiderTerm("0", resolved, label);   // a leading minus → explicit subtraction (item 66: the one shared join)
         roll.terms = roll.terms.concat(new Roll(expr).terms.slice(1));
         added = true;
       }
@@ -10391,6 +10477,214 @@ Hooks.on("cosmere-rpg.preUseItem", (item) => {
  *   edhaAddInjury.
  * ============================================================================================ */
 
+/* --- Loot: cache tokens + defeated-adversary search (item 34b, 2026-09-06; design from PR #103,
+ * Ben-approved 2026-07-18 / 2026-09-05) --------------------------------------------------------
+ * Ben: "I can paint a chest on the battlemap — how do we make it accessible by the players?"
+ * A loot CACHE is a world adversary-type actor flagged `edha-content.lootCache` — the GM mints one
+ * with `edha.createLootCache("name")`, stocks it by dragging items onto its sheet (fully
+ * Foundry-editable), and places its LINKED chest token over the painted chest. A player
+ * DOUBLE-CLICKS the cache token — or a DEFEATED adversary's token (HP ≤ 0 or the Dead status =
+ * searching the body) — with one of their own tokens within EDHA_LOOT_REACH_FT and gets a whispered
+ * contents card. Each Take button relays through the `loot-take` socket action (EDHA_SOCKET_ACTIONS):
+ * the primary GM client is the SINGLE WRITER, and `edhaLootClaim` (a synchronous test-and-set,
+ * taken BEFORE the first await) is the double-loot guard — two players clicking the same blade
+ * yield exactly one winner even when the two relays interleave on the GM's event loop. The winner's
+ * take deletes the item from the source and creates it on the taker, then posts a public card.
+ * Adversary ownership NEVER opens up (the cache is `ownership.default: 0`, bodies keep theirs; the
+ * intercept returns before Foundry's sheet render). Natural weapons (`alwaysEquipped`, item 34a)
+ * are not lootable from a body; traits/actions/talents are never loot. Generic: no talent or
+ * adversary name anywhere in this block (iron rule 2b). */
+const EDHA_LOOT_REACH_FT = 5;                        // max edge-to-edge gap looter-token → source-token
+const EDHA_LOOT_CACHE_IMG = "icons/svg/chest.svg";   // verified present on Foundry v13.351 (resources/app/public/icons/svg/chest.svg)
+const EDHA_LOOT_GEAR_TYPES = ["weapon", "equipment", "loot"];
+
+// PURE (pinned): which of a source's items can be taken? Gear only; a BODY keeps its alwaysEquipped
+// natural weapons (the hound keeps its Bite), a CACHE gives up everything gear-typed on it.
+function edhaLootableItems(items, { cache = false } = {}) {
+  return (items || []).filter(i => {
+    if (!EDHA_LOOT_GEAR_TYPES.includes(i?.type)) return false;
+    if (!cache && i.type === "weapon" && i.system?.alwaysEquipped === true) return false;
+    return true;
+  });
+}
+// PURE (pinned): is this actor defeated? HP ≤ 0, or the system's DEFEATED status (the Dead marker).
+function edhaLootDefeated(actor) {
+  if (!actor) return false;
+  const hp = Number(actor.system?.resources?.hea?.value);
+  if (Number.isFinite(hp) && hp <= 0) return true;
+  const dead = CONFIG.specialStatusEffects?.DEFEATED || "dead";
+  return !!actor.statuses?.has?.(dead);
+}
+// PURE (pinned): is this actor a loot source, and which kind? The cache flag wins; a defeated
+// adversary is a searchable "body"; a downed PC (or a live adversary) is never lootable.
+function edhaLootSourceKind(actor) {
+  if (!actor) return null;
+  if (actor.getFlag?.("edha-content", "lootCache") || actor.flags?.["edha-content"]?.lootCache) return "cache";
+  if (actor.type === "adversary" && edhaLootDefeated(actor)) return "body";
+  return null;
+}
+// PURE (pinned): edge-to-edge gap in ft between two token rects {x, y, w, h} (center px, size in
+// grid squares) on a grid of `pxPerFt` px per foot and `gd` ft per square.
+function edhaLootGapFt(a, b, { pxPerFt = 20, gd = 5 } = {}) {
+  const ft = Math.hypot(a.x - b.x, a.y - b.y) / pxPerFt;
+  const half = t => Math.max(t.w || 1, t.h || 1) * gd / 2;
+  return Math.max(0, ft - half(a) - half(b));
+}
+// PURE (pinned): may this looter reach the source? `gapFt` from edhaLootGapFt.
+function edhaLootInReach(gapFt, reachFt = EDHA_LOOT_REACH_FT) { return Number.isFinite(gapFt) && gapFt <= reachFt; }
+// PURE (pinned): the take-guard's decision. `ledger` is a Set of claimed "<srcUuid>|<itemId>" keys;
+// the FIRST claim of a key wins (true), every later claim loses (false). Synchronous on purpose —
+// it runs before the GM handler's first await, so two interleaved relays cannot both pass.
+function edhaLootClaim(ledger, srcUuid, itemId) {
+  const key = `${srcUuid}|${itemId}`;
+  if (ledger.has(key)) return false;
+  ledger.add(key);
+  return true;
+}
+function edhaLootRelease(ledger, srcUuid, itemId) { ledger.delete(`${srcUuid}|${itemId}`); }
+const EDHA_LOOT_CLAIMS = new Set();   // the GM client's claim ledger (per session; a taken item's id never comes back)
+// PURE (pinned): the takeable list for the contents card — one row per lootable item, in item order.
+function edhaLootRows(items, { cache = false } = {}) {
+  return edhaLootableItems(items, { cache }).map(i => {
+    const qty = Number(i.system?.quantity) || 1;
+    return { id: i.id, name: i.name, qty, label: `${i.name}${qty > 1 ? ` ×${qty}` : ""}` };
+  });
+}
+// Live geometry: the token rect edhaLootGapFt wants.
+function edhaLootRect(tok) { return { x: tok.center.x, y: tok.center.y, w: tok.document?.width || 1, h: tok.document?.height || 1 }; }
+// The clicking user's nearest owned token within reach of the source, or null.
+function edhaLootMyTokenNear(srcTok) {
+  let best = null, bestGap = Infinity;
+  const opts = { pxPerFt: edhaPxPerFt(), gd: canvas?.scene?.grid?.distance || 5 };
+  for (const t of (canvas?.tokens?.placeables ?? [])) {
+    if (t === srcTok || !t.actor?.isOwner || t.document?.hidden) continue;
+    let g = Infinity;
+    try { g = edhaLootGapFt(edhaLootRect(t), edhaLootRect(srcTok), opts); } catch (e) {}
+    if (g < bestGap) { best = t; bestGap = g; }
+  }
+  return best && edhaLootInReach(bestGap) ? best : null;
+}
+// Player double-clicked a token: if it's a loot source, post the contents card instead of the
+// (permission-blocked) sheet. Returns true when handled. A GM double-click keeps the normal sheet —
+// that's how a cache gets stocked.
+function edhaLootTryOpen(tok) {
+  const actor = tok?.actor;
+  const kind = edhaLootSourceKind(actor);
+  if (!kind || game.user?.isGM) return false;
+  const name = tok.document?.name ?? actor.name;
+  if (!edhaLootMyTokenNear(tok)) {
+    ui.notifications?.warn(`Edha: move within ${EDHA_LOOT_REACH_FT} ft to ${kind === "cache" ? "open" : "search"} ${name}.`);
+    return true;
+  }
+  const rows = edhaLootRows([...(actor.items ?? [])], { cache: kind === "cache" });
+  if (!rows.length) { ui.notifications?.info(`Edha: ${name} — nothing worth taking.`); return true; }
+  const src = tok.document.uuid;
+  const btns = rows.map(r => `<button type="button" class="edha-loot-btn" data-edha-src="${src}" data-edha-item="${r.id}">${r.label}</button>`);
+  ChatMessage.create({
+    whisper: [...new Set([game.user.id, ...edhaGmIds()])],
+    speaker: ChatMessage.getSpeaker({ token: tok.document }),
+    content: `<div class="edha-trigger-card"><p>${kind === "cache" ? "🧰" : "🎒"} <strong>${kind === "cache" ? name : `Searching ${name}`}</strong> — take:</p>${btns.join(" ")}</div>`,
+  });
+  return true;
+}
+// Who receives the item: the user's selected owned token's actor, else their assigned character.
+function edhaLootTakerActor() {
+  const ctl = (canvas?.tokens?.controlled ?? []).find(t => t.actor?.isOwner);
+  return ctl?.actor ?? game.user?.character ?? null;
+}
+// Button binding: EDHA_CARD_BUTTONS["edha-loot-btn"] (end of file).
+async function edhaLootTakeClick(ev) {
+  try {
+    ev.preventDefault();
+    const btn = ev.currentTarget;
+    if (btn.disabled) return;
+    const taker = edhaLootTakerActor();
+    if (!taker) { ui.notifications?.warn("Edha: select your token (or assign your character) so I know who takes it."); return; }
+    const payload = { srcTokenUuid: btn.dataset.edhaSrc, itemId: btn.dataset.edhaItem, takerUuid: taker.uuid };
+    btn.disabled = true;   // local courtesy only — the GM-side claim ledger is the real guard
+    if (game.user?.isGM) { await edhaLootTakeGM(payload); return; }
+    if (!game.users?.activeGM) { btn.disabled = false; ui.notifications?.warn("Edha: a GM must be online to take items."); return; }
+    game.socket.emit("module.edha-content", { action: "loot-take", payload });
+  } catch (e) { edhaClickFailed("loot take", e); }
+}
+// GM-side apply — the single writer. Claim first (synchronous), then move the item for real.
+async function edhaLootTakeGM(p) {
+  const src = p?.srcTokenUuid, id = p?.itemId;
+  if (!src || !id) return;
+  if (!edhaLootClaim(EDHA_LOOT_CLAIMS, src, id)) {
+    ChatMessage.create({ whisper: edhaGmIds(), content: `<p>🎒 Loot: that item was already claimed from its source (two takes raced). Nothing moved.</p>` });
+    return;
+  }
+  try {
+    const source = await edhaResolveActorRef(src);            // token uuid → its actor (unlinked bodies resolve to the delta actor)
+    const item = source?.items?.get(id) ?? null;
+    const taker = await edhaResolveActorRef(p.takerUuid);
+    if (!item || !taker) {
+      edhaLootRelease(EDHA_LOOT_CLAIMS, src, id);
+      ChatMessage.create({ whisper: edhaGmIds(), content: `<p>🎒 Loot: ${item ? "the taker could not be resolved" : `that item is no longer on ${source?.name ?? "the source"} (already taken?)`}. Nothing moved.</p>` });
+      return;
+    }
+    const data = item.toObject();
+    delete data._id;
+    // The taken copy is the taker's ordinary gear now: shed the adversary-pack provenance (the
+    // adversary sync deletes edha-content-flagged items) and land it unequipped/strippable.
+    if (data.flags?.["edha-content"]) delete data.flags["edha-content"];
+    if (data.system) {
+      if ("equipped" in data.system) data.system.equipped = false;
+      if ("alwaysEquipped" in data.system) data.system.alwaysEquipped = false;
+    }
+    const name = item.name, srcName = source?.name ?? "the cache";
+    await taker.createEmbeddedDocuments("Item", [data]);
+    await item.delete();
+    ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: taker }), content: `<p>🎒 <strong>${taker.name}</strong> takes <strong>${name}</strong> from <strong>${srcName}</strong>.</p>` });
+  } catch (e) {
+    edhaLootRelease(EDHA_LOOT_CLAIMS, src, id);
+    console.error("Edha Content | loot-take GM apply failed", e);
+  }
+}
+// GM console utility (`edha.createLootCache(name)`): mint a stockable cache actor — Loot Caches
+// folder, linked chest token, the lootCache flag, players keep NO ownership.
+async function edhaCreateLootCache(name = "Loot Cache") {
+  try {
+    if (!game.user?.isGM) { ui.notifications?.warn("Edha: only the GM creates loot caches."); return null; }
+    let folder = game.folders?.find(f => f.type === "Actor" && f.name === "Loot Caches");
+    if (!folder) { try { folder = await Folder.create({ name: "Loot Caches", type: "Actor" }); } catch (e) { /* perms */ } }
+    const actor = await Actor.create({
+      name, type: "adversary", img: EDHA_LOOT_CACHE_IMG, folder: folder?.id ?? null,
+      prototypeToken: {
+        name, actorLink: true,                                   // linked: the placed chest always mirrors the stocked actor
+        displayName: CONST.TOKEN_DISPLAY_MODES?.HOVER ?? 30,     // anyone can hover-read the chest's name
+        disposition: CONST.TOKEN_DISPOSITIONS?.NEUTRAL ?? 0,
+        texture: { src: EDHA_LOOT_CACHE_IMG },
+      },
+      ownership: { default: 0 },
+      flags: { "edha-content": { lootCache: true } },
+    });
+    ui.notifications?.info(`Edha: "${name}" created (Loot Caches folder) — drag items onto its sheet, then place its token over the chest.`);
+    return actor;
+  } catch (e) {
+    console.error("Edha Content | createLootCache failed", e);
+    ui.notifications?.error(`Edha: cache creation failed — ${e.message}`);
+    return null;
+  }
+}
+// Intercept the double-click at the Token class (the same walk-the-proto idiom as the phantom
+// veil's isVisible wrap). Foundry v13 binds `clickLeft2: this._onClickLeft2` per token at draw
+// time, so an `init`-time prototype patch is what every later-drawn token picks up. Non-loot
+// tokens and every GM click fall straight through to the original (Foundry's own sheet gate).
+Hooks.once("init", function edhaPatchLootDblClick() {
+  try {
+    const TokenCls = foundry.canvas?.placeables?.Token ?? globalThis.Token;
+    let proto = TokenCls?.prototype, orig = null;
+    while (proto && !orig) { orig = Object.getOwnPropertyDescriptor(proto, "_onClickLeft2")?.value ?? null; if (!orig) proto = Object.getPrototypeOf(proto); }
+    if (!orig) { console.warn("Edha Content | Token#_onClickLeft2 not found — loot double-click disabled (the GM can still hand items over manually)."); return; }
+    TokenCls.prototype._onClickLeft2 = function (event) {
+      try { if (edhaLootTryOpen(this)) return; } catch (e) { console.error("Edha Content | loot open failed", e); }
+      return orig.call(this, event);
+    };
+  } catch (e) { console.error("Edha Content | loot double-click patch failed", e); }
+});
+
 /* --- Injury tool (shared primitive, backlog 9a): create an injury Item, rolled or typed -------------
  * Creation is the inverse of the Reknit delete-item relay: owner-side create when we own the target,
  * else the `create-item` GM relay. Type picking: a RollTable named like "Injuries" wins when one
@@ -12029,6 +12323,7 @@ const EDHA_SOCKET_ACTIONS = {
     const a = await edhaResolveActorRef(p.targetUuid);
     if (a) await edhaCounterApplyGM(a, String(p.status || "insight"), Number(p.count) || 0, p.mark || null);
   },
+  "loot-take": async (payload) => { await edhaLootTakeGM(payload); },            // loot Take button (item 34b) — the GM is the single writer; edhaLootClaim is the double-loot guard
 };
 // Socket relay: a player's Detonate emits the resolved writes; only the primary active GM applies them.
 Hooks.once("ready", () => {
@@ -21121,7 +21416,7 @@ Hooks.once("ready", () => {
       bakedEffects: pj(h.bakedEffectsJson), extraItems: pj(h.extraItemsJson),
     });
   };
-  const api = { syncNow: edhaSyncNow, syncActorTalents: edhaSyncActorTalents, syncAllCharacters: edhaSyncAllCharacters, syncAdversary: edhaSyncAdversaryActor, syncAllAdversaries: edhaSyncAllAdversaries, setTempHp: edhaSetTempHp, getTempHp: edhaGetTempHp, summon: summonByTalent, showRange: edhaShowRange, drawMana: edhaDrawMana, grantDrawMana: edhaGrantDrawMana, resetTriggers: edhaResetTriggers, fixSettings: edhaFixSettings, clearKindleLights: edhaClearKindleLights, refreshDefBuffs: edhaRefreshDefBuffs, migrateDerivations: edhaMigrateDerivations, fixPcTokens: edhaFixPcTokens, grantStartingKit: edhaGrantStartingKit, creationWizard: edhaCreationWizard, newCharacter: edhaCreatorNewCharacter, isIsolated: edhaIsIsolated, toggleStatus: edhaToggleStatus, darkVeilSweep: edhaDarkVeilSweep, allEffects: edhaAllEffects, raiseStakes: edhaRaiseStakesApi, rally: edhaRallyApi, skipBudget: (v) => { globalThis.edhaSkipBudget = !!v; return globalThis.edhaSkipBudget; }, debug: edhaSetDebug, debugSave: edhaDebugSave, debugsave: edhaDebugSave };   // lowercase alias — Ben typed edha.debugsave() at the 07-12 bench and got a TypeError
+  const api = { syncNow: edhaSyncNow, syncActorTalents: edhaSyncActorTalents, syncAllCharacters: edhaSyncAllCharacters, syncAdversary: edhaSyncAdversaryActor, syncAllAdversaries: edhaSyncAllAdversaries, createLootCache: edhaCreateLootCache, setTempHp: edhaSetTempHp, getTempHp: edhaGetTempHp, summon: summonByTalent, showRange: edhaShowRange, drawMana: edhaDrawMana, grantDrawMana: edhaGrantDrawMana, resetTriggers: edhaResetTriggers, fixSettings: edhaFixSettings, clearKindleLights: edhaClearKindleLights, refreshDefBuffs: edhaRefreshDefBuffs, migrateDerivations: edhaMigrateDerivations, fixPcTokens: edhaFixPcTokens, grantStartingKit: edhaGrantStartingKit, creationWizard: edhaCreationWizard, newCharacter: edhaCreatorNewCharacter, isIsolated: edhaIsIsolated, toggleStatus: edhaToggleStatus, darkVeilSweep: edhaDarkVeilSweep, allEffects: edhaAllEffects, raiseStakes: edhaRaiseStakesApi, rally: edhaRallyApi, skipBudget: (v) => { globalThis.edhaSkipBudget = !!v; return globalThis.edhaSkipBudget; }, debug: edhaSetDebug, debugSave: edhaDebugSave, debugsave: edhaDebugSave };   // lowercase alias — Ben typed edha.debugsave() at the 07-12 bench and got a TypeError
   const mod = game.modules?.get("edha-content");
   if (mod) mod.api = api;
   globalThis.edha = Object.assign(globalThis.edha || {}, api);
@@ -21148,8 +21443,10 @@ Hooks.once("ready", () => {
  * ============================================================================================== */
 const EDHA_CARD_BUTTONS = {
   "edha-list-release": edhaListReleaseClick,
+  "edha-loot-btn": edhaLootTakeClick,
   "edha-watch-manual": (ev, msg) => edhaWatchManualClick(ev, msg),
   "edha-pick-btn": edhaPromptPickClick,
+  "edha-pick-decline-btn": edhaPromptPickDeclineClick,
   "edha-dispel-btn": edhaDispelPickClick,
   "edha-opp-btn": edhaOpportunityClick,
   "edha-plotgrant-btn": edhaPlotGrantClick,
