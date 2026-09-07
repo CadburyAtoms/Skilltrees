@@ -2908,7 +2908,7 @@ half is queued for the next bench run with a REBUILD note.
 
 ---
 
-## 90. [ ] Retire the five harness-only checklist rows (I10b2-1..4 and 77-1's unset-side clause): no sideless token can exist on this build
+## 90. [x] Retire the five harness-only checklist rows (I10b2-1..4 and 77-1's unset-side clause): no sideless token can exist on this build (2026-09-07, PR #282)
 
 **Why:** bench runs 38, 42 and 43 each independently re-derived the same fact on Ben's build
 (Foundry core 13.351, cosmere-rpg 2.1.0): creating a token with `disposition: null`, or updating
