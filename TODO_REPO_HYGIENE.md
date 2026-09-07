@@ -1707,7 +1707,7 @@ object. ENGINE-ONLY (F5).
 
 ---
 
-## 51. [ ] Puppeteer / Unnerving Approach refund Investiture on a declined offer (R-17)
+## 51. [x] Puppeteer / Unnerving Approach refund Investiture on a declined offer (R-17) (2026-09-06, PR #230 — **live behaviour bench-pending**)
 
 **Why:** The once-per-round click budget is consistent, but a declined/ignored offer still
 charges Investiture. Ben (a): keep the click budget AND refund the Investiture when the offer is
@@ -1720,6 +1720,13 @@ Pin headlessly.
 
 **Done when:** a headless pin shows a declined/ignored offer leaves Investiture unchanged while
 the round's use is still available; checklist row 2bJ-10 marked 🤖.
+
+**DONE 2026-09-06, PR #230 (ENGINE-ONLY, F5).** R-69's mechanism reused (charge on post, `edhaRefundCost`
+on back-out) through ONE path, `edhaOfferDecline`: a Decline button on system-charged offers, a
+round-change sweep for ignored ones, the accept click refusing a resolved card. Puppeteer's offer
+(watch-posted, costs on the click) is not refundable by construction. Pinned in
+`tests/offer-decline-refund.test.js` (four pins, four mutations). ⏳ **Bench-pending** — 🤖 2bJ-10 /
+2bJ-10b / 2bJ-10c under `# BENCH — Black`. Detail: the handoff delta.
 
 **PM:** lane B · model opus · size S · deps none · verify: headless pin. ENGINE-ONLY (F5).
 
