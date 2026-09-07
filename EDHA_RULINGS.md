@@ -532,6 +532,7 @@ agent to TEST, so it was in the wrong file. Original measurement: bench run 25.)
 > formula at roll time, mirroring what R-65 already does for engine-rolled cards) would need to hook
 > the system's own damage-roll pipeline, which is a different, ENGINE-side change outside item 59's
 > TOOLING + DATA scope. Left open here for Ben to decide whether that is worth a follow-up item.
+> **SHIPPED (runtime half)** in PR #<N> (ENGINE-ONLY, bench-pending) — `tests/runtime-formula-fold.test.js`. Item 69 folds the same field inside `edhaWrapRollDamage` at ROLL time, with the roller's data substituted first, so the tier/rank-scaled formulas the build-time fold could not touch now print plain dice on the system's own card (`2d8 + 5` at tier 2 / rank 3); riders join onto the folded base. The item-59 Verdict 🤖 row under `# BENCH — Order` is this item's re-test.
 
 ---
 
