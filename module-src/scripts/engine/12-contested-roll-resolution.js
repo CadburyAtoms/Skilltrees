@@ -489,15 +489,17 @@ Hooks.on("updateToken", (doc, change, options, userId) => {
     const what = m.note || "may move half their Speed without provoking Reactions";
     const scene = doc.parent; const gs = scene?.grid?.size || 100, gd = scene?.grid?.distance || 5;
     const cx = doc.x + (doc.width * gs) / 2, cy = doc.y + (doc.height * gs) / 2;   // destination center (doc already updated)
-    const disp = doc.disposition ?? 1;
+    // Item 10 batch 2 (R-63): a mover whose side did not resolve lists nobody, and a token whose
+    // side did not resolve is left off the list — the card says so rather than guessing FRIENDLY.
+    const disp = doc.disposition;
     const allies = (canvas?.tokens?.placeables ?? []).filter(t => {
       if (t.id === doc.id || !t.actor) return false;
-      if ((t.document?.disposition ?? 1) !== disp) return false;
+      if (!edhaSideSame(t.document?.disposition, disp)) return false;
       return (Math.hypot((t.center?.x ?? 0) - cx, (t.center?.y ?? 0) - cy) / gs * gd) <= ft;
     });
     const content = allies.length
       ? `<div class="edha-trigger-card"><p>🚶 <strong>${src}</strong> — ${actor.name} moved; allies within ${ft} ft ${what}:</p><ul>${allies.map(t => `<li><strong>${t.actor.name}</strong> — up to ${edhaHalfSpeed(t.actor)} ft</li>`).join("")}</ul></div>`
-      : `<p>🚶 <strong>${src}</strong> — ${actor.name} moved, but no allies were within ${ft} ft of where it stopped.</p>`;
+      : `<p>🚶 <strong>${src}</strong> — ${actor.name} moved, but no allies were within ${ft} ft of where it stopped${Number.isFinite(disp) ? "" : " (its token has no disposition set, so allies could not be told apart)"}.</p>`;
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content });
   } catch (e) { console.error("Edha Content | movement-window card failed", e); }
 });

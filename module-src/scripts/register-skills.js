@@ -3269,12 +3269,15 @@ function edhaPickAccepts(h, c) {
     if (Number.isFinite(hp) && hp <= 0) return false;
   }
   const disp = String(h.disposition || "any");
-  if (disp === "enemy" && c.disposition === c.ownerDisposition) return false;
-  if (disp === "ally" && c.disposition !== c.ownerDisposition) return false;
+  // R-63 / item 10 batch 2: a side that did not resolve matches NEITHER ally nor enemy, so it is
+  // OMITTED from a filtered offer (it still qualifies under "any"). `!edhaSideSame` is NOT
+  // `edhaSideHostile` — each branch names the predicate it means.
+  if (disp === "enemy" && !edhaSideHostile(c.disposition, c.ownerDisposition)) return false;
+  if (disp === "ally" && !edhaSideSame(c.disposition, c.ownerDisposition)) return false;
   // Measured against the ANCHOR instead of you: Unnerving Approach pushes an ally OF YOUR TARGET,
   // which "ally" (relative to you) gets exactly backwards.
-  if (disp === "anchor-ally" && c.disposition !== c.anchorDisposition) return false;
-  if (disp === "anchor-enemy" && c.disposition === c.anchorDisposition) return false;
+  if (disp === "anchor-ally" && !edhaSideSame(c.disposition, c.anchorDisposition)) return false;
+  if (disp === "anchor-enemy" && !edhaSideHostile(c.disposition, c.anchorDisposition)) return false;
   const want = String(h.requireStatus || "").split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
   if (want.length && !want.some((s) => (c.statuses || []).includes(s))) return false;
   return true;
@@ -3476,7 +3479,10 @@ function edhaPickCandidates(owner, h, anchor) {
   const ft = h.rangeColor ? edhaAttuneFtColor(owner, h.rangeColor) : (Number(h.rangeFt) || 0);
   if (!ft) return [];
   const otok = edhaCasterToken(owner);
-  const ownerDisp = otok?.document?.disposition ?? 1, anchorDisp = atok.document?.disposition ?? 1;
+  // Raw sides, no default (item 10 batch 2): edhaPickAccepts fails CLOSED on an unresolvable one.
+  // The owner's side comes from edhaActorSide (live token, else the prototype) because the owner
+  // may have no token on the scene; the anchor's token is in hand, so its document is read directly.
+  const ownerDisp = edhaActorSide(owner), anchorDisp = atok.document?.disposition;
   const list = edhaTokensWithin(atok, ft).filter((t) => t.actor);   // edhaTokensWithin already drops the anchor
   // The owner is a candidate for its own network (Anticipate grants advantage to "you or an ally"),
   // and edhaTokensWithin cannot supply it when the owner IS the anchor — so add it back explicitly.
@@ -3485,7 +3491,7 @@ function edhaPickCandidates(owner, h, anchor) {
   for (const t of list) {
     if (h.includeSelf === false && t.actor === owner) continue;
     if (!edhaPickAccepts(h, {
-      disposition: t.document?.disposition ?? 1, anchorDisposition: anchorDisp, ownerDisposition: ownerDisp,
+      disposition: t.document?.disposition, anchorDisposition: anchorDisp, ownerDisposition: ownerDisp,
       hp: t.actor.system?.resources?.hea?.value, statuses: [...(t.actor.statuses ?? [])],
     })) continue;
     out.push(t);
@@ -5359,8 +5365,12 @@ function edhaSweepEmptyNote(owner, ft, sameSide) {
     const ot = edhaCasterToken(owner);
     if (!ot) return `${owner.name} has no token on the current scene — use the talent from a PLACED token's sheet (a compendium or sidebar sheet has no position to measure from).`;
     const scene = ot.scene ?? canvas?.scene; const gs = scene?.grid?.size || 100, gd = scene?.grid?.distance || 5;
-    const disp = ot.document?.disposition ?? 1;
-    const cands = (canvas?.tokens?.placeables ?? []).filter(t => t.id !== ot.id && t.actor && (((t.document?.disposition ?? 1) === disp) === sameSide));
+    // Item 10 batch 2 (R-63): the note counts the SAME candidates the sweep it explains would have
+    // matched, so a token whose side did not resolve is neither "same-side" nor "opposing" here and
+    // is never named as the nearest; an owner whose own side did not resolve gets told exactly that.
+    const disp = ot.document?.disposition;
+    if (!Number.isFinite(disp)) return `${owner.name}'s token has no disposition set — allies and targets cannot be told apart, so nothing is in range.`;
+    const cands = (canvas?.tokens?.placeables ?? []).filter(t => t.id !== ot.id && t.actor && (sameSide ? edhaSideSame(t.document?.disposition, disp) : edhaSideHostile(t.document?.disposition, disp)));
     if (!cands.length) return `No ${sameSide ? "same-side" : "opposing"} tokens on the scene at all.`;
     const dists = cands.map(t => ({ t, d: Math.hypot((t.center?.x ?? 0) - ot.center.x, (t.center?.y ?? 0) - ot.center.y) / gs * gd })).sort((a, b) => a.d - b.d);
     return `No ${sameSide ? "allies" : "targets"} within ${ft} ft — nearest (${dists[0].t.actor.name}) is ${Math.round(dists[0].d)} ft away; ${cands.length} candidate${cands.length === 1 ? "" : "s"} on the scene.`;
@@ -6044,15 +6054,17 @@ Hooks.on("updateToken", (doc, change, options, userId) => {
     const what = m.note || "may move half their Speed without provoking Reactions";
     const scene = doc.parent; const gs = scene?.grid?.size || 100, gd = scene?.grid?.distance || 5;
     const cx = doc.x + (doc.width * gs) / 2, cy = doc.y + (doc.height * gs) / 2;   // destination center (doc already updated)
-    const disp = doc.disposition ?? 1;
+    // Item 10 batch 2 (R-63): a mover whose side did not resolve lists nobody, and a token whose
+    // side did not resolve is left off the list — the card says so rather than guessing FRIENDLY.
+    const disp = doc.disposition;
     const allies = (canvas?.tokens?.placeables ?? []).filter(t => {
       if (t.id === doc.id || !t.actor) return false;
-      if ((t.document?.disposition ?? 1) !== disp) return false;
+      if (!edhaSideSame(t.document?.disposition, disp)) return false;
       return (Math.hypot((t.center?.x ?? 0) - cx, (t.center?.y ?? 0) - cy) / gs * gd) <= ft;
     });
     const content = allies.length
       ? `<div class="edha-trigger-card"><p>🚶 <strong>${src}</strong> — ${actor.name} moved; allies within ${ft} ft ${what}:</p><ul>${allies.map(t => `<li><strong>${t.actor.name}</strong> — up to ${edhaHalfSpeed(t.actor)} ft</li>`).join("")}</ul></div>`
-      : `<p>🚶 <strong>${src}</strong> — ${actor.name} moved, but no allies were within ${ft} ft of where it stopped.</p>`;
+      : `<p>🚶 <strong>${src}</strong> — ${actor.name} moved, but no allies were within ${ft} ft of where it stopped${Number.isFinite(disp) ? "" : " (its token has no disposition set, so allies could not be told apart)"}.</p>`;
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content });
   } catch (e) { console.error("Edha Content | movement-window card failed", e); }
 });
@@ -16826,8 +16838,10 @@ async function edhaOrderRefreshBoundIcon(target) {
  * the V1 body stays as the fallback. ------------------------------------------------------------- */
 const EDHA_ORDER_PROH_LABEL = { move: "move from its space", invest: "activate Investiture" };
 function edhaPickProhibition(owner, title) {
-  const otok = edhaCasterToken(owner); const disp = otok?.document?.disposition ?? 1;
-  const allies = (canvas?.tokens?.placeables ?? []).filter(t => t.actor && t.actor !== owner && (t.document?.disposition ?? 1) === disp);
+  // Item 10 batch 2 (R-63): the owner's side via edhaActorSide (the owner may have no token on the
+  // scene); a token whose side did not resolve is left out of the <select> rather than offered as an ally.
+  const disp = edhaActorSide(owner);
+  const allies = (canvas?.tokens?.placeables ?? []).filter(t => t.actor && t.actor !== owner && edhaSideSame(t.document?.disposition, disp));
   const opts = allies.map(t => `<option value="${t.actor.uuid}">${t.name}</option>`).join("");
   const content = `
         <p><label><input type="radio" name="edhaProhKind" value="move" checked> Move from its space</label></p>
@@ -19579,9 +19593,9 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
         const item = event.item, owner = item?.actor; if (!owner) return;
         const otok = edhaCasterToken(owner); if (!otok) return;
         const ft = edhaAttuneFtColor(owner, this.rangeColor || "white");
-        const disp = otok.document?.disposition ?? 1;
+        const disp = otok.document?.disposition;   // item 10 batch 2 (R-63): an unresolvable side is omitted from the beacon list
         let allies = edhaTokensInCircle(otok.center.x, otok.center.y, ft, otok.id)
-          .filter(t => (t.document?.disposition ?? 1) === disp && t.actor);
+          .filter(t => t.actor && edhaSideSame(t.document?.disposition, disp));
         if (this.visibleOnly) allies = allies.filter(t => !t.document?.hidden && edhaCanSee(otok, t));
         edhaPostBeaconCard(owner, item.name, allies, edhaParseCosts(this.costs), this.prompt || "");
       } catch (e) { console.error("Edha Content | edha-cleanse executor failed", e); }
