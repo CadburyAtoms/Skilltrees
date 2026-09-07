@@ -2028,6 +2028,12 @@ Crownox Ring's adjacent ox at 7.5 ft — already passes under the inclusive half
 motivating failure is gone; what is left is a Huge owner's "adjacent" and the `rangeFt` sweep. Let
 item 47's W29 §2 bench row measure first.
 
+**Narrowed 2026-09-07 (item 79, R-52's dashboard confirmation):** Ben, verbatim, *"I'm fine with
+whatever fix you can find for this. I think increasing slack would work, or editing the cue."* The
++2.5 ft slack (item 47) IS that fix and is already shipped. This item stays open, but only as a
+contingency: dispatch it ONLY if bench run 42's W29 §2 measurement row finds a gap the shipped
+slack still misses. Not closed.
+
 ---
 
 ## 63. [x] Rallying Shout's reminder prints only for a downed ally — a target-condition dial on `edha-note` (R-25 — 2026-09-06, PR #239; REBUILD heroic + ⟳ Sync, bench-pending)
@@ -2279,6 +2285,11 @@ count is declared, the rows exist; on (b) the index says so. ENGINE-ONLY (F5).
 
 **PM:** lane B · model `fable-worker` (medium) · size S · deps **R-83** · verify: mutation pins +
 the family count. ENGINE-ONLY (F5). Found by fix pass 8.
+
+**Note 2026-09-07 (item 79):** R-83 is still WAITING — Ben asked for good examples before deciding
+(*"I'm not sure what this means and will want the pm to give me good examples when we get here in
+chat"*); the examples were given in chat and recorded in the ruling
+(`EDHA_RULINGS.md`). Still blocked on Ben's (a)/(b) call.
 
 ---
 
@@ -2546,3 +2557,159 @@ not fail the row for the parentheses.**
 
 **PM:** lane B · model opus (`test-pass-fixes`) · size S · deps #265 (the report) · verify: the
 pin + bench run 42. Dispatched 2026-09-06 23:21. Found by bench run 41.
+
+---
+
+## 79. [ ] Rulings close-out 2026-09-07: Ben's dashboard marks recorded, four items filed
+
+**Why:** Ben marked a batch of open rulings and one art entry done through the dashboard's note
+boxes and DONE marks on the morning of 2026-09-07 (pasted into the PM chat at ~10:10 ET, source of
+truth). Those marks need to land in `EDHA_RULINGS.md` and `EDHA_ADVERSARY_ART_WISHLIST.md`
+verbatim, four of the answers spawn new fix items, one ruling (R-56) got REOPENED against its own
+2026-09-06 answer and needs to wait rather than ship, and two brand-new rulings (R-86, R-87) were
+settled directly on the dashboard with no code change owed.
+
+**What to do:**
+- `EDHA_RULINGS.md`: R-18 ANSWERED (Ben confirms the house convention, canon-checked against
+  `.claude/skills/cosmere-canon-reference/SKILL.md` §"advantage / disadvantage" — an advantage
+  rolls extra and the player picks the die, a disadvantage rolls extra and the GM picks, they
+  cancel 1-for-1) — consequence filed as item 80; R-52 gets Ben's confirming note narrowing item
+  62 (the shipped +2.5 ft slack IS the fix, edge-to-edge is a contingency on bench run 42, not a
+  standing requirement); R-56 REOPENED verbatim (Ben now wants the cosmere ladder for every actor
+  type, reversing the 2026-09-06 answer) — scoped and filed as item 83, WAITING for Ben's go, no
+  code touched; R-82 ANSWERED (default (a) accepted, no veto) — filed as item 81; R-80, R-81, R-84,
+  R-85 ANSWERED (applied defaults accepted, no veto) and moved to §K per the doc's own convention;
+  R-77 and R-48 get their 2026-09-06 answers reconfirmed verbatim, no status change; F-1 gets a
+  SETTLED note answering Ben's rank-3-attunement question by citing the engine constant directly;
+  new R-86 (GM-less / two-GM scenarios are not needed at Ben's table — retires bench run 42's
+  2bM-1, the one-applier dissipates re-test, and Job 6a; the engine's primary-GM gate and GM-less
+  region-trap behaviour stay, because the bench itself is the second GM client) and new R-87 (the
+  character-creation wizard's numbers stand, no veto) filed direct to §K. `CLAUDE.md`'s
+  `EDHA_RULINGS.md` map row count corrected via `grep -c '^\*\*R-[0-9]' EDHA_RULINGS.md`.
+- `TODO_REPO_HYGIENE.md`: file items 80 (R-18's next-test-list fix), 81 (R-82's `onGraze` dial on
+  `edha-damage-bonus`), 82 (the bestiary statting standard gains an explicit senses/movement line
+  per block, Ben's own ask), 83 (R-56's reversal, WAITING on Ben's go). Item 62 gets a dated note
+  narrowing it per R-52's confirmation. Item 70 gets a one-line note that R-83 is still WAITING,
+  examples given in chat.
+- `EDHA_ADVERSARY_ART_WISHLIST.md`: mark the Mistheron entry (Batch 1) done with the date, in
+  whatever form `parseArtWishlist` (`scripts/build-dashboard.js`) actually detects — root-caused:
+  the function had **no done-detection at all**, so every entry rendered perpetually open
+  regardless of doc content; added a `**DONE …**` bold-marker convention mirroring the existing
+  `RULING_APPLIED_MARK_RE` pattern, TOOLING + DOCS-ONLY.
+- A dated delta at the top of `docs/handoff-changelog/2026-09.md` covering this close-out: what was
+  recorded, the four items filed, R-86/R-87, the Mistheron art mark, and that bench run 42 carries
+  the checklist retirements R-86 names.
+
+**Done when:** `EDHA_RULINGS.md` has zero rulings left answered-but-unrecorded from the 2026-09-07
+dashboard batch; the rulings tab shows R-18, R-82, F-1, R-80, R-81, R-84, R-85 as settled/answered
+and R-56 as reopened-and-waiting; the Art tab shows the Mistheron row done; `CLAUDE.md`'s ruling
+count line matches `grep -c`; dashboard rebuilt; gates green.
+
+**PM:** lane R · model sonnet · size S · deps none · verify: manual diff of `EDHA_RULINGS.md`
+sections + `node scripts/build-dashboard.js` (Rulings/Art tab counts) + `node scripts/gates.js`.
+DOCS-ONLY (one small TOOLING addition to `parseArtWishlist`'s done-detection, necessary for the
+Art tab proof this item itself demands).
+
+---
+
+## 80. [ ] Quarry advantage joins the next-test list instead of stomping the slot (R-18)
+
+**Why:** R-18 answered 2026-09-07: attacking your quarry while under an active disadvantage
+(Weakened, say) should follow the standard advantage/disadvantage cancellation rule (SR p.18,
+`.claude/skills/cosmere-canon-reference/SKILL.md` §"advantage / disadvantage" — canon-checked by
+the PM against Ben's memory of the rule, which matched exactly), not silently overwrite the
+disadvantage the way the quarry site does today.
+
+**What to do:** ENGINE-ONLY (F5). The Heroic quarry-advantage site currently writes/overwrites a
+single slot; change it to `edhaListPush` onto `flags.nextTestMod` — item 49's writer path — so it
+joins the list instead of stomping it. Item 49's existing fold already cancels an advantage entry
+against a disadvantage entry one-for-one per R-80 (moved to §K, same item 79 close-out), so no new
+fold logic is needed, only the write site. Pin both orders (quarry-advantage-then-disadvantage,
+disadvantage-then-quarry-advantage) — both must cancel, neither must stomp.
+
+**Done when:** the two order-pins pass and fail under a one-line reversion to the old overwrite;
+one 🤖 checklist row (Quarry, Heroic) re-tests it at the table; R-18 moves to §K once shipped and
+bench-confirmed.
+
+**PM:** lane B · model opus · size S · deps R-18 ✓ (item 79) · verify: mutation (reverting to the
+stomp fails the pin). ENGINE-ONLY (F5).
+
+---
+
+## 81. [ ] A per-rule `onGraze` dial on `edha-damage-bonus` (R-82)
+
+**Why:** R-82 answered 2026-09-07 (default (a) accepted, no veto): the melee-only
+`edha-damage-bonus` rules (Warlord's Advance and kin — the armed-strike bonuses) fire on a graze
+application today, the same drift R-14(c) already closed on the Life mutation riders (Bone Spurs,
+Venom Glands, Apex Form) with a per-rule graze dial (item 56, PR #242).
+
+**What to do:** give `edha-damage-bonus` the same per-rule `onGraze` dial the Life riders have (the
+`graze` value is already available at the call site per R-82's own text). Audit every authored
+`edha-damage-bonus` card (Warlord's Advance and kin) and set the value the card's own wording
+implies. An authored value change means a pack REBUILD — list every changed card in the PR and let
+the PM decide the deploy class rather than assuming DOCS-ONLY or ENGINE-ONLY.
+
+**Done when:** the dial exists and is pinned (on/off, mutation-verified); every audited card's
+`onGraze` value is stated in the PR with the card text it was read from; one 🤖 checklist row per
+changed card; R-82 moves to §K once shipped and bench-confirmed.
+
+**PM:** lane B · model opus · size S · deps R-82 ✓ (item 79), item 56 ✓ · verify: mutation + the
+per-card audit table. ENGINE + likely REBUILD (PM decides from the PR's card list).
+
+---
+
+## 82. [ ] Bestiary statting standard gains an explicit senses + movement line per block
+
+**Why:** Ben, 2026-09-07 (dashboard), verbatim: *"We should update the bestiary lore-forge skill
+to have it create appropriate stats for each adversary. Then the actor tokens for the adversaries
+will inhereit the correct sight range, speed, etc."* Today a statted block's senses/movement is
+whatever the derivation default gives it unless the block authors an explicit override, and R-56's
+history (fix pass E → bench run 22 → PR #240 → now REOPENED by item 79's close-out) shows how much
+drift that default can carry across sheet/token/build when nobody has to state the number.
+
+**What to do:** find where the bestiary statting standard lives — the `lore-forge` /
+`session-forge` skills' block-statting steps, and `leyline-tree-authoring` SKILL.md §"Adversary
+abilities" — and add an explicit senses + movement line to the standard: every new block states
+its Senses Range and Speed on the card, sourced from whichever default table is current at time of
+authoring (see item 83) or from a stated bespoke reason. Add a lint pass: a block with neither an
+explicit `senses`/movement field nor an AWA-derivable default fails the build. Then, SEPARATELY,
+the values for the existing 52 pack + 47 world blocks are invented content (a value has to be
+chosen per block) — batch them for Ben as ONE approval per the lore-approval gate before any data
+edit, and ship as an adversaries REBUILD once approved.
+
+**Done when:** the statting standard names the senses/movement line explicitly; the lint pass
+exists and is mutation-verified (a block missing both fails the build); the 52+47-block value batch
+is written and sent to Ben as one approval menu (not applied before he says yes).
+
+**PM:** lane H (Ben's approval batch is the gate) · model sonnet · size M · deps item 83 (which
+default the explicit value overrides — R-56's ladder or the Edha table).
+
+---
+
+## 83. [ ] R-56 reversal — the cosmere senses ladder for every actor type (WAITING on Ben's go)
+
+**Why:** R-56 was answered 2026-09-06 (Edha AWA table for adversaries too, shipped PR #240) and
+REOPENED 2026-09-07 by item 79's close-out: Ben, verbatim, *"Honestly we should be using the
+cosmere ladder for everyone. If that's a huge issue or rebuild let me know before changing."* This
+reverses direction — the SYSTEM's own ladder for every actor type, not the Edha table.
+
+**What to do — WAITING, do not dispatch until Ben says go; this note is the "let me know" the
+ruling asked for.** Scope, sized honestly because it touches five surfaces: (1) `edhaDeriveSheetStats`
+writes the Edha AWA table (0→10, 1→15, 2–3→20, 4→25, 5+→30 ft) into `senses.range.derived` for
+every actor type — ENGINE-ONLY to swap for the system ladder; (2) `scripts/foundry-build.js`'s
+`advSensesRangeFt` stamps prototype-token sight from the same Edha table — adversaries pack
+**REBUILD** to change; (3) the character-creation wizard's preview promises the Edha table; (4)
+`scripts/bench-setup-console.js` gives bench PCs their sight off the Edha table (R-2); (5) docs —
+`Character_Building_Rules.md` §Senses Range, `docs/ACTOR_STAT_DERIVATION.md`, and the tests pinning
+`edhaSensesRangeFtFromAwa` all carry the Edha numbers. The system ladder is `[5, 10, 20, 50, 100,
+∞]` indexed by `ceil(AWA/2)` — AWA 0 → 5 ft, 1–2 → 10 ft, 3–4 → 20 ft, 5 → 50 ft: stingier than the
+Edha table at AWA 0–2, wider at 5+, so this is a real behavior change at the table, not a
+relabeling. Once Ben says go: swap the constant/table at all five sites, re-pin every test that
+asserts the Edha numbers, adversaries REBUILD + ⟳ Sync, wizard preview updated, docs corrected.
+
+**Done when:** Ben has explicitly said go (recorded in `EDHA_RULINGS.md` under R-56); all five
+surfaces read the system ladder; every re-pinned test passes; adversaries REBUILD shipped and
+bench-confirmed.
+
+**PM:** lane H · model opus · size M · deps Ben's go on R-56 (item 79's REOPENED note). Item 82
+depends on this item's outcome (which default the explicit per-block override sits against).
