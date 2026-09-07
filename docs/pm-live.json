@@ -1,18 +1,15 @@
 {
   "pm": {
     "status": "awake",
-    "note": "Hand-started Fable PM (Ben, 09:52 ET Mon). Bench run 43 MERGED 13:23 (#280, 11.1M): 10 more rows retired, open bench rows 20 -> 10, and every remaining row is gated on a fix, a ruling, or you - the bench queue is drained. Two defects filed: item 88 (adversary triggered-effect cards post PUBLICLY - Predator's Due shows the boss's heal and a GM instruction to the table; waits on R-90) and item 89 (Unbreakable Line has no use rule - REBUILD). Running now: item 86 (sonnet, engine-only) and item 90 (sonnet, retire the five harness-only rows). Opus 3 of 3 used today. YOU OWE: Sync Talents click. Rulings for you: R-83, R-56 go/no-go, R-88, R-89, R-90, R-91.",
-    "waitingOn": "Sync Talents click for your own PCs; R-83 (a)/(b); R-56 go/no-go (item 83); R-88, R-89, R-90, R-91 (defaults (a) if silent); the 10 unmarked bench flag rows + 5 world rows",
+    "note": "Hand-started Fable PM (Ben, 09:52 ET Mon). Item 86 MERGED (#283) and PUSHED LIVE 13:40 (served engine a23e70d1 = main ca8d3c2): PRESS F5 on your Gamemaster client (engine-only, no rebuild). Twelve PRs merged today (#272-#283). Running now: item 89 (sonnet, Unbreakable Line's missing use rule, a REBUILD when it lands). Everything else queued needs Opus (resets at midnight: items 80, 81, 62) or a ruling from you. YOU OWE: F5 + one Sync Talents click. Rulings for you: R-83, R-56 go/no-go, R-88, R-89, R-90, R-91.",
+    "waitingOn": "F5 on the Gamemaster client (item 86 live); Sync Talents click for your own PCs; R-83 (a)/(b); R-56 go/no-go (item 83); R-88, R-89, R-90, R-91 (defaults (a) if silent); the 10 unmarked bench flag rows + 5 world rows",
     "nextWakeAt": null,
     "session": "2026-09-07 09:52 ET - Fable PM (hand-started, Ben's hours by his word)"
   },
   "workers": [
-    { "item": "86", "title": "edhaListPlaceNotes gates on edhaIsTalent - swap to edhaRuleBearer, pin, sweep the remaining edhaIsTalent calls", "model": "sonnet", "size": "S", "lane": "B",
-      "branch": "pm/86-place-notes-rule-bearer", "startedAt": "2026-09-07T17:22:00Z", "agent": "Work item 86",
-      "phase": "working", "pr": null, "note": "ENGINE-ONLY (F5) when it lands" },
-    { "item": "90", "title": "Retire the five harness-only rows (I10b2-1..4, 77-1 unset-side) - no sideless token can exist", "model": "sonnet", "size": "S", "lane": "R",
-      "branch": "pm/90-harness-only-retirements", "startedAt": "2026-09-07T17:28:00Z", "agent": "Work item 90",
-      "phase": "working", "pr": null, "note": null }
+    { "item": "89", "title": "Unbreakable Line ships no use rule on either block - author the contest-core test, align activation (DATA -> REBUILD)", "model": "sonnet", "size": "S", "lane": "B",
+      "branch": "pm/89-unbreakable-line-use-rule", "startedAt": "2026-09-07T17:35:00Z", "agent": "Work item 89",
+      "phase": "working", "pr": null, "note": "REBUILD + Sync Adversaries when it lands" }
   ],
   "usage": null
 }
