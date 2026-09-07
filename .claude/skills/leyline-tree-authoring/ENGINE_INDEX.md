@@ -56,6 +56,39 @@ not parsed:** `scripts/handler-schemas.js` (lint pass 9/9b, the item-64 build gu
 18 read the tables through `tests/harness.js` `loadHandlerRegistry()`, so a field or `choices`
 value you add is visible to the gates the moment the row exists.
 
+**Registered types with no AUTHORED-TALENT user — dispositions (item 71, 2026-09-06).** Item 24
+found six handler rows no `data/authored/*.json` talent carries. None is dead: each has a consumer
+on another surface, proven by `grep -rn '"<type>"' data/` plus a scratch `foundry-build.js all`
+read back through `classic-level` (the counts below are the rules in the BUILT packs).
+- `edha-pick-expertises` — **generator-emitted**: `scripts/foundry-build.js` (`ev:cult:pick:<slug>:<i>`,
+  the "edha-pick-expertises, NOT the native pick:true" block in the cultures writer) mints one rule
+  per `pickGroups` entry of `data/cultures.json` → **11 rules in `edha-items`** (Canticle, Kettavar,
+  Corvaine, Sylvaneth, Goldenport, Thalendor, Malcurr, Lunavar, Ashkar, Vorsk). Never appears in
+  `data/` as a literal — that is exactly the case the item-64 build guard exists for.
+- `edha-regen` — **adversary-carried** (lint pass 5 surface): The Garden Sow / *Nexus-Fed*
+  (`data/adversaries.json`) → 1 rule in `edha-adversaries`. Talents use `edha-regen-grant` instead.
+- `edha-ambush-belief` — **adversary-carried**: the seeming TRAIT on Stillback, Wasting-Eater
+  Stillback, Wrongwake ×2, Keelshadow, The False Spring, Hazewyrm Adult/Elder, The Doubled/Elder
+  → 10 rules; `lint-refs.js` pass 5's phantom-loop check also requires it.
+- `edha-pack-advantage` — **adversary-carried**: Cinderhound / *Pack Tactics* → 1 rule.
+- `edha-dark-veil` — **adversary-carried**: Stalker / *Veil* → 1 rule (`edhaDarkVeilSweep` is its reader).
+- `edha-thorns` — **adversary-carried**: Cinderhound / *Cinder Coat* → 1 rule.
+None is a deletion candidate; a type whose only consumer is an adversary is a legitimate row (the
+ratchet's adversary carve-out). Re-run the grep before believing any future "unused type" claim.
+
+**Executor-less rows.** `edha-illusion-upkeep` carries an explicit **no-op executor** since item 71
+(the same shape eight other config-only rows already used — `edha-watch`, `edha-test-react`,
+`edha-damage-reduce`, `edha-focus-guard`, `edha-move-veto`, `edha-hp-floor`, `edha-aura`,
+`edha-damage-react`): its readers are the `combatTurnChange` sweep and `edhaUpkeepInvClick` in the
+Illusion section, so a rule a user places on an event the system DOES dispatch (`use`,
+`add-to-actor`) executes to nothing instead of throwing in `Handler.execute`. Behaviour unchanged;
+the registry snapshot does not record executors, so it did not move. **Nine rows still register
+with NO executor** — `edha-zone-hazard`, `edha-zone-guard`, `edha-snare-react`, `edha-damage-bonus`,
+`edha-counter-transfer`, `edha-die-step-react`, `edha-unseen-ward`, `edha-suppress-veil`,
+`edha-heal-react` — all config-only riders read by sweeps; `tests/handler-registry.test.js`
+names each in `EXECUTOR_LESS_CONFIG_ONLY` so the set can only shrink (filed as a follow-up, not
+fixed under item 71).
+
 Native handlers: `grant-items` · `remove-items` · `modify-attribute` · `set-attribute` ·
 `modify-skill-rank` · `set-skill-rank` · `grant-expertises` · `remove-expertises` · `use-item` ·
 `update-item` · **`update-actor`** · **`execute-macro`**
@@ -1671,7 +1704,8 @@ code, and every marker ledger lives under `flags.edha-content.lists.<key>`.**
   read back by every card and the fooled-target riders), `hpFormula`, `speed`, `defensePenalty`,
   `beliefDefense`, `beliefSkill`, `rangeColor`. The sweep reads the stamped skill; no talent name
   survives in the flow. Consumers: Phantom Double + BOTH adversary "The Seeming" abilities.
-- **`edha-illusion-upkeep`** (config-only; the `combatTurnChange` sweep is its reader) —
+- **`edha-illusion-upkeep`** (config-only; the `combatTurnChange` sweep is its reader; carries a
+  no-op executor since item 71 so a dispatched placement cannot throw) —
   `resource`, `costPer`, `qualifier`, `note`. The pay button carries its DOCUMENT, so the click
   charges what the rule says.
 - **`edhaGetOrdained` → `edhaOwnerList(o, "ordained")`** — the SIXTH and last ledger repoint.

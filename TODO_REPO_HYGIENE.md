@@ -2254,7 +2254,7 @@ the family count. ENGINE-ONLY (F5). Found by fix pass 8.
 
 ---
 
-## 71. [ ] Registry leftovers from item 24 — a README row, an executor-less handler, six unused types, a stale console line, a loosened test slice
+## 71. [x] Registry leftovers from item 24 — a README row, an executor-less handler, six unused types, a stale console line, a loosened test slice (2026-09-06, PR #TBD)
 
 **Why:** item 24 (PR #244, 2026-09-06) turned the 102 `api.register*Type` calls into two tables
 and, in passing, found five small things it was told not to fix:
