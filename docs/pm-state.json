@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-07T21:33:02.545Z",
+  "generatedAt": "2026-09-07T21:35:02.736Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "14280fced7",
-    "commit": "124b35f",
+    "hash": "d3dc5edee5",
+    "commit": "fcc9e4a",
     "branch": "pm/board-2026-09-07i",
     "repo": "CadburyAtoms/Skilltrees"
   },
@@ -1129,8 +1129,8 @@
       "lane": "B",
       "model": "sonnet",
       "size": "S",
-      "deps": "R-88 ✓ (a)",
-      "status": "merged 17:29 (REBUILD owed: leyline pack + ⟳ Sync Talents)",
+      "deps": "R-88 ✓ (a) · merged 17:29, REBUILD owed (leyline + ⟳ Sync Talents)",
+      "status": "bench-pending",
       "statusDetail": null,
       "pr": 288
     },
