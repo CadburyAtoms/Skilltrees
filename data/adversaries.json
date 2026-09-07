@@ -16,7 +16,7 @@
       "foc": "Focus max (override). 0 if none.",
       "inv": "Investiture max (override). DEFAULTS for attuned blocks (ruling 49): any entry with `leylines` gets the PC derivation 2 + max(awa, pre) = 2 (adversary attributes are 0). Set explicitly only to deviate; omit otherwise. 0 if unattuned.",
       "movement": "Walk rate in ft (override). Omit/null = system default (25 ft). 0 = immobile.",
-      "senses": "Senses Range in ft (Character_Building_Rules §Senses Range; Ben 07-16c sight rule). Omit = the AWA table default (adversary AWA 0 → 10 ft). Sets the token's darkness-vision radius (sight.range — lit areas visible beyond it natively) AND the sheet's senses override; the engine's edhaCanSee uses it as the in-darkness sight limit.",
+      "senses": "Senses Range in ft — the BESPOKE OVERRIDE (Character_Building_Rules §Senses Range; Ben 07-16c sight rule; R-56 (a), item 55: one rule for PCs and adversaries). Omit = the Edha AWA table (adversary AWA 0 → 10 ft), which the build stamps on the prototype token (advSensesRangeFt) and the engine derives on the sheet (edhaDeriveSheetStats) — the two agree. Set it ONLY for a creature whose fiction justifies unusual senses (Briar-Gone Grove: 30 — a rooted grove-heart has no eyes and perceives through its own soil, so its reach is the arena, not an AWA-0 stare). Sets the token's darkness-vision radius (sight.range — lit areas visible beyond it natively) AND the sheet's senses override; the engine's edhaCanSee uses it as the in-darkness sight limit.",
       "conditionImmunities": "Array of condition ids the creature is immune to (afflicted/blind/disoriented/exhausted/immobilized/prone/restrained/slowed/stunned/surprised/...). Note: frightened/compelled are Edha-custom and NOT valid system ids.",
       "count": "How many appear in the dungeon (informational; the GM drags this many tokens).",
       "biography": "Sheet bio / GM notes.",
@@ -3251,6 +3251,7 @@
     "hp": 60,
     "foc": 3,
     "movement": 5,
+    "senses": 30,
     "count": 1,
     "biography": "<p>A grove-heart locked in un-clearing blight — \"gone to briar\" (canon §5c, ruling 32; the Thalendor encounter that IS the plot). Kit is \"the Closing Arena\" grown to boss scale (ruling 110): the maze grows around you while the grove drags at whatever crosses its soil. Not evil; wrong — the Gone-to-Weir Fen-Heart's family grammar in forest key.</p><p><em>Healthy grove-hearts stay the ruling-40 terrain-scale / diplomacy exception — no block by design. Call the Runners is the scaling knob: cap it for small parties.</em></p>",
     "items": [
