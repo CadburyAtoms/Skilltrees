@@ -261,6 +261,36 @@ const RULING_ASK_RE = /^Ask:\s*(.+?)\s*$/;
 // the old `[^*]+` stopped at the first `*`, captured nothing, and — being a match — also kept the
 // "no default stated" fallback from firing, so every bold-inline default rendered as an EMPTY card).
 const RULING_DEFAULT_RE = /\*Recommended(?:\s+default)?:\s*((?:\*\*[^*]*\*\*|[^*])+)\*/i;
+// The BARE style — `*Recommended*` with no colon, attached to a lettered option instead of leading
+// its own sentence: `**(a)** … so one rule governs everything — *Recommended*, and it matches …`
+// (R-56 is the live example; item 87, 2026-09-07). RULING_DEFAULT_RE requires a colon right after
+// "Recommended" and never matches this shape, so it fell through to "no default stated". The
+// natural default here is the `(x) …` option clause the marker is attached to: find the nearest
+// `**(x)**` label BEFORE the bare marker, then read through to the next option label (or the end
+// of the paragraph) — that span is "one sentence" in this doc's semicolon-separated options list.
+// Markers are stripped the same way the colon-form path strips them.
+const RULING_BARE_RECOMMENDED_RE = /\*Recommended\*(?!\s*:)/i;
+const RULING_OPTION_LABEL_RE = /\*\*\([a-z]\)\*\*/gi;
+function bareRecommendedDefault(body) {
+  const marker = body.match(RULING_BARE_RECOMMENDED_RE);
+  if (!marker) return null;
+  const markerIdx = marker.index;
+  const labels = [...body.matchAll(RULING_OPTION_LABEL_RE)];
+  const before = labels.filter((l) => l.index < markerIdx);
+  if (!before.length) return null; // bare marker with no option to anchor to — leave to the fallback
+  const labelStart = before[before.length - 1].index;
+  const after = labels.find((l) => l.index >= markerIdx);
+  const paraBreak = body.indexOf('\n\n', markerIdx);
+  let end = body.length;
+  if (after) end = Math.min(end, after.index);
+  if (paraBreak !== -1) end = Math.min(end, paraBreak);
+  return body.slice(labelStart, end)
+    .replace(/[;,\s]+$/, '')
+    .replace(/\*\*/g, '')
+    .replace(/\*/g, '')
+    .trim()
+    .replace(/\s+/g, ' ');
+}
 const RULING_APPLIED_RE = /\*\*Default applied:\s*([^*]+)\*\*/i;
 // "Applied — veto?" is a property of the ENTRY, not only of §I: the doc's own intro says anything
 // marked **APPLIED** is already live and needs a veto, and R-48 / R-80 / R-81 / R-84 / R-85 all sit
@@ -294,7 +324,9 @@ function parseOpenRulings(md) {
           id: cur.id,
           section: sec.title,
           ask,
-          default: dm ? dm[1].replace(/\*\*/g, '').trim().replace(/\s+/g, ' ') : 'no default stated',
+          default: dm
+            ? dm[1].replace(/\*\*/g, '').trim().replace(/\s+/g, ' ')
+            : (bareRecommendedDefault(body) || 'no default stated'),
           applied,
           blocks: 0, // filled by mobileSnapshot(), which has the other tabs to count citations in
         });
