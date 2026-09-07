@@ -337,6 +337,10 @@ test("build-dashboard: parseOpenRulings marks R-56/R-83 open and R-18/R-41/R-42/
   assert.strictEqual(r56.section, "H. Map & character creation");
   assert.strictEqual(r56.applied, false);
   assert.strictEqual(r56.ask, "Should adversaries use the Edha Senses Range table too, or keep the cosmere ladder?", "R-56 has no Ask: line, so the self-contained heading question is the ask (item 44's fallback)");
+  // item 87: R-56's own recommendation uses the BARE `*Recommended*` style (no colon) attached to
+  // its `**(a)**` option, not the `*Recommended default: …*` colon form — RULING_DEFAULT_RE never
+  // matched it, so the card used to read "no default stated" even though a recommendation exists.
+  assert.strictEqual(r56.default, "(a) extend the Edha table to adversary sheets AND their token sight, so one rule governs everything — Recommended, and it matches the 07-17c ruling that adversaries \"use the same vision rules as players unless bespoke\"", "item 87: the bare *Recommended* style now yields the (a) option clause instead of \"no default stated\"");
   for (const r of open) assert.strictEqual(typeof r.blocks, "number", `${r.id}.blocks is not a number in the raw parse (mobileSnapshot fills it in)`);
   // item 76: every open ruling's card carries a real default (the bold-inline form used to capture ""),
   // read through the inner **…** pairs and stripped of the markers.
@@ -365,6 +369,13 @@ to undo; NOT applied yet.* (b) leave it loose. *(Board table.)*
 
 *(R-107 — a stub for a ruling whose entry is elsewhere — DEFAULT (a) APPLIED 2026-09-06.)*
 
+**R-108. Should the gadget beep?** Context prose with no recommendation of any kind stated anywhere
+in this body. *(Board table.)*
+
+**R-109. Should the widget replace the gizmo?** Context prose. Options: **(a)** replace it entirely,
+so the old gizmo retires — *Recommended*, and it keeps the API simple; **(b)** keep both side by
+side. *(Board table.)*
+
 ## I. Applied defaults
 
 These are already live in the code.
@@ -384,7 +395,7 @@ answer.
 
 test("build-dashboard: parseOpenRulings — a §B stub pointing at §K does not re-open, §I gets applied:true with its own default sentence, §K is skipped outright", () => {
   const open = dashboard.parseOpenRulings(RULINGS_FIXTURE);
-  assert.deepStrictEqual(open.map((r) => r.id).sort(), ["R-101", "R-103", "R-105", "R-106"]);
+  assert.deepStrictEqual(open.map((r) => r.id).sort(), ["R-101", "R-103", "R-105", "R-106", "R-108", "R-109"]);
   const r101 = open.find((r) => r.id === "R-101");
   assert.strictEqual(r101.default, "yes, make it spin.");
   assert.strictEqual(r101.ask, "Should the widget spin (a), or stay still (b)?", "an Ask: paragraph replaces a symptom heading (item 44)");
@@ -402,6 +413,16 @@ test("build-dashboard: parseOpenRulings — a §B stub pointing at §K does not 
   const r106 = open.find((r) => r.id === "R-106");
   assert.strictEqual(r106.default, "(a) yes — APPLIED in #999 (stub in §I).");
   assert.strictEqual(r106.applied, true, "a bold **APPLIED** note in §B marks the entry applied");
+  // item 87: a ruling with no `*Recommended…*` marker of any kind still falls back to the plain
+  // "no default stated" text — the bare-style fallback must not fire on a body it cannot anchor to.
+  const r108 = open.find((r) => r.id === "R-108");
+  assert.strictEqual(r108.default, "no default stated");
+  // item 87: the BARE `*Recommended*` style (no colon), attached to a lettered option instead of
+  // leading its own sentence — RULING_DEFAULT_RE never matches this shape (no colon), so the
+  // default is the `(x) …` option clause the marker is attached to, read through to the next
+  // option's label, markers stripped the same way the colon-form path strips them.
+  const r109 = open.find((r) => r.id === "R-109");
+  assert.strictEqual(r109.default, "(a) replace it entirely, so the old gizmo retires — Recommended, and it keeps the API simple");
 });
 
 // item 85: a ruling's OPEN/CLOSED status is decided by its LAST status marker in document order,
