@@ -18,11 +18,12 @@ const path = require("path");
 const cp = require("child_process");
 
 const REPO = path.resolve(__dirname, "..");
-const { parseHandlerSchemas, parseHandlerChoices, topLevelKeys, matchBrace } = require(path.join(REPO, "scripts", "handler-schemas.js"));
+const { parseHandlerSchemas, parseHandlerChoices, schemasFromRegistry, choicesFromRegistry, topLevelKeys, matchBrace } = require(path.join(REPO, "scripts", "handler-schemas.js"));
 const { readEngineSource } = require("./harness.js");
 const ENGINE = readEngineSource();
 
-/* --- the scanner primitives ------------------------------------------------------------------ */
+/* --- the scanner primitives (item 24: kept for scripts/dump-native-vocabulary.js, which still
+ *     parses the SYSTEM bundle's registrations — the engine's own are EVALUATED now) ---------- */
 
 test("topLevelKeys reads keys at depth 0 only, through prose hints with braces/parens/comments", () => {
   const body = `
@@ -61,11 +62,15 @@ test("parseHandlerSchemas: spot-pinned schemas (small exact, large superset)", (
   assert.ok(schemas.get("edha-watch").size >= 20, "edha-watch schema under-parsed");
 });
 
-test("parseHandlerSchemas rots LOUDLY: duplicate type / missing type / zero sites all throw", () => {
-  const reg = (t, extra = "") => `api.registerItemEventHandlerType({ source: "x", type: "${t}", ${extra} });\n`;
-  assert.throws(() => parseHandlerSchemas(reg("edha-a") + reg("edha-a")), /registered twice/);
-  assert.throws(() => parseHandlerSchemas(`api.registerItemEventHandlerType({ source: "x" });`), /no type/);
-  assert.throws(() => parseHandlerSchemas("nothing here"), /no registerItemEventHandlerType/);
+test("schemasFromRegistry rots LOUDLY: duplicate type / missing type / empty registry all throw", () => {
+  const def = (type, fields = {}) => ({ source: "x", type, config: { schema: fields } });
+  assert.throws(() => schemasFromRegistry({ handlers: [def("edha-a"), def("edha-a")] }), /registered twice/);
+  assert.throws(() => schemasFromRegistry({ handlers: [{ source: "x" }] }), /no type/);
+  assert.throws(() => schemasFromRegistry({ handlers: [] }), /no registerItemEventHandlerType/);
+  // Field names come from the schema object's own key order — no config = no fields, never a throw.
+  const m = schemasFromRegistry({ handlers: [def("edha-b", { z: {}, a: {} }), { source: "x", type: "edha-c" }] });
+  assert.deepStrictEqual([...m.get("edha-b")], ["z", "a"]);
+  assert.deepStrictEqual([...m.get("edha-c")], []);
 });
 
 /* --- pass 9 end-to-end, mutation-checked both ways ------------------------------------------- */
@@ -169,11 +174,24 @@ test("parseHandlerChoices: the exact field the Reeve-Owl tripped over", () => {
   assert.strictEqual(choicesMap.get("edha-triggered-effect").get("damageType").initial, "energy");
 });
 
-test("parseHandlerChoices rots LOUDLY: an empty choices() and a lost API both throw", () => {
-  assert.throws(() => parseHandlerChoices(
-    `api.registerItemEventHandlerType({ type: "edha-a", config: { schema: {\n` +
-    `  f: new FF.StringField({ choices: choices() }),\n} } });`), /no string literals/);
-  assert.throws(() => parseHandlerChoices("nothing here"), /no registerItemEventHandlerType/);
+test("choicesFromRegistry rots LOUDLY: an empty choices set, a function-valued choices, and an empty registry all throw", () => {
+  const field = (options) => ({ kind: "StringField", options });
+  const reg = (options) => ({ handlers: [{ type: "edha-a", config: { schema: { f: field(options) } } }] });
+  assert.throws(() => choicesFromRegistry(reg({ choices: {} })), /EMPTY choices/);
+  assert.throws(() => choicesFromRegistry(reg({ choices: () => ({}) })), /not enumerable/);
+  assert.throws(() => choicesFromRegistry({ handlers: [] }), /no registerItemEventHandlerType/);
+  // The engine's `choices("", "a")` helper yields {"": "(none)", a: "a"} — keys are the values; the
+  // array form Foundry also accepts is read too; a field without choices is simply not listed.
+  const m = choicesFromRegistry({ handlers: [{ type: "edha-b", config: { schema: {
+    obj: field({ choices: { "": "(none)", a: "a" }, initial: "" }),
+    arr: field({ choices: ["x", "y"] }),
+    open: field({ initial: "free text" }),
+  } } }] });
+  assert.deepStrictEqual([...m.get("edha-b").get("obj").choices], ["", "a"]);
+  assert.strictEqual(m.get("edha-b").get("obj").initial, "");
+  assert.deepStrictEqual([...m.get("edha-b").get("arr").choices], ["x", "y"]);
+  assert.strictEqual(m.get("edha-b").get("arr").initial, null);
+  assert.ok(!m.get("edha-b").has("open"));
 });
 
 let errs9b = null;

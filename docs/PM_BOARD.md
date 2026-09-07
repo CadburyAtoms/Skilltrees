@@ -24,7 +24,9 @@ session resumes from this file alone.
 > run log. **Waiting on Ben now:**
 > - keep Foundry open while bench run 40 drives the nine engine-only merges pushed live at 20:16
 > - press F5 on the `Gamemaster` client (it still runs the 18:59 engine until reloaded)
-> - ONE `deploy-to-foundry.bat` run (Foundry closed) for the REBUILD stack — 34a #220, 57 #226, 58 #227, 65 + 67 #232, 59 #234, plus 55 / 56 / 63 once they land — the PM push-notifies when bench 40 has reported, not before
+> - ONE `deploy-to-foundry.bat` run (Foundry closed) for the REBUILD stack — 34a #220, 57 #226, 58 #227, 65 + 67 #232, 59 #234, 63 #239, 55 #240, 56 #242 — and the bat copies the engine, so 69 #237, 68 #241 and 24 #244 go live with it; the PM push-notifies ONCE when bench 40 has reported, not before
+> - answer **R-83** (three heal writers still bypass the No-Healing gate; default (a) = gate them at their emitters) — item 70 waits on it because it moves HP at the table
+> - veto **PM-R15** if you want the engine SOURCES to be the only tracked copy — default: the assembled `register-skills.js` stays tracked and deployed, and item 4 is building it that way now
 >
 > _(Remote Control by default — PM-R12 — was already on before this session, via the Desktop toggle; Ben, 17:55.
 > Whether scheduler-started sessions honour it is what Monday 21:10 will show. The list above is one bullet per

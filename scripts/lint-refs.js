@@ -36,7 +36,7 @@
 "use strict";
 const fs = require("fs");
 const path = require("path");
-const { parseHandlerSchemas, parseHandlerChoices, matchBrace, topLevelKeys } = require("./handler-schemas.js");
+const { parseHandlerSchemas, parseHandlerChoices, loadRegistry, matchBrace, topLevelKeys } = require("./handler-schemas.js");
 const { loadJson } = require("./lib/data.js");
 const { slugify } = require("./edha-pack-io.js");   // the ONE slugifier (pass 21's canonical home) — pass 22 slugs culture names exactly as foundry-build.js does
 const { stripComments } = require("./lib/strip-comments.js");
@@ -621,8 +621,9 @@ engine.split("\n").forEach((lineText, i) => {
 // registered config schema doesn't define: the rule loads, the Events tab renders, and the
 // mechanic just never fires — the field-level twin of the failure mode pass 2 kills. 221 talents
 // were hand-authored across 27 sessions, so this must be a gate, not a one-off sweep.
-// edha-* schemas are parsed from the engine's own registerItemEventHandlerType calls
-// (scripts/handler-schemas.js — hard-fails if the parse rots); native schemas come from
+// edha-* schemas are the engine's own EDHA_HANDLER_TYPES table, evaluated headlessly
+// (scripts/handler-schemas.js via tests/harness.js — item 24; a broken table fails at load, never
+// under-reports); native schemas come from
 // native-vocabulary.json's schemaFields. Rule-level keys are held to the system's rule schema
 // too ({id, description, order, event, handler}) — a typo'd "hander" is a dead rule the same way.
 //
@@ -1446,10 +1447,15 @@ engine.split("\n").forEach((lineText, i) => {
     "edha-watch-rule":      "read by handler type — edhaWatchersOfRule(<handlerType>), which ignores the event field by design",
   };
   const src18 = blankStringsAndComments(engine, { keepStrings: true });   // comments out, strings kept
-  const types = [...src18.matchAll(/registerItemEventType\(\{[\s\S]{0,400}?type:\s*"(edha-[a-z0-9-]+)"[\s\S]{0,800}?hook:\s*"([^"]+)"/g)]
-    .map((m) => ({ type: m[1], hook: m[2] }));
+  // The (type, hook) pairs come from the EVALUATED registry (item 24: EDHA_EVENT_TYPES through
+  // tests/harness.js loadHandlerRegistry(), the same objects Foundry receives) — this pass used
+  // to regex the registration calls out of the source. The dispatch checks below stay textual:
+  // they ask what the rest of the ENGINE does with the hook and the type name.
+  let types = [];
+  try { types = loadRegistry().events.map((d) => ({ type: String(d.type), hook: String(d.hook) })); }
+  catch (e) { err(`lint-refs pass 18: cannot load the engine's event registry — ${e.message}`); }
   if (types.length < 10) {
-    err(`lint-refs pass 18: only ${types.length} registerItemEventType calls were parsed (expected 10+) — the scan rotted; fix it before trusting this pass.`);
+    err(`lint-refs pass 18: only ${types.length} event types were registered (expected 10+) — the registry rotted; fix it before trusting this pass.`);
   }
   for (const { type, hook } of types) {
     if (!/^edha-content\.noop-/.test(hook)) continue;                 // a real system hook fires itself

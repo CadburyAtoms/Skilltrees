@@ -130,6 +130,56 @@ function RollStub({ total, capture } = {}) {
   };
 }
 
+/* `foundry.data.fields` stub (2026-09-06, item 24). The engine's native handler-config schemas
+ * are `new FF.StringField({…})` objects, so the sandbox must hand back SOMETHING constructible for
+ * every `*Field` name. Each stub records its kind and the options it was given — that is all the
+ * registry tooling reads (`scripts/handler-schemas.js`: field NAMES from the schema's own key
+ * order, `choices` + `initial` from the options). No validation, no cleaning: the real DataField
+ * semantics are Foundry's. */
+function mockDataFields() {
+  const cache = new Map();
+  return new Proxy({}, {
+    get(_, name) {
+      if (typeof name !== "string" || !/Field$/.test(name)) return undefined;
+      if (!cache.has(name)) {
+        cache.set(name, class MockField {
+          constructor(options = {}) { this.kind = name; this.options = options; }
+        });
+      }
+      return cache.get(name);
+    },
+    has(_, name) { return typeof name === "string" && /Field$/.test(name); },
+  });
+}
+
+/* Run the engine's native event-system registration against a RECORDING cosmereRPG API and hand
+ * back what it registered, in registration order — `{ events: [def…], handlers: [def…], env }`,
+ * each `def` the exact object the engine passed (type, label, description, hook / config.schema,
+ * executor). This is the headless view of what Foundry's Events-tab picker will list, and the one
+ * source `scripts/handler-schemas.js` (lint pass 9/9b, the item-64 build guard) and the item-24
+ * registry snapshot read. Pass an existing `env` to reuse a loaded engine. */
+function loadHandlerRegistry(env = loadEngine()) {
+  const events = [], handlers = [];
+  env.cosmereRPG = { api: {
+    registerItemEventType: (def) => { events.push(def); return true; },
+    registerItemEventHandlerType: (def) => { handlers.push(def); return true; },
+  } };
+  const ok = env.edhaRegisterNativeEventSystem();
+  if (ok !== true) throw new Error(`loadHandlerRegistry: edhaRegisterNativeEventSystem() did not register (returned ${ok})`);
+  if (!events.length || !handlers.length) throw new Error(`loadHandlerRegistry: ${events.length} events / ${handlers.length} handlers registered — engine renamed the API?`);
+  return { events, handlers, env };
+}
+
+/* The snapshot shape of a registry: per event `{type, label, description, hook}`, per handler
+ * `{type, label, description, fields}` with `fields` in the schema's own declaration order. */
+function registryShape({ events, handlers }) {
+  return {
+    events: events.map((d) => ({ type: d.type, label: d.label, description: d.description, hook: d.hook })),
+    handlers: handlers.map((d) => ({ type: d.type, label: d.label, description: d.description,
+      fields: Object.keys(d.config?.schema || {}) })),
+  };
+}
+
 /* Load the engine into a fresh vm context. Returns the context: engine helpers are its
  * properties (env.edhaFoldDieMath(…)), and env.__hooks records every Hooks.on/once call. */
 function loadEngine() {
@@ -159,7 +209,7 @@ function loadEngine() {
         randomID: (n = 16) => Array.from({ length: n }, () => "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"[Math.floor(Math.random() * 62)]).join(""),
       },
       data: {
-        fields: {},
+        fields: mockDataFields(),
         regionBehaviors: { RegionBehaviorType: class RegionBehaviorType { static _createEventsField() { return {}; } } },
       },
       applications: { api: {} },
@@ -429,6 +479,7 @@ function sleep(ms) {
 
 module.exports = {
   loadEngine, ENGINE_PATH, safeEval, replaceFormulaData, fireHook,
+  mockDataFields, loadHandlerRegistry, registryShape,
   readEngineSource, readSourceLF, codeOnly,
   getProp, setProp,
   mockActor, mockEffect, mockItem,

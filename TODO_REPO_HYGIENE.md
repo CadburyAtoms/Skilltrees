@@ -814,7 +814,7 @@ passes 20/21 unchanged; `gates.js` 10/10 PASS. Comment-only — the file changes
 
 ---
 
-## 24. [ ] Table-driven handler registry (the first real cut of #4)
+## 24. [x] Table-driven handler registry (the first real cut of #4) (2026-09-06, PR #244)
 
 **Why:** `edhaRegisterNativeEventSystem` is 2,537 lines of 103 sequential
 `registerItemEventType` / `registerItemEventHandlerType` calls. Because it is code, not data,

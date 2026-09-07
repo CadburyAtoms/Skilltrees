@@ -4742,3 +4742,69 @@ VISIBLE are the actual behavior flips this pass made on purpose.
       correctly instead of getting a free extra use. If you have a save/actor from before 2026-08-10
       with a Cascading Failure / The Unmooring already detonated this scene, confirm it still refuses
       a second detonate.
+
+---
+
+# BENCH — Handler registry smoke (item 24)
+
+Engine-only, F5 / relaunch — no pack rebuild, no ⟳ Sync. Item 24 (PR #244) turned the ~2,500-line
+run of 102 sequential `registerItemEventType` / `registerItemEventHandlerType` calls into two tables
+(`EDHA_EVENT_TYPES` = 15 rows, `EDHA_HANDLER_TYPES` = 87 rows) registered by ONE loop, in the same
+order with the same objects. The repo-side proof is the byte-identical registry snapshot
+(`tests/fixtures/handler-registry.snapshot.json`) plus the full suite; these rows are the live
+smoke: the picker still lists everything, and one talent per handler FAMILY still fires end to end.
+Any bench actor works; put the named talent on it (drag from the atlas pack) if it is not there.
+Adversary rows are not needed — the table is the same object for both.
+
+## The picker (one row)
+
+- [ ] 🤖 **Every handler type still appears in the Events-tab picker.** Open any talent → Events tab →
+      add a rule → the Handler dropdown. Expected: **87** `Edha:`-labelled handler entries (every row
+      of `EDHA_HANDLER_TYPES`; the system's own 12 native handlers are extra) and, in the Event
+      dropdown, **15** `Edha:` event entries. Cross-check from the console:
+      `edha.EDHA_HANDLER_TYPES.length` → 87, `edha.EDHA_EVENT_TYPES.length` → 15, and
+      `Object.keys(CONFIG.COSMERE.items.events.handlers).filter(k => k.startsWith("edha-")).length` → 87.
+      Also confirm the boot log line `Edha Content | native event system registered` appears once
+      and no `registration failed` error precedes it.
+
+## One talent per handler family (the executors are unchanged objects; this proves the loop bound them)
+
+- [ ] 🤖 **Use-time grant family (`edha-cae-grant`) — Fast Talker** (heroic-agent). Use it → the
+      CAE tracker (or the honour-system fallback card) shows the granted Reaction group.
+- [ ] 🤖 **Gated test + success/fail dispatch (`edha-def-test` → `edha-test-success` /
+      `edha-test-fail`) — Cascade Collapse** (Chaos). Use it, roll the test on the card → the
+      success payload (owner-list + triggered effect) fires on a beat, the FAIL rule on a miss.
+- [ ] 🤖 **Watch family (`edha-watch` + the `edha-watch-rule` readers) — Guardian Stance**
+      (White, `edha-aura`) and **Resilient Hero** (heroic-leader, `edha-hp-floor`). Stance on, an
+      ally in range takes damage → the aura applies; Resilient Hero's floor holds HP at the formula.
+- [ ] 🤖 **Damage rider (`edha-damage-rider` on `edha-pre-deal-damage`) — Prognosis** (Life). Roll
+      damage with the rider's condition met → the bonus is folded into the damage roll.
+- [ ] 🤖 **Test rider (`edha-test-rider` on `edha-pre-test`) — Kneel** (Power). Make the matching
+      test → the rider's modifier shows on the roll dialog / result.
+- [ ] 🤖 **Burst / AoE (`edha-burst` on `edha-pre-use`) — Sudden Growth** (Green). Use → the
+      template places, detonates, and the captured tokens are reported on the card.
+- [ ] 🤖 **Movement (`edha-move` / `edha-push`) — Cruel Step** (Black). Use → the forced-move
+      prompt and the token move resolve as before.
+- [ ] 🤖 **Status family (`edha-apply-status` / `edha-self-status` / `edha-status-sweep`) — Vital
+      Diagnosis** (Life). Use on a target → the status lands and the card names it.
+- [ ] 🤖 **Draw-Mana pulse (`edha-pulse` on `edha-draw-mana`) — Black Leyline Attunement**
+      (Black). Draw Mana in Black → the sweep card reports both numbers (R-32 wording unchanged).
+- [ ] 🤖 **Apply-damage watchers (`edha-hp-threshold` / `edha-multi-hit` / `edha-overflow-thp` /
+      `edha-damage-convert` on `edha-apply-watch`) — Mender's Instinct** (Green, hp-threshold) and
+      **Flashpoint** (Red, multi-hit — the row the mutation proof dropped). An ally drops to half →
+      Mender's prompt; a Red burst hits 2+ → Flashpoint's choice prompt.
+- [ ] 🤖 **Zones + hazards (`edha-zone` / `edha-place-hazard`) — Bastion** (Civilization) and
+      **Pyre** (Destruction). Use → the region/drawing is placed and its behaviour type is the
+      registered `edha-content.*` one (region behaviours are registered by the same function, before
+      the loop).
+- [ ] 🤖 **Summons (`edha-summon` / `edha-summon-effect`) — Forge Construct** (Civilization). Use →
+      the construct actor + token appear in the Summons folder with the baked attack.
+- [ ] 🤖 **Prompt-pick + owner-list ledgers (`edha-prompt-pick` / `edha-owner-list` /
+      `edha-marker-command`) — Unweaving** (Chaos) and **Foreknown Strike** (Fate). The pick dialog
+      opens with its options; the ledger entry is written and the marker command consumes it.
+- [ ] 🤖 **Focus / temp-HP economy (`edha-focus` / `edha-temp-hp`) — Sovereign's Favor**
+      (Sovereignty) and **Reaper's Harvest** (Death). The temp HP writes to the module flag and shows
+      on the sheet; the focus gain lands on the test-success beat.
+- [ ] 🤖 **Reactions on a watched roll (`edha-test-react` / `edha-damage-react` /
+      `edha-reroll-react`) — Pack Sense** (Green) and **Shatter Focus** (Chaos). The reaction card
+      posts on the watched trigger and its button resolves.

@@ -13,12 +13,36 @@ own event system underneath**, and authored rules may use both. As of system 2.1
 
 | | edha-* | native | total |
 |---|--:|--:|--:|
-| handler types | 68 | **12** | **80** |
+| handler types | 87 | **12** | **99** |
 | event types | 15 | **17** | **32** |
 
-*(Recounted 07-25 pass 2bU — the migration's handler builds had left the old 31/11 numbers far
-behind; `grep -c registerItemEventHandlerType` is the live count. `data/native-vocabulary.json` is a
-snapshot of the SYSTEM's half and does not change when the module adds one.)*
+*(Recounted 2026-09-06, item 24 — the 07-25 "68" had drifted to 87. The live count is now
+`EDHA_HANDLER_TYPES.length` / `EDHA_EVENT_TYPES.length` (or `edha.EDHA_HANDLER_TYPES.length` in the
+console) — `grep -c registerItemEventHandlerType` is **1** since the registry became a table. Headless:
+`node -e "const h=require('./tests/harness.js');const r=h.loadHandlerRegistry();console.log(r.events.length,r.handlers.length)"`.
+`data/native-vocabulary.json` is a snapshot of the SYSTEM's half and does not change when the module
+adds one.)*
+
+### The registry is a TABLE (item 24, 2026-09-06) — how to add a handler or event type
+
+`EDHA_EVENT_TYPES` and `EDHA_HANDLER_TYPES` are two top-level arrays in the `NATIVE EVENT SYSTEM`
+section (built in an IIFE that owns `FF`, `choices` and the deal-damage debounce), registered by
+ONE loop in `edhaRegisterNativeEventSystem()` — `for (const def of EDHA_HANDLER_TYPES)
+api.registerItemEventHandlerType(def)`. Each row is the exact object the system receives:
+`{ source, type, label, description, config: { schema: { <field>: new FF.XField({…}) } }, executor }`
+(the system calls `executor.call(this, event)` with `this` = the handler DataModel, so `this.<field>`
+reads the rule's config). Both arrays are on the `edha` API.
+
+**To add a handler type:** add a row to `EDHA_HANDLER_TYPES` (order = Events-tab picker order, so
+append unless the family it belongs to sits together), then regenerate the snapshot
+`tests/fixtures/handler-registry.snapshot.json` deliberately (one-liner in the header of
+`tests/handler-registry.test.js`) and say so in the delta. The pins that guard the table:
+`tests/handler-registry.test.js` (snapshot: type → ordered field names, label, description, hook;
+exactly one registration loop; the table elements ARE the registered objects; both on the API).
+Never add a second `api.register*Type(` call site — the loop pin fails. **Schemas are evaluated,
+not parsed:** `scripts/handler-schemas.js` (lint pass 9/9b, the item-64 build guard) and lint pass
+18 read the tables through `tests/harness.js` `loadHandlerRegistry()`, so a field or `choices`
+value you add is visible to the gates the moment the row exists.
 
 Native handlers: `grant-items` · `remove-items` · `modify-attribute` · `set-attribute` ·
 `modify-skill-rank` · `set-skill-rank` · `grant-expertises` · `remove-expertises` · `use-item` ·
@@ -89,8 +113,9 @@ accident of append order, so nothing in this index could point at them. Item 23 
 `BLUE / CALCULATION` · `HEROIC PATHS` · `BLUE / ILLUSION` · `BLUE / FORESIGHT` ·
 `RED / MOMENTUM + FRENZY` — then the cross-tree run below — then `DESTRUCTION` · `LIFE` · `CHAOS` ·
 `FATE` · `SOVEREIGNTY` · `DEATH` · `CIVILIZATION` · `POWER` · `KNOWLEDGE` · `ORDER` ·
-`GREEN / TERRITORY` · `GREEN / RESTORATION` · `GREEN / INSTINCT` · `NATIVE EVENT SYSTEM` ·
-`EDHA_CARD_BUTTONS`.
+`GREEN / TERRITORY` · `GREEN / RESTORATION` · `GREEN / INSTINCT` · `NATIVE EVENT SYSTEM` (the
+region-behaviour registration, the ONE registration loop, then the `EDHA_EVENT_TYPES` /
+`EDHA_HANDLER_TYPES` tables — item 24) · `EDHA_CARD_BUTTONS`.
 
 **The cross-tree run** — between the RED and DESTRUCTION banners; bannered by item 23
 
@@ -3235,9 +3260,10 @@ next interpolation site inherits the fix instead of repeating the bug.
   load-bearing case is the one it must NOT touch: an already-singular configured label (`Edict`,
   `Harvested Remain`) comes back unchanged.
 - **`edhaAnnotateSentence(entryName, label, field, prohText, creatureBound)`** — the `edha-owner-list`
-  annotate card's sentence, extracted from the executor **so it can be pinned at all** (an executor
-  inside a `registerItemEventHandlerType` config is unreachable from the harness — see
-  `tests/spend-tag.test.js`'s note). Two shapes, because the ledgers are: a CREATURE-bound entry
+  annotate card's sentence, extracted from the executor **so it can be pinned at all** (until item
+  24 an executor inside a `registerItemEventHandlerType` config was unreachable from the harness —
+  see `tests/spend-tag.test.js`'s note; since 2026-09-06 `loadHandlerRegistry().handlers` hands back
+  every row's `executor`, the way `tests/heal-announce-delivered.test.js` already drives H10's). Two shapes, because the ledgers are: a CREATURE-bound entry
   reads possessively (*"the Edict on Roek"*), a POINT-bound marker names only itself, because the
   entry IS the thing being marked and there is no creature for an "on" clause to point at.
 

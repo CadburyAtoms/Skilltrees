@@ -18849,6 +18849,31 @@ function edhaRegisterNativeEventSystem() {
     console.warn("Edha Content | cosmereRPG API not available — native event/handler types NOT registered.");
     return false;
   }
+  // ONE registration loop (item 24, 2026-09-06). The definitions live in EDHA_EVENT_TYPES /
+  // EDHA_HANDLER_TYPES below — same order, same objects the sequential calls used to pass. Adding a
+  // type = adding a row; tests/handler-registry.test.js pins the registered shape and that this
+  // loop is the only registration site.
+  for (const def of EDHA_EVENT_TYPES) api.registerItemEventType(def);
+  for (const def of EDHA_HANDLER_TYPES) api.registerItemEventHandlerType(def);
+
+  console.log("Edha Content | native event system registered (events: edha-deal-damage, edha-on-defeat, edha-take-damage [+sentinels: apply-watch, pre-deal-damage, pre-test, on-hit, pre-use, combat-timing]; handlers: triggered-effect, damage-rider, test-rider, burst, defense-buff, aoe-template, place-hazard, temp-hp, ritual-hp-cost, heal-cut, summon, apply-status, status-sweep, overflow-thp, damage-convert, marked-damage-trigger, hp-threshold, multi-hit; region: edha-content.hazard, edha-content.fate-snare).");
+  return true;
+}
+
+/* ---- THE REGISTRY TABLES (item 24, 2026-09-06) ------------------------------------------------
+ * EDHA_EVENT_TYPES / EDHA_HANDLER_TYPES are the definitions edhaRegisterNativeEventSystem() used
+ * to make as ~100 sequential api.register*Type(...) calls. They are DATA now: one array element
+ * per type, in the original registration order, each the exact object the system's
+ * registerItemEventType / registerItemEventHandlerType receives (the system binds `this` in an
+ * executor to the handler DataModel via executor.call(this, event) — the element shape is the
+ * call's argument, untouched, so that binding and every closure are preserved). Built inside an
+ * IIFE so `FF`, `choices` and the deal-damage debounce map stay private to the tables rather
+ * than leaking into module scope. Exposed read-only on the edha API (edha.EDHA_HANDLER_TYPES) and
+ * evaluated headlessly by tests/harness.js loadHandlerRegistry() — which is how
+ * scripts/handler-schemas.js (lint pass 9/9b, the item-64 build guard) reads the schemas now
+ * instead of regex-parsing this source. To add a handler: add a row. Keep the tables next to the
+ * loop above; the section banner's ledger of what each type owns is unchanged. */
+const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
   const FF = foundry.data.fields;
   const choices = (...vals) => vals.reduce((o, v) => (o[v] = v || "(none)", o), {});
 
@@ -18857,7 +18882,8 @@ function edhaRegisterNativeEventSystem() {
   // logical "you dealt damage" would dispatch twice. Debounce per rolling item: only the first fire
   // within 400ms counts (graze rolls also carry options.graze when distinguishable).
   const _edhaDealDebounce = new Map();
-  api.registerItemEventType({
+  const EDHA_EVENT_TYPES = [
+  {
     source: "edha-content", type: "edha-deal-damage",
     label: "Edha: After You Deal Damage", description: "Fires after any of your items rolls damage.",
     hook: "cosmere-rpg.damageRoll",
@@ -18873,8 +18899,8 @@ function edhaRegisterNativeEventSystem() {
       } catch (e) { return false; }
     },
     transform: (roll, src) => ({ document: src?.actor ?? src, options: { roll, sourceItem: src } }),
-  });
-  api.registerItemEventType({
+  },
+  {
     source: "edha-content", type: "edha-on-defeat",
     label: "Edha: When You Defeat a Creature", description: "Fires for you when a creature you damage drops to 0 HP.",
     hook: "cosmere-rpg.applyDamage",
@@ -18886,8 +18912,8 @@ function edhaRegisterNativeEventSystem() {
       } catch (e) { return false; }
     },
     transform: (target, damage) => ({ document: edhaResolveKiller(target) ?? target, options: { victim: target, damage } }),
-  });
-  api.registerItemEventType({
+  },
+  {
     source: "edha-content", type: "edha-take-damage",
     label: "Edha: After You Take Damage", description: "Fires for the victim after damage is applied to them.",
     hook: "cosmere-rpg.applyDamage",
@@ -18898,71 +18924,73 @@ function edhaRegisterNativeEventSystem() {
       } catch (e) { return false; }
     },
     transform: (target, damage) => ({ document: target, options: { damage, victim: target } }),
-  });
-  api.registerItemEventType({
+  },
+  {
     source: "edha-content", type: "edha-apply-watch",
     label: "Edha: Damage/Heal-Application Watcher", description: "Config-only rule read by the apply-damage engine (overflow Temp HP, damage conversion, marked-target triggers, HP-threshold prompts).",
     hook: "edha-content.noop-apply-watch", // sentinel: never fired; the applyDamage wrapper reads these rules
-  });
-  api.registerItemEventType({
+  },
+  {
     source: "edha-content", type: "edha-pre-deal-damage",
     label: "Edha: Passive Damage Rider", description: "Adds bonus damage to your matching damage rolls (applied automatically by the system).",
     hook: "edha-content.noop-rider",   // sentinel: never fired; the rollDamage wrapper reads this rule
-  });
-  api.registerItemEventType({
+  },
+  {
     source: "edha-content", type: "edha-pre-test",
     label: "Edha: Test Modifier Rider", description: "Adds a bonus to your matching skill/attack TEST (applied automatically via the system's temporary modifier).",
     hook: "edha-content.noop-test-rider",   // sentinel: never fired; the pre{Skill|Attack|Item}Roll injector reads this rule
-  });
-  api.registerItemEventType({
+  },
+  {
     source: "edha-content", type: "edha-on-hit",
     label: "Edha: When You Hit (Apply Damage)", description: "Fires when YOUR attack actually deals damage to a creature (a real hit — not just a roll). Pair with an Edha: Triggered Effect.",
     hook: "edha-content.noop-on-hit",   // sentinel: never fired by the system; the applyDamage wrapper dispatches these
-  });
-  api.registerItemEventType({
+  },
+  {
     source: "edha-content", type: "edha-watch-rule",
     label: "Edha: Watch Rule (config only)", description: "Holds an Edha: Watch handler. Never fires by itself — the watch sweep reads these rules when another document resolves a test or rolls a skill. Put the payload on the sibling 'When Your Test SUCCEEDS' / 'FAILS' rules.",
     hook: "edha-content.noop-watch-rule",   // sentinel: never fired; edhaDispatchWatchers reads these rules
-  });
-  api.registerItemEventType({
+  },
+  {
     source: "edha-content", type: "edha-pre-use",
     label: "Edha: Before This Is Used", description: "Fires on the acting client when this item is used, BEFORE its cost is paid and before it rolls — any handler works. An Edha: Point Burst rule here additionally TAKES OVER the use (the engine resolves the burst itself and cancels the default single-target flow). Anything else runs as a rider and lets the normal use proceed.",
     hook: "edha-content.noop-pre-use", // fired by the edha-pre-use dispatcher on cosmere-rpg.preUseItem (07-28); edha-burst rules are read directly by the takeover instead
-  });
-  api.registerItemEventType({
+  },
+  {
     source: "edha-content", type: "edha-combat-timing",
     label: "Edha: Combat-Timed Passive", description: "Active during a combat-timing window (e.g. round start until your turn). The engine's combat hooks read this rule's config.",
     hook: "edha-content.noop-combat-timing", // sentinel: never fired; the combat hooks read this rule
-  });
-  api.registerItemEventType({
+  },
+  {
     source: "edha-content", type: "edha-draw-mana",
     label: "Edha: When You Draw Mana", description: "Fires on the owner's client each time they use the Draw Mana action — this is how a Leyline Attunement Key carries its own rider. Any handler works. The Keys are Always Active, so they can never fire a plain 'use' event; this is the event they get instead.",
     hook: "edha-content.noop-draw-mana",   // sentinel: never fired; edhaDispatchDrawMana dispatches these
-  });
-  api.registerItemEventType({
+  },
+  {
     source: "edha-content", type: "edha-ritual-paid",
     label: "Edha: When You Pay Ritual HP", description: "Fires for the caster after one of their talents' Edha: Ritual HP Cost rules deducts health — this is how an Always-Active ritual passive carries its own rider (the advantage on your next Black test, the Reserve banking). Paying the price from Reserve instead of health does NOT fire it. Any handler works.",
     hook: "edha-content.noop-ritual-paid",   // sentinel: never fired; edhaDispatchRitualPaid dispatches these
-  });
-  api.registerItemEventType({
+  },
+  {
     source: "edha-content", type: "edha-opportunity",
     label: "Edha: When You Roll an Opportunity", description: "The PAYLOAD of an Opportunity spend. Put an Edha: Opportunity Option on this talent to add its button to the Opportunity-spend menu, then put what actually happens here — any handler works, exactly as on a gated test's success. Rules here run when the player clicks that button, after its resource cost is deducted (07-25).",
     hook: "edha-content.noop-opportunity",   // sentinel: never fired; the post-roll Opportunity watcher reads these rules
-  });
+  },
 
-  api.registerItemEventType({
+  {
     source: "edha-content", type: "edha-test-success",
     label: "Edha: When Your Test SUCCEEDS", description: "Fires when this talent's own Edha: Gated Test rule beats its target. Put the talent's payload rules on this event — any handler works.",
     hook: "edha-content.noop-test-success",   // sentinel: never fired; edhaDispatchTestResult dispatches these
-  });
-  api.registerItemEventType({
+  },
+  {
     source: "edha-content", type: "edha-test-fail",
     label: "Edha: When Your Test FAILS", description: "Fires when this talent's own Edha: Gated Test rule does NOT beat its target (Synchronized Assault's reduced effect, Absolute Authority's consolation Weakened). Leave it empty if a failure should do nothing.",
     hook: "edha-content.noop-test-fail",      // sentinel: never fired; edhaDispatchTestResult dispatches these
-  });
+  },
+  ];
 
   /* ---- HANDLER TYPES (config schemas auto-render in the rule editor) ---- */
-  api.registerItemEventHandlerType({
+  const EDHA_HANDLER_TYPES = [
+  {
     source: "edha-content", type: "edha-cae-grant",
     label: "Edha: Grant / Burn Action Economy", description: "Add a named Action or Reaction group to the Cosmere Advanced Encounters tracker, or burn one of the target's Reactions. Falls back to a plain chat note when CAE is off or there is no combat, so the talent still reads correctly at the table.",
     config: { schema: {
@@ -18987,8 +19015,8 @@ function edhaRegisterNativeEventSystem() {
         content: `<p>⚡ <strong>${item.name}</strong>: ${burn ? `${who.name} loses one Reaction` : `${who === owner ? "you gain" : `${who.name} gains`} ${n} ${this.kind}${n === 1 ? "" : "s"} — ${label}`}`
           + `${tracked ? " (on the tracker)" : " (no tracker in this scene — honour-system)"}.</p>` });
     },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-enter-stance",
     label: "Edha: Enter a Stance", description: "Put the user into one of their own stance talents. Pair with Edha: Combat-Timed Passive to start every combat in a stance (Practiced Kata).",
     config: { schema: {
@@ -19003,8 +19031,8 @@ function edhaRegisterNativeEventSystem() {
       if (edhaActiveStance(owner) === target.name) return;   // already there — toggling would LEAVE it
       await edhaToggleStance(target);
     },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-def-test",
     label: "Edha: Gated Test (On Use)", description: "Roll this talent's own test and gate its payload on the result. YOU roll it on the talent's card; the engine captures that roll and compares it. Put what happens on the sibling 'When Your Test SUCCEEDS' / 'FAILS' rules — this handler only decides.",
     config: { schema: {
@@ -19096,11 +19124,11 @@ function edhaRegisterNativeEventSystem() {
             + `${cfg.note ? ` <span style="opacity:.85;font-size:.9em">${cfg.note}</span>` : ""}</p>` });
       });
     },
-  });
+  },
   /* H8 (07-24q). The OBSERVER — see the block comment above edhaWatchMatches for why neither event
    * system could express this. Gate only, exactly like edha-def-test, and it dispatches the SAME two
    * events onto the watching talent, so every existing payload handler works unchanged. */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-watch",
     label: "Edha: Watch (react to another talent's test or roll)", description: "This talent reacts to something ANOTHER document did — a test another of your talents resolved, or any skill roll you made. Put what happens on the sibling 'When Your Test SUCCEEDS' / 'FAILS' rules, exactly as for a gated test; this handler only decides whether the observation counts.",
     config: { schema: {
@@ -19131,7 +19159,7 @@ function edhaRegisterNativeEventSystem() {
     // Config-only: the sweep in edhaDispatchWatchers reads these rules. An executor would be wrong —
     // nothing ever fires this rule ON its own item; that is the whole point of the handler.
     executor: async function () {},
-  });
+  },
   /* H12 (07-24s). BULK DETONATION as a rule — the whole of Destruction's non-ledger backlog.
    *
    * 2bY: the two name-keyed payloads its body used to wrap are GONE — the Pinpoint rider reads off
@@ -19142,7 +19170,7 @@ function edhaRegisterNativeEventSystem() {
    * `mergeTerrain` MERGES NOTHING — there is no geometry union in the project (ENGINE_INDEX
    * "No merge/union exists"). It swaps the terrain formula and prints a GM instruction. Named
    * `mergeTerrain` with that stated here so nobody authors it expecting a shape operation. */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-detonate-list",
     label: "Edha: Detonate Placed Markers", description: "Set off the markers you have placed (Charges), all at once or one at a time: each catches the creatures inside it, rolls its own damage, and leaves its dangerous terrain. Put the extra effects of THIS talent's detonation in the fields below.",
     config: { schema: {
@@ -19191,14 +19219,14 @@ function edhaRegisterNativeEventSystem() {
         });
       } catch (e) { console.error("Edha Content | edha-detonate-list executor failed", e); }
     },
-  });
+  },
   /* H6 (07-24s). THE OFFER. A rule can resolve a test and apply an effect; it cannot ASK, which is
    * why 31 "choose one" talents were engine code. The click DISPATCHES BACK — it fires this item's
    * own `edha-test-success` rules with the picked creature as the subject — so this handler owns no
    * payload vocabulary at all and every payload handler works on a pick unchanged. See the block
    * comment above edhaPickAccepts for why this is NOT the "schema over an existing card function"
    * §9o costed, and for the three candidate sources deliberately NOT shipped. */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-prompt-pick",
     label: "Edha: Prompt / Pick One", description: "Whisper yourself a card that asks a question — accept an offer, or choose one creature from a filtered list. What HAPPENS goes on the sibling 'When Your Test SUCCEEDS' rules, exactly as for a gated test; the creature you pick becomes their target.",
     config: { schema: {
@@ -19225,7 +19253,7 @@ function edhaRegisterNativeEventSystem() {
         await edhaRunPromptPick(item, this, event);
       } catch (e) { console.error("Edha Content | edha-prompt-pick executor failed", e); }
     },
-  });
+  },
   /* H10 (07-24r). INVOLUNTARY FOCUS as a rule. `edhaGainFocus` / `edhaDrainFocus` have existed since
    * the Black tree shipped and have never had a handler, so every talent that moves someone's focus
    * did it from a name-keyed branch — the shape §9k found and §9o costed at 9 consumers across 5
@@ -19233,7 +19261,7 @@ function edhaRegisterNativeEventSystem() {
    * keep owning the Wary reduction, the max clamp, the GM relay and the zero announcement; the
    * handler only says who, which way, and how much. It is NOT the resource-COST pipeline — a talent
    * that spends its OWN focus as a cost still does that on its activation. */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-focus",
     label: "Edha: Gain / Drain Focus (or Investiture)", description: "Move a creature's focus (or Investiture) involuntarily: you regain it, or the creature you affected loses it. Not for a talent's own resource cost — that lives on the activation.",
     config: { schema: {
@@ -19305,14 +19333,14 @@ function edhaRegisterNativeEventSystem() {
         else await edhaGainFocus(who, n, source);
       } catch (e) { console.error("Edha Content | edha-focus executor failed", e); }
     },
-  });
+  },
   /* The smallest possible payload, and the one bucket 3 needs most (07-24p). Every declared exit —
    * ENGINE-OWNED and MANUAL alike — owes its talent a rule that "at minimum posts a card", and until
    * now nothing could: edha-gm-cue is config-only (its watchers read it; its executor is a no-op) and
    * whispers GMs on fixed triggers. This one has a body, so it works as a payload on ANY event —
    * edha-test-success, use, edha-combat-timing — and it is what turns "the card says what happens,
    * the table resolves it" from a name-keyed ChatMessage.create into an editable rule. */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-damage-react",
     label: "Edha: Offer a Reaction When Someone Takes Damage", description: "The Bulwark shape: an ally near you is damaged (or drops to 0) and you are offered a whispered card to spend a resource and intervene — reduce the hit, take it for them, hit back, or keep them standing. Config-only: the applyDamage watcher reads these rules and posts the card; the button already knows how to resolve each action.",
     config: { schema: {
@@ -19333,11 +19361,11 @@ function edhaRegisterNativeEventSystem() {
     // Config-only: the applyDamage watcher (edhaBulwarkReactions) reads these rules and posts the
     // card. An executor would be wrong — nothing ever `use`s a reaction talent to make it happen.
     executor: async function () {},
-  });
+  },
   /* H26 (07-25). The coord/test-triggered twin of H25: someone rolls, you are offered a whispered
    * card to spend a resource and react. The Bulwark trade again — the posters were already generic;
    * only the selection and the spec were name-keyed, and both now ride the document. */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-test-react",
     label: "Edha: Offer a Reaction When Someone Rolls", description: "The Coordination shape: a creature near you makes a test (or attack) and you are offered a whispered card to spend a resource and react — negate a Complication, boost the result, grant a Plot Die, or impose disadvantage. Config-only: the roll watcher reads these rules and posts the card; the buttons already know how to resolve each action.",
     config: { schema: {
@@ -19358,10 +19386,10 @@ function edhaRegisterNativeEventSystem() {
     } },
     // Config-only: the roll watcher (edhaTestReactWatch) reads these rules and posts the card.
     executor: async function () {},
-  });
+  },
   /* H27 (07-25). The synchronous half of the Bulwark family: a flat pre-reduction applied INSIDE the
    * applyDamage wrapper before the hit lands — no card, no consent, exactly what a passive means. */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-damage-reduce",
     label: "Edha: Passive Damage Reduction For Allies", description: "An ally near you is about to take damage and it is passively reduced before it lands (Shield Wall, Devoted Conduit). Config-only: the applyDamage wrapper reads these rules; first qualifying owner per talent applies.",
     config: { schema: {
@@ -19374,11 +19402,11 @@ function edhaRegisterNativeEventSystem() {
     } },
     // Config-only: the applyDamage pre-pass reads these rules. An executor would run after the hit.
     executor: async function () {},
-  });
+  },
   /* The FOCUS GUARD (2bZ — was Wary's two name-keyed sites, re-litigated per iron rule 3: both
    * halves stay ENFORCED, they just read a rule now). Config-only: edhaDrainFocus applies the
    * reduction in-flight, and the preCreateActiveEffect veto blocks the status while focus holds. */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-focus-guard",
     label: "Edha: Focus Guard (passive)", description: "Wary's shape: involuntary focus loss against YOU is reduced, and a status cannot be applied to you while you hold focus. Config-only — the focus-drain path and the status-creation veto read this rule off its owner.",
     config: { schema: {
@@ -19388,10 +19416,10 @@ function edhaRegisterNativeEventSystem() {
     } },
     // Config-only: edhaDrainFocus + the preCreateActiveEffect veto read this rule.
     executor: async function () {},
-  });
+  },
   /* The MOVE VETO's rule (2bZ — was Dread Presence's name-keyed preUpdateToken sweep, iron rule 3
    * re-litigated: still ENFORCED, now read off the document; the adversary copies carry it too). */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-move-veto",
     label: "Edha: Forbid Approaching Allies (movement veto)", description: "Dread Presence's shape: a creature bearing the status, inside your range, cannot willingly move closer to any of its allies. Engine-forced movement bypasses it. Config-only: the token-movement veto reads this rule off its owner — character or adversary alike.",
     config: { schema: {
@@ -19401,13 +19429,13 @@ function edhaRegisterNativeEventSystem() {
     } },
     // Config-only: the preUpdateToken move veto reads this rule.
     executor: async function () {},
-  });
+  },
   /* The HP FLOOR (2bZ — was Resilient Hero's name-keyed preUpdateActor veto). Config-only: the
    * pre-update veto reads it. The once-per-long-rest spend is a FLAG whose key rides the rule so
    * the talent's own NATIVE rule (long-rest-actor + update-actor) can clear it — the first
    * authored native-handler rule in the project (⚑ 2bA-9). The veto's read is tolerant of the
    * native writer's stringly values ("false"/"0" read as cleared), the plot-die precedent. */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-hp-floor",
     label: "Edha: Hold At An HP Floor (once per long rest)", description: "The first time health would hit 0, it becomes the floor formula instead. Spent until the flag below clears — pair a native 'Actor Long Rested' + 'Update Actor' rule on the same talent to clear it automatically. Config-only: the pre-update veto reads this rule.",
     config: { schema: {
@@ -19416,10 +19444,10 @@ function edhaRegisterNativeEventSystem() {
     } },
     // Config-only: the preUpdateActor HP-floor veto reads this rule.
     executor: async function () {},
-  });
+  },
   /* H7 (07-25). The adjacency aura: a GM-side sweep manages one AE on you and your adjacent living
    * allies while the adjacency holds. Guardian Stance's shape, spec on the document. */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-aura",
     label: "Edha: Adjacency Aura (managed Active Effect)", description: "While at least one living ally is adjacent to you, you (and them) carry a managed Active Effect — applied and removed automatically as tokens move. Config-only: the aura sweep reads these rules.",
     config: { schema: {
@@ -19431,11 +19459,11 @@ function edhaRegisterNativeEventSystem() {
     } },
     // Config-only: the aura sweep (edhaAuraSweep) reads these rules on token movement.
     executor: async function () {},
-  });
+  },
   /* 07-25. The Attunement pulse: something radiates from you to everyone matching in range. First
    * consumers: White Leyline Attunement (visible-gated heal on Draw Mana, the 07-12 through-walls
    * ruling as a field) and Collective Resolve (Determined to allies in range on use). */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-pulse",
     label: "Edha: Pulse To Creatures In Range", description: "When this rule fires, every ally — or every enemy — within your Attunement Range is healed or gains a status. Put it on `use`, or on the Draw Mana event for an Attunement Key rider. An enemy pulse keeps GM information off the player card: hidden/wall skips whisper to the GM instead (07-12b).",
     config: { schema: {
@@ -19452,10 +19480,10 @@ function edhaRegisterNativeEventSystem() {
     executor: async function (event) {
       try { await edhaRunPulse(event.item, this); } catch (e) { console.error("Edha Content | edha-pulse executor failed", e); }
     },
-  });
+  },
   /* 07-25. The cleanse offer: a whispered card listing every (ally, condition) in range; clicking
    * spends the costs and removes the condition. Beacon of Stability's shape, spec on the document. */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-cleanse",
     label: "Edha: Offer To Cleanse A Condition", description: "When this rule fires, you are offered a whispered card: one button per condition on each ally in range; clicking spends the costs and removes it. Put it on the Draw Mana event for Beacon of Stability's cadence — or set the trigger to 'success-damage-roll' for a heal-test talent whose cleanse fires only on the non-graze branch (Surgical Precision; that mode reads YOUR CURRENT TARGET and the conditions list, and the rule rides an 'Edha: Watch Rule' event).",
     config: { schema: {
@@ -19480,10 +19508,10 @@ function edhaRegisterNativeEventSystem() {
         edhaPostBeaconCard(owner, item.name, allies, edhaParseCosts(this.costs), this.prompt || "");
       } catch (e) { console.error("Edha Content | edha-cleanse executor failed", e); }
     },
-  });
+  },
   /* 07-25. The round-scoped movement window: use arms it, and while it is open every move you make
    * posts the allies-within-range card (the updateToken watcher reads the FLAG). Ordered Advance. */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-move-window",
     label: "Edha: Arm A Movement Window (this round)", description: "On use, arms a round-scoped window: whenever you then move, a card lists the allies within range of where you stopped, with each one's half Speed. Out of combat the window stays open until re-armed.",
     config: { schema: {
@@ -19500,9 +19528,9 @@ function edhaRegisterNativeEventSystem() {
         ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🚶 <strong>${item.name}</strong> (${actor.name}): this round, whenever ${actor.name} moves, a card will list the allies within ${Number(this.rangeFt) || 10} ft who ${what}.</p>` });
       } catch (e) { console.error("Edha Content | edha-move-window executor failed", e); }
     },
-  });
+  },
   /* 07-25. A rule over the Tool A2 designate-mark primitive (Guiding Signal). */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-designate",
     label: "Edha: Designate An Opposing Character", description: "On use, posts the designate card: pick an opposing token within your Attunement Range; the next ally to test against it this round raises the stakes (they target the token when rolling).",
     config: { schema: {
@@ -19515,11 +19543,11 @@ function edhaRegisterNativeEventSystem() {
         edhaPostDesignateCard(actor, item.name, { color: this.color || "white", note: this.note || "" });
       } catch (e) { console.error("Edha Content | edha-designate executor failed", e); }
     },
-  });
+  },
   /* 07-25. The accord forge payload (Terms of Accord): pair it with Edha: Prompt / Pick One — the
    * picked creature becomes the accord partner. The accord flag then drives the ENGINE-OWNED
    * partner watcher (Bound by Word's offer). */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-accord-forge",
     label: "Edha: Forge An Accord With The Picked Creature", description: "Put this on 'When Your Test SUCCEEDS' under a Prompt / Pick One rule: the creature you picked becomes your accord partner (the accord stores your modifier so the partner watcher can offer it on their tests).",
     config: { schema: {
@@ -19538,8 +19566,8 @@ function edhaRegisterNativeEventSystem() {
         ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🤝 <strong>${item.name}</strong>: ${owner.name} & ${partner.name} share an objective${this.note ? ` — ${this.note}` : ""}${bound ? `; ${partner.name} may use ${owner.name}'s modifier (+${mod})` : ""}.</p>` });
       } catch (e) { console.error("Edha Content | edha-accord-forge executor failed", e); }
     },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-reveal",
     label: "Edha: Reveal Facts About a Creature", description: "Post a card stating facts about a creature — its HP, conditions, defenses, or which of its numbers are lowest / below half. The scouting payload: pair it with Edha: Gated Test (put it on the SUCCESS event) or fire it straight off `use`. Whispered to you and the GM by default, so learning something is not the same as telling the table.",
     config: { schema: {
@@ -19574,8 +19602,8 @@ function edhaRegisterNativeEventSystem() {
       if (this.whisper !== false) msg.whisper = edhaWhisperIds(owner);
       ChatMessage.create(msg);
     },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-note",
     label: "Edha: Post a Note", description: "Posts a chat note when this rule fires. The table-run half of a talent: say what the players must resolve by hand. Works on any event — put it on 'When Your Test SUCCEEDS' for the payload of a gated test.",
     config: { schema: {
@@ -19611,12 +19639,12 @@ function edhaRegisterNativeEventSystem() {
         ...(who ? { whisper: who } : {}),
         content: `<p>${this.icon ? `${this.icon} ` : ""}<strong>${item.name}</strong>: ${body}</p>` });
     },
-  });
+  },
   /* H3 (07-24p). The ledger only — canvas objects (Fate's templates, Destruction's Regions) stay
    * with the placement handlers, and Knowledge's counted single bearer is a different shape (see
    * the block comment above edhaListPush). `release` returning false is load-bearing: it is what
    * makes a conditional payload work without a new gate field. */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-owner-list",
     label: "Edha: Sustained List (place / release)", description: "The capped ledger every marker tree hand-rolled: place a mark on a creature, keep at most <cap> of them, and clear one when it is spent. Put a 'release' rule BEFORE a damage rule to make the damage conditional on the creature actually bearing your mark — release stops the remaining rules when there was nothing to release. Mode 'counter' (H3b, §9m q6) is the COUNTED SINGLE BEARER instead: one creature carries 0..cap points of your counter; placing on a new creature clears the old bearer.",
     config: { schema: {
@@ -19855,8 +19883,8 @@ function edhaRegisterNativeEventSystem() {
             + `${this.releaseButton ? `<button type="button" class="edha-list-release" data-owner="${owner.uuid}" data-list="${key}" data-status="${status}" data-entry="${entry.id}"${mo ? ` data-multi="1"` : ""}>${this.releaseButton}</button>` : ""}` });
       });
     },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-triggered-effect",
     label: "Edha: Triggered Effect", description: "Deal damage / AoE / heal / Temp HP / affliction when this rule fires.",
     config: { schema: {
@@ -19922,8 +19950,8 @@ function edhaRegisterNativeEventSystem() {
         else await edhaFireTrigger(owner, item.name, spec, ctx);
       } catch (e) { console.error("Edha Content | edha-triggered-effect executor failed", e); }
     },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-damage-rider",
     label: "Edha: Damage Rider", description: "Passively adds bonus damage to your matching damage rolls.",
     config: { schema: {
@@ -19936,8 +19964,8 @@ function edhaRegisterNativeEventSystem() {
       lightRadiusFt: new FF.NumberField({ required: false, initial: 0, label: "Damaged creatures shed light (ft, 0 = none)", hint: "Kindle: creatures that take this damage type from you emit a flame light of this radius until end of scene." }),
     } },
     executor: async function () { /* applied by the rollDamage wrapper (edhaRiderBonus reads this rule) */ },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-pick-expertises",
     label: "Edha: Pick Expertises (authored list)",
     description: "Prompts a pick of N expertises from THIS rule's own entries list. (The native grant-expertises pick mode offers the system's Rosharan registries instead — bench 07-19.)",
@@ -19972,8 +20000,8 @@ function edhaRegisterNativeEventSystem() {
         await job;
       } catch (e) { console.error("Edha Content | edha-pick-expertises executor failed", e); }
     },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-test-rider",
     label: "Edha: Test Modifier Rider", description: "Passively adds a bonus to your matching skill/attack TEST (injected as the system's temporary modifier).",
     config: { schema: {
@@ -19994,8 +20022,8 @@ function edhaRegisterNativeEventSystem() {
       unlessDisadvantage: new FF.BooleanField({ required: false, initial: false, label: "Stand down if the roll is already at disadvantage", hint: "Apex Predator never stomps an active disadvantage (e.g. Weakened). Only meaningful with Mode = advantage. 07-25 pass 2bS." }),
     } },
     executor: async function () { /* applied by the pre-roll injector (edhaTestRiderApply reads this rule) */ },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-move",
     label: "Edha: Forced Movement (caster)", description: "Relocate the caster toward their current target, ignoring Reactions, halting at walls. PILOT (Red): enforced, not GM-narrated.",
     config: { schema: {
@@ -20008,8 +20036,8 @@ function edhaRegisterNativeEventSystem() {
       note: new FF.StringField({ required: false, initial: "", label: "Note" }),
     } },
     executor: async function (event) { try { await edhaRunMove(event.item, this); } catch (e) { console.error("Edha Content | edha-move executor failed", e); } },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-push",
     label: "Edha: Push Target + Collision", description: "Shove the creature you hit away from you (wall-aware); on a wall collision, deal the collision damage. PILOT (Red). Pair with event edha-on-hit.",
     config: { schema: {
@@ -20043,8 +20071,8 @@ function edhaRegisterNativeEventSystem() {
         });
       } catch (e) { console.error("Edha Content | edha-push executor failed", e); }
     },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-rally-stack",
     label: "Edha: Rally Stack", description: "A stacking +1 counter (max = Red rank) SPENT in full on your next test (R-27 — the card is canon); an unspent stack still resets at the start of your turn or the round. Battle Fever / Feeding Frenzy. Allies-in-range sharing is narrated.",
     config: { schema: {
@@ -20053,8 +20081,8 @@ function edhaRegisterNativeEventSystem() {
       note: new FF.StringField({ required: false, initial: "", label: "Note" }),
     } },
     executor: async function (event) { try { if ((this.trigger || "deal-damage") === "deal-damage") edhaRallyOnDeal(event.item?.actor); } catch (e) { console.error("Edha Content | edha-rally-stack executor failed", e); } },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-burst",
     label: "Edha: Point-Targeted Burst", description: "Click-to-place a burst template, then Detonate: capture everyone inside, roll once, auto-save for half, apply, optionally drop terrain.",
     config: { schema: {
@@ -20071,8 +20099,8 @@ function edhaRegisterNativeEventSystem() {
       terrain: new FF.BooleanField({ required: false, initial: false, label: "Leave dangerous terrain at the point" }),
     } },
     executor: async function () { /* config-only: the preUseItem takeover reads this rule (edhaBurstRule) */ },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-defense-buff",
     label: "Edha: Combat-Timed Defense Buff", description: "Grants +N to the listed defenses during a combat-timing window (managed automatically by the combat tracker), or — window 'scene' — as an Active Effect created on use and cleared when the encounter ends.",
     config: { schema: {
@@ -20099,10 +20127,10 @@ function edhaRegisterNativeEventSystem() {
           content: `<p>🛡️ <strong>${item.name}</strong>: ${actor.name} gains <strong>+${amt}</strong> to ${defs.join("/")} for the scene.</p>` });
       } catch (e) { console.error("Edha Content | scene defense buff failed", e); }
     },
-  });
+  },
   // `edha-aoe-template` was registered here until 2026-09-06 — RETIRED per R-78 (item 48); see the
   // retirement note where edhaPlaceAoe used to live. Use `edha-burst` for every area effect.
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-place-hazard",
     label: "Edha: Place Dangerous Terrain", description: "Drop a scene-long dangerous-terrain Region that damages tokens on enter / start of turn. mode trail (2bY) makes it a TOGGLE instead: on use the trail arms/ends, and while armed every space you move through becomes a dangerous-terrain patch with this rule's damage (Walking Ruin's shape; the move watcher reads the rule).",
     config: { schema: {
@@ -20125,8 +20153,8 @@ function edhaRegisterNativeEventSystem() {
       }
       await edhaPlaceHazard(item, this);
     },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-temp-hp",
     label: "Edha: Grant Temp HP", description: "Roll a formula on use and set it as the target's Edha Temp HP. 'victim' (07-25) grants the creature this rule's trigger resolved against — as a watch payload it KEEPS THE HIGHER value ('does not stack', Sovereign's Favor) and relays through the GM.",
     config: { schema: {
@@ -20134,8 +20162,8 @@ function edhaRegisterNativeEventSystem() {
       target: new FF.StringField({ required: true, initial: "targeted", choices: choices("targeted", "self", "victim"), label: "Target" }),
     } },
     executor: async function (event) { const item = event.item; if (item?.actor) await edhaApplyTempHp(item, this, event.options); },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-ritual-hp-cost",
     label: "Edha: Ritual HP Cost", description: "On use, the caster loses health = formula, then the payment is ANNOUNCED (Edha: When You Pay Ritual HP) so ritual riders on other talents fire off their own documents.",
     config: { schema: {
@@ -20143,11 +20171,11 @@ function edhaRegisterNativeEventSystem() {
       note: new FF.StringField({ required: false, initial: "", label: "Note" }),
     } },
     executor: async function (event) { const item = event.item; if (item?.actor) await edhaRitualHpCost(item, this); },
-  });
+  },
   /* H18's payload half (2bZ). The banking rule is ALSO the Reserve-user marker: the sheet's Reserve
    * bar, the Spend-Investiture "Pay from Reserve" checkbox, the Double-Dip pay-from-Reserve offer
    * and edhaReserveCap all key on an actor carrying this rule — never on a talent name. */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-reserve-bank",
     label: "Edha: Bank Ritual HP As Reserve", description: "Pair with event Edha: When You Pay Ritual HP — the health just paid is banked as Reserve, up to the cap. Carrying this rule is what makes its owner a Reserve user: it turns on the sheet's Reserve bar, the Spend-Investiture 'Pay from Reserve' checkbox and the Double-Dip pay-from-Reserve offer.",
     config: { schema: {
@@ -20164,8 +20192,8 @@ function edhaRegisterNativeEventSystem() {
           content: `<p>🩸 <strong>${item.name}</strong>: banked <strong>${banked}</strong> Reserve (${edhaGetReserve(owner)}/${edhaReserveCap(owner)}).</p>` });
       } catch (e) { console.error("Edha Content | edha-reserve-bank executor failed", e); }
     },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-opportunity-option",
     label: "Edha: Opportunity Option", description: "An entry on the Opportunity-spend menu card (posts when one of your tests rolls an Opportunity). Pair with event Edha: When You Roll an Opportunity. The Opportunity itself is trusted (never auto-deducted); the listed resource cost IS deducted on click.",
     config: { schema: {
@@ -20178,8 +20206,8 @@ function edhaRegisterNativeEventSystem() {
       note: new FF.StringField({ required: false, initial: "", label: "Note (shown on the card / posted for kind=note)" }),
     } },
     executor: async function () { /* config-only: the post-roll Opportunity watcher reads this rule (edhaOpportunityMenuWatch) */ },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-heal-cut",
     label: "Edha: Halve Healing On Hit (Necrotic Grasp)", description: "When you hit a creature with a matching-color attack, its healing received is halved until the end of your next turn. Applied automatically at damage application.",
     config: { schema: {
@@ -20188,13 +20216,13 @@ function edhaRegisterNativeEventSystem() {
       note: new FF.StringField({ required: false, initial: "", label: "Note" }),
     } },
     executor: async function () { /* config-only: the applyDamage wrapper reads this rule */ },
-  });
+  },
   /* 2bW (Death). The lethal-drop ward as a PAYLOAD rule: the flag it writes was always generic —
    * edhaDeathWardCheck in the applyDamage post-pass reads `deathWard` off the victim, and the
    * defeat watcher skips warded creatures — only the WRITER was name-keyed. Put it on 'When Your
    * Test SUCCEEDS' after a gated test (Death Ward: Black vs Spiritual, willing bypass), or on
    * `use` for an untested ward. */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-ward",
     label: "Edha: Ward the First Lethal Drop",
     description: "The subject creature is warded: the FIRST time it would drop to 0 HP this scene it drops to 1 HP instead and gains the Temp HP formula, then the ward ends. Enforced by the damage post-pass; the defeat watcher never counts a warded drop. An already-warded target (and a missing GM for another's creature) refuses BEFORE cost.",
@@ -20214,12 +20242,12 @@ function edhaRegisterNativeEventSystem() {
           content: `<p>💀 <strong>${item.name}</strong>: ${victim.name} is warded — the first time they would drop to 0 HP this scene, they drop to 1 HP instead and gain the Temp HP. The ward then ends.${this.note ? ` <span style="opacity:.8">${this.note}</span>` : ""}</p>` });
       } catch (e) { console.error("Edha Content | edha-ward executor failed", e); }
     },
-  });
+  },
   /* 2bW (Death). The recurring-affliction shape: gated application, then a start-of-its-turn drain
    * that heals the caster. The tick, the icon-removal cleanup and the scene reset were already
    * flag-driven (`decay`); only the APPLICATION was a name-keyed takeover. One instance per
    * creature — any owner — is the flag key's own semantics. */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-turn-dot",
     label: "Edha: Recurring Decay (start-of-turn drain)",
     description: "On use, your targeted creature starts decaying: at the start of each of its turns it takes the formula (re-rolled each turn) and you heal a fraction of the damage. Removing the marker icon ends it; the whole state clears at scene end. The target gate (marker status or below half HP, range, one instance per creature, a GM online for another's creature) refuses BEFORE cost.",
@@ -20249,12 +20277,12 @@ function edhaRegisterNativeEventSystem() {
           content: `<p>🦠 <strong>${item.name}</strong>: ${target.name} is <strong>${edhaConditionLabel(st) || st}</strong> — for the scene it takes the damage at the start of each of its turns${value.healFraction > 0 ? `, and ${owner.name} regains ${value.healFraction === 0.5 ? "half" : `${Math.round(value.healFraction * 100)}%`} of it as HP` : ""}. Remove the icon to end it.${this.note ? ` <span style="opacity:.8">${this.note}</span>` : ""}</p>` });
       } catch (e) { console.error("Edha Content | edha-turn-dot executor failed", e); }
     },
-  });
+  },
   /* 2bW (Death). Raise Dead's exit — ENGINE-OWNED flow keyed on its rule (the edha-decree shape):
    * the DialogV2 confirm, the burst-apply revive relay, the combatant initiative surgery and the
    * auto injury are a multi-step subsystem no rule chain expresses, so the FLOW stays engine code
    * and this rule is how it is armed, gated and tuned. See the Death tree-section header. */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-revive",
     label: "Edha: Revive a Downed Creature",
     description: "On use: the targeted 0-HP creature returns to 1 HP (GM relay), gains the status until the end of ITS next turn, moves onto your initiative (GM-side), and takes one auto-created injury. If your ledger holds an entry you are asked whether to consume one. Once per scene + the target-at-0 gate refuse BEFORE cost (the generic sceneOnce stamp).",
@@ -20269,13 +20297,13 @@ function edhaRegisterNativeEventSystem() {
       note: new FF.StringField({ required: false, blank: true, initial: "", label: "Card note" }),
     } },
     executor: async function (event) { await edhaReviveUse(event.item, this); },
-  });
+  },
   /* 2bW (Life). Adaptive Mutation's chooser: a whispered card offering the rule's enabled
    * adaptations; the click bakes the picked rider onto the WILLING target's `mutation` flag, which
    * the (already name-free) applyDamage readers consume — Bone Spurs rides the outgoing pre-pass,
    * Venom the on-hit post-pass, Dense Tissue the incoming deflect reduce + the forced-movement
    * veto. One adaptation per creature, scene-scoped (the Life reset clears it). */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-mutation",
     label: "Edha: Grant an Adaptation (pick one)",
     description: "On use, a whispered card offers the enabled adaptations for your willing target (default you): Bone Spurs (+keen on melee hits), Venom Glands (melee hits afflict ongoing vital), Dense Tissue (+Deflect and immunity to forced movement). Clicking bakes the choice onto the creature for the scene — one adaptation per creature; a talent granting apex doubling reads the same flag.",
@@ -20294,14 +20322,14 @@ function edhaRegisterNativeEventSystem() {
         edhaPostMutationCard(owner, target, item.name, this);
       } catch (e) { console.error("Edha Content | edha-mutation executor failed", e); }
     },
-  });
+  },
   /* 2bW (Life). The start-of-THEIR-turn regen grant (Apex Form / Primal Regeneration): writes a
    * `lifeRegen` entry on YOU (the regrowth-queue pattern) that the EXISTING combatTurnChange
    * resolver heals from — edhaResolveLifeRegen was flag-driven all along, so no new hook and no
    * edha-combat-timing widening was needed. The apex half — +Deflect, +vital-on-hits, adaptation
    * doubling, the injury-on-end price — is the `apexForm` flag the (name-free) readers and the
    * Life scene reset consume. */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-regen-grant",
     label: "Edha: Grant Start-of-Turn Regeneration",
     description: "On use, your willing target (default you) regenerates the formula at the START OF ITS TURNS for the scene. Optional: end when it takes Vital/Spirit damage (Primal Regeneration), a better formula while it carries an adaptation, and the apex package — +Deflect, +vital on its attacks, adaptations doubled, and an auto-created Injury when the effect ends at scene end (Apex Form).",
@@ -20330,8 +20358,8 @@ function edhaRegisterNativeEventSystem() {
         ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: owner }), content: `<p>🌟 <strong>${item.name}</strong>: ${text}</p>` });
       } catch (e) { console.error("Edha Content | edha-regen-grant executor failed", e); }
     },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-summon",
     label: "Edha: Summon", description: "Spawn a token scaled to the caster when this talent is used.",
     config: { schema: {
@@ -20385,12 +20413,12 @@ function edhaRegisterNativeEventSystem() {
         bakedEffects: pj(this.bakedEffectsJson), extraItems: pj(this.extraItemsJson),
       });
     },
-  });
+  },
 
   /* H22 (2bAA) — the engine's first blocks-movement capability. ENGINE-OWNED, keyed on the RULE:
    * the picker, the Wall documents and their GM relay are canvas work no rule chain expresses
    * (§9o), so the flow stays engine code and every dial is a field. See the Illusion section. */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-barrier",
     label: "Edha: Barrier (blocks movement)", description: "Click-place an obstruction with health: a token that can be attacked and destroyed, inside a box of Foundry walls that nothing moves through. It comes down when it is destroyed, when its token is deleted, or at the end of the encounter. Put it on 'use'.",
     config: { schema: {
@@ -20409,7 +20437,7 @@ function edhaRegisterNativeEventSystem() {
       const item = event.item; if (!item?.actor) return;
       await edhaPlaceBarrier(item, this);
     },
-  });
+  },
 
   /* ENGINE-OWNED, taken RULE-KEYED (2bAA — the edha-decree exit shape). Re-litigated per iron
    * rule 3 and the exit CONFIRMED: the per-viewer veil is a patch of the Token#isVisible getter
@@ -20418,7 +20446,7 @@ function edhaRegisterNativeEventSystem() {
    * copy stamps, its HP/speed/defenses, which of YOUR defenses sets the DC, which skill the
    * onlookers roll, the range gate, and the card line. The Mistheron's The Seeming is the second
    * consumer, on its own adversary document (lint pass 5 standard). No talent name in code. */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-illusion-copy",
     label: "Edha: Illusory Copy (belief loop)", description: "Place an illusory duplicate that every enemy who can see it tests against. Losers lose track of the original — their client stops rendering it; winners see only empty air where the copy stands. Any hit breaks it. Put it on 'use'.",
     config: { schema: {
@@ -20452,11 +20480,11 @@ function edhaRegisterNativeEventSystem() {
         });
       } catch (e) { console.error("Edha Content | edha-illusion-copy executor failed", e); }
     },
-  });
+  },
 
   /* Config-only by design: the turn-start sweep in the Illusion section is the reader (the
    * pass-Y/Z veto shape). Nothing here executes, because Living Image's `use` payload is a note. */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-illusion-upkeep",
     label: "Edha: Illusion Upkeep Prompt", description: "While you have living summoned illusions, your turn start whispers an upkeep prompt with a one-click payment. Config-only: the turn-start sweep reads this rule, so it needs no event of its own — put it on any event.",
     config: { schema: {
@@ -20465,10 +20493,10 @@ function edhaRegisterNativeEventSystem() {
       qualifier: new FF.StringField({ required: false, blank: true, initial: "COMPLEX", label: "Which illusions cost upkeep", hint: "Printed in the prompt. Living Image charges for COMPLEX images only; simple ones are free and the table calls which is which." }),
       note: new FF.StringField({ required: false, blank: true, initial: "", label: "Note appended to the prompt" }),
     } },
-  });
+  },
 
   /* ---- v3 HANDLER TYPES (state marks, sweeps, apply-engine watchers) ---- */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-apply-status",
     label: "Edha: Mark / Apply Status to Target", description: "On use, applies a status to your targeted creature and records you as the mark's owner. Optional: allies' damage vs the marked creature gains bonus damage.",
     config: { schema: {
@@ -20484,8 +20512,8 @@ function edhaRegisterNativeEventSystem() {
       const item = event.item; if (!item?.actor) return;
       await edhaApplyStatusMark(item, this, event.options?.victim ?? null);
     },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-status-sweep",
     label: "Edha: Damage All [Status] Creatures In Range", description: "On use, every creature in range with the status takes the damage; optionally gain Temp HP equal to the total dealt (Spoils of Isolation).",
     config: { schema: {
@@ -20501,8 +20529,8 @@ function edhaRegisterNativeEventSystem() {
       const item = event.item; if (!item?.actor) return;
       await edhaStatusSweep(item, this);
     },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-overflow-thp",
     label: "Edha: Heal Overflow Becomes Temp HP", description: "When this talent's healing would exceed the target's max HP, the excess becomes Edha Temp HP (applied automatically).",
     config: { schema: {
@@ -20510,8 +20538,8 @@ function edhaRegisterNativeEventSystem() {
       deflectStackMax: new FF.NumberField({ required: false, initial: 0, label: "Deflect rider: stack +1 Deflect per heal, up to", hint: "0 = no rider. Overgrowth: 3 — each heal by this talent also steps a +1/+2/+3 Deflect AE on the healed creature until combat ends. 07-25 pass 2bS: this FIELD is the discriminator (Life Surge carries the identical overflow rule and grants no Deflect); it replaced the item.name === 'Overgrowth' check." }),
     } },
     executor: async function () { /* config-only: the applyDamage wrapper reads this rule */ },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-damage-convert",
     label: "Edha: Convert Damage Type vs State", description: "Your damage changes type when the victim matches a state (Severance: vs Isolated → vital). Applied automatically at damage application.",
     config: { schema: {
@@ -20519,8 +20547,8 @@ function edhaRegisterNativeEventSystem() {
       whenTargetIsolated: new FF.BooleanField({ required: false, initial: true, label: "Only vs Isolated targets" }),
     } },
     executor: async function () { /* config-only: the applyDamage wrapper reads this rule */ },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-marked-damage-trigger",
     label: "Edha: When Your Marked Creature Takes Damage", description: "When the creature bearing your mark/status takes damage from any source, you recover a resource (once per round). Applied automatically.",
     config: { schema: {
@@ -20530,8 +20558,8 @@ function edhaRegisterNativeEventSystem() {
       oncePerRound: new FF.BooleanField({ required: false, initial: true, label: "Once per round" }),
     } },
     executor: async function () { /* config-only: the applyDamage wrapper reads this rule */ },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-gm-cue",
     label: "Edha: GM Cue Card", description: "Whispers the GM a reminder card when the trigger crosses (damaged / hp-below / ally-drops / seeming-break / on-hit / enemy-turn-start / turn-end). Config-only: the engine's watchers read this rule. REGISTRATION IS LOAD-BEARING — an unregistered handler type is silently dropped by the DataModel, exactly like a bad rule id.",
     config: { schema: {
@@ -20543,8 +20571,8 @@ function edhaRegisterNativeEventSystem() {
       note: new FF.StringField({ required: false, initial: "", label: "Card text (author the cost into it)" }),
     } },
     executor: async function () { /* config-only: the engine's cue watchers read this rule */ },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-regen",
     label: "Edha: Turn-End Regen", description: "At the end of the owner's turn, the owner regains a flat amount of health, engine-applied (clamped: never while down, never past max) with a whispered GM card. Config-only: the turn cue sweep reads this rule. First consumer: the Garden Sow's Nexus-Fed.",
     config: { schema: {
@@ -20552,8 +20580,8 @@ function edhaRegisterNativeEventSystem() {
       note: new FF.StringField({ required: false, initial: "", label: "Card text" }),
     } },
     executor: async function () { /* config-only: edhaTurnCueSweep applies the regen */ },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-ambush-belief",
     label: "Edha: Ambush Seeming Belief Test", description: "On the owner's first attack against each target per scene, the target tests Perception vs the owner's chosen defense (engine-rolled); failure marks them fooled in the owner's ambushBelief ledger, which whenTargetFooled damage riders read. The lightweight seeming — no phantom copy, no client veil. Config-only: the engine's use-hook watcher reads this rule off the seeming trait.",
     config: { schema: {
@@ -20562,29 +20590,29 @@ function edhaRegisterNativeEventSystem() {
       note: new FF.StringField({ required: false, initial: "", label: "GM-card suffix (the rider reminder)" }),
     } },
     executor: async function () { /* config-only: the ambush-belief use-hook reads this rule */ },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-pack-advantage",
     label: "Edha: Pack Advantage (Aggro Ledger)", description: "Attacking a creature that a living packmate (another token carrying this same item) last attacked → this attack rolls with advantage. Config-only: the pre-roll pipeline reads this rule via the aggro ledger.",
     config: { schema: {
       note: new FF.StringField({ required: false, initial: "", label: "Note" }),
     } },
     executor: async function () { /* config-only: the pack-advantage pre-roll reads this rule */ },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-dark-veil",
     label: "Edha: Marker Auto-On In Darkness", description: "While the owner's token stands unlit, the named marker AE auto-enables (re-lit auto-disables only engine-enabled markers — a GM's manual cover toggle is never fought). Config-only: the dark-veil sweep reads this rule.",
     config: { schema: {
       effectName: new FF.StringField({ required: false, blank: true, initial: "", label: "Marker AE name prefix (blank = this item's name)" }),
     } },
     executor: async function () { /* config-only: the dark-veil sweep reads this rule */ },
-  });
+  },
   /* 2bU (07-25). The sense-through-obstruction spec as a rule — was the name-keyed
    * EDHA_SENSE_REVEALS table (Void Sense, Reaper's Harvest). The per-viewer canvas rendering stays
    * ENGINE-OWNED (edhaSenseRevealShows rewires the local client's veil, which no document rule can
    * do for another client); this rule carries which STATUS reveals and the damage-recovery rider,
    * so the talent is editable and a rename unwires nothing. */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-sense-reveal",
     label: "Edha: Sense Marked Creatures (config only)",
     description: "You sense creatures bearing this marker status through walls and fog — their tokens render to YOUR client through any obstruction (GM-hidden stays hidden). Optionally, when a creature bearing YOUR marker takes damage, you recover a resource. Config-only: the veil wrap and the damage post-pass read this rule — put it on an 'Edha: Watch Rule' event.",
@@ -20596,13 +20624,13 @@ function edhaRegisterNativeEventSystem() {
       rangeColor: new FF.StringField({ required: false, blank: true, initial: "", choices: choices("", "white", "blue", "black", "red", "green"), label: "Recovery only within Attunement Range", hint: "Blank = any distance. Void Sense's card says 'in Attunement Range' (Blue). Both tokens must be on the map." }),
     } },
     executor: async function () { /* config-only: edhaSenseRevealShows + edhaSenseRevealOnDamage read this rule */ },
-  });
+  },
   /* 2bU (07-25). The damage-redirect offer as a rule — was Mantle-name-keyed. The poster and the
    * click machinery stay ENGINE-OWNED (the H6 trade: a multi-click budgeted prompt is not a rule);
    * this rule carries WHO qualifies, the budget and the range, which is what makes it editable.
    * 2bV adds `direction: intercept` — the INVERSE flow (Shoulder the Oath): a creature on YOUR
    * ledger takes the hit and YOU may take a fraction of it in their place. */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-redirect",
     label: "Edha: Redirect Damage (config only)",
     description: "to-allies: when you take damage while armed, a whispered offer lets you pass up to the budget of it to one or more willing allies in range (Mantle of the Aspirant). intercept: a creature on your sustained ledger takes damage and you are offered a Reaction — take the fraction yourself (same type), they heal back fraction + the heal bonus (never more than they lost), and BOTH of you gain the Temp HP formula (Shoulder the Oath). Config-only: the applyDamage post-pass reads this rule — put it on an 'Edha: Watch Rule' event.",
@@ -20637,9 +20665,9 @@ function edhaRegisterNativeEventSystem() {
           content: `<p>🩸 <strong>${item.name}</strong>: ${owner.name} is bound to ${t.name} for the scene${this.linkNote ? ` — ${String(this.linkNote).split("{name}").join(t.name)}` : ""}.</p>` });
       } catch (e) { console.error("Edha Content | redirect link failed", e); }
     },
-  });
+  },
   /* 2bV. Lawkeeper's Eye's shape, generic: advantage against creatures bound on YOUR ledger. */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-bound-adv",
     label: "Edha: Advantage vs Your Ledger-Bound Targets (config only)",
     description: "Any attack or item test you or an ally rolls against a creature on your sustained ledger gains advantage while YOU can see the target (hidden/wall line of sight — darkness stays GM-judged). Config-only: the pre-roll injector reads this rule — put it on an 'Edha: Watch Rule' event.",
@@ -20651,9 +20679,9 @@ function edhaRegisterNativeEventSystem() {
       placeNote: new FF.StringField({ required: false, blank: true, initial: "", label: "Printed on this ledger's PLACE cards", hint: "Lawkeeper's GM-reveal + advantage line rides Edict's card. Blank = nothing." }),
     } },
     executor: async function () { /* config-only: edhaBoundAdvApply reads this rule */ },
-  });
+  },
   /* 2bV. Verdict's payload — the prohibition family's resolve-as-a-rule. */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-prohibition-resolve",
     label: "Edha: Resolve a Prohibition (On Success)",
     description: "Put it on 'When Your Test SUCCEEDS' after an Edha: Gated Test. The victim's entry on your ledger resolves as a violation (the shared resolver: damage off the PLACING talent's formula, Disoriented, any annotate rider, entry consumed). The court then turns on the accomplices: each OTHER enemy within the radius rolls the skill vs your colour (engine-rolled, never trusted); failures share ONE roll of THIS talent's damage formula + Disoriented.",
@@ -20692,10 +20720,10 @@ function edhaRegisterNativeEventSystem() {
         });
       } catch (e) { console.error("Edha Content | prohibition-resolve failed", e); }
     },
-  });
+  },
   /* 2bV. Final Decree's dials — the flow itself stays ENGINE-OWNED (multi-step subsystem; see the
    * Order section header) and this rule is how it is armed, gated and tuned. */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-decree",
     label: "Edha: Scene-Wide Prohibition (Decree)",
     description: "On use: every living enemy in your Attunement Range is bound under ONE declared prohibition (picker; cancel refunds) and your ledger allies stand Witness. The violation watchers prompt; resolution fires every active Edict, grants the Witness Temp-HP die + advantage, and courts every enemy near the violator with this talent's damage formula. The flow is engine-owned; this rule carries the dials.",
@@ -20708,9 +20736,9 @@ function edhaRegisterNativeEventSystem() {
       oncePerScene: new FF.BooleanField({ required: false, initial: true, label: "Once per scene", hint: "Vetoed BEFORE cost (the generic sceneOnce stamp)." }),
     } },
     executor: async function (event) { await edhaDecreeUse(event.item, this); },
-  });
+  },
   /* 2bU (07-25). The flat test aura as a rule — was Mantle's name-keyed pre-roll injector. */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-test-aura",
     label: "Edha: Flat Test Aura (config only)",
     description: "While you are armed, qualifying creatures near you add a flat bonus to every d20 test they roll (injected pre-roll; ⚑ dialog-roll rebuilds are the standing bench caveat). Config-only: the pre-roll injector reads this rule — put it on an 'Edha: Watch Rule' event.",
@@ -20723,8 +20751,8 @@ function edhaRegisterNativeEventSystem() {
       requireSelfStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "Only while YOU carry this status", hint: "The arming gate (mantled)." }),
     } },
     executor: async function () { /* config-only: edhaTestAuraApply reads this rule */ },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-self-status",
     label: "Edha: Apply Status To Yourself (On Use)", description: "On use, the user gains the status — timed (expires end of your next turn) or until removed. Brace-class defensive stances, and the arming statuses the armed damage-bonus / watch rules read.",
     config: { schema: {
@@ -20742,9 +20770,9 @@ function edhaRegisterNativeEventSystem() {
       if (this.timed !== false) await edhaApplyTimedStatus(actor, this.statusId || "braced", { owner: actor, expire: "owner" });
       else await edhaToggleStatus(actor, this.statusId || "braced", true);
     },
-  });
+  },
   /* ---- H2: the zone family (07-25, pass 2bS — Green's terrain talents off their names) ---- */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-zone",
     label: "Edha: Place a Zone (terrain / Foundation / fortify / link)",
     description: "The zone family. terrain = click-to-place a [Size] difficult-terrain square Region within Attunement Range (the Green Draw-Mana rider's shape). foundation = the begin-turn defense-buff square (Civilization's Foundation: gold Drawing, tier sustain cap, +1 all defenses to allies beginning their turn inside). fortify = your existing Foundations grow teeth for the scene (enter damage off THIS talent's formula + Agility-vs-Red save, enemies-only difficult terrain, Construct +2 inside). link = pick two of your Foundations; allies teleport between them (once/turn, trusted). The pickers, Drawings, Regions and GM relays stay engine-owned; this rule carries the dials. A cancelled picker REFUNDS the cost.",
@@ -20802,8 +20830,8 @@ function edhaRegisterNativeEventSystem() {
           content: `<p>🌿 <strong>${item.name}</strong> (${actor.name}): terrain NOT placed (${pt ? "out of range" : "cancelled"}).</p>` });
       }
     },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-zone-hazard",
     label: "Edha: Zone Hazard Rider (config only)",
     description: "Difficult terrain YOU create also damages creatures that enter or start their turn in it (Thorn Field's shape). Config-only: the zone creator reads this rule off the creator's items and bakes the hazard into the Region — put it on an 'Edha: Watch Rule' event. @colorRank = your rank in the colour (ROLE rank for an adversary), @tier = your tier.",
@@ -20814,8 +20842,8 @@ function edhaRegisterNativeEventSystem() {
       color: new FF.StringField({ required: false, initial: "green", label: "Colour for @colorRank" }),
       label: new FF.StringField({ required: false, blank: true, initial: "", label: "Hazard label", hint: "Shown on the terrain visual and the damage cards. Blank = this talent's name." }),
     } },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-zone-react",
     label: "Edha: Zone Reaction",
     description: "What this talent does around dangerous/difficult terrain you own. turn-end-in-zone + offer-expand = a creature ends its turn in your terrain → a whispered offer to expand it (Spreading Roots' shape; config-only, read by the combat-turn sweep — put it on an 'Edha: Watch Rule' event; one offer per round). defeat-in-zone + ignite-spread = a character drops to 0 HP in your terrain → a zone ignites on the body and your zones spread (Combustion Chain's shape; the defeat sweep reads it, and using the talent posts the armed reminder card; 2bY).",
@@ -20842,11 +20870,11 @@ function edhaRegisterNativeEventSystem() {
           content: `<div class="edha-trigger-card"><p>🔥 <strong>${item.name}</strong> is armed — it fires automatically (Reaction) when a character drops to 0 HP in your dangerous terrain. You can also trigger it by hand here.</p><button type="button" class="edha-combustion" data-owner="${actor.uuid}" data-label="${item.name}" data-spread="${spreadFt}" data-ignite="${igniteFt}">Spread &amp; ignite (GM positions)</button></div>` });
       } catch (e) { console.error("Edha Content | zone-react executor failed", e); }
     },
-  });
+  },
   /* 2bX — the Fate marker family: what a talent does AROUND the owner's placed marker squares.
    * All three are read by engine sweeps that ANNOUNCE (edhaWatchersOfRule / the owner's-items
    * sweep) — no dispatcher hand-lists a consumer, no talent is named. */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-zone-guard",
     label: "Edha: Marker-Square Guard (config only)",
     description: "Defender-keyed protections for allies standing on YOUR marker squares (Bulwark Ground's shape). Config-only — put it on an 'Edha: Watch Rule' event: the legacy-marker turn-start pass reads thpFormula, and the pre-roll injector reads noAdvantage (attacks against an ally on your square can't benefit from advantage — the inverse of edha-unseen-ward).",
@@ -20855,8 +20883,8 @@ function edhaRegisterNativeEventSystem() {
       noAdvantage: new FF.BooleanField({ required: false, initial: true, label: "Attacks against an ally on your squares can't benefit from advantage", hint: "Neutralizes advantage to none; never touches disadvantage. The GM can re-toggle in the roll dialog." }),
       note: new FF.StringField({ required: false, blank: true, initial: "", label: "Card note" }),
     } },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-snare-react",
     label: "Edha: Snare-Spring Reaction (config only)",
     description: "What this talent does when one of the OWNER's snares springs (swept by the spring resolver — put it on an 'Edha: Watch Rule' event). offer-mark = a Reaction card offering to mark the triggering foe (markedBy.<markKey>); the SAME rule then feeds the applyDamage pre-pass: the marked foe takes the bonus whenever it takes damage within nearFt of your marker squares (Hexmark). prompt = post the note when the spring lies within nearFt of a LINKED marker square (Weave the Thread's Reactive-Strike grant).",
@@ -20869,13 +20897,13 @@ function edhaRegisterNativeEventSystem() {
       requireLinked: new FF.BooleanField({ required: false, initial: false, label: "Only near a LINKED square (prompt)", hint: "The `linked` annotation the link-markers zone verb writes." }),
       note: new FF.StringField({ required: false, blank: true, initial: "", label: "Prompt text (prompt)", hint: "The granted action, verbatim — GM/players execute it (the declared manual half)." }),
     } },
-  });
+  },
   /* 2bY — the detonation counterpart of edha-snare-react: what this talent does when the OWNER's
    * Charges detonate. Config-only: the detonate resolver (edhaResolveCharges) sweeps the owner's
    * rules of this type after every detonation — it rides Set Charge, Cascading Failure and The
    * Unmooring alike, and the sweep names no talent. The foe save is ENGINE-ROLLED per foe (iron
    * rule 3 — never trust-the-player). Put it on an 'Edha: Watch Rule' event. */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-detonate-react",
     label: "Edha: Detonation Rider (config only)",
     description: "When any of YOUR Charges detonate, each caught character tests a skill vs. your colour; failures gain a status (Concussive Yield's shape). Config-only — the detonate resolver sweeps this rule; put it on an 'Edha: Watch Rule' event.",
@@ -20887,11 +20915,11 @@ function edhaRegisterNativeEventSystem() {
       note: new FF.StringField({ required: false, blank: true, initial: "", label: "Card note" }),
     } },
     executor: async function () { /* config-only: the detonate resolver's sweep reads this rule */ },
-  });
+  },
   /* 2bY — the mark-payoff Reaction (deity/Chaos's Shatter Focus): ENGINE-OWNED flow keyed on this
    * rule (the chat-scan + kept-d20 rewrite + cross-client relay are no rule chain's job); every
    * dial is a field. The "no mark on the target" refusal is vetoed BEFORE cost. */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-reroll-react",
     label: "Edha: Remove Your Mark, Reroll-Take-Lower (Reaction)",
     description: "Spend the Reaction when an enemy bearing your mark makes a test: the mark is removed and the test rerolls, keeping the lower d20. Refused before cost with no marked target selected. The auto-prompt whispers you when a mark-bearer rolls (mutable per card; a real use re-arms).",
@@ -20901,12 +20929,12 @@ function edhaRegisterNativeEventSystem() {
       note: new FF.StringField({ required: false, blank: true, initial: "", label: "Card note" }),
     } },
     executor: async function (event) { const item = event.item; if (item?.actor) await edhaRerollReactFlow(item, this); },
-  });
+  },
   /* 2bX — ENGINE-OWNED card flows over the owner's placed markers, keyed on this rule (the
    * edha-decree exit shape): the spring buttons, the declared-event resolve and the ≤maxFt slide
    * are multi-step card/canvas flows no rule chain expresses. Every dial is a field; the
    * spring-pick bonus is THIS item's own damage formula. oncePerScene is vetoed pre-cost. */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-marker-command",
     label: "Edha: Marker Command (move / spring)",
     description: "Post a card commanding YOUR placed marker squares. move = slide one marker up to maxFt (Read the Threads — put the foresight GM-reveal line in the note). spring-pick = a button per unsprung snare; the clicked spring adds this talent's own damage formula as bonus damage (Foreknown Strike). spring-all = a declare card whose resolve button springs every unsprung snare and posts the rally note (Thread of Inevitability; once/scene refuses before any cost is paid).",
@@ -20920,13 +20948,13 @@ function edhaRegisterNativeEventSystem() {
       const item = event.item; if (!item?.actor) return;
       return edhaMarkerCommand(item, this);
     },
-  });
+  },
   /* H21 (2bV) — the summon-mode family: what a talent does TO your live summon. toggle-baked is
    * Siege Form's shape (enable a baked, disabled effect the summon spec ships with); grant is
    * Arsenal's (copy THIS talent's Effects-tab template onto the summon + arm the kill-chase);
    * transform is Magnum Opus's ENGINE-OWNED colossus rewrite, keyed on this rule (see the
    * Civilization section header). All three gate pre-cost via the summon-effect veto. */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-summon-effect",
     label: "Edha: Summon Mode (toggle / arm / transform)",
     description: "Acts on YOUR live summon. toggle-baked = enable a named baked effect the summon ships with, with an end button (Siege Form). grant = copy this talent's own Effects-tab template effect onto the summon and arm its on-kill prompt (Arsenal). transform = the engine-owned colossus rewrite: bonus HP, defense effect, splashing hits, zone-buff upgrade (Magnum Opus). Refused BEFORE cost with no live summon (and per-mode gates).",
@@ -20955,9 +20983,9 @@ function edhaRegisterNativeEventSystem() {
       if (this.mode === "transform") return edhaCivTransformSummon(item, this, c);
       return edhaCivToggleBakedEffect(item, this, c);
     },
-  });
+  },
   /* ---- The Green pack family (07-25, pass 2bS — Instinct's on-use / dealer-side shapes) ---- */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-adv-attack",
     label: "Edha: Advantage On the Next Attack (On Use)",
     description: "Grants 'advantage on your next attack' (the existing advAttackNext pipeline consumes it on your next attack/item roll). 'pack' also grants it to each ally adjacent to the enemy you have targeted (Pack Hunter); Scent mode instead names the lowest-HP living enemy in Attunement Range and arms you against it (Scent the Weak).",
@@ -21015,8 +21043,8 @@ function edhaRegisterNativeEventSystem() {
         ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>🐾 <strong>${item.name}</strong> (${actor.name}): advantage on your next attack.</p>` });
       }
     },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-strike-window",
     label: "Edha: Open a Strike Window (On Use)",
     description: "Arms a window lasting until the start of your next turn. Your Edha: Bonus Damage rules gated 'window' apply while it is open (Pack Pressure). Put the card text — including any GM-narrated half — in the note, where it is editable.",
@@ -21031,8 +21059,8 @@ function edhaRegisterNativeEventSystem() {
       await actor.setFlag("edha-content", "strikeWindow", coord).catch(() => {});
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: `<p>${this.icon ? `${this.icon} ` : ""}<strong>${item.name}</strong> (${actor.name}): ${this.note || "the window is open until the start of your next turn."}</p>` });
     },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-damage-bonus",
     label: "Edha: Bonus Damage On Your Hits (config only)",
     description: "Adds a bonus damage instance to qualifying hits — read by the applyDamage pre-pass, so put it on an 'Edha: Watch Rule' event. 'window' = while your Edha: Strike Window is open (Pack Pressure); 'pack-on-target' = you + at least one ally attacked this victim this round, with @hunters (Coordinated Hunt); 'armed-self-status' = while you carry the arming status, consumed on the hit if set (Predatory Strike); 'self-hits-counter-bearer' = your own hit on your counter's bearer (Hunter's Discipline); 'ally-hits-counter-bearer' = an ALLY's hit on your bearer within your range while you are armed (Pack Share, The Pack).",
@@ -21065,12 +21093,12 @@ function edhaRegisterNativeEventSystem() {
       placeListStatus: new FF.StringField({ required: false, blank: true, initial: "", label: "…its marker status", hint: "Blank = the ledger name (`quarry`)." }),
       placeListCapFormula: new FF.StringField({ required: false, blank: true, initial: "", label: "…its cap (formula)", hint: "Blank = 1 (Quarry is a single mark)." }),
     } },
-  });
+  },
   /* `edha-counter-transfer` (07-25, 2bT) — the on-kill half of a counter talent: when the creature
    * bearing your counter drops to 0 HP, offer the transfer prompt (and optionally the ally burst).
    * Config-only: the live→0 sweep in the Knowledge section reads these rules; the prompt cards and
    * their click handlers are the ENGINE-OWNED support surface (the H6 trade). */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-counter-transfer",
     label: "Edha: Counter Transfer On Kill (config only)",
     description: "When the creature bearing your counter drops to 0 HP: a whispered Free-Action prompt to place (fraction × its count) on a new creature in range — and, if enabled, a public card letting each ally in range deal the burst formula to an enemy of their choice. Put it on an 'Edha: Watch Rule' event.",
@@ -21082,13 +21110,13 @@ function edhaRegisterNativeEventSystem() {
       allyBurst: new FF.BooleanField({ required: false, initial: false, label: "Allies burst on the kill", hint: "Each ally in range may click to deal the burst formula (YOUR dice — Ben R4) to any enemy of their choice. Death Mark." }),
       burstFormula: new FF.StringField({ required: false, blank: true, initial: "", label: "Burst formula", hint: "Rolled against YOUR roll data per click. Blank = (@tier)d(2 * @skills.red.rank + 2)." }),
     } },
-  });
+  },
   /* H9 `edha-die-step` (07-25, 2bT — §9m q1, ruled BUILD IT): write a damage-die-step ledger entry.
    * The ledger, the rollDamage rewrite, the timed sweep and the GM roll watch are the Sovereignty
    * section's engine machinery; this handler is how a TALENT writes an entry — including the
    * couplings the watch reads back as DATA (failThp*, onPairHit), so no talent name ever reaches
    * the watch. */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-die-step",
     label: "Edha: Step a Damage Die (On Use / On Success)", description: "Move a creature's damage die size along the d4–d12 ladder (entries stack; the clamp is the only rail). Put it on 'use' for an untested buff (Exalt), or on the 'When Your Test SUCCEEDS' / 'FAILS' events after an Edha: Gated Test (Censure, Decree of Ruin). 'pair' writes a linked ally/enemy pair whose on-hit coupling the engine watches (Sovereign's Balance, Sovereignty).",
     config: { schema: {
@@ -21162,10 +21190,10 @@ function edhaRegisterNativeEventSystem() {
         say(`${who.name} is <strong>${steps > 0 ? "Exalted" : "Diminished"}</strong> — ${stepWord(steps)} ${durText}.`);
       } catch (e) { console.error("Edha Content | edha-die-step executor failed", e); }
     },
-  });
+  },
   /* The reaction half of the die-step family (2bT) — config-only: the GM roll watch in the
    * Sovereignty section sweeps these rules (Expose). */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-die-step-react",
     label: "Edha: Die-Step Reaction (config only)",
     description: "Reacts when a creature carrying YOUR matching die-step debuff fails a test: you recover Investiture (auto on readable failed attacks; owner-click card otherwise), and a targeted ally in range may be offered a Reactive Strike. Put it on an 'Edha: Watch Rule' event (Expose).",
@@ -21175,8 +21203,8 @@ function edhaRegisterNativeEventSystem() {
       reactiveStrike: new FF.BooleanField({ required: false, initial: true, label: "Offer the Reactive Strike", hint: "When the failed test was an attack on your ally in the range below, the card names the Strike (player-executed — no hook can force another creature's action)." }),
       allyRange: new FF.StringField({ required: false, initial: "white", label: "Ally Attunement Range colour" }),
     } },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-unseen-ward",
     label: "Edha: Ward Allies vs Unseen Attacks (config only)",
     description: "An ally near you targeted by an attack they can't see (hidden attacker, or wall LOS; darkness GM-judged) gets +N defense against it — injected as −N on the attack roll (Packmate's Warning). Config-only: the pre-roll injector reads this rule — put it on an 'Edha: Watch Rule' event.",
@@ -21185,8 +21213,8 @@ function edhaRegisterNativeEventSystem() {
       amount: new FF.NumberField({ required: false, initial: 2, label: "Defense bonus" }),
       excludeSelf: new FF.BooleanField({ required: false, initial: true, label: "'An ally' — never the owner itself" }),
     } },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-suppress-veil",
     label: "Edha: Suppress Enemy Veils (config only)",
     description: "While you are ARMED (the self-status below — write it with an Edha: Apply Status To Yourself rule on this talent's use), hostile dark-veil markers within Attunement Range stay DOWN: the veil sweep refuses to raise them and stands down ones it raised (Natural Order). A GM's manual marker toggle is never fought. Config-only — put it on an 'Edha: Watch Rule' event.",
@@ -21194,9 +21222,9 @@ function edhaRegisterNativeEventSystem() {
       rangeColor: new FF.StringField({ required: false, initial: "green", label: "Attunement Range colour" }),
       requireSelfStatus: new FF.StringField({ required: false, initial: "clearsight", label: "Armed while you carry this status" }),
     } },
-  });
+  },
   /* ---- The Green Restoration family (07-25, pass 2bS — the on-heal riders + the injury menu) ---- */
-  api.registerItemEventHandlerType({
+  {
     source: "edha-content", type: "edha-heal-react",
     label: "Edha: When You Restore Health (config only)",
     description: "Reacts when YOU restore health to a creature — read at the heal chokepoints, so put it on an 'Edha: Watch Rule' event. queue-regrowth = the healed ally regains the formula at the start of your next turn while still in range (auto — Resurgent Growth). offer-thp = whispered card to grant Temp HP when the target was below half; cost and roll land on the CLICK (Vital Surge). offer-cleanse = whispered card, one button per present condition (Natural Recovery).",
@@ -21213,8 +21241,8 @@ function edhaRegisterNativeEventSystem() {
       conditions: new FF.StringField({ required: false, blank: true, initial: "afflicted, disoriented, stunned, weakened", label: "Cleansable conditions (offer-cleanse)", hint: "Comma-list of status ids; only conditions the target actually has get a button." }),
       costNote: new FF.StringField({ required: false, blank: true, initial: "spend an Opportunity", label: "Cost wording (offer-cleanse)", hint: "Honour-system, exactly as retired — printed on the card and the result." }),
     } },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-remove-injury",
     label: "Edha: Remove an Injury (On Use)",
     description: "Posts the injury menu for your targeted creature (default: yourself) — one button per removable injury; the click spends the temporary/permanent Investiture cost and deletes the injury Item (Reknit Form). Death injuries never appear.",
@@ -21226,8 +21254,8 @@ function edhaRegisterNativeEventSystem() {
       const item = event.item, owner = item?.actor; if (!owner) return;
       edhaPostReknitCard(owner, item, this);
     },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-next-test-mod",
     label: "Edha: Modify a Next Test (On Use)", description: "On use, a next test gains (dis)advantage, a dice/flat modifier (Probability Net's −1d6), a Plot Die, and/or a banked Opportunity. Target YOURSELF or the creature you have targeted. Rides the nextTestMod / plotDieNext / oppCredit pipelines; counted, consumed on the next test.",
     config: { schema: {
@@ -21320,16 +21348,16 @@ function edhaRegisterNativeEventSystem() {
         content: `<p>🎲 <strong>${item.name}</strong>: ${who} ${rollWord} — ${bits.join(", ")}`
           + `${quarryUuid ? " (against your quarry only)" : ""}.</p>` });
     },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-single-target",
     label: "Edha: Single Target Only", description: "This talent affects ONE creature. With several tokens targeted the use is cancelled BEFORE any cost and you get a whispered picker card listing them; clicking one retargets and re-uses the talent. Config-only: the pre-use gate reads this rule.",
     config: { schema: {
       note: new FF.StringField({ required: false, blank: true, initial: "", label: "Note (shown on the picker card)" }),
     } },
     executor: async function () { /* config-only: the preUseItem single-target gate reads this rule */ },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-thorns",
     label: "Edha: Melee Splash-Back (Thorns)", description: "When a melee attacker damages the owner, the attacker takes the splash automatically (Cinder Coat). Config-only: the applyDamage wrapper reads this rule.",
     config: { schema: {
@@ -21338,8 +21366,8 @@ function edhaRegisterNativeEventSystem() {
       meleeOnly: new FF.BooleanField({ required: false, initial: true, label: "Melee/adjacent attackers only" }),
     } },
     executor: async function () { /* config-only: the applyDamage wrapper reads this rule */ },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-hp-threshold",
     label: "Edha: When An Ally Drops To Half HP", description: "Posts a reaction prompt (chat-card button) when an ally character drops to half HP or below: optionally pay the cost to heal them. Applied automatically.",
     config: { schema: {
@@ -21352,8 +21380,8 @@ function edhaRegisterNativeEventSystem() {
       note: new FF.StringField({ required: false, initial: "", label: "Note (shown on the prompt)", hint: "ONE tight line — the card already names who dropped and to what HP when this is blank. Do not paste the talent description here (bench run 3 defect 4c)." }),
     } },
     executor: async function () { /* config-only: the applyDamage wrapper reads this rule */ },
-  });
-  api.registerItemEventHandlerType({
+  },
+  {
     source: "edha-content", type: "edha-multi-hit",
     label: "Edha: When You Hit Two Or More Creatures", description: "When a matching talent of yours captures 2+ creatures (burst/AoE), posts the talent's choice prompt (Flashpoint). Applied automatically.",
     config: { schema: {
@@ -21364,11 +21392,11 @@ function edhaRegisterNativeEventSystem() {
       note: new FF.StringField({ required: false, initial: "", label: "Choice text (shown on the prompt)" }),
     } },
     executor: async function () { /* config-only: the burst/AoE engine reads this rule */ },
-  });
+  },
+  ];
 
-  console.log("Edha Content | native event system registered (events: edha-deal-damage, edha-on-defeat, edha-take-damage [+sentinels: apply-watch, pre-deal-damage, pre-test, on-hit, pre-use, combat-timing]; handlers: triggered-effect, damage-rider, test-rider, burst, defense-buff, aoe-template, place-hazard, temp-hp, ritual-hp-cost, heal-cut, summon, apply-status, status-sweep, overflow-thp, damage-convert, marked-damage-trigger, hp-threshold, multi-hit; region: edha-content.hazard, edha-content.fate-snare).");
-  return true;
-}
+  return { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES };
+})();
 
 /* ═══ THE RELAY IS NOT A WRITE (2026-09-05, fix pass 4 — bench run 31 defect ③) ═══════════════
  *
@@ -21583,7 +21611,7 @@ Hooks.once("ready", () => {
       bakedEffects: pj(h.bakedEffectsJson), extraItems: pj(h.extraItemsJson),
     });
   };
-  const api = { syncNow: edhaSyncNow, syncActorTalents: edhaSyncActorTalents, syncAllCharacters: edhaSyncAllCharacters, syncAdversary: edhaSyncAdversaryActor, syncAllAdversaries: edhaSyncAllAdversaries, createLootCache: edhaCreateLootCache, setTempHp: edhaSetTempHp, getTempHp: edhaGetTempHp, summon: summonByTalent, showRange: edhaShowRange, drawMana: edhaDrawMana, grantDrawMana: edhaGrantDrawMana, resetTriggers: edhaResetTriggers, fixSettings: edhaFixSettings, clearKindleLights: edhaClearKindleLights, refreshDefBuffs: edhaRefreshDefBuffs, migrateDerivations: edhaMigrateDerivations, fixPcTokens: edhaFixPcTokens, grantStartingKit: edhaGrantStartingKit, creationWizard: edhaCreationWizard, newCharacter: edhaCreatorNewCharacter, isIsolated: edhaIsIsolated, toggleStatus: edhaToggleStatus, darkVeilSweep: edhaDarkVeilSweep, allEffects: edhaAllEffects, raiseStakes: edhaRaiseStakesApi, rally: edhaRallyApi, skipBudget: (v) => { globalThis.edhaSkipBudget = !!v; return globalThis.edhaSkipBudget; }, debug: edhaSetDebug, debugSave: edhaDebugSave, debugsave: edhaDebugSave };   // lowercase alias — Ben typed edha.debugsave() at the 07-12 bench and got a TypeError
+  const api = { syncNow: edhaSyncNow, syncActorTalents: edhaSyncActorTalents, syncAllCharacters: edhaSyncAllCharacters, syncAdversary: edhaSyncAdversaryActor, syncAllAdversaries: edhaSyncAllAdversaries, createLootCache: edhaCreateLootCache, EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES, setTempHp: edhaSetTempHp, getTempHp: edhaGetTempHp, summon: summonByTalent, showRange: edhaShowRange, drawMana: edhaDrawMana, grantDrawMana: edhaGrantDrawMana, resetTriggers: edhaResetTriggers, fixSettings: edhaFixSettings, clearKindleLights: edhaClearKindleLights, refreshDefBuffs: edhaRefreshDefBuffs, migrateDerivations: edhaMigrateDerivations, fixPcTokens: edhaFixPcTokens, grantStartingKit: edhaGrantStartingKit, creationWizard: edhaCreationWizard, newCharacter: edhaCreatorNewCharacter, isIsolated: edhaIsIsolated, toggleStatus: edhaToggleStatus, darkVeilSweep: edhaDarkVeilSweep, allEffects: edhaAllEffects, raiseStakes: edhaRaiseStakesApi, rally: edhaRallyApi, skipBudget: (v) => { globalThis.edhaSkipBudget = !!v; return globalThis.edhaSkipBudget; }, debug: edhaSetDebug, debugSave: edhaDebugSave, debugsave: edhaDebugSave };   // lowercase alias — Ben typed edha.debugsave() at the 07-12 bench and got a TypeError
   const mod = game.modules?.get("edha-content");
   if (mod) mod.api = api;
   globalThis.edha = Object.assign(globalThis.edha || {}, api);
