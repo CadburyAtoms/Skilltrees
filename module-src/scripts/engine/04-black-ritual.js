@@ -97,7 +97,8 @@ async function edhaDispatchOnHit(dealer, target, list) {
   const dealtTypes = list.filter(i => Number(i?.amount) > 0 && i?.type && i.type !== "heal").map(i => i.type);
   if (!dealtTypes.length) return;
   // ENGINE PASS 5.2 (Job 2): edhaRulesForEvent replaces the hand-rolled actor.items double loop —
-  // it already filters by event and item-talent-ness, ordered exactly the same way.
+  // it already filters by event and rule-bearer-ness (talents + weapons since item 84), ordered
+  // exactly the same way. The weapon half is what carries the migrated adversary attacks' cues.
   for (const { item: tal, rule } of edhaRulesForEvent(owner, "edha-on-hit")) {
     if (edhaOnHitIsItemSpecific(tal, rule) && dealer.item !== tal) continue;
     // GM cue on the owner's own hit (Press the Line: allied Raider reaction shot, 07-16).
@@ -195,15 +196,23 @@ function edhaDispatchCombatTiming(combat, moment) {
  *
  * It sweeps the actor's OWN items rather than the EDHA_DRAW_MANA table, so a rule on any talent
  * fires — a Key, or anything else that wants to ride Draw Mana. */
-/* Pure: every rule on the actor's talents listening for `type`, ordered. Split out from the
- * dispatcher so the SELECTION is unit-testable (the dispatch itself is async and the runner is
- * sync). `order` sorts WITHIN a talent, matching edhaDispatchTestResult — across talents the item
- * order stands, which is what lets Red's reminder follow Red's grant. */
+/* Pure: every rule on the actor's RULE-BEARING items listening for `type`, ordered. Split out from
+ * the dispatcher so the SELECTION is unit-testable (the dispatch itself is async and the runner is
+ * sync). `order` sorts WITHIN an item, matching edhaDispatchTestResult — across items the item
+ * order stands, which is what lets Red's reminder follow Red's grant.
+ *
+ * ITEM 84 (2026-09-07): gates on `edhaRuleBearer` (talents + weapons), NOT `edhaIsTalent`. Item 34a
+ * widened the two actor-wide harvest loops (edhaActorRuleOf / edhaActorRulesOf) when it moved the
+ * adversaries' attacks onto weapon-type documents, and left THIS selection behind — so every
+ * `edha-on-hit` rule the migration put on a weapon was silently inert (bench run 42: Surecat's
+ * Pounce cue posted nothing on four applied hits; six shipped rules affected). The widening covers
+ * all four dispatchers that read this — on-hit, combat-timing, draw-mana, ritual-paid — because a
+ * weapon can carry any of those events and dropping them is the identical bug. */
 function edhaRulesForEvent(actor, type) {
   const out = [];
   try {
     for (const item of actor?.items ?? []) {
-      if (!edhaIsTalent(item)) continue;
+      if (!edhaRuleBearer(item)) continue;   // talents + weapons — item 84, matching item 34a's loops
       const rules = edhaEventRules(item).filter(r => r?.event === type)
         .sort((a, b) => (Number(a.order) || 0) - (Number(b.order) || 0));
       for (const rule of rules) out.push({ item, rule });

@@ -1331,11 +1331,36 @@ test("edhaRulesForEvent: picks only rules on the named event", () => {
   assert.strictEqual(got[0].item.name, "Blue Leyline Attunement");
 });
 
-test("edhaRulesForEvent: skips non-talent items entirely", () => {
-  // A weapon carrying a same-named rule must not fire an Attunement rider.
-  const weapon = { type: "weapon", name: "Sword", hasEvents: () => true,
+test("edhaRulesForEvent: skips items that are not rule bearers", () => {
+  // Plain equipment carrying a same-named rule must not fire an Attunement rider. (Weapons WERE
+  // the decoy here until item 84 — see the rule-bearer pin below; equipment is the non-bearer now.)
+  const gear = { type: "equipment", name: "Lantern", hasEvents: () => true,
     enabledEvents: [{ event: "edha-draw-mana", handler: { type: "edha-note" } }] };
-  eq(env.edhaRulesForEvent({ items: [weapon] }, "edha-draw-mana"), []);
+  eq(env.edhaRulesForEvent({ items: [gear] }, "edha-draw-mana"), []);
+});
+
+/* ITEM 84 REGRESSION (2026-09-07, bench run 42) — edhaRulesForEvent gated on edhaIsTalent, which
+ * excludes weapons ON PURPOSE, so all six weapon-borne `edha-on-hit` cues the item-34a weapon
+ * migration moved onto weapon documents were SILENTLY INERT (Surecat's Pounce posted nothing on
+ * four applied hits). Item 34a widened the two actor-wide harvest loops to edhaRuleBearer and left
+ * this one behind. Revert the predicate to edhaIsTalent and this test fails. */
+test("edhaRulesForEvent: a weapon-borne edha-on-hit rule reaches the dispatcher (item 84)", () => {
+  const weapon = { type: "weapon", name: "The Pounce Already Taken", hasEvents: () => true,
+    enabledEvents: [{ event: "edha-on-hit", handler: { type: "edha-gm-cue", note: "already there" } }] };
+  const got = env.edhaRulesForEvent({ items: [weapon] }, "edha-on-hit");
+  assert.strictEqual(got.length, 1, "weapon-borne edha-on-hit rule was dropped by the selection");
+  assert.strictEqual(got[0].item, weapon);
+  assert.strictEqual(got[0].rule.handler.type, "edha-gm-cue");
+});
+
+// The same widening for the other three callers' events — a weapon may now carry any of them.
+// No shipped weapon does today (0 in data/), so these pin the predicate, not a live consumer.
+test("edhaRulesForEvent: the widening covers every caller's event, not just on-hit (item 84)", () => {
+  for (const ev of ["edha-combat-timing", "edha-draw-mana", "edha-ritual-paid"]) {
+    const w = { type: "weapon", name: "Sword", hasEvents: () => true,
+      enabledEvents: [{ event: ev, handler: { type: "edha-note" } }] };
+    assert.strictEqual(env.edhaRulesForEvent({ items: [w] }, ev).length, 1, `${ev} dropped on a weapon`);
+  }
 });
 
 test("edhaRulesForEvent: `order` sorts within a talent — Red's reminder follows Red's grant", () => {

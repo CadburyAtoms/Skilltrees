@@ -1246,9 +1246,15 @@ were stuck there. Two exits, and which one you need depends on whether a hook al
   Blue/Red Keys then carry ordinary `edha-next-test-mod` rules.
 - **An existing engine-detected event** when the behaviour is a passive rider — Calculated Patience
   needed no new event at all, because `edha-pre-test` already fires from the pre-roll injector.
-- **`edhaRulesForEvent(actor, type)`** is the reusable selection: every rule on the actor's talents
-  listening for `type`, `order`-sorted within each talent. Split out of the dispatcher so it is
-  unit-testable — the dispatch is async and `tests/run.js` is synchronous.
+- **`edhaRulesForEvent(actor, type)`** is the reusable selection: every rule on the actor's
+  **rule-bearing** items listening for `type`, `order`-sorted within each item. Split out of the
+  dispatcher so it is unit-testable — the dispatch is async and `tests/run.js` is synchronous.
+  ⚠ It gates on **`edhaRuleBearer`** (talents + weapons) since **item 84** (2026-09-07), not
+  `edhaIsTalent`: item 34a widened `edhaActorRuleOf`/`edhaActorRulesOf` for the weapon migration and
+  missed this one, so all six weapon-borne `edha-on-hit` cues were silently inert until bench run 42
+  caught it. All four dispatchers reading it (on-hit, combat-timing, draw-mana, ritual-paid) inherit
+  the widening. **Use `edhaRuleBearer` for any new rule-harvest loop** — `edhaIsTalent` is for
+  talent-*use* automation (the `preUseItem` veto), where weapons are excluded on purpose.
 - ⚠ **Retire the old table row in the same commit**, or the rider fires twice. For a single-slot flag
   the second write clobbers the first *with the same value*, so it is invisible at the bench.
 - ⚠ **A dispatcher does not always want the GM gate.** `edhaDispatchCombatTiming` has one because a
