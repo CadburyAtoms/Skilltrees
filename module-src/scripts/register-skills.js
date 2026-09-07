@@ -10466,6 +10466,41 @@ function edhaLootRows(items, { cache = false } = {}) {
 }
 // Live geometry: the token rect edhaLootGapFt wants.
 function edhaLootRect(tok) { return { x: tok.center.x, y: tok.center.y, w: tok.document?.width || 1, h: tok.document?.height || 1 }; }
+// The clicking user's nearest owned token within reach of the source, or null.
+function edhaLootMyTokenNear(srcTok) {
+  let best = null, bestGap = Infinity;
+  const opts = { pxPerFt: edhaPxPerFt(), gd: canvas?.scene?.grid?.distance || 5 };
+  for (const t of (canvas?.tokens?.placeables ?? [])) {
+    if (t === srcTok || !t.actor?.isOwner || t.document?.hidden) continue;
+    let g = Infinity;
+    try { g = edhaLootGapFt(edhaLootRect(t), edhaLootRect(srcTok), opts); } catch (e) {}
+    if (g < bestGap) { best = t; bestGap = g; }
+  }
+  return best && edhaLootInReach(bestGap) ? best : null;
+}
+// Player double-clicked a token: if it's a loot source, post the contents card instead of the
+// (permission-blocked) sheet. Returns true when handled. A GM double-click keeps the normal sheet —
+// that's how a cache gets stocked.
+function edhaLootTryOpen(tok) {
+  const actor = tok?.actor;
+  const kind = edhaLootSourceKind(actor);
+  if (!kind || game.user?.isGM) return false;
+  const name = tok.document?.name ?? actor.name;
+  if (!edhaLootMyTokenNear(tok)) {
+    ui.notifications?.warn(`Edha: move within ${EDHA_LOOT_REACH_FT} ft to ${kind === "cache" ? "open" : "search"} ${name}.`);
+    return true;
+  }
+  const rows = edhaLootRows([...(actor.items ?? [])], { cache: kind === "cache" });
+  if (!rows.length) { ui.notifications?.info(`Edha: ${name} — nothing worth taking.`); return true; }
+  const src = tok.document.uuid;
+  const btns = rows.map(r => `<button type="button" class="edha-loot-btn" data-edha-src="${src}" data-edha-item="${r.id}">${r.label}</button>`);
+  ChatMessage.create({
+    whisper: [...new Set([game.user.id, ...edhaGmIds()])],
+    speaker: ChatMessage.getSpeaker({ token: tok.document }),
+    content: `<div class="edha-trigger-card"><p>${kind === "cache" ? "🧰" : "🎒"} <strong>${kind === "cache" ? name : `Searching ${name}`}</strong> — take:</p>${btns.join(" ")}</div>`,
+  });
+  return true;
+}
 // GM console utility (`edha.createLootCache(name)`): mint a stockable cache actor — Loot Caches
 // folder, linked chest token, the lootCache flag, players keep NO ownership.
 async function edhaCreateLootCache(name = "Loot Cache") {
@@ -10492,6 +10527,23 @@ async function edhaCreateLootCache(name = "Loot Cache") {
     return null;
   }
 }
+// Intercept the double-click at the Token class (the same walk-the-proto idiom as the phantom
+// veil's isVisible wrap). Foundry v13 binds `clickLeft2: this._onClickLeft2` per token at draw
+// time, so an `init`-time prototype patch is what every later-drawn token picks up. Non-loot
+// tokens and every GM click fall straight through to the original (Foundry's own sheet gate).
+Hooks.once("init", function edhaPatchLootDblClick() {
+  try {
+    const TokenCls = foundry.canvas?.placeables?.Token ?? globalThis.Token;
+    let proto = TokenCls?.prototype, orig = null;
+    while (proto && !orig) { orig = Object.getOwnPropertyDescriptor(proto, "_onClickLeft2")?.value ?? null; if (!orig) proto = Object.getPrototypeOf(proto); }
+    if (!orig) { console.warn("Edha Content | Token#_onClickLeft2 not found — loot double-click disabled (the GM can still hand items over manually)."); return; }
+    TokenCls.prototype._onClickLeft2 = function (event) {
+      try { if (edhaLootTryOpen(this)) return; } catch (e) { console.error("Edha Content | loot open failed", e); }
+      return orig.call(this, event);
+    };
+  } catch (e) { console.error("Edha Content | loot double-click patch failed", e); }
+});
+
 /* --- Injury tool (shared primitive, backlog 9a): create an injury Item, rolled or typed -------------
  * Creation is the inverse of the Reknit delete-item relay: owner-side create when we own the target,
  * else the `create-item` GM relay. Type picking: a RollTable named like "Injuries" wins when one
