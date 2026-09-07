@@ -3027,7 +3027,7 @@ the Bench tab four fewer open ⚑; `node scripts/gates.js` green. DOCS-ONLY — 
 
 ---
 
-## 92. [ ] R-88 (a) — Volatile Strike drops its `whenDamageType: "impact"` gate so the rider fires on ANY melee hit, as its card says
+## 92. [x] R-88 (a) — Volatile Strike drops its `whenDamageType: "impact"` gate so the rider fires on ANY melee hit, as its card says (2026-09-07, PR #288)
 
 **Why:** bench run 42 (2026-09-07, PR #274) measured both directions on the deployed pack: a plain
 weapon hit that dealt **impact** posted the *"⚡ Volatile Strike — 1 Investiture …"* offer, and the
