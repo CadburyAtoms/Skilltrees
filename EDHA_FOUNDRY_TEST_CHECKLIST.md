@@ -4047,6 +4047,18 @@ for the first time". Keep 2bAB-9.)*
       `The Reckoning`'s `activation.type` is **`"none"`** while the Crownox Ring's is **`utility`**,
       for the same ability — so even a hand-click cannot start the test on one of the two blocks.
       Row stays 🤖, blocked on item 89; re-drive (b) when it ships.
+      🔧 **2026-09-07, item 89 SHIPPED (REBUILD + ⟳ Sync Adversaries — not yet on Ben's deployed
+      pack)** — both blocks now carry a `use` → `edha-def-test` rule (`skill: white, vs: prompt-dc`,
+      the same shape as the Callthief's Counterpoint): using the item queues a real White contest-core
+      test instead of posting an empty card. `The Reckoning` also lost its stray `kind: "trait"` and
+      gained `cost: "Special"` / `consume: "3 Focus"` to match Crownox Ring, so both blocks' built
+      `activation.type` now agree (`skill_test`, promoted by the def-test rule's skill — see item 89's
+      PR for why `vs: prompt-dc` rather than a static `dc`: H1's `dc` field is a flat number only, and
+      "half the damage taken" varies per drop). **Re-drive (b) after the next deploy**: click
+      Unbreakable Line on either block with a target selected, confirm a real White roll posts and the
+      contest resolves (SUCCESS/FAIL line, not an empty card), and confirm both blocks' Activation
+      glyphs now read the same. 🤖 not ⚑ — this is a live-table observation an agent bench run can
+      drive once Ben has rebuilt and synced.
 
 *(**Retributive Guard** — RETIRED on evidence 2026-07-27v, bench run 3, on a **FRESH pack import** with
 three unlinked ring tokens (this is **2bAB-3**): the retaliate **prompt posted by itself from the
