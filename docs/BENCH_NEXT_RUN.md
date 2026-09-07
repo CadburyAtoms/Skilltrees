@@ -99,6 +99,7 @@ what §2 is for.
   both re-derived this independently — a third re-derivation is not a good use of a run.** Run 43's
   view, offered to the PM rather than acted on: these five clauses are **harness-only** and should be
   retired as such, with the repo-side test standing as the record. **Ben's call, not a bench run's.**
+  ✅ **Done by item 90 (2026-09-07, PR #TBD)** — all five retired in `EDHA_FOUNDRY_TEST_CHECKLIST.md`.
 - **The two `# Adversary pack sync` bulk rows need BEN**, not a bench run.
 - **R-62 needs Ben to disconnect `Gamemaster` for one window**, or R-91 answered (a).
 - **`edhaLootTryOpen` refuses a GM by design** — but 34b is now RETIRED, driven from `PlayerBench`.
