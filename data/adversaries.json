@@ -3057,6 +3057,17 @@
         "text": "<p><em>White talent, name verbatim.</em></p><p>Once per round, when an adjacent ring-mate would drop to 0 health, spend 3 Focus and test White against a DC equal to half the damage taken: on a success it drops to 1 health instead — the crown holds.</p>",
         "events": [
           {
+            "event": "use",
+            "handler": {
+              "type": "edha-def-test",
+              "skill": "white",
+              "vs": "prompt-dc",
+              "requireTarget": true,
+              "note": "Success: the ring-mate holds at 1 health instead of dropping (once per round; GM adjudicates — adversary Investiture has no auto-write)."
+            },
+            "description": "H1 `edha-def-test` (2026-09-07, item 89): the missing use rule — clicking the item posted an empty card (no test, no contest core, no roll). DC = half the damage taken has no static/formula field on H1 (the executor reads `Number(h.dc)`, a flat number only), so `vs: prompt-dc` is the closest expressible form — same shape as the Callthief's Counterpoint: the ox rolls White, then the GM enters half the drop damage as the DC when the roll resolves. requireTarget: the dropping ring-mate."
+          },
+          {
             "event": "edha-apply-watch",
             "handler": {
               "type": "edha-gm-cue",
@@ -4664,9 +4675,21 @@
       },
       {
         "name": "Unbreakable Line",
-        "kind": "trait",
-        "text": "<p><em>White talent, name verbatim — the DC test is engine-cued at the drop and adjudicated at the table (adversary Investiture has no auto-write).</em></p><p>Once per round, when a pack-mate adjacent to the lead would drop to 0 health, the lead may test White (DC = half the damage taken) to hold it at 1 instead — the line does not break.</p>",
+        "cost": "Special",
+        "consume": "3 Focus",
+        "text": "<p><em>White talent, name verbatim — the DC test is engine-cued at the drop and adjudicated at the table (adversary Investiture has no auto-write).</em></p><p>Once per round, when a pack-mate adjacent to the lead would drop to 0 health, spend 3 Focus and the lead may test White (DC = half the damage taken) to hold it at 1 instead — the line does not break.</p>",
         "events": [
+          {
+            "event": "use",
+            "handler": {
+              "type": "edha-def-test",
+              "skill": "white",
+              "vs": "prompt-dc",
+              "requireTarget": true,
+              "note": "Success: the pack-mate holds at 1 health instead of dropping (once per round; GM adjudicates — adversary Investiture has no auto-write)."
+            },
+            "description": "H1 `edha-def-test` (2026-09-07, item 89): the missing use rule — clicking the item posted an empty card (no test, no contest core, no roll). DC = half the damage taken has no static/formula field on H1 (the executor reads `Number(h.dc)`, a flat number only), so `vs: prompt-dc` is the closest expressible form — same shape as the Callthief's Counterpoint: the lead rolls White, then the GM enters half the drop damage as the DC when the roll resolves. requireTarget: the dropping pack-mate. Also drops `kind: \"trait\"` (there was no other `cost`, so it defaulted to Passive/type \"none\", which cannot be clicked at all — a def-test rule needs `skill_test`, and every other def-test-bearing adversary ability ships as the default action kind) and adds cost/consume 3 Focus to match Crownox Ring's copy of the same named ability (both mirror the PC card's `3 Investiture`, `data/leyline.json` — Focus is the adversary-side resource, the same Investiture-to-Focus swap Crownox Ring's own Retributive Guard uses elsewhere in this file)."
+          },
           {
             "event": "edha-apply-watch",
             "handler": {
