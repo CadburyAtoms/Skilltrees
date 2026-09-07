@@ -1963,7 +1963,7 @@ makes the gate fail; no engine change.
 
 ---
 
-## 61. [ ] Fix Goldenport / Corvaine map polygons so four cities resolve to the right nation (R-42)
+## 61. [x] Fix Goldenport / Corvaine map polygons so four cities resolve to the right nation (R-42) — done 2026-09-06, PR #256 (DATA + MODULE ASSET: sync push / deploy .bat, no pack rebuild; bench run 41 re-tests the picker row)
 
 **Why:** `lint_map.py` reports four WARNs: city-04/11/14/17 fall outside Goldenport's polygon, and
 city-31 doesn't resolve to Corvaine even though ruling 154 says the border there IS the river.
