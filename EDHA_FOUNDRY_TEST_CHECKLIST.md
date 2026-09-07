@@ -378,7 +378,8 @@ Evidence per row in the delta. **2bAC-2 retired on measured evidence at bench ru
 the small-handler case is structurally intact (see the delta); the one 2bAC row left below is a
 visual-legibility judgment — still ⚑ Ben.
 
-- [ ] ⚑ **2bAC-1 (judgment half) — do the labels read as PHRASES?** — with that same dialog open: does every label read as a phrase in 2 lines or fewer, or are some still jargon that needs re-wording? A measurement cannot answer this; you have to read them. *(Split 2026-07-27w — the geometry half is the bench row above.)*
+- [x] ⚑ **2bAC-1 (judgment half) — do the labels read as PHRASES?** — with that same dialog open: does every label read as a phrase in 2 lines or fewer, or are some still jargon that needs re-wording? A measurement cannot answer this; you have to read them. *(Split 2026-07-27w — the geometry half is the bench row above.)*
+      ✅ **retired 2026-09-07 on Ben's dashboard mark — PASS: no note**
 
 *(**item 37 — orphan-token repair** — RETIRED on evidence 2026-09-05, bench run 30. Run 1: `BENCH SETUP DONE — 16 PCs, 7 targets … orphans: **3 repaired, 0 replaced**`, one ⚠ line per orphan naming `Bench — Green`, `Bench — Heroic`, `Bench Target — Floater`; zero talent/path ⚠ lines. Run 2: `orphans: **0 repaired, 0 replaced**`, no `CREATED` and no `+N talents` line — idempotent. After the repair each token's `actorId` resolves to its own roster actor and **all three drive**: `Bench — Green` drew mana and its `edha-zone` placement ran to completion (Region `Bench — Green — Difficult Terrain`, `terrain.ownerUuid: Actor.KYTl8CYAycyeNR11`) — exactly the flow that refused with "no token on the scene to place terrain from" at run 27; `Bench — Heroic` drove `Sharp Eye` to a resolved card, "Sharp Eye : 6 vs Bench Target — Floater's COG 14 — FAIL", which is also the proof that the repaired **Floater** token resolves as a def-test TARGET. ⚠️ **Four OTHER orphans exist on the Playtest Map** — `The Forgemaster`, `The Demolisher`, `PC Tester`, `Cragdrake Whelp Pack (1)` — and the planner correctly left all four alone: none is a bench-roster name, so they are not ours to touch.)*
 
@@ -445,17 +446,6 @@ Adjacent A` off the `costs:` rule. Whispered, with the ⚖ resolve button. ⚠�
 **ANSWERED 2026-09-06, R-74 (a): author one `costs:` line onto a single adversary ability**
 (default: the Stalker's Fade) — ruling answered 2026-09-06 → item 57, REBUILD.)*
 
-- [ ] 🤖 **R-74 (item 57) — the 28b adversary-bespoke-cost half finally has a subject: the Stalker's
-      Fade.** REBUILD (adversaries pack + ⟳ Sync Adversaries). Fresh Stalker import (Inv 2). Use
-      **Fade** from its sheet: a whispered confirm card posts — *"🌫️ Fade — spend 1
-      Investiture to gain Concealment …? (spends 1 Investiture)"* — and Investiture is **still 2**
-      (the cost is spent on the CLICK, not the post). Click **Fade (1 Investiture)**: Investiture
-      **2 → 1** through `edhaSpendResource`, and the table-run note *"Concealed until the end of its
-      next turn — toggle the Fade marker on the sheet."* posts. **The 28b half:** with an
-      Investiture-watching consumer live (a `proh:{kind:"invest"}` Edict bound to the Stalker, as
-      run 35 staged it), that click prompts and a GM hand-edit of the same pool in the same round
-      does not. **CONTROL:** its `activation.consume` is empty (read the item), so the click is the
-      ONLY deduction — a second Investiture drop would be a double charge.
 
 *(**✅ RETIRED 2026-09-06, bench run 35 — item 13's "a MIGRATED SPEND still taxes the watches".**
 ⚠️ **The row's named subject does not exist.** It said "H10's `edha-focus` Investiture DRAIN … —
@@ -529,16 +519,30 @@ site fired on the probe.)*
   `disposition: ally` (Anticipate) and a probe token whose disposition will not resolve inside the
   range, the offer card lists the real allies and NOT the probe; the same rule at `any` still offers
   the probe. (Was: the probe read FRIENDLY and was offered as an ally.)
+      ⛔ **2026-09-07, bench run 42 — BLOCKED, blocker RE-DERIVED (not inherited).** A placed token
+      cannot carry a non-finite disposition on this build: creating a token with `disposition: null`
+      and updating an existing one to `null` / `undefined` / `NaN` all read back **−1 (HOSTILE)**.
+      So the row's probe cannot be staged at all, and its fallback (an actor with no token) is not a
+      discriminator either — a creature with no token is never in any range sweep. The headless pins in
+      `tests/disposition-failclosed.test.js` remain the proof that holds without a table. Row stays 🤖.
 - [ ] 🤖 **I10b2-2 — sweep empty-note (`edhaSweepEmptyNote`)**: PlotGrant with no ally in range and
   the probe as the NEAREST token — the note names the nearest REAL same-side token and its count,
   never the probe. If the OWNER's own token side does not resolve, the note reads *"…'s token has no
   disposition set — allies and targets cannot be told apart, so nothing is in range."*
+      ⛔ **2026-09-07, bench run 42 — BLOCKED, same re-derived blocker as I10b2-1** (non-finite
+      dispositions coerce to −1 at create AND update on this build).
 - [ ] 🤖 **I10b2-3 — movement-window card (Ordered Advance)**: arm the window, move next to a real
   ally and the probe — the card lists the ally only. A sideless mover's card ends *"…of where it
   stopped (its token has no disposition set, so allies could not be told apart)."*
+      ⛔ **2026-09-07, bench run 42 — BLOCKED, same re-derived blocker as I10b2-1.**
 - [ ] 🤖 **I10b2-4 — Edict `<select>` + Beacon card**: `edhaPickProhibition`'s "Attack a chosen
   ally" list omits the probe (a sideless owner sees `(no allied tokens)`); Beacon of Purity's cleanse
   card lists conditions on real allies only, never the probe's.
+      ⛔ **2026-09-07, bench run 42 — BLOCKED for the probe half; the picker itself was driven.**
+      `edhaPickProhibition` rendered live from `Bench — Order`'s **Edict**: radio options *Move from its
+      space* / *Attack a chosen ally:* / *Activate Investiture* / *Other:* (`edhaProhKind` =
+      `move|attack|invest|other`), with the ally `<select>` listing exactly the six real allied tokens on
+      the scene. The omits-the-probe clause is unstageable for the I10b2-1 reason.
 
 ## Migration machinery (cross-tree behaviour)
 
@@ -571,8 +575,9 @@ really seeing; the push direction was correct on both axes). **ANSWERED 2026-09-
 owning talent's name is canon** ("💥 Vigilant Stance — X is pushed 3 ft."). Current engine behaviour
 stands — no change needed; row CLOSED.)*
 
-- [ ] ⚑ **2bM-1 — ⚠️⚠️ H3 ordering (any ledger)** — as a PLAYER, with **no GM connected**, use **Covenant** on an ally you don't own → It refuses with "a GM must be online… nothing placed" and **no half-formed pact is left behind**. Before the fix the entry was written anyway and then hidden for ever. If a GM is always online at your table, skip — this cannot bite you.
+- [x] ⚑ **2bM-1 — ⚠️⚠️ H3 ordering (any ledger)** — as a PLAYER, with **no GM connected**, use **Covenant** on an ally you don't own → It refuses with "a GM must be online… nothing placed" and **no half-formed pact is left behind**. Before the fix the entry was written anyway and then hidden for ever. If a GM is always online at your table, skip — this cannot bite you.
       ⛔ **BLOCKER (2026-07-27w): needs ZERO GM clients connected, and the bench joins as a GM.** So it is not simply a Ben row — it is **conditionally agent-drivable**: in a window where your own Gamemaster client is CLOSED and the agent joins only as `PlayerBench`, a bench run can drive it. Until such a window is arranged it stays ⚑.
+      ✅ **retired 2026-09-07 on Ben's dashboard mark — SKIP: There will never be no GM connected. This isn't needed, and any similar items aren't needed. There will always be a GM session as the Edha Module needs one to load.**
 *(**2bL-14** — Bear Witness mid-combat reload — and **2bE-9** — adversary widening — both RETIRED on evidence
 2026-07-28l, bench run 23. Evidence in the delta.)*
 
@@ -743,22 +748,6 @@ tree-specific re-test is Ambush Bite's row in the Black block; these two are the
 `msg.rolls[0].formula`, and sample the same root again ~2 s after the card lands — the cosmere damage
 card rebuilds its damage section AFTER `renderChatMessageHTML` fires.)*
 
-- [ ] 🤖 **Prognosis's rider arithmetic is FOLDED — the R-71 fold reaches the rider half.** Run 41
-      read `2d8 + 2 + ((2)d(2 * 3 + 2))[Prognosis]`: the base folded (item 69), the rider not, on the
-      same bar. `edhaRiderBonus` now folds each rider's own `bonusFormula` against the roller's data
-      (`edhaFoldRiderFormula`) before wrapping it. **Re-test:** `Bench — Life` casts Life Surge at a
-      target carrying a condition. `.dice-formula`, sampled 2 s after the card lands, must read
-      **`2d8 + 2 + (2d8)[Prognosis]`** — folded on BOTH sides, one `[Prognosis]` outside the
-      parentheses — and the healing/damage total must be the same size it was at run 41 (2d8 rider,
-      not 0). **NEG:** at a condition-free target the bar is `2d8 + 2` with no rider term at all.
-- [ ] 🤖 **One more rider, one more tree — the fix is family-wide, not Ambush-Bite-shaped.** Drive any
-      SECOND `edha-damage-rider` that produces a labelled term (Kindle on a Red damage talent, or
-      Spearing Beak / Momentum's Edge / Scalpel-Strike — whichever the roster can reach fastest).
-      **Re-test:** its bar must carry **exactly one** copy of the rider's label, OUTSIDE the
-      parentheses, at both sample times, and no `@`-ref may survive into the printed formula. Say
-      which talent was driven and paste the exact string. *(The parentheses are correct and stay:
-      the system's graze clone keeps only dice/operator/pool terms, so an unparenthesised rider die
-      would start riding grazes — do not fail a row for them.)*
 
 ---
 
@@ -1034,43 +1023,6 @@ against a target with two living allies within 10 ft.*
   granter's own round. **NEG (b):** NEITHER side in a combat → stamp `null`, it **survived** a round
   change and the next test rolled **`2d20kl + 4`** with its consume card before clearing.)*
 
-- [ ] 🤖 **Ambush Bite's doubled rider flavor — FIXED IN FIX PASS 10 (TODO 78), re-test.** ENGINE-ONLY
-      (F5). Run 41 proved fix pass 9's repair correct on the string and unreachable on this card, so
-      the repair moved OFF the render and onto message creation: a `preCreateChatMessage` pass
-      (`edhaUndoFlavorPropagation`) strips, from the serialized roll, the flavor copies core's
-      `propagateFlavor` stamped into the parenthetical's own inner roll. The rehydrated
-      `term = roll.formula` then re-derives without the inner label, so the recompiled `formula`
-      getter (what the damage card prints) agrees with the stored `_formula` (what core prints).
-      **The parentheses STAY** — the graze clone keeps only dice/operator/pool terms, so a bare rider
-      die would start riding grazes — and fix pass 9's expected string was wrong to drop them.
-      **Re-test:** one fooled Ambush Bite from the Stillback. Read the card's own `.dice-formula`
-      node **2 s after the card lands** (never `msg.rolls[0].formula`, and never at hook time — run
-      41's lesson): it must read **exactly `1d10 + 3 + (1d6)[Ambush Bite] + 0`** — ONE `[Ambush Bite]`,
-      outside the parentheses — and the damage total must be unchanged (base dice + 3). Sample the
-      same root at hook time too: both samples must now agree. **NEG:** the graze half of that same
-      card still rolls the BASE dice only (no `1d6` in the graze breakdown).
-      ❌ **2026-09-06, bench run 41 — FAIL, on the hash-verified `f2fb3e2da75057ce…` engine. The
-      repair is correct and it runs in the wrong place.** One fooled Ambush Bite from a fresh
-      `Stillback` import (Perception 7 vs DC 12 → *"taken in"*, belief rolled for real): the card's
-      `.dice-formula` reads **`1d10 + 3 + (1d6[Ambush Bite])[Ambush Bite] + 0`**. Damage maths is
-      right (dice 3 and 3, +3 = 9) and the **NEG passes** — the graze block is `1d10` only.
-      **Root cause (hook → handler → write):** `edhaTidyFormula` is fine — fed that exact string in
-      the console it returns `1d10 + 3 + 1d6[Ambush Bite] + 0`. The problem is *when* it runs. A probe
-      hook on `renderChatMessageHTML` for that message fired **twice**, both times on a **detached**
-      element (`root.isConnected === false`), and both times the node already read
-      `1d10 + 3 + (1d6)[Ambush Bite] + 0` — *single*-labelled, so the guard
-      `if (!inner.includes(tag)) return m;` correctly left it alone. **1 500 ms later the same root is
-      `isConnected === true` and reads the doubled string**, graze block now present, node order
-      changed: the system re-renders the damage section asynchronously, AFTER the hook, and that
-      rebuild is where `term = roll.formula` re-derives the inner label. There is **no further
-      `renderChatMessageHTML` pass** on the connected element, and `msg.rolls[0].formula` is already
-      the doubled string, so the doubling lives in the message data, not only in the DOM.
-      **Free discriminator, same session:** on an ENGINE-rolled bare-roll message (Prognosis's rider
-      on Life Surge) the tidy DID land — DOM `2d8 + 2 + ((2)d(2 * 3 + 2))[Prognosis]` while
-      `rolls[0].formula` held `…[Prognosis])[Prognosis]`. The display hook works wherever it sees the
-      final string; the system's own damage **card** is the one surface it does not. A fix belongs
-      upstream of the message, or on a render pass that sees the connected element — **another
-      `renderChatMessageHTML` registration will not do it**.
 
 *(**✅ RETIRED on evidence 2026-09-06, bench run 40 — 2bJ-10b and 2bJ-10c**, same deploy, same
 combat. **2bJ-10b (IGNORED):** the use charged 4 → 3; advancing only the TURN (the tracker moved off
@@ -1103,10 +1055,6 @@ half of the spot-check row, PASSED at run 1 and retired with it.
 answered 2026-09-06 → item 58, REBUILD + ↻ Sync); R-24 (a) YES, keep Reckless Advance as the root —
 no change, moved to §K, graph half of this row retired; R-27 (a) THE CARD is canon, the rally bonus
 is spent on the next test then clears (ruling answered 2026-09-06 → item 52).
-- [ ] 🤖 **R-23 re-test (item 58 shipped) — Volatile Strike rides ANY melee hit.** With
-      `whenDealer: "any"` now on its rule, a plain sword hit (not a Volatile Strike cast) should
-      offer the Investiture prompt to add half [Tier][Die] impact; a standalone cast of Volatile
-      Strike itself should still self-offer on its own hit (harmless, expected per the ruling).
 
 *(**✅ RETIRED on evidence 2026-09-06, bench run 40 — 52-1 and 52-2** (item 52 / R-27), on the
 hash-verified `0ea0741a…` deploy. ⚠️ **The rally-stack talent on `Bench — Red` is `Feeding Frenzy`,
@@ -1383,19 +1331,6 @@ discriminator). Drive: Adaptive Mutation on Bench — Life (or an ally), pick th
 a dummy with a melee weapon, roll damage, click the card's **graze** subtotal so it is active,
 then **Apply**.
 
-- [ ] 🤖 **2bW-18 — a hit-only rider on a graze does NOTHING: Venom Glands ("melee HITS inflict
-      Afflicted", `venomOnGraze: false`).** Graze application → NO Afflicted, no affliction entry,
-      and the whispered note "🐍 Venom Glands (Life): graze — the venom needs a melee hit." Then a
-      HIT application (toggle back to the normal subtotal, Apply) → Afflicted + the ongoing-vital
-      entry as before (2bW-12's evidence). Also confirm the Events tab of Adaptive Mutation shows
-      the two new toggles (Bone Spurs: also fires on a graze = ON; Venom Glands = OFF).
-- [ ] 🤖 **2bW-19 — a damage rider on a graze APPLIES: Bone Spurs ("melee attacks DEAL additional
-      Keen", `keenOnGraze: true`).** Graze application → the "+N keen on the strike" card and the
-      extra keen instance land on the graze total exactly as on a hit. Optional third check: Apex
-      Form's +Tier vital ("DEALS additional Vital on all attacks", `vitalOnGraze: true`) also rides
-      the graze. A scene whose mutation flag was baked BEFORE this deploy carries no dial and keeps
-      firing on a graze — that is the designed fallback, not a bug (re-use the talent after the
-      scene reset to bake the new flag).
 
 ---
 
@@ -1559,14 +1494,6 @@ in the 07-27c delta.
 
 ### Fix pass 7b re-tests (item 48, 2026-09-06 — ENGINE-ONLY, F5; no rebuild, no ⟳ Sync)
 
-- [ ] 🤖 **R-37(2) — Inevitable Snare's card reads as one sentence about one snare — NEG half only.**
-      ✅ **Main clause RETIRED 2026-09-06, bench run 40:** with snares on the ledger, Inevitable Snare
-      posted *"📋 Inevitable Snare : Snare #2 is now inevitable."* — one sentence about one snare, not
-      "the snares on Snare #1 is inevitable". (#2 rather than #1 because the run was at the `@tier`
-      cap and the oldest entry had been evicted; the number is the ledger index.) **What is left is
-      the NEG (the branch that must NOT change):** Sealed Edict on a creature still reads *"the Edict
-      on **&lt;creature&gt;** ("*prohibition*") is now sealed."* — not driven this run (it needs an
-      Order Edict placed through the prohibition picker first).
 
 *(**✅ RETIRED on evidence 2026-09-06, bench run 40 — R-13, R-37(1) and R-37(3)**, on the
 hash-verified `0ea0741a…` deploy, driven on `Bench — Fate` (tier 2, so both caps are 2).
@@ -1882,7 +1809,8 @@ predicate is `edhaCivIsConstruct`, which tests the `summon` flag + the name pref
 The only reader of the `system.type`-based `edhaIsConstruct` is Fault Line's `constructMult`
 (Destruction, already benched).
 
-- [ ] ⚑ **Civ enemy-cost — GO, KEEP the experiment (bench run 7, 2026-07-27e — resolver-level evidence)** — the custom type DID register (`CONFIG.RegionBehavior.dataModels["edha-content.enemy-cost"]` → `EdhaEnemyCostRegionBehavior`, a true subclass of the native `ModifyMovementCostRegionBehaviorType`), and the native base's **only** resolver is `_getTerrainEffects` (`Object.getOwnPropertyNames` on the base prototype gives exactly `prepareBaseData`, `_onUpdate`, `_getTerrainEffects`) — which the subclass overrides. Called on the real behavior with the real tokens: the **ALLY** (disposition 1 = `ownerDisposition`) returns `[]` → ×1; the **ENEMY** (disposition −1) returns `[{"name":"difficulty","difficulty":2}]` → ×2. Identical for token documents and placeables. The second guessed name `getTerrainEffects` does not exist on the base and is dead code that can be deleted. **Ben's remaining half is the ruler UI itself** (a canvas-feel read a hidden-pane session cannot take) — but the underlying cost resolution is proven disposition-filtered, so the experiment should be KEPT.
+- [x] ⚑ **Civ enemy-cost — GO, KEEP the experiment (bench run 7, 2026-07-27e — resolver-level evidence)** — the custom type DID register (`CONFIG.RegionBehavior.dataModels["edha-content.enemy-cost"]` → `EdhaEnemyCostRegionBehavior`, a true subclass of the native `ModifyMovementCostRegionBehaviorType`), and the native base's **only** resolver is `_getTerrainEffects` (`Object.getOwnPropertyNames` on the base prototype gives exactly `prepareBaseData`, `_onUpdate`, `_getTerrainEffects`) — which the subclass overrides. Called on the real behavior with the real tokens: the **ALLY** (disposition 1 = `ownerDisposition`) returns `[]` → ×1; the **ENEMY** (disposition −1) returns `[{"name":"difficulty","difficulty":2}]` → ×2. Identical for token documents and placeables. The second guessed name `getTerrainEffects` does not exist on the base and is dead code that can be deleted. **Ben's remaining half is the ruler UI itself** (a canvas-feel read a hidden-pane session cannot take) — but the underlying cost resolution is proven disposition-filtered, so the experiment should be KEPT.
+      ✅ **retired 2026-09-07 on Ben's dashboard mark — SKIP: This is opus garble- I can't parse it. I'm flagging as not needed and if it comes up later we can reassess.**
 
 ---
 
@@ -1969,6 +1897,15 @@ re-derived, and not a new bug.
   sweep fixed — Natural Order's veil suppression, Voice of Authority (`rollerIs: enemy`), Shatter
   Focus's auto-prompt, a Fate snare spring, and Death Ward's willing bypass (an unset-side target
   now TESTS instead of being read as willing) — one unset-side token each is enough.
+  ⚠️ **2026-09-07, bench run 42 — PARTIAL: both aura directions PASS live, the unset-side clause is
+  BLOCKED.** Mantle armed on `Bench — Power` (status `mantled`), one real ally and one real enemy in
+  Black range, each with exactly ONE token (a second token of the same actor was deleted first — it
+  would have made the NEG unreadable). `affects: allies` → ally `Bench — Order` rolled
+  **`1d20 + 4 + 1[Mantle of the Aspirant]`**, enemy `B42 Stalker` rolled **`1d20 + 0`**. Flipping the
+  rule to `affects: enemies` **on the Events tab field** and re-rolling both inverted it exactly:
+  enemy **`1d20 + 0 + 1[Mantle of the Aspirant]`**, ally **`1d20 + 4`**. Rule restored to `allies`.
+  ⛔ The unset-side token cannot be staged (see I10b2-1: non-finite dispositions coerce to −1), so the
+  five sibling sites are unstageable by the same measurement. Row stays 🤖 for that half only.
 
 ---
 
@@ -2343,7 +2280,7 @@ paths).
 > without the stance and **9** with it. `derived` is the armour-only sub-field and never folds in
 > `bonus`; the engine reads `.value` (`edhaDeflectOf`). **Read `system.deflect.value`, never `.derived`.**
 
-- [ ] ⚑ **The roll dialog DOES have an advantage control — run 11's reading corrected, 2026-07-27n (no
+- [x] ⚑ **The roll dialog DOES have an advantage control — run 11's reading corrected, 2026-07-27n (no
       engine change, read this before chasing it)** — bench run 11 retired the quarry advantage row on
       good evidence (`2d20kh + 4` + the 🎯 card on **both** the fast-forward and dialog paths) but
       concluded that "the cosmere dialog exposes **no advantage control at all**", which made the row's
@@ -2364,6 +2301,7 @@ paths).
       we do about it" ruling is closed, no engine change.** The feel-check above ("is that cue
       readable enough for you?") is the part that stays ⚑ — only Ben's next play session can settle
       it.
+      ✅ **retired 2026-09-07 on Ben's dashboard mark — PASS: no note**
 *(**2bD-7 — regression: the untouched rows** — RETIRED on evidence 2026-07-28l, bench run 23. It had hung on **Sharp Eye alone** since 07-27k, the other three (Tactical Ploy, Valiant Intervention, Steadfast Challenge) having cleared at runs 9 and 10. Sharp Eye now works — see 2bQ-4 — so all four of the untouched rows behave. Evidence in the delta.)*
       ⛔ **RESIDUE, stated exactly — narrowed 2026-07-27v: 3 OF 4 ARE CLOSED AND ONLY SHARP EYE IS
       LEFT.** ✅ Tactical Ploy (2bE-7, both branches, bench run 9) · ✅ Valiant Intervention (2bF-15,
@@ -2402,7 +2340,7 @@ multi-use test-only mods: the count-2 mod applied to two SEPARATE tests and then
 > legitimate consumer and **must not simply be removed**; Shockwave Slam's problem is that its authored
 > `damage.formula` is a *collision* formula being misread as "this talent has its own attack". Fix the
 > discrimination, not the gate. → carry into **test-pass-fixes** with 2bA-5.
-- [ ] ⚑ **Four silently-dead prereqs now bite (2026-07-24b)** — **Know Your Moment** (Scholar) lists
+- [x] ⚑ **Four silently-dead prereqs now bite (2026-07-24b)** — **Know Your Moment** (Scholar) lists
       **Mind and Body** as a talent prereq (it was being dropped entirely); **Resolute Stand**
       (Leader) requires **Athletics 1+**; **Shattering Blow** (Warrior) requires **Windstance**
       AND **Perception 2+** (both were dropped); **Animal Bond** (Hunter) spells "companion".
@@ -2433,6 +2371,7 @@ multi-use test-only mods: the count-2 mod applied to two SEPARATE tests and then
       answered **no**.
       ⚠️ Also measured: `available:false` on an obtained node proves nothing about prereqs — every
       obtained node reads false. Do not read that field as a prereq signal.
+      ✅ **retired 2026-09-07 on Ben's dashboard mark — SKIP: no note**
 
 ---
 
@@ -2526,21 +2465,13 @@ anything that errors in the row's note box.
 
 ## Re-test after item 63 (2026-09-06 — R-25 (c): `whenTarget: downed` on Rousing Presence's Rallying Shout note; **REBUILD heroic + ⟳ Sync Talents first**, then F5)
 
-- [ ] 🤖 **2bM-6b — Rallying Shout's reminder prints ONLY for a downed ally (R-25 (c), item 63, PR #239)** — on
-  **Bench — Heroic** with Rousing Presence + Rallying Shout owned, use Rousing Presence three times, targeting an
-  ally each time: **(1) ally at full HP, no status → NO "📣 Rousing Presence" Rallying Shout line** (the other
-  reminder lines, 2bM-5, still print); **(2) ally at 0 HP → the line prints** ("You may revive an Unconscious
-  ally. If the target is at 0 health it recovers its recovery die + N health"); **(3) ally Unconscious with HP
-  above 0 → the line prints**. Also confirm the field shows on the rule's **Events tab** as "Only when the
-  target is…" = downed (editability is the point of rule 2b). Before this fix run 11 saw the line on an ally at
-  **32 HP**; if it still prints at full HP the pack is stale — check DEPLOY STATE, not the engine.
 
 ## Re-test after the fix pass F fixes (2026-07-28m — three fixed; ⟳ sync the module + F5 first, NO rebuild, NO ⟳ Sync Talents)
 
 
 ## Re-test after the run-13 fixes (2026-07-27q — all three fixed; ⟳ sync + F5 first, no rebuild)
 
-- [ ] ⚑ **One-applier: the dissipates card, RE-TEST (07-27q)** — with **two GM clients** live, break any 1-HP illusion copy (HP→0).
+- [x] ⚑ **One-applier: the dissipates card, RE-TEST (07-27q)** — with **two GM clients** live, break any 1-HP illusion copy (HP→0).
       ⛔ **BLOCKER (2026-07-27w): Ben must press F5 on his Gamemaster client first.** Everything mechanical on this row PASSES; the only open question is whether the doubling survives a reload, and the duplicate is provably his un-reloaded client (see the evidence below). After the F5 this becomes a 🤖 row — re-tag it then rather than leaving it in Ben's queue for ever.
       **POSITIVE:** the "🌫️ …is struck and dissipates" card posts **exactly ONCE**. Run 13 got two, 1 ms apart, authored by `Bench` and by `Gamemaster`.
       **NEGATIVE (load-bearing):** the same hook must not go silent. In the same session, take a **non-PC** to 0 HP → the DEFEATED skull overlay still appears, and healing it above 0 removes it again. That branch shares the guard that was changed, so a gate that is too tight kills the skull as well as the duplicate card.
@@ -2586,6 +2517,7 @@ anything that errors in the row's note box.
       bench run 15** — the pointer that used to say "see the Combustion Chain row directly below" is
       stale and struck 2026-07-27v. This row is now only about the DOUBLING, and it cannot be judged
       until Ben F5s the Gamemaster client.)*
+      ✅ **retired 2026-09-07 on Ben's dashboard mark — SKIP: In-play there will never be 2 GM clients. I'm marking this "skip".**
 
 *(**PROBE — "the adversary I just dragged in does nothing"** — CLOSED 2026-07-27v on its own recorded
 verdict, "recommend closing this row unless the table symptom recurs". Bench run 15 measured it on a
@@ -2860,62 +2792,18 @@ carry **Shortbow + Knife** (and the packed Shortbow reads `attack.type: "ranged"
       live row: `display: flex`, `padding: 5px 8px`, `border: 1px solid rgba(255,214,107,.25)`,
       `cursor: pointer`, and a custom-appearance radio rendered at 14 px. What is wanted is whether the
       bordered rows / hover glow / selected state read as clickable to you at the table.
-- [ ] 🤖 **DEFECT (bench run 38) — the weapon picker said "a Agent" / "a Envoy" — ✅ FIXED, re-read
-      it live.** The intro line was built as `` `the arms a ${pathName} actually carries` `` with the
-      article as a LITERAL (`register-skills.js`, `edhaCreatorWeaponPick`), so every vowel-initial
-      path read ungrammatically: measured live as *"the arms a Agent actually carries"* and *"the
-      arms a Envoy actually carries"*. Hunter/Leader/Scholar/Warrior were unaffected.
-      **SHIPPED 2026-09-06, item 48 (ENGINE-ONLY, F5)** as one `edhaArticle` helper, pinned in
-      `tests/article-agreement.test.js`. **Re-test:** open the weapon step on **all six** paths and
-      read the line — **an** Agent, **an** Envoy, **a** Hunter, **a** Leader, **a** Scholar,
-      **a** Warrior. The four that were already right are the negative control: a fix that merely
-      flipped the literal would break them.
 - [ ] ⚑ **Preview panel centered (07-19y)** — the derived-stat box on the attributes page is
       centered ("90% of the way to clean design" — say what the last 10% needs).
-- [ ] ⚑ **Attributes page — VETO CHECK (Ben)** — are **12 points at L1 / max 3 per attribute at
+- [x] ⚑ **Attributes page — VETO CHECK (Ben)** — are **12 points at L1 / max 3 per attribute at
       L1 / +1 at levels 3, 6, 9, 12, 15, 18** still canon? They come from the legacy
       `Character_Building_Rules.md`. Confirm, or say the real numbers — the wizard enforces
       whatever this answer is. *(Split 2026-07-27w; the enforcement half is the 🤖 row above.)*
-- [ ] ⚑ **Skills page — VETO CHECK (Ben)** — are **5 + (L−1)×2 total ranks** and **max rank
+      ✅ **retired 2026-09-07 on Ben's dashboard mark — SKIP: no note**
+- [x] ⚑ **Skills page — VETO CHECK (Ben)** — are **5 + (L−1)×2 total ranks** and **max rank
       INT((L−1)/5)+2** still canon? Same legacy source as the attributes numbers; confirm or give
       the real ones. *(Split 2026-07-27w; the enforcement half is the 🤖 row above.)*
+      ✅ **retired 2026-09-07 on Ben's dashboard mark — SKIP: no note**
 
-- [ ] 🤖 **Map picker shows the redrawn map** — after deploy: the Where-are-you-from step shows
-      the new map art (Goldenport wash running the whole west coast is the giveaway) and the
-      map is not stretched or letterboxed (the asset aspect changed with the new canvas).
-      ✅ **ANSWERED 2026-09-06, `EDHA_RULINGS.md` R-41 (b): this is the row that stands** — the
-      labelled political map is what Ben wants; "Map v3: label-free" is retired in the wizard
-      section above. The aspect clause is already answered (0.7513 == canvas aspect).
-- [ ] 🤖 **Redrawn polygons hit the right nations** — click near the touchy borders: the
-      Goldenport coastal strip (formerly Kettavar/Lunavar), the Vorsk/Lunavar mountain line,
-      Malcurr's lake country, the Thalendor/Corvaine river line. Hover names must match the
-      wash colors; Sylvaneth island still clickable.
-      - ✅ **2026-07-28h (bench run 21) — all TEN polygons resolve to their own nation, and the
-        picker plumbing is sound.** Clicking each polygon in turn drove the dropdown to ten
-        DISTINCT nations: poly 0→Sylvaneth (**the island is clickable**), 1→Kettavar, 2→Vorsk,
-        3→Malcurr, 4→Lunavar, 5→Thalendor, 6→Goldenport, 7→Ashkar, 8→Canticle, 9→Corvaine. Hover
-        (`pointerenter`) gives name + region — "Goldenport / west coast (inlets = Life-nexus trade
-        arteries)", "Malcurr / northeast lake country (tree-of-lakes waterways)" — with a gold
-        highlight, and `pointerleave` hides the tip. The SVG overlay is pixel-aligned with the
-        image (both 558,326 284×378; viewBox `0 0 2236 2976`), and the culture card + map
-        highlight both follow the select.
-      ⏸️ **The row STAYS only for the border/dead-spot half, which is `EDHA_RULINGS.md` R-42** —
-        the four Goldenport-tagged dots inside no polygon and the Corvaine dot resolving to
-        Thalendor are the defect row below, not a new finding. Centroid hit-testing cannot settle
-        a border question; that needed R-42 answered first.
-        **ANSWERED 2026-09-06, R-42 (a): FIX THE POLYGONS** (ruling answered 2026-09-06 → item 61,
-        map-data, lane R) — Goldenport gains its coastal/island lobes, Corvaine's edge moves to the
-        river bank; row re-tests once `source-materials/maps/thyrcross.map.json` is edited and
-        `lint_map.py`'s four WARNs go to zero.
-        **✅ POLYGONS REDRAWN 2026-09-06, item 61, PR #256** (`thyrcross.map.json` + regenerated
-        `thyrcross-nations.json`; `lint_map.py` city WARNs 4 → 0; every other ring byte-identical).
-        Goldenport's ring now carries the west-coast strip and the two city islands (joined by
-        narrow land corridors); the Thalendor/Corvaine seam sits on the Palewater's west bank at the
-        ferry. **Bench run 41 reads, on the creation wizard's map picker (needs the asset live —
-        `module-src-sync.js status` first):** hover ~[480,1120] and ~[407,1324] (the strip north of
-        the old edge) and the islands ~[746,676] / ~[595,916] → tooltip **Goldenport**; hover
-        ~[1244,1552] (east bank at the ferry) → **Corvaine**, ~[1236,1554] (west bank) →
-        **Thalendor**; a click on each drives the dropdown to that nation; Sylvaneth still clickable.
 - [ ] ❌ **DEFECT (measured by the 2026-07-27v checklist audit, never benched): five map-picker DEAD
       SPOTS / mis-hits, and four of them are holes in the partition** — `module-src/assets/
       thyrcross-nations.json` is byte-identical to `thyrcross.map.json`'s polygons and to the deployed
@@ -3340,75 +3228,12 @@ a normally forged `summonTalent`-stamped Construct**. **OFF** (bench run 8): the
 **pre-cost** — "Edha: Siege Cannon (Siege Form only) needs Siege Form active — toggle it on first.
 Nothing spent." — with **Investiture unchanged at 4**, no consume dialog, no roll. **ON** (bench run 7):
 the Cannon rolled `(2)d(2*3+2)+2+2 = 10` energy and applied exactly **8** through a deflect-2 target.)*
-- [ ] 🤖 **Adversary tokens see like PCs (mechanical half)** — select a synced (or re-dragged)
-      adversary token and read its vision config: `visionMode` is the cosmere **"sense"** mode,
-      the range is its Senses Range (adversary AWA 0 → 10 ft), and a block carrying a bespoke
-      `senses` value still wins over the default. This is a document read, not a look.
-      *(Split 2026-07-27w.)*
-      - ⚠️ **2026-07-28j (bench run 22) — TWO clauses PASS, the third's NUMBER IS WRONG, and the
-        fourth has no instance to test. Read at whole-population scale, not on one token.**
-        ✅ Across **all 47** world adversaries: `visionMode` is **"sense"** for every one, and token
-        sight range **exactly equals** `system.senses.range.value` for every one — **zero**
-        mismatches. Those two clauses are settled.
-        ❌ **"adversary AWA 0 → 10 ft" is not what the world holds: it is 5 ft.** Every world
-        adversary is AWA 0 → Senses **5**. The cause is not a bug in the sync — it is that
-        `edhaDeriveSheetStats` opens with `if (actor?.type !== "character") return;` (~L16296) and
-        **both** `preCreateActor` token-default hooks do the same, so the Edha AWA table
-        (`edhaSensesRangeFtFromAwa`, 0 → 10) is **character-only** and adversaries fall through to
-        the cosmere system's own derivation, which gives 5.
-        ⚠️ **And the PACK disagrees with the WORLD**: all **52** pack adversaries ship
-        `prototypeToken.sight.range` **10** against a `senses.range.value` of **5** (52/52
-        mismatched), and the sync PUSHES that 10 — the placed-token row above watched a token come
-        back at **10** after a sync while its actor's Senses Range stayed **5**. So a synced token
-        sees 10 and a world actor reads 5. Pack 10 · world 5 · sync pushes 10.
-        ⛔ **"a bespoke `senses` value still wins" is UNRUNNABLE as written** — **0 of 52** pack and
-        **0 of 47** world adversaries carry any `senses.range` override or `useOverride`, so there
-        is no such block to test. It needs one authored first.
-        **Row stays 🤖** pending a decision on which number is canon — see the ⚑ design row directly
-        below, whose premise ("10 ft is intended") is the pack's value, not the live one.
-      - 📌 **2026-09-06, bench run 32 — that decision already EXISTS and is numbered: `EDHA_RULINGS.md`
-        **R-56** ("Should adversaries use the Edha Senses Range table too, or keep the cosmere ladder?"),
-        with option **(a)** — extend the Edha table to adversary sheets AND their token sight —
-        recommended. So this row is **not** waiting on a bench run and not on a deploy; it is waiting
-        on **R-56**, and the two remaining clauses are downstream of that one answer. Re-checked
-        against DEPLOY STATE: nothing here is a deployment gap. Row stays 🤖 **only** for the
-        re-measure after R-56 is answered.
-      - ✅ **ANSWERED 2026-09-06, R-56 (a): ONE rule — adversary sheets AND token sight use the Edha
-        AWA table** (ruling answered 2026-09-06 → item 55, ENGINE + BUILD/DATA, REBUILD + world bulk
-        sync). Row stays 🤖 for the re-measure once item 55 ships.
-      - 🚚 **SHIPPED 2026-09-06, item 55 (PR #240, REBUILD + world bulk sync — needs Ben's deploy AND
-        "⟳ Sync Adversaries from Pack" before the re-measure means anything).** The re-test, whole
-        population: on a freshly synced (or re-dragged) adversary, `system.senses.range.value` reads
-        **10** (AWA 0 → the Edha table; was 5) and `prototypeToken.sight.range` / the placed token's
-        `sight.range` read the SAME **10**, `visionMode "sense"` — zero sheet/token mismatches across
-        every adversary. Headless already holds it (tests/adversary-senses.test.js); this row is the
-        live confirmation.
-      - ✅ **2026-09-06, bench run 41 — the ENGINE HALF IS DONE; only the PACK half is left, and the
-        row now says which is which.** On the hash-verified `f2fb3e2da75057ce…` engine, with NO
-        rebuild and NO sync: **all 48 world adversaries (AWA 0) read `system.senses.range.value` =
-        10** — one value across the whole population, from the Edha AWA table (bench run 22 measured
-        **5** on 47/47 before item 55). All 28 characters read 20/15 off the same table.
-        `edhaDeriveSheetStats` writes `.derived` at prepare time, so the sheet half needed no deploy.
-        The **`updateActor` AWA watcher** was driven on an ADVERSARY — the half that used to be
-        character-only — moving one imported adversary 0 → 3 → 1 → 0 and reading **sheet, prototype
-        token and the PLACED token together at every step**: 10/10/10 → 20/20/20 → 15/15/15 →
-        10/10/10.
-        ⛔ **Still blocked on Ben's deploy, correctly:** the *packs'* `prototypeToken.sight.range` is
-        unchanged, so world adversaries still read a mix of 10 and 5 and **45 of 48 mismatch their own
-        sheet**; and **0 of 48** carry a `senses` override, so the Grove row below cannot run either.
-        What is left to re-measure after the rebuild + **⟳ Sync Adversaries from Pack** is the
-        sheet/token agreement across the whole population.
-- [ ] 🤖 **Briar-Gone Grove — the bespoke `senses` override wins on both surfaces** — after the item-55
-      rebuild + sync, the Grove (Thalendor Heartwood Bestiary) reads Senses Range **30 ft** on its sheet
-      (`senses.range.override` 30, `useOverride` true — the engine's table write to `.derived` stays 10
-      underneath) and its prototype token AND a freshly dragged token carry `sight.range` **30**,
-      `visionMode "sense"`. Every other adversary stays at 10. This is the instance the 07-28j note said
-      did not exist ("0 of 52 carry any override"); a document read, not a look. *(Item 55, PR #240.)*
-- [ ] ⚑ **Adversary sight range — does 10 ft feel wrong? Say a number.** — with those tokens on a
+- [x] ⚑ **Adversary sight range — does 10 ft feel wrong? Say a number.** — with those tokens on a
       real map: adversary AWA 0 → **10 ft** is intended, but it is a **design dial**, not a bug.
       If it plays badly, give the number you want instead. *(Split 2026-07-27w; the config read is
       the 🤖 row above. Related: rulings menu — bench PCs carry the same 10 ft and it nearly caused
       a false PASS.)*
+      ✅ **retired 2026-09-07 on Ben's dashboard mark — PARTIAL: We should update the bestiary lore-forge skill to have it create appropriate stats for each adversary. Then the actor tokens for the adversaries will inhereit the correct sight range, speed, etc.**
 *(**Shortsword on the CURRENT Raider** — RETIRED on evidence 2026-07-28j, bench run 22, together with
 "Stale duplicates healed" above (same actors, one pass, as the row asked). ℹ️ **There are FOUR Corvaine
 Raider actors in the world, not five** — both rows say five; the count is stale. All four read
@@ -3440,7 +3265,7 @@ transform was read at the destination) and raised its info card, quoted.*
 at the registered handlers, **not pixel clicks** — no screenshots. That tests the logic and the
 resulting DOM/CSS, **not** physical reachability under a stray overlay.)*
 
-- [ ] ⚑ **Paint overlay imports aligned — REWRITTEN 2026-07-27v against the real numbers; every figure
+- [x] ⚑ **Paint overlay imports aligned — REWRITTEN 2026-07-27v against the real numbers; every figure
       in the previous version was wrong** (it said 2865×3399 and 6 crosshairs, and it listed Heartholt
       and Withervale as still to paint when both are already flagged `painted: true`).
       **Step 0, do this first:** run `python scripts/map/paint_overlay.py`. The committed
@@ -3457,15 +3282,18 @@ resulting DOM/CSS, **not** physical reachability under a stray overlay.)*
       canvas, paint it where it SHOULD be, click that spot in `viewer.html`, and include the "(x, y)" in
       the report — your brush overrules the gazetteer, and the session re-measures whatever routes the
       move changes.
-- [ ] ⚑ **💾 writes the real file** — with an edit pending, 💾 save file → pick
+      ✅ **retired 2026-09-07 on Ben's dashboard mark — SKIP: no note**
+- [x] ⚑ **💾 writes the real file** — with an edit pending, 💾 save file → pick
       `EDHA_CAMPAIGN_CANON.md` (repo root; Chrome/Edge only — the button stays dead in
       Firefox): your change is in the MD (`git diff` shows it). Second save shouldn't re-ask
       for the file.
       ⛔ **BLOCKER (2026-07-27w): genuinely not agent-drivable.** `showSaveFilePicker` needs a real
       user gesture **and** an OS file dialog, is Chrome/Edge-only, and the write lands inside the
       repo. No bench harness can supply any of the three. ⚑ by nature, not by tagging.
-- [ ] ⚑ **Ergonomics verdict** — both tools freeform: pane split, label sizes, search feel,
+      ✅ **retired 2026-09-07 on Ben's dashboard mark — SKIP: no note**
+- [x] ⚑ **Ergonomics verdict** — both tools freeform: pane split, label sizes, search feel,
       editing feel, anything that makes lookup slower than grepping the MD is a bug here.
+      ✅ **retired 2026-09-07 on Ben's dashboard mark — SKIP: no note**
 
 ---
 
@@ -3539,16 +3367,6 @@ the marker is its declared exit (`<!-- NO NAMEABLE HOOK: the miss/graze/hit adju
 module-visible data -->`), so lint pass 5 is satisfied by the reasoned exemption, not by silence.
 Nothing to bench: the mechanic is the GM's application step by construction.)*
 
-- [ ] 🤖 **R-47 (item 57) — no engineering note on the player-facing card.** REBUILD (adversaries
-      pack + ⟳ Sync Adversaries). Fresh imports of **Wrongwake** and **Stillback**: use **Seize and
-      Roll**, **Drag Under** and **Slip the Sound** (the three bench run 16 saw post their rationale
-      verbatim) and read the chat card and the item sheet's description — the words `NO NAMEABLE HOOK`
-      appear in **neither**. **Then** open the item's description source (the `</>` toggle in the
-      ProseMirror editor, or `item.system.description.value` from the console) — the marker is still
-      there as an HTML comment. **CONTROL:** the Stonebound Captain's Combat Training reads the R-29
-      text and nothing after it. ⚠️ If Ben SAVES one of these descriptions from the ProseMirror
-      editor, note whether the comment survives the round-trip — if the editor strips it, R-47 needs
-      a GM-note field instead and lint pass 5 would start failing on the next extract.
 
 ## The 2bAB pre-deploy audit rewires (2026-07-26 — 15 dead adversary copies of tree talents, wired)
 
@@ -3627,31 +3445,6 @@ Scalpel-Strike's +4, Spearing Beak's fooled +1d6) harvest through the new `edhaR
 gate on both actor-wide rule loops — pinned headless; the rows below are the live half.
 The 34b loot half (chest caches, body search) is a separate later PR and has its own rows.
 
-- [ ] 🤖 **Weapon section render** — after ⟳ Sync, open a Corvaine Raider and a Cinderhound:
-      Shortsword / Soldier's Crossbow / Bite sit in the sheet's WEAPONS section; Break and the
-      other bespoke abilities stay under actions/traits. Frost Lance (Frostbinder) is still an action.
-- [ ] 🤖 **Roll parity** — Stonebound Captain's Poleaxe still rolls +7 to hit, 1d10+4 impact;
-      Trooper's Strike +5 / 1d6+2 impact (same numbers as before the migration).
-- [ ] 🤖 **Native defense test** — target a PC token, use a migrated weapon: the roll targets and
-      tests the defender's Physical defense natively (the flow action-typed attacks never had).
-- [ ] 🤖 **Weapon-borne riders survive** (the `edhaRuleBearer` gate): Bite's hit still lights the
-      target (Kindle light), Scalpel-Strike still adds +4 vs a Vital-Diagram-marked target, and
-      Spearing Beak's +1d6 still applies ONLY vs a fooled target — all three riders now live on
-      weapon-type items.
-- [ ] 🤖 **Pack advantage off a weapon attack** — two Cinderhounds on one target: the second Bite
-      still rolls with advantage (the aggro ledger records weapon rolls).
-- [ ] 🤖 **alwaysEquipped** — Bite / Spearing Beak / Slam / Scalpel-Strike show as always equipped
-      (no unequip toggle); gear weapons (Shortsword, Poleaxe, both crossbows, Issued Blade) are
-      ordinary equipment.
-- [ ] 🤖 **Summon weapons** — summon the Forge Construct: Construct Slam and Siege Cannon are
-      weapon-type, Siege Cannon still refuses to fire with Siege Form toggled off
-      (`requiresSummonEffect` is item-type-agnostic), and both target + test defense natively.
-- [ ] 🤖 **melee/ranged discriminator on weapons** — a melee-gated rider fires on a migrated melee
-      weapon hit and stands down on a Crossbow / Soldier's Crossbow shot (`edhaAttackKind` reads
-      the weapon's native `attack.type`; the crossbows carry `attack.range.value 60`).
-- [ ] 🤖 **⟳ Sync carries the weapon items** — a world adversary that pre-dates this deploy loses
-      its action-typed Strike/Bite and gains the weapon-typed one after one Sync click (position,
-      HP, and the actor's other items kept); a renamed copy is skipped as before.
 
 **34b — loot caches + body search** (2026-09-06, PR #233, ENGINE-ONLY → F5 / relaunch, no pack
 rebuild). `edha.createLootCache(name)` mints a flagged cache actor with a linked chest token; a
@@ -3671,6 +3464,16 @@ logged in as a player user owning a PC token) — rows 3–5 need the player sid
       and stocking an **`alwaysEquipped: true`** weapon on the **cache** listed it normally
       (*"🧰 Bench Chest — take: Food (ration, 1 day) ×3  ·  B40 Natural Fang"*), so the exclusion is
       body-only exactly as designed.
+      🔎 **2026-09-07, bench run 42 — the DEPLOY blocker is GONE and the refusal is now genuinely
+      exercised, but the live take needs a player client.** With the rebuilt pack live, the Cinderhound's
+      Bite is `type: "weapon", alwaysEquipped: true`, so `edhaLootableItems` (re-implemented inline —
+      the function is module-scoped) returns **`[]` for the BODY and `["Bite"]` for a CACHE**: the
+      exclusion is the `alwaysEquipped` branch, not "not gear at all". Matched control on the same
+      build: a defeated `B42 Corvaine Raider`'s body now offers **both** `Soldier's Crossbow` and
+      `Shortsword` (run 40 saw only the Shortsword, because the Crossbow was still `action`-typed) —
+      a direct before/after that the rebuild landed. ⛔ **Row stays 🤖 for the live card only:**
+      `edhaLootTryOpen` returns early for a GM by design (`if (!kind || game.user?.isGM) return false`),
+      so the search card cannot be raised from the `Bench` GM client — it needs `PlayerBench` logged in.
 
 *(**✅ RETIRED on evidence 2026-09-06, bench run 40 — the other SIX 34b rows**, driven on the
 hash-verified `0ea0741a…` deploy with `PlayerBench` logged in as a real second client.
@@ -3713,42 +3516,33 @@ Parity in the PR: 336 embedded docs, 39 changed (36 + item 67's 3), 0 roll diffe
 applies R-81 default (a) to the three run-19 blocks — open for Ben's veto on the ruling, but the
 rows below test what shipped.
 
-- [ ] 🤖 **34c render/roll parity — Lunavar Fens** — fresh Reedling + Stillback: Whip-Lash and
-      Ambush Bite sit in the WEAPONS section (always equipped); Whip-Lash rolls +4 / 1d6+1 impact,
-      Ambush Bite +6 / 1d10+3 keen. Seize and Roll stays an action.
-- [ ] 🤖 **34c render/roll parity — Malcurr Lakes + the Sevenbrand** — Wrongwake Breach Strike
-      +6 / 1d10+2 keen (weapon, always equipped); the Construct-Smith's Forge-Hammer is an ORDINARY
-      weapon (`hammer`, unequip toggle present), +5 / 1d8+2 impact. Drag Under stays an action.
-- [ ] 🤖 **34c render/roll parity — Goldenport Coast** — Garden Sow Tusk Rake +7 / 1d10+4 impact
-      (weapon); Trampling Charge stays a 2-action action. Keelshadow Breach and Drag +6 / 1d8+4 keen.
-- [ ] 🤖 **34c render/roll parity — Canticle Plains** — Callthief Take the Answerer +6 / 1d8+2 keen;
-      False Spring Glare-Strike +7 / 1d10+3 energy; Reeve-Owl Stoop of Office +6 / 1d8+2 keen.
-- [ ] 🤖 **34c render/roll parity — W29 balance-pass blocks** — Brandram Ram +7 / 1d10+3 impact,
-      Tussock-Sow Tusk Rake +6 / 1d10+2 keen, Surecat The Pounce Already Taken +7 / 1d8+2 keen; the
-      Noonwing's Wingstorm and The Stoop stay actions.
-- [ ] 🤖 **34c render/roll parity — Vorsk Ranges** — Cragdrake Alpha Rend +9 / 1d10+4 keen
-      (weapon); Cragdrake Adult Bite +7 / 1d8+2 keen (weapon) while its Searing Bolt is still an
-      ACTION that consumes 1 Focus (+6 / 1d6 energy).
-- [ ] 🤖 **34c render/roll parity — Ashkar Mesas** — Hazewyrm Elder Rend +9 / 1d10+4 keen (weapon);
-      Slagbull Gore +8 / 1d10+3 impact; both Hazewyrm Searing Bolts stay Focus-costed actions.
-- [ ] 🤖 **34c render/roll parity — Kettavar Tundra** — The Doubled Elder Raking Grasp +8 / 1d10+4
-      keen; Cull-Alpha Culling Bite +6 / 1d6+2 keen; both weapons, always equipped.
 - [ ] 🤖 **34c weapon-borne riders survive** (the `edhaRuleBearer` gate, second consumer set): a
       fooled `edha-damage-rider` on a weapon-type item still fires — The Doubled's Raking Grasp adds
       +1d6 ONLY against a target taken in by The Doubling (CONTROL: an un-fooled target gets the
       bare 1d8+2); an on-hit `edha-gm-cue` on a weapon still whispers — Surecat's The Pounce Already
       Taken posts its cue when its damage lands.
-- [ ] 🤖 **R-81 (item 67) — Shockwave Slam pushes 10 ft.** Brandram hits a PC token with Ram on a
-      clear lane: the victim is pushed **10 ft** (600 px at 300 px/5 ft), not 5; collision half 1d6
-      impact unchanged. The rule is `{bySize: false, distanceFt: 10}`; the card bolds "up to 10 ft".
-- [ ] 🤖 **R-81 (item 67) — the Brandram's Reckless Advance charges 10 ft.** Park a target ≥ 15 ft
-      away, target it, use Reckless Advance: the token travels **600 px** and the card reads "charge
-      up to 10 ft". CONTROL: from 5 ft away it stops adjacent (clipped by the target).
-- [ ] 🤖 **R-81 (item 67) — the Tussock-Sow's Sudden Growth places a 10-ft square.** Use it
-      (1 Focus, edha-burst terrain): the placed difficult-terrain square measures **10 ft** (600 px a
-      side), matching the Briar-Gone Grove's at rank 3; the card reads "A 10-ft square of mire".
-      Placement range is still by rank (30 ft at green 2) — the card's "within 10 ft" is a known,
-      reported drift, not this row's subject.
+      ⚠️ **2026-09-07, bench run 42 — PARTIAL, row stays: the RIDER half passes and the CUE half is a
+      root-caused DEFECT.** On the hash-verified `609c7e45…` engine, with the whole REBUILD stack live.
+      ✅ **Rider, with a matched control in the same window:** a fresh `B42 The Doubled` rolled
+      `1d8 + 2 + (1d6)[Raking Grasp] + 0` against `Bench Target — Adjacent A` (The Doubling: Perception
+      8 vs 13 → *taken in*) and the bare `1d8 + 2 + 0` against `Bench — Order` (Perception 18 vs 13 →
+      *sees through it*) — the `whenTargetFooled` rider on a weapon-type item fires, and only when fooled.
+      ❌ **Cue: an `edha-on-hit` rule that lives on a WEAPON document never dispatches.** Surecat's
+      `The Pounce Already Taken` (`edha-on-hit → edha-gm-cue`) posted NOTHING on four applied hits — out
+      of combat and on its own turn inside a started combat. **Root cause, in code:**
+      `edhaRulesForEvent` (`module-src/scripts/engine/04-black-ritual.js:206`) gates on `edhaIsTalent`,
+      which excludes weapon-type items by design; item 34a widened `edhaActorRuleOf`/`edhaActorRulesOf`
+      to `edhaRuleBearer` (talents + weapons) but not this one. **Proven by mutation:** setting
+      `flags.edha-content.adversaryTalent = true` on that same weapon — the only field that changes
+      `edhaIsTalent`'s verdict — made the identical take post *"⏰ The Pounce Already Taken (B42 Surecat):
+      … (hit Bench Target — Adjacent A.)"*, whispered to Bench + Gamemaster. **Positive control:**
+      Brandram's Shockwave Slam (`edha-on-hit → edha-push`, on a **trait**) fired in the same session.
+      **Blast radius, measured across all five packs: 6 shipped weapon-borne `edha-on-hit → edha-gm-cue`
+      rules are inert** — Wake-Eel Shoal/Worry the Failing, Dirgehound Pack/Worry the Straggler,
+      Callthief/Take the Answerer, Surecat/The Pounce Already Taken, Fellstag/Antler Sweep,
+      Keelshadow/Breach and Drag. The 13 `edha-pre-deal-damage → edha-damage-rider` weapon rules are
+      unaffected (four of them measured firing today). **Fix = one predicate swap** (`edhaRuleBearer`
+      in `edhaRulesForEvent`); re-test this row's cue half after it ships. → test-pass-fixes.
 
 ---
 
@@ -4109,6 +3903,16 @@ for the first time". Keep 2bAB-9.)*
         cross-check. ⚠️ **(b) below is still NOT fixed by this** — the missing `use` rule is separate,
         and so is R-52 (c)(ii), edge-to-edge measurement for sized tokens (TODO item 62), which is
         what "an ADJACENT ox" would still need for a Huge owner.
+      - 📏 **R-52 (c)(ii) MEASURED 2026-09-07, bench run 42 — the numbers item 62 needs.** Staged on the
+        Playtest Map (300 px = 5 ft) with a real 3×3 token (the Fen-Heart token temporarily widened to
+        3×3, restored to 2×2 after) and a 1×1 neighbour **touching** it — edge-to-edge **0.0 ft** in
+        every case. Centre-to-centre, against the current gate (c2c ≤ rule + 2.5 ft slack, so 7.5 ft
+        for a 5-ft rule): **1×1 owner 5.0 ft ✅ · 2×2 (Large) 7.5 ft ✅ (exactly on the boundary — the
+        case run 39 measured firing) · 3×3 (Huge) orthogonal 10.0 ft ❌ · 3×3 diagonal 14.142 ft ❌ ·
+        4×4 (Gargantuan) orthogonal 12.5 ft ❌.** So the half-square slack fixed Large and nothing
+        larger, and the slack a Huge owner would need is 5 ft (7.5 ft for Gargantuan) — i.e. **size-
+        dependent, which is exactly what edge-to-edge gives for free (0.0 ft at every size)**. Item 62
+        can be reframed on these six numbers; nothing else here is blocked on them.
       ❌ **(b) "the White test resolves through the contest core on use" is UNIMPLEMENTED on both
       blocks.** Behaviour-tested, not merely read: using the item on either block posted an **empty
       chat card** (`content: ""`) with the owner as speaker — no test, no contest core, no roll.
@@ -4216,26 +4020,6 @@ the Ram damage formula came out **`1d10 + 3 + (2d4)[Momentum's Edge] + 0`** — 
 labelled. Control: re-stamped at rest, 0 px moved → **`1d10 + 3 + 0`**, no rider. First ADVERSARY
 consumer of `whenMovedTowardFt`, working.)*
 
-- [ ] 🤖 **Shockwave Slam push** — melee hit pushes up to 10 ft; collision deals half 1d4
-      impact (the real edha-push rule).
-      **2026-07-28e, bench run 19 — FAIL on the distance, row stays. Two corrections to the row
-      itself, and the cause is shared with the Reckless Advance row below.**
-      ✅ The push FIRES: *"💥 Shockwave Slam — Bench Adv — Victim Tokened is pushed **5 ft**."*,
-      measured 300 px = 5 ft.
-      ❌ **The card promises 10 ft and the engine delivers 5.** Card text (read live off the deployed
-      item): *"the target is pushed up to **10 ft**; collision with an obstacle deals half 1d6 impact
-      (half [Tier][Die]: count = tier 1, die = rival rank 2, ruling 122)"*. The rule is
-      `{bySize: true, distanceFt: 5, collisionFormula: "floor(1d6 / 2)"}` — and **`bySize: true` makes
-      `distanceFt` dead**: `edha-push` resolves `EDHA_SIZE_FT[edhaColorRank(owner, "red")]`, and
-      Brandram's **red rank is 2** → `EDHA_SIZE_FT[2]` = **5 ft**. The card was written against
-      rank-3 numbers; ruling 122 gives adversaries the **role** rank, which for a rival is 2.
-      📝 **The row's own "half 1d4" is WRONG and is corrected here** — card AND rule both say
-      **`floor(1d6 / 2)`**, they agree; only the row was stale.
-      ⚠️ The collision die could **not** be observed and that is geometry, not a defect: with a
-      one-square (5 ft) push, travel-then-collide is impossible — the next square is either free
-      (full 5 ft, no collision) or occupied (**"pushed 0 ft (stopped by Bench Target — Floater)"**,
-      and the engine correctly rolls no die on a push that never travelled). Same all-or-nothing
-      construction run 17 mis-filed as a bug.
 - [ ] 🤖 **Reckless Advance / Unstoppable executors** — use → 10-ft no-Reaction charge;
       Fast-turn damage → free half-Speed move (once/turn).
       **2026-07-28e, bench run 19 — PARTIAL + BLOCKED, row stays 🤖.**
@@ -4291,6 +4075,13 @@ consumer of `whenMovedTowardFt`, working.)*
       unmoved**; the identical call with **`animate: false` moved it**. A **1×1** token failed exactly the same
       way, which is what rules the footprint out. Not an engine defect — a harness limit with a workaround (pump
       `canvas.app.ticker.update()`; see the run-29 runbook lessons).
+      ✅ **2026-09-07, bench run 42 — the DISTANCE half is FIXED and measured; only the Unstoppable half
+      is left.** Item 67 replaced `bySize` with `{bySize: false, distanceFt: 10}`: on the rebuilt pack a
+      fresh `B42 Brandram` charged **600 px = 10.0 ft** exactly (*"💨 Reckless Advance — B42 Brandram
+      moves 10 ft toward Bench — Order, ignoring Reactions."*) from a 20-ft start on a wall-free lane.
+      CONTROL: from a 17.3-ft start the same use clipped — *"moves 5 ft … (stopped by Bench — Order)"* —
+      the Large charger's own footprint, not the allowance. **Row stays 🤖 only for Unstoppable's
+      fast-turn → free half-Speed move (once/turn), which was not driven.**
 
 *(**Bloodied withdraw cue** — RETIRED on evidence 2026-07-28e, bench run 19:
 *"⏰ Deny It the Run-Up (Bench Adv — Brandram): Bloodied — it withdraws uphill; it has proved what it
@@ -4347,12 +4138,6 @@ together, neither alone.)*
 (5400,9000 → 5400,9150) and the card read "💨 Reckless Advance — … moves 3 ft toward Bench Target —
 Isolated, **ignoring Reactions**".)*
 
-- [ ] 🤖 **R-46 (item 57) — Reckless Advance charges 25 ft.** REBUILD (adversaries pack + ⟳ Sync
-      Adversaries). Fresh Whelp Pack import; park a target **≥ 30 ft** away on a clear lane, target
-      it, use Reckless Advance: the card reads *"moves **25 ft** toward …, ignoring Reactions"* and the
-      token has travelled 1500 px (5-ft grid at 300 px). **CONTROL:** the same use from **10 ft**
-      away stops adjacent (clipped by the target, not by the allowance). The rule is
-      `{bySize: false, distanceFt: 25}`; the card text states "up to 25 ft (its full Speed)".
 
 ## 2. Cragdrake Adult (rival ×2, wolf-sized)
 
@@ -4369,13 +4154,6 @@ Weakened. See that run's handoff delta.)*
 > test-pass-fixes. *(Reckless Advance's prose states no distance, so it is not the same drift —
 > though a "charge" that moves 3 ft is a design question, logged to `EDHA_RULINGS.md`.)*
 
-- [ ] 🤖 **R-48 default (a), applied by item 57 — Explosive Leap moves 20 ft.** REBUILD (adversaries
-      pack + ⟳ Sync Adversaries). Fresh Cragdrake Adult import; target a token **≥ 25 ft** away on a
-      clear lane, use Explosive Leap: the card reads *"moves **20 ft** toward …"* and the token has
-      travelled 1200 px. The rule is now `{bySize: false, distanceFt: 20}` — the card's own number.
-      ⚠️ Ben may still veto R-48 (it is applied as the PM's recorded default, not answered); the
-      Brandram's Shockwave Slam / Reckless Advance and the Tussock-Sow's terrain square from the
-      run-19 table are NOT touched by item 57 — they are the same family and want the same decision.
 
 ## 3. Cragdrake Alpha (boss, tier 2)
 
@@ -4842,7 +4620,7 @@ re-queue.**)*
         true` and a hand-picked clear `ORIGIN` — budget a step for it rather than discovering it at
         the row. The ally-vs-enemy pair is otherwise ready: `Bench — Order` (disposition 1) and
         `Bench Target — Adjacent A` (−1) stand three squares apart.
-- [ ] 🤖 **Job 6a — 4 flag/status writes that used to fail SILENTLY with no GM online now warn the
+- [x] 🤖 **Job 6a — 4 flag/status writes that used to fail SILENTLY with no GM online now warn the
       player instead.** With no GM connected (or `game.users.activeGM` unset), as a non-owning
       player: (1) unmark a ledger entry via `edhaListUnmark`'s consumer (any H3 list release/evict
       on a creature you don't own), (2) `edhaRemoveMark`'s reroll-reaction removal, (3) an
@@ -4853,6 +4631,7 @@ re-queue.**)*
       nothing. Also confirm the OTHER 3 unified sites (`edhaSetNextTestMod`, `edhaSovSetSteps`,
       `edhaGrantAdvAttack`, `edhaGrantTempHpCross`) still warn as before (they already did — this is
       a wording-consolidation regression check, not a behavior flip).
+      ✅ **retired 2026-09-07 on Ben's dashboard mark — SKIP: retired under R-86 (Ben, 2026-09-07): "There will never be no GM connected. This isn't needed, and any similar items aren't needed. There will always be a GM session as the Edha Module needs one to load."**
 *(**Job 6b — `edhaWriteStatusMark`'s GM-relay consolidation** — ✅ **PASS, RETIRED on evidence: ALL
 THREE shapes are now proven** (list-kind placement at bench run 30; the enemies-in-range fill and the
 plain victim mark at bench run 31, 2026-09-05). Every leg was driven from **`PlayerBench`**, a genuinely
