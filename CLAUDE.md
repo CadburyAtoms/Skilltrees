@@ -62,7 +62,13 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
 ## Where behavior lives
 
 - **`module-src/scripts/register-skills.js`** — the ENTIRE runtime engine (single tracked copy,
-  ~19.7k lines (2026-09-05, `wc -l`); mirrored to Ben's live module by `scripts/module-src-sync.js`).
+  ~21.8k lines (2026-09-06, `wc -l`); mirrored to Ben's live module by `scripts/module-src-sync.js`).
+  **Since item 4 (2026-09-06, PM-R15) it is ASSEMBLED, not hand-edited: the edit surface is
+  `module-src/scripts/engine/NN-<slug>.js`** — one source per `/* ===` banner (55 files, lexical
+  order = file order). Edit the source, run `node scripts/engine-assemble.js`, commit BOTH; gate
+  `engine-assembly` fails when the tracked file is not their byte-exact concatenation, and the
+  assembled file is still what deploys, what `tests/harness.js` loads, and what `lint-refs.js`
+  reads. The section → file map is in `ENGINE_INDEX.md`.
   Every generic handler, one tree-section header per tree. ⚠️ Also, today, **200 talents' worth of
   name-keyed automation** — that is the iron-rule-2b backlog, not the pattern to copy (this line
   used to read "all name-based automation lives here", which is how the backlog grew). New
@@ -102,7 +108,8 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
    mean **2a**.)
 
    **2a. One engine, no side-engines.** All runtime code lives in
-   `module-src/scripts/register-skills.js`. New automation composes existing primitives — grep
+   `module-src/scripts/register-skills.js` (assembled from the per-section sources under
+   `module-src/scripts/engine/` since item 4 — one deployed file, still). New automation composes existing primitives — grep
    `ENGINE_INDEX.md` FIRST. A genuinely new mechanic adds ONE small generic handler/flag/event
    type, never a bespoke per-tree subsystem and never a second script.
 

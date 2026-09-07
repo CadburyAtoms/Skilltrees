@@ -82,7 +82,7 @@ version control; git history already remembers them.~~ *(Done 2026-07-06 — the
 
 ---
 
-## 4. [ ] Split the ~19.7k-line engine (2026-09-05) into concatenated sections (keep ONE deployed file)
+## 4. [x] Split the ~19.7k-line engine (2026-09-05) into concatenated sections (keep ONE deployed file) — DONE 2026-09-06, PR #247
 
 **Why:** `module-src/scripts/register-skills.js` is the ceiling on maintainability.
 The single-file property matters for deployment (module-src-sync mirrors one file to
@@ -101,6 +101,24 @@ Ben's live module) — but the *source* doesn't have to be one file.
 
 **Done when:** sources are per-section, the assembled engine is byte-stable, all
 gates green, docs updated. This is the largest item — do it alone in its own session.
+
+**PM:** lane R · model fable-worker · size L · deps #23 (banners, #179) + #24 (table registry, #244) · verify: three equal SHA-256s + a mutation of one source failing `--check`.
+
+**DONE (2026-09-06, #247 — TOOLING-only; the deployed file did not change by one byte).** Ruling
+**PM-R15** applied as the default: the assembled `module-src/scripts/register-skills.js` STAYS the
+tracked and deployed artifact; the per-section sources are the EDIT surface. `scripts/engine-split.js`
+(re-runnable) cuts the engine at every column-0 `/* ===` banner into `module-src/scripts/engine/NN-<slug>.js`
+— **55 files**, each an exact byte range, lexical order = assembly order; the head docblock is file 00,
+the largest is `53-native-event-system.js` at **3,067 lines** (one banner, one file — no invented
+seam). `scripts/engine-assemble.js` concatenates them (CRLF→LF only, the engine is tracked LF) and
+`--check` names the first differing line + its source file. Gate **`engine-assembly`** sits right after
+`engine-check` in `gates.js`; the pre-commit body runs it when the engine or `engine/` is staged.
+Proof: sha256 `acac2589…` for the tracked engine before the split, the re-assembled engine, and
+`origin/main:module-src/scripts/register-skills.js`; a one-line mutation of `41-life.js` failed the
+gate at engine line 13186 (`source 41-life.js:5`), re-assembly green. `module-src-sync.js` still
+mirrors only the assembled file (its `FILES` list; checked). Docs: `ENGINE_INDEX.md` header rule +
+section → file map, CLAUDE.md "Where behavior lives" + rule 2a, the three engine-editing skills,
+`scripts/README.md`.
 
 ---
 
