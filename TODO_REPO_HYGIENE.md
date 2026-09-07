@@ -2802,7 +2802,7 @@ to Foundry).
 
 ---
 
-## 86. [ ] `edhaListPlaceNotes` harvests `placeNote` behind `edhaIsTalent` and would drop a weapon-borne placeNote (item 84's bug, one loop over)
+## 86. [x] `edhaListPlaceNotes` harvests `placeNote` behind `edhaIsTalent` and would drop a weapon-borne placeNote (item 84's bug, one loop over) (2026-09-07, PR #283)
 
 **Why:** item 84's report (PR #276, 2026-09-07) swapped `edhaRulesForEvent`'s gate from
 `edhaIsTalent` (talents only, weapons excluded on purpose) to `edhaRuleBearer` (talents + weapons),
