@@ -33,7 +33,7 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
-## 2026-09-06 — Item 55: ONE senses rule for PCs and adversaries, R-56 (a) (**ENGINE + BUILD/DATA → pack REBUILD + a world bulk "⟳ Sync Adversaries from Pack", Ben's deploy; PR #__PR__**)
+## 2026-09-06 — Item 55: ONE senses rule for PCs and adversaries, R-56 (a) (**ENGINE + BUILD/DATA → pack REBUILD + a world bulk "⟳ Sync Adversaries from Pack", Ben's deploy; PR #240**)
 
 R-56 (a), Ben: adversary SHEETS and TOKEN SIGHT use the Edha AWA table (0→10, 1→15, 2–3→20, 4→25,
 5+→30), exactly as PCs do. Bench run 22 had measured three surfaces disagreeing about the SAME

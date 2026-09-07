@@ -1799,7 +1799,7 @@ row.
 
 ---
 
-## 55. [x] One senses rule for PCs and adversaries alike (R-56) — DONE 2026-09-06, PR #__PR__ (REBUILD + world bulk sync, bench-pending)
+## 55. [x] One senses rule for PCs and adversaries alike (R-56) — DONE 2026-09-06, PR #240 (REBUILD + world bulk sync, bench-pending)
 
 **Why:** Ben (a): adversary sheets AND token sight should use the same Edha AWA table as PCs, not
 the flat 10 ft pack-token default or the raw cosmere ladder. This unblocks the "Adversary tokens
@@ -1817,7 +1817,7 @@ still reads correctly; packs rebuild clean.
 **PM:** lane B · model opus · size M · deps none · verify: pack rebuild (Ben's deploy) + a world
 bulk sync (authorised by this ruling). REBUILD + world bulk sync.
 
-**Shipped 2026-09-06 (PR #__PR__):** the guard is gone at `edhaDeriveSheetStats` (senses now run
+**Shipped 2026-09-06 (PR #240):** the guard is gone at `edhaDeriveSheetStats` (senses now run
 for every actor type; HP/Speed stay PC-only below a later guard), the `preCreateActor` token-default
 hook (adversaries get sight = table(AWA) too, without the PC's HOVER displayName), and the AWA
 `updateActor` watcher; the `ready` refresh sweep resets every actor, not just characters, so a world
