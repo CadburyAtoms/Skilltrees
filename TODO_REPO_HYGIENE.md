@@ -2421,7 +2421,7 @@ snapshot. Found by item 71.
 
 ---
 
-## 76. [x] The phone card's DEFAULT is empty for bold-inline defaults, and R-80 / R-81 say "(§I)" but live in §C (2026-09-06, PR #PRNUM)
+## 76. [x] The phone card's DEFAULT is empty for bold-inline defaults, and R-80 / R-81 say "(§I)" but live in §C (2026-09-06, PR #262)
 
 > **DONE 2026-09-06.** Root cause of the empty default: `RULING_DEFAULT_RE`'s `[^*]+` capture
 > stopped at the first `*` of the inner `**(a) …**`, and because that WAS a match the "no default
