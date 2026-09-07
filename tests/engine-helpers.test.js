@@ -226,6 +226,29 @@ test("edhaTidyFormula never touches operators inside flavor labels", () => {
   assert.strictEqual(env.edhaTidyFormula("1d8[Predatory+Patience]+2"), "1d8[Predatory+Patience] + 2");
 });
 
+/* --- edhaTidyFormula — the DOUBLED rider flavor (fix pass 9 / TODO 72; bench run 40) -------------
+ * `1d10 + 3 + (1d6[Ambush Bite])[Ambush Bite] + 0` is Foundry's doing, not ours: a flavored
+ * ParentheticalTerm propagates its flavor onto every inner term on evaluation
+ * (client/dice/terms/parenthetical.mjs:105 → roll.mjs:496) and then re-derives `term = roll.formula`
+ * when the chat message rebuilds it, so the label comes back inside the parentheses as well as
+ * after them. The parentheses have to stay in the ROLL (the graze clone keeps only dice/operator/
+ * pool terms, so an unparenthesised rider die would start riding grazes), so the repair is here, in
+ * the display layer. Reversion: delete the dedupe loop and the first two cases fail. */
+test("edhaTidyFormula collapses Foundry's doubled parenthetical flavor to one label", () => {
+  assert.strictEqual(env.edhaTidyFormula("1d10+3+(1d6[Ambush Bite])[Ambush Bite]+0"),
+    "1d10 + 3 + 1d6[Ambush Bite] + 0", "THE EXACT bench-run-40 string, tidied");
+  assert.strictEqual(env.edhaTidyFormula("(3[Kindle])[Kindle]"), "3[Kindle]", "a resolved @-ref rider, same shape");
+});
+test("edhaTidyFormula keeps the parentheses when the rider is a compound term", () => {
+  // propagateFlavor stamps EVERY inner term, the operator included — the label goes, the parens stay.
+  assert.strictEqual(env.edhaTidyFormula("(1[Kindle] +[Kindle] 2[Kindle])[Kindle]"), "(1 + 2)[Kindle]");
+});
+test("edhaTidyFormula leaves a parenthetical whose inner label DIFFERS alone", () => {
+  assert.strictEqual(env.edhaTidyFormula("(1d6[Prognosis])[Kindle]"), "(1d6[Prognosis])[Kindle]");
+  assert.strictEqual(env.edhaTidyFormula("(1d6)[Ambush Bite]"), "(1d6)[Ambush Bite]",
+    "NEGATIVE CONTROL: the shape the engine itself assembles is not rewritten");
+});
+
 // --- edhaIsTalent / edhaOwnsTalent — the 07-14 W23 pipe-cleaner fallback -----------------------
 // The adversary sheet renders only trait/weapon/action sections, so adversary tree-talent embeds
 // are ACTION-TYPED TWINS flagged `edha-content.adversaryTalent`. Ownership gates must count both
