@@ -1,24 +1,37 @@
 {
   "pm": {
     "status": "awake",
-    "note": "Fable PM (Ben-started, 16:56 ET). PM-R14: caps lifted, Fable workers on the larger items. Forty-four PRs merged tonight. Since 22:40: item 74 (a single-scope pack-build crash), 75 (nine no-op executors), 10 batch 2 (the disposition fail-open backlog is CLOSED - ratchet at 0) and 76 (every phone ruling card now shows its default; R-80 / R-81 render as applied-veto cards; R-48 is correctly closed). Only bench run 41 is still running - it drives the engine pushed at 22:17. Once it reports I push the engine again (items 71, 75, 10 batch 2 and the map asset from 61 are merged but not yet live) and merge its PR. STILL OWED: one deploy-to-foundry.bat run (Foundry closed) for the pack REBUILDS - 34a, 57, 58, 65+67, 59, 63, 55, 56; those bench rows stay blocked until then. The queue is nearly empty: 77 (a Power-side disposition read, S), 70 (blocked on your R-83), 62 (needs a reframe), 9 (blocked on map rulings). R-83 still needs your answer. Defaults applied, vetoable: R-18, R-80, R-81, R-82, R-84, R-85, PM-R15.",
-    "waitingOn": "ONE deploy-to-foundry.bat run (Foundry closed) for the pack rebuilds - after bench 41 finishes; R-83 (needs your answer - it moves HP); R-18, R-80, R-81, R-82, R-84, R-85, PM-R15 (defaults apply if silent)",
+    "note": "Fable PM (Ben-started, 16:56 ET). PM-R14: caps lifted. Forty-six PRs merged tonight. Bench run 41 is DONE (PR #265, merged 23:2x): 25 rows retired on evidence - item 24's whole registry-smoke section (the 87-handler picker matches the table in order), fix pass 9's rows (the once budget bites, R-84 refunds, R-85 expires), the heal cards, the Verdict fold, item 55's engine half; one FAIL root-caused (Ambush Bite's doubled label: the tidy runs before the system re-renders the card) - fix pass 10 is on it now, with item 77 (a Power-side disposition read) beside it. 23:21: the engine AND the redrawn map asset were pushed live (items 71, 75, 10 batch 2, 61); F5 your Gamemaster client. STILL OWED: one deploy-to-foundry.bat run (Foundry closed) for the pack REBUILDS - 34a, 57, 58, 65+67, 59, 63, 55, 56 - their bench rows stay blocked until then; bench run 42 drives them afterwards. R-83 still needs your answer (item 70). Defaults applied, vetoable: R-18, R-80, R-81, R-82, R-84, R-85, PM-R15.",
+    "waitingOn": "ONE deploy-to-foundry.bat run (Foundry closed) for the pack rebuilds; R-83 (needs your answer - it moves HP); R-18, R-80, R-81, R-82, R-84, R-85, PM-R15 (defaults apply if silent)",
     "nextWakeAt": null,
     "session": "2026-09-06 16:56 ET — Fable PM (hand-started)"
   },
   "workers": [
     {
-      "item": "5",
-      "title": "Bench run 41 — the engine-only merges since bench 40 on the 22:17 push (f2fb3e2d…): item 24's registry smoke ×16, fix pass 9's four rows + 2bJ-10, the Verdict fold, the heal cards, the 55 / 56 engine halves; REBUILD rows stay blocked",
+      "item": "78",
+      "title": "Fix pass 10 — Ambush Bite's doubled rider label survives fix pass 9: the tidy runs on a detached element before the system re-renders the damage section; fix at creation or the system's own re-render, never a second render hook",
       "model": "opus",
-      "size": "L",
+      "size": "S",
       "lane": "B",
-      "branch": "pm/bench-run-41",
-      "startedAt": "2026-09-07T02:18:00Z",
-      "agent": "Bench run 41",
+      "branch": "pm/fix-pass-10",
+      "startedAt": "2026-09-07T03:21:00Z",
+      "agent": "Fix pass 10",
       "phase": "working",
       "pr": null,
-      "note": "worktree; engine pushed 22:17 (live = main #253); 7.0M so far"
+      "note": "worktree; test-pass-fixes; ENGINE-ONLY (F5)"
+    },
+    {
+      "item": "77",
+      "title": "Power's enemies filter reads !edhaSameDisposition as enemy — name the predicate, sweep every negated actor-level side read, pin",
+      "model": "fable",
+      "size": "S",
+      "lane": "B",
+      "branch": "pm/77-power-side-read",
+      "startedAt": "2026-09-07T03:21:00Z",
+      "agent": "Work item 77",
+      "phase": "working",
+      "pr": null,
+      "note": "worktree; fable-worker; ENGINE-ONLY (F5)"
     }
   ],
   "usage": null
