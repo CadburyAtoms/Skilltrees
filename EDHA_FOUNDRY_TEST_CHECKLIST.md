@@ -1264,6 +1264,27 @@ on a nat-1 graze application.
 > deciding on its own fresh d20 (8). The Surgical data half stays COSMETIC-only on the owed deity
 > rebuild.
 
+**Item 56 (R-14, 2026-09-06) — the melee mutation riders follow their OWN card's graze wording.**
+Needs the deity pack REBUILT + ⟳ Sync on Bench — Life (the authored `edha-mutation` /
+`edha-regen-grant` rules carry the new dials) AND the F5 engine (the Apply-click graze
+discriminator). Drive: Adaptive Mutation on Bench — Life (or an ally), pick the adaptation, attack
+a dummy with a melee weapon, roll damage, click the card's **graze** subtotal so it is active,
+then **Apply**.
+
+- [ ] 🤖 **2bW-18 — a hit-only rider on a graze does NOTHING: Venom Glands ("melee HITS inflict
+      Afflicted", `venomOnGraze: false`).** Graze application → NO Afflicted, no affliction entry,
+      and the whispered note "🐍 Venom Glands (Life): graze — the venom needs a melee hit." Then a
+      HIT application (toggle back to the normal subtotal, Apply) → Afflicted + the ongoing-vital
+      entry as before (2bW-12's evidence). Also confirm the Events tab of Adaptive Mutation shows
+      the two new toggles (Bone Spurs: also fires on a graze = ON; Venom Glands = OFF).
+- [ ] 🤖 **2bW-19 — a damage rider on a graze APPLIES: Bone Spurs ("melee attacks DEAL additional
+      Keen", `keenOnGraze: true`).** Graze application → the "+N keen on the strike" card and the
+      extra keen instance land on the graze total exactly as on a hit. Optional third check: Apex
+      Form's +Tier vital ("DEALS additional Vital on all attacks", `vitalOnGraze: true`) also rides
+      the graze. A scene whose mutation flag was baked BEFORE this deploy carries no dial and keeps
+      firing on a graze — that is the designed fallback, not a bug (re-use the talent after the
+      scene reset to bake the new flag).
+
 ---
 
 # BENCH — Chaos (Maelith, deity)
@@ -3208,6 +3229,19 @@ the Cannon rolled `(2)d(2*3+2)+2+2 = 10` energy and applied exactly **8** throug
       - ✅ **ANSWERED 2026-09-06, R-56 (a): ONE rule — adversary sheets AND token sight use the Edha
         AWA table** (ruling answered 2026-09-06 → item 55, ENGINE + BUILD/DATA, REBUILD + world bulk
         sync). Row stays 🤖 for the re-measure once item 55 ships.
+      - 🚚 **SHIPPED 2026-09-06, item 55 (PR #240, REBUILD + world bulk sync — needs Ben's deploy AND
+        "⟳ Sync Adversaries from Pack" before the re-measure means anything).** The re-test, whole
+        population: on a freshly synced (or re-dragged) adversary, `system.senses.range.value` reads
+        **10** (AWA 0 → the Edha table; was 5) and `prototypeToken.sight.range` / the placed token's
+        `sight.range` read the SAME **10**, `visionMode "sense"` — zero sheet/token mismatches across
+        every adversary. Headless already holds it (tests/adversary-senses.test.js); this row is the
+        live confirmation.
+- [ ] 🤖 **Briar-Gone Grove — the bespoke `senses` override wins on both surfaces** — after the item-55
+      rebuild + sync, the Grove (Thalendor Heartwood Bestiary) reads Senses Range **30 ft** on its sheet
+      (`senses.range.override` 30, `useOverride` true — the engine's table write to `.derived` stays 10
+      underneath) and its prototype token AND a freshly dragged token carry `sight.range` **30**,
+      `visionMode "sense"`. Every other adversary stays at 10. This is the instance the 07-28j note said
+      did not exist ("0 of 52 carry any override"); a document read, not a look. *(Item 55, PR #240.)*
 - [ ] ⚑ **Adversary sight range — does 10 ft feel wrong? Say a number.** — with those tokens on a
       real map: adversary AWA 0 → **10 ft** is intended, but it is a **design dial**, not a bug.
       If it plays badly, give the number you want instead. *(Split 2026-07-27w; the config read is

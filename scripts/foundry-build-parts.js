@@ -136,4 +136,25 @@ function authoredOverlayFor(index, { docId, name, atlas, group }) {
   return bucket ? bucket[name] : undefined;
 }
 
-module.exports = { prereqGroups, loadAuthoredIndex, authoredScopeKey, authoredOverlayFor, formatAuthoredCollisions };
+// Senses Range in ft from Awareness — the Edha table (Character_Building_Rules.md §Senses Range:
+// AWA 0→10, 1→15, 2–3→20, 4→25, 5+→30). ONE rule for PCs and adversaries alike (EDHA_RULINGS.md
+// R-56 (a), item 55): the engine's `edhaSensesRangeFtFromAwa` is the runtime copy that derives the
+// SHEET, this is the build-time copy that stamps the pack's prototype-token sight, and
+// tests/adversary-senses.test.js pins the two term-for-term so they cannot drift apart.
+function sensesRangeFtFromAwa(awa) {
+  const a = Number(awa) || 0;
+  return a >= 5 ? 30 : a === 4 ? 25 : a >= 2 ? 20 : a === 1 ? 15 : 10;
+}
+
+// An adversary block's Senses Range: its explicit `senses` (ft) is the bespoke override and wins;
+// otherwise the AWA table. Adversary blocks carry no attributes (they are all 0 — see the README's
+// `inv` note), so the default is table(0) = 10 ft, the same number the engine derives on the sheet.
+// The build reads this for the prototype token so pack sheet and token agree (they used to ship a
+// FLAT 10 against a sheet that derived the cosmere ladder's 5 — bench run 22, 52/52 mismatched).
+function advSensesRangeFt(adv) {
+  const explicit = Number(adv?.senses);
+  if (Number.isFinite(explicit) && explicit > 0) return explicit;
+  return sensesRangeFtFromAwa(0);
+}
+
+module.exports = { prereqGroups, loadAuthoredIndex, authoredScopeKey, authoredOverlayFor, formatAuthoredCollisions, sensesRangeFtFromAwa, advSensesRangeFt };

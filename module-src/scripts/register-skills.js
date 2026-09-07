@@ -1248,6 +1248,38 @@ function edhaMarkOwner(victim, status) {
     return m?.actorId ? { owner: game.actors?.get(m.actorId) ?? null, talent: m.talent || "" } : null;
   } catch (e) { return null; }
 }
+/* Was this application the GRAZE half of a damage card? (item 56 / R-14, 2026-09-06.) The system
+ * decides hit-vs-graze on the CHAT MESSAGE (`CosmereChatMessage#useGraze`, toggled on the card) and
+ * calls `actor.applyDamage(instances, { originatingItem })` with no marker — the graze total arrives
+ * as a plain number. So the discriminator is a breadcrumb stamped by the `onClickApplyButton` wrap
+ * (below, at ready) for the lifetime of that click, and every engine caller may say it outright
+ * with `options.edhaGraze`. Read it SYNCHRONOUSLY at the top of edhaWrapApplyDamage — the post-pass
+ * runs after awaits, by which time the click (and its breadcrumb) may be over. */
+let _edhaApplyGrazeCtx = null;   // { graze: boolean } while a damage-card Apply click is running
+function edhaApplyIsGraze(options) {
+  if (options?.edhaGraze === true) return true;
+  if (options?.edhaGraze === false) return false;
+  return _edhaApplyGrazeCtx?.graze === true;
+}
+async function edhaWrapApplyClick(originalCall, event, forceRolls) {
+  _edhaApplyGrazeCtx = { graze: this?.useGraze === true };
+  try { return await originalCall(event, forceRolls); }
+  finally { _edhaApplyGrazeCtx = null; }
+}
+Hooks.once("ready", () => {
+  try {
+    const MsgCls = CONFIG.ChatMessage?.documentClass;
+    if (typeof MsgCls?.prototype?.onClickApplyButton !== "function") { console.warn("Edha Content | CosmereChatMessage#onClickApplyButton not found — graze-aware riders fall back to hit behaviour."); return; }
+    if (game.modules.get("lib-wrapper")?.active && globalThis.libWrapper) {
+      libWrapper.register("edha-content", "CONFIG.ChatMessage.documentClass.prototype.onClickApplyButton",
+        function (wrapped, event, forceRolls = null) { return edhaWrapApplyClick.call(this, wrapped, event, forceRolls); }, "MIXED");
+    } else {
+      const orig = MsgCls.prototype.onClickApplyButton;
+      MsgCls.prototype.onClickApplyButton = function (event, forceRolls = null) { return edhaWrapApplyClick.call(this, (e, f) => orig.call(this, e, f), event, forceRolls); };
+    }
+    console.log("Edha Content | damage-card Apply click wrapped (graze discriminator).");
+  } catch (e) { console.error("Edha Content | onClickApplyButton wrap failed", e); }
+});
 // Who dealt this application? (authoritative options first, else the fresh rollDamage breadcrumb)
 function edhaDealerOf(options) {
   const a = options?.edhaSource?.actor ?? options?.edhaSource ?? options?.originatingItem?.actor ?? null;
@@ -1393,6 +1425,7 @@ async function edhaDamageBonusPost(dealer, target, prevHp = null) {
 function edhaWrapApplyDamage(originalCall, instances, options = {}) {
   const target = this;
   const list = (Array.isArray(instances) ? instances : [instances]).filter(Boolean);
+  const graze = edhaApplyIsGraze(options);   // item 56 / R-14: read NOW — the click breadcrumb is gone by the post-pass
   let prevHp = null, maxHp = null, halfNote = null;
   try {
     const hea = target?.system?.resources?.hea;
@@ -1615,7 +1648,7 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
         if (!crossModes.includes(String(w.handler?.require || "window"))) continue;
         runBonusRule(w.actor, w.item, w.handler);
       }
-      edhaLifeOutgoingBonus(dealer.actor, list, dealer.item);   // LIFE / Anaveth — Bone Spurs (+keen, melee-gated) / Apex Form (+vital) on the buffed creature's hit
+      edhaLifeOutgoingBonus(dealer.actor, list, dealer.item, graze);   // LIFE / Anaveth — Bone Spurs (+keen, melee-gated) / Apex Form (+vital) on the buffed creature's hit; each rider's own onGraze dial decides the graze half (R-14)
       // (Tempered Edge + Concord ride the generic edha-damage-bonus sweep above since 2bV.)
       edhaOrderDealerPre(dealer, target, list);    // ORDER / Tessavain — the Covenant-break watch
     }
@@ -1672,7 +1705,7 @@ function edhaWrapApplyDamage(originalCall, instances, options = {}) {
             ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealer.actor }), content: `<p>🩸 <strong>${hc.item.name}</strong>: ${target.name}'s healing is halved until the end of ${dealer.actor.name}'s next turn.</p>` });
           }
         }
-        await edhaLifeVenomOnHit(dealer.actor, target, dealer.item);   // LIFE / Anaveth — Venom Glands (melee-gated) afflicts the foe on the buffed creature's hit
+        await edhaLifeVenomOnHit(dealer.actor, target, dealer.item, graze);   // LIFE / Anaveth — Venom Glands (melee-gated) afflicts the foe on the buffed creature's hit (its onGraze dial decides the graze half — R-14)
         await edhaCivConstructHitRiders(dealer, target, prevHp);   // CIVILIZATION / Kethane — Magnum Opus Colossus splash + Arsenal kill-chase prompt
         await edhaDamageBonusPost(dealer, target, prevHp);   // drains the placeCounter + armed-outcome queues, feeds the kill tally (2bT/2bU)
       }
@@ -13273,7 +13306,10 @@ function edhaLifeDeflectReduce(target, list) {
 // Bone Spurs (+tier keen, melee — edhaAttackKind-gated) / Apex Form (+tier vital): a bonus instance
 // on the BUFFED creature's hit. A definitive ranged hit stands the Spurs down; unknown = owner-judged.
 // Apex Form DOUBLES active mutations (07-16c, Ben E19 — was a GM ruling on the numbers).
-function edhaLifeOutgoingBonus(dealerActor, list, dealerItem = null) {
+// `graze` (item 56 / R-14): this application is the graze half of the card. Each rider carries its
+// own dial, baked onto the flag from the rule (`mutation.onGraze`, `apexForm.vitalOnGraze`); ONLY an
+// explicit `false` stands the rider down on a graze — a flag without the field behaves as before.
+function edhaLifeOutgoingBonus(dealerActor, list, dealerItem = null, graze = false) {
   try {
     if (!dealerActor || !list?.length) return;
     if (!list.some(i => Number(i?.amount) > 0 && i?.type && i.type !== "heal")) return;   // only ride a real hit
@@ -13282,14 +13318,18 @@ function edhaLifeOutgoingBonus(dealerActor, list, dealerItem = null) {
     const apexDbl = a ? 2 : 1;
     if (m?.kind === "boneSpurs" && m.keen > 0) {
       const kind = edhaAttackKind(dealerItem);
-      if (kind === "ranged") {
+      if (graze && m.onGraze === false) {
+        ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealerActor }), content: `<p>🦴 <strong>Bone Spurs</strong> (Life): graze — the rider fires on a hit only.</p>` });
+      } else if (kind === "ranged") {
         ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealerActor }), content: `<p>🦴 <strong>Bone Spurs</strong> (Life): ranged attack — the melee rider stands down.</p>` });
       } else {
         list.push({ amount: Math.floor(m.keen) * apexDbl, type: "keen" });
         ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealerActor }), content: `<p>🦴 <strong>Bone Spurs</strong> (Life): +${Math.floor(m.keen) * apexDbl} keen on the strike${apexDbl > 1 ? ` (doubled — ${a?.sourceName || "apex"})` : ""}${kind === "melee" ? " (melee — auto-checked)" : " (melee — GM withholds on a ranged attack)"}.</p>` });
       }
     }
-    if (a?.vital > 0) {
+    if (a?.vital > 0 && graze && a.vitalOnGraze === false) {
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealerActor }), content: `<p>🌟 <strong>${a.sourceName || "Apex"}</strong> (Life): graze — the +vital rider fires on a hit only.</p>` });
+    } else if (a?.vital > 0) {
       list.push({ amount: Math.floor(a.vital), type: "vital" });
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealerActor }), content: `<p>🌟 <strong>${a.sourceName || "Apex"}</strong> (Life): +${Math.floor(a.vital)} vital on the strike.</p>` });
     }
@@ -13297,10 +13337,14 @@ function edhaLifeOutgoingBonus(dealerActor, list, dealerItem = null) {
 }
 // Venom Glands (melee — edhaAttackKind-gated): the buffed creature's hit afflicts the foe (½[T][D]
 // vital, baked at apply). A definitive ranged hit doesn't envenom; unknown = owner-judged.
-async function edhaLifeVenomOnHit(dealerActor, victim, dealerItem = null) {
+async function edhaLifeVenomOnHit(dealerActor, victim, dealerItem = null, graze = false) {
   try {
     const m = dealerActor?.getFlag?.("edha-content", "mutation");
     if (m?.kind !== "venomGlands" || !(m.venom > 0) || !victim) return;
+    if (graze && m.onGraze === false) {   // item 56 / R-14: "melee HITS inflict Afflicted" — the card's own wording
+      ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealerActor }), content: `<p>🐍 <strong>Venom Glands</strong> (Life): graze — the venom needs a melee hit.</p>` });
+      return;
+    }
     const kind = edhaAttackKind(dealerItem);
     if (kind === "ranged") {
       ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: dealerActor }), content: `<p>🐍 <strong>Venom Glands</strong> (Life): ranged attack — the venom needs a melee hit.</p>` });
@@ -13384,8 +13428,10 @@ function edhaPostMutationCard(owner, target, label, h) {
     const keenF = String(h?.keenFormula || "").trim();
     const venomF = String(h?.venomFormula || "").trim();
     const defl = Math.max(0, Number(h?.deflectAmount) || 0);
-    if (keenF) opts.push(["boneSpurs", "Bone Spurs (+keen on melee hits)", `data-edha-keenf="${encodeURIComponent(keenF)}"`]);
-    if (venomF) opts.push(["venomGlands", "Venom Glands (Afflicted — ongoing vital, melee)", `data-edha-venomf="${encodeURIComponent(venomF)}"`]);
+    // The per-rider graze dial rides the card into the flag (item 56 / R-14): "0" = hit only.
+    const og = (v) => (v === false ? `data-edha-ongraze="0"` : `data-edha-ongraze="1"`);
+    if (keenF) opts.push(["boneSpurs", "Bone Spurs (+keen on melee hits)", `data-edha-keenf="${encodeURIComponent(keenF)}" ${og(h?.keenOnGraze)}`]);
+    if (venomF) opts.push(["venomGlands", "Venom Glands (Afflicted — ongoing vital, melee)", `data-edha-venomf="${encodeURIComponent(venomF)}" ${og(h?.venomOnGraze)}`]);
     if (defl > 0) opts.push(["denseTissue", `Dense Tissue (+${defl} Deflect, no forced movement)`, `data-edha-deflect="${defl}"`]);
     if (!opts.length) return;
     const rows = opts.map(([k, l, extra]) => `<button type="button" class="edha-mutation-btn" data-edha-owner="${owner.uuid}" data-edha-target="${t.uuid}" data-edha-kind="${k}" ${extra}>${l}</button>`).join(" ");
@@ -13416,6 +13462,7 @@ async function edhaMutationClick(ev) {
     if (kind === "venomGlands") { const r = await edhaRollFormula(rd, decodeURIComponent(ds.edhaVenomf || "0")); venom = Math.max(0, Math.floor(r.total)); }
     const flag = { kind, sceneId: canvas?.scene?.id ?? null, ownerUuid: owner.uuid,
       keen, venom, deflect: kind === "denseTissue" ? Math.max(0, Number(ds.edhaDeflect) || 0) : 0 };
+    if (ds.edhaOngraze !== undefined) flag.onGraze = ds.edhaOngraze !== "0";   // item 56 / R-14: the rule's dial, baked; absent = fires on a graze (as before)
     await edhaSetEdhaFlag(target, "mutation", flag);   // Job 6: edhaSetActorFlagCross retired (literal twin of edhaSetEdhaFlag)
     btn.closest(".edha-trigger-card")?.querySelectorAll(".edha-mutation-btn").forEach(b => b.disabled = true);
     btn.textContent = "✓ applied";
@@ -18327,10 +18374,24 @@ function edhaWalkRateFtFromSpd(spd) { return 20 + 5 * (Number(spd) || 0); }
  *    Skipped while the actor's SOURCE carries its own movement override (legacy pregens).
  *  • Senses: writes .derived (NOT .override), exactly as the system's own prepareSecondaryDerivedData
  *    does, so a player's Configure Senses Range override still wins and the .bonus still adds.
+ *    Applies to EVERY actor type — adversaries included (R-56 (a), item 55); HP and Speed stay PC-only.
  */
 function edhaDeriveSheetStats(actor) {
   try {
-    if (actor?.type !== "character") return;
+    if (!actor) return;
+    // Senses Range = the Edha AWA table, for EVERY actor type (R-56 (a), item 55: ONE rule for PCs
+    // and adversaries — the sheet, the prototype token the build stamps, and edhaCanSee all read
+    // the same table). The system wrote its own ladder into .derived a moment ago; overwrite it,
+    // leaving override/useOverride/bonus alone so a hand-configured range — or an adversary
+    // block's explicit `senses` override, which the build writes as exactly that — still wins.
+    // Was character-only from 07-28i to item 55: every world adversary read the cosmere ladder's
+    // 5 ft on the sheet while its token carried 10 (bench run 22, 47/47).
+    const senses = actor.system?.senses?.range;
+    if (senses) {
+      const awa = Number(actor.system?.attributes?.awa?.value) || 0;
+      try { senses.derived = edhaSensesRangeFtFromAwa(awa); } catch (e) { /* non-fatal */ }
+    }
+    if (actor.type !== "character") return;   // HP and Speed below are PC-only rules (adversary blocks carry overrides)
     // HP = system + EDHA_HP_BONUS (0 since R-54 — the Edha and system tables agree)
     const heaMax = actor.system?.resources?.hea?.max;
     const srcHeaBonus = Number(actor._source?.system?.resources?.hea?.max?.bonus) || 0;
@@ -18363,13 +18424,6 @@ function edhaDeriveSheetStats(actor) {
       const spd = Number(actor.system?.attributes?.spd?.value) || 0;
       try { rate.override = edhaWalkRateFtFromSpd(spd); rate.useOverride = true; } catch (e) { /* non-fatal */ }
     }
-    // Senses Range = the Edha AWA table. The system wrote its own .derived a moment ago; overwrite
-    // it, leaving override/useOverride/bonus alone so a hand-configured range still wins.
-    const senses = actor.system?.senses?.range;
-    if (senses) {
-      const awa = Number(actor.system?.attributes?.awa?.value) || 0;
-      try { senses.derived = edhaSensesRangeFtFromAwa(awa); } catch (e) { /* non-fatal */ }
-    }
   } catch (e) { console.error("Edha Content | sheet-stat derivation failed", e); }
 }
 // One-time migration: strip the pregens' per-actor HP bonus / movement override so the derivations
@@ -18387,14 +18441,18 @@ async function edhaMigrateDerivations() {
   return n;
 }
 
-/* --- PC token defaults (07-18 bench: new "Test Warrior" had a hidden name + short sight) --------
- * Foundry's blank prototype token (displayName NONE, sight range 0) is wrong for Edha PCs: the
+/* --- Token sight defaults (07-18 bench: new "Test Warrior" had a hidden name + short sight) ------
+ * Foundry's blank prototype token (displayName NONE, sight range 0) is wrong for Edha actors: the
  * sight model (07-16c) gives every creature its Senses Range, and a PC's name should read on
- * hover. NEW character actors get displayName HOVER(30) + sight enabled in the cosmere "sense"
- * vision mode (attenuation 0.1 — the exact shape the world PCs and the 07-17c adversary builds
- * carry), range = Senses Range from AWA. An updateActor watcher keeps the range in step when AWA
- * changes (prototype + placed tokens, single GM applier). `edha.fixPcTokens()` retrofits
- * EXISTING characters and their placed tokens (run once for Test / Test Warrior).
+ * hover. NEW actors of ANY type get sight enabled in the cosmere "sense" vision mode (attenuation
+ * 0.1 — the exact shape the world PCs and the adversary pack builds carry), range = Senses Range
+ * from the Edha AWA table (R-56 (a), item 55: one rule for PCs and adversaries; was character-only
+ * before). New CHARACTERS additionally get displayName HOVER(30); adversaries keep Foundry's
+ * default (the pack's OWNER_HOVER(20) is set by the build, and a blank-created adversary should not
+ * leak its name to players on hover). Pack-built and imported actors already carry a sight range
+ * and are left alone. An updateActor watcher keeps the range in step when AWA changes (prototype +
+ * placed tokens, single GM applier, every actor type). `edha.fixPcTokens()` retrofits EXISTING
+ * characters and their placed tokens; existing adversaries are re-stamped by the pack sync.
  */
 function edhaPcSightShape(actor) {
   const awa = Number(actor?.system?.attributes?.awa?.value) || 0;
@@ -18402,14 +18460,14 @@ function edhaPcSightShape(actor) {
 }
 Hooks.on("preCreateActor", (doc, data) => {
   try {
-    if (doc.type !== "character") return;
-    if (data?.prototypeToken?.sight?.range) return; // imported/duplicated actors keep their own config
-    doc.updateSource({ prototypeToken: { displayName: 30, sight: edhaPcSightShape(doc) } });
-  } catch (e) { console.error("Edha Content | PC token defaults failed", e); }
+    if (data?.prototypeToken?.sight?.range) return; // imported/duplicated/pack-built actors keep their own config
+    const proto = { sight: edhaPcSightShape(doc) };
+    if (doc.type === "character") proto.displayName = 30;
+    doc.updateSource({ prototypeToken: proto });
+  } catch (e) { console.error("Edha Content | token sight defaults failed", e); }
 });
 Hooks.on("updateActor", (actor, changes) => {
   try {
-    if (actor.type !== "character") return;
     if (changes?.system?.attributes?.awa === undefined) return;
     if (!edhaDefBuffGmGate()) return; // ONE applier (§10)
     const range = edhaPcSightShape(actor).range;
@@ -18418,7 +18476,7 @@ Hooks.on("updateActor", (actor, changes) => {
       const toks = sc.tokens?.filter?.(t => t.actorId === actor.id) ?? [];
       if (toks.length) void sc.updateEmbeddedDocuments("Token", toks.map(t => ({ _id: t.id, "sight.range": range })));
     }
-  } catch (e) { console.error("Edha Content | PC sight-range sync failed", e); }
+  } catch (e) { console.error("Edha Content | sight-range sync failed", e); }
 });
 async function edhaFixPcTokens() {
   if (!game.user?.isGM) { ui.notifications?.warn("Edha: PC token fix is GM-only."); return; }
@@ -18459,7 +18517,8 @@ Hooks.once("ready", () => {
   // persisted, so the actor snapped back to 57 the next time a real update re-initialised it — the
   // "flip", and why there was no residue. It hit EVERY character carrying ANY ADD-mode effect, on
   // EVERY client, at world load; Hardy was only how the bench noticed.
-  for (const a of (game.actors ?? [])) { if (a.type === "character") { try { a.reset(); a.sheet?.rendered && a.sheet.render(false); } catch (e) {} } }
+  // Every actor, not just characters, since item 55: adversaries' Senses Range is derived here too.
+  for (const a of (game.actors ?? [])) { try { a.reset(); a.sheet?.rendered && a.sheet.render(false); } catch (e) {} }
 });
 
 /* --- Apply-damage targeting: make the chat Apply buttons follow TARGETS ONLY -------------------
@@ -20223,6 +20282,8 @@ function edhaRegisterNativeEventSystem() {
     config: { schema: {
       keenFormula: new FF.StringField({ required: false, blank: true, initial: "@tier", label: "Bone Spurs: +keen on melee hits", hint: "Flat, computed on pick. Blank = the option is not offered." }),
       venomFormula: new FF.StringField({ required: false, blank: true, initial: "floor(((@tier)d(2 * @skills.green.rank + 2)) / 2)", label: "Venom Glands: ongoing vital (rolled on pick)", hint: "Blank = not offered." }),
+      keenOnGraze: new FF.BooleanField({ required: false, initial: true, label: "Bone Spurs: also fires on a graze", hint: "R-14 (item 56): follow the card — 'melee attacks DEAL additional Keen' = grazes count (on). 'On a hit' wording = off." }),
+      venomOnGraze: new FF.BooleanField({ required: false, initial: true, label: "Venom Glands: also fires on a graze", hint: "R-14 (item 56): follow the card — 'melee HITS inflict Afflicted' = hit only (off). 'When you deal damage' wording = on. Off is what Adaptive Mutation ships." }),
       deflectAmount: new FF.NumberField({ required: false, initial: 2, label: "Dense Tissue: +Deflect", hint: "0 = not offered. Dense Tissue also refuses forced movement (the engine veto reads the flag)." }),
       note: new FF.StringField({ required: false, blank: true, initial: "", label: "Card note" }),
     } },
@@ -20250,6 +20311,7 @@ function edhaRegisterNativeEventSystem() {
       mutationFormula: new FF.StringField({ required: false, blank: true, initial: "", label: "…better formula while it carries an adaptation", hint: "Primal Regeneration: (@tier)d(2 * @skills.green.rank + 2) + 1. Blank = no upgrade." }),
       deflect: new FF.NumberField({ required: false, initial: 0, label: "Apex: +Deflect while active", hint: "Apex Form is 2. 0 with no vital formula = no apex package." }),
       vitalFormula: new FF.StringField({ required: false, blank: true, initial: "", label: "Apex: +vital on its attacks", hint: "Flat, baked at use (Apex Form: @tier). Blank = none. Any apex field also DOUBLES the target's active adaptations and prices the effect at one Injury when it ends at scene end — the flag readers do both." }),
+      vitalOnGraze: new FF.BooleanField({ required: false, initial: true, label: "Apex: +vital also fires on a graze", hint: "R-14 (item 56): follow the card — 'DEALS additional Vital damage on all attacks' = grazes count (on). 'On a hit' wording = off." }),
       note: new FF.StringField({ required: false, blank: true, initial: "", label: "Card text", hint: "{name} = the target. Blank = a generic summary." }),
     } },
     executor: async function (event) {
@@ -20259,7 +20321,7 @@ function edhaRegisterNativeEventSystem() {
         const deflect = Math.max(0, Number(this.deflect) || 0);
         const vital = this.vitalFormula ? Math.max(0, Math.floor(edhaEvalSync(this.vitalFormula, owner.getRollData()))) : 0;
         if (deflect > 0 || vital > 0)
-          await edhaSetEdhaFlag(t, "apexForm", { deflect, vital, ownerUuid: owner.uuid, sourceName: item.name, sceneId: canvas?.scene?.id ?? null });   // Job 6: edhaSetActorFlagCross retired
+          await edhaSetEdhaFlag(t, "apexForm", { deflect, vital, vitalOnGraze: this.vitalOnGraze !== false, ownerUuid: owner.uuid, sourceName: item.name, sceneId: canvas?.scene?.id ?? null });   // vitalOnGraze: the rule's dial (R-14)   // Job 6: edhaSetActorFlagCross retired
         await edhaAddLifeRegen(owner, { targetUuid: t.uuid, formula: this.formula || "@tier + 1",
           endOnVitalSpirit: this.endOnVitalSpirit === true, sourceName: item.name,
           mutationFormula: String(this.mutationFormula || "").trim() });
