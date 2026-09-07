@@ -2481,7 +2481,17 @@ quoted from `pm-state.js --dashboard-dir`. Found by item 44.
 
 ---
 
-## 77. [ ] Power's ally/enemy filter reads `!edhaSameDisposition` as "enemy" — the batch-1 corollary at a site outside the ratchet
+## 77. [x] Power's ally/enemy filter reads `!edhaSameDisposition` as "enemy" — the batch-1 corollary at a site outside the ratchet — DONE 2026-09-06, PR #TBD
+
+**DONE (2026-09-06, PR #TBD):** the Power site plus FIVE more the sweep found — every actor-level
+side read whose result was negated or used as `if (same) skip` for an enemies-only branch:
+`edhaTestAuraApply` (47-power), `edhaVeilSuppressed` (32-senses), `edhaTestReactWatch`'s
+`rollerIs: "enemy"` (12-contest), `edhaChaosShatterPrompt` (42-chaos), the fate-snare region
+spring (53-native), and the MIRROR image — `edha-def-test`'s `skipIfAlly` willing bypass read
+`!edhaDisposHostile` as "ally" and skipped the test for an unresolved target. Each branch now names
+the predicate it means; `tests/side-read-polarity.test.js` drives all five functions with the real
+helpers and fails under reversion (the snare site is pinned in `tests/snare-arm-under.test.js`).
+The seven positive-form call sites are correct as is (table in the PR). ENGINE-ONLY (F5).
 
 **Why:** item 10 batch 2 (2026-09-06, PR #263) closed the `dispoFailOpen` ratchet at 0 and, on
 the audit, found one more site the ratchet never counted because it goes through the ACTOR-level
