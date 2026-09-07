@@ -418,11 +418,17 @@ there is no lint — the swept corpus was 3 sites and only 1 was wrong):
   guess into world state that a later filter cannot distinguish from a real answer. The bake site
   uses `edhaActorSide`, and `edhaCivFortifyGM` **refuses to build the Region** when the side did not
   resolve — a Fortified Foundation that cannot tell sides apart damages everyone who enters it.
-- The **11 remaining** `disposition ?? 0|1` occurrences (`dispoFailOpen` batch 2) are reads whose only
+- **`dispoFailOpen` is 0 (item 10 batch 2, 2026-09-06) — a tombstone; a count of 1 is a regression.** The
+  last 11 occurrences were reads whose only
   consumer is a card's wording or a picker list a human then confirms — `edhaPickCandidates`,
   `edhaSweepEmptyNote`, the movement-window card, `edhaPickProhibition`'s `<select>`, and the
   `edha-cleanse` beacon list. A human gate stands between each and any effect; that is the line
-  batch 1 was drawn on.
+  batch 1 was drawn on. They now hand RAW sides to `edhaSideSame` / `edhaSideHostile` (the owner's own
+  via `edhaActorSide`), so an unresolvable side is OMITTED from every filtered list or card — and where
+  the OWNER's side did not resolve, the empty-note and the movement-window card say so instead of
+  guessing. `edhaPickAccepts`'s `ally` / `enemy` / `anchor-ally` / `anchor-enemy` branches carry the
+  pair; `any` is not a side filter and still offers the unset token. Pinned per family in
+  `tests/disposition-failclosed.test.js`.
 
 ## ⛑ AN AUTHORED **0** IS FALSY — the `x || <default>` revert (07-28g, 4 shipped bugs, NOT gated)
 
