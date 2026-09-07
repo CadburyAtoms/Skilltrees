@@ -1701,7 +1701,7 @@ object. ENGINE-ONLY (F5).
 
 ---
 
-## 51. [ ] Puppeteer / Unnerving Approach refund Investiture on a declined offer (R-17)
+## 51. [x] Puppeteer / Unnerving Approach refund Investiture on a declined offer (R-17) (2026-09-06, PR #230 — **live behaviour bench-pending**)
 
 **Why:** The once-per-round click budget is consistent, but a declined/ignored offer still
 charges Investiture. Ben (a): keep the click budget AND refund the Investiture when the offer is
@@ -1714,6 +1714,13 @@ Pin headlessly.
 
 **Done when:** a headless pin shows a declined/ignored offer leaves Investiture unchanged while
 the round's use is still available; checklist row 2bJ-10 marked 🤖.
+
+**DONE 2026-09-06, PR #230 (ENGINE-ONLY, F5).** R-69's mechanism reused (charge on post, `edhaRefundCost`
+on back-out) through ONE path, `edhaOfferDecline`: a Decline button on system-charged offers, a
+round-change sweep for ignored ones, the accept click refusing a resolved card. Puppeteer's offer
+(watch-posted, costs on the click) is not refundable by construction. Pinned in
+`tests/offer-decline-refund.test.js` (four pins, four mutations). ⏳ **Bench-pending** — 🤖 2bJ-10 /
+2bJ-10b / 2bJ-10c under `# BENCH — Black`. Detail: the handoff delta.
 
 **PM:** lane B · model opus · size S · deps none · verify: headless pin. ENGINE-ONLY (F5).
 
@@ -2026,3 +2033,57 @@ paths call it. One 🤖 checklist row beside 2bI-4 plus a positive-rider negativ
 **PM:** lane B · model fable-worker · size S · deps 49 ✓ · verify: mutation. ENGINE-ONLY (F5).
 Found by item 49. **Landed:** `edhaJoinRiderTerm` (SHARED CORE, beside `edhaTidyFormula`);
 `tests/negative-rider-join.test.js` (7 pins); checklist 2bI-4d / 2bI-4e.
+
+---
+
+## 65. [ ] 34c — the 44 later-bestiary attack items still `kind: action` (the rest of the fleet weapon migration)
+
+**Why:** item 34a (PR #220, 2026-09-06) migrated the 11 attack items across the 13 ORIGINAL
+statblocks to `kind: "weapon"` and put `edhaRuleBearer` on both actor-wide rule loops. Its worker
+measured the rest: the **39 bestiary statblocks statted after 07-18** (Reedling → The Cull-Alpha)
+carry **44 attack items still `kind: action`** — same model, same proof shape, not touched because
+34a's brief scoped it to the 11-of-13 table. Until they migrate, those blocks' attacks skip the
+system's native target + test-defense flow that 34a gave the originals, and any rider authored on
+them is harvested only because it sits on an action-typed item the loops still read.
+
+**What to do:** the 34a recipe over the 44: `kind: "weapon"` (natural weapons `alwaysEquipped:
+true`; maneuvers, reactions and any Frost-Lance-shaped ability stay actions — apply Ben's 07-18
+rulings by analogy and list every judgment call in the PR body), attack numbers preserved (same
+skill test + modifier), parity over the embedded docs with `_stats` stripped (N changed, 0 missing,
+0 roll differences — the 34a comparison script is the shape: `tmp/parity-34a.js` was gitignored,
+so re-derive it), lint pass 5 green, `validate-adversaries.js` 0 issues on a scratch build with
+`EDHA_DATA` pinned to the worktree. Extend 34a's `# BENCH — Fleet weapon migration` section with
+🤖 rows for the new blocks' weapon-borne riders (if any) and one render/roll-parity row.
+
+**Done when:** `grep -c '"kind": "action"' data/adversaries.json` counts no attack items (every
+remaining `action` is a maneuver / reaction / utility, listed by name in the PR); parity table in
+the PR; packs rebuild + validate clean; the bench rows exist.
+
+**PM:** lane B · model `fable-worker` (medium) · size M · deps 34a ✓ (#220) · verify: parity table +
+scratch build + validator. REBUILD + ⟳ Sync (Ben's deploy). Found by item 34a. Dispatched 19:52
+carrying item 67 in the same PR.
+
+---
+
+## 67. [ ] The R-48 family: three more run-19 charge distances still `bySize` at rank 2 against rank-3 cards (R-81)
+
+**Why:** R-46 (a) and R-48's applied default replaced `bySize` with an explicit `distanceFt` on the
+Cragdrake Whelp Pack's Reckless Advance (25 ft) and the Cragdrake Adult's Explosive Leap (20 ft)
+in item 57 (PR #226, 2026-09-06). Its worker found the same shape, untouched per its brief, on
+three more blocks from the run-19 table: the **Brandram's Shockwave Slam** (`bySize: true` beside
+a dead `distanceFt: 5`), the **Brandram's Reckless Advance**, and the **Tussock-Sow's terrain
+square** — all `bySize` at role rank 2 while their cards print the rank-3 numbers, so the engine
+moves less than the card promises. Board ruling **R-81** holds the choice; the PM's default is (a).
+
+**What to do (default (a)):** for each of the three, `bySize: false` + `distanceFt` = the card's
+own number, the card text stating it (the R-46 shape, `data/adversaries.json`); (b) would instead
+fix the three cards to the rank-2 numbers — do (b) only if Ben says so on the board before
+dispatch. Scratch build with `EDHA_DATA` pinned to the worktree, `validate-adversaries.js` 0
+issues, a LevelDB read-back diff naming exactly the three abilities; three 🤖 rows (each charge
+carries its card's distance). Rides item 65's adversaries rebuild.
+
+**Done when:** the three rules carry an explicit distance matching their cards, the build diff
+names only them, the rows exist. REBUILD + ⟳ Sync (Ben's deploy).
+
+**PM:** lane R · model `fable-worker` (medium) · size S · deps 57 ✓ (#226), R-81 default · verify:
+build read-back diff + validator. REBUILD. Found by item 57. Riding item 65's PR (dispatched 19:52).
