@@ -5462,14 +5462,38 @@ function edhaFindMarkGrant(actor) {
 
 /* --- Tool B: the Coordination post-roll watcher (Concordant Presence / Shared Conviction / Pillar) - */
 // Once-per-round gate, parallel to the focus economy's (keyed off a separate "coordRound" store).
+/* ⛑ THE DOTTED-FLAG-KEY CLASS, third instance — `coordRound` joins the ambush-belief and `trigRound`
+ * ledgers behind `edhaFlagKey` (fix pass 9, TODO 72; bench run 40's root-caused defect).
+ *
+ * `edhaPromptPickClick` marks its `once: "round"` budget with the TALENT'S UUID —
+ * `edhaCoordOPRMark(owner, item.uuid, "_pick")` — and Foundry expands dotted keys at every depth of
+ * an update payload (`ClientDatabaseBackend#_updateDocuments` runs `foundry.utils.expandObject` on
+ * every update, client/data/client-backend.mjs:208; that helper recurses into every plain object,
+ * common/utils/helpers.mjs:495). So the document stored `coordRound.Actor.<id>.Item.<id>._pick`
+ * while the reader looked up the FLAT key and got `undefined` — for ever. Measured live: three
+ * Unnerving Approach picks in round 4 with the round-4 mark present. Blast radius: every
+ * `edha-prompt-pick` rule carrying `once: "round"` (Black's Unnerving Approach and Puppeteer, plus
+ * Unnerving Approach's adversary twin). It hid because every other caller here passes a talent name
+ * or an item id, and nothing in `data/` carries a dot in a name or an id.
+ *
+ * Escaped at the LEDGER BOUNDARY, not the call site (the standing rule — ENGINE_INDEX "⛑ A DOTTED
+ * KEY IN A FLAG VALUE"), so any caller may pass any string. A no-op on every dot-free key already
+ * persisted, so no migration is needed for the eight other call sites. */
 function edhaCoordOPRAllowed(owner, name, key) {
   const round = edhaCombatRoundOf(owner); if (round == null) return true;   // R-4/#28a: the OWNER's combat
-  return owner.getFlag?.("edha-content", "coordRound")?.[name]?.[key] !== round;
+  const store = owner.getFlag?.("edha-content", "coordRound") ?? null;
+  if (!store) return true;
+  /* The escaped key is the only one written from here on. The `getProperty` fallback is a ONE-TIME
+   * tolerance for a document stamped BEFORE this fix: those marks are really stored at the expanded
+   * PATH, and reading them keeps a budget already spent this round spent across the F5. */
+  const bucket = store[edhaFlagKey(name)]
+    ?? (String(name ?? "").includes(".") ? foundry.utils.getProperty(store, String(name)) : null);
+  return bucket?.[edhaFlagKey(key)] !== round && bucket?.[key] !== round;
 }
 async function edhaCoordOPRMark(owner, name, key) {
   const round = edhaCombatRoundOf(owner); if (round == null) return;   // R-4/#28a: the OWNER's combat
   const m = foundry.utils.deepClone(owner.getFlag("edha-content", "coordRound") ?? {});
-  (m[name] ??= {})[key] = round;
+  (m[edhaFlagKey(name)] ??= {})[edhaFlagKey(key)] = round;
   try { await owner.setFlag("edha-content", "coordRound", m); } catch (e) {}
 }
 // The kept (active) d20 natural result — for Shared Conviction's "plausible failure" heuristic.

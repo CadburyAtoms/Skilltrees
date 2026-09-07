@@ -259,9 +259,19 @@ source, not inferred.
 
 - **`edhaFlagKey(s)`** — dots → `_`. Apply it at the **ledger boundary**, not the call site.
 - Already applied: the ambush-belief ledger (`edhaAmbushMark` / `edhaAmbushTested` /
-  `edhaAmbushFooledIn` all take RAW uuids and escape internally) and the `trigRound` once-per-round
-  ledger (`edhaTriggerAllowed` / `edhaMarkTriggerUsed`). Escaping is a no-op on every dot-free key
+  `edhaAmbushFooledIn` all take RAW uuids and escape internally), the `trigRound` once-per-round
+  ledger (`edhaTriggerAllowed` / `edhaMarkTriggerUsed`), and — since fix pass 9 (TODO 72,
+  2026-09-06) — the **`coordRound`** once-per-round ledger (`edhaCoordOPRAllowed` /
+  `edhaCoordOPRMark`, both `name` and `key`). Escaping is a no-op on every dot-free key
   already persisted, so adding it never needs a migration.
+- **`coordRound` is the worked example of what this costs when it is missed.** Bench run 40 measured
+  it live: `edhaPromptPickClick` marks with the talent's **UUID**, so every `edha-prompt-pick` rule
+  carrying `once: "round"` (Unnerving Approach, Puppeteer, and Unnerving Approach's adversary twin)
+  had a budget that never bit — three picks in round 4 with the round-4 mark sitting on the actor,
+  expanded, unread. Nine call sites shared the helper and eight of them passed a dot-free talent
+  name or item id, which is exactly why it hid for as long as it did. `edhaCoordOPRAllowed` also
+  carries a one-time `foundry.utils.getProperty` fallback so a document stamped under the old,
+  expanded shape still reads as spent for the rest of that round.
 - **Anything derived from a UUID, a decimal, or an authored name** is a candidate. `phantomBelief`
   is the pattern to copy when starting fresh: it stores an **array of `{uuid, …}` records**, which
   cannot hit this at all.
