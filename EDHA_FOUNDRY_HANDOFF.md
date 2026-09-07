@@ -33,6 +33,44 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
+## 2026-09-06 — Item 43: the phone board opens on "Needs you" — open-ruling and Ben-only cards, a stale-heartbeat banner (**DOCS/TOOLING** — no engine, no data)
+
+Ben, phone chat: scrolling the whole dashboard to find one answerable ruling was why rulings sat
+unanswered. `docs/pm-board-mobile.html` now opens on a **Needs you** view: one status line (PM
+awake/stopped, what is running, blocked-on-you yes/no), a stale-heartbeat banner (PM says awake but
+`pm/state.generatedAt` is over 60 minutes old — the 09-06 stall), a card per OPEN ruling, a card per
+`benOnly` ask, and a ⚑ count-and-link. Everything else (Now detail, Snapshot, Budget, Queue, the old
+For Ben list, the Inbox composer, Run log, the full Dashboard) moved under a collapsed `#more`
+`<details>`, state in `localStorage`, every access try/catch'd.
+
+- **`scripts/build-dashboard.js`**: new `parseOpenRulings(md)` walks `parseRulings()`'s own
+  sections/blocks (no new markdown parser) — a ruling is open when its own text carries none of
+  `**ANSWERED` / `**VETOED` / `**SETTLED` (the last catches the one §B stub that restates a §K
+  ruling without repeating its resolution, R-4); §J/§K are skipped outright; §I entries carry
+  `applied: true`. `mobileSnapshot()` fills each entry's `blocks` count via new `countCitations()`
+  (checklist + repo tabs; a migration code like `2bR-18` never counts as a citation of ruling
+  `R-18`) and ships `openRulings: [{id, section, ask, default, applied, blocks}]` in the dash
+  **index**, not a chunk — the cards render with no chunk fetch.
+- **`scripts/pm-state.js`**: new `parseBenOnly(md)` reads the board's "Waiting on Ben" line into
+  `state.benOnly` — one bullet per ask once the PM writes it that way, else a paren-depth-aware `;`
+  split on today's inline numbered prose (a semicolon inside an aside, e.g. "(seven items
+  bench-pending)", never counts — only a `(<digit>)` marker does).
+- **Card controls write the same inbox note the composer would**, via a new shared `sendNote()`:
+  **[Go with the default]** → `Re Rulings › <section> › R-n. <question>: <default>`; **[Other…]** →
+  an inline textarea, same prefix; §I "applied — veto?" cards get **[Keep]** / **[Veto…]**;
+  Ben-only cards get **[Done]** → `Re Waiting on Ben › <ask>: done.`. No control scrolls to the
+  composer.
+- **Proven:** `tests/pm-state.test.js` pins R-18/R-48 open and R-41/R-42/R-54 ANSWERED-closed
+  against the real `EDHA_RULINGS.md`, plus a synthetic fixture for the §B-stub / §I-applied /
+  §K-skip shape and the citation counter's migration-code guard. Verified in a local static
+  preview (`pm-state.js --inject`): both real open rulings render with correct default/no-default
+  text, the full-text expander pulls the real ruling body off the already-loaded Rulings tab, `#more`
+  toggles and persists, and the page still renders with `dbRef` absent (buttons toast instead of
+  throwing). The tracked page keeps `{}` in both snapshot slots; `EDHA_DASHBOARD.html` is byte-for-
+  byte unchanged (`openRulings` is mobile-only) and its `--check` gate still passes.
+- **Found, not R-80:** the item's own brief names "today R-18, R-48, R-80" as the open set; R-80
+  does not exist anywhere in the repo (`EDHA_RULINGS.md`, `docs/PM_BOARD.md`, a full-repo grep) —
+  only R-18 and R-48 are actually open today. Flagged for the PM rather than invented.
 ## 2026-09-06 — Item 69: `system.damage.formula` folds to plain dice at ROLL time, R-71's runtime half (**ENGINE-ONLY, F5**)
 
 Item 59 built R-71 (a) — fold `system.damage.formula` at BUILD time — and proved it a no-op on every

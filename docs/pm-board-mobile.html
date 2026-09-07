@@ -106,6 +106,41 @@
   .eyebrow .sub { font-size: 12.5px; color: var(--faint); }
   .eyebrow .right { margin-left: auto; font-size: 12.5px; color: var(--dim); }
 
+  /* ---- NEEDS YOU (item 43 — everything else lives behind More) ---- */
+  .status-line { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 14px; padding: 2px 0 12px; }
+  .status-line .txt { color: var(--dim); }
+  .status-line .txt b { color: var(--txt); font-weight: 600; }
+  .stale-banner { background: var(--bad-soft); border: 1px solid var(--bad); color: var(--bad); border-radius: 10px; padding: 10px 12px; font-size: 13px; font-weight: 600; margin-bottom: 10px; }
+  .nycards { display: grid; gap: 10px; }
+  .nycard { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; box-shadow: var(--shadow); border-left: 4px solid var(--warn); display: grid; gap: 8px; }
+  .nycard.applied { border-left-color: var(--violet); }
+  .nycard.benonly { border-left-color: var(--accent); }
+  .nycard .ny-k { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); display: flex; align-items: center; gap: 8px; }
+  .nycard .ny-badge { font-size: 10.5px; padding: 1px 8px; border-radius: 9px; border: 1px solid var(--line); color: var(--dim); font-weight: 600; white-space: nowrap; margin-left: auto; }
+  .nycard .ny-ask { font-weight: 600; font-size: 15px; overflow-wrap: anywhere; }
+  .nycard .ny-default { font-size: 13.5px; color: var(--dim); overflow-wrap: anywhere; }
+  .nycard .ny-default b { color: var(--txt); }
+  .nycard details.ny-full { font-size: 12.5px; color: var(--dim); }
+  .nycard details.ny-full summary { cursor: pointer; text-decoration: underline dotted; }
+  .nycard details.ny-full .body { margin-top: 6px; background: var(--panel2); border-radius: 8px; padding: 8px 10px; overflow-wrap: anywhere; }
+  .nyacts { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .nyacts .btn2 { padding: 7px 12px; border-radius: 8px; border: 1px solid var(--line-strong); background: var(--panel2); color: var(--txt); font-weight: 600; font-size: 13px; cursor: pointer; }
+  .nyacts .btn2.primary { background: var(--accent); border-color: var(--accent); color: #141a2b; }
+  .nyother { display: none; gap: 6px; }
+  .nyother.show { display: grid; }
+  .nyother textarea { width: 100%; min-height: 56px; resize: vertical; font: inherit; color: var(--txt); background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 9px; }
+  .nyempty { color: var(--dim); font-size: 13.5px; background: var(--panel); border: 1px dashed var(--line); border-radius: 10px; padding: 12px; }
+  .nyflags { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font-size: 13px; color: var(--dim); }
+  .nyflags .linkbtn { font-weight: 600; }
+
+  /* ---- MORE (the old full board, collapsed by default) ---- */
+  #more { border: none; }
+  #more > .more-summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 10px 2px; font-size: 13px; font-weight: 600; color: var(--dim); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  #more > .more-summary::-webkit-details-marker { display: none; }
+  #more > .more-summary .tw { color: var(--faint); font-size: 11px; display: inline-block; transition: transform .1s; }
+  #more[open] > .more-summary .tw { transform: rotate(90deg); }
+  #more .more-body { display: grid; gap: 26px; padding-top: 18px; }
+
   /* ---- chips & pills ---- */
   .chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
   .chip { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 500; line-height: 1; padding: 4px 8px; border-radius: 999px; border: 1px solid var(--line); color: var(--dim); background: var(--panel); white-space: nowrap; }
@@ -306,64 +341,76 @@
       <span class="updated" id="updated">—</span>
     </div>
     <nav class="jump" aria-label="Sections">
-      <a href="#now">Now</a><a href="#snapshot">Snapshot</a><a href="#budget">Budget</a><a href="#queue">Queue</a><a href="#ben">For Ben</a><a href="#inbox">Inbox</a><a href="#log">Run log</a><a href="#dash">Dashboard</a>
+      <a href="#needsyou">Needs you</a><a href="#now">Now</a><a href="#snapshot">Snapshot</a><a href="#budget">Budget</a><a href="#queue">Queue</a><a href="#ben">For Ben</a><a href="#inbox">Inbox</a><a href="#log">Run log</a><a href="#dash">Dashboard</a>
     </nav>
   </div>
 </header>
 
 <main>
-  <section id="now" aria-labelledby="h-now">
-    <div class="eyebrow"><h2 id="h-now">Now</h2><span class="sub" id="now-sub"></span><span class="right" id="clock"></span></div>
-    <div class="now-panel" id="now-panel"></div>
+  <section id="needsyou" aria-labelledby="h-needsyou">
+    <div class="eyebrow"><h2 id="h-needsyou">Needs you</h2><span class="right" id="clock"></span></div>
+    <div id="stale-banner"></div>
+    <div class="status-line" id="status-line"></div>
+    <div class="nycards" id="nycards"></div>
   </section>
 
-  <section id="snapshot" aria-labelledby="h-snapshot">
-    <div class="eyebrow"><h2 id="h-snapshot">Snapshot</h2><span class="sub" id="snap-sub"></span><span class="right" id="snap-age"></span></div>
-    <div class="tiles" id="tiles"></div>
-    <div id="deploy"></div>
-  </section>
+  <details id="more">
+    <summary class="more-summary"><span class="tw" aria-hidden="true">▶</span><span>More — full dashboard, queue, budget, run log, inbox</span></summary>
+    <div class="more-body">
+      <section id="now" aria-labelledby="h-now">
+        <div class="eyebrow"><h2 id="h-now">Now</h2><span class="sub" id="now-sub"></span></div>
+        <div class="now-panel" id="now-panel"></div>
+      </section>
 
-  <section id="budget" aria-labelledby="h-budget">
-    <div class="eyebrow"><h2 id="h-budget">Budget window</h2><span class="sub" id="budget-sub"></span></div>
-    <div class="meters" id="meters"></div>
-    <div class="slot" id="slot"></div>
-    <div class="usage" id="usage"></div>
-  </section>
+      <section id="snapshot" aria-labelledby="h-snapshot">
+        <div class="eyebrow"><h2 id="h-snapshot">Snapshot</h2><span class="sub" id="snap-sub"></span><span class="right" id="snap-age"></span></div>
+        <div class="tiles" id="tiles"></div>
+        <div id="deploy"></div>
+      </section>
 
-  <section id="queue" aria-labelledby="h-queue">
-    <div class="eyebrow"><h2 id="h-queue">Queue</h2><span class="sub" id="queue-sub"></span></div>
-    <div class="filters" id="filters" role="group" aria-label="Filter queue"></div>
-    <div class="rows" id="rows"></div>
-  </section>
+      <section id="budget" aria-labelledby="h-budget">
+        <div class="eyebrow"><h2 id="h-budget">Budget window</h2><span class="sub" id="budget-sub"></span></div>
+        <div class="meters" id="meters"></div>
+        <div class="slot" id="slot"></div>
+        <div class="usage" id="usage"></div>
+      </section>
 
-  <section id="ben" aria-labelledby="h-ben">
-    <div class="eyebrow"><h2 id="h-ben">For Ben</h2><span class="sub">what only you can unblock</span></div>
-    <div class="asks" id="asks"></div>
-  </section>
+      <section id="queue" aria-labelledby="h-queue">
+        <div class="eyebrow"><h2 id="h-queue">Queue</h2><span class="sub" id="queue-sub"></span></div>
+        <div class="filters" id="filters" role="group" aria-label="Filter queue"></div>
+        <div class="rows" id="rows"></div>
+      </section>
 
-  <section id="inbox" aria-labelledby="h-inbox">
-    <div class="eyebrow"><h2 id="h-inbox">Inbox to the PM</h2><span class="sub">read on its next wake</span></div>
-    <form class="composer" id="composer">
-      <textarea id="note" placeholder="Foundry is up tonight 8–10 · skip 20, do 19a next · pause after this one" aria-label="Note to the PM" disabled></textarea>
-      <div class="act"><span class="hint" id="inbox-hint">Connecting…</span><button class="btn" type="submit" id="send" disabled>Send</button></div>
-    </form>
-    <div class="notes" id="notes"></div>
-  </section>
+      <section id="ben" aria-labelledby="h-ben">
+        <div class="eyebrow"><h2 id="h-ben">For Ben</h2><span class="sub">what only you can unblock</span></div>
+        <div class="asks" id="asks"></div>
+      </section>
 
-  <section id="log" aria-labelledby="h-log">
-    <div class="eyebrow"><h2 id="h-log">Run log</h2><span class="sub">newest first</span></div>
-    <div class="log" id="loglist"></div>
-  </section>
-  <section id="dash" aria-labelledby="h-dash">
-    <div class="eyebrow"><h2 id="h-dash">Dashboard</h2><span class="sub" id="dash-sub"></span></div>
-    <div class="dtabs" id="dtabs" role="tablist" aria-label="Dashboard tabs"></div>
-    <div class="dtools">
-      <input type="search" id="dq" placeholder="search rows on this tab…" aria-label="Search rows">
-      <div class="filters" id="dfilters" role="group" aria-label="Filter rows"></div>
+      <section id="inbox" aria-labelledby="h-inbox">
+        <div class="eyebrow"><h2 id="h-inbox">Inbox to the PM</h2><span class="sub">read on its next wake</span></div>
+        <form class="composer" id="composer">
+          <textarea id="note" placeholder="Foundry is up tonight 8–10 · skip 20, do 19a next · pause after this one" aria-label="Note to the PM" disabled></textarea>
+          <div class="act"><span class="hint" id="inbox-hint">Connecting…</span><button class="btn" type="submit" id="send" disabled>Send</button></div>
+        </form>
+        <div class="notes" id="notes"></div>
+      </section>
+
+      <section id="log" aria-labelledby="h-log">
+        <div class="eyebrow"><h2 id="h-log">Run log</h2><span class="sub">newest first</span></div>
+        <div class="log" id="loglist"></div>
+      </section>
+      <section id="dash" aria-labelledby="h-dash">
+        <div class="eyebrow"><h2 id="h-dash">Dashboard</h2><span class="sub" id="dash-sub"></span></div>
+        <div class="dtabs" id="dtabs" role="tablist" aria-label="Dashboard tabs"></div>
+        <div class="dtools">
+          <input type="search" id="dq" placeholder="search rows on this tab…" aria-label="Search rows">
+          <div class="filters" id="dfilters" role="group" aria-label="Filter rows"></div>
+        </div>
+        <div class="srcnote" id="dsrc"></div>
+        <div class="dsections" id="dsections"></div>
+      </section>
     </div>
-    <div class="srcnote" id="dsrc"></div>
-    <div class="dsections" id="dsections"></div>
-  </section>
+  </details>
 </main>
 <footer id="foot"></footer>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -383,7 +430,7 @@
     { dow: ["Mon", "Tue", "Wed", "Thu"], start: "21:00", end: "07:00", spanDays: 1 },
     { dow: ["Fri"], start: "21:00", end: "07:00", spanDays: 3 }
   ];
-  if (!state || !state.queue) state = { queue: [], runLog: [], rulings: [], inbox: [], workers: [], dispatches: [], caps: { dispatchesPerWindow: 2, opusPerWindow: 1, windowHours: 5, windows: DEFAULT_WINDOWS }, timeZone: "America/New_York", pm: { status: "unknown" }, foundry: {}, source: {} };
+  if (!state || !state.queue) state = { queue: [], runLog: [], rulings: [], benOnly: [], inbox: [], workers: [], dispatches: [], caps: { dispatchesPerWindow: 2, opusPerWindow: 1, windowHours: 5, windows: DEFAULT_WINDOWS }, timeZone: "America/New_York", pm: { status: "unknown" }, foundry: {}, source: {} };
   var liveDoc = false;   // pm/state arrived from the store
   var dbRef = null;
   var filter = "all";
@@ -397,6 +444,19 @@
   var dq = "";            // search needle
   var dashOpen = {};      // secId -> true while expanded (this page load only)
   var MIRRORS = { forben: { label: "⚑ For Ben", key: "forBen" }, benchqueue: { label: "🤖 Bench queue", key: "benchQueue" } };
+
+  // ---- item 43: the "Needs you" view is everything above the fold; the old full board (queue,
+  // budget, run log, dashboard, inbox composer) lives under this collapsed toggle, state in
+  // localStorage so a re-open remembers it was expanded. Every access is try/catch'd — a private
+  // window or blocked site data must not break the page (CLAUDE.md "the page still renders with
+  // ... no localStorage").
+  var MORE_KEY = "edha-mobile-more-open";
+  (function () {
+    var more = $("more");
+    try { if (localStorage.getItem(MORE_KEY) === "1") more.open = true; } catch (e) {}
+    more.addEventListener("toggle", function () { try { localStorage.setItem(MORE_KEY, more.open ? "1" : "0"); } catch (e) {} });
+  })();
+  function openMore() { var more = $("more"); if (more && !more.open) { more.open = true; try { localStorage.setItem(MORE_KEY, "1"); } catch (e) {} } }
 
   /** index + {id: chunk} → the assembled dashboard, or null when a chunk the index names is missing
    * or carries another stamp (a push in flight — wait for the next snapshot). */
@@ -805,12 +865,151 @@
     if (ta.disabled) toast("Open this page in claude.ai to send inbox notes"); else { ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); }
   }
 
+  // ---- item 43: "Needs you" — one status line, a stale-heartbeat banner, and a card per open
+  // ruling / board (waiting) ruling / Ben-only ask. Everything else moved under #more. openRulings
+  // and benOnly can both be missing (an old cached snapshot, or the tracked page's empty `{}`
+  // slots) — every read below falls back to [] rather than throwing.
+  var lastIndex = null; // dash/index, set the moment it arrives — openRulings needs no chunk fetch
+  function openRulingsList() { return (lastIndex && lastIndex.openRulings) || (dash && dash.index && dash.index.openRulings) || []; }
+  var plainText = function (s) { return String(s == null ? "" : s).replace(/\*\*/g, "").replace(/`/g, ""); };
+
+  /** Shared with the Inbox composer under More: one inbox note, written the same way no matter
+   * which control asked for it. Resolves true/false so a caller can react without duplicating the
+   * disabled/toast dance. */
+  function sendNote(text) {
+    if (!dbRef) { toast("Open this page in claude.ai to send inbox notes"); return Promise.resolve(false); }
+    return dbRef.collection("inbox").add({ text: text, createdAt: new Date().toISOString(), status: "new", from: "mobile-board" })
+      .then(function () { toast("Sent to the PM"); return true; })
+      .catch(function (e) { toast(e && e.code === "quota_exceeded" ? "Inbox is full — delete old notes first" : "Could not send: " + (e && e.message || "unknown error")); return false; });
+  }
+
+  function renderStatusLine(now) {
+    var pm = state.pm || { status: "unknown" }, wf = windowFacts(now), ws = state.workers || [];
+    var stLabel = { awake: "PM awake", waiting: "PM waiting", stopped: "PM stopped", unknown: "PM state unknown" }[pm.status] || pm.status;
+    var running = ws.length ? ws.map(function (w) { return "#" + esc(w.item) + " (" + esc(w.model || "?") + ", " + esc(ago(w.startedAt, now)) + ")"; }).join(", ") : "nothing running";
+    var openR = openRulingsList(), benOnly = state.benOnly || [];
+    var reasons = [];
+    if (pm.waitingOn) reasons.push(esc(pm.waitingOn));
+    if ((state.queue || []).some(function (q) { return q.status === "blocked"; })) reasons.push("a blocked queue row");
+    if (openR.length) reasons.push(openR.length + " open ruling" + (openR.length === 1 ? "" : "s"));
+    if (benOnly.length) reasons.push(benOnly.length + " Ben-only ask" + (benOnly.length === 1 ? "" : "s"));
+    var blocked = reasons.length ? "Yes — " + reasons.join(", ") : "No";
+    $("status-line").innerHTML = pill(pm.status, stLabel) + '<span class="txt">running: <b>' + running + '</b> &middot; blocked on you: <b>' + blocked + '</b></span>';
+  }
+
+  function renderStaleBanner(now) {
+    var gen = Date.parse(state.generatedAt);
+    var stale = !isNaN(gen) && (now - gen) > 60 * 60 * 1000 && state.pm && state.pm.status === "awake";
+    $("stale-banner").innerHTML = stale
+      ? '<div class="stale-banner">⚠ Stale heartbeat — the PM says it is awake, but its last snapshot is ' + esc(ago(state.generatedAt, now)) + ' old. It may be frozen on a permission dialog.</div>'
+      : "";
+  }
+
+  /** The ruling's full card text, read off the already-loaded ⚖ Rulings tab (item 43's cards carry
+   * only {id, section, ask, default, applied, blocks} — the full text is not duplicated into the
+   * index). Returns null before the rulings chunk has loaded; the card falls back to pointing at
+   * the tab under More rather than blocking on it. */
+  function findRulingFullText(id) {
+    if (!dash || !dash.rows) return null;
+    var re = new RegExp("^\\*\\*" + id.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\.");
+    for (var k in dash.rows) {
+      if (!Object.prototype.hasOwnProperty.call(dash.rows, k)) continue;
+      var e = dash.rows[k];
+      if (e.tab === "rulings" && e.row && re.test(e.row.text)) return e.row.text;
+    }
+    return null;
+  }
+  function rulingReplyPrefix(r) { return "Re Rulings › " + plainText(r.section) + " › " + r.id + ". " + r.ask + ": "; }
+  function markSent(btn, label) {
+    var acts = btn.closest(".nyacts"); if (acts) acts.innerHTML = '<span class="pill merged">' + esc(label || "Sent ✓") + "</span>";
+    var card = btn.closest(".nycard"); var box = card && card.querySelector(".nyother"); if (box) box.classList.remove("show");
+  }
+
+  function rulingCardHtml(r) {
+    var hasDefault = r.default && r.default !== "no default stated";
+    var full = findRulingFullText(r.id);
+    var fullHtml = full ? '<details class="ny-full"><summary>full text</summary><div class="body">' + inl(full) + "</div></details>" : '<div class="ny-full">full text: see the ⚖ Rulings tab under More.</div>';
+    var badge = r.blocks ? '<span class="ny-badge">blocks ' + r.blocks + " checklist row" + (r.blocks === 1 ? "" : "s") + " / TODO item" + (r.blocks === 1 ? "" : "s") + "</span>" : "";
+    if (r.applied) {
+      return '<div class="nycard applied" data-ruling="' + esc(r.id) + '">' +
+        '<div class="ny-k">' + esc(r.id) + " · applied as default" + badge + "</div>" +
+        '<div class="ny-ask">' + esc(r.ask) + "</div>" +
+        '<div class="ny-default">Live now: <b>' + esc(r.default) + "</b></div>" +
+        fullHtml +
+        '<div class="nyacts"><button type="button" class="btn2 primary" data-keep="' + esc(r.id) + '">Keep</button><button type="button" class="btn2" data-veto-open="' + esc(r.id) + '">Veto…</button></div>' +
+        '<div class="nyother" id="ny-other-' + esc(r.id) + '"><textarea placeholder="Why veto it — what should happen instead"></textarea><button type="button" class="btn2 primary" data-veto-send="' + esc(r.id) + '">Send veto</button></div>' +
+        "</div>";
+    }
+    return '<div class="nycard" data-ruling="' + esc(r.id) + '">' +
+      '<div class="ny-k">' + esc(r.id) + " · " + esc(plainText(r.section)) + badge + "</div>" +
+      '<div class="ny-ask">' + esc(r.ask) + "</div>" +
+      '<div class="ny-default">' + (hasDefault ? "Recommended: <b>" + esc(r.default) + "</b>" : "No default stated.") + "</div>" +
+      fullHtml +
+      '<div class="nyacts">' + (hasDefault ? '<button type="button" class="btn2 primary" data-default="' + esc(r.id) + '">Go with the default</button>' : "") +
+      '<button type="button" class="btn2" data-other-open="' + esc(r.id) + '">Other…</button></div>' +
+      '<div class="nyother" id="ny-other-' + esc(r.id) + '"><textarea placeholder="Your answer"></textarea><button type="button" class="btn2 primary" data-other-send="' + esc(r.id) + '">Send</button></div>' +
+      "</div>";
+  }
+  function benOnlyCardHtml(ask, i) {
+    return '<div class="nycard benonly" data-benonly="' + i + '"><div class="ny-k">Yours to do</div><div class="ny-ask">' + esc(ask) + '</div>' +
+      '<div class="nyacts"><button type="button" class="btn2 primary" data-done="' + i + '">Done</button></div></div>';
+  }
+  function renderNeedsYou(now) {
+    renderStaleBanner(now);
+    renderStatusLine(now);
+    var open = openRulingsList();
+    var h = open.filter(function (r) { return !r.applied; }).map(rulingCardHtml)
+      .concat(open.filter(function (r) { return r.applied; }).map(rulingCardHtml))
+      .concat((state.benOnly || []).map(benOnlyCardHtml));
+    var counts = (lastIndex && lastIndex.counts) || (dash && dash.index && dash.index.counts) || {};
+    if (counts.forBen) h.push('<div class="nyflags">⚑ <button type="button" class="linkbtn" data-tab="forben">' + counts.forBen + " row" + (counts.forBen === 1 ? "" : "s") + " need your judgment</button> — full list under More → Dashboard.</div>");
+    $("nycards").innerHTML = h.join("") || '<div class="nyempty">Nothing needs you right now.</div>';
+  }
+  $("nycards").addEventListener("click", function (ev) {
+    var t = ev.target, btn;
+    if ((btn = t.closest("button[data-tab]"))) { jumpToDash(btn.getAttribute("data-tab")); return; }
+    if ((btn = t.closest("button[data-other-open], button[data-veto-open]"))) {
+      var id0 = btn.getAttribute("data-other-open") || btn.getAttribute("data-veto-open");
+      var box0 = document.getElementById("ny-other-" + id0);
+      if (box0) { box0.classList.toggle("show"); if (box0.classList.contains("show")) box0.querySelector("textarea").focus(); }
+      return;
+    }
+    if ((btn = t.closest("button[data-default]"))) {
+      var r1 = openRulingsList().filter(function (x) { return x.id === btn.getAttribute("data-default"); })[0];
+      if (r1) { btn.disabled = true; sendNote(rulingReplyPrefix(r1) + r1.default).then(function (ok) { btn.disabled = false; if (ok) markSent(btn); }); }
+      return;
+    }
+    if ((btn = t.closest("button[data-keep]"))) {
+      var r2 = openRulingsList().filter(function (x) { return x.id === btn.getAttribute("data-keep"); })[0];
+      if (r2) { btn.disabled = true; sendNote(rulingReplyPrefix(r2) + "keep the applied default.").then(function (ok) { btn.disabled = false; if (ok) markSent(btn); }); }
+      return;
+    }
+    if ((btn = t.closest("button[data-other-send]"))) {
+      var id3 = btn.getAttribute("data-other-send"), r3 = openRulingsList().filter(function (x) { return x.id === id3; })[0];
+      var box3 = document.getElementById("ny-other-" + id3), text3 = box3 ? box3.querySelector("textarea").value.trim() : "";
+      if (r3 && text3) { btn.disabled = true; sendNote(rulingReplyPrefix(r3) + text3).then(function (ok) { btn.disabled = false; if (ok) markSent(btn); }); }
+      else if (!text3) toast("Type an answer first");
+      return;
+    }
+    if ((btn = t.closest("button[data-veto-send]"))) {
+      var id4 = btn.getAttribute("data-veto-send"), r4 = openRulingsList().filter(function (x) { return x.id === id4; })[0];
+      var box4 = document.getElementById("ny-other-" + id4), text4 = box4 ? box4.querySelector("textarea").value.trim() : "";
+      if (r4) { btn.disabled = true; sendNote(rulingReplyPrefix(r4) + "VETO" + (text4 ? " — " + text4 : "") + ".").then(function (ok) { btn.disabled = false; if (ok) markSent(btn); }); }
+      return;
+    }
+    if ((btn = t.closest("button[data-done]"))) {
+      var i = +btn.getAttribute("data-done"), ask = (state.benOnly || [])[i];
+      if (ask != null) { btn.disabled = true; sendNote("Re Waiting on Ben › " + ask + ": done.").then(function (ok) { btn.disabled = false; if (ok) markSent(btn); }); }
+      return;
+    }
+  });
+
   function render() {
     var now = Date.now();
-    try { renderHeader(now); renderNow(now); renderBudget(now); renderQueue(); renderAsks(); renderLog(now); renderFoot(); renderSnapshot(now); renderDash(); }
+    try { renderHeader(now); renderNeedsYou(now); renderNow(now); renderBudget(now); renderQueue(); renderAsks(); renderLog(now); renderFoot(); renderSnapshot(now); renderDash(); }
     catch (e) { console.error(e); }
   }
-  function tick() { var now = Date.now(); try { renderHeader(now); renderNow(now); renderBudget(now); } catch (e) { console.error(e); } }
+  function tick() { var now = Date.now(); try { renderHeader(now); renderNeedsYou(now); renderNow(now); renderBudget(now); } catch (e) { console.error(e); } }
 
   $("filters").addEventListener("click", function (ev) { var b = ev.target.closest("button[data-f]"); if (!b) return; filter = b.getAttribute("data-f"); renderQueue(); });
   // dashboard: tabs, filters, search, section toggles, go/reply, tiles
@@ -827,7 +1026,11 @@
     if (g) gotoRow(g.getAttribute("data-go"), g.getAttribute("data-gotab"), g.getAttribute("data-gosec"));
     if (r) replyTo(r.getAttribute("data-reply"));
   });
-  function jumpToDash(key) { setDashTab(key); $("dash").scrollIntoView({ block: "start" }); }
+  function jumpToDash(key) { openMore(); setDashTab(key); $("dash").scrollIntoView({ block: "start" }); }
+  document.querySelector(".jump").addEventListener("click", function (ev) {
+    var a = ev.target.closest("a[href]"); if (!a || a.getAttribute("href") === "#needsyou") return;
+    openMore();
+  });
   $("tiles").addEventListener("click", function (ev) { var b = ev.target.closest("button[data-tab]"); if (b) jumpToDash(b.getAttribute("data-tab")); });
   $("asks").addEventListener("click", function (ev) { var b = ev.target.closest("button[data-tab]"); if (b) jumpToDash(b.getAttribute("data-tab")); });
 
@@ -857,7 +1060,7 @@
       Promise.all(ids.map(function (id) { return db.doc("dash/" + id).get(); })).then(function (docs) {
         var chunks = {}; docs.forEach(function (d, i) { if (d.exists) chunks[ids[i]] = d.data(); });
         var a = assembleDash(idx, chunks);
-        if (a) { dash = a; dashLive = true; renderSnapshot(Date.now()); renderDash(); renderAsks(); }
+        if (a) { dash = a; dashLive = true; renderSnapshot(Date.now()); renderDash(); renderAsks(); renderNeedsYou(Date.now()); }
         else if (!retried) setTimeout(function () { loadDash(idx, true); }, 3000);
         else console.warn("dash: chunks incomplete for stamp", idx.stamp);
       }).catch(function (e) { console.warn("dash: chunk load failed", e); });
@@ -865,6 +1068,10 @@
     db.doc("dash/index").onSnapshot(function (snap) {
       if (!snap.exists) return;
       var idx = snap.data();
+      // openRulings rides in the index itself (item 43) — render the "Needs you" cards right away,
+      // without waiting on the chunk fetch below (that's only needed for the full-text expander).
+      lastIndex = idx;
+      renderNeedsYou(Date.now());
       if (dashLive && dash && dash.index.stamp === idx.stamp && dash.index.generatedAt === idx.generatedAt) return;
       loadDash(idx, false);
     }, function (err) { console.warn("dash/index subscription ended", err); });
@@ -876,10 +1083,9 @@
 
   $("composer").addEventListener("submit", async function (ev) {
     ev.preventDefault();
-    var text = $("note").value.trim(); if (!text || !dbRef) return;
+    var text = $("note").value.trim(); if (!text) return;
     $("send").disabled = true;
-    try { await dbRef.collection("inbox").add({ text: text, createdAt: new Date().toISOString(), status: "new", from: "mobile-board" }); $("note").value = ""; toast("Sent to the PM"); }
-    catch (e) { toast(e && e.code === "quota_exceeded" ? "Inbox is full — delete old notes first" : "Could not send: " + (e && e.message || "unknown error")); }
+    if (await sendNote(text)) $("note").value = "";
     $("send").disabled = false;
   });
   $("notes").addEventListener("click", async function (ev) {

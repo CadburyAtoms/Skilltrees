@@ -234,6 +234,46 @@ function parseRulings(rows) {
   });
 }
 
+/** The board's "Waiting on Ben" line -> one ask per bullet (item 43, 2026-09-06 — the "Needs you"
+ * view's Ben-only cards). Today it is inline prose inside the top status blockquote: "**Waiting on
+ * Ben now:** (1) ...; (2) ...; (3) ...". This item's own spec asks the PM to keep that line "one
+ * bullet per ask" going forward — a `- ask` list right after the label — which this parses
+ * directly; until the board is edited that way, a top-level `;` split (a semicolon nested inside a
+ * parenthetical aside does not count — only a "(<digits>)" marker ever opens on a digit, so it can
+ * always be told apart from an ordinary aside like "(seven items bench-pending)") recovers each
+ * numbered ask and drops its "(n)" marker. Scans the RAW lines rather than `parseMd`'s blocks:
+ * the label lives inside the top blockquote, before any `## ` heading `sections()` keys on, and
+ * `parseMd` collapses a blockquote's own paragraph breaks into one blob, erasing the very boundary
+ * this needs. Returns [] if the board carries no such line yet — the page just shows no Ben-only
+ * cards until the PM adopts the convention. */
+function parseBenOnly(md) {
+  const LABEL_RE = /\*\*Waiting on Ben\b[^*]*:\*\*/i;
+  const lines = md.split(/\r?\n/);
+  const startIdx = lines.findIndex((l) => LABEL_RE.test(l));
+  if (startIdx === -1) return [];
+  const labelMatch = lines[startIdx].match(LABEL_RE);
+  const collected = [lines[startIdx].slice(labelMatch.index + labelMatch[0].length)];
+  for (let i = startIdx + 1; i < lines.length; i++) {
+    const l = lines[i];
+    if (/^\s*$/.test(l) || /^>\s*$/.test(l) || /^#{1,6}\s/.test(l)) break; // paragraph/section boundary
+    collected.push(l.replace(/^>\s?/, ""));
+  }
+  const bulletLines = collected.filter((l) => /^\s*[-*]\s+/.test(l));
+  if (bulletLines.length) return bulletLines.map((l) => strip(l.replace(/^\s*[-*]\s+/, ""))).filter(Boolean);
+
+  const joined = collected.join(" ").replace(/\s+/g, " ").trim();
+  const parts = [];
+  let depth = 0, cur = "";
+  for (const ch of joined) {
+    if (ch === "(") depth++;
+    else if (ch === ")") depth = Math.max(0, depth - 1);
+    if (ch === ";" && depth === 0) { parts.push(cur); cur = ""; }
+    else cur += ch;
+  }
+  parts.push(cur);
+  return parts.map((s) => strip(s.replace(/^\s*\(\d+\)\s*/, ""))).filter(Boolean);
+}
+
 function parseInbox(secBlocks) {
   const out = [];
   for (const b of secBlocks || []) {
@@ -409,6 +449,7 @@ function parseBoard(md, opts = {}) {
   const rulings = parseRulings(tableRows(sec["rulings"], ["id", "question", "ruling"]));
   const inbox = parseInbox(sec["inbox from ben"]);
   const foundry = parseFoundry(sec["foundry windows"]);
+  const benOnly = parseBenOnly(md);
 
   const live = opts.live || {};
   let workers = Array.isArray(live.workers) ? live.workers : null;
@@ -444,6 +485,7 @@ function parseBoard(md, opts = {}) {
     usage,
     queue,
     rulings,
+    benOnly,
     inbox,
     foundry,
     runLog,
@@ -474,6 +516,9 @@ function shardDashboard(snap, opts = {}) {
   const index = {
     schema: snap.schema, stamp: snap.stamp, generatedAt: opts.now || new Date().toISOString(),
     sources: snap.sources, counts: snap.counts, deploy: snap.deploy, forBen: snap.forBen, benchQueue: snap.benchQueue,
+    // openRulings rides in the index (small, item 43's "Needs you" cards) rather than a chunk, so
+    // the page can render them above the fold before it has fetched anything else.
+    openRulings: snap.openRulings || [],
     tabs: [], chunks: [],
   };
   for (const tab of snap.tabs) {
@@ -596,7 +641,7 @@ function main(argv) {
 
 module.exports = {
   parseBoard, injectState, injectSlot, injectPage, shardDashboard, buildDashboardShards, writeDashboardDir,
-  wallToIso, tzOffsetMinutes, parseQueue, parseRunLog, parseRulings, parseInbox,
+  wallToIso, tzOffsetMinutes, parseQueue, parseRunLog, parseRulings, parseInbox, parseBenOnly,
   parseFoundry, parseCaps, parseWindowEntry, parseWindowsSpec, inWindow, nextWindowOpen, DEFAULT_WINDOWS,
   STATUS_VOCAB, DASH_CHUNK_BYTES, DASH_COLLECTION,
 };

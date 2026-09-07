@@ -1423,7 +1423,7 @@ fixed. ENGINE-ONLY if a fix is needed.
 
 ---
 
-## 43. [ ] Phone board "Needs you" view — collapse the dashboard to what Ben must act on
+## 43. [x] Phone board "Needs you" view — collapse the dashboard to what Ben must act on (2026-09-06, PR #236)
 
 **Why:** Ben, phone chat 2026-09-06 (~09:20 ET, relayed by skilltrees-f4): "I've noticed I'm not
 working on rulings because for each I need to scroll through the phone dashboard, find one I can
