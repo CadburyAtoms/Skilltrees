@@ -33,7 +33,7 @@ default and the checklist id it came from. The checklist is for tests.
 
 ---
 
-## 2026-09-06 — BENCH RUN 40: the whole engine-only backlog of tonight, driven live — 27 rows retired, one root-caused defect (**DOCS-ONLY** — no engine change, no data change, no pack rebuild, no ⟳ Sync)
+## 2026-09-06 — BENCH RUN 40: the whole engine-only backlog of tonight, driven live — 29 rows retired, one root-caused defect (**DOCS-ONLY** — no engine change, no data change, no pack rebuild, no ⟳ Sync)
 
 **Deploy, hash-verified from both sides before anything was driven.** The served
 `/modules/edha-content/scripts/register-skills.js`, fetched cache-busted and CRLF-normalised, hashes
@@ -53,7 +53,7 @@ Roster: `bench-setup-console.js` served from the module folder and run twice —
 re-run. The run-38 fixture worry is settled: every bench PC really does carry a melee **and** a
 ranged weapon (`Sidesword` + `Shortbow`, the latter `attack.type === "ranged"`).
 
-**Rows retired on evidence — 27, each with its own control** (full evidence inline in
+**Rows retired on evidence — 29 (31 rows deleted, 2 of them rewritten as narrowed rows), each with its own control** (full evidence inline in
 `EDHA_FOUNDRY_TEST_CHECKLIST.md`; one line each here):
 - **Fix pass 7b (item 48) — all six:** **R-31** (a PC's Phantom Double token reads `<X> (Illusion)`,
   an ally's copy labels *the ally*, and the Mistheron's adversary copy stays plain `Mistheron (3)`);

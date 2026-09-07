@@ -1640,7 +1640,8 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   `stopPropagation` / `preventDefault` / `stopImmediatePropagation` — the loot intercept returns
   before Foundry's own handler when it handles the click, and only throws on a bare `{}` when it
   **doesn't**, which is a useful signal but a confusing one to read as a failure.
-- **Density, measured: 27 checklist rows retired on evidence, 1 row narrowed to a named blocker,
+- **Density, measured: 29 checklist rows retired on evidence, 3 rows left open (one narrowed to a
+  named deploy blocker, one to an undriven NEG, one annotated PARTIAL),
   1 root-caused defect + 1 cosmetic defect filed, 2 new rulings, and 3 wrong reference names in the
   checklist corrected — in ~120 driving calls. The end-of-run per-actor diff was empty but for one
   pre-existing effect.** The fix-pass re-test block was again the densest thing available, for the
