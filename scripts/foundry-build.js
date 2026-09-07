@@ -235,13 +235,11 @@ function riderRule(t, spec) {
     lightRadiusFt: Number(spec.light?.radiusFt) || 0,   // >0: damaged creatures shed a flame light of this radius (Kindle)
   } };
 }
-function aoeRule(t, spec) {
-  const a = spec.area || {};
-  const sizeTxt = a.sizeByRank ? "[Size]" : `${a.sizeFt || 0} ft`;
-  return { id: ruleId(t, "aoe"), description: `On use, drops a ${sizeTxt} burst and auto-targets ${spec.affects || "enemies"}.`, event: "use", handler: {
-    type: "edha-aoe-template", sizeByRank: !!a.sizeByRank, sizeFt: a.sizeFt || 0, affects: spec.affects || "enemies", color: spec.color || "",
-  } };
-}
+// The on-use `edha-aoe-template` generator (for a `TALENT_TARGETING` entry with `.area` and no
+// `.burst`) was RETIRED 2026-09-06 (item 64): the engine dropped that handler under R-78
+// (item 48), and the only qualifying entry — Lay Foundation — carries an authored `edha-zone` rule
+// that replaced the generated events anyway. An `.area` without a `.burst` now emits nothing; the
+// writers below refuse any `edha-*` type the engine does not register, so this cannot recur silently.
 // Point-targeted burst (preUseItem takeover): the rule is the CONFIG the engine reads — size,
 // placement range, save, heal/terrain — all editable on the talent's Events tab.
 function burstRule(t, spec) {
@@ -293,8 +291,7 @@ function talentEvents(t) {
   if (TALENT_TRIGGERS[t.name])         add(triggerRule(t, TALENT_TRIGGERS[t.name]));
   if (TALENT_RIDERS[t.name])           add(riderRule(t, TALENT_RIDERS[t.name]));
   const tgt = TALENT_TARGETING[t.name];
-  if (tgt?.burst)                      add(burstRule(t, tgt));       // burst supersedes the on-use AoE template
-  else if (tgt?.area)                  add(aoeRule(t, tgt));
+  if (tgt?.burst)                      add(burstRule(t, tgt));       // `.area` alone emits nothing since item 64 (see above)
   if (TALENT_THP[t.name])              add(thpRule(t, TALENT_THP[t.name]));
   if (TALENT_SUMMONS[t.name])          add(summonRule(t, TALENT_SUMMONS[t.name]));
   if (TALENT_HAZARDS[t.name])          add(hazardRule(t, TALENT_HAZARDS[t.name]));
@@ -942,7 +939,24 @@ async function guardUnextracted(pack, packDir, baselineDir) {
   }
   return { dirty, hadBaseline: true };
 }
+// Item 64 guard: no document reaches a pack carrying an `edha-*` handler type the engine does not
+// register (`registerItemEventHandlerType` calls are the record — the same parse lint-refs pass 9
+// uses). Both writers call this, so it covers every generator AND every authored overlay; a
+// generated rule never appears in data/, which is why pass 9 alone could not catch the retired
+// `edha-aoe-template` generator (item 64).
+const { checkHandlerTypes, formatFindings } = require("./lib/handler-type-guard.js");
+let REGISTERED_HANDLER_TYPES = null;
+function assertRegisteredHandlerTypes(where, docs) {
+  if (!REGISTERED_HANDLER_TYPES) {
+    const { parseHandlerSchemas } = require("./handler-schemas.js");
+    const enginePath = require("path").join(__dirname, "..", "module-src", "scripts", "register-skills.js");
+    REGISTERED_HANDLER_TYPES = parseHandlerSchemas(fs.readFileSync(enginePath, "utf8"));
+  }
+  const { findings } = checkHandlerTypes(docs, REGISTERED_HANDLER_TYPES);
+  if (findings.length) throw new Error(formatFindings(where, findings).join("\n"));
+}
 async function writePack(dir, docs, folders) {
+  assertRegisteredHandlerTypes(dir, docs);
   fs.rmSync(dir, { recursive: true, force: true });
   fs.mkdirSync(dir, { recursive: true });
   const db = new ClassicLevel(dir, { keyEncoding: "utf8", valueEncoding: "json" });
@@ -1308,6 +1322,7 @@ function buildAdversaries(resolveTalent) {
 }
 
 async function writeActorPack(dir, actors, items, folders) {
+  assertRegisteredHandlerTypes(dir, [...actors, ...items]);   // embedded items carry the adversary rules
   fs.rmSync(dir, { recursive: true, force: true });
   fs.mkdirSync(dir, { recursive: true });
   const db = new ClassicLevel(dir, { keyEncoding: "utf8", valueEncoding: "json" });
