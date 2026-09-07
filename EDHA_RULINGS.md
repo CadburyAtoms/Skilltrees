@@ -151,6 +151,12 @@ the re-test row is on the checklist under `# BENCH — Engine-wide & cross-tree`
 > defer to the primary GM, a non-GM owner still writes). No change to the shipped code. Moves to §K
 > once the live re-test passes after Ben reloads his Gamemaster client — the run-37 blocker was the
 > stale client, not the code.
+> **CONFIRMED 2026-09-07 (Ben, dashboard), verbatim: "that works. default."** No change to the
+> shipped code or the ruling's status — same veto window, still moves to §K once the live re-test
+> passes. Also on this dashboard card, Ben separately noted two-GM tables will never happen at his
+> table in play (*"In-play there will never be 2 GM clients"*) — recorded as new **R-86** (§K); it
+> does not change this ruling's applied default, only confirms the scenario it defends against is
+> rare enough that a bench re-test, not a design reversal, is what is still owed.
 
 *(R-5 — does Fault Line's line spare allies — ANSWERED 2026-09-05, moved to §K.)*
 
@@ -266,6 +272,16 @@ Weakened rolls at **advantage** today — the quarry site runs after Weakened's 
 is the house convention (pack advantage, the Opportunity adv-test and `edha-next-test-mod` all stomp;
 only `edha-test-rider` has the opt-in `unlessDisadvantage` that Apex Predator uses). Left alone
 deliberately rather than changed silently. *(Checklist Quarry row, Heroic.)*
+> **ANSWERED 2026-09-07 (Ben, dashboard), verbatim: "it gets added to the list of advantages and
+> disadvantages on the roll. I believe the player gets to assign advantages and the GM gets to
+> assign disadvantages to the die participating in the roll, but double check the cosmere rpg
+> canon rules."** Canon check (`.claude/skills/cosmere-canon-reference/SKILL.md` §"advantage /
+> disadvantage", SR p.18): an advantage or disadvantage rolls an extra of one die type and keeps
+> one, the player chooses the die for advantages and the GM for disadvantages, and they cancel
+> each other one-for-one — Ben's memory is canon; no correction needed. Consequence: the quarry
+> advantage site must stop stomping the slot and instead JOIN the next-test list (item 49's
+> `flags.nextTestMod` list, whose fold already cancels an advantage against a disadvantage per
+> R-80) → **TODO item 80**. Stays open here until item 80 ships and the bench confirms it.
 
 *(R-19 — combat-timing talents granting to adversaries too — ANSWERED 2026-09-05, moved to §K.)*
 
@@ -401,78 +417,50 @@ spend. *(Board table; raised by item 28b.)*
 
 ---
 
-**R-80. Both an advantage AND a disadvantage next-test entry on one victim — do they cancel, or does disadvantage win?** With the next-test slot a LIST since item 49 (PR #221, 2026-09-06), a victim can carry both an advantage entry and a disadvantage entry for the same test — impossible under the old single slot. Item 49 folds them by boolean-OR per direction and, when both are present, writes NOTHING: the roll stays exactly as the player configured it (the standard table rule that they cancel; it never stomps a manual dialog choice). *Recommended default: **(a) they cancel** — **APPLIED** in #221 (stub in §I).* (b) disadvantage wins — one line in `edhaNextModFoldMode`, pinned, so a veto is a one-line diff. *(Board table 2026-09-06; raised by item 49.)*
+*(R-80 — both an advantage and a disadvantage next-test entry on one victim CANCEL (the roll stays as the player configured it) — DEFAULT (a) APPLIED 2026-09-06, item 49, PR #221; ANSWERED 2026-09-07, moved to §K.)*
 
 ---
 
-**R-81. Three more `bySize` charge distances whose cards print the rank-3 number — the R-46 treatment on all of them?** R-46 / R-48 fixed two charge distances by replacing `bySize` with an explicit `distanceFt`. Item 57's worker found the same shape on three more run-19 blocks — the Brandram's Shockwave Slam (`bySize: true` beside a dead `distanceFt: 5`) and Reckless Advance, and the Tussock-Sow's terrain square — all `bySize` at rank 2 while their cards print rank-3 numbers. *Recommended default: **(a) yes, the R-46 treatment on all three** (explicit `distanceFt` = the card's own number, stated on the card) — **APPLIED** by item 67 (PR #232; REBUILD owed to the next deploy; stub in §I).* (b) fix the three cards to the rank-2 numbers instead. Ben's R-48 answer of 2026-09-06 ("a statted block should not scale") rests on the same principle. *(Board table 2026-09-06; raised by item 57.)*
-
-Ask: Should the Brandram's Shockwave Slam and Reckless Advance and the Tussock-Sow's terrain square each keep an explicit `distanceFt` equal to the number their card prints, as already applied (a), or should the three cards be rewritten to the rank-2 `[Size]` numbers the engine was rolling (b)?
+*(R-81 — the three run-19 `bySize` blocks (Brandram's Shockwave Slam / Reckless Advance, Tussock-Sow's terrain square) carry an explicit `distanceFt` = the card's own number — DEFAULT (a) APPLIED 2026-09-06, item 67, PR #232, REBUILD owed to the next deploy; ANSWERED 2026-09-07, moved to §K.)*
 
 ---
 
 **R-82. Should R-14's "follow the card" graze rule reach the generic `edha-damage-bonus` rules too?** R-14 (c) now governs the Life mutation riders (Bone Spurs, Venom Glands, Apex Form) through per-rule graze dials (item 56, PR #242). Item 56's worker found that the generic `edha-damage-bonus` rules with `meleeOnly` (Warlord's Advance and kin — the armed-strike bonuses) ALSO fire on a graze application today. *Recommended default: **(a) yes** — the same per-rule `onGraze` dial on `edha-damage-bonus`, each card audited (the `graze` value is already available at that call site); a small S item once Ben nods. NOT applied yet.* (b) leave them — a bonus "on your attacks" reads as any application. *(Board table 2026-09-06; raised by item 56.)*
+> **ANSWERED 2026-09-07 (Ben, dashboard) — marked done, no note = the recommended default
+> accepted: (a) yes**, the same per-rule `onGraze` dial on `edha-damage-bonus`, each card audited
+> → **TODO item 81**. **Not shipped yet** — stays open here until item 81 lands and the bench
+> confirms it, then moves to §K.
 
 Ask: Should the melee-only `edha-damage-bonus` rules (Warlord's Advance and kin) get the same per-rule `onGraze` dial the Life mutation riders have, so a bonus stops firing on a graze unless its card says otherwise (a), or keep firing on any application including a graze (b)?
 
 ---
 
 **R-83. Three `hea` writers bypass the heal-cut gate — gate them at their emitters?** `ENGINE_INDEX.md` says every `hea` write outside `applyDamage` must pass `edhaHealCutGate`, and three do NOT: `edha-regen`'s turn-end write, the decay lifesteal heal-back, and `edhaBurstDetonate`'s heal hits. Their cards are honest (fix pass 8 / item 68, PR #241, fixed the announcing), but the HP still lands on a withered creature — Mending Aura keeps healing a target that "cannot regain HP". Gating them changes live HP at the table; `edhaApplyBurstResults` must STAY ungated (Raise Dead's stabilising 1 HP rides it, R-10), so the gate belongs in each emitter. *Recommended default: **(a) gate all three at the emitter** (the mark's card is the promise), the family test's gate-call count raised from 2 with a declaration, one 🤖 row per writer → TODO item 70. **WAITING for Ben — not applied, because it moves HP.*** (b) leave them ungated and say so in `ENGINE_INDEX.md`. *(Board table 2026-09-06; raised by fix pass 8.)*
+> **STILL WAITING 2026-09-07 (Ben, dashboard), verbatim: "I'm not sure what this means and will
+> want the pm to give me good examples when we get here in chat."** Plain-language gloss, written
+> for Ben: the three heal writers are (1) `edha-regen`'s turn-end heal (the adversary regen rule —
+> The Garden Sow / Nexus-Fed — plus the talent-side `edha-regen-grant` family: Apex Form's vital
+> regen, Mending Aura's turn heals), (2) the Lifeline-style `healFormula` heal-back die on
+> `edha-redirect` (the Life talent that takes an ally's damage and rolls a heal-back), and (3)
+> `edhaBurstDetonate`'s heal hits (any burst whose spec heals the tokens it catches). Today all
+> three still add HP to a creature under a "cannot regain HP" mark (Withering Touch / the Black
+> no-healing marks), while an ordinary heal on that creature is blocked. Concretely: an ally
+> Withered by a Black talent, then hit by Mending Aura's turn-end regen tick, gains HP today even
+> though the same ally targeted directly by a normal heal spell would not. **(a)** = those three
+> obey the mark too, so a Withered creature never regains HP from any source. **(b)** = leave them
+> as the deliberate exceptions and write that down in `ENGINE_INDEX.md`, so the mark's promise
+> reads "no ordinary healing, but regen/lifesteal/burst-heal still reach you." Item 70 stays
+> blocked on this call.
 
 Ask: Should `edha-regen`'s turn-end heal, the decay lifesteal heal-back, and `edhaBurstDetonate`'s heal hits each pass `edhaHealCutGate` so a creature that "cannot regain HP" stops gaining HP from them (a), or stay ungated with that exception written into `ENGINE_INDEX.md` (b)?
 
 ---
 
-**R-84. An offer that CANNOT be made still charges its Investiture — refund that too?** Measured at
-bench run 40 (2026-09-06) while driving item 51's R-17 rows. **Unnerving Approach** used against a
-target with no living ally within 10 ft posts its `emptyNote` card — *"no living ally of your target
-within 10 ft to push (it may already be Isolated)"* — and the SYSTEM has already taken the
-Investiture (measured **2 → 1**, with no refund and no Decline button, because there is no offer to
-decline). R-17 refunds a **declined** or **ignored** offer; it says nothing about an offer that never
-existed. From the player's side the three cases are indistinguishable: the cost left, nothing
-happened. *Recommended: **(a) refund it** — reuse `edhaOfferDecline`'s `edhaRefundCost` path on the
-`emptyNote` branch whenever `edhaOfferRefundable` is true, i.e. the same gate R-17 already computes.*
-(b) keep charging — "you spent the Investiture looking" is a defensible table rule, but then the card
-should SAY the cost was spent. Either way the card needs to stop being silent about the money.
-*(Bench run 40; from item 51 / R-17.)*
-
-> **DEFAULT (a) APPLIED 2026-09-06 (fix pass 9, TODO 72, ENGINE-ONLY → F5) — pending Ben's veto.**
-> The `emptyNote` branch now computes `edhaOfferRefundable(item, event)` — R-17's own gate,
-> unchanged — and refunds through `edhaOfferDecline(null, item, …, {refund: true})`, so
-> `edhaRefundCost` still has **exactly one caller** in the offer family (the pin that guards that
-> invariant is unmoved). The card names the money either way. One deviation from the ruling's own
-> wording, stated: the non-refundable line reads **"no cost was spent"**, not (b)'s *"the cost was
-> spent"* — with R-17's gate, `refundable === false` on this branch means the offer came from a
-> watch / success rule where the system charged **nothing** (that rule's `costs` land on the click,
-> which never happens here), so "spent" would be false. Fixed for all three `source: "creatures"`
-> rules carrying an `emptyNote`: Unnerving Approach (Black + its adversary twin), Anticipate (Blue),
-> Terms of Accord (White). Four cases pinned in `tests/offer-decline-refund.test.js`; dropping the
-> refund call fails the first. **A veto is a one-line revert.** 🤖 re-test row on the checklist.
+*(R-84 — an offer that cannot be made refunds its Investiture, and the card names the money — DEFAULT (a) APPLIED 2026-09-06, fix pass 9; ANSWERED 2026-09-07, moved to §K.)*
 
 ---
 
-**R-85. `expireEndOfRound` stamps the GRANTER's combat — should it fall back to the BEARER's?**
-Measured at bench run 40 while driving **2bI-4c**. `edha-next-test-mod` writes
-`mod.round = edhaCombatRoundOf(owner)` (`register-skills.js` ~L21116), and the comment says "the
-GRANTER's combat (edhaNextTestMatches reads the BEARER's — same combat at the table)". When the
-granter is **not a combatant** the stamp is `round: null`, and a `null` stamp can never expire — so a
-"this round" rider granted from outside the tracker sits on the victim for ever. Reproduced exactly:
-Pattern Recognition cast by a `Bench — Blue` that was not in the combat wrote
-`{source:"Pattern Recognition", round:null, …}`; adding Blue as a combatant and re-casting wrote
-`round: 8` and the rider then expired on schedule. The row itself PASSES once both are in the
-tracker, so this is a ruling, not a defect. *Recommended: **(a) fall back to the BEARER's combat when
-the granter has none** — `edhaCombatRoundOf(owner) ?? edhaCombatRoundOf(target)`; a "this round"
-rider then always means the round the victim is living in.* (b) leave it — out of combat there is no
-round and an inert stamp is honest; the cost is that a mid-combat grant from a non-combatant NPC
-never expires. *(Bench run 40; from item 49 / 2bI-4c.)*
-
-> **DEFAULT (a) APPLIED 2026-09-06 (fix pass 9, TODO 72, ENGINE-ONLY → F5) — pending Ben's veto.**
-> `mod.round = edhaCombatRoundOf(owner) ?? edhaCombatRoundOf(target)`, exactly as recommended. The
-> in-combat case is untouched (the granter's round still wins, even when the bearer is in a
-> different one — the fallback is a fallback); with BOTH sides out of combat the stamp is still
-> `null`, which is (b)'s honest answer for the only case where it is actually honest. Five cases
-> pinned in `tests/next-mod-round-fallback.test.js`, driving the shipped executor; removing the `??`
-> fails the fallback case. **A veto is a one-word revert.** 🤖 re-test row on the checklist.
+*(R-85 — `expireEndOfRound` falls back to the BEARER's combat when the granter is not a combatant — DEFAULT (a) APPLIED 2026-09-06, fix pass 9; ANSWERED 2026-09-07, moved to §K.)*
 
 ---
 
@@ -752,6 +740,9 @@ trade for a pack rebuild than the single-block version was. *(Bench run 19; chec
 > say "within 10 ft" — the same family one field over, reported to the PM.
 
 > **ANSWERED 2026-09-06 (a) — Ben, from the phone board at 21:14 ET, verbatim: *"the CARD is canon for an adversary — a statted block should not scale, so give it `distanceFt: 20` and drop `bySize`."*** Item 57 (PR #226) had already applied exactly that (`bySize: false`, `distanceFt: 20`, card text unchanged; REBUILD owed to the next deploy) — nothing further to change. The principle also underwrites R-81 (item 67) and R-46.
+> **CONFIRMED 2026-09-07 (Ben, dashboard), verbatim: "Yeah it makes no sense for an adult drake to
+> only jump 5 feet."** No change to the shipped code or the ruling's status — the 2026-09-06 answer
+> and PR #226 stand.
 
 *(R-49 — is a creature an obstacle for push collision damage — ANSWERED 2026-09-05, moved to §K.)*
 
@@ -809,6 +800,11 @@ engine, so it should be decided deliberately rather than slipped in. Blast radiu
 > `EDHA_ADJACENCY_SLACK_FT` now read by BOTH adjacency gates. ⚠️ All four measured gaps reach,
 > **including the 7.5 ft Large-owner case this ruling's prose predicted would still miss** — the
 > boundary is inclusive, so 7.5 ≤ 5 + 2.5. (ii) edge-to-edge is untouched and remains item 62.
+> **ANSWERED 2026-09-07 (Ben, dashboard), verbatim: "I'm fine with whatever fix you can find for
+> this. I think increasing slack would work, or editing the cue."** The +2.5 ft slack that shipped
+> as (i) IS that fix — all four measured gaps reach, including the Large-owner case. Item 62's
+> edge-to-edge measurement narrows to a contingency: only pick it up if bench run 42's W29 §2
+> re-test finds a gap the slack still misses. Item 62 stays open, narrowed, not closed.
 
 *(R-53 — Dead status on a "goes still" cue — ANSWERED 2026-09-06, moved to §K.)*
 
@@ -947,6 +943,22 @@ this — it only decides how far the fix reaches. *(Marathon 3, fix pass E.)*
 > tests/adversary-senses.test.js:"R-56: an adversary at AWA 0 derives 10 ft on the sheet (was the
 > cosmere ladder's 5)" and siblings; scratch read-back: 52 pack adversaries, 1 changed (the Grove),
 > 51 unchanged at 10. Ben: rebuild + deploy + press ⟳ Sync Adversaries from Pack.
+> **REOPENED 2026-09-07 (Ben, dashboard), verbatim: "Honestly we should be using the cosmere
+> ladder for everyone. If that's a huge issue or rebuild let me know before changing."** — and,
+> on the same card, *"In-play there will never be 2 GM clients. I'm marking this 'skip'"* (that
+> second remark belongs to R-77, not this ruling; recorded there). This reverses the direction R-56
+> shipped 2026-09-06 (the Edha AWA table for everyone) back toward the SYSTEM's own ladder for
+> everyone. **WAITING — nothing changed yet.** PM's scope, so Ben can decide before dispatch: the
+> Edha AWA table (0→10, 1→15, 2–3→20, 4→25, 5+→30 ft) is written into `senses.range.derived` for
+> every actor type by `edhaDeriveSheetStats` (ENGINE-ONLY to remove), the build stamps
+> prototype-token sight from the same table via `advSensesRangeFt` in `scripts/foundry-build.js`
+> (adversaries pack **REBUILD** to change), the character-creation wizard's preview promises the
+> table, `scripts/bench-setup-console.js` gives bench PCs their sight (R-2), and the docs
+> `Character_Building_Rules.md` §Senses Range + `docs/ACTOR_STAT_DERIVATION.md` + the tests
+> pinning `edhaSensesRangeFtFromAwa` all carry it. The system ladder is `[5, 10, 20, 50, 100, ∞]`
+> indexed by `ceil(AWA/2)`, so AWA 0 → 5 ft, 1–2 → 10 ft, 3–4 → 20 ft, 5 → 50 ft: stingier than the
+> Edha table at AWA 0–2, wider at 5+. Size M (ENGINE + adversaries REBUILD + wizard + docs +
+> tests) → **TODO item 83, lane H** — filed but held until Ben says go.
 
 ---
 
@@ -1007,13 +1019,13 @@ word and it gets built that way. *(Fix pass 5; no checklist row — this is a de
 
 *(R-68 — the map toolchain's alpha threshold is now one constant, 128 — ANSWERED-by-acceptance 2026-09-06, moved to §K.)*
 
-*(R-80 — both an advantage and a disadvantage next-test entry on one victim CANCEL (the roll stays as the player configured it) — DEFAULT (a) APPLIED 2026-09-06, item 49, PR #221; the ruling and its applied note stay in §C.)*
+*(R-80 — both an advantage and a disadvantage next-test entry on one victim CANCEL (the roll stays as the player configured it) — DEFAULT (a) APPLIED 2026-09-06, item 49, PR #221; ANSWERED 2026-09-07, moved to §K.)*
 
-*(R-81 — the three run-19 `bySize` blocks (Brandram's Shockwave Slam / Reckless Advance, Tussock-Sow's terrain square) carry an explicit `distanceFt` = the card's own number — DEFAULT (a) APPLIED 2026-09-06, item 67, PR #232, REBUILD owed to the next deploy; the ruling and its applied note stay in §C.)*
+*(R-81 — the three run-19 `bySize` blocks (Brandram's Shockwave Slam / Reckless Advance, Tussock-Sow's terrain square) carry an explicit `distanceFt` = the card's own number — DEFAULT (a) APPLIED 2026-09-06, item 67, PR #232, REBUILD owed to the next deploy; ANSWERED 2026-09-07, moved to §K.)*
 
-*(R-84 — an offer that cannot be made refunds its Investiture, and the card names the money — DEFAULT (a) APPLIED 2026-09-06, fix pass 9; the ruling and its applied note stay in §C.)*
+*(R-84 — an offer that cannot be made refunds its Investiture, and the card names the money — DEFAULT (a) APPLIED 2026-09-06, fix pass 9; ANSWERED 2026-09-07, moved to §K.)*
 
-*(R-85 — `expireEndOfRound` falls back to the BEARER's combat when the granter is not a combatant — DEFAULT (a) APPLIED 2026-09-06, fix pass 9; the ruling and its applied note stay in §C.)*
+*(R-85 — `expireEndOfRound` falls back to the BEARER's combat when the granter is not a combatant — DEFAULT (a) APPLIED 2026-09-06, fix pass 9; ANSWERED 2026-09-07, moved to §K.)*
 
 ---
 
@@ -1023,6 +1035,12 @@ Recorded so they are not re-derived. No decision needed unless something here su
 
 **F-1. Rank-3 Black Attunement Range measures 60 ft**, not the 30 ft several stagings assumed. Any
 row whose expectation was built on 30 ft should be re-read.
+> **SETTLED 2026-09-07 — Ben asked (dashboard): "All attunement ranges should be the same- what
+> does Red rank-3 attunement range read?"** Answer from the engine: `EDHA_ATTUNE_FT = [0, 15, 30,
+> 60, 90, 120]` (`module-src/scripts/engine/35-targeting-attunement-range-aoe-templates.js:24`) is
+> indexed by color **RANK**, not by color, and is the same table for every color — Red rank-3 reads
+> **60 ft**, exactly like Black. Nothing to change; the 30 ft assumed in old stagings was the
+> stager's own error, not a rule difference between colors.
 
 **F-2. Marathon 1 run 6's 2bX-5 PASS was recorded over a broken roll.** Its contest half is worth
 re-reading now that attribute contests demonstrably work (R-43).
@@ -1584,3 +1602,87 @@ this is a "close the door before it matters" call. *(3A-6.)*
 > Mutation-verified against real data (Black's Cruel Step, `min` 1 → `max` 6 → `lint-refs.js`
 > fails naming it, restored → clean) and pinned in `tests/consume-guard.test.js` (5 cases). No
 > engine change, nothing left to bench. **Moved to §K in the same PR (2026-09-06).**
+
+**R-80. Both an advantage AND a disadvantage next-test entry on one victim — do they cancel, or does disadvantage win?** With the next-test slot a LIST since item 49 (PR #221, 2026-09-06), a victim can carry both an advantage entry and a disadvantage entry for the same test — impossible under the old single slot. Item 49 folds them by boolean-OR per direction and, when both are present, writes NOTHING: the roll stays exactly as the player configured it (the standard table rule that they cancel; it never stomps a manual dialog choice). *Recommended default: **(a) they cancel** — **APPLIED** in #221.* (b) disadvantage wins — one line in `edhaNextModFoldMode`, pinned, so a veto is a one-line diff. *(Board table 2026-09-06; raised by item 49.)*
+> **ANSWERED 2026-09-07 (Ben, dashboard) — marked done, no note = the applied default ACCEPTED,
+> no veto.** No change to the shipped code (PR #221). **Moved here by the PM on 2026-09-07.**
+
+**R-81. Three more `bySize` charge distances whose cards print the rank-3 number — the R-46 treatment on all of them?** R-46 / R-48 fixed two charge distances by replacing `bySize` with an explicit `distanceFt`. Item 57's worker found the same shape on three more run-19 blocks — the Brandram's Shockwave Slam (`bySize: true` beside a dead `distanceFt: 5`) and Reckless Advance, and the Tussock-Sow's terrain square — all `bySize` at rank 2 while their cards print rank-3 numbers. *Recommended default: **(a) yes, the R-46 treatment on all three** (explicit `distanceFt` = the card's own number, stated on the card) — **APPLIED** by item 67 (PR #232; REBUILD owed to the next deploy).* (b) fix the three cards to the rank-2 numbers instead. Ben's R-48 answer of 2026-09-06 ("a statted block should not scale") rests on the same principle. *(Board table 2026-09-06; raised by item 57.)*
+> **ANSWERED 2026-09-07 (Ben, dashboard) — marked done, no note = the applied default ACCEPTED,
+> no veto.** No change to the shipped code (PR #232; REBUILD still owed to the next deploy for the
+> pack to carry it live). **Moved here by the PM on 2026-09-07.**
+
+**R-84. An offer that CANNOT be made still charges its Investiture — refund that too?** Measured at
+bench run 40 (2026-09-06) while driving item 51's R-17 rows. **Unnerving Approach** used against a
+target with no living ally within 10 ft posts its `emptyNote` card — *"no living ally of your target
+within 10 ft to push (it may already be Isolated)"* — and the SYSTEM has already taken the
+Investiture (measured **2 → 1**, with no refund and no Decline button, because there is no offer to
+decline). R-17 refunds a **declined** or **ignored** offer; it says nothing about an offer that never
+existed. From the player's side the three cases are indistinguishable: the cost left, nothing
+happened. *Recommended: **(a) refund it** — reuse `edhaOfferDecline`'s `edhaRefundCost` path on the
+`emptyNote` branch whenever `edhaOfferRefundable` is true, i.e. the same gate R-17 already computes.*
+(b) keep charging — "you spent the Investiture looking" is a defensible table rule, but then the card
+should SAY the cost was spent. Either way the card needs to stop being silent about the money.
+*(Bench run 40; from item 51 / R-17.)*
+> **DEFAULT (a) APPLIED 2026-09-06 (fix pass 9, TODO 72, ENGINE-ONLY → F5).**
+> The `emptyNote` branch now computes `edhaOfferRefundable(item, event)` — R-17's own gate,
+> unchanged — and refunds through `edhaOfferDecline(null, item, …, {refund: true})`, so
+> `edhaRefundCost` still has **exactly one caller** in the offer family (the pin that guards that
+> invariant is unmoved). The card names the money either way. One deviation from the ruling's own
+> wording, stated: the non-refundable line reads **"no cost was spent"**, not (b)'s *"the cost was
+> spent"* — with R-17's gate, `refundable === false` on this branch means the offer came from a
+> watch / success rule where the system charged **nothing** (that rule's `costs` land on the click,
+> which never happens here), so "spent" would be false. Fixed for all three `source: "creatures"`
+> rules carrying an `emptyNote`: Unnerving Approach (Black + its adversary twin), Anticipate (Blue),
+> Terms of Accord (White). Four cases pinned in `tests/offer-decline-refund.test.js`; dropping the
+> refund call fails the first. 🤖 re-test row on the checklist.
+> **ANSWERED 2026-09-07 (Ben, dashboard) — marked done, no note = the applied default ACCEPTED,
+> no veto.** No change to the shipped code. **Moved here by the PM on 2026-09-07.**
+
+**R-85. `expireEndOfRound` stamps the GRANTER's combat — should it fall back to the BEARER's?**
+Measured at bench run 40 while driving **2bI-4c**. `edha-next-test-mod` writes
+`mod.round = edhaCombatRoundOf(owner)` (`register-skills.js` ~L21116), and the comment says "the
+GRANTER's combat (edhaNextTestMatches reads the BEARER's — same combat at the table)". When the
+granter is **not a combatant** the stamp is `round: null`, and a `null` stamp can never expire — so a
+"this round" rider granted from outside the tracker sits on the victim for ever. Reproduced exactly:
+Pattern Recognition cast by a `Bench — Blue` that was not in the combat wrote
+`{source:"Pattern Recognition", round:null, …}`; adding Blue as a combatant and re-casting wrote
+`round: 8` and the rider then expired on schedule. The row itself PASSES once both are in the
+tracker, so this is a ruling, not a defect. *Recommended: **(a) fall back to the BEARER's combat when
+the granter has none** — `edhaCombatRoundOf(owner) ?? edhaCombatRoundOf(target)`; a "this round"
+rider then always means the round the victim is living in.* (b) leave it — out of combat there is no
+round and an inert stamp is honest; the cost is that a mid-combat grant from a non-combatant NPC
+never expires. *(Bench run 40; from item 49 / 2bI-4c.)*
+> **DEFAULT (a) APPLIED 2026-09-06 (fix pass 9, TODO 72, ENGINE-ONLY → F5).**
+> `mod.round = edhaCombatRoundOf(owner) ?? edhaCombatRoundOf(target)`, exactly as recommended. The
+> in-combat case is untouched (the granter's round still wins, even when the bearer is in a
+> different one — the fallback is a fallback); with BOTH sides out of combat the stamp is still
+> `null`, which is (b)'s honest answer for the only case where it is actually honest. Five cases
+> pinned in `tests/next-mod-round-fallback.test.js`, driving the shipped executor; removing the `??`
+> fails the fallback case. 🤖 re-test row on the checklist.
+> **ANSWERED 2026-09-07 (Ben, dashboard) — marked done, no note = the applied default ACCEPTED,
+> no veto.** No change to the shipped code. **Moved here by the PM on 2026-09-07.**
+
+**R-86. GM-less and two-GM tables are not a scenario worth engineering rulings for.** Raised on
+Ben's dashboard 2026-09-07 against a cluster of checklist rows and rulings premised on either
+scenario (bench run 42's 2bM-1, the one-applier dissipates re-test, Job 6a, R-77's two-GM
+defense). Ben, verbatim: *"There will never be no GM connected. This isn't needed, and any similar
+items aren't needed. There will always be a GM session as the Edha Module needs one to load."* and,
+on the same card: *"In-play there will never be 2 GM clients. I'm marking this 'skip'."*
+> **ANSWERED 2026-09-07 (Ben, dashboard) — settled directly, no code change.** Consequence:
+> checklist rows premised on a GM-less table or two live GM clients are RETIRED, not run — bench
+> run 42 retires **2bM-1**, the one-applier-dissipates re-test, and **Job 6a**. This does **not**
+> touch the engine's primary-GM gate (R-77) or the GM-less region-trap behaviour (item 12 / PR
+> #197's ruling) — those stay exactly as built: **the bench itself joins Ben's table as a second GM
+> client** (`bench-run`'s whole method, `Bench` alongside `Gamemaster`), so both gates remain
+> engineering necessities that protect a real in-session shape, not table rules being tested for
+> their own sake. Filed direct to §K — no TODO item, no engine change, nothing to bench beyond the
+> two checklist retirements above.
+
+**R-87. The character-creation wizard's numbers stand — no veto.** Both VETO CHECK rows on Ben's
+dashboard 2026-09-07 (12 attribute points at L1 / max 3 per attribute at L1, +1 at levels 3, 6, 9,
+12, 15, 18; skills 5 + (L−1)×2 total ranks, max rank INT((L−1)/5)+2 — source:
+`Character_Building_Rules.md`, the legacy spec) were skipped with no note.
+> **ANSWERED 2026-09-07 (Ben, dashboard) — skipped both VETO CHECK rows = no veto, the wizard's
+> spec stands as built.** No code change; the wizard's 🤖 enforcement rows keep testing exactly that
+> spec. Filed direct to §K — nothing to change, nothing new to bench beyond the existing rows.
