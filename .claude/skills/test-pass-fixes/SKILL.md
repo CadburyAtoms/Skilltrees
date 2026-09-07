@@ -158,7 +158,8 @@ For each root cause, in this order:
    (CASE_STUDIES §5: the Opportunity menu began as a one-talent report).
 3. **Fix in the right layer.** text-drift → `data/authored/<file>` AND the source prose
    (`data/leyline.json` / `domain.json`) together; engine-bug / wrong-trigger-semantics →
-   `register-skills.js`; design-gap → primitive + rule/wiring. Prefer engine-only (no pack
+   `register-skills.js` — via its source under `module-src/scripts/engine/`, then
+   `node scripts/engine-assemble.js`, commit both (item 4); design-gap → primitive + rule/wiring. Prefer engine-only (no pack
    rebuild) when both routes work; if authored data changed, the pass needs a rebuild — track it.
 4. **Retrofit sibling consumers.** If the root cause is a shared path (a trigger's semantics, a
    formula helper), fix every consumer, not just the reported one — grep the engine for the
@@ -206,6 +207,7 @@ Run them **individually**, and read each exit code:
 
 ```bash
 node --check module-src/scripts/register-skills.js
+node scripts/engine-assemble.js --check    # engine = its engine/ sources (item 4)
 node scripts/validate.js
 node scripts/lint-refs.js
 node tests/run.js

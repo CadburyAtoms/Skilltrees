@@ -33,9 +33,40 @@ Engine tab** (40 items before, 40 after; only the two EMPTY 9a/9b stubs went) ·
 true, one line each, dated, grouped API / engine idioms / tooling / bench harness · §H history —
 where §7.0, §7.-1, the migration and §9a/§9b/§9g are recorded.
 
-**Proven.** `node scripts/build-dashboard.js --check` green; Engine tab items 40 → 40; all ten
-local gates PASS; the ten cold-read questions are answered with line numbers in the PR body.
+**Proven.** `node scripts/build-dashboard.js --check` green; Engine tab items 40 → 40; all eleven
+local gates PASS (after merging item 4's `engine-assembly` gate, which the reference now names);
+the ten cold-read questions are answered with line numbers in the PR body.
 Nothing here is for the bench or for Ben's judgment.
+
+---
+
+## 2026-09-06 — Item 4: the engine is EDITED AS SECTIONS — `module-src/scripts/engine/NN-<slug>.js`, assembled into the ONE deployed file (**TOOLING-only — the deployed `register-skills.js` did not change by one byte**; PR #247)
+
+**What changed.** `module-src/scripts/register-skills.js` (21,792 lines) is now the *assembly* of
+55 per-section sources under `module-src/scripts/engine/`, one file per column-0 `/* ===` banner
+(item 23 bannered every region for exactly this). `scripts/engine-split.js` is the re-runnable cut
+(each source an exact byte range of the engine; `00-file-header` is the head docblock; lexical order
+= assembly order; largest file `53-native-event-system.js`, 3,067 lines — one banner, one file, no
+invented seam). `scripts/engine-assemble.js` concatenates them back (no headers, no separators;
+CRLF→LF only, because the engine is tracked and deployed LF) and `--check` fails naming the first
+differing engine line and its source file. New gate **`engine-assembly`**, right after
+`engine-check` in `scripts/gates.js` (11 local gates now); the pre-commit body runs the same check
+whenever the engine or `engine/` is staged.
+
+**The rule (PM-R15, applied as the default — Ben can veto).** The assembled file STAYS the tracked
+and deployed artifact — nothing about Ben's F5 workflow, `module-src-sync.js` (its `FILES` list
+still names only `scripts/register-skills.js`, checked), `tests/harness.js` `ENGINE_PATH`,
+`lint-refs.js`, the ratchet tests, or "grep the engine" changed. **Edit the source under
+`module-src/scripts/engine/`, run `node scripts/engine-assemble.js`, commit BOTH.** An edit made
+straight into `register-skills.js` trips the gate; `node scripts/engine-split.js` pushes it down
+into the sources. If the engine changes on `main` under an open branch, re-run the split on the
+new engine rather than hand-merging sources. The section → file map lives in `ENGINE_INDEX.md`.
+
+**Proven.** sha256 `acac2589da7b…` three ways — the tracked engine before the split, the
+re-assembled engine, `origin/main:module-src/scripts/register-skills.js`. Mutation: one word added
+to `41-life.js` line 5 → `--check` exit 1 at engine line 13186 (`source 41-life.js:5`);
+re-assembled → green. Full local gates green; test count unchanged. Nothing for the bench —
+lane R, no behaviour change.
 
 ---
 
@@ -14866,8 +14897,14 @@ default and the checklist id it came from. The checklist is for tests.
   `lang/en.json`, `packs/{edha-leyline,edha-deity,edha-heroic,edha-adversaries,edha-items}` (LevelDB).
   Agent builds go to a SCRATCH root under `%TEMP%`, never here.
 - **The engine:** `module-src/scripts/register-skills.js`, **21,792 lines** (`wc -l`, 2026-09-06),
-  54 `/* === */` section banners (one per tree + one per engine family). Iron rule 2a: no second
-  script, ever.
+  one `/* === */` section banner per tree and per engine family. **Since item 4 (2026-09-06,
+  PM-R15) it is ASSEMBLED, not hand-edited:** the edit surface is `module-src/scripts/engine/NN-<slug>.js`
+  (55 sources, one per banner, lexical order = file order; the section → file map is in
+  `ENGINE_INDEX.md`). Edit the source, run `node scripts/engine-assemble.js`, commit BOTH; the
+  `engine-assembly` gate fails when the tracked file is not their byte-exact concatenation
+  (`node scripts/engine-split.js` pushes a stray direct edit back down). The assembled file is
+  still the ONE deployed script (iron rule 2a), what `tests/harness.js` loads and what
+  `lint-refs.js` reads.
 - **The live table:** world `edha` at `localhost:30000`. Three users can be connected at once with
   no cookie displacement: **`Bench`** (passwordless GM — the agent), **`PlayerBench`** (passwordless
   PLAYER — the only way to reach non-owner / socket-relay halves, because `game.socket.emit` never
@@ -14910,9 +14947,10 @@ default and the checklist id it came from. The checklist is for tests.
   (`_stats.createdTime/modifiedTime`) — prove parity on CONTENT: `edha-pack-io.readPack` +
   `stableStringify` with those two fields stripped. The pack writers refuse any document carrying
   an `edha-*` handler type the engine does not register (`scripts/lib/handler-type-guard.js`).
-- **Gates — `node scripts/gates.js`** is the ONE list (item 20): `engine-check`, `scripts-check`,
-  `validate`, `lint-refs`, `unit-tests` (`tests/run.js`), `dashboard --check`, `canon-codex --check`,
-  `player-primer --check`, `audit-parser-test`, `tree-audit` (`audit.py`); `--ci` adds `map-lint`
+- **Gates — `node scripts/gates.js`** is the ONE list (item 20): `engine-check`, `engine-assembly`
+  (item 4), `scripts-check`, `validate`, `lint-refs`, `unit-tests` (`tests/run.js`), `dashboard --check`,
+  `canon-codex --check`, `player-primer --check`, `audit-parser-test`, `tree-audit` (`audit.py`) —
+  eleven local; `--ci` adds `map-lint`
   (Pillow, installed just-in-time) and `pack-build-validate` (scratch build of every pack + both
   validators). It resolves Python itself (`python3` → `python` → `py -3`), runs EVERY gate, prints a
   PASS/FAIL table. **Never chain gates with `;` or pipe them through `tail`.** `--list`, `--only <id>`.
@@ -14976,9 +15014,9 @@ literal in the engine's `ready` hook is the authority). Keys today:
 ## 5. Data files (`data/`) — what is canonical and what is masked
 
 - **The three atlases — structure + source prose:** `leyline.json` (**125** talents, 5 colours × 25),
-  `domain.json` (**90**, 10 deity trees × 9), `cosmere.json` (**150** = 6 heroic paths × 25; the nine
-  Knights Radiant orders, 225 rows, were PARKED 2026-09-05 in `source-materials/radiant-orders.json`
-  — un-parking owes each a tree layout). One lowercase dialect since item 22: `name action cost
+  `domain.json` (**90**, 10 deity trees × 9), `cosmere.json` (**150** = 6 heroic paths × 25 — that IS
+  the whole heroic set; the nine Knights Radiant ORDERS, 225 rows that no consumer read, were PARKED
+  2026-09-05 in `source-materials/radiant-orders.json` — un-parking owes each a tree layout). One lowercase dialect since item 22: `name action cost
   prerequisites description flavor tags specialty path` (+ `deity domain colors` / `atlas layout`);
   `validate.js` rejects the retired capitalised keys by name. Every entry in a talent's
   `connections` becomes a **managed prerequisite** on the tree node — the graph must be a DAG rooted
@@ -15208,7 +15246,7 @@ ADD-mode effect; source-asserted).
   rows with `grep -c '^- \[ \] 🤖'` (28 after run 32) — the two counting conventions differ.
 - **Rulings:** `EDHA_RULINGS.md` R-1…R-81 in §A–§K; **§I = applied-as-default, veto if you disagree**
   (R-43 / R-63 / R-64 / R-65 change live dice or behaviour; R-48, R-81 the charge-family defaults);
-  §K = settled. PM rulings PM-R1…PM-R14 live in `docs/PM_BOARD.md`.
+  §K = settled. PM rulings PM-R1…PM-R15 live in `docs/PM_BOARD.md`.
 
 ## 9. Engine backlog — CANONICAL (consolidated 2026-07-03c; §9a/§9b BUILT 2026-07-04)
 
@@ -15386,6 +15424,7 @@ each with its PR number). See **§H History** for the section-level reversals.
 - **A checklist "must NOT contain `<string>`" byte-check always means outside comments** — the SHA-256 against HEAD is what decides (07-28h/i). **A check that cannot fail proves nothing** — always report the denominator (07-27u).
 - **Test-harness traps:** `void`-dispatched writes need `await sleep(0)` before asserting; vm-realm objects need the harness's `eq()`, never `deepStrictEqual` (09-05 item 5).
 - **Worktree builds default to the MAIN checkout's data** — pin `EDHA_DATA` (09-05, memory).
+- **An edit made straight into `register-skills.js` trips the `engine-assembly` gate** — edit `module-src/scripts/engine/NN-<slug>.js`, assemble, commit both; if the engine changed on `main` under your open branch, re-run `engine-split.js` on the new engine rather than hand-merging sources (09-06 item 4).
 
 **Bench harness (driving Ben's Foundry through the browser pane)**
 - **With the pane hidden, `document.hidden` is true and rAF never fires** — ResizeObserver / IntersectionObserver fire 0 times, an animated token move resolves unmoved, the vision polygon goes stale, `canvas.mousePosition` freezes at (0,0), the ChatLog renders nothing (hand-render `msg.renderHTML()` into `ol.chat-log`). Pump `canvas.app.ticker.update()` in a `setTimeout(…,0)` loop, use `animate:false`, force `canvas.perception.update(…)`. **Fronting the tab flips `document.hidden` and observers run** — re-read every row recorded BLOCKED on rendering (07-27e/o, runs 22/23/29/30, run 38).
