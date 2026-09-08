@@ -138,7 +138,8 @@ default and the checklist id it came from. The checklist is for tests.
   echoes to its sender) and Ben's **`Gamemaster`**. `game.users.activeGM` resolves to **`Bench`**
   (its id sorts first), so a run must read it at setup and say what it found. The bench runs on the
   EXISTING **"Playtest Map"** scene (the whole scene is the bench's, PM-R13); the PC actor documents
-  **"Tem parinaem"** and **"Soggy Bottom"** are hard-guarded and untouchable.
+  **"Tem parinaem"** and **"Soggy Bottom"** are refresh-only (`⟳ Sync Talents`), never hand-edited
+  (PM-R17).
 - **Repo scripts you will use:** `scripts/foundry-build.js` (generator), `foundry-extract.js`
   (Foundry edits → `data/authored/`), `validate-packs.js` / `validate-adversaries.js` (read via
   temp copy — safe with Foundry open), `inspect-pack.js <pack> "<Name>" | --group <Tree>`,
