@@ -216,7 +216,7 @@ region-behaviour registration, the ONE registration loop, then the `EDHA_EVENT_T
 | `LOOT CACHES + BODY SEARCH` (item 34b, 2026-09-06) | `edhaCreateLootCache` (console `edha.createLootCache(name)` — a flagged `edha-content.lootCache` adversary-type actor, Loot Caches folder, linked chest token) · the PURE, pinned helpers `edhaLootableItems` / `edhaLootRows` (gear only; a body keeps `alwaysEquipped` weapons) · `edhaLootDefeated` (HP ≤ 0 or DEFEATED) · `edhaLootSourceKind` (cache flag wins → "cache"; defeated adversary → "body"; else null) · `edhaLootGapFt` / `edhaLootInReach` (`EDHA_LOOT_REACH_FT` 5, edge-to-edge) · **`edhaLootClaim`** / `edhaLootRelease` on `EDHA_LOOT_CLAIMS` (the synchronous double-loot guard) · live: `edhaLootMyTokenNear` → `edhaLootTryOpen` (the `Token#_onClickLeft2` init patch `edhaPatchLootDblClick` — returns BEFORE the sheet render for a loot source, so adversary sheets never open to players) → `EDHA_CARD_BUTTONS["edha-loot-btn"]` → `EDHA_SOCKET_ACTIONS["loot-take"]` → `edhaLootTakeGM` (claim → delete on source → create on taker → public card). `tests/loot-caches.test.js`. |
 | `INJURIES` | `edhaAddInjury` · `edhaFindInjuryTable` · `EDHA_INJURY_FALLBACK` · `edhaCreateItemDocs` / **`edhaCreateItemCross`** (a player cannot create an item on another actor — the cross path relays to the GM). |
 | `TRIGGER GATING & COST` | `_edhaInTrigger` (the file-wide re-entrancy guard) · `EDHA_TRIG_PENDING` · `EDHA_RES_LABEL` · `edhaIsTalent` · `edhaRuleBearer` (talents + weapons — the gate on `edhaActorRuleOf`/`edhaActorRulesOf`, item 34a) · `edhaOwnsTalent` (⚠ an iron-rule-2b smell, on the pass-7 ratchet — do not add a caller) · `edhaResVal` · `edhaTriggerAllowed` · `edhaMarkTriggerUsed` · `edhaResolveCost`. |
-| `SENSES, LIGHT & VISIBILITY` | `edhaTokensWithin` · `edhaPointIlluminated` · `edhaSensesRangeFtFromAwa` · `edhaSensesRangeFt` · `edhaCanSee`; the dark veil (`edhaDarkVeilSweep` + `edhaDarkVeilSoon`, **debounced 300 ms** — the sweep is O(tokens) and movement fires in bursts) · `edhaVeilSuppressed`; reveal-on-damage `edhaSenseRevealShows` · `edhaSenseRevealOnDamage`. |
+| `SENSES, LIGHT & VISIBILITY` | `edhaTokensWithin` · `edhaPointIlluminated` · `EDHA_SENSES_RANGES_FT` · `edhaSensesRangeFtFromAwa` · `edhaAwaForSenses` · `edhaSensesRangeFt` · `edhaCanSee`; the dark veil (`edhaDarkVeilSweep` + `edhaDarkVeilSoon`, **debounced 300 ms** — the sweep is O(tokens) and movement fires in bursts) · `edhaVeilSuppressed`; reveal-on-damage `edhaSenseRevealShows` · `edhaSenseRevealOnDamage`. |
 | `TRIGGERED-EFFECT RESOLUTION` | the runner: `edhaEffectTargets` → `edhaRunTriggerEffect` → `edhaPostTriggerCard` → `edhaDeductCost`, entered at `edhaFireTrigger`; plus `edhaUserTargetTokens`/`edhaUserTargetToken`/`edhaUserTargetActor`, **`edhaResolveVictim`** (⚠ "victim" ≠ "target" — the creature the event happened TO), `edhaToggleStatus`, `edhaRollCard`, `edhaTriggerCardClick`, and card-state persistence `edhaMarkCardResolved` · `edhaMessageIdOf`. |
 | `SINGLE-TARGET GATE + DEFEAT TRACKING` | `edhaSetUserTargets` (the one writer of `game.user.targets`) · `edhaPickTargetClick` + the `preUseItem` gate; **`edhaKillerCandidates`** + the `updateActor` defeat sync — what every "when you defeat a creature" talent reads, since the system fires no defeat event. |
 | `TARGETING: ATTUNEMENT RANGE + AoE TEMPLATES` | the reach model: `EDHA_ATTUNE_FT` (feet by colour RANK, not by talent) · `EDHA_LEY_COLORS` · `EDHA_COLOR_HEX` · `EDHA_RANGE_RING_HEX` · `edhaTalentColor` · **`edhaColorRank`** (every range check in the file resolves through it) · `edhaCasterToken`; canvas: `edhaDrawCircle` · `edhaTokensInCircle` · `edhaShowRange` · `edhaNextTokenName`. *(`edhaPlaceAoe` retired 2026-09-06, R-78.)* |
@@ -2433,18 +2433,27 @@ the first one lived inside the trample announcer, looked private, and got duplic
 - **`edhaPointIlluminated(x, y)`** — is a scene point lit? Global light at/below its darkness
   threshold, darkness < 0.5 (⚑ feel dial), or inside any active light polygon (ambient + token
   emitters). Fails open (lit). Also drives `edha-dark-veil`.
-- **`edhaSensesRangeFt(actor)` / `edhaSensesRangeFtFromAwa(awa)`** — Senses Range ft: the system's
-  derived value when present, else the AWA table (0→10 · 1→15 · 2–3→20 · 4→25 · 5+→30; pinned).
-  The build writes adversary token `sight.range` from it (per-block `senses` field wins) — Foundry
-  natively renders lit areas beyond sight.range, so token vision IS the rule with no module code.
-  ✅ **ONE RULE FOR EVERY ACTOR TYPE since item 55 (R-56 (a), 2026-09-06).** `edhaDeriveSheetStats`
-  writes the AWA table into `system.senses.range.derived` for characters AND adversaries (it was
-  character-only from 07-28i, which left adversary sheets on the cosmere ladder's 5 while their
-  tokens carried a flat 10). The build's `advSensesRangeFt(adv)` (`scripts/foundry-build-parts.js`)
-  stamps the same table on the pack's prototype token — a block's explicit `senses` (ft) is the
+- **`edhaSensesRangeFt(actor)` / `edhaSensesRangeFtFromAwa(awa)` / `edhaAwaForSenses(actor)` /
+  `EDHA_SENSES_RANGES_FT`** — Senses Range ft: the actor's derived value when present, else the
+  **cosmere system's OWN ladder** `[5, 10, 20, 50, 100, ∞]` indexed by `ceil((AWA value + bonus)/2)`
+  — AWA 0→5 · 1–2→10 · 3–4→20 · 5–6→50 · 7–8→100 · 9+→∞ (pinned). `edhaAwaForSenses` is the
+  `value + bonus` reader the system's own `awarenessToSensesRange` uses, so a token's stamped sight
+  cannot fall behind a sheet an AWA effect moved. The build writes adversary token `sight.range`
+  from the same ladder (per-block `senses` field wins) — Foundry natively renders lit areas beyond
+  sight.range, so token vision IS the rule with no module code.
+  ✅ **ONE RULE FOR EVERY ACTOR TYPE — and since item 83 (R-56 FINAL, 2026-09-07, Ben: "Cosmere
+  ladder for everyone") that rule is the SYSTEM'S, and the engine writes NOTHING to the sheet.**
+  `CommonActorDataModel.prepareSecondaryDerivedData` (cosmere-rpg 2.1.0 `index.js:8455-8457`;
+  `SENSES_RANGES`/`awarenessToSensesRange` at `:8534-8538`) already writes this ladder into
+  `senses.range.derived` for BOTH actor models, so `edhaDeriveSheetStats` deliberately has **no
+  senses branch at all** — do not "restore" one. The helper above exists only for the surfaces the
+  system does NOT derive: the token-sight stamp and the wizard preview. The build's
+  `advSensesRangeFt(adv)` (`scripts/foundry-build-parts.js`) stamps the same ladder on the pack's
+  prototype token (5 ft for an attribute-less block) — a block's explicit `senses` (ft) is the
   bespoke override on both surfaces (Briar-Gone Grove, 30 ft, is the one instance) — and
-  `tests/adversary-senses.test.js` pins the build-time and runtime tables equal. A creature's
-  Senses Range and a PC's now mean the same thing.
+  `tests/adversary-senses.test.js` pins the build-time and runtime ladders equal at AWA 0–10.
+  History: Edha table on PC sheets 07-28i → extended to adversaries at item 55 / R-56 (a) 2026-09-06
+  (PR #240) → reversed to the system's ladder at item 83. See `docs/ACTOR_STAT_DERIVATION.md` §3b.
 - **The aggro ledger** — every damaging item roll records the attacker TOKEN's last target
   (`aggro` flag, post-roll so an attack never counts itself; cleared at combat end). Solves the
   "GM owns every adversary, targeting is per-user" problem. **`edha-pack-advantage`** (sentinel):
@@ -2962,8 +2971,9 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   **Do not "fix" the engine for this.** If the die's colour cue is too subtle at the table, the
   answer is the whispered advantage card (the quarry site's, 07-27l), not a change to the channel.
 - **Token sight defaults** (`edhaPcSightShape(actor)` + preCreateActor hook + AWA updateActor
-  watcher + `edha.fixPcTokens()`) — new actors of EVERY type (item 55, R-56 (a); was character-only)
-  get cosmere "sense" sight (attenuation 0.1) with range = Senses Range (`edhaSensesRangeFtFromAwa`);
+  watcher + `edha.fixPcTokens()`) — new actors of EVERY type (item 55, R-56; was character-only)
+  get cosmere "sense" sight (attenuation 0.1) with range = Senses Range from the SYSTEM's ladder
+  (`edhaSensesRangeFtFromAwa(edhaAwaForSenses(actor))` — 5 ft at AWA 0 since item 83, was 10);
   new CHARACTERS additionally get displayName HOVER(30) (adversaries keep Foundry's default so a
   blank-created one does not leak its name on hover); pack-built/imported actors that already carry
   a sight range are left alone. The watcher (single GM applier) pushes range onto prototype + placed
@@ -2974,9 +2984,11 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   (Surefooted's +10 displayed +20). Set the override to the base derivation only.
 - **THE EDHA DERIVED-STAT RULES — one source of truth** (`EDHA_HP_BONUS`,
   **`edhaWalkRateFtFromSpd(spd)`** = 20 + 5×SPD, `edhaSensesRangeFtFromAwa(awa)`; canon is
-  `source-materials/legacy-uploads/Character_Building_Rules.md` §Derived stats). **TWO** of them
-  differ from the cosmere system's own derivation — Movement and Senses — and **both**
-  `edhaDeriveSheetStats` (the sheet) and `edhaCwDerivedPreview` (the wizard's live panel) must read
+  `source-materials/legacy-uploads/Character_Building_Rules.md` §Derived stats). **ONE** of them
+  still differs from the cosmere system's own derivation — **Movement**; Senses joined it in 07-28i
+  and left again at item 83 (R-56 final — the system's ladder for every actor type, engine writes
+  nothing), and HP was never really a difference (R-54). `edhaDeriveSheetStats` (the sheet) and
+  `edhaCwDerivedPreview` (the wizard's live panel) must read
   these helpers, never re-implement the arithmetic. 07-28i: when they each carried a copy they
   drifted in BOTH directions at once (preview 13/30/10 vs sheet 14/35/5), and a fix that only moved
   one surface would have been right for one cell and wrong for the next.

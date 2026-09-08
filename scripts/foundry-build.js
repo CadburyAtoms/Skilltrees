@@ -1188,10 +1188,11 @@ function advActorSystem(adv) {
   }
   if (adv.movement != null) sys.movement = { walk: { rate: ov(adv.movement) } };
   // Senses Range override (07-16c): the block's `senses` (ft) lands on the sheet too, as a
-  // DerivedValueField override — the engine's edhaDeriveSheetStats writes the AWA table into
-  // `.derived` and leaves an override alone, so this wins over the table on the sheet exactly as
-  // advSensesRangeFt makes it win on the token (R-56 (a), item 55). Shape verified by bench run 22
-  // (`senses.range.value` reads on every world adversary). Briar-Gone Grove is the one live user.
+  // DerivedValueField override — the SYSTEM writes its ladder into `.derived` and an override sits
+  // above it, so this wins on the sheet exactly as advSensesRangeFt makes it win on the token
+  // (R-56, reversed to the system ladder 2026-09-07 → item 83; the engine no longer writes senses
+  // at all). Shape verified by bench run 22 (`senses.range.value` reads on every world adversary).
+  // Briar-Gone Grove is the one live user, and this is the escape hatch item 83 had to keep.
   if (adv.senses != null) sys.senses = { range: ov(adv.senses) };
   if (adv.conditionImmunities?.length) sys.immunities = { condition: Object.fromEntries(adv.conditionImmunities.map(c => [c, true])) };
   const skills = advSkills(adv);
@@ -1237,9 +1238,10 @@ function advPrototypeToken(adv, token) {
   // only {enabled, range} and left visionMode at Foundry's "basic" — stricter than PCs, whose
   // prototype tokens carry the cosmere "sense" visionMode (verified against Ben's world: enabled,
   // range = Senses Range, visionMode "sense", attenuation 0.1) — hence "can't see anything beyond
-  // 10 ft unless lit". Range = Senses Range from the Edha AWA table via advSensesRangeFt (R-56 (a),
-  // item 55: ONE rule for PCs and adversaries — the sheet's engine derivation reads the same table,
-  // so pack sheet and token agree; it used to be a flat 10 here against a derived 5 on the sheet).
+  // 10 ft unless lit". Range = Senses Range from the SYSTEM's ladder via advSensesRangeFt (R-56
+  // reversed 2026-09-07, item 83: ONE rule for PCs and adversaries — the system derives the same
+  // ladder onto the sheet for every actor type, so pack sheet and token agree at **5 ft** for an
+  // attribute-less block; it was a flat 10 here against a derived 5 before item 55, then 10/10).
   // A block's explicit `senses` (ft) is the bespoke override and wins on both surfaces.
   return {
     name: adv.name, displayName: 20, actorLink: false,

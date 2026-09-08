@@ -9449,6 +9449,15 @@ function edhaCwAttrBudget(level) { return 12 + [3, 6, 9, 12, 15, 18].filter(x =>
 function edhaCwSkillBudget(level) { return 5 + (Math.max(1, Number(level) || 1) - 1) * 2; }
 function edhaCwMaxSkillRank(level) { return Math.floor((Math.max(1, Number(level) || 1) - 1) / 5) + 2; }
 
+// The Senses cell. The ladder's top rung is Number.MAX_SAFE_INTEGER (the system's own ∞ — see
+// `SENSES_RANGES`, cosmere-rpg index.js:8534), reachable at AWA 9, and the attribute cap above
+// level 1 is 99 — so the preview MUST render it as ∞ rather than "9007199254740991 ft". The
+// system's sheet does the same via its `isNumMaxSafeInt` Handlebars helper (index.js:13644).
+function edhaCwSensesCell(awa) {
+  const ft = edhaSensesRangeFtFromAwa(awa);
+  return ft === Number.MAX_SAFE_INTEGER ? "∞" : `${ft} ft`;
+}
+
 // Live derived-stat preview for the attributes page (Ben 07-19: "show what the character's
 // health, focus, investiture, and defenses WILL be at the current distribution"). Its contract is
 // the SHEET, not the rulebook — every number must be what the finished sheet will read, so the
@@ -9457,7 +9466,11 @@ function edhaCwMaxSkillRank(level) { return Math.floor((Math.max(1, Number(level
 // Bench run 21 caught all three drifting at once when they were: Health missed the then-+1, Move
 // used the SYSTEM's ceil(SPD/2) ladder against the sheet's 20+5×SPD, and Senses was the only one the
 // preview had right. (R-54 has since set EDHA_HP_BONUS to 0, so the Health cell now equals the
-// system's advancement sum — read from the constant, never re-inlined, so the two stay agreed.)
+// system's advancement sum — read from the constant, never re-inlined, so the two stay agreed.
+// R-56's 2026-09-07 reversal — item 83 — has since made Senses the SYSTEM's ladder too: the cell
+// still reads the shared helper, but that helper is now the system's `[5,10,20,50,100,∞]` by
+// ceil(AWA/2), so the preview promises exactly what the system will derive onto the sheet.
+// MOVEMENT is now the only cell here that is an Edha rule rather than a system one.)
 // The rest mirror the system: health sums the advancement rules (rule.health +
 // STR where healthIncludeStrength — read from CONFIG at runtime); Focus 2+WIL; defenses 10+pair;
 // recovery is the system's ceil(WIL/2) die ladder; Investiture 2+max(AWA,PRE) is the Edha rule
@@ -9479,7 +9492,7 @@ function edhaCwDerivedPreview(actor, cur) {
   return `<div class="edha-cw-stats-box" style="display:flex;flex-wrap:wrap;gap:4px 14px;justify-content:center;text-align:center;padding:5px 8px;border:1px solid rgba(127,208,255,.35);border-radius:4px;margin:4px auto">
     ${cell("Health", hp)} ${cell("Focus", 2 + cur.wil)} ${cell("Investiture", `${2 + Math.max(cur.awa, cur.pre)}*`)}
     ${cell("Phys def", 10 + cur.str + cur.spd)} ${cell("Cog def", 10 + cur.int + cur.wil)} ${cell("Spi def", 10 + cur.awa + cur.pre)}
-    ${cell("Move", `${edhaWalkRateFtFromSpd(cur.spd)} ft`)} ${cell("Recovery", DICE[idx(cur.wil)])} ${cell("Senses", `${edhaSensesRangeFtFromAwa(cur.awa)} ft`)}
+    ${cell("Move", `${edhaWalkRateFtFromSpd(cur.spd)} ft`)} ${cell("Recovery", DICE[idx(cur.wil)])} ${cell("Senses", edhaCwSensesCell(cur.awa))}
     <span style="flex-basis:100%;font-size:.85em;opacity:.65;text-align:center">Live at this spread — path/item bonuses land on top. *Investiture needs a leyline attunement.</span>
   </div>`;
 }
@@ -9532,8 +9545,9 @@ async function edhaCwStepperDialog(DV2, { title, intro, rows, cur, budget, capFo
 // for each — make it accurate"): defenses are the system's 10+pair formulas; max Health adds STR
 // on level gains (deriveMaxHealth); Focus max = 2+WIL and the Recovery die steps with WIL (both
 // system-derived); movement rate derives from SPD (edhaWalkRateFtFromSpd — the EDHA 20+5×SPD
-// formula, which replaces the system's ladder on the sheet); Senses Range derives from AWA
-// (edhaSensesRangeFtFromAwa); Investiture 2 + max(AWA, PRE) is the Edha rule. The
+// formula, which replaces the system's ladder on the sheet); Senses Range derives from AWA on the
+// SYSTEM's own ladder (edhaSensesRangeFtFromAwa, R-56 reversed at item 83 — the engine no longer
+// overrides the sheet's number at all); Investiture 2 + max(AWA, PRE) is the Edha rule. The
 // skill list per attribute is built LIVE from CONFIG.COSMERE.skills, so it stays accurate.
 const EDHA_CW_ATTR_STAT = {
   str: "Physical defense (10+STR+SPD) · max Health (each level's gain adds STR) · carry/lift capacity",
@@ -11170,14 +11184,15 @@ async function edhaResolveCost(owner, name, spec) {
  * within N feet, is this square lit, can this creature see that one. Sits between the two halves
  * of the trigger machinery because the effect resolver above it needs these answers to pick
  * targets, and the stealth talents below need them to decide whether they are hidden.
- * Ranges derive from Awareness (edhaSensesRangeFtFromAwa), so a sheet edit moves them for free.
+ * Ranges derive from Awareness (edhaSensesRangeFtFromAwa — the SYSTEM's own ladder since R-56's
+ * 2026-09-07 reversal), so a sheet edit moves them for free.
  *
  * The DARK-VEIL sweep (07-16c, Ben's A1 ruling) is the one stateful piece: while a Veil owner's
  * token stands on an UNLIT square it gains the hidden marker, and it loses it on light. It is
  * DEBOUNCED (edhaDarkVeilSoon, 300 ms) because token movement and scene-darkness changes both
  * fire in bursts — the sweep is O(tokens) and must not run per pixel.
- * Owns — geometry/sight: edhaTokensWithin · edhaPointIlluminated · edhaSensesRangeFtFromAwa ·
- *   edhaSensesRangeFt · edhaCanSee.
+ * Owns — geometry/sight: edhaTokensWithin · edhaPointIlluminated · EDHA_SENSES_RANGES_FT ·
+ *   edhaSensesRangeFtFromAwa · edhaAwaForSenses · edhaSensesRangeFt · edhaCanSee.
  * Owns — dark veil: _edhaDarkVeilTimer · edhaDarkVeilSoon · edhaVeilSuppressed ·
  *   edhaDarkVeilSweep + the updateToken / updateScene / deleteCombat watchers.
  * Owns — reveal on damage: edhaSenseRevealShows · edhaSenseRevealOnDamage (a hidden creature
@@ -11216,16 +11231,34 @@ function edhaPointIlluminated(x, y) {
     return false;
   } catch (e) { return true; }
 }
-// Senses Range in ft (Character_Building_Rules.md §Senses Range): the system's derived value when
-// present, else the AWA table — 0→10, 1→15, 2–3→20, 4→25, 5+→30. Pure table pinned in tests/.
+// Senses Range in ft — the COSMERE SYSTEM'S OWN LADDER, for every actor type (EDHA_RULINGS.md
+// R-56, reversed 2026-09-07: Ben, "Cosmere ladder for everyone"). `[5, 10, 20, 50, 100, ∞]` indexed
+// by `ceil(AWA/2)` → AWA 0 → 5, 1–2 → 10, 3–4 → 20, 5–6 → 50, 7–8 → 100, 9+ → ∞. Term-for-term the
+// system's `awarenessToSensesRange` / `SENSES_RANGES` (systems/cosmere-rpg 2.1.0 index.js:8534-8538),
+// which `CommonActorDataModel.prepareSecondaryDerivedData` (index.js:8455-8457) already writes into
+// `senses.range.derived` for BOTH actor models — so the sheet needs no Edha write at all any more
+// (`edhaDeriveSheetStats` stopped overwriting it), and this copy exists only for the surfaces the
+// system does NOT derive: the token-sight stamp and the creation wizard's preview.
+// History: 07-16c → item 55 this was the EDHA table (AWA 0→10, 1→15, 2–3→20, 4→25, 5+→30) from
+// `Character_Building_Rules.md` §Senses Range; R-56 (a) extended it to adversaries on 2026-09-06
+// (PR #240) and Ben reversed the whole direction on 2026-09-07 (item 83). Pure table pinned in tests/.
+const EDHA_SENSES_RANGES_FT = [5, 10, 20, 50, 100, Number.MAX_SAFE_INTEGER];
 function edhaSensesRangeFtFromAwa(awa) {
   const a = Number(awa) || 0;
-  return a >= 5 ? 30 : a === 4 ? 25 : a >= 2 ? 20 : a === 1 ? 15 : 10;
+  return EDHA_SENSES_RANGES_FT[Math.min(Math.max(0, Math.ceil(a / 2)), EDHA_SENSES_RANGES_FT.length - 1)];
+}
+// The AWA the ladder is indexed by: value + bonus, exactly as the system's own
+// `awarenessToSensesRange(attr)` reads it — so a token's stamped sight matches the sheet the system
+// derived when an effect is adding AWA. (The Edha table read `.value` alone; both surfaces agreed
+// only because the engine wrote both. Now the system owns the sheet, so this has to follow it.)
+function edhaAwaForSenses(actor) {
+  const a = actor?.system?.attributes?.awa;
+  return (Number(a?.value) || 0) + (Number(a?.bonus) || 0);
 }
 function edhaSensesRangeFt(actor) {
   const v = edhaDerivedNum(actor?.system?.senses?.range, NaN);   // DerivedValueField object — one reader, edhaDerivedNum
   if (Number.isFinite(v) && v > 0) return v;
-  return edhaSensesRangeFtFromAwa(actor?.system?.attributes?.awa?.value);
+  return edhaSensesRangeFtFromAwa(edhaAwaForSenses(actor));
 }
 
 // Line of sight (shared primitive): can `viewer` (token) see `target` (token)? A hidden target is
@@ -18574,8 +18607,11 @@ function edhaDeriveInvestiture(actor) {
  * BOTH directions at once — bench run 21 measured preview Health 13 / Move 30 / Senses 10 against
  * sheet 14 / 35 / 5.
  *  • Movement = 20 + SPD·5 ft   (canon; the system's own ladder is ceil(SPD/2) into [20,25,30,40,60,80])
- *  • Senses Range = the AWA table (canon; the system's is ceil(AWA/2) into [5,10,20,50,100,∞], so
- *    an AWA-0 PC read 5 ft on the sheet while their TOKEN sight was already built off the Edha table)
+ *  • Senses Range = **the SYSTEM's ladder**, ceil(AWA/2) into [5,10,20,50,100,∞] — NOT an Edha rule
+ *    any more. R-56 was reversed 2026-09-07 (item 83); the engine writes nothing, the system's own
+ *    `prepareSecondaryDerivedData` owns the sheet number, and `edhaSensesRangeFtFromAwa` is only the
+ *    token-stamp / wizard-preview copy of the same ladder. Movement is now the ONE stat Edha still
+ *    overrides on the sheet.
  *  • HP = the system's per-level accumulation + EDHA_HP_BONUS
  * EDHA_HP_BONUS was `1` until R-54 answered (c) "remove the +1" — **no level gate anywhere**; the
  * math stays a single constant read from ONE place, so the sheet derivation, the clamp repair and
@@ -18585,9 +18621,9 @@ function edhaDeriveInvestiture(actor) {
 const EDHA_HP_BONUS = 0;
 function edhaWalkRateFtFromSpd(spd) { return 20 + 5 * (Number(spd) || 0); }
 
-/* --- Edha sheet derivations: HP = system + EDHA_HP_BONUS (0 since R-54); Speed = 20 + 5 × SPD;
- * Senses = the AWA table ---------------------------------------------------------------------
- * The Edha reference sheets derive MOVEMENT and SENSES differently from the cosmere system; the
+/* --- Edha sheet derivations: HP = system + EDHA_HP_BONUS (0 since R-54); Speed = 20 + 5 × SPD.
+ * Senses is NOT here any more — the system's ladder owns it (R-56 reversed, item 83) ----------
+ * The Edha reference sheets derive MOVEMENT differently from the cosmere system; the
  * pregens carried per-actor hacks (hea.max.bonus:1 / movement override). Now derived for ALL
  * characters:
  *  • HP: +EDHA_HP_BONUS to hea.max.bonus IN MEMORY — skipped while the actor's SOURCE still carries
@@ -18599,25 +18635,21 @@ function edhaWalkRateFtFromSpd(spd) { return 20 + 5 * (Number(spd) || 0); }
  *    if the constant ever moves again. Do not "simplify" either away.
  *  • Speed: override = 20 + 5×SPD + (current bonus) — keeps AE speed buffs (Walking Ruin) additive.
  *    Skipped while the actor's SOURCE carries its own movement override (legacy pregens).
- *  • Senses: writes .derived (NOT .override), exactly as the system's own prepareSecondaryDerivedData
- *    does, so a player's Configure Senses Range override still wins and the .bonus still adds.
- *    Applies to EVERY actor type — adversaries included (R-56 (a), item 55); HP and Speed stay PC-only.
+ *  • Senses: nothing. The system derives it for every actor type; see the ⛔ note in the body.
  */
 function edhaDeriveSheetStats(actor) {
   try {
     if (!actor) return;
-    // Senses Range = the Edha AWA table, for EVERY actor type (R-56 (a), item 55: ONE rule for PCs
-    // and adversaries — the sheet, the prototype token the build stamps, and edhaCanSee all read
-    // the same table). The system wrote its own ladder into .derived a moment ago; overwrite it,
-    // leaving override/useOverride/bonus alone so a hand-configured range — or an adversary
-    // block's explicit `senses` override, which the build writes as exactly that — still wins.
-    // Was character-only from 07-28i to item 55: every world adversary read the cosmere ladder's
-    // 5 ft on the sheet while its token carried 10 (bench run 22, 47/47).
-    const senses = actor.system?.senses?.range;
-    if (senses) {
-      const awa = Number(actor.system?.attributes?.awa?.value) || 0;
-      try { senses.derived = edhaSensesRangeFtFromAwa(awa); } catch (e) { /* non-fatal */ }
-    }
+    // ⛔ NO SENSES WRITE HERE — deliberately. R-56 was reversed 2026-09-07 (Ben, "Cosmere ladder
+    // for everyone" → item 83): Senses Range is the SYSTEM's own ladder for every actor type, and
+    // `CommonActorDataModel.prepareSecondaryDerivedData` (cosmere-rpg 2.1.0 index.js:8455-8457,
+    // reached by BOTH CharacterActorDataModel — which supers into it at :17628 — and
+    // AdversaryActorDataModel at :25877) already wrote `senses.range.derived =
+    // awarenessToSensesRange(awa)` a moment ago. So the fix is the ABSENCE of a write: the Edha
+    // table override that stood here 07-16c → item 55 is gone, and the system's number survives —
+    // including the `value + bonus` reading of AWA the Edha copy never had. A hand-set override,
+    // and an adversary block's explicit `senses` (which the build writes as exactly that), still
+    // win, because they always did — they sit above `.derived` in the DerivedValueField.
     if (actor.type !== "character") return;   // HP and Speed below are PC-only rules (adversary blocks carry overrides)
     // HP = system + EDHA_HP_BONUS (0 since R-54 — the Edha and system tables agree)
     const heaMax = actor.system?.resources?.hea?.max;
@@ -18673,8 +18705,8 @@ async function edhaMigrateDerivations() {
  * sight model (07-16c) gives every creature its Senses Range, and a PC's name should read on
  * hover. NEW actors of ANY type get sight enabled in the cosmere "sense" vision mode (attenuation
  * 0.1 — the exact shape the world PCs and the adversary pack builds carry), range = Senses Range
- * from the Edha AWA table (R-56 (a), item 55: one rule for PCs and adversaries; was character-only
- * before). New CHARACTERS additionally get displayName HOVER(30); adversaries keep Foundry's
+ * from the SYSTEM's ladder (R-56 reversed 2026-09-07, item 83 — one rule for PCs and adversaries;
+ * this was the Edha table from 07-18 to item 55/83). New CHARACTERS additionally get displayName HOVER(30); adversaries keep Foundry's
  * default (the pack's OWNER_HOVER(20) is set by the build, and a blank-created adversary should not
  * leak its name to players on hover). Pack-built and imported actors already carry a sight range
  * and are left alone. An updateActor watcher keeps the range in step when AWA changes (prototype +
@@ -18682,8 +18714,9 @@ async function edhaMigrateDerivations() {
  * characters and their placed tokens; existing adversaries are re-stamped by the pack sync.
  */
 function edhaPcSightShape(actor) {
-  const awa = Number(actor?.system?.attributes?.awa?.value) || 0;
-  return { enabled: true, range: edhaSensesRangeFtFromAwa(awa), visionMode: "sense", attenuation: 0.1 };
+  // AWA read as value + bonus (edhaAwaForSenses), the way the system's own derivation reads it —
+  // otherwise an AE that adds AWA moves the SHEET's Senses Range and leaves the token behind.
+  return { enabled: true, range: edhaSensesRangeFtFromAwa(edhaAwaForSenses(actor)), visionMode: "sense", attenuation: 0.1 };
 }
 Hooks.on("preCreateActor", (doc, data) => {
   try {
@@ -18744,7 +18777,12 @@ Hooks.once("ready", () => {
   // persisted, so the actor snapped back to 57 the next time a real update re-initialised it — the
   // "flip", and why there was no residue. It hit EVERY character carrying ANY ADD-mode effect, on
   // EVERY client, at world load; Hardy was only how the bench noticed.
-  // Every actor, not just characters, since item 55: adversaries' Senses Range is derived here too.
+  // Every actor, not just characters (widened at item 55). Kept at that scope after item 83 removed
+  // the senses write: the sweep is a re-prepare, and an adversary prepared before this wrapper
+  // installed should re-render from the same pipeline everything else runs. Nothing here writes
+  // senses any more — the system's own derivation gives every actor the ladder on the next prepare,
+  // which is why an existing PC needs only an F5 for the SHEET number. Its stored TOKEN sight.range
+  // is persisted data and does NOT move here — `edha.fixPcTokens()` or an AWA edit re-stamps it.
   for (const a of (game.actors ?? [])) { try { a.reset(); a.sheet?.rendered && a.sheet.render(false); } catch (e) {} }
 });
 

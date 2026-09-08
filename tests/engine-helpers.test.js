@@ -422,16 +422,41 @@ test("edhaPhantomOwnedBy: token-keyed when both sides know their token; actor-id
   assert.strictEqual(env.edhaPhantomOwnedBy(birdA, null, "mist1"), true);                // caster lost its token — actor fallback
 });
 
-// --- 07-16c the Senses Range table (pure) --------------------------------------------------------
-test("edhaSensesRangeFtFromAwa follows the Character_Building_Rules table", () => {
-  assert.strictEqual(env.edhaSensesRangeFtFromAwa(0), 10);
-  assert.strictEqual(env.edhaSensesRangeFtFromAwa(1), 15);
-  assert.strictEqual(env.edhaSensesRangeFtFromAwa(2), 20);
+// --- the Senses Range ladder (pure) — R-56 FINAL, 2026-09-07 (item 83) --------------------------
+// Ben, verbatim: "Cosmere ladder for everyone." This helper was the EDHA table (0→10, 1→15, 2–3→20,
+// 4→25, 5+→30) from 07-16c until item 83; it is now the cosmere system's own `SENSES_RANGES`
+// = [5, 10, 20, 50, 100, ∞] indexed by ceil(AWA/2) (systems/cosmere-rpg 2.1.0 index.js:8534-8538),
+// term-for-term, so the token stamp and the wizard preview promise exactly what the system derives
+// onto the sheet. Reverting the table fails every line below.
+test("edhaSensesRangeFtFromAwa is the cosmere system's ceil(AWA/2) ladder", () => {
+  assert.strictEqual(env.edhaSensesRangeFtFromAwa(0), 5);
+  assert.strictEqual(env.edhaSensesRangeFtFromAwa(1), 10);
+  assert.strictEqual(env.edhaSensesRangeFtFromAwa(2), 10);
   assert.strictEqual(env.edhaSensesRangeFtFromAwa(3), 20);
-  assert.strictEqual(env.edhaSensesRangeFtFromAwa(4), 25);
-  assert.strictEqual(env.edhaSensesRangeFtFromAwa(5), 30);
-  assert.strictEqual(env.edhaSensesRangeFtFromAwa(6), 30);
-  assert.strictEqual(env.edhaSensesRangeFtFromAwa(undefined), 10);
+  assert.strictEqual(env.edhaSensesRangeFtFromAwa(4), 20);
+  assert.strictEqual(env.edhaSensesRangeFtFromAwa(5), 50);
+  assert.strictEqual(env.edhaSensesRangeFtFromAwa(6), 50);
+  assert.strictEqual(env.edhaSensesRangeFtFromAwa(7), 100);
+  assert.strictEqual(env.edhaSensesRangeFtFromAwa(8), 100);
+  assert.strictEqual(env.edhaSensesRangeFtFromAwa(9), Number.MAX_SAFE_INTEGER);   // the system's ∞
+  assert.strictEqual(env.edhaSensesRangeFtFromAwa(99), Number.MAX_SAFE_INTEGER);  // clamped at the top rung
+  assert.strictEqual(env.edhaSensesRangeFtFromAwa(undefined), 5);
+  assert.strictEqual(env.edhaSensesRangeFtFromAwa(-4), 5);   // never indexes off the bottom
+});
+
+test("edhaAwaForSenses reads value + bonus, the way the system's awarenessToSensesRange does", () => {
+  const actor = (value, bonus) => ({ system: { attributes: { awa: { value, bonus } } } });
+  assert.strictEqual(env.edhaAwaForSenses(actor(2, 0)), 2);
+  assert.strictEqual(env.edhaAwaForSenses(actor(2, 2)), 4);      // an AE adding AWA moves sight too
+  assert.strictEqual(env.edhaSensesRangeFtFromAwa(env.edhaAwaForSenses(actor(2, 2))), 20);
+  assert.strictEqual(env.edhaAwaForSenses(undefined), 0);
+  assert.strictEqual(env.edhaAwaForSenses({}), 0);
+});
+
+test("edhaCwSensesCell renders the ladder's top rung as ∞, not the raw MAX_SAFE_INTEGER", () => {
+  assert.strictEqual(env.edhaCwSensesCell(0), "5 ft");
+  assert.strictEqual(env.edhaCwSensesCell(5), "50 ft");
+  assert.strictEqual(env.edhaCwSensesCell(9), "∞");   // the wizard's attribute cap above L1 is 99
 });
 
 // --- 07-18b adversary pack sync: the item-replacement decision (pure) ----------------------------

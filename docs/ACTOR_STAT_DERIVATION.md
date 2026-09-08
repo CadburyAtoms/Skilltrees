@@ -20,7 +20,8 @@ which is 10 + STR at level 1 and 39 + 2·STR at level 7. cosmere-rpg 2.1.0's adv
 (`config.ts` ~L485): level 1 `health: 10, healthIncludeStrength: true`, levels 2–5 `health: 5`,
 level 6 `health: 4` + STR, level 11 `3` + STR, level 16 `2` + STR — **the same table, term for term.**
 The engine comment that says "the cosmere system derives all three differently" is true for
-Movement and Senses and **false for HP**. A "level gate" would apply the +1 only above level 1,
+Movement and Senses and **false for HP**. (Senses has since gone back to the system too — R-56's
+2026-09-07 reversal, §3b; **Movement is the only stat Edha still derives differently.**) A "level gate" would apply the +1 only above level 1,
 which matches nothing in canon either. **Recommended: remove the +1 (`EDHA_HP_BONUS = 0`), not gate
 it.** One constant; the sheet, the wizard preview, and the pinned tests move together by design.
 
@@ -41,7 +42,7 @@ flowchart TD
   G --> H["CLAMP: every resource's current value ≤ its max"]
   H --> I["EDHA WRAPPER (libWrapper on prepareDerivedData)"]
   I --> J["edhaDeriveInvestiture<br/>inv.max = 2 + max(AWA, PRE) written as an override,<br/>persisted to the sheet once per session (R-77 gate)"]
-  I --> K["edhaDeriveSheetStats<br/>hea.max.bonus += EDHA_HP_BONUS (1), in memory only → 11 at STR 0<br/>then the clamp repair · walk rate override = 20 + 5·SPD<br/>senses.derived = the Edha AWA table"]
+  I --> K["edhaDeriveSheetStats<br/>hea.max.bonus += EDHA_HP_BONUS (0 since R-54), in memory only<br/>then the clamp repair · walk rate override = 20 + 5·SPD<br/>senses: NOTHING — the system's ladder above stands (R-56, item 83)"]
   K --> V["Everything reads .value = (override if useOverride, else derived) + bonus"]
   J --> V
 ```
@@ -76,7 +77,7 @@ on purpose (system comment: "Should only be the value, not include the bonus").
 | **Max Investiture** | 2 + max(AWA, PRE), only if attuned | **not derived for characters** — a manual field | `edhaDeriveInvestiture`: override = 2 + max(AWA, PRE); current clamped; override persisted to the sheet once per session, non-primary GMs defer (R-77) | none |
 | **Defenses** PHY / COG / SPI | 10 + STR+SPD / 10 + INT+WIL / 10 + AWA+PRE | **identical** (attribute values) + `bonus` | read-only (`edhaReadDefense`); `edha-defense-buff` applies scene/turn buffs as effects | `defenses.*.bonus`: phy 6, cog 10, spi 12 (Customary Garb, Collected, …) |
 | **Movement** (walk) | 20 + 5·SPD ft | ladder `[20,25,30,40,60,80][ceil((SPD+bonus)/2)]` | **override = 20 + 5·SPD** (SPD value), unless the sheet already carries its own override; effect bonuses add on top via the getter | `walk.rate.bonus` 5 (Surefooted +10, Walking Ruin, …), `walk.rate.override` 1 (Siege Form 0) |
-| **Senses range** | AWA 0→10, 1→15, 2–3→20, 4→25, 5–6→30 ft | ladder `[5,10,20,50,100,∞][ceil((AWA+bonus)/2)]` | **`.derived` overwritten with the Edha table** (AWA value) **for EVERY actor type — adversaries too since item 55 / R-56 (a)**; a hand-set override still wins (an adversary block's `senses` is written as exactly that); bonus still adds; the token's sight range is set from the same table (engine for new/edited actors, `advSensesRangeFt` in the build for the pack) | none |
+| **Senses range** | Edha canon named AWA 0→10, 1→15, 2–3→20, 4→25, 5–6→30 ft — **superseded, see §3b** | ladder `[5,10,20,50,100,∞][ceil((AWA+bonus)/2)]` | **NONE since item 83 (R-56 final, 2026-09-07).** The engine writes nothing to `senses.range`; the system's own value stands for every actor type. A hand-set override still wins (an adversary block's `senses` is written as exactly that) and bonus still adds, because both sit above `.derived`. The token's sight range is stamped from a copy of the *same* ladder (`edhaSensesRangeFtFromAwa` for new/edited actors, `advSensesRangeFt` in the build for the pack) | none |
 | **Recovery die** | WIL 0–1 d4, 2–3 d6, 4–5 d8, 6–7 d10 | `[d4,d6,d8,d10,d12,d20][ceil((WIL+bonus)/2)]` — same to WIL 6; **WIL 7+ gives d12 where canon says d10** | none (wizard preview mirrors the system ladder) | none |
 | **Lift / Carry** | not in canon | `[100,200,500,1000,5000,10000]` / `[50,100,250,500,2500,5000]` by ceil((STR+bonus)/2) lb | none | none |
 | **Deflect** | — | max(natural, best equipped armour) | none | Guardian Stance +1 Deflect (toggled effect) |
@@ -84,24 +85,53 @@ on purpose (system comment: "Should only be the value, not include the bonus").
 | **Skill-rank budget** | 5 + (L−1)·2 | advancement table (4 at L1) | wizard and sheet budget bar use the Edha number | — |
 | **Tier / max skill rank** | table: T1 L1–5 (max 2), T2 L6–10 (3), … | same table | none | — |
 
-Net for a fresh level-1 character with every attribute 0: **Health 11 (engine) vs 10 (canon and
-system)**, Focus 2, Investiture 2, defenses 10/10/10, Move 20 ft, Senses 10 ft (system alone would
-say 5 ft), Recovery d4.
+Net for a fresh level-1 character with every attribute 0 (as of item 83): **Health 10** (R-54
+removed the +1 — engine, canon and system now agree), Focus 2, Investiture 2, defenses 10/10/10,
+Move 20 ft (the one stat Edha still overrides), **Senses 5 ft** (the system's own ladder — see §3b),
+Recovery d4.
 
-### 3a. Adversaries (item 55, R-56 (a), 2026-09-06)
+### 3a. Adversaries (item 55, R-56 (a), 2026-09-06 — then item 83, below)
 
-Adversary actors run the same `prepareDerivedData` wrapper. Of the Edha layer above, **only the
-Senses row applies to them**: `edhaDeriveSheetStats` writes the AWA table into
-`senses.range.derived` first, for every actor type, and returns before the HP bonus and the walk
-override, which stay PC-only (adversary blocks carry explicit `hp` / `movement` overrides from the
-build instead). Adversary blocks have no attributes (all 0), so the table gives **10 ft** — the
-same number the build stamps on the pack's prototype token via `advSensesRangeFt(adv)`, so sheet
-and token agree; a block's `senses` field is the bespoke override on both (Briar-Gone Grove, 30
-ft). Before item 55 the sheet derivation was character-only, so every world adversary read the
-cosmere ladder's **5** against a token carrying a **flat 10** (bench run 22, 47/47 and 52/52).
-Because the wrapper installs at `ready`, the ready-time refresh sweep resets adversaries as well
-as characters — a world adversary prepared before that would otherwise show 5 until its next
-update.
+Adversary actors run the same `prepareDerivedData` wrapper. **Since item 83 none of the Edha layer
+applies to them at all**: `edhaDeriveSheetStats` returns at `actor.type !== "character"` before it
+does anything, because the senses write that used to sit above that guard is gone. HP and Speed were
+always PC-only (adversary blocks carry explicit `hp` / `movement` overrides from the build instead).
+Adversary blocks have no attributes (all 0), so the system's ladder gives **5 ft** — the same number
+the build stamps on the pack's prototype token via `advSensesRangeFt(adv)`, so sheet and token agree
+(**52/52** at the item-83 rebuild); a block's `senses` field is the bespoke override on both
+(Briar-Gone Grove, 30 ft). The ready-time refresh sweep still resets every actor, not just
+characters — that scope was widened at item 55 and kept, but it is now only a re-render, since
+nothing in the Edha layer writes an adversary's senses.
+
+### 3b. The Senses Range reversal — the whole history in one place (R-56)
+
+This number moved three times, so read the sequence before changing it again:
+
+| When | Rule on the sheet | Rule on the token | Why |
+|---|---|---|---|
+| before 07-28i | the system's ladder (nothing wrote it) | the Edha table (PCs); a **flat 10** (pack adversaries) | the sheet was the only surface still on the system's number — bench run 21 reported it as a preview/sheet drift |
+| 07-28i (fix pass E) | **Edha table**, characters only | unchanged | `Character_Building_Rules.md` §Senses Range was read as canon, so the sheet was moved to it |
+| item 55 / R-56 **(a)**, 2026-09-06 (PR #240) | **Edha table**, every actor type | Edha table everywhere (the flat 10 removed) | one rule for PCs and adversaries — bench run 22 had measured three surfaces disagreeing about the same creature (47/47 world, 52/52 pack) |
+| **item 83 / R-56 FINAL, 2026-09-07** | **the system's ladder**, every actor type — *and the engine writes nothing* | the system's ladder everywhere | Ben, verbatim: *"Cosmere ladder for everyone."* |
+
+The final shape is worth stating precisely, because it is not symmetrical with the others: the
+system's `CommonActorDataModel.prepareSecondaryDerivedData` (cosmere-rpg 2.1.0 `index.js:8455-8457`;
+`SENSES_RANGES = [5,10,20,50,100,Number.MAX_SAFE_INTEGER]` and `awarenessToSensesRange` at
+`:8534-8538`) **already writes this ladder for both actor models** — `CharacterActorDataModel`
+supers into it (`:17628`), `AdversaryActorDataModel` (`:25877`) inherits it. So the sheet half of
+item 83 was a **deletion**, not a re-tabling, and the system's reading of AWA as `value + bonus`
+(which the Edha copy never had) comes back with it. The engine keeps one copy of the ladder,
+`edhaSensesRangeFtFromAwa`, purely for the two surfaces the system does not derive — the token-sight
+stamp (`edhaPcSightShape` → `preCreateActor` / `updateActor` / `edha.fixPcTokens()`) and the
+creation wizard's preview — and the build keeps a third, `sensesRangeFtFromAwa` in
+`scripts/foundry-build-parts.js`, for the pack's prototype tokens.
+`tests/adversary-senses.test.js` pins the build copy against the engine copy term-for-term at
+AWA 0–10 so they cannot drift apart again.
+
+⚠️ **Sheets and tokens deploy differently.** The sheet number is derived every prepare, so an
+**F5 alone** moves every existing actor, PC and adversary. A token's `sight.range` is *stored*, so
+it does not: pack adversaries are re-stamped by the REBUILD + ⟳ Sync Adversaries, and existing PC
+tokens need `edha.fixPcTokens()` (or any AWA edit, which re-fires the `updateActor` watcher).
 
 ## 4. Where the +1 came from — the history, dated
 
@@ -142,10 +172,17 @@ derivation settles) and are fixed independently of this ruling.
 
 ## 6. Where to look (for the next agent)
 
-- Engine: `module-src/scripts/register-skills.js` — `EDHA_HP_BONUS` / `edhaWalkRateFtFromSpd`
-  (~L17300), `edhaDeriveInvestiture` (~L17254), `edhaDeriveSheetStats` (~L17314), the wrapper
-  install in `Hooks.once("ready")` just below it, `edhaSensesRangeFtFromAwa` (~L10068),
-  `edhaCwDerivedPreview` (~L8556), `edhaReadDefense` (~L5048), `edhaDerivedNum` (~L5452).
+- Engine — **edit the per-section sources under `module-src/scripts/engine/`, never the assembled
+  `register-skills.js`** (item 4; run `node scripts/engine-assemble.js` and commit both). Line
+  numbers below are in the assembled file as of 2026-09-07 and drift — grep the name:
+  `EDHA_HP_BONUS` / `edhaWalkRateFtFromSpd` (~L18622) and `edhaDeriveSheetStats` (~L18640) +
+  `edhaDeriveInvestiture` and the wrapper install in `Hooks.once("ready")` just below it, all in
+  `engine/52-green-instinct.js`; `EDHA_SENSES_RANGES_FT` / `edhaSensesRangeFtFromAwa` (~L11246) and
+  `edhaAwaForSenses` (~L11254) in `engine/32-senses-light-visibility.js`; `edhaCwSensesCell`
+  (~L9456) and `edhaCwDerivedPreview` (~L9478) in `engine/24-the-character-creation-wizard.js`;
+  `edhaReadDefense`, `edhaDerivedNum`.
+- Build-side copy of the senses ladder (the pack's prototype-token sight): `sensesRangeFtFromAwa`
+  and `advSensesRangeFt` in `scripts/foundry-build-parts.js`.
 - System (read-only clone, release-2.1.0): `src/system/documents/actor.ts` `prepareDerivedData`
   (~L292: super → `applyActiveEffects` → `prepareSecondaryDerivedData`);
   `src/system/data/actor/common.ts` `prepareSecondaryDerivedData` (~L685) and the four ladders
