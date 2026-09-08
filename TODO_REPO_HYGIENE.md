@@ -3294,3 +3294,39 @@ carries the refresh recipe; `node scripts/gates.js` green. DOCS-ONLY (no script 
 **PM:** lane R · model sonnet · size S · deps — · verify: the grep above before/after + gates.
 Filed 2026-09-07 21:5x from Ben's chat ruling. The first refresh under the new rule is bench run 44's
 step zero (both PCs' `⟳ Sync Talents` after the 20:28 leyline REBUILD).
+
+## 98. [ ] Phone-inbox close-out 2026-09-07 21:53 — retire the Ashkar art-backlog row on Ben's word, and rewrite the stale "Session 1 is ready pending Ben's ⚑ batch" line in the campaign state
+
+**Why:** two notes from Ben's phone board (inbox, 2026-09-07 21:53–21:54 ET), verbatim:
+- On the Bench row `ART BACKLOG, not a test` under `# Ashkar Mesas Bestiary (rulings 137–138 …)`
+  (`EDHA_FOUNDRY_TEST_CHECKLIST.md` ~L4579): *"This can be marked complete. We will revisit the art
+  and session building loop later."*
+- On the Worldbuilding row for `EDHA_CAMPAIGN_STATE.md` ~L95 (*"Session 1 is ready pending Ben's ⚑
+  batch"*): *"What else is needed from me here? is an updated session forge needed?"* The PM's answer
+  (chat, 22:0x): that paragraph is stale — of its four blockers, the **W23 adversary tooling round is
+  DONE** (the bestiary folders shipped in July and were bench-tested through September) and the
+  **capitals are DONE** (5 capital-tagged of 35 cities in `source-materials/maps/thyrcross.map.json`);
+  the **battle-map art** (Palewater shallows, Withervale) is Ben's whenever he gets to it; and the
+  **day-5 ferry-pair town stop** (ruling 154, *"needs some GAS"*, run-sheet §10.2) still needs a
+  session-forge pass. Because the run-sheet predates the July–September engine, bestiary, and rulings
+  work, a **session-forge refresh sitting with Ben precedes play** — it is interactive (his ruling
+  gates), not an overnight item — and is **deferred on his 21:53 note**.
+
+**What to do:** (1) the Ashkar row → `[x]` with a dated retirement note quoting Ben verbatim (phone
+inbox, 2026-09-07 21:53 ET); leave the Kettavar `ART BACKLOG` row (~L4674) open — Ben named only
+Ashkar — but mention it in the delta. Do not touch `EDHA_ADVERSARY_ART_WISHLIST.md` (the art debt
+stays tracked there). (2) Rewrite the `EDHA_CAMPAIGN_STATE.md` ~L95–99 paragraph to today's truth
+in the same voice: what is done (W23 round, capitals — cite the map count), what is Ben's (the two
+battle maps' art), what is open (the ferry-pair stop → session-forge), and the dated note that a
+session-forge refresh with Ben precedes session 1 and is deferred per his 2026-09-07 21:53 note
+(verbatim). Keep the two settled/resolved parentheticals that follow it. (3) `node
+scripts/build-dashboard.js` (both files are dashboard sources); `node scripts/build-canon-codex.js`
+if the codex reads the state doc (run its `--check` to find out). DOCS-ONLY.
+
+**Done when:** the Ashkar row is `[x]` with the quote; the state paragraph reads true today and
+carries the deferral note; the dashboard's ⚑ For-Ben count drops by one; `node scripts/gates.js`
+green. DOCS-ONLY.
+
+**PM:** lane R · model sonnet · size S · deps — (branch from the `main` that has this item; item 97
+runs in parallel on other files — expect the usual changelog-top / dashboard merge at review) ·
+verify: the ⚑ count before/after + gates. Filed 2026-09-07 22:0x from the phone inbox.
