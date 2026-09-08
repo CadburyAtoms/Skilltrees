@@ -352,6 +352,45 @@ test("build-dashboard: parseOpenRulings marks R-56 open and R-18/R-41/R-42/R-48/
   for (const r of open) assert.ok(/\?$/.test(r.ask), `${r.id}: ask is not a question — "${r.ask}"`);
 });
 
+// item 96: the desktop Rulings tab's `done` flag used to require living under §K — an inline
+// ANSWERED/VETOED/SETTLED answer left in its themed section (the doc's OWN convention when a
+// worker hasn't yet moved the text) rendered as an open row forever, which is how 47 already-
+// answered rulings sat in §A–§J reading as open on the desktop tab (R-47: "why is this still
+// here?"). parseRulings() now also marks `done: true` when rulingBodyIsClosed() reads the
+// assembled body (heading + following prose, same span parseOpenRulings() reads) as closed,
+// regardless of section — this fixture pins BOTH directions plus the pre-existing §K-regardless-
+// of-body behavior, all against the SAME body-assembly walk so this can never drift from
+// parseOpenRulings()'s idea of "closed".
+const DONE_FIXTURE = `## B. Scope
+
+**R-300. Answered outside §K must read done.** Some prose about the rule.
+> **ANSWERED 2026-09-06: yes, ship it.**
+
+**R-301. Unanswered must stay NOT done.** Some prose with no ANSWERED/VETOED/SETTLED/REOPENED
+marker anywhere in this body.
+
+## K. Settled
+
+**R-302. Anything already living in §K stays done regardless of its own body.** No closing marker
+in this body either — §K alone must still mark it done, unchanged from before item 96.
+`;
+
+test("build-dashboard: parseRulings — done is true when rulingBodyIsClosed() reads the body closed, not only inside §K (item 96)", () => {
+  const doc = dashboard.parseRulings(DONE_FIXTURE);
+  const byId = {};
+  for (const sec of doc.sections) {
+    for (const b of sec.blocks) {
+      if (b.type === "item" && b.kind === "ruling") {
+        const m = b.text.match(/^\*\*([RF]-\d+)\./);
+        byId[m[1]] = b;
+      }
+    }
+  }
+  assert.strictEqual(byId["R-300"].done, true, "an ANSWERED body outside §K must render done: true");
+  assert.strictEqual(byId["R-301"].done, false, "an unanswered body must render done: false");
+  assert.strictEqual(byId["R-302"].done, true, "§K items stay done regardless of their own body — unchanged");
+});
+
 const RULINGS_FIXTURE = `## B. Scope
 
 **R-100. Stub-duplicate check: does the retired stub avoid re-opening?** -> **SETTLED, moved to §K.**

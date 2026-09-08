@@ -211,6 +211,34 @@ function parseRulings(md) {
     if (item) { item.text += ' ' + line.trim(); continue; }
     if (line.trim()) pushProse(line.trim());
   }
+
+  // A ruling is also `done` when its OWN body reads as closed per rulingBodyIsClosed() — not only
+  // when it happens to live under §K (item 96). Without this, an answer recorded inline (the
+  // doc's own "answer inline, then move to §K" convention) never flips the desktop Rulings tab's
+  // row to done until someone remembers to physically relocate the text, which is exactly how 47
+  // already-answered rulings sat in §A–§J reading as open (R-47's "why is this still here?").
+  // Reuses rulingBodyIsClosed()/RULING_STUB_RE (defined below) and the same body-assembly walk
+  // parseOpenRulings() uses, so the two views can never disagree about what counts as closed;
+  // this only ever ADDS `done: true` on top of the settled-by-section default above, and never
+  // touches `text`/`head`/`blocks`, so mobileSnapshot(), parseOpenRulings() and countCitations()
+  // (which all read those instead) are unaffected.
+  for (const s of doc.sections) {
+    let cur = null;
+    const flush = () => {
+      if (cur && rulingBodyIsClosed(cur.parts.join('\n'))) cur.item.done = true;
+      cur = null;
+    };
+    for (const b of s.blocks) {
+      if (b.type === 'item' && b.kind === 'ruling') {
+        flush();
+        cur = { item: b, parts: [b.text] };
+      } else if (b.type === 'prose') {
+        if (RULING_STUB_RE.test(b.text)) { flush(); continue; } // an already-closed one-liner
+        if (cur) cur.parts.push(b.text);
+      }
+    }
+    flush();
+  }
   return doc;
 }
 

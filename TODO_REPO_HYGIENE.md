@@ -3209,7 +3209,7 @@ scripts/gates.js` green. DOCS-ONLY.
 **PM:** lane R · model sonnet · size S · deps item 91 merged · verify: `grep -c WAITING
 EDHA_RULINGS.md` before/after + the dashboard counts + `node scripts/gates.js`. DOCS-ONLY.
 
-## 96. [ ] Rulings §K sweep — 47 answered rulings still sit in §A–§J, so the desktop Rulings tab lists them as open and Ben asks "Why is this still here?" (R-47); move them to §K under the doc's own rule and make the dashboard mark a closed body done
+## 96. [x] Rulings §K sweep — 47 answered rulings still sit in §A–§J, so the desktop Rulings tab lists them as open and Ben asks "Why is this still here?" (R-47); move them to §K under the doc's own rule and make the dashboard mark a closed body done (2026-09-07, PR #300)
 
 **Why:** Ben's third dashboard paste of 2026-09-07 (20:30 ET, `@4944221a06`) marked 43 rulings
 ✓ DONE and left one note, on R-47: *"Why is this still here?"* Every one of those rulings — and
