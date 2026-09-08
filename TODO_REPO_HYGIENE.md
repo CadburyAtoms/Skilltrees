@@ -2686,7 +2686,7 @@ default the explicit value overrides — R-56's ladder or the Edha table).
 
 ---
 
-## 83. [ ] R-56 reversal — the cosmere senses ladder for every actor type (WAITING on Ben's go)
+## 83. [ ] R-56 reversal — the cosmere senses ladder for every actor type (GO — Ben, chat 2026-09-07 21:51)
 
 **Why:** R-56 was answered 2026-09-06 (Edha AWA table for adversaries too, shipped PR #240) and
 REOPENED 2026-09-07 by item 79's close-out: Ben, verbatim, *"Honestly we should be using the
@@ -2713,6 +2713,13 @@ bench-confirmed.
 
 **PM:** lane H · model opus · size M · deps Ben's go on R-56 (item 79's REOPENED note). Item 82
 depends on this item's outcome (which default the explicit per-block override sits against).
+
+**PM GO 2026-09-07 21:51 ET — Ben, chat, verbatim: *"Cosmere ladder for everyone."*** (his phone tap of 17:25
+said (a) keep; the chat answer is the later and explicit one and wins.) Record it under R-56 in
+`EDHA_RULINGS.md` as **ANSWERED — the system ladder for every actor type** with that text and move R-56
+to §K per item 96's convention (it is the last open ruling on the desktop tab). Deploy class: ENGINE
+(F5, pushed by the PM) + adversaries **REBUILD** + ⟳ Sync Adversaries (Ben's next bat run) — the
+wizard preview, `bench-setup-console.js`, docs and tests are repo-side. Dispatch after 00:00 ET (PM-R16).
 
 ---
 
@@ -3252,3 +3259,38 @@ the concatenated moved bodies before = after, both hashes in the PR body); `pars
 **PM:** lane R · model sonnet · size M · deps — (branch from the `main` that has this item) · verify:
 the parser counts before/after, the hash proof, the mutation, gates. Filed 2026-09-07 20:4x from
 Ben's third dashboard paste (43 ✓ DONE ticks + the R-47 note).
+
+## 97. [ ] PM-R17 — Ben's two PCs may be REFRESHED by agents (⟳ Sync Talents / sync-from-pack), never edited: rewrite the "UNTOUCHABLE" hard rule everywhere it is stated
+
+**Why:** Ben, chat 2026-09-07 21:51 ET, verbatim: *"I'm rewriting the previous rule regarding Tem
+parinaem and Soggy Bottom — they get refreshes from you and agents but no edits to stats, items, or
+text."* Until now bench-run hard rule 1 said the two player-character actor documents are
+UNTOUCHABLE (never written to, never targeted by an effect that writes to them), which is why every
+post-deploy `⟳ Sync Talents` click on them was left as something only Ben could do (the bench synced
+its 16 bench PCs and stopped). The new rule splits the guard in two: **a REFRESH — the PC sheet's
+`⟳ Sync Talents` button, or any equivalent pull-from-pack of their owned talent copies — is now
+allowed for the PM and for agents; a hand EDIT of their stats, items, or text is still forbidden**,
+and their tokens on the Playtest Map stay under the PM-R13 scene licence exactly as before.
+
+**What to do:** rewrite the rule at every place it is stated, quoting Ben's sentence once (in the
+bench-run skill) and pointing to PM-R17 elsewhere: `.claude/skills/bench-run/SKILL.md` hard rule 1
+(and the "keep their hard guard unchanged" clause in hard rule 4), `.claude/skills/bench-marathon/SKILL.md`
+~L138, `docs/EDHA_BENCH_RUNBOOK.md` ~L23 and ~L106 (and add one short recipe: how a run refreshes the
+two PCs — open each sheet, click `⟳ Sync Talents`, record the toast; never the roster script's write
+paths), `EDHA_FOUNDRY_HANDOFF.md` ~L141, the CLAUDE.md map row for the bench (~L45, "hard-guarded" →
+"refresh-only"), and the header comment of `scripts/bench-setup-console.js` (~L17; the `PROTECTED`
+list at ~L86 STAYS — it guards the script's own writes, which are edits, not refreshes; do not change
+the script's behaviour or `tests/bench-orphans.test.js`). Leave historical text alone (changelog
+deltas, retired checklist evidence, TODO items 1289/1557 context). Add the ruling to `EDHA_RULINGS.md`
+§K as a settled record if the doc keeps PM rulings there (check R-8's entry, which cites the guard,
+and add one line pointing at PM-R17); otherwise the board's rulings table is the record. Then
+`node scripts/build-dashboard.js` if any dashboard source changed.
+
+**Done when:** `grep -rn -i "untouchable" .claude docs EDHA_FOUNDRY_HANDOFF.md CLAUDE.md scripts/bench-setup-console.js`
+finds no statement of the old absolute rule about the two PCs (historical/evidence text excepted and
+listed in the PR); every rewritten statement says refresh-yes / edit-no and cites PM-R17; the runbook
+carries the refresh recipe; `node scripts/gates.js` green. DOCS-ONLY (no script behaviour change).
+
+**PM:** lane R · model sonnet · size S · deps — · verify: the grep above before/after + gates.
+Filed 2026-09-07 21:5x from Ben's chat ruling. The first refresh under the new rule is bench run 44's
+step zero (both PCs' `⟳ Sync Talents` after the 20:28 leyline REBUILD).
