@@ -2698,7 +2698,21 @@ default the explicit value overrides — R-56's ladder or the Edha table).
 
 ---
 
-## 83. [ ] R-56 reversal — the cosmere senses ladder for every actor type (GO — Ben, chat 2026-09-07 21:51)
+## 83. [x] R-56 reversal — the cosmere senses ladder for every actor type (2026-09-07, PR #313)
+<!-- DONE 2026-09-07 (PR #313) — Ben's final answer shipped: the system's
+     `[5,10,20,50,100,∞][ceil((AWA value+bonus)/2)]` for EVERY actor type. The sheet half is a
+     DELETION — `CommonActorDataModel.prepareSecondaryDerivedData` (cosmere-rpg 2.1.0
+     index.js:8455-8457) already writes that ladder for both actor models, so
+     `edhaDeriveSheetStats`'s Edha-table write was removed rather than re-tabled, and the
+     system's `value + bonus` reading of AWA comes back with it. Re-tabled: the engine's
+     `edhaSensesRangeFtFromAwa` (+ new `edhaAwaForSenses`) for the token stamp, the build's
+     `sensesRangeFtFromAwa`/`advSensesRangeFt`, the wizard preview (new `edhaCwSensesCell`
+     renders the top rung as ∞), and bench-setup-console.js's R-2 PC sight (20 → 10 at AWA 2).
+     Pack: 51 of 52 tokens 10 → 5, the Grove 30/30 unchanged, 0 other field diffs across 18,879
+     leaves; sheet/token parity 52/52. Mutation-pinned (ladder revert → 6 fails; sheet write
+     restored → 9 fails). ENGINE (F5) + adversaries REBUILD + ⟳ Sync Adversaries. Bench rows
+     83-1 … 83-6; 83-2/83-3 BLOCKED-ON-DEPLOY. R-56 moved to EDHA_RULINGS.md §K.7 — the doc now
+     has NO open ruling, which tests/pm-state.test.js pins. Item 82's default is now 5 ft. -->
 
 **Why:** R-56 was answered 2026-09-06 (Edha AWA table for adversaries too, shipped PR #240) and
 REOPENED 2026-09-07 by item 79's close-out: Ben, verbatim, *"Honestly we should be using the
