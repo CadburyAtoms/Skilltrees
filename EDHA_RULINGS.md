@@ -209,75 +209,7 @@ that was waiting on it. A ruling is not done until the thing it decides has actu
 
 *(R-55 — the sheet's three budget chips all read spent/total — ANSWERED 2026-09-06, moved to §K.)*
 
-**R-56. Should adversaries use the Edha Senses Range table too, or keep the cosmere ladder?** Fix
-pass E made PC sheets read the Edha table (`Character_Building_Rules.md` §Senses Range: AWA 0 → 10 ft,
-1 → 15, 2–3 → 20, 4 → 25, 5+ → 30), because the wizard preview already promised it, the PC's own
-token sight was already built off it, and the sheet was the only surface still showing the system's
-ceil(AWA/2) ladder [5, 10, 20, 50, 100, ∞]. **Adversaries were deliberately left alone** — they are a
-GM-facing surface, Ben is mid-session, and their tokens ship a flat **10 ft** default from the build
-rather than either table, so widening the change would have altered combat vision for every creature
-on the map to settle a PC bug. That leaves three different rules in play for three surfaces, which is
-one too many. Options: **(a)** extend the Edha table to adversary sheets AND their token sight, so
-one rule governs everything — *Recommended*, and it matches the 07-17c ruling that adversaries "use
-the same vision rules as players unless bespoke"; **(b)** leave adversaries on the system ladder and
-accept that a creature's Senses Range means something different from a PC's; **(c)** keep the flat
-10 ft build default as the adversary rule and say so, retiring the AWA link for them entirely. A
-block's explicit `senses` field stays the bespoke override under all three. Nothing is blocked on
-this — it only decides how far the fix reaches. *(Marathon 3, fix pass E.)*
-
-> **MEASURED 2026-07-28j (bench run 22) — it is worse than "three rules for three surfaces": the
-> three surfaces disagree about the SAME creature, and one of the three moves when you press a
-> button.** Read at whole-population scale, not on one token.
-> - **World actors: 5 ft.** All **47** adversaries in the world are AWA 0 → `senses.range.value`
->   **5**, `visionMode "sense"`, and token sight **exactly equals** Senses Range — **0** mismatches.
-> - **Pack: 10 ft.** All **52** pack adversaries ship `prototypeToken.sight.range` **10** against a
->   `senses.range.value` of **5** — **52 of 52** internally mismatched. So R-56's "flat 10 ft from
->   the build" is confirmed, and it is *only* on the token, never on the sheet.
-> - **⚠️ And `⟳ Sync from Pack` PUSHES the 10.** Observed live: a placed token hand-broken to sight 0
->   came back at **10** after one sync while its actor's Senses Range stayed **5**. So a *synced*
->   token sees 10 and a *freshly created* one sees 5 — the same creature, two numbers, decided by
->   whether anyone clicked sync.
-> - **Mechanism, so option (a) is a small change:** `edhaDeriveSheetStats` opens with
->   `if (actor?.type !== "character") return;` (~L16296) and **both** `preCreateActor` token-default
->   hooks do the same. The Edha table is character-only by one guard in three places, not by design
->   spread through the engine.
-> - **⛔ The "bespoke `senses` override stays" clause has no instance under any option:** **0 of 52**
->   pack and **0 of 47** world adversaries carry a `senses.range` override or `useOverride`. If that
->   escape hatch is meant to be real, one block needs to author it so it can be tested.
->
-> This also blocks a checklist row: `# Bench-results fixes` → "Adversary tokens see like PCs" asserts
-> **AWA 0 → 10 ft**, which no live world adversary can satisfy, and its ⚑ sibling asks whether 10 ft
-> *feels* wrong when 10 ft is not what is playing. Both wait on this ruling.
-> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) ONE rule — adversary sheets AND
-> token sight use the Edha AWA table.** Spec: drop the `type !== 'character'` guard for senses in
-> `edhaDeriveSheetStats` and both `preCreateActor` token-default hooks (~3 places); the flat 10 ft
-> pack token default goes (build emits sight = table(AWA), so pack sheet and token agree); author
-> ONE adversary block with an explicit `senses` override so the bespoke escape hatch is testable
-> (Ben did not pick which). ENGINE + BUILD/DATA → pack **REBUILD** (Ben's deploy) + a world bulk
-> sync (now authorised) → **item 55**. Unblocks the "Adversary tokens see like PCs" row (AWA 0 → 10
-> ft) and its ⚑ feel sibling.
-> **SHIPPED** in PR #240 (REBUILD + world bulk sync, bench-pending) — guard gone at all three engine
-> sites (+ the `ready` refresh sweep now resets adversaries too); the build's `advSensesRangeFt`
-> replaces the flat 10; the override block is **Briar-Gone Grove, `senses: 30`** (a rooted
-> grove-heart has no eyes and perceives through its own soil). Pins:
-> tests/adversary-senses.test.js:"R-56: an adversary at AWA 0 derives 10 ft on the sheet (was the
-> cosmere ladder's 5)" and siblings; scratch read-back: 52 pack adversaries, 1 changed (the Grove),
-> 51 unchanged at 10. Ben: rebuild + deploy + press ⟳ Sync Adversaries from Pack.
-> **REOPENED 2026-09-07 (Ben, dashboard), verbatim: "Honestly we should be using the cosmere
-> ladder for everyone. If that's a huge issue or rebuild let me know before changing."** This
-> reverses the direction R-56
-> shipped 2026-09-06 (the Edha AWA table for everyone) back toward the SYSTEM's own ladder for
-> everyone. **WAITING — nothing changed yet.** PM's scope, so Ben can decide before dispatch: the
-> Edha AWA table (0→10, 1→15, 2–3→20, 4→25, 5+→30 ft) is written into `senses.range.derived` for
-> every actor type by `edhaDeriveSheetStats` (ENGINE-ONLY to remove), the build stamps
-> prototype-token sight from the same table via `advSensesRangeFt` in `scripts/foundry-build.js`
-> (adversaries pack **REBUILD** to change), the character-creation wizard's preview promises the
-> table, `scripts/bench-setup-console.js` gives bench PCs their sight (R-2), and the docs
-> `Character_Building_Rules.md` §Senses Range + `docs/ACTOR_STAT_DERIVATION.md` + the tests
-> pinning `edhaSensesRangeFtFromAwa` all carry it. The system ladder is `[5, 10, 20, 50, 100, ∞]`
-> indexed by `ceil(AWA/2)`, so AWA 0 → 5 ft, 1–2 → 10 ft, 3–4 → 20 ft, 5 → 50 ft: stingier than the
-> Edha table at AWA 0–2, wider at 5+. Size M (ENGINE + adversaries REBUILD + wizard + docs +
-> tests) → **TODO item 83, lane H** — filed but held until Ben says go.
+*(R-56 — the cosmere senses ladder for every actor type — ANSWERED 2026-09-07, moved to §K.)*
 
 ---
 
@@ -1942,7 +1874,7 @@ re-read after it settles). Only the target number is a decision. *(Bench run 21.
 
 ---
 
-### K.7 — R-55 … F-1
+### K.7 — R-55 … R-56
 
 **R-55. The sheet's budget chips use two different meanings of "X / Y" — which is right?** On a
 correctly-built L1 PC (12 attribute points spent, 5 skill ranks spent, 2 of 4 talents taken) the
@@ -2000,3 +1932,108 @@ row whose expectation was built on 30 ft should be re-read.
 **F-2. Marathon 1 run 6's 2bX-5 PASS was recorded over a broken roll.** Its contest half is worth
 re-reading now that attribute contests demonstrably work (R-43).
 > **SETTLED 2026-09-07 (Ben, dashboard ✓ DONE on both of the day's pastes — the morning batch and 20:30): a flag, not a question, so there was nothing to answer; recorded and closed at item 96's review.** The 2bX-5 contest re-read, if anyone wants it, is a bench matter (a 🤖 row), not a ruling.
+
+**R-56. Should adversaries use the Edha Senses Range table too, or keep the cosmere ladder?** Fix
+pass E made PC sheets read the Edha table (`Character_Building_Rules.md` §Senses Range: AWA 0 → 10 ft,
+1 → 15, 2–3 → 20, 4 → 25, 5+ → 30), because the wizard preview already promised it, the PC's own
+token sight was already built off it, and the sheet was the only surface still showing the system's
+ceil(AWA/2) ladder [5, 10, 20, 50, 100, ∞]. **Adversaries were deliberately left alone** — they are a
+GM-facing surface, Ben is mid-session, and their tokens ship a flat **10 ft** default from the build
+rather than either table, so widening the change would have altered combat vision for every creature
+on the map to settle a PC bug. That leaves three different rules in play for three surfaces, which is
+one too many. Options: **(a)** extend the Edha table to adversary sheets AND their token sight, so
+one rule governs everything — *Recommended*, and it matches the 07-17c ruling that adversaries "use
+the same vision rules as players unless bespoke"; **(b)** leave adversaries on the system ladder and
+accept that a creature's Senses Range means something different from a PC's; **(c)** keep the flat
+10 ft build default as the adversary rule and say so, retiring the AWA link for them entirely. A
+block's explicit `senses` field stays the bespoke override under all three. Nothing is blocked on
+this — it only decides how far the fix reaches. *(Marathon 3, fix pass E.)*
+
+> **MEASURED 2026-07-28j (bench run 22) — it is worse than "three rules for three surfaces": the
+> three surfaces disagree about the SAME creature, and one of the three moves when you press a
+> button.** Read at whole-population scale, not on one token.
+> - **World actors: 5 ft.** All **47** adversaries in the world are AWA 0 → `senses.range.value`
+>   **5**, `visionMode "sense"`, and token sight **exactly equals** Senses Range — **0** mismatches.
+> - **Pack: 10 ft.** All **52** pack adversaries ship `prototypeToken.sight.range` **10** against a
+>   `senses.range.value` of **5** — **52 of 52** internally mismatched. So R-56's "flat 10 ft from
+>   the build" is confirmed, and it is *only* on the token, never on the sheet.
+> - **⚠️ And `⟳ Sync from Pack` PUSHES the 10.** Observed live: a placed token hand-broken to sight 0
+>   came back at **10** after one sync while its actor's Senses Range stayed **5**. So a *synced*
+>   token sees 10 and a *freshly created* one sees 5 — the same creature, two numbers, decided by
+>   whether anyone clicked sync.
+> - **Mechanism, so option (a) is a small change:** `edhaDeriveSheetStats` opens with
+>   `if (actor?.type !== "character") return;` (~L16296) and **both** `preCreateActor` token-default
+>   hooks do the same. The Edha table is character-only by one guard in three places, not by design
+>   spread through the engine.
+> - **⛔ The "bespoke `senses` override stays" clause has no instance under any option:** **0 of 52**
+>   pack and **0 of 47** world adversaries carry a `senses.range` override or `useOverride`. If that
+>   escape hatch is meant to be real, one block needs to author it so it can be tested.
+>
+> This also blocks a checklist row: `# Bench-results fixes` → "Adversary tokens see like PCs" asserts
+> **AWA 0 → 10 ft**, which no live world adversary can satisfy, and its ⚑ sibling asks whether 10 ft
+> *feels* wrong when 10 ft is not what is playing. Both wait on this ruling.
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) ONE rule — adversary sheets AND
+> token sight use the Edha AWA table.** Spec: drop the `type !== 'character'` guard for senses in
+> `edhaDeriveSheetStats` and both `preCreateActor` token-default hooks (~3 places); the flat 10 ft
+> pack token default goes (build emits sight = table(AWA), so pack sheet and token agree); author
+> ONE adversary block with an explicit `senses` override so the bespoke escape hatch is testable
+> (Ben did not pick which). ENGINE + BUILD/DATA → pack **REBUILD** (Ben's deploy) + a world bulk
+> sync (now authorised) → **item 55**. Unblocks the "Adversary tokens see like PCs" row (AWA 0 → 10
+> ft) and its ⚑ feel sibling.
+> **SHIPPED** in PR #240 (REBUILD + world bulk sync, bench-pending) — guard gone at all three engine
+> sites (+ the `ready` refresh sweep now resets adversaries too); the build's `advSensesRangeFt`
+> replaces the flat 10; the override block is **Briar-Gone Grove, `senses: 30`** (a rooted
+> grove-heart has no eyes and perceives through its own soil). Pins:
+> tests/adversary-senses.test.js:"R-56: an adversary at AWA 0 derives 10 ft on the sheet (was the
+> cosmere ladder's 5)" and siblings; scratch read-back: 52 pack adversaries, 1 changed (the Grove),
+> 51 unchanged at 10. Ben: rebuild + deploy + press ⟳ Sync Adversaries from Pack.
+> **REOPENED 2026-09-07 (Ben, dashboard), verbatim: "Honestly we should be using the cosmere
+> ladder for everyone. If that's a huge issue or rebuild let me know before changing."** This
+> reverses the direction R-56
+> shipped 2026-09-06 (the Edha AWA table for everyone) back toward the SYSTEM's own ladder for
+> everyone. **WAITING — nothing changed yet.** PM's scope, so Ben can decide before dispatch: the
+> Edha AWA table (0→10, 1→15, 2–3→20, 4→25, 5+→30 ft) is written into `senses.range.derived` for
+> every actor type by `edhaDeriveSheetStats` (ENGINE-ONLY to remove), the build stamps
+> prototype-token sight from the same table via `advSensesRangeFt` in `scripts/foundry-build.js`
+> (adversaries pack **REBUILD** to change), the character-creation wizard's preview promises the
+> table, `scripts/bench-setup-console.js` gives bench PCs their sight (R-2), and the docs
+> `Character_Building_Rules.md` §Senses Range + `docs/ACTOR_STAT_DERIVATION.md` + the tests
+> pinning `edhaSensesRangeFtFromAwa` all carry it. The system ladder is `[5, 10, 20, 50, 100, ∞]`
+> indexed by `ceil(AWA/2)`, so AWA 0 → 5 ft, 1–2 → 10 ft, 3–4 → 20 ft, 5 → 50 ft: stingier than the
+> Edha table at AWA 0–2, wider at 5+. Size M (ENGINE + adversaries REBUILD + wizard + docs +
+> tests) → **TODO item 83, lane H** — filed but held until Ben says go.
+> **ANSWERED (final) 2026-09-07 21:51 (Ben, chat), verbatim: "Cosmere ladder for everyone."**
+> This supersedes both earlier positions — the 2026-09-06 phone tap for **(a)** (extend the Edha AWA
+> table to adversaries, shipped in PR #240) and, before that, fix pass E's move of PC sheets onto the
+> Edha table at all. Ben's phone tap of 2026-09-07 17:25 re-affirmed (a); the chat answer six hours
+> later is the later and explicit one and wins. **The answer is effectively option (d), which the
+> menu never listed: the cosmere system's OWN ladder `[5, 10, 20, 50, 100, ∞]` indexed by
+> `ceil(AWA/2)` for EVERY actor type** — AWA 0 → 5 ft, 1–2 → 10, 3–4 → 20, 5–6 → 50, 7–8 → 100,
+> 9+ → ∞. The bespoke escape hatch is unchanged and still has exactly one instance:
+> **Briar-Gone Grove, `senses: 30`**.
+> **SHIPPED** in PR #313 (**ENGINE, F5** + adversaries **REBUILD** + ⟳ Sync Adversaries — item 83).
+> The shape of the fix is what makes it small: the system's own
+> `CommonActorDataModel.prepareSecondaryDerivedData` (cosmere-rpg 2.1.0 `index.js:8455-8457`,
+> `SENSES_RANGES` / `awarenessToSensesRange` at `:8534-8538`) **already writes exactly this ladder
+> into `senses.range.derived` for both actor models** — `CharacterActorDataModel` supers into it
+> (`:17628`) and `AdversaryActorDataModel` (`:25877`) inherits it untouched. So the sheet half is
+> the **removal** of `edhaDeriveSheetStats`'s Edha-table write, not a re-tabling: the engine now
+> writes nothing at all to senses, and the system's number — which reads AWA as `value + bonus`,
+> which the Edha copy never did — stands on every sheet. What did have to be re-tabled is the three
+> surfaces the system does *not* derive: `edhaSensesRangeFtFromAwa` (the token-sight stamp and the
+> `preCreateActor` / `updateActor` hooks), the build's `sensesRangeFtFromAwa` / `advSensesRangeFt`
+> (prototype-token sight in the pack), and `scripts/bench-setup-console.js`'s R-2 bench-PC sight
+> (AWA 2: **20 → 10 ft**). The wizard preview follows the same helper and renders the ladder's top
+> rung as **∞** rather than `Number.MAX_SAFE_INTEGER` (the wizard's attribute cap above level 1 is
+> 99, so AWA 9 is reachable there).
+> **Measured:** the adversaries pack rebuild moves **51 of 52** prototype tokens from `sight.range`
+> **10 → 5**; Briar-Gone Grove stays **30** on both sheet and token; a full leaf-level diff of the
+> two scratch builds (18,879 leaves) shows **no other field difference** but build timestamps. Pack
+> sheet/token parity — R-56 (a)'s invariant — holds **52/52**: 51 blocks carry no override and the
+> system derives 5 for them, the Grove carries 30 on both.
+> **What Ben's existing actors need:** an **F5 alone** fixes every SHEET (PC and adversary — the
+> system re-derives on the next prepare, and the `ready` sweep re-renders open sheets). A token's
+> stored `sight.range` is persisted data and does **not** move on F5: adversaries are re-stamped by
+> the pack REBUILD + **⟳ Sync Adversaries from Pack**, and existing **PC** tokens need
+> `edha.fixPcTokens()` from the GM console (or any AWA edit, which re-fires the `updateActor`
+> watcher). Bench PCs are re-stamped by the next `bench-setup-console.js` run.

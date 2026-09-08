@@ -164,6 +164,25 @@ At L7 with STR 0: HP = 39. With STR included: **HP at L7 = 39 + 2·STR**.
 | 4 | 25 ft |
 | 5–6 | 30 ft |
 
+> ⚠️ **SUPERSEDED IN PLAY — the table above is no longer what Foundry derives.** Kept verbatim as
+> the historical Edha rule, because several docs, tests and checklist rows cite it by line.
+>
+> **The live rule is the cosmere system's own Senses ladder, for every actor type** — PCs,
+> adversaries, everything: `[5, 10, 20, 50, 100, ∞]` ft indexed by `ceil((AWA value + bonus) / 2)`.
+>
+> | AWA | 0 | 1–2 | 3–4 | 5–6 | 7–8 | 9+ |
+> |---|---|---|---|---|---|---|
+> | Range | 5 ft | 10 ft | 20 ft | 50 ft | 100 ft | ∞ |
+>
+> History: the table above was Edha canon and was applied to PC sheets on 2026-07-28 (fix pass E),
+> then extended to adversary sheets and token sight on 2026-09-06 (`EDHA_RULINGS.md` R-56 (a),
+> TODO item 55, PR #240). Ben **reversed the direction on 2026-09-07** — verbatim, *"Cosmere ladder
+> for everyone"* (R-56 final, TODO item 83) — so the engine now writes nothing to Senses Range at
+> all and the system's derivation stands. A creature may still carry an explicit override (the one
+> authored instance is the adversary block **Briar-Gone Grove, 30 ft**). **Movement (20 + 5·SPD) is
+> now the only derived stat where Edha still departs from the system.** See
+> `docs/ACTOR_STAT_DERIVATION.md` §3b for the full table of who changed when.
+
 ---
 
 ## Level progression and resources
@@ -200,7 +219,7 @@ Underlying formulas:
 
 ### Leyline Rank Scaling, or [Die], [Size], [Attunement Range]
 
-Many Leyline talents scale with ranks in the given Leyline skill and is referenced in talent descriptions as `[Die]`, `[Size]�, or �[Attunement Range]�:
+Many Leyline talents scale with ranks in the given Leyline skill and is referenced in talent descriptions as `[Die]`, `[Size]�, or �[Attunement Range]�:
 
 | Rank | Die | Size | Attunement Range
 |---|---|

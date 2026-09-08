@@ -3366,6 +3366,12 @@ the Cannon rolled `(2)d(2*3+2)+2+2 = 10` energy and applied exactly **8** throug
       the 🤖 row above. Related: rulings menu — bench PCs carry the same 10 ft and it nearly caused
       a false PASS.)*
       ✅ **retired 2026-09-07 on Ben's dashboard mark — PARTIAL: We should update the bestiary lore-forge skill to have it create appropriate stats for each adversary. Then the actor tokens for the adversaries will inhereit the correct sight range, speed, etc.**
+      ⚠️ **The 10 ft this row argues about is GONE — superseded 2026-09-07 by item 83 (R-56
+      final, Ben: *"Cosmere ladder for everyone"*). An attribute-less adversary at AWA 0 now reads
+      **5 ft** on the sheet and on its token, from the cosmere system's own
+      `[5,10,20,50,100,∞][ceil(AWA/2)]` ladder. Ben's "give adversaries real stats" note is the
+      actual answer to the dial: an adversary block with a real AWA gets a real range for free.
+      Re-tests are the 83-* rows below.**
 *(**Shortsword on the CURRENT Raider** — RETIRED on evidence 2026-07-28j, bench run 22, together with
 "Stale duplicates healed" above (same actors, one pass, as the row asked). ℹ️ **There are FOUR Corvaine
 Raider actors in the world, not five** — both rows say five; the count is stale. All four read
@@ -3378,6 +3384,55 @@ in this run by Spearing Beak. The sync half and the GM-lore/ownership half were 
       Bench — Chaos (Void Sense, `edha-sense-reveal` status `omen`) rendered an Omen-marked target
       it could not otherwise see, while an identically-obscured UNMARKED control stayed invisible —
       the mark was the only difference.)*
+
+### Item 83 — R-56 reversal: the cosmere senses ladder for every actor type (2026-09-07 — **ENGINE (F5)** + adversaries **REBUILD** + **⟳ Sync Adversaries from Pack**)
+
+Ben's final answer on R-56, verbatim: *"Cosmere ladder for everyone."* The engine no longer writes
+Senses Range at all — the cosmere system's own `[5, 10, 20, 50, 100, ∞][ceil((AWA value+bonus)/2)]`
+derivation stands for every actor type — and the token-sight stamp, the pack build, the wizard
+preview and `scripts/bench-setup-console.js` were all moved onto the same ladder. **AWA 0 is 5 ft
+now, not 10.** Proven repo-side (52-doc pack read-back: 51 tokens 10 → 5, Briar-Gone Grove unchanged
+at 30, no other field changed; mutation-pinned in `tests/adversary-senses.test.js`,
+`tests/derived-stats.test.js`, `tests/engine-helpers.test.js`). These rows are what only a live
+table can settle.
+
+- [ ] 🤖 **83-1 — a PC sheet reads the ladder after F5 alone (ENGINE, no rebuild).** On any bench PC,
+      set AWA 0 and read `system.senses.range.value` on the sheet: **5** (it read 10 under R-56 (a)).
+      Then walk AWA 1→5 and confirm **10 · 10 · 20 · 20 · 50**. Read the DerivedValueField's
+      **`.value`**, never `.derived`/`.override`. Also confirm no ⟳ Sync was needed for the sheet
+      number — the sheet is derived every prepare, which is the claim the delta makes.
+- [ ] 🤖 **83-2 — an adversary SHEET and its TOKEN both read 5 ft at AWA 0 (needs the REBUILD).**
+      **BLOCKED-ON-DEPLOY until Ben's next `deploy-to-foundry.bat` run + ⟳ Sync Adversaries from
+      Pack.** After it: pick any adversary with no `senses` override, read `system.senses.range.value`
+      (**5**) and its prototype `sight.range` (**5**), then a placed token's `sight.range` (**5**).
+      R-56 (a)'s parity invariant is the point — sheet and token must agree, for every creature.
+      Spot-check at whole-population scale if the run has room: **51 of 52** pack adversaries should
+      read 5/5, one (the Grove) 30/30, and **0** mismatched.
+- [ ] 🤖 **83-3 — the bespoke escape hatch survives: Briar-Gone Grove still sees 30 ft.**
+      **BLOCKED-ON-DEPLOY (same rebuild + sync as 83-2).** The Grove's sheet `senses.range.value`
+      must be **30** with `useOverride true`, its token `sight.range` **30**, and its
+      `senses.range.derived` **5** underneath — i.e. the override wins over the system's ladder
+      exactly as it won over the Edha table. This is the only authored instance of the override, so
+      it is the only live test the clause has.
+- [ ] 🤖 **83-4 — the creation wizard's preview promises the ladder, and the finished sheet agrees.**
+      ENGINE-only (F5). Run ＋ Edha Character to the attributes step and read the **Senses** cell of
+      the live derived-stat panel at AWA 0 (**5 ft**), 2 (**10 ft**) and 4 (**20 ft**); Finish and
+      confirm the sheet reads the same number. (Bench run 21's original failure was preview-vs-sheet
+      drift, so the *agreement* is the row, not just the number.) If the run can push AWA to 9, the
+      cell should render **∞**, not `9007199254740991 ft`.
+- [ ] 🤖 **83-5 — the bench roster script stamps PC sight from the ladder (R-2 re-pin).**
+      `scripts/bench-setup-console.js` now writes `prototypeToken.sight.range` **10** for its AWA-2
+      PCs (was 20 under the Edha table). Re-run the roster setup and confirm all bench PC prototypes
+      read **10**, and that a token created fresh during the run inherits 10. ⚠️ Known from bench run
+      30: the prototype write does **not** reach tokens already on the map — those keep their stored
+      range until re-placed or re-stamped, so read prototypes and freshly-placed tokens, not the
+      standing ones, or record both.
+- [ ] 🤖 **83-6 — what an EXISTING PC token needs (the deploy claim).** The delta claims F5 alone
+      moves every SHEET but not a stored token `sight.range`, and that `edha.fixPcTokens()` (or any
+      AWA edit) is what re-stamps an existing PC's tokens. Verify both halves on one PC: after F5 the
+      sheet moved and the placed token did not; after `edha.fixPcTokens()` from the GM console the
+      prototype **and** the placed token read the ladder's number. If that is wrong, the delta's
+      deploy instructions to Ben are wrong.
 
 ---
 
