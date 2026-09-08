@@ -20,9 +20,12 @@ Sessions still **cannot launch Foundry** — everything here requires Ben to hav
   never activate/deactivate). Do NOT create a bench scene. The setup script places tokens
   only when its `PLACE_TOKENS` flag is set, offset from an `ORIGIN` you choose after looking
   at the map for a clear area.
-- **Player characters "Tem parinaem" and "Soggy Bottom" are UNTOUCHABLE** — never write to
-  them, never target-and-fire effects that write to them, never delete their tokens. The
-  setup script hard-throws on their names.
+- **Player characters "Tem parinaem" and "Soggy Bottom" may be REFRESHED, never EDITED
+  (PM-R17)** — a REFRESH (the sheet's `⟳ Sync Talents` button, or an equivalent pull of their
+  owned talent copies from the pack) is allowed for the PM and for agents; a hand write to
+  their stats, items, or text, or an effect aimed at writing to them, is still forbidden. The
+  setup script hard-throws on their names — it guards its own write paths, which are edits,
+  never refreshes.
 
 **The next run's paste-ready prompt lives in `docs/BENCH_NEXT_RUN.md`** — each run ends by
 rewriting that file for the run after it (run 1 → run 2 = White+Blue, run 3 = Black+Green,
@@ -38,10 +41,17 @@ then the deities, Heroic, and the non-tree console-runnable sections).
 
 1. **Join:** browser pane → `http://localhost:30000/join` → select **Bench** → Join (no
    password). If Bench shows as already active, STOP and ask Ben to free the session.
-2. **Health check** (console via javascript_tool), screenshot as the run header:
+2. **Refresh the two PCs (PM-R17; this run's "step zero" on the board):** as the GM `Bench`
+   user, open each of "Tem parinaem" and "Soggy Bottom"'s own sheet and click
+   **`⟳ Sync Talents`** — this is the only touch these two documents get from a bench run
+   (never `bench-setup-console.js`'s write paths, which are for the bench roster, not these
+   two). Record the toast text for each PC in the run's delta/report. This is a REFRESH (pull
+   their owned talent copies from the pack), never a hand edit to their stats, items, or
+   text — see hard rule 1.
+3. **Health check** (console via javascript_tool), screenshot as the run header:
    `game.world.id === "edha"`, `game.modules.get("edha-content")?.active`, `!!globalThis.edha`,
    `game.system.version`. Mismatch → stop, report.
-3. **Setup:** run `scripts/bench-setup-console.js` in the console. Verify the summary log
+4. **Setup:** run `scripts/bench-setup-console.js` in the console. Verify the summary log
    (⚠ lines = talents/paths not found — fix the script, don't improvise). Since 2026-09-05 (item
    37) the setup script also detects and repairs ORPHAN tokens on the Playtest Map — a token whose
    `actorId` resolves to no actor — printing a ⚠ per orphan and a final `orphans: N repaired, M
@@ -51,16 +61,16 @@ then the deities, Heroic, and the non-tree console-runnable sections).
    "Playtest Map", find a clear area, set `ORIGIN` + `PLACE_TOKENS = true`, and run once more to
    place the bench tokens. Never *activate/deactivate* a scene (it yanks every connected client,
    including Ben's).
-4. **Run order:** `BENCH — Engine-wide` first — if **2bA-7** (the edit-round-trip) fails, stop
+5. **Run order:** `BENCH — Engine-wide` first — if **2bA-7** (the edit-round-trip) fails, stop
    the whole run and report; everything rides on it. Then White → Blue → Black → Red → Green,
    the ten deities, Heroic, then whatever non-tree sections are console-runnable.
-5. **Per row:** select the section's bench PC token → target via
+6. **Per row:** select the section's bench PC token → target via
    `game.user.targets` API (`token.setTarget(true, {releaseOthers: true})`) → trigger by the
    row's own verb (sheet click for UI rows; `actor.items.getName("X").use()` for mechanics) →
    read the outcome off `#chat-log` (read_page) + assert actor/status state in the console →
    screenshot the card for evidence. Combat-timing rows: create a Combat on the bench scene,
    run it, and **delete that combat afterward**.
-6. **Multi-client rows — use `PlayerBench`.** Ben created a dedicated passwordless **player**
+7. **Multi-client rows — use `PlayerBench`.** Ben created a dedicated passwordless **player**
    (non-GM) user named **`PlayerBench`** (id `yF9LHvfhB7otsHYY`) on 2026-07-27 for exactly this.
    Never join as `Gamemaster`, `Amertron`, `Laustarr` or `Spidercam` — those are Ben's and his
    players'. The procedure, as actually executed in run 13:
@@ -86,7 +96,7 @@ then the deities, Heroic, and the non-tree console-runnable sections).
    machine. If `PlayerBench` owns *many* PCs, a belief ledger holding both a fooled and a seer
    observer resolves to "sees through" and you are testing the wrong thing. Narrow ownership to
    a **single** PC per direction and re-read — that is how run 13 proved both directions.
-7. **Recording (per run, one commit):**
+8. **Recording (per run, one commit):**
    - **PASS (mechanical):** the row is retired — deleted from `EDHA_FOUNDRY_TEST_CHECKLIST.md`
      and named (with its 2b id) in that run's single dated handoff delta (in `docs/handoff-changelog/2026-MM.md`), one line of evidence
      each ("card text quoted / status applied and expired / screenshot in session transcript").
@@ -96,7 +106,7 @@ then the deities, Heroic, and the non-tree console-runnable sections).
      and anything needing Ben's judgment stay ⚑ untouched for Ben.
    - Then: rebuild the dashboard, run the gates, commit (`Bench run N (<tree>): X retired on
      evidence, Y fails -> test-pass-fixes`).
-8. **Safety rules (hard):**
+9. **Safety rules (hard):**
    - **The WHOLE Playtest Map scene is the bench's** (widened 2026-09-06, Ben, phone, via the relay
      session, verbatim: "Feel free to remove that combat — the entire scene is for your use at
      this point" — was "only create/modify inside the 'Edha Bench' folders"). Adversaries needed as
@@ -104,8 +114,9 @@ then the deities, Heroic, and the non-tree console-runnable sections).
      campaign tokens. The zero-combatant combat `BerbNeuXp4iKduef` may be deleted by the next run —
      record it in the run's world diff as authorised.
    - No deletion of any OTHER pre-existing document. The two PC actor **documents** (Tem parinaem,
-     Soggy Bottom) keep their hard guard unchanged — only their **tokens on the Playtest Map scene**
-     fall under the scene licence above, never the actor documents themselves.
+     Soggy Bottom) stay refresh-only under **PM-R17** — only their **tokens on the Playtest Map
+     scene** fall under the scene licence above, never a hand edit to the actor documents
+     themselves.
    - No world-settings changes, no scene activation, DEPLOY STATE untouched (agent findings
      go in the delta; only Ben advances DEPLOY STATE).
    - Chat spam is accepted (Ben's call, 07-26); end the run noting Ben may flush bench chat.
@@ -117,7 +128,7 @@ then the deities, Heroic, and the non-tree console-runnable sections).
    - **Log out — always the last in-world act:** `game.logOut()` in the console, then confirm
      the join screen lists Bench as selectable again. A session that ends without this HOLDS
      the Bench slot and the next session cannot join (run 1 did exactly that; Ben had to ask).
-9. **Pilot rule:** the first run executes ONE tree (Red — smallest live surface, the
+10. **Pilot rule:** the first run executes ONE tree (Red — smallest live surface, the
    migration's pipe-cleaner talents) end-to-end through recording, delta, dashboard, commit —
    then scale to multi-tree runs.
 
@@ -129,7 +140,7 @@ then the deities, Heroic, and the non-tree console-runnable sections).
   consults whatever combat the tracker was already viewing (Ben usually has a campaign combat
   open; this masqueraded as a Breaking Point "stale tally / never re-arms" bug for half of
   run 1). Never modify Ben's combat; only view yours.
-- **Foundry v13 selectors:** there is no `#chat-log` — read `ol.chat-log` (step 5's `#chat-log`
+- **Foundry v13 selectors:** there is no `#chat-log` — read `ol.chat-log` (step 6's `#chat-log`
   is v12 phrasing).
 - **Hidden-pane animation freeze:** when the browser pane isn't displayed, the PIXI ticker never
   runs, so token moves hang mid-animation on the agent's client (document `_source` is correct;

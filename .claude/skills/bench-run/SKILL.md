@@ -12,8 +12,14 @@ running (if `http://localhost:30000` doesn't answer, stop and ask).
 
 ## Hard rules (before anything else)
 
-1. **Player characters "Tem parinaem" and "Soggy Bottom" are UNTOUCHABLE.** Never write to
-   them, never aim an effect that writes to them, never move or delete their tokens.
+1. **Player characters "Tem parinaem" and "Soggy Bottom" may be REFRESHED, never EDITED
+   (PM-R17).** Ben, chat 2026-09-07 21:51 ET, verbatim: *"I'm rewriting the previous rule
+   regarding Tem parinaem and Soggy Bottom — they get refreshes from you and agents but no
+   edits to stats, items, or text."* A REFRESH — the sheet's `⟳ Sync Talents` button, or an
+   equivalent pull of their owned talent copies from the pack — is allowed for the PM and for
+   agents. An EDIT — any hand write to their stats, items, or text, or any effect aimed at
+   writing to them — is still forbidden. Their tokens are governed by hard rule 4 (the PM-R13
+   scene licence), unchanged by this ruling.
 2. **Never type a password.** The `Bench` user is passwordless by design; if Foundry asks for
    a password anyway, stop and tell Ben — do not enter one.
 3. **Never activate/deactivate a scene** (it yanks every connected client). *View* scenes.
@@ -24,10 +30,11 @@ running (if `http://localhost:30000` doesn't answer, stop and ask).
    `BerbNeuXp4iKduef` may be deleted by the next run — record it in the run's world diff as
    authorised. Bench-created combats/walls/measured-templates are still yours to clean up and MUST
    be cleaned up when they are NOT part of the licensed scene cleanup above. The two PC actor
-   **documents** (Tem parinaem, Soggy Bottom, hard rule 1) keep their hard guard unchanged — only
-   their **tokens on the Playtest Map scene** fall under this new licence, never the actor
-   documents themselves. (**R-8**, `EDHA_RULINGS.md`) Bench setups keep rosters to the actors
-   under test — do not widen a roster beyond what the run's checklist section needs.
+   **documents** (Tem parinaem, Soggy Bottom, hard rule 1) stay refresh-only under **PM-R17** —
+   only their **tokens on the Playtest Map scene** fall under this new licence, never a hand
+   edit to the actor documents themselves. (**R-8**, `EDHA_RULINGS.md`) Bench setups keep
+   rosters to the actors under test — do not widen a roster beyond what the run's checklist
+   section needs.
 5. **DEPLOY STATE is Ben's** — your findings go in the handoff delta (top of the current month's `docs/handoff-changelog/2026-MM.md`), never there.
 6. **Snapshot ids, flags AND EFFECTS before creating anything, and delete only what the
    snapshot proves you created.** A run that snapshotted ids and flags but not effects swept
