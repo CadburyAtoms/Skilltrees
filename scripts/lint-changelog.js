@@ -29,6 +29,13 @@
  * them to satisfy a lint). The loose pattern still catches the real failure this gate exists
  * for: a heading swallowed by an edit, or a line that isn't a heading at all.
  *
+ * REFACTORED for TODO_REPO_HYGIENE item 102: `checkMonthFile(dir, file)` and `lint(dir)` are now
+ * exported and side-effect-free (no shared mutable error array, no process.exit), so
+ * `tests/handoff-split.test.js` can run the same check against a fixture directory. `main()` (the
+ * CLI entry, run only when this file is executed directly) keeps the exact exit codes and console
+ * output this file always had. Also uses the shared `MARKER` from `scripts/lib/changelog-rules.js`
+ * instead of its own copy, so it cannot drift from what `handoff-split.js` writes.
+ *
  * Zero dependencies, five files (the month files + README.md), milliseconds. Exit 0 quietly on
  * success; exit 1 with every mismatch named on failure.
  *
@@ -38,14 +45,10 @@
 const fs = require("fs");
 const path = require("path");
 const { REPO_ROOT } = require("./lib/paths");
+const { MARKER } = require("./lib/changelog-rules");
 
 const DIR = path.join(REPO_ROOT, "docs", "handoff-changelog");
-const README_PATH = path.join(DIR, "README.md");
-const MARKER = "<!-- handoff-split: dated deltas begin below this line, verbatim, newest first -->";
 const MONTH_FILE_RE = /^2026-\d{2}\.md$/;
-
-const errors = [];
-const err = (m) => errors.push(m);
 
 // A valid dated-delta heading — see the file header for why this is looser than one fixed dash
 // position.
@@ -55,9 +58,9 @@ function isDeltaHeading(line) {
   return i !== -1 && i + 3 < line.length;
 }
 
-function monthFiles() {
-  if (!fs.existsSync(DIR)) return [];
-  return fs.readdirSync(DIR).filter((f) => MONTH_FILE_RE.test(f)).sort();
+function monthFiles(dir) {
+  if (!fs.existsSync(dir)) return [];
+  return fs.readdirSync(dir).filter((f) => MONTH_FILE_RE.test(f)).sort();
 }
 
 // | [`2026-09.md`](2026-09.md) | 115 | 2026-09-04 → 2026-09-08 |
@@ -70,41 +73,47 @@ function readmeCounts(text) {
 }
 
 // "The dated session deltas of 2026-09 (115 deltas, 2026-09-04 → 2026-09-08), newest first,"
-function headerCount(text, file) {
+function headerCount(text, file, errors) {
   const m = text.match(/\((\d+)\s+deltas?,/);
   if (!m) {
-    err(`${file}: header line missing the "(N deltas, ..." count — cannot verify`);
+    errors.push(`${file}: header line missing the "(N deltas, ..." count — cannot verify`);
     return null;
   }
   return Number(m[1]);
 }
 
-// Returns the heading count below the marker, or undefined if a structural check already
-// failed (marker cardinality, the required blank line, or the first heading's shape).
-function checkMonthFile(file) {
-  const full = path.join(DIR, file);
+/**
+ * Runs the per-file structural + count checks for one month file and returns
+ * `{ count, errors }`: `count` is the number of "## " headings below the marker (or `undefined`
+ * if a structural check already failed — marker cardinality, the required blank line, or the
+ * first heading's shape, in which case the count comparison cannot run) and `errors` is every
+ * message found, in the exact wording the CLI has always printed.
+ */
+function checkMonthFile(dir, file) {
+  const errors = [];
+  const full = path.join(dir, file);
   const text = fs.readFileSync(full, "utf8");
   const lines = text.split("\n");
 
   const markerIdxs = [];
   lines.forEach((l, i) => { if (l === MARKER) markerIdxs.push(i); });
   if (markerIdxs.length !== 1) {
-    err(`${file}: marker line found ${markerIdxs.length} time(s) (expected exactly 1)`);
-    return undefined;
+    errors.push(`${file}: marker line found ${markerIdxs.length} time(s) (expected exactly 1)`);
+    return { count: undefined, errors };
   }
   const mi = markerIdxs[0];
 
   if (lines[mi + 1] !== "") {
-    err(`${file}: no blank line between the marker (line ${mi + 1}) and what follows it — insert exactly one`);
-    return undefined;
+    errors.push(`${file}: no blank line between the marker (line ${mi + 1}) and what follows it — insert exactly one`);
+    return { count: undefined, errors };
   }
   if (lines[mi + 2] === "") {
-    err(`${file}: more than one blank line after the marker (line ${mi + 1}) — exactly one is required`);
-    return undefined;
+    errors.push(`${file}: more than one blank line after the marker (line ${mi + 1}) — exactly one is required`);
+    return { count: undefined, errors };
   }
   if (!isDeltaHeading(lines[mi + 2] || "")) {
-    err(`${file}:${mi + 3}: first line after the marker's blank line is not a dated delta heading: ${JSON.stringify(lines[mi + 2] || "")}`);
-    return undefined;
+    errors.push(`${file}:${mi + 3}: first line after the marker's blank line is not a dated delta heading: ${JSON.stringify(lines[mi + 2] || "")}`);
+    return { count: undefined, errors };
   }
 
   const headingLines = [];
@@ -113,42 +122,57 @@ function checkMonthFile(file) {
   }
   for (const h of headingLines) {
     if (!isDeltaHeading(h.text)) {
-      err(`${file}:${h.n}: heading is not a valid dated delta ("## YYYY-MM-DD ... — ..."): ${h.text}`);
+      errors.push(`${file}:${h.n}: heading is not a valid dated delta ("## YYYY-MM-DD ... — ..."): ${h.text}`);
     }
   }
 
   const count = headingLines.length;
-  const hCount = headerCount(text, file);
+  const hCount = headerCount(text, file, errors);
   if (hCount !== null && hCount !== count) {
-    err(`${file}: header says ${hCount} deltas, but ${count} "## " heading(s) are below the marker`);
+    errors.push(`${file}: header says ${hCount} deltas, but ${count} "## " heading(s) are below the marker`);
   }
-  return count;
+  return { count, errors };
 }
 
-function main() {
-  if (!fs.existsSync(README_PATH)) {
-    err(`README.md not found at ${README_PATH}`);
+/**
+ * Runs every check against `dir` (a `docs/handoff-changelog`-shaped directory: month files plus
+ * a `README.md` index) and returns the flat list of error messages — empty means clean. No
+ * console output, no process.exit; `main()` below is the only thing that prints/exits.
+ */
+function lint(dir) {
+  const errors = [];
+  const readmePath = path.join(dir, "README.md");
+
+  if (!fs.existsSync(readmePath)) {
+    errors.push(`README.md not found at ${readmePath}`);
   }
-  const readmeText = fs.existsSync(README_PATH) ? fs.readFileSync(README_PATH, "utf8") : "";
+  const readmeText = fs.existsSync(readmePath) ? fs.readFileSync(readmePath, "utf8") : "";
   const readmeMap = readmeCounts(readmeText);
 
-  const files = monthFiles();
+  const files = monthFiles(dir);
   if (!files.length) {
-    err(`no docs/handoff-changelog/2026-MM.md files found in ${DIR}`);
+    errors.push(`no docs/handoff-changelog/2026-MM.md files found in ${dir}`);
   }
 
   for (const file of files) {
-    const count = checkMonthFile(file);
+    const { count, errors: fileErrors } = checkMonthFile(dir, file);
+    errors.push(...fileErrors);
     if (count === undefined) continue; // already erred (marker / blank-line / heading-shape)
     if (!readmeMap.has(file)) {
-      err(`README.md: no index row found for ${file}`);
+      errors.push(`README.md: no index row found for ${file}`);
       continue;
     }
     const rCount = readmeMap.get(file);
     if (rCount !== count) {
-      err(`README.md: index says ${file} has ${rCount} deltas, but ${count} "## " heading(s) are below its marker`);
+      errors.push(`README.md: index says ${file} has ${rCount} deltas, but ${count} "## " heading(s) are below its marker`);
     }
   }
+
+  return { errors, fileCount: files.length };
+}
+
+function main() {
+  const { errors, fileCount } = lint(DIR);
 
   if (errors.length) {
     for (const e of errors) console.error(`✗ ${e}`);
@@ -156,7 +180,9 @@ function main() {
     process.exit(1);
     return;
   }
-  console.log(`✓ lint-changelog: ${files.length} month files, blank-line + heading-shape + count checks clean.`);
+  console.log(`✓ lint-changelog: ${fileCount} month files, blank-line + heading-shape + count checks clean.`);
 }
 
-main();
+if (require.main === module) main();
+
+module.exports = { lint, checkMonthFile, isDeltaHeading, monthFiles, readmeCounts, MARKER };

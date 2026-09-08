@@ -34,13 +34,13 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const { MARKER, MONTH_INSERT_RULE_LINES, README_RULE_LINES } = require('./lib/changelog-rules');
 
 const ROOT = path.resolve(__dirname, '..');
 const HANDOFF = path.join(ROOT, 'EDHA_FOUNDRY_HANDOFF.md');
 const OUT_DIR = path.join(ROOT, 'docs', 'handoff-changelog');
 const REFERENCE_RE = /^## Reference — table of contents/m;
 const DELTA_RE = /^## (2026-\d\d)-\d\d/;
-const MARKER = '<!-- handoff-split: dated deltas begin below this line, verbatim, newest first -->';
 
 const sha = (s) => crypto.createHash('sha256').update(s, 'utf8').digest('hex');
 
@@ -86,13 +86,17 @@ function monthHeader(month, blocks) {
     '  and the reference owes a fix.',
     '- **A new delta goes at the TOP of the current month\'s file**, directly under the marker line',
     '  (iron rule 5). Do not add one to the handoff itself.',
+    ...MONTH_INSERT_RULE_LINES,
     '- **Finding a delta\'s original commit:** `git log --follow` on this file cannot reach it — the',
     '  deltas left a file that still exists, and follow only tracks renames. Use the pickaxe on the',
     '  old path instead: `git log -S"<delta title>" -- EDHA_FOUNDRY_HANDOFF.md` (the first commit',
     '  listed, oldest, is where the delta was written). The index is `README.md` beside this file.',
     '',
     MARKER,
-  ].join('\n') + '\n';
+    // Exactly one blank line between the marker and the first delta heading (item 100 /
+    // lint-changelog.js's structural check) — the extra trailing '\n' below is that blank line;
+    // the block bodies concatenated after this header already start with a "## " heading.
+  ].join('\n') + '\n\n';
 }
 
 function readmeText(monthMap, archiveNote) {
@@ -110,10 +114,7 @@ function readmeText(monthMap, archiveNote) {
     '`scripts/handoff-split.js` (TODO_REPO_HYGIENE item 19b, ruling PM-R1); this index is regenerated',
     'by the same script — do not hand-edit the table.',
     '',
-    '**Rule (iron rule 5):** a new delta goes at the TOP of the current month\'s file, directly under',
-    'its marker line — never into `EDHA_FOUNDRY_HANDOFF.md`, which is now the cold-start REFERENCE',
-    'alone (what is true today). A delta\'s original commit: `git log -S"<delta title>" --',
-    'EDHA_FOUNDRY_HANDOFF.md` (`--follow` cannot track a block that left a file that still exists).',
+    ...README_RULE_LINES,
     '',
     '| File | Deltas | Date range |',
     '|---|---|---|',
@@ -130,17 +131,26 @@ const ARCHIVE_NOTE =
   'wall on 2026-07-06 (item 7). They are condensed duplicates of full deltas in `2026-06.md` / `2026-07.md`, ' +
   'not deltas themselves, so they stay in their own file rather than being bucketed by month.';
 
-function main() {
-  const args = new Set(process.argv.slice(2));
-  const dry = args.has('--dry-run');
-  const hashOnly = args.has('--hash');
+/**
+ * The move + regenerate logic, with the handoff/output paths injectable so
+ * `tests/handoff-split.test.js` can run it against a fixture handoff and a temp directory
+ * instead of this repo's real `EDHA_FOUNDRY_HANDOFF.md` / `docs/handoff-changelog/`. The CLI
+ * (`main()` below) calls this with the real paths, so its behavior is unchanged.
+ */
+function run(opts = {}) {
+  const {
+    handoffPath = HANDOFF,
+    outDir = OUT_DIR,
+    dry = false,
+    hashOnly = false,
+  } = opts;
 
   // Existing month files (re-run / --hash case).
   const monthMap = new Map();
-  if (fs.existsSync(OUT_DIR)) {
-    for (const f of fs.readdirSync(OUT_DIR)) {
+  if (fs.existsSync(outDir)) {
+    for (const f of fs.readdirSync(outDir)) {
       const m = f.match(/^(2026-\d\d)\.md$/);
-      if (m) monthMap.set(m[1], readMonthFile(path.join(OUT_DIR, f)));
+      if (m) monthMap.set(m[1], readMonthFile(path.join(outDir, f)));
     }
   }
 
@@ -148,9 +158,9 @@ function main() {
   let movedCount = 0;
   let newHandoff = null;
   if (!hashOnly) {
-    const handoff = fs.readFileSync(HANDOFF, 'utf8');
+    const handoff = fs.readFileSync(handoffPath, 'utf8');
     const refAt = handoff.search(REFERENCE_RE);
-    if (refAt === -1) throw new Error('EDHA_FOUNDRY_HANDOFF.md has no `## Reference — table of contents` line');
+    if (refAt === -1) throw new Error(`${handoffPath} has no \`## Reference — table of contents\` line`);
     const above = handoff.slice(0, refAt);
     const reference = handoff.slice(refAt);
     const { pre, blocks } = splitBlocks(above);
@@ -176,14 +186,24 @@ function main() {
   const total = months.reduce((n, m) => n + monthMap.get(m).length, 0);
 
   if (!hashOnly && !dry) {
-    fs.mkdirSync(OUT_DIR, { recursive: true });
+    fs.mkdirSync(outDir, { recursive: true });
     for (const m of months) {
       const blocks = monthMap.get(m);
-      fs.writeFileSync(path.join(OUT_DIR, `${m}.md`), monthHeader(m, blocks) + blocks.map((b) => b.body).join(''));
+      fs.writeFileSync(path.join(outDir, `${m}.md`), monthHeader(m, blocks) + blocks.map((b) => b.body).join(''));
     }
-    fs.writeFileSync(path.join(OUT_DIR, 'README.md'), readmeText(monthMap, ARCHIVE_NOTE));
-    fs.writeFileSync(HANDOFF, newHandoff);
+    fs.writeFileSync(path.join(outDir, 'README.md'), readmeText(monthMap, ARCHIVE_NOTE));
+    fs.writeFileSync(handoffPath, newHandoff);
   }
+
+  return { monthMap, months, removed, movedCount, newHandoff, bodies, total, dry, hashOnly };
+}
+
+function main() {
+  const args = new Set(process.argv.slice(2));
+  const dry = args.has('--dry-run');
+  const hashOnly = args.has('--hash');
+
+  const { monthMap, months, removed, movedCount, newHandoff, bodies, total } = run({ dry, hashOnly });
 
   if (!hashOnly) {
     console.log(`removed from handoff : ${movedCount} delta headings, ${removed.length} chars`);
@@ -197,4 +217,15 @@ function main() {
   }
 }
 
-main();
+if (require.main === module) main();
+
+module.exports = {
+  run,
+  splitBlocks,
+  readMonthFile,
+  dateRange,
+  monthHeader,
+  readmeText,
+  ARCHIVE_NOTE,
+  MARKER,
+};
