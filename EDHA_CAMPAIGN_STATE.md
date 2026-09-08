@@ -92,11 +92,23 @@ Ben 2026-07-16.)*
 
 ## 7. Next session
 
-**Session 1 is ready pending Ben's ⚑ batch** (run-sheet §10): battle-map art (Palewater
-shallows, Withervale) and the **required W23 adversary tooling round** (script stats →
-adversaries.json → foundry-build → the edha-adversaries Actor folder with working talents;
-deliverable "deploy and refresh, the folder is ready"), capitals from the 29 city markers,
-and the **day-5 ferry-pair town stop** (ruling 154 — Ben: *"needs some GAS"*; run-sheet §10.2).
+**Session 1's blocker list is stale — three of four are resolved, one is Ben's ⚑.** The **W23
+adversary tooling round is DONE**: the bestiary folders (script stats → `data/adversaries.json` →
+`foundry-build` → the edha-adversaries Actor folder with working talents) shipped in July 2026 and
+have been bench-tested through September (see `EDHA_FOUNDRY_TEST_CHECKLIST.md`'s bestiary
+sections). The **capitals are DONE**: `source-materials/maps/thyrcross.map.json` carries 35
+cities, 5 of them capital-tagged (Maelstrand, Kragmoot, Goldenport, and the Ashkar pair
+Raskeld/Kaelmouth). The **battle-map art** (Palewater shallows, Withervale) is still Ben's ⚑,
+whenever he gets to it. That leaves one open content piece: the **day-5 ferry-pair town stop**
+(ruling 154 — Ben: *"needs some GAS"*; run-sheet §10.2), which needs a session-forge pass.
+Because the run-sheet predates the
+July–September engine, bestiary, and rulings work, a **session-forge refresh sitting with Ben
+precedes session 1** — it is interactive (his ruling gates), not an overnight item — and is
+**deferred on his own note, phone inbox 2026-09-07 21:53 ET, verbatim**: *"We will revisit the
+art and session building loop later."* (Ben also asked, phone inbox 21:54 ET: *"What else is
+needed from me here? is an updated session forge needed?"* — the answer: nothing is owed from him
+right now except the two battle maps' art, whenever he gets to it; yes, a session-forge refresh is
+needed, and it sits waiting for when he wants to run it.)
 *(Settled 2026-07-16: ALL placeholder names confirmed — Roek, Ashmark, Joskin, Sorrel,
 Warden Selm — and the bruising-not-lethal statblock tuning approved.)* *(The Harrow beat was resolved 2026-07-13 — mercy-plot cut; the 2026-07-14 review
 round added the river beats, the mistheron fight, strict ruling-34 rot, the writ ambush, and
