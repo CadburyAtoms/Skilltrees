@@ -3434,3 +3434,32 @@ the site either way. Deploy class per the answer.
 
 **PM:** lane R (b) / B (a) · model sonnet (b) / opus (a) · size S · deps **R-92** · verify: the
 census + the pin. Filed 2026-09-08 00:3x from item 70's report.
+
+## 102. [ ] `scripts/handoff-split.js` regenerates the month headers and the README from its own template — a re-run would drop item 100's blank line, rule sentences, and true counts
+
+**Why:** item 100 (PR #311, 2026-09-08) put exactly one blank line between each month file's
+marker line and its first delta heading, wrote the "insert as heading, body, blank line; bump the
+month header count and the README row" rule into each month file's prose and into
+`docs/handoff-changelog/README.md`, and set the counts to the real heading totals — all gated by
+the new `scripts/lint-changelog.js`. The worker checked `scripts/handoff-split.js` and reported,
+not fixed: its `monthHeader()` / `readMonthFile()` (~L60–84) and its README template know nothing
+about any of that — a re-run (the next time a delta lands in `EDHA_FOUNDRY_HANDOFF.md` by mistake,
+or when a new month starts) would strip the blank line and the rule sentences and rewrite the
+counts from its own tally, and the gate would fail on the result.
+
+**What to do:** make the split script's templates emit the blank line and both rule sentences
+verbatim (single source: export the sentences from `lint-changelog.js` or a tiny shared module so
+the gate and the generator cannot disagree); compute each month's count and date range from the
+real headings when it regenerates a header or the README table; refactor `lint-changelog.js` so
+its per-file check is callable (`checkMonthFile` / a `lint(dir)` returning errors) and pin: a
+fixture handoff run through the split yields month files + README that pass the gate's check;
+then the idempotence proof on the real repo — `node scripts/handoff-split.js` → `git status
+--short` empty and `node scripts/lint-changelog.js` green — stated in the PR. Do not change any
+delta text (verbatim history).
+
+**Done when:** the fixture pin exists and fails if either template drops the blank line or a rule
+sentence (mutation); the real-repo re-run is idempotent and the gate stays green; `node
+scripts/gates.js` green. TOOLING-only.
+
+**PM:** lane R · model sonnet · size S · deps — · verify: the mutation + the idempotence diff +
+gates. Found by item 100; filed 2026-09-08 00:5x.
