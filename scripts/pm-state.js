@@ -15,6 +15,8 @@
  *                                                     see LIVE OVERLAY below) the board cannot
  *                                                     carry while a worker holds the checkout
  *   node scripts/pm-state.js --usage-json u.json      fold `pm-usage.py --last --json` output in
+ *   node scripts/pm-state.js --runlog-rows N          cap the PROJECTED run log to N rows (0 = all;
+ *                                                     default 60 — see RUN LOG CAP below)
  *   node scripts/pm-state.js --inject docs/pm-board-mobile.html --out page.html
  *                                                     embed the state into the page's
  *                                                     <script id="pm-state"> slot (the at-rest
@@ -36,6 +38,15 @@
  * `stamp` is not the index's is ignored, so a shrinking chunk count leaves harmless orphans.
  * `manifest.json` carries the `writes` array for one Artifact write_db batch. Push these whenever a
  * source doc changed (any merge) — the stamp says whether they did.
+ *
+ * RUN LOG CAP (added 2026-09-08, item 99 — the run log alone was 154 KB of a 259 KB `pm/state`
+ * document and the store's 256 KiB cap refused the push). `runLog` in the output is a PROJECTION:
+ * the most recent `--runlog-rows` rows (default 60, newest last, as parsed; 0 = all), plus
+ * `runLogTotal` (the full parsed row count) and `runLogFrom` (the date of the oldest row still in
+ * the projection) so the page can say "last N of M". `dispatches` (the budget math) and every
+ * per-item run-log lookup (e.g. the `running`-row worker synthesis above) always read the FULL
+ * parsed log before the cap is applied — only what ships to the store is capped, never what is
+ * computed from it.
  *
  * WHAT IT PARSES (by `## ` section heading, then by table header — never by row position):
  *   Queue (in order)       → queue[]      # · Item · Lane · Model · Size · Deps · Status · PR
@@ -105,6 +116,10 @@ const DOW_ORDER = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 // 256 KiB document cap, with room for the JSON envelope.
 const DASH_CHUNK_BYTES = 200 * 1024;
 const DASH_COLLECTION = "dash";
+// The run log ITSELF is projected (not chunked) into `pm/state`, so it gets its own cap — the
+// most recent this many rows ship by default; --runlog-rows overrides (0 = all). See RUN LOG CAP
+// in the header comment (item 99, 2026-09-08).
+const DEFAULT_RUNLOG_ROWS = 60;
 
 // ---- time -------------------------------------------------------------------
 
@@ -467,6 +482,15 @@ function parseBoard(md, opts = {}) {
   const win = inWindow(now, caps.windows, tz);
   const windowStatus = { open: win.open, changeAt: win.changeAt, nextOpenAt: win.open ? null : nextWindowOpen(now, caps.windows, tz) };
 
+  // dispatches (budget math) and any per-item run-log lookup (the workers synthesis above) already
+  // ran against the FULL parsed `runLog` above this line — only the copy that ships to the store
+  // is capped, from here down. See RUN LOG CAP in the header comment (item 99).
+  const dispatches = runLog.filter((r) => r.isDispatch && r.at).map((r) => ({ at: r.at, model: r.model, item: r.itemNo, pr: r.pr }));
+  const runlogRows = typeof opts.runlogRows === "number" && !Number.isNaN(opts.runlogRows) ? opts.runlogRows : DEFAULT_RUNLOG_ROWS;
+  const runLogTotal = runLog.length;
+  const projectedRunLog = runlogRows > 0 && runLog.length > runlogRows ? runLog.slice(-runlogRows) : runLog;
+  const runLogFrom = projectedRunLog.length ? projectedRunLog[0].date : null;
+
   return {
     schema: 1,
     generatedAt: now,
@@ -488,8 +512,10 @@ function parseBoard(md, opts = {}) {
     benOnly,
     inbox,
     foundry,
-    runLog,
-    dispatches: runLog.filter((r) => r.isDispatch && r.at).map((r) => ({ at: r.at, model: r.model, item: r.itemNo, pr: r.pr })),
+    runLog: projectedRunLog,
+    runLogTotal,
+    runLogFrom,
+    dispatches,
     statusVocab: STATUS_VOCAB,
   };
 }
@@ -574,12 +600,17 @@ function injectPage(html, state, shards) {
 // ---- CLI ---------------------------------------------------------------------------
 
 function parseArgs(argv) {
-  const a = { board: path.join(REPO_ROOT, "docs", "PM_BOARD.md"), live: null, usageJson: null, out: null, inject: null, dashboardDir: null };
+  const a = { board: path.join(REPO_ROOT, "docs", "PM_BOARD.md"), live: null, usageJson: null, runlogRows: null, out: null, inject: null, dashboardDir: null };
   for (let i = 0; i < argv.length; i++) {
     const k = argv[i], v = argv[i + 1];
     if (k === "--board") { a.board = v; i++; }
     else if (k === "--live") { a.live = v; i++; }
     else if (k === "--usage-json") { a.usageJson = v; i++; }
+    else if (k === "--runlog-rows") {
+      const n = Number(v);
+      if (v === undefined || Number.isNaN(n)) throw new Error(`pm-state: --runlog-rows wants a number (got ${v})`);
+      a.runlogRows = n; i++;
+    }
     else if (k === "--out") { a.out = v; i++; }
     else if (k === "--inject") { a.inject = v; i++; }
     else if (k === "--dashboard-dir") { a.dashboardDir = v; i++; }
@@ -607,9 +638,9 @@ function writeDashboardDir(dir, shards) {
 function main(argv) {
   const a = parseArgs(argv);
   if (a.help) {
-    // Lines 2..38 of this file: the usage synopsis plus the DASHBOARD block that explains
-    // --dashboard-dir. Keep the end in step with the header if either block grows.
-    process.stdout.write(fs.readFileSync(__filename, "utf8").split("\n").slice(1, 38).join("\n") + "\n");
+    // Lines 2..49 of this file: the usage synopsis plus the DASHBOARD and RUN LOG CAP blocks that
+    // explain --dashboard-dir and --runlog-rows. Keep the end in step with the header if any block grows.
+    process.stdout.write(fs.readFileSync(__filename, "utf8").split("\n").slice(1, 49).join("\n") + "\n");
     return 0;
   }
   const md = fs.readFileSync(a.board, "utf8");
@@ -618,7 +649,7 @@ function main(argv) {
     const u = JSON.parse(fs.readFileSync(a.usageJson, "utf8"));
     live.usage = Object.assign({}, live.usage || {}, { lastSession: u, measuredAt: new Date().toISOString() });
   }
-  const state = parseBoard(md, { live });
+  const state = parseBoard(md, { live, runlogRows: a.runlogRows });
   let shards = null;
   if (a.inject || a.dashboardDir) shards = buildDashboardShards({ now: state.generatedAt });
   if (a.dashboardDir) {
@@ -634,7 +665,7 @@ function main(argv) {
   } else {
     out = JSON.stringify(state, null, 2) + "\n";
   }
-  if (a.out) { fs.writeFileSync(a.out, out); process.stderr.write(`pm-state: wrote ${a.out} (${state.queue.length} queue rows, ${state.runLog.length} run-log rows, ${state.workers.length} worker(s), window ${state.windowStatus.open ? "open" : "closed"}${shards ? `, dashboard @${shards.index.stamp}` : ""})\n`); }
+  if (a.out) { fs.writeFileSync(a.out, out); process.stderr.write(`pm-state: wrote ${a.out} (${state.queue.length} queue rows, ${state.runLog.length} of ${state.runLogTotal} run-log rows, ${state.workers.length} worker(s), window ${state.windowStatus.open ? "open" : "closed"}${shards ? `, dashboard @${shards.index.stamp}` : ""})\n`); }
   else process.stdout.write(out);
   return 0;
 }
@@ -643,7 +674,7 @@ module.exports = {
   parseBoard, injectState, injectSlot, injectPage, shardDashboard, buildDashboardShards, writeDashboardDir,
   wallToIso, tzOffsetMinutes, parseQueue, parseRunLog, parseRulings, parseInbox, parseBenOnly,
   parseFoundry, parseCaps, parseWindowEntry, parseWindowsSpec, inWindow, nextWindowOpen, DEFAULT_WINDOWS,
-  STATUS_VOCAB, DASH_CHUNK_BYTES, DASH_COLLECTION,
+  STATUS_VOCAB, DASH_CHUNK_BYTES, DASH_COLLECTION, DEFAULT_RUNLOG_ROWS,
 };
 
 if (require.main === module) {
