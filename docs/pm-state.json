@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-08T04:32:24.615Z",
+  "generatedAt": "2026-09-08T04:55:15.462Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "136c1093e1",
-    "commit": "982c998",
+    "hash": "7136b5cee5",
+    "commit": "de6a328",
     "branch": "main",
     "repo": "CadburyAtoms/Skilltrees"
   },
@@ -43,7 +43,7 @@
   },
   "pm": {
     "status": "awake",
-    "note": "00:32 ET (09-08): item 70 merged (#308) and pushed live at 00:31 — a creature that cannot regain HP no longer gains it from regen ticks, the decay drain-back, or burst heals; press F5 when Foundry is back (it has been DOWN since your 21:52 bat run). Running: item 83 (opus): the cosmere senses ladder for everyone, per your R-56 answer — engine half pushed by me when it merges, the adversaries half needs your next bat run + ⟳ Sync Adversaries. Filed: item 100 (a changelog hygiene gate — two workers displaced a delta heading tonight) and item 101 / ruling R-92 (a fourth ungated heal writer item 70 found: Mantle of the Aspirant's redirect unwind — gate it, or declare it the exception? default: exception). Bench run 44 waits for Foundry.",
+    "note": "00:55 ET (09-08): item 100 merged (#311) — a changelog gate now catches a displaced delta heading and a stale index (12 gates). Item 70 is live (pushed 00:31) — press F5 when Foundry is back; it has been DOWN since your 21:52 bat run. Running: item 83 (opus): the cosmere senses ladder for everyone per your R-56 answer — I push the engine half when it merges, the adversaries half needs your next bat run + ⟳ Sync Adversaries. Queued: item 102 (sonnet, the split script learns the new rule). Waiting on you: R-92 (a fourth ungated heal writer — Mantle of the Aspirant's redirect unwind; default: declare it the exception) and Foundry for bench run 44.",
     "waitingOn": "Foundry relaunch + F5 (bench 44); R-92 (default: declare the exception)",
     "nextWakeAt": null,
     "session": "2026-09-07 20:30 ET hand-started (Ben's third paste) — session of record, overnight shift"
@@ -1016,7 +1016,19 @@
     {
       "pos": 96,
       "item": "100",
-      "title": "Changelog hygiene gate — two workers tonight REPLACED the top delta heading instead of inserting above it (bench 44a #298 → item 94's heading; item 99 #309 → item 98's), and docs/handoff-changelog/README.md's index has drifted (94 vs the file's 97 vs the real count). Fix: one blank line after the marker + the rule written where workers read it; scripts/lint-changelog.js in gates.js (marker shape, heading pattern, README/header counts = heading counts, two mutations). TOOLING-only. Filed 00:3x",
+      "title": "Changelog hygiene gate — two workers tonight REPLACED the top delta heading instead of inserting above it (bench 44a #298 → item 94's heading; item 99 #309 → item 98's), and docs/handoff-changelog/README.md's index has drifted (94 vs the file's 97 vs the real count). Fix: one blank line after the marker + the rule written where workers read it; scripts/lint-changelog.js in gates.js (marker shape, heading pattern, README/header counts = heading counts, two mutations). TOOLING-only. Filed 00:3x. Dispatched 00:35 (sonnet, worktree pm/100-changelog-gate), parallel to 83. Merged 00:54 after review — scripts/lint-changelog.js (marker once + one blank line + a dated heading; every heading shaped ## YYYY-MM-DD … — …, loosened for the verbatim DELTA / 28m suffixes; heading count = the month header's count = the README row) wired into gates.js after lint-refs (12 gates now); the blank line inserted in all four month files; the rule written in each file's prose, the README and the work-item skill, one phrase in CLAUDE.md; README index 94 → 115 for 2026-09 (the real count), the month header likewise; both mutations shown failing. One PM correction: the new obligation — bump the month header count and the README row per delta — was not written anywhere workers read, so it was added to the skill, the four month files and the README before merge. Found: handoff-split.js would strip the blank line and the rule on a re-run → item 102. Gates 12/12; CI green on 871992a. 3.3M / 159 turns / 17 min",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "S",
+      "deps": "#310 ✓",
+      "status": "merged",
+      "statusDetail": null,
+      "pr": 311
+    },
+    {
+      "pos": 98,
+      "item": "102",
+      "title": "scripts/handoff-split.js regenerates the month headers and the README from its own template — a re-run would drop item 100's blank line, rule sentences and true counts, and the new lint-changelog gate would fail. Make the template emit them and compute counts/date ranges from the real headings; an idempotence proof (re-run on the real repo → empty git diff) and a fixture pin through the gate's own check. TOOLING-only. Found by item 100; filed 00:5x",
       "lane": "R",
       "model": "sonnet",
       "size": "S",
@@ -1310,34 +1322,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-06",
-      "time": "22:12",
-      "at": "2026-09-07T02:12:00.000Z",
-      "item": "Item 61 (R-42 map polygons) — work-item via fable-worker, worktree",
-      "itemNo": null,
-      "model": "fable (medium)",
-      "isDispatch": false,
-      "duration": "12 min, 90 turns",
-      "weighted": "1.7M",
-      "weightedM": 1.7,
-      "outcome": "merged 22:30 after review (gh mergedAt 02:30:43Z), no trailers; the PM merged main once more (changelog + its README + dashboard + codex regenerated), re-ran lint_map.py on the branch (1 WARN left, the pre-existing audit-S3 one). The asset is not yet live — next sync push after bench 41. Found: seven cityless islets, a lint blind spot for wrong-nation resolution, the tree-audit footer on a passing run",
-      "pr": 256
-    },
-    {
-      "date": "2026-09-06",
-      "time": "22:31",
-      "at": "2026-09-07T02:31:00.000Z",
-      "item": "Wave 8: items 74 (build single-scope TDZ), 75 (nine executor no-ops), 76 (ruling-card defaults + R-80 / R-81 §I stubs) — work-item via fable-worker, worktrees",
-      "itemNo": null,
-      "model": "fable ×3",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "the three follow-ups filed tonight; all S, disjoint files (build script / engine source 53 / dashboard parser + rulings). Bench 41 still driving",
-      "pr": null
-    },
     {
       "date": "2026-09-06",
       "time": "22:33",
@@ -2149,9 +2133,37 @@
       "weightedM": null,
       "outcome": "running",
       "pr": null
+    },
+    {
+      "date": "2026-09-08",
+      "time": "00:35",
+      "at": "2026-09-08T04:35:00.000Z",
+      "item": "Dispatched item 100 (sonnet, worktree pm/100-changelog-gate — the changelog hygiene gate + README index fix) the minute #310 merged; parallel to 83 on disjoint files. Foundry still DOWN at 00:34",
+      "itemNo": "310",
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "running",
+      "pr": null
+    },
+    {
+      "date": "2026-09-08",
+      "time": "00:35",
+      "at": "2026-09-08T04:35:00.000Z",
+      "item": "Item 100 (changelog hygiene gate + README index fix) — work-item, worktree",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "17 min, 159 turns",
+      "weighted": "3.3M",
+      "weightedM": 3.3,
+      "outcome": "merged 00:54 after review, no trailers; CLEAN (83 had not merged); gates 12/12 in the worktree (the new lint-changelog included), CI green on 871992a. One PM correction on the branch: the gate's count check obliges every delta to bump the month header and the README row, and nothing told workers so — added to the work-item skill, the four month files and the README. Found: handoff-split.js would undo the rule on a re-run → item 102 (sonnet S). TOOLING-only",
+      "pr": 311
     }
   ],
-  "runLogTotal": 217,
+  "runLogTotal": 219,
   "runLogFrom": "2026-09-06",
   "dispatches": [
     {
@@ -2723,6 +2735,18 @@
       "model": "opus",
       "item": null,
       "pr": null
+    },
+    {
+      "at": "2026-09-08T04:35:00.000Z",
+      "model": "sonnet",
+      "item": "310",
+      "pr": null
+    },
+    {
+      "at": "2026-09-08T04:35:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 311
     }
   ],
   "statusVocab": [
