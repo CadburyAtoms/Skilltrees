@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-08T04:18:44.265Z",
+  "generatedAt": "2026-09-08T04:32:24.615Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "9021a2effb",
-    "commit": "646fede",
-    "branch": "pm/99-pm-state-runlog-cap",
+    "hash": "136c1093e1",
+    "commit": "982c998",
+    "branch": "main",
     "repo": "CadburyAtoms/Skilltrees"
   },
   "timeZone": "America/New_York",
@@ -43,24 +43,24 @@
   },
   "pm": {
     "status": "awake",
-    "note": "00:03 ET (09-08): the Opus count reset — item 70 is running (opus, worktree): R-83 (a), the three heal writers that still bypass the no-healing mark get gated at their emitters; engine-only, pushed live when it merges. Next: item 83 (cosmere ladder for everyone — engine push + an adversaries REBUILD on your next bat run), then bench run 44 — but Foundry has been DOWN since your 21:52 bat run (probed 22:20, 22:25, 23:26, 00:01). Relaunch it when you can; the bench waits for it, the engine items do not.",
-    "waitingOn": "Foundry relaunch (bench 44)",
+    "note": "00:32 ET (09-08): item 70 merged (#308) and pushed live at 00:31 — a creature that cannot regain HP no longer gains it from regen ticks, the decay drain-back, or burst heals; press F5 when Foundry is back (it has been DOWN since your 21:52 bat run). Running: item 83 (opus): the cosmere senses ladder for everyone, per your R-56 answer — engine half pushed by me when it merges, the adversaries half needs your next bat run + ⟳ Sync Adversaries. Filed: item 100 (a changelog hygiene gate — two workers displaced a delta heading tonight) and item 101 / ruling R-92 (a fourth ungated heal writer item 70 found: Mantle of the Aspirant's redirect unwind — gate it, or declare it the exception? default: exception). Bench run 44 waits for Foundry.",
+    "waitingOn": "Foundry relaunch + F5 (bench 44); R-92 (default: declare the exception)",
     "nextWakeAt": null,
     "session": "2026-09-07 20:30 ET hand-started (Ben's third paste) — session of record, overnight shift"
   },
   "workers": [
     {
-      "item": "70",
-      "title": "R-83 (a) — gate the three ungated heal writers at their emitters (regen tick, redirect heal-back, burst heal hits); Raise Dead's path stays ungated",
+      "item": "83",
+      "title": "R-56 — the cosmere senses ladder for every actor type (engine derive, build token-sight stamp, wizard preview, bench PCs, docs, tests); R-56 recorded and moved to §K",
       "model": "opus",
-      "size": "S",
-      "lane": "B",
-      "branch": "pm/70-heal-cut-emitters",
-      "startedAt": "2026-09-08T04:03:00Z",
-      "agent": "Work item 70",
+      "size": "M",
+      "lane": "H",
+      "branch": "pm/83-cosmere-senses-ladder",
+      "startedAt": "2026-09-08T04:32:00Z",
+      "agent": "Work item 83",
       "phase": "working",
       "pr": null,
-      "note": "ENGINE-ONLY → F5; three 🤖 rows for bench 44; Opus 1 of 3 for 09-08"
+      "note": "ENGINE (F5, PM push) + adversaries REBUILD + ⟳ Sync (Ben's next bat); Opus 2 of 3 for 09-08"
     }
   ],
   "usage": null,
@@ -788,14 +788,14 @@
     {
       "pos": 63,
       "item": "70",
-      "title": "R-83's fix — gate the three ungated hea writers at their emitters (edha-regen turn-end, the decay lifesteal heal-back, edhaBurstDetonate's heal hits); edhaApplyBurstResults stays ungated (R-10); the drop-to-one family pin's gate-call count raised with a declaration; three 🤖 rows. ENGINE-ONLY; found by fix pass 8. Ben 09-07: \"I'm not sure what this means and will want the pm to give me good examples when we get here in chat\" — examples given in chat 10:1x and recorded in the ruling (item 79); still waiting for (a)/(b) — answered (a) 09-07 17:11. Dispatched 2026-09-08 00:03 (opus, worktree pm/70-heal-cut-emitters; Opus 1 of 3 for 09-08)",
+      "title": "R-83's fix — gate the three ungated hea writers at their emitters (edha-regen turn-end, the decay lifesteal heal-back, edhaBurstDetonate's heal hits); edhaApplyBurstResults stays ungated (R-10); the drop-to-one family pin's gate-call count raised with a declaration; three 🤖 rows. ENGINE-ONLY; found by fix pass 8. Ben 09-07: \"I'm not sure what this means and will want the pm to give me good examples when we get here in chat\" — examples given in chat 10:1x and recorded in the ruling (item 79); still waiting for (a)/(b) — answered (a) 09-07 17:11. Dispatched 2026-09-08 00:03 (opus, worktree pm/70-heal-cut-emitters; Opus 1 of 3 for 09-08). Merged 00:29 after review — the three writers gated at their emitters (07-edha-owner-list.js regen tick, 45-death.js decay heal-back, 39-burst-execution…js per-target burst heal), edhaApplyBurstResults asserted ungated (R-10), census 2 → 5 declared, nine headless pins in tests/heal-cut-emitters.test.js each shown failing under a one-line reversion, cards built from the delivered amount; ENGINE_INDEX + handoff §10 corrected; four 🤖 rows 70-1 … 70-4 (a burst row with the Raise Dead control); R-83 SHIPPED, held for the bench. Found: a FOURTH ungated writer (Mantle of the Aspirant's redirect unwind, 47-power.js ~L306) → R-92 / item 101. The PM merged main (changelog 70 above 99; dashboard), gates 11/11 (1060 tests), CI green on bb9b843. Pushed live 00:31 (hash match; Foundry down — F5 when it relaunches). 4.8M / 203 turns / 23 min. ENGINE-ONLY",
       "lane": "B",
       "model": "opus",
       "size": "S",
       "deps": "R-83 ✓ (a, 09-07 17:11)",
-      "status": "running",
+      "status": "bench-pending",
       "statusDetail": null,
-      "pr": null
+      "pr": 308
     },
     {
       "pos": 64,
@@ -1004,13 +1004,37 @@
     {
       "pos": 77,
       "item": "83",
-      "title": "R-56 REVERSAL — the cosmere senses ladder for everyone (drop the Edha AWA table from edhaDeriveSheetStats, advSensesRangeFt in the build → adversaries REBUILD, the wizard preview, bench-setup PC sight, Character_Building_Rules.md §Senses Range, ACTOR_STAT_DERIVATION.md, the edhaSensesRangeFtFromAwa pins). Scoped in chat 09-07; Ben asked to be told before changing — GO 21:51 (Ben, chat, verbatim: *\"Cosmere ladder for everyone.\"*); the worker also records R-56 ANSWERED in EDHA_RULINGS.md and moves it to §K. ENGINE (PM push) + adversaries REBUILD (Ben's next bat). Tonight's second Opus dispatch, after item 70 (00:00 ET)",
+      "title": "R-56 REVERSAL — the cosmere senses ladder for everyone (drop the Edha AWA table from edhaDeriveSheetStats, advSensesRangeFt in the build → adversaries REBUILD, the wizard preview, bench-setup PC sight, Character_Building_Rules.md §Senses Range, ACTOR_STAT_DERIVATION.md, the edhaSensesRangeFtFromAwa pins). Scoped in chat 09-07; Ben asked to be told before changing — GO 21:51 (Ben, chat, verbatim: *\"Cosmere ladder for everyone.\"*); the worker also records R-56 ANSWERED in EDHA_RULINGS.md and moves it to §K. ENGINE (PM push) + adversaries REBUILD (Ben's next bat). Tonight's second Opus dispatch, after item 70 (00:00 ET). Dispatched 00:32 (opus, worktree pm/83-cosmere-senses-ladder; Opus 2 of 3 for 09-08)",
       "lane": "H",
       "model": "opus",
       "size": "M",
       "deps": "R-56 ✓ (chat 21:51)",
+      "status": "running",
+      "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 96,
+      "item": "100",
+      "title": "Changelog hygiene gate — two workers tonight REPLACED the top delta heading instead of inserting above it (bench 44a #298 → item 94's heading; item 99 #309 → item 98's), and docs/handoff-changelog/README.md's index has drifted (94 vs the file's 97 vs the real count). Fix: one blank line after the marker + the rule written where workers read it; scripts/lint-changelog.js in gates.js (marker shape, heading pattern, README/header counts = heading counts, two mutations). TOOLING-only. Filed 00:3x",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "S",
+      "deps": null,
       "status": "queued",
       "statusDetail": null,
+      "pr": null
+    },
+    {
+      "pos": 97,
+      "item": "101",
+      "title": "R-92 — Mantle of the Aspirant's redirect-unwind heal (47-power.js ~L306) is a hea writer outside the heal-cut gate, declared nowhere (found by item 70's sweep). (b) declare it the exception + a census line (sonnet S, DOCS + test) or (a) gate it like the other three (opus S, ENGINE-ONLY). Filed 00:3x",
+      "lane": "R/B",
+      "model": "sonnet/opus",
+      "size": "S",
+      "deps": "R-92 (Ben)",
+      "status": "blocked",
+      "statusDetail": "R-92",
       "pr": null
     },
     {
@@ -1220,14 +1244,14 @@
     {
       "pos": 95,
       "item": "99",
-      "title": "pm-state.js projects the WHOLE run log into pm/state — at 00:04 on 09-08 the phone document (259 KB JSON; run log 154 KB / 212 rows) was refused by the store's 256 KiB cap and the phone froze on the 22:21 state. Fix: project the last 60 rows + runLogTotal / runLogFrom, budget math and per-item lookups still from the full parsed log, --runlog-rows override, page header \"last N of M\", pinned under the cap with a mutation; regenerate the tracked state. TOOLING-only. Filed 00:1x",
+      "title": "pm-state.js projects the WHOLE run log into pm/state — at 00:04 on 09-08 the phone document (259 KB JSON; run log 154 KB / 212 rows) was refused by the store's 256 KiB cap and the phone froze on the 22:21 state. Fix: project the last 60 rows + runLogTotal / runLogFrom, budget math and per-item lookups still from the full parsed log, --runlog-rows override, page header \"last N of M\", pinned under the cap with a mutation; regenerate the tracked state. TOOLING-only. Filed 00:1x. Dispatched 00:07 (sonnet, worktree pm/99-pm-state-runlog-cap), parallel to 70. Merged 00:25 after review — parseBoard() caps the projected runLog to the newest 60 (--runlog-rows, 0 = all) with runLogTotal / runLogFrom; dispatches and the running-row lookup computed from the full log before the cap; page header \"last N of M\"; real board 263,291 → 149,475 compact bytes (the uncapped shape itself over the 262,144 cap); three pins, mutation shown failing; one PM correction (the delta had displaced item 98's changelog heading — restored); gates 11/11; CI green on 6f4e531. The phone state pushed at 00:27 (148 KB) and the page republished with the header.",
       "lane": "R",
       "model": "sonnet",
       "size": "S",
-      "deps": "this PR merged",
-      "status": "queued",
+      "deps": "#307 ✓",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 309
     }
   ],
   "rulings": [
@@ -1286,62 +1310,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-06",
-      "time": "22:17",
-      "at": "2026-09-07T02:17:00.000Z",
-      "item": "Engine pushed live (module-src-sync.js push) — Foundry was up (302) and still serving the 20:16 engine, i.e. Ben had not run the bat; every engine-only merge since (69, 68, 24, 55 / 56 engine halves, fix pass 9) went live on its own class",
-      "itemNo": null,
-      "model": "fable",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "served hash f2fb3e2d… = main at 53dd0bc, 6 in sync, 0 hand-edited, safety copy kept. The pack REBUILD stack is still Ben's bat; his Gamemaster client is two pushes behind until F5",
-      "pr": null
-    },
-    {
-      "date": "2026-09-06",
-      "time": "22:18",
-      "at": "2026-09-07T02:18:00.000Z",
-      "item": "Bench run 41 (registry smoke ×16, fix pass 9's four + 2bJ-10, the Verdict fold, the fix-pass-8 heal cards, the 55 / 56 engine halves; REBUILD rows stay blocked) — bench-run, worktree",
-      "itemNo": null,
-      "model": "opus",
-      "isDispatch": true,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "dispatched on f2fb3e2d…; told the next free ruling number is R-86 and that deltas go to the changelog now. Four workers in flight: bench 41, 71, 61, 44",
-      "pr": null
-    },
-    {
-      "date": "2026-09-06",
-      "time": "22:11",
-      "at": "2026-09-07T02:11:00.000Z",
-      "item": "Item 71 (registry leftovers) — work-item via fable-worker, worktree",
-      "itemNo": null,
-      "model": "fable (medium)",
-      "isDispatch": false,
-      "duration": "16 min, 106 turns",
-      "weighted": "1.8M",
-      "weightedM": 1.8,
-      "outcome": "merged 22:27 after review (gh mergedAt 02:27:00Z), no trailers, no bounce; the worker merged main (fix pass 9) into the sources and re-assembled itself. Its ENGINE-ONLY half (the derived console line + one no-op executor) is not yet live — held for bench 41's hash. Found: the foundry-build.js items single-scope TDZ crash → TODO 74; nine executor-less rows → TODO 75",
-      "pr": 257
-    },
-    {
-      "date": "2026-09-06",
-      "time": "22:12",
-      "at": "2026-09-07T02:12:00.000Z",
-      "item": "Item 44 (Ask: lines on open rulings) — work-item via fable-worker, worktree",
-      "itemNo": null,
-      "model": "fable (medium)",
-      "isDispatch": false,
-      "duration": "10 min, 88 turns",
-      "weighted": "1.5M",
-      "weightedM": 1.5,
-      "outcome": "merged 22:28 after review (gh mergedAt 02:28:41Z), no trailers; the PM merged main once more (two changelog deltas kept, split re-run). Item 43's parser had NO Ask: fallback, so the worker added the two-line fallback + pins (in scope by the \"Done when\"); 8 open rulings audited — 4 got an Ask: (R-48, R-81, R-82, R-83), 4 already asked. Found: RULING_DEFAULT_RE yields an EMPTY default for the bold-inline form (R-80 … R-85), and R-80 / R-81 say \"(§I)\" but live in §C → TODO 76",
-      "pr": 258
-    },
     {
       "date": "2026-09-06",
       "time": "22:12",
@@ -2125,9 +2093,65 @@
       "weightedM": null,
       "outcome": "board PR + dispatch",
       "pr": null
+    },
+    {
+      "date": "2026-09-08",
+      "time": "00:07",
+      "at": "2026-09-08T04:07:00.000Z",
+      "item": "Dispatched item 99 (sonnet, worktree pm/99-pm-state-runlog-cap — cap the projected run log so the phone document fits the 256 KiB store cap) the minute #307 merged; parallel to 70 on disjoint files",
+      "itemNo": "307",
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "running",
+      "pr": null
+    },
+    {
+      "date": "2026-09-08",
+      "time": "00:07",
+      "at": "2026-09-08T04:07:00.000Z",
+      "item": "Item 99 (pm-state.js caps the projected run log so pm/state fits the store's 256 KiB cap) — work-item, worktree",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "16 min, 168 turns",
+      "weighted": "3.0M",
+      "weightedM": 3,
+      "outcome": "merged 00:25 after review, no trailers; one PM correction on the branch (the delta had displaced item 98's changelog heading — the second worker tonight to do that; restored), gates 11/11 in the worktree, CI green on 6f4e531. Real board 263,291 → 149,475 compact bytes; pins + mutation; page header \"last N of M\". Phone state pushed 00:27 (first success since 22:21) and the page republished",
+      "pr": 309
+    },
+    {
+      "date": "2026-09-08",
+      "time": "00:03",
+      "at": "2026-09-08T04:03:00.000Z",
+      "item": "Item 70 (R-83 (a) — the heal-cut gate reaches the last three hea writers) — work-item, worktree",
+      "itemNo": null,
+      "model": "opus",
+      "isDispatch": true,
+      "duration": "23 min, 203 turns",
+      "weighted": "4.8M",
+      "weightedM": 4.8,
+      "outcome": "merged 00:29 after review, no trailers; CONFLICTING after #309 landed → the PM merged main into the branch (changelog: 70 above 99; dashboard regenerated; the assembled engine unchanged on main), gates 11/11 (1060 tests), CI green on bb9b843. Three emitters gated, edhaApplyBurstResults pinned ungated, census 2 → 5, nine pins × three reversions shown failing, four 🤖 rows. Found: a fourth ungated writer → R-92 (waiting) / item 101; README index drift → item 100. Pushed live 00:31, hash match — Foundry still DOWN (F5 owed when it relaunches). ENGINE-ONLY",
+      "pr": 308
+    },
+    {
+      "date": "2026-09-08",
+      "time": "00:32",
+      "at": "2026-09-08T04:32:00.000Z",
+      "item": "Dispatched item 83 (opus M, worktree pm/83-cosmere-senses-ladder — R-56: the system's senses ladder for every actor type; ENGINE + adversaries REBUILD + wizard + bench-setup + docs + tests; the worker records R-56 ANSWERED verbatim and moves it to §K). Opus 2 of 3 for 09-08. Items 100 / 101 filed (100 sonnet-ready; 101 blocked on R-92)",
+      "itemNo": null,
+      "model": "opus",
+      "isDispatch": true,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "running",
+      "pr": null
     }
   ],
-  "runLogTotal": 213,
+  "runLogTotal": 217,
   "runLogFrom": "2026-09-06",
   "dispatches": [
     {
@@ -2672,6 +2696,30 @@
     },
     {
       "at": "2026-09-08T04:03:00.000Z",
+      "model": "opus",
+      "item": null,
+      "pr": null
+    },
+    {
+      "at": "2026-09-08T04:07:00.000Z",
+      "model": "sonnet",
+      "item": "307",
+      "pr": null
+    },
+    {
+      "at": "2026-09-08T04:07:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 309
+    },
+    {
+      "at": "2026-09-08T04:03:00.000Z",
+      "model": "opus",
+      "item": null,
+      "pr": 308
+    },
+    {
+      "at": "2026-09-08T04:32:00.000Z",
       "model": "opus",
       "item": null,
       "pr": null

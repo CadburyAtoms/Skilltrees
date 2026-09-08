@@ -3376,3 +3376,61 @@ green. TOOLING-only.
 runs in parallel on engine files — expect the changelog-top / dashboard / TODO merge at review) ·
 verify: the byte count before/after + the mutation + gates. Filed 2026-09-08 00:1x by the PM after
 the failed push.
+
+## 100. [ ] Changelog hygiene gate — two workers tonight REPLACED the top delta heading instead of inserting above it, and the changelog README index has drifted
+
+**Why:** twice on 2026-09-07/08 a worker's new delta went in by *replacing* the first `## ` heading
+under the marker line instead of inserting above it — bench 44a (PR #298, displaced item 94's
+heading) and item 99 (PR #309, displaced item 98's) — leaving the previous delta's body headless
+until the PM restored it at review. Both briefs said "insert above the current top heading — never
+replace it", so wording does not fix it; the file's shape invites it: the marker line is
+immediately followed by the first heading with no blank line between, so an edit anchored on
+"marker + first heading" swallows the heading. Separately, `docs/handoff-changelog/README.md`'s
+index says 2026-09.md holds 94 deltas ending 2026-09-06, the month file's own header says 97, and
+the real heading count is higher still (item 70's and item 99's workers both reported it; nothing
+gates it).
+
+**What to do:** (1) Put exactly one blank line between the marker line and the first heading in
+every month file and say so in the marker line's neighbouring prose and in
+`.claude/skills/work-item/SKILL.md` + the changelog `README.md`: "insert your delta as: heading,
+body, blank line — directly under the marker's blank line; the heading that was first stays
+untouched". (2) A gate, `scripts/lint-changelog.js`, wired into `scripts/gates.js` (and CI runs
+gates): for each `docs/handoff-changelog/2026-MM.md`, (a) the marker line exists once and is
+followed by one blank line then a `## YYYY-MM-DD — ` heading; (b) every `## ` heading below the
+marker matches `^## \d{4}-\d{2}-\d{2} — .+`; (c) the `## ` count equals the count the README index
+row states for that file, and the month file's own header count matches too — so a replaced heading
+(count +0 while the index says +1) and a forgotten index (+1 vs +0) both fail. Fix the README
+index and the month headers to today's true counts in the same PR (state them). Mutation: delete a
+heading → the gate fails naming the file; bump the README count without a delta → fails. (3) Keep
+the gate fast (it reads five files).
+
+**Done when:** the gate is in `node scripts/gates.js --list`; the README index and every month
+header carry the true counts; the blank-line rule is written where workers read it; both mutations
+shown failing. TOOLING-only.
+
+**PM:** lane R · model sonnet · size S · deps — · verify: the two mutations + gates. Filed
+2026-09-08 00:3x after the second displaced heading of the night.
+
+## 101. [ ] R-92 — Mantle of the Aspirant's redirect-unwind heal (`47-power.js` ~L306) is a `hea` writer outside the heal-cut gate, declared nowhere: gate it (a) or declare it the exception (b) (WAITING on Ben)
+
+**Why:** item 70 (PR #308) gated R-83's three writers and swept for more: the Power tree's Mantle
+of the Aspirant "redirect unwind" heals the WEARER back the amount an ally shouldered, writing `hea`
+without `edhaHealCutGate`, and it is named in none of the declared lists (R-10's four floors, R-83's
+three, `ENGINE_INDEX.md`'s census — now five call sites, pinned by `tests/drop-to-one-family.test.js`).
+It is arguably a reversal of a transfer (the wearer ends where it stood before shouldering — R-10's
+"a floor / an undo is not regaining" shape) rather than a heal from nothing, which is why it was
+filed as ruling **R-92** (board rulings table) rather than fixed.
+
+**What to do (on R-92):** (b) — one declared-exception paragraph in `ENGINE_INDEX.md`'s heal-cut
+rule naming the site and the reason, plus a negative slice in the family test so the census names
+it on purpose (Sonnet S, DOCS + one test line); (a) — gate it at the emitter exactly as item 70 did
+the other three, a pin (withered → 0 and the card names the mark; unmarked unchanged) shown failing
+under reversion, the census 5 → 6 declared, one 🤖 row (Opus S, ENGINE-ONLY F5). `46-civilization.js`
+~L474 (Colossus raising `max.override` and `value` together) was listed by the same sweep as a
+max-HP grant, not a heal — no action.
+
+**Done when:** R-92 is answered and the chosen shape shipped with its pin; the family census names
+the site either way. Deploy class per the answer.
+
+**PM:** lane R (b) / B (a) · model sonnet (b) / opus (a) · size S · deps **R-92** · verify: the
+census + the pin. Filed 2026-09-08 00:3x from item 70's report.
