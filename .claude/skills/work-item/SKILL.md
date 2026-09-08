@@ -92,8 +92,13 @@ is a stop-and-report, not a thing to fix.
 - Check your item `[x]` in `TODO_REPO_HYGIENE.md` with the date and the PR number (you know the
   number after `gh pr create`; amend the commit).
 - A dated delta at the **top** of the current month's changelog file,
-  `docs/handoff-changelog/2026-MM.md`, under its marker line (never in `EDHA_FOUNDRY_HANDOFF.md`,
-  the reference alone since item 19b): `## 2026-MM-DD — <what changed> (<DOCS-ONLY | TOOLING-only | ENGINE-ONLY, F5 | REBUILD + ⟳ Sync>)`,
+  `docs/handoff-changelog/2026-MM.md` (never in `EDHA_FOUNDRY_HANDOFF.md`, the reference alone
+  since item 19b): insert it as **heading, body, blank line — directly under the marker's blank
+  line; the heading that was first stays untouched** (exactly one blank line sits between the
+  marker and the first heading, gated by `scripts/lint-changelog.js`, item 100 — do not replace
+  the top heading), and **bump BOTH counts the gate checks by one for your delta** — the
+  `(N deltas, <first date> → <last date>)` count and date range in the month file's header line,
+  and that file's row in `docs/handoff-changelog/README.md`. Format: `## 2026-MM-DD — <what changed> (<DOCS-ONLY | TOOLING-only | ENGINE-ONLY, F5 | REBUILD + ⟳ Sync>)`,
   five to fifteen lines, what and why, what was proven, what is 🤖 for the bench.
 - New engine primitive → a row in `ENGINE_INDEX.md`.
 - Lane B → rows in `EDHA_FOUNDRY_TEST_CHECKLIST.md` marked **🤖** (an agent can drive them).

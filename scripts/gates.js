@@ -129,6 +129,12 @@ function buildGates(py) {
   });
 
   gates.push({
+    id: "lint-changelog",
+    desc: "node scripts/lint-changelog.js (item 100: changelog blank-line + heading-shape + count hygiene)",
+    run: () => run("node", ["scripts/lint-changelog.js"]),
+  });
+
+  gates.push({
     id: "unit-tests",
     desc: "node tests/run.js",
     run: () => run("node", ["tests/run.js"]),
