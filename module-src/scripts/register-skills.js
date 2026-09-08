@@ -4391,12 +4391,21 @@ async function edhaTurnCueSweep(combat, prior, current) {
       }
       // `edha-regen` rules: engine-applied turn-end regen (clamped by edhaRegenClamp; a whispered
       // card keeps the heal visible at the table). Config-only handler; this sweep is its engine.
+      /* R-83 (a) — ANSWERED 2026-09-07 (Ben, "a"), item 70. This write is a HEAL, and until now it
+       * was one of three that reached `hea` without the No-Healing / Healing-Halved gate: a creature
+       * carrying a "cannot regain HP" mark kept ticking up from Mending Aura, Apex Form's vital
+       * regen and the adversary regen rules (The Garden Sow's Nexus-Fed) while an ordinary heal on
+       * the same creature was blocked. It is gated HERE, at the emitter — the amount the gate
+       * DELIVERS is what lands and what the card says (item 68's contract), so a blocked tick names
+       * the mark instead of printing a number, and a halved mark simply ticks for half. */
       for (const { item: tal, handler: h } of edhaActorRulesOf(prevTok.actor, "edha-regen")) {
           const res = prevTok.actor.system?.resources?.hea;
           const heal = edhaRegenClamp(h.amount, res?.value, edhaResVal(res));
           if (!heal) continue;
-          await edhaResourceWrite(prevTok.actor, "hea", { value: (Number(res?.value) || 0) + heal }, edhaBookkeepingTag(`${tal.name} (edha-regen)`));
-          await edhaPostCueCard(prevTok.actor, tal, { note: h.note || `regains ${heal} HP.`, trigger: "turn-end" }, ` <em>(+${heal} HP applied, end of turn.)</em>`);
+          const got = edhaHealCutGate(prevTok.actor, heal);
+          const line = edhaHealLine(prevTok.actor, heal, got, d => `regains ${d} HP`);
+          if (got > 0) await edhaResourceWrite(prevTok.actor, "hea", { value: (Number(res?.value) || 0) + got }, edhaBookkeepingTag(`${tal.name} (edha-regen)`));
+          await edhaPostCueCard(prevTok.actor, tal, { note: h.note || `${line}.`, trigger: "turn-end" }, got > 0 ? ` <em>(+${got} HP applied, end of turn.)</em>` : ` <em>(no HP applied — ${line}.)</em>`);
       }
     }
   } catch (e) { console.error("Edha Content | turn cue sweep failed", e); }
@@ -12400,9 +12409,17 @@ async function edhaBurstDetonate(pid, messageId = null) {
       const hr = await edhaRollFormula(rd, dmgF);
       rolls.push(hr);
       const amt = Math.max(0, Math.floor(hr.total));
+      /* R-83 (a) — ANSWERED 2026-09-07 (Ben, "a"), item 70. A burst heal is a HEAL, so the
+       * No-Healing / Healing-Halved mark applies to every token it catches. The gate goes HERE, in
+       * the emitter, PER TARGET — never in edhaApplyBurstResults, which must stay ungated because
+       * Raise Dead's stabilising `{amount: 1, heal: true}` hit rides that same path (R-10 (3): a
+       * floor against death is not regaining). Gating the writer instead of the emitter would turn
+       * "cannot regain HP" into "cannot be saved". A blocked target contributes NO hit at all — the
+       * relay leg never sees it — and its line names the mark instead of printing a number. */
       for (const t of caught) {
-        hits.push({ actorUuid: t.actor.uuid, amount: amt, type: "heal", heal: true });
-        lines.push(`${t.name}: +${amt} HP (capped at max)`);
+        const got = edhaHealCutGate(t.actor, amt);
+        if (got > 0) hits.push({ actorUuid: t.actor.uuid, amount: got, type: "heal", heal: true });
+        lines.push(edhaHealLine(t.actor, amt, got, n => `${t.name}: +${n} HP (capped at max)`) || `${t.name}: +0 HP (capped at max)`);
       }
     } else if (affects !== "none") {
       const dice = await edhaRollFormula(rd, dmgF);
@@ -15197,11 +15214,23 @@ async function edhaDecayTurnTick(combat) {
     const owner = game.actors?.get(d.ownerId);
     const back = Math.floor(amt * (d.healFraction ?? 0.5));
     let healed = "";
+    /* R-83 (a) — ANSWERED 2026-09-07 (Ben, "a"), item 70. The lifesteal heal-back is a HEAL on the
+     * decay's OWNER, and it used to reach `hea` without the No-Healing / Healing-Halved gate: a
+     * Withered necromancer kept draining HP back out of its victim while an ordinary heal on it was
+     * blocked. Gated HERE, at the emitter; the delivered amount is what lands and what the card
+     * says (item 68's contract), so a blocked heal-back names the mark instead of a number and the
+     * decay DAMAGE above is untouched — the victim still rots either way. */
     if (owner && back > 0 && (Number(owner.system?.resources?.hea?.value) || 0) > 0) {
       const ohea = owner.system.resources.hea;
       const omax = Number(ohea?.max?.value ?? ohea?.max) || 0;
-      const next = Math.min(omax || Infinity, (Number(ohea?.value) || 0) + back);
-      try { await edhaResourceWrite(owner, "hea", { value: next }, edhaBookkeepingTag(`${d.sourceName || "Decay"} (lifesteal)`)); healed = ` ${owner.name} regains <strong>${back}</strong> HP.`; } catch (e) {}
+      let got = edhaHealCutGate(owner, back);
+      if (got > 0) {
+        const next = Math.min(omax || Infinity, (Number(ohea?.value) || 0) + got);
+        try { await edhaResourceWrite(owner, "hea", { value: next }, edhaBookkeepingTag(`${d.sourceName || "Decay"} (lifesteal)`)); }
+        catch (e) { got = 0; }   // the write failed — never claim HP that did not land (the pre-gate try/catch said the same)
+      }
+      const line = edhaHealLine(owner, back, got, n => `${owner.name} regains <strong>${n}</strong> HP`);
+      healed = line ? ` ${line}.` : "";
     }
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), rolls: [dr],
       content: `<p>🦠 <strong>${d.sourceName || "Decay"}</strong> — ${actor.name} takes <strong>${amt}</strong> ${d.type || "vital"} (start of turn).${healed}</p>` });

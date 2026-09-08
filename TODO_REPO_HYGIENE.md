@@ -2261,7 +2261,7 @@ pins. ENGINE-ONLY (F5). Found by item 59.
 
 ---
 
-## 70. [ ] Three `hea` writers still bypass the heal-cut gate — a withered creature is healed by Mending Aura (R-83)
+## 70. [x] Three `hea` writers still bypass the heal-cut gate — a withered creature is healed by Mending Aura (R-83) (2026-09-08, PR #308)
 
 **Why:** fix pass 8 (item 68, PR #241, 2026-09-06) audited every heal announcer and found the
 same drift one layer down: `ENGINE_INDEX.md` says every `hea` write outside `applyDamage` must pass
@@ -2290,6 +2290,18 @@ the family count. ENGINE-ONLY (F5). Found by fix pass 8.
 (*"I'm not sure what this means and will want the pm to give me good examples when we get here in
 chat"*); the examples were given in chat and recorded in the ruling
 (`EDHA_RULINGS.md`). Still blocked on Ben's (a)/(b) call.
+
+**DONE 2026-09-08 (PR #308, ENGINE-ONLY → F5).** R-83 answered **(a)** (Ben, dashboard 2026-09-07
+17:11, verbatim *"a"*). All three gate at their EMITTERS — the `edha-regen` turn-end tick
+(`07-edha-owner-list.js`), the decay lifesteal heal-back (`45-death.js`), `edhaBurstDetonate`'s
+per-target heal (`39-burst-execution-the-gm-socket-relay.js`) — and each card is built from what the
+gate DELIVERED via `edhaHealLine`, so a blocked heal names the mark instead of printing a number.
+`edhaApplyBurstResults` stays ungated and `tests/drop-to-one-family.test.js` now asserts that too
+(R-10 (3), Raise Dead's stabilising 1 HP); its gate-call count went **2 → 5** with one declared line
+per site. Nine headless pins in `tests/heal-cut-emitters.test.js` (per writer: withered → 0 + the
+card names the mark, halved → half, unmarked → unchanged), each shown failing under a one-line
+reversion of its gate call; gates 11/11. Bench rows **70-1 … 70-4** are the live confirmation, and
+R-83 stays open in `EDHA_RULINGS.md` until they pass.
 
 ---
 

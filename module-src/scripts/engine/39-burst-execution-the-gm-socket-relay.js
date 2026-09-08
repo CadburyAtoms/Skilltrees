@@ -90,9 +90,17 @@ async function edhaBurstDetonate(pid, messageId = null) {
       const hr = await edhaRollFormula(rd, dmgF);
       rolls.push(hr);
       const amt = Math.max(0, Math.floor(hr.total));
+      /* R-83 (a) — ANSWERED 2026-09-07 (Ben, "a"), item 70. A burst heal is a HEAL, so the
+       * No-Healing / Healing-Halved mark applies to every token it catches. The gate goes HERE, in
+       * the emitter, PER TARGET — never in edhaApplyBurstResults, which must stay ungated because
+       * Raise Dead's stabilising `{amount: 1, heal: true}` hit rides that same path (R-10 (3): a
+       * floor against death is not regaining). Gating the writer instead of the emitter would turn
+       * "cannot regain HP" into "cannot be saved". A blocked target contributes NO hit at all — the
+       * relay leg never sees it — and its line names the mark instead of printing a number. */
       for (const t of caught) {
-        hits.push({ actorUuid: t.actor.uuid, amount: amt, type: "heal", heal: true });
-        lines.push(`${t.name}: +${amt} HP (capped at max)`);
+        const got = edhaHealCutGate(t.actor, amt);
+        if (got > 0) hits.push({ actorUuid: t.actor.uuid, amount: got, type: "heal", heal: true });
+        lines.push(edhaHealLine(t.actor, amt, got, n => `${t.name}: +${n} HP (capped at max)`) || `${t.name}: +0 HP (capped at max)`);
       }
     } else if (affects !== "none") {
       const dice = await edhaRollFormula(rd, dmgF);

@@ -1406,6 +1406,17 @@ Ask: Should the melee-only `edha-damage-bonus` rules (Warlord's Advance and kin)
 > turn-end heal, the decay lifesteal heal-back, and `edhaBurstDetonate`'s heal hits too.
 > **Item 70** (opus, engine-only) is now unblocked and applies it. **Not shipped yet** — stays open
 > here until item 70 lands and the bench confirms it, then moves to §K.
+> **SHIPPED** in PR #308 (ENGINE-ONLY → F5, bench-pending) — all three writers gated **at their
+> emitters**: the `edha-regen` turn-end tick (`07-edha-owner-list.js`), the decay lifesteal heal-back
+> (`45-death.js`) and `edhaBurstDetonate`'s per-target heal (`39-burst-execution-…js`). The gate's
+> call count went **2 → 5** with one declared line per site in `tests/drop-to-one-family.test.js`,
+> and `edhaApplyBurstResults` is asserted to stay UNGATED — Raise Dead's stabilising 1 HP rides it
+> (R-10 (3)), which is why the burst gate lives in the emitter. Nine headless pins in
+> `tests/heal-cut-emitters.test.js` (per writer: withered → 0 and the card names the mark, halved →
+> half, unmarked → unchanged), each shown failing under a one-line reversion of its gate call; gates
+> 11/11. Every card is built from the DELIVERED amount via `edhaHealLine`, so a blocked heal names
+> the mark instead of printing a number. 🤖 re-tests are checklist rows **70-1 … 70-4**; this ruling
+> stays here until the bench confirms them at the table, then moves to §K.
 
 Ask: Should `edha-regen`'s turn-end heal, the decay lifesteal heal-back, and `edhaBurstDetonate`'s heal hits each pass `edhaHealCutGate` so a creature that "cannot regain HP" stops gaining HP from them (a), or stay ungated with that exception written into `ENGINE_INDEX.md` (b)?
 
