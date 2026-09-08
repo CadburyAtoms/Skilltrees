@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-08T05:09:30.265Z",
+  "generatedAt": "2026-09-08T05:29:55.152Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "cc629fa6f8",
-    "commit": "d9a4433",
+    "hash": "b517d166a4",
+    "commit": "dd0b877",
     "branch": "main",
     "repo": "CadburyAtoms/Skilltrees"
   },
@@ -42,27 +42,13 @@
     "nextOpenAt": null
   },
   "pm": {
-    "status": "awake",
-    "note": "01:10 ET (09-08): item 83 merged (#313) and its engine half is live — Senses Range is the cosmere ladder for everyone now (AWA 0 = 5 ft). Owed by you: F5 (sheets for items 70 + 83), then ONE deploy-to-foundry.bat + ⟳ Sync Adversaries (adversary tokens 10 → 5), and `edha.fixPcTokens()` from the GM console for existing PC tokens. The rulings doc has ZERO open rulings. Foundry has been DOWN since your 21:52 bat run — bench run 44 waits for it. Running: item 102 (sonnet, changelog split script). Waiting on you: R-92 (a fourth ungated heal writer — Mantle of the Aspirant's redirect unwind; default: declare it the exception) and Foundry.",
+    "status": "waiting",
+    "note": "01:30 ET (09-08): six items merged tonight — 70 (heal-cut gates) and 83 (cosmere senses ladder) are LIVE in the module; 99, 100, 102, 103 were tooling and docs. Owed by you when Foundry is back: F5 (sheets), then ONE deploy-to-foundry.bat + ⟳ Sync Adversaries (adversary tokens 10 → 5 ft), and `edha.fixPcTokens()` from the GM console for existing PC tokens. Foundry has been DOWN since your 21:52 bat run — bench run 44 waits for it; next check ~02:30, and if it is still down the last Opus slot goes to item 88 (whisper adversary cards to the GM) instead. The rulings doc has zero open rulings. Waiting on you: R-92 (default: declare the exception) and Foundry.",
     "waitingOn": "Foundry relaunch + F5 (bench 44); R-92 (default: declare the exception)",
-    "nextWakeAt": null,
+    "nextWakeAt": "2026-09-08T06:30:00Z",
     "session": "2026-09-07 20:30 ET hand-started (Ben's third paste) — session of record, overnight shift"
   },
-  "workers": [
-    {
-      "item": "102",
-      "title": "handoff-split.js emits item 100's blank line + rule sentences from one shared source, counts from the real headings; idempotence proof",
-      "model": "sonnet",
-      "size": "S",
-      "lane": "R",
-      "branch": "pm/102-handoff-split-template",
-      "startedAt": "2026-09-08T04:58:00Z",
-      "agent": "Work item 102",
-      "phase": "working",
-      "pr": null,
-      "note": "TOOLING-only"
-    }
-  ],
+  "workers": [],
   "usage": null,
   "queue": [
     {
@@ -1028,14 +1014,26 @@
     {
       "pos": 98,
       "item": "102",
-      "title": "scripts/handoff-split.js regenerates the month headers and the README from its own template — a re-run would drop item 100's blank line, rule sentences and true counts, and the new lint-changelog gate would fail. Make the template emit them and compute counts/date ranges from the real headings; an idempotence proof (re-run on the real repo → empty git diff) and a fixture pin through the gate's own check. TOOLING-only. Found by item 100; filed 00:5x. Dispatched 00:58 (sonnet, worktree pm/102-handoff-split-template), parallel to 83",
+      "title": "scripts/handoff-split.js regenerates the month headers and the README from its own template — a re-run would drop item 100's blank line, rule sentences and true counts, and the new lint-changelog gate would fail. Make the template emit them and compute counts/date ranges from the real headings; an idempotence proof (re-run on the real repo → empty git diff) and a fixture pin through the gate's own check. TOOLING-only. Found by item 100; filed 00:5x. Dispatched 00:58 (sonnet, worktree pm/102-handoff-split-template), parallel to 83. Merged 01:26 after review — scripts/lib/changelog-rules.js is the one source of the marker and the two rule texts (the gate and the generator both require it); handoff-split.js's run() made injectable and its templates emit the blank line + rules, counts from the real headings; lint-changelog.js's checks exported without changing the CLI; tests/handoff-split.test.js (9 pins: fixture split passes the gate, idempotence, both mutations shown failing); the real-repo re-run is byte-idempotent. CONFLICTING after #313 → the PM merged main (changelog: 102 above 83, count recomputed to 117 — the new gate verified it; dashboard), gates 12/12 (1073 tests), CI green on 235fce3. 3.5M / 159 turns / 24 min",
       "lane": "R",
       "model": "sonnet",
       "size": "S",
       "deps": "#312 ✓",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 315
+    },
+    {
+      "pos": 99,
+      "item": "103",
+      "title": "docs/ACTOR_STAT_DERIVATION.md §1 / §3 still describe the +1 R-54 (c) removed on 09-06 (EDHA_HP_BONUS = 0) — the doc CLAUDE.md sends every session to before touching a derived stat; rewrite to today's truth with the history in one dated clause, sweep the file, grep proof. DOCS-ONLY. Found by item 83; filed 01:1x. Dispatched 01:12 (sonnet, worktree pm/103-actor-stat-derivation-hp), parallel to 102. Merged 01:29 after review — §1, §2's clamp sentence, §3's two Health rows and §5's options table now state EDHA_HP_BONUS = 0 (R-54 (c), 2026-09-06) as the fact with the +1 as dated history; grep 21 → 14 hits, every survivor history or an unrelated stat, listed in the PR. CONFLICTING after #315 → the PM merged main (changelog top: 103 above 102, count 118, gate-verified; dashboard), gates 12/12, CI green on e23a3a0. 1.9M / 104 turns / 12 min",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "S",
+      "deps": "#314 ✓",
+      "status": "merged",
+      "statusDetail": null,
+      "pr": 316
     },
     {
       "pos": 97,
@@ -1322,62 +1320,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-06",
-      "time": "22:31",
-      "at": "2026-09-07T02:31:00.000Z",
-      "item": "Item 75 (nine executor no-ops) — work-item via fable-worker, worktree",
-      "itemNo": null,
-      "model": "fable (medium)",
-      "isDispatch": false,
-      "duration": "9 min, 78 turns",
-      "weighted": "1.1M",
-      "weightedM": 1.1,
-      "outcome": "merged 22:43 after review (gh mergedAt 02:43:53Z), no trailers; the PM merged main (item 74) and re-assembled. ENGINE-ONLY, held for bench 41's hash",
-      "pr": 261
-    },
-    {
-      "date": "2026-09-06",
-      "time": "22:33",
-      "at": "2026-09-07T02:33:00.000Z",
-      "item": "Item 10 batch 2 (the last 11 fail-open disposition reads) — work-item via fable-worker, worktree",
-      "itemNo": null,
-      "model": "fable (medium)",
-      "isDispatch": false,
-      "duration": "13 min, 66 turns",
-      "weighted": "1.2M",
-      "weightedM": 1.2,
-      "outcome": "merged 22:49 after review (gh mergedAt 02:49:14Z), no trailers; the worker merged main twice itself (items 74, 75) and re-assembled. Item 10 closed; the ratchet is a tombstone at 0. Found: the Power-side corollary → TODO 77. ENGINE-ONLY, held for bench 41's hash",
-      "pr": 263
-    },
-    {
-      "date": "2026-09-06",
-      "time": "22:31",
-      "at": "2026-09-07T02:31:00.000Z",
-      "item": "Item 76 (ruling-card defaults + R-80 / R-81 §I stubs) — work-item via fable-worker, worktree",
-      "itemNo": null,
-      "model": "fable (medium)",
-      "isDispatch": false,
-      "duration": "10 min, 64 turns",
-      "weighted": "1.1M",
-      "weightedM": 1.1,
-      "outcome": "merged 22:51 after review (gh mergedAt 02:51:13Z), no trailers; one PM correction (R-48's misplaced ANSWERED line — the PM's own 21:46 insert — moved into its block, pin flipped to closed); CI on the corrected head was slow to appear and ran green after the final main merge. The phone's Needs-you cards now show 7 open rulings with real questions, real defaults, and applied-veto styling on R-80 / R-81 / R-84 / R-85",
-      "pr": 262
-    },
-    {
-      "date": "2026-09-06",
-      "time": "22:18",
-      "at": "2026-09-07T02:18:00.000Z",
-      "item": "Bench run 41 (the engine-only merges on the 22:17 push) — bench-run, worktree",
-      "itemNo": null,
-      "model": "opus",
-      "isDispatch": true,
-      "duration": "61 min, 496 turns",
-      "weighted": "14.3M",
-      "weightedM": 14.3,
-      "outcome": "merged 23:21 after review (gh mergedAt 03:21:00Z), no trailers, no header markers, the worker merged main itself and re-ran the split. 25 rows retired on evidence — open 🤖 77 → 52: item 24's whole registry-smoke section (the real Events-tab picker holds 87 Edha: handlers / 15 events in TABLE order), fix pass 9's once budget (one flat key, third use refused), 2bJ-10 whole, R-84 (refund + \"cost refunded\"), R-85 (bearer's round), item 68's four heal cards (both marks produced for real), item 69 (Verdict's system card 2d8 + 5), item 55's engine half (48 adversaries read Senses 10 with no rebuild; the AWA watcher driven on an adversary). 1 FAIL, root-caused: Ambush Bite's label is still doubled on the card — edhaTidyFormula runs in renderChatMessageHTML on a detached element before the system re-renders the damage section ~1.5 s later → fix pass 10 (TODO 78). Three wrong reference names corrected; no new rulings; world diff EMPTY across all 74 actors (a ghost drawing cleared with scene.update({drawings: []}, {recursive: false}) — runbook lesson)",
-      "pr": 265
-    },
     {
       "date": "2026-09-06",
       "time": "23:21",
@@ -2161,9 +2103,65 @@
       "weightedM": 6.5,
       "outcome": "merged 01:07 after review, no trailers; the worker merged main itself (CLEAN), gates 12/12 locally + its own --ci 14, CI green on a2d1d9d. The sheet half is a deletion (the system already derives the ladder on both models — cited to index.js:8455 / :8534), four non-derived surfaces re-tabled, AWA read as value + bonus for token/sheet parity (the worker's one judgment, pinned); pack read-back 51 tokens 10 → 5, Grove 30, 0 other diffs; R-56 moved to §K → zero open rulings; six 🤖 rows. Pushed live 01:08, hash match; Foundry still DOWN — Ben owes F5 + a bat run + ⟳ Sync Adversaries + edha.fixPcTokens(). Found: item 82 re-scoped (default now 5 ft); ACTOR_STAT_DERIVATION.md §1/§3 stale on R-54's +1 → item 103. ENGINE (F5) + adversaries REBUILD",
       "pr": 313
+    },
+    {
+      "date": "2026-09-08",
+      "time": "01:12",
+      "at": "2026-09-08T05:12:00.000Z",
+      "item": "Dispatched item 103 (sonnet, worktree pm/103-actor-stat-derivation-hp — the derivation doc's stale +1) the minute #314 merged; parallel to 102. Foundry still DOWN at 01:11; bench 44 (Opus 3 of 3) held — if Foundry is still down by ~05:00 the slot goes to item 88 (R-90 (a), engine-only) instead, else it stays for the bench",
+      "itemNo": "314",
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "running",
+      "pr": null
+    },
+    {
+      "date": "2026-09-08",
+      "time": "00:58",
+      "at": "2026-09-08T04:58:00.000Z",
+      "item": "Item 102 (handoff-split.js learns item 100's rule from one shared source; idempotence proof) — work-item, worktree",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "24 min, 159 turns",
+      "weighted": "3.5M",
+      "weightedM": 3.5,
+      "outcome": "merged 01:26 after review, no trailers; CONFLICTING (base #312) → the PM merged main (changelog top: 102 above 83, header + README recounted to 117 and verified by the new gate; dashboard regenerated), gates 12/12 (1073 tests), CI green on 235fce3. Byte-idempotent re-run on the real repo; both mutations pinned. TOOLING-only",
+      "pr": 315
+    },
+    {
+      "date": "2026-09-08",
+      "time": "01:12",
+      "at": "2026-09-08T05:12:00.000Z",
+      "item": "Item 103 (ACTOR_STAT_DERIVATION.md's stale +1 → R-54's answer as the fact) — work-item, worktree",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "12 min, 104 turns",
+      "weighted": "1.9M",
+      "weightedM": 1.9,
+      "outcome": "merged 01:29 after review, no trailers; CONFLICTING (base #314) → the PM merged main (changelog top: 103 above 102, count 118 verified by the gate; dashboard), gates 12/12, CI green on e23a3a0. DOCS-ONLY",
+      "pr": 316
+    },
+    {
+      "date": "2026-09-08",
+      "time": "01:30",
+      "at": "2026-09-08T05:30:00.000Z",
+      "item": "Shift tally so far (00:01 → 01:30): 6 items merged (99 #309, 70 #308, 100 #311, 83 #313, 102 #315, 103 #316) + 4 board PRs (#307, #310, #312, #314) = 10 PRs; workers 23.0M weighted (Opus 70 4.8 + 83 6.5 = 11.3; Sonnet 99 3.0 + 100 3.3 + 102 3.5 + 103 1.9 = 11.7); PM 32.7M cumulative since 20:30 (the session's own cost is now the largest line — every review needed a main merge plus a correction). Live: 70 + 83 pushed (hash match). Foundry DOWN since 21:52 (probed hourly, last 01:29) — bench 44 held. Opus 2 of 3 used. Queue: 101 blocked(R-92), 82 blocked(Ben's batch), 88 / 80 / 81 / 62 Opus S engine-only. Plan: wake ~02:30, re-probe; if Foundry is still down, the third Opus slot goes to item 88 (R-90 (a), whisper adversary triggered-effect cards to the GMs) so the day's slot is not wasted, and bench 44 goes to the next shift; stop before 07:00 with a handoff row",
+      "itemNo": "309",
+      "model": "fable",
+      "isDispatch": false,
+      "duration": "1 h 29",
+      "weighted": "32.7M (PM, cumulative)",
+      "weightedM": 32.7,
+      "outcome": "waiting",
+      "pr": null
     }
   ],
-  "runLogTotal": 221,
+  "runLogTotal": 225,
   "runLogFrom": "2026-09-06",
   "dispatches": [
     {
@@ -2759,6 +2757,24 @@
       "model": "opus",
       "item": null,
       "pr": 313
+    },
+    {
+      "at": "2026-09-08T05:12:00.000Z",
+      "model": "sonnet",
+      "item": "314",
+      "pr": null
+    },
+    {
+      "at": "2026-09-08T04:58:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 315
+    },
+    {
+      "at": "2026-09-08T05:12:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 316
     }
   ],
   "statusVocab": [
