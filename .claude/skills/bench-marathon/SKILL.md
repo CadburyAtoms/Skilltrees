@@ -135,9 +135,11 @@ skipped while looking scheduled.
 
 ## The standing rules — pass these to EVERY bench subagent, verbatim
 
-- **Tem parinaem and Soggy Bottom are untouchable.** Never type a password. Never activate or
-  deactivate a scene (combats stay INACTIVE via `ui.combat.initialize({combat})`). Create only in the
-  Edha Bench folders. Leave Ben's campaign combat alone.
+- **Tem parinaem and Soggy Bottom may be REFRESHED, never EDITED (PM-R17).** A REFRESH — the
+  sheet's `⟳ Sync Talents` button, or an equivalent pull of their owned talent copies from the
+  pack — is allowed; a hand write to their stats, items, or text is not. Never type a password.
+  Never activate or deactivate a scene (combats stay INACTIVE via `ui.combat.initialize({combat})`).
+  Create only in the Edha Bench folders. Leave Ben's campaign combat alone.
 - **Snapshot ids, flags AND EFFECTS at start**, and never delete anything the snapshot doesn't prove
   you created. A run that snapshotted only ids and flags deleted four pre-existing effects off
   campaign adversaries and could only restore two.

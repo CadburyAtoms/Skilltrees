@@ -545,6 +545,9 @@ about how broadly watches should be scoped? *(3B-B; overlaps R-4.)*
 > R-4's combat gate already removed the out-of-combat cross-talk; no further watch scoping. Bench
 > setups keep rosters to the actors under test — recorded as a runbook note. This also settles
 > R-72's "decide together with R-8" clause: R-72 (b) stands on its own.
+> **PM-R17 (2026-09-07, `docs/PM_BOARD.md`) updates the guard this ruling cites:** the two PC
+> actor documents (Tem parinaem, Soggy Bottom) may now be REFRESHED by the PM and by agents
+> (`⟳ Sync Talents`), never hand-edited — R-8's roster-scoping answer is otherwise unchanged.
 
 ---
 

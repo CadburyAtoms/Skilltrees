@@ -14,8 +14,10 @@
  *
  * Idempotent: re-running repairs drift instead of duplicating; nothing outside the
  * "Edha Bench" folders is ever touched, and the only deletions are embedded items on bench
- * actors. ⚠️ PLAYER CHARACTERS "Tem parinaem" and "Soggy Bottom" are hard-guarded — the
- * script throws before ever writing to them (Ben's ruling 07-26).
+ * actors. ⚠️ PLAYER CHARACTERS "Tem parinaem" and "Soggy Bottom" may be REFRESHED (their own
+ * sheet's ⟳ Sync Talents button — never through this script), never EDITED (PM-R17). This
+ * script performs only edits against the bench roster, so it still throws before ever
+ * writing to those two documents (Ben's ruling 07-26; the PROTECTED guard below is unchanged).
  *
  * NOTES
  * - PCs are level 7 (the playtest norm the checklist's expected values were written against).
