@@ -3331,7 +3331,7 @@ green. DOCS-ONLY.
 runs in parallel on other files — expect the usual changelog-top / dashboard merge at review) ·
 verify: the ⚑ count before/after + gates. Filed 2026-09-07 22:0x from the phone inbox.
 
-## 99. [ ] `pm-state.js` projects the WHOLE run log into `pm/state` — the phone document hit the store's 256 KiB cap on 2026-09-08 00:04 and the push failed
+## 99. [x] `pm-state.js` projects the WHOLE run log into `pm/state` — the phone document hit the store's 256 KiB cap on 2026-09-08 00:04 and the push failed (2026-09-08, PR #309)
 
 **Why:** the mobile board's live document `pm/state` is written with `Artifact write_db` from
 `docs/pm-state.json`, and the store caps one document at **256 KiB** (the same cap the dashboard
