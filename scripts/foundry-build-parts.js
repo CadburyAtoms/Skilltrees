@@ -136,21 +136,26 @@ function authoredOverlayFor(index, { docId, name, atlas, group }) {
   return bucket ? bucket[name] : undefined;
 }
 
-// Senses Range in ft from Awareness — the Edha table (Character_Building_Rules.md §Senses Range:
-// AWA 0→10, 1→15, 2–3→20, 4→25, 5+→30). ONE rule for PCs and adversaries alike (EDHA_RULINGS.md
-// R-56 (a), item 55): the engine's `edhaSensesRangeFtFromAwa` is the runtime copy that derives the
-// SHEET, this is the build-time copy that stamps the pack's prototype-token sight, and
-// tests/adversary-senses.test.js pins the two term-for-term so they cannot drift apart.
+// Senses Range in ft from Awareness — the COSMERE SYSTEM'S OWN ladder, `[5,10,20,50,100,∞]` indexed
+// by ceil(AWA/2) (cosmere-rpg 2.1.0 `SENSES_RANGES` / `awarenessToSensesRange`, index.js:8534-8538).
+// ONE rule for PCs and adversaries alike (EDHA_RULINGS.md R-56, ANSWERED-final 2026-09-07: "Cosmere
+// ladder for everyone" → item 83, reversing R-56 (a)'s Edha table of 2026-09-06). The system itself
+// derives the SHEET for every actor type; this is the build-time copy that stamps the pack's
+// prototype-token sight so the token matches the sheet, and the engine's `edhaSensesRangeFtFromAwa`
+// is the runtime copy for the same reason. tests/adversary-senses.test.js pins the two term-for-term
+// so they cannot drift apart.
+const SENSES_RANGES_FT = [5, 10, 20, 50, 100, Number.MAX_SAFE_INTEGER];
 function sensesRangeFtFromAwa(awa) {
   const a = Number(awa) || 0;
-  return a >= 5 ? 30 : a === 4 ? 25 : a >= 2 ? 20 : a === 1 ? 15 : 10;
+  return SENSES_RANGES_FT[Math.min(Math.max(0, Math.ceil(a / 2)), SENSES_RANGES_FT.length - 1)];
 }
 
 // An adversary block's Senses Range: its explicit `senses` (ft) is the bespoke override and wins;
-// otherwise the AWA table. Adversary blocks carry no attributes (they are all 0 — see the README's
-// `inv` note), so the default is table(0) = 10 ft, the same number the engine derives on the sheet.
-// The build reads this for the prototype token so pack sheet and token agree (they used to ship a
-// FLAT 10 against a sheet that derived the cosmere ladder's 5 — bench run 22, 52/52 mismatched).
+// otherwise the ladder. Adversary blocks carry no attributes (they are all 0 — see the README's
+// `inv` note), so the default is ladder(0) = **5 ft** since item 83, the same number the SYSTEM
+// derives on the sheet. The build reads this for the prototype token so pack sheet and token agree
+// (they shipped a FLAT 10 against a derived 5 until item 55 — bench run 22, 52/52 mismatched — then
+// 10/10 under R-56 (a); item 83 takes both to 5).
 function advSensesRangeFt(adv) {
   const explicit = Number(adv?.senses);
   if (Number.isFinite(explicit) && explicit > 0) return explicit;

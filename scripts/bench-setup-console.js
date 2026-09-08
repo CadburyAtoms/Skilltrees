@@ -219,12 +219,13 @@ if (typeof game !== "undefined") (async () => {
     for (const [k, v] of Object.entries(C.skills)) upd[`system.skills.${k}.rank`] = v;
     // R-2 (EDHA_RULINGS.md, Ben 2026-09-05): normal PC vision, not the AWA-0 creation default.
     // `preCreateActor` stamps prototypeToken.sight.range from AWA at creation time, before this
-    // update sets AWA to 2 above — so new PCs freeze at the AWA-0 row (10 ft) instead of the AWA-2
-    // row their own attributes call for. 20 ft = Character_Building_Rules.md §Senses Range for
-    // AWA 2-3 (source-materials/legacy-uploads/Character_Building_Rules.md:163), the same table
-    // module-src/scripts/register-skills.js's edhaSensesRangeFtFromAwa(2) returns. Adversary
-    // tokens (TGT/adversary blocks below) are untouched — their 10 ft stays R-2's ⚑ design dial.
-    upd["prototypeToken.sight.range"] = 20;
+    // update sets AWA to 2 above — so new PCs freeze at the AWA-0 row (5 ft) instead of the AWA-2
+    // row their own attributes call for. **10 ft** = the cosmere system's own Senses ladder
+    // `[5,10,20,50,100,∞][ceil(AWA/2)]` at AWA 2 — R-56's final answer, 2026-09-07 (Ben, "Cosmere
+    // ladder for everyone" → item 83), the same number `edhaSensesRangeFtFromAwa(2)` now returns.
+    // It was 20 under the Edha table this reverses. Adversary tokens (TGT/adversary blocks below)
+    // are untouched here — the pack build stamps them from the same ladder (5 ft at AWA 0).
+    upd["prototypeToken.sight.range"] = 10;
     await a.update(upd);
     if (C.path) {
       if (!a.items.some(i => i.type === "path" && i.name === C.path)) {
