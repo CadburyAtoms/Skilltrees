@@ -3208,3 +3208,47 @@ scripts/gates.js` green. DOCS-ONLY.
 
 **PM:** lane R · model sonnet · size S · deps item 91 merged · verify: `grep -c WAITING
 EDHA_RULINGS.md` before/after + the dashboard counts + `node scripts/gates.js`. DOCS-ONLY.
+
+## 96. [ ] Rulings §K sweep — 47 answered rulings still sit in §A–§J, so the desktop Rulings tab lists them as open and Ben asks "Why is this still here?" (R-47); move them to §K under the doc's own rule and make the dashboard mark a closed body done
+
+**Why:** Ben's third dashboard paste of 2026-09-07 (20:30 ET, `@4944221a06`) marked 43 rulings
+✓ DONE and left one note, on R-47: *"Why is this still here?"* Every one of those rulings — and
+R-83 / R-88 / R-89 / R-90 / R-91, which he did not re-mark — is already ANSWERED, SETTLED, or
+SHIPPED inline: `parseOpenRulings()` in `scripts/build-dashboard.js` (the phone's "Needs you"
+logic, which reads the body's last ANSWERED / VETOED / SETTLED / REOPENED marker) finds exactly
+ONE open ruling, **R-56**. But the desktop dashboard's ⚖ Rulings tab is built by `parseRulings()`,
+which marks a ruling `done` only when it lives under `## K. Settled` — and the close-out items
+(79, 91, 95) recorded Ben's answers inline under each number without moving the entry. The doc's
+own header says what should have happened: *"When a ruling is answered: record the answer inline
+under its number, move it to §K (Settled)."* So 48 entries sit in §A–§J today, 47 of them with
+closed bodies (per the parser — A: R-2 · B: R-4 R-74 R-78 R-77 R-6 · C: R-10 R-12 R-13 R-14 R-15
+R-17 R-18 R-50 R-51 R-69 R-70 R-72 R-82 R-83 R-88 R-89 R-90 R-91 · D: R-23 R-25 · E: R-27 R-28
+R-29 R-31 R-32 R-71 · F: R-35 R-36 R-37 R-38 · G: R-40 R-46 R-48 R-47 R-52 · H: R-42 R-54 R-55 ·
+I: R-73 · J: F-1 F-2), and the tab shows all 48 as open rows. R-4 is the odd one: its full text is
+already in §K and §B still carries a `**R-4.` heading paragraph pointing there, which the parser
+counts as a ruling, not a stub.
+
+**What to do:** (1) In `EDHA_RULINGS.md`, move each closed-body entry's text **verbatim** (heading
+paragraph + every prose paragraph up to the next ruling / stub / heading — the same body
+`parseOpenRulings()` reads) out of its themed section into `## K. Settled`, keeping §K's existing
+grouping convention (read §K first; add a short sub-heading per source section only if §K already
+uses them), and leave the doc's one-line stub behind in the themed section — the R-1 / R-3 shape:
+`*(R-n — <short title> — ANSWERED <date>, moved to §K.)*` (`RULING_STUB_RE` skips stubs). R-4's §B
+heading becomes a stub (its text is already in §K — do not duplicate it). §I's R-73 becomes a stub
+in §I. **R-56 stays where it is** — it is the one open ruling. Change no ruling's wording, dates,
+options, or answers. (2) In `scripts/build-dashboard.js`, make `parseRulings()` mark a ruling
+`done` when `rulingBodyIsClosed()` is true for its body — not only when it lives in §K — so a future
+inline answer never shows as open on the desktop tab again; keep §K's items done as today. Pin it
+in the dashboard tests with a mutation: a fixture with an ANSWERED body outside §K renders done, and
+the real-doc pin that expects `parseOpenRulings` = [R-56] stays. (3) `node scripts/build-dashboard.js`;
+confirm `parseOpenRulings(md)` still returns exactly R-56 and the Rulings tab's not-done count goes
+48 → 1. Do NOT touch `data/`, the engine, the checklist, or the board.
+
+**Done when:** every §A–§J entry except R-56 is a stub; §K holds the moved texts verbatim (sha256 of
+the concatenated moved bodies before = after, both hashes in the PR body); `parseOpenRulings` =
+[R-56]; the desktop Rulings tab shows 1 open row; the mutation pin fails without the parser change;
+`node scripts/gates.js` green. DOCS + TOOLING-only — no deploy.
+
+**PM:** lane R · model sonnet · size M · deps — (branch from the `main` that has this item) · verify:
+the parser counts before/after, the hash proof, the mutation, gates. Filed 2026-09-07 20:4x from
+Ben's third dashboard paste (43 ✓ DONE ticks + the R-47 note).
