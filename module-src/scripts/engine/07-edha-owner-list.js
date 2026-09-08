@@ -446,12 +446,21 @@ async function edhaTurnCueSweep(combat, prior, current) {
       }
       // `edha-regen` rules: engine-applied turn-end regen (clamped by edhaRegenClamp; a whispered
       // card keeps the heal visible at the table). Config-only handler; this sweep is its engine.
+      /* R-83 (a) — ANSWERED 2026-09-07 (Ben, "a"), item 70. This write is a HEAL, and until now it
+       * was one of three that reached `hea` without the No-Healing / Healing-Halved gate: a creature
+       * carrying a "cannot regain HP" mark kept ticking up from Mending Aura, Apex Form's vital
+       * regen and the adversary regen rules (The Garden Sow's Nexus-Fed) while an ordinary heal on
+       * the same creature was blocked. It is gated HERE, at the emitter — the amount the gate
+       * DELIVERS is what lands and what the card says (item 68's contract), so a blocked tick names
+       * the mark instead of printing a number, and a halved mark simply ticks for half. */
       for (const { item: tal, handler: h } of edhaActorRulesOf(prevTok.actor, "edha-regen")) {
           const res = prevTok.actor.system?.resources?.hea;
           const heal = edhaRegenClamp(h.amount, res?.value, edhaResVal(res));
           if (!heal) continue;
-          await edhaResourceWrite(prevTok.actor, "hea", { value: (Number(res?.value) || 0) + heal }, edhaBookkeepingTag(`${tal.name} (edha-regen)`));
-          await edhaPostCueCard(prevTok.actor, tal, { note: h.note || `regains ${heal} HP.`, trigger: "turn-end" }, ` <em>(+${heal} HP applied, end of turn.)</em>`);
+          const got = edhaHealCutGate(prevTok.actor, heal);
+          const line = edhaHealLine(prevTok.actor, heal, got, d => `regains ${d} HP`);
+          if (got > 0) await edhaResourceWrite(prevTok.actor, "hea", { value: (Number(res?.value) || 0) + got }, edhaBookkeepingTag(`${tal.name} (edha-regen)`));
+          await edhaPostCueCard(prevTok.actor, tal, { note: h.note || `${line}.`, trigger: "turn-end" }, got > 0 ? ` <em>(+${got} HP applied, end of turn.)</em>` : ` <em>(no HP applied — ${line}.)</em>`);
       }
     }
   } catch (e) { console.error("Edha Content | turn cue sweep failed", e); }

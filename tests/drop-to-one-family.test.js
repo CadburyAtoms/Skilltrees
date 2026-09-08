@@ -159,16 +159,35 @@ test("R-10 (4) NEGATIVE: the floor is once, and a drop to a positive value is le
 /* ---- 5. THE FAMILY PIN — none of the four acquired the gate ------------------------------------- */
 
 test("R-10: the heal gate is consulted at exactly the two REAL-heal sites, and by no drop-to-1 writer", () => {
-  // The mutation-sensitive case. `edhaHealCutGate` belongs on paths that HEAL: edhaCrossHeal's
-  // non-bypass branch and the effect-heal branch of the triggered-effect runner. A third call is
-  // either a new heal path (fine — say so here) or one of the four drop-to-1 writers acquiring it,
-  // which is R-10 being reversed by accident.
+  /* The mutation-sensitive case. `edhaHealCutGate` belongs on paths that HEAL. A call that is not
+   * declared below is either a new heal path (fine — add its one line here) or one of the four
+   * drop-to-1 writers acquiring the gate, which is R-10 being reversed by accident.
+   *   1. edhaCrossHeal's non-bypass branch — the standard door for every rule-driven heal.
+   *   2. the effect-heal branch of the triggered-effect runner (Mender's Instinct).
+   *   3. the `edha-regen` turn-end tick    — R-83 (a), item 70 (Mending Aura / Apex Form / Nexus-Fed).
+   *   4. the decay lifesteal heal-back      — R-83 (a), item 70 (the decay owner's drain-back).
+   *   5. edhaBurstDetonate's per-target heal — R-83 (a), item 70; the EMITTER, because
+   *      edhaApplyBurstResults must stay ungated for Raise Dead's stabilising 1 HP (R-10 (3)). */
   const code = codeOnly(readEngineSource());
   const calls = code.match(/(?<!function )\bedhaHealCutGate\(/g) || [];
-  assert.strictEqual(calls.length, 2,
-    `expected edhaCrossHeal's gated branch + the effect-heal branch, found ${calls.length}. ` +
+  assert.strictEqual(calls.length, 5,
+    `expected the five declared heal sites (cross-heal, effect-heal, regen tick, decay lifesteal, ` +
+    `burst emitter), found ${calls.length}. ` +
     "R-10 (b): a drop-to-1 / stabilize writer must NEVER route through the heal gate — stabilizing " +
     "at 1 is a floor against death, not regaining.");
+  // R-83 (a) — the three item-70 sites, each by the shape that makes it the EMITTER.
+  assert.ok(/const got = edhaHealCutGate\(prevTok\.actor, heal\);/.test(code),
+    "(3) the edha-regen turn-end tick gates before it writes");
+  assert.ok(/let got = edhaHealCutGate\(owner, back\);/.test(code),
+    "(4) the decay lifesteal heal-back gates before it writes");
+  assert.ok(/const got = edhaHealCutGate\(t\.actor, amt\);/.test(code),
+    "(5) edhaBurstDetonate gates per caught token, while building `hits`");
+  // …and edhaApplyBurstResults, the WRITER those hits land through, still does not.
+  const applyBurst = code.slice(code.indexOf("async function edhaApplyBurstResults("));
+  const applyBurstBody = applyBurst.slice(0, applyBurst.indexOf("const EDHA_SOCKET_ACTIONS"));
+  assert.ok(applyBurstBody.length > 100, "the edhaApplyBurstResults slice must actually bracket the function");
+  assert.ok(!/edhaHealCutGate\(/.test(applyBurstBody),
+    "R-10 (3): edhaApplyBurstResults stays ungated — Raise Dead's stabilising 1 HP rides it");
 
   // Each writer, by its own shape, still writes the 1 unconditionally.
   assert.ok(/edhaCrossHeal\(victim, Math\.max\(1, 1 - cur\), \{ bypassHealCut: true \}\)/.test(code),

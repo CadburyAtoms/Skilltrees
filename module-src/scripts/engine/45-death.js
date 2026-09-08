@@ -121,11 +121,23 @@ async function edhaDecayTurnTick(combat) {
     const owner = game.actors?.get(d.ownerId);
     const back = Math.floor(amt * (d.healFraction ?? 0.5));
     let healed = "";
+    /* R-83 (a) — ANSWERED 2026-09-07 (Ben, "a"), item 70. The lifesteal heal-back is a HEAL on the
+     * decay's OWNER, and it used to reach `hea` without the No-Healing / Healing-Halved gate: a
+     * Withered necromancer kept draining HP back out of its victim while an ordinary heal on it was
+     * blocked. Gated HERE, at the emitter; the delivered amount is what lands and what the card
+     * says (item 68's contract), so a blocked heal-back names the mark instead of a number and the
+     * decay DAMAGE above is untouched — the victim still rots either way. */
     if (owner && back > 0 && (Number(owner.system?.resources?.hea?.value) || 0) > 0) {
       const ohea = owner.system.resources.hea;
       const omax = Number(ohea?.max?.value ?? ohea?.max) || 0;
-      const next = Math.min(omax || Infinity, (Number(ohea?.value) || 0) + back);
-      try { await edhaResourceWrite(owner, "hea", { value: next }, edhaBookkeepingTag(`${d.sourceName || "Decay"} (lifesteal)`)); healed = ` ${owner.name} regains <strong>${back}</strong> HP.`; } catch (e) {}
+      let got = edhaHealCutGate(owner, back);
+      if (got > 0) {
+        const next = Math.min(omax || Infinity, (Number(ohea?.value) || 0) + got);
+        try { await edhaResourceWrite(owner, "hea", { value: next }, edhaBookkeepingTag(`${d.sourceName || "Decay"} (lifesteal)`)); }
+        catch (e) { got = 0; }   // the write failed — never claim HP that did not land (the pre-gate try/catch said the same)
+      }
+      const line = edhaHealLine(owner, back, got, n => `${owner.name} regains <strong>${n}</strong> HP`);
+      healed = line ? ` ${line}.` : "";
     }
     ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), rolls: [dr],
       content: `<p>🦠 <strong>${d.sourceName || "Decay"}</strong> — ${actor.name} takes <strong>${amt}</strong> ${d.type || "vital"} (start of turn).${healed}</p>` });
