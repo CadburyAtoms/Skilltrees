@@ -9,7 +9,9 @@ by the same script — do not hand-edit the table.
 its marker line — never into `EDHA_FOUNDRY_HANDOFF.md`, which is now the cold-start REFERENCE
 alone (what is true today). Insert it as heading, body, blank line — directly under the marker's
 own blank line; the heading that was first stays untouched (exactly one blank line sits between
-the marker and the first heading, checked by `scripts/lint-changelog.js`, item 100). A delta's
+the marker and the first heading, checked by `scripts/lint-changelog.js`, item 100). A new delta
+also bumps the count and date range in the month file's header line AND in the table below — the
+same gate compares both to the real heading count. A delta's
 original commit: `git log -S"<delta title>" --
 EDHA_FOUNDRY_HANDOFF.md` (`--follow` cannot track a block that left a file that still exists).
 
