@@ -3330,3 +3330,37 @@ green. DOCS-ONLY.
 **PM:** lane R · model sonnet · size S · deps — (branch from the `main` that has this item; item 97
 runs in parallel on other files — expect the usual changelog-top / dashboard merge at review) ·
 verify: the ⚑ count before/after + gates. Filed 2026-09-07 22:0x from the phone inbox.
+
+## 99. [ ] `pm-state.js` projects the WHOLE run log into `pm/state` — the phone document hit the store's 256 KiB cap on 2026-09-08 00:04 and the push failed
+
+**Why:** the mobile board's live document `pm/state` is written with `Artifact write_db` from
+`docs/pm-state.json`, and the store caps one document at **256 KiB** (the same cap the dashboard
+chunks are sharded under — `--dashboard-dir` already respects it). `scripts/pm-state.js` projects
+the board's run log in full (`runLog[]`, 212 rows = 154 KB of the 259 KB JSON tonight; the queue is
+another 83 KB), so at 00:04 ET on 2026-09-08 the push was refused — *"db write failed
+(invalid-argument): the server could not accept the request as shaped"* — and the phone froze on the
+22:21 ET state. Every run-log row makes it worse; the 22:21 push had ~3 KB of headroom.
+
+**What to do:** in `scripts/pm-state.js`, cap what is PROJECTED, not what is parsed: `runLog` carries
+the most recent **N = 60** rows (newest last, as today) plus `runLogTotal` (the full count) and
+`runLogFrom` (the date of the oldest projected row); `dispatches` (the budget math) and any
+per-item lookups (`[...runLog].reverse().find(...)` at ~L458) keep reading the FULL parsed log, so
+trailing-window counts and "last dispatch of item N" never truncate. Add `--runlog-rows <n>` to
+`parseArgs` for the PM to override (0 = all). `docs/pm-board-mobile.html`: if the run-log panel has
+a header, show "last N of M" from those two fields; no other page change. Pin it in
+`tests/pm-state.test.js`: a synthetic board with 400 run-log rows projects `runLog.length === 60`,
+`runLogTotal === 400`, `dispatches` counted from all 400, and the serialized state stays under
+262,144 bytes; plus the real `docs/PM_BOARD.md` projection under the cap (state the byte count).
+Mutation: the cap removed → the length assertion fails. Regenerate `docs/pm-state.json` with the
+new default and commit it (the tracked file is what the phone shows — Ben's 2026-09-06 instruction).
+TOOLING-only; the page republish (if the panel header changed) is the PM's.
+
+**Done when:** `node scripts/pm-state.js --live docs/pm-live.json --out docs/pm-state.json` writes a
+file whose JSON is under 200 KB with today's board; the pins pass and fail under the mutation; the
+full-log invariants (`dispatches`, per-item last-dispatch) are asserted; `node scripts/gates.js`
+green. TOOLING-only.
+
+**PM:** lane R · model sonnet · size S · deps — (branch from the `main` that has this item; item 70
+runs in parallel on engine files — expect the changelog-top / dashboard / TODO merge at review) ·
+verify: the byte count before/after + the mutation + gates. Filed 2026-09-08 00:1x by the PM after
+the failed push.
