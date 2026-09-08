@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-08T01:59:37.073Z",
+  "generatedAt": "2026-09-08T02:21:32.702Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "1f894fa295",
-    "commit": "5a0a6ac",
+    "hash": "635ae7ada0",
+    "commit": "60d0c6e",
     "branch": "main",
     "repo": "CadburyAtoms/Skilltrees"
   },
@@ -42,27 +42,13 @@
     "nextOpenAt": null
   },
   "pm": {
-    "status": "awake",
-    "note": "21:58 ET: your four phone notes are recorded (bat run 21:52 verified — content unchanged; R-56 = cosmere ladder → item 83 GO tonight; the Ashkar art row and the stale session-1 state line → item 98). Foundry was DOWN at 21:56–21:58 after the bat run — relaunch it before midnight so bench run 44 can join. Running: item 97 (sonnet) — the PM-R17 docs sweep (your two PCs: refresh yes, edit no). Item 98 (sonnet) dispatches when the board PR merges. After 00:00: item 70 → item 83 → push live → bench run 44 (step zero: ⟳ Sync Talents on both PCs). Waiting on Ben: nothing, except Foundry back up.",
+    "status": "waiting",
+    "note": "22:20 ET: item 98 merged (#305) — the Ashkar art row is retired on your word and the session-1 state line is true again (W23 round and capitals done; the two battle maps' art is yours; the ferry-pair stop waits for a session-forge sitting with you, deferred on your note). Nothing is running; every Sonnet-sized item is closed. Foundry was still DOWN at 22:20 after your 21:52 bat run — relaunch it before midnight so bench run 44 can join. After 00:00: item 70 → item 83 (cosmere ladder) → push live → bench run 44 (step zero: ⟳ Sync Talents on both PCs). Waiting on Ben: only Foundry back up.",
     "waitingOn": "Foundry relaunch before 00:00 (bench 44)",
     "nextWakeAt": "2026-09-08T04:00:00Z",
     "session": "2026-09-07 20:30 ET hand-started (Ben's third paste) — session of record"
   },
-  "workers": [
-    {
-      "item": "97",
-      "title": "PM-R17 docs sweep — Ben's two PCs: refresh yes (⟳ Sync Talents), edit no; rewrite the UNTOUCHABLE rule everywhere it is stated",
-      "model": "sonnet",
-      "size": "S",
-      "lane": "R",
-      "branch": "pm/97-pc-refresh-rule",
-      "startedAt": "2026-09-08T01:56:00Z",
-      "agent": "Work item 97",
-      "phase": "working",
-      "pr": null,
-      "note": "bench-run hard rules 1 + 4, bench-marathon, runbook + refresh recipe, handoff, CLAUDE.md map row, bench-setup header comment"
-    }
-  ],
+  "workers": [],
   "usage": null,
   "queue": [
     {
@@ -1196,26 +1182,26 @@
     {
       "pos": 93,
       "item": "97",
-      "title": "PM-R17 — Ben's two PCs may be REFRESHED by agents (⟳ Sync Talents / pull-from-pack), never EDITED (stats, items, text): rewrite the \"UNTOUCHABLE\" hard rule at every statement (bench-run SKILL hard rules 1 + 4, bench-marathon SKILL, the runbook + a refresh recipe, the handoff reference, the CLAUDE.md map row, bench-setup-console.js's header comment; the script's PROTECTED guard STAYS — it guards edits), historical text left alone. DOCS-ONLY. Filed 21:5x from Ben's chat ruling. Dispatched 21:56 (sonnet, worktree pm/97-pc-refresh-rule)",
+      "title": "PM-R17 — Ben's two PCs may be REFRESHED by agents (⟳ Sync Talents / pull-from-pack), never EDITED (stats, items, text): rewrite the \"UNTOUCHABLE\" hard rule at every statement (bench-run SKILL hard rules 1 + 4, bench-marathon SKILL, the runbook + a refresh recipe, the handoff reference, the CLAUDE.md map row, bench-setup-console.js's header comment; the script's PROTECTED guard STAYS — it guards edits), historical text left alone. DOCS-ONLY. Filed 21:5x from Ben's chat ruling. Dispatched 21:56 (sonnet, worktree pm/97-pc-refresh-rule). Merged 22:13 after review — all four live statements rewritten (bench-run hard rules 1 + 4 with Ben's sentence quoted once, bench-marathon, the runbook's safety bullet + hard-rules clause, the handoff bullet, the CLAUDE.md map row, the setup script's header comment), a numbered \"Refresh the two PCs\" step 2 added to the runbook's per-run checklist (steps renumbered 3→10, one cross-ref fixed), R-8 in §K.1 points at PM-R17; the PROTECTED guard and tests/bench-orphans.test.js untouched; the worker merged main itself (#303) and CI ran green on the merge head 7244e2c; grep proof: every remaining \"untouchable\" hit is historical or a PM-file description of the ruling. 3.3M / 185 turns / 16 min",
       "lane": "R",
       "model": "sonnet",
       "size": "S",
       "deps": "PM-R17 ✓",
-      "status": "running",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 304
     },
     {
       "pos": 94,
       "item": "98",
-      "title": "Phone-inbox close-out 21:53 — the Ashkar ART BACKLOG row retired on Ben's word (*\"This can be marked complete. We will revisit the art and session building loop later.\"*; the Kettavar twin stays open unless he names it) and the stale campaign-state line *\"Session 1 is ready pending Ben's ⚑ batch\"* rewritten to today's truth (W23 round + capitals DONE, battle-map art his, the ferry-pair stop → a session-forge refresh sitting with Ben, deferred on his note). DOCS-ONLY. Filed 22:0x",
+      "title": "Phone-inbox close-out 21:53 — the Ashkar ART BACKLOG row retired on Ben's word (*\"This can be marked complete. We will revisit the art and session building loop later.\"*; the Kettavar twin stays open unless he names it) and the stale campaign-state line *\"Session 1 is ready pending Ben's ⚑ batch\"* rewritten to today's truth (W23 round + capitals DONE, battle-map art his, the ferry-pair stop → a session-forge refresh sitting with Ben, deferred on his note). DOCS-ONLY. Filed 22:0x. Dispatched 22:02 (sonnet, worktree pm/98-inbox-closeout-2153). Merged 22:20 after review — the Ashkar row [x] with Ben's quote inline, the Kettavar twin left open; the state paragraph rewritten with the capitals verified from the map JSON (5 of 35: Maelstrand, Kragmoot, Goldenport, Raskeld, Kaelmouth) and Ben's question + answer recorded inline; codex in sync (no rebuild). CONFLICTING at report (base #303) → the PM merged main (changelog: 98 above 97; dashboard regenerated) and corrected the delta's For-Ben count to the worker's own 13 → 11 (the item's TODO heading quoted \"⚑ batch\" and had counted itself); gates 11/11; CI green on cbc4008. 2.6M / 167 turns / 15 min",
       "lane": "R",
       "model": "sonnet",
       "size": "S",
-      "deps": "this PR merged",
-      "status": "queued",
+      "deps": "#303 ✓",
+      "status": "merged",
       "statusDetail": null,
-      "pr": null
+      "pr": 305
     }
   ],
   "rulings": [
@@ -4171,6 +4157,48 @@
       "weightedM": null,
       "outcome": "board PR + dispatch",
       "pr": null
+    },
+    {
+      "date": "2026-09-07",
+      "time": "21:56",
+      "at": "2026-09-08T01:56:00.000Z",
+      "item": "Item 97 (PM-R17 — the two PCs refresh-only, never edited; the \"UNTOUCHABLE\" rule rewritten at every live statement) — work-item, worktree",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "16 min, 185 turns",
+      "weighted": "3.3M",
+      "weightedM": 3.3,
+      "outcome": "merged 22:13 after review, no trailers; the worker merged main itself after #303 landed (dashboard regenerated), CI green on the merge head 7244e2c, gates 11/11 re-run by the PM in the worktree. Four live statements rewritten + the runbook's new \"Refresh the two PCs\" step 2 (steps renumbered, one cross-ref fixed) + R-8's pointer; script guard and orphan test untouched; grep proof clean (remaining hits historical). DOCS-ONLY",
+      "pr": 304
+    },
+    {
+      "date": "2026-09-07",
+      "time": "22:02",
+      "at": "2026-09-08T02:02:00.000Z",
+      "item": "Item 98 (phone-inbox close-out — the Ashkar art row retired on Ben's word; the stale session-1 state line rewritten) — work-item, worktree",
+      "itemNo": null,
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": "15 min, 167 turns",
+      "weighted": "2.6M",
+      "weightedM": 2.6,
+      "outcome": "merged 22:20 after review, no trailers; CONFLICTING at report (base #303) → the PM merged main into the branch (changelog: 98 above 97; dashboard regenerated) and corrected the delta's For-Ben count to the worker's own verified 13 → 11 (its reason: the item's TODO heading quoted \"⚑ batch\" and had counted itself); gates 11/11 in the worktree; CI green on cbc4008. Capitals verified from the map JSON (5 of 35); codex in sync; the Kettavar art row left open on purpose. DOCS-ONLY",
+      "pr": 305
+    },
+    {
+      "date": "2026-09-07",
+      "time": "22:22",
+      "at": "2026-09-08T02:22:00.000Z",
+      "item": "Evening tally (20:30 → 22:22, Ben's hours until 21:00 by his paste, the shift after): 4 items merged (bench 44a #298, 96 #300, 97 #304, 98 #305) + 5 board PRs (#297, #299, #301, #302, #303) = 9 PRs; workers 15.5M weighted (all Sonnet: 4.5 + 5.1 + 3.3 + 2.6); PM 14.6M / 338 turns (four reviews, each with a main merge and a correction; three Ben inputs — a paste, two chat rulings, four phone notes). Rulings closed: R-56 (cosmere ladder → item 83 GO), PM-R17 (PCs refresh-only); the desktop Rulings tab is empty of open rulings. Queue: nothing Sonnet-sized; Opus resumes 00:00 ET — 70 → 83 → push live + hash → bench run 44 (if Foundry is back: DOWN since the 21:52 bat run, last probed 22:20); 80 / 88 / 81 / 62 the night after. Waiting on Ben: only the Foundry relaunch. Loop idles until 00:00 unless Ben writes; stop before 07:00 with a handoff row",
+      "itemNo": "298",
+      "model": "fable",
+      "isDispatch": false,
+      "duration": "1 h 52",
+      "weighted": "14.6M (PM) + 15.5M workers",
+      "weightedM": 14.6,
+      "outcome": "waiting",
+      "pr": null
     }
   ],
   "dispatches": [
@@ -4701,6 +4729,18 @@
       "model": "sonnet",
       "item": null,
       "pr": 300
+    },
+    {
+      "at": "2026-09-08T01:56:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 304
+    },
+    {
+      "at": "2026-09-08T02:02:00.000Z",
+      "model": "sonnet",
+      "item": null,
+      "pr": 305
     }
   ],
   "statusVocab": [
