@@ -3260,7 +3260,7 @@ the concatenated moved bodies before = after, both hashes in the PR body); `pars
 the parser counts before/after, the hash proof, the mutation, gates. Filed 2026-09-07 20:4x from
 Ben's third dashboard paste (43 ✓ DONE ticks + the R-47 note).
 
-## 97. [ ] PM-R17 — Ben's two PCs may be REFRESHED by agents (⟳ Sync Talents / sync-from-pack), never edited: rewrite the "UNTOUCHABLE" hard rule everywhere it is stated
+## 97. [x] PM-R17 — Ben's two PCs may be REFRESHED by agents (⟳ Sync Talents / sync-from-pack), never edited: rewrite the "UNTOUCHABLE" hard rule everywhere it is stated (2026-09-07, PR #304)
 
 **Why:** Ben, chat 2026-09-07 21:51 ET, verbatim: *"I'm rewriting the previous rule regarding Tem
 parinaem and Soggy Bottom — they get refreshes from you and agents but no edits to stats, items, or
