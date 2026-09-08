@@ -3435,7 +3435,7 @@ the site either way. Deploy class per the answer.
 **PM:** lane R (b) / B (a) · model sonnet (b) / opus (a) · size S · deps **R-92** · verify: the
 census + the pin. Filed 2026-09-08 00:3x from item 70's report.
 
-## 102. [ ] `scripts/handoff-split.js` regenerates the month headers and the README from its own template — a re-run would drop item 100's blank line, rule sentences, and true counts
+## 102. [x] `scripts/handoff-split.js` regenerates the month headers and the README from its own template — a re-run would drop item 100's blank line, rule sentences, and true counts (2026-09-08, PR #315)
 
 **Why:** item 100 (PR #311, 2026-09-08) put exactly one blank line between each month file's
 marker line and its first delta heading, wrote the "insert as heading, body, blank line; bump the
