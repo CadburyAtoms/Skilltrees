@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-08T04:55:15.462Z",
+  "generatedAt": "2026-09-08T05:09:30.265Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "7136b5cee5",
-    "commit": "de6a328",
+    "hash": "cc629fa6f8",
+    "commit": "d9a4433",
     "branch": "main",
     "repo": "CadburyAtoms/Skilltrees"
   },
@@ -43,24 +43,24 @@
   },
   "pm": {
     "status": "awake",
-    "note": "00:55 ET (09-08): item 100 merged (#311) — a changelog gate now catches a displaced delta heading and a stale index (12 gates). Item 70 is live (pushed 00:31) — press F5 when Foundry is back; it has been DOWN since your 21:52 bat run. Running: item 83 (opus): the cosmere senses ladder for everyone per your R-56 answer — I push the engine half when it merges, the adversaries half needs your next bat run + ⟳ Sync Adversaries. Queued: item 102 (sonnet, the split script learns the new rule). Waiting on you: R-92 (a fourth ungated heal writer — Mantle of the Aspirant's redirect unwind; default: declare it the exception) and Foundry for bench run 44.",
+    "note": "01:10 ET (09-08): item 83 merged (#313) and its engine half is live — Senses Range is the cosmere ladder for everyone now (AWA 0 = 5 ft). Owed by you: F5 (sheets for items 70 + 83), then ONE deploy-to-foundry.bat + ⟳ Sync Adversaries (adversary tokens 10 → 5), and `edha.fixPcTokens()` from the GM console for existing PC tokens. The rulings doc has ZERO open rulings. Foundry has been DOWN since your 21:52 bat run — bench run 44 waits for it. Running: item 102 (sonnet, changelog split script). Waiting on you: R-92 (a fourth ungated heal writer — Mantle of the Aspirant's redirect unwind; default: declare it the exception) and Foundry.",
     "waitingOn": "Foundry relaunch + F5 (bench 44); R-92 (default: declare the exception)",
     "nextWakeAt": null,
     "session": "2026-09-07 20:30 ET hand-started (Ben's third paste) — session of record, overnight shift"
   },
   "workers": [
     {
-      "item": "83",
-      "title": "R-56 — the cosmere senses ladder for every actor type (engine derive, build token-sight stamp, wizard preview, bench PCs, docs, tests); R-56 recorded and moved to §K",
-      "model": "opus",
-      "size": "M",
-      "lane": "H",
-      "branch": "pm/83-cosmere-senses-ladder",
-      "startedAt": "2026-09-08T04:32:00Z",
-      "agent": "Work item 83",
+      "item": "102",
+      "title": "handoff-split.js emits item 100's blank line + rule sentences from one shared source, counts from the real headings; idempotence proof",
+      "model": "sonnet",
+      "size": "S",
+      "lane": "R",
+      "branch": "pm/102-handoff-split-template",
+      "startedAt": "2026-09-08T04:58:00Z",
+      "agent": "Work item 102",
       "phase": "working",
       "pr": null,
-      "note": "ENGINE (F5, PM push) + adversaries REBUILD + ⟳ Sync (Ben's next bat); Opus 2 of 3 for 09-08"
+      "note": "TOOLING-only"
     }
   ],
   "usage": null,
@@ -992,26 +992,26 @@
     {
       "pos": 76,
       "item": "82",
-      "title": "Adversary statting standard writes senses + speed per block (Ben 09-07: the bestiary skill should stat them so tokens inherit sight and speed); a lint; the values for the 52 existing blocks are invented content → ONE approval batch to Ben, then an adversaries REBUILD",
+      "title": "Adversary statting standard writes senses + speed per block (Ben 09-07: the bestiary skill should stat them so tokens inherit sight and speed); a lint; the values for the 52 existing blocks are invented content → ONE approval batch to Ben, then an adversaries REBUILD. Re-scoped 2026-09-08 01:1x after item 83 (#313): the default a block gets WITHOUT a senses line is now the system ladder — 5 ft at AWA 0, 10 at 1–2, 20 at 3–4 — not the Edha table's 10; the item's per-block line is the bespoke override above that default (the Grove's senses: 30 shape), and the approval batch's proposals should be read against the ladder. Dep 83 cleared; still gated on Ben's batch",
       "lane": "H",
       "model": "sonnet",
       "size": "M",
-      "deps": "83 · Ben's batch",
+      "deps": "83 ✓ · Ben's batch",
       "status": "blocked",
-      "statusDetail": "83",
+      "statusDetail": "Ben's batch",
       "pr": null
     },
     {
       "pos": 77,
       "item": "83",
-      "title": "R-56 REVERSAL — the cosmere senses ladder for everyone (drop the Edha AWA table from edhaDeriveSheetStats, advSensesRangeFt in the build → adversaries REBUILD, the wizard preview, bench-setup PC sight, Character_Building_Rules.md §Senses Range, ACTOR_STAT_DERIVATION.md, the edhaSensesRangeFtFromAwa pins). Scoped in chat 09-07; Ben asked to be told before changing — GO 21:51 (Ben, chat, verbatim: *\"Cosmere ladder for everyone.\"*); the worker also records R-56 ANSWERED in EDHA_RULINGS.md and moves it to §K. ENGINE (PM push) + adversaries REBUILD (Ben's next bat). Tonight's second Opus dispatch, after item 70 (00:00 ET). Dispatched 00:32 (opus, worktree pm/83-cosmere-senses-ladder; Opus 2 of 3 for 09-08)",
+      "title": "R-56 REVERSAL — the cosmere senses ladder for everyone (drop the Edha AWA table from edhaDeriveSheetStats, advSensesRangeFt in the build → adversaries REBUILD, the wizard preview, bench-setup PC sight, Character_Building_Rules.md §Senses Range, ACTOR_STAT_DERIVATION.md, the edhaSensesRangeFtFromAwa pins). Scoped in chat 09-07; Ben asked to be told before changing — GO 21:51 (Ben, chat, verbatim: *\"Cosmere ladder for everyone.\"*); the worker also records R-56 ANSWERED in EDHA_RULINGS.md and moves it to §K. ENGINE (PM push) + adversaries REBUILD (Ben's next bat). Tonight's second Opus dispatch, after item 70 (00:00 ET). Dispatched 00:32 (opus, worktree pm/83-cosmere-senses-ladder; Opus 2 of 3 for 09-08). Merged 01:07 after review — the sheet half is a DELETION: the cosmere system's CommonActorDataModel.prepareSecondaryDerivedData (index.js:8455) already writes the ladder for both actor models, so edhaDeriveSheetStats's Edha-table write was removed; the four surfaces the system does not derive (token-sight stamp with AWA = value + bonus, the build's advSensesRangeFt, the wizard preview with ∞ rendered, bench-setup-console.js) re-tabled to [5,10,20,50,100,∞][ceil(AWA/2)]. Proofs: derivation 0–5 → 5·10·10·20·20·50 for both types; scratch pack read-back 51 of 52 tokens 10 → 5, the Grove 30 unchanged, 0 other diffs, validators green; two mutations (6 and 9 failures) restored to 1064/0; --ci 14 gates. R-56 ANSWERED verbatim and moved to §K.7 — the rulings doc has zero open rulings; six 🤖 rows 83-1 … 83-6 (83-2 / 83-3 BLOCKED-ON-DEPLOY). Pushed live 01:08 (hash match) — Ben owes an F5 (sheets), then a bat run + ⟳ Sync Adversaries (tokens), and edha.fixPcTokens() for existing PC tokens (row 83-6 checks that claim). Found: item 82's default is now 5 ft (re-scoped below); ACTOR_STAT_DERIVATION.md §1/§3 still describe R-54's removed +1 → item 103. 6.5M / 288 turns / 35 min",
       "lane": "H",
       "model": "opus",
       "size": "M",
       "deps": "R-56 ✓ (chat 21:51)",
-      "status": "running",
+      "status": "bench-pending",
       "statusDetail": null,
-      "pr": null
+      "pr": 313
     },
     {
       "pos": 96,
@@ -1028,12 +1028,12 @@
     {
       "pos": 98,
       "item": "102",
-      "title": "scripts/handoff-split.js regenerates the month headers and the README from its own template — a re-run would drop item 100's blank line, rule sentences and true counts, and the new lint-changelog gate would fail. Make the template emit them and compute counts/date ranges from the real headings; an idempotence proof (re-run on the real repo → empty git diff) and a fixture pin through the gate's own check. TOOLING-only. Found by item 100; filed 00:5x",
+      "title": "scripts/handoff-split.js regenerates the month headers and the README from its own template — a re-run would drop item 100's blank line, rule sentences and true counts, and the new lint-changelog gate would fail. Make the template emit them and compute counts/date ranges from the real headings; an idempotence proof (re-run on the real repo → empty git diff) and a fixture pin through the gate's own check. TOOLING-only. Found by item 100; filed 00:5x. Dispatched 00:58 (sonnet, worktree pm/102-handoff-split-template), parallel to 83",
       "lane": "R",
       "model": "sonnet",
       "size": "S",
-      "deps": null,
-      "status": "queued",
+      "deps": "#312 ✓",
+      "status": "running",
       "statusDetail": null,
       "pr": null
     },
@@ -1322,34 +1322,6 @@
     "liveEngineVersion": null
   },
   "runLog": [
-    {
-      "date": "2026-09-06",
-      "time": "22:33",
-      "at": "2026-09-07T02:33:00.000Z",
-      "item": "Item 10 batch 2 (the last 11 dispoFailOpen reads — picker candidates, the empty-note sweep, the movement-window card, the prohibition dialog, the cleanse beacon list — onto edhaSideSame / edhaSideHostile, ratchet 11 → 0) — work-item via fable-worker, worktree",
-      "itemNo": null,
-      "model": "fable (medium)",
-      "isDispatch": false,
-      "duration": null,
-      "weighted": null,
-      "weightedM": null,
-      "outcome": "the queue's last engine item; lane B (each flip changes what a human sees for an unset-disposition token → 🤖 rows). Five workers in flight: bench 41, 74, 75, 76, 10",
-      "pr": null
-    },
-    {
-      "date": "2026-09-06",
-      "time": "22:31",
-      "at": "2026-09-07T02:31:00.000Z",
-      "item": "Item 74 (single-scope build TDZ crash) — work-item via fable-worker, worktree",
-      "itemNo": null,
-      "model": "fable (medium)",
-      "isDispatch": false,
-      "duration": "9 min, 74 turns",
-      "weighted": "1.1M",
-      "weightedM": 1.1,
-      "outcome": "merged 22:40 after review (gh mergedAt below), no trailers, no bounce; the worker found adversaries alone was broken the same way (the item named only items) and pinned both; content parity of all five packs vs all proven; TOOLING-only, nothing owed to Foundry",
-      "pr": 260
-    },
     {
       "date": "2026-09-06",
       "time": "22:31",
@@ -2161,9 +2133,37 @@
       "weightedM": 3.3,
       "outcome": "merged 00:54 after review, no trailers; CLEAN (83 had not merged); gates 12/12 in the worktree (the new lint-changelog included), CI green on 871992a. One PM correction on the branch: the gate's count check obliges every delta to bump the month header and the README row, and nothing told workers so — added to the work-item skill, the four month files and the README. Found: handoff-split.js would undo the rule on a re-run → item 102 (sonnet S). TOOLING-only",
       "pr": 311
+    },
+    {
+      "date": "2026-09-08",
+      "time": "00:58",
+      "at": "2026-09-08T04:58:00.000Z",
+      "item": "Dispatched item 102 (sonnet, worktree pm/102-handoff-split-template — the split script learns item 100's rule; one shared source for the gate and the generator; idempotence proof) the minute #312 merged; parallel to 83. Foundry still DOWN at 00:57",
+      "itemNo": "312",
+      "model": "sonnet",
+      "isDispatch": true,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "running",
+      "pr": null
+    },
+    {
+      "date": "2026-09-08",
+      "time": "00:32",
+      "at": "2026-09-08T04:32:00.000Z",
+      "item": "Item 83 (R-56 final — the cosmere senses ladder for every actor type) — work-item, worktree",
+      "itemNo": null,
+      "model": "opus",
+      "isDispatch": true,
+      "duration": "35 min, 288 turns",
+      "weighted": "6.5M",
+      "weightedM": 6.5,
+      "outcome": "merged 01:07 after review, no trailers; the worker merged main itself (CLEAN), gates 12/12 locally + its own --ci 14, CI green on a2d1d9d. The sheet half is a deletion (the system already derives the ladder on both models — cited to index.js:8455 / :8534), four non-derived surfaces re-tabled, AWA read as value + bonus for token/sheet parity (the worker's one judgment, pinned); pack read-back 51 tokens 10 → 5, Grove 30, 0 other diffs; R-56 moved to §K → zero open rulings; six 🤖 rows. Pushed live 01:08, hash match; Foundry still DOWN — Ben owes F5 + a bat run + ⟳ Sync Adversaries + edha.fixPcTokens(). Found: item 82 re-scoped (default now 5 ft); ACTOR_STAT_DERIVATION.md §1/§3 stale on R-54's +1 → item 103. ENGINE (F5) + adversaries REBUILD",
+      "pr": 313
     }
   ],
-  "runLogTotal": 219,
+  "runLogTotal": 221,
   "runLogFrom": "2026-09-06",
   "dispatches": [
     {
@@ -2747,6 +2747,18 @@
       "model": "sonnet",
       "item": null,
       "pr": 311
+    },
+    {
+      "at": "2026-09-08T04:58:00.000Z",
+      "model": "sonnet",
+      "item": "312",
+      "pr": null
+    },
+    {
+      "at": "2026-09-08T04:32:00.000Z",
+      "model": "opus",
+      "item": null,
+      "pr": 313
     }
   ],
   "statusVocab": [

@@ -2693,6 +2693,15 @@ edit, and ship as an adversaries REBUILD once approved.
 exists and is mutation-verified (a block missing both fails the build); the 52-block value batch
 is written and sent to Ben as one approval menu (not applied before he says yes).
 
+**PM re-scope 2026-09-08 01:1x (after item 83, PR #313):** the default a block gets WITHOUT an explicit
+`senses` line is now the cosmere system's own ladder — `[5, 10, 20, 50, 100, ∞][ceil(AWA/2)]`, so 5 ft at
+AWA 0, 10 at 1–2, 20 at 3–4 — not the Edha table's 10 ft this item was drafted against (R-56 final,
+Ben 2026-09-07 21:51: *"Cosmere ladder for everyone."*). The per-block line this item adds is the
+bespoke override ABOVE that default (Briar-Gone Grove's `senses: 30` is the one shipped instance;
+the build writes it as `useOverride`), and the approval batch's proposed values should be read
+against the ladder: a block only needs a line where its creature should see differently from what
+its AWA already gives it. Dep item 83 is cleared; the gate is Ben's batch.
+
 **PM:** lane H (Ben's approval batch is the gate) · model sonnet · size M · deps item 83 (which
 default the explicit value overrides — R-56's ladder or the Edha table).
 
@@ -3477,3 +3486,25 @@ scripts/gates.js` green. TOOLING-only.
 
 **PM:** lane R · model sonnet · size S · deps — · verify: the mutation + the idempotence diff +
 gates. Found by item 100; filed 2026-09-08 00:5x.
+
+## 103. [ ] `docs/ACTOR_STAT_DERIVATION.md` §1 and its §3 Max-Health row still describe the `+1` that R-54 removed (`EDHA_HP_BONUS` is 0)
+
+**Why:** item 83's worker (PR #313, 2026-09-08) corrected the senses rows of
+`docs/ACTOR_STAT_DERIVATION.md` (§3 / §3a / the mermaid / §6 and a new §3b history table) and
+reported, not fixed, that §1's overview and the §3 Max-Health row still say a level-1 PC gets the
+Edha `+1` max-HP bonus — R-54 answered (c) "remove the +1" on 2026-09-06 and `EDHA_HP_BONUS` has been
+`0` in `module-src/scripts/engine/52-green-instinct.js` since. The doc is the reference CLAUDE.md
+tells sessions to read BEFORE touching any derived-stat formula, so a stale +1 there is a trap.
+
+**What to do:** rewrite §1's max-health sentence(s) and the §3 Max-Health row to today's truth —
+the system's per-level accumulation plus `EDHA_HP_BONUS` (0 since R-54 (c), 2026-09-06; the
+constant stays so a future change is one line), with the R-54 history in one clause — and sweep
+the rest of the file for any other `+1` / "11 at STR 0" claim (R-54's own question); leave §3b
+(item 83's history table) alone. Cite the engine constant by file. DOCS-ONLY.
+
+**Done when:** `grep -n "+1\|11 max\|+ 1" docs/ACTOR_STAT_DERIVATION.md` shows no live claim of the
+bonus (history mentions dated and past-tense are fine, listed in the PR); `node scripts/gates.js`
+green (the doc is not a dashboard source — say so if `--check` disagrees).
+
+**PM:** lane R · model sonnet · size S · deps — · verify: the grep before/after. Found by item 83;
+filed 2026-09-08 01:1x.
