@@ -701,6 +701,15 @@ function edhaCwAttrBudget(level) { return 12 + [3, 6, 9, 12, 15, 18].filter(x =>
 function edhaCwSkillBudget(level) { return 5 + (Math.max(1, Number(level) || 1) - 1) * 2; }
 function edhaCwMaxSkillRank(level) { return Math.floor((Math.max(1, Number(level) || 1) - 1) / 5) + 2; }
 
+// The Senses cell. The ladder's top rung is Number.MAX_SAFE_INTEGER (the system's own ∞ — see
+// `SENSES_RANGES`, cosmere-rpg index.js:8534), reachable at AWA 9, and the attribute cap above
+// level 1 is 99 — so the preview MUST render it as ∞ rather than "9007199254740991 ft". The
+// system's sheet does the same via its `isNumMaxSafeInt` Handlebars helper (index.js:13644).
+function edhaCwSensesCell(awa) {
+  const ft = edhaSensesRangeFtFromAwa(awa);
+  return ft === Number.MAX_SAFE_INTEGER ? "∞" : `${ft} ft`;
+}
+
 // Live derived-stat preview for the attributes page (Ben 07-19: "show what the character's
 // health, focus, investiture, and defenses WILL be at the current distribution"). Its contract is
 // the SHEET, not the rulebook — every number must be what the finished sheet will read, so the
@@ -709,7 +718,11 @@ function edhaCwMaxSkillRank(level) { return Math.floor((Math.max(1, Number(level
 // Bench run 21 caught all three drifting at once when they were: Health missed the then-+1, Move
 // used the SYSTEM's ceil(SPD/2) ladder against the sheet's 20+5×SPD, and Senses was the only one the
 // preview had right. (R-54 has since set EDHA_HP_BONUS to 0, so the Health cell now equals the
-// system's advancement sum — read from the constant, never re-inlined, so the two stay agreed.)
+// system's advancement sum — read from the constant, never re-inlined, so the two stay agreed.
+// R-56's 2026-09-07 reversal — item 83 — has since made Senses the SYSTEM's ladder too: the cell
+// still reads the shared helper, but that helper is now the system's `[5,10,20,50,100,∞]` by
+// ceil(AWA/2), so the preview promises exactly what the system will derive onto the sheet.
+// MOVEMENT is now the only cell here that is an Edha rule rather than a system one.)
 // The rest mirror the system: health sums the advancement rules (rule.health +
 // STR where healthIncludeStrength — read from CONFIG at runtime); Focus 2+WIL; defenses 10+pair;
 // recovery is the system's ceil(WIL/2) die ladder; Investiture 2+max(AWA,PRE) is the Edha rule
@@ -731,7 +744,7 @@ function edhaCwDerivedPreview(actor, cur) {
   return `<div class="edha-cw-stats-box" style="display:flex;flex-wrap:wrap;gap:4px 14px;justify-content:center;text-align:center;padding:5px 8px;border:1px solid rgba(127,208,255,.35);border-radius:4px;margin:4px auto">
     ${cell("Health", hp)} ${cell("Focus", 2 + cur.wil)} ${cell("Investiture", `${2 + Math.max(cur.awa, cur.pre)}*`)}
     ${cell("Phys def", 10 + cur.str + cur.spd)} ${cell("Cog def", 10 + cur.int + cur.wil)} ${cell("Spi def", 10 + cur.awa + cur.pre)}
-    ${cell("Move", `${edhaWalkRateFtFromSpd(cur.spd)} ft`)} ${cell("Recovery", DICE[idx(cur.wil)])} ${cell("Senses", `${edhaSensesRangeFtFromAwa(cur.awa)} ft`)}
+    ${cell("Move", `${edhaWalkRateFtFromSpd(cur.spd)} ft`)} ${cell("Recovery", DICE[idx(cur.wil)])} ${cell("Senses", edhaCwSensesCell(cur.awa))}
     <span style="flex-basis:100%;font-size:.85em;opacity:.65;text-align:center">Live at this spread — path/item bonuses land on top. *Investiture needs a leyline attunement.</span>
   </div>`;
 }
@@ -784,8 +797,9 @@ async function edhaCwStepperDialog(DV2, { title, intro, rows, cur, budget, capFo
 // for each — make it accurate"): defenses are the system's 10+pair formulas; max Health adds STR
 // on level gains (deriveMaxHealth); Focus max = 2+WIL and the Recovery die steps with WIL (both
 // system-derived); movement rate derives from SPD (edhaWalkRateFtFromSpd — the EDHA 20+5×SPD
-// formula, which replaces the system's ladder on the sheet); Senses Range derives from AWA
-// (edhaSensesRangeFtFromAwa); Investiture 2 + max(AWA, PRE) is the Edha rule. The
+// formula, which replaces the system's ladder on the sheet); Senses Range derives from AWA on the
+// SYSTEM's own ladder (edhaSensesRangeFtFromAwa, R-56 reversed at item 83 — the engine no longer
+// overrides the sheet's number at all); Investiture 2 + max(AWA, PRE) is the Edha rule. The
 // skill list per attribute is built LIVE from CONFIG.COSMERE.skills, so it stays accurate.
 const EDHA_CW_ATTR_STAT = {
   str: "Physical defense (10+STR+SPD) · max Health (each level's gain adds STR) · carry/lift capacity",
