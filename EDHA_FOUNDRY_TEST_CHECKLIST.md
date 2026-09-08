@@ -4576,7 +4576,7 @@ Slagbull moves **5 ft** toward Bench Adv — Hazewyrm Elder, **ignoring Reaction
 really moved 300 px = 5 ft. The 5 is arithmetically right, not a fallback: `bySize` reads
 `EDHA_SIZE_FT[edhaColorRank(owner,"red")]` and the Slagbull's red rank is **2** → `EDHA_SIZE_FT[2]`
 = **5 ft**.)*
-- [ ] ⚑ **ART BACKLOG, not a test** — placeholder icons on all five Ashkar blocks. Tracked in `EDHA_ADVERSARY_ART_WISHLIST.md`; there is nothing here to bench, and no bench run can retire it. It stays listed only so the art debt stays visible. *(Re-labelled 2026-07-27w.)*
+- [x] ⚑ **ART BACKLOG, not a test** — placeholder icons on all five Ashkar blocks. Tracked in `EDHA_ADVERSARY_ART_WISHLIST.md`; there is nothing here to bench, and no bench run can retire it. It stays listed only so the art debt stays visible. *(Re-labelled 2026-07-27w.)* *(RETIRED on Ben's word — phone inbox, 2026-09-07 21:53 ET, verbatim: "This can be marked complete. We will revisit the art and session building loop later." The art debt itself stays tracked in `EDHA_ADVERSARY_ART_WISHLIST.md`, untouched by this row's retirement — only the bench-queue placeholder is closed. The Kettavar twin row below (~L4674) stays OPEN: Ben named only Ashkar.)*
 
 # Kettavar Tundra Bestiary (rulings 147–148 — statted 2026-07-22; the Kettavar dive Phase-4c gate)
 
