@@ -3377,7 +3377,7 @@ runs in parallel on engine files — expect the changelog-top / dashboard / TODO
 verify: the byte count before/after + the mutation + gates. Filed 2026-09-08 00:1x by the PM after
 the failed push.
 
-## 100. [ ] Changelog hygiene gate — two workers tonight REPLACED the top delta heading instead of inserting above it, and the changelog README index has drifted
+## 100. [x] Changelog hygiene gate — two workers tonight REPLACED the top delta heading instead of inserting above it, and the changelog README index has drifted (2026-09-08, PR #311)
 
 **Why:** twice on 2026-09-07/08 a worker's new delta went in by *replacing* the first `## ` heading
 under the marker line instead of inserting above it — bench 44a (PR #298, displaced item 94's
