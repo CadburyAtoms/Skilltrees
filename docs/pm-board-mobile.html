@@ -397,7 +397,7 @@
       </section>
 
       <section id="log" aria-labelledby="h-log">
-        <div class="eyebrow"><h2 id="h-log">Run log</h2><span class="sub">newest first</span></div>
+        <div class="eyebrow"><h2 id="h-log">Run log</h2><span class="sub" id="log-sub">newest first</span></div>
         <div class="log" id="loglist"></div>
       </section>
       <section id="dash" aria-labelledby="h-dash">
@@ -715,6 +715,17 @@
 
   function renderLog(now) {
     var rows = (state.runLog || []).slice().reverse();
+    // item 99 (2026-09-08): runLog is a PROJECTION (the newest 60 rows by default) — runLogTotal
+    // is the full parsed count, runLogFrom the oldest date still in the projection. Older states
+    // (or a page not yet republished with this fallback) carry neither field, so fall back to the
+    // pre-cap label rather than claiming a total we don't have.
+    var sub = $("log-sub");
+    if (sub) {
+      var total = state.runLogTotal;
+      sub.textContent = (total != null && total > rows.length)
+        ? "last " + rows.length + " of " + total + (state.runLogFrom ? " · since " + state.runLogFrom : "")
+        : "newest first";
+    }
     $("loglist").innerHTML = rows.map(function (r) {
       var when = r.at ? fmtWhen(Date.parse(r.at), now) : (r.date || "");
       return '<div class="entry"><div class="h"><span class="when num">' + esc(when) + '</span><span class="it">' + esc(r.item) + '</span></div>' +

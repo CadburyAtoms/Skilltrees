@@ -26,7 +26,7 @@ const path = require("path");
 
 const REPO = path.resolve(__dirname, "..");
 const { parseBoard, injectState, injectPage, shardDashboard, wallToIso, inWindow, nextWindowOpen,
-  parseWindowEntry, parseBenOnly, STATUS_VOCAB, DASH_CHUNK_BYTES } = require(path.join(REPO, "scripts", "pm-state.js"));
+  parseWindowEntry, parseBenOnly, STATUS_VOCAB, DASH_CHUNK_BYTES, DEFAULT_RUNLOG_ROWS } = require(path.join(REPO, "scripts", "pm-state.js"));
 const dashboard = require(path.join(REPO, "scripts", "build-dashboard.js"));
 
 const FIXTURE = `# PM Board — fixture
@@ -568,4 +568,75 @@ test("pm-state: --inject fills both slots and the page can assemble the dashboar
   for (const c of d.index.chunks) assert.ok(d.chunks[c.id] && d.chunks[c.id].stamp === d.index.stamp, `chunk ${c.id} present under the index's stamp`);
   assert.ok(!out.includes("</script><script>alert"), "nothing in the sources can close the slot early");
   assert.ok(out.length > page.length + 500000, "the whole dashboard rides in the page");
+});
+
+// ---- item 99: runLog is a PROJECTION (2026-09-08) --------------------------------------------
+// The run log alone hit 154 KB of a 259 KB `pm/state` document and the store's 256 KiB cap
+// refused the push (00:04 ET, 2026-09-08). A 400-row synthetic board stress-tests the cap the
+// same way the dashboard shard test above stress-tests DASH_CHUNK_BYTES: derive the expected
+// numbers from the SAME source rows the markdown table is built from, not from hand-counted
+// literals, so the pin does not silently drift if the generator changes.
+const BIG_RUNLOG_ROWS = Array.from({ length: 400 }, (_, i) => {
+  const date = new Date(Date.UTC(2025, 0, 1) + i * 86400000).toISOString().slice(0, 10);
+  // Item "1" appears exactly once, at row 5 — deep in the part the 60-row cap drops (the
+  // projection keeps only the newest 60 of 400, i.e. indices 340-399) — so any per-item lookup
+  // that reads the CAPPED array instead of the full one will fail to find it.
+  const item = i === 5 ? "1" : String((i % 20) + 2);
+  const model = i === 5 ? "sonnet" : i % 3 === 0 ? "opus" : i % 3 === 1 ? "sonnet" : "fable";
+  return { date, item, model };
+});
+const BIG_BOARD = `# PM Board — item 99 stress fixture
+
+## Queue (in order)
+
+| # | Item | Lane | Model | Size | Deps | Status | PR |
+|---:|---|:-:|:-:|:-:|---|---|---|
+| 1 | 1 Test item still running | R | sonnet | S | — | running | |
+
+## Run log
+
+| Date | Item | Model | Duration | Weighted usage | Outcome | PR |
+|---|---|---|---|---:|---|---|
+${BIG_RUNLOG_ROWS.map((r) => `| ${r.date} 10:00 | #${r.item} synthetic row | ${r.model} | 5 min | 0.1M | ok | |`).join("\n")}
+`;
+
+test("pm-state: runLog projects the newest 60 of 400 rows; runLogTotal/runLogFrom describe the full log; dispatches and per-item lookups read the FULL log", () => {
+  const s = parseBoard(BIG_BOARD, { now: NOW, git: GIT });
+  assert.strictEqual(DEFAULT_RUNLOG_ROWS, 60, "the default this test pins against");
+  assert.strictEqual(s.runLog.length, 60, "projected run log caps at the default 60 rows");
+  assert.strictEqual(s.runLogTotal, 400, "the full parsed count ships alongside the cap");
+  assert.strictEqual(s.runLogFrom, BIG_RUNLOG_ROWS[340].date, "runLogFrom is the oldest row still in the projection (row 400-60)");
+  assert.strictEqual(s.runLog[0].date, BIG_RUNLOG_ROWS[340].date, "oldest kept row");
+  assert.strictEqual(s.runLog[59].date, BIG_RUNLOG_ROWS[399].date, "newest row stays last, as today");
+
+  const expectedDispatches = BIG_RUNLOG_ROWS.filter((r) => r.model === "sonnet" || r.model === "opus").length;
+  assert.strictEqual(s.dispatches.length, expectedDispatches, "dispatches is counted from all 400 rows, not the capped 60");
+  assert.ok(expectedDispatches > s.runLog.length, "sanity: the full-log dispatch count exceeds the whole capped projection");
+
+  // The `running` queue row for item 1 must resolve its start time from row 5 — outside the
+  // last-60 window — proving the workers synthesis (`[...runLog].reverse().find(...)`) still
+  // reads the FULL parsed log, not the capped one.
+  assert.strictEqual(s.workers.length, 1);
+  assert.strictEqual(s.workers[0].item, "1");
+  assert.strictEqual(s.workers[0].startedAt, wallToIso(BIG_RUNLOG_ROWS[5].date, "10:00", "America/New_York"), "worker start time resolved past the 60-row cap");
+
+  const bytes = Buffer.byteLength(JSON.stringify(s));
+  assert.ok(bytes < 262144, `serialized state is ${bytes} bytes, must stay under the store's 256 KiB document cap`);
+});
+
+test("pm-state: --runlog-rows overrides the default cap (0 = all)", () => {
+  const all = parseBoard(BIG_BOARD, { now: NOW, git: GIT, runlogRows: 0 });
+  assert.strictEqual(all.runLog.length, 400, "0 means no cap");
+  assert.strictEqual(all.runLogTotal, 400);
+  const ten = parseBoard(BIG_BOARD, { now: NOW, git: GIT, runlogRows: 10 });
+  assert.strictEqual(ten.runLog.length, 10);
+  assert.strictEqual(ten.runLogTotal, 400, "runLogTotal is unaffected by the override");
+  assert.strictEqual(ten.dispatches.length, BIG_RUNLOG_ROWS.filter((r) => r.model === "sonnet" || r.model === "opus").length, "dispatches still full even under a tighter override");
+});
+
+test("pm-state: the real board's projected state stays under the store's 256 KiB document cap", () => {
+  const md = fs.readFileSync(path.join(REPO, "docs", "PM_BOARD.md"), "utf8");
+  const s = parseBoard(md, { now: NOW, git: GIT });
+  const bytes = Buffer.byteLength(JSON.stringify(s));
+  assert.ok(bytes < 262144, `real board projects to ${bytes} bytes`);
 });
