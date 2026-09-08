@@ -3117,7 +3117,7 @@ customized variants: the bulk pass skips them; their own sheet button syncs them
       from Pack** + **＋ Edha Character** (positive control), the player's Actors sidebar footer held
       neither — only Foundry's own "Create Actor". The PC-sheet **⟳ Sync Talents** button IS
       player-facing by design and works on an owned actor.)*
-- [ ] 🤖 **Bulk sync replaces the 07-17c re-drag** — after deploying 07-17c + this together, do
+- [x] 🤖 **Bulk sync replaces the 07-17c re-drag** — after deploying 07-17c + this together, do
       NOT re-drag; click the button once. Then confirm a Mistheron placed BEFORE the deploy rolls
       Spearing Beak's +1d6 only vs fooled targets (the 07-17c `whenTargetFooled` fix) — proof the
       new item rules landed on an existing token.
@@ -3137,7 +3137,32 @@ customized variants: the bulk pass skips them; their own sheet button syncs them
         it needs **Ben to click the bulk button once, or to authorise a bench run to click it**. Row
         stays 🤖 with that blocker named. **Do not re-attempt it un-authorised — six runs have now
         deferred these two without writing down why.**
-- [ ] 🤖 **Renamed copies skipped** — rename a world copy (e.g. "Roek Alpha") → bulk sync skips it
+      - ✅ **RETIRED 2026-09-07, bench run 44a — the bulk-button clause is PROVEN, authorized by Ben**
+        ("I am authorizing a bench run to click it.", his dashboard paste at 20:30 ET, both rows).
+        Joined as `Bench`; served `register-skills.js` hashed **`a23e70…8d9db8d`**, byte-identical
+        to `HEAD` — the 20:28 REBUILD (leyline item 92 + adversaries items 89/93) was confirmed live
+        before the click. A pre-click sweep (`foundry.utils.diffObject` on `system` /
+        `prototypeToken` / `img` / every item's flags+events, actor-by-actor against the pack) found
+        **every one of the 45 real-name world adversaries already byte-matched its pack source** —
+        Ben (or an earlier process) had already synced since the 20:28 rebuild, so no stale-copy
+        differential existed to catch mid-flight; this is recorded plainly rather than invented. A
+        DOM click on `button.edha-adv-sync-all-btn` (found by its exact engine title text, not
+        called as a function) then produced, verbatim from `console.log("Edha Content | adversary
+        sync:", …)`: **45 `synced`** (every real-name actor, each with its item count and, for every
+        actor holding a placed token, its token count — e.g. `"Cinderhound (3 items, 3 tokens)"`,
+        `"Corvaine Line-Caller (8 items)"`), **1 `skipped`** (the renamed fixture, row below), **1
+        `missing`** (`Bench Target — Undefended`, the no-pack-source fixture, expected). Post-click,
+        the same parity sweep against all 44 real-name actors (excluding the bench fixtures) came
+        back **0 diffs** — pack parity holds. All **40 placed tokens** across both `Playtest Map` and
+        `Playtest Map (Copy)` kept their exact `x`/`y` and HP through the sync (position and HP
+        snapshotted before, re-read after, zero mismatches) — the "and their placed tokens" clause
+        the row asks for. World diff: **0 — no change** to any real adversary's data (they already
+        matched) plus the sync's own token-field pushes (a no-op here since prototypes already
+        matched); the only bench-created document (a renamed Mistheron import, used for the row
+        below) was deleted at cleanup. Ben's own PC "⟳ Sync Talents"/re-drag is untouched — the
+        engine only iterates `game.actors.filter(a => a.type === "adversary")`, confirmed by reading
+        `module-src/scripts/engine/27-adversary-pack-sync.js` before the click.
+- [x] 🤖 **Renamed copies skipped** — rename a world copy (e.g. "Roek Alpha") → bulk sync skips it
       and the console lists it under `skipped`; its own sheet button still syncs it.
       - ✅ **NARROWED 2026-07-28j (bench run 22) — the second half is PROVEN.** A renamed,
         drag-stamped copy (`Bench Adv — Mistheron`, `_stats.compendiumSource` pointing at the pack
@@ -3156,6 +3181,16 @@ customized variants: the bulk pass skips them; their own sheet button syncs them
         it needs **Ben to click the bulk button once, or to authorise a bench run to click it**. Row
         stays 🤖 with that blocker named. **Do not re-attempt it un-authorised — six runs have now
         deferred these two without writing down why.**
+      - ✅ **RETIRED 2026-09-07, bench run 44a — the bulk-skip clause is PROVEN.** Run 22's fixture no
+        longer existed, so this run imported a fresh drag-stamped copy of Mistheron into the
+        `Bench Targets` folder and renamed it `Bench Adv — Mistheron (44a)` (recorded as
+        bench-created before the click). The bulk click's console object listed it verbatim as
+        `"Bench Adv — Mistheron (44a) (source: Mistheron)"` under `skipped` — the exact
+        `${name} (source: ${src.name})` shape `edhaSyncAllAdversaries` builds on a name mismatch. A
+        full before/after comparison of the actor (id, name, folder, `compendiumSource`, HP, all 7
+        item ids/names/flags/events, effects) came back **byte-identical** — the bulk pass touched
+        nothing on it. Deleted at cleanup (bench-created, snapshot-proven; no token had been placed
+        for it, confirmed before deletion).
 
 *(**Sheet button · Placed-token push · State preserved · Hand-added items survive · Stale duplicates
 healed — ALL FIVE RETIRED on evidence 2026-07-28j, bench run 22**, driven as four assertions over a
