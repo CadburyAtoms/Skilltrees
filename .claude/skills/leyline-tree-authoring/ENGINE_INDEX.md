@@ -3285,14 +3285,25 @@ picks the rank/range/tint. Items already carry their formula — read `item.syst
   `edhaApplyBurstResults`'s `{amount: 1, heal: true}`; (4) the `edha-hp-floor` `preUpdateActor`
   veto, which rewrites the incoming change and never was a heal — in the family because it makes
   the same promise and a refactor onto a heal helper would gate it by accident.
-  **`edhaHealCutGate` has exactly TWO call sites** (`edhaCrossHeal`'s non-bypass branch + the
-  effect-heal branch); the test counts them, so a third is either a new heal path you declare there
-  or R-10 being reversed by accident. A plain heal on a withered creature is still blocked.
-  ⚠️ **Three heal paths still write `hea` WITHOUT the gate** (found by item 68, 2026-09-06, filed
-  not fixed — closing the gap changes live HP and needs a ruling): `edha-regen`'s turn-end write,
-  the decay lifesteal heal-back, and `edhaBurstDetonate`'s heal hits. `edhaApplyBurstResults`
-  itself must STAY ungated — Raise Dead's stabilizing 1 HP rides it (R-10 (3)); a burst gate
-  belongs in the emitter, the way `edhaCrossHeal`'s relay leg already gates before it emits.
+  **`edhaHealCutGate` has exactly FIVE call sites** (2 → 5 on 2026-09-07, item 70);
+  `tests/drop-to-one-family.test.js` counts them with one declared line each, so a sixth is either
+  a new heal path you declare there or R-10 being reversed by accident. They are:
+  (1) `edhaCrossHeal`'s non-bypass branch — the standard door; (2) the effect-heal branch of the
+  triggered-effect runner; (3) the `edha-regen` turn-end tick; (4) the decay lifesteal heal-back;
+  (5) `edhaBurstDetonate`'s per-target heal, as `hits` is built. A plain heal on a withered
+  creature is still blocked.
+  ✅ **THE RULE ABOVE IS NOW TRUE OF EVERY `hea` WRITER OUTSIDE `applyDamage`.** (3)–(5) were the
+  three paths item 68 found bypassing the gate on 2026-09-06 and filed rather than fixed, because
+  closing the gap moves live HP; **R-83 answered (a) on 2026-09-07** (Ben, dashboard) and item 70
+  gated all three AT THEIR EMITTERS. So a creature that "cannot regain HP" no longer gains it from
+  Mending Aura's turn tick, Apex Form's vital regen, an adversary regen rule, a decay owner's
+  drain-back, or a burst heal; a halved mark halves each of them; and each card is built from what
+  the gate DELIVERED (`edhaHealLine`) rather than from the roll.
+  ⚠️ **`edhaApplyBurstResults` is the DECLARED EXCEPTION and must STAY ungated** — Raise Dead's
+  stabilizing `{amount: 1, heal: true}` hit rides that writer (R-10 (3): a floor against death is
+  not regaining), and gating it would turn "cannot regain HP" into "cannot be saved" for one
+  talent. That is precisely why (5) sits in the EMITTER, the way `edhaCrossHeal`'s relay leg
+  already gates before it emits; the same family test asserts the writer itself stays clean.
 - **`edhaCrossHeal(actor, amount, {bypassHealCut})` RETURNS the amount DELIVERED** (item 68,
   2026-09-06) — the gated number on the owned leg and the relayed leg alike, `0` when the mark
   blocked it; the drop-to-1 bypass reports its full amount. Build every heal card from this, never

@@ -764,6 +764,43 @@ tree-specific re-test is Ambush Bite's row in the Black block; these two are the
 `msg.rolls[0].formula`, and sample the same root again ~2 s after the card lands — the cosmere damage
 card rebuilds its damage section AFTER `renderChatMessageHTML` fires.)*
 
+## The heal-cut gate reaches the last three `hea` writers — item 70 (R-83 (a), 2026-09-07 — ENGINE-ONLY, F5; no rebuild, no ⟳ Sync)
+
+*(Ben answered R-83 **(a)**: a creature that "cannot regain HP" stops gaining HP from the regen tick,
+the decay lifesteal heal-back and burst heals too, so all three were gated **at their emitters**.
+Each row is the same shape as the retired item-68 rows in the Death block: produce the mark FOR
+REAL (`Bench — Death` arms **Withering Touch** and lands a melee Sidesword hit → `healCut
+{fraction: 0, byName: "Withering Touch"}`; `Bench — Black`'s **Withering Ray** gives the halved
+`{fraction: 0.5, byName: "Necrotic Grasp"}` variant), then check **both the HP and the card**. The
+control that makes each row load-bearing is a second, UNMARKED creature in the same window taking
+the full amount. ⚠️ `edhaApplyBurstResults` was deliberately left ungated — Raise Dead's stabilising
+1 HP still lands on a withered creature (R-10 (3)); the retired R-10 rows in the Death block already
+cover that direction and must NOT regress.)*
+
+- [ ] 🤖 **70-1 — Mending Aura's turn tick on a Withered ally.** Grant the regen (Mending Aura /
+  Apex Form's vital regen, i.e. any `edha-regen` rule) to a withered ally below max HP, then end
+  that ally's turn in a started combat. **Expect HP unchanged (+0)**, the gate card
+  *"🩸 &lt;name&gt; cannot regain HP (Withering Touch)"*, and the regen cue card carrying
+  *"no HP applied — &lt;name&gt; cannot regain HP (Withering Touch) — no healing lands"* with **no
+  number anywhere in it**. Control: the same tick on an unmarked ally still prints *"+N HP applied,
+  end of turn"* and moves the HP. Halved variant: the tick lands **half** and the card prints the
+  halved number, never the un-gated one.
+- [ ] 🤖 **70-2 — an adversary regen tick on a Withered creature (The Garden Sow's Nexus-Fed).**
+  Same check on the bestiary side of the same handler, since the adversary rules are where
+  `edha-regen` shipped first: wither a Nexus-Fed adversary below max, end its turn. **Expect +0**
+  and the mark named on the card; unmarked control ticks in full.
+- [ ] 🤖 **70-3 — the decay lifesteal heal-back into a Withered owner.** Wither `Bench — Death`,
+  then have it run **Consuming Decay** on a victim and tick a turn. **Expect the victim to take the
+  decay damage exactly as before** (the damage is NOT gated) while the owner's HP stays put, and the
+  decay card to read *"&lt;owner&gt; cannot regain HP (Withering Touch) — no healing lands"* instead
+  of *"regains N HP"*. Halved variant: the owner drains back **half** the usual amount.
+- [ ] 🤖 **70-4 — a burst HEAL over a Withered token (the emitter gate).** Detonate a healing burst
+  (`edha-burst` with `burst.heal`, `affects: allies`) catching one withered ally and one unmarked
+  ally. **Expect the burst card's per-target lines to differ**: the unmarked ally reads
+  *"&lt;name&gt;: +N HP (capped at max)"* and gains N; the withered ally's line reads
+  *"&lt;name&gt; cannot regain HP (Withering Touch) — no healing lands"* and its HP does not move.
+  ⚠️ Confirm in the same window that **Raise Dead still returns a withered creature to 1 HP** — that
+  hit rides `edhaApplyBurstResults`, which stays ungated on purpose.
 
 ---
 
