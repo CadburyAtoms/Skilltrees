@@ -332,8 +332,7 @@ Recorded so they are not re-derived. No decision needed unless something here su
 
 *(F-1 — Red rank-3 Attunement Range also measures 60 ft — SETTLED 2026-09-07, moved to §K.)*
 
-**F-2. Marathon 1 run 6's 2bX-5 PASS was recorded over a broken roll.** Its contest half is worth
-re-reading now that attribute contests demonstrably work (R-43).
+*(F-2 — run 6's 2bX-5 PASS over a broken roll — SETTLED 2026-09-07, moved to §K.)*
 
 ---
 
@@ -1983,3 +1982,7 @@ row whose expectation was built on 30 ft should be re-read.
 > indexed by color **RANK**, not by color, and is the same table for every color — Red rank-3 reads
 > **60 ft**, exactly like Black. Nothing to change; the 30 ft assumed in old stagings was the
 > stager's own error, not a rule difference between colors.
+
+**F-2. Marathon 1 run 6's 2bX-5 PASS was recorded over a broken roll.** Its contest half is worth
+re-reading now that attribute contests demonstrably work (R-43).
+> **SETTLED 2026-09-07 (Ben, dashboard ✓ DONE on both of the day's pastes — the morning batch and 20:30): a flag, not a question, so there was nothing to answer; recorded and closed at item 96's review.** The 2bX-5 contest re-read, if anyone wants it, is a bench matter (a 🤖 row), not a ruling.
