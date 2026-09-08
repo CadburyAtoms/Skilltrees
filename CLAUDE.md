@@ -182,7 +182,7 @@ root-causes and fixes them. Also upcoming: playtest-1 and the §9f balance revie
    that decides, and both have already let a failing lint into a commit (07-18g, 07-18j).
 5. **Docs are part of the change.** Every working session ends with: a dated delta at the TOP of
    the current month's changelog file, `docs/handoff-changelog/2026-MM.md` (under its marker
-   line — NOT in `EDHA_FOUNDRY_HANDOFF.md`, which is the reference alone since item 19b), checklist rows for everything that must be re-tested, **the right
+   line's blank line — NOT in `EDHA_FOUNDRY_HANDOFF.md`, which is the reference alone since item 19b), checklist rows for everything that must be re-tested, **the right
    marker on every new row**, and new primitives added to `ENGINE_INDEX.md`.
 
    **There are TWO markers and they are not interchangeable** (split 2026-07-27w; the old wording
