@@ -33,16 +33,7 @@ that was waiting on it. A ruling is not done until the thing it decides has actu
 
 *(R-1 — should the PLAYER role keep ACTOR_CREATE — ANSWERED 2026-09-05, moved to §K.)*
 
-**R-2. Should `scripts/bench-setup-console.js` give bench PCs a normal sight range?**
-> **ANSWERED 2026-09-05 (Ben, via the mobile board inbox): YES — give them normal vision.**
-> Matches the recommendation. Consequence: raise the bench PCs' 10 ft sight in
-> `scripts/bench-setup-console.js`. Filed as **TODO_REPO_HYGIENE #26**. The **adversary** 10 ft is
-> explicitly NOT touched — it stays a design dial and a ⚑ row, exactly as this ruling says.
-
-They carry **10 ft**, which makes a player client render almost nothing — it already caused a
-near-false-PASS at run 13. *Recommended: yes, give them normal vision.* Distinct from the adversary
-10 ft, which is a deliberate design dial and stays a ⚑ checklist row ("Adversary sight range — does
-10 ft feel wrong? Say a number"). *(3A-2.)*
+*(R-2 — bench PCs get normal sight range — ANSWERED 2026-09-05, moved to §K.)*
 
 *(R-3 — applyButtonsTo running on one GM while world-scope — ANSWERED 2026-09-06, moved to §K.)*
 
@@ -50,134 +41,21 @@ near-false-PASS at run 13. *Recommended: yes, give them normal vision.* Distinct
 
 ## B. Scope & width — what a rule should reach
 
-**R-4. THE BIG ONE: out-of-combat scope.** → **SETTLED, moved to §K on 2026-09-06** (both halves shipped as
-TODO #28a / PR #188 and #28b / PR #189; all eight bench rows PASSED on runs 34 and 35). The full text,
-the answer, and the run-by-run evidence are in §K.
+*(R-4 — out-of-combat scope — SETTLED 2026-09-06, moved to §K.)*
 
-**R-74. No adversary ability in the game pays an engine-driven cost — should one?** Measured at bench
-run 34 while trying to drive R-4's last 28b row: **`data/adversaries.json` contains zero `"costs"`
-keys** across all 52 blocks, so the sentence "an adversary's own bespoke ability cost goes through
-`edhaSpendResource` and therefore counts as a spend" is true of the engine and true of nothing on the
-table. Every adversary resource change today is either a GM hand-edit (now correctly *not* a spend,
-per 28b) or nothing at all. Two consequences worth your call, and they point opposite ways.
-*Recommended: **author one `costs:` line onto a single adversary ability** — the Stalker's `Fade` or
-the Stonebound Captain's signature is the obvious candidate — so the wired-vs-typed contrast that 28b
-is built on exists somewhere in the shipped bestiary, and the bench row has a subject.* The
-alternative is to declare the half untestable-by-construction and close it, which is honest but
-leaves an engine path with no consumer — the same shape as the `senses` field retired in 07-27v.
-⚠️ This is a **REBUILD** either way (it is `data/adversaries.json`), so it is not a bench decision.
-*(Bench run 34, from the R-4 28b row.)*
-> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) author one `costs:` line onto a
-> single adversary ability.** Ben did not pick the subject; default to the Stalker's Fade unless a
-> better fit turns up. `data/adversaries.json` (+ baked AEs if any) → adversaries pack **REBUILD**,
-> Ben's deploy → **item 57**; lint pass 5 must stay green; then the 28b "adversary bespoke cost"
-> bench row finally has a subject.
-> **SHIPPED** in PR #226 (REBUILD, bench-pending) — the Stalker's **Fade**: a `use` → `edha-prompt-pick`
-> {source: confirm, costs: "inv:1"} card spends the Investiture on the click (through `edhaSpendResource`),
-> native `consume` removed so it is the only deduction; the damaged gm-cue stays as the reminder. Fit:
-> Fade is a Reaction the GM decides to take, and a confirm card that charges on the click is exactly
-> "spend only if you take it". 🤖 row under the R-4 28b section.
+*(R-74 — the Stalker's Fade gets an authored `costs:` line — ANSWERED 2026-09-06, moved to §K.)*
 
 *(R-75 — H26 reaction family left ungated — ANSWERED 2026-09-06, moved to §K.)*
 
 *(R-76 — H10's Investiture-drain branch has no consumer — ANSWERED 2026-09-06, moved to §K.)*
 
-**R-78. The `edha-aoe-template` handler has NO consumer either — retire it, or give it one?**
-Measured at bench run 38 while driving the "AoE burst auto-target" row. That row names **Flame
-Surge** as its example, but Flame Surge carries an **`edha-burst`** rule, and `edha-burst` goes
-through `edhaCastBurst` → `edhaBurstDetonate`, which **never targets anything** — it resolves damage
-straight to the caught actors. The retarget the row is actually about (`edhaSetUserTargets(caught)`,
-`register-skills.js` ~L10829) lives only in **`edhaPlaceAoe`**, which is reachable only from the
-**`edha-aoe-template`** handler — and a sweep of `data/` finds **zero** `edha-aoe-template` rules
-against **12** `edha-burst` rules (3 talents: Flame Surge, Sudden Growth, Mending Aura; the rest
-adversary abilities). So a registered handler type is offered in Ben's Events-tab dropdown that
-nothing in the game uses. The bench proved the branch works by staging the rule by hand (2 enemies
-captured **and** targeted, an ally target released), so this is not a defect — it is the third
-instance of the **R-74 / R-76** shape: an engine path with no consumer. *Recommended: **retire
-`edha-aoe-template`*** — unlike R-74's and R-76's, this one is not a small missing dial but a
-**second, parallel AoE model** that the click-to-place/Detonate pipeline replaced, and leaving both
-registered invites an author to pick the dead one. The alternative is to keep it as the "capture and
-target, GM applies by hand" variant and say so in the header. ⚠️ **ENGINE-ONLY either way** (no
-authored data references it, so no pack rebuild). *(Bench run 38, from the AoE burst row.)*
-> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) RETIRE the handler.** Spec: remove
-> `edha-aoe-template`'s registration + `edhaPlaceAoe`'s template branch (keep whatever
-> `edhaCastBurst` / `edha-burst` share), lint-refs vocabulary + native-vocabulary snapshot untouched
-> (it is an edha-* type), `ENGINE_INDEX.md` row struck with the date, name-keyed allowlist
-> unaffected. ENGINE-ONLY, F5 → **item 48**; gates must stay green; retire the "AoE burst
-> auto-target" row's remaining clause.
-> **SHIPPED** in PR #217 (ENGINE-ONLY, bench-pending) — tests/aoe-template-retired.test.js:"R-78: edha-aoe-template is NOT a registered handler type, and edha-burst still is"
+*(R-78 — the `edha-aoe-template` handler is retired — ANSWERED 2026-09-06, moved to §K.)*
 
-**R-77. Should the Investiture-max persist be behind the primary-GM gate, or stay owner-gated?**
-Found at bench run 36 while driving item 12's two-GM row. `edhaDeriveInvestiture`'s persist branch
-(`register-skills.js` ~17252) is a world write — `system.resources.inv.max.override` — and it is
-**not** behind `edhaDefBuffGmGate()`. It gates on **`actor.isOwner`** plus a **per-client**
-`_edhaInvPersisted` Set, so with two GM clients connected the writer is *whichever client prepares
-the actor first*: the bench measured Ben's **non-primary** `Gamemaster` writing `override: 6` on
-`Bench — Red` and the **primary** `Bench` writing `override: 5` on `Bench — Blue`, in the same
-window. Both clients derive the same number (`2 + max(Awareness, Presence)`), so the harm today is a
-redundant write, not a wrong value — but it is the one world-writing site item 12's consolidation
-did not reach, and it is the family that produced the historic double-write bugs.
-*Recommended: **keep the owner gate, and add the primary-GM gate only for the GM case*** — i.e.
-persist if `edhaNoOtherActiveGM()` **or** the writer is a non-GM owner. That preserves the reason
-the owner gate exists (a player-owned PC must be able to persist its own max on a table where no GM
-is online, which is what `edhaDeriveInvestiture`'s 2026-06-11 gotcha comment is about) while making
-two GM clients agree on one writer. The blunt alternative — `edhaDefBuffGmGate()` outright — is
-simpler but silently stops persisting for player-owned PCs whenever the primary GM has not looked at
-the actor. **ENGINE-ONLY either way** (no pack rebuild). *(Bench run 36, from item 12's bench row;
-the re-test row is on the checklist under `# BENCH — Engine-wide & cross-tree`.)*
-
-> **APPLIED as the recommended default 2026-09-06 (fix pass 6, ENGINE-ONLY) — pending Ben's veto.**
-> `edhaDeriveInvestiture`'s persist branch now also requires `!game.user?.isGM ||
-> edhaNoOtherActiveGM()`: a GM defers to the **primary** GM, a **non-GM owner still writes** (so a
-> player-owned PC on a GM-less table keeps persisting its own max, which is the whole reason the owner
-> gate exists). The blunt alternative — `edhaDefBuffGmGate()` outright — is **not** what shipped.
-> Both directions are pinned in `tests/inv-persist-gm-gate.test.js` and mutation-verified: drop the
-> new term and the second GM writes again; swap in the blunt gate and the GM-less player-owned PC
-> stops persisting. **A veto is a one-line change** with a failing test on whichever side you pick,
-> so say the word and it flips. The ruling stays OPEN until then.
->
-> ⚠️ **Bench run 37 (2026-09-06) could NOT confirm the applied default at the table, and the
-> reason is not the code.** The gate reads correctly from the primary client (`activeGM` = `Bench`,
-> `isSelf` = true, so `mayPersist` = true there and false when the same expression is evaluated for a
-> non-primary GM), but an airtight probe — a fresh character created carrying the CORRECT override so
-> neither client's per-session Set was seeded, then made stale in one update — measured the single
-> `inv.max.override` write originating on **Ben's non-primary `Gamemaster`**. The most probable
-> cause, stated as an inference: **Ben's client has been connected since before the 03:47 engine push
-> and fix pass 6 is ENGINE-ONLY**, so it is still running the pre-fix engine, which has no gate at
-> all. **This does not change the recommended default and does not reopen the design question** — it
-> only means the applied default is still unverified live. Re-test after Ben F5s his client.
->
-> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) keep the applied default** (GMs
-> defer to the primary GM, a non-GM owner still writes). No change to the shipped code. Moves to §K
-> once the live re-test passes after Ben reloads his Gamemaster client — the run-37 blocker was the
-> stale client, not the code.
-> **CONFIRMED 2026-09-07 (Ben, dashboard), verbatim: "that works. default."** No change to the
-> shipped code or the ruling's status — same veto window, still moves to §K once the live re-test
-> passes. Separately, on the bench's one-applier-dissipates re-test row (not this card), Ben noted
-> two GM clients will never happen at his table in play — recorded as new **R-86** (§K); it does
-> not change this ruling's applied default: the bench itself is a second GM client, so the gate
-> stays an engineering necessity and the live re-test is still what is owed.
+*(R-77 — Investiture-max persist defers to the primary GM — ANSWERED 2026-09-06, moved to §K.)*
 
 *(R-5 — does Fault Line's line spare allies — ANSWERED 2026-09-05, moved to §K.)*
 
-**R-6. Fault Line's dangerous-terrain Region catches bystanders scene-wide**, with no friend/foe
-clause — it incidentally ticked your **Stitchmother** during run 11 (effects verified back to
-snapshot state afterwards). Same shape as R-5 but on the Region rather than the line. *(3A-4.)*
-> **Measured again 2026-09-06, bench run 33, and it is wider than "bystanders": the Region catches
-> the CASTER.** The rectangle is laid with one end at the caster's own square, so on both casts the
-> chat read *"🔥 **Bench — Destruction** takes 8 energy from dangerous terrain (Dangerous Terrain —
-> Bench — Destruction)"* (10 on the second) — and the ally in the line took its own tick on top of
-> the burst. So R-5's "only the caster is spared" does **not** carry over to the Region: right now
-> **nobody** is spared, the caster included. Recommended default unchanged in shape, but the ruling
-> should now say explicitly whether the caster's own square is dangerous terrain to them.
-> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (b) spare the CASTER only, everyone
-> else including allies is caught.** Matches R-5 / item 29 for the line, so both halves of the
-> talent follow one rule. Spec: the dangerous-terrain Region (and its tick) exempts the actor that
-> laid it — either lay the rectangle one square out from the caster or exempt the caster's token
-> from the tick; Ben did not choose which. The ally-in-the-line burst + terrain double hit stays.
-> ENGINE-ONLY, F5 → **item 48**; lane R then a 🤖 re-test of the run-33 Fault Line row with the
-> caster unharmed.
-> **SHIPPED** in PR #217 (ENGINE-ONLY, bench-pending) — tests/fault-line-caster-exempt.test.js:"R-6: the CASTER standing in their own Fault Line takes 0 — no damage, no card". Of the two exits Ben left open, this took EXEMPT-THE-CASTER and kept the rectangle on the damaged line; the delta says why.
+*(R-6 — Fault Line's dangerous-terrain Region spares the caster only — ANSWERED 2026-09-06, moved to §K.)*
 
 *(R-7 — Final Decree / Edict's Temp HP rider scope — ANSWERED 2026-09-05, moved to §K.)*
 
@@ -189,99 +67,23 @@ snapshot state afterwards). Same shape as R-5 but on the Region rather than the 
 
 *(R-9 — cannot-regain-HP vs heal-overflow Temp HP — ANSWERED 2026-09-06, moved to §K.)*
 
-**R-10. Does "cannot regain HP" stop drop-to-1 stabilization?** Same family as R-9, different
-consumer. *(3B-C.)*
-> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (b) NO, stabilizing at 1 is a floor
-> against death, not regaining.** Spec: every drop-to-1 / stabilize consumer must bypass the no-heal
-> condition (audit the family: whatever writes `hea.value = 1` on a 0-HP creature). ENGINE-ONLY,
-> F5 → **item 47**; headless pin (a withered creature at 0 still stabilizes to 1; a plain heal on it
-> still does nothing); 🤖 re-test row.
-> **SHIPPED** in PR #215 (ENGINE-ONLY, bench-pending) — `tests/drop-to-one-family.test.js`. ⚠️ The
-> audit found the family ALREADY bypassing, so no behaviour moved; what shipped is the ruling
-> recorded at the site plus the guard that keeps it (the heal gate's call sites are pinned at 2,
-> and `bypassHealCut: true`'s callers at 1).
+*(R-10 — cannot-regain-HP does not block drop-to-1 stabilization — ANSWERED 2026-09-06, moved to §K.)*
 
 *(R-11 — refund on a fully-blocked heal — ANSWERED 2026-09-06, moved to §K.)*
 
-**R-12. Should a raised creature clear its OWN Harvested Remain?** An adversary that had itself been
-harvested was raised by spending a *different* Remain, and came back at 1 HP **still wearing the
-`harvested` marker with its own ledger entry live** — a living creature that is also a Remain. The
-card says nothing either way. *(3B-C + checklist Raise Dead row, Death section.)*
-> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) YES: raising clears the creature's
-> own `harvested` marker and its ledger entry.** Spec: the raise path (Death tree, Raise Dead / the
-> remains ledger) removes the raised actor's own entry and marker in the same write. ENGINE-ONLY,
-> F5 → **item 47**; headless pin on the ledger; re-test = the Death-section Raise Dead row (a raised
-> adversary comes back at 1 HP with no marker and the ledger one entry shorter).
-> **SHIPPED** in PR #215 (ENGINE-ONLY, bench-pending) — `tests/raise-clears-remain.test.js`, via
-> the new generic `edhaLedgerDropCreature(uuid, key, status)`; it sweeps EVERY owner's ledger, not
-> only the raiser's, because a marker is a property of the creature.
+*(R-12 — a raised creature clears its own Harvested Remain — ANSWERED 2026-09-06, moved to §K.)*
 
-**R-13. A snare placed UNDER a creature insta-springs**, where the card says "enter or pass through".
-*Recommended: arm, do not spring.* Narrowed by run 7: placement **adjacent** does not insta-spring,
-only placement directly under a creature does. *(3B-C.)*
-> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) ARM, do not spring; it fires on the
-> creature's next move.** Spec: the Fate snare `RegionBehavior` ignores tokens already inside at
-> placement (arm-only), springs on enter / pass-through per the card. ENGINE-ONLY, F5 → **item 48**;
-> pin; 🤖 re-test = place under a creature (no spring), creature moves (springs).
-> **SHIPPED** in PR #217 (ENGINE-ONLY, bench-pending) — tests/snare-arm-under.test.js:"R-13 behavior: placed UNDER a creature — the creation-time tokenEnter does NOT spring it"
+*(R-13 — a snare placed under a creature arms, does not spring — ANSWERED 2026-09-06, moved to §K.)*
 
-**R-14. Melee mutation riders fire on a nat-1 graze application.** Intended? *(3B-C.)*
-> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (c) FOLLOW EACH RIDER'S OWN CARD** —
-> "on a hit" = hit only, "when you deal damage" / "on a hit or graze" = grazes count. Spec: audit
-> every melee mutation rider's card text and set a per-rule `onGraze` (or equivalent) so the rider's
-> trigger matches its wording; iron rule 2b — the dial lives on the rule, the handler reads it.
-> ENGINE + AUTHORED (rebuild + ↻ Sync if any rule changes) → **item 56**; headless pin per rider; 🤖
-> re-test on a nat-1 graze for one hit-only rider and one damage rider.
-> **SHIPPED** in PR #242 (REBUILD, bench-pending) — `edha-mutation.keenOnGraze` / `venomOnGraze`,
-> `edha-regen-grant.vitalOnGraze`, read through the new Apply-click graze discriminator
-> (`edhaApplyIsGraze`); Bone Spurs "melee attacks DEAL" → on, Venom Glands "melee HITS" → OFF (the one
-> change), Apex Form "DEALS … on all attacks" → on. `tests/rider-graze-dial.test.js`; 🤖 2bW-18 / 2bW-19.
+*(R-14 — melee mutation riders follow each rider's own card wording on grazes — ANSWERED 2026-09-06, moved to §K.)*
 
-**R-15. Coercive Pressure no longer stacks with another next-test rider** (e.g. Probability Net) —
-the second write overwrites the first, because the bespoke Cognitive-disadvantage flag that allowed
-both is gone. Confirmed on the live actor: `flags.nextTestMod` is **one object**, so each bearer has
-exactly one slot. Does losing cross-rider stacking matter at the table? *(Checklist 2bI-4.)*
-> **ANSWERED 2026-09-06 (Ben, phone, via the relay session, verbatim: "that needs to be a list not
-> one slot"): (b) the next-test slot becomes a LIST, not one object.** Spec: `flags.nextTestMod` →
-> an array of `{source, kind, value, expiry}`; every writer appends, every reader applies all
-> entries (disadvantage is boolean-OR, dice/flat mods sum), expiry per entry (see R-20/R-57:
-> round-scoped entries expire at the round change), consumers clear only their own entry; migrate a
-> legacy single object on read. ENGINE-ONLY, F5 → **item 49**; headless pin: Coercive Pressure +
-> Probability Net on one target both apply and both clear independently; 🤖 re-test = checklist
-> 2bI-4.
-> **SHIPPED** in PR #221 (ENGINE-ONLY, bench-pending) — `tests/next-test-mod-list.test.js`
+*(R-15 — Coercive Pressure's next-test slot becomes a list, not one object — ANSWERED 2026-09-06, moved to §K.)*
 
 *(R-16 — Wary reducing Whispered Doubt's extra loss — ANSWERED 2026-09-06, moved to §K.)*
 
-**R-17. Puppeteer / Unnerving Approach — the once-per-round budget now spends on CLICK, not on
-card-post.** Declining an offer no longer burns the use (verified: an ignored picker did not block a
-same-round re-use). **But each ignored USE still charges its Investiture** — only the round budget
-waits for the click. Two questions: is the click-not-post budget intended, and should an ignored use
-refund its Investiture? *(Checklist 2bJ-10.)*
-> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) keep the click budget AND refund
-> the Investiture when the offer is declined/ignored,** consistent with R-69 (cancelled picker
-> refunds, no stamp). Spec: charge on the click that resolves the offer, or charge on post and
-> refund on decline/timeout — reuse whichever the R-69 picker path already does. ENGINE-ONLY, F5 →
-> **item 51**; headless pin; 🤖 re-test = checklist 2bJ-10 (declined offer: Investiture unchanged,
-> round use still available).
-> **SHIPPED** in PR #230 (ENGINE-ONLY, bench-pending) — `tests/offer-decline-refund.test.js`. R-69's mechanism
-> (charge on post, `edhaRefundCost` on back-out) reused through one path, `edhaOfferDecline`.
+*(R-17 — Puppeteer/Unnerving Approach keeps the click budget, refunds a declined offer — ANSWERED 2026-09-06, moved to §K.)*
 
-**R-18. Should quarry advantage refuse to stomp an active DISADVANTAGE?** Attacking your quarry while
-Weakened rolls at **advantage** today — the quarry site runs after Weakened's and overwrites it. That
-is the house convention (pack advantage, the Opportunity adv-test and `edha-next-test-mod` all stomp;
-only `edha-test-rider` has the opt-in `unlessDisadvantage` that Apex Predator uses). Left alone
-deliberately rather than changed silently. *(Checklist Quarry row, Heroic.)*
-> **ANSWERED 2026-09-07 (Ben, dashboard), verbatim: "it gets added to the list of advantages and
-> disadvantages on the roll. I believe the player gets to assign advantages and the GM gets to
-> assign disadvantages to the die participating in the roll, but double check the cosmere rpg
-> canon rules."** Canon check (`.claude/skills/cosmere-canon-reference/SKILL.md` §"advantage /
-> disadvantage", SR p.18): an advantage or disadvantage rolls an extra of one die type and keeps
-> one, the player chooses the die for advantages and the GM for disadvantages, and they cancel
-> each other one-for-one — Ben's memory is canon; no correction needed. Consequence: the quarry
-> advantage site must stop stomping the slot and instead JOIN the next-test list (item 49's
-> `flags.nextTestMod` list, whose fold already cancels an advantage against a disadvantage per
-> R-80) → **TODO item 80**. Stays open here until item 80 ships and the bench confirms it.
+*(R-18 — quarry advantage joins the next-test list instead of stomping — ANSWERED 2026-09-07, moved to §K.)*
 
 *(R-19 — combat-timing talents granting to adversaries too — ANSWERED 2026-09-05, moved to §K.)*
 
@@ -291,131 +93,16 @@ deliberately rather than changed silently. *(Checklist Quarry row, Heroic.)*
 
 *(R-22 — build guard rejects any `min ≠ max` consume entry — ANSWERED 2026-09-06, moved to §K.)*
 
-**R-50. An ambushing strike never gets its OWN fooled-rider — the strike that marks them fooled is
-the one strike that does not benefit.** Surfaced by bench run 18 and filed here by fix pass C
-(2026-07-28d) rather than left in a run's prose. Verified in code, not inferred: the belief test is
-kicked off from the `cosmere-rpg.useItem` hook as a **fire-and-forget** `void
-edhaAmbushBeliefTest(...)`, while the `whenTargetFooled` damage rider is selected when the damage
-formula is assembled — which for a `skill_test` talent the system does *before* the test resolves.
-So the ledger write always lands after the number is fixed, and the +1d6 / +1d8 first appears on the
-**second** strike. Run 18 saw it identically on Glare-Strike and Raking Grasp, and it matches the
-card text ("its FIRST attack … marks them fooled" — marks, not benefits).
-*Recommended default: **intended**, leave it.* It reads as a deliberate ambush rhythm — the seeming
-buys you the opening, the payoff starts once they have committed to believing it — and the
-alternative costs real machinery (the rider would have to be re-derived after the test, or the
-belief test awaited inside the use hook, which risks the takeover class of bug). Say so if you want
-the ambusher to benefit on the strike that fools them and it becomes an engine task.
-> **ANSWERED 2026-09-06 (Ben, phone, via the relay session, after a full walkthrough): (b) the
-> FIRST strike must benefit.** The "marks, not benefits" reading does not match the ten cards:
-> Stillback "Its first attack from unbroken stillness is made from ambush"; Wrongwake "on a failure
-> the attack comes from ambush"; The False Spring "Its first strike against each fooled target is
-> made from the mirage"; Hazewyrm "The first time it strikes each creature per scene, that creature
-> has tested Perception… the strike comes from the shimmer". Affected: every `edha-ambush-belief`
-> carrier — Stillback, Wasting-Eater Stillback, Wrongwake, Wasting-Eater Wrongwake, Keelshadow, The
-> False Spring, Hazewyrm Adult, Hazewyrm Elder, The Doubled, The Doubled Elder (the Mistheron's
-> placed-copy seeming already tests at placement and is NOT affected). SPEC (avoid awaiting inside
-> the useItem hook — the takeover bug class): in the `edha-damage-rider` `whenTargetFooled` check
-> (~L974), when the current target has no ledger entry for this scene, run the belief test right
-> there with the engine's synchronous dice evaluator (`edhaRollDiceSync` family), use the local
-> result for the rider decision, then write the ledger + post the GM/player cards asynchronously
-> exactly as `edhaAmbushBeliefTest` does today (factor the roll/DC/advantage bits into a shared pure
-> helper so the two paths cannot drift); the `useItem` path stays as the fallback for a strike with
-> no rider. ENGINE-ONLY, F5 → **item 53**; headless pins: first strike vs untested target rolls the
-> test and applies the rider on a fail; second strike reads the ledger and rolls no second test;
-> Mistheron path unchanged; 🤖 re-test on Stillback (Ambush Bite 1d10+3 +1d6 on the FIRST bite vs a
-> fooled target).
-> **SHIPPED** in PR #219 (ENGINE-ONLY, bench-pending) — `tests/ambush-first-strike.test.js`
+*(R-50 — ambush riders benefit on the FIRST strike, not the second — ANSWERED 2026-09-06, moved to §K.)*
 
-**R-51. Does an illusory copy breaking count as "an ally dropped"?** Raised by fix pass C while
-fixing the cross-disposition defect below it. The two are separate: the defect was that a tokenless
-victim fired cue owners on *every* side, and that is fixed. What is left is a design question the
-old bug was hiding — a phantom copy now resolves to the side of the creature it duplicates, so
-breaking one cues **that side's** `ally-drops` owners ("an ally dropped: the Raider may immediately
-Disengage and flee"). *Recommended default: **no — a phantom's break should not fire `ally-drops`
-at all.*** It never had a life to lose, and its own side are precisely the people who know it was
-never real; the fooled *enemies* are the ones who would react, and they are on the other side of
-the filter. One-line engine change (skip the block when the victim carries the `phantomDouble`
-flag), **engine-only, no pack rebuild** — left undone deliberately because it would silence a cue
-you may want. *(From bench run 18 / fix pass C.)*
-> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) NO: a phantom's break fires no
-> ally-drops cue.** Spec: skip the ally-drops block when the victim carries the `phantomDouble`
-> flag (the one-line change the ruling names). ENGINE-ONLY, F5 → **item 47**; headless pin (phantom
-> break → no cue; real ally drop → cue); 🤖 re-test in the illusion section.
-> **SHIPPED** in PR #215 (ENGINE-ONLY, bench-pending) — `tests/ally-drop-side.test.js`.
+*(R-51 — an illusory copy breaking is not "an ally dropped" — ANSWERED 2026-09-06, moved to §K.)*
 
-**R-69. Should a CANCELLED picker still burn the talent's once-per-scene use?** Today it does.
-`edhaDecreeUse` calls `edhaStampSceneOnce(owner, item)` **before** it opens the prohibition picker,
-so pressing **Cancel** refunds the Investiture correctly (verified on the live table, bench run 25 —
-4 → 1 → 4, no card, no `decree` flag) but leaves `sceneOnce.<itemId> === true`: **Final Decree is
-spent for the scene without ever having resolved.** The stamp is deliberately pre-cost — that is
-R-61's "vetoed BEFORE cost" polarity, and it is what stops a player probing the picker to see the
-enemy list and then backing out for free. So this is a real trade, not an oversight.
-*Recommended default: **move the stamp to after a successful pick.*** A cancel that refunds the cost
-but eats the scene's only use is the worst of both worlds at the table, and the information leak it
-guards against is small — the picker shows allies you can already see. If you would rather keep the
-anti-probing behaviour, the honest fix is the other direction: **don't refund on cancel either**, so
-the cost and the use agree. Either way the two should not disagree. Engine-only, one line, no pack
-rebuild. Applies to every `edhaDialogPick` caller that stamps before prompting.
-*(From bench run 25, found while re-testing fix pass 1's picker-cancel row.)*
-> **ANSWERED 2026-09-05 16:30 (Ben, in chat, the PM's batch): "Stamp only after a successful pick."**
-> Cancel costs nothing and burns nothing; cost and use agree. The fix goes at the primitive — every
-> `edhaDialogPick` caller that stamps `sceneOnce` before prompting moves the stamp to after the pick
-> resolves — so it is one change, not one per talent. Engine-only, no pack rebuild. **Live engine
-> behaviour → lane B**, bench-verified before it counts. Filed as **TODO_REPO_HYGIENE #36**; moves
-> to §K when #36 lands.
-> Shipped in PR #160 (2026-09-05); moves to §K after the bench pass.
-> **VERIFIED GREEN, bench run 28 (2026-09-05).** All four legs on `Bench — Order`: cancel refunds
-> 4 → 1 → 4 and leaves `sceneOnce` **undefined**; the talent is immediately re-usable in the same
-> scene; a real pick posts the Decree card, writes the `decree` flag and stamps `sceneOnce`; and a
-> third use is still refused pre-cost with the unchanged wording and unchanged Investiture (R-61
-> polarity intact). Ready to move to §K.
+*(R-69 — a cancelled picker stamps sceneOnce only after a successful pick — ANSWERED 2026-09-05, moved to §K.)*
 
 
-**R-70. A two-resource activation only charges the FIRST resource unless the player ticks the second
-box — should Edha do anything about it?** Not a bug, and not ours: bench run 28 read the dialog
-instead of clicking through it and found the cause in **cosmere-rpg 2.1.0's own `index.js`**, comment
-included — `// Only automatically check first option, or anything overridden.` →
-`const shouldConsume = options.shouldConsume ?? i === 0;`. Both `consume` entries survive the build
-and reach the dialog intact (verified on the compendium document and live: ticking both charges both,
-inv 9 → 8 **and** foc 8 → 7). The consequence at the table is that a card reading **"Cost: 1
-Investiture, 1 Focus"** — the Stitchmother's *Reknit Form*, and any tree talent with two costs —
-is **under-charged by a default click**, silently, every time. `options.shouldConsume` is a single
-boolean for ALL entries, so there is no per-item authoring field that would fix it; the only levers
-are a system-level wrapper that pre-checks every row, or leaving it to the table.
-*Recommended default: **leave it alone and note it in the handbook.*** Wrapping the system's own
-dialog to change a default is exactly the kind of side-engine iron rule 2a exists to prevent, the
-player can see both unticked boxes on screen, and a GM who misses it has under-charged by one
-resource. If you would rather the dialog matched the card, the honest fix is one wrapper on
-`showConsumeDialog` that passes `shouldConsume: true` — which then applies to **every** talent with
-a second cost, including ones where the second cost is meant to be optional.
-*(From bench run 28, settling the row bench run 27 filed.)*
-> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (b) wrap the dialog so every cost row
-> starts ticked.** Ben chose the wrapper knowing it applies to every talent with a second cost (rows
-> stay untickable by the player). Spec: ONE wrapper on the system's `showConsumeDialog` passing
-> `shouldConsume: true`; ENGINE-ONLY, F5 → **item 50**; declare it in the header as the one
-> sanctioned system-dialog wrapper (iron rule 2a exception by Ben's ruling); pin a headless test on
-> the option shape; bench re-test = Reknit Form charges inv AND foc on a default click.
-> **SHIPPED** in PR #222 (ENGINE-ONLY, bench-pending) — `tests/consume-dialog-wrapper.test.js`
-> (the pure option shape, the system's row map `[true, true]`, the installed patch, and a source
-> scan that exactly ONE wrapper of the system dialog exists — a second one fails the suite).
+*(R-70 — a two-resource activation dialog starts every cost row ticked — ANSWERED 2026-09-06, moved to §K.)*
 
-**R-72. Is an INVOLUNTARY drain a "spend"?** Raised by item 28b: the Order Edict fires only on the
-creature's own activations, and H10's Investiture-drain write (`register-skills.js` ~L18139, the
-one `edhaSpendTag` site item 13 preserved) currently stamps a drain the same way as a voluntary
-spend. *(Board table; raised by item 28b.)*
-> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (b) NO, a drain is not a spend.** Spec:
-> H10's write → `edhaBookkeepingTag`; `edhaDrainFocus` likewise carries a bookkeeping tag (28b's "a
-> test fails if one ever appears" pin flips to its opposite). ENGINE-ONLY, F5 → **item 47**; re-pin
-> tests; bench re-test = an Edict-bound creature drained by an enemy gets NO violation prompt, and
-> its own wired spend still does. This also settles R-8's "decide together with R-8" clause — R-72
-> (b) stands on its own.
-> **SHIPPED** in PR #215 (ENGINE-ONLY, bench-pending) — `tests/resource-writes.test.js` +
-> `tests/spend-tag.test.js`. THREE existing pins were FLIPPED to assert their opposite (they
-> existed to stop a refactor answering this ruling by the back door). The `set-resource` relay
-> half moved with the other two — split, the unowned drain would violate an Edict the owned one
-> does not.
-
----
+*(R-72 — an involuntary drain is not a spend — ANSWERED 2026-09-06, moved to §K.)*
 
 *(R-80 — both an advantage and a disadvantage next-test entry on one victim CANCEL (the roll stays as the player configured it) — DEFAULT (a) APPLIED 2026-09-06, item 49, PR #221; ANSWERED 2026-09-07, moved to §K.)*
 
@@ -425,41 +112,9 @@ spend. *(Board table; raised by item 28b.)*
 
 ---
 
-**R-82. Should R-14's "follow the card" graze rule reach the generic `edha-damage-bonus` rules too?** R-14 (c) now governs the Life mutation riders (Bone Spurs, Venom Glands, Apex Form) through per-rule graze dials (item 56, PR #242). Item 56's worker found that the generic `edha-damage-bonus` rules with `meleeOnly` (Warlord's Advance and kin — the armed-strike bonuses) ALSO fire on a graze application today. *Recommended default: **(a) yes** — the same per-rule `onGraze` dial on `edha-damage-bonus`, each card audited (the `graze` value is already available at that call site); a small S item once Ben nods. NOT applied yet.* (b) leave them — a bonus "on your attacks" reads as any application. *(Board table 2026-09-06; raised by item 56.)*
-> **ANSWERED 2026-09-07 (Ben, dashboard) — marked done, no note = the recommended default
-> accepted: (a) yes**, the same per-rule `onGraze` dial on `edha-damage-bonus`, each card audited
-> → **TODO item 81**. **Not shipped yet** — stays open here until item 81 lands and the bench
-> confirms it, then moves to §K.
+*(R-82 — R-14's graze rule reaches `edha-damage-bonus` too — ANSWERED 2026-09-07, moved to §K.)*
 
-Ask: Should the melee-only `edha-damage-bonus` rules (Warlord's Advance and kin) get the same per-rule `onGraze` dial the Life mutation riders have, so a bonus stops firing on a graze unless its card says otherwise (a), or keep firing on any application including a graze (b)?
-
----
-
-**R-83. Three `hea` writers bypass the heal-cut gate — gate them at their emitters?** `ENGINE_INDEX.md` says every `hea` write outside `applyDamage` must pass `edhaHealCutGate`, and three do NOT: `edha-regen`'s turn-end write, the decay lifesteal heal-back, and `edhaBurstDetonate`'s heal hits. Their cards are honest (fix pass 8 / item 68, PR #241, fixed the announcing), but the HP still lands on a withered creature — Mending Aura keeps healing a target that "cannot regain HP". Gating them changes live HP at the table; `edhaApplyBurstResults` must STAY ungated (Raise Dead's stabilising 1 HP rides it, R-10), so the gate belongs in each emitter. *Recommended default: **(a) gate all three at the emitter** (the mark's card is the promise), the family test's gate-call count raised from 2 with a declaration, one 🤖 row per writer → TODO item 70. **WAITING for Ben — not applied, because it moves HP.*** (b) leave them ungated and say so in `ENGINE_INDEX.md`. *(Board table 2026-09-06; raised by fix pass 8.)*
-> **STILL WAITING 2026-09-07 (Ben, dashboard), verbatim: "I'm not sure what this means and will
-> want the pm to give me good examples when we get here in chat."** Plain-language gloss, written
-> for Ben: the three heal writers are (1) `edha-regen`'s turn-end heal (the adversary regen rule —
-> The Garden Sow / Nexus-Fed — plus the talent-side `edha-regen-grant` family: Apex Form's vital
-> regen, Mending Aura's turn heals), (2) the Lifeline-style `healFormula` heal-back die on
-> `edha-redirect` (the Life talent that takes an ally's damage and rolls a heal-back), and (3)
-> `edhaBurstDetonate`'s heal hits (any burst whose spec heals the tokens it catches). Today all
-> three still add HP to a creature under a "cannot regain HP" mark (Withering Touch / the Black
-> no-healing marks), while an ordinary heal on that creature is blocked. Concretely: an ally
-> Withered by a Black talent, then hit by Mending Aura's turn-end regen tick, gains HP today even
-> though the same ally targeted directly by a normal heal spell would not. **(a)** = those three
-> obey the mark too, so a Withered creature never regains HP from any source. **(b)** = leave them
-> as the deliberate exceptions and write that down in `ENGINE_INDEX.md`, so the mark's promise
-> reads "no ordinary healing, but regen/lifesteal/burst-heal still reach you." Item 70 stays
-> blocked on this call.
-> **ANSWERED 2026-09-07 17:11 (Ben, dashboard), verbatim: "a"** — (a) gate all three writers at
-> their emitters, so a creature that "cannot regain HP" stops gaining HP from `edha-regen`'s
-> turn-end heal, the decay lifesteal heal-back, and `edhaBurstDetonate`'s heal hits too.
-> **Item 70** (opus, engine-only) is now unblocked and applies it. **Not shipped yet** — stays open
-> here until item 70 lands and the bench confirms it, then moves to §K.
-
-Ask: Should `edha-regen`'s turn-end heal, the decay lifesteal heal-back, and `edhaBurstDetonate`'s heal hits each pass `edhaHealCutGate` so a creature that "cannot regain HP" stops gaining HP from them (a), or stay ungated with that exception written into `ENGINE_INDEX.md` (b)?
-
----
+*(R-83 — gate all three heal writers at their emitters — ANSWERED 2026-09-07, moved to §K.)*
 
 *(R-84 — an offer that cannot be made refunds its Investiture, and the card names the money — DEFAULT (a) APPLIED 2026-09-06, fix pass 9; ANSWERED 2026-09-07, moved to §K.)*
 
@@ -469,140 +124,21 @@ Ask: Should `edha-regen`'s turn-end heal, the decay lifesteal heal-back, and `ed
 
 ---
 
-**R-88. Volatile Strike rides any melee hit — but only one that deals IMPACT. Is that the rule you want?**
-R-23 (a) shipped as `whenDealer: "any"` (item 58), and bench run 42 confirms it works: on the deployed
-pack a **plain weapon hit that dealt impact** — a staged impact-damage sidesword on `Bench — Red`, not
-a Volatile Strike cast — posted the offer *"⚡ Volatile Strike — 1 Investiture … spend 1 Investiture
-(test Red vs Physical) to add half [Tier][Die] impact to the creature you hit."* But the same PC's
-**ordinary keen sidesword hit offered nothing**, because the rule also carries
-`whenDamageType: "impact"` — untouched by R-23, and not mentioned on the card, whose prose is the bare
-*"When you hit with a melee attack, spend 1 Investiture …"*. So today the talent reads as a rider on
-every melee hit and behaves as a rider on impact hits only, which for a Red PC with a keen weapon is
-almost never. *Recommended default: **(a) drop the `whenDamageType` gate** — one field on the Events
-tab, no engine change, and the card then tells the truth.* (b) keep the gate and say so on the card
-("when you hit with a melee attack **for impact damage**") — also a data-only fix, but it makes the
-talent weapon-dependent in a way nothing else in Red is. *(Bench run 42, 2026-09-07 — measured both
-directions in one window; nothing is broken, the two halves just disagree.)*
-> **ANSWERED 2026-09-07 17:11 (Ben, dashboard), verbatim: "a"** — (a) drop the `whenDamageType:
-> "impact"` gate; the card is canon. **SHIPPED in item 92, PR #288** (`data/authored/leyline-red.json`,
-> the one authored field plus the rule's own `description` string; parity-proved, exactly one
-> document differed) — **REBUILD (leyline pack) + ⟳ Sync Talents still owed** to Ben's next deploy.
-> 🤖 re-test is checklist row **92-1** (Red section): stays open here until the pack is rebuilt and
-> the bench confirms the keen-hit case now offers, then moves to §K.
+*(R-88 — Volatile Strike drops the impact-only damage-type gate — ANSWERED 2026-09-07, moved to §K.)*
 
----
+*(R-89 — the NO NAMEABLE HOOK marker moves into a `noHook` flag, off the prose — ANSWERED 2026-09-07, moved to §K.)*
 
-**R-89. The `NO NAMEABLE HOOK` marker does not survive a ProseMirror save. Where should it live?**
-R-47's own ⚠️ clause asked this and bench run 42 answered the mechanism: feeding a marked description
-through `ProseMirror.dom.parseString` → `serializeString` — the exact pair Foundry's editor uses when
-you save — **drops the `<!-- NO NAMEABLE HOOK: … -->` comment entirely** (measured on Wrongwake's Drag
-Under: the source ends with the marker, the round-trip ends at "no air, no speech."). Nothing is broken
-today, because the marker lives in `data/adversaries.json` and only the world copy would lose it — but
-the authoring loop is Foundry-edit → extract → build, so **the first time Ben edits one of these
-descriptions in Foundry and it is extracted, the marker is silently gone and `lint-refs.js` pass 5
-starts failing** on an ability that never changed. *Recommended default: **(a) move the declaration off
-the description** into a dedicated field the editor cannot rewrite (a `flags.edha-content.noHook`
-string, read by lint pass 5, rendered nowhere) — the marker stops being prose and starts being data.*
-(b) leave it and add a note to `AUTHORING_WORKFLOW.md` telling Ben not to save those descriptions from
-the editor. (c) teach the extract step to re-attach the marker from the repo copy when the incoming
-text has lost it. *(Bench run 42, 2026-09-07 — R-47's other four clauses all passed and its row is
-retired; this is the residue.)*
-> **ANSWERED 2026-09-07 17:11 (Ben, dashboard), verbatim: "a"** — (a) move the declaration off the
-> description into `flags.edha-content.noHook` (data, not prose), read by lint pass 5, rendered
-> nowhere. **Item 93** (sonnet, adversaries REBUILD + ⟳ Sync Adversaries) applies it. **Not shipped
-> yet** — stays open here until item 93 lands and the bench confirms it, then moves to §K.
+*(R-90 — an adversary's edha-triggered-effect card whispers when there is no player owner — ANSWERED 2026-09-07, moved to §K.)*
 
----
-
-**R-90. An adversary's `edha-triggered-effect` card is public. Should it whisper to the GMs?**
-Bench run 43 re-drove Predator's Due on the current build: the heal is right (a fresh Cragdrake Alpha
-went **30 → 33** on taking a character to 0), but the card posts with `whisper: []` — so the table sees
-the boss's remaining-HP arithmetic *and* the GM instruction printed inside the same card
-(*"…and 1 Focus on the kill (focus is a GM add)"*). Run 16 blamed `edhaWhisperIds()` returning empty;
-that is wrong — the poster, `edhaRollCard`
-(`module-src/scripts/engine/33-triggered-effect-resolution.js:143`), simply passes **no `whisper` key**,
-and neither do its six sibling call sites. Public is correct for a PC healing themselves; it is the
-adversary case that leaks. **17** adversary `edha-triggered-effect` rules ship, of which the three
-`Predator's Due` blocks carry a literal GM instruction and the three `Afterburn` afflictions post
-through the same poster. *Recommended default: **(a) whisper to `edhaWhisperIds(owner)` when the owner
-has no player OWNER** — i.e. an adversary — and leave a player-owned actor's card public. One helper
-call per poster, and it is exactly what `edhaPostCueCard` already does for adversary cues.* (b) whisper
-only when the rule's own note contains a GM instruction — more surgical, but it makes the audience a
-property of prose. (c) leave everything public and delete the GM instruction from the three card texts
-instead — cheapest, but it also shows the players the boss's healing roll. *(Bench run 43, 2026-09-07;
-implementation is `TODO_REPO_HYGIENE` item 88, which is blocked on this answer.)*
-> **ANSWERED 2026-09-07 17:25 (Ben, phone inbox), verbatim (the row's own (a) text tapped): "(a)
-> whisper to `edhaWhisperIds(owner)` when the owner has no player OWNER — i.e. an adversary — and
-> leave a player-owned actor's card public. One helper call per poster, and it is exactly what
-> `edhaPostCueCard` already does for adversary cues."** **Item 88** (opus, engine-only) applies it.
-> **Not shipped yet** — stays open here until item 88 lands and the bench confirms it, then moves
-> to §K.
-
----
-
-**R-91. Does R-86 retire the R-62 audience row, or do you want to disconnect for one window?**
-The checklist row **"VISIBLE — R-62 audience flips, seven sites"** asks, for each of seven card sites,
-that a GM be **logged out** when the card fires and then log back in. Bench run 43 re-derived why that
-cannot be staged: the world holds **exactly two GM users** — `Bench` (which by definition is connected
-during a bench run) and `Gamemaster` (Ben, connected through runs 24–43) — and the other four users are
-all role 1. So `edhaGmIds({activeOnly: true})` and `edhaGmIds()` return the same list no matter what the
-bench does; there is no offline GM to act as a discriminator. **R-86** already says *"There will never
-be no GM connected. This isn't needed, and any similar items aren't needed"*, and it retired **Job 6a**,
-whose premise is the same. *Recommended default: **(a) retire the row under R-86** — the flips are
-repo-side facts pinned by the code (`activeOnly` present or absent at each of the seven sites) and the
-behaviour they change only matters in a state you have said will never occur.* (b) keep it and
-disconnect `Gamemaster` for one deliberate window so a bench run can drive all seven sites in one pass —
-about ten minutes of your time, once. (c) keep it open indefinitely. *(Bench run 43, 2026-09-07 — the
-row is annotated with this derivation and stays 🤖 until you answer; a technical blocker never becomes
-⚑.)*
-> **ANSWERED 2026-09-07 17:25 (Ben, phone inbox), verbatim (the row's own (a) text tapped): "(a)
-> retire the row under R-86 — the flips are repo-side facts pinned by the code (`activeOnly`
-> present or absent at each of the seven sites) and the behaviour they change only matters in a
-> state you have said will never occur."** **This item** (`TODO_REPO_HYGIENE` item 95) applies it:
-> the checklist row **"VISIBLE — R-62 audience flips, seven sites"**
-> (`EDHA_FOUNDRY_TEST_CHECKLIST.md`) is retired under R-86 with that reason; its ⛔ evidence trail
-> stays intact.
-
----
+*(R-91 — R-86 retires the R-62 seven-site audience-flip checklist row — ANSWERED 2026-09-07, moved to §K.)*
 
 ## D. Talent identity & tree shape
 
-**R-23. Volatile Strike — whose hit should it ride?** Card and rule description both say "when you
-hit with a melee attack" (a rider), but it is authored `skill_test` **with its own damage formula**,
-so it derives item-specific and only ever offers itself on its own damage.
-(a) `whenDealer: "any"` → a true rider on any melee impact hit, accepting that a standalone use also
-self-offers; or (b) it is the Special Action you take *after* your weapon hits, in which case the
-on-hit rule is the redundant half and should be `whenDealer: "self"` or removed.
-**Settleable entirely from the Events tab — `whenDealer` is a field on the rule, no code change
-either way.** Never benched. *(3A-3 + checklist Red row — the same question, recorded twice.)*
-> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) a TRUE RIDER on any melee hit:
-> `whenDealer: "any"`.** Authored rule field change in `data/authored/leyline-red.json`
-> (settleable from the Events tab) → **REBUILD + ↻ Sync**, **item 58**; 🤖 re-test = the Red row (a
-> sword hit offers Volatile Strike; standalone use self-offers harmlessly).
-> **SHIPPED** in PR #227 (REBUILD, bench-pending) — `whenDealer: "any"` on rule `TKmyXVyFhGYWryKv`,
-> `data/authored/leyline-red.json`.
+*(R-23 — Volatile Strike rides any melee hit as a true rider — ANSWERED 2026-09-06, moved to §K.)*
 
 *(R-24 — Red/Momentum branch root — ANSWERED 2026-09-06, moved to §K.)*
 
-**R-25. Rallying Shout's reminder now prints on an ally ABOVE 0 HP.** Deliberate change, re-confirmed
-at run 11 on an ally at 32 HP. The number defect in the same line is fixed and table-verified
-("recovery die + **3** health" at Leadership 3). Only the gate is yours: keep the always-print, or
-restore the at-0-HP-only gate? *(3A-11 + checklist 2bM-6.)*
-> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (c) print ONLY for an ally at 0 HP or
-> carrying Unconscious** (the two cases the card names). ENGINE-ONLY, F5 → **item 47**; headless pin
-> (ally at 32 HP: no card; ally at 0: card; ally Unconscious above 0: card); 🤖 re-test = 2bM-6.
-> ⛔ **NOT SHIPPED in PR #215 (item 47) — it is not an engine-only change.** Since the 2b
-> migration that reminder is an AUTHORED `edha-note` rule on Rousing Presence
-> (`data/authored/heroic-envoy.json`, rule `RouseRallying000`, `whenOwnsTalent: "Rallying Shout"`),
-> and `edha-note` carries no target-condition dial. Gating it needs EITHER a new generic field on
-> `edha-note` PLUS an authored value on that rule (**REBUILD + ↻ Sync**), OR a name-keyed engine
-> branch, which iron rule 2b forbids and the ratchet prevents. Shipping the dial alone would add an
-> engine path with no consumer — R-74/R-76's own complaint. **Needs a rebuild-class item; the
-> answer (c) stands unchanged.**
-> **SHIPPED** in PR #239 (REBUILD, bench-pending) — item 63: `edha-note` gained the generic `whenTarget`
-> field (blank | `downed` = target at 0 HP or Unconscious, pure gate `edhaNoteTargetGate`), and
-> `RouseRallying000` carries `whenTarget: "downed"`. tests/note-target-gate.test.js pins the three cases
-> plus the no-field case; heroic pack parity = 204 documents, 1 differs. 🤖 re-test = checklist 2bM-6b.
+*(R-25 — Rallying Shout's reminder prints only for an ally at 0 HP or below — ANSWERED 2026-09-06, moved to §K.)*
 
 *(R-57 — Pattern Recognition's round-expiry, kept — ANSWERED 2026-09-06, moved to §K.)*
 
@@ -612,154 +148,34 @@ restore the at-0-HP-only gate? *(3A-11 + checklist 2bM-6.)*
 
 *(R-26 — blank-note edha-push card text — ANSWERED 2026-09-06, moved to §K.)*
 
-**R-27. Battle Fever — which side is canon, the card or the engine?** The card says "+1 to your next
-test (max = Rank), **resets at start of your turn**"; the engine's rally bonus rides **every** test
-until turn start (`rally {count, resetOn: turn}` — it never consumes on a test; observed +2[Rally] on
-6+ consecutive rolls). The max=Rank cap works on both readings. *(Checklist Red spot-checks row.)*
-> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) THE CARD is canon**: the rally
-> bonus is SPENT on the next test (max = Rank), and clears at the start of the owner's turn. Spec:
-> the rally handler's `{count, resetOn: turn}` gains consume-on-test (the bonus applies once, to the
-> next test, then the stack is cleared/decremented). ENGINE-ONLY, F5 → **item 52**; headless pin
-> (three damage events → +3 on the next test, +0 on the one after; cap at Rank); 🤖 re-test = the
-> Red spot-checks row.
-> **SHIPPED** in PR #223 (ENGINE-ONLY, bench-pending) — `tests/rally-spent-on-test.test.js` (three hits
-> → `0 + 3[Rally]` on the next test and +0 on the one after; four hits at Rank 3 spend as +3; an unspent
-> stack still clears at the owner's turn start). The consume is a post-`<ctx>Roll` reader of the actor's
-> own `rally` flag (`edhaRallyConsume`), not a roll option — a cancelled dialog cannot strand the stack.
+*(R-27 — Battle Fever — the card is canon over the engine — ANSWERED 2026-09-06, moved to §K.)*
 
-**R-28. Withering Touch's duration — "start" or "end" of your next turn?** The engine
-(`expireAfter {round: 2, turn: 0}`), **both** chat cards and the **measured** expiry all say **END**;
-only the prose says *start*. *Recommended: fix the prose* (and the source in `data/domain.json`) —
-do not leave three artifacts agreeing and one disagreeing. *(3A-15 + checklist 2bW-1.)*
-> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) END; fix the PROSE.** Authored
-> description + `data/domain.json` source prose say "end of your next turn"; engine and cards
-> unchanged. DATA/TEXT → pack **REBUILD + ↻ Sync**, **item 58**; retire checklist 2bW-1's duration
-> clause.
-> **SHIPPED** in PR #227 (REBUILD, bench-pending) — `description` (value/chat/short) +
-> `WitherNote000000.text` in `data/authored/deity-death.json`, and the source `description` in
-> `data/domain.json`, all "end of your next turn".
+*(R-28 — Withering Touch's duration ends at the END of your next turn — ANSWERED 2026-09-06, moved to §K.)*
 
-**R-29. Combat Training's garbled source.** The cheatsheet sentence reads "turn one of its own
-**grazes into a graze**". Rule whether that means **miss → graze** or **graze → hit**, and the text
-gets fixed to match. Open since 2026-07-16. *(Checklist adversary-wiring row.)*
-> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) MISS → GRAZE, once per round,
-> without spending Focus** — the canon Combat Training wording. Spec: fix the cheatsheet sentence
-> and the adversary block's description (its description is currently EMPTY in
-> `data/adversaries.json` — write it); wire per lint pass 5. Adversaries pack **REBUILD** (Ben's
-> deploy) → **item 57**. Retire the adversary-wiring checklist row on evidence.
-> **SHIPPED** in PR #226 (REBUILD, bench-pending) — the Captain's text reads "Once per round, when one of the
-> Captain's attacks misses, it can turn that miss into a graze without spending Focus." (note: the block's
-> `text` was never actually empty — it carried the 07-16 ruling wording plus a visible marker; both
-> rewritten). The garbled sentence lives only in the source PDF, which is not in the repo; the built
-> description is now the canonical wording. Checklist row retired on the built-pack read-back.
+*(R-29 — Combat Training's garbled source resolves to miss-to-graze, once per round — ANSWERED 2026-09-06, moved to §K.)*
 
 *(R-30 — 2bR-17 spec vs rule (Counterpoint) — ANSWERED 2026-09-06, moved to §K.)*
 
-**R-31. Should a PC's own Phantom Double token be labelled "(Illusion)"?** The plain name is
-deliberate for The Seeming's veil, but no veil applies in the PC direction. *(3A-9.)*
-> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) YES, label the PC's copy
-> "(Illusion)"**; the Mistheron's veiled copy keeps its plain name. ENGINE-ONLY (the copy-token
-> spawner, character owners only), F5 → **item 48**; 🤖 re-test in the Blue block.
-> **SHIPPED** in PR #217 (ENGINE-ONLY, bench-pending) — tests/illusion-token-label.test.js:"R-31: a CHARACTER's copy — the token is labelled (Illusion)"
+*(R-31 — a PC's own Phantom Double token is labelled "(Illusion)" — ANSWERED 2026-09-06, moved to §K.)*
 
-**R-32. Black Draw Mana's sweep card says "affected 5"** when all five were already Weakened —
-intent vs. state. Which should the card report? *(3A-10.)*
-> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) report BOTH: "swept N · newly
-> Weakened M".** ENGINE-ONLY (the pulse runner's card text), F5 → **item 48**; headless pin on the
-> string; 🤖 re-test = Black Draw Mana on five pre-Weakened targets reads swept 5 · newly 0.
-> **SHIPPED** in PR #217 (ENGINE-ONLY, bench-pending) — tests/pulse-sweep-counts.test.js:"R-32: five ALREADY-Weakened enemies read 'swept 5 · newly Weakened 0'"
+*(R-32 — Black Draw Mana's sweep card reports both swept and newly-affected counts — ANSWERED 2026-09-06, moved to §K.)*
 
 *(R-33 — 2bI-3 card text vs behaviour (Coercive Pressure) — ANSWERED 2026-09-06, moved to §K.)*
 
 
-**R-71. The system's own item-damage card prints the UNFOLDED formula — leave it, or fold at build
-time?** R-65 folds every roll that goes through `edhaRollFormula`, and every engine-rolled card
-measured since reads plain dice (`2d8`, `2d8 + 2`, `1d6 + 2`). But a talent whose damage the
-**cosmere system** rolls for itself — `item.system.damage.formula`, rolled by the system's `use()`
-before any Edha rule sees it — never reaches that helper, so its card shows the raw parenthetical.
-Measured on **Verdict**: the system card read `(2)d(2 * 3 + 2) + 5 = 10` while the same talent's
-engine-rolled Edict payoff on the very next card read `2d8 + 2 = 7`. **The maths is right** —
-Foundry's parser evaluates the parenthetical correctly, 10 and 7 are both valid — so this is a
-DISPLAY gap, not a damage bug, and it is the same string bench run 24 saw on Exalt's card.
-*Recommended default: **fold the authored `system.damage.formula` at BUILD time**, so every
-system-rolled card reads `2d8` like every engine-rolled one.* The alternative is to accept the
-parenthetical on those cards, which is defensible — it is honest about the scaling — but it makes
-two cards from the same talent look like they use different maths. A build-time fold would need a
-**pack rebuild**, and it changes what Ben sees on the sheet, so it is a judgment call rather than a
-mechanical fix.
-*(Filed by bench run 28, which moved it out of the checklist: the row asked Ben to DECIDE, not an
-agent to TEST, so it was in the wrong file. Original measurement: bench run 25.)*
-> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) fold `system.damage.formula` at
-> BUILD time.** Spec: `foundry-build.js` folds the authored damage formula into plain dice for
-> every talent the system rolls itself (same fold `edhaRollFormula` does at runtime per R-65).
-> Packs **REBUILD** (Ben's deploy); TOOLING + DATA → **item 59**; pin with a build-report diff
-> showing only formula strings changed; bench visual check = Verdict's system card reads `2d8 + 5`
-> like its engine-rolled card.
-> **SHIPPED** in PR #234 (REBUILD, bench-pending) — `scripts/lib/fold-die-math.js`
-> (`foldDieMath`) wired into `foundry-build.js`, pinned against the engine's own `edhaFoldDieMath` in
-> `tests/fold-die-math.test.js`. ⚠️ **Load-bearing limit found while shipping it, worth reading before
-> the bench row above surprises anyone:** the fold can only resolve a `damage.formula` whose computed
-> dice math is ALREADY fully numeric — it has no actor to substitute `@tier`/`@skills.<color>.rank`
-> from at build time, so a genuinely rank/tier-scaled `[Tier][Die]` formula (Verdict's own
-> `(@tier)d(2 * @skills.blue.rank + 2)` included) folds to ITSELF, unchanged, exactly like the
-> engine's own copy before runtime substitution. Measured against every current `damageFormula` (51
-> in `data/talent-rolls.json`) and every authored `damage.formula` overlay: **none are fully numeric
-> today**, so a real build's folded-formula count is currently 0 — proven correct by mutation (a
-> scratch-only synthetic flat formula DOES fold end-to-end; see the item-59 PR body / handoff delta
-> for the isolated one-field diff). If Verdict's card still shows the parenthetical on the bench run,
-> that is this limit, not a regression — the deeper fix (folding the SUBSTITUTED, actor-specific
-> formula at roll time, mirroring what R-65 already does for engine-rolled cards) would need to hook
-> the system's own damage-roll pipeline, which is a different, ENGINE-side change outside item 59's
-> TOOLING + DATA scope. Left open here for Ben to decide whether that is worth a follow-up item.
-> **SHIPPED (runtime half)** in PR #237 (ENGINE-ONLY, bench-pending) — `tests/runtime-formula-fold.test.js`. Item 69 folds the same field inside `edhaWrapRollDamage` at ROLL time, with the roller's data substituted first, so the tier/rank-scaled formulas the build-time fold could not touch now print plain dice on the system's own card (`2d8 + 5` at tier 2 / rank 3); riders join onto the folded base. The item-59 Verdict 🤖 row under `# BENCH — Order` is this item's re-test.
-
----
+*(R-71 — the system's item-damage card folds its formula at build time — ANSWERED 2026-09-06, moved to §K.)*
 
 ## F. Cosmetic & feel
 
 *(R-34 — Walking Ruin's indicator — ANSWERED 2026-09-05, moved to §K.)*
 
-**R-35. Should Unweaving's dispel card list the OMEN MARKER itself as a dispellable effect button?**
-Today the card lists enabled effects; the Omen marker is not among them. *(3B-D + checklist Chaos
-residuals row — that row's other half, the through-walls rendering, was CLOSED on run 13's
-sense-through evidence with a negative control.)*
-> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) YES.** Spec: the `edha-pick`
-> `source:'effects'` menu (already being widened under R-73 (b)) also offers the target's Omen
-> ledger entries as a "dispel Omen" button that clears the marker + ledger entry. ENGINE-ONLY, F5 →
-> folded into **item 54** with R-73(b); headless pin; 🤖 re-test = Chaos residuals row.
-> **SHIPPED** in PR #224 (ENGINE-ONLY, bench-pending) — `tests/dispel-widening.test.js`. The rule's new
-> `ledgers` field defaults to `omens:omen`, so Unweaving needs no rebuild; the click clears the marker
-> AND the ledger row, and a marker with no row still comes off.
+*(R-35 — Unweaving's dispel card lists the omen marker as a dispellable button — ANSWERED 2026-09-06, moved to §K.)*
 
-**R-36. Temp HP source relabelling misattributes a surviving value.** When a smaller Temp HP grant
-loses the keeps-higher comparison, the `source` is still relabelled to the loser — so an ally holding
-6 from Final Decree ends up reading "Bear Witness", and a 99-THP ally ends up reading "Investiture of
-Command". The number is right; the attribution lies. *(3B-D.)*
-> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) FIX: relabel `source` only when
-> the new grant WINS the keeps-higher comparison.** ENGINE-ONLY, F5 → **item 47**; headless pin (6
-> from Final Decree survives a 4 from Bear Witness → source stays Final Decree).
-> **SHIPPED** in PR #215 (ENGINE-ONLY, bench-pending) — `tests/temphp-source-label.test.js`. A tie
-> is not a win: the incumbent keeps both its value and its label.
+*(R-36 — Temp HP source relabelling only fires when the new grant is smaller — ANSWERED 2026-09-06, moved to §K.)*
 
-**R-37. Three small card-text nits, one decision:** Ordained eviction is never verbalized (the place
-card says "(2/2)" but never says the oldest fizzled) · Inevitable Snare's grammar reads "the snares on
-Snare #1 **is** inevitable" · Bulwark's THP attribution. Fix all three, or leave them? *(3B-D.)*
-> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) FIX ALL THREE**: (1) Ordained
-> eviction posts a line naming the fizzled oldest ground; (2) Inevitable Snare grammar ("the snares
-> on Snare #1 is" → correct number); (3) Bulwark's THP attribution. (1) and (3) are engine card text
-> (ENGINE-ONLY, F5); (2) is authored text if it lives on the card (REBUILD + ↻ Sync) or engine if it
-> is a generated string — check which. → **item 48**.
-> **SHIPPED** in PR #217 (ENGINE-ONLY, bench-pending) — tests/card-attribution-nits.test.js:"R-37(1): placing at the cap NAMES the oldest ground that fizzled" / "R-37(2): a POINT-bound entry names only the marker" / "R-37(3): the ordained turn-start card credits the Temp HP to the GUARD talent". (2) was ENGINE-generated after all, not authored — checked before editing, so all three shipped in one ENGINE-ONLY pass.
+*(R-37 — three small card-text nits, all fixed — ANSWERED 2026-09-06, moved to §K.)*
 
-**R-38. Dread Presence's veto silently makes a Weakened target unmovable.** Three moves resolved with
-no error and did nothing; the only evidence anywhere was `ui.notifications`. Working as designed —
-but it reads identically to a broken range gate, which cost a run real time. Should a refused move
-post something the player can see? *(3A-13.)*
-> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) a refused move POSTS a whisper to
-> the mover naming the talent that stopped it.** Spec: the `preUpdateToken` veto path posts one
-> whispered card (mover's owners + GM) per refused move, throttled per token per round so a dragged
-> path does not spam. ENGINE-ONLY, F5 → **item 48**; headless pin on the message; 🤖 re-test.
-> **SHIPPED** in PR #217 (ENGINE-ONLY, bench-pending) — tests/move-veto-announce.test.js:"R-38: a dragged path — two refusals in one round — posts ONE card; the next round posts another"
+*(R-38 — Dread Presence's veto posts a whisper to the mover — ANSWERED 2026-09-06, moved to §K.)*
 
 *(R-39 — roll dialog colour cue — ANSWERED 2026-09-06, moved to §K.)*
 
@@ -767,147 +183,17 @@ post something the player can see? *(3A-13.)*
 
 ## G. Adversaries & bestiary
 
-**R-40. The Gone-to-Weir Fen-Heart's token footprint — 3×3 or 4×4?** `size: "large"` is the schema
-cap, so the footprint is set by hand at placement and the biography carries the note. Say which, and
-it goes in the block's text. *(Checklist Lunavar row; its sheet-read half is now RETIRED — bench run
-16 confirmed `creatureType: custom`, `size: large` and the bio note. Only the number is still open.)*
-> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) 3×3 (Huge).** Put the number in
-> the block's biography note (`data/adversaries.json`) and in the placement guidance; adversaries
-> pack **REBUILD** → **item 57**.
-> **SHIPPED** in PR #226 (REBUILD, bench-pending) — the biography's placement sentence now reads "set the
-> token to **3×3** on placement" with the reach-15 / 30-ft measurements noted against that footprint.
-> No token field can carry it: `size: "large"` is the schema cap (2×2), so the number is guidance, as ruled.
+*(R-40 — the Gone-to-Weir Fen-Heart's footprint is 3×3 (Huge) — ANSWERED 2026-09-06, moved to §K.)*
 
-**R-46. How far should a "charge" carry? The Cragdrake Whelp Pack's Reckless Advance moves 3 ft.**
-Raised by bench run 16 (2026-07-27x), which drove it and watched a charging whelp advance **half a
-square**. The rule is `edha-move {bySize: true}` and the whelp is **small**, so `bySize` is behaving
-exactly as configured — this is a design question, not a defect, and the card states no distance so
-nothing is drifting. But "charge toward it, ignoring Reactions — whelps arrive all at once or not at
-all" reads like a rush, and 3 ft is not a rush. *Recommended default: give it an explicit
-`distanceFt` (its Speed, 25 ft, or half that) rather than `bySize`, and say so on the card.*
-⚠️ **Distinct from the Explosive Leap case** in the same section — see **R-48**, which test-pass-fixes
-sent back here on 2026-07-27y: it is the same `bySize` question, not a wiring bug.
-> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) FULL SPEED, 25 ft, explicit
-> `distanceFt`, stated on the card.** `data/adversaries.json`: `edha-move bySize` → `distanceFt: 25`
-> on Reckless Advance + card text; check R-48 (Explosive Leap, same `bySize` question) for the same
-> treatment if still open. Adversaries pack **REBUILD** → **item 57**; 🤖 re-test.
-> **SHIPPED** in PR #226 (REBUILD, bench-pending) — `{bySize: false, distanceFt: 25}`, card text "charge up to
-> 25 ft (its full Speed)". 🤖 row in the Whelp Pack section. R-48 got the same treatment (below).
+*(R-46 — a "charge" carries full speed, 25 ft, explicit — ANSWERED 2026-09-06, moved to §K.)*
 
-**R-48. The Cragdrake Adult's Explosive Leap says "up to 20 ft" and moves 5. Which side is canon?**
-Sent here by fix pass A (2026-07-27y) after root-causing it rather than fixing it — the run filed it
-as card-vs-engine drift, and it is, but **neither side is wrong by itself**, so it is a ruling, not a
-defect. `bySize: true` means *distance = `[Size]` by RED rank*, and `EDHA_SIZE_FT` is
-`[–, 2.5, 5, 10, 15, 20]`. The Cragdrake Adult is a **rival** attuned to red, so its rank is **2** and
-the leap is **5 ft** — the engine is doing exactly what the rule says. The card's flat "20 ft" is the
-**rank-5** value, so the prose reads as a promise the block can never keep. Same shape as R-46, one
-layer over: there the card states no distance, here it states the wrong one.
-*Recommended default: the CARD is canon for an adversary — a statted block should not scale, so give
-it `distanceFt: 20` and drop `bySize`.* The alternative (keep `bySize`, reword the card to "Leap
-`[Size]` ft") is defensible but makes an adversary card read like a PC talent. Whichever way it goes,
-authored data changes → **pack rebuild + ⟳ Sync**, which is why fix pass A left it alone: the
-rebuild list is currently empty and this is not worth re-opening it on its own.
-
-Ask: Is the CARD canon for a statted adversary block — keep the applied explicit `distanceFt` (the card's own number) on the Cragdrake Adult's Explosive Leap and the three run-19 blocks it turned out to share the shape with (a), or reword those cards to the rank-2 `[Size]` distances the engine was rolling (b)?
-
-⚠️ **UPDATED 2026-07-28e by bench run 19 — this is no longer one block, it is a FAMILY of at least
-four across two colours, and three of them state a wrong number on the card.** Measured live:
-| block | ability | card says | engine did | rank |
-|---|---|---|---|---|
-| Cragdrake Adult | Explosive Leap | 20 ft | 5 ft | red 2 |
-| **Brandram** | **Shockwave Slam** | **10 ft** | **5 ft** (measured 300 px) | red 2 |
-| **Brandram** | **Reckless Advance** | **10 ft** | **5 ft** (from 32.5 ft away, unclipped) | red 2 |
-| **Tussock-Sow** | Green Key terrain square | "~10-ft square" | **5 ft** | green 2 |
-| *Briar-Gone Grove* | *Green Key terrain square* | *10 ft* | ***10 ft*** ✅ | *green **3*** |
-The Grove row is the control that proves the mechanism rather than merely asserting it: **same code
-path, rank 3, and the card's number comes out right.** So every rank-**2** rival lands exactly one step
-down `EDHA_SIZE_FT` while its card carries the rank-3 figure. Note also that `bySize: true` makes an
-authored `distanceFt` **dead** — Shockwave Slam ships `distanceFt: 5` *and* `bySize: true`, and the 5
-is coincidence, not the source. **Deciding R-48 once now settles four blocks**, which is a much better
-trade for a pack rebuild than the single-block version was. *(Bench run 19; checklist W29 §7, §8.)*
-> **DEFAULT (a) APPLIED** in PR #226 (REBUILD, bench-pending; the PM's recorded default, item 57) — the
-> **Cragdrake Adult's Explosive Leap** only: `{bySize: false, distanceFt: 20}`, the card's own "up to 20 ft".
-> 🤖 row in the Cragdrake Adult section. **Still open for Ben's veto**, and the other three rows of the run-19
-> family (Brandram Shockwave Slam / Reckless Advance, Tussock-Sow terrain square) are untouched — the brief
-> scoped the default to the Adult; they want the same call in one pass.
-> **R-81 default (a) APPLIED** in PR #232 (the three run-19 blocks, riding item 65's rebuild; item 67) —
-> the **Brandram's Shockwave Slam** `{bySize: false, distanceFt: 10}` (the dead `distanceFt: 5` beside
-> `bySize: true` replaced), the **Brandram's Reckless Advance** `{bySize: false, distanceFt: 10}`, the
-> **Tussock-Sow's Sudden Growth** `{sizeByRank: false, sizeFt: 10}` (the terrain square's analogue of
-> `bySize`) — each the card's own number, now bold on the card. The run-19 family is now closed on
-> default (a) end to end; **still open for Ben's veto** ((b) = fix the cards to the rank-2 numbers
-> instead). 🤖 three rows in the `34c` sub-block of the fleet-weapon bench section. Left alone: both
-> Sudden Growths (Sow, Grove) still place within Attunement Range by rank (30 / 60 ft) while their cards
-> say "within 10 ft" — the same family one field over, reported to the PM.
-
-> **ANSWERED 2026-09-06 (a) — Ben, from the phone board at 21:14 ET, verbatim: *"the CARD is canon for an adversary — a statted block should not scale, so give it `distanceFt: 20` and drop `bySize`."*** Item 57 (PR #226) had already applied exactly that (`bySize: false`, `distanceFt: 20`, card text unchanged; REBUILD owed to the next deploy) — nothing further to change. The principle also underwrites R-81 (item 67) and R-46.
-> **CONFIRMED 2026-09-07 (Ben, dashboard), verbatim: "Yeah it makes no sense for an adult drake to
-> only jump 5 feet."** No change to the shipped code or the ruling's status — the 2026-09-06 answer
-> and PR #226 stand.
+*(R-48 — the Cragdrake Adult's Explosive Leap — the card's 20 ft is canon — ANSWERED 2026-09-06, moved to §K.)*
 
 *(R-49 — is a creature an obstacle for push collision damage — ANSWERED 2026-09-05, moved to §K.)*
 
-**R-47. Should the `NO NAMEABLE HOOK:` engineering note be visible on the player-facing card?**
-Bench run 16 drove Seize and Roll, Drag Under and Slip the Sound and all three posted their authoring
-rationale to chat verbatim — e.g. "NO NAMEABLE HOOK: to-hit-only grab — a hit that deals no damage
-makes no document write, so there is no engine hook; the GM rolls the attack and adjudicates the
-grip." The wiring is correct and the rows passed; the question is presentational. *Recommended
-default: keep the line in the item description (it is the rule-3 ledger and it must stay somewhere
-visible in Foundry), but move it behind a GM-only note field or an HTML comment so the table sees
-only the fiction.* Affects every adversary ability carrying the marker, not just these three.
-> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) NO: keep it on the item but hide
-> it from the table** (GM-only note field or an HTML comment inside the description). Applies to
-> EVERY adversary ability carrying the marker; lint pass 5 must keep recognising the marker in its
-> new home; build/data change → adversaries pack **REBUILD** → **item 57**.
-> **SHIPPED** in PR #226 (REBUILD, bench-pending) — all **16** markers are now `<!-- NO NAMEABLE HOOK: … -->`
-> HTML comments inside the ability's `text`/`rider` (Combat Training, Mutation Upgrade, Seize and Roll,
-> Cannot Stop, Drag Under, Slip the Sound, The Passed Wasting, A Thousand Small Bodies ×2, The Old
-> Agreement, Pay the Ledger, Guardian Stance, Apex Predator ×2, Pack Doctrine, The Tithe Takes the
-> Failing). `lint-refs.js` pass 5 still reads the raw prose for the exemption AND now fails a VISIBLE
-> marker — mutation-proved both ways. 🤖 row in the adversary-wiring section (includes a ProseMirror
-> round-trip check: if the editor strips comments on save, the marker needs a GM-note field instead).
-> **Moved by R-89 (a) → item 93** (2026-09-07): the HTML comment described above is gone — the
-> declaration now lives in the `noHook` key (`flags.edha-content.noHook` on the built docs).
+*(R-47 — the NO NAMEABLE HOOK note stays off the player-facing card — ANSWERED 2026-09-06, moved to §K.)*
 
-**R-52. A 5-ft `ally-drops` cue cannot reach an ally standing next to its owner. Slack, or edge-to-edge?**
-Raised by bench run 19 (2026-07-28e), which measured it four ways rather than asserting it.
-`edhaTokenGapFt` measures **centre-to-centre** and `edhaAllyDropEligible` applies **no slack**, so:
-
-| owner | ally position | gap | card |
-|---|---|---|---|
-| Crownox Ring (**Large 2×2**) | orthogonally adjacent | **7.5 ft** | ❌ |
-| Crownox Ring | overlapping the ring's own square | 0 ft | ✅ |
-| The Reckoning (Medium) | orthogonally adjacent | 5.0 ft | ✅ |
-| The Reckoning | **diagonally** adjacent | **7.07 ft** | ❌ |
-
-A **Large** owner's 5-ft cue can therefore *never* reach a ring-mate beside it — only one standing
-inside its footprint — and a Medium owner's misses every diagonal. Both cards promise the opposite:
-*"an **adjacent** ox may spend 3 Focus"* and *"a pack-mate dropped **within 5 ft**"*. This is a
-measurement convention, not a broken hook, which is why it is here and not in test-pass-fixes.
-⚠️ **The engine already answers this question elsewhere and disagrees with itself:** the
-`enemy-turn-start` sweep in the same file adds **`+ 2.5` half-square slack**, with the comment
-*"half-square slack for adjacency reads"*. `ally-drops` has none.
-*Recommended default: give `edhaAllyDropEligible` the same `+ 2.5` slack, which fixes the Medium
-diagonal immediately and is a one-line ENGINE-ONLY change (no pack rebuild).* That still leaves the
-Large owner at 7.5 ft, so if "adjacent to the ring" is meant to work, the fuller answer is to measure
-**edge-to-edge** for sized tokens — a bigger change that would touch every `rangeFt` gate in the
-engine, so it should be decided deliberately rather than slipped in. Blast radius today is the two
-5-ft rules (Crownox Ring, The Reckoning); Roek's 20 ft is unaffected. *(Checklist W29 §2.)*
-> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (c) BOTH** — (i) the +2.5 ft
-> half-square slack in `edhaAllyDropEligible` NOW, one-line ENGINE-ONLY, matches the
-> enemy-turn-start sweep → **item 47**; AND (ii) file edge-to-edge measurement for sized tokens as
-> its own TODO item with a bench sweep of every `rangeFt` gate → **item 62**, because the Crownox
-> Ring's "an adjacent ox" stays false under slack alone. Headless pin on the four measured cases; 🤖
-> re-test = W29 §2 when both ship.
-> **(i) SHIPPED** in PR #215 (ENGINE-ONLY, bench-pending) — `tests/ally-drop-side.test.js`, via
-> `EDHA_ADJACENCY_SLACK_FT` now read by BOTH adjacency gates. ⚠️ All four measured gaps reach,
-> **including the 7.5 ft Large-owner case this ruling's prose predicted would still miss** — the
-> boundary is inclusive, so 7.5 ≤ 5 + 2.5. (ii) edge-to-edge is untouched and remains item 62.
-> **ANSWERED 2026-09-07 (Ben, dashboard), verbatim: "I'm fine with whatever fix you can find for
-> this. I think increasing slack would work, or editing the cue."** The +2.5 ft slack that shipped
-> as (i) IS that fix — all four measured gaps reach, including the Large-owner case. Item 62's
-> edge-to-edge measurement narrows to a contingency: only pick it up if bench run 42's W29 §2
-> re-test finds a gap the slack still misses. Item 62 stays open, narrowed, not closed.
+*(R-52 — the 5-ft ally-drops cue gets +2.5 ft adjacency slack — ANSWERED 2026-09-07, moved to §K.)*
 
 *(R-53 — Dead status on a "goes still" cue — ANSWERED 2026-09-06, moved to §K.)*
 
@@ -917,80 +203,11 @@ engine, so it should be decided deliberately rather than slipped in. Blast radiu
 
 *(R-41 — labelled vs label-free character-creation map — ANSWERED 2026-09-06, moved to §K.)*
 
-**R-42. Map polygon dead spots — fix the polygon, or re-tag the dots?** Point-testing all 35 gazetteer
-city dots against the 10 shipped nation polygons: **30 agree, 5 do not.** `city-04 [746,676]`,
-`city-11 [484,1120]`, `city-14 [407,1324]` and `city-17 [595,916]` — all tagged `goldenport` — fall
-**inside no polygon at all**, so clicking there selects nothing; and `city-31 [1244,1552]`, tagged
-`corvaine`, resolves to **`thalendor`**. Controls pass (Aldercourt → corvaine, Heartholt →
-thalendor), and `thyrcross-nations.json` is byte-identical to `thyrcross.map.json`'s polygons and to
-the deployed copy, so this is **map truth, not a deploy gap**. **These are the same four `lint_map.py`
-already WARNs about.** Either Goldenport's polygon is missing its coastal lobe, or those dots are
-tagged to the wrong nation — both are edits to `source-materials/maps/thyrcross.map.json`, and only
-you can say which is true. *(3A-17.)*
-> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) FIX THE POLYGONS.** Goldenport
-> gains its coastal/island lobes so city-04/11/14/17 fall inside it; Corvaine's edge moves to the
-> river bank so city-31 (ruling 154 river port, "the border IS the river") resolves to corvaine.
-> Edits to `source-materials/maps/thyrcross.map.json` + regenerated `thyrcross-nations.json`;
-> `lint_map.py`'s four WARNs must go to zero. Map-data item, lane R → **item 61**; then the
-> "Redrawn polygons hit the right nations" row re-tests.
+*(R-42 — map polygon dead spots get the polygons fixed — ANSWERED 2026-09-06, moved to §K.)*
 
-**R-54. Is 11 max health at STR 0 correct for a level-1 PC — i.e. does `HP = system + 1` apply at
-level 1?** The checklist's "+1 max health" row demands a fresh actor read **10/10 at STR 0**, and
-bench run 21 proved that **can never happen**, for a reason that is design rather than a bug. The
-07-19z fix it was written for genuinely worked — a brand-new ＋ Edha Character carries 20 items, 19
-of them actions, and **zero transfer Active Effects**, so the AE that used to add the +1 is gone. But
-the actor still derives max **11**: `_source…hea.max.bonus` is **0** while derived reads `bonus: 1`,
-and **a plain cosmere character with no items and no effects at all reads exactly the same 11**. The
-source is `edhaDeriveSheetStats` (engine ~L16178), which deliberately adds +1 to `hea.max.bonus` in
-memory for every character — its own comment says *"The Edha reference sheets derive these
-differently from the cosmere system… HP = system + 1."* So either **(a)** 11 is intended and the
-row's number is simply stale (retire "10/10", write "10/11") — *Recommended*, since the derivation is
-documented and deliberate — or **(b)** the +1 is not meant to apply at level 1, and the derivation
-needs a level gate. ⚠️ Note this is **not** the same question as the two *defects* it sits next to:
-the derived-stat preview showing Health 13 vs the sheet's 14, and the finish top-up leaving health
-13/14, are both **bugs to fix either way** (the preview must model the derivation; the top-up must
-re-read after it settles). Only the target number is a decision. *(Bench run 21.)*
-> **2026-07-28i — both defects are FIXED and the question is unchanged, but one fact about it
-> changed.** The 13/14 root cause turned out not to be timing at all: the system clamps every
-> resource to its max at the end of `prepareSecondaryDerivedData`, *before* the module raises that
-> max, so the +1 was **unreachable by any route** — 11/11 could never be displayed, healed to, or
-> rested to. That is now repaired, so if you rule **(a)**, 11 will finally behave like a real 11
-> instead of a number painted on the sheet. If you rule **(b)**, the repair becomes a no-op by
-> construction. The engine now holds the number as a single constant, `EDHA_HP_BONUS`, read by both
-> the sheet derivation and the wizard preview — so answering this is a one-line change that moves
-> the sheet, the preview and the tests together. *(Marathon 3, fix pass E.)*
-> **ANSWERED 2026-09-06 (Ben, phone, via the relay session, after reading the derivation map
-> `docs/ACTOR_STAT_DERIVATION.md`): (c) REMOVE the +1.** This supersedes the earlier lean toward
-> (b) and the request for a level gate — **no level gate anywhere**; the math stays a single
-> constant. Spec: `EDHA_HP_BONUS = 1` → `0` (keep the constant and its comment block, but correct
-> the comment "the cosmere system derives all three differently" to name only Movement and Senses —
-> HP is identical to the system: `Character_Building_Rules.md` §HP and
-> `Edha_Character_Builder.xlsx` (Character Builder!H22) both give `HP = 10 + STR` at L1, term-for-
-> term the system's own advancement table); the clamp repair and `edhaCwDerivedPreview` read the
-> constant, so they follow. Re-pin `tests/derived-stats.test.js` + `tests/engine-helpers.test.js`
-> wherever they assert the +1. The June pregens that still store a manual `hea.max.bonus` keep it
-> until `edha.migrateDerivations()` — left alone unless Ben says otherwise. ENGINE-ONLY, F5 →
-> **item 47**; the checklist's "+1 max health" row rewrites as the re-test: a fresh actor at STR 0
-> reads **10/10** after Finish, an existing PC at full health drops 11→10 on reload with nothing
-> stored changing.
-> **SHIPPED** in PR #215 (ENGINE-ONLY, bench-pending) — `tests/derived-stats.test.js`. Note
-> `tests/engine-helpers.test.js` needed no change: it never asserted the +1.
+*(R-54 — the +1 max-health bonus is removed, HP = system — ANSWERED 2026-09-06, moved to §K.)*
 
-**R-55. The sheet's budget chips use two different meanings of "X / Y" — which is right?** On a
-correctly-built L1 PC (12 attribute points spent, 5 skill ranks spent, 2 of 4 talents taken) the
-header strip reads **"Talents 2 / 4"**, **"Attr pts 0 / 12"**, **"Skill rnks 0 / 5"**. Talents is
-*spent* / total; the other two are *remaining* / total. The checklist's "Sheet budget bar says 5
-skill ranks" row predicted **5/5**, so it was written expecting *spent*/total everywhere. **The fix
-that row tests did work** — the denominator is the Edha budget **5**, not the system table's 4, and
-it is never the old **-1/4** — so the row is retired on that evidence; this is only about which
-numerator convention the three chips should share. *Recommended: make all three spent/total*, since
-"Talents 2 / 4" is the one players read most and 0/12 next to a fully-spent sheet reads like an
-error. *(Bench run 21.)*
-> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) all three chips read SPENT /
-> total.** Attr pts and Skill rnks flip to spent/total to match Talents. ENGINE-ONLY (sheet
-> decorator), F5 → **item 48**; headless pin on the three strings for a built L1 PC (12/12, 5/5,
-> 2/4).
-> **SHIPPED** in PR #217 (ENGINE-ONLY, bench-pending) — tests/budget-chips.test.js:"R-55: a built L1 PC reads 12/12, 5/5 and 2/4 — spent over total, all three"
+*(R-55 — the sheet's three budget chips all read spent/total — ANSWERED 2026-09-06, moved to §K.)*
 
 **R-56. Should adversaries use the Edha Senses Range table too, or keep the cosmere ladder?** Fix
 pass E made PC sheets read the Edha table (`Character_Building_Rules.md` §Senses Range: AWA 0 → 10 ft,
@@ -1069,29 +286,7 @@ this — it only decides how far the fix reaches. *(Marathon 3, fix pass E.)*
 These are **already live in the code**. They were taken as defaults rather than left to stall a fix.
 If you disagree with any, say so and it gets reverted.
 
-**R-73. A DISPEL cannot remove a passive that lives on a talent or a trait — it stays that way.**
-Fix pass 5, 2026-09-06, while sweeping the `actor.effects` family that had hidden the Stalker's veil
-defect. `edha-pick` `source: "effects"` — the Unravel-Everything shape — offers one delete button per
-**enabled `actor.effects` entry**, so an ActiveEffect authored `transfer: true` on a talent or trait
-never appears in the menu: a PC's `Hardy` / `Collected` / `Surefooted`, a Cinderhound's `Cinder Coat`,
-the Frostbinder's permanent `braced` from `Predictive Ward`. **Default applied: leave the menu
-narrow.** Deleting a yielded ITEM effect writes to the item, so one click would permanently strip the
-passive from that creature's copy of the talent — a much worse failure than a dispel that cannot
-reach it, and unrecoverable without a re-drag or a ⟳ Sync. **If you want those dispellable**, the fix
-is *not* to widen the read on its own: it is to widen the read AND guard the delete so only
-actor-level effects are removed, offering item-owned ones as a temporary **disable** instead. Say the
-word and it gets built that way. *(Fix pass 5; no checklist row — this is a decision, not a test.)*
-> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): VETOED — widen the dispel the safe
-> way (b), not the narrow applied default.** Spec exactly as this ruling's own "say the word"
-> clause: `edha-pick` `source:'effects'` lists item-owned transferred effects too (Hardy, Collected,
-> Surefooted, Cinder Coat, Predictive Ward's braced), offered as a temporary DISABLE (`disabled:
-> true` on the effect, never delete); the delete path stays guarded to actor-level effects only.
-> ENGINE-ONLY, F5 → **item 54** (folded with R-35); pin both branches headlessly; bench re-test =
-> Unravel Everything can disable a target's Hardy and the talent copy survives intact. **Stays
-> HERE** — open, pending ship — until item 54 lands and the bench confirms it; then it moves to §K.
-> **SHIPPED** in PR #224 (ENGINE-ONLY, bench-pending) — `tests/dispel-widening.test.js`. Item-owned
-> effects are offered as a DISABLE; the delete guard is on the DOCUMENT (`edhaEffectOwnerItem`,
-> fail-closed), so a forged delete button cannot strip a talent's copy.
+*(R-73 — a dispel widens to disable item-owned passives, not delete them — ANSWERED 2026-09-06, moved to §K.)*
 
 *(R-43 — "tests Speed" means the ATTRIBUTE, live dice math — ANSWERED-by-acceptance 2026-09-06, moved to §K.)*
 
@@ -1135,14 +330,7 @@ word and it gets built that way. *(Fix pass 5; no checklist row — this is a de
 
 Recorded so they are not re-derived. No decision needed unless something here surprises you.
 
-**F-1. Rank-3 Black Attunement Range measures 60 ft**, not the 30 ft several stagings assumed. Any
-row whose expectation was built on 30 ft should be re-read.
-> **SETTLED 2026-09-07 — Ben asked (dashboard): "All attunement ranges should be the same- what
-> does Red rank-3 attunement range read?"** Answer from the engine: `EDHA_ATTUNE_FT = [0, 15, 30,
-> 60, 90, 120]` (`module-src/scripts/engine/35-targeting-attunement-range-aoe-templates.js:24`) is
-> indexed by color **RANK**, not by color, and is the same table for every color — Red rank-3 reads
-> **60 ft**, exactly like Black. Nothing to change; the 30 ft assumed in old stagings was the
-> stager's own error, not a rule difference between colors.
+*(F-1 — Red rank-3 Attunement Range also measures 60 ft — SETTLED 2026-09-07, moved to §K.)*
 
 **F-2. Marathon 1 run 6's 2bX-5 PASS was recorded over a broken roll.** Its contest half is worth
 re-reading now that attribute contests demonstrably work (R-43).
@@ -1150,6 +338,11 @@ re-reading now that attribute contests demonstrably work (R-43).
 ---
 
 ## K. Settled
+
+Split into `K.1`–`K.7` below purely to keep each dashboard chunk under its byte cap (item 96) — a mechanical size split in existing document order, not a thematic one.
+
+### K.1 — R-4 … R-26
+
 
 **R-4. THE BIG ONE: out-of-combat scope.** Every run of both marathons saw some face of this. Today,
 out of combat: any focus **decrease** counts as a spend (including your own GM bookkeeping edits);
@@ -1425,6 +618,8 @@ the engine get aligned to it. *(Checklist 2bA-6. Its two secondary observations 
 > align checklist row 2bA-6's wording and the handler's schema hint to it.
 
 ---
+
+### K.2 — R-30 … R-22
 
 **R-30. 2bR-17 spec vs rule.** The checklist row says Counterpoint tests "vs the target's **Cognitive
 defense**"; the rule is `vs: "prompt-dc"` (the GM types the influence DC). Arguably correct for a
@@ -1705,6 +900,8 @@ this is a "close the door before it matters" call. *(3A-6.)*
 > fails naming it, restored → clean) and pinned in `tests/consume-guard.test.js` (5 cases). No
 > engine change, nothing left to bench. **Moved to §K in the same PR (2026-09-06).**
 
+### K.3 — R-80 … R-6
+
 **R-80. Both an advantage AND a disadvantage next-test entry on one victim — do they cancel, or does disadvantage win?** With the next-test slot a LIST since item 49 (PR #221, 2026-09-06), a victim can carry both an advantage entry and a disadvantage entry for the same test — impossible under the old single slot. Item 49 folds them by boolean-OR per direction and, when both are present, writes NOTHING: the roll stays exactly as the player configured it (the standard table rule that they cancel; it never stomps a manual dialog choice). *Recommended default: **(a) they cancel** — **APPLIED** in #221.* (b) disadvantage wins — one line in `edhaNextModFoldMode`, pinned, so a veto is a one-line diff. *(Board table 2026-09-06; raised by item 49.)*
 > **ANSWERED 2026-09-07 (Ben, dashboard) — marked done, no note = the applied default ACCEPTED,
 > no veto.** No change to the shipped code (PR #221). **Moved here by the PM on 2026-09-07.**
@@ -1788,3 +985,1001 @@ dashboard 2026-09-07 (12 attribute points at L1 / max 3 per attribute at L1, +1 
 > **ANSWERED 2026-09-07 (Ben, dashboard) — skipped both VETO CHECK rows = no veto, the wizard's
 > spec stands as built.** No code change; the wizard's 🤖 enforcement rows keep testing exactly that
 > spec. Filed direct to §K — nothing to change, nothing new to bench beyond the existing rows.
+
+---
+
+**R-2. Should `scripts/bench-setup-console.js` give bench PCs a normal sight range?**
+> **ANSWERED 2026-09-05 (Ben, via the mobile board inbox): YES — give them normal vision.**
+> Matches the recommendation. Consequence: raise the bench PCs' 10 ft sight in
+> `scripts/bench-setup-console.js`. Filed as **TODO_REPO_HYGIENE #26**. The **adversary** 10 ft is
+> explicitly NOT touched — it stays a design dial and a ⚑ row, exactly as this ruling says.
+
+They carry **10 ft**, which makes a player client render almost nothing — it already caused a
+near-false-PASS at run 13. *Recommended: yes, give them normal vision.* Distinct from the adversary
+10 ft, which is a deliberate design dial and stays a ⚑ checklist row ("Adversary sight range — does
+10 ft feel wrong? Say a number"). *(3A-2.)*
+
+---
+
+**R-74. No adversary ability in the game pays an engine-driven cost — should one?** Measured at bench
+run 34 while trying to drive R-4's last 28b row: **`data/adversaries.json` contains zero `"costs"`
+keys** across all 52 blocks, so the sentence "an adversary's own bespoke ability cost goes through
+`edhaSpendResource` and therefore counts as a spend" is true of the engine and true of nothing on the
+table. Every adversary resource change today is either a GM hand-edit (now correctly *not* a spend,
+per 28b) or nothing at all. Two consequences worth your call, and they point opposite ways.
+*Recommended: **author one `costs:` line onto a single adversary ability** — the Stalker's `Fade` or
+the Stonebound Captain's signature is the obvious candidate — so the wired-vs-typed contrast that 28b
+is built on exists somewhere in the shipped bestiary, and the bench row has a subject.* The
+alternative is to declare the half untestable-by-construction and close it, which is honest but
+leaves an engine path with no consumer — the same shape as the `senses` field retired in 07-27v.
+⚠️ This is a **REBUILD** either way (it is `data/adversaries.json`), so it is not a bench decision.
+*(Bench run 34, from the R-4 28b row.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) author one `costs:` line onto a
+> single adversary ability.** Ben did not pick the subject; default to the Stalker's Fade unless a
+> better fit turns up. `data/adversaries.json` (+ baked AEs if any) → adversaries pack **REBUILD**,
+> Ben's deploy → **item 57**; lint pass 5 must stay green; then the 28b "adversary bespoke cost"
+> bench row finally has a subject.
+> **SHIPPED** in PR #226 (REBUILD, bench-pending) — the Stalker's **Fade**: a `use` → `edha-prompt-pick`
+> {source: confirm, costs: "inv:1"} card spends the Investiture on the click (through `edhaSpendResource`),
+> native `consume` removed so it is the only deduction; the damaged gm-cue stays as the reminder. Fit:
+> Fade is a Reaction the GM decides to take, and a confirm card that charges on the click is exactly
+> "spend only if you take it". 🤖 row under the R-4 28b section.
+
+---
+
+**R-78. The `edha-aoe-template` handler has NO consumer either — retire it, or give it one?**
+Measured at bench run 38 while driving the "AoE burst auto-target" row. That row names **Flame
+Surge** as its example, but Flame Surge carries an **`edha-burst`** rule, and `edha-burst` goes
+through `edhaCastBurst` → `edhaBurstDetonate`, which **never targets anything** — it resolves damage
+straight to the caught actors. The retarget the row is actually about (`edhaSetUserTargets(caught)`,
+`register-skills.js` ~L10829) lives only in **`edhaPlaceAoe`**, which is reachable only from the
+**`edha-aoe-template`** handler — and a sweep of `data/` finds **zero** `edha-aoe-template` rules
+against **12** `edha-burst` rules (3 talents: Flame Surge, Sudden Growth, Mending Aura; the rest
+adversary abilities). So a registered handler type is offered in Ben's Events-tab dropdown that
+nothing in the game uses. The bench proved the branch works by staging the rule by hand (2 enemies
+captured **and** targeted, an ally target released), so this is not a defect — it is the third
+instance of the **R-74 / R-76** shape: an engine path with no consumer. *Recommended: **retire
+`edha-aoe-template`*** — unlike R-74's and R-76's, this one is not a small missing dial but a
+**second, parallel AoE model** that the click-to-place/Detonate pipeline replaced, and leaving both
+registered invites an author to pick the dead one. The alternative is to keep it as the "capture and
+target, GM applies by hand" variant and say so in the header. ⚠️ **ENGINE-ONLY either way** (no
+authored data references it, so no pack rebuild). *(Bench run 38, from the AoE burst row.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) RETIRE the handler.** Spec: remove
+> `edha-aoe-template`'s registration + `edhaPlaceAoe`'s template branch (keep whatever
+> `edhaCastBurst` / `edha-burst` share), lint-refs vocabulary + native-vocabulary snapshot untouched
+> (it is an edha-* type), `ENGINE_INDEX.md` row struck with the date, name-keyed allowlist
+> unaffected. ENGINE-ONLY, F5 → **item 48**; gates must stay green; retire the "AoE burst
+> auto-target" row's remaining clause.
+> **SHIPPED** in PR #217 (ENGINE-ONLY, bench-pending) — tests/aoe-template-retired.test.js:"R-78: edha-aoe-template is NOT a registered handler type, and edha-burst still is"
+
+---
+
+**R-77. Should the Investiture-max persist be behind the primary-GM gate, or stay owner-gated?**
+Found at bench run 36 while driving item 12's two-GM row. `edhaDeriveInvestiture`'s persist branch
+(`register-skills.js` ~17252) is a world write — `system.resources.inv.max.override` — and it is
+**not** behind `edhaDefBuffGmGate()`. It gates on **`actor.isOwner`** plus a **per-client**
+`_edhaInvPersisted` Set, so with two GM clients connected the writer is *whichever client prepares
+the actor first*: the bench measured Ben's **non-primary** `Gamemaster` writing `override: 6` on
+`Bench — Red` and the **primary** `Bench` writing `override: 5` on `Bench — Blue`, in the same
+window. Both clients derive the same number (`2 + max(Awareness, Presence)`), so the harm today is a
+redundant write, not a wrong value — but it is the one world-writing site item 12's consolidation
+did not reach, and it is the family that produced the historic double-write bugs.
+*Recommended: **keep the owner gate, and add the primary-GM gate only for the GM case*** — i.e.
+persist if `edhaNoOtherActiveGM()` **or** the writer is a non-GM owner. That preserves the reason
+the owner gate exists (a player-owned PC must be able to persist its own max on a table where no GM
+is online, which is what `edhaDeriveInvestiture`'s 2026-06-11 gotcha comment is about) while making
+two GM clients agree on one writer. The blunt alternative — `edhaDefBuffGmGate()` outright — is
+simpler but silently stops persisting for player-owned PCs whenever the primary GM has not looked at
+the actor. **ENGINE-ONLY either way** (no pack rebuild). *(Bench run 36, from item 12's bench row;
+the re-test row is on the checklist under `# BENCH — Engine-wide & cross-tree`.)*
+
+> **APPLIED as the recommended default 2026-09-06 (fix pass 6, ENGINE-ONLY) — pending Ben's veto.**
+> `edhaDeriveInvestiture`'s persist branch now also requires `!game.user?.isGM ||
+> edhaNoOtherActiveGM()`: a GM defers to the **primary** GM, a **non-GM owner still writes** (so a
+> player-owned PC on a GM-less table keeps persisting its own max, which is the whole reason the owner
+> gate exists). The blunt alternative — `edhaDefBuffGmGate()` outright — is **not** what shipped.
+> Both directions are pinned in `tests/inv-persist-gm-gate.test.js` and mutation-verified: drop the
+> new term and the second GM writes again; swap in the blunt gate and the GM-less player-owned PC
+> stops persisting. **A veto is a one-line change** with a failing test on whichever side you pick,
+> so say the word and it flips. The ruling stays OPEN until then.
+>
+> ⚠️ **Bench run 37 (2026-09-06) could NOT confirm the applied default at the table, and the
+> reason is not the code.** The gate reads correctly from the primary client (`activeGM` = `Bench`,
+> `isSelf` = true, so `mayPersist` = true there and false when the same expression is evaluated for a
+> non-primary GM), but an airtight probe — a fresh character created carrying the CORRECT override so
+> neither client's per-session Set was seeded, then made stale in one update — measured the single
+> `inv.max.override` write originating on **Ben's non-primary `Gamemaster`**. The most probable
+> cause, stated as an inference: **Ben's client has been connected since before the 03:47 engine push
+> and fix pass 6 is ENGINE-ONLY**, so it is still running the pre-fix engine, which has no gate at
+> all. **This does not change the recommended default and does not reopen the design question** — it
+> only means the applied default is still unverified live. Re-test after Ben F5s his client.
+>
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) keep the applied default** (GMs
+> defer to the primary GM, a non-GM owner still writes). No change to the shipped code. Moves to §K
+> once the live re-test passes after Ben reloads his Gamemaster client — the run-37 blocker was the
+> stale client, not the code.
+> **CONFIRMED 2026-09-07 (Ben, dashboard), verbatim: "that works. default."** No change to the
+> shipped code or the ruling's status — same veto window, still moves to §K once the live re-test
+> passes. Separately, on the bench's one-applier-dissipates re-test row (not this card), Ben noted
+> two GM clients will never happen at his table in play — recorded as new **R-86** (§K); it does
+> not change this ruling's applied default: the bench itself is a second GM client, so the gate
+> stays an engineering necessity and the live re-test is still what is owed.
+
+---
+
+**R-6. Fault Line's dangerous-terrain Region catches bystanders scene-wide**, with no friend/foe
+clause — it incidentally ticked your **Stitchmother** during run 11 (effects verified back to
+snapshot state afterwards). Same shape as R-5 but on the Region rather than the line. *(3A-4.)*
+> **Measured again 2026-09-06, bench run 33, and it is wider than "bystanders": the Region catches
+> the CASTER.** The rectangle is laid with one end at the caster's own square, so on both casts the
+> chat read *"🔥 **Bench — Destruction** takes 8 energy from dangerous terrain (Dangerous Terrain —
+> Bench — Destruction)"* (10 on the second) — and the ally in the line took its own tick on top of
+> the burst. So R-5's "only the caster is spared" does **not** carry over to the Region: right now
+> **nobody** is spared, the caster included. Recommended default unchanged in shape, but the ruling
+> should now say explicitly whether the caster's own square is dangerous terrain to them.
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (b) spare the CASTER only, everyone
+> else including allies is caught.** Matches R-5 / item 29 for the line, so both halves of the
+> talent follow one rule. Spec: the dangerous-terrain Region (and its tick) exempts the actor that
+> laid it — either lay the rectangle one square out from the caster or exempt the caster's token
+> from the tick; Ben did not choose which. The ally-in-the-line burst + terrain double hit stays.
+> ENGINE-ONLY, F5 → **item 48**; lane R then a 🤖 re-test of the run-33 Fault Line row with the
+> caster unharmed.
+> **SHIPPED** in PR #217 (ENGINE-ONLY, bench-pending) — tests/fault-line-caster-exempt.test.js:"R-6: the CASTER standing in their own Fault Line takes 0 — no damage, no card". Of the two exits Ben left open, this took EXEMPT-THE-CASTER and kept the rectangle on the damaged line; the delta says why.
+
+---
+
+### K.4 — R-10 … R-82
+
+**R-10. Does "cannot regain HP" stop drop-to-1 stabilization?** Same family as R-9, different
+consumer. *(3B-C.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (b) NO, stabilizing at 1 is a floor
+> against death, not regaining.** Spec: every drop-to-1 / stabilize consumer must bypass the no-heal
+> condition (audit the family: whatever writes `hea.value = 1` on a 0-HP creature). ENGINE-ONLY,
+> F5 → **item 47**; headless pin (a withered creature at 0 still stabilizes to 1; a plain heal on it
+> still does nothing); 🤖 re-test row.
+> **SHIPPED** in PR #215 (ENGINE-ONLY, bench-pending) — `tests/drop-to-one-family.test.js`. ⚠️ The
+> audit found the family ALREADY bypassing, so no behaviour moved; what shipped is the ruling
+> recorded at the site plus the guard that keeps it (the heal gate's call sites are pinned at 2,
+> and `bypassHealCut: true`'s callers at 1).
+
+---
+
+**R-12. Should a raised creature clear its OWN Harvested Remain?** An adversary that had itself been
+harvested was raised by spending a *different* Remain, and came back at 1 HP **still wearing the
+`harvested` marker with its own ledger entry live** — a living creature that is also a Remain. The
+card says nothing either way. *(3B-C + checklist Raise Dead row, Death section.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) YES: raising clears the creature's
+> own `harvested` marker and its ledger entry.** Spec: the raise path (Death tree, Raise Dead / the
+> remains ledger) removes the raised actor's own entry and marker in the same write. ENGINE-ONLY,
+> F5 → **item 47**; headless pin on the ledger; re-test = the Death-section Raise Dead row (a raised
+> adversary comes back at 1 HP with no marker and the ledger one entry shorter).
+> **SHIPPED** in PR #215 (ENGINE-ONLY, bench-pending) — `tests/raise-clears-remain.test.js`, via
+> the new generic `edhaLedgerDropCreature(uuid, key, status)`; it sweeps EVERY owner's ledger, not
+> only the raiser's, because a marker is a property of the creature.
+
+---
+
+**R-13. A snare placed UNDER a creature insta-springs**, where the card says "enter or pass through".
+*Recommended: arm, do not spring.* Narrowed by run 7: placement **adjacent** does not insta-spring,
+only placement directly under a creature does. *(3B-C.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) ARM, do not spring; it fires on the
+> creature's next move.** Spec: the Fate snare `RegionBehavior` ignores tokens already inside at
+> placement (arm-only), springs on enter / pass-through per the card. ENGINE-ONLY, F5 → **item 48**;
+> pin; 🤖 re-test = place under a creature (no spring), creature moves (springs).
+> **SHIPPED** in PR #217 (ENGINE-ONLY, bench-pending) — tests/snare-arm-under.test.js:"R-13 behavior: placed UNDER a creature — the creation-time tokenEnter does NOT spring it"
+
+---
+
+**R-14. Melee mutation riders fire on a nat-1 graze application.** Intended? *(3B-C.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (c) FOLLOW EACH RIDER'S OWN CARD** —
+> "on a hit" = hit only, "when you deal damage" / "on a hit or graze" = grazes count. Spec: audit
+> every melee mutation rider's card text and set a per-rule `onGraze` (or equivalent) so the rider's
+> trigger matches its wording; iron rule 2b — the dial lives on the rule, the handler reads it.
+> ENGINE + AUTHORED (rebuild + ↻ Sync if any rule changes) → **item 56**; headless pin per rider; 🤖
+> re-test on a nat-1 graze for one hit-only rider and one damage rider.
+> **SHIPPED** in PR #242 (REBUILD, bench-pending) — `edha-mutation.keenOnGraze` / `venomOnGraze`,
+> `edha-regen-grant.vitalOnGraze`, read through the new Apply-click graze discriminator
+> (`edhaApplyIsGraze`); Bone Spurs "melee attacks DEAL" → on, Venom Glands "melee HITS" → OFF (the one
+> change), Apex Form "DEALS … on all attacks" → on. `tests/rider-graze-dial.test.js`; 🤖 2bW-18 / 2bW-19.
+
+---
+
+**R-15. Coercive Pressure no longer stacks with another next-test rider** (e.g. Probability Net) —
+the second write overwrites the first, because the bespoke Cognitive-disadvantage flag that allowed
+both is gone. Confirmed on the live actor: `flags.nextTestMod` is **one object**, so each bearer has
+exactly one slot. Does losing cross-rider stacking matter at the table? *(Checklist 2bI-4.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session, verbatim: "that needs to be a list not
+> one slot"): (b) the next-test slot becomes a LIST, not one object.** Spec: `flags.nextTestMod` →
+> an array of `{source, kind, value, expiry}`; every writer appends, every reader applies all
+> entries (disadvantage is boolean-OR, dice/flat mods sum), expiry per entry (see R-20/R-57:
+> round-scoped entries expire at the round change), consumers clear only their own entry; migrate a
+> legacy single object on read. ENGINE-ONLY, F5 → **item 49**; headless pin: Coercive Pressure +
+> Probability Net on one target both apply and both clear independently; 🤖 re-test = checklist
+> 2bI-4.
+> **SHIPPED** in PR #221 (ENGINE-ONLY, bench-pending) — `tests/next-test-mod-list.test.js`
+
+---
+
+**R-17. Puppeteer / Unnerving Approach — the once-per-round budget now spends on CLICK, not on
+card-post.** Declining an offer no longer burns the use (verified: an ignored picker did not block a
+same-round re-use). **But each ignored USE still charges its Investiture** — only the round budget
+waits for the click. Two questions: is the click-not-post budget intended, and should an ignored use
+refund its Investiture? *(Checklist 2bJ-10.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) keep the click budget AND refund
+> the Investiture when the offer is declined/ignored,** consistent with R-69 (cancelled picker
+> refunds, no stamp). Spec: charge on the click that resolves the offer, or charge on post and
+> refund on decline/timeout — reuse whichever the R-69 picker path already does. ENGINE-ONLY, F5 →
+> **item 51**; headless pin; 🤖 re-test = checklist 2bJ-10 (declined offer: Investiture unchanged,
+> round use still available).
+> **SHIPPED** in PR #230 (ENGINE-ONLY, bench-pending) — `tests/offer-decline-refund.test.js`. R-69's mechanism
+> (charge on post, `edhaRefundCost` on back-out) reused through one path, `edhaOfferDecline`.
+
+---
+
+**R-18. Should quarry advantage refuse to stomp an active DISADVANTAGE?** Attacking your quarry while
+Weakened rolls at **advantage** today — the quarry site runs after Weakened's and overwrites it. That
+is the house convention (pack advantage, the Opportunity adv-test and `edha-next-test-mod` all stomp;
+only `edha-test-rider` has the opt-in `unlessDisadvantage` that Apex Predator uses). Left alone
+deliberately rather than changed silently. *(Checklist Quarry row, Heroic.)*
+> **ANSWERED 2026-09-07 (Ben, dashboard), verbatim: "it gets added to the list of advantages and
+> disadvantages on the roll. I believe the player gets to assign advantages and the GM gets to
+> assign disadvantages to the die participating in the roll, but double check the cosmere rpg
+> canon rules."** Canon check (`.claude/skills/cosmere-canon-reference/SKILL.md` §"advantage /
+> disadvantage", SR p.18): an advantage or disadvantage rolls an extra of one die type and keeps
+> one, the player chooses the die for advantages and the GM for disadvantages, and they cancel
+> each other one-for-one — Ben's memory is canon; no correction needed. Consequence: the quarry
+> advantage site must stop stomping the slot and instead JOIN the next-test list (item 49's
+> `flags.nextTestMod` list, whose fold already cancels an advantage against a disadvantage per
+> R-80) → **TODO item 80**. Stays open here until item 80 ships and the bench confirms it.
+
+---
+
+**R-50. An ambushing strike never gets its OWN fooled-rider — the strike that marks them fooled is
+the one strike that does not benefit.** Surfaced by bench run 18 and filed here by fix pass C
+(2026-07-28d) rather than left in a run's prose. Verified in code, not inferred: the belief test is
+kicked off from the `cosmere-rpg.useItem` hook as a **fire-and-forget** `void
+edhaAmbushBeliefTest(...)`, while the `whenTargetFooled` damage rider is selected when the damage
+formula is assembled — which for a `skill_test` talent the system does *before* the test resolves.
+So the ledger write always lands after the number is fixed, and the +1d6 / +1d8 first appears on the
+**second** strike. Run 18 saw it identically on Glare-Strike and Raking Grasp, and it matches the
+card text ("its FIRST attack … marks them fooled" — marks, not benefits).
+*Recommended default: **intended**, leave it.* It reads as a deliberate ambush rhythm — the seeming
+buys you the opening, the payoff starts once they have committed to believing it — and the
+alternative costs real machinery (the rider would have to be re-derived after the test, or the
+belief test awaited inside the use hook, which risks the takeover class of bug). Say so if you want
+the ambusher to benefit on the strike that fools them and it becomes an engine task.
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session, after a full walkthrough): (b) the
+> FIRST strike must benefit.** The "marks, not benefits" reading does not match the ten cards:
+> Stillback "Its first attack from unbroken stillness is made from ambush"; Wrongwake "on a failure
+> the attack comes from ambush"; The False Spring "Its first strike against each fooled target is
+> made from the mirage"; Hazewyrm "The first time it strikes each creature per scene, that creature
+> has tested Perception… the strike comes from the shimmer". Affected: every `edha-ambush-belief`
+> carrier — Stillback, Wasting-Eater Stillback, Wrongwake, Wasting-Eater Wrongwake, Keelshadow, The
+> False Spring, Hazewyrm Adult, Hazewyrm Elder, The Doubled, The Doubled Elder (the Mistheron's
+> placed-copy seeming already tests at placement and is NOT affected). SPEC (avoid awaiting inside
+> the useItem hook — the takeover bug class): in the `edha-damage-rider` `whenTargetFooled` check
+> (~L974), when the current target has no ledger entry for this scene, run the belief test right
+> there with the engine's synchronous dice evaluator (`edhaRollDiceSync` family), use the local
+> result for the rider decision, then write the ledger + post the GM/player cards asynchronously
+> exactly as `edhaAmbushBeliefTest` does today (factor the roll/DC/advantage bits into a shared pure
+> helper so the two paths cannot drift); the `useItem` path stays as the fallback for a strike with
+> no rider. ENGINE-ONLY, F5 → **item 53**; headless pins: first strike vs untested target rolls the
+> test and applies the rider on a fail; second strike reads the ledger and rolls no second test;
+> Mistheron path unchanged; 🤖 re-test on Stillback (Ambush Bite 1d10+3 +1d6 on the FIRST bite vs a
+> fooled target).
+> **SHIPPED** in PR #219 (ENGINE-ONLY, bench-pending) — `tests/ambush-first-strike.test.js`
+
+---
+
+**R-51. Does an illusory copy breaking count as "an ally dropped"?** Raised by fix pass C while
+fixing the cross-disposition defect below it. The two are separate: the defect was that a tokenless
+victim fired cue owners on *every* side, and that is fixed. What is left is a design question the
+old bug was hiding — a phantom copy now resolves to the side of the creature it duplicates, so
+breaking one cues **that side's** `ally-drops` owners ("an ally dropped: the Raider may immediately
+Disengage and flee"). *Recommended default: **no — a phantom's break should not fire `ally-drops`
+at all.*** It never had a life to lose, and its own side are precisely the people who know it was
+never real; the fooled *enemies* are the ones who would react, and they are on the other side of
+the filter. One-line engine change (skip the block when the victim carries the `phantomDouble`
+flag), **engine-only, no pack rebuild** — left undone deliberately because it would silence a cue
+you may want. *(From bench run 18 / fix pass C.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) NO: a phantom's break fires no
+> ally-drops cue.** Spec: skip the ally-drops block when the victim carries the `phantomDouble`
+> flag (the one-line change the ruling names). ENGINE-ONLY, F5 → **item 47**; headless pin (phantom
+> break → no cue; real ally drop → cue); 🤖 re-test in the illusion section.
+> **SHIPPED** in PR #215 (ENGINE-ONLY, bench-pending) — `tests/ally-drop-side.test.js`.
+
+---
+
+**R-69. Should a CANCELLED picker still burn the talent's once-per-scene use?** Today it does.
+`edhaDecreeUse` calls `edhaStampSceneOnce(owner, item)` **before** it opens the prohibition picker,
+so pressing **Cancel** refunds the Investiture correctly (verified on the live table, bench run 25 —
+4 → 1 → 4, no card, no `decree` flag) but leaves `sceneOnce.<itemId> === true`: **Final Decree is
+spent for the scene without ever having resolved.** The stamp is deliberately pre-cost — that is
+R-61's "vetoed BEFORE cost" polarity, and it is what stops a player probing the picker to see the
+enemy list and then backing out for free. So this is a real trade, not an oversight.
+*Recommended default: **move the stamp to after a successful pick.*** A cancel that refunds the cost
+but eats the scene's only use is the worst of both worlds at the table, and the information leak it
+guards against is small — the picker shows allies you can already see. If you would rather keep the
+anti-probing behaviour, the honest fix is the other direction: **don't refund on cancel either**, so
+the cost and the use agree. Either way the two should not disagree. Engine-only, one line, no pack
+rebuild. Applies to every `edhaDialogPick` caller that stamps before prompting.
+*(From bench run 25, found while re-testing fix pass 1's picker-cancel row.)*
+> **ANSWERED 2026-09-05 16:30 (Ben, in chat, the PM's batch): "Stamp only after a successful pick."**
+> Cancel costs nothing and burns nothing; cost and use agree. The fix goes at the primitive — every
+> `edhaDialogPick` caller that stamps `sceneOnce` before prompting moves the stamp to after the pick
+> resolves — so it is one change, not one per talent. Engine-only, no pack rebuild. **Live engine
+> behaviour → lane B**, bench-verified before it counts. Filed as **TODO_REPO_HYGIENE #36**; moves
+> to §K when #36 lands.
+> Shipped in PR #160 (2026-09-05); moves to §K after the bench pass.
+> **VERIFIED GREEN, bench run 28 (2026-09-05).** All four legs on `Bench — Order`: cancel refunds
+> 4 → 1 → 4 and leaves `sceneOnce` **undefined**; the talent is immediately re-usable in the same
+> scene; a real pick posts the Decree card, writes the `decree` flag and stamps `sceneOnce`; and a
+> third use is still refused pre-cost with the unchanged wording and unchanged Investiture (R-61
+> polarity intact). Ready to move to §K.
+
+---
+
+**R-70. A two-resource activation only charges the FIRST resource unless the player ticks the second
+box — should Edha do anything about it?** Not a bug, and not ours: bench run 28 read the dialog
+instead of clicking through it and found the cause in **cosmere-rpg 2.1.0's own `index.js`**, comment
+included — `// Only automatically check first option, or anything overridden.` →
+`const shouldConsume = options.shouldConsume ?? i === 0;`. Both `consume` entries survive the build
+and reach the dialog intact (verified on the compendium document and live: ticking both charges both,
+inv 9 → 8 **and** foc 8 → 7). The consequence at the table is that a card reading **"Cost: 1
+Investiture, 1 Focus"** — the Stitchmother's *Reknit Form*, and any tree talent with two costs —
+is **under-charged by a default click**, silently, every time. `options.shouldConsume` is a single
+boolean for ALL entries, so there is no per-item authoring field that would fix it; the only levers
+are a system-level wrapper that pre-checks every row, or leaving it to the table.
+*Recommended default: **leave it alone and note it in the handbook.*** Wrapping the system's own
+dialog to change a default is exactly the kind of side-engine iron rule 2a exists to prevent, the
+player can see both unticked boxes on screen, and a GM who misses it has under-charged by one
+resource. If you would rather the dialog matched the card, the honest fix is one wrapper on
+`showConsumeDialog` that passes `shouldConsume: true` — which then applies to **every** talent with
+a second cost, including ones where the second cost is meant to be optional.
+*(From bench run 28, settling the row bench run 27 filed.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (b) wrap the dialog so every cost row
+> starts ticked.** Ben chose the wrapper knowing it applies to every talent with a second cost (rows
+> stay untickable by the player). Spec: ONE wrapper on the system's `showConsumeDialog` passing
+> `shouldConsume: true`; ENGINE-ONLY, F5 → **item 50**; declare it in the header as the one
+> sanctioned system-dialog wrapper (iron rule 2a exception by Ben's ruling); pin a headless test on
+> the option shape; bench re-test = Reknit Form charges inv AND foc on a default click.
+> **SHIPPED** in PR #222 (ENGINE-ONLY, bench-pending) — `tests/consume-dialog-wrapper.test.js`
+> (the pure option shape, the system's row map `[true, true]`, the installed patch, and a source
+> scan that exactly ONE wrapper of the system dialog exists — a second one fails the suite).
+
+---
+
+**R-72. Is an INVOLUNTARY drain a "spend"?** Raised by item 28b: the Order Edict fires only on the
+creature's own activations, and H10's Investiture-drain write (`register-skills.js` ~L18139, the
+one `edhaSpendTag` site item 13 preserved) currently stamps a drain the same way as a voluntary
+spend. *(Board table; raised by item 28b.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (b) NO, a drain is not a spend.** Spec:
+> H10's write → `edhaBookkeepingTag`; `edhaDrainFocus` likewise carries a bookkeeping tag (28b's "a
+> test fails if one ever appears" pin flips to its opposite). ENGINE-ONLY, F5 → **item 47**; re-pin
+> tests; bench re-test = an Edict-bound creature drained by an enemy gets NO violation prompt, and
+> its own wired spend still does. This also settles R-8's "decide together with R-8" clause — R-72
+> (b) stands on its own.
+> **SHIPPED** in PR #215 (ENGINE-ONLY, bench-pending) — `tests/resource-writes.test.js` +
+> `tests/spend-tag.test.js`. THREE existing pins were FLIPPED to assert their opposite (they
+> existed to stop a refactor answering this ruling by the back door). The `set-resource` relay
+> half moved with the other two — split, the unowned drain would violate an Edict the owned one
+> does not.
+
+---
+
+---
+
+**R-82. Should R-14's "follow the card" graze rule reach the generic `edha-damage-bonus` rules too?** R-14 (c) now governs the Life mutation riders (Bone Spurs, Venom Glands, Apex Form) through per-rule graze dials (item 56, PR #242). Item 56's worker found that the generic `edha-damage-bonus` rules with `meleeOnly` (Warlord's Advance and kin — the armed-strike bonuses) ALSO fire on a graze application today. *Recommended default: **(a) yes** — the same per-rule `onGraze` dial on `edha-damage-bonus`, each card audited (the `graze` value is already available at that call site); a small S item once Ben nods. NOT applied yet.* (b) leave them — a bonus "on your attacks" reads as any application. *(Board table 2026-09-06; raised by item 56.)*
+> **ANSWERED 2026-09-07 (Ben, dashboard) — marked done, no note = the recommended default
+> accepted: (a) yes**, the same per-rule `onGraze` dial on `edha-damage-bonus`, each card audited
+> → **TODO item 81**. **Not shipped yet** — stays open here until item 81 lands and the bench
+> confirms it, then moves to §K.
+
+Ask: Should the melee-only `edha-damage-bonus` rules (Warlord's Advance and kin) get the same per-rule `onGraze` dial the Life mutation riders have, so a bonus stops firing on a graze unless its card says otherwise (a), or keep firing on any application including a graze (b)?
+
+---
+
+---
+
+### K.5 — R-83 … R-71
+
+**R-83. Three `hea` writers bypass the heal-cut gate — gate them at their emitters?** `ENGINE_INDEX.md` says every `hea` write outside `applyDamage` must pass `edhaHealCutGate`, and three do NOT: `edha-regen`'s turn-end write, the decay lifesteal heal-back, and `edhaBurstDetonate`'s heal hits. Their cards are honest (fix pass 8 / item 68, PR #241, fixed the announcing), but the HP still lands on a withered creature — Mending Aura keeps healing a target that "cannot regain HP". Gating them changes live HP at the table; `edhaApplyBurstResults` must STAY ungated (Raise Dead's stabilising 1 HP rides it, R-10), so the gate belongs in each emitter. *Recommended default: **(a) gate all three at the emitter** (the mark's card is the promise), the family test's gate-call count raised from 2 with a declaration, one 🤖 row per writer → TODO item 70. **WAITING for Ben — not applied, because it moves HP.*** (b) leave them ungated and say so in `ENGINE_INDEX.md`. *(Board table 2026-09-06; raised by fix pass 8.)*
+> **STILL WAITING 2026-09-07 (Ben, dashboard), verbatim: "I'm not sure what this means and will
+> want the pm to give me good examples when we get here in chat."** Plain-language gloss, written
+> for Ben: the three heal writers are (1) `edha-regen`'s turn-end heal (the adversary regen rule —
+> The Garden Sow / Nexus-Fed — plus the talent-side `edha-regen-grant` family: Apex Form's vital
+> regen, Mending Aura's turn heals), (2) the Lifeline-style `healFormula` heal-back die on
+> `edha-redirect` (the Life talent that takes an ally's damage and rolls a heal-back), and (3)
+> `edhaBurstDetonate`'s heal hits (any burst whose spec heals the tokens it catches). Today all
+> three still add HP to a creature under a "cannot regain HP" mark (Withering Touch / the Black
+> no-healing marks), while an ordinary heal on that creature is blocked. Concretely: an ally
+> Withered by a Black talent, then hit by Mending Aura's turn-end regen tick, gains HP today even
+> though the same ally targeted directly by a normal heal spell would not. **(a)** = those three
+> obey the mark too, so a Withered creature never regains HP from any source. **(b)** = leave them
+> as the deliberate exceptions and write that down in `ENGINE_INDEX.md`, so the mark's promise
+> reads "no ordinary healing, but regen/lifesteal/burst-heal still reach you." Item 70 stays
+> blocked on this call.
+> **ANSWERED 2026-09-07 17:11 (Ben, dashboard), verbatim: "a"** — (a) gate all three writers at
+> their emitters, so a creature that "cannot regain HP" stops gaining HP from `edha-regen`'s
+> turn-end heal, the decay lifesteal heal-back, and `edhaBurstDetonate`'s heal hits too.
+> **Item 70** (opus, engine-only) is now unblocked and applies it. **Not shipped yet** — stays open
+> here until item 70 lands and the bench confirms it, then moves to §K.
+
+Ask: Should `edha-regen`'s turn-end heal, the decay lifesteal heal-back, and `edhaBurstDetonate`'s heal hits each pass `edhaHealCutGate` so a creature that "cannot regain HP" stops gaining HP from them (a), or stay ungated with that exception written into `ENGINE_INDEX.md` (b)?
+
+---
+
+---
+
+**R-88. Volatile Strike rides any melee hit — but only one that deals IMPACT. Is that the rule you want?**
+R-23 (a) shipped as `whenDealer: "any"` (item 58), and bench run 42 confirms it works: on the deployed
+pack a **plain weapon hit that dealt impact** — a staged impact-damage sidesword on `Bench — Red`, not
+a Volatile Strike cast — posted the offer *"⚡ Volatile Strike — 1 Investiture … spend 1 Investiture
+(test Red vs Physical) to add half [Tier][Die] impact to the creature you hit."* But the same PC's
+**ordinary keen sidesword hit offered nothing**, because the rule also carries
+`whenDamageType: "impact"` — untouched by R-23, and not mentioned on the card, whose prose is the bare
+*"When you hit with a melee attack, spend 1 Investiture …"*. So today the talent reads as a rider on
+every melee hit and behaves as a rider on impact hits only, which for a Red PC with a keen weapon is
+almost never. *Recommended default: **(a) drop the `whenDamageType` gate** — one field on the Events
+tab, no engine change, and the card then tells the truth.* (b) keep the gate and say so on the card
+("when you hit with a melee attack **for impact damage**") — also a data-only fix, but it makes the
+talent weapon-dependent in a way nothing else in Red is. *(Bench run 42, 2026-09-07 — measured both
+directions in one window; nothing is broken, the two halves just disagree.)*
+> **ANSWERED 2026-09-07 17:11 (Ben, dashboard), verbatim: "a"** — (a) drop the `whenDamageType:
+> "impact"` gate; the card is canon. **SHIPPED in item 92, PR #288** (`data/authored/leyline-red.json`,
+> the one authored field plus the rule's own `description` string; parity-proved, exactly one
+> document differed) — **REBUILD (leyline pack) + ⟳ Sync Talents still owed** to Ben's next deploy.
+> 🤖 re-test is checklist row **92-1** (Red section): stays open here until the pack is rebuilt and
+> the bench confirms the keen-hit case now offers, then moves to §K.
+
+---
+
+---
+
+**R-89. The `NO NAMEABLE HOOK` marker does not survive a ProseMirror save. Where should it live?**
+R-47's own ⚠️ clause asked this and bench run 42 answered the mechanism: feeding a marked description
+through `ProseMirror.dom.parseString` → `serializeString` — the exact pair Foundry's editor uses when
+you save — **drops the `<!-- NO NAMEABLE HOOK: … -->` comment entirely** (measured on Wrongwake's Drag
+Under: the source ends with the marker, the round-trip ends at "no air, no speech."). Nothing is broken
+today, because the marker lives in `data/adversaries.json` and only the world copy would lose it — but
+the authoring loop is Foundry-edit → extract → build, so **the first time Ben edits one of these
+descriptions in Foundry and it is extracted, the marker is silently gone and `lint-refs.js` pass 5
+starts failing** on an ability that never changed. *Recommended default: **(a) move the declaration off
+the description** into a dedicated field the editor cannot rewrite (a `flags.edha-content.noHook`
+string, read by lint pass 5, rendered nowhere) — the marker stops being prose and starts being data.*
+(b) leave it and add a note to `AUTHORING_WORKFLOW.md` telling Ben not to save those descriptions from
+the editor. (c) teach the extract step to re-attach the marker from the repo copy when the incoming
+text has lost it. *(Bench run 42, 2026-09-07 — R-47's other four clauses all passed and its row is
+retired; this is the residue.)*
+> **ANSWERED 2026-09-07 17:11 (Ben, dashboard), verbatim: "a"** — (a) move the declaration off the
+> description into `flags.edha-content.noHook` (data, not prose), read by lint pass 5, rendered
+> nowhere. **Item 93** (sonnet, adversaries REBUILD + ⟳ Sync Adversaries) applies it. **Not shipped
+> yet** — stays open here until item 93 lands and the bench confirms it, then moves to §K.
+
+---
+
+---
+
+**R-90. An adversary's `edha-triggered-effect` card is public. Should it whisper to the GMs?**
+Bench run 43 re-drove Predator's Due on the current build: the heal is right (a fresh Cragdrake Alpha
+went **30 → 33** on taking a character to 0), but the card posts with `whisper: []` — so the table sees
+the boss's remaining-HP arithmetic *and* the GM instruction printed inside the same card
+(*"…and 1 Focus on the kill (focus is a GM add)"*). Run 16 blamed `edhaWhisperIds()` returning empty;
+that is wrong — the poster, `edhaRollCard`
+(`module-src/scripts/engine/33-triggered-effect-resolution.js:143`), simply passes **no `whisper` key**,
+and neither do its six sibling call sites. Public is correct for a PC healing themselves; it is the
+adversary case that leaks. **17** adversary `edha-triggered-effect` rules ship, of which the three
+`Predator's Due` blocks carry a literal GM instruction and the three `Afterburn` afflictions post
+through the same poster. *Recommended default: **(a) whisper to `edhaWhisperIds(owner)` when the owner
+has no player OWNER** — i.e. an adversary — and leave a player-owned actor's card public. One helper
+call per poster, and it is exactly what `edhaPostCueCard` already does for adversary cues.* (b) whisper
+only when the rule's own note contains a GM instruction — more surgical, but it makes the audience a
+property of prose. (c) leave everything public and delete the GM instruction from the three card texts
+instead — cheapest, but it also shows the players the boss's healing roll. *(Bench run 43, 2026-09-07;
+implementation is `TODO_REPO_HYGIENE` item 88, which is blocked on this answer.)*
+> **ANSWERED 2026-09-07 17:25 (Ben, phone inbox), verbatim (the row's own (a) text tapped): "(a)
+> whisper to `edhaWhisperIds(owner)` when the owner has no player OWNER — i.e. an adversary — and
+> leave a player-owned actor's card public. One helper call per poster, and it is exactly what
+> `edhaPostCueCard` already does for adversary cues."** **Item 88** (opus, engine-only) applies it.
+> **Not shipped yet** — stays open here until item 88 lands and the bench confirms it, then moves
+> to §K.
+
+---
+
+---
+
+**R-91. Does R-86 retire the R-62 audience row, or do you want to disconnect for one window?**
+The checklist row **"VISIBLE — R-62 audience flips, seven sites"** asks, for each of seven card sites,
+that a GM be **logged out** when the card fires and then log back in. Bench run 43 re-derived why that
+cannot be staged: the world holds **exactly two GM users** — `Bench` (which by definition is connected
+during a bench run) and `Gamemaster` (Ben, connected through runs 24–43) — and the other four users are
+all role 1. So `edhaGmIds({activeOnly: true})` and `edhaGmIds()` return the same list no matter what the
+bench does; there is no offline GM to act as a discriminator. **R-86** already says *"There will never
+be no GM connected. This isn't needed, and any similar items aren't needed"*, and it retired **Job 6a**,
+whose premise is the same. *Recommended default: **(a) retire the row under R-86** — the flips are
+repo-side facts pinned by the code (`activeOnly` present or absent at each of the seven sites) and the
+behaviour they change only matters in a state you have said will never occur.* (b) keep it and
+disconnect `Gamemaster` for one deliberate window so a bench run can drive all seven sites in one pass —
+about ten minutes of your time, once. (c) keep it open indefinitely. *(Bench run 43, 2026-09-07 — the
+row is annotated with this derivation and stays 🤖 until you answer; a technical blocker never becomes
+⚑.)*
+> **ANSWERED 2026-09-07 17:25 (Ben, phone inbox), verbatim (the row's own (a) text tapped): "(a)
+> retire the row under R-86 — the flips are repo-side facts pinned by the code (`activeOnly`
+> present or absent at each of the seven sites) and the behaviour they change only matters in a
+> state you have said will never occur."** **This item** (`TODO_REPO_HYGIENE` item 95) applies it:
+> the checklist row **"VISIBLE — R-62 audience flips, seven sites"**
+> (`EDHA_FOUNDRY_TEST_CHECKLIST.md`) is retired under R-86 with that reason; its ⛔ evidence trail
+> stays intact.
+
+---
+
+---
+
+**R-23. Volatile Strike — whose hit should it ride?** Card and rule description both say "when you
+hit with a melee attack" (a rider), but it is authored `skill_test` **with its own damage formula**,
+so it derives item-specific and only ever offers itself on its own damage.
+(a) `whenDealer: "any"` → a true rider on any melee impact hit, accepting that a standalone use also
+self-offers; or (b) it is the Special Action you take *after* your weapon hits, in which case the
+on-hit rule is the redundant half and should be `whenDealer: "self"` or removed.
+**Settleable entirely from the Events tab — `whenDealer` is a field on the rule, no code change
+either way.** Never benched. *(3A-3 + checklist Red row — the same question, recorded twice.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) a TRUE RIDER on any melee hit:
+> `whenDealer: "any"`.** Authored rule field change in `data/authored/leyline-red.json`
+> (settleable from the Events tab) → **REBUILD + ↻ Sync**, **item 58**; 🤖 re-test = the Red row (a
+> sword hit offers Volatile Strike; standalone use self-offers harmlessly).
+> **SHIPPED** in PR #227 (REBUILD, bench-pending) — `whenDealer: "any"` on rule `TKmyXVyFhGYWryKv`,
+> `data/authored/leyline-red.json`.
+
+---
+
+**R-25. Rallying Shout's reminder now prints on an ally ABOVE 0 HP.** Deliberate change, re-confirmed
+at run 11 on an ally at 32 HP. The number defect in the same line is fixed and table-verified
+("recovery die + **3** health" at Leadership 3). Only the gate is yours: keep the always-print, or
+restore the at-0-HP-only gate? *(3A-11 + checklist 2bM-6.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (c) print ONLY for an ally at 0 HP or
+> carrying Unconscious** (the two cases the card names). ENGINE-ONLY, F5 → **item 47**; headless pin
+> (ally at 32 HP: no card; ally at 0: card; ally Unconscious above 0: card); 🤖 re-test = 2bM-6.
+> ⛔ **NOT SHIPPED in PR #215 (item 47) — it is not an engine-only change.** Since the 2b
+> migration that reminder is an AUTHORED `edha-note` rule on Rousing Presence
+> (`data/authored/heroic-envoy.json`, rule `RouseRallying000`, `whenOwnsTalent: "Rallying Shout"`),
+> and `edha-note` carries no target-condition dial. Gating it needs EITHER a new generic field on
+> `edha-note` PLUS an authored value on that rule (**REBUILD + ↻ Sync**), OR a name-keyed engine
+> branch, which iron rule 2b forbids and the ratchet prevents. Shipping the dial alone would add an
+> engine path with no consumer — R-74/R-76's own complaint. **Needs a rebuild-class item; the
+> answer (c) stands unchanged.**
+> **SHIPPED** in PR #239 (REBUILD, bench-pending) — item 63: `edha-note` gained the generic `whenTarget`
+> field (blank | `downed` = target at 0 HP or Unconscious, pure gate `edhaNoteTargetGate`), and
+> `RouseRallying000` carries `whenTarget: "downed"`. tests/note-target-gate.test.js pins the three cases
+> plus the no-field case; heroic pack parity = 204 documents, 1 differs. 🤖 re-test = checklist 2bM-6b.
+
+---
+
+**R-27. Battle Fever — which side is canon, the card or the engine?** The card says "+1 to your next
+test (max = Rank), **resets at start of your turn**"; the engine's rally bonus rides **every** test
+until turn start (`rally {count, resetOn: turn}` — it never consumes on a test; observed +2[Rally] on
+6+ consecutive rolls). The max=Rank cap works on both readings. *(Checklist Red spot-checks row.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) THE CARD is canon**: the rally
+> bonus is SPENT on the next test (max = Rank), and clears at the start of the owner's turn. Spec:
+> the rally handler's `{count, resetOn: turn}` gains consume-on-test (the bonus applies once, to the
+> next test, then the stack is cleared/decremented). ENGINE-ONLY, F5 → **item 52**; headless pin
+> (three damage events → +3 on the next test, +0 on the one after; cap at Rank); 🤖 re-test = the
+> Red spot-checks row.
+> **SHIPPED** in PR #223 (ENGINE-ONLY, bench-pending) — `tests/rally-spent-on-test.test.js` (three hits
+> → `0 + 3[Rally]` on the next test and +0 on the one after; four hits at Rank 3 spend as +3; an unspent
+> stack still clears at the owner's turn start). The consume is a post-`<ctx>Roll` reader of the actor's
+> own `rally` flag (`edhaRallyConsume`), not a roll option — a cancelled dialog cannot strand the stack.
+
+---
+
+**R-28. Withering Touch's duration — "start" or "end" of your next turn?** The engine
+(`expireAfter {round: 2, turn: 0}`), **both** chat cards and the **measured** expiry all say **END**;
+only the prose says *start*. *Recommended: fix the prose* (and the source in `data/domain.json`) —
+do not leave three artifacts agreeing and one disagreeing. *(3A-15 + checklist 2bW-1.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) END; fix the PROSE.** Authored
+> description + `data/domain.json` source prose say "end of your next turn"; engine and cards
+> unchanged. DATA/TEXT → pack **REBUILD + ↻ Sync**, **item 58**; retire checklist 2bW-1's duration
+> clause.
+> **SHIPPED** in PR #227 (REBUILD, bench-pending) — `description` (value/chat/short) +
+> `WitherNote000000.text` in `data/authored/deity-death.json`, and the source `description` in
+> `data/domain.json`, all "end of your next turn".
+
+---
+
+**R-29. Combat Training's garbled source.** The cheatsheet sentence reads "turn one of its own
+**grazes into a graze**". Rule whether that means **miss → graze** or **graze → hit**, and the text
+gets fixed to match. Open since 2026-07-16. *(Checklist adversary-wiring row.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) MISS → GRAZE, once per round,
+> without spending Focus** — the canon Combat Training wording. Spec: fix the cheatsheet sentence
+> and the adversary block's description (its description is currently EMPTY in
+> `data/adversaries.json` — write it); wire per lint pass 5. Adversaries pack **REBUILD** (Ben's
+> deploy) → **item 57**. Retire the adversary-wiring checklist row on evidence.
+> **SHIPPED** in PR #226 (REBUILD, bench-pending) — the Captain's text reads "Once per round, when one of the
+> Captain's attacks misses, it can turn that miss into a graze without spending Focus." (note: the block's
+> `text` was never actually empty — it carried the 07-16 ruling wording plus a visible marker; both
+> rewritten). The garbled sentence lives only in the source PDF, which is not in the repo; the built
+> description is now the canonical wording. Checklist row retired on the built-pack read-back.
+
+---
+
+**R-31. Should a PC's own Phantom Double token be labelled "(Illusion)"?** The plain name is
+deliberate for The Seeming's veil, but no veil applies in the PC direction. *(3A-9.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) YES, label the PC's copy
+> "(Illusion)"**; the Mistheron's veiled copy keeps its plain name. ENGINE-ONLY (the copy-token
+> spawner, character owners only), F5 → **item 48**; 🤖 re-test in the Blue block.
+> **SHIPPED** in PR #217 (ENGINE-ONLY, bench-pending) — tests/illusion-token-label.test.js:"R-31: a CHARACTER's copy — the token is labelled (Illusion)"
+
+---
+
+**R-32. Black Draw Mana's sweep card says "affected 5"** when all five were already Weakened —
+intent vs. state. Which should the card report? *(3A-10.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) report BOTH: "swept N · newly
+> Weakened M".** ENGINE-ONLY (the pulse runner's card text), F5 → **item 48**; headless pin on the
+> string; 🤖 re-test = Black Draw Mana on five pre-Weakened targets reads swept 5 · newly 0.
+> **SHIPPED** in PR #217 (ENGINE-ONLY, bench-pending) — tests/pulse-sweep-counts.test.js:"R-32: five ALREADY-Weakened enemies read 'swept 5 · newly Weakened 0'"
+
+---
+
+**R-71. The system's own item-damage card prints the UNFOLDED formula — leave it, or fold at build
+time?** R-65 folds every roll that goes through `edhaRollFormula`, and every engine-rolled card
+measured since reads plain dice (`2d8`, `2d8 + 2`, `1d6 + 2`). But a talent whose damage the
+**cosmere system** rolls for itself — `item.system.damage.formula`, rolled by the system's `use()`
+before any Edha rule sees it — never reaches that helper, so its card shows the raw parenthetical.
+Measured on **Verdict**: the system card read `(2)d(2 * 3 + 2) + 5 = 10` while the same talent's
+engine-rolled Edict payoff on the very next card read `2d8 + 2 = 7`. **The maths is right** —
+Foundry's parser evaluates the parenthetical correctly, 10 and 7 are both valid — so this is a
+DISPLAY gap, not a damage bug, and it is the same string bench run 24 saw on Exalt's card.
+*Recommended default: **fold the authored `system.damage.formula` at BUILD time**, so every
+system-rolled card reads `2d8` like every engine-rolled one.* The alternative is to accept the
+parenthetical on those cards, which is defensible — it is honest about the scaling — but it makes
+two cards from the same talent look like they use different maths. A build-time fold would need a
+**pack rebuild**, and it changes what Ben sees on the sheet, so it is a judgment call rather than a
+mechanical fix.
+*(Filed by bench run 28, which moved it out of the checklist: the row asked Ben to DECIDE, not an
+agent to TEST, so it was in the wrong file. Original measurement: bench run 25.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) fold `system.damage.formula` at
+> BUILD time.** Spec: `foundry-build.js` folds the authored damage formula into plain dice for
+> every talent the system rolls itself (same fold `edhaRollFormula` does at runtime per R-65).
+> Packs **REBUILD** (Ben's deploy); TOOLING + DATA → **item 59**; pin with a build-report diff
+> showing only formula strings changed; bench visual check = Verdict's system card reads `2d8 + 5`
+> like its engine-rolled card.
+> **SHIPPED** in PR #234 (REBUILD, bench-pending) — `scripts/lib/fold-die-math.js`
+> (`foldDieMath`) wired into `foundry-build.js`, pinned against the engine's own `edhaFoldDieMath` in
+> `tests/fold-die-math.test.js`. ⚠️ **Load-bearing limit found while shipping it, worth reading before
+> the bench row above surprises anyone:** the fold can only resolve a `damage.formula` whose computed
+> dice math is ALREADY fully numeric — it has no actor to substitute `@tier`/`@skills.<color>.rank`
+> from at build time, so a genuinely rank/tier-scaled `[Tier][Die]` formula (Verdict's own
+> `(@tier)d(2 * @skills.blue.rank + 2)` included) folds to ITSELF, unchanged, exactly like the
+> engine's own copy before runtime substitution. Measured against every current `damageFormula` (51
+> in `data/talent-rolls.json`) and every authored `damage.formula` overlay: **none are fully numeric
+> today**, so a real build's folded-formula count is currently 0 — proven correct by mutation (a
+> scratch-only synthetic flat formula DOES fold end-to-end; see the item-59 PR body / handoff delta
+> for the isolated one-field diff). If Verdict's card still shows the parenthetical on the bench run,
+> that is this limit, not a regression — the deeper fix (folding the SUBSTITUTED, actor-specific
+> formula at roll time, mirroring what R-65 already does for engine-rolled cards) would need to hook
+> the system's own damage-roll pipeline, which is a different, ENGINE-side change outside item 59's
+> TOOLING + DATA scope. Left open here for Ben to decide whether that is worth a follow-up item.
+> **SHIPPED (runtime half)** in PR #237 (ENGINE-ONLY, bench-pending) — `tests/runtime-formula-fold.test.js`. Item 69 folds the same field inside `edhaWrapRollDamage` at ROLL time, with the roller's data substituted first, so the tier/rank-scaled formulas the build-time fold could not touch now print plain dice on the system's own card (`2d8 + 5` at tier 2 / rank 3); riders join onto the folded base. The item-59 Verdict 🤖 row under `# BENCH — Order` is this item's re-test.
+
+---
+
+---
+
+### K.6 — R-35 … R-54
+
+**R-35. Should Unweaving's dispel card list the OMEN MARKER itself as a dispellable effect button?**
+Today the card lists enabled effects; the Omen marker is not among them. *(3B-D + checklist Chaos
+residuals row — that row's other half, the through-walls rendering, was CLOSED on run 13's
+sense-through evidence with a negative control.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) YES.** Spec: the `edha-pick`
+> `source:'effects'` menu (already being widened under R-73 (b)) also offers the target's Omen
+> ledger entries as a "dispel Omen" button that clears the marker + ledger entry. ENGINE-ONLY, F5 →
+> folded into **item 54** with R-73(b); headless pin; 🤖 re-test = Chaos residuals row.
+> **SHIPPED** in PR #224 (ENGINE-ONLY, bench-pending) — `tests/dispel-widening.test.js`. The rule's new
+> `ledgers` field defaults to `omens:omen`, so Unweaving needs no rebuild; the click clears the marker
+> AND the ledger row, and a marker with no row still comes off.
+
+---
+
+**R-36. Temp HP source relabelling misattributes a surviving value.** When a smaller Temp HP grant
+loses the keeps-higher comparison, the `source` is still relabelled to the loser — so an ally holding
+6 from Final Decree ends up reading "Bear Witness", and a 99-THP ally ends up reading "Investiture of
+Command". The number is right; the attribution lies. *(3B-D.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) FIX: relabel `source` only when
+> the new grant WINS the keeps-higher comparison.** ENGINE-ONLY, F5 → **item 47**; headless pin (6
+> from Final Decree survives a 4 from Bear Witness → source stays Final Decree).
+> **SHIPPED** in PR #215 (ENGINE-ONLY, bench-pending) — `tests/temphp-source-label.test.js`. A tie
+> is not a win: the incumbent keeps both its value and its label.
+
+---
+
+**R-37. Three small card-text nits, one decision:** Ordained eviction is never verbalized (the place
+card says "(2/2)" but never says the oldest fizzled) · Inevitable Snare's grammar reads "the snares on
+Snare #1 **is** inevitable" · Bulwark's THP attribution. Fix all three, or leave them? *(3B-D.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) FIX ALL THREE**: (1) Ordained
+> eviction posts a line naming the fizzled oldest ground; (2) Inevitable Snare grammar ("the snares
+> on Snare #1 is" → correct number); (3) Bulwark's THP attribution. (1) and (3) are engine card text
+> (ENGINE-ONLY, F5); (2) is authored text if it lives on the card (REBUILD + ↻ Sync) or engine if it
+> is a generated string — check which. → **item 48**.
+> **SHIPPED** in PR #217 (ENGINE-ONLY, bench-pending) — tests/card-attribution-nits.test.js:"R-37(1): placing at the cap NAMES the oldest ground that fizzled" / "R-37(2): a POINT-bound entry names only the marker" / "R-37(3): the ordained turn-start card credits the Temp HP to the GUARD talent". (2) was ENGINE-generated after all, not authored — checked before editing, so all three shipped in one ENGINE-ONLY pass.
+
+---
+
+**R-38. Dread Presence's veto silently makes a Weakened target unmovable.** Three moves resolved with
+no error and did nothing; the only evidence anywhere was `ui.notifications`. Working as designed —
+but it reads identically to a broken range gate, which cost a run real time. Should a refused move
+post something the player can see? *(3A-13.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) a refused move POSTS a whisper to
+> the mover naming the talent that stopped it.** Spec: the `preUpdateToken` veto path posts one
+> whispered card (mover's owners + GM) per refused move, throttled per token per round so a dragged
+> path does not spam. ENGINE-ONLY, F5 → **item 48**; headless pin on the message; 🤖 re-test.
+> **SHIPPED** in PR #217 (ENGINE-ONLY, bench-pending) — tests/move-veto-announce.test.js:"R-38: a dragged path — two refusals in one round — posts ONE card; the next round posts another"
+
+---
+
+**R-40. The Gone-to-Weir Fen-Heart's token footprint — 3×3 or 4×4?** `size: "large"` is the schema
+cap, so the footprint is set by hand at placement and the biography carries the note. Say which, and
+it goes in the block's text. *(Checklist Lunavar row; its sheet-read half is now RETIRED — bench run
+16 confirmed `creatureType: custom`, `size: large` and the bio note. Only the number is still open.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) 3×3 (Huge).** Put the number in
+> the block's biography note (`data/adversaries.json`) and in the placement guidance; adversaries
+> pack **REBUILD** → **item 57**.
+> **SHIPPED** in PR #226 (REBUILD, bench-pending) — the biography's placement sentence now reads "set the
+> token to **3×3** on placement" with the reach-15 / 30-ft measurements noted against that footprint.
+> No token field can carry it: `size: "large"` is the schema cap (2×2), so the number is guidance, as ruled.
+
+---
+
+**R-46. How far should a "charge" carry? The Cragdrake Whelp Pack's Reckless Advance moves 3 ft.**
+Raised by bench run 16 (2026-07-27x), which drove it and watched a charging whelp advance **half a
+square**. The rule is `edha-move {bySize: true}` and the whelp is **small**, so `bySize` is behaving
+exactly as configured — this is a design question, not a defect, and the card states no distance so
+nothing is drifting. But "charge toward it, ignoring Reactions — whelps arrive all at once or not at
+all" reads like a rush, and 3 ft is not a rush. *Recommended default: give it an explicit
+`distanceFt` (its Speed, 25 ft, or half that) rather than `bySize`, and say so on the card.*
+⚠️ **Distinct from the Explosive Leap case** in the same section — see **R-48**, which test-pass-fixes
+sent back here on 2026-07-27y: it is the same `bySize` question, not a wiring bug.
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) FULL SPEED, 25 ft, explicit
+> `distanceFt`, stated on the card.** `data/adversaries.json`: `edha-move bySize` → `distanceFt: 25`
+> on Reckless Advance + card text; check R-48 (Explosive Leap, same `bySize` question) for the same
+> treatment if still open. Adversaries pack **REBUILD** → **item 57**; 🤖 re-test.
+> **SHIPPED** in PR #226 (REBUILD, bench-pending) — `{bySize: false, distanceFt: 25}`, card text "charge up to
+> 25 ft (its full Speed)". 🤖 row in the Whelp Pack section. R-48 got the same treatment (below).
+
+---
+
+**R-48. The Cragdrake Adult's Explosive Leap says "up to 20 ft" and moves 5. Which side is canon?**
+Sent here by fix pass A (2026-07-27y) after root-causing it rather than fixing it — the run filed it
+as card-vs-engine drift, and it is, but **neither side is wrong by itself**, so it is a ruling, not a
+defect. `bySize: true` means *distance = `[Size]` by RED rank*, and `EDHA_SIZE_FT` is
+`[–, 2.5, 5, 10, 15, 20]`. The Cragdrake Adult is a **rival** attuned to red, so its rank is **2** and
+the leap is **5 ft** — the engine is doing exactly what the rule says. The card's flat "20 ft" is the
+**rank-5** value, so the prose reads as a promise the block can never keep. Same shape as R-46, one
+layer over: there the card states no distance, here it states the wrong one.
+*Recommended default: the CARD is canon for an adversary — a statted block should not scale, so give
+it `distanceFt: 20` and drop `bySize`.* The alternative (keep `bySize`, reword the card to "Leap
+`[Size]` ft") is defensible but makes an adversary card read like a PC talent. Whichever way it goes,
+authored data changes → **pack rebuild + ⟳ Sync**, which is why fix pass A left it alone: the
+rebuild list is currently empty and this is not worth re-opening it on its own.
+
+Ask: Is the CARD canon for a statted adversary block — keep the applied explicit `distanceFt` (the card's own number) on the Cragdrake Adult's Explosive Leap and the three run-19 blocks it turned out to share the shape with (a), or reword those cards to the rank-2 `[Size]` distances the engine was rolling (b)?
+
+⚠️ **UPDATED 2026-07-28e by bench run 19 — this is no longer one block, it is a FAMILY of at least
+four across two colours, and three of them state a wrong number on the card.** Measured live:
+| block | ability | card says | engine did | rank |
+|---|---|---|---|---|
+| Cragdrake Adult | Explosive Leap | 20 ft | 5 ft | red 2 |
+| **Brandram** | **Shockwave Slam** | **10 ft** | **5 ft** (measured 300 px) | red 2 |
+| **Brandram** | **Reckless Advance** | **10 ft** | **5 ft** (from 32.5 ft away, unclipped) | red 2 |
+| **Tussock-Sow** | Green Key terrain square | "~10-ft square" | **5 ft** | green 2 |
+| *Briar-Gone Grove* | *Green Key terrain square* | *10 ft* | ***10 ft*** ✅ | *green **3*** |
+The Grove row is the control that proves the mechanism rather than merely asserting it: **same code
+path, rank 3, and the card's number comes out right.** So every rank-**2** rival lands exactly one step
+down `EDHA_SIZE_FT` while its card carries the rank-3 figure. Note also that `bySize: true` makes an
+authored `distanceFt` **dead** — Shockwave Slam ships `distanceFt: 5` *and* `bySize: true`, and the 5
+is coincidence, not the source. **Deciding R-48 once now settles four blocks**, which is a much better
+trade for a pack rebuild than the single-block version was. *(Bench run 19; checklist W29 §7, §8.)*
+> **DEFAULT (a) APPLIED** in PR #226 (REBUILD, bench-pending; the PM's recorded default, item 57) — the
+> **Cragdrake Adult's Explosive Leap** only: `{bySize: false, distanceFt: 20}`, the card's own "up to 20 ft".
+> 🤖 row in the Cragdrake Adult section. **Still open for Ben's veto**, and the other three rows of the run-19
+> family (Brandram Shockwave Slam / Reckless Advance, Tussock-Sow terrain square) are untouched — the brief
+> scoped the default to the Adult; they want the same call in one pass.
+> **R-81 default (a) APPLIED** in PR #232 (the three run-19 blocks, riding item 65's rebuild; item 67) —
+> the **Brandram's Shockwave Slam** `{bySize: false, distanceFt: 10}` (the dead `distanceFt: 5` beside
+> `bySize: true` replaced), the **Brandram's Reckless Advance** `{bySize: false, distanceFt: 10}`, the
+> **Tussock-Sow's Sudden Growth** `{sizeByRank: false, sizeFt: 10}` (the terrain square's analogue of
+> `bySize`) — each the card's own number, now bold on the card. The run-19 family is now closed on
+> default (a) end to end; **still open for Ben's veto** ((b) = fix the cards to the rank-2 numbers
+> instead). 🤖 three rows in the `34c` sub-block of the fleet-weapon bench section. Left alone: both
+> Sudden Growths (Sow, Grove) still place within Attunement Range by rank (30 / 60 ft) while their cards
+> say "within 10 ft" — the same family one field over, reported to the PM.
+
+> **ANSWERED 2026-09-06 (a) — Ben, from the phone board at 21:14 ET, verbatim: *"the CARD is canon for an adversary — a statted block should not scale, so give it `distanceFt: 20` and drop `bySize`."*** Item 57 (PR #226) had already applied exactly that (`bySize: false`, `distanceFt: 20`, card text unchanged; REBUILD owed to the next deploy) — nothing further to change. The principle also underwrites R-81 (item 67) and R-46.
+> **CONFIRMED 2026-09-07 (Ben, dashboard), verbatim: "Yeah it makes no sense for an adult drake to
+> only jump 5 feet."** No change to the shipped code or the ruling's status — the 2026-09-06 answer
+> and PR #226 stand.
+
+---
+
+**R-47. Should the `NO NAMEABLE HOOK:` engineering note be visible on the player-facing card?**
+Bench run 16 drove Seize and Roll, Drag Under and Slip the Sound and all three posted their authoring
+rationale to chat verbatim — e.g. "NO NAMEABLE HOOK: to-hit-only grab — a hit that deals no damage
+makes no document write, so there is no engine hook; the GM rolls the attack and adjudicates the
+grip." The wiring is correct and the rows passed; the question is presentational. *Recommended
+default: keep the line in the item description (it is the rule-3 ledger and it must stay somewhere
+visible in Foundry), but move it behind a GM-only note field or an HTML comment so the table sees
+only the fiction.* Affects every adversary ability carrying the marker, not just these three.
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) NO: keep it on the item but hide
+> it from the table** (GM-only note field or an HTML comment inside the description). Applies to
+> EVERY adversary ability carrying the marker; lint pass 5 must keep recognising the marker in its
+> new home; build/data change → adversaries pack **REBUILD** → **item 57**.
+> **SHIPPED** in PR #226 (REBUILD, bench-pending) — all **16** markers are now `<!-- NO NAMEABLE HOOK: … -->`
+> HTML comments inside the ability's `text`/`rider` (Combat Training, Mutation Upgrade, Seize and Roll,
+> Cannot Stop, Drag Under, Slip the Sound, The Passed Wasting, A Thousand Small Bodies ×2, The Old
+> Agreement, Pay the Ledger, Guardian Stance, Apex Predator ×2, Pack Doctrine, The Tithe Takes the
+> Failing). `lint-refs.js` pass 5 still reads the raw prose for the exemption AND now fails a VISIBLE
+> marker — mutation-proved both ways. 🤖 row in the adversary-wiring section (includes a ProseMirror
+> round-trip check: if the editor strips comments on save, the marker needs a GM-note field instead).
+> **Moved by R-89 (a) → item 93** (2026-09-07): the HTML comment described above is gone — the
+> declaration now lives in the `noHook` key (`flags.edha-content.noHook` on the built docs).
+
+---
+
+**R-52. A 5-ft `ally-drops` cue cannot reach an ally standing next to its owner. Slack, or edge-to-edge?**
+Raised by bench run 19 (2026-07-28e), which measured it four ways rather than asserting it.
+`edhaTokenGapFt` measures **centre-to-centre** and `edhaAllyDropEligible` applies **no slack**, so:
+
+| owner | ally position | gap | card |
+|---|---|---|---|
+| Crownox Ring (**Large 2×2**) | orthogonally adjacent | **7.5 ft** | ❌ |
+| Crownox Ring | overlapping the ring's own square | 0 ft | ✅ |
+| The Reckoning (Medium) | orthogonally adjacent | 5.0 ft | ✅ |
+| The Reckoning | **diagonally** adjacent | **7.07 ft** | ❌ |
+
+A **Large** owner's 5-ft cue can therefore *never* reach a ring-mate beside it — only one standing
+inside its footprint — and a Medium owner's misses every diagonal. Both cards promise the opposite:
+*"an **adjacent** ox may spend 3 Focus"* and *"a pack-mate dropped **within 5 ft**"*. This is a
+measurement convention, not a broken hook, which is why it is here and not in test-pass-fixes.
+⚠️ **The engine already answers this question elsewhere and disagrees with itself:** the
+`enemy-turn-start` sweep in the same file adds **`+ 2.5` half-square slack**, with the comment
+*"half-square slack for adjacency reads"*. `ally-drops` has none.
+*Recommended default: give `edhaAllyDropEligible` the same `+ 2.5` slack, which fixes the Medium
+diagonal immediately and is a one-line ENGINE-ONLY change (no pack rebuild).* That still leaves the
+Large owner at 7.5 ft, so if "adjacent to the ring" is meant to work, the fuller answer is to measure
+**edge-to-edge** for sized tokens — a bigger change that would touch every `rangeFt` gate in the
+engine, so it should be decided deliberately rather than slipped in. Blast radius today is the two
+5-ft rules (Crownox Ring, The Reckoning); Roek's 20 ft is unaffected. *(Checklist W29 §2.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (c) BOTH** — (i) the +2.5 ft
+> half-square slack in `edhaAllyDropEligible` NOW, one-line ENGINE-ONLY, matches the
+> enemy-turn-start sweep → **item 47**; AND (ii) file edge-to-edge measurement for sized tokens as
+> its own TODO item with a bench sweep of every `rangeFt` gate → **item 62**, because the Crownox
+> Ring's "an adjacent ox" stays false under slack alone. Headless pin on the four measured cases; 🤖
+> re-test = W29 §2 when both ship.
+> **(i) SHIPPED** in PR #215 (ENGINE-ONLY, bench-pending) — `tests/ally-drop-side.test.js`, via
+> `EDHA_ADJACENCY_SLACK_FT` now read by BOTH adjacency gates. ⚠️ All four measured gaps reach,
+> **including the 7.5 ft Large-owner case this ruling's prose predicted would still miss** — the
+> boundary is inclusive, so 7.5 ≤ 5 + 2.5. (ii) edge-to-edge is untouched and remains item 62.
+> **ANSWERED 2026-09-07 (Ben, dashboard), verbatim: "I'm fine with whatever fix you can find for
+> this. I think increasing slack would work, or editing the cue."** The +2.5 ft slack that shipped
+> as (i) IS that fix — all four measured gaps reach, including the Large-owner case. Item 62's
+> edge-to-edge measurement narrows to a contingency: only pick it up if bench run 42's W29 §2
+> re-test finds a gap the slack still misses. Item 62 stays open, narrowed, not closed.
+
+---
+
+**R-42. Map polygon dead spots — fix the polygon, or re-tag the dots?** Point-testing all 35 gazetteer
+city dots against the 10 shipped nation polygons: **30 agree, 5 do not.** `city-04 [746,676]`,
+`city-11 [484,1120]`, `city-14 [407,1324]` and `city-17 [595,916]` — all tagged `goldenport` — fall
+**inside no polygon at all**, so clicking there selects nothing; and `city-31 [1244,1552]`, tagged
+`corvaine`, resolves to **`thalendor`**. Controls pass (Aldercourt → corvaine, Heartholt →
+thalendor), and `thyrcross-nations.json` is byte-identical to `thyrcross.map.json`'s polygons and to
+the deployed copy, so this is **map truth, not a deploy gap**. **These are the same four `lint_map.py`
+already WARNs about.** Either Goldenport's polygon is missing its coastal lobe, or those dots are
+tagged to the wrong nation — both are edits to `source-materials/maps/thyrcross.map.json`, and only
+you can say which is true. *(3A-17.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) FIX THE POLYGONS.** Goldenport
+> gains its coastal/island lobes so city-04/11/14/17 fall inside it; Corvaine's edge moves to the
+> river bank so city-31 (ruling 154 river port, "the border IS the river") resolves to corvaine.
+> Edits to `source-materials/maps/thyrcross.map.json` + regenerated `thyrcross-nations.json`;
+> `lint_map.py`'s four WARNs must go to zero. Map-data item, lane R → **item 61**; then the
+> "Redrawn polygons hit the right nations" row re-tests.
+
+---
+
+**R-54. Is 11 max health at STR 0 correct for a level-1 PC — i.e. does `HP = system + 1` apply at
+level 1?** The checklist's "+1 max health" row demands a fresh actor read **10/10 at STR 0**, and
+bench run 21 proved that **can never happen**, for a reason that is design rather than a bug. The
+07-19z fix it was written for genuinely worked — a brand-new ＋ Edha Character carries 20 items, 19
+of them actions, and **zero transfer Active Effects**, so the AE that used to add the +1 is gone. But
+the actor still derives max **11**: `_source…hea.max.bonus` is **0** while derived reads `bonus: 1`,
+and **a plain cosmere character with no items and no effects at all reads exactly the same 11**. The
+source is `edhaDeriveSheetStats` (engine ~L16178), which deliberately adds +1 to `hea.max.bonus` in
+memory for every character — its own comment says *"The Edha reference sheets derive these
+differently from the cosmere system… HP = system + 1."* So either **(a)** 11 is intended and the
+row's number is simply stale (retire "10/10", write "10/11") — *Recommended*, since the derivation is
+documented and deliberate — or **(b)** the +1 is not meant to apply at level 1, and the derivation
+needs a level gate. ⚠️ Note this is **not** the same question as the two *defects* it sits next to:
+the derived-stat preview showing Health 13 vs the sheet's 14, and the finish top-up leaving health
+13/14, are both **bugs to fix either way** (the preview must model the derivation; the top-up must
+re-read after it settles). Only the target number is a decision. *(Bench run 21.)*
+> **2026-07-28i — both defects are FIXED and the question is unchanged, but one fact about it
+> changed.** The 13/14 root cause turned out not to be timing at all: the system clamps every
+> resource to its max at the end of `prepareSecondaryDerivedData`, *before* the module raises that
+> max, so the +1 was **unreachable by any route** — 11/11 could never be displayed, healed to, or
+> rested to. That is now repaired, so if you rule **(a)**, 11 will finally behave like a real 11
+> instead of a number painted on the sheet. If you rule **(b)**, the repair becomes a no-op by
+> construction. The engine now holds the number as a single constant, `EDHA_HP_BONUS`, read by both
+> the sheet derivation and the wizard preview — so answering this is a one-line change that moves
+> the sheet, the preview and the tests together. *(Marathon 3, fix pass E.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session, after reading the derivation map
+> `docs/ACTOR_STAT_DERIVATION.md`): (c) REMOVE the +1.** This supersedes the earlier lean toward
+> (b) and the request for a level gate — **no level gate anywhere**; the math stays a single
+> constant. Spec: `EDHA_HP_BONUS = 1` → `0` (keep the constant and its comment block, but correct
+> the comment "the cosmere system derives all three differently" to name only Movement and Senses —
+> HP is identical to the system: `Character_Building_Rules.md` §HP and
+> `Edha_Character_Builder.xlsx` (Character Builder!H22) both give `HP = 10 + STR` at L1, term-for-
+> term the system's own advancement table); the clamp repair and `edhaCwDerivedPreview` read the
+> constant, so they follow. Re-pin `tests/derived-stats.test.js` + `tests/engine-helpers.test.js`
+> wherever they assert the +1. The June pregens that still store a manual `hea.max.bonus` keep it
+> until `edha.migrateDerivations()` — left alone unless Ben says otherwise. ENGINE-ONLY, F5 →
+> **item 47**; the checklist's "+1 max health" row rewrites as the re-test: a fresh actor at STR 0
+> reads **10/10** after Finish, an existing PC at full health drops 11→10 on reload with nothing
+> stored changing.
+> **SHIPPED** in PR #215 (ENGINE-ONLY, bench-pending) — `tests/derived-stats.test.js`. Note
+> `tests/engine-helpers.test.js` needed no change: it never asserted the +1.
+
+---
+
+### K.7 — R-55 … F-1
+
+**R-55. The sheet's budget chips use two different meanings of "X / Y" — which is right?** On a
+correctly-built L1 PC (12 attribute points spent, 5 skill ranks spent, 2 of 4 talents taken) the
+header strip reads **"Talents 2 / 4"**, **"Attr pts 0 / 12"**, **"Skill rnks 0 / 5"**. Talents is
+*spent* / total; the other two are *remaining* / total. The checklist's "Sheet budget bar says 5
+skill ranks" row predicted **5/5**, so it was written expecting *spent*/total everywhere. **The fix
+that row tests did work** — the denominator is the Edha budget **5**, not the system table's 4, and
+it is never the old **-1/4** — so the row is retired on that evidence; this is only about which
+numerator convention the three chips should share. *Recommended: make all three spent/total*, since
+"Talents 2 / 4" is the one players read most and 0/12 next to a fully-spent sheet reads like an
+error. *(Bench run 21.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): (a) all three chips read SPENT /
+> total.** Attr pts and Skill rnks flip to spent/total to match Talents. ENGINE-ONLY (sheet
+> decorator), F5 → **item 48**; headless pin on the three strings for a built L1 PC (12/12, 5/5,
+> 2/4).
+> **SHIPPED** in PR #217 (ENGINE-ONLY, bench-pending) — tests/budget-chips.test.js:"R-55: a built L1 PC reads 12/12, 5/5 and 2/4 — spent over total, all three"
+
+---
+
+**R-73. A DISPEL cannot remove a passive that lives on a talent or a trait — it stays that way.**
+Fix pass 5, 2026-09-06, while sweeping the `actor.effects` family that had hidden the Stalker's veil
+defect. `edha-pick` `source: "effects"` — the Unravel-Everything shape — offers one delete button per
+**enabled `actor.effects` entry**, so an ActiveEffect authored `transfer: true` on a talent or trait
+never appears in the menu: a PC's `Hardy` / `Collected` / `Surefooted`, a Cinderhound's `Cinder Coat`,
+the Frostbinder's permanent `braced` from `Predictive Ward`. **Default applied: leave the menu
+narrow.** Deleting a yielded ITEM effect writes to the item, so one click would permanently strip the
+passive from that creature's copy of the talent — a much worse failure than a dispel that cannot
+reach it, and unrecoverable without a re-drag or a ⟳ Sync. **If you want those dispellable**, the fix
+is *not* to widen the read on its own: it is to widen the read AND guard the delete so only
+actor-level effects are removed, offering item-owned ones as a temporary **disable** instead. Say the
+word and it gets built that way. *(Fix pass 5; no checklist row — this is a decision, not a test.)*
+> **ANSWERED 2026-09-06 (Ben, phone, via the relay session): VETOED — widen the dispel the safe
+> way (b), not the narrow applied default.** Spec exactly as this ruling's own "say the word"
+> clause: `edha-pick` `source:'effects'` lists item-owned transferred effects too (Hardy, Collected,
+> Surefooted, Cinder Coat, Predictive Ward's braced), offered as a temporary DISABLE (`disabled:
+> true` on the effect, never delete); the delete path stays guarded to actor-level effects only.
+> ENGINE-ONLY, F5 → **item 54** (folded with R-35); pin both branches headlessly; bench re-test =
+> Unravel Everything can disable a target's Hardy and the talent copy survives intact. **Stays
+> HERE** — open, pending ship — until item 54 lands and the bench confirms it; then it moves to §K.
+> **SHIPPED** in PR #224 (ENGINE-ONLY, bench-pending) — `tests/dispel-widening.test.js`. Item-owned
+> effects are offered as a DISABLE; the delete guard is on the DOCUMENT (`edhaEffectOwnerItem`,
+> fail-closed), so a forged delete button cannot strip a talent's copy.
+
+---
+
+**F-1. Rank-3 Black Attunement Range measures 60 ft**, not the 30 ft several stagings assumed. Any
+row whose expectation was built on 30 ft should be re-read.
+> **SETTLED 2026-09-07 — Ben asked (dashboard): "All attunement ranges should be the same- what
+> does Red rank-3 attunement range read?"** Answer from the engine: `EDHA_ATTUNE_FT = [0, 15, 30,
+> 60, 90, 120]` (`module-src/scripts/engine/35-targeting-attunement-range-aoe-templates.js:24`) is
+> indexed by color **RANK**, not by color, and is the same table for every color — Red rank-3 reads
+> **60 ft**, exactly like Black. Nothing to change; the 30 ft assumed in old stagings was the
+> stager's own error, not a rule difference between colors.
