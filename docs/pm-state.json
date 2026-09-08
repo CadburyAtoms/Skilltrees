@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "generatedAt": "2026-09-08T02:21:32.702Z",
+  "generatedAt": "2026-09-08T04:04:26.970Z",
   "source": {
     "path": "docs/PM_BOARD.md",
-    "hash": "635ae7ada0",
-    "commit": "60d0c6e",
+    "hash": "9021a2effb",
+    "commit": "4486342",
     "branch": "main",
     "repo": "CadburyAtoms/Skilltrees"
   },
@@ -42,13 +42,27 @@
     "nextOpenAt": null
   },
   "pm": {
-    "status": "waiting",
-    "note": "22:20 ET: item 98 merged (#305) — the Ashkar art row is retired on your word and the session-1 state line is true again (W23 round and capitals done; the two battle maps' art is yours; the ferry-pair stop waits for a session-forge sitting with you, deferred on your note). Nothing is running; every Sonnet-sized item is closed. Foundry was still DOWN at 22:20 after your 21:52 bat run — relaunch it before midnight so bench run 44 can join. After 00:00: item 70 → item 83 (cosmere ladder) → push live → bench run 44 (step zero: ⟳ Sync Talents on both PCs). Waiting on Ben: only Foundry back up.",
-    "waitingOn": "Foundry relaunch before 00:00 (bench 44)",
-    "nextWakeAt": "2026-09-08T04:00:00Z",
-    "session": "2026-09-07 20:30 ET hand-started (Ben's third paste) — session of record"
+    "status": "awake",
+    "note": "00:03 ET (09-08): the Opus count reset — item 70 is running (opus, worktree): R-83 (a), the three heal writers that still bypass the no-healing mark get gated at their emitters; engine-only, pushed live when it merges. Next: item 83 (cosmere ladder for everyone — engine push + an adversaries REBUILD on your next bat run), then bench run 44 — but Foundry has been DOWN since your 21:52 bat run (probed 22:20, 22:25, 23:26, 00:01). Relaunch it when you can; the bench waits for it, the engine items do not.",
+    "waitingOn": "Foundry relaunch (bench 44)",
+    "nextWakeAt": null,
+    "session": "2026-09-07 20:30 ET hand-started (Ben's third paste) — session of record, overnight shift"
   },
-  "workers": [],
+  "workers": [
+    {
+      "item": "70",
+      "title": "R-83 (a) — gate the three ungated heal writers at their emitters (regen tick, redirect heal-back, burst heal hits); Raise Dead's path stays ungated",
+      "model": "opus",
+      "size": "S",
+      "lane": "B",
+      "branch": "pm/70-heal-cut-emitters",
+      "startedAt": "2026-09-08T04:03:00Z",
+      "agent": "Work item 70",
+      "phase": "working",
+      "pr": null,
+      "note": "ENGINE-ONLY → F5; three 🤖 rows for bench 44; Opus 1 of 3 for 09-08"
+    }
+  ],
   "usage": null,
   "queue": [
     {
@@ -774,12 +788,12 @@
     {
       "pos": 63,
       "item": "70",
-      "title": "R-83's fix — gate the three ungated hea writers at their emitters (edha-regen turn-end, the decay lifesteal heal-back, edhaBurstDetonate's heal hits); edhaApplyBurstResults stays ungated (R-10); the drop-to-one family pin's gate-call count raised with a declaration; three 🤖 rows. ENGINE-ONLY; found by fix pass 8. Ben 09-07: \"I'm not sure what this means and will want the pm to give me good examples when we get here in chat\" — examples given in chat 10:1x and recorded in the ruling (item 79); still waiting for (a)/(b)",
+      "title": "R-83's fix — gate the three ungated hea writers at their emitters (edha-regen turn-end, the decay lifesteal heal-back, edhaBurstDetonate's heal hits); edhaApplyBurstResults stays ungated (R-10); the drop-to-one family pin's gate-call count raised with a declaration; three 🤖 rows. ENGINE-ONLY; found by fix pass 8. Ben 09-07: \"I'm not sure what this means and will want the pm to give me good examples when we get here in chat\" — examples given in chat 10:1x and recorded in the ruling (item 79); still waiting for (a)/(b) — answered (a) 09-07 17:11. Dispatched 2026-09-08 00:03 (opus, worktree pm/70-heal-cut-emitters; Opus 1 of 3 for 09-08)",
       "lane": "B",
       "model": "opus",
       "size": "S",
       "deps": "R-83 ✓ (a, 09-07 17:11)",
-      "status": "queued",
+      "status": "running",
       "statusDetail": null,
       "pr": null
     },
@@ -1202,6 +1216,18 @@
       "status": "merged",
       "statusDetail": null,
       "pr": 305
+    },
+    {
+      "pos": 95,
+      "item": "99",
+      "title": "pm-state.js projects the WHOLE run log into pm/state — at 00:04 on 09-08 the phone document (259 KB JSON; run log 154 KB / 212 rows) was refused by the store's 256 KiB cap and the phone froze on the 22:21 state. Fix: project the last 60 rows + runLogTotal / runLogFrom, budget math and per-item lookups still from the full parsed log, --runlog-rows override, page header \"last N of M\", pinned under the cap with a mutation; regenerate the tracked state. TOOLING-only. Filed 00:1x",
+      "lane": "R",
+      "model": "sonnet",
+      "size": "S",
+      "deps": "this PR merged",
+      "status": "queued",
+      "statusDetail": null,
+      "pr": null
     }
   ],
   "rulings": [
@@ -4199,6 +4225,48 @@
       "weightedM": 14.6,
       "outcome": "waiting",
       "pr": null
+    },
+    {
+      "date": "2026-09-08",
+      "time": "00:01",
+      "at": "2026-09-08T04:01:00.000Z",
+      "item": "Resume at the Opus reset. Clean tree, no PRs, engine 6 in sync, inbox empty (also at 22:25 and 23:26); Foundry DOWN since the 21:52 bat run (probed 22:20, 22:25, 23:26, 00:01).",
+      "itemNo": null,
+      "model": "fable",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "dispatching 70",
+      "pr": null
+    },
+    {
+      "date": "2026-09-08",
+      "time": "00:03",
+      "at": "2026-09-08T04:03:00.000Z",
+      "item": "Dispatched item 70 (opus, worktree pm/70-heal-cut-emitters — R-83 (a): gate edha-regen's turn-end heal, the edha-redirect heal-back, and edhaBurstDetonate's heal hits at their emitters; edhaApplyBurstResults stays ungated; family count declared; three headless pins shown failing under reversion; three 🤖 rows). Opus 1 of 3 for 09-08. Serial: 83 follows when 70 merges",
+      "itemNo": null,
+      "model": "opus",
+      "isDispatch": true,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "running",
+      "pr": null
+    },
+    {
+      "date": "2026-09-08",
+      "time": "00:04",
+      "at": "2026-09-08T04:04:00.000Z",
+      "item": "Phone-state push FAILED on size — pm/state is 259 KB of JSON (run log 154 KB / 212 rows, queue 83 KB) against the store's 256 KiB document cap; the 22:21 push had ~3 KB of headroom. The phone shows the 22:21 state until the projection shrinks → item 99 filed (sonnet S, TOOLING: pm-state.js projects the last 60 run-log rows + a total, budget math still from the full log, pinned under the cap), dispatched on this PR's merge in parallel with 70 (disjoint files)",
+      "itemNo": null,
+      "model": "fable",
+      "isDispatch": false,
+      "duration": null,
+      "weighted": null,
+      "weightedM": null,
+      "outcome": "board PR + dispatch",
+      "pr": null
     }
   ],
   "dispatches": [
@@ -4741,6 +4809,12 @@
       "model": "sonnet",
       "item": null,
       "pr": 305
+    },
+    {
+      "at": "2026-09-08T04:03:00.000Z",
+      "model": "opus",
+      "item": null,
+      "pr": null
     }
   ],
   "statusVocab": [
