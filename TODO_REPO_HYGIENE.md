@@ -3295,7 +3295,7 @@ carries the refresh recipe; `node scripts/gates.js` green. DOCS-ONLY (no script 
 Filed 2026-09-07 21:5x from Ben's chat ruling. The first refresh under the new rule is bench run 44's
 step zero (both PCs' `⟳ Sync Talents` after the 20:28 leyline REBUILD).
 
-## 98. [ ] Phone-inbox close-out 2026-09-07 21:53 — retire the Ashkar art-backlog row on Ben's word, and rewrite the stale "Session 1 is ready pending Ben's ⚑ batch" line in the campaign state
+## 98. [x] Phone-inbox close-out 2026-09-07 21:53 — retire the Ashkar art-backlog row on Ben's word, and rewrite the stale "Session 1 is ready pending Ben's ⚑ batch" line in the campaign state (2026-09-07, PR #305)
 
 **Why:** two notes from Ben's phone board (inbox, 2026-09-07 21:53–21:54 ET), verbatim:
 - On the Bench row `ART BACKLOG, not a test` under `# Ashkar Mesas Bestiary (rulings 137–138 …)`
