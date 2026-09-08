@@ -6,8 +6,13 @@
  *              "Movement = 20 + SPD·5", so the SHEET was right and the preview was re-implementing
  *              the cosmere system's ceil(SPD/2) ladder.
  *   • Senses — preview 10 ft, sheet 5 ft. The same doc's §Senses Range table says AWA 0 → 10 ft,
- *              so the PREVIEW was right: the engine had never applied the Edha table to the sheet
- *              at all, and the system's own ceil(AWA/2) ladder stood.
+ *              so the PREVIEW was ruled right at the time: the engine had never applied the Edha
+ *              table to the sheet at all, and the system's own ceil(AWA/2) ladder stood.
+ *              ⟳ **REVERSED 2026-09-07 (R-56 final, item 83): the system's ladder is canon for
+ *              every actor type after all** — Ben, "Cosmere ladder for everyone". The sheet's 5 ft
+ *              was never a bug; the fix was to move the PREVIEW (and the token stamp) onto the
+ *              system's `[5,10,20,50,100,∞][ceil(AWA/2)]` and delete the engine's sheet write. The
+ *              agreement this file pins is unchanged — only which number both sides read.
  *   • Health — preview 13, sheet 14. The +1 itself was the open ruling R-54, so these tests pinned
  *              the AGREEMENT, never the number.
  *
@@ -91,29 +96,35 @@ test("NEGATIVE: a legacy pregen's own movement override is never stomped", () =>
   assert.strictEqual(a.system.movement.walk.rate.override, null);
 });
 
-// --- Senses: the preview was canon, the sheet was the bug ---------------------
-test("edhaDeriveSheetStats writes the Edha AWA table into senses.range.derived", () => {
-  for (const [awa, ft] of [[0, 10], [1, 15], [2, 20], [3, 20], [4, 25], [5, 30]]) {
+// --- Senses: R-56 REVERSED 2026-09-07 (item 83) — the engine writes NOTHING ----
+// The cases below are the reversal's load-bearing half: `edhaDeriveSheetStats` must LEAVE the
+// system's own `senses.range.derived` alone for every actor type, so the sheet reads the cosmere
+// ladder. A returning Edha-table write fails all three.
+test("R-56 (item 83): edhaDeriveSheetStats does NOT touch senses.range — the system's ladder stands", () => {
+  for (const [awa, ft] of [[0, 5], [1, 10], [2, 10], [3, 20], [4, 20], [5, 50]]) {
     const a = pc({ awa });
+    const before = a.system.senses.range.derived;
+    assert.strictEqual(before, ft, `the system prepared AWA ${awa} → ${ft} ft`);
     env.edhaDeriveSheetStats(a);
-    assert.strictEqual(a.system.senses.range.derived, ft, `AWA ${awa}`);
+    assert.strictEqual(a.system.senses.range.derived, ft, `AWA ${awa} unchanged by the Edha layer`);
+    assert.strictEqual(a.system.senses.range.value, ft, `AWA ${awa} sheet value`);
   }
 });
 
-test("the AWA-0 case is the reported one: sheet read the system's 5 ft, canon is 10 ft", () => {
+test("R-56 (item 83): the AWA-0 case — the sheet reads the system's 5 ft, and nothing overwrites it", () => {
   const a = pc({ awa: 0 });
   assert.strictEqual(a.system.senses.range.derived, 5);    // what the system prepared
   env.edhaDeriveSheetStats(a);
-  assert.strictEqual(a.system.senses.range.value, 10);     // what the sheet now shows
+  assert.strictEqual(a.system.senses.range.value, 5);      // what the sheet shows — was 10 under R-56 (a)
 });
 
-test("NEGATIVE: senses writes .derived only — a hand-configured override still wins", () => {
+test("NEGATIVE: a hand-configured override still wins, and the bonus still adds", () => {
   const a = pc({ awa: 0 });
   a.system.senses.range.override = 60;
   a.system.senses.range.useOverride = true;
   a.system.senses.range.bonus = 5;
   env.edhaDeriveSheetStats(a);
-  assert.strictEqual(a.system.senses.range.derived, 10);   // still updated underneath
+  assert.strictEqual(a.system.senses.range.derived, 5);    // the system's number underneath
   assert.strictEqual(a.system.senses.range.value, 65);     // but the override + bonus decide
 });
 
@@ -176,12 +187,12 @@ test("R-54: a legacy June pregen storing its own hea bonus KEEPS it (until migra
   assert.strictEqual(a.system.resources.hea.value, 14);
 });
 
-test("NEGATIVE: adversaries get no bonus and no speed override — but senses DO follow the Edha table (R-56, item 55)", () => {
+test("NEGATIVE: adversaries get no bonus, no speed override — and senses stay the system's ladder (R-56 reversed, item 83)", () => {
   const a = pc({ str: 3, spd: 3, awa: 0, type: "adversary" });
   env.edhaDeriveSheetStats(a);
   assert.strictEqual(a.system.resources.hea.max.value, 13);
   assert.strictEqual(a.system.movement.walk.rate.useOverride, false);
-  assert.strictEqual(a.system.senses.range.derived, 10);   // was 5 (cosmere ladder) until item 55 — see tests/adversary-senses.test.js
+  assert.strictEqual(a.system.senses.range.derived, 5);    // 5 (cosmere ladder) → 10 at item 55 → back to 5 at item 83
 });
 
 // --- THE ROW THAT FAILED: preview and sheet must agree ----------------------

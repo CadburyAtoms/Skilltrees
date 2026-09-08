@@ -309,47 +309,46 @@ test("pm-state: the mobile snapshot's rows are exactly the committed dashboard's
 
 // ---- item 43: the "Needs you" view's open-ruling cards (2026-09-06) ----
 
-test("build-dashboard: parseOpenRulings marks R-56 open and R-18/R-41/R-42/R-48/R-54/R-80/R-81/R-82/R-83/R-84/R-85/R-88/R-89/R-90/R-91 ANSWERED-closed, against the real EDHA_RULINGS.md", () => {
-  // item 95 (2026-09-07 evening close-out, part 2): Ben's phone-inbox tap (17:25 ET) answered R-90
-  // and R-91 with their own (a) text. R-90 -> item 88 (opus, engine-only) applies it, but nothing
-  // has shipped yet, so it reads ANSWERED-but-not-applied and gets a closing marker in place —
-  // same shape item 91 used for R-83/R-88/R-89. R-91 -> retired the R-62 checklist row under R-86,
-  // applied directly by this same item (no engine change to wait on). Both now carry a closing
-  // ANSWERED marker and drop out of parseOpenRulings, moving from the OPEN illustrations to the
-  // closed list. R-56 was the third WAITING ruling item 91 had used alongside them; with R-90/R-91
-  // closed it becomes the SOLE open illustration: it has no `Ask:` line, so its heading is the
-  // fallback question (item 44) and its bare *Recommended* default (item 87) are what the
-  // assertions below read. R-56 itself is untouched by this item and stays WAITING on purpose
-  // (Ben's phone tap conflicts with his morning note, so the PM has asked him in chat).
+test("build-dashboard: parseOpenRulings finds NO open ruling in the real EDHA_RULINGS.md — R-56 closed with item 83", () => {
+  // item 83 (2026-09-07 21:51 ET): Ben answered R-56 in chat, verbatim "Cosmere ladder for
+  // everyone", reversing his own 2026-09-06 (a). R-56 was the SOLE open ruling left in the doc
+  // (item 95 had closed R-90 and R-91), so with its ANSWERED (final) marker recorded and the entry
+  // moved to §K.7 behind a §H stub, **the real doc now has none.** That is the state this pins:
+  // the phone's "Needs you" view is legitimately empty, not broken.
+  //
+  // The parser behaviours this test used to demonstrate ON R-56 are all fixture-pinned below and
+  // lose nothing by its closing: item 44's heading-as-ask fallback (R-103), item 87's bare
+  // `*Recommended*` style (R-109) and its no-marker fallback (R-108), item 76's bold-inline default
+  // (R-105/R-106), and item 85's last-marker-wins REOPENED rule (its own fixture test). What only
+  // the real doc can check is the closed list and the count — so that is all that is left here.
+  // ⚠️ When Ben opens the next ruling this length assertion moves to 1; do not delete it, and do not
+  // re-point the illustrations at whatever that ruling turns out to be.
   const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
   const open = dashboard.parseOpenRulings(md);
   const ids = open.map((r) => r.id);
-  // item 85: R-56 was ANSWERED 2026-09-06 and shipped, then Ben REOPENED it 2026-09-07 against its
-  // own answer (item 79's close-out). The REOPENED marker comes AFTER the ANSWERED one in document
-  // order, so it must win and the ruling must read as open again — this is the item's whole point.
-  // item 91 confirmed R-56 is UNCHANGED by the evening paste (Ben's text is the same "let me know
-  // before changing"); item 95 confirms it again — it must stay open, not get marked answered.
-  assert.ok(ids.includes("R-56"), "R-56 was REOPENED 2026-09-07 after its own 2026-09-06 ANSWERED marker and must show as open again (last-marker-wins); item 95 leaves it WAITING on purpose");
-  for (const closed of ["R-18", "R-41", "R-42", "R-48", "R-54", "R-80", "R-81", "R-82", "R-83", "R-84", "R-85", "R-88", "R-89", "R-90", "R-91"]) {
+  for (const closed of ["R-18", "R-41", "R-42", "R-48", "R-54", "R-56", "R-80", "R-81", "R-82", "R-83", "R-84", "R-85", "R-88", "R-89", "R-90", "R-91"]) {
     assert.ok(!ids.includes(closed), `${closed} is ANSWERED/moved-to-§K and must not show up as an open ruling`);
   }
-  assert.strictEqual(open.length, 1, "R-56 is now the sole open ruling in the real doc (item 95 closed R-90 and R-91)");
-  // R-56 has no `Ask:` line — its heading is already a self-contained question, so item 44's
-  // fallback (heading stays the ask) applies, exactly like R-18/R-80/R-84/R-85 before it closed.
-  const r56 = open.find((r) => r.id === "R-56");
-  assert.strictEqual(r56.section, "H. Map & character creation");
-  assert.strictEqual(r56.applied, false);
-  assert.strictEqual(r56.ask, "Should adversaries use the Edha Senses Range table too, or keep the cosmere ladder?", "R-56 has no Ask: line, so the self-contained heading question is the ask (item 44's fallback)");
-  // item 87: R-56's own recommendation uses the BARE `*Recommended*` style (no colon) attached to
-  // its `**(a)**` option, not the `*Recommended default: …*` colon form — RULING_DEFAULT_RE never
-  // matched it, so the card used to read "no default stated" even though a recommendation exists.
-  assert.strictEqual(r56.default, "(a) extend the Edha table to adversary sheets AND their token sight, so one rule governs everything — Recommended, and it matches the 07-17c ruling that adversaries \"use the same vision rules as players unless bespoke\"", "item 87: the bare *Recommended* style now yields the (a) option clause instead of \"no default stated\"");
+  assert.strictEqual(open.length, 0, `no ruling is open in the real doc after item 83 closed R-56 — got [${ids.join(", ")}]`);
+  // The shape contract still has to hold for whatever opens next, so keep the loops: they are
+  // vacuous today and become live the moment a ruling reopens.
   for (const r of open) assert.strictEqual(typeof r.blocks, "number", `${r.id}.blocks is not a number in the raw parse (mobileSnapshot fills it in)`);
-  // item 76: every open ruling's card carries a real default (the bold-inline form used to capture ""),
-  // read through the inner **…** pairs and stripped of the markers.
   for (const r of open) assert.ok(r.default.length > 0 && !/\*\*/.test(r.default), `${r.id}: default is empty or still carries bold markers — "${r.default}"`);
-  // Every open ruling yields a real question: either a heading ending in "?" or an Ask: line (which must too).
   for (const r of open) assert.ok(/\?$/.test(r.ask), `${r.id}: ask is not a question — "${r.ask}"`);
+});
+
+test("build-dashboard: R-56's §H stub does not re-open it, and its §K.7 entry carries the final answer", () => {
+  // item 83's own docs half, pinned against the real doc: the one-line stub left behind in §H must
+  // match item 96's RULING_STUB_RE shape (so the desktop tab does not count it as a live ruling),
+  // and the moved entry must carry the ANSWERED (final) marker with Ben's words — otherwise the
+  // reversal is recorded nowhere a cold session would find it.
+  const md = fs.readFileSync(path.join(REPO, "EDHA_RULINGS.md"), "utf8");
+  assert.ok(/^\*\(R-56 — .*ANSWERED 2026-09-07, moved to §K\.\)\*$/m.test(md), "§H keeps a one-line R-56 stub in item 96's shape");
+  assert.strictEqual((md.match(/^\*\*R-56\./gm) || []).length, 1, "exactly one R-56 entry body, and it lives in §K");
+  const kIdx = md.indexOf("## K. Settled");
+  assert.ok(md.indexOf("**R-56.") > kIdx, "the R-56 body sits below the §K heading");
+  assert.ok(md.includes('**ANSWERED (final) 2026-09-07 21:51 (Ben, chat), verbatim: "Cosmere ladder for everyone."**'),
+    "R-56 records Ben's final answer verbatim");
 });
 
 // item 96: the desktop Rulings tab's `done` flag used to require living under §K — an inline
@@ -504,7 +503,9 @@ test("build-dashboard: countCitations counts citing rows (not raw text occurrenc
 
 test("pm-state: the mobile snapshot's openRulings carries {id, section, ask, default, applied, blocks} and rides in the dash index (no chunk fetch needed)", () => {
   const snap = snapshot();
-  assert.ok(Array.isArray(snap.openRulings) && snap.openRulings.length >= 1, "R-56 at least, after item 95's 2026-09-07 evening close-out, part 2 (R-90/R-91 answered and closed)");
+  // item 83 closed R-56, the last open ruling, so this is legitimately EMPTY today — the shape
+  // contract below is what matters and stays live for the next ruling Ben opens.
+  assert.ok(Array.isArray(snap.openRulings), "openRulings is always an array, empty or not");
   for (const r of snap.openRulings) {
     assert.deepStrictEqual(Object.keys(r).sort(), ["applied", "ask", "blocks", "default", "id", "section"]);
     assert.strictEqual(typeof r.blocks, "number");
