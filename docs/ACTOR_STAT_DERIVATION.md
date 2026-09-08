@@ -12,18 +12,22 @@ Everything below was read from source, not from memory: the cosmere-rpg system a
 
 ## 1. The answer to R-54 in one paragraph
 
-**Canon says a level-1 character has 10 + STR health. So does the system. The +1 is not a rule
-anywhere; it is `EDHA_HP_BONUS = 1` in the engine, inherited from a per-actor hack on the four June
-playtest PCs.** `Character_Building_Rules.md` §HP: "L1 = 10 + STR". The Builder Reference workbook,
-cell H22 of *Character Builder*: `=10+STR+(L-1)*5+IF(L>=6,STR-1,0)+IF(L>=11,STR-2,0)+IF(L>=16,STR-3,0)`,
+**Canon says a level-1 character has 10 + STR health. So does the system. Health is not a stat
+Edha derives differently: `EDHA_HP_BONUS = 0` in the engine
+(`module-src/scripts/engine/52-green-instinct.js`), since R-54 answered (c) "remove the +1"
+(2026-09-06). The constant used to be `1`, inherited from a per-actor hack on the four June
+playtest PCs — the dated history is in §4.** `Character_Building_Rules.md` §HP: "L1 = 10 + STR".
+The Builder Reference workbook, cell H22 of *Character Builder*:
+`=10+STR+(L-1)*5+IF(L>=6,STR-1,0)+IF(L>=11,STR-2,0)+IF(L>=16,STR-3,0)`,
 which is 10 + STR at level 1 and 39 + 2·STR at level 7. cosmere-rpg 2.1.0's advancement table
 (`config.ts` ~L485): level 1 `health: 10, healthIncludeStrength: true`, levels 2–5 `health: 5`,
 level 6 `health: 4` + STR, level 11 `3` + STR, level 16 `2` + STR — **the same table, term for term.**
 The engine comment that says "the cosmere system derives all three differently" is true for
-Movement and Senses and **false for HP**. (Senses has since gone back to the system too — R-56's
-2026-09-07 reversal, §3b; **Movement is the only stat Edha still derives differently.**) A "level gate" would apply the +1 only above level 1,
-which matches nothing in canon either. **Recommended: remove the +1 (`EDHA_HP_BONUS = 0`), not gate
-it.** One constant; the sheet, the wizard preview, and the pinned tests move together by design.
+Movement and false for HP. (Senses has since gone back to the system too — R-56's
+2026-09-07 reversal, §3b; **Movement is the only stat Edha still derives differently.**) The
+level-gate alternative considered in §5 would have applied a bonus only above level 1, which
+matches nothing in canon either. One constant; the sheet, the wizard preview, and the pinned tests
+move together by design.
 
 ## 2. The pipeline — what runs, in what order, on every data prepare
 
@@ -55,7 +59,8 @@ Two facts about this chain explain most past bugs:
 - **The system clamps current resources to their max BEFORE the Edha wrapper runs.** So a max the
   wrapper raises afterwards is a point the clamp already removed. That is why the +1 was
   unreachable for a month (13/14 forever) until fix pass E re-ran the clamp from `_source`.
-  If the +1 goes, that repair becomes a no-op by construction.
+  Since R-54 (c) removed the +1 (2026-09-06, `EDHA_HP_BONUS = 0`), that repair is now a no-op by
+  construction.
 
 **Every derived number is a `DerivedValueField`:** `{derived, override, useOverride, bonus}` with a
 getter-only `.value = (useOverride ? override : derived) + bonus`. The engine reads these only
@@ -71,8 +76,8 @@ on purpose (system comment: "Should only be the value, not include the bonus").
 | Stat | Edha canon (rules doc + builder workbook) | cosmere-rpg 2.1.0 | Edha engine layer | Talent/trait effects on it (count in `data/`) |
 |---|---|---|---|---|
 | **Attributes** STR SPD INT WIL AWA PRE | assigned points (12 at L1, +1 at L3, L6, …) | stored `value`; effects add `bonus` | none | `str.bonus` 1, `spd.bonus` 1 (Stitchmother Phase 2) |
-| **Max Health** | L1 **10 + STR**; L2–5 +5; L6 4 + STR; L7–10 +5; L11 3 + STR; L12–15 +5; L16 2 + STR; L17–20 +5 (= 39 + 2·STR at L7) | **identical**: `deriveMaxHealth` sums the advancement rules into `hea.max.derived` | **+1** to `hea.max.bonus` in memory every prepare (`EDHA_HP_BONUS`), skipped while the sheet stores a manual bonus; then the clamp repair | `hea.max.bonus` 8 (Hardy ×3 colours: +level; Stitchmother +20; Unbreakable Line; …) |
-| **Current Health** | — | clamped to max at the end of secondary derivation (before the +1) | clamp repair hands back the stored point | — |
+| **Max Health** | L1 **10 + STR**; L2–5 +5; L6 4 + STR; L7–10 +5; L11 3 + STR; L12–15 +5; L16 2 + STR; L17–20 +5 (= 39 + 2·STR at L7) | **identical**: `deriveMaxHealth` sums the advancement rules into `hea.max.derived` | `+ EDHA_HP_BONUS` to `hea.max.bonus` in memory every prepare — **0 since R-54 (c), 2026-09-06** (was `1`; kept as a constant so a future change is one line), skipped while the sheet stores a manual bonus; then the clamp repair | `hea.max.bonus` 8 (Hardy ×3 colours: +level; Stitchmother +20; Unbreakable Line; …) |
+| **Current Health** | — | clamped to max at the end of secondary derivation, before the Edha wrapper adds `EDHA_HP_BONUS` (0 since R-54) | clamp repair hands back the stored point (a no-op now that the bonus is 0) | — |
 | **Max Focus** | 2 + WIL | 2 + WIL (value) | none | `foc.max.bonus` 6 (Composed +2, …) |
 | **Max Investiture** | 2 + max(AWA, PRE), only if attuned | **not derived for characters** — a manual field | `edhaDeriveInvestiture`: override = 2 + max(AWA, PRE); current clamped; override persisted to the sheet once per session, non-primary GMs defer (R-77) | none |
 | **Defenses** PHY / COG / SPI | 10 + STR+SPD / 10 + INT+WIL / 10 + AWA+PRE | **identical** (attribute values) + `bonus` | read-only (`edhaReadDefense`); `edha-defense-buff` applies scene/turn buffs as effects | `defenses.*.bonus`: phy 6, cog 10, spi 12 (Customary Garb, Collected, …) |
@@ -154,21 +159,21 @@ tokens need `edha.fixPcTokens()` (or any AWA edit, which re-fires the `updateAct
 6. **2026-09-06** (this trace) — both canon sources and the system agree on 10 + STR at level 1.
    The +1 has no source other than step 2.
 
-## 5. What a "level gate" is, and the three options
+## 5. What a "level gate" is, and the three options that were on the table
 
-A **level gate** is a condition on the level: `if (actor.system.level > 1) bonus += 1`, so the +1
-applies from level 2 up and a level-1 character reads 10. It is a hack on a hack — canon has no +1
-at level 2 either.
+A **level gate** is a condition on the level: `if (actor.system.level > 1) bonus += 1`, so a bonus
+would apply from level 2 up while a level-1 character would still read 10. It is a hack on a
+hack — canon has no such bonus at level 2 either.
 
 | Option | Engine change | Level-1 STR-0 health | Matches canon? | Side effects |
 |---|---|---|---|---|
-| (a) keep 11 | none | 11 | no | the "+1 max health" checklist row is rewritten to expect 11 |
-| (b) level gate | add the condition | 10 (11+ from L2) | no | two formulas to explain; preview and tests carry the gate too |
-| **(c) remove the +1** — *recommended* | `EDHA_HP_BONUS = 0` (one constant) | **10** | **yes**, and equals the system | every character's max drops by 1 on the next prepare; a character at full health is clamped by 1; nothing stored changes; the clamp repair becomes a no-op; the June pregens that still store a manual bonus keep it until `edha.migrateDerivations()` runs; the checklist row's original "10/10" target becomes reachable; the engine comment "derives all three differently" is corrected to two |
+| (a) keep 11 | none | 11 | no | the "+1 max health" checklist row would have been rewritten to expect 11 |
+| (b) level gate | add the condition | 10 (11+ from L2) | no | two formulas to explain; preview and tests would have carried the gate too |
+| **(c) remove the +1 — chosen (R-54 (c), 2026-09-06)** | `EDHA_HP_BONUS = 0` (one constant) | **10** | **yes**, and equals the system | every character's max dropped by 1 on the next prepare; a character at full health was clamped by 1; nothing stored changed; the clamp repair became a no-op; the June pregens that still store a manual bonus keep it until `edha.migrateDerivations()` runs; the checklist row's original "10/10" target became reachable; the engine comment "derives all three differently" was corrected to two |
 
-Whichever Ben picks: the two neighbouring **bugs** stay bugs (the wizard's derived-stat preview
-must promise what the sheet will show, and the finish step's top-up must re-read after the
-derivation settles) and are fixed independently of this ruling.
+Ben picked **(c)** on 2026-09-06 (R-54): the two neighbouring **bugs** stayed bugs regardless (the
+wizard's derived-stat preview must promise what the sheet will show, and the finish step's top-up
+must re-read after the derivation settles) — both were fixed independently of this ruling.
 
 ## 6. Where to look (for the next agent)
 

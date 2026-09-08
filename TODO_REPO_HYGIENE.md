@@ -3487,7 +3487,7 @@ scripts/gates.js` green. TOOLING-only.
 **PM:** lane R · model sonnet · size S · deps — · verify: the mutation + the idempotence diff +
 gates. Found by item 100; filed 2026-09-08 00:5x.
 
-## 103. [ ] `docs/ACTOR_STAT_DERIVATION.md` §1 and its §3 Max-Health row still describe the `+1` that R-54 removed (`EDHA_HP_BONUS` is 0)
+## 103. [x] `docs/ACTOR_STAT_DERIVATION.md` §1 and its §3 Max-Health row still describe the `+1` that R-54 removed (`EDHA_HP_BONUS` is 0) (2026-09-08, PR #316)
 
 **Why:** item 83's worker (PR #313, 2026-09-08) corrected the senses rows of
 `docs/ACTOR_STAT_DERIVATION.md` (§3 / §3a / the mermaid / §6 and a new §3b history table) and
