@@ -459,6 +459,45 @@ function edhaNumOr(v, fallback) {
   return Number.isFinite(n) ? n : fallback;
 }
 
+/* ── DISTANCE: measure the way FOUNDRY'S RULER measures ──────────────────────────────────────
+ * Every "within N ft" check in this engine MUST go through here. Before 2026-09-09 each site
+ * computed its own `Math.hypot(dx, dy) / gridSize * gridDistance`, i.e. EUCLIDEAN feet — which
+ * disagrees with the ruler the players read on any square grid whose diagonal rule is not
+ * Euclidean. On Ben's world (`gridDiagonals: 0`, Equidistant) a pure diagonal reads 5 ft on the
+ * ruler and 7.07 ft to hypot, so the error reaches sqrt(2) — 41%.
+ *
+ * Measured live in bench-run 44 (Palewater Ford): Ordered Advance's 10 ft window excluded two
+ * raiders standing at a ruler-measured 10 ft, because hypot made them 11.18 ft and 14.14 ft.
+ * The card said "no allies were within 10 ft" while the ruler said both were. Ben's ruling
+ * (2026-09-09): "Engine range checks need to agree to Foundry's ruler. Honestly, range checks
+ * should just use the Foundry Ruler."
+ *
+ * `canvas.grid.measurePath` IS the ruler — it honours the scene's grid type and the world's
+ * diagonal rule, so this is also correct on hex and gridless scenes for free. The hypot fallback
+ * only runs when there is no canvas (headless test harness), where a square grid and Euclidean
+ * agree closely enough for the pinned cases.
+ *
+ * NOT for vector geometry — a push direction, a unit normal, a point-to-segment distance, or a
+ * "is this point inside this circle" shape test are real Euclidean questions and keep Math.hypot.
+ * The question decides: "how far apart are these, in feet?" is the ruler's; "which way does this
+ * point" is not. */
+function edhaMeasureFt(ax, ay, bx, by) {
+  try {
+    const d = canvas?.grid?.measurePath?.([{ x: ax, y: ay }, { x: bx, y: by }])?.distance;
+    if (Number.isFinite(d)) return d;
+  } catch (e) {}
+  const gs = canvas?.scene?.grid?.size || 100, gd = canvas?.scene?.grid?.distance || 5;
+  return Math.hypot(ax - bx, ay - by) / gs * gd;
+}
+// Centre-to-centre distance in scene feet between two placeables, on the ruler.
+function edhaTokenGapFt(a, b) {
+  return edhaMeasureFt(a?.center?.x ?? 0, a?.center?.y ?? 0, b?.center?.x ?? 0, b?.center?.y ?? 0);
+}
+// Distance in scene feet from a raw {x,y} point to a placeable's centre, on the ruler.
+function edhaPointGapFt(pt, tok) {
+  return edhaMeasureFt(pt?.x ?? 0, pt?.y ?? 0, tok?.center?.x ?? 0, tok?.center?.y ?? 0);
+}
+
 // Resolve the rolling actor from a d20Roll config: Item/Attack rolls carry the item in data.source;
 // plain skill rolls only identify the actor via messageData.speaker (set by rollSkill).
 function edhaD20RollActor(config) {
@@ -4348,11 +4387,8 @@ async function edhaGmCueDamageSweep(victim, prevHp, newHp, maxHp) {
     }
   } catch (e) { console.error("Edha Content | GM cue sweep failed", e); }
 }
-// Center-to-center distance in scene feet between two placeables.
-function edhaTokenGapFt(a, b) {
-  const gs = canvas?.scene?.grid?.size || 100, gd = canvas?.scene?.grid?.distance || 5;
-  return Math.hypot((a.center?.x ?? 0) - (b.center?.x ?? 0), (a.center?.y ?? 0) - (b.center?.y ?? 0)) / gs * gd;
-}
+// edhaTokenGapFt moved to 01-shared-core.js (2026-09-09) so every range check measures on
+// Foundry's ruler, not on Euclidean hypot. See the DISTANCE block there for why.
 // Turn-based GM cues (07-16b playtest pass): "enemy-turn-start {rangeFt}" cues a reaction holder
 // once when a hostile starts its turn in range (Reactive Strike — a per-ACTION cue would spam);
 // "turn-end {everyNRounds}" cues at the END of the owner's own turn on matching rounds (Glyph
@@ -5488,7 +5524,7 @@ function edhaSweepEmptyNote(owner, ft, sameSide) {
     if (!Number.isFinite(disp)) return `${owner.name}'s token has no disposition set — allies and targets cannot be told apart, so nothing is in range.`;
     const cands = (canvas?.tokens?.placeables ?? []).filter(t => t.id !== ot.id && t.actor && (sameSide ? edhaSideSame(t.document?.disposition, disp) : edhaSideHostile(t.document?.disposition, disp)));
     if (!cands.length) return `No ${sameSide ? "same-side" : "opposing"} tokens on the scene at all.`;
-    const dists = cands.map(t => ({ t, d: Math.hypot((t.center?.x ?? 0) - ot.center.x, (t.center?.y ?? 0) - ot.center.y) / gs * gd })).sort((a, b) => a.d - b.d);
+    const dists = cands.map(t => ({ t, d: edhaTokenGapFt(t, ot) })).sort((a, b) => a.d - b.d);   // ruler, not hypot (2026-09-09): this number is SHOWN to the player
     return `No ${sameSide ? "allies" : "targets"} within ${ft} ft — nearest (${dists[0].t.actor.name}) is ${Math.round(dists[0].d)} ft away; ${cands.length} candidate${cands.length === 1 ? "" : "s"} on the scene.`;
   } catch (e) { return "No candidates in range."; }
 }
@@ -6178,7 +6214,7 @@ Hooks.on("updateToken", (doc, change, options, userId) => {
     const allies = (canvas?.tokens?.placeables ?? []).filter(t => {
       if (t.id === doc.id || !t.actor) return false;
       if (!edhaSideSame(t.document?.disposition, disp)) return false;
-      return (Math.hypot((t.center?.x ?? 0) - cx, (t.center?.y ?? 0) - cy) / gs * gd) <= ft;
+      return edhaMeasureFt(t.center?.x ?? 0, t.center?.y ?? 0, cx, cy) <= ft;   // ruler, not hypot (2026-09-09)
     });
     const content = allies.length
       ? `<div class="edha-trigger-card"><p>🚶 <strong>${src}</strong> — ${actor.name} moved; allies within ${ft} ft ${what}:</p><ul>${allies.map(t => `<li><strong>${t.actor.name}</strong> — up to ${edhaHalfSpeed(t.actor)} ft</li>`).join("")}</ul></div>`
@@ -6295,7 +6331,11 @@ function edhaReduceInstances(list, amount) {
 async function edhaCrossHeal(actor, amount, { bypassHealCut = false } = {}) {
   if (!actor || !(amount > 0)) return 0;
   if (!bypassHealCut) { amount = edhaHealCutGate(actor, amount); if (!(amount > 0)) return 0; }
-  if (actor.isOwner) { await edhaHealActor(actor, amount); return amount; }
+  // Return what LANDED (item 68's contract), not what was asked for: edhaHealActor clamps at max.
+  if (actor.isOwner) return await edhaHealActor(actor, amount);
+  // Relay branch: the write happens on another client, so the delivered delta is not knowable here
+  // — the requested amount is the honest best estimate. Cards on this path may still over-report a
+  // target that was already at full HP.  (bench run 44, 2026-09-09)
   try { game.socket.emit("module.edha-content", { action: "burst-apply", payload: { hits: [{ actorUuid: actor.uuid, amount, heal: true }] } }); return amount; } catch (e) { return 0; }
 }
 async function edhaCrossDamage(actor, amount, type, opts = {}) {
@@ -11206,8 +11246,7 @@ function edhaTokensWithin(centerTok, ft) {
   const cx = centerTok.center?.x, cy = centerTok.center?.y;
   return (canvas?.tokens?.placeables ?? []).filter(t => {
     if (t.id === centerTok.id || !t.actor) return false;
-    const px = Math.hypot((t.center?.x ?? 0) - cx, (t.center?.y ?? 0) - cy);
-    return (px / gs * gd) <= ft;
+    return edhaMeasureFt(t.center?.x ?? 0, t.center?.y ?? 0, cx, cy) <= ft;   // ruler, not hypot (2026-09-09)
   });
 }
 
@@ -11971,8 +12010,7 @@ function edhaTokensInCircle(cx, cy, ft, excludeId) {
   const scene = canvas?.scene; const gs = scene?.grid?.size || 100, gd = scene?.grid?.distance || 5;
   return (canvas?.tokens?.placeables ?? []).filter(t => {
     if (!t.actor || t.id === excludeId) return false;
-    const px = Math.hypot((t.center?.x ?? 0) - cx, (t.center?.y ?? 0) - cy);
-    return (px / gs * gd) <= ft;
+    return edhaMeasureFt(t.center?.x ?? 0, t.center?.y ?? 0, cx, cy) <= ft;   // ruler, not hypot (2026-09-09)
   });
 }
 
@@ -12261,7 +12299,7 @@ async function edhaPickPlacement(item, { color = "", rangeFt = 0 } = {}) {
   const pt = await edhaPickPoint(`Click the square for ${item.name} (right-click to cancel).${ft > 0 ? ` Attunement Range ${ft} ft.` : ""}`);
   try { if (ring) await ring.delete(); } catch (e) {}
   if (!pt) { edhaRefundCost(item); ui.notifications?.info(`${item.name} canceled — cost refunded.`); return null; }
-  if (ft > 0 && tok && Math.hypot(pt.x - tok.center.x, pt.y - tok.center.y) / gs * gd > ft + gd / 2) {
+  if (ft > 0 && tok && edhaPointGapFt(pt, tok) > ft + gd / 2) {   // ruler, not hypot (2026-09-09)
     edhaRefundCost(item); ui.notifications?.warn(`Edha: that square is beyond Attunement Range (${ft} ft) — cost refunded.`); return null;
   }
   return pt;
@@ -12969,7 +13007,7 @@ async function edhaSetChargeMarker(item, h) {
     const pt = await edhaPickPoint(`Click where to place the ${item.name} (right-click to cancel). Attunement Range ${ft} ft.`);
     try { if (ring) await ring.delete(); } catch (e) {}
     if (!pt) { edhaRefundCost(item); ui.notifications?.info(`${item.name} canceled — cost refunded.`); return; }
-    if (tok && Math.hypot(pt.x - tok.center.x, pt.y - tok.center.y) / gs * gd > ft + gd / 2) {
+    if (tok && edhaPointGapFt(pt, tok) > ft + gd / 2) {   // ruler, not hypot (2026-09-09)
       edhaRefundCost(item); ui.notifications?.warn(`Edha: that point is beyond Attunement Range (${ft} ft) — cost refunded.`); return;
     }
     const [tpl] = await scene.createEmbeddedDocuments("MeasuredTemplate", [{
@@ -14387,7 +14425,7 @@ async function edhaFatePlaceCore(item, h, kind) {
     const pt = await edhaPickPoint(`Click the 5 ft square for ${item.name} (right-click to cancel). Attunement Range ${ft} ft.`);
     try { if (ring) await ring.delete(); } catch (e) {}
     if (!pt) { edhaRefundCost(item); ui.notifications?.info(`${item.name} canceled — cost refunded.`); return; }
-    if (tok && Math.hypot(pt.x - tok.center.x, pt.y - tok.center.y) / gs * gd > ft + gd / 2) {
+    if (tok && edhaPointGapFt(pt, tok) > ft + gd / 2) {   // ruler, not hypot (2026-09-09)
       edhaRefundCost(item); ui.notifications?.warn(`Edha: that square is beyond Attunement Range (${ft} ft) — cost refunded.`); return;
     }
     const [tpl] = await scene.createEmbeddedDocuments("MeasuredTemplate", [{
@@ -14647,7 +14685,7 @@ async function edhaZoneLinkMarkers(item, h) {
     const ft = EDHA_ATTUNE_FT[edhaColorRank(owner, h.color || "green") || 1] || EDHA_ATTUNE_FT[1];
     const gd = canvas?.scene?.grid?.distance || 5, gs = canvas?.scene?.grid?.size || 100;
     const opts = ord.map((m, i) => {
-      const dist = tok ? Math.hypot((m.x ?? 0) - tok.center.x, (m.y ?? 0) - tok.center.y) / gs * gd : null;
+      const dist = tok ? edhaPointGapFt({ x: m.x ?? 0, y: m.y ?? 0 }, tok) : null;   // ruler, not hypot (2026-09-09)
       const far = dist != null && dist > ft + gd / 2;
       return `<option value="${m.id}">${m.talent || "Marker"} #${i + 1}${far ? " (beyond Attunement Range)" : ""}</option>`;
     });
@@ -18265,10 +18303,19 @@ for (const ctx of ["Attack", "Item"]) Hooks.on(`cosmere-rpg.pre${ctx}Roll`, edha
  *     LAST name-keyed row. The EDHA_DRAW_MANA table it lived in is DELETED; the 07-05 Isolated
  *     gate, the 07-12 line-of-sight ruling and the 07-12b GM-whispered skip accounting all rode
  *     into the pulse runner as generic fields. Do not re-add a table here. */
+/* Returns the HP that ACTUALLY LANDED, which is not the amount asked for whenever the target is
+ * at (or near) max — the write clamps, and before 2026-09-09 the clamped delta was thrown away.
+ * That is the second half of item 68's contract: the gate's cut was already reported honestly,
+ * but the MAX CLAMP was not, so a sweep over allies who were all at full HP printed "healed 3 of
+ * 3 ally(ies) for 3 HP" having delivered nothing. Measured twice in bench run 44 (2026-09-09):
+ * Tem +1, Hannah +1, Soggy +0 (full) reported as 3 healed for 3. */
 async function edhaHealActor(actor, amt) {
-  const hea = actor?.system?.resources?.hea; if (!hea) return;
+  const hea = actor?.system?.resources?.hea; if (!hea) return 0;
   const max = (hea.max && typeof hea.max === "object") ? hea.max.value : hea.max;
-  await edhaResourceWrite(actor, "hea", { value: Math.min(max ?? ((hea.value || 0) + amt), (hea.value || 0) + amt) }, edhaBookkeepingTag("edhaHealActor"));
+  const before = Number(hea.value) || 0;
+  const after = Math.min(max ?? (before + amt), before + amt);
+  await edhaResourceWrite(actor, "hea", { value: after }, edhaBookkeepingTag("edhaHealActor"));
+  return Math.max(0, after - before);
 }
 /* The pulse runner (`edha-pulse`, 07-25; enemy side 2bZ): heal or a status to every ally — or
  * enemy — within the colour's Attunement Range. visibleOnly reproduces the 07-12 through-walls
@@ -18426,7 +18473,7 @@ async function edhaZoneFoundation(item, h) {
     if (!pt) { edhaRefundCost(item); ui.notifications?.info(`${item.name} cancelled — Investiture refunded.`); return; }
     if (tok) {
       const gs0 = scene.grid?.size || 100, gd0 = scene.grid?.distance || 5;
-      const distFt = Math.hypot(pt.x - tok.center.x, pt.y - tok.center.y) / gs0 * gd0;
+      const distFt = edhaPointGapFt(pt, tok);   // ruler, not hypot (2026-09-09)
       if (distFt > rangeFt + gd0 / 2) { edhaRefundCost(item); ui.notifications?.warn(`Edha: that point is ${Math.round(distFt)} ft away — beyond Attunement Range (${rangeFt} ft). Refunded.`); return; }
     }
     const gs = scene.grid?.size || 100, gd = scene.grid?.distance || 5;
@@ -21092,7 +21139,7 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
       const pt = await edhaPickPoint(`Click where the ${sizeFt} ft difficult-terrain square grows (right-click to cancel). Attunement Range ${ft} ft.`);
       try { if (ring) await ring.delete(); } catch (e) {}
       const gd0 = canvas?.scene?.grid?.distance || 5, gs0 = canvas?.scene?.grid?.size || 100;
-      if (pt && Math.hypot(pt.x - tok.center.x, pt.y - tok.center.y) / gs0 * gd0 <= ft + gd0 / 2) {
+      if (pt && edhaPointGapFt(pt, tok) <= ft + gd0 / 2) {   // ruler, not hypot (2026-09-09)
         await edhaDropGreenTerrain(actor, canvas?.scene, pt.x, pt.y, sizeFt, item);
         // Ledger cost (2bW — Bone Garden): spent only once the square actually landed.
         if (this.costList) await edhaLedgerSpend(actor, String(this.costList).trim(), String(this.costListStatus || this.costList).trim(), item.name);

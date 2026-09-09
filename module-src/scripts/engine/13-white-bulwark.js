@@ -106,7 +106,11 @@ function edhaReduceInstances(list, amount) {
 async function edhaCrossHeal(actor, amount, { bypassHealCut = false } = {}) {
   if (!actor || !(amount > 0)) return 0;
   if (!bypassHealCut) { amount = edhaHealCutGate(actor, amount); if (!(amount > 0)) return 0; }
-  if (actor.isOwner) { await edhaHealActor(actor, amount); return amount; }
+  // Return what LANDED (item 68's contract), not what was asked for: edhaHealActor clamps at max.
+  if (actor.isOwner) return await edhaHealActor(actor, amount);
+  // Relay branch: the write happens on another client, so the delivered delta is not knowable here
+  // — the requested amount is the honest best estimate. Cards on this path may still over-report a
+  // target that was already at full HP.  (bench run 44, 2026-09-09)
   try { game.socket.emit("module.edha-content", { action: "burst-apply", payload: { hits: [{ actorUuid: actor.uuid, amount, heal: true }] } }); return amount; } catch (e) { return 0; }
 }
 async function edhaCrossDamage(actor, amount, type, opts = {}) {

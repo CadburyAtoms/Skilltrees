@@ -433,6 +433,45 @@ function edhaNumOr(v, fallback) {
   return Number.isFinite(n) ? n : fallback;
 }
 
+/* ── DISTANCE: measure the way FOUNDRY'S RULER measures ──────────────────────────────────────
+ * Every "within N ft" check in this engine MUST go through here. Before 2026-09-09 each site
+ * computed its own `Math.hypot(dx, dy) / gridSize * gridDistance`, i.e. EUCLIDEAN feet — which
+ * disagrees with the ruler the players read on any square grid whose diagonal rule is not
+ * Euclidean. On Ben's world (`gridDiagonals: 0`, Equidistant) a pure diagonal reads 5 ft on the
+ * ruler and 7.07 ft to hypot, so the error reaches sqrt(2) — 41%.
+ *
+ * Measured live in bench-run 44 (Palewater Ford): Ordered Advance's 10 ft window excluded two
+ * raiders standing at a ruler-measured 10 ft, because hypot made them 11.18 ft and 14.14 ft.
+ * The card said "no allies were within 10 ft" while the ruler said both were. Ben's ruling
+ * (2026-09-09): "Engine range checks need to agree to Foundry's ruler. Honestly, range checks
+ * should just use the Foundry Ruler."
+ *
+ * `canvas.grid.measurePath` IS the ruler — it honours the scene's grid type and the world's
+ * diagonal rule, so this is also correct on hex and gridless scenes for free. The hypot fallback
+ * only runs when there is no canvas (headless test harness), where a square grid and Euclidean
+ * agree closely enough for the pinned cases.
+ *
+ * NOT for vector geometry — a push direction, a unit normal, a point-to-segment distance, or a
+ * "is this point inside this circle" shape test are real Euclidean questions and keep Math.hypot.
+ * The question decides: "how far apart are these, in feet?" is the ruler's; "which way does this
+ * point" is not. */
+function edhaMeasureFt(ax, ay, bx, by) {
+  try {
+    const d = canvas?.grid?.measurePath?.([{ x: ax, y: ay }, { x: bx, y: by }])?.distance;
+    if (Number.isFinite(d)) return d;
+  } catch (e) {}
+  const gs = canvas?.scene?.grid?.size || 100, gd = canvas?.scene?.grid?.distance || 5;
+  return Math.hypot(ax - bx, ay - by) / gs * gd;
+}
+// Centre-to-centre distance in scene feet between two placeables, on the ruler.
+function edhaTokenGapFt(a, b) {
+  return edhaMeasureFt(a?.center?.x ?? 0, a?.center?.y ?? 0, b?.center?.x ?? 0, b?.center?.y ?? 0);
+}
+// Distance in scene feet from a raw {x,y} point to a placeable's centre, on the ruler.
+function edhaPointGapFt(pt, tok) {
+  return edhaMeasureFt(pt?.x ?? 0, pt?.y ?? 0, tok?.center?.x ?? 0, tok?.center?.y ?? 0);
+}
+
 // Resolve the rolling actor from a d20Roll config: Item/Attack rolls carry the item in data.source;
 // plain skill rolls only identify the actor via messageData.speaker (set by rollSkill).
 function edhaD20RollActor(config) {

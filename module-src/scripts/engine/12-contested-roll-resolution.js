@@ -497,7 +497,7 @@ Hooks.on("updateToken", (doc, change, options, userId) => {
     const allies = (canvas?.tokens?.placeables ?? []).filter(t => {
       if (t.id === doc.id || !t.actor) return false;
       if (!edhaSideSame(t.document?.disposition, disp)) return false;
-      return (Math.hypot((t.center?.x ?? 0) - cx, (t.center?.y ?? 0) - cy) / gs * gd) <= ft;
+      return edhaMeasureFt(t.center?.x ?? 0, t.center?.y ?? 0, cx, cy) <= ft;   // ruler, not hypot (2026-09-09)
     });
     const content = allies.length
       ? `<div class="edha-trigger-card"><p>🚶 <strong>${src}</strong> — ${actor.name} moved; allies within ${ft} ft ${what}:</p><ul>${allies.map(t => `<li><strong>${t.actor.name}</strong> — up to ${edhaHalfSpeed(t.actor)} ft</li>`).join("")}</ul></div>`

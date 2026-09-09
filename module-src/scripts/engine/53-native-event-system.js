@@ -2274,7 +2274,7 @@ const { EDHA_EVENT_TYPES, EDHA_HANDLER_TYPES } = (() => {
       const pt = await edhaPickPoint(`Click where the ${sizeFt} ft difficult-terrain square grows (right-click to cancel). Attunement Range ${ft} ft.`);
       try { if (ring) await ring.delete(); } catch (e) {}
       const gd0 = canvas?.scene?.grid?.distance || 5, gs0 = canvas?.scene?.grid?.size || 100;
-      if (pt && Math.hypot(pt.x - tok.center.x, pt.y - tok.center.y) / gs0 * gd0 <= ft + gd0 / 2) {
+      if (pt && edhaPointGapFt(pt, tok) <= ft + gd0 / 2) {   // ruler, not hypot (2026-09-09)
         await edhaDropGreenTerrain(actor, canvas?.scene, pt.x, pt.y, sizeFt, item);
         // Ledger cost (2bW — Bone Garden): spent only once the square actually landed.
         if (this.costList) await edhaLedgerSpend(actor, String(this.costList).trim(), String(this.costListStatus || this.costList).trim(), item.name);

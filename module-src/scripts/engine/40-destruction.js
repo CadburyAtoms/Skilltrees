@@ -212,7 +212,7 @@ async function edhaSetChargeMarker(item, h) {
     const pt = await edhaPickPoint(`Click where to place the ${item.name} (right-click to cancel). Attunement Range ${ft} ft.`);
     try { if (ring) await ring.delete(); } catch (e) {}
     if (!pt) { edhaRefundCost(item); ui.notifications?.info(`${item.name} canceled — cost refunded.`); return; }
-    if (tok && Math.hypot(pt.x - tok.center.x, pt.y - tok.center.y) / gs * gd > ft + gd / 2) {
+    if (tok && edhaPointGapFt(pt, tok) > ft + gd / 2) {   // ruler, not hypot (2026-09-09)
       edhaRefundCost(item); ui.notifications?.warn(`Edha: that point is beyond Attunement Range (${ft} ft) — cost refunded.`); return;
     }
     const [tpl] = await scene.createEmbeddedDocuments("MeasuredTemplate", [{

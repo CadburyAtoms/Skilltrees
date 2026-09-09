@@ -200,7 +200,7 @@ async function edhaFatePlaceCore(item, h, kind) {
     const pt = await edhaPickPoint(`Click the 5 ft square for ${item.name} (right-click to cancel). Attunement Range ${ft} ft.`);
     try { if (ring) await ring.delete(); } catch (e) {}
     if (!pt) { edhaRefundCost(item); ui.notifications?.info(`${item.name} canceled — cost refunded.`); return; }
-    if (tok && Math.hypot(pt.x - tok.center.x, pt.y - tok.center.y) / gs * gd > ft + gd / 2) {
+    if (tok && edhaPointGapFt(pt, tok) > ft + gd / 2) {   // ruler, not hypot (2026-09-09)
       edhaRefundCost(item); ui.notifications?.warn(`Edha: that square is beyond Attunement Range (${ft} ft) — cost refunded.`); return;
     }
     const [tpl] = await scene.createEmbeddedDocuments("MeasuredTemplate", [{
@@ -460,7 +460,7 @@ async function edhaZoneLinkMarkers(item, h) {
     const ft = EDHA_ATTUNE_FT[edhaColorRank(owner, h.color || "green") || 1] || EDHA_ATTUNE_FT[1];
     const gd = canvas?.scene?.grid?.distance || 5, gs = canvas?.scene?.grid?.size || 100;
     const opts = ord.map((m, i) => {
-      const dist = tok ? Math.hypot((m.x ?? 0) - tok.center.x, (m.y ?? 0) - tok.center.y) / gs * gd : null;
+      const dist = tok ? edhaPointGapFt({ x: m.x ?? 0, y: m.y ?? 0 }, tok) : null;   // ruler, not hypot (2026-09-09)
       const far = dist != null && dist > ft + gd / 2;
       return `<option value="${m.id}">${m.talent || "Marker"} #${i + 1}${far ? " (beyond Attunement Range)" : ""}</option>`;
     });
