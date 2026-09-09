@@ -276,7 +276,7 @@
     "action": "Passive",
     "cost": "",
     "prerequisites": "Covenant",
-    "description": "At the start of each round, each ally in a Covenant with you within Attunement Range gains temporary HP equal to your White.",
+    "description": "At the start of each round, each ally in a Covenant with you within Attunement Range gains temporary HP equal to your ranks in White.",
     "flavor": "I see you. The blow does not.",
     "atlas": "deity",
     "layout": {
@@ -297,7 +297,7 @@
     "action": "Reaction",
     "cost": "",
     "prerequisites": "Covenant",
-    "description": "When an ally in a Covenant with you would take damage and you are within Attunement Range, you may take half that damage instead and reduce the remaining damage to that ally by your White. Both you and that ally gain temporary HP equal to your White.",
+    "description": "When an ally in a Covenant with you would take damage and you are within Attunement Range, you may take half that damage instead and reduce the remaining damage to that ally by your ranks in White. Both you and that ally gain temporary HP equal to your ranks in White.",
     "flavor": "The bond is mutual. So is the wound.",
     "atlas": "deity",
     "layout": {
