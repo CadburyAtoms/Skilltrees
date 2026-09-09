@@ -1,146 +1,80 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<title>Edha — Level-Up Guides (L2–L10)</title>
+<html lang="en"><head><meta charset="utf-8">
+<title>Edha — Level-Up Guides (three builds per character, L2–L10)</title>
 <style>
   @page { size: A4; margin: 0; }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
-  body {
-    font-family: 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
-    color: #232B24; background: #fff;
-    -webkit-print-color-adjust: exact; print-color-adjust: exact;
-  }
-  .sheet {
-    width: 210mm; height: 296mm; padding: 10mm 12mm 9mm;
-    overflow: hidden; display: flex; flex-direction: column; gap: 3.2mm;
-    page-break-after: always; position: relative;
-  }
+  body { font-family: 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
+         color: #232B24; background: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .sheet { width: 210mm; height: 296mm; padding: 10mm 12mm 9mm; overflow: hidden;
+           display: flex; flex-direction: column; gap: 2.7mm; page-break-after: always; }
   .sheet:last-child { page-break-after: auto; }
-
-  /* ---------- header ---------- */
   .hd { border-bottom: 1.6pt solid #232B24; padding-bottom: 1.8mm; }
-  .eyebrow {
-    font-size: 7.2pt; letter-spacing: .20em; text-transform: uppercase;
-    color: #9A6E2A; font-weight: 700; margin-bottom: .9mm;
-  }
-  .hd h1 { font-size: 19pt; margin: 0 0 1.1mm; letter-spacing: .005em; line-height: 1.04; }
-  .paths { display: flex; gap: 5mm; align-items: center; flex-wrap: wrap; font-size: 8.6pt; }
-  .paths b { font-weight: 700; }
-  .pip {
-    display: inline-block; width: 3.6mm; height: 3.6mm; border-radius: 50%;
-    vertical-align: -0.6mm; margin-right: 1.2mm; border: .5pt solid rgba(0,0,0,.30);
-  }
-  .swatch {
-    display: inline-block; width: 6.4mm; height: 3.6mm; vertical-align: -0.6mm;
-    margin-right: 1.2mm; border: .5pt solid rgba(0,0,0,.30);
-  }
-  .c-white { background: #AEB4A6; } .c-blue { background: #4A6E8F; }
-  .c-black { background: #3B3542; } .c-red { background: #9C4432; }
-  .c-green { background: #4A7042; }
-
-  /* ---------- zones ---------- */
-  .zone { display: flex; align-items: baseline; gap: 2.4mm; margin-bottom: 1.3mm; }
-  .num {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 5.2mm; height: 5.2mm; border-radius: 50%; background: #40684E; color: #fff;
-    font-size: 7.6pt; font-weight: 700; flex: 0 0 auto;
-  }
-  .zt { font-size: 10.4pt; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
-  .zs { font-size: 8.2pt; font-style: italic; color: #5A6155; }
-  .rule { flex: 1; border-bottom: .6pt solid #C7CDBB; transform: translateY(-1mm); }
-
-  /* ---------- "now" strip ---------- */
-  .now {
-    background: #EEF0E7; border-left: 2.4pt solid #40684E;
-    padding: 2mm 3mm; font-size: 8.2pt; line-height: 1.36;
-  }
-  .now .stats { font-variant-numeric: tabular-nums; }
-  .now b { color: #40684E; }
-  .spine { margin-top: 1.4mm; font-style: italic; color: #3E463D; }
-
-  /* ---------- ladder table ---------- */
-  table { width: 100%; border-collapse: collapse; font-size: 8.3pt; }
-  thead th {
-    font-size: 7.1pt; letter-spacing: .13em; text-transform: uppercase; color: #5A6155;
-    text-align: left; padding: 0 1.6mm 1.1mm; border-bottom: .9pt solid #232B24; font-weight: 700;
-  }
-  tbody td { padding: .82mm 1.6mm; border-bottom: .4pt solid #D9DED0; vertical-align: top; line-height: 1.22; }
-  tbody tr:last-child td { border-bottom: none; }
-  td.lv { font-weight: 700; width: 8mm; font-variant-numeric: tabular-nums; }
-  td.tal { width: 41mm; font-weight: 700; }
-  td.tal em { display: block; font-weight: 400; font-style: normal; font-size: 7.2pt; color: #6A7165; letter-spacing: .03em; }
-  td.sk { width: 46mm; font-size: 7.9pt; }
-  td.at { width: 21mm; font-size: 7.9pt; font-weight: 700; color: #9A6E2A; }
-  td.wy { font-size: 7.9pt; color: #40474019; color: #474E44; font-style: italic; }
-  tr.spike td { background: #F5F2E7; }
-  tr.spike td.lv { color: #9A6E2A; }
-
-  /* ---------- talent cards ---------- */
-  .cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.7mm 3mm; }
-  .card { border-top: 1.9pt solid #40684E; padding-top: 1.1mm; }
-  .card.ley-green { border-top-color: #4A7042; } .card.ley-blue { border-top-color: #4A6E8F; }
-  .card.ley-black { border-top-color: #3B3542; } .card.ley-white { border-top-color: #AEB4A6; }
-  .card.ley-red { border-top-color: #9C4432; } .card.heroic { border-top-color: #9A6E2A; }
-  .card h4 { margin: 0 0 .35mm; font-size: 8.2pt; line-height: 1.1; }
-  .meta {
-    font-size: 6.4pt; letter-spacing: .05em; text-transform: uppercase;
-    color: #6A7165; margin-bottom: .6mm;
-  }
-  .card p { margin: 0; font-size: 7.2pt; line-height: 1.25; }
-
-  /* ---------- callout ---------- */
-  .callout {
-    background: #F5F2E7; border: .7pt solid #D8CFAE; padding: 2mm 2.8mm;
-    font-size: 7.9pt; line-height: 1.34;
-  }
-  .callout b { color: #9A6E2A; }
-
-  /* ---------- the deliverable (one inverted block per sheet) ---------- */
-  .deliver {
-    margin-top: auto; background: #40684E; color: #F3F1E4;
-    padding: 3mm 3.6mm; display: flex; gap: 5mm; align-items: flex-start;
-  }
-  .deliver .lab {
-    font-size: 7.2pt; letter-spacing: .19em; text-transform: uppercase;
-    color: #E2C489; font-weight: 700; margin-bottom: 1.2mm;
-  }
-  .deliver h3 { margin: 0 0 1.1mm; font-size: 11.6pt; line-height: 1.08; }
-  .deliver p { margin: 0; font-size: 8.2pt; line-height: 1.36; }
-  .deliver .col { flex: 1; }
-  .box {
-    display: inline-block; width: 3.2mm; height: 3.2mm; border: .8pt solid #E2C489;
-    vertical-align: -0.3mm; margin-right: 1.6mm;
-  }
-  .deliver li { list-style: none; margin-bottom: .9mm; font-size: 8.2pt; }
-  .deliver ul { margin: 0; padding: 0; }
-  .foot {
-    font-size: 6.8pt; color: #6A7165; letter-spacing: .04em;
-    display: flex; justify-content: space-between; padding-top: 1mm;
-  }
-</style>
-</head>
-<body>
-
-<!-- ══════════════════════ PAGE 1 — TEM ══════════════════════ -->
+  .eyebrow { font-size: 7.2pt; letter-spacing: .2em; text-transform: uppercase; color: #9A6E2A;
+             font-weight: 700; margin-bottom: .9mm; display: flex; justify-content: space-between; }
+  .hd h1 { font-size: 18pt; margin: 0 0 .6mm; line-height: 1.04; }
+  .hd .bn { font-size: 11pt; font-style: italic; color: #40684E; margin: 0 0 1.2mm; }
+  .paths { display: flex; gap: 5mm; align-items: center; flex-wrap: wrap; font-size: 8.4pt; }
+  .pip { display:inline-block; width:3.5mm; height:3.5mm; border-radius:50%; vertical-align:-.6mm;
+         margin-right:1.1mm; border:.5pt solid rgba(0,0,0,.3); }
+  .swatch { display:inline-block; width:6.2mm; height:3.5mm; vertical-align:-.6mm; margin-right:1.1mm;
+            border:.5pt solid rgba(0,0,0,.3); }
+  .zone { display:flex; align-items:baseline; gap:2.4mm; margin-bottom:1.3mm; }
+  .num { display:inline-flex; align-items:center; justify-content:center; width:5.2mm; height:5.2mm;
+         border-radius:50%; background:#40684E; color:#fff; font-size:7.6pt; font-weight:700; flex:0 0 auto; }
+  .zt { font-size:10.2pt; font-weight:700; letter-spacing:.06em; text-transform:uppercase; }
+  .zs { font-size:8pt; font-style:italic; color:#5A6155; }
+  .rule { flex:1; border-bottom:.6pt solid #C7CDBB; transform:translateY(-1mm); }
+  .now { background:#EEF0E7; border-left:2.4pt solid #40684E; padding:2mm 3mm; font-size:8.1pt; line-height:1.34; }
+  .now b { color:#40684E; }
+  .spine { margin-top:1.2mm; font-style:italic; color:#3E463D; }
+  table { width:100%; border-collapse:collapse; font-size:8.2pt; }
+  thead th { font-size:7pt; letter-spacing:.13em; text-transform:uppercase; color:#5A6155; text-align:left;
+             padding:0 1.5mm 1mm; border-bottom:.9pt solid #232B24; font-weight:700; }
+  tbody td { padding:.8mm 1.5mm; border-bottom:.4pt solid #D9DED0; vertical-align:top; line-height:1.2; }
+  tbody tr:last-child td { border-bottom:none; }
+  td.lv { font-weight:700; width:7mm; }
+  td.tal { width:40mm; font-weight:700; }
+  td.tal em { display:block; font-weight:400; font-style:normal; font-size:7pt; color:#6A7165; letter-spacing:.03em; }
+  td.sk { width:45mm; font-size:7.7pt; }
+  td.at { width:19mm; font-size:7.7pt; font-weight:700; color:#9A6E2A; }
+  td.wy { font-size:7.7pt; color:#474E44; font-style:italic; }
+  tr.spike td { background:#F5F2E7; }
+  tr.spike td.lv { color:#9A6E2A; }
+  .cards { display:grid; grid-template-columns:1fr 1fr 1fr; gap:1.6mm 3mm; }
+  .card { border-top:1.9pt solid #40684E; padding-top:1.1mm; }
+  .card h4 { margin:0 0 .3mm; font-size:8.1pt; line-height:1.1; }
+  .meta { font-size:6.3pt; letter-spacing:.05em; text-transform:uppercase; color:#6A7165; margin-bottom:.6mm; }
+  .card p { margin:0; font-size:6.9pt; line-height:1.21; }
+  .callout { background:#F5F2E7; border:.7pt solid #D8CFAE; padding:1.8mm 2.6mm; font-size:7.5pt; line-height:1.3; }
+  .callout b { color:#9A6E2A; }
+  .deliver { margin-top:auto; background:#40684E; color:#F3F1E4; padding:3mm 3.6mm; display:flex; gap:5mm; }
+  .deliver .lab { font-size:7.1pt; letter-spacing:.19em; text-transform:uppercase; color:#E2C489;
+                  font-weight:700; margin-bottom:1.1mm; }
+  .deliver h3 { margin:0 0 1mm; font-size:11.4pt; line-height:1.08; }
+  .deliver p { margin:0; font-size:8.1pt; line-height:1.34; }
+  .deliver .col { flex:1; }
+  .deliver ul { margin:0; padding:0; }
+  .deliver li { list-style:none; margin-bottom:.85mm; font-size:8.1pt; }
+  .box { display:inline-block; width:3.1mm; height:3.1mm; border:.8pt solid #E2C489; vertical-align:-.3mm; margin-right:1.5mm; }
+  .foot { font-size:6.7pt; color:#6A7165; letter-spacing:.04em; display:flex; justify-content:space-between; padding-top:.8mm; }
+</style></head><body>
 <div class="sheet">
   <div class="hd">
-    <div class="eyebrow">Edha · Level-up guide · Levels 2–10</div>
+    <div class="eyebrow"><span>Edha &middot; level-up guide &middot; levels 2&ndash;10</span><span>Build A of 3</span></div>
     <h1>Tem parinaem</h1>
+    <p class="bn">The Woods-Scholar Hunter</p>
     <div class="paths">
       <span><b>Scholar</b> <span style="color:#6A7165">heroic</span></span>
-      <span><span class="pip c-green"></span><b>Green</b> <span style="color:#6A7165">leyline</span></span>
-      <span><span class="swatch" style="background:linear-gradient(90deg,#9C4432 50%,#4A7042 50%)"></span><b>Knowledge</b> <span style="color:#6A7165">deity · Red/Green</span></span>
+      <span><span class="pip" style="background:#4A7042"></span><b>Green</b> <span style="color:#6A7165">leyline</span></span>
+      <span><span class="swatch" style="background:linear-gradient(90deg,#9C4432 50%,#4A7042 50%)"></span><b>Knowledge</b> <span style="color:#6A7165">deity &middot; Red/Green</span></span>
     </div>
   </div>
 
   <div class="now">
-    <div class="stats"><b>Now:</b> HP 13 · Physical 16 · deflect 0 · foc 3 · inv 5 &nbsp;|&nbsp;
-      STR 3 · SPD 3 · AWA 3 · PRE 2 · WIL 1 · INT 0 &nbsp;|&nbsp;
-      Heavy Weaponry <b>+5</b> · Athletics +4 · Green +4 · Light Weaponry +3</div>
-    <div class="spine">The spine: a heavy weapon, ground that bites, and a mark that makes the kill inevitable.
-      Your rank‑2 Heavy Weaponry is your best skill in the game — and right now you own no heavy weapon.</div>
+    <div><b>Now:</b> HP 13 &middot; Physical 16 &middot; deflect 0 &middot; foc 3 &middot; inv 5 &nbsp;|&nbsp; STR 3 &middot; SPD 3 &middot; AWA 3 &middot; PRE 2 &middot; WIL 1 &middot; INT 0 &nbsp;|&nbsp; Heavy Weaponry <b>+5</b> &middot; Athletics +4 &middot; Green +4 &middot; Light Weaponry +3</div>
+    <div class="spine">Mark one creature, and every hit you land on it gets worse. A heavy weapon, ground that bites, and an Insight count that only ever goes up.</div>
   </div>
 
   <div>
@@ -149,15 +83,15 @@
     <table>
       <thead><tr><th>Lv</th><th>Talent</th><th>Skill ranks</th><th>Attribute</th><th>What it buys you</th></tr></thead>
       <tbody>
-        <tr><td class="lv">2</td><td class="tal">Thorn Field<em>Green · Territory</em></td><td class="sk">Green → 2, Survival → 1</td><td class="at">—</td><td class="wy">Your free terrain starts hurting people</td></tr>
-        <tr><td class="lv">3</td><td class="tal">Spreading Roots<em>Green · Territory</em></td><td class="sk">Red → 1, Red → 2</td><td class="at">STR 4</td><td class="wy">The carpet grows; Heavy Weaponry → +6</td></tr>
-        <tr><td class="lv">4</td><td class="tal">Studied Mark<em>Knowledge</em></td><td class="sk">Perception → 1, → 2</td><td class="at">—</td><td class="wy">Knowledge opens. The Insight engine starts</td></tr>
-        <tr><td class="lv">5</td><td class="tal">Predatory Strike<em>Knowledge</em></td><td class="sk">Survival → 2, Athletics → 2</td><td class="at">—</td><td class="wy">Your weapon becomes the payoff</td></tr>
-        <tr class="spike"><td class="lv">6</td><td class="tal">Accumulate<em>Knowledge</em></td><td class="sk">Green → 3, Red → 3</td><td class="at">AWA 4</td><td class="wy">TIER 2. Every die you roll doubles</td></tr>
-        <tr><td class="lv">7</td><td class="tal">Hunter's Discipline<em>Knowledge</em></td><td class="sk">Heavy Wpn → 3, Agility → 2</td><td class="at">—</td><td class="wy">Free vital damage on every hit</td></tr>
-        <tr><td class="lv">8</td><td class="tal">Killing Blow<em>Knowledge</em></td><td class="sk">Lore → 1, Medicine → 1</td><td class="at">—</td><td class="wy">The finisher, priced in Insight</td></tr>
-        <tr><td class="lv">9</td><td class="tal">Death Mark<em>Knowledge</em></td><td class="sk">Lore → 2, Insight → 1</td><td class="at">STR 5</td><td class="wy">A kill rolls straight into the next one</td></tr>
-        <tr><td class="lv">10</td><td class="tal">The Pack<em>Knowledge</em></td><td class="sk">two free ranks</td><td class="at">—</td><td class="wy">The whole party rides your mark</td></tr>
+        <tr><td class="lv">2</td><td class="tal">Grasping Vines<em>Green &middot; Territory</em></td><td class="sk">Green → 2, Survival → 1</td><td class="at">&mdash;</td><td class="wy">A ranged Restrain on your best modifier &mdash; and the gate to the rest of the column</td></tr>
+<tr><td class="lv">3</td><td class="tal">Thorn Field<em>Green &middot; Territory</em></td><td class="sk">Red → 2</td><td class="at">STR 4</td><td class="wy">Your free Draw Mana terrain starts dealing damage</td></tr>
+<tr><td class="lv">4</td><td class="tal">Studied Mark<em>Knowledge</em></td><td class="sk">Perception → 2</td><td class="at">&mdash;</td><td class="wy">Knowledge opens. The Insight engine starts</td></tr>
+<tr><td class="lv">5</td><td class="tal">Predatory Strike<em>Knowledge</em></td><td class="sk">Survival → 2, Athletics → 2</td><td class="at">&mdash;</td><td class="wy">Your weapon becomes the payoff &mdash; bonus vital <i>per Insight</i></td></tr>
+<tr class="spike"><td class="lv">6</td><td class="tal">Accumulate<em>Knowledge</em></td><td class="sk">Green → 3, Red → 3</td><td class="at">AWA 4</td><td class="wy">TIER 2. Every die you roll doubles</td></tr>
+<tr><td class="lv">7</td><td class="tal">Hunter's Discipline<em>Knowledge</em></td><td class="sk">Heavy Weaponry → 3, Agility → 2</td><td class="at">&mdash;</td><td class="wy">Free vital damage on every single hit</td></tr>
+<tr><td class="lv">8</td><td class="tal">Killing Blow<em>Knowledge</em></td><td class="sk">Lore → 1, Medicine → 1</td><td class="at">&mdash;</td><td class="wy">The finisher, priced in Insight</td></tr>
+<tr><td class="lv">9</td><td class="tal">Death Mark<em>Knowledge</em></td><td class="sk">Lore → 2, Insight → 1</td><td class="at">STR 5</td><td class="wy">A kill rolls straight into the next target</td></tr>
+<tr><td class="lv">10</td><td class="tal">The Pack<em>Knowledge</em></td><td class="sk">two free ranks</td><td class="at">&mdash;</td><td class="wy">The whole party rides your mark</td></tr>
       </tbody>
     </table>
   </div>
@@ -166,63 +100,53 @@
     <div class="zone"><span class="num">2</span><span class="zt">What each one says</span>
       <span class="zs">exactly as written on the talent</span><span class="rule"></span></div>
     <div class="cards">
-      <div class="card ley-green"><h4>Thorn Field</h4><div class="meta">Passive · Green 2+</div><p>Your difficult terrain deals half [Tier][Die] keen damage to characters that enter or start their turn in it.</p></div>
-      <div class="card ley-green"><h4>Spreading Roots</h4><div class="meta">Special · 1 Investiture · Green 1+</div><p>When a character ends their turn in your difficult terrain, you may spend 1 Investiture to have the terrain expand [Size].</p></div>
-      <div class="card"><h4>Studied Mark</h4><div class="meta">1 Action · 1 Inv · Red 2+; Green 2+</div><p>Choose a creature in Attunement Range. Place 2 Insight on it and learn its HP, conditions, and Physical and Spiritual defenses. Insight sits on only one creature at a time, caps at 5, and fades at end of scene.</p></div>
-      <div class="card"><h4>Predatory Strike</h4><div class="meta">1 Action · 1 Inv · Red 2+; Green 2+</div><p>Make a melee or ranged weapon attack. On a hit, deal bonus Vital damage equal to [Tier][Die] <b>per Insight</b> on the target (minimum 1), then place 1 Insight on it.</p></div>
-      <div class="card"><h4>Accumulate</h4><div class="meta">Passive · Studied Mark</div><p>At the start of each of your turns, place 1 Insight on your marked creature if it's in range. When it takes damage from any source, you recover 1 Investiture, once per round.</p></div>
-      <div class="card"><h4>Hunter's Discipline</h4><div class="meta">Passive · Predatory Strike</div><p>When you hit your marked creature, deal additional Vital damage equal to your Tier. When it drops to 0 HP, choose a new creature as a Free Action and place half its Insight on that one.</p></div>
-      <div class="card"><h4>Killing Blow</h4><div class="meta">1 Action · 2 Inv · Red 3+</div><p>Test Red vs. Physical against your marked creature. On success, deal [Tier][Die] Vital damage <b>per Insight</b> and remove all Insight. On failure, [Tier][Die] Vital and remove 1.</p></div>
-      <div class="card"><h4>Death Mark</h4><div class="meta">Passive · Hunter's Discipline</div><p>When your marked creature drops to 0 HP, place its full Insight count on any creature in range as a Free Action. Each ally in range deals [Tier][Die] Vital damage to an enemy of their choice.</p></div>
-      <div class="card"><h4>The Pack</h4><div class="meta">1 Action · 2 Inv · Accumulate</div><p>For the scene, allies in Attunement Range deal bonus Vital damage equal to your Insight count against your marked creature. The first ally to hit it each round adds 1 Insight.</p></div>
+      <div class="card" style="border-top-color:#9C4432"><h4>Grasping Vines</h4><div class="meta">1 Action &middot; 1 Investiture &middot; Green 1+</div><p>Spend 1 Investiture and test Green vs. Physical defense of a character within Attunement Range. On a success, the target becomes Restrained. Spend 1 Investiture at the start of your turn to maintain the vines.</p></div>
+<div class="card" style="border-top-color:#9C4432"><h4>Thorn Field</h4><div class="meta">∞ &middot; — &middot; Green 2+</div><p>Your difficult terrain deals half [Tier][Die] keen damage to characters that enter or start their turn in it.</p></div>
+<div class="card" style="border-top-color:#9C4432"><h4>Studied Mark</h4><div class="meta">1 Action &middot; 1 Investiture &middot; Red 2+; Green 2+</div><p>Spend 1 Investiture and choose a creature in Attunement Range. Place 2 Insight on it and learn its current HP, conditions, and Physical and Spiritual defenses. You may have Insight on only one creature at a time;</p></div>
+<div class="card" style="border-top-color:#9C4432"><h4>Predatory Strike</h4><div class="meta">1 Action &middot; 1 Investiture &middot; Red 2+; Green 2+</div><p>Spend 1 Investiture and make a melee or ranged weapon attack. On a hit, deal bonus Vital damage equal to [Tier][Die] per Insight on the target (minimum 1), then place 1 Insight on the target.</p></div>
+<div class="card" style="border-top-color:#9C4432"><h4>Accumulate</h4><div class="meta">Passive &middot; — &middot; Studied Mark</div><p>At the start of each of your turns, if the creature bearing your Insight is in Attunement Range, place 1 Insight on it (up to the cap). When that creature takes damage from any source, you recover 1 Investiture once per round.</p></div>
+<div class="card" style="border-top-color:#9C4432"><h4>Hunter's Discipline</h4><div class="meta">Passive &middot; — &middot; Predatory Strike</div><p>When you hit the creature bearing your Insight, deal additional Vital damage equal to your Tier. When that creature drops to 0 HP, you may choose a new creature in Attunement Range as a Free Action and place Insight equal to half the slain creature's…</p></div>
+<div class="card" style="border-top-color:#9C4432"><h4>Killing Blow</h4><div class="meta">1 Action &middot; 2 Investiture &middot; Red 3+; Predatory Strike</div><p>Spend 2 Investiture and test Red vs. Physical against the creature bearing your Insight. On success, deal [Tier][Die] Vital damage per Insight and remove all Insight. On failure, deal [Tier][Die] Vital damage and remove 1 Insight.</p></div>
+<div class="card" style="border-top-color:#9C4432"><h4>Death Mark</h4><div class="meta">Passive &middot; — &middot; Hunter's Discipline or Killing Blow</div><p>When the creature bearing your Insight drops to 0 HP, you may choose any creature in Attunement Range as a Free Action and place Insight equal to the slain creature's Insight count on it.</p></div>
+<div class="card" style="border-top-color:#9C4432"><h4>The Pack</h4><div class="meta">1 Action &middot; 2 Investiture &middot; Accumulate or Pack Share</div><p>Spend 2 Investiture. For the scene, allies in Attunement Range deal bonus Vital damage equal to your Insight count on attacks against the creature bearing your Insight. The first ally to hit that creature each round places 1 Insight on it.</p></div>
     </div>
   </div>
 
-  <div class="callout">
-    <b>Buy a heavy weapon before any of this matters.</b> Your Mace rolls Light Weaponry (+3) — worse than your fists (+4)
-    — while your rank‑2 Heavy Weaponry (+5) has nothing to swing. <b>Hammer</b> 1d10 impact is the straight upgrade;
-    <b>Longspear</b> 1d8 keen has <i>reach</i>, so you fight from the second rank on a barge; <b>Axe</b> 1d6 keen is
-    <i>thrown 20/60 ft</i> — the only heavy weapon that solves your ranged gap. <i>Predatory Strike</i> rides whichever you pick.
-  </div>
+  <div class="callout"><b>Buy a heavy weapon before any of this matters.</b> Your Mace rolls Light Weaponry (+3) &mdash; worse than your fists (+4) &mdash; while your rank-2 Heavy Weaponry (+5) has nothing to swing. <b>Hammer</b> 1d10 impact is the straight upgrade; <b>Longspear</b> 1d8 keen has <i>reach</i>, so you fight from the second rank on a barge; <b>Axe</b> 1d6 keen is <i>thrown 20/60 ft</i> &mdash; the only heavy weapon that solves your ranged gap. <i>Predatory Strike</i> rides whichever you pick.</div>
 
   <div class="deliver">
     <div class="col">
       <div class="lab">Your next level-up</div>
-      <h3>Level 2 — Thorn Field</h3>
-      <p>Your Green Attunement already drops free difficult terrain every time you Draw Mana. This makes it bite —
-        and at the ford, the raiders have to wade.</p>
+      <h3>Level 2 &mdash; Grasping Vines</h3>
+      <p>Grasping Vines is both a good pick and a required one &mdash; Thorn Field and Spreading Roots are gated behind it. It tests Green (+4), your best casting number.</p>
     </div>
     <div class="col">
       <div class="lab">Spend these</div>
       <ul>
-        <li><span class="box"></span>Talent: <b>Thorn Field</b></li>
-        <li><span class="box"></span>Skill rank: <b>Green → 2</b></li>
-        <li><span class="box"></span>Skill rank: <b>Survival → 1</b></li>
+        <li><span class="box"></span>Talent: <b>Grasping Vines</b></li>
+        <li><span class="box"></span>Skill rank: <b>Green &rarr; 2</b></li>
+<li><span class="box"></span>Skill rank: <b>Survival &rarr; 1</b></li>
         <li><span class="box"></span>Shopping: <b>a heavy weapon</b></li>
       </ul>
     </div>
   </div>
-  <div class="foot"><span>Edha — Tem parinaem</span><span>Scholar · Green · Knowledge</span></div>
+  <div class="foot"><span>Edha &mdash; Tem parinaem &middot; Build A: The Woods-Scholar Hunter</span><span>Scholar &middot; Green &middot; Knowledge</span></div>
 </div>
-
-<!-- ══════════════════════ PAGE 2 — HANNAH ══════════════════════ -->
 <div class="sheet">
   <div class="hd">
-    <div class="eyebrow">Edha · Level-up guide · Levels 2–10</div>
-    <h1>Hannah <span style="font-size:11pt;color:#6A7165;font-style:italic">(name pending)</span></h1>
+    <div class="eyebrow"><span>Edha &middot; level-up guide &middot; levels 2&ndash;10</span><span>Build B of 3</span></div>
+    <h1>Tem parinaem</h1>
+    <p class="bn">The Risen Pack</p>
     <div class="paths">
-      <span><b>Envoy</b> <span style="color:#6A7165">heroic</span></span>
-      <span><span class="pip c-blue"></span><b>Blue</b> <span style="color:#6A7165">leyline</span></span>
-      <span><span class="swatch" style="background:linear-gradient(90deg,#4A6E8F 50%,#3B3542 50%)"></span><b>Chaos</b> <span style="color:#6A7165">deity · Blue/Black</span></span>
+      <span><b>Scholar</b> <span style="color:#6A7165">heroic</span></span>
+      <span><span class="pip" style="background:#4A7042"></span><b>Green</b> <span style="color:#6A7165">leyline</span></span>
+      <span><span class="swatch" style="background:linear-gradient(90deg,#3B3542 50%,#4A7042 50%)"></span><b>Death</b> <span style="color:#6A7165">deity &middot; Black/Green</span></span>
     </div>
   </div>
 
   <div class="now">
-    <div class="stats"><b>Now:</b> HP 11 · Physical 14 · deflect 0 · foc 4 · inv 4 &nbsp;|&nbsp;
-      SPD 3 · INT 3 · PRE 2 · WIL 2 · AWA 1 · STR 1 &nbsp;|&nbsp;
-      Blue <b>+5</b> · Light Weaponry +4 · Black +3 · Discipline +3</div>
-    <div class="spine">The spine: your best skill is Blue at +5 — and Blue has no attack talents. <b>Chaos tests Blue.</b>
-      One skill rank opens the whole tree, and spirit damage ignores armour entirely.</div>
+    <div><b>Now:</b> HP 13 &middot; Physical 16 &middot; deflect 0 &middot; foc 3 &middot; inv 5 &nbsp;|&nbsp; STR 3 &middot; SPD 3 &middot; AWA 3 &middot; PRE 2 &middot; WIL 1 &middot; INT 0 &nbsp;|&nbsp; Heavy Weaponry <b>+5</b> &middot; Athletics +4 &middot; Green +4 &middot; Light Weaponry +3</div>
+    <div class="spine">Every corpse in the room is fuel. You raise them, you fight beside them, and your damage comes from <i>how many things are attacking</i> rather than how hard you swing.</div>
   </div>
 
   <div>
@@ -231,15 +155,15 @@
     <table>
       <thead><tr><th>Lv</th><th>Talent</th><th>Skill ranks</th><th>Attribute</th><th>What it buys you</th></tr></thead>
       <tbody>
-        <tr><td class="lv">2</td><td class="tal">Entropy Strike<em>Chaos</em></td><td class="sk">Black → 2, Persuasion → 1</td><td class="at">—</td><td class="wy">A ranged attack at last — on your <i>best</i> skill</td></tr>
-        <tr><td class="lv">3</td><td class="tal">Spreading Omen<em>Chaos</em></td><td class="sk">Persuasion → 2, Discipline → 2</td><td class="at">INT 4</td><td class="wy">Two Omens a cast; Blue → +6</td></tr>
-        <tr><td class="lv">4</td><td class="tal">Shatter Focus<em>Chaos</em></td><td class="sk">Deception → 1, Insight → 1</td><td class="at">—</td><td class="wy">A reaction that makes an enemy reroll <i>down</i></td></tr>
-        <tr><td class="lv">5</td><td class="tal">Collected<em>Envoy · Diplomat</em></td><td class="sk">Deception → 2, Insight → 2</td><td class="at">—</td><td class="wy">+2 Cognitive and Spiritual — you are fragile</td></tr>
-        <tr class="spike"><td class="lv">6</td><td class="tal">Cascade Collapse<em>Chaos</em></td><td class="sk">Blue → 3, Black → 3</td><td class="at">PRE 3</td><td class="wy">TIER 2. Detonate every Omen at once</td></tr>
-        <tr><td class="lv">7</td><td class="tal">Isolating Pressure<em>Chaos</em></td><td class="sk">Light Wpn → 3, Leadership → 1</td><td class="at">—</td><td class="wy">Isolated — and vital damage off an Omen</td></tr>
-        <tr><td class="lv">8</td><td class="tal">Void Sense<em>Chaos</em></td><td class="sk">Leadership → 2, Lore → 1</td><td class="at">—</td><td class="wy">See through walls; Investiture pays you back</td></tr>
-        <tr><td class="lv">9</td><td class="tal">Withering Ray<em>Black · Ritual</em></td><td class="sk">Lore → 2, Agility → 1</td><td class="at">INT 5</td><td class="wy">Double dice of vital, paid for in blood</td></tr>
-        <tr><td class="lv">10</td><td class="tal">Unravel Everything<em>Chaos</em></td><td class="sk">two free ranks</td><td class="at">—</td><td class="wy">Omen the room, then end it</td></tr>
+        <tr><td class="lv">2</td><td class="tal">Predator's Instinct<em>Green &middot; Instinct</em></td><td class="sk">Survival → 2</td><td class="at">&mdash;</td><td class="wy">Tracking advantage &mdash; and the gate to the whole Instinct column</td></tr>
+<tr><td class="lv">3</td><td class="tal">Coordinated Hunt<em>Green &middot; Instinct</em></td><td class="sk">Green → 2, Black → 1</td><td class="at">STR 4</td><td class="wy">The focus-fire engine: bonus damage per attacker on one target</td></tr>
+<tr><td class="lv">4</td><td class="tal">Reaper's Harvest<em>Death</em></td><td class="sk">Black → 2, Athletics → 2</td><td class="at">&mdash;</td><td class="wy">Death opens. Every death in range is Investiture and a corpse you own</td></tr>
+<tr><td class="lv">5</td><td class="tal">Bone Garden<em>Death</em></td><td class="sk">Agility → 2, Perception → 1</td><td class="at">&mdash;</td><td class="wy">Spend a corpse for damaging difficult terrain</td></tr>
+<tr class="spike"><td class="lv">6</td><td class="tal">Risen Servant<em>Death</em></td><td class="sk">Green → 3, Heavy Weaponry → 3</td><td class="at">AWA 4</td><td class="wy">TIER 2. Two servants, two Remains, 2d8 on everything</td></tr>
+<tr><td class="lv">7</td><td class="tal">Scent the Weak<em>Green &middot; Instinct</em></td><td class="sk">Survival → 3, Perception → 2</td><td class="at">&mdash;</td><td class="wy">Free advantage each round on the lowest-HP enemy</td></tr>
+<tr><td class="lv">8</td><td class="tal">Pack Pressure<em>Green &middot; Instinct</em></td><td class="sk">Perception → 3, Athletics → 3</td><td class="at">&mdash;</td><td class="wy">+2d8 on your Strikes, plus free repositioning for everyone</td></tr>
+<tr><td class="lv">9</td><td class="tal">Speak with the Fallen<em>Death</em></td><td class="sk">Insight → 2</td><td class="at">STR 5</td><td class="wy">The scholar's real research tool &mdash; ask the dead three questions</td></tr>
+<tr><td class="lv">10</td><td class="tal">Raise Dead<em>Death</em></td><td class="sk">Agility → 3, Insight → 3</td><td class="at">&mdash;</td><td class="wy">Bring a dead party member back, once per scene</td></tr>
       </tbody>
     </table>
   </div>
@@ -248,63 +172,196 @@
     <div class="zone"><span class="num">2</span><span class="zt">What each one says</span>
       <span class="zs">exactly as written on the talent</span><span class="rule"></span></div>
     <div class="cards">
-      <div class="card ley-blue"><h4>Entropy Strike</h4><div class="meta">1 Action · 1 Inv · Blue 2+; Black 2+</div><p>Test <b>Blue</b> vs. Cognitive. On success, place an Omen on the target and deal [Tier][Die] <b>spirit</b> damage. You may hold up to <i>tier</i> Omens at once.</p></div>
-      <div class="card ley-blue"><h4>Spreading Omen</h4><div class="meta">1 Action · 1 Inv · Entropy Strike</div><p>Test Blue vs. Cognitive. On success, place an Omen on the target <i>and</i> one additional enemy within 10 ft of them, subject to your Omen cap.</p></div>
-      <div class="card ley-blue"><h4>Shatter Focus</h4><div class="meta">Reaction · 1 Inv · Entropy Strike</div><p>When an enemy bearing one of your Omens makes a test, remove the Omen; that enemy rerolls and <b>takes the lower result</b>.</p></div>
-      <div class="card heroic"><h4>Collected</h4><div class="meta">Passive · Envoy · Diplomat</div><p>Increase your Cognitive and Spiritual defenses by 2.</p></div>
-      <div class="card ley-blue"><h4>Cascade Collapse</h4><div class="meta">2 Actions · 2 Inv · Shatter Focus</div><p>Test Blue vs. Cognitive. On success, remove <b>all</b> your Omens in range at once; each enemy whose Omen is removed takes [Tier][Die] spirit damage and is Disoriented until the start of your next turn.</p></div>
-      <div class="card ley-black"><h4>Isolating Pressure</h4><div class="meta">1 Action · 2 Inv · Blue 2+; Black 2+</div><p>Test <b>Black</b> vs. Physical. On success the target is Isolated until the start of your next turn. If it bears an Omen, remove it and deal [Tier][Die] + Awareness <b>vital</b> damage.</p></div>
-      <div class="card ley-black"><h4>Void Sense</h4><div class="meta">Passive · Isolating Pressure</div><p>You sense every enemy bearing your Omen through any obstruction. Once per round, when one takes damage from any source, you recover 1 Investiture.</p></div>
-      <div class="card ley-black"><h4>Withering Ray</h4><div class="meta">1 Action · lose half [Die] HP · Black 1+</div><p>Lose half [Die] health, then make a ranged Black attack vs. Spiritual within Attunement Range. On a hit, deal <b>2[Tier][Die] vital</b> damage.</p></div>
-      <div class="card ley-blue"><h4>Unravel Everything</h4><div class="meta">3 Actions · 3 Inv · Cascade Collapse</div><p>Omen every enemy in range up to your cap, then remove them all at once — each deals [Tier][Die] + Awareness spirit and Disorients. Enemies who are <i>Isolated</i> take 2[Tier][Die] vital instead.</p></div>
+      <div class="card" style="border-top-color:#3B3542"><h4>Predator's Instinct</h4><div class="meta">∞ &middot; — &middot; Survival 2+</div><p>Gain an advantage on tests to track or locate characters suffering an injury or below half health. You can sense fear in characters within 30 feet without testing.</p></div>
+<div class="card" style="border-top-color:#3B3542"><h4>Coordinated Hunt</h4><div class="meta">∞ &middot; — &middot; Pack Hunter</div><p>When you and at least one ally both make attack tests against the same character in the same round, each attack deals bonus damage equal to the number of different attackers who targeted it this round (maximum = Rank).</p></div>
+<div class="card" style="border-top-color:#3B3542"><h4>Reaper's Harvest</h4><div class="meta">Passive &middot; — &middot; Black 2+; Green 2+</div><p>When a character drops to 0 HP within your Attunement Range, you recover 1 Investiture and mark the corpse as a Harvested Remain. You begin each scene with 1 Harvested Remain. You may sustain a number of Remains equal to your tier;</p></div>
+<div class="card" style="border-top-color:#3B3542"><h4>Bone Garden</h4><div class="meta">1 Action &middot; 1 Investiture &middot; Reaper's Harvest</div><p>Spend 1 Investiture and a Harvested Remain on a 10 ft square in Attunement Range. For the scene, the square is difficult terrain, and a character that ends its turn in the square takes [Tier][Die] keen damage from grasping bone.</p></div>
+<div class="card" style="border-top-color:#3B3542"><h4>Risen Servant</h4><div class="meta">1 Action &middot; 1 Investiture &middot; Bone Garden or Speak with the Fallen</div><p>Spend 1 Investiture and a Harvested Remain to raise a Risen Servant in an adjacent space for the scene. The servant has HP equal to [Tier][Die], Speed 25 ft, defenses equal to yours minus 3, and one melee attack per turn dealing [Tier][Die] keen dama…</p></div>
+<div class="card" style="border-top-color:#3B3542"><h4>Scent the Weak</h4><div class="meta">★ &middot; — &middot; Predator's Instinct</div><p>You know which creature within Attunement Range has the lowest HP. Your first test against it each round gains advantage.</p></div>
+<div class="card" style="border-top-color:#3B3542"><h4>Pack Pressure</h4><div class="meta">1 Action &middot; 1 Investiture &middot; Green 2+</div><p>You and each ally within 15 feet may Move up to half their movement rate without provoking Reactive Strikes. Until the start of your next turn, when you or an ally adjacent to the same character Strikes it, that Strike deals an extra [Tier][Die] dama…</p></div>
+<div class="card" style="border-top-color:#3B3542"><h4>Speak with the Fallen</h4><div class="meta">2 Actions &middot; 2 Investiture &middot; Reaper's Harvest</div><p>Spend 2 Investiture and a Harvested Remain — or touch any remains of a character that died within the last 24 hours. Ask up to 3 questions; the spirit answers truthfully but briefly.</p></div>
+<div class="card" style="border-top-color:#3B3542"><h4>Raise Dead</h4><div class="meta">3 Actions &middot; 4 Investiture &middot; Necrotic Cascade or Speak with the Fallen</div><p>Spend 4 Investiture and touch the remains of a character that died within the last hour, consuming a Harvested Remain if one represents the target. The character returns to life with 1 HP and one additional injury.</p></div>
     </div>
   </div>
 
-  <div class="callout">
-    <b>Spirit and vital damage ignore deflect.</b> That is the point of this build: armour does nothing against you.
-    Note the shape of the tree — <i>Entropy Strike</i> and <i>Spreading Omen</i> lay Omens down, <i>Shatter Focus</i> and
-    <i>Cascade Collapse</i> cash them in, and <i>Void Sense</i> refunds the Investiture. Also worth one purchase:
-    a <b>shortbow</b> (Light Weaponry +4, 80/320 ft) for the rounds you'd rather not spend Investiture at all.
-  </div>
+  <div class="callout"><b>Black never gets rolled &mdash; it is a door key, not a stat.</b> Every formula in this lane (the harvest range, Bone Garden, and a Risen Servant's HP <i>and</i> its attack) scales off <b>Green</b>, so Black stops at 2 forever and every spare rank goes to Green &mdash; which drives the dice, the Attunement Range, <i>and</i> Coordinated Hunt's damage cap. It also finally cashes in <i>Pack Hunter</i>, which you already own: your servants are allies, so you always have someone to flank with.</div>
 
   <div class="deliver">
     <div class="col">
       <div class="lab">Your next level-up</div>
-      <h3>Level 2 — Entropy Strike</h3>
-      <p>Chaos needs Blue 2 and Black 2. You already have Blue 2 — so <b>one skill rank</b> opens
-        the entire tree, and its opening attack rolls your strongest skill.</p>
+      <h3>Level 2 &mdash; Predator's Instinct</h3>
+      <p>Predator's Instinct needs Survival 2, so buy both ranks now. It gates Scent the Weak and Coordinated Hunt &mdash; the whole Instinct column runs through it.</p>
+    </div>
+    <div class="col">
+      <div class="lab">Spend these</div>
+      <ul>
+        <li><span class="box"></span>Talent: <b>Predator's Instinct</b></li>
+        <li><span class="box"></span>Skill rank: <b>Survival &rarr; 2</b></li>
+        <li><span class="box"></span>Shopping: <b>a Hammer, and an Axe to throw</b></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>Edha &mdash; Tem parinaem &middot; Build B: The Risen Pack</span><span>Scholar &middot; Green &middot; Death</span></div>
+</div>
+<div class="sheet">
+  <div class="hd">
+    <div class="eyebrow"><span>Edha &middot; level-up guide &middot; levels 2&ndash;10</span><span>Build C of 3</span></div>
+    <h1>Tem parinaem</h1>
+    <p class="bn">The Ground Is Already Decided</p>
+    <div class="paths">
+      <span><b>Scholar</b> <span style="color:#6A7165">heroic</span></span>
+      <span><span class="pip" style="background:#4A7042"></span><b>Green</b> <span style="color:#6A7165">leyline</span></span>
+      <span><span class="swatch" style="background:linear-gradient(90deg,#4A7042 50%,#AEB4A6 50%)"></span><b>Fate</b> <span style="color:#6A7165">deity &middot; Green/White</span></span>
+    </div>
+  </div>
+
+  <div class="now">
+    <div><b>Now:</b> HP 13 &middot; Physical 16 &middot; deflect 0 &middot; foc 3 &middot; inv 5 &nbsp;|&nbsp; STR 3 &middot; SPD 3 &middot; AWA 3 &middot; PRE 2 &middot; WIL 1 &middot; INT 0 &nbsp;|&nbsp; Heavy Weaponry <b>+5</b> &middot; Athletics +4 &middot; Green +4 &middot; Light Weaponry +3</div>
+    <div class="spine">You never have to hit anything. You decide where the fight happens before it starts, and the enemy walks into it.</div>
+  </div>
+
+  <div>
+    <div class="zone"><span class="num">1</span><span class="zt">The ladder</span>
+      <span class="zs">one talent and two skill ranks per level</span><span class="rule"></span></div>
+    <table>
+      <thead><tr><th>Lv</th><th>Talent</th><th>Skill ranks</th><th>Attribute</th><th>What it buys you</th></tr></thead>
+      <tbody>
+        <tr><td class="lv">2</td><td class="tal">Grasping Vines<em>Green &middot; Territory</em></td><td class="sk">White → 1, Green → 2</td><td class="at">&mdash;</td><td class="wy">A Restrain at range while Fate is still locked &mdash; and it gates the Territory column</td></tr>
+<tr><td class="lv">3</td><td class="tal">Snare<em>Fate</em></td><td class="sk">White → 2, Survival → 1</td><td class="at">AWA 4</td><td class="wy">Fate opens. Your damage engine, and it makes no attack roll at all</td></tr>
+<tr><td class="lv">4</td><td class="tal">Ordained Ground<em>Fate</em></td><td class="sk">Survival → 2, Athletics → 2</td><td class="at">&mdash;</td><td class="wy">Ally squares &mdash; defensive buffs, and the fuel half the tree consumes</td></tr>
+<tr><td class="lv">5</td><td class="tal">Read the Threads<em>Fate</em></td><td class="sk">Agility → 2, Perception → 1</td><td class="at">&mdash;</td><td class="wy">See their turn, then slide a Snare into their path</td></tr>
+<tr class="spike"><td class="lv">6</td><td class="tal">Inevitable Snare<em>Fate</em></td><td class="sk">Green → 3, Heavy Weaponry → 3</td><td class="at">AWA 5</td><td class="wy">TIER 2. +2d8 and Disoriented on every trap</td></tr>
+<tr><td class="lv">7</td><td class="tal">Hexmark<em>Fate</em></td><td class="sk">Perception → 2, Survival → 3</td><td class="at">&mdash;</td><td class="wy">A free Reaction that taxes the victim on every instance of damage</td></tr>
+<tr><td class="lv">8</td><td class="tal">Foreknown Strike<em>Fate</em></td><td class="sk">Perception → 3, Athletics → 3</td><td class="at">&mdash;</td><td class="wy">Allies detonate your traps on demand &mdash; they stop being reactive</td></tr>
+<tr><td class="lv">9</td><td class="tal">Weave the Thread<em>Fate</em></td><td class="sk">Agility → 3, Insight → 1</td><td class="at">AWA 6</td><td class="wy">Links two squares: free Aid, and free Reactive Strikes on every trigger</td></tr>
+<tr><td class="lv">10</td><td class="tal">Thread of Inevitability<em>Fate</em></td><td class="sk">Insight → 2, Stealth → 1</td><td class="at">&mdash;</td><td class="wy">Declare a prophecy; when it happens the whole board goes off at once</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div>
+    <div class="zone"><span class="num">2</span><span class="zt">What each one says</span>
+      <span class="zs">exactly as written on the talent</span><span class="rule"></span></div>
+    <div class="cards">
+      <div class="card" style="border-top-color:#4A7042"><h4>Grasping Vines</h4><div class="meta">1 Action &middot; 1 Investiture &middot; Green 1+</div><p>Spend 1 Investiture and test Green vs. Physical defense of a character within Attunement Range. On a success, the target becomes Restrained. Spend 1 Investiture at the start of your turn to maintain the vines.</p></div>
+<div class="card" style="border-top-color:#4A7042"><h4>Snare</h4><div class="meta">1 Action &middot; 1 Investiture &middot; White 2+; Green 2+</div><p>Spend 1 Investiture and place a Snare on a 5 ft square in Attunement Range. The first enemy character to enter the Snare's square triggers it: the target takes [Tier][Die] + Awareness keen damage and is Restrained until the start of your next turn.</p></div>
+<div class="card" style="border-top-color:#4A7042"><h4>Ordained Ground</h4><div class="meta">Free Action &middot; 1 Investiture &middot; White 2+; Green 2+</div><p>Spend 1 Investiture and designate a 5 ft square in Attunement Range as Ordained Ground for the scene. An ally that begins its turn on an Ordained Ground square gains +1 to all defenses until the start of its next turn and may use the Aid action at up…</p></div>
+<div class="card" style="border-top-color:#4A7042"><h4>Read the Threads</h4><div class="meta">1 Action &middot; 1 Investiture &middot; Ordained Ground</div><p>Spend 1 Investiture and choose a character in Attunement Range. You learn the action it intends to take on its next turn and any movement it plans to make.</p></div>
+<div class="card" style="border-top-color:#4A7042"><h4>Inevitable Snare</h4><div class="meta">Free Action &middot; 1 Investiture &middot; Snare</div><p>When you place a Snare, spend an additional 1 Investiture to declare it an Inevitable Snare. When an Inevitable Snare triggers, it deals an additional [Tier][Die] keen damage, and the triggering target tests Speed vs. your Green;</p></div>
+<div class="card" style="border-top-color:#4A7042"><h4>Hexmark</h4><div class="meta">Reaction &middot; — &middot; Snare</div><p>When an enemy triggers one of your Snares, you may Hexmark it. For the rest of the scene, the Hexmarked target takes an additional [Tier] keen damage whenever it takes damage from any source while within 10 ft of any of your Ordained Ground squares o…</p></div>
+<div class="card" style="border-top-color:#4A7042"><h4>Foreknown Strike</h4><div class="meta">2 Actions &middot; 2 Investiture &middot; Inevitable Snare or Hexmark</div><p>Spend 2 Investiture. For the scene, an ally standing on one of your Ordained Ground squares may, as a Free Action on its turn, trigger any one of your unsprung Snares within 30 ft, treating the center of the Snare's space as the triggering character.…</p></div>
+<div class="card" style="border-top-color:#4A7042"><h4>Weave the Thread</h4><div class="meta">2 Actions &middot; 2 Investiture &middot; Read the Threads or Bulwark Ground</div><p>Spend 2 Investiture and choose two of your active Ordained Ground squares within Attunement Range. For the scene, their fates are linked: an ally standing on either linked square may use the Aid action as a Free Action once per round, and when an ene…</p></div>
+<div class="card" style="border-top-color:#4A7042"><h4>Thread of Inevitability</h4><div class="meta">3 Actions &middot; 3 Investiture &middot; Weave the Thread or Foreknown Strike</div><p>Spend 3 Investiture and declare a specific event that will happen during this scene — a character drops to 0 HP, a particular enemy crosses a threshold, an ally reaches a designated location, or the GM raises the stakes.</p></div>
+    </div>
+  </div>
+
+  <div class="callout"><b>Awareness pays you three times over, and White is never rolled.</b> Every damage formula in Fate scales off <b>Green</b>, and <i>Snare</i> literally adds your Awareness to its damage &mdash; so White stops at 2 as a door key while each AWA point buys <b>+1 Snare damage, +1 max Investiture</b> (it is 2 + your best of Awareness/Presence) <b>and +1 Spiritual defense</b>. Buy a <b>Longspear</b>: reach means you can hit something standing in your own Snare without stepping into it.</div>
+
+  <div class="deliver">
+    <div class="col">
+      <div class="lab">Your next level-up</div>
+      <h3>Level 2 &mdash; Grasping Vines</h3>
+      <p>Nothing in Fate is reachable at level 2 &mdash; both entries need White 2 <i>and</i> Green 2. Grasping Vines fills the level usefully and starts the White rank you need.</p>
+    </div>
+    <div class="col">
+      <div class="lab">Spend these</div>
+      <ul>
+        <li><span class="box"></span>Talent: <b>Grasping Vines</b></li>
+        <li><span class="box"></span>Skill rank: <b>White &rarr; 1</b></li>
+<li><span class="box"></span>Skill rank: <b>Green &rarr; 2</b></li>
+        <li><span class="box"></span>Shopping: <b>a Longspear</b></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>Edha &mdash; Tem parinaem &middot; Build C: The Ground Is Already Decided</span><span>Scholar &middot; Green &middot; Fate</span></div>
+</div>
+<div class="sheet">
+  <div class="hd">
+    <div class="eyebrow"><span>Edha &middot; level-up guide &middot; levels 2&ndash;10</span><span>Build A of 3</span></div>
+    <h1>Hannah</h1>
+    <p class="bn">The Omen-Caster</p>
+    <div class="paths">
+      <span><b>Envoy</b> <span style="color:#6A7165">heroic</span></span>
+      <span><span class="pip" style="background:#4A6E8F"></span><b>Blue</b> <span style="color:#6A7165">leyline</span></span>
+      <span><span class="swatch" style="background:linear-gradient(90deg,#3B3542 50%,#4A6E8F 50%)"></span><b>Chaos</b> <span style="color:#6A7165">deity &middot; Black/Blue</span></span>
+    </div>
+  </div>
+
+  <div class="now">
+    <div><b>Now:</b> HP 11 &middot; Physical 14 &middot; deflect 0 &middot; foc 4 &middot; inv 4 &nbsp;|&nbsp; SPD 3 &middot; INT 3 &middot; PRE 2 &middot; WIL 2 &middot; AWA 1 &middot; STR 1 &nbsp;|&nbsp; Blue <b>+5</b> &middot; Light Weaponry +4 &middot; Black +3 &middot; Discipline +3</div>
+    <div class="spine">Your best skill is Blue at +5, and Blue has no attack talents. <b>Chaos tests Blue.</b> One skill rank opens the tree, and spirit damage ignores armour entirely.</div>
+  </div>
+
+  <div>
+    <div class="zone"><span class="num">1</span><span class="zt">The ladder</span>
+      <span class="zs">one talent and two skill ranks per level</span><span class="rule"></span></div>
+    <table>
+      <thead><tr><th>Lv</th><th>Talent</th><th>Skill ranks</th><th>Attribute</th><th>What it buys you</th></tr></thead>
+      <tbody>
+        <tr><td class="lv">2</td><td class="tal">Entropy Strike<em>Chaos</em></td><td class="sk">Black → 2, Persuasion → 1</td><td class="at">&mdash;</td><td class="wy">A ranged attack at last &mdash; and it rolls your <i>best</i> skill</td></tr>
+<tr><td class="lv">3</td><td class="tal">Spreading Omen<em>Chaos</em></td><td class="sk">Persuasion → 2, Discipline → 2</td><td class="at">INT 4</td><td class="wy">Two Omens a cast; Blue climbs to +6</td></tr>
+<tr><td class="lv">4</td><td class="tal">Shatter Focus<em>Chaos</em></td><td class="sk">Deception → 1, Insight → 1</td><td class="at">&mdash;</td><td class="wy">A reaction that makes an enemy reroll and take the worse result</td></tr>
+<tr><td class="lv">5</td><td class="tal">Collected<em>Envoy &middot; Diplomat</em></td><td class="sk">Deception → 2, Insight → 2</td><td class="at">&mdash;</td><td class="wy">+2 Cognitive and Spiritual &mdash; you are fragile</td></tr>
+<tr class="spike"><td class="lv">6</td><td class="tal">Cascade Collapse<em>Chaos</em></td><td class="sk">Blue → 3, Black → 3</td><td class="at">PRE 3</td><td class="wy">TIER 2. Detonate every Omen at once</td></tr>
+<tr><td class="lv">7</td><td class="tal">Isolating Pressure<em>Chaos</em></td><td class="sk">Light Weaponry → 2, Leadership → 1</td><td class="at">&mdash;</td><td class="wy">Isolated, and vital damage off an Omen</td></tr>
+<tr><td class="lv">8</td><td class="tal">Void Sense<em>Chaos</em></td><td class="sk">Light Weaponry → 3, Lore → 1</td><td class="at">&mdash;</td><td class="wy">See through walls, and Investiture pays you back</td></tr>
+<tr><td class="lv">9</td><td class="tal">Withering Ray<em>Black &middot; Ritual</em></td><td class="sk">Lore → 2, Agility → 1</td><td class="at">INT 5</td><td class="wy">Double dice of vital damage, paid for in your own blood</td></tr>
+<tr><td class="lv">10</td><td class="tal">Unravel Everything<em>Chaos</em></td><td class="sk">two free ranks</td><td class="at">&mdash;</td><td class="wy">Omen the room, then end it</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div>
+    <div class="zone"><span class="num">2</span><span class="zt">What each one says</span>
+      <span class="zs">exactly as written on the talent</span><span class="rule"></span></div>
+    <div class="cards">
+      <div class="card" style="border-top-color:#3B3542"><h4>Entropy Strike</h4><div class="meta">1 Action &middot; 1 Investiture &middot; Blue 2+; Black 2+</div><p>Spend 1 Investiture and test Blue vs. Cognitive. On success, place an Omen on the target and deal [Tier][Die] spirit damage. You may have up to tier Omens active simultaneously; placements beyond this cap are lost.</p></div>
+<div class="card" style="border-top-color:#3B3542"><h4>Spreading Omen</h4><div class="meta">1 Action &middot; 1 Investiture &middot; Entropy Strike</div><p>Spend 1 Investiture and test Blue vs. Cognitive. On success, place an Omen on the target and one additional enemy within 10 ft of them, subject to your Omen cap.</p></div>
+<div class="card" style="border-top-color:#3B3542"><h4>Shatter Focus</h4><div class="meta">Reaction &middot; 1 Investiture &middot; Entropy Strike</div><p>Spend 1 Investiture when an enemy bearing one of your Omens in Attunement Range makes a test. Remove the Omen; that enemy rerolls and takes the lower result.</p></div>
+<div class="card" style="border-top-color:#3B3542"><h4>Collected</h4><div class="meta">Passive &middot; — &middot; —</div><p>Increase your Cognitive and Spiritual defenses by 2.</p></div>
+<div class="card" style="border-top-color:#3B3542"><h4>Cascade Collapse</h4><div class="meta">2 Actions &middot; 2 Investiture &middot; Shatter Focus or Spreading Omen</div><p>Spend 2 Investiture and test Blue vs. Cognitive. On success, remove all your Omens within Attunement Range simultaneously; each enemy whose Omen is removed takes [Tier][Die] spirit damage and is Disoriented until the start of your next turn.</p></div>
+<div class="card" style="border-top-color:#3B3542"><h4>Isolating Pressure</h4><div class="meta">1 Action &middot; 2 Investiture &middot; Blue 2+; Black 2+</div><p>Spend 2 Investiture and test Black vs. Physical. On success, the target is Isolated until the start of your next turn. If the target bears an Omen, also remove it and deal [Tier][Die] + Awareness vital damage.</p></div>
+<div class="card" style="border-top-color:#3B3542"><h4>Void Sense</h4><div class="meta">Passive &middot; — &middot; Isolating Pressure</div><p>You sense the location of every enemy bearing your Omen through any obstruction. Once per round, when an enemy bearing one of your Omens in Attunement Range takes damage from any source, you recover 1 Investiture.</p></div>
+<div class="card" style="border-top-color:#3B3542"><h4>Withering Ray</h4><div class="meta">1 Action &middot; Lose HP = half [Die] &middot; Black 1+</div><p>Lose half [Die] health, then make a ranged Black attack vs. Spiritual against a character within Attunement Range. On a hit, deal 2[Tier][Die] vital damage.</p></div>
+<div class="card" style="border-top-color:#3B3542"><h4>Unravel Everything</h4><div class="meta">3 Actions &middot; 3 Investiture &middot; Cascade Collapse or Isolating Ruin</div><p>Spend 3 Investiture. Place an Omen on every enemy in Attunement Range up to your cap (prioritize as you choose), then remove all your Omens simultaneously — each removed Omen deals [Tier][Die] + Awareness spirit damage and Disorients its bearer until…</p></div>
+    </div>
+  </div>
+
+  <div class="callout"><b>Spirit and vital damage ignore deflect.</b> That is the point of this build: armour does nothing against you. Note the shape &mdash; <i>Entropy Strike</i> and <i>Spreading Omen</i> lay Omens down, <i>Shatter Focus</i> and <i>Cascade Collapse</i> cash them in, and <i>Void Sense</i> refunds the Investiture. Also worth one purchase: a <b>shortbow</b> (Light Weaponry +4, 80/320 ft) for rounds you would rather not spend Investiture at all.</div>
+
+  <div class="deliver">
+    <div class="col">
+      <div class="lab">Your next level-up</div>
+      <h3>Level 2 &mdash; Entropy Strike</h3>
+      <p>Chaos needs Blue 2 and Black 2. You already have Blue 2 &mdash; so <b>one skill rank</b> opens the entire tree, and its opening attack rolls your strongest skill.</p>
     </div>
     <div class="col">
       <div class="lab">Spend these</div>
       <ul>
         <li><span class="box"></span>Talent: <b>Entropy Strike</b></li>
-        <li><span class="box"></span>Skill rank: <b>Black → 2</b></li>
-        <li><span class="box"></span>Skill rank: <b>Persuasion → 1</b></li>
+        <li><span class="box"></span>Skill rank: <b>Black &rarr; 2</b></li>
+<li><span class="box"></span>Skill rank: <b>Persuasion &rarr; 1</b></li>
         <li><span class="box"></span>Shopping: <b>a shortbow</b></li>
       </ul>
     </div>
   </div>
-  <div class="foot"><span>Edha — Hannah</span><span>Envoy · Blue · Chaos</span></div>
+  <div class="foot"><span>Edha &mdash; Hannah &middot; Build A: The Omen-Caster</span><span>Envoy &middot; Blue &middot; Chaos</span></div>
 </div>
-
-<!-- ══════════════════════ PAGE 3 — SOGGY ══════════════════════ -->
 <div class="sheet">
   <div class="hd">
-    <div class="eyebrow">Edha · Level-up guide · Levels 2–10</div>
-    <h1>Soggy Bottom</h1>
+    <div class="eyebrow"><span>Edha &middot; level-up guide &middot; levels 2&ndash;10</span><span>Build B of 3</span></div>
+    <h1>Hannah</h1>
+    <p class="bn">The Standing Law</p>
     <div class="paths">
-      <span><b>Scholar</b> <span style="color:#6A7165">heroic</span></span>
-      <span><span class="pip c-white"></span><b>White</b> <span style="color:#6A7165">leyline</span></span>
-      <span><span class="swatch" style="background:linear-gradient(90deg,#AEB4A6 50%,#4A7042 50%)"></span><b>Fate</b> <span style="color:#6A7165">deity · White/Green</span></span>
+      <span><b>Envoy</b> <span style="color:#6A7165">heroic</span></span>
+      <span><span class="pip" style="background:#4A6E8F"></span><b>Blue</b> <span style="color:#6A7165">leyline</span></span>
+      <span><span class="swatch" style="background:linear-gradient(90deg,#4A6E8F 50%,#AEB4A6 50%)"></span><b>Order</b> <span style="color:#6A7165">deity &middot; Blue/White</span></span>
     </div>
   </div>
 
   <div class="now">
-    <div class="stats"><b>Now:</b> HP 11 · Spiritual 16 · deflect 0 · foc 2 · inv 5 &nbsp;|&nbsp;
-      AWA 3 · INT 3 · PRE 3 · SPD 2 · STR 1 · <b style="color:#9C4432">WIL 0</b> &nbsp;|&nbsp;
-      White +2 · Light Weaponry +2 · Athletics +1</div>
-    <div class="spine">The spine: you will not out-damage anyone — be the reason nobody dies.
-      <b>Willpower is your one real problem</b>: White tests off it, and max focus is 2 + Willpower. You are at the floor.</div>
+    <div><b>Now:</b> HP 11 &middot; Physical 14 &middot; deflect 0 &middot; foc 4 &middot; inv 4 &nbsp;|&nbsp; SPD 3 &middot; INT 3 &middot; PRE 2 &middot; WIL 2 &middot; AWA 1 &middot; STR 1 &nbsp;|&nbsp; Blue <b>+5</b> &middot; Light Weaponry +4 &middot; Black +3 &middot; Discipline +3</div>
+    <div class="spine">You name one thing an enemy may not do. It obeys and wastes its turn, or it breaks the law and takes armour-ignoring spirit damage. Either way you win &mdash; and you never rolled.</div>
   </div>
 
   <div>
@@ -313,15 +370,15 @@
     <table>
       <thead><tr><th>Lv</th><th>Talent</th><th>Skill ranks</th><th>Attribute</th><th>What it buys you</th></tr></thead>
       <tbody>
-        <tr><td class="lv">2</td><td class="tal">Field Medicine<em>Scholar · Surgeon</em></td><td class="sk">Medicine → 1, → 2</td><td class="at">—</td><td class="wy">Real healing. The party has none</td></tr>
-        <tr><td class="lv">3</td><td class="tal">Mending Aura<em>White · Coordination</em></td><td class="sk">Lore → 1, Deduction → 2</td><td class="at">WIL 1</td><td class="wy">Group healing off Opportunity; focus → 3</td></tr>
-        <tr><td class="lv">4</td><td class="tal">Swift Healer<em>Scholar · Surgeon</em></td><td class="sk">Green → 1, Lore → 2</td><td class="at">—</td><td class="wy">Field Medicine becomes a <i>Free Action</i></td></tr>
-        <tr><td class="lv">5</td><td class="tal">Emotional Intelligence<em>Scholar · Surgeon</em></td><td class="sk">Green → 2, Insight → 1</td><td class="at">—</td><td class="wy">Erudition reaches Spiritual skills</td></tr>
-        <tr class="spike"><td class="lv">6</td><td class="tal">Ordained Ground<em>Fate</em></td><td class="sk">White → 3, Medicine → 3</td><td class="at">WIL 2</td><td class="wy">TIER 2. Fate opens; White → +5</td></tr>
-        <tr><td class="lv">7</td><td class="tal">Collected<em>Scholar · Surgeon</em></td><td class="sk">Insight → 2, Perception → 1</td><td class="at">—</td><td class="wy">+2 Cognitive and Spiritual</td></tr>
-        <tr><td class="lv">8</td><td class="tal">Resuscitation<em>Scholar · Surgeon</em></td><td class="sk">Perception → 2, Crafting → 2</td><td class="at">—</td><td class="wy">Bring back the unconscious — or the newly dead</td></tr>
-        <tr><td class="lv">9</td><td class="tal">Applied Medicine<em>Scholar · Surgeon</em></td><td class="sk">Lore → 3, Deduction → 3</td><td class="at">WIL 3</td><td class="wy">Healing scales off Lore too; focus → 5</td></tr>
-        <tr><td class="lv">10</td><td class="tal">Bulwark Ground<em>Fate</em></td><td class="sk">two free ranks</td><td class="at">—</td><td class="wy">Your ground hands out temp HP every round</td></tr>
+        <tr><td class="lv">2</td><td class="tal">Edict<em>Order</em></td><td class="sk">White → 2</td><td class="at">&mdash;</td><td class="wy">The signature. A prohibition with no test and no save, plus a damage trap</td></tr>
+<tr><td class="lv">3</td><td class="tal">Lawkeeper's Eye<em>Order</em></td><td class="sk">Discipline → 2, Persuasion → 1</td><td class="at">INT 4</td><td class="wy">The bound target's intent, and <i>advantage for the whole party</i> against it</td></tr>
+<tr><td class="lv">4</td><td class="tal">Intercept<em>Blue &middot; Foresight</em></td><td class="sk">Persuasion → 2, Insight → 1</td><td class="at">&mdash;</td><td class="wy">Finally makes the Forewarned you already own do something</td></tr>
+<tr><td class="lv">5</td><td class="tal">Covenant<em>Order</em></td><td class="sk">Insight → 2, Lore → 1</td><td class="at">&mdash;</td><td class="wy">+1 to all defenses for you and a bonded ally, and Aid at range</td></tr>
+<tr class="spike"><td class="lv">6</td><td class="tal">Sealed Edict<em>Order</em></td><td class="sk">Blue → 3, Discipline → 3</td><td class="at">INT 5</td><td class="wy">TIER 2 + Blue 3 = 2d8. A sealed law hurts twice</td></tr>
+<tr><td class="lv">7</td><td class="tal">Verdict<em>Order</em></td><td class="sk">Persuasion → 3, Lore → 2</td><td class="at">&mdash;</td><td class="wy">Stop waiting for them to break it &mdash; detonate it yourself, with a splash</td></tr>
+<tr><td class="lv">8</td><td class="tal">Bear Witness<em>Order</em></td><td class="sk">Lore → 3, Insight → 3</td><td class="at">&mdash;</td><td class="wy">Free temp HP to every bonded ally, every round</td></tr>
+<tr><td class="lv">9</td><td class="tal">Concord<em>Order</em></td><td class="sk">Deception → 2</td><td class="at">PRE 3</td><td class="wy">Bonded allies Aid each other free, and hit harder</td></tr>
+<tr><td class="lv">10</td><td class="tal">Final Decree<em>Order</em></td><td class="sk">Perception → 2</td><td class="at">&mdash;</td><td class="wy">One prohibition on <i>every</i> enemy in range</td></tr>
       </tbody>
     </table>
   </div>
@@ -330,44 +387,321 @@
     <div class="zone"><span class="num">2</span><span class="zt">What each one says</span>
       <span class="zs">exactly as written on the talent</span><span class="rule"></span></div>
     <div class="cards">
-      <div class="card heroic"><h4>Field Medicine</h4><div class="meta">Action · 1 Focus · Medicine 1+</div><p>Spend 1 focus and test Medicine (DC 15) to heal a conscious character. On success, add your ranks in Medicine to their recovery die.</p></div>
-      <div class="card ley-white"><h4>Mending Aura</h4><div class="meta">Special · Opportunity; 1 Inv · White 2+</div><p>You may spend Opportunity to restore half [Tier][Die] health to <b>each ally</b> within [Size].</p></div>
-      <div class="card heroic"><h4>Swift Healer</h4><div class="meta">Free Action · Field Medicine; Medicine 2+</div><p>Use Field Medicine as a <b>Free Action</b>. Your healing abilities restore additional health equal to your ranks in Medicine.</p></div>
-      <div class="card heroic"><h4>Emotional Intelligence</h4><div class="meta">Passive · Scholar · Surgeon</div><p>Gain Diagnosis expertise. Gain an additional skill from Erudition. You can now choose Spiritual skills with Erudition.</p></div>
-      <div class="card ley-white"><h4>Ordained Ground</h4><div class="meta">Free Action · 1 Inv · White 2+; Green 2+</div><p>Designate a 5 ft square in range as Ordained Ground for the scene. An ally starting its turn there gains <b>+1 to all defenses</b> and may Aid at up to 30 ft. Sustain up to <i>tier</i> squares.</p></div>
-      <div class="card heroic"><h4>Collected</h4><div class="meta">Passive · Emotional Intelligence</div><p>Increase your Cognitive and Spiritual defenses by 2.</p></div>
-      <div class="card heroic"><h4>Resuscitation</h4><div class="meta">Special · 3 Focus · Swift Healer; Medicine 3+</div><p>Spend 3 focus when using Field Medicine to revive an Unconscious character — or one who died recently.</p></div>
-      <div class="card heroic"><h4>Applied Medicine</h4><div class="meta">Passive · Collected; Lore 2+</div><p>Your healing abilities restore additional health equal to your ranks in Lore.</p></div>
-      <div class="card ley-white"><h4>Bulwark Ground</h4><div class="meta">Passive · Ordained Ground</div><p>At the start of each round, an ally beginning its turn on your Ordained Ground gains temporary HP equal to your tier. While they stand there, attacks against them <b>cannot benefit from advantage</b>.</p></div>
+      <div class="card" style="border-top-color:#4A6E8F"><h4>Edict</h4><div class="meta">1 Action &middot; 1 Investiture &middot; Blue 2+; White 2+</div><p>Spend 1 Investiture and place an Edict on a character in Attunement Range, declaring one prohibited action (move from its space, attack a chosen ally, activate Investiture, etc.).</p></div>
+<div class="card" style="border-top-color:#4A6E8F"><h4>Lawkeeper's Eye</h4><div class="meta">Passive &middot; — &middot; Edict</div><p>When you place an Edict, you learn the bound character's intended action on its next turn. While you can see a character bound by one of your Edicts, you and your allies have advantage on attack tests against that character.</p></div>
+<div class="card" style="border-top-color:#4A6E8F"><h4>Intercept</h4><div class="meta">Reaction &middot; 1 Investiture &middot; Blue 1+</div><p>When a creature you designated with Forewarned takes the declared action, spend 1 Investiture to impose disadvantage on that action.</p></div>
+<div class="card" style="border-top-color:#4A6E8F"><h4>Covenant</h4><div class="meta">1 Action &middot; 1 Investiture &middot; Blue 2+; White 2+</div><p>Spend 1 Investiture and touch a willing ally; you and that ally enter a Covenant for the scene. While the Covenant holds, you and the ally each gain +1 to all defenses when within Attunement Range of each other, and may use the Aid action targeting e…</p></div>
+<div class="card" style="border-top-color:#4A6E8F"><h4>Sealed Edict</h4><div class="meta">Free Action &middot; 1 Investiture &middot; Blue 3+</div><p>When you place an Edict, spend an additional 1 Investiture to declare it Sealed. When a Sealed Edict is violated, the target tests Discipline vs. your Blue;</p></div>
+<div class="card" style="border-top-color:#4A6E8F"><h4>Verdict</h4><div class="meta">2 Actions &middot; 2 Investiture &middot; Lawkeeper's Eye or Sealed Edict</div><p>Spend 2 Investiture and choose a character bound by one of your Edicts in Attunement Range. Test Blue vs. Cognitive. On a success, the Edict is immediately considered violated, and each other enemy within 10 ft of the target tests Discipline vs.</p></div>
+<div class="card" style="border-top-color:#4A6E8F"><h4>Bear Witness</h4><div class="meta">Passive &middot; — &middot; Covenant</div><p>At the start of each round, each ally in a Covenant with you within Attunement Range gains temporary HP equal to your White.</p></div>
+<div class="card" style="border-top-color:#4A6E8F"><h4>Concord</h4><div class="meta">2 Actions &middot; 2 Investiture &middot; Bear Witness or Shoulder the Oath</div><p>Spend 2 Investiture. For the scene, your active Covenants form a Concord: an ally in a Covenant with you may, as a Free Action on its turn, grant any other Covenant ally the benefit of the Aid action, and each Covenant ally's first attack each round…</p></div>
+<div class="card" style="border-top-color:#4A6E8F"><h4>Final Decree</h4><div class="meta">3 Actions &middot; 3 Investiture &middot; Verdict or Concord</div><p>Spend 3 Investiture and name one prohibited action that applies to every enemy in Attunement Range as if bound by your Edict; each ally in a Covenant with you is named a Witness.</p></div>
     </div>
   </div>
 
-  <div class="callout">
-    <b>Put every attribute point into Willpower.</b> It is the highest-leverage change available to anyone in the party.
-    White tests off Willpower, so rank 2 currently yields only <b>+2</b>; three points take White from +2 to <b>+5</b>.
-    The same three points take your max focus from <b>2 to 5</b> — which is why one spend currently empties you.
-    Fate also needs <i>Green 2</i>, so the two Green ranks at levels 4–5 are doing double duty.
-  </div>
+  <div class="callout"><b>An Edict never rolls.</b> Everything else in your kit can fail; this is a placement, not a test. So forbid the enemy's <i>best</i> option, not its scariest one &mdash; obeying costs it the turn, breaking costs it 2d8 + your Intellect in spirit damage that armour does not stop, and Lawkeeper's Eye hands the whole party advantage against it either way. Your loop at tier 2 is <b>Draw Mana &rarr; Edict &rarr; Sealed (free)</b>, with an action to spare and Investiture net zero, forever.</div>
 
   <div class="deliver">
     <div class="col">
       <div class="lab">Your next level-up</div>
-      <h3>Level 2 — Field Medicine</h3>
-      <p>Nobody in this party can heal. You are the only candidate, and the Surgeon line runs all the way
-        to bringing back the dead — but every step of it gates on Medicine ranks, so start buying them now.</p>
+      <h3>Level 2 &mdash; Edict</h3>
+      <p>Order needs Blue 2 (you have it) and White 2 (you do not). Both ranks go to White &mdash; that is the entire admission fee, and Edict comes online immediately.</p>
+    </div>
+    <div class="col">
+      <div class="lab">Spend these</div>
+      <ul>
+        <li><span class="box"></span>Talent: <b>Edict</b></li>
+        <li><span class="box"></span>Skill rank: <b>White &rarr; 2</b></li>
+        <li><span class="box"></span>Shopping: <b>leather armour and a shortbow</b></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>Edha &mdash; Hannah &middot; Build B: The Standing Law</span><span>Envoy &middot; Blue &middot; Order</span></div>
+</div>
+<div class="sheet">
+  <div class="hd">
+    <div class="eyebrow"><span>Edha &middot; level-up guide &middot; levels 2&ndash;10</span><span>Build C of 3</span></div>
+    <h1>Hannah</h1>
+    <p class="bn">The Closing Argument</p>
+    <div class="paths">
+      <span><b>Envoy</b> <span style="color:#6A7165">heroic</span></span>
+      <span><span class="pip" style="background:#4A6E8F"></span><b>Blue</b> <span style="color:#6A7165">leyline</span></span>
+      <span style="color:#6A7165"><i>no deity path &mdash; depth instead of breadth</i></span>
+    </div>
+  </div>
+
+  <div class="now">
+    <div><b>Now:</b> HP 11 &middot; Physical 14 &middot; deflect 0 &middot; foc 4 &middot; inv 4 &nbsp;|&nbsp; SPD 3 &middot; INT 3 &middot; PRE 2 &middot; WIL 2 &middot; AWA 1 &middot; STR 1 &nbsp;|&nbsp; Blue <b>+5</b> &middot; Light Weaponry +4 &middot; Black +3 &middot; Discipline +3</div>
+    <div class="spine">You do not fight. You argue the enemy out of fighting &mdash; then spend one Action and your whole focus pool to end the combat outright.</div>
+  </div>
+
+  <div>
+    <div class="zone"><span class="num">1</span><span class="zt">The ladder</span>
+      <span class="zs">one talent and two skill ranks per level</span><span class="rule"></span></div>
+    <table>
+      <thead><tr><th>Lv</th><th>Talent</th><th>Skill ranks</th><th>Attribute</th><th>What it buys you</th></tr></thead>
+      <tbody>
+        <tr><td class="lv">2</td><td class="tal">Withering Retort<em>Envoy &middot; Diplomat</em></td><td class="sk">Discipline → 2, Persuasion → 1</td><td class="at">&mdash;</td><td class="wy">Deflect on demand for a character who has none &mdash; and the gate to the pacify line</td></tr>
+<tr><td class="lv">3</td><td class="tal">Well Dressed<em>Envoy &middot; Diplomat</em></td><td class="sk">Persuasion → 2, Lore → 1</td><td class="at">WIL 3</td><td class="wy">Fashion expertise, advantage on your first face test, and the multi-target branch</td></tr>
+<tr><td class="lv">4</td><td class="tal">Calm Appeal<em>Envoy &middot; Diplomat</em></td><td class="sk">Lore → 2, Insight → 1</td><td class="at">&mdash;</td><td class="wy"><b>Pacify comes online</b>, and resisting you now costs focus</td></tr>
+<tr><td class="lv">5</td><td class="tal">Calculated Patience<em>Blue &middot; Foresight</em></td><td class="sk">Insight → 2, Deception → 1</td><td class="at">&mdash;</td><td class="wy">Free permanent advantage on the roll that decides the fight</td></tr>
+<tr class="spike"><td class="lv">6</td><td class="tal">Peaceful Solution<em>Envoy &middot; Diplomat</em></td><td class="sk">Discipline → 3, Persuasion → 3</td><td class="at">WIL 4</td><td class="wy">TIER 2. The fight-ender: pacify them all and combat <i>stops</i></td></tr>
+<tr><td class="lv">7</td><td class="tal">Galvanize<em>Envoy &middot; Faithful</em></td><td class="sk">Lore → 3, Insight → 3</td><td class="at">&mdash;</td><td class="wy">A real support action for your spare actions &mdash; and the gate to Composed</td></tr>
+<tr><td class="lv">8</td><td class="tal">High Society Contacts<em>Envoy &middot; Diplomat</em></td><td class="sk">Deception → 2, Leadership → 1</td><td class="at">&mdash;</td><td class="wy">High Society expertise. <b>Needs a story hook &mdash; see below</b></td></tr>
+<tr><td class="lv">9</td><td class="tal">Composed<em>Envoy &middot; Faithful</em></td><td class="sk">Leadership → 2, Perception → 1</td><td class="at">WIL 5</td><td class="wy">+tier to max <i>and</i> current focus &mdash; the extra magazine</td></tr>
+<tr><td class="lv">10</td><td class="tal">Practiced Oratory<em>Envoy &middot; Diplomat</em></td><td class="sk">Perception → 2, Blue → 3</td><td class="at">&mdash;</td><td class="wy">Steadfast Challenge now hits up to four targets. The build completes</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div>
+    <div class="zone"><span class="num">2</span><span class="zt">What each one says</span>
+      <span class="zs">exactly as written on the talent</span><span class="rule"></span></div>
+    <div class="cards">
+      <div class="card" style="border-top-color:#9A6E2A"><h4>Withering Retort</h4><div class="meta">Reaction &middot; — &middot; Steadfast Challenge; Discipline 2+</div><p>Use your Steadfast Challenge before an attack and increase your deflect against the attack by your ranks in Discipline.</p></div>
+<div class="card" style="border-top-color:#9A6E2A"><h4>Well Dressed</h4><div class="meta">Special &middot; — &middot; Steadfast Challenge</div><p>Gain Fashion expertise. While wearing Presentable armor or fashionable clothing, gain an advantage on your first Deception, Leadership, or Persuasion test.</p></div>
+<div class="card" style="border-top-color:#9A6E2A"><h4>Calm Appeal</h4><div class="meta">Passive &middot; 1 Focus &middot; Withering Retort; Discipline 2+</div><p>When your Steadfast Challenge makes a target Disoriented, spend 1 focus to pacify them. Resisting your Steadfast Challenge costs additional focus equal to your ranks in Discipline.</p></div>
+<div class="card" style="border-top-color:#9A6E2A"><h4>Calculated Patience</h4><div class="meta">∞ &middot; — &middot; Blue 2+</div><p>When you take a slow turn, your first test that turn gains advantage.</p></div>
+<div class="card" style="border-top-color:#9A6E2A"><h4>Peaceful Solution</h4><div class="meta">Free Action &middot; — &middot; Calm Appeal; Discipline 3+</div><p>If all non-minion enemies are pacified, you ase tensions and end combat.</p></div>
+<div class="card" style="border-top-color:#9A6E2A"><h4>Galvanize</h4><div class="meta">2 Actions &middot; — &middot; —</div><p>An ally rolls their recovery die and recovers that much focus.</p></div>
+<div class="card" style="border-top-color:#9A6E2A"><h4>High Society Contacts</h4><div class="meta">Special &middot; 2 Focus &middot; Well Dressed; Patron in high society</div><p>Gain High Society expertise. Spend 2 focus to add Opportunity to a test to interact in high society.</p></div>
+<div class="card" style="border-top-color:#9A6E2A"><h4>Composed</h4><div class="meta">Passive &middot; — &middot; Galvanize</div><p>Increase your max and current focus by your tier.</p></div>
+<div class="card" style="border-top-color:#9A6E2A"><h4>Practiced Oratory</h4><div class="meta">Special &middot; Variable Focus &middot; High Society Contacts; Persuasion 3+</div><p>When you use Rousing Resence or Steadfast Challenge, spend focus up to your ranks in Persuasion to add that many targets.</p></div>
+    </div>
+  </div>
+
+  <div class="callout"><b>One Action ends the fight.</b> At level 10: Steadfast Challenge (1 focus) + Practiced Oratory for three extra targets (3) + Calm Appeal on each of the four (4) = eight of your nine focus, one Action &mdash; four enemies Disoriented and pacified, then Peaceful Solution as a <i>Free Action</i> ends combat. &#9888; Two things to settle with Ben first: <b>High Society Contacts needs a patron in high society</b> (a narrative prerequisite, not a talent &mdash; an exiled Law-Singer makes that a story hook rather than a blocker), and <b>&ldquo;pacified&rdquo; is not an automated condition</b>, so he tracks it by hand.</div>
+
+  <div class="deliver">
+    <div class="col">
+      <div class="lab">Your next level-up</div>
+      <h3>Level 2 &mdash; Withering Retort</h3>
+      <p>Withering Retort needs Discipline 2, so buy the rank now. It is deflect for a character with none, and every pacify talent below it is gated behind it.</p>
+    </div>
+    <div class="col">
+      <div class="lab">Spend these</div>
+      <ul>
+        <li><span class="box"></span>Talent: <b>Withering Retort</b></li>
+        <li><span class="box"></span>Skill rank: <b>Discipline &rarr; 2</b></li>
+<li><span class="box"></span>Skill rank: <b>Persuasion &rarr; 1</b></li>
+        <li><span class="box"></span>Shopping: <b>a Uniform</b> (the only armour that is Presentable by default)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>Edha &mdash; Hannah &middot; Build C: The Closing Argument</span><span>Envoy &middot; Blue &middot; no deity</span></div>
+</div>
+<div class="sheet">
+  <div class="hd">
+    <div class="eyebrow"><span>Edha &middot; level-up guide &middot; levels 2&ndash;10</span><span>Build A of 3</span></div>
+    <h1>Soggy Bottom</h1>
+    <p class="bn">The Surgeon</p>
+    <div class="paths">
+      <span><b>Scholar</b> <span style="color:#6A7165">heroic</span></span>
+      <span><span class="pip" style="background:#AEB4A6"></span><b>White</b> <span style="color:#6A7165">leyline</span></span>
+      <span><span class="swatch" style="background:linear-gradient(90deg,#4A7042 50%,#AEB4A6 50%)"></span><b>Fate</b> <span style="color:#6A7165">deity &middot; Green/White</span></span>
+    </div>
+  </div>
+
+  <div class="now">
+    <div><b>Now:</b> HP 11 &middot; Spiritual 16 &middot; deflect 0 &middot; foc 2 &middot; inv 5 &nbsp;|&nbsp; AWA 3 &middot; INT 3 &middot; PRE 3 &middot; SPD 2 &middot; STR 1 &middot; <b style="color:#9C4432">WIL 0</b> &nbsp;|&nbsp; White +2 &middot; Light Weaponry +2 &middot; Athletics +1</div>
+    <div class="spine">You will not out-damage anyone &mdash; be the reason nobody dies. <b>Willpower is the one real problem</b>: White tests off it, and max focus is 2 + Willpower. You are at the floor.</div>
+  </div>
+
+  <div>
+    <div class="zone"><span class="num">1</span><span class="zt">The ladder</span>
+      <span class="zs">one talent and two skill ranks per level</span><span class="rule"></span></div>
+    <table>
+      <thead><tr><th>Lv</th><th>Talent</th><th>Skill ranks</th><th>Attribute</th><th>What it buys you</th></tr></thead>
+      <tbody>
+        <tr><td class="lv">2</td><td class="tal">Field Medicine<em>Scholar &middot; Surgeon</em></td><td class="sk">Medicine → 2</td><td class="at">&mdash;</td><td class="wy">Real healing. The party has none at all</td></tr>
+<tr><td class="lv">3</td><td class="tal">Swift Healer<em>Scholar &middot; Surgeon</em></td><td class="sk">Lore → 1, Deduction → 2</td><td class="at">WIL 1</td><td class="wy">Field Medicine becomes a <i>Free Action</i> &mdash; enormous</td></tr>
+<tr><td class="lv">4</td><td class="tal">Concordant Presence<em>White &middot; Coordination</em></td><td class="sk">Green → 1, Lore → 2</td><td class="at">&mdash;</td><td class="wy">An ally's success now sets up the next ally's</td></tr>
+<tr><td class="lv">5</td><td class="tal">Emotional Intelligence<em>Scholar &middot; Surgeon</em></td><td class="sk">Green → 2, Perception → 1</td><td class="at">&mdash;</td><td class="wy">Erudition reaches Spiritual skills, and gates Collected</td></tr>
+<tr class="spike"><td class="lv">6</td><td class="tal">Ordained Ground<em>Fate</em></td><td class="sk">White → 3, Medicine → 3</td><td class="at">WIL 2</td><td class="wy">TIER 2. Fate opens; White climbs to +5</td></tr>
+<tr><td class="lv">7</td><td class="tal">Collected<em>Scholar &middot; Surgeon</em></td><td class="sk">Insight → 2, Crafting → 2</td><td class="at">&mdash;</td><td class="wy">+2 Cognitive and Spiritual</td></tr>
+<tr><td class="lv">8</td><td class="tal">Resuscitation<em>Scholar &middot; Surgeon</em></td><td class="sk">Perception → 2, Insight → 3</td><td class="at">&mdash;</td><td class="wy">Bring back the unconscious &mdash; or the newly dead</td></tr>
+<tr><td class="lv">9</td><td class="tal">Applied Medicine<em>Scholar &middot; Surgeon</em></td><td class="sk">Lore → 3, Deduction → 3</td><td class="at">WIL 3</td><td class="wy">Healing scales off Lore as well; focus reaches 5</td></tr>
+<tr><td class="lv">10</td><td class="tal">Bulwark Ground<em>Fate</em></td><td class="sk">two free ranks</td><td class="at">&mdash;</td><td class="wy">Your ground hands out temporary HP every round</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div>
+    <div class="zone"><span class="num">2</span><span class="zt">What each one says</span>
+      <span class="zs">exactly as written on the talent</span><span class="rule"></span></div>
+    <div class="cards">
+      <div class="card" style="border-top-color:#4A7042"><h4>Field Medicine</h4><div class="meta">Action &middot; 1 Focus &middot; Medicine 1+</div><p>Spend 1 focus and test Medicine (DC 15) to heal a concious character. On success, add your ranks in Medicine to their recovery die.</p></div>
+<div class="card" style="border-top-color:#4A7042"><h4>Swift Healer</h4><div class="meta">Free Action &middot; — &middot; Field Medicine; Medicine 2+</div><p>Use Field Medicine as a Free Action. Your healing abilities restore additional health equal to your ranks in Medicine.</p></div>
+<div class="card" style="border-top-color:#4A7042"><h4>Concordant Presence</h4><div class="meta">Passive &middot; — &middot; White 1+</div><p>When an ally you can see within Attunement Range succeeds on a test, the next ally testing that same skill this round raises the stakes.</p></div>
+<div class="card" style="border-top-color:#4A7042"><h4>Emotional Intelligence</h4><div class="meta">Passive &middot; — &middot; —</div><p>Gain Diagnosis expertise. Gain an additional skill from Erudtition. You can now choose Spiritual skills with Erudition.</p></div>
+<div class="card" style="border-top-color:#4A7042"><h4>Ordained Ground</h4><div class="meta">Free Action &middot; 1 Investiture &middot; White 2+; Green 2+</div><p>Spend 1 Investiture and designate a 5 ft square in Attunement Range as Ordained Ground for the scene. An ally that begins its turn on an Ordained Ground square gains +1 to all defenses until the start of its next turn and may use the Aid action at up…</p></div>
+<div class="card" style="border-top-color:#4A7042"><h4>Collected</h4><div class="meta">Passive &middot; — &middot; Emotional Intelligence</div><p>Increase your Cognitive and Spiritual defenses by 2.</p></div>
+<div class="card" style="border-top-color:#4A7042"><h4>Resuscitation</h4><div class="meta">Special &middot; 3 Focus &middot; Swift Healer; Medicine 3+</div><p>Spend 3 focus when using Field Medicine to revive an Unconcious character or one who died recently.</p></div>
+<div class="card" style="border-top-color:#4A7042"><h4>Applied Medicine</h4><div class="meta">Passive &middot; — &middot; Collected; Lore 2+</div><p>Your healing abilities restore additional health equal to your ranks in Lore.</p></div>
+<div class="card" style="border-top-color:#4A7042"><h4>Bulwark Ground</h4><div class="meta">Passive &middot; — &middot; Ordained Ground</div><p>At the start of each round, an ally that begins its turn on one of your Ordained Ground squares gains temporary HP equal to your tier. While an ally stands on an Ordained Ground square, attacks against that ally cannot benefit from advantage.</p></div>
+    </div>
+  </div>
+
+  <div class="callout"><b>Put every attribute point into Willpower.</b> It is the highest-leverage change available to anyone in the party. White tests off Willpower, so rank 2 currently yields only <b>+2</b>; three points take White from +2 to <b>+5</b>. The same three points take your max focus from <b>2 to 5</b> &mdash; which is why one spend currently empties you. Fate also needs <i>Green 2</i>, so the two Green ranks at levels 4&ndash;5 are doing double duty.</div>
+
+  <div class="deliver">
+    <div class="col">
+      <div class="lab">Your next level-up</div>
+      <h3>Level 2 &mdash; Field Medicine</h3>
+      <p>Nobody in this party can heal. You are the only candidate, and the Surgeon line runs all the way to bringing back the dead &mdash; but every step gates on Medicine ranks, so start buying them now.</p>
     </div>
     <div class="col">
       <div class="lab">Spend these</div>
       <ul>
         <li><span class="box"></span>Talent: <b>Field Medicine</b></li>
-        <li><span class="box"></span>Skill rank: <b>Medicine → 1</b></li>
-        <li><span class="box"></span>Skill rank: <b>Medicine → 2</b></li>
-        <li><span class="box"></span>Plan: <b>Willpower at 3, 6, 9</b></li>
+        <li><span class="box"></span>Skill rank: <b>Medicine &rarr; 2</b></li>
+        <li><span class="box"></span>Plan: <b>Willpower at 3, 6 and 9</b></li>
       </ul>
     </div>
   </div>
-  <div class="foot"><span>Edha — Soggy Bottom</span><span>Scholar · White · Fate</span></div>
+  <div class="foot"><span>Edha &mdash; Soggy Bottom &middot; Build A: The Surgeon</span><span>Scholar &middot; White &middot; Fate</span></div>
 </div>
+<div class="sheet">
+  <div class="hd">
+    <div class="eyebrow"><span>Edha &middot; level-up guide &middot; levels 2&ndash;10</span><span>Build B of 3</span></div>
+    <h1>Soggy Bottom</h1>
+    <p class="bn">The Weight of the Crown</p>
+    <div class="paths">
+      <span><b>Scholar</b> <span style="color:#6A7165">heroic</span></span>
+      <span><span class="pip" style="background:#AEB4A6"></span><b>White</b> <span style="color:#6A7165">leyline</span></span>
+      <span><span class="swatch" style="background:linear-gradient(90deg,#3B3542 50%,#AEB4A6 50%)"></span><b>Sovereignty</b> <span style="color:#6A7165">deity &middot; Black/White</span></span>
+    </div>
+  </div>
 
-</body>
-</html>
+  <div class="now">
+    <div><b>Now:</b> HP 11 &middot; Spiritual 16 &middot; deflect 0 &middot; foc 2 &middot; inv 5 &nbsp;|&nbsp; AWA 3 &middot; INT 3 &middot; PRE 3 &middot; SPD 2 &middot; STR 1 &middot; <b style="color:#9C4432">WIL 0</b> &nbsp;|&nbsp; White +2 &middot; Light Weaponry +2 &middot; Athletics +1</div>
+    <div class="spine">You do not roll damage &mdash; you change what everyone else's dice are. Your allies' damage dice get bigger and the enemy's get smaller, and it lasts the scene.</div>
+  </div>
+
+  <div>
+    <div class="zone"><span class="num">1</span><span class="zt">The ladder</span>
+      <span class="zs">one talent and two skill ranks per level</span><span class="rule"></span></div>
+    <table>
+      <thead><tr><th>Lv</th><th>Talent</th><th>Skill ranks</th><th>Attribute</th><th>What it buys you</th></tr></thead>
+      <tbody>
+        <tr><td class="lv">2</td><td class="tal">Exalt<em>Sovereignty</em></td><td class="sk">Black → 2</td><td class="at">&mdash;</td><td class="wy">An ally's damage die grows a step. No test, no attack roll</td></tr>
+<tr><td class="lv">3</td><td class="tal">Censure<em>Sovereignty</em></td><td class="sk">Deduction → 2, Leadership → 1</td><td class="at">PRE 4</td><td class="wy">The mirror: an enemy's damage die shrinks. Tests Black &mdash; your Presence</td></tr>
+<tr><td class="lv">4</td><td class="tal">Sovereign's Favor<em>Sovereignty</em></td><td class="sk">Insight → 2, Perception → 1</td><td class="at">&mdash;</td><td class="wy">Your buff now carries temporary HP with it</td></tr>
+<tr><td class="lv">5</td><td class="tal">Expose<em>Sovereignty</em></td><td class="sk">Crafting → 2, Lore → 1</td><td class="at">&mdash;</td><td class="wy">A Censured enemy failing anything refunds your Investiture</td></tr>
+<tr class="spike"><td class="lv">6</td><td class="tal">Decree of Ruin<em>Sovereignty</em></td><td class="sk">Black → 3, White → 3</td><td class="at">PRE 5</td><td class="wy">TIER 2. The shrink becomes permanent for the scene</td></tr>
+<tr><td class="lv">7</td><td class="tal">Investiture of Authority<em>Sovereignty</em></td><td class="sk">Lore → 2, Discipline → 1</td><td class="at">&mdash;</td><td class="wy">One ally's die grows <i>for the whole scene</i></td></tr>
+<tr><td class="lv">8</td><td class="tal">Sovereign's Balance<em>Sovereignty</em></td><td class="sk">Deduction → 3, Insight → 3</td><td class="at">&mdash;</td><td class="wy">Buff and debuff in a single action</td></tr>
+<tr><td class="lv">9</td><td class="tal">Edict of the Fallen<em>Sovereignty</em></td><td class="sk">Lore → 3, Perception → 2</td><td class="at">PRE 6</td><td class="wy">Shrink an attacker's die for the scene on a Spiritual test</td></tr>
+<tr><td class="lv">10</td><td class="tal">Sovereignty<em>Sovereignty</em></td><td class="sk">Leadership → 2, Discipline → 2</td><td class="at">&mdash;</td><td class="wy">Two steps up for an ally and two down for an enemy, all scene</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div>
+    <div class="zone"><span class="num">2</span><span class="zt">What each one says</span>
+      <span class="zs">exactly as written on the talent</span><span class="rule"></span></div>
+    <div class="cards">
+      <div class="card" style="border-top-color:#3B3542"><h4>Exalt</h4><div class="meta">1 Action &middot; 1 Investiture &middot; Black 2+; White 2+</div><p>Spend 1 Investiture and choose a willing ally in Attunement Range. Until the start of your next turn, that ally's damage die size increases by one step (maximum d12).</p></div>
+<div class="card" style="border-top-color:#3B3542"><h4>Censure</h4><div class="meta">1 Action &middot; 1 Investiture &middot; Black 2+; White 2+</div><p>Spend 1 Investiture and test Black vs. Cognitive against a creature in Attunement Range. On success, until the start of your next turn, that creature's damage die size decreases by one step (minimum d4).</p></div>
+<div class="card" style="border-top-color:#3B3542"><h4>Sovereign's Favor</h4><div class="meta">Passive &middot; — &middot; Exalt</div><p>When you use Exalt on an ally, they also gain temporary HP equal to [Tier][Die]. This talent's temporary HP does not stack.</p></div>
+<div class="card" style="border-top-color:#3B3542"><h4>Expose</h4><div class="meta">Passive &middot; — &middot; Censure</div><p>When a creature affected by your Censure fails a test, you recover 1 Investiture. When that creature fails an attack test, any ally in Attunement Range who is that attack's target may make a Reactive Strike against it.</p></div>
+<div class="card" style="border-top-color:#3B3542"><h4>Decree of Ruin</h4><div class="meta">1 Action &middot; 2 Investiture &middot; Black 3+; Censure</div><p>Spend 2 Investiture and test Black vs. Cognitive against a creature in Attunement Range. On success, for the scene, that creature's damage die size decreases by one step (minimum d4). On failure, the decrease lasts until the start of your next turn.</p></div>
+<div class="card" style="border-top-color:#3B3542"><h4>Investiture of Authority</h4><div class="meta">1 Action &middot; 2 Investiture &middot; White 3+; Exalt</div><p>Spend 2 Investiture and choose a willing ally in Attunement Range. For the scene, that ally's damage die size increases by one step (maximum d12), replacing any existing Exalt on that target. Once per ally per scene.</p></div>
+<div class="card" style="border-top-color:#3B3542"><h4>Sovereign's Balance</h4><div class="meta">1 Action &middot; 2 Investiture &middot; Sovereign's Favor or Investiture of Authority</div><p>Spend 2 Investiture and choose one willing ally and one enemy in Attunement Range. Until the start of your next turn, the ally's damage die size increases by one step (maximum d12) and the enemy's damage die size decreases by one step (minimum d4).</p></div>
+<div class="card" style="border-top-color:#3B3542"><h4>Edict of the Fallen</h4><div class="meta">2 Actions &middot; 2 Investiture &middot; Expose or Decree of Ruin</div><p>Spend 2 Investiture and test Black vs. Spiritual against a creature in Attunement Range. On success, for the scene, that creature's damage die size for attacks decreases by two steps (minimum d4), and each time it fails an attack test, each ally in A…</p></div>
+<div class="card" style="border-top-color:#3B3542"><h4>Sovereignty</h4><div class="meta">3 Actions &middot; 3 Investiture &middot; Sovereign's Balance or Edict of the Fallen</div><p>Spend 3 Investiture and choose one willing ally and one enemy in Attunement Range. For the scene: the ally's damage die size increases by two steps (maximum d12) and the enemy's damage die size decreases by two steps (minimum d4).</p></div>
+    </div>
+  </div>
+
+  <div class="callout"><b>This is the build that solves Willpower by never using it.</b> Sovereignty tests <b>Black</b>, which is keyed to <b>Presence</b> &mdash; already one of your three good stats &mdash; and four of these nine talents make no test at all. Three points into Presence take Black to <b>+9</b> and, because max Investiture is 2 + your best of Awareness/Presence, your Investiture pool to <b>8</b>, which is exactly what a tree this hungry needs. Willpower stays 0 and never once matters.</div>
+
+  <div class="deliver">
+    <div class="col">
+      <div class="lab">Your next level-up</div>
+      <h3>Level 2 &mdash; Exalt</h3>
+      <p>Sovereignty needs White 2 (you have it) and Black 2 (you do not). Both ranks go to Black &mdash; the whole admission fee &mdash; and Exalt works from that moment.</p>
+    </div>
+    <div class="col">
+      <div class="lab">Spend these</div>
+      <ul>
+        <li><span class="box"></span>Talent: <b>Exalt</b></li>
+        <li><span class="box"></span>Skill rank: <b>Black &rarr; 2</b></li>
+        <li><span class="box"></span>Shopping: <b>leather armour</b> (deflect 1, no Strength requirement)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>Edha &mdash; Soggy Bottom &middot; Build B: The Weight of the Crown</span><span>Scholar &middot; White &middot; Sovereignty</span></div>
+</div>
+<div class="sheet">
+  <div class="hd">
+    <div class="eyebrow"><span>Edha &middot; level-up guide &middot; levels 2&ndash;10</span><span>Build C of 3</span></div>
+    <h1>Soggy Bottom</h1>
+    <p class="bn">The Foreseen Turn</p>
+    <div class="paths">
+      <span><b>Scholar</b> <span style="color:#6A7165">heroic</span></span>
+      <span><span class="pip" style="background:#AEB4A6"></span><b>White</b> <span style="color:#6A7165">leyline</span></span>
+      <span style="color:#6A7165"><i>no deity path &mdash; depth instead of breadth</i></span>
+    </div>
+  </div>
+
+  <div class="now">
+    <div><b>Now:</b> HP 11 &middot; Spiritual 16 &middot; deflect 0 &middot; foc 2 &middot; inv 5 &nbsp;|&nbsp; AWA 3 &middot; INT 3 &middot; PRE 3 &middot; SPD 2 &middot; STR 1 &middot; <b style="color:#9C4432">WIL 0</b> &nbsp;|&nbsp; White +2 &middot; Light Weaponry +2 &middot; Athletics +1</div>
+    <div class="spine">You spend the fight reading it, and on the round that matters you hand the entire party an extra Action.</div>
+  </div>
+
+  <div>
+    <div class="zone"><span class="num">1</span><span class="zt">The ladder</span>
+      <span class="zs">one talent and two skill ranks per level</span><span class="rule"></span></div>
+    <table>
+      <thead><tr><th>Lv</th><th>Talent</th><th>Skill ranks</th><th>Attribute</th><th>What it buys you</th></tr></thead>
+      <tbody>
+        <tr><td class="lv">2</td><td class="tal">Mind and Body<em>Scholar &middot; Strategist</em></td><td class="sk">Deduction → 2, Lore → 1</td><td class="at">&mdash;</td><td class="wy">A weapon expertise, an extra Erudition skill, and physical skills unlocked</td></tr>
+<tr><td class="lv">3</td><td class="tal">Clear Mind<em>Scholar &middot; Strategist</em></td><td class="sk">Lore → 2, Insight → 2</td><td class="at">INT 4</td><td class="wy"><b>Max focus + tier</b> &mdash; the focus floor fixed by a talent, not an attribute</td></tr>
+<tr><td class="lv">4</td><td class="tal">Know Your Moment<em>Scholar &middot; Strategist</em></td><td class="sk">Crafting → 2, Medicine → 1</td><td class="at">&mdash;</td><td class="wy">+2 to all defenses from the top of each round until you act</td></tr>
+<tr><td class="lv">5</td><td class="tal">Deep Contemplation<em>Scholar &middot; Strategist</em></td><td class="sk">Discipline → 1, Perception → 1</td><td class="at">&mdash;</td><td class="wy">Re-slot two Erudition skills mid-adventure</td></tr>
+<tr class="spike"><td class="lv">6</td><td class="tal">Concordant Presence<em>White &middot; Coordination</em></td><td class="sk">Lore → 3, Deduction → 3</td><td class="at">INT 5</td><td class="wy">TIER 2. Focus 4, and your aura doubles to 60 ft</td></tr>
+<tr><td class="lv">7</td><td class="tal">Contingency<em>Scholar &middot; Strategist</em></td><td class="sk">White → 3, Insight → 3</td><td class="at">&mdash;</td><td class="wy">Reaction: delete a Complication off any ally within 20 ft</td></tr>
+<tr><td class="lv">8</td><td class="tal">Turning Point<em>Scholar &middot; Strategist</em></td><td class="sk">Medicine → 2, Discipline → 2</td><td class="at">&mdash;</td><td class="wy"><b>The payoff</b> &mdash; the whole party gains an Action</td></tr>
+<tr><td class="lv">9</td><td class="tal">Beacon of Stability<em>White &middot; Coordination</em></td><td class="sk">Perception → 2, Leadership → 1</td><td class="at">INT 6</td><td class="wy">Your Draw Mana now heals <i>and</i> strips a condition</td></tr>
+<tr><td class="lv">10</td><td class="tal">Keen Insight<em>Scholar &middot; Strategist</em></td><td class="sk">Crafting → 3, Leadership → 2</td><td class="at">&mdash;</td><td class="wy">Gain Advantage now debuffs the target too</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div>
+    <div class="zone"><span class="num">2</span><span class="zt">What each one says</span>
+      <span class="zs">exactly as written on the talent</span><span class="rule"></span></div>
+    <div class="cards">
+      <div class="card" style="border-top-color:#9A6E2A"><h4>Mind and Body</h4><div class="meta">Passive &middot; — &middot; —</div><p>Gain a weapon expertise. Gain an additional skill from Erudition. You can now choose physical skills with Erudition.</p></div>
+<div class="card" style="border-top-color:#9A6E2A"><h4>Clear Mind</h4><div class="meta">Passive &middot; — &middot; Strategize</div><p>Increase your max and current focus by your tier.</p></div>
+<div class="card" style="border-top-color:#9A6E2A"><h4>Know Your Moment</h4><div class="meta">Passive &middot; — &middot; Mind and Body; Deduction 2+</div><p>Your defenses increase by 2 from the start of each round until you take your turn.</p></div>
+<div class="card" style="border-top-color:#9A6E2A"><h4>Deep Contemplation</h4><div class="meta">2 Actions &middot; — &middot; Clear Mind; Lore 2+</div><p>Reassign up to 2 skills and expertises from Erudition</p></div>
+<div class="card" style="border-top-color:#9A6E2A"><h4>Concordant Presence</h4><div class="meta">Passive &middot; — &middot; White 1+</div><p>When an ally you can see within Attunement Range succeeds on a test, the next ally testing that same skill this round raises the stakes.</p></div>
+<div class="card" style="border-top-color:#9A6E2A"><h4>Contingency</h4><div class="meta">Reaction &middot; 2 Focus &middot; Clear Mind; Lore 3+</div><p>Spend 2 focus to remove Complication from the test of an ally within 20 ft.</p></div>
+<div class="card" style="border-top-color:#9A6E2A"><h4>Turning Point</h4><div class="meta">2 Actions &middot; 2 Focus &middot; Contingency; Deduction 3+</div><p>Spend 2 focus to test Deduction vs. Cognitive of the enemy leader, gaining an advantage if you took a slow turn. On a success, you and your allies gain an Action on your next turns.</p></div>
+<div class="card" style="border-top-color:#9A6E2A"><h4>Beacon of Stability</h4><div class="meta">Special &middot; 1 Investiture &middot; White 2+</div><p>When you Draw Mana, spend 1 Investiture to remove one condition from an ally within Attunement Range.</p></div>
+<div class="card" style="border-top-color:#9A6E2A"><h4>Keen Insight</h4><div class="meta">Passive &middot; — &middot; Deep Contemplation</div><p>After you Gain Advantage, the target must resist your influence or gain a disadvantage on their next test.</p></div>
+    </div>
+  </div>
+
+  <div class="callout"><b>Turning Point is the whole character, and it tests Deduction &mdash; your best skill, not your worst.</b> At Intellect 6 with Deduction 3 you roll +9 against the enemy leader, with advantage if you took a slow turn, and success hands an extra Action to <i>every</i> member of the party. Everything below it exists to make that roll land: <i>Clear Mind</i> pays for it, <i>Know Your Moment</i> keeps you standing until your initiative comes up. &#9888; You never take Hardy, so you stay at HP 11 &mdash; play this one from the back rank.</div>
+
+  <div class="deliver">
+    <div class="col">
+      <div class="lab">Your next level-up</div>
+      <h3>Level 2 &mdash; Mind and Body</h3>
+      <p>Mind and Body is a root pick with no prerequisite at all, and it opens Know Your Moment. Deduction 2 now starts the run to the Deduction 3 that Turning Point demands.</p>
+    </div>
+    <div class="col">
+      <div class="lab">Spend these</div>
+      <ul>
+        <li><span class="box"></span>Talent: <b>Mind and Body</b></li>
+        <li><span class="box"></span>Skill rank: <b>Deduction &rarr; 2</b></li>
+<li><span class="box"></span>Skill rank: <b>Lore &rarr; 1</b></li>
+        <li><span class="box"></span>Shopping: <b>leather armour</b>, and pay for library access</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>Edha &mdash; Soggy Bottom &middot; Build C: The Foreseen Turn</span><span>Scholar &middot; White &middot; no deity</span></div>
+</div>
+</body></html>
