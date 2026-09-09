@@ -25,8 +25,7 @@ function edhaTokensWithin(centerTok, ft) {
   const cx = centerTok.center?.x, cy = centerTok.center?.y;
   return (canvas?.tokens?.placeables ?? []).filter(t => {
     if (t.id === centerTok.id || !t.actor) return false;
-    const px = Math.hypot((t.center?.x ?? 0) - cx, (t.center?.y ?? 0) - cy);
-    return (px / gs * gd) <= ft;
+    return edhaMeasureFt(t.center?.x ?? 0, t.center?.y ?? 0, cx, cy) <= ft;   // ruler, not hypot (2026-09-09)
   });
 }
 

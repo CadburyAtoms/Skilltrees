@@ -173,10 +173,19 @@ for (const ctx of ["Attack", "Item"]) Hooks.on(`cosmere-rpg.pre${ctx}Roll`, edha
  *     LAST name-keyed row. The EDHA_DRAW_MANA table it lived in is DELETED; the 07-05 Isolated
  *     gate, the 07-12 line-of-sight ruling and the 07-12b GM-whispered skip accounting all rode
  *     into the pulse runner as generic fields. Do not re-add a table here. */
+/* Returns the HP that ACTUALLY LANDED, which is not the amount asked for whenever the target is
+ * at (or near) max — the write clamps, and before 2026-09-09 the clamped delta was thrown away.
+ * That is the second half of item 68's contract: the gate's cut was already reported honestly,
+ * but the MAX CLAMP was not, so a sweep over allies who were all at full HP printed "healed 3 of
+ * 3 ally(ies) for 3 HP" having delivered nothing. Measured twice in bench run 44 (2026-09-09):
+ * Tem +1, Hannah +1, Soggy +0 (full) reported as 3 healed for 3. */
 async function edhaHealActor(actor, amt) {
-  const hea = actor?.system?.resources?.hea; if (!hea) return;
+  const hea = actor?.system?.resources?.hea; if (!hea) return 0;
   const max = (hea.max && typeof hea.max === "object") ? hea.max.value : hea.max;
-  await edhaResourceWrite(actor, "hea", { value: Math.min(max ?? ((hea.value || 0) + amt), (hea.value || 0) + amt) }, edhaBookkeepingTag("edhaHealActor"));
+  const before = Number(hea.value) || 0;
+  const after = Math.min(max ?? (before + amt), before + amt);
+  await edhaResourceWrite(actor, "hea", { value: after }, edhaBookkeepingTag("edhaHealActor"));
+  return Math.max(0, after - before);
 }
 /* The pulse runner (`edha-pulse`, 07-25; enemy side 2bZ): heal or a status to every ally — or
  * enemy — within the colour's Attunement Range. visibleOnly reproduces the 07-12 through-walls
@@ -334,7 +343,7 @@ async function edhaZoneFoundation(item, h) {
     if (!pt) { edhaRefundCost(item); ui.notifications?.info(`${item.name} cancelled — Investiture refunded.`); return; }
     if (tok) {
       const gs0 = scene.grid?.size || 100, gd0 = scene.grid?.distance || 5;
-      const distFt = Math.hypot(pt.x - tok.center.x, pt.y - tok.center.y) / gs0 * gd0;
+      const distFt = edhaPointGapFt(pt, tok);   // ruler, not hypot (2026-09-09)
       if (distFt > rangeFt + gd0 / 2) { edhaRefundCost(item); ui.notifications?.warn(`Edha: that point is ${Math.round(distFt)} ft away — beyond Attunement Range (${rangeFt} ft). Refunded.`); return; }
     }
     const gs = scene.grid?.size || 100, gd = scene.grid?.distance || 5;

@@ -166,7 +166,7 @@ async function edhaPickPlacement(item, { color = "", rangeFt = 0 } = {}) {
   const pt = await edhaPickPoint(`Click the square for ${item.name} (right-click to cancel).${ft > 0 ? ` Attunement Range ${ft} ft.` : ""}`);
   try { if (ring) await ring.delete(); } catch (e) {}
   if (!pt) { edhaRefundCost(item); ui.notifications?.info(`${item.name} canceled — cost refunded.`); return null; }
-  if (ft > 0 && tok && Math.hypot(pt.x - tok.center.x, pt.y - tok.center.y) / gs * gd > ft + gd / 2) {
+  if (ft > 0 && tok && edhaPointGapFt(pt, tok) > ft + gd / 2) {   // ruler, not hypot (2026-09-09)
     edhaRefundCost(item); ui.notifications?.warn(`Edha: that square is beyond Attunement Range (${ft} ft) — cost refunded.`); return null;
   }
   return pt;

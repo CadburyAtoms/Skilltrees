@@ -403,11 +403,8 @@ async function edhaGmCueDamageSweep(victim, prevHp, newHp, maxHp) {
     }
   } catch (e) { console.error("Edha Content | GM cue sweep failed", e); }
 }
-// Center-to-center distance in scene feet between two placeables.
-function edhaTokenGapFt(a, b) {
-  const gs = canvas?.scene?.grid?.size || 100, gd = canvas?.scene?.grid?.distance || 5;
-  return Math.hypot((a.center?.x ?? 0) - (b.center?.x ?? 0), (a.center?.y ?? 0) - (b.center?.y ?? 0)) / gs * gd;
-}
+// edhaTokenGapFt moved to 01-shared-core.js (2026-09-09) so every range check measures on
+// Foundry's ruler, not on Euclidean hypot. See the DISTANCE block there for why.
 // Turn-based GM cues (07-16b playtest pass): "enemy-turn-start {rangeFt}" cues a reaction holder
 // once when a hostile starts its turn in range (Reactive Strike — a per-ACTION cue would spam);
 // "turn-end {everyNRounds}" cues at the END of the owner's own turn on matching rounds (Glyph

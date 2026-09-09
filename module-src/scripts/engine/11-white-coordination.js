@@ -167,7 +167,7 @@ function edhaSweepEmptyNote(owner, ft, sameSide) {
     if (!Number.isFinite(disp)) return `${owner.name}'s token has no disposition set — allies and targets cannot be told apart, so nothing is in range.`;
     const cands = (canvas?.tokens?.placeables ?? []).filter(t => t.id !== ot.id && t.actor && (sameSide ? edhaSideSame(t.document?.disposition, disp) : edhaSideHostile(t.document?.disposition, disp)));
     if (!cands.length) return `No ${sameSide ? "same-side" : "opposing"} tokens on the scene at all.`;
-    const dists = cands.map(t => ({ t, d: Math.hypot((t.center?.x ?? 0) - ot.center.x, (t.center?.y ?? 0) - ot.center.y) / gs * gd })).sort((a, b) => a.d - b.d);
+    const dists = cands.map(t => ({ t, d: edhaTokenGapFt(t, ot) })).sort((a, b) => a.d - b.d);   // ruler, not hypot (2026-09-09): this number is SHOWN to the player
     return `No ${sameSide ? "allies" : "targets"} within ${ft} ft — nearest (${dists[0].t.actor.name}) is ${Math.round(dists[0].d)} ft away; ${cands.length} candidate${cands.length === 1 ? "" : "s"} on the scene.`;
   } catch (e) { return "No candidates in range."; }
 }
