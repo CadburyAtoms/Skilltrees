@@ -122,20 +122,50 @@ This is Ben's question 2, answered from the formulas rather than from feel.
 | Hunter `Deadly Trap` `2d4` | 5 | **5** | **5** |
 
 Heroic damage talents are **flat across tiers 1 and 2 — the whole of levels 1 to 10.** Leyline
-damage doubles at level 6 and overtakes them there. So a heroic character is ahead at levels 1–5,
-level with them at 6, and behind after; and a leyline character's power curve has a cliff at
-exactly the level heroic's does not. That is a real, structural mismatch, and it is not visible
-in any talent's text.
+damage doubles at level 6 and overtakes them there.
 
-### Every heroic tree is fully available by level 5; leyline trees are not
+**But the level at which each side gets its damage is the other half of the answer, and correcting
+the rank-gate bug reversed it.** All three of heroic's big damage talents are **level-6 gated by an
+off-colour skill**:
 
-| | reachable by L5 | of 25 |
+| Talent | gate | earliest level | Tier 1 | Tier 2 |
+|---|---|---|---|---|
+| Warrior `Devastating Blow` | `Athletics 3+` | **L6** | — | 2d8 = 9 |
+| Warrior `Wit's End` | `Intimidation 3+` | **L6** | — | 4d6 = 14 |
+| Hunter `Fatal Thrust` | `Perception 3+` | **L6** | — | 4d4 = 10 |
+| Hunter `Deadly Trap` | `Survival 1+` | L1 | 2d4 = 5 | 2d4 = 5 |
+| Red `Searing Bolt` | `Red 1+` | **L1** | 1d6 = 3.5 | 2d8 = 9 |
+| Black `Withering Ray` | `Black 1+` | **L1** | 2d6 = 7 vital | 4d8 = 18 vital |
+
+So the honest shape is: **leyline has real damage from level 1 and heroic does not.** Black's
+`Withering Ray` is 2d6 = 7 *vital* (ignores Deflect) for one Action at level 1; the strongest thing
+a heroic character can do before level 6 is a weapon Strike plus `Mighty`'s +2. Then at level 6
+both sides spike together — heroic's three talents arrive, leyline's dice double — and after that
+heroic flattens for the rest of the tier while leyline keeps climbing with rank.
+
+The mismatch is real but it is **not** the front-loaded-heroic/back-loaded-leyline story the first
+draft of this document told. It is: leyline ahead early, both spike at 6, leyline pulls away after.
+
+### Reachability by level 5 — heroic and leyline are at parity
+
+> ⚠️ **This section previously said "every heroic tree is 100% available by level 5".** That was
+> a bug in `derive-dossiers.js`, caught by the review's own verification pass: the rank-3 → L6 rule
+> was applied only to the five leyline colours, so a talent gated on `Athletics 3+` or
+> `Perception 3+` fell through and was dropped. **43 talents were mis-levelled, 37 of them
+> heroic.** The rank cap is universal — `validate-build.py`: "max skill rank 2 up to level 5, 3
+> from level 6" — for every skill, not just colours. Fixed; the numbers below are the corrected
+> ones, and they say something different.
+
+| Tree | reachable by L5 | of 25 |
 |---|---|---|
-| every heroic tree | 25 | 100% |
-| leyline/White, Black | 21 | 84% |
-| leyline/Red | 20 | 80% |
-| leyline/Green | 19 | 76% |
-| leyline/Blue | 18 | 72% |
+| leyline/White, Black; heroic/Leader | 20 | 80% |
+| leyline/Red; heroic/Envoy, Hunter, Scholar, Warrior | 19 | 76% |
+| heroic/Agent | 18 | 72% |
+| leyline/Blue, Green | 17 | 68% |
+
+Every tree in both atlases opens 68–80% of itself by level 5. **There is no front-loading
+asymmetry.** What there is instead is a shared level-6 wall: `maxL` is 6 for all eleven
+25-talent trees.
 
 ### Trigger-gating — White is the outlier, and by a distance
 
@@ -427,10 +457,13 @@ formulas, but it has the five largest heal formulas in the game. The distinction
    damage tree. For **Scholar it is half a hole**: 24 against 30–32 for the rest of heroic, bought
    back in out-of-combat power the rubric under-weights but a fight does not. For **Sovereignty it
    is a hole**: 13, four below the next-lowest deity tree, with no independent effect of any kind.
-2. **Leyline vs heroic at comparable points.** No, and the mismatch is structural rather than
-   per-talent. Heroic trees are fully available by L5 and their damage is **flat from level 1 to
-   level 10**; leyline trees are 72–84% available at L5 and their damage **doubles at level 6**.
-   Heroic is ahead early, level at 6, behind after.
+2. **Leyline vs heroic at comparable points.** No, but not in the direction the first draft of this
+   review claimed. On **availability** they are at parity: every tree in both atlases opens 68–80%
+   of itself by level 5, and all eleven 25-talent trees wall at level 6. On **damage**, leyline is
+   ahead early — Black's `Withering Ray` is 2d6 vital for one Action at **level 1**, while all
+   three of heroic's big damage talents (`Devastating Blow`, `Wit's End`, `Fatal Thrust`) are
+   gated behind an off-colour `Skill 3+`, i.e. **level 6**. Both sides spike at 6; after that
+   heroic is flat for the rest of the tier and leyline keeps climbing with rank.
 3. **Deity parity.** Not close. Sovereignty is last by a wide margin — no damage, no independent
    effect, a signature resource that was never built, and a dead gate colour. Life is low-damage
    but legitimate. Chaos, Order, Death, Destruction and Knowledge are strong. The two-colour gate

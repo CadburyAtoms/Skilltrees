@@ -50,7 +50,16 @@ const BY_TREE = {};
 for (const t of T) (BY_TREE[t.atlas + '|' + t.tree] ||= {})[t.name.trim().toLowerCase()] = t;
 
 // requirement groups, mirroring validate-build.py
-const RANK_RE = /^(white|blue|black|red|green)\s+(\d)\+$/i;
+//
+// The rank cap is UNIVERSAL, not colour-specific: `scripts/validate-build.py` says "max skill rank
+// 2 up to level 5, 3 from level 6" for every skill. This regex used to match only the five leyline
+// colours, so a talent gated on `Athletics 3+` or `Perception 3+` fell through to the talent-name
+// branch, resolved to nothing, and was silently dropped — reporting 43 talents as reachable before
+// level 6 when they are not, 37 of them heroic. That produced the false headline "every heroic tree
+// is 100% available by level 5" (really 72-76%, i.e. level with leyline's 68-80%). The one
+// non-skill prerequisite in the data, "Title granting you command of 5+ people", is excluded by the
+// single-word skill name. Fixed 2026-09-09.
+const RANK_RE = /^([A-Za-z]+)\s+(\d)\+$/;
 function groups(t) {
   const tt = BY_TREE[t.atlas + '|' + t.tree];
   const g = [];
@@ -61,7 +70,7 @@ function groups(t) {
   if (prose && prose !== '—') {
     for (const part of prose.split(/;|,/).map(s => s.trim()).filter(Boolean)) {
       const m = part.match(RANK_RE);
-      if (m) { ranks.push({ color: m[1], rank: +m[2] }); continue; }
+      if (m) { ranks.push({ skill: m[1], rank: +m[2] }); continue; }
       const ors = part.split(/\bor\b/i).map(s => s.trim().toLowerCase()).filter(Boolean);
       const resolved = ors.filter(o => tt[o]);
       if (resolved.length) g.push(resolved);
@@ -91,12 +100,16 @@ function calcDepth(t, seen = new Set()) {
 }
 for (const t of T) calcDepth(t);
 
-// earliest level: rank cap 2 up to L5, 3 from L6. Need `rank` in a colour => level>= (rank<=2?1:6).
-// plus depth: you need `depth` prior talents in this tree, 1 talent/level from L1.
+// earliest level, from the advancement table in `scripts/validate-build.py`: the max skill rank is
+// 2 through level 5, 3 from level 6 — and it is the same cap for EVERY skill, colour or not. So a
+// `<Skill> 3+` prerequisite is a level-6 gate whatever the skill; rank 4 and 5 extrapolate to the
+// tier boundaries above (none exist in the data today, but the ladder should not lie if one lands).
+// Plus depth: you need `depth` prior talents in this tree, 1 talent per level from L1.
+const RANK_MIN_LEVEL = { 3: 6, 4: 11, 5: 16 };
 function earliestLevel(t) {
   const { ranks } = meta.get(t);
   let lv = 1 + depth.get(t);              // own depth-many prereq talents first
-  for (const r of ranks) if (r.rank >= 3) lv = Math.max(lv, 6);
+  for (const r of ranks) lv = Math.max(lv, RANK_MIN_LEVEL[r.rank] || 1);
   return lv;
 }
 
@@ -114,7 +127,7 @@ const rows = T.map(t => {
     action: t.action, cost: t.cost, prerequisites: t.prerequisites,
     connections: t.connections || [],
     depth: depth.get(t), earliestLevel: earliestLevel(t),
-    rankGate: meta.get(t).ranks.map(r => r.color + ' ' + r.rank + '+').join('; ') || '',
+    rankGate: meta.get(t).ranks.map(r => r.skill + ' ' + r.rank + '+').join('; ') || '',
     tags: t.tags || '',
     description: gen,
     flavor: t.flavor || '',
