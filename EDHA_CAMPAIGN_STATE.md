@@ -88,27 +88,31 @@ Ben 2026-07-16.)*
 
 | # | Title | Status | One-line |
 |---|---|---|---|
-| 1 | The Harvest That Won't Die | **built + reviewed (2026-07-14), not played** | Escort three grain barges ~13 days down the Palewater (re-timed 2026-07-19, ruling 84); river beats days 2–6 (wrong catch, tollbirds, skeindeer); ambush at the raiders' ford day ~9; mistheron fog attack day 10–11; the hook lands at Withervale day 13. |
+| 1 | The Harvest That Won't Die | **built, reviewed, and session-forge refreshed 2026-09-09 — not played** | Escort three grain barges **13 days** down the Palewater; river beats days 1–4; the **Wainferry/Wainscross ferry stop day 5** (ruling 163 — the chain-toll and the paymaster writ); beats days 6–8; ambush at the raiders' ford **day 9**; mistheron fog attack **day 11–12**; the hook lands at Withervale **day 13**. |
 
 ## 7. Next session
 
-**Session 1's blocker list is stale — three of four are resolved, one is Ben's ⚑.** The **W23
+**Session 1 is ready to run. One ⚑ remains, and it is art.** The **W23
 adversary tooling round is DONE**: the bestiary folders (script stats → `data/adversaries.json` →
 `foundry-build` → the edha-adversaries Actor folder with working talents) shipped in July 2026 and
 have been bench-tested through September (see `EDHA_FOUNDRY_TEST_CHECKLIST.md`'s bestiary
 sections). The **capitals are DONE**: `source-materials/maps/thyrcross.map.json` carries 35
 cities, 5 of them capital-tagged (Maelstrand, Kragmoot, Goldenport, and the Ashkar pair
 Raskeld/Kaelmouth). The **battle-map art** (Palewater shallows, Withervale) is still Ben's ⚑,
-whenever he gets to it. That leaves one open content piece: the **day-5 ferry-pair town stop**
-(ruling 154 — Ben: *"needs some GAS"*; run-sheet §10.2), which needs a session-forge pass.
-Because the run-sheet predates the
-July–September engine, bestiary, and rulings work, a **session-forge refresh sitting with Ben
-precedes session 1** — it is interactive (his ruling gates), not an overnight item — and is
-**deferred on his own note, phone inbox 2026-09-07 21:53 ET, verbatim**: *"We will revisit the
-art and session building loop later."* (Ben also asked, phone inbox 21:54 ET: *"What else is
-needed from me here? is an updated session forge needed?"* — the answer: nothing is owed from him
-right now except the two battle maps' art, whenever he gets to it; yes, a session-forge refresh is
-needed, and it sits waiting for when he wants to run it.)
+whenever he gets to it.
+
+**The session-forge refresh RAN on 2026-09-09** (Ben: *"rerun the session forge for session
+one"*), and it closed everything else — including ruling 154's day-5 ferry stop, which had been
+the last open content piece. It re-measured every leg on the current trace and found the run-sheet
+had drifted from both the map and the pack: the journey said "twelve days" in five places against
+ruling 84's thirteen, the Black Altar seed still carried a pre-redraw coordinate, and the
+Mistheron's Seeming was still written as an always-on trait when the bench-verified actor spends an
+Action on it. All fixed, gates green. The **day-5 stop is built** (run-sheet §2b, canon ruling
+163): Ben took the **"Ferry Law"** shape, named the towns **Wainferry / Wainscross**, and declined
+the burying-ground variant so it would not steal Withervale's thunder — the wasting appears there
+only as a working horse with a collar-sore that will not close. **Nothing is owed from Ben now
+except the two battle maps.** What session 1 needs next is a table, not a session.
+
 *(Settled 2026-07-16: ALL placeholder names confirmed — Roek, Ashmark, Joskin, Sorrel,
 Warden Selm — and the bruising-not-lethal statblock tuning approved.)* *(The Harrow beat was resolved 2026-07-13 — mercy-plot cut; the 2026-07-14 review
 round added the river beats, the mistheron fight, strict ruling-34 rot, the writ ambush, and

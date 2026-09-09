@@ -3492,6 +3492,15 @@ session-1 cues nobody triggered, the per-bird fix, and the whole playtest-9 wiri
 hand-run ability carries a written no-hook rationale (Combat Training, Pack Tactics, Veil,
 Mutation Upgrade); superseded hand-toggle AEs were removed — the engine does those now.
 
+📌 **2026-09-09 — the RUN-SHEET was the stale side, and it has been corrected (no marker: repo-side, nothing to test).**
+The session-forge rerun found `EDHA_SESSION_1_SCRIPT.md` still describing The Seeming as an
+always-on, costless trait granting advantage — the pre-W23 draft wording. The shipped actor, which
+is what these rows benched, spends **1 Action** to place a **1-health copy token** with an
+engine-rolled belief test, and Spearing Beak deals **keen**, not "impale". The run-sheet now
+transcribes `data/adversaries.json` and says so in-line. **`data/adversaries.json` was not touched
+and needs no rebuild** — if a future pass sees the two disagree again, the data is the authority
+and the prose is what owes a fix, not the reverse.
+
 ✅ **THE SESSION-1 + PLAYTEST-9 CUES ARE BENCHED — nine rows RETIRED on evidence 2026-09-05, bench run 27**
 (fresh pack imports into the "Edha Bench" folder, all driven through `applyDamage` with an explicit
 `edhaSource`/`originatingItem`; every cue's once-per-round budget was stepped past with a real round change

@@ -5306,6 +5306,35 @@ roster approved with the cinderbrock chosen over the flintram)
     beyond Ben's own (Morrain; Vespera/Kaelmere, rulings 105/136) stay ⚑ for the
     ruling-118 naming walk — gate C upheld.
 
+
+### Ruling — 2026-09-09 (Ben, via the session-forge rerun for session 1)
+
+163. **The Palewater ferry pair is named, and the day-5 stop is "Ferry Law."** (a) **city-30 =
+    Wainferry** (Thalendor, west bank, ~12k) and **city-31 = Wainscross** (Corvaine, east bank,
+    ~15k). The pair shares the root ***Wain-*** and each bank wears it in its own register —
+    **the river nation names the boat, the road nation names the crossing** — which is ruling
+    155's driver mix said as a place name (Thalendor 35% water, Corvaine 30% junction). This
+    closes ruling 154's naming gate. (b) **Deliberately NOT ruling-118 god-fossils.** The
+    fossil pattern is the first reach for *padded small towns*; these are a 12k and a 15k city
+    in two registers that carry no fossils at all — Thalendor's names are secular-pastoral
+    (Elmsworth, Withervale, Heartholt, Fenholt) and **Corvaine is godless** (ruling 76, capital
+    Aldercourt). Minting Verd-/Dann- names here would have written worship ground into a nation
+    that has none, and W12's sacred-geography map inherits every fossil, so the restraint is
+    load-bearing rather than stylistic. (c) **The stop's content is "Ferry Law"** — the chain
+    across the river is the legal crossing of the lower Palewater, and a Corvaine ferry-serjeant
+    levies a lawful chain-lift toll on relief grain. Ben declined the burying-ground variant
+    (a graveyard that has stopped taking the giving-back pour) **so the day-5 stop would not
+    steal Withervale's thunder**, asking for *"still something here regarding the wasting, but
+    not a major item"*: that is a single working draught-horse whose collar-sore has neither
+    closed nor turned bad since spring, stated once and never explained. (d) **What the scene
+    is FOR, and the canon it fixes:** the toll's writ is countersigned by a **paymaster** —
+    money coming in — while Roek's writ four days downriver is countersigned by a
+    **quartermaster**: authority to take with nothing behind it to pay. Ruling 28's
+    "institutional, not caloric" desperation is now a thing players can *read off two pieces of
+    paper* rather than be told, and it sharpens the Malcurr question (if the treasury cannot pay
+    a border company, who bought its armour?). The ferry also explains in-fiction why the raiders
+    need the ford at km 1,008: it is the wadeable crossing beyond ferry law.
+
 ## 10. Provisional items awaiting Ben (⚑)
 
 - **Kettavar** — *dive COMPLETE 2026-07-22 (W24's tenth and last nation; rulings 139–149).*
