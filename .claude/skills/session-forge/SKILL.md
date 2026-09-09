@@ -239,3 +239,55 @@ into this section — it's the one part of the sheet Ben can show the table.
    exactly the doc-vs-gazetteer drift this workflow produces.
 5. The ⚑ batch to Ben: names, tone calls, anything you couldn't verify — one menu, recommended
    defaults, same as Phase 3.
+
+## Phase 11 — Publish the GM script (the deliverable Ben actually runs from)
+
+**Standing instruction, Ben 2026-09-09: every session gets one, and they all look the same.**
+The markdown run-sheet is the source of truth and stays in the repo; it is not what gets read at
+the table. The deliverable is a **published Artifact** — the same run-sheet, in play order, set so
+a GM can run from it in a dim room without cross-referencing anything.
+
+**Build it from `GM_SCRIPT_TEMPLATE.html` (this folder).** Everything above the template's opening
+comment — the font link and the whole `<style>` block — is the **house identity: copy it verbatim.**
+Session 4 must look like session 1; that consistency is the point of the standing instruction, and
+re-designing per session throws it away. Load `artifact-design` before writing, but spend it on the
+*content* decisions, not on a new palette.
+
+What the house look encodes, and why each part exists:
+
+- **Play order, top to bottom.** Session 1's beats were filed out of order (a day-5 stop sitting
+  below the day-8 foreshadow) and it read fine as a document and wrong as a script. If the
+  markdown's order and play order disagree, **fix the markdown too** — don't paper over it in HTML.
+- **`.aloud`** — its own face and colour, so the eye lands on spoken text mid-sentence. Never put
+  GM instruction inside one. Read every box out loud once before publishing.
+- **`.check` / `.free`** — every DC is monospaced and findable; every no-roll freebie is marked, so
+  the attuned-PC gift never gets lost in prose.
+- **`.stat`** — statblocks **transcribed from `data/adversaries.json`**, never from memory and never
+  from the markdown when the two disagree. Session 1 shipped a Mistheron whose Seeming had been
+  prose-drifted into an always-on trait while the shipped actor spent an Action; the sheet would
+  have run the fight at double the bird's real output. Say in the block which side is authoritative.
+- **The `.journey` strip** — only when the session spans a measured journey, and only with numbers
+  `measure.py` actually produced. A session in one town drops the block rather than inventing a scale.
+- **§8 walled in green** — the one section a player may see. Spoiler-check it against §0's
+  do-NOT-reveal band every time.
+- **Print CSS** ships with the template; Ben may run from paper.
+
+**Mechanics.**
+- `favicon` on first publish only (🌾 for session 1). A redeploy **omits** it — the icon is how a
+  tab is recognised.
+- `<title>` is the session's evocative name, never "Session N".
+- **Revising an existing session republishes to the SAME URL** — pass the artifact's `url`, or the
+  same local file path within the publishing conversation. Publishing without it silently makes a
+  second artifact and Ben's link goes stale. Session URLs are recorded in
+  `EDHA_CAMPAIGN_STATE.md` §6 — look there before publishing a revision.
+- Take the one allowed look at the rendered file before publishing (Chromium is at
+  `/opt/pw-browsers/chromium-*/chrome-linux/chrome`; `--headless --screenshot`), fix what it shows,
+  publish. Don't build a screenshot loop.
+- Then **record the URL in `EDHA_CAMPAIGN_STATE.md` §6** beside that session's row, so the next
+  forge run republishes rather than duplicating.
+
+**Published artifacts (republish to these, never create a second):**
+
+| Session | GM script |
+|---|---|
+| 1 — The Harvest That Won't Die | https://claude.ai/code/artifact/9db5c439-01fe-459d-9539-151279764afd |

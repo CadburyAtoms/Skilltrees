@@ -1,0 +1,546 @@
+<title>⟨Session title — the evocative one, not "Session N"⟩</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+
+<style>
+:root{
+  --ground:#eceae2;
+  --surface:#f7f5ef;
+  --surface-2:#e3e0d6;
+  --ink:#171d1c;
+  --ink-soft:#414845;
+  --muted:#6d726c;
+  --rule:#cfcbbf;
+  --rule-soft:#dedacf;
+  --blight:#8a6414;
+  --blight-soft:#f0e6cd;
+  --water:#2b5a59;
+  --water-soft:#dfeae7;
+  --blood:#7a2f28;
+  --blood-soft:#f2e2df;
+  --safe:#33553a;
+  --safe-soft:#e0ebe0;
+
+  --f-display:"Fraunces","Iowan Old Style",Georgia,serif;
+  --f-body:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+  --f-mono:"IBM Plex Mono","SF Mono",Menlo,monospace;
+
+  --wrap:74rem;
+  --col:41rem;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#111514;
+    --surface:#181e1d;
+    --surface-2:#212827;
+    --ink:#e7e4da;
+    --ink-soft:#bdbcb2;
+    --muted:#8b918a;
+    --rule:#333a38;
+    --rule-soft:#262d2c;
+    --blight:#d0a03a;
+    --blight-soft:#2a2415;
+    --water:#7cb6b1;
+    --water-soft:#162423;
+    --blood:#cc7266;
+    --blood-soft:#2a1917;
+    --safe:#8fbb92;
+    --safe-soft:#16211a;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#111514;
+  --surface:#181e1d;
+  --surface-2:#212827;
+  --ink:#e7e4da;
+  --ink-soft:#bdbcb2;
+  --muted:#8b918a;
+  --rule:#333a38;
+  --rule-soft:#262d2c;
+  --blight:#d0a03a;
+  --blight-soft:#2a2415;
+  --water:#7cb6b1;
+  --water-soft:#162423;
+  --blood:#cc7266;
+  --blood-soft:#2a1917;
+  --safe:#8fbb92;
+  --safe-soft:#16211a;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--ground);color:var(--ink);
+  font-family:var(--f-body);font-size:16px;line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 1.5rem 6rem}
+
+/* ---------- masthead ---------- */
+.mast{padding:3.5rem 0 1.75rem;border-bottom:2px solid var(--ink)}
+.eyebrow{
+  font-family:var(--f-mono);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--blight);margin:0 0 1rem;font-weight:600;
+}
+h1{
+  font-family:var(--f-display);font-optical-sizing:auto;
+  font-size:clamp(2.4rem,6vw,4rem);line-height:1.02;margin:0;font-weight:700;
+  letter-spacing:-.02em;text-wrap:balance;
+}
+h1 em{font-style:italic;font-weight:600;color:var(--blight)}
+.standfirst{
+  font-family:var(--f-display);font-size:clamp(1.05rem,2vw,1.3rem);line-height:1.5;
+  color:var(--ink-soft);max-width:46rem;margin:1.1rem 0 0;font-weight:400;
+}
+.mast-meta{
+  display:flex;flex-wrap:wrap;gap:.5rem 1.5rem;margin-top:1.5rem;
+  font-family:var(--f-mono);font-size:.74rem;color:var(--muted);
+}
+.mast-meta b{color:var(--ink);font-weight:600}
+
+/* ---------- journey strip ---------- */
+.journey{margin:2rem 0 0;padding:1.25rem 0 0}
+.journey h2{
+  font-family:var(--f-mono);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 1rem;font-weight:600;
+}
+.days{display:flex;gap:2px;align-items:stretch;overflow-x:auto;padding-bottom:.5rem}
+.day{
+  flex:1 1 0;min-width:2.4rem;background:var(--surface-2);border-radius:1px;
+  padding:.4rem .3rem .5rem;text-align:center;position:relative;
+}
+.day .n{font-family:var(--f-mono);font-size:.68rem;color:var(--muted);display:block}
+.day.stop{background:var(--blight);}
+.day.stop .n{color:var(--ground);font-weight:600}
+.day.fight{background:var(--blood)}
+.day.fight .n{color:#fff;font-weight:600}
+.day.land{background:var(--ink)}
+.day.land .n{color:var(--ground);font-weight:600}
+.legend{
+  display:flex;flex-wrap:wrap;gap:.4rem 1.25rem;margin-top:.75rem;
+  font-family:var(--f-mono);font-size:.7rem;color:var(--muted);
+}
+.legend span{display:inline-flex;align-items:center;gap:.4rem}
+.sw{width:.7rem;height:.7rem;border-radius:1px;display:inline-block}
+
+/* ---------- nav ---------- */
+nav.jump{
+  position:sticky;top:0;z-index:20;background:var(--ground);
+  border-bottom:1px solid var(--rule);margin-top:2rem;
+  padding:.6rem 0;
+}
+nav.jump ul{list-style:none;display:flex;flex-wrap:wrap;gap:.3rem .35rem;margin:0;padding:0}
+nav.jump a{
+  display:block;font-family:var(--f-mono);font-size:.72rem;text-decoration:none;
+  color:var(--ink-soft);border:1px solid var(--rule);padding:.22rem .55rem;border-radius:2px;
+  white-space:nowrap;
+}
+nav.jump a:hover{border-color:var(--blight);color:var(--blight)}
+nav.jump a:focus-visible{outline:2px solid var(--blight);outline-offset:2px}
+nav.jump a.safe{border-color:var(--safe);color:var(--safe)}
+
+/* ---------- layout ---------- */
+main{display:block}
+section.scene{padding:3rem 0 0;border-top:1px solid var(--rule-soft);margin-top:3rem;scroll-margin-top:3.5rem}
+section.scene:first-of-type{border-top:0}
+.scene-head{display:grid;grid-template-columns:5.5rem 1fr;gap:1.5rem;align-items:start}
+@media (max-width:640px){.scene-head{grid-template-columns:1fr;gap:.5rem}}
+.daytag{
+  font-family:var(--f-mono);font-size:.7rem;line-height:1.35;text-transform:uppercase;
+  letter-spacing:.08em;color:var(--muted);border-top:2px solid var(--blight);padding-top:.5rem;
+}
+.daytag b{display:block;font-size:1.5rem;color:var(--ink);letter-spacing:-.02em;font-weight:600}
+h2.scene-title{
+  font-family:var(--f-display);font-size:clamp(1.6rem,3.4vw,2.3rem);line-height:1.1;
+  margin:0;font-weight:600;letter-spacing:-.015em;text-wrap:balance;
+}
+h2.scene-title small{
+  display:block;font-family:var(--f-mono);font-size:.7rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--blight);margin-bottom:.5rem;font-weight:600;
+}
+.col{max-width:var(--col);margin-left:7rem}
+@media (max-width:640px){.col{margin-left:0}}
+.col.wide{max-width:58rem}
+
+h3{
+  font-family:var(--f-body);font-size:.95rem;font-weight:600;letter-spacing:.01em;
+  margin:2.25rem 0 .6rem;color:var(--ink);
+}
+h3::before{content:"";display:block;width:1.75rem;border-top:2px solid var(--rule);margin-bottom:.6rem}
+h4{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--muted);margin:1.5rem 0 .5rem;font-weight:600}
+p{margin:0 0 .9rem}
+ul,ol{margin:0 0 .9rem;padding-left:1.15rem}
+li{margin-bottom:.45rem}
+strong{font-weight:600}
+em{font-style:italic}
+a{color:var(--blight)}
+
+.lede{font-family:var(--f-display);font-size:1.12rem;line-height:1.55;color:var(--ink-soft)}
+
+/* ---------- read aloud ---------- */
+.aloud{
+  font-family:var(--f-display);font-optical-sizing:auto;
+  font-size:1.13rem;line-height:1.58;color:var(--ink);
+  background:var(--water-soft);border-left:3px solid var(--water);
+  padding:1.15rem 1.35rem 1.15rem 1.5rem;margin:1rem 0 1.25rem;border-radius:0 2px 2px 0;
+}
+.aloud::before{
+  content:"Read aloud";display:block;font-family:var(--f-mono);font-size:.64rem;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--water);margin-bottom:.6rem;font-weight:600;
+}
+.aloud p:last-child{margin-bottom:0}
+.aloud em{color:var(--ink)}
+
+/* ---------- gm note ---------- */
+.note{
+  border-left:3px solid var(--blight);background:var(--blight-soft);
+  padding:1rem 1.25rem;margin:1.1rem 0;border-radius:0 2px 2px 0;font-size:.94rem;
+}
+.note::before{
+  content:"GM note";display:block;font-family:var(--f-mono);font-size:.64rem;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--blight);margin-bottom:.5rem;font-weight:600;
+}
+.note.warn::before{content:"Watch for"}
+.note p:last-child{margin-bottom:0}
+
+/* ---------- checks ---------- */
+.check{
+  font-family:var(--f-mono);font-size:.82rem;font-weight:600;
+  background:var(--surface-2);padding:.1rem .4rem;border-radius:2px;
+  white-space:nowrap;color:var(--ink);
+}
+.free{
+  font-family:var(--f-mono);font-size:.82rem;font-weight:600;color:var(--safe);
+  background:var(--safe-soft);padding:.1rem .4rem;border-radius:2px;white-space:nowrap;
+}
+
+/* ---------- tables ---------- */
+.tw{overflow-x:auto;margin:1.1rem 0 1.4rem;border:1px solid var(--rule);border-radius:2px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.88rem;min-width:34rem}
+th,td{text-align:left;padding:.6rem .75rem;border-bottom:1px solid var(--rule-soft);vertical-align:top}
+thead th{
+  font-family:var(--f-mono);font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);background:var(--surface-2);font-weight:600;border-bottom:1px solid var(--rule);
+}
+tbody tr:last-child td{border-bottom:0}
+td strong{font-weight:600}
+
+/* ---------- statblock ---------- */
+.stat{
+  border:1px solid var(--rule);border-top:3px solid var(--blood);background:var(--surface);
+  padding:1.1rem 1.25rem;margin:1.1rem 0;border-radius:0 0 2px 2px;
+}
+.stat h5{
+  font-family:var(--f-display);font-size:1.15rem;margin:0 0 .15rem;font-weight:600;letter-spacing:-.01em;
+}
+.stat .kind{
+  font-family:var(--f-mono);font-size:.7rem;letter-spacing:.08em;color:var(--muted);
+  margin:0 0 .75rem;text-transform:uppercase;
+}
+.line{
+  font-family:var(--f-mono);font-size:.82rem;line-height:1.7;color:var(--ink);
+  background:var(--surface-2);padding:.5rem .7rem;border-radius:2px;margin:0 0 .85rem;
+  font-variant-numeric:tabular-nums;
+}
+.abil{margin:0 0 .7rem;font-size:.92rem}
+.abil:last-child{margin-bottom:0}
+.g{
+  font-family:var(--f-mono);font-weight:600;color:var(--blood);font-size:.85rem;
+  margin-right:.35rem;
+}
+.abil b{font-weight:600}
+
+/* ---------- callout bands ---------- */
+.band{
+  border:1px solid var(--rule);border-radius:2px;padding:1.15rem 1.35rem;margin:1.5rem 0;
+  background:var(--surface);
+}
+.band.danger{border-color:var(--blood);background:var(--blood-soft)}
+.band.safe{border-color:var(--safe);background:var(--safe-soft)}
+.band h4{margin-top:0}
+.band.danger h4{color:var(--blood)}
+.band.safe h4{color:var(--safe)}
+.band p:last-child,.band ul:last-child{margin-bottom:0}
+
+.pill{
+  display:inline-block;font-family:var(--f-mono);font-size:.66rem;letter-spacing:.1em;
+  text-transform:uppercase;padding:.15rem .45rem;border-radius:2px;font-weight:600;
+  border:1px solid currentColor;
+}
+.pill.cut{color:var(--muted)}
+.pill.flag{color:var(--blight)}
+.pill.time{color:var(--muted);border-style:dashed}
+
+.handout{
+  border:1px solid var(--rule);border-left:3px solid var(--safe);background:var(--surface);
+  padding:1.2rem 1.4rem;margin:1.1rem 0;font-family:var(--f-display);font-size:1.05rem;
+  line-height:1.55;border-radius:0 2px 2px 0;
+}
+.handout .who{
+  font-family:var(--f-mono);font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--safe);margin-bottom:.6rem;font-weight:600;
+}
+
+footer{
+  margin-top:4rem;padding-top:1.5rem;border-top:2px solid var(--ink);
+  font-family:var(--f-mono);font-size:.74rem;color:var(--muted);line-height:1.8;
+}
+footer b{color:var(--ink);font-weight:600}
+
+@media print{
+  nav.jump{display:none}
+  body{background:#fff;color:#000;font-size:11pt}
+  section.scene{break-inside:avoid-page}
+  .aloud,.stat,.note{break-inside:avoid}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="wrap">
+
+<!--
+  ============================================================================
+  EDHA GM SCRIPT TEMPLATE  —  the house look for a session run-sheet artifact.
+  Everything ABOVE this comment (the <title>, the font link, the <style>) is
+  the house identity: copy it VERBATIM into every session's script so session 4
+  looks like session 1. Everything below is skeleton — replace the
+  ⟨angle-bracket⟩ guidance with the session's real content and delete these
+  comments.
+
+  The rules that matter, learned building session 1 (see SKILL.md Phase 11):
+   • PLAY ORDER, always. The GM reads top to bottom while running.
+   • Read-aloud gets .aloud — its own face and colour so the eye finds it
+     mid-sentence. Never mix GM instruction into an .aloud block.
+   • Every DC is a <span class="check">; every no-roll freebie is .free.
+   • §8 player-safe is the ONLY section a player may see. Keep it walled and
+     green, and spoiler-check it against §0's do-NOT-reveal band.
+   • Transcribe statblocks from data/adversaries.json, never from memory or
+     from the markdown if the two disagree — the data is the authority.
+  ============================================================================
+-->
+
+<header class="mast">
+  <p class="eyebrow">Edha · Session ⟨N⟩ · GM run-sheet</p>
+  <h1>⟨Title, broken<br>across <em>two lines</em>⟩</h1>
+  <p class="standfirst">⟨The job in one sentence, as the PCs understand it.⟩</p>
+  <div class="mast-meta">
+    <span><b>Runtime</b> ⟨hrs⟩</span>
+    <span><b>Party</b> ⟨N PCs, tier, builds known?⟩</span>
+    <span><b>Combat</b> ⟨how many fights, cuttable?⟩</span>
+    <span><b>GM truth throughout</b> except §8</span>
+  </div>
+
+  <!-- The journey strip. ONLY include it when the session actually spans a
+       measured journey; a session in one town has no days to draw and should
+       drop this block entirely rather than invent a scale. Day classes:
+       .stop (a town/social beat) .fight (combat) .land (the destination). -->
+  <div class="journey">
+    <h2>⟨The run — N km along the traced channel, mode km/day⟩</h2>
+    <div class="days">
+      <div class="day"><span class="n">1</span></div>
+      <div class="day stop"><span class="n">2</span></div>
+      <div class="day fight"><span class="n">3</span></div>
+      <div class="day land"><span class="n">4</span></div>
+    </div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--blight)"></i> ⟨the stop⟩</span>
+      <span><i class="sw" style="background:var(--blood)"></i> ⟨the fights⟩</span>
+      <span><i class="sw" style="background:var(--ink)"></i> ⟨the destination⟩</span>
+    </div>
+  </div>
+</header>
+
+<nav class="jump" aria-label="Scenes">
+  <ul>
+    <li><a href="#purpose">§0 Purpose</a></li>
+    <li><a href="#cast">§1 Cast</a></li>
+    <li><a href="#scene1">⟨§2 Scene⟩</a></li>
+    <li><a href="#ledger">§5 Ledgers</a></li>
+    <li><a href="#hooks">§7 Hooks</a></li>
+    <li><a href="#player" class="safe">§8 Player-safe</a></li>
+    <li><a href="#handoff">§9 Foundry</a></li>
+  </ul>
+</nav>
+
+<main>
+
+<section class="scene" id="purpose">
+  <div class="scene-head">
+    <div class="daytag">Before<b>§0</b></div>
+    <h2 class="scene-title"><small>What this session is for</small>⟨The point, in three words⟩</h2>
+  </div>
+  <div class="col">
+    <p class="lede"><strong>The job:</strong> ⟨one sentence⟩</p>
+    <p class="lede"><strong>The point:</strong> ⟨what they should FEEL by the last scene⟩</p>
+    <p><strong>The pay:</strong> ⟨coin/kind/papers/favour, and who hands it over⟩</p>
+
+    <h3>⟨N⟩ promises the session keeps</h3>
+    <ol><li>⟨build-agnosticism, tone, which thread advances⟩</li></ol>
+
+    <div class="band danger">
+      <h4>Do NOT reveal tonight</h4>
+      <p>⟨The buried list, from canon + the act ladder. This is the GM's wall
+         for improvisation — write it before any scene prose exists.⟩</p>
+    </div>
+
+    <div class="band">
+      <h4>If time runs short</h4>
+      <p>⟨The one scene that must land, and what to cut for it.⟩</p>
+    </div>
+  </div>
+</section>
+
+<section class="scene" id="cast">
+  <div class="scene-head">
+    <div class="daytag">Cast<b>§1</b></div>
+    <h2 class="scene-title"><small>⟨N⟩ voices</small>Who they meet</h2>
+  </div>
+  <div class="col wide">
+    <div class="tw"><table>
+      <thead><tr><th>NPC</th><th>One-line</th><th>Face / voice</th><th>Wants</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>⟨Name⟩</strong> <span class="pill flag">⚑ name</span></td>
+          <td>⟨role⟩</td><td>⟨two features + a speech habit⟩</td>
+          <td>⟨the want — this is what makes them playable. Adversary leaders
+              also get what makes them STOP fighting.⟩</td>
+        </tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- ===== one <section class="scene"> per scene, in PLAY ORDER ===== -->
+<section class="scene" id="scene1">
+  <div class="scene-head">
+    <div class="daytag">Day<b>⟨N⟩</b>⟨Site⟩<br>⟨x,y⟩</div>
+    <h2 class="scene-title"><small>Scene ⟨N⟩ · §⟨N⟩ · ⟨minutes⟩ · ⟨combat?⟩</small>⟨Scene name⟩</h2>
+  </div>
+  <div class="col">
+    <p><strong>Goal:</strong> ⟨the scene's job⟩ <span class="pill cut">⟨what to cut if short⟩</span></p>
+
+    <div class="aloud">
+      <p>⟨Short, sensory, ends on the wrong detail. Speak-testable: read it out
+         loud once before you ship it.⟩</p>
+    </div>
+
+    <h3>⟨Beat⟩</h3>
+    <ul>
+      <li><span class="check">Skill · DC N</span> ⟨what it unlocks⟩</li>
+      <li><span class="free">Green PC · free</span> ⟨the attuned freebie — what one build
+          simply perceives that others must roll for⟩</li>
+      <li><span class="free">Un-missable</span> ⟨a campaign-gating clue needs a delivery
+          path that cannot fail: loot, dialogue, or a second location. Rolls
+          modulate WHEN, never WHETHER.⟩</li>
+    </ul>
+
+    <div class="note">
+      <p><strong>What this plants:</strong> ⟨the GM-truth behind the beat, and the
+         instruction not to explain it⟩</p>
+    </div>
+
+    <!-- combat scenes add: battle map, statblocks, tactics, outs, scaling -->
+    <div class="stat">
+      <h5>⟨Adversary⟩ <span style="font-family:var(--f-mono);font-size:.8rem;color:var(--muted)">×N</span></h5>
+      <p class="kind">⟨role · type · tier⟩</p>
+      <p class="line">phy ⟨N⟩ · cog ⟨N⟩ · spi ⟨N⟩ &nbsp;|&nbsp; deflect ⟨N⟩ &nbsp;|&nbsp; HP ⟨N⟩ &nbsp;|&nbsp; foc ⟨N⟩ &nbsp;|&nbsp; move ⟨N⟩ ft</p>
+      <p class="abil"><span class="g">▶</span><b>⟨1 Action⟩</b> — ⟨attack/effect⟩</p>
+      <p class="abil"><span class="g">▶▶</span><b>⟨2 Actions⟩</b> — ⟨…⟩</p>
+      <p class="abil"><span class="g">⟲</span><b>⟨Reaction⟩</b> — ⟨…⟩</p>
+      <p class="abil"><span class="g">∞</span><b>⟨Trait⟩</b> — ⟨… including the morale/break condition⟩</p>
+    </div>
+
+    <div class="band danger">
+      <h4>⟨Bruise, don't wipe⟩</h4>
+      <p>⟨Scaling for ±1 PC and unknown party shapes; what happens to a downed PC.⟩</p>
+    </div>
+  </div>
+</section>
+
+<section class="scene" id="ledger">
+  <div class="scene-head">
+    <div class="daytag">Audit<b>§5</b></div>
+    <h2 class="scene-title"><small>What tonight plants</small>Clue &amp; loot ledgers</h2>
+  </div>
+  <div class="col wide">
+    <div class="tw"><table>
+      <thead><tr><th>Clue</th><th>Where</th><th>Points toward</th></tr></thead>
+      <tbody><tr><td>⟨…⟩</td><td>⟨…⟩</td><td>⟨the thread it feeds⟩</td></tr></tbody>
+    </table></div>
+
+    <div class="band danger">
+      <h4>Stays buried tonight</h4>
+      <p>⟨the explicit list — must agree with §0's do-NOT-reveal band⟩</p>
+    </div>
+
+    <h3>Loot &amp; payment</h3>
+    <div class="tw"><table>
+      <thead><tr><th>Item / payment</th><th>Where / from whom</th><th>Worth / notes</th><th>Clue?</th></tr></thead>
+      <tbody><tr><td>⟨…⟩</td><td>⟨…⟩</td><td>⟨copper/silver/gold vs. descriptive pay-in-kind⟩</td><td>⟨✔⟩</td></tr></tbody>
+    </table></div>
+  </div>
+</section>
+
+<section class="scene" id="hooks">
+  <div class="scene-head">
+    <div class="daytag">Next<b>§7</b></div>
+    <h2 class="scene-title"><small>The next-session prep list</small>What they can do next</h2>
+  </div>
+  <div class="col wide">
+    <div class="tw"><table>
+      <thead><tr><th>Hook</th><th>Planted at</th><th>Pursuing it looks like</th><th>Prep state</th></tr></thead>
+      <tbody><tr><td>⟨…⟩</td><td>⟨…⟩</td><td>⟨…⟩</td><td>⟨prepped / needs prep / improvisable⟩</td></tr></tbody>
+    </table></div>
+  </div>
+</section>
+
+<section class="scene" id="player">
+  <div class="scene-head">
+    <div class="daytag" style="border-top-color:var(--safe)">Safe<b>§8</b></div>
+    <h2 class="scene-title"><small style="color:var(--safe)">The only non-GM section</small>Player-facing text</h2>
+  </div>
+  <div class="col">
+    <div class="band safe">
+      <h4>Safe to read aloud or show</h4>
+      <p>Spoiler-checked against §0's do-NOT-reveal list. Everything else on this page is GM truth.</p>
+    </div>
+    <div class="handout">
+      <p class="who">Read aloud</p>
+      <p>⟨the "previously on", from the state doc's last session log⟩</p>
+    </div>
+    <div class="handout">
+      <p class="who">Post it or read it verbatim</p>
+      <p>⟨handouts — letters, notices, rumour tables — written out in full so Ben
+         can read or print them straight⟩</p>
+    </div>
+  </div>
+</section>
+
+<section class="scene" id="handoff">
+  <div class="scene-head">
+    <div class="daytag">Prep<b>§9</b></div>
+    <h2 class="scene-title"><small>Battle maps + Foundry</small>What still needs making</h2>
+  </div>
+  <div class="col">
+    <h3>Battle-map briefs</h3>
+    <ul><li><strong>⟨Site⟩</strong> <span class="pill flag">⚑ not drawn</span> ⟨grid, the
+      3–5 terrain features that matter, and a one-line design goal⟩</li></ul>
+    <h3>Foundry</h3>
+    <ul><li>⟨adversaries.json entries; engine-only vs REBUILD + ⟳ Sync, stated explicitly⟩</li></ul>
+    <div class="band">
+      <h4>Open for Ben</h4>
+      <ol><li>⟨numbered ⚑ batch, each with a recommended default⟩</li></ol>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p><b>Edha — Session ⟨N⟩ run-sheet.</b> Generated from <code>EDHA_SESSION_⟨N⟩_SCRIPT.md</code> at ⟨date⟩.</p>
+  <p>⟨Measurement provenance — which script produced the distances, the scale, the travel mode.⟩</p>
+  <p><b>GM truth throughout except §8.</b> ⚑ marks a provisional default you can swap freely.</p>
+</footer>
+
+</div>
