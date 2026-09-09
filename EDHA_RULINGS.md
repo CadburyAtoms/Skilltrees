@@ -1458,6 +1458,33 @@ row is annotated with this derivation and stays 🤖 until you answer; a technic
 
 ---
 
+**R-93. When a card says "your &lt;Colour&gt;" but the engine pays RANK, which side is wrong?**
+Bench-adjacent finding, 2026-09-09: four talents phrase a quantity as *"your &lt;Colour&gt;"*, and the
+authored formulas behind them do not agree with each other. `Kindle` (Red · Conflagration) resolves
+`@skills.red.mod` and `Bonds of Community` (Civilization) resolves `@skills.white.rank + @attr.wil` —
+both of which **are** the skill modifier, so those two cards are already correct. But `Bear Witness`
+and `Shoulder the Oath` (both Order) resolve `@skills.white.rank`, i.e. rank only, while their cards
+say *"your White"*. Everywhere else in the data the convention is the unambiguous **"your ranks in
+X"** (21+ talents: Field Medicine, Swift Healer, Practiced Oratory, Rallying Shout, …), so a bare
+*"your &lt;Colour&gt;"* most naturally reads as the modifier — which is what a player would compute.
+The divergence is invisible for a character whose attribute is 0 (Soggy Bottom's Willpower 0 makes
+modifier and rank both equal his rank) and materially wrong for anyone else.
+*Recommended default: **(a) reword the two cards, leave the engine alone** — the rank formula is the
+designed behaviour and "temporary HP equal to your ranks in White" is the house convention.*
+(b) Change the two formulas to `.mod` instead, making the cards right and the talents stronger.
+(c) Leave both and treat "your &lt;Colour&gt;" as meaning rank throughout — rejected on sight, because
+`Kindle` and `Bonds of Community` would then both be wrong in the other direction.
+> **ANSWERED 2026-09-09 (Ben, chat), verbatim: "note the Bear Witness needs the talent reworded —
+> the code is right. Temp HP = Ranks in White."** Applied as (a): `Bear Witness` and
+> `Shoulder the Oath` reworded to **"your ranks in White"** in `data/domain.json` and
+> `data/authored/deity-order.json` (value, chat and short forms). `Kindle` and
+> `Bonds of Community` deliberately UNCHANGED — their formulas are the modifier, so their cards
+> were already right; the extension to `Shoulder the Oath` (not named by Ben, but the same rule,
+> the same formula, twice) is flagged in the delta for veto. **Text-only: pack rebuild + ⟳ Sync,
+> no engine change.** Checklist rows under THE PACK-REBUILD LIST.
+
+---
+
 **R-92. A PC hits 0 HP and nothing happens. Should Edha add a generic "dropped" GM cue?**
 Confirmed live in bench run 44 (2026-09-09): Tem was reduced to 0 HP on the Palewater Ford scene and
 **no status, no prompt, no card, no token overlay** appeared — the only effect on him was the

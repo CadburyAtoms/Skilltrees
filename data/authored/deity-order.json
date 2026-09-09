@@ -11,9 +11,9 @@
       "docId": "snJh1J774s7Ny9Bx",
       "img": "icons/tools/hand/scale-balances-merchant-brown.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>I see you. The blow does not.</em></p><p>At the start of each round, each ally in a Covenant with you within Attunement Range gains temporary HP equal to your White.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>At the start of each round, each ally in a Covenant with you within Attunement Range gains temporary HP equal to your White.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>At the start of each round, each ally in a Covenant with you within Attunement Range gains temporary HP equal to your White.</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p><em>I see you. The blow does not.</em></p><p>At the start of each round, each ally in a Covenant with you within Attunement Range gains temporary HP equal to your ranks in White.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>At the start of each round, each ally in a Covenant with you within Attunement Range gains temporary HP equal to your ranks in White.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Always Active\" aria-label=\"Always Active\">8</span></p><p>At the start of each round, each ally in a Covenant with you within Attunement Range gains temporary HP equal to your ranks in White.</p>"
       },
       "activation": {
         "type": "none",
@@ -455,9 +455,9 @@
       "docId": "ZwgTxgUMd0r2Ghw1",
       "img": "icons/sundries/scrolls/scroll-bound-blue-tan.webp",
       "description": {
-        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p><em>The bond is mutual. So is the wound.</em></p><p>When an ally in a Covenant with you would take damage and you are within Attunement Range, you may take half that damage instead and reduce the remaining damage to that ally by your White. Both you and that ally gain temporary HP equal to your White.</p>",
-        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When an ally in a Covenant with you would take damage and you are within Attunement Range, you may take half that damage instead and reduce the remaining damage to that ally by your White. Both you and that ally gain temporary HP equal to your White.</p>",
-        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When an ally in a Covenant with you would take damage and you are within Attunement Range, you may take half that damage instead and reduce the remaining damage to that ally by your White. Both you and that ally gain temporary HP equal to your White.</p>"
+        "value": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p><em>The bond is mutual. So is the wound.</em></p><p>When an ally in a Covenant with you would take damage and you are within Attunement Range, you may take half that damage instead and reduce the remaining damage to that ally by your ranks in White. Both you and that ally gain temporary HP equal to your ranks in White.</p>",
+        "chat": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When an ally in a Covenant with you would take damage and you are within Attunement Range, you may take half that damage instead and reduce the remaining damage to that ally by your ranks in White. Both you and that ally gain temporary HP equal to your ranks in White.</p>",
+        "short": "<p><strong>Activation:</strong> <span class=\"cosmere-icon\" data-tooltip=\"Reaction\" aria-label=\"Reaction\">r</span></p><p>When an ally in a Covenant with you would take damage and you are within Attunement Range, you may take half that damage instead and reduce the remaining damage to that ally by your ranks in White. Both you and that ally gain temporary HP equal to your ranks in White.</p>"
       },
       "activation": {
         "type": "utility",

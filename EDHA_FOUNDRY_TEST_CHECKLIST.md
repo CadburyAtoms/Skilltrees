@@ -335,6 +335,12 @@ shape keys `system.events` by rule id and puts the type on `handler`.)
 
 ## THE PACK-REBUILD LIST — run these in this order, Foundry CLOSED
 
+### Order card rewording — R-93 (2026-09-09, **REBUILD deity + ⟳ Sync Talents**)
+
+- [ ] 🤖 **`Bear Witness` reads “temporary HP equal to your **ranks in** White”** on the card in Foundry (was “your White”). Text-only — the engine already paid `@skills.white.rank`; Ben ruled 2026-09-09 that the code is right and the card was wrong. Check the sheet card, the chat card and the short form all agree.
+- [ ] 🤖 **`Shoulder the Oath` reads “reduce … by your **ranks in** White” and “temporary HP equal to your **ranks in** White”** — same fix, two phrases, same rule (`healBonusFormula` and `thpFormula` both `@skills.white.rank`).
+- [ ] 🤖 **`Kindle` and `Bonds of Community` still read “your Red” / “your White”** — deliberately UNCHANGED: `@skills.red.mod` and `@skills.white.rank + @attr.wil` are both the modifier, so those two cards were already correct. A rewording here would be a regression.
+
 **✅ All FOUR builds carried into bench run 11 are DONE and VERIFIED LIVE (2026-07-27m).** Ben ran
 them; the run then read all five packs directly and confirmed each fix in place — Flamestance
 `whenSkill: "inm"`, Sharp Eye `skill: "prc"`, Set at Odds / Synchronized Assault `skill: "lea"`,

@@ -1,0 +1,857 @@
+[
+ {
+  "name": "TEM 1 — The Ground Fights For You (Green · Territory)",
+  "start_skills": {
+   "agi": 1,
+   "ath": 1,
+   "green": 1,
+   "hwp": 2
+  },
+  "start_talents": [
+   "Erudition",
+   "Green Leyline Attunement",
+   "Pack Hunter",
+   "Primal Awareness"
+  ],
+  "levels": [
+   {
+    "lv": 2,
+    "talent": "Grasping Vines",
+    "tree": "Green",
+    "ranks": {
+     "green": 2,
+     "sur": 1
+    }
+   },
+   {
+    "lv": 3,
+    "talent": "Thorn Field",
+    "tree": "Green",
+    "ranks": {
+     "sur": 2,
+     "ath": 2
+    }
+   },
+   {
+    "lv": 4,
+    "talent": "Spreading Roots",
+    "tree": "Green",
+    "ranks": {
+     "prc": 2
+    }
+   },
+   {
+    "lv": 5,
+    "talent": "Territorial Instinct",
+    "tree": "Green",
+    "ranks": {
+     "red": 2
+    }
+   },
+   {
+    "lv": 6,
+    "talent": "Sudden Growth",
+    "tree": "Green",
+    "ranks": {
+     "green": 3,
+     "sur": 3
+    }
+   },
+   {
+    "lv": 7,
+    "talent": "Pack Sense",
+    "tree": "Green",
+    "ranks": {
+     "hwp": 3,
+     "agi": 2
+    }
+   },
+   {
+    "lv": 8,
+    "talent": "Apex Predator",
+    "tree": "Green",
+    "ranks": {
+     "lor": 1,
+     "med": 1
+    }
+   },
+   {
+    "lv": 9,
+    "talent": "Studied Mark",
+    "tree": "Knowledge",
+    "ranks": {
+     "lor": 2,
+     "ins": 1
+    }
+   },
+   {
+    "lv": 10,
+    "talent": "Predatory Strike",
+    "tree": "Knowledge",
+    "ranks": {}
+   }
+  ]
+ },
+ {
+  "name": "TEM 2 — The Pack Closes (Green · Instinct)",
+  "start_skills": {
+   "agi": 1,
+   "ath": 1,
+   "green": 1,
+   "hwp": 2
+  },
+  "start_talents": [
+   "Erudition",
+   "Green Leyline Attunement",
+   "Pack Hunter",
+   "Primal Awareness"
+  ],
+  "levels": [
+   {
+    "lv": 2,
+    "talent": "Predator's Instinct",
+    "tree": "Green",
+    "ranks": {
+     "sur": 2
+    }
+   },
+   {
+    "lv": 3,
+    "talent": "Coordinated Hunt",
+    "tree": "Green",
+    "ranks": {
+     "green": 2,
+     "ath": 2
+    }
+   },
+   {
+    "lv": 4,
+    "talent": "Scent the Weak",
+    "tree": "Green",
+    "ranks": {
+     "prc": 2
+    }
+   },
+   {
+    "lv": 5,
+    "talent": "Pack Pressure",
+    "tree": "Green",
+    "ranks": {
+     "red": 2
+    }
+   },
+   {
+    "lv": 6,
+    "talent": "Packmate's Warning",
+    "tree": "Green",
+    "ranks": {
+     "green": 3,
+     "sur": 3
+    }
+   },
+   {
+    "lv": 7,
+    "talent": "Drive the Prey",
+    "tree": "Green",
+    "ranks": {
+     "hwp": 3,
+     "agi": 2
+    }
+   },
+   {
+    "lv": 8,
+    "talent": "Natural Order",
+    "tree": "Green",
+    "ranks": {
+     "lor": 2
+    }
+   },
+   {
+    "lv": 9,
+    "talent": "Studied Mark",
+    "tree": "Knowledge",
+    "ranks": {
+     "ins": 2
+    }
+   },
+   {
+    "lv": 10,
+    "talent": "Predatory Strike",
+    "tree": "Knowledge",
+    "ranks": {
+     "med": 1,
+     "lor": 3
+    }
+   }
+  ]
+ },
+ {
+  "name": "TEM 3 — The Mark (Knowledge · the hunt)",
+  "start_skills": {
+   "agi": 1,
+   "ath": 1,
+   "green": 1,
+   "hwp": 2
+  },
+  "start_talents": [
+   "Erudition",
+   "Green Leyline Attunement",
+   "Pack Hunter",
+   "Primal Awareness"
+  ],
+  "levels": [
+   {
+    "lv": 2,
+    "talent": "Grasping Vines",
+    "tree": "Green",
+    "ranks": {
+     "green": 2,
+     "sur": 1
+    }
+   },
+   {
+    "lv": 3,
+    "talent": "Thorn Field",
+    "tree": "Green",
+    "ranks": {
+     "red": 2
+    }
+   },
+   {
+    "lv": 4,
+    "talent": "Studied Mark",
+    "tree": "Knowledge",
+    "ranks": {
+     "prc": 2
+    }
+   },
+   {
+    "lv": 5,
+    "talent": "Predatory Strike",
+    "tree": "Knowledge",
+    "ranks": {
+     "sur": 2,
+     "ath": 2
+    }
+   },
+   {
+    "lv": 6,
+    "talent": "Accumulate",
+    "tree": "Knowledge",
+    "ranks": {
+     "green": 3,
+     "red": 3
+    }
+   },
+   {
+    "lv": 7,
+    "talent": "Hunter's Discipline",
+    "tree": "Knowledge",
+    "ranks": {
+     "hwp": 3,
+     "agi": 2
+    }
+   },
+   {
+    "lv": 8,
+    "talent": "Killing Blow",
+    "tree": "Knowledge",
+    "ranks": {
+     "lor": 1,
+     "med": 1
+    }
+   },
+   {
+    "lv": 9,
+    "talent": "Death Mark",
+    "tree": "Knowledge",
+    "ranks": {
+     "lor": 2,
+     "ins": 1
+    }
+   },
+   {
+    "lv": 10,
+    "talent": "The Pack",
+    "tree": "Knowledge",
+    "ranks": {}
+   }
+  ]
+ },
+ {
+  "name": "HANNAH 1 — What Follows Her (Black · Subjugation)",
+  "start_skills": {
+   "black": 1,
+   "blue": 2,
+   "dis": 1,
+   "lwp": 1
+  },
+  "start_talents": [
+   "Rousing Presence",
+   "Blue Leyline Attunement",
+   "Forewarned",
+   "Steadfast Challenge"
+  ],
+  "levels": [
+   {
+    "lv": 2,
+    "talent": "Hollow Command",
+    "tree": "Black",
+    "ranks": {
+     "black": 2,
+     "dec": 1
+    }
+   },
+   {
+    "lv": 3,
+    "talent": "Siphoned Will",
+    "tree": "Black",
+    "ranks": {
+     "dec": 2,
+     "prs": 1
+    }
+   },
+   {
+    "lv": 4,
+    "talent": "Predatory Insight",
+    "tree": "Black",
+    "ranks": {
+     "prs": 2,
+     "ins": 1
+    }
+   },
+   {
+    "lv": 5,
+    "talent": "Coercive Pressure",
+    "tree": "Black",
+    "ranks": {
+     "dis": 2,
+     "lor": 1
+    }
+   },
+   {
+    "lv": 6,
+    "talent": "Extract Thought",
+    "tree": "Black",
+    "ranks": {
+     "dec": 3,
+     "black": 3
+    }
+   },
+   {
+    "lv": 7,
+    "talent": "Composed",
+    "tree": "Subjugation",
+    "ranks": {
+     "lor": 2,
+     "ins": 2
+    }
+   },
+   {
+    "lv": 8,
+    "talent": "Whispered Doubt",
+    "tree": "Black",
+    "ranks": {
+     "prs": 3,
+     "dis": 3
+    }
+   },
+   {
+    "lv": 9,
+    "talent": "Unnerving Approach",
+    "tree": "Black",
+    "ranks": {
+     "lea": 1,
+     "prc": 1
+    }
+   },
+   {
+    "lv": 10,
+    "talent": "Puppeteer",
+    "tree": "Black",
+    "ranks": {
+     "lea": 2,
+     "prc": 2
+    }
+   }
+  ]
+ },
+ {
+  "name": "HANNAH 2 — The Room Is the Fight (Envoy · Diplomat, Blue support)",
+  "start_skills": {
+   "black": 1,
+   "blue": 2,
+   "dis": 1,
+   "lwp": 1
+  },
+  "start_talents": [
+   "Rousing Presence",
+   "Blue Leyline Attunement",
+   "Forewarned",
+   "Steadfast Challenge"
+  ],
+  "levels": [
+   {
+    "lv": 2,
+    "talent": "Withering Retort",
+    "tree": "Diplomat",
+    "ranks": {
+     "dis": 2,
+     "prs": 1
+    }
+   },
+   {
+    "lv": 3,
+    "talent": "Well Dressed",
+    "tree": "Diplomat",
+    "ranks": {
+     "prs": 2,
+     "lor": 1
+    }
+   },
+   {
+    "lv": 4,
+    "talent": "Calm Appeal",
+    "tree": "Diplomat",
+    "ranks": {
+     "lor": 2,
+     "ins": 1
+    }
+   },
+   {
+    "lv": 5,
+    "talent": "Calculated Patience",
+    "tree": "Blue",
+    "ranks": {
+     "ins": 2,
+     "dec": 1
+    }
+   },
+   {
+    "lv": 6,
+    "talent": "Peaceful Solution",
+    "tree": "Diplomat",
+    "ranks": {
+     "dis": 3,
+     "blue": 3
+    }
+   },
+   {
+    "lv": 7,
+    "talent": "Pattern Recognition",
+    "tree": "Blue",
+    "ranks": {
+     "dec": 2,
+     "lea": 1
+    }
+   },
+   {
+    "lv": 8,
+    "talent": "Reactive Analysis",
+    "tree": "Blue",
+    "ranks": {
+     "lea": 2,
+     "prc": 1
+    }
+   },
+   {
+    "lv": 9,
+    "talent": "False Premise",
+    "tree": "Blue",
+    "ranks": {
+     "prc": 2,
+     "cra": 1
+    }
+   },
+   {
+    "lv": 10,
+    "talent": "Counterspell",
+    "tree": "Blue",
+    "ranks": {
+     "lor": 3,
+     "dec": 3
+    }
+   }
+  ]
+ },
+ {
+  "name": "HANNAH 3 — The Omen-Caster (Chaos)",
+  "start_skills": {
+   "black": 1,
+   "blue": 2,
+   "dis": 1,
+   "lwp": 1
+  },
+  "start_talents": [
+   "Rousing Presence",
+   "Blue Leyline Attunement",
+   "Forewarned",
+   "Steadfast Challenge"
+  ],
+  "levels": [
+   {
+    "lv": 2,
+    "talent": "Entropy Strike",
+    "tree": "Chaos",
+    "ranks": {
+     "black": 2,
+     "prs": 1
+    }
+   },
+   {
+    "lv": 3,
+    "talent": "Spreading Omen",
+    "tree": "Chaos",
+    "ranks": {
+     "prs": 2,
+     "dis": 2
+    }
+   },
+   {
+    "lv": 4,
+    "talent": "Shatter Focus",
+    "tree": "Chaos",
+    "ranks": {
+     "dec": 1,
+     "ins": 1
+    }
+   },
+   {
+    "lv": 5,
+    "talent": "Collected",
+    "tree": "Envoy",
+    "ranks": {
+     "dec": 2,
+     "ins": 2
+    }
+   },
+   {
+    "lv": 6,
+    "talent": "Cascade Collapse",
+    "tree": "Chaos",
+    "ranks": {
+     "blue": 3,
+     "black": 3
+    }
+   },
+   {
+    "lv": 7,
+    "talent": "Isolating Pressure",
+    "tree": "Chaos",
+    "ranks": {
+     "lwp": 2,
+     "lea": 1
+    }
+   },
+   {
+    "lv": 8,
+    "talent": "Void Sense",
+    "tree": "Chaos",
+    "ranks": {
+     "lwp": 3,
+     "lor": 1
+    }
+   },
+   {
+    "lv": 9,
+    "talent": "Withering Ray",
+    "tree": "Black",
+    "ranks": {
+     "lor": 2,
+     "agi": 1
+    }
+   },
+   {
+    "lv": 10,
+    "talent": "Unravel Everything",
+    "tree": "Chaos",
+    "ranks": {}
+   }
+  ]
+ },
+ {
+  "name": "SOGGY 1 — The Surgeon (Scholar · Surgeon)",
+  "start_skills": {
+   "cra": 1,
+   "ded": 1,
+   "ins": 1,
+   "white": 2
+  },
+  "start_talents": [
+   "Erudition",
+   "White Leyline Attunement",
+   "Strategize",
+   "Guiding Signal"
+  ],
+  "levels": [
+   {
+    "lv": 2,
+    "talent": "Field Medicine",
+    "tree": "Scholar",
+    "ranks": {
+     "med": 2
+    }
+   },
+   {
+    "lv": 3,
+    "talent": "Swift Healer",
+    "tree": "Scholar",
+    "ranks": {
+     "lor": 1,
+     "ded": 2
+    }
+   },
+   {
+    "lv": 4,
+    "talent": "Concordant Presence",
+    "tree": "White",
+    "ranks": {
+     "green": 1,
+     "lor": 2
+    }
+   },
+   {
+    "lv": 5,
+    "talent": "Emotional Intelligence",
+    "tree": "Scholar",
+    "ranks": {
+     "green": 2,
+     "prc": 1
+    }
+   },
+   {
+    "lv": 6,
+    "talent": "Ordained Ground",
+    "tree": "Fate",
+    "ranks": {
+     "white": 3,
+     "med": 3
+    }
+   },
+   {
+    "lv": 7,
+    "talent": "Collected",
+    "tree": "Surgeon",
+    "ranks": {
+     "ins": 2,
+     "cra": 2
+    }
+   },
+   {
+    "lv": 8,
+    "talent": "Resuscitation",
+    "tree": "Scholar",
+    "ranks": {
+     "prc": 2,
+     "ins": 3
+    }
+   },
+   {
+    "lv": 9,
+    "talent": "Applied Medicine",
+    "tree": "Scholar",
+    "ranks": {
+     "lor": 3,
+     "ded": 3
+    }
+   },
+   {
+    "lv": 10,
+    "talent": "Bulwark Ground",
+    "tree": "Fate",
+    "ranks": {}
+   }
+  ]
+ },
+ {
+  "name": "SOGGY 2 — The Line Holds (White · Coordination)",
+  "start_skills": {
+   "cra": 1,
+   "ded": 1,
+   "ins": 1,
+   "white": 2
+  },
+  "start_talents": [
+   "Erudition",
+   "White Leyline Attunement",
+   "Strategize",
+   "Guiding Signal"
+  ],
+  "levels": [
+   {
+    "lv": 2,
+    "talent": "Concordant Presence",
+    "tree": "White",
+    "ranks": {
+     "lea": 1,
+     "ded": 2
+    }
+   },
+   {
+    "lv": 3,
+    "talent": "Unity of Purpose",
+    "tree": "White",
+    "ranks": {
+     "lea": 2,
+     "lor": 1
+    }
+   },
+   {
+    "lv": 4,
+    "talent": "Beacon of Stability",
+    "tree": "White",
+    "ranks": {
+     "lor": 2,
+     "ins": 2
+    }
+   },
+   {
+    "lv": 5,
+    "talent": "Shared Conviction",
+    "tree": "White",
+    "ranks": {
+     "prc": 2
+    }
+   },
+   {
+    "lv": 6,
+    "talent": "Ordered Advance",
+    "tree": "White",
+    "ranks": {
+     "white": 3,
+     "med": 1
+    }
+   },
+   {
+    "lv": 7,
+    "talent": "Mending Aura",
+    "tree": "White",
+    "ranks": {
+     "med": 2,
+     "cra": 2
+    }
+   },
+   {
+    "lv": 8,
+    "talent": "Pillar of Order",
+    "tree": "White",
+    "ranks": {
+     "dis": 2
+    }
+   },
+   {
+    "lv": 9,
+    "talent": "Terms of Accord",
+    "tree": "White",
+    "ranks": {
+     "ded": 3,
+     "lor": 3
+    }
+   },
+   {
+    "lv": 10,
+    "talent": "Disciplined Mind",
+    "tree": "White",
+    "ranks": {
+     "ins": 3,
+     "med": 3
+    }
+   }
+  ]
+ },
+ {
+  "name": "SOGGY 3 — The Ground Is Already Decided (Fate)",
+  "start_skills": {
+   "cra": 1,
+   "ded": 1,
+   "ins": 1,
+   "white": 2
+  },
+  "start_talents": [
+   "Erudition",
+   "White Leyline Attunement",
+   "Strategize",
+   "Guiding Signal"
+  ],
+  "levels": [
+   {
+    "lv": 2,
+    "talent": "Concordant Presence",
+    "tree": "White",
+    "ranks": {
+     "green": 2
+    }
+   },
+   {
+    "lv": 3,
+    "talent": "Ordained Ground",
+    "tree": "Fate",
+    "ranks": {
+     "lor": 1,
+     "ded": 2
+    }
+   },
+   {
+    "lv": 4,
+    "talent": "Snare",
+    "tree": "Fate",
+    "ranks": {
+     "lor": 2,
+     "ins": 2
+    }
+   },
+   {
+    "lv": 5,
+    "talent": "Read the Threads",
+    "tree": "Fate",
+    "ranks": {
+     "prc": 2
+    }
+   },
+   {
+    "lv": 6,
+    "talent": "Bulwark Ground",
+    "tree": "Fate",
+    "ranks": {
+     "white": 3,
+     "green": 3
+    }
+   },
+   {
+    "lv": 7,
+    "talent": "Inevitable Snare",
+    "tree": "Fate",
+    "ranks": {
+     "med": 2
+    }
+   },
+   {
+    "lv": 8,
+    "talent": "Hexmark",
+    "tree": "Fate",
+    "ranks": {
+     "cra": 2,
+     "dis": 1
+    }
+   },
+   {
+    "lv": 9,
+    "talent": "Weave the Thread",
+    "tree": "Fate",
+    "ranks": {
+     "ded": 3,
+     "lor": 3
+    }
+   },
+   {
+    "lv": 10,
+    "talent": "Thread of Inevitability",
+    "tree": "Fate",
+    "ranks": {
+     "ins": 3,
+     "med": 3
+    }
+   }
+  ]
+ }
+]
