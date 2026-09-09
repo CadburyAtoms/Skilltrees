@@ -113,8 +113,24 @@ for (const k of order) {
   console.log(k.replace('|', '/').padEnd(21), String(ign.length).padStart(9), String(def.length).padStart(13),
     '  ' + ign.map(r => `${r.name}(${r.damageType})`).join(', '));
 }
+// A typed formula is not the only way to bypass Deflect — six talents do it in prose, and reading
+// only the type column overstates the gap. This is the correction to a first draft of this
+// section that said "Destruction 0/6 deflect-ignoring": its capstone bypasses Deflect in words.
+const PROSE_BYPASS = /ignor\w*\s+deflect|bypass\w*\s+deflect|deflect[^.;]{0,20}(does not|doesn't) (apply|reduce)/i;
+console.log('');
+console.log('=== talents that bypass Deflect in PROSE rather than by damage type ===');
+for (const r of rows) {
+  if (!PROSE_BYPASS.test(txt(r))) continue;
+  const typed = r.damageType === 'vital' || r.damageType === 'spirit';
+  console.log('  ' + (r.atlas + '/' + r.tree).padEnd(21) + r.name.padEnd(24) + (typed ? '(also a typed vital/spirit formula)' : 'PROSE ONLY — the type column misses this'));
+}
+console.log('  NOTE deity/Life `Lifeline` matches this pattern but REDIRECTS damage to the caster');
+console.log('  as spirit; it is mitigation, not Deflect-ignoring damage dealt. Read before counting.');
 console.log('');
 console.log(`TOTAL: ${ignTot} of ${ignTot + defTot} typed damage formulas (${Math.round(100 * ignTot / (ignTot + defTot))}%) ignore Deflect.`);
+console.log('With the prose bypasses folded in, the honest statement is narrower: leyline/Red and');
+console.log('deity/Fate are the only damage-dealing trees with NO Deflect bypass of any kind, while');
+console.log('Chaos, Order, Knowledge and Black bypass it on every damage talent they have.');
 console.log('Three talents carry a formula with NO type — Fatal Thrust, Wit\'s End, Devastating Blow.');
 console.log('All three ADD dice to a weapon attack, so the weapon supplies the type; that is correct,');
 console.log('not a defect.');
