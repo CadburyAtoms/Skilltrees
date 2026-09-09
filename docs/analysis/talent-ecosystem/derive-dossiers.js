@@ -10,18 +10,27 @@ const LEY = load('leyline.json'), HER = load('cosmere.json'), DOM = load('domain
 // silently loaded ZERO overrides for all 365 talents: every dossier reported `events=false
 // effects=false` (247 talents have events, 32 have effects) and dropped the 54 machine-readable
 // damage formulas. Fixed 2026-09-09.
+// KEYED BY FILE + NAME, never by name alone: 12 talent names live in more than one tree (`Hardy`
+// is in seven, `Mighty` in six, `Collected` in five — see shared-talents.js), so a flat name map
+// silently hands every copy whichever file was read last. That made deity/Chaos's `Shatter Focus`
+// report leyline/Red's text, and would have mis-assigned roll formulas and wiring counts across
+// all 41 duplicated slots.
 const AUTH = {};
+let authCount = 0;
 for (const f of fs.readdirSync(path.join(D, 'authored'))) {
   const j = load(path.join('authored', f));
   const talents = j && j.talents ? j.talents : (Array.isArray(j) ? j : {});
   const entries = Array.isArray(talents)
     ? talents.filter(a => a && a.name).map(a => [a.name, a])
     : Object.entries(talents);
-  for (const [name, a] of entries) if (a) AUTH[String(name).trim().toLowerCase()] = a;
+  // `deity-chaos.json` -> `deity|chaos`; matches atlas|tree lowercased on the talent rows.
+  const key = f.replace(/\.json$/i, '').toLowerCase().replace('-', '|');
+  for (const [name, a] of entries) if (a) { AUTH[key + '|' + String(name).trim().toLowerCase()] = a; authCount++; }
 }
-if (Object.keys(AUTH).length < 300) {
-  throw new Error(`authored overlay loaded only ${Object.keys(AUTH).length} entries (expected 365) — the shape changed, fix this loader`);
+if (authCount < 300) {
+  throw new Error(`authored overlay loaded only ${authCount} entries (expected 365) — the shape changed, fix this loader`);
 }
+const authOf = t => AUTH[t.atlas.toLowerCase() + '|' + t.tree.toLowerCase() + '|' + t.name.trim().toLowerCase()] || {};
 // Authored description HTML -> plain body text, minus the Activation:/Cost: header paragraphs the
 // build injects (they duplicate the `action`/`cost` columns) but KEEPING the italic flavour line.
 const htmlText = h => String(h || '').replace(/<[^>]+>/g, ' ')
@@ -93,7 +102,7 @@ function earliestLevel(t) {
 
 const norm = s => String(s).replace(/\s+/g, ' ').replace(/[‘’]/g, "'").trim().toLowerCase();
 const rows = T.map(t => {
-  const a = AUTH[t.name.trim().toLowerCase()] || {};
+  const a = authOf(t);
   const body = authoredBody(a);
   const gen = String(t.description || '');
   // Only surface the authored text when it actually says something different — the overlay

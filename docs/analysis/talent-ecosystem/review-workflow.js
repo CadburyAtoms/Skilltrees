@@ -233,12 +233,12 @@ whether a talent is good. Do not confuse "unwired" with "weak". Mention it only 
 finding.
 
 --- authored-overlay text divergences (the authored text WINS in Foundry) ---
-12 of 365 talents have authored text that differs from the generator prose, and the dossiers flag
-each with "⚠️ AUTHORED OVERRIDE DIVERGES". Most are a flavour line or a typo fix. Three are
-material: leyline/White **Mending Aura** (the authored text adds a 1 Investiture cost the
-generator prose lacks), heroic/Envoy **Composed** ("increase your max AND CURRENT focus" vs.
-"increase your maximum focus"), and deity/Chaos **Shatter Focus**, where the two sources describe
-COMPLETELY DIFFERENT TALENTS. Use the authored text.
+Only 4 of 365 talents have authored text that differs from the generator prose, and the dossiers
+flag each with "⚠️ AUTHORED OVERRIDE DIVERGES". Three are typo fixes the authored side already
+made (White's Collective Resolve "gran"->"grant", Blue's Absolute Stillness "has"->"have", Red's
+Feeding Frenzy a stray open paren). ONE is material: leyline/White **Mending Aura** — the authored
+text costs "an Opportunity AND 1 Investiture", the source prose costs Opportunity only. Use the
+authored text; the source prose owes a fix.
 
 Read ${DOS}/advantage-ledger.md for the verbatim text of all 48 talents that name "advantage",
 and re-classify them yourself if any advantage claim is load-bearing for you. Read
