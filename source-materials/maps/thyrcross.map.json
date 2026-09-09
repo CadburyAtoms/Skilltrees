@@ -2,8 +2,8 @@
  "_README": {
   "purpose": "THE machine-readable geographic source of truth for the Thyrcross world map. Canon doc Â§5a is the prose summary of this file; sessions answer geometry questions (distance, travel time, which-nation, border crossings) by querying this JSON via scripts/map/, never by eyeballing the PNGs. Regenerate labeled maps with scripts/map/render.py.",
   "coordinates": "Full-resolution pixels on source-materials/maps/thyrcross.png (origin top-left; 2236x2976 since the 2026-07-19 redraw). meta.km_per_px converts to km (Ben's ruling 2026-07-12: ~4,000 km north-south).",
-  "provenance": "Nations/cities extracted from the political layers of Thycross.procreate (OneDrive; gitignored) via scripts/map/extract_procreate.py; polygons traced by scripts/map/trace_regions.py; waterways by scripts/map/trace_rivers.py. meta.source records the .procreate stamp at extraction time â€” if the file's size/mtime differ, the art has changed and a re-extraction pass is due.",
-  "flags": "âš‘1 fields mirror the canon doc's provisional-until-Ben-confirms convention. `painted` on sites (and on cities once named): false = Ben's Thycross.procreate doesn't show it yet â€” scripts/map/paint_overlay.py renders the import-into-Procreate guide layer from these."
+  "provenance": "Nations/cities extracted from the political layers of Thycross.procreate (OneDrive; gitignored) via scripts/map/extract_procreate.py; polygons traced by scripts/map/trace_regions.py; waterways by scripts/map/trace_rivers.py. meta.source records the .procreate stamp at extraction time — if the file's size/mtime differ, the art has changed and a re-extraction pass is due.",
+  "flags": "âš‘1 fields mirror the canon doc's provisional-until-Ben-confirms convention. `painted` on sites (and on cities once named): false = Ben's Thycross.procreate doesn't show it yet — scripts/map/paint_overlay.py renders the import-into-Procreate guide layer from these."
  },
  "meta": {
   "canvas_px": [
@@ -2450,7 +2450,7 @@
     688,
     2556
    ],
-   "region": "southwest mesa badlands â€” the new tenth nation (collapsed/anarchic state)",
+   "region": "southwest mesa badlands — the new tenth nation (collapsed/anarchic state)",
    "polygon": [
     [
      732,
@@ -3603,7 +3603,7 @@
    "nation": "lunavar",
    "name": "Fenholt",
    "painted": false,
-   "note_2026_07_19": "unnamed west-border town (Lunavar side of the Goldenport strip). Ruling 86 detached the Fenholt name â€” the ruling-82 identity swap with city-17 stays as position bookkeeping only."
+   "note_2026_07_19": "unnamed west-border town (Lunavar side of the Goldenport strip). Ruling 86 detached the Fenholt name — the ruling-82 identity swap with city-17 stays as position bookkeeping only."
   },
   {
    "id": "city-07",
@@ -3705,7 +3705,7 @@
     916
    ],
    "nation": "goldenport",
-   "note_2026_07_19": "unnamed Goldenport coastal-island town (took city-06's geometric match in the ruling-82 swap; ruling 86 made the swap moot for naming â€” both are unnamed).",
+   "note_2026_07_19": "unnamed Goldenport coastal-island town (took city-06's geometric match in the ruling-82 swap; ruling 86 made the swap moot for naming — both are unnamed).",
    "nation_previous": "lunavar"
   },
   {
@@ -3902,9 +3902,9 @@
     885,
     1514
    ],
-   "note": "Thalendor's capital (picked 2026-07-13; Ben's criterion: nearest to both Elmsworth and the forest center; PAINTED by Ben on the 2026-07-19 redraw â€” capital ring-glyph, his brush supersedes the criterion spot). ~342 km from Elmsworth, ~266 km from the forest centroid, ~294 km interior of the Palewater border, deep west-central forest. Lore: the heart-city of the Root Network heartland.",
+   "note": "Thalendor's capital (picked 2026-07-13; Ben's criterion: nearest to both Elmsworth and the forest center; PAINTED by Ben on the 2026-07-19 redraw — capital ring-glyph, his brush supersedes the criterion spot). ~342 km from Elmsworth, ~266 km from the forest centroid, ~294 km interior of the Palewater border, deep west-central forest. Lore: the heart-city of the Root Network heartland.",
    "painted": true,
-   "resited": "2026-07-19: Ben PAINTED this on the redrawn map (glyph eyeball-verified this session; old canvas px [1284, 1601]) â€” âš‘ confirm identity"
+   "resited": "2026-07-19: Ben PAINTED this on the redrawn map (glyph eyeball-verified this session; old canvas px [1284, 1601]) — âš‘ confirm identity"
   },
   {
    "id": "elmsworth",
@@ -3915,7 +3915,7 @@
    ],
    "note": "Session-1 staging town: head-of-navigation river port at the lake outflow (beside city marker city-15). Snapped onto the Palewater 2026-07-13 (was 290 km inland).",
    "painted": false,
-   "resited": "2026-07-19: re-registered to the redrawn Thycross.procreate (old canvas px [1290, 1470]) â€” âš‘ verify in viewer.html"
+   "resited": "2026-07-19: re-registered to the redrawn Thycross.procreate (old canvas px [1290, 1470]) — âš‘ verify in viewer.html"
   },
   {
    "id": "palewater-ford",
@@ -3924,9 +3924,9 @@
     1157,
     1679
    ],
-   "note": "The raiders' ford â€” braided shallows; only wadeable border crossing for fifty miles. 935 km along the Palewater from Elmsworth (~day 8-9 at barge_down 110); session-1 ambush.",
+   "note": "The raiders' ford — braided shallows; only wadeable border crossing for fifty miles. 1,011 km along the Palewater from Elmsworth (~day 9 at barge_down 110); session-1 ambush. Distance/day re-measured 2026-09-09 on the ruling-84 trace (was '935 km / ~day 8-9', a pre-ruling-84 leftover that contradicted this file's own waterway and route notes).",
    "painted": false,
-   "resited": "2026-07-19: re-pinned on the corrected channel trace at the played fraction of the Elmsworth->Withervale run (935/1339) â€” âš‘ verify in viewer.html"
+   "resited": "2026-07-19: re-pinned on the corrected channel trace at the played fraction of the Elmsworth->Withervale run (935/1339) — âš‘ verify in viewer.html"
   },
   {
    "id": "withervale",
@@ -3935,9 +3935,9 @@
     1220,
     1796
    ],
-   "note": "Session-1 famine village, Thalendor (west) bank; river-stage at channel (1497,1929). 1,339 km along the Palewater from Elmsworth (~day 12).",
+   "note": "Session-1 famine village, Thalendor (west) bank; river-stage at channel (1243,1809). 1,444 km along the Palewater from Elmsworth (~day 13). Re-measured 2026-09-09: the old river-stage px (1497,1929) was a pre-redraw coordinate sitting 161 km off the traced channel; 1,339 km / ~day 12 was a pre-ruling-84 leftover.",
    "painted": true,
-   "resited": "2026-07-19: Ben PAINTED this on the redrawn map (glyph eyeball-verified this session; old canvas px [1480, 1925]) â€” âš‘ confirm identity"
+   "resited": "2026-07-19: Ben PAINTED this on the redrawn map (glyph eyeball-verified this session; old canvas px [1480, 1925]) — âš‘ confirm identity"
   },
   {
    "id": "black-altar-crossing",
@@ -3948,7 +3948,7 @@
    ],
    "note": "Fixed landmark: destabilizing leyline nexus ON the Palewater at the southern Thalendor/Corvaine/Canticle confluence. Snapped onto the channel 2026-07-13 (was tripoint estimate (1400,2280)). From Withervale: 1,082 km along channel (~10 days by water; re-anchored at the confluence fork (1356, 2154), ruling 101 - supersedes the pre-redraw 1,355 and ruling 84's 1,178 tail-projection) or ~620 km overland. The sea mouth lies 807 km (~7-8 barge days) further down the east reach.",
    "painted": true,
-   "resited": "2026-07-19: Ben PAINTED this on the redrawn map (glyph eyeball-verified this session; old canvas px [1449, 2337]) â€” âš‘ confirm identity"
+   "resited": "2026-07-19: Ben PAINTED this on the redrawn map (glyph eyeball-verified this session; old canvas px [1449, 2337]) — âš‘ confirm identity"
   },
   {
    "id": "aldercourt",
@@ -3963,7 +3963,7 @@
    ],
    "note": "Corvaine's capital (picked 2026-07-14, Corvaine dive item 4; ruling 43): city marker city-18 named, not a new city. Sea-and-river port at the east-coast river mouth facing the Sylvaneth strait; mid-realm between city-13 (north, ~473 km) and city-22 (south, ~767 km); ~650 km straight (~16 road-days) from Palewater Ford. Distances re-measured 2026-07-19 (ruling 86).",
    "painted": false,
-   "resited": "2026-07-19: re-registered to the redrawn Thycross.procreate (old canvas px [1778, 1601]) â€” âš‘ verify in viewer.html"
+   "resited": "2026-07-19: re-registered to the redrawn Thycross.procreate (old canvas px [1778, 1601]) — âš‘ verify in viewer.html"
   },
   {
    "id": "moonmere",
@@ -3978,7 +3978,7 @@
    ],
    "note": "Lunavar's capital (picked 2026-07-19, Lunavar dive section 3; ruling 68): city marker city-23 named, not a new city. Far-south, in the southern ridge districts - ~1,061 km of marsh (straight-line) between it and the Vorsk raids at the northern edge; ~547 km from Goldenport's anchor (west). Distances re-measured 2026-07-19 on the redrawn map (ruling 86).",
    "painted": false,
-   "resited": "2026-07-19: re-registered to the redrawn Thycross.procreate (old canvas px [796, 2107]) â€” âš‘ verify in viewer.html"
+   "resited": "2026-07-19: re-registered to the redrawn Thycross.procreate (old canvas px [796, 2107]) — âš‘ verify in viewer.html"
   },
   {
    "id": "fenholt",
@@ -3987,7 +3987,7 @@
     686,
     1311
    ],
-   "note": "Lunavar's raid-front north town (named 2026-07-19, ruling 68; RE-SITED by criterion 2026-07-19, ruling 86 â€” the redraw moved the drawn markers away from the Vorsk border, and the raid-front CRITERION travels, not the marker: Fenholt is a site again, not city-06). Northeast marsh edge under the Vorsk foothills â€” Taking-law raid country (ruling 67: Iron Congregation chaplains beginning to preach past the law), causeway-secret defense, Ferrik Cade's home ground (Sec 7). âš‘ exact spot is Ben's viewer.html click; needs painting (paint-overlay guide).",
+   "note": "Lunavar's raid-front north town (named 2026-07-19, ruling 68; RE-SITED by criterion 2026-07-19, ruling 86 — the redraw moved the drawn markers away from the Vorsk border, and the raid-front CRITERION travels, not the marker: Fenholt is a site again, not city-06). Northeast marsh edge under the Vorsk foothills — Taking-law raid country (ruling 67: Iron Congregation chaplains beginning to preach past the law), causeway-secret defense, Ferrik Cade's home ground (Sec 7). âš‘ exact spot is Ben's viewer.html click; needs painting (paint-overlay guide).",
    "painted": false
   },
   {
@@ -4003,7 +4003,7 @@
    ],
    "note": "Malcurr's southern trade town and war-coin forge-town (picked 2026-07-19, Malcurr dive section 2; ruling 73): city marker city-09 named, not a new city. The Corvaine road: ~286 km from Corvaine's nearest marker (city-13), ~737 km from Aldercourt, ~638 km from the border-river's traced channel. Home of the Sevenbrand - the forge-guild that mints the war-coin (ruling 57). Distances re-measured 2026-07-19 (ruling 86).",
    "painted": false,
-   "resited": "2026-07-19: re-registered to the redrawn Thycross.procreate (old canvas px [1589, 1175]) â€” âš‘ verify in viewer.html"
+   "resited": "2026-07-19: re-registered to the redrawn Thycross.procreate (old canvas px [1589, 1175]) — âš‘ verify in viewer.html"
   },
   {
    "id": "kenmere",
@@ -4018,7 +4018,7 @@
    ],
    "note": "Malcurr's capital (picked 2026-07-19, Malcurr dive section 3; ruling 79): city marker city-07 named, not a new city. 'Ken' - hand-knowledge - on the lake: the lake of knowing. Central-southern hub of the tree-of-lakes, ~354 km up the lake-roads from Brandmere (the funding trail: border -> Brandmere -> Kenmere). Seat of the Warlock's Proofhall. Distances re-measured 2026-07-19 (ruling 86).",
    "painted": false,
-   "resited": "2026-07-19: re-registered to the redrawn Thycross.procreate (old canvas px [1789, 1075]) â€” âš‘ verify in viewer.html"
+   "resited": "2026-07-19: re-registered to the redrawn Thycross.procreate (old canvas px [1789, 1075]) — âš‘ verify in viewer.html"
   },
   {
    "id": "west-border-lake",
