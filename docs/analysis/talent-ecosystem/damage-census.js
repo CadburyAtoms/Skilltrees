@@ -92,3 +92,29 @@ for(const k of order){
   console.log(k.replace('|','/').padEnd(21),String(sub.length).padStart(3),String(ev).padStart(11),
     String(ef).padStart(12),String(n).padStart(9),(100*n/sub.length).toFixed(0).padStart(8)+'%');
 }
+
+// ---- DAMAGE TYPE: which trees bypass Deflect ---------------------------------------------------
+// The leyline design guide: "Vital, Spirit: ignore Deflect entirely. These are a big deal — use
+// sparingly." Deflect subtracts from impact/keen/energy and does nothing to vital/spirit, so two
+// talents with the same dice are not the same talent. This is a parity axis that a damage COUNT
+// cannot see: deity/Knowledge has 3 damage formulas and deity/Destruction has 6, but all three of
+// Knowledge's are vital and all six of Destruction's are deflectable.
+console.log('');
+console.log('=== DAMAGE TYPE: vital/spirit ignore Deflect, impact/keen/energy do not ===');
+console.log('TREE                  ignores-Deflect  deflectable   the Deflect-ignoring ones');
+let ignTot = 0, defTot = 0;
+for (const k of order) {
+  const [atlas, tree] = k.split('|');
+  const sub = rows.filter(r => r.atlas === atlas && r.tree === tree && r.isDamageFormula);
+  if (!sub.length) continue;
+  const ign = sub.filter(r => r.damageType === 'vital' || r.damageType === 'spirit');
+  const def = sub.filter(r => r.damageType && r.damageType !== 'vital' && r.damageType !== 'spirit');
+  ignTot += ign.length; defTot += def.length;
+  console.log(k.replace('|', '/').padEnd(21), String(ign.length).padStart(9), String(def.length).padStart(13),
+    '  ' + ign.map(r => `${r.name}(${r.damageType})`).join(', '));
+}
+console.log('');
+console.log(`TOTAL: ${ignTot} of ${ignTot + defTot} typed damage formulas (${Math.round(100 * ignTot / (ignTot + defTot))}%) ignore Deflect.`);
+console.log('Three talents carry a formula with NO type — Fatal Thrust, Wit\'s End, Devastating Blow.');
+console.log('All three ADD dice to a weapon attack, so the weapon supplies the type; that is correct,');
+console.log('not a defect.');
