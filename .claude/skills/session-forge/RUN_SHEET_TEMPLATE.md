@@ -1,8 +1,13 @@
 # Run-sheet template — `EDHA_SESSION_<N>_SCRIPT.md`
 
-The frozen shape of `EDHA_SESSION_1_SCRIPT.md`. Copy the skeleton, keep the section order — Ben
-reads this at the table, so the sheet is organized in *play order* with GM-truth marked and
-player-safe text quarantined at the end (§8). Guidance is in ⟨angle brackets⟩; delete it.
+The frozen shape of `EDHA_SESSION_1_SCRIPT.md` — the repo-side source of truth for a session.
+Copy the skeleton, keep the section order: it is organized in *play order*, with GM-truth marked
+and player-safe text quarantined at the end (§8). Guidance is in ⟨angle brackets⟩; delete it.
+
+> **This markdown is not what Ben reads at the table.** Every session also ships a published
+> GM-script Artifact built on `GM_SCRIPT_TEMPLATE.html` — see **SKILL.md Phase 11**, which is a
+> standing instruction, not an option. Keep the two in step: the markdown is the source, the
+> artifact is the deliverable, and play order has to be right in both.
 
 ---
 

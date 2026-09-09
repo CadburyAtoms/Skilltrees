@@ -90,6 +90,12 @@ Ben 2026-07-16.)*
 |---|---|---|---|
 | 1 | The Harvest That Won't Die | **built, reviewed, and session-forge refreshed 2026-09-09 — not played** | Escort three grain barges **13 days** down the Palewater; river beats days 1–4; the **Wainferry/Wainscross ferry stop day 5** (ruling 163 — the chain-toll and the paymaster writ); beats days 6–8; ambush at the raiders' ford **day 9**; mistheron fog attack **day 11–12**; the hook lands at Withervale **day 13**. |
 
+**Published GM scripts** — the read-at-the-table artifacts (session-forge Phase 11). **Revising a session republishes to its existing URL**; publishing without it makes a second artifact and Ben's link goes stale.
+
+| # | GM script |
+|---|---|
+| 1 | https://claude.ai/code/artifact/9db5c439-01fe-459d-9539-151279764afd |
+
 ## 7. Next session
 
 **Session 1 is ready to run. One ⚑ remains, and it is art.** The **W23
