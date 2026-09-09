@@ -37,6 +37,15 @@ else                        { d20.number = 1; }
 
 (`<FoundryData>/systems/cosmere-rpg/index.js`, system 2.1.0 — the version Ben runs.)
 
+**The Edha engine has already had to solve this**, which settles it beyond doubt.
+`module-src/scripts/engine/15-blue-calculation.js` carries `edhaNextModFoldMode`, whose own
+comment reads: *"fold a list of MATCHING entries into the one advantageMode the system can hold.
+Boolean-OR per direction; both directions present cancel to null."* Two advantage sources fold to
+one advantage. An advantage and a disadvantage cancel to nothing.
+
+**Disadvantage is the same scalar**, so everything below applies to it equally — which matters,
+because imposing disadvantage is leyline/Blue's main lever and Blue has five talents that do it.
+
 Consequences you must reason with:
 
 * **A second source of advantage on the same roll is worth literally nothing.** Not diminishing —
@@ -49,6 +58,11 @@ Consequences you must reason with:
   supplies something to spend it on.
 * Caveat worth stating where it matters: this is the implemented behaviour. If the printed rules
   stack advantages, the table still plays the implementation. Flag it rather than assuming.
+* **There IS a stacking alternative already in the engine.** `edha-next-test-mod` also carries a
+  `formula` field — a dice/flat modifier on the next test (`−1d6`) applied by term concatenation,
+  and item 49 made those **SUM**: "every matching entry appends its own term". It is currently
+  used by one adversary ability (`Probability Net`) and by no talent. So a designer who wants a
+  penalty that stacks does not need new engine work — the primitive exists.
 
 ## Resources
 
