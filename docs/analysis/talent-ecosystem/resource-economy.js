@@ -39,9 +39,13 @@ const CURRENCIES = {
     produce: /\b(gain|gains|grant|grants|add|adds)\b[^.;]{0,40}\bOpportunity\b|\bOpportunity range\b/i,
     consume: /\bspend\w*\b[^.;]{0,30}\bOpportunity\b|\bor Opportunity\b/i,
   },
+  // "Raise the stakes" is the GM action that makes a test roll the plot die, so a talent that
+  // raises the stakes IS plot-die integration even though it never says "plot die". Searching the
+  // literal words undercounts badly: it finds 3 talents in 2 trees, where the real figure is 19
+  // across 7. Opportunity range and Complication manipulation belong here for the same reason.
   plot_die: {
-    produce: /\b(roll|rolls|add|adds)\b[^.;]{0,30}\bplot die\b|\braise the stakes\b/i,
-    consume: /\b(re-?roll|choose|change|set|replace|treat)\b[^.;]{0,40}\bplot die\b|\bplot die\b[^.;]{0,30}\b(face|result)\b/i,
+    produce: /\braise(s|d)? the stakes\b|\b(roll|rolls|add|adds)\b[^.;]{0,30}\bplot die\b/i,
+    consume: /\b(re-?roll|choose|change|set|replace|treat|remove)\b[^.;]{0,40}\b(plot die|Complication)\b|\bplot die\b[^.;]{0,30}\b(face|result)\b|\bOpportunity range\b[^.;]{0,20}\bexpand/i,
   },
   temp_hp: { produce: /\btemporary (hp|health)\b/i, consume: /\bspend\w*[^.;]{0,20}\btemporary (hp|health)\b/i },
   omen: { produce: /\bplace\w*[^.;]{0,25}\bOmen\b|\bOmen\b[^.;]{0,20}\bon the target\b/i, consume: /\b(spend|consume|remove|detonat\w+|trigger)\w*[^.;]{0,25}\bOmen\b/i },
@@ -104,6 +108,19 @@ const ip = report.investiture.prod, ic = report.investiture.cons;
 console.log('  tree                 regen  costers');
 for (const k of trees) console.log('  ' + pad(k, 20) + String((ip[k] || []).length).padStart(5) + String((ic[k] || []).length).padStart(9)
   + ((ip[k] || []).length ? '   [' + ip[k].join(', ') + ']' : ''));
+
+// The plot die deserves its own listing: two design-guide claims rest on it — "Plot Die
+// manipulation is Blue's capstone identity. Choosing any Plot Die face is the ultimate Blue
+// expression" and White's "Plot Die integration. White rewards coordinated group action."
+console.log('\n=== PLOT-DIE INTEGRATION, by tree (raise the stakes counts) ===');
+const PLOT = /\braise(s|d)? the stakes\b|\bplot die\b|\bComplication\b|\bOpportunity range\b/i;
+const plotBy = {};
+for (const r of rows) if (PLOT.test(txt(r))) (plotBy[r.atlas + '/' + r.tree] ||= []).push(r.name);
+for (const [k, v] of Object.entries(plotBy).sort((a, b) => b[1].length - a[1].length)) {
+  console.log('  ' + pad(k, 20) + String(v.length).padStart(3) + '  ' + v.join(', '));
+}
+const noPlot = trees.filter(k => !plotBy[k]);
+console.log('  NONE: ' + noPlot.join(', '));
 
 console.log('\n=== Focus economy ===');
 const fp = report.focus.prod, fc = report.focus.cons;
