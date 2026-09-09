@@ -59,6 +59,13 @@ for (const t of T) (BY_TREE[t.atlas + '|' + t.tree] ||= {})[t.name.trim().toLowe
 // is 100% available by level 5" (really 72-76%, i.e. level with leyline's 68-80%). The one
 // non-skill prerequisite in the data, "Title granting you command of 5+ people", is excluded by the
 // single-word skill name. Fixed 2026-09-09.
+// ATTRIBUTES ARE NOT SKILLS and do not obey the skill-rank cap — they advance on attribute points
+// at levels 3, 6 and 9. Exactly one prerequisite in the data gates on one: leyline/White's
+// `Shared Burden`, "Strength 3+". The first version of this fix swept it up with the skills and
+// dated it L6; caught by the review's own problem ledger. The six attributes are Strength, Speed,
+// Intellect, Willpower, Awareness and Presence — everything else in the `<Word> <n>+` shape is a
+// skill or a leyline colour.
+const ATTRIBUTES = /^(strength|speed|intellect|willpower|awareness|presence)$/i;
 const RANK_RE = /^([A-Za-z]+)\s+(\d)\+$/;
 function groups(t) {
   const tt = BY_TREE[t.atlas + '|' + t.tree];
@@ -70,7 +77,7 @@ function groups(t) {
   if (prose && prose !== '—') {
     for (const part of prose.split(/;|,/).map(s => s.trim()).filter(Boolean)) {
       const m = part.match(RANK_RE);
-      if (m) { ranks.push({ skill: m[1], rank: +m[2] }); continue; }
+      if (m) { ranks.push({ skill: m[1], rank: +m[2], attribute: ATTRIBUTES.test(m[1]) }); continue; }
       const ors = part.split(/\bor\b/i).map(s => s.trim().toLowerCase()).filter(Boolean);
       const resolved = ors.filter(o => tt[o]);
       if (resolved.length) g.push(resolved);
@@ -109,7 +116,7 @@ const RANK_MIN_LEVEL = { 3: 6, 4: 11, 5: 16 };
 function earliestLevel(t) {
   const { ranks } = meta.get(t);
   let lv = 1 + depth.get(t);              // own depth-many prereq talents first
-  for (const r of ranks) lv = Math.max(lv, RANK_MIN_LEVEL[r.rank] || 1);
+  for (const r of ranks) { if (r.attribute) continue; lv = Math.max(lv, RANK_MIN_LEVEL[r.rank] || 1); }
   return lv;
 }
 

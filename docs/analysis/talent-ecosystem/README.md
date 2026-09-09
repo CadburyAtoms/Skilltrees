@@ -158,14 +158,20 @@ draft of this document told. It is: leyline ahead early, both spike at 6, leylin
 
 | Tree | reachable by L5 | of 25 |
 |---|---|---|
-| leyline/White, Black; heroic/Leader | 20 | 80% |
+| leyline/White | 21 | 84% |
+| leyline/Black; heroic/Leader | 20 | 80% |
 | leyline/Red; heroic/Envoy, Hunter, Scholar, Warrior | 19 | 76% |
 | heroic/Agent | 18 | 72% |
 | leyline/Blue, Green | 17 | 68% |
 
-Every tree in both atlases opens 68–80% of itself by level 5. **There is no front-loading
+Every tree in both atlases opens 68–84% of itself by level 5. **There is no front-loading
 asymmetry.** What there is instead is a shared level-6 wall: `maxL` is 6 for all eleven
-25-talent trees.
+25-talent trees, and the L6-gated count per tree is near-symmetric (heroic mean 6.0, leyline 6.4).
+
+> A second, smaller correction, also from the review's own problem ledger: the first version of
+> this fix swept up **attributes** with skills. `Shared Burden` gates on `Strength 3+`, and
+> attributes advance on attribute points at levels 3/6/9, not the skill-rank cap — so it is a
+> level-3 talent, not level-6. It is the only attribute gate in the data.
 
 ### Trigger-gating — White is the outlier, and by a distance
 
@@ -390,9 +396,21 @@ redirection. **Verdict: DISTINCT.** The 0.794 function-vector similarity (rank 1
 pairs are more similar, topped by Black↔Red at 0.911) is a *fantasy* adjacency: both are "the
 clever one who doesn't hit things". That is worth fixing in the prose, not in the talents.
 
-The real identity collision is elsewhere and sharper: **the leyline design guide gives Blue
-plot-die manipulation as its "capstone identity", and heroic/Agent has it.** Six plot-die talents
-to Blue's zero, including the exact effect the guide reserves for Blue.
+There is a second, weaker point worth stating with its caveat attached. The leyline design guide
+gives Blue plot-die manipulation as its *"capstone identity"* — and Blue has **zero** plot-die
+talents while heroic/Agent has six, including `Sure Outcome`, the exact face-editing effect the
+guide's sentence describes.
+
+> ⚠️ **But that line sits under a disclaimer, which this review initially missed and its own
+> defence advocate caught.** `PART 4: COLOR IDENTITIES` opens with *"**Note:** Attunement/Physical/
+> Cognitive have been replaced by Specialties. The descriptions below are reference, not law."* So
+> the plot-die claim is a **design note that was never built**, not a broken promise — and Blue's
+> player-facing path description never mentions the plot die at all. Report it as an unbuilt idea.
+>
+> The Sovereignty/Decree case is **not** weakened the same way, and the asymmetry is decisive: the
+> deity guide's PART 4 carries no such disclaimer (it says "The 10 **confirmed** identities"), and
+> Sovereignty's *player-facing* path description promises Decree twice, in the prose a player reads
+> when choosing a god.
 
 ### 3. Blue's core lever is binary, so five talents do one talent's work
 
@@ -405,7 +423,42 @@ The fix needs no new engine work: `edha-next-test-mod` already carries a `formul
 dice/flat modifiers **SUM** (item 49). It is used today by one adversary ability and by no talent.
 **R-98.**
 
-### 4. White is not a damage problem; it is a permission problem
+### 4. The real diagnosis: White has two talents in twenty-five it can spend an Action on
+
+This arrived last, from the cross-cut pass, and it is the best number in the review. Counting only
+talents that cost `1 Action`, `2 Actions` or `3 Actions` — the things a player *chooses to do on
+their own turn* (`agency-census.js`):
+
+| Tree | action-costing | of | % |
+|---|---|---|---|
+| **leyline/White** | **2** | 25 | **8%** — `Guiding Signal` (1A, L1) and `Ordered Advance` (2A, L4). That is the entire list. |
+| heroic/Envoy, heroic/Scholar | 3 | 25 | 12% |
+| leyline/Red, heroic/Agent | 4 | 25 | 16% |
+| leyline/Blue | 5 | 25 | 20% — and three of the five are scene setup (`Phantom Double`, `Telepathic Network`, `Phantom Barricade`) |
+| leyline/Black, Green | 6 | 25 | 24% |
+| heroic/Hunter, Leader | 7 | 25 | 28% |
+| heroic/Warrior | 13 | 25 | 52% |
+| every deity tree | 5–8 | **9** | 56–89% |
+
+By atlas: leyline **18%**, heroic **25%**, deity **72%**.
+
+**This reframes the whole review.** What the two PCs experience is not "I deal zero damage" — a
+Blue player who `Counterspell`s an enemy's talent has visibly done something, and a White player
+whose `Shield Wall` shaves damage off every attack on two adjacent allies contributes every round.
+What they experience is: *three Actions on a Slow turn, and a twenty-five-talent tree that offers
+two things to spend them on.* "Damage" was standing in for four properties at once — an effect
+that is **self-initiated, always legal, always resolves, and produces a visible number**. Damage is
+the cheapest single purchase of all four; it is not the only one, and it brings a fifth thing
+nobody asked for, which is White and Blue becoming damage trees.
+
+All four independently-framed remediation passes — minimal-change, identity-first, systemic and
+player-experience — reached this separately, and all four say **no** to damage for either tree.
+
+Note the contrast with **deity/Sovereignty, which is 78% action-costing (7 of 9)**. Sovereignty
+has no agency problem at all; its problem is that what those Actions buy is ±1 average damage.
+Two different failures that a damage count cannot tell apart.
+
+### 4b. Why White in particular is hostage
 
 White's kit is 52% trigger-gated with seven Reactions competing for one slot, and most of it
 additionally requires allies to be adjacent — `Guardian Stance`, `Interposing Shield`,
@@ -441,6 +494,22 @@ Insight — up to `5d6` vital, ignoring Deflect — for 1 Action and 2 Investitu
 Life is the tree Sovereignty is often mistaken for and is *not* a problem: it also has no damage
 formulas, but it has the five largest heal formulas in the game. The distinction that matters is
 **independent effect**, not damage.
+
+## Determinable defects — these need a fix, not a decision
+
+Nothing here is a design question. Each is checkable, each is wrong, and none is in the rulings
+because there is nothing for Ben to decide. **Not fixed in this pass** — this review changed no
+talent data.
+
+| # | Defect | Evidence |
+|---|---|---|
+| 1 | **Two live iron-rule-7 divergences in deity/Death.** `Raise Dead`'s card reads "Necrotic Cascade **or** Speak with the Fallen"; its `connections` are `[Necrotic Cascade, Risen Servant]`. A player who took Speak with the Fallen is refused by Foundry with no reason on the card; a player who took Risen Servant is allowed by a talent the card never names. `Necrotic Cascade` has the same shape (card: "Consuming Decay"; connections add `Death Ward`). | `data/domain.json`. This is exactly the prose-vs-`connections` case CLAUDE.md iron rule 7 flags as **ungated**. |
+| 2 | **`Frightened` is required by two talents and produced by none.** deity/Power's `Kneel` and `Absolute Authority` both key on "Compelled, **Frightened**, or Weakened". Grep of all 365 returns three hits and no producer. Both clauses are permanently dead. | A player reads a condition on their own card and nothing in the game can cause it. |
+| 3 | **`Interposing Shield` is missing a token.** It reads `reduce that damage by half [Die]` where both its siblings read `half [Tier][Die]` — `Devoted Conduit` and `Shield Wall`. So White's **costed Reaction** mitigates ~2.0 at Tier 2 while its **free Passives** mitigate ~4.5. Almost certainly an authoring slip. | One token, one talent. |
+| 4 | **`Counterspell`'s cost field is misspelt** — `"2 Focus; 1 Investiure"` in `data/leyline.json`. Blue therefore reads as 15 Investiture-costing talents in every automated census when it is 16, and one of this review's own critics reproduced the miss. | Invisible at the table; permanently corrupts census runs. |
+| 5 | **deity/Chaos's capstone is the only one of ten with no once-per-scene limiter.** Every other deity capstone carries one; `Unravel Everything` does not, so it is repeatable every turn the player can pay for it. | A nine-of-ten conformance break nobody had checked. |
+| 6 | **The design guide states Black's Draw Mana radius at double the shipped value** — the guide says "no ally within 10 ft", three shipped talents in two trees say 5 ft. Stale doc; a hazard the next time anyone authors from it. | `DESIGN-GUIDE-CLAIMS.md` vs `data/leyline.json`. |
+| 7 | **leyline/Black is 60% Passive** (15 of 25) against its own guide's "eliminate Passives above 35%", and 4% Special against a 25–30% target. The other four leyline trees complied with the same revision pass. The defence advocate conceded this one outright: *"no reading of the guide excuses it."* | `agency-census.js` / action-type census. |
 
 ## Answers to Ben's four questions
 
