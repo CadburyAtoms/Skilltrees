@@ -51,14 +51,15 @@ fight — Withervale is the one scene that must breathe.
 | **Marshal Vareth Khor** | Thalendor's border marshal; devoted Kethane (Civilization) follower — believes *order fed people once and will again* (canon §6). | Grey-templed, immaculate even now; speaks in logistics. Never raises his voice. | The convoy delivered and the border held with a garrison he doesn't have. |
 | **Alchemist Doran Fenn** | Runs the Mage's relief vats at Elmsworth. | Young, exhausted, ink-and-reagent-stained; proud of work he half-suspects is a lie. | To be *believed* that the alchemy is enough. It isn't and he knows it. |
 | **Wick** | Lead bargemaster; has run this river thirty years. | Weathered, fatalistic, dry jokes. Knows every bar and channel of the Palewater. | To not get killed for someone else's grain. |
-| **Ferry-Serjeant Ordis Kell** ⚑ | Holds Corvaine's turn at the joint chain-office at Wainscross (§2b) — the levy, by the book. | Ink-stained gloves, reading spectacles he is too young for, unfailingly courteous. | His book to balance. He is the last part of Corvaine's border machine still being paid, and some part of him knows it. |
+| **Ferry-Serjeant Ordis Kell** | Holds Corvaine's turn at the joint chain-office at Wainscross (§2b) — the levy, by the book. | Ink-stained gloves, reading spectacles he is too young for, unfailingly courteous. | His book to balance. He is the last part of Corvaine's border machine still being paid, and some part of him knows it. |
 | **Sergeant Halden Roek** | Corvaine regular leading the raid — a *soldier*, not a bandit. | Hollow-cheeked under too-good armor; ashamed and doing it anyway. | Food for his own starving unit. Would rather not kill. |
 | **Keeper Harrow** | Priest of the Last Harvest (Morrath) at Withervale's shrine. | Old, faithful, and breaking — kept the merciful rite until it stopped answering; his faith in the Shepherd will not let him take by knife what the god should take by grace. | An answer to *why the deaths won't take* — and the strength to keep faith while he waits for one. |
 | **Gramma Mella Ashmark** | Withervale elder; keeper of the border folklore. | Sharp-eyed, unbothered by much; tells the old stories straight. | Someone young enough to *listen* before it matters. |
 | **Elder Joskin** | The man who has been dying for four months and cannot finish. | Grey, sunken, breathing like a bellows with a hole in it. Lucid in flashes. | To be allowed to die. Nobody can give it to him. |
 
-> **All names CONFIRMED (Ben, 2026-07-16)** — Roek, Ashmark, Joskin, plus Sorrel the tanner and
-> Warden Selm (§4). Gramma Ashmark deliberately echoes the oneshot's "Theron Ashmark's
+> **All names CONFIRMED** — Roek, Ashmark, Joskin, plus Sorrel the tanner and Warden Selm (§4)
+> (Ben, 2026-07-16), and **Ferry-Serjeant Ordis Kell** (Ben, 2026-09-09). **No ⚑ names remain in
+> this sheet.** Gramma Ashmark deliberately echoes the oneshot's "Theron Ashmark's
 > grandmother" Black-Altar folklore (canon §5) — kept on purpose.
 
 ---
@@ -162,7 +163,7 @@ way. Barges pass when it drops; it drops when the toll is paid. The office that 
 **joint**, held in alternate years by each bank, and this year it sits on the **Corvaine** side —
 which is why the man with the tally-book wears a serjeant's badge.
 
-**The ask:** Ferry-Serjeant ⚑ **Ordis Kell** assesses a **chain-lift levy of one part in twenty**
+**The ask:** Ferry-Serjeant **Ordis Kell** assesses a **chain-lift levy of one part in twenty**
 on the cargo — correctly, on relief grain. He is polite, literate, and entirely within his rights.
 Khor's contract did not budget for it.
 
@@ -357,7 +358,7 @@ the scene. One invested minion in the dozen ≈ ruling 39's 1-in-8.
 - ⟲ **Break** (Reaction, free): when a Raider is first reduced below half HP *or* an ally drops,
   it may immediately Disengage and flee. These are not fanatics.
 
-**Corvaine Line-Caller** ⚑ — minion, ×1. *humanoid (White-attuned), tier 1.* As Corvaine
+**Corvaine Line-Caller** — minion, ×1. *humanoid (White-attuned), tier 1.* As Corvaine
 Raider (defenses, deflect, HP, Move, crossbow/shortsword) plus **inv 2** and:
 - ▶ **Guiding Signal** (1 Action, 1 Investiture — *the White tree talent, AS WRITTEN per
   ruling 40: humans use talents unmodified*): designate one PC within Attunement Range
@@ -372,7 +373,7 @@ Raider (defenses, deflect, HP, Move, crossbow/shortsword) plus **inv 2** and:
   39 teaches: invested minions are force-multipliers — shoot the signaler.)*
 - White-attuned **Corvaine ground-stock** (ruling 36) — the ecology confirmed in play.
 
-**Sergeant Halden Roek** ⚑ — rival, tier 1. *humanoid.*
+**Sergeant Halden Roek** — rival, tier 1. *humanoid.*
 - **Defenses** phy 13 / cog 12 / spi 12. **deflect 2**. **HP** 28. **foc** 3. **Move** 25 ft.
 - ▶ **Issued Blade** — attack +5, Reach 5 ft., 1d8+2 **keen**.
 - ▶▶ **Press the Line** — attack +5, Reach 5 ft., 1d8+2 keen; on a hit, one ally Raider may make a
@@ -859,11 +860,8 @@ player-safe nations/faiths/names guide). Any origin works with this session as w
 
 1. **Map art** — see the briefs in §9; flag if you want those generated next.
 
-2. **Ferry-Serjeant Ordis Kell** (§2b) is the only ⚑ placeholder name left in the sheet —
-   every other session-1 name is confirmed. Swap it freely; the character is *the last man in
-   Corvaine's border machine who still gets paid*, and the name should sound like paperwork.
-
-*Settled 2026-09-09 (Ben, the session-forge rerun; canon ruling 163):* the **day-5 ferry stop is
+*Settled 2026-09-09 (Ben, the session-forge rerun; canon ruling 163):* **Ferry-Serjeant Ordis Kell
+is confirmed** — the sheet now carries no ⚑ names at all. The **day-5 ferry stop is
 built** (§2b) — ruling 154's standing to-do is closed. Ben took the **"Ferry Law"** shape and
 declined the burying-ground variant so it would not steal Withervale's thunder, asking instead for
 *"something here regarding the wasting, but not a major item"* — that is the chain-horse: three
