@@ -9,7 +9,8 @@ ford combat statted, and a clue ledger. GM truth throughout **except §8 (player
 Map: `source-materials/maps/thyrcross-labeled.png` (scale: **1 px ≈ 1.5 km**; all geometry lives
 in `source-materials/maps/thyrcross.map.json`, measured with `scripts/map/measure.py` — canon
 §5a). Sites run **south down the Palewater**, the Thalendor/Corvaine border river: **Elmsworth**
-(1036,1359 — the head-of-navigation port) → **Palewater Ford** (1157,1679 — 1,008 km along channel)
+(1036,1359 — the head-of-navigation port) → the **Wainferry/Wainscross** ferry pair (1236,1554 /
+1244,1552 — ~550 km, barge-day 5) → **Palewater Ford** (1157,1679 — 1,008 km along channel)
 → **Withervale** (1220,1796 — 1,444 km) — **~thirteen days downriver** for a laden flotilla
 (barge_down 110 km/day; the drawn channel meanders at ~2.1× straight-line and the measurement
 honours it). The convoy is a **barge flotilla**: the river IS the delivery system. The **Black
@@ -20,7 +21,7 @@ water, or ~620 km overland (ruling 101 re-anchor; was 1,178) — the *act-1 fina
 
 ## 0. What this session is for
 
-**The job:** escort three barges of the Mage's alchemical relief concentrate twelve days
+**The job:** escort three barges of the Mage's alchemical relief concentrate thirteen days
 downriver, from a granary river-port to a starving border village. Simple on paper. **The point:** by the last scene the players should have *felt* —
 not been told — that **nothing in this land can properly die.** That image is the whole campaign's
 seed. Everything else tonight (the raid, the politics, the famine) is scaffolding around that one
@@ -50,6 +51,7 @@ fight — Withervale is the one scene that must breathe.
 | **Marshal Vareth Khor** | Thalendor's border marshal; devoted Kethane (Civilization) follower — believes *order fed people once and will again* (canon §6). | Grey-templed, immaculate even now; speaks in logistics. Never raises his voice. | The convoy delivered and the border held with a garrison he doesn't have. |
 | **Alchemist Doran Fenn** | Runs the Mage's relief vats at Elmsworth. | Young, exhausted, ink-and-reagent-stained; proud of work he half-suspects is a lie. | To be *believed* that the alchemy is enough. It isn't and he knows it. |
 | **Wick** | Lead bargemaster; has run this river thirty years. | Weathered, fatalistic, dry jokes. Knows every bar and channel of the Palewater. | To not get killed for someone else's grain. |
+| **Ferry-Serjeant Ordis Kell** ⚑ | Holds Corvaine's turn at the joint chain-office at Wainscross (§2b) — the levy, by the book. | Ink-stained gloves, reading spectacles he is too young for, unfailingly courteous. | His book to balance. He is the last part of Corvaine's border machine still being paid, and some part of him knows it. |
 | **Sergeant Halden Roek** | Corvaine regular leading the raid — a *soldier*, not a bandit. | Hollow-cheeked under too-good armor; ashamed and doing it anyway. | Food for his own starving unit. Would rather not kill. |
 | **Keeper Harrow** | Priest of the Last Harvest (Morrath) at Withervale's shrine. | Old, faithful, and breaking — kept the merciful rite until it stopped answering; his faith in the Shepherd will not let him take by knife what the god should take by grace. | An answer to *why the deaths won't take* — and the strength to keep faith while he waits for one. |
 | **Gramma Mella Ashmark** | Withervale elder; keeper of the border folklore. | Sharp-eyed, unbothered by much; tells the old stories straight. | Someone young enough to *listen* before it matters. |
@@ -83,7 +85,7 @@ plant the *alchemy-is-faking-it* crack. Keep it to ~30–40 minutes.
 Marshal **Khor** needs bodies for the escort and does not have the luxury of asking who they are.
 Whatever the party is — mercenaries, refugees working passage, a Thalendor patrol, pilgrims,
 opportunists — Khor attaches them in one flat sentence: *"You'll ride the grain down to
-Withervale. Twelve days on the water. My garrison can't spare six men for twelve days, let alone
+Withervale. Thirteen days on the water. My garrison can't spare six men for thirteen days, let alone
 the twenty it would take to do it right — so it's you."*
 
 - **Payment** is food (worth more than coin here) or passage papers — dealer's choice per PC.
@@ -108,14 +110,17 @@ what a field-acre used to. The Mage solved hunger — you're welcome."* Let the 
 > is draining Green. Do not explain it. The player who says "wait, why doesn't the cut wheat rot?"
 > has just found the whole campaign — smile and move on.
 
-### On the river (days 1–7)
+### On the river (days 1–8, the ferry stop on day 5)
 
 Wick's flotilla is three laden grain-barges riding the current, poled and steered, drifting the
 long reaches through the night with a steersman on watch; the PCs split across them. **Crew:
 a steersman and two polers per barge — nine barge-folk, plus Wick: ten souls, none of them
 fighters.** The PCs are the escort; that's the whole point of the hire (ruling 39: Wick's
 thirty-year river-sense is knack-tier — texture, never a roll; nobody aboard casts anything).
-Seven travel days before the shallows — run three or four beats, not a montage of twelve:
+Eight travel days before the shallows, with the ferry pair (§2b) sitting in the middle of them
+on day 5 — run three or four beats total, not a montage of thirteen.
+
+**Before the ferry (days 1–4):**
 
 - A **garrison river-post**, undermanned, waves them through; its sergeant begs for news from
   *up*river, because none comes up anymore.
@@ -128,7 +133,123 @@ Seven travel days before the shallows — run three or four beats, not a montage
   mistherons** — setup for the fog reaches, §3b.)
 - A barge of **border families poling the other way**, upriver, quitting the frontier while they
   still can. Nobody comments on the direction the PCs are headed.
-- **The tollbirds (days 4–6).** Ash-gray crows pass overhead in strings and skeins, hundreds
+
+---
+
+## 2b. Scene 1b — Wainferry & Wainscross: the last honest crossing (day 5)
+
+**Site:** the ferry pair, ~km 550–578 below Elmsworth — **Wainferry** (Thalendor, west bank, ~12k,
+(1236,1554)) facing **Wainscross** (Corvaine, east bank, ~15k, (1244,1552)) across the Palewater.
+**Goal:** show the border *working* — two nations that trade across a chain every day — and let the
+players watch **lawful requisition happen**, four days before Roek waves the same paper at them.
+~30–40 minutes, no combat. **Cuttable to ten:** run the chain-toll and the writ, skip the town.
+
+### Arrival (read aloud)
+
+> The river narrows, and there is a *chain* across it — hand-thick, slung bank to bank, dripping
+> and singing faintly where the current pulls it. On either end sits a town, and they are plainly
+> the same town that a river happened to. Same roofs, same boat-sheds, same washing on the same
+> lines. On the west bank the signboards say Wainferry and the talk is Thalendor; on the east they
+> say Wainscross and the talk is Corvaine; and the ferry-scow crawls between them all day on that
+> chain, carrying cabbages, soldiers, a wedding party and a coffin, in that order. Wick spits over
+> the side, almost fondly. *"Last place on this river that still works. Chain drops for the toll.
+> Not before."*
+
+### The chain (the scene's spine)
+
+The chain is the **legal crossing of the lower Palewater** — and it is physically in the flotilla's
+way. Barges pass when it drops; it drops when the toll is paid. The office that lifts it is
+**joint**, held in alternate years by each bank, and this year it sits on the **Corvaine** side —
+which is why the man with the tally-book wears a serjeant's badge.
+
+**The ask:** Ferry-Serjeant ⚑ **Ordis Kell** assesses a **chain-lift levy of one part in twenty**
+on the cargo — correctly, on relief grain. He is polite, literate, and entirely within his rights.
+Khor's contract did not budget for it.
+
+> Kell, not unkindly, reading from the book: *"One sack in twenty, on the manifest as it stands.
+> The chain's a service, not a wall — and you'll want it dropping again on your way back up."*
+
+Five ways out, each with a real downstream cost. **Let the players find them; don't list them.**
+
+| Path | Costs | Downstream |
+|---|---|---|
+| **Pay in grain** (the default) | 1 sack in 20 off the manifest | Withervale notices what arrives. Roek's ask on day 9 lands on a party that has already given once. |
+| **Persuasion / Leadership vs. Kell's Spiritual (DC 13)** — relief cargo under a Marshal's writ | half the levy | He *cannot* waive it entirely; his book is audited. Say so — it's characterising. |
+| **Deception (DC 14)** — understate the manifest | nothing, tonight | Fails outright if the tally-clerk was allowed aboard. If it holds, Roek's people still have the true count on day 9, and the discrepancy is *theirs* to notice. |
+| **Labour at the capstan** (Athletics, no roll — a choice) | the day in town | Clears the levy in full and costs them the market, the hiring, and the horse. |
+| **Khor's papers as surety** | nothing, tonight | The levy goes on account against the Marshal: **a debt to Khor** the campaign can call in whenever it wants one. |
+
+### The tell — the writ (the clue that pays off at the ford)
+
+Kell's levy is countersigned, and he will show the paper to anyone who asks; it is the thing he is
+proudest of.
+
+- **Perception or Lore (DC 12), or just asking:** the regents' seal is pressed into the wax — and
+  the seal is a **child's handprint** (Corvaine's king is a boy; public knowledge, and a free hook).
+  Beneath it sit two countersignatures: the **ferry office** and the **paymaster's**.
+- **Un-missable fallback:** if nobody rolls or asks, Kell *volunteers* it — he wants the manifest
+  initialled and holds the writ out to be read while he waits.
+
+> **GM note — what this plants.** Roek's writ, four days downriver, is **genuine**: same seal, same
+> handprint, correctly issued. But it is countersigned by a **quartermaster**, not a paymaster —
+> authority to *take*, with nothing behind it to *pay*. A PC who read Kell's paper sees it at a
+> glance. Roek's unit is not raiding outside the law; it is raiding *inside* a law that has quietly
+> stopped paying (canon ruling 28: the desperation is institutional, not caloric). That comparison
+> is the whole Corvaine thread in one gesture — and it sharpens the question the raiders' gear
+> already asks: if the treasury cannot pay a border company, **who bought them matched armour?**
+
+### The tally-clerk (why the scout knows their load)
+
+A clerk in Wainscross livery asks, with complete courtesy, to walk the decks and count. He is
+entitled to — he is assessing the levy. Whatever the party says, **the count happens**: openly if
+they allow it, from the quay with a glass if they don't.
+
+- **Allowed aboard:** he is chatty, and lets slip that the border companies south are on short
+  commons — *"they've stopped sending the wagons down"*. Free confirmation that Roek's unit is unpaid.
+- **Refused:** the count happens anyway, and the mounted scout on days 6–8 is now *explained*.
+
+### The town (what a day buys)
+
+Keep it short. Wainferry is the last market for **850 km** — below the pair both banks run wild all
+the way to Withervale, and only the ford breaks it. **Say that out loud.** The players should hear
+the door closing behind them.
+
+- **For sale:** rope, tar, poles, lamp-oil, salt meat, a barge dog if they want one; a
+  barber-surgeon; a shrine of the Last Harvest whose keeper is perfectly *fine*, which will matter
+  in eight days.
+- **Not for sale: fish.** The stalls hold river-crayfish and smoked stock hauled *down* from the
+  lakes. Ask a fishmonger and get a shrug: *"River's off. Two year now."* (Pays off the wrong
+  catch, §2 — and nobody here connects it to anything.)
+- **Hiring:** a poler or two, the last chance to add a warm body before the shallows.
+- **Green PC (freebie, no roll):** the Root Network is thinner here than at Elmsworth —
+  measurably, not impressionistically. The gradient runs downriver. They are going downriver.
+
+### The chain-horse (the wasting, quietly)
+
+At the capstan, one of the four draught horses has an open sore on the shoulder where the collar
+sits. It is working. It has been working like that **since spring**.
+
+- The hostler, asked, is matter-of-fact — and does not hear how strange it is until she says it
+  aloud: *"Won't close. Won't turn bad, neither. Just… sits there."* A beat. *"Ought to have put
+  her down by now, I suppose. Nobody's got round to it."*
+- **Medicine or Survival (DC 12) — freebie for a Green PC:** the wound is *stalled*. Not infected,
+  not healing. Held.
+- **Then leave it.** Don't explain it, don't let Wick remark on it, and don't let anyone in
+  Wainferry be frightened by it. This is **Withervale's cow at a tenth of the volume, eight days
+  early** — the players should only recognise it in hindsight, and the recognition is the payoff.
+
+### Leaving (read aloud)
+
+> The chain goes down at dawn with a sound like a struck bell, and comes back up behind you. By
+> mid-morning the last roofs are gone and the banks are willow and reed and nothing at all. Wick
+> checks his poles twice, for no reason he'd admit to. *"That's the towns done. Eight days of
+> nobody now. Then Withervale."*
+
+### Back on the water (days 6–8)
+
+The towns are behind them now and the banks are empty:
+
+- **The tollbirds (days 6–7).** Ash-gray crows pass overhead in strings and skeins, hundreds
   across an afternoon, all headed one way — downriver. They don't land. Wick: *"Tollbirds. They
   sit where someone's dying — always did; honest as a bell. Started moving south two years
   back. More every season."* Nobody on the crew says anything else while the birds are
@@ -147,8 +268,10 @@ Seven travel days before the shallows — run three or four beats, not a montage
   further downriver, the wronger the animals.**)
 - A **Corvaine scout** on the east bank, mounted, keeping pace for an hour. He doesn't engage.
   Wick, not looking up from the steering oar: *"Counting barges. They'll know our load before we
-  do."*
-- Evening of day 7, Wick foreshadows: *"Palewater shallows tomorrow. Only stretch a man can wade
+  do."* (**He is the follow-up to the tally-clerk at Wainscross, §2b** — if the party let the
+  clerk aboard, or if they didn't and he counted from the quay anyway, this is that count riding
+  south. Wick's line is literal, not fatalism.)
+- Evening of day 8, Wick foreshadows: *"Palewater shallows tomorrow. Only stretch a man can wade
   the border for fifty mile — that's why the raids happen there and nowhere else. We pole the
   channel single file and we don't stop. Boots dry, hands free."*
 
@@ -156,7 +279,7 @@ Seven travel days before the shallows — run three or four beats, not a montage
 
 ## 3. Scene 2 — Palewater Ford: the raiders' ford
 
-**Site:** the braided shallows of the Palewater, day 8 or 9 (1148,1669). The river spreads over
+**Site:** the braided shallows of the Palewater, day 9 (1157,1679). The river spreads over
 gravel bars here and the barge channel threads them **single file, dead slow** — and those same
 shallows are the **only wadeable border crossing for fifty miles**. The convoy never fords
 anything; *the raiders do*. That's why the ambush happens here and nowhere else. **Goal:**
@@ -312,7 +435,7 @@ this crossing a dozen times and hates it more each time.
 
 ---
 
-## 3b. Scene 2b — the fog reaches: the mistherons (day 10 or 11)
+## 3b. Scene 2b — the fog reaches: the mistherons (day 11 or 12)
 
 **Site:** the marshy river-meets below the shallows, two days short of Withervale — the flotilla
 drifting a long reach in pre-dawn fog. **Goal:** break up the second half of the river with a
@@ -339,40 +462,44 @@ always come from where they aren't.
 - **Animal-wise PC (Survival, or any animal-handling instinct, DC 12 — freebie for a Green
   PC):** the bird is *ribs under feathers* — starving, new to this, and afraid of the light.
   This is not a monster; it's what the broken river made of it.
-- **Tokens:** the two birds and the PCs. The crew are set dressing — belowdecks the moment
-  the first bird strikes (the birds ignore them; they want the dog, a sack, or an isolated
-  target). Wick stays at the steering oar, shouting ranges that are wrong, because he's
-  hearing the seemings too.
+- **Tokens:** the two birds, the PCs — **and up to two seeming-copies**, which the engine
+  drops as their own tokens when a bird spends its Action on The Seeming (1 health each; any
+  hit pops one). Open the fight with both birds hidden and both seemings up. The crew are set
+  dressing — belowdecks the moment the first bird strikes (the birds ignore them; they want the
+  dog, a sack, or an isolated target). Wick stays at the steering oar, shouting ranges that are
+  wrong, because he's hearing the seemings too.
 
 ### Adversary (tier 1; schema matches `data/adversaries.json`)
 
 **Mistheron** — rival, ×2. *beast (Blue-attuned), tier 1.*
 - **Defenses** phy 12 / cog 14 / spi 11. **deflect 1** (dense fog-gray plumage). **HP** 20.
   **foc** 2. **Move** 30 ft. (wading stalk; short clumsy glides).
-- **∞ The Seeming** (trait, always on — the Blue tree talent **Phantom Double**, run as a
-  natural, costless, self-only trick per Ben's adversary-talent ruling 2026-07-14): its image
-  stands a pace from its body. A character **tests Perception vs. its Cognitive defense (14)**
-  on first sighting it, and again whenever it re-enters the fog. On a failure they treat the
-  seeming as real — their attacks **pass through harmlessly** — and the mistheron has
-  **advantage** against them. A success, or landing any hit on the real body, breaks the
-  seeming for that character until the bird is next unseen. Its *call* also sounds from the
-  seeming, never the body.
-- ▶ **Spearing Beak** — attack +5, Reach 10 ft., 1d8+2 impale; +1d6 against a character who
-  hasn't broken the seeming.
-- ▶▶ **Snatch and Wade** — attack +5 vs. a Small-or-smaller creature or a carried/loose object
-  (the dog; a grain sack): on a hit it grips instead of dealing damage and immediately moves
-  its full Speed into the fog. *(This is what it actually wants.)*
+- ▶ **The Seeming** (1 Action — the Blue tree talent **Phantom Double**, adapted per ruling 40:
+  self-only, at will): its image stands a pace from its body. Using it places the seeming as
+  **its own token beside the bird — 1 health, any hit breaks it**. Every enemy who can see it
+  **tests Perception against its Cognitive defense (14)**, engine-rolled: on a failure only the
+  seeming is real to them; on a success it is empty air. When the seeming breaks, the bird
+  stands plainly seen. Its *call* sounds from the seeming, never the body. *(It costs the bird
+  an Action to raise — a round spent hiding is a round it does not strike. That trade is the
+  fight.)*
+- ▶ **Spearing Beak** — attack +5, Reach 10 ft., 1d8+2 **keen**; **+1d6** against a character
+  who is taken in by the seeming.
+- ▶▶ **Snatch and Wade** — attack +5, Reach 5 ft., vs. one Small-or-smaller creature or a
+  carried/loose object (the dog; a grain sack): on a hit it grips instead of dealing damage and
+  immediately moves its full Speed into the fog. *(This is what it actually wants.)*
 - ⟲ **Fade** (Reaction, 1 focus): when its seeming breaks or it takes damage, it moves 10 ft.
-  without provoking, into fog if possible — re-hiding restores the seeming.
+  without provoking, into fog if possible — once unseen it may raise **The Seeming** again.
 - **∞ Starving, Not Fanatic** (trait, GM-run): bloodied (≤ half HP), or if its partner is
   bloodied, it breaks off into the fog and does not return. Thrust fire at it or raise a
   sustained din (the barge bell) and it fades within a round.
 
 *(Ben's adversary-design ruling, 2026-07-14, now ruling 40: humans use tree talents AS
 WRITTEN; animals and monsters get niche adaptations — the Seeming IS Blue's Phantom Double,
-adapted always-on/costless/self-only. The W23 tooling round has built this as a droppable
-Actor in the `edha-adversaries` pack ("Riverlands Bestiary" folder); until Ben's pack
-rebuild lands, it runs off this block.)*
+adapted self-only and at-will. **This block is now a transcription of the shipped actor**, not a
+draft: the Mistheron is live in the `edha-adversaries` pack ("Riverlands Bestiary" folder) and
+The Seeming's full loop — the belief roll, the 1-health copy, the break card — has been
+bench-verified (runs 18 and 30; re-confirmed 2026-09-05). Run it from the pack; this block is
+the reading copy. `data/adversaries.json` is the authority if the two ever disagree again.)*
 
 ### Outs (same register as the raid — sad, not evil)
 
@@ -402,7 +529,7 @@ on the river.)
 ## 4. Scene 3 — Withervale: the harvest that won't die
 
 **Site:** famine village, Thalendor side of the border (1220,1796) — the flotilla ties up at its
-river-stage on day 12. **Goal:** land the hook. This is the scene the whole session exists
+river-stage on day 13. **Goal:** land the hook. This is the scene the whole session exists
 for. Slow down. Let silence sit. ~45–60 minutes, no combat.
 
 ### Arrival (read aloud)
@@ -527,7 +654,7 @@ them the folklore — and points downriver at the finale.
 > bury near it — said the ground down there don't *keep* the dead the way ground should."* She looks
 > at the standing blight. *"Reckon the whole border's the Crossing now, don't you?"*
 
-- This is a **seed, not a quest** — it plants the Black Altar (act-1 finale, 1449,2337) as the place
+- This is a **seed, not a quest** — it plants the Black Altar (act-1 finale, 1282,2157) as the place
   where the wrongness is *worst* and oldest. Don't push them toward it tonight.
 
 ### The grove that went to briar (side-quest seed — drop the line, don't run it)
@@ -582,14 +709,18 @@ Cut to black. **Session 1 ends.**
 | Alchemy *fakes* a working cycle; real fields failed | Elmsworth vats (Fenn) | The famine is a symptom, not a cause |
 | The Root Network is being drained, southward | Green tug (Elmsworth + Withervale) | Verdannis's Green-drain (act-1 investigation; unnamed) |
 | Raiders carry **Malcurr**-forged gear | Palewater Ford (tell / loot) | Malcurr funds Corvaine's raids → the Warlock (act-1 political thread) |
+| A **lawful** Corvaine levy, paymaster-countersigned | Wainferry chain-toll (§2b, Kell's writ) | The control case: this is what Corvaine's border machine looks like when it still works |
+| Roek's writ is countersigned by a **quartermaster**, not a paymaster | §2b then §3 — the comparison, not either paper alone | Corvaine's treasury has failed: authority to take, nothing behind it to pay. Sharpens "who bought the armour?" |
+| The border companies south are "on short commons; they've stopped sending the wagons" | The tally-clerk, if let aboard (§2b) | Same thread, said out loud by a bored clerk |
+| A working horse with a sore that will not close or turn bad | Wainferry capstan (§2b) | The wasting at a tenth volume, eight days before Withervale's cow — recognised only in hindsight |
 | Corvaine raids from *desperation*, not malice | Roek | The crisis is top-down; nobody here is the villain |
 | **Nothing can properly die** | Withervale (all four wrong things) | THE HOOK — Morrath sealed (revealed only via Anaveth, later) |
 | Heaven "stopped answering" the death-rite | Keeper Harrow | Same hook, theological angle — a god has gone silent |
 | The shrine roll's two-year discontinuity | Withervale shrine (asked with respect) | Dates the seal; cross-district comparison later proves *everywhere at once* (canon §3a, ruling 48) |
 | "Steel still kills — it's the *dying* that's broke" | Harrow (pressed); the raid's own dead; the cut blight-stalk that rots normally | Precision for the mystery: this is not immortality — the thing that *catches* a natural ending has stopped |
 | The fish are wasting-stuck; "nobody eats those" | The wrong catch (days 2–3, Wick) | Ruling 27's fish-wasting — the river's food chain is broken; why the mistherons come |
-| Tollbirds migrating downriver, two years, more every season | Days 4–6 overhead; the pair on Joskin's roofline | The two-year clock, free — and the gathering at the Crossing (a readable clock-face, canon §5c) |
-| Mistherons stalking barges — "never in thirty years" | Fog attack (§3b, day 10–11) | Layer-1 control case: the wasting is continent-wide, with no Green drain in sight |
+| Tollbirds migrating downriver, two years, more every season | Days 6–7 overhead; the pair on Joskin's roofline | The two-year clock, free — and the gathering at the Crossing (a readable clock-face, canon §5c) |
+| Mistherons stalking barges — "never in thirty years" | Fog attack (§3b, day 11–12) | Layer-1 control case: the wasting is continent-wide, with no Green drain in sight |
 | Skeindeer wheel as one; far south they "widow-dance" | Dusk river beat (+ Gramma, if asked) | The White gradient — pointing the same way as the tollbirds: the Crossing |
 | The shrine-grove "gone to briar" up the mill-brook | Gramma / any villager | The prepped session-2 side quest — and the drain's local, walkable face |
 | The **Black Altar Crossing**, where it's worst | Gramma Ashmark | Act-1 finale site (1282,2157) |
@@ -597,6 +728,27 @@ Cut to black. **Session 1 ends.**
 **Stays buried tonight:** the gods exist; Death/Morrath specifically; the Fetch; the whole
 cosmology. Players should leave the table *unsettled and curious*, holding a mystery, not an
 answer.
+
+### Loot & payment ledger — what tonight can put in their hands
+
+Worth denominates in copper/silver/gold against the canon §5d anchors (day's labour 1s, bread 1c,
+sword 2g) — **except** the relief cargo itself, which stays descriptive by design: in Thalendor
+food outvalues coin (ruling 56), and that is the point of the job.
+
+| Item / payment | Where / from whom | Worth / notes | Clue? |
+|---|---|---|---|
+| **The job's pay** — provisions or passage papers, per PC | Khor, at Elmsworth or on delivery | Dealer's choice per PC. Food is the better pay here and everyone at the table should feel that | — |
+| **The chain-lift levy** — 1 sack in 20, or half, or a day's labour, or on account | Ferry-Serjeant Kell, Wainferry (§2b) | A *cost*, not loot — whatever they choose follows them. On account = **a debt to Khor** | the writ |
+| Rope, tar, poles, lamp-oil, salt meat, a barge dog | Wainferry market (§2b) | Ordinary prices; last market for 850 km | — |
+| A hired poler or two | Wainferry quay (§2b) | ~1s/day; the last warm body before the shallows | — |
+| **Malcurr-stamped blade** (and matched deflect-2 armour) | Any downed raider, Palewater Ford | Fresh-forged, uniform, mountain-forge work. **Un-missable: looting delivers it even if nobody rolls the tell** | ✔ the act-1 political thread |
+| **The writ of requisition** | Roek, on parley or from his body | Real paper, real seal, child's-handprint wax — and a quartermaster's countersignature | ✔ pairs with Kell's writ (§2b) |
+| Soldier's crossbows, shortswords, Roek's issued blade | Palewater Ford | Ordinary tier-1 gear; `kind:"weapon"` items on the pack actors, so they strip and render properly | — |
+| A cut of the crew's salt meat | Wick's stores (§3b) | Ends the mistheron fight if given to the river. Wick will be furious, then quiet | — |
+| **The shrine's roll of the dead** (shown, not taken) | Keeper Harrow, asked with respect | Not loot — but the cheapest world-scale clue in the campaign | ✔ dates the seal |
+
+⚠️ **If the party skips or talks past the ford fight, the Malcurr clue must still land** — Roek
+carries the same stamped blade to a parley, and leaves the writ behind either way.
 
 ---
 
@@ -620,11 +772,11 @@ starts from.
 | # | Hook | Planted at | Pursuing it looks like | Prep state |
 |---|---|---|---|---|
 | 1 | **Malcurr maker's-marks** on the raiders' gear | Ford (tell / loot) | Show the blade to Khor; trace the forge-stamps north; ask who *pays* for matched armor on unpaid soldiers — the act-1 political thread toward the Warlock's funding | needs prep (act-1 spine, opening doc §3) |
-| 2 | **The writ + the child's-handprint seal** | Ford (parley / loot) | Corvaine court politics: who countersigns requisitions for Malcurr-armed units, and why does a starving army carry fresh paper? | needs prep |
+| 2 | **The writ + the child's-handprint seal** | Ford (parley / loot) — **and the comparison with Kell's levy, §2b** | Corvaine court politics: a paymaster countersigns at the ferry, a *quartermaster* countersigns Roek's. Who authorises takings nobody will reimburse, and why does an unpaid army carry fresh paper *and* new armour? | needs prep |
 | 3 | **Roek's people** (if shown mercy or fed) | Ford (outs) | An inside line into Corvaine's border troops — safe passage, rumor, and later acts' defections start here | contact established; improvisable |
 | 4 | **The Green drain, southward** | Elmsworth vats; the Green tug | Follow the gradient down the border; press Fenn past "bad leyline weather"; map which groves sickened in what order | needs prep (act-1 investigation) |
 | 5 | **The briar-gone shrine-grove** | Withervale (Gramma / villagers) | Rootling skirmishes + a negotiation won by root-warden craft; the drain's local, walkable face | **PREPPED side quest** (§4, seed) — build out first for session 2 |
-| 6 | **The Black Altar Crossing** | Gramma's folklore; both animal gradients | The act-1 finale, ~11 more days by water or ~580 km overland — if they bolt early, the world should make the distance felt | act-1 finale (opening doc §3) |
+| 6 | **The Black Altar Crossing** | Gramma's folklore; both animal gradients | The act-1 finale, ~ten more days by water or ~620 km overland — if they bolt early, the world should make the distance felt | act-1 finale (opening doc §3) |
 | 7 | **The animal gradient** (tollbird clock; widow-dancing) | River beats; Gramma | The naturalist thread: ask locals *how long* and *how far south it's worse* — free triangulation toward the Crossing | improvisable anywhere |
 | 8 | **Sorrel's quick end** | Harrow, pressed; the village's silence | The quiet local mystery — who gave Sorrel mercy? Pulls the table into Withervale's conscience; handle gently | improvisable (the Harrow-as-killer plot stays CUT, ruling 25) |
 | 9 | **The report home / return leg** | Khor's contract | The barges go back upriver; carrying what they saw to Khor and Fenn turns witnesses into agents — and Khor's response seeds Thalendor's institutional arc | needs prep |
@@ -656,7 +808,7 @@ player-safe nations/faiths/names guide). Any origin works with this session as w
 **Handout — the notice that brought you here (verbatim, post it or read it):**
 
 > BY ORDER OF THE BORDER MARSHAL — ESCORTS WANTED. Three barges, Elmsworth to Withervale,
-> twelve days on the water. Armed, able, or useful persons apply at the granary hall. Payment
+> thirteen days on the water. Armed, able, or useful persons apply at the granary hall. Payment
 > in provisions or passage papers, at the Marshal's discretion. The grain moves with or
 > without you. — V. KHOR, Marshal of the Border
 
@@ -675,6 +827,10 @@ player-safe nations/faiths/names guide). Any origin works with this session as w
   either side, visibility two or three squares in the fog; theater-of-mind works fine. If Ben
   wants art anyway: one barge mid-reach, fog, reed-bank shadows — design goal *you can't trust
   what you can see*.
+- **Wainferry / Wainscross (§2b — no map needed):** no combat, and the scene is a quay, a
+  tally-book and a chain. Theatre-of-mind is correct here. If Ben ever wants art, the shot is
+  *one frame containing both towns and the chain between them* — the whole point of the scene is
+  that they are one place a river happened to.
 - **Withervale** (⚑ not drawn): no combat expected — a village flavor map is enough. Features:
   the river-stage, the standing black-blighted fields, the cow-pen, the third house (two
   tollbirds on the roofline), the shrine with the black-and-green threshold. (Brief also in
@@ -695,17 +851,26 @@ player-safe nations/faiths/names guide). Any origin works with this session as w
   for talents-on-adversaries. Engine unchanged; this is a pack-rebuild-only delivery.
   Art: core-icon placeholders; drop real files per `EDHA_ADVERSARY_ART_WISHLIST.md` +
   rebuild and the build picks them up automatically.
+- **§2b adds no adversaries and needs no pack rebuild** — the ferry scene is entirely social.
+  Kell, the tally-clerk and the hostler are GM voices, not actors.
 - Scenes/journals: none required — this sheet is the journal.
 
 ## 10. ⚑ Open for Ben
 
 1. **Map art** — see the briefs in §9; flag if you want those generated next.
 
-2. **Day-5 ferry-pair town stop (2026-07-22, ruling 154)** — Fork A placed **city-30 /
-   city-31** (the Palewater ferry-pair, rulings 151–152) at ~km 550, barge-day 5 of the
-   relief run — between the day-2–6 river beats and the day-9 ambush. Ben: *"give them a
-   day in town"* — the stop **needs some GAS** before play. No existing beat moves; the
-   ferry towns also explain in-fiction why the raiders cross at the ford instead.
+2. **Ferry-Serjeant Ordis Kell** (§2b) is the only ⚑ placeholder name left in the sheet —
+   every other session-1 name is confirmed. Swap it freely; the character is *the last man in
+   Corvaine's border machine who still gets paid*, and the name should sound like paperwork.
+
+*Settled 2026-09-09 (Ben, the session-forge rerun; canon ruling 163):* the **day-5 ferry stop is
+built** (§2b) — ruling 154's standing to-do is closed. Ben took the **"Ferry Law"** shape and
+declined the burying-ground variant so it would not steal Withervale's thunder, asking instead for
+*"something here regarding the wasting, but not a major item"* — that is the chain-horse: three
+lines, unexplained, never remarked on. The towns are **Wainferry** (Thalendor, west bank) and
+**Wainscross** (Corvaine, east): a shared *Wain-* root worn in each bank's own register,
+deliberately **not** a ruling-118 god-fossil, since Thalendor's names carry none and Corvaine is
+godless (ruling 76).
 
 *Settled 2026-07-16 (Ben):* **all remaining NPC names confirmed** — Roek, Ashmark, Joskin,
 Sorrel the tanner, and Warden Selm (the briar grove's root-warden, §4); every session-1 name
