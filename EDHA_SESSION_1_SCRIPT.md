@@ -20,7 +20,7 @@ water, or ~620 km overland (ruling 101 re-anchor; was 1,178) — the *act-1 fina
 
 ## 0. What this session is for
 
-**The job:** escort three barges of the Mage's alchemical relief concentrate twelve days
+**The job:** escort three barges of the Mage's alchemical relief concentrate thirteen days
 downriver, from a granary river-port to a starving border village. Simple on paper. **The point:** by the last scene the players should have *felt* —
 not been told — that **nothing in this land can properly die.** That image is the whole campaign's
 seed. Everything else tonight (the raid, the politics, the famine) is scaffolding around that one
@@ -83,7 +83,7 @@ plant the *alchemy-is-faking-it* crack. Keep it to ~30–40 minutes.
 Marshal **Khor** needs bodies for the escort and does not have the luxury of asking who they are.
 Whatever the party is — mercenaries, refugees working passage, a Thalendor patrol, pilgrims,
 opportunists — Khor attaches them in one flat sentence: *"You'll ride the grain down to
-Withervale. Twelve days on the water. My garrison can't spare six men for twelve days, let alone
+Withervale. Thirteen days on the water. My garrison can't spare six men for thirteen days, let alone
 the twenty it would take to do it right — so it's you."*
 
 - **Payment** is food (worth more than coin here) or passage papers — dealer's choice per PC.
@@ -108,14 +108,14 @@ what a field-acre used to. The Mage solved hunger — you're welcome."* Let the 
 > is draining Green. Do not explain it. The player who says "wait, why doesn't the cut wheat rot?"
 > has just found the whole campaign — smile and move on.
 
-### On the river (days 1–7)
+### On the river (days 1–8, the ferry stop on day 5)
 
 Wick's flotilla is three laden grain-barges riding the current, poled and steered, drifting the
 long reaches through the night with a steersman on watch; the PCs split across them. **Crew:
 a steersman and two polers per barge — nine barge-folk, plus Wick: ten souls, none of them
 fighters.** The PCs are the escort; that's the whole point of the hire (ruling 39: Wick's
 thirty-year river-sense is knack-tier — texture, never a roll; nobody aboard casts anything).
-Seven travel days before the shallows — run three or four beats, not a montage of twelve:
+Eight travel days before the shallows — run three or four beats, not a montage of thirteen:
 
 - A **garrison river-post**, undermanned, waves them through; its sergeant begs for news from
   *up*river, because none comes up anymore.
@@ -148,7 +148,7 @@ Seven travel days before the shallows — run three or four beats, not a montage
 - A **Corvaine scout** on the east bank, mounted, keeping pace for an hour. He doesn't engage.
   Wick, not looking up from the steering oar: *"Counting barges. They'll know our load before we
   do."*
-- Evening of day 7, Wick foreshadows: *"Palewater shallows tomorrow. Only stretch a man can wade
+- Evening of day 8, Wick foreshadows: *"Palewater shallows tomorrow. Only stretch a man can wade
   the border for fifty mile — that's why the raids happen there and nowhere else. We pole the
   channel single file and we don't stop. Boots dry, hands free."*
 
@@ -156,7 +156,7 @@ Seven travel days before the shallows — run three or four beats, not a montage
 
 ## 3. Scene 2 — Palewater Ford: the raiders' ford
 
-**Site:** the braided shallows of the Palewater, day 8 or 9 (1148,1669). The river spreads over
+**Site:** the braided shallows of the Palewater, day 9 (1157,1679). The river spreads over
 gravel bars here and the barge channel threads them **single file, dead slow** — and those same
 shallows are the **only wadeable border crossing for fifty miles**. The convoy never fords
 anything; *the raiders do*. That's why the ambush happens here and nowhere else. **Goal:**
@@ -312,7 +312,7 @@ this crossing a dozen times and hates it more each time.
 
 ---
 
-## 3b. Scene 2b — the fog reaches: the mistherons (day 10 or 11)
+## 3b. Scene 2b — the fog reaches: the mistherons (day 11 or 12)
 
 **Site:** the marshy river-meets below the shallows, two days short of Withervale — the flotilla
 drifting a long reach in pre-dawn fog. **Goal:** break up the second half of the river with a
@@ -339,40 +339,44 @@ always come from where they aren't.
 - **Animal-wise PC (Survival, or any animal-handling instinct, DC 12 — freebie for a Green
   PC):** the bird is *ribs under feathers* — starving, new to this, and afraid of the light.
   This is not a monster; it's what the broken river made of it.
-- **Tokens:** the two birds and the PCs. The crew are set dressing — belowdecks the moment
-  the first bird strikes (the birds ignore them; they want the dog, a sack, or an isolated
-  target). Wick stays at the steering oar, shouting ranges that are wrong, because he's
-  hearing the seemings too.
+- **Tokens:** the two birds, the PCs — **and up to two seeming-copies**, which the engine
+  drops as their own tokens when a bird spends its Action on The Seeming (1 health each; any
+  hit pops one). Open the fight with both birds hidden and both seemings up. The crew are set
+  dressing — belowdecks the moment the first bird strikes (the birds ignore them; they want the
+  dog, a sack, or an isolated target). Wick stays at the steering oar, shouting ranges that are
+  wrong, because he's hearing the seemings too.
 
 ### Adversary (tier 1; schema matches `data/adversaries.json`)
 
 **Mistheron** — rival, ×2. *beast (Blue-attuned), tier 1.*
 - **Defenses** phy 12 / cog 14 / spi 11. **deflect 1** (dense fog-gray plumage). **HP** 20.
   **foc** 2. **Move** 30 ft. (wading stalk; short clumsy glides).
-- **∞ The Seeming** (trait, always on — the Blue tree talent **Phantom Double**, run as a
-  natural, costless, self-only trick per Ben's adversary-talent ruling 2026-07-14): its image
-  stands a pace from its body. A character **tests Perception vs. its Cognitive defense (14)**
-  on first sighting it, and again whenever it re-enters the fog. On a failure they treat the
-  seeming as real — their attacks **pass through harmlessly** — and the mistheron has
-  **advantage** against them. A success, or landing any hit on the real body, breaks the
-  seeming for that character until the bird is next unseen. Its *call* also sounds from the
-  seeming, never the body.
-- ▶ **Spearing Beak** — attack +5, Reach 10 ft., 1d8+2 impale; +1d6 against a character who
-  hasn't broken the seeming.
-- ▶▶ **Snatch and Wade** — attack +5 vs. a Small-or-smaller creature or a carried/loose object
-  (the dog; a grain sack): on a hit it grips instead of dealing damage and immediately moves
-  its full Speed into the fog. *(This is what it actually wants.)*
+- ▶ **The Seeming** (1 Action — the Blue tree talent **Phantom Double**, adapted per ruling 40:
+  self-only, at will): its image stands a pace from its body. Using it places the seeming as
+  **its own token beside the bird — 1 health, any hit breaks it**. Every enemy who can see it
+  **tests Perception against its Cognitive defense (14)**, engine-rolled: on a failure only the
+  seeming is real to them; on a success it is empty air. When the seeming breaks, the bird
+  stands plainly seen. Its *call* sounds from the seeming, never the body. *(It costs the bird
+  an Action to raise — a round spent hiding is a round it does not strike. That trade is the
+  fight.)*
+- ▶ **Spearing Beak** — attack +5, Reach 10 ft., 1d8+2 **keen**; **+1d6** against a character
+  who is taken in by the seeming.
+- ▶▶ **Snatch and Wade** — attack +5, Reach 5 ft., vs. one Small-or-smaller creature or a
+  carried/loose object (the dog; a grain sack): on a hit it grips instead of dealing damage and
+  immediately moves its full Speed into the fog. *(This is what it actually wants.)*
 - ⟲ **Fade** (Reaction, 1 focus): when its seeming breaks or it takes damage, it moves 10 ft.
-  without provoking, into fog if possible — re-hiding restores the seeming.
+  without provoking, into fog if possible — once unseen it may raise **The Seeming** again.
 - **∞ Starving, Not Fanatic** (trait, GM-run): bloodied (≤ half HP), or if its partner is
   bloodied, it breaks off into the fog and does not return. Thrust fire at it or raise a
   sustained din (the barge bell) and it fades within a round.
 
 *(Ben's adversary-design ruling, 2026-07-14, now ruling 40: humans use tree talents AS
 WRITTEN; animals and monsters get niche adaptations — the Seeming IS Blue's Phantom Double,
-adapted always-on/costless/self-only. The W23 tooling round has built this as a droppable
-Actor in the `edha-adversaries` pack ("Riverlands Bestiary" folder); until Ben's pack
-rebuild lands, it runs off this block.)*
+adapted self-only and at-will. **This block is now a transcription of the shipped actor**, not a
+draft: the Mistheron is live in the `edha-adversaries` pack ("Riverlands Bestiary" folder) and
+The Seeming's full loop — the belief roll, the 1-health copy, the break card — has been
+bench-verified (runs 18 and 30; re-confirmed 2026-09-05). Run it from the pack; this block is
+the reading copy. `data/adversaries.json` is the authority if the two ever disagree again.)*
 
 ### Outs (same register as the raid — sad, not evil)
 
@@ -402,7 +406,7 @@ on the river.)
 ## 4. Scene 3 — Withervale: the harvest that won't die
 
 **Site:** famine village, Thalendor side of the border (1220,1796) — the flotilla ties up at its
-river-stage on day 12. **Goal:** land the hook. This is the scene the whole session exists
+river-stage on day 13. **Goal:** land the hook. This is the scene the whole session exists
 for. Slow down. Let silence sit. ~45–60 minutes, no combat.
 
 ### Arrival (read aloud)
@@ -527,7 +531,7 @@ them the folklore — and points downriver at the finale.
 > bury near it — said the ground down there don't *keep* the dead the way ground should."* She looks
 > at the standing blight. *"Reckon the whole border's the Crossing now, don't you?"*
 
-- This is a **seed, not a quest** — it plants the Black Altar (act-1 finale, 1449,2337) as the place
+- This is a **seed, not a quest** — it plants the Black Altar (act-1 finale, 1282,2157) as the place
   where the wrongness is *worst* and oldest. Don't push them toward it tonight.
 
 ### The grove that went to briar (side-quest seed — drop the line, don't run it)
@@ -589,7 +593,7 @@ Cut to black. **Session 1 ends.**
 | "Steel still kills — it's the *dying* that's broke" | Harrow (pressed); the raid's own dead; the cut blight-stalk that rots normally | Precision for the mystery: this is not immortality — the thing that *catches* a natural ending has stopped |
 | The fish are wasting-stuck; "nobody eats those" | The wrong catch (days 2–3, Wick) | Ruling 27's fish-wasting — the river's food chain is broken; why the mistherons come |
 | Tollbirds migrating downriver, two years, more every season | Days 4–6 overhead; the pair on Joskin's roofline | The two-year clock, free — and the gathering at the Crossing (a readable clock-face, canon §5c) |
-| Mistherons stalking barges — "never in thirty years" | Fog attack (§3b, day 10–11) | Layer-1 control case: the wasting is continent-wide, with no Green drain in sight |
+| Mistherons stalking barges — "never in thirty years" | Fog attack (§3b, day 11–12) | Layer-1 control case: the wasting is continent-wide, with no Green drain in sight |
 | Skeindeer wheel as one; far south they "widow-dance" | Dusk river beat (+ Gramma, if asked) | The White gradient — pointing the same way as the tollbirds: the Crossing |
 | The shrine-grove "gone to briar" up the mill-brook | Gramma / any villager | The prepped session-2 side quest — and the drain's local, walkable face |
 | The **Black Altar Crossing**, where it's worst | Gramma Ashmark | Act-1 finale site (1282,2157) |
@@ -624,7 +628,7 @@ starts from.
 | 3 | **Roek's people** (if shown mercy or fed) | Ford (outs) | An inside line into Corvaine's border troops — safe passage, rumor, and later acts' defections start here | contact established; improvisable |
 | 4 | **The Green drain, southward** | Elmsworth vats; the Green tug | Follow the gradient down the border; press Fenn past "bad leyline weather"; map which groves sickened in what order | needs prep (act-1 investigation) |
 | 5 | **The briar-gone shrine-grove** | Withervale (Gramma / villagers) | Rootling skirmishes + a negotiation won by root-warden craft; the drain's local, walkable face | **PREPPED side quest** (§4, seed) — build out first for session 2 |
-| 6 | **The Black Altar Crossing** | Gramma's folklore; both animal gradients | The act-1 finale, ~11 more days by water or ~580 km overland — if they bolt early, the world should make the distance felt | act-1 finale (opening doc §3) |
+| 6 | **The Black Altar Crossing** | Gramma's folklore; both animal gradients | The act-1 finale, ~ten more days by water or ~620 km overland — if they bolt early, the world should make the distance felt | act-1 finale (opening doc §3) |
 | 7 | **The animal gradient** (tollbird clock; widow-dancing) | River beats; Gramma | The naturalist thread: ask locals *how long* and *how far south it's worse* — free triangulation toward the Crossing | improvisable anywhere |
 | 8 | **Sorrel's quick end** | Harrow, pressed; the village's silence | The quiet local mystery — who gave Sorrel mercy? Pulls the table into Withervale's conscience; handle gently | improvisable (the Harrow-as-killer plot stays CUT, ruling 25) |
 | 9 | **The report home / return leg** | Khor's contract | The barges go back upriver; carrying what they saw to Khor and Fenn turns witnesses into agents — and Khor's response seeds Thalendor's institutional arc | needs prep |
@@ -656,7 +660,7 @@ player-safe nations/faiths/names guide). Any origin works with this session as w
 **Handout — the notice that brought you here (verbatim, post it or read it):**
 
 > BY ORDER OF THE BORDER MARSHAL — ESCORTS WANTED. Three barges, Elmsworth to Withervale,
-> twelve days on the water. Armed, able, or useful persons apply at the granary hall. Payment
+> thirteen days on the water. Armed, able, or useful persons apply at the granary hall. Payment
 > in provisions or passage papers, at the Marshal's discretion. The grain moves with or
 > without you. — V. KHOR, Marshal of the Border
 
