@@ -85,7 +85,11 @@ if (typeof game !== "undefined") (async () => {
   const ORIGIN = { x: 200, y: 200 }; // top-left pixel of a clear area on the Playtest Map
   const RESET_TOKENS = false;
   const SCENE_NAME = "Playtest Map";
-  const PROTECTED = ["tem parinaem", "soggy bottom"]; // player characters — never write to these
+  // Player characters — never write to these (PM-R17). Matched lowercased against the actor
+  // name, so a RENAME in Foundry silently un-protects one: if a player renames their actor
+  // (Hannah's is still a placeholder), this list has to follow. Confirmed as all three players'
+  // own actors by Ben, 2026-09-09.
+  const PROTECTED = ["tem parinaem", "soggy bottom", "temp name hannah character"];
   if (game.world.id !== "edha") return console.error("BENCH SETUP: wrong world:", game.world.id);
   if (!game.user.isGM) return console.error("BENCH SETUP: needs a GM user.");
   const assertNotProtected = (name) => {

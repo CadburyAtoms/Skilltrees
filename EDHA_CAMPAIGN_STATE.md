@@ -12,19 +12,93 @@ the party, and the clocks. Owned by the `.claude/skills/session-forge` (reads fi
 
 ## 1. The party
 
-- **3 players.** Builds and names still forming; keep session 1 build-agnostic until they land.
-  - **PC-1 — Lunavar pool-priest (player-declared, 2026-07-23).** Backstory the player chose
-    unprompted: pushed into (or swam in) a consecrated **moon-pool** and surfaced carrying
-    knowledge they were never meant to have; the character is now trying to understand what they
-    saw and *do something* about it. **The player does not yet know what they were shown** — it
-    stays an open mystery for them to play toward.
-    - **GM truth:** this is **Olvarra**. Stripped and signaling into the jammed moon-pool channel
-      (canon §3 "the Lantern" / rulings 64–66), she has reached the one mortal who breached the
-      water — the campaign's first live line to "the most important eventual ally." The reveal
-      must land in the player's hands: **never name Olvarra or the Lantern's true nature to them**,
-      and the cult must never learn the moon is Olvarra (ruling 65). Tailored player-safe hooks
-      seeded in `EDHA_PLAYER_PRIMER.md` §Lunavar (the reader-who-enters-the-water folklore).
-  - **PC-2, PC-3:** not yet created.
+**All three PCs exist and are built (Ben, 2026-09-09). The build-agnostic constraint is
+RETIRED** — session 1 was written before the party landed and still runs for any table, but a
+forge run may now write *to these three* rather than around them.
+
+The three Foundry actors are the **players'**, not the bench's: `Temp Name Hannah character`,
+`Soggy Bottom`, `Tem Parinaem`. All three are PROTECTED in `scripts/bench-setup-console.js` —
+refresh-only via the sheet's own ⟳ Sync Talents button, never written by tooling (PM-R17).
+**When a player adds or changes inventory, talents, or expertises, that lands in §1a**, not here.
+
+### PC-1 — `Temp Name Hannah character` ⚑ *(placeholder name — the player has not settled one)*
+
+**Envoy** heroic · **Blue** leyline · **Chaos** deity path. She/her. Expertises: **Law-Singing**,
+**Performance**.
+
+From **Canticle**, and **exiled from her home town for seeing things she should not be able to
+see** — spirits, hallucinations, presences. She was the local Law-Singer's apprentice before the
+exile. **No one in her town had ever attuned Blue before her.** She left to follow the visions
+and find out what is happening to her.
+
+*Canon fit, and it is unusually good:* Canticle is **the nation where law binds only when
+performed aloud before witnesses** (§5b "The Sounding") — accurate quotation is the highest
+courtesy, deliberate misquotation a civil offense, and every caravan hires a **way-witness**, a
+licensed junior bard who *is* the law's presence on the road. So a Law-Singer's apprentice who
+**sees things that are not there** is not merely odd in Canticle; she is an unreliable witness in
+a society whose entire legal epistemology rests on reliable ones. Her exile has teeth. Her
+expertises are also the way-witness's job description, which makes travelling with a convoy a
+natural fit rather than a contrivance.
+
+- **GM truth — the Fetch has chosen her**, most likely to follow and keep tabs on Soggy Bottom.
+  Ben's framing: **the Fetch's influence is *why* she attuned Blue at all**, in a town with no
+  Blue in it, and her visions of horror are its doing. She has no idea, and must not learn it here.
+- **GM truth — the deity path is mechanical, not devotional.** The player chose **Chaos** because
+  they like the Omen mechanics and wanted a Blue/Black character. **Hannah does not worship
+  Maelith or Chaos** and should never be played as doing so. (⚑ Ben: note the irony if you want
+  it — the pre-infiltration Chaos theology that could damn the Fetch sits in **Canticle's Deep
+  Stacks**, her own country's archive, thread §8.6. The Fetch has recruited a girl from the one
+  nation holding the evidence against it.)
+
+### PC-2 — `Soggy Bottom`
+
+**Scholar** heroic · **White** leyline · **Fate** deity path. They/them ⚑ *(Ben wrote both "they"
+and "his" — settle it whenever.)* Expertises: **Moon-Pool Rites**, **Night-Work**.
+
+Dunked into the **moon-pool in Lunavar's capital** (Moonmere, city-23) and **exiled for it** —
+the deepest Lunavite transgression. They have been seeing visions since, with no clear sense of
+what they mean but a deep foreboding that **these visions must not come to pass**. Their goal is
+to understand them, prevent them, and **return to Lunavar** — as a hero, or not as a hero.
+
+- **GM truth — this is Olvarra.** Stripped and signalling into the jammed moon-pool channel
+  (canon §3 "the Lantern", rulings 64–66), she has reached the one mortal who breached the water —
+  the campaign's first live line to "the most important eventual ally." She is **greatly
+  diminished; vague visions and an exile are the only tools she has.** She does not have the whole
+  picture yet; she knows something is wrong and is trying to get *anyone* out into the world to
+  look. The reveal must land in the player's hands: **never name Olvarra or the Lantern's true
+  nature to them**, and the cult must never learn the moon is Olvarra (ruling 65). Player-safe
+  hooks are seeded in `EDHA_PLAYER_PRIMER.md` §Lunavar (the reader-who-enters-the-water folklore).
+
+### PC-3 — `Tem Parinaem`
+
+**Scholar** heroic · **Green** leyline · **Knowledge** deity path. He/him. A **scholar of the
+woods, from Thalendor**.
+
+**Thin by design, not by neglect** — the player's actual want was a **STR-based Scholar**, and the
+build came first. Ben put him on the Knowledge path with **no deity association at all**; it is a
+bookmark, a reminder to **lean Red later**, not a faith. Treat Knowledge as unwritten until the
+player says otherwise.
+
+- **He is the party's only Green**, which matters more than it looks: session 1 hands the Green
+  PC a free read at Elmsworth's vats, the Wainferry chain-horse, and Withervale, and the whole
+  act-1 investigation is a **Green drain**. The mechanical choice landed him on the campaign's
+  spine by accident.
+- **Session 2's briar grove is his scene** — Thalendor woods, a Green-starved grove-heart, a
+  negotiation won by root-warden craft. It is already prepped and pointed straight at him.
+- ⚑ **Backstory development is an open item with Ben**, not a blocker. See the state doc's §7 note.
+
+### The party as a shape
+
+**Blue / White / Green. No Black, no Red.** Two Scholars and an Envoy — **no dedicated fighter**,
+which is a real scaling input for session 1's ford (run-sheet §3: the squishy/support-heavy
+variant is now the default, not a variant). One native (Tem, Thalendor) and two exiles (Hannah
+from Canticle, Soggy from Lunavar) — the Khor hire at Elmsworth works for all three unchanged.
+
+**Two of the three are vision-havers with opposed sources**, and neither player knows it: Hannah
+was pushed out into the world by **the Fetch corrupting her attunement**, Soggy by **a god trying
+to get someone to look**. That symmetry is the campaign's spine sitting inside the party, and the
+session where they compare notes and find their visions *disagree* is a beat worth waiting for.
+
 - Location: n/a (session 1 opens at Elmsworth, the head-of-navigation river port, (1036,1359)).
 
 ## 1a. Party inventory & wealth
@@ -35,6 +109,12 @@ mundane kit lives on the Foundry character sheets, THIS section tracks only what
 must know — wealth, story-bearing items, and outstanding payment. Worth denominates in
 **copper/silver/gold** (canon §5d, rulings 54–59 — the W25 coinage pass landed 2026-07-18);
 food-payment in the deficit nations stays descriptive per ruling 56.)*
+
+**The three actors are the players' own** (`Temp Name Hannah character`, `Soggy Bottom`,
+`Tem Parinaem`). **When a player adds or changes inventory, talents learned, or expertises, it
+gets noted HERE** (Ben, 2026-09-09) — this section is the repo's record of what the party is
+carrying, and a forge run reads it before pricing a job or stocking loot. The sheets stay the
+source of truth for the numbers; this is the ledger of what *matters to prep*.
 
 - **Wealth:** —
 - **Notable items:** — *(gear with a story, a clue, or a mechanic attached — the
