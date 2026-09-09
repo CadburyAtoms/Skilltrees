@@ -126,11 +126,14 @@ Adversaries differ in three ways:
   White 1 — so a talent needing White 2+ is out of reach at that role.
 - **Talents are listed as `"Tree/Talent Name"`** in `data/adversaries.json`, and the build
   auto-embeds each colour's Key.
-- **Prereqs are not enforced for NPCs** — ruling 40 lets an adversary run a talent as written,
-  and a GM may hand one anything. So `--adversaries` reports unreachable talents as `??`, not as
-  errors. Read them as a design signal: a minion holding a talent a PC would need two picks and
-  a rank-2 skill to reach is stronger than its role advertises, which may be exactly what you
-  want — or may be an accident.
+- **Prereqs and rank requirements do NOT apply to adversaries (R-94).** Ben, 2026-09-09:
+  *"I'm fine with adversaries skipping around on talent trees and rank requirements."* Nothing in
+  the repo enforces them — `scripts/validate.js` only checks that a talent ref RESOLVES — and that
+  is deliberate. **Do not "fix" an adversary to make its talents legal.** `--adversaries` still
+  lists off-tree picks, because it tells you what a statblock costs the players: a minion holding
+  something a PC would need two picks and a rank-2 skill to reach is stronger than its role
+  advertises. That may be exactly the intent. Role is the lever if it isn't (minion 1 / rival 2 /
+  boss 3).
 
 Bespoke adversary abilities (not tree talents) are a different surface with their own wiring
 standard — see `leyline-tree-authoring` §"Adversary abilities" and `lint-refs.js` pass 5.

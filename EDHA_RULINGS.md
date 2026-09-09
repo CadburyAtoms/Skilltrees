@@ -1458,6 +1458,31 @@ row is annotated with this derivation and stays 🤖 until you answer; a technic
 
 ---
 
+**R-94. Do talent-tree prerequisites and rank requirements apply to adversaries?**
+`scripts/validate-build.py --adversaries` (added 2026-09-09) checks each adversary's `talents`
+list against the same requirement graph a PC's ladder must satisfy, and found one:
+**Corvaine Line-Caller's `Ordered Advance`** is not reachable the way a PC would reach it — as a
+`minion` its White is **rank 1** (`ROLE_LEYLINE_RANK` — minion 1 / rival 2 / boss 3), while the
+talent wants `Leadership 2+` and a `connections` edge from `Beacon of Stability`, neither of which
+that statblock has. Nothing in the repo enforces this: `scripts/validate.js` checks only that a
+talent ref **resolves** (exists, unambiguous, group matches), never that it is *takeable*. So the
+question is whether that silence is deliberate. *Recommended default: **(a) adversaries are exempt
+— prereqs and rank gates are a PC-progression rule, not a statblock rule.** Ruling 40 already lets
+an NPC run a tree talent "as written", and a GM needs to be able to build the monster the scene
+wants without laddering it. Keep the report as information, never as an error.* (b) Enforce them,
+and rewrite any statblock that violates them. (c) Enforce them only for `boss` roles.
+> **ANSWERED 2026-09-09 (Ben, chat), verbatim: "Note that I'm fine with adversaries skipping
+> around on talent trees and rank requirements."** Applied as (a). **No code change was needed** —
+> nothing ever enforced them — but three places described the situation as a concern and now do
+> not: `scripts/validate-build.py`'s adversary mode relabels these `off-tree` (was `??`) and states
+> the licence in its output and docstring; `.claude/skills/build-forge/` Phase 5 says explicitly
+> **do not "fix" an adversary to make its talents legal**; and the `CLAUDE.md` map row matches.
+> The report is kept because it still answers a useful question — what a statblock actually costs
+> the players — and because **role is the lever** (minion 1 / rival 2 / boss 3) if a GM ever does
+> want a talent to sit inside its role's reach.
+
+---
+
 **R-93. When a card says "your &lt;Colour&gt;" but the engine pays RANK, which side is wrong?**
 Bench-adjacent finding, 2026-09-09: four talents phrase a quantity as *"your &lt;Colour&gt;"*, and the
 authored formulas behind them do not agree with each other. `Kindle` (Red · Conflagration) resolves

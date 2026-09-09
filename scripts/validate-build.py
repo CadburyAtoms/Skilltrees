@@ -189,12 +189,18 @@ def validate_build(build, verbose=True):
 
 # ---------------------------------------------------------------- adversary mode
 def validate_adversaries():
-    """Report any adversary holding a talent it could not legally have taken.
+    """List which of an adversary's talents a PC could not have reached the same way.
 
-    NOT a hard failure: ruling 40 lets an NPC run a talent 'as written', and the GM may
-    hand an adversary anything. But an unreachable talent is usually a design signal -- a
-    minion carrying a rank-3 talent is stronger than its role implies -- so it is worth
-    seeing. An adversary's colour rank comes from its ROLE (minion 1 / rival 2 / boss 3).
+    **This is information, never an error (R-94).** Ben, 2026-09-09: "I'm fine with
+    adversaries skipping around on talent trees and rank requirements." Nothing in the
+    repo enforces adversary prereqs -- scripts/validate.js only checks that a talent ref
+    RESOLVES -- and that is deliberate: an NPC exists to be interesting, not legal.
+
+    The report is still worth printing, because it tells you what a statblock is actually
+    costing the players: a minion carrying a talent a PC would need two picks and a rank-2
+    skill to reach is stronger than its role advertises. Sometimes that is the design;
+    sometimes it is an accident. An adversary's colour rank comes from its ROLE
+    (minion 1 / rival 2 / boss 3), so role is the lever if you want to change it.
     """
     advs = _load("adversaries.json")
     print("=" * 78)
@@ -217,22 +223,22 @@ def validate_adversaries():
             taken.add(str(entry).split("/")[-1].strip().lower())
         for c in (adv.get("leylines") or []):
             taken.add("%s leyline attunement" % str(c).lower())
-        print("  %s (%s, tier %s, leylines=%s -> rank %s)"
+        print("  %s (%s, tier %s, leylines=%s -> colour rank %s)"
               % (name, role, adv.get("tier"), adv.get("leylines") or [], ROLE_LEYLINE_RANK.get(role, 1)))
         for entry in listed:
             tree, _, tname = str(entry).rpartition("/")
             t, hits = find(tname, tree or None)
             if t is None:
-                print("      !! %s -- NOT FOUND / ambiguous" % entry)
+                print("      MISSING  %s -- resolves to no talent (this one IS an error)" % entry)
                 n_flagged += 1
                 continue
             good, notes, _ = check_gates(t, skills, taken)
             if not good:
                 n_flagged += 1
-            print("      %s%-22s %s" % ("ok " if good else "?? ", t["name"],
+            print("      %s%-22s %s" % ("    " if good else "off-tree ", t["name"],
                                         "; ".join(notes) if notes else "ROOT"))
-    print("  %d adversaries with talents; %d talent(s) not legally reachable "
-          "(informational -- see the docstring)" % (n_checked, n_flagged))
+    print("  %d adversaries with talents; %d marked 'off-tree' -- reachable by the GM's "
+          "licence (R-94), not by a PC's ladder. Informational only." % (n_checked, n_flagged))
     return True
 
 # ---------------------------------------------------------------- entry point
