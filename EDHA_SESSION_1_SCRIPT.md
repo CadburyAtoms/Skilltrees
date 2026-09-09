@@ -27,9 +27,16 @@ not been told — that **nothing in this land can properly die.** That image is 
 seed. Everything else tonight (the raid, the politics, the famine) is scaffolding around that one
 horror.
 
+> **The party landed 2026-09-09** (`EDHA_CAMPAIGN_STATE.md` §1) and the sheet has been tuned to
+> it without losing its build-agnosticism: **Hannah** (Envoy, **Blue**, Canticle exile,
+> Law-Singing + Performance), **Soggy Bottom** (Scholar, **White**, Lunavar moon-pool exile),
+> **Tem Parinaem** (Scholar, **Green**, Thalendor woods). **No Black, no Red, and no dedicated
+> fighter** — the ford's scaling default moved accordingly (§3).
+
 **Three promises the session keeps:**
 1. **Any build works.** Guards guard, healers tend, talkers negotiate, scouts scout. The hook is a
-   *mystery*, not a stat check — every table finds it.
+   *mystery*, not a stat check — every table finds it. *(Still true and still worth keeping: this
+   party is two Scholars and an Envoy, and the session was built so that costs them nothing.)*
 2. **The famine is a symptom, shown early.** The Mage's alchemy visibly *fakes* a working harvest.
    That wrongness is the first crack.
 3. **End on the hook, not a cliffhanger fight.** Session 1 closes quiet and wrong, in Withervale.
@@ -190,6 +197,12 @@ proudest of.
   Beneath it sit two countersignatures: the **ferry office** and the **paymaster's**.
 - **Un-missable fallback:** if nobody rolls or asks, Kell *volunteers* it — he wants the manifest
   initialled and holds the writ out to be read while he waits.
+- 🎯 **Hannah reads this for free.** She was a Law-Singer's apprentice in **Canticle**, where law
+  binds only when performed and *accurate quotation is the highest courtesy* (canon §5b, "The
+  Sounding"). Countersignatures, who may authorise what, and the difference a wrong seal makes are
+  her trade. Give her the paper and let her tell the table what it means — this scene and her
+  sheet were built for each other by accident, and it is the best moment in the session to make an
+  Envoy feel like the expert in the room.
 
 > **GM note — what this plants.** Roek's writ, four days downriver, is **genuine**: same seal, same
 > handprint, correctly issued. But it is countersigned by a **quartermaster**, not a paymaster —
@@ -422,6 +435,10 @@ this crossing a dozen times and hates it more each time.
 
 - **Default:** Roek + 2 Raiders + 1 Line-Caller (ruling 39's shape: one invested minion at
   the sharp end).
+- ⚠️ **For THIS party, start from the softened numbers below, not these.** Two Scholars and an
+  Envoy, no dedicated fighter (state doc §1): take the squishy/support-heavy line — **Raider
+  deflect 1, HP 10**, and open with Ordered Advance rather than Signal. The fight still has to
+  bruise; it now has to bruise a party with no front line.
 - **±1 PC:** ±1 Raider. **Squishy/support-heavy party:** drop Raider deflect to 1 and HP to
   10, and have the Line-Caller lead with Ordered Advance instead of Signal (mobility reads
   softer than advantage).
@@ -680,7 +697,12 @@ From Gramma as the players leave her, or any villager asked *"what else is wrong
 - ⚑ The grove is deliberately **unsited** until session-2 prep runs (gazetteer entry first,
   per the map rule). The warden's name **Selm is confirmed** (Ben, 2026-07-16).
 
-### Per-color leyline tug (build-agnostic — use only what the party brought)
+### Per-color leyline tug (use only what the party brought)
+
+> **This party brings Blue, White and Green** — Hannah, Soggy and Tem respectively. **Black and
+> Red will not fire**; they stay listed because a build can change and because the colours are
+> canon regardless. Tem's Green is the loud one here, and it is the same signal he has been
+> getting since Elmsworth.
 
 - **Green:** the Root Network runs *under* Withervale and it's being bled — a physical wrongness,
   like a vein drawn thin. Strongest signal yet, and it points south/down the border.
