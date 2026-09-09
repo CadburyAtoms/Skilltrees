@@ -305,10 +305,44 @@ tutorial combat that is *sad, not evil*, and drops the **Malcurr-funding** seed.
 > a crawl — poling single file up the one channel deep enough to float them. The lead barge is
 > midway through the bars when the willow scrub on the Corvaine bank comes apart into people — a
 > dozen thin figures in *good* armour wading the shallows in a broad, practiced line, crossbows
-> up, water at their knees. The man at their head wades with one arm raised high — not a
-> weapon: a folded paper, sealed and beribboned. A voice, hoarse and almost apologetic:
+> up, water at their knees.
+>
+> A single crossbow snaps. The bolt goes into the grain sack a hand's width from the lead
+> poleman's knee and stands there quivering, and the pole goes into the water, and every head on
+> three barges turns at once. **Nobody is hurt. That was the point.**
+>
+> The man at their head wades with one arm raised high — not a weapon: a folded paper, sealed and
+> beribboned. A voice, hoarse and almost apologetic:
 > **"Writ of requisition, under the regents' seal. Hold your poles. Ground your grain on the
 > bar and walk on south, and nobody drowns today."**
+
+### The parley round (run this BEFORE initiative)
+
+**Do not roll initiative yet.** The warning shot buys Roek exactly what he wants — everyone
+looking at him — and he spends it talking. Give the table **one full round of open conversation**
+in which the raiders hold their line in the shallows and do not close, do not shoot, and do not
+board. Roek will hold the writ up the whole time and answer questions about it honestly.
+
+*Ben, 2026-09-09:* Roek leads with the writ and a round of parley; the warning round is the
+bowman's, and it is deliberately a miss. **Mechanically this matters more than it reads** — see
+the balance note under *Scaling*: the encounter opens with a crossbow line at 60 ft against a
+party with no armour and (probably) no ranged weapon, so a round of incoming fire before the PCs
+can act at all is the difference between "bruising" and "flattening". The parley round is where
+that round goes.
+
+**What can happen in the parley round, and what it costs Roek:**
+
+| The party… | Roek's response |
+|---|---|
+| Asks to see the writ | He wades two steps closer and holds it out flat. Free look at the wax — **the child's handprint** (below). Costs him nothing; he *wants* it read. |
+| Argues Withervale is starving too | The *Outs* Persuasion/Leadership test, at **DC 13 vs. his Spiritual**, right here. On a success he takes one barge's load and goes — no combat at all. |
+| Plays for time / stalls | He gives them one more exchange, then: *"You've had the courtesy. Ground the grain."* Initiative. |
+| Draws, casts, or advances | Initiative immediately, and the parley round is spent — **but Roek's line still does not get a free volley**; the PCs simply acted first. |
+| Stands down | The raiders offload two barges onto the bar and vanish back across the shallows. |
+
+**When initiative is finally rolled, the raiders do not get a surprise round.** The warning shot
+already spent their ambush; from here it is an even fight that the PCs entered with their eyes
+open. If a PC would be Surprised, they are not — the whole line announced itself.
 
 They mean it. Roek's people want the food, not a fight. **If the PCs stand down, the raiders
 offload two barges onto the bar and vanish back across the shallows** — a legitimate (if
@@ -413,7 +447,8 @@ who looks:
 
 ### Tactics
 
-Round 1: the crossbow line shoots from the willow scrub while two waders per barge close through
+Round 1 **(the round after the parley — see above; there is no surprise round)**: the crossbow
+line shoots from the willow scrub while two waders per barge close through
 the shallows to board (everyone off the bars is Slowed — the kill-box working as designed). The
 **Line-Caller** wades a pace behind the boarders, Signal on whichever PC looks most dangerous,
 Ordered Advance keeping the wade tight. Roek
@@ -450,6 +485,27 @@ this crossing a dozen times and hates it more each time.
   tone. If a PC drops, they get dragged onto a bar — by either side; nobody here wants a drowning.
   Roek's people don't finish the downed (they want grain, not murder) — a clean place to teach the
   injury rules without a death.
+
+**⚑ Measured, bench run 44 (2026-09-09) — read this before running it.** Three rounds were played
+in Foundry on the real map with copies of the three actual PCs, on the softened numbers above
+(Raider deflect 1 / HP 10). Result: **18 damage to the party, 7 to the raiders**, and Tem — the
+highest-Physical PC, at the boarding rail — was taken from 13 HP to 2 in three rounds. Two
+structural causes, neither of them the statblocks:
+
+1. **The party has no ranged attack.** Not one, at the time of measuring. Against a crossbow line
+   opening at 60 ft, rounds 1–2 are pure incoming fire with no reply. This is what the **parley
+   round** above is for, and it is also worth telling the players there are shops in Elmsworth
+   (§2): a **shortbow** is 80/320 ft and Hannah's Light Weaponry rank makes it her best attack by
+   a wide margin; a **throwing axe** is Heavy Weaponry, which is Tem's rank-2 skill.
+2. **Cosmere has no whiffs.** A failed attack can still graze. Raider B rolled a **2** against
+   Hannah and dealt 5. Against PCs with no armour and deflect 0, that is a floor of damage every
+   round no matter how the dice fall.
+
+⚠️ **Charge the graze cost.** A graze costs the attacker **1 focus per target** (SR p.35) and is
+optional. Roek has 3 focus and *Press the Line* eats 1 per use; the Raiders and the Line-Caller
+have **1 focus each**, so a minion can graze exactly **once in the whole fight**. Run 44's first
+pass forgot this and the encounter read far more lethal than it is — with focus charged properly,
+most raider misses are simply misses.
 
 ---
 

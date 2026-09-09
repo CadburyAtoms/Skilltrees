@@ -1458,6 +1458,31 @@ row is annotated with this derivation and stays 🤖 until you answer; a technic
 
 ---
 
+**R-92. A PC hits 0 HP and nothing happens. Should Edha add a generic "dropped" GM cue?**
+Confirmed live in bench run 44 (2026-09-09): Tem was reduced to 0 HP on the Palewater Ford scene and
+**no status, no prompt, no card, no token overlay** appeared — the only effect on him was the
+`Determined` from Rousing Presence. This is not an Edha bug and not a system bug: **Cosmere RPG 2.1.0
+ships the entire injury apparatus and deliberately does not automate it.** The system has an `injury`
+item type, the duration table (Flesh Wound → Shallow → Vicious → Permanent → Death), an
+`apply-injury-actor` event type, an "apply injury to character" chat button, and `actor.rollInjury()`
+— but `unconscious` appears in `index.js` **only as a status definition, never applied by code**,
+there is no `health <= 0` check anywhere in the bundle, and the injury roll is a manual **"Roll
+Injury"** button bound to the Health resource on the character sheet. Metalworks made it GM-driven on
+purpose. The question is whether *Edha* should notice the drop for you. It matters for session 1
+specifically: §3's design note calls the ford *"a clean place to teach the injury rules without a
+death"*, and at the table the GM currently has to spot the number themselves mid-fight.
+*Recommended default: **(a) add a generic drop cue** — a GM-whispered card when any character's
+health crosses to 0, naming them and offering the Roll Injury reminder. It composes existing
+primitives (`edha-apply-watch` → `edha-gm-cue` is exactly the shape **Cover Their Retreat** already
+uses for "an ally within 20 ft would drop"), so it is one small generic handler under iron rule 2a,
+not a subsystem, and it changes no dice.* (b) Add the cue **and** auto-apply the `unconscious`
+status — more automation, but it makes a ruling about a rule the system chose to leave to you, and
+it would fight any table ruling that a PC stays up. (c) Leave it manual and matching the system's own
+choice — one fewer card, and you watch the HP bars. *(Bench run 44, 2026-09-09 — filed rather than
+patched because (a) vs (c) is a taste call about how much the engine should nag.)*
+
+---
+
 ---
 
 **R-23. Volatile Strike — whose hit should it ride?** Card and rule description both say "when you
