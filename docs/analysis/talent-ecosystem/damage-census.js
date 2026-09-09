@@ -48,3 +48,47 @@ for(const k of order){
     String(c.diesize||0).padStart(7),'  |',String(srcItems.length).padStart(3),String(eL).padStart(9));
 }
 fs.writeFileSync(process.argv[2]+'/../census2.json',JSON.stringify(out,null,1));
+
+// ---- CROSS-CHECK against the authored roll formulas -------------------------------------------
+// The block above is regex over prose. `damageFormula` is what Foundry actually rolls, taken from
+// the authored overlay. Two independent evidence streams; where they disagree, someone is wrong
+// and the talent text settles it. Note `type: "heal"` formulas are NOT damage (Scholar's three
+// and Green's two are heals) -- counting `damage.formula` without that filter says Scholar deals
+// damage when it deals none.
+console.log('');
+console.log('=== CROSS-CHECK: prose classifier vs. the authored roll formula ===');
+console.log('TREE                  regex-src  roll-dmg  roll-heal  DELTA  disagreements');
+for(const k of order){
+  const [atlas,tree]=k.split('|');
+  const sub=rows.filter(r=>r.atlas===atlas&&r.tree===tree);
+  const o=out[k];
+  const srcNames=new Set([...(o.items.source||[]),...(o.items['source+amp']||[])].map(x=>x.name));
+  const formNames=new Set(sub.filter(r=>r.isDamageFormula).map(r=>r.name));
+  const onlyRegex=[...srcNames].filter(n=>!formNames.has(n));
+  const onlyForm=[...formNames].filter(n=>!srcNames.has(n));
+  const heal=sub.filter(r=>r.isHealFormula).length;
+  const bits=[];
+  if(onlyRegex.length) bits.push('prose-only: '+onlyRegex.join(', '));
+  if(onlyForm.length) bits.push('FORMULA-ONLY: '+onlyForm.join(', '));
+  console.log(k.replace('|','/').padEnd(21),String(srcNames.size).padStart(9),String(formNames.size).padStart(9),
+    String(heal).padStart(10),String(formNames.size-srcNames.size).padStart(7),'  '+(bits.join(' | ')||'agree'));
+}
+const allForm=rows.filter(r=>r.isDamageFormula);
+console.log('');
+console.log('Total: '+allForm.length+' talents carry a damage roll formula, '+rows.filter(r=>r.isHealFormula).length+' carry a heal formula.');
+console.log('A talent can deal damage with NO formula (fixed amounts, event-driven, summons, hazards),');
+console.log('so the formula count is a FLOOR. A prose hit with no formula is either unautomated damage');
+console.log('or a false positive -- read the talent.');
+
+// ---- wiring, which is a different question and worth seeing next to it -------------------------
+console.log('');
+console.log('=== WIRING (authored overlay): how much of each tree is actually automated ===');
+console.log('TREE                  n  withEvents  withEffects  neither  %unwired');
+for(const k of order){
+  const [atlas,tree]=k.split('|');
+  const sub=rows.filter(r=>r.atlas===atlas&&r.tree===tree);
+  const ev=sub.filter(r=>r.hasEvents).length, ef=sub.filter(r=>r.hasEffects).length;
+  const n=sub.filter(r=>!r.hasEvents&&!r.hasEffects).length;
+  console.log(k.replace('|','/').padEnd(21),String(sub.length).padStart(3),String(ev).padStart(11),
+    String(ef).padStart(12),String(n).padStart(9),(100*n/sub.length).toFixed(0).padStart(8)+'%');
+}

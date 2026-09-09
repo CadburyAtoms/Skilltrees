@@ -11,7 +11,12 @@ const FUNCS={
  reduce_damage:/(reduce|prevent|ignore|halve|negate)[^.;]{0,50}damage|less damage|damage[^.;]{0,25}reduced/,
  heal:/(regain|recover|restore|heal)[^.;]{0,30}(health|hp)/,
  temp_hp:/temporary (hp|health)/,
- grant_advantage:/gain(s)? (an )?advantage|advantage on/,
+ // The (?<!dis) matters: the old pattern was /gain(s)? (an )?advantage|advantage on/, and
+ // `advantage on` matches INSIDE `disadvantage on`. That counted Blue's four disadvantage-imposing
+ // talents (Intercept, Absolute Stillness, False Premise, Probability Cascade) as advantage
+ // GRANTERS — the source of the "Blue has 8 advantage-granting talents" line in the first draft
+ // of the README. Blue has 4. Fixed 2026-09-09.
+ grant_advantage:/(?<!dis)advantage/,
  impose_disadvantage:/disadvantage/,
  reroll:/re-?roll/,
  grant_action:/(gain|grant|take)[^.;]{0,30}(reaction|free action|action)|additional action|extra action/,
