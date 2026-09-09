@@ -26,7 +26,11 @@ from PIL import Image
 
 import maplib
 
-DOCS = ["EDHA_CAMPAIGN_CANON.md", "EDHA_CAMPAIGN_OPENING.md", "EDHA_SESSION_1_SCRIPT.md"]
+DOCS = ["EDHA_CAMPAIGN_CANON.md", "EDHA_CAMPAIGN_OPENING.md", "EDHA_SESSION_1_SCRIPT.md",
+        # added 2026-09-09: the state doc carried a pre-redraw Elmsworth coordinate
+        # (1290,1470 vs the gazetteer's 1036,1359, ~438 km off) for as long as it existed,
+        # purely because nothing scanned it. session-forge reads this file first.
+        "EDHA_CAMPAIGN_STATE.md"]
 COORD_RE = re.compile(r"\((\d{3,4}),\s?(\d{3,4})\)")
 TOL_PX = 25
 TOL_MOUTH_PX = 15    # mouths are load-bearing: they anchor within ~24 km

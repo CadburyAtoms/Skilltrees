@@ -25,7 +25,7 @@ the party, and the clocks. Owned by the `.claude/skills/session-forge` (reads fi
       and the cult must never learn the moon is Olvarra (ruling 65). Tailored player-safe hooks
       seeded in `EDHA_PLAYER_PRIMER.md` §Lunavar (the reader-who-enters-the-water folklore).
   - **PC-2, PC-3:** not yet created.
-- Location: n/a (session 1 opens at Elmsworth, the head-of-navigation river port, (1290,1470)).
+- Location: n/a (session 1 opens at Elmsworth, the head-of-navigation river port, (1036,1359)).
 
 ## 1a. Party inventory & wealth
 
@@ -81,8 +81,9 @@ table. The Fetch reveal must happen in the players' hands, so track both lists v
 ## 5. NPC dispositions
 
 *(None met. Session-1 cast staged in `EDHA_SESSION_1_SCRIPT.md` §1: Marshal Vareth Khor (canon),
-Fenn, Wick, Sgt. Roek, Keeper Harrow, Gramma Ashmark, Elder Joskin — all names CONFIRMED,
-Ben 2026-07-16.)*
+Fenn, Wick, **Ferry-Serjeant Ordis Kell** (§2b), Sgt. Roek, Keeper Harrow, Gramma Ashmark, Elder
+Joskin — all names CONFIRMED, Ben 2026-07-16 and 2026-09-09 (Kell). **No ⚑ names remain in the
+session-1 sheet.**)*
 
 ## 6. Session log
 
